@@ -34,19 +34,22 @@ namespace Elite
 {
     internal static class trade
     {
+		internal const int NO_OF_STOCK_ITEMS = 17;
+		internal const int ALIEN_ITEMS_IDX = 16;
+
 		#define SLAVES		3
 		#define NARCOTICS	6
 		#define FIREARMS	10
 
-				/*
-				 * The following holds the Elite Planet Stock Market.
-				 */
+		/*
+		* The following holds the Elite Planet Stock Market.
+		*/
 
 		#define TONNES		0
 		#define KILOGRAMS	1
 		#define GRAMS		2
 
-				struct stock_item stock_market[NO_OF_STOCK_ITEMS]=
+		internal static stock_item[] stock_market = new stock_item[NO_OF_STOCK_ITEMS]
 		{
 			{"Food",		 0, 0,  19, -2,   6, 0x01, TONNES},
 			{"Textiles",	 0, 0,  20, -1,  10, 0x03, TONNES},

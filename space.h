@@ -29,25 +29,6 @@ struct point
 };
 
 
-struct univ_object
-{
-	int type;
-	Vector location;
-	Matrix rotmat;
-	int rotx;
-	int rotz;
-	int flags;
-	int energy;
-	int velocity;
-	int acceleration;
-	int missiles;
-	int target;
-	int bravery;
-	int exp_delta;
-	int exp_seed;
-	int distance;
-};
-
 #define MAX_UNIV_OBJECTS	20
 
 extern struct univ_object universe[MAX_UNIV_OBJECTS];
