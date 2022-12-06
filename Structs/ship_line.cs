@@ -1,14 +1,14 @@
 ﻿namespace Elite.Structs
 {
-    public struct ship_line
+    internal struct ship_line
     {
-        public int dist;
-        public int face1;
-        public int face2;
-        public int start_point;
-        public int end_point;
+        internal int dist;
+        internal int face1;
+        internal int face2;
+        internal int start_point;
+        internal int end_point;
 
-        public ship_line(int dist, int face1, int face2, int start_point, int end_point)
+        internal ship_line(int dist, int face1, int face2, int start_point, int end_point)
         {
             this.dist = dist;
             this.face1 = face1;

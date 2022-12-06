@@ -1,26 +1,26 @@
 ﻿namespace Elite.Structs
 {
-    public struct ship_data
+    internal struct ship_data
     {
-        public string name;
-        public int num_points;
-        public int num_lines;
-        public int num_faces;
-        public int max_loot;
-        public int scoop_type;
-        public double size;
-        public int front_laser;
-        public int bounty;
-        public int vanish_point;
-        public int energy;
-        public int velocity;
-        public int missiles;
-        public int laser_strength;
-        public ship_point[] points;
-        public ship_line[] lines;
-        public ship_face_normal[] normals;
+        internal string name;
+        internal int num_points;
+        internal int num_lines;
+        internal int num_faces;
+        internal int max_loot;
+        internal int scoop_type;
+        internal double size;
+        internal int front_laser;
+        internal int bounty;
+        internal int vanish_point;
+        internal int energy;
+        internal int velocity;
+        internal int missiles;
+        internal int laser_strength;
+        internal ship_point[] points;
+        internal ship_line[] lines;
+        internal ship_face_normal[] normals;
 
-        public ship_data(string name, int num_points, int num_lines, int num_faces, int max_loot,
+        internal ship_data(string name, int num_points, int num_lines, int num_faces, int max_loot,
             int scoop_type, double size, int front_laser, int bounty, int vanish_point, int energy,
             int velocity, int missiles, int laser_strength, ship_point[] points, ship_line[] lines, ship_face_normal[] normals)
         {
