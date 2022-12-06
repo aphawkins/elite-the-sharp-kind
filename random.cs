@@ -15,50 +15,56 @@
 /*
  * random.c
  */
- 
- 
-#include <stdlib.h>
-#include "allegro.h"
 
-#include "random.h"
 
-static int rand_seed;
+# include <stdlib.h>
+# include "allegro.h"
 
-/*
- * Portable random number generator implementing the recursion:
- *     IX = 16807 * IX MOD (2**(31) - 1)
- * Using only 32 bits, including sign.
- *
- * Taken from "A Guide to Simulation" by Bratley, Fox and Schrage.
- */
+# include "random.h"
 
-int randint (void)
+namespace Elite
 {
-	int k1;
-	int ix = rand_seed;
-	
-	k1 = ix / 127773;
-	ix = 16807 * (ix - k1 * 127773) - k1 * 2836;
-	if (ix < 0)
-		ix += 2147483647;
-	rand_seed = ix;
+	internal static class random
+	{
+		static int rand_seed;
 
-	return ix; 
-}
- 
+		/*
+		 * Portable random number generator implementing the recursion:
+		 *     IX = 16807 * IX MOD (2**(31) - 1)
+		 * Using only 32 bits, including sign.
+		 *
+		 * Taken from "A Guide to Simulation" by Bratley, Fox and Schrage.
+		 */
 
-void set_rand_seed (int seed)
-{
-	rand_seed = seed;
-}
+		int randint(void)
+		{
+			int k1;
+			int ix = rand_seed;
+
+			k1 = ix / 127773;
+			ix = 16807 * (ix - k1 * 127773) - k1 * 2836;
+			if (ix < 0)
+				ix += 2147483647;
+			rand_seed = ix;
+
+			return ix;
+		}
 
 
-int get_rand_seed (void)
-{
-	return rand_seed;
-}
+		void set_rand_seed(int seed)
+		{
+			rand_seed = seed;
+		}
 
-int rand255 (void)
-{
-	return (randint() & 255);
+
+		int get_rand_seed(void)
+		{
+			return rand_seed;
+		}
+
+		int rand255(void)
+		{
+			return (randint() & 255);
+		}
+	}
 }
