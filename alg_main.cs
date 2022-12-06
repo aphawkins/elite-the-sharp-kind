@@ -75,7 +75,7 @@ namespace Elite
 		 * Initialise the game parameters.
 		 */
 
-		void initialise_game(void)
+		void initialise_game()
 		{
 			set_rand_seed (time(NULL));
 			current_screen = SCR_INTRO_ONE;
@@ -113,7 +113,7 @@ namespace Elite
 		}
 
 
-		void finish_game (void)
+		void finish_game ()
 		{
 			finish = 1;
 			game_over = 1;
@@ -191,7 +191,7 @@ namespace Elite
 
 
 
-		void draw_laser_sights(void)
+		void draw_laser_sights()
 		{
 			int laser = 0;
 			int x1,y1,x2,y2;
@@ -255,7 +255,7 @@ namespace Elite
 		}
 
 
-		void arrow_right (void)
+		void arrow_right ()
 		{
 			switch (current_screen)
 			{
@@ -289,7 +289,7 @@ namespace Elite
 		}
 
 
-		void arrow_left (void)
+		void arrow_left ()
 		{
 			switch (current_screen)
 			{
@@ -323,7 +323,7 @@ namespace Elite
 		}
 
 
-		void arrow_up (void)
+		void arrow_up ()
 		{
 			switch (current_screen)
 			{
@@ -365,7 +365,7 @@ namespace Elite
 
 
 
-		void arrow_down (void)
+		void arrow_down ()
 		{
 			switch (current_screen)
 			{
@@ -407,7 +407,7 @@ namespace Elite
 		}
 
 
-		void return_pressed (void)
+		void return_pressed ()
 		{
 			switch (current_screen)
 			{
@@ -426,7 +426,7 @@ namespace Elite
 		}
 
 
-		void y_pressed (void)
+		void y_pressed ()
 		{
 			switch (current_screen)
 			{
@@ -437,7 +437,7 @@ namespace Elite
 		}
 
 
-		void n_pressed (void)
+		void n_pressed ()
 		{
 			switch (current_screen)
 			{
@@ -451,7 +451,7 @@ namespace Elite
 		}
 
 
-		void d_pressed (void)
+		void d_pressed ()
 		{
 			switch (current_screen)
 			{
@@ -471,7 +471,7 @@ namespace Elite
 		}
 
 
-		void f_pressed (void)
+		void f_pressed ()
 		{
 			if ((current_screen == SCR_GALACTIC_CHART) ||
 				(current_screen == SCR_SHORT_RANGE))
@@ -501,7 +501,7 @@ namespace Elite
 		}
 
 
-		void delete_find_char (void)
+		void delete_find_char ()
 		{
 			char str[40];
 			int len;
@@ -529,7 +529,7 @@ namespace Elite
 		}
 
 
-		void auto_dock (void)
+		void auto_dock ()
 		{
 			struct univ_object ship;
 
@@ -613,7 +613,7 @@ namespace Elite
 		}
 
 
-		void run_escape_sequence (void)
+		void run_escape_sequence ()
 		{
 			int i;
 			int newship;
@@ -684,7 +684,7 @@ namespace Elite
 		}
 
 
-		void handle_flight_keys (void)
+		void handle_flight_keys ()
 		{
 			int keyasc;
 	
@@ -1003,7 +1003,7 @@ namespace Elite
 		}
 
 
-		void save_commander_screen (void)
+		void save_commander_screen ()
 		{
 			char path[255];
 			int okay;
@@ -1044,7 +1044,7 @@ namespace Elite
 		}
 
 
-		void load_commander_screen (void)
+		void load_commander_screen ()
 		{
 			char path[255];
 			int rv;
@@ -1082,7 +1082,7 @@ namespace Elite
 
 
 
-		void run_first_intro_screen (void)
+		void run_first_intro_screen ()
 		{
 			current_screen = SCR_INTRO_ONE;
 
@@ -1116,7 +1116,7 @@ namespace Elite
 
 
 
-		void run_second_intro_screen (void)
+		void run_second_intro_screen ()
 		{
 			current_screen = SCR_INTRO_TWO;
 	
@@ -1198,7 +1198,7 @@ namespace Elite
 		 * Just draw a very simple one for the moment.
 		 */
 
-		void display_break_pattern (void)
+		void display_break_pattern ()
 		{
 			int i;
 
@@ -1235,7 +1235,7 @@ namespace Elite
 
 
 
-		void initialise_allegro (void)
+		void initialise_allegro ()
 		{
 			allegro_init();
 			install_keyboard(); 

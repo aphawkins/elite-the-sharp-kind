@@ -278,7 +278,7 @@ namespace Elite
 		}
 
 
-		void engage_auto_pilot (void)
+		void engage_auto_pilot ()
 		{
 			if (auto_pilot || witchspace || hyper_ready)
 				return; 
@@ -288,7 +288,7 @@ namespace Elite
 		}
 
 
-		void disengage_auto_pilot (void)
+		void disengage_auto_pilot ()
 		{
 			if (auto_pilot)
 			{

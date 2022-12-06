@@ -38,7 +38,7 @@ namespace Elite
 		struct star stars[20];
 
 
-		void create_new_stars(void)
+		void create_new_stars()
 		{
 			int i;
 			int nstars;
@@ -56,7 +56,7 @@ namespace Elite
 		}
 
 
-		void front_starfield(void)
+		void front_starfield()
 		{
 			int i;
 			double Q;
@@ -152,7 +152,7 @@ namespace Elite
 
 
 
-		void rear_starfield(void)
+		void rear_starfield()
 		{
 			int i;
 			double Q;
@@ -261,7 +261,7 @@ namespace Elite
 		}
 
 
-		void side_starfield(void)
+		void side_starfield()
 		{
 			int i;
 			double delta;
@@ -359,7 +359,7 @@ namespace Elite
 		 * When we change view, flip the stars over so they look like other stars.
 		 */
 
-		void flip_stars(void)
+		void flip_stars()
 		{
 			int i;
 			int nstars;
@@ -377,7 +377,7 @@ namespace Elite
 		}
 
 
-		void update_starfield(void)
+		void update_starfield()
 		{
 			switch (current_screen)
 			{

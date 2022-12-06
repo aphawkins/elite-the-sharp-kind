@@ -24,23 +24,23 @@ extern int ecm_active;
 extern int missile_target;
 extern int in_battle;
 
-void reset_weapons (void);
+void reset_weapons ();
 void tactics (int un);
 int in_target (int type, double x, double y, double z);
 void check_target (int un, struct univ_object *flip);
 void check_missiles (int un);
-void draw_laser_lines (void);
-int fire_laser (void);
-void cool_laser (void);
-void arm_missile (void);
-void unarm_missile (void);
-void fire_missile (void);
+void draw_laser_lines ();
+int fire_laser ();
+void cool_laser ();
+void arm_missile ();
+void unarm_missile ();
+void fire_missile ();
 void activate_ecm (int ours);
-void time_ecm (void);
-void random_encounter (void);
+void time_ecm ();
+void random_encounter ();
 void explode_object (int un);
-void abandon_ship (void);
-void create_thargoid (void);
+void abandon_ship ();
+void create_thargoid ();
 void dock_it (struct univ_object *ship);
 
 

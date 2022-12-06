@@ -81,7 +81,7 @@ namespace Elite
 		 */
 
 
-		void generate_stock_market (void)
+		void generate_stock_market ()
 		{
 			int quant;
 			int price;
@@ -127,14 +127,14 @@ namespace Elite
 		}
 
  
-		int carrying_contraband (void)
+		int carrying_contraband ()
 		{
 			return (cmdr.current_cargo[SLAVES] + cmdr.current_cargo[NARCOTICS]) * 2 +
 					cmdr.current_cargo[FIREARMS];
 		}
 
 
-		int total_cargo (void)
+		int total_cargo ()
 		{
 			int i;
 			int cargo_held;

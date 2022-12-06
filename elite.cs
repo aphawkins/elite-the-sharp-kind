@@ -149,7 +149,7 @@ namespace Elite
 			&dodec_data
 		};
 
-		void restore_saved_commander(void)
+		void restore_saved_commander()
 		{
 			cmdr = saved_cmdr;
 

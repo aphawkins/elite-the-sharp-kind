@@ -29,7 +29,7 @@ namespace Elite
 {
 	internal static class file
 	{
-		void write_config_file(void)
+		void write_config_file()
 		{
 			FILE* fp;
 
@@ -124,7 +124,7 @@ namespace Elite
 		 * Read in the newkind.cfg file.
 		 */
 
-		void read_config_file(void)
+		void read_config_file()
 		{
 			FILE* fp;
 			char str[256];

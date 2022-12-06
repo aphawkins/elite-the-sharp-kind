@@ -181,7 +181,7 @@ namespace Elite
 		}
 
 
-		void constrictor_mission_brief (void)
+		void constrictor_mission_brief ()
 		{
 			Matrix rotmat;
 
@@ -217,7 +217,7 @@ namespace Elite
 		}	
 
 
-		void constrictor_mission_debrief (void)
+		void constrictor_mission_debrief ()
 		{
 			int keyasc;
 
@@ -244,7 +244,7 @@ namespace Elite
 		}
 
 
-		void thargoid_mission_first_brief (void)
+		void thargoid_mission_first_brief ()
 		{
 			int keyasc;
 
@@ -267,7 +267,7 @@ namespace Elite
 		}
 
 
-		void thargoid_mission_second_brief (void)
+		void thargoid_mission_second_brief ()
 		{
 			int keyasc;
 
@@ -293,7 +293,7 @@ namespace Elite
 		}
 
 
-		void thargoid_mission_debrief (void)
+		void thargoid_mission_debrief ()
 		{
 			int keyasc;
 
@@ -321,7 +321,7 @@ namespace Elite
 
 
 
-		void check_mission_brief (void)
+		void check_mission_brief ()
 		{
 			if ((cmdr.mission == 0) && (cmdr.score >= 256) && (cmdr.galaxy_number < 2))
 			{

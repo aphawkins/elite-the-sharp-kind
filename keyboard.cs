@@ -65,18 +65,18 @@ namespace Elite
 		int kbd_space_pressed;
 
 
-		int kbd_keyboard_startup(void)
+		int kbd_keyboard_startup()
 		{
 			//	set_keyboard_rate(2000, 2000);
 			return 0;
 		}
 
-		int kbd_keyboard_shutdown(void)
+		int kbd_keyboard_shutdown()
 		{
 			return 0;
 		}
 
-		void kbd_poll_keyboard(void)
+		void kbd_poll_keyboard()
 		{
 			poll_keyboard();
 
@@ -133,7 +133,7 @@ namespace Elite
 		}
 
 
-		int kbd_read_key(void)
+		int kbd_read_key()
 		{
 			int keynum;
 			int keycode;
@@ -162,7 +162,7 @@ namespace Elite
 		}
 
 
-		void kbd_clear_key_buffer(void)
+		void kbd_clear_key_buffer()
 		{
 			while (keypressed())
 				readkey();

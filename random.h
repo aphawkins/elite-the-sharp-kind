@@ -19,10 +19,10 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-int randint (void);
+int randint ();
 void set_rand_seed (int seed);
-int get_rand_seed (void);
-int rand255 (void);
+int get_rand_seed ();
+int rand255 ();
 
 #endif
 

@@ -124,7 +124,7 @@ namespace Elite
 
 
 
-		void show_distance_to_planet (void)
+		void show_distance_to_planet ()
 		{
 			int px,py;
 			char planet_name[16];
@@ -164,7 +164,7 @@ namespace Elite
 		}
 
 
-		void move_cursor_to_origin (void)
+		void move_cursor_to_origin ()
 		{
 			if (current_screen == SCR_GALACTIC_CHART)
 			{
@@ -237,7 +237,7 @@ namespace Elite
 
 
 
-		void display_short_range_chart (void)
+		void display_short_range_chart ()
 		{
 			int i;
 			struct galaxy_seed glx;
@@ -335,7 +335,7 @@ namespace Elite
 
 
 
-		void display_galactic_chart (void)
+		void display_galactic_chart ()
 		{
 			int i;
 			struct galaxy_seed glx;
@@ -389,7 +389,7 @@ namespace Elite
 		 * Displays data on the currently selected Hyperspace Planet.
 		 */
 
-		void display_data_on_planet (void)
+		void display_data_on_planet ()
 		{
 			char planet_name[16];
 			char str[100];
@@ -500,7 +500,7 @@ namespace Elite
 			"Red"
 		};
 
-		void display_commander_status (void)
+		void display_commander_status ()
 		{
 			char planet_name[16];
 			char str[100];
@@ -765,7 +765,7 @@ namespace Elite
 			gfx_display_text (16, 340, str);
 		}
 
-		void select_previous_stock (void)
+		void select_previous_stock ()
 		{
 			if ((!docked) || (hilite_item == 0))
 				return;
@@ -773,7 +773,7 @@ namespace Elite
 			highlight_stock (hilite_item - 1);
 		}
 
-		void select_next_stock (void)
+		void select_next_stock ()
 		{
 			if ((!docked) || (hilite_item == 16))
 				return;
@@ -782,7 +782,7 @@ namespace Elite
 		}
 
 
-		void buy_stock (void)
+		void buy_stock ()
 		{
 			struct stock_item *item;
 			int cargo_held;
@@ -810,7 +810,7 @@ namespace Elite
 		}
 
 
-		void sell_stock (void)
+		void sell_stock ()
 		{
 			struct stock_item *item;
 	
@@ -828,7 +828,7 @@ namespace Elite
 
 
 
-		void display_market_prices (void)
+		void display_market_prices ()
 		{
 			char str[100];
 			char planet_name[16];
@@ -863,7 +863,7 @@ namespace Elite
 		}
 
 
-		void display_inventory (void)
+		void display_inventory ()
 		{
 			int i;
 			int y;
@@ -1103,7 +1103,7 @@ namespace Elite
 		}
 
 
-		void select_next_equip (void)
+		void select_next_equip ()
 		{
 			int next;
 			int i;
@@ -1125,7 +1125,7 @@ namespace Elite
 				highlight_equip (next);
 		}
 
-		void select_previous_equip (void)
+		void select_previous_equip ()
 		{
 			int i;
 			int prev;
@@ -1148,7 +1148,7 @@ namespace Elite
 		}
 
 
-		void list_equip_prices (void)
+		void list_equip_prices ()
 		{
 			int i;
 			int y;
@@ -1183,7 +1183,7 @@ namespace Elite
 		}
 
 
-		void collapse_equip_list (void)
+		void collapse_equip_list ()
 		{
 			int i;
 			int ch;
@@ -1217,7 +1217,7 @@ namespace Elite
 		}
 
 
-		void buy_equip (void)
+		void buy_equip ()
 		{
 			int i;
 
@@ -1366,7 +1366,7 @@ namespace Elite
 		}
 
 
-		void equip_ship (void)
+		void equip_ship ()
 		{
 			current_screen = SCR_EQUIP_SHIP;
 

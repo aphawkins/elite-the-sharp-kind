@@ -375,7 +375,7 @@ namespace Elite
 		 * Generate a landscape map for a SNES Elite style planet.
 		 */
 
-		void generate_snes_landscape (void)
+		void generate_snes_landscape ()
 		{
 			int x,y;
 			int colour;
@@ -398,7 +398,7 @@ namespace Elite
 		 * Returns a number between -7 and +8 with Gaussian distribution.
 		 */
 
-		int grand (void)
+		int grand ()
 		{
 			int i;
 			int r;

@@ -212,7 +212,7 @@ namespace Elite
 		 * Dock the player into the space station.
 		 */
 
-		void dock_player (void)
+		void dock_player ()
 		{
 			disengage_auto_pilot();
 			docked = 1;
@@ -266,14 +266,14 @@ namespace Elite
 		 * Game Over...
 		 */
 
-		void do_game_over (void)
+		void do_game_over ()
 		{
 			snd_play_sample (SND_GAMEOVER);
 			game_over = 1;
 		}
 
 
-		void update_altitude (void)
+		void update_altitude ()
 		{
 			double x,y,z;
 			double dist;
@@ -319,7 +319,7 @@ namespace Elite
 		}
 
 
-		void update_cabin_temp (void)
+		void update_cabin_temp ()
 		{
 			int x,y,z;
 			int dist;
@@ -375,7 +375,7 @@ namespace Elite
 		 * Regenerate the shields and the energy banks.
 		 */
 
-		void regenerate_shields (void)
+		void regenerate_shields ()
 		{
 			if (energy > 127)
 			{
@@ -437,7 +437,7 @@ namespace Elite
 
 
 
-		void make_station_appear (void)
+		void make_station_appear ()
 		{
 			double px,py,pz;
 			double sx,sy,sz;
@@ -575,7 +575,7 @@ namespace Elite
 		 * Update all the objects in the universe and render them.
 		 */
 
-		void update_universe (void)
+		void update_universe ()
 		{
 			int i;
 			int type;
@@ -694,7 +694,7 @@ namespace Elite
 		 * Update the scanner and draw all the lollipops.
 		 */
 
-		void update_scanner (void)
+		void update_scanner ()
 		{
 			int i;
 			int x,y,z;
@@ -759,7 +759,7 @@ namespace Elite
 		 * Update the compass which tracks the space station / planet.
 		 */
 
-		void update_compass (void)
+		void update_compass ()
 		{
 			struct vector dest;
 			int compass_x;
@@ -793,7 +793,7 @@ namespace Elite
 		 * Display the speed bar.
 		 */
 
-		void display_speed (void)
+		void display_speed ()
 		{
 			int sx,sy;
 			int i;
@@ -838,7 +838,7 @@ namespace Elite
 		 * Display the current shield strengths.
 		 */
 
-		void display_shields (void)
+		void display_shields ()
 		{
 			if (front_shield > 3)
 				display_dial_bar (front_shield / 4, 31, 7);
@@ -848,20 +848,20 @@ namespace Elite
 		}
 
 
-		void display_altitude (void)
+		void display_altitude ()
 		{
 			if (myship.altitude > 3)
 				display_dial_bar (myship.altitude / 4, 31, 92);
 		}
 
-		void display_cabin_temp (void)
+		void display_cabin_temp ()
 		{
 			if (myship.cabtemp > 3)
 				display_dial_bar (myship.cabtemp / 4, 31, 60);
 		}
 
 
-		void display_laser_temp (void)
+		void display_laser_temp ()
 		{
 			if (laser_temp > 0)
 				display_dial_bar (laser_temp / 4, 31, 76);
@@ -872,7 +872,7 @@ namespace Elite
 		 * Display the energy banks.
 		 */
 
-		void display_energy (void)
+		void display_energy ()
 		{
 			int e1,e2,e3,e4;
 
@@ -896,7 +896,7 @@ namespace Elite
 
 
 
-		void display_flight_roll (void)
+		void display_flight_roll ()
 		{
 			int sx,sy;
 			int i;
@@ -914,7 +914,7 @@ namespace Elite
 			}
 		}
 
-		void display_flight_climb (void)
+		void display_flight_climb ()
 		{
 			int sx,sy;
 			int i;
@@ -933,14 +933,14 @@ namespace Elite
 		}
 
 
-		void display_fuel (void)
+		void display_fuel ()
 		{
 			if (cmdr.fuel > 0)
 				display_dial_bar ((cmdr.fuel * 64) / myship.max_fuel, 31, 44);
 		}
 
 
-		void display_missiles (void)
+		void display_missiles ()
 		{
 			int nomiss;
 			int x,y;
@@ -969,7 +969,7 @@ namespace Elite
 		}
 
 
-		void update_console (void)
+		void update_console ()
 		{
 			gfx_set_clip_region (0, 0, 512, 512);
 			gfx_draw_scanner();
@@ -998,34 +998,34 @@ namespace Elite
 				gfx_draw_sprite (IMG_BIG_E, 115, 490);
 		}
 
-		void increase_flight_roll (void)
+		void increase_flight_roll ()
 		{
 			if (flight_roll < myship.max_roll)
 				flight_roll++;
 		}
 
 
-		void decrease_flight_roll (void)
+		void decrease_flight_roll ()
 		{
 			if (flight_roll > -myship.max_roll)
 				flight_roll--;
 		}
 
 
-		void increase_flight_climb (void)
+		void increase_flight_climb ()
 		{
 			if (flight_climb < myship.max_climb)
 				flight_climb++;
 		}
 
-		void decrease_flight_climb (void)
+		void decrease_flight_climb ()
 		{
 			if (flight_climb > -myship.max_climb)
 				flight_climb--;
 		}
 
 
-		void start_hyperspace (void)
+		void start_hyperspace ()
 		{
 			if (hyper_ready)
 				return;
@@ -1046,7 +1046,7 @@ namespace Elite
 			disengage_auto_pilot();
 		}
 
-		void start_galactic_hyperspace (void)
+		void start_galactic_hyperspace ()
 		{
 			if (hyper_ready)
 				return;
@@ -1062,7 +1062,7 @@ namespace Elite
 
 
 
-		void display_hyper_status (void)
+		void display_hyper_status ()
 		{
 			char str[80];
 
@@ -1095,7 +1095,7 @@ namespace Elite
 			return ((x << 1) | (x >> 7)) & 255;
 		}
 
-		void enter_next_galaxy (void)
+		void enter_next_galaxy ()
 		{
 			cmdr.galaxy_number++;
 			cmdr.galaxy_number &= 7;
@@ -1115,7 +1115,7 @@ namespace Elite
 
 
 
-		void enter_witchspace (void)
+		void enter_witchspace ()
 		{
 			int i;
 			int nthg;
@@ -1140,7 +1140,7 @@ namespace Elite
 		}
 
 
-		void complete_hyperspace (void)
+		void complete_hyperspace ()
 		{
 			Matrix rotmat;
 			int px,py,pz;
@@ -1208,7 +1208,7 @@ namespace Elite
 		}
 
 
-		void countdown_hyperspace (void)
+		void countdown_hyperspace ()
 		{
 			if (hyper_countdown == 0)
 			{
@@ -1221,7 +1221,7 @@ namespace Elite
 
 
 
-		void jump_warp (void)
+		void jump_warp ()
 		{
 			int i;
 			int type;
@@ -1267,7 +1267,7 @@ namespace Elite
 		}
 
 
-		void launch_player (void)
+		void launch_player ()
 		{
 			Matrix rotmat;
 
@@ -1298,7 +1298,7 @@ namespace Elite
 		 * For the moment we just do an instant dock if we are in the safe zone.
 		 */
 
-		void engage_docking_computer (void)
+		void engage_docking_computer ()
 		{
 			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 			{

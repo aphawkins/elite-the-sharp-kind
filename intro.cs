@@ -53,7 +53,7 @@ namespace Elite
 		static Matrix intro_ship_matrix;
 
 
-		void initialise_intro1(void)
+		void initialise_intro1()
 		{
 			clear_universe();
 			set_init_matrix(intro_ship_matrix);
@@ -61,7 +61,7 @@ namespace Elite
 		}
 
 
-		void initialise_intro2(void)
+		void initialise_intro2()
 		{
 			ship_no = 0;
 			show_time = 0;
@@ -75,7 +75,7 @@ namespace Elite
 
 
 
-		void update_intro1(void)
+		void update_intro1()
 		{
 			universe[0].location.z -= 100;
 
@@ -95,7 +95,7 @@ namespace Elite
 		}
 
 
-		void update_intro2(void)
+		void update_intro2()
 		{
 			show_time++;
 

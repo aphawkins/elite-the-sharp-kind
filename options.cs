@@ -71,7 +71,7 @@ struct setting
 };
 
 
-void quit_screen(void)
+void quit_screen()
 		{
 			current_screen = SCR_QUIT;
 
@@ -177,20 +177,20 @@ void quit_screen(void)
 
 
 
-		void select_left_setting(void)
+		void select_left_setting()
 		{
 			if ((hilite_item & 1) != 0)
 				highlight_setting(hilite_item - 1);
 		}
 
-		void select_right_setting(void)
+		void select_right_setting()
 		{
 			if (((hilite_item & 1) == 0) && (hilite_item < (NUM_SETTINGS - 1)))
 				highlight_setting(hilite_item + 1);
 		}
 
 
-		void select_up_setting(void)
+		void select_up_setting()
 		{
 			if (hilite_item == (NUM_SETTINGS - 1))
 			{
@@ -203,7 +203,7 @@ void quit_screen(void)
 		}
 
 
-		void select_down_setting(void)
+		void select_down_setting()
 		{
 			if (hilite_item == (NUM_SETTINGS - 2))
 			{
@@ -215,7 +215,7 @@ void quit_screen(void)
 				highlight_setting(hilite_item + 2);
 		}
 
-		void toggle_setting(void)
+		void toggle_setting()
 		{
 			if (hilite_item == (NUM_SETTINGS - 1))
 			{
@@ -251,7 +251,7 @@ void quit_screen(void)
 		}
 
 
-		void game_settings_screen(void)
+		void game_settings_screen()
 		{
 			int i;
 
@@ -309,20 +309,20 @@ void quit_screen(void)
 			hilite_item = i;
 		}
 
-		void select_previous_option(void)
+		void select_previous_option()
 		{
 			if (hilite_item > 0)
 				highlight_option(hilite_item - 1);
 		}
 
-		void select_next_option(void)
+		void select_next_option()
 		{
 			if (hilite_item < (NUM_OPTIONS - 1))
 				highlight_option(hilite_item + 1);
 		}
 
 
-		void do_option(void)
+		void do_option()
 		{
 			if ((!docked) && option_list[hilite_item].docked_only)
 				return;
@@ -349,7 +349,7 @@ void quit_screen(void)
 		}
 
 
-		void display_options(void)
+		void display_options()
 		{
 			int i;
 

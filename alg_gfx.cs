@@ -54,7 +54,7 @@ namespace Elite
 
 
 
-		void frame_timer(void)
+		void frame_timer()
 		{
 			frame_count++;
 		}
@@ -62,7 +62,7 @@ namespace Elite
 
 
 
-		int gfx_graphics_startup(void)
+		int gfx_graphics_startup()
 		{
 			PALETTE the_palette;
 			int rv;
@@ -138,7 +138,7 @@ namespace Elite
 		}
 
 
-		void gfx_graphics_shutdown(void)
+		void gfx_graphics_shutdown()
 		{
 			destroy_bitmap(scanner_image);
 			destroy_bitmap(gfx_screen);
@@ -150,7 +150,7 @@ namespace Elite
 		 * Blit the back buffer to the screen.
 		 */
 
-		void gfx_update_screen(void)
+		void gfx_update_screen()
 		{
 			while (frame_count < 1)
 				rest(10);
@@ -162,13 +162,13 @@ namespace Elite
 		}
 
 
-		void gfx_acquire_screen(void)
+		void gfx_acquire_screen()
 		{
 			acquire_bitmap(gfx_screen);
 		}
 
 
-		void gfx_release_screen(void)
+		void gfx_release_screen()
 		{
 			release_bitmap(gfx_screen);
 		}
@@ -523,12 +523,12 @@ namespace Elite
 		}
 
 
-		void gfx_clear_display(void)
+		void gfx_clear_display()
 		{
 			rectfill(gfx_screen, GFX_X_OFFSET + 1, GFX_Y_OFFSET + 1, 510 + GFX_X_OFFSET, 383 + GFX_Y_OFFSET, GFX_COL_BLACK);
 		}
 
-		void gfx_clear_text_area(void)
+		void gfx_clear_text_area()
 		{
 			rectfill(gfx_screen, GFX_X_OFFSET + 1, GFX_Y_OFFSET + 340, 510 + GFX_X_OFFSET, 383 + GFX_Y_OFFSET, GFX_COL_BLACK);
 		}
@@ -587,7 +587,7 @@ namespace Elite
 		}
 
 
-		void gfx_draw_scanner(void)
+		void gfx_draw_scanner()
 		{
 			blit(scanner_image, gfx_screen, 0, 0, GFX_X_OFFSET, 385 + GFX_Y_OFFSET, scanner_image->w, scanner_image->h);
 		}
@@ -598,7 +598,7 @@ namespace Elite
 		}
 
 
-		void gfx_start_render(void)
+		void gfx_start_render()
 		{
 			start_poly = 0;
 			total_polys = 0;
@@ -664,7 +664,7 @@ namespace Elite
 		}
 
 
-		void gfx_finish_render(void)
+		void gfx_finish_render()
 		{
 			int num_points;
 			int* pl;

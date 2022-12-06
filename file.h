@@ -19,8 +19,8 @@
 #ifndef FILE_H
 #define FILE_H
 
-void write_config_file (void);
-void read_config_file (void);
+void write_config_file ();
+void read_config_file ();
 int save_commander_file (char *path);
 int load_commander_file (char *path);
 

@@ -95,7 +95,7 @@ namespace Elite
 
 
 
-		void clear_universe (void)
+		void clear_universe ()
 		{
 			int i;
 
@@ -218,7 +218,7 @@ namespace Elite
 
 
 	
-		void reset_weapons (void)
+		void reset_weapons ()
 		{
 			laser_temp = 0;
 			laser_counter = 0;
@@ -415,7 +415,7 @@ namespace Elite
 		}
 
 
-		void time_ecm (void)
+		void time_ecm ()
 		{
 			if (ecm_active != 0)
 			{
@@ -426,20 +426,20 @@ namespace Elite
 		}
 
 
-		void arm_missile (void)
+		void arm_missile ()
 		{
 			if ((cmdr.missiles != 0) && (missile_target == MISSILE_UNARMED))
 				missile_target = MISSILE_ARMED;
 		}
 
 
-		void unarm_missile (void)
+		void unarm_missile ()
 		{
 			missile_target = MISSILE_UNARMED;
 			snd_play_sample (SND_BOOP);
 		}
 
-		void fire_missile (void)
+		void fire_missile ()
 		{
 			int newship;
 			struct univ_object *ns;
@@ -610,7 +610,7 @@ namespace Elite
 
 
 
-		void launch_shuttle (void)
+		void launch_shuttle ()
 		{
 			int type;
 
@@ -880,7 +880,7 @@ namespace Elite
 		}
 
 
-		void draw_laser_lines (void)
+		void draw_laser_lines ()
 		{
 			if (wireframe)
 			{
@@ -897,7 +897,7 @@ namespace Elite
 		}
 
 
-		int fire_laser (void)
+		int fire_laser ()
 		{
 			if ((laser_counter == 0) && (laser_temp < 242))
 			{
@@ -945,7 +945,7 @@ namespace Elite
 		}
 
 
-		void cool_laser (void)
+		void cool_laser ()
 		{
 			laser = 0;
 
@@ -983,7 +983,7 @@ namespace Elite
 		}
 
 
-		void create_thargoid (void)
+		void create_thargoid ()
 		{
 			int newship;
 	
@@ -1000,7 +1000,7 @@ namespace Elite
 
 
 
-		void create_cougar (void)
+		void create_cougar ()
 		{
 			int newship;
 
@@ -1018,7 +1018,7 @@ namespace Elite
 
 
 
-		void create_trader (void)
+		void create_trader ()
 		{
 			int newship;
 			int rnd;
@@ -1046,7 +1046,7 @@ namespace Elite
 		}
 
 
-		void create_lone_hunter (void)
+		void create_lone_hunter ()
 		{
 			int rnd;
 			int type;
@@ -1081,7 +1081,7 @@ namespace Elite
 
 		/* Check for a random asteroid encounter... */
 
-		void check_for_asteroids (void)
+		void check_for_asteroids ()
 		{
 			int newship;
 			int type;
@@ -1109,7 +1109,7 @@ namespace Elite
 
 		/* If we've been a bad boy then send the cops after us... */
 
-		void check_for_cops (void)
+		void check_for_cops ()
 		{
 			int newship;
 			int offense;
@@ -1134,7 +1134,7 @@ namespace Elite
 		}
 
 
-		void check_for_others (void)
+		void check_for_others ()
 		{
 			int x,y,z;
 			int newship;
@@ -1189,7 +1189,7 @@ namespace Elite
 		}
 
 
-		void random_encounter (void)
+		void random_encounter ()
 		{
 			if ((ship_count[SHIP_CORIOLIS] != 0) || (ship_count[SHIP_DODEC] != 0))
 				return;
@@ -1227,7 +1227,7 @@ namespace Elite
 		}
 
 
-		void abandon_ship (void)
+		void abandon_ship ()
 		{
 			int i;
 

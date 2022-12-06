@@ -59,11 +59,11 @@ extern int kbd_backspace_pressed;
 extern int kbd_space_pressed;
 
 
-int kbd_keyboard_startup (void);
-int kbd_keyboard_shutdown (void);
-void kbd_poll_keyboard (void);
-int kbd_read_key (void);
-void kbd_clear_key_buffer (void);
+int kbd_keyboard_startup ();
+int kbd_keyboard_shutdown ();
+void kbd_poll_keyboard ();
+int kbd_read_key ();
+void kbd_clear_key_buffer ();
 
 #endif
  

@@ -58,7 +58,7 @@ namespace Elite
 		};
  
  
-		void snd_sound_startup (void)
+		void snd_sound_startup ()
 		{
 			int i;
 
@@ -80,7 +80,7 @@ namespace Elite
 		}
  
 
-		void snd_sound_shutdown (void)
+		void snd_sound_shutdown ()
 		{
 			int i;
 
@@ -112,7 +112,7 @@ namespace Elite
 		}
 
 
-		void snd_update_sound (void)
+		void snd_update_sound ()
 		{
 			int i;
 	
@@ -142,7 +142,7 @@ namespace Elite
 		}
 
 
-		void snd_stop_midi (void)
+		void snd_stop_midi ()
 		{
 			if (sound_on);
 				play_midi (NULL, TRUE);

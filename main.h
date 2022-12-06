@@ -16,9 +16,9 @@
 #define MAIN_H
 
 void info_message (char *message);
-void save_commander_screen (void);
-void load_commander_screen (void);
-void update_screen (void);
+void save_commander_screen ();
+void load_commander_screen ();
+void update_screen ();
 
 
 #endif

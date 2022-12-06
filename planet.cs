@@ -113,7 +113,7 @@ namespace Elite
 		 * This is the version used in the 6502 Elites.
 		 */
 
-		int gen_rnd_number (void)
+		int gen_rnd_number ()
 		{
 			int a,x;
 
@@ -139,7 +139,7 @@ namespace Elite
 		 */
 
 
-		int gen_msx_rnd_number (void)
+		int gen_msx_rnd_number ()
 		{
 			int a,b;
 

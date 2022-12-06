@@ -36,7 +36,7 @@ namespace Elite
 		 * Taken from "A Guide to Simulation" by Bratley, Fox and Schrage.
 		 */
 
-		int randint(void)
+		int randint()
 		{
 			int k1;
 			int ix = rand_seed;
@@ -57,12 +57,12 @@ namespace Elite
 		}
 
 
-		int get_rand_seed(void)
+		int get_rand_seed()
 		{
 			return rand_seed;
 		}
 
-		int rand255(void)
+		int rand255()
 		{
 			return (randint() & 255);
 		}
