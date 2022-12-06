@@ -26,7 +26,14 @@ namespace Elite
 
 	internal static class elite
 	{
-		internal static galaxy_seed docked_planet;
+		internal const int PULSE_LASER = 0x0F;
+		internal const int BEAM_LASER = 0x8F;
+		internal const int MILITARY_LASER = 0x97;
+		internal const int MINING_LASER = 0x32;
+
+		internal const int MAX_UNIV_OBJECTS = 20;
+
+        internal static galaxy_seed docked_planet;
 		internal static galaxy_seed hyperspace_planet;
 		internal static planet_data current_planet_data;
 
