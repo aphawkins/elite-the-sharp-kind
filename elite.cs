@@ -22,22 +22,22 @@
 
 namespace Elite
 {
+	using System.ComponentModel.Design;
+
 	internal static class elite
 	{
-		struct galaxy_seed docked_planet;
-
-		struct galaxy_seed hyperspace_planet;
-
-		struct planet_data current_planet_data;
+		internal static galaxy_seed docked_planet;
+		internal static galaxy_seed hyperspace_planet;
+		internal static planet_data current_planet_data;
 
 		int curr_galaxy_num = 1;
 		int curr_fuel = 70;
-		int carry_flag = 0;
-		int current_screen = 0;
+		internal static int carry_flag = 0;
+		internal static int current_screen = 0;
 		int witchspace;
 
-		int wireframe = 0;
-		int anti_alias_gfx = 0;
+		internal static int wireframe = 0;
+        internal static int anti_alias_gfx = 0;
 		int hoopy_casinos = 0;
 		int speed_cap = 75;
 		int instant_dock = 0;
@@ -65,7 +65,7 @@ namespace Elite
 		int auto_pilot;
 
 
-		struct commander saved_cmdr =
+		internal static commander saved_cmdr =
 		{
 			"JAMESON",									/* Name 			*/
 			0,											/* Mission Number 	*/
@@ -100,12 +100,11 @@ namespace Elite
 			0x80										/* Saved			*/
 		};
 
-	struct commander cmdr;
+		internal static commander cmdr;
 
-		struct player_ship myship;
+		internal static player_ship myship;
 
-
-		struct ship_data * ship_list[NO_OF_SHIPS + 1] =
+		internal static ship_data ship_list[NO_OF_SHIPS + 1] =
 		{
 			NULL,
 			&missile_data,
@@ -142,8 +141,6 @@ namespace Elite
 			&cougar_data,
 			&dodec_data
 		};
-
-
 
 		void restore_saved_commander(void)
 		{
