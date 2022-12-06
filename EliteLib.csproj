@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="alg_data.h" />
+    <None Remove="alg_gfx.c" />
+    <None Remove="alg_main.c" />
+    <None Remove="alg_main.h" />
+    <None Remove="config.h" />
+    <None Remove="docked.c" />
+    <None Remove="docked.h" />
+    <None Remove="elite.c" />
+    <None Remove="elite.h" />
+    <None Remove="file.c" />
+    <None Remove="file.h" />
+    <None Remove="gfx.h" />
+    <None Remove="intro.c" />
+    <None Remove="intro.h" />
+    <None Remove="keyboard.c" />
+    <None Remove="keyboard.h" />
+    <None Remove="main.h" />
+    <None Remove="menu.h" />
+    <None Remove="missions.c" />
+    <None Remove="missions.h" />
+    <None Remove="options.c" />
+    <None Remove="options.h" />
+    <None Remove="pilot.c" />
+    <None Remove="pilot.h" />
+    <None Remove="planet.c" />
+    <None Remove="planet.h" />
+    <None Remove="random.c" />
+    <None Remove="random.h" />
+    <None Remove="readme.txt" />
+    <None Remove="shipdata.c" />
+    <None Remove="shipdata.h" />
+    <None Remove="shipface.c" />
+    <None Remove="shipface.h" />
+    <None Remove="sound.c" />
+    <None Remove="sound.h" />
+    <None Remove="space.c" />
+    <None Remove="space.h" />
+    <None Remove="stars.c" />
+    <None Remove="stars.h" />
+    <None Remove="swat.c" />
+    <None Remove="swat.h" />
+    <None Remove="threed.c" />
+    <None Remove="threed.h" />
+    <None Remove="trade.c" />
+    <None Remove="trade.h" />
+    <None Remove="vector.c" />
+    <None Remove="vector.h" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="alg_data.h" />
+    <Compile Include="alg_gfx.c" />
+    <Compile Include="alg_main.c" />
+    <Compile Include="alg_main.h" />
+    <Compile Include="config.h" />
+    <Compile Include="docked.c" />
+    <Compile Include="docked.h" />
+    <Compile Include="elite.c" />
+    <Compile Include="elite.h" />
+    <Compile Include="file.c" />
+    <Compile Include="file.h" />
+    <Compile Include="gfx.h" />
+    <Compile Include="intro.c" />
+    <Compile Include="intro.h" />
+    <Compile Include="keyboard.c" />
+    <Compile Include="keyboard.h" />
+    <Compile Include="main.h" />
+    <Compile Include="menu.h" />
+    <Compile Include="missions.c" />
+    <Compile Include="missions.h" />
+    <Compile Include="options.c" />
+    <Compile Include="options.h" />
+    <Compile Include="pilot.c" />
+    <Compile Include="pilot.h" />
+    <Compile Include="planet.c" />
+    <Compile Include="planet.h" />
+    <Compile Include="random.c" />
+    <Compile Include="random.h" />
+    <Compile Include="readme.txt" />
+    <Compile Include="shipdata.c" />
+    <Compile Include="shipdata.h" />
+    <Compile Include="shipface.c" />
+    <Compile Include="shipface.h" />
+    <Compile Include="sound.c" />
+    <Compile Include="sound.h" />
+    <Compile Include="space.c" />
+    <Compile Include="space.h" />
+    <Compile Include="stars.c" />
+    <Compile Include="stars.h" />
+    <Compile Include="swat.c" />
+    <Compile Include="swat.h" />
+    <Compile Include="threed.c" />
+    <Compile Include="threed.h" />
+    <Compile Include="trade.c" />
+    <Compile Include="trade.h" />
+    <Compile Include="vector.c" />
+    <Compile Include="vector.h" />
+  </ItemGroup>
+
+</Project>
