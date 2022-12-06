@@ -52,19 +52,22 @@ namespace Elite
 		extern int flight_roll;
 		extern int flight_speed;
 
-		struct galaxy_seed destination_planet;
-		int hyper_ready;
+		galaxy_seed destination_planet;
+		internal static int hyper_ready;
 		int hyper_countdown;
 		char hyper_name[16];
 		int hyper_distance;
 		int hyper_galactic;
 
 
+		internal const int MAX_UNIV_OBJECTS = 20;
+
+        internal static univ_object[] universe = new univ_object[MAX_UNIV_OBJECTS];
+		internal static int[] ship_count = new int[NO_OF_SHIPS + 1];  /* many */
 
 
 
-
-		void rotate_x_first (double *a, double *b, int direction)
+        void rotate_x_first (double *a, double *b, int direction)
 		{
 			double fx,ux;
 
