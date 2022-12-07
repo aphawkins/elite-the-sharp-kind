@@ -794,19 +794,19 @@ namespace Elite
 
 			item = &stock_market[hilite_item];
 		
-			if ((item->current_quantity == 0) ||
-				(cmdr.credits < item->current_price))
+			if ((item.current_quantity == 0) ||
+				(cmdr.credits < item.current_price))
 				return;
 
 			cargo_held = total_cargo();
 	
-			if ((item->units == TONNES) &&
+			if ((item.units == TONNES) &&
 				(cargo_held == cmdr.cargo_capacity))
 				return;
 	
 			cmdr.current_cargo[hilite_item]++;
-			item->current_quantity--;
-			cmdr.credits -= item->current_price;	
+			item.current_quantity--;
+			cmdr.credits -= item.current_price;	
 
 			highlight_stock (hilite_item);
 		}
@@ -822,8 +822,8 @@ namespace Elite
 			item = &stock_market[hilite_item];
 
 			cmdr.current_cargo[hilite_item]--;
-			item->current_quantity++;
-			cmdr.credits += item->current_price;	
+			item.current_quantity++;
+			cmdr.credits += item.current_price;	
 
 			highlight_stock (hilite_item);
 		}

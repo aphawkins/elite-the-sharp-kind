@@ -133,7 +133,7 @@ namespace Elite
 			gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
 
 			gfx_display_centre_text(360, "Press Fire or Space, Commander.", 140, GFX_COL_GOLD);
-			gfx_display_centre_text(330, ship_list[ship_no]->name, 120, GFX_COL_WHITE);
+			gfx_display_centre_text(330, ship_list[ship_no].name, 120, GFX_COL_WHITE);
 		}
 	}
 }

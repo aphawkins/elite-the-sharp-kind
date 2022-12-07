@@ -122,7 +122,7 @@ namespace Elite
 
 			clear(gfx_screen);
 
-			blit(scanner_image, gfx_screen, 0, 0, GFX_X_OFFSET, 385 + GFX_Y_OFFSET, scanner_image->w, scanner_image->h);
+			blit(scanner_image, gfx_screen, 0, 0, GFX_X_OFFSET, 385 + GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
 			gfx_draw_line(0, 0, 0, 384);
 			gfx_draw_line(0, 0, 511, 0);
 			gfx_draw_line(511, 0, 511, 384);
@@ -176,7 +176,7 @@ namespace Elite
 		void gfx_fast_plot_pixel(int x, int y, int col)
 		{
 			//	_putpixel(gfx_screen, x, y, col);
-			gfx_screen->line[y][x] = col;
+			gfx_screen.line[y][x] = col;
 		}
 
 
@@ -589,7 +589,7 @@ namespace Elite
 
 		void gfx_draw_scanner()
 		{
-			blit(scanner_image, gfx_screen, 0, 0, GFX_X_OFFSET, 385 + GFX_Y_OFFSET, scanner_image->w, scanner_image->h);
+			blit(scanner_image, gfx_screen, 0, 0, GFX_X_OFFSET, 385 + GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
 		}
 
 		void gfx_set_clip_region(int tx, int ty, int bx, int by)
@@ -757,7 +757,7 @@ namespace Elite
 			}
 
 			if (x == -1)
-				x = ((256 * GFX_SCALE) - sprite_bmp->w) / 2;
+				x = ((256 * GFX_SCALE) - sprite_bmp.w) / 2;
 
 			draw_sprite(gfx_screen, sprite_bmp, x + GFX_X_OFFSET, y + GFX_Y_OFFSET);
 		}

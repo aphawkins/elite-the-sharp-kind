@@ -172,8 +172,8 @@ namespace Elite
 			uint y;
 			extern int carry_flag;
 
-			x = glx_ptr->a + glx_ptr->c;
-			y = glx_ptr->b + glx_ptr->d;
+			x = glx_ptr.a + glx_ptr.c;
+			y = glx_ptr.b + glx_ptr.d;
 
 
 			if (x > 0xFF)
@@ -182,13 +182,13 @@ namespace Elite
 			x &= 0xFF;
 			y &= 0xFF;
 
-			glx_ptr->a = glx_ptr->c;
-			glx_ptr->b = glx_ptr->d;
-			glx_ptr->c = glx_ptr->e;
-			glx_ptr->d = glx_ptr->f;
+			glx_ptr.a = glx_ptr.c;
+			glx_ptr.b = glx_ptr.d;
+			glx_ptr.c = glx_ptr.e;
+			glx_ptr.d = glx_ptr.f;
 
-			x += glx_ptr->c;
-			y += glx_ptr->d;
+			x += glx_ptr.c;
+			y += glx_ptr.d;
 
 
 			if (x > 0xFF)
@@ -202,8 +202,8 @@ namespace Elite
 			x &= 0xFF;
 			y &= 0xFF;
 
-			glx_ptr->e = x;
-			glx_ptr->f = y;
+			glx_ptr.e = x;
+			glx_ptr.f = y;
 		}
 
 
@@ -486,29 +486,29 @@ namespace Elite
 		void generate_planet_data (struct planet_data *pl, galaxy_seed planet_seed)
 		{
 
-			pl->government = (planet_seed.c / 8) & 7;
+			pl.government = (planet_seed.c / 8) & 7;
 
-			pl->economy = planet_seed.b & 7;
+			pl.economy = planet_seed.b & 7;
 
-			if (pl->government < 2)
-				pl->economy = pl->economy | 2;
+			if (pl.government < 2)
+				pl.economy = pl.economy | 2;
 
-			pl->techlevel = pl->economy ^ 7;
-			pl->techlevel += planet_seed.d & 3;
-			pl->techlevel += (pl->government / 2) + (pl->government & 1);
+			pl.techlevel = pl.economy ^ 7;
+			pl.techlevel += planet_seed.d & 3;
+			pl.techlevel += (pl.government / 2) + (pl.government & 1);
 
 
-			pl->population = pl->techlevel * 4;
-			pl->population += pl->government;
-			pl->population += pl->economy;
-			pl->population++;
+			pl.population = pl.techlevel * 4;
+			pl.population += pl.government;
+			pl.population += pl.economy;
+			pl.population++;
 
-			pl->productivity = (pl->economy ^ 7) + 3;
-			pl->productivity *= pl->government + 4;
-			pl->productivity *= pl->population;
-			pl->productivity *= 8;
+			pl.productivity = (pl.economy ^ 7) + 3;
+			pl.productivity *= pl.government + 4;
+			pl.productivity *= pl.population;
+			pl.productivity *= 8;
 
-			pl->radius = (((planet_seed.f & 15) + 11) * 256) + planet_seed.d;
+			pl.radius = (((planet_seed.f & 15) + 11) * 256) + planet_seed.d;
 		}
 	}
 }

@@ -140,8 +140,8 @@ namespace Elite
 
 					if ((ship_type != SHIP_PLANET) && (ship_type != SHIP_SUN))
 					{
-						universe[i].energy = ship_list[ship_type]->energy;
-						universe[i].missiles = ship_list[ship_type]->missiles;
+						universe[i].energy = ship_list[ship_type].energy;
+						universe[i].missiles = ship_list[ship_type].missiles;
 						ship_count[ship_type]++;
 					}
 			
@@ -246,22 +246,22 @@ namespace Elite
 	
 			if ((universe[un].type == SHIP_CORIOLIS) || (universe[un].type == SHIP_DODEC))
 			{
-				ns->velocity = 32;
-				ns->location.x += ns->rotmat[2].x * 2; 		
-				ns->location.y += ns->rotmat[2].y * 2; 		
-				ns->location.z += ns->rotmat[2].z * 2;
+				ns.velocity = 32;
+				ns.location.x += ns.rotmat[2].x * 2; 		
+				ns.location.y += ns.rotmat[2].y * 2; 		
+				ns.location.z += ns.rotmat[2].z * 2;
 			}
 
-			ns->flags |= flags;
-			ns->rotz /= 2;
-			ns->rotz *= 2;
-			ns->bravery = bravery;
+			ns.flags |= flags;
+			ns.rotz /= 2;
+			ns.rotz *= 2;
+			ns.bravery = bravery;
 
 			if ((type == SHIP_CARGO) || (type == SHIP_ALLOY) || (type == SHIP_ROCK))
 			{
-				ns->rotz = ((rand255() * 2) & 255) - 128;
-				ns->rotx = ((rand255() * 2) & 255) - 128;
-				ns->velocity = rand255() & 15;
+				ns.rotz = ((rand255() * 2) & 255) - 128;
+				ns.rotx = ((rand255() * 2) & 255) - 128;
+				ns.velocity = rand255() & 15;
 			}
 		}
 
@@ -280,7 +280,7 @@ namespace Elite
 				if (cnt >= 128)
 					return;
 
-				cnt &= ship_list[universe[un].type]->max_loot;
+				cnt &= ship_list[universe[un].type].max_loot;
 				cnt &= 15;
 			}
 
@@ -300,7 +300,7 @@ namespace Elite
 			if (z < 0)
 				return 0;
 		
-			size = ship_list[type]->size;
+			size = ship_list[type].size;
 
 			return ((x*x + y*y) <= size);	
 		}
@@ -355,9 +355,9 @@ namespace Elite
 	
 			univ = &universe[un];
 	
-			if (in_target (univ->type, flip->location.x, flip->location.y, flip->location.z))
+			if (in_target (univ.type, flip.location.x, flip.location.y, flip.location.z))
 			{
-				if ((missile_target == MISSILE_ARMED) && (univ->type >= 0))
+				if ((missile_target == MISSILE_ARMED) && (univ.type >= 0))
 				{
 					missile_target = un;
 					info_message ("Target Locked");
@@ -368,24 +368,24 @@ namespace Elite
 				{
 					snd_play_sample (SND_HIT_ENEMY);
 
-					if ((univ->type != SHIP_CORIOLIS) && (univ->type != SHIP_DODEC))
+					if ((univ.type != SHIP_CORIOLIS) && (univ.type != SHIP_DODEC))
 					{			
-						if ((univ->type == SHIP_CONSTRICTOR) || (univ->type == SHIP_COUGAR))
+						if ((univ.type == SHIP_CONSTRICTOR) || (univ.type == SHIP_COUGAR))
 						{
 							if (laser == (MILITARY_LASER & 127))
-								univ->energy -= laser / 4;
+								univ.energy -= laser / 4;
 						}
 						else
 						{
-							univ->energy -= laser;
+							univ.energy -= laser;
 						}
 					}
 
-					if (univ->energy <= 0)
+					if (univ.energy <= 0)
 					{
 						explode_object (un);
 				
-						if (univ->type == SHIP_ASTEROID)
+						if (univ.type == SHIP_ASTEROID)
 						{
 							if (laser == (MINING_LASER & 127))
 								launch_loot (un, SHIP_ROCK);
@@ -462,9 +462,9 @@ namespace Elite
 
 			ns = &universe[newship];
 	
-			ns->velocity = flight_speed * 2;
-			ns->flags = FLG_ANGRY;
-			ns->target = missile_target;
+			ns.velocity = flight_speed * 2;
+			ns.flags = FLG_ANGRY;
+			ns.target = missile_target;
 
 			if (universe[missile_target].type > SHIP_ROCK)
 				universe[missile_target].flags |= FLG_ANGRY;
@@ -486,34 +486,34 @@ namespace Elite
 			rat = 3;
 			rat2 = 0.111;
 	
-			dir = vector_dot_product (&nvec, &ship->rotmat[1]);
+			dir = vector_dot_product (&nvec, &ship.rotmat[1]);
 
 			if (direction < -0.861)
 			{
-				ship->rotx = (dir < 0) ? 7 : -7;
-				ship->rotz = 0;
+				ship.rotx = (dir < 0) ? 7 : -7;
+				ship.rotz = 0;
 				return; 
 			}
 	
-			ship->rotx = 0;
+			ship.rotx = 0;
 	
 			if ((fabs(dir) * 2) >= rat2)
 			{
-				ship->rotx = (dir < 0) ? rat : -rat;
+				ship.rotx = (dir < 0) ? rat : -rat;
 			}
 		
-			if (abs(ship->rotz) < 16)
+			if (abs(ship.rotz) < 16)
 			{
-				dir = vector_dot_product (&nvec, &ship->rotmat[0]);
+				dir = vector_dot_product (&nvec, &ship.rotmat[0]);
 
-				ship->rotz = 0;
+				ship.rotz = 0;
 
 				if ((fabs(dir) * 2) > rat2)
 				{
-					ship->rotz = (dir < 0) ? rat : -rat;
+					ship.rotz = (dir < 0) ? rat : -rat;
 
-					if (ship->rotx < 0)
-						ship->rotz = -ship->rotz;
+					if (ship.rotx < 0)
+						ship.rotz = -ship.rotz;
 				}		
 			}
 		}
@@ -534,45 +534,45 @@ namespace Elite
 			if (ecm_active)
 			{
 				snd_play_sample (SND_EXPLODE);
-				missile->flags |= FLG_DEAD;		
+				missile.flags |= FLG_DEAD;		
 				return;
 			}
 
-			if (missile->target == 0)
+			if (missile.target == 0)
 			{
-				if (missile->distance < 256)
+				if (missile.distance < 256)
 				{
-					missile->flags |= FLG_DEAD;
+					missile.flags |= FLG_DEAD;
 					snd_play_sample (SND_EXPLODE);
-					damage_ship (250, missile->location.z >= 0.0);
+					damage_ship (250, missile.location.z >= 0.0);
 					return;
 				}
 
-				vec.x = missile->location.x;
-				vec.y = missile->location.y;
-				vec.z = missile->location.z;
+				vec.x = missile.location.x;
+				vec.y = missile.location.y;
+				vec.z = missile.location.z;
 			}
 			else
 			{
-				target = &universe[missile->target];
+				target = &universe[missile.target];
 
-				vec.x = missile->location.x - target->location.x;
-				vec.y = missile->location.y - target->location.y;
-				vec.z = missile->location.z - target->location.z;
+				vec.x = missile.location.x - target.location.x;
+				vec.y = missile.location.y - target.location.y;
+				vec.z = missile.location.z - target.location.z;
 	
 				if ((fabs(vec.x) < 256) && (fabs(vec.y) < 256) && (fabs(vec.z) < 256))
 				{
-					missile->flags |= FLG_DEAD;		
+					missile.flags |= FLG_DEAD;		
 
-					if ((target->type != SHIP_CORIOLIS) && (target->type != SHIP_DODEC))
-						explode_object (missile->target);
+					if ((target.type != SHIP_CORIOLIS) && (target.type != SHIP_DODEC))
+						explode_object (missile.target);
 					else
 						snd_play_sample (SND_EXPLODE);
 
 					return;
 				}
 
-				if ((rand255() < 16) && (target->flags & FLG_HAS_ECM))
+				if ((rand255() < 16) && (target.flags & FLG_HAS_ECM))
 				{
 					activate_ecm (0);
 					return;
@@ -580,7 +580,7 @@ namespace Elite
 			}	
 
 			nvec = unit_vector(&vec);
-			direction = vector_dot_product (&nvec, &missile->rotmat[2]); 
+			direction = vector_dot_product (&nvec, &missile.rotmat[2]); 
 			nvec.x = -nvec.x;
 			nvec.y = -nvec.y;
 			nvec.z = -nvec.z;
@@ -590,21 +590,21 @@ namespace Elite
 
 			if (direction <= -0.167)
 			{
-				missile->acceleration = -2;
+				missile.acceleration = -2;
 				return;
 			}
 
 			if (direction >= cnt2)
 			{
-				missile->acceleration = 3;
+				missile.acceleration = 3;
 				return;
 			}
 
-			if (missile->velocity < 6)
-				missile->acceleration = 3;
+			if (missile.velocity < 6)
+				missile.acceleration = 3;
 			else
 				if (rand255() >= 200)
-					missile->acceleration = -2;
+					missile.acceleration = -2;
 			return;
 		}
 
@@ -637,8 +637,8 @@ namespace Elite
 			int attacking;
 	
 			ship = &universe[un];
-			type = ship->type;
-			flags = ship->flags;
+			type = ship.type;
+			flags = ship.flags;
 
 			if ((type == SHIP_PLANET) || (type == SHIP_SUN))
 				return;
@@ -682,20 +682,20 @@ namespace Elite
 				if (rand255() > 200)
 				{
 					launch_enemy (un, SHIP_SIDEWINDER + (rand255() & 3), FLG_ANGRY | FLG_HAS_ECM, 113);
-					ship->flags |= FLG_INACTIVE;
+					ship.flags |= FLG_INACTIVE;
 				}
 
 				return;
 			}
 	
 	
-			if (ship->energy < ship_list[type]->energy)
-				ship->energy++;
+			if (ship.energy < ship_list[type].energy)
+				ship.energy++;
 
 			if ((type == SHIP_THARGLET) && (ship_count[SHIP_THARGOID] == 0))
 			{
-				ship->flags = 0;
-				ship->velocity /= 2;
+				ship.flags = 0;
+				ship.velocity /= 2;
 				return;
 			}
 
@@ -710,7 +710,7 @@ namespace Elite
 				if (cmdr.legal_status >= 64)
 				{
 					flags |= FLG_ANGRY;
-					ship->flags = flags;
+					ship.flags = flags;
 				}
 			}
 	
@@ -730,7 +730,7 @@ namespace Elite
 			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 			{
 				if ((flags & FLG_BOLD) == 0)
-					ship->bravery = 0;
+					ship.bravery = 0;
 			}
 
 	
@@ -747,30 +747,30 @@ namespace Elite
 	
 			if (rand255() >= 250)
 			{
-				ship->rotz = rand255() | 0x68;
-				if (ship->rotz > 127)
-					ship->rotz = -(ship->rotz & 127);
+				ship.rotz = rand255() | 0x68;
+				if (ship.rotz > 127)
+					ship.rotz = -(ship.rotz & 127);
 			}
 	
-			maxeng = ship_list[type]->energy;
-			energy = ship->energy;
+			maxeng = ship_list[type].energy;
+			energy = ship.energy;
 
 			if (energy < (maxeng / 2))
 			{
 				if ((energy < (maxeng / 8)) && (rand255() > 230) && (type != SHIP_THARGOID))
 				{
-					ship->flags &= ~FLG_ANGRY;
-					ship->flags |= FLG_INACTIVE;
+					ship.flags &= ~FLG_ANGRY;
+					ship.flags |= FLG_INACTIVE;
 					launch_enemy (un, SHIP_ESCAPE_CAPSULE, 0, 126);
 					return;				
 				}
 
-				if ((ship->missiles != 0) && (ecm_active == 0) &&
-					(ship->missiles >= (rand255() & 31)))
+				if ((ship.missiles != 0) && (ecm_active == 0) &&
+					(ship.missiles >= (rand255() & 31)))
 				{
-					ship->missiles--;
+					ship.missiles--;
 					if (type == SHIP_THARGOID)
-						launch_enemy (un, SHIP_THARGLET, FLG_ANGRY, ship->bravery);
+						launch_enemy (un, SHIP_THARGLET, FLG_ANGRY, ship.bravery);
 					else
 					{
 						launch_enemy (un, SHIP_MISSILE, FLG_ANGRY, 126);
@@ -781,20 +781,20 @@ namespace Elite
 			}
 
 			nvec = unit_vector(&universe[un].location);
-			direction = vector_dot_product (&nvec, &ship->rotmat[2]); 
+			direction = vector_dot_product (&nvec, &ship.rotmat[2]); 
 	
-			if 	((ship->distance < 8192) && (direction <= -0.833) &&
-				 (ship_list[type]->laser_strength != 0))
+			if 	((ship.distance < 8192) && (direction <= -0.833) &&
+				 (ship_list[type].laser_strength != 0))
 			{
 				if (direction <= -0.917)
-					ship->flags |= FLG_FIRING | FLG_HOSTILE;		
+					ship.flags |= FLG_FIRING | FLG_HOSTILE;		
 
 				if (direction <= -0.972)
 				{
-					damage_ship (ship_list[type]->laser_strength, ship->location.z >= 0.0);
-					ship->acceleration--;
-					if (((ship->location.z >= 0.0) && (front_shield == 0)) ||
-						((ship->location.z < 0.0) && (aft_shield == 0)))
+					damage_ship (ship_list[type].laser_strength, ship.location.z >= 0.0);
+					ship.acceleration--;
+					if (((ship.location.z >= 0.0) && (front_shield == 0)) ||
+						((ship.location.z < 0.0) && (aft_shield == 0)))
 						snd_play_sample (SND_INCOMMING_FIRE_2);
 					else
 						snd_play_sample (SND_INCOMMING_FIRE_1);
@@ -808,31 +808,31 @@ namespace Elite
 					track_object (&universe[un], direction, nvec);
 				}
 
-		//		if ((fabs(ship->location.z) < 768) && (ship->bravery <= ((rand255() & 127) | 64)))
-				if (fabs(ship->location.z) < 768)
+		//		if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((rand255() & 127) | 64)))
+				if (fabs(ship.location.z) < 768)
 				{
-					ship->rotx = rand255() & 0x87;
-					if (ship->rotx > 127)
-						ship->rotx = -(ship->rotx & 127);
+					ship.rotx = rand255() & 0x87;
+					if (ship.rotx > 127)
+						ship.rotx = -(ship.rotx & 127);
 
-					ship->acceleration = 3;
+					ship.acceleration = 3;
 					return;
 				}
 
-				if (ship->distance < 8192)
-					ship->acceleration = -1;
+				if (ship.distance < 8192)
+					ship.acceleration = -1;
 				else
-					ship->acceleration = 3;
+					ship.acceleration = 3;
 				return;
 			} 
 
 			attacking = 0;
 
-			if ((fabs(ship->location.z) >= 768) ||
-				(fabs(ship->location.x) >= 512) ||
-				(fabs(ship->location.y) >= 512))
+			if ((fabs(ship.location.z) >= 768) ||
+				(fabs(ship.location.x) >= 512) ||
+				(fabs(ship.location.y) >= 512))
 			{
-				if (ship->bravery > (rand255() & 127))
+				if (ship.bravery > (rand255() & 127))
 				{
 					attacking = 1;
 					nvec.x = -nvec.x;
@@ -844,39 +844,39 @@ namespace Elite
 
 			track_object (&universe[un], direction, nvec);
 
-			if ((attacking == 1) && (ship->distance < 2048))
+			if ((attacking == 1) && (ship.distance < 2048))
 			{
 				if (direction >= cnt2)
 				{
-					ship->acceleration = -1;
+					ship.acceleration = -1;
 					return;
 				}
 
-				if (ship->velocity < 6)
-					ship->acceleration = 3;
+				if (ship.velocity < 6)
+					ship.acceleration = 3;
 				else
 					if (rand255() >= 200)
-						ship->acceleration = -1;
+						ship.acceleration = -1;
 				return;
 			}
 	
 			if (direction <= -0.167)
 			{
-				ship->acceleration = -1;
+				ship.acceleration = -1;
 				return;
 			}
 
 			if (direction >= cnt2)
 			{
-				ship->acceleration = 3;
+				ship.acceleration = 3;
 				return;
 			}
 		 
-			if (ship->velocity < 6)
-				ship->acceleration = 3;
+			if (ship.velocity < 6)
+				ship.acceleration = 3;
 			else
 				if (rand255() >= 200)
-					ship->acceleration = -1;
+					ship.acceleration = -1;
 		}
 
 

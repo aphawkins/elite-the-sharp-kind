@@ -78,21 +78,21 @@ namespace Elite
 			double y;
 			double z;
 
-			x = (vec->x * mat[0].x) +
-				(vec->y * mat[0].y) +
-				(vec->z * mat[0].z);
+			x = (vec.x * mat[0].x) +
+				(vec.y * mat[0].y) +
+				(vec.z * mat[0].z);
 
-			y = (vec->x * mat[1].x) +
-				(vec->y * mat[1].y) +
-				(vec->z * mat[1].z);
+			y = (vec.x * mat[1].x) +
+				(vec.y * mat[1].y) +
+				(vec.z * mat[1].z);
 
-			z = (vec->x * mat[2].x) +
-				(vec->y * mat[2].y) +
-				(vec->z * mat[2].z);
+			z = (vec.x * mat[2].x) +
+				(vec.y * mat[2].y) +
+				(vec.z * mat[2].z);
 
-			vec->x = x;
-			vec->y = y;
-			vec->z = z;
+			vec.x = x;
+			vec.y = y;
+			vec.z = z;
 		}
 
 
@@ -104,7 +104,7 @@ namespace Elite
 
 		double vector_dot_product (struct vector *first, struct vector *second)
 		{
-			return (first->x * second->x) + (first->y * second->y) + (first->z * second->z);	
+			return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);	
 		}
 
 
@@ -119,9 +119,9 @@ namespace Elite
 			double uni;
 			struct vector res;
 
-			lx = vec->x;
-			ly = vec->y;
-			lz = vec->z;
+			lx = vec.x;
+			ly = vec.y;
+			lz = vec.z;
 
 			uni = sqrt (lx * lx + ly * ly + lz * lz);
 

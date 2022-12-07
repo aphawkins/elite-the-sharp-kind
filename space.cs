@@ -93,18 +93,18 @@ namespace Elite
 		{
 			double x,y,z;
 	
-			x = vec->x;
-			y = vec->y;
-			z = vec->z;
+			x = vec.x;
+			y = vec.y;
+			z = vec.z;
 
 			y = y - alpha * x;
 			x = x + alpha * y;
 			y = y - beta * z;
 			z = z + beta * y;
 	
-			vec->x = x;
-			vec->y = y;
-			vec->z = z;
+			vec.x = x;
+			vec.y = y;
+			vec.z = z;
 		}
 
 
@@ -124,30 +124,30 @@ namespace Elite
 			alpha = flight_roll / 256.0;
 			beta = flight_climb / 256.0;
 	
-			x = obj->location.x;
-			y = obj->location.y;
-			z = obj->location.z;
+			x = obj.location.x;
+			y = obj.location.y;
+			z = obj.location.z;
 
-			if (!(obj->flags & FLG_DEAD))
+			if (!(obj.flags & FLG_DEAD))
 			{ 
-				if (obj->velocity != 0)
+				if (obj.velocity != 0)
 				{
-					speed = obj->velocity;
+					speed = obj.velocity;
 					speed *= 1.5; 	
-					x += obj->rotmat[2].x * speed; 
-					y += obj->rotmat[2].y * speed; 
-					z += obj->rotmat[2].z * speed; 
+					x += obj.rotmat[2].x * speed; 
+					y += obj.rotmat[2].y * speed; 
+					z += obj.rotmat[2].z * speed; 
 				}
 
-				if (obj->acceleration != 0)
+				if (obj.acceleration != 0)
 				{
-					obj->velocity += obj->acceleration;
-					obj->acceleration = 0;
-					if (obj->velocity > ship_list[obj->type]->velocity)
-						obj->velocity = ship_list[obj->type]->velocity;
+					obj.velocity += obj.acceleration;
+					obj.acceleration = 0;
+					if (obj.velocity > ship_list[obj.type].velocity)
+						obj.velocity = ship_list[obj.type].velocity;
 			
-					if (obj->velocity <= 0)
-						obj->velocity = 1;
+					if (obj.velocity <= 0)
+						obj.velocity = 1;
 				}
 			}
 	
@@ -158,36 +158,36 @@ namespace Elite
 
 			z = z - flight_speed;
 
-			obj->location.x = x;
-			obj->location.y = y;
-			obj->location.z = z;	
+			obj.location.x = x;
+			obj.location.y = y;
+			obj.location.z = z;	
 
-			obj->distance = sqrt (x*x + y*y + z*z);
+			obj.distance = sqrt (x*x + y*y + z*z);
 	
-			if (obj->type == SHIP_PLANET)
+			if (obj.type == SHIP_PLANET)
 				beta = 0.0;
 	
-			rotate_vec (&obj->rotmat[2], alpha, beta);
-			rotate_vec (&obj->rotmat[1], alpha, beta);
-			rotate_vec (&obj->rotmat[0], alpha, beta);
+			rotate_vec (&obj.rotmat[2], alpha, beta);
+			rotate_vec (&obj.rotmat[1], alpha, beta);
+			rotate_vec (&obj.rotmat[0], alpha, beta);
 
-			if (obj->flags & FLG_DEAD)
+			if (obj.flags & FLG_DEAD)
 				return;
 
 
-			rotx = obj->rotx;
-			rotz = obj->rotz;
+			rotx = obj.rotx;
+			rotz = obj.rotz;
 	
 			/* If necessary rotate the object around the X axis... */
 
 			if (rotx != 0)
 			{
-				rotate_x_first (&obj->rotmat[2].x, &obj->rotmat[1].x, rotx);
-				rotate_x_first (&obj->rotmat[2].y, &obj->rotmat[1].y, rotx);	
-				rotate_x_first (&obj->rotmat[2].z, &obj->rotmat[1].z, rotx);
+				rotate_x_first (&obj.rotmat[2].x, &obj.rotmat[1].x, rotx);
+				rotate_x_first (&obj.rotmat[2].y, &obj.rotmat[1].y, rotx);	
+				rotate_x_first (&obj.rotmat[2].z, &obj.rotmat[1].z, rotx);
 
 				if ((rotx != 127) && (rotx != -127))
-					obj->rotx -= (rotx < 0) ? -1 : 1;
+					obj.rotx -= (rotx < 0) ? -1 : 1;
 			}	
 
 	
@@ -195,18 +195,18 @@ namespace Elite
 
 			if (rotz != 0)
 			{	
-				rotate_x_first (&obj->rotmat[0].x, &obj->rotmat[1].x, rotz);
-				rotate_x_first (&obj->rotmat[0].y, &obj->rotmat[1].y, rotz);	
-				rotate_x_first (&obj->rotmat[0].z, &obj->rotmat[1].z, rotz);	
+				rotate_x_first (&obj.rotmat[0].x, &obj.rotmat[1].x, rotz);
+				rotate_x_first (&obj.rotmat[0].y, &obj.rotmat[1].y, rotz);	
+				rotate_x_first (&obj.rotmat[0].z, &obj.rotmat[1].z, rotz);	
 
 				if ((rotz != 127) && (rotz != -127))
-					obj->rotz -= (rotz < 0) ? -1 : 1;
+					obj.rotz -= (rotz < 0) ? -1 : 1;
 			}
 
 
 			/* Orthonormalize the rotation matrix... */
 
-			tidy_matrix (obj->rotmat);
+			tidy_matrix (obj.rotmat);
 		}
 
 
@@ -510,64 +510,64 @@ namespace Elite
 			if ((current_screen == SCR_REAR_VIEW) ||
 				(current_screen == SCR_GAME_OVER))
 			{
-				flip->location.x = -flip->location.x;
-				flip->location.z = -flip->location.z;
+				flip.location.x = -flip.location.x;
+				flip.location.z = -flip.location.z;
 
-				flip->rotmat[0].x = -flip->rotmat[0].x;
-				flip->rotmat[0].z = -flip->rotmat[0].z;
+				flip.rotmat[0].x = -flip.rotmat[0].x;
+				flip.rotmat[0].z = -flip.rotmat[0].z;
 
-				flip->rotmat[1].x = -flip->rotmat[1].x;
-				flip->rotmat[1].z = -flip->rotmat[1].z;
+				flip.rotmat[1].x = -flip.rotmat[1].x;
+				flip.rotmat[1].z = -flip.rotmat[1].z;
 
-				flip->rotmat[2].x = -flip->rotmat[2].x;
-				flip->rotmat[2].z = -flip->rotmat[2].z;
+				flip.rotmat[2].x = -flip.rotmat[2].x;
+				flip.rotmat[2].z = -flip.rotmat[2].z;
 				return;
 			}
 
 
 			if (current_screen == SCR_LEFT_VIEW)
 			{
-				tmp = flip->location.x;
-				flip->location.x = flip->location.z;
-				flip->location.z = -tmp;
+				tmp = flip.location.x;
+				flip.location.x = flip.location.z;
+				flip.location.z = -tmp;
 
-				if (flip->type < 0)
+				if (flip.type < 0)
 					return;
 		
-				tmp = flip->rotmat[0].x;
-				flip->rotmat[0].x = flip->rotmat[0].z;
-				flip->rotmat[0].z = -tmp;		
+				tmp = flip.rotmat[0].x;
+				flip.rotmat[0].x = flip.rotmat[0].z;
+				flip.rotmat[0].z = -tmp;		
 
-				tmp = flip->rotmat[1].x;
-				flip->rotmat[1].x = flip->rotmat[1].z;
-				flip->rotmat[1].z = -tmp;		
+				tmp = flip.rotmat[1].x;
+				flip.rotmat[1].x = flip.rotmat[1].z;
+				flip.rotmat[1].z = -tmp;		
 
-				tmp = flip->rotmat[2].x;
-				flip->rotmat[2].x = flip->rotmat[2].z;
-				flip->rotmat[2].z = -tmp;		
+				tmp = flip.rotmat[2].x;
+				flip.rotmat[2].x = flip.rotmat[2].z;
+				flip.rotmat[2].z = -tmp;		
 				return;
 			}
 
 			if (current_screen == SCR_RIGHT_VIEW)
 			{
-				tmp = flip->location.x;
-				flip->location.x = -flip->location.z;
-				flip->location.z = tmp;
+				tmp = flip.location.x;
+				flip.location.x = -flip.location.z;
+				flip.location.z = tmp;
 
-				if (flip->type < 0)
+				if (flip.type < 0)
 					return;
 		
-				tmp = flip->rotmat[0].x;
-				flip->rotmat[0].x = -flip->rotmat[0].z;
-				flip->rotmat[0].z = tmp;		
+				tmp = flip.rotmat[0].x;
+				flip.rotmat[0].x = -flip.rotmat[0].z;
+				flip.rotmat[0].z = tmp;		
 
-				tmp = flip->rotmat[1].x;
-				flip->rotmat[1].x = -flip->rotmat[1].z;
-				flip->rotmat[1].z = tmp;		
+				tmp = flip.rotmat[1].x;
+				flip.rotmat[1].x = -flip.rotmat[1].z;
+				flip.rotmat[1].z = tmp;		
 
-				tmp = flip->rotmat[2].x;
-				flip->rotmat[2].x = -flip->rotmat[2].z;
-				flip->rotmat[2].z = tmp;		
+				tmp = flip.rotmat[2].x;
+				flip.rotmat[2].x = -flip.rotmat[2].z;
+				flip.rotmat[2].z = tmp;		
 
 			}
 		}
@@ -599,7 +599,7 @@ namespace Elite
 						if (type == SHIP_VIPER)
 							cmdr.legal_status |= 64;
 			
-						bounty = ship_list[type]->bounty;
+						bounty = ship_list[type].bounty;
 				
 						if ((bounty != 0) && (!witchspace))
 						{

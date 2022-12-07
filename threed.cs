@@ -67,20 +67,20 @@ namespace Elite
 			struct ship_data *ship;
 			int lasv;
 
-			ship = ship_list[univ->type];
+			ship = ship_list[univ.type];
 	
 			for (i = 0; i < 3; i++)
-				trans_mat[i] = univ->rotmat[i];
+				trans_mat[i] = univ.rotmat[i];
 		
-			camera_vec = univ->location;
+			camera_vec = univ.location;
 			mult_vector (&camera_vec, trans_mat);
 			camera_vec = unit_vector (&camera_vec);
 	
-			num_faces = ship->num_faces;
+			num_faces = ship.num_faces;
 	
 			for (i = 0; i < num_faces; i++)
 			{
-				ship_norm = ship->normals;
+				ship_norm = ship.normals;
 
 				vec.x = ship_norm[i].x;
 				vec.y = ship_norm[i].y;
@@ -108,17 +108,17 @@ namespace Elite
 			trans_mat[1].z = trans_mat[2].y;
 			trans_mat[2].y = tmp;
 
-			for (i = 0; i < ship->num_points; i++)
+			for (i = 0; i < ship.num_points; i++)
 			{
-				vec.x = ship->points[i].x;
-				vec.y = ship->points[i].y;
-				vec.z = ship->points[i].z;
+				vec.x = ship.points[i].x;
+				vec.y = ship.points[i].y;
+				vec.z = ship.points[i].z;
 
 				mult_vector (&vec, trans_mat);
 
-				rx = vec.x + univ->location.x;
-				ry = vec.y + univ->location.y;
-				rz = vec.z + univ->location.z;
+				rx = vec.x + univ.location.x;
+				ry = vec.y + univ.location.y;
+				rz = vec.z + univ.location.z;
 
 				sx = (rx * 256) / rz;
 				sy = (ry * 256) / rz;
@@ -136,27 +136,27 @@ namespace Elite
 
 			}
 
-			for (i = 0; i < ship->num_lines; i++)
+			for (i = 0; i < ship.num_lines; i++)
 			{
-				if (visible[ship->lines[i].face1] ||
-					visible[ship->lines[i].face2])
+				if (visible[ship.lines[i].face1] ||
+					visible[ship.lines[i].face2])
 				{
-					sx = point_list[ship->lines[i].start_point].x;
-					sy = point_list[ship->lines[i].start_point].y;
+					sx = point_list[ship.lines[i].start_point].x;
+					sy = point_list[ship.lines[i].start_point].y;
 
-					ex = point_list[ship->lines[i].end_point].x;
-					ey = point_list[ship->lines[i].end_point].y;
+					ex = point_list[ship.lines[i].end_point].x;
+					ey = point_list[ship.lines[i].end_point].y;
 
 					gfx_draw_line (sx, sy, ex, ey);
 				}
 			}
 
 
-			if (univ->flags & FLG_FIRING)
+			if (univ.flags & FLG_FIRING)
 			{
-				lasv = ship_list[univ->type]->front_laser;
+				lasv = ship_list[univ.type].front_laser;
 				gfx_draw_line (point_list[lasv].x, point_list[lasv].y,
-							   univ->location.x > 0 ? 0 : 511, rand255() * 2);
+							   univ.location.x > 0 ? 0 : 511, rand255() * 2);
 			}
 		}
 
@@ -189,18 +189,18 @@ namespace Elite
 			int lasv;
 			int col;
 
-			solid_data = &ship_solids[univ->type];
-			ship = ship_list[univ->type];
+			solid_data = &ship_solids[univ.type];
+			ship = ship_list[univ.type];
 	
 			for (i = 0; i < 3; i++)
-				trans_mat[i] = univ->rotmat[i];
+				trans_mat[i] = univ.rotmat[i];
 		
-			camera_vec = univ->location;
+			camera_vec = univ.location;
 			mult_vector (&camera_vec, trans_mat);
 			camera_vec = unit_vector (&camera_vec);
 
-			num_faces = solid_data->num_faces;
-			face_data = solid_data->face_data;
+			num_faces = solid_data.num_faces;
+			face_data = solid_data.face_data;
 
 		/*
 			for (i = 0; i < num_faces; i++)
@@ -229,17 +229,17 @@ namespace Elite
 			trans_mat[2].y = tmp;
 
 
-			for (i = 0; i < ship->num_points; i++)
+			for (i = 0; i < ship.num_points; i++)
 			{
-				vec.x = ship->points[i].x;
-				vec.y = ship->points[i].y;
-				vec.z = ship->points[i].z;
+				vec.x = ship.points[i].x;
+				vec.y = ship.points[i].y;
+				vec.z = ship.points[i].z;
 
 				mult_vector (&vec, trans_mat);
 
-				rx = vec.x + univ->location.x;
-				ry = vec.y + univ->location.y;
-				rz = vec.z + univ->location.z;
+				rx = vec.x + univ.location.x;
+				ry = vec.y + univ.location.y;
+				rz = vec.z + univ.location.z;
 
 				if (rz <= 0)
 					rz = 1;
@@ -326,13 +326,13 @@ namespace Elite
 				}
 			}
 
-			if (univ->flags & FLG_FIRING)
+			if (univ.flags & FLG_FIRING)
 			{
-				lasv = ship_list[univ->type]->front_laser;
-				col = (univ->type == SHIP_VIPER) ? GFX_COL_CYAN : GFX_COL_WHITE; 
+				lasv = ship_list[univ.type].front_laser;
+				col = (univ.type == SHIP_VIPER) ? GFX_COL_CYAN : GFX_COL_WHITE; 
 		
 				gfx_render_line (point_list[lasv].x, point_list[lasv].y,
-								 univ->location.x > 0 ? 0 : 511, rand255() * 2,
+								 univ.location.x > 0 ? 0 : 511, rand255() * 2,
 								 point_list[lasv].z, col);
 			}
 		}
@@ -644,8 +644,8 @@ namespace Elite
 			int x,y;
 			int radius;
 	
-			x = (planet->location.x * 256) / planet->location.z;
-			y = (planet->location.y * 256) / planet->location.z;
+			x = (planet.location.x * 256) / planet.location.z;
+			y = (planet.location.y * 256) / planet.location.z;
 
 			y = -y;
 	
@@ -655,7 +655,7 @@ namespace Elite
 			x *= GFX_SCALE;
 			y *= GFX_SCALE;
 	
-			radius = 6291456 / planet->distance;
+			radius = 6291456 / planet.distance;
 		//	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
 
 			radius *= GFX_SCALE;
@@ -669,7 +669,7 @@ namespace Elite
 			switch (planet_render_style)
 			{
 				case 0:
-					draw_wireframe_planet (x, y, radius, planet->rotmat);
+					draw_wireframe_planet (x, y, radius, planet.rotmat);
 					break;
 		
 				case 1:
@@ -678,7 +678,7 @@ namespace Elite
 
 				case 2:
 				case 3:
-					render_planet (x, y, radius, planet->rotmat);
+					render_planet (x, y, radius, planet.rotmat);
 					break;
 			}
 		}
@@ -783,8 +783,8 @@ namespace Elite
 			int x,y;
 			int radius;
 	
-			x = (planet->location.x * 256) / planet->location.z;
-			y = (planet->location.y * 256) / planet->location.z;
+			x = (planet.location.x * 256) / planet.location.z;
+			y = (planet.location.y * 256) / planet.location.z;
 
 			y = -y;
 	
@@ -794,7 +794,7 @@ namespace Elite
 			x *= GFX_SCALE;
 			y *= GFX_SCALE;
 	
-			radius = 6291456 / planet->distance;
+			radius = 6291456 / planet.distance;
 
 			radius *= GFX_SCALE;
 
@@ -833,29 +833,29 @@ namespace Elite
 			int old_seed;
 	
 	
-			if (univ->exp_delta > 251)
+			if (univ.exp_delta > 251)
 			{
-				univ->flags |= FLG_REMOVE;
+				univ.flags |= FLG_REMOVE;
 				return;
 			}
 	
-			univ->exp_delta += 4;
+			univ.exp_delta += 4;
 
-			if (univ->location.z <= 0)
+			if (univ.location.z <= 0)
 				return;
 
-			ship = ship_list[univ->type];
+			ship = ship_list[univ.type];
 	
 			for (i = 0; i < 3; i++)
-				trans_mat[i] = univ->rotmat[i];
+				trans_mat[i] = univ.rotmat[i];
 		
-			camera_vec = univ->location;
+			camera_vec = univ.location;
 			mult_vector (&camera_vec, trans_mat);
 			camera_vec = unit_vector (&camera_vec);
 	
-			ship_norm = ship->normals;
+			ship_norm = ship.normals;
 	
-			for (i = 0; i < ship->num_faces; i++)
+			for (i = 0; i < ship.num_faces; i++)
 			{
 				vec.x = ship_norm[i].x;
 				vec.y = ship_norm[i].y;
@@ -879,10 +879,10 @@ namespace Elite
 			trans_mat[1].z = trans_mat[2].y;
 			trans_mat[2].y = tmp;
 	
-			sp = ship->points;
+			sp = ship.points;
 			np = 0;
 	
-			for (i = 0; i < ship->num_points; i++)
+			for (i = 0; i < ship.num_points; i++)
 			{
 				if (visible[sp[i].face1] || visible[sp[i].face2] ||
 					visible[sp[i].face3] || visible[sp[i].face4])
@@ -893,9 +893,9 @@ namespace Elite
 
 					mult_vector (&vec, trans_mat);
 
-					rx = vec.x + univ->location.x;
-					ry = vec.y + univ->location.y;
-					rz = vec.z + univ->location.z;
+					rx = vec.x + univ.location.x;
+					ry = vec.y + univ.location.y;
+					rz = vec.z + univ.location.z;
 
 					sx = (rx * 256) / rz;
 					sy = (ry * 256) / rz;
@@ -915,14 +915,14 @@ namespace Elite
 			}
 
 	
-			z = (int)univ->location.z;
+			z = (int)univ.location.z;
 	
 			if (z >= 0x2000)
 				q = 254;
 			else
 				q = (z / 32) | 1;
 
-			pr = (univ->exp_delta * 256) / q;
+			pr = (univ.exp_delta * 256) / q;
 	
 		//	if (pr > 0x1C00)
 		//		q = 254;
@@ -931,7 +931,7 @@ namespace Elite
 			q = pr / 32;	
 		
 			old_seed = get_rand_seed();
-			set_rand_seed (univ->exp_seed);
+			set_rand_seed (univ.exp_seed);
 
 			for (cnt = 0; cnt < np; cnt++)
 			{
@@ -977,36 +977,36 @@ namespace Elite
 				(current_screen != SCR_GAME_OVER) && (current_screen != SCR_ESCAPE_POD))
 				return;
 	
-			if ((ship->flags & FLG_DEAD) && !(ship->flags & FLG_EXPLOSION))
+			if ((ship.flags & FLG_DEAD) && !(ship.flags & FLG_EXPLOSION))
 			{
-				ship->flags |= FLG_EXPLOSION;
-				ship->exp_seed = randint();
-				ship->exp_delta = 18; 
+				ship.flags |= FLG_EXPLOSION;
+				ship.exp_seed = randint();
+				ship.exp_delta = 18; 
 			}
 
-			if (ship->flags & FLG_EXPLOSION)
+			if (ship.flags & FLG_EXPLOSION)
 			{
 				draw_explosion (ship);
 				return;
 			}
 	
-			if (ship->location.z <= 0)	/* Only display ships in front of us. */
+			if (ship.location.z <= 0)	/* Only display ships in front of us. */
 				return;
 
-			if (ship->type == SHIP_PLANET)
+			if (ship.type == SHIP_PLANET)
 			{
 				draw_planet (ship);
 				return;
 			}
 
-			if (ship->type == SHIP_SUN)
+			if (ship.type == SHIP_SUN)
 			{
 				draw_sun (ship);
 				return;
 			}
 	
-			if ((fabs(ship->location.x) > ship->location.z) ||	/* Check for field of vision. */
-				(fabs(ship->location.y) > ship->location.z))
+			if ((fabs(ship.location.x) > ship.location.z) ||	/* Check for field of vision. */
+				(fabs(ship.location.y) > ship.location.z))
 				return;
 		
 			if (wireframe)

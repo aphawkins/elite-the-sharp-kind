@@ -183,9 +183,9 @@ namespace Elite
 				return;					
 			}
 
-			if (ship_list[type]->scoop_type != 0)
+			if (ship_list[type].scoop_type != 0)
 			{
-				trade = ship_list[type]->scoop_type + 1;
+				trade = ship_list[type].scoop_type + 1;
 				cmdr.current_cargo[trade]++;
 				info_message (stock_market[trade].name);
 				remove_ship (un);
