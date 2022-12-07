@@ -241,7 +241,7 @@ namespace Elite
 		void launch_enemy (int un, int type, int flags, int bravery)
 		{
 			int newship;
-			struct univ_object *ns;
+			univ_object *ns;
 	
 			newship = add_new_ship (type, universe[un].location.x, universe[un].location.y,
 									universe[un].location.z, universe[un].rotmat,
@@ -267,7 +267,7 @@ namespace Elite
 			ns.rotz *= 2;
 			ns.bravery = bravery;
 
-			if ((type == SHIP_CARGO) || (type == SHIP_ALLOY) || (type == SHIP_ROCK))
+			if ((type == shipdata.SHIP_CARGO) || (type == shipdata.SHIP_ALLOY) || (type == shipdata.SHIP_ROCK))
 			{
 				ns.rotz = ((rand255() * 2) & 255) - 128;
 				ns.rotx = ((rand255() * 2) & 255) - 128;
@@ -359,9 +359,9 @@ namespace Elite
 		}
 
 
-		void check_target (int un, struct univ_object *flip)
+		static void check_target (int un, univ_object *flip)
 		{
-			struct univ_object *univ;
+			univ_object *univ;
 	
 			univ = &universe[un];
 	
@@ -395,15 +395,15 @@ namespace Elite
 					{
 						explode_object (un);
 				
-						if (univ.type == SHIP_ASTEROID)
+						if (univ.type == shipdata.SHIP_ASTEROID)
 						{
 							if (laser == (MINING_LASER & 127))
-								launch_loot (un, SHIP_ROCK);
+								launch_loot (un, shipdata.SHIP_ROCK);
 						}
 						else
 						{
-							launch_loot (un, SHIP_ALLOY);
-							launch_loot (un, SHIP_CARGO); 
+							launch_loot (un, shipdata.SHIP_ALLOY);
+							launch_loot (un, shipdata.SHIP_CARGO); 
 						}
 					}
 					
@@ -1124,7 +1124,7 @@ namespace Elite
 			int newship;
 			int offense;
 
-			offense = carrying_contraband() * 2;
+			offense = trade.carrying_contraband() * 2;
 			if (ship_count[SHIP_VIPER] == 0)
 				offense |= elite.cmdr.legal_status;
 

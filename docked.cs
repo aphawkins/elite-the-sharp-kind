@@ -753,7 +753,7 @@ namespace Elite
 				(elite.cmdr.credits < item.current_price))
 				return;
 
-			cargo_held = total_cargo();
+			cargo_held = trade.total_cargo();
 	
 			if ((item.units == trade.TONNES) &&
 				(cargo_held == elite.cmdr.cargo_capacity))

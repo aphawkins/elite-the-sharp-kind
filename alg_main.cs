@@ -50,6 +50,7 @@
 # include "file.h"
 # include "keyboard.h"
 
+using Elite.Enums;
 using EliteLib;
 
 namespace Elite
@@ -1168,12 +1169,12 @@ namespace Elite
 
             VectorMaths.set_init_matrix (rotmat);
 
-			newship = add_new_ship (SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
-			universe[newship].flags |= FLG_DEAD;
+			newship = add_new_ship (shipdata.SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
+			universe[newship].flags |= FLG.FLG_DEAD;
 
 			for (i = 0; i < 5; i++)
 			{
-				type = (rand255() & 1) ? SHIP_CARGO : SHIP_ALLOY;
+				type = (rand255() & 1) ? shipdata.SHIP_CARGO : shipdata.SHIP_ALLOY;
 				newship = add_new_ship (type, (rand255() & 63) - 32,
 										(rand255() & 63) - 32, -400, rotmat, 0, 0);
 				universe[newship].rotz = ((rand255() * 2) & 255) - 128;

@@ -14,10 +14,11 @@
 
 namespace Elite
 {
+	using Elite.Enums;
 	using Elite.Structs;
 
 	internal static class trade
-    {
+	{
 		internal const int NO_OF_STOCK_ITEMS = 17;
 		internal const int ALIEN_ITEMS_IDX = 16;
 
@@ -25,11 +26,11 @@ namespace Elite
 		const int NARCOTICS = 6;
 		const int FIREARMS = 10;
 
-        internal static int TONNES = 0;
+		internal static int TONNES = 0;
 		internal static int KILOGRAMS = 1;
 		internal static int GRAMS = 2;
 
-        /*
+		/*
 		* The following holds the Elite Planet Stock Market.
 		*/
 		internal static stock_item[] stock_market = new stock_item[NO_OF_STOCK_ITEMS]
@@ -59,7 +60,7 @@ namespace Elite
 		 * There is also a slight amount of randomness added in.
 		 * The random value is changed each time we hyperspace.
 		 */
-		static void generate_stock_market ()
+		static void generate_stock_market()
 		{
 			int quant;
 			int price;
@@ -67,20 +68,20 @@ namespace Elite
 
 			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
 			{
-				price  = stock_market[i].base_price;								/* Start with the base price	*/
-				price += elite.cmdr.market_rnd & stock_market[i].mask;					/* Add in a random amount		*/
-				price += elite.current_planet_data.economy * stock_market[i].eco_adjust;	/* Adjust for planet economy	*/
-				price &= 255;														/* Only need bottom 8 bits		*/
+				price = stock_market[i].base_price;                             /* Start with the base price	*/
+				price += elite.cmdr.market_rnd & stock_market[i].mask;                  /* Add in a random amount		*/
+				price += elite.current_planet_data.economy * stock_market[i].eco_adjust;    /* Adjust for planet economy	*/
+				price &= 255;                                                       /* Only need bottom 8 bits		*/
 
-				quant  = stock_market[i].base_quantity;								/* Start with the base quantity */
-				quant += elite.cmdr.market_rnd & stock_market[i].mask;					/* Add in a random amount		*/
-				quant -= elite.current_planet_data.economy * stock_market[i].eco_adjust;	/* Adjust for planet economy	*/
-				quant &= 255;														/* Only need bottom 8 bits		*/
+				quant = stock_market[i].base_quantity;                              /* Start with the base quantity */
+				quant += elite.cmdr.market_rnd & stock_market[i].mask;                  /* Add in a random amount		*/
+				quant -= elite.current_planet_data.economy * stock_market[i].eco_adjust;    /* Adjust for planet economy	*/
+				quant &= 255;                                                       /* Only need bottom 8 bits		*/
 
-				if (quant > 127)	/* In an 8-bit environment '>127' would be negative */
-					quant = 0;		/* So we set it to a minimum of zero. */
+				if (quant > 127)    /* In an 8-bit environment '>127' would be negative */
+					quant = 0;      /* So we set it to a minimum of zero. */
 
-				quant &= 63;		/* Quantities range from 0..63 */
+				quant &= 63;        /* Quantities range from 0..63 */
 
 				stock_market[i].current_price = price * 4;
 				stock_market[i].current_quantity = quant;
@@ -92,9 +93,7 @@ namespace Elite
 			stock_market[ALIEN_ITEMS_IDX].current_quantity = 0;
 		}
 
-
-
-		void set_stock_quantities(int *quant)
+		internal static void set_stock_quantities(int[] quant)
 		{
 			int i;
 
@@ -104,15 +103,12 @@ namespace Elite
 			stock_market[ALIEN_ITEMS_IDX].current_quantity = 0;
 		}
 
- 
-		int carrying_contraband ()
+		internal static int carrying_contraband()
 		{
-			return (elite.cmdr.current_cargo[SLAVES] + elite.cmdr.current_cargo[NARCOTICS]) * 2 +
-					elite.cmdr.current_cargo[FIREARMS];
+			return (elite.cmdr.current_cargo[SLAVES] + elite.cmdr.current_cargo[NARCOTICS]) * 2 + elite.cmdr.current_cargo[FIREARMS];
 		}
 
-
-		int total_cargo ()
+		internal static int total_cargo()
 		{
 			int i;
 			int cargo_held;
@@ -130,48 +126,47 @@ namespace Elite
 			return cargo_held;
 		}
 
-
-		void scoop_item (int un)
+		internal static void scoop_item(int un)
 		{
 			int type;
 			int trade;
 
-			if (universe[un].flags & FLG_DEAD)
+			if (universe[un].flags & FLG.FLG_DEAD)
 				return;
-	
+
 			type = universe[un].type;
-	
-			if (type == SHIP_MISSILE)
+
+			if (type == shipdata.SHIP_MISSILE)
 				return;
 
 			if ((elite.cmdr.fuel_scoop == 0) || (universe[un].location.y >= 0) ||
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
-				explode_object (un);
-				damage_ship (128 + (universe[un].energy / 2), universe[un].location.z > 0);
+				explode_object(un);
+				damage_ship(128 + (universe[un].energy / 2), universe[un].location.z > 0);
 				return;
 			}
 
-			if (type == SHIP_CARGO)
+			if (type == shipdata.SHIP_CARGO)
 			{
 				trade = rand255() & 7;
 				elite.cmdr.current_cargo[trade]++;
-				info_message (stock_market[trade].name);
-				remove_ship (un);
-				return;					
+				info_message(stock_market[trade].name);
+				remove_ship(un);
+				return;
 			}
 
 			if (ship_list[type].scoop_type != 0)
 			{
 				trade = ship_list[type].scoop_type + 1;
 				elite.cmdr.current_cargo[trade]++;
-				info_message (stock_market[trade].name);
-				remove_ship (un);
-				return;					
+				info_message(stock_market[trade].name);
+				remove_ship(un);
+				return;
 			}
-	
-			explode_object (un);
-			damage_ship (universe[un].energy / 2, universe[un].location.z > 0);
+
+			explode_object(un);
+			damage_ship(universe[un].energy / 2, universe[un].location.z > 0);
 		}
 	}
 }

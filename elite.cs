@@ -38,8 +38,8 @@ namespace Elite
 		internal static galaxy_seed hyperspace_planet;
 		internal static planet_data current_planet_data;
 
-		int curr_galaxy_num = 1;
-		int curr_fuel = 70;
+		static int curr_galaxy_num = 1;
+		static int curr_fuel = 70;
 		internal static int carry_flag = 0;
 		internal static int current_screen = 0;
         internal static int witchspace;
@@ -159,7 +159,7 @@ namespace Elite
 
 			planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
 			generate_stock_market();
-			set_stock_quantities(cmdr.station_stock);
+			trade.set_stock_quantities(cmdr.station_stock);
 		}
 	}
 }

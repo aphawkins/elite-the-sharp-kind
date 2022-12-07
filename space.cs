@@ -587,7 +587,7 @@ namespace Elite
 			int type;
 			int bounty;
 			char str[80];
-			struct univ_object flip;
+			univ_object flip;
 	
 	
 			gfx_start_render();
@@ -663,7 +663,7 @@ namespace Elite
 						if ((type == SHIP_CORIOLIS) || (type == SHIP_DODEC))
 							check_docking (i);
 						else
-							scoop_item(i);
+							trade.scoop_item(i);
 				
 						continue;
 					}
@@ -1237,9 +1237,9 @@ namespace Elite
 			{
 				type = universe[i].type;
 		
-				if ((type > 0) && (type != SHIP_ASTEROID) && (type != SHIP_CARGO) &&
-					(type != SHIP_ALLOY) && (type != SHIP_ROCK) &&
-					(type != SHIP_BOULDER) && (type != SHIP_ESCAPE_CAPSULE))
+				if ((type > 0) && (type != shipdata.SHIP_ASTEROID) && (type != shipdata.SHIP_CARGO) &&
+					(type != shipdata.SHIP_ALLOY) && (type != shipdata.SHIP_ROCK) &&
+					(type != shipdata.SHIP_BOULDER) && (type != shipdata.SHIP_ESCAPE_CAPSULE))
 				{
 					info_message ("Mass Locked");
 					return;
@@ -1281,7 +1281,7 @@ namespace Elite
 			flight_speed = 12;
 			flight_roll = -15;
 			flight_climb = 0;
-			elite.cmdr.legal_status |= carrying_contraband();
+			elite.cmdr.legal_status |= trade.carrying_contraband();
 			create_new_stars();
 			clear_universe();
 			generate_landscape(docked_planet.a * 251 + docked_planet.b);
