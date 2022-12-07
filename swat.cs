@@ -202,7 +202,7 @@ namespace Elite
 
 			if ((type == SHIP_CORIOLIS) || (type == SHIP_DODEC))
 			{
-				set_init_matrix (rotmat);
+                VectorMaths.set_init_matrix (rotmat);
 				px = universe[un].location.x;
 				py = universe[un].location.y;
 				pz = universe[un].location.z;
@@ -456,8 +456,8 @@ namespace Elite
 
 			if (missile_target < 0)
 				return;
-	
-			set_init_matrix (rotmat);
+
+			VectorMaths.set_init_matrix (rotmat);
 			rotmat[2].z = 1.0;
 			rotmat[0].x = -1.0;
 	
@@ -495,7 +495,7 @@ namespace Elite
 			rat = 3;
 			rat2 = 0.111;
 	
-			dir = vector_dot_product (&nvec, &ship.rotmat[1]);
+			dir = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[1]);
 
 			if (direction < -0.861)
 			{
@@ -513,7 +513,7 @@ namespace Elite
 		
 			if (abs(ship.rotz) < 16)
 			{
-				dir = vector_dot_product (&nvec, &ship.rotmat[0]);
+				dir = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[0]);
 
 				ship.rotz = 0;
 
@@ -588,8 +588,8 @@ namespace Elite
 				}
 			}	
 
-			nvec = unit_vector(&vec);
-			direction = vector_dot_product (&nvec, &missile.rotmat[2]); 
+			nvec = VectorMaths.unit_vector(&vec);
+			direction = VectorMaths.vector_dot_product (&nvec, &missile.rotmat[2]); 
 			nvec.x = -nvec.x;
 			nvec.y = -nvec.y;
 			nvec.z = -nvec.z;
@@ -789,8 +789,8 @@ namespace Elite
 				}
 			}
 
-			nvec = unit_vector(&universe[un].location);
-			direction = vector_dot_product (&nvec, &ship.rotmat[2]); 
+			nvec = VectorMaths.unit_vector(&universe[un].location);
+			direction = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[2]); 
 	
 			if 	((ship.distance < 8192) && (direction <= -0.833) &&
 				 (ship_list[type].laser_strength != 0))
@@ -974,8 +974,8 @@ namespace Elite
 			Matrix rotmat;
 			int x,y,z;
 			int newship;
-	
-			set_init_matrix (rotmat);
+
+			VectorMaths.set_init_matrix (rotmat);
 
 			z = 12000;
 			x = 1000 + (randint() & 8191);
@@ -1163,11 +1163,11 @@ namespace Elite
 			{
 				create_lone_hunter();
 				return;
-			}	
+			}
 
 			/* Pack hunters... */
-	
-			set_init_matrix (rotmat);
+
+			VectorMaths.set_init_matrix (rotmat);
 
 			z = 12000;
 			x = 1000 + (randint() & 8191);

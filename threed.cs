@@ -16,7 +16,6 @@
 # include <stdio.h>
 # include <math.h>
 # include <ctype.h>
-
 # include "config.h"
 # include "elite.h"
 # include "gfx.h"
@@ -28,6 +27,7 @@
 # include "space.h"
 # include "random.h"
 
+using Elite;
 using Elite.Structs;
 using EliteLib;
 
@@ -78,8 +78,8 @@ namespace Elite
 				trans_mat[i] = univ.rotmat[i];
 		
 			camera_vec = univ.location;
-			mult_vector (&camera_vec, trans_mat);
-			camera_vec = unit_vector (&camera_vec);
+			VectorMaths.mult_vector (&camera_vec, trans_mat);
+			camera_vec = VectorMaths.unit_vector (&camera_vec);
 	
 			num_faces = ship.num_faces;
 	
@@ -95,8 +95,8 @@ namespace Elite
 					visible[i] = 1;
 				else
 				{
-					vec = unit_vector (&vec);
-					cos_angle = vector_dot_product (&vec, &camera_vec);
+					vec = VectorMaths.unit_vector (&vec);
+					cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
 					visible[i] = (cos_angle < -0.2);
 				}
 			}
@@ -119,7 +119,7 @@ namespace Elite
 				vec.y = ship.points[i].y;
 				vec.z = ship.points[i].z;
 
-				mult_vector (&vec, trans_mat);
+				VectorMaths.mult_vector (&vec, trans_mat);
 
 				rx = vec.x + univ.location.x;
 				ry = vec.y + univ.location.y;
@@ -201,27 +201,27 @@ namespace Elite
 				trans_mat[i] = univ.rotmat[i];
 		
 			camera_vec = univ.location;
-			mult_vector (&camera_vec, trans_mat);
-			camera_vec = unit_vector (&camera_vec);
+			VectorMaths.mult_vector(&camera_vec, trans_mat);
+			camera_vec = VectorMaths.unit_vector (&camera_vec);
 
 			num_faces = solid_data.num_faces;
 			face_data = solid_data.face_data;
 
-		/*
-			for (i = 0; i < num_faces; i++)
-			{
-				vec.x = face_data[i].norm_x;
-				vec.y = face_data[i].norm_y;
-				vec.z = face_data[i].norm_z;
+/*
+    for (i = 0; i < num_faces; i++)
+    {
+        vec.x = face_data[i].norm_x;
+        vec.y = face_data[i].norm_y;
+        vec.z = face_data[i].norm_z;
 
-				vec = unit_vector (&vec);
-				cos_angle = vector_dot_product (&vec, &camera_vec);
+        vec = VectorMaths.unit_vector (&vec);
+        cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
 
-				visible[i] = (cos_angle < -0.13);
-			}
-		*/
+        visible[i] = (cos_angle < -0.13);
+    }
+*/
 
-			tmp = trans_mat[0].y;
+tmp = trans_mat[0].y;
 			trans_mat[0].y = trans_mat[1].x;
 			trans_mat[1].x = tmp;
 
@@ -240,7 +240,7 @@ namespace Elite
 				vec.y = ship.points[i].y;
 				vec.z = ship.points[i].z;
 
-				mult_vector (&vec, trans_mat);
+				VectorMaths.mult_vector(&vec, trans_mat);
 
 				rx = vec.x + univ.location.x;
 				ry = vec.y + univ.location.y;
@@ -855,8 +855,8 @@ namespace Elite
 				trans_mat[i] = univ.rotmat[i];
 		
 			camera_vec = univ.location;
-			mult_vector (&camera_vec, trans_mat);
-			camera_vec = unit_vector (&camera_vec);
+			VectorMaths.mult_vector(&camera_vec, trans_mat);
+			camera_vec = VectorMaths.unit_vector (&camera_vec);
 	
 			ship_norm = ship.normals;
 	
@@ -866,8 +866,8 @@ namespace Elite
 				vec.y = ship_norm[i].y;
 				vec.z = ship_norm[i].z;
 
-				vec = unit_vector (&vec);
-				cos_angle = vector_dot_product (&vec, &camera_vec);
+				vec = VectorMaths.unit_vector (&vec);
+				cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
 
 				visible[i] = (cos_angle < -0.13);
 			}
@@ -896,7 +896,7 @@ namespace Elite
 					vec.y = sp[i].y;
 					vec.z = sp[i].z;
 
-					mult_vector (&vec, trans_mat);
+					VectorMaths.mult_vector(&vec, trans_mat);
 
 					rx = vec.x + univ.location.x;
 					ry = vec.y + univ.location.y;

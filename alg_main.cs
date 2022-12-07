@@ -538,8 +538,8 @@ namespace Elite
 			ship.location.x = 0;
 			ship.location.y = 0;
 			ship.location.z = 0;
-	
-			set_init_matrix (ship.rotmat);
+
+            VectorMaths.set_init_matrix (ship.rotmat);
 			ship.rotmat[2].z = 1;
 			ship.rotmat[0].x = -1;
 			ship.type = -96;
@@ -627,7 +627,7 @@ namespace Elite
 			flight_roll = 0;
 			flight_climb = 0;
 
-			set_init_matrix (rotmat);
+            VectorMaths.set_init_matrix (rotmat);
 			rotmat[2].z = 1.0;
 	
 			newship = add_new_ship (SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
@@ -1166,7 +1166,7 @@ namespace Elite
 			flight_climb = 0;
 			clear_universe();
 
-			set_init_matrix (rotmat);
+            VectorMaths.set_init_matrix (rotmat);
 
 			newship = add_new_ship (SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
 			universe[newship].flags |= FLG_DEAD;

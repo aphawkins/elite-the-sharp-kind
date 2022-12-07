@@ -203,7 +203,7 @@ namespace Elite
 			gfx_display_centre_text(330, "Press space to continue.", 140, GFX_COL_GOLD);
 
 			clear_universe();
-			set_init_matrix(rotmat);
+            VectorMaths.set_init_matrix(rotmat);
 			add_new_ship(SHIP_CONSTRICTOR, 200, 90, 600, rotmat, -127, -127);
 			flight_roll = 0;
 			flight_climb = 0;

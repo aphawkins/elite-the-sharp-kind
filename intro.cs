@@ -58,7 +58,7 @@ namespace Elite
 		void initialise_intro1()
 		{
 			clear_universe();
-			set_init_matrix(intro_ship_matrix);
+            VectorMaths.set_init_matrix(intro_ship_matrix);
 			add_new_ship(SHIP_COBRA3, 0, 0, 4500, intro_ship_matrix, -127, -127);
 		}
 
@@ -71,7 +71,7 @@ namespace Elite
 
 			clear_universe();
 			create_new_stars();
-			set_init_matrix(intro_ship_matrix);
+            VectorMaths.set_init_matrix(intro_ship_matrix);
 			add_new_ship(1, 0, 0, 5000, intro_ship_matrix, -127, -127);
 		}
 

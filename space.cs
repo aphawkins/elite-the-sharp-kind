@@ -210,7 +210,7 @@ namespace Elite
 
 			/* Orthonormalize the rotation matrix... */
 
-			tidy_matrix (obj.rotmat);
+			VectorMaths.tidy_matrix(obj.rotmat);
 		}
 
 
@@ -252,7 +252,7 @@ namespace Elite
 			if (fz > -0.90)
 				return 0;
 	
-			vec = unit_vector (&universe[sn].location);
+			vec = VectorMaths.unit_vector (&universe[sn].location);
 
 			if (vec.z < 0.927)
 				return 0;
@@ -458,14 +458,14 @@ namespace Elite
 			vec.y = (rand() & 32767) - 16384;	
 			vec.z = rand() & 32767;	
 
-			vec = unit_vector (&vec);
+			vec = VectorMaths.unit_vector (&vec);
 
 			sx = px - vec.x * 65792;
 			sy = py - vec.y * 65792;
 			sz = pz - vec.z * 65792;
 
-		//	set_init_matrix (rotmat);
-	
+			//	VectorMaths.set_init_matrix (rotmat);
+
 			rotmat[0].x = 1.0;
 			rotmat[0].y = 0.0;
 			rotmat[0].z = 0.0;
@@ -478,7 +478,7 @@ namespace Elite
 			rotmat[2].y = vec.y;
 			rotmat[2].z = vec.z;
 
-			tidy_matrix (rotmat);
+			VectorMaths.tidy_matrix (rotmat);
 	
 			add_new_station (sx, sy, sz, rotmat);
 		}
@@ -778,7 +778,7 @@ namespace Elite
 			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 				un = 1;
 	
-			dest = unit_vector (&universe[un].location);
+			dest = VectorMaths.unit_vector (&universe[un].location);
 	
 			compass_x = compass_centre_x + (dest.x * 16);
 			compass_y = compass_centre_y + (dest.y * -16);
@@ -1185,7 +1185,7 @@ namespace Elite
 			clear_universe();
 
 			generate_landscape(docked_planet.a * 251 + docked_planet.b);
-			set_init_matrix (rotmat);
+			VectorMaths.set_init_matrix (rotmat);
 
 			pz = (((docked_planet.b) & 7) + 7) / 2;
 			px = pz / 2;
@@ -1285,7 +1285,7 @@ namespace Elite
 			create_new_stars();
 			clear_universe();
 			generate_landscape(docked_planet.a * 251 + docked_planet.b);
-			set_init_matrix (rotmat);
+			VectorMaths.set_init_matrix (rotmat);
 			add_new_ship (SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
 
 			rotmat[2].x = -rotmat[2].x;

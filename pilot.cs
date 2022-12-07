@@ -28,7 +28,6 @@
 # include <math.h>
 # include <stdlib.h>
 # include <string.h>
-
 # include "config.h"
 # include "gfx.h"
 # include "elite.h"
@@ -36,6 +35,9 @@
 # include "main.h"
 # include "space.h"
 # include "sound.h"
+
+
+using Elite;
 
 namespace Elite
 {
@@ -61,13 +63,13 @@ namespace Elite
 			rat2 = 0.1666;
 			cnt2 = 0.8055;
 
-			nvec = unit_vector(&vec);
-			direction = vector_dot_product(&nvec, &ship.rotmat[2]); 
+			nvec = VectorMaths.unit_vector(&vec);
+			direction = VectorMaths.vector_dot_product(&nvec, &ship.rotmat[2]); 
 	
 			if (direction < -0.6666)
 				rat2 = 0;
 
-			dir = vector_dot_product (&nvec, &ship.rotmat[1]);
+			dir = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[1]);
 
 			if (direction < -0.861)
 			{
@@ -85,7 +87,7 @@ namespace Elite
 		
 			if (abs(ship.rotz) < 16)
 			{
-				dir = vector_dot_product (&nvec, &ship.rotmat[0]);
+				dir = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[0]);
 
 				ship.rotz = 0;
 
@@ -182,7 +184,7 @@ namespace Elite
 			diff.y = ship.location.y - universe[1].location.y;
 			diff.z = ship.location.z - universe[1].location.z;
 
-			vec = unit_vector (&diff);	
+			vec = VectorMaths.unit_vector (&diff);	
 
 			ship.rotx = 0;
 
@@ -215,7 +217,7 @@ namespace Elite
 
 			ship.rotz = 0;
 
-			dir = vector_dot_product (&ship.rotmat[0], &universe[1].rotmat[1]);
+			dir = VectorMaths.vector_dot_product (&ship.rotmat[0], &universe[1].rotmat[1]);
 
 			if (fabs(dir) >= 0.9166)
 			{
@@ -259,8 +261,8 @@ namespace Elite
 				return;
 			}	
 	
-			vec = unit_vector (&diff);	
-			dir = vector_dot_product (&universe[1].rotmat[2], &vec);
+			vec = VectorMaths.unit_vector (&diff);	
+			dir = VectorMaths.vector_dot_product (&universe[1].rotmat[2], &vec);
 
 			if (dir < 0.9722)
 			{
@@ -268,7 +270,7 @@ namespace Elite
 				return;
 			}
 
-			dir = vector_dot_product (&ship.rotmat[2], &vec);
+			dir = VectorMaths.vector_dot_product (&ship.rotmat[2], &vec);
 
 			if (dir < -0.9444)
 			{
