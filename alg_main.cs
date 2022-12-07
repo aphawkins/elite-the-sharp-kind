@@ -533,7 +533,7 @@ namespace Elite
 
 		void auto_dock ()
 		{
-			struct univ_object ship;
+			univ_object ship;
 
 			ship.location.x = 0;
 			ship.location.y = 0;

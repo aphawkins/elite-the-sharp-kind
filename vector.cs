@@ -19,12 +19,6 @@
  * I have, therefore, written a new set of routines which use floating point math.
  */
 
-#include <stdlib.h>
-#include <math.h>
-
-#include "config.h"
-#include "vector.h"
-
 namespace Elite
 {
 	using Elite.Structs;
@@ -47,35 +41,30 @@ namespace Elite
 		 */
 
 
-		void mult_matrix (Vector *first, Vector *second)
+		static void mult_matrix(Vector[] first, Vector[] second)
 		{
 			int i;
-			Matrix rv;
+			Matrix rv = new();
+			double x;
+			double y;
+            double z;
 
-			for (i = 0; i < 3; i++)
+            for (i = 0; i < 3; i++)
 			{
+				x =	(first[0].x * second[i].x) + (first[1].x * second[i].y) + (first[2].x * second[i].z);
+                y =	(first[0].y * second[i].x) + (first[1].y * second[i].y) + (first[2].y * second[i].z);
+				z =	(first[0].z * second[i].x) + (first[1].z * second[i].y) + (first[2].z * second[i].z);
 
-				rv[i].x =	(first[0].x * second[i].x) +
-				 			(first[1].x * second[i].y) +
-							(first[2].x * second[i].z);
-
-				rv[i].y =	(first[0].y * second[i].x) +
-							(first[1].y * second[i].y) +
-							(first[2].y * second[i].z);
-
-				rv[i].z =	(first[0].z * second[i].x) +
-							(first[1].z * second[i].y) +
-							(first[2].z * second[i].z);
+				rv[i] = new Vector(x, y, z);
 			}
 
 			for (i = 0; i < 3; i++)
+			{
 				first[i] = rv[i];
+			}
 		}
 
-
-
-
-		static void mult_vector (ref Vector vec, ref Vector mat)
+		static void mult_vector (Vector vec, Vector[] mat)
 		{
 			double x;
 			double y;
@@ -105,7 +94,7 @@ namespace Elite
 		 */
 
 
-		static double vector_dot_product (ref Vector first, ref Vector second)
+		static double vector_dot_product(Vector first, Vector second)
 		{
 			return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);	
 		}
@@ -116,7 +105,7 @@ namespace Elite
 		 * Convert a vector into a vector of unit (1) length.
 		 */
 
-		static Vector unit_vector (ref Vector vec)
+		static Vector unit_vector(Vector vec)
 		{
 			double lx,ly,lz;
 			double uni;
@@ -139,7 +128,7 @@ namespace Elite
 
 
 
-		static void set_init_matrix(ref Vector mat)
+		static void set_init_matrix(Vector[] mat)
 		{
 			int i;
 
@@ -149,9 +138,9 @@ namespace Elite
 
 
 
-		static void tidy_matrix(ref Vector mat)
+		static void tidy_matrix(Vector[] mat)
 		{
-			mat[2] = unit_vector(&mat[2]);
+			mat[2] = unit_vector(mat[2]);
 
 			if ((mat[2].x > -1) && (mat[2].x < 1))
 			{
@@ -169,7 +158,7 @@ namespace Elite
 				mat[1].x = -(mat[2].y * mat[1].y + mat[2].z * mat[1].z) / mat[2].x;
 			}
 	
-			mat[1] = unit_vector (&mat[1]);
+			mat[1] = unit_vector (mat[1]);
 	
 
 			/* xyzzy... nothing happens. :-)*/

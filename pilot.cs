@@ -39,14 +39,16 @@
 
 namespace Elite
 {
-    internal static class pilot
+	using Elite.Structs;
+
+	internal static class pilot
 	{
 
 		/*
 		 * Fly to a given point in space.
 		 */
 
-		void fly_to_vector (struct univ_object *ship, Vector vec)
+		void fly_to_vector(univ_object *ship, Vector vec)
 		{
 			Vector nvec;
 			double direction;
@@ -60,7 +62,7 @@ namespace Elite
 			cnt2 = 0.8055;
 
 			nvec = unit_vector(&vec);
-			direction = vector_dot_product (&nvec, &ship.rotmat[2]); 
+			direction = vector_dot_product(&nvec, &ship.rotmat[2]); 
 	
 			if (direction < -0.6666)
 				rat2 = 0;

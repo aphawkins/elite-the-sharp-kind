@@ -118,7 +118,7 @@ namespace Elite
 		}
 
 
-		static int add_new_ship (int ship_type, int x, int y, int z, ref Vector rotmat, int rotx, int rotz)
+		static int add_new_ship (int ship_type, int x, int y, int z, Vector[] rotmat, int rotx, int rotz)
 		{
 			int i;
 

@@ -93,7 +93,7 @@ namespace Elite
 		}
 
 
-		static void rotate_vec (ref Vector vec, double alpha, double beta)
+		static void rotate_vec(Vector[] vec, double alpha, double beta)
 		{
 			double x,y,z;
 	

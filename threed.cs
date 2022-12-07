@@ -589,7 +589,7 @@ namespace Elite
 		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
 		 */
 
-		void render_planet (int xo, int yo, int radius, ref Vector vec)
+		void render_planet (int xo, int yo, int radius, Vector[] vec)
 		{
 			int x,y;
 			int s;
@@ -630,7 +630,7 @@ namespace Elite
 		 * Need to add in the two arcs that the original Elite had.
 		 */
 
-		void draw_wireframe_planet (int xo, int yo, int radius, ref Vector vec)
+		void draw_wireframe_planet (int xo, int yo, int radius, Vector[] vec)
 		{
 			gfx_draw_circle (xo, yo, radius, GFX_COL_WHITE);
 		}
