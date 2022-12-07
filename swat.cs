@@ -345,16 +345,16 @@ namespace Elite
 		void explode_object (int un)
 		{
 
-			cmdr.score++;
+			elite.cmdr.score++;
 
-			if ((cmdr.score & 255) == 0)
+			if ((elite.cmdr.score & 255) == 0)
 				info_message ("Right On Commander!");
 	
 			snd_play_sample (SND_EXPLODE);
 			universe[un].flags |= FLG_DEAD;
 
 			if (universe[un].type == SHIP_CONSTRICTOR)
-				cmdr.mission = 2;
+				elite.cmdr.mission = 2;
 		}
 
 
@@ -437,7 +437,7 @@ namespace Elite
 
 		void arm_missile ()
 		{
-			if ((cmdr.missiles != 0) && (missile_target == MISSILE_UNARMED))
+			if ((elite.cmdr.missiles != 0) && (missile_target == MISSILE_UNARMED))
 				missile_target = MISSILE_ARMED;
 		}
 
@@ -478,7 +478,7 @@ namespace Elite
 			if (universe[missile_target].type > SHIP_ROCK)
 				universe[missile_target].flags |= FLG_ANGRY;
 	
-			cmdr.missiles--;
+			elite.cmdr.missiles--;
 			missile_target = MISSILE_UNARMED;
 	
 			snd_play_sample (SND_MISSILE);
@@ -716,7 +716,7 @@ namespace Elite
 
 			if (flags & FLG_POLICE)
 			{
-				if (cmdr.legal_status >= 64)
+				if (elite.cmdr.legal_status >= 64)
 				{
 					flags |= FLG_ANGRY;
 					ship.flags = flags;
@@ -913,19 +913,19 @@ namespace Elite
 				switch (current_screen)
 				{
 					case SCR_FRONT_VIEW:
-						laser = cmdr.front_laser;
+						laser = elite.cmdr.front_laser;
 						break;
 			
 					case SCR_REAR_VIEW:
-						laser = cmdr.rear_laser;
+						laser = elite.cmdr.rear_laser;
 						break;
 					
 					case SCR_RIGHT_VIEW:
-						laser = cmdr.right_laser;
+						laser = elite.cmdr.right_laser;
 						break;
 					
 					case SCR_LEFT_VIEW:
-						laser = cmdr.left_laser;
+						laser = elite.cmdr.left_laser;
 						break;
 				
 					default:
@@ -1061,7 +1061,7 @@ namespace Elite
 			int type;
 			int newship;
 
-			if ((cmdr.mission == 1) && (cmdr.galaxy_number == 1) &&
+			if ((elite.cmdr.mission == 1) && (elite.cmdr.galaxy_number == 1) &&
 				(docked_planet.d == 144) && (docked_planet.b == 33) &&
 				(ship_count[SHIP_CONSTRICTOR] == 0))
 			{
@@ -1125,7 +1125,7 @@ namespace Elite
 
 			offense = carrying_contraband() * 2;
 			if (ship_count[SHIP_VIPER] == 0)
-				offense |= cmdr.legal_status;
+				offense |= elite.cmdr.legal_status;
 
 			if (rand255() >= offense)
 				return;
@@ -1229,7 +1229,7 @@ namespace Elite
 			if (in_battle)
 				return;
 
-			if ((cmdr.mission == 5) && (rand255() >= 200))
+			if ((elite.cmdr.mission == 5) && (rand255() >= 200))
 				create_thargoid ();
 		
 			check_for_others();	
@@ -1240,12 +1240,12 @@ namespace Elite
 		{
 			int i;
 
-			cmdr.escape_pod = 0;
-			cmdr.legal_status = 0;
-			cmdr.fuel = myship.max_fuel;
+			elite.cmdr.escape_pod = 0;
+			elite.cmdr.legal_status = 0;
+			elite.cmdr.fuel = myship.max_fuel;
 	
 			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
-				cmdr.current_cargo[i] = 0;
+				elite.cmdr.current_cargo[i] = 0;
 	
 			snd_play_sample (SND_DOCK);					
 			dock_player();

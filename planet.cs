@@ -218,7 +218,7 @@ namespace Elite
 			int dx, dy;
 			int i;
 
-			glx = cmdr.galaxy;
+			glx = elite.cmdr.galaxy;
 
 			for (i = 0; i < 256; i++)
 			{
@@ -252,7 +252,7 @@ namespace Elite
 			galaxy_seed glx;
 			int i;
 
-			glx = cmdr.galaxy;
+			glx = elite.cmdr.galaxy;
 
 			for (i = 0; i < 256; i++)
 			{
@@ -454,7 +454,7 @@ namespace Elite
 		{
 			char *mission_text;
 	
-			if (cmdr.mission == 1)
+			if (elite.cmdr.mission == 1)
 			{
 				mission_text = mission_planet_desc (planet);
 				if (mission_text != NULL)

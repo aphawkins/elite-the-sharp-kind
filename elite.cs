@@ -23,7 +23,7 @@
 namespace Elite
 {
 	using Elite.Structs;
-	using System.ComponentModel.Design;
+	using EliteLib.Structs;
 
 	internal static class elite
 	{
@@ -150,7 +150,7 @@ namespace Elite
 			&dodec_data
 		};
 
-		void restore_saved_commander()
+		static void restore_saved_commander()
 		{
 			cmdr = saved_cmdr;
 

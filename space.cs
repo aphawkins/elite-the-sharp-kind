@@ -365,12 +365,12 @@ namespace Elite
 				return;
 			}
 	
-			if ((myship.cabtemp < 224) || (cmdr.fuel_scoop == 0))
+			if ((myship.cabtemp < 224) || (elite.cmdr.fuel_scoop == 0))
 				return;
 
-			cmdr.fuel += flight_speed / 2;
-			if (cmdr.fuel > myship.max_fuel)
-				cmdr.fuel = myship.max_fuel;
+			elite.cmdr.fuel += flight_speed / 2;
+			if (elite.cmdr.fuel > myship.max_fuel)
+				elite.cmdr.fuel = myship.max_fuel;
 
 			info_message ("Fuel Scoop On");	
 		}
@@ -399,7 +399,7 @@ namespace Elite
 			}
 		
 			energy++;
-			energy += cmdr.energy_unit;
+			energy += elite.cmdr.energy_unit;
 			if (energy > 255)
 				energy = 255;
 		}
@@ -601,14 +601,14 @@ namespace Elite
 					if (universe[i].flags & FLG_REMOVE)
 					{
 						if (type == SHIP_VIPER)
-							cmdr.legal_status |= 64;
+							elite.cmdr.legal_status |= 64;
 			
 						bounty = ship_list[type].bounty;
 				
 						if ((bounty != 0) && (!witchspace))
 						{
-							cmdr.credits += bounty;
-							sprintf (str, "%d.%d CR", cmdr.credits / 10, cmdr.credits % 10);
+							elite.cmdr.credits += bounty;
+							sprintf (str, "%d.%d CR", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
 							info_message (str);
 						}
 				
@@ -941,8 +941,8 @@ namespace Elite
 
 		void display_fuel ()
 		{
-			if (cmdr.fuel > 0)
-				display_dial_bar ((cmdr.fuel * 64) / myship.max_fuel, 31, 44);
+			if (elite.cmdr.fuel > 0)
+				display_dial_bar ((elite.cmdr.fuel * 64) / myship.max_fuel, 31, 44);
 		}
 
 
@@ -951,10 +951,10 @@ namespace Elite
 			int nomiss;
 			int x,y;
 
-			if (cmdr.missiles == 0)
+			if (elite.cmdr.missiles == 0)
 				return;
 	
-			nomiss = cmdr.missiles > 4 ? 4 : cmdr.missiles;
+			nomiss = elite.cmdr.missiles > 4 ? 4 : elite.cmdr.missiles;
 
 			x = (4 - nomiss) * 16 + 35;
 			y = 113 + 385;
@@ -1038,7 +1038,7 @@ namespace Elite
 		
 			hyper_distance = calc_distance_to_planet (docked_planet, hyperspace_planet);
 
-			if ((hyper_distance == 0) || (hyper_distance > cmdr.fuel))
+			if ((hyper_distance == 0) || (hyper_distance > elite.cmdr.fuel))
 				return;
 
 			destination_planet = hyperspace_planet;
@@ -1057,7 +1057,7 @@ namespace Elite
 			if (hyper_ready)
 				return;
 
-			if (cmdr.galactic_hyperdrive == 0)
+			if (elite.cmdr.galactic_hyperdrive == 0)
 				return;
 		
 			hyper_ready = 1;
@@ -1103,15 +1103,15 @@ namespace Elite
 
 		void enter_next_galaxy ()
 		{
-			cmdr.galaxy_number++;
-			cmdr.galaxy_number &= 7;
+			elite.cmdr.galaxy_number++;
+			elite.cmdr.galaxy_number &= 7;
 	
-			cmdr.galaxy.a = rotate_byte_left (cmdr.galaxy.a);
-			cmdr.galaxy.b = rotate_byte_left (cmdr.galaxy.b);
-			cmdr.galaxy.c = rotate_byte_left (cmdr.galaxy.c);
-			cmdr.galaxy.d = rotate_byte_left (cmdr.galaxy.d);
-			cmdr.galaxy.e = rotate_byte_left (cmdr.galaxy.e);
-			cmdr.galaxy.f = rotate_byte_left (cmdr.galaxy.f);
+			elite.cmdr.galaxy.a = rotate_byte_left (elite.cmdr.galaxy.a);
+			elite.cmdr.galaxy.b = rotate_byte_left (elite.cmdr.galaxy.b);
+			elite.cmdr.galaxy.c = rotate_byte_left (elite.cmdr.galaxy.c);
+			elite.cmdr.galaxy.d = rotate_byte_left (elite.cmdr.galaxy.d);
+			elite.cmdr.galaxy.e = rotate_byte_left (elite.cmdr.galaxy.e);
+			elite.cmdr.galaxy.f = rotate_byte_left (elite.cmdr.galaxy.f);
 
 			docked_planet = find_planet (0x60, 0x60);
 			hyperspace_planet = docked_planet;
@@ -1156,14 +1156,14 @@ namespace Elite
 	
 			if (hyper_galactic)
 			{
-				cmdr.galactic_hyperdrive = 0;
+				elite.cmdr.galactic_hyperdrive = 0;
 				enter_next_galaxy();
-				cmdr.legal_status = 0;
+				elite.cmdr.legal_status = 0;
 			}
 			else
 			{
-				cmdr.fuel -= hyper_distance;
-				cmdr.legal_status /= 2;
+				elite.cmdr.fuel -= hyper_distance;
+				elite.cmdr.legal_status /= 2;
 
 				if ((rand255() > 253) || (flight_climb == myship.max_climb))
 				{
@@ -1174,7 +1174,7 @@ namespace Elite
 				docked_planet = destination_planet; 
 			}
 
-			cmdr.market_rnd = rand255();
+			elite.cmdr.market_rnd = rand255();
 			generate_planet_data (&current_planet_data, docked_planet);
 			generate_stock_market ();
 	
@@ -1281,7 +1281,7 @@ namespace Elite
 			flight_speed = 12;
 			flight_roll = -15;
 			flight_climb = 0;
-			cmdr.legal_status |= carrying_contraband();
+			elite.cmdr.legal_status |= carrying_contraband();
 			create_new_stars();
 			clear_universe();
 			generate_landscape(docked_planet.a * 251 + docked_planet.b);

@@ -10,5 +10,17 @@
         internal int base_quantity;
         internal int mask;
         internal int units;
+
+        internal stock_item(string name, int current_quantity, int current_price, int base_price, int eco_adjust, int base_quantity, int mask, int units)
+        {
+            this.name = name;
+            this.current_quantity = current_quantity;
+            this.current_price = current_price;
+            this.base_price = base_price;
+            this.eco_adjust = eco_adjust;
+            this.base_quantity = base_quantity;
+            this.mask = mask;
+            this.units = units;
+        }
     };
 }

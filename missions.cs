@@ -126,7 +126,7 @@ namespace Elite
 
 			pnum = find_planet_number(planet);
 
-			if (cmdr.galaxy_number == 0)
+			if (elite.cmdr.galaxy_number == 0)
 			{
 				switch (pnum)
 				{
@@ -141,7 +141,7 @@ namespace Elite
 				}
 			}
 
-			if (cmdr.galaxy_number == 1)
+			if (elite.cmdr.galaxy_number == 1)
 			{
 				switch (pnum)
 				{
@@ -177,7 +177,7 @@ namespace Elite
 				}
 			}
 
-			if ((cmdr.galaxy_number == 2) && (pnum == 101))
+			if ((elite.cmdr.galaxy_number == 2) && (pnum == 101))
 				return mission1_pdesc[9];
 
 			return NULL;
@@ -188,7 +188,7 @@ namespace Elite
 		{
 			Matrix rotmat;
 
-			cmdr.mission = 1;
+			elite.cmdr.mission = 1;
 
 			current_screen = SCR_FRONT_VIEW;
 
@@ -198,7 +198,7 @@ namespace Elite
 
 			gfx_display_pretty_text(16, 50, 300, 384, mission1_brief_a);
 			gfx_display_pretty_text(16, 200, 470, 384,
-				  (cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
+				  (elite.cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
 
 			gfx_display_centre_text(330, "Press space to continue.", 140, GFX_COL_GOLD);
 
@@ -224,9 +224,9 @@ namespace Elite
 		{
 			int keyasc;
 
-			cmdr.mission = 3;
-			cmdr.score += 256;
-			cmdr.credits += 50000;
+			elite.cmdr.mission = 3;
+			elite.cmdr.score += 256;
+			elite.cmdr.credits += 50000;
 
 			gfx_clear_display();
 			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
@@ -251,7 +251,7 @@ namespace Elite
 		{
 			int keyasc;
 
-			cmdr.mission = 4;
+			elite.cmdr.mission = 4;
 
 			gfx_clear_display();
 			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
@@ -274,7 +274,7 @@ namespace Elite
 		{
 			int keyasc;
 
-			cmdr.mission = 5;
+			elite.cmdr.mission = 5;
 
 			gfx_clear_display();
 			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
@@ -300,9 +300,9 @@ namespace Elite
 		{
 			int keyasc;
 
-			cmdr.mission = 6;
-			cmdr.score += 256;
-			cmdr.energy_unit = 2;
+			elite.cmdr.mission = 6;
+			elite.cmdr.score += 256;
+			elite.cmdr.energy_unit = 2;
 
 			gfx_clear_display();
 			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
@@ -326,31 +326,31 @@ namespace Elite
 
 		void check_mission_brief()
 		{
-			if ((cmdr.mission == 0) && (cmdr.score >= 256) && (cmdr.galaxy_number < 2))
+			if ((elite.cmdr.mission == 0) && (elite.cmdr.score >= 256) && (elite.cmdr.galaxy_number < 2))
 			{
 				constrictor_mission_brief();
 				return;
 			}
 
-			if (cmdr.mission == 2)
+			if (elite.cmdr.mission == 2)
 			{
 				constrictor_mission_debrief();
 				return;
 			}
 
-			if ((cmdr.mission == 3) && (cmdr.score >= 1280) && (cmdr.galaxy_number == 2))
+			if ((elite.cmdr.mission == 3) && (elite.cmdr.score >= 1280) && (elite.cmdr.galaxy_number == 2))
 			{
 				thargoid_mission_first_brief();
 				return;
 			}
 
-			if ((cmdr.mission == 4) && (docked_planet.d == 215) && (docked_planet.b == 84))
+			if ((elite.cmdr.mission == 4) && (docked_planet.d == 215) && (docked_planet.b == 84))
 			{
 				thargoid_mission_second_brief();
 				return;
 			}
 
-			if ((cmdr.mission == 5) && (docked_planet.d == 63) && (docked_planet.b == 72))
+			if ((elite.cmdr.mission == 5) && (docked_planet.d == 63) && (docked_planet.b == 72))
 			{
 				thargoid_mission_debrief();
 				return;

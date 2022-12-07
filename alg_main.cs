@@ -202,22 +202,22 @@ namespace Elite
 			{
 				case SCR_FRONT_VIEW:
 					gfx_display_centre_text (32, "Front View", 120, GFX_COL_WHITE);
-					laser = cmdr.front_laser;
+					laser = elite.cmdr.front_laser;
 					break;
 		
 				case SCR_REAR_VIEW:
 					gfx_display_centre_text (32, "Rear View", 120, GFX_COL_WHITE);
-					laser = cmdr.rear_laser;
+					laser = elite.cmdr.rear_laser;
 					break;
 
 				case SCR_LEFT_VIEW:
 					gfx_display_centre_text (32, "Left View", 120, GFX_COL_WHITE);
-					laser = cmdr.left_laser;
+					laser = elite.cmdr.left_laser;
 					break;
 
 				case SCR_RIGHT_VIEW:
 					gfx_display_centre_text (32, "Right View", 120, GFX_COL_WHITE);
-					laser = cmdr.right_laser;
+					laser = elite.cmdr.right_laser;
 					break;
 			}
 	
@@ -876,7 +876,7 @@ namespace Elite
 
 			if (kbd_dock_pressed)
 			{
-				if (!docked && cmdr.docking_computer)
+				if (!docked && elite.cmdr.docking_computer)
 				{
 					if (instant_dock)
 						engage_docking_computer();
@@ -890,7 +890,7 @@ namespace Elite
 	
 			if (kbd_ecm_pressed)
 			{
-				if (!docked && cmdr.ecm)
+				if (!docked && elite.cmdr.ecm)
 					activate_ecm(1);
 			}
 
@@ -969,16 +969,16 @@ namespace Elite
 
 			if (kbd_energy_bomb_pressed)
 			{
-				if ((!docked) && (cmdr.energy_bomb))
+				if ((!docked) && (elite.cmdr.energy_bomb))
 				{
 					detonate_bomb = 1;
-					cmdr.energy_bomb = 0;
+					elite.cmdr.energy_bomb = 0;
 				}
 			}		
 
 			if (kbd_escape_pressed)
 			{
-				if ((!docked) && (cmdr.escape_pod) && (!witchspace))
+				if ((!docked) && (elite.cmdr.escape_pod) && (!witchspace))
 					run_escape_sequence();
 			}
 		}
@@ -991,7 +991,7 @@ namespace Elite
 			int i;
 	
 			fname = get_filename (path);
-			cname = cmdr.name;
+			cname = elite.cmdr.name;
 
 			for (i = 0; i < 31; i++)
 			{
@@ -1018,7 +1018,7 @@ namespace Elite
 			gfx_draw_line (0, 36, 511, 36);
 			gfx_update_screen();
 	
-			strcpy (path, cmdr.name);
+			strcpy (path, elite.cmdr.name);
 			strcat (path, ".nkc");
 	
 			okay = gfx_request_file ("Save Commander", path, "nkc");

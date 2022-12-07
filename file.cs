@@ -187,53 +187,53 @@ namespace Elite
 			if (fp == NULL)
 				return 1;
 
-			block[0] = cmdr.mission;
+			block[0] = elite.cmdr.mission;
 			block[1] = docked_planet.d;
 			block[2] = docked_planet.b;
-			block[3] = cmdr.galaxy.a;
-			block[4] = cmdr.galaxy.b;
-			block[5] = cmdr.galaxy.c;
-			block[6] = cmdr.galaxy.d;
-			block[7] = cmdr.galaxy.e;
-			block[8] = cmdr.galaxy.f;
-			block[9] = (cmdr.credits >> 24) & 255;
-			block[10] = (cmdr.credits >> 16) & 255;
-			block[11] = (cmdr.credits >> 8) & 255;
-			block[12] = cmdr.credits & 255;
-			block[13] = cmdr.fuel;
+			block[3] = elite.cmdr.galaxy.a;
+			block[4] = elite.cmdr.galaxy.b;
+			block[5] = elite.cmdr.galaxy.c;
+			block[6] = elite.cmdr.galaxy.d;
+			block[7] = elite.cmdr.galaxy.e;
+			block[8] = elite.cmdr.galaxy.f;
+			block[9] = (elite.cmdr.credits >> 24) & 255;
+			block[10] = (elite.cmdr.credits >> 16) & 255;
+			block[11] = (elite.cmdr.credits >> 8) & 255;
+			block[12] = elite.cmdr.credits & 255;
+			block[13] = elite.cmdr.fuel;
 			block[14] = 4;
-			block[15] = cmdr.galaxy_number;
-			block[16] = cmdr.front_laser;
-			block[17] = cmdr.rear_laser;
-			block[18] = cmdr.left_laser;
-			block[19] = cmdr.right_laser;
+			block[15] = elite.cmdr.galaxy_number;
+			block[16] = elite.cmdr.front_laser;
+			block[17] = elite.cmdr.rear_laser;
+			block[18] = elite.cmdr.left_laser;
+			block[19] = elite.cmdr.right_laser;
 			block[20] = 0;
 			block[21] = 0;
-			block[22] = cmdr.cargo_capacity + 2;
+			block[22] = elite.cmdr.cargo_capacity + 2;
 
 			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
-				block[23 + i] = cmdr.current_cargo[i];
+				block[23 + i] = elite.cmdr.current_cargo[i];
 
-			block[40] = cmdr.ecm ? 255 : 0;
-			block[41] = cmdr.fuel_scoop ? 255 : 0;
-			block[42] = cmdr.energy_bomb ? 0x7F : 0;
-			block[43] = cmdr.energy_unit;
-			block[44] = cmdr.docking_computer ? 255 : 0;
-			block[45] = cmdr.galactic_hyperdrive ? 255 : 0;
-			block[46] = cmdr.escape_pod ? 255 : 0;
+			block[40] = elite.cmdr.ecm ? 255 : 0;
+			block[41] = elite.cmdr.fuel_scoop ? 255 : 0;
+			block[42] = elite.cmdr.energy_bomb ? 0x7F : 0;
+			block[43] = elite.cmdr.energy_unit;
+			block[44] = elite.cmdr.docking_computer ? 255 : 0;
+			block[45] = elite.cmdr.galactic_hyperdrive ? 255 : 0;
+			block[46] = elite.cmdr.escape_pod ? 255 : 0;
 			block[47] = 0;
 			block[48] = 0;
 			block[49] = 0;
 			block[50] = 0;
-			block[51] = cmdr.missiles;
-			block[52] = cmdr.legal_status;
+			block[51] = elite.cmdr.missiles;
+			block[52] = elite.cmdr.legal_status;
 
 			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
 				block[53 + i] = stock_market[i].current_quantity;
 
-			block[70] = cmdr.market_rnd;
-			block[71] = cmdr.score & 255;
-			block[72] = cmdr.score >> 8;
+			block[70] = elite.cmdr.market_rnd;
+			block[71] = elite.cmdr.score & 255;
+			block[72] = elite.cmdr.score >> 8;
 			block[73] = 0x20;
 
 			chk = checksum(block);

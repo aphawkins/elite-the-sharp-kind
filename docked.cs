@@ -13,18 +13,21 @@
  */
 
 
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <ctype.h>
+# include <string.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <math.h>
+# include <ctype.h>
 
-#include "config.h"
-#include "gfx.h"
-#include "elite.h"
-#include "planet.h"
-#include "shipdata.h"
-#include "space.h"
+# include "config.h"
+# include "gfx.h"
+# include "elite.h"
+# include "planet.h"
+# include "shipdata.h"
+# include "space.h"
+
+using Elite;
+using Elite.Structs;
 
 namespace Elite
 {
@@ -71,12 +74,12 @@ namespace Elite
 
 			if (current_screen == SCR_GALACTIC_CHART)
 			{
-				radius = cmdr.fuel / 4 * GFX_SCALE;
+				radius = elite.cmdr.fuel / 4 * GFX_SCALE;
 				cross_size = 7 * GFX_SCALE;
 			}
 			else
 			{
-				radius = cmdr.fuel * GFX_SCALE;
+				radius = elite.cmdr.fuel * GFX_SCALE;
 				cross_size = 16 * GFX_SCALE;
 			}
 	
@@ -191,7 +194,7 @@ namespace Elite
 			int found;
 			char str[32];
 	
-			glx = cmdr.galaxy;
+			glx = elite.cmdr.galaxy;
 			found = 0;
 	
 			for (i = 0; i < 256; i++)
@@ -263,7 +266,7 @@ namespace Elite
 			for (i = 0; i < 64; i++)
 				row_used[i] = 0;
 
-			glx = cmdr.galaxy;
+			glx = elite.cmdr.galaxy;
 
 			for (i = 0; i < 256; i++)
 			{
@@ -349,7 +352,7 @@ namespace Elite
 
 			gfx_clear_display();
 
-			sprintf (str, "GALACTIC CHART %d", cmdr.galaxy_number + 1);
+			sprintf (str, "GALACTIC CHART %d", elite.cmdr.galaxy_number + 1);
 
 			gfx_display_centre_text (10, str, 140, GFX_COL_GOLD);
 
@@ -359,7 +362,7 @@ namespace Elite
 			draw_fuel_limit_circle (docked_planet.d * GFX_SCALE,
 							(docked_planet.b / (2 / GFX_SCALE)) + (18 * GFX_SCALE) + 1);
 
-			glx = cmdr.galaxy;
+			glx = elite.cmdr.galaxy;
 
 			for (i = 0; i < 256; i++)
 			{
@@ -515,7 +518,7 @@ namespace Elite
 
 			gfx_clear_display();
 
-			sprintf (str, "COMMANDER %s", cmdr.name);
+			sprintf (str, "COMMANDER %s", elite.cmdr.name);
 
 			gfx_display_centre_text (10, str, 140, GFX_COL_GOLD);
 
@@ -563,24 +566,24 @@ namespace Elite
 			gfx_display_colour_text (16, 90, "Condition:", GFX_COL_GREEN_1);
 			gfx_display_text (190, 90, condition_txt[condition]);
 
-			sprintf (str, "%d.%d Light Years", cmdr.fuel / 10, cmdr.fuel % 10);
+			sprintf (str, "%d.%d Light Years", elite.cmdr.fuel / 10, elite.cmdr.fuel % 10);
 			gfx_display_colour_text (16, 106, "Fuel:", GFX_COL_GREEN_1);
 			gfx_display_text (70, 106, str);
 
-			sprintf (str, "%d.%d Cr", cmdr.credits / 10, cmdr.credits % 10);
+			sprintf (str, "%d.%d Cr", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
 			gfx_display_colour_text (16, 122, "Cash:", GFX_COL_GREEN_1);
 			gfx_display_text (70, 122, str);
 
-			if (cmdr.legal_status == 0)
+			if (elite.cmdr.legal_status == 0)
 				strcpy (str, "Clean");
 			else
-				strcpy (str, cmdr.legal_status > 50 ? "Fugitive" : "Offender");
+				strcpy (str, elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender");
 
 			gfx_display_colour_text (16, 138, "Legal Status:", GFX_COL_GREEN_1);
 			gfx_display_text (128, 138, str);
 
 			for (i = 0; i < NO_OF_RANKS; i++)
-				if (cmdr.score >= rating[i].score)
+				if (elite.cmdr.score >= rating[i].score)
 					strcpy (str, rating[i].title);
 	
 			gfx_display_colour_text (16, 154, "Rating:", GFX_COL_GREEN_1);
@@ -591,40 +594,40 @@ namespace Elite
 			x = EQUIP_START_X;
 			y = EQUIP_START_Y;
 
-			if (cmdr.cargo_capacity > 20)
+			if (elite.cmdr.cargo_capacity > 20)
 			{
 				gfx_display_text (x, y, "Large Cargo Bay");
 				y += Y_INC;
 			}
 	
-			if (cmdr.escape_pod)
+			if (elite.cmdr.escape_pod)
 			{
 				gfx_display_text (x, y, "Escape Pod");
 				y += Y_INC;
 			}
 	
-			if (cmdr.fuel_scoop)
+			if (elite.cmdr.fuel_scoop)
 			{
 				gfx_display_text (x, y, "Fuel Scoops");
 				y += Y_INC;
 			}
 
-			if (cmdr.ecm)
+			if (elite.cmdr.ecm)
 			{
 				gfx_display_text (x, y, "E.C.M. System");
 				y += Y_INC;
 			}
 
-			if (cmdr.energy_bomb)
+			if (elite.cmdr.energy_bomb)
 			{
 				gfx_display_text (x, y, "Energy Bomb");
 				y += Y_INC;
 			}
 
-			if (cmdr.energy_unit)
+			if (elite.cmdr.energy_unit)
 			{
 				gfx_display_text (x, y,
-						  cmdr.energy_unit == 1 ? "Extra Energy Unit" :"Naval Energy Unit");
+						  elite.cmdr.energy_unit == 1 ? "Extra Energy Unit" :"Naval Energy Unit");
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
 				{
@@ -633,7 +636,7 @@ namespace Elite
 				}
 			}
 
-			if (cmdr.docking_computer)
+			if (elite.cmdr.docking_computer)
 			{
 				gfx_display_text (x, y, "Docking Computers");
 				y += Y_INC;
@@ -645,7 +648,7 @@ namespace Elite
 			}
 
 	
-			if (cmdr.galactic_hyperdrive)
+			if (elite.cmdr.galactic_hyperdrive)
 			{
 				gfx_display_text (x, y, "Galactic Hyperspace");
 				y += Y_INC;
@@ -656,9 +659,9 @@ namespace Elite
 				}
 			}
 
-			if (cmdr.front_laser)
+			if (elite.cmdr.front_laser)
 			{
-				sprintf (str, "Front %s Laser", laser_type(cmdr.front_laser));
+				sprintf (str, "Front %s Laser", laser_type(elite.cmdr.front_laser));
 				gfx_display_text (x, y, str);
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
@@ -668,9 +671,9 @@ namespace Elite
 				}
 			}
 	
-			if (cmdr.rear_laser)
+			if (elite.cmdr.rear_laser)
 			{
-				sprintf (str, "Rear %s Laser", laser_type(cmdr.rear_laser));
+				sprintf (str, "Rear %s Laser", laser_type(elite.cmdr.rear_laser));
 				gfx_display_text (x, y, str);
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
@@ -680,9 +683,9 @@ namespace Elite
 				}
 			}
 
-			if (cmdr.left_laser)
+			if (elite.cmdr.left_laser)
 			{
-				sprintf (str, "Left %s Laser", laser_type(cmdr.left_laser));
+				sprintf (str, "Left %s Laser", laser_type(elite.cmdr.left_laser));
 				gfx_display_text (x, y, str);
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
@@ -692,9 +695,9 @@ namespace Elite
 				}
 			}
 
-			if (cmdr.right_laser)
+			if (elite.cmdr.right_laser)
 			{
-				sprintf (str, "Right %s Laser", laser_type(cmdr.right_laser));
+				sprintf (str, "Right %s Laser", laser_type(elite.cmdr.right_laser));
 				gfx_display_text (x, y, str);
 			}
 		}
@@ -702,10 +705,6 @@ namespace Elite
 
 
 		/***********************************************************************************/
-
-		#define TONNES		0
-		#define	KILOGRAMS	1
-		#define GRAMS		2
 
 		static int hilite_item;
 		static char *unit_name[] = {"t", "kg", "g"};
@@ -733,8 +732,8 @@ namespace Elite
 
 			gfx_display_text (338, y, str);
 
-			if (cmdr.current_cargo[i] > 0)
-				sprintf (str, "%d%s", cmdr.current_cargo[i],
+			if (elite.cmdr.current_cargo[i] > 0)
+				sprintf (str, "%d%s", elite.cmdr.current_cargo[i],
 									  unit_name[stock_market[i].units]);
 			else
 				strcpy (str, "-");
@@ -763,7 +762,7 @@ namespace Elite
 			hilite_item = i;
 
 			gfx_clear_text_area();
-			sprintf (str, "Cash: %d.%d", cmdr.credits / 10, cmdr.credits % 10);
+			sprintf (str, "Cash: %d.%d", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
 			gfx_display_text (16, 340, str);
 		}
 
@@ -786,7 +785,7 @@ namespace Elite
 
 		void buy_stock ()
 		{
-			struct stock_item *item;
+			stock_item *item;
 			int cargo_held;
 	
 			if (!docked)
@@ -795,18 +794,18 @@ namespace Elite
 			item = &stock_market[hilite_item];
 		
 			if ((item.current_quantity == 0) ||
-				(cmdr.credits < item.current_price))
+				(elite.cmdr.credits < item.current_price))
 				return;
 
 			cargo_held = total_cargo();
 	
-			if ((item.units == TONNES) &&
-				(cargo_held == cmdr.cargo_capacity))
+			if ((item.units == trade.TONNES) &&
+				(cargo_held == elite.cmdr.cargo_capacity))
 				return;
 	
-			cmdr.current_cargo[hilite_item]++;
+			elite.cmdr.current_cargo[hilite_item]++;
 			item.current_quantity--;
-			cmdr.credits -= item.current_price;	
+			elite.cmdr.credits -= item.current_price;	
 
 			highlight_stock (hilite_item);
 		}
@@ -814,16 +813,16 @@ namespace Elite
 
 		void sell_stock ()
 		{
-			struct stock_item *item;
+			stock_item *item;
 	
-			if ((!docked) || (cmdr.current_cargo[hilite_item] == 0))
+			if ((!docked) || (elite.cmdr.current_cargo[hilite_item] == 0))
 				return;
 
 			item = &stock_market[hilite_item];
 
-			cmdr.current_cargo[hilite_item]--;
+			elite.cmdr.current_cargo[hilite_item]--;
 			item.current_quantity++;
-			cmdr.credits += item.current_price;	
+			elite.cmdr.credits += item.current_price;	
 
 			highlight_stock (hilite_item);
 		}
@@ -877,22 +876,22 @@ namespace Elite
 			gfx_display_centre_text (10, "INVENTORY", 140, GFX_COL_GOLD);
 			gfx_draw_line (0, 36, 511, 36);
 	
-			sprintf (str, "%d.%d Light Years", cmdr.fuel / 10, cmdr.fuel % 10);
+			sprintf (str, "%d.%d Light Years", elite.cmdr.fuel / 10, elite.cmdr.fuel % 10);
 			gfx_display_colour_text (16, 50, "Fuel:", GFX_COL_GREEN_1);
 			gfx_display_text (70, 50, str);
 
-			sprintf (str, "%d.%d Cr", cmdr.credits / 10, cmdr.credits % 10);
+			sprintf (str, "%d.%d Cr", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
 			gfx_display_colour_text (16, 66, "Cash:", GFX_COL_GREEN_1);
 			gfx_display_text (70, 66, str);
 	
 			y = 98;
 			for (i = 0; i < 17; i++)
 			{
-				if (cmdr.current_cargo[i] > 0)
+				if (elite.cmdr.current_cargo[i] > 0)
 				{
 					gfx_display_text (16, y, stock_market[i].name);
 
-					sprintf (str, "%d%s", cmdr.current_cargo[i],
+					sprintf (str, "%d%s", elite.cmdr.current_cargo[i],
 									  unit_name[stock_market[i].units]);
 
 					gfx_display_text (180, y, str);
@@ -974,82 +973,82 @@ namespace Elite
 			switch (type)
 			{
 				case EQ_FUEL:
-					return (cmdr.fuel >= 70);
+					return (elite.cmdr.fuel >= 70);
 		
 				case EQ_MISSILE:
-					return (cmdr.missiles >= 4);
+					return (elite.cmdr.missiles >= 4);
 		
 				case EQ_CARGO_BAY:
-					return (cmdr.cargo_capacity > 20);
+					return (elite.cmdr.cargo_capacity > 20);
 		
 				case EQ_ECM:
-					return cmdr.ecm;
+					return elite.cmdr.ecm;
 		
 				case EQ_FUEL_SCOOPS:
-					return cmdr.fuel_scoop;
+					return elite.cmdr.fuel_scoop;
 		
 				case EQ_ESCAPE_POD:
-					return cmdr.escape_pod;
+					return elite.cmdr.escape_pod;
 		
 				case EQ_ENERGY_BOMB:
-					return cmdr.energy_bomb;
+					return elite.cmdr.energy_bomb;
 
 				case EQ_ENERGY_UNIT:
-					return cmdr.energy_unit;
+					return elite.cmdr.energy_unit;
 			
 				case EQ_DOCK_COMP:
-					return cmdr.docking_computer;
+					return elite.cmdr.docking_computer;
 			
 				case EQ_GAL_DRIVE:
-					return cmdr.galactic_hyperdrive;
+					return elite.cmdr.galactic_hyperdrive;
 			
 				case EQ_FRONT_PULSE:
-					return (cmdr.front_laser == PULSE_LASER);
+					return (elite.cmdr.front_laser == PULSE_LASER);
 		
 				case EQ_REAR_PULSE:
-					return (cmdr.rear_laser == PULSE_LASER);
+					return (elite.cmdr.rear_laser == PULSE_LASER);
 
 				case EQ_LEFT_PULSE:
-					return (cmdr.left_laser == PULSE_LASER);
+					return (elite.cmdr.left_laser == PULSE_LASER);
 
 				case EQ_RIGHT_PULSE:
-					return (cmdr.right_laser == PULSE_LASER);
+					return (elite.cmdr.right_laser == PULSE_LASER);
 
 				case EQ_FRONT_BEAM:
-					return (cmdr.front_laser == BEAM_LASER);
+					return (elite.cmdr.front_laser == BEAM_LASER);
 
 				case EQ_REAR_BEAM:
-					return (cmdr.rear_laser == BEAM_LASER);
+					return (elite.cmdr.rear_laser == BEAM_LASER);
 
 				case EQ_LEFT_BEAM:
-					return (cmdr.left_laser == BEAM_LASER);
+					return (elite.cmdr.left_laser == BEAM_LASER);
 
 				case EQ_RIGHT_BEAM:
-					return (cmdr.right_laser == BEAM_LASER);
+					return (elite.cmdr.right_laser == BEAM_LASER);
 
 				case EQ_FRONT_MINING:
-					return (cmdr.front_laser == MINING_LASER);
+					return (elite.cmdr.front_laser == MINING_LASER);
 
 				case EQ_REAR_MINING:
-					return (cmdr.rear_laser == MINING_LASER);
+					return (elite.cmdr.rear_laser == MINING_LASER);
 
 				case EQ_LEFT_MINING:
-					return (cmdr.left_laser == MINING_LASER);
+					return (elite.cmdr.left_laser == MINING_LASER);
 
 				case EQ_RIGHT_MINING:
-					return (cmdr.right_laser == MINING_LASER);
+					return (elite.cmdr.right_laser == MINING_LASER);
 
 				case EQ_FRONT_MILITARY:
-					return (cmdr.front_laser == MILITARY_LASER);
+					return (elite.cmdr.front_laser == MILITARY_LASER);
 
 				case EQ_REAR_MILITARY:
-					return (cmdr.rear_laser == MILITARY_LASER);
+					return (elite.cmdr.rear_laser == MILITARY_LASER);
 
 				case EQ_LEFT_MILITARY:
-					return (cmdr.left_laser == MILITARY_LASER);
+					return (elite.cmdr.left_laser == MILITARY_LASER);
 
 				case EQ_RIGHT_MILITARY:
-					return (cmdr.right_laser == MILITARY_LASER);
+					return (elite.cmdr.right_laser == MILITARY_LASER);
 			}
 
 			return 0;
@@ -1100,7 +1099,7 @@ namespace Elite
 			hilite_item = i;
 
 			gfx_clear_text_area();
-			sprintf (str, "Cash: %d.%d", cmdr.credits / 10, cmdr.credits % 10);
+			sprintf (str, "Cash: %d.%d", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
 			gfx_display_text (16, 340, str);
 		}
 
@@ -1160,13 +1159,13 @@ namespace Elite
 	
 			tech_level = current_planet_data.techlevel + 1;
 
-			equip_stock[0].price = (70 - cmdr.fuel) * 2;
+			equip_stock[0].price = (70 - elite.cmdr.fuel) * 2;
 	
 			y = 55;
 			for (i = 0; i < NO_OF_EQUIP_ITEMS; i++)
 			{
 				equip_stock[i].canbuy = ((equip_present (equip_stock[i].type) == 0) &&
-										 (equip_stock[i].price <= cmdr.credits));
+										 (equip_stock[i].price <= elite.cmdr.credits));
 	
 				if (equip_stock[i].show && (tech_level >= equip_stock[i].level))
 				{
@@ -1241,129 +1240,129 @@ namespace Elite
 			switch (equip_stock[hilite_item].type)
 			{
 				case EQ_FUEL:
-					cmdr.fuel = myship.max_fuel;
+					elite.cmdr.fuel = myship.max_fuel;
 					update_console();
 					break;
 
 				case EQ_MISSILE:
-					cmdr.missiles++;
+					elite.cmdr.missiles++;
 					update_console();
 					break;
 		
 				case EQ_CARGO_BAY:
-					cmdr.cargo_capacity = 35;
+					elite.cmdr.cargo_capacity = 35;
 					break;
 		
 				case EQ_ECM:
-					cmdr.ecm = 1;
+					elite.cmdr.ecm = 1;
 					break;
 		
 				case EQ_FUEL_SCOOPS:
-					cmdr.fuel_scoop = 1;
+					elite.cmdr.fuel_scoop = 1;
 					break;
 		
 				case EQ_ESCAPE_POD:
-					cmdr.escape_pod = 1;
+					elite.cmdr.escape_pod = 1;
 					break;
 		
 				case EQ_ENERGY_BOMB:
-					cmdr.energy_bomb = 1;
+					elite.cmdr.energy_bomb = 1;
 					break;
 
 				case EQ_ENERGY_UNIT:
-					cmdr.energy_unit = 1;
+					elite.cmdr.energy_unit = 1;
 					break;
 			
 				case EQ_DOCK_COMP:
-					cmdr.docking_computer = 1;
+					elite.cmdr.docking_computer = 1;
 					break;
 			
 				case EQ_GAL_DRIVE:
-					cmdr.galactic_hyperdrive = 1;
+					elite.cmdr.galactic_hyperdrive = 1;
 					break;
 			
 				case EQ_FRONT_PULSE:
-					cmdr.credits += laser_refund (cmdr.front_laser);
-					cmdr.front_laser = PULSE_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.front_laser);
+					elite.cmdr.front_laser = PULSE_LASER;
 					break;
 		
 				case EQ_REAR_PULSE:
-					cmdr.credits += laser_refund (cmdr.rear_laser);
-					cmdr.rear_laser = PULSE_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.rear_laser);
+					elite.cmdr.rear_laser = PULSE_LASER;
 					break;
 
 				case EQ_LEFT_PULSE:
-					cmdr.credits += laser_refund (cmdr.left_laser);
-					cmdr.left_laser = PULSE_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.left_laser);
+					elite.cmdr.left_laser = PULSE_LASER;
 					break;
 
 				case EQ_RIGHT_PULSE:
-					cmdr.credits += laser_refund (cmdr.right_laser);
-					cmdr.right_laser = PULSE_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.right_laser);
+					elite.cmdr.right_laser = PULSE_LASER;
 					break;
 
 				case EQ_FRONT_BEAM:
-					cmdr.credits += laser_refund (cmdr.front_laser);
-					cmdr.front_laser = BEAM_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.front_laser);
+					elite.cmdr.front_laser = BEAM_LASER;
 					break;
 
 				case EQ_REAR_BEAM:
-					cmdr.credits += laser_refund (cmdr.rear_laser);
-					cmdr.rear_laser = BEAM_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.rear_laser);
+					elite.cmdr.rear_laser = BEAM_LASER;
 					break;
 
 				case EQ_LEFT_BEAM:
-					cmdr.credits += laser_refund (cmdr.left_laser);
-					cmdr.left_laser = BEAM_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.left_laser);
+					elite.cmdr.left_laser = BEAM_LASER;
 					break;
 
 				case EQ_RIGHT_BEAM:
-					cmdr.credits += laser_refund (cmdr.right_laser);
-					cmdr.right_laser = BEAM_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.right_laser);
+					elite.cmdr.right_laser = BEAM_LASER;
 					break;
 
 				case EQ_FRONT_MINING:
-					cmdr.credits += laser_refund (cmdr.front_laser);
-					cmdr.front_laser = MINING_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.front_laser);
+					elite.cmdr.front_laser = MINING_LASER;
 					break;
 
 				case EQ_REAR_MINING:
-					cmdr.credits += laser_refund (cmdr.rear_laser);
-					cmdr.rear_laser = MINING_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.rear_laser);
+					elite.cmdr.rear_laser = MINING_LASER;
 					break;
 
 				case EQ_LEFT_MINING:
-					cmdr.credits += laser_refund (cmdr.left_laser);
-					cmdr.left_laser = MINING_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.left_laser);
+					elite.cmdr.left_laser = MINING_LASER;
 					break;
 
 				case EQ_RIGHT_MINING:
-					cmdr.credits += laser_refund (cmdr.right_laser);
-					cmdr.right_laser = MINING_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.right_laser);
+					elite.cmdr.right_laser = MINING_LASER;
 					break;
 
 				case EQ_FRONT_MILITARY:
-					cmdr.credits += laser_refund (cmdr.front_laser);
-					cmdr.front_laser = MILITARY_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.front_laser);
+					elite.cmdr.front_laser = MILITARY_LASER;
 					break;
 
 				case EQ_REAR_MILITARY:
-					cmdr.credits += laser_refund (cmdr.rear_laser);
-					cmdr.rear_laser = MILITARY_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.rear_laser);
+					elite.cmdr.rear_laser = MILITARY_LASER;
 					break;
 
 				case EQ_LEFT_MILITARY:
-					cmdr.credits += laser_refund (cmdr.left_laser);
-					cmdr.left_laser = MILITARY_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.left_laser);
+					elite.cmdr.left_laser = MILITARY_LASER;
 					break;
 
 				case EQ_RIGHT_MILITARY:
-					cmdr.credits += laser_refund (cmdr.right_laser);
-					cmdr.right_laser = MILITARY_LASER;
+					elite.cmdr.credits += laser_refund (elite.cmdr.right_laser);
+					elite.cmdr.right_laser = MILITARY_LASER;
 					break;
 			}
 
-			cmdr.credits -= equip_stock[hilite_item].price;
+			elite.cmdr.credits -= equip_stock[hilite_item].price;
 			list_equip_prices();
 		}
 
