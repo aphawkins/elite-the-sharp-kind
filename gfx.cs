@@ -26,9 +26,6 @@ namespace Elite
 {
 	internal static class gfx
 	{
-//# ifndef GFX_H
-//#define GFX_H
-
 #if RES_512_512
 		internal const int GFX_SCALE = 2;
 		internal const int GFX_X_OFFSET = 0;
@@ -53,10 +50,9 @@ namespace Elite
 		internal const int GFX_VIEW_TY = 1;
 		internal const int GFX_VIEW_BX = 509;
 		internal const int GFX_VIEW_BY = 381;
-
 #endif
 
-//#if GFX_SCALE
+#if GFX_SCALE
 		internal const int GFX_SCALE = 1;
 		internal const int GFX_X_OFFSET = 0;
 		internal const int GFX_Y_OFFSET = 0;
@@ -67,7 +63,7 @@ namespace Elite
 		internal const int GFX_VIEW_TY = 1;
 		internal const int GFX_VIEW_BX = 253;
 		internal const int GFX_VIEW_BY = 191;
-//#endif
+#endif
 
 		internal const int GFX_COL_BLACK = 0;
 		internal const int GFX_COL_DARK_RED = 28;

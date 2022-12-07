@@ -55,8 +55,8 @@ namespace Elite
 
 
 
-		int cross_x = 0;
-		int cross_y = 0;
+		internal static int cross_x = 0;
+        internal static int cross_y = 0;
 
 
 
