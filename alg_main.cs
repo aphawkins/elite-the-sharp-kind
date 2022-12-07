@@ -1176,12 +1176,12 @@ namespace Elite
 
 			for (i = 0; i < 5; i++)
 			{
-				type = (rand255() & 1) ? shipdata.SHIP_CARGO : shipdata.SHIP_ALLOY;
-				newship = add_new_ship (type, (rand255() & 63) - 32,
-										(rand255() & 63) - 32, -400, rotmat, 0, 0);
-                space.universe[newship].rotz = ((rand255() * 2) & 255) - 128;
-                space.universe[newship].rotx = ((rand255() * 2) & 255) - 128;
-                space.universe[newship].velocity = rand255() & 15;
+				type = (random.rand255() & 1) ? shipdata.SHIP_CARGO : shipdata.SHIP_ALLOY;
+				newship = add_new_ship (type, (random.rand255() & 63) - 32,
+										(random.rand255() & 63) - 32, -400, rotmat, 0, 0);
+                space.universe[newship].rotz = ((random.rand255() * 2) & 255) - 128;
+                space.universe[newship].rotx = ((random.rand255() * 2) & 255) - 128;
+                space.universe[newship].velocity = random.rand255() & 15;
 			}
 	
 	

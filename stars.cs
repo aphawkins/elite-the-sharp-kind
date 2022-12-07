@@ -47,9 +47,9 @@ namespace Elite
 
 			for (i = 0; i < nstars; i++)
 			{
-				stars[i].x = (rand255() - 128) | 8;
-				stars[i].y = (rand255() - 128) | 4;
-				stars[i].z = rand255() | 0x90;
+				stars[i].x = (random.rand255() - 128) | 8;
+				stars[i].y = (random.rand255() - 128) | 4;
+				stars[i].z = random.rand255() | 0x90;
 			}
 
 			warp_stars = 0;
@@ -139,9 +139,9 @@ namespace Elite
 				if ((sx > 120) || (sx < -120) ||
 					(sy > 120) || (sy < -120) || (zz < 16))
 				{
-					stars[i].x = (rand255() - 128) | 8;
-					stars[i].y = (rand255() - 128) | 4;
-					stars[i].z = rand255() | 0x90;
+					stars[i].x = (random.rand255() - 128) | 8;
+					stars[i].y = (random.rand255() - 128) | 4;
+					stars[i].z = random.rand255() | 0x90;
 					continue;
 				}
 
@@ -241,17 +241,17 @@ namespace Elite
 
 				if ((zz >= 300) || (abs(yy) >= 110))
 				{
-					stars[i].z = (rand255() & 127) + 51;
+					stars[i].z = (random.rand255() & 127) + 51;
 
-					if (rand255() & 1)
+					if (random.rand255() & 1)
 					{
-						stars[i].x = rand255() - 128;
-						stars[i].y = (rand255() & 1) ? -115 : 115;
+						stars[i].x = random.rand255() - 128;
+						stars[i].y = (random.rand255() & 1) ? -115 : 115;
 					}
 					else
 					{
-						stars[i].x = (rand255() & 1) ? -126 : 126;
-						stars[i].y = rand255() - 128;
+						stars[i].x = (random.rand255() & 1) ? -126 : 126;
+						stars[i].y = random.rand255() - 128;
 					}
 				}
 
@@ -338,15 +338,15 @@ namespace Elite
 
 				if (abs(stars[i].x) >= 116)
 				{
-					stars[i].y = rand255() - 128;
+					stars[i].y = random.rand255() - 128;
 					stars[i].x = (current_screen == SCR_LEFT_VIEW) ? 115 : -115;
-					stars[i].z = rand255() | 8;
+					stars[i].z = random.rand255() | 8;
 				}
 				else if (abs(stars[i].y) >= 116)
 				{
-					stars[i].x = rand255() - 128;
+					stars[i].x = random.rand255() - 128;
 					stars[i].y = (alpha > 0) ? -110 : 110;
-					stars[i].z = rand255() | 8;
+					stars[i].z = random.rand255() | 8;
 				}
 
 			}

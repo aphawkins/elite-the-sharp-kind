@@ -131,10 +131,12 @@ namespace Elite
 			int type;
 			int trade;
 
-			if (space.universe[un].flags & FLG.FLG_DEAD)
+			if (space.universe[un].flags.HasFlag(FLG.FLG_DEAD))
+			{
 				return;
+			}
 
-			type = universe[un].type;
+			type = space.universe[un].type;
 
 			if (type == shipdata.SHIP_MISSILE)
 				return;
@@ -142,14 +144,14 @@ namespace Elite
 			if ((elite.cmdr.fuel_scoop == 0) || (space.universe[un].location.y >= 0) ||
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
-				explode_object(un);
-				damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.z > 0);
+				swat.explode_object(un);
+				space.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.z > 0);
 				return;
 			}
 
 			if (type == shipdata.SHIP_CARGO)
 			{
-				trade = rand255() & 7;
+				trade = random.rand255() & 7;
 				elite.cmdr.current_cargo[trade]++;
 				info_message(stock_market[trade].name);
 				remove_ship(un);
@@ -165,8 +167,8 @@ namespace Elite
 				return;
 			}
 
-			explode_object(un);
-			damage_ship(space.universe[un].energy / 2, space.universe[un].location.z > 0);
+			swat.explode_object(un);
+			space.damage_ship(space.universe[un].energy / 2, space.universe[un].location.z > 0);
 		}
 	}
 }

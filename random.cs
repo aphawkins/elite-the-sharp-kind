@@ -62,7 +62,7 @@ namespace Elite
 			return rand_seed;
 		}
 
-		int rand255()
+		internal static int rand255()
 		{
 			return (randint() & 255);
 		}

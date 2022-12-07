@@ -411,17 +411,17 @@ namespace Elite
 				do_game_over();
 		}
 
-
 		/*
 		 * Deplete the shields.  Drain the energy banks if the shields fail.
 		 */
-
-		void damage_ship(int damage, int front)
+		internal static void damage_ship(int damage, bool front)
 		{
 			int shield;
 
 			if (damage <= 0)    /* sanity check */
+			{
 				return;
+			}
 
 			shield = front ? front_shield : aft_shield;
 
@@ -1163,7 +1163,7 @@ namespace Elite
 				elite.cmdr.fuel -= hyper_distance;
 				elite.cmdr.legal_status /= 2;
 
-				if ((rand255() > 253) || (flight_climb == myship.max_climb))
+				if ((random.rand255() > 253) || (flight_climb == myship.max_climb))
 				{
 					enter_witchspace();
 					return;
@@ -1172,7 +1172,7 @@ namespace Elite
 				docked_planet = destination_planet;
 			}
 
-			elite.cmdr.market_rnd = rand255();
+			elite.cmdr.market_rnd = random.rand255();
 			planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
 			generate_stock_market();
 

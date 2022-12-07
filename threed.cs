@@ -56,7 +56,7 @@ namespace Elite
 		 *
 		 */
 
-		void draw_wireframe_ship (struct univ_object *univ)
+		void draw_wireframe_ship (univ_object *univ)
 		{
 			Matrix trans_mat;
 			int i;
@@ -67,7 +67,7 @@ namespace Elite
 			Vector camera_vec;
 			double cos_angle;
 			double tmp;
-			struct ship_face_normal *ship_norm;
+			ship_face_normal *ship_norm;
 			int num_faces;
 			struct ship_data *ship;
 			int lasv;
@@ -160,8 +160,7 @@ namespace Elite
 			if (univ.flags & FLG_FIRING)
 			{
 				lasv = ship_list[univ.type].front_laser;
-				gfx_draw_line (point_list[lasv].x, point_list[lasv].y,
-							   univ.location.x > 0 ? 0 : 511, rand255() * 2);
+				gfx_draw_line (point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
 			}
 		}
 
@@ -337,7 +336,7 @@ tmp = trans_mat[0].y;
 				col = (univ.type == SHIP_VIPER) ? GFX_COL_CYAN : GFX_COL_WHITE; 
 		
 				gfx_render_line (point_list[lasv].x, point_list[lasv].y,
-								 univ.location.x > 0 ? 0 : 511, rand255() * 2,
+								 univ.location.x > 0 ? 0 : 511, random.rand255() * 2,
 								 point_list[lasv].z, col);
 			}
 		}
@@ -831,12 +830,11 @@ tmp = trans_mat[0].y;
 			Vector camera_vec;
 			double cos_angle;
 			double tmp;
-			struct ship_face_normal *ship_norm;
-			struct ship_point *sp;
-			struct ship_data *ship;
+			ship_face_normal *ship_norm;
+			ship_point *sp;
+			ship_data *ship;
 			int np;
 			int old_seed;
-	
 	
 			if (univ.exp_delta > 251)
 			{
@@ -945,8 +943,8 @@ tmp = trans_mat[0].y;
 	
 				for (i = 0; i < 16; i++)
 				{
-					px = rand255() - 128;
-					py = rand255() - 128;		
+					px = random.rand255() - 128;
+					py = random.rand255() - 128;		
 
 					px = (px * q) / 256;
 					py = (py * q) / 256;
