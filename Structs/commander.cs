@@ -1,6 +1,7 @@
 ﻿namespace EliteLib.Structs
 {
     using Elite;
+    using Elite.Structs;
 
     internal struct commander
     {

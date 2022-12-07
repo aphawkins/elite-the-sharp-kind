@@ -23,7 +23,7 @@ void move_cursor_to_origin ();
 void find_planet_by_name (char *find_name);
 void display_market_prices ();
 void display_commander_status ();
-int calc_distance_to_planet (struct galaxy_seed from_planet, struct galaxy_seed to_planet);
+int calc_distance_to_planet (galaxy_seed from_planet, galaxy_seed to_planet);
 void highlight_stock (int i);
 void select_previous_stock ();
 void select_next_stock ();

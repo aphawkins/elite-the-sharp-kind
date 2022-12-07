@@ -46,7 +46,9 @@
 
 namespace Elite
 {
-    internal static class space
+	using Elite.Structs;
+
+	internal static class space
     {
 		extern int flight_climb;
 		extern int flight_roll;

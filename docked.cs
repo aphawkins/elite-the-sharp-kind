@@ -28,7 +28,9 @@
 
 namespace Elite
 {
-    internal static class docked
+	using Elite.Structs;
+
+	internal static class docked
     {
 				char *economy_type[] = {"Rich Industrial",
 								"Average Industrial",
@@ -88,7 +90,7 @@ namespace Elite
 
 
 
-		int calc_distance_to_planet (struct galaxy_seed from_planet, struct galaxy_seed to_planet)
+		static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
 		{
 			int dx,dy;
 			int light_years;
@@ -107,7 +109,7 @@ namespace Elite
 		}
 
 
-		void show_distance (int ypos, struct galaxy_seed from_planet, struct galaxy_seed to_planet)
+		void show_distance (int ypos, galaxy_seed from_planet, galaxy_seed to_planet)
 		{
 			char str[100];
 			int light_years;
@@ -184,7 +186,7 @@ namespace Elite
 		void find_planet_by_name (char *find_name)
 		{
 			int i;
-			struct galaxy_seed glx;
+			galaxy_seed glx;
 			char planet_name[16];
 			int found;
 			char str[32];
@@ -240,7 +242,7 @@ namespace Elite
 		void display_short_range_chart ()
 		{
 			int i;
-			struct galaxy_seed glx;
+			galaxy_seed glx;
 			int dx,dy;
 			int px,py;
 			char planet_name[16];
@@ -338,7 +340,7 @@ namespace Elite
 		void display_galactic_chart ()
 		{
 			int i;
-			struct galaxy_seed glx;
+			galaxy_seed glx;
 			char str[64];
 			int px,py;
 	

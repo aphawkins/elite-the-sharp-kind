@@ -22,6 +22,7 @@
 
 namespace Elite
 {
+	using Elite.Structs;
 	using System.ComponentModel.Design;
 
 	internal static class elite

@@ -29,9 +29,11 @@
 
 namespace Elite
 {
-    internal static class planet
+	using Elite.Structs;
+
+	internal static class planet
     {
-        extern struct galaxy_seed hyperspace_planet;
+        internal galaxy_seed hyperspace_planet;
 
 		struct random_seed
 		{
@@ -164,10 +166,10 @@ namespace Elite
 		}
 
 
-		void waggle_galaxy (struct galaxy_seed *glx_ptr)
+		static void waggle_galaxy(galaxy_seed *glx_ptr)
 		{
-			unsigned int x;
-			unsigned int y;
+			uint x;
+			uint y;
 			extern int carry_flag;
 
 			x = glx_ptr->a + glx_ptr->c;
@@ -207,11 +209,11 @@ namespace Elite
 
 
 
-		struct galaxy_seed find_planet (int cx, int cy)
+		static galaxy_seed find_planet(int cx, int cy)
 		{
 			int min_dist = 10000;
-			struct galaxy_seed glx;
-			struct galaxy_seed planet;
+			galaxy_seed glx;
+			galaxy_seed planet;
 			int distance;
 			int dx, dy;
 			int i;
@@ -245,9 +247,9 @@ namespace Elite
 		}
 
 
-		int find_planet_number (struct galaxy_seed planet)
+		int find_planet_number(galaxy_seed planet)
 		{
-			struct galaxy_seed glx;
+			galaxy_seed glx;
 			int i;
 
 			glx = cmdr.galaxy;
@@ -274,7 +276,7 @@ namespace Elite
 
 
 
-		void name_planet (char *gname, struct galaxy_seed glx)
+		void name_planet (char *gname, galaxy_seed glx)
 		{
 			int size;
 			int i;
@@ -326,7 +328,7 @@ namespace Elite
 		}
 
 
-		void describe_inhabitants (char *str, struct galaxy_seed planet)
+		void describe_inhabitants (char *str, galaxy_seed planet)
 		{
 			int inhab;
 
@@ -448,7 +450,7 @@ namespace Elite
 
 
 
-		char *describe_planet (struct galaxy_seed planet)
+		static string describe_planet(galaxy_seed planet)
 		{
 			char *mission_text;
 	
@@ -481,7 +483,7 @@ namespace Elite
 
 
 
-		void generate_planet_data (struct planet_data *pl, struct galaxy_seed planet_seed)
+		void generate_planet_data (struct planet_data *pl, galaxy_seed planet_seed)
 		{
 
 			pl->government = (planet_seed.c / 8) & 7;
