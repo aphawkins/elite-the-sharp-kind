@@ -26,7 +26,7 @@ namespace Elite
 {
 	internal static class stars
 	{
-		int warp_stars;
+		internal static int warp_stars;
 
 		struct star
 		{

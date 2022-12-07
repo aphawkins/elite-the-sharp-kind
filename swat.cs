@@ -43,16 +43,19 @@ namespace Elite
 
     internal static class swat
     {
-        int laser_counter;
-		int laser;
-		int laser2;
-		int laser_x;
-		int laser_y;
+		internal static int MISSILE_UNARMED = -2;
+		internal static int MISSILE_ARMED = -1;
 
-		int ecm_active;
-		int missile_target;
-		int ecm_ours;
-		int in_battle;
+        static int laser_counter;
+        static int laser;
+        static int laser2;
+        static int laser_x;
+        static int laser_y;
+
+        internal static int ecm_active;
+		internal static int missile_target;
+        static int ecm_ours;
+        internal static int in_battle;
 
 		struct univ_object universe[MAX_UNIV_OBJECTS];
 		int ship_count[NO_OF_SHIPS + 1];  /* many */

@@ -44,6 +44,7 @@
 # include "stars.h"
 # include "pilot.h"
 
+using Elite;
 using Elite.Structs;
 using EliteLib;
 
@@ -958,7 +959,7 @@ namespace Elite
 			x = (4 - nomiss) * 16 + 35;
 			y = 113 + 385;
 	
-			if (missile_target != MISSILE_UNARMED)
+			if (missile_target != swat.MISSILE_UNARMED)
 			{
 				gfx_draw_sprite ((missile_target < 0) ? IMG_MISSILE_YELLOW :
 														IMG_MISSILE_RED, x, y);
