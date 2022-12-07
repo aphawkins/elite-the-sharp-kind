@@ -18,25 +18,29 @@
  * Special Weapons And Tactics.
  */
 
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
+# include <math.h>
+# include <stdlib.h>
+# include <string.h>
 
-#include "config.h"
-#include "gfx.h"
-#include "elite.h"
-#include "vector.h"
-#include "swat.h"
-#include "shipdata.h"
-#include "space.h"
-#include "main.h"
-#include "sound.h"
-#include "random.h"
-#include "trade.h"
-#include "pilot.h" 
+# include "config.h"
+# include "gfx.h"
+# include "elite.h"
+# include "vector.h"
+# include "swat.h"
+# include "shipdata.h"
+# include "space.h"
+# include "main.h"
+# include "sound.h"
+# include "random.h"
+# include "trade.h"
+# include "pilot.h" 
+
 
 namespace Elite
 {
+    using EliteLib;
+    using Elite.Structs;
+
     internal static class swat
     {
         int laser_counter;
@@ -109,7 +113,7 @@ namespace Elite
 		}
 
 
-		int add_new_ship (int ship_type, int x, int y, int z, struct vector *rotmat, int rotx, int rotz)
+		static int add_new_ship (int ship_type, int x, int y, int z, ref Vector rotmat, int rotx, int rotz)
 		{
 			int i;
 

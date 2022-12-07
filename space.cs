@@ -18,31 +18,34 @@
  * This module handles all the flight system and management of the space universe.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
+# include <stdio.h>
+# include <string.h>
+# include <math.h>
+# include <stdlib.h>
 
-#include "vector.h"
+# include "vector.h"
 
-#include "alg_data.h"
+# include "alg_data.h"
 
-#include "config.h"
-#include "elite.h"
-#include "gfx.h"
-#include "docked.h"
-#include "intro.h"
-#include "shipdata.h"
-#include "shipface.h"
-#include "space.h" 
-#include "threed.h"
-#include "sound.h"
-#include "main.h"
-#include "swat.h"
-#include "random.h"
-#include "trade.h"
-#include "stars.h"
-#include "pilot.h"
+# include "config.h"
+# include "elite.h"
+# include "gfx.h"
+# include "docked.h"
+# include "intro.h"
+# include "shipdata.h"
+# include "shipface.h"
+# include "space.h" 
+# include "threed.h"
+# include "sound.h"
+# include "main.h"
+# include "swat.h"
+# include "random.h"
+# include "trade.h"
+# include "stars.h"
+# include "pilot.h"
+
+using Elite.Structs;
+using EliteLib;
 
 namespace Elite
 {
@@ -89,7 +92,7 @@ namespace Elite
 		}
 
 
-		void rotate_vec (struct vector *vec, double alpha, double beta)
+		static void rotate_vec (ref Vector vec, double alpha, double beta)
 		{
 			double x,y,z;
 	
@@ -236,7 +239,7 @@ namespace Elite
 
 		int is_docking (int sn)
 		{
-			struct vector vec;
+			Vector vec;
 			double fz;
 			double ux;
 
@@ -763,7 +766,7 @@ namespace Elite
 
 		void update_compass ()
 		{
-			struct vector dest;
+			Vector dest;
 			int compass_x;
 			int compass_y;
 			int un = 0;

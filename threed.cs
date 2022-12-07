@@ -11,26 +11,31 @@
  *
  */
 
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <ctype.h>
+# include <string.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <math.h>
+# include <ctype.h>
 
-#include "config.h"
-#include "elite.h"
-#include "gfx.h"
-#include "planet.h"
-#include "vector.h"
-#include "shipdata.h"
-#include "shipface.h"
-#include "threed.h"
-#include "space.h"
-#include "random.h"
+# include "config.h"
+# include "elite.h"
+# include "gfx.h"
+# include "planet.h"
+# include "vector.h"
+# include "shipdata.h"
+# include "shipface.h"
+# include "threed.h"
+# include "space.h"
+# include "random.h"
+
+using Elite.Structs;
+using EliteLib;
 
 namespace Elite
 {
-    internal static class threed
+	using EliteLib;
+
+	internal static class threed
     {
 		#define MAX(x,y) (((x) > (y)) ? (x) : (y))
 
@@ -584,7 +589,7 @@ namespace Elite
 		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
 		 */
 
-		void render_planet (int xo, int yo, int radius, struct vector *vec)
+		void render_planet (int xo, int yo, int radius, ref Vector vec)
 		{
 			int x,y;
 			int s;
@@ -625,7 +630,7 @@ namespace Elite
 		 * Need to add in the two arcs that the original Elite had.
 		 */
 
-		void draw_wireframe_planet (int xo, int yo, int radius, struct vector *vec)
+		void draw_wireframe_planet (int xo, int yo, int radius, ref Vector vec)
 		{
 			gfx_draw_circle (xo, yo, radius, GFX_COL_WHITE);
 		}
@@ -809,7 +814,7 @@ namespace Elite
 
 
 
-		void draw_explosion (struct univ_object *univ)
+		static void draw_explosion (struct univ_object *univ)
 		{
 			int i;
 			int z;
@@ -822,8 +827,8 @@ namespace Elite
 			int sx,sy;
 			double rx,ry,rz;
 			int visible[32];
-			struct vector vec;
-			struct vector camera_vec;
+			Vector vec;
+			Vector camera_vec;
 			double cos_angle;
 			double tmp;
 			struct ship_face_normal *ship_norm;

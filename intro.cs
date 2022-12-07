@@ -36,6 +36,8 @@
 
 namespace Elite
 {
+	using EliteLib;
+
 	internal static class intro
 	{
 		static int ship_no;

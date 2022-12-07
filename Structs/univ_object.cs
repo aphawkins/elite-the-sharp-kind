@@ -1,11 +1,12 @@
 ﻿namespace Elite.Structs
 {
     using Elite.Enums;
+    using EliteLib;
 
     internal struct univ_object
     {
         internal int type;
-        internal vector location;
+        internal Vector location;
         internal Matrix rotmat;
         internal int rotx;
         internal int rotz;

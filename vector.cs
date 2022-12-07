@@ -27,13 +27,16 @@
 
 namespace Elite
 {
-    internal static class vector
+	using Elite.Structs;
+	using EliteLib;
+
+	internal static class vector
     {
-        static Matrix start_matrix =
+        static Matrix start_matrix = new()
 		{
-			{1.0, 0.0, 0.0},
-			{0.0, 1.0, 0.0},
-			{0.0, 0.0,-1.0}
+			new Vector(1.0, 0.0, 0.0),
+            new Vector(0.0, 1.0, 0.0),
+            new Vector(0.0, 0.0,-1.0)
 		};
 
 
@@ -44,7 +47,7 @@ namespace Elite
 		 */
 
 
-		void mult_matrix (struct vector *first, struct vector *second)
+		void mult_matrix (Vector *first, Vector *second)
 		{
 			int i;
 			Matrix rv;
@@ -72,7 +75,7 @@ namespace Elite
 
 
 
-		void mult_vector (struct vector *vec, struct vector *mat)
+		static void mult_vector (ref Vector vec, ref Vector mat)
 		{
 			double x;
 			double y;
@@ -102,7 +105,7 @@ namespace Elite
 		 */
 
 
-		double vector_dot_product (struct vector *first, struct vector *second)
+		static double vector_dot_product (ref Vector first, ref Vector second)
 		{
 			return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);	
 		}
@@ -113,17 +116,17 @@ namespace Elite
 		 * Convert a vector into a vector of unit (1) length.
 		 */
 
-		struct vector unit_vector (struct vector *vec)
+		static Vector unit_vector (ref Vector vec)
 		{
 			double lx,ly,lz;
 			double uni;
-			struct vector res;
+			Vector res;
 
 			lx = vec.x;
 			ly = vec.y;
 			lz = vec.z;
 
-			uni = sqrt (lx * lx + ly * ly + lz * lz);
+			uni = Math.Sqrt(lx * lx + ly * ly + lz * lz);
 
 			res.x = lx / uni;
 			res.y = ly / uni;
@@ -136,7 +139,7 @@ namespace Elite
 
 
 
-		void set_init_matrix (struct vector *mat)
+		static void set_init_matrix(ref Vector mat)
 		{
 			int i;
 
@@ -146,9 +149,9 @@ namespace Elite
 
 
 
-		void tidy_matrix (struct vector *mat)
+		static void tidy_matrix(ref Vector mat)
 		{
-			mat[2] = unit_vector (&mat[2]);
+			mat[2] = unit_vector(&mat[2]);
 
 			if ((mat[2].x > -1) && (mat[2].x < 1))
 			{

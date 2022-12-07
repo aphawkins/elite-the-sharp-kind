@@ -19,36 +19,38 @@
  */
 
 
-#include <stdio.h>
-#include <string.h>
-#include <math.h> 
-#include <ctype.h>
-#include <time.h>
-#include <stdlib.h>
+# include <stdio.h>
+# include <string.h>
+# include <math.h> 
+# include <ctype.h>
+# include <time.h>
+# include <stdlib.h>
 
-#include "allegro.h"
+# include "allegro.h"
 
-#include "config.h"
-#include "gfx.h"
-#include "main.h"
-#include "vector.h"
-#include "alg_data.h"
-#include "elite.h"
-#include "docked.h"
-#include "intro.h"
-#include "shipdata.h"
-#include "shipface.h"
-#include "space.h"
-#include "sound.h"
-#include "threed.h"
-#include "swat.h"
-#include "random.h"
-#include "options.h"
-#include "stars.h"
-#include "missions.h"
-#include "pilot.h"
-#include "file.h"
-#include "keyboard.h"
+# include "config.h"
+# include "gfx.h"
+# include "main.h"
+# include "vector.h"
+# include "alg_data.h"
+# include "elite.h"
+# include "docked.h"
+# include "intro.h"
+# include "shipdata.h"
+# include "shipface.h"
+# include "space.h"
+# include "sound.h"
+# include "threed.h"
+# include "swat.h"
+# include "random.h"
+# include "options.h"
+# include "stars.h"
+# include "missions.h"
+# include "pilot.h"
+# include "file.h"
+# include "keyboard.h"
+
+using EliteLib;
 
 namespace Elite
 {
