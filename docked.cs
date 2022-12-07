@@ -12,30 +12,17 @@
  *
  */
 
-
-# include <string.h>
-# include <stdlib.h>
-# include <stdio.h>
-# include <math.h>
-# include <ctype.h>
-
-# include "config.h"
-# include "gfx.h"
-# include "elite.h"
-# include "planet.h"
-# include "shipdata.h"
-# include "space.h"
-
 using Elite;
 using Elite.Structs;
 
 namespace Elite
 {
+	using Elite.Enums;
 	using Elite.Structs;
 
 	internal static class docked
     {
-				char *economy_type[] = {"Rich Industrial",
+		static string[] economy_type = {"Rich Industrial",
 								"Average Industrial",
 								"Poor Industrial",
 								"Mainly Industrial",
@@ -44,7 +31,7 @@ namespace Elite
 								"Average Agricultural",
 								"Poor Agricultural"};
 
-		char *government_type[] = {	"Anarchy",
+        static string[] government_type = {	"Anarchy",
 									"Feudal",
 									"Multi-Government",
 									"Dictatorship",
@@ -53,26 +40,15 @@ namespace Elite
 									"Democracy",
 									"Corporate State"};
 
-
-
-
-
-
 		internal static int cross_x = 0;
         internal static int cross_y = 0;
 
-
-
-
-
-
-
-		void draw_fuel_limit_circle (int cx, int cy)
+		static void draw_fuel_limit_circle (int cx, int cy)
 		{
 			int radius;
 			int cross_size;
 
-			if (current_screen == SCR_GALACTIC_CHART)
+			if (current_screen == SCR.SCR_GALACTIC_CHART)
 			{
 				radius = elite.cmdr.fuel / 4 * GFX_SCALE;
 				cross_size = 7 * GFX_SCALE;
@@ -88,10 +64,6 @@ namespace Elite
 			gfx_draw_line (cx, cy - cross_size, cx, cy + cross_size);
 			gfx_draw_line (cx - cross_size, cy, cx + cross_size, cy);
 		}
-
-
-
-
 
 		static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
 		{
@@ -111,8 +83,7 @@ namespace Elite
 			return light_years;
 		}
 
-
-		void show_distance (int ypos, galaxy_seed from_planet, galaxy_seed to_planet)
+		static void show_distance (int ypos, galaxy_seed from_planet, galaxy_seed to_planet)
 		{
 			char str[100];
 			int light_years;
@@ -127,9 +98,7 @@ namespace Elite
 			gfx_display_text (16, ypos, str);
 		}
 
-
-
-		void show_distance_to_planet ()
+		static void show_distance_to_planet ()
 		{
 			int px,py;
 			char planet_name[16];
@@ -168,8 +137,7 @@ namespace Elite
 			}
 		}
 
-
-		void move_cursor_to_origin ()
+		static void move_cursor_to_origin ()
 		{
 			if (current_screen == SCR_GALACTIC_CHART)
 			{
@@ -185,8 +153,7 @@ namespace Elite
 			show_distance_to_planet();
 		}
 
-
-		void find_planet_by_name (char *find_name)
+		static void find_planet_by_name (char *find_name)
 		{
 			int i;
 			galaxy_seed glx;
@@ -240,9 +207,7 @@ namespace Elite
 			}
 		}
 
-
-
-		void display_short_range_chart ()
+		static void display_short_range_chart ()
 		{
 			int i;
 			galaxy_seed glx;
@@ -337,10 +302,7 @@ namespace Elite
 			cross_y = ((hyperspace_planet.b - docked_planet.b) * 2 * GFX_SCALE) + GFX_Y_CENTRE;
 		}
 
-
-
-
-		void display_galactic_chart ()
+		static void display_galactic_chart ()
 		{
 			int i;
 			galaxy_seed glx;
@@ -386,20 +348,15 @@ namespace Elite
 			cross_y = (hyperspace_planet.b / (2 / GFX_SCALE)) + (18 * GFX_SCALE) + 1;
 		}
 
-
-
-
-
 		/*
 		 * Displays data on the currently selected Hyperspace Planet.
 		 */
-
-		void display_data_on_planet ()
+		static void display_data_on_planet()
 		{
-			char planet_name[16];
-			char str[100];
-			char *description;
-			struct planet_data hyper_planet_data;
+			string planet_name;
+			string str;
+			string description;
+			planet_data hyper_planet_data = new();
 
 			current_screen = SCR_PLANET_DATA;
 
@@ -412,8 +369,7 @@ namespace Elite
 
 			gfx_draw_line (0, 36, 511, 36);
 
-
-			generate_planet_data (&hyper_planet_data, hyperspace_planet);
+			planet.generate_planet_data(ref hyper_planet_data, hyperspace_planet);
 
 			show_distance (42, docked_planet, hyperspace_planet);
 
@@ -1157,7 +1113,7 @@ namespace Elite
 
 			gfx_clear_area (2, 55, 510, 380);
 	
-			tech_level = current_planet_data.techlevel + 1;
+			tech_level = elite.current_planet_data.techlevel + 1;
 
 			equip_stock[0].price = (70 - elite.cmdr.fuel) * 2;
 	

@@ -483,7 +483,7 @@ namespace Elite
 
 
 
-		void generate_planet_data (struct planet_data *pl, galaxy_seed planet_seed)
+		internal static void generate_planet_data(ref planet_data pl, galaxy_seed planet_seed)
 		{
 
 			pl.government = (planet_seed.c / 8) & 7;

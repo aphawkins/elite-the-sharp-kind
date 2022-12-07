@@ -1175,7 +1175,7 @@ namespace Elite
 			}
 
 			elite.cmdr.market_rnd = rand255();
-			generate_planet_data (&current_planet_data, docked_planet);
+			planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
 			generate_stock_market ();
 	
 			flight_speed = 12;

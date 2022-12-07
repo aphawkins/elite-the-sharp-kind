@@ -157,7 +157,7 @@ namespace Elite
 			docked_planet = find_planet(cmdr.ship_x, cmdr.ship_y);
 			hyperspace_planet = docked_planet;
 
-			generate_planet_data(&current_planet_data, docked_planet);
+			planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
 			generate_stock_market();
 			set_stock_quantities(cmdr.station_stock);
 		}

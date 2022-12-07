@@ -37,6 +37,7 @@
 
 
 using Elite;
+using EliteLib;
 
 namespace Elite
 {
@@ -219,7 +220,7 @@ namespace Elite
 		{
 			int station;
 	
-			station = (current_planet_data.techlevel >= 10) ? SHIP_DODEC : SHIP_CORIOLIS;
+			station = (elite.current_planet_data.techlevel >= 10) ? SHIP_DODEC : SHIP_CORIOLIS;
 			universe[1].type = 0;
 			add_new_ship (station, sx, sy, sz, rotmat, 0, -127);					
 		}
@@ -1153,7 +1154,7 @@ namespace Elite
 			int type;
 			int i;
 
-			gov = current_planet_data.government; 
+			gov = elite.current_planet_data.government; 
 			rnd = rand255();
 
 			if ((gov != 0) && ((rnd >= 90) || ((rnd & 7) < gov)))

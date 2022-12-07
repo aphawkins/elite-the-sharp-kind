@@ -12,24 +12,6 @@
  *
  */
 
-/*
- * trade.c
- */
-
-# include <stdlib.h>
-
-# include "config.h"
-# include "gfx.h"
-# include "elite.h"
-# include "trade.h"
-# include "docked.h"
-# include "planet.h"
-# include "space.h"
-# include "sound.h"
-# include "random.h"
-# include "main.h"
-# include "swat.h"
-
 namespace Elite
 {
 	using Elite.Structs;
@@ -87,12 +69,12 @@ namespace Elite
 			{
 				price  = stock_market[i].base_price;								/* Start with the base price	*/
 				price += elite.cmdr.market_rnd & stock_market[i].mask;					/* Add in a random amount		*/
-				price += current_planet_data.economy * stock_market[i].eco_adjust;	/* Adjust for planet economy	*/
+				price += elite.current_planet_data.economy * stock_market[i].eco_adjust;	/* Adjust for planet economy	*/
 				price &= 255;														/* Only need bottom 8 bits		*/
 
 				quant  = stock_market[i].base_quantity;								/* Start with the base quantity */
 				quant += elite.cmdr.market_rnd & stock_market[i].mask;					/* Add in a random amount		*/
-				quant -= current_planet_data.economy * stock_market[i].eco_adjust;	/* Adjust for planet economy	*/
+				quant -= elite.current_planet_data.economy * stock_market[i].eco_adjust;	/* Adjust for planet economy	*/
 				quant &= 255;														/* Only need bottom 8 bits		*/
 
 				if (quant > 127)	/* In an 8-bit environment '>127' would be negative */
