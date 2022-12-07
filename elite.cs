@@ -42,35 +42,35 @@ namespace Elite
 		int curr_fuel = 70;
 		internal static int carry_flag = 0;
 		internal static int current_screen = 0;
-		int witchspace;
+        internal static int witchspace;
 
 		internal static int wireframe = 0;
         internal static int anti_alias_gfx = 0;
-		int hoopy_casinos = 0;
-		int speed_cap = 75;
-		int instant_dock = 0;
+        internal static int hoopy_casinos = 0;
+        internal static int speed_cap = 75;
+        internal static int instant_dock = 0;
 
 
-		char scanner_filename[256];
-		int scanner_cx;
-		int scanner_cy;
-		int compass_centre_x;
-		int compass_centre_y;
+        internal static string scanner_filename;
+        internal static int scanner_cx;
+        internal static int scanner_cy;
+        internal static int compass_centre_x;
+        internal static int compass_centre_y;
 
-		int planet_render_style = 0;
+        internal static int planet_render_style = 0;
 
-		int game_over;
-		int docked;
-		int finish;
-		int flight_speed;
-		int flight_roll;
-		int flight_climb;
-		int front_shield;
-		int aft_shield;
-		int energy;
-		int laser_temp;
-		int detonate_bomb;
-		int auto_pilot;
+        internal static int game_over;
+        internal static int docked;
+        internal static int finish;
+        internal static int flight_speed;
+        internal static int flight_roll;
+        internal static int flight_climb;
+        internal static int front_shield;
+        internal static int aft_shield;
+        internal static int energy;
+        internal static int laser_temp;
+        internal static int detonate_bomb;
+        internal static int auto_pilot;
 
 
 		internal static commander saved_cmdr =

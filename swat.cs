@@ -36,6 +36,8 @@
 # include "pilot.h" 
 
 
+using Elite;
+
 namespace Elite
 {
     using EliteLib;
@@ -663,7 +665,7 @@ namespace Elite
 				return;
 			}
 
-			if (((un ^ mcount) & 7) != 0)
+			if (((un ^ alg_main.mcount) & 7) != 0)
 				return;
 
 			if ((type == SHIP_CORIOLIS) || (type == SHIP_DODEC))

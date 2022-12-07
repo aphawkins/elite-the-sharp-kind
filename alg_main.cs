@@ -60,7 +60,7 @@ namespace Elite
 		int cross_timer;
 
 		int draw_lasers;
-		int mcount;
+        internal static int mcount;
 		int message_count;
 		char message_string[80];
 		int rolling;

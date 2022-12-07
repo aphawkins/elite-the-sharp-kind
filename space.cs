@@ -1268,7 +1268,7 @@ namespace Elite
 			}
 
 			warp_stars = 1;
-			mcount &= 63;
+			alg_main.mcount &= 63;
 			in_battle = 0;
 		}
 
