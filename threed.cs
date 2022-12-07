@@ -783,7 +783,7 @@ tmp = trans_mat[0].y;
 
 
 
-		void draw_sun (struct univ_object *planet)
+		void draw_sun (univ_object *planet)
 		{
 			int x,y;
 			int radius;
@@ -814,7 +814,7 @@ tmp = trans_mat[0].y;
 
 
 
-		static void draw_explosion (struct univ_object *univ)
+		static void draw_explosion (univ_object *univ)
 		{
 			int i;
 			int z;
@@ -973,7 +973,7 @@ tmp = trans_mat[0].y;
 		 * (Ship, Planet, Sun etc).
 		 */
 
-		void draw_ship (struct univ_object *ship)
+		void draw_ship (univ_object *ship)
 		{
 
 			if ((current_screen != SCR_FRONT_VIEW) && (current_screen != SCR_REAR_VIEW) && 

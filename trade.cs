@@ -131,7 +131,7 @@ namespace Elite
 			int type;
 			int trade;
 
-			if (universe[un].flags & FLG.FLG_DEAD)
+			if (space.universe[un].flags & FLG.FLG_DEAD)
 				return;
 
 			type = universe[un].type;
@@ -139,11 +139,11 @@ namespace Elite
 			if (type == shipdata.SHIP_MISSILE)
 				return;
 
-			if ((elite.cmdr.fuel_scoop == 0) || (universe[un].location.y >= 0) ||
+			if ((elite.cmdr.fuel_scoop == 0) || (space.universe[un].location.y >= 0) ||
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
 				explode_object(un);
-				damage_ship(128 + (universe[un].energy / 2), universe[un].location.z > 0);
+				damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.z > 0);
 				return;
 			}
 
@@ -166,7 +166,7 @@ namespace Elite
 			}
 
 			explode_object(un);
-			damage_ship(universe[un].energy / 2, universe[un].location.z > 0);
+			damage_ship(space.universe[un].energy / 2, space.universe[un].location.z > 0);
 		}
 	}
 }

@@ -213,7 +213,7 @@ namespace Elite
 			{
 				gfx_clear_area(310, 50, 510, 180);
 				update_universe();
-				universe[0].location.z = 600;
+				space.universe[0].location.z = 600;
 				gfx_update_screen();
 				kbd_poll_keyboard();
 			} while (!kbd_space_pressed);

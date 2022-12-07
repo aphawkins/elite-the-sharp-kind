@@ -57,7 +57,7 @@ namespace Elite
 
 		void initialise_intro1()
 		{
-			clear_universe();
+			swat.clear_universe();
             VectorMaths.set_init_matrix(intro_ship_matrix);
 			add_new_ship(SHIP_COBRA3, 0, 0, 4500, intro_ship_matrix, -127, -127);
 		}
@@ -69,7 +69,7 @@ namespace Elite
 			show_time = 0;
 			direction = 100;
 
-			clear_universe();
+			swat.clear_universe();
 			create_new_stars();
             VectorMaths.set_init_matrix(intro_ship_matrix);
 			add_new_ship(1, 0, 0, 5000, intro_ship_matrix, -127, -127);
@@ -79,10 +79,12 @@ namespace Elite
 
 		void update_intro1()
 		{
-			universe[0].location.z -= 100;
+            space.universe[0].location.z -= 100;
 
-			if (universe[0].location.z < 384)
-				universe[0].location.z = 384;
+			if (space.universe[0].location.z < 384)
+			{
+				space.universe[0].location.z = 384;
+			}
 
 			gfx_clear_display();
 
@@ -104,12 +106,14 @@ namespace Elite
 			if ((show_time >= 140) && (direction < 0))
 				direction = -direction;
 
-			universe[0].location.z += direction;
+            space.universe[0].location.z += direction;
 
-			if (universe[0].location.z < min_dist[ship_no])
-				universe[0].location.z = min_dist[ship_no];
+			if (space.universe[0].location.z < min_dist[ship_no])
+			{
+				space.universe[0].location.z = min_dist[ship_no];
+			}
 
-			if (universe[0].location.z > 4500)
+			if (space.universe[0].location.z > 4500)
 			{
 				do
 				{
@@ -121,12 +125,11 @@ namespace Elite
 				show_time = 0;
 				direction = -100;
 
-				ship_count[universe[0].type] = 0;
-				universe[0].type = 0;
+				ship_count[space.universe[0].type] = 0;
+                space.universe[0].type = 0;
 
 				add_new_ship(ship_no, 0, 0, 4500, intro_ship_matrix, -127, -127);
 			}
-
 
 			gfx_clear_display();
 			update_starfield();

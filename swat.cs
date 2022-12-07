@@ -37,14 +37,17 @@
 
 
 using Elite;
+using Elite.Enums;
+using Elite.Structs;
 using EliteLib;
 
 namespace Elite
 {
     using EliteLib;
     using Elite.Structs;
+	using Elite.Enums;
 
-    internal static class swat
+	internal static class swat
     {
 		internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
@@ -59,10 +62,6 @@ namespace Elite
 		internal static int missile_target;
         static int ecm_ours;
         internal static int in_battle;
-
-		struct univ_object universe[MAX_UNIV_OBJECTS];
-		int ship_count[NO_OF_SHIPS + 1];  /* many */
-
 
 		int initial_flags[NO_OF_SHIPS + 1] =
 		{
@@ -102,15 +101,12 @@ namespace Elite
 			0											// dodec
 		};
 
-
-
-
-		void clear_universe ()
+		internal static void clear_universe ()
 		{
 			int i;
 
 			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
-				universe[i].type = 0;
+				space.universe[i].type = 0;
 
 			for (i = 0; i <= NO_OF_SHIPS; i++)
 				ship_count[i] = 0;
@@ -125,33 +121,33 @@ namespace Elite
 
 			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
 			{
-				if (universe[i].type == 0)
+				if (space.universe[i].type == 0)
 				{
-					universe[i].type = ship_type;
-					universe[i].location.x = x;
-					universe[i].location.y = y;
-					universe[i].location.z = z;
-			
-					universe[i].distance = sqrt(x*x + y*y + z*z);
+                    space.universe[i].type = ship_type;
+                    space.universe[i].location.x = x;
+                    space.universe[i].location.y = y;
+                    space.universe[i].location.z = z;
 
-					universe[i].rotmat[0] = rotmat[0];
-					universe[i].rotmat[1] = rotmat[1];
-					universe[i].rotmat[2] = rotmat[2];
+                    space.universe[i].distance = sqrt(x*x + y*y + z*z);
 
-					universe[i].rotx = rotx;
-					universe[i].rotz = rotz;
-			
-					universe[i].velocity = 0;
-					universe[i].acceleration = 0;
-					universe[i].bravery = 0;
-					universe[i].target = 0;
-			
-					universe[i].flags = initial_flags[ship_type];
+                    space.universe[i].rotmat[0] = rotmat[0];
+                    space.universe[i].rotmat[1] = rotmat[1];
+                    space.universe[i].rotmat[2] = rotmat[2];
+
+                    space.universe[i].rotx = rotx;
+                    space.universe[i].rotz = rotz;
+
+                    space.universe[i].velocity = 0;
+                    space.universe[i].acceleration = 0;
+                    space.universe[i].bravery = 0;
+                    space.universe[i].target = 0;
+
+                    space.universe[i].flags = initial_flags[ship_type];
 
 					if ((ship_type != SHIP_PLANET) && (ship_type != SHIP_SUN))
 					{
-						universe[i].energy = ship_list[ship_type].energy;
-						universe[i].missiles = ship_list[ship_type].missiles;
+                        space.universe[i].energy = ship_list[ship_type].energy;
+                        space.universe[i].missiles = ship_list[ship_type].missiles;
 						ship_count[ship_type]++;
 					}
 			
@@ -177,19 +173,18 @@ namespace Elite
 
 			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
 			{
-				if ((universe[i].type == SHIP_MISSILE) && (universe[i].target == un))
-					universe[i].flags |= FLG_DEAD;
+				if ((space.universe[i].type == SHIP_MISSILE) && (space.universe[i].target == un))
+                    space.universe[i].flags |= FLG.FLG_DEAD;
 			}
 		}
 
-
-		void remove_ship (int un)
+		static void remove_ship (int un)
 		{
 			int type;
 			Matrix rotmat;
 			int px,py,pz;
 	
-			type = universe[un].type;
+			type = space.universe[un].type;
 	
 			if (type == 0)
 				return;
@@ -197,16 +192,16 @@ namespace Elite
 			if (type > 0)
 				ship_count[type]--;
 
-			universe[un].type = 0;		
+            space.universe[un].type = 0;		
 
 			check_missiles (un);
 
 			if ((type == SHIP_CORIOLIS) || (type == SHIP_DODEC))
 			{
                 VectorMaths.set_init_matrix (rotmat);
-				px = universe[un].location.x;
-				py = universe[un].location.y;
-				pz = universe[un].location.z;
+				px = space.universe[un].location.x;
+				py = space.universe[un].location.y;
+				pz = space.universe[un].location.z;
 		
 				py &= 0xFFFF;
 				py |= 0x60000;
@@ -221,7 +216,7 @@ namespace Elite
 			int station;
 	
 			station = (elite.current_planet_data.techlevel >= 10) ? SHIP_DODEC : SHIP_CORIOLIS;
-			universe[1].type = 0;
+            space.universe[1].type = 0;
 			add_new_ship (station, sx, sy, sz, rotmat, 0, -127);					
 		}
 	
@@ -238,23 +233,23 @@ namespace Elite
 		}
 
  
-		void launch_enemy (int un, int type, int flags, int bravery)
+		static void launch_enemy (int un, int type, int flags, int bravery)
 		{
 			int newship;
 			univ_object *ns;
 	
-			newship = add_new_ship (type, universe[un].location.x, universe[un].location.y,
-									universe[un].location.z, universe[un].rotmat,
-									universe[un].rotx, universe[un].rotz);
+			newship = add_new_ship (type, space.universe[un].location.x, space.universe[un].location.y,
+                                    space.universe[un].location.z, space.universe[un].rotmat,
+                                    space.universe[un].rotx, space.universe[un].rotz);
 
 			if (newship == -1)
 			{
 				return;
 			}
 
-			ns = &universe[newship];
+			ns = space.universe[newship];
 	
-			if ((universe[un].type == SHIP_CORIOLIS) || (universe[un].type == SHIP_DODEC))
+			if ((space.universe[un].type == SHIP_CORIOLIS) || (space.universe[un].type == SHIP_DODEC))
 			{
 				ns.velocity = 32;
 				ns.location.x += ns.rotmat[2].x * 2; 		
@@ -290,7 +285,7 @@ namespace Elite
 				if (cnt >= 128)
 					return;
 
-				cnt &= ship_list[universe[un].type].max_loot;
+				cnt &= ship_list[space.universe[un].type].max_loot;
 				cnt &= 15;
 			}
 
@@ -322,23 +317,23 @@ namespace Elite
 			int type;
 			int flags;
 	
-			type = universe[un].type;
-			flags = universe[un].flags;
+			type = space.universe[un].type;
+			flags = space.universe[un].flags;
 
 			if (flags & FLG_INACTIVE)
 				return;
 	
 			if ((type == SHIP_CORIOLIS) || (type == SHIP_DODEC))
 			{
-				universe[un].flags |= FLG_ANGRY;
+                space.universe[un].flags |= FLG_ANGRY;
 				return;
 			}
 	
 			if (type > SHIP_ROCK)
 			{
-				universe[un].rotx = 4;
-				universe[un].acceleration = 2;
-				universe[un].flags |= FLG_ANGRY;
+                space.universe[un].rotx = 4;
+                space.universe[un].acceleration = 2;
+                space.universe[un].flags |= FLG_ANGRY;
 			}
 		}
 
@@ -352,9 +347,9 @@ namespace Elite
 				info_message ("Right On Commander!");
 	
 			snd_play_sample (SND_EXPLODE);
-			universe[un].flags |= FLG_DEAD;
+            space.universe[un].flags |= FLG_DEAD;
 
-			if (universe[un].type == SHIP_CONSTRICTOR)
+			if (space.universe[un].type == SHIP_CONSTRICTOR)
 				elite.cmdr.mission = 2;
 		}
 
@@ -363,7 +358,7 @@ namespace Elite
 		{
 			univ_object *univ;
 	
-			univ = &universe[un];
+			univ = space.universe[un];
 	
 			if (in_target (univ.type, flip.location.x, flip.location.y, flip.location.z))
 			{
@@ -452,7 +447,7 @@ namespace Elite
 		void fire_missile ()
 		{
 			int newship;
-			struct univ_object *ns;
+			univ_object *ns;
 			Matrix rotmat;
 
 			if (missile_target < 0)
@@ -470,14 +465,14 @@ namespace Elite
 				return;
 			}
 
-			ns = &universe[newship];
+			ns = space.universe[newship];
 	
 			ns.velocity = flight_speed * 2;
 			ns.flags = FLG_ANGRY;
 			ns.target = missile_target;
 
-			if (universe[missile_target].type > SHIP_ROCK)
-				universe[missile_target].flags |= FLG_ANGRY;
+			if (space.universe[missile_target].type > SHIP_ROCK)
+				space.universe[missile_target].flags |= FLG.FLG_ANGRY;
 	
 			elite.cmdr.missiles--;
 			missile_target = MISSILE_UNARMED;
@@ -532,14 +527,14 @@ namespace Elite
 
 		void missile_tactics (int un)
 		{
-			struct univ_object *missile;
-			struct univ_object *target;
+			univ_object *missile;
+			univ_object *target;
 			Vector vec;
 			Vector nvec;
 			double direction;
 			double cnt2 = 0.223;
 	
-			missile = &universe[un];
+			missile = space.universe[un];
 	
 			if (ecm_active)
 			{
@@ -564,7 +559,7 @@ namespace Elite
 			}
 			else
 			{
-				target = &universe[missile.target];
+				target = space.universe[missile.target];
 
 				vec.x = missile.location.x - target.location.x;
 				vec.y = missile.location.y - target.location.y;
@@ -640,13 +635,13 @@ namespace Elite
 			int energy;
 			int maxeng;
 			int flags;
-			struct univ_object *ship;
+			univ_object *ship;
 			Vector nvec;
 			double cnt2 = 0.223;
 			double direction;
 			int attacking;
 	
-			ship = &universe[un];
+			ship = space.universe[un];
 			type = ship.type;
 			flags = ship.flags;
 
@@ -728,7 +723,7 @@ namespace Elite
 			{
 				if ((flags & FLG_FLY_TO_PLANET) || (flags & FLG_FLY_TO_STATION))
 				{
-					auto_pilot_ship (&universe[un]);
+					auto_pilot_ship (space.universe[un]);
 				}
 
 				return;
@@ -790,7 +785,7 @@ namespace Elite
 				}
 			}
 
-			nvec = VectorMaths.unit_vector(&universe[un].location);
+			nvec = VectorMaths.unit_vector(space.universe[un].location);
 			direction = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[2]); 
 	
 			if 	((ship.distance < 8192) && (direction <= -0.833) &&
@@ -815,7 +810,7 @@ namespace Elite
 					nvec.y = -nvec.y;
 					nvec.z = -nvec.z;
 					direction = -direction;
-					track_object (&universe[un], direction, nvec);
+					track_object (space.universe[un], direction, nvec);
 				}
 
 		//		if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((rand255() & 127) | 64)))
@@ -852,7 +847,7 @@ namespace Elite
 				}
 			}
 
-			track_object (&universe[un], direction, nvec);
+			track_object (space.universe[un], direction, nvec);
 
 			if ((attacking == 1) && (ship.distance < 2048))
 			{
@@ -1000,8 +995,8 @@ namespace Elite
 			newship = create_other_ship (SHIP_THARGOID);
 			if (newship != -1)
 			{
-				universe[newship].flags = FLG_ANGRY | FLG_HAS_ECM;
-				universe[newship].bravery = 113;
+				space.universe[newship].flags = FLG_ANGRY | FLG_HAS_ECM;
+				space.universe[newship].bravery = 113;
 
 				if (rand255() > 64)
 					launch_enemy (newship, SHIP_THARGLET, FLG_ANGRY | FLG_HAS_ECM, 96);
@@ -1020,9 +1015,9 @@ namespace Elite
 			newship = create_other_ship (SHIP_COUGAR);
 			if (newship != -1)
 			{
-				universe[newship].flags = FLG_HAS_ECM; // | FLG_CLOAKED;
-				universe[newship].bravery = 121;
-				universe[newship].velocity = 18;
+				space.universe[newship].flags = FLG_HAS_ECM; // | FLG_CLOAKED;
+				space.universe[newship].bravery = 121;
+				space.universe[newship].velocity = 18;
 			}	
 		}
 
@@ -1040,20 +1035,20 @@ namespace Elite
 	
 			if (newship != -1)
 			{
-				universe[newship].rotmat[2].z = -1.0;
-				universe[newship].rotz = rand255() & 7;
+				space.universe[newship].rotmat[2].z = -1.0;
+				space.universe[newship].rotz = rand255() & 7;
 		
 				rnd = rand255();
-				universe[newship].velocity = (rnd & 31) | 16;
-				universe[newship].bravery = rnd / 2;
+				space.universe[newship].velocity = (rnd & 31) | 16;
+				space.universe[newship].bravery = rnd / 2;
 
 				if (rnd & 1)
-					universe[newship].flags |= FLG_HAS_ECM;
+					space.universe[newship].flags |= FLG_HAS_ECM;
 
-		//		if (rnd & 2)
-		//			universe[newship].flags |= FLG_ANGRY; 
-			}
-		}
+        //		if (rnd & 2)
+        //			space.universe[newship].flags |= FLG_ANGRY; 
+    }
+}
 
 
 		void create_lone_hunter ()
@@ -1078,11 +1073,11 @@ namespace Elite
 
 			if (newship != -1)
 			{
-				universe[newship].flags = FLG_ANGRY;
+				space.universe[newship].flags = FLG.FLG_ANGRY;
 				if ((rand255() > 200) || (type == SHIP_CONSTRICTOR))
-					universe[newship].flags |= FLG_HAS_ECM;
-		
-				universe[newship].bravery = ((rand255() * 2) | 64) & 127;
+					space.universe[newship].flags |= FLG.FLG_HAS_ECM;
+
+				space.universe[newship].bravery = ((rand255() * 2) | 64) & 127;
 				in_battle = 1;  
 			}	
 		}
@@ -1108,10 +1103,10 @@ namespace Elite
 	
 			if (newship != -1)
 			{
-		//		universe[newship].velocity = (rand255() & 31) | 16; 
-				universe[newship].velocity = 8;
-				universe[newship].rotz = rand255() > 127 ? -127 : 127; 
-				universe[newship].rotx = 16; 
+				//		space.universe[newship].velocity = (rand255() & 31) | 16; 
+				space.universe[newship].velocity = 8;
+				space.universe[newship].rotz = rand255() > 127 ? -127 : 127;
+				space.universe[newship].rotx = 16; 
 			}
 		}
 
@@ -1135,11 +1130,11 @@ namespace Elite
 	
 			if (newship != -1)
 			{
-				universe[newship].flags = FLG_ANGRY;
+				space.universe[newship].flags = FLG.FLG_ANGRY;
 				if (rand255() > 245)
-					universe[newship].flags |= FLG_HAS_ECM;
-		
-				universe[newship].bravery = ((rand255() * 2) | 64) & 127;  
+					space.universe[newship].flags |= FLG.FLG_HAS_ECM;
+
+				space.universe[newship].bravery = ((rand255() * 2) | 64) & 127;  
 			}
 		}
 
@@ -1187,11 +1182,11 @@ namespace Elite
 				newship = add_new_ship (type, x, y, z, rotmat, 0, 0);
 				if (newship != -1)
 				{
-					universe[newship].flags = FLG_ANGRY;
+					space.universe[newship].flags = FLG.FLG_ANGRY;
 					if (rand255() > 245)
-						universe[newship].flags |= FLG_HAS_ECM;
-		
-					universe[newship].bravery = ((rand255() * 2) | 64) & 127;
+						space.universe[newship].flags |= FLG.FLG_HAS_ECM;
+
+					space.universe[newship].bravery = ((rand255() * 2) | 64) & 127;
 					in_battle++;  
 				}
 			}
@@ -1206,7 +1201,7 @@ namespace Elite
 
 			if (rand255() == 136)
 			{
-				if (((int)(universe[0].location.z) & 0x3e) != 0)
+				if (((int)(space.universe[0].location.z) & 0x3e) != 0)
 					create_thargoid ();
 				else
 					create_cougar();			

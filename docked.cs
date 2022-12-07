@@ -505,7 +505,7 @@ namespace Elite
 
 				for (i = 0; i < MAX_UNIV_OBJECTS; i++)
 				{
-					type = universe[i].type;
+					type = space.universe[i].type;
 		
 					if ((type == SHIP_MISSILE) ||
 						((type > SHIP_ROCK) && (type < SHIP_DODEC)))

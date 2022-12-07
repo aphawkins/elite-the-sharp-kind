@@ -632,14 +632,14 @@ namespace Elite
 			rotmat[2].z = 1.0;
 	
 			newship = add_new_ship (SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
-			universe[newship].velocity = 7;
+			space.universe[newship].velocity = 7;
 			snd_play_sample (SND_LAUNCH);
 
 			for (i = 0; i < 90; i++)
 			{
 				if (i == 40)
 				{
-					universe[newship].flags |= FLG_DEAD;
+                    space.universe[newship].flags |= FLG_DEAD;
 					snd_play_sample (SND_EXPLODE);
 				}
 
@@ -648,9 +648,9 @@ namespace Elite
 				update_starfield();
 				update_universe();
 
-				universe[newship].location.x = 0;
-				universe[newship].location.y = 0;
-				universe[newship].location.z += 2;
+                space.universe[newship].location.x = 0;
+                space.universe[newship].location.y = 0;
+                space.universe[newship].location.z += 2;
 
 				gfx_display_centre_text (358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL_WHITE);
 		
@@ -668,8 +668,10 @@ namespace Elite
 				{
 					for (i = 0; i < MAX_UNIV_OBJECTS; i++)
 					{
-						if (universe[i].type != 0)
-							universe[i].location.z -= 1500;
+						if (space.universe[i].type != 0)
+						{
+							space.universe[i].location.z -= 1500;
+						}
 					}
 
 				}
@@ -1170,16 +1172,16 @@ namespace Elite
             VectorMaths.set_init_matrix (rotmat);
 
 			newship = add_new_ship (shipdata.SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
-			universe[newship].flags |= FLG.FLG_DEAD;
+            space.universe[newship].flags |= FLG.FLG_DEAD;
 
 			for (i = 0; i < 5; i++)
 			{
 				type = (rand255() & 1) ? shipdata.SHIP_CARGO : shipdata.SHIP_ALLOY;
 				newship = add_new_ship (type, (rand255() & 63) - 32,
 										(rand255() & 63) - 32, -400, rotmat, 0, 0);
-				universe[newship].rotz = ((rand255() * 2) & 255) - 128;
-				universe[newship].rotx = ((rand255() * 2) & 255) - 128;
-				universe[newship].velocity = rand255() & 15;
+                space.universe[newship].rotz = ((rand255() * 2) & 255) - 128;
+                space.universe[newship].rotx = ((rand255() * 2) & 255) - 128;
+                space.universe[newship].velocity = rand255() & 15;
 			}
 	
 	
