@@ -43,7 +43,7 @@ namespace Elite
 		#define LAND_X_MAX	128
 		#define LAND_Y_MAX	128
 
-				static unsigned char landscape[LAND_X_MAX+1][LAND_Y_MAX+1];
+		static unsigned char landscape[LAND_X_MAX+1][LAND_Y_MAX+1];
 
 		static struct point point_list[100];
 

@@ -1227,18 +1227,12 @@ namespace Elite
 				current_screen = SCR_FRONT_VIEW;
 		}
 
-
-		void info_message (char *message)
+		internal static void info_message(string message)
 		{
 			strcpy (message_string, message);
 			message_count = 37;
 		//	snd_play_sample (SND_BEEP);
 		}
-
-
-
-
-
 
 		void initialise_allegro ()
 		{
@@ -1347,7 +1341,7 @@ namespace Elite
 						{
 							auto_dock();
 							if ((mcount & 127) == 0)
-								info_message ("Docking Computers On");
+								info_message("Docking Computers On");
 						}
 
 						update_universe ();
@@ -1396,7 +1390,7 @@ namespace Elite
 						{
 							if (energy < 50)
 							{
-								info_message ("ENERGY LOW");
+								info_message("ENERGY LOW");
 								snd_play_sample (SND_BEEP);
 							}
 

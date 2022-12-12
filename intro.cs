@@ -44,13 +44,15 @@ namespace Elite
 		static int show_time;
 		static int direction;
 
-
-		static int min_dist[NO_OF_SHIPS + 1] = {0, 200, 800, 200,   200, 200, 300, 384,   200,
-										  200, 200, 420, 900, 500, 800, 384, 384,
-										  384, 384, 384, 200, 384, 384, 384,   0,
-										  384,   0, 384, 384, 700, 384,   0,   0,
-							 			  900};
-
+		static int[] min_dist = new int[shipdata.NO_OF_SHIPS + 1]
+		{
+			0, 
+			200, 800, 200, 200, 200, 300, 384, 200,
+			200, 200, 420, 900, 500, 800, 384, 384,
+			384, 384, 384, 200, 384, 384, 384,   0,
+			384,   0, 384, 384, 700, 384,   0,   0,
+			900
+		};
 
 		static Matrix intro_ship_matrix;
 
@@ -118,7 +120,7 @@ namespace Elite
 				do
 				{
 					ship_no++;
-					if (ship_no > NO_OF_SHIPS)
+					if (ship_no > shipdata.NO_OF_SHIPS)
 						ship_no = 1;
 				} while (min_dist[ship_no] == 0);
 

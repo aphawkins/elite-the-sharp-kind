@@ -69,7 +69,7 @@ namespace Elite
 		internal const int MAX_UNIV_OBJECTS = 20;
 
 		internal static univ_object[] universe = new univ_object[MAX_UNIV_OBJECTS];
-		internal static int[] ship_count = new int[NO_OF_SHIPS + 1];  /* many */
+		internal static int[] ship_count = new int[shipdata.NO_OF_SHIPS + 1];  /* many */
 
 		static void rotate_x_first(double* a, double* b, int direction)
 		{
@@ -370,7 +370,7 @@ namespace Elite
 			if (elite.cmdr.fuel > myship.max_fuel)
 				elite.cmdr.fuel = myship.max_fuel;
 
-			info_message("Fuel Scoop On");
+			alg_main.info_message("Fuel Scoop On");
 		}
 
 
@@ -607,10 +607,10 @@ namespace Elite
 						{
 							elite.cmdr.credits += bounty;
 							sprintf(str, "%d.%d CR", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
-							info_message(str);
+                            alg_main.info_message(str);
 						}
 
-						remove_ship(i);
+						swat.remove_ship(i);
 						continue;
 					}
 
@@ -668,7 +668,7 @@ namespace Elite
 
 					if (universe[i].distance > 57344)
 					{
-						remove_ship(i);
+                        swat.remove_ship(i);
 						continue;
 					}
 
@@ -1239,14 +1239,14 @@ namespace Elite
 					(type != shipdata.SHIP_ALLOY) && (type != shipdata.SHIP_ROCK) &&
 					(type != shipdata.SHIP_BOULDER) && (type != shipdata.SHIP_ESCAPE_CAPSULE))
 				{
-					info_message("Mass Locked");
+                    alg_main.info_message("Mass Locked");
 					return;
 				}
 			}
 
 			if ((universe[0].distance < 75001) || (universe[1].distance < 75001))
 			{
-				info_message("Mass Locked");
+                alg_main.info_message("Mass Locked");
 				return;
 			}
 

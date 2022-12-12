@@ -153,17 +153,17 @@ namespace Elite
 			{
 				trade = random.rand255() & 7;
 				elite.cmdr.current_cargo[trade]++;
-				info_message(stock_market[trade].name);
-				remove_ship(un);
+                alg_main.info_message(stock_market[trade].name);
+                swat.remove_ship(un);
 				return;
 			}
 
-			if (ship_list[type].scoop_type != 0)
+			if (elite.ship_list[type].scoop_type != 0)
 			{
-				trade = ship_list[type].scoop_type + 1;
+				trade = elite.ship_list[type].scoop_type + 1;
 				elite.cmdr.current_cargo[trade]++;
-				info_message(stock_market[trade].name);
-				remove_ship(un);
+                alg_main.info_message(stock_market[trade].name);
+                swat.remove_ship(un);
 				return;
 			}
 

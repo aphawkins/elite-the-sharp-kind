@@ -112,7 +112,7 @@ namespace Elite
 
 		internal static player_ship myship;
 
-		internal static ship_data ship_list[NO_OF_SHIPS + 1] =
+		internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]
 		{
 			NULL,
 			&missile_data,

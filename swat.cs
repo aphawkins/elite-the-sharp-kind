@@ -63,7 +63,7 @@ namespace Elite
         static int ecm_ours;
         internal static int in_battle;
 
-		int initial_flags[NO_OF_SHIPS + 1] =
+		int[] initial_flags = new int[NO_OF_SHIPS + 1]
 		{
 			0,											// NULL,
 			0,											// missile 
@@ -106,10 +106,14 @@ namespace Elite
 			int i;
 
 			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+			{
 				space.universe[i].type = 0;
+			}
 
-			for (i = 0; i <= NO_OF_SHIPS; i++)
+			for (i = 0; i <= shipdata.NO_OF_SHIPS; i++)
+			{
 				ship_count[i] = 0;
+			}
 
 			in_battle = 0;
 		}
@@ -168,7 +172,7 @@ namespace Elite
 			if (missile_target == un)
 			{
 				missile_target = MISSILE_UNARMED;
-				info_message ("Target Lost");
+                alg_main.info_message("Target Lost");
 			}
 
 			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
@@ -178,7 +182,7 @@ namespace Elite
 			}
 		}
 
-		static void remove_ship (int un)
+		internal static void remove_ship (int un)
 		{
 			int type;
 			Matrix rotmat;
@@ -343,7 +347,7 @@ namespace Elite
 
 			if ((elite.cmdr.score & 255) == 0)
 			{
-				info_message("Right On Commander!");
+                alg_main.info_message("Right On Commander!");
 			}
 
 			snd_play_sample(SND.SND_EXPLODE);
@@ -366,7 +370,7 @@ namespace Elite
 				if ((missile_target == MISSILE_ARMED) && (univ.type >= 0))
 				{
 					missile_target = un;
-					info_message ("Target Locked");
+                    alg_main.info_message ("Target Locked");
 					snd_play_sample (SND_BEEP);
 				}
 	
@@ -462,7 +466,7 @@ namespace Elite
 
 			if (newship == -1)
 			{
-				info_message ("Missile Jammed");
+                alg_main.info_message("Missile Jammed");
 				return;
 			}
 
@@ -780,7 +784,7 @@ namespace Elite
 					else
 					{
 						launch_enemy (un, SHIP_MISSILE, FLG_ANGRY, 126);
-						info_message ("INCOMING MISSILE");
+						alg_main.info_message("INCOMING MISSILE");
 					}
 					return;
 				}
