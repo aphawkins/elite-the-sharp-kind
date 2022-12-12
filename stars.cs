@@ -24,6 +24,8 @@
 
 namespace Elite
 {
+	using Elite.Enums;
+
 	internal static class stars
 	{
 		internal static int warp_stars;
@@ -131,7 +133,9 @@ namespace Elite
 
 
 				if (warp_stars)
-					gfx_draw_line(sx, sy, (xx + 128) * GFX_SCALE, (yy + 96) * GFX_SCALE);
+				{
+					alg_gfx.gfx_draw_line(sx, sy, (xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE);
+				}
 
 				sx = xx;
 				sy = yy;
@@ -152,7 +156,7 @@ namespace Elite
 
 
 
-		void rear_starfield()
+		static void rear_starfield()
 		{
 			int i;
 			double Q;
@@ -233,7 +237,9 @@ namespace Elite
 					   (sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY) &&
 					   (ex >= GFX_VIEW_TX) && (ex <= GFX_VIEW_BX) &&
 					   (ey >= GFX_VIEW_TY) && (ey <= GFX_VIEW_BY))
-						gfx_draw_line(sx, sy, (xx + 128) * GFX_SCALE, (yy + 96) * GFX_SCALE);
+					{
+						alg_gfx.gfx_draw_line(sx, sy, (xx + 128) * GFX_SCALE, (yy + 96) * GFX_SCALE);
+					}
 				}
 
 				stars[i].y = yy;
@@ -299,18 +305,18 @@ namespace Elite
 				sy *= GFX_SCALE;
 
 				if ((!warp_stars) &&
-					(sx >= GFX_VIEW_TX) && (sx <= GFX_VIEW_BX) &&
-					(sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY))
+					(sx >= GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
+					(sy >= GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-					gfx_plot_pixel(sx, sy, GFX_COL_WHITE);
+					gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
-						gfx_plot_pixel(sx + 1, sy, GFX_COL_WHITE);
+						gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0x90)
 					{
-						gfx_plot_pixel(sx, sy + 1, GFX_COL_WHITE);
-						gfx_plot_pixel(sx + 1, sy + 1, GFX_COL_WHITE);
+						gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+						gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 
@@ -333,16 +339,17 @@ namespace Elite
 				stars[i].x = xx;
 
 				if (warp_stars)
-					gfx_draw_line(sx, sy, (xx + 128) * GFX_SCALE, (yy + 96) * GFX_SCALE);
-
+				{
+                    alg_gfx.gfx_draw_line(sx, sy, (xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE);
+				}
 
 				if (abs(stars[i].x) >= 116)
 				{
 					stars[i].y = random.rand255() - 128;
-					stars[i].x = (current_screen == SCR_LEFT_VIEW) ? 115 : -115;
+					stars[i].x = (current_screen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
 					stars[i].z = random.rand255() | 8;
 				}
-				else if (abs(stars[i].y) >= 116)
+				else if (Math.Abs(stars[i].y) >= 116)
 				{
 					stars[i].x = random.rand255() - 128;
 					stars[i].y = (alpha > 0) ? -110 : 110;

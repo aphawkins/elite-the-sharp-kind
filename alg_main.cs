@@ -995,24 +995,23 @@ namespace Elite
 			*cname = '\0';
 		}
 
-
-		void save_commander_screen ()
+		static void save_commander_screen ()
 		{
-			char path[255];
+			string path;
 			int okay;
 			int rv;
 	
 			current_screen = SCR_SAVE_CMDR;
 
 			gfx_clear_display();
-			gfx_display_centre_text (10, "SAVE COMMANDER", 140, GFX_COL_GOLD);
-			gfx_draw_line (0, 36, 511, 36);
+			gfx_display_centre_text (10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_draw_line (0, 36, 511, 36);
 			gfx_update_screen();
 	
 			strcpy (path, elite.cmdr.name);
 			strcat (path, ".nkc");
 	
-			okay = gfx_request_file ("Save Commander", path, "nkc");
+			okay = gfx_request_file("Save Commander", path, "nkc");
 	
 			if (!okay)
 			{
@@ -1020,7 +1019,7 @@ namespace Elite
 				return;
 			}
 
-			rv = save_commander_file (path);
+			rv = save_commander_file(path);
 
 			if (rv)
 			{
@@ -1043,8 +1042,8 @@ namespace Elite
 			int rv;
 
 			gfx_clear_display();
-			gfx_display_centre_text (10, "LOAD COMMANDER", 140, GFX_COL_GOLD);
-			gfx_draw_line (0, 36, 511, 36);
+			gfx_display_centre_text (10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_draw_line (0, 36, 511, 36);
 			gfx_update_screen();
 	
 	

@@ -117,8 +117,8 @@ namespace Elite
 				sx += 128;
 				sy += 96;
 
-				sx *= GFX_SCALE;
-				sy *= GFX_SCALE;
+				sx *= gfx.GFX_SCALE;
+				sy *= gfx.GFX_SCALE;
 
 				point_list[i].x = sx;
 				point_list[i].y = sy;
@@ -136,7 +136,7 @@ namespace Elite
 					ex = point_list[ship.lines[i].end_point].x;
 					ey = point_list[ship.lines[i].end_point].y;
 
-					gfx_draw_line (sx, sy, ex, ey);
+                    alg_gfx.gfx_draw_line (sx, sy, ex, ey);
 				}
 			}
 
@@ -144,7 +144,7 @@ namespace Elite
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
 				lasv = elite.ship_list[univ.type].front_laser;
-				gfx_draw_line (point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
+                alg_gfx.gfx_draw_line (point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
 			}
 		}
 

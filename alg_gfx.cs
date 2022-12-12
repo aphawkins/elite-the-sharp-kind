@@ -122,7 +122,7 @@ namespace Elite
 
 			clear(gfx_screen);
 
-			blit(scanner_image, gfx_screen, 0, 0, GFX_X_OFFSET, 385 + GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
+			blit(scanner_image, gfx_screen, 0, 0, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
 			gfx_draw_line(0, 0, 0, 384);
 			gfx_draw_line(0, 0, 511, 0);
 			gfx_draw_line(511, 0, 511, 384);
@@ -435,7 +435,7 @@ namespace Elite
 
 
 
-		static void gfx_draw_line(int x1, int y1, int x2, int y2)
+		internal static void gfx_draw_line(int x1, int y1, int x2, int y2)
 		{
 			if (y1 == y2)
 			{

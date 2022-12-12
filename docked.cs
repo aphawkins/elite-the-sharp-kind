@@ -50,19 +50,19 @@ namespace Elite
 
 			if (current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				radius = elite.cmdr.fuel / 4 * GFX_SCALE;
-				cross_size = 7 * GFX_SCALE;
+				radius = elite.cmdr.fuel / 4 * gfx.GFX_SCALE;
+				cross_size = 7 * gfx.GFX_SCALE;
 			}
 			else
 			{
-				radius = elite.cmdr.fuel * GFX_SCALE;
-				cross_size = 16 * GFX_SCALE;
+				radius = elite.cmdr.fuel * gfx.GFX_SCALE;
+				cross_size = 16 * gfx.GFX_SCALE;
 			}
 	
-			gfx_draw_circle (cx, cy, radius, GFX_COL_GREEN_1);
+			gfx_draw_circle(cx, cy, radius, gfx.GFX_COL_GREEN_1);
 
-			gfx_draw_line (cx, cy - cross_size, cx, cy + cross_size);
-			gfx_draw_line (cx - cross_size, cy, cx + cross_size, cy);
+            alg_gfx.gfx_draw_line(cx, cy - cross_size, cx, cy + cross_size);
+            alg_gfx.gfx_draw_line(cx - cross_size, cy, cx + cross_size, cy);
 		}
 
 		static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
@@ -70,8 +70,8 @@ namespace Elite
 			int dx,dy;
 			int light_years;
 
-			dx = abs(to_planet.d - from_planet.d);
-			dy = abs(to_planet.b - from_planet.b);
+			dx = Math.Abs(to_planet.d - from_planet.d);
+			dy = Math.Abs(to_planet.b - from_planet.b);
 
 			dx = dx * dx;
 			dy = dy / 2;
@@ -218,26 +218,28 @@ namespace Elite
 			int row;
 			int blob_size;
 
-			current_screen = SCR_SHORT_RANGE;
+			current_screen = SCR.SCR_SHORT_RANGE;
 
 			gfx_clear_display();
 
-			gfx_display_centre_text (10, "SHORT RANGE CHART", 140, GFX_COL_GOLD);
+			gfx_display_centre_text (10, "SHORT RANGE CHART", 140, gfx.GFX_COL_GOLD);
 
-			gfx_draw_line (0, 36, 511, 36);
+            alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			draw_fuel_limit_circle (GFX_X_CENTRE, GFX_Y_CENTRE);
+			draw_fuel_limit_circle (gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
 
 			for (i = 0; i < 64; i++)
+			{
 				row_used[i] = 0;
+			}
 
 			glx = elite.cmdr.galaxy;
 
 			for (i = 0; i < 256; i++)
 			{
 
-				dx = abs (glx.d - docked_planet.d);
-				dy = abs (glx.b - docked_planet.b);
+				dx = Math.Abs(glx.d - docked_planet.d);
+				dy = Math.Abs(glx.b - docked_planet.b);
 
 				if ((dx >= 20) || (dy >= 38))
 				{
@@ -310,31 +312,30 @@ namespace Elite
 			int px,py;
 	
 
-			current_screen = SCR_GALACTIC_CHART;
+			current_screen = SCR.SCR_GALACTIC_CHART;
 
 			gfx_clear_display();
 
 			sprintf (str, "GALACTIC CHART %d", elite.cmdr.galaxy_number + 1);
 
-			gfx_display_centre_text (10, str, 140, GFX_COL_GOLD);
+			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 
-			gfx_draw_line (0, 36, 511, 36);
-			gfx_draw_line (0, 36+258, 511, 36+258);
+            alg_gfx.gfx_draw_line(0, 36, 511, 36);
+            alg_gfx.gfx_draw_line(0, 36+258, 511, 36+258);
 
-			draw_fuel_limit_circle (docked_planet.d * GFX_SCALE,
-							(docked_planet.b / (2 / GFX_SCALE)) + (18 * GFX_SCALE) + 1);
+			draw_fuel_limit_circle(docked_planet.d * gfx.GFX_SCALE, (docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
 
 			glx = elite.cmdr.galaxy;
 
 			for (i = 0; i < 256; i++)
 			{
-				px = glx.d * GFX_SCALE;
-				py = (glx.b / (2 / GFX_SCALE)) + (18 * GFX_SCALE) + 1;
+				px = glx.d * gfx.GFX_SCALE;
+				py = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 
-				gfx_plot_pixel (px, py, GFX_COL_WHITE);
+				gfx_plot_pixel(px, py, gfx.GFX_COL_WHITE);
 
 				if ((glx.e | 0x50) < 0x90)
-					gfx_plot_pixel (px + 1, py, GFX_COL_WHITE);
+					gfx_plot_pixel (px + 1, py, gfx.GFX_COL_WHITE);
 
 				waggle_galaxy (&glx);
 				waggle_galaxy (&glx);
@@ -358,16 +359,16 @@ namespace Elite
 			string description;
 			planet_data hyper_planet_data = new();
 
-			current_screen = SCR_PLANET_DATA;
+			current_screen = SCR.SCR_PLANET_DATA;
 
 			gfx_clear_display();
 
 			name_planet (planet_name, hyperspace_planet);
 			sprintf (str, "DATA ON %s", planet_name);
 
-			gfx_display_centre_text (10, str, 140, GFX_COL_GOLD);
+			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 
-			gfx_draw_line (0, 36, 511, 36);
+            alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			planet.generate_planet_data(ref hyper_planet_data, hyperspace_planet);
 
@@ -476,12 +477,12 @@ namespace Elite
 
 			sprintf (str, "COMMANDER %s", elite.cmdr.name);
 
-			gfx_display_centre_text (10, str, 140, GFX_COL_GOLD);
+			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 
-			gfx_draw_line (0, 36, 511, 36);
+            alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 
-			gfx_display_colour_text (16, 58, "Present System:", GFX_COL_GREEN_1);
+			gfx_display_colour_text (16, 58, "Present System:", gfx.GFX_COL_GREEN_1);
 	
 			if (!witchspace)
 			{
@@ -491,7 +492,7 @@ namespace Elite
 				gfx_display_text (190, 58, str);
 			}
 
-			gfx_display_colour_text (16, 74, "Hyperspace System:", GFX_COL_GREEN_1);
+			gfx_display_colour_text (16, 74, "Hyperspace System:", gfx.GFX_COL_GREEN_1);
 			name_planet (planet_name, hyperspace_planet);
 			capitalise_name (planet_name);
 			sprintf (str, "%s", planet_name);
@@ -791,21 +792,21 @@ namespace Elite
 			char planet_name[16];
 			int i;
 
-			current_screen = SCR_MARKET_PRICES;
+			current_screen = SCR.SCR_MARKET_PRICES;
 
 			gfx_clear_display();
 
 			name_planet (planet_name, docked_planet);
 			sprintf (str, "%s MARKET PRICES", planet_name);
-			gfx_display_centre_text (10, str, 140, GFX_COL_GOLD);
+			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 
-			gfx_draw_line (0, 36, 511, 36);
+            alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			gfx_display_colour_text (16,  40, "PRODUCT", GFX_COL_GREEN_1);
-			gfx_display_colour_text (166, 40, "UNIT", GFX_COL_GREEN_1);
-			gfx_display_colour_text (246, 40, "PRICE", GFX_COL_GREEN_1);
-			gfx_display_colour_text (314, 40, "FOR SALE", GFX_COL_GREEN_1);
-			gfx_display_colour_text (420, 40, "IN HOLD", GFX_COL_GREEN_1);
+			gfx_display_colour_text (16,  40, "PRODUCT", gfx.GFX_COL_GREEN_1);
+			gfx_display_colour_text (166, 40, "UNIT", gfx.GFX_COL_GREEN_1);
+			gfx_display_colour_text (246, 40, "PRICE", gfx.GFX_COL_GREEN_1);
+			gfx_display_colour_text (314, 40, "FOR SALE", gfx.GFX_COL_GREEN_1);
+			gfx_display_colour_text (420, 40, "IN HOLD", gfx.GFX_COL_GREEN_1);
 
 			for (i = 0; i < 17; i++)
 			{
@@ -826,18 +827,18 @@ namespace Elite
 			int y;
 			char str[80];
 	
-			current_screen = SCR_INVENTORY;
+			current_screen = SCR.SCR_INVENTORY;
 
 			gfx_clear_display();
-			gfx_display_centre_text (10, "INVENTORY", 140, GFX_COL_GOLD);
-			gfx_draw_line (0, 36, 511, 36);
+			gfx_display_centre_text (10, "INVENTORY", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_draw_line(0, 36, 511, 36);
 	
 			sprintf (str, "%d.%d Light Years", elite.cmdr.fuel / 10, elite.cmdr.fuel % 10);
-			gfx_display_colour_text (16, 50, "Fuel:", GFX_COL_GREEN_1);
+			gfx_display_colour_text (16, 50, "Fuel:", gfx.GFX_COL_GREEN_1);
 			gfx_display_text (70, 50, str);
 
 			sprintf (str, "%d.%d Cr", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
-			gfx_display_colour_text (16, 66, "Cash:", GFX_COL_GREEN_1);
+			gfx_display_colour_text (16, 66, "Cash:", gfx.GFX_COL_GREEN_1);
 			gfx_display_text (70, 66, str);
 	
 			y = 98;
@@ -1323,13 +1324,13 @@ namespace Elite
 		}
 
 
-		void equip_ship ()
+		static void equip_ship ()
 		{
 			current_screen = SCR_EQUIP_SHIP;
 
 			gfx_clear_display();
-			gfx_display_centre_text (10, "EQUIP SHIP", 140, GFX_COL_GOLD);
-			gfx_draw_line (0, 36, 511, 36);
+			gfx_display_centre_text (10, "EQUIP SHIP", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			collapse_equip_list();
 	
