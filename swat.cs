@@ -150,8 +150,8 @@ namespace Elite
 
 					if ((ship_type != SHIP_PLANET) && (ship_type != SHIP_SUN))
 					{
-                        space.universe[i].energy = ship_list[ship_type].energy;
-                        space.universe[i].missiles = ship_list[ship_type].missiles;
+                        space.universe[i].energy = elite.ship_list[ship_type].energy;
+                        space.universe[i].missiles = elite.ship_list[ship_type].missiles;
 						ship_count[ship_type]++;
 					}
 			
@@ -289,7 +289,7 @@ namespace Elite
 				if (cnt >= 128)
 					return;
 
-				cnt &= ship_list[space.universe[un].type].max_loot;
+				cnt &= elite.ship_list[space.universe[un].type].max_loot;
 				cnt &= 15;
 			}
 
@@ -309,7 +309,7 @@ namespace Elite
 			if (z < 0)
 				return 0;
 		
-			size = ship_list[type].size;
+			size = elite.ship_list[type].size;
 
 			return ((x*x + y*y) <= size);	
 		}
@@ -707,10 +707,12 @@ namespace Elite
 
 				return;
 			}
-	
-	
-			if (ship.energy < ship_list[type].energy)
+
+
+			if (ship.energy < elite.ship_list[type].energy)
+			{
 				ship.energy++;
+			}
 
 			if ((type == SHIP_THARGLET) && (ship_count[SHIP_THARGOID] == 0))
 			{
@@ -775,7 +777,7 @@ namespace Elite
 				}
 			}
 	
-			maxeng = ship_list[type].energy;
+			maxeng = elite.ship_list[type].energy;
 			energy = ship.energy;
 
 			if (energy < (maxeng / 2))
@@ -809,7 +811,7 @@ namespace Elite
 			direction = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[2]); 
 	
 			if 	((ship.distance < 8192) && (direction <= -0.833) &&
-				 (ship_list[type].laser_strength != 0))
+				 (elite.ship_list[type].laser_strength != 0))
 			{
 				if (direction <= -0.917)
 				{
@@ -818,7 +820,7 @@ namespace Elite
 
 				if (direction <= -0.972)
 				{
-					space.damage_ship (ship_list[type].laser_strength, ship.location.z >= 0.0);
+					space.damage_ship (elite.ship_list[type].laser_strength, ship.location.z >= 0.0);
 					ship.acceleration--;
 					if (((ship.location.z >= 0.0) && (front_shield == 0)) ||
 						((ship.location.z < 0.0) && (aft_shield == 0)))

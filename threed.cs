@@ -11,22 +11,6 @@
  *
  */
 
-# include <string.h>
-# include <stdlib.h>
-# include <stdio.h>
-# include <math.h>
-# include <ctype.h>
-# include "config.h"
-# include "elite.h"
-# include "gfx.h"
-# include "planet.h"
-# include "vector.h"
-# include "shipdata.h"
-# include "shipface.h"
-# include "threed.h"
-# include "space.h"
-# include "random.h"
-
 using Elite;
 using Elite.Enums;
 using Elite.Structs;
@@ -38,16 +22,12 @@ namespace Elite
 
 	internal static class threed
     {
-		#define MAX(x,y) (((x) > (y)) ? (x) : (y))
+		const int LAND_X_MAX = 128;
+		const int LAND_Y_MAX = 128;
 
+		static char[,] landscape = new char[LAND_X_MAX + 1, LAND_Y_MAX + 1];
 
-		#define LAND_X_MAX	128
-		#define LAND_Y_MAX	128
-
-		static unsigned char landscape[LAND_X_MAX+1][LAND_Y_MAX+1];
-
-		static struct point point_list[100];
-
+		static point[] point_list = new point[100];
 
 		/*
 		 * The following routine is used to draw a wireframe represtation of a ship.
@@ -56,28 +36,29 @@ namespace Elite
 		 * A number of features (such as not showing detail at distance) have not yet been implemented.
 		 *
 		 */
-
-		static void draw_wireframe_ship (univ_object *univ)
+		static void draw_wireframe_ship(ref univ_object univ)
 		{
 			Matrix trans_mat;
 			int i;
 			int sx,sy,ex,ey;
 			double rx,ry,rz;
-			int visible[32];
+			int[] visible = new int[32];
 			Vector vec;
 			Vector camera_vec;
 			double cos_angle;
 			double tmp;
-			ship_face_normal *ship_norm;
+			ship_face_normal ship_norm;
 			int num_faces;
-			struct ship_data *ship;
+			ship_data ship;
 			int lasv;
 
-			ship = ship_list[univ.type];
-	
+			ship = elite.ship_list[univ.type];
+
 			for (i = 0; i < 3; i++)
+			{
 				trans_mat[i] = univ.rotmat[i];
-		
+			}
+
 			camera_vec = univ.location;
 			VectorMaths.mult_vector (&camera_vec, trans_mat);
 			camera_vec = VectorMaths.unit_vector (&camera_vec);
@@ -158,15 +139,12 @@ namespace Elite
 			}
 
 
-			if (univ.flags & FLG.FLG_FIRING)
+			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
-				lasv = ship_list[univ.type].front_laser;
+				lasv = elite.ship_list[univ.type].front_laser;
 				gfx_draw_line (point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
 			}
 		}
-
-
-
 
 		/*
 		 * Hacked version of the draw ship routine to display solid ships...
@@ -174,8 +152,7 @@ namespace Elite
 		 *
 		 * Check for hidden surface supplied by T.Harte.
 		 */
-
-		void draw_solid_ship (ref univ_object univ)
+		static void draw_solid_ship (ref univ_object univ)
 		{
 			int i;
 			int sx,sy;
@@ -183,23 +160,25 @@ namespace Elite
 			Vector vec;
 			Vector camera_vec;
 			double tmp;
-			ship_face *face_data;
+			ship_face face_data;
 			int num_faces;
 			int num_points;
-			int poly_list[16];
+			int[] poly_list = new int[16];
 			int zavg;
-			ship_solid *solid_data;
-			struct ship_data *ship;
+			ship_solid solid_data;
+			ship_data ship;
 			Matrix trans_mat;
 			int lasv;
 			int col;
 
 			solid_data = &ship_solids[univ.type];
-			ship = ship_list[univ.type];
-	
+			ship = elite.ship_list[univ.type];
+
 			for (i = 0; i < 3; i++)
+			{
 				trans_mat[i] = univ.rotmat[i];
-		
+			}
+
 			camera_vec = univ.location;
 			VectorMaths.mult_vector(&camera_vec, trans_mat);
 			camera_vec = VectorMaths.unit_vector (&camera_vec);
@@ -281,13 +260,13 @@ namespace Elite
 
 					poly_list[2] = point_list[face_data[i].p2].x;
 					poly_list[3] = point_list[face_data[i].p2].y;
-					zavg = MAX(zavg,point_list[face_data[i].p2].z);
+					zavg = Math.Max(zavg, point_list[face_data[i].p2].z);
 
 					if (num_points > 2)
 					{
 						poly_list[4] = point_list[face_data[i].p3].x;
 						poly_list[5] = point_list[face_data[i].p3].y;
-						zavg = MAX(zavg,point_list[face_data[i].p3].z);
+						zavg = Math.Max(zavg, point_list[face_data[i].p3].z);
 					}
 
 					if (num_points > 3)
@@ -322,7 +301,7 @@ namespace Elite
 					{
 						poly_list[14] = point_list[face_data[i].p8].x;
 						poly_list[15] = point_list[face_data[i].p8].y;
-						zavg = MAX(zavg,point_list[face_data[i].p8].z);
+						zavg = Math.Max(zavg, point_list[face_data[i].p8].z);
 					}
 			
 
@@ -331,9 +310,9 @@ namespace Elite
 				}
 			}
 
-			if (univ.flags & FLG.FLG_FIRING)
+			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
-				lasv = ship_list[univ.type].front_laser;
+				lasv = elite.ship_list[univ.type].front_laser;
 				col = (univ.type == SHIP_VIPER) ? GFX_COL_CYAN : GFX_COL_WHITE; 
 		
 				gfx_render_line (point_list[lasv].x, point_list[lasv].y,
@@ -644,7 +623,7 @@ namespace Elite
 		 * - SNES Elite style.
 		 */
 
-		void draw_planet (struct univ_object *planet)
+		void draw_planet(univ_object *planet)
 		{
 			int x,y;
 			int radius;
@@ -833,7 +812,7 @@ namespace Elite
 			double tmp;
 			ship_face_normal *ship_norm;
 			ship_point *sp;
-			ship_data *ship;
+			ship_data ship;
 			int np;
 			int old_seed;
 	
@@ -848,11 +827,13 @@ namespace Elite
 			if (univ.location.z <= 0)
 				return;
 
-			ship = ship_list[univ.type];
-	
+			ship = elite.ship_list[univ.type];
+
 			for (i = 0; i < 3; i++)
+			{
 				trans_mat[i] = univ.rotmat[i];
-		
+			}
+
 			camera_vec = univ.location;
 			VectorMaths.mult_vector(&camera_vec, trans_mat);
 			camera_vec = VectorMaths.unit_vector (&camera_vec);

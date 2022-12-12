@@ -146,11 +146,15 @@ namespace Elite
 				{
 					obj.velocity += obj.acceleration;
 					obj.acceleration = 0;
-					if (obj.velocity > ship_list[obj.type].velocity)
-						obj.velocity = ship_list[obj.type].velocity;
+					if (obj.velocity > elite.ship_list[obj.type].velocity)
+					{
+						obj.velocity = elite.ship_list[obj.type].velocity;
+					}
 
 					if (obj.velocity <= 0)
+					{
 						obj.velocity = 1;
+					}
 				}
 			}
 
@@ -605,7 +609,7 @@ namespace Elite
 							elite.cmdr.legal_status |= 64;
 						}
 
-						bounty = ship_list[type].bounty;
+						bounty = elite.ship_list[type].bounty;
 
 						if ((bounty != 0) && (!witchspace))
 						{
