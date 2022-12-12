@@ -1047,8 +1047,8 @@ namespace Elite
 
 			set_commander_name (path);
 			saved_cmdr = cmdr;
-			saved_cmdr.ship_x = docked_planet.d;
-			saved_cmdr.ship_y = docked_planet.b;
+			saved_cmdr.ship_x = elite.docked_planet.d;
+			saved_cmdr.ship_y = elite.docked_planet.b;
 		}
 
 
@@ -1210,7 +1210,7 @@ namespace Elite
 	
 			for (i = 0; i < 20; i++)
 			{
-				gfx_draw_circle (256, 192, 30 + i * 15, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_draw_circle(256, 192, 30 + i * 15, gfx.GFX_COL_WHITE);
 				gfx_update_screen();
 			}	
 

@@ -1054,7 +1054,7 @@ namespace Elite
 			if (hyper_ready)
 				return;
 
-			hyper_distance = calc_distance_to_planet(docked_planet, hyperspace_planet);
+			hyper_distance = calc_distance_to_planet(elite.docked_planet, hyperspace_planet);
 
 			if ((hyper_distance == 0) || (hyper_distance > elite.cmdr.fuel))
 				return;
@@ -1129,8 +1129,8 @@ namespace Elite
 			elite.cmdr.galaxy.e = rotate_byte_left(elite.cmdr.galaxy.e);
 			elite.cmdr.galaxy.f = rotate_byte_left(elite.cmdr.galaxy.f);
 
-			docked_planet = find_planet(0x60, 0x60);
-			hyperspace_planet = docked_planet;
+            elite.docked_planet = find_planet(0x60, 0x60);
+			hyperspace_planet = elite.docked_planet;
 		}
 
 		static void enter_witchspace()
@@ -1139,7 +1139,7 @@ namespace Elite
 			int nthg;
 
             elite.witchspace = true;
-			docked_planet.b ^= 31;
+            elite.docked_planet.b ^= 31;
 			in_battle = 1;
 
             elite.flight_speed = 12;
@@ -1183,11 +1183,11 @@ namespace Elite
 					return;
 				}
 
-				docked_planet = destination_planet;
+                elite.docked_planet = destination_planet;
 			}
 
 			elite.cmdr.market_rnd = random.rand255();
-			planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
+			planet.generate_planet_data(ref elite.current_planet_data, elite.docked_planet);
 			generate_stock_market();
 
             elite.flight_speed = 12;
@@ -1196,10 +1196,10 @@ namespace Elite
 			create_new_stars();
 			clear_universe();
 
-			generate_landscape(docked_planet.a * 251 + docked_planet.b);
+			generate_landscape(elite.docked_planet.a * 251 + docked_planet.b);
 			VectorMaths.set_init_matrix(rotmat);
 
-			pz = (((docked_planet.b) & 7) + 7) / 2;
+			pz = (((elite.docked_planet.b) & 7) + 7) / 2;
 			px = pz / 2;
 			py = px;
 
@@ -1207,7 +1207,7 @@ namespace Elite
 			py <<= 16;
 			pz <<= 16;
 
-			if ((docked_planet.b & 1) == 0)
+			if ((elite.docked_planet.b & 1) == 0)
 			{
 				px = -px;
 				py = -py;
@@ -1216,8 +1216,8 @@ namespace Elite
 			add_new_ship(SHIP_PLANET, px, py, pz, rotmat, 0, 0);
 
 
-			pz = -(((docked_planet.d & 7) | 1) << 16);
-			px = ((docked_planet.f & 3) << 16) | ((docked_planet.f & 3) << 8);
+			pz = -(((elite.docked_planet.d & 7) | 1) << 16);
+			px = ((elite.docked_planet.f & 3) << 16) | ((elite.docked_planet.f & 3) << 8);
 
 			add_new_ship(SHIP_SUN, px, py, pz, rotmat, 0, 0);
 
@@ -1295,7 +1295,7 @@ namespace Elite
 			elite.cmdr.legal_status |= trade.carrying_contraband();
 			create_new_stars();
 			swat.clear_universe();
-			generate_landscape(docked_planet.a * 251 + docked_planet.b);
+			generate_landscape(elite.docked_planet.a * 251 + elite.docked_planet.b);
 			VectorMaths.set_init_matrix(rotmat);
 			add_new_ship(SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
 

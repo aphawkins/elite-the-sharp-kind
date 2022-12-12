@@ -21,7 +21,7 @@ namespace Elite
 	using Elite.Enums;
 	using Elite.Structs;
 
-	internal static class docked
+	internal static class Docked
     {
 		static string[] economy_type = {"Rich Industrial",
 								"Average Industrial",
@@ -59,8 +59,8 @@ namespace Elite
 				radius = elite.cmdr.fuel * gfx.GFX_SCALE;
 				cross_size = 16 * gfx.GFX_SCALE;
 			}
-	
-			gfx_draw_circle(cx, cy, radius, gfx.GFX_COL_GREEN_1);
+
+            alg_gfx.gfx_draw_circle(cx, cy, radius, gfx.GFX_COL_GREEN_1);
 
             alg_gfx.gfx_draw_line(cx, cy - cross_size, cx, cy + cross_size);
             alg_gfx.gfx_draw_line(cx - cross_size, cy, cx + cross_size, cy);
@@ -78,7 +78,7 @@ namespace Elite
 			dy = dy / 2;
 			dy = dy * dy;
 
-			light_years = sqrt(dx + dy);
+			light_years = (int)Math.Sqrt(dx + dy);
 			light_years *= 4;
 
 			return light_years;
@@ -112,8 +112,8 @@ namespace Elite
 			}
 			else
 			{
-				px = ((cross_x - gfx.GFX_X_CENTRE) / (4 * gfx.GFX_SCALE)) + docked_planet.d;
-				py = ((cross_y - gfx.GFX_Y_CENTRE) / (2 * gfx.GFX_SCALE)) + docked_planet.b;
+				px = ((cross_x - gfx.GFX_X_CENTRE) / (4 * gfx.GFX_SCALE)) + elite.docked_planet.d;
+				py = ((cross_y - gfx.GFX_Y_CENTRE) / (2 * gfx.GFX_SCALE)) + elite.docked_planet.b;
 			}
 
 			hyperspace_planet = find_planet (px, py);
@@ -124,7 +124,7 @@ namespace Elite
 			sprintf (str, "%-18s", planet_name);
 			gfx_display_text (16, 340, str);
 
-			show_distance (356, docked_planet, hyperspace_planet);
+			show_distance (356, elite.docked_planet, hyperspace_planet);
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
@@ -133,8 +133,8 @@ namespace Elite
 			}
 			else
 			{
-				cross_x = ((hyperspace_planet.d - docked_planet.d) * (4 * gfx.GFX_SCALE)) + gfx.GFX_X_CENTRE;
-				cross_y = ((hyperspace_planet.b - docked_planet.b) * (2 * gfx.GFX_SCALE)) + gfx.GFX_Y_CENTRE;
+				cross_x = ((hyperspace_planet.d - elite.docked_planet.d) * (4 * gfx.GFX_SCALE)) + gfx.GFX_X_CENTRE;
+				cross_y = ((hyperspace_planet.b - elite.docked_planet.b) * (2 * gfx.GFX_SCALE)) + gfx.GFX_Y_CENTRE;
 			}
 		}
 
@@ -142,8 +142,8 @@ namespace Elite
 		{
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				cross_x = docked_planet.d * gfx.GFX_SCALE;
-				cross_y = docked_planet.b / (2 / gfx.GFX_SCALE) + (18 * gfx.GFX_SCALE) + 1;
+				cross_x = elite.docked_planet.d * gfx.GFX_SCALE;
+				cross_y = elite.docked_planet.b / (2 / gfx.GFX_SCALE) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
@@ -194,7 +194,7 @@ namespace Elite
 			sprintf (str, "%-18s", planet_name);
 			gfx_display_text (16, 340, str);
 
-			show_distance (356, docked_planet, hyperspace_planet);
+			show_distance (356, elite.docked_planet, hyperspace_planet);
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
@@ -203,8 +203,8 @@ namespace Elite
 			}
 			else
 			{
-				cross_x = ((hyperspace_planet.d - docked_planet.d) * (4 * gfx.GFX_SCALE)) + gfx.GFX_X_CENTRE;
-				cross_y = ((hyperspace_planet.b - docked_planet.b) * (2 * gfx.GFX_SCALE)) + gfx.GFX_Y_CENTRE;
+				cross_x = ((hyperspace_planet.d - elite.docked_planet.d) * (4 * gfx.GFX_SCALE)) + gfx.GFX_X_CENTRE;
+				cross_y = ((hyperspace_planet.b - elite.docked_planet.b) * (2 * gfx.GFX_SCALE)) + gfx.GFX_Y_CENTRE;
 			}
 		}
 
@@ -239,8 +239,8 @@ namespace Elite
 			for (i = 0; i < 256; i++)
 			{
 
-				dx = Math.Abs(glx.d - docked_planet.d);
-				dy = Math.Abs(glx.b - docked_planet.b);
+				dx = Math.Abs(glx.d - elite.docked_planet.d);
+				dy = Math.Abs(glx.b - elite.docked_planet.b);
 
 				if ((dx >= 20) || (dy >= 38))
 				{
@@ -252,10 +252,10 @@ namespace Elite
 					continue;
 				}
 
-				px = (glx.d - docked_planet.d);
+				px = (glx.d - elite.docked_planet.d);
 				px = px * 4 * GFX_SCALE + GFX_X_CENTRE;  /* Convert to screen co-ords */
 
-				py = (glx.b - docked_planet.b);
+				py = (glx.b - elite.docked_planet.b);
 				py = py * 2 * GFX_SCALE + GFX_Y_CENTRE;	/* Convert to screen co-ords */
 
 				row = py / (8 * GFX_SCALE);
@@ -292,8 +292,8 @@ namespace Elite
 				/* Yes this was how it was done... don't ask :-( */
 
 				blob_size = (glx.f & 1) + 2 + carry_flag;
-				blob_size *= GFX_SCALE;
-				gfx_draw_filled_circle (px, py, blob_size, GFX_COL_GOLD);
+				blob_size *= gfx.GFX_SCALE;
+				gfx_draw_filled_circle (px, py, blob_size, gfx.GFX_COL_GOLD);
 
 				waggle_galaxy (&glx);
 				waggle_galaxy (&glx);
@@ -301,11 +301,11 @@ namespace Elite
 				waggle_galaxy (&glx);
 			}
 
-			cross_x = ((hyperspace_planet.d - docked_planet.d) * 4 * GFX_SCALE) + GFX_X_CENTRE;
-			cross_y = ((hyperspace_planet.b - docked_planet.b) * 2 * GFX_SCALE) + GFX_Y_CENTRE;
+			cross_x = ((hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+			cross_y = ((hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 		}
 
-		static void display_galactic_chart ()
+		static void display_galactic_chart()
 		{
 			int i;
 			galaxy_seed glx;
@@ -323,7 +323,7 @@ namespace Elite
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
             alg_gfx.gfx_draw_line(0, 36+258, 511, 36+258);
 
-			draw_fuel_limit_circle(docked_planet.d * gfx.GFX_SCALE, (docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
+			draw_fuel_limit_circle(elite.docked_planet.d * gfx.GFX_SCALE, (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
 
 			glx = elite.cmdr.galaxy;
 
@@ -372,7 +372,7 @@ namespace Elite
 
 			planet.generate_planet_data(ref hyper_planet_data, hyperspace_planet);
 
-			show_distance (42, docked_planet, hyperspace_planet);
+			show_distance (42, elite.docked_planet, hyperspace_planet);
 
 			sprintf (str, "Economy:%s", economy_type[hyper_planet_data.economy]);
 			gfx_display_text (16, 74, str);
@@ -486,7 +486,7 @@ namespace Elite
 	
 			if (!elite.witchspace)
 			{
-				name_planet (planet_name, docked_planet);
+				name_planet (planet_name, elite.docked_planet);
 				capitalise_name (planet_name);
 				sprintf (str, "%s", planet_name);
 				gfx_display_text (190, 58, str);
@@ -796,7 +796,7 @@ namespace Elite
 
 			gfx_clear_display();
 
-			name_planet (planet_name, docked_planet);
+			name_planet (planet_name, elite.docked_planet);
 			sprintf (str, "%s MARKET PRICES", planet_name);
 			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 

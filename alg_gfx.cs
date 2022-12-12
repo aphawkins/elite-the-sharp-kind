@@ -425,15 +425,17 @@ namespace Elite
 
 
 
-		static void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
+		internal static void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
 		{
 			if (anti_alias_gfx && (circle_colour == gfx.GFX_COL_WHITE))
+			{
 				gfx_draw_aa_circle(cx, cy, itofix(radius));
+			}
 			else
-				circle(gfx_screen, cx + GFX_X_OFFSET, cy + GFX_Y_OFFSET, radius, circle_colour);
+			{
+				circle(gfx_screen, cx + gfx.GFX_X_OFFSET, cy + gfx.GFX_Y_OFFSET, radius, circle_colour);
+			}
 		}
-
-
 
 		internal static void gfx_draw_line(int x1, int y1, int x2, int y2)
 		{

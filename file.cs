@@ -188,8 +188,8 @@ namespace Elite
 				return 1;
 
 			block[0] = elite.cmdr.mission;
-			block[1] = docked_planet.d;
-			block[2] = docked_planet.b;
+			block[1] = elite.docked_planet.d;
+			block[2] = elite.docked_planet.b;
 			block[3] = elite.cmdr.galaxy.a;
 			block[4] = elite.cmdr.galaxy.b;
 			block[5] = elite.cmdr.galaxy.c;

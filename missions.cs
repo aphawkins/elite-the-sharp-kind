@@ -108,22 +108,22 @@ namespace Elite
 			"For the moment please accept this Navy Extra Energy Unit as payment. " +
 			"---MESSAGE ENDS.";
 
-
-
 		static string? mission_planet_desc(galaxy_seed planet)
 		{
 			int pnum;
 
 			if (!docked)
+			{
 				return null;
+			}
 
-			if ((planet.a != docked_planet.a) ||
-				(planet.b != docked_planet.b) ||
-				(planet.c != docked_planet.c) ||
-				(planet.d != docked_planet.d) ||
-				(planet.e != docked_planet.e) ||
-				(planet.f != docked_planet.f))
-				return NULL;
+			if ((planet.a != elite.docked_planet.a) ||
+				(planet.b != elite.docked_planet.b) ||
+				(planet.c != elite.docked_planet.c) ||
+				(planet.d != elite.docked_planet.d) ||
+				(planet.e != elite.docked_planet.e) ||
+				(planet.f != elite.docked_planet.f))
+				return null;
 
 			pnum = find_planet_number(planet);
 
@@ -342,13 +342,13 @@ namespace Elite
 				return;
 			}
 
-			if ((elite.cmdr.mission == 4) && (docked_planet.d == 215) && (docked_planet.b == 84))
+			if ((elite.cmdr.mission == 4) && (elite.docked_planet.d == 215) && (elite.docked_planet.b == 84))
 			{
 				thargoid_mission_second_brief();
 				return;
 			}
 
-			if ((elite.cmdr.mission == 5) && (docked_planet.d == 63) && (docked_planet.b == 72))
+			if ((elite.cmdr.mission == 5) && (elite.docked_planet.d == 63) && (elite.docked_planet.b == 72))
 			{
 				thargoid_mission_debrief();
 				return;

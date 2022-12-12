@@ -169,7 +169,7 @@ namespace Elite
 			int zavg;
 			ship_solid solid_data;
 			ship_data ship;
-			Matrix trans_mat;
+			Vector[] trans_mat = new Vector[3];
 			int lasv;
 			int col;
 
@@ -182,8 +182,8 @@ namespace Elite
 			}
 
 			camera_vec = univ.location;
-			VectorMaths.mult_vector(&camera_vec, trans_mat);
-			camera_vec = VectorMaths.unit_vector (&camera_vec);
+			VectorMaths.mult_vector(ref camera_vec, trans_mat);
+			camera_vec = VectorMaths.unit_vector(camera_vec);
 
 			num_faces = solid_data.num_faces;
 			face_data = solid_data.face_data;
@@ -604,16 +604,14 @@ namespace Elite
 			}
 		}
 
-
 		/*
 		 * Draw a wireframe planet.
 		 * At the moment we just draw a circle.
 		 * Need to add in the two arcs that the original Elite had.
 		 */
-
-		void draw_wireframe_planet (int xo, int yo, int radius, Vector[] vec)
+		static void draw_wireframe_planet (int xo, int yo, int radius, Vector[] vec)
 		{
-			gfx_draw_circle (xo, yo, radius, GFX_COL_WHITE);
+            alg_gfx.gfx_draw_circle (xo, yo, radius, gfx.GFX_COL_WHITE);
 		}
 
 
@@ -625,26 +623,26 @@ namespace Elite
 		 * - SNES Elite style.
 		 */
 
-		void draw_planet(univ_object *planet)
+		static void draw_planet(ref univ_object planet)
 		{
 			int x,y;
 			int radius;
 	
-			x = (planet.location.x * 256) / planet.location.z;
-			y = (planet.location.y * 256) / planet.location.z;
+			x = (int)((planet.location.x * 256) / planet.location.z);
+			y = (int)((planet.location.y * 256) / planet.location.z);
 
 			y = -y;
 	
 			x += 128;
 			y += 96;
 
-			x *= GFX_SCALE;
-			y *= GFX_SCALE;
+			x *= gfx.GFX_SCALE;
+			y *= gfx.GFX_SCALE;
 	
 			radius = 6291456 / planet.distance;
 		//	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
 
-			radius *= GFX_SCALE;
+			radius *= gfx.GFX_SCALE;
 
 			if ((x + radius <  0) ||
 				(x - radius > 511) ||
@@ -659,7 +657,7 @@ namespace Elite
 					break;
 		
 				case 1:
-					gfx_draw_filled_circle (x, y, radius, GFX_COL_GREEN_1);
+					gfx_draw_filled_circle (x, y, radius, gfx.GFX_COL_GREEN_1);
 					break;
 
 				case 2:
@@ -669,8 +667,7 @@ namespace Elite
 			}
 		}
 
-
-		void render_sun_line (int xo, int yo, int x, int y, int radius)
+		static void render_sun_line(int xo, int yo, int x, int y, int radius)
 		{
 			int sy = yo + y;
 			int sx,ex;
@@ -731,14 +728,13 @@ namespace Elite
 			} 	
 		}
 
-
-		void render_sun (int xo, int yo, int radius)
+		static void render_sun (int xo, int yo, int radius)
 		{
 			int x,y;
 			int s;
 	
-			xo += GFX_X_OFFSET;
-			yo += GFX_Y_OFFSET;
+			xo += gfx.GFX_X_OFFSET;
+			yo += gfx.GFX_Y_OFFSET;
 	
 			s = -radius;
 			x = radius;
@@ -762,27 +758,25 @@ namespace Elite
 			}
 		}
 
-
-
-		void draw_sun (univ_object *planet)
+		static void draw_sun(ref univ_object planet)
 		{
 			int x,y;
 			int radius;
 	
-			x = (planet.location.x * 256) / planet.location.z;
-			y = (planet.location.y * 256) / planet.location.z;
+			x = (int)((planet.location.x * 256) / planet.location.z);
+			y = (int)((planet.location.y * 256) / planet.location.z);
 
 			y = -y;
 	
 			x += 128;
 			y += 96;
 
-			x *= GFX_SCALE;
-			y *= GFX_SCALE;
+			x *= gfx.GFX_SCALE;
+			y *= gfx.GFX_SCALE;
 	
 			radius = 6291456 / planet.distance;
 
-			radius *= GFX_SCALE;
+			radius *= gfx.GFX_SCALE;
 
 			if ((x + radius <  0) ||
 				(x - radius > 511) ||
@@ -793,8 +787,6 @@ namespace Elite
 			render_sun (x, y, radius);
 		}
 
-
-
 		static void draw_explosion(ref univ_object univ)
 		{
 			int i;
@@ -804,7 +796,7 @@ namespace Elite
 			int px,py;
 			int cnt;
 			int sizex,sizey,psx,psy;
-			Matrix trans_mat;
+			Vector[] trans_mat = new Vector[3];
 			int sx,sy;
 			double rx,ry,rz;
 			int visible[32];
@@ -837,8 +829,8 @@ namespace Elite
 			}
 
 			camera_vec = univ.location;
-			VectorMaths.mult_vector(&camera_vec, trans_mat);
-			camera_vec = VectorMaths.unit_vector (&camera_vec);
+			VectorMaths.mult_vector(ref camera_vec, trans_mat);
+			camera_vec = VectorMaths.unit_vector(camera_vec);
 	
 			ship_norm = ship.normals;
 	
@@ -878,14 +870,14 @@ namespace Elite
 					vec.y = sp[i].y;
 					vec.z = sp[i].z;
 
-					VectorMaths.mult_vector(&vec, trans_mat);
+					VectorMaths.mult_vector(ref vec, trans_mat);
 
 					rx = vec.x + univ.location.x;
 					ry = vec.y + univ.location.y;
 					rz = vec.z + univ.location.z;
 
-					sx = (rx * 256) / rz;
-					sy = (ry * 256) / rz;
+					sx = (int)((rx * 256) / rz);
+					sy = (int)((ry * 256) / rz);
 
 					sy = -sy;
 

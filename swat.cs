@@ -1085,7 +1085,7 @@ namespace Elite
 			int newship;
 
 			if ((elite.cmdr.mission == 1) && (elite.cmdr.galaxy_number == 1) &&
-				(docked_planet.d == 144) && (docked_planet.b == 33) &&
+				(elite.docked_planet.d == 144) && (elite.docked_planet.b == 33) &&
 				(ship_count[SHIP_CONSTRICTOR] == 0))
 			{
 				type = SHIP_CONSTRICTOR;
