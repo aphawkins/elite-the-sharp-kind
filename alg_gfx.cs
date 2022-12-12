@@ -425,9 +425,9 @@ namespace Elite
 
 
 
-		void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
+		static void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
 		{
-			if (anti_alias_gfx && (circle_colour == GFX_COL_WHITE))
+			if (anti_alias_gfx && (circle_colour == gfx.GFX_COL_WHITE))
 				gfx_draw_aa_circle(cx, cy, itofix(radius));
 			else
 				circle(gfx_screen, cx + GFX_X_OFFSET, cy + GFX_Y_OFFSET, radius, circle_colour);
@@ -435,43 +435,41 @@ namespace Elite
 
 
 
-		void gfx_draw_line(int x1, int y1, int x2, int y2)
+		static void gfx_draw_line(int x1, int y1, int x2, int y2)
 		{
 			if (y1 == y2)
 			{
-				hline(gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, GFX_COL_WHITE);
+				hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, gfx.GFX_COL_WHITE);
 				return;
 			}
 
 			if (x1 == x2)
 			{
-				vline(gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, y2 + GFX_Y_OFFSET, GFX_COL_WHITE);
+				vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
 				return;
 			}
 
 			if (anti_alias_gfx)
 				gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
 			else
-				line(gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, y2 + GFX_Y_OFFSET, GFX_COL_WHITE);
+				line(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
 		}
 
-
-
-		void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
+		static void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
 		{
 			if (y1 == y2)
 			{
-				hline(gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, line_colour);
+				hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, line_colour);
 				return;
 			}
 
 			if (x1 == x2)
 			{
-				vline(gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, y2 + GFX_Y_OFFSET, line_colour);
+				vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
 				return;
 			}
 
-			if (anti_alias_gfx && (line_colour == GFX_COL_WHITE))
+			if (anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
 				gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
 			else
 				line(gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, y2 + GFX_Y_OFFSET, line_colour);
@@ -479,10 +477,10 @@ namespace Elite
 
 
 
-		void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
+		static void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
 		{
-			triangle(gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, y2 + GFX_Y_OFFSET,
-						   x3 + GFX_X_OFFSET, y3 + GFX_Y_OFFSET, col);
+			triangle(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET,
+						   x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
 		}
 
 
@@ -490,7 +488,7 @@ namespace Elite
 		void gfx_display_text(int x, int y, char* txt)
 		{
 			text_mode(-1);
-			textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / GFX_SCALE)) + GFX_X_OFFSET, (y / (2 / GFX_SCALE)) + GFX_Y_OFFSET, GFX_COL_WHITE);
+			textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
 		}
 
 
@@ -523,31 +521,31 @@ namespace Elite
 		}
 
 
-		void gfx_clear_display()
+		static void gfx_clear_display()
 		{
-			rectfill(gfx_screen, GFX_X_OFFSET + 1, GFX_Y_OFFSET + 1, 510 + GFX_X_OFFSET, 383 + GFX_Y_OFFSET, GFX_COL_BLACK);
+			rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-		void gfx_clear_text_area()
+		static void gfx_clear_text_area()
 		{
-			rectfill(gfx_screen, GFX_X_OFFSET + 1, GFX_Y_OFFSET + 340, 510 + GFX_X_OFFSET, 383 + GFX_Y_OFFSET, GFX_COL_BLACK);
-		}
-
-
-		void gfx_clear_area(int tx, int ty, int bx, int by)
-		{
-			rectfill(gfx_screen, tx + GFX_X_OFFSET, ty + GFX_Y_OFFSET,
-						   bx + GFX_X_OFFSET, by + GFX_Y_OFFSET, GFX_COL_BLACK);
-		}
-
-		void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
-		{
-			rectfill(gfx_screen, tx + GFX_X_OFFSET, ty + GFX_Y_OFFSET,
-						   bx + GFX_X_OFFSET, by + GFX_Y_OFFSET, col);
+			rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
 
-		void gfx_display_pretty_text(int tx, int ty, int bx, int by, char* txt)
+		static void gfx_clear_area(int tx, int ty, int bx, int by)
+		{
+			rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET,
+						   bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
+		}
+
+		static void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
+		{
+			rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET,
+						   bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, col);
+		}
+
+
+		static void gfx_display_pretty_text(int tx, int ty, int bx, int by, char* txt)
 		{
 			char strbuf[100];
 			char* str;
@@ -581,24 +579,24 @@ namespace Elite
 				*bptr = '\0';
 
 				text_mode(-1);
-				textout(gfx_screen, datafile[ELITE_1].dat, strbuf, tx + GFX_X_OFFSET, ty + GFX_Y_OFFSET, GFX_COL_WHITE);
+				textout(gfx_screen, datafile[ELITE_1].dat, strbuf, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
 				ty += (8 * GFX_SCALE);
 			}
 		}
 
 
-		void gfx_draw_scanner()
+		static void gfx_draw_scanner()
 		{
-			blit(scanner_image, gfx_screen, 0, 0, GFX_X_OFFSET, 385 + GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
+			blit(scanner_image, gfx_screen, 0, 0, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
 		}
 
-		void gfx_set_clip_region(int tx, int ty, int bx, int by)
+		static void gfx_set_clip_region(int tx, int ty, int bx, int by)
 		{
-			set_clip(gfx_screen, tx + GFX_X_OFFSET, ty + GFX_Y_OFFSET, bx + GFX_X_OFFSET, by + GFX_Y_OFFSET);
+			set_clip(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
 		}
 
 
-		void gfx_start_render()
+		static void gfx_start_render()
 		{
 			start_poly = 0;
 			total_polys = 0;

@@ -26,7 +26,7 @@ namespace Elite
 
 	internal static class VectorMaths
 	{
-		static Matrix start_matrix = new()
+		static Vector[] start_matrix = new Vector[3]
 		{
 			new Vector(1.0, 0.0, 0.0),
 			new Vector(0.0, 1.0, 0.0),
@@ -40,7 +40,7 @@ namespace Elite
 		static void mult_matrix(Vector[] first, Vector[] second)
 		{
 			int i;
-			Matrix rv = new();
+			Vector[] rv = new Vector[3];
 			double x;
 			double y;
 			double z;
@@ -60,7 +60,7 @@ namespace Elite
 			}
 		}
 
-		internal static void mult_vector(Vector vec, Vector[] mat)
+		internal static void mult_vector(ref Vector vec, Vector[] mat)
 		{
 			double x;
 			double y;

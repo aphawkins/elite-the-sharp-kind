@@ -38,16 +38,16 @@ namespace Elite
 		 */
 		static void draw_wireframe_ship(ref univ_object univ)
 		{
-			Matrix trans_mat;
+			Vector[] trans_mat = new Vector[3];
 			int i;
 			int sx,sy,ex,ey;
 			double rx,ry,rz;
-			int[] visible = new int[32];
+			bool[] visible = new bool[32];
 			Vector vec;
 			Vector camera_vec;
 			double cos_angle;
 			double tmp;
-			ship_face_normal ship_norm;
+			ship_face_normal[] ship_norm;
 			int num_faces;
 			ship_data ship;
 			int lasv;
@@ -60,8 +60,8 @@ namespace Elite
 			}
 
 			camera_vec = univ.location;
-			VectorMaths.mult_vector (&camera_vec, trans_mat);
-			camera_vec = VectorMaths.unit_vector (&camera_vec);
+			VectorMaths.mult_vector(ref camera_vec, trans_mat);
+			camera_vec = VectorMaths.unit_vector(camera_vec);
 	
 			num_faces = ship.num_faces;
 	
@@ -74,12 +74,14 @@ namespace Elite
 				vec.z = ship_norm[i].z;
 
 				if ((vec.x == 0) && (vec.y == 0) && (vec.z == 0))
-					visible[i] = 1;
+				{
+					visible[i] = true;
+				}
 				else
 				{
-					vec = VectorMaths.unit_vector (&vec);
-					cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
-					visible[i] = (cos_angle < -0.2);
+					vec = VectorMaths.unit_vector(vec);
+					cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
+					visible[i] = cos_angle < -0.2;
 				}
 			}
 
@@ -101,14 +103,14 @@ namespace Elite
 				vec.y = ship.points[i].y;
 				vec.z = ship.points[i].z;
 
-				VectorMaths.mult_vector (&vec, trans_mat);
+				VectorMaths.mult_vector(ref vec, trans_mat);
 
 				rx = vec.x + univ.location.x;
 				ry = vec.y + univ.location.y;
 				rz = vec.z + univ.location.z;
 
-				sx = (rx * 256) / rz;
-				sy = (ry * 256) / rz;
+				sx = (int)((rx * 256) / rz);
+				sy = (int)((ry * 256) / rz);
 
 				sy = -sy;
 
