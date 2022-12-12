@@ -290,12 +290,14 @@ namespace Elite
 
 			myship.altitude = 255;
 
-			if (witchspace)
+			if (elite.witchspace)
+			{
 				return;
+			}
 
-			x = fabs(universe[0].location.x);
-			y = fabs(universe[0].location.y);
-			z = fabs(universe[0].location.z);
+			x = Math.Abs(universe[0].location.x);
+			y = Math.Abs(universe[0].location.y);
+			z = Math.Abs(universe[0].location.z);
 
 			if ((x > 65535) || (y > 65535) || (z > 65535))
 				return;
@@ -329,25 +331,31 @@ namespace Elite
 		}
 
 
-		void update_cabin_temp()
+		static void update_cabin_temp()
 		{
 			int x, y, z;
 			int dist;
 
 			myship.cabtemp = 30;
 
-			if (witchspace)
+			if (elite.witchspace)
+			{
 				return;
+			}
 
 			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
+			{
 				return;
+			}
 
-			x = abs((int)universe[1].location.x);
-			y = abs((int)universe[1].location.y);
-			z = abs((int)universe[1].location.z);
+			x = Math.Abs((int)universe[1].location.x);
+			y = Math.Abs((int)universe[1].location.y);
+			z = Math.Abs((int)universe[1].location.z);
 
 			if ((x > 65535) || (y > 65535) || (z > 65535))
+			{
 				return;
+			}
 
 			x /= 256;
 			y /= 256;
@@ -611,7 +619,7 @@ namespace Elite
 
 						bounty = elite.ship_list[type].bounty;
 
-						if ((bounty != 0) && (!witchspace))
+						if ((bounty != 0) && (!elite.witchspace))
 						{
 							elite.cmdr.credits += bounty;
 							sprintf(str, "%d.%d CR", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
@@ -780,8 +788,10 @@ namespace Elite
 			int compass_y;
 			int un = 0;
 
-			if (witchspace)
+			if (elite.witchspace)
+			{
 				return;
+			}
 
 			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 				un = 1;
@@ -1125,16 +1135,12 @@ namespace Elite
 			hyperspace_planet = docked_planet;
 		}
 
-
-
-
-
-		void enter_witchspace()
+		static void enter_witchspace()
 		{
 			int i;
 			int nthg;
 
-			witchspace = 1;
+            elite.witchspace = true;
 			docked_planet.b ^= 31;
 			in_battle = 1;
 
@@ -1154,13 +1160,13 @@ namespace Elite
 		}
 
 
-		void complete_hyperspace()
+		static void complete_hyperspace()
 		{
-			Matrix rotmat;
+			Vector[] rotmat = new Vector[3];
 			int px, py, pz;
 
 			hyper_ready = 0;
-			witchspace = 0;
+            elite.witchspace = false;
 
 			if (hyper_galactic)
 			{

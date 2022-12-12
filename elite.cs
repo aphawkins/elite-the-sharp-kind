@@ -42,7 +42,7 @@ namespace Elite
 		static int curr_fuel = 70;
 		internal static int carry_flag = 0;
 		internal static int current_screen = 0;
-        internal static int witchspace;
+        internal static bool witchspace;
 
 		internal static int wireframe = 0;
         internal static int anti_alias_gfx = 0;

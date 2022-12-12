@@ -45,7 +45,7 @@ namespace Elite
 			int i;
 			int nstars;
 
-			nstars = witchspace ? 3 : 12;
+			nstars = elite.witchspace ? 3 : 12;
 
 			for (i = 0; i < nstars; i++)
 			{
@@ -57,8 +57,7 @@ namespace Elite
 			warp_stars = 0;
 		}
 
-
-		void front_starfield()
+		static void front_starfield()
 		{
 			int i;
 			double Q;
@@ -70,7 +69,7 @@ namespace Elite
 			int sy;
 			int nstars;
 
-			nstars = witchspace ? 3 : 12;
+			nstars = elite.witchspace ? 3 : 12;
 
 			delta = warp_stars ? 50 : flight_speed;
 			alpha = (double)flight_roll;
@@ -168,7 +167,7 @@ namespace Elite
 			int ex, ey;
 			int nstars;
 
-			nstars = witchspace ? 3 : 12;
+			nstars = elite.witchspace ? 3 : 12;
 
 			delta = warp_stars ? 50 : flight_speed;
 			alpha = -flight_roll;
@@ -279,7 +278,7 @@ namespace Elite
 			double delt8;
 			int nstars;
 
-			nstars = witchspace ? 3 : 12;
+			nstars = elite.witchspace ? 3 : 12;
 
 			delta = warp_stars ? 50 : flight_speed;
 			alpha = flight_roll;
@@ -365,15 +364,14 @@ namespace Elite
 		/*
 		 * When we change view, flip the stars over so they look like other stars.
 		 */
-
-		void flip_stars()
+		static void flip_stars()
 		{
 			int i;
 			int nstars;
 			int sx;
 			int sy;
 
-			nstars = witchspace ? 3 : 12;
+			nstars = elite.witchspace ? 3 : 12;
 			for (i = 0; i < nstars; i++)
 			{
 				sy = stars[i].y;
@@ -383,8 +381,7 @@ namespace Elite
 			}
 		}
 
-
-		void update_starfield()
+		static void update_starfield()
 		{
 			switch (current_screen)
 			{

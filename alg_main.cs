@@ -98,7 +98,7 @@ namespace Elite
 			hyper_ready = 0;
 			detonate_bomb = 0;
 			find_input = 0;
-			witchspace = 0;
+			elite.witchspace = false;
 			game_paused = 0;
 			auto_pilot = 0;
 	
@@ -805,7 +805,7 @@ namespace Elite
 				display_data_on_planet();
 			}
 
-			if (kbd_F8_pressed && (!witchspace))
+			if (kbd_F8_pressed && (!elite.witchspace))
 			{
 				find_input = 0;
 				display_market_prices();
@@ -896,7 +896,7 @@ namespace Elite
 					start_hyperspace();
 			}
 
-			if (kbd_jump_pressed && (!docked) && (!witchspace))
+			if (kbd_jump_pressed && (!docked) && (!elite.witchspace))
 			{
 				jump_warp();
 			}
@@ -969,7 +969,7 @@ namespace Elite
 
 			if (kbd_escape_pressed)
 			{
-				if ((!docked) && (elite.cmdr.escape_pod) && (!witchspace))
+				if ((!docked) && (elite.cmdr.escape_pod) && (!elite.witchspace))
 					run_escape_sequence();
 			}
 		}
@@ -1386,9 +1386,11 @@ namespace Elite
 				
 						if ((mcount & 31) == 20)
 							update_cabin_temp();
-					
-						if ((mcount == 0) && (!witchspace))
+
+						if ((mcount == 0) && (!elite.witchspace))
+						{
 							random_encounter();
+						}
 					
 						cool_laser();				
 						time_ecm();

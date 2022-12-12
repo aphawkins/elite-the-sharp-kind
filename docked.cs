@@ -484,7 +484,7 @@ namespace Elite
 
 			gfx_display_colour_text (16, 58, "Present System:", gfx.GFX_COL_GREEN_1);
 	
-			if (!witchspace)
+			if (!elite.witchspace)
 			{
 				name_planet (planet_name, docked_planet);
 				capitalise_name (planet_name);

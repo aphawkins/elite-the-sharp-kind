@@ -282,18 +282,16 @@ namespace Elite
 			fly_to_station (ship);
 		}
 
-
-		void engage_auto_pilot ()
+		static void engage_auto_pilot ()
 		{
-			if (auto_pilot || witchspace || hyper_ready)
+			if (auto_pilot || elite.witchspace || hyper_ready)
 				return; 
 
 			auto_pilot = 1;
 			snd_play_midi (SND_BLUE_DANUBE, 1);
 		}
 
-
-		void disengage_auto_pilot ()
+		static void disengage_auto_pilot ()
 		{
 			if (auto_pilot)
 			{
