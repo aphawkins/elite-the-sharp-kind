@@ -60,9 +60,9 @@ namespace Elite
 
 			nstars = elite.witchspace ? 3 : 12;
 
-			delta = Stars.warp_stars ? 50 : flight_speed;
-			alpha = (double)flight_roll;
-			beta = (double)flight_climb;
+			delta = Stars.warp_stars ? 50 : elite.flight_speed;
+			alpha = (double)elite.flight_roll;
+			beta = (double)elite.flight_climb;
 
 			alpha /= 256.0;
 			delta /= 2.0;
@@ -156,9 +156,9 @@ namespace Elite
 
 			nstars = elite.witchspace ? 3 : 12;
 
-			delta = Stars.warp_stars ? 50 : flight_speed;
-			alpha = -flight_roll;
-			beta = -flight_climb;
+			delta = Stars.warp_stars ? 50 : elite.flight_speed;
+			alpha = -elite.flight_roll;
+			beta = -elite.flight_climb;
 
 			alpha /= 256.0;
 			delta /= 2.0;
@@ -266,9 +266,9 @@ namespace Elite
 
 			nstars = elite.witchspace ? 3 : 12;
 
-			delta = Stars.warp_stars ? 50 : flight_speed;
-			alpha = flight_roll;
-			beta = flight_climb;
+			delta = Stars.warp_stars ? 50 : elite.flight_speed;
+			alpha = elite.flight_roll;
+			beta = elite.flight_climb;
 
 			if (elite.current_screen == SCR.SCR_LEFT_VIEW)
 			{

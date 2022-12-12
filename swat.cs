@@ -474,7 +474,7 @@ namespace Elite
 
 			ns = space.universe[newship];
 	
-			ns.velocity = flight_speed * 2;
+			ns.velocity = elite.flight_speed * 2;
 			ns.flags = FLG.FLG_ANGRY;
 			ns.target = missile_target;
 

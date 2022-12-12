@@ -86,9 +86,9 @@ namespace Elite
 
 			restore_saved_commander();
 
-			flight_speed = 1;
-			flight_roll = 0;
-			flight_climb = 0;
+            elite.flight_speed = 1;
+            elite.flight_roll = 0;
+			elite.flight_climb = 0;
 			docked = 1;
 			front_shield = 255;
 			aft_shield = 255;
@@ -268,8 +268,10 @@ namespace Elite
 				case SCR.SCR_REAR_VIEW:
 				case SCR.SCR_RIGHT_VIEW:
 				case SCR.SCR_LEFT_VIEW:
-					if (flight_roll > 0)
-						flight_roll = 0;
+					if (elite.flight_roll > 0)
+					{
+                        elite.flight_roll = 0;
+					}
 					else
 					{
 						decrease_flight_roll();
@@ -301,8 +303,10 @@ namespace Elite
 				case SCR.SCR_REAR_VIEW:
 				case SCR.SCR_RIGHT_VIEW:
 				case SCR.SCR_LEFT_VIEW:
-					if (flight_roll < 0)
-						flight_roll = 0;
+					if (elite.flight_roll < 0)
+					{
+						elite.flight_roll = 0;
+					}
 					else
 					{
 						increase_flight_roll();
@@ -342,8 +346,10 @@ namespace Elite
 				case SCR.SCR_REAR_VIEW:
 				case SCR.SCR_RIGHT_VIEW:
 				case SCR.SCR_LEFT_VIEW:
-					if (flight_climb > 0)
-						flight_climb = 0;
+					if (elite.flight_climb > 0)
+					{
+						elite.flight_climb = 0;
+					}
 					else
 					{
 						decrease_flight_climb();
@@ -382,8 +388,10 @@ namespace Elite
 				case SCR.SCR_REAR_VIEW:
 				case SCR.SCR_RIGHT_VIEW:
 				case SCR.SCR_LEFT_VIEW:
-					if (flight_climb < 0)
-						flight_climb = 0;
+					if (elite.flight_climb < 0)
+					{
+						elite.flight_climb = 0;
+					}
 					else
 					{
 						increase_flight_climb();
@@ -523,7 +531,7 @@ namespace Elite
 			ship.rotmat[2].z = 1;
 			ship.rotmat[0].x = -1;
 			ship.type = -96;
-			ship.velocity = flight_speed;
+			ship.velocity = elite.flight_speed;
 			ship.acceleration = 0;
 			ship.bravery = 0;
 			ship.rotz = 0;
@@ -532,27 +540,37 @@ namespace Elite
 			auto_pilot_ship (&ship);
 
 			if (ship.velocity > 22)
-				flight_speed = 22;
+			{
+                elite.flight_speed = 22;
+			}
 			else
-				flight_speed = ship.velocity;
+			{
+                elite.flight_speed = ship.velocity;
+			}
 	
 			if (ship.acceleration > 0)
 			{
-				flight_speed++;
-				if (flight_speed > 22)
-					flight_speed = 22;
+                elite.flight_speed++;
+				if (elite.flight_speed > 22)
+				{
+					elite.flight_speed = 22;
+				}
 			}
 
 			if (ship.acceleration < 0)
 			{
-				flight_speed--;
-				if (flight_speed < 1)
-					flight_speed = 1;
-			}	
+                elite.flight_speed--;
+				if (elite.flight_speed < 1)
+				{
+					elite.flight_speed = 1;
+				}
+			}
 
 			if (ship.rotx == 0)
-				flight_climb = 0;
-	
+			{
+				elite.flight_climb = 0;
+			}
+
 			if (ship.rotx < 0)
 			{
 				increase_flight_climb();
@@ -568,13 +586,17 @@ namespace Elite
 				if (ship.rotx > 1)
 					decrease_flight_climb();
 			}
-	
+
 			if (ship.rotz == 127)
-				flight_roll = -14;
+			{
+				elite.flight_roll = -14;
+			}
 			else
 			{
 				if (ship.rotz == 0)
-					flight_roll = 0;
+				{
+					elite.flight_roll = 0;
+				}
 
 				if (ship.rotz > 0)
 				{
@@ -583,7 +605,7 @@ namespace Elite
 					if (ship.rotz > 1)
 						increase_flight_roll();
 				}
-		
+
 				if (ship.rotz < 0)
 				{
 					decrease_flight_roll();
@@ -602,10 +624,10 @@ namespace Elite
 			Vector[] rotmat = new Vector[3];
 
             elite.current_screen = SCR.SCR_ESCAPE_POD;
-	
-			flight_speed = 1;
-			flight_roll = 0;
-			flight_climb = 0;
+
+            elite.flight_speed = 1;
+            elite.flight_roll = 0;
+            elite.flight_climb = 0;
 
             VectorMaths.set_init_matrix (rotmat);
 			rotmat[2].z = 1.0;
@@ -643,7 +665,7 @@ namespace Elite
 			{
 				auto_dock();
 
-				if ((Math.Abs(flight_roll) < 3) && (Math.Abs(flight_climb) < 3))
+				if ((Math.Abs(elite.flight_roll) < 3) && (Math.Abs(elite.flight_climb) < 3))
 				{
 					for (i = 0; i < MAX_UNIV_OBJECTS; i++)
 					{
@@ -919,8 +941,10 @@ namespace Elite
 			{
 				if (!docked)
 				{
-					if (flight_speed < myship.max_speed)
-						flight_speed++;
+					if (elite.flight_speed < myship.max_speed)
+					{
+						elite.flight_speed++;
+					}
 				}
 			}
 
@@ -928,8 +952,10 @@ namespace Elite
 			{
 				if (!docked)
 				{
-					if (flight_speed > 1)
-						flight_speed--;
+					if (elite.flight_speed > 1)
+					{
+						elite.flight_speed--;
+					}
 				}
 			}
 
@@ -1104,9 +1130,9 @@ namespace Elite
 		
 			initialise_intro2();
 
-			flight_speed = 3;
-			flight_roll = 0;
-			flight_climb = 0;
+            elite.flight_speed = 3;
+            elite.flight_roll = 0;
+            elite.flight_climb = 0;
 
 			for (;;)
 			{
@@ -1135,10 +1161,10 @@ namespace Elite
 
             elite.current_screen = SCR.SCR_GAME_OVER;
 			gfx_set_clip_region (1, 1, 510, 383);
-	
-			flight_speed = 6;
-			flight_roll = 0;
-			flight_climb = 0;
+
+            elite.flight_speed = 6;
+            elite.flight_roll = 0;
+            elite.flight_climb = 0;
 			clear_universe();
 
             VectorMaths.set_init_matrix (rotmat);
@@ -1276,20 +1302,28 @@ namespace Elite
 
 					if (!rolling)
 					{
-						if (flight_roll > 0)
+						if (elite.flight_roll > 0)
+						{
 							decrease_flight_roll();
-			
-						if (flight_roll < 0)
+						}
+
+						if (elite.flight_roll < 0)
+						{
 							increase_flight_roll();
+						}
 					}
 
 					if (!climbing)
 					{
-						if (flight_climb > 0)
+						if (elite.flight_climb > 0)
+						{
 							decrease_flight_climb();
+						}
 
-						if (flight_climb < 0)
+						if (elite.flight_climb < 0)
+						{
 							increase_flight_climb();
+						}
 					}
 
 

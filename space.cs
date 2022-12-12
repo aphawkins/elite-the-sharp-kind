@@ -55,10 +55,6 @@ namespace Elite
 
 	internal static class space
 	{
-		extern int flight_climb;
-		extern int flight_roll;
-		extern int flight_speed;
-
 		galaxy_seed destination_planet;
 		internal static int hyper_ready;
 		int hyper_countdown;
@@ -124,8 +120,8 @@ namespace Elite
 			int rotx, rotz;
 			double speed;
 
-			alpha = flight_roll / 256.0;
-			beta = flight_climb / 256.0;
+			alpha = elite.flight_roll / 256.0;
+			beta = elite.flight_climb / 256.0;
 
 			x = obj.location.x;
 			y = obj.location.y;
@@ -163,7 +159,7 @@ namespace Elite
 			y = k2 - z * beta;
 			x = x + alpha * y;
 
-			z = z - flight_speed;
+			z = z - elite.flight_speed;
 
 			obj.location.x = x;
 			obj.location.y = y;
@@ -226,9 +222,9 @@ namespace Elite
 		{
 			disengage_auto_pilot();
 			docked = 1;
-			flight_speed = 0;
-			flight_roll = 0;
-			flight_climb = 0;
+            elite.flight_speed = 0;
+            elite.flight_roll = 0;
+            elite.flight_climb = 0;
 			front_shield = 255;
 			aft_shield = 255;
 			energy = 255;
@@ -378,11 +374,15 @@ namespace Elite
 			}
 
 			if ((myship.cabtemp < 224) || (elite.cmdr.fuel_scoop == 0))
+			{
 				return;
+			}
 
-			elite.cmdr.fuel += flight_speed / 2;
+			elite.cmdr.fuel += elite.flight_speed / 2;
 			if (elite.cmdr.fuel > myship.max_fuel)
+			{
 				elite.cmdr.fuel = myship.max_fuel;
+			}
 
 			alg_main.info_message("Fuel Scoop On");
 		}
@@ -505,13 +505,13 @@ namespace Elite
 				return;
 			}
 
-			if (flight_speed >= 5)
+			if (elite.flight_speed >= 5)
 			{
 				do_game_over();
 				return;
 			}
 
-			flight_speed = 1;
+            elite.flight_speed = 1;
 			damage_ship(5, universe[i].location.z > 0);
 			snd_play_sample(SND.SND_CRASH);
 		}
@@ -808,12 +808,10 @@ namespace Elite
 
 		}
 
-
 		/*
 		 * Display the speed bar.
 		 */
-
-		void display_speed()
+		static void display_speed()
 		{
 			int sx, sy;
 			int i;
@@ -823,9 +821,9 @@ namespace Elite
 			sx = 417;
 			sy = 384 + 9;
 
-			len = ((flight_speed * 64) / myship.max_speed) - 1;
+			len = ((elite.flight_speed * 64) / myship.max_speed) - 1;
 
-			colour = (flight_speed > (myship.max_speed * 2 / 3)) ? GFX_COL_DARK_RED : GFX_COL_GOLD;
+			colour = (elite.flight_speed > (myship.max_speed * 2 / 3)) ? gfx.GFX_COL_DARK_RED : gfx.GFX_COL_GOLD;
 
 			for (i = 0; i < 6; i++)
 			{
@@ -914,9 +912,7 @@ namespace Elite
 				display_dial_bar(e1, 416, 115);
 		}
 
-
-
-		void display_flight_roll()
+		static void display_flight_roll()
 		{
 			int sx, sy;
 			int i;
@@ -925,16 +921,16 @@ namespace Elite
 			sx = 416;
 			sy = 384 + 9 + 14;
 
-			pos = sx - ((flight_roll * 28) / myship.max_roll);
+			pos = sx - ((elite.flight_roll * 28) / myship.max_roll);
 			pos += 32;
 
 			for (i = 0; i < 4; i++)
 			{
-				gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, GFX_COL_GOLD);
+				gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, gfx.GFX_COL_GOLD);
 			}
 		}
 
-		void display_flight_climb()
+		static void display_flight_climb()
 		{
 			int sx, sy;
 			int i;
@@ -943,7 +939,7 @@ namespace Elite
 			sx = 416;
 			sy = 384 + 9 + 14 + 16;
 
-			pos = sx + ((flight_climb * 28) / myship.max_climb);
+			pos = sx + ((elite.flight_climb * 28) / myship.max_climb);
 			pos += 32;
 
 			for (i = 0; i < 4; i++)
@@ -1018,34 +1014,42 @@ namespace Elite
 				gfx_draw_sprite(IMG_BIG_E, 115, 490);
 		}
 
-		void increase_flight_roll()
+		static void increase_flight_roll()
 		{
-			if (flight_roll < myship.max_roll)
-				flight_roll++;
+			if (elite.flight_roll < myship.max_roll)
+			{
+                elite.flight_roll++;
+			}
 		}
 
 
-		void decrease_flight_roll()
+		static void decrease_flight_roll()
 		{
-			if (flight_roll > -myship.max_roll)
-				flight_roll--;
+			if (elite.flight_roll > -myship.max_roll)
+			{
+				elite.flight_roll--;
+			}
 		}
 
 
-		void increase_flight_climb()
+		static void increase_flight_climb()
 		{
-			if (flight_climb < myship.max_climb)
-				flight_climb++;
+			if (elite.flight_climb < myship.max_climb)
+			{
+                elite.flight_climb++;
+			}
 		}
 
-		void decrease_flight_climb()
+		static void decrease_flight_climb()
 		{
-			if (flight_climb > -myship.max_climb)
-				flight_climb--;
+			if (elite.flight_climb > -myship.max_climb)
+			{
+				elite.flight_climb--;
+			}
 		}
 
 
-		void start_hyperspace()
+		static void start_hyperspace()
 		{
 			if (hyper_ready)
 				return;
@@ -1138,9 +1142,9 @@ namespace Elite
 			docked_planet.b ^= 31;
 			in_battle = 1;
 
-			flight_speed = 12;
-			flight_roll = 0;
-			flight_climb = 0;
+            elite.flight_speed = 12;
+            elite.flight_roll = 0;
+            elite.flight_climb = 0;
 			create_new_stars();
 			clear_universe();
 
@@ -1173,7 +1177,7 @@ namespace Elite
 				elite.cmdr.fuel -= hyper_distance;
 				elite.cmdr.legal_status /= 2;
 
-				if ((random.rand255() > 253) || (flight_climb == myship.max_climb))
+				if ((random.rand255() > 253) || (elite.flight_climb == myship.max_climb))
 				{
 					enter_witchspace();
 					return;
@@ -1186,9 +1190,9 @@ namespace Elite
 			planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
 			generate_stock_market();
 
-			flight_speed = 12;
-			flight_roll = 0;
-			flight_climb = 0;
+            elite.flight_speed = 12;
+            elite.flight_roll = 0;
+            elite.flight_climb = 0;
 			create_new_stars();
 			clear_universe();
 
@@ -1285,9 +1289,9 @@ namespace Elite
 			Matrix rotmat;
 
 			docked = 0;
-			flight_speed = 12;
-			flight_roll = -15;
-			flight_climb = 0;
+            elite.flight_speed = 12;
+            elite.flight_roll = -15;
+            elite.flight_climb = 0;
 			elite.cmdr.legal_status |= trade.carrying_contraband();
 			create_new_stars();
 			swat.clear_universe();

@@ -23,47 +23,56 @@
 
 namespace Elite
 {
-    internal static class sound
+	using Elite.Enums;
+
+	internal static class sound
     {
-		#define NUM_SAMPLES 14 
+		const int NUM_SAMPLES = 14;
 
-				extern DATAFILE *datafile;
+		extern DATAFILE *datafile;
 
-		static int sound_on;
+		static bool sound_on;
 
 		struct sound_sample
 		{
- 			SAMPLE *sample;
-			char filename[256];
-			int runtime;
-			int timeleft;
+ 			internal SAMPLE *sample;
+            internal string filename;
+            internal int runtime;
+            internal int timeleft;
+
+			internal sound_sample(SAMPLE sample, string filename, int runtime, int timeleft)
+			{
+				this.sample = sample;
+				this.filename = filename;
+				this.runtime = runtime;
+				this.timeleft = timeleft;
+			}
 		};
 
-		struct sound_sample sample_list[NUM_SAMPLES] =
+		static sound_sample[] sample_list = new sound_sample[NUM_SAMPLES]
 		{
-			{NULL, "launch.wav",    32, 0},
-			{NULL, "crash.wav",      7, 0},
-			{NULL, "dock.wav",      36, 0},
-			{NULL, "gameover.wav",  24, 0},
-			{NULL, "pulse.wav",      4, 0},
-			{NULL, "hitem.wav",		 4, 0},
-			{NULL, "explode.wav",	23, 0},
-			{NULL, "ecm.wav",		23, 0},
-			{NULL, "missile.wav",	25, 0},
-			{NULL, "hyper.wav",	    37, 0},
-			{NULL, "incom1.wav",	 4, 0},
-			{NULL, "incom2.wav",	 5, 0},
-			{NULL, "beep.wav",		 2, 0},
-			{NULL, "boop.wav",		 7, 0},
+			new(null, "launch.wav",    32, 0),
+			new(null, "crash.wav",      7, 0),
+			new(null, "dock.wav",      36, 0),
+			new(null, "gameover.wav",  24, 0),
+			new(null, "pulse.wav",      4, 0),
+			new(null, "hitem.wav",      4, 0),
+			new(null, "explode.wav",   23, 0),
+			new(null, "ecm.wav",       23, 0),
+			new(null, "missile.wav",   25, 0),
+			new(null, "hyper.wav",     37, 0),
+			new(null, "incom1.wav",     4, 0),
+			new(null, "incom2.wav",     5, 0),
+			new(null, "beep.wav",       2, 0),
+			new(null, "boop.wav",       7, 0),
 		};
  
- 
-		void snd_sound_startup ()
+		static void snd_sound_startup()
 		{
 			int i;
 
  			/* Install a sound driver.. */
-			sound_on = 1;
+			sound_on = true;
 	
 			if (install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, ".") != 0)
 			{
@@ -78,14 +87,15 @@ namespace Elite
 				sample_list[i].sample = load_sample(sample_list[i].filename);
 			}
 		}
- 
 
-		void snd_sound_shutdown ()
+		static void snd_sound_shutdown ()
 		{
 			int i;
 
 			if (!sound_on)
+			{
 				return;
+			}
 
 			for (i = 0; i < NUM_SAMPLES; i++)
 			{
@@ -97,22 +107,22 @@ namespace Elite
 			}
 		}
 
-
-		void snd_play_sample (int sample_no)
+		static void snd_play_sample (int sample_no)
 		{
 			if (!sound_on)
+			{
 				return;
+			}
 
 			if (sample_list[sample_no].timeleft != 0)
 				return;
 
 			sample_list[sample_no].timeleft = sample_list[sample_no].runtime;
 		
-			play_sample (sample_list[sample_no].sample, 255, 128, 1000, FALSE);
+			play_sample(sample_list[sample_no].sample, 255, 128, 1000, false);
 		}
 
-
-		void snd_update_sound ()
+		static void snd_update_sound()
 		{
 			int i;
 	
@@ -123,29 +133,31 @@ namespace Elite
 			}
 		}
 
-
-		void snd_play_midi (int midi_no, int repeat)
+		static void snd_play_midi(SND midi_no, int repeat)
 		{
 			if (!sound_on)
+			{
 				return;
-	
+			}
+
 			switch (midi_no)
 			{
-				case SND_ELITE_THEME:
-					play_midi (datafile[THEME].dat, repeat);
+				case SND.SND_ELITE_THEME:
+					play_midi(datafile[THEME].dat, repeat);
 					break;
 		
-				case SND_BLUE_DANUBE:
-					play_midi (datafile[DANUBE].dat, repeat);
+				case SND.SND_BLUE_DANUBE:
+					play_midi(datafile[DANUBE].dat, repeat);
 					break;
 			}
 		}
 
-
-		void snd_stop_midi ()
+		static void snd_stop_midi()
 		{
-			if (sound_on);
-				play_midi (NULL, TRUE);
+			if (sound_on)
+			{
+				play_midi(null, true);
+			}
 		}
 	}
 }

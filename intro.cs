@@ -90,7 +90,7 @@ namespace Elite
 
 			gfx_clear_display();
 
-			flight_roll = 1;
+            elite.flight_roll = 1;
 			update_universe();
 
 			gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
