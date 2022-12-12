@@ -639,8 +639,8 @@ namespace Elite
 			{
 				if (i == 40)
 				{
-                    space.universe[newship].flags |= FLG_DEAD;
-					snd_play_sample (SND_EXPLODE);
+                    space.universe[newship].flags |= FLG.FLG_DEAD;
+					snd_play_sample(SND_EXPLODE);
 				}
 
 				gfx_set_clip_region (1, 1, 510, 383);

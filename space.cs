@@ -50,6 +50,7 @@ using EliteLib;
 
 namespace Elite
 {
+	using Elite.Enums;
 	using Elite.Structs;
 
 	internal static class space
@@ -114,7 +115,7 @@ namespace Elite
 		 * Update an objects location in the universe.
 		 */
 
-		void move_univ_object(univ_object* obj)
+		static void move_univ_object(ref univ_object obj)
 		{
 			double x, y, z;
 			double k2;
@@ -173,9 +174,10 @@ namespace Elite
 			rotate_vec(&obj.rotmat[1], alpha, beta);
 			rotate_vec(&obj.rotmat[0], alpha, beta);
 
-			if (obj.flags & FLG_DEAD)
+			if (obj.flags.HasFlag(FLG.FLG_DEAD))
+			{
 				return;
-
+			}
 
 			rotx = obj.rotx;
 			rotz = obj.rotz;
@@ -596,10 +598,12 @@ namespace Elite
 
 				if (type != 0)
 				{
-					if (universe[i].flags & FLG_REMOVE)
+					if (universe[i].flags.HasFlag(FLG.FLG_REMOVE))
 					{
 						if (type == SHIP_VIPER)
+						{
 							elite.cmdr.legal_status |= 64;
+						}
 
 						bounty = ship_list[type].bounty;
 
@@ -614,13 +618,13 @@ namespace Elite
 						continue;
 					}
 
-					if ((detonate_bomb) && ((universe[i].flags & FLG_DEAD) == 0) &&
+					if ((detonate_bomb) && ((!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
 						(type != SHIP_PLANET) && (type != SHIP_SUN) &&
 						(type != SHIP_CONSTRICTOR) && (type != SHIP_COUGAR) &&
 						(type != SHIP_CORIOLIS) && (type != SHIP_DODEC))
 					{
 						snd_play_sample(SND_EXPLODE);
-						universe[i].flags |= FLG_DEAD;
+						universe[i].flags |= FLG.FLG_DEAD;
 					}
 
 					if ((current_screen != SCR_INTRO_ONE) &&
@@ -678,9 +682,9 @@ namespace Elite
 					universe[i].exp_seed = flip.exp_seed;
 					universe[i].exp_delta = flip.exp_delta;
 
-					universe[i].flags &= ~FLG_FIRING;
+					universe[i].flags &= ~FLG.FLG_FIRING;
 
-					if (universe[i].flags & FLG_DEAD)
+					if (universe[i].flags & FLG.FLG_DEAD)
 						continue;
 
 					check_target(i, &flip);
@@ -708,9 +712,11 @@ namespace Elite
 			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
 			{
 				if ((universe[i].type <= 0) ||
-					(universe[i].flags & FLG_DEAD) ||
-					(universe[i].flags & FLG_CLOAKED))
+					universe[i].flags.HasFlag(FLG.FLG_DEAD) ||
+					universe[i].flags.HasFlag(FLG.FLG_CLOAKED))
+				{
 					continue;
+				}
 
 				x = universe[i].location.x / 256;
 				y = universe[i].location.y / 256;
@@ -728,7 +734,7 @@ namespace Elite
 				y1 += scanner_cy;
 				y2 += scanner_cy;
 
-				colour = (universe[i].flags & FLG_HOSTILE) ? GFX_COL_YELLOW_5 : GFX_COL_WHITE;
+				colour = universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL_YELLOW_5 : GFX_COL_WHITE;
 
 				switch (universe[i].type)
 				{

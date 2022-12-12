@@ -28,6 +28,7 @@
 # include "random.h"
 
 using Elite;
+using Elite.Enums;
 using Elite.Structs;
 using EliteLib;
 
@@ -56,7 +57,7 @@ namespace Elite
 		 *
 		 */
 
-		void draw_wireframe_ship (univ_object *univ)
+		static void draw_wireframe_ship (univ_object *univ)
 		{
 			Matrix trans_mat;
 			int i;
@@ -157,7 +158,7 @@ namespace Elite
 			}
 
 
-			if (univ.flags & FLG_FIRING)
+			if (univ.flags & FLG.FLG_FIRING)
 			{
 				lasv = ship_list[univ.type].front_laser;
 				gfx_draw_line (point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
@@ -174,20 +175,20 @@ namespace Elite
 		 * Check for hidden surface supplied by T.Harte.
 		 */
 
-		void draw_solid_ship (struct univ_object *univ)
+		void draw_solid_ship (ref univ_object univ)
 		{
 			int i;
 			int sx,sy;
 			double rx,ry,rz;
-			struct vector vec;
-			struct vector camera_vec;
+			Vector vec;
+			Vector camera_vec;
 			double tmp;
-			struct ship_face *face_data;
+			ship_face *face_data;
 			int num_faces;
 			int num_points;
 			int poly_list[16];
 			int zavg;
-			struct ship_solid *solid_data;
+			ship_solid *solid_data;
 			struct ship_data *ship;
 			Matrix trans_mat;
 			int lasv;
@@ -206,21 +207,21 @@ namespace Elite
 			num_faces = solid_data.num_faces;
 			face_data = solid_data.face_data;
 
-/*
-    for (i = 0; i < num_faces; i++)
-    {
-        vec.x = face_data[i].norm_x;
-        vec.y = face_data[i].norm_y;
-        vec.z = face_data[i].norm_z;
+			/*
+				for (i = 0; i < num_faces; i++)
+				{
+					vec.x = face_data[i].norm_x;
+					vec.y = face_data[i].norm_y;
+					vec.z = face_data[i].norm_z;
 
-        vec = VectorMaths.unit_vector (&vec);
-        cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
+					vec = VectorMaths.unit_vector (&vec);
+					cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
 
-        visible[i] = (cos_angle < -0.13);
-    }
-*/
+					visible[i] = (cos_angle < -0.13);
+				}
+			*/
 
-tmp = trans_mat[0].y;
+			tmp = trans_mat[0].y;
 			trans_mat[0].y = trans_mat[1].x;
 			trans_mat[1].x = tmp;
 
@@ -330,7 +331,7 @@ tmp = trans_mat[0].y;
 				}
 			}
 
-			if (univ.flags & FLG_FIRING)
+			if (univ.flags & FLG.FLG_FIRING)
 			{
 				lasv = ship_list[univ.type].front_laser;
 				col = (univ.type == SHIP_VIPER) ? GFX_COL_CYAN : GFX_COL_WHITE; 
@@ -813,7 +814,7 @@ tmp = trans_mat[0].y;
 
 
 
-		static void draw_explosion (univ_object *univ)
+		static void draw_explosion(ref univ_object univ)
 		{
 			int i;
 			int z;
@@ -838,7 +839,7 @@ tmp = trans_mat[0].y;
 	
 			if (univ.exp_delta > 251)
 			{
-				univ.flags |= FLG_REMOVE;
+				univ.flags |= FLG.FLG_REMOVE;
 				return;
 			}
 	
@@ -980,14 +981,14 @@ tmp = trans_mat[0].y;
 				(current_screen != SCR_GAME_OVER) && (current_screen != SCR_ESCAPE_POD))
 				return;
 	
-			if ((ship.flags & FLG_DEAD) && !(ship.flags & FLG_EXPLOSION))
+			if ((ship.flags & FLG.FLG_DEAD) && !(ship.flags & FLG.FLG_EXPLOSION))
 			{
-				ship.flags |= FLG_EXPLOSION;
+				ship.flags |= FLG.FLG_EXPLOSION;
 				ship.exp_seed = randint();
 				ship.exp_delta = 18; 
 			}
 
-			if (ship.flags & FLG_EXPLOSION)
+			if (ship.flags & FLG.FLG_EXPLOSION)
 			{
 				draw_explosion (ship);
 				return;

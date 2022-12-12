@@ -41,6 +41,7 @@ using Elite;
 
 namespace Elite
 {
+	using Elite.Enums;
 	using Elite.Structs;
 
 	internal static class pilot
@@ -50,7 +51,7 @@ namespace Elite
 		 * Fly to a given point in space.
 		 */
 
-		void fly_to_vector(univ_object *ship, Vector vec)
+		static void fly_to_vector(ref univ_object ship, Vector vec)
 		{
 			Vector nvec;
 			double direction;
@@ -64,12 +65,12 @@ namespace Elite
 			cnt2 = 0.8055;
 
 			nvec = VectorMaths.unit_vector(&vec);
-			direction = VectorMaths.vector_dot_product(&nvec, &ship.rotmat[2]); 
+			direction = VectorMaths.vector_dot_product(&nvec, ship.rotmat[2]); 
 	
 			if (direction < -0.6666)
 				rat2 = 0;
 
-			dir = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[1]);
+			dir = VectorMaths.vector_dot_product (&nvec, ship.rotmat[1]);
 
 			if (direction < -0.861)
 			{
@@ -80,18 +81,18 @@ namespace Elite
 
 			ship.rotx = 0;
 	
-			if ((fabs(dir) * 2) >= rat2)
+			if ((Math.Abs(dir) * 2) >= rat2)
 			{
 				ship.rotx = (dir < 0) ? rat : -rat;
 			}
 		
-			if (abs(ship.rotz) < 16)
+			if (Math.Abs(ship.rotz) < 16)
 			{
-				dir = VectorMaths.vector_dot_product (&nvec, &ship.rotmat[0]);
+				dir = VectorMaths.vector_dot_product (&nvec, ship.rotmat[0]);
 
 				ship.rotz = 0;
 
-				if ((fabs(dir) * 2) >= rat2)
+				if ((Math.Abs(dir) * 2) >= rat2)
 				{
 					ship.rotz = (dir < 0) ? rat : -rat;
 
@@ -119,7 +120,7 @@ namespace Elite
 		 * Fly towards the planet.
 		 */
 
-		void fly_to_planet (univ_object *ship)
+		void fly_to_planet(ref univ_object ship)
 		{
 			Vector vec;
 
@@ -127,7 +128,7 @@ namespace Elite
 			vec.y = space.universe[0].location.y - ship.location.y;
 			vec.z = space.universe[0].location.z - ship.location.z;
 
-			fly_to_vector (ship, vec);	
+			fly_to_vector(ship, vec);	
 		}
 
 
@@ -235,17 +236,17 @@ namespace Elite
 		 * Fly a ship to the planet or to the space station and dock it.
 		 */
 
-		void auto_pilot_ship (univ_object *ship)
+		void auto_pilot_ship(ref univ_object ship)
 		{
 			Vector diff;
 			Vector vec;
 			double dist;
 			double dir;
 	
-			if ((ship.flags & FLG_FLY_TO_PLANET) ||
+			if (ship.flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
 				((ship_count[SHIP_CORIOLIS] == 0) && (ship_count[SHIP_DODEC] == 0)))
 			{
-				fly_to_planet (ship);
+				fly_to_planet(ship);
 				return;
 			}
 
@@ -253,20 +254,20 @@ namespace Elite
 			diff.y = ship.location.y - space.universe[1].location.y;	
 			diff.z = ship.location.z - space.universe[1].location.z;	
 
-			dist = sqrt (diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+			dist = Math.Sqrt(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
 
 			if (dist < 160)
 			{
-				ship.flags |= FLG_REMOVE;		// Ship has docked.
+				ship.flags |= FLG.FLG_REMOVE;		// Ship has docked.
 				return;
 			}	
 	
-			vec = VectorMaths.unit_vector (&diff);	
+			vec = VectorMaths.unit_vector(&diff);	
 			dir = VectorMaths.vector_dot_product (space.universe[1].rotmat[2], &vec);
 
 			if (dir < 0.9722)
 			{
-				fly_to_station_front (ship);
+				fly_to_station_front(ship);
 				return;
 			}
 
