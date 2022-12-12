@@ -948,32 +948,30 @@ namespace Elite
 			set_rand_seed (old_seed);
 		}
 
-
-
 		/*
 		 * Draws an object in the universe.
 		 * (Ship, Planet, Sun etc).
 		 */
-
-		void draw_ship (univ_object *ship)
+		static void draw_ship (ref univ_object ship)
 		{
-
-			if ((current_screen != SCR_FRONT_VIEW) && (current_screen != SCR_REAR_VIEW) && 
-				(current_screen != SCR_LEFT_VIEW) && (current_screen != SCR_RIGHT_VIEW) &&
-				(current_screen != SCR_INTRO_ONE) && (current_screen != SCR_INTRO_TWO) &&
-				(current_screen != SCR_GAME_OVER) && (current_screen != SCR_ESCAPE_POD))
+			if ((elite.current_screen != SCR.SCR_FRONT_VIEW) && (elite.current_screen != SCR.SCR_REAR_VIEW) &&
+				(elite.current_screen != SCR.SCR_LEFT_VIEW) && (elite.current_screen != SCR.SCR_RIGHT_VIEW) &&
+				(elite.current_screen != SCR.SCR_INTRO_ONE) && (elite.current_screen != SCR.SCR_INTRO_TWO) &&
+				(elite.current_screen != SCR.SCR_GAME_OVER) && (elite.current_screen != SCR.SCR_ESCAPE_POD))
+			{
 				return;
-	
-			if ((ship.flags & FLG.FLG_DEAD) && !(ship.flags & FLG.FLG_EXPLOSION))
+			}
+
+			if (ship.flags.HasFlag(FLG.FLG_DEAD) && !ship.flags.HasFlag(FLG.FLG_EXPLOSION))
 			{
 				ship.flags |= FLG.FLG_EXPLOSION;
 				ship.exp_seed = randint();
 				ship.exp_delta = 18; 
 			}
 
-			if (ship.flags & FLG.FLG_EXPLOSION)
+			if (ship.flags.HasFlag(FLG.FLG_EXPLOSION))
 			{
-				draw_explosion (ship);
+				draw_explosion(ref ship);
 				return;
 			}
 	
@@ -982,24 +980,28 @@ namespace Elite
 
 			if (ship.type == SHIP_PLANET)
 			{
-				draw_planet (ship);
+				draw_planet(ship);
 				return;
 			}
 
 			if (ship.type == SHIP_SUN)
 			{
-				draw_sun (ship);
+				draw_sun(ship);
 				return;
 			}
 	
-			if ((fabs(ship.location.x) > ship.location.z) ||	/* Check for field of vision. */
-				(fabs(ship.location.y) > ship.location.z))
+			if ((Math.Abs(ship.location.x) > ship.location.z) ||	/* Check for field of vision. */
+				(Math.Abs(ship.location.y) > ship.location.z))
 				return;
-		
+
 			if (wireframe)
-				draw_wireframe_ship (ship);
+			{
+				draw_wireframe_ship(ref ship);
+			}
 			else
-				draw_solid_ship (ship);
+			{
+				draw_solid_ship(ref ship);
+			}
 		}
 	}
 }

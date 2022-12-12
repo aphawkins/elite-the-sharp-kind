@@ -13,6 +13,7 @@
  */
 
 using Elite;
+using Elite.Enums;
 using Elite.Structs;
 
 namespace Elite
@@ -48,7 +49,7 @@ namespace Elite
 			int radius;
 			int cross_size;
 
-			if (current_screen == SCR.SCR_GALACTIC_CHART)
+			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
 				radius = elite.cmdr.fuel / 4 * gfx.GFX_SCALE;
 				cross_size = 7 * gfx.GFX_SCALE;
@@ -104,15 +105,15 @@ namespace Elite
 			char planet_name[16];
 			char str[32];
 
-			if (current_screen == SCR_GALACTIC_CHART)
+			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				px = cross_x / GFX_SCALE;
-				py = (cross_y - ((18 * GFX_SCALE) + 1)) * (2 / GFX_SCALE);
+				px = cross_x / gfx.GFX_SCALE;
+				py = (cross_y - ((18 * gfx.GFX_SCALE) + 1)) * (2 / gfx.GFX_SCALE);
 			}
 			else
 			{
-				px = ((cross_x - GFX_X_CENTRE) / (4 * GFX_SCALE)) + docked_planet.d;
-				py = ((cross_y - GFX_Y_CENTRE) / (2 * GFX_SCALE)) + docked_planet.b;
+				px = ((cross_x - gfx.GFX_X_CENTRE) / (4 * gfx.GFX_SCALE)) + docked_planet.d;
+				py = ((cross_y - gfx.GFX_Y_CENTRE) / (2 * gfx.GFX_SCALE)) + docked_planet.b;
 			}
 
 			hyperspace_planet = find_planet (px, py);
@@ -125,35 +126,35 @@ namespace Elite
 
 			show_distance (356, docked_planet, hyperspace_planet);
 
-			if (current_screen == SCR_GALACTIC_CHART)
+			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				cross_x = hyperspace_planet.d * GFX_SCALE;
-				cross_y = hyperspace_planet.b / (2 / GFX_SCALE) + (18 * GFX_SCALE) + 1;
+				cross_x = hyperspace_planet.d * gfx.GFX_SCALE;
+				cross_y = hyperspace_planet.b / (2 / gfx.GFX_SCALE) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
-				cross_x = ((hyperspace_planet.d - docked_planet.d) * (4 * GFX_SCALE)) + GFX_X_CENTRE;
-				cross_y = ((hyperspace_planet.b - docked_planet.b) * (2 * GFX_SCALE)) + GFX_Y_CENTRE;
+				cross_x = ((hyperspace_planet.d - docked_planet.d) * (4 * gfx.GFX_SCALE)) + gfx.GFX_X_CENTRE;
+				cross_y = ((hyperspace_planet.b - docked_planet.b) * (2 * gfx.GFX_SCALE)) + gfx.GFX_Y_CENTRE;
 			}
 		}
 
 		static void move_cursor_to_origin ()
 		{
-			if (current_screen == SCR_GALACTIC_CHART)
+			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				cross_x = docked_planet.d * GFX_SCALE;
-				cross_y = docked_planet.b / (2 / GFX_SCALE) + (18 * GFX_SCALE) + 1;
+				cross_x = docked_planet.d * gfx.GFX_SCALE;
+				cross_y = docked_planet.b / (2 / gfx.GFX_SCALE) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
-				cross_x = GFX_X_CENTRE;
-				cross_y = GFX_Y_CENTRE;
+				cross_x = gfx.GFX_X_CENTRE;
+				cross_y = gfx.GFX_Y_CENTRE;
 			}
 
 			show_distance_to_planet();
 		}
 
-		static void find_planet_by_name (char *find_name)
+		static void find_planet_by_name (string find_name)
 		{
 			int i;
 			galaxy_seed glx;
@@ -195,15 +196,15 @@ namespace Elite
 
 			show_distance (356, docked_planet, hyperspace_planet);
 
-			if (current_screen == SCR_GALACTIC_CHART)
+			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				cross_x = hyperspace_planet.d * GFX_SCALE;
-				cross_y = hyperspace_planet.b / (2 / GFX_SCALE) + (18 * GFX_SCALE) + 1;
+				cross_x = hyperspace_planet.d * gfx.GFX_SCALE;
+				cross_y = hyperspace_planet.b / (2 / gfx.GFX_SCALE) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
-				cross_x = ((hyperspace_planet.d - docked_planet.d) * (4 * GFX_SCALE)) + GFX_X_CENTRE;
-				cross_y = ((hyperspace_planet.b - docked_planet.b) * (2 * GFX_SCALE)) + GFX_Y_CENTRE;
+				cross_x = ((hyperspace_planet.d - docked_planet.d) * (4 * gfx.GFX_SCALE)) + gfx.GFX_X_CENTRE;
+				cross_y = ((hyperspace_planet.b - docked_planet.b) * (2 * gfx.GFX_SCALE)) + gfx.GFX_Y_CENTRE;
 			}
 		}
 
@@ -218,7 +219,7 @@ namespace Elite
 			int row;
 			int blob_size;
 
-			current_screen = SCR.SCR_SHORT_RANGE;
+            elite.current_screen = SCR.SCR_SHORT_RANGE;
 
 			gfx_clear_display();
 
@@ -310,9 +311,8 @@ namespace Elite
 			galaxy_seed glx;
 			char str[64];
 			int px,py;
-	
 
-			current_screen = SCR.SCR_GALACTIC_CHART;
+            elite.current_screen = SCR.SCR_GALACTIC_CHART;
 
 			gfx_clear_display();
 
@@ -359,7 +359,7 @@ namespace Elite
 			string description;
 			planet_data hyper_planet_data = new();
 
-			current_screen = SCR.SCR_PLANET_DATA;
+            elite.current_screen = SCR.SCR_PLANET_DATA;
 
 			gfx_clear_display();
 
@@ -454,7 +454,7 @@ namespace Elite
 		#define Y_INC			16
 
 
-		static char *condition_txt[] =
+		static string[] condition_txt = new string[]
 		{
 			"Docked",
 			"Green",
@@ -470,8 +470,8 @@ namespace Elite
 			int x,y;
 			int condition;
 			int type;
-	
-			current_screen = SCR_CMDR_STATUS;
+
+            elite.current_screen = SCR.SCR_CMDR_STATUS;
 
 			gfx_clear_display();
 
@@ -786,13 +786,13 @@ namespace Elite
 
 
 
-		void display_market_prices ()
+		static void display_market_prices ()
 		{
 			char str[100];
 			char planet_name[16];
 			int i;
 
-			current_screen = SCR.SCR_MARKET_PRICES;
+            elite.current_screen = SCR.SCR_MARKET_PRICES;
 
 			gfx_clear_display();
 
@@ -826,8 +826,8 @@ namespace Elite
 			int i;
 			int y;
 			char str[80];
-	
-			current_screen = SCR.SCR_INVENTORY;
+
+            elite.current_screen = SCR.SCR_INVENTORY;
 
 			gfx_clear_display();
 			gfx_display_centre_text (10, "INVENTORY", 140, gfx.GFX_COL_GOLD);
@@ -1326,7 +1326,7 @@ namespace Elite
 
 		static void equip_ship ()
 		{
-			current_screen = SCR_EQUIP_SHIP;
+			elite.current_screen = SCR.SCR_EQUIP_SHIP;
 
 			gfx_clear_display();
 			gfx_display_centre_text (10, "EQUIP SHIP", 140, gfx.GFX_COL_GOLD);

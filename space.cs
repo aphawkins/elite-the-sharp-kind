@@ -495,15 +495,13 @@ namespace Elite
 			add_new_station(sx, sy, sz, rotmat);
 		}
 
-
-
-		void check_docking(int i)
+		static void check_docking(int i)
 		{
 			if (is_docking(i))
 			{
-				snd_play_sample(SND_DOCK);
+				snd_play_sample(SND.SND_DOCK);
 				dock_player();
-				current_screen = SCR_BREAK_PATTERN;
+                elite.current_screen = SCR.SCR_BREAK_PATTERN;
 				return;
 			}
 
@@ -515,16 +513,15 @@ namespace Elite
 
 			flight_speed = 1;
 			damage_ship(5, universe[i].location.z > 0);
-			snd_play_sample(SND_CRASH);
+			snd_play_sample(SND.SND_CRASH);
 		}
 
-
-		void switch_to_view(univ_object* flip)
+		static void switch_to_view(ref univ_object flip)
 		{
 			double tmp;
 
-			if ((current_screen == SCR_REAR_VIEW) ||
-				(current_screen == SCR_GAME_OVER))
+			if ((elite.current_screen == SCR.SCR_REAR_VIEW) ||
+				(elite.current_screen == SCR.SCR_GAME_OVER))
 			{
 				flip.location.x = -flip.location.x;
 				flip.location.z = -flip.location.z;
@@ -540,8 +537,7 @@ namespace Elite
 				return;
 			}
 
-
-			if (current_screen == SCR_LEFT_VIEW)
+			if (elite.current_screen == SCR.SCR_LEFT_VIEW)
 			{
 				tmp = flip.location.x;
 				flip.location.x = flip.location.z;
@@ -564,7 +560,7 @@ namespace Elite
 				return;
 			}
 
-			if (current_screen == SCR_RIGHT_VIEW)
+			if (elite.current_screen == SCR.SCR_RIGHT_VIEW)
 			{
 				tmp = flip.location.x;
 				flip.location.x = -flip.location.z;
@@ -639,10 +635,10 @@ namespace Elite
 						universe[i].flags |= FLG.FLG_DEAD;
 					}
 
-					if ((current_screen != SCR_INTRO_ONE) &&
-						(current_screen != SCR_INTRO_TWO) &&
-						(current_screen != SCR_GAME_OVER) &&
-						(current_screen != SCR_ESCAPE_POD))
+					if ((elite.current_screen != SCR.SCR_INTRO_ONE) &&
+						(elite.current_screen != SCR.SCR_INTRO_TWO) &&
+						(elite.current_screen != SCR.SCR_GAME_OVER) &&
+						(elite.current_screen != SCR.SCR_ESCAPE_POD))
 					{
 						tactics(i);
 					}
@@ -1084,26 +1080,24 @@ namespace Elite
 			disengage_auto_pilot();
 		}
 
-
-
-		void display_hyper_status()
+		static void display_hyper_status()
 		{
 			char str[80];
 
 			sprintf(str, "%d", hyper_countdown);
 
-			if ((current_screen == SCR_FRONT_VIEW) || (current_screen == SCR_REAR_VIEW) ||
-				(current_screen == SCR_LEFT_VIEW) || (current_screen == SCR_RIGHT_VIEW))
+			if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
+				(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW))
 			{
 				gfx_display_text(5, 5, str);
 				if (hyper_galactic)
 				{
-					gfx_display_centre_text(358, "Galactic Hyperspace", 120, GFX_COL_WHITE);
+					gfx_display_centre_text(358, "Galactic Hyperspace", 120, gfx.GFX_COL_WHITE);
 				}
 				else
 				{
 					sprintf(str, "Hyperspace - %s", hyper_name);
-					gfx_display_centre_text(358, str, 120, GFX_COL_WHITE);
+					gfx_display_centre_text(358, str, 120, gfx.GFX_COL_WHITE);
 				}
 			}
 			else
@@ -1155,7 +1149,7 @@ namespace Elite
 			for (i = 0; i < nthg; i++)
 				create_thargoid();
 
-			current_screen = SCR_BREAK_PATTERN;
+            elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			snd_play_sample(SND_HYPERSPACE);
 		}
 
@@ -1223,12 +1217,11 @@ namespace Elite
 
 			add_new_ship(SHIP_SUN, px, py, pz, rotmat, 0, 0);
 
-			current_screen = SCR_BREAK_PATTERN;
+            elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			snd_play_sample(SND_HYPERSPACE);
 		}
 
-
-		void countdown_hyperspace()
+		static void countdown_hyperspace()
 		{
 			if (hyper_countdown == 0)
 			{
@@ -1307,24 +1300,21 @@ namespace Elite
 			rotmat[2].z = -rotmat[2].z;
 			add_new_station(0, 0, -256, rotmat);
 
-			current_screen = SCR_BREAK_PATTERN;
+            elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			snd_play_sample(SND_LAUNCH);
 		}
-
-
 
 		/*
 		 * Engage the docking computer.
 		 * For the moment we just do an instant dock if we are in the safe zone.
 		 */
-
-		void engage_docking_computer()
+		static void engage_docking_computer()
 		{
 			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 			{
 				snd_play_sample(SND_DOCK);
 				dock_player();
-				current_screen = SCR_BREAK_PATTERN;
+                elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			}
 		}
 	}

@@ -22,6 +22,7 @@
 
 namespace Elite
 {
+	using Elite.Enums;
 	using Elite.Structs;
 	using EliteLib.Structs;
 
@@ -41,7 +42,7 @@ namespace Elite
 		static int curr_galaxy_num = 1;
 		static int curr_fuel = 70;
 		internal static int carry_flag = 0;
-		internal static int current_screen = 0;
+		internal static SCR current_screen = 0;
         internal static bool witchspace;
 
 		internal static int wireframe = 0;

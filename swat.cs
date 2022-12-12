@@ -926,30 +926,31 @@ namespace Elite
 		}
 
 
-		int fire_laser ()
+		static int fire_laser ()
 		{
 			if ((laser_counter == 0) && (laser_temp < 242))
 			{
-				switch (current_screen)
+				switch (elite.current_screen)
 				{
-					case SCR_FRONT_VIEW:
+					case SCR.SCR_FRONT_VIEW:
 						laser = elite.cmdr.front_laser;
 						break;
 			
-					case SCR_REAR_VIEW:
+					case SCR.SCR_REAR_VIEW:
 						laser = elite.cmdr.rear_laser;
 						break;
 					
-					case SCR_RIGHT_VIEW:
+					case SCR.SCR_RIGHT_VIEW:
 						laser = elite.cmdr.right_laser;
 						break;
 					
-					case SCR_LEFT_VIEW:
+					case SCR.SCR_LEFT_VIEW:
 						laser = elite.cmdr.left_laser;
 						break;
 				
 					default:
 						laser = 0;
+						break;
 				}
 
 				if (laser != 0)
@@ -1260,20 +1261,22 @@ namespace Elite
 		}
 
 
-		void abandon_ship ()
+		static void abandon_ship ()
 		{
 			int i;
 
 			elite.cmdr.escape_pod = 0;
 			elite.cmdr.legal_status = 0;
 			elite.cmdr.fuel = myship.max_fuel;
-	
+
 			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
+			{
 				elite.cmdr.current_cargo[i] = 0;
-	
-			snd_play_sample (SND_DOCK);					
+			}
+
+			snd_play_sample(SND.SND_DOCK);					
 			dock_player();
-			current_screen = SCR_BREAK_PATTERN;
+            elite.current_screen = SCR.SCR_BREAK_PATTERN;
 		}
 	}
 }

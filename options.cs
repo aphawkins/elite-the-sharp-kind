@@ -62,20 +62,20 @@ struct setting
 			char* value[5];
 		};
 
-		static struct setting setting_list[NUM_SETTINGS] =
-{
-	{"Graphics:",		{"Solid", "Wireframe", "", "", ""}},
-	{"Anti Alias:",		{"Off", "On", "", "", ""}},		
-	{"Planet Style:",	{"Wireframe", "Green", "SNES", "Fractal", ""}},
-	{"Planet Desc.:",	{"BBC", "MSX", "", "", ""}},
-	{"Instant Dock:",	{"Off", "On", "", "", ""}},	
-	{"Save Settings",	{"", "", "", "", ""}}
-};
+		static setting[] setting_list = new setting[NUM_SETTINGS]
+		{
+			{"Graphics:",		{"Solid", "Wireframe", "", "", ""}},
+			{"Anti Alias:",		{"Off", "On", "", "", ""}},		
+			{"Planet Style:",	{"Wireframe", "Green", "SNES", "Fractal", ""}},
+			{"Planet Desc.:",	{"BBC", "MSX", "", "", ""}},
+			{"Instant Dock:",	{"Off", "On", "", "", ""}},	
+			{"Save Settings",	{"", "", "", "", ""}}
+		};
 
 
 		static void quit_screen()
 		{
-			current_screen = SCR.SCR_QUIT;
+            elite.current_screen = SCR.SCR_QUIT;
 
 			gfx_clear_display();
 			gfx_display_centre_text(10, "GAME OPTIONS", 140, gfx.GFX_COL_GOLD);
@@ -249,11 +249,11 @@ struct setting
 		}
 
 
-		void game_settings_screen()
+		static void game_settings_screen()
 		{
 			int i;
 
-			current_screen = SCR_SETTINGS;
+            elite.current_screen = SCR.SCR_SETTINGS;
 
 			gfx_clear_display();
 			gfx_display_centre_text(10, "GAME SETTINGS", 140, gfx.GFX_COL_GOLD);
@@ -350,7 +350,7 @@ struct setting
 		{
 			int i;
 
-			current_screen = SCR.SCR_OPTIONS;
+            elite.current_screen = SCR.SCR_OPTIONS;
 
 			gfx_clear_display();
 			gfx_display_centre_text(10, "GAME OPTIONS", 140, gfx.GFX_COL_GOLD);

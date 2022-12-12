@@ -33,6 +33,7 @@
 
 namespace Elite
 {
+	using Elite.Enums;
 	using Elite.Structs;
 	using EliteLib;
 
@@ -185,11 +186,11 @@ namespace Elite
 
 		static void constrictor_mission_brief()
 		{
-			Matrix rotmat;
+			Vector[] rotmat = new Vector[3];
 
 			elite.cmdr.mission = 1;
 
-			current_screen = SCR_FRONT_VIEW;
+            elite.current_screen = SCR.SCR_FRONT_VIEW;
 
 			gfx_clear_display();
 			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);

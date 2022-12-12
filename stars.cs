@@ -270,7 +270,7 @@ namespace Elite
 			alpha = flight_roll;
 			beta = flight_climb;
 
-			if (current_screen == SCR.SCR_LEFT_VIEW)
+			if (elite.current_screen == SCR.SCR_LEFT_VIEW)
 			{
 				delta = -delta;
 				alpha = -alpha;
@@ -331,7 +331,7 @@ namespace Elite
 				if (Math.Abs(stars[i].x) >= 116)
 				{
 					stars[i].y = random.rand255() - 128;
-					stars[i].x = (current_screen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
+					stars[i].x = (elite.current_screen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
 					stars[i].z = random.rand255() | 8;
 				}
 				else if (Math.Abs(stars[i].y) >= 116)
@@ -368,7 +368,7 @@ namespace Elite
 
 		static void update_starfield()
 		{
-			switch (current_screen)
+			switch (elite.current_screen)
 			{
 				case SCR.SCR_FRONT_VIEW:
 				case SCR.SCR_INTRO_ONE:
