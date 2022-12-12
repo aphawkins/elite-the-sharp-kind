@@ -664,7 +664,7 @@ namespace Elite
 
 				}
 
-				warp_stars = 1;
+				Stars.warp_stars = true;
 				gfx_set_clip_region (1, 1, 510, 383);
 				gfx_clear_display();
 				update_starfield();

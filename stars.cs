@@ -12,35 +12,24 @@
  *
  */
 
-# include <stdlib.h>
-# include <math.h>
-
-# include "config.h"
-# include "elite.h" 
-# include "gfx.h"
-# include "vector.h"
-# include "stars.h"
-# include "random.h"
-
 namespace Elite
 {
 	using Elite.Enums;
 
-	internal static class stars
+	internal static class Stars
 	{
-		internal static int warp_stars;
+		internal static bool warp_stars;
 
 		struct star
 		{
-			double x;
-			double y;
-			double z;
+			internal double x;
+            internal double y;
+            internal double z;
 		};
 
-		struct star stars[20];
+		static star[] stars = new star[20];
 
-
-		void create_new_stars()
+		static void create_new_stars()
 		{
 			int i;
 			int nstars;
@@ -54,7 +43,7 @@ namespace Elite
 				stars[i].z = random.rand255() | 0x90;
 			}
 
-			warp_stars = 0;
+            Stars.warp_stars = false;
 		}
 
 		static void front_starfield()
@@ -71,7 +60,7 @@ namespace Elite
 
 			nstars = elite.witchspace ? 3 : 12;
 
-			delta = warp_stars ? 50 : flight_speed;
+			delta = Stars.warp_stars ? 50 : flight_speed;
 			alpha = (double)flight_roll;
 			beta = (double)flight_climb;
 
@@ -89,22 +78,22 @@ namespace Elite
 				sx += 128;
 				sy += 96;
 
-				sx *= GFX_SCALE;
-				sy *= GFX_SCALE;
+				sx *= gfx.GFX_SCALE;
+				sy *= gfx.GFX_SCALE;
 
-				if ((!warp_stars) &&
-					(sx >= GFX_VIEW_TX) && (sx <= GFX_VIEW_BX) &&
-					(sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY))
+				if ((!Stars.warp_stars) &&
+					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
+					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-					gfx_plot_pixel(sx, sy, GFX_COL_WHITE);
+					gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
-						gfx_plot_pixel(sx + 1, sy, GFX_COL_WHITE);
+						gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0x90)
 					{
-						gfx_plot_pixel(sx, sy + 1, GFX_COL_WHITE);
-						gfx_plot_pixel(sx + 1, sy + 1, GFX_COL_WHITE);
+						gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+						gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 
@@ -131,9 +120,9 @@ namespace Elite
 				stars[i].x = xx;
 
 
-				if (warp_stars)
+				if (Stars.warp_stars)
 				{
-					alg_gfx.gfx_draw_line(sx, sy, (xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE);
+					alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
 				}
 
 				sx = xx;
@@ -150,10 +139,8 @@ namespace Elite
 
 			}
 
-			warp_stars = 0;
+            Stars.warp_stars = false;
 		}
-
-
 
 		static void rear_starfield()
 		{
@@ -169,7 +156,7 @@ namespace Elite
 
 			nstars = elite.witchspace ? 3 : 12;
 
-			delta = warp_stars ? 50 : flight_speed;
+			delta = Stars.warp_stars ? 50 : flight_speed;
 			alpha = -flight_roll;
 			beta = -flight_climb;
 
@@ -187,22 +174,22 @@ namespace Elite
 				sx += 128;
 				sy += 96;
 
-				sx *= GFX_SCALE;
-				sy *= GFX_SCALE;
+				sx *= gfx.GFX_SCALE;
+				sy *= gfx.GFX_SCALE;
 
-				if ((!warp_stars) &&
-					(sx >= GFX_VIEW_TX) && (sx <= GFX_VIEW_BX) &&
-					(sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY))
+				if ((!Stars.warp_stars) &&
+					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
+					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-					gfx_plot_pixel(sx, sy, GFX_COL_WHITE);
+					gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
-						gfx_plot_pixel(sx + 1, sy, GFX_COL_WHITE);
+						gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0x90)
 					{
-						gfx_plot_pixel(sx, sy + 1, GFX_COL_WHITE);
-						gfx_plot_pixel(sx + 1, sy + 1, GFX_COL_WHITE);
+						gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+						gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 
@@ -225,26 +212,26 @@ namespace Elite
 				*/
 				yy = yy + beta;
 
-				if (warp_stars)
+				if (Stars.warp_stars)
 				{
 					ey = yy;
 					ex = xx;
-					ex = (ex + 128) * GFX_SCALE;
-					ey = (ey + 96) * GFX_SCALE;
+					ex = (ex + 128) * gfx.GFX_SCALE;
+					ey = (ey + 96) * gfx.GFX_SCALE;
 
-					if ((sx >= GFX_VIEW_TX) && (sx <= GFX_VIEW_BX) &&
-					   (sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY) &&
-					   (ex >= GFX_VIEW_TX) && (ex <= GFX_VIEW_BX) &&
-					   (ey >= GFX_VIEW_TY) && (ey <= GFX_VIEW_BY))
+					if ((sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
+					   (sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY) &&
+					   (ex >= gfx.GFX_VIEW_TX) && (ex <= gfx.GFX_VIEW_BX) &&
+					   (ey >= gfx.GFX_VIEW_TY) && (ey <= gfx.GFX_VIEW_BY))
 					{
-						alg_gfx.gfx_draw_line(sx, sy, (xx + 128) * GFX_SCALE, (yy + 96) * GFX_SCALE);
+						alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
 					}
 				}
 
 				stars[i].y = yy;
 				stars[i].x = xx;
 
-				if ((zz >= 300) || (abs(yy) >= 110))
+				if ((zz >= 300) || (Math.Abs(yy) >= 110))
 				{
 					stars[i].z = (random.rand255() & 127) + 51;
 
@@ -262,11 +249,10 @@ namespace Elite
 
 			}
 
-			warp_stars = 0;
+            Stars.warp_stars = false;
 		}
 
-
-		void side_starfield()
+		static void side_starfield()
 		{
 			int i;
 			double delta;
@@ -280,11 +266,11 @@ namespace Elite
 
 			nstars = elite.witchspace ? 3 : 12;
 
-			delta = warp_stars ? 50 : flight_speed;
+			delta = Stars.warp_stars ? 50 : flight_speed;
 			alpha = flight_roll;
 			beta = flight_climb;
 
-			if (current_screen == SCR_LEFT_VIEW)
+			if (current_screen == SCR.SCR_LEFT_VIEW)
 			{
 				delta = -delta;
 				alpha = -alpha;
@@ -300,12 +286,12 @@ namespace Elite
 				sx += 128;
 				sy += 96;
 
-				sx *= GFX_SCALE;
-				sy *= GFX_SCALE;
+				sx *= gfx.GFX_SCALE;
+				sy *= gfx.GFX_SCALE;
 
-				if ((!warp_stars) &&
-					(sx >= GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
-					(sy >= GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
+				if ((!Stars.warp_stars) &&
+					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
+					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
 					gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
@@ -337,12 +323,12 @@ namespace Elite
 				stars[i].y = yy;
 				stars[i].x = xx;
 
-				if (warp_stars)
+				if (Stars.warp_stars)
 				{
-                    alg_gfx.gfx_draw_line(sx, sy, (xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE);
+                    alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
 				}
 
-				if (abs(stars[i].x) >= 116)
+				if (Math.Abs(stars[i].x) >= 116)
 				{
 					stars[i].y = random.rand255() - 128;
 					stars[i].x = (current_screen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
@@ -357,9 +343,8 @@ namespace Elite
 
 			}
 
-			warp_stars = 0;
+            Stars.warp_stars = false;
 		}
-
 
 		/*
 		 * When we change view, flip the stars over so they look like other stars.
@@ -385,20 +370,20 @@ namespace Elite
 		{
 			switch (current_screen)
 			{
-				case SCR_FRONT_VIEW:
-				case SCR_INTRO_ONE:
-				case SCR_INTRO_TWO:
-				case SCR_ESCAPE_POD:
+				case SCR.SCR_FRONT_VIEW:
+				case SCR.SCR_INTRO_ONE:
+				case SCR.SCR_INTRO_TWO:
+				case SCR.SCR_ESCAPE_POD:
 					front_starfield();
 					break;
 
-				case SCR_REAR_VIEW:
-				case SCR_GAME_OVER:
+				case SCR.SCR_REAR_VIEW:
+				case SCR.SCR_GAME_OVER:
 					rear_starfield();
 					break;
 
-				case SCR_LEFT_VIEW:
-				case SCR_RIGHT_VIEW:
+				case SCR.SCR_LEFT_VIEW:
+				case SCR.SCR_RIGHT_VIEW:
 					side_starfield();
 					break;
 			}

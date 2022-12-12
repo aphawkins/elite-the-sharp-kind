@@ -1281,7 +1281,7 @@ namespace Elite
 					universe[i].location.z -= jump;
 			}
 
-			warp_stars = 1;
+            Stars.warp_stars = true;
 			alg_main.mcount &= 63;
 			in_battle = 0;
 		}
