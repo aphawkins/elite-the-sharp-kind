@@ -123,9 +123,11 @@ namespace Elite
 				(planet.d != elite.docked_planet.d) ||
 				(planet.e != elite.docked_planet.e) ||
 				(planet.f != elite.docked_planet.f))
+			{
 				return null;
+			}
 
-			pnum = find_planet_number(planet);
+			pnum = Planet.find_planet_number(planet);
 
 			if (elite.cmdr.galaxy_number == 0)
 			{

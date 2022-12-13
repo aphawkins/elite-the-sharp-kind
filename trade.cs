@@ -60,7 +60,7 @@ namespace Elite
 		 * There is also a slight amount of randomness added in.
 		 * The random value is changed each time we hyperspace.
 		 */
-		static void generate_stock_market()
+		internal static void generate_stock_market()
 		{
 			int quant;
 			int price;

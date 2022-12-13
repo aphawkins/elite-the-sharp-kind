@@ -116,7 +116,7 @@ namespace Elite
 				py = ((cross_y - gfx.GFX_Y_CENTRE) / (2 * gfx.GFX_SCALE)) + elite.docked_planet.b;
 			}
 
-			hyperspace_planet = find_planet (px, py);
+			hyperspace_planet = Planet.find_planet(px, py);
 
 			name_planet (planet_name, hyperspace_planet);
 
@@ -154,7 +154,7 @@ namespace Elite
 			show_distance_to_planet();
 		}
 
-		static void find_planet_by_name (string find_name)
+		internal static void find_planet_by_name (string find_name)
 		{
 			int i;
 			galaxy_seed glx;
@@ -370,7 +370,7 @@ namespace Elite
 
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			planet.generate_planet_data(ref hyper_planet_data, hyperspace_planet);
+			Planet.generate_planet_data(ref hyper_planet_data, hyperspace_planet);
 
 			show_distance (42, elite.docked_planet, hyperspace_planet);
 

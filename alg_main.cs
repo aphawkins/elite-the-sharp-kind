@@ -848,7 +848,7 @@ namespace Elite
 				if (kbd_enter_pressed)
 				{
 					find_input = 0;
-					find_planet_by_name (find_name);
+					Docked.find_planet_by_name(find_name);
 					return;
 				}
 

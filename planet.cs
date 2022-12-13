@@ -31,7 +31,7 @@ namespace Elite
 {
 	using Elite.Structs;
 
-	internal static class planet
+	internal static class Planet
     {
         internal galaxy_seed hyperspace_planet;
 
@@ -44,7 +44,7 @@ namespace Elite
 		};
 
 
-		static struct random_seed rnd_seed;
+		static random_seed rnd_seed;
 
 		static char *digrams="ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
 
@@ -59,9 +59,6 @@ namespace Elite
 
 		static char planet_description[300];
 		static char *desc_ptr;
-
-
-
 
 		static char *desc_list[36][5] =
 		{
@@ -206,10 +203,7 @@ namespace Elite
 			glx_ptr.f = y;
 		}
 
-
-
-
-		static galaxy_seed find_planet(int cx, int cy)
+		internal static galaxy_seed find_planet(int cx, int cy)
 		{
 			int min_dist = 10000;
 			galaxy_seed glx;
@@ -246,8 +240,7 @@ namespace Elite
 			return planet;
 		}
 
-
-		int find_planet_number(galaxy_seed planet)
+		internal static int find_planet_number(galaxy_seed planet)
 		{
 			galaxy_seed glx;
 			int i;

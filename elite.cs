@@ -155,11 +155,11 @@ namespace Elite
 		{
 			cmdr = saved_cmdr;
 
-			docked_planet = find_planet(cmdr.ship_x, cmdr.ship_y);
+			docked_planet = Planet.find_planet(cmdr.ship_x, cmdr.ship_y);
 			hyperspace_planet = docked_planet;
 
-			planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
-			generate_stock_market();
+			Planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
+			trade.generate_stock_market();
 			trade.set_stock_quantities(cmdr.station_stock);
 		}
 	}

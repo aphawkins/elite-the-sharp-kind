@@ -1129,7 +1129,7 @@ namespace Elite
 			elite.cmdr.galaxy.e = rotate_byte_left(elite.cmdr.galaxy.e);
 			elite.cmdr.galaxy.f = rotate_byte_left(elite.cmdr.galaxy.f);
 
-            elite.docked_planet = find_planet(0x60, 0x60);
+            elite.docked_planet = Planet.find_planet(0x60, 0x60);
 			hyperspace_planet = elite.docked_planet;
 		}
 
@@ -1187,8 +1187,8 @@ namespace Elite
 			}
 
 			elite.cmdr.market_rnd = random.rand255();
-			planet.generate_planet_data(ref elite.current_planet_data, elite.docked_planet);
-			generate_stock_market();
+			Planet.generate_planet_data(ref elite.current_planet_data, elite.docked_planet);
+			trade.generate_stock_market();
 
             elite.flight_speed = 12;
             elite.flight_roll = 0;
