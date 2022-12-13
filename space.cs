@@ -221,7 +221,7 @@ namespace Elite
 		void dock_player()
 		{
 			disengage_auto_pilot();
-			docked = 1;
+            elite.docked = true;
             elite.flight_speed = 0;
             elite.flight_roll = 0;
             elite.flight_climb = 0;
@@ -998,8 +998,10 @@ namespace Elite
 			display_fuel();
 			display_missiles();
 
-			if (docked)
+			if (elite.docked)
+			{
 				return;
+			}
 
 			update_scanner();
 			update_compass();
@@ -1281,11 +1283,11 @@ namespace Elite
 		}
 
 
-		void launch_player()
+		static void launch_player()
 		{
-			Matrix rotmat;
+			Vector[] rotmat = new Vector[3];
 
-			docked = 0;
+            elite.docked = false;
             elite.flight_speed = 12;
             elite.flight_roll = -15;
             elite.flight_climb = 0;

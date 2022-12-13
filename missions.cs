@@ -18,18 +18,18 @@
  * Code to handle the special missions.
  */
 
-# include <stdlib.h>
-# include <string.h>
+//# include <stdlib.h>
+//# include <string.h>
 
-# include "config.h"
-# include "elite.h"
-# include "gfx.h"
-# include "vector.h"
-# include "space.h"
-# include "planet.h"
-# include "main.h"
-# include "missions.h" 
-# include "keyboard.h"
+//# include "config.h"
+//# include "elite.h"
+//# include "gfx.h"
+//# include "vector.h"
+//# include "space.h"
+//# include "planet.h"
+//# include "main.h"
+//# include "missions.h" 
+//# include "keyboard.h"
 
 namespace Elite
 {

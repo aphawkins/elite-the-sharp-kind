@@ -89,7 +89,7 @@ namespace Elite
 			elite.flight_speed = 1;
 			elite.flight_roll = 0;
 			elite.flight_climb = 0;
-			docked = 1;
+			elite.docked = true;
 			front_shield = 255;
 			aft_shield = 255;
 			energy = 255;
@@ -433,10 +433,15 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_QUIT:
-					if (docked)
+					if (elite.docked)
+					{
 						display_commander_status();
+					}
 					else
-                        elite.current_screen = SCR.SCR_FRONT_VIEW;
+					{
+						elite.current_screen = SCR.SCR_FRONT_VIEW;
+					}
+
 					break;
 			}
 		}
@@ -689,16 +694,18 @@ namespace Elite
 		}
 
 
-		void handle_flight_keys ()
+		static void handle_flight_keys ()
 		{
 			int keyasc;
 	
-			if (docked &&
+			if (elite.docked &&
 				((elite.current_screen == SCR.SCR_MARKET_PRICES) ||
 				 (elite.current_screen == SCR.SCR_OPTIONS) ||
 				 (elite.current_screen == SCR.SCR_SETTINGS) ||
 				 (elite.current_screen == SCR.SCR_EQUIP_SHIP)))
+			{
 				kbd_read_key();
+			}
 
 			kbd_poll_keyboard();
 
@@ -740,8 +747,10 @@ namespace Elite
 			{
 				find_input = 0;
 		
-				if (docked)
+				if (elite.docked)
+				{
 					launch_player();
+				}
 				else
 				{
 					if (elite.current_screen != SCR.SCR_FRONT_VIEW)
@@ -756,7 +765,7 @@ namespace Elite
 			{
 				find_input = 0;
 		
-				if (!docked)
+				if (!elite.docked)
 				{
 					if (elite.current_screen != SCR.SCR_REAR_VIEW)
 					{
@@ -770,7 +779,7 @@ namespace Elite
 			{
 				find_input = 0;
 		
-				if (!docked)
+				if (!elite.docked)
 				{
 					if (elite.current_screen != SCR.SCR_LEFT_VIEW)
 					{
@@ -784,8 +793,10 @@ namespace Elite
 			{
 				find_input = 0;
 		
-				if (docked)
+				if (elite.docked)
+				{
 					equip_ship();
+				}
 				else
 				{
 					if (elite.current_screen != SCR.SCR_RIGHT_VIEW)
@@ -872,73 +883,99 @@ namespace Elite
  
 			if (kbd_fire_pressed)
 			{
-				if ((!docked) && (draw_lasers == 0))
+				if ((!elite.docked) && (draw_lasers == 0))
+				{
 					draw_lasers = fire_laser();
+				}
 			}
 
 			if (kbd_dock_pressed)
 			{
-				if (!docked && elite.cmdr.docking_computer)
+				if (!elite.docked && elite.cmdr.docking_computer)
 				{
 					if (instant_dock)
+					{
 						engage_docking_computer();
+					}
 					else
+					{
 						engage_auto_pilot();
+					}
 				}
 			}
 
 			if (kbd_d_pressed)
+			{
 				d_pressed();
-	
+			}
+
 			if (kbd_ecm_pressed)
 			{
-				if (!docked && elite.cmdr.ecm)
+				if (!elite.docked && elite.cmdr.ecm)
+				{
 					activate_ecm(1);
+				}
 			}
 
 			if (kbd_find_pressed)
-				f_pressed ();
-	
-			if (kbd_hyperspace_pressed && (!docked))
 			{
-				if (kbd_ctrl_pressed)
-					start_galactic_hyperspace();
-				else
-					start_hyperspace();
+				f_pressed ();
 			}
 
-			if (kbd_jump_pressed && (!docked) && (!elite.witchspace))
+			if (kbd_hyperspace_pressed && (!elite.docked))
+			{
+				if (kbd_ctrl_pressed)
+				{
+					start_galactic_hyperspace();
+				}
+				else
+				{
+					start_hyperspace();
+				}
+			}
+
+			if (kbd_jump_pressed && (!elite.docked) && (!elite.witchspace))
 			{
 				jump_warp();
 			}
 	
 			if (kbd_fire_missile_pressed)
 			{
-				if (!docked)
+				if (!elite.docked)
+				{
 					fire_missile();
+				}
 			}
 
 			if (kbd_origin_pressed)
+			{
 				o_pressed();
+			}
 
 			if (kbd_pause_pressed)
+			{
 				game_paused = 1;
-	
+			}
+
 			if (kbd_target_missile_pressed)
 			{
-				if (!docked)
-					arm_missile();		
+				if (!elite.docked)
+				{
+					arm_missile();
+				}
 			}
 
 			if (kbd_unarm_missile_pressed)
 			{
-				if (!docked)
+				if (!elite.docked)
+				{
 					unarm_missile();
+				}
 			}
 	
 			if (kbd_inc_speed_pressed)
 			{
-				if (!docked)
+				if (!elite.docked)
 				{
 					if (elite.flight_speed < myship.max_speed)
 					{
@@ -949,7 +986,7 @@ namespace Elite
 
 			if (kbd_dec_speed_pressed)
 			{
-				if (!docked)
+				if (!elite.docked)
 				{
 					if (elite.flight_speed > 1)
 					{
@@ -959,8 +996,10 @@ namespace Elite
 			}
 
 			if (kbd_up_pressed)
+			{
 				arrow_up();
-	
+			}
+
 			if (kbd_down_pressed)
 				arrow_down();
 
@@ -975,7 +1014,7 @@ namespace Elite
 
 			if (kbd_energy_bomb_pressed)
 			{
-				if ((!docked) && (elite.cmdr.energy_bomb))
+				if ((!elite.docked) && (elite.cmdr.energy_bomb))
 				{
 					detonate_bomb = 1;
 					elite.cmdr.energy_bomb = 0;
@@ -984,14 +1023,14 @@ namespace Elite
 
 			if (kbd_escape_pressed)
 			{
-				if ((!docked) && (elite.cmdr.escape_pod) && (!elite.witchspace))
+				if ((!elite.docked) && (elite.cmdr.escape_pod) && (!elite.witchspace))
+				{
 					run_escape_sequence();
+				}
 			}
 		}
 
-
-
-		void set_commander_name (char *path)
+		static void set_commander_name (char *path)
 		{
 			char *fname, *cname;
 			int i;
@@ -1209,7 +1248,7 @@ namespace Elite
 				gfx_update_screen();
 			}	
 
-			if (docked)
+			if (elite.docked)
 			{
 				check_mission_brief();
 				display_commander_status();
@@ -1322,7 +1361,7 @@ namespace Elite
 					}
 
 
-					if (!docked)
+					if (!elite.docked)
 					{
 						gfx_acquire_screen();
 					
@@ -1344,7 +1383,7 @@ namespace Elite
 
 						update_universe ();
 
-						if (docked)
+						if (elite.docked)
 						{
 							update_console();
 							gfx_release_screen();

@@ -492,8 +492,10 @@ namespace Elite
 			sprintf (str, "%s", planet_name);
 			gfx_display_text (190, 74, str);
 
-			if (docked)
+			if (elite.docked)
+			{
 				condition = 0;
+			}
 			else
 			{
 				condition = 1;
@@ -717,30 +719,36 @@ namespace Elite
 			gfx_display_text (16, 340, str);
 		}
 
-		void select_previous_stock ()
+		static void select_previous_stock ()
 		{
-			if ((!docked) || (hilite_item == 0))
+			if ((!elite.docked) || (hilite_item == 0))
+			{
 				return;
+			}
 
 			highlight_stock (hilite_item - 1);
 		}
 
-		void select_next_stock ()
+		static void select_next_stock()
 		{
-			if ((!docked) || (hilite_item == 16))
+			if ((!elite.docked) || (hilite_item == 16))
+			{
 				return;
+			}
 
-			highlight_stock (hilite_item + 1);
+			highlight_stock(hilite_item + 1);
 		}
 
 
-		void buy_stock ()
+		static void buy_stock ()
 		{
 			stock_item *item;
 			int cargo_held;
 	
-			if (!docked)
+			if (!elite.docked)
+			{
 				return;
+			}
 
 			item = &stock_market[hilite_item];
 		
@@ -762,12 +770,14 @@ namespace Elite
 		}
 
 
-		void sell_stock ()
+		static void sell_stock ()
 		{
 			stock_item *item;
 	
-			if ((!docked) || (elite.cmdr.current_cargo[hilite_item] == 0))
+			if ((!elite.docked) || (elite.cmdr.current_cargo[hilite_item] == 0))
+			{
 				return;
+			}
 
 			item = &stock_market[hilite_item];
 
@@ -806,7 +816,7 @@ namespace Elite
 				display_stock_price (i);
 			}
 
-			if (docked)
+			if (elite.docked)
 			{
 				hilite_item = -1;
 				highlight_stock (0);

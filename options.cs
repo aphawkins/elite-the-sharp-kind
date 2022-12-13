@@ -269,20 +269,20 @@ struct setting
 		}
 
 
-		void display_option_item(int i)
+		static void display_option_item(int i)
 		{
 			int y;
 			int col;
 
 			y = (384 - (30 * NUM_OPTIONS)) / 2;
 			y += i * 30;
-			col = ((!docked) && option_list[i].docked_only) ? GFX_COL_GREY_1 : GFX_COL_WHITE;
+			col = ((!elite.docked) && option_list[i].docked_only) ? gfx.GFX_COL_GREY_1 : gfx.GFX_COL_WHITE;
 
 			gfx_display_centre_text(y, option_list[i].text, 120, col);
 		}
 
 
-		void highlight_option(int i)
+		static void highlight_option(int i)
 		{
 			int y;
 			int x;
@@ -320,10 +320,12 @@ struct setting
 		}
 
 
-		void do_option()
+		static void do_option()
 		{
-			if ((!docked) && option_list[hilite_item].docked_only)
+			if ((!elite.docked) && option_list[hilite_item].docked_only)
+			{
 				return;
+			}
 
 			switch (hilite_item)
 			{

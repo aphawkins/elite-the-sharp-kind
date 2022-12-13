@@ -12,30 +12,29 @@
  *
  **/
 
-# include <string.h>
-# include <stdlib.h>
-# include <stdio.h>
-# include <math.h>
-# include <ctype.h>
+//# include <string.h>
+//# include <stdlib.h>
+//# include <stdio.h>
+//# include <math.h>
+//# include <ctype.h>
 
-# include "allegro.h"
+//# include "allegro.h"
 
-# include "config.h"
-# include "gfx.h"
-# include "alg_data.h"
-# include "elite.h"
+//# include "config.h"
+//# include "gfx.h"
+//# include "alg_data.h"
+//# include "elite.h"
 
 namespace Elite
 {
 	internal static class alg_gfx
 	{
-
 		BITMAP* gfx_screen;
-		volatile int frame_count;
+		volatile static int frame_count;
 		DATAFILE* datafile;
 		BITMAP* scanner_image;
 
-#define MAX_POLYS	100
+		const int MAX_POLYS = 100;
 
 		static int start_poly;
 		static int total_polys;
@@ -49,27 +48,22 @@ namespace Elite
 			int next;
 		};
 
-		static struct poly_data poly_chain[MAX_POLYS];
+		static poly_data[] poly_chain = new poly_data[MAX_POLYS];
 
-
-
-
-		void frame_timer()
+		static void frame_timer()
 		{
 			frame_count++;
 		}
 		END_OF_FUNCTION(frame_timer);
 
-
-
-		int gfx_graphics_startup()
+		static int gfx_graphics_startup()
 		{
 			PALETTE the_palette;
 			int rv;
 
-# ifdef ALLEGRO_WINDOWS	
+#if ALLEGRO_WINDOWS
 
-# ifdef RES_512_512
+#if RES_512_512
 			rv = set_gfx_mode(GFX_DIRECTX_OVL, 512, 512, 0, 0);
 
 			if (rv != 0)
@@ -137,27 +131,24 @@ namespace Elite
 			return 0;
 		}
 
-
-		void gfx_graphics_shutdown()
+		static void gfx_graphics_shutdown()
 		{
 			destroy_bitmap(scanner_image);
 			destroy_bitmap(gfx_screen);
 			unload_datafile(datafile);
 		}
 
-
 		/*
 		 * Blit the back buffer to the screen.
 		 */
-
-		void gfx_update_screen()
+		static void gfx_update_screen()
 		{
 			while (frame_count < 1)
 				rest(10);
 			frame_count = 0;
 
 			acquire_screen();
-			blit(gfx_screen, screen, GFX_X_OFFSET, GFX_Y_OFFSET, GFX_X_OFFSET, GFX_Y_OFFSET, 512, 512);
+			blit(gfx_screen, screen, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, 512, 512);
 			release_screen();
 		}
 
@@ -182,13 +173,13 @@ namespace Elite
 
 		void gfx_plot_pixel(int x, int y, int col)
 		{
-			putpixel(gfx_screen, x + GFX_X_OFFSET, y + GFX_Y_OFFSET, col);
+			putpixel(gfx_screen, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, col);
 		}
 
 
 		void gfx_draw_filled_circle(int cx, int cy, int radius, int circle_colour)
 		{
-			circlefill(gfx_screen, cx + GFX_X_OFFSET, cy + GFX_Y_OFFSET, radius, circle_colour);
+			circlefill(gfx_screen, cx + gfx.GFX_X_OFFSET, cy + gfx.GFX_Y_OFFSET, radius, circle_colour);
 		}
 
 
@@ -212,8 +203,8 @@ namespace Elite
 			int s;
 			int sx, sy;
 
-			cx += GFX_X_OFFSET;
-			cy += GFX_Y_OFFSET;
+			cx += gfx.GFX_X_OFFSET;
+			cy += gfx.GFX_Y_OFFSET;
 
 			radius >>= (16 - AA_BITS);
 

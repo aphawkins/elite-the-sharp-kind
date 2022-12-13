@@ -61,7 +61,7 @@ namespace Elite
         internal static int planet_render_style = 0;
 
         internal static int game_over;
-        internal static int docked;
+        internal static bool docked;
         internal static int finish;
         internal static int flight_speed;
         internal static int flight_roll;
