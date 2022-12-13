@@ -128,7 +128,7 @@ namespace Elite
 
 		internal static void scoop_item(int un)
 		{
-			int type;
+            SHIP type;
 			int trade;
 
 			if (space.universe[un].flags.HasFlag(FLG.FLG_DEAD))
@@ -138,7 +138,7 @@ namespace Elite
 
 			type = space.universe[un].type;
 
-			if (type == shipdata.SHIP_MISSILE)
+			if (type == SHIP.SHIP_MISSILE)
 				return;
 
 			if ((elite.cmdr.fuel_scoop == 0) || (space.universe[un].location.y >= 0) ||
@@ -149,7 +149,7 @@ namespace Elite
 				return;
 			}
 
-			if (type == shipdata.SHIP_CARGO)
+			if (type == SHIP.SHIP_CARGO)
 			{
 				trade = random.rand255() & 7;
 				elite.cmdr.current_cargo[trade]++;
@@ -158,9 +158,9 @@ namespace Elite
 				return;
 			}
 
-			if (elite.ship_list[type].scoop_type != 0)
+			if (elite.ship_list[(int)type].scoop_type != 0)
 			{
-				trade = elite.ship_list[type].scoop_type + 1;
+				trade = elite.ship_list[(int)type].scoop_type + 1;
 				elite.cmdr.current_cargo[trade]++;
                 alg_main.info_message(stock_market[trade].name);
                 swat.remove_ship(un);

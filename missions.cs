@@ -208,7 +208,7 @@ namespace Elite
 
 			clear_universe();
             VectorMaths.set_init_matrix(rotmat);
-			add_new_ship(SHIP_CONSTRICTOR, 200, 90, 600, rotmat, -127, -127);
+			swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, 200, 90, 600, rotmat, -127, -127);
             elite.flight_roll = 0;
             elite.flight_climb = 0;
             elite.flight_speed = 0;

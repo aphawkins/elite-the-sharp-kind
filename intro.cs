@@ -36,6 +36,8 @@
 
 namespace Elite
 {
+	using Elite.Enums;
+	using Elite.Structs;
 	using EliteLib;
 
 	internal static class intro
@@ -54,18 +56,16 @@ namespace Elite
 			900
 		};
 
-		static Matrix intro_ship_matrix;
+		static Vector[] intro_ship_matrix;
 
-
-		void initialise_intro1()
+		static void initialise_intro1()
 		{
 			swat.clear_universe();
             VectorMaths.set_init_matrix(intro_ship_matrix);
-			add_new_ship(SHIP_COBRA3, 0, 0, 4500, intro_ship_matrix, -127, -127);
+			swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 4500, intro_ship_matrix, -127, -127);
 		}
 
-
-		void initialise_intro2()
+		static void initialise_intro2()
 		{
 			ship_no = 0;
 			show_time = 0;
@@ -74,12 +74,10 @@ namespace Elite
 			swat.clear_universe();
 			create_new_stars();
             VectorMaths.set_init_matrix(intro_ship_matrix);
-			add_new_ship(1, 0, 0, 5000, intro_ship_matrix, -127, -127);
+			swat.add_new_ship(SHIP.SHIP_MISSILE, 0, 0, 5000, intro_ship_matrix, -127, -127);
 		}
 
-
-
-		void update_intro1()
+		static void update_intro1()
 		{
             space.universe[0].location.z -= 100;
 
@@ -100,15 +98,16 @@ namespace Elite
 			gfx_display_centre_text(360, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
 		}
 
-
-		void update_intro2()
+		static void update_intro2()
 		{
 			show_time++;
 
 			if ((show_time >= 140) && (direction < 0))
+			{
 				direction = -direction;
+			}
 
-            space.universe[0].location.z += direction;
+			space.universe[0].location.z += direction;
 
 			if (space.universe[0].location.z < min_dist[ship_no])
 			{
@@ -121,7 +120,9 @@ namespace Elite
 				{
 					ship_no++;
 					if (ship_no > shipdata.NO_OF_SHIPS)
+					{
 						ship_no = 1;
+					}
 				} while (min_dist[ship_no] == 0);
 
 				show_time = 0;

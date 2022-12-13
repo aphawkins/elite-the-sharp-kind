@@ -5,7 +5,7 @@
 
     internal struct univ_object
     {
-        internal int type;
+        internal SHIP type;
         internal Vector location;
         internal Matrix rotmat;
         internal int rotx;

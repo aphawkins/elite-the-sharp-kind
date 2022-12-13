@@ -19,36 +19,36 @@
  */
 
 
-# include <stdio.h>
-# include <string.h>
-# include <math.h> 
-# include <ctype.h>
-# include <time.h>
-# include <stdlib.h>
+//# include <stdio.h>
+//# include <string.h>
+//# include <math.h> 
+//# include <ctype.h>
+//# include <time.h>
+//# include <stdlib.h>
 
-# include "allegro.h"
+//# include "allegro.h"
 
-# include "config.h"
-# include "gfx.h"
-# include "main.h"
-# include "vector.h"
-# include "alg_data.h"
-# include "elite.h"
-# include "docked.h"
-# include "intro.h"
-# include "shipdata.h"
-# include "shipface.h"
-# include "space.h"
-# include "sound.h"
-# include "threed.h"
-# include "swat.h"
-# include "random.h"
-# include "options.h"
-# include "stars.h"
-# include "missions.h"
-# include "pilot.h"
-# include "file.h"
-# include "keyboard.h"
+//# include "config.h"
+//# include "gfx.h"
+//# include "main.h"
+//# include "vector.h"
+//# include "alg_data.h"
+//# include "elite.h"
+//# include "docked.h"
+//# include "intro.h"
+//# include "shipdata.h"
+//# include "shipface.h"
+//# include "space.h"
+//# include "sound.h"
+//# include "threed.h"
+//# include "swat.h"
+//# include "random.h"
+//# include "options.h"
+//# include "stars.h"
+//# include "missions.h"
+//# include "pilot.h"
+//# include "file.h"
+//# include "keyboard.h"
 
 using Elite.Enums;
 using Elite.Structs;
@@ -636,7 +636,7 @@ namespace Elite
             VectorMaths.set_init_matrix (rotmat);
 			rotmat[2].z = 1.0;
 	
-			newship = add_new_ship(SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
+			newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
 			space.universe[newship].velocity = 7;
 			snd_play_sample(SND.SND_LAUNCH);
 
@@ -664,8 +664,8 @@ namespace Elite
 			}
 
 	
-			while ((ship_count[SHIP_CORIOLIS] == 0) &&
-				   (ship_count[SHIP_DODEC] == 0))
+			while ((ship_count[SHIP.SHIP_CORIOLIS] == 0) &&
+				   (ship_count[SHIP.SHIP_DODEC] == 0))
 			{
 				auto_dock();
 
@@ -1077,11 +1077,11 @@ namespace Elite
 
 			if (rv)
 			{
-				gfx_display_centre_text (175, "Error Saving Commander!", 140, GFX_COL_GOLD);
+				gfx_display_centre_text (175, "Error Saving Commander!", 140, gfx.GFX_COL_GOLD);
 				return;
 			}
 	
-			gfx_display_centre_text (175, "Commander Saved.", 140, GFX_COL_GOLD);
+			gfx_display_centre_text (175, "Commander Saved.", 140, gfx.GFX_COL_GOLD);
 
 			set_commander_name (path);
 			saved_cmdr = cmdr;
@@ -1090,7 +1090,7 @@ namespace Elite
 		}
 
 
-		void load_commander_screen ()
+		static void load_commander_screen ()
 		{
 			char path[255];
 			int rv;
@@ -1195,7 +1195,7 @@ namespace Elite
 			int i;
 			int newship;
 			Vector[] rotmat = new Vector[3];
-			int type;
+            SHIP type;
 
 			elite.current_screen = SCR.SCR_GAME_OVER;
 			gfx_set_clip_region(1, 1, 510, 383);
@@ -1207,14 +1207,13 @@ namespace Elite
 
 			VectorMaths.set_init_matrix(rotmat);
 
-			newship = add_new_ship(shipdata.SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
+			newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
 			space.universe[newship].flags |= FLG.FLG_DEAD;
 
 			for (i = 0; i < 5; i++)
 			{
-				type = ((random.rand255() & 1) == 1) ? shipdata.SHIP_CARGO : shipdata.SHIP_ALLOY;
-				newship = add_new_ship(type, (random.rand255() & 63) - 32,
-										(random.rand255() & 63) - 32, -400, rotmat, 0, 0);
+				type = ((random.rand255() & 1) == 1) ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
+				newship = swat.add_new_ship(type, (random.rand255() & 63) - 32, (random.rand255() & 63) - 32, -400, rotmat, 0, 0);
 				space.universe[newship].rotz = ((random.rand255() * 2) & 255) - 128;
 				space.universe[newship].rotx = ((random.rand255() * 2) & 255) - 128;
 				space.universe[newship].velocity = random.rand255() & 15;

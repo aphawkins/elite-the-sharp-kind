@@ -456,14 +456,14 @@ namespace Elite
 			"Red"
 		};
 
-		void display_commander_status ()
+		static void display_commander_status ()
 		{
 			string planet_name;
 			char str[100];
 			int i;
 			int x,y;
 			int condition;
-			int type;
+            SHIP type;
 
             elite.current_screen = SCR.SCR_CMDR_STATUS;
 
@@ -504,8 +504,8 @@ namespace Elite
 				{
 					type = space.universe[i].type;
 		
-					if ((type == SHIP_MISSILE) ||
-						((type > SHIP_ROCK) && (type < SHIP_DODEC)))
+					if ((type == SHIP.SHIP_MISSILE) ||
+						((type > SHIP.SHIP_ROCK) && (type < SHIP.SHIP_DODEC)))
 					{
 						condition = 2;
 						break;

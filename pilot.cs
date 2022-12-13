@@ -235,8 +235,7 @@ namespace Elite
 		/*
 		 * Fly a ship to the planet or to the space station and dock it.
 		 */
-
-		void auto_pilot_ship(ref univ_object ship)
+		static void auto_pilot_ship(ref univ_object ship)
 		{
 			Vector diff;
 			Vector vec;
@@ -244,9 +243,9 @@ namespace Elite
 			double dir;
 	
 			if (ship.flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
-				((ship_count[SHIP_CORIOLIS] == 0) && (ship_count[SHIP_DODEC] == 0)))
+				((ship_count[SHIP.SHIP_CORIOLIS] == 0) && (ship_count[SHIP.SHIP_DODEC] == 0)))
 			{
-				fly_to_planet(ship);
+				fly_to_planet(ref ship);
 				return;
 			}
 

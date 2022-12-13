@@ -315,7 +315,7 @@ namespace Elite
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
 				lasv = elite.ship_list[univ.type].front_laser;
-				col = (univ.type == SHIP_VIPER) ? GFX_COL_CYAN : GFX_COL_WHITE; 
+				col = (univ.type == SHIP.SHIP_VIPER) ? gfx.GFX_COL_CYAN : gfx.GFX_COL_WHITE; 
 		
 				gfx_render_line (point_list[lasv].x, point_list[lasv].y,
 								 univ.location.x > 0 ? 0 : 511, random.rand255() * 2,
@@ -987,15 +987,15 @@ namespace Elite
 			if (ship.location.z <= 0)	/* Only display ships in front of us. */
 				return;
 
-			if (ship.type == SHIP_PLANET)
+			if (ship.type == SHIP.SHIP_PLANET)
 			{
-				draw_planet(ship);
+				draw_planet(ref ship);
 				return;
 			}
 
-			if (ship.type == SHIP_SUN)
+			if (ship.type == SHIP.SHIP_SUN)
 			{
-				draw_sun(ship);
+				draw_sun(ref ship);
 				return;
 			}
 	

@@ -165,10 +165,12 @@ namespace Elite
 			obj.location.y = y;
 			obj.location.z = z;
 
-			obj.distance = sqrt(x * x + y * y + z * z);
+			obj.distance = (int)Math.Sqrt(x * x + y * y + z * z);
 
-			if (obj.type == SHIP_PLANET)
+			if (obj.type == SHIP.SHIP_PLANET)
+			{
 				beta = 0.0;
+			}
 
 			rotate_vec(&obj.rotmat[2], alpha, beta);
 			rotate_vec(&obj.rotmat[1], alpha, beta);
@@ -339,7 +341,7 @@ namespace Elite
 				return;
 			}
 
-			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
+			if (ship_count[SHIP.SHIP_CORIOLIS] || ship_count[SHIP.SHIP_DODEC])
 			{
 				return;
 			}
@@ -586,10 +588,10 @@ namespace Elite
 		 * Update all the objects in the universe and render them.
 		 */
 
-		void update_universe()
+		static void update_universe()
 		{
 			int i;
-			int type;
+            SHIP type;
 			int bounty;
 			char str[80];
 			univ_object flip;
@@ -605,7 +607,7 @@ namespace Elite
 				{
 					if (universe[i].flags.HasFlag(FLG.FLG_REMOVE))
 					{
-						if (type == SHIP_VIPER)
+						if (type == SHIP.SHIP_VIPER)
 						{
 							elite.cmdr.legal_status |= 64;
 						}
@@ -623,12 +625,16 @@ namespace Elite
 						continue;
 					}
 
-					if ((detonate_bomb) && ((!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
-						(type != SHIP_PLANET) && (type != SHIP_SUN) &&
-						(type != SHIP_CONSTRICTOR) && (type != SHIP_COUGAR) &&
-						(type != SHIP_CORIOLIS) && (type != SHIP_DODEC))
+					if (detonate_bomb && 
+						(!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
+						(type != SHIP.SHIP_PLANET) && 
+						(type != SHIP.SHIP_SUN) &&
+						(type != SHIP.SHIP_CONSTRICTOR) && 
+						(type != SHIP.SHIP_COUGAR) &&
+						(type != SHIP.SHIP_CORIOLIS) && 
+						(type != SHIP.SHIP_DODEC))
 					{
-						snd_play_sample(SND_EXPLODE);
+						snd_play_sample(SND.SND_EXPLODE);
 						universe[i].flags |= FLG.FLG_DEAD;
 					}
 
@@ -645,10 +651,10 @@ namespace Elite
 					flip = universe[i];
 					switch_to_view(&flip);
 
-					if (type == SHIP_PLANET)
+					if (type == SHIP.SHIP_PLANET)
 					{
-						if ((ship_count[SHIP_CORIOLIS] == 0) &&
-							(ship_count[SHIP_DODEC] == 0) &&
+						if ((ship_count[SHIP.SHIP_CORIOLIS] == 0) &&
+							(ship_count[SHIP.SHIP_DODEC] == 0) &&
 							(universe[i].distance < 65792)) // was 49152
 						{
 							make_station_appear();
@@ -658,7 +664,7 @@ namespace Elite
 						continue;
 					}
 
-					if (type == SHIP_SUN)
+					if (type == SHIP.SHIP_SUN)
 					{
 						draw_ship(&flip);
 						continue;
@@ -743,16 +749,16 @@ namespace Elite
 
 				switch (universe[i].type)
 				{
-					case SHIP_MISSILE:
+					case SHIP.SHIP_MISSILE:
 						colour = 137;
 						break;
 
-					case SHIP_DODEC:
-					case SHIP_CORIOLIS:
-						colour = GFX_COL_GREEN_1;
+					case SHIP.SHIP_DODEC:
+					case SHIP.SHIP_CORIOLIS:
+						colour = gfx.GFX_COL_GREEN_1;
 						break;
 
-					case SHIP_VIPER:
+					case SHIP.SHIP_VIPER:
 						colour = 252;
 						break;
 				}
@@ -773,8 +779,7 @@ namespace Elite
 		/*
 		 * Update the compass which tracks the space station / planet.
 		 */
-
-		void update_compass()
+		static void update_compass()
 		{
 			Vector dest;
 			int compass_x;
@@ -786,8 +791,10 @@ namespace Elite
 				return;
 			}
 
-			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
+			if (ship_count[SHIP.SHIP_CORIOLIS] || ship_count[SHIP.SHIP_DODEC])
+			{
 				un = 1;
+			}
 
 			dest = VectorMaths.unit_vector(universe[un].location);
 
@@ -1006,11 +1013,15 @@ namespace Elite
 			update_scanner();
 			update_compass();
 
-			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
+			if (ship_count[SHIP.SHIP_CORIOLIS] || ship_count[SHIP.SHIP_DODEC])
+			{
 				gfx_draw_sprite(IMG_BIG_S, 387, 490);
+			}
 
 			if (ecm_active)
+			{
 				gfx_draw_sprite(IMG_BIG_E, 115, 490);
+			}
 		}
 
 		static void increase_flight_roll()
@@ -1212,16 +1223,16 @@ namespace Elite
 				py = -py;
 			}
 
-			add_new_ship(SHIP_PLANET, px, py, pz, rotmat, 0, 0);
+			swat.add_new_ship(SHIP.SHIP_PLANET, px, py, pz, rotmat, 0, 0);
 
 
 			pz = -(((elite.docked_planet.d & 7) | 1) << 16);
 			px = ((elite.docked_planet.f & 3) << 16) | ((elite.docked_planet.f & 3) << 8);
 
-			add_new_ship(SHIP_SUN, px, py, pz, rotmat, 0, 0);
+			swat.add_new_ship(SHIP.SHIP_SUN, px, py, pz, rotmat, 0, 0);
 
             elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			snd_play_sample(SND_HYPERSPACE);
+			snd_play_sample(SND.SND_HYPERSPACE);
 		}
 
 		static void countdown_hyperspace()
@@ -1237,19 +1248,19 @@ namespace Elite
 
 
 
-		void jump_warp()
+		static void jump_warp()
 		{
 			int i;
-			int type;
+            SHIP type;
 			int jump;
 
 			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
 			{
 				type = universe[i].type;
 
-				if ((type > 0) && (type != shipdata.SHIP_ASTEROID) && (type != shipdata.SHIP_CARGO) &&
-					(type != shipdata.SHIP_ALLOY) && (type != shipdata.SHIP_ROCK) &&
-					(type != shipdata.SHIP_BOULDER) && (type != shipdata.SHIP_ESCAPE_CAPSULE))
+				if ((type > 0) && (type != SHIP.SHIP_ASTEROID) && (type != SHIP.SHIP_CARGO) &&
+					(type != SHIP.SHIP_ALLOY) && (type != SHIP.SHIP_ROCK) &&
+					(type != SHIP.SHIP_BOULDER) && (type != SHIP.SHIP_ESCAPE_CAPSULE))
 				{
                     alg_main.info_message("Mass Locked");
 					return;
@@ -1296,7 +1307,7 @@ namespace Elite
 			swat.clear_universe();
 			generate_landscape(elite.docked_planet.a * 251 + elite.docked_planet.b);
 			VectorMaths.set_init_matrix(rotmat);
-			add_new_ship(SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
+			swat.add_new_ship(SHIP.SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
 
 			rotmat[2].x = -rotmat[2].x;
 			rotmat[2].y = -rotmat[2].y;
@@ -1304,7 +1315,7 @@ namespace Elite
 			add_new_station(0, 0, -256, rotmat);
 
             elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			snd_play_sample(SND_LAUNCH);
+			snd_play_sample(SND.SND_LAUNCH);
 		}
 
 		/*
@@ -1313,9 +1324,9 @@ namespace Elite
 		 */
 		static void engage_docking_computer()
 		{
-			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
+			if (ship_count[SHIP.SHIP_CORIOLIS] || ship_count[SHIP.SHIP_DODEC])
 			{
-				snd_play_sample(SND_DOCK);
+				snd_play_sample(SND.SND_DOCK);
 				dock_player();
                 elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			}
