@@ -1060,7 +1060,7 @@ namespace Elite
 				return;
 
 			destination_planet = hyperspace_planet;
-			name_planet(hyper_name, destination_planet);
+			hyper_name = Planet.name_planet(ref destination_planet);
 			hyper_name = Planet.capitalise_name(hyper_name);
 
 			hyper_ready = 1;

@@ -102,7 +102,6 @@ namespace Elite
 		static void show_distance_to_planet ()
 		{
 			int px,py;
-			char planet_name[16];
 			char str[32];
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
@@ -118,7 +117,7 @@ namespace Elite
 
 			hyperspace_planet = Planet.find_planet(px, py);
 
-			name_planet (planet_name, hyperspace_planet);
+            string planet_name = Planet.name_planet(hyperspace_planet);
 
 			gfx_clear_text_area();
 			sprintf (str, "%-18s", planet_name);
@@ -158,7 +157,7 @@ namespace Elite
 		{
 			int i;
 			galaxy_seed glx;
-			char planet_name[16];
+			string planet_name;
 			bool found = false;
 			char str[32];
 	
@@ -166,7 +165,7 @@ namespace Elite
 
 			for (i = 0; i < 256; i++)
 			{
-				name_planet(planet_name, glx);
+				planet_name = Planet.name_planet(ref glx);
 
 				if (strcmp(planet_name, find_name) == 0)
 				{
@@ -213,7 +212,6 @@ namespace Elite
 			galaxy_seed glx;
 			int dx,dy;
 			int px,py;
-			string planet_name;
 			int row_used[64];
 			int row;
 			int blob_size;
@@ -278,9 +276,9 @@ namespace Elite
 				if (row_used[row] == 0)
 				{
 					row_used[row] = 1;
-                    Planet.name_planet(planet_name, glx);
+                    string planet_name = Planet.name_planet(ref glx);
                     planet_name = Planet.capitalise_name(planet_name);
-					gfx_display_text(px + (4 * GFX_SCALE), (row * 8 - 5) * GFX_SCALE, planet_name);
+					gfx_display_text(px + (4 * gfx.GFX_SCALE), (row * 8 - 5) * gfx.GFX_SCALE, planet_name);
 				}
 
 				/* The next bit calculates the size of the circle used to represent */
@@ -351,7 +349,6 @@ namespace Elite
 		 */
 		static void display_data_on_planet()
 		{
-			string planet_name;
 			string str;
 			string description;
 			planet_data hyper_planet_data = new();
@@ -360,7 +357,7 @@ namespace Elite
 
 			gfx_clear_display();
 
-			name_planet(planet_name, hyperspace_planet);
+			string planet_name = Planet.name_planet(ref hyperspace_planet);
 			sprintf(str, "DATA ON %s", planet_name);
 
 			gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
@@ -483,14 +480,14 @@ namespace Elite
 	
 			if (!elite.witchspace)
 			{
-				name_planet (planet_name, elite.docked_planet);
+				planet_name = Planet.name_planet (ref elite.docked_planet);
                 planet_name = Planet.capitalise_name(planet_name);
 				sprintf (str, "%s", planet_name);
 				gfx_display_text (190, 58, str);
 			}
 
 			gfx_display_colour_text (16, 74, "Hyperspace System:", gfx.GFX_COL_GREEN_1);
-			name_planet (planet_name, hyperspace_planet);
+			planet_name = Planet.name_planet (ref hyperspace_planet);
 			planet_name = Planet.capitalise_name(planet_name);
 			sprintf (str, "%s", planet_name);
 			gfx_display_text (190, 74, str);
@@ -786,14 +783,13 @@ namespace Elite
 		static void display_market_prices ()
 		{
 			char str[100];
-			char planet_name[16];
 			int i;
 
             elite.current_screen = SCR.SCR_MARKET_PRICES;
 
 			gfx_clear_display();
 
-			name_planet (planet_name, elite.docked_planet);
+			string planet_name = Planet.name_planet (ref elite.docked_planet);
 			sprintf (str, "%s MARKET PRICES", planet_name);
 			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 

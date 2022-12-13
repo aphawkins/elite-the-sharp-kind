@@ -108,7 +108,7 @@ namespace Elite
 			"For the moment please accept this Navy Extra Energy Unit as payment. " +
 			"---MESSAGE ENDS.";
 
-		static string? mission_planet_desc(galaxy_seed planet)
+		internal static string mission_planet_desc(galaxy_seed planet)
 		{
 			int pnum;
 
@@ -181,9 +181,11 @@ namespace Elite
 			}
 
 			if ((elite.cmdr.galaxy_number == 2) && (pnum == 101))
+			{
 				return mission1_pdesc[9];
+			}
 
-			return NULL;
+			return null;
 		}
 
 		static void constrictor_mission_brief()

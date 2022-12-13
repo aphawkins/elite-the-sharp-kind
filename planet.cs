@@ -46,7 +46,6 @@ namespace Elite
 		static string[] inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
 
 		static string planet_description;
-		static int desc_ptr;
 
 		static string[][] desc_list = new string[36][]
 		{
@@ -99,7 +98,9 @@ namespace Elite
 			x = (rnd_seed.a * 2) & 0xFF;
 			a = x + rnd_seed.c;
 			if (rnd_seed.a > 127)
+			{
 				a++;
+			}
 			rnd_seed.a = a & 0xFF;
 			rnd_seed.c = x;
 
@@ -251,11 +252,11 @@ namespace Elite
 			return -1;
 		}
 
-		internal static void name_planet(ref string gname, ref galaxy_seed glx)
+		internal static string name_planet(ref galaxy_seed glx)
 		{
 			int size;
 			int i;
-			string gname_temp = string.Empty;
+			string gname = string.Empty;
 			int x;
 
 			if ((glx.a & 0x40) == 0)
@@ -274,17 +275,17 @@ namespace Elite
 				{
 					x += 12;
 					x *= 2;
-                    gname_temp += digrams[x];
+                    gname += digrams[x];
 					if (digrams[x + 1] != '?')
 					{
-                        gname_temp += digrams[x + 1];
+                        gname += digrams[x + 1];
 					}
 				}
 
 				waggle_galaxy(ref glx);
 			}
 
-			gname = gname_temp;
+			return gname;
 		}
 
 		internal static string capitalise_name(string name)
@@ -329,28 +330,31 @@ namespace Elite
 			return sb.ToString();
 		}
 
-		static void expand_description(char* source)
+		// TODO: Check this for correctness
+		static void expand_description(string source)
 		{
-			string str;
-			char* ptr;
+			string temp = string.Empty;
+			string expanded;
 			int num;
 			int rnd;
 			int option;
 			int i, len, x;
 
-			while (*source != '\0')
+			for (int j = 0; j < source.Length; j++)
 			{
-				if (*source == '<')
+				if (source[j] == '<')
 				{
-					source++;
-					ptr = str;
-					while (*source != '>')
-						*ptr++ = *source++;
-					*ptr = '\0';
-					source++;
-					num = atoi(str);
+					j++;
+					while (source[j] != '>')
+					{
+						temp += source[j];
+						j++;
+					}
+					// j++;
+					num = Convert.ToInt32(temp);
+					expanded = temp;
 
-					if (elite.hoopy_casinos)
+                    if (elite.hoopy_casinos)
 					{
 						option = gen_msx_rnd_number();
 					}
@@ -364,30 +368,26 @@ namespace Elite
 						if (rnd >= 0xCC) option++;
 					}
 
-					expand_description(desc_list[num][option]);
+                    expand_description(desc_list[num][option]);
 					continue;
 				}
 
-				if (*source == '%')
+				if (source[j] == '%')
 				{
-					source++;
-					switch (*source)
+					j++;
+					switch (source[j])
 					{
 						case 'H':
-							name_planet(str, hyperspace_planet);
-							str = Planet.capitalise_name(str);
-							for (ptr = str; *ptr != '\0';)
-								*desc_ptr++ = *ptr++;
+							temp = name_planet(ref hyperspace_planet);
+							temp = Planet.capitalise_name(temp);
+							planet_description += temp;
 							break;
 
 						case 'I':
-							name_planet(str, hyperspace_planet);
-							str = Planet.capitalise_name(str);
-							for (ptr = str; *ptr != '\0';)
-								*desc_ptr++ = *ptr++;
-							desc_ptr--;
-							strcpy(desc_ptr, "ian");
-							desc_ptr += 3;
+							temp = name_planet(ref hyperspace_planet);
+							temp = Planet.capitalise_name(temp);
+                            planet_description += temp;
+                            planet_description += "ian";
 							break;
 
 						case 'R':
@@ -396,24 +396,25 @@ namespace Elite
 							{
 								x = gen_rnd_number() & 0x3e;
 								if (i == 0)
-									*desc_ptr++ = digrams[x];
+								{
+                                    planet_description += digrams[x];
+								}
 								else
-									*desc_ptr++ = tolower(digrams[x]);
-								*desc_ptr++ = tolower(digrams[x + 1]);
+								{
+                                    planet_description += char.ToLower(digrams[x]);
+								}
+                                planet_description += char.ToLower(digrams[x + 1]);
 							}
-
+							break;
 					}
 
-					source++;
+					j++;
 					continue;
 				}
 
-				*desc_ptr++ = *source++;
+				planet_description += source[j];
 			}
 
-
-
-			*desc_ptr = '\0';
 		}
 
 		static string describe_planet(galaxy_seed planet)
@@ -422,7 +423,7 @@ namespace Elite
 
 			if (elite.cmdr.mission == 1)
 			{
-				mission_text = mission_planet_desc(planet);
+				mission_text = missions.mission_planet_desc(planet);
 				if (mission_text != null)
 				{
 					return mission_text;
@@ -441,8 +442,6 @@ namespace Elite
 				rnd_seed.c ^= rnd_seed.a;
 				rnd_seed.d ^= rnd_seed.b;
 			}
-
-			desc_ptr = planet_description;
 
 			expand_description("<14> is <22>.");
 
