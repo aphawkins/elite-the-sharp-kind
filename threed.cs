@@ -383,28 +383,27 @@ namespace Elite
 		 * Guassian random number generator.
 		 * Returns a number between -7 and +8 with Gaussian distribution.
 		 */
-
-		int grand ()
+		static int grand ()
 		{
 			int i;
 			int r;
 	
 			r = 0;
 			for (i = 0; i < 12; i++)
-				r += randint() & 15;
-	
+			{
+				r += random.randint() & 15;
+			}
+
 			r /= 12;
 			r -= 7;
 
 			return r;
 		}
 
-
 		/*
 		 * Calculate the midpoint between two given points.
 		 */
-
-		int calc_midpoint (int sx, int sy, int ex, int ey)
+		static int calc_midpoint (int sx, int sy, int ex, int ey)
 		{
 			int a,b,n;
 
@@ -457,22 +456,25 @@ namespace Elite
 		 * Generate a fractal landscape.
 		 * Uses midpoint displacement method.
 		 */
-
-		void generate_fractal_landscape (int rnd_seed)
+		static void generate_fractal_landscape (int rnd_seed)
 		{
 			int x,y,d,h;
 			double dist;
-			int dark;
+			bool dark;
 			int old_seed;
 	
-			old_seed = get_rand_seed();
+			old_seed = random.get_rand_seed();
 			set_rand_seed(rnd_seed);
 	
 			d = LAND_X_MAX / 8;
-	
+
 			for (y = 0; y <= LAND_Y_MAX; y += d)
+			{
 				for (x = 0; x <= LAND_X_MAX; x += d)
-					landscape[x][y] = randint() & 255;
+				{
+					landscape[x][y] = random.randint() & 255;
+				}
+			}
 
 			for (y = 0; y < LAND_Y_MAX; y += d)
 				for (x = 0; x < LAND_X_MAX; x += d)	
@@ -486,18 +488,17 @@ namespace Elite
 					dark = dist > 10000;
 					h = landscape[x][y];
 					if (h > 166)
-						landscape[x][y] = dark ? GFX_COL_GREEN_1 : GFX_COL_GREEN_2;
+						landscape[x][y] = dark ? gfx.GFX_COL_GREEN_1 : gfx.GFX_COL_GREEN_2;
 					else 
-						landscape[x][y] = dark ? GFX_COL_BLUE_2 : GFX_COL_BLUE_1;
+						landscape[x][y] = dark ? gfx.GFX_COL_BLUE_2 : gfx.GFX_COL_BLUE_1;
 
 				}
 			}
 
-			set_rand_seed (old_seed);
+			random.set_rand_seed (old_seed);
 		}
 
-
-		void generate_landscape (int rnd_seed)
+		static void generate_landscape (int rnd_seed)
 		{
 			switch (planet_render_style)
 			{
@@ -517,15 +518,11 @@ namespace Elite
 					break;
 			}
 		}
-
- 
  
 		/*
 		 * Draw a line of the planet with appropriate rotation.
 		 */
-
-
-		void render_planet_line (int xo, int yo, int x, int y, int radius, int vx, int vy)
+		static void render_planet_line (int xo, int yo, int x, int y, int radius, int vx, int vy)
 		{
 			int lx, ly;
 			int rx, ry;
@@ -670,62 +667,78 @@ namespace Elite
 		static void render_sun_line(int xo, int yo, int x, int y, int radius)
 		{
 			int sy = yo + y;
-			int sx,ex;
+			int sx, ex;
 			int colour;
-			int dx,dy;
+			int dx, dy;
 			int distance;
-			int inner,outer;
+			int inner, outer;
 			int inner2;
-			int mix;
+			bool mix;
 
-			if ((sy < GFX_VIEW_TY + GFX_Y_OFFSET) ||
-				(sy > GFX_VIEW_BY + GFX_Y_OFFSET))
+			if ((sy < gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) ||
+				(sy > gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
+			{
 				return;
-	
+			}
+
 			sx = xo - x;
 			ex = xo + x;
 
-			sx -= (radius * (2 + (randint() & 7))) >> 8;
-			ex += (radius * (2 + (randint() & 7))) >> 8;
-	
-			if ((sx > GFX_VIEW_BX + GFX_X_OFFSET) ||
-				(ex < GFX_VIEW_TX + GFX_X_OFFSET))
-				return;
-	
-			if (sx < GFX_VIEW_TX + GFX_X_OFFSET)
-				sx = GFX_VIEW_TX + GFX_X_OFFSET;
-	
-			if (ex > GFX_VIEW_BX + GFX_X_OFFSET)
-				ex = GFX_VIEW_BX + GFX_X_OFFSET;
+			sx -= (radius * (2 + (random.randint() & 7))) >> 8;
+			ex += (radius * (2 + (random.randint() & 7))) >> 8;
 
-			inner = (radius * (200 + (randint() & 7))) >> 8;
+			if ((sx > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET) ||
+				(ex < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET))
+			{
+				return;
+			}
+
+			if (sx < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)
+			{
+				sx = gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET;
+			}
+
+			if (ex > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)
+			{
+				ex = gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET;
+			}
+
+			inner = (radius * (200 + (random.randint() & 7))) >> 8;
 			inner *= inner;
-	
-			inner2 = (radius * (220 + (randint() & 7))) >> 8;
+
+			inner2 = (radius * (220 + (random.randint() & 7))) >> 8;
 			inner2 *= inner2;
-	
-			outer = (radius * (239 + (randint() & 7))) >> 8;
-			outer *= outer;	
+
+			outer = (radius * (239 + (random.randint() & 7))) >> 8;
+			outer *= outer;
 
 			dy = y * y;
 			dx = sx - xo;
-	
-			for (; sx <= ex; sx++,dx++)
+
+			for (; sx <= ex; sx++, dx++)
 			{
-				mix = (sx ^ y) & 1;
+				mix = ((sx ^ y) & 1) == 1;
 				distance = dx * dx + dy;
 
 				if (distance < inner)
-					colour = GFX_COL_WHITE;
+				{
+					colour = gfx.GFX_COL_WHITE;
+				}
 				else if (distance < inner2)
-					colour = GFX_COL_YELLOW_4;
+				{
+					colour = gfx.GFX_COL_YELLOW_4;
+				}
 				else if (distance < outer)
-					colour = GFX_ORANGE_3;
+				{
+					colour = gfx.GFX_ORANGE_3;
+				}
 				else
-					colour = mix ? GFX_ORANGE_1 : GFX_ORANGE_2;
-		
-				gfx_fast_plot_pixel (sx, sy, colour);
-			} 	
+				{
+					colour = mix ? gfx.GFX_ORANGE_1 : gfx.GFX_ORANGE_2;
+				}
+
+				gfx_fast_plot_pixel(sx, sy, colour);
+			}
 		}
 
 		static void render_sun (int xo, int yo, int radius)
@@ -909,8 +922,8 @@ namespace Elite
 
 			q = pr / 32;	
 		
-			old_seed = get_rand_seed();
-			set_rand_seed (univ.exp_seed);
+			old_seed = random.get_rand_seed();
+            random.set_rand_seed (univ.exp_seed);
 
 			for (cnt = 0; cnt < np; cnt++)
 			{
@@ -928,16 +941,20 @@ namespace Elite
 					px = px + px + sx;
 					py = py + py + sy;
 
-					sizex = (randint() & 1) + 1;
-					sizey = (randint() & 1) + 1;
+					sizex = (random.randint() & 1) + 1;
+					sizey = (random.randint() & 1) + 1;
 
 					for (psy = 0; psy < sizey; psy++)
-						for (psx = 0; psx < sizex; psx++)		
-							gfx_plot_pixel (px+psx, py+psy, GFX_COL_WHITE);
+					{
+						for (psx = 0; psx < sizex; psx++)
+						{
+							gfx_plot_pixel (px+psx, py+psy, gfx.GFX_COL_WHITE);
+						}
+					}
 				}
 			}
 
-			set_rand_seed (old_seed);
+            random.set_rand_seed (old_seed);
 		}
 
 		/*
@@ -957,7 +974,7 @@ namespace Elite
 			if (ship.flags.HasFlag(FLG.FLG_DEAD) && !ship.flags.HasFlag(FLG.FLG_EXPLOSION))
 			{
 				ship.flags |= FLG.FLG_EXPLOSION;
-				ship.exp_seed = randint();
+				ship.exp_seed = random.randint();
 				ship.exp_delta = 18; 
 			}
 

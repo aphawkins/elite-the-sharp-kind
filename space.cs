@@ -452,25 +452,22 @@ namespace Elite
 				aft_shield = shield;
 		}
 
-
-
-
-		void make_station_appear()
+		static void make_station_appear()
 		{
 			double px, py, pz;
 			double sx, sy, sz;
 			Vector vec;
-			Matrix rotmat;
+			Vector[] rotmat = new Vector[3];
 
 			px = universe[0].location.x;
 			py = universe[0].location.y;
 			pz = universe[0].location.z;
 
-			vec.x = (rand() & 32767) - 16384;
-			vec.y = (rand() & 32767) - 16384;
-			vec.z = rand() & 32767;
+			vec.x = (random.rand() & 32767) - 16384;
+			vec.y = (random.rand() & 32767) - 16384;
+			vec.z = random.rand() & 32767;
 
-			vec = VectorMaths.unit_vector(&vec);
+			vec = VectorMaths.unit_vector(vec);
 
 			sx = px - vec.x * 65792;
 			sy = py - vec.y * 65792;
@@ -1148,7 +1145,7 @@ namespace Elite
 			create_new_stars();
 			clear_universe();
 
-			nthg = (randint() & 3) + 1;
+			nthg = (random.randint() & 3) + 1;
 
 			for (i = 0; i < nthg; i++)
 				create_thargoid();

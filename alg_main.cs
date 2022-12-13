@@ -81,13 +81,13 @@ namespace Elite
 
 		static void initialise_game()
 		{
-			set_rand_seed (time(NULL));
+			random.set_rand_seed(time(null));
 			elite.current_screen = SCR.SCR_INTRO_ONE;
 
 			restore_saved_commander();
 
-            elite.flight_speed = 1;
-            elite.flight_roll = 0;
+			elite.flight_speed = 1;
+			elite.flight_roll = 0;
 			elite.flight_climb = 0;
 			docked = 1;
 			front_shield = 255;
@@ -101,21 +101,20 @@ namespace Elite
 			elite.witchspace = false;
 			game_paused = 0;
 			auto_pilot = 0;
-	
+
 			create_new_stars();
 			clear_universe();
-	
+
 			cross_x = -1;
 			cross_y = -1;
 			cross_timer = 0;
 
-	
-			myship.max_speed = 40;		/* 0.27 Light Mach */
-			myship.max_roll = 31;
-			myship.max_climb = 8;		/* CF 8 */
-			myship.max_fuel = 70;		/* 7.0 Light Years */
-		}
 
+			myship.max_speed = 40;      /* 0.27 Light Mach */
+			myship.max_roll = 31;
+			myship.max_climb = 8;       /* CF 8 */
+			myship.max_fuel = 70;       /* 7.0 Light Years */
+		}
 
 		void finish_game ()
 		{
@@ -1159,48 +1158,44 @@ namespace Elite
 			Vector[] rotmat = new Vector[3];
 			int type;
 
-            elite.current_screen = SCR.SCR_GAME_OVER;
-			gfx_set_clip_region (1, 1, 510, 383);
+			elite.current_screen = SCR.SCR_GAME_OVER;
+			gfx_set_clip_region(1, 1, 510, 383);
 
-            elite.flight_speed = 6;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+			elite.flight_speed = 6;
+			elite.flight_roll = 0;
+			elite.flight_climb = 0;
 			clear_universe();
 
-            VectorMaths.set_init_matrix (rotmat);
+			VectorMaths.set_init_matrix(rotmat);
 
 			newship = add_new_ship(shipdata.SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
-            space.universe[newship].flags |= FLG.FLG_DEAD;
+			space.universe[newship].flags |= FLG.FLG_DEAD;
 
 			for (i = 0; i < 5; i++)
 			{
-				type = (random.rand255() & 1) ? shipdata.SHIP_CARGO : shipdata.SHIP_ALLOY;
-				newship = add_new_ship (type, (random.rand255() & 63) - 32,
+				type = ((random.rand255() & 1) == 1) ? shipdata.SHIP_CARGO : shipdata.SHIP_ALLOY;
+				newship = add_new_ship(type, (random.rand255() & 63) - 32,
 										(random.rand255() & 63) - 32, -400, rotmat, 0, 0);
-                space.universe[newship].rotz = ((random.rand255() * 2) & 255) - 128;
-                space.universe[newship].rotx = ((random.rand255() * 2) & 255) - 128;
-                space.universe[newship].velocity = random.rand255() & 15;
+				space.universe[newship].rotz = ((random.rand255() * 2) & 255) - 128;
+				space.universe[newship].rotx = ((random.rand255() * 2) & 255) - 128;
+				space.universe[newship].velocity = random.rand255() & 15;
 			}
-	
-	
+
+
 			for (i = 0; i < 100; i++)
 			{
 				gfx_clear_display();
 				update_starfield();
 				update_universe();
-				gfx_display_centre_text (190, "GAME OVER", 140, GFX_COL_GOLD);
+				gfx_display_centre_text(190, "GAME OVER", 140, gfx.GFX_COL_GOLD);
 				gfx_update_screen();
 			}
 		}
-
-
-
 
 		/*
 		 * Draw a break pattern (for launching, docking and hyperspacing).
 		 * Just draw a very simple one for the moment.
 		 */
-
 		void display_break_pattern ()
 		{
 			int i;

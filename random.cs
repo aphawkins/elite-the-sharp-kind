@@ -17,10 +17,10 @@
  */
 
 
-# include <stdlib.h>
-# include "allegro.h"
+//# include <stdlib.h>
+//# include "allegro.h"
 
-# include "random.h"
+//# include "random.h"
 
 namespace Elite
 {
@@ -35,8 +35,7 @@ namespace Elite
 		 *
 		 * Taken from "A Guide to Simulation" by Bratley, Fox and Schrage.
 		 */
-
-		int randint()
+		internal static int randint()
 		{
 			int k1;
 			int ix = rand_seed;
@@ -44,20 +43,21 @@ namespace Elite
 			k1 = ix / 127773;
 			ix = 16807 * (ix - k1 * 127773) - k1 * 2836;
 			if (ix < 0)
+			{
 				ix += 2147483647;
+			}
+
 			rand_seed = ix;
 
 			return ix;
 		}
 
-
-		void set_rand_seed(int seed)
+		internal static void set_rand_seed(int seed)
 		{
 			rand_seed = seed;
 		}
 
-
-		int get_rand_seed()
+		internal static int get_rand_seed()
 		{
 			return rand_seed;
 		}
@@ -65,6 +65,11 @@ namespace Elite
 		internal static int rand255()
 		{
 			return (randint() & 255);
+		}
+
+		internal static int rand()
+		{
+			return new Random().Next();
 		}
 	}
 }

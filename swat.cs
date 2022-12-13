@@ -926,7 +926,7 @@ namespace Elite
 		}
 
 
-		static int fire_laser ()
+		static int fire_laser()
 		{
 			if ((laser_counter == 0) && (laser_temp < 242))
 			{
@@ -935,19 +935,19 @@ namespace Elite
 					case SCR.SCR_FRONT_VIEW:
 						laser = elite.cmdr.front_laser;
 						break;
-			
+
 					case SCR.SCR_REAR_VIEW:
 						laser = elite.cmdr.rear_laser;
 						break;
-					
+
 					case SCR.SCR_RIGHT_VIEW:
 						laser = elite.cmdr.right_laser;
 						break;
-					
+
 					case SCR.SCR_LEFT_VIEW:
 						laser = elite.cmdr.left_laser;
 						break;
-				
+
 					default:
 						laser = 0;
 						break;
@@ -959,14 +959,16 @@ namespace Elite
 					laser &= 127;
 					laser2 = laser;
 
-					snd_play_sample (SND_PULSE);
+					snd_play_sample(SND.SND_PULSE);
 					laser_temp += 8;
 					if (energy > 1)
+					{
 						energy--;
-			
-					laser_x = ((rand() & 3) + 128 - 2) * GFX_SCALE;
-					laser_y = ((rand() & 3) + 96 - 2) * GFX_SCALE;
-			
+					}
+
+					laser_x = ((random.rand() & 3) + 128 - 2) * gfx.GFX_SCALE;
+					laser_y = ((random.rand() & 3) + 96 - 2) * gfx.GFX_SCALE;
+
 					return 2;
 				}
 			}
@@ -999,8 +1001,8 @@ namespace Elite
 			VectorMaths.set_init_matrix (rotmat);
 
 			z = 12000;
-			x = 1000 + (randint() & 8191);
-			y = 1000 + (randint() & 8191);
+			x = 1000 + (random.randint() & 8191);
+			y = 1000 + (random.randint() & 8191);
 
 			if (random.rand255() > 127)
 				x = -x;
@@ -1195,8 +1197,8 @@ namespace Elite
 			VectorMaths.set_init_matrix (rotmat);
 
 			z = 12000;
-			x = 1000 + (randint() & 8191);
-			y = 1000 + (randint() & 8191);
+			x = 1000 + (random.randint() & 8191);
+			y = 1000 + (random.randint() & 8191);
 
 			if (random.rand255() > 127)
 				x = -x;
