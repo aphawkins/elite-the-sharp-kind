@@ -154,31 +154,30 @@ namespace Elite
 			show_distance_to_planet();
 		}
 
-		internal static void find_planet_by_name (string find_name)
+		internal static void find_planet_by_name(string find_name)
 		{
 			int i;
 			galaxy_seed glx;
 			char planet_name[16];
-			int found;
+			bool found = false;
 			char str[32];
 	
 			glx = elite.cmdr.galaxy;
-			found = 0;
-	
+
 			for (i = 0; i < 256; i++)
 			{
-				name_planet (planet_name, glx);
-		
-				if (strcmp (planet_name, find_name) == 0)
+				name_planet(planet_name, glx);
+
+				if (strcmp(planet_name, find_name) == 0)
 				{
-					found = 1;
+					found = true;
 					break;
 				}
 
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
+				Planet.waggle_galaxy(ref glx);
+				Planet.waggle_galaxy(ref glx);
+				Planet.waggle_galaxy(ref glx);
+				Planet.waggle_galaxy(ref glx);
 			}
 
 			if (!found)
@@ -214,7 +213,7 @@ namespace Elite
 			galaxy_seed glx;
 			int dx,dy;
 			int px,py;
-			char planet_name[16];
+			string planet_name;
 			int row_used[64];
 			int row;
 			int blob_size;
@@ -244,10 +243,10 @@ namespace Elite
 
 				if ((dx >= 20) || (dy >= 38))
 				{
-					waggle_galaxy (&glx);
-					waggle_galaxy (&glx);
-					waggle_galaxy (&glx);
-					waggle_galaxy (&glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
 
 					continue;
 				}
@@ -256,7 +255,7 @@ namespace Elite
 				px = px * 4 * GFX_SCALE + GFX_X_CENTRE;  /* Convert to screen co-ords */
 
 				py = (glx.b - elite.docked_planet.b);
-				py = py * 2 * GFX_SCALE + GFX_Y_CENTRE;	/* Convert to screen co-ords */
+				py = py * 2 * GFX_SCALE + GFX_Y_CENTRE; /* Convert to screen co-ords */
 
 				row = py / (8 * GFX_SCALE);
 
@@ -268,10 +267,10 @@ namespace Elite
 
 				if (row <= 3)
 				{
-					waggle_galaxy (&glx);
-					waggle_galaxy (&glx);
-					waggle_galaxy (&glx);
-					waggle_galaxy (&glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
 
 					continue;
 				}
@@ -279,13 +278,10 @@ namespace Elite
 				if (row_used[row] == 0)
 				{
 					row_used[row] = 1;
-
-					name_planet (planet_name, glx);
-					capitalise_name (planet_name);
-
-					gfx_display_text (px + (4 * GFX_SCALE), (row * 8 - 5) * GFX_SCALE, planet_name);
+                    Planet.name_planet(planet_name, glx);
+                    planet_name = Planet.capitalise_name(planet_name);
+					gfx_display_text(px + (4 * GFX_SCALE), (row * 8 - 5) * GFX_SCALE, planet_name);
 				}
-
 
 				/* The next bit calculates the size of the circle used to represent */
 				/* a planet.  The carry_flag is left over from the name generation. */
@@ -293,12 +289,12 @@ namespace Elite
 
 				blob_size = (glx.f & 1) + 2 + carry_flag;
 				blob_size *= gfx.GFX_SCALE;
-				gfx_draw_filled_circle (px, py, blob_size, gfx.GFX_COL_GOLD);
+				gfx_draw_filled_circle(px, py, blob_size, gfx.GFX_COL_GOLD);
 
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
+				Planet.waggle_galaxy(ref glx);
+				Planet.waggle_galaxy(ref glx);
+				Planet.waggle_galaxy(ref glx);
+				Planet.waggle_galaxy(ref glx);
 			}
 
 			cross_x = ((hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
@@ -335,13 +331,14 @@ namespace Elite
 				gfx_plot_pixel(px, py, gfx.GFX_COL_WHITE);
 
 				if ((glx.e | 0x50) < 0x90)
-					gfx_plot_pixel (px + 1, py, gfx.GFX_COL_WHITE);
+				{
+					gfx_plot_pixel(px + 1, py, gfx.GFX_COL_WHITE);
+				}
 
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
-				waggle_galaxy (&glx);
-
+                Planet.waggle_galaxy(ref glx);
+                Planet.waggle_galaxy(ref glx);
+                Planet.waggle_galaxy(ref glx);
+				Planet.waggle_galaxy(ref glx);
 			}
 
 
@@ -359,44 +356,44 @@ namespace Elite
 			string description;
 			planet_data hyper_planet_data = new();
 
-            elite.current_screen = SCR.SCR_PLANET_DATA;
+			elite.current_screen = SCR.SCR_PLANET_DATA;
 
 			gfx_clear_display();
 
-			name_planet (planet_name, hyperspace_planet);
-			sprintf (str, "DATA ON %s", planet_name);
+			name_planet(planet_name, hyperspace_planet);
+			sprintf(str, "DATA ON %s", planet_name);
 
-			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
+			gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
 
-            alg_gfx.gfx_draw_line(0, 36, 511, 36);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			Planet.generate_planet_data(ref hyper_planet_data, hyperspace_planet);
 
-			show_distance (42, elite.docked_planet, hyperspace_planet);
+			show_distance(42, elite.docked_planet, hyperspace_planet);
 
-			sprintf (str, "Economy:%s", economy_type[hyper_planet_data.economy]);
-			gfx_display_text (16, 74, str);
+			sprintf(str, "Economy:%s", economy_type[hyper_planet_data.economy]);
+			gfx_display_text(16, 74, str);
 
-			sprintf (str, "Government:%s", government_type[hyper_planet_data.government]);
-			gfx_display_text (16, 106, str);
+			sprintf(str, "Government:%s", government_type[hyper_planet_data.government]);
+			gfx_display_text(16, 106, str);
 
-			sprintf (str, "Tech.Level:%3d", hyper_planet_data.techlevel + 1);
-			gfx_display_text (16, 138, str);
+			sprintf(str, "Tech.Level:%3d", hyper_planet_data.techlevel + 1);
+			gfx_display_text(16, 138, str);
 
-			sprintf (str, "Population:%d.%d Billion", hyper_planet_data.population / 10, hyper_planet_data.population % 10);
-			gfx_display_text (16, 170, str);
+			sprintf(str, "Population:%d.%d Billion", hyper_planet_data.population / 10, hyper_planet_data.population % 10);
+			gfx_display_text(16, 170, str);
 
-			describe_inhabitants (str, hyperspace_planet);
-			gfx_display_text (16, 202, str);
+			str = Planet.describe_inhabitants(str, hyperspace_planet);
+			gfx_display_text(16, 202, str);
 
-			sprintf (str, "Gross Productivity:%5d M CR", hyper_planet_data.productivity);
-			gfx_display_text (16, 234, str);
+			sprintf(str, "Gross Productivity:%5d M CR", hyper_planet_data.productivity);
+			gfx_display_text(16, 234, str);
 
-			sprintf (str, "Average Radius:%5d km", hyper_planet_data.radius);
-			gfx_display_text (16, 266, str);
+			sprintf(str, "Average Radius:%5d km", hyper_planet_data.radius);
+			gfx_display_text(16, 266, str);
 
-			description = describe_planet (hyperspace_planet);
-			gfx_display_pretty_text (16, 298, 400, 384, description);
+			description = describe_planet(hyperspace_planet);
+			gfx_display_pretty_text(16, 298, 400, 384, description);
 		}
 
 
@@ -464,7 +461,7 @@ namespace Elite
 
 		void display_commander_status ()
 		{
-			char planet_name[16];
+			string planet_name;
 			char str[100];
 			int i;
 			int x,y;
@@ -487,14 +484,14 @@ namespace Elite
 			if (!elite.witchspace)
 			{
 				name_planet (planet_name, elite.docked_planet);
-				capitalise_name (planet_name);
+                planet_name = Planet.capitalise_name(planet_name);
 				sprintf (str, "%s", planet_name);
 				gfx_display_text (190, 58, str);
 			}
 
 			gfx_display_colour_text (16, 74, "Hyperspace System:", gfx.GFX_COL_GREEN_1);
 			name_planet (planet_name, hyperspace_planet);
-			capitalise_name (planet_name);
+			planet_name = Planet.capitalise_name(planet_name);
 			sprintf (str, "%s", planet_name);
 			gfx_display_text (190, 74, str);
 

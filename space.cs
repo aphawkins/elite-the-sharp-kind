@@ -58,7 +58,7 @@ namespace Elite
 		galaxy_seed destination_planet;
 		internal static int hyper_ready;
 		int hyper_countdown;
-		char hyper_name[16];
+		static string hyper_name;
 		int hyper_distance;
 		int hyper_galactic;
 
@@ -1061,7 +1061,7 @@ namespace Elite
 
 			destination_planet = hyperspace_planet;
 			name_planet(hyper_name, destination_planet);
-			capitalise_name(hyper_name);
+			hyper_name = Planet.capitalise_name(hyper_name);
 
 			hyper_ready = 1;
 			hyper_countdown = 15;

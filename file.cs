@@ -29,7 +29,7 @@ namespace Elite
 {
 	internal static class file
 	{
-		void write_config_file()
+		static void write_config_file()
 		{
 			FILE* fp;
 
@@ -45,7 +45,7 @@ namespace Elite
 
 			fprintf(fp, "%d\t\t# Planet style: 0 = Wireframe, 1 = Green, 2 = SNES, 3 = Fractal\n", planet_render_style);
 
-			fprintf(fp, "%d\t\t# Planet Descriptions: 0 = Tree Grubs, 1 = Hoopy Casinos\n", hoopy_casinos);
+			fprintf(fp, $"{(elite.hoopy_casinos ? 1 : 0)}\t\t# Planet Descriptions: 0 = Tree Grubs, 1 = Hoopy Casinos\n");
 
 			fprintf(fp, "%d\t\t# Instant dock: 0 = off, 1 = on\n", instant_dock);
 
@@ -124,10 +124,10 @@ namespace Elite
 		 * Read in the newkind.cfg file.
 		 */
 
-		void read_config_file()
+		static void read_config_file()
 		{
 			FILE* fp;
-			char str[256];
+			string str;
 
 			fp = fopen("newkind.cfg", "r");
 			if (fp == NULL)
@@ -146,7 +146,7 @@ namespace Elite
 			sscanf(str, "%d", &planet_render_style);
 
 			read_cfg_line(str, sizeof(str), fp);
-			sscanf(str, "%d", &hoopy_casinos);
+			elite.hoopy_casinos = str[0] != '0';
 
 			read_cfg_line(str, sizeof(str), fp);
 			sscanf(str, "%d", &instant_dock);

@@ -111,7 +111,7 @@ struct setting
 					break;
 
 				case 3:
-					v = hoopy_casinos;
+					v = elite.hoopy_casinos ? 1 : 0;
 					break;
 
 				case 4:
@@ -213,7 +213,7 @@ struct setting
 				highlight_setting(hilite_item + 2);
 		}
 
-		void toggle_setting()
+		static void toggle_setting()
 		{
 			if (hilite_item == (NUM_SETTINGS - 1))
 			{
@@ -237,7 +237,7 @@ struct setting
 					break;
 
 				case 3:
-					hoopy_casinos ^= 1;
+					elite.hoopy_casinos = !elite.hoopy_casinos;
 					break;
 
 				case 4:

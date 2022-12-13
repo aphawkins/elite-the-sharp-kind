@@ -2,11 +2,11 @@
 {
     internal struct galaxy_seed
     {
-        internal char a;    /* 6c */
-        internal char b;    /* 6d */
-        internal char c;    /* 6e */
-        internal char d;    /* 6f */
-        internal char e;    /* 70 */
-        internal char f;    /* 71 */
+        internal int a;    /* 6c */
+        internal int b;    /* 6d */
+        internal int c;    /* 6e */
+        internal int d;    /* 6f */
+        internal int e;    /* 70 */
+        internal int f;    /* 71 */
     };
 }

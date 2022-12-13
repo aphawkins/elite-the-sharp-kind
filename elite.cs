@@ -47,7 +47,7 @@ namespace Elite
 
 		internal static int wireframe = 0;
         internal static int anti_alias_gfx = 0;
-        internal static int hoopy_casinos = 0;
+        internal static bool hoopy_casinos = false;
         internal static int speed_cap = 75;
         internal static int instant_dock = 0;
 
