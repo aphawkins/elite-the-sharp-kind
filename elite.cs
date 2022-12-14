@@ -24,6 +24,7 @@ namespace Elite
 {
 	using Elite.Enums;
 	using Elite.Structs;
+	using Elite.Ships;
 
 	internal static class elite
 	{
@@ -113,40 +114,40 @@ namespace Elite
 
 		internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]
 		{
-			null,
+			new(),
 			shipdata.missile_data,
-			&coriolis_data,
-			&esccaps_data,
-			&alloy_data,
-			&cargo_data,
-			&boulder_data,
-			&asteroid_data,
-			&rock_data,
-			&orbit_data,
-			&transp_data,
-			&cobra3a_data,
-			&pythona_data,
-			&boa_data,
-			&anacnda_data,
-			&hermit_data,
-			&viper_data,
-			&sidewnd_data,
-			&mamba_data,
-			&krait_data,
-			&adder_data,
-			&gecko_data,
-			&cobra1_data,
-			&worm_data,
-			&cobra3b_data,
-			&asp2_data,
-			&pythonb_data,
-			&ferdlce_data,
-			&moray_data,
-			&thargoid_data,
-			&thargon_data,
-			&constrct_data,
-			&cougar_data,
-			&dodec_data
+			shipdata.coriolis_data,
+			shipdata.esccaps_data,
+			shipdata.alloy_data,
+			shipdata.cargo_data,
+			shipdata.boulder_data,
+			shipdata.asteroid_data,
+			shipdata.rock_data,
+			shipdata.orbit_data,
+			shipdata.transp_data,
+			shipdata.cobra3a_data,
+			shipdata.pythona_data,
+			shipdata.boa_data,
+			shipdata.anacnda_data,
+			shipdata.hermit_data,
+			shipdata.viper_data,
+			shipdata.sidewnd_data,
+			shipdata.mamba_data,
+			shipdata.krait_data,
+			shipdata.adder_data,
+			shipdata.gecko_data,
+			shipdata.cobra1_data,
+			shipdata.worm_data,
+			shipdata.cobra3b_data,
+			shipdata.asp2_data,
+			shipdata.pythonb_data,
+			shipdata.ferdlce_data,
+			shipdata.moray_data,
+			shipdata.thargoid_data,
+			shipdata.thargon_data,
+			shipdata.constrct_data,
+			shipdata.cougar_data,
+			shipdata.dodec_data
 		};
 
 		static void restore_saved_commander()

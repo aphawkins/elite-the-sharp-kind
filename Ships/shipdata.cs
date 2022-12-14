@@ -1,4 +1,4 @@
-namespace Elite
+namespace Elite.Ships
 {
     internal static partial class shipdata
     {

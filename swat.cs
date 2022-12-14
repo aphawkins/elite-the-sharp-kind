@@ -37,10 +37,11 @@
 
 namespace Elite
 {
-	using Elite.Enums;
-	using Elite.Structs;
+    using Elite.Enums;
+    using Elite.Structs;
+    using EliteLib.Ships;
 
-	internal static class swat
+    internal static class swat
     {
 		internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;

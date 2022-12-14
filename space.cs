@@ -46,10 +46,11 @@
 
 namespace Elite
 {
-	using Elite.Enums;
-	using Elite.Structs;
+    using Elite.Enums;
+    using Elite.Structs;
+    using EliteLib.Ships;
 
-	internal static class space
+    internal static class space
 	{
 		galaxy_seed destination_planet;
 		internal static int hyper_ready;
