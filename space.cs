@@ -229,48 +229,55 @@ namespace Elite
 		/*
 		 * Check if we are correctly aligned to dock.
 		 */
-		int is_docking(int sn)
+		static bool is_docking(int sn)
 		{
 			Vector vec;
 			double fz;
 			double ux;
 
 			if (auto_pilot)     // Don't want it to kill anyone!
-				return 1;
+			{
+				return true;
+			}
 
 			fz = universe[sn].rotmat[2].z;
 
 			if (fz > -0.90)
-				return 0;
+			{
+				return false;
+			}
 
 			vec = VectorMaths.unit_vector(universe[sn].location);
 
 			if (vec.z < 0.927)
-				return 0;
+			{
+				return false;
+			}
 
 			ux = universe[sn].rotmat[1].x;
 			if (ux < 0)
+			{
 				ux = -ux;
+			}
 
 			if (ux < 0.84)
-				return 0;
+			{
+				return false;
+			}
 
-			return 1;
+			return true;
 		}
-
 
 		/*
 		 * Game Over...
 		 */
-
-		void do_game_over()
+		static void do_game_over()
 		{
-			snd_play_sample(SND_GAMEOVER);
+            sound.snd_play_sample(SND.SND_GAMEOVER);
 			game_over = 1;
 		}
 
-
-		void update_altitude()
+		static void update_altitude()
 		{
 			double x, y, z;
 			double dist;
@@ -493,7 +500,7 @@ namespace Elite
 		{
 			if (is_docking(i))
 			{
-				snd_play_sample(SND.SND_DOCK);
+                sound.snd_play_sample(SND.SND_DOCK);
 				dock_player();
                 elite.current_screen = SCR.SCR_BREAK_PATTERN;
 				return;
@@ -507,7 +514,7 @@ namespace Elite
 
             elite.flight_speed = 1;
 			damage_ship(5, universe[i].location.z > 0);
-			snd_play_sample(SND.SND_CRASH);
+            sound.snd_play_sample(SND.SND_CRASH);
 		}
 
 		static void switch_to_view(ref univ_object flip)
@@ -628,7 +635,7 @@ namespace Elite
 						(type != SHIP.SHIP_CORIOLIS) && 
 						(type != SHIP.SHIP_DODEC))
 					{
-						snd_play_sample(SND.SND_EXPLODE);
+                        sound.snd_play_sample(SND.SND_EXPLODE);
 						universe[i].flags |= FLG.FLG_DEAD;
 					}
 
@@ -872,26 +879,27 @@ namespace Elite
 				display_dial_bar(myship.altitude / 4, 31, 92);
 			}
 		}
-
-		void display_cabin_temp()
+		
+		static void display_cabin_temp()
 		{
 			if (myship.cabtemp > 3)
+			{
 				display_dial_bar(myship.cabtemp / 4, 31, 60);
+			}
 		}
 
-
-		void display_laser_temp()
+		static void display_laser_temp()
 		{
-			if (laser_temp > 0)
-				display_dial_bar(laser_temp / 4, 31, 76);
+			if (elite.laser_temp > 0)
+			{
+				display_dial_bar(elite.laser_temp / 4, 31, 76);
+			}
 		}
-
 
 		/*
 		 * Display the energy banks.
 		 */
-
-		void display_energy()
+		static void display_energy()
 		{
 			int e1, e2, e3, e4;
 
@@ -1147,7 +1155,7 @@ namespace Elite
 
             elite.witchspace = true;
             elite.docked_planet.b ^= 31;
-			in_battle = 1;
+			swat.in_battle = true;
 
             elite.flight_speed = 12;
             elite.flight_roll = 0;
@@ -1158,12 +1166,13 @@ namespace Elite
 			nthg = (random.randint() & 3) + 1;
 
 			for (i = 0; i < nthg; i++)
+			{
 				create_thargoid();
+			}
 
-            elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			snd_play_sample(SND_HYPERSPACE);
+			elite.current_screen = SCR.SCR_BREAK_PATTERN;
+            sound.snd_play_sample(SND.SND_HYPERSPACE);
 		}
-
 
 		static void complete_hyperspace()
 		{
@@ -1229,7 +1238,7 @@ namespace Elite
 			swat.add_new_ship(SHIP.SHIP_SUN, px, py, pz, rotmat, 0, 0);
 
             elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			snd_play_sample(SND.SND_HYPERSPACE);
+            sound.snd_play_sample(SND.SND_HYPERSPACE);
 		}
 
 		static void countdown_hyperspace()
@@ -1270,26 +1279,32 @@ namespace Elite
 				return;
 			}
 
-
 			if (universe[0].distance < universe[1].distance)
+			{
 				jump = universe[0].distance - 75000;
+			}
 			else
+			{
 				jump = universe[1].distance - 75000;
+			}
 
 			if (jump > 1024)
+			{
 				jump = 1024;
+			}
 
 			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				if (universe[i].type != 0)
+				{
 					universe[i].location.z -= jump;
+				}
 			}
 
             Stars.warp_stars = true;
 			alg_main.mcount &= 63;
-			in_battle = 0;
+			swat.in_battle = false;
 		}
-
 
 		static void launch_player()
 		{
@@ -1312,7 +1327,7 @@ namespace Elite
 			add_new_station(0, 0, -256, rotmat);
 
             elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			snd_play_sample(SND.SND_LAUNCH);
+            sound.snd_play_sample(SND.SND_LAUNCH);
 		}
 
 		/*
@@ -1323,7 +1338,7 @@ namespace Elite
 		{
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-				snd_play_sample(SND.SND_DOCK);
+                sound.snd_play_sample(SND.SND_DOCK);
 				dock_player();
                 elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			}

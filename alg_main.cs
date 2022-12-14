@@ -57,18 +57,18 @@ namespace Elite
 
 	internal static class alg_main
 	{
-        static int old_cross_x, old_cross_y;
-        static int cross_timer;
-        static int draw_lasers;
-        internal static int mcount;
-        static int message_count;
-        static string message_string;
-        static int rolling;
-        static int climbing;
-        static int game_paused;
-        static int have_joystick;
-        static int find_input;
-        static string find_name;
+		static int old_cross_x, old_cross_y;
+		static int cross_timer;
+		static int draw_lasers;
+		internal static int mcount;
+		static int message_count;
+		static string message_string;
+		static int rolling;
+		static int climbing;
+		static int game_paused;
+		static int have_joystick;
+		static int find_input;
+		static string find_name;
 
 		/*
 		 * Initialise the game parameters.
@@ -85,7 +85,7 @@ namespace Elite
 			elite.flight_climb = 0;
 			elite.docked = true;
 			elite.front_shield = 255;
-            elite.aft_shield = 255;
+			elite.aft_shield = 255;
 			energy = 255;
 			draw_lasers = 0;
 			mcount = 0;
@@ -110,16 +110,16 @@ namespace Elite
 			myship.max_fuel = 70;       /* 7.0 Light Years */
 		}
 
-		void finish_game ()
+		void finish_game()
 		{
 			finish = 1;
 			game_over = 1;
 		}
-		
+
 		/*
 		 * Move the planet chart cross hairs to specified position.
 		 */
-		static void move_cross (int dx, int dy)
+		static void move_cross(int dx, int dy)
 		{
 			cross_timer = 5;
 
@@ -137,13 +137,13 @@ namespace Elite
 
 				if (cross_x < 1)
 					cross_x = 1;
-			
+
 				if (cross_x > 510)
 					cross_x = 510;
 
 				if (cross_y < 37)
 					cross_y = 37;
-		
+
 				if (cross_y > 293)
 					cross_y = 293;
 			}
@@ -154,100 +154,100 @@ namespace Elite
 		 * Draw the cross hairs at the specified position.
 		 */
 
-		static void draw_cross (int cx, int cy)
+		static void draw_cross(int cx, int cy)
 		{
 			if (elite.current_screen == SCR.SCR_SHORT_RANGE)
 			{
-				gfx_set_clip_region (1, 37, 510, 339);
-				xor_mode (TRUE);
-				gfx_draw_colour_line (cx - 16, cy, cx + 16, cy, gfx.GFX_COL_RED);
-				gfx_draw_colour_line (cx, cy - 16, cx, cy + 16, gfx.GFX_COL_RED);
-				xor_mode (FALSE);
-				gfx_set_clip_region (1, 1, 510, 383);
+				gfx_set_clip_region(1, 37, 510, 339);
+				xor_mode(TRUE);
+				gfx_draw_colour_line(cx - 16, cy, cx + 16, cy, gfx.GFX_COL_RED);
+				gfx_draw_colour_line(cx, cy - 16, cx, cy + 16, gfx.GFX_COL_RED);
+				xor_mode(FALSE);
+				gfx_set_clip_region(1, 1, 510, 383);
 				return;
 			}
-	
+
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				gfx_set_clip_region (1, 37, 510, 293);
-				xor_mode (TRUE);
-				gfx_draw_colour_line (cx - 8, cy, cx + 8, cy, gfx.GFX_COL_RED);
-				gfx_draw_colour_line (cx, cy - 8, cx, cy + 8, gfx.GFX_COL_RED);
-				xor_mode (FALSE);
-				gfx_set_clip_region (1, 1, 510, 383);
+				gfx_set_clip_region(1, 37, 510, 293);
+				xor_mode(TRUE);
+				gfx_draw_colour_line(cx - 8, cy, cx + 8, cy, gfx.GFX_COL_RED);
+				gfx_draw_colour_line(cx, cy - 8, cx, cy + 8, gfx.GFX_COL_RED);
+				xor_mode(FALSE);
+				gfx_set_clip_region(1, 1, 510, 383);
 			}
 		}
 
 		static void draw_laser_sights()
 		{
 			bool laser = false;
-			int x1,y1,x2,y2;
-	
+			int x1, y1, x2, y2;
+
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_FRONT_VIEW:
-					gfx_display_centre_text (32, "Front View", 120, gfx.GFX_COL_WHITE);
+					gfx_display_centre_text(32, "Front View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.front_laser;
 					break;
-		
+
 				case SCR.SCR_REAR_VIEW:
-					gfx_display_centre_text (32, "Rear View", 120, gfx.GFX_COL_WHITE);
+					gfx_display_centre_text(32, "Rear View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.rear_laser;
 					break;
 
 				case SCR.SCR_LEFT_VIEW:
-					gfx_display_centre_text (32, "Left View", 120, gfx.GFX_COL_WHITE);
+					gfx_display_centre_text(32, "Left View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.left_laser;
 					break;
 
 				case SCR.SCR_RIGHT_VIEW:
-					gfx_display_centre_text (32, "Right View", 120, gfx.GFX_COL_WHITE);
+					gfx_display_centre_text(32, "Right View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.right_laser;
 					break;
 			}
-	
+
 			if (laser)
 			{
 				x1 = 128 * gfx.GFX_SCALE;
-				y1 = (96-8) * gfx.GFX_SCALE;
-				y2 = (96-16) * gfx.GFX_SCALE;
-   
-				gfx_draw_colour_line (x1-1, y1, x1-1, y2, gfx.GFX_COL_GREY_1); 
-				gfx_draw_colour_line (x1, y1, x1, y2, gfx.GFX_COL_WHITE);
-				gfx_draw_colour_line (x1+1, y1, x1+1, y2, gfx.GFX_COL_GREY_1); 
+				y1 = (96 - 8) * gfx.GFX_SCALE;
+				y2 = (96 - 16) * gfx.GFX_SCALE;
 
-				y1 = (96+8) * gfx.GFX_SCALE;
-				y2 = (96+16) * gfx.GFX_SCALE;
-		
-				gfx_draw_colour_line (x1-1, y1, x1-1, y2, gfx.GFX_COL_GREY_1); 
-				gfx_draw_colour_line (x1, y1, x1, y2, gfx.GFX_COL_WHITE);
-				gfx_draw_colour_line (x1+1, y1, x1+1, y2, gfx.GFX_COL_GREY_1); 
+				gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
+				gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
+				gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
 
-				x1 = (128-8) * gfx.GFX_SCALE;
+				y1 = (96 + 8) * gfx.GFX_SCALE;
+				y2 = (96 + 16) * gfx.GFX_SCALE;
+
+				gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
+				gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
+				gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
+
+				x1 = (128 - 8) * gfx.GFX_SCALE;
 				y1 = 96 * gfx.GFX_SCALE;
-				x2 = (128-16) * gfx.GFX_SCALE;
-		   
-				gfx_draw_colour_line (x1, y1-1, x2, y1-1, gfx.GFX_COL_GREY_1); 
-				gfx_draw_colour_line (x1, y1, x2, y1, gfx.GFX_COL_WHITE);
-				gfx_draw_colour_line (x1, y1+1, x2, y1+1, gfx.GFX_COL_GREY_1); 
+				x2 = (128 - 16) * gfx.GFX_SCALE;
 
-				x1 = (128+8) * gfx.GFX_SCALE;
-				x2 = (128+16) * gfx.GFX_SCALE;
+				gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
+				gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
+				gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
 
-				gfx_draw_colour_line (x1, y1-1, x2, y1-1, gfx.GFX_COL_GREY_1); 
-				gfx_draw_colour_line (x1, y1, x2, y1, gfx.GFX_COL_WHITE);
-				gfx_draw_colour_line (x1, y1+1, x2, y1+1, gfx.GFX_COL_GREY_1); 
+				x1 = (128 + 8) * gfx.GFX_SCALE;
+				x2 = (128 + 16) * gfx.GFX_SCALE;
+
+				gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
+				gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
+				gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
 			}
 		}
 
-		static void arrow_right ()
+		static void arrow_right()
 		{
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_MARKET_PRICES:
 					buy_stock();
 					break;
-		
+
 				case SCR.SCR_SETTINGS:
 					select_right_setting();
 					break;
@@ -263,7 +263,7 @@ namespace Elite
 				case SCR.SCR_LEFT_VIEW:
 					if (elite.flight_roll > 0)
 					{
-                        elite.flight_roll = 0;
+						elite.flight_roll = 0;
 					}
 					else
 					{
@@ -275,7 +275,7 @@ namespace Elite
 			}
 		}
 
-		static void arrow_left ()
+		static void arrow_left()
 		{
 			switch (elite.current_screen)
 			{
@@ -286,10 +286,10 @@ namespace Elite
 				case SCR.SCR_SETTINGS:
 					select_left_setting();
 					break;
-		
+
 				case SCR.SCR_SHORT_RANGE:
 				case SCR.SCR_GALACTIC_CHART:
-					move_cross (-1, 0);
+					move_cross(-1, 0);
 					break;
 
 				case SCR.SCR_FRONT_VIEW:
@@ -310,7 +310,7 @@ namespace Elite
 			}
 		}
 
-		static void arrow_up ()
+		static void arrow_up()
 		{
 			switch (elite.current_screen)
 			{
@@ -329,10 +329,10 @@ namespace Elite
 				case SCR.SCR_SETTINGS:
 					select_up_setting();
 					break;
-		
+
 				case SCR.SCR_SHORT_RANGE:
 				case SCR.SCR_GALACTIC_CHART:
-					move_cross (0, -1);
+					move_cross(0, -1);
 					break;
 
 				case SCR.SCR_FRONT_VIEW:
@@ -352,7 +352,7 @@ namespace Elite
 			}
 		}
 
-		static void arrow_down ()
+		static void arrow_down()
 		{
 			switch (elite.current_screen)
 			{
@@ -363,7 +363,7 @@ namespace Elite
 				case SCR.SCR_EQUIP_SHIP:
 					select_next_equip();
 					break;
-		
+
 				case SCR.SCR_OPTIONS:
 					select_next_option();
 					break;
@@ -371,10 +371,10 @@ namespace Elite
 				case SCR.SCR_SETTINGS:
 					select_down_setting();
 					break;
-		
+
 				case SCR.SCR_SHORT_RANGE:
 				case SCR.SCR_GALACTIC_CHART:
-					move_cross (0, 1);
+					move_cross(0, 1);
 					break;
 
 				case SCR.SCR_FRONT_VIEW:
@@ -394,14 +394,14 @@ namespace Elite
 			}
 		}
 
-		static void return_pressed ()
+		static void return_pressed()
 		{
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_EQUIP_SHIP:
 					buy_equip();
 					break;
-		
+
 				case SCR.SCR_OPTIONS:
 					do_option();
 					break;
@@ -409,10 +409,10 @@ namespace Elite
 				case SCR.SCR_SETTINGS:
 					toggle_setting();
 					break;
-			}	
+			}
 		}
 
-		static void y_pressed ()
+		static void y_pressed()
 		{
 			switch (elite.current_screen)
 			{
@@ -422,7 +422,7 @@ namespace Elite
 			}
 		}
 
-		static void n_pressed ()
+		static void n_pressed()
 		{
 			switch (elite.current_screen)
 			{
@@ -441,15 +441,15 @@ namespace Elite
 		}
 
 
-		static void d_pressed ()
+		static void d_pressed()
 		{
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_GALACTIC_CHART:
 				case SCR.SCR_SHORT_RANGE:
-    				show_distance_to_planet();
+					show_distance_to_planet();
 					break;
-		
+
 				case SCR.SCR_FRONT_VIEW:
 				case SCR.SCR_REAR_VIEW:
 				case SCR.SCR_RIGHT_VIEW:
@@ -460,7 +460,7 @@ namespace Elite
 			}
 		}
 
-		static void f_pressed ()
+		static void f_pressed()
 		{
 			if ((elite.current_screen == SCR.SCR_GALACTIC_CHART) ||
 				(elite.current_screen == SCR.SCR_SHORT_RANGE))
@@ -468,39 +468,39 @@ namespace Elite
 				find_input = 1;
 				*find_name = '\0';
 				gfx_clear_text_area();
-				gfx_display_text (16, 340, "Planet Name?");
+				gfx_display_text(16, 340, "Planet Name?");
 			}
 		}
 
 		static void add_find_char(int letter)
 		{
 			char str[40];
-	
-			if (strlen (find_name) == 16)
-				return;
-		
-			str[0] = toupper (letter);
-			str[1] = '\0';
-			strcat (find_name, str);
 
-			sprintf (str, "Planet Name? %s", find_name);		
-			gfx_clear_text_area ();
+			if (strlen(find_name) == 16)
+				return;
+
+			str[0] = toupper(letter);
+			str[1] = '\0';
+			strcat(find_name, str);
+
+			sprintf(str, "Planet Name? %s", find_name);
+			gfx_clear_text_area();
 			gfx_display_text(16, 340, str);
 		}
 
 
-		static void delete_find_char ()
+		static void delete_find_char()
 		{
 			char str[40];
 			int len;
 
-			len = strlen (find_name);
+			len = strlen(find_name);
 			if (len == 0)
 				return;
-		
-			find_name[len - 1] = '\0';	
-		
-			sprintf (str, "Planet Name? %s", find_name);		
+
+			find_name[len - 1] = '\0';
+
+			sprintf(str, "Planet Name? %s", find_name);
 			gfx_clear_text_area();
 			gfx_display_text(16, 340, str);
 		}
@@ -511,13 +511,13 @@ namespace Elite
 			{
 				case SCR.SCR_GALACTIC_CHART:
 				case SCR.SCR_SHORT_RANGE:
-    				move_cursor_to_origin();
+					move_cursor_to_origin();
 					break;
 			}
 		}
 
 
-		static void auto_dock ()
+		static void auto_dock()
 		{
 			univ_object ship;
 
@@ -525,7 +525,7 @@ namespace Elite
 			ship.location.y = 0;
 			ship.location.z = 0;
 
-            VectorMaths.set_init_matrix (ship.rotmat);
+			VectorMaths.set_init_matrix(ship.rotmat);
 			ship.rotmat[2].z = 1;
 			ship.rotmat[0].x = -1;
 			ship.type = -96;
@@ -535,20 +535,20 @@ namespace Elite
 			ship.rotz = 0;
 			ship.rotx = 0;
 
-			auto_pilot_ship (&ship);
+			auto_pilot_ship(&ship);
 
 			if (ship.velocity > 22)
 			{
-                elite.flight_speed = 22;
+				elite.flight_speed = 22;
 			}
 			else
 			{
-                elite.flight_speed = ship.velocity;
+				elite.flight_speed = ship.velocity;
 			}
-	
+
 			if (ship.acceleration > 0)
 			{
-                elite.flight_speed++;
+				elite.flight_speed++;
 				if (elite.flight_speed > 22)
 				{
 					elite.flight_speed = 22;
@@ -557,7 +557,7 @@ namespace Elite
 
 			if (ship.acceleration < 0)
 			{
-                elite.flight_speed--;
+				elite.flight_speed--;
 				if (elite.flight_speed < 1)
 				{
 					elite.flight_speed = 1;
@@ -576,7 +576,7 @@ namespace Elite
 				if (ship.rotx < -1)
 					increase_flight_climb();
 			}
-	
+
 			if (ship.rotx > 0)
 			{
 				decrease_flight_climb();
@@ -615,49 +615,49 @@ namespace Elite
 		}
 
 
-		static void run_escape_sequence ()
+		static void run_escape_sequence()
 		{
 			int i;
 			int newship;
 			Vector[] rotmat = new Vector[3];
 
-            elite.current_screen = SCR.SCR_ESCAPE_POD;
+			elite.current_screen = SCR.SCR_ESCAPE_POD;
 
-            elite.flight_speed = 1;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+			elite.flight_speed = 1;
+			elite.flight_roll = 0;
+			elite.flight_climb = 0;
 
-            VectorMaths.set_init_matrix (rotmat);
+			VectorMaths.set_init_matrix(rotmat);
 			rotmat[2].z = 1.0;
-	
+
 			newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
 			space.universe[newship].velocity = 7;
-			snd_play_sample(SND.SND_LAUNCH);
+			sound.snd_play_sample(SND.SND_LAUNCH);
 
 			for (i = 0; i < 90; i++)
 			{
 				if (i == 40)
 				{
-                    space.universe[newship].flags |= FLG.FLG_DEAD;
-					snd_play_sample(SND.SND_EXPLODE);
+					space.universe[newship].flags |= FLG.FLG_DEAD;
+					sound.snd_play_sample(SND.SND_EXPLODE);
 				}
 
-				gfx_set_clip_region (1, 1, 510, 383);
+				gfx_set_clip_region(1, 1, 510, 383);
 				gfx_clear_display();
 				update_starfield();
 				update_universe();
 
-                space.universe[newship].location.x = 0;
-                space.universe[newship].location.y = 0;
-                space.universe[newship].location.z += 2;
+				space.universe[newship].location.x = 0;
+				space.universe[newship].location.y = 0;
+				space.universe[newship].location.z += 2;
 
-				gfx_display_centre_text (358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
-		
+				gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
+
 				update_console();
 				gfx_update_screen();
 			}
 
-	
+
 			while ((space.ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[(int)SHIP.SHIP_DODEC] == 0))
 			{
 				auto_dock();
@@ -674,7 +674,7 @@ namespace Elite
 				}
 
 				Stars.warp_stars = true;
-				gfx_set_clip_region (1, 1, 510, 383);
+				gfx_set_clip_region(1, 1, 510, 383);
 				gfx_clear_display();
 				update_starfield();
 				update_universe();
@@ -686,10 +686,10 @@ namespace Elite
 		}
 
 
-		static void handle_flight_keys ()
+		static void handle_flight_keys()
 		{
 			int keyasc;
-	
+
 			if (elite.docked &&
 				((elite.current_screen == SCR.SCR_MARKET_PRICES) ||
 				 (elite.current_screen == SCR.SCR_OPTIONS) ||
@@ -702,12 +702,12 @@ namespace Elite
 			kbd_poll_keyboard();
 
 			if (have_joystick)
-			{	
-				poll_joystick();	
+			{
+				poll_joystick();
 
 				if (joy[0].stick[0].axis[1].d1)
 					arrow_up();
-		
+
 				if (joy[0].stick[0].axis[1].d2)
 					arrow_down();
 
@@ -716,7 +716,7 @@ namespace Elite
 
 				if (joy[0].stick[0].axis[0].d2)
 					arrow_right();
-		
+
 				if (joy[0].button[0].b)
 					kbd_fire_pressed = 1;
 
@@ -727,18 +727,18 @@ namespace Elite
 					kbd_dec_speed_pressed = 1;
 			}
 
-	
+
 			if (game_paused)
 			{
 				if (kbd_resume_pressed)
 					game_paused = 0;
 				return;
 			}
-		
+
 			if (kbd_F1_pressed)
 			{
 				find_input = 0;
-		
+
 				if (elite.docked)
 				{
 					launch_player();
@@ -756,12 +756,12 @@ namespace Elite
 			if (kbd_F2_pressed)
 			{
 				find_input = 0;
-		
+
 				if (!elite.docked)
 				{
 					if (elite.current_screen != SCR.SCR_REAR_VIEW)
 					{
-                        elite.current_screen = SCR.SCR_REAR_VIEW;
+						elite.current_screen = SCR.SCR_REAR_VIEW;
 						flip_stars();
 					}
 				}
@@ -770,12 +770,12 @@ namespace Elite
 			if (kbd_F3_pressed)
 			{
 				find_input = 0;
-		
+
 				if (!elite.docked)
 				{
 					if (elite.current_screen != SCR.SCR_LEFT_VIEW)
 					{
-                        elite.current_screen = SCR.SCR_LEFT_VIEW;
+						elite.current_screen = SCR.SCR_LEFT_VIEW;
 						flip_stars();
 					}
 				}
@@ -784,7 +784,7 @@ namespace Elite
 			if (kbd_F4_pressed)
 			{
 				find_input = 0;
-		
+
 				if (elite.docked)
 				{
 					equip_ship();
@@ -793,7 +793,7 @@ namespace Elite
 				{
 					if (elite.current_screen != SCR.SCR_RIGHT_VIEW)
 					{
-                        elite.current_screen = SCR.SCR_RIGHT_VIEW;
+						elite.current_screen = SCR.SCR_RIGHT_VIEW;
 						flip_stars();
 					}
 				}
@@ -823,7 +823,7 @@ namespace Elite
 			{
 				find_input = 0;
 				display_market_prices();
-			}	
+			}
 
 			if (kbd_F9_pressed)
 			{
@@ -836,7 +836,7 @@ namespace Elite
 				find_input = 0;
 				display_inventory();
 			}
-	
+
 			if (kbd_F11_pressed)
 			{
 				find_input = 0;
@@ -846,7 +846,7 @@ namespace Elite
 			if (find_input)
 			{
 				keyasc = kbd_read_key();
-		
+
 				if (kbd_enter_pressed)
 				{
 					find_input = 0;
@@ -861,18 +861,18 @@ namespace Elite
 				}
 
 				if (isalpha(keyasc))
-					add_find_char (keyasc);
+					add_find_char(keyasc);
 
-				return;		
+				return;
 			}
-	
+
 			if (kbd_y_pressed)
 				y_pressed();
 
 			if (kbd_n_pressed)
 				n_pressed();
 
- 
+
 			if (kbd_fire_pressed)
 			{
 				if ((!elite.docked) && (draw_lasers == 0))
@@ -911,7 +911,7 @@ namespace Elite
 
 			if (kbd_find_pressed)
 			{
-				f_pressed ();
+				f_pressed();
 			}
 
 			if (kbd_hyperspace_pressed && (!elite.docked))
@@ -930,7 +930,7 @@ namespace Elite
 			{
 				jump_warp();
 			}
-	
+
 			if (kbd_fire_missile_pressed)
 			{
 				if (!elite.docked)
@@ -964,7 +964,7 @@ namespace Elite
 					unarm_missile();
 				}
 			}
-	
+
 			if (kbd_inc_speed_pressed)
 			{
 				if (!elite.docked)
@@ -997,10 +997,10 @@ namespace Elite
 
 			if (kbd_left_pressed)
 				arrow_left();
-		
+
 			if (kbd_right_pressed)
 				arrow_right();
-	
+
 			if (kbd_enter_pressed)
 				return_pressed();
 
@@ -1011,7 +1011,7 @@ namespace Elite
 					detonate_bomb = 1;
 					elite.cmdr.energy_bomb = 0;
 				}
-			}		
+			}
 
 			if (kbd_escape_pressed)
 			{
@@ -1022,43 +1022,43 @@ namespace Elite
 			}
 		}
 
-		static void set_commander_name (char *path)
+		static void set_commander_name(char* path)
 		{
-			char *fname, *cname;
+			char* fname, *cname;
 			int i;
-	
-			fname = get_filename (path);
+
+			fname = get_filename(path);
 			cname = elite.cmdr.name;
 
 			for (i = 0; i < 31; i++)
 			{
 				if (!isalnum(*fname))
 					break;
-		
+
 				*cname++ = toupper(*fname++);
-			}	
+			}
 
 			*cname = '\0';
 		}
 
-		static void save_commander_screen ()
+		static void save_commander_screen()
 		{
 			string path;
 			int okay;
 			int rv;
 
-            elite.current_screen = SCR.SCR_SAVE_CMDR;
+			elite.current_screen = SCR.SCR_SAVE_CMDR;
 
 			gfx_clear_display();
-			gfx_display_centre_text (10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
-            alg_gfx.gfx_draw_line (0, 36, 511, 36);
+			gfx_display_centre_text(10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 			gfx_update_screen();
-	
-			strcpy (path, elite.cmdr.name);
-			strcat (path, ".nkc");
-	
+
+			strcpy(path, elite.cmdr.name);
+			strcat(path, ".nkc");
+
 			okay = gfx_request_file("Save Commander", path, "nkc");
-	
+
 			if (!okay)
 			{
 				display_options();
@@ -1069,13 +1069,13 @@ namespace Elite
 
 			if (rv)
 			{
-				gfx_display_centre_text (175, "Error Saving Commander!", 140, gfx.GFX_COL_GOLD);
+				gfx_display_centre_text(175, "Error Saving Commander!", 140, gfx.GFX_COL_GOLD);
 				return;
 			}
-	
-			gfx_display_centre_text (175, "Commander Saved.", 140, gfx.GFX_COL_GOLD);
 
-			set_commander_name (path);
+			gfx_display_centre_text(175, "Commander Saved.", 140, gfx.GFX_COL_GOLD);
+
+			set_commander_name(path);
 			saved_cmdr = cmdr;
 			saved_cmdr.ship_x = elite.docked_planet.d;
 			saved_cmdr.ship_y = elite.docked_planet.b;
@@ -1118,15 +1118,15 @@ namespace Elite
 			update_console();
 		}
 
-		static void run_first_intro_screen ()
+		static void run_first_intro_screen()
 		{
-            elite.current_screen = SCR.SCR_INTRO_ONE;
+			elite.current_screen = SCR.SCR_INTRO_ONE;
 
 			snd_play_midi(SND.SND_ELITE_THEME, true);
 
 			initialise_intro1();
 
-			for (;;)
+			for (; ; )
 			{
 				update_intro1();
 
@@ -1136,33 +1136,33 @@ namespace Elite
 
 				if (kbd_y_pressed)
 				{
-					snd_stop_midi();	
+					snd_stop_midi();
 					load_commander_screen();
 					break;
 				}
-		
+
 				if (kbd_n_pressed)
-				{ 
-					snd_stop_midi();	
+				{
+					snd_stop_midi();
 					break;
 				}
-			} 
+			}
 
 		}
 
-		static void run_second_intro_screen ()
+		static void run_second_intro_screen()
 		{
-            elite.current_screen = SCR.SCR_INTRO_TWO;
-	
+			elite.current_screen = SCR.SCR_INTRO_TWO;
+
 			snd_play_midi(SND.SND_BLUE_DANUBE, true);
-		
+
 			initialise_intro2();
 
-            elite.flight_speed = 3;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+			elite.flight_speed = 3;
+			elite.flight_roll = 0;
+			elite.flight_climb = 0;
 
-			for (;;)
+			for (; ; )
 			{
 				update_intro2();
 
@@ -1170,9 +1170,9 @@ namespace Elite
 
 				kbd_poll_keyboard();
 
-				if (kbd_space_pressed) 
+				if (kbd_space_pressed)
 					break;
-			} 
+			}
 
 			snd_stop_midi();
 		}
@@ -1185,7 +1185,7 @@ namespace Elite
 			int i;
 			int newship;
 			Vector[] rotmat = new Vector[3];
-            SHIP type;
+			SHIP type;
 
 			elite.current_screen = SCR.SCR_GAME_OVER;
 			gfx_set_clip_region(1, 1, 510, 383);
@@ -1224,18 +1224,18 @@ namespace Elite
 		 * Draw a break pattern (for launching, docking and hyperspacing).
 		 * Just draw a very simple one for the moment.
 		 */
-		void display_break_pattern ()
+		void display_break_pattern()
 		{
 			int i;
 
-			gfx_set_clip_region (1, 1, 510, 383);
+			gfx_set_clip_region(1, 1, 510, 383);
 			gfx_clear_display();
-	
+
 			for (i = 0; i < 20; i++)
 			{
 				alg_gfx.gfx_draw_circle(256, 192, 30 + i * 15, gfx.GFX_COL_WHITE);
 				gfx_update_screen();
-			}	
+			}
 
 			if (elite.docked)
 			{
@@ -1244,25 +1244,25 @@ namespace Elite
 				update_console();
 			}
 			else
-                elite.current_screen = SCR.SCR_FRONT_VIEW;
+				elite.current_screen = SCR.SCR_FRONT_VIEW;
 		}
 
 		internal static void info_message(string message)
 		{
-			strcpy (message_string, message);
+			strcpy(message_string, message);
 			message_count = 37;
-		//	snd_play_sample (SND_BEEP);
+			//	sound.snd_play_sample (SND_BEEP);
 		}
 
-		void initialise_allegro ()
+		void initialise_allegro()
 		{
 			allegro_init();
-			install_keyboard(); 
+			install_keyboard();
 			install_timer();
 			install_mouse();
 
 			have_joystick = 0;
-	
+
 			if (install_joystick(JOY_TYPE_AUTODETECT) == 0)
 			{
 				have_joystick = (num_joysticks > 0);
@@ -1278,48 +1278,48 @@ namespace Elite
 			{
 				return 1;
 			}
-	
+
 			/* Start the sound system... */
 			snd_sound_startup();
 
 			/* Do any setup necessary for the keyboard... */
 			kbd_keyboard_startup();
-	
+
 			finish = 0;
 			auto_pilot = 0;
-	
+
 			while (!finish)
 			{
-				game_over = 0;	
+				game_over = 0;
 				initialise_game();
 				dock_player();
 
 				update_console();
 
-                elite.current_screen = SCR.SCR_FRONT_VIEW;
+				elite.current_screen = SCR.SCR_FRONT_VIEW;
 				run_first_intro_screen();
 				run_second_intro_screen();
 
 				old_cross_x = -1;
 				old_cross_y = -1;
 
-				dock_player ();
-				display_commander_status ();
-		
+				dock_player();
+				display_commander_status();
+
 				while (!game_over)
 				{
 					snd_update_sound();
 					gfx_update_screen();
-					gfx_set_clip_region (1, 1, 510, 383);
+					gfx_set_clip_region(1, 1, 510, 383);
 
 					rolling = 0;
 					climbing = 0;
 
-					handle_flight_keys ();
+					handle_flight_keys();
 
 					if (game_paused)
 						continue;
-				
+
 					if (message_count > 0)
 						message_count--;
 
@@ -1353,7 +1353,7 @@ namespace Elite
 					if (!elite.docked)
 					{
 						gfx_acquire_screen();
-					
+
 						if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
 							(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW) ||
 							(elite.current_screen == SCR.SCR_INTRO_ONE) || (elite.current_screen == SCR.SCR_INTRO_TWO) ||
@@ -1370,7 +1370,7 @@ namespace Elite
 								info_message("Docking Computers On");
 						}
 
-						update_universe ();
+						update_universe();
 
 						if (elite.docked)
 						{
@@ -1387,7 +1387,7 @@ namespace Elite
 								draw_laser_lines();
 								draw_lasers--;
 							}
-					
+
 							draw_laser_sights();
 						}
 
@@ -1395,7 +1395,7 @@ namespace Elite
 						{
 							gfx_display_centre_text(358, message_string, 120, gfx.GFX_COL_WHITE);
 						}
-					
+
 						if (hyper_ready)
 						{
 							display_hyper_status();
@@ -1406,7 +1406,7 @@ namespace Elite
 						}
 
 						gfx_release_screen();
-			
+
 						mcount--;
 						if (mcount < 0)
 							mcount = 255;
@@ -1419,12 +1419,12 @@ namespace Elite
 							if (energy < 50)
 							{
 								info_message("ENERGY LOW");
-								snd_play_sample (SND_BEEP);
+								sound.snd_play_sample(SND_BEEP);
 							}
 
 							update_altitude();
 						}
-				
+
 						if ((mcount & 31) == 20)
 							update_cabin_temp();
 
@@ -1432,8 +1432,8 @@ namespace Elite
 						{
 							random_encounter();
 						}
-					
-						cool_laser();				
+
+						cool_laser();
 						time_ecm();
 
 						update_console();
@@ -1447,31 +1447,31 @@ namespace Elite
 						cross_timer--;
 						if (cross_timer == 0)
 						{
-    						show_distance_to_planet();
+							show_distance_to_planet();
 						}
 					}
-			
+
 					if ((cross_x != old_cross_x) ||
 						(cross_y != old_cross_y))
 					{
 						if (old_cross_x != -1)
-							draw_cross (old_cross_x, old_cross_y);
+							draw_cross(old_cross_x, old_cross_y);
 
 						old_cross_x = cross_x;
 						old_cross_y = cross_y;
 
-						draw_cross (old_cross_x, old_cross_y);
+						draw_cross(old_cross_x, old_cross_y);
 					}
 				}
 
-				if (!finish)		
+				if (!finish)
 					run_game_over_screen();
 			}
 
 			snd_sound_shutdown();
-	
-			gfx_graphics_shutdown ();
-	
+
+			gfx_graphics_shutdown();
+
 			return 0;
 		}
 

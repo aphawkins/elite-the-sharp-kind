@@ -107,19 +107,21 @@ namespace Elite
 			}
 		}
 
-		static void snd_play_sample (int sample_no)
+		internal static void snd_play_sample(SND sample_no)
 		{
 			if (!sound_on)
 			{
 				return;
 			}
 
-			if (sample_list[sample_no].timeleft != 0)
+			if (sample_list[(int)sample_no].timeleft != 0)
+			{
 				return;
+			}
 
-			sample_list[sample_no].timeleft = sample_list[sample_no].runtime;
-		
-			play_sample(sample_list[sample_no].sample, 255, 128, 1000, false);
+			sample_list[(int)sample_no].timeleft = sample_list[(int)sample_no].runtime;
+
+			play_sample(sample_list[(int)sample_no].sample, 255, 128, 1000, false);
 		}
 
 		static void snd_update_sound()

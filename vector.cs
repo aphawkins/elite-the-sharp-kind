@@ -113,7 +113,7 @@ namespace Elite
 			return res;
 		}
 
-		internal static void set_init_matrix(Vector[] mat)
+		internal static void set_init_matrix(ref Vector[] mat)
 		{
 			int i;
 
