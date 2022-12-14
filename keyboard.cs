@@ -15,10 +15,10 @@
  * Code to handle keyboard input.
  */
 
-# include <stdlib.h>
-# include <string.h>
+//# include <stdlib.h>
+//# include <string.h>
 
-# include "allegro.h"
+//# include "allegro.h"
 
 namespace Elite
 {
@@ -65,18 +65,18 @@ namespace Elite
 		int kbd_space_pressed;
 
 
-		int kbd_keyboard_startup()
+        static int kbd_keyboard_startup()
 		{
 			//	set_keyboard_rate(2000, 2000);
 			return 0;
 		}
 
-		int kbd_keyboard_shutdown()
+        static int kbd_keyboard_shutdown()
 		{
 			return 0;
 		}
 
-		void kbd_poll_keyboard()
+		static void kbd_poll_keyboard()
 		{
 			poll_keyboard();
 
@@ -129,11 +129,13 @@ namespace Elite
 			kbd_space_pressed = key[KEY_SPACE];
 
 			while (keypressed())
+			{
 				readkey();
+			}
 		}
 
 
-		int kbd_read_key()
+		static int kbd_read_key()
 		{
 			int keynum;
 			int keycode;
@@ -162,10 +164,12 @@ namespace Elite
 		}
 
 
-		void kbd_clear_key_buffer()
+		static void kbd_clear_key_buffer()
 		{
 			while (keypressed())
+			{
 				readkey();
+			}
 		}
 	}
 }

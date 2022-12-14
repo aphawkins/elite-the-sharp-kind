@@ -22,7 +22,6 @@
 namespace Elite
 {
 	using Elite.Structs;
-	using EliteLib;
 
 	internal static class VectorMaths
 	{

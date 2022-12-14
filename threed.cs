@@ -11,14 +11,10 @@
  *
  */
 
-using Elite;
-using Elite.Enums;
-using Elite.Structs;
-using EliteLib;
-
 namespace Elite
 {
-	using EliteLib;
+	using Elite.Enums;
+	using Elite.Structs;
 
 	internal static class threed
     {

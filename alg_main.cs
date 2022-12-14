@@ -52,7 +52,6 @@
 
 using Elite.Enums;
 using Elite.Structs;
-using EliteLib;
 
 namespace Elite
 {
@@ -1090,43 +1089,41 @@ namespace Elite
 		}
 
 
-		static void load_commander_screen ()
+		static void load_commander_screen()
 		{
 			char path[255];
 			int rv;
 
 			gfx_clear_display();
-			gfx_display_centre_text (10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
-            alg_gfx.gfx_draw_line (0, 36, 511, 36);
+			gfx_display_centre_text(10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 			gfx_update_screen();
-	
-	
-			strcpy (path, "jameson.nkc");
-	
-			rv = gfx_request_file ("Load Commander", path, "nkc");
+
+
+			strcpy(path, "jameson.nkc");
+
+			rv = gfx_request_file("Load Commander", path, "nkc");
 
 			if (rv == 0)
 				return;
 
-			rv = load_commander_file (path);
+			rv = load_commander_file(path);
 
 			if (rv)
 			{
 				saved_cmdr = cmdr;
-				gfx_display_centre_text (175, "Error Loading Commander!", 140, GFX_COL_GOLD);
-				gfx_display_centre_text (200, "Press any key to continue.", 140, GFX_COL_GOLD);
+				gfx_display_centre_text(175, "Error Loading Commander!", 140, GFX_COL_GOLD);
+				gfx_display_centre_text(200, "Press any key to continue.", 140, GFX_COL_GOLD);
 				gfx_update_screen();
 				readkey();
 				return;
 			}
-	
+
 			restore_saved_commander();
-			set_commander_name (path);
+			set_commander_name(path);
 			saved_cmdr = cmdr;
 			update_console();
 		}
-
-
 
 		static void run_first_intro_screen ()
 		{

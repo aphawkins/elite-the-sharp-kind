@@ -1,4 +1,4 @@
-﻿namespace EliteLib.Structs
+﻿namespace Elite.Structs
 {
     internal struct player_ship
     {

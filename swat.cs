@@ -18,34 +18,27 @@
  * Special Weapons And Tactics.
  */
 
-# include <math.h>
-# include <stdlib.h>
-# include <string.h>
+//# include <math.h>
+//# include <stdlib.h>
+//# include <string.h>
 
-# include "config.h"
-# include "gfx.h"
-# include "elite.h"
-# include "vector.h"
-# include "swat.h"
-# include "shipdata.h"
-# include "space.h"
-# include "main.h"
-# include "sound.h"
-# include "random.h"
-# include "trade.h"
-# include "pilot.h" 
-
-
-using Elite;
-using Elite.Enums;
-using Elite.Structs;
-using EliteLib;
+//# include "config.h"
+//# include "gfx.h"
+//# include "elite.h"
+//# include "vector.h"
+//# include "swat.h"
+//# include "shipdata.h"
+//# include "space.h"
+//# include "main.h"
+//# include "sound.h"
+//# include "random.h"
+//# include "trade.h"
+//# include "pilot.h" 
 
 namespace Elite
 {
-    using EliteLib;
-    using Elite.Structs;
 	using Elite.Enums;
+	using Elite.Structs;
 
 	internal static class swat
     {
@@ -63,7 +56,7 @@ namespace Elite
         static int ecm_ours;
         internal static int in_battle;
 
-        FLG[] initial_flags = new FLG[NO_OF_SHIPS + 1]
+        FLG[] initial_flags = new FLG[shipdata.NO_OF_SHIPS + 1]
 		{
 			0,											// NULL,
 			0,											// missile 

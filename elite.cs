@@ -12,19 +12,18 @@
  *
  */
 
-# include <stdlib.h>
+//# include <stdlib.h>
 
-# include "config.h"
-# include "elite.h"
-# include "vector.h"
-# include "planet.h"
-# include "shipdata.h"
+//# include "config.h"
+//# include "elite.h"
+//# include "vector.h"
+//# include "planet.h"
+//# include "shipdata.h"
 
 namespace Elite
 {
 	using Elite.Enums;
 	using Elite.Structs;
-	using EliteLib.Structs;
 
 	internal static class elite
 	{
@@ -74,12 +73,11 @@ namespace Elite
         internal static int auto_pilot;
 
 
-		internal static commander saved_cmdr =
-		{
+		internal static commander saved_cmdr = new commander(
 			"JAMESON",									/* Name 			*/
 			0,											/* Mission Number 	*/
 			0x14,0xAD,									/* Ship X,Y			*/
-			{0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7},		/* Galaxy Seed		*/
+			new(0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7),		/* Galaxy Seed		*/
 			1000,										/* Credits * 10		*/
 			70,											/* Fuel	* 10		*/
 			0,
@@ -90,7 +88,7 @@ namespace Elite
 			0,											/* Right Laser		*/
 			0, 0,
 			20,											/* Cargo Capacity	*/
-			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},		/* Current Cargo	*/
+			new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},		/* Current Cargo	*/
 			0,											/* ECM				*/
 			0,											/* Fuel Scoop		*/
 			0,											/* Energy Bomb		*/
@@ -101,13 +99,13 @@ namespace Elite
 			0,0,0,0,
 			3,											/* No. of Missiles	*/
 			0,											/* Legal Status		*/
-			{0x10, 0x0F, 0x11, 0x00, 0x03, 0x1C,		/* Station Stock	*/
+			new int[] {0x10, 0x0F, 0x11, 0x00, 0x03, 0x1C,		/* Station Stock	*/
 			 0x0E, 0x00, 0x00, 0x0A, 0x00, 0x11,
 			 0x3A, 0x07, 0x09, 0x08, 0x00},
 			0,											/* Fluctuation		*/
 			0,											/* Score			*/
-			0x80										/* Saved			*/
-		};
+			0x80                                        /* Saved			*/
+		);
 
 		internal static commander cmdr;
 
@@ -115,8 +113,8 @@ namespace Elite
 
 		internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]
 		{
-			NULL,
-			&missile_data,
+			null,
+			shipdata.missile_data,
 			&coriolis_data,
 			&esccaps_data,
 			&alloy_data,

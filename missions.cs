@@ -35,7 +35,6 @@ namespace Elite
 {
 	using Elite.Enums;
 	using Elite.Structs;
-	using EliteLib;
 
 	internal static class missions
 	{

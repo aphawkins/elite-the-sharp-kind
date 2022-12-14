@@ -22,23 +22,22 @@
  */
 
 
-# include <stdlib.h>
+//# include <stdlib.h>
 
-# include "config.h"
-# include "elite.h"
-# include "gfx.h"
-# include "vector.h"
-# include "shipdata.h"
-# include "shipface.h"
-# include "threed.h"
-# include "space.h"
-# include "stars.h"
+//# include "config.h"
+//# include "elite.h"
+//# include "gfx.h"
+//# include "vector.h"
+//# include "shipdata.h"
+//# include "shipface.h"
+//# include "threed.h"
+//# include "space.h"
+//# include "stars.h"
 
 namespace Elite
 {
 	using Elite.Enums;
 	using Elite.Structs;
-	using EliteLib;
 
 	internal static class intro
 	{
