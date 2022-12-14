@@ -500,7 +500,7 @@ namespace Elite
 			{
 				condition = 1;
 
-				for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+				for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 				{
 					type = space.universe[i].type;
 		

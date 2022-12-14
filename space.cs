@@ -47,22 +47,18 @@
 namespace Elite
 {
     using Elite.Enums;
-    using Elite.Structs;
-    using EliteLib.Ships;
+	using Elite.Ships;
+	using Elite.Structs;
 
     internal static class space
 	{
-		galaxy_seed destination_planet;
+        static galaxy_seed destination_planet;
 		internal static int hyper_ready;
-		int hyper_countdown;
+        static int hyper_countdown;
 		static string hyper_name;
-		int hyper_distance;
-		int hyper_galactic;
-
-
-		internal const int MAX_UNIV_OBJECTS = 20;
-
-		internal static univ_object[] universe = new univ_object[MAX_UNIV_OBJECTS];
+        static int hyper_distance;
+        static int hyper_galactic;
+		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static int[] ship_count = new int[shipdata.NO_OF_SHIPS + 1];  /* many */
 
 		static void rotate_x_first(double* a, double* b, int direction)
@@ -212,31 +208,27 @@ namespace Elite
 			VectorMaths.tidy_matrix(obj.rotmat);
 		}
 
-
 		/*
 		 * Dock the player into the space station.
 		 */
-
-		void dock_player()
+		static void dock_player()
 		{
 			disengage_auto_pilot();
             elite.docked = true;
             elite.flight_speed = 0;
             elite.flight_roll = 0;
             elite.flight_climb = 0;
-			front_shield = 255;
-			aft_shield = 255;
+            elite.front_shield = 255;
+            elite.aft_shield = 255;
 			energy = 255;
 			myship.altitude = 255;
 			myship.cabtemp = 30;
 			reset_weapons();
 		}
 
-
 		/*
 		 * Check if we are correctly aligned to dock.
 		 */
-
 		int is_docking(int sn)
 		{
 			Vector vec;
@@ -338,7 +330,7 @@ namespace Elite
 				return;
 			}
 
-			if (ship_count[SHIP.SHIP_CORIOLIS] || ship_count[SHIP.SHIP_DODEC])
+			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
 				return;
 			}
@@ -396,15 +388,15 @@ namespace Elite
 		{
 			if (energy > 127)
 			{
-				if (front_shield < 255)
+				if (elite.front_shield < 255)
 				{
-					front_shield++;
+                    elite.front_shield++;
 					energy--;
 				}
 
-				if (aft_shield < 255)
+				if (elite.aft_shield < 255)
 				{
-					aft_shield++;
+                    elite.aft_shield++;
 					energy--;
 				}
 			}
@@ -412,7 +404,9 @@ namespace Elite
 			energy++;
 			energy += elite.cmdr.energy_unit;
 			if (energy > 255)
+			{
 				energy = 255;
+			}
 		}
 
 
@@ -436,7 +430,7 @@ namespace Elite
 				return;
 			}
 
-			shield = front ? front_shield : aft_shield;
+			shield = front ? elite.front_shield : elite.aft_shield;
 
 			shield -= damage;
 			if (shield < 0)
@@ -446,9 +440,13 @@ namespace Elite
 			}
 
 			if (front)
-				front_shield = shield;
+			{
+				elite.front_shield = shield;
+			}
 			else
-				aft_shield = shield;
+			{
+				elite.aft_shield = shield;
+			}
 		}
 
 		static void make_station_appear()
@@ -593,10 +591,9 @@ namespace Elite
 			char str[80];
 			univ_object flip;
 
-
 			gfx_start_render();
 
-			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				type = universe[i].type;
 
@@ -650,8 +647,8 @@ namespace Elite
 
 					if (type == SHIP.SHIP_PLANET)
 					{
-						if ((ship_count[SHIP.SHIP_CORIOLIS] == 0) &&
-							(ship_count[SHIP.SHIP_DODEC] == 0) &&
+						if ((ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) &&
+							(ship_count[(int)SHIP.SHIP_DODEC] == 0) &&
 							(universe[i].distance < 65792)) // was 49152
 						{
 							make_station_appear();
@@ -717,7 +714,7 @@ namespace Elite
 			int x1, y1, y2;
 			int colour;
 
-			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				if ((universe[i].type <= 0) ||
 					universe[i].flags.HasFlag(FLG.FLG_DEAD) ||
@@ -788,7 +785,7 @@ namespace Elite
 				return;
 			}
 
-			if (ship_count[SHIP.SHIP_CORIOLIS] || ship_count[SHIP.SHIP_DODEC])
+			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
 				un = 1;
 			}
@@ -852,25 +849,28 @@ namespace Elite
 			gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_DARK_RED);
 		}
 
-
 		/*
 		 * Display the current shield strengths.
 		 */
-
-		void display_shields()
+		static void display_shields()
 		{
-			if (front_shield > 3)
-				display_dial_bar(front_shield / 4, 31, 7);
+			if (elite.front_shield > 3)
+			{
+				display_dial_bar(elite.front_shield / 4, 31, 7);
+			}
 
-			if (aft_shield > 3)
-				display_dial_bar(aft_shield / 4, 31, 23);
+			if (elite.aft_shield > 3)
+			{
+				display_dial_bar(elite.aft_shield / 4, 31, 23);
+			}
 		}
 
-
-		void display_altitude()
+		static void display_altitude()
 		{
 			if (myship.altitude > 3)
+			{
 				display_dial_bar(myship.altitude / 4, 31, 92);
+			}
 		}
 
 		void display_cabin_temp()
@@ -1010,7 +1010,7 @@ namespace Elite
 			update_scanner();
 			update_compass();
 
-			if (ship_count[SHIP.SHIP_CORIOLIS] || ship_count[SHIP.SHIP_DODEC])
+			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
 				gfx_draw_sprite(IMG_BIG_S, 387, 490);
 			}
@@ -1251,7 +1251,7 @@ namespace Elite
             SHIP type;
 			int jump;
 
-			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				type = universe[i].type;
 
@@ -1279,7 +1279,7 @@ namespace Elite
 			if (jump > 1024)
 				jump = 1024;
 
-			for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				if (universe[i].type != 0)
 					universe[i].location.z -= jump;
@@ -1321,7 +1321,7 @@ namespace Elite
 		 */
 		static void engage_docking_computer()
 		{
-			if (ship_count[SHIP.SHIP_CORIOLIS] || ship_count[SHIP.SHIP_DODEC])
+			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
 				snd_play_sample(SND.SND_DOCK);
 				dock_player();

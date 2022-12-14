@@ -37,8 +37,8 @@
 namespace Elite
 {
     using Elite.Enums;
-    using Elite.Structs;
-    using EliteLib.Ships;
+	using Elite.Ships;
+	using Elite.Structs;
 
     internal static class intro
 	{
@@ -128,7 +128,7 @@ namespace Elite
 				show_time = 0;
 				direction = -100;
 
-				ship_count[space.universe[0].type] = 0;
+                space.ship_count[(int)space.universe[0].type] = 0;
                 space.universe[0].type = 0;
 
 				add_new_ship(ship_no, 0, 0, 4500, intro_ship_matrix, -127, -127);
@@ -140,8 +140,8 @@ namespace Elite
 
 			gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
 
-			gfx_display_centre_text(360, "Press Fire or Space, Commander.", 140, GFX_COL_GOLD);
-			gfx_display_centre_text(330, elite.ship_list[ship_no].name, 120, GFX_COL_WHITE);
+			gfx_display_centre_text(360, "Press Fire or Space, Commander.", 140, gfx.GFX_COL_GOLD);
+			gfx_display_centre_text(330, elite.ship_list[ship_no].name, 120, gfx.GFX_COL_WHITE);
 		}
 	}
 }

@@ -150,7 +150,7 @@ namespace Elite
 			shipdata.dodec_data
 		};
 
-		static void restore_saved_commander()
+		internal static void restore_saved_commander()
 		{
 			cmdr = saved_cmdr;
 

@@ -12,85 +12,80 @@
  *
  */
 
-/*
- * alg_main.c
- *
- * Allegro version of the main game handler.
- */
-
-
-//# include <stdio.h>
-//# include <string.h>
-//# include <math.h> 
-//# include <ctype.h>
-//# include <time.h>
-//# include <stdlib.h>
-
-//# include "allegro.h"
-
-//# include "config.h"
-//# include "gfx.h"
-//# include "main.h"
-//# include "vector.h"
-//# include "alg_data.h"
-//# include "elite.h"
-//# include "docked.h"
-//# include "intro.h"
-//# include "shipdata.h"
-//# include "shipface.h"
-//# include "space.h"
-//# include "sound.h"
-//# include "threed.h"
-//# include "swat.h"
-//# include "random.h"
-//# include "options.h"
-//# include "stars.h"
-//# include "missions.h"
-//# include "pilot.h"
-//# include "file.h"
-//# include "keyboard.h"
-
-using Elite.Enums;
-using Elite.Structs;
-
 namespace Elite
 {
+	/*
+	 * alg_main.c
+	 *
+	 * Allegro version of the main game handler.
+	 */
+
+
+	//# include <stdio.h>
+	//# include <string.h>
+	//# include <math.h> 
+	//# include <ctype.h>
+	//# include <time.h>
+	//# include <stdlib.h>
+
+	//# include "allegro.h"
+
+	//# include "config.h"
+	//# include "gfx.h"
+	//# include "main.h"
+	//# include "vector.h"
+	//# include "alg_data.h"
+	//# include "elite.h"
+	//# include "docked.h"
+	//# include "intro.h"
+	//# include "shipdata.h"
+	//# include "shipface.h"
+	//# include "space.h"
+	//# include "sound.h"
+	//# include "threed.h"
+	//# include "swat.h"
+	//# include "random.h"
+	//# include "options.h"
+	//# include "stars.h"
+	//# include "missions.h"
+	//# include "pilot.h"
+	//# include "file.h"
+	//# include "keyboard.h"
+
+	using Elite.Enums;
+	using Elite.Structs;
+
 	internal static class alg_main
 	{
-		int old_cross_x, old_cross_y;
-		int cross_timer;
-
-		int draw_lasers;
+        static int old_cross_x, old_cross_y;
+        static int cross_timer;
+        static int draw_lasers;
         internal static int mcount;
-		int message_count;
-		char message_string[80];
-		int rolling;
-		int climbing;
-		int game_paused;
-		int have_joystick;
-
-		int find_input;
-		char find_name[20];
-
-
+        static int message_count;
+        static string message_string;
+        static int rolling;
+        static int climbing;
+        static int game_paused;
+        static int have_joystick;
+        static int find_input;
+        static string find_name;
 
 		/*
 		 * Initialise the game parameters.
 		 */
-
 		static void initialise_game()
 		{
-			random.set_rand_seed(time(null));
+			random.set_rand_seed((int)DateTime.UtcNow.Ticks);
 			elite.current_screen = SCR.SCR_INTRO_ONE;
 
-			restore_saved_commander();
+			elite.restore_saved_commander();
 
 			elite.flight_speed = 1;
 			elite.flight_roll = 0;
 			elite.flight_climb = 0;
 			elite.docked = true;
-			front_shield = 255;
-			aft_shield = 255;
+			elite.front_shield = 255;
+            elite.aft_shield = 255;
 			energy = 255;
 			draw_lasers = 0;
 			mcount = 0;
@@ -663,21 +658,19 @@ namespace Elite
 			}
 
 	
-			while ((ship_count[SHIP.SHIP_CORIOLIS] == 0) &&
-				   (ship_count[SHIP.SHIP_DODEC] == 0))
+			while ((space.ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[(int)SHIP.SHIP_DODEC] == 0))
 			{
 				auto_dock();
 
 				if ((Math.Abs(elite.flight_roll) < 3) && (Math.Abs(elite.flight_climb) < 3))
 				{
-					for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+					for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 					{
 						if (space.universe[i].type != 0)
 						{
 							space.universe[i].location.z -= 1500;
 						}
 					}
-
 				}
 
 				Stars.warp_stars = true;
@@ -1112,14 +1105,14 @@ namespace Elite
 			if (rv)
 			{
 				saved_cmdr = cmdr;
-				gfx_display_centre_text(175, "Error Loading Commander!", 140, GFX_COL_GOLD);
-				gfx_display_centre_text(200, "Press any key to continue.", 140, GFX_COL_GOLD);
+				gfx_display_centre_text(175, "Error Loading Commander!", 140, gfx.GFX_COL_GOLD);
+				gfx_display_centre_text(200, "Press any key to continue.", 140, gfx.GFX_COL_GOLD);
 				gfx_update_screen();
 				readkey();
 				return;
 			}
 
-			restore_saved_commander();
+			elite.restore_saved_commander();
 			set_commander_name(path);
 			saved_cmdr = cmdr;
 			update_console();
