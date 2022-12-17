@@ -1122,7 +1122,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_INTRO_ONE;
 
-			snd_play_midi(SND.SND_ELITE_THEME, true);
+			sound.snd_play_midi(SND.SND_ELITE_THEME, true);
 
 			initialise_intro1();
 
@@ -1136,14 +1136,14 @@ namespace Elite
 
 				if (kbd_y_pressed)
 				{
-					snd_stop_midi();
+					sound.snd_stop_midi();
 					load_commander_screen();
 					break;
 				}
 
 				if (kbd_n_pressed)
 				{
-					snd_stop_midi();
+                    sound.snd_stop_midi();
 					break;
 				}
 			}
@@ -1154,7 +1154,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_INTRO_TWO;
 
-			snd_play_midi(SND.SND_BLUE_DANUBE, true);
+			sound.snd_play_midi(SND.SND_BLUE_DANUBE, true);
 
 			initialise_intro2();
 
@@ -1174,7 +1174,7 @@ namespace Elite
 					break;
 			}
 
-			snd_stop_midi();
+            sound.snd_stop_midi();
 		}
 
 		/*
@@ -1280,7 +1280,7 @@ namespace Elite
 			}
 
 			/* Start the sound system... */
-			snd_sound_startup();
+			sound.snd_sound_startup();
 
 			/* Do any setup necessary for the keyboard... */
 			kbd_keyboard_startup();
@@ -1308,7 +1308,7 @@ namespace Elite
 
 				while (!game_over)
 				{
-					snd_update_sound();
+					sound.snd_update_sound();
 					gfx_update_screen();
 					gfx_set_clip_region(1, 1, 510, 383);
 
@@ -1468,7 +1468,7 @@ namespace Elite
 					run_game_over_screen();
 			}
 
-			snd_sound_shutdown();
+			sound.snd_sound_shutdown();
 
 			gfx_graphics_shutdown();
 

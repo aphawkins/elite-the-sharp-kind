@@ -280,13 +280,15 @@ namespace Elite
 			fly_to_station (ship);
 		}
 
-		static void engage_auto_pilot ()
+		static void engage_auto_pilot()
 		{
 			if (auto_pilot || elite.witchspace || hyper_ready)
-				return; 
+			{
+				return;
+			}
 
 			auto_pilot = 1;
-			snd_play_midi (SND_BLUE_DANUBE, 1);
+			sound.snd_play_midi(SND_BLUE_DANUBE, 1);
 		}
 
 		static void disengage_auto_pilot ()
@@ -294,7 +296,7 @@ namespace Elite
 			if (auto_pilot)
 			{
 				auto_pilot = 0;
-				snd_stop_midi();
+                sound.snd_stop_midi();
 			}
 		}
 	}
