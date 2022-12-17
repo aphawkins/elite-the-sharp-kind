@@ -195,15 +195,15 @@ namespace Elite
 
             elite.current_screen = SCR.SCR_FRONT_VIEW;
 
-			gfx_clear_display();
-			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_clear_display();
+            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			gfx_display_pretty_text(16, 50, 300, 384, mission1_brief_a);
 			gfx_display_pretty_text(16, 200, 470, 384,
 				  (elite.cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
 
-			gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
 			clear_universe();
             VectorMaths.set_init_matrix(rotmat);
@@ -214,7 +214,7 @@ namespace Elite
 
 			do
 			{
-				gfx_clear_area(310, 50, 510, 180);
+                alg_gfx.gfx_clear_area(310, 50, 510, 180);
 				update_universe();
 				space.universe[0].location.z = 600;
 				gfx_update_screen();
@@ -230,15 +230,15 @@ namespace Elite
 			elite.cmdr.score += 256;
 			elite.cmdr.credits += 50000;
 
-			gfx_clear_display();
-			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_clear_display();
+            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			gfx_display_centre_text(100, "Congratulations Commander!", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(100, "Congratulations Commander!", 140, gfx.GFX_COL_GOLD);
 
 			gfx_display_pretty_text(116, 132, 400, 384, mission1_debrief);
 
-			gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
 			gfx_update_screen();
 
@@ -254,13 +254,13 @@ namespace Elite
 
 			elite.cmdr.mission = 4;
 
-			gfx_clear_display();
-			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_clear_display();
+            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			gfx_display_pretty_text(116, 132, 400, 384, mission2_brief_a);
 
-			gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
 			gfx_update_screen();
 
@@ -277,8 +277,8 @@ namespace Elite
 
 			elite.cmdr.mission = 5;
 
-			gfx_clear_display();
-			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_clear_display();
+            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			gfx_display_pretty_text(16, 50, 300, 384, mission2_brief_b);
@@ -286,7 +286,7 @@ namespace Elite
 
 			gfx_draw_sprite(IMG_BLAKE, 352, 46);
 
-			gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
 			gfx_update_screen();
 
@@ -305,15 +305,15 @@ namespace Elite
 			elite.cmdr.score += 256;
 			elite.cmdr.energy_unit = 2;
 
-			gfx_clear_display();
-			gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_clear_display();
+            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			gfx_display_centre_text(100, "Well done Commander.", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(100, "Well done Commander.", 140, gfx.GFX_COL_GOLD);
 
 			gfx_display_pretty_text(116, 132, 400, 384, mission2_debrief);
 
-			gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
 			gfx_update_screen();
 

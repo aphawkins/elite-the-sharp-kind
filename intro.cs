@@ -86,16 +86,16 @@ namespace Elite
 				space.universe[0].location.z = 384;
 			}
 
-			gfx_clear_display();
+            alg_gfx.gfx_clear_display();
 
             elite.flight_roll = 1;
 			update_universe();
 
 			gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
 
-			gfx_display_centre_text(310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
-			gfx_display_centre_text(330, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);
-			gfx_display_centre_text(360, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
+            alg_gfx.gfx_display_centre_text(330, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);
+            alg_gfx.gfx_display_centre_text(360, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
 		}
 
 		static void update_intro2()
@@ -134,14 +134,14 @@ namespace Elite
 				add_new_ship(ship_no, 0, 0, 4500, intro_ship_matrix, -127, -127);
 			}
 
-			gfx_clear_display();
+            alg_gfx.gfx_clear_display();
 			update_starfield();
 			update_universe();
 
 			gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
 
-			gfx_display_centre_text(360, "Press Fire or Space, Commander.", 140, gfx.GFX_COL_GOLD);
-			gfx_display_centre_text(330, elite.ship_list[ship_no].name, 120, gfx.GFX_COL_WHITE);
+            alg_gfx.gfx_display_centre_text(360, "Press Fire or Space, Commander.", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(330, elite.ship_list[ship_no].name, 120, gfx.GFX_COL_WHITE);
 		}
 	}
 }

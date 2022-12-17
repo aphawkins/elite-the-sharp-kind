@@ -1117,28 +1117,27 @@ namespace Elite
 				gfx_display_text(5, 5, str);
 				if (hyper_galactic)
 				{
-					gfx_display_centre_text(358, "Galactic Hyperspace", 120, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_display_centre_text(358, "Galactic Hyperspace", 120, gfx.GFX_COL_WHITE);
 				}
 				else
 				{
 					sprintf(str, "Hyperspace - %s", hyper_name);
-					gfx_display_centre_text(358, str, 120, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_display_centre_text(358, str, 120, gfx.GFX_COL_WHITE);
 				}
 			}
 			else
 			{
-				gfx_clear_area(5, 5, 25, 34);
+                alg_gfx.gfx_clear_area(5, 5, 25, 34);
 				gfx_display_text(5, 5, str);
 			}
 		}
 
-
-		int rotate_byte_left(int x)
+		static int rotate_byte_left(int x)
 		{
 			return ((x << 1) | (x >> 7)) & 255;
 		}
 
-		void enter_next_galaxy()
+		static void enter_next_galaxy()
 		{
 			elite.cmdr.galaxy_number++;
 			elite.cmdr.galaxy_number &= 7;

@@ -186,22 +186,22 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_FRONT_VIEW:
-					gfx_display_centre_text(32, "Front View", 120, gfx.GFX_COL_WHITE);
+					alg_gfx.gfx_display_centre_text(32, "Front View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.front_laser;
 					break;
 
 				case SCR.SCR_REAR_VIEW:
-					gfx_display_centre_text(32, "Rear View", 120, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_display_centre_text(32, "Rear View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.rear_laser;
 					break;
 
 				case SCR.SCR_LEFT_VIEW:
-					gfx_display_centre_text(32, "Left View", 120, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_display_centre_text(32, "Left View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.left_laser;
 					break;
 
 				case SCR.SCR_RIGHT_VIEW:
-					gfx_display_centre_text(32, "Right View", 120, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_display_centre_text(32, "Right View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.right_laser;
 					break;
 			}
@@ -429,7 +429,7 @@ namespace Elite
 				case SCR.SCR_QUIT:
 					if (elite.docked)
 					{
-						display_commander_status();
+                        Docked.display_commander_status();
 					}
 					else
 					{
@@ -646,7 +646,7 @@ namespace Elite
 				}
 
 				gfx_set_clip_region(1, 1, 510, 383);
-				gfx_clear_display();
+				alg_gfx.gfx_clear_display();
 				update_starfield();
 				update_universe();
 
@@ -654,7 +654,7 @@ namespace Elite
 				space.universe[newship].location.y = 0;
 				space.universe[newship].location.z += 2;
 
-				gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
+                alg_gfx.gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
 
 				update_console();
 				gfx_update_screen();
@@ -678,7 +678,7 @@ namespace Elite
 
 				Stars.warp_stars = true;
 				gfx_set_clip_region(1, 1, 510, 383);
-				gfx_clear_display();
+                alg_gfx.gfx_clear_display();
 				update_starfield();
 				update_universe();
 				update_console();
@@ -831,7 +831,7 @@ namespace Elite
 			if (kbd_F9_pressed)
 			{
 				find_input = 0;
-				display_commander_status();
+                Docked.display_commander_status();
 			}
 
 			if (kbd_F10_pressed)
@@ -888,7 +888,7 @@ namespace Elite
 			{
 				if (!elite.docked && elite.cmdr.docking_computer)
 				{
-					if (instant_dock)
+					if (elite.instant_dock)
 					{
 						engage_docking_computer();
 					}
@@ -1044,7 +1044,7 @@ namespace Elite
 			*cname = '\0';
 		}
 
-		static void save_commander_screen()
+		internal static void save_commander_screen()
 		{
 			string path;
 			int okay;
@@ -1052,8 +1052,8 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_SAVE_CMDR;
 
-			gfx_clear_display();
-			gfx_display_centre_text(10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_clear_display();
+            alg_gfx.gfx_display_centre_text(10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
 			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 			gfx_update_screen();
 
@@ -1072,11 +1072,11 @@ namespace Elite
 
 			if (rv)
 			{
-				gfx_display_centre_text(175, "Error Saving Commander!", 140, gfx.GFX_COL_GOLD);
+                alg_gfx.gfx_display_centre_text(175, "Error Saving Commander!", 140, gfx.GFX_COL_GOLD);
 				return;
 			}
 
-			gfx_display_centre_text(175, "Commander Saved.", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(175, "Commander Saved.", 140, gfx.GFX_COL_GOLD);
 
 			set_commander_name(path);
 			saved_cmdr = cmdr;
@@ -1084,14 +1084,13 @@ namespace Elite
 			saved_cmdr.ship_y = elite.docked_planet.b;
 		}
 
-
-		static void load_commander_screen()
+		internal static void load_commander_screen()
 		{
 			char path[255];
 			int rv;
 
-			gfx_clear_display();
-			gfx_display_centre_text(10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_clear_display();
+            alg_gfx.gfx_display_centre_text(10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
 			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 			gfx_update_screen();
 
@@ -1108,8 +1107,8 @@ namespace Elite
 			if (rv)
 			{
 				saved_cmdr = cmdr;
-				gfx_display_centre_text(175, "Error Loading Commander!", 140, gfx.GFX_COL_GOLD);
-				gfx_display_centre_text(200, "Press any key to continue.", 140, gfx.GFX_COL_GOLD);
+                alg_gfx.gfx_display_centre_text(175, "Error Loading Commander!", 140, gfx.GFX_COL_GOLD);
+                alg_gfx.gfx_display_centre_text(200, "Press any key to continue.", 140, gfx.GFX_COL_GOLD);
 				gfx_update_screen();
 				readkey();
 				return;
@@ -1215,10 +1214,10 @@ namespace Elite
 
 			for (i = 0; i < 100; i++)
 			{
-				gfx_clear_display();
+                alg_gfx.gfx_clear_display();
 				update_starfield();
 				update_universe();
-				gfx_display_centre_text(190, "GAME OVER", 140, gfx.GFX_COL_GOLD);
+                alg_gfx.gfx_display_centre_text(190, "GAME OVER", 140, gfx.GFX_COL_GOLD);
 				gfx_update_screen();
 			}
 		}
@@ -1232,7 +1231,7 @@ namespace Elite
 			int i;
 
 			gfx_set_clip_region(1, 1, 510, 383);
-			gfx_clear_display();
+            alg_gfx.gfx_clear_display();
 
 			for (i = 0; i < 20; i++)
 			{
@@ -1243,7 +1242,7 @@ namespace Elite
 			if (elite.docked)
 			{
 				check_mission_brief();
-				display_commander_status();
+                Docked.display_commander_status();
 				update_console();
 			}
 			else
@@ -1307,7 +1306,7 @@ namespace Elite
 				old_cross_y = -1;
 
 				dock_player();
-				display_commander_status();
+                Docked.display_commander_status();
 
 				while (!game_over)
 				{
@@ -1362,7 +1361,7 @@ namespace Elite
 							(elite.current_screen == SCR.SCR_INTRO_ONE) || (elite.current_screen == SCR.SCR_INTRO_TWO) ||
 							(elite.current_screen == SCR.SCR_GAME_OVER))
 						{
-							gfx_clear_display();
+                            alg_gfx.gfx_clear_display();
 							update_starfield();
 						}
 
@@ -1396,7 +1395,7 @@ namespace Elite
 
 						if (message_count > 0)
 						{
-							gfx_display_centre_text(358, message_string, 120, gfx.GFX_COL_WHITE);
+                            alg_gfx.gfx_display_centre_text(358, message_string, 120, gfx.GFX_COL_WHITE);
 						}
 
 						if (space.hyper_ready)

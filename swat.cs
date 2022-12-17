@@ -910,7 +910,7 @@ namespace Elite
 
 		static void draw_laser_lines()
 		{
-			if (wireframe)
+			if (elite.wireframe)
 			{
 				gfx_draw_colour_line(32 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
 				gfx_draw_colour_line(48 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);

@@ -45,12 +45,11 @@ namespace Elite
 		internal static SCR current_screen = 0;
         internal static bool witchspace;
 
-		internal static int wireframe = 0;
-        internal static int anti_alias_gfx = 0;
+		internal static bool wireframe = false;
+        internal static bool anti_alias_gfx = false;
         internal static bool hoopy_casinos = false;
         internal static int speed_cap = 75;
-        internal static int instant_dock = 0;
-
+        internal static bool instant_dock = false;
 
         internal static string scanner_filename;
         internal static int scanner_cx;

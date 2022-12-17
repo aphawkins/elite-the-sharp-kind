@@ -418,7 +418,7 @@ namespace Elite
 
 		internal static void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
 		{
-			if (anti_alias_gfx && (circle_colour == gfx.GFX_COL_WHITE))
+			if (elite.anti_alias_gfx && (circle_colour == gfx.GFX_COL_WHITE))
 			{
 				gfx_draw_aa_circle(cx, cy, itofix(radius));
 			}
@@ -442,10 +442,14 @@ namespace Elite
 				return;
 			}
 
-			if (anti_alias_gfx)
+			if (elite.anti_alias_gfx)
+			{
 				gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
+			}
 			else
+			{
 				line(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
+			}
 		}
 
 		static void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
@@ -462,10 +466,14 @@ namespace Elite
 				return;
 			}
 
-			if (anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
+			if (elite.anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
+			{
 				gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
+			}
 			else
-				line(gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, y2 + GFX_Y_OFFSET, line_colour);
+			{
+				line(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
+			}
 		}
 
 
@@ -476,24 +484,19 @@ namespace Elite
 						   x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
 		}
 
-
-
-		void gfx_display_text(int x, int y, char* txt)
+		static void gfx_display_text(int x, int y, char* txt)
 		{
 			text_mode(-1);
 			textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
 		}
 
-
-		void gfx_display_colour_text(int x, int y, char* txt, int col)
+		internal static void gfx_display_colour_text(int x, int y, string txt, int col)
 		{
 			text_mode(-1);
-			textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / GFX_SCALE)) + GFX_X_OFFSET, (y / (2 / GFX_SCALE)) + GFX_Y_OFFSET, col);
+			textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, col);
 		}
 
-
-
-		void gfx_display_centre_text(int y, char* str, int psize, int col)
+		internal static void gfx_display_centre_text(int y, string str, int psize, int col)
 		{
 			int txt_size;
 			int txt_colour;
@@ -513,8 +516,7 @@ namespace Elite
 			textout_centre(gfx_screen, datafile[txt_size].dat, str, (128 * GFX_SCALE) + GFX_X_OFFSET, (y / (2 / GFX_SCALE)) + GFX_Y_OFFSET, txt_colour);
 		}
 
-
-		static void gfx_clear_display()
+		internal static void gfx_clear_display()
 		{
 			rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
@@ -524,19 +526,15 @@ namespace Elite
 			rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-
-		static void gfx_clear_area(int tx, int ty, int bx, int by)
+		internal static void gfx_clear_area(int tx, int ty, int bx, int by)
 		{
-			rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET,
-						   bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
+			rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-		static void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
+		internal static void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
 		{
-			rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET,
-						   bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, col);
+			rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, col);
 		}
-
 
 		static void gfx_display_pretty_text(int tx, int ty, int bx, int by, char* txt)
 		{

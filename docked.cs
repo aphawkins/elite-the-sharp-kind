@@ -218,9 +218,9 @@ namespace Elite
 
             elite.current_screen = SCR.SCR_SHORT_RANGE;
 
-			gfx_clear_display();
+            alg_gfx.gfx_clear_display();
 
-			gfx_display_centre_text (10, "SHORT RANGE CHART", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text (10, "SHORT RANGE CHART", 140, gfx.GFX_COL_GOLD);
 
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
@@ -308,11 +308,11 @@ namespace Elite
 
             elite.current_screen = SCR.SCR_GALACTIC_CHART;
 
-			gfx_clear_display();
+            alg_gfx.gfx_clear_display();
 
 			sprintf (str, "GALACTIC CHART %d", elite.cmdr.galaxy_number + 1);
 
-			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
             alg_gfx.gfx_draw_line(0, 36+258, 511, 36+258);
@@ -355,12 +355,12 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_PLANET_DATA;
 
-			gfx_clear_display();
+            alg_gfx.gfx_clear_display();
 
 			string planet_name = Planet.name_planet(ref hyperspace_planet);
 			sprintf(str, "DATA ON %s", planet_name);
 
-			gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
 
 			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
@@ -452,7 +452,7 @@ namespace Elite
 			"Red"
 		};
 
-		static void display_commander_status ()
+		internal static void display_commander_status ()
 		{
 			string planet_name;
 			char str[100];
@@ -463,16 +463,15 @@ namespace Elite
 
             elite.current_screen = SCR.SCR_CMDR_STATUS;
 
-			gfx_clear_display();
+            alg_gfx.gfx_clear_display();
 
 			sprintf (str, "COMMANDER %s", elite.cmdr.name);
 
-			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-
-			gfx_display_colour_text (16, 58, "Present System:", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16, 58, "Present System:", gfx.GFX_COL_GREEN_1);
 	
 			if (!elite.witchspace)
 			{
@@ -482,7 +481,7 @@ namespace Elite
 				gfx_display_text (190, 58, str);
 			}
 
-			gfx_display_colour_text (16, 74, "Hyperspace System:", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16, 74, "Hyperspace System:", gfx.GFX_COL_GREEN_1);
 			planet_name = Planet.name_planet (ref hyperspace_planet);
 			planet_name = Planet.capitalise_name(planet_name);
 			sprintf (str, "%s", planet_name);
@@ -511,16 +510,16 @@ namespace Elite
 				if ((condition == 2) && (energy < 128))
 					condition = 3;
 			}
-	
-			gfx_display_colour_text (16, 90, "Condition:", GFX_COL_GREEN_1);
+
+            alg_gfx.gfx_display_colour_text (16, 90, "Condition:", gfx.GFX_COL_GREEN_1);
 			gfx_display_text (190, 90, condition_txt[condition]);
 
 			sprintf (str, "%d.%d Light Years", elite.cmdr.fuel / 10, elite.cmdr.fuel % 10);
-			gfx_display_colour_text (16, 106, "Fuel:", GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16, 106, "Fuel:", gfx.GFX_COL_GREEN_1);
 			gfx_display_text (70, 106, str);
 
 			sprintf (str, "%d.%d Cr", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
-			gfx_display_colour_text (16, 122, "Cash:", GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16, 122, "Cash:", gfx.GFX_COL_GREEN_1);
 			gfx_display_text (70, 122, str);
 
 			if (elite.cmdr.legal_status == 0)
@@ -528,17 +527,17 @@ namespace Elite
 			else
 				strcpy (str, elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender");
 
-			gfx_display_colour_text (16, 138, "Legal Status:", GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16, 138, "Legal Status:", GFX_COL_GREEN_1);
 			gfx_display_text (128, 138, str);
 
 			for (i = 0; i < NO_OF_RANKS; i++)
 				if (elite.cmdr.score >= rating[i].score)
 					strcpy (str, rating[i].title);
-	
-			gfx_display_colour_text (16, 154, "Rating:", GFX_COL_GREEN_1);
+
+            alg_gfx.gfx_display_colour_text (16, 154, "Rating:", GFX_COL_GREEN_1);
 			gfx_display_text (80, 154, str);
 
-			gfx_display_colour_text (16, 186, "EQUIPMENT:", GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16, 186, "EQUIPMENT:", GFX_COL_GREEN_1);
 
 			x = EQUIP_START_X;
 			y = EQUIP_START_Y;
@@ -699,13 +698,13 @@ namespace Elite
 			if ((hilite_item != -1) && (hilite_item != i))
 			{
 				y = hilite_item * 15 + 55;
-				gfx_clear_area (2, y, 510, y + 15);
+				alg_gfx.gfx_clear_area (2, y, 510, y + 15);
 				display_stock_price (hilite_item);		
 			}
 
 			y = i * 15 + 55;
 	
-			gfx_draw_rectangle (2, y, 510, y + 15, GFX_COL_DARK_RED);
+			alg_gfx.gfx_draw_rectangle (2, y, 510, y + 15, GFX_COL_DARK_RED);
 			display_stock_price (i);		
 
 			hilite_item = i;
@@ -793,19 +792,19 @@ namespace Elite
 
             elite.current_screen = SCR.SCR_MARKET_PRICES;
 
-			gfx_clear_display();
+            alg_gfx.gfx_clear_display();
 
 			string planet_name = Planet.name_planet (ref elite.docked_planet);
 			sprintf (str, "%s MARKET PRICES", planet_name);
-			gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_display_centre_text (10, str, 140, gfx.GFX_COL_GOLD);
 
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			gfx_display_colour_text (16,  40, "PRODUCT", gfx.GFX_COL_GREEN_1);
-			gfx_display_colour_text (166, 40, "UNIT", gfx.GFX_COL_GREEN_1);
-			gfx_display_colour_text (246, 40, "PRICE", gfx.GFX_COL_GREEN_1);
-			gfx_display_colour_text (314, 40, "FOR SALE", gfx.GFX_COL_GREEN_1);
-			gfx_display_colour_text (420, 40, "IN HOLD", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16,  40, "PRODUCT", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (166, 40, "UNIT", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (246, 40, "PRICE", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (314, 40, "FOR SALE", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (420, 40, "IN HOLD", gfx.GFX_COL_GREEN_1);
 
 			for (i = 0; i < 17; i++)
 			{
@@ -828,16 +827,16 @@ namespace Elite
 
             elite.current_screen = SCR.SCR_INVENTORY;
 
-			gfx_clear_display();
-			gfx_display_centre_text (10, "INVENTORY", 140, gfx.GFX_COL_GOLD);
+            alg_gfx.gfx_clear_display();
+            alg_gfx.gfx_display_centre_text (10, "INVENTORY", 140, gfx.GFX_COL_GOLD);
             alg_gfx.gfx_draw_line(0, 36, 511, 36);
 	
 			sprintf (str, "%d.%d Light Years", elite.cmdr.fuel / 10, elite.cmdr.fuel % 10);
-			gfx_display_colour_text (16, 50, "Fuel:", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16, 50, "Fuel:", gfx.GFX_COL_GREEN_1);
 			gfx_display_text (70, 50, str);
 
 			sprintf (str, "%d.%d Cr", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
-			gfx_display_colour_text (16, 66, "Cash:", gfx.GFX_COL_GREEN_1);
+            alg_gfx.gfx_display_colour_text (16, 66, "Cash:", gfx.GFX_COL_GREEN_1);
 			gfx_display_text (70, 66, str);
 	
 			y = 98;
@@ -1023,19 +1022,18 @@ namespace Elite
 
 			col = equip_stock[i].canbuy ? GFX_COL_WHITE : GFX_COL_GREY_1;
 
-			x = *(equip_stock[i].name) == '>' ? 50 : 16; 
+			x = *(equip_stock[i].name) == '>' ? 50 : 16;
 
-			gfx_display_colour_text (x, y, &equip_stock[i].name[1], col);
+			alg_gfx.gfx_display_colour_text (x, y, &equip_stock[i].name[1], col);
 
 			if (equip_stock[i].price != 0)
 			{
 				sprintf (str, "%d.%d", equip_stock[i].price / 10, equip_stock[i].price % 10);
-				gfx_display_colour_text (338, y, str, col);
+				alg_gfx.gfx_display_colour_text (338, y, str, col);
 			}
 		}
 
-
-		void highlight_equip (int i)
+		static void highlight_equip (int i)
 		{
 			int y;
 			char str[30];
@@ -1043,13 +1041,13 @@ namespace Elite
 			if ((hilite_item != -1) && (hilite_item != i))
 			{
 				y = equip_stock[hilite_item].y;
-				gfx_clear_area (2, y+1, 510, y + 15);
+				alg_gfx.gfx_clear_area (2, y+1, 510, y + 15);
 				display_equip_price (hilite_item);		
 			}
 
 			y = equip_stock[i].y;
-	
-			gfx_draw_rectangle (2, y+1, 510, y + 15, GFX_COL_DARK_RED);
+
+			alg_gfx.gfx_draw_rectangle (2, y+1, 510, y + 15, GFX_COL_DARK_RED);
 			display_equip_price (i);		
 
 			hilite_item = i;
@@ -1111,7 +1109,7 @@ namespace Elite
 			int y;
 			int tech_level;
 
-			gfx_clear_area (2, 55, 510, 380);
+			alg_gfx.gfx_clear_area (2, 55, 510, 380);
 	
 			tech_level = elite.current_planet_data.techlevel + 1;
 
@@ -1327,8 +1325,8 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_EQUIP_SHIP;
 
-			gfx_clear_display();
-			gfx_display_centre_text (10, "EQUIP SHIP", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_display_centre_text (10, "EQUIP SHIP", 140, gfx.GFX_COL_GOLD);
 			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			collapse_equip_list();

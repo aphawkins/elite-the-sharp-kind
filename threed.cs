@@ -496,7 +496,7 @@ namespace Elite
 
 		static void generate_landscape (int rnd_seed)
 		{
-			switch (planet_render_style)
+			switch (elite.planet_render_style)
 			{
 				case 0:		/* Wireframe... do nothing for now... */
 					break;
@@ -643,7 +643,7 @@ namespace Elite
 				(y - radius > 383))
 				return; 
 
-			switch (planet_render_style)
+			switch (elite.planet_render_style)
 			{
 				case 0:
 					draw_wireframe_planet (x, y, radius, planet.rotmat);
@@ -999,7 +999,7 @@ namespace Elite
 				(Math.Abs(ship.location.y) > ship.location.z))
 				return;
 
-			if (wireframe)
+			if (elite.wireframe)
 			{
 				draw_wireframe_ship(ref ship);
 			}
