@@ -21,13 +21,13 @@
         internal int unused3;
         internal int cargo_capacity;
         internal int[] current_cargo = new int[trade.NO_OF_STOCK_ITEMS];
-        internal int ecm;
-        internal int fuel_scoop;
-        internal int energy_bomb;
+        internal bool ecm;
+        internal bool fuel_scoop;
+        internal bool energy_bomb;
         internal int energy_unit;
-        internal int docking_computer;
-        internal int galactic_hyperdrive;
-        internal int escape_pod;
+        internal bool docking_computer;
+        internal bool galactic_hyperdrive;
+        internal bool escape_pod;
         internal int unused4;
         internal int unused5;
         internal int unused6;
@@ -41,7 +41,7 @@
 
         public commander(string name, int mission, int ship_x, int ship_y, galaxy_seed galaxy, int credits, int fuel, int unused1, 
             int galaxy_number, int front_laser, int rear_laser, int left_laser, int right_laser, int unused2, int unused3, int cargo_capacity,
-            int[] current_cargo, int ecm, int fuel_scoop, int energy_bomb, int energy_unit, int docking_computer, int galactic_hyperdrive, int escape_pod,
+            int[] current_cargo, bool ecm, bool fuel_scoop, bool energy_bomb, int energy_unit, bool docking_computer, bool galactic_hyperdrive, bool escape_pod,
             int unused4, int unused5, int unused6, int unused7, int missiles, int legal_status, int[] station_stock, int market_rnd, int score, int saved)
         {
             this.name = name;

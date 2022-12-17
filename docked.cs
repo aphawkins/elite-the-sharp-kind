@@ -416,11 +416,9 @@ namespace Elite
 			{0x1900, "---- E L I T E ---"}
 		};
 
-		char *laser_name[5] = {"Pulse", "Beam", "Military", "Mining", "Custom"};
+		string[] laser_name = new string[5] {"Pulse", "Beam", "Military", "Mining", "Custom"};
 
-
-
-		char *laser_type (int strength)
+		static string laser_type(int strength)
 		{
 			switch (strength)
 			{
@@ -429,24 +427,22 @@ namespace Elite
 
 				case BEAM_LASER:
 					return laser_name[1];
-		
+
 				case MILITARY_LASER:
 					return laser_name[2];
-		
+
 				case MINING_LASER:
 					return laser_name[3];
-			}	
+			}
 
 			return laser_name[4];
 		}
-
 
 		#define EQUIP_START_Y	202
 		#define EQUIP_START_X	50
 		#define EQUIP_MAX_Y		290
 		#define EQUIP_WIDTH		200
 		#define Y_INC			16
-
 
 		static string[] condition_txt = new string[]
 		{
