@@ -217,7 +217,7 @@ struct setting
 		{
 			if (hilite_item == (NUM_SETTINGS - 1))
 			{
-				write_config_file();
+				file.write_config_file();
 				display_options();
 				return;
 			}

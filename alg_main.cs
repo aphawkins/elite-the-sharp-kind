@@ -1065,7 +1065,7 @@ namespace Elite
 				return;
 			}
 
-			rv = save_commander_file(path);
+			rv = file.save_commander_file(path);
 
 			if (rv)
 			{
@@ -1100,7 +1100,7 @@ namespace Elite
 			if (rv == 0)
 				return;
 
-			rv = load_commander_file(path);
+			rv = file.load_commander_file(path);
 
 			if (rv)
 			{
@@ -1272,7 +1272,7 @@ namespace Elite
 		static int main()
 		{
 			initialise_allegro();
-			read_config_file();
+			file.read_config_file();
 
 			if (gfx_graphics_startup() == 1)
 			{
