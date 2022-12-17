@@ -21,6 +21,7 @@
 
 namespace Elite
 {
+	using System;
 	using Elite.Structs;
 
 	internal static class VectorMaths
@@ -96,15 +97,13 @@ namespace Elite
 		 */
 		internal static Vector unit_vector(Vector vec)
 		{
-			double lx, ly, lz;
-			double uni;
 			Vector res;
 
-			lx = vec.x;
-			ly = vec.y;
-			lz = vec.z;
+            double lx = vec.x;
+            double ly = vec.y;
+            double lz = vec.z;
 
-			uni = Math.Sqrt(lx * lx + ly * ly + lz * lz);
+			double uni = Math.Sqrt(lx * lx + ly * ly + lz * lz);
 
 			res.x = lx / uni;
 			res.y = ly / uni;

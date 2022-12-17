@@ -610,7 +610,7 @@ namespace Elite
 
 			if ((space.ship_count[(int)SHIP.SHIP_TRANSPORTER] != 0) ||
 				(space.ship_count[(int)SHIP.SHIP_SHUTTLE] != 0) ||
-				(random.rand255() < 253) || (auto_pilot))
+				(random.rand255() < 253) || elite.auto_pilot)
 			{
 				return;
 			}

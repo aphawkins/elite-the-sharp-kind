@@ -71,8 +71,7 @@ namespace Elite
         internal static int energy;
         internal static int laser_temp;
         internal static int detonate_bomb;
-        internal static int auto_pilot;
-
+        internal static bool auto_pilot;
 
 		internal static commander saved_cmdr = new commander(
 			"JAMESON",									/* Name 			*/

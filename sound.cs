@@ -137,7 +137,7 @@ namespace Elite
 			//}
 		}
 
-		static void snd_play_midi(SND midi_no, int repeat)
+		internal static void snd_play_midi(SND midi_no, int repeat)
 		{
 			//if (!sound_on)
 			//{

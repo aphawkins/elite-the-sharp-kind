@@ -24,20 +24,16 @@
  * I have split it out to make it more understandable and easier to maintain.
  */
 
-
-# include <math.h>
-# include <stdlib.h>
-# include <string.h>
-# include "config.h"
-# include "gfx.h"
-# include "elite.h"
-# include "vector.h"
-# include "main.h"
-# include "space.h"
-# include "sound.h"
-
-
-using Elite;
+//# include <math.h>
+//# include <stdlib.h>
+//# include <string.h>
+//# include "config.h"
+//# include "gfx.h"
+//# include "elite.h"
+//# include "vector.h"
+//# include "main.h"
+//# include "space.h"
+//# include "sound.h"
 
 namespace Elite
 {
@@ -46,11 +42,9 @@ namespace Elite
 
 	internal static class pilot
 	{
-
 		/*
 		 * Fly to a given point in space.
 		 */
-
 		static void fly_to_vector(ref univ_object ship, Vector vec)
 		{
 			Vector nvec;
@@ -64,31 +58,33 @@ namespace Elite
 			rat2 = 0.1666;
 			cnt2 = 0.8055;
 
-			nvec = VectorMaths.unit_vector(&vec);
-			direction = VectorMaths.vector_dot_product(&nvec, ship.rotmat[2]); 
-	
-			if (direction < -0.6666)
-				rat2 = 0;
+			nvec = VectorMaths.unit_vector(vec);
+			direction = VectorMaths.vector_dot_product(nvec, ship.rotmat[2]);
 
-			dir = VectorMaths.vector_dot_product (&nvec, ship.rotmat[1]);
+			if (direction < -0.6666)
+			{
+				rat2 = 0;
+			}
+
+			dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[1]);
 
 			if (direction < -0.861)
 			{
 				ship.rotx = (dir < 0) ? 7 : -7;
 				ship.rotz = 0;
-				return; 
+				return;
 			}
 
 			ship.rotx = 0;
-	
+
 			if ((Math.Abs(dir) * 2) >= rat2)
 			{
 				ship.rotx = (dir < 0) ? rat : -rat;
 			}
-		
+
 			if (Math.Abs(ship.rotz) < 16)
 			{
-				dir = VectorMaths.vector_dot_product (&nvec, ship.rotmat[0]);
+				dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[0]);
 
 				ship.rotz = 0;
 
@@ -97,8 +93,10 @@ namespace Elite
 					ship.rotz = (dir < 0) ? rat : -rat;
 
 					if (ship.rotx < 0)
+					{
 						ship.rotz = -ship.rotz;
-				}		
+					}
+				}
 			}
 
 			if (direction <= -0.167)
@@ -114,13 +112,10 @@ namespace Elite
 			}
 		}
 
-
-
 		/*
 		 * Fly towards the planet.
 		 */
-
-		void fly_to_planet(ref univ_object ship)
+		static void fly_to_planet(ref univ_object ship)
 		{
 			Vector vec;
 
@@ -128,17 +123,14 @@ namespace Elite
 			vec.y = space.universe[0].location.y - ship.location.y;
 			vec.z = space.universe[0].location.z - ship.location.z;
 
-			fly_to_vector(ship, vec);	
+			fly_to_vector(ref ship, vec);
 		}
-
 
 		/*
 		 * Fly to a point in front of the station docking bay.
 		 * Done prior to the final stage of docking.
 		 */
-
-
-		void fly_to_station_front (univ_object *ship)
+		static void fly_to_station_front(ref univ_object ship)
 		{
 			Vector vec;
 
@@ -150,15 +142,13 @@ namespace Elite
 			vec.y += space.universe[1].rotmat[2].y * 768;
 			vec.z += space.universe[1].rotmat[2].z * 768;
 
-			fly_to_vector (ship, vec);	
+			fly_to_vector(ref ship, vec);
 		}
-
 
 		/*
 		 * Fly towards the space station.
 		 */
-
-		void fly_to_station (univ_object *ship)
+		static void fly_to_station(ref univ_object ship)
 		{
 			Vector vec;
 
@@ -166,26 +156,23 @@ namespace Elite
 			vec.y = space.universe[1].location.y - ship.location.y;
 			vec.z = space.universe[1].location.z - ship.location.z;
 
-			fly_to_vector (ship, vec);	
+			fly_to_vector(ref ship, vec);
 		}
-
 
 		/*
 		 * Final stage of docking.
 		 * Fly into the docking bay.
 		 */
- 
-		void fly_to_docking_bay (univ_object *ship)
+		static void fly_to_docking_bay(ref univ_object ship)
 		{
 			Vector diff;
-			Vector vec;
 			double dir;
 
 			diff.x = ship.location.x - space.universe[1].location.x;
 			diff.y = ship.location.y - space.universe[1].location.y;
 			diff.z = ship.location.z - space.universe[1].location.z;
 
-			vec = VectorMaths.unit_vector (&diff);	
+			Vector vec = VectorMaths.unit_vector(diff);
 
 			ship.rotx = 0;
 
@@ -198,29 +185,31 @@ namespace Elite
 					ship.rotz = -ship.rotz;
 				}
 
-				if (fabs(vec.x) >= 0.0625)
+				if (Math.Abs(vec.x) >= 0.0625)
 				{
 					ship.acceleration = 0;
 					ship.velocity = 1;
 					return;
 				}
 
-				if (fabs(vec.y) > 0.002436)
-					ship.rotx = (vec.y < 0) ? -1 : 1;
-
-				if (fabs(vec.y) >= 0.0625)
+				if (Math.Abs(vec.y) > 0.002436)
 				{
-					 ship.acceleration = 0;
-					 ship.velocity = 1;
-					 return;
+					ship.rotx = (vec.y < 0) ? -1 : 1;
+				}
+
+				if (Math.Abs(vec.y) >= 0.0625)
+				{
+					ship.acceleration = 0;
+					ship.velocity = 1;
+					return;
 				}
 			}
 
 			ship.rotz = 0;
 
-			dir = VectorMaths.vector_dot_product (&ship.rotmat[0], space.universe[1].rotmat[1]);
+			dir = VectorMaths.vector_dot_product(ship.rotmat[0], space.universe[1].rotmat[1]);
 
-			if (fabs(dir) >= 0.9166)
+			if (Math.Abs(dir) >= 0.9166)
 			{
 				ship.acceleration++;
 				ship.rotz = 127;
@@ -240,7 +229,7 @@ namespace Elite
 			Vector vec;
 			double dist;
 			double dir;
-	
+
 			if (ship.flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
 				((space.ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[(int)SHIP.SHIP_DODEC] == 0)))
 			{
@@ -248,55 +237,55 @@ namespace Elite
 				return;
 			}
 
-			diff.x = ship.location.x - space.universe[1].location.x;	
-			diff.y = ship.location.y - space.universe[1].location.y;	
-			diff.z = ship.location.z - space.universe[1].location.z;	
+			diff.x = ship.location.x - space.universe[1].location.x;
+			diff.y = ship.location.y - space.universe[1].location.y;
+			diff.z = ship.location.z - space.universe[1].location.z;
 
 			dist = Math.Sqrt(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
 
 			if (dist < 160)
 			{
-				ship.flags |= FLG.FLG_REMOVE;		// Ship has docked.
+				ship.flags |= FLG.FLG_REMOVE;       // Ship has docked.
 				return;
-			}	
-	
-			vec = VectorMaths.unit_vector(&diff);	
-			dir = VectorMaths.vector_dot_product (space.universe[1].rotmat[2], &vec);
+			}
+
+			vec = VectorMaths.unit_vector(diff);
+			dir = VectorMaths.vector_dot_product(space.universe[1].rotmat[2], vec);
 
 			if (dir < 0.9722)
 			{
-				fly_to_station_front(ship);
+				fly_to_station_front(ref ship);
 				return;
 			}
 
-			dir = VectorMaths.vector_dot_product (&ship.rotmat[2], &vec);
+			dir = VectorMaths.vector_dot_product(ship.rotmat[2], vec);
 
 			if (dir < -0.9444)
 			{
-				fly_to_docking_bay (ship);
+				fly_to_docking_bay(ref ship);
 				return;
 			}
 
-			fly_to_station (ship);
+			fly_to_station(ref ship);
 		}
 
 		static void engage_auto_pilot()
 		{
-			if (auto_pilot || elite.witchspace || hyper_ready)
+			if (elite.auto_pilot || elite.witchspace || space.hyper_ready)
 			{
 				return;
 			}
 
-			auto_pilot = 1;
-			sound.snd_play_midi(SND_BLUE_DANUBE, 1);
+			elite.auto_pilot = true;
+			sound.snd_play_midi(SND.SND_BLUE_DANUBE, 1);
 		}
 
-		static void disengage_auto_pilot ()
+		static void disengage_auto_pilot()
 		{
-			if (auto_pilot)
+			if (elite.auto_pilot)
 			{
-				auto_pilot = 0;
-                sound.snd_stop_midi();
+				elite.auto_pilot = false;
+				sound.snd_stop_midi();
 			}
 		}
 	}

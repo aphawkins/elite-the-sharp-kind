@@ -53,7 +53,7 @@ namespace Elite
     internal static class space
 	{
         static galaxy_seed destination_planet;
-		internal static int hyper_ready;
+		internal static bool hyper_ready;
         static int hyper_countdown;
 		static string hyper_name;
         static int hyper_distance;
@@ -235,7 +235,7 @@ namespace Elite
 			double fz;
 			double ux;
 
-			if (auto_pilot)     // Don't want it to kill anyone!
+			if (elite.auto_pilot)     // Don't want it to kill anyone!
 			{
 				return true;
 			}
@@ -1067,7 +1067,9 @@ namespace Elite
 		static void start_hyperspace()
 		{
 			if (hyper_ready)
+			{
 				return;
+			}
 
 			hyper_distance = calc_distance_to_planet(elite.docked_planet, hyperspace_planet);
 
@@ -1078,7 +1080,7 @@ namespace Elite
 			hyper_name = Planet.name_planet(ref destination_planet);
 			hyper_name = Planet.capitalise_name(hyper_name);
 
-			hyper_ready = 1;
+			hyper_ready = true;
 			hyper_countdown = 15;
 			hyper_galactic = 0;
 
@@ -1088,12 +1090,16 @@ namespace Elite
 		void start_galactic_hyperspace()
 		{
 			if (hyper_ready)
+			{
 				return;
+			}
 
 			if (elite.cmdr.galactic_hyperdrive == 0)
+			{
 				return;
+			}
 
-			hyper_ready = 1;
+			hyper_ready = true;
 			hyper_countdown = 2;
 			hyper_galactic = 1;
 			disengage_auto_pilot();
@@ -1179,7 +1185,7 @@ namespace Elite
 			Vector[] rotmat = new Vector[3];
 			int px, py, pz;
 
-			hyper_ready = 0;
+			hyper_ready = false;
             elite.witchspace = false;
 
 			if (hyper_galactic)

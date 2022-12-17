@@ -89,12 +89,12 @@ namespace Elite
 			energy = 255;
 			draw_lasers = 0;
 			mcount = 0;
-			hyper_ready = 0;
+			space.hyper_ready = false;
 			detonate_bomb = 0;
 			find_input = 0;
 			elite.witchspace = false;
 			game_paused = 0;
-			auto_pilot = 0;
+			elite.auto_pilot = false;
 
 			create_new_stars();
 			clear_universe();
@@ -454,8 +454,11 @@ namespace Elite
 				case SCR.SCR_REAR_VIEW:
 				case SCR.SCR_RIGHT_VIEW:
 				case SCR.SCR_LEFT_VIEW:
-					if (auto_pilot)
+					if (elite.auto_pilot)
+					{
 						disengage_auto_pilot();
+					}
+
 					break;
 			}
 		}
@@ -1286,7 +1289,7 @@ namespace Elite
 			kbd_keyboard_startup();
 
 			finish = 0;
-			auto_pilot = 0;
+			elite.auto_pilot = false;
 
 			while (!finish)
 			{
@@ -1363,7 +1366,7 @@ namespace Elite
 							update_starfield();
 						}
 
-						if (auto_pilot)
+						if (elite.auto_pilot)
 						{
 							auto_dock();
 							if ((mcount & 127) == 0)
@@ -1396,7 +1399,7 @@ namespace Elite
 							gfx_display_centre_text(358, message_string, 120, gfx.GFX_COL_WHITE);
 						}
 
-						if (hyper_ready)
+						if (space.hyper_ready)
 						{
 							display_hyper_status();
 							if ((mcount & 3) == 0)
