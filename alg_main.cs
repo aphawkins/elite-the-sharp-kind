@@ -86,7 +86,7 @@ namespace Elite
 			elite.docked = true;
 			elite.front_shield = 255;
 			elite.aft_shield = 255;
-			energy = 255;
+			elite.energy = 255;
 			draw_lasers = 0;
 			mcount = 0;
 			space.hyper_ready = false;
@@ -1411,14 +1411,18 @@ namespace Elite
 
 						mcount--;
 						if (mcount < 0)
+						{
 							mcount = 255;
+						}
 
 						if ((mcount & 7) == 0)
+						{
 							regenerate_shields();
+						}
 
 						if ((mcount & 31) == 10)
 						{
-							if (energy < 50)
+							if (elite.energy < 50)
 							{
 								info_message("ENERGY LOW");
 								sound.snd_play_sample(SND_BEEP);
@@ -1428,7 +1432,9 @@ namespace Elite
 						}
 
 						if ((mcount & 31) == 20)
+						{
 							update_cabin_temp();
+						}
 
 						if ((mcount == 0) && (!elite.witchspace))
 						{

@@ -220,7 +220,7 @@ namespace Elite
             elite.flight_climb = 0;
             elite.front_shield = 255;
             elite.aft_shield = 255;
-			energy = 255;
+			elite.energy = 255;
 			myship.altitude = 255;
 			myship.cabtemp = 30;
 			reset_weapons();
@@ -391,38 +391,39 @@ namespace Elite
 		 * Regenerate the shields and the energy banks.
 		 */
 
-		void regenerate_shields()
+		static void regenerate_shields()
 		{
-			if (energy > 127)
+			if (elite.energy > 127)
 			{
 				if (elite.front_shield < 255)
 				{
                     elite.front_shield++;
-					energy--;
+					elite.energy--;
 				}
 
 				if (elite.aft_shield < 255)
 				{
                     elite.aft_shield++;
-					energy--;
+                    elite.energy--;
 				}
 			}
 
-			energy++;
-			energy += elite.cmdr.energy_unit;
-			if (energy > 255)
+            elite.energy++;
+            elite.energy += elite.cmdr.energy_unit;
+			if (elite.energy > 255)
 			{
-				energy = 255;
+                elite.energy = 255;
 			}
 		}
 
-
-		void decrease_energy(int amount)
+		static void decrease_energy(int amount)
 		{
-			energy += amount;
+            elite.energy += amount;
 
-			if (energy <= 0)
+			if (elite.energy <= 0)
+			{
 				do_game_over();
+			}
 		}
 
 		/*
@@ -903,22 +904,30 @@ namespace Elite
 		{
 			int e1, e2, e3, e4;
 
-			e1 = energy > 64 ? 64 : energy;
-			e2 = energy > 128 ? 64 : energy - 64;
-			e3 = energy > 192 ? 64 : energy - 128;
-			e4 = energy - 192;
+			e1 = elite.energy > 64 ? 64 : elite.energy;
+			e2 = elite.energy > 128 ? 64 : elite.energy - 64;
+			e3 = elite.energy > 192 ? 64 : elite.energy - 128;
+			e4 = elite.energy - 192;
 
 			if (e4 > 0)
+			{
 				display_dial_bar(e4, 416, 61);
+			}
 
 			if (e3 > 0)
+			{
 				display_dial_bar(e3, 416, 79);
+			}
 
 			if (e2 > 0)
+			{
 				display_dial_bar(e2, 416, 97);
+			}
 
 			if (e1 > 0)
+			{
 				display_dial_bar(e1, 416, 115);
+			}
 		}
 
 		static void display_flight_roll()

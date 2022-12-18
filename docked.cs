@@ -507,8 +507,10 @@ namespace Elite
 					}
 				}
  
-				if ((condition == 2) && (energy < 128))
+				if ((condition == 2) && (elite.energy < 128))
+				{
 					condition = 3;
+				}
 			}
 
             alg_gfx.gfx_display_colour_text (16, 90, "Condition:", gfx.GFX_COL_GREEN_1);
@@ -922,8 +924,7 @@ namespace Elite
 			{0, 0, 0,10, 60000, ">Right",					EQ_RIGHT_MILITARY}
 		};
 
-
-		int equip_present (int type)
+		static bool equip_present (int type)
 		{
 			switch (type)
 			{
@@ -958,55 +959,55 @@ namespace Elite
 					return elite.cmdr.galactic_hyperdrive;
 			
 				case EQ_FRONT_PULSE:
-					return (elite.cmdr.front_laser == PULSE_LASER);
+					return (elite.cmdr.front_laser == elite.PULSE_LASER);
 		
 				case EQ_REAR_PULSE:
-					return (elite.cmdr.rear_laser == PULSE_LASER);
+					return (elite.cmdr.rear_laser == elite.PULSE_LASER);
 
 				case EQ_LEFT_PULSE:
-					return (elite.cmdr.left_laser == PULSE_LASER);
+					return (elite.cmdr.left_laser == elite.PULSE_LASER);
 
 				case EQ_RIGHT_PULSE:
-					return (elite.cmdr.right_laser == PULSE_LASER);
+					return (elite.cmdr.right_laser == elite.PULSE_LASER);
 
 				case EQ_FRONT_BEAM:
-					return (elite.cmdr.front_laser == BEAM_LASER);
+					return (elite.cmdr.front_laser == elite.BEAM_LASER);
 
 				case EQ_REAR_BEAM:
-					return (elite.cmdr.rear_laser == BEAM_LASER);
+					return (elite.cmdr.rear_laser == elite.BEAM_LASER);
 
 				case EQ_LEFT_BEAM:
-					return (elite.cmdr.left_laser == BEAM_LASER);
+					return (elite.cmdr.left_laser == elite.BEAM_LASER);
 
 				case EQ_RIGHT_BEAM:
-					return (elite.cmdr.right_laser == BEAM_LASER);
+					return (elite.cmdr.right_laser == elite.BEAM_LASER);
 
 				case EQ_FRONT_MINING:
-					return (elite.cmdr.front_laser == MINING_LASER);
+					return (elite.cmdr.front_laser == elite.MINING_LASER);
 
 				case EQ_REAR_MINING:
-					return (elite.cmdr.rear_laser == MINING_LASER);
+					return (elite.cmdr.rear_laser == elite.MINING_LASER);
 
 				case EQ_LEFT_MINING:
-					return (elite.cmdr.left_laser == MINING_LASER);
+					return (elite.cmdr.left_laser == elite.MINING_LASER);
 
 				case EQ_RIGHT_MINING:
-					return (elite.cmdr.right_laser == MINING_LASER);
+					return (elite.cmdr.right_laser == elite.MINING_LASER);
 
 				case EQ_FRONT_MILITARY:
-					return (elite.cmdr.front_laser == MILITARY_LASER);
+					return (elite.cmdr.front_laser == elite.MILITARY_LASER);
 
 				case EQ_REAR_MILITARY:
-					return (elite.cmdr.rear_laser == MILITARY_LASER);
+					return (elite.cmdr.rear_laser == elite.MILITARY_LASER);
 
 				case EQ_LEFT_MILITARY:
-					return (elite.cmdr.left_laser == MILITARY_LASER);
+					return (elite.cmdr.left_laser == elite.MILITARY_LASER);
 
 				case EQ_RIGHT_MILITARY:
-					return (elite.cmdr.right_laser == MILITARY_LASER);
+					return (elite.cmdr.right_laser == elite.MILITARY_LASER);
 			}
 
-			return 0;
+			return false;
 		}
 
 

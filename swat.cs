@@ -194,7 +194,7 @@ namespace Elite
 
 			if ((type == SHIP.SHIP_CORIOLIS) || (type == SHIP.SHIP_DODEC))
 			{
-				VectorMaths.set_init_matrix(rotmat);
+				VectorMaths.set_init_matrix(ref rotmat);
 				px = (int)space.universe[un].location.x;
 				py = (int)space.universe[un].location.y;
 				pz = (int)space.universe[un].location.z;
@@ -283,14 +283,14 @@ namespace Elite
 			}
 		}
 
-		static bool in_target(int type, double x, double y, double z)
+		static bool in_target(SHIP type, double x, double y, double z)
 		{
 			if (z < 0)
 			{
 				return false;
 			}
 
-			double size = elite.ship_list[type].size;
+			double size = elite.ship_list[(int)type].size;
 
 			return ((x * x + y * y) <= size);
 		}
@@ -352,7 +352,7 @@ namespace Elite
 					sound.snd_play_sample(SND.SND_BEEP);
 				}
 
-				if (laser)
+				if (laser > 0)
 				{
 					sound.snd_play_sample(SND.SND_HIT_ENEMY);
 
@@ -360,7 +360,7 @@ namespace Elite
 					{
 						if ((univ.type == SHIP.SHIP_CONSTRICTOR) || (univ.type == SHIP.SHIP_COUGAR))
 						{
-							if (laser == (MILITARY_LASER & 127))
+							if (laser == (elite.MILITARY_LASER & 127))
 							{
 								univ.energy -= laser / 4;
 							}
@@ -924,7 +924,6 @@ namespace Elite
 			}
 		}
 
-
 		static int fire_laser()
 		{
 			if ((laser_counter == 0) && (elite.laser_temp < 242))
@@ -960,9 +959,9 @@ namespace Elite
 
 					sound.snd_play_sample(SND.SND_PULSE);
 					elite.laser_temp += 8;
-					if (energy > 1)
+					if (elite.energy > 1)
 					{
-						energy--;
+                        elite.energy--;
 					}
 
 					laser_x = ((random.rand() & 3) + 128 - 2) * gfx.GFX_SCALE;

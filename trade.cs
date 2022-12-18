@@ -141,7 +141,7 @@ namespace Elite
 			if (type == SHIP.SHIP_MISSILE)
 				return;
 
-			if ((elite.cmdr.fuel_scoop == 0) || (space.universe[un].location.y >= 0) ||
+			if ((!elite.cmdr.fuel_scoop) || (space.universe[un].location.y >= 0) ||
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
 				swat.explode_object(un);
