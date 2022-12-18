@@ -85,15 +85,17 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-					gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
-						gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
+					{
+						alg_gfx.gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
+					}
 
 					if (zz < 0x90)
 					{
-						gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
-						gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
+                        alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+                        alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 
@@ -181,15 +183,17 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-					gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
-						gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
+					{
+                        alg_gfx.gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
+					}
 
 					if (zz < 0x90)
 					{
-						gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
-						gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
+                        alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+                        alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 
@@ -293,15 +297,17 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-					gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
-						gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
+					{
+						alg_gfx.gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
+					}
 
 					if (zz < 0x90)
 					{
-						gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
-						gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
+                        alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+                        alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 

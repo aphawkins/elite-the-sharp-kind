@@ -17,11 +17,11 @@ namespace Elite
 	using Elite.Structs;
 
 	internal static class threed
-    {
+	{
 		const int LAND_X_MAX = 128;
 		const int LAND_Y_MAX = 128;
 
-		static char[,] landscape = new char[LAND_X_MAX + 1, LAND_Y_MAX + 1];
+		static int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
 
 		static point[] point_list = new point[100];
 
@@ -36,8 +36,8 @@ namespace Elite
 		{
 			Vector[] trans_mat = new Vector[3];
 			int i;
-			int sx,sy,ex,ey;
-			double rx,ry,rz;
+			int sx, sy, ex, ey;
+			double rx, ry, rz;
 			bool[] visible = new bool[32];
 			Vector vec;
 			Vector camera_vec;
@@ -48,7 +48,7 @@ namespace Elite
 			ship_data ship;
 			int lasv;
 
-			ship = elite.ship_list[univ.type];
+			ship = elite.ship_list[(int)univ.type];
 
 			for (i = 0; i < 3; i++)
 			{
@@ -58,9 +58,9 @@ namespace Elite
 			camera_vec = univ.location;
 			VectorMaths.mult_vector(ref camera_vec, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
-	
+
 			num_faces = ship.num_faces;
-	
+
 			for (i = 0; i < num_faces; i++)
 			{
 				ship_norm = ship.normals;
@@ -132,15 +132,15 @@ namespace Elite
 					ex = point_list[ship.lines[i].end_point].x;
 					ey = point_list[ship.lines[i].end_point].y;
 
-                    alg_gfx.gfx_draw_line (sx, sy, ex, ey);
+					alg_gfx.gfx_draw_line(sx, sy, ex, ey);
 				}
 			}
 
 
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
-				lasv = elite.ship_list[univ.type].front_laser;
-                alg_gfx.gfx_draw_line (point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
+				lasv = elite.ship_list[(int)univ.type].front_laser;
+				alg_gfx.gfx_draw_line(point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
 			}
 		}
 
@@ -150,29 +150,23 @@ namespace Elite
 		 *
 		 * Check for hidden surface supplied by T.Harte.
 		 */
-		static void draw_solid_ship (ref univ_object univ)
+		static void draw_solid_ship(ref univ_object univ)
 		{
-			int i;
-			int sx,sy;
-			double rx,ry,rz;
+			int sx, sy;
+			double rx, ry, rz;
 			Vector vec;
 			Vector camera_vec;
-			double tmp;
-			ship_face face_data;
-			int num_faces;
 			int num_points;
 			int[] poly_list = new int[16];
 			int zavg;
-			ship_solid solid_data;
-			ship_data ship;
 			Vector[] trans_mat = new Vector[3];
 			int lasv;
 			int col;
 
-			solid_data = &ship_solids[univ.type];
-			ship = elite.ship_list[univ.type];
+			ship_solid solid_data = shipface.ship_solids[(int)univ.type];
+			ship_data ship = elite.ship_list[(int)univ.type];
 
-			for (i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				trans_mat[i] = univ.rotmat[i];
 			}
@@ -181,8 +175,8 @@ namespace Elite
 			VectorMaths.mult_vector(ref camera_vec, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
 
-			num_faces = solid_data.num_faces;
-			face_data = solid_data.face_data;
+			int num_faces = solid_data.num_faces;
+			ship_face[] face_data = solid_data.face_data;
 
 			/*
 				for (i = 0; i < num_faces; i++)
@@ -198,7 +192,7 @@ namespace Elite
 				}
 			*/
 
-			tmp = trans_mat[0].y;
+			double tmp = trans_mat[0].y;
 			trans_mat[0].y = trans_mat[1].x;
 			trans_mat[1].x = tmp;
 
@@ -211,41 +205,42 @@ namespace Elite
 			trans_mat[2].y = tmp;
 
 
-			for (i = 0; i < ship.num_points; i++)
+			for (int i = 0; i < ship.num_points; i++)
 			{
 				vec.x = ship.points[i].x;
 				vec.y = ship.points[i].y;
 				vec.z = ship.points[i].z;
 
-				VectorMaths.mult_vector(&vec, trans_mat);
+				VectorMaths.mult_vector(ref vec, trans_mat);
 
 				rx = vec.x + univ.location.x;
 				ry = vec.y + univ.location.y;
 				rz = vec.z + univ.location.z;
 
 				if (rz <= 0)
+				{
 					rz = 1;
-		
-				sx = (rx * 256) / rz;
-				sy = (ry * 256) / rz;
+				}
+
+				sx = (int)((rx * 256) / rz);
+				sy = (int)((ry * 256) / rz);
 
 				sy = -sy;
 
 				sx += 128;
 				sy += 96;
 
-				sx *= GFX_SCALE;
-				sy *= GFX_SCALE;
+				sx *= gfx.GFX_SCALE;
+				sy *= gfx.GFX_SCALE;
 
 				point_list[i].x = sx;
 				point_list[i].y = sy;
-				point_list[i].z = rz;
-		
+				point_list[i].z = (int)rz;
 			}
 
-			for (i = 0; i < num_faces; i++)
+			for (int i = 0; i < num_faces; i++)
 			{
-				if (((point_list[face_data[i].p1].x - point_list[face_data[i].p2].x) * 
+				if (((point_list[face_data[i].p1].x - point_list[face_data[i].p2].x) *
 					 (point_list[face_data[i].p3].y - point_list[face_data[i].p2].y) -
 					 (point_list[face_data[i].p1].y - point_list[face_data[i].p2].y) *
 					 (point_list[face_data[i].p3].x - point_list[face_data[i].p2].x)) <= 0)
@@ -271,28 +266,28 @@ namespace Elite
 					{
 						poly_list[6] = point_list[face_data[i].p4].x;
 						poly_list[7] = point_list[face_data[i].p4].y;
-						zavg = MAX(zavg,point_list[face_data[i].p4].z);
+						zavg = Math.Max(zavg, point_list[face_data[i].p4].z);
 					}
 
 					if (num_points > 4)
 					{
 						poly_list[8] = point_list[face_data[i].p5].x;
 						poly_list[9] = point_list[face_data[i].p5].y;
-						zavg = MAX(zavg,point_list[face_data[i].p5].z);
+						zavg = Math.Max(zavg, point_list[face_data[i].p5].z);
 					}
 
 					if (num_points > 5)
 					{
 						poly_list[10] = point_list[face_data[i].p6].x;
 						poly_list[11] = point_list[face_data[i].p6].y;
-						zavg = MAX(zavg,point_list[face_data[i].p6].z);
+						zavg = Math.Max(zavg, point_list[face_data[i].p6].z);
 					}
-														 
+
 					if (num_points > 6)
 					{
 						poly_list[12] = point_list[face_data[i].p7].x;
 						poly_list[13] = point_list[face_data[i].p7].y;
-						zavg = MAX(zavg,point_list[face_data[i].p7].z);
+						zavg = Math.Max(zavg, point_list[face_data[i].p7].z);
 					}
 
 					if (num_points > 7)
@@ -301,34 +296,27 @@ namespace Elite
 						poly_list[15] = point_list[face_data[i].p8].y;
 						zavg = Math.Max(zavg, point_list[face_data[i].p8].z);
 					}
-			
 
-					gfx_render_polygon (face_data[i].points, poly_list, face_data[i].colour, zavg);
-			
+					alg_gfx.gfx_render_polygon(face_data[i].points, poly_list, face_data[i].colour, zavg);
 				}
 			}
 
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
-				lasv = elite.ship_list[univ.type].front_laser;
-				col = (univ.type == SHIP.SHIP_VIPER) ? gfx.GFX_COL_CYAN : gfx.GFX_COL_WHITE; 
-		
-				gfx_render_line (point_list[lasv].x, point_list[lasv].y,
+				lasv = elite.ship_list[(int)univ.type].front_laser;
+				col = (univ.type == SHIP.SHIP_VIPER) ? gfx.GFX_COL_CYAN : gfx.GFX_COL_WHITE;
+
+				alg_gfx.gfx_render_line(point_list[lasv].x, point_list[lasv].y,
 								 univ.location.x > 0 ? 0 : 511, random.rand255() * 2,
 								 point_list[lasv].z, col);
 			}
 		}
 
-
-
-
-
 		/*
 		 * Colour map used to generate a SNES Elite style planet.
 		 * This is a quick hack and needs tidying up.
 		 */
-
-		int snes_planet_colour[] =
+		static int[] snes_planet_colour = new int[]
 		{
 			102, 102,
 			134, 134, 134, 134,
@@ -338,7 +326,7 @@ namespace Elite
 			83,83,83,83,
 			122,
 			83,83,
-			249,249,249,249, 
+			249,249,249,249,
 			83,
 			122,
 			249,249,249,249,249,249,
@@ -350,40 +338,34 @@ namespace Elite
 			167,167, 167, 167,
 			134,134, 134, 134,
 			102, 102
-		}; 
-
+		};
 
 		/*
 		 * Generate a landscape map for a SNES Elite style planet.
 		 */
-
-		void generate_snes_landscape ()
+		static void generate_snes_landscape()
 		{
-			int x,y;
 			int colour;
-	
-			for (y = 0; y <= LAND_Y_MAX; y++)
+
+			for (int y = 0; y <= LAND_Y_MAX; y++)
 			{
-				colour = snes_planet_colour[y * (sizeof(snes_planet_colour)/sizeof(int)) / LAND_Y_MAX];  
-				for (x = 0; x <= LAND_X_MAX; x++)
+				colour = snes_planet_colour[y * snes_planet_colour.Length / LAND_Y_MAX];
+				for (int x = 0; x <= LAND_X_MAX; x++)
 				{
-					landscape[x][y] = colour;		
+					landscape[x, y] = colour;
 				}
-			}	
+			}
 		}
-
-
-
 
 		/*
 		 * Guassian random number generator.
 		 * Returns a number between -7 and +8 with Gaussian distribution.
 		 */
-		static int grand ()
+		static int grand()
 		{
 			int i;
 			int r;
-	
+
 			r = 0;
 			for (i = 0; i < 12; i++)
 			{
@@ -399,159 +381,165 @@ namespace Elite
 		/*
 		 * Calculate the midpoint between two given points.
 		 */
-		static int calc_midpoint (int sx, int sy, int ex, int ey)
+		static int calc_midpoint(int sx, int sy, int ex, int ey)
 		{
-			int a,b,n;
+			int a = landscape[sx, sy];
+			int b = landscape[ex, ey];
 
-			a = landscape[sx][sy];
-			b = landscape[ex][ey];
-	
-			n = ((a + b) / 2) + grand();
+			int n = ((a + b) / 2) + grand();
 			if (n < 0)
+			{
 				n = 0;
-			if (n > 255)
-				n = 255;
-	
-			return n;
-		} 
+			}
 
+			if (n > 255)
+			{
+				n = 255;
+			}
+
+			return n;
+		}
 
 		/*
 		 * Calculate a square on the midpoint map.
 		 */
-
-		void midpoint_square (int tx, int ty, int w)
+		static void midpoint_square(int tx, int ty, int w)
 		{
-			int mx,my;
-			int bx,by;
-			int d;
+			int d = w / 2;
+			int mx = tx + d;
+			int my = ty + d;
+			int bx = tx + w;
+			int by = ty + w;
 
-			d = w / 2;	
-			mx = tx + d;
-			my = ty + d;
-			bx = tx + w;
-			by = ty + w;
-	
-			landscape[mx][ty] = calc_midpoint(tx,ty,bx,ty);
-			landscape[mx][by] = calc_midpoint(tx,by,bx,by);
-			landscape[tx][my] = calc_midpoint(tx,ty,tx,by);
-			landscape[bx][my] = calc_midpoint(bx,ty,bx,by);
-			landscape[mx][my] = calc_midpoint(tx,my,bx,my); 
+			landscape[mx, ty] = calc_midpoint(tx, ty, bx, ty);
+			landscape[mx, by] = calc_midpoint(tx, by, bx, by);
+			landscape[tx, my] = calc_midpoint(tx, ty, tx, by);
+			landscape[bx, my] = calc_midpoint(bx, ty, bx, by);
+			landscape[mx, my] = calc_midpoint(tx, my, bx, my);
 
 			if (d == 1)
+			{
 				return;
-	
-			midpoint_square (tx,ty,d);
-			midpoint_square (mx,ty,d);
-			midpoint_square (tx,my,d);
-			midpoint_square (mx,my,d);
-		}
+			}
 
+			midpoint_square(tx, ty, d);
+			midpoint_square(mx, ty, d);
+			midpoint_square(tx, my, d);
+			midpoint_square(mx, my, d);
+		}
 
 		/*
 		 * Generate a fractal landscape.
 		 * Uses midpoint displacement method.
 		 */
-		static void generate_fractal_landscape (int rnd_seed)
+		static void generate_fractal_landscape(int rnd_seed)
 		{
-			int x,y,d,h;
+			int h;
 			double dist;
 			bool dark;
-			int old_seed;
-	
-			old_seed = random.get_rand_seed();
-			set_rand_seed(rnd_seed);
-	
-			d = LAND_X_MAX / 8;
 
-			for (y = 0; y <= LAND_Y_MAX; y += d)
+			int old_seed = random.get_rand_seed();
+			random.set_rand_seed(rnd_seed);
+
+			int d = LAND_X_MAX / 8;
+
+			for (int y = 0; y <= LAND_Y_MAX; y += d)
 			{
-				for (x = 0; x <= LAND_X_MAX; x += d)
+				for (int x = 0; x <= LAND_X_MAX; x += d)
 				{
-					landscape[x][y] = random.randint() & 255;
+					landscape[x, y] = random.randint() & 255;
 				}
 			}
 
-			for (y = 0; y < LAND_Y_MAX; y += d)
-				for (x = 0; x < LAND_X_MAX; x += d)	
-					midpoint_square (x,y,d);
-
-			for (y = 0; y <= LAND_Y_MAX; y++)
+			for (int y = 0; y < LAND_Y_MAX; y += d)
 			{
-				for (x = 0; x <= LAND_X_MAX; x++)
+				for (int x = 0; x < LAND_X_MAX; x += d)
 				{
-					dist = x*x + y*y;
+					midpoint_square(x, y, d);
+				}
+			}
+
+			for (int y = 0; y <= LAND_Y_MAX; y++)
+			{
+				for (int x = 0; x <= LAND_X_MAX; x++)
+				{
+					dist = x * x + y * y;
 					dark = dist > 10000;
-					h = landscape[x][y];
+					h = landscape[x, y];
 					if (h > 166)
-						landscape[x][y] = dark ? gfx.GFX_COL_GREEN_1 : gfx.GFX_COL_GREEN_2;
-					else 
-						landscape[x][y] = dark ? gfx.GFX_COL_BLUE_2 : gfx.GFX_COL_BLUE_1;
-
+					{
+						landscape[x, y] = dark ? gfx.GFX_COL_GREEN_1 : gfx.GFX_COL_GREEN_2;
+					}
+					else
+					{
+						landscape[x, y] = dark ? gfx.GFX_COL_BLUE_2 : gfx.GFX_COL_BLUE_1;
+					}
 				}
 			}
 
-			random.set_rand_seed (old_seed);
+			random.set_rand_seed(old_seed);
 		}
 
-		static void generate_landscape (int rnd_seed)
+		static void generate_landscape(int rnd_seed)
 		{
 			switch (elite.planet_render_style)
 			{
-				case 0:		/* Wireframe... do nothing for now... */
+				case 0:     /* Wireframe... do nothing for now... */
 					break;
-		
+
 				case 1:
 					/* generate_green_landscape (); */
 					break;
-		
+
 				case 2:
 					generate_snes_landscape();
 					break;
-		
+
 				case 3:
-					generate_fractal_landscape (rnd_seed);
+					generate_fractal_landscape(rnd_seed);
 					break;
 			}
 		}
- 
+
 		/*
 		 * Draw a line of the planet with appropriate rotation.
 		 */
-		static void render_planet_line (int xo, int yo, int x, int y, int radius, int vx, int vy)
+		static void render_planet_line(int xo, int yo, int x, int y, int radius, int vx, int vy)
 		{
 			int lx, ly;
 			int rx, ry;
 			int colour;
-			int sx,sy;
+			int sx, sy;
 			int ex;
 			int div;
 
 			sy = y + yo;
-	
-			if ((sy < GFX_VIEW_TY + GFX_Y_OFFSET) ||
-				(sy > GFX_VIEW_BY + GFX_Y_OFFSET))
+
+			if ((sy < gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) ||
+				(sy > gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
+			{
 				return;
-					   
+			}
+
 			sx = xo - x;
 			ex = xo + x;
-	
+
 			rx = -x * vx - y * vy;
 			ry = -x * vy + y * vx;
 			rx += radius << 16;
 			ry += radius << 16;
-			div = radius << 10;	 /* radius * 2 * LAND_X_MAX >> 16 */
-	
-		
+			div = radius << 10;  /* radius * 2 * LAND_X_MAX >> 16 */
+
+
 			for (; sx <= ex; sx++)
 			{
-				if ((sx >= (GFX_VIEW_TX + GFX_X_OFFSET)) && (sx <= (GFX_VIEW_BX + GFX_X_OFFSET)))
+				if ((sx >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)) && (sx <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)))
 				{
 					lx = rx / div;
 					ly = ry / div;
-					colour = landscape[lx][ly];
- 
-					gfx_fast_plot_pixel (sx, sy, colour);
+					colour = landscape[lx, ly];
+
+					alg_gfx.gfx_fast_plot_pixel(sx, sy, colour);
 				}
 				rx += vx;
 				ry += vy;
@@ -562,19 +550,18 @@ namespace Elite
 		/*
 		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
 		 */
-
-		void render_planet (int xo, int yo, int radius, Vector[] vec)
+		static void render_planet(int xo, int yo, int radius, Vector[] vec)
 		{
-			int x,y;
+			int x, y;
 			int s;
-			int vx,vy;
+			int vx, vy;
 
-			xo += GFX_X_OFFSET;
-			yo += GFX_Y_OFFSET;
-	
-			vx = vec[1].x * 65536;
-			vy = vec[1].y * 65536;	
-	
+			xo += gfx.GFX_X_OFFSET;
+			yo += gfx.GFX_Y_OFFSET;
+
+			vx = (int)(vec[1].x * 65536);
+			vy = (int)(vec[1].y * 65536);
+
 			s = radius;
 			x = radius;
 			y = 0;
@@ -582,18 +569,18 @@ namespace Elite
 			s -= x + x;
 			while (y <= x)
 			{
-				render_planet_line (xo, yo, x, y, radius, vx, vy);
-				render_planet_line (xo, yo, x,-y, radius, vx, vy);
-				render_planet_line (xo, yo, y, x, radius, vx, vy);
-				render_planet_line (xo, yo, y,-x, radius, vx, vy);
-		
+				render_planet_line(xo, yo, x, y, radius, vx, vy);
+				render_planet_line(xo, yo, x, -y, radius, vx, vy);
+				render_planet_line(xo, yo, y, x, radius, vx, vy);
+				render_planet_line(xo, yo, y, -x, radius, vx, vy);
+
 				s += y + y + 1;
 				y++;
 				if (s >= 0)
 				{
 					s -= x + x + 2;
 					x--;
-				}				
+				}
 			}
 		}
 
@@ -602,9 +589,9 @@ namespace Elite
 		 * At the moment we just draw a circle.
 		 * Need to add in the two arcs that the original Elite had.
 		 */
-		static void draw_wireframe_planet (int xo, int yo, int radius, Vector[] vec)
+		static void draw_wireframe_planet(int xo, int yo, int radius, Vector[] vec)
 		{
-            alg_gfx.gfx_draw_circle (xo, yo, radius, gfx.GFX_COL_WHITE);
+			alg_gfx.gfx_draw_circle(xo, yo, radius, gfx.GFX_COL_WHITE);
 		}
 
 
@@ -618,44 +605,44 @@ namespace Elite
 
 		static void draw_planet(ref univ_object planet)
 		{
-			int x,y;
+			int x, y;
 			int radius;
-	
+
 			x = (int)((planet.location.x * 256) / planet.location.z);
 			y = (int)((planet.location.y * 256) / planet.location.z);
 
 			y = -y;
-	
+
 			x += 128;
 			y += 96;
 
 			x *= gfx.GFX_SCALE;
 			y *= gfx.GFX_SCALE;
-	
+
 			radius = 6291456 / planet.distance;
-		//	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
+			//	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
 
 			radius *= gfx.GFX_SCALE;
 
-			if ((x + radius <  0) ||
+			if ((x + radius < 0) ||
 				(x - radius > 511) ||
 				(y + radius < 0) ||
 				(y - radius > 383))
-				return; 
+				return;
 
 			switch (elite.planet_render_style)
 			{
 				case 0:
-					draw_wireframe_planet (x, y, radius, planet.rotmat);
+					draw_wireframe_planet(x, y, radius, planet.rotmat);
 					break;
-		
+
 				case 1:
-					gfx_draw_filled_circle (x, y, radius, gfx.GFX_COL_GREEN_1);
+					alg_gfx.gfx_draw_filled_circle(x, y, radius, gfx.GFX_COL_GREEN_1);
 					break;
 
 				case 2:
 				case 3:
-					render_planet (x, y, radius, planet.rotmat);
+					render_planet(x, y, radius, planet.rotmat);
 					break;
 			}
 		}
@@ -733,18 +720,18 @@ namespace Elite
 					colour = mix ? gfx.GFX_ORANGE_1 : gfx.GFX_ORANGE_2;
 				}
 
-				gfx_fast_plot_pixel(sx, sy, colour);
+				alg_gfx.gfx_fast_plot_pixel(sx, sy, colour);
 			}
 		}
 
-		static void render_sun (int xo, int yo, int radius)
+		static void render_sun(int xo, int yo, int radius)
 		{
-			int x,y;
+			int x, y;
 			int s;
-	
+
 			xo += gfx.GFX_X_OFFSET;
 			yo += gfx.GFX_Y_OFFSET;
-	
+
 			s = -radius;
 			x = radius;
 			y = 0;
@@ -752,48 +739,48 @@ namespace Elite
 			// s -= x + x;
 			while (y <= x)
 			{
-				render_sun_line (xo, yo, x, y, radius);
-				render_sun_line (xo, yo, x,-y, radius);
-				render_sun_line (xo, yo, y, x, radius);
-				render_sun_line (xo, yo, y,-x, radius);
-		
+				render_sun_line(xo, yo, x, y, radius);
+				render_sun_line(xo, yo, x, -y, radius);
+				render_sun_line(xo, yo, y, x, radius);
+				render_sun_line(xo, yo, y, -x, radius);
+
 				s += y + y + 1;
 				y++;
 				if (s >= 0)
 				{
 					s -= x + x + 2;
 					x--;
-				}				
+				}
 			}
 		}
 
 		static void draw_sun(ref univ_object planet)
 		{
-			int x,y;
+			int x, y;
 			int radius;
-	
+
 			x = (int)((planet.location.x * 256) / planet.location.z);
 			y = (int)((planet.location.y * 256) / planet.location.z);
 
 			y = -y;
-	
+
 			x += 128;
 			y += 96;
 
 			x *= gfx.GFX_SCALE;
 			y *= gfx.GFX_SCALE;
-	
+
 			radius = 6291456 / planet.distance;
 
 			radius *= gfx.GFX_SCALE;
 
-			if ((x + radius <  0) ||
+			if ((x + radius < 0) ||
 				(x - radius > 511) ||
 				(y + radius < 0) ||
 				(y - radius > 383))
-				return; 
+				return;
 
-			render_sun (x, y, radius);
+			render_sun(x, y, radius);
 		}
 
 		static void draw_explosion(ref univ_object univ)
@@ -802,35 +789,35 @@ namespace Elite
 			int z;
 			int q;
 			int pr;
-			int px,py;
+			int px, py;
 			int cnt;
-			int sizex,sizey,psx,psy;
+			int sizex, sizey, psx, psy;
 			Vector[] trans_mat = new Vector[3];
-			int sx,sy;
-			double rx,ry,rz;
-			int visible[32];
+			int sx, sy;
+			double rx, ry, rz;
+			bool[] visible = new bool[32];
 			Vector vec;
 			Vector camera_vec;
 			double cos_angle;
 			double tmp;
-			ship_face_normal *ship_norm;
-			ship_point *sp;
+			ship_face_normal[] ship_norm;
+			ship_point[] sp;
 			ship_data ship;
 			int np;
 			int old_seed;
-	
+
 			if (univ.exp_delta > 251)
 			{
 				univ.flags |= FLG.FLG_REMOVE;
 				return;
 			}
-	
+
 			univ.exp_delta += 4;
 
 			if (univ.location.z <= 0)
 				return;
 
-			ship = elite.ship_list[univ.type];
+			ship = elite.ship_list[(int)univ.type];
 
 			for (i = 0; i < 3; i++)
 			{
@@ -840,17 +827,17 @@ namespace Elite
 			camera_vec = univ.location;
 			VectorMaths.mult_vector(ref camera_vec, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
-	
+
 			ship_norm = ship.normals;
-	
+
 			for (i = 0; i < ship.num_faces; i++)
 			{
 				vec.x = ship_norm[i].x;
 				vec.y = ship_norm[i].y;
 				vec.z = ship_norm[i].z;
 
-				vec = VectorMaths.unit_vector (&vec);
-				cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
+				vec = VectorMaths.unit_vector(vec);
+				cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
 
 				visible[i] = (cos_angle < -0.13);
 			}
@@ -866,10 +853,10 @@ namespace Elite
 			tmp = trans_mat[1].z;
 			trans_mat[1].z = trans_mat[2].y;
 			trans_mat[2].y = tmp;
-	
+
 			sp = ship.points;
 			np = 0;
-	
+
 			for (i = 0; i < ship.num_points; i++)
 			{
 				if (visible[sp[i].face1] || visible[sp[i].face2] ||
@@ -893,8 +880,8 @@ namespace Elite
 					sx += 128;
 					sy += 96;
 
-					sx *= GFX_SCALE;
-					sy *= GFX_SCALE;
+					sx *= gfx.GFX_SCALE;
+					sy *= gfx.GFX_SCALE;
 
 					point_list[np].x = sx;
 					point_list[np].y = sy;
@@ -902,38 +889,38 @@ namespace Elite
 				}
 			}
 
-	
+
 			z = (int)univ.location.z;
-	
+
 			if (z >= 0x2000)
 				q = 254;
 			else
 				q = (z / 32) | 1;
 
 			pr = (univ.exp_delta * 256) / q;
-	
-		//	if (pr > 0x1C00)
-		//		q = 254;
-		//	else
 
-			q = pr / 32;	
-		
+			//	if (pr > 0x1C00)
+			//		q = 254;
+			//	else
+
+			q = pr / 32;
+
 			old_seed = random.get_rand_seed();
-            random.set_rand_seed (univ.exp_seed);
+			random.set_rand_seed(univ.exp_seed);
 
 			for (cnt = 0; cnt < np; cnt++)
 			{
 				sx = point_list[cnt].x;
 				sy = point_list[cnt].y;
-	
+
 				for (i = 0; i < 16; i++)
 				{
 					px = random.rand255() - 128;
-					py = random.rand255() - 128;		
+					py = random.rand255() - 128;
 
 					px = (px * q) / 256;
 					py = (py * q) / 256;
-		
+
 					px = px + px + sx;
 					py = py + py + sy;
 
@@ -944,20 +931,20 @@ namespace Elite
 					{
 						for (psx = 0; psx < sizex; psx++)
 						{
-							gfx_plot_pixel (px+psx, py+psy, gfx.GFX_COL_WHITE);
+							alg_gfx.gfx_plot_pixel(px + psx, py + psy, gfx.GFX_COL_WHITE);
 						}
 					}
 				}
 			}
 
-            random.set_rand_seed (old_seed);
+			random.set_rand_seed(old_seed);
 		}
 
 		/*
 		 * Draws an object in the universe.
 		 * (Ship, Planet, Sun etc).
 		 */
-		static void draw_ship (ref univ_object ship)
+		static void draw_ship(ref univ_object ship)
 		{
 			if ((elite.current_screen != SCR.SCR_FRONT_VIEW) && (elite.current_screen != SCR.SCR_REAR_VIEW) &&
 				(elite.current_screen != SCR.SCR_LEFT_VIEW) && (elite.current_screen != SCR.SCR_RIGHT_VIEW) &&
@@ -971,7 +958,7 @@ namespace Elite
 			{
 				ship.flags |= FLG.FLG_EXPLOSION;
 				ship.exp_seed = random.randint();
-				ship.exp_delta = 18; 
+				ship.exp_delta = 18;
 			}
 
 			if (ship.flags.HasFlag(FLG.FLG_EXPLOSION))
@@ -979,8 +966,8 @@ namespace Elite
 				draw_explosion(ref ship);
 				return;
 			}
-	
-			if (ship.location.z <= 0)	/* Only display ships in front of us. */
+
+			if (ship.location.z <= 0)   /* Only display ships in front of us. */
 				return;
 
 			if (ship.type == SHIP.SHIP_PLANET)
@@ -994,8 +981,8 @@ namespace Elite
 				draw_sun(ref ship);
 				return;
 			}
-	
-			if ((Math.Abs(ship.location.x) > ship.location.z) ||	/* Check for field of vision. */
+
+			if ((Math.Abs(ship.location.x) > ship.location.z) ||    /* Check for field of vision. */
 				(Math.Abs(ship.location.y) > ship.location.z))
 				return;
 

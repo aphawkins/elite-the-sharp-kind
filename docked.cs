@@ -287,7 +287,7 @@ namespace Elite
 
 				blob_size = (glx.f & 1) + 2 + carry_flag;
 				blob_size *= gfx.GFX_SCALE;
-				gfx_draw_filled_circle(px, py, blob_size, gfx.GFX_COL_GOLD);
+				alg_gfx.gfx_draw_filled_circle(px, py, blob_size, gfx.GFX_COL_GOLD);
 
 				Planet.waggle_galaxy(ref glx);
 				Planet.waggle_galaxy(ref glx);
@@ -326,11 +326,11 @@ namespace Elite
 				px = glx.d * gfx.GFX_SCALE;
 				py = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 
-				gfx_plot_pixel(px, py, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_plot_pixel(px, py, gfx.GFX_COL_WHITE);
 
 				if ((glx.e | 0x50) < 0x90)
 				{
-					gfx_plot_pixel(px + 1, py, gfx.GFX_COL_WHITE);
+                    alg_gfx.gfx_plot_pixel(px + 1, py, gfx.GFX_COL_WHITE);
 				}
 
                 Planet.waggle_galaxy(ref glx);

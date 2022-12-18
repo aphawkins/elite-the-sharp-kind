@@ -153,31 +153,29 @@ namespace Elite
 		}
 
 
-		void gfx_acquire_screen()
+        static void gfx_acquire_screen()
 		{
 			acquire_bitmap(gfx_screen);
 		}
 
 
-		void gfx_release_screen()
+        static void gfx_release_screen()
 		{
 			release_bitmap(gfx_screen);
 		}
 
-		void gfx_fast_plot_pixel(int x, int y, int col)
+		internal static void gfx_fast_plot_pixel(int x, int y, int col)
 		{
 			//	_putpixel(gfx_screen, x, y, col);
 			gfx_screen.line[y][x] = col;
 		}
 
-
-		void gfx_plot_pixel(int x, int y, int col)
+        internal static void gfx_plot_pixel(int x, int y, int col)
 		{
 			putpixel(gfx_screen, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, col);
 		}
 
-
-		void gfx_draw_filled_circle(int cx, int cy, int radius, int circle_colour)
+        internal static void gfx_draw_filled_circle(int cx, int cy, int radius, int circle_colour)
 		{
 			circlefill(gfx_screen, cx + gfx.GFX_X_OFFSET, cy + gfx.GFX_Y_OFFSET, radius, circle_colour);
 		}
@@ -593,15 +591,16 @@ namespace Elite
 			total_polys = 0;
 		}
 
-
-		void gfx_render_polygon(int num_points, int* point_list, int face_colour, int zavg)
+		internal static void gfx_render_polygon(int num_points, int[] point_list, int face_colour, int zavg)
 		{
 			int i;
 			int x;
 			int nx;
 
 			if (total_polys == MAX_POLYS)
+			{
 				return;
+			}
 
 			x = total_polys;
 			total_polys++;
@@ -612,10 +611,14 @@ namespace Elite
 			poly_chain[x].next = -1;
 
 			for (i = 0; i < 16; i++)
+			{
 				poly_chain[x].point_list[i] = point_list[i];
+			}
 
 			if (x == 0)
+			{
 				return;
+			}
 
 			if (zavg > poly_chain[start_poly].z)
 			{
@@ -639,10 +642,9 @@ namespace Elite
 			poly_chain[i].next = x;
 		}
 
-
-		void gfx_render_line(int x1, int y1, int x2, int y2, int dist, int col)
+		internal static void gfx_render_line(int x1, int y1, int x2, int y2, int dist, int col)
 		{
-			int point_list[4];
+			int[] point_list = new int[4];
 
 			point_list[0] = x1;
 			point_list[1] = y1;
@@ -652,8 +654,7 @@ namespace Elite
 			gfx_render_polygon(2, point_list, col, dist);
 		}
 
-
-		void gfx_finish_render()
+		static void gfx_finish_render()
 		{
 			int num_points;
 			int* pl;
