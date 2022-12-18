@@ -54,7 +54,7 @@ namespace Elite
 
 		internal static int ecm_active;
 		internal static int missile_target;
-		static int ecm_ours;
+		static bool ecm_ours;
 		internal static bool in_battle;
 
 		static FLG[] initial_flags = new FLG[shipdata.NO_OF_SHIPS + 1]
@@ -377,7 +377,7 @@ namespace Elite
 
 						if (univ.type == SHIP.SHIP_ASTEROID)
 						{
-							if (laser == (MINING_LASER & 127))
+							if (laser == (elite.MINING_LASER & 127))
 							{
 								launch_loot(un, SHIP.SHIP_ROCK);
 							}
@@ -394,7 +394,7 @@ namespace Elite
 			}
 		}
 
-		static void activate_ecm(int ours)
+		internal static void activate_ecm(bool ours)
 		{
 			if (ecm_active == 0)
 			{
@@ -411,11 +411,10 @@ namespace Elite
 				ecm_active--;
 				if (ecm_ours)
 				{
-					decrease_energy(-1);
+					space.decrease_energy(-1);
 				}
 			}
 		}
-
 
 		static void arm_missile()
 		{
@@ -520,7 +519,7 @@ namespace Elite
 
 			missile = space.universe[un];
 
-			if (ecm_active)
+			if (ecm_active != 0)
 			{
 				sound.snd_play_sample(SND.SND_EXPLODE);
 
@@ -568,19 +567,19 @@ namespace Elite
 
 				if ((random.rand255() < 16) && (target.flags.HasFlag(FLG.FLG_HAS_ECM)))
 				{
-					activate_ecm(0);
+					activate_ecm(false);
 					return;
 				}
 			}
 
 			nvec = VectorMaths.unit_vector(vec);
-			direction = VectorMaths.vector_dot_product(&nvec, &missile.rotmat[2]);
+			direction = VectorMaths.vector_dot_product(nvec, missile.rotmat[2]);
 			nvec.x = -nvec.x;
 			nvec.y = -nvec.y;
 			nvec.z = -nvec.z;
 			direction = -direction;
 
-			track_object(missile, direction, nvec);
+			track_object(ref missile, direction, nvec);
 
 			if (direction <= -0.167)
 			{
@@ -731,7 +730,7 @@ namespace Elite
 			{
 				if (flags.HasFlag(FLG.FLG_FLY_TO_PLANET) || flags.HasFlag(FLG.FLG_FLY_TO_STATION))
 				{
-					auto_pilot_ship(space.universe[un]);
+					pilot.auto_pilot_ship(ref space.universe[un]);
 				}
 
 				return;
@@ -797,7 +796,7 @@ namespace Elite
 			}
 
 			nvec = VectorMaths.unit_vector(space.universe[un].location);
-			direction = VectorMaths.vector_dot_product(&nvec, &ship.rotmat[2]);
+			direction = VectorMaths.vector_dot_product(nvec, ship.rotmat[2]);
 
 			if ((ship.distance < 8192) && (direction <= -0.833) &&
 				 (elite.ship_list[(int)type].laser_strength != 0))
@@ -827,11 +826,11 @@ namespace Elite
 					nvec.y = -nvec.y;
 					nvec.z = -nvec.z;
 					direction = -direction;
-					track_object(space.universe[un], direction, nvec);
+					track_object(ref space.universe[un], direction, nvec);
 				}
 
 				//		if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
-				if (fabs(ship.location.z) < 768)
+				if (Math.Abs(ship.location.z) < 768)
 				{
 					ship.rotx = random.rand255() & 0x87;
 					if (ship.rotx > 127)
@@ -842,17 +841,22 @@ namespace Elite
 				}
 
 				if (ship.distance < 8192)
+				{
 					ship.acceleration = -1;
+				}
 				else
+				{
 					ship.acceleration = 3;
+				}
+
 				return;
 			}
 
 			attacking = 0;
 
-			if ((fabs(ship.location.z) >= 768) ||
-				(fabs(ship.location.x) >= 512) ||
-				(fabs(ship.location.y) >= 512))
+			if ((Math.Abs(ship.location.z) >= 768) ||
+				(Math.Abs(ship.location.x) >= 512) ||
+				(Math.Abs(ship.location.y) >= 512))
 			{
 				if (ship.bravery > (random.rand255() & 127))
 				{
@@ -864,7 +868,7 @@ namespace Elite
 				}
 			}
 
-			track_object(space.universe[un], direction, nvec);
+			track_object(ref space.universe[un], direction, nvec);
 
 			if ((attacking == 1) && (ship.distance < 2048))
 			{
@@ -912,15 +916,15 @@ namespace Elite
 		{
 			if (elite.wireframe)
 			{
-				gfx_draw_colour_line(32 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
-				gfx_draw_colour_line(48 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
-				gfx_draw_colour_line(208 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
-				gfx_draw_colour_line(224 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
+				alg_gfx.gfx_draw_colour_line(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_draw_colour_line(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_draw_colour_line(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_draw_colour_line(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, gfx.GFX_COL_WHITE);
 			}
 			else
 			{
-				gfx_draw_triangle(32 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, 48 * GFX_SCALE, GFX_VIEW_BY, GFX_COL_RED);
-				gfx_draw_triangle(208 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, 224 * GFX_SCALE, GFX_VIEW_BY, GFX_COL_RED);
+				alg_gfx.gfx_draw_triangle(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, 48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, gfx.GFX_COL_RED);
+				alg_gfx.gfx_draw_triangle(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, 224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, gfx.GFX_COL_RED);
 			}
 		}
 
@@ -961,7 +965,7 @@ namespace Elite
 					elite.laser_temp += 8;
 					if (elite.energy > 1)
 					{
-                        elite.energy--;
+						elite.energy--;
 					}
 
 					laser_x = ((random.rand() & 3) + 128 - 2) * gfx.GFX_SCALE;
@@ -998,21 +1002,24 @@ namespace Elite
 		static int create_other_ship(SHIP type)
 		{
 			Vector[] rotmat = new Vector[3];
-			int x, y, z;
-			int newship;
 
-			VectorMaths.set_init_matrix(rotmat);
+			VectorMaths.set_init_matrix(ref rotmat);
 
-			z = 12000;
-			x = 1000 + (random.randint() & 8191);
-			y = 1000 + (random.randint() & 8191);
+			int z = 12000;
+			int x = 1000 + (random.randint() & 8191);
+			int y = 1000 + (random.randint() & 8191);
 
 			if (random.rand255() > 127)
+			{
 				x = -x;
-			if (random.rand255() > 127)
-				y = -y;
+			}
 
-			newship = add_new_ship(type, x, y, z, rotmat, 0, 0);
+			if (random.rand255() > 127)
+			{
+				y = -y;
+			}
+
+			int newship = add_new_ship(type, x, y, z, rotmat, 0, 0);
 
 			return newship;
 		}
@@ -1058,7 +1065,7 @@ namespace Elite
 		{
 			int newship;
 			int rnd;
-			int type;
+			SHIP type;
 
 			type = SHIP.SHIP_COBRA3 + (random.rand255() & 3);
 
@@ -1073,7 +1080,7 @@ namespace Elite
 				space.universe[newship].velocity = (rnd & 31) | 16;
 				space.universe[newship].bravery = rnd / 2;
 
-				if (rnd & 1)
+				if ((rnd & 1) == 1)
 				{
 					space.universe[newship].flags |= FLG.FLG_HAS_ECM;
 				}
@@ -1183,13 +1190,11 @@ namespace Elite
 			int x, y, z;
 			int newship;
 			Vector[] rotmat = new Vector[3];
-			int gov;
-			int rnd;
 			SHIP type;
 			int i;
 
-			gov = elite.current_planet_data.government;
-			rnd = random.rand255();
+			int gov = elite.current_planet_data.government;
+			int rnd = random.rand255();
 
 			if ((gov != 0) && ((rnd >= 90) || ((rnd & 7) < gov)))
 			{
@@ -1204,7 +1209,7 @@ namespace Elite
 
 			/* Pack hunters... */
 
-			VectorMaths.set_init_matrix(rotmat);
+			VectorMaths.set_init_matrix(ref rotmat);
 
 			z = 12000;
 			x = 1000 + (random.randint() & 8191);
@@ -1293,17 +1298,17 @@ namespace Elite
 		{
 			int i;
 
-			elite.cmdr.escape_pod = 0;
+			elite.cmdr.escape_pod = false;
 			elite.cmdr.legal_status = 0;
-			elite.cmdr.fuel = myship.max_fuel;
+			elite.cmdr.fuel = elite.myship.max_fuel;
 
-			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
+			for (i = 0; i < trade.NO_OF_STOCK_ITEMS; i++)
 			{
 				elite.cmdr.current_cargo[i] = 0;
 			}
 
 			sound.snd_play_sample(SND.SND_DOCK);
-			dock_player();
+			space.dock_player();
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
 		}
 	}

@@ -211,7 +211,7 @@ namespace Elite
 		/*
 		 * Dock the player into the space station.
 		 */
-		static void dock_player()
+		internal static void dock_player()
 		{
 			disengage_auto_pilot();
             elite.docked = true;
@@ -221,8 +221,8 @@ namespace Elite
             elite.front_shield = 255;
             elite.aft_shield = 255;
 			elite.energy = 255;
-			myship.altitude = 255;
-			myship.cabtemp = 30;
+            elite.myship.altitude = 255;
+            elite.myship.cabtemp = 30;
 			reset_weapons();
 		}
 
@@ -282,7 +282,7 @@ namespace Elite
 			double x, y, z;
 			double dist;
 
-			myship.altitude = 255;
+            elite.myship.altitude = 255;
 
 			if (elite.witchspace)
 			{
@@ -308,7 +308,7 @@ namespace Elite
 			dist -= 9472;
 			if (dist < 1)
 			{
-				myship.altitude = 0;
+                elite.myship.altitude = 0;
 				do_game_over();
 				return;
 			}
@@ -316,12 +316,12 @@ namespace Elite
 			dist = sqrt(dist);
 			if (dist < 1)
 			{
-				myship.altitude = 0;
+                elite.myship.altitude = 0;
 				do_game_over();
 				return;
 			}
 
-			myship.altitude = dist;
+            elite.myship.altitude = dist;
 		}
 
 
@@ -330,7 +330,7 @@ namespace Elite
 			int x, y, z;
 			int dist;
 
-			myship.cabtemp = 30;
+            elite.myship.cabtemp = 30;
 
 			if (elite.witchspace)
 			{
@@ -362,24 +362,24 @@ namespace Elite
 
 			dist ^= 255;
 
-			myship.cabtemp = dist + 30;
+            elite.myship.cabtemp = dist + 30;
 
-			if (myship.cabtemp > 255)
+			if (elite.myship.cabtemp > 255)
 			{
-				myship.cabtemp = 255;
+                elite.myship.cabtemp = 255;
 				do_game_over();
 				return;
 			}
 
-			if ((myship.cabtemp < 224) || (elite.cmdr.fuel_scoop == 0))
+			if ((elite.myship.cabtemp < 224) || (!elite.cmdr.fuel_scoop))
 			{
 				return;
 			}
 
 			elite.cmdr.fuel += elite.flight_speed / 2;
-			if (elite.cmdr.fuel > myship.max_fuel)
+			if (elite.cmdr.fuel > elite.myship.max_fuel)
 			{
-				elite.cmdr.fuel = myship.max_fuel;
+				elite.cmdr.fuel = elite.myship.max_fuel;
 			}
 
 			alg_main.info_message("Fuel Scoop On");
@@ -416,7 +416,7 @@ namespace Elite
 			}
 		}
 
-		static void decrease_energy(int amount)
+		internal static void decrease_energy(int amount)
 		{
             elite.energy += amount;
 
@@ -765,15 +765,15 @@ namespace Elite
 						break;
 				}
 
-				gfx_draw_colour_line(x1 + 2, y2, x1 - 3, y2, colour);
-				gfx_draw_colour_line(x1 + 2, y2 + 1, x1 - 3, y2 + 1, colour);
-				gfx_draw_colour_line(x1 + 2, y2 + 2, x1 - 3, y2 + 2, colour);
-				gfx_draw_colour_line(x1 + 2, y2 + 3, x1 - 3, y2 + 3, colour);
+                alg_gfx.gfx_draw_colour_line(x1 + 2, y2, x1 - 3, y2, colour);
+                alg_gfx.gfx_draw_colour_line(x1 + 2, y2 + 1, x1 - 3, y2 + 1, colour);
+                alg_gfx.gfx_draw_colour_line(x1 + 2, y2 + 2, x1 - 3, y2 + 2, colour);
+                alg_gfx.gfx_draw_colour_line(x1 + 2, y2 + 3, x1 - 3, y2 + 3, colour);
 
 
-				gfx_draw_colour_line(x1, y1, x1, y2, colour);
-				gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, colour);
-				gfx_draw_colour_line(x1 + 2, y1, x1 + 2, y2, colour);
+                alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, colour);
+                alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, colour);
+                alg_gfx.gfx_draw_colour_line(x1 + 2, y1, x1 + 2, y2, colour);
 			}
 		}
 
@@ -827,13 +827,13 @@ namespace Elite
 			sx = 417;
 			sy = 384 + 9;
 
-			len = ((elite.flight_speed * 64) / myship.max_speed) - 1;
+			len = ((elite.flight_speed * 64) / elite.myship.max_speed) - 1;
 
-			colour = (elite.flight_speed > (myship.max_speed * 2 / 3)) ? gfx.GFX_COL_DARK_RED : gfx.GFX_COL_GOLD;
+			colour = (elite.flight_speed > (elite.myship.max_speed * 2 / 3)) ? gfx.GFX_COL_DARK_RED : gfx.GFX_COL_GOLD;
 
 			for (i = 0; i < 6; i++)
 			{
-				gfx_draw_colour_line(sx, sy + i, sx + len, sy + i, colour);
+                alg_gfx.gfx_draw_colour_line(sx, sy + i, sx + len, sy + i, colour);
 			}
 		}
 
@@ -847,14 +847,14 @@ namespace Elite
 		{
 			int i = 0;
 
-			gfx_draw_colour_line(x, y + 384, x + len, y + 384, GFX_COL_GOLD);
+            alg_gfx.gfx_draw_colour_line(x, y + 384, x + len, y + 384, GFX_COL_GOLD);
 			i++;
-			gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_GOLD);
+            alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_GOLD);
 
 			for (i = 2; i < 7; i++)
-				gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_YELLOW_1);
+                alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_YELLOW_1);
 
-			gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_DARK_RED);
+            alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_DARK_RED);
 		}
 
 		/*
@@ -875,17 +875,17 @@ namespace Elite
 
 		static void display_altitude()
 		{
-			if (myship.altitude > 3)
+			if (elite.myship.altitude > 3)
 			{
-				display_dial_bar(myship.altitude / 4, 31, 92);
+				display_dial_bar(elite.myship.altitude / 4, 31, 92);
 			}
 		}
 		
 		static void display_cabin_temp()
 		{
-			if (myship.cabtemp > 3)
+			if (elite.myship.cabtemp > 3)
 			{
-				display_dial_bar(myship.cabtemp / 4, 31, 60);
+				display_dial_bar(elite.myship.cabtemp / 4, 31, 60);
 			}
 		}
 
@@ -939,12 +939,12 @@ namespace Elite
 			sx = 416;
 			sy = 384 + 9 + 14;
 
-			pos = sx - ((elite.flight_roll * 28) / myship.max_roll);
+			pos = sx - ((elite.flight_roll * 28) / elite.myship.max_roll);
 			pos += 32;
 
 			for (i = 0; i < 4; i++)
 			{
-				gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, gfx.GFX_COL_GOLD);
+                alg_gfx.gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, gfx.GFX_COL_GOLD);
 			}
 		}
 
@@ -957,24 +957,26 @@ namespace Elite
 			sx = 416;
 			sy = 384 + 9 + 14 + 16;
 
-			pos = sx + ((elite.flight_climb * 28) / myship.max_climb);
+			pos = sx + ((elite.flight_climb * 28) / elite.myship.max_climb);
 			pos += 32;
 
 			for (i = 0; i < 4; i++)
 			{
-				gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, GFX_COL_GOLD);
+                alg_gfx.gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, gfx.GFX_COL_GOLD);
 			}
 		}
 
 
-		void display_fuel()
+		static void display_fuel()
 		{
 			if (elite.cmdr.fuel > 0)
-				display_dial_bar((elite.cmdr.fuel * 64) / myship.max_fuel, 31, 44);
+			{
+				display_dial_bar((elite.cmdr.fuel * 64) / elite.myship.max_fuel, 31, 44);
+			}
 		}
 
 
-		void display_missiles()
+		static void display_missiles()
 		{
 			int nomiss;
 			int x, y;
@@ -1032,7 +1034,7 @@ namespace Elite
 				gfx_draw_sprite(IMG_BIG_S, 387, 490);
 			}
 
-			if (ecm_active)
+			if (swat.ecm_active != 0)
 			{
 				gfx_draw_sprite(IMG_BIG_E, 115, 490);
 			}
@@ -1040,7 +1042,7 @@ namespace Elite
 
 		static void increase_flight_roll()
 		{
-			if (elite.flight_roll < myship.max_roll)
+			if (elite.flight_roll < elite.myship.max_roll)
 			{
                 elite.flight_roll++;
 			}
@@ -1049,7 +1051,7 @@ namespace Elite
 
 		static void decrease_flight_roll()
 		{
-			if (elite.flight_roll > -myship.max_roll)
+			if (elite.flight_roll > -elite.myship.max_roll)
 			{
 				elite.flight_roll--;
 			}
@@ -1058,7 +1060,7 @@ namespace Elite
 
 		static void increase_flight_climb()
 		{
-			if (elite.flight_climb < myship.max_climb)
+			if (elite.flight_climb < elite.myship.max_climb)
 			{
                 elite.flight_climb++;
 			}
@@ -1066,7 +1068,7 @@ namespace Elite
 
 		static void decrease_flight_climb()
 		{
-			if (elite.flight_climb > -myship.max_climb)
+			if (elite.flight_climb > -elite.myship.max_climb)
 			{
 				elite.flight_climb--;
 			}
@@ -1207,7 +1209,7 @@ namespace Elite
 				elite.cmdr.fuel -= hyper_distance;
 				elite.cmdr.legal_status /= 2;
 
-				if ((random.rand255() > 253) || (elite.flight_climb == myship.max_climb))
+				if ((random.rand255() > 253) || (elite.flight_climb == elite.myship.max_climb))
 				{
 					enter_witchspace();
 					return;

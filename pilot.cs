@@ -223,7 +223,7 @@ namespace Elite
 		/*
 		 * Fly a ship to the planet or to the space station and dock it.
 		 */
-		static void auto_pilot_ship(ref univ_object ship)
+		internal static void auto_pilot_ship(ref univ_object ship)
 		{
 			Vector diff;
 			Vector vec;

@@ -104,13 +104,13 @@ namespace Elite
 			cross_timer = 0;
 
 
-			myship.max_speed = 40;      /* 0.27 Light Mach */
-			myship.max_roll = 31;
-			myship.max_climb = 8;       /* CF 8 */
-			myship.max_fuel = 70;       /* 7.0 Light Years */
+            elite.myship.max_speed = 40;      /* 0.27 Light Mach */
+            elite.myship.max_roll = 31;
+            elite.myship.max_climb = 8;       /* CF 8 */
+            elite.myship.max_fuel = 70;       /* 7.0 Light Years */
 		}
 
-		void finish_game()
+		static void finish_game()
 		{
 			finish = 1;
 			game_over = 1;
@@ -160,8 +160,8 @@ namespace Elite
 			{
 				gfx_set_clip_region(1, 37, 510, 339);
 				xor_mode(TRUE);
-				gfx_draw_colour_line(cx - 16, cy, cx + 16, cy, gfx.GFX_COL_RED);
-				gfx_draw_colour_line(cx, cy - 16, cx, cy + 16, gfx.GFX_COL_RED);
+				alg_gfx.gfx_draw_colour_line(cx - 16, cy, cx + 16, cy, gfx.GFX_COL_RED);
+                alg_gfx.gfx_draw_colour_line(cx, cy - 16, cx, cy + 16, gfx.GFX_COL_RED);
 				xor_mode(FALSE);
 				gfx_set_clip_region(1, 1, 510, 383);
 				return;
@@ -171,8 +171,8 @@ namespace Elite
 			{
 				gfx_set_clip_region(1, 37, 510, 293);
 				xor_mode(TRUE);
-				gfx_draw_colour_line(cx - 8, cy, cx + 8, cy, gfx.GFX_COL_RED);
-				gfx_draw_colour_line(cx, cy - 8, cx, cy + 8, gfx.GFX_COL_RED);
+                alg_gfx.gfx_draw_colour_line(cx - 8, cy, cx + 8, cy, gfx.GFX_COL_RED);
+                alg_gfx.gfx_draw_colour_line(cx, cy - 8, cx, cy + 8, gfx.GFX_COL_RED);
 				xor_mode(FALSE);
 				gfx_set_clip_region(1, 1, 510, 383);
 			}
@@ -212,31 +212,31 @@ namespace Elite
 				y1 = (96 - 8) * gfx.GFX_SCALE;
 				y2 = (96 - 16) * gfx.GFX_SCALE;
 
-				gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
-				gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
-				gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
+                alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
+                alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
+                alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
 
 				y1 = (96 + 8) * gfx.GFX_SCALE;
 				y2 = (96 + 16) * gfx.GFX_SCALE;
 
-				gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
-				gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
-				gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
+                alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
+                alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
+                alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
 
 				x1 = (128 - 8) * gfx.GFX_SCALE;
 				y1 = 96 * gfx.GFX_SCALE;
 				x2 = (128 - 16) * gfx.GFX_SCALE;
 
-				gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
-				gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
-				gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
+                alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
+                alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
+                alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
 
 				x1 = (128 + 8) * gfx.GFX_SCALE;
 				x2 = (128 + 16) * gfx.GFX_SCALE;
 
-				gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
-				gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
-				gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
+                alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
+                alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
+                alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
 			}
 		}
 
@@ -538,7 +538,7 @@ namespace Elite
 			ship.rotz = 0;
 			ship.rotx = 0;
 
-			auto_pilot_ship(&ship);
+			pilot.auto_pilot_ship(ref ship);
 
 			if (ship.velocity > 22)
 			{
@@ -908,7 +908,7 @@ namespace Elite
 			{
 				if (!elite.docked && elite.cmdr.ecm)
 				{
-					activate_ecm(1);
+					swat.activate_ecm(true);
 				}
 			}
 
@@ -972,7 +972,7 @@ namespace Elite
 			{
 				if (!elite.docked)
 				{
-					if (elite.flight_speed < myship.max_speed)
+					if (elite.flight_speed < elite.myship.max_speed)
 					{
 						elite.flight_speed++;
 					}
@@ -1294,7 +1294,7 @@ namespace Elite
 			{
 				game_over = 0;
 				initialise_game();
-				dock_player();
+				space.dock_player();
 
 				update_console();
 
@@ -1305,7 +1305,7 @@ namespace Elite
 				old_cross_x = -1;
 				old_cross_y = -1;
 
-				dock_player();
+				space.dock_player();
                 Docked.display_commander_status();
 
 				while (!game_over)

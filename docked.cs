@@ -416,22 +416,22 @@ namespace Elite
 			{0x1900, "---- E L I T E ---"}
 		};
 
-		string[] laser_name = new string[5] {"Pulse", "Beam", "Military", "Mining", "Custom"};
+		static string[] laser_name = new string[5] {"Pulse", "Beam", "Military", "Mining", "Custom"};
 
 		static string laser_type(int strength)
 		{
 			switch (strength)
 			{
-				case PULSE_LASER:
+				case elite.PULSE_LASER:
 					return laser_name[0];
 
-				case BEAM_LASER:
+				case elite.BEAM_LASER:
 					return laser_name[1];
 
-				case MILITARY_LASER:
+				case elite.MILITARY_LASER:
 					return laser_name[2];
 
-				case MINING_LASER:
+				case elite.MINING_LASER:
 					return laser_name[3];
 			}
 
@@ -1152,20 +1152,20 @@ namespace Elite
 		}
 
 
-		int laser_refund (int laser_type)
+		static int laser_refund (int laser_type)
 		{
 			switch (laser_type)
 			{
-				case PULSE_LASER:
+				case elite.PULSE_LASER:
 					return 4000;
 		
-				case BEAM_LASER:
+				case elite.BEAM_LASER:
 					return 10000;
 		
-				case MILITARY_LASER:
+				case elite.MILITARY_LASER:
 					return 60000;
 		
-				case MINING_LASER:
+				case elite.MINING_LASER:
 					return 8000;
 			}
 
@@ -1173,7 +1173,7 @@ namespace Elite
 		}
 
 
-		void buy_equip ()
+		static void buy_equip ()
 		{
 			int i;
 
@@ -1195,7 +1195,7 @@ namespace Elite
 			switch (equip_stock[hilite_item].type)
 			{
 				case EQ_FUEL:
-					elite.cmdr.fuel = myship.max_fuel;
+					elite.cmdr.fuel = elite.myship.max_fuel;
 					update_console();
 					break;
 
@@ -1238,82 +1238,82 @@ namespace Elite
 			
 				case EQ_FRONT_PULSE:
 					elite.cmdr.credits += laser_refund (elite.cmdr.front_laser);
-					elite.cmdr.front_laser = PULSE_LASER;
+					elite.cmdr.front_laser = elite.PULSE_LASER;
 					break;
 		
 				case EQ_REAR_PULSE:
 					elite.cmdr.credits += laser_refund (elite.cmdr.rear_laser);
-					elite.cmdr.rear_laser = PULSE_LASER;
+					elite.cmdr.rear_laser = elite.PULSE_LASER;
 					break;
 
 				case EQ_LEFT_PULSE:
 					elite.cmdr.credits += laser_refund (elite.cmdr.left_laser);
-					elite.cmdr.left_laser = PULSE_LASER;
+					elite.cmdr.left_laser = elite.PULSE_LASER;
 					break;
 
 				case EQ_RIGHT_PULSE:
 					elite.cmdr.credits += laser_refund (elite.cmdr.right_laser);
-					elite.cmdr.right_laser = PULSE_LASER;
+					elite.cmdr.right_laser = elite.PULSE_LASER;
 					break;
 
 				case EQ_FRONT_BEAM:
 					elite.cmdr.credits += laser_refund (elite.cmdr.front_laser);
-					elite.cmdr.front_laser = BEAM_LASER;
+					elite.cmdr.front_laser = elite.BEAM_LASER;
 					break;
 
 				case EQ_REAR_BEAM:
 					elite.cmdr.credits += laser_refund (elite.cmdr.rear_laser);
-					elite.cmdr.rear_laser = BEAM_LASER;
+					elite.cmdr.rear_laser = elite.BEAM_LASER;
 					break;
 
 				case EQ_LEFT_BEAM:
 					elite.cmdr.credits += laser_refund (elite.cmdr.left_laser);
-					elite.cmdr.left_laser = BEAM_LASER;
+					elite.cmdr.left_laser = elite.BEAM_LASER;
 					break;
 
 				case EQ_RIGHT_BEAM:
 					elite.cmdr.credits += laser_refund (elite.cmdr.right_laser);
-					elite.cmdr.right_laser = BEAM_LASER;
+					elite.cmdr.right_laser = elite.BEAM_LASER;
 					break;
 
 				case EQ_FRONT_MINING:
 					elite.cmdr.credits += laser_refund (elite.cmdr.front_laser);
-					elite.cmdr.front_laser = MINING_LASER;
+					elite.cmdr.front_laser = elite.MINING_LASER;
 					break;
 
 				case EQ_REAR_MINING:
 					elite.cmdr.credits += laser_refund (elite.cmdr.rear_laser);
-					elite.cmdr.rear_laser = MINING_LASER;
+					elite.cmdr.rear_laser = elite.MINING_LASER;
 					break;
 
 				case EQ_LEFT_MINING:
 					elite.cmdr.credits += laser_refund (elite.cmdr.left_laser);
-					elite.cmdr.left_laser = MINING_LASER;
+					elite.cmdr.left_laser = elite.MINING_LASER;
 					break;
 
 				case EQ_RIGHT_MINING:
 					elite.cmdr.credits += laser_refund (elite.cmdr.right_laser);
-					elite.cmdr.right_laser = MINING_LASER;
+					elite.cmdr.right_laser = elite.MINING_LASER;
 					break;
 
 				case EQ_FRONT_MILITARY:
 					elite.cmdr.credits += laser_refund (elite.cmdr.front_laser);
-					elite.cmdr.front_laser = MILITARY_LASER;
+					elite.cmdr.front_laser = elite.MILITARY_LASER;
 					break;
 
 				case EQ_REAR_MILITARY:
 					elite.cmdr.credits += laser_refund (elite.cmdr.rear_laser);
-					elite.cmdr.rear_laser = MILITARY_LASER;
+					elite.cmdr.rear_laser = elite.MILITARY_LASER;
 					break;
 
 				case EQ_LEFT_MILITARY:
 					elite.cmdr.credits += laser_refund (elite.cmdr.left_laser);
-					elite.cmdr.left_laser = MILITARY_LASER;
+					elite.cmdr.left_laser = elite.MILITARY_LASER;
 					break;
 
 				case EQ_RIGHT_MILITARY:
 					elite.cmdr.credits += laser_refund (elite.cmdr.right_laser);
-					elite.cmdr.right_laser = MILITARY_LASER;
+					elite.cmdr.right_laser = elite.MILITARY_LASER;
 					break;
 			}
 

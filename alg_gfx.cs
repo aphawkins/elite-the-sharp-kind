@@ -450,7 +450,7 @@ namespace Elite
 			}
 		}
 
-		static void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
+		internal static void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
 		{
 			if (y1 == y2)
 			{
@@ -474,9 +474,7 @@ namespace Elite
 			}
 		}
 
-
-
-		static void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
+		internal static void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
 		{
 			triangle(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET,
 						   x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
