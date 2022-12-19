@@ -651,7 +651,7 @@ namespace Elite
 
                 alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 				alg_gfx.gfx_clear_display();
-				update_starfield();
+                Stars.update_starfield();
 				space.update_universe();
 
 				space.universe[newship].location.x = 0;
@@ -683,7 +683,7 @@ namespace Elite
 				Stars.warp_stars = true;
                 alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
                 alg_gfx.gfx_clear_display();
-				update_starfield();
+                Stars.update_starfield();
                 space.update_universe();
 				update_console();
                 alg_gfx.gfx_update_screen();
@@ -1221,7 +1221,7 @@ namespace Elite
 			for (i = 0; i < 100; i++)
 			{
                 alg_gfx.gfx_clear_display();
-				update_starfield();
+                Stars.update_starfield();
                 space.update_universe();
                 alg_gfx.gfx_display_centre_text(190, "GAME OVER", 140, gfx.GFX_COL_GOLD);
                 alg_gfx.gfx_update_screen();
@@ -1232,7 +1232,7 @@ namespace Elite
 		 * Draw a break pattern (for launching, docking and hyperspacing).
 		 * Just draw a very simple one for the moment.
 		 */
-		void display_break_pattern()
+		static void display_break_pattern()
 		{
 			int i;
 
@@ -1368,7 +1368,7 @@ namespace Elite
 							(elite.current_screen == SCR.SCR_GAME_OVER))
 						{
                             alg_gfx.gfx_clear_display();
-							update_starfield();
+                            Stars.update_starfield();
 						}
 
 						if (elite.auto_pilot)

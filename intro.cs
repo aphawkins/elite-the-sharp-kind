@@ -36,19 +36,19 @@
 
 namespace Elite
 {
-    using Elite.Enums;
+	using Elite.Enums;
 	using Elite.Ships;
 	using Elite.Structs;
 
-    internal static class intro
+	internal static class intro
 	{
-		static int ship_no;
+		static SHIP ship_no;
 		static int show_time;
 		static int direction;
 
 		static int[] min_dist = new int[shipdata.NO_OF_SHIPS + 1]
 		{
-			0, 
+			0,
 			200, 800, 200, 200, 200, 300, 384, 200,
 			200, 200, 420, 900, 500, 800, 384, 384,
 			384, 384, 384, 200, 384, 384, 384,   0,
@@ -61,7 +61,7 @@ namespace Elite
 		static void initialise_intro1()
 		{
 			swat.clear_universe();
-            VectorMaths.set_init_matrix(intro_ship_matrix);
+			VectorMaths.set_init_matrix(ref intro_ship_matrix);
 			swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 4500, intro_ship_matrix, -127, -127);
 		}
 
@@ -72,30 +72,30 @@ namespace Elite
 			direction = 100;
 
 			swat.clear_universe();
-            Stars.create_new_stars();
-            VectorMaths.set_init_matrix(intro_ship_matrix);
+			Stars.create_new_stars();
+			VectorMaths.set_init_matrix(ref intro_ship_matrix);
 			swat.add_new_ship(SHIP.SHIP_MISSILE, 0, 0, 5000, intro_ship_matrix, -127, -127);
 		}
 
 		static void update_intro1()
 		{
-            space.universe[0].location.z -= 100;
+			space.universe[0].location.z -= 100;
 
 			if (space.universe[0].location.z < 384)
 			{
 				space.universe[0].location.z = 384;
 			}
 
-            alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_clear_display();
 
-            elite.flight_roll = 1;
-            space.update_universe();
+			elite.flight_roll = 1;
+			space.update_universe();
 
 			alg_gfx.gfx_draw_sprite(gfx.IMG_ELITE_TXT, -1, 10);
 
-            alg_gfx.gfx_display_centre_text(310, "Original Game (C) I.Bell & D.Braben.", 120, gfx.GFX_COL_WHITE);
-            alg_gfx.gfx_display_centre_text(330, "Re-engineered by C.J.Pinder.", 120, gfx.GFX_COL_WHITE);
-            alg_gfx.gfx_display_centre_text(360, "Load New Commander (Y/N)?", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(310, "Original Game (C) I.Bell & D.Braben.", 120, gfx.GFX_COL_WHITE);
+			alg_gfx.gfx_display_centre_text(330, "Re-engineered by C.J.Pinder.", 120, gfx.GFX_COL_WHITE);
+			alg_gfx.gfx_display_centre_text(360, "Load New Commander (Y/N)?", 140, gfx.GFX_COL_GOLD);
 		}
 
 		static void update_intro2()
@@ -109,9 +109,9 @@ namespace Elite
 
 			space.universe[0].location.z += direction;
 
-			if (space.universe[0].location.z < min_dist[ship_no])
+			if (space.universe[0].location.z < min_dist[(int)ship_no])
 			{
-				space.universe[0].location.z = min_dist[ship_no];
+				space.universe[0].location.z = min_dist[(int)ship_no];
 			}
 
 			if (space.universe[0].location.z > 4500)
@@ -119,29 +119,29 @@ namespace Elite
 				do
 				{
 					ship_no++;
-					if (ship_no > shipdata.NO_OF_SHIPS)
+					if ((int)ship_no > shipdata.NO_OF_SHIPS)
 					{
-						ship_no = 1;
+						ship_no = SHIP.SHIP_MISSILE;
 					}
-				} while (min_dist[ship_no] == 0);
+				} while (min_dist[(int)ship_no] == 0);
 
 				show_time = 0;
 				direction = -100;
 
-                space.ship_count[(int)space.universe[0].type] = 0;
-                space.universe[0].type = 0;
+				space.ship_count[(int)space.universe[0].type] = 0;
+				space.universe[0].type = 0;
 
-				add_new_ship(ship_no, 0, 0, 4500, intro_ship_matrix, -127, -127);
+				swat.add_new_ship(ship_no, 0, 0, 4500, intro_ship_matrix, -127, -127);
 			}
 
-            alg_gfx.gfx_clear_display();
-			update_starfield();
-            space.update_universe();
+			alg_gfx.gfx_clear_display();
+			Stars.update_starfield();
+			space.update_universe();
 
-            alg_gfx.gfx_draw_sprite(gfx.IMG_ELITE_TXT, -1, 10);
+			alg_gfx.gfx_draw_sprite(gfx.IMG_ELITE_TXT, -1, 10);
 
-            alg_gfx.gfx_display_centre_text(360, "Press Fire or Space, Commander.", 140, gfx.GFX_COL_GOLD);
-            alg_gfx.gfx_display_centre_text(330, elite.ship_list[ship_no].name, 120, gfx.GFX_COL_WHITE);
+			alg_gfx.gfx_display_centre_text(360, "Press Fire or Space, Commander.", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(330, elite.ship_list[(int)ship_no].name, 120, gfx.GFX_COL_WHITE);
 		}
 	}
 }

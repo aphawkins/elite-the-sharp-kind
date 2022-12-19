@@ -372,7 +372,7 @@ namespace Elite
 			}
 		}
 
-		static void update_starfield()
+		internal static void update_starfield()
 		{
 			switch (elite.current_screen)
 			{
