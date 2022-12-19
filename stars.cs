@@ -23,8 +23,8 @@ namespace Elite
 		struct star
 		{
 			internal double x;
-            internal double y;
-            internal double z;
+			internal double y;
+			internal double z;
 		};
 
 		static star[] stars = new star[20];
@@ -43,7 +43,7 @@ namespace Elite
 				stars[i].z = random.rand255() | 0x90;
 			}
 
-            Stars.warp_stars = false;
+			Stars.warp_stars = false;
 		}
 
 		static void front_starfield()
@@ -85,7 +85,7 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-                    alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
+					alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
@@ -94,8 +94,8 @@ namespace Elite
 
 					if (zz < 0x90)
 					{
-                        alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
-                        alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
+						alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+						alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 
@@ -141,7 +141,7 @@ namespace Elite
 
 			}
 
-            Stars.warp_stars = false;
+			Stars.warp_stars = false;
 		}
 
 		static void rear_starfield()
@@ -183,17 +183,17 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-                    alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
+					alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        alg_gfx.gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
+						alg_gfx.gfx_plot_pixel(sx + 1, sy, gfx.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
-                        alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
+						alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+						alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 
@@ -253,7 +253,7 @@ namespace Elite
 
 			}
 
-            Stars.warp_stars = false;
+			Stars.warp_stars = false;
 		}
 
 		static void side_starfield()
@@ -297,7 +297,7 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-                    alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
+					alg_gfx.gfx_plot_pixel(sx, sy, gfx.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
@@ -306,8 +306,8 @@ namespace Elite
 
 					if (zz < 0x90)
 					{
-                        alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
-                        alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
+						alg_gfx.gfx_plot_pixel(sx, sy + 1, gfx.GFX_COL_WHITE);
+						alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, gfx.GFX_COL_WHITE);
 					}
 				}
 
@@ -331,7 +331,7 @@ namespace Elite
 
 				if (Stars.warp_stars)
 				{
-                    alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
+					alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
 				}
 
 				if (Math.Abs(stars[i].x) >= 116)
@@ -349,7 +349,7 @@ namespace Elite
 
 			}
 
-            Stars.warp_stars = false;
+			Stars.warp_stars = false;
 		}
 
 		/*

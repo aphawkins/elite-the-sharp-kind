@@ -99,9 +99,9 @@ namespace Elite
 		{
 			Vector res;
 
-            double lx = vec.x;
-            double ly = vec.y;
-            double lz = vec.z;
+			double lx = vec.x;
+			double ly = vec.y;
+			double lz = vec.z;
 
 			double uni = Math.Sqrt(lx * lx + ly * ly + lz * lz);
 

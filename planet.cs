@@ -26,9 +26,9 @@ namespace Elite
 		struct random_seed
 		{
 			internal int a;
-            internal int b;
-            internal int c;
-            internal int d;
+			internal int b;
+			internal int c;
+			internal int d;
 		};
 
 		static random_seed rnd_seed;
@@ -273,10 +273,10 @@ namespace Elite
 				{
 					x += 12;
 					x *= 2;
-                    gname += digrams[x];
+					gname += digrams[x];
 					if (digrams[x + 1] != '?')
 					{
-                        gname += digrams[x + 1];
+						gname += digrams[x + 1];
 					}
 				}
 
@@ -352,7 +352,7 @@ namespace Elite
 					num = Convert.ToInt32(temp);
 					expanded = temp;
 
-                    if (elite.hoopy_casinos)
+					if (elite.hoopy_casinos)
 					{
 						option = gen_msx_rnd_number();
 					}
@@ -366,7 +366,7 @@ namespace Elite
 						if (rnd >= 0xCC) option++;
 					}
 
-                    expand_description(desc_list[num][option]);
+					expand_description(desc_list[num][option]);
 					continue;
 				}
 
@@ -384,8 +384,8 @@ namespace Elite
 						case 'I':
 							temp = name_planet(ref elite.hyperspace_planet);
 							temp = Planet.capitalise_name(temp);
-                            planet_description += temp;
-                            planet_description += "ian";
+							planet_description += temp;
+							planet_description += "ian";
 							break;
 
 						case 'R':
@@ -395,13 +395,13 @@ namespace Elite
 								x = gen_rnd_number() & 0x3e;
 								if (i == 0)
 								{
-                                    planet_description += digrams[x];
+									planet_description += digrams[x];
 								}
 								else
 								{
-                                    planet_description += char.ToLower(digrams[x]);
+									planet_description += char.ToLower(digrams[x]);
 								}
-                                planet_description += char.ToLower(digrams[x + 1]);
+								planet_description += char.ToLower(digrams[x + 1]);
 							}
 							break;
 					}

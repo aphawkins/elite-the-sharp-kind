@@ -113,6 +113,5 @@ namespace Elite
 		internal const int IMG_MISSILE_YELLOW = 8;
 		internal const int IMG_MISSILE_RED = 9;
 		internal const int IMG_BLAKE = 10;
-//#endif
 	}
 }

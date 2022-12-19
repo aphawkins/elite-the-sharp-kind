@@ -35,7 +35,7 @@ namespace Elite
 
 		internal const int MAX_UNIV_OBJECTS = 20;
 
-        internal static galaxy_seed docked_planet;
+		internal static galaxy_seed docked_planet;
 		internal static galaxy_seed hyperspace_planet;
 		internal static planet_data current_planet_data;
 
@@ -43,66 +43,66 @@ namespace Elite
 		static int curr_fuel = 70;
 		internal static int carry_flag = 0;
 		internal static SCR current_screen = 0;
-        internal static bool witchspace;
+		internal static bool witchspace;
 
 		internal static bool wireframe = false;
-        internal static bool anti_alias_gfx = false;
-        internal static bool hoopy_casinos = false;
-        internal static int speed_cap = 75;
-        internal static bool instant_dock = false;
+		internal static bool anti_alias_gfx = false;
+		internal static bool hoopy_casinos = false;
+		internal static int speed_cap = 75;
+		internal static bool instant_dock = false;
 
-        internal static string scanner_filename;
-        internal static int scanner_cx;
-        internal static int scanner_cy;
-        internal static int compass_centre_x;
-        internal static int compass_centre_y;
+		internal static string scanner_filename;
+		internal static int scanner_cx;
+		internal static int scanner_cy;
+		internal static int compass_centre_x;
+		internal static int compass_centre_y;
 
-        internal static int planet_render_style = 0;
+		internal static int planet_render_style = 0;
 
-        internal static bool game_over;
-        internal static bool docked;
-        internal static int finish;
-        internal static int flight_speed;
-        internal static int flight_roll;
-        internal static int flight_climb;
-        internal static int front_shield;
-        internal static int aft_shield;
-        internal static int energy;
-        internal static int laser_temp;
-        internal static bool detonate_bomb;
-        internal static bool auto_pilot;
+		internal static bool game_over;
+		internal static bool docked;
+		internal static int finish;
+		internal static int flight_speed;
+		internal static int flight_roll;
+		internal static int flight_climb;
+		internal static int front_shield;
+		internal static int aft_shield;
+		internal static int energy;
+		internal static int laser_temp;
+		internal static bool detonate_bomb;
+		internal static bool auto_pilot;
 
 		internal static commander saved_cmdr = new commander(
-			"JAMESON",									/* Name 			*/
-			0,											/* Mission Number 	*/
-			0x14,0xAD,									/* Ship X,Y			*/
-			new(0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7),		/* Galaxy Seed		*/
-			1000,										/* Credits * 10		*/
-			70,											/* Fuel	* 10		*/
+			"JAMESON",                                  /* Name 			*/
+			0,                                          /* Mission Number 	*/
+			0x14, 0xAD,                                 /* Ship X,Y			*/
+			new(0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7),        /* Galaxy Seed		*/
+			1000,                                       /* Credits * 10		*/
+			70,                                         /* Fuel	* 10		*/
 			0,
-			0,											/* Galaxy - 1		*/
-			PULSE_LASER,								/* Front Laser		*/
-			0,											/* Rear Laser		*/
-			0,											/* Left Laser		*/
-			0,											/* Right Laser		*/
+			0,                                          /* Galaxy - 1		*/
+			PULSE_LASER,                                /* Front Laser		*/
+			0,                                          /* Rear Laser		*/
+			0,                                          /* Left Laser		*/
+			0,                                          /* Right Laser		*/
 			0, 0,
-			20,											/* Cargo Capacity	*/
-			new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},		/* Current Cargo	*/
-			0,											/* ECM				*/
-			0,											/* Fuel Scoop		*/
-			0,											/* Energy Bomb		*/
-			0,											/* Energy Unit		*/
-			0,											/* Docking Computer */
-			0,											/* Galactic H'Drive	*/
-			0,											/* Escape Pod		*/
-			0,0,0,0,
-			3,											/* No. of Missiles	*/
-			0,											/* Legal Status		*/
+			20,                                         /* Cargo Capacity	*/
+			new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },        /* Current Cargo	*/
+			false,                                          /* ECM				*/
+			false,                                          /* Fuel Scoop		*/
+			false,                                          /* Energy Bomb		*/
+			0,                                          /* Energy Unit		*/
+			false,                                          /* Docking Computer */
+			false,                                          /* Galactic H'Drive	*/
+			false,                                          /* Escape Pod		*/
+			0, 0, 0, 0,
+			3,                                          /* No. of Missiles	*/
+			0,                                          /* Legal Status		*/
 			new int[] {0x10, 0x0F, 0x11, 0x00, 0x03, 0x1C,		/* Station Stock	*/
 			 0x0E, 0x00, 0x00, 0x0A, 0x00, 0x11,
 			 0x3A, 0x07, 0x09, 0x08, 0x00},
-			0,											/* Fluctuation		*/
-			0,											/* Score			*/
+			0,                                          /* Fluctuation		*/
+			0,                                          /* Score			*/
 			0x80                                        /* Saved			*/
 		);
 

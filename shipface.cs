@@ -22,7 +22,7 @@
  * Adapted from the Elite ship data published by Ian Bell.
  *
  * Adapted further for clockwise vertex lists.
- */ 
+ */
 
 namespace Elite
 {
@@ -30,14 +30,14 @@ namespace Elite
 
 	internal static class shipface
 	{
-        //#include <stdlib.h>
+		//#include <stdlib.h>
 
-        //#include "config.h"
-        //#include "elite.h"
-        //#include "shipface.h"
-        //#include "gfx.h"
+		//#include "config.h"
+		//#include "elite.h"
+		//#include "shipface.h"
+		//#include "gfx.h"
 
-        private static ship_face[] missile_face = new ship_face[]
+		private static ship_face[] missile_face = new ship_face[]
 		{
 			//fins
 			new(gfx.GFX_COL_RED,  0x20, 0x00, 0x00, 3,  5, 9, 15, 0, 0, 0, 0, 0),
@@ -69,7 +69,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] coriolis_face = new ship_face[15]
+		private static ship_face[] coriolis_face = new ship_face[15]
 		{
 			new(gfx.GFX_COL_GREY_3,  0x6B,-0x6B, 0x6B, 3,  4,  0,  3,  0,  0,  0, 0, 0),
 			new(gfx.GFX_COL_GREY_3,  0x6B, 0x6B, 0x6B, 3,  0,  5,  1,  0,  0,  0, 0, 0),
@@ -80,7 +80,7 @@ namespace Elite
 			new(gfx.GFX_COL_GREY_2,  0xA0, 0x00, 0x00, 4,  8,  5,  0,  4,  0,  0, 0, 0),
 			new(gfx.GFX_COL_GREY_2, -0xA0, 0x00, 0x00, 4, 10,  7,  2,  6,  0,  0, 0, 0),
 			new(gfx.GFX_COL_GREY_2,  0x00, 0xA0, 0x00, 4,  1,  5,  9,  6,  0,  0, 0, 0),
-        
+
 			new(gfx.GFX_COL_GREY_3, -0x6B,-0x6B,-0x6B, 3, 11,  7, 10,  0,  0,  0, 0, 0),
 			new(gfx.GFX_COL_GREY_3,  0x6B,-0x6B,-0x6B, 3, 11,  8,  4,  0,  0,  0, 0, 0),
 			new(gfx.GFX_COL_GREY_3,  0x6B, 0x6B,-0x6B, 3,  9,  5,  8,  0,  0,  0, 0, 0),
@@ -93,22 +93,22 @@ namespace Elite
 		};
 
 
-        private static ship_face[] escape_face = new ship_face[4]
+		private static ship_face[] escape_face = new ship_face[4]
 		{
-			new ship_face(gfx.GFX_COL_RED,		 0x34, 0x00,-0x7A, 3, 3, 1, 2,  0, 0, 0, 0, 0),
-            new ship_face(gfx.GFX_COL_DARK_RED,	 0x27, 0x67, 0x1E, 3, 0, 3, 2,  0, 0, 0, 0, 0),
-            new ship_face(gfx.GFX_COL_RED_3,		 0x27,-0x67, 0x1E, 3, 0, 1, 3,  0, 0, 0, 0, 0),
-            new ship_face(gfx.GFX_COL_RED_4,		-0x70, 0x00, 0x00, 3, 0, 2, 1,  0, 0, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_RED,       0x34, 0x00,-0x7A, 3, 3, 1, 2,  0, 0, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_DARK_RED,  0x27, 0x67, 0x1E, 3, 0, 3, 2,  0, 0, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_RED_3,         0x27,-0x67, 0x1E, 3, 0, 1, 3,  0, 0, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_RED_4,        -0x70, 0x00, 0x00, 3, 0, 2, 1,  0, 0, 0, 0, 0),
 		};
 
 
-        private static ship_face[] alloy_face =
+		private static ship_face[] alloy_face =
 		{
 			new(gfx.GFX_COL_GREY_1, 0x00, 0x00, 0x00, 4, 0, 1, 2, 3, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_3, 0x00, 0x00, 0x00, 4, 3, 2, 1, 0, 0, 0, 0, 0),
 		};
 
-        private static ship_face[] cargo_face =
+		private static ship_face[] cargo_face =
 		{
 			new(gfx.GFX_COL_GREY_4,  0x60, 0x00, 0x00, 5, 4, 0, 1, 2, 3, 0, 0, 0),
 
@@ -122,7 +122,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] boulder_face =
+		private static ship_face[] boulder_face =
 		{
 			new(gfx.GFX_COL_GREY_3, -0x0F,-0x03, 0x08, 3, 0, 4, 5,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1, -0x07, 0x0C, 0x1E, 3, 0, 5, 1,  0, 0, 0, 0, 0),
@@ -138,7 +138,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] asteroid_face = 
+		private static ship_face[] asteroid_face =
 		{
 			new(gfx.GFX_COL_GREY_3,  0x09, 0x42, 0x51, 3, 5, 0, 6,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1,  0x09,-0x42, 0x51, 3, 2, 5, 6,  0, 0, 0, 0, 0),
@@ -160,7 +160,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] rock_face =
+		private static ship_face[] rock_face =
 		{
 			new(gfx.GFX_COL_GREY_1, 0x00, 0x00, 0x00, 3, 3, 2, 1, 0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_2, 0x00, 0x00, 0x00, 3, 0, 2, 3, 0, 0, 0, 0, 0),
@@ -170,7 +170,7 @@ namespace Elite
 
 
 
-        private static ship_face[] shuttle_face =
+		private static ship_face[] shuttle_face =
 		{
 			new(gfx.GFX_COL_GREY_1,  0x00,-0x4A, 0x04, 3,  0,  4,  7,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_2, -0x33,-0x33, 0x17, 3,  1,  4,  0,  0, 0, 0, 0, 0),
@@ -181,8 +181,8 @@ namespace Elite
 			new(gfx.GFX_COL_GREY_1,  0x4A, 0x00, 0x04, 3,  3,  7,  6,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_2,  0x33,-0x33, 0x17, 3,  0,  7,  3,  0, 0, 0, 0, 0),
 
-			new(gfx.GFX_COL_GREY_3,	0x00, 0x00,-0x6B, 4,  7,  4,  5,  6, 0, 0, 0, 0),
-			new(gfx.GFX_COL_RED,		0x00, 0x00,-0x6B, 4, 11,  8,  9, 10, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_3, 0x00, 0x00,-0x6B, 4,  7,  4,  5,  6, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED,        0x00, 0x00,-0x6B, 4, 11,  8,  9, 10, 0, 0, 0, 0),
 
 			new(gfx.GFX_COL_GREY_4, -0x37, -0x37, 0x28, 3,  0, 12,  1,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1, -0x29,  0x29, 0x5A, 3,  1, 12,  2,  0, 0, 0, 0, 0),
@@ -195,9 +195,9 @@ namespace Elite
 
 
 
-        /* Two lines on base & detail of IB DB initials added back in :-) */
+		/* Two lines on base & detail of IB DB initials added back in :-) */
 
-        private static ship_face[] transporter_face =
+		private static ship_face[] transporter_face =
 		{
 			new(gfx.GFX_COL_GREY_3,  0x00, 0x00,-0x67, 7,  5,  4,  3, 2,  1 ,0, 6, 0),
 
@@ -239,37 +239,37 @@ namespace Elite
 		};
 
 
-        private static ship_face[] cobra3_face = 
+		private static ship_face[] cobra3_face =
 		{
-			new(gfx.GFX_COL_GREY_2,	0x00, 0x3E, 0x1F, 3,  1,  0,  2,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_2, 0x00, 0x3E, 0x1F, 3,  1,  0,  2,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_BLUE_1,   -0x12, 0x37, 0x10, 3,  5,  1,  2,  0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_BLUE_1,	0x12, 0x37, 0x10, 3,  2,  0,  6,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_BLUE_1, 0x12, 0x37, 0x10, 3,  2,  0,  6,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_BLUE_3,   -0x10, 0x34, 0x0E, 3,  3,  1,  5,  0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_BLUE_3,	0x10, 0x34, 0x0E, 3,  6,  0,  4,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_BLUE_3, 0x10, 0x34, 0x0E, 3,  6,  0,  4,  0, 0, 0, 0, 0),
 
 			new(gfx.GFX_COL_GREY_1,   -0x0E, 0x2F, 0x00, 3,  5,  2,  9,  0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_1,	0x0E, 0x2F, 0x00, 3,  9,  2,  6,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_1, 0x0E, 0x2F, 0x00, 3,  9,  2,  6,  0, 0, 0, 0, 0),
 
 			new(gfx.GFX_COL_BLUE_2,   -0x3D, 0x66, 0x00, 3,  8,  3,  5,  0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_BLUE_2,	0x3D, 0x66, 0x00, 3,  6,  4,  7,  0, 0, 0, 0, 0),
-        
-			new(gfx.GFX_COL_GREY_2,	0x00, 0x00,-0x50, 7,  6,  7, 11, 10, 8, 5, 9, 0),
+			new(gfx.GFX_COL_BLUE_2, 0x3D, 0x66, 0x00, 3,  6,  4,  7,  0, 0, 0, 0, 0),
+
+			new(gfx.GFX_COL_GREY_2, 0x00, 0x00,-0x50, 7,  6,  7, 11, 10, 8, 5, 9, 0),
 
 			new(gfx.GFX_COL_GREY_3,   -0x07,-0x2A, 0x09, 4, 10,  1,  3,  8, 0, 0, 0, 0),
-			new(gfx.GFX_COL_DARK_RED,	0x00,-0x1E, 0x06, 4, 10, 11,  0,  1, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_3,	0x07,-0x2A, 0x09, 4,  7,  4,  0, 11, 0, 0, 0, 0),
+			new(gfx.GFX_COL_DARK_RED,   0x00,-0x1E, 0x06, 4, 10, 11,  0,  1, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_3, 0x07,-0x2A, 0x09, 4,  7,  4,  0, 11, 0, 0, 0, 0),
 
-			new(gfx.GFX_COL_RED,		0x00, 0x00,-0x50, 4, 17, 14, 15, 16, 0, 0, 0, 0),
-			new(gfx.GFX_COL_RED,		0x00, 0x00,-0x50, 4, 19, 12, 13, 18, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED,        0x00, 0x00,-0x50, 4, 17, 14, 15, 16, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED,        0x00, 0x00,-0x50, 4, 19, 12, 13, 18, 0, 0, 0, 0),
 			new(gfx.GFX_COL_DARK_RED,  0x00, 0x00,-0x50, 3, 23, 22, 24,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_DARK_RED,  0x00, 0x00,-0x50, 3, 27, 25, 26,  0, 0, 0, 0, 0),
 
-			new(gfx.GFX_COL_WHITE,		0x00, 0x3E, 0x1F, 2, 20, 21,  0,  0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_WHITE,		0x00,-0x1E, 0x06, 2, 21, 20,  0,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_WHITE,      0x00, 0x3E, 0x1F, 2, 20, 21,  0,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_WHITE,      0x00,-0x1E, 0x06, 2, 21, 20,  0,  0, 0, 0, 0, 0),
 		};
 
 
-        private static ship_face[] python_face =
+		private static ship_face[] python_face =
 		{
 			new(gfx.GFX_COL_GREY_2, -0x1B, 0x28, 0x0B, 3, 0,  1,  3, 0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1,  0x1B, 0x28, 0x0B, 3, 2,  1,  0, 0, 0, 0, 0, 0),
@@ -290,7 +290,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] boa_face =
+		private static ship_face[] boa_face =
 		{
 			new(gfx.GFX_COL_BLUE_4,  0x2B, 0x25,-0x3C, 6, 11, 10,  1, 5, 6, 2, 0, 0),
 			new(gfx.GFX_COL_BLUE_2,  0x00,-0x2D,-0x59, 6, 12, 11,  2, 7, 8, 3, 0, 0),
@@ -311,7 +311,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] anaconda_face =
+		private static ship_face[] anaconda_face =
 		{
 			new(gfx.GFX_COL_GREEN_1,  0x00,-0x33,-0x31, 5,  3,  2,  1,  0, 4, 0, 0, 0),
 			new(gfx.GFX_COL_GREEN_2, -0x33, 0x12,-0x57, 5,  6, 10,  5,  0, 1, 0, 0, 0),
@@ -331,7 +331,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] hermit_face = 
+		private static ship_face[] hermit_face =
 		{
 			new(gfx.GFX_COL_PINK_1,  0x09, 0x42, 0x51, 3, 5, 0, 6,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1,  0x09,-0x42, 0x51, 3, 2, 5, 6,  0, 0, 0, 0, 0),
@@ -350,16 +350,16 @@ namespace Elite
 		};
 
 
-        private static ship_face[] viper_face = 
+		private static ship_face[] viper_face =
 		{
 			new(gfx.GFX_COL_GREY_2,  0x00, 0x20, 0x00, 3,  7,  8,  1, 0, 0, 0, 0, 0),
-        
+
 			new(gfx.GFX_COL_BLUE_3, -0x16, 0x21, 0x0B, 4,  8,  4,  0, 1, 0, 0, 0, 0),
 			new(gfx.GFX_COL_BLUE_2,  0x16, 0x21, 0x0B, 4,  3,  7,  1, 0, 0, 0, 0, 0),
-        
+
 			new(gfx.GFX_COL_BLUE_2, -0x16,-0x21, 0x0B, 4,  2,  0,  4, 6, 0, 0, 0, 0),
 			new(gfx.GFX_COL_BLUE_3,  0x16,-0x21, 0x0B, 4,  0,  2,  5, 3, 0, 0, 0, 0),
-        
+
 			new(gfx.GFX_COL_GREY_2,  0x00,-0x20, 0x00, 3,  2,  6,  5, 0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1,  0x00, 0x00,-0x30, 6,  4,  8,  7, 3, 5, 6, 0, 0),
 			new(gfx.GFX_COL_RED,  0x00, 0x00,-0x30, 3, 12, 13,  9, 0, 0, 0, 0, 0),
@@ -368,7 +368,7 @@ namespace Elite
 
 
 
-        private static ship_face[] sidewinder_face =
+		private static ship_face[] sidewinder_face =
 		{
 			new(gfx.GFX_COL_YELLOW_1,  0x00, 0x20, 0x08, 3, 4, 0, 1, 0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_YELLOW_2, -0x0C, 0x2F, 0x06, 3, 4, 3, 0, 0, 0, 0, 0, 0),
@@ -383,7 +383,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] mamba_face =
+		private static ship_face[] mamba_face =
 		{
 			new(gfx.GFX_COL_GREEN_1,  0x00,-0x18, 0x02, 3,  1,  4,  0,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREEN_3,  0x00, 0x18, 0x02, 3,  2,  0,  3,  0, 0, 0, 0, 0),
@@ -400,7 +400,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] krait_face = 
+		private static ship_face[] krait_face =
 		{
 			new(gfx.GFX_COL_BLUE_3,  0x03, 0x18, 0x03, 3,  0,  3,  1, 0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_BLUE_2,  0x03,-0x18, 0x03, 3,  2,  3,  0, 0, 0, 0, 0, 0),
@@ -416,26 +416,26 @@ namespace Elite
 			new(gfx.GFX_COL_WHITE, -0x03, 0x18, 0x03, 2,  4,  6,  0, 0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_WHITE, -0x03,-0x18, 0x03, 2,  6,  4,  0, 0, 0, 0, 0, 0),
 
-			new(gfx.GFX_COL_RED,	  0x26, 0x00,-0x4D, 3, 12, 11, 13, 0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_RED,	 -0x26, 0x00,-0x4D, 3, 16, 14, 15, 0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_WHITE,	  0x03, 0x18, 0x03, 3,  7, 10,  8, 0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_WHITE,	 -0x03, 0x18, 0x03, 3,  8,  9,  7, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED,      0x26, 0x00,-0x4D, 3, 12, 11, 13, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED,     -0x26, 0x00,-0x4D, 3, 16, 14, 15, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_WHITE,    0x03, 0x18, 0x03, 3,  7, 10,  8, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_WHITE,   -0x03, 0x18, 0x03, 3,  8,  9,  7, 0, 0, 0, 0, 0),
 		};
 
 
-        private static ship_face[] adder_face =
+		private static ship_face[] adder_face =
 		{
-			new(gfx.GFX_COL_GREY_1,	0x00, 0x27, 0x0A, 4, 0, 1,  11,  10, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_1,	0x00,-0x27, 0x0A, 4, 1, 0,  12,  13, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_1, 0x00, 0x27, 0x0A, 4, 0, 1,  11,  10, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_1, 0x00,-0x27, 0x0A, 4, 1, 0,  12,  13, 0, 0, 0, 0),
 
-			new(gfx.GFX_COL_RED_4,  	0x45, 0x32, 0x0D, 3,  2, 11,  1,  0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_RED,		0x45,-0x32, 0x0D, 3,  1, 13,  2,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED_4,      0x45, 0x32, 0x0D, 3,  2, 11,  1,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED,        0x45,-0x32, 0x0D, 3,  1, 13,  2,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_DARK_RED,  0x1E, 0x34, 0x00, 4,  9, 11,  2,  3, 0, 0, 0, 0),
 			new(gfx.GFX_COL_RED_3,     0x1E,-0x34, 0x00, 4,  3, 2, 13,  4, 0, 0, 0, 0),
 
 			new(gfx.GFX_COL_DARK_RED, -0x1E, 0x34, 0x00, 4, 10,  8,  6,  7, 0, 0, 0, 0),
-			new(gfx.GFX_COL_RED_3,	   -0x1E,-0x34, 0x00, 4, 7,  6,  5,  12, 0, 0, 0, 0),
-			new(gfx.GFX_COL_RED_4,	   -0x45, 0x32, 0x0D, 3, 10,  7,  0,  0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED_3,     -0x1E,-0x34, 0x00, 4, 7,  6,  5,  12, 0, 0, 0, 0),
+			new(gfx.GFX_COL_RED_4,     -0x45, 0x32, 0x0D, 3, 10,  7,  0,  0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_RED,      -0x45,-0x32, 0x0D, 3, 0,  7,  12,  0, 0, 0, 0, 0),
 
 			new(gfx.GFX_COL_GREY_3,  0x00, 0x00,-0xA0, 6,  3,  4,  5,  6, 8, 9, 0, 0),
@@ -445,7 +445,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] gecko_face =
+		private static ship_face[] gecko_face =
 		{
 			new(gfx.GFX_COL_GREY_2,  0x00, 0x1F, 0x05, 4,  3,  2, 0, 1, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1,  0x04, 0x2D, 0x08, 3,  3,  1, 5, 0, 0, 0, 0, 0),
@@ -465,7 +465,7 @@ namespace Elite
 
 
 
-        private static ship_face[] cobra1_face =
+		private static ship_face[] cobra1_face =
 		{
 			new(gfx.GFX_COL_BLUE_2,  0x00, 0x29, 0x0A, 3,  0, 1, 8, 0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_BLUE_2,  0x00,-0x1B, 0x03, 4,  6, 7, 1, 0, 0, 0, 0, 0),
@@ -486,7 +486,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] worm_face = 
+		private static ship_face[] worm_face =
 		{
 			new(gfx.GFX_COL_GREY_4,  0x00, 0x58, 0x46, 4, 1, 0, 2, 3, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1,  0x46, 0x42, 0x23, 3, 0, 4, 2, 0, 0, 0, 0, 0),
@@ -501,7 +501,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] asp2_face = 
+		private static ship_face[] asp2_face =
 		{
 			new(gfx.GFX_COL_GREY_4,  0x00,-0x23, 0x05, 5,  8,  9,  7,  0, 4, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_2,  0x08,-0x26,-0x07, 5,  3,  4,  0,  1, 2, 0, 0, 0),
@@ -524,7 +524,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] fer_de_lance_face = 
+		private static ship_face[] fer_de_lance_face =
 		{
 			new(gfx.GFX_COL_GREY_1,  0x00, 0x18, 0x06, 4,  5,  0,  8, 9, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_2, -0x44, 0x00, 0x18, 3,  0,  5,  1, 0, 0, 0, 0, 0),
@@ -547,7 +547,7 @@ namespace Elite
 		};
 
 
-        private static ship_face[] moray_face = 
+		private static ship_face[] moray_face =
 		{
 			new(gfx.GFX_COL_BLUE_4,  0x00, 0x2B, 0x07, 3,  0,  2, 1, 0, 0, 0, 0, 0),
 			new(gfx.GFX_COL_BLUE_3, -0x0A, 0x31, 0x07, 3,  1,  2, 3, 0, 0, 0, 0, 0),
@@ -568,50 +568,50 @@ namespace Elite
 		};
 
 
-        private static ship_face[] thargoid_face = 
+		private static ship_face[] thargoid_face =
 		{
-			new(gfx.GFX_COL_DARK_RED,	 0x67,-0x3C, 0x19, 4,  1,  0,  8,  9,  0,  0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	 0x67,-0x3C,-0x19, 4,  2,  1,  9, 10,  0,  0, 0, 0),
-			new(gfx.GFX_COL_DARK_RED,	 0x67,-0x19,-0x3C, 4,  3,  2, 10, 11,  0,  0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	 0x67, 0x19,-0x3C, 4,  4,  3, 11, 12,  0,  0, 0, 0),
+			new(gfx.GFX_COL_DARK_RED,    0x67,-0x3C, 0x19, 4,  1,  0,  8,  9,  0,  0, 0, 0),
+			new(gfx.GFX_COL_GREY_2,  0x67,-0x3C,-0x19, 4,  2,  1,  9, 10,  0,  0, 0, 0),
+			new(gfx.GFX_COL_DARK_RED,    0x67,-0x19,-0x3C, 4,  3,  2, 10, 11,  0,  0, 0, 0),
+			new(gfx.GFX_COL_GREY_2,  0x67, 0x19,-0x3C, 4,  4,  3, 11, 12,  0,  0, 0, 0),
 		/*
 			new(gfx.GFX_COL_GREY_3,	 0x40, 0x00, 0x00, 8,  7,  6,  5,  4,  3,  2, 1, 0),
 		*/
-			new(gfx.GFX_COL_GREY_3,	 0x40, 0x00, 0x00, 4,  0,  1,  2,  7,  0,  0, 0, 0),
-			new(gfx.GFX_COL_GREY_3,	 0x40, 0x00, 0x00, 4,  2,  3,  6,  7,  0,  0, 0, 0),
-			new(gfx.GFX_COL_GREY_3,	 0x40, 0x00, 0x00, 4,  3,  4,  5,  6,  0,  0, 0, 0),
+			new(gfx.GFX_COL_GREY_3,  0x40, 0x00, 0x00, 4,  0,  1,  2,  7,  0,  0, 0, 0),
+			new(gfx.GFX_COL_GREY_3,  0x40, 0x00, 0x00, 4,  2,  3,  6,  7,  0,  0, 0, 0),
+			new(gfx.GFX_COL_GREY_3,  0x40, 0x00, 0x00, 4,  3,  4,  5,  6,  0,  0, 0, 0),
 
-			new(gfx.GFX_COL_DARK_RED,	 0x67, 0x3C,-0x19, 4,  5,  4, 12, 13,  0,  0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	 0x67, 0x3C, 0x19, 4,  6,  5, 13, 14,  0,  0, 0, 0),
-			new(gfx.GFX_COL_DARK_RED,	 0x67, 0x19, 0x3C, 4,  7,  6, 14, 15,  0,  0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	 0x67,-0x19, 0x3C, 4,  0,  7, 15,  8,  0,  0, 0, 0),
+			new(gfx.GFX_COL_DARK_RED,    0x67, 0x3C,-0x19, 4,  5,  4, 12, 13,  0,  0, 0, 0),
+			new(gfx.GFX_COL_GREY_2,  0x67, 0x3C, 0x19, 4,  6,  5, 13, 14,  0,  0, 0, 0),
+			new(gfx.GFX_COL_DARK_RED,    0x67, 0x19, 0x3C, 4,  7,  6, 14, 15,  0,  0, 0, 0),
+			new(gfx.GFX_COL_GREY_2,  0x67,-0x19, 0x3C, 4,  0,  7, 15,  8,  0,  0, 0, 0),
 		/*
 			new(gfx.GFX_COL_GREY_3,	-0x30, 0x00, 0x00, 8, 15, 14, 13, 12, 11, 10, 9, 8),
 		*/
-			new(gfx.GFX_COL_GREY_3,	-0x30, 0x00, 0x00, 4,  9,  8, 15, 10, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_3,	-0x30, 0x00, 0x00, 4, 11, 10, 15, 14, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_3,	-0x30, 0x00, 0x00, 4, 12, 11, 14, 13, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_3, -0x30, 0x00, 0x00, 4,  9,  8, 15, 10, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_3, -0x30, 0x00, 0x00, 4, 11, 10, 15, 14, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_3, -0x30, 0x00, 0x00, 4, 12, 11, 14, 13, 0, 0, 0, 0),
 
-			new(gfx.GFX_COL_WHITE,		-0x30, 0x00, 0x00, 2, 16, 17, 19,  0,  0,  0, 0, 0),
-			new(gfx.GFX_COL_WHITE,		-0x30, 0x00, 0x00, 2, 18, 19, 16,  0,  0,  0, 0, 0),
+			new(gfx.GFX_COL_WHITE,      -0x30, 0x00, 0x00, 2, 16, 17, 19,  0,  0,  0, 0, 0),
+			new(gfx.GFX_COL_WHITE,      -0x30, 0x00, 0x00, 2, 18, 19, 16,  0,  0,  0, 0, 0),
 		};
 
 
-        private static ship_face[] thargon_face = 
+		private static ship_face[] thargon_face =
 		{
 			new(gfx.GFX_COL_DARK_RED, -0x24, 0x00, 0x00, 5, 3, 2, 1, 0, 4, 0, 0, 0),
 
-			new(gfx.GFX_COL_GREY_1,	0x14,-0x05, 0x07, 4, 6, 5, 0, 1, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	0x2E,-0x2A,-0x0E, 4, 7, 6, 1, 2, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_4,	0x24, 0x00,-0x68, 4, 8, 7, 2, 3, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	0x2E, 0x2A,-0x0E, 4, 9, 8, 3, 4, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_3,	0x14, 0x05, 0x07, 4, 4, 0, 5, 9, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_1, 0x14,-0x05, 0x07, 4, 6, 5, 0, 1, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_2, 0x2E,-0x2A,-0x0E, 4, 7, 6, 1, 2, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_4, 0x24, 0x00,-0x68, 4, 8, 7, 2, 3, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_2, 0x2E, 0x2A,-0x0E, 4, 9, 8, 3, 4, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_3, 0x14, 0x05, 0x07, 4, 4, 0, 5, 9, 0, 0, 0, 0),
 
 			new(gfx.GFX_COL_DARK_RED,  0x24, 0x00, 0x00, 5, 9, 5, 6, 7, 8, 0, 0, 0),
 		};
 
 
-        private static ship_face[] constrictor_face = 
+		private static ship_face[] constrictor_face =
 		{
 			new(gfx.GFX_COL_GREY_4,    0x00,  0x37,  0x0F, 4,  1,  0,  8, 9, 0, 0, 0, 0),
 			new(gfx.GFX_COL_GREY_1,   -0x18,  0x4B,  0x14, 3,  1,  9,  2, 0, 0, 0, 0, 0),
@@ -630,22 +630,22 @@ namespace Elite
 			new(gfx.GFX_COL_DARK_RED,    0x00, -0x1B,  0x00, 3, 15, 11, 13, 0, 0, 0, 0, 0),
 		};
 
-        private static ship_face[] cougar_face = new ship_face[12]
+		private static ship_face[] cougar_face = new ship_face[12]
 		{
-			new(gfx.GFX_COL_GREY_1,	-0x10,  0x2E,  0x04, 4,  2,  1,  0, 3, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	-0x10, -0x2E,  0x04, 3,  4,  1,  2, 0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_4,	 0x00, -0x1B,  0x05, 4,  4,  5,  0, 1, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	 0x10, -0x2E,  0x04, 3,  6,  5,  4, 0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_2,	 0x10,  0x2E,  0x04, 4,  5,  6,  3, 0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_GREY_3,	 0x00,  0x00, -0xA0, 4,  6,  4,  2, 3, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_1, -0x10,  0x2E,  0x04, 4,  2,  1,  0, 3, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_2, -0x10, -0x2E,  0x04, 3,  4,  1,  2, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_4,  0x00, -0x1B,  0x05, 4,  4,  5,  0, 1, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_2,  0x10, -0x2E,  0x04, 3,  6,  5,  4, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_2,  0x10,  0x2E,  0x04, 4,  5,  6,  3, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_GREY_3,  0x00,  0x00, -0xA0, 4,  6,  4,  2, 3, 0, 0, 0, 0),
 
-			new(gfx.GFX_COL_YELLOW_1,	-0x10, -0x2E,  0x04, 4,  1,  2,  8, 7, 0, 0, 0, 0),
-			new(gfx.GFX_COL_YELLOW_1,	-0x10,  0x2E,  0x04, 4,  7,  8,  2, 1, 0, 0, 0, 0),
-			new(gfx.GFX_COL_YELLOW_1,	 0x10,  0x2E,  0x04, 4,  5,  6, 10, 9, 0, 0, 0, 0),
-			new(gfx.GFX_COL_YELLOW_1,	 0x10, -0x2E,  0x04, 4,  9, 10,  6, 5, 0, 0, 0, 0),
+			new(gfx.GFX_COL_YELLOW_1,   -0x10, -0x2E,  0x04, 4,  1,  2,  8, 7, 0, 0, 0, 0),
+			new(gfx.GFX_COL_YELLOW_1,   -0x10,  0x2E,  0x04, 4,  7,  8,  2, 1, 0, 0, 0, 0),
+			new(gfx.GFX_COL_YELLOW_1,    0x10,  0x2E,  0x04, 4,  5,  6, 10, 9, 0, 0, 0, 0),
+			new(gfx.GFX_COL_YELLOW_1,    0x10, -0x2E,  0x04, 4,  9, 10,  6, 5, 0, 0, 0, 0),
 
-			new(gfx.GFX_COL_BLUE_3,	-0x10,  0x2E,  0x04, 3, 12, 13, 11, 0, 0, 0, 0, 0),
-			new(gfx.GFX_COL_BLUE_2,	 0x10,  0x2E,  0x04, 3, 11, 14, 12, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_BLUE_3, -0x10,  0x2E,  0x04, 3, 12, 13, 11, 0, 0, 0, 0, 0),
+			new(gfx.GFX_COL_BLUE_2,  0x10,  0x2E,  0x04, 3, 11, 14, 12, 0, 0, 0, 0, 0),
 		/*
 			new(8,	 0x00,  0x00, -0xA0, 3, 15, 16, 19, 0, 0, 0, 0, 0),
 			new(8,	 0x00,  0x00, -0xA0, 3, 19, 18, 17, 0, 0, 0, 0, 0),
@@ -654,26 +654,26 @@ namespace Elite
 
 		private static ship_face[] dodec_face = new ship_face[]
 		{
-			new ship_face(gfx.GFX_COL_GREY_4,	 0x00,  0x00,  0xC4, 5,  3,  2,  1,  0,  4, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_1,	 0x67,  0x8E,  0x58, 5,  6, 10,  5,  0,  1, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_2,	 0xA9, -0x37,  0x59, 5,  7, 11,  6,  1,  2, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_3,	 0x00, -0xB0,  0x58, 5,  8, 12,  7,  2,  3, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_1,	-0xA9, -0x37,  0x59, 5,  9, 13,  8,  3,  4, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_3,	-0x67,  0x8E,  0x58, 5,  5, 14,  9,  4,  0, 0, 0, 0),
- 			new ship_face(gfx.GFX_COL_GREY_1,	 0x00,  0xB0, -0x58, 5, 15, 19, 14,  5, 10, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_2,	 0xA9,  0x37, -0x59, 5, 16, 15, 10,  6, 11, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_1,	 0x67, -0x8E, -0x58, 5, 17, 16, 11,  7, 12, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_3,	-0x67, -0x8E, -0x58, 5, 18, 17, 12,  8, 13, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_2,	-0xA9,  0x37, -0x59, 5, 19, 18, 13,  9, 14, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_GREY_4,	 0x00,  0x00, -0xC4, 5, 19, 15, 16, 17, 18, 0, 0, 0),
-			new ship_face(gfx.GFX_COL_BLACK,	 0x00,  0x00,  0xC4, 4, 22, 20, 21, 23,  0, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_4,    0x00,  0x00,  0xC4, 5,  3,  2,  1,  0,  4, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_1,    0x67,  0x8E,  0x58, 5,  6, 10,  5,  0,  1, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_2,    0xA9, -0x37,  0x59, 5,  7, 11,  6,  1,  2, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_3,    0x00, -0xB0,  0x58, 5,  8, 12,  7,  2,  3, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_1,   -0xA9, -0x37,  0x59, 5,  9, 13,  8,  3,  4, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_3,   -0x67,  0x8E,  0x58, 5,  5, 14,  9,  4,  0, 0, 0, 0),
+ 			new ship_face(gfx.GFX_COL_GREY_1,    0x00,  0xB0, -0x58, 5, 15, 19, 14,  5, 10, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_2,    0xA9,  0x37, -0x59, 5, 16, 15, 10,  6, 11, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_1,    0x67, -0x8E, -0x58, 5, 17, 16, 11,  7, 12, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_3,   -0x67, -0x8E, -0x58, 5, 18, 17, 12,  8, 13, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_2,   -0xA9,  0x37, -0x59, 5, 19, 18, 13,  9, 14, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_GREY_4,    0x00,  0x00, -0xC4, 5, 19, 15, 16, 17, 18, 0, 0, 0),
+			new ship_face(gfx.GFX_COL_BLACK,     0x00,  0x00,  0xC4, 4, 22, 20, 21, 23,  0, 0, 0, 0),
 		};
 
 
 		internal static ship_solid[] ship_solids = new ship_solid[34]
 		{
 			new( 0, null),
-			new(17, missile_face), 
+			new(17, missile_face),
 			new(15, coriolis_face),
 			new( 4, escape_face),
 			new( 2, alloy_face),
