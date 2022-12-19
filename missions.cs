@@ -111,7 +111,7 @@ namespace Elite
 		{
 			int pnum;
 
-			if (!docked)
+			if (!elite.docked)
 			{
 				return null;
 			}
@@ -193,33 +193,32 @@ namespace Elite
 
 			elite.cmdr.mission = 1;
 
-            elite.current_screen = SCR.SCR_FRONT_VIEW;
+			elite.current_screen = SCR.SCR_FRONT_VIEW;
 
-            alg_gfx.gfx_clear_display();
-            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
-            alg_gfx.gfx_draw_line(0, 36, 511, 36);
+			alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			gfx_display_pretty_text(16, 50, 300, 384, mission1_brief_a);
-			gfx_display_pretty_text(16, 200, 470, 384,
-				  (elite.cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
+			alg_gfx.gfx_display_pretty_text(16, 50, 300, 384, mission1_brief_a);
+			alg_gfx.gfx_display_pretty_text(16, 200, 470, 384, (elite.cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
 
-            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
-            swat.clear_universe();
-            VectorMaths.set_init_matrix(rotmat);
+			swat.clear_universe();
+			VectorMaths.set_init_matrix(ref rotmat);
 			swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, 200, 90, 600, rotmat, -127, -127);
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
-            elite.flight_speed = 0;
+			elite.flight_roll = 0;
+			elite.flight_climb = 0;
+			elite.flight_speed = 0;
 
 			do
 			{
-                alg_gfx.gfx_clear_area(310, 50, 510, 180);
-				update_universe();
+				alg_gfx.gfx_clear_area(310, 50, 510, 180);
+				space.update_universe();
 				space.universe[0].location.z = 600;
-				gfx_update_screen();
-				kbd_poll_keyboard();
-			} while (!kbd_space_pressed);
+				alg_gfx.gfx_update_screen();
+				keyboard.kbd_poll_keyboard();
+			} while (!keyboard.kbd_space_pressed);
 		}
 
 		static void constrictor_mission_debrief()
@@ -230,21 +229,21 @@ namespace Elite
 			elite.cmdr.score += 256;
 			elite.cmdr.credits += 50000;
 
-            alg_gfx.gfx_clear_display();
-            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
-            alg_gfx.gfx_draw_line(0, 36, 511, 36);
+			alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-            alg_gfx.gfx_display_centre_text(100, "Congratulations Commander!", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(100, "Congratulations Commander!", 140, gfx.GFX_COL_GOLD);
 
-			gfx_display_pretty_text(116, 132, 400, 384, mission1_debrief);
+			alg_gfx.gfx_display_pretty_text(116, 132, 400, 384, mission1_debrief);
 
-            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
-			gfx_update_screen();
+			alg_gfx.gfx_update_screen();
 
 			do
 			{
-				keyasc = kbd_read_key();
+				keyasc = keyboard.kbd_read_key();
 			} while (keyasc != ' ');
 		}
 
@@ -254,19 +253,19 @@ namespace Elite
 
 			elite.cmdr.mission = 4;
 
-            alg_gfx.gfx_clear_display();
-            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
-            alg_gfx.gfx_draw_line(0, 36, 511, 36);
+			alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			gfx_display_pretty_text(116, 132, 400, 384, mission2_brief_a);
+			alg_gfx.gfx_display_pretty_text(116, 132, 400, 384, mission2_brief_a);
 
-            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
-			gfx_update_screen();
+			alg_gfx.gfx_update_screen();
 
 			do
 			{
-				keyasc = kbd_read_key();
+				keyasc = keyboard.kbd_read_key();
 			} while (keyasc != ' ');
 		}
 
@@ -277,22 +276,22 @@ namespace Elite
 
 			elite.cmdr.mission = 5;
 
-            alg_gfx.gfx_clear_display();
-            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
-            alg_gfx.gfx_draw_line(0, 36, 511, 36);
+			alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			gfx_display_pretty_text(16, 50, 300, 384, mission2_brief_b);
-			gfx_display_pretty_text(16, 200, 470, 384, mission2_brief_c);
+			alg_gfx.gfx_display_pretty_text(16, 50, 300, 384, mission2_brief_b);
+			alg_gfx.gfx_display_pretty_text(16, 200, 470, 384, mission2_brief_c);
 
-            alg_gfx.gfx_draw_sprite(IMG_BLAKE, 352, 46);
+			alg_gfx.gfx_draw_sprite(gfx.IMG_BLAKE, 352, 46);
 
-            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
-			gfx_update_screen();
+			alg_gfx.gfx_update_screen();
 
 			do
 			{
-				keyasc = kbd_read_key();
+				keyasc = keyboard.kbd_read_key();
 			} while (keyasc != ' ');
 		}
 
@@ -305,27 +304,25 @@ namespace Elite
 			elite.cmdr.score += 256;
 			elite.cmdr.energy_unit = 2;
 
-            alg_gfx.gfx_clear_display();
-            alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
-            alg_gfx.gfx_draw_line(0, 36, 511, 36);
+			alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_display_centre_text(10, "INCOMING MESSAGE", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-            alg_gfx.gfx_display_centre_text(100, "Well done Commander.", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(100, "Well done Commander.", 140, gfx.GFX_COL_GOLD);
 
-			gfx_display_pretty_text(116, 132, 400, 384, mission2_debrief);
+			alg_gfx.gfx_display_pretty_text(116, 132, 400, 384, mission2_debrief);
 
-            alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
-			gfx_update_screen();
+			alg_gfx.gfx_update_screen();
 
 			do
 			{
-				keyasc = kbd_read_key();
+				keyasc = keyboard.kbd_read_key();
 			} while (keyasc != ' ');
 		}
 
-
-
-		void check_mission_brief()
+		static void check_mission_brief()
 		{
 			if ((elite.cmdr.mission == 0) && (elite.cmdr.score >= 256) && (elite.cmdr.galaxy_number < 2))
 			{

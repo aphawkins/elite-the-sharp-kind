@@ -141,10 +141,13 @@ namespace Elite
 		/*
 		 * Blit the back buffer to the screen.
 		 */
-		static void gfx_update_screen()
+		internal static void gfx_update_screen()
 		{
 			while (frame_count < 1)
+			{
 				rest(10);
+			}
+
 			frame_count = 0;
 
 			acquire_screen();
@@ -532,7 +535,7 @@ namespace Elite
 			rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, col);
 		}
 
-		static void gfx_display_pretty_text(int tx, int ty, int bx, int by, char* txt)
+		internal static void gfx_display_pretty_text(int tx, int ty, int bx, int by, string txt)
 		{
 			char strbuf[100];
 			char* str;

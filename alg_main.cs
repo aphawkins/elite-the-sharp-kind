@@ -652,7 +652,7 @@ namespace Elite
                 alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 				alg_gfx.gfx_clear_display();
 				update_starfield();
-				update_universe();
+				space.update_universe();
 
 				space.universe[newship].location.x = 0;
 				space.universe[newship].location.y = 0;
@@ -661,7 +661,7 @@ namespace Elite
                 alg_gfx.gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
 
 				update_console();
-				gfx_update_screen();
+				alg_gfx.gfx_update_screen();
 			}
 
 
@@ -684,9 +684,9 @@ namespace Elite
                 alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
                 alg_gfx.gfx_clear_display();
 				update_starfield();
-				update_universe();
+                space.update_universe();
 				update_console();
-				gfx_update_screen();
+                alg_gfx.gfx_update_screen();
 			}
 
 			abandon_ship();
@@ -703,10 +703,10 @@ namespace Elite
 				 (elite.current_screen == SCR.SCR_SETTINGS) ||
 				 (elite.current_screen == SCR.SCR_EQUIP_SHIP)))
 			{
-				kbd_read_key();
+				keyboard.kbd_read_key();
 			}
 
-			kbd_poll_keyboard();
+			keyboard.kbd_poll_keyboard();
 
 			if (have_joystick)
 			{
@@ -852,7 +852,7 @@ namespace Elite
 
 			if (find_input)
 			{
-				keyasc = kbd_read_key();
+				keyasc = keyboard.kbd_read_key();
 
 				if (kbd_enter_pressed)
 				{
@@ -1059,7 +1059,7 @@ namespace Elite
             alg_gfx.gfx_clear_display();
             alg_gfx.gfx_display_centre_text(10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
 			alg_gfx.gfx_draw_line(0, 36, 511, 36);
-			gfx_update_screen();
+            alg_gfx.gfx_update_screen();
 
 			strcpy(path, elite.cmdr.name);
 			strcat(path, ".nkc");
@@ -1096,7 +1096,7 @@ namespace Elite
             alg_gfx.gfx_clear_display();
             alg_gfx.gfx_display_centre_text(10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
 			alg_gfx.gfx_draw_line(0, 36, 511, 36);
-			gfx_update_screen();
+            alg_gfx.gfx_update_screen();
 
 
 			strcpy(path, "jameson.nkc");
@@ -1113,7 +1113,7 @@ namespace Elite
 				saved_cmdr = cmdr;
                 alg_gfx.gfx_display_centre_text(175, "Error Loading Commander!", 140, gfx.GFX_COL_GOLD);
                 alg_gfx.gfx_display_centre_text(200, "Press any key to continue.", 140, gfx.GFX_COL_GOLD);
-				gfx_update_screen();
+                alg_gfx.gfx_update_screen();
 				readkey();
 				return;
 			}
@@ -1136,9 +1136,9 @@ namespace Elite
 			{
 				update_intro1();
 
-				gfx_update_screen();
+                alg_gfx.gfx_update_screen();
 
-				kbd_poll_keyboard();
+                keyboard.kbd_poll_keyboard();
 
 				if (kbd_y_pressed)
 				{
@@ -1172,12 +1172,14 @@ namespace Elite
 			{
 				update_intro2();
 
-				gfx_update_screen();
+                alg_gfx.gfx_update_screen();
 
-				kbd_poll_keyboard();
+                keyboard.kbd_poll_keyboard();
 
 				if (kbd_space_pressed)
+				{
 					break;
+				}
 			}
 
             sound.snd_stop_midi();
@@ -1220,9 +1222,9 @@ namespace Elite
 			{
                 alg_gfx.gfx_clear_display();
 				update_starfield();
-				update_universe();
+                space.update_universe();
                 alg_gfx.gfx_display_centre_text(190, "GAME OVER", 140, gfx.GFX_COL_GOLD);
-				gfx_update_screen();
+                alg_gfx.gfx_update_screen();
 			}
 		}
 
@@ -1240,7 +1242,7 @@ namespace Elite
 			for (i = 0; i < 20; i++)
 			{
 				alg_gfx.gfx_draw_circle(256, 192, 30 + i * 15, gfx.GFX_COL_WHITE);
-				gfx_update_screen();
+                alg_gfx.gfx_update_screen();
 			}
 
 			if (elite.docked)
@@ -1315,7 +1317,7 @@ namespace Elite
 				while (!elite.game_over)
 				{
 					sound.snd_update_sound();
-					gfx_update_screen();
+                    alg_gfx.gfx_update_screen();
                     alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 
 					rolling = 0;
@@ -1376,7 +1378,7 @@ namespace Elite
 								info_message("Docking Computers On");
 						}
 
-						update_universe();
+                        space.update_universe();
 
 						if (elite.docked)
 						{

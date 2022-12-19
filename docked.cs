@@ -393,7 +393,7 @@ namespace Elite
             alg_gfx.gfx_display_text(16, 266, str);
 
 			description = describe_planet(elite.hyperspace_planet);
-			gfx_display_pretty_text(16, 298, 400, 384, description);
+			alg_gfx.gfx_display_pretty_text(16, 298, 400, 384, description);
 		}
 
 

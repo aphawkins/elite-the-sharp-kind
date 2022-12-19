@@ -582,12 +582,10 @@ namespace Elite
 			}
 		}
 
-
 		/*
 		 * Update all the objects in the universe and render them.
 		 */
-
-		static void update_universe()
+		internal static void update_universe()
 		{
 			SHIP type;
 			int bounty;

@@ -24,46 +24,45 @@ namespace Elite
 {
 	internal static class keyboard
 	{
-		int kbd_F1_pressed;
-		int kbd_F2_pressed;
-		int kbd_F3_pressed;
-		int kbd_F4_pressed;
-		int kbd_F5_pressed;
-		int kbd_F6_pressed;
-		int kbd_F7_pressed;
-		int kbd_F8_pressed;
-		int kbd_F9_pressed;
-		int kbd_F10_pressed;
-		int kbd_F11_pressed;
-		int kbd_F12_pressed;
-		int kbd_y_pressed;
-		int kbd_n_pressed;
-		int kbd_fire_pressed;
-		int kbd_ecm_pressed;
-		int kbd_energy_bomb_pressed;
-		int kbd_hyperspace_pressed;
-		int kbd_ctrl_pressed;
-		int kbd_jump_pressed;
-		int kbd_escape_pressed;
-		int kbd_dock_pressed;
-		int kbd_d_pressed;
-		int kbd_origin_pressed;
-		int kbd_find_pressed;
-		int kbd_fire_missile_pressed;
-		int kbd_target_missile_pressed;
-		int kbd_unarm_missile_pressed;
-		int kbd_pause_pressed;
-		int kbd_resume_pressed;
-		int kbd_inc_speed_pressed;
-		int kbd_dec_speed_pressed;
-		int kbd_up_pressed;
-		int kbd_down_pressed;
-		int kbd_left_pressed;
-		int kbd_right_pressed;
-		int kbd_enter_pressed;
-		int kbd_backspace_pressed;
-		int kbd_space_pressed;
-
+        internal static bool kbd_F1_pressed;
+        internal static bool kbd_F2_pressed;
+        internal static bool kbd_F3_pressed;
+        internal static bool kbd_F4_pressed;
+        internal static bool kbd_F5_pressed;
+        internal static bool kbd_F6_pressed;
+        internal static bool kbd_F7_pressed;
+        internal static bool kbd_F8_pressed;
+        internal static bool kbd_F9_pressed;
+        internal static bool kbd_F10_pressed;
+        internal static bool kbd_F11_pressed;
+        internal static bool kbd_F12_pressed;
+        internal static bool kbd_y_pressed;
+        internal static bool kbd_n_pressed;
+        internal static bool kbd_fire_pressed;
+        internal static bool kbd_ecm_pressed;
+        internal static bool kbd_energy_bomb_pressed;
+        internal static bool kbd_hyperspace_pressed;
+        internal static bool kbd_ctrl_pressed;
+        internal static bool kbd_jump_pressed;
+        internal static bool kbd_escape_pressed;
+        internal static bool kbd_dock_pressed;
+        internal static bool kbd_d_pressed;
+        internal static bool kbd_origin_pressed;
+        internal static bool kbd_find_pressed;
+        internal static bool kbd_fire_missile_pressed;
+        internal static bool kbd_target_missile_pressed;
+        internal static bool kbd_unarm_missile_pressed;
+        internal static bool kbd_pause_pressed;
+        internal static bool kbd_resume_pressed;
+        internal static bool kbd_inc_speed_pressed;
+        internal static bool kbd_dec_speed_pressed;
+        internal static bool kbd_up_pressed;
+        internal static bool kbd_down_pressed;
+        internal static bool kbd_left_pressed;
+        internal static bool kbd_right_pressed;
+        internal static bool kbd_enter_pressed;
+        internal static bool kbd_backspace_pressed;
+		internal static bool kbd_space_pressed;
 
         static int kbd_keyboard_startup()
 		{
@@ -76,7 +75,7 @@ namespace Elite
 			return 0;
 		}
 
-		static void kbd_poll_keyboard()
+		internal static void kbd_poll_keyboard()
 		{
 			poll_keyboard();
 
@@ -134,8 +133,7 @@ namespace Elite
 			}
 		}
 
-
-		static int kbd_read_key()
+		internal static int kbd_read_key()
 		{
 			int keynum;
 			int keycode;
