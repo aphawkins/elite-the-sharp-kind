@@ -57,37 +57,32 @@ namespace Elite
         static int hyper_countdown;
 		static string hyper_name;
         static int hyper_distance;
-        static int hyper_galactic;
+        static bool hyper_galactic;
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static int[] ship_count = new int[shipdata.NO_OF_SHIPS + 1];  /* many */
 
-		static void rotate_x_first(double* a, double* b, int direction)
+		static void rotate_x_first(ref double a, ref double b, int direction)
 		{
-			double fx, ux;
-
-			fx = *a;
-			ux = *b;
+            double fx = a;
+            double ux = b;
 
 			if (direction < 0)
 			{
-				*a = fx - (fx / 512) + (ux / 19);
-				*b = ux - (ux / 512) - (fx / 19);
+				a = fx - (fx / 512) + (ux / 19);
+				b = ux - (ux / 512) - (fx / 19);
 			}
 			else
 			{
-				*a = fx - (fx / 512) - (ux / 19);
-				*b = ux - (ux / 512) + (fx / 19);
+				a = fx - (fx / 512) - (ux / 19);
+				b = ux - (ux / 512) + (fx / 19);
 			}
 		}
 
-
-		static void rotate_vec(Vector[] vec, double alpha, double beta)
+		static void rotate_vec(ref Vector vec, double alpha, double beta)
 		{
-			double x, y, z;
-
-			x = vec.x;
-			y = vec.y;
-			z = vec.z;
+            double x = vec.x;
+            double y = vec.y;
+            double z = vec.z;
 
 			y = y - alpha * x;
 			x = x + alpha * y;
@@ -99,11 +94,9 @@ namespace Elite
 			vec.z = z;
 		}
 
-
 		/*
 		 * Update an objects location in the universe.
 		 */
-
 		static void move_univ_object(ref univ_object obj)
 		{
 			double x, y, z;
@@ -120,7 +113,7 @@ namespace Elite
 			y = obj.location.y;
 			z = obj.location.z;
 
-			if (!(obj.flags & FLG_DEAD))
+			if (!obj.flags.HasFlag(FLG.FLG_DEAD))
 			{
 				if (obj.velocity != 0)
 				{
@@ -135,9 +128,9 @@ namespace Elite
 				{
 					obj.velocity += obj.acceleration;
 					obj.acceleration = 0;
-					if (obj.velocity > elite.ship_list[obj.type].velocity)
+					if (obj.velocity > elite.ship_list[(int)obj.type].velocity)
 					{
-						obj.velocity = elite.ship_list[obj.type].velocity;
+						obj.velocity = elite.ship_list[(int)obj.type].velocity;
 					}
 
 					if (obj.velocity <= 0)
@@ -165,9 +158,9 @@ namespace Elite
 				beta = 0.0;
 			}
 
-			rotate_vec(&obj.rotmat[2], alpha, beta);
-			rotate_vec(&obj.rotmat[1], alpha, beta);
-			rotate_vec(&obj.rotmat[0], alpha, beta);
+			rotate_vec(ref obj.rotmat[2], alpha, beta);
+			rotate_vec(ref obj.rotmat[1], alpha, beta);
+			rotate_vec(ref obj.rotmat[0], alpha, beta);
 
 			if (obj.flags.HasFlag(FLG.FLG_DEAD))
 			{
@@ -181,9 +174,9 @@ namespace Elite
 
 			if (rotx != 0)
 			{
-				rotate_x_first(&obj.rotmat[2].x, &obj.rotmat[1].x, rotx);
-				rotate_x_first(&obj.rotmat[2].y, &obj.rotmat[1].y, rotx);
-				rotate_x_first(&obj.rotmat[2].z, &obj.rotmat[1].z, rotx);
+				rotate_x_first(ref obj.rotmat[2].x, ref obj.rotmat[1].x, rotx);
+				rotate_x_first(ref obj.rotmat[2].y, ref obj.rotmat[1].y, rotx);
+				rotate_x_first(ref obj.rotmat[2].z, ref obj.rotmat[1].z, rotx);
 
 				if ((rotx != 127) && (rotx != -127))
 					obj.rotx -= (rotx < 0) ? -1 : 1;
@@ -194,12 +187,14 @@ namespace Elite
 
 			if (rotz != 0)
 			{
-				rotate_x_first(&obj.rotmat[0].x, &obj.rotmat[1].x, rotz);
-				rotate_x_first(&obj.rotmat[0].y, &obj.rotmat[1].y, rotz);
-				rotate_x_first(&obj.rotmat[0].z, &obj.rotmat[1].z, rotz);
+				rotate_x_first(ref obj.rotmat[0].x, ref obj.rotmat[1].x, rotz);
+				rotate_x_first(ref obj.rotmat[0].y, ref obj.rotmat[1].y, rotz);
+				rotate_x_first(ref obj.rotmat[0].z, ref obj.rotmat[1].z, rotz);
 
 				if ((rotz != 127) && (rotz != -127))
+				{
 					obj.rotz -= (rotz < 0) ? -1 : 1;
+				}
 			}
 
 
@@ -213,7 +208,7 @@ namespace Elite
 		 */
 		internal static void dock_player()
 		{
-			disengage_auto_pilot();
+            pilot.disengage_auto_pilot();
             elite.docked = true;
             elite.flight_speed = 0;
             elite.flight_roll = 0;
@@ -223,7 +218,7 @@ namespace Elite
 			elite.energy = 255;
             elite.myship.altitude = 255;
             elite.myship.cabtemp = 30;
-			reset_weapons();
+			swat.reset_weapons();
 		}
 
 		/*
@@ -274,14 +269,11 @@ namespace Elite
 		static void do_game_over()
 		{
             sound.snd_play_sample(SND.SND_GAMEOVER);
-			game_over = 1;
+			elite.game_over = true;
 		}
 
 		static void update_altitude()
 		{
-			double x, y, z;
-			double dist;
-
             elite.myship.altitude = 255;
 
 			if (elite.witchspace)
@@ -289,21 +281,25 @@ namespace Elite
 				return;
 			}
 
-			x = Math.Abs(universe[0].location.x);
-			y = Math.Abs(universe[0].location.y);
-			z = Math.Abs(universe[0].location.z);
+            double x = Math.Abs(universe[0].location.x);
+            double y = Math.Abs(universe[0].location.y);
+            double z = Math.Abs(universe[0].location.z);
 
 			if ((x > 65535) || (y > 65535) || (z > 65535))
+			{
 				return;
+			}
 
 			x /= 256;
 			y /= 256;
 			z /= 256;
 
-			dist = (x * x) + (y * y) + (z * z);
+            double dist = (x * x) + (y * y) + (z * z);
 
 			if (dist > 65535)
+			{
 				return;
+			}
 
 			dist -= 9472;
 			if (dist < 1)
@@ -313,7 +309,7 @@ namespace Elite
 				return;
 			}
 
-			dist = sqrt(dist);
+			dist = Math.Sqrt(dist);
 			if (dist < 1)
 			{
                 elite.myship.altitude = 0;
@@ -321,7 +317,7 @@ namespace Elite
 				return;
 			}
 
-            elite.myship.altitude = dist;
+            elite.myship.altitude = (int)dist;
 		}
 
 
@@ -494,7 +490,7 @@ namespace Elite
 
 			VectorMaths.tidy_matrix(rotmat);
 
-			add_new_station(sx, sy, sz, rotmat);
+			swat.add_new_station(sx, sy, sz, rotmat);
 		}
 
 		static void check_docking(int i)
@@ -593,15 +589,14 @@ namespace Elite
 
 		static void update_universe()
 		{
-			int i;
             SHIP type;
 			int bounty;
-			char str[80];
+			string str;
 			univ_object flip;
 
-			gfx_start_render();
+			alg_gfx.gfx_start_render();
 
-			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				type = universe[i].type;
 
@@ -614,12 +609,12 @@ namespace Elite
 							elite.cmdr.legal_status |= 64;
 						}
 
-						bounty = elite.ship_list[type].bounty;
+						bounty = elite.ship_list[(int)type].bounty;
 
 						if ((bounty != 0) && (!elite.witchspace))
 						{
 							elite.cmdr.credits += bounty;
-							sprintf(str, "%d.%d CR", elite.cmdr.credits / 10, elite.cmdr.credits % 10);
+							str = $"{elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d} CR";
                             alg_main.info_message(str);
 						}
 
@@ -627,7 +622,7 @@ namespace Elite
 						continue;
 					}
 
-					if (detonate_bomb && 
+					if (elite.detonate_bomb && 
 						(!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
 						(type != SHIP.SHIP_PLANET) && 
 						(type != SHIP.SHIP_SUN) &&
@@ -645,13 +640,13 @@ namespace Elite
 						(elite.current_screen != SCR.SCR_GAME_OVER) &&
 						(elite.current_screen != SCR.SCR_ESCAPE_POD))
 					{
-						tactics(i);
+						swat.tactics(i);
 					}
 
-					move_univ_object(universe[i]);
+					move_univ_object(ref universe[i]);
 
 					flip = universe[i];
-					switch_to_view(&flip);
+					switch_to_view(ref flip);
 
 					if (type == SHIP.SHIP_PLANET)
 					{
@@ -662,21 +657,23 @@ namespace Elite
 							make_station_appear();
 						}
 
-						draw_ship(&flip);
+						threed.draw_ship(ref flip);
 						continue;
 					}
 
 					if (type == SHIP.SHIP_SUN)
 					{
-						draw_ship(&flip);
+                        threed.draw_ship(ref flip);
 						continue;
 					}
 
 
 					if (universe[i].distance < 170)
 					{
-						if ((type == SHIP_CORIOLIS) || (type == SHIP_DODEC))
+						if ((type == SHIP.SHIP_CORIOLIS) || (type == SHIP.SHIP_DODEC))
+						{
 							check_docking(i);
+						}
 						else
 							trade.scoop_item(i);
 
@@ -689,7 +686,7 @@ namespace Elite
 						continue;
 					}
 
-					draw_ship(&flip);
+					threed.draw_ship(ref flip);
 
 					universe[i].flags = flip.flags;
 					universe[i].exp_seed = flip.exp_seed;
@@ -697,25 +694,23 @@ namespace Elite
 
 					universe[i].flags &= ~FLG.FLG_FIRING;
 
-					if (universe[i].flags & FLG.FLG_DEAD)
+					if (universe[i].flags.HasFlag(FLG.FLG_DEAD))
+					{
 						continue;
+					}
 
-					check_target(i, &flip);
+					swat.check_target(i, ref flip);
 				}
 			}
 
-			gfx_finish_render();
-			detonate_bomb = 0;
+			alg_gfx.gfx_finish_render();
+			elite.detonate_bomb = false;
 		}
-
-
-
 
 		/*
 		 * Update the scanner and draw all the lollipops.
 		 */
-
-		void update_scanner()
+		static void update_scanner()
 		{
 			int i;
 			int x, y, z;
@@ -731,9 +726,9 @@ namespace Elite
 					continue;
 				}
 
-				x = universe[i].location.x / 256;
-				y = universe[i].location.y / 256;
-				z = universe[i].location.z / 256;
+				x = (int)(universe[i].location.x / 256);
+				y = (int)(universe[i].location.y / 256);
+				z = (int)(universe[i].location.z / 256);
 
 				x1 = x;
 				y1 = -z / 4;
@@ -743,11 +738,11 @@ namespace Elite
 					(x1 < -50) || (x1 > 50))
 					continue;
 
-				x1 += scanner_cx;
-				y1 += scanner_cy;
-				y2 += scanner_cy;
+				x1 += elite.scanner_cx;
+				y1 += elite.scanner_cy;
+				y2 += elite.scanner_cy;
 
-				colour = universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL_YELLOW_5 : GFX_COL_WHITE;
+				colour = universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? gfx.GFX_COL_YELLOW_5 : gfx.GFX_COL_WHITE;
 
 				switch (universe[i].type)
 				{
@@ -777,7 +772,6 @@ namespace Elite
 			}
 		}
 
-
 		/*
 		 * Update the compass which tracks the space station / planet.
 		 */
@@ -800,16 +794,16 @@ namespace Elite
 
 			dest = VectorMaths.unit_vector(universe[un].location);
 
-			compass_x = compass_centre_x + (dest.x * 16);
-			compass_y = compass_centre_y + (dest.y * -16);
+			compass_x = (int)(elite.compass_centre_x + (dest.x * 16));
+			compass_y = (int)(elite.compass_centre_y + (dest.y * -16));
 
 			if (dest.z < 0)
 			{
-				gfx_draw_sprite(IMG_RED_DOT, compass_x, compass_y);
+                alg_gfx.gfx_draw_sprite(gfx.IMG_RED_DOT, compass_x, compass_y);
 			}
 			else
 			{
-				gfx_draw_sprite(IMG_GREEN_DOT, compass_x, compass_y);
+                alg_gfx.gfx_draw_sprite(gfx.IMG_GREEN_DOT, compass_x, compass_y);
 			}
 
 		}
@@ -837,24 +831,22 @@ namespace Elite
 			}
 		}
 
-
 		/*
 		 * Draw an indicator bar.
 		 * Used for shields and energy banks.
 		 */
-
-		void display_dial_bar(int len, int x, int y)
+		static void display_dial_bar(int len, int x, int y)
 		{
 			int i = 0;
 
-            alg_gfx.gfx_draw_colour_line(x, y + 384, x + len, y + 384, GFX_COL_GOLD);
+            alg_gfx.gfx_draw_colour_line(x, y + 384, x + len, y + 384, gfx.GFX_COL_GOLD);
 			i++;
-            alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_GOLD);
+            alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, gfx.GFX_COL_GOLD);
 
 			for (i = 2; i < 7; i++)
-                alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_YELLOW_1);
+                alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, gfx.GFX_COL_YELLOW_1);
 
-            alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL_DARK_RED);
+            alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, gfx.GFX_COL_DARK_RED);
 		}
 
 		/*
@@ -966,7 +958,6 @@ namespace Elite
 			}
 		}
 
-
 		static void display_fuel()
 		{
 			if (elite.cmdr.fuel > 0)
@@ -975,40 +966,36 @@ namespace Elite
 			}
 		}
 
-
-		static void display_missiles()
+        static void display_missiles()
 		{
-			int nomiss;
-			int x, y;
-
 			if (elite.cmdr.missiles == 0)
-				return;
-
-			nomiss = elite.cmdr.missiles > 4 ? 4 : elite.cmdr.missiles;
-
-			x = (4 - nomiss) * 16 + 35;
-			y = 113 + 385;
-
-			if (missile_target != swat.MISSILE_UNARMED)
 			{
-				gfx_draw_sprite((missile_target < 0) ? IMG_MISSILE_YELLOW :
-														IMG_MISSILE_RED, x, y);
+				return;
+			}
+
+			int nomiss = elite.cmdr.missiles > 4 ? 4 : elite.cmdr.missiles;
+
+            int x = (4 - nomiss) * 16 + 35;
+            int y = 113 + 385;
+
+			if (swat.missile_target != swat.MISSILE_UNARMED)
+			{
+                alg_gfx.gfx_draw_sprite((swat.missile_target < 0) ? gfx.IMG_MISSILE_YELLOW : gfx.IMG_MISSILE_RED, x, y);
 				x += 16;
 				nomiss--;
 			}
 
 			for (; nomiss > 0; nomiss--)
 			{
-				gfx_draw_sprite(IMG_MISSILE_GREEN, x, y);
+                alg_gfx.gfx_draw_sprite(gfx.IMG_MISSILE_GREEN, x, y);
 				x += 16;
 			}
 		}
 
-
-		void update_console()
+		static void update_console()
 		{
-			gfx_set_clip_region(0, 0, 512, 512);
-			gfx_draw_scanner();
+            alg_gfx.gfx_set_clip_region(0, 0, 512, 512);
+            alg_gfx.gfx_draw_scanner();
 
 			display_speed();
 			display_flight_climb();
@@ -1031,12 +1018,12 @@ namespace Elite
 
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-				gfx_draw_sprite(IMG_BIG_S, 387, 490);
+                alg_gfx.gfx_draw_sprite(gfx.IMG_BIG_S, 387, 490);
 			}
 
 			if (swat.ecm_active != 0)
 			{
-				gfx_draw_sprite(IMG_BIG_E, 115, 490);
+                alg_gfx.gfx_draw_sprite(gfx.IMG_BIG_E, 115, 490);
 			}
 		}
 
@@ -1048,7 +1035,6 @@ namespace Elite
 			}
 		}
 
-
 		static void decrease_flight_roll()
 		{
 			if (elite.flight_roll > -elite.myship.max_roll)
@@ -1056,7 +1042,6 @@ namespace Elite
 				elite.flight_roll--;
 			}
 		}
-
 
 		static void increase_flight_climb()
 		{
@@ -1073,8 +1058,7 @@ namespace Elite
 				elite.flight_climb--;
 			}
 		}
-
-
+		
 		static void start_hyperspace()
 		{
 			if (hyper_ready)
@@ -1082,64 +1066,64 @@ namespace Elite
 				return;
 			}
 
-			hyper_distance = calc_distance_to_planet(elite.docked_planet, hyperspace_planet);
+			hyper_distance = Docked.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
 			if ((hyper_distance == 0) || (hyper_distance > elite.cmdr.fuel))
+			{
 				return;
+			}
 
-			destination_planet = hyperspace_planet;
+			destination_planet = elite.hyperspace_planet;
 			hyper_name = Planet.name_planet(ref destination_planet);
 			hyper_name = Planet.capitalise_name(hyper_name);
 
 			hyper_ready = true;
 			hyper_countdown = 15;
-			hyper_galactic = 0;
+			hyper_galactic = false;
 
-			disengage_auto_pilot();
+            pilot.disengage_auto_pilot();
 		}
 
-		void start_galactic_hyperspace()
+		static void start_galactic_hyperspace()
 		{
 			if (hyper_ready)
 			{
 				return;
 			}
 
-			if (elite.cmdr.galactic_hyperdrive == 0)
+			if (!elite.cmdr.galactic_hyperdrive)
 			{
 				return;
 			}
 
 			hyper_ready = true;
 			hyper_countdown = 2;
-			hyper_galactic = 1;
-			disengage_auto_pilot();
+			hyper_galactic = true;
+            pilot.disengage_auto_pilot();
 		}
 
 		static void display_hyper_status()
 		{
-			char str[80];
-
-			sprintf(str, "%d", hyper_countdown);
+			string str = $"{hyper_countdown:d}";
 
 			if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
 				(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW))
 			{
-				gfx_display_text(5, 5, str);
+                alg_gfx.gfx_display_text(5, 5, str);
 				if (hyper_galactic)
 				{
                     alg_gfx.gfx_display_centre_text(358, "Galactic Hyperspace", 120, gfx.GFX_COL_WHITE);
 				}
 				else
 				{
-					sprintf(str, "Hyperspace - %s", hyper_name);
+					str = "Hyperspace - " + hyper_name;
                     alg_gfx.gfx_display_centre_text(358, str, 120, gfx.GFX_COL_WHITE);
 				}
 			}
 			else
 			{
                 alg_gfx.gfx_clear_area(5, 5, 25, 34);
-				gfx_display_text(5, 5, str);
+                alg_gfx.gfx_display_text(5, 5, str);
 			}
 		}
 
@@ -1161,7 +1145,7 @@ namespace Elite
 			elite.cmdr.galaxy.f = rotate_byte_left(elite.cmdr.galaxy.f);
 
             elite.docked_planet = Planet.find_planet(0x60, 0x60);
-			hyperspace_planet = elite.docked_planet;
+            elite.hyperspace_planet = elite.docked_planet;
 		}
 
 		static void enter_witchspace()
@@ -1176,14 +1160,14 @@ namespace Elite
             elite.flight_speed = 12;
             elite.flight_roll = 0;
             elite.flight_climb = 0;
-			create_new_stars();
-			clear_universe();
+            Stars.create_new_stars();
+            swat.clear_universe();
 
 			nthg = (random.randint() & 3) + 1;
 
 			for (i = 0; i < nthg; i++)
 			{
-				create_thargoid();
+				swat.create_thargoid();
 			}
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
@@ -1200,7 +1184,7 @@ namespace Elite
 
 			if (hyper_galactic)
 			{
-				elite.cmdr.galactic_hyperdrive = 0;
+				elite.cmdr.galactic_hyperdrive = false;
 				enter_next_galaxy();
 				elite.cmdr.legal_status = 0;
 			}
@@ -1225,11 +1209,11 @@ namespace Elite
             elite.flight_speed = 12;
             elite.flight_roll = 0;
             elite.flight_climb = 0;
-			create_new_stars();
-			clear_universe();
+            Stars.create_new_stars();
+			swat.clear_universe();
 
-			generate_landscape(elite.docked_planet.a * 251 + docked_planet.b);
-			VectorMaths.set_init_matrix(rotmat);
+            threed.generate_landscape(elite.docked_planet.a * 251 + elite.docked_planet.b);
+			VectorMaths.set_init_matrix(ref rotmat);
 
 			pz = (((elite.docked_planet.b) & 7) + 7) / 2;
 			px = pz / 2;
@@ -1331,16 +1315,16 @@ namespace Elite
             elite.flight_roll = -15;
             elite.flight_climb = 0;
 			elite.cmdr.legal_status |= trade.carrying_contraband();
-			create_new_stars();
+            Stars.create_new_stars();
 			swat.clear_universe();
-			generate_landscape(elite.docked_planet.a * 251 + elite.docked_planet.b);
-			VectorMaths.set_init_matrix(rotmat);
+			threed.generate_landscape(elite.docked_planet.a * 251 + elite.docked_planet.b);
+			VectorMaths.set_init_matrix(ref rotmat);
 			swat.add_new_ship(SHIP.SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
 
 			rotmat[2].x = -rotmat[2].x;
 			rotmat[2].y = -rotmat[2].y;
 			rotmat[2].z = -rotmat[2].z;
-			add_new_station(0, 0, -256, rotmat);
+			swat.add_new_station(0, 0, -256, rotmat);
 
             elite.current_screen = SCR.SCR_BREAK_PATTERN;
             sound.snd_play_sample(SND.SND_LAUNCH);

@@ -59,7 +59,7 @@ namespace Elite
 
         internal static int planet_render_style = 0;
 
-        internal static int game_over;
+        internal static bool game_over;
         internal static bool docked;
         internal static int finish;
         internal static int flight_speed;
@@ -69,7 +69,7 @@ namespace Elite
         internal static int aft_shield;
         internal static int energy;
         internal static int laser_temp;
-        internal static int detonate_bomb;
+        internal static bool detonate_bomb;
         internal static bool auto_pilot;
 
 		internal static commander saved_cmdr = new commander(

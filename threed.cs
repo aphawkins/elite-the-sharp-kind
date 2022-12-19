@@ -480,7 +480,7 @@ namespace Elite
 			random.set_rand_seed(old_seed);
 		}
 
-		static void generate_landscape(int rnd_seed)
+		internal static void generate_landscape(int rnd_seed)
 		{
 			switch (elite.planet_render_style)
 			{
@@ -944,7 +944,7 @@ namespace Elite
 		 * Draws an object in the universe.
 		 * (Ship, Planet, Sun etc).
 		 */
-		static void draw_ship(ref univ_object ship)
+		internal static void draw_ship(ref univ_object ship)
 		{
 			if ((elite.current_screen != SCR.SCR_FRONT_VIEW) && (elite.current_screen != SCR.SCR_REAR_VIEW) &&
 				(elite.current_screen != SCR.SCR_LEFT_VIEW) && (elite.current_screen != SCR.SCR_RIGHT_VIEW) &&

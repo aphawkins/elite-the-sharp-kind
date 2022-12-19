@@ -206,14 +206,14 @@ namespace Elite
 			}
 		}
 
-		static void add_new_station(double sx, double sy, double sz, Vector[] rotmat)
+		internal static void add_new_station(double sx, double sy, double sz, Vector[] rotmat)
 		{
 			SHIP station = (elite.current_planet_data.techlevel >= 10) ? SHIP.SHIP_DODEC : SHIP.SHIP_CORIOLIS;
 			space.universe[1].type = 0;
 			add_new_ship(station, (int)sx, (int)sy, (int)sz, rotmat, 0, -127);
 		}
 
-		static void reset_weapons()
+		internal static void reset_weapons()
 		{
 			elite.laser_temp = 0;
 			laser_counter = 0;
@@ -337,7 +337,7 @@ namespace Elite
 			}
 		}
 
-		static void check_target(int un, ref univ_object flip)
+		internal static void check_target(int un, ref univ_object flip)
 		{
 			univ_object univ;
 
@@ -618,8 +618,7 @@ namespace Elite
 			launch_enemy(1, type, FLG.FLG_HAS_ECM | FLG.FLG_FLY_TO_PLANET, 113);
 		}
 
-
-		static void tactics(int un)
+		internal static void tactics(int un)
 		{
 			SHIP type;
 			int energy;
@@ -1024,7 +1023,7 @@ namespace Elite
 			return newship;
 		}
 
-		static void create_thargoid()
+		internal static void create_thargoid()
 		{
 			int newship;
 

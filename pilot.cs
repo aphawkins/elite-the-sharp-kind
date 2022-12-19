@@ -280,7 +280,7 @@ namespace Elite
 			sound.snd_play_midi(SND.SND_BLUE_DANUBE, 1);
 		}
 
-		static void disengage_auto_pilot()
+		internal static void disengage_auto_pilot()
 		{
 			if (elite.auto_pilot)
 			{

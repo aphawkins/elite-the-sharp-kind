@@ -480,7 +480,7 @@ namespace Elite
 						   x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
 		}
 
-		static void gfx_display_text(int x, int y, char* txt)
+		internal static void gfx_display_text(int x, int y, string txt)
 		{
 			text_mode(-1);
 			textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
@@ -571,19 +571,17 @@ namespace Elite
 			}
 		}
 
-
-		static void gfx_draw_scanner()
+		internal static void gfx_draw_scanner()
 		{
 			blit(scanner_image, gfx_screen, 0, 0, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
 		}
 
-		static void gfx_set_clip_region(int tx, int ty, int bx, int by)
+		internal static void gfx_set_clip_region(int tx, int ty, int bx, int by)
 		{
 			set_clip(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
 		}
 
-
-		static void gfx_start_render()
+		internal static void gfx_start_render()
 		{
 			start_poly = 0;
 			total_polys = 0;
@@ -652,7 +650,7 @@ namespace Elite
 			gfx_render_polygon(2, point_list, col, dist);
 		}
 
-		static void gfx_finish_render()
+		internal static void gfx_finish_render()
 		{
 			int num_points;
 			int* pl;
@@ -697,46 +695,45 @@ namespace Elite
 			polygon(gfx_screen, num_points, poly_list, face_colour);
 		}
 
-
-		void gfx_draw_sprite(int sprite_no, int x, int y)
+		internal static void gfx_draw_sprite(int sprite_no, int x, int y)
 		{
 			BITMAP* sprite_bmp;
 
 			switch (sprite_no)
 			{
-				case IMG_GREEN_DOT:
+				case gfx.IMG_GREEN_DOT:
 					sprite_bmp = datafile[GRNDOT].dat;
 					break;
 
-				case IMG_RED_DOT:
+				case gfx.IMG_RED_DOT:
 					sprite_bmp = datafile[REDDOT].dat;
 					break;
 
-				case IMG_BIG_S:
+				case gfx.IMG_BIG_S:
 					sprite_bmp = datafile[SAFE].dat;
 					break;
 
-				case IMG_ELITE_TXT:
+				case gfx.IMG_ELITE_TXT:
 					sprite_bmp = datafile[ELITETXT].dat;
 					break;
 
-				case IMG_BIG_E:
+				case gfx.IMG_BIG_E:
 					sprite_bmp = datafile[ECM].dat;
 					break;
 
-				case IMG_BLAKE:
+				case gfx.IMG_BLAKE:
 					sprite_bmp = datafile[BLAKE].dat;
 					break;
 
-				case IMG_MISSILE_GREEN:
+				case gfx.IMG_MISSILE_GREEN:
 					sprite_bmp = datafile[MISSILE_G].dat;
 					break;
 
-				case IMG_MISSILE_YELLOW:
+				case gfx.IMG_MISSILE_YELLOW:
 					sprite_bmp = datafile[MISSILE_Y].dat;
 					break;
 
-				case IMG_MISSILE_RED:
+				case gfx.IMG_MISSILE_RED:
 					sprite_bmp = datafile[MISSILE_R].dat;
 					break;
 

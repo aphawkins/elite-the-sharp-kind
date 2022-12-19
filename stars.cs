@@ -29,7 +29,7 @@ namespace Elite
 
 		static star[] stars = new star[20];
 
-		static void create_new_stars()
+		internal static void create_new_stars()
 		{
 			int i;
 			int nstars;
@@ -71,8 +71,8 @@ namespace Elite
 			{
 				/* Plot the stars in their current locations... */
 
-				sy = stars[i].y;
-				sx = stars[i].x;
+				sy = (int)stars[i].y;
+				sx = (int)stars[i].x;
 				zz = stars[i].z;
 
 				sx += 128;
@@ -127,8 +127,8 @@ namespace Elite
 					alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
 				}
 
-				sx = xx;
-				sy = yy;
+				sx = (int)xx;
+				sy = (int)yy;
 
 				if ((sx > 120) || (sx < -120) ||
 					(sy > 120) || (sy < -120) || (zz < 16))
@@ -169,8 +169,8 @@ namespace Elite
 			{
 				/* Plot the stars in their current locations... */
 
-				sy = stars[i].y;
-				sx = stars[i].x;
+				sy = (int)stars[i].y;
+				sx = (int)stars[i].x;
 				zz = stars[i].z;
 
 				sx += 128;
@@ -218,8 +218,8 @@ namespace Elite
 
 				if (Stars.warp_stars)
 				{
-					ey = yy;
-					ex = xx;
+					ey = (int)yy;
+					ex = (int)xx;
 					ex = (ex + 128) * gfx.GFX_SCALE;
 					ey = (ey + 96) * gfx.GFX_SCALE;
 
@@ -239,14 +239,14 @@ namespace Elite
 				{
 					stars[i].z = (random.rand255() & 127) + 51;
 
-					if (random.rand255() & 1)
+					if ((random.rand255() & 1) == 1)
 					{
 						stars[i].x = random.rand255() - 128;
-						stars[i].y = (random.rand255() & 1) ? -115 : 115;
+						stars[i].y = ((random.rand255() & 1) == 1) ? -115 : 115;
 					}
 					else
 					{
-						stars[i].x = (random.rand255() & 1) ? -126 : 126;
+						stars[i].x = ((random.rand255() & 1) == 1) ? -126 : 126;
 						stars[i].y = random.rand255() - 128;
 					}
 				}
@@ -283,8 +283,8 @@ namespace Elite
 
 			for (i = 0; i < nstars; i++)
 			{
-				sy = stars[i].y;
-				sx = stars[i].x;
+				sy = (int)stars[i].y;
+				sx = (int)stars[i].x;
 				zz = stars[i].z;
 
 				sx += 128;
@@ -365,8 +365,8 @@ namespace Elite
 			nstars = elite.witchspace ? 3 : 12;
 			for (i = 0; i < nstars; i++)
 			{
-				sy = stars[i].y;
-				sx = stars[i].x;
+				sy = (int)stars[i].y;
+				sx = (int)stars[i].x;
 				stars[i].x = sy;
 				stars[i].y = sx;
 			}

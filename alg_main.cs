@@ -90,14 +90,14 @@ namespace Elite
 			draw_lasers = 0;
 			mcount = 0;
 			space.hyper_ready = false;
-			detonate_bomb = 0;
+			elite.detonate_bomb = false;
 			find_input = 0;
 			elite.witchspace = false;
 			game_paused = 0;
 			elite.auto_pilot = false;
 
-			create_new_stars();
-			clear_universe();
+			Stars.create_new_stars();
+            swat.clear_universe();
 
 			cross_x = -1;
 			cross_y = -1;
@@ -113,7 +113,7 @@ namespace Elite
 		static void finish_game()
 		{
 			finish = 1;
-			game_over = 1;
+			elite.game_over = true;
 		}
 
 		/*
@@ -158,23 +158,23 @@ namespace Elite
 		{
 			if (elite.current_screen == SCR.SCR_SHORT_RANGE)
 			{
-				gfx_set_clip_region(1, 37, 510, 339);
+				alg_gfx.gfx_set_clip_region(1, 37, 510, 339);
 				xor_mode(TRUE);
 				alg_gfx.gfx_draw_colour_line(cx - 16, cy, cx + 16, cy, gfx.GFX_COL_RED);
                 alg_gfx.gfx_draw_colour_line(cx, cy - 16, cx, cy + 16, gfx.GFX_COL_RED);
 				xor_mode(FALSE);
-				gfx_set_clip_region(1, 1, 510, 383);
+                alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 				return;
 			}
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				gfx_set_clip_region(1, 37, 510, 293);
+                alg_gfx.gfx_set_clip_region(1, 37, 510, 293);
 				xor_mode(TRUE);
                 alg_gfx.gfx_draw_colour_line(cx - 8, cy, cx + 8, cy, gfx.GFX_COL_RED);
                 alg_gfx.gfx_draw_colour_line(cx, cy - 8, cx, cy + 8, gfx.GFX_COL_RED);
 				xor_mode(FALSE);
-				gfx_set_clip_region(1, 1, 510, 383);
+                alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 			}
 		}
 
@@ -456,7 +456,7 @@ namespace Elite
 				case SCR.SCR_LEFT_VIEW:
 					if (elite.auto_pilot)
 					{
-						disengage_auto_pilot();
+						pilot.disengage_auto_pilot();
 					}
 
 					break;
@@ -471,16 +471,18 @@ namespace Elite
 				find_input = 1;
 				*find_name = '\0';
 				gfx_clear_text_area();
-				gfx_display_text(16, 340, "Planet Name?");
+				alg_gfx.gfx_display_text(16, 340, "Planet Name?");
 			}
 		}
 
 		static void add_find_char(int letter)
 		{
-			char str[40];
+			string str;
 
 			if (strlen(find_name) == 16)
+			{
 				return;
+			}
 
 			str[0] = toupper(letter);
 			str[1] = '\0';
@@ -488,24 +490,26 @@ namespace Elite
 
 			sprintf(str, "Planet Name? %s", find_name);
 			gfx_clear_text_area();
-			gfx_display_text(16, 340, str);
+            alg_gfx.gfx_display_text(16, 340, str);
 		}
 
 
 		static void delete_find_char()
 		{
-			char str[40];
+			string str;
 			int len;
 
 			len = strlen(find_name);
 			if (len == 0)
+			{
 				return;
+			}
 
 			find_name[len - 1] = '\0';
 
 			sprintf(str, "Planet Name? %s", find_name);
 			gfx_clear_text_area();
-			gfx_display_text(16, 340, str);
+            alg_gfx.gfx_display_text(16, 340, str);
 		}
 
 		static void o_pressed()
@@ -645,7 +649,7 @@ namespace Elite
 					sound.snd_play_sample(SND.SND_EXPLODE);
 				}
 
-				gfx_set_clip_region(1, 1, 510, 383);
+                alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 				alg_gfx.gfx_clear_display();
 				update_starfield();
 				update_universe();
@@ -677,7 +681,7 @@ namespace Elite
 				}
 
 				Stars.warp_stars = true;
-				gfx_set_clip_region(1, 1, 510, 383);
+                alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
                 alg_gfx.gfx_clear_display();
 				update_starfield();
 				update_universe();
@@ -1011,7 +1015,7 @@ namespace Elite
 			{
 				if ((!elite.docked) && (elite.cmdr.energy_bomb))
 				{
-					detonate_bomb = 1;
+					elite.detonate_bomb = true;
 					elite.cmdr.energy_bomb = 0;
 				}
 			}
@@ -1190,12 +1194,12 @@ namespace Elite
 			SHIP type;
 
 			elite.current_screen = SCR.SCR_GAME_OVER;
-			gfx_set_clip_region(1, 1, 510, 383);
+            alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 
 			elite.flight_speed = 6;
 			elite.flight_roll = 0;
 			elite.flight_climb = 0;
-			clear_universe();
+            swat.clear_universe();
 
 			VectorMaths.set_init_matrix(rotmat);
 
@@ -1230,7 +1234,7 @@ namespace Elite
 		{
 			int i;
 
-			gfx_set_clip_region(1, 1, 510, 383);
+            alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
             alg_gfx.gfx_clear_display();
 
 			for (i = 0; i < 20; i++)
@@ -1292,7 +1296,7 @@ namespace Elite
 
 			while (!finish)
 			{
-				game_over = 0;
+				game_over = false;
 				initialise_game();
 				space.dock_player();
 
@@ -1308,11 +1312,11 @@ namespace Elite
 				space.dock_player();
                 Docked.display_commander_status();
 
-				while (!game_over)
+				while (!elite.game_over)
 				{
 					sound.snd_update_sound();
 					gfx_update_screen();
-					gfx_set_clip_region(1, 1, 510, 383);
+                    alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 
 					rolling = 0;
 					climbing = 0;

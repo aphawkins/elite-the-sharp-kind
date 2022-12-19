@@ -205,7 +205,7 @@ namespace Elite
 
             alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 
-			clear_universe();
+            swat.clear_universe();
             VectorMaths.set_init_matrix(rotmat);
 			swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, 200, 90, 600, rotmat, -127, -127);
             elite.flight_roll = 0;
@@ -284,7 +284,7 @@ namespace Elite
 			gfx_display_pretty_text(16, 50, 300, 384, mission2_brief_b);
 			gfx_display_pretty_text(16, 200, 470, 384, mission2_brief_c);
 
-			gfx_draw_sprite(IMG_BLAKE, 352, 46);
+            alg_gfx.gfx_draw_sprite(IMG_BLAKE, 352, 46);
 
             alg_gfx.gfx_display_centre_text(330, "Press space to continue.", 140, gfx.GFX_COL_GOLD);
 

@@ -23,8 +23,6 @@ namespace Elite
 
 	internal static class Planet
 	{
-		internal static galaxy_seed hyperspace_planet;
-
 		struct random_seed
 		{
 			internal int a;
@@ -378,13 +376,13 @@ namespace Elite
 					switch (source[j])
 					{
 						case 'H':
-							temp = name_planet(ref hyperspace_planet);
+							temp = name_planet(ref elite.hyperspace_planet);
 							temp = Planet.capitalise_name(temp);
 							planet_description += temp;
 							break;
 
 						case 'I':
-							temp = name_planet(ref hyperspace_planet);
+							temp = name_planet(ref elite.hyperspace_planet);
 							temp = Planet.capitalise_name(temp);
                             planet_description += temp;
                             planet_description += "ian";
