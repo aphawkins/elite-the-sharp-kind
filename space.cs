@@ -990,7 +990,7 @@ namespace Elite
 			}
 		}
 
-		static void update_console()
+		internal static void update_console()
 		{
 			alg_gfx.gfx_set_clip_region(0, 0, 512, 512);
 			alg_gfx.gfx_draw_scanner();

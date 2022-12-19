@@ -470,7 +470,7 @@ namespace Elite
 			{
 				find_input = 1;
 				*find_name = '\0';
-				gfx_clear_text_area();
+				alg_gfx.gfx_clear_text_area();
 				alg_gfx.gfx_display_text(16, 340, "Planet Name?");
 			}
 		}
@@ -489,7 +489,7 @@ namespace Elite
 			strcat(find_name, str);
 
 			sprintf(str, "Planet Name? %s", find_name);
-			gfx_clear_text_area();
+            alg_gfx.gfx_clear_text_area();
             alg_gfx.gfx_display_text(16, 340, str);
 		}
 
@@ -508,7 +508,7 @@ namespace Elite
 			find_name[len - 1] = '\0';
 
 			sprintf(str, "Planet Name? %s", find_name);
-			gfx_clear_text_area();
+            alg_gfx.gfx_clear_text_area();
             alg_gfx.gfx_display_text(16, 340, str);
 		}
 
@@ -660,7 +660,7 @@ namespace Elite
 
                 alg_gfx.gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
 
-				update_console();
+                space.update_console();
 				alg_gfx.gfx_update_screen();
 			}
 
@@ -685,7 +685,7 @@ namespace Elite
                 alg_gfx.gfx_clear_display();
                 Stars.update_starfield();
                 space.update_universe();
-				update_console();
+                space.update_console();
                 alg_gfx.gfx_update_screen();
 			}
 
@@ -1121,7 +1121,7 @@ namespace Elite
 			elite.restore_saved_commander();
 			set_commander_name(path);
 			saved_cmdr = cmdr;
-			update_console();
+            space.update_console();
 		}
 
 		static void run_first_intro_screen()
@@ -1249,7 +1249,7 @@ namespace Elite
 			{
 				check_mission_brief();
                 Docked.display_commander_status();
-				update_console();
+                space.update_console();
 			}
 			else
 				elite.current_screen = SCR.SCR_FRONT_VIEW;
@@ -1302,7 +1302,7 @@ namespace Elite
 				initialise_game();
 				space.dock_player();
 
-				update_console();
+                space.update_console();
 
 				elite.current_screen = SCR.SCR_FRONT_VIEW;
 				run_first_intro_screen();
@@ -1382,7 +1382,7 @@ namespace Elite
 
 						if (elite.docked)
 						{
-							update_console();
+                            space.update_console();
 							gfx_release_screen();
 							continue;
 						}
@@ -1450,7 +1450,7 @@ namespace Elite
 						cool_laser();
 						time_ecm();
 
-						update_console();
+                        space.update_console();
 					}
 
 					if (SCR.current_screen == SCR.SCR_BREAK_PATTERN)

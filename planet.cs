@@ -415,7 +415,7 @@ namespace Elite
 
 		}
 
-		static string describe_planet(galaxy_seed planet)
+		internal static string describe_planet(galaxy_seed planet)
 		{
 			string mission_text;
 
