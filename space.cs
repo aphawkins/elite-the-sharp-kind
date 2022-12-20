@@ -1025,7 +1025,7 @@ namespace Elite
 			}
 		}
 
-		static void increase_flight_roll()
+		internal static void increase_flight_roll()
 		{
 			if (elite.flight_roll < elite.myship.max_roll)
 			{
@@ -1033,7 +1033,7 @@ namespace Elite
 			}
 		}
 
-		static void decrease_flight_roll()
+		internal static void decrease_flight_roll()
 		{
 			if (elite.flight_roll > -elite.myship.max_roll)
 			{
@@ -1041,7 +1041,7 @@ namespace Elite
 			}
 		}
 
-		static void increase_flight_climb()
+		internal static void increase_flight_climb()
 		{
 			if (elite.flight_climb < elite.myship.max_climb)
 			{
@@ -1049,7 +1049,7 @@ namespace Elite
 			}
 		}
 
-		static void decrease_flight_climb()
+		internal static void decrease_flight_climb()
 		{
 			if (elite.flight_climb > -elite.myship.max_climb)
 			{

@@ -183,13 +183,13 @@ namespace Elite
 			hilite_item = item;
 		}
 
-		static void select_left_setting()
+		internal static void select_left_setting()
 		{
 			if ((hilite_item & 1) != 0)
 				highlight_setting(hilite_item - 1);
 		}
 
-		static void select_right_setting()
+		internal static void select_right_setting()
 		{
 			if (((hilite_item & 1) == 0) && (hilite_item < (NUM_SETTINGS - 1)))
 			{
@@ -197,7 +197,7 @@ namespace Elite
 			}
 		}
 
-		static void select_up_setting()
+		internal static void select_up_setting()
 		{
 			if (hilite_item == (NUM_SETTINGS - 1))
 			{
@@ -211,7 +211,7 @@ namespace Elite
 			}
 		}
 
-		static void select_down_setting()
+		internal static void select_down_setting()
 		{
 			if (hilite_item == (NUM_SETTINGS - 2))
 			{
@@ -225,7 +225,7 @@ namespace Elite
 			}
 		}
 
-		static void toggle_setting()
+		internal static void toggle_setting()
 		{
 			if (hilite_item == (NUM_SETTINGS - 1))
 			{
@@ -318,13 +318,13 @@ namespace Elite
 			hilite_item = i;
 		}
 
-		static void select_previous_option()
+		internal static void select_previous_option()
 		{
 			if (hilite_item > 0)
 				highlight_option(hilite_item - 1);
 		}
 
-		static void select_next_option()
+		internal static void select_next_option()
 		{
 			if (hilite_item < (NUM_OPTIONS - 1))
 			{
@@ -332,7 +332,7 @@ namespace Elite
 			}
 		}
 
-		static void do_option()
+		internal static void do_option()
 		{
 			if ((!elite.docked) && option_list[hilite_item].docked_only)
 			{

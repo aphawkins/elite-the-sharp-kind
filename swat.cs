@@ -1293,7 +1293,7 @@ namespace Elite
 			check_for_others();
 		}
 
-		static void abandon_ship()
+		internal static void abandon_ship()
 		{
 			int i;
 

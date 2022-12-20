@@ -131,7 +131,7 @@ namespace Elite
 			return 0;
 		}
 
-		static void gfx_graphics_shutdown()
+		internal static void gfx_graphics_shutdown()
 		{
 			destroy_bitmap(scanner_image);
 			destroy_bitmap(gfx_screen);
@@ -477,7 +477,14 @@ namespace Elite
 			}
 		}
 
-		internal static void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
+        internal static void gfx_draw_colour_line_xor(int x1, int y1, int x2, int y2, int line_colour)
+		{
+            xor_mode(TRUE);
+            gfx_draw_colour_line(x1, y1, x2, y2, line_colour);
+            xor_mode(FALSE);
+        }
+
+        internal static void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
 		{
 			triangle(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET,
 						   x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);

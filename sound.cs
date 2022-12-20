@@ -88,7 +88,7 @@ namespace Elite
 			//}
 		}
 
-		static void snd_sound_shutdown()
+		internal static void snd_sound_shutdown()
 		{
 			//int i;
 
