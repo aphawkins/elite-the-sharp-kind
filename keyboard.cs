@@ -137,7 +137,7 @@ namespace Elite
 		{
 			int keynum;
 			int keycode;
-			int keyasc;
+			char keyasc;
 
 			kbd_enter_pressed = false;
 			kbd_backspace_pressed = false;
@@ -149,13 +149,13 @@ namespace Elite
 			if (keycode == KEY_ENTER)
 			{
 				kbd_enter_pressed = true;
-				return 0;
+				return (char)0;
 			}
 
 			if (keycode == KEY_BACKSPACE)
 			{
 				kbd_backspace_pressed = true;
-				return 0;
+				return (char)0;
 			}
 
 			return keyasc;

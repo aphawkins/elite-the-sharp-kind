@@ -29,7 +29,26 @@ namespace Elite
 {
 	internal static class alg_gfx
 	{
-		BITMAP* gfx_screen;
+        /* Allegro datafile object indexes, produced by grabber v3.9.32 (WIP), Mingw32 */
+        /* Datafile: c:\usr\cprogs\NewKind\elite.dat */
+        /* Date: Mon May 07 19:20:00 2001 */
+        /* Do not hand edit! */
+        const int BLAKE = 0;        /* BMP  */
+		const int DANUBE = 1;        /* MIDI */
+		const int ECM = 2;        /* BMP  */
+		const int ELITE_1 = 3;        /* FONT */
+		const int ELITE_2 = 4;        /* FONT */
+		const int ELITETXT = 5;        /* BMP  */
+		const int FRONTV = 6;        /* BMP  */
+		const int GRNDOT = 7;        /* BMP  */
+		const int MISSILE_G = 8;        /* BMP  */
+		const int MISSILE_R = 9;        /* BMP  */
+		const int MISSILE_Y = 10;       /* BMP  */
+		const int REDDOT = 11;       /* BMP  */
+		const int SAFE = 12;       /* BMP  */
+		const int THEME = 13;       /* MIDI */
+
+        BITMAP* gfx_screen;
 		volatile static int frame_count;
 		DATAFILE* datafile;
 		BITMAP* scanner_image;
@@ -41,11 +60,11 @@ namespace Elite
 
 		struct poly_data
 		{
-			int z;
-			int no_points;
-			int face_colour;
-			int point_list[16];
-			int next;
+			internal int z;
+            internal int no_points;
+            internal int face_colour;
+			internal int[] point_list; // = new int[16];
+            internal int next;
 		};
 
 		static poly_data[] poly_chain = new poly_data[MAX_POLYS];
@@ -182,21 +201,20 @@ namespace Elite
 		}
 
 
-#define AA_BITS 3
-#define AA_AND  7
-#define AA_BASE 235
+		const int AA_BITS = 3;
+		const int AA_AND = 7;
+		const int AA_BASE = 235;
 
 #define trunc(x) ((x) & ~65535)
 #define frac(x) ((x) & 65535)
 #define invfrac(x) (65535-frac(x))
 #define plot(x,y,c) putpixel(gfx_screen, (x), (y), (c)+AA_BASE)
 
-		/*
+        /*
 		 * Draw anti-aliased wireframe circle.
 		 * By T.Harte.
 		 */
-
-		void gfx_draw_aa_circle(int cx, int cy, int radius)
+        static void gfx_draw_aa_circle(int cx, int cy, int radius)
 		{
 			int x, y;
 			int s;
@@ -266,13 +284,11 @@ namespace Elite
 			}
 		}
 
-
-		/*
+        /*
 		 * Draw anti-aliased line.
 		 * By T.Harte.
 		 */
-
-		void gfx_draw_aa_line(int x1, int y1, int x2, int y2)
+        static void gfx_draw_aa_line(int x1, int y1, int x2, int y2)
 		{
 			fixed grad, xd, yd;
 			fixed xgap, ygap, xend, yend, xf, yf;
@@ -288,7 +304,7 @@ namespace Elite
 			xd = x2 - x1;
 			yd = y2 - y1;
 
-			if (abs(xd) > abs(yd))
+			if (Math.Abs(xd) > Math.Abs(yd))
 			{
 				if (x1 > x2)
 				{
@@ -404,16 +420,14 @@ namespace Elite
 			}
 		}
 
-#undef trunc
-#undef frac
-#undef invfrac
-#undef plot
+//#undef trunc
+//#undef frac
+//#undef invfrac
+//#undef plot
 
-#undef AA_BITS
-#undef AA_AND
-#undef AA_BASE
-
-
+//#undef AA_BITS
+//#undef AA_AND
+//#undef AA_BASE
 
 		internal static void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
 		{
@@ -517,7 +531,7 @@ namespace Elite
 			}
 
 			text_mode(-1);
-			textout_centre(gfx_screen, datafile[txt_size].dat, str, (128 * GFX_SCALE) + GFX_X_OFFSET, (y / (2 / GFX_SCALE)) + GFX_Y_OFFSET, txt_colour);
+			textout_centre(gfx_screen, datafile[txt_size].dat, str, (128 * gfx.GFX_SCALE) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, txt_colour);
 		}
 
 		internal static void gfx_clear_display()
@@ -661,7 +675,7 @@ namespace Elite
 		internal static void gfx_finish_render()
 		{
 			int num_points;
-			int* pl;
+			int[] pl;
 			int i;
 			int col;
 
@@ -684,18 +698,15 @@ namespace Elite
 			};
 		}
 
-
-		void gfx_polygon(int num_points, int* poly_list, int face_colour)
+		static void gfx_polygon(int num_points, int[] poly_list, int face_colour)
 		{
-			int i;
-			int x, y;
+            int x = 0;
+            int y = 1;
 
-			x = 0;
-			y = 1;
-			for (i = 0; i < num_points; i++)
+			for (int i = 0; i < num_points; i++)
 			{
-				poly_list[x] += GFX_X_OFFSET;
-				poly_list[y] += GFX_Y_OFFSET;
+				poly_list[x] += gfx.GFX_X_OFFSET;
+				poly_list[y] += gfx.GFX_Y_OFFSET;
 				x += 2;
 				y += 2;
 			}
@@ -750,9 +761,11 @@ namespace Elite
 			}
 
 			if (x == -1)
-				x = ((256 * GFX_SCALE) - sprite_bmp.w) / 2;
+			{
+				x = ((256 * gfx.GFX_SCALE) - sprite_bmp.w) / 2;
+			}
 
-			draw_sprite(gfx_screen, sprite_bmp, x + GFX_X_OFFSET, y + GFX_Y_OFFSET);
+			draw_sprite(gfx_screen, sprite_bmp, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET);
 		}
 
 		internal static bool gfx_request_file(string title, string path, string ext)
@@ -761,7 +774,7 @@ namespace Elite
 
 			show_mouse(screen);
 			okay = file_select(title, path, ext);
-			show_mouse(NULL);
+			show_mouse(null);
 
 			return okay;
 		}
