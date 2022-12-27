@@ -322,7 +322,7 @@ namespace Elite
 			} while (keyasc != ' ');
 		}
 
-		static void check_mission_brief()
+		internal static void check_mission_brief()
 		{
 			if ((elite.cmdr.mission == 0) && (elite.cmdr.score >= 256) && (elite.cmdr.galaxy_number < 2))
 			{

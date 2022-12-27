@@ -63,11 +63,11 @@ namespace Elite
 		internal static int mcount;
 		static int message_count;
 		static string message_string;
-		static int rolling;
-		static int climbing;
-		static int game_paused;
+		static bool rolling;
+		static bool climbing;
+		static bool game_paused;
 		static bool have_joystick;
-		static int find_input;
+		static bool find_input;
 		static string find_name;
 
 		/*
@@ -91,28 +91,28 @@ namespace Elite
 			mcount = 0;
 			space.hyper_ready = false;
 			elite.detonate_bomb = false;
-			find_input = 0;
+			find_input = false;
 			elite.witchspace = false;
-			game_paused = 0;
+			game_paused = false;
 			elite.auto_pilot = false;
 
 			Stars.create_new_stars();
-            swat.clear_universe();
+			swat.clear_universe();
 
 			Docked.cross_x = -1;
-            Docked.cross_y = -1;
+			Docked.cross_y = -1;
 			cross_timer = 0;
 
 
-            elite.myship.max_speed = 40;      /* 0.27 Light Mach */
-            elite.myship.max_roll = 31;
-            elite.myship.max_climb = 8;       /* CF 8 */
-            elite.myship.max_fuel = 70;       /* 7.0 Light Years */
+			elite.myship.max_speed = 40;      /* 0.27 Light Mach */
+			elite.myship.max_roll = 31;
+			elite.myship.max_climb = 8;       /* CF 8 */
+			elite.myship.max_fuel = 70;       /* 7.0 Light Years */
 		}
 
 		static void finish_game()
 		{
-			elite.finish = 1;
+			elite.finish = true;
 			elite.game_over = true;
 		}
 
@@ -125,36 +125,36 @@ namespace Elite
 
 			if (elite.current_screen == SCR.SCR_SHORT_RANGE)
 			{
-                Docked.cross_x += (dx * 4);
-                Docked.cross_y += (dy * 4);
+				Docked.cross_x += (dx * 4);
+				Docked.cross_y += (dy * 4);
 				return;
 			}
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-                Docked.cross_x += (dx * 2);
-                Docked.cross_y += (dy * 2);
+				Docked.cross_x += (dx * 2);
+				Docked.cross_y += (dy * 2);
 
 				if (Docked.cross_x < 1)
-                {
-                    Docked.cross_x = 1;
-                }
+				{
+					Docked.cross_x = 1;
+				}
 
-                if (Docked.cross_x > 510)
-                {
-                    Docked.cross_x = 510;
-                }
+				if (Docked.cross_x > 510)
+				{
+					Docked.cross_x = 510;
+				}
 
-                if (Docked.cross_y < 37)
-                {
-                    Docked.cross_y = 37;
-                }
+				if (Docked.cross_y < 37)
+				{
+					Docked.cross_y = 37;
+				}
 
-                if (Docked.cross_y > 293)
-                {
-                    Docked.cross_y = 293;
-                }
-            }
+				if (Docked.cross_y > 293)
+				{
+					Docked.cross_y = 293;
+				}
+			}
 		}
 
 		/*
@@ -166,17 +166,17 @@ namespace Elite
 			{
 				alg_gfx.gfx_set_clip_region(1, 37, 510, 339);
 				alg_gfx.gfx_draw_colour_line_xor(cx - 16, cy, cx + 16, cy, gfx.GFX_COL_RED);
-                alg_gfx.gfx_draw_colour_line_xor(cx, cy - 16, cx, cy + 16, gfx.GFX_COL_RED);
-                alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
+				alg_gfx.gfx_draw_colour_line_xor(cx, cy - 16, cx, cy + 16, gfx.GFX_COL_RED);
+				alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 				return;
 			}
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-                alg_gfx.gfx_set_clip_region(1, 37, 510, 293);
-                alg_gfx.gfx_draw_colour_line_xor(cx - 8, cy, cx + 8, cy, gfx.GFX_COL_RED);
-                alg_gfx.gfx_draw_colour_line_xor(cx, cy - 8, cx, cy + 8, gfx.GFX_COL_RED);
-                alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
+				alg_gfx.gfx_set_clip_region(1, 37, 510, 293);
+				alg_gfx.gfx_draw_colour_line_xor(cx - 8, cy, cx + 8, cy, gfx.GFX_COL_RED);
+				alg_gfx.gfx_draw_colour_line_xor(cx, cy - 8, cx, cy + 8, gfx.GFX_COL_RED);
+				alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 			}
 		}
 
@@ -193,17 +193,17 @@ namespace Elite
 					break;
 
 				case SCR.SCR_REAR_VIEW:
-                    alg_gfx.gfx_display_centre_text(32, "Rear View", 120, gfx.GFX_COL_WHITE);
+					alg_gfx.gfx_display_centre_text(32, "Rear View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.rear_laser;
 					break;
 
 				case SCR.SCR_LEFT_VIEW:
-                    alg_gfx.gfx_display_centre_text(32, "Left View", 120, gfx.GFX_COL_WHITE);
+					alg_gfx.gfx_display_centre_text(32, "Left View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.left_laser;
 					break;
 
 				case SCR.SCR_RIGHT_VIEW:
-                    alg_gfx.gfx_display_centre_text(32, "Right View", 120, gfx.GFX_COL_WHITE);
+					alg_gfx.gfx_display_centre_text(32, "Right View", 120, gfx.GFX_COL_WHITE);
 					laser = elite.cmdr.right_laser;
 					break;
 			}
@@ -214,31 +214,31 @@ namespace Elite
 				y1 = (96 - 8) * gfx.GFX_SCALE;
 				y2 = (96 - 16) * gfx.GFX_SCALE;
 
-                alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
-                alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
-                alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
+				alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
+				alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
 
 				y1 = (96 + 8) * gfx.GFX_SCALE;
 				y2 = (96 + 16) * gfx.GFX_SCALE;
 
-                alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
-                alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
-                alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
+				alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
+				alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
 
 				x1 = (128 - 8) * gfx.GFX_SCALE;
 				y1 = 96 * gfx.GFX_SCALE;
 				x2 = (128 - 16) * gfx.GFX_SCALE;
 
-                alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
-                alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
-                alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
+				alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
+				alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
 
 				x1 = (128 + 8) * gfx.GFX_SCALE;
 				x2 = (128 + 16) * gfx.GFX_SCALE;
 
-                alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
-                alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
-                alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
+				alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
+				alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
 			}
 		}
 
@@ -270,8 +270,8 @@ namespace Elite
 					else
 					{
 						space.decrease_flight_roll();
-                        space.decrease_flight_roll();
-						rolling = 1;
+						space.decrease_flight_roll();
+						rolling = true;
 					}
 					break;
 			}
@@ -305,8 +305,8 @@ namespace Elite
 					else
 					{
 						space.increase_flight_roll();
-                        space.increase_flight_roll();
-						rolling = 1;
+						space.increase_flight_roll();
+						rolling = true;
 					}
 					break;
 			}
@@ -349,7 +349,7 @@ namespace Elite
 					{
 						space.decrease_flight_climb();
 					}
-					climbing = 1;
+					climbing = true;
 					break;
 			}
 		}
@@ -391,7 +391,7 @@ namespace Elite
 					{
 						space.increase_flight_climb();
 					}
-					climbing = 1;
+					climbing = true;
 					break;
 			}
 		}
@@ -431,7 +431,7 @@ namespace Elite
 				case SCR.SCR_QUIT:
 					if (elite.docked)
 					{
-                        Docked.display_commander_status();
+						Docked.display_commander_status();
 					}
 					else
 					{
@@ -470,7 +470,7 @@ namespace Elite
 			if ((elite.current_screen == SCR.SCR_GALACTIC_CHART) ||
 				(elite.current_screen == SCR.SCR_SHORT_RANGE))
 			{
-				find_input = 1;
+				find_input = true;
 				find_name = string.Empty;
 				alg_gfx.gfx_clear_text_area();
 				alg_gfx.gfx_display_text(16, 340, "Planet Name?");
@@ -488,8 +488,8 @@ namespace Elite
 			find_name += str;
 
 			str = "Planet Name? " + find_name;
-            alg_gfx.gfx_clear_text_area();
-            alg_gfx.gfx_display_text(16, 340, str);
+			alg_gfx.gfx_clear_text_area();
+			alg_gfx.gfx_display_text(16, 340, str);
 		}
 
 		static void delete_find_char()
@@ -505,8 +505,8 @@ namespace Elite
 			find_name = find_name[..^1];
 
 			str = "Planet Name? " + find_name;
-            alg_gfx.gfx_clear_text_area();
-            alg_gfx.gfx_display_text(16, 340, str);
+			alg_gfx.gfx_clear_text_area();
+			alg_gfx.gfx_display_text(16, 340, str);
 		}
 
 		static void o_pressed()
@@ -575,23 +575,23 @@ namespace Elite
 
 			if (ship.rotx < 0)
 			{
-                space.increase_flight_climb();
+				space.increase_flight_climb();
 
 				if (ship.rotx < -1)
-                {
-                    space.increase_flight_climb();
-                }
-            }
+				{
+					space.increase_flight_climb();
+				}
+			}
 
 			if (ship.rotx > 0)
 			{
-                space.decrease_flight_climb();
+				space.decrease_flight_climb();
 
 				if (ship.rotx > 1)
-                {
-                    space.decrease_flight_climb();
-                }
-            }
+				{
+					space.decrease_flight_climb();
+				}
+			}
 
 			if (ship.rotz == 127)
 			{
@@ -606,23 +606,23 @@ namespace Elite
 
 				if (ship.rotz > 0)
 				{
-                    space.increase_flight_roll();
+					space.increase_flight_roll();
 
 					if (ship.rotz > 1)
-                    {
-                        space.increase_flight_roll();
-                    }
-                }
+					{
+						space.increase_flight_roll();
+					}
+				}
 
 				if (ship.rotz < 0)
 				{
-                    space.decrease_flight_roll();
+					space.decrease_flight_roll();
 
 					if (ship.rotz < -1)
-                    {
-                        space.decrease_flight_roll();
-                    }
-                }
+					{
+						space.decrease_flight_roll();
+					}
+				}
 			}
 		}
 
@@ -653,18 +653,18 @@ namespace Elite
 					sound.snd_play_sample(SND.SND_EXPLODE);
 				}
 
-                alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
+				alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 				alg_gfx.gfx_clear_display();
-                Stars.update_starfield();
+				Stars.update_starfield();
 				space.update_universe();
 
 				space.universe[newship].location.x = 0;
 				space.universe[newship].location.y = 0;
 				space.universe[newship].location.z += 2;
 
-                alg_gfx.gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
+				alg_gfx.gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
 
-                space.update_console();
+				space.update_console();
 				alg_gfx.gfx_update_screen();
 			}
 
@@ -685,21 +685,20 @@ namespace Elite
 				}
 
 				Stars.warp_stars = true;
-                alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
-                alg_gfx.gfx_clear_display();
-                Stars.update_starfield();
-                space.update_universe();
-                space.update_console();
-                alg_gfx.gfx_update_screen();
+				alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
+				alg_gfx.gfx_clear_display();
+				Stars.update_starfield();
+				space.update_universe();
+				space.update_console();
+				alg_gfx.gfx_update_screen();
 			}
 
 			swat.abandon_ship();
 		}
 
-
 		static void handle_flight_keys()
 		{
-			int keyasc;
+			char keyasc;
 
 			if (elite.docked &&
 				((elite.current_screen == SCR.SCR_MARKET_PRICES) ||
@@ -712,146 +711,148 @@ namespace Elite
 
 			keyboard.kbd_poll_keyboard();
 
-			if (have_joystick)
-			{
-				poll_joystick();
+			//if (have_joystick)
+			//{
+			//	poll_joystick();
 
-				if (joy[0].stick[0].axis[1].d1)
-					arrow_up();
+			//	if (joy[0].stick[0].axis[1].d1)
+			//		arrow_up();
 
-				if (joy[0].stick[0].axis[1].d2)
-					arrow_down();
+			//	if (joy[0].stick[0].axis[1].d2)
+			//		arrow_down();
 
-				if (joy[0].stick[0].axis[0].d1)
-					arrow_left();
+			//	if (joy[0].stick[0].axis[0].d1)
+			//		arrow_left();
 
-				if (joy[0].stick[0].axis[0].d2)
-					arrow_right();
+			//	if (joy[0].stick[0].axis[0].d2)
+			//		arrow_right();
 
-				if (joy[0].button[0].b)
-					keyboard.kbd_fire_pressed = 1;
+			//	if (joy[0].button[0].b)
+			//		keyboard.kbd_fire_pressed = true;
 
-				if (joy[0].button[1].b)
-                    keyboard.kbd_inc_speed_pressed = 1;
+			//	if (joy[0].button[1].b)
+			//		keyboard.kbd_inc_speed_pressed = true;
 
-				if (joy[0].button[2].b)
-                    keyboard.kbd_dec_speed_pressed = 1;
-			}
-
+			//	if (joy[0].button[2].b)
+			//		keyboard.kbd_dec_speed_pressed = true;
+			//}
 
 			if (game_paused)
 			{
 				if (keyboard.kbd_resume_pressed)
-					game_paused = 0;
+				{
+					game_paused = false;
+				}
+
 				return;
 			}
 
 			if (keyboard.kbd_F1_pressed)
 			{
-				find_input = 0;
+				find_input = false;
 
 				if (elite.docked)
 				{
-					launch_player();
+					space.launch_player();
 				}
 				else
 				{
 					if (elite.current_screen != SCR.SCR_FRONT_VIEW)
 					{
-						current_screen = SCR.SCR_FRONT_VIEW;
-						flip_stars();
+						elite.current_screen = SCR.SCR_FRONT_VIEW;
+						Stars.flip_stars();
 					}
 				}
 			}
 
 			if (keyboard.kbd_F2_pressed)
 			{
-				find_input = 0;
+				find_input = false;
 
 				if (!elite.docked)
 				{
 					if (elite.current_screen != SCR.SCR_REAR_VIEW)
 					{
 						elite.current_screen = SCR.SCR_REAR_VIEW;
-						flip_stars();
+						Stars.flip_stars();
 					}
 				}
 			}
 
 			if (keyboard.kbd_F3_pressed)
 			{
-				find_input = 0;
+				find_input = false;
 
 				if (!elite.docked)
 				{
 					if (elite.current_screen != SCR.SCR_LEFT_VIEW)
 					{
 						elite.current_screen = SCR.SCR_LEFT_VIEW;
-						flip_stars();
+						Stars.flip_stars();
 					}
 				}
 			}
 
 			if (keyboard.kbd_F4_pressed)
 			{
-				find_input = 0;
+				find_input = false;
 
 				if (elite.docked)
 				{
-					equip_ship();
+					Docked.equip_ship();
 				}
 				else
 				{
 					if (elite.current_screen != SCR.SCR_RIGHT_VIEW)
 					{
 						elite.current_screen = SCR.SCR_RIGHT_VIEW;
-						flip_stars();
+						Stars.flip_stars();
 					}
 				}
 			}
 
 			if (keyboard.kbd_F5_pressed)
 			{
-				find_input = 0;
+				find_input = false;
 				old_cross_x = -1;
-				display_galactic_chart();
+				Docked.display_galactic_chart();
 			}
 
 			if (keyboard.kbd_F6_pressed)
 			{
-				find_input = 0;
+				find_input = false;
 				old_cross_x = -1;
-				display_short_range_chart();
+				Docked.display_short_range_chart();
 			}
 
 			if (keyboard.kbd_F7_pressed)
 			{
-				find_input = 0;
-				display_data_on_planet();
+				find_input = false;
+				Docked.display_data_on_planet();
 			}
 
 			if (keyboard.kbd_F8_pressed && (!elite.witchspace))
 			{
-				find_input = 0;
-				display_market_prices();
+				find_input = false;
+				Docked.display_market_prices();
 			}
 
 			if (keyboard.kbd_F9_pressed)
 			{
-				find_input = 0;
-                Docked.display_commander_status();
+				find_input = false;
+				Docked.display_commander_status();
 			}
 
 			if (keyboard.kbd_F10_pressed)
 			{
-				find_input = 0;
-				display_inventory();
+				find_input = false;
+				Docked.display_inventory();
 			}
 
 			if (keyboard.kbd_F11_pressed)
 			{
-				find_input = 0;
-				display_options();
+				find_input = false;
+				options.display_options();
 			}
 
 			if (find_input)
@@ -860,7 +861,7 @@ namespace Elite
 
 				if (keyboard.kbd_enter_pressed)
 				{
-					find_input = 0;
+					find_input = false;
 					Docked.find_planet_by_name(find_name);
 					return;
 				}
@@ -871,24 +872,29 @@ namespace Elite
 					return;
 				}
 
-				if (isalpha(keyasc))
+				if (char.IsLetter(keyasc))
+				{
 					add_find_char(keyasc);
+				}
 
 				return;
 			}
 
 			if (keyboard.kbd_y_pressed)
+			{
 				y_pressed();
+			}
 
 			if (keyboard.kbd_n_pressed)
+			{
 				n_pressed();
-
+			}
 
 			if (keyboard.kbd_fire_pressed)
 			{
 				if ((!elite.docked) && (draw_lasers == 0))
 				{
-					draw_lasers = fire_laser();
+					draw_lasers = swat.fire_laser();
 				}
 			}
 
@@ -898,11 +904,11 @@ namespace Elite
 				{
 					if (elite.instant_dock)
 					{
-						engage_docking_computer();
+						space.engage_docking_computer();
 					}
 					else
 					{
-						engage_auto_pilot();
+						pilot.engage_auto_pilot();
 					}
 				}
 			}
@@ -929,24 +935,24 @@ namespace Elite
 			{
 				if (keyboard.kbd_ctrl_pressed)
 				{
-					start_galactic_hyperspace();
+					space.start_galactic_hyperspace();
 				}
 				else
 				{
-					start_hyperspace();
+					space.start_hyperspace();
 				}
 			}
 
 			if (keyboard.kbd_jump_pressed && (!elite.docked) && (!elite.witchspace))
 			{
-				jump_warp();
+				space.jump_warp();
 			}
 
 			if (keyboard.kbd_fire_missile_pressed)
 			{
 				if (!elite.docked)
 				{
-					fire_missile();
+					swat.fire_missile();
 				}
 			}
 
@@ -957,14 +963,14 @@ namespace Elite
 
 			if (keyboard.kbd_pause_pressed)
 			{
-				game_paused = 1;
+				game_paused = true;
 			}
 
 			if (keyboard.kbd_target_missile_pressed)
 			{
 				if (!elite.docked)
 				{
-					arm_missile();
+					swat.arm_missile();
 				}
 			}
 
@@ -972,7 +978,7 @@ namespace Elite
 			{
 				if (!elite.docked)
 				{
-					unarm_missile();
+					swat.unarm_missile();
 				}
 			}
 
@@ -1004,23 +1010,31 @@ namespace Elite
 			}
 
 			if (keyboard.kbd_down_pressed)
+			{
 				arrow_down();
+			}
 
 			if (keyboard.kbd_left_pressed)
+			{
 				arrow_left();
+			}
 
 			if (keyboard.kbd_right_pressed)
+			{
 				arrow_right();
+			}
 
 			if (keyboard.kbd_enter_pressed)
+			{
 				return_pressed();
+			}
 
 			if (keyboard.kbd_energy_bomb_pressed)
 			{
 				if ((!elite.docked) && (elite.cmdr.energy_bomb))
 				{
 					elite.detonate_bomb = true;
-					elite.cmdr.energy_bomb = 0;
+					elite.cmdr.energy_bomb = false;
 				}
 			}
 
@@ -1033,99 +1047,90 @@ namespace Elite
 			}
 		}
 
-		static void set_commander_name(char* path)
+		static void set_commander_name(string path)
 		{
-			char* fname, *cname;
-			int i;
+			string fname = Path.GetFileNameWithoutExtension(path);
+			string cname = elite.cmdr.name;
 
-			fname = get_filename(path);
-			cname = elite.cmdr.name;
-
-			for (i = 0; i < 31; i++)
+			foreach (char c in fname)
 			{
-				if (!isalnum(*fname))
-					break;
-
-				*cname++ = toupper(*fname++);
+				if (char.IsLetter(c))
+				{
+					cname += char.ToUpper(c);
+				}
 			}
 
-			*cname = '\0';
+			elite.cmdr.name = cname;
 		}
 
 		internal static void save_commander_screen()
 		{
-			string path;
-			int okay;
-			int rv;
-
 			elite.current_screen = SCR.SCR_SAVE_CMDR;
 
-            alg_gfx.gfx_clear_display();
-            alg_gfx.gfx_display_centre_text(10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_display_centre_text(10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
 			alg_gfx.gfx_draw_line(0, 36, 511, 36);
-            alg_gfx.gfx_update_screen();
+			alg_gfx.gfx_update_screen();
 
-			strcpy(path, elite.cmdr.name);
-			strcat(path, ".nkc");
+			string path = elite.cmdr.name;
+			path = ".nkc";
 
-			okay = gfx_request_file("Save Commander", path, "nkc");
+			bool okay = alg_gfx.gfx_request_file("Save Commander", path, "nkc");
 
 			if (!okay)
 			{
-				display_options();
+				options.display_options();
 				return;
 			}
 
-			rv = file.save_commander_file(path);
+			bool rv = file.save_commander_file(path);
 
 			if (rv)
 			{
-                alg_gfx.gfx_display_centre_text(175, "Error Saving Commander!", 140, gfx.GFX_COL_GOLD);
+				alg_gfx.gfx_display_centre_text(175, "Error Saving Commander!", 140, gfx.GFX_COL_GOLD);
 				return;
 			}
 
-            alg_gfx.gfx_display_centre_text(175, "Commander Saved.", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_display_centre_text(175, "Commander Saved.", 140, gfx.GFX_COL_GOLD);
 
 			set_commander_name(path);
-			saved_cmdr = cmdr;
-			saved_cmdr.ship_x = elite.docked_planet.d;
-			saved_cmdr.ship_y = elite.docked_planet.b;
+			elite.saved_cmdr = elite.cmdr;
+			elite.saved_cmdr.ship_x = elite.docked_planet.d;
+			elite.saved_cmdr.ship_y = elite.docked_planet.b;
 		}
 
 		internal static void load_commander_screen()
 		{
-			char path[255];
-			int rv;
-
-            alg_gfx.gfx_clear_display();
-            alg_gfx.gfx_display_centre_text(10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
+			alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_display_centre_text(10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
 			alg_gfx.gfx_draw_line(0, 36, 511, 36);
-            alg_gfx.gfx_update_screen();
+			alg_gfx.gfx_update_screen();
 
+			string path = "jameson.nkc";
 
-			strcpy(path, "jameson.nkc");
+			bool rv = alg_gfx.gfx_request_file("Load Commander", path, "nkc");
 
-			rv = gfx_request_file("Load Commander", path, "nkc");
-
-			if (rv == 0)
+			if (!rv)
+			{
 				return;
+			}
 
 			rv = file.load_commander_file(path);
 
 			if (rv)
 			{
-				saved_cmdr = cmdr;
-                alg_gfx.gfx_display_centre_text(175, "Error Loading Commander!", 140, gfx.GFX_COL_GOLD);
-                alg_gfx.gfx_display_centre_text(200, "Press any key to continue.", 140, gfx.GFX_COL_GOLD);
-                alg_gfx.gfx_update_screen();
+				elite.saved_cmdr = elite.cmdr;
+				alg_gfx.gfx_display_centre_text(175, "Error Loading Commander!", 140, gfx.GFX_COL_GOLD);
+				alg_gfx.gfx_display_centre_text(200, "Press any key to continue.", 140, gfx.GFX_COL_GOLD);
+				alg_gfx.gfx_update_screen();
 				readkey();
 				return;
 			}
 
 			elite.restore_saved_commander();
 			set_commander_name(path);
-			saved_cmdr = cmdr;
-            space.update_console();
+			elite.saved_cmdr = elite.cmdr;
+			space.update_console();
 		}
 
 		static void run_first_intro_screen()
@@ -1134,26 +1139,26 @@ namespace Elite
 
 			sound.snd_play_midi(SND.SND_ELITE_THEME, true);
 
-			initialise_intro1();
+			intro.initialise_intro1();
 
 			for (; ; )
 			{
-				update_intro1();
+				intro.update_intro1();
 
-                alg_gfx.gfx_update_screen();
+				alg_gfx.gfx_update_screen();
 
-                keyboard.kbd_poll_keyboard();
+				keyboard.kbd_poll_keyboard();
 
-				if (kbd_y_pressed)
+				if (keyboard.kbd_y_pressed)
 				{
 					sound.snd_stop_midi();
 					load_commander_screen();
 					break;
 				}
 
-				if (kbd_n_pressed)
+				if (keyboard.kbd_n_pressed)
 				{
-                    sound.snd_stop_midi();
+					sound.snd_stop_midi();
 					break;
 				}
 			}
@@ -1166,7 +1171,7 @@ namespace Elite
 
 			sound.snd_play_midi(SND.SND_BLUE_DANUBE, true);
 
-			initialise_intro2();
+			intro.initialise_intro2();
 
 			elite.flight_speed = 3;
 			elite.flight_roll = 0;
@@ -1174,19 +1179,19 @@ namespace Elite
 
 			for (; ; )
 			{
-				update_intro2();
+				intro.update_intro2();
 
-                alg_gfx.gfx_update_screen();
+				alg_gfx.gfx_update_screen();
 
-                keyboard.kbd_poll_keyboard();
+				keyboard.kbd_poll_keyboard();
 
-				if (kbd_space_pressed)
+				if (keyboard.kbd_space_pressed)
 				{
 					break;
 				}
 			}
 
-            sound.snd_stop_midi();
+			sound.snd_stop_midi();
 		}
 
 		/*
@@ -1200,14 +1205,14 @@ namespace Elite
 			SHIP type;
 
 			elite.current_screen = SCR.SCR_GAME_OVER;
-            alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
+			alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 
 			elite.flight_speed = 6;
 			elite.flight_roll = 0;
 			elite.flight_climb = 0;
-            swat.clear_universe();
+			swat.clear_universe();
 
-			VectorMaths.set_init_matrix(rotmat);
+			VectorMaths.set_init_matrix(ref rotmat);
 
 			newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
 			space.universe[newship].flags |= FLG.FLG_DEAD;
@@ -1224,11 +1229,11 @@ namespace Elite
 
 			for (i = 0; i < 100; i++)
 			{
-                alg_gfx.gfx_clear_display();
-                Stars.update_starfield();
-                space.update_universe();
-                alg_gfx.gfx_display_centre_text(190, "GAME OVER", 140, gfx.GFX_COL_GOLD);
-                alg_gfx.gfx_update_screen();
+				alg_gfx.gfx_clear_display();
+				Stars.update_starfield();
+				space.update_universe();
+				alg_gfx.gfx_display_centre_text(190, "GAME OVER", 140, gfx.GFX_COL_GOLD);
+				alg_gfx.gfx_update_screen();
 			}
 		}
 
@@ -1240,20 +1245,20 @@ namespace Elite
 		{
 			int i;
 
-            alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
-            alg_gfx.gfx_clear_display();
+			alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
+			alg_gfx.gfx_clear_display();
 
 			for (i = 0; i < 20; i++)
 			{
 				alg_gfx.gfx_draw_circle(256, 192, 30 + i * 15, gfx.GFX_COL_WHITE);
-                alg_gfx.gfx_update_screen();
+				alg_gfx.gfx_update_screen();
 			}
 
 			if (elite.docked)
 			{
-				check_mission_brief();
-                Docked.display_commander_status();
-                space.update_console();
+				missions.check_mission_brief();
+				Docked.display_commander_status();
+				space.update_console();
 			}
 			else
 				elite.current_screen = SCR.SCR_FRONT_VIEW;
@@ -1261,24 +1266,24 @@ namespace Elite
 
 		internal static void info_message(string message)
 		{
-			strcpy(message_string, message);
+			message_string = message;
 			message_count = 37;
 			//	sound.snd_play_sample (SND_BEEP);
 		}
 
-		void initialise_allegro()
+		static void initialise_allegro()
 		{
-			allegro_init();
-			install_keyboard();
-			install_timer();
-			install_mouse();
+			// allegro_init();
+			// install_keyboard();
+			// install_timer();
+			// install_mouse();
 
-			have_joystick = 0;
+			have_joystick = false;
 
-			if (install_joystick(JOY_TYPE_AUTODETECT) == 0)
-			{
-				have_joystick = (num_joysticks > 0);
-			}
+			//if (install_joystick(JOY_TYPE_AUTODETECT) == 0)
+			//{
+			//	have_joystick = (num_joysticks > 0);
+			//}
 		}
 
 		static int main()
@@ -1286,7 +1291,7 @@ namespace Elite
 			initialise_allegro();
 			file.read_config_file();
 
-			if (gfx_graphics_startup() == 1)
+			if (alg_gfx.gfx_graphics_startup() == 1)
 			{
 				return 1;
 			}
@@ -1295,18 +1300,18 @@ namespace Elite
 			sound.snd_sound_startup();
 
 			/* Do any setup necessary for the keyboard... */
-			kbd_keyboard_startup();
+			keyboard.kbd_keyboard_startup();
 
-            elite.finish = 0;
+			elite.finish = false;
 			elite.auto_pilot = false;
 
 			while (!elite.finish)
 			{
-				game_over = false;
+				elite.game_over = false;
 				initialise_game();
 				space.dock_player();
 
-                space.update_console();
+				space.update_console();
 
 				elite.current_screen = SCR.SCR_FRONT_VIEW;
 				run_first_intro_screen();
@@ -1316,35 +1321,39 @@ namespace Elite
 				old_cross_y = -1;
 
 				space.dock_player();
-                Docked.display_commander_status();
+				Docked.display_commander_status();
 
 				while (!elite.game_over)
 				{
 					sound.snd_update_sound();
-                    alg_gfx.gfx_update_screen();
-                    alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
+					alg_gfx.gfx_update_screen();
+					alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 
-					rolling = 0;
-					climbing = 0;
+					rolling = false;
+					climbing = false;
 
 					handle_flight_keys();
 
 					if (game_paused)
+					{
 						continue;
+					}
 
 					if (message_count > 0)
+					{
 						message_count--;
+					}
 
 					if (!rolling)
 					{
 						if (elite.flight_roll > 0)
 						{
-                            space.decrease_flight_roll();
+							space.decrease_flight_roll();
 						}
 
 						if (elite.flight_roll < 0)
 						{
-                            space.increase_flight_roll();
+							space.increase_flight_roll();
 						}
 					}
 
@@ -1352,27 +1361,26 @@ namespace Elite
 					{
 						if (elite.flight_climb > 0)
 						{
-                            space.decrease_flight_climb();
+							space.decrease_flight_climb();
 						}
 
 						if (elite.flight_climb < 0)
 						{
-                            space.increase_flight_climb();
+							space.increase_flight_climb();
 						}
 					}
 
-
 					if (!elite.docked)
 					{
-						gfx_acquire_screen();
+						alg_gfx.gfx_acquire_screen();
 
 						if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
 							(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW) ||
 							(elite.current_screen == SCR.SCR_INTRO_ONE) || (elite.current_screen == SCR.SCR_INTRO_TWO) ||
 							(elite.current_screen == SCR.SCR_GAME_OVER))
 						{
-                            alg_gfx.gfx_clear_display();
-                            Stars.update_starfield();
+							alg_gfx.gfx_clear_display();
+							Stars.update_starfield();
 						}
 
 						if (elite.auto_pilot)
@@ -1382,21 +1390,21 @@ namespace Elite
 								info_message("Docking Computers On");
 						}
 
-                        space.update_universe();
+						space.update_universe();
 
 						if (elite.docked)
 						{
-                            space.update_console();
-							gfx_release_screen();
+							space.update_console();
+							alg_gfx.gfx_release_screen();
 							continue;
 						}
 
 						if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
 							(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW))
 						{
-							if (draw_lasers)
+							if (draw_lasers != 0)
 							{
-								draw_laser_lines();
+								swat.draw_laser_lines();
 								draw_lasers--;
 							}
 
@@ -1405,19 +1413,19 @@ namespace Elite
 
 						if (message_count > 0)
 						{
-                            alg_gfx.gfx_display_centre_text(358, message_string, 120, gfx.GFX_COL_WHITE);
+							alg_gfx.gfx_display_centre_text(358, message_string, 120, gfx.GFX_COL_WHITE);
 						}
 
 						if (space.hyper_ready)
 						{
-							display_hyper_status();
+							space.display_hyper_status();
 							if ((mcount & 3) == 0)
 							{
-								countdown_hyperspace();
+								space.countdown_hyperspace();
 							}
 						}
 
-						gfx_release_screen();
+						alg_gfx.gfx_release_screen();
 
 						mcount--;
 						if (mcount < 0)
@@ -1427,7 +1435,7 @@ namespace Elite
 
 						if ((mcount & 7) == 0)
 						{
-							regenerate_shields();
+							space.regenerate_shields();
 						}
 
 						if ((mcount & 31) == 10)
@@ -1438,27 +1446,29 @@ namespace Elite
 								sound.snd_play_sample(SND.SND_BEEP);
 							}
 
-							update_altitude();
+							space.update_altitude();
 						}
 
 						if ((mcount & 31) == 20)
 						{
-							update_cabin_temp();
+							space.update_cabin_temp();
 						}
 
 						if ((mcount == 0) && (!elite.witchspace))
 						{
-							random_encounter();
+							swat.random_encounter();
 						}
 
-						cool_laser();
-						time_ecm();
+						swat.cool_laser();
+						swat.time_ecm();
 
-                        space.update_console();
+						space.update_console();
 					}
 
-					if (SCR.current_screen == SCR.SCR_BREAK_PATTERN)
+					if (elite.current_screen == SCR.SCR_BREAK_PATTERN)
+					{
 						display_break_pattern();
+					}
 
 					if (cross_timer > 0)
 					{
@@ -1473,11 +1483,11 @@ namespace Elite
 						(Docked.cross_y != old_cross_y))
 					{
 						if (old_cross_x != -1)
-                        {
-                            draw_cross(old_cross_x, old_cross_y);
-                        }
+						{
+							draw_cross(old_cross_x, old_cross_y);
+						}
 
-                        old_cross_x = Docked.cross_x;
+						old_cross_x = Docked.cross_x;
 						old_cross_y = Docked.cross_y;
 
 						draw_cross(old_cross_x, old_cross_y);
@@ -1485,10 +1495,10 @@ namespace Elite
 				}
 
 				if (!elite.finish)
-                {
-                    run_game_over_screen();
-                }
-            }
+				{
+					run_game_over_screen();
+				}
+			}
 
 			sound.snd_sound_shutdown();
 
@@ -1497,6 +1507,6 @@ namespace Elite
 			return 0;
 		}
 
-		END_OF_MAIN();
+		//END_OF_MAIN();
 	}
 }

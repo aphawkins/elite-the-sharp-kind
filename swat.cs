@@ -404,7 +404,7 @@ namespace Elite
 			}
 		}
 
-		static void time_ecm()
+		internal static void time_ecm()
 		{
 			if (ecm_active != 0)
 			{
@@ -416,7 +416,7 @@ namespace Elite
 			}
 		}
 
-		static void arm_missile()
+		internal static void arm_missile()
 		{
 			if ((elite.cmdr.missiles != 0) && (missile_target == MISSILE_UNARMED))
 			{
@@ -424,13 +424,13 @@ namespace Elite
 			}
 		}
 
-		static void unarm_missile()
+		internal static void unarm_missile()
 		{
 			missile_target = MISSILE_UNARMED;
 			sound.snd_play_sample(SND.SND_BOOP);
 		}
 
-		static void fire_missile()
+		internal static void fire_missile()
 		{
 			int newship;
 			univ_object ns;
@@ -911,7 +911,7 @@ namespace Elite
 			}
 		}
 
-		static void draw_laser_lines()
+		internal static void draw_laser_lines()
 		{
 			if (elite.wireframe)
 			{
@@ -927,7 +927,7 @@ namespace Elite
 			}
 		}
 
-		static int fire_laser()
+		internal static int fire_laser()
 		{
 			if ((laser_counter == 0) && (elite.laser_temp < 242))
 			{
@@ -977,7 +977,7 @@ namespace Elite
 			return 0;
 		}
 
-		static void cool_laser()
+		internal static void cool_laser()
 		{
 			laser = 0;
 
@@ -1244,7 +1244,7 @@ namespace Elite
 			}
 		}
 
-		static void random_encounter()
+		internal static void random_encounter()
 		{
 			if ((space.ship_count[(int)SHIP.SHIP_CORIOLIS] != 0) || (space.ship_count[(int)SHIP.SHIP_DODEC] != 0))
 			{

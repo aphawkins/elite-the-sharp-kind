@@ -355,7 +355,7 @@ namespace Elite
 		/*
 		 * When we change view, flip the stars over so they look like other stars.
 		 */
-		static void flip_stars()
+		internal static void flip_stars()
 		{
 			int i;
 			int nstars;

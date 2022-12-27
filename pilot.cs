@@ -269,7 +269,7 @@ namespace Elite
 			fly_to_station(ref ship);
 		}
 
-		static void engage_auto_pilot()
+		internal static void engage_auto_pilot()
 		{
 			if (elite.auto_pilot || elite.witchspace || space.hyper_ready)
 			{

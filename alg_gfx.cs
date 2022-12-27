@@ -56,7 +56,7 @@ namespace Elite
 		}
 		END_OF_FUNCTION(frame_timer);
 
-		static int gfx_graphics_startup()
+		internal static int gfx_graphics_startup()
 		{
 			PALETTE the_palette;
 			int rv;
@@ -155,14 +155,12 @@ namespace Elite
 			release_screen();
 		}
 
-
-        static void gfx_acquire_screen()
+        internal static void gfx_acquire_screen()
 		{
 			acquire_bitmap(gfx_screen);
 		}
 
-
-        static void gfx_release_screen()
+        internal static void gfx_release_screen()
 		{
 			release_bitmap(gfx_screen);
 		}
@@ -757,10 +755,9 @@ namespace Elite
 			draw_sprite(gfx_screen, sprite_bmp, x + GFX_X_OFFSET, y + GFX_Y_OFFSET);
 		}
 
-
-		int gfx_request_file(char* title, char* path, char* ext)
+		internal static bool gfx_request_file(string title, string path, string ext)
 		{
-			int okay;
+			bool okay;
 
 			show_mouse(screen);
 			okay = file_select(title, path, ext);

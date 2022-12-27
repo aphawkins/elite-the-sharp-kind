@@ -64,7 +64,7 @@ namespace Elite
         internal static bool kbd_backspace_pressed;
 		internal static bool kbd_space_pressed;
 
-        static int kbd_keyboard_startup()
+        internal static int kbd_keyboard_startup()
 		{
 			//	set_keyboard_rate(2000, 2000);
 			return 0;
@@ -133,14 +133,14 @@ namespace Elite
 			}
 		}
 
-		internal static int kbd_read_key()
+		internal static char kbd_read_key()
 		{
 			int keynum;
 			int keycode;
 			int keyasc;
 
-			kbd_enter_pressed = 0;
-			kbd_backspace_pressed = 0;
+			kbd_enter_pressed = false;
+			kbd_backspace_pressed = false;
 
 			keynum = readkey();
 			keycode = keynum >> 8;
@@ -148,13 +148,13 @@ namespace Elite
 
 			if (keycode == KEY_ENTER)
 			{
-				kbd_enter_pressed = 1;
+				kbd_enter_pressed = true;
 				return 0;
 			}
 
 			if (keycode == KEY_BACKSPACE)
 			{
-				kbd_backspace_pressed = 1;
+				kbd_backspace_pressed = true;
 				return 0;
 			}
 

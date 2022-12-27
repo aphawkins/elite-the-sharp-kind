@@ -172,7 +172,7 @@ namespace Elite
 		//	return acc;
 		//}
 
-		internal static int save_commander_file(string path)
+		internal static bool save_commander_file(string path)
 		{
             //FILE* fp;
             //unsigned char block[256];
@@ -246,10 +246,10 @@ namespace Elite
             //if (fclose(fp) == EOF)
             //	return 1;
 
-            return 0;
+            return false;
 		}
 
-		internal static int load_commander_file(string path)
+		internal static bool load_commander_file(string path)
 		{
 			//FILE* fp;
 			//unsigned char block[256];
@@ -319,7 +319,7 @@ namespace Elite
 			//if (fclose(fp) == EOF)
 			//	return 1;
 
-			return 0;
+			return false;
 		}
 	}
 }

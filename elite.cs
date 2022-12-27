@@ -61,7 +61,7 @@ namespace Elite
 
 		internal static bool game_over;
 		internal static bool docked;
-		internal static int finish;
+		internal static bool finish;
 		internal static int flight_speed;
 		internal static int flight_roll;
 		internal static int flight_climb;

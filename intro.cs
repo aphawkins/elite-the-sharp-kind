@@ -58,14 +58,14 @@ namespace Elite
 
 		static Vector[] intro_ship_matrix;
 
-		static void initialise_intro1()
+		internal static void initialise_intro1()
 		{
 			swat.clear_universe();
 			VectorMaths.set_init_matrix(ref intro_ship_matrix);
 			swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 4500, intro_ship_matrix, -127, -127);
 		}
 
-		static void initialise_intro2()
+		internal static void initialise_intro2()
 		{
 			ship_no = 0;
 			show_time = 0;
@@ -77,7 +77,7 @@ namespace Elite
 			swat.add_new_ship(SHIP.SHIP_MISSILE, 0, 0, 5000, intro_ship_matrix, -127, -127);
 		}
 
-		static void update_intro1()
+		internal static void update_intro1()
 		{
 			space.universe[0].location.z -= 100;
 
@@ -98,7 +98,7 @@ namespace Elite
 			alg_gfx.gfx_display_centre_text(360, "Load New Commander (Y/N)?", 140, gfx.GFX_COL_GOLD);
 		}
 
-		static void update_intro2()
+		internal static void update_intro2()
 		{
 			show_time++;
 

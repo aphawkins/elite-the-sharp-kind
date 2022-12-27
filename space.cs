@@ -272,7 +272,7 @@ namespace Elite
 			elite.game_over = true;
 		}
 
-		static void update_altitude()
+		internal static void update_altitude()
 		{
 			elite.myship.altitude = 255;
 
@@ -320,8 +320,7 @@ namespace Elite
 			elite.myship.altitude = (int)dist;
 		}
 
-
-		static void update_cabin_temp()
+		internal static void update_cabin_temp()
 		{
 			int x, y, z;
 			int dist;
@@ -381,13 +380,10 @@ namespace Elite
 			alg_main.info_message("Fuel Scoop On");
 		}
 
-
-
 		/*
 		 * Regenerate the shields and the energy banks.
 		 */
-
-		static void regenerate_shields()
+		internal static void regenerate_shields()
 		{
 			if (elite.energy > 127)
 			{
@@ -1057,7 +1053,7 @@ namespace Elite
 			}
 		}
 
-		static void start_hyperspace()
+		internal static void start_hyperspace()
 		{
 			if (hyper_ready)
 			{
@@ -1082,7 +1078,7 @@ namespace Elite
 			pilot.disengage_auto_pilot();
 		}
 
-		static void start_galactic_hyperspace()
+		internal static void start_galactic_hyperspace()
 		{
 			if (hyper_ready)
 			{
@@ -1100,7 +1096,7 @@ namespace Elite
 			pilot.disengage_auto_pilot();
 		}
 
-		static void display_hyper_status()
+		internal static void display_hyper_status()
 		{
 			string str = $"{hyper_countdown:d}";
 
@@ -1239,7 +1235,7 @@ namespace Elite
 			sound.snd_play_sample(SND.SND_HYPERSPACE);
 		}
 
-		static void countdown_hyperspace()
+		internal static void countdown_hyperspace()
 		{
 			if (hyper_countdown == 0)
 			{
@@ -1250,7 +1246,7 @@ namespace Elite
 			hyper_countdown--;
 		}
 
-		static void jump_warp()
+		internal static void jump_warp()
 		{
 			int i;
 			SHIP type;
@@ -1302,7 +1298,7 @@ namespace Elite
 			swat.in_battle = false;
 		}
 
-		static void launch_player()
+		internal static void launch_player()
 		{
 			Vector[] rotmat = new Vector[3];
 
@@ -1330,7 +1326,7 @@ namespace Elite
 		 * Engage the docking computer.
 		 * For the moment we just do an instant dock if we are in the safe zone.
 		 */
-		static void engage_docking_computer()
+		internal static void engage_docking_computer()
 		{
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{

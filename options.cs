@@ -360,7 +360,7 @@ namespace Elite
 			}
 		}
 
-		static void display_options()
+		internal static void display_options()
 		{
 			int i;
 

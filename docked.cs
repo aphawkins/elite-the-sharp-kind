@@ -206,7 +206,7 @@ namespace Elite
 			}
 		}
 
-		static void display_short_range_chart()
+		internal static void display_short_range_chart()
 		{
 			int i;
 			galaxy_seed glx;
@@ -303,7 +303,7 @@ namespace Elite
 			cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 		}
 
-		static void display_galactic_chart()
+		internal static void display_galactic_chart()
 		{
 			int px, py;
 
@@ -347,7 +347,7 @@ namespace Elite
 		/*
 		 * Displays data on the currently selected Hyperspace Planet.
 		 */
-		static void display_data_on_planet()
+		internal static void display_data_on_planet()
 		{
 			string description;
 			planet_data hyper_planet_data = new();
@@ -795,9 +795,7 @@ namespace Elite
 			highlight_stock(hilite_item);
 		}
 
-
-
-		static void display_market_prices()
+		internal static void display_market_prices()
 		{
 			elite.current_screen = SCR.SCR_MARKET_PRICES;
 
@@ -827,7 +825,7 @@ namespace Elite
 			}
 		}
 
-		static void display_inventory()
+		internal static void display_inventory()
 		{
 			int i;
 			int y;
@@ -1333,7 +1331,7 @@ namespace Elite
 			list_equip_prices();
 		}
 
-		static void equip_ship()
+		internal static void equip_ship()
 		{
 			elite.current_screen = SCR.SCR_EQUIP_SHIP;
 
