@@ -14,11 +14,12 @@
 
 namespace Elite
 {
+	using System.Diagnostics;
 	/*
-	 * alg_main.c
-	 *
-	 * Allegro version of the main game handler.
-	 */
+* alg_main.c
+*
+* Allegro version of the main game handler.
+*/
 
 
 	//# include <stdio.h>
@@ -1123,7 +1124,9 @@ namespace Elite
 				alg_gfx.gfx_display_centre_text(175, "Error Loading Commander!", 140, gfx.GFX_COL_GOLD);
 				alg_gfx.gfx_display_centre_text(200, "Press any key to continue.", 140, gfx.GFX_COL_GOLD);
 				alg_gfx.gfx_update_screen();
-				readkey();
+				//TODO: Fix this
+				//readkey();
+				Debug.WriteLine("call to readkey()");
 				return;
 			}
 
