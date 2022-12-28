@@ -56,7 +56,7 @@ namespace Elite
 	using Elite.Enums;
 	using Elite.Structs;
 
-	internal static class alg_main
+	public static class alg_main
 	{
 		static int old_cross_x, old_cross_y;
 		static int cross_timer;
@@ -1289,7 +1289,7 @@ namespace Elite
 			//}
 		}
 
-		static int main()
+		public static int main()
 		{
 			initialise_allegro();
 			file.read_config_file();
