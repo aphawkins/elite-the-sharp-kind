@@ -675,8 +675,9 @@ namespace Elite
 			poly_chain[x].face_colour = face_colour;
 			poly_chain[x].z = zavg;
 			poly_chain[x].next = -1;
+            poly_chain[x].point_list = new int[16];
 
-			for (i = 0; i < 16; i++)
+            for (i = 0; i < 16; i++)
 			{
 				poly_chain[x].point_list[i] = point_list[i];
 			}

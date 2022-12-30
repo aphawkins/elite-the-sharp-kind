@@ -125,7 +125,8 @@ namespace Elite
 
 					space.universe[i].distance = (int)Math.Sqrt(x * x + y * y + z * z);
 
-					space.universe[i].rotmat[0] = rotmat[0];
+					space.universe[i].rotmat = new Vector[3];
+                    space.universe[i].rotmat[0] = rotmat[0];
 					space.universe[i].rotmat[1] = rotmat[1];
 					space.universe[i].rotmat[2] = rotmat[2];
 

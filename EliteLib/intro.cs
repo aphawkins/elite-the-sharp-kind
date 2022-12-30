@@ -56,7 +56,7 @@ namespace Elite
 			900
 		};
 
-		static Vector[] intro_ship_matrix;
+		static Vector[] intro_ship_matrix = new Vector[3];
 
 		internal static void initialise_intro1()
 		{
