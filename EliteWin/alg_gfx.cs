@@ -30,6 +30,7 @@ namespace Elite
 	using System.Diagnostics;
 	using System.Drawing;
 	using Elite.Enums;
+	using Elite.Structs;
 
 	public class alg_gfx : IGfx
 	{
@@ -56,6 +57,7 @@ namespace Elite
 		Bitmap _gfx_screen;
 		Graphics _gfx_screen_graphics;
 
+		// Actual screen
 		Bitmap _screen;
         Graphics _screen_graphics;
 
@@ -79,9 +81,8 @@ namespace Elite
         struct poly_data
 		{
 			internal int z;
-            internal int no_points;
             internal GFX_COL face_colour;
-			internal int[] point_list; // = new int[16];
+			internal Point[] point_list;
             internal int next;
 		};
 
@@ -691,7 +692,7 @@ namespace Elite
 			total_polys = 0;
 		}
 
-		public void gfx_render_polygon(int num_points, int[] point_list, GFX_COL face_colour, int zavg)
+		public void gfx_render_polygon(point[] point_list, GFX_COL face_colour, int zavg)
 		{
 			int i;
 			int nx;
@@ -704,16 +705,16 @@ namespace Elite
 			int x = total_polys;
 			total_polys++;
 
-			poly_chain[x].no_points = num_points;
 			poly_chain[x].face_colour = face_colour;
 			poly_chain[x].z = zavg;
 			poly_chain[x].next = -1;
-            poly_chain[x].point_list = new int[16];
+            poly_chain[x].point_list = new Point[point_list.Length];
 
-            for (i = 0; i < 16; i++)
+            for (i = 0; i < point_list.Length; i++)
 			{
-				poly_chain[x].point_list[i] = point_list[i];
-			}
+				poly_chain[x].point_list[i].X = point_list[i].x;
+                poly_chain[x].point_list[i].Y = point_list[i].y;
+            }
 
 			if (x == 0)
 			{
@@ -744,22 +745,18 @@ namespace Elite
 
 		public void gfx_render_line(int x1, int y1, int x2, int y2, int dist, GFX_COL col)
 		{
-			int[] point_list = new int[4];
+			point[] point_list = new point[2];
 
-			point_list[0] = x1;
-			point_list[1] = y1;
-			point_list[2] = x2;
-			point_list[3] = y2;
+			point_list[0].x = x1;
+			point_list[0].y = y1;
+			point_list[1].x = x2;
+			point_list[1].y = y2;
 
-			gfx_render_polygon(2, point_list, col, dist);
+			gfx_render_polygon(point_list, col, dist);
 		}
 
 		public void gfx_finish_render()
 		{
-			int num_points;
-			int[] pl;
-            GFX_COL col;
-
 			if (total_polys == 0)
             {
                 return;
@@ -767,42 +764,29 @@ namespace Elite
 
             for (int i = start_poly; i != -1; i = poly_chain[i].next)
 			{
-				num_points = poly_chain[i].no_points;
-				pl = poly_chain[i].point_list;
-				col = poly_chain[i].face_colour;
+                Point[] points = poly_chain[i].point_list;
+				GFX_COL col = poly_chain[i].face_colour;
 
-				if (num_points == 2)
+				if (points.Length == 2)
 				{
-					gfx_draw_colour_line(pl[0], pl[1], pl[2], pl[3], col);
+					gfx_draw_colour_line(points[0].X, points[0].Y, points[1].X, points[1].Y, col);
 					continue;
 				}
 
-				gfx_polygon(num_points, pl, col);
+				gfx_polygon(points, col);
 			};
 		}
 
-		private void gfx_polygon(int num_points, int[] poly_list, GFX_COL face_colour)
+		private void gfx_polygon(Point[] points, GFX_COL face_colour)
 		{
             // Debug.WriteLine("gfx_polygon");
 
-            Point[] points = new Point[num_points];
-
-            int x = 0;
-			int y = 1;
-
-			for (int i = 0; i < num_points; i++)
+			for (int i = 0; i < points.Length; i++)
 			{
-				poly_list[x] += gfx.GFX_X_OFFSET;
-				poly_list[y] += gfx.GFX_Y_OFFSET;
-
-				points[i].X = poly_list[x];
-                points[i].Y = poly_list[y];
-
-                x += 2;
-                y += 2;
+				points[i].X += gfx.GFX_X_OFFSET;
+				points[i].Y += gfx.GFX_Y_OFFSET;
             }
 
-            //polygon(gfx_screen, num_points, poly_list, face_colour);
 			Brush brush = new SolidBrush(MapColor(face_colour));
 			_gfx_screen_graphics.FillPolygon(brush, points);
 		}

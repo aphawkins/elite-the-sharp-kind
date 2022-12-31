@@ -17,6 +17,7 @@ namespace Elite
 	using System.Diagnostics;
 	using System.Drawing;
 	using Elite.Enums;
+	using Elite.Structs;
 
 	public interface IGfx
 	{
@@ -70,7 +71,7 @@ namespace Elite
 
 		void gfx_start_render();
 
-		void gfx_render_polygon(int num_points, int[] point_list, GFX_COL face_colour, int zavg);
+		void gfx_render_polygon(point[] point_list, GFX_COL face_colour, int zavg);
 
 		void gfx_render_line(int x1, int y1, int x2, int y2, int dist, GFX_COL col);
 

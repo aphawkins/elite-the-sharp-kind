@@ -1,9 +1,9 @@
 ﻿namespace Elite.Structs
 {
-    internal struct point
+    public struct point
     {
-        internal int x;
-        internal int y;
-        internal int z;
+        public int x;
+        public int y;
+        public int z;
     };
 }
