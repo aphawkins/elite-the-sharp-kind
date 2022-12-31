@@ -89,10 +89,10 @@ namespace Elite
 			elite.current_screen = SCR.SCR_QUIT;
 
             elite.alg_gfx.gfx_clear_display();
-            elite.alg_gfx.gfx_display_centre_text(10, "GAME OPTIONS", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-            elite.alg_gfx.gfx_display_centre_text(175, "QUIT GAME (Y/N)?", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
 		}
 
 		static void display_setting_item(int item)
@@ -103,7 +103,7 @@ namespace Elite
 			if (item == (NUM_SETTINGS - 1))
 			{
 				y = ((NUM_SETTINGS + 1) / 2) * 30 + 96 + 32;
-                elite.alg_gfx.gfx_display_centre_text(y, setting_list[item].name, 120, gfx.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_display_centre_text(y, setting_list[item].name, 120, GFX_COL.GFX_COL_WHITE);
 				return;
 			}
 
@@ -137,8 +137,8 @@ namespace Elite
 			x = (item & 1) * 250 + 32;
 			y = (item / 2) * 30 + 96;
 
-            elite.alg_gfx.gfx_display_colour_text(x, y, setting_list[item].name, gfx.GFX_COL_WHITE);
-            elite.alg_gfx.gfx_display_colour_text(x + 120, y, setting_list[item].value[v], gfx.GFX_COL_WHITE);
+            elite.alg_gfx.gfx_display_colour_text(x, y, setting_list[item].name, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.gfx_display_colour_text(x + 120, y, setting_list[item].value[v], GFX_COL.GFX_COL_WHITE);
 		}
 
 		static void highlight_setting(int item)
@@ -178,7 +178,7 @@ namespace Elite
 				width = 100;
 			}
 
-            elite.alg_gfx.gfx_draw_rectangle(x, y, x + width, y + OPTION_BAR_HEIGHT, gfx.GFX_COL_DARK_RED);
+            elite.alg_gfx.gfx_draw_rectangle(x, y, x + width, y + OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
 			display_setting_item(item);
 			hilite_item = item;
 		}
@@ -268,7 +268,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_SETTINGS;
 
             elite.alg_gfx.gfx_clear_display();
-            elite.alg_gfx.gfx_display_centre_text(10, "GAME SETTINGS", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			for (i = 0; i < NUM_SETTINGS; i++)
@@ -283,12 +283,9 @@ namespace Elite
 
 		static void display_option_item(int i)
 		{
-			int y;
-			int col;
-
-			y = (384 - (30 * NUM_OPTIONS)) / 2;
+			int y = (384 - (30 * NUM_OPTIONS)) / 2;
 			y += i * 30;
-			col = ((!elite.docked) && option_list[i].docked_only) ? gfx.GFX_COL_GREY_1 : gfx.GFX_COL_WHITE;
+            GFX_COL col = ((!elite.docked) && option_list[i].docked_only) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
 
             elite.alg_gfx.gfx_display_centre_text(y, option_list[i].text, 120, col);
 		}
@@ -311,7 +308,7 @@ namespace Elite
 			y = (384 - (30 * NUM_OPTIONS)) / 2;
 			y += i * 30;
 
-            elite.alg_gfx.gfx_draw_rectangle(x, y, x + OPTION_BAR_WIDTH, y + OPTION_BAR_HEIGHT, gfx.GFX_COL_DARK_RED);
+            elite.alg_gfx.gfx_draw_rectangle(x, y, x + OPTION_BAR_WIDTH, y + OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
 			display_option_item(i);
 
 			hilite_item = i;
@@ -366,12 +363,12 @@ namespace Elite
 			elite.current_screen = SCR.SCR_OPTIONS;
 
             elite.alg_gfx.gfx_clear_display();
-            elite.alg_gfx.gfx_display_centre_text(10, "GAME OPTIONS", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
-            elite.alg_gfx.gfx_display_centre_text(300, "Version: Release 1.0", 120, gfx.GFX_COL_WHITE);
-            elite.alg_gfx.gfx_display_centre_text(320, "www.newkind.co.uk", 120, gfx.GFX_COL_WHITE);
-            elite.alg_gfx.gfx_display_centre_text(340, "Written by Christian Pinder 1999-2001", 120, gfx.GFX_COL_WHITE);
-            elite.alg_gfx.gfx_display_centre_text(360, "Based on original code by Ian Bell & David Braben", 120, gfx.GFX_COL_WHITE);
+            elite.alg_gfx.gfx_display_centre_text(300, "Version: Release 1.0", 120, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.gfx_display_centre_text(320, "www.newkind.co.uk", 120, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.gfx_display_centre_text(340, "Written by Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.gfx_display_centre_text(360, "Based on original code by Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);
 
 			for (i = 0; i < NUM_OPTIONS; i++)
 			{

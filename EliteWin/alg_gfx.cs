@@ -29,6 +29,7 @@ namespace Elite
 {
 	using System.Diagnostics;
 	using System.Drawing;
+	using Elite.Enums;
 
 	public class alg_gfx : IGfx
 	{
@@ -74,7 +75,7 @@ namespace Elite
 		{
 			internal int z;
             internal int no_points;
-            internal int face_colour;
+            internal GFX_COL face_colour;
 			internal int[] point_list; // = new int[16];
             internal int next;
 		};
@@ -206,7 +207,7 @@ namespace Elite
             //release_bitmap(gfx_screen);
 		}
 
-		public void gfx_fast_plot_pixel(int x, int y, int col)
+		public void gfx_fast_plot_pixel(int x, int y, GFX_COL col)
 		{
             Debug.WriteLine("gfx_fast_plot_pixel");
 
@@ -214,14 +215,14 @@ namespace Elite
             //gfx_screen.line[y][x] = col;
 		}
 
-        public void gfx_plot_pixel(int x, int y, int col)
+        public void gfx_plot_pixel(int x, int y, GFX_COL col)
 		{
             Debug.WriteLine("gfx_plot_pixel");
 
             //putpixel(gfx_screen, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, col);
         }
 
-        public void gfx_draw_filled_circle(int cx, int cy, int radius, int circle_colour)
+        public void gfx_draw_filled_circle(int cx, int cy, int radius, GFX_COL circle_colour)
 		{
             Debug.WriteLine("gfx_draw_filled_circle");
 
@@ -457,7 +458,7 @@ namespace Elite
 //#undef AA_AND
 //#undef AA_BASE
 
-		public void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
+		public void gfx_draw_circle(int cx, int cy, int radius, GFX_COL circle_colour)
 		{
             Debug.WriteLine("gfx_draw_circle");
 
@@ -497,35 +498,32 @@ namespace Elite
 			//}
 		}
 
-		public void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
+		public void gfx_draw_colour_line(int x1, int y1, int x2, int y2, GFX_COL line_colour)
 		{
 			Debug.WriteLine("gfx_draw_colour_line");
 
-            //if (y1 == y2)
-            //{
-            //	hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, line_colour);
-            //	return;
-            //}
+			//if (y1 == y2)
+			//{
+			//	hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, line_colour);
+			//	return;
+			//}
 
-            //if (x1 == x2)
-            //{
-            //	vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
-            //	return;
-            //}
+			//if (x1 == x2)
+			//{
+			//	vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
+			//	return;
+			//}
 
-            //if (elite.anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
-            //{
-            //	gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
-            //}
-            //else
-            //{
-            Pen whitePen = new(Color.White, 1);
+			//if (elite.anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
+			//{
+			//	gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
+			//}
+			//else
+			//{
 
-            gfx_screen_graphics.DrawLine(whitePen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+            Pen pen = new(MapColor(line_colour), 1);
 
-
-			//gfx_screen.SetPixel(x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, Color.Black);
-   //         gfx_screen.SetPixel(x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, Color.Black);
+            gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 
 			Application.DoEvents();
 
@@ -533,7 +531,7 @@ namespace Elite
 			//}
 		}
 
-        public void gfx_draw_colour_line_xor(int x1, int y1, int x2, int y2, int line_colour)
+        public void gfx_draw_colour_line_xor(int x1, int y1, int x2, int y2, GFX_COL line_colour)
 		{
             Debug.WriteLine("gfx_draw_colour_line_xor");
 
@@ -542,7 +540,7 @@ namespace Elite
             //xor_mode(false);
         }
 
-        public void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
+        public void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL col)
 		{
             Debug.WriteLine("gfx_draw_triangle");
 
@@ -558,7 +556,7 @@ namespace Elite
 			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
 		}
 
-		public void gfx_display_colour_text(int x, int y, string txt, int col)
+		public void gfx_display_colour_text(int x, int y, string txt, GFX_COL col)
 		{
             Debug.WriteLine("gfx_display_colour_text");
 
@@ -566,7 +564,7 @@ namespace Elite
 			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, col);
 		}
 
-		public void gfx_display_centre_text(int y, string str, int psize, int col)
+		public void gfx_display_centre_text(int y, string str, int psize, GFX_COL col)
 		{
             Debug.WriteLine("gfx_display_centre_text");
 
@@ -609,7 +607,7 @@ namespace Elite
             //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-		public void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
+		public void gfx_draw_rectangle(int tx, int ty, int bx, int by, GFX_COL col)
 		{
             Debug.WriteLine("gfx_draw_rectangle");
 
@@ -677,7 +675,7 @@ namespace Elite
 			total_polys = 0;
 		}
 
-		public void gfx_render_polygon(int num_points, int[] point_list, int face_colour, int zavg)
+		public void gfx_render_polygon(int num_points, int[] point_list, GFX_COL face_colour, int zavg)
 		{
 			int i;
 			int x;
@@ -729,7 +727,7 @@ namespace Elite
 			poly_chain[i].next = x;
 		}
 
-		public void gfx_render_line(int x1, int y1, int x2, int y2, int dist, int col)
+		public void gfx_render_line(int x1, int y1, int x2, int y2, int dist, GFX_COL col)
 		{
 			int[] point_list = new int[4];
 
@@ -746,7 +744,7 @@ namespace Elite
 			int num_points;
 			int[] pl;
 			int i;
-			int col;
+            GFX_COL col;
 
 			if (total_polys == 0)
 				return;
@@ -767,7 +765,7 @@ namespace Elite
 			};
 		}
 
-		static void gfx_polygon(int num_points, int[] poly_list, int face_colour)
+		static void gfx_polygon(int num_points, int[] poly_list, GFX_COL face_colour)
 		{
             Debug.WriteLine("gfx_polygon");
 
@@ -785,7 +783,7 @@ namespace Elite
 			//polygon(gfx_screen, num_points, poly_list, face_colour);
 		}
 
-		public void gfx_draw_sprite(int sprite_no, int x, int y)
+		public void gfx_draw_sprite(IMG sprite_no, int x, int y)
 		{
             Debug.WriteLine("gfx_draw_sprite");
 
@@ -852,6 +850,31 @@ namespace Elite
 			//show_mouse(null);
 
 			return okay;
+		}
+
+		private static Color MapColor(GFX_COL col)
+		{
+			switch (col)
+			{
+				case GFX_COL.GFX_COL_WHITE:
+					return Color.White;
+
+				case GFX_COL.GFX_COL_BLACK:
+					return Color.Black;
+
+                case GFX_COL.GFX_COL_GOLD:
+                    return Color.Gold;
+
+                case GFX_COL.GFX_COL_YELLOW_1:
+                    return Color.Yellow;
+
+                case GFX_COL.GFX_COL_DARK_RED:
+                    return Color.DarkRed;
+
+                default:
+					Debug.Assert(false);
+					return Color.Magenta;
+			}
 		}
 	}
 }

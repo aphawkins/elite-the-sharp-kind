@@ -161,7 +161,7 @@ namespace Elite
 			int zavg;
 			Vector[] trans_mat = new Vector[3];
 			int lasv;
-			int col;
+            GFX_COL col;
 
 			ship_solid solid_data = shipface.ship_solids[(int)univ.type];
 			ship_data ship = elite.ship_list[(int)univ.type];
@@ -304,7 +304,7 @@ namespace Elite
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
 				lasv = elite.ship_list[(int)univ.type].front_laser;
-				col = (univ.type == SHIP.SHIP_VIPER) ? gfx.GFX_COL_CYAN : gfx.GFX_COL_WHITE;
+				col = (univ.type == SHIP.SHIP_VIPER) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
                 elite.alg_gfx.gfx_render_line(point_list[lasv].x, point_list[lasv].y,
 								 univ.location.x > 0 ? 0 : 511, random.rand255() * 2,
@@ -345,7 +345,7 @@ namespace Elite
 		 */
 		static void generate_snes_landscape()
 		{
-			int colour;
+            int colour;
 
 			for (int y = 0; y <= LAND_Y_MAX; y++)
 			{
@@ -468,11 +468,11 @@ namespace Elite
 					h = landscape[x, y];
 					if (h > 166)
 					{
-						landscape[x, y] = dark ? gfx.GFX_COL_GREEN_1 : gfx.GFX_COL_GREEN_2;
+						landscape[x, y] = (int)(dark ? GFX_COL.GFX_COL_GREEN_1 : GFX_COL.GFX_COL_GREEN_2);
 					}
 					else
 					{
-						landscape[x, y] = dark ? gfx.GFX_COL_BLUE_2 : gfx.GFX_COL_BLUE_1;
+						landscape[x, y] = (int)(dark ? GFX_COL.GFX_COL_BLUE_2 : GFX_COL.GFX_COL_BLUE_1);
 					}
 				}
 			}
@@ -508,7 +508,7 @@ namespace Elite
 		{
 			int lx, ly;
 			int rx, ry;
-			int colour;
+            GFX_COL colour;
 			int sx, sy;
 			int ex;
 			int div;
@@ -537,7 +537,7 @@ namespace Elite
 				{
 					lx = rx / div;
 					ly = ry / div;
-					colour = landscape[lx, ly];
+					colour = (GFX_COL)landscape[lx, ly];
 
                     elite.alg_gfx.gfx_fast_plot_pixel(sx, sy, colour);
 				}
@@ -591,7 +591,7 @@ namespace Elite
 		 */
 		static void draw_wireframe_planet(int xo, int yo, int radius, Vector[] vec)
 		{
-            elite.alg_gfx.gfx_draw_circle(xo, yo, radius, gfx.GFX_COL_WHITE);
+            elite.alg_gfx.gfx_draw_circle(xo, yo, radius, GFX_COL.GFX_COL_WHITE);
 		}
 
 
@@ -637,7 +637,7 @@ namespace Elite
 					break;
 
 				case 1:
-                    elite.alg_gfx.gfx_draw_filled_circle(x, y, radius, gfx.GFX_COL_GREEN_1);
+                    elite.alg_gfx.gfx_draw_filled_circle(x, y, radius, GFX_COL.GFX_COL_GREEN_1);
 					break;
 
 				case 2:
@@ -651,7 +651,7 @@ namespace Elite
 		{
 			int sy = yo + y;
 			int sx, ex;
-			int colour;
+            GFX_COL colour;
 			int dx, dy;
 			int distance;
 			int inner, outer;
@@ -705,19 +705,19 @@ namespace Elite
 
 				if (distance < inner)
 				{
-					colour = gfx.GFX_COL_WHITE;
+					colour = GFX_COL.GFX_COL_WHITE;
 				}
 				else if (distance < inner2)
 				{
-					colour = gfx.GFX_COL_YELLOW_4;
+					colour = GFX_COL.GFX_COL_YELLOW_4;
 				}
 				else if (distance < outer)
 				{
-					colour = gfx.GFX_ORANGE_3;
+					colour = GFX_COL.GFX_COL_ORANGE_3;
 				}
 				else
 				{
-					colour = mix ? gfx.GFX_ORANGE_1 : gfx.GFX_ORANGE_2;
+					colour = mix ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
 				}
 
                 elite.alg_gfx.gfx_fast_plot_pixel(sx, sy, colour);
@@ -931,7 +931,7 @@ namespace Elite
 					{
 						for (psx = 0; psx < sizex; psx++)
 						{
-                            elite.alg_gfx.gfx_plot_pixel(px + psx, py + psy, gfx.GFX_COL_WHITE);
+                            elite.alg_gfx.gfx_plot_pixel(px + psx, py + psy, GFX_COL.GFX_COL_WHITE);
 						}
 					}
 				}

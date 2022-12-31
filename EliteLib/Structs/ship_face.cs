@@ -1,8 +1,10 @@
 ﻿namespace Elite.Structs
 {
+    using Elite.Enums;
+
     internal struct ship_face
     {
-        internal int colour;
+        internal GFX_COL colour;
         internal int norm_x;
         internal int norm_y;
         internal int norm_z;
@@ -16,7 +18,7 @@
         internal int p7;
         internal int p8;
 
-        internal ship_face(int colour, int norm_x, int norm_y, int norm_z, int points, int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
+        internal ship_face(GFX_COL colour, int norm_x, int norm_y, int norm_z, int points, int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
         {
             this.colour = colour;
             this.norm_x = norm_x;

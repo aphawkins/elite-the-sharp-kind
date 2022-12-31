@@ -167,8 +167,8 @@ namespace Elite
 			if (elite.current_screen == SCR.SCR_SHORT_RANGE)
 			{
                 elite.alg_gfx.gfx_set_clip_region(1, 37, 510, 339);
-                elite.alg_gfx.gfx_draw_colour_line_xor(cx - 16, cy, cx + 16, cy, gfx.GFX_COL_RED);
-                elite.alg_gfx.gfx_draw_colour_line_xor(cx, cy - 16, cx, cy + 16, gfx.GFX_COL_RED);
+                elite.alg_gfx.gfx_draw_colour_line_xor(cx - 16, cy, cx + 16, cy, GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.gfx_draw_colour_line_xor(cx, cy - 16, cx, cy + 16, GFX_COL.GFX_COL_RED);
                 elite.alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 				return;
 			}
@@ -176,8 +176,8 @@ namespace Elite
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
                 elite.alg_gfx.gfx_set_clip_region(1, 37, 510, 293);
-                elite.alg_gfx.gfx_draw_colour_line_xor(cx - 8, cy, cx + 8, cy, gfx.GFX_COL_RED);
-                elite.alg_gfx.gfx_draw_colour_line_xor(cx, cy - 8, cx, cy + 8, gfx.GFX_COL_RED);
+                elite.alg_gfx.gfx_draw_colour_line_xor(cx - 8, cy, cx + 8, cy, GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.gfx_draw_colour_line_xor(cx, cy - 8, cx, cy + 8, GFX_COL.GFX_COL_RED);
                 elite.alg_gfx.gfx_set_clip_region(1, 1, 510, 383);
 			}
 		}
@@ -190,22 +190,22 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_FRONT_VIEW:
-					elite.alg_gfx.gfx_display_centre_text(32, "Front View", 120, gfx.GFX_COL_WHITE);
+					elite.alg_gfx.gfx_display_centre_text(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
 					laser = elite.cmdr.front_laser;
 					break;
 
 				case SCR.SCR_REAR_VIEW:
-					elite.alg_gfx.gfx_display_centre_text(32, "Rear View", 120, gfx.GFX_COL_WHITE);
+					elite.alg_gfx.gfx_display_centre_text(32, "Rear View", 120, GFX_COL.GFX_COL_WHITE);
 					laser = elite.cmdr.rear_laser;
 					break;
 
 				case SCR.SCR_LEFT_VIEW:
-					elite.alg_gfx.gfx_display_centre_text(32, "Left View", 120, gfx.GFX_COL_WHITE);
+					elite.alg_gfx.gfx_display_centre_text(32, "Left View", 120, GFX_COL.GFX_COL_WHITE);
 					laser = elite.cmdr.left_laser;
 					break;
 
 				case SCR.SCR_RIGHT_VIEW:
-					elite.alg_gfx.gfx_display_centre_text(32, "Right View", 120, gfx.GFX_COL_WHITE);
+					elite.alg_gfx.gfx_display_centre_text(32, "Right View", 120, GFX_COL.GFX_COL_WHITE);
 					laser = elite.cmdr.right_laser;
 					break;
 			}
@@ -216,31 +216,31 @@ namespace Elite
 				y1 = (96 - 8) * gfx.GFX_SCALE;
 				y2 = (96 - 16) * gfx.GFX_SCALE;
 
-				elite.alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
-				elite.alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
-				elite.alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
+				elite.alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, GFX_COL.GFX_COL_GREY_1);
+				elite.alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, GFX_COL.GFX_COL_WHITE);
+				elite.alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, GFX_COL.GFX_COL_GREY_1);
 
 				y1 = (96 + 8) * gfx.GFX_SCALE;
 				y2 = (96 + 16) * gfx.GFX_SCALE;
 
-                elite.alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, gfx.GFX_COL_GREY_1);
-                elite.alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, gfx.GFX_COL_WHITE);
-                elite.alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, gfx.GFX_COL_GREY_1);
+                elite.alg_gfx.gfx_draw_colour_line(x1 - 1, y1, x1 - 1, y2, GFX_COL.GFX_COL_GREY_1);
+                elite.alg_gfx.gfx_draw_colour_line(x1, y1, x1, y2, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_draw_colour_line(x1 + 1, y1, x1 + 1, y2, GFX_COL.GFX_COL_GREY_1);
 
 				x1 = (128 - 8) * gfx.GFX_SCALE;
 				y1 = 96 * gfx.GFX_SCALE;
 				x2 = (128 - 16) * gfx.GFX_SCALE;
 
-                elite.alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
-                elite.alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
-                elite.alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
+                elite.alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, GFX_COL.GFX_COL_GREY_1);
+                elite.alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, GFX_COL.GFX_COL_GREY_1);
 
 				x1 = (128 + 8) * gfx.GFX_SCALE;
 				x2 = (128 + 16) * gfx.GFX_SCALE;
 
-                elite.alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, gfx.GFX_COL_GREY_1);
-                elite.alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, gfx.GFX_COL_WHITE);
-                elite.alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, gfx.GFX_COL_GREY_1);
+                elite.alg_gfx.gfx_draw_colour_line(x1, y1 - 1, x2, y1 - 1, GFX_COL.GFX_COL_GREY_1);
+                elite.alg_gfx.gfx_draw_colour_line(x1, y1, x2, y1, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_draw_colour_line(x1, y1 + 1, x2, y1 + 1, GFX_COL.GFX_COL_GREY_1);
 			}
 		}
 
@@ -664,7 +664,7 @@ namespace Elite
 				space.universe[newship].location.y = 0;
 				space.universe[newship].location.z += 2;
 
-                elite.alg_gfx.gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, gfx.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_display_centre_text(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
 
 				space.update_console();
                 elite.alg_gfx.gfx_update_screen();
@@ -1070,7 +1070,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_SAVE_CMDR;
 
             elite.alg_gfx.gfx_clear_display();
-            elite.alg_gfx.gfx_display_centre_text(10, "SAVE COMMANDER", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
             elite.alg_gfx.gfx_update_screen();
 
@@ -1089,11 +1089,11 @@ namespace Elite
 
 			if (rv)
 			{
-                elite.alg_gfx.gfx_display_centre_text(175, "Error Saving Commander!", 140, gfx.GFX_COL_GOLD);
+                elite.alg_gfx.gfx_display_centre_text(175, "Error Saving Commander!", 140, GFX_COL.GFX_COL_GOLD);
 				return;
 			}
 
-            elite.alg_gfx.gfx_display_centre_text(175, "Commander Saved.", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
 
 			set_commander_name(path);
 			elite.saved_cmdr = elite.cmdr;
@@ -1104,7 +1104,7 @@ namespace Elite
 		internal static void load_commander_screen()
 		{
             elite.alg_gfx.gfx_clear_display();
-            elite.alg_gfx.gfx_display_centre_text(10, "LOAD COMMANDER", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
             elite.alg_gfx.gfx_update_screen();
 
@@ -1122,8 +1122,8 @@ namespace Elite
 			if (rv)
 			{
 				elite.saved_cmdr = elite.cmdr;
-                elite.alg_gfx.gfx_display_centre_text(175, "Error Loading Commander!", 140, gfx.GFX_COL_GOLD);
-                elite.alg_gfx.gfx_display_centre_text(200, "Press any key to continue.", 140, gfx.GFX_COL_GOLD);
+                elite.alg_gfx.gfx_display_centre_text(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
+                elite.alg_gfx.gfx_display_centre_text(200, "Press any key to continue.", 140, GFX_COL.GFX_COL_GOLD);
                 elite.alg_gfx.gfx_update_screen();
 				//TODO: Fix this
 				//readkey();
@@ -1236,7 +1236,7 @@ namespace Elite
                 elite.alg_gfx.gfx_clear_display();
 				Stars.update_starfield();
 				space.update_universe();
-                elite.alg_gfx.gfx_display_centre_text(190, "GAME OVER", 140, gfx.GFX_COL_GOLD);
+                elite.alg_gfx.gfx_display_centre_text(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
                 elite.alg_gfx.gfx_update_screen();
 			}
 		}
@@ -1254,7 +1254,7 @@ namespace Elite
 
 			for (i = 0; i < 20; i++)
 			{
-                elite.alg_gfx.gfx_draw_circle(256, 192, 30 + i * 15, gfx.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_draw_circle(256, 192, 30 + i * 15, GFX_COL.GFX_COL_WHITE);
                 elite.alg_gfx.gfx_update_screen();
 			}
 
@@ -1419,7 +1419,7 @@ namespace Elite
 
 						if (message_count > 0)
 						{
-                            elite.alg_gfx.gfx_display_centre_text(358, message_string, 120, gfx.GFX_COL_WHITE);
+                            elite.alg_gfx.gfx_display_centre_text(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
 						}
 
 						if (space.hyper_ready)

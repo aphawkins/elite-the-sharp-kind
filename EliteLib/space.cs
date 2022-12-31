@@ -709,7 +709,7 @@ namespace Elite
 			int i;
 			int x, y, z;
 			int x1, y1, y2;
-			int colour;
+            GFX_COL colour;
 
 			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
@@ -730,27 +730,29 @@ namespace Elite
 
 				if ((y2 < -28) || (y2 > 28) ||
 					(x1 < -50) || (x1 > 50))
+				{
 					continue;
+				}
 
 				x1 += elite.scanner_cx;
 				y1 += elite.scanner_cy;
 				y2 += elite.scanner_cy;
 
-				colour = universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? gfx.GFX_COL_YELLOW_5 : gfx.GFX_COL_WHITE;
+				colour = universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
 
 				switch (universe[i].type)
 				{
 					case SHIP.SHIP_MISSILE:
-						colour = 137;
+						colour = GFX_COL.UNKNOWN_1;
 						break;
 
 					case SHIP.SHIP_DODEC:
 					case SHIP.SHIP_CORIOLIS:
-						colour = gfx.GFX_COL_GREEN_1;
+						colour = GFX_COL.GFX_COL_GREEN_1;
 						break;
 
 					case SHIP.SHIP_VIPER:
-						colour = 252;
+						colour = GFX_COL.UNKNOWN_2;
 						break;
 				}
 
@@ -793,11 +795,11 @@ namespace Elite
 
 			if (dest.z < 0)
 			{
-                elite.alg_gfx.gfx_draw_sprite(gfx.IMG_RED_DOT, compass_x, compass_y);
+                elite.alg_gfx.gfx_draw_sprite(IMG.IMG_RED_DOT, compass_x, compass_y);
 			}
 			else
 			{
-                elite.alg_gfx.gfx_draw_sprite(gfx.IMG_GREEN_DOT, compass_x, compass_y);
+                elite.alg_gfx.gfx_draw_sprite(IMG.IMG_GREEN_DOT, compass_x, compass_y);
 			}
 
 		}
@@ -807,19 +809,14 @@ namespace Elite
 		 */
 		static void display_speed()
 		{
-			int sx, sy;
-			int i;
-			int len;
-			int colour;
+			int sx = 417;
+            int sy = 384 + 9;
 
-			sx = 417;
-			sy = 384 + 9;
+			int len = ((elite.flight_speed * 64) / elite.myship.max_speed) - 1;
 
-			len = ((elite.flight_speed * 64) / elite.myship.max_speed) - 1;
+            GFX_COL colour = (elite.flight_speed > (elite.myship.max_speed * 2 / 3)) ? GFX_COL.GFX_COL_DARK_RED : GFX_COL.GFX_COL_GOLD;
 
-			colour = (elite.flight_speed > (elite.myship.max_speed * 2 / 3)) ? gfx.GFX_COL_DARK_RED : gfx.GFX_COL_GOLD;
-
-			for (i = 0; i < 6; i++)
+			for (int i = 0; i < 6; i++)
 			{
                 elite.alg_gfx.gfx_draw_colour_line(sx, sy + i, sx + len, sy + i, colour);
 			}
@@ -833,16 +830,16 @@ namespace Elite
 		{
 			int i = 0;
 
-            elite.alg_gfx.gfx_draw_colour_line(x, y + 384, x + len, y + 384, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_draw_colour_line(x, y + 384, x + len, y + 384, GFX_COL.GFX_COL_GOLD);
 			i++;
-            elite.alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL.GFX_COL_GOLD);
 
 			for (i = 2; i < 7; i++)
 			{
-				elite.alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, gfx.GFX_COL_YELLOW_1);
+				elite.alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL.GFX_COL_YELLOW_1);
 			}
 
-            elite.alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, gfx.GFX_COL_DARK_RED);
+            elite.alg_gfx.gfx_draw_colour_line(x, y + i + 384, x + len, y + i + 384, GFX_COL.GFX_COL_DARK_RED);
 		}
 
 		/*
@@ -932,7 +929,7 @@ namespace Elite
 
 			for (i = 0; i < 4; i++)
 			{
-                elite.alg_gfx.gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, gfx.GFX_COL_GOLD);
+                elite.alg_gfx.gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, GFX_COL.GFX_COL_GOLD);
 			}
 		}
 
@@ -950,7 +947,7 @@ namespace Elite
 
 			for (i = 0; i < 4; i++)
 			{
-                elite.alg_gfx.gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, gfx.GFX_COL_GOLD);
+                elite.alg_gfx.gfx_draw_colour_line(pos + i, sy, pos + i, sy + 7, GFX_COL.GFX_COL_GOLD);
 			}
 		}
 
@@ -976,14 +973,14 @@ namespace Elite
 
 			if (swat.missile_target != swat.MISSILE_UNARMED)
 			{
-                elite.alg_gfx.gfx_draw_sprite((swat.missile_target < 0) ? gfx.IMG_MISSILE_YELLOW : gfx.IMG_MISSILE_RED, x, y);
+                elite.alg_gfx.gfx_draw_sprite((swat.missile_target < 0) ? IMG.IMG_MISSILE_YELLOW : IMG.IMG_MISSILE_RED, x, y);
 				x += 16;
 				nomiss--;
 			}
 
 			for (; nomiss > 0; nomiss--)
 			{
-                elite.alg_gfx.gfx_draw_sprite(gfx.IMG_MISSILE_GREEN, x, y);
+                elite.alg_gfx.gfx_draw_sprite(IMG.IMG_MISSILE_GREEN, x, y);
 				x += 16;
 			}
 		}
@@ -1014,12 +1011,12 @@ namespace Elite
 
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-                elite.alg_gfx.gfx_draw_sprite(gfx.IMG_BIG_S, 387, 490);
+                elite.alg_gfx.gfx_draw_sprite(IMG.IMG_BIG_S, 387, 490);
 			}
 
 			if (swat.ecm_active != 0)
 			{
-                elite.alg_gfx.gfx_draw_sprite(gfx.IMG_BIG_E, 115, 490);
+                elite.alg_gfx.gfx_draw_sprite(IMG.IMG_BIG_E, 115, 490);
 			}
 		}
 
@@ -1108,12 +1105,12 @@ namespace Elite
                 elite.alg_gfx.gfx_display_text(5, 5, str);
 				if (hyper_galactic)
 				{
-                    elite.alg_gfx.gfx_display_centre_text(358, "Galactic Hyperspace", 120, gfx.GFX_COL_WHITE);
+                    elite.alg_gfx.gfx_display_centre_text(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
 				}
 				else
 				{
 					str = "Hyperspace - " + hyper_name;
-                    elite.alg_gfx.gfx_display_centre_text(358, str, 120, gfx.GFX_COL_WHITE);
+                    elite.alg_gfx.gfx_display_centre_text(358, str, 120, GFX_COL.GFX_COL_WHITE);
 				}
 			}
 			else

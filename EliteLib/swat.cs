@@ -916,15 +916,15 @@ namespace Elite
 		{
 			if (elite.wireframe)
 			{
-                elite.alg_gfx.gfx_draw_colour_line(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, gfx.GFX_COL_WHITE);
-                elite.alg_gfx.gfx_draw_colour_line(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, gfx.GFX_COL_WHITE);
-                elite.alg_gfx.gfx_draw_colour_line(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, gfx.GFX_COL_WHITE);
-                elite.alg_gfx.gfx_draw_colour_line(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, gfx.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_draw_colour_line(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_draw_colour_line(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_draw_colour_line(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_draw_colour_line(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, GFX_COL.GFX_COL_WHITE);
 			}
 			else
 			{
-                elite.alg_gfx.gfx_draw_triangle(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, 48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, gfx.GFX_COL_RED);
-                elite.alg_gfx.gfx_draw_triangle(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, 224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, gfx.GFX_COL_RED);
+                elite.alg_gfx.gfx_draw_triangle(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, 48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.gfx_draw_triangle(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, 224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, GFX_COL.GFX_COL_RED);
 			}
 		}
 
