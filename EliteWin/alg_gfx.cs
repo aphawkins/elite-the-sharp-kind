@@ -63,7 +63,7 @@ namespace Elite
 
         volatile static int frame_count;
 		//DATAFILE* datafile;
-		//BITMAP* scanner_image;
+		Bitmap scanner_image;
 
 		const int MAX_POLYS = 100;
 
@@ -98,75 +98,79 @@ namespace Elite
 		{
 			Debug.WriteLine("gfx_graphics_startup");
 
-//			PALETTE the_palette;
-//			int rv;
+			//			PALETTE the_palette;
+			//			int rv;
 
-//#if ALLEGRO_WINDOWS
+			//#if ALLEGRO_WINDOWS
 
-//#if RES_512_512
-//			rv = set_gfx_mode(GFX_DIRECTX_OVL, 512, 512, 0, 0);
+			//#if RES_512_512
+			//			rv = set_gfx_mode(GFX_DIRECTX_OVL, 512, 512, 0, 0);
 
-//			if (rv != 0)
-//				rv = set_gfx_mode(GFX_DIRECTX_WIN, 512, 512, 0, 0);
+			//			if (rv != 0)
+			//				rv = set_gfx_mode(GFX_DIRECTX_WIN, 512, 512, 0, 0);
 
-//			if (rv != 0)
-//				rv = set_gfx_mode(GFX_GDI, 512, 512, 0, 0);
+			//			if (rv != 0)
+			//				rv = set_gfx_mode(GFX_GDI, 512, 512, 0, 0);
 
-//			if (rv == 0)
-//				set_display_switch_mode(SWITCH_BACKGROUND);
-//#else
-//			rv = set_gfx_mode(GFX_DIRECTX, 800, 600, 0, 0);
+			//			if (rv == 0)
+			//				set_display_switch_mode(SWITCH_BACKGROUND);
+			//#else
+			//			rv = set_gfx_mode(GFX_DIRECTX, 800, 600, 0, 0);
 
-//			if (rv != 0)
-//				rv = set_gfx_mode(GFX_GDI, 800, 600, 0, 0);
-//#endif
+			//			if (rv != 0)
+			//				rv = set_gfx_mode(GFX_GDI, 800, 600, 0, 0);
+			//#endif
 
-//#else
-//			rv = set_gfx_mode(GFX_AUTODETECT, 800, 600, 0, 0);
-//#endif
+			//#else
+			//			rv = set_gfx_mode(GFX_AUTODETECT, 800, 600, 0, 0);
+			//#endif
 
-//			if (rv != 0)
-//			{
-//				set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-//				allegro_message("Unable to set graphics mode.");
-//				return 1;
-//			}
+			//			if (rv != 0)
+			//			{
+			//				set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+			//				allegro_message("Unable to set graphics mode.");
+			//				return 1;
+			//			}
 
-//			datafile = load_datafile("elite.dat");
-//			if (!datafile)
-//			{
-//				set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-//				allegro_message("Error loading %s!\n", "elite.dat");
-//				return 1;
-//			}
+			//			datafile = load_datafile("elite.dat");
+			//			if (!datafile)
+			//			{
+			//				set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+			//				allegro_message("Error loading %s!\n", "elite.dat");
+			//				return 1;
+			//			}
 
-//			scanner_image = load_bitmap(scanner_filename, the_palette);
-//			if (!scanner_image)
-//			{
-//				set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-//				allegro_message("Error reading scanner bitmap file.\n");
-//				return 1;
-//			}
+			// TODO: load image from resource
+			scanner_image = (Bitmap)Image.FromFile(Path.Combine("gfx", "scanner.bmp"));
 
-//			/* select the scanner palette */
-//			set_palette(the_palette);
+            if (scanner_image == null)
+			{
+				//set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+				//allegro_message("Error reading scanner bitmap file.\n");
+				return 1;
+			}
 
-//			/* Create the screen buffer bitmap */
-//			gfx_screen = create_bitmap(SCREEN_W, SCREEN_H);
+            //			/* select the scanner palette */
+            //			set_palette(the_palette);
 
-//			clear(gfx_screen);
+            //			/* Create the screen buffer bitmap */
+            //			gfx_screen = create_bitmap(SCREEN_W, SCREEN_H);
 
-//			blit(scanner_image, gfx_screen, 0, 0, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
-//			gfx_draw_line(0, 0, 0, 384);
-//			gfx_draw_line(0, 0, 511, 0);
-//			gfx_draw_line(511, 0, 511, 384);
+            //			clear(gfx_screen);
 
-//			/* Install a timer to regulate the speed of the game... */
+			gfx_draw_scanner();
 
-//			LOCK_VARIABLE(frame_count);
-//			LOCK_FUNCTION(frame_timer);
-//			frame_count = 0;
-//			install_int(frame_timer, speed_cap);
+			// Draw border
+            gfx_draw_line(0, 0, 0, 384);
+			gfx_draw_line(0, 0, 511, 0);
+			gfx_draw_line(511, 0, 511, 384);
+
+			//			/* Install a timer to regulate the speed of the game... */
+
+			//			LOCK_VARIABLE(frame_count);
+			//			LOCK_FUNCTION(frame_timer);
+			//			frame_count = 0;
+			//			install_int(frame_timer, speed_cap);
 
 			return 0;
 		}
@@ -488,29 +492,30 @@ namespace Elite
 
 		public void gfx_draw_line(int x1, int y1, int x2, int y2)
 		{
-            Debug.WriteLine("gfx_draw_line");
+            //Debug.WriteLine("gfx_draw_line");
 
-			//if (y1 == y2)
-			//{
-			//	hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, gfx.GFX_COL_WHITE);
-			//	return;
-			//}
+            //if (y1 == y2)
+            //{
+            //	hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, gfx.GFX_COL_WHITE);
+            //	return;
+            //}
 
-			//if (x1 == x2)
-			//{
-			//	vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
-			//	return;
-			//}
+            //if (x1 == x2)
+            //{
+            //	vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
+            //	return;
+            //}
 
-			//if (elite.anti_alias_gfx)
-			//{
-			//	gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
-			//}
-			//else
-			//{
-			//	line(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
-			//}
-		}
+            //if (elite.anti_alias_gfx)
+            //{
+            //	gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
+            //}
+            //else
+            //{
+				Pen pen = new(MapColor(GFX_COL.GFX_COL_WHITE), 1);
+				_gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+            //}
+        }
 
 		public void gfx_draw_colour_line(int x1, int y1, int x2, int y2, GFX_COL line_colour)
 		{
@@ -534,14 +539,8 @@ namespace Elite
 			//}
 			//else
 			//{
-
-            Pen pen = new(MapColor(line_colour), 1);
-
-            _gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
-
-			
-
-			//line(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
+				Pen pen = new(MapColor(line_colour), 1);
+				_gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 			//}
 		}
 
@@ -674,10 +673,10 @@ namespace Elite
 
 		public void gfx_draw_scanner()
 		{
-            Debug.WriteLine("gfx_draw_scanner");
+            // Debug.WriteLine("gfx_draw_scanner");
 
-            //blit(scanner_image, gfx_screen, 0, 0, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
-		}
+            _gfx_screen_graphics.DrawImage(scanner_image, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
+        }
 
 		public void gfx_set_clip_region(int tx, int ty, int bx, int by)
 		{

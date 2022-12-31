@@ -12,4 +12,10 @@
     <ProjectReference Include="..\EliteLib\EliteLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="gfx\scanner.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
