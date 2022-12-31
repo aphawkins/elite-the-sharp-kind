@@ -52,9 +52,12 @@ namespace Elite
 		const int SAFE = 12;       /* BMP  */
 		const int THEME = 13;       /* MIDI */
 
-		Bitmap gfx_screen;
-		Graphics gfx_screen_graphics;
+		// Screen buffer
+		Bitmap _gfx_screen;
+		Graphics _gfx_screen_graphics;
 
+		Bitmap _screen;
+        Graphics _screen_graphics;
 
         volatile static int frame_count;
 		//DATAFILE* datafile;
@@ -67,8 +70,10 @@ namespace Elite
 
 		public alg_gfx(ref Bitmap screen)
 		{
-			gfx_screen = screen;
-            gfx_screen_graphics = Graphics.FromImage(gfx_screen);
+			_screen = screen;
+            _screen_graphics = Graphics.FromImage(_screen);
+            _gfx_screen = new Bitmap(screen.Width, screen.Height);
+            _gfx_screen_graphics = Graphics.FromImage(_gfx_screen);
         }
 
         struct poly_data
@@ -179,19 +184,27 @@ namespace Elite
 		 */
 		public void gfx_update_screen()
 		{
-			Debug.WriteLine("gfx_update_screen");
+			//Debug.WriteLine("gfx_update_screen");
 
 			//while (frame_count < 1)
 			//{
-			//	rest(10);
+			//	Thread.Sleep(10);
+			//	// rest(10);
 			//}
 
 			//frame_count = 0;
 
-			//acquire_screen();
-			//blit(gfx_screen, screen, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, 512, 512);
-			//release_screen();
-		}
+            //acquire_screen();
+            //blit(gfx_screen, screen, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, 512, 512);
+            //release_screen();
+
+			lock(_screen)
+			{
+				_screen_graphics.DrawImage(_gfx_screen, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET);
+			}
+
+            Application.DoEvents();
+        }
 
         public void gfx_acquire_screen()
 		{
@@ -500,7 +513,7 @@ namespace Elite
 
 		public void gfx_draw_colour_line(int x1, int y1, int x2, int y2, GFX_COL line_colour)
 		{
-			Debug.WriteLine("gfx_draw_colour_line");
+			//Debug.WriteLine("gfx_draw_colour_line");
 
 			//if (y1 == y2)
 			//{
@@ -523,9 +536,9 @@ namespace Elite
 
             Pen pen = new(MapColor(line_colour), 1);
 
-            gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+            _gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 
-			Application.DoEvents();
+			
 
 			//line(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
 			//}
@@ -588,9 +601,12 @@ namespace Elite
 
 		public void gfx_clear_display()
 		{
-            Debug.WriteLine("gfx_clear_display");
+            //Debug.WriteLine("gfx_clear_display");
 
-            //rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
+			//rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
+
+			Brush brush = new SolidBrush(Color.Black);
+            _gfx_screen_graphics.FillRectangle(brush, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
 		}
 
 		public void gfx_clear_text_area()
@@ -678,7 +694,6 @@ namespace Elite
 		public void gfx_render_polygon(int num_points, int[] point_list, GFX_COL face_colour, int zavg)
 		{
 			int i;
-			int x;
 			int nx;
 
 			if (total_polys == MAX_POLYS)
@@ -686,7 +701,7 @@ namespace Elite
 				return;
 			}
 
-			x = total_polys;
+			int x = total_polys;
 			total_polys++;
 
 			poly_chain[x].no_points = num_points;
@@ -743,13 +758,14 @@ namespace Elite
 		{
 			int num_points;
 			int[] pl;
-			int i;
             GFX_COL col;
 
 			if (total_polys == 0)
-				return;
+            {
+                return;
+            }
 
-			for (i = start_poly; i != -1; i = poly_chain[i].next)
+            for (int i = start_poly; i != -1; i = poly_chain[i].next)
 			{
 				num_points = poly_chain[i].no_points;
 				pl = poly_chain[i].point_list;
@@ -765,22 +781,30 @@ namespace Elite
 			};
 		}
 
-		static void gfx_polygon(int num_points, int[] poly_list, GFX_COL face_colour)
+		private void gfx_polygon(int num_points, int[] poly_list, GFX_COL face_colour)
 		{
-            Debug.WriteLine("gfx_polygon");
+            // Debug.WriteLine("gfx_polygon");
 
-   //         int x = 0;
-   //         int y = 1;
+            Point[] points = new Point[num_points];
 
-			//for (int i = 0; i < num_points; i++)
-			//{
-			//	poly_list[x] += gfx.GFX_X_OFFSET;
-			//	poly_list[y] += gfx.GFX_Y_OFFSET;
-			//	x += 2;
-			//	y += 2;
-			//}
+            int x = 0;
+			int y = 1;
 
-			//polygon(gfx_screen, num_points, poly_list, face_colour);
+			for (int i = 0; i < num_points; i++)
+			{
+				poly_list[x] += gfx.GFX_X_OFFSET;
+				poly_list[y] += gfx.GFX_Y_OFFSET;
+
+				points[i].X = poly_list[x];
+                points[i].Y = poly_list[y];
+
+                x += 2;
+                y += 2;
+            }
+
+            //polygon(gfx_screen, num_points, poly_list, face_colour);
+			Brush brush = new SolidBrush(MapColor(face_colour));
+			_gfx_screen_graphics.FillPolygon(brush, points);
 		}
 
 		public void gfx_draw_sprite(IMG sprite_no, int x, int y)
@@ -868,8 +892,29 @@ namespace Elite
                 case GFX_COL.GFX_COL_YELLOW_1:
                     return Color.Yellow;
 
+                case GFX_COL.GFX_COL_RED:
+                    return Color.Red;
+
                 case GFX_COL.GFX_COL_DARK_RED:
                     return Color.DarkRed;
+
+				case GFX_COL.GFX_COL_BLUE_1:
+                    return Color.Blue;
+
+                case GFX_COL.GFX_COL_BLUE_2:
+                    return Color.AliceBlue;
+
+                case GFX_COL.GFX_COL_BLUE_3:
+                    return Color.DodgerBlue;
+
+                case GFX_COL.GFX_COL_GREY_1:
+                    return Color.Gray;
+
+                case GFX_COL.GFX_COL_GREY_2:
+                    return Color.SlateGray;
+
+                case GFX_COL.GFX_COL_GREY_3:
+                    return Color.DarkGray;
 
                 default:
 					Debug.Assert(false);
