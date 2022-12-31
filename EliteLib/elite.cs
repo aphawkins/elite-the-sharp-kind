@@ -25,9 +25,12 @@ namespace Elite
 	using Elite.Enums;
 	using Elite.Structs;
 	using Elite.Ships;
+	using System.Drawing;
 
 	internal static class elite
 	{
+		internal static IGfx alg_gfx;
+
 		internal const int PULSE_LASER = 0x0F;
 		internal const int BEAM_LASER = 0x8F;
 		internal const int MILITARY_LASER = 0x97;
@@ -39,8 +42,8 @@ namespace Elite
 		internal static galaxy_seed hyperspace_planet;
 		internal static planet_data current_planet_data;
 
-		static int curr_galaxy_num = 1;
-		static int curr_fuel = 70;
+		//static int curr_galaxy_num = 1;
+		//static int curr_fuel = 70;
 		internal static int carry_flag = 0;
 		internal static SCR current_screen = 0;
 		internal static bool witchspace;

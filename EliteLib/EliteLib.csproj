@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE;RES_800_600</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;RES_512_512</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE;RES_800_600</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE;RES_512_512</DefineConstants>
   </PropertyGroup>
 
 </Project>

@@ -60,10 +60,10 @@ namespace Elite
 				cross_size = 16 * gfx.GFX_SCALE;
 			}
 
-			alg_gfx.gfx_draw_circle(cx, cy, radius, gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_draw_circle(cx, cy, radius, gfx.GFX_COL_GREEN_1);
 
-			alg_gfx.gfx_draw_line(cx, cy - cross_size, cx, cy + cross_size);
-			alg_gfx.gfx_draw_line(cx - cross_size, cy, cx + cross_size, cy);
+            elite.alg_gfx.gfx_draw_line(cx, cy - cross_size, cx, cy + cross_size);
+            elite.alg_gfx.gfx_draw_line(cx - cross_size, cy, cx + cross_size, cy);
 		}
 
 		internal static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
@@ -100,7 +100,7 @@ namespace Elite
 				str = "                                                     ";
 			}
 
-			alg_gfx.gfx_display_text(16, ypos, str);
+            elite.alg_gfx.gfx_display_text(16, ypos, str);
 		}
 
 		internal static void show_distance_to_planet()
@@ -123,9 +123,9 @@ namespace Elite
 
 			string planet_name = Planet.name_planet(ref elite.hyperspace_planet);
 
-			alg_gfx.gfx_clear_text_area();
+            elite.alg_gfx.gfx_clear_text_area();
 			str = $"{planet_name:-18s}";
-			alg_gfx.gfx_display_text(16, 340, str);
+            elite.alg_gfx.gfx_display_text(16, 340, str);
 
 			show_distance(356, elite.docked_planet, elite.hyperspace_planet);
 
@@ -181,16 +181,16 @@ namespace Elite
 
 			if (!found)
 			{
-				alg_gfx.gfx_clear_text_area();
-				alg_gfx.gfx_display_text(16, 340, "Unknown Planet");
+                elite.alg_gfx.gfx_clear_text_area();
+                elite.alg_gfx.gfx_display_text(16, 340, "Unknown Planet");
 				return;
 			}
 
 			elite.hyperspace_planet = glx;
 
-			alg_gfx.gfx_clear_text_area();
+            elite.alg_gfx.gfx_clear_text_area();
 			string str = $"{planet_name:-18s}";
-			alg_gfx.gfx_display_text(16, 340, str);
+            elite.alg_gfx.gfx_display_text(16, 340, str);
 
 			show_distance(356, elite.docked_planet, elite.hyperspace_planet);
 
@@ -218,11 +218,11 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_SHORT_RANGE;
 
-			alg_gfx.gfx_clear_display();
+            elite.alg_gfx.gfx_clear_display();
 
-			alg_gfx.gfx_display_centre_text(10, "SHORT RANGE CHART", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, "SHORT RANGE CHART", 140, gfx.GFX_COL_GOLD);
 
-			alg_gfx.gfx_draw_line(0, 36, 511, 36);
+            elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			draw_fuel_limit_circle(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
 
@@ -282,7 +282,7 @@ namespace Elite
 					row_used[row] = 1;
 					string planet_name = Planet.name_planet(ref glx);
 					planet_name = Planet.capitalise_name(planet_name);
-					alg_gfx.gfx_display_text(px + (4 * gfx.GFX_SCALE), (row * 8 - 5) * gfx.GFX_SCALE, planet_name);
+                    elite.alg_gfx.gfx_display_text(px + (4 * gfx.GFX_SCALE), (row * 8 - 5) * gfx.GFX_SCALE, planet_name);
 				}
 
 				/* The next bit calculates the size of the circle used to represent */
@@ -291,7 +291,7 @@ namespace Elite
 
 				blob_size = (glx.f & 1) + 2 + elite.carry_flag;
 				blob_size *= gfx.GFX_SCALE;
-				alg_gfx.gfx_draw_filled_circle(px, py, blob_size, gfx.GFX_COL_GOLD);
+                elite.alg_gfx.gfx_draw_filled_circle(px, py, blob_size, gfx.GFX_COL_GOLD);
 
 				Planet.waggle_galaxy(ref glx);
 				Planet.waggle_galaxy(ref glx);
@@ -309,14 +309,14 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_GALACTIC_CHART;
 
-			alg_gfx.gfx_clear_display();
+            elite.alg_gfx.gfx_clear_display();
 
 			string str = "GALACTIC CHART {elite.cmdr.galaxy_number + 1:d}";
 
-			alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
 
-			alg_gfx.gfx_draw_line(0, 36, 511, 36);
-			alg_gfx.gfx_draw_line(0, 36 + 258, 511, 36 + 258);
+            elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
+            elite.alg_gfx.gfx_draw_line(0, 36 + 258, 511, 36 + 258);
 
 			draw_fuel_limit_circle(elite.docked_planet.d * gfx.GFX_SCALE, (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
 
@@ -327,11 +327,11 @@ namespace Elite
 				px = glx.d * gfx.GFX_SCALE;
 				py = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 
-				alg_gfx.gfx_plot_pixel(px, py, gfx.GFX_COL_WHITE);
+                elite.alg_gfx.gfx_plot_pixel(px, py, gfx.GFX_COL_WHITE);
 
 				if ((glx.e | 0x50) < 0x90)
 				{
-					alg_gfx.gfx_plot_pixel(px + 1, py, gfx.GFX_COL_WHITE);
+                    elite.alg_gfx.gfx_plot_pixel(px + 1, py, gfx.GFX_COL_WHITE);
 				}
 
 				Planet.waggle_galaxy(ref glx);
@@ -354,42 +354,42 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_PLANET_DATA;
 
-			alg_gfx.gfx_clear_display();
+            elite.alg_gfx.gfx_clear_display();
 
 			string planet_name = Planet.name_planet(ref elite.hyperspace_planet);
 			string str = "DATA ON " + planet_name;
 
-			alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
 
-			alg_gfx.gfx_draw_line(0, 36, 511, 36);
+            elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			Planet.generate_planet_data(ref hyper_planet_data, elite.hyperspace_planet);
 
 			show_distance(42, elite.docked_planet, elite.hyperspace_planet);
 
 			str = "Economy:" + economy_type[hyper_planet_data.economy];
-			alg_gfx.gfx_display_text(16, 74, str);
+            elite.alg_gfx.gfx_display_text(16, 74, str);
 
 			str = "Government:" + government_type[hyper_planet_data.government];
-			alg_gfx.gfx_display_text(16, 106, str);
+            elite.alg_gfx.gfx_display_text(16, 106, str);
 
 			str = $"Tech.Level:{hyper_planet_data.techlevel + 1:3d}";
-			alg_gfx.gfx_display_text(16, 138, str);
+            elite.alg_gfx.gfx_display_text(16, 138, str);
 
 			str = $"Population:{hyper_planet_data.population / 10:d}.{hyper_planet_data.population % 10:d} Billion";
-			alg_gfx.gfx_display_text(16, 170, str);
+            elite.alg_gfx.gfx_display_text(16, 170, str);
 
 			str = Planet.describe_inhabitants(str, elite.hyperspace_planet);
-			alg_gfx.gfx_display_text(16, 202, str);
+            elite.alg_gfx.gfx_display_text(16, 202, str);
 
 			str = $"Gross Productivity:{hyper_planet_data.productivity:5d} M CR";
-			alg_gfx.gfx_display_text(16, 234, str);
+            elite.alg_gfx.gfx_display_text(16, 234, str);
 
 			str = "Average Radius:{hyper_planet_data.radius:5d} km";
-			alg_gfx.gfx_display_text(16, 266, str);
+            elite.alg_gfx.gfx_display_text(16, 266, str);
 
 			description = Planet.describe_planet(elite.hyperspace_planet);
-			alg_gfx.gfx_display_pretty_text(16, 298, 400, 384, description);
+            elite.alg_gfx.gfx_display_pretty_text(16, 298, 400, 384, description);
 		}
 
 		struct rank
@@ -466,29 +466,29 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_CMDR_STATUS;
 
-			alg_gfx.gfx_clear_display();
+            elite.alg_gfx.gfx_clear_display();
 
 			str = "COMMANDER " + elite.cmdr.name;
 
-			alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
 
-			alg_gfx.gfx_draw_line(0, 36, 511, 36);
+            elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			alg_gfx.gfx_display_colour_text(16, 58, "Present System:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_colour_text(16, 58, "Present System:", gfx.GFX_COL_GREEN_1);
 
 			if (!elite.witchspace)
 			{
 				planet_name = Planet.name_planet(ref elite.docked_planet);
 				planet_name = Planet.capitalise_name(planet_name);
 				str = planet_name;
-				alg_gfx.gfx_display_text(190, 58, str);
+                elite.alg_gfx.gfx_display_text(190, 58, str);
 			}
 
-			alg_gfx.gfx_display_colour_text(16, 74, "Hyperspace System:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_colour_text(16, 74, "Hyperspace System:", gfx.GFX_COL_GREEN_1);
 			planet_name = Planet.name_planet(ref elite.hyperspace_planet);
 			planet_name = Planet.capitalise_name(planet_name);
 			str = planet_name;
-			alg_gfx.gfx_display_text(190, 74, str);
+            elite.alg_gfx.gfx_display_text(190, 74, str);
 
 			if (elite.docked)
 			{
@@ -516,16 +516,16 @@ namespace Elite
 				}
 			}
 
-			alg_gfx.gfx_display_colour_text(16, 90, "Condition:", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_text(190, 90, condition_txt[condition]);
+            elite.alg_gfx.gfx_display_colour_text(16, 90, "Condition:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_text(190, 90, condition_txt[condition]);
 
 			str = $"{elite.cmdr.fuel / 10:d}.{elite.cmdr.fuel % 10:d} Light Years";
-			alg_gfx.gfx_display_colour_text(16, 106, "Fuel:", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_text(70, 106, str);
+            elite.alg_gfx.gfx_display_colour_text(16, 106, "Fuel:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_text(70, 106, str);
 
 			str = $"{elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d} Cr";
-			alg_gfx.gfx_display_colour_text(16, 122, "Cash:", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_text(70, 122, str);
+            elite.alg_gfx.gfx_display_colour_text(16, 122, "Cash:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_text(70, 122, str);
 
 			if (elite.cmdr.legal_status == 0)
 			{
@@ -536,8 +536,8 @@ namespace Elite
 				str = elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender";
 			}
 
-			alg_gfx.gfx_display_colour_text(16, 138, "Legal Status:", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_text(128, 138, str);
+            elite.alg_gfx.gfx_display_colour_text(16, 138, "Legal Status:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_text(128, 138, str);
 
 			for (i = 0; i < NO_OF_RANKS; i++)
 			{
@@ -547,47 +547,47 @@ namespace Elite
 				}
 			}
 
-			alg_gfx.gfx_display_colour_text(16, 154, "Rating:", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_text(80, 154, str);
+            elite.alg_gfx.gfx_display_colour_text(16, 154, "Rating:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_text(80, 154, str);
 
-			alg_gfx.gfx_display_colour_text(16, 186, "EQUIPMENT:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_colour_text(16, 186, "EQUIPMENT:", gfx.GFX_COL_GREEN_1);
 
 			x = EQUIP_START_X;
 			y = EQUIP_START_Y;
 
 			if (elite.cmdr.cargo_capacity > 20)
 			{
-				alg_gfx.gfx_display_text(x, y, "Large Cargo Bay");
+                elite.alg_gfx.gfx_display_text(x, y, "Large Cargo Bay");
 				y += Y_INC;
 			}
 
 			if (elite.cmdr.escape_pod)
 			{
-				alg_gfx.gfx_display_text(x, y, "Escape Pod");
+                elite.alg_gfx.gfx_display_text(x, y, "Escape Pod");
 				y += Y_INC;
 			}
 
 			if (elite.cmdr.fuel_scoop)
 			{
-				alg_gfx.gfx_display_text(x, y, "Fuel Scoops");
+                elite.alg_gfx.gfx_display_text(x, y, "Fuel Scoops");
 				y += Y_INC;
 			}
 
 			if (elite.cmdr.ecm)
 			{
-				alg_gfx.gfx_display_text(x, y, "E.C.M. System");
+                elite.alg_gfx.gfx_display_text(x, y, "E.C.M. System");
 				y += Y_INC;
 			}
 
 			if (elite.cmdr.energy_bomb)
 			{
-				alg_gfx.gfx_display_text(x, y, "Energy Bomb");
+                elite.alg_gfx.gfx_display_text(x, y, "Energy Bomb");
 				y += Y_INC;
 			}
 
 			if (elite.cmdr.energy_unit != 0)
 			{
-				alg_gfx.gfx_display_text(x, y, elite.cmdr.energy_unit == 1 ? "Extra Energy Unit" : "Naval Energy Unit");
+                elite.alg_gfx.gfx_display_text(x, y, elite.cmdr.energy_unit == 1 ? "Extra Energy Unit" : "Naval Energy Unit");
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
 				{
@@ -598,7 +598,7 @@ namespace Elite
 
 			if (elite.cmdr.docking_computer)
 			{
-				alg_gfx.gfx_display_text(x, y, "Docking Computers");
+                elite.alg_gfx.gfx_display_text(x, y, "Docking Computers");
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
 				{
@@ -610,7 +610,7 @@ namespace Elite
 
 			if (elite.cmdr.galactic_hyperdrive)
 			{
-				alg_gfx.gfx_display_text(x, y, "Galactic Hyperspace");
+                elite.alg_gfx.gfx_display_text(x, y, "Galactic Hyperspace");
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
 				{
@@ -622,7 +622,7 @@ namespace Elite
 			if (elite.cmdr.front_laser != 0)
 			{
 				str = $"Front {laser_type(elite.cmdr.front_laser)} Laser";
-				alg_gfx.gfx_display_text(x, y, str);
+                elite.alg_gfx.gfx_display_text(x, y, str);
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
 				{
@@ -634,7 +634,7 @@ namespace Elite
 			if (elite.cmdr.rear_laser != 0)
 			{
 				str = $"Rear {laser_type(elite.cmdr.rear_laser)} Laser";
-				alg_gfx.gfx_display_text(x, y, str);
+                elite.alg_gfx.gfx_display_text(x, y, str);
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
 				{
@@ -646,7 +646,7 @@ namespace Elite
 			if (elite.cmdr.left_laser != 0)
 			{
 				str = $"Left {laser_type(elite.cmdr.left_laser)} Laser";
-				alg_gfx.gfx_display_text(x, y, str);
+                elite.alg_gfx.gfx_display_text(x, y, str);
 				y += Y_INC;
 				if (y > EQUIP_MAX_Y)
 				{
@@ -658,7 +658,7 @@ namespace Elite
 			if (elite.cmdr.right_laser != 0)
 			{
 				str = $"Right {laser_type(elite.cmdr.right_laser)} Laser";
-				alg_gfx.gfx_display_text(x, y, str);
+                elite.alg_gfx.gfx_display_text(x, y, str);
 			}
 		}
 
@@ -674,11 +674,11 @@ namespace Elite
 
 			y = i * 15 + 55;
 
-			alg_gfx.gfx_display_text(16, y, trade.stock_market[i].name);
+            elite.alg_gfx.gfx_display_text(16, y, trade.stock_market[i].name);
 
-			alg_gfx.gfx_display_text(180, y, unit_name[trade.stock_market[i].units]);
+            elite.alg_gfx.gfx_display_text(180, y, unit_name[trade.stock_market[i].units]);
 			str = $"{trade.stock_market[i].current_price / 10:d}.{trade.stock_market[i].current_price % 10:d}";
-			alg_gfx.gfx_display_text(256, y, str);
+            elite.alg_gfx.gfx_display_text(256, y, str);
 
 			if (trade.stock_market[i].current_quantity > 0)
 			{
@@ -689,7 +689,7 @@ namespace Elite
 				str = "-";
 			}
 
-			alg_gfx.gfx_display_text(338, y, str);
+            elite.alg_gfx.gfx_display_text(338, y, str);
 
 			if (elite.cmdr.current_cargo[i] > 0)
 			{
@@ -700,7 +700,7 @@ namespace Elite
 				str = "-";
 			}
 
-			alg_gfx.gfx_display_text(444, y, str);
+            elite.alg_gfx.gfx_display_text(444, y, str);
 		}
 
 		static void highlight_stock(int i)
@@ -711,20 +711,20 @@ namespace Elite
 			if ((hilite_item != -1) && (hilite_item != i))
 			{
 				y = hilite_item * 15 + 55;
-				alg_gfx.gfx_clear_area(2, y, 510, y + 15);
+                elite.alg_gfx.gfx_clear_area(2, y, 510, y + 15);
 				display_stock_price(hilite_item);
 			}
 
 			y = i * 15 + 55;
 
-			alg_gfx.gfx_draw_rectangle(2, y, 510, y + 15, gfx.GFX_COL_DARK_RED);
+            elite.alg_gfx.gfx_draw_rectangle(2, y, 510, y + 15, gfx.GFX_COL_DARK_RED);
 			display_stock_price(i);
 
 			hilite_item = i;
 
-			alg_gfx.gfx_clear_text_area();
+            elite.alg_gfx.gfx_clear_text_area();
 			str = $"Cash: {elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d}";
-			alg_gfx.gfx_display_text(16, 340, str);
+            elite.alg_gfx.gfx_display_text(16, 340, str);
 		}
 
 		internal static void select_previous_stock()
@@ -799,19 +799,19 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_MARKET_PRICES;
 
-			alg_gfx.gfx_clear_display();
+            elite.alg_gfx.gfx_clear_display();
 
 			string planet_name = Planet.name_planet(ref elite.docked_planet);
 			string str = planet_name + " MARKET PRICES";
-			alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_display_centre_text(10, str, 140, gfx.GFX_COL_GOLD);
 
-			alg_gfx.gfx_draw_line(0, 36, 511, 36);
+            elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
-			alg_gfx.gfx_display_colour_text(16, 40, "PRODUCT", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_colour_text(166, 40, "UNIT", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_colour_text(246, 40, "PRICE", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_colour_text(314, 40, "FOR SALE", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_colour_text(420, 40, "IN HOLD", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_colour_text(16, 40, "PRODUCT", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_colour_text(166, 40, "UNIT", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_colour_text(246, 40, "PRICE", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_colour_text(314, 40, "FOR SALE", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_colour_text(420, 40, "IN HOLD", gfx.GFX_COL_GREEN_1);
 
 			for (int i = 0; i < 17; i++)
 			{
@@ -833,28 +833,28 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_INVENTORY;
 
-			alg_gfx.gfx_clear_display();
-			alg_gfx.gfx_display_centre_text(10, "INVENTORY", 140, gfx.GFX_COL_GOLD);
-			alg_gfx.gfx_draw_line(0, 36, 511, 36);
+            elite.alg_gfx.gfx_clear_display();
+            elite.alg_gfx.gfx_display_centre_text(10, "INVENTORY", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			str = $"{elite.cmdr.fuel / 10:d}.{elite.cmdr.fuel % 10:d} Light Years";
-			alg_gfx.gfx_display_colour_text(16, 50, "Fuel:", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_text(70, 50, str);
+            elite.alg_gfx.gfx_display_colour_text(16, 50, "Fuel:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_text(70, 50, str);
 
 			str = $"{elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d} Cr";
-			alg_gfx.gfx_display_colour_text(16, 66, "Cash:", gfx.GFX_COL_GREEN_1);
-			alg_gfx.gfx_display_text(70, 66, str);
+            elite.alg_gfx.gfx_display_colour_text(16, 66, "Cash:", gfx.GFX_COL_GREEN_1);
+            elite.alg_gfx.gfx_display_text(70, 66, str);
 
 			y = 98;
 			for (i = 0; i < 17; i++)
 			{
 				if (elite.cmdr.current_cargo[i] > 0)
 				{
-					alg_gfx.gfx_display_text(16, y, trade.stock_market[i].name);
+                    elite.alg_gfx.gfx_display_text(16, y, trade.stock_market[i].name);
 
 					str = $"{elite.cmdr.current_cargo[i]:d}{unit_name[trade.stock_market[i].units]}";
 
-					alg_gfx.gfx_display_text(180, y, str);
+                    elite.alg_gfx.gfx_display_text(180, y, str);
 					y += 16;
 				}
 			}
@@ -1036,12 +1036,12 @@ namespace Elite
 
 			int x = equip_stock[i].name[0] == '>' ? 50 : 16;
 
-			alg_gfx.gfx_display_colour_text(x, y, equip_stock[i].name[1..], col);
+            elite.alg_gfx.gfx_display_colour_text(x, y, equip_stock[i].name[1..], col);
 
 			if (equip_stock[i].price != 0)
 			{
 				str = $"{equip_stock[i].price / 10:d}.{equip_stock[i].price % 10:d}";
-				alg_gfx.gfx_display_colour_text(338, y, str, col);
+                elite.alg_gfx.gfx_display_colour_text(338, y, str, col);
 			}
 		}
 
@@ -1053,20 +1053,20 @@ namespace Elite
 			if ((hilite_item != -1) && (hilite_item != i))
 			{
 				y = equip_stock[hilite_item].y;
-				alg_gfx.gfx_clear_area(2, y + 1, 510, y + 15);
+                elite.alg_gfx.gfx_clear_area(2, y + 1, 510, y + 15);
 				display_equip_price(hilite_item);
 			}
 
 			y = equip_stock[i].y;
 
-			alg_gfx.gfx_draw_rectangle(2, y + 1, 510, y + 15, gfx.GFX_COL_DARK_RED);
+            elite.alg_gfx.gfx_draw_rectangle(2, y + 1, 510, y + 15, gfx.GFX_COL_DARK_RED);
 			display_equip_price(i);
 
 			hilite_item = i;
 
-			alg_gfx.gfx_clear_text_area();
+            elite.alg_gfx.gfx_clear_text_area();
 			str = $"Cash: {elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d}";
-			alg_gfx.gfx_display_text(16, 340, str);
+            elite.alg_gfx.gfx_display_text(16, 340, str);
 		}
 
 		internal static void select_next_equip()
@@ -1075,7 +1075,9 @@ namespace Elite
 			int i;
 
 			if (hilite_item == (NO_OF_EQUIP_ITEMS - 1))
+			{
 				return;
+			}
 
 			next = hilite_item;
 			for (i = hilite_item + 1; i < NO_OF_EQUIP_ITEMS; i++)
@@ -1088,7 +1090,9 @@ namespace Elite
 			}
 
 			if (next != hilite_item)
+			{
 				highlight_equip(next);
+			}
 		}
 
 		internal static void select_previous_equip()
@@ -1097,7 +1101,9 @@ namespace Elite
 			int prev;
 
 			if (hilite_item == 0)
+			{
 				return;
+			}
 
 			prev = hilite_item;
 			for (i = hilite_item - 1; i >= 0; i--)
@@ -1119,7 +1125,7 @@ namespace Elite
 		{
 			int i;
 
-			alg_gfx.gfx_clear_area(2, 55, 510, 380);
+            elite.alg_gfx.gfx_clear_area(2, 55, 510, 380);
 
 			int tech_level = elite.current_planet_data.techlevel + 1;
 
@@ -1335,9 +1341,9 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_EQUIP_SHIP;
 
-			alg_gfx.gfx_clear_display();
-			alg_gfx.gfx_display_centre_text(10, "EQUIP SHIP", 140, gfx.GFX_COL_GOLD);
-			alg_gfx.gfx_draw_line(0, 36, 511, 36);
+            elite.alg_gfx.gfx_clear_display();
+            elite.alg_gfx.gfx_display_centre_text(10, "EQUIP SHIP", 140, gfx.GFX_COL_GOLD);
+            elite.alg_gfx.gfx_draw_line(0, 36, 511, 36);
 
 			collapse_equip_list();
 

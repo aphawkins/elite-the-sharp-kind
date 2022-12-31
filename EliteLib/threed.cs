@@ -132,7 +132,7 @@ namespace Elite
 					ex = point_list[ship.lines[i].end_point].x;
 					ey = point_list[ship.lines[i].end_point].y;
 
-					alg_gfx.gfx_draw_line(sx, sy, ex, ey);
+                    elite.alg_gfx.gfx_draw_line(sx, sy, ex, ey);
 				}
 			}
 
@@ -140,7 +140,7 @@ namespace Elite
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
 				lasv = elite.ship_list[(int)univ.type].front_laser;
-				alg_gfx.gfx_draw_line(point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
+                elite.alg_gfx.gfx_draw_line(point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
 			}
 		}
 
@@ -297,7 +297,7 @@ namespace Elite
 						zavg = Math.Max(zavg, point_list[face_data[i].p8].z);
 					}
 
-					alg_gfx.gfx_render_polygon(face_data[i].points, poly_list, face_data[i].colour, zavg);
+                    elite.alg_gfx.gfx_render_polygon(face_data[i].points, poly_list, face_data[i].colour, zavg);
 				}
 			}
 
@@ -306,7 +306,7 @@ namespace Elite
 				lasv = elite.ship_list[(int)univ.type].front_laser;
 				col = (univ.type == SHIP.SHIP_VIPER) ? gfx.GFX_COL_CYAN : gfx.GFX_COL_WHITE;
 
-				alg_gfx.gfx_render_line(point_list[lasv].x, point_list[lasv].y,
+                elite.alg_gfx.gfx_render_line(point_list[lasv].x, point_list[lasv].y,
 								 univ.location.x > 0 ? 0 : 511, random.rand255() * 2,
 								 point_list[lasv].z, col);
 			}
@@ -539,7 +539,7 @@ namespace Elite
 					ly = ry / div;
 					colour = landscape[lx, ly];
 
-					alg_gfx.gfx_fast_plot_pixel(sx, sy, colour);
+                    elite.alg_gfx.gfx_fast_plot_pixel(sx, sy, colour);
 				}
 				rx += vx;
 				ry += vy;
@@ -591,7 +591,7 @@ namespace Elite
 		 */
 		static void draw_wireframe_planet(int xo, int yo, int radius, Vector[] vec)
 		{
-			alg_gfx.gfx_draw_circle(xo, yo, radius, gfx.GFX_COL_WHITE);
+            elite.alg_gfx.gfx_draw_circle(xo, yo, radius, gfx.GFX_COL_WHITE);
 		}
 
 
@@ -637,7 +637,7 @@ namespace Elite
 					break;
 
 				case 1:
-					alg_gfx.gfx_draw_filled_circle(x, y, radius, gfx.GFX_COL_GREEN_1);
+                    elite.alg_gfx.gfx_draw_filled_circle(x, y, radius, gfx.GFX_COL_GREEN_1);
 					break;
 
 				case 2:
@@ -720,7 +720,7 @@ namespace Elite
 					colour = mix ? gfx.GFX_ORANGE_1 : gfx.GFX_ORANGE_2;
 				}
 
-				alg_gfx.gfx_fast_plot_pixel(sx, sy, colour);
+                elite.alg_gfx.gfx_fast_plot_pixel(sx, sy, colour);
 			}
 		}
 
@@ -931,7 +931,7 @@ namespace Elite
 					{
 						for (psx = 0; psx < sizex; psx++)
 						{
-							alg_gfx.gfx_plot_pixel(px + psx, py + psy, gfx.GFX_COL_WHITE);
+                            elite.alg_gfx.gfx_plot_pixel(px + psx, py + psy, gfx.GFX_COL_WHITE);
 						}
 					}
 				}

@@ -28,8 +28,9 @@
 namespace Elite
 {
 	using System.Diagnostics;
+	using System.Drawing;
 
-	internal static class alg_gfx
+	public class alg_gfx : IGfx
 	{
         /* Allegro datafile object indexes, produced by grabber v3.9.32 (WIP), Mingw32 */
         /* Datafile: c:\usr\cprogs\NewKind\elite.dat */
@@ -50,8 +51,11 @@ namespace Elite
 		const int SAFE = 12;       /* BMP  */
 		const int THEME = 13;       /* MIDI */
 
-		//BITMAP* gfx_screen;
-		volatile static int frame_count;
+		Bitmap gfx_screen;
+		Graphics gfx_screen_graphics;
+
+
+        volatile static int frame_count;
 		//DATAFILE* datafile;
 		//BITMAP* scanner_image;
 
@@ -60,7 +64,13 @@ namespace Elite
 		static int start_poly;
 		static int total_polys;
 
-		struct poly_data
+		public alg_gfx(ref Bitmap screen)
+		{
+			gfx_screen = screen;
+            gfx_screen_graphics = Graphics.FromImage(gfx_screen);
+        }
+
+        struct poly_data
 		{
 			internal int z;
             internal int no_points;
@@ -77,7 +87,7 @@ namespace Elite
 		}
 		//END_OF_FUNCTION(frame_timer);
 
-		internal static int gfx_graphics_startup()
+		public int gfx_graphics_startup()
 		{
 			Debug.WriteLine("gfx_graphics_startup");
 
@@ -154,7 +164,7 @@ namespace Elite
 			return 0;
 		}
 
-		internal static void gfx_graphics_shutdown()
+		public void gfx_graphics_shutdown()
 		{
             Debug.WriteLine("gfx_graphics_shutdown");
 
@@ -166,7 +176,7 @@ namespace Elite
 		/*
 		 * Blit the back buffer to the screen.
 		 */
-		internal static void gfx_update_screen()
+		public void gfx_update_screen()
 		{
 			Debug.WriteLine("gfx_update_screen");
 
@@ -182,21 +192,21 @@ namespace Elite
 			//release_screen();
 		}
 
-        internal static void gfx_acquire_screen()
+        public void gfx_acquire_screen()
 		{
             Debug.WriteLine("gfx_acquire_screen");
 
             //acquire_bitmap(gfx_screen);
         }
 
-        internal static void gfx_release_screen()
+        public void gfx_release_screen()
 		{
             Debug.WriteLine("gfx_release_screen");
 
             //release_bitmap(gfx_screen);
 		}
 
-		internal static void gfx_fast_plot_pixel(int x, int y, int col)
+		public void gfx_fast_plot_pixel(int x, int y, int col)
 		{
             Debug.WriteLine("gfx_fast_plot_pixel");
 
@@ -204,14 +214,14 @@ namespace Elite
             //gfx_screen.line[y][x] = col;
 		}
 
-        internal static void gfx_plot_pixel(int x, int y, int col)
+        public void gfx_plot_pixel(int x, int y, int col)
 		{
             Debug.WriteLine("gfx_plot_pixel");
 
             //putpixel(gfx_screen, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, col);
         }
 
-        internal static void gfx_draw_filled_circle(int cx, int cy, int radius, int circle_colour)
+        public void gfx_draw_filled_circle(int cx, int cy, int radius, int circle_colour)
 		{
             Debug.WriteLine("gfx_draw_filled_circle");
 
@@ -447,7 +457,7 @@ namespace Elite
 //#undef AA_AND
 //#undef AA_BASE
 
-		internal static void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
+		public void gfx_draw_circle(int cx, int cy, int radius, int circle_colour)
 		{
             Debug.WriteLine("gfx_draw_circle");
 
@@ -461,7 +471,7 @@ namespace Elite
 			//}
 		}
 
-		internal static void gfx_draw_line(int x1, int y1, int x2, int y2)
+		public void gfx_draw_line(int x1, int y1, int x2, int y2)
 		{
             Debug.WriteLine("gfx_draw_line");
 
@@ -487,33 +497,43 @@ namespace Elite
 			//}
 		}
 
-		internal static void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
+		public void gfx_draw_colour_line(int x1, int y1, int x2, int y2, int line_colour)
 		{
 			Debug.WriteLine("gfx_draw_colour_line");
 
-			//if (y1 == y2)
-			//{
-			//	hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, line_colour);
-			//	return;
-			//}
+            //if (y1 == y2)
+            //{
+            //	hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, line_colour);
+            //	return;
+            //}
 
-			//if (x1 == x2)
-			//{
-			//	vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
-			//	return;
-			//}
+            //if (x1 == x2)
+            //{
+            //	vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
+            //	return;
+            //}
 
-			//if (elite.anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
-			//{
-			//	gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
-			//}
-			//else
-			//{
-			//	line(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
+            //if (elite.anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
+            //{
+            //	gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
+            //}
+            //else
+            //{
+            Pen whitePen = new(Color.White, 1);
+
+            gfx_screen_graphics.DrawLine(whitePen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+
+
+			//gfx_screen.SetPixel(x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, Color.Black);
+   //         gfx_screen.SetPixel(x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, Color.Black);
+
+			Application.DoEvents();
+
+			//line(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
 			//}
 		}
 
-        internal static void gfx_draw_colour_line_xor(int x1, int y1, int x2, int y2, int line_colour)
+        public void gfx_draw_colour_line_xor(int x1, int y1, int x2, int y2, int line_colour)
 		{
             Debug.WriteLine("gfx_draw_colour_line_xor");
 
@@ -522,7 +542,7 @@ namespace Elite
             //xor_mode(false);
         }
 
-        internal static void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
+        public void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, int col)
 		{
             Debug.WriteLine("gfx_draw_triangle");
 
@@ -530,7 +550,7 @@ namespace Elite
 						   //x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
 		}
 
-		internal static void gfx_display_text(int x, int y, string txt)
+		public void gfx_display_text(int x, int y, string txt)
 		{
             Debug.WriteLine("gfx_display_text");
 
@@ -538,7 +558,7 @@ namespace Elite
 			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
 		}
 
-		internal static void gfx_display_colour_text(int x, int y, string txt, int col)
+		public void gfx_display_colour_text(int x, int y, string txt, int col)
 		{
             Debug.WriteLine("gfx_display_colour_text");
 
@@ -546,7 +566,7 @@ namespace Elite
 			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, col);
 		}
 
-		internal static void gfx_display_centre_text(int y, string str, int psize, int col)
+		public void gfx_display_centre_text(int y, string str, int psize, int col)
 		{
             Debug.WriteLine("gfx_display_centre_text");
 
@@ -568,35 +588,35 @@ namespace Elite
 			//textout_centre(gfx_screen, datafile[txt_size].dat, str, (128 * gfx.GFX_SCALE) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, txt_colour);
 		}
 
-		internal static void gfx_clear_display()
+		public void gfx_clear_display()
 		{
             Debug.WriteLine("gfx_clear_display");
 
             //rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-		internal static void gfx_clear_text_area()
+		public void gfx_clear_text_area()
 		{
             Debug.WriteLine("gfx_clear_text_area");
 
             //rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-		internal static void gfx_clear_area(int tx, int ty, int bx, int by)
+		public void gfx_clear_area(int tx, int ty, int bx, int by)
 		{
             Debug.WriteLine("gfx_clear_area");
 
             //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-		internal static void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
+		public void gfx_draw_rectangle(int tx, int ty, int bx, int by, int col)
 		{
             Debug.WriteLine("gfx_draw_rectangle");
 
             //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, col);
 		}
 
-		internal static void gfx_display_pretty_text(int tx, int ty, int bx, int by, string txt)
+		public void gfx_display_pretty_text(int tx, int ty, int bx, int by, string txt)
 		{
             Debug.WriteLine("gfx_display_pretty_text");
 
@@ -637,27 +657,27 @@ namespace Elite
 			//}
 		}
 
-		internal static void gfx_draw_scanner()
+		public void gfx_draw_scanner()
 		{
             Debug.WriteLine("gfx_draw_scanner");
 
             //blit(scanner_image, gfx_screen, 0, 0, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET, scanner_image.w, scanner_image.h);
 		}
 
-		internal static void gfx_set_clip_region(int tx, int ty, int bx, int by)
+		public void gfx_set_clip_region(int tx, int ty, int bx, int by)
 		{
             Debug.WriteLine("gfx_set_clip_region");
 
             //set_clip(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
 		}
 
-		internal static void gfx_start_render()
+		public void gfx_start_render()
 		{
 			start_poly = 0;
 			total_polys = 0;
 		}
 
-		internal static void gfx_render_polygon(int num_points, int[] point_list, int face_colour, int zavg)
+		public void gfx_render_polygon(int num_points, int[] point_list, int face_colour, int zavg)
 		{
 			int i;
 			int x;
@@ -709,7 +729,7 @@ namespace Elite
 			poly_chain[i].next = x;
 		}
 
-		internal static void gfx_render_line(int x1, int y1, int x2, int y2, int dist, int col)
+		public void gfx_render_line(int x1, int y1, int x2, int y2, int dist, int col)
 		{
 			int[] point_list = new int[4];
 
@@ -721,7 +741,7 @@ namespace Elite
 			gfx_render_polygon(2, point_list, col, dist);
 		}
 
-		internal static void gfx_finish_render()
+		public void gfx_finish_render()
 		{
 			int num_points;
 			int[] pl;
@@ -765,7 +785,7 @@ namespace Elite
 			//polygon(gfx_screen, num_points, poly_list, face_colour);
 		}
 
-		internal static void gfx_draw_sprite(int sprite_no, int x, int y)
+		public void gfx_draw_sprite(int sprite_no, int x, int y)
 		{
             Debug.WriteLine("gfx_draw_sprite");
 
@@ -821,7 +841,7 @@ namespace Elite
 			//draw_sprite(gfx_screen, sprite_bmp, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET);
 		}
 
-		internal static bool gfx_request_file(string title, string path, string ext)
+		public bool gfx_request_file(string title, string path, string ext)
 		{
             Debug.WriteLine("gfx_request_file");
 
