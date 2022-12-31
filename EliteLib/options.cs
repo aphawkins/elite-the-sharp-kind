@@ -229,7 +229,7 @@ namespace Elite
 		{
 			if (hilite_item == (NUM_SETTINGS - 1))
 			{
-				file.write_config_file();
+				File.write_config_file();
 				display_options();
 				return;
 			}

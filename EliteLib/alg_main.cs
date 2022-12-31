@@ -1085,7 +1085,7 @@ namespace Elite
 				return;
 			}
 
-			bool rv = file.save_commander_file(path);
+			bool rv = File.save_commander_file(path);
 
 			if (rv)
 			{
@@ -1117,7 +1117,7 @@ namespace Elite
 				return;
 			}
 
-			rv = file.load_commander_file(path);
+			rv = File.load_commander_file(path);
 
 			if (rv)
 			{
@@ -1295,7 +1295,7 @@ namespace Elite
             elite.alg_gfx = alg_gfx;
 
             initialise_allegro();
-			file.read_config_file();
+			File.read_config_file();
 
 			if (elite.alg_gfx.gfx_graphics_startup() == 1)
 			{

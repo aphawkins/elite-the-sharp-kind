@@ -27,7 +27,7 @@
 
 namespace Elite
 {
-	internal static class file
+	internal static class File
 	{
 		internal static void write_config_file()
 		{
