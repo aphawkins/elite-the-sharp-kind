@@ -43,7 +43,7 @@ namespace Elite
 
         void DrawScanner();
 
-        void DrawSprite(IMG sprite_no, int x, int y);
+        void DrawSprite(IMG spriteImgage, int x, int y);
 
         void DrawText(int x, int y, string text, GFX_COL colour);
 

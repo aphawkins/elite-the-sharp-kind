@@ -41,18 +41,23 @@ namespace Elite
         //const int THEME = 13;       /* MIDI */
 
         // Screen buffer
-        private readonly Bitmap _gfx_screen;
-        private readonly Graphics _gfx_screen_graphics;
+        private readonly Bitmap _screenBuffer;
+        private readonly Graphics _screenBufferGraphics;
 
         // Actual screen
         private readonly Bitmap _screen;
-        private readonly Graphics _screen_graphics;
+        private readonly Graphics _screenGraphics;
+
+		// Fonts
         private readonly Font _fontSmall = new ("Arial", 12, FontStyle.Regular, GraphicsUnit.Pixel);
         private readonly Font _fontLarge = new("Arial", 14, FontStyle.Regular, GraphicsUnit.Pixel);
 
+		// Images
+		private Bitmap _imageScanner;
+		private readonly Dictionary<IMG, Bitmap> _images = new();
+
         private volatile int frame_count;
-		//DATAFILE* datafile;
-        private Bitmap _scannerImage;
+        //DATAFILE* datafile;
         private const int MAX_POLYS = 100;
         private int start_poly;
         private int total_polys;
@@ -60,9 +65,9 @@ namespace Elite
 		public alg_gfx(ref Bitmap screen)
 		{
 			_screen = screen;
-            _screen_graphics = Graphics.FromImage(_screen);
-            _gfx_screen = new Bitmap(screen.Width, screen.Height);
-            _gfx_screen_graphics = Graphics.FromImage(_gfx_screen);
+            _screenGraphics = Graphics.FromImage(_screen);
+            _screenBuffer = new Bitmap(screen.Width, screen.Height);
+            _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
         }
 
         private struct poly_data
@@ -128,10 +133,9 @@ namespace Elite
 			//				return 1;
 			//			}
 
-			// TODO: load image from resource
-			_scannerImage = (Bitmap)Image.FromFile(Path.Combine("gfx", "scanner.bmp"));
+			bool imagesLoaded = LoadImages();
 
-            if (_scannerImage == null)
+            if (!imagesLoaded)
 			{
 				//set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
 				//allegro_message("Error reading scanner bitmap file.\n");
@@ -161,6 +165,31 @@ namespace Elite
 			//			install_int(frame_timer, speed_cap);
 
 			return 0;
+		}
+
+		private bool LoadImages()
+		{
+			string subFolder = "gfx";
+
+			// TODO: load image from resource
+			try
+			{
+				_imageScanner = (Bitmap)Image.FromFile(Path.Combine(subFolder, "scanner.bmp"));
+				_images[IMG.IMG_GREEN_DOT] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "greendot.bmp"));
+                _images[IMG.IMG_RED_DOT] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "reddot.bmp"));
+                _images[IMG.IMG_BIG_S] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "safe.bmp"));
+                _images[IMG.IMG_ELITE_TXT] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "elitetx3.bmp"));
+                _images[IMG.IMG_BIG_E] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "ecm.bmp"));
+                _images[IMG.IMG_MISSILE_GREEN] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "missgrn.bmp"));
+                _images[IMG.IMG_MISSILE_YELLOW] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "missyell.bmp"));
+                _images[IMG.IMG_MISSILE_RED] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "missred.bmp"));
+                _images[IMG.IMG_BLAKE] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "blake.bmp"));
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 
 		public void GraphicsShutdown()
@@ -193,7 +222,7 @@ namespace Elite
 
             lock (_screen)
 			{
-				_screen_graphics.DrawImage(_gfx_screen, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET);
+				_screenGraphics.DrawImage(_screenBuffer, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET);
 			}
 
             Application.DoEvents();
@@ -499,7 +528,7 @@ namespace Elite
             //}
             //else
             //{
-			_gfx_screen_graphics.DrawLine(MapColorToPen(GFX_COL.GFX_COL_WHITE), x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.DrawLine(MapColorToPen(GFX_COL.GFX_COL_WHITE), x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
             //}
         }
 
@@ -525,7 +554,7 @@ namespace Elite
             //}
             //else
             //{
-			_gfx_screen_graphics.DrawLine(MapColorToPen(line_colour), x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.DrawLine(MapColorToPen(line_colour), x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 			//}
 		}
 
@@ -558,7 +587,7 @@ namespace Elite
             //Debug.WriteLine(nameof(DisplayText));
 
             PointF point = new((x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
-            _gfx_screen_graphics.DrawString(text, _fontSmall, MapColorToBrush(colour), point);
+            _screenBufferGraphics.DrawString(text, _fontSmall, MapColorToBrush(colour), point);
         }
 
 		public void DrawTextCentre(int y, string text, int psize, GFX_COL colour)
@@ -572,7 +601,7 @@ namespace Elite
             };
 
             PointF point = new((128 * gfx.GFX_SCALE) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
-            _gfx_screen_graphics.DrawString(
+            _screenBufferGraphics.DrawString(
 				text,
                 psize == 140 ? _fontLarge : _fontSmall, 
 				MapColorToBrush(colour), 
@@ -584,28 +613,28 @@ namespace Elite
 		{
             //Debug.WriteLine(nameof(ClearDisplay));
 
-            _gfx_screen_graphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
+            _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
 		}
 
 		public void ClearTextArea()
 		{
             //Debug.WriteLine(nameof(ClearTextArea));
 
-            _gfx_screen_graphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
+            _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
         }
 
 		public void ClearArea(int tx, int ty, int bx, int by)
 		{
             //Debug.WriteLine(nameof(ClearArea));
 
-			_gfx_screen_graphics.FillRectangle(Brushes.Black, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.FillRectangle(Brushes.Black, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
         }
 
 		public void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL col)
 		{
             Debug.WriteLine(nameof(DrawRectangle));
 
-			_gfx_screen_graphics.FillRectangle(MapColorToBrush(col), tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.FillRectangle(MapColorToBrush(col), tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
         }
 
 		public void DrawTextPretty(int tx, int ty, int bx, int by, string txt)
@@ -653,7 +682,7 @@ namespace Elite
 		{
             // Debug.WriteLine(nameof(DrawScanner));
 
-            _gfx_screen_graphics.DrawImage(_scannerImage, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
+            _screenBufferGraphics.DrawImage(_imageScanner, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
 
 		public void SetClipRegion(int tx, int ty, int bx, int by)
@@ -764,66 +793,24 @@ namespace Elite
 				points[i].Y += gfx.GFX_Y_OFFSET;
             }
 
-			_gfx_screen_graphics.FillPolygon(MapColorToBrush(face_colour), points);
+			_screenBufferGraphics.FillPolygon(MapColorToBrush(face_colour), points);
 		}
 
-		public void DrawSprite(IMG sprite_no, int x, int y)
-		{
-            Debug.WriteLine(nameof(DrawSprite));
+		public void DrawSprite(IMG spriteImgage, int x, int y)
+        {
+            //Debug.WriteLine(nameof(DrawSprite) + " " + sprite_no);
 
-			//BITMAP* sprite_bmp;
+            Bitmap sprite = _images[spriteImgage];
 
-			//switch (sprite_no)
-			//{
-			//	case gfx.IMG_GREEN_DOT:
-			//		sprite_bmp = datafile[GRNDOT].dat;
-			//		break;
+            if (x == -1)
+            {
+                x = ((256 * gfx.GFX_SCALE) - sprite.Width) / 2;
+            }
 
-			//	case gfx.IMG_RED_DOT:
-			//		sprite_bmp = datafile[REDDOT].dat;
-			//		break;
+            _screenBufferGraphics.DrawImage(sprite, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET);
+        }
 
-			//	case gfx.IMG_BIG_S:
-			//		sprite_bmp = datafile[SAFE].dat;
-			//		break;
-
-			//	case gfx.IMG_ELITE_TXT:
-			//		sprite_bmp = datafile[ELITETXT].dat;
-			//		break;
-
-			//	case gfx.IMG_BIG_E:
-			//		sprite_bmp = datafile[ECM].dat;
-			//		break;
-
-			//	case gfx.IMG_BLAKE:
-			//		sprite_bmp = datafile[BLAKE].dat;
-			//		break;
-
-			//	case gfx.IMG_MISSILE_GREEN:
-			//		sprite_bmp = datafile[MISSILE_G].dat;
-			//		break;
-
-			//	case gfx.IMG_MISSILE_YELLOW:
-			//		sprite_bmp = datafile[MISSILE_Y].dat;
-			//		break;
-
-			//	case gfx.IMG_MISSILE_RED:
-			//		sprite_bmp = datafile[MISSILE_R].dat;
-			//		break;
-
-			//	default:
-			//		return;
-			//}
-
-			//if (x == -1)
-			//{
-			//	x = ((256 * gfx.GFX_SCALE) - sprite_bmp.w) / 2;
-			//}
-
-			//draw_sprite(gfx_screen, sprite_bmp, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET);
-		}
-
-		public bool RequestFile(string title, string path, string ext)
+        public bool RequestFile(string title, string path, string ext)
 		{
             Debug.WriteLine(nameof(RequestFile));
 
@@ -932,17 +919,23 @@ namespace Elite
         {
             if (!disposedValue)
             {
-                if (disposing)
-                {
+				if (disposing)
+				{
 					// dispose managed state (managed objects)
-					_gfx_screen_graphics.Dispose();
-					_gfx_screen.Dispose();
-					_screen_graphics.Dispose();
+					_screenBufferGraphics.Dispose();
+					_screenBuffer.Dispose();
+					_screenGraphics.Dispose();
 					_screen.Dispose();
-					_scannerImage.Dispose();
 					_fontSmall.Dispose();
 					_fontLarge.Dispose();
-                }
+
+					// Images
+					_imageScanner.Dispose();
+					foreach(KeyValuePair<IMG, Bitmap> image in _images)
+					{
+						image.Value.Dispose();
+					}
+				}
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
