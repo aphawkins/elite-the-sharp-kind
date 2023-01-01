@@ -96,7 +96,7 @@ namespace Elite
 
 		public int GraphicsStartup()
 		{
-			Debug.WriteLine("gfx_graphics_startup");
+			Debug.WriteLine(nameof(GraphicsStartup));
 
 			//			PALETTE the_palette;
 			//			int rv;
@@ -177,7 +177,7 @@ namespace Elite
 
 		public void GraphicsShutdown()
 		{
-            Debug.WriteLine("gfx_graphics_shutdown");
+            Debug.WriteLine(nameof(GraphicsShutdown));
 
             //destroy_bitmap(scanner_image);
             //destroy_bitmap(gfx_screen);
@@ -189,21 +189,21 @@ namespace Elite
 		 */
 		public void ScreenUpdate()
 		{
-			//Debug.WriteLine("gfx_update_screen");
+            //Debug.WriteLine(nameof(ScreenUpdate));
 
-			//while (frame_count < 1)
-			//{
-			//	Thread.Sleep(10);
-			//	// rest(10);
-			//}
+            //while (frame_count < 1)
+            //{
+            //	Thread.Sleep(10);
+            //	// rest(10);
+            //}
 
-			//frame_count = 0;
+            //frame_count = 0;
 
             //acquire_screen();
             //blit(gfx_screen, screen, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, 512, 512);
             //release_screen();
 
-			lock(_screen)
+            lock (_screen)
 			{
 				_screen_graphics.DrawImage(_gfx_screen, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET);
 			}
@@ -213,21 +213,21 @@ namespace Elite
 
         public void ScreenAcquire()
 		{
-            Debug.WriteLine("gfx_acquire_screen");
+            Debug.WriteLine(nameof(ScreenAcquire));
 
             //acquire_bitmap(gfx_screen);
         }
 
         public void ScreenRelease()
 		{
-            Debug.WriteLine("gfx_release_screen");
+            Debug.WriteLine(nameof(ScreenRelease));
 
             //release_bitmap(gfx_screen);
 		}
 
 		public void PlotPixelFast(int x, int y, GFX_COL col)
 		{
-            Debug.WriteLine("gfx_fast_plot_pixel");
+            Debug.WriteLine(nameof(PlotPixelFast));
 
             ////	_putpixel(gfx_screen, x, y, col);
             //gfx_screen.line[y][x] = col;
@@ -235,14 +235,14 @@ namespace Elite
 
         public void PlotPixel(int x, int y, GFX_COL col)
 		{
-            Debug.WriteLine("gfx_plot_pixel");
+            Debug.WriteLine(nameof(PlotPixel));
 
             //putpixel(gfx_screen, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, col);
         }
 
         public void DrawCircleFilled(int cx, int cy, int radius, GFX_COL circle_colour)
 		{
-            Debug.WriteLine("gfx_draw_filled_circle");
+            Debug.WriteLine(nameof(DrawCircleFilled));
 
             //circlefill(gfx_screen, cx + gfx.GFX_X_OFFSET, cy + gfx.GFX_Y_OFFSET, radius, circle_colour);
         }
@@ -478,7 +478,7 @@ namespace Elite
 
 		public void DrawCircle(int cx, int cy, int radius, GFX_COL circle_colour)
 		{
-            Debug.WriteLine("gfx_draw_circle");
+            Debug.WriteLine(nameof(DrawCircle));
 
 			//if (elite.anti_alias_gfx && (circle_colour == gfx.GFX_COL_WHITE))
 			//{
@@ -492,7 +492,7 @@ namespace Elite
 
 		public void DrawLine(int x1, int y1, int x2, int y2)
 		{
-            //Debug.WriteLine("gfx_draw_line");
+            //Debug.WriteLine(nameof(DrawLine));
 
             //if (y1 == y2)
             //{
@@ -512,41 +512,41 @@ namespace Elite
             //}
             //else
             //{
-				Pen pen = new(MapColor(GFX_COL.GFX_COL_WHITE), 1);
+            Pen pen = new(MapColor(GFX_COL.GFX_COL_WHITE), 1);
 				_gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
             //}
         }
 
 		public void DrawLine(int x1, int y1, int x2, int y2, GFX_COL line_colour)
 		{
-			//Debug.WriteLine("gfx_draw_line (colour)");
+            //Debug.WriteLine(nameof(DrawLine));
 
-			//if (y1 == y2)
-			//{
-			//	hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, line_colour);
-			//	return;
-			//}
+            //if (y1 == y2)
+            //{
+            //	hline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, line_colour);
+            //	return;
+            //}
 
-			//if (x1 == x2)
-			//{
-			//	vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
-			//	return;
-			//}
+            //if (x1 == x2)
+            //{
+            //	vline(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, y2 + gfx.GFX_Y_OFFSET, line_colour);
+            //	return;
+            //}
 
-			//if (elite.anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
-			//{
-			//	gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
-			//}
-			//else
-			//{
-				Pen pen = new(MapColor(line_colour), 1);
+            //if (elite.anti_alias_gfx && (line_colour == gfx.GFX_COL_WHITE))
+            //{
+            //	gfx_draw_aa_line(itofix(x1), itofix(y1), itofix(x2), itofix(y2));
+            //}
+            //else
+            //{
+            Pen pen = new(MapColor(line_colour), 1);
 				_gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 			//}
 		}
 
         public void DrawLineXor(int x1, int y1, int x2, int y2, GFX_COL line_colour)
 		{
-            Debug.WriteLine("gfx_draw_line_xor");
+            Debug.WriteLine(nameof(DrawLineXor));
 
             //xor_mode(true);
             //gfx_draw_colour_line(x1, y1, x2, y2, line_colour);
@@ -555,7 +555,7 @@ namespace Elite
 
         public void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL col)
 		{
-            Debug.WriteLine("gfx_draw_triangle");
+            Debug.WriteLine(nameof(DrawTriangle));
 
          //   triangle(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET,
 						   //x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
@@ -563,7 +563,7 @@ namespace Elite
 
 		public void DisplayText(int x, int y, string txt)
 		{
-            Debug.WriteLine("gfx_display_text");
+            Debug.WriteLine(nameof(DisplayText));
 
 			//text_mode(-1);
 			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
@@ -571,7 +571,7 @@ namespace Elite
 
 		public void DisplayText(int x, int y, string txt, GFX_COL col)
 		{
-            Debug.WriteLine("gfx_display_colour_text");
+            Debug.WriteLine(nameof(DisplayText));
 
 			//text_mode(-1);
 			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, col);
@@ -579,7 +579,7 @@ namespace Elite
 
 		public void DisplayTextCentre(int y, string str, int psize, GFX_COL col)
 		{
-            Debug.WriteLine("gfx_display_centre_text");
+            Debug.WriteLine(nameof(DisplayTextCentre));
 
 			//int txt_size;
 			//int txt_colour;
@@ -601,38 +601,38 @@ namespace Elite
 
 		public void ClearDisplay()
 		{
-            //Debug.WriteLine("gfx_clear_display");
+            //Debug.WriteLine(nameof(ClearDisplay));
 
-			//rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
+            //rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 
-			Brush brush = new SolidBrush(Color.Black);
+            Brush brush = new SolidBrush(Color.Black);
             _gfx_screen_graphics.FillRectangle(brush, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
 		}
 
 		public void ClearTextArea()
 		{
-            Debug.WriteLine("gfx_clear_text_area");
+            Debug.WriteLine(nameof(ClearTextArea));
 
             //rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
 		public void ClearArea(int tx, int ty, int bx, int by)
 		{
-            Debug.WriteLine("gfx_clear_area");
+            Debug.WriteLine(nameof(ClearArea));
 
             //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
 		public void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL col)
 		{
-            Debug.WriteLine("gfx_draw_rectangle");
+            Debug.WriteLine(nameof(DrawRectangle));
 
             //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, col);
 		}
 
 		public void DisplayTextPretty(int tx, int ty, int bx, int by, string txt)
 		{
-            Debug.WriteLine("gfx_display_pretty_text");
+            Debug.WriteLine(nameof(DisplayTextPretty));
 
 			//char strbuf[100];
 			//char* str;
@@ -673,14 +673,14 @@ namespace Elite
 
 		public void DrawScanner()
 		{
-            // Debug.WriteLine("gfx_draw_scanner");
+            // Debug.WriteLine(nameof(DrawScanner));
 
             _gfx_screen_graphics.DrawImage(scanner_image, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
 
 		public void SetClipRegion(int tx, int ty, int bx, int by)
 		{
-            Debug.WriteLine("gfx_set_clip_region");
+            Debug.WriteLine(nameof(SetClipRegion));
 
             //set_clip(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
 		}
@@ -778,9 +778,9 @@ namespace Elite
 
 		private void gfx_polygon(Point[] points, GFX_COL face_colour)
 		{
-            // Debug.WriteLine("gfx_polygon");
+            // Debug.WriteLine(nameof(gfx_polygon));
 
-			for (int i = 0; i < points.Length; i++)
+            for (int i = 0; i < points.Length; i++)
 			{
 				points[i].X += gfx.GFX_X_OFFSET;
 				points[i].Y += gfx.GFX_Y_OFFSET;
@@ -792,7 +792,7 @@ namespace Elite
 
 		public void DrawSprite(IMG sprite_no, int x, int y)
 		{
-            Debug.WriteLine("gfx_draw_sprite");
+            Debug.WriteLine(nameof(DrawSprite));
 
 			//BITMAP* sprite_bmp;
 
@@ -848,7 +848,7 @@ namespace Elite
 
 		public bool RequestFile(string title, string path, string ext)
 		{
-            Debug.WriteLine("gfx_request_file");
+            Debug.WriteLine(nameof(RequestFile));
 
 			bool okay = false;
 
