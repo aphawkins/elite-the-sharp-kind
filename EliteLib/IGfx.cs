@@ -25,15 +25,7 @@ namespace Elite
 
         void ClearTextArea();
 
-        void DisplayText(int x, int y, string txt, GFX_COL col);
-
-        void DisplayText(int x, int y, string txt);
-
-        void DisplayTextCentre(int y, string str, int psize, GFX_COL col);
-
-        void DisplayTextPretty(int tx, int ty, int bx, int by, string txt);
-
-        void DrawCircle(int cx, int cy, int radius, GFX_COL circle_colour);
+        void DrawCircle(int cx, int cy, int radius, GFX_COL colour);
 
         void DrawCircleFilled(int cx, int cy, int radius, GFX_COL circle_colour);
 
@@ -41,27 +33,35 @@ namespace Elite
 
         void DrawLine(int x1, int y1, int x2, int y2);
 
-        void DrawLine(int x1, int y1, int x2, int y2, int dist, GFX_COL col);
+        void DrawLine(int x1, int y1, int x2, int y2, int dist, GFX_COL colour);
 
         void DrawLineXor(int x1, int y1, int x2, int y2, GFX_COL line_colour);
 
         void DrawPolygon(Vector2[] point_list, GFX_COL face_colour, int zavg);
 
-        void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL col);
+        void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL colour);
 
         void DrawScanner();
 
         void DrawSprite(IMG sprite_no, int x, int y);
 
-        void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL col);
+        void DrawText(int x, int y, string text, GFX_COL colour);
+
+        void DrawText(int x, int y, string text);
+
+        void DrawTextCentre(int y, string text, int psize, GFX_COL colour);
+
+        void DrawTextPretty(int tx, int ty, int bx, int by, string text);
+
+        void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL colour);
 
         void GraphicsShutdown();
 
         int GraphicsStartup();
 
-        void PlotPixel(int x, int y, GFX_COL col);
+        void PlotPixel(int x, int y, GFX_COL colour);
 
-        void PlotPixelFast(int x, int y, GFX_COL col);
+        void PlotPixelFast(int x, int y, GFX_COL colour);
 
         void RenderFinish();
 

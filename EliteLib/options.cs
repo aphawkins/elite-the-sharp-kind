@@ -89,10 +89,10 @@ namespace Elite
 			elite.current_screen = SCR.SCR_QUIT;
 
 			elite.alg_gfx.ClearDisplay();
-			elite.alg_gfx.DisplayTextCentre(10, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
+			elite.alg_gfx.DrawTextCentre(10, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
-			elite.alg_gfx.DisplayTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
+			elite.alg_gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
 		}
 
 		static void display_setting_item(int item)
@@ -103,7 +103,7 @@ namespace Elite
 			if (item == (NUM_SETTINGS - 1))
 			{
 				y = ((NUM_SETTINGS + 1) / 2) * 30 + 96 + 32;
-				elite.alg_gfx.DisplayTextCentre(y, setting_list[item].name, 120, GFX_COL.GFX_COL_WHITE);
+				elite.alg_gfx.DrawTextCentre(y, setting_list[item].name, 120, GFX_COL.GFX_COL_WHITE);
 				return;
 			}
 
@@ -137,8 +137,8 @@ namespace Elite
 			x = (item & 1) * 250 + 32;
 			y = (item / 2) * 30 + 96;
 
-			elite.alg_gfx.DisplayText(x, y, setting_list[item].name, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DisplayText(x + 120, y, setting_list[item].value[v], GFX_COL.GFX_COL_WHITE);
+			elite.alg_gfx.DrawText(x, y, setting_list[item].name, GFX_COL.GFX_COL_WHITE);
+			elite.alg_gfx.DrawText(x + 120, y, setting_list[item].value[v], GFX_COL.GFX_COL_WHITE);
 		}
 
 		static void highlight_setting(int item)
@@ -268,7 +268,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_SETTINGS;
 
 			elite.alg_gfx.ClearDisplay();
-			elite.alg_gfx.DisplayTextCentre(10, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
+			elite.alg_gfx.DrawTextCentre(10, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
 			for (i = 0; i < NUM_SETTINGS; i++)
@@ -287,7 +287,7 @@ namespace Elite
 			y += i * 30;
 			GFX_COL col = ((!elite.docked) && option_list[i].docked_only) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
 
-			elite.alg_gfx.DisplayTextCentre(y, option_list[i].text, 120, col);
+			elite.alg_gfx.DrawTextCentre(y, option_list[i].text, 120, col);
 		}
 
 		static void highlight_option(int i)
@@ -363,12 +363,12 @@ namespace Elite
 			elite.current_screen = SCR.SCR_OPTIONS;
 
 			elite.alg_gfx.ClearDisplay();
-			elite.alg_gfx.DisplayTextCentre(10, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
+			elite.alg_gfx.DrawTextCentre(10, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(0, 36, 511, 36);
-			elite.alg_gfx.DisplayTextCentre(300, "Version: Release 1.0", 120, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DisplayTextCentre(320, "www.newkind.co.uk", 120, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DisplayTextCentre(340, "Written by Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DisplayTextCentre(360, "Based on original code by Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);
+			elite.alg_gfx.DrawTextCentre(300, "Version: Release 1.0", 120, GFX_COL.GFX_COL_WHITE);
+			elite.alg_gfx.DrawTextCentre(320, "www.newkind.co.uk", 120, GFX_COL.GFX_COL_WHITE);
+			elite.alg_gfx.DrawTextCentre(340, "Written by Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
+			elite.alg_gfx.DrawTextCentre(360, "Based on original code by Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);
 
 			for (i = 0; i < NUM_OPTIONS; i++)
 			{

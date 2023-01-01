@@ -12,19 +12,6 @@
  *
  **/
 
-//# include <string.h>
-//# include <stdlib.h>
-//# include <stdio.h>
-//# include <math.h>
-//# include <ctype.h>
-
-//# include "allegro.h"
-
-//# include "config.h"
-//# include "gfx.h"
-//# include "alg_data.h"
-//# include "elite.h"
-
 namespace Elite
 {
 	using System.Diagnostics;
@@ -32,43 +19,43 @@ namespace Elite
 	using System.Numerics;
 	using Elite.Enums;
 
-	public class alg_gfx : IGfx
+	public class alg_gfx : IGfx, IDisposable
 	{
         /* Allegro datafile object indexes, produced by grabber v3.9.32 (WIP), Mingw32 */
         /* Datafile: c:\usr\cprogs\NewKind\elite.dat */
         /* Date: Mon May 07 19:20:00 2001 */
         /* Do not hand edit! */
-        const int BLAKE = 0;        /* BMP  */
-		const int DANUBE = 1;        /* MIDI */
-		const int ECM = 2;        /* BMP  */
-		const int ELITE_1 = 3;        /* FONT */
-		const int ELITE_2 = 4;        /* FONT */
-		const int ELITETXT = 5;        /* BMP  */
-		const int FRONTV = 6;        /* BMP  */
-		const int GRNDOT = 7;        /* BMP  */
-		const int MISSILE_G = 8;        /* BMP  */
-		const int MISSILE_R = 9;        /* BMP  */
-		const int MISSILE_Y = 10;       /* BMP  */
-		const int REDDOT = 11;       /* BMP  */
-		const int SAFE = 12;       /* BMP  */
-		const int THEME = 13;       /* MIDI */
+        //const int BLAKE = 0;        /* BMP  */
+        //const int DANUBE = 1;        /* MIDI */
+        //const int ECM = 2;        /* BMP  */
+        //const int ELITE_1 = 3;        /* FONT */
+        //const int ELITE_2 = 4;        /* FONT */
+        //const int ELITETXT = 5;        /* BMP  */
+        //const int FRONTV = 6;        /* BMP  */
+        //const int GRNDOT = 7;        /* BMP  */
+        //const int MISSILE_G = 8;        /* BMP  */
+        //const int MISSILE_R = 9;        /* BMP  */
+        //const int MISSILE_Y = 10;       /* BMP  */
+        //const int REDDOT = 11;       /* BMP  */
+        //const int SAFE = 12;       /* BMP  */
+        //const int THEME = 13;       /* MIDI */
 
-		// Screen buffer
-		Bitmap _gfx_screen;
-		Graphics _gfx_screen_graphics;
+        // Screen buffer
+        private readonly Bitmap _gfx_screen;
+        private readonly Graphics _gfx_screen_graphics;
 
-		// Actual screen
-		Bitmap _screen;
-        Graphics _screen_graphics;
+        // Actual screen
+        private readonly Bitmap _screen;
+        private readonly Graphics _screen_graphics;
+        private readonly Font _fontSmall = new ("Arial", 12, FontStyle.Regular, GraphicsUnit.Pixel);
+        private readonly Font _fontLarge = new("Arial", 14, FontStyle.Regular, GraphicsUnit.Pixel);
 
-        volatile static int frame_count;
+        private volatile int frame_count;
 		//DATAFILE* datafile;
-		Bitmap scanner_image;
-
-		const int MAX_POLYS = 100;
-
-		static int start_poly;
-		static int total_polys;
+        private Bitmap _scannerImage;
+        private const int MAX_POLYS = 100;
+        private int start_poly;
+        private int total_polys;
 
 		public alg_gfx(ref Bitmap screen)
 		{
@@ -78,7 +65,7 @@ namespace Elite
             _gfx_screen_graphics = Graphics.FromImage(_gfx_screen);
         }
 
-        struct poly_data
+        private struct poly_data
 		{
 			internal int z;
             internal GFX_COL face_colour;
@@ -86,9 +73,10 @@ namespace Elite
             internal int next;
 		};
 
-		static poly_data[] poly_chain = new poly_data[MAX_POLYS];
+        private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
+        private bool disposedValue;
 
-		static void frame_timer()
+        private void frame_timer()
 		{
 			frame_count++;
 		}
@@ -141,9 +129,9 @@ namespace Elite
 			//			}
 
 			// TODO: load image from resource
-			scanner_image = (Bitmap)Image.FromFile(Path.Combine("gfx", "scanner.bmp"));
+			_scannerImage = (Bitmap)Image.FromFile(Path.Combine("gfx", "scanner.bmp"));
 
-            if (scanner_image == null)
+            if (_scannerImage == null)
 			{
 				//set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
 				//allegro_message("Error reading scanner bitmap file.\n");
@@ -247,10 +235,9 @@ namespace Elite
             //circlefill(gfx_screen, cx + gfx.GFX_X_OFFSET, cy + gfx.GFX_Y_OFFSET, radius, circle_colour);
         }
 
-
-		const int AA_BITS = 3;
-		const int AA_AND = 7;
-		const int AA_BASE = 235;
+        private const int AA_BITS = 3;
+        private const int AA_AND = 7;
+        private const int AA_BASE = 235;
 
 //#define trunc(x) ((x) & ~65535)
 //#define frac(x) ((x) & 65535)
@@ -476,7 +463,7 @@ namespace Elite
 //#undef AA_AND
 //#undef AA_BASE
 
-		public void DrawCircle(int cx, int cy, int radius, GFX_COL circle_colour)
+		public void DrawCircle(int cx, int cy, int radius, GFX_COL colour)
 		{
             Debug.WriteLine(nameof(DrawCircle));
 
@@ -486,7 +473,7 @@ namespace Elite
 			//}
 			//else
 			//{
-			//	circle(gfx_screen, cx + gfx.GFX_X_OFFSET, cy + gfx.GFX_Y_OFFSET, radius, circle_colour);
+			//	circle(gfx_screen, cx + gfx.GFX_X_OFFSET, cy + gfx.GFX_Y_OFFSET, radius, colour);
 			//}
 		}
 
@@ -512,8 +499,7 @@ namespace Elite
             //}
             //else
             //{
-            Pen pen = new(MapColor(GFX_COL.GFX_COL_WHITE), 1);
-				_gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+			_gfx_screen_graphics.DrawLine(MapColorToPen(GFX_COL.GFX_COL_WHITE), x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
             //}
         }
 
@@ -539,8 +525,7 @@ namespace Elite
             //}
             //else
             //{
-            Pen pen = new(MapColor(line_colour), 1);
-				_gfx_screen_graphics.DrawLine(pen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+			_gfx_screen_graphics.DrawLine(MapColorToPen(line_colour), x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 			//}
 		}
 
@@ -561,78 +546,71 @@ namespace Elite
 						   //x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
 		}
 
-		public void DisplayText(int x, int y, string txt)
+		public void DrawText(int x, int y, string text)
 		{
-            Debug.WriteLine(nameof(DisplayText));
+			//Debug.WriteLine(nameof(DrawText));
 
-			//text_mode(-1);
-			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
-		}
+			DrawText(x, y, text, GFX_COL.GFX_COL_WHITE);
+        }
 
-		public void DisplayText(int x, int y, string txt, GFX_COL col)
+		public void DrawText(int x, int y, string text, GFX_COL colour)
 		{
-            Debug.WriteLine(nameof(DisplayText));
+            //Debug.WriteLine(nameof(DisplayText));
 
-			//text_mode(-1);
-			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, col);
-		}
+            PointF point = new((x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
+            _gfx_screen_graphics.DrawString(text, _fontSmall, MapColorToBrush(colour), point);
+        }
 
-		public void DisplayTextCentre(int y, string str, int psize, GFX_COL col)
+		public void DrawTextCentre(int y, string text, int psize, GFX_COL colour)
 		{
-            Debug.WriteLine(nameof(DisplayTextCentre));
+            //Debug.WriteLine(nameof(DisplayTextCentre));
 
-			//int txt_size;
-			//int txt_colour;
+            StringFormat stringFormat = new()
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
-			//if (psize == 140)
-			//{
-			//	txt_size = ELITE_2;
-			//	txt_colour = -1;
-			//}
-			//else
-			//{
-			//	txt_size = ELITE_1;
-			//	txt_colour = col;
-			//}
-
-			//text_mode(-1);
-			//textout_centre(gfx_screen, datafile[txt_size].dat, str, (128 * gfx.GFX_SCALE) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, txt_colour);
-		}
+            PointF point = new((128 * gfx.GFX_SCALE) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
+            _gfx_screen_graphics.DrawString(
+				text,
+                psize == 140 ? _fontLarge : _fontSmall, 
+				MapColorToBrush(colour), 
+				point, 
+				stringFormat);
+        }
 
 		public void ClearDisplay()
 		{
             //Debug.WriteLine(nameof(ClearDisplay));
 
-            //rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
-
-            Brush brush = new SolidBrush(Color.Black);
-            _gfx_screen_graphics.FillRectangle(brush, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
+            _gfx_screen_graphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
 		}
 
 		public void ClearTextArea()
 		{
-            Debug.WriteLine(nameof(ClearTextArea));
+            //Debug.WriteLine(nameof(ClearTextArea));
 
-            //rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
-		}
+            _gfx_screen_graphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
+        }
 
 		public void ClearArea(int tx, int ty, int bx, int by)
 		{
-            Debug.WriteLine(nameof(ClearArea));
+            //Debug.WriteLine(nameof(ClearArea));
 
-            //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
-		}
+			_gfx_screen_graphics.FillRectangle(Brushes.Black, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
+        }
 
 		public void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL col)
 		{
             Debug.WriteLine(nameof(DrawRectangle));
 
-            //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, col);
-		}
+			_gfx_screen_graphics.FillRectangle(MapColorToBrush(col), tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
+        }
 
-		public void DisplayTextPretty(int tx, int ty, int bx, int by, string txt)
+		public void DrawTextPretty(int tx, int ty, int bx, int by, string txt)
 		{
-            Debug.WriteLine(nameof(DisplayTextPretty));
+            Debug.WriteLine(nameof(DrawTextPretty));
 
 			//char strbuf[100];
 			//char* str;
@@ -675,7 +653,7 @@ namespace Elite
 		{
             // Debug.WriteLine(nameof(DrawScanner));
 
-            _gfx_screen_graphics.DrawImage(scanner_image, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
+            _gfx_screen_graphics.DrawImage(_scannerImage, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
 
 		public void SetClipRegion(int tx, int ty, int bx, int by)
@@ -786,8 +764,7 @@ namespace Elite
 				points[i].Y += gfx.GFX_Y_OFFSET;
             }
 
-			Brush brush = new SolidBrush(MapColor(face_colour));
-			_gfx_screen_graphics.FillPolygon(brush, points);
+			_gfx_screen_graphics.FillPolygon(MapColorToBrush(face_colour), points);
 		}
 
 		public void DrawSprite(IMG sprite_no, int x, int y)
@@ -859,50 +836,132 @@ namespace Elite
 			return okay;
 		}
 
-		private static Color MapColor(GFX_COL col)
+		private static Pen MapColorToPen(GFX_COL col)
 		{
 			switch (col)
 			{
 				case GFX_COL.GFX_COL_WHITE:
-					return Color.White;
+					return Pens.White;
 
 				case GFX_COL.GFX_COL_BLACK:
-					return Color.Black;
+					return Pens.Black;
 
                 case GFX_COL.GFX_COL_GOLD:
-                    return Color.Gold;
+                    return Pens.Gold;
 
                 case GFX_COL.GFX_COL_YELLOW_1:
-                    return Color.Yellow;
+                    return Pens.Yellow;
 
                 case GFX_COL.GFX_COL_RED:
-                    return Color.Red;
+                    return Pens.Red;
 
                 case GFX_COL.GFX_COL_DARK_RED:
-                    return Color.DarkRed;
+                    return Pens.DarkRed;
 
 				case GFX_COL.GFX_COL_BLUE_1:
-                    return Color.Blue;
+                    return Pens.Blue;
 
                 case GFX_COL.GFX_COL_BLUE_2:
-                    return Color.AliceBlue;
+                    return Pens.AliceBlue;
 
                 case GFX_COL.GFX_COL_BLUE_3:
-                    return Color.DodgerBlue;
+                    return Pens.DodgerBlue;
 
                 case GFX_COL.GFX_COL_GREY_1:
-                    return Color.Gray;
+                    return Pens.Gray;
 
                 case GFX_COL.GFX_COL_GREY_2:
-                    return Color.SlateGray;
+                    return Pens.SlateGray;
 
                 case GFX_COL.GFX_COL_GREY_3:
-                    return Color.DarkGray;
+                    return Pens.DarkGray;
 
                 default:
 					Debug.Assert(false);
-					return Color.Magenta;
+					return Pens.Magenta;
 			}
 		}
-	}
+
+        private static Brush MapColorToBrush(GFX_COL col)
+        {
+            switch (col)
+            {
+                case GFX_COL.GFX_COL_WHITE:
+                    return Brushes.White;
+
+                case GFX_COL.GFX_COL_BLACK:
+                    return Brushes.Black;
+
+                case GFX_COL.GFX_COL_GOLD:
+                    return Brushes.Gold;
+
+                case GFX_COL.GFX_COL_YELLOW_1:
+                    return Brushes.Yellow;
+
+                case GFX_COL.GFX_COL_RED:
+                    return Brushes.Red;
+
+                case GFX_COL.GFX_COL_DARK_RED:
+                    return Brushes.DarkRed;
+
+                case GFX_COL.GFX_COL_BLUE_1:
+                    return Brushes.Blue;
+
+                case GFX_COL.GFX_COL_BLUE_2:
+                    return Brushes.AliceBlue;
+
+                case GFX_COL.GFX_COL_BLUE_3:
+                    return Brushes.DodgerBlue;
+
+                case GFX_COL.GFX_COL_GREY_1:
+                    return Brushes.Gray;
+
+                case GFX_COL.GFX_COL_GREY_2:
+                    return Brushes.SlateGray;
+
+                case GFX_COL.GFX_COL_GREY_3:
+                    return Brushes.DarkGray;
+
+                default:
+                    Debug.Assert(false);
+                    return Brushes.Magenta;
+            }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+					// dispose managed state (managed objects)
+					_gfx_screen_graphics.Dispose();
+					_gfx_screen.Dispose();
+					_screen_graphics.Dispose();
+					_screen.Dispose();
+					_scannerImage.Dispose();
+					_fontSmall.Dispose();
+					_fontLarge.Dispose();
+                }
+
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~alg_gfx()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
 }

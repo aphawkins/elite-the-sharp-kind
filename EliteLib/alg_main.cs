@@ -190,22 +190,22 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_FRONT_VIEW:
-					elite.alg_gfx.DisplayTextCentre(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
+					elite.alg_gfx.DrawTextCentre(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
 					laser = elite.cmdr.front_laser;
 					break;
 
 				case SCR.SCR_REAR_VIEW:
-					elite.alg_gfx.DisplayTextCentre(32, "Rear View", 120, GFX_COL.GFX_COL_WHITE);
+					elite.alg_gfx.DrawTextCentre(32, "Rear View", 120, GFX_COL.GFX_COL_WHITE);
 					laser = elite.cmdr.rear_laser;
 					break;
 
 				case SCR.SCR_LEFT_VIEW:
-					elite.alg_gfx.DisplayTextCentre(32, "Left View", 120, GFX_COL.GFX_COL_WHITE);
+					elite.alg_gfx.DrawTextCentre(32, "Left View", 120, GFX_COL.GFX_COL_WHITE);
 					laser = elite.cmdr.left_laser;
 					break;
 
 				case SCR.SCR_RIGHT_VIEW:
-					elite.alg_gfx.DisplayTextCentre(32, "Right View", 120, GFX_COL.GFX_COL_WHITE);
+					elite.alg_gfx.DrawTextCentre(32, "Right View", 120, GFX_COL.GFX_COL_WHITE);
 					laser = elite.cmdr.right_laser;
 					break;
 			}
@@ -475,7 +475,7 @@ namespace Elite
 				find_input = true;
 				find_name = string.Empty;
                 elite.alg_gfx.ClearTextArea();
-                elite.alg_gfx.DisplayText(16, 340, "Planet Name?");
+                elite.alg_gfx.DrawText(16, 340, "Planet Name?");
 			}
 		}
 
@@ -491,7 +491,7 @@ namespace Elite
 
 			str = "Planet Name? " + find_name;
             elite.alg_gfx.ClearTextArea();
-            elite.alg_gfx.DisplayText(16, 340, str);
+            elite.alg_gfx.DrawText(16, 340, str);
 		}
 
 		static void delete_find_char()
@@ -508,7 +508,7 @@ namespace Elite
 
 			str = "Planet Name? " + find_name;
             elite.alg_gfx.ClearTextArea();
-            elite.alg_gfx.DisplayText(16, 340, str);
+            elite.alg_gfx.DrawText(16, 340, str);
 		}
 
 		static void o_pressed()
@@ -664,7 +664,7 @@ namespace Elite
 				space.universe[newship].location.y = 0;
 				space.universe[newship].location.z += 2;
 
-                elite.alg_gfx.DisplayTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
 
 				space.update_console();
                 elite.alg_gfx.ScreenUpdate();
@@ -1070,7 +1070,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_SAVE_CMDR;
 
             elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DisplayTextCentre(10, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(10, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
             elite.alg_gfx.ScreenUpdate();
 
@@ -1089,11 +1089,11 @@ namespace Elite
 
 			if (rv)
 			{
-                elite.alg_gfx.DisplayTextCentre(175, "Error Saving Commander!", 140, GFX_COL.GFX_COL_GOLD);
+                elite.alg_gfx.DrawTextCentre(175, "Error Saving Commander!", 140, GFX_COL.GFX_COL_GOLD);
 				return;
 			}
 
-            elite.alg_gfx.DisplayTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
 
 			set_commander_name(path);
 			elite.saved_cmdr = elite.cmdr;
@@ -1104,7 +1104,7 @@ namespace Elite
 		internal static void load_commander_screen()
 		{
             elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DisplayTextCentre(10, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(10, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
             elite.alg_gfx.ScreenUpdate();
 
@@ -1122,8 +1122,8 @@ namespace Elite
 			if (rv)
 			{
 				elite.saved_cmdr = elite.cmdr;
-                elite.alg_gfx.DisplayTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
-                elite.alg_gfx.DisplayTextCentre(200, "Press any key to continue.", 140, GFX_COL.GFX_COL_GOLD);
+                elite.alg_gfx.DrawTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
+                elite.alg_gfx.DrawTextCentre(200, "Press any key to continue.", 140, GFX_COL.GFX_COL_GOLD);
                 elite.alg_gfx.ScreenUpdate();
 				//TODO: Fix this
 				//readkey();
@@ -1236,7 +1236,7 @@ namespace Elite
                 elite.alg_gfx.ClearDisplay();
 				Stars.update_starfield();
 				space.update_universe();
-                elite.alg_gfx.DisplayTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
+                elite.alg_gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
                 elite.alg_gfx.ScreenUpdate();
 			}
 		}
@@ -1419,7 +1419,7 @@ namespace Elite
 
 						if (message_count > 0)
 						{
-                            elite.alg_gfx.DisplayTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
+                            elite.alg_gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
 						}
 
 						if (space.hyper_ready)

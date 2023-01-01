@@ -1102,21 +1102,21 @@ namespace Elite
 			if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
 				(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW))
 			{
-                elite.alg_gfx.DisplayText(5, 5, str);
+                elite.alg_gfx.DrawText(5, 5, str);
 				if (hyper_galactic)
 				{
-                    elite.alg_gfx.DisplayTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
 				}
 				else
 				{
 					str = "Hyperspace - " + hyper_name;
-                    elite.alg_gfx.DisplayTextCentre(358, str, 120, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.DrawTextCentre(358, str, 120, GFX_COL.GFX_COL_WHITE);
 				}
 			}
 			else
 			{
                 elite.alg_gfx.ClearArea(5, 5, 25, 34);
-                elite.alg_gfx.DisplayText(5, 5, str);
+                elite.alg_gfx.DrawText(5, 5, str);
 			}
 		}
 
