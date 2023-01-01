@@ -245,55 +245,55 @@ namespace Elite
 					 (point_list[face_data[i].p3].x - point_list[face_data[i].p2].x)) <= 0)
 				{
 					num_points = face_data[i].points;
-                    point[] poly_list = new point[num_points];
+                    System.Numerics.Vector2[] poly_list = new System.Numerics.Vector2[num_points];
 
-                    poly_list[0].x = point_list[face_data[i].p1].x;
-					poly_list[0].y = point_list[face_data[i].p1].y;
+                    poly_list[0].X = point_list[face_data[i].p1].x;
+					poly_list[0].Y = point_list[face_data[i].p1].y;
 					zavg = point_list[face_data[i].p1].z;
 
-					poly_list[1].x = point_list[face_data[i].p2].x;
-					poly_list[1].y = point_list[face_data[i].p2].y;
+					poly_list[1].X = point_list[face_data[i].p2].x;
+					poly_list[1].Y = point_list[face_data[i].p2].y;
 					zavg = Math.Max(zavg, point_list[face_data[i].p2].z);
 
 					if (num_points > 2)
 					{
-						poly_list[2].x = point_list[face_data[i].p3].x;
-						poly_list[2].y = point_list[face_data[i].p3].y;
+						poly_list[2].X = point_list[face_data[i].p3].x;
+						poly_list[2].Y = point_list[face_data[i].p3].y;
 						zavg = Math.Max(zavg, point_list[face_data[i].p3].z);
 					}
 
 					if (num_points > 3)
 					{
-						poly_list[3].x = point_list[face_data[i].p4].x;
-						poly_list[3].y = point_list[face_data[i].p4].y;
+						poly_list[3].X = point_list[face_data[i].p4].x;
+						poly_list[3].Y = point_list[face_data[i].p4].y;
 						zavg = Math.Max(zavg, point_list[face_data[i].p4].z);
 					}
 
 					if (num_points > 4)
 					{
-						poly_list[4].x = point_list[face_data[i].p5].x;
-						poly_list[4].y = point_list[face_data[i].p5].y;
+						poly_list[4].X = point_list[face_data[i].p5].x;
+						poly_list[4].Y = point_list[face_data[i].p5].y;
 						zavg = Math.Max(zavg, point_list[face_data[i].p5].z);
 					}
 
 					if (num_points > 5)
 					{
-						poly_list[5].x = point_list[face_data[i].p6].x;
-						poly_list[5].y = point_list[face_data[i].p6].y;
+						poly_list[5].X = point_list[face_data[i].p6].x;
+						poly_list[5].Y = point_list[face_data[i].p6].y;
 						zavg = Math.Max(zavg, point_list[face_data[i].p6].z);
 					}
 
 					if (num_points > 6)
 					{
-						poly_list[6].x = point_list[face_data[i].p7].x;
-						poly_list[6].y = point_list[face_data[i].p7].y;
+						poly_list[6].X = point_list[face_data[i].p7].x;
+						poly_list[6].Y = point_list[face_data[i].p7].y;
 						zavg = Math.Max(zavg, point_list[face_data[i].p7].z);
 					}
 
 					if (num_points > 7)
 					{
-						poly_list[7].x = point_list[face_data[i].p8].x;
-						poly_list[7].y = point_list[face_data[i].p8].y;
+						poly_list[7].X = point_list[face_data[i].p8].x;
+						poly_list[7].Y = point_list[face_data[i].p8].y;
 						zavg = Math.Max(zavg, point_list[face_data[i].p8].z);
 					}
 

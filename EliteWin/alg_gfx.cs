@@ -29,8 +29,8 @@ namespace Elite
 {
 	using System.Diagnostics;
 	using System.Drawing;
+	using System.Numerics;
 	using Elite.Enums;
-	using Elite.Structs;
 
 	public class alg_gfx : IGfx
 	{
@@ -691,7 +691,7 @@ namespace Elite
 			total_polys = 0;
 		}
 
-		public void gfx_render_polygon(point[] point_list, GFX_COL face_colour, int zavg)
+		public void gfx_render_polygon(Vector2[] point_list, GFX_COL face_colour, int zavg)
 		{
 			int i;
 			int nx;
@@ -711,8 +711,8 @@ namespace Elite
 
             for (i = 0; i < point_list.Length; i++)
 			{
-				poly_chain[x].point_list[i].X = point_list[i].x;
-                poly_chain[x].point_list[i].Y = point_list[i].y;
+				poly_chain[x].point_list[i].X = (int)point_list[i].X;
+                poly_chain[x].point_list[i].Y = (int)point_list[i].Y;
             }
 
 			if (x == 0)
@@ -744,12 +744,12 @@ namespace Elite
 
 		public void gfx_render_line(int x1, int y1, int x2, int y2, int dist, GFX_COL col)
 		{
-			point[] point_list = new point[2];
+			Vector2[] point_list = new Vector2[2];
 
-			point_list[0].x = x1;
-			point_list[0].y = y1;
-			point_list[1].x = x2;
-			point_list[1].y = y2;
+			point_list[0].X = x1;
+			point_list[0].Y = y1;
+			point_list[1].X = x2;
+			point_list[1].Y = y2;
 
 			gfx_render_polygon(point_list, col, dist);
 		}
