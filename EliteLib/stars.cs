@@ -85,17 +85,17 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.gfx_plot_pixel(sx, sy, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.PlotPixel(sx, sy, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.gfx_plot_pixel(sx + 1, sy, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx + 1, sy, GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.gfx_plot_pixel(sx, sy + 1, GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx, sy + 1, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx + 1, sy + 1, GFX_COL.GFX_COL_WHITE);
 					}
 				}
 
@@ -124,7 +124,7 @@ namespace Elite
 
 				if (Stars.warp_stars)
 				{
-                    elite.alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
+                    elite.alg_gfx.DrawLine(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
 				}
 
 				sx = (int)xx;
@@ -183,17 +183,17 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.gfx_plot_pixel(sx, sy, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.PlotPixel(sx, sy, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.gfx_plot_pixel(sx + 1, sy, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx + 1, sy, GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.gfx_plot_pixel(sx, sy + 1, GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx, sy + 1, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx + 1, sy + 1, GFX_COL.GFX_COL_WHITE);
 					}
 				}
 
@@ -228,7 +228,7 @@ namespace Elite
 					   (ex >= gfx.GFX_VIEW_TX) && (ex <= gfx.GFX_VIEW_BX) &&
 					   (ey >= gfx.GFX_VIEW_TY) && (ey <= gfx.GFX_VIEW_BY))
 					{
-                        elite.alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
+                        elite.alg_gfx.DrawLine(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
 					}
 				}
 
@@ -297,17 +297,17 @@ namespace Elite
 					(sx >= gfx.GFX_VIEW_TX) && (sx <= gfx.GFX_VIEW_BX) &&
 					(sy >= gfx.GFX_VIEW_TY) && (sy <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.gfx_plot_pixel(sx, sy, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.PlotPixel(sx, sy, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.gfx_plot_pixel(sx + 1, sy, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx + 1, sy, GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.gfx_plot_pixel(sx, sy + 1, GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.gfx_plot_pixel(sx + 1, sy + 1, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx, sy + 1, GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.PlotPixel(sx + 1, sy + 1, GFX_COL.GFX_COL_WHITE);
 					}
 				}
 
@@ -331,7 +331,7 @@ namespace Elite
 
 				if (Stars.warp_stars)
 				{
-                    elite.alg_gfx.gfx_draw_line(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
+                    elite.alg_gfx.DrawLine(sx, sy, (int)(xx + 128) * gfx.GFX_SCALE, (int)(yy + 96) * gfx.GFX_SCALE);
 				}
 
 				if (Math.Abs(stars[i].x) >= 116)

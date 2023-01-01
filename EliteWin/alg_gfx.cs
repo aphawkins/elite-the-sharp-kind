@@ -94,7 +94,7 @@ namespace Elite
 		}
 		//END_OF_FUNCTION(frame_timer);
 
-		public int gfx_graphics_startup()
+		public int GraphicsStartup()
 		{
 			Debug.WriteLine("gfx_graphics_startup");
 
@@ -158,12 +158,12 @@ namespace Elite
 
             //			clear(gfx_screen);
 
-			gfx_draw_scanner();
+			DrawScanner();
 
 			// Draw border
-            gfx_draw_line(0, 0, 0, 384);
-			gfx_draw_line(0, 0, 511, 0);
-			gfx_draw_line(511, 0, 511, 384);
+            DrawLine(0, 0, 0, 384);
+			DrawLine(0, 0, 511, 0);
+			DrawLine(511, 0, 511, 384);
 
 			//			/* Install a timer to regulate the speed of the game... */
 
@@ -175,7 +175,7 @@ namespace Elite
 			return 0;
 		}
 
-		public void gfx_graphics_shutdown()
+		public void GraphicsShutdown()
 		{
             Debug.WriteLine("gfx_graphics_shutdown");
 
@@ -187,7 +187,7 @@ namespace Elite
 		/*
 		 * Blit the back buffer to the screen.
 		 */
-		public void gfx_update_screen()
+		public void ScreenUpdate()
 		{
 			//Debug.WriteLine("gfx_update_screen");
 
@@ -211,21 +211,21 @@ namespace Elite
             Application.DoEvents();
         }
 
-        public void gfx_acquire_screen()
+        public void ScreenAcquire()
 		{
             Debug.WriteLine("gfx_acquire_screen");
 
             //acquire_bitmap(gfx_screen);
         }
 
-        public void gfx_release_screen()
+        public void ScreenRelease()
 		{
             Debug.WriteLine("gfx_release_screen");
 
             //release_bitmap(gfx_screen);
 		}
 
-		public void gfx_fast_plot_pixel(int x, int y, GFX_COL col)
+		public void PlotPixelFast(int x, int y, GFX_COL col)
 		{
             Debug.WriteLine("gfx_fast_plot_pixel");
 
@@ -233,14 +233,14 @@ namespace Elite
             //gfx_screen.line[y][x] = col;
 		}
 
-        public void gfx_plot_pixel(int x, int y, GFX_COL col)
+        public void PlotPixel(int x, int y, GFX_COL col)
 		{
             Debug.WriteLine("gfx_plot_pixel");
 
             //putpixel(gfx_screen, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, col);
         }
 
-        public void gfx_draw_filled_circle(int cx, int cy, int radius, GFX_COL circle_colour)
+        public void DrawCircleFilled(int cx, int cy, int radius, GFX_COL circle_colour)
 		{
             Debug.WriteLine("gfx_draw_filled_circle");
 
@@ -476,7 +476,7 @@ namespace Elite
 //#undef AA_AND
 //#undef AA_BASE
 
-		public void gfx_draw_circle(int cx, int cy, int radius, GFX_COL circle_colour)
+		public void DrawCircle(int cx, int cy, int radius, GFX_COL circle_colour)
 		{
             Debug.WriteLine("gfx_draw_circle");
 
@@ -490,7 +490,7 @@ namespace Elite
 			//}
 		}
 
-		public void gfx_draw_line(int x1, int y1, int x2, int y2)
+		public void DrawLine(int x1, int y1, int x2, int y2)
 		{
             //Debug.WriteLine("gfx_draw_line");
 
@@ -517,9 +517,9 @@ namespace Elite
             //}
         }
 
-		public void gfx_draw_colour_line(int x1, int y1, int x2, int y2, GFX_COL line_colour)
+		public void DrawLine(int x1, int y1, int x2, int y2, GFX_COL line_colour)
 		{
-			//Debug.WriteLine("gfx_draw_colour_line");
+			//Debug.WriteLine("gfx_draw_line (colour)");
 
 			//if (y1 == y2)
 			//{
@@ -544,16 +544,16 @@ namespace Elite
 			//}
 		}
 
-        public void gfx_draw_colour_line_xor(int x1, int y1, int x2, int y2, GFX_COL line_colour)
+        public void DrawLineXor(int x1, int y1, int x2, int y2, GFX_COL line_colour)
 		{
-            Debug.WriteLine("gfx_draw_colour_line_xor");
+            Debug.WriteLine("gfx_draw_line_xor");
 
             //xor_mode(true);
             //gfx_draw_colour_line(x1, y1, x2, y2, line_colour);
             //xor_mode(false);
         }
 
-        public void gfx_draw_triangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL col)
+        public void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL col)
 		{
             Debug.WriteLine("gfx_draw_triangle");
 
@@ -561,7 +561,7 @@ namespace Elite
 						   //x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
 		}
 
-		public void gfx_display_text(int x, int y, string txt)
+		public void DisplayText(int x, int y, string txt)
 		{
             Debug.WriteLine("gfx_display_text");
 
@@ -569,7 +569,7 @@ namespace Elite
 			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
 		}
 
-		public void gfx_display_colour_text(int x, int y, string txt, GFX_COL col)
+		public void DisplayText(int x, int y, string txt, GFX_COL col)
 		{
             Debug.WriteLine("gfx_display_colour_text");
 
@@ -577,7 +577,7 @@ namespace Elite
 			//textout(gfx_screen, datafile[ELITE_1].dat, txt, (x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, col);
 		}
 
-		public void gfx_display_centre_text(int y, string str, int psize, GFX_COL col)
+		public void DisplayTextCentre(int y, string str, int psize, GFX_COL col)
 		{
             Debug.WriteLine("gfx_display_centre_text");
 
@@ -599,7 +599,7 @@ namespace Elite
 			//textout_centre(gfx_screen, datafile[txt_size].dat, str, (128 * gfx.GFX_SCALE) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET, txt_colour);
 		}
 
-		public void gfx_clear_display()
+		public void ClearDisplay()
 		{
             //Debug.WriteLine("gfx_clear_display");
 
@@ -609,28 +609,28 @@ namespace Elite
             _gfx_screen_graphics.FillRectangle(brush, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
 		}
 
-		public void gfx_clear_text_area()
+		public void ClearTextArea()
 		{
             Debug.WriteLine("gfx_clear_text_area");
 
             //rectfill(gfx_screen, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-		public void gfx_clear_area(int tx, int ty, int bx, int by)
+		public void ClearArea(int tx, int ty, int bx, int by)
 		{
             Debug.WriteLine("gfx_clear_area");
 
             //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, gfx.GFX_COL_BLACK);
 		}
 
-		public void gfx_draw_rectangle(int tx, int ty, int bx, int by, GFX_COL col)
+		public void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL col)
 		{
             Debug.WriteLine("gfx_draw_rectangle");
 
             //rectfill(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET, col);
 		}
 
-		public void gfx_display_pretty_text(int tx, int ty, int bx, int by, string txt)
+		public void DisplayTextPretty(int tx, int ty, int bx, int by, string txt)
 		{
             Debug.WriteLine("gfx_display_pretty_text");
 
@@ -671,27 +671,27 @@ namespace Elite
 			//}
 		}
 
-		public void gfx_draw_scanner()
+		public void DrawScanner()
 		{
             // Debug.WriteLine("gfx_draw_scanner");
 
             _gfx_screen_graphics.DrawImage(scanner_image, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
 
-		public void gfx_set_clip_region(int tx, int ty, int bx, int by)
+		public void SetClipRegion(int tx, int ty, int bx, int by)
 		{
             Debug.WriteLine("gfx_set_clip_region");
 
             //set_clip(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
 		}
 
-		public void gfx_start_render()
+		public void RenderStart()
 		{
 			start_poly = 0;
 			total_polys = 0;
 		}
 
-		public void gfx_render_polygon(Vector2[] point_list, GFX_COL face_colour, int zavg)
+		public void DrawPolygon(Vector2[] point_list, GFX_COL face_colour, int zavg)
 		{
 			int i;
 			int nx;
@@ -742,7 +742,7 @@ namespace Elite
 			poly_chain[i].next = x;
 		}
 
-		public void gfx_render_line(int x1, int y1, int x2, int y2, int dist, GFX_COL col)
+		public void DrawLine(int x1, int y1, int x2, int y2, int dist, GFX_COL col)
 		{
 			Vector2[] point_list = new Vector2[2];
 
@@ -751,10 +751,10 @@ namespace Elite
 			point_list[1].X = x2;
 			point_list[1].Y = y2;
 
-			gfx_render_polygon(point_list, col, dist);
+			DrawPolygon(point_list, col, dist);
 		}
 
-		public void gfx_finish_render()
+		public void RenderFinish()
 		{
 			if (total_polys == 0)
             {
@@ -768,7 +768,7 @@ namespace Elite
 
 				if (points.Length == 2)
 				{
-					gfx_draw_colour_line(points[0].X, points[0].Y, points[1].X, points[1].Y, col);
+					DrawLine(points[0].X, points[0].Y, points[1].X, points[1].Y, col);
 					continue;
 				}
 
@@ -790,7 +790,7 @@ namespace Elite
 			_gfx_screen_graphics.FillPolygon(brush, points);
 		}
 
-		public void gfx_draw_sprite(IMG sprite_no, int x, int y)
+		public void DrawSprite(IMG sprite_no, int x, int y)
 		{
             Debug.WriteLine("gfx_draw_sprite");
 
@@ -846,7 +846,7 @@ namespace Elite
 			//draw_sprite(gfx_screen, sprite_bmp, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET);
 		}
 
-		public bool gfx_request_file(string title, string path, string ext)
+		public bool RequestFile(string title, string path, string ext)
 		{
             Debug.WriteLine("gfx_request_file");
 
