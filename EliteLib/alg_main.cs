@@ -644,14 +644,14 @@ namespace Elite
 
 			int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
 			space.universe[newship].velocity = 7;
-			elite.sound.snd_play_sample(SND.SND_LAUNCH);
+			elite.sound.PlaySample(SND.SND_LAUNCH);
 
 			for (i = 0; i < 90; i++)
 			{
 				if (i == 40)
 				{
 					space.universe[newship].flags |= FLG.FLG_DEAD;
-					elite.sound.snd_play_sample(SND.SND_EXPLODE);
+					elite.sound.PlaySample(SND.SND_EXPLODE);
 				}
 
                 elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
@@ -1140,7 +1140,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_INTRO_ONE;
 
-			elite.sound.snd_play_midi(SND.SND_ELITE_THEME, true);
+			elite.sound.PlayMidi(SND.SND_ELITE_THEME, true);
 
 			intro.initialise_intro1();
 
@@ -1154,14 +1154,14 @@ namespace Elite
 
 				if (keyboard.kbd_y_pressed)
 				{
-					elite.sound.snd_stop_midi();
+					elite.sound.StopMidi();
 					load_commander_screen();
 					break;
 				}
 
 				if (keyboard.kbd_n_pressed)
 				{
-					elite.sound.snd_stop_midi();
+					elite.sound.StopMidi();
 					break;
 				}
 			}
@@ -1172,7 +1172,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_INTRO_TWO;
 
-			elite.sound.snd_play_midi(SND.SND_BLUE_DANUBE, true);
+			elite.sound.PlayMidi(SND.SND_BLUE_DANUBE, true);
 
 			intro.initialise_intro2();
 
@@ -1194,7 +1194,7 @@ namespace Elite
 				}
 			}
 
-			elite.sound.snd_stop_midi();
+			elite.sound.StopMidi();
 		}
 
 		/*
@@ -1303,7 +1303,7 @@ namespace Elite
 			}
 
 			/* Start the sound system... */
-			sound.snd_sound_startup();
+			sound.SoundStartup();
 
 			/* Do any setup necessary for the keyboard... */
 			keyboard.kbd_keyboard_startup();
@@ -1331,7 +1331,7 @@ namespace Elite
 
 				while (!elite.game_over)
 				{
-					sound.snd_update_sound();
+					sound.UpdateSound();
                     elite.alg_gfx.ScreenUpdate();
                     elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
 
@@ -1449,7 +1449,7 @@ namespace Elite
 							if (elite.energy < 50)
 							{
 								info_message("ENERGY LOW");
-								sound.snd_play_sample(SND.SND_BEEP);
+								sound.PlaySample(SND.SND_BEEP);
 							}
 
 							space.update_altitude();
@@ -1506,7 +1506,7 @@ namespace Elite
 				}
 			}
 
-			sound.snd_sound_shutdown();
+			sound.SoundShutdown();
 
             elite.alg_gfx.GraphicsShutdown();
 

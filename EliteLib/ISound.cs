@@ -18,11 +18,16 @@ namespace Elite
 
     public interface ISound
     {
-        void snd_play_midi(SND midi_no, bool repeat);
-        void snd_play_sample(SND sample_no);
-        void snd_sound_shutdown();
-        void snd_sound_startup();
-        void snd_stop_midi();
-        void snd_update_sound();
+        void PlayMidi(SND midi_no, bool repeat);
+
+        void PlaySample(SND sample_no);
+
+        void SoundShutdown();
+
+        void SoundStartup();
+
+        void StopMidi();
+
+        void UpdateSound();
     }
 }

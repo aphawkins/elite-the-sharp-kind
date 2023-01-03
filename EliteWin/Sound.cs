@@ -12,27 +12,22 @@
  *
  */
 
-/*
- * sound.c
- */
-
-//#include <stdlib.h>
-//#include <allegro.h>
-//#include "sound.h"
-//#include "alg_data.h" 
-
 namespace Elite
 {
-	using System.Diagnostics;
-	using Elite.Enums;
+    using System.Diagnostics;
+    using Commons.Music.Midi;
+    using Elite.Enums;
 
-    public class Sound : ISound
+    public class Sound : ISound, IDisposable
     {
         //const int NUM_SAMPLES = 14;
 
         //extern DATAFILE* datafile;
 
-        //static bool sound_on;
+        MidiPlayer? _midiPlayer;
+
+        bool sound_on;
+        private bool disposedValue;
 
         //struct sound_sample
         //{
@@ -68,14 +63,14 @@ namespace Elite
         //	new(null, "boop.wav",       7, 0),
         //};
 
-        public void snd_sound_startup()
+        public void SoundStartup()
         {
-            Debug.WriteLine(nameof(snd_sound_startup));
+            Debug.WriteLine(nameof(SoundStartup));
 
             //int i;
 
-            //	/* Install a sound driver.. */
-            //sound_on = true;
+            // Install a sound driver..
+            sound_on = true;
 
             //if (install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, ".") != 0)
             //{
@@ -91,18 +86,16 @@ namespace Elite
             //}
         }
 
-        public void snd_sound_shutdown()
+        public void SoundShutdown()
         {
-            Debug.WriteLine(nameof(snd_sound_shutdown));
+            Debug.WriteLine(nameof(SoundShutdown));
 
-            //int i;
+            if (!sound_on)
+            {
+                return;
+            }
 
-            //if (!sound_on)
-            //{
-            //	return;
-            //}
-
-            //for (i = 0; i < NUM_SAMPLES; i++)
+            //for (int i = 0; i < NUM_SAMPLES; i++)
             //{
             //	if (sample_list[i].sample != NULL)
             //	{
@@ -112,14 +105,14 @@ namespace Elite
             //}
         }
 
-        public void snd_play_sample(SND sample_no)
+        public void PlaySample(SND sample_no)
         {
-            Debug.WriteLine(nameof(snd_play_sample));
+            Debug.WriteLine(nameof(PlaySample));
 
-            //if (!sound_on)
-            //{
-            //	return;
-            //}
+            if (!sound_on)
+            {
+                return;
+            }
 
             //if (sample_list[(int)sample_no].timeleft != 0)
             //{
@@ -131,9 +124,9 @@ namespace Elite
             //play_sample(sample_list[(int)sample_no].sample, 255, 128, 1000, false);
         }
 
-        public void snd_update_sound()
+        public void UpdateSound()
         {
-            Debug.WriteLine(nameof(snd_update_sound));
+            Debug.WriteLine(nameof(UpdateSound));
 
             //int i;
 
@@ -146,35 +139,96 @@ namespace Elite
             //}
         }
 
-        public void snd_play_midi(SND midi_no, bool repeat)
+        public void PlayMidi(SND midi_no, bool repeat)
         {
-            Debug.WriteLine(nameof(snd_play_midi));
+            //Debug.WriteLine(nameof(MidiPlay));
 
-            //if (!sound_on)
-            //{
-            //	return;
-            //}
+            if (!sound_on)
+            {
+                return;
+            }
 
-            //switch (midi_no)
-            //{
-            //	case SND.SND_ELITE_THEME:
-            //		play_midi(datafile[THEME].dat, repeat);
-            //		break;
+            string file;
 
-            //	case SND.SND_BLUE_DANUBE:
-            //		play_midi(datafile[DANUBE].dat, repeat);
-            //		break;
-            //}
+            switch (midi_no)
+            {
+                case SND.SND_ELITE_THEME:
+                    file = "theme.mid";
+                    break;
+
+                case SND.SND_BLUE_DANUBE:
+                    file = "danube.mid";
+                    break;
+
+                default:
+                    StopMidi();
+                    return;
+            }
+
+            //TODO: Get repeat/loop working
+            file = Path.Combine("music", file);
+            IMidiAccess access = MidiAccessManager.Default;
+            IMidiOutput output = access.OpenOutputAsync(access.Outputs.Last().Id).Result;
+            MidiMusic music = MidiMusic.Read(File.OpenRead(file));
+            _midiPlayer = new(music, output);
+            if (repeat)
+            {
+                _midiPlayer.Finished += _midiPlayer_Finished;
+                _midiPlayer.Play();
+            }
+            else
+            {
+                _midiPlayer.Play();
+            }
         }
 
-        public void snd_stop_midi()
+        private void _midiPlayer_Finished()
         {
-            Debug.WriteLine(nameof(snd_stop_midi));
+            _midiPlayer.Seek(0);
+            _midiPlayer.Play();
+        }
 
-            //if (sound_on)
-            //{
-            //	play_midi(null, true);
-            //}
+        public void StopMidi()
+        {
+            //Debug.WriteLine(nameof(snd_stop_midi));
+
+            if (!sound_on)
+            {
+                return;
+            }
+
+            _midiPlayer?.Stop();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects)
+                    _midiPlayer?.Stop();
+                    _midiPlayer?.Dispose();
+                }
+
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Sound()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
