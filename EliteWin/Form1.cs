@@ -6,6 +6,7 @@ namespace EliteWin
     {
         System.Windows.Forms.Timer _refreshTimer = new();
         IGfx _gfx;
+        ISound _sound;
 
         public Form1()
         {
@@ -35,8 +36,9 @@ namespace EliteWin
             screen.Image = bmp;
 
             _gfx = new alg_gfx(ref bmp);
+            _sound = new Sound();
 
-            alg_main.main(ref _gfx);
+            alg_main.main(ref _gfx, ref _sound);
         }
     }
 }

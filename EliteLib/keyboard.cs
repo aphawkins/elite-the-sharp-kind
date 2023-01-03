@@ -68,8 +68,10 @@ namespace Elite
 
         internal static int kbd_keyboard_startup()
 		{
-			//	set_keyboard_rate(2000, 2000);
-			return 0;
+            Debug.WriteLine(nameof(kbd_keyboard_startup));
+
+            //	set_keyboard_rate(2000, 2000);
+            return 0;
 		}
 
         static int kbd_keyboard_shutdown()
@@ -79,7 +81,7 @@ namespace Elite
 
 		internal static void kbd_poll_keyboard()
 		{
-			Debug.WriteLine("kbd_poll_keyboard");
+			Debug.WriteLine(nameof(kbd_poll_keyboard));
 
 			//poll_keyboard();
 
@@ -139,7 +141,7 @@ namespace Elite
 
 		internal static char kbd_read_key()
 		{
-            Debug.WriteLine("kbd_read_key");
+            Debug.WriteLine(nameof(kbd_read_key));
 
 			//int keynum;
 			//int keycode;
@@ -171,7 +173,7 @@ namespace Elite
 
 		static void kbd_clear_key_buffer()
 		{
-			Debug.WriteLine("kbd_clear_key_buffer");
+			Debug.WriteLine(nameof(kbd_clear_key_buffer));
 
 			//while (keypressed())
 			//{

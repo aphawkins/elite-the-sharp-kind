@@ -628,7 +628,6 @@ namespace Elite
 			}
 		}
 
-
 		static void run_escape_sequence()
 		{
 			int i;
@@ -645,14 +644,14 @@ namespace Elite
 
 			int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
 			space.universe[newship].velocity = 7;
-			sound.snd_play_sample(SND.SND_LAUNCH);
+			elite.sound.snd_play_sample(SND.SND_LAUNCH);
 
 			for (i = 0; i < 90; i++)
 			{
 				if (i == 40)
 				{
 					space.universe[newship].flags |= FLG.FLG_DEAD;
-					sound.snd_play_sample(SND.SND_EXPLODE);
+					elite.sound.snd_play_sample(SND.SND_EXPLODE);
 				}
 
                 elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
@@ -1141,7 +1140,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_INTRO_ONE;
 
-			sound.snd_play_midi(SND.SND_ELITE_THEME, true);
+			elite.sound.snd_play_midi(SND.SND_ELITE_THEME, true);
 
 			intro.initialise_intro1();
 
@@ -1155,14 +1154,14 @@ namespace Elite
 
 				if (keyboard.kbd_y_pressed)
 				{
-					sound.snd_stop_midi();
+					elite.sound.snd_stop_midi();
 					load_commander_screen();
 					break;
 				}
 
 				if (keyboard.kbd_n_pressed)
 				{
-					sound.snd_stop_midi();
+					elite.sound.snd_stop_midi();
 					break;
 				}
 			}
@@ -1173,7 +1172,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_INTRO_TWO;
 
-			sound.snd_play_midi(SND.SND_BLUE_DANUBE, true);
+			elite.sound.snd_play_midi(SND.SND_BLUE_DANUBE, true);
 
 			intro.initialise_intro2();
 
@@ -1195,7 +1194,7 @@ namespace Elite
 				}
 			}
 
-			sound.snd_stop_midi();
+			elite.sound.snd_stop_midi();
 		}
 
 		/*
@@ -1290,9 +1289,10 @@ namespace Elite
 			//}
 		}
 
-		public static int main(ref IGfx alg_gfx)
+		public static int main(ref IGfx alg_gfx, ref ISound sound)
 		{
             elite.alg_gfx = alg_gfx;
+			elite.sound = sound;
 
             initialise_allegro();
 			File.read_config_file();

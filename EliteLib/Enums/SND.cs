@@ -1,6 +1,6 @@
 ﻿namespace Elite.Enums
 {
-    internal enum SND
+    public enum SND
     {
         SND_LAUNCH = 0,
         SND_CRASH = 1,

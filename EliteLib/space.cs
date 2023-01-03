@@ -268,7 +268,7 @@ namespace Elite
 		 */
 		static void do_game_over()
 		{
-			sound.snd_play_sample(SND.SND_GAMEOVER);
+			elite.sound.snd_play_sample(SND.SND_GAMEOVER);
 			elite.game_over = true;
 		}
 
@@ -493,7 +493,7 @@ namespace Elite
 		{
 			if (is_docking(i))
 			{
-				sound.snd_play_sample(SND.SND_DOCK);
+				elite.sound.snd_play_sample(SND.SND_DOCK);
 				dock_player();
 				elite.current_screen = SCR.SCR_BREAK_PATTERN;
 				return;
@@ -507,7 +507,7 @@ namespace Elite
 
 			elite.flight_speed = 1;
 			damage_ship(5, universe[i].location.z > 0);
-			sound.snd_play_sample(SND.SND_CRASH);
+			elite.sound.snd_play_sample(SND.SND_CRASH);
 		}
 
 		static void switch_to_view(ref univ_object flip)
@@ -625,7 +625,7 @@ namespace Elite
 						(type != SHIP.SHIP_CORIOLIS) &&
 						(type != SHIP.SHIP_DODEC))
 					{
-						sound.snd_play_sample(SND.SND_EXPLODE);
+						elite.sound.snd_play_sample(SND.SND_EXPLODE);
 						universe[i].flags |= FLG.FLG_DEAD;
 					}
 
@@ -1164,7 +1164,7 @@ namespace Elite
 			}
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			sound.snd_play_sample(SND.SND_HYPERSPACE);
+			elite.sound.snd_play_sample(SND.SND_HYPERSPACE);
 		}
 
 		static void complete_hyperspace()
@@ -1231,7 +1231,7 @@ namespace Elite
 			swat.add_new_ship(SHIP.SHIP_SUN, px, py, pz, rotmat, 0, 0);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			sound.snd_play_sample(SND.SND_HYPERSPACE);
+			elite.sound.snd_play_sample(SND.SND_HYPERSPACE);
 		}
 
 		internal static void countdown_hyperspace()
@@ -1318,7 +1318,7 @@ namespace Elite
 			swat.add_new_station(0, 0, -256, rotmat);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			sound.snd_play_sample(SND.SND_LAUNCH);
+			elite.sound.snd_play_sample(SND.SND_LAUNCH);
 		}
 
 		/*
@@ -1329,7 +1329,7 @@ namespace Elite
 		{
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-				sound.snd_play_sample(SND.SND_DOCK);
+				elite.sound.snd_play_sample(SND.SND_DOCK);
 				dock_player();
 				elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			}

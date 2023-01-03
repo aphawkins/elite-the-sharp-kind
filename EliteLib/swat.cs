@@ -329,7 +329,7 @@ namespace Elite
 				alg_main.info_message("Right On Commander!");
 			}
 
-			sound.snd_play_sample(SND.SND_EXPLODE);
+			elite.sound.snd_play_sample(SND.SND_EXPLODE);
 			space.universe[un].flags |= FLG.FLG_DEAD;
 
 			if (space.universe[un].type == SHIP.SHIP_CONSTRICTOR)
@@ -350,12 +350,12 @@ namespace Elite
 				{
 					missile_target = un;
 					alg_main.info_message("Target Locked");
-					sound.snd_play_sample(SND.SND_BEEP);
+					elite.sound.snd_play_sample(SND.SND_BEEP);
 				}
 
 				if (laser > 0)
 				{
-					sound.snd_play_sample(SND.SND_HIT_ENEMY);
+					elite.sound.snd_play_sample(SND.SND_HIT_ENEMY);
 
 					if ((univ.type != SHIP.SHIP_CORIOLIS) && (univ.type != SHIP.SHIP_DODEC))
 					{
@@ -401,7 +401,7 @@ namespace Elite
 			{
 				ecm_active = 32;
 				ecm_ours = ours;
-				sound.snd_play_sample(SND.SND_ECM);
+				elite.sound.snd_play_sample(SND.SND_ECM);
 			}
 		}
 
@@ -428,7 +428,7 @@ namespace Elite
 		internal static void unarm_missile()
 		{
 			missile_target = MISSILE_UNARMED;
-			sound.snd_play_sample(SND.SND_BOOP);
+			elite.sound.snd_play_sample(SND.SND_BOOP);
 		}
 
 		internal static void fire_missile()
@@ -468,7 +468,7 @@ namespace Elite
 			elite.cmdr.missiles--;
 			missile_target = MISSILE_UNARMED;
 
-			sound.snd_play_sample(SND.SND_MISSILE);
+			elite.sound.snd_play_sample(SND.SND_MISSILE);
 		}
 
 		static void track_object(ref univ_object ship, double direction, Vector nvec)
@@ -522,7 +522,7 @@ namespace Elite
 
 			if (ecm_active != 0)
 			{
-				sound.snd_play_sample(SND.SND_EXPLODE);
+				elite.sound.snd_play_sample(SND.SND_EXPLODE);
 
 				missile.flags |= FLG.FLG_DEAD;
 				return;
@@ -533,7 +533,7 @@ namespace Elite
 				if (missile.distance < 256)
 				{
 					missile.flags |= FLG.FLG_DEAD;
-					sound.snd_play_sample(SND.SND_EXPLODE);
+					elite.sound.snd_play_sample(SND.SND_EXPLODE);
 					space.damage_ship(250, missile.location.z >= 0.0);
 					return;
 				}
@@ -560,7 +560,7 @@ namespace Elite
 					}
 					else
 					{
-						sound.snd_play_sample(SND.SND_EXPLODE);
+						elite.sound.snd_play_sample(SND.SND_EXPLODE);
 					}
 
 					return;
@@ -595,11 +595,15 @@ namespace Elite
 			}
 
 			if (missile.velocity < 6)
-				missile.acceleration = 3;
-			else
-				if (random.rand255() >= 200)
-				missile.acceleration = -2;
-			return;
+            {
+                missile.acceleration = 3;
+            }
+            else if (random.rand255() >= 200)
+            {
+                missile.acceleration = -2;
+            }
+
+            return;
 		}
 
 
@@ -813,11 +817,11 @@ namespace Elite
 					if (((ship.location.z >= 0.0) && (elite.front_shield == 0)) ||
 						((ship.location.z < 0.0) && (elite.aft_shield == 0)))
 					{
-						sound.snd_play_sample(SND.SND_INCOMMING_FIRE_2);
+						elite.sound.snd_play_sample(SND.SND_INCOMMING_FIRE_2);
 					}
 					else
 					{
-						sound.snd_play_sample(SND.SND_INCOMMING_FIRE_1);
+						elite.sound.snd_play_sample(SND.SND_INCOMMING_FIRE_1);
 					}
 				}
 				else
@@ -961,7 +965,7 @@ namespace Elite
 					laser &= 127;
 					laser2 = laser;
 
-					sound.snd_play_sample(SND.SND_PULSE);
+					elite.sound.snd_play_sample(SND.SND_PULSE);
 					elite.laser_temp += 8;
 					if (elite.energy > 1)
 					{
@@ -1307,7 +1311,7 @@ namespace Elite
 				elite.cmdr.current_cargo[i] = 0;
 			}
 
-			sound.snd_play_sample(SND.SND_DOCK);
+			elite.sound.snd_play_sample(SND.SND_DOCK);
 			space.dock_player();
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
 		}

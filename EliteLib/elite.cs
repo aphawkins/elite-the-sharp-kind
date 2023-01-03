@@ -30,6 +30,7 @@ namespace Elite
 	internal static class elite
 	{
 		internal static IGfx alg_gfx;
+		internal static ISound sound;
 
 		internal const int PULSE_LASER = 0x0F;
 		internal const int BEAM_LASER = 0x8F;

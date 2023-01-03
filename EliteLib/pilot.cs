@@ -277,7 +277,7 @@ namespace Elite
 			}
 
 			elite.auto_pilot = true;
-			sound.snd_play_midi(SND.SND_BLUE_DANUBE, true);
+			elite.sound.snd_play_midi(SND.SND_BLUE_DANUBE, true);
 		}
 
 		internal static void disengage_auto_pilot()
@@ -285,7 +285,7 @@ namespace Elite
 			if (elite.auto_pilot)
 			{
 				elite.auto_pilot = false;
-				sound.snd_stop_midi();
+				elite.sound.snd_stop_midi();
 			}
 		}
 	}
