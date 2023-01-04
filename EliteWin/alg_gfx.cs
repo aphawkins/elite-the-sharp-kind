@@ -206,7 +206,8 @@ namespace Elite
 		 */
 		public void ScreenUpdate()
 		{
-            //Debug.WriteLine(nameof(ScreenUpdate));
+            // TODO: Put in a better framerate handler
+            Thread.Sleep(100);
 
             //while (frame_count < 1)
             //{
@@ -215,10 +216,6 @@ namespace Elite
             //}
 
             //frame_count = 0;
-
-            //acquire_screen();
-            //blit(gfx_screen, screen, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, gfx.GFX_X_OFFSET, gfx.GFX_Y_OFFSET, 512, 512);
-            //release_screen();
 
             lock (_screen)
 			{
@@ -252,9 +249,7 @@ namespace Elite
 
         public void PlotPixel(int x, int y, GFX_COL col)
 		{
-            Debug.WriteLine(nameof(PlotPixel));
-
-            //putpixel(gfx_screen, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, col);
+			_screenBuffer.SetPixel(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, MapColorToPen(col).Color);
         }
 
         public void DrawCircleFilled(int cx, int cy, int radius, GFX_COL circle_colour)
@@ -827,11 +822,14 @@ namespace Elite
 		{
 			switch (col)
 			{
-				case GFX_COL.GFX_COL_WHITE:
-					return Pens.White;
+                case GFX_COL.GFX_COL_WHITE:
+                    return Pens.White;
 
-				case GFX_COL.GFX_COL_BLACK:
-					return Pens.Black;
+                case GFX_COL.GFX_COL_WHITE_2:
+                    return Pens.WhiteSmoke;
+
+                case GFX_COL.GFX_COL_BLACK:
+                    return Pens.Black;
 
                 case GFX_COL.GFX_COL_GOLD:
                     return Pens.Gold;
@@ -842,26 +840,50 @@ namespace Elite
                 case GFX_COL.GFX_COL_RED:
                     return Pens.Red;
 
+                case GFX_COL.GFX_COL_RED_3:
+                    return Pens.PaleVioletRed;
+
+                case GFX_COL.GFX_COL_RED_4:
+                    return Pens.MediumVioletRed;
+
                 case GFX_COL.GFX_COL_DARK_RED:
                     return Pens.DarkRed;
 
-				case GFX_COL.GFX_COL_BLUE_1:
-                    return Pens.Blue;
+                case GFX_COL.GFX_COL_BLUE_1:
+                    return Pens.LightBlue;
 
                 case GFX_COL.GFX_COL_BLUE_2:
-                    return Pens.AliceBlue;
+                    return Pens.MediumBlue;
 
                 case GFX_COL.GFX_COL_BLUE_3:
-                    return Pens.DodgerBlue;
+                    return Pens.Blue;
+
+                case GFX_COL.GFX_COL_BLUE_4:
+                    return Pens.DarkBlue;
 
                 case GFX_COL.GFX_COL_GREY_1:
-                    return Pens.Gray;
+                    return Pens.DimGray;
 
                 case GFX_COL.GFX_COL_GREY_2:
-                    return Pens.SlateGray;
+                    return Pens.LightGray;
 
                 case GFX_COL.GFX_COL_GREY_3:
+                    return Pens.Gray;
+
+                case GFX_COL.GFX_COL_GREY_4:
                     return Pens.DarkGray;
+
+                case GFX_COL.GFX_COL_GREEN_1:
+                    return Pens.LightGreen;
+
+                case GFX_COL.GFX_COL_GREEN_2:
+                    return Pens.Green;
+
+                case GFX_COL.GFX_COL_GREEN_3:
+                    return Pens.DarkGreen;
+
+                case GFX_COL.GFX_COL_PINK_1:
+                    return Pens.Pink;
 
                 default:
 					Debug.Assert(false);
@@ -876,6 +898,9 @@ namespace Elite
                 case GFX_COL.GFX_COL_WHITE:
                     return Brushes.White;
 
+                case GFX_COL.GFX_COL_WHITE_2:
+                    return Brushes.WhiteSmoke;
+
                 case GFX_COL.GFX_COL_BLACK:
                     return Brushes.Black;
 
@@ -888,26 +913,50 @@ namespace Elite
                 case GFX_COL.GFX_COL_RED:
                     return Brushes.Red;
 
+                case GFX_COL.GFX_COL_RED_3:
+                    return Brushes.PaleVioletRed;
+
+                case GFX_COL.GFX_COL_RED_4:
+                    return Brushes.MediumVioletRed;
+
                 case GFX_COL.GFX_COL_DARK_RED:
                     return Brushes.DarkRed;
 
                 case GFX_COL.GFX_COL_BLUE_1:
-                    return Brushes.Blue;
+                    return Brushes.LightBlue;
 
                 case GFX_COL.GFX_COL_BLUE_2:
-                    return Brushes.AliceBlue;
+                    return Brushes.MediumBlue;
 
                 case GFX_COL.GFX_COL_BLUE_3:
-                    return Brushes.DodgerBlue;
+                    return Brushes.Blue;
+
+                case GFX_COL.GFX_COL_BLUE_4:
+                    return Brushes.DarkBlue;
 
                 case GFX_COL.GFX_COL_GREY_1:
-                    return Brushes.Gray;
+                    return Brushes.DimGray;
 
                 case GFX_COL.GFX_COL_GREY_2:
-                    return Brushes.SlateGray;
+                    return Brushes.LightGray;
 
                 case GFX_COL.GFX_COL_GREY_3:
+                    return Brushes.Gray;
+
+                case GFX_COL.GFX_COL_GREY_4:
                     return Brushes.DarkGray;
+
+                case GFX_COL.GFX_COL_GREEN_1:
+                    return Brushes.LightGreen;
+
+                case GFX_COL.GFX_COL_GREEN_2:
+                    return Brushes.Green;
+
+                case GFX_COL.GFX_COL_GREEN_3:
+                    return Brushes.DarkGreen;
+
+                case GFX_COL.GFX_COL_PINK_1:
+                    return Brushes.Pink;
 
                 default:
                     Debug.Assert(false);

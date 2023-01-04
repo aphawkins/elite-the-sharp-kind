@@ -45,5 +45,7 @@
         int kbd_keyboard_startup();
         void kbd_poll_keyboard();
         char kbd_read_key();
+
+        void KeyPressed(int keyValue);
     }
 }

@@ -1,5 +1,6 @@
 namespace EliteWin
 {
+    using System.Diagnostics;
     using Elite;
 
     public partial class Form1 : Form
@@ -16,15 +17,7 @@ namespace EliteWin
             _refreshTimer.Interval = 100;
             _refreshTimer.Tick += (sender, e) => RefreshScreen();
             _refreshTimer.Start();
-        }
 
-        private void RefreshScreen()
-        {
-            screen.Refresh();
-        }
-
-        private async void btnStart_Click(object sender, EventArgs e)
-        {
             Bitmap bmp = new(512, 512);
             for (int y = 0; y < bmp.Height; y++)
             {
@@ -38,9 +31,21 @@ namespace EliteWin
 
             _gfx = new alg_gfx(ref bmp);
             _sound = new Sound();
-            _keyboard = new keyboard();
+            _keyboard = new Keyboard();
+            Task.Run(() => alg_main.main(ref _gfx, ref _sound, ref _keyboard));
+        }
 
-            alg_main.main(ref _gfx, ref _sound, ref _keyboard);
+        private void RefreshScreen()
+        {
+            screen.Refresh();
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            //Debug.WriteLine("KeyDown KeyCode: " + e.KeyCode);
+            //Debug.WriteLine("KeyDown KeyValue: " + e.KeyValue);
+
+            _keyboard.KeyPressed(e.KeyValue);
         }
     }
 }

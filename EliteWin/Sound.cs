@@ -173,7 +173,7 @@ namespace Elite
             _midiPlayer = new(music, output);
             if (repeat)
             {
-                _midiPlayer.Finished += _midiPlayer_Finished;
+                //_midiPlayer.Finished += _midiPlayer_Finished;
                 _midiPlayer.Play();
             }
             else
