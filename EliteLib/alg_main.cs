@@ -707,10 +707,10 @@ namespace Elite
 				 (elite.current_screen == SCR.SCR_SETTINGS) ||
 				 (elite.current_screen == SCR.SCR_EQUIP_SHIP)))
 			{
-				keyboard.kbd_read_key();
+				elite.keyboard.kbd_read_key();
 			}
 
-			keyboard.kbd_poll_keyboard();
+            elite.keyboard.kbd_poll_keyboard();
 
 			//if (have_joystick)
 			//{
@@ -740,7 +740,7 @@ namespace Elite
 
 			if (game_paused)
 			{
-				if (keyboard.kbd_resume_pressed)
+				if (elite.keyboard.kbd_resume_pressed)
 				{
 					game_paused = false;
 				}
@@ -748,7 +748,7 @@ namespace Elite
 				return;
 			}
 
-			if (keyboard.kbd_F1_pressed)
+			if (elite.keyboard.kbd_F1_pressed)
 			{
 				find_input = false;
 
@@ -766,7 +766,7 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_F2_pressed)
+			if (elite.keyboard.kbd_F2_pressed)
 			{
 				find_input = false;
 
@@ -780,7 +780,7 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_F3_pressed)
+			if (elite.keyboard.kbd_F3_pressed)
 			{
 				find_input = false;
 
@@ -794,7 +794,7 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_F4_pressed)
+			if (elite.keyboard.kbd_F4_pressed)
 			{
 				find_input = false;
 
@@ -812,45 +812,45 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_F5_pressed)
+			if (elite.keyboard.kbd_F5_pressed)
 			{
 				find_input = false;
 				old_cross_x = -1;
 				Docked.display_galactic_chart();
 			}
 
-			if (keyboard.kbd_F6_pressed)
+			if (elite.keyboard.kbd_F6_pressed)
 			{
 				find_input = false;
 				old_cross_x = -1;
 				Docked.display_short_range_chart();
 			}
 
-			if (keyboard.kbd_F7_pressed)
+			if (elite.keyboard.kbd_F7_pressed)
 			{
 				find_input = false;
 				Docked.display_data_on_planet();
 			}
 
-			if (keyboard.kbd_F8_pressed && (!elite.witchspace))
+			if (elite.keyboard.kbd_F8_pressed && (!elite.witchspace))
 			{
 				find_input = false;
 				Docked.display_market_prices();
 			}
 
-			if (keyboard.kbd_F9_pressed)
+			if (elite.keyboard.kbd_F9_pressed)
 			{
 				find_input = false;
 				Docked.display_commander_status();
 			}
 
-			if (keyboard.kbd_F10_pressed)
+			if (elite.keyboard.kbd_F10_pressed)
 			{
 				find_input = false;
 				Docked.display_inventory();
 			}
 
-			if (keyboard.kbd_F11_pressed)
+			if (elite.keyboard.kbd_F11_pressed)
 			{
 				find_input = false;
 				options.display_options();
@@ -858,16 +858,16 @@ namespace Elite
 
 			if (find_input)
 			{
-				keyasc = keyboard.kbd_read_key();
+				keyasc = elite.keyboard.kbd_read_key();
 
-				if (keyboard.kbd_enter_pressed)
+				if (elite.keyboard.kbd_enter_pressed)
 				{
 					find_input = false;
 					Docked.find_planet_by_name(find_name);
 					return;
 				}
 
-				if (keyboard.kbd_backspace_pressed)
+				if (elite.keyboard.kbd_backspace_pressed)
 				{
 					delete_find_char();
 					return;
@@ -881,17 +881,17 @@ namespace Elite
 				return;
 			}
 
-			if (keyboard.kbd_y_pressed)
+			if (elite.keyboard.kbd_y_pressed)
 			{
 				y_pressed();
 			}
 
-			if (keyboard.kbd_n_pressed)
+			if (elite.keyboard.kbd_n_pressed)
 			{
 				n_pressed();
 			}
 
-			if (keyboard.kbd_fire_pressed)
+			if (elite.keyboard.kbd_fire_pressed)
 			{
 				if ((!elite.docked) && (draw_lasers == 0))
 				{
@@ -899,7 +899,7 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_dock_pressed)
+			if (elite.keyboard.kbd_dock_pressed)
 			{
 				if (!elite.docked && elite.cmdr.docking_computer)
 				{
@@ -914,12 +914,12 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_d_pressed)
+			if (elite.keyboard.kbd_d_pressed)
 			{
 				d_pressed();
 			}
 
-			if (keyboard.kbd_ecm_pressed)
+			if (elite.keyboard.kbd_ecm_pressed)
 			{
 				if (!elite.docked && elite.cmdr.ecm)
 				{
@@ -927,14 +927,14 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_find_pressed)
+			if (elite.keyboard.kbd_find_pressed)
 			{
 				f_pressed();
 			}
 
-			if (keyboard.kbd_hyperspace_pressed && (!elite.docked))
+			if (elite.keyboard.kbd_hyperspace_pressed && (!elite.docked))
 			{
-				if (keyboard.kbd_ctrl_pressed)
+				if (elite.keyboard.kbd_ctrl_pressed)
 				{
 					space.start_galactic_hyperspace();
 				}
@@ -944,12 +944,12 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_jump_pressed && (!elite.docked) && (!elite.witchspace))
+			if (elite.keyboard.kbd_jump_pressed && (!elite.docked) && (!elite.witchspace))
 			{
 				space.jump_warp();
 			}
 
-			if (keyboard.kbd_fire_missile_pressed)
+			if (elite.keyboard.kbd_fire_missile_pressed)
 			{
 				if (!elite.docked)
 				{
@@ -957,17 +957,17 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_origin_pressed)
+			if (elite.keyboard.kbd_origin_pressed)
 			{
 				o_pressed();
 			}
 
-			if (keyboard.kbd_pause_pressed)
+			if (elite.keyboard.kbd_pause_pressed)
 			{
 				game_paused = true;
 			}
 
-			if (keyboard.kbd_target_missile_pressed)
+			if (elite.keyboard.kbd_target_missile_pressed)
 			{
 				if (!elite.docked)
 				{
@@ -975,7 +975,7 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_unarm_missile_pressed)
+			if (elite.keyboard.kbd_unarm_missile_pressed)
 			{
 				if (!elite.docked)
 				{
@@ -983,7 +983,7 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_inc_speed_pressed)
+			if (elite.keyboard.kbd_inc_speed_pressed)
 			{
 				if (!elite.docked)
 				{
@@ -994,7 +994,7 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_dec_speed_pressed)
+			if (elite.keyboard.kbd_dec_speed_pressed)
 			{
 				if (!elite.docked)
 				{
@@ -1005,32 +1005,32 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_up_pressed)
+			if (elite.keyboard.kbd_up_pressed)
 			{
 				arrow_up();
 			}
 
-			if (keyboard.kbd_down_pressed)
+			if (elite.keyboard.kbd_down_pressed)
 			{
 				arrow_down();
 			}
 
-			if (keyboard.kbd_left_pressed)
+			if (elite.keyboard.kbd_left_pressed)
 			{
 				arrow_left();
 			}
 
-			if (keyboard.kbd_right_pressed)
+			if (elite.keyboard.kbd_right_pressed)
 			{
 				arrow_right();
 			}
 
-			if (keyboard.kbd_enter_pressed)
+			if (elite.keyboard.kbd_enter_pressed)
 			{
 				return_pressed();
 			}
 
-			if (keyboard.kbd_energy_bomb_pressed)
+			if (elite.keyboard.kbd_energy_bomb_pressed)
 			{
 				if ((!elite.docked) && (elite.cmdr.energy_bomb))
 				{
@@ -1039,7 +1039,7 @@ namespace Elite
 				}
 			}
 
-			if (keyboard.kbd_escape_pressed)
+			if (elite.keyboard.kbd_escape_pressed)
 			{
 				if ((!elite.docked) && (elite.cmdr.escape_pod) && (!elite.witchspace))
 				{
@@ -1150,16 +1150,16 @@ namespace Elite
 
                 elite.alg_gfx.ScreenUpdate();
 
-				keyboard.kbd_poll_keyboard();
+                elite.keyboard.kbd_poll_keyboard();
 
-				if (keyboard.kbd_y_pressed)
+				if (elite.keyboard.kbd_y_pressed)
 				{
 					elite.sound.StopMidi();
 					load_commander_screen();
 					break;
 				}
 
-				if (keyboard.kbd_n_pressed)
+				if (elite.keyboard.kbd_n_pressed)
 				{
 					elite.sound.StopMidi();
 					break;
@@ -1186,9 +1186,9 @@ namespace Elite
 
                 elite.alg_gfx.ScreenUpdate();
 
-				keyboard.kbd_poll_keyboard();
+                elite.keyboard.kbd_poll_keyboard();
 
-				if (keyboard.kbd_space_pressed)
+				if (elite.keyboard.kbd_space_pressed)
 				{
 					break;
 				}
@@ -1246,26 +1246,26 @@ namespace Elite
 		 */
 		static void display_break_pattern()
 		{
-			int i;
-
             elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
             elite.alg_gfx.ClearDisplay();
 
-			for (i = 0; i < 20; i++)
-			{
+            for (int i = 0; i < 20; i++)
+            {
                 elite.alg_gfx.DrawCircle(256, 192, 30 + i * 15, GFX_COL.GFX_COL_WHITE);
                 elite.alg_gfx.ScreenUpdate();
-			}
+            }
 
-			if (elite.docked)
+            if (elite.docked)
 			{
 				missions.check_mission_brief();
 				Docked.display_commander_status();
 				space.update_console();
 			}
 			else
-				elite.current_screen = SCR.SCR_FRONT_VIEW;
-		}
+            {
+                elite.current_screen = SCR.SCR_FRONT_VIEW;
+            }
+        }
 
 		internal static void info_message(string message)
 		{
@@ -1289,10 +1289,11 @@ namespace Elite
 			//}
 		}
 
-		public static int main(ref IGfx alg_gfx, ref ISound sound)
+		public static int main(ref IGfx alg_gfx, ref ISound sound, ref IKeyboard keyboard)
 		{
             elite.alg_gfx = alg_gfx;
 			elite.sound = sound;
+			elite.keyboard = keyboard;
 
             initialise_allegro();
 			File.read_config_file();

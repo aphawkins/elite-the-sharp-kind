@@ -7,6 +7,7 @@ namespace EliteWin
         System.Windows.Forms.Timer _refreshTimer = new();
         IGfx _gfx;
         ISound _sound;
+        IKeyboard _keyboard;
 
         public Form1()
         {
@@ -37,8 +38,9 @@ namespace EliteWin
 
             _gfx = new alg_gfx(ref bmp);
             _sound = new Sound();
+            _keyboard = new keyboard();
 
-            alg_main.main(ref _gfx, ref _sound);
+            alg_main.main(ref _gfx, ref _sound, ref _keyboard);
         }
     }
 }

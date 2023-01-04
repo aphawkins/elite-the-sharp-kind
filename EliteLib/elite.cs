@@ -25,14 +25,14 @@ namespace Elite
 	using Elite.Enums;
 	using Elite.Structs;
 	using Elite.Ships;
-	using System.Drawing;
 
 	internal static class elite
 	{
 		internal static IGfx alg_gfx;
 		internal static ISound sound;
+        internal static IKeyboard keyboard;
 
-		internal const int PULSE_LASER = 0x0F;
+        internal const int PULSE_LASER = 0x0F;
 		internal const int BEAM_LASER = 0x8F;
 		internal const int MILITARY_LASER = 0x97;
 		internal const int MINING_LASER = 0x32;

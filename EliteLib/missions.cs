@@ -217,8 +217,8 @@ namespace Elite
 				space.update_universe();
 				space.universe[0].location.z = 600;
                 elite.alg_gfx.ScreenUpdate();
-				keyboard.kbd_poll_keyboard();
-			} while (!keyboard.kbd_space_pressed);
+				elite.keyboard.kbd_poll_keyboard();
+			} while (!elite.keyboard.kbd_space_pressed);
 		}
 
 		static void constrictor_mission_debrief()
@@ -243,7 +243,7 @@ namespace Elite
 
 			do
 			{
-				keyasc = keyboard.kbd_read_key();
+				keyasc = elite.keyboard.kbd_read_key();
 			} while (keyasc != ' ');
 		}
 
@@ -265,7 +265,7 @@ namespace Elite
 
 			do
 			{
-				keyasc = keyboard.kbd_read_key();
+				keyasc = elite.keyboard.kbd_read_key();
 			} while (keyasc != ' ');
 		}
 
@@ -291,7 +291,7 @@ namespace Elite
 
 			do
 			{
-				keyasc = keyboard.kbd_read_key();
+				keyasc = elite.keyboard.kbd_read_key();
 			} while (keyasc != ' ');
 		}
 
@@ -318,7 +318,7 @@ namespace Elite
 
 			do
 			{
-				keyasc = keyboard.kbd_read_key();
+				keyasc = elite.keyboard.kbd_read_key();
 			} while (keyasc != ' ');
 		}
 
