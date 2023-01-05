@@ -82,7 +82,7 @@ namespace Elite
 
         public void kbd_poll_keyboard()
         {
-            Debug.WriteLine(nameof(kbd_poll_keyboard));
+            //Debug.WriteLine(nameof(kbd_poll_keyboard));
 
             //poll_keyboard();
 

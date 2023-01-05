@@ -25,8 +25,8 @@ namespace Elite
         //extern DATAFILE* datafile;
 
         MidiPlayer? _midiPlayer;
-        IMidiAccess _access;
-        IMidiOutput _output;
+        IMidiAccess? _access;
+        IMidiOutput? _output;
 
         bool sound_on;
         private bool disposedValue;
@@ -71,8 +71,10 @@ namespace Elite
 
             //int i;
 
-            // Install a sound driver..
+// Install a sound driver..
+#if !DEBUG
             sound_on = true;
+#endif
 
             //if (install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, ".") != 0)
             //{

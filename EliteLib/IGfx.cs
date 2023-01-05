@@ -27,15 +27,15 @@ namespace Elite
 
         void DrawCircle(int cx, int cy, int radius, GFX_COL colour);
 
-        void DrawCircleFilled(int cx, int cy, int radius, GFX_COL circle_colour);
+        void DrawCircleFilled(int cx, int cy, int radius, GFX_COL colour);
 
-        void DrawLine(int x1, int y1, int x2, int y2, GFX_COL line_colour);
+        void DrawLine(int x1, int y1, int x2, int y2, GFX_COL colour);
 
         void DrawLine(int x1, int y1, int x2, int y2);
 
         void DrawLine(int x1, int y1, int x2, int y2, int dist, GFX_COL colour);
 
-        void DrawLineXor(int x1, int y1, int x2, int y2, GFX_COL line_colour);
+        void DrawLineXor(int x1, int y1, int x2, int y2, GFX_COL colour);
 
         void DrawPolygon(Vector2[] point_list, GFX_COL face_colour, int zavg);
 
