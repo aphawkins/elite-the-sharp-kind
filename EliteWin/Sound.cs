@@ -25,6 +25,8 @@ namespace Elite
         //extern DATAFILE* datafile;
 
         MidiPlayer? _midiPlayer;
+        IMidiAccess _access;
+        IMidiOutput _output;
 
         bool sound_on;
         private bool disposedValue;
@@ -84,6 +86,9 @@ namespace Elite
             //{
             //	sample_list[i].sample = load_sample(sample_list[i].filename);
             //}
+
+            _access = MidiAccessManager.Default;
+            _output = _access.OpenOutputAsync(_access.Outputs.Last().Id).Result;
         }
 
         public void SoundShutdown()
@@ -148,6 +153,8 @@ namespace Elite
                 return;
             }
 
+            StopMidi();
+
             string file;
 
             switch (midi_no)
@@ -167,10 +174,9 @@ namespace Elite
 
             //TODO: Get repeat/loop working
             file = Path.Combine("music", file);
-            IMidiAccess access = MidiAccessManager.Default;
-            IMidiOutput output = access.OpenOutputAsync(access.Outputs.Last().Id).Result;
+
             MidiMusic music = MidiMusic.Read(File.OpenRead(file));
-            _midiPlayer = new(music, output);
+            _midiPlayer = new(music, _output);
             if (repeat)
             {
                 //_midiPlayer.Finished += _midiPlayer_Finished;
@@ -197,7 +203,12 @@ namespace Elite
                 return;
             }
 
-            _midiPlayer?.Stop();
+            if (_midiPlayer != null)
+            {
+                _midiPlayer.Stop();
+                _midiPlayer.Dispose();
+                _midiPlayer = null;
+            }
         }
 
         protected virtual void Dispose(bool disposing)

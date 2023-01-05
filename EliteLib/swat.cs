@@ -138,7 +138,8 @@ namespace Elite
 					space.universe[i].bravery = 0;
 					space.universe[i].target = 0;
 
-					space.universe[i].flags = initial_flags[(int)ship_type];
+
+                    space.universe[i].flags = initial_flags[(int)ship_type < 0 ? 0 : (int)ship_type];
 
 					if ((ship_type != SHIP.SHIP_PLANET) && (ship_type != SHIP.SHIP_SUN))
 					{
