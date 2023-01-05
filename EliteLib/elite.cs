@@ -25,6 +25,7 @@ namespace Elite
 	using Elite.Enums;
 	using Elite.Structs;
 	using Elite.Ships;
+	using System.Numerics;
 
 	internal static class elite
 	{
@@ -56,10 +57,8 @@ namespace Elite
 		internal static bool instant_dock = false;
 
 		internal static string scanner_filename;
-		internal static int scanner_cx;
-		internal static int scanner_cy;
-		internal static int compass_centre_x;
-		internal static int compass_centre_y;
+		internal static Vector2 scanner_centre = new(253, 63 + 385);
+		internal static Vector2 compass_centre = new(382, 22 + 385);
 
 		internal static int planet_render_style = 0;
 

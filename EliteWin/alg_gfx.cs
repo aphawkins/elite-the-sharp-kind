@@ -265,17 +265,17 @@ namespace Elite
             _screenBufferGraphics.DrawEllipse(MapColorToPen(colour), cx + gfx.GFX_X_OFFSET - radius, cy + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
         }
 
-        public virtual void DrawLine(int x1, int y1, int x2, int y2)
+        public virtual void DrawLine(float x1, float y1, float x2, float y2)
 		{
 			DrawLine(x1, y1, x2, y2, GFX_COL.GFX_COL_WHITE);
         }
 
-		public void DrawLine(int x1, int y1, int x2, int y2, GFX_COL line_colour)
+		public void DrawLine(float x1, float y1, float x2, float y2, GFX_COL line_colour)
 		{
 			_screenBufferGraphics.DrawLine(MapColorToPen(line_colour), x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 		}
 
-        public void DrawLineXor(int x1, int y1, int x2, int y2, GFX_COL line_colour)
+        public void DrawLineXor(float x1, float y1, float x2, float y2, GFX_COL line_colour)
 		{
             Debug.WriteLine(nameof(DrawLineXor));
 
@@ -502,8 +502,6 @@ namespace Elite
 
 		private void gfx_polygon(Point[] points, GFX_COL face_colour)
 		{
-            // Debug.WriteLine(nameof(gfx_polygon));
-
             for (int i = 0; i < points.Length; i++)
 			{
 				points[i].X += gfx.GFX_X_OFFSET;
@@ -515,8 +513,6 @@ namespace Elite
 
 		public void DrawSprite(IMG spriteImgage, int x, int y)
         {
-            //Debug.WriteLine(nameof(DrawSprite) + " " + sprite_no);
-
             Bitmap sprite = _images[spriteImgage];
 
             if (x == -1)

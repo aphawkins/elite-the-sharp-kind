@@ -14,12 +14,10 @@
 
 namespace Elite
 {
-	using System.Diagnostics;
-	using System.Drawing;
-	using System.Numerics;
-	using Elite.Enums;
+    using System.Drawing;
+    using Elite.Enums;
 
-	public class alg_gfx_aa : alg_gfx
+    public class alg_gfx_aa : alg_gfx
     {
         //private const int AA_BITS = 3;
         //private const int AA_AND = 7;
@@ -115,14 +113,8 @@ namespace Elite
         /// <param name="y1"></param>
         /// <param name="x2"></param>
         /// <param name="y2"></param>
-        public override void DrawLine(int x1, int y1, int x2, int y2)
+        public override void DrawLine(float x1, float y1, float x2, float y2)
         {
-            // Method originally used floats
-            // float x1 = itofix(x1)
-            // float y1 = itofix(y1)
-            // float x2 = itofix(x2)
-            // float y2 =  itofix(y2)
-
             //	fixed grad, xd, yd;
             //	fixed xgap, ygap, xend, yend, xf, yf;
             //	fixed brightness1, brightness2, swap;

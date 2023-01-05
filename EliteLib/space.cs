@@ -706,12 +706,9 @@ namespace Elite
 		 */
 		static void update_scanner()
 		{
-			int i;
-			int x, y, z;
-			int x1, y1, y2;
             GFX_COL colour;
 
-			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				if ((universe[i].type <= 0) ||
 					universe[i].flags.HasFlag(FLG.FLG_DEAD) ||
@@ -720,13 +717,13 @@ namespace Elite
 					continue;
 				}
 
-				x = (int)(universe[i].location.x / 256);
-				y = (int)(universe[i].location.y / 256);
-				z = (int)(universe[i].location.z / 256);
+                int x = (int)(universe[i].location.x / 256);
+                int y = (int)(universe[i].location.y / 256);
+                int z = (int)(universe[i].location.z / 256);
 
-				x1 = x;
-				y1 = -z / 4;
-				y2 = y1 - y / 2;
+				float x1 = x;
+				float y1 = -z / 4;
+				float y2 = y1 - y / 2;
 
 				if ((y2 < -28) || (y2 > 28) ||
 					(x1 < -50) || (x1 > 50))
@@ -734,9 +731,9 @@ namespace Elite
 					continue;
 				}
 
-				x1 += elite.scanner_cx;
-				y1 += elite.scanner_cy;
-				y2 += elite.scanner_cy;
+				x1 += elite.scanner_centre.X;
+				y1 += elite.scanner_centre.Y;
+				y2 += elite.scanner_centre.Y;
 
 				colour = universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
 
@@ -773,9 +770,6 @@ namespace Elite
 		 */
 		static void update_compass()
 		{
-			Vector dest;
-			int compass_x;
-			int compass_y;
 			int un = 0;
 
 			if (elite.witchspace)
@@ -788,10 +782,10 @@ namespace Elite
 				un = 1;
 			}
 
-			dest = VectorMaths.unit_vector(universe[un].location);
+			Vector dest = VectorMaths.unit_vector(universe[un].location);
 
-			compass_x = (int)(elite.compass_centre_x + (dest.x * 16));
-			compass_y = (int)(elite.compass_centre_y + (dest.y * -16));
+			int compass_x = (int)(elite.compass_centre.X + (dest.x * 16));
+			int compass_y = (int)(elite.compass_centre.Y + (dest.y * -16));
 
 			if (dest.z < 0)
 			{
