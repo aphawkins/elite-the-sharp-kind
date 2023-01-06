@@ -46,6 +46,7 @@
 
 namespace Elite
 {
+	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Ships;
 	using Elite.Structs;
@@ -78,7 +79,7 @@ namespace Elite
 			}
 		}
 
-		static void rotate_vec(ref Vector vec, float alpha, float beta)
+		static void rotate_vec(ref Vector3 vec, float alpha, float beta)
 		{
 			float x = vec.X;
 			float y = vec.Y;
@@ -226,7 +227,7 @@ namespace Elite
 		 */
 		static bool is_docking(int sn)
 		{
-			Vector vec;
+			Vector3 vec;
 			float fz;
 			float ux;
 
@@ -453,8 +454,8 @@ namespace Elite
 		{
 			float px, py, pz;
 			float sx, sy, sz;
-			Vector vec;
-			Vector[] rotmat = new Vector[3];
+			Vector3 vec;
+			Vector3[] rotmat = new Vector3[3];
 
 			px = universe[0].location.X;
 			py = universe[0].location.Y;
@@ -782,7 +783,7 @@ namespace Elite
 				un = 1;
 			}
 
-			Vector dest = VectorMaths.unit_vector(universe[un].location);
+			Vector3 dest = VectorMaths.unit_vector(universe[un].location);
 
 			int compass_x = (int)(elite.compass_centre.X + (dest.X * 16));
 			int compass_y = (int)(elite.compass_centre.Y + (dest.Y * -16));
@@ -1163,7 +1164,7 @@ namespace Elite
 
 		static void complete_hyperspace()
 		{
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 			int px, py, pz;
 
 			hyper_ready = false;
@@ -1293,7 +1294,7 @@ namespace Elite
 
 		internal static void launch_player()
 		{
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 
 			elite.docked = false;
 			elite.flight_speed = 12;

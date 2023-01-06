@@ -33,6 +33,7 @@
 
 namespace Elite
 {
+	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Structs;
 
@@ -189,7 +190,7 @@ namespace Elite
 
 		static void constrictor_mission_brief()
 		{
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 
 			elite.cmdr.mission = 1;
 

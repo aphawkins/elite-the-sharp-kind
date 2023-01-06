@@ -36,6 +36,7 @@
 
 namespace Elite
 {
+	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Ships;
 	using Elite.Structs;
@@ -56,7 +57,7 @@ namespace Elite
 			900
 		};
 
-		static Vector[] intro_ship_matrix = new Vector[3];
+		static Vector3[] intro_ship_matrix = new Vector3[3];
 
 		internal static void initialise_intro1()
 		{

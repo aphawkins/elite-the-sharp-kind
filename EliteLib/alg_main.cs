@@ -16,6 +16,7 @@ namespace Elite
 {
 	using System.Diagnostics;
 	using System.Drawing;
+	using System.Numerics;
 	/*
 * alg_main.c
 *
@@ -526,7 +527,7 @@ namespace Elite
 		static void auto_dock()
 		{
 			univ_object ship = new univ_object();
-			ship.rotmat = new Vector[3];
+			ship.rotmat = new Vector3[3];
 			ship.location.X = 0;
 			ship.location.Y = 0;
 			ship.location.Z = 0;
@@ -631,7 +632,7 @@ namespace Elite
 		static void run_escape_sequence()
 		{
 			int i;
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 
 			elite.current_screen = SCR.SCR_ESCAPE_POD;
 
@@ -1204,7 +1205,7 @@ namespace Elite
 		{
 			int i;
 			int newship;
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 			SHIP type;
 
 			elite.current_screen = SCR.SCR_GAME_OVER;

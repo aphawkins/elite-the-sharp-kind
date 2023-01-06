@@ -13,6 +13,7 @@
 
 namespace Elite
 {
+	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Structs;
 
@@ -34,13 +35,13 @@ namespace Elite
 		 */
 		static void draw_wireframe_ship(ref univ_object univ)
 		{
-			Vector[] trans_mat = new Vector[3];
+			Vector3[] trans_mat = new Vector3[3];
 			int i;
 			int sx, sy, ex, ey;
 			float rx, ry, rz;
 			bool[] visible = new bool[32];
-			Vector vec;
-			Vector camera_vec;
+			Vector3 vec;
+			Vector3 camera_vec;
 			float cos_angle;
 			float tmp;
 			ship_face_normal[] ship_norm;
@@ -154,11 +155,11 @@ namespace Elite
 		{
 			int sx, sy;
 			float rx, ry, rz;
-			Vector vec;
-			Vector camera_vec;
+			Vector3 vec;
+			Vector3 camera_vec;
 			int num_points;
 			int zavg;
-			Vector[] trans_mat = new Vector[3];
+			Vector3[] trans_mat = new Vector3[3];
 			int lasv;
             GFX_COL col;
 
@@ -550,7 +551,7 @@ namespace Elite
 		/*
 		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
 		 */
-		static void render_planet(int xo, int yo, int radius, Vector[] vec)
+		static void render_planet(int xo, int yo, int radius, Vector3[] vec)
 		{
 			int x, y;
 			int s;
@@ -589,7 +590,7 @@ namespace Elite
 		 * At the moment we just draw a circle.
 		 * Need to add in the two arcs that the original Elite had.
 		 */
-		static void draw_wireframe_planet(int xo, int yo, int radius, Vector[] vec)
+		static void draw_wireframe_planet(int xo, int yo, int radius, Vector3[] vec)
 		{
             elite.alg_gfx.DrawCircle(xo, yo, radius, GFX_COL.GFX_COL_WHITE);
 		}
@@ -792,12 +793,12 @@ namespace Elite
 			int px, py;
 			int cnt;
 			int sizex, sizey, psx, psy;
-			Vector[] trans_mat = new Vector[3];
+			Vector3[] trans_mat = new Vector3[3];
 			int sx, sy;
 			float rx, ry, rz;
 			bool[] visible = new bool[32];
-			Vector vec;
-			Vector camera_vec;
+			Vector3 vec;
+			Vector3 camera_vec;
 			float cos_angle;
 			float tmp;
 			ship_face_normal[] ship_norm;

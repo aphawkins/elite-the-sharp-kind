@@ -1,12 +1,13 @@
 ﻿namespace Elite.Structs
 {
+    using System.Numerics;
     using Elite.Enums;
 
     internal struct univ_object
     {
         internal SHIP type;
-        internal Vector location;
-        internal Vector[] rotmat;
+        internal Vector3 location;
+        internal Vector3[] rotmat;
         internal int rotx;
         internal int rotz;
         internal FLG flags;

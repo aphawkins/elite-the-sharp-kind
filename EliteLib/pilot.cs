@@ -37,6 +37,7 @@
 
 namespace Elite
 {
+	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Structs;
 
@@ -45,9 +46,9 @@ namespace Elite
 		/*
 		 * Fly to a given point in space.
 		 */
-		static void fly_to_vector(ref univ_object ship, Vector vec)
+		static void fly_to_vector(ref univ_object ship, Vector3 vec)
 		{
-			Vector nvec;
+			Vector3 nvec;
 			float direction;
 			float dir;
 			int rat;
@@ -117,7 +118,7 @@ namespace Elite
 		 */
 		static void fly_to_planet(ref univ_object ship)
 		{
-			Vector vec;
+			Vector3 vec;
 
 			vec.X = space.universe[0].location.X - ship.location.X;
 			vec.Y = space.universe[0].location.Y - ship.location.Y;
@@ -132,7 +133,7 @@ namespace Elite
 		 */
 		static void fly_to_station_front(ref univ_object ship)
 		{
-			Vector vec;
+			Vector3 vec;
 
 			vec.X = space.universe[1].location.X - ship.location.X;
 			vec.Y = space.universe[1].location.Y - ship.location.Y;
@@ -150,7 +151,7 @@ namespace Elite
 		 */
 		static void fly_to_station(ref univ_object ship)
 		{
-			Vector vec;
+			Vector3 vec;
 
 			vec.X = space.universe[1].location.X - ship.location.X;
 			vec.Y = space.universe[1].location.Y - ship.location.Y;
@@ -165,14 +166,14 @@ namespace Elite
 		 */
 		static void fly_to_docking_bay(ref univ_object ship)
 		{
-			Vector diff;
+			Vector3 diff;
 			float dir;
 
 			diff.X = ship.location.X - space.universe[1].location.X;
 			diff.Y = ship.location.Y - space.universe[1].location.Y;
 			diff.Z = ship.location.Z - space.universe[1].location.Z;
 
-			Vector vec = VectorMaths.unit_vector(diff);
+			Vector3 vec = VectorMaths.unit_vector(diff);
 
 			ship.rotx = 0;
 
@@ -225,8 +226,8 @@ namespace Elite
 		 */
 		internal static void auto_pilot_ship(ref univ_object ship)
 		{
-			Vector diff;
-			Vector vec;
+			Vector3 diff;
+			Vector3 vec;
 			float dist;
 			float dir;
 

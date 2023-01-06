@@ -37,6 +37,7 @@
 
 namespace Elite
 {
+	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Ships;
 	using Elite.Structs;
@@ -112,7 +113,7 @@ namespace Elite
 			in_battle = false;
 		}
 
-		internal static int add_new_ship(SHIP ship_type, int x, int y, int z, Vector[] rotmat, int rotx, int rotz)
+		internal static int add_new_ship(SHIP ship_type, int x, int y, int z, Vector3[] rotmat, int rotx, int rotz)
 		{
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
@@ -125,7 +126,7 @@ namespace Elite
 
 					space.universe[i].distance = (int)Math.Sqrt(x * x + y * y + z * z);
 
-					space.universe[i].rotmat = new Vector[3];
+					space.universe[i].rotmat = new Vector3[3];
                     space.universe[i].rotmat[0] = rotmat[0];
 					space.universe[i].rotmat[1] = rotmat[1];
 					space.universe[i].rotmat[2] = rotmat[2];
@@ -175,7 +176,7 @@ namespace Elite
 		internal static void remove_ship(int un)
 		{
 			SHIP type;
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 			int px, py, pz;
 
 			type = space.universe[un].type;
@@ -208,7 +209,7 @@ namespace Elite
 			}
 		}
 
-		internal static void add_new_station(float sx, float sy, float sz, Vector[] rotmat)
+		internal static void add_new_station(float sx, float sy, float sz, Vector3[] rotmat)
 		{
 			SHIP station = (elite.current_planet_data.techlevel >= 10) ? SHIP.SHIP_DODEC : SHIP.SHIP_CORIOLIS;
 			space.universe[1].type = 0;
@@ -436,7 +437,7 @@ namespace Elite
 		{
 			int newship;
 			univ_object ns;
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 
 			if (missile_target < 0)
 			{
@@ -472,7 +473,7 @@ namespace Elite
 			elite.sound.PlaySample(SND.SND_MISSILE);
 		}
 
-		static void track_object(ref univ_object ship, float direction, Vector nvec)
+		static void track_object(ref univ_object ship, float direction, Vector3 nvec)
 		{
 			int rat = 3;
 			float rat2 = 0.111f;
@@ -514,8 +515,8 @@ namespace Elite
 		{
 			univ_object missile;
 			univ_object target;
-			Vector vec;
-			Vector nvec;
+			Vector3 vec;
+			Vector3 nvec;
 			float direction;
 			float cnt2 = 0.223f;
 
@@ -631,7 +632,7 @@ namespace Elite
 			int maxeng;
 			FLG flags;
 			univ_object ship;
-			Vector nvec;
+			Vector3 nvec;
 			float cnt2 = 0.223f;
 			float direction;
 			int attacking;
@@ -1006,7 +1007,7 @@ namespace Elite
 
 		static int create_other_ship(SHIP type)
 		{
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 
 			VectorMaths.set_init_matrix(ref rotmat);
 
@@ -1194,7 +1195,7 @@ namespace Elite
 		{
 			int x, y, z;
 			int newship;
-			Vector[] rotmat = new Vector[3];
+			Vector3[] rotmat = new Vector3[3];
 			SHIP type;
 			int i;
 

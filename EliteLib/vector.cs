@@ -22,25 +22,26 @@
 namespace Elite
 {
 	using System;
+	using System.Numerics;
 	using Elite.Structs;
 
 	internal static class VectorMaths
 	{
-		static Vector[] start_matrix = new Vector[3]
+		static Vector3[] start_matrix = new Vector3[3]
 		{
-			new Vector(1.0f, 0.0f, 0.0f),
-			new Vector(0.0f, 1.0f, 0.0f),
-			new Vector(0.0f, 0.0f,-1.0f)
+			new Vector3(1.0f, 0.0f, 0.0f),
+			new Vector3(0.0f, 1.0f, 0.0f),
+			new Vector3(0.0f, 0.0f,-1.0f)
 		};
 
 		/*
 		 * Multiply first matrix by second matrix.
 		 * Put result into first matrix.
 		 */
-		static void mult_matrix(Vector[] first, Vector[] second)
+		static void mult_matrix(Vector3[] first, Vector3[] second)
 		{
 			int i;
-			Vector[] rv = new Vector[3];
+			Vector3[] rv = new Vector3[3];
 			float x;
 			float y;
 			float z;
@@ -51,7 +52,7 @@ namespace Elite
 				y = (first[0].Y * second[i].X) + (first[1].Y * second[i].Y) + (first[2].Y * second[i].Z);
 				z = (first[0].Z * second[i].X) + (first[1].Z * second[i].Y) + (first[2].Z * second[i].Z);
 
-				rv[i] = new Vector(x, y, z);
+				rv[i] = new(x, y, z);
 			}
 
 			for (i = 0; i < 3; i++)
@@ -60,7 +61,7 @@ namespace Elite
 			}
 		}
 
-		internal static void mult_vector(ref Vector vec, Vector[] mat)
+		internal static void mult_vector(ref Vector3 vec, Vector3[] mat)
 		{
 			float x;
 			float y;
@@ -87,7 +88,7 @@ namespace Elite
 		 * Calculate the dot product of two vectors sharing a common point.
 		 * Returns the cosine of the angle between the two vectors.
 		 */
-		internal static float vector_dot_product(Vector first, Vector second)
+		internal static float vector_dot_product(Vector3 first, Vector3 second)
 		{
 			return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
 		}
@@ -95,9 +96,9 @@ namespace Elite
 		/*
 		 * Convert a vector into a vector of unit (1) length.
 		 */
-		internal static Vector unit_vector(Vector vec)
+		internal static Vector3 unit_vector(Vector3 vec)
 		{
-			Vector res;
+			Vector3 res;
 
 			float lx = vec.X;
 			float ly = vec.Y;
@@ -112,7 +113,7 @@ namespace Elite
 			return res;
 		}
 
-		internal static void set_init_matrix(ref Vector[] mat)
+		internal static void set_init_matrix(ref Vector3[] mat)
 		{
 			int i;
 
@@ -122,7 +123,7 @@ namespace Elite
 			}
 		}
 
-		internal static void tidy_matrix(Vector[] mat)
+		internal static void tidy_matrix(Vector3[] mat)
 		{
 			mat[2] = unit_vector(mat[2]);
 
