@@ -119,9 +119,9 @@ namespace Elite
 				if (space.universe[i].type == 0)
 				{
 					space.universe[i].type = ship_type;
-					space.universe[i].location.x = x;
-					space.universe[i].location.y = y;
-					space.universe[i].location.z = z;
+					space.universe[i].location.X = x;
+					space.universe[i].location.Y = y;
+					space.universe[i].location.Z = z;
 
 					space.universe[i].distance = (int)Math.Sqrt(x * x + y * y + z * z);
 
@@ -197,9 +197,9 @@ namespace Elite
 			if ((type == SHIP.SHIP_CORIOLIS) || (type == SHIP.SHIP_DODEC))
 			{
 				VectorMaths.set_init_matrix(ref rotmat);
-				px = (int)space.universe[un].location.x;
-				py = (int)space.universe[un].location.y;
-				pz = (int)space.universe[un].location.z;
+				px = (int)space.universe[un].location.X;
+				py = (int)space.universe[un].location.Y;
+				pz = (int)space.universe[un].location.Z;
 
 				py &= 0xFFFF;
 				py |= 0x60000;
@@ -208,7 +208,7 @@ namespace Elite
 			}
 		}
 
-		internal static void add_new_station(double sx, double sy, double sz, Vector[] rotmat)
+		internal static void add_new_station(float sx, float sy, float sz, Vector[] rotmat)
 		{
 			SHIP station = (elite.current_planet_data.techlevel >= 10) ? SHIP.SHIP_DODEC : SHIP.SHIP_CORIOLIS;
 			space.universe[1].type = 0;
@@ -229,8 +229,8 @@ namespace Elite
 			int newship;
 			univ_object ns;
 
-			newship = add_new_ship(type, (int)space.universe[un].location.x, (int)space.universe[un].location.y,
-									(int)space.universe[un].location.z, space.universe[un].rotmat,
+			newship = add_new_ship(type, (int)space.universe[un].location.X, (int)space.universe[un].location.Y,
+									(int)space.universe[un].location.Z, space.universe[un].rotmat,
 									space.universe[un].rotx, space.universe[un].rotz);
 
 			if (newship == -1)
@@ -243,9 +243,9 @@ namespace Elite
 			if ((space.universe[un].type == SHIP.SHIP_CORIOLIS) || (space.universe[un].type == SHIP.SHIP_DODEC))
 			{
 				ns.velocity = 32;
-				ns.location.x += ns.rotmat[2].x * 2;
-				ns.location.y += ns.rotmat[2].y * 2;
-				ns.location.z += ns.rotmat[2].z * 2;
+				ns.location.X += ns.rotmat[2].X * 2;
+				ns.location.Y += ns.rotmat[2].Y * 2;
+				ns.location.Z += ns.rotmat[2].Z * 2;
 			}
 
 			ns.flags |= flags;
@@ -285,14 +285,14 @@ namespace Elite
 			}
 		}
 
-		static bool in_target(SHIP type, double x, double y, double z)
+		static bool in_target(SHIP type, float x, float y, float z)
 		{
 			if (z < 0)
 			{
 				return false;
 			}
 
-			double size = elite.ship_list[(int)type].size;
+			float size = elite.ship_list[(int)type].size;
 
 			return ((x * x + y * y) <= size);
 		}
@@ -345,7 +345,7 @@ namespace Elite
 
 			univ = space.universe[un];
 
-			if (in_target(univ.type, flip.location.x, flip.location.y, flip.location.z))
+			if (in_target(univ.type, flip.location.X, flip.location.Y, flip.location.Z))
 			{
 				if ((missile_target == MISSILE_ARMED) && (univ.type >= 0))
 				{
@@ -444,8 +444,8 @@ namespace Elite
 			}
 
 			VectorMaths.set_init_matrix(ref rotmat);
-			rotmat[2].z = 1.0;
-			rotmat[0].x = -1.0;
+			rotmat[2].Z = 1.0f;
+			rotmat[0].X = -1.0f;
 
 			newship = add_new_ship(SHIP.SHIP_MISSILE, 0, -28, 14, rotmat, 0, 0);
 
@@ -472,11 +472,11 @@ namespace Elite
 			elite.sound.PlaySample(SND.SND_MISSILE);
 		}
 
-		static void track_object(ref univ_object ship, double direction, Vector nvec)
+		static void track_object(ref univ_object ship, float direction, Vector nvec)
 		{
 			int rat = 3;
-			double rat2 = 0.111;
-			double dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[1]);
+			float rat2 = 0.111f;
+			float dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[1]);
 
 			if (direction < -0.861)
 			{
@@ -516,8 +516,8 @@ namespace Elite
 			univ_object target;
 			Vector vec;
 			Vector nvec;
-			double direction;
-			double cnt2 = 0.223;
+			float direction;
+			float cnt2 = 0.223f;
 
 			missile = space.universe[un];
 
@@ -535,23 +535,23 @@ namespace Elite
 				{
 					missile.flags |= FLG.FLG_DEAD;
 					elite.sound.PlaySample(SND.SND_EXPLODE);
-					space.damage_ship(250, missile.location.z >= 0.0);
+					space.damage_ship(250, missile.location.Z >= 0.0);
 					return;
 				}
 
-				vec.x = missile.location.x;
-				vec.y = missile.location.y;
-				vec.z = missile.location.z;
+				vec.X = missile.location.X;
+				vec.Y = missile.location.Y;
+				vec.Z = missile.location.Z;
 			}
 			else
 			{
 				target = space.universe[missile.target];
 
-				vec.x = missile.location.x - target.location.x;
-				vec.y = missile.location.y - target.location.y;
-				vec.z = missile.location.z - target.location.z;
+				vec.X = missile.location.X - target.location.X;
+				vec.Y = missile.location.Y - target.location.Y;
+				vec.Z = missile.location.Z - target.location.Z;
 
-				if ((Math.Abs(vec.x) < 256) && (Math.Abs(vec.y) < 256) && (Math.Abs(vec.z) < 256))
+				if ((Math.Abs(vec.X) < 256) && (Math.Abs(vec.Y) < 256) && (Math.Abs(vec.Z) < 256))
 				{
 					missile.flags |= FLG.FLG_DEAD;
 
@@ -576,9 +576,9 @@ namespace Elite
 
 			nvec = VectorMaths.unit_vector(vec);
 			direction = VectorMaths.vector_dot_product(nvec, missile.rotmat[2]);
-			nvec.x = -nvec.x;
-			nvec.y = -nvec.y;
-			nvec.z = -nvec.z;
+			nvec.X = -nvec.X;
+			nvec.Y = -nvec.Y;
+			nvec.Z = -nvec.Z;
 			direction = -direction;
 
 			track_object(ref missile, direction, nvec);
@@ -632,8 +632,8 @@ namespace Elite
 			FLG flags;
 			univ_object ship;
 			Vector nvec;
-			double cnt2 = 0.223;
-			double direction;
+			float cnt2 = 0.223f;
+			float direction;
 			int attacking;
 
 			ship = space.universe[un];
@@ -813,10 +813,10 @@ namespace Elite
 
 				if (direction <= -0.972)
 				{
-					space.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.z >= 0.0);
+					space.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
 					ship.acceleration--;
-					if (((ship.location.z >= 0.0) && (elite.front_shield == 0)) ||
-						((ship.location.z < 0.0) && (elite.aft_shield == 0)))
+					if (((ship.location.Z >= 0.0) && (elite.front_shield == 0)) ||
+						((ship.location.Z < 0.0) && (elite.aft_shield == 0)))
 					{
 						elite.sound.PlaySample(SND.SND_INCOMMING_FIRE_2);
 					}
@@ -827,15 +827,15 @@ namespace Elite
 				}
 				else
 				{
-					nvec.x = -nvec.x;
-					nvec.y = -nvec.y;
-					nvec.z = -nvec.z;
+					nvec.X = -nvec.X;
+					nvec.Y = -nvec.Y;
+					nvec.Z = -nvec.Z;
 					direction = -direction;
 					track_object(ref space.universe[un], direction, nvec);
 				}
 
 				//		if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
-				if (Math.Abs(ship.location.z) < 768)
+				if (Math.Abs(ship.location.Z) < 768)
 				{
 					ship.rotx = random.rand255() & 0x87;
 					if (ship.rotx > 127)
@@ -859,16 +859,16 @@ namespace Elite
 
 			attacking = 0;
 
-			if ((Math.Abs(ship.location.z) >= 768) ||
-				(Math.Abs(ship.location.x) >= 512) ||
-				(Math.Abs(ship.location.y) >= 512))
+			if ((Math.Abs(ship.location.Z) >= 768) ||
+				(Math.Abs(ship.location.X) >= 512) ||
+				(Math.Abs(ship.location.Y) >= 512))
 			{
 				if (ship.bravery > (random.rand255() & 127))
 				{
 					attacking = 1;
-					nvec.x = -nvec.x;
-					nvec.y = -nvec.y;
-					nvec.z = -nvec.z;
+					nvec.X = -nvec.X;
+					nvec.Y = -nvec.Y;
+					nvec.Z = -nvec.Z;
 					direction = -direction;
 				}
 			}
@@ -1078,7 +1078,7 @@ namespace Elite
 
 			if (newship != -1)
 			{
-				space.universe[newship].rotmat[2].z = -1.0;
+				space.universe[newship].rotmat[2].Z = -1.0f;
 				space.universe[newship].rotz = random.rand255() & 7;
 
 				rnd = random.rand255();
@@ -1259,7 +1259,7 @@ namespace Elite
 
 			if (random.rand255() == 136)
 			{
-				if (((int)(space.universe[0].location.z) & 0x3e) != 0)
+				if (((int)(space.universe[0].location.Z) & 0x3e) != 0)
 				{
 					create_thargoid();
 				}

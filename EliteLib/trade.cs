@@ -141,11 +141,11 @@ namespace Elite
 			if (type == SHIP.SHIP_MISSILE)
 				return;
 
-			if ((!elite.cmdr.fuel_scoop) || (space.universe[un].location.y >= 0) ||
+			if ((!elite.cmdr.fuel_scoop) || (space.universe[un].location.Y >= 0) ||
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
 				swat.explode_object(un);
-				space.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.z > 0);
+				space.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
 				return;
 			}
 
@@ -168,7 +168,7 @@ namespace Elite
 			}
 
 			swat.explode_object(un);
-			space.damage_ship(space.universe[un].energy / 2, space.universe[un].location.z > 0);
+			space.damage_ship(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
 		}
 	}
 }

@@ -22,9 +22,9 @@ namespace Elite
 
 		struct star
 		{
-			internal double x;
-			internal double y;
-			internal double z;
+			internal float x;
+			internal float y;
+			internal float z;
 		};
 
 		static star[] stars = new star[20];
@@ -49,11 +49,11 @@ namespace Elite
 		static void front_starfield()
 		{
 			int i;
-			double Q;
-			double delta;
-			double alpha = 0;
-			double beta = 0;
-			double xx, yy, zz;
+			float Q;
+			float delta;
+			float alpha = 0;
+			float beta = 0;
+			float xx, yy, zz;
 			int sx;
 			int sy;
 			int nstars;
@@ -61,11 +61,11 @@ namespace Elite
 			nstars = elite.witchspace ? 3 : 12;
 
 			delta = Stars.warp_stars ? 50 : elite.flight_speed;
-			alpha = (double)elite.flight_roll;
-			beta = (double)elite.flight_climb;
+			alpha = (float)elite.flight_roll;
+			beta = (float)elite.flight_climb;
 
-			alpha /= 256.0;
-			delta /= 2.0;
+			alpha /= 256.0f;
+			delta /= 2.0f;
 
 			for (i = 0; i < nstars; i++)
 			{
@@ -147,11 +147,11 @@ namespace Elite
 		static void rear_starfield()
 		{
 			int i;
-			double Q;
-			double delta;
-			double alpha = 0;
-			double beta = 0;
-			double xx, yy, zz;
+			float Q;
+			float delta;
+			float alpha = 0;
+			float beta = 0;
+			float xx, yy, zz;
 			int sx, sy;
 			int ex, ey;
 			int nstars;
@@ -162,8 +162,8 @@ namespace Elite
 			alpha = -elite.flight_roll;
 			beta = -elite.flight_climb;
 
-			alpha /= 256.0;
-			delta /= 2.0;
+			alpha /= 256.0f;
+			delta /= 2.0f;
 
 			for (i = 0; i < nstars; i++)
 			{
@@ -259,13 +259,13 @@ namespace Elite
 		static void side_starfield()
 		{
 			int i;
-			double delta;
-			double alpha;
-			double beta;
-			double xx, yy, zz;
+			float delta;
+			float alpha;
+			float beta;
+			float xx, yy, zz;
 			int sx;
 			int sy;
-			double delt8;
+			float delt8;
 			int nstars;
 
 			nstars = elite.witchspace ? 3 : 12;

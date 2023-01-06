@@ -79,11 +79,11 @@ namespace Elite
 
 		internal static void update_intro1()
 		{
-			space.universe[0].location.z -= 100;
+			space.universe[0].location.Z -= 100;
 
-			if (space.universe[0].location.z < 384)
+			if (space.universe[0].location.Z < 384)
 			{
-				space.universe[0].location.z = 384;
+				space.universe[0].location.Z = 384;
 			}
 
             elite.alg_gfx.ClearDisplay();
@@ -107,14 +107,14 @@ namespace Elite
 				direction = -direction;
 			}
 
-			space.universe[0].location.z += direction;
+			space.universe[0].location.Z += direction;
 
-			if (space.universe[0].location.z < min_dist[(int)ship_no])
+			if (space.universe[0].location.Z < min_dist[(int)ship_no])
 			{
-				space.universe[0].location.z = min_dist[(int)ship_no];
+				space.universe[0].location.Z = min_dist[(int)ship_no];
 			}
 
-			if (space.universe[0].location.z > 4500)
+			if (space.universe[0].location.Z > 4500)
 			{
 				do
 				{

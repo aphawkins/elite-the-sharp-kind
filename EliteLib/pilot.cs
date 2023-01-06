@@ -48,15 +48,15 @@ namespace Elite
 		static void fly_to_vector(ref univ_object ship, Vector vec)
 		{
 			Vector nvec;
-			double direction;
-			double dir;
+			float direction;
+			float dir;
 			int rat;
-			double rat2;
-			double cnt2;
+			float rat2;
+			float cnt2;
 
 			rat = 3;
-			rat2 = 0.1666;
-			cnt2 = 0.8055;
+			rat2 = 0.1666f;
+			cnt2 = 0.8055f;
 
 			nvec = VectorMaths.unit_vector(vec);
 			direction = VectorMaths.vector_dot_product(nvec, ship.rotmat[2]);
@@ -119,9 +119,9 @@ namespace Elite
 		{
 			Vector vec;
 
-			vec.x = space.universe[0].location.x - ship.location.x;
-			vec.y = space.universe[0].location.y - ship.location.y;
-			vec.z = space.universe[0].location.z - ship.location.z;
+			vec.X = space.universe[0].location.X - ship.location.X;
+			vec.Y = space.universe[0].location.Y - ship.location.Y;
+			vec.Z = space.universe[0].location.Z - ship.location.Z;
 
 			fly_to_vector(ref ship, vec);
 		}
@@ -134,13 +134,13 @@ namespace Elite
 		{
 			Vector vec;
 
-			vec.x = space.universe[1].location.x - ship.location.x;
-			vec.y = space.universe[1].location.y - ship.location.y;
-			vec.z = space.universe[1].location.z - ship.location.z;
+			vec.X = space.universe[1].location.X - ship.location.X;
+			vec.Y = space.universe[1].location.Y - ship.location.Y;
+			vec.Z = space.universe[1].location.Z - ship.location.Z;
 
-			vec.x += space.universe[1].rotmat[2].x * 768;
-			vec.y += space.universe[1].rotmat[2].y * 768;
-			vec.z += space.universe[1].rotmat[2].z * 768;
+			vec.X += space.universe[1].rotmat[2].X * 768;
+			vec.Y += space.universe[1].rotmat[2].Y * 768;
+			vec.Z += space.universe[1].rotmat[2].Z * 768;
 
 			fly_to_vector(ref ship, vec);
 		}
@@ -152,9 +152,9 @@ namespace Elite
 		{
 			Vector vec;
 
-			vec.x = space.universe[1].location.x - ship.location.x;
-			vec.y = space.universe[1].location.y - ship.location.y;
-			vec.z = space.universe[1].location.z - ship.location.z;
+			vec.X = space.universe[1].location.X - ship.location.X;
+			vec.Y = space.universe[1].location.Y - ship.location.Y;
+			vec.Z = space.universe[1].location.Z - ship.location.Z;
 
 			fly_to_vector(ref ship, vec);
 		}
@@ -166,11 +166,11 @@ namespace Elite
 		static void fly_to_docking_bay(ref univ_object ship)
 		{
 			Vector diff;
-			double dir;
+			float dir;
 
-			diff.x = ship.location.x - space.universe[1].location.x;
-			diff.y = ship.location.y - space.universe[1].location.y;
-			diff.z = ship.location.z - space.universe[1].location.z;
+			diff.X = ship.location.X - space.universe[1].location.X;
+			diff.Y = ship.location.Y - space.universe[1].location.Y;
+			diff.Z = ship.location.Z - space.universe[1].location.Z;
 
 			Vector vec = VectorMaths.unit_vector(diff);
 
@@ -179,25 +179,25 @@ namespace Elite
 			if (ship.type < 0)
 			{
 				ship.rotz = 1;
-				if (((vec.x >= 0) && (vec.y >= 0)) ||
-					 ((vec.x < 0) && (vec.y < 0)))
+				if (((vec.X >= 0) && (vec.Y >= 0)) ||
+					 ((vec.X < 0) && (vec.Y < 0)))
 				{
 					ship.rotz = -ship.rotz;
 				}
 
-				if (Math.Abs(vec.x) >= 0.0625)
+				if (Math.Abs(vec.X) >= 0.0625)
 				{
 					ship.acceleration = 0;
 					ship.velocity = 1;
 					return;
 				}
 
-				if (Math.Abs(vec.y) > 0.002436)
+				if (Math.Abs(vec.Y) > 0.002436)
 				{
-					ship.rotx = (vec.y < 0) ? -1 : 1;
+					ship.rotx = (vec.Y < 0) ? -1 : 1;
 				}
 
-				if (Math.Abs(vec.y) >= 0.0625)
+				if (Math.Abs(vec.Y) >= 0.0625)
 				{
 					ship.acceleration = 0;
 					ship.velocity = 1;
@@ -227,8 +227,8 @@ namespace Elite
 		{
 			Vector diff;
 			Vector vec;
-			double dist;
-			double dir;
+			float dist;
+			float dir;
 
 			if (ship.flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
 				((space.ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[(int)SHIP.SHIP_DODEC] == 0)))
@@ -237,11 +237,11 @@ namespace Elite
 				return;
 			}
 
-			diff.x = ship.location.x - space.universe[1].location.x;
-			diff.y = ship.location.y - space.universe[1].location.y;
-			diff.z = ship.location.z - space.universe[1].location.z;
+			diff.X = ship.location.X - space.universe[1].location.X;
+			diff.Y = ship.location.Y - space.universe[1].location.Y;
+			diff.Z = ship.location.Z - space.universe[1].location.Z;
 
-			dist = Math.Sqrt(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+			dist = (float)Math.Sqrt(diff.X * diff.X + diff.Y * diff.Y + diff.Z * diff.Z);
 
 			if (dist < 160)
 			{

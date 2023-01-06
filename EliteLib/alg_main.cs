@@ -527,13 +527,13 @@ namespace Elite
 		{
 			univ_object ship = new univ_object();
 			ship.rotmat = new Vector[3];
-			ship.location.x = 0;
-			ship.location.y = 0;
-			ship.location.z = 0;
+			ship.location.X = 0;
+			ship.location.Y = 0;
+			ship.location.Z = 0;
 
 			VectorMaths.set_init_matrix(ref ship.rotmat);
-			ship.rotmat[2].z = 1;
-			ship.rotmat[0].x = -1;
+			ship.rotmat[2].Z = 1;
+			ship.rotmat[0].X = -1;
 			ship.type = (SHIP)(-96);
 			ship.velocity = elite.flight_speed;
 			ship.acceleration = 0;
@@ -640,7 +640,7 @@ namespace Elite
 			elite.flight_climb = 0;
 
 			VectorMaths.set_init_matrix(ref rotmat);
-			rotmat[2].z = 1.0;
+			rotmat[2].Z = 1.0f;
 
 			int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
 			space.universe[newship].velocity = 7;
@@ -659,9 +659,9 @@ namespace Elite
 				Stars.update_starfield();
 				space.update_universe();
 
-				space.universe[newship].location.x = 0;
-				space.universe[newship].location.y = 0;
-				space.universe[newship].location.z += 2;
+				space.universe[newship].location.X = 0;
+				space.universe[newship].location.Y = 0;
+				space.universe[newship].location.Z += 2;
 
                 elite.alg_gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
 
@@ -680,7 +680,7 @@ namespace Elite
 					{
 						if (space.universe[i].type != 0)
 						{
-							space.universe[i].location.z -= 1500;
+							space.universe[i].location.Z -= 1500;
 						}
 					}
 				}

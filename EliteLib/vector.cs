@@ -28,9 +28,9 @@ namespace Elite
 	{
 		static Vector[] start_matrix = new Vector[3]
 		{
-			new Vector(1.0, 0.0, 0.0),
-			new Vector(0.0, 1.0, 0.0),
-			new Vector(0.0, 0.0,-1.0)
+			new Vector(1.0f, 0.0f, 0.0f),
+			new Vector(0.0f, 1.0f, 0.0f),
+			new Vector(0.0f, 0.0f,-1.0f)
 		};
 
 		/*
@@ -41,15 +41,15 @@ namespace Elite
 		{
 			int i;
 			Vector[] rv = new Vector[3];
-			double x;
-			double y;
-			double z;
+			float x;
+			float y;
+			float z;
 
 			for (i = 0; i < 3; i++)
 			{
-				x = (first[0].x * second[i].x) + (first[1].x * second[i].y) + (first[2].x * second[i].z);
-				y = (first[0].y * second[i].x) + (first[1].y * second[i].y) + (first[2].y * second[i].z);
-				z = (first[0].z * second[i].x) + (first[1].z * second[i].y) + (first[2].z * second[i].z);
+				x = (first[0].X * second[i].X) + (first[1].X * second[i].Y) + (first[2].X * second[i].Z);
+				y = (first[0].Y * second[i].X) + (first[1].Y * second[i].Y) + (first[2].Y * second[i].Z);
+				z = (first[0].Z * second[i].X) + (first[1].Z * second[i].Y) + (first[2].Z * second[i].Z);
 
 				rv[i] = new Vector(x, y, z);
 			}
@@ -62,34 +62,34 @@ namespace Elite
 
 		internal static void mult_vector(ref Vector vec, Vector[] mat)
 		{
-			double x;
-			double y;
-			double z;
+			float x;
+			float y;
+			float z;
 
-			x = (vec.x * mat[0].x) +
-				(vec.y * mat[0].y) +
-				(vec.z * mat[0].z);
+			x = (vec.X * mat[0].X) +
+				(vec.Y * mat[0].Y) +
+				(vec.Z * mat[0].Z);
 
-			y = (vec.x * mat[1].x) +
-				(vec.y * mat[1].y) +
-				(vec.z * mat[1].z);
+			y = (vec.X * mat[1].X) +
+				(vec.Y * mat[1].Y) +
+				(vec.Z * mat[1].Z);
 
-			z = (vec.x * mat[2].x) +
-				(vec.y * mat[2].y) +
-				(vec.z * mat[2].z);
+			z = (vec.X * mat[2].X) +
+				(vec.Y * mat[2].Y) +
+				(vec.Z * mat[2].Z);
 
-			vec.x = x;
-			vec.y = y;
-			vec.z = z;
+			vec.X = x;
+			vec.Y = y;
+			vec.Z = z;
 		}
 
 		/*
 		 * Calculate the dot product of two vectors sharing a common point.
 		 * Returns the cosine of the angle between the two vectors.
 		 */
-		internal static double vector_dot_product(Vector first, Vector second)
+		internal static float vector_dot_product(Vector first, Vector second)
 		{
-			return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);
+			return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
 		}
 
 		/*
@@ -99,15 +99,15 @@ namespace Elite
 		{
 			Vector res;
 
-			double lx = vec.x;
-			double ly = vec.y;
-			double lz = vec.z;
+			float lx = vec.X;
+			float ly = vec.Y;
+			float lz = vec.Z;
 
-			double uni = Math.Sqrt(lx * lx + ly * ly + lz * lz);
+			float uni = (float)Math.Sqrt(lx * lx + ly * ly + lz * lz);
 
-			res.x = lx / uni;
-			res.y = ly / uni;
-			res.z = lz / uni;
+			res.X = lx / uni;
+			res.Y = ly / uni;
+			res.Z = lz / uni;
 
 			return res;
 		}
@@ -126,29 +126,29 @@ namespace Elite
 		{
 			mat[2] = unit_vector(mat[2]);
 
-			if ((mat[2].x > -1) && (mat[2].x < 1))
+			if ((mat[2].X > -1) && (mat[2].X < 1))
 			{
-				if ((mat[2].y > -1) && (mat[2].y < 1))
+				if ((mat[2].Y > -1) && (mat[2].Y < 1))
 				{
-					mat[1].z = -(mat[2].x * mat[1].x + mat[2].y * mat[1].y) / mat[2].z;
+					mat[1].Z = -(mat[2].X * mat[1].X + mat[2].Y * mat[1].Y) / mat[2].Z;
 				}
 				else
 				{
-					mat[1].y = -(mat[2].x * mat[1].x + mat[2].z * mat[1].z) / mat[2].y;
+					mat[1].Y = -(mat[2].X * mat[1].X + mat[2].Z * mat[1].Z) / mat[2].Y;
 				}
 			}
 			else
 			{
-				mat[1].x = -(mat[2].y * mat[1].y + mat[2].z * mat[1].z) / mat[2].x;
+				mat[1].X = -(mat[2].Y * mat[1].Y + mat[2].Z * mat[1].Z) / mat[2].X;
 			}
 
 			mat[1] = unit_vector(mat[1]);
 
 			/* xyzzy... nothing happens. :-)*/
 
-			mat[0].x = mat[1].y * mat[2].z - mat[1].z * mat[2].y;
-			mat[0].y = mat[1].z * mat[2].x - mat[1].x * mat[2].z;
-			mat[0].z = mat[1].x * mat[2].y - mat[1].y * mat[2].x;
+			mat[0].X = mat[1].Y * mat[2].Z - mat[1].Z * mat[2].Y;
+			mat[0].Y = mat[1].Z * mat[2].X - mat[1].X * mat[2].Z;
+			mat[0].Z = mat[1].X * mat[2].Y - mat[1].Y * mat[2].X;
 		}
 	}
 }

@@ -2,15 +2,15 @@
 {
     internal struct Vector
     {
-        internal double x;
-        internal double y;
-        internal double z;
+        internal float X;
+        internal float Y;
+        internal float Z;
 
-        internal Vector(double x, double y, double z)
+        internal Vector(float x, float y, float z)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.X = x;
+            this.Y = y;
+            this.Z = z;
         }
     };
 }

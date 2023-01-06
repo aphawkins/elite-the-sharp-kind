@@ -37,12 +37,12 @@ namespace Elite
 			Vector[] trans_mat = new Vector[3];
 			int i;
 			int sx, sy, ex, ey;
-			double rx, ry, rz;
+			float rx, ry, rz;
 			bool[] visible = new bool[32];
 			Vector vec;
 			Vector camera_vec;
-			double cos_angle;
-			double tmp;
+			float cos_angle;
+			float tmp;
 			ship_face_normal[] ship_norm;
 			int num_faces;
 			ship_data ship;
@@ -65,11 +65,11 @@ namespace Elite
 			{
 				ship_norm = ship.normals;
 
-				vec.x = ship_norm[i].x;
-				vec.y = ship_norm[i].y;
-				vec.z = ship_norm[i].z;
+				vec.X = ship_norm[i].x;
+				vec.Y = ship_norm[i].y;
+				vec.Z = ship_norm[i].z;
 
-				if ((vec.x == 0) && (vec.y == 0) && (vec.z == 0))
+				if ((vec.X == 0) && (vec.Y == 0) && (vec.Z == 0))
 				{
 					visible[i] = true;
 				}
@@ -81,29 +81,29 @@ namespace Elite
 				}
 			}
 
-			tmp = trans_mat[0].y;
-			trans_mat[0].y = trans_mat[1].x;
-			trans_mat[1].x = tmp;
+			tmp = trans_mat[0].Y;
+			trans_mat[0].Y = trans_mat[1].X;
+			trans_mat[1].X = tmp;
 
-			tmp = trans_mat[0].z;
-			trans_mat[0].z = trans_mat[2].x;
-			trans_mat[2].x = tmp;
+			tmp = trans_mat[0].Z;
+			trans_mat[0].Z = trans_mat[2].X;
+			trans_mat[2].X = tmp;
 
-			tmp = trans_mat[1].z;
-			trans_mat[1].z = trans_mat[2].y;
-			trans_mat[2].y = tmp;
+			tmp = trans_mat[1].Z;
+			trans_mat[1].Z = trans_mat[2].Y;
+			trans_mat[2].Y = tmp;
 
 			for (i = 0; i < ship.num_points; i++)
 			{
-				vec.x = ship.points[i].x;
-				vec.y = ship.points[i].y;
-				vec.z = ship.points[i].z;
+				vec.X = ship.points[i].x;
+				vec.Y = ship.points[i].y;
+				vec.Z = ship.points[i].z;
 
 				VectorMaths.mult_vector(ref vec, trans_mat);
 
-				rx = vec.x + univ.location.x;
-				ry = vec.y + univ.location.y;
-				rz = vec.z + univ.location.z;
+				rx = vec.X + univ.location.X;
+				ry = vec.Y + univ.location.Y;
+				rz = vec.Z + univ.location.Z;
 
 				sx = (int)((rx * 256) / rz);
 				sy = (int)((ry * 256) / rz);
@@ -116,8 +116,8 @@ namespace Elite
 				sx *= gfx.GFX_SCALE;
 				sy *= gfx.GFX_SCALE;
 
-				point_list[i].x = sx;
-				point_list[i].y = sy;
+				point_list[i].X = sx;
+				point_list[i].Y = sy;
 
 			}
 
@@ -126,11 +126,11 @@ namespace Elite
 				if (visible[ship.lines[i].face1] ||
 					visible[ship.lines[i].face2])
 				{
-					sx = point_list[ship.lines[i].start_point].x;
-					sy = point_list[ship.lines[i].start_point].y;
+					sx = point_list[ship.lines[i].start_point].X;
+					sy = point_list[ship.lines[i].start_point].Y;
 
-					ex = point_list[ship.lines[i].end_point].x;
-					ey = point_list[ship.lines[i].end_point].y;
+					ex = point_list[ship.lines[i].end_point].X;
+					ey = point_list[ship.lines[i].end_point].Y;
 
                     elite.alg_gfx.DrawLine(sx, sy, ex, ey);
 				}
@@ -140,7 +140,7 @@ namespace Elite
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
 				lasv = elite.ship_list[(int)univ.type].front_laser;
-                elite.alg_gfx.DrawLine(point_list[lasv].x, point_list[lasv].y, univ.location.x > 0 ? 0 : 511, random.rand255() * 2);
+                elite.alg_gfx.DrawLine(point_list[lasv].X, point_list[lasv].Y, univ.location.X > 0 ? 0 : 511, random.rand255() * 2);
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Elite
 		static void draw_solid_ship(ref univ_object univ)
 		{
 			int sx, sy;
-			double rx, ry, rz;
+			float rx, ry, rz;
 			Vector vec;
 			Vector camera_vec;
 			int num_points;
@@ -191,30 +191,30 @@ namespace Elite
 				}
 			*/
 
-			double tmp = trans_mat[0].y;
-			trans_mat[0].y = trans_mat[1].x;
-			trans_mat[1].x = tmp;
+			float tmp = trans_mat[0].Y;
+			trans_mat[0].Y = trans_mat[1].X;
+			trans_mat[1].X = tmp;
 
-			tmp = trans_mat[0].z;
-			trans_mat[0].z = trans_mat[2].x;
-			trans_mat[2].x = tmp;
+			tmp = trans_mat[0].Z;
+			trans_mat[0].Z = trans_mat[2].X;
+			trans_mat[2].X = tmp;
 
-			tmp = trans_mat[1].z;
-			trans_mat[1].z = trans_mat[2].y;
-			trans_mat[2].y = tmp;
+			tmp = trans_mat[1].Z;
+			trans_mat[1].Z = trans_mat[2].Y;
+			trans_mat[2].Y = tmp;
 
 
 			for (int i = 0; i < ship.num_points; i++)
 			{
-				vec.x = ship.points[i].x;
-				vec.y = ship.points[i].y;
-				vec.z = ship.points[i].z;
+				vec.X = ship.points[i].x;
+				vec.Y = ship.points[i].y;
+				vec.Z = ship.points[i].z;
 
 				VectorMaths.mult_vector(ref vec, trans_mat);
 
-				rx = vec.x + univ.location.x;
-				ry = vec.y + univ.location.y;
-				rz = vec.z + univ.location.z;
+				rx = vec.X + univ.location.X;
+				ry = vec.Y + univ.location.Y;
+				rz = vec.Z + univ.location.Z;
 
 				if (rz <= 0)
 				{
@@ -232,69 +232,69 @@ namespace Elite
 				sx *= gfx.GFX_SCALE;
 				sy *= gfx.GFX_SCALE;
 
-				point_list[i].x = sx;
-				point_list[i].y = sy;
-				point_list[i].z = (int)rz;
+				point_list[i].X = sx;
+				point_list[i].Y = sy;
+				point_list[i].Z = (int)rz;
 			}
 
 			for (int i = 0; i < num_faces; i++)
 			{
-				if (((point_list[face_data[i].p1].x - point_list[face_data[i].p2].x) *
-					 (point_list[face_data[i].p3].y - point_list[face_data[i].p2].y) -
-					 (point_list[face_data[i].p1].y - point_list[face_data[i].p2].y) *
-					 (point_list[face_data[i].p3].x - point_list[face_data[i].p2].x)) <= 0)
+				if (((point_list[face_data[i].p1].X - point_list[face_data[i].p2].X) *
+					 (point_list[face_data[i].p3].Y - point_list[face_data[i].p2].Y) -
+					 (point_list[face_data[i].p1].Y - point_list[face_data[i].p2].Y) *
+					 (point_list[face_data[i].p3].X - point_list[face_data[i].p2].X)) <= 0)
 				{
 					num_points = face_data[i].points;
                     System.Numerics.Vector2[] poly_list = new System.Numerics.Vector2[num_points];
 
-                    poly_list[0].X = point_list[face_data[i].p1].x;
-					poly_list[0].Y = point_list[face_data[i].p1].y;
-					zavg = point_list[face_data[i].p1].z;
+                    poly_list[0].X = point_list[face_data[i].p1].X;
+					poly_list[0].Y = point_list[face_data[i].p1].Y;
+					zavg = point_list[face_data[i].p1].Z;
 
-					poly_list[1].X = point_list[face_data[i].p2].x;
-					poly_list[1].Y = point_list[face_data[i].p2].y;
-					zavg = Math.Max(zavg, point_list[face_data[i].p2].z);
+					poly_list[1].X = point_list[face_data[i].p2].X;
+					poly_list[1].Y = point_list[face_data[i].p2].Y;
+					zavg = Math.Max(zavg, point_list[face_data[i].p2].Z);
 
 					if (num_points > 2)
 					{
-						poly_list[2].X = point_list[face_data[i].p3].x;
-						poly_list[2].Y = point_list[face_data[i].p3].y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p3].z);
+						poly_list[2].X = point_list[face_data[i].p3].X;
+						poly_list[2].Y = point_list[face_data[i].p3].Y;
+						zavg = Math.Max(zavg, point_list[face_data[i].p3].Z);
 					}
 
 					if (num_points > 3)
 					{
-						poly_list[3].X = point_list[face_data[i].p4].x;
-						poly_list[3].Y = point_list[face_data[i].p4].y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p4].z);
+						poly_list[3].X = point_list[face_data[i].p4].X;
+						poly_list[3].Y = point_list[face_data[i].p4].Y;
+						zavg = Math.Max(zavg, point_list[face_data[i].p4].Z);
 					}
 
 					if (num_points > 4)
 					{
-						poly_list[4].X = point_list[face_data[i].p5].x;
-						poly_list[4].Y = point_list[face_data[i].p5].y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p5].z);
+						poly_list[4].X = point_list[face_data[i].p5].X;
+						poly_list[4].Y = point_list[face_data[i].p5].Y;
+						zavg = Math.Max(zavg, point_list[face_data[i].p5].Z);
 					}
 
 					if (num_points > 5)
 					{
-						poly_list[5].X = point_list[face_data[i].p6].x;
-						poly_list[5].Y = point_list[face_data[i].p6].y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p6].z);
+						poly_list[5].X = point_list[face_data[i].p6].X;
+						poly_list[5].Y = point_list[face_data[i].p6].Y;
+						zavg = Math.Max(zavg, point_list[face_data[i].p6].Z);
 					}
 
 					if (num_points > 6)
 					{
-						poly_list[6].X = point_list[face_data[i].p7].x;
-						poly_list[6].Y = point_list[face_data[i].p7].y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p7].z);
+						poly_list[6].X = point_list[face_data[i].p7].X;
+						poly_list[6].Y = point_list[face_data[i].p7].Y;
+						zavg = Math.Max(zavg, point_list[face_data[i].p7].Z);
 					}
 
 					if (num_points > 7)
 					{
-						poly_list[7].X = point_list[face_data[i].p8].x;
-						poly_list[7].Y = point_list[face_data[i].p8].y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p8].z);
+						poly_list[7].X = point_list[face_data[i].p8].X;
+						poly_list[7].Y = point_list[face_data[i].p8].Y;
+						zavg = Math.Max(zavg, point_list[face_data[i].p8].Z);
 					}
 
                     elite.alg_gfx.DrawPolygon(poly_list, face_data[i].colour, zavg);
@@ -306,9 +306,9 @@ namespace Elite
 				lasv = elite.ship_list[(int)univ.type].front_laser;
 				col = (univ.type == SHIP.SHIP_VIPER) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
-                elite.alg_gfx.DrawLine(point_list[lasv].x, point_list[lasv].y,
-								 univ.location.x > 0 ? 0 : 511, random.rand255() * 2,
-								 point_list[lasv].z, col);
+                elite.alg_gfx.DrawLine(point_list[lasv].X, point_list[lasv].Y,
+								 univ.location.X > 0 ? 0 : 511, random.rand255() * 2,
+								 point_list[lasv].Z, col);
 			}
 		}
 
@@ -435,7 +435,7 @@ namespace Elite
 		static void generate_fractal_landscape(int rnd_seed)
 		{
 			int h;
-			double dist;
+			float dist;
 			bool dark;
 
 			int old_seed = random.get_rand_seed();
@@ -559,8 +559,8 @@ namespace Elite
 			xo += gfx.GFX_X_OFFSET;
 			yo += gfx.GFX_Y_OFFSET;
 
-			vx = (int)(vec[1].x * 65536);
-			vy = (int)(vec[1].y * 65536);
+			vx = (int)(vec[1].X * 65536);
+			vy = (int)(vec[1].Y * 65536);
 
 			s = radius;
 			x = radius;
@@ -608,8 +608,8 @@ namespace Elite
 			int x, y;
 			int radius;
 
-			x = (int)((planet.location.x * 256) / planet.location.z);
-			y = (int)((planet.location.y * 256) / planet.location.z);
+			x = (int)((planet.location.X * 256) / planet.location.Z);
+			y = (int)((planet.location.Y * 256) / planet.location.Z);
 
 			y = -y;
 
@@ -759,8 +759,8 @@ namespace Elite
 			int x, y;
 			int radius;
 
-			x = (int)((planet.location.x * 256) / planet.location.z);
-			y = (int)((planet.location.y * 256) / planet.location.z);
+			x = (int)((planet.location.X * 256) / planet.location.Z);
+			y = (int)((planet.location.Y * 256) / planet.location.Z);
 
 			y = -y;
 
@@ -794,12 +794,12 @@ namespace Elite
 			int sizex, sizey, psx, psy;
 			Vector[] trans_mat = new Vector[3];
 			int sx, sy;
-			double rx, ry, rz;
+			float rx, ry, rz;
 			bool[] visible = new bool[32];
 			Vector vec;
 			Vector camera_vec;
-			double cos_angle;
-			double tmp;
+			float cos_angle;
+			float tmp;
 			ship_face_normal[] ship_norm;
 			ship_point[] sp;
 			ship_data ship;
@@ -814,7 +814,7 @@ namespace Elite
 
 			univ.exp_delta += 4;
 
-			if (univ.location.z <= 0)
+			if (univ.location.Z <= 0)
 				return;
 
 			ship = elite.ship_list[(int)univ.type];
@@ -832,9 +832,9 @@ namespace Elite
 
 			for (i = 0; i < ship.num_faces; i++)
 			{
-				vec.x = ship_norm[i].x;
-				vec.y = ship_norm[i].y;
-				vec.z = ship_norm[i].z;
+				vec.X = ship_norm[i].x;
+				vec.Y = ship_norm[i].y;
+				vec.Z = ship_norm[i].z;
 
 				vec = VectorMaths.unit_vector(vec);
 				cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
@@ -842,17 +842,17 @@ namespace Elite
 				visible[i] = (cos_angle < -0.13);
 			}
 
-			tmp = trans_mat[0].y;
-			trans_mat[0].y = trans_mat[1].x;
-			trans_mat[1].x = tmp;
+			tmp = trans_mat[0].Y;
+			trans_mat[0].Y = trans_mat[1].X;
+			trans_mat[1].X = tmp;
 
-			tmp = trans_mat[0].z;
-			trans_mat[0].z = trans_mat[2].x;
-			trans_mat[2].x = tmp;
+			tmp = trans_mat[0].Z;
+			trans_mat[0].Z = trans_mat[2].X;
+			trans_mat[2].X = tmp;
 
-			tmp = trans_mat[1].z;
-			trans_mat[1].z = trans_mat[2].y;
-			trans_mat[2].y = tmp;
+			tmp = trans_mat[1].Z;
+			trans_mat[1].Z = trans_mat[2].Y;
+			trans_mat[2].Y = tmp;
 
 			sp = ship.points;
 			np = 0;
@@ -862,15 +862,15 @@ namespace Elite
 				if (visible[sp[i].face1] || visible[sp[i].face2] ||
 					visible[sp[i].face3] || visible[sp[i].face4])
 				{
-					vec.x = sp[i].x;
-					vec.y = sp[i].y;
-					vec.z = sp[i].z;
+					vec.X = sp[i].x;
+					vec.Y = sp[i].y;
+					vec.Z = sp[i].z;
 
 					VectorMaths.mult_vector(ref vec, trans_mat);
 
-					rx = vec.x + univ.location.x;
-					ry = vec.y + univ.location.y;
-					rz = vec.z + univ.location.z;
+					rx = vec.X + univ.location.X;
+					ry = vec.Y + univ.location.Y;
+					rz = vec.Z + univ.location.Z;
 
 					sx = (int)((rx * 256) / rz);
 					sy = (int)((ry * 256) / rz);
@@ -883,14 +883,14 @@ namespace Elite
 					sx *= gfx.GFX_SCALE;
 					sy *= gfx.GFX_SCALE;
 
-					point_list[np].x = sx;
-					point_list[np].y = sy;
+					point_list[np].X = sx;
+					point_list[np].Y = sy;
 					np++;
 				}
 			}
 
 
-			z = (int)univ.location.z;
+			z = (int)univ.location.Z;
 
 			if (z >= 0x2000)
 				q = 254;
@@ -910,8 +910,8 @@ namespace Elite
 
 			for (cnt = 0; cnt < np; cnt++)
 			{
-				sx = point_list[cnt].x;
-				sy = point_list[cnt].y;
+				sx = point_list[cnt].X;
+				sy = point_list[cnt].Y;
 
 				for (i = 0; i < 16; i++)
 				{
@@ -967,7 +967,7 @@ namespace Elite
 				return;
 			}
 
-			if (ship.location.z <= 0)   /* Only display ships in front of us. */
+			if (ship.location.Z <= 0)   /* Only display ships in front of us. */
 				return;
 
 			if (ship.type == SHIP.SHIP_PLANET)
@@ -982,8 +982,8 @@ namespace Elite
 				return;
 			}
 
-			if ((Math.Abs(ship.location.x) > ship.location.z) ||    /* Check for field of vision. */
-				(Math.Abs(ship.location.y) > ship.location.z))
+			if ((Math.Abs(ship.location.X) > ship.location.Z) ||    /* Check for field of vision. */
+				(Math.Abs(ship.location.Y) > ship.location.Z))
 				return;
 
 			if (elite.wireframe)

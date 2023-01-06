@@ -215,7 +215,7 @@ namespace Elite
 			{
                 elite.alg_gfx.ClearArea(310, 50, 510, 180);
 				space.update_universe();
-				space.universe[0].location.z = 600;
+				space.universe[0].location.Z = 600;
                 elite.alg_gfx.ScreenUpdate();
 				elite.keyboard.kbd_poll_keyboard();
 			} while (!elite.keyboard.kbd_space_pressed);

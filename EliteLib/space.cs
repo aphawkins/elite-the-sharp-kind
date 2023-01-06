@@ -61,10 +61,10 @@ namespace Elite
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static int[] ship_count = new int[shipdata.NO_OF_SHIPS + 1];  /* many */
 
-		static void rotate_x_first(ref double a, ref double b, int direction)
+		static void rotate_x_first(ref float a, ref float b, int direction)
 		{
-			double fx = a;
-			double ux = b;
+			float fx = a;
+			float ux = b;
 
 			if (direction < 0)
 			{
@@ -78,20 +78,20 @@ namespace Elite
 			}
 		}
 
-		static void rotate_vec(ref Vector vec, double alpha, double beta)
+		static void rotate_vec(ref Vector vec, float alpha, float beta)
 		{
-			double x = vec.x;
-			double y = vec.y;
-			double z = vec.z;
+			float x = vec.X;
+			float y = vec.Y;
+			float z = vec.Z;
 
 			y = y - alpha * x;
 			x = x + alpha * y;
 			y = y - beta * z;
 			z = z + beta * y;
 
-			vec.x = x;
-			vec.y = y;
-			vec.z = z;
+			vec.X = x;
+			vec.Y = y;
+			vec.Z = z;
 		}
 
 		/*
@@ -99,29 +99,29 @@ namespace Elite
 		 */
 		static void move_univ_object(ref univ_object obj)
 		{
-			double x, y, z;
-			double k2;
-			double alpha;
-			double beta;
+			float x, y, z;
+			float k2;
+			float alpha;
+			float beta;
 			int rotx, rotz;
-			double speed;
+			float speed;
 
-			alpha = elite.flight_roll / 256.0;
-			beta = elite.flight_climb / 256.0;
+			alpha = elite.flight_roll / 256.0f;
+			beta = elite.flight_climb / 256.0f;
 
-			x = obj.location.x;
-			y = obj.location.y;
-			z = obj.location.z;
+			x = obj.location.X;
+			y = obj.location.Y;
+			z = obj.location.Z;
 
 			if (!obj.flags.HasFlag(FLG.FLG_DEAD))
 			{
 				if (obj.velocity != 0)
 				{
 					speed = obj.velocity;
-					speed *= 1.5;
-					x += obj.rotmat[2].x * speed;
-					y += obj.rotmat[2].y * speed;
-					z += obj.rotmat[2].z * speed;
+					speed *= 1.5f;
+					x += obj.rotmat[2].X * speed;
+					y += obj.rotmat[2].Y * speed;
+					z += obj.rotmat[2].Z * speed;
 				}
 
 				if (obj.acceleration != 0)
@@ -147,15 +147,15 @@ namespace Elite
 
 			z = z - elite.flight_speed;
 
-			obj.location.x = x;
-			obj.location.y = y;
-			obj.location.z = z;
+			obj.location.X = x;
+			obj.location.Y = y;
+			obj.location.Z = z;
 
 			obj.distance = (int)Math.Sqrt(x * x + y * y + z * z);
 
 			if (obj.type == SHIP.SHIP_PLANET)
 			{
-				beta = 0.0;
+				beta = 0.0f;
 			}
 
 			rotate_vec(ref obj.rotmat[2], alpha, beta);
@@ -174,9 +174,9 @@ namespace Elite
 
 			if (rotx != 0)
 			{
-				rotate_x_first(ref obj.rotmat[2].x, ref obj.rotmat[1].x, rotx);
-				rotate_x_first(ref obj.rotmat[2].y, ref obj.rotmat[1].y, rotx);
-				rotate_x_first(ref obj.rotmat[2].z, ref obj.rotmat[1].z, rotx);
+				rotate_x_first(ref obj.rotmat[2].X, ref obj.rotmat[1].X, rotx);
+				rotate_x_first(ref obj.rotmat[2].Y, ref obj.rotmat[1].Y, rotx);
+				rotate_x_first(ref obj.rotmat[2].Z, ref obj.rotmat[1].Z, rotx);
 
 				if ((rotx != 127) && (rotx != -127))
 					obj.rotx -= (rotx < 0) ? -1 : 1;
@@ -187,9 +187,9 @@ namespace Elite
 
 			if (rotz != 0)
 			{
-				rotate_x_first(ref obj.rotmat[0].x, ref obj.rotmat[1].x, rotz);
-				rotate_x_first(ref obj.rotmat[0].y, ref obj.rotmat[1].y, rotz);
-				rotate_x_first(ref obj.rotmat[0].z, ref obj.rotmat[1].z, rotz);
+				rotate_x_first(ref obj.rotmat[0].X, ref obj.rotmat[1].X, rotz);
+				rotate_x_first(ref obj.rotmat[0].Y, ref obj.rotmat[1].Y, rotz);
+				rotate_x_first(ref obj.rotmat[0].Z, ref obj.rotmat[1].Z, rotz);
 
 				if ((rotz != 127) && (rotz != -127))
 				{
@@ -227,15 +227,15 @@ namespace Elite
 		static bool is_docking(int sn)
 		{
 			Vector vec;
-			double fz;
-			double ux;
+			float fz;
+			float ux;
 
 			if (elite.auto_pilot)     // Don't want it to kill anyone!
 			{
 				return true;
 			}
 
-			fz = universe[sn].rotmat[2].z;
+			fz = universe[sn].rotmat[2].Z;
 
 			if (fz > -0.90)
 			{
@@ -244,12 +244,12 @@ namespace Elite
 
 			vec = VectorMaths.unit_vector(universe[sn].location);
 
-			if (vec.z < 0.927)
+			if (vec.Z < 0.927)
 			{
 				return false;
 			}
 
-			ux = universe[sn].rotmat[1].x;
+			ux = universe[sn].rotmat[1].X;
 			if (ux < 0)
 			{
 				ux = -ux;
@@ -281,9 +281,9 @@ namespace Elite
 				return;
 			}
 
-			double x = Math.Abs(universe[0].location.x);
-			double y = Math.Abs(universe[0].location.y);
-			double z = Math.Abs(universe[0].location.z);
+			float x = Math.Abs(universe[0].location.X);
+			float y = Math.Abs(universe[0].location.Y);
+			float z = Math.Abs(universe[0].location.Z);
 
 			if ((x > 65535) || (y > 65535) || (z > 65535))
 			{
@@ -294,7 +294,7 @@ namespace Elite
 			y /= 256;
 			z /= 256;
 
-			double dist = (x * x) + (y * y) + (z * z);
+			float dist = (x * x) + (y * y) + (z * z);
 
 			if (dist > 65535)
 			{
@@ -309,7 +309,7 @@ namespace Elite
 				return;
 			}
 
-			dist = Math.Sqrt(dist);
+			dist = (float)Math.Sqrt(dist);
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
@@ -337,9 +337,9 @@ namespace Elite
 				return;
 			}
 
-			x = Math.Abs((int)universe[1].location.x);
-			y = Math.Abs((int)universe[1].location.y);
-			z = Math.Abs((int)universe[1].location.z);
+			x = Math.Abs((int)universe[1].location.X);
+			y = Math.Abs((int)universe[1].location.Y);
+			z = Math.Abs((int)universe[1].location.Z);
 
 			if ((x > 65535) || (y > 65535) || (z > 65535))
 			{
@@ -451,38 +451,38 @@ namespace Elite
 
 		static void make_station_appear()
 		{
-			double px, py, pz;
-			double sx, sy, sz;
+			float px, py, pz;
+			float sx, sy, sz;
 			Vector vec;
 			Vector[] rotmat = new Vector[3];
 
-			px = universe[0].location.x;
-			py = universe[0].location.y;
-			pz = universe[0].location.z;
+			px = universe[0].location.X;
+			py = universe[0].location.Y;
+			pz = universe[0].location.Z;
 
-			vec.x = (random.rand() & 32767) - 16384;
-			vec.y = (random.rand() & 32767) - 16384;
-			vec.z = random.rand() & 32767;
+			vec.X = (random.rand() & 32767) - 16384;
+			vec.Y = (random.rand() & 32767) - 16384;
+			vec.Z = random.rand() & 32767;
 
 			vec = VectorMaths.unit_vector(vec);
 
-			sx = px - vec.x * 65792;
-			sy = py - vec.y * 65792;
-			sz = pz - vec.z * 65792;
+			sx = px - vec.X * 65792;
+			sy = py - vec.Y * 65792;
+			sz = pz - vec.Z * 65792;
 
 			//	VectorMaths.set_init_matrix (rotmat);
 
-			rotmat[0].x = 1.0;
-			rotmat[0].y = 0.0;
-			rotmat[0].z = 0.0;
+			rotmat[0].X = 1.0f;
+			rotmat[0].Y = 0.0f;
+			rotmat[0].Z = 0.0f;
 
-			rotmat[1].x = vec.x;
-			rotmat[1].y = vec.z;
-			rotmat[1].z = -vec.y;
+			rotmat[1].X = vec.X;
+			rotmat[1].Y = vec.Z;
+			rotmat[1].Z = -vec.Y;
 
-			rotmat[2].x = vec.x;
-			rotmat[2].y = vec.y;
-			rotmat[2].z = vec.z;
+			rotmat[2].X = vec.X;
+			rotmat[2].Y = vec.Y;
+			rotmat[2].Z = vec.Z;
 
 			VectorMaths.tidy_matrix(rotmat);
 
@@ -506,74 +506,74 @@ namespace Elite
 			}
 
 			elite.flight_speed = 1;
-			damage_ship(5, universe[i].location.z > 0);
+			damage_ship(5, universe[i].location.Z > 0);
 			elite.sound.PlaySample(SND.SND_CRASH);
 		}
 
 		static void switch_to_view(ref univ_object flip)
 		{
-			double tmp;
+			float tmp;
 
 			if ((elite.current_screen == SCR.SCR_REAR_VIEW) ||
 				(elite.current_screen == SCR.SCR_GAME_OVER))
 			{
-				flip.location.x = -flip.location.x;
-				flip.location.z = -flip.location.z;
+				flip.location.X = -flip.location.X;
+				flip.location.Z = -flip.location.Z;
 
-				flip.rotmat[0].x = -flip.rotmat[0].x;
-				flip.rotmat[0].z = -flip.rotmat[0].z;
+				flip.rotmat[0].X = -flip.rotmat[0].X;
+				flip.rotmat[0].Z = -flip.rotmat[0].Z;
 
-				flip.rotmat[1].x = -flip.rotmat[1].x;
-				flip.rotmat[1].z = -flip.rotmat[1].z;
+				flip.rotmat[1].X = -flip.rotmat[1].X;
+				flip.rotmat[1].Z = -flip.rotmat[1].Z;
 
-				flip.rotmat[2].x = -flip.rotmat[2].x;
-				flip.rotmat[2].z = -flip.rotmat[2].z;
+				flip.rotmat[2].X = -flip.rotmat[2].X;
+				flip.rotmat[2].Z = -flip.rotmat[2].Z;
 				return;
 			}
 
 			if (elite.current_screen == SCR.SCR_LEFT_VIEW)
 			{
-				tmp = flip.location.x;
-				flip.location.x = flip.location.z;
-				flip.location.z = -tmp;
+				tmp = flip.location.X;
+				flip.location.X = flip.location.Z;
+				flip.location.Z = -tmp;
 
 				if (flip.type < 0)
 					return;
 
-				tmp = flip.rotmat[0].x;
-				flip.rotmat[0].x = flip.rotmat[0].z;
-				flip.rotmat[0].z = -tmp;
+				tmp = flip.rotmat[0].X;
+				flip.rotmat[0].X = flip.rotmat[0].Z;
+				flip.rotmat[0].Z = -tmp;
 
-				tmp = flip.rotmat[1].x;
-				flip.rotmat[1].x = flip.rotmat[1].z;
-				flip.rotmat[1].z = -tmp;
+				tmp = flip.rotmat[1].X;
+				flip.rotmat[1].X = flip.rotmat[1].Z;
+				flip.rotmat[1].Z = -tmp;
 
-				tmp = flip.rotmat[2].x;
-				flip.rotmat[2].x = flip.rotmat[2].z;
-				flip.rotmat[2].z = -tmp;
+				tmp = flip.rotmat[2].X;
+				flip.rotmat[2].X = flip.rotmat[2].Z;
+				flip.rotmat[2].Z = -tmp;
 				return;
 			}
 
 			if (elite.current_screen == SCR.SCR_RIGHT_VIEW)
 			{
-				tmp = flip.location.x;
-				flip.location.x = -flip.location.z;
-				flip.location.z = tmp;
+				tmp = flip.location.X;
+				flip.location.X = -flip.location.Z;
+				flip.location.Z = tmp;
 
 				if (flip.type < 0)
 					return;
 
-				tmp = flip.rotmat[0].x;
-				flip.rotmat[0].x = -flip.rotmat[0].z;
-				flip.rotmat[0].z = tmp;
+				tmp = flip.rotmat[0].X;
+				flip.rotmat[0].X = -flip.rotmat[0].Z;
+				flip.rotmat[0].Z = tmp;
 
-				tmp = flip.rotmat[1].x;
-				flip.rotmat[1].x = -flip.rotmat[1].z;
-				flip.rotmat[1].z = tmp;
+				tmp = flip.rotmat[1].X;
+				flip.rotmat[1].X = -flip.rotmat[1].Z;
+				flip.rotmat[1].Z = tmp;
 
-				tmp = flip.rotmat[2].x;
-				flip.rotmat[2].x = -flip.rotmat[2].z;
-				flip.rotmat[2].z = tmp;
+				tmp = flip.rotmat[2].X;
+				flip.rotmat[2].X = -flip.rotmat[2].Z;
+				flip.rotmat[2].Z = tmp;
 
 			}
 		}
@@ -717,9 +717,9 @@ namespace Elite
 					continue;
 				}
 
-                int x = (int)(universe[i].location.x / 256);
-                int y = (int)(universe[i].location.y / 256);
-                int z = (int)(universe[i].location.z / 256);
+                int x = (int)(universe[i].location.X / 256);
+                int y = (int)(universe[i].location.Y / 256);
+                int z = (int)(universe[i].location.Z / 256);
 
 				float x1 = x;
 				float y1 = -z / 4;
@@ -784,10 +784,10 @@ namespace Elite
 
 			Vector dest = VectorMaths.unit_vector(universe[un].location);
 
-			int compass_x = (int)(elite.compass_centre.X + (dest.x * 16));
-			int compass_y = (int)(elite.compass_centre.Y + (dest.y * -16));
+			int compass_x = (int)(elite.compass_centre.X + (dest.X * 16));
+			int compass_y = (int)(elite.compass_centre.Y + (dest.Y * -16));
 
-			if (dest.z < 0)
+			if (dest.Z < 0)
 			{
                 elite.alg_gfx.DrawSprite(IMG.IMG_RED_DOT, compass_x, compass_y);
 			}
@@ -1282,7 +1282,7 @@ namespace Elite
 			{
 				if (universe[i].type != 0)
 				{
-					universe[i].location.z -= jump;
+					universe[i].location.Z -= jump;
 				}
 			}
 
@@ -1306,9 +1306,9 @@ namespace Elite
 			VectorMaths.set_init_matrix(ref rotmat);
 			swat.add_new_ship(SHIP.SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
 
-			rotmat[2].x = -rotmat[2].x;
-			rotmat[2].y = -rotmat[2].y;
-			rotmat[2].z = -rotmat[2].z;
+			rotmat[2].X = -rotmat[2].X;
+			rotmat[2].Y = -rotmat[2].Y;
+			rotmat[2].Z = -rotmat[2].Z;
 			swat.add_new_station(0, 0, -256, rotmat);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;

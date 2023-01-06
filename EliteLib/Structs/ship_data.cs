@@ -8,7 +8,7 @@
         internal int num_faces;
         internal int max_loot;
         internal int scoop_type;
-        internal double size;
+        internal float size;
         internal int front_laser;
         internal int bounty;
         internal int vanish_point;
@@ -21,7 +21,7 @@
         internal ship_face_normal[] normals;
 
         internal ship_data(string name, int num_points, int num_lines, int num_faces, int max_loot,
-            int scoop_type, double size, int front_laser, int bounty, int vanish_point, int energy,
+            int scoop_type, float size, int front_laser, int bounty, int vanish_point, int energy,
             int velocity, int missiles, int laser_strength, ship_point[] points, ship_line[] lines, ship_face_normal[] normals)
         {
             this.name = name;
