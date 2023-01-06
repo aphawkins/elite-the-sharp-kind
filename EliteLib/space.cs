@@ -310,7 +310,7 @@ namespace Elite
 				return;
 			}
 
-			dist = (float)Math.Sqrt(dist);
+			dist = MathF.Sqrt(dist);
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;

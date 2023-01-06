@@ -104,7 +104,7 @@ namespace Elite
 			float ly = vec.Y;
 			float lz = vec.Z;
 
-			float uni = (float)Math.Sqrt(lx * lx + ly * ly + lz * lz);
+			float uni = MathF.Sqrt(lx * lx + ly * ly + lz * lz);
 
 			res.X = lx / uni;
 			res.Y = ly / uni;

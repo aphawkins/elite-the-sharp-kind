@@ -242,7 +242,7 @@ namespace Elite
 			diff.Y = ship.location.Y - space.universe[1].location.Y;
 			diff.Z = ship.location.Z - space.universe[1].location.Z;
 
-			dist = (float)Math.Sqrt(diff.X * diff.X + diff.Y * diff.Y + diff.Z * diff.Z);
+			dist = MathF.Sqrt(diff.X * diff.X + diff.Y * diff.Y + diff.Z * diff.Z);
 
 			if (dist < 160)
 			{

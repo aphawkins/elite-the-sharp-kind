@@ -61,8 +61,8 @@ namespace Elite
 			nstars = elite.witchspace ? 3 : 12;
 
 			delta = Stars.warp_stars ? 50 : elite.flight_speed;
-			alpha = (float)elite.flight_roll;
-			beta = (float)elite.flight_climb;
+			alpha = elite.flight_roll;
+			beta = elite.flight_climb;
 
 			alpha /= 256.0f;
 			delta /= 2.0f;
