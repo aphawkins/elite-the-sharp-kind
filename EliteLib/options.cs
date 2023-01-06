@@ -89,7 +89,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_QUIT;
 
 			elite.alg_gfx.ClearDisplay();
-			elite.alg_gfx.DrawTextCentre(10, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
+			elite.alg_gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
 			elite.alg_gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
@@ -268,7 +268,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_SETTINGS;
 
 			elite.alg_gfx.ClearDisplay();
-			elite.alg_gfx.DrawTextCentre(10, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
+			elite.alg_gfx.DrawTextCentre(20, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
 			for (i = 0; i < NUM_SETTINGS; i++)
@@ -363,7 +363,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_OPTIONS;
 
 			elite.alg_gfx.ClearDisplay();
-			elite.alg_gfx.DrawTextCentre(10, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
+			elite.alg_gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(0, 36, 511, 36);
 			elite.alg_gfx.DrawTextCentre(300, "Version: Release 1.0", 120, GFX_COL.GFX_COL_WHITE);
 			elite.alg_gfx.DrawTextCentre(320, "www.newkind.co.uk", 120, GFX_COL.GFX_COL_WHITE);

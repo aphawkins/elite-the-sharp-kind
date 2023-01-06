@@ -1,6 +1,5 @@
 namespace EliteWin
 {
-    using System.Diagnostics;
     using Elite;
 
     public partial class Form1 : Form

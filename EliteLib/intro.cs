@@ -36,12 +36,11 @@
 
 namespace Elite
 {
-	using System.Numerics;
-	using Elite.Enums;
-	using Elite.Ships;
-	using Elite.Structs;
+    using System.Numerics;
+    using Elite.Enums;
+    using Elite.Ships;
 
-	internal static class intro
+    internal static class intro
 	{
 		static SHIP ship_no;
 		static int show_time;

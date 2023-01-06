@@ -14,52 +14,51 @@
 
 namespace Elite
 {
-	using System.Diagnostics;
-	using System.Drawing;
-	using System.Numerics;
-	/*
+    using System.Diagnostics;
+    using System.Numerics;
+    /*
 * alg_main.c
 *
 * Allegro version of the main game handler.
 */
 
 
-	//# include <stdio.h>
-	//# include <string.h>
-	//# include <math.h> 
-	//# include <ctype.h>
-	//# include <time.h>
-	//# include <stdlib.h>
+    //# include <stdio.h>
+    //# include <string.h>
+    //# include <math.h> 
+    //# include <ctype.h>
+    //# include <time.h>
+    //# include <stdlib.h>
 
-	//# include "allegro.h"
+    //# include "allegro.h"
 
-	//# include "config.h"
-	//# include "gfx.h"
-	//# include "main.h"
-	//# include "vector.h"
-	//# include "alg_data.h"
-	//# include "elite.h"
-	//# include "docked.h"
-	//# include "intro.h"
-	//# include "shipdata.h"
-	//# include "shipface.h"
-	//# include "space.h"
-	//# include "sound.h"
-	//# include "threed.h"
-	//# include "swat.h"
-	//# include "random.h"
-	//# include "options.h"
-	//# include "stars.h"
-	//# include "missions.h"
-	//# include "pilot.h"
-	//# include "file.h"
-	//# include "keyboard.h"
+    //# include "config.h"
+    //# include "gfx.h"
+    //# include "main.h"
+    //# include "vector.h"
+    //# include "alg_data.h"
+    //# include "elite.h"
+    //# include "docked.h"
+    //# include "intro.h"
+    //# include "shipdata.h"
+    //# include "shipface.h"
+    //# include "space.h"
+    //# include "sound.h"
+    //# include "threed.h"
+    //# include "swat.h"
+    //# include "random.h"
+    //# include "options.h"
+    //# include "stars.h"
+    //# include "missions.h"
+    //# include "pilot.h"
+    //# include "file.h"
+    //# include "keyboard.h"
 
-	using Elite.Enums;
-	using Elite.Structs;
-	using EliteLib.Enums;
+    using Elite.Enums;
+    using Elite.Structs;
+    using EliteLib.Enums;
 
-	public static class alg_main
+    public static class alg_main
 	{
 		static int old_cross_x, old_cross_y;
 		static int cross_timer;
@@ -1071,7 +1070,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_SAVE_CMDR;
 
             elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(10, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(20, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
             elite.alg_gfx.ScreenUpdate();
 
@@ -1105,7 +1104,7 @@ namespace Elite
 		internal static void load_commander_screen()
 		{
             elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(10, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(20, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
             elite.alg_gfx.ScreenUpdate();
 

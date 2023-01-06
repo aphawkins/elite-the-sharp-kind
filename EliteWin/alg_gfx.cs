@@ -50,7 +50,7 @@ namespace Elite
 
 		// Fonts
         private readonly Font _fontSmall = new ("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-        private readonly Font _fontLarge = new("Arial", 14, FontStyle.Bold, GraphicsUnit.Pixel);
+        private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
 
 		// Images
 		private Bitmap _imageScanner;

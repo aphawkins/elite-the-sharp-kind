@@ -14,9 +14,8 @@
 
 namespace Elite
 {
-    using Elite;
-    using Elite.Enums;
-    using Elite.Structs;
+	using Elite.Enums;
+	using Elite.Structs;
 
 	internal static class Docked
 	{
@@ -65,17 +64,14 @@ namespace Elite
 
 		internal static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
 		{
-			int dx, dy;
-			int light_years;
+            int dx = Math.Abs(to_planet.d - from_planet.d);
+            int dy = Math.Abs(to_planet.b - from_planet.b);
 
-			dx = Math.Abs(to_planet.d - from_planet.d);
-			dy = Math.Abs(to_planet.b - from_planet.b);
+			dx *= dx;
+			dy /= 2;
+			dy *= dy;
 
-			dx = dx * dx;
-			dy = dy / 2;
-			dy = dy * dy;
-
-			light_years = (int)Math.Sqrt(dx + dy);
+            int light_years = (int)Math.Sqrt(dx + dy);
 			light_years *= 4;
 
 			return light_years;
@@ -197,36 +193,24 @@ namespace Elite
 
 		internal static void display_short_range_chart()
 		{
-			int i;
-			galaxy_seed glx;
-			int dx, dy;
-			int px, py;
 			int[] row_used = new int[64];
-			int row;
-			int blob_size;
-
 			elite.current_screen = SCR.SCR_SHORT_RANGE;
-
             elite.alg_gfx.ClearDisplay();
-
-            elite.alg_gfx.DrawTextCentre(10, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
-
+            elite.alg_gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
-
 			draw_fuel_limit_circle(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
 
-			for (i = 0; i < 64; i++)
+			for (int i = 0; i < 64; i++)
 			{
 				row_used[i] = 0;
 			}
 
-			glx = elite.cmdr.galaxy;
+			galaxy_seed glx = elite.cmdr.galaxy;
 
-			for (i = 0; i < 256; i++)
+			for (int i = 0; i < 256; i++)
 			{
-
-				dx = Math.Abs(glx.d - elite.docked_planet.d);
-				dy = Math.Abs(glx.b - elite.docked_planet.b);
+				int dx = Math.Abs(glx.d - elite.docked_planet.d);
+				int dy = Math.Abs(glx.b - elite.docked_planet.b);
 
 				if ((dx >= 20) || (dy >= 38))
 				{
@@ -238,13 +222,13 @@ namespace Elite
 					continue;
 				}
 
-				px = (glx.d - elite.docked_planet.d);
+				int px = (glx.d - elite.docked_planet.d);
 				px = px * 4 * gfx.GFX_SCALE + gfx.GFX_X_CENTRE;  /* Convert to screen co-ords */
 
-				py = (glx.b - elite.docked_planet.b);
+				int py = (glx.b - elite.docked_planet.b);
 				py = py * 2 * gfx.GFX_SCALE + gfx.GFX_Y_CENTRE; /* Convert to screen co-ords */
 
-				row = py / (8 * gfx.GFX_SCALE);
+				int row = py / (8 * gfx.GFX_SCALE);
 
 				if (row_used[row] == 1)
 				{
@@ -278,7 +262,7 @@ namespace Elite
 				/* a planet.  The carry_flag is left over from the name generation. */
 				/* Yes this was how it was done... don't ask :-( */
 
-				blob_size = (glx.f & 1) + 2 + elite.carry_flag;
+				int blob_size = (glx.f & 1) + 2 + elite.carry_flag;
 				blob_size *= gfx.GFX_SCALE;
                 elite.alg_gfx.DrawCircleFilled(px, py, blob_size, GFX_COL.GFX_COL_GOLD);
 
@@ -294,27 +278,19 @@ namespace Elite
 
 		internal static void display_galactic_chart()
 		{
-			int px, py;
-
 			elite.current_screen = SCR.SCR_GALACTIC_CHART;
-
             elite.alg_gfx.ClearDisplay();
-
 			string str = $"GALACTIC CHART {elite.cmdr.galaxy_number + 1:D}";
-
-            elite.alg_gfx.DrawTextCentre(10, str, 140, GFX_COL.GFX_COL_GOLD);
-
+            elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
             elite.alg_gfx.DrawLine(0, 36 + 258, 511, 36 + 258);
-
 			draw_fuel_limit_circle(elite.docked_planet.d * gfx.GFX_SCALE, (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
-
 			galaxy_seed glx = elite.cmdr.galaxy;
 
 			for (int i = 0; i < 256; i++)
 			{
-				px = glx.d * gfx.GFX_SCALE;
-				py = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+				int px = glx.d * gfx.GFX_SCALE;
+				int py = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 
                 elite.alg_gfx.PlotPixel(px, py, GFX_COL.GFX_COL_WHITE);
 
@@ -347,7 +323,7 @@ namespace Elite
 			string planet_name = Planet.name_planet(ref elite.hyperspace_planet);
 			string str = "DATA ON " + planet_name;
 
-            elite.alg_gfx.DrawTextCentre(10, str, 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
 
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
@@ -458,7 +434,7 @@ namespace Elite
 
 			str = "COMMANDER " + elite.cmdr.name;
 
-            elite.alg_gfx.DrawTextCentre(10, str, 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
 
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
@@ -791,7 +767,7 @@ namespace Elite
 
 			string planet_name = Planet.name_planet(ref elite.docked_planet);
 			string str = planet_name + " MARKET PRICES";
-            elite.alg_gfx.DrawTextCentre(10, str, 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
 
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
@@ -822,7 +798,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_INVENTORY;
 
             elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(10, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(20, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
 			str = $"{elite.cmdr.fuel / 10:D}.{elite.cmdr.fuel % 10:D} Light Years";
@@ -1330,7 +1306,7 @@ namespace Elite
 			elite.current_screen = SCR.SCR_EQUIP_SHIP;
 
             elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(10, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(20, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
 			collapse_equip_list();

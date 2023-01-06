@@ -21,11 +21,10 @@
 
 namespace Elite
 {
-	using System;
-	using System.Numerics;
-	using Elite.Structs;
+    using System;
+    using System.Numerics;
 
-	internal static class VectorMaths
+    internal static class VectorMaths
 	{
 		static Vector3[] start_matrix = new Vector3[3]
 		{
