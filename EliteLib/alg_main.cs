@@ -78,7 +78,7 @@ namespace Elite
 		 */
 		static void initialise_game()
 		{
-			random.set_rand_seed((int)DateTime.UtcNow.Ticks);
+			random.rand_seed = (int)DateTime.UtcNow.Ticks;
 			elite.current_screen = SCR.SCR_INTRO_ONE;
 
 			elite.restore_saved_commander();

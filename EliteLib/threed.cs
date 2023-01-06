@@ -439,8 +439,8 @@ namespace Elite
 			float dist;
 			bool dark;
 
-			int old_seed = random.get_rand_seed();
-			random.set_rand_seed(rnd_seed);
+			int old_seed = random.rand_seed;
+			random.rand_seed = rnd_seed;
 
 			int d = LAND_X_MAX / 8;
 
@@ -478,7 +478,7 @@ namespace Elite
 				}
 			}
 
-			random.set_rand_seed(old_seed);
+			random.rand_seed = old_seed;
 		}
 
 		internal static void generate_landscape(int rnd_seed)
@@ -906,8 +906,8 @@ namespace Elite
 
 			q = pr / 32;
 
-			old_seed = random.get_rand_seed();
-			random.set_rand_seed(univ.exp_seed);
+			old_seed = random.rand_seed;
+			random.rand_seed = univ.exp_seed;
 
 			for (cnt = 0; cnt < np; cnt++)
 			{
@@ -938,7 +938,7 @@ namespace Elite
 				}
 			}
 
-			random.set_rand_seed(old_seed);
+			random.rand_seed = old_seed;
 		}
 
 		/*

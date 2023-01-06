@@ -26,8 +26,6 @@ namespace Elite
 {
 	internal static class random
 	{
-		static int rand_seed;
-
 		/*
 		 * Portable random number generator implementing the recursion:
 		 *     IX = 16807 * IX MOD (2**(31) - 1)
@@ -52,15 +50,7 @@ namespace Elite
 			return ix;
 		}
 
-		internal static void set_rand_seed(int seed)
-		{
-			rand_seed = seed;
-		}
-
-		internal static int get_rand_seed()
-		{
-			return rand_seed;
-		}
+		internal static int rand_seed { get; set; }
 
 		internal static int rand255()
 		{
