@@ -106,7 +106,7 @@ namespace Elite
 
 			elite.hyperspace_planet = Planet.find_planet(px, py);
 
-			string planet_name = Planet.name_planet(ref elite.hyperspace_planet);
+			string planet_name = Planet.name_planet(elite.hyperspace_planet);
 
             elite.alg_gfx.ClearTextArea();
 			str = $"{planet_name:-18s}";
@@ -150,7 +150,7 @@ namespace Elite
 
 			for (int i = 0; i < 256; i++)
 			{
-				planet_name = Planet.name_planet(ref glx);
+				planet_name = Planet.name_planet(glx);
 
 				if (planet_name == find_name)
 				{
@@ -253,7 +253,7 @@ namespace Elite
 				if (row_used[row] == 0)
 				{
 					row_used[row] = 1;
-					string planet_name = Planet.name_planet(ref glx);
+					string planet_name = Planet.name_planet(glx);
 					planet_name = Planet.capitalise_name(planet_name);
                     elite.alg_gfx.DrawText(px + (4 * gfx.GFX_SCALE), (row * 8 - 5) * gfx.GFX_SCALE, planet_name);
 				}
@@ -320,7 +320,7 @@ namespace Elite
 
             elite.alg_gfx.ClearDisplay();
 
-			string planet_name = Planet.name_planet(ref elite.hyperspace_planet);
+			string planet_name = Planet.name_planet(elite.hyperspace_planet);
 			string str = "DATA ON " + planet_name;
 
             elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
@@ -442,14 +442,14 @@ namespace Elite
 
 			if (!elite.witchspace)
 			{
-				planet_name = Planet.name_planet(ref elite.docked_planet);
+				planet_name = Planet.name_planet(elite.docked_planet);
 				planet_name = Planet.capitalise_name(planet_name);
 				str = planet_name;
                 elite.alg_gfx.DrawText(190, 58, str);
 			}
 
             elite.alg_gfx.DrawText(16, 74, "Hyperspace System:", GFX_COL.GFX_COL_GREEN_1);
-			planet_name = Planet.name_planet(ref elite.hyperspace_planet);
+			planet_name = Planet.name_planet(elite.hyperspace_planet);
 			planet_name = Planet.capitalise_name(planet_name);
 			str = planet_name;
             elite.alg_gfx.DrawText(190, 74, str);
@@ -765,7 +765,7 @@ namespace Elite
 
             elite.alg_gfx.ClearDisplay();
 
-			string planet_name = Planet.name_planet(ref elite.docked_planet);
+			string planet_name = Planet.name_planet(elite.docked_planet);
 			string str = planet_name + " MARKET PRICES";
             elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
 

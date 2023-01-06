@@ -1062,7 +1062,7 @@ namespace Elite
 			}
 
 			destination_planet = elite.hyperspace_planet;
-			hyper_name = Planet.name_planet(ref destination_planet);
+			hyper_name = Planet.name_planet(destination_planet);
 			hyper_name = Planet.capitalise_name(hyper_name);
 
 			hyper_ready = true;

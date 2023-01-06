@@ -251,7 +251,7 @@ namespace Elite
 			return -1;
 		}
 
-		internal static string name_planet(ref galaxy_seed glx)
+		internal static string name_planet(galaxy_seed glx)
 		{
 			int size;
 			int i;
@@ -380,13 +380,13 @@ namespace Elite
 					switch (source[j])
 					{
 						case 'H':
-							temp = name_planet(ref elite.hyperspace_planet);
+							temp = name_planet(elite.hyperspace_planet);
 							temp = Planet.capitalise_name(temp);
 							planet_description += temp;
 							break;
 
 						case 'I':
-							temp = name_planet(ref elite.hyperspace_planet);
+							temp = name_planet(elite.hyperspace_planet);
 							temp = Planet.capitalise_name(temp);
 							planet_description += temp;
 							planet_description += "ian";
