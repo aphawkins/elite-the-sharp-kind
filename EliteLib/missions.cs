@@ -36,6 +36,7 @@ namespace Elite
 	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Structs;
+	using EliteLib.Enums;
 
 	internal static class missions
 	{
@@ -219,7 +220,7 @@ namespace Elite
 				space.universe[0].location.Z = 600;
                 elite.alg_gfx.ScreenUpdate();
 				elite.keyboard.kbd_poll_keyboard();
-			} while (!elite.keyboard.kbd_space_pressed);
+			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
 		static void constrictor_mission_debrief()

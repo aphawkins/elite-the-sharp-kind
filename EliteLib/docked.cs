@@ -12,14 +12,11 @@
  *
  */
 
-using Elite;
-using Elite.Enums;
-using Elite.Structs;
-
 namespace Elite
 {
-	using Elite.Enums;
-	using Elite.Structs;
+    using Elite;
+    using Elite.Enums;
+    using Elite.Structs;
 
 	internal static class Docked
 	{
@@ -86,19 +83,11 @@ namespace Elite
 
 		static void show_distance(int ypos, galaxy_seed from_planet, galaxy_seed to_planet)
 		{
-			string str;
-			int light_years;
+			int light_years = calc_distance_to_planet(from_planet, to_planet);
 
-			light_years = calc_distance_to_planet(from_planet, to_planet);
-
-			if (light_years > 0)
-			{
-				str = $"Distance: {light_years / 10:2d}.{light_years % 10:d} Light Years ";
-			}
-			else
-			{
-				str = "                                                     ";
-			}
+			string str = light_years > 0
+                ? $"Distance: {light_years / 10:D2}.{light_years % 10:D} Light Years "
+                : "                                                     ";
 
             elite.alg_gfx.DrawText(16, ypos, str);
 		}
@@ -311,7 +300,7 @@ namespace Elite
 
             elite.alg_gfx.ClearDisplay();
 
-			string str = "GALACTIC CHART {elite.cmdr.galaxy_number + 1:d}";
+			string str = $"GALACTIC CHART {elite.cmdr.galaxy_number + 1:D}";
 
             elite.alg_gfx.DrawTextCentre(10, str, 140, GFX_COL.GFX_COL_GOLD);
 
@@ -349,7 +338,6 @@ namespace Elite
 		 */
 		internal static void display_data_on_planet()
 		{
-			string description;
 			planet_data hyper_planet_data = new();
 
 			elite.current_screen = SCR.SCR_PLANET_DATA;
@@ -373,22 +361,22 @@ namespace Elite
 			str = "Government:" + government_type[hyper_planet_data.government];
             elite.alg_gfx.DrawText(16, 106, str);
 
-			str = $"Tech.Level:{hyper_planet_data.techlevel + 1:3d}";
+			str = $"Tech Level:{hyper_planet_data.techlevel + 1:D3}";
             elite.alg_gfx.DrawText(16, 138, str);
 
-			str = $"Population:{hyper_planet_data.population / 10:d}.{hyper_planet_data.population % 10:d} Billion";
+			str = $"Population:{hyper_planet_data.population / 10:D}.{hyper_planet_data.population % 10:D} Billion";
             elite.alg_gfx.DrawText(16, 170, str);
 
 			str = Planet.describe_inhabitants(str, elite.hyperspace_planet);
             elite.alg_gfx.DrawText(16, 202, str);
 
-			str = $"Gross Productivity:{hyper_planet_data.productivity:5d} M CR";
+			str = $"Gross Productivity:{hyper_planet_data.productivity:D5} M CR";
             elite.alg_gfx.DrawText(16, 234, str);
 
-			str = "Average Radius:{hyper_planet_data.radius:5d} km";
+			str = $"Average Radius:{hyper_planet_data.radius:D5} km";
             elite.alg_gfx.DrawText(16, 266, str);
 
-			description = Planet.describe_planet(elite.hyperspace_planet);
+            string description = Planet.describe_planet(elite.hyperspace_planet);
             elite.alg_gfx.DrawTextPretty(16, 298, 400, 384, description);
 		}
 
@@ -519,11 +507,11 @@ namespace Elite
             elite.alg_gfx.DrawText(16, 90, "Condition:", GFX_COL.GFX_COL_GREEN_1);
             elite.alg_gfx.DrawText(190, 90, condition_txt[condition]);
 
-			str = $"{elite.cmdr.fuel / 10:d}.{elite.cmdr.fuel % 10:d} Light Years";
+			str = $"{elite.cmdr.fuel / 10:D}.{elite.cmdr.fuel % 10:D} Light Years";
             elite.alg_gfx.DrawText(16, 106, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
             elite.alg_gfx.DrawText(70, 106, str);
 
-			str = $"{elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d} Cr";
+			str = $"{elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D} Cr";
             elite.alg_gfx.DrawText(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
             elite.alg_gfx.DrawText(70, 122, str);
 
@@ -677,12 +665,12 @@ namespace Elite
             elite.alg_gfx.DrawText(16, y, trade.stock_market[i].name);
 
             elite.alg_gfx.DrawText(180, y, unit_name[trade.stock_market[i].units]);
-			str = $"{trade.stock_market[i].current_price / 10:d}.{trade.stock_market[i].current_price % 10:d}";
+			str = $"{trade.stock_market[i].current_price / 10:D}.{trade.stock_market[i].current_price % 10:D}";
             elite.alg_gfx.DrawText(256, y, str);
 
 			if (trade.stock_market[i].current_quantity > 0)
 			{
-				str = $"{trade.stock_market[i].current_quantity:d}{unit_name[trade.stock_market[i].units]}";
+				str = $"{trade.stock_market[i].current_quantity:D}{unit_name[trade.stock_market[i].units]}";
 			}
 			else
 			{
@@ -693,7 +681,7 @@ namespace Elite
 
 			if (elite.cmdr.current_cargo[i] > 0)
 			{
-				str = $"{elite.cmdr.current_cargo[i]:d}{unit_name[trade.stock_market[i].units]}";
+				str = $"{elite.cmdr.current_cargo[i]:D}{unit_name[trade.stock_market[i].units]}";
 			}
 			else
 			{
@@ -723,7 +711,7 @@ namespace Elite
 			hilite_item = i;
 
             elite.alg_gfx.ClearTextArea();
-			str = $"Cash: {elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d}";
+			str = $"Cash: {elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D}";
             elite.alg_gfx.DrawText(16, 340, str);
 		}
 
@@ -837,11 +825,11 @@ namespace Elite
             elite.alg_gfx.DrawTextCentre(10, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
 
-			str = $"{elite.cmdr.fuel / 10:d}.{elite.cmdr.fuel % 10:d} Light Years";
+			str = $"{elite.cmdr.fuel / 10:D}.{elite.cmdr.fuel % 10:D} Light Years";
             elite.alg_gfx.DrawText(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
             elite.alg_gfx.DrawText(70, 50, str);
 
-			str = $"{elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d} Cr";
+			str = $"{elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D} Cr";
             elite.alg_gfx.DrawText(16, 66, "Cash:", GFX_COL.GFX_COL_GREEN_1);
             elite.alg_gfx.DrawText(70, 66, str);
 
@@ -852,7 +840,7 @@ namespace Elite
 				{
                     elite.alg_gfx.DrawText(16, y, trade.stock_market[i].name);
 
-					str = $"{elite.cmdr.current_cargo[i]:d}{unit_name[trade.stock_market[i].units]}";
+					str = $"{elite.cmdr.current_cargo[i]:D}{unit_name[trade.stock_market[i].units]}";
 
                     elite.alg_gfx.DrawText(180, y, str);
 					y += 16;
@@ -1040,7 +1028,7 @@ namespace Elite
 
 			if (equip_stock[i].price != 0)
 			{
-				str = $"{equip_stock[i].price / 10:d}.{equip_stock[i].price % 10:d}";
+				str = $"{equip_stock[i].price / 10:D}.{equip_stock[i].price % 10:D}";
                 elite.alg_gfx.DrawText(338, y, str, col);
 			}
 		}
@@ -1065,7 +1053,7 @@ namespace Elite
 			hilite_item = i;
 
             elite.alg_gfx.ClearTextArea();
-			str = $"Cash: {elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d}";
+			str = $"Cash: {elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D}";
             elite.alg_gfx.DrawText(16, 340, str);
 		}
 

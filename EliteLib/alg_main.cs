@@ -57,6 +57,7 @@ namespace Elite
 
 	using Elite.Enums;
 	using Elite.Structs;
+	using EliteLib.Enums;
 
 	public static class alg_main
 	{
@@ -741,7 +742,7 @@ namespace Elite
 
 			if (game_paused)
 			{
-				if (elite.keyboard.kbd_resume_pressed)
+				if (elite.keyboard.IsKeyPressed(CommandKey.Resume))
 				{
 					game_paused = false;
 				}
@@ -749,7 +750,7 @@ namespace Elite
 				return;
 			}
 
-			if (elite.keyboard.kbd_F1_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F1))
 			{
 				find_input = false;
 
@@ -767,7 +768,7 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_F2_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F2))
 			{
 				find_input = false;
 
@@ -781,7 +782,7 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_F3_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F3))
 			{
 				find_input = false;
 
@@ -795,7 +796,7 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_F4_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F4))
 			{
 				find_input = false;
 
@@ -813,45 +814,45 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_F5_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F5))
 			{
 				find_input = false;
 				old_cross_x = -1;
 				Docked.display_galactic_chart();
 			}
 
-			if (elite.keyboard.kbd_F6_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F6))
 			{
 				find_input = false;
 				old_cross_x = -1;
 				Docked.display_short_range_chart();
 			}
 
-			if (elite.keyboard.kbd_F7_pressed)
-			{
+            if (elite.keyboard.IsKeyPressed(CommandKey.F7))
+            {
 				find_input = false;
 				Docked.display_data_on_planet();
 			}
 
-			if (elite.keyboard.kbd_F8_pressed && (!elite.witchspace))
+			if (elite.keyboard.IsKeyPressed(CommandKey.F8) && (!elite.witchspace))
 			{
 				find_input = false;
 				Docked.display_market_prices();
 			}
 
-			if (elite.keyboard.kbd_F9_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F9))
 			{
 				find_input = false;
 				Docked.display_commander_status();
 			}
 
-			if (elite.keyboard.kbd_F10_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F10))
 			{
 				find_input = false;
 				Docked.display_inventory();
 			}
 
-			if (elite.keyboard.kbd_F11_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.F11))
 			{
 				find_input = false;
 				options.display_options();
@@ -861,14 +862,14 @@ namespace Elite
 			{
 				keyasc = elite.keyboard.kbd_read_key();
 
-				if (elite.keyboard.kbd_enter_pressed)
+				if (elite.keyboard.IsKeyPressed(CommandKey.Enter))
 				{
 					find_input = false;
 					Docked.find_planet_by_name(find_name);
 					return;
 				}
 
-				if (elite.keyboard.kbd_backspace_pressed)
+				if (elite.keyboard.IsKeyPressed(CommandKey.Backspace))
 				{
 					delete_find_char();
 					return;
@@ -882,17 +883,17 @@ namespace Elite
 				return;
 			}
 
-			if (elite.keyboard.kbd_y_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Y))
 			{
 				y_pressed();
 			}
 
-			if (elite.keyboard.kbd_n_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.N))
 			{
 				n_pressed();
 			}
 
-			if (elite.keyboard.kbd_fire_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Fire))
 			{
 				if ((!elite.docked) && (draw_lasers == 0))
 				{
@@ -900,7 +901,7 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_dock_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Dock))
 			{
 				if (!elite.docked && elite.cmdr.docking_computer)
 				{
@@ -915,12 +916,12 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_d_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.D))
 			{
 				d_pressed();
 			}
 
-			if (elite.keyboard.kbd_ecm_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.ECM))
 			{
 				if (!elite.docked && elite.cmdr.ecm)
 				{
@@ -928,14 +929,14 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_find_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Find))
 			{
 				f_pressed();
 			}
 
-			if (elite.keyboard.kbd_hyperspace_pressed && (!elite.docked))
+			if (elite.keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!elite.docked))
 			{
-				if (elite.keyboard.kbd_ctrl_pressed)
+				if (elite.keyboard.IsKeyPressed(CommandKey.CTRL))
 				{
 					space.start_galactic_hyperspace();
 				}
@@ -945,12 +946,12 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_jump_pressed && (!elite.docked) && (!elite.witchspace))
+			if (elite.keyboard.IsKeyPressed(CommandKey.Jump) && (!elite.docked) && (!elite.witchspace))
 			{
 				space.jump_warp();
 			}
 
-			if (elite.keyboard.kbd_fire_missile_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.FireMissile))
 			{
 				if (!elite.docked)
 				{
@@ -958,17 +959,17 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_origin_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Origin))
 			{
 				o_pressed();
 			}
 
-			if (elite.keyboard.kbd_pause_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Pause))
 			{
 				game_paused = true;
 			}
 
-			if (elite.keyboard.kbd_target_missile_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.TargetMissile))
 			{
 				if (!elite.docked)
 				{
@@ -976,7 +977,7 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_unarm_missile_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.UnarmMissile))
 			{
 				if (!elite.docked)
 				{
@@ -984,7 +985,7 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_inc_speed_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.IncSpeed))
 			{
 				if (!elite.docked)
 				{
@@ -995,7 +996,7 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_dec_speed_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.DecSpeed))
 			{
 				if (!elite.docked)
 				{
@@ -1006,32 +1007,32 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_up_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Up))
 			{
 				arrow_up();
 			}
 
-			if (elite.keyboard.kbd_down_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Down))
 			{
 				arrow_down();
 			}
 
-			if (elite.keyboard.kbd_left_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Left))
 			{
 				arrow_left();
 			}
 
-			if (elite.keyboard.kbd_right_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Right))
 			{
 				arrow_right();
 			}
 
-			if (elite.keyboard.kbd_enter_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Enter))
 			{
 				return_pressed();
 			}
 
-			if (elite.keyboard.kbd_energy_bomb_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.EnergyBomb))
 			{
 				if ((!elite.docked) && (elite.cmdr.energy_bomb))
 				{
@@ -1040,7 +1041,7 @@ namespace Elite
 				}
 			}
 
-			if (elite.keyboard.kbd_escape_pressed)
+			if (elite.keyboard.IsKeyPressed(CommandKey.Escape))
 			{
 				if ((!elite.docked) && (elite.cmdr.escape_pod) && (!elite.witchspace))
 				{
@@ -1153,14 +1154,14 @@ namespace Elite
 
                 elite.keyboard.kbd_poll_keyboard();
 
-				if (elite.keyboard.kbd_y_pressed)
+				if (elite.keyboard.IsKeyPressed(CommandKey.Y))
 				{
 					elite.sound.StopMidi();
 					load_commander_screen();
 					break;
 				}
 
-				if (elite.keyboard.kbd_n_pressed)
+				if (elite.keyboard.IsKeyPressed(CommandKey.N))
 				{
 					elite.sound.StopMidi();
 					break;
@@ -1189,7 +1190,7 @@ namespace Elite
 
                 elite.keyboard.kbd_poll_keyboard();
 
-				if (elite.keyboard.kbd_space_pressed)
+				if (elite.keyboard.IsKeyPressed(CommandKey.Space))
 				{
 					break;
 				}

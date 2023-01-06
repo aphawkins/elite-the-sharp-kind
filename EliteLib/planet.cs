@@ -19,6 +19,7 @@
 namespace Elite
 {
 	using Elite.Structs;
+	using System.Diagnostics;
 	using System.Text;
 
 	internal static class Planet
@@ -343,13 +344,16 @@ namespace Elite
 				if (source[j] == '<')
 				{
 					j++;
-					while (source[j] != '>')
+                    temp = string.Empty;
+
+                    while (source[j] != '>')
 					{
 						temp += source[j];
 						j++;
 					}
 					// j++;
 					num = Convert.ToInt32(temp);
+					Debug.Assert(num < desc_list.Length);
 					expanded = temp;
 
 					if (elite.hoopy_casinos)

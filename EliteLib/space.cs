@@ -609,7 +609,7 @@ namespace Elite
 						if ((bounty != 0) && (!elite.witchspace))
 						{
 							elite.cmdr.credits += bounty;
-							str = $"{elite.cmdr.credits / 10:d}.{elite.cmdr.credits % 10:d} CR";
+							str = $"{elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D} CR";
 							alg_main.info_message(str);
 						}
 
@@ -1092,7 +1092,7 @@ namespace Elite
 
 		internal static void display_hyper_status()
 		{
-			string str = $"{hyper_countdown:d}";
+			string str = $"{hyper_countdown:D}";
 
 			if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
 				(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW))
