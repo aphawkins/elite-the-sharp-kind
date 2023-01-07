@@ -21,25 +21,6 @@ namespace Elite
 
 	public class alg_gfx : IGfx, IDisposable
 	{
-        /* Allegro datafile object indexes, produced by grabber v3.9.32 (WIP), Mingw32 */
-        /* Datafile: c:\usr\cprogs\NewKind\elite.dat */
-        /* Date: Mon May 07 19:20:00 2001 */
-        /* Do not hand edit! */
-        //const int BLAKE = 0;        /* BMP  */
-        //const int DANUBE = 1;        /* MIDI */
-        //const int ECM = 2;        /* BMP  */
-        //const int ELITE_1 = 3;        /* FONT */
-        //const int ELITE_2 = 4;        /* FONT */
-        //const int ELITETXT = 5;        /* BMP  */
-        //const int FRONTV = 6;        /* BMP  */
-        //const int GRNDOT = 7;        /* BMP  */
-        //const int MISSILE_G = 8;        /* BMP  */
-        //const int MISSILE_R = 9;        /* BMP  */
-        //const int MISSILE_Y = 10;       /* BMP  */
-        //const int REDDOT = 11;       /* BMP  */
-        //const int SAFE = 12;       /* BMP  */
-        //const int THEME = 13;       /* MIDI */
-
         // Screen buffer
         private readonly Bitmap _screenBuffer;
         private readonly Graphics _screenBufferGraphics;
@@ -57,7 +38,6 @@ namespace Elite
 		private readonly Dictionary<IMG, Bitmap> _images = new();
 
         private volatile int frame_count;
-        //DATAFILE* datafile;
         private const int MAX_POLYS = 100;
         private int start_poly;
         private int total_polys;
@@ -87,51 +67,9 @@ namespace Elite
 		}
 		//END_OF_FUNCTION(frame_timer);
 
-		public int GraphicsStartup()
+		public bool GraphicsStartup()
 		{
 			Debug.WriteLine(nameof(GraphicsStartup));
-
-			//			PALETTE the_palette;
-			//			int rv;
-
-			//#if ALLEGRO_WINDOWS
-
-			//#if RES_512_512
-			//			rv = set_gfx_mode(GFX_DIRECTX_OVL, 512, 512, 0, 0);
-
-			//			if (rv != 0)
-			//				rv = set_gfx_mode(GFX_DIRECTX_WIN, 512, 512, 0, 0);
-
-			//			if (rv != 0)
-			//				rv = set_gfx_mode(GFX_GDI, 512, 512, 0, 0);
-
-			//			if (rv == 0)
-			//				set_display_switch_mode(SWITCH_BACKGROUND);
-			//#else
-			//			rv = set_gfx_mode(GFX_DIRECTX, 800, 600, 0, 0);
-
-			//			if (rv != 0)
-			//				rv = set_gfx_mode(GFX_GDI, 800, 600, 0, 0);
-			//#endif
-
-			//#else
-			//			rv = set_gfx_mode(GFX_AUTODETECT, 800, 600, 0, 0);
-			//#endif
-
-			//			if (rv != 0)
-			//			{
-			//				set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-			//				allegro_message("Unable to set graphics mode.");
-			//				return 1;
-			//			}
-
-			//			datafile = load_datafile("elite.dat");
-			//			if (!datafile)
-			//			{
-			//				set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-			//				allegro_message("Error loading %s!\n", "elite.dat");
-			//				return 1;
-			//			}
 
 			bool imagesLoaded = LoadImages();
 
@@ -139,16 +77,10 @@ namespace Elite
 			{
 				//set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
 				//allegro_message("Error reading scanner bitmap file.\n");
-				return 1;
+				return false;
 			}
 
-            //			/* select the scanner palette */
-            //			set_palette(the_palette);
-
-            //			/* Create the screen buffer bitmap */
-            //			gfx_screen = create_bitmap(SCREEN_W, SCREEN_H);
-
-            //			clear(gfx_screen);
+            _screenBufferGraphics.Clear(Color.Black);
 
 			DrawScanner();
 
@@ -164,7 +96,7 @@ namespace Elite
 			//			frame_count = 0;
 			//			install_int(frame_timer, speed_cap);
 
-			return 0;
+			return true;
 		}
 
 		private bool LoadImages()
@@ -294,23 +226,17 @@ namespace Elite
 
 		public void DrawText(int x, int y, string text)
 		{
-			//Debug.WriteLine(nameof(DrawText));
-
 			DrawText(x, y, text, GFX_COL.GFX_COL_WHITE);
         }
 
 		public void DrawText(int x, int y, string text, GFX_COL colour)
 		{
-            //Debug.WriteLine(nameof(DisplayText));
-
             PointF point = new((x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
             _screenBufferGraphics.DrawString(text, _fontSmall, MapColorToBrush(colour), point);
         }
 
 		public void DrawTextCentre(int y, string text, int psize, GFX_COL colour)
 		{
-            //Debug.WriteLine(nameof(DisplayTextCentre));
-
             StringFormat stringFormat = new()
             {
                 Alignment = StringAlignment.Center,
@@ -328,29 +254,21 @@ namespace Elite
 
 		public void ClearDisplay()
 		{
-            //Debug.WriteLine(nameof(ClearDisplay));
-
             _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
 		}
 
 		public void ClearTextArea()
 		{
-            //Debug.WriteLine(nameof(ClearTextArea));
-
             _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
         }
 
 		public void ClearArea(int tx, int ty, int bx, int by)
 		{
-            //Debug.WriteLine(nameof(ClearArea));
-
 			_screenBufferGraphics.FillRectangle(Brushes.Black, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
         }
 
 		public void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL col)
 		{
-            Debug.WriteLine(nameof(DrawRectangle));
-
 			_screenBufferGraphics.FillRectangle(MapColorToBrush(col), tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
         }
 
@@ -379,8 +297,6 @@ namespace Elite
 
 		public void DrawScanner()
 		{
-            // Debug.WriteLine(nameof(DrawScanner));
-
             _screenBufferGraphics.DrawImage(_imageScanner, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
 

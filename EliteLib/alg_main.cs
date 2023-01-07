@@ -1299,7 +1299,7 @@ namespace Elite
             initialise_allegro();
 			File.read_config_file();
 
-			if (elite.alg_gfx.GraphicsStartup() == 1)
+			if (!elite.alg_gfx.GraphicsStartup())
 			{
 				return 1;
 			}

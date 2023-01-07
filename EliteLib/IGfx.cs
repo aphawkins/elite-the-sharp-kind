@@ -57,7 +57,7 @@ namespace Elite
 
         void GraphicsShutdown();
 
-        int GraphicsStartup();
+        bool GraphicsStartup();
 
         void PlotPixel(int x, int y, GFX_COL colour);
 

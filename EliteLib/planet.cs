@@ -327,7 +327,6 @@ namespace Elite
 			return sb.ToString();
 		}
 
-		// TODO: Check this for correctness
 		static void expand_description(string source, ref string planet_description)
 		{
 			string temp = string.Empty;
@@ -408,7 +407,6 @@ namespace Elite
 							break;
 					}
 
-					//j++;
 					continue;
 				}
 
