@@ -1395,8 +1395,10 @@ namespace Elite
 						{
 							auto_dock();
 							if ((mcount & 127) == 0)
-								info_message("Docking Computers On");
-						}
+                            {
+                                info_message("Docking Computers On");
+                            }
+                        }
 
 						space.update_universe();
 

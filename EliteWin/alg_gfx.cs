@@ -38,9 +38,12 @@ namespace Elite
 		private readonly Dictionary<IMG, Bitmap> _images = new();
 
         private volatile int frame_count;
+        private object frameCountLock = new();
         private const int MAX_POLYS = 100;
         private int start_poly;
         private int total_polys;
+
+        private System.Windows.Forms.Timer _frameTimer;
 
 		public alg_gfx(ref Bitmap screen)
 		{
@@ -61,12 +64,6 @@ namespace Elite
         private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
         private bool disposedValue;
 
-        private void frame_timer()
-		{
-			frame_count++;
-		}
-		//END_OF_FUNCTION(frame_timer);
-
 		public bool GraphicsStartup()
 		{
 			Debug.WriteLine(nameof(GraphicsStartup));
@@ -75,7 +72,6 @@ namespace Elite
 
             if (!imagesLoaded)
 			{
-				//set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
 				//allegro_message("Error reading scanner bitmap file.\n");
 				return false;
 			}
@@ -89,17 +85,32 @@ namespace Elite
 			DrawLine(0, 0, 511, 0);
 			DrawLine(511, 0, 511, 384);
 
-			//			/* Install a timer to regulate the speed of the game... */
+            // Install a timer to regulate the speed of the game...
+            lock (frameCountLock)
+            {
+                frame_count = 0;
+            }
 
-			//			LOCK_VARIABLE(frame_count);
-			//			LOCK_FUNCTION(frame_timer);
-			//			frame_count = 0;
-			//			install_int(frame_timer, speed_cap);
+            _frameTimer = new()
+            {
+                // Approx matxh the speed of the TNK
+                Interval = 5000 / elite.speed_cap
+            };
+            _frameTimer.Tick += _frameTimer_Tick;
+            _frameTimer.Start();
 
-			return true;
+            return true;
 		}
 
-		private bool LoadImages()
+        private void _frameTimer_Tick(object? sender, EventArgs e)
+        {
+            lock (frameCountLock)
+            {
+                frame_count++;
+            }
+        }
+
+        private bool LoadImages()
 		{
 			string subFolder = "gfx";
 
@@ -133,21 +144,24 @@ namespace Elite
             //unload_datafile(datafile);
         }
 
-		/*
-		 * Blit the back buffer to the screen.
-		 */
+        /// <summary>
+        /// Blit the back buffer to the screen.
+        /// </summary>
 		public void ScreenUpdate()
 		{
-            // TODO: Put in a better framerate handler
-            Thread.Sleep(100);
+            Debug.WriteLine(nameof(ScreenUpdate));
 
-            //while (frame_count < 1)
-            //{
-            //	Thread.Sleep(10);
-            //	// rest(10);
-            //}
+            while (frame_count < 1)
+            {
+                Thread.Sleep(10);
+                // TODO: find a better way of doing multithreading
+                Application.DoEvents();
+            }
 
-            //frame_count = 0;
+            lock (frameCountLock)
+            {
+                frame_count = 0;
+            }
 
             lock (_screen)
 			{

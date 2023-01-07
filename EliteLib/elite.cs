@@ -27,7 +27,7 @@ namespace Elite
 	using Elite.Ships;
 	using System.Numerics;
 
-	internal static class elite
+	public static class elite
 	{
 		internal static IGfx alg_gfx;
 		internal static ISound sound;
@@ -53,7 +53,8 @@ namespace Elite
 		internal static bool wireframe = false;
 		internal static bool anti_alias_gfx = false;
 		internal static bool hoopy_casinos = false;
-		internal static int speed_cap = 75;
+		//TODO: used by gfx a rate limiter meaning this class has to be public. Find a better way.
+		public static int speed_cap = 75;
 		internal static bool instant_dock = false;
 
 		internal static string scanner_filename;
