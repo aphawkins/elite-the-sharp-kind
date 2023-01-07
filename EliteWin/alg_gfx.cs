@@ -17,7 +17,7 @@ namespace Elite
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Numerics;
-	using Elite.Enums;
+    using Elite.Enums;
 
 	public class alg_gfx : IGfx, IDisposable
 	{
@@ -356,43 +356,25 @@ namespace Elite
 
 		public void DrawTextPretty(int tx, int ty, int bx, int by, string txt)
 		{
-            Debug.WriteLine(nameof(DrawTextPretty));
+			int i = 0;
+			int maxlen = (bx - tx) / 8;
+            int previous = i;
 
-			//char strbuf[100];
-			//char* str;
-			//char* bptr;
-			//int len;
-			//int pos;
-			//int maxlen;
+            while (i < txt.Length)
+			{
+                i += maxlen;
+                i = Math.Clamp(i, 0, txt.Length - 1);
 
-			//maxlen = (bx - tx) / 8;
+                while (txt[i] is not ' ' and not ',' and not '.')
+				{
+					i--;
+				}
 
-			//str = txt;
-			//len = strlen(txt);
-
-			//while (len > 0)
-			//{
-			//	pos = maxlen;
-			//	if (pos > len)
-			//		pos = len;
-
-			//	while ((str[pos] != ' ') && (str[pos] != ',') &&
-			//		   (str[pos] != '.') && (str[pos] != '\0'))
-			//	{
-			//		pos--;
-			//	}
-
-			//	len = len - pos - 1;
-
-			//	for (bptr = strbuf; pos >= 0; pos--)
-			//		*bptr++ = *str++;
-
-			//	*bptr = '\0';
-
-			//	text_mode(-1);
-			//	textout(gfx_screen, datafile[ELITE_1].dat, strbuf, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, gfx.GFX_COL_WHITE);
-			//	ty += (8 * GFX_SCALE);
-			//}
+                i++;
+                DrawText(tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, txt[previous..i], GFX_COL.GFX_COL_WHITE);
+                previous = i;
+                ty += 8 * gfx.GFX_SCALE;
+			}
 		}
 
 		public void DrawScanner()

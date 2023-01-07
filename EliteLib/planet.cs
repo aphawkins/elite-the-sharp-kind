@@ -44,8 +44,6 @@ namespace Elite
 
 		static string[] inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
 
-		static string planet_description;
-
 		static string[][] desc_list = new string[36][]
 		{
 		/*  0	*/	new string[] {"fabled", "notable", "well known", "famous", "noted"},
@@ -330,7 +328,7 @@ namespace Elite
 		}
 
 		// TODO: Check this for correctness
-		static void expand_description(string source)
+		static void expand_description(string source, ref string planet_description)
 		{
 			string temp = string.Empty;
 			string expanded;
@@ -370,7 +368,7 @@ namespace Elite
 						if (rnd >= 0xCC) option++;
 					}
 
-					expand_description(desc_list[num][option]);
+					expand_description(desc_list[num][option], ref planet_description);
 					continue;
 				}
 
@@ -410,7 +408,7 @@ namespace Elite
 							break;
 					}
 
-					j++;
+					//j++;
 					continue;
 				}
 
@@ -445,7 +443,9 @@ namespace Elite
 				rnd_seed.d ^= rnd_seed.b;
 			}
 
-			expand_description("<14> is <22>.");
+			string planet_description = string.Empty;
+
+            expand_description("<14> is <22>.", ref planet_description);
 
 			return planet_description;
 		}

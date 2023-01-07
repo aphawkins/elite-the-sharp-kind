@@ -331,25 +331,25 @@ namespace Elite
 
 			show_distance(42, elite.docked_planet, elite.hyperspace_planet);
 
-			str = "Economy:" + economy_type[hyper_planet_data.economy];
+			str = "Economy: " + economy_type[hyper_planet_data.economy];
             elite.alg_gfx.DrawText(16, 74, str);
 
-			str = "Government:" + government_type[hyper_planet_data.government];
+			str = "Government: " + government_type[hyper_planet_data.government];
             elite.alg_gfx.DrawText(16, 106, str);
 
-			str = $"Tech Level:{hyper_planet_data.techlevel + 1:D3}";
+			str = $"Tech Level: {hyper_planet_data.techlevel + 1}";
             elite.alg_gfx.DrawText(16, 138, str);
 
-			str = $"Population:{hyper_planet_data.population / 10:D}.{hyper_planet_data.population % 10:D} Billion";
+			str = $"Population: {hyper_planet_data.population / 10}.{hyper_planet_data.population % 10} Billion";
             elite.alg_gfx.DrawText(16, 170, str);
 
 			str = Planet.describe_inhabitants(str, elite.hyperspace_planet);
             elite.alg_gfx.DrawText(16, 202, str);
 
-			str = $"Gross Productivity:{hyper_planet_data.productivity:D5} M CR";
+			str = $"Gross Productivity: {hyper_planet_data.productivity} M CR";
             elite.alg_gfx.DrawText(16, 234, str);
 
-			str = $"Average Radius:{hyper_planet_data.radius:D5} km";
+			str = $"Average Radius: {hyper_planet_data.radius} km";
             elite.alg_gfx.DrawText(16, 266, str);
 
             string description = Planet.describe_planet(elite.hyperspace_planet);
