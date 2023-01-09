@@ -225,8 +225,9 @@ namespace Elite
 		{
             Debug.WriteLine(nameof(DrawLineXor));
 
+            // .NET has deprecated GDI XOR drawing
             //xor_mode(true);
-            //gfx_draw_colour_line(x1, y1, x2, y2, line_colour);
+            DrawLine(x1, y1, x2, y2, line_colour);
             //xor_mode(false);
         }
 
