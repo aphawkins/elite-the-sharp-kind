@@ -313,8 +313,6 @@ namespace Elite
 
 		public void SetClipRegion(int tx, int ty, int bx, int by)
 		{
-            Debug.WriteLine(nameof(SetClipRegion));
-
             _screenBufferGraphics.Clip = new Region(new Rectangle(tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET));
         }
 

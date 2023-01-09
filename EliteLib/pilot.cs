@@ -278,7 +278,7 @@ namespace Elite
 			}
 
 			elite.auto_pilot = true;
-			elite.sound.PlayMidi(SND.SND_BLUE_DANUBE, true);
+			elite.sound.PlayMidi(Music.BlueDanube, true);
 		}
 
 		internal static void disengage_auto_pilot()

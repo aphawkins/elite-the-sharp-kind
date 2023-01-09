@@ -645,14 +645,14 @@ namespace Elite
 
 			int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
 			space.universe[newship].velocity = 7;
-			elite.sound.PlaySample(SND.SND_LAUNCH);
+			elite.sound.PlaySample(Sfx.Launch);
 
 			for (i = 0; i < 90; i++)
 			{
 				if (i == 40)
 				{
 					space.universe[newship].flags |= FLG.FLG_DEAD;
-					elite.sound.PlaySample(SND.SND_EXPLODE);
+					elite.sound.PlaySample(Sfx.Explode);
 				}
 
                 elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
@@ -1141,7 +1141,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_INTRO_ONE;
 
-			elite.sound.PlayMidi(SND.SND_ELITE_THEME, true);
+			elite.sound.PlayMidi(Music.EliteTheme, true);
 
 			intro.initialise_intro1();
 
@@ -1173,7 +1173,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_INTRO_TWO;
 
-			elite.sound.PlayMidi(SND.SND_BLUE_DANUBE, true);
+			elite.sound.PlayMidi(Music.BlueDanube, true);
 
 			intro.initialise_intro2();
 
@@ -1303,9 +1303,6 @@ namespace Elite
 			{
 				return 1;
 			}
-
-			/* Start the sound system... */
-			sound.SoundStartup();
 
 			/* Do any setup necessary for the keyboard... */
 			keyboard.kbd_keyboard_startup();
@@ -1453,7 +1450,7 @@ namespace Elite
 							if (elite.energy < 50)
 							{
 								info_message("ENERGY LOW");
-								sound.PlaySample(SND.SND_BEEP);
+								sound.PlaySample(Sfx.Beep);
 							}
 
 							space.update_altitude();
@@ -1509,8 +1506,6 @@ namespace Elite
 					run_game_over_screen();
 				}
 			}
-
-			sound.SoundShutdown();
 
             elite.alg_gfx.GraphicsShutdown();
 

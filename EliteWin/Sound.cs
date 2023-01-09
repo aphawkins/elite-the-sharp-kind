@@ -14,170 +14,94 @@
 
 namespace Elite
 {
-    using System.Diagnostics;
     using Commons.Music.Midi;
     using Elite.Enums;
 
-    public class Sound : ISound, IDisposable
+    public partial class Sound : ISound, IDisposable
     {
-        //const int NUM_SAMPLES = 14;
+        private MidiPlayer? _midiPlayer;
+        private readonly IMidiAccess? _access;
+        private readonly IMidiOutput? _output;
+        private readonly bool _midiOn;
+        private readonly bool _sfxOn;
+        private bool _disposedValue;
 
-        //extern DATAFILE* datafile;
-
-        MidiPlayer? _midiPlayer;
-        IMidiAccess? _access;
-        IMidiOutput? _output;
-
-        bool sound_on;
-        private bool disposedValue;
-
-        //struct sound_sample
-        //{
-        //	internal SAMPLE* sample;
-        //	internal string filename;
-        //	internal int runtime;
-        //	internal int timeleft;
-
-        //	internal sound_sample(SAMPLE sample, string filename, int runtime, int timeleft)
-        //	{
-        //		this.sample = sample;
-        //		this.filename = filename;
-        //		this.runtime = runtime;
-        //		this.timeleft = timeleft;
-        //	}
-        //};
-
-        //static sound_sample[] sample_list = new sound_sample[NUM_SAMPLES]
-        //{
-        //	new(null, "launch.wav",    32, 0),
-        //	new(null, "crash.wav",      7, 0),
-        //	new(null, "dock.wav",      36, 0),
-        //	new(null, "gameover.wav",  24, 0),
-        //	new(null, "pulse.wav",      4, 0),
-        //	new(null, "hitem.wav",      4, 0),
-        //	new(null, "explode.wav",   23, 0),
-        //	new(null, "ecm.wav",       23, 0),
-        //	new(null, "missile.wav",   25, 0),
-        //	new(null, "hyper.wav",     37, 0),
-        //	new(null, "incom1.wav",     4, 0),
-        //	new(null, "incom2.wav",     5, 0),
-        //	new(null, "beep.wav",       2, 0),
-        //	new(null, "boop.wav",       7, 0),
-        //};
-
-        public void SoundStartup()
+        private readonly Dictionary<Sfx, SfxSample> _sfx = new()
         {
-            Debug.WriteLine(nameof(SoundStartup));
+            { Sfx.Launch, new("launch.wav", 32) },
+            { Sfx.Crash, new("crash.wav", 7) },
+            { Sfx.Dock, new("dock.wav", 36) },
+            { Sfx.Gameover, new("gameover.wav", 24) },
+            { Sfx.Pulse, new("pulse.wav", 4) },
+            { Sfx.HitEnemy, new("hitem.wav", 4) },
+            { Sfx.Explode, new("explode.wav", 23) },
+            { Sfx.Ecm, new("ecm.wav", 23) },
+            { Sfx.Missile, new("missile.wav", 25) },
+            { Sfx.Hyperspace, new("hyper.wav", 37) },
+            { Sfx.IncomingFire1, new("incom1.wav", 4) },
+            { Sfx.IncomingFire2, new("incom2.wav", 5) },
+            { Sfx.Beep, new("beep.wav", 2) },
+            { Sfx.Boop, new("boop.wav", 7) },
+        };
 
-            //int i;
+        private readonly Dictionary<Music, string> _music = new()
+        {
+            { Music.EliteTheme, Path.Combine("music", "theme.mid") },
+            { Music.BlueDanube, Path.Combine("music", "danube.mid") },
+        };
 
-// Install a sound driver..
-#if !DEBUG
-            sound_on = true;
+        public Sound()
+        {
+#if DEBUG
+            _midiOn = false;
+            _sfxOn = true;
+#else
+            _midiOn = true;
+            _sfxOn = true;
 #endif
-
-            //if (install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, ".") != 0)
-            //{
-            //	sound_on = 0;
-            //	return;
-            //}
-
-            ///* Load the sound samples... */
-
-            //for (i = 0; i < NUM_SAMPLES; i++)
-            //{
-            //	sample_list[i].sample = load_sample(sample_list[i].filename);
-            //}
 
             _access = MidiAccessManager.Default;
             _output = _access.OpenOutputAsync(_access.Outputs.Last().Id).Result;
         }
 
-        public void SoundShutdown()
+        public void PlaySample(Sfx sample_no)
         {
-            Debug.WriteLine(nameof(SoundShutdown));
-
-            if (!sound_on)
+            if (!_sfxOn)
             {
                 return;
             }
 
-            //for (int i = 0; i < NUM_SAMPLES; i++)
-            //{
-            //	if (sample_list[i].sample != NULL)
-            //	{
-            //		destroy_sample (sample_list[i].sample);
-            //		sample_list[i].sample = NULL;
-            //	}
-            //}
-        }
-
-        public void PlaySample(SND sample_no)
-        {
-            Debug.WriteLine(nameof(PlaySample));
-
-            if (!sound_on)
+            if (_sfx[sample_no].HasTimeRemaining)
             {
                 return;
             }
 
-            //if (sample_list[(int)sample_no].timeleft != 0)
-            //{
-            //	return;
-            //}
-
-            //sample_list[(int)sample_no].timeleft = sample_list[(int)sample_no].runtime;
-
-            //play_sample(sample_list[(int)sample_no].sample, 255, 128, 1000, false);
+            _sfx[sample_no].ResetTime();
+            _sfx[sample_no].Play();
         }
 
         public void UpdateSound()
         {
-            Debug.WriteLine(nameof(UpdateSound));
-
-            //int i;
-
-            //for (i = 0; i < NUM_SAMPLES; i++)
-            //{
-            //	if (sample_list[i].timeleft > 0)
-            //	{
-            //		sample_list[i].timeleft--;
-            //	}
-            //}
+            foreach (KeyValuePair<Sfx, SfxSample> sfx in _sfx)
+            {
+                if (sfx.Value.HasTimeRemaining)
+                {
+                    sfx.Value.ReduceTimeRemaining();
+                }
+            }
         }
 
-        public void PlayMidi(SND midi_no, bool repeat)
+        public void PlayMidi(Music midi_no, bool repeat)
         {
-            //Debug.WriteLine(nameof(MidiPlay));
-
-            if (!sound_on)
+            if (!_midiOn)
             {
                 return;
             }
 
             StopMidi();
 
-            string file;
-
-            switch (midi_no)
-            {
-                case SND.SND_ELITE_THEME:
-                    file = "theme.mid";
-                    break;
-
-                case SND.SND_BLUE_DANUBE:
-                    file = "danube.mid";
-                    break;
-
-                default:
-                    StopMidi();
-                    return;
-            }
-
             //TODO: Get repeat/loop working
-            file = Path.Combine("music", file);
-
-            MidiMusic music = MidiMusic.Read(File.OpenRead(file));
+            MidiMusic music = MidiMusic.Read(File.OpenRead(_music[midi_no]));
             _midiPlayer = new(music, _output);
             if (repeat)
             {
@@ -198,9 +122,7 @@ namespace Elite
 
         public void StopMidi()
         {
-            //Debug.WriteLine(nameof(snd_stop_midi));
-
-            if (!sound_on)
+            if (!_midiOn)
             {
                 return;
             }
@@ -215,18 +137,23 @@ namespace Elite
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
                     _midiPlayer?.Stop();
                     _midiPlayer?.Dispose();
+
+                    foreach (KeyValuePair<Sfx, SfxSample> v in _sfx)
+                    {
+                        v.Value.Dispose();
+                    }
                 }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

@@ -18,13 +18,9 @@ namespace Elite
 
     public interface ISound
     {
-        void PlayMidi(SND midi_no, bool repeat);
+        void PlayMidi(Music midi_no, bool repeat);
 
-        void PlaySample(SND sample_no);
-
-        void SoundShutdown();
-
-        void SoundStartup();
+        void PlaySample(Sfx sample_no);
 
         void StopMidi();
 
