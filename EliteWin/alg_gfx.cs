@@ -149,8 +149,6 @@ namespace Elite
         /// </summary>
 		public void ScreenUpdate()
 		{
-            Debug.WriteLine(nameof(ScreenUpdate));
-
             while (frame_count < 1)
             {
                 Thread.Sleep(10);
@@ -223,8 +221,6 @@ namespace Elite
 
         public void DrawLineXor(float x1, float y1, float x2, float y2, GFX_COL line_colour)
 		{
-            Debug.WriteLine(nameof(DrawLineXor));
-
             // .NET has deprecated GDI XOR drawing
             //xor_mode(true);
             DrawLine(x1, y1, x2, y2, line_colour);
@@ -319,8 +315,8 @@ namespace Elite
 		{
             Debug.WriteLine(nameof(SetClipRegion));
 
-            //set_clip(gfx_screen, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
-		}
+            _screenBufferGraphics.Clip = new Region(new Rectangle(tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET));
+        }
 
 		public void RenderStart()
 		{
