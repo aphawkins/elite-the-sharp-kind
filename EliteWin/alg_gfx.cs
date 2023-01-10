@@ -516,6 +516,15 @@ namespace Elite
                 case GFX_COL.GFX_COL_PINK_1:
                     return Pens.Pink;
 
+                case GFX_COL.UNKNOWN_1:
+                    return Pens.Orange;
+
+                case GFX_COL.UNKNOWN_2:
+                    return Pens.DarkOrange;
+
+                case GFX_COL.GFX_COL_CYAN:
+                    return Pens.Cyan;
+
                 default:
 					Debug.Assert(false);
 					return Pens.Magenta;
@@ -588,6 +597,15 @@ namespace Elite
 
                 case GFX_COL.GFX_COL_PINK_1:
                     return Brushes.Pink;
+
+                case GFX_COL.UNKNOWN_1:
+                    return Brushes.Orange;
+
+                case GFX_COL.UNKNOWN_2:
+                    return Brushes.DarkOrange;
+
+                case GFX_COL.GFX_COL_CYAN:
+                    return Brushes.Cyan;
 
                 default:
                     Debug.Assert(false);
