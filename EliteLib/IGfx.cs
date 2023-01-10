@@ -51,7 +51,7 @@ namespace Elite
 
         void DrawTextCentre(int y, string text, int psize, GFX_COL colour);
 
-        void DrawTextPretty(int tx, int ty, int bx, int by, string text);
+        void DrawTextPretty(int x, int y, int width, int height, string text);
 
         void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL colour);
 
@@ -78,6 +78,6 @@ namespace Elite
         /// </summary>
         void ScreenUpdate();
 
-        void SetClipRegion(int tx, int ty, int bx, int by);
+        void SetClipRegion(int x, int y, int width, int height);
     }
 }

@@ -46,10 +46,9 @@
         Resume = 82, // R
 
         IncSpeed = 32, // SPACE
-        DecSpeed = 220, // BACKSLASH
+        DecSpeed = 191, // FRONTSLASH
 
-        //TODO: ENTER needs properly handling
-        Enter = -1, // ENTER
+        Enter = 13, // ENTER
         Backspace = 8, // BACKSPACE
         Space = 32, // SPACE
     }

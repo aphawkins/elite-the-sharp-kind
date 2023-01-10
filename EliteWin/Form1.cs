@@ -1,7 +1,6 @@
 namespace EliteWin
 {
     using Elite;
-    using Elite.Enums;
 
     public partial class Form1 : Form
     {

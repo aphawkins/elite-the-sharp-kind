@@ -276,7 +276,7 @@ namespace Elite
 
 		public void ClearTextArea()
 		{
-            _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
+            _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 43 + gfx.GFX_Y_OFFSET);
         }
 
 		public void ClearArea(int x, int y, int width, int height)
@@ -284,31 +284,31 @@ namespace Elite
 			_screenBufferGraphics.FillRectangle(Brushes.Black, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
-		public void DrawRectangle(int x, int y, int width, int height, GFX_COL col)
+		public void DrawRectangle(int x, int y, int width, int height, GFX_COL colour)
 		{
-			_screenBufferGraphics.FillRectangle(MapColorToBrush(col), x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.FillRectangle(MapColorToBrush(colour), x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
-		public void DrawTextPretty(int tx, int ty, int bx, int by, string txt)
+		public void DrawTextPretty(int x, int y, int width, int height, string text)
 		{
 			int i = 0;
-			int maxlen = (bx - tx) / 8;
+			int maxlen = (width - x) / 8;
             int previous = i;
 
-            while (i < txt.Length)
+            while (i < text.Length)
 			{
                 i += maxlen;
-                i = Math.Clamp(i, 0, txt.Length - 1);
+                i = Math.Clamp(i, 0, text.Length - 1);
 
-                while (txt[i] is not ' ' and not ',' and not '.')
+                while (text[i] is not ' ' and not ',' and not '.')
 				{
 					i--;
 				}
 
                 i++;
-                DrawText(tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, txt[previous..i], GFX_COL.GFX_COL_WHITE);
+                DrawText(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
                 previous = i;
-                ty += 8 * gfx.GFX_SCALE;
+                y += 8 * gfx.GFX_SCALE;
 			}
 		}
 
@@ -317,9 +317,9 @@ namespace Elite
             _screenBufferGraphics.DrawImage(_imageScanner, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
 
-		public void SetClipRegion(int tx, int ty, int bx, int by)
+		public void SetClipRegion(int x, int y, int width, int height)
 		{
-            _screenBufferGraphics.Clip = new Region(new Rectangle(tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET));
+            _screenBufferGraphics.Clip = new Region(new Rectangle(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET));
         }
 
 		public void RenderStart()

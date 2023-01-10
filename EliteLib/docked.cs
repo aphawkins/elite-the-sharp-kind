@@ -1089,7 +1089,7 @@ namespace Elite
 		{
 			int i;
 
-            elite.alg_gfx.ClearArea(2, 55, 510, 380);
+            elite.alg_gfx.ClearArea(2, 55, 508, 325);
 
 			int tech_level = elite.current_planet_data.techlevel + 1;
 
@@ -1297,7 +1297,7 @@ namespace Elite
 					break;
 			}
 
-			elite.cmdr.credits -= equip_stock[hilite_item].price;
+            elite.cmdr.credits -= equip_stock[hilite_item].price;
 			list_equip_prices();
 		}
 
