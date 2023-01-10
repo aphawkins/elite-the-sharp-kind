@@ -279,14 +279,14 @@ namespace Elite
             _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
         }
 
-		public void ClearArea(int tx, int ty, int bx, int by)
+		public void ClearArea(int x, int y, int width, int height)
 		{
-			_screenBufferGraphics.FillRectangle(Brushes.Black, tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.FillRectangle(Brushes.Black, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
-		public void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL col)
+		public void DrawRectangle(int x, int y, int width, int height, GFX_COL col)
 		{
-			_screenBufferGraphics.FillRectangle(MapColorToBrush(col), tx + gfx.GFX_X_OFFSET, ty + gfx.GFX_Y_OFFSET, bx + gfx.GFX_X_OFFSET, by + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.FillRectangle(MapColorToBrush(col), x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
 		public void DrawTextPretty(int tx, int ty, int bx, int by, string txt)

@@ -32,7 +32,7 @@
             rotmat = other.rotmat.Cloner();
             rotx = other.rotx;
             rotz = other.rotz;
-            flags= other.flags;
+            flags = other.flags;
             energy = other.energy;
             velocity = other.velocity;
             acceleration = other.acceleration;
@@ -40,7 +40,7 @@
             target = other.target;
             bravery = other.bravery;
             exp_delta = other.exp_delta;
-            exp_seed= other.exp_seed;
+            exp_seed = other.exp_seed;
             distance = other.distance;
         }
 

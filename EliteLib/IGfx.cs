@@ -19,7 +19,7 @@ namespace Elite
 
     public interface IGfx
     {
-        void ClearArea(int tx, int ty, int bx, int by);
+        void ClearArea(int x, int y, int width, int height);
 
         void ClearDisplay();
 
@@ -39,7 +39,7 @@ namespace Elite
 
         void DrawPolygon(Vector2[] point_list, GFX_COL face_colour, int zavg);
 
-        void DrawRectangle(int tx, int ty, int bx, int by, GFX_COL colour);
+        void DrawRectangle(int x, int y, int width, int height, GFX_COL colour);
 
         void DrawScanner();
 
