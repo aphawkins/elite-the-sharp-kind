@@ -515,8 +515,7 @@ namespace Elite
 		{
 			float tmp;
 
-			if ((elite.current_screen == SCR.SCR_REAR_VIEW) ||
-				(elite.current_screen == SCR.SCR_GAME_OVER))
+			if (elite.current_screen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
 			{
 				flip.location.X = -flip.location.X;
 				flip.location.Z = -flip.location.Z;
@@ -587,7 +586,6 @@ namespace Elite
 			SHIP type;
 			int bounty;
 			string str;
-			univ_object flip;
 
             elite.alg_gfx.RenderStart();
 
@@ -630,17 +628,19 @@ namespace Elite
 						universe[i].flags |= FLG.FLG_DEAD;
 					}
 
-					if ((elite.current_screen != SCR.SCR_INTRO_ONE) &&
-						(elite.current_screen != SCR.SCR_INTRO_TWO) &&
-						(elite.current_screen != SCR.SCR_GAME_OVER) &&
-						(elite.current_screen != SCR.SCR_ESCAPE_POD))
+					if (elite.current_screen is 
+						not SCR.SCR_INTRO_ONE and
+                        not SCR.SCR_INTRO_TWO and
+                        not SCR.SCR_GAME_OVER and
+                        not SCR.SCR_ESCAPE_POD)
 					{
 						swat.tactics(i);
 					}
 
 					move_univ_object(ref universe[i]);
 
-					flip = universe[i];
+                    univ_object flip = (univ_object)universe[i].Clone();
+					flip.bravery = 99;
 					switch_to_view(ref flip);
 
 					if (type == SHIP.SHIP_PLANET)
@@ -670,9 +670,11 @@ namespace Elite
 							check_docking(i);
 						}
 						else
-							trade.scoop_item(i);
+                        {
+                            trade.scoop_item(i);
+                        }
 
-						continue;
+                        continue;
 					}
 
 					if (universe[i].distance > 57344)
@@ -1094,8 +1096,9 @@ namespace Elite
 		{
 			string str = $"{hyper_countdown:D}";
 
-			if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
-				(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW))
+			if (elite.current_screen is 
+				SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
+                SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
 			{
                 elite.alg_gfx.DrawText(5, 5, str);
 				if (hyper_galactic)

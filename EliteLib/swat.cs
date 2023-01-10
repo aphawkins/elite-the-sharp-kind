@@ -98,14 +98,15 @@ namespace Elite
 
 		internal static void clear_universe()
 		{
-			int i;
-
-			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
-				space.universe[i].type = 0;
-			}
+                space.universe[i] = new()
+                {
+                    type = 0
+                };
+            }
 
-			for (i = 0; i <= shipdata.NO_OF_SHIPS; i++)
+			for (int i = 0; i <= shipdata.NO_OF_SHIPS; i++)
 			{
 				space.ship_count[i] = 0;
 			}

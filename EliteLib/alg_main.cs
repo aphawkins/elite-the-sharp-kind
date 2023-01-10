@@ -1379,10 +1379,11 @@ namespace Elite
 					{
                         elite.alg_gfx.ScreenAcquire();
 
-						if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
-							(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW) ||
-							(elite.current_screen == SCR.SCR_INTRO_ONE) || (elite.current_screen == SCR.SCR_INTRO_TWO) ||
-							(elite.current_screen == SCR.SCR_GAME_OVER))
+						if (elite.current_screen is 
+							SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
+                            SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
+                            SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
+                            SCR.SCR_GAME_OVER)
 						{
                             elite.alg_gfx.ClearDisplay();
 							Stars.update_starfield();
@@ -1406,8 +1407,9 @@ namespace Elite
 							continue;
 						}
 
-						if ((elite.current_screen == SCR.SCR_FRONT_VIEW) || (elite.current_screen == SCR.SCR_REAR_VIEW) ||
-							(elite.current_screen == SCR.SCR_LEFT_VIEW) || (elite.current_screen == SCR.SCR_RIGHT_VIEW))
+						if (elite.current_screen is 
+							SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
+                            SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
 						{
 							if (draw_lasers != 0)
 							{
