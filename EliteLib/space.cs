@@ -640,7 +640,6 @@ namespace Elite
 					move_univ_object(ref universe[i]);
 
                     univ_object flip = (univ_object)universe[i].Clone();
-					flip.bravery = 99;
 					switch_to_view(ref flip);
 
 					if (type == SHIP.SHIP_PLANET)
