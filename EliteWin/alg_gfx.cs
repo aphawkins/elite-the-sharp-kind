@@ -227,12 +227,18 @@ namespace Elite
             //xor_mode(false);
         }
 
-        public void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL col)
+        public void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL colour)
 		{
             Debug.WriteLine(nameof(DrawTriangle));
 
-         //   triangle(gfx_screen, x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET,
-						   //x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET, col);
+            Point[] points = new Point[3]
+            {
+                new Point(x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET),
+                new Point(x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET),
+                new Point(x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET),
+            };
+
+            gfx_polygon(points, colour);
 		}
 
 		public void DrawText(int x, int y, string text)
