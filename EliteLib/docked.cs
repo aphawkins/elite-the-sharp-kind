@@ -42,8 +42,10 @@ namespace Elite
 		internal static int cross_y = 0;
 
 		internal static List<Vector2> planetPixels = new();
+        internal static List<(Vector2 position, string name)> planetNames = new();
+		internal static List<(Vector2 position, int size)> planetSizes = new();
 
-		internal static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
+        internal static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
 		{
             int dx = Math.Abs(to_planet.d - from_planet.d);
             int dy = Math.Abs(to_planet.b - from_planet.b);
@@ -98,12 +100,12 @@ namespace Elite
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
 				cross_x = elite.hyperspace_planet.d * gfx.GFX_SCALE;
-				cross_y = elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE) + (18 * gfx.GFX_SCALE) + 1;
+				cross_y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
-				cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * (4 * gfx.GFX_SCALE)) + gfx.GFX_X_CENTRE;
-				cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * (2 * gfx.GFX_SCALE)) + gfx.GFX_Y_CENTRE;
+				cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+				cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 			}
 		}
 
@@ -112,7 +114,7 @@ namespace Elite
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
 				cross_x = elite.docked_planet.d * gfx.GFX_SCALE;
-				cross_y = elite.docked_planet.b / (2 / gfx.GFX_SCALE) + (18 * gfx.GFX_SCALE) + 1;
+				cross_y = (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
@@ -163,12 +165,12 @@ namespace Elite
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
 				cross_x = elite.hyperspace_planet.d * gfx.GFX_SCALE;
-				cross_y = elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE) + (18 * gfx.GFX_SCALE) + 1;
+				cross_y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
-				cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * (4 * gfx.GFX_SCALE)) + gfx.GFX_X_CENTRE;
-				cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * (2 * gfx.GFX_SCALE)) + gfx.GFX_Y_CENTRE;
+				cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+				cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 			}
 		}
 
@@ -176,12 +178,10 @@ namespace Elite
 		{
 			int[] row_used = new int[64];
 			elite.current_screen = SCR.SCR_SHORT_RANGE;
-            elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
-			elite.draw.DrawFuelLimitCircle(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
+			planetNames.Clear();
+			planetSizes.Clear();
 
-			for (int i = 0; i < 64; i++)
+            for (int i = 0; i < 64; i++)
 			{
 				row_used[i] = 0;
 			}
@@ -203,11 +203,11 @@ namespace Elite
 					continue;
 				}
 
-				int px = (glx.d - elite.docked_planet.d);
-				px = px * 4 * gfx.GFX_SCALE + gfx.GFX_X_CENTRE;  /* Convert to screen co-ords */
+				int px = glx.d - elite.docked_planet.d;
+				px = (px * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;  /* Convert to screen co-ords */
 
-				int py = (glx.b - elite.docked_planet.b);
-				py = py * 2 * gfx.GFX_SCALE + gfx.GFX_Y_CENTRE; /* Convert to screen co-ords */
+				int py = glx.b - elite.docked_planet.b;
+				py = (py * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE; /* Convert to screen co-ords */
 
 				int row = py / (8 * gfx.GFX_SCALE);
 
@@ -236,16 +236,17 @@ namespace Elite
 					row_used[row] = 1;
 					string planet_name = Planet.name_planet(glx);
 					planet_name = Planet.capitalise_name(planet_name);
-                    elite.alg_gfx.DrawText(px + (4 * gfx.GFX_SCALE), (row * 8 - 5) * gfx.GFX_SCALE, planet_name);
+
+					planetNames.Add((new(px + (4 * gfx.GFX_SCALE), ((row * 8) - 5) * gfx.GFX_SCALE), planet_name));
 				}
 
 				/* The next bit calculates the size of the circle used to represent */
 				/* a planet.  The carry_flag is left over from the name generation. */
 				/* Yes this was how it was done... don't ask :-( */
-
 				int blob_size = (glx.f & 1) + 2 + elite.carry_flag;
 				blob_size *= gfx.GFX_SCALE;
-                elite.alg_gfx.DrawCircleFilled(px, py, blob_size, GFX_COL.GFX_COL_GOLD);
+				planetSizes.Add((new(px, py), blob_size));
+                
 
 				Planet.waggle_galaxy(ref glx);
 				Planet.waggle_galaxy(ref glx);
@@ -253,17 +254,19 @@ namespace Elite
 				Planet.waggle_galaxy(ref glx);
 			}
 
-			cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+			elite.draw.DrawShortRangeChart(planetNames, planetSizes);
+
+            cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
 			cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 		}
 
 		internal static void display_galactic_chart()
 		{
 			elite.current_screen = SCR.SCR_GALACTIC_CHART;
-			elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1);
             galaxy_seed glx = elite.cmdr.galaxy;
+			planetPixels.Clear();
 
-			for (int i = 0; i < 256; i++)
+            for (int i = 0; i < 256; i++)
 			{
 				Vector2 pixel = new();
                 pixel.X = glx.d * gfx.GFX_SCALE;
@@ -282,7 +285,9 @@ namespace Elite
 				Planet.waggle_galaxy(ref glx);
 			}
 
-			cross_x = elite.hyperspace_planet.d * gfx.GFX_SCALE;
+            elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, planetPixels);
+
+            cross_x = elite.hyperspace_planet.d * gfx.GFX_SCALE;
 			cross_y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 		}
 
@@ -613,7 +618,7 @@ namespace Elite
 			int y;
 			string str;
 
-			y = i * 15 + 55;
+			y = (i * 15) + 55;
 
             elite.alg_gfx.DrawText(16, y, trade.stock_market[i].name);
 
@@ -651,12 +656,12 @@ namespace Elite
 
 			if ((hilite_item != -1) && (hilite_item != i))
 			{
-				y = hilite_item * 15 + 55;
+				y = (hilite_item * 15) + 55;
                 elite.alg_gfx.ClearArea(2, y, 508, 15);
 				display_stock_price(hilite_item);
 			}
 
-			y = i * 15 + 55;
+			y = (i * 15) + 55;
 
             elite.alg_gfx.DrawRectangle(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
 			display_stock_price(i);
@@ -882,13 +887,13 @@ namespace Elite
 			switch (type)
 			{
 				case equip_types.EQ_FUEL:
-					return (elite.cmdr.fuel >= 70);
+					return elite.cmdr.fuel >= 70;
 
 				case equip_types.EQ_MISSILE:
-					return (elite.cmdr.missiles >= 4);
+					return elite.cmdr.missiles >= 4;
 
 				case equip_types.EQ_CARGO_BAY:
-					return (elite.cmdr.cargo_capacity > 20);
+					return elite.cmdr.cargo_capacity > 20;
 
 				case equip_types.EQ_ECM:
 					return elite.cmdr.ecm;
@@ -912,52 +917,52 @@ namespace Elite
 					return elite.cmdr.galactic_hyperdrive;
 
 				case equip_types.EQ_FRONT_PULSE:
-					return (elite.cmdr.front_laser == elite.PULSE_LASER);
+					return elite.cmdr.front_laser == elite.PULSE_LASER;
 
 				case equip_types.EQ_REAR_PULSE:
-					return (elite.cmdr.rear_laser == elite.PULSE_LASER);
+					return elite.cmdr.rear_laser == elite.PULSE_LASER;
 
 				case equip_types.EQ_LEFT_PULSE:
-					return (elite.cmdr.left_laser == elite.PULSE_LASER);
+					return elite.cmdr.left_laser == elite.PULSE_LASER;
 
 				case equip_types.EQ_RIGHT_PULSE:
-					return (elite.cmdr.right_laser == elite.PULSE_LASER);
+					return elite.cmdr.right_laser == elite.PULSE_LASER;
 
 				case equip_types.EQ_FRONT_BEAM:
-					return (elite.cmdr.front_laser == elite.BEAM_LASER);
+					return elite.cmdr.front_laser == elite.BEAM_LASER;
 
 				case equip_types.EQ_REAR_BEAM:
-					return (elite.cmdr.rear_laser == elite.BEAM_LASER);
+					return elite.cmdr.rear_laser == elite.BEAM_LASER;
 
 				case equip_types.EQ_LEFT_BEAM:
-					return (elite.cmdr.left_laser == elite.BEAM_LASER);
+					return elite.cmdr.left_laser == elite.BEAM_LASER;
 
 				case equip_types.EQ_RIGHT_BEAM:
-					return (elite.cmdr.right_laser == elite.BEAM_LASER);
+					return elite.cmdr.right_laser == elite.BEAM_LASER;
 
 				case equip_types.EQ_FRONT_MINING:
-					return (elite.cmdr.front_laser == elite.MINING_LASER);
+					return elite.cmdr.front_laser == elite.MINING_LASER;
 
 				case equip_types.EQ_REAR_MINING:
-					return (elite.cmdr.rear_laser == elite.MINING_LASER);
+					return elite.cmdr.rear_laser == elite.MINING_LASER;
 
 				case equip_types.EQ_LEFT_MINING:
-					return (elite.cmdr.left_laser == elite.MINING_LASER);
+					return elite.cmdr.left_laser == elite.MINING_LASER;
 
 				case equip_types.EQ_RIGHT_MINING:
-					return (elite.cmdr.right_laser == elite.MINING_LASER);
+					return elite.cmdr.right_laser == elite.MINING_LASER;
 
 				case equip_types.EQ_FRONT_MILITARY:
-					return (elite.cmdr.front_laser == elite.MILITARY_LASER);
+					return elite.cmdr.front_laser == elite.MILITARY_LASER;
 
 				case equip_types.EQ_REAR_MILITARY:
-					return (elite.cmdr.rear_laser == elite.MILITARY_LASER);
+					return elite.cmdr.rear_laser == elite.MILITARY_LASER;
 
 				case equip_types.EQ_LEFT_MILITARY:
-					return (elite.cmdr.left_laser == elite.MILITARY_LASER);
+					return elite.cmdr.left_laser == elite.MILITARY_LASER;
 
 				case equip_types.EQ_RIGHT_MILITARY:
-					return (elite.cmdr.right_laser == elite.MILITARY_LASER);
+					return elite.cmdr.right_laser == elite.MILITARY_LASER;
 			}
 
 			return false;
@@ -1075,9 +1080,9 @@ namespace Elite
 			int y = 55;
 			for (i = 0; i < NO_OF_EQUIP_ITEMS; i++)
 			{
-				equip_stock[i].canbuy = ((!equip_present(equip_stock[i].type)) && (equip_stock[i].price <= elite.cmdr.credits));
+				equip_stock[i].canbuy = (!equip_present(equip_stock[i].type)) && (equip_stock[i].price <= elite.cmdr.credits);
 
-				if ((equip_stock[i].show) && (tech_level >= equip_stock[i].level))
+				if (equip_stock[i].show && (tech_level >= equip_stock[i].level))
 				{
 					equip_stock[i].y = y;
 					y += 15;
@@ -1102,7 +1107,7 @@ namespace Elite
 			for (int i = 0; i < NO_OF_EQUIP_ITEMS; i++)
 			{
 				ch = equip_stock[i].name[0];
-				equip_stock[i].show = ((ch == ' ') || (ch == '+'));
+				equip_stock[i].show = (ch == ' ') || (ch == '+');
 			}
 		}
 

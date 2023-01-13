@@ -115,6 +115,8 @@ namespace Elite
 
         public alg_gfx(ref Bitmap screen)
 		{
+            Debug.Assert(screen.Width == 512);
+            Debug.Assert(screen.Height == 512);
             Debug.Assert(_pens.Count == Enum.GetNames(typeof(GFX_COL)).Length);
             Debug.Assert(_brushes.Count == Enum.GetNames(typeof(GFX_COL)).Length);
 
@@ -260,17 +262,14 @@ namespace Elite
 			_screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), _pens[col].Color);
         }
 
-        public void DrawCircleFilled(int cx, int cy, int radius, GFX_COL colour)
+        public void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour)
 		{
-            Debug.WriteLine(nameof(DrawCircleFilled));
-
-            _screenBufferGraphics.FillEllipse(_brushes[colour], cx + gfx.GFX_X_OFFSET - radius, cy + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
+            _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + gfx.GFX_X_OFFSET - radius, centre.Y + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
         }
 
-
-        public virtual void DrawCircle(int cx, int cy, int radius, GFX_COL colour)
+        public virtual void DrawCircle(Vector2 centre, float radius, GFX_COL colour)
 		{
-            _screenBufferGraphics.DrawEllipse(_pens[colour], cx + gfx.GFX_X_OFFSET - radius, cy + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
+            _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + gfx.GFX_X_OFFSET - radius, centre.Y + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
         }
 
         public virtual void DrawLine(float x1, float y1, float x2, float y2)

@@ -131,11 +131,13 @@ namespace Elite
 
 			for (int i = 0; i < stars.Length; i++)
 			{
-				/* Plot the stars in their current locations... */
-				Vector2 star = new();
-                star.Y = stars[i].Y;
-                star.X = stars[i].X;
-				float zz = stars[i].Z;
+                /* Plot the stars in their current locations... */
+                Vector2 star = new()
+                {
+                    Y = stars[i].Y,
+                    X = stars[i].X
+                };
+                float zz = stars[i].Z;
 
                 star.X += 128;
                 star.Y += 96;
@@ -161,7 +163,6 @@ namespace Elite
 					}
 				}
 
-
 				/* Move the stars to their new locations...*/
 
 				float Q = delta / stars[i].Z;
@@ -171,14 +172,14 @@ namespace Elite
 				float xx = stars[i].X - (stars[i].X * Q);
 				zz = stars[i].Z;
 
-				yy = yy + (xx * alpha);
-				xx = xx - (yy * alpha);
+				yy += xx * alpha;
+				xx -= yy * alpha;
 
 				/*
 						tx = yy * beta;
 						xx = xx + (tx * tx * 2);
 				*/
-				yy = yy + beta;
+				yy += beta;
 
 				if (warp_stars)
 				{
@@ -273,11 +274,11 @@ namespace Elite
 				float delt8 = delta / (zz / 32);
 				xx = xx + delt8;
 
-				xx += (yy * (beta / 256));
-				yy -= (xx * (beta / 256));
+				xx += yy * (beta / 256);
+				yy -= xx * (beta / 256);
 
-				xx += ((yy / 256) * (alpha / 256)) * (-xx);
-				yy += ((yy / 256) * (alpha / 256)) * (yy);
+				xx += yy / 256 * (alpha / 256) * (-xx);
+				yy += yy / 256 * (alpha / 256) * yy;
 
 				yy += alpha;
 

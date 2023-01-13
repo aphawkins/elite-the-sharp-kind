@@ -9,4 +9,9 @@
 - Sun is missing in initial system
 
 ## Missions
-- Ship and text in mission bried doesn't clip correctly
+- Ship and text in mission brief doesn't clip correctly
+
+## Charts
+- Stutter on first moving the cursor
+- Distance to planet doesn't show when cursor moved to new planet
+- Formatting of distance to planet has leading zeros

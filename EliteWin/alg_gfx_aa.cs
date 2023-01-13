@@ -15,6 +15,7 @@
 namespace Elite
 {
     using System.Drawing;
+    using System.Numerics;
     using Elite.Enums;
 
     public class alg_gfx_aa : alg_gfx
@@ -32,11 +33,8 @@ namespace Elite
         {
         }
 
-        public override void DrawCircle(int cx, int cy, int radius, GFX_COL colour = GFX_COL.GFX_COL_WHITE)
+        public override void DrawCircle(Vector2 centre, float radius, GFX_COL colour = GFX_COL.GFX_COL_WHITE)
         {
-            // Method originally used floats
-            // float radius = itofix(radius)
-
             //	int x, y;
             //	int s;
             //	int sx, sy;

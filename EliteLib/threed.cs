@@ -505,13 +505,10 @@ namespace Elite
 		/*
 		 * Draw a line of the planet with appropriate rotation.
 		 */
-		static void render_planet_line(int xo, int yo, int x, int y, int radius, int vx, int vy)
+		static void render_planet_line(float xo, float yo, float x, float y, int radius, float vx, float vy)
 		{
-			int lx, ly;
-			int rx, ry;
             GFX_COL colour;
 			Vector2 s = new();
-			int ex;
 			int div;
 
 			s.Y = y + yo;
@@ -523,10 +520,10 @@ namespace Elite
 			}
 
 			s.X = xo - x;
-			ex = xo + x;
+			float ex = xo + x;
 
-			rx = -x * vx - y * vy;
-			ry = -x * vy + y * vx;
+			float rx = -x * vx - y * vy;
+			float ry = -x * vy + y * vx;
 			rx += radius << 16;
 			ry += radius << 16;
 			div = radius << 10;  /* radius * 2 * LAND_X_MAX >> 16 */
@@ -536,8 +533,8 @@ namespace Elite
 			{
 				if ((s.X >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)) && (s.X <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)))
 				{
-					lx = rx / div;
-					ly = ry / div;
+					int lx = (int)(rx / div);
+					int ly = (int)(ry / div);
 					colour = (GFX_COL)landscape[lx, ly];
 
                     elite.alg_gfx.PlotPixelFast(s, colour);
@@ -551,29 +548,25 @@ namespace Elite
 		/*
 		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
 		 */
-		static void render_planet(int xo, int yo, int radius, Vector3[] vec)
+		static void render_planet(Vector2 centre, int radius, Vector3[] vec)
 		{
-			int x, y;
-			int s;
-			int vx, vy;
+            centre.X += gfx.GFX_X_OFFSET;
+            centre.Y += gfx.GFX_Y_OFFSET;
 
-			xo += gfx.GFX_X_OFFSET;
-			yo += gfx.GFX_Y_OFFSET;
+            float vx = vec[1].X * 65536;
+            float vy = vec[1].Y * 65536;
 
-			vx = (int)(vec[1].X * 65536);
-			vy = (int)(vec[1].Y * 65536);
-
-			s = radius;
-			x = radius;
-			y = 0;
+			float s = radius;
+            float x = radius;
+            float y = 0;
 
 			s -= x + x;
 			while (y <= x)
 			{
-				render_planet_line(xo, yo, x, y, radius, vx, vy);
-				render_planet_line(xo, yo, x, -y, radius, vx, vy);
-				render_planet_line(xo, yo, y, x, radius, vx, vy);
-				render_planet_line(xo, yo, y, -x, radius, vx, vy);
+				render_planet_line(centre.X, centre.Y, x, y, radius, vx, vy);
+				render_planet_line(centre.X, centre.Y, x, -y, radius, vx, vy);
+				render_planet_line(centre.X, centre.Y, y, x, radius, vx, vy);
+				render_planet_line(centre.X, centre.Y, y, -x, radius, vx, vy);
 
 				s += y + y + 1;
 				y++;
@@ -590,11 +583,10 @@ namespace Elite
 		 * At the moment we just draw a circle.
 		 * Need to add in the two arcs that the original Elite had.
 		 */
-		static void draw_wireframe_planet(int xo, int yo, int radius, Vector3[] vec)
+		static void draw_wireframe_planet(Vector2 centre, int radius, Vector3[] vec)
 		{
-            elite.alg_gfx.DrawCircle(xo, yo, radius, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
 		}
-
 
 		/*
 		 * Draw a planet.
@@ -603,47 +595,46 @@ namespace Elite
 		 * - Fractal landscape.
 		 * - SNES Elite style.
 		 */
-
 		static void draw_planet(ref univ_object planet)
 		{
-			int x, y;
-			int radius;
+			Vector2 position = new();
+            position.X = planet.location.X * 256 / planet.location.Z;
+            position.Y = planet.location.Y * 256 / planet.location.Z;
 
-			x = (int)((planet.location.X * 256) / planet.location.Z);
-			y = (int)((planet.location.Y * 256) / planet.location.Z);
+            position.Y = -position.Y;
 
-			y = -y;
+            position.X += 128;
+            position.Y += 96;
 
-			x += 128;
-			y += 96;
+            position.X *= gfx.GFX_SCALE;
+            position.Y *= gfx.GFX_SCALE;
 
-			x *= gfx.GFX_SCALE;
-			y *= gfx.GFX_SCALE;
-
-			radius = 6291456 / planet.distance;
+			int radius = 6291456 / planet.distance;
 			//	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
 
 			radius *= gfx.GFX_SCALE;
 
-			if ((x + radius < 0) ||
-				(x - radius > 511) ||
-				(y + radius < 0) ||
-				(y - radius > 383))
-				return;
+			if ((position.X + radius < 0) ||
+				(position.X - radius > 511) ||
+				(position.Y + radius < 0) ||
+				(position.Y - radius > 383))
+            {
+                return;
+            }
 
-			switch (elite.planet_render_style)
+            switch (elite.planet_render_style)
 			{
 				case 0:
-					draw_wireframe_planet(x, y, radius, planet.rotmat);
+					draw_wireframe_planet(position, radius, planet.rotmat);
 					break;
 
 				case 1:
-                    elite.alg_gfx.DrawCircleFilled(x, y, radius, GFX_COL.GFX_COL_GREEN_1);
+                    elite.alg_gfx.DrawCircleFilled(position, radius, GFX_COL.GFX_COL_GREEN_1);
 					break;
 
 				case 2:
 				case 3:
-					render_planet(x, y, radius, planet.rotmat);
+					render_planet(position, radius, planet.rotmat);
 					break;
 			}
 		}

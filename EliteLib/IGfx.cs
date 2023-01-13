@@ -25,9 +25,9 @@ namespace Elite
 
         void ClearTextArea();
 
-        void DrawCircle(int cx, int cy, int radius, GFX_COL colour);
+        void DrawCircle(Vector2 centre, float radius, GFX_COL colour);
 
-        void DrawCircleFilled(int cx, int cy, int radius, GFX_COL colour);
+        void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour);
 
         void DrawLine(float x1, float y1, float x2, float y2, GFX_COL colour);
 

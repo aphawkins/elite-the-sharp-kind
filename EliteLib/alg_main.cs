@@ -127,14 +127,14 @@ namespace Elite
 
 			if (elite.current_screen == SCR.SCR_SHORT_RANGE)
 			{
-				Docked.cross_x += (dx * 4);
-				Docked.cross_y += (dy * 4);
+				Docked.cross_x += dx * 4;
+				Docked.cross_y += dy * 4;
 				return;
 			}
 			else if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				Docked.cross_x += (dx * 2);
-				Docked.cross_y += (dy * 2);
+				Docked.cross_x += dx * 2;
+				Docked.cross_y += dy * 2;
 
 				if (Docked.cross_x < 1)
 				{
@@ -1031,7 +1031,7 @@ namespace Elite
 
 			if (elite.keyboard.IsKeyPressed(CommandKey.EnergyBomb))
 			{
-				if ((!elite.docked) && (elite.cmdr.energy_bomb))
+				if ((!elite.docked) && elite.cmdr.energy_bomb)
 				{
 					elite.detonate_bomb = true;
 					elite.cmdr.energy_bomb = false;
@@ -1040,7 +1040,7 @@ namespace Elite
 
 			if (elite.keyboard.IsKeyPressed(CommandKey.Escape))
 			{
-				if ((!elite.docked) && (elite.cmdr.escape_pod) && (!elite.witchspace))
+				if ((!elite.docked) && elite.cmdr.escape_pod && (!elite.witchspace))
 				{
 					run_escape_sequence();
 				}
@@ -1250,7 +1250,7 @@ namespace Elite
 
             for (int i = 0; i < 20; i++)
             {
-                elite.alg_gfx.DrawCircle(256, 192, 30 + i * 15, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.DrawCircle(new(256f, 192f), 30f + (i * 15f), GFX_COL.GFX_COL_WHITE);
                 elite.alg_gfx.ScreenUpdate();
             }
 
@@ -1491,22 +1491,17 @@ namespace Elite
 					if ((Docked.cross_x != old_cross_x) ||
 						(Docked.cross_y != old_cross_y))
 					{
-						//if (old_cross_x != -1)
-						//{
-						//	draw_cross(old_cross_x, old_cross_y);
-						//}
+                        old_cross_x = Docked.cross_x;
+                        old_cross_y = Docked.cross_y;
 
-						if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+                        if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 						{
-							elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1);
+							elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, Docked.planetPixels);
 						}
 						else if(elite.current_screen == SCR.SCR_SHORT_RANGE)
 						{
-							//
-						}
-
-						old_cross_x = Docked.cross_x;
-						old_cross_y = Docked.cross_y;
+							elite.draw.DrawShortRangeChart(Docked.planetNames, Docked.planetSizes);
+                        }
 
 						draw_cross(old_cross_x, old_cross_y);
 					}
