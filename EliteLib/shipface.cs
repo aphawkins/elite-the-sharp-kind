@@ -278,8 +278,8 @@ namespace Elite
 			new(GFX_COL.GFX_COL_GREY_2,  0x1B,-0x28, 0x0B, 3, 8,  2,  0, 0, 0, 0, 0, 0),
 
 			new(GFX_COL.GFX_COL_YELLOW_1, -0x13, 0x26, 0x00, 3, 3,  1,  4, 0, 0, 0, 0, 0),
-			new(GFX_COL.GFX_COL_YELLOW_2,  0x13, 0x26, 0x00, 3, 4,  1,  2, 0, 0, 0, 0, 0),
-			new(GFX_COL.GFX_COL_YELLOW_2, -0x13,-0x26, 0x00, 3, 3,  9,  8, 0, 0, 0, 0, 0),
+			new(GFX_COL.GFX_COL_GOLD,  0x13, 0x26, 0x00, 3, 4,  1,  2, 0, 0, 0, 0, 0),
+			new(GFX_COL.GFX_COL_GOLD, -0x13,-0x26, 0x00, 3, 3,  9,  8, 0, 0, 0, 0, 0),
 			new(GFX_COL.GFX_COL_YELLOW_1,  0x13,-0x26, 0x00, 3, 8,  9,  2, 0, 0, 0, 0, 0),
 
 			new(GFX_COL.GFX_COL_GREY_2, -0x19, 0x25,-0x0B, 4, 3,  4,  5, 6, 0, 0, 0, 0),
@@ -372,13 +372,13 @@ namespace Elite
 		private static ship_face[] sidewinder_face =
 		{
 			new(GFX_COL.GFX_COL_YELLOW_1,  0x00, 0x20, 0x08, 3, 4, 0, 1, 0, 0, 0, 0, 0),
-			new(GFX_COL.GFX_COL_YELLOW_2, -0x0C, 0x2F, 0x06, 3, 4, 3, 0, 0, 0, 0, 0, 0),
-			new(GFX_COL.GFX_COL_YELLOW_2,  0x0C, 0x2F, 0x06, 3, 2, 4, 1, 0, 0, 0, 0, 0),
+			new(GFX_COL.GFX_COL_GOLD, -0x0C, 0x2F, 0x06, 3, 4, 3, 0, 0, 0, 0, 0, 0),
+			new(GFX_COL.GFX_COL_GOLD,  0x0C, 0x2F, 0x06, 3, 2, 4, 1, 0, 0, 0, 0, 0),
 
 			new(GFX_COL.GFX_COL_GREY_1,  0x00, 0x00,-0x70, 4, 2, 5, 3, 4, 0, 0, 0, 0),
 
 			new(GFX_COL.GFX_COL_YELLOW_1, -0x0C,-0x2F, 0x06, 3, 5, 0, 3, 0, 0, 0, 0, 0),
-			new(GFX_COL.GFX_COL_YELLOW_2,  0x00,-0x20, 0x08, 3, 1, 0, 5, 0, 0, 0, 0, 0),
+			new(GFX_COL.GFX_COL_GOLD,  0x00,-0x20, 0x08, 3, 1, 0, 5, 0, 0, 0, 0, 0),
 			new(GFX_COL.GFX_COL_YELLOW_1,  0x0C,-0x2F, 0x06, 3, 2, 1, 5, 0, 0, 0, 0, 0),
 			new(GFX_COL.GFX_COL_RED,  0x00, 0x00,-0x70, 4, 8, 9, 6, 7, 0, 0, 0, 0),
 		};
@@ -618,8 +618,8 @@ namespace Elite
 			new(GFX_COL.GFX_COL_GREY_1,   -0x18,  0x4B,  0x14, 3,  1,  9,  2, 0, 0, 0, 0, 0),
 			new(GFX_COL.GFX_COL_GREY_1,    0x18,  0x4B,  0x14, 3,  0,  7,  8, 0, 0, 0, 0, 0),
 
-			new(GFX_COL.GFX_COL_YELLOW_2,    0x2C,  0x4B,  0x00, 3,  7,  6,  8, 0, 0, 0, 0, 0),
-			new(GFX_COL.GFX_COL_YELLOW_2,   -0x2C,  0x4B,  0x00, 3,  9,  3,  2, 0, 0, 0, 0, 0),
+			new(GFX_COL.GFX_COL_GOLD,    0x2C,  0x4B,  0x00, 3,  7,  6,  8, 0, 0, 0, 0, 0),
+			new(GFX_COL.GFX_COL_GOLD,   -0x2C,  0x4B,  0x00, 3,  9,  3,  2, 0, 0, 0, 0, 0),
 
 			new(GFX_COL.GFX_COL_YELLOW_1,   -0x2C,  0x4B,  0x00, 3,  9,  4,  3, 0, 0, 0, 0, 0),
 			new(GFX_COL.GFX_COL_GREY_1,    0x00,  0x35,  0x00, 4,  8,  5,  4, 9, 0, 0, 0, 0),

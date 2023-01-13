@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteWin", "EliteWin\EliteW
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteLib", "EliteLib\EliteLib.csproj", "{72055A4A-5224-466A-9E19-6FDF89B9650A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{04F98D02-06AE-4A39-AB4A-47AE9856AA01}"
+	ProjectSection(SolutionItems) = preProject
+		docs\issues.md = docs\issues.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

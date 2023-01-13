@@ -45,9 +45,80 @@ namespace Elite
 
         private System.Windows.Forms.Timer _frameTimer;
 
-		public alg_gfx(ref Bitmap screen)
+        private readonly Dictionary<GFX_COL, Pen> _pens = new()
+            {
+                { GFX_COL.GFX_COL_BLACK, Pens.Black },
+                { GFX_COL.GFX_COL_WHITE, Pens.White },
+                { GFX_COL.GFX_COL_WHITE_2, Pens.WhiteSmoke },
+                { GFX_COL.GFX_COL_GOLD, Pens.Gold },
+                { GFX_COL.GFX_COL_CYAN, Pens.Cyan },
+                { GFX_COL.GFX_COL_GREY_1, Pens.DimGray },
+                { GFX_COL.GFX_COL_GREY_2, Pens.LightGray },
+                { GFX_COL.GFX_COL_GREY_3, Pens.Gray },
+                { GFX_COL.GFX_COL_GREY_4, Pens.DarkGray },
+                { GFX_COL.GFX_COL_BLUE_1, Pens.LightBlue },
+                { GFX_COL.GFX_COL_BLUE_2, Pens.MediumBlue },
+                { GFX_COL.GFX_COL_BLUE_3, Pens.Blue },
+                { GFX_COL.GFX_COL_BLUE_4, Pens.DarkBlue },
+                { GFX_COL.GFX_COL_RED, Pens.Red },
+                { GFX_COL.GFX_COL_RED_3, Pens.PaleVioletRed },
+                { GFX_COL.GFX_COL_RED_4, Pens.MediumVioletRed },
+                { GFX_COL.GFX_COL_DARK_RED, Pens.DarkRed },
+                { GFX_COL.GFX_COL_YELLOW_1, Pens.Yellow },
+                { GFX_COL.GFX_COL_YELLOW_3, Pens.LightGoldenrodYellow },
+                { GFX_COL.GFX_COL_YELLOW_4, Pens.LightYellow },
+                { GFX_COL.GFX_COL_YELLOW_5, Pens.YellowGreen },
+                { GFX_COL.GFX_COL_ORANGE_1, Pens.Orange },
+                { GFX_COL.GFX_COL_ORANGE_2, Pens.OrangeRed },
+                { GFX_COL.GFX_COL_ORANGE_3, Pens.DarkOrange },
+                { GFX_COL.GFX_COL_GREEN_1, Pens.LightGreen },
+                { GFX_COL.GFX_COL_GREEN_2, Pens.Green },
+                { GFX_COL.GFX_COL_GREEN_3, Pens.DarkGreen },
+                { GFX_COL.GFX_COL_PINK_1, Pens.Pink },
+                { GFX_COL.UNKNOWN_1, Pens.Orange },
+                { GFX_COL.UNKNOWN_2, Pens.DarkOrange }
+            };
+
+        private readonly Dictionary<GFX_COL, Brush> _brushes = new()
+            {
+                { GFX_COL.GFX_COL_BLACK, Brushes.Black },
+                { GFX_COL.GFX_COL_WHITE, Brushes.White },
+                { GFX_COL.GFX_COL_WHITE_2, Brushes.WhiteSmoke },
+                { GFX_COL.GFX_COL_GOLD, Brushes.Gold },
+                { GFX_COL.GFX_COL_CYAN, Brushes.Cyan },
+                { GFX_COL.GFX_COL_GREY_1, Brushes.DimGray },
+                { GFX_COL.GFX_COL_GREY_2, Brushes.LightGray },
+                { GFX_COL.GFX_COL_GREY_3, Brushes.Gray },
+                { GFX_COL.GFX_COL_GREY_4, Brushes.DarkGray },
+                { GFX_COL.GFX_COL_BLUE_1, Brushes.LightBlue },
+                { GFX_COL.GFX_COL_BLUE_2, Brushes.MediumBlue },
+                { GFX_COL.GFX_COL_BLUE_3, Brushes.Blue },
+                { GFX_COL.GFX_COL_BLUE_4, Brushes.DarkBlue },
+                { GFX_COL.GFX_COL_RED, Brushes.Red },
+                { GFX_COL.GFX_COL_RED_3, Brushes.PaleVioletRed },
+                { GFX_COL.GFX_COL_RED_4, Brushes.MediumVioletRed },
+                { GFX_COL.GFX_COL_DARK_RED, Brushes.DarkRed },
+                { GFX_COL.GFX_COL_YELLOW_1, Brushes.Yellow },
+                { GFX_COL.GFX_COL_YELLOW_3, Brushes.LightYellow },
+                { GFX_COL.GFX_COL_YELLOW_4, Brushes.YellowGreen },
+                { GFX_COL.GFX_COL_YELLOW_5, Brushes.GreenYellow },
+                { GFX_COL.GFX_COL_ORANGE_1, Brushes.Orange },
+                { GFX_COL.GFX_COL_ORANGE_2, Brushes.OrangeRed },
+                { GFX_COL.GFX_COL_ORANGE_3, Brushes.DarkOrange },
+                { GFX_COL.GFX_COL_GREEN_1, Brushes.LightGreen },
+                { GFX_COL.GFX_COL_GREEN_2, Brushes.Green },
+                { GFX_COL.GFX_COL_GREEN_3, Brushes.DarkGreen },
+                { GFX_COL.GFX_COL_PINK_1, Brushes.Pink },
+                { GFX_COL.UNKNOWN_1, Brushes.Orange },
+                { GFX_COL.UNKNOWN_2, Brushes.DarkOrange }
+            };
+
+        public alg_gfx(ref Bitmap screen)
 		{
-			_screen = screen;
+            Debug.Assert(_pens.Count == Enum.GetNames(typeof(GFX_COL)).Length);
+            Debug.Assert(_brushes.Count == Enum.GetNames(typeof(GFX_COL)).Length);
+
+            _screen = screen;
             _screenGraphics = Graphics.FromImage(_screen);
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
             _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
@@ -171,42 +242,35 @@ namespace Elite
 
         public void ScreenAcquire()
 		{
-            Debug.WriteLine(nameof(ScreenAcquire));
-
             //acquire_bitmap(gfx_screen);
         }
 
         public void ScreenRelease()
 		{
-            Debug.WriteLine(nameof(ScreenRelease));
-
             //release_bitmap(gfx_screen);
 		}
 
-		public void PlotPixelFast(int x, int y, GFX_COL col)
+		public void PlotPixelFast(Vector2 position, GFX_COL col)
 		{
-            Debug.WriteLine(nameof(PlotPixelFast));
-
-            ////	_putpixel(gfx_screen, x, y, col);
-            //gfx_screen.line[y][x] = col;
-		}
+            PlotPixel(position, col);
+        }
 
         public void PlotPixel(Vector2 position, GFX_COL col)
 		{
-			_screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), MapColorToPen(col).Color);
+			_screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), _pens[col].Color);
         }
 
         public void DrawCircleFilled(int cx, int cy, int radius, GFX_COL colour)
 		{
             Debug.WriteLine(nameof(DrawCircleFilled));
 
-            _screenBufferGraphics.FillEllipse(MapColorToBrush(colour), cx + gfx.GFX_X_OFFSET - radius, cy + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
+            _screenBufferGraphics.FillEllipse(_brushes[colour], cx + gfx.GFX_X_OFFSET - radius, cy + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
         }
 
 
         public virtual void DrawCircle(int cx, int cy, int radius, GFX_COL colour)
 		{
-            _screenBufferGraphics.DrawEllipse(MapColorToPen(colour), cx + gfx.GFX_X_OFFSET - radius, cy + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
+            _screenBufferGraphics.DrawEllipse(_pens[colour], cx + gfx.GFX_X_OFFSET - radius, cy + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
         }
 
         public virtual void DrawLine(float x1, float y1, float x2, float y2)
@@ -216,7 +280,7 @@ namespace Elite
 
 		public void DrawLine(float x1, float y1, float x2, float y2, GFX_COL line_colour)
 		{
-			_screenBufferGraphics.DrawLine(MapColorToPen(line_colour), x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.DrawLine(_pens[line_colour], x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 		}
 
         public void DrawLineXor(float x1, float y1, float x2, float y2, GFX_COL line_colour)
@@ -249,7 +313,7 @@ namespace Elite
 		public void DrawText(int x, int y, string text, GFX_COL colour)
 		{
             PointF point = new((x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
-            _screenBufferGraphics.DrawString(text, _fontSmall, MapColorToBrush(colour), point);
+            _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point);
         }
 
 		public void DrawTextCentre(int y, string text, int psize, GFX_COL colour)
@@ -264,7 +328,7 @@ namespace Elite
             _screenBufferGraphics.DrawString(
 				text,
                 psize == 140 ? _fontLarge : _fontSmall, 
-				MapColorToBrush(colour), 
+				_brushes[colour], 
 				point, 
 				stringFormat);
         }
@@ -286,7 +350,7 @@ namespace Elite
 
 		public void DrawRectangle(int x, int y, int width, int height, GFX_COL colour)
 		{
-			_screenBufferGraphics.FillRectangle(MapColorToBrush(colour), x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.FillRectangle(_brushes[colour], x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
 		public void DrawTextPretty(int x, int y, int width, int height, string text)
@@ -421,7 +485,7 @@ namespace Elite
 				points[i].Y += gfx.GFX_Y_OFFSET;
             }
 
-			_screenBufferGraphics.FillPolygon(MapColorToBrush(face_colour), points);
+			_screenBufferGraphics.FillPolygon(_brushes[face_colour], points);
 		}
 
 		public void DrawSprite(IMG spriteImgage, int x, int y)
@@ -448,170 +512,6 @@ namespace Elite
 
 			return okay;
 		}
-
-		private static Pen MapColorToPen(GFX_COL col)
-		{
-			switch (col)
-			{
-                case GFX_COL.GFX_COL_WHITE:
-                    return Pens.White;
-
-                case GFX_COL.GFX_COL_WHITE_2:
-                    return Pens.WhiteSmoke;
-
-                case GFX_COL.GFX_COL_BLACK:
-                    return Pens.Black;
-
-                case GFX_COL.GFX_COL_GOLD:
-                    return Pens.Gold;
-
-                case GFX_COL.GFX_COL_YELLOW_1:
-                    return Pens.Yellow;
-
-                case GFX_COL.GFX_COL_RED:
-                    return Pens.Red;
-
-                case GFX_COL.GFX_COL_RED_3:
-                    return Pens.PaleVioletRed;
-
-                case GFX_COL.GFX_COL_RED_4:
-                    return Pens.MediumVioletRed;
-
-                case GFX_COL.GFX_COL_DARK_RED:
-                    return Pens.DarkRed;
-
-                case GFX_COL.GFX_COL_BLUE_1:
-                    return Pens.LightBlue;
-
-                case GFX_COL.GFX_COL_BLUE_2:
-                    return Pens.MediumBlue;
-
-                case GFX_COL.GFX_COL_BLUE_3:
-                    return Pens.Blue;
-
-                case GFX_COL.GFX_COL_BLUE_4:
-                    return Pens.DarkBlue;
-
-                case GFX_COL.GFX_COL_GREY_1:
-                    return Pens.DimGray;
-
-                case GFX_COL.GFX_COL_GREY_2:
-                    return Pens.LightGray;
-
-                case GFX_COL.GFX_COL_GREY_3:
-                    return Pens.Gray;
-
-                case GFX_COL.GFX_COL_GREY_4:
-                    return Pens.DarkGray;
-
-                case GFX_COL.GFX_COL_GREEN_1:
-                    return Pens.LightGreen;
-
-                case GFX_COL.GFX_COL_GREEN_2:
-                    return Pens.Green;
-
-                case GFX_COL.GFX_COL_GREEN_3:
-                    return Pens.DarkGreen;
-
-                case GFX_COL.GFX_COL_PINK_1:
-                    return Pens.Pink;
-
-                case GFX_COL.UNKNOWN_1:
-                    return Pens.Orange;
-
-                case GFX_COL.UNKNOWN_2:
-                    return Pens.DarkOrange;
-
-                case GFX_COL.GFX_COL_CYAN:
-                    return Pens.Cyan;
-
-                default:
-					Debug.Assert(false);
-					return Pens.Magenta;
-			}
-		}
-
-        private static Brush MapColorToBrush(GFX_COL col)
-        {
-            switch (col)
-            {
-                case GFX_COL.GFX_COL_WHITE:
-                    return Brushes.White;
-
-                case GFX_COL.GFX_COL_WHITE_2:
-                    return Brushes.WhiteSmoke;
-
-                case GFX_COL.GFX_COL_BLACK:
-                    return Brushes.Black;
-
-                case GFX_COL.GFX_COL_GOLD:
-                    return Brushes.Gold;
-
-                case GFX_COL.GFX_COL_YELLOW_1:
-                    return Brushes.Yellow;
-
-                case GFX_COL.GFX_COL_RED:
-                    return Brushes.Red;
-
-                case GFX_COL.GFX_COL_RED_3:
-                    return Brushes.PaleVioletRed;
-
-                case GFX_COL.GFX_COL_RED_4:
-                    return Brushes.MediumVioletRed;
-
-                case GFX_COL.GFX_COL_DARK_RED:
-                    return Brushes.DarkRed;
-
-                case GFX_COL.GFX_COL_BLUE_1:
-                    return Brushes.LightBlue;
-
-                case GFX_COL.GFX_COL_BLUE_2:
-                    return Brushes.MediumBlue;
-
-                case GFX_COL.GFX_COL_BLUE_3:
-                    return Brushes.Blue;
-
-                case GFX_COL.GFX_COL_BLUE_4:
-                    return Brushes.DarkBlue;
-
-                case GFX_COL.GFX_COL_GREY_1:
-                    return Brushes.DimGray;
-
-                case GFX_COL.GFX_COL_GREY_2:
-                    return Brushes.LightGray;
-
-                case GFX_COL.GFX_COL_GREY_3:
-                    return Brushes.Gray;
-
-                case GFX_COL.GFX_COL_GREY_4:
-                    return Brushes.DarkGray;
-
-                case GFX_COL.GFX_COL_GREEN_1:
-                    return Brushes.LightGreen;
-
-                case GFX_COL.GFX_COL_GREEN_2:
-                    return Brushes.Green;
-
-                case GFX_COL.GFX_COL_GREEN_3:
-                    return Brushes.DarkGreen;
-
-                case GFX_COL.GFX_COL_PINK_1:
-                    return Brushes.Pink;
-
-                case GFX_COL.UNKNOWN_1:
-                    return Brushes.Orange;
-
-                case GFX_COL.UNKNOWN_2:
-                    return Brushes.DarkOrange;
-
-                case GFX_COL.GFX_COL_CYAN:
-                    return Brushes.Cyan;
-
-                default:
-                    Debug.Assert(false);
-                    return Brushes.Magenta;
-            }
-        }
 
         protected virtual void Dispose(bool disposing)
         {

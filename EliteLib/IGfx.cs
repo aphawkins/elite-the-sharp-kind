@@ -61,7 +61,7 @@ namespace Elite
 
         void PlotPixel(Vector2 position, GFX_COL colour);
 
-        void PlotPixelFast(int x, int y, GFX_COL colour);
+        void PlotPixelFast(Vector2 position, GFX_COL colour);
 
         void RenderFinish();
 

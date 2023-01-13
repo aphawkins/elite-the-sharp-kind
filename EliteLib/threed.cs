@@ -510,19 +510,19 @@ namespace Elite
 			int lx, ly;
 			int rx, ry;
             GFX_COL colour;
-			int sx, sy;
+			Vector2 s = new();
 			int ex;
 			int div;
 
-			sy = y + yo;
+			s.Y = y + yo;
 
-			if ((sy < gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) ||
-				(sy > gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
+			if ((s.Y < gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) ||
+				(s.Y > gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
 			{
 				return;
 			}
 
-			sx = xo - x;
+			s.X = xo - x;
 			ex = xo + x;
 
 			rx = -x * vx - y * vy;
@@ -532,15 +532,15 @@ namespace Elite
 			div = radius << 10;  /* radius * 2 * LAND_X_MAX >> 16 */
 
 
-			for (; sx <= ex; sx++)
+			for (; s.X <= ex; s.X++)
 			{
-				if ((sx >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)) && (sx <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)))
+				if ((s.X >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)) && (s.X <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)))
 				{
 					lx = rx / div;
 					ly = ry / div;
 					colour = (GFX_COL)landscape[lx, ly];
 
-                    elite.alg_gfx.PlotPixelFast(sx, sy, colour);
+                    elite.alg_gfx.PlotPixelFast(s, colour);
 				}
 				rx += vx;
 				ry += vy;
@@ -648,38 +648,39 @@ namespace Elite
 			}
 		}
 
-		static void render_sun_line(int xo, int yo, int x, int y, int radius)
+		static void render_sun_line(int xo, int yo, float x, float y, int radius)
 		{
-			int sy = yo + y;
-			int sx, ex;
+			Vector2 s = new();
+			s.Y = yo + y;
+			float ex;
             GFX_COL colour;
-			int dx, dy;
-			int distance;
+			float dx, dy;
+			float distance;
 			int inner, outer;
 			int inner2;
 			bool mix;
 
-			if ((sy < gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) ||
-				(sy > gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
+			if ((s.Y < gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) ||
+				(s.Y > gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
 			{
 				return;
 			}
 
-			sx = xo - x;
+			s.X = xo - x;
 			ex = xo + x;
 
-			sx -= (radius * (2 + (random.randint() & 7))) >> 8;
+			s.X -= (radius * (2 + (random.randint() & 7))) >> 8;
 			ex += (radius * (2 + (random.randint() & 7))) >> 8;
 
-			if ((sx > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET) ||
+			if ((s.X > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET) ||
 				(ex < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET))
 			{
 				return;
 			}
 
-			if (sx < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)
+			if (s.X < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)
 			{
-				sx = gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET;
+				s.X = gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET;
 			}
 
 			if (ex > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)
@@ -697,12 +698,12 @@ namespace Elite
 			outer *= outer;
 
 			dy = y * y;
-			dx = sx - xo;
+			dx = s.X - xo;
 
-			for (; sx <= ex; sx++, dx++)
+			for (; s.X <= ex; s.X++, dx++)
 			{
-				mix = ((sx ^ y) & 1) == 1;
-				distance = dx * dx + dy;
+				mix = ((int)MathF.Pow(s.X, y) & 1) == 1;
+				distance = (dx * dx) + dy;
 
 				if (distance < inner)
 				{
@@ -721,7 +722,7 @@ namespace Elite
 					colour = mix ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
 				}
 
-                elite.alg_gfx.PlotPixelFast(sx, sy, colour);
+                elite.alg_gfx.PlotPixelFast(s, colour);
 			}
 		}
 
@@ -779,9 +780,11 @@ namespace Elite
 				(x - radius > 511) ||
 				(y + radius < 0) ||
 				(y - radius > 383))
-				return;
+            {
+                return;
+            }
 
-			render_sun(x, y, radius);
+            render_sun(x, y, radius);
 		}
 
 		static void draw_explosion(ref univ_object univ)
@@ -966,9 +969,11 @@ namespace Elite
 			}
 
 			if (ship.location.Z <= 0)   /* Only display ships in front of us. */
-				return;
+            {
+                return;
+            }
 
-			if (ship.type == SHIP.SHIP_PLANET)
+            if (ship.type == SHIP.SHIP_PLANET)
 			{
 				draw_planet(ref ship);
 				return;
@@ -982,9 +987,11 @@ namespace Elite
 
 			if ((Math.Abs(ship.location.X) > ship.location.Z) ||    /* Check for field of vision. */
 				(Math.Abs(ship.location.Y) > ship.location.Z))
-				return;
+            {
+                return;
+            }
 
-			if (elite.wireframe)
+            if (elite.wireframe)
 			{
 				draw_wireframe_ship(ref ship);
 			}
