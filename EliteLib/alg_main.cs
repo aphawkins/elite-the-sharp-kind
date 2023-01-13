@@ -56,7 +56,6 @@ namespace Elite
 
     using Elite.Enums;
     using Elite.Structs;
-    using EliteLib.Enums;
 
     public static class alg_main
 	{
@@ -132,8 +131,7 @@ namespace Elite
 				Docked.cross_y += (dy * 4);
 				return;
 			}
-
-			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+			else if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
 				Docked.cross_x += (dx * 2);
 				Docked.cross_y += (dy * 2);
@@ -1296,6 +1294,8 @@ namespace Elite
 			elite.sound = sound;
 			elite.keyboard = keyboard;
 
+			elite.draw = new Draw(elite.alg_gfx);
+
             initialise_allegro();
 			File.read_config_file();
 
@@ -1491,9 +1491,18 @@ namespace Elite
 					if ((Docked.cross_x != old_cross_x) ||
 						(Docked.cross_y != old_cross_y))
 					{
-						if (old_cross_x != -1)
+						//if (old_cross_x != -1)
+						//{
+						//	draw_cross(old_cross_x, old_cross_y);
+						//}
+
+						if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 						{
-							draw_cross(old_cross_x, old_cross_y);
+							elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1);
+						}
+						else if(elite.current_screen == SCR.SCR_SHORT_RANGE)
+						{
+							//
 						}
 
 						old_cross_x = Docked.cross_x;

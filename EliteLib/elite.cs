@@ -78,6 +78,8 @@ namespace Elite
 
 		internal static player_ship myship;
 
+		internal static Draw draw;
+
 		internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]
 		{
 			new(),

@@ -14,6 +14,7 @@
 
 namespace Elite
 {
+	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Structs;
 
@@ -40,27 +41,7 @@ namespace Elite
 		internal static int cross_x = 0;
 		internal static int cross_y = 0;
 
-		static void draw_fuel_limit_circle(int cx, int cy)
-		{
-			int radius;
-			int cross_size;
-
-			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
-			{
-				radius = elite.cmdr.fuel / 4 * gfx.GFX_SCALE;
-				cross_size = 7 * gfx.GFX_SCALE;
-			}
-			else
-			{
-				radius = elite.cmdr.fuel * gfx.GFX_SCALE;
-				cross_size = 16 * gfx.GFX_SCALE;
-			}
-
-            elite.alg_gfx.DrawCircle(cx, cy, radius, GFX_COL.GFX_COL_GREEN_1);
-
-            elite.alg_gfx.DrawLine(cx, cy - cross_size, cx, cy + cross_size);
-            elite.alg_gfx.DrawLine(cx - cross_size, cy, cx + cross_size, cy);
-		}
+		internal static List<Vector2> planetPixels = new();
 
 		internal static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
 		{
@@ -198,7 +179,7 @@ namespace Elite
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(0, 36, 511, 36);
-			draw_fuel_limit_circle(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
+			elite.draw.DrawFuelLimitCircle(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
 
 			for (int i = 0; i < 64; i++)
 			{
@@ -279,24 +260,20 @@ namespace Elite
 		internal static void display_galactic_chart()
 		{
 			elite.current_screen = SCR.SCR_GALACTIC_CHART;
-            elite.alg_gfx.ClearDisplay();
-			string str = $"GALACTIC CHART {elite.cmdr.galaxy_number + 1:D}";
-            elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
-            elite.alg_gfx.DrawLine(0, 36 + 258, 511, 36 + 258);
-			draw_fuel_limit_circle(elite.docked_planet.d * gfx.GFX_SCALE, (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
-			galaxy_seed glx = elite.cmdr.galaxy;
+			elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1);
+            galaxy_seed glx = elite.cmdr.galaxy;
 
 			for (int i = 0; i < 256; i++)
 			{
-				int px = glx.d * gfx.GFX_SCALE;
-				int py = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+				Vector2 pixel = new();
+                pixel.X = glx.d * gfx.GFX_SCALE;
+                pixel.Y = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 
-                elite.alg_gfx.PlotPixel(px, py, GFX_COL.GFX_COL_WHITE);
+				planetPixels.Add(pixel);
 
 				if ((glx.e | 0x50) < 0x90)
 				{
-                    elite.alg_gfx.PlotPixel(px + 1, py, GFX_COL.GFX_COL_WHITE);
+					planetPixels.Add(new(pixel.X + 1, pixel.Y));
 				}
 
 				Planet.waggle_galaxy(ref glx);
@@ -309,10 +286,10 @@ namespace Elite
 			cross_y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 		}
 
-		/*
+        /*
 		 * Displays data on the currently selected Hyperspace Planet.
 		 */
-		internal static void display_data_on_planet()
+        internal static void display_data_on_planet()
 		{
 			planet_data hyper_planet_data = new();
 

@@ -790,9 +790,7 @@ namespace Elite
 			int z;
 			int q;
 			int pr;
-			int px, py;
 			int cnt;
-			int sizex, sizey, psx, psy;
 			Vector3[] trans_mat = new Vector3[3];
 			int sx, sy;
 			float rx, ry, rz;
@@ -916,23 +914,22 @@ namespace Elite
 
 				for (i = 0; i < 16; i++)
 				{
-					px = random.rand255() - 128;
-					py = random.rand255() - 128;
+					Vector2 position = new(random.rand255() - 128, random.rand255() - 128);
 
-					px = (px * q) / 256;
-					py = (py * q) / 256;
+                    position.X = position.X * q / 256;
+                    position.Y = position.Y * q / 256;
 
-					px = px + px + sx;
-					py = py + py + sy;
+                    position.X = position.X + position.X + sx;
+                    position.Y = position.Y + position.Y + sy;
 
-					sizex = (random.randint() & 1) + 1;
-					sizey = (random.randint() & 1) + 1;
+					int sizex = (random.randint() & 1) + 1;
+					int sizey = (random.randint() & 1) + 1;
 
-					for (psy = 0; psy < sizey; psy++)
+					for (int psy = 0; psy < sizey; psy++)
 					{
-						for (psx = 0; psx < sizex; psx++)
+						for (int psx = 0; psx < sizex; psx++)
 						{
-                            elite.alg_gfx.PlotPixel(px + psx, py + psy, GFX_COL.GFX_COL_WHITE);
+                            elite.alg_gfx.PlotPixel(new(position.X + psx, position.Y + psy), GFX_COL.GFX_COL_WHITE);
 						}
 					}
 				}

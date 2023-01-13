@@ -1,4 +1,4 @@
-﻿namespace EliteLib.Enums
+﻿namespace Elite.Enums
 {
     public enum CommandKey
     {

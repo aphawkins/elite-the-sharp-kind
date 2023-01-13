@@ -191,9 +191,9 @@ namespace Elite
             //gfx_screen.line[y][x] = col;
 		}
 
-        public void PlotPixel(int x, int y, GFX_COL col)
+        public void PlotPixel(Vector2 position, GFX_COL col)
 		{
-			_screenBuffer.SetPixel(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, MapColorToPen(col).Color);
+			_screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), MapColorToPen(col).Color);
         }
 
         public void DrawCircleFilled(int cx, int cy, int radius, GFX_COL colour)
@@ -379,7 +379,7 @@ namespace Elite
 			poly_chain[i].next = x;
 		}
 
-		public void DrawLine(int x1, int y1, int x2, int y2, int dist, GFX_COL col)
+		public void DrawLine(float x1, float y1, float x2, float y2, int dist, GFX_COL col)
 		{
 			Vector2[] point_list = new Vector2[2];
 

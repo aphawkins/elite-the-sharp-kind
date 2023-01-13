@@ -36,7 +36,6 @@ namespace Elite
 	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Structs;
-	using EliteLib.Enums;
 
 	internal static class missions
 	{

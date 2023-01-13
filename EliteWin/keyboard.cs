@@ -23,7 +23,7 @@
 namespace Elite
 {
 	using System.Diagnostics;
-    using EliteLib.Enums;
+    using Elite.Enums;
 
     public class Keyboard : IKeyboard
     {
