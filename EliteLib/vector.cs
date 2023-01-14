@@ -28,95 +28,46 @@ namespace Elite
 	{
 		static Vector3[] start_matrix = new Vector3[3]
 		{
-			new Vector3(1.0f, 0.0f, 0.0f),
-			new Vector3(0.0f, 1.0f, 0.0f),
-			new Vector3(0.0f, 0.0f,-1.0f)
+			new Vector3(1f, 0f, 0f),
+			new Vector3(0f, 1f, 0f),
+			new Vector3(0f, 0f,-1f)
 		};
-
-		/*
-		 * Multiply first matrix by second matrix.
-		 * Put result into first matrix.
-		 */
-		static void mult_matrix(Vector3[] first, Vector3[] second)
-		{
-			int i;
-			Vector3[] rv = new Vector3[3];
-			float x;
-			float y;
-			float z;
-
-			for (i = 0; i < 3; i++)
-			{
-				x = (first[0].X * second[i].X) + (first[1].X * second[i].Y) + (first[2].X * second[i].Z);
-				y = (first[0].Y * second[i].X) + (first[1].Y * second[i].Y) + (first[2].Y * second[i].Z);
-				z = (first[0].Z * second[i].X) + (first[1].Z * second[i].Y) + (first[2].Z * second[i].Z);
-
-				rv[i] = new(x, y, z);
-			}
-
-			for (i = 0; i < 3; i++)
-			{
-				first[i] = rv[i];
-			}
-		}
 
 		internal static void mult_vector(ref Vector3 vec, Vector3[] mat)
 		{
-			float x;
-			float y;
-			float z;
+			Matrix4x4 matrix = new(
+				mat[0].X, mat[0].Y, mat[0].Z, 0f,
+				mat[1].X, mat[1].Y, mat[1].Z, 0f,
+				mat[2].X, mat[2].Y, mat[2].Z, 0f,
+				0f, 0f, 0f, 0f);
 
-			x = (vec.X * mat[0].X) +
-				(vec.Y * mat[0].Y) +
-				(vec.Z * mat[0].Z);
-
-			y = (vec.X * mat[1].X) +
-				(vec.Y * mat[1].Y) +
-				(vec.Z * mat[1].Z);
-
-			z = (vec.X * mat[2].X) +
-				(vec.Y * mat[2].Y) +
-				(vec.Z * mat[2].Z);
-
-			vec.X = x;
-			vec.Y = y;
-			vec.Z = z;
+            vec = Vector3.TransformNormal(vec, matrix);
 		}
 
-		/*
-		 * Calculate the dot product of two vectors sharing a common point.
-		 * Returns the cosine of the angle between the two vectors.
-		 */
+		/// <summary>
+		/// Calculate the dot product of two vectors sharing a common point.
+		/// </summary>
+		/// <param name="first"></param>
+		/// <param name="second"></param>
+		/// <returns>The cosine of the angle between the two vectors.</returns>
 		internal static float vector_dot_product(Vector3 first, Vector3 second)
 		{
-			return (first.X * second.X) + (first.Y * second.Y) + (first.Z * second.Z);
-		}
+            return Vector3.Dot(first, second);
+        }
 
-		/*
-		 * Convert a vector into a vector of unit (1) length.
-		 */
+		/// <summary>
+		/// Convert a vector into a vector of unit (1) length.
+		/// </summary>
+		/// <param name="vec"></param>
+		/// <returns></returns>
 		internal static Vector3 unit_vector(Vector3 vec)
 		{
-			Vector3 res;
-
-			float lx = vec.X;
-			float ly = vec.Y;
-			float lz = vec.Z;
-
-			float uni = MathF.Sqrt(lx * lx + ly * ly + lz * lz);
-
-			res.X = lx / uni;
-			res.Y = ly / uni;
-			res.Z = lz / uni;
-
-			return res;
+            return Vector3.Divide(vec, vec.Length());
 		}
 
 		internal static void set_init_matrix(ref Vector3[] mat)
 		{
-			int i;
-
-			for (i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				mat[i] = start_matrix[i];
 			}
@@ -126,9 +77,9 @@ namespace Elite
 		{
 			mat[2] = unit_vector(mat[2]);
 
-			if ((mat[2].X > -1) && (mat[2].X < 1))
+			if (mat[2].X is > (-1) and < 1)
 			{
-				if ((mat[2].Y > -1) && (mat[2].Y < 1))
+				if (mat[2].Y is > (-1) and < 1)
 				{
 					mat[1].Z = -(mat[2].X * mat[1].X + mat[2].Y * mat[1].Y) / mat[2].Z;
 				}
