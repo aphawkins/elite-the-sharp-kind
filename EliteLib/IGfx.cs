@@ -49,13 +49,7 @@ namespace Elite
 
         void DrawTextCentre(int y, string text, int psize, GFX_COL colour);
 
-        void DrawTextPretty(int x, int y, int width, int height, string text);
-
         void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
-
-        void GraphicsShutdown();
-
-        bool GraphicsStartup();
 
         void PlotPixel(Vector2 position, GFX_COL colour);
 

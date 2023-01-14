@@ -124,39 +124,22 @@ namespace Elite
             _screenGraphics = Graphics.FromImage(_screen);
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
             _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
-        }
 
-        private struct poly_data
-		{
-			internal int z;
-            internal GFX_COL face_colour;
-			internal Vector2[] point_list;
-            internal int next;
-		};
-
-        private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
-        private bool disposedValue;
-
-		public bool GraphicsStartup()
-		{
-			Debug.WriteLine(nameof(GraphicsStartup));
-
-			bool imagesLoaded = LoadImages();
+            bool imagesLoaded = LoadImages();
 
             if (!imagesLoaded)
-			{
-				//allegro_message("Error reading scanner bitmap file.\n");
-				return false;
-			}
+            {
+                throw new Exception("Failed to load images");
+            }
 
             _screenBufferGraphics.Clear(Color.Black);
 
-			DrawScanner();
+            DrawScanner();
 
-			// Draw border
+            // Draw border
             DrawLine(0, 0, 0, 384);
-			DrawLine(0, 0, 511, 0);
-			DrawLine(511, 0, 511, 384);
+            DrawLine(0, 0, 511, 0);
+            DrawLine(511, 0, 511, 384);
 
             // Install a timer to regulate the speed of the game...
             lock (frameCountLock)
@@ -171,9 +154,18 @@ namespace Elite
             };
             _frameTimer.Tick += _frameTimer_Tick;
             _frameTimer.Start();
+        }
 
-            return true;
-		}
+        private struct poly_data
+		{
+			internal int z;
+            internal GFX_COL face_colour;
+			internal Vector2[] point_list;
+            internal int next;
+		};
+
+        private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
+        private bool disposedValue;
 
         private void _frameTimer_Tick(object? sender, EventArgs e)
         {
@@ -207,15 +199,6 @@ namespace Elite
 				return false;
 			}
 		}
-
-		public void GraphicsShutdown()
-		{
-            Debug.WriteLine(nameof(GraphicsShutdown));
-
-            //destroy_bitmap(scanner_image);
-            //destroy_bitmap(gfx_screen);
-            //unload_datafile(datafile);
-        }
 
         /// <summary>
         /// Blit the back buffer to the screen.
@@ -343,29 +326,6 @@ namespace Elite
 			_screenBufferGraphics.FillRectangle(_brushes[colour], x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
-		public void DrawTextPretty(int x, int y, int width, int height, string text)
-		{
-			int i = 0;
-			int maxlen = (width - x) / 8;
-            int previous = i;
-
-            while (i < text.Length)
-			{
-                i += maxlen;
-                i = Math.Clamp(i, 0, text.Length - 1);
-
-                while (text[i] is not ' ' and not ',' and not '.')
-				{
-					i--;
-				}
-
-                i++;
-                DrawText(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
-                previous = i;
-                y += 8 * gfx.GFX_SCALE;
-			}
-		}
-
 		public void DrawScanner()
 		{
             _screenBufferGraphics.DrawImage(_imageScanner, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
@@ -435,14 +395,14 @@ namespace Elite
 
 		public void DrawLine(float x1, float y1, float x2, float y2, int dist, GFX_COL col)
 		{
-			Vector2[] point_list = new Vector2[2];
+			Vector2[] vectors = new Vector2[2];
 
-			point_list[0].X = x1;
-			point_list[0].Y = y1;
-			point_list[1].X = x2;
-			point_list[1].Y = y2;
+			vectors[0].X = x1;
+			vectors[0].Y = y1;
+			vectors[1].X = x2;
+			vectors[1].Y = y2;
 
-			DrawPolygon(point_list, col, dist);
+			DrawPolygon(vectors, col, dist);
 		}
 
 		public void RenderFinish()

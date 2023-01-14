@@ -1299,11 +1299,6 @@ namespace Elite
             initialise_allegro();
 			File.read_config_file();
 
-			if (!elite.alg_gfx.GraphicsStartup())
-			{
-				return 1;
-			}
-
 			/* Do any setup necessary for the keyboard... */
 			keyboard.kbd_keyboard_startup();
 
@@ -1512,8 +1507,6 @@ namespace Elite
 					run_game_over_screen();
 				}
 			}
-
-            elite.alg_gfx.GraphicsShutdown();
 
 			return 0;
 		}

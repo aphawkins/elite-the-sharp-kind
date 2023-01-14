@@ -74,7 +74,7 @@
             _gfx.DrawText(16, 202, inhabitants);
             _gfx.DrawText(16, 234, $"Gross Productivity: {productivity} M CR");
             _gfx.DrawText(16, 266, $"Average Radius: {radius} km");
-            _gfx.DrawTextPretty(16, 298, 400, 384, description);
+            DrawTextPretty(16, 298, 400, 384, description);
         }
 
         private void DrawFuelLimitCircle(Vector2 centre)
@@ -96,6 +96,30 @@
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawLine(centre.X, centre.Y - cross_size, centre.X, centre.Y + cross_size);
             _gfx.DrawLine(centre.X - cross_size, centre.Y, centre.X + cross_size, centre.Y);
+        }
+
+        // TOOD: This should be private
+        internal void DrawTextPretty(int x, int y, int width, int height, string text)
+        {
+            int i = 0;
+            int maxlen = (width - x) / 8;
+            int previous = i;
+
+            while (i < text.Length)
+            {
+                i += maxlen;
+                i = Math.Clamp(i, 0, text.Length - 1);
+
+                while (text[i] is not ' ' and not ',' and not '.')
+                {
+                    i--;
+                }
+
+                i++;
+                _gfx.DrawText(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
+                previous = i;
+                y += 8 * gfx.GFX_SCALE;
+            }
         }
     }
 }

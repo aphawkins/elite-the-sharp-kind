@@ -915,6 +915,7 @@ namespace Elite
 					{
 						for (int psx = 0; psx < sizex; psx++)
 						{
+							//TODO: Bug - the X or Y could be negative
                             Debug.Assert(position.X >= 0);
                             Debug.Assert(position.Y >= 0);
 
