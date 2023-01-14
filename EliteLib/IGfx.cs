@@ -35,8 +35,6 @@ namespace Elite
 
         void DrawLine(float x1, float y1, float x2, float y2, int dist, GFX_COL colour);
 
-        void DrawLineXor(float x1, float y1, float x2, float y2, GFX_COL colour);
-
         void DrawPolygon(Vector2[] point_list, GFX_COL face_colour, int zavg);
 
         void DrawRectangle(int x, int y, int width, int height, GFX_COL colour);
@@ -53,7 +51,7 @@ namespace Elite
 
         void DrawTextPretty(int x, int y, int width, int height, string text);
 
-        void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL colour);
+        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
 
         void GraphicsShutdown();
 

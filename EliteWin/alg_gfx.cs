@@ -130,7 +130,7 @@ namespace Elite
 		{
 			internal int z;
             internal GFX_COL face_colour;
-			internal Point[] point_list;
+			internal Vector2[] point_list;
             internal int next;
 		};
 
@@ -282,26 +282,17 @@ namespace Elite
 			_screenBufferGraphics.DrawLine(_pens[line_colour], x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
 		}
 
-        public void DrawLineXor(float x1, float y1, float x2, float y2, GFX_COL line_colour)
+        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)
 		{
-            // .NET has deprecated GDI XOR drawing
-            //xor_mode(true);
-            DrawLine(x1, y1, x2, y2, line_colour);
-            //xor_mode(false);
-        }
+            Vector2[] points = new Vector2[3] { a, b, c };
+            points[0].X += gfx.GFX_X_OFFSET;
+            points[0].Y += gfx.GFX_Y_OFFSET;
+            points[1].X += gfx.GFX_X_OFFSET;
+            points[1].Y += gfx.GFX_Y_OFFSET;
+            points[2].X += gfx.GFX_X_OFFSET;
+            points[2].Y += gfx.GFX_Y_OFFSET;
 
-        public void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, GFX_COL colour)
-		{
-            Debug.WriteLine(nameof(DrawTriangle));
-
-            Point[] points = new Point[3]
-            {
-                new Point(x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET),
-                new Point(x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET),
-                new Point(x3 + gfx.GFX_X_OFFSET, y3 + gfx.GFX_Y_OFFSET),
-            };
-
-            gfx_polygon(points, colour);
+            DrawPolygon(points, colour);
 		}
 
 		public void DrawText(int x, int y, string text)
@@ -407,12 +398,12 @@ namespace Elite
 			poly_chain[x].face_colour = face_colour;
 			poly_chain[x].z = zavg;
 			poly_chain[x].next = -1;
-            poly_chain[x].point_list = new Point[point_list.Length];
+            poly_chain[x].point_list = new Vector2[point_list.Length];
 
             for (i = 0; i < point_list.Length; i++)
 			{
-				poly_chain[x].point_list[i].X = (int)point_list[i].X;
-                poly_chain[x].point_list[i].Y = (int)point_list[i].Y;
+				poly_chain[x].point_list[i].X = point_list[i].X;
+                poly_chain[x].point_list[i].Y = point_list[i].Y;
             }
 
 			if (x == 0)
@@ -463,25 +454,27 @@ namespace Elite
 
             for (int i = start_poly; i != -1; i = poly_chain[i].next)
 			{
-                Point[] points = poly_chain[i].point_list;
 				GFX_COL col = poly_chain[i].face_colour;
 
-				if (points.Length == 2)
+				if (poly_chain[i].point_list.Length == 2)
 				{
-					DrawLine(points[0].X, points[0].Y, points[1].X, points[1].Y, col);
+					DrawLine(poly_chain[i].point_list[0].X, poly_chain[i].point_list[0].Y, 
+                        poly_chain[i].point_list[1].X, poly_chain[i].point_list[1].Y, 
+                        col);
 					continue;
 				}
 
-				gfx_polygon(points, col);
+                DrawPolygon(poly_chain[i].point_list, col);
 			};
 		}
 
-		private void gfx_polygon(Point[] points, GFX_COL face_colour)
+		private void DrawPolygon(Vector2[] vectors, GFX_COL face_colour)
 		{
-            for (int i = 0; i < points.Length; i++)
+            PointF[] points = new PointF[vectors.Length];
+
+            for (int i = 0; i < vectors.Length; i++)
 			{
-				points[i].X += gfx.GFX_X_OFFSET;
-				points[i].Y += gfx.GFX_Y_OFFSET;
+                points[i] = new PointF(vectors[i].X + gfx.GFX_X_OFFSET, vectors[i].Y + gfx.GFX_Y_OFFSET);
             }
 
 			_screenBufferGraphics.FillPolygon(_brushes[face_colour], points);

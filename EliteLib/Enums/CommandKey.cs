@@ -27,7 +27,7 @@
         Fire = 65, // A
         ECM = 69, // E
                                           // TODO: Fix unhandled TAB
-        EnergyBomb = 81, // Q  (Should be TAB)
+        EnergyBomb = 9, // TAB
         Hyperspace = 72, // H
         CTRL = 17, // CTRL
         Jump = 74, // J

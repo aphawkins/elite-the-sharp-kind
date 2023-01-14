@@ -166,8 +166,8 @@ namespace Elite
 			if (elite.current_screen == SCR.SCR_SHORT_RANGE)
 			{
                 elite.alg_gfx.SetClipRegion(1, 37, 510, 339);
-                elite.alg_gfx.DrawLineXor(cx - 16, cy, cx + 16, cy, GFX_COL.GFX_COL_RED);
-                elite.alg_gfx.DrawLineXor(cx, cy - 16, cx, cy + 16, GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.DrawLine(cx - 16, cy, cx + 16, cy, GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.DrawLine(cx, cy - 16, cx, cy + 16, GFX_COL.GFX_COL_RED);
                 elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
 				return;
 			}
@@ -175,8 +175,8 @@ namespace Elite
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
                 elite.alg_gfx.SetClipRegion(1, 37, 510, 293);
-                elite.alg_gfx.DrawLineXor(cx - 8, cy, cx + 8, cy, GFX_COL.GFX_COL_RED);
-                elite.alg_gfx.DrawLineXor(cx, cy - 8, cx, cy + 8, GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.DrawLine(cx - 8, cy, cx + 8, cy, GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.DrawLine(cx, cy - 8, cx, cy + 8, GFX_COL.GFX_COL_RED);
                 elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
 			}
 		}

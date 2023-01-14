@@ -8,6 +8,7 @@
 ## Ships
 - Sun is missing in initial system
 - Different planet styles not working
+- Explosion of other ship can cause an exception
 
 ## Missions
 - Ship and text in mission brief doesn't clip correctly

@@ -930,8 +930,8 @@ namespace Elite
 			}
 			else
 			{
-                elite.alg_gfx.DrawTriangle(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, 48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, GFX_COL.GFX_COL_RED);
-                elite.alg_gfx.DrawTriangle(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, 224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.DrawTriangle(new(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+                elite.alg_gfx.DrawTriangle(new(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
 			}
 		}
 

@@ -13,6 +13,7 @@
 
 namespace Elite
 {
+	using System.Diagnostics;
 	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Structs;
@@ -914,6 +915,9 @@ namespace Elite
 					{
 						for (int psx = 0; psx < sizex; psx++)
 						{
+                            Debug.Assert(position.X >= 0);
+                            Debug.Assert(position.Y >= 0);
+
                             elite.alg_gfx.PlotPixel(new(position.X + psx, position.Y + psy), GFX_COL.GFX_COL_WHITE);
 						}
 					}
