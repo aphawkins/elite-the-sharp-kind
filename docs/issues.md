@@ -13,5 +13,15 @@
 
 ## Charts
 - Stutter on first moving the cursor
-- Distance to planet doesn't show when cursor moved to new planet
-- Formatting of distance to planet has leading zeros
+- Find planet not working
+- Incorrect distance show on current planet after hyperspace
+
+## File
+- Load/save config not working
+- Load/save commander not working
+
+## Misc
+- Use floating point maths everywhere
+- Replace x, y coords with vectors
+- Change statics to objects
+- Abstract out drawing and scaling routines

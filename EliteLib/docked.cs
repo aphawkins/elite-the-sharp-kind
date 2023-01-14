@@ -44,6 +44,8 @@ namespace Elite
 		internal static List<Vector2> planetPixels = new();
         internal static List<(Vector2 position, string name)> planetNames = new();
 		internal static List<(Vector2 position, int size)> planetSizes = new();
+		internal static string planetName;
+        internal static int distanceToPlanet;
 
         internal static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
 		{
@@ -58,17 +60,6 @@ namespace Elite
 			light_years *= 4;
 
 			return light_years;
-		}
-
-		static void show_distance(int ypos, galaxy_seed from_planet, galaxy_seed to_planet)
-		{
-			int light_years = calc_distance_to_planet(from_planet, to_planet);
-
-			string str = light_years > 0
-                ? $"Distance: {light_years / 10:D2}.{light_years % 10:D} Light Years "
-                : "                                                     ";
-
-            elite.alg_gfx.DrawText(16, ypos, str);
 		}
 
 		internal static void show_distance_to_planet()
@@ -88,14 +79,8 @@ namespace Elite
 			}
 
 			elite.hyperspace_planet = Planet.find_planet(px, py);
-
-			string planet_name = Planet.name_planet(elite.hyperspace_planet);
-
-            elite.alg_gfx.ClearTextArea();
-			str = $"{planet_name:-18s}";
-            elite.alg_gfx.DrawText(16, 340, str);
-
-			show_distance(356, elite.docked_planet, elite.hyperspace_planet);
+			planetName = Planet.name_planet(elite.hyperspace_planet);
+			distanceToPlanet = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
@@ -155,12 +140,8 @@ namespace Elite
 			}
 
 			elite.hyperspace_planet = glx;
-
-            elite.alg_gfx.ClearTextArea();
-			string str = $"{planet_name:-18s}";
-            elite.alg_gfx.DrawText(16, 340, str);
-
-			show_distance(356, elite.docked_planet, elite.hyperspace_planet);
+			planetName = planet_name;
+			distanceToPlanet = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
@@ -254,7 +235,7 @@ namespace Elite
 				Planet.waggle_galaxy(ref glx);
 			}
 
-			elite.draw.DrawShortRangeChart(planetNames, planetSizes);
+			elite.draw.DrawShortRangeChart(planetNames, planetSizes, planetName, distanceToPlanet);
 
             cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
 			cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
@@ -285,7 +266,7 @@ namespace Elite
 				Planet.waggle_galaxy(ref glx);
 			}
 
-            elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, planetPixels);
+            elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, planetPixels, planetName, distanceToPlanet);
 
             cross_x = elite.hyperspace_planet.d * gfx.GFX_SCALE;
 			cross_y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
@@ -300,42 +281,20 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_PLANET_DATA;
 
-            elite.alg_gfx.ClearDisplay();
+			string planetName = Planet.name_planet(elite.hyperspace_planet);
+            int lightYears = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
+            Planet.generate_planet_data(ref hyper_planet_data, elite.hyperspace_planet);
 
-			string planet_name = Planet.name_planet(elite.hyperspace_planet);
-			string str = "DATA ON " + planet_name;
-
-            elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
-
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
-
-			Planet.generate_planet_data(ref hyper_planet_data, elite.hyperspace_planet);
-
-			show_distance(42, elite.docked_planet, elite.hyperspace_planet);
-
-			str = "Economy: " + economy_type[hyper_planet_data.economy];
-            elite.alg_gfx.DrawText(16, 74, str);
-
-			str = "Government: " + government_type[hyper_planet_data.government];
-            elite.alg_gfx.DrawText(16, 106, str);
-
-			str = $"Tech Level: {hyper_planet_data.techlevel + 1}";
-            elite.alg_gfx.DrawText(16, 138, str);
-
-			str = $"Population: {hyper_planet_data.population / 10}.{hyper_planet_data.population % 10} Billion";
-            elite.alg_gfx.DrawText(16, 170, str);
-
-			str = Planet.describe_inhabitants(str, elite.hyperspace_planet);
-            elite.alg_gfx.DrawText(16, 202, str);
-
-			str = $"Gross Productivity: {hyper_planet_data.productivity} M CR";
-            elite.alg_gfx.DrawText(16, 234, str);
-
-			str = $"Average Radius: {hyper_planet_data.radius} km";
-            elite.alg_gfx.DrawText(16, 266, str);
-
-            string description = Planet.describe_planet(elite.hyperspace_planet);
-            elite.alg_gfx.DrawTextPretty(16, 298, 400, 384, description);
+            elite.draw.DrawDataOnPlanet(planetName, lightYears,
+                economy_type[hyper_planet_data.economy],
+                government_type[hyper_planet_data.government],
+                hyper_planet_data.techlevel + 1,
+				hyper_planet_data.population,
+				Planet.describe_inhabitants(elite.hyperspace_planet),
+                hyper_planet_data.productivity,
+                hyper_planet_data.radius,
+                Planet.describe_planet(elite.hyperspace_planet)
+                );
 		}
 
 		struct rank

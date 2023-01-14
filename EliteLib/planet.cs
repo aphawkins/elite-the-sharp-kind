@@ -290,9 +290,8 @@ namespace Elite
 			return char.ToUpper(name[0]) + name[1..].ToLower();
 		}
 
-		internal static string describe_inhabitants(string str, galaxy_seed planet)
+		internal static string describe_inhabitants(galaxy_seed planet)
 		{
-			int inhab;
 			StringBuilder sb = new("(");
 
 			if (planet.e < 128)
@@ -301,7 +300,7 @@ namespace Elite
 			}
 			else
 			{
-				inhab = (planet.f / 4) & 7;
+				int inhab = (planet.f / 4) & 7;
 				if (inhab < 3)
 				{
 					sb.Append(inhabitant_desc1[inhab]);
@@ -348,7 +347,7 @@ namespace Elite
 						temp += source[j];
 						j++;
 					}
-					// j++;
+
 					num = Convert.ToInt32(temp);
 					Debug.Assert(num < desc_list.Length);
 					expanded = temp;

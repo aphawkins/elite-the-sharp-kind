@@ -1496,11 +1496,11 @@ namespace Elite
 
                         if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 						{
-							elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, Docked.planetPixels);
+							elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, Docked.planetPixels, Docked.planetName, Docked.distanceToPlanet);
 						}
 						else if(elite.current_screen == SCR.SCR_SHORT_RANGE)
 						{
-							elite.draw.DrawShortRangeChart(Docked.planetNames, Docked.planetSizes);
+							elite.draw.DrawShortRangeChart(Docked.planetNames, Docked.planetSizes, Docked.planetName, Docked.distanceToPlanet);
                         }
 
 						draw_cross(old_cross_x, old_cross_y);
