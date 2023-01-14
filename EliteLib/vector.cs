@@ -101,5 +101,29 @@ namespace Elite
 			mat[0].Y = mat[1].Z * mat[2].X - mat[1].X * mat[2].Z;
 			mat[0].Z = mat[1].X * mat[2].Y - mat[1].Y * mat[2].X;
 		}
-	}
+
+        internal static void rotate_vec(ref Vector3[] vec, float alpha, float beta)
+		{
+			for (int i = 0; i < vec.Length; i++)
+			{
+				rotate_vec(ref vec[i], alpha, beta);
+            }
+        }
+
+        static void rotate_vec(ref Vector3 vec, float alpha, float beta)
+        {
+            float x = vec.X;
+            float y = vec.Y;
+            float z = vec.Z;
+
+            y = y - alpha * x;
+            x = x + alpha * y;
+            y = y - beta * z;
+            z = z + beta * y;
+
+            vec.X = x;
+            vec.Y = y;
+            vec.Z = z;
+        }
+    }
 }

@@ -19,7 +19,7 @@
         internal int bravery;
         internal int exp_delta;
         internal int exp_seed;
-        internal int distance;
+        internal float distance;
 
         internal univ_object()
         {

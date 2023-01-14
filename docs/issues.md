@@ -7,6 +7,7 @@
 
 ## Ships
 - Sun is missing in initial system
+- Different planet styles not working
 
 ## Missions
 - Ship and text in mission brief doesn't clip correctly
@@ -15,6 +16,7 @@
 - Stutter on first moving the cursor
 - Find planet not working
 - Incorrect distance show on current planet after hyperspace
+- Hyperspace countdown clip region is overlapping horizontal line
 
 ## File
 - Load/save config not working

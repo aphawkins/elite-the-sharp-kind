@@ -106,8 +106,8 @@ namespace Elite
 				ry = vec.Y + univ.location.Y;
 				rz = vec.Z + univ.location.Z;
 
-				sx = (int)((rx * 256) / rz);
-				sy = (int)((ry * 256) / rz);
+				sx = (int)(rx * 256 / rz);
+				sy = (int)(ry * 256 / rz);
 
 				sy = -sy;
 
@@ -222,8 +222,8 @@ namespace Elite
 					rz = 1;
 				}
 
-				sx = (int)((rx * 256) / rz);
-				sy = (int)((ry * 256) / rz);
+				sx = (int)(rx * 256 / rz);
+				sy = (int)(ry * 256 / rz);
 
 				sy = -sy;
 
@@ -240,10 +240,10 @@ namespace Elite
 
 			for (int i = 0; i < num_faces; i++)
 			{
-				if (((point_list[face_data[i].p1].X - point_list[face_data[i].p2].X) *
-					 (point_list[face_data[i].p3].Y - point_list[face_data[i].p2].Y) -
-					 (point_list[face_data[i].p1].Y - point_list[face_data[i].p2].Y) *
-					 (point_list[face_data[i].p3].X - point_list[face_data[i].p2].X)) <= 0)
+				if ((((point_list[face_data[i].p1].X - point_list[face_data[i].p2].X) *
+					 (point_list[face_data[i].p3].Y - point_list[face_data[i].p2].Y)) -
+					 ((point_list[face_data[i].p1].Y - point_list[face_data[i].p2].Y) *
+					 (point_list[face_data[i].p3].X - point_list[face_data[i].p2].X))) <= 0)
 				{
 					num_points = face_data[i].points;
                     System.Numerics.Vector2[] poly_list = new System.Numerics.Vector2[num_points];
@@ -464,7 +464,7 @@ namespace Elite
 			{
 				for (int x = 0; x <= LAND_X_MAX; x++)
 				{
-					dist = x * x + y * y;
+					dist = (x * x) + (y * y);
 					dark = dist > 10000;
 					h = landscape[x, y];
 					if (h > 166)
@@ -505,16 +505,15 @@ namespace Elite
 		/*
 		 * Draw a line of the planet with appropriate rotation.
 		 */
-		static void render_planet_line(float xo, float yo, float x, float y, int radius, float vx, float vy)
+		static void render_planet_line(float xo, float yo, float x, float y, float radius, float vx, float vy)
 		{
-            GFX_COL colour;
-			Vector2 s = new();
-			int div;
+            Vector2 s = new()
+            {
+                Y = y + yo
+            };
 
-			s.Y = y + yo;
-
-			if ((s.Y < gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) ||
-				(s.Y > gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
+            if (s.Y is < (gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) or
+                > (gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
 			{
 				return;
 			}
@@ -522,23 +521,23 @@ namespace Elite
 			s.X = xo - x;
 			float ex = xo + x;
 
-			float rx = -x * vx - y * vy;
-			float ry = -x * vy + y * vx;
-			rx += radius << 16;
-			ry += radius << 16;
-			div = radius << 10;  /* radius * 2 * LAND_X_MAX >> 16 */
+			float rx = (-x * vx) - (y * vy);
+			float ry = (-x * vy) + (y * vx);
+			rx += radius * 65536f;
+			ry += radius * 65536f;
+			float div = radius * 1024f;  /* radius * 2 * LAND_X_MAX >> 16 */
 
 
 			for (; s.X <= ex; s.X++)
 			{
-				if ((s.X >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)) && (s.X <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)))
+				if (s.X is >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET) and <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET))
 				{
 					int lx = (int)(rx / div);
 					int ly = (int)(ry / div);
-					colour = (GFX_COL)landscape[lx, ly];
-
+                    //TODO: fix colours
+                    GFX_COL colour = (GFX_COL)landscape[lx, ly];
                     elite.alg_gfx.PlotPixelFast(s, colour);
-				}
+                }
 				rx += vx;
 				ry += vy;
 			}
@@ -548,7 +547,7 @@ namespace Elite
 		/*
 		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
 		 */
-		static void render_planet(Vector2 centre, int radius, Vector3[] vec)
+		static void render_planet(Vector2 centre, float radius, Vector3[] vec)
 		{
             centre.X += gfx.GFX_X_OFFSET;
             centre.Y += gfx.GFX_Y_OFFSET;
@@ -583,7 +582,7 @@ namespace Elite
 		 * At the moment we just draw a circle.
 		 * Need to add in the two arcs that the original Elite had.
 		 */
-		static void draw_wireframe_planet(Vector2 centre, int radius, Vector3[] vec)
+		static void draw_wireframe_planet(Vector2 centre, float radius, Vector3[] vec)
 		{
             elite.alg_gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
 		}
@@ -609,7 +608,7 @@ namespace Elite
             position.X *= gfx.GFX_SCALE;
             position.Y *= gfx.GFX_SCALE;
 
-			int radius = 6291456 / planet.distance;
+			float radius = 6291456f / planet.distance;
 			//	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
 
 			radius *= gfx.GFX_SCALE;
@@ -622,14 +621,14 @@ namespace Elite
                 return;
             }
 
-            switch (elite.planet_render_style)
+			switch (elite.planet_render_style)
 			{
 				case 0:
 					draw_wireframe_planet(position, radius, planet.rotmat);
 					break;
 
 				case 1:
-                    elite.alg_gfx.DrawCircleFilled(position, radius, GFX_COL.GFX_COL_GREEN_1);
+					elite.alg_gfx.DrawCircleFilled(position, radius, GFX_COL.GFX_COL_GREEN_1);
 					break;
 
 				case 2:
@@ -639,7 +638,7 @@ namespace Elite
 			}
 		}
 
-		static void render_sun_line(int xo, int yo, float x, float y, int radius)
+		static void render_sun_line(float xo, float yo, float x, float y, float radius)
 		{
 			Vector2 s = new();
 			s.Y = yo + y;
@@ -647,12 +646,10 @@ namespace Elite
             GFX_COL colour;
 			float dx, dy;
 			float distance;
-			int inner, outer;
-			int inner2;
 			bool mix;
 
-			if ((s.Y < gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) ||
-				(s.Y > gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
+			if (s.Y is < (gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) or
+                > (gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
 			{
 				return;
 			}
@@ -660,8 +657,8 @@ namespace Elite
 			s.X = xo - x;
 			ex = xo + x;
 
-			s.X -= (radius * (2 + (random.randint() & 7))) >> 8;
-			ex += (radius * (2 + (random.randint() & 7))) >> 8;
+			s.X -= radius * (2f + (random.randint() & 7)) / 256f;
+			ex += radius * (2f + (random.randint() & 7)) / 256f;
 
 			if ((s.X > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET) ||
 				(ex < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET))
@@ -679,14 +676,14 @@ namespace Elite
 				ex = gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET;
 			}
 
-			inner = (radius * (200 + (random.randint() & 7))) >> 8;
+			float inner = radius * (200 + (random.randint() & 7)) / 256f;
 			inner *= inner;
 
-			inner2 = (radius * (220 + (random.randint() & 7))) >> 8;
-			inner2 *= inner2;
+			float inner2 = radius * (220 + (random.randint() & 7)) / 256f;
+            inner2 *= inner2;
 
-			outer = (radius * (239 + (random.randint() & 7))) >> 8;
-			outer *= outer;
+			float outer = radius * (239 + (random.randint() & 7)) / 256f;
+            outer *= outer;
 
 			dy = y * y;
 			dx = s.X - xo;
@@ -717,17 +714,14 @@ namespace Elite
 			}
 		}
 
-		static void render_sun(int xo, int yo, int radius)
+		static void render_sun(float xo, float yo, float radius)
 		{
-			int x, y;
-			int s;
-
 			xo += gfx.GFX_X_OFFSET;
 			yo += gfx.GFX_Y_OFFSET;
 
-			s = -radius;
-			x = radius;
-			y = 0;
+			float s = -radius;
+            float x = radius;
+            float y = 0f;
 
 			// s -= x + x;
 			while (y <= x)
@@ -749,11 +743,8 @@ namespace Elite
 
 		static void draw_sun(ref univ_object planet)
 		{
-			int x, y;
-			int radius;
-
-			x = (int)((planet.location.X * 256) / planet.location.Z);
-			y = (int)((planet.location.Y * 256) / planet.location.Z);
+			float x = planet.location.X * 256f / planet.location.Z;
+            float y = planet.location.Y * 256f / planet.location.Z;
 
 			y = -y;
 
@@ -763,7 +754,7 @@ namespace Elite
 			x *= gfx.GFX_SCALE;
 			y *= gfx.GFX_SCALE;
 
-			radius = 6291456 / planet.distance;
+			float radius = 6291456f / planet.distance;
 
 			radius *= gfx.GFX_SCALE;
 
@@ -832,7 +823,7 @@ namespace Elite
 				vec = VectorMaths.unit_vector(vec);
 				cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
 
-				visible[i] = (cos_angle < -0.13);
+				visible[i] = cos_angle < -0.13;
 			}
 
 			tmp = trans_mat[0].Y;
@@ -865,8 +856,8 @@ namespace Elite
 					ry = vec.Y + univ.location.Y;
 					rz = vec.Z + univ.location.Z;
 
-					sx = (int)((rx * 256) / rz);
-					sy = (int)((ry * 256) / rz);
+					sx = (int)(rx * 256 / rz);
+					sy = (int)(ry * 256 / rz);
 
 					sy = -sy;
 
@@ -890,7 +881,7 @@ namespace Elite
 			else
 				q = (z / 32) | 1;
 
-			pr = (univ.exp_delta * 256) / q;
+			pr = univ.exp_delta * 256 / q;
 
 			//	if (pr > 0x1C00)
 			//		q = 254;

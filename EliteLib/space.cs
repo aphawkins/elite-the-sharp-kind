@@ -79,22 +79,6 @@ namespace Elite
 			}
 		}
 
-		static void rotate_vec(ref Vector3 vec, float alpha, float beta)
-		{
-			float x = vec.X;
-			float y = vec.Y;
-			float z = vec.Z;
-
-			y = y - alpha * x;
-			x = x + alpha * y;
-			y = y - beta * z;
-			z = z + beta * y;
-
-			vec.X = x;
-			vec.Y = y;
-			vec.Z = z;
-		}
-
 		/*
 		 * Update an objects location in the universe.
 		 */
@@ -152,16 +136,14 @@ namespace Elite
 			obj.location.Y = y;
 			obj.location.Z = z;
 
-			obj.distance = (int)Math.Sqrt(x * x + y * y + z * z);
+			obj.distance = obj.location.Length();
 
 			if (obj.type == SHIP.SHIP_PLANET)
 			{
 				beta = 0.0f;
 			}
 
-			rotate_vec(ref obj.rotmat[2], alpha, beta);
-			rotate_vec(ref obj.rotmat[1], alpha, beta);
-			rotate_vec(ref obj.rotmat[0], alpha, beta);
+            VectorMaths.rotate_vec(ref obj.rotmat, alpha, beta);
 
 			if (obj.flags.HasFlag(FLG.FLG_DEAD))
 			{
@@ -1246,15 +1228,15 @@ namespace Elite
 		{
 			int i;
 			SHIP type;
-			int jump;
+			float jump;
 
 			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				type = universe[i].type;
 
-				if ((type > 0) && (type != SHIP.SHIP_ASTEROID) && (type != SHIP.SHIP_CARGO) &&
-					(type != SHIP.SHIP_ALLOY) && (type != SHIP.SHIP_ROCK) &&
-					(type != SHIP.SHIP_BOULDER) && (type != SHIP.SHIP_ESCAPE_CAPSULE))
+				if (type is > 0 and not SHIP.SHIP_ASTEROID and not SHIP.SHIP_CARGO and
+                    not SHIP.SHIP_ALLOY and not SHIP.SHIP_ROCK and
+                    not SHIP.SHIP_BOULDER and not SHIP.SHIP_ESCAPE_CAPSULE)
 				{
 					alg_main.info_message("Mass Locked");
 					return;
@@ -1267,16 +1249,9 @@ namespace Elite
 				return;
 			}
 
-			if (universe[0].distance < universe[1].distance)
-			{
-				jump = universe[0].distance - 75000;
-			}
-			else
-			{
-				jump = universe[1].distance - 75000;
-			}
+			jump = universe[0].distance < universe[1].distance ? universe[0].distance - 75000f : universe[1].distance - 75000f;
 
-			if (jump > 1024)
+            if (jump > 1024)
 			{
 				jump = 1024;
 			}
