@@ -297,21 +297,7 @@ namespace Elite
                 );
 		}
 
-		struct rank
-		{
-			internal int score;
-			internal string title;
-
-			internal rank(int score, string title)
-			{
-				this.score = score;
-				this.title = title;
-			}
-		};
-
-		const int NO_OF_RANKS = 9;
-
-		static rank[] rating = new rank[NO_OF_RANKS]
+		static (int score, string title)[] ratings = new(int score, string title)[]
 		{
 			new(0x0000, "Harmless"),
 			new(0x0008, "Mostly Harmless"),
@@ -407,8 +393,8 @@ namespace Elite
 				{
 					type = space.universe[i].type;
 
-					if ((type == SHIP.SHIP_MISSILE) ||
-						((type > SHIP.SHIP_ROCK) && (type < SHIP.SHIP_DODEC)))
+					if (type is SHIP.SHIP_MISSILE or
+                        > SHIP.SHIP_ROCK and < SHIP.SHIP_DODEC)
 					{
 						condition = 2;
 						break;
@@ -432,23 +418,16 @@ namespace Elite
             elite.alg_gfx.DrawText(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
             elite.alg_gfx.DrawText(70, 122, str);
 
-			if (elite.cmdr.legal_status == 0)
-			{
-				str = "Clean";
-			}
-			else
-			{
-				str = elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender";
-			}
+			str = elite.cmdr.legal_status == 0 ? "Clean" : elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender";
 
             elite.alg_gfx.DrawText(16, 138, "Legal Status:", GFX_COL.GFX_COL_GREEN_1);
             elite.alg_gfx.DrawText(128, 138, str);
 
-			for (i = 0; i < NO_OF_RANKS; i++)
+			foreach ((int score, string title) in ratings)
 			{
-				if (elite.cmdr.score >= rating[i].score)
+				if (elite.cmdr.score >= score)
 				{
-					str = rating[i].title;
+					str = title;
 				}
 			}
 
