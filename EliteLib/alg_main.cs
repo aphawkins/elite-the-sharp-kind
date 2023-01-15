@@ -105,7 +105,6 @@ namespace Elite
 			Docked.cross_y = -1;
 			cross_timer = 0;
 
-
 			elite.myship.max_speed = 40;      /* 0.27 Light Mach */
 			elite.myship.max_roll = 31;
 			elite.myship.max_climb = 8;       /* CF 8 */
@@ -902,7 +901,7 @@ namespace Elite
 			{
 				if (!elite.docked && elite.cmdr.docking_computer)
 				{
-					if (elite.instant_dock)
+					if (elite.config.InstantDock)
 					{
 						space.engage_docking_computer();
 					}
@@ -1083,7 +1082,7 @@ namespace Elite
 				return;
 			}
 
-			bool rv = File.save_commander_file(path);
+			bool rv = SaveFile.save_commander_file(path);
 
 			if (rv)
 			{
@@ -1115,7 +1114,7 @@ namespace Elite
 				return;
 			}
 
-			rv = File.load_commander_file(path);
+			rv = SaveFile.load_commander_file(path);
 
 			if (rv)
 			{
@@ -1293,11 +1292,11 @@ namespace Elite
             elite.alg_gfx = alg_gfx;
 			elite.sound = sound;
 			elite.keyboard = keyboard;
-
 			elite.draw = new Draw(elite.alg_gfx);
 
             initialise_allegro();
-			File.read_config_file();
+			elite.config = ConfigFile.ReadConfigAsync().Result;
+			elite.alg_gfx.SpeedCap = elite.config.SpeedCap;
 
 			/* Do any setup necessary for the keyboard... */
 			keyboard.kbd_keyboard_startup();

@@ -7,8 +7,9 @@
 
 ## Ships
 - Sun is missing in initial system
-- Different planet styles not working
+- Colours on SNES planet style not working
 - Explosion of other ship can cause an exception
+- Planet can render with black lines through it if filled with colour
 
 ## Missions
 - Ship and text in mission brief doesn't clip correctly

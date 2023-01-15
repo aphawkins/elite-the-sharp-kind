@@ -18,6 +18,7 @@ namespace Elite
 	using Elite.Structs;
 	using Elite.Ships;
 	using System.Numerics;
+	using Elite.Config;
 
 	public static class elite
 	{
@@ -42,18 +43,11 @@ namespace Elite
 		internal static SCR current_screen = 0;
 		internal static bool witchspace;
 
-		internal static bool wireframe = false;
-		internal static bool anti_alias_gfx = false;
-		internal static bool hoopy_casinos = false;
-		//TODO: used by gfx a rate limiter meaning this class has to be public. Find a better way.
-		public static int speed_cap = 75;
-		internal static bool instant_dock = false;
+        public static ConfigSettings config;
 
-		internal static string scanner_filename;
+        internal static string scanner_filename;
 		internal static Vector2 scanner_centre = new(253, 63 + 385);
 		internal static Vector2 compass_centre = new(382, 22 + 385);
-
-		internal static int planet_render_style = 0;
 
 		internal static bool game_over;
 		internal static bool docked;
@@ -75,9 +69,7 @@ namespace Elite
 #endif
 
         internal static commander cmdr;
-
 		internal static player_ship myship;
-
 		internal static Draw draw;
 
 		internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]

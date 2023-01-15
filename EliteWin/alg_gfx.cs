@@ -50,30 +50,30 @@ namespace Elite
                 { GFX_COL.GFX_COL_BLACK, Pens.Black },
                 { GFX_COL.GFX_COL_WHITE, Pens.White },
                 { GFX_COL.GFX_COL_WHITE_2, Pens.WhiteSmoke },
-                { GFX_COL.GFX_COL_GOLD, Pens.Gold },
                 { GFX_COL.GFX_COL_CYAN, Pens.Cyan },
-                { GFX_COL.GFX_COL_GREY_1, Pens.DimGray },
-                { GFX_COL.GFX_COL_GREY_2, Pens.LightGray },
-                { GFX_COL.GFX_COL_GREY_3, Pens.Gray },
-                { GFX_COL.GFX_COL_GREY_4, Pens.DarkGray },
-                { GFX_COL.GFX_COL_BLUE_1, Pens.LightBlue },
-                { GFX_COL.GFX_COL_BLUE_2, Pens.MediumBlue },
-                { GFX_COL.GFX_COL_BLUE_3, Pens.Blue },
-                { GFX_COL.GFX_COL_BLUE_4, Pens.DarkBlue },
+                { GFX_COL.GFX_COL_GREY_1, Pens.DarkGray },
+                { GFX_COL.GFX_COL_GREY_2, Pens.Gray },
+                { GFX_COL.GFX_COL_GREY_3, Pens.LightGray },
+                { GFX_COL.GFX_COL_GREY_4, Pens.DimGray },
+                { GFX_COL.GFX_COL_BLUE_1, Pens.DarkBlue },
+                { GFX_COL.GFX_COL_BLUE_2, Pens.Blue },
+                { GFX_COL.GFX_COL_BLUE_3, Pens.MediumBlue },
+                { GFX_COL.GFX_COL_BLUE_4, Pens.LightBlue },
                 { GFX_COL.GFX_COL_RED, Pens.Red },
                 { GFX_COL.GFX_COL_RED_3, Pens.PaleVioletRed },
                 { GFX_COL.GFX_COL_RED_4, Pens.MediumVioletRed },
                 { GFX_COL.GFX_COL_DARK_RED, Pens.DarkRed },
-                { GFX_COL.GFX_COL_YELLOW_1, Pens.Yellow },
-                { GFX_COL.GFX_COL_YELLOW_3, Pens.LightGoldenrodYellow },
+                { GFX_COL.GFX_COL_YELLOW_1, Pens.Goldenrod },
+                { GFX_COL.GFX_COL_GOLD, Pens.Gold },
+                { GFX_COL.GFX_COL_YELLOW_3, Pens.Yellow },
                 { GFX_COL.GFX_COL_YELLOW_4, Pens.LightYellow },
-                { GFX_COL.GFX_COL_YELLOW_5, Pens.YellowGreen },
-                { GFX_COL.GFX_COL_ORANGE_1, Pens.Orange },
+                { GFX_COL.GFX_COL_YELLOW_5, Pens.LightGoldenrodYellow },
+                { GFX_COL.GFX_COL_ORANGE_1, Pens.DarkOrange },
                 { GFX_COL.GFX_COL_ORANGE_2, Pens.OrangeRed },
-                { GFX_COL.GFX_COL_ORANGE_3, Pens.DarkOrange },
-                { GFX_COL.GFX_COL_GREEN_1, Pens.LightGreen },
+                { GFX_COL.GFX_COL_ORANGE_3, Pens.Orange },
+                { GFX_COL.GFX_COL_GREEN_1, Pens.DarkGreen },
                 { GFX_COL.GFX_COL_GREEN_2, Pens.Green },
-                { GFX_COL.GFX_COL_GREEN_3, Pens.DarkGreen },
+                { GFX_COL.GFX_COL_GREEN_3, Pens.LightGreen },
                 { GFX_COL.GFX_COL_PINK_1, Pens.Pink },
                 { GFX_COL.UNKNOWN_1, Pens.Orange },
                 { GFX_COL.UNKNOWN_2, Pens.DarkOrange }
@@ -84,30 +84,30 @@ namespace Elite
                 { GFX_COL.GFX_COL_BLACK, Brushes.Black },
                 { GFX_COL.GFX_COL_WHITE, Brushes.White },
                 { GFX_COL.GFX_COL_WHITE_2, Brushes.WhiteSmoke },
-                { GFX_COL.GFX_COL_GOLD, Brushes.Gold },
                 { GFX_COL.GFX_COL_CYAN, Brushes.Cyan },
-                { GFX_COL.GFX_COL_GREY_1, Brushes.DimGray },
-                { GFX_COL.GFX_COL_GREY_2, Brushes.LightGray },
-                { GFX_COL.GFX_COL_GREY_3, Brushes.Gray },
-                { GFX_COL.GFX_COL_GREY_4, Brushes.DarkGray },
-                { GFX_COL.GFX_COL_BLUE_1, Brushes.LightBlue },
-                { GFX_COL.GFX_COL_BLUE_2, Brushes.MediumBlue },
-                { GFX_COL.GFX_COL_BLUE_3, Brushes.Blue },
-                { GFX_COL.GFX_COL_BLUE_4, Brushes.DarkBlue },
+                { GFX_COL.GFX_COL_GREY_1, Brushes.DarkGray },
+                { GFX_COL.GFX_COL_GREY_2, Brushes.Gray },
+                { GFX_COL.GFX_COL_GREY_3, Brushes.LightGray },
+                { GFX_COL.GFX_COL_GREY_4, Brushes.DimGray },
+                { GFX_COL.GFX_COL_BLUE_1, Brushes.DarkBlue },
+                { GFX_COL.GFX_COL_BLUE_2, Brushes.Blue },
+                { GFX_COL.GFX_COL_BLUE_3, Brushes.MediumBlue },
+                { GFX_COL.GFX_COL_BLUE_4, Brushes.LightBlue },
                 { GFX_COL.GFX_COL_RED, Brushes.Red },
                 { GFX_COL.GFX_COL_RED_3, Brushes.PaleVioletRed },
                 { GFX_COL.GFX_COL_RED_4, Brushes.MediumVioletRed },
                 { GFX_COL.GFX_COL_DARK_RED, Brushes.DarkRed },
-                { GFX_COL.GFX_COL_YELLOW_1, Brushes.Yellow },
-                { GFX_COL.GFX_COL_YELLOW_3, Brushes.LightYellow },
-                { GFX_COL.GFX_COL_YELLOW_4, Brushes.YellowGreen },
-                { GFX_COL.GFX_COL_YELLOW_5, Brushes.GreenYellow },
-                { GFX_COL.GFX_COL_ORANGE_1, Brushes.Orange },
+                { GFX_COL.GFX_COL_YELLOW_1, Brushes.Goldenrod },
+                { GFX_COL.GFX_COL_GOLD, Brushes.Gold },
+                { GFX_COL.GFX_COL_YELLOW_3, Brushes.Yellow },
+                { GFX_COL.GFX_COL_YELLOW_4, Brushes.LightYellow },
+                { GFX_COL.GFX_COL_YELLOW_5, Brushes.LightGoldenrodYellow },
+                { GFX_COL.GFX_COL_ORANGE_1, Brushes.DarkOrange },
                 { GFX_COL.GFX_COL_ORANGE_2, Brushes.OrangeRed },
-                { GFX_COL.GFX_COL_ORANGE_3, Brushes.DarkOrange },
-                { GFX_COL.GFX_COL_GREEN_1, Brushes.LightGreen },
+                { GFX_COL.GFX_COL_ORANGE_3, Brushes.Orange },
+                { GFX_COL.GFX_COL_GREEN_1, Brushes.DarkGreen },
                 { GFX_COL.GFX_COL_GREEN_2, Brushes.Green },
-                { GFX_COL.GFX_COL_GREEN_3, Brushes.DarkGreen },
+                { GFX_COL.GFX_COL_GREEN_3, Brushes.LightGreen },
                 { GFX_COL.GFX_COL_PINK_1, Brushes.Pink },
                 { GFX_COL.UNKNOWN_1, Brushes.Orange },
                 { GFX_COL.UNKNOWN_2, Brushes.DarkOrange }
@@ -150,7 +150,7 @@ namespace Elite
             _frameTimer = new()
             {
                 // Approx matxh the speed of the TNK
-                Interval = 5000 / elite.speed_cap
+                Interval = 5000 / SpeedCap
             };
             _frameTimer.Tick += _frameTimer_Tick;
             _frameTimer.Start();
@@ -200,6 +200,8 @@ namespace Elite
 			}
 		}
 
+        public int SpeedCap { get; set; } = 75;
+
         /// <summary>
         /// Blit the back buffer to the screen.
         /// </summary>
@@ -242,7 +244,9 @@ namespace Elite
 
         public void PlotPixel(Vector2 position, GFX_COL col)
 		{
-			_screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), _pens[col].Color);
+            //TODO: Fix SNES planet colour issues
+            Color colour = _pens.ContainsKey(col) ? _pens[col].Color : Color.Magenta;
+			_screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), colour);
         }
 
         public void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour)

@@ -110,23 +110,23 @@ namespace Elite
 			switch (item)
 			{
 				case 0:
-					v = elite.wireframe ? 1 : 0;
+					v = elite.config.UseWireframe ? 1 : 0;
 					break;
 
 				case 1:
-					v = elite.anti_alias_gfx ? 1 : 0;
+					v = elite.config.AntiAliasWireframe ? 1 : 0;
 					break;
 
 				case 2:
-					v = elite.planet_render_style;
+					v = (int)elite.config.PlanetRenderStyle;
 					break;
 
 				case 3:
-					v = elite.hoopy_casinos ? 1 : 0;
+					v = elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0;
 					break;
 
 				case 4:
-					v = elite.instant_dock ? 1 : 0;
+					v = elite.config.InstantDock ? 1 : 0;
 					break;
 
 				default:
@@ -229,7 +229,7 @@ namespace Elite
 		{
 			if (hilite_item == (NUM_SETTINGS - 1))
 			{
-				File.write_config_file();
+				ConfigFile.WriteConfigAsync(elite.config);
 				display_options();
 				return;
 			}
@@ -237,23 +237,23 @@ namespace Elite
 			switch (hilite_item)
 			{
 				case 0:
-					elite.wireframe = !elite.wireframe;
+					elite.config.UseWireframe = !elite.config.UseWireframe;
 					break;
 
 				case 1:
-					elite.anti_alias_gfx = !elite.anti_alias_gfx;
+					elite.config.AntiAliasWireframe = !elite.config.AntiAliasWireframe;
 					break;
 
 				case 2:
-					elite.planet_render_style = (elite.planet_render_style + 1) % 4;
+					elite.config.PlanetRenderStyle = (PlanetRenderStyle)((int)(elite.config.PlanetRenderStyle + 1) % 4);
 					break;
 
 				case 3:
-					elite.hoopy_casinos = !elite.hoopy_casinos;
-					break;
+					elite.config.PlanetDescriptions = (PlanetDescriptions)((int)(elite.config.PlanetDescriptions + 1) % 2);
+                    break;
 
 				case 4:
-					elite.instant_dock = !elite.instant_dock;
+					elite.config.InstantDock = !elite.config.InstantDock;
 					break;
 			}
 

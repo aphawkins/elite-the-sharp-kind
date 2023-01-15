@@ -347,11 +347,9 @@ namespace Elite
 		 */
 		static void generate_snes_landscape()
 		{
-            int colour;
-
 			for (int y = 0; y <= LAND_Y_MAX; y++)
 			{
-				colour = snes_planet_colour[y * snes_planet_colour.Length / LAND_Y_MAX];
+				int colour = snes_planet_colour[y * (snes_planet_colour.Length - 1) / LAND_Y_MAX];
 				for (int x = 0; x <= LAND_X_MAX; x++)
 				{
 					landscape[x, y] = colour;
@@ -484,20 +482,20 @@ namespace Elite
 
 		internal static void generate_landscape(int rnd_seed)
 		{
-			switch (elite.planet_render_style)
+			switch (elite.config.PlanetRenderStyle)
 			{
-				case 0:     /* Wireframe... do nothing for now... */
+				case PlanetRenderStyle.Wireframe:     /* Wireframe... do nothing for now... */
 					break;
 
-				case 1:
+				case PlanetRenderStyle.Green:
 					/* generate_green_landscape (); */
 					break;
 
-				case 2:
+				case PlanetRenderStyle.SNES:
 					generate_snes_landscape();
 					break;
 
-				case 3:
+				case PlanetRenderStyle.Fractal:
 					generate_fractal_landscape(rnd_seed);
 					break;
 			}
@@ -622,18 +620,18 @@ namespace Elite
                 return;
             }
 
-			switch (elite.planet_render_style)
+			switch (elite.config.PlanetRenderStyle)
 			{
-				case 0:
+				case PlanetRenderStyle.Wireframe:
 					draw_wireframe_planet(position, radius, planet.rotmat);
 					break;
 
-				case 1:
+				case PlanetRenderStyle.Green:
 					elite.alg_gfx.DrawCircleFilled(position, radius, GFX_COL.GFX_COL_GREEN_1);
 					break;
 
-				case 2:
-				case 3:
+				case PlanetRenderStyle.SNES:
+				case PlanetRenderStyle.Fractal:
 					render_planet(position, radius, planet.rotmat);
 					break;
 			}
@@ -978,7 +976,7 @@ namespace Elite
                 return;
             }
 
-            if (elite.wireframe)
+            if (elite.config.UseWireframe)
 			{
 				draw_wireframe_ship(ref ship);
 			}

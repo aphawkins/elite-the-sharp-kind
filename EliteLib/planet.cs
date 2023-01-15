@@ -18,6 +18,7 @@
 
 namespace Elite
 {
+	using Elite.Enums;
 	using Elite.Structs;
 	using System.Diagnostics;
 	using System.Text;
@@ -352,7 +353,7 @@ namespace Elite
 					Debug.Assert(num < desc_list.Length);
 					expanded = temp;
 
-					if (elite.hoopy_casinos)
+					if (elite.config.PlanetDescriptions == Enums.PlanetDescriptions.HoopyCasinos)
 					{
 						option = gen_msx_rnd_number();
 					}
@@ -432,7 +433,7 @@ namespace Elite
 			rnd_seed.c = planet.e;
 			rnd_seed.d = planet.f;
 
-			if (elite.hoopy_casinos)
+			if (elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
 			{
 				rnd_seed.a ^= planet.a;
 				rnd_seed.b ^= planet.b;

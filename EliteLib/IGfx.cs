@@ -19,6 +19,8 @@ namespace Elite
 
     public interface IGfx
     {
+        int SpeedCap { get; set; }
+
         void ClearArea(int x, int y, int width, int height);
 
         void ClearDisplay();
