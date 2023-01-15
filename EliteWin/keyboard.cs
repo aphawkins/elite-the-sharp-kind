@@ -9,17 +9,6 @@
  *
  */
 
-/*
- * keyboard.c
- *
- * Code to handle keyboard input.
- */
-
-//# include <stdlib.h>
-//# include <string.h>
-
-//# include "allegro.h"
-
 namespace Elite
 {
 	using System.Diagnostics;
@@ -27,8 +16,8 @@ namespace Elite
 
     public class Keyboard : IKeyboard
     {
-        CommandKey _lastKeyPressed = CommandKey.None;
-        private Dictionary<CommandKey, bool> _isPressed = new Dictionary<CommandKey, bool>();
+        int _lastKeyPressed;
+        private Dictionary<int, bool> _isPressed = new Dictionary<int, bool>();
 
         public int kbd_keyboard_startup()
         {
@@ -144,24 +133,29 @@ namespace Elite
             //}
         }
 
-        public void KeyPressed(int keyValue)
+        public void KeyDown(int keyValue)
         {
-            _lastKeyPressed = (CommandKey)keyValue;
-            _isPressed[(CommandKey)keyValue] = true;
+            _lastKeyPressed = keyValue;
+            _isPressed[keyValue] = true;
+        }
+
+        public void KeyUp(int keyValue)
+        {
+            _isPressed[keyValue] = false;
         }
 
         public bool IsKeyPressed(CommandKey key)
         {
-            bool isPressed = _isPressed.ContainsKey(key) && _isPressed[key];
-            _isPressed[key] = false;
+            bool isPressed = _isPressed.ContainsKey((int)key) && _isPressed[(int)key];
             return isPressed;
         }
 
-        public CommandKey ReadKey()
+        /// <inheritdoc />
+        public int ReadKey()
         {
-            _lastKeyPressed = CommandKey.None;
+            _lastKeyPressed = 0;
 
-            while (_lastKeyPressed == CommandKey.None) 
+            while (_lastKeyPressed == 0) 
             {
                 //Thread.Sleep(100);
             }

@@ -1100,24 +1100,7 @@ namespace Elite
 
 		internal static void load_commander_screen()
 		{
-			//rv = SaveFile.load_commander_file(path);
-
-			//if (rv)
-			//{
-			//	elite.saved_cmdr = elite.cmdr;
-			//             elite.alg_gfx.DrawTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
-			//             elite.alg_gfx.DrawTextCentre(200, "Press any key to continue.", 140, GFX_COL.GFX_COL_GOLD);
-			//             elite.alg_gfx.ScreenUpdate();
-			//	//TODO: Fix this
-			//	//readkey();
-			//	Debug.WriteLine("call to readkey()");
-			//	return;
-			//}
-
-
-
-
-			CommandKey key = CommandKey.None;
+			int key;
 			string name = elite.cmdr.name;
 
             do
@@ -1125,23 +1108,24 @@ namespace Elite
 				elite.draw.DrawLoadCommander(false, name);
 
 				key = elite.keyboard.ReadKey();
-				if (key is >= (CommandKey)'A' and <= (CommandKey)'Z')
+				if (key is >= 'A' and <= 'Z')
 				{
 					name += (char)key;
                 }
-				else if (key is CommandKey.Backspace)
+				else if (key is (int)CommandKey.Backspace)
 				{
 					if (!string.IsNullOrEmpty(name))
 					{
 						name = name[..^1]; ;
 					}
 				}
-            } while (key != CommandKey.Enter);
+            } while (key != (int)CommandKey.Enter);
 
             bool isLoaded = SaveFile.load_commander_file(name);
 
             if (isLoaded)
 			{
+				elite.saved_cmdr = elite.cmdr;
 				elite.restore_saved_commander();
 				set_commander_name(name);
 				elite.saved_cmdr = elite.cmdr;
@@ -1153,7 +1137,7 @@ namespace Elite
 				do
 				{
 					key = elite.keyboard.ReadKey();
-				} while (key != CommandKey.Space);
+				} while (key != (int)CommandKey.Space);
             }
         }
 

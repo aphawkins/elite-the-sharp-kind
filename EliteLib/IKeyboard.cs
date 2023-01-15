@@ -10,10 +10,16 @@
 
         char kbd_read_key();
 
-        void KeyPressed(int keyValue);
+        void KeyDown(int keyValue);
+
+        void KeyUp(int keyValue);
 
         bool IsKeyPressed(CommandKey key);
 
-        CommandKey ReadKey();
+        /// <summary>
+        /// Blocks until the next key is pressed.
+        /// </summary>
+        /// <returns></returns>
+        int ReadKey();
     }
 }

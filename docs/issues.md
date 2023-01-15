@@ -1,8 +1,6 @@
 # Known Issues
 
 ## Controls
-- Keyboard has issue with repeating key
-- Keyboard has issue with multiple keys
 - Joystick support needs adding back
 
 ## Ships
@@ -19,7 +17,7 @@
 - Find planet not working
 - Incorrect distance show on current planet after hyperspace
 - Hyperspace countdown clip region is overlapping horizontal line
-- Config screen not working
+- Options screen not working
 
 ## File
 - Load/save commander not working

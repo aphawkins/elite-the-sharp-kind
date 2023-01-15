@@ -44,7 +44,12 @@ namespace EliteWin
             //Debug.WriteLine("KeyDown KeyCode: " + e.KeyCode);
             //Debug.WriteLine("KeyDown KeyValue: " + e.KeyValue);
 
-            _keyboard.KeyPressed(e.KeyValue);
+            _keyboard.KeyDown(e.KeyValue);
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            _keyboard.KeyUp(e.KeyValue);
         }
     }
 }
