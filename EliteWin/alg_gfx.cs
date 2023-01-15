@@ -326,12 +326,17 @@ namespace Elite
 			_screenBufferGraphics.FillRectangle(Brushes.Black, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
-		public void DrawRectangle(int x, int y, int width, int height, GFX_COL colour)
+		public void DrawRectangleFilled(int x, int y, int width, int height, GFX_COL colour)
 		{
 			_screenBufferGraphics.FillRectangle(_brushes[colour], x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
-		public void DrawScanner()
+        public void DrawRectangle(int x, int y, int width, int height, GFX_COL colour)
+        {
+            _screenBufferGraphics.DrawRectangle(_pens[colour], x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
+        }
+
+        public void DrawScanner()
 		{
             _screenBufferGraphics.DrawImage(_imageScanner, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
@@ -456,19 +461,6 @@ namespace Elite
 
             _screenBufferGraphics.DrawImage(sprite, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET);
         }
-
-        public bool RequestFile(string title, string path, string ext)
-		{
-            Debug.WriteLine(nameof(RequestFile));
-
-			bool okay = false;
-
-			//show_mouse(screen);
-			//okay = file_select(title, path, ext);
-			//show_mouse(null);
-
-			return okay;
-		}
 
         protected virtual void Dispose(bool disposing)
         {

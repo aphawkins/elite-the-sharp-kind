@@ -178,7 +178,7 @@ namespace Elite
 				width = 100;
 			}
 
-			elite.alg_gfx.DrawRectangle(x, y, width, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
+			elite.alg_gfx.DrawRectangleFilled(x, y, width, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
 			display_setting_item(item);
 			hilite_item = item;
 		}
@@ -308,7 +308,7 @@ namespace Elite
 			y = (384 - (30 * NUM_OPTIONS)) / 2;
 			y += i * 30;
 
-			elite.alg_gfx.DrawRectangle(x, y, OPTION_BAR_WIDTH, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
+			elite.alg_gfx.DrawRectangleFilled(x, y, OPTION_BAR_WIDTH, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
 			display_option_item(i);
 
 			hilite_item = i;

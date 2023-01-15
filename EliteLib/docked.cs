@@ -622,7 +622,7 @@ namespace Elite
 
 			y = (i * 15) + 55;
 
-            elite.alg_gfx.DrawRectangle(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+            elite.alg_gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
 			display_stock_price(i);
 
 			hilite_item = i;
@@ -964,7 +964,7 @@ namespace Elite
 
 			y = equip_stock[i].y;
 
-            elite.alg_gfx.DrawRectangle(2, y + 1, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+            elite.alg_gfx.DrawRectangleFilled(2, y + 1, 508, 15, GFX_COL.GFX_COL_DARK_RED);
 			display_equip_price(i);
 
 			hilite_item = i;

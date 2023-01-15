@@ -39,6 +39,8 @@ namespace Elite
 
         void DrawPolygon(Vector2[] point_list, GFX_COL face_colour, int zavg);
 
+        void DrawRectangleFilled(int x, int y, int width, int height, GFX_COL colour);
+
         void DrawRectangle(int x, int y, int width, int height, GFX_COL colour);
 
         void DrawScanner();
@@ -60,8 +62,6 @@ namespace Elite
         void RenderFinish();
 
         void RenderStart();
-
-        bool RequestFile(string title, string path, string ext);
 
         void ScreenAcquire();
 

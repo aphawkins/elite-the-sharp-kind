@@ -27,6 +27,7 @@ namespace Elite
 
     public class Keyboard : IKeyboard
     {
+        CommandKey _lastKeyPressed = CommandKey.None;
         private Dictionary<CommandKey, bool> _isPressed = new Dictionary<CommandKey, bool>();
 
         public int kbd_keyboard_startup()
@@ -145,6 +146,7 @@ namespace Elite
 
         public void KeyPressed(int keyValue)
         {
+            _lastKeyPressed = (CommandKey)keyValue;
             _isPressed[(CommandKey)keyValue] = true;
         }
 
@@ -153,6 +155,18 @@ namespace Elite
             bool isPressed = _isPressed.ContainsKey(key) && _isPressed[key];
             _isPressed[key] = false;
             return isPressed;
+        }
+
+        public CommandKey ReadKey()
+        {
+            _lastKeyPressed = CommandKey.None;
+
+            while (_lastKeyPressed == CommandKey.None) 
+            {
+                //Thread.Sleep(100);
+            }
+
+            return _lastKeyPressed;
         }
     }
 }

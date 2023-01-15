@@ -2,6 +2,8 @@
 {
     public enum CommandKey
     {
+        None = 0,
+
         F1 = 112,
         F2 = 113,
         F3 = 114,

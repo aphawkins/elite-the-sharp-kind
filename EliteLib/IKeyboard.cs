@@ -13,5 +13,7 @@
         void KeyPressed(int keyValue);
 
         bool IsKeyPressed(CommandKey key);
+
+        CommandKey ReadKey();
     }
 }

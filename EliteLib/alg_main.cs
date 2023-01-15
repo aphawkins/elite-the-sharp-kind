@@ -1064,77 +1064,100 @@ namespace Elite
 
 		internal static void save_commander_screen()
 		{
-			elite.current_screen = SCR.SCR_SAVE_CMDR;
+			//elite.current_screen = SCR.SCR_SAVE_CMDR;
 
-            elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
-            elite.alg_gfx.ScreenUpdate();
+   //         elite.alg_gfx.ClearDisplay();
+   //         elite.alg_gfx.DrawTextCentre(20, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
+   //         elite.alg_gfx.DrawLine(0, 36, 511, 36);
+   //         elite.alg_gfx.ScreenUpdate();
 
-			string path = elite.cmdr.name;
-			path = ".nkc";
+			//string path = elite.cmdr.name;
+			//path = ".nkc";
 
-			bool okay = elite.alg_gfx.RequestFile("Save Commander", path, "nkc");
+			//bool okay = elite.alg_gfx.RequestFile("Save Commander", path, "nkc");
 
-			if (!okay)
-			{
-				options.display_options();
-				return;
-			}
+			//if (!okay)
+			//{
+			//	options.display_options();
+			//	return;
+			//}
 
-			bool rv = SaveFile.save_commander_file(path);
+			//bool rv = SaveFile.save_commander_file(path);
 
-			if (rv)
-			{
-                elite.alg_gfx.DrawTextCentre(175, "Error Saving Commander!", 140, GFX_COL.GFX_COL_GOLD);
-				return;
-			}
+			//if (rv)
+			//{
+   //             elite.alg_gfx.DrawTextCentre(175, "Error Saving Commander!", 140, GFX_COL.GFX_COL_GOLD);
+			//	return;
+			//}
 
-            elite.alg_gfx.DrawTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
+   //         elite.alg_gfx.DrawTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
 
-			set_commander_name(path);
-			elite.saved_cmdr = elite.cmdr;
-			elite.saved_cmdr.ship_x = elite.docked_planet.d;
-			elite.saved_cmdr.ship_y = elite.docked_planet.b;
+			//set_commander_name(path);
+			//elite.saved_cmdr = elite.cmdr;
+			//elite.saved_cmdr.ship_x = elite.docked_planet.d;
+			//elite.saved_cmdr.ship_y = elite.docked_planet.b;
 		}
 
 		internal static void load_commander_screen()
 		{
-            elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
-            elite.alg_gfx.ScreenUpdate();
+			//rv = SaveFile.load_commander_file(path);
 
-			string path = "jameson.nkc";
+			//if (rv)
+			//{
+			//	elite.saved_cmdr = elite.cmdr;
+			//             elite.alg_gfx.DrawTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
+			//             elite.alg_gfx.DrawTextCentre(200, "Press any key to continue.", 140, GFX_COL.GFX_COL_GOLD);
+			//             elite.alg_gfx.ScreenUpdate();
+			//	//TODO: Fix this
+			//	//readkey();
+			//	Debug.WriteLine("call to readkey()");
+			//	return;
+			//}
 
-			bool rv = elite.alg_gfx.RequestFile("Load Commander", path, "nkc");
 
-			if (!rv)
+
+
+			CommandKey key = CommandKey.None;
+			string name = elite.cmdr.name;
+
+            do
 			{
-				return;
-			}
+				elite.draw.DrawLoadCommander(false, name);
 
-			rv = SaveFile.load_commander_file(path);
+				key = elite.keyboard.ReadKey();
+				if (key is >= (CommandKey)'A' and <= (CommandKey)'Z')
+				{
+					name += (char)key;
+                }
+				else if (key is CommandKey.Backspace)
+				{
+					if (!string.IsNullOrEmpty(name))
+					{
+						name = name[..^1]; ;
+					}
+				}
+            } while (key != CommandKey.Enter);
 
-			if (rv)
+            bool isLoaded = SaveFile.load_commander_file(name);
+
+            if (isLoaded)
 			{
+				elite.restore_saved_commander();
+				set_commander_name(name);
 				elite.saved_cmdr = elite.cmdr;
-                elite.alg_gfx.DrawTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
-                elite.alg_gfx.DrawTextCentre(200, "Press any key to continue.", 140, GFX_COL.GFX_COL_GOLD);
-                elite.alg_gfx.ScreenUpdate();
-				//TODO: Fix this
-				//readkey();
-				Debug.WriteLine("call to readkey()");
-				return;
+				space.update_console();
 			}
+            else
+			{
+                elite.draw.DrawLoadCommander(true, name);
+				do
+				{
+					key = elite.keyboard.ReadKey();
+				} while (key != CommandKey.Space);
+            }
+        }
 
-			elite.restore_saved_commander();
-			set_commander_name(path);
-			elite.saved_cmdr = elite.cmdr;
-			space.update_console();
-		}
-
-		static void run_first_intro_screen()
+        static void run_first_intro_screen()
 		{
 			elite.current_screen = SCR.SCR_INTRO_ONE;
 

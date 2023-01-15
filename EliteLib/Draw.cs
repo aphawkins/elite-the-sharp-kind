@@ -121,5 +121,24 @@
                 y += 8 * gfx.GFX_SCALE;
             }
         }
+
+        internal void DrawLoadCommander(bool isError, string name)
+        {
+            _gfx.ClearDisplay();
+            _gfx.DrawTextCentre(20, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(0, 36, 511, 36);
+
+            _gfx.DrawTextCentre(75, "Please enter commander name:", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawRectangle(100, 100, 312, 50, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(125, name, 140, GFX_COL.GFX_COL_WHITE);
+
+            if (isError)
+            {
+                _gfx.DrawTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
+            }
+
+            _gfx.ScreenUpdate();
+        }
     }
 }
