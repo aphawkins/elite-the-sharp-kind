@@ -204,14 +204,14 @@ namespace Elite
 				{
 					stars[i].Z = (random.rand255() & 127) + 51;
 
-					if ((random.rand255() & 1) == 1)
+					if (random.rand255().IsOdd())
 					{
 						stars[i].X = random.rand255() - 128;
-						stars[i].Y = ((random.rand255() & 1) == 1) ? -115 : 115;
+						stars[i].Y = random.rand255().IsOdd() ? -115 : 115;
 					}
 					else
 					{
-						stars[i].X = ((random.rand255() & 1) == 1) ? -126 : 126;
+						stars[i].X = random.rand255().IsOdd() ? -126 : 126;
 						stars[i].Y = random.rand255() - 128;
 					}
 				}

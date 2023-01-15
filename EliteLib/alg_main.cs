@@ -1220,7 +1220,7 @@ namespace Elite
 
 			for (i = 0; i < 5; i++)
 			{
-				type = ((random.rand255() & 1) == 1) ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
+				type = random.rand255().IsOdd() ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
 				newship = swat.add_new_ship(type, (random.rand255() & 63) - 32, (random.rand255() & 63) - 32, -400, rotmat, 0, 0);
 				space.universe[newship].rotz = ((random.rand255() * 2) & 255) - 128;
 				space.universe[newship].rotx = ((random.rand255() * 2) & 255) - 128;

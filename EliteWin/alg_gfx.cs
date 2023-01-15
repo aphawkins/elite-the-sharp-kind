@@ -245,8 +245,9 @@ namespace Elite
         public void PlotPixel(Vector2 position, GFX_COL col)
 		{
             //TODO: Fix SNES planet colour issues
-            Color colour = _pens.ContainsKey(col) ? _pens[col].Color : Color.Magenta;
-			_screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), colour);
+            Color colour = _pens.TryGetValue(col, out Pen value) ? value.Color : Color.Magenta;
+
+            _screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), colour);
         }
 
         public void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour)

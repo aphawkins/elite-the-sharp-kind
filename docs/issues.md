@@ -19,9 +19,9 @@
 - Find planet not working
 - Incorrect distance show on current planet after hyperspace
 - Hyperspace countdown clip region is overlapping horizontal line
+- Config screen not working
 
 ## File
-- Load/save config not working
 - Load/save commander not working
 
 ## Misc

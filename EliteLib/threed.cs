@@ -639,13 +639,10 @@ namespace Elite
 
 		static void render_sun_line(float xo, float yo, float x, float y, float radius)
 		{
-			Vector2 s = new();
-			s.Y = yo + y;
-			float ex;
-            GFX_COL colour;
-			float dx, dy;
-			float distance;
-			bool mix;
+            Vector2 s = new()
+            {
+                Y = yo + y
+            };
 
 			if (s.Y is < (gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) or
                 > (gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
@@ -654,7 +651,7 @@ namespace Elite
 			}
 
 			s.X = xo - x;
-			ex = xo + x;
+			float ex = xo + x;
 
 			s.X -= radius * (2f + (random.randint() & 7)) / 256f;
 			ex += radius * (2f + (random.randint() & 7)) / 256f;
@@ -684,30 +681,20 @@ namespace Elite
 			float outer = radius * (239 + (random.randint() & 7)) / 256f;
             outer *= outer;
 
-			dy = y * y;
-			dx = s.X - xo;
+			float dy = y * y;
+			float dx = s.X - xo;
 
 			for (; s.X <= ex; s.X++, dx++)
 			{
-				mix = ((int)MathF.Pow(s.X, y) & 1) == 1;
-				distance = (dx * dx) + dy;
+				float distance = (dx * dx) + dy;
 
-				if (distance < inner)
-				{
-					colour = GFX_COL.GFX_COL_WHITE;
-				}
-				else if (distance < inner2)
-				{
-					colour = GFX_COL.GFX_COL_YELLOW_4;
-				}
-				else if (distance < outer)
-				{
-					colour = GFX_COL.GFX_COL_ORANGE_3;
-				}
-				else
-				{
-					colour = mix ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
-				}
+				GFX_COL colour = distance < inner
+                    ? GFX_COL.GFX_COL_WHITE
+                    : distance < inner2
+						? GFX_COL.GFX_COL_YELLOW_4
+						: distance < outer
+							? GFX_COL.GFX_COL_ORANGE_3
+							: ((int)MathF.Pow(s.X, y)).IsOdd() ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
 
                 elite.alg_gfx.PlotPixelFast(s, colour);
 			}
