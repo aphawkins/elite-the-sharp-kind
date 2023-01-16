@@ -9,9 +9,9 @@
         internal int eco_adjust;
         internal int base_quantity;
         internal int mask;
-        internal int units;
+        internal string units;
 
-        internal stock_item(string name, int current_quantity, int current_price, int base_price, int eco_adjust, int base_quantity, int mask, int units)
+        internal stock_item(string name, int current_quantity, int current_price, int base_price, int eco_adjust, int base_quantity, int mask, string units)
         {
             this.name = name;
             this.current_quantity = current_quantity;

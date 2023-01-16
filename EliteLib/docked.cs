@@ -626,8 +626,6 @@ namespace Elite
 			elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
 		}
 
-        private static string[] unit_name = { "t", "kg", "g" };
-
         internal static void display_inventory()
 		{
 			int i;
@@ -655,7 +653,7 @@ namespace Elite
 				{
                     elite.alg_gfx.DrawTextLeft(16, y, trade.stock_market[i].name, GFX_COL.GFX_COL_WHITE);
 
-					str = $"{elite.cmdr.current_cargo[i]:D}{unit_name[trade.stock_market[i].units]}";
+					str = $"{elite.cmdr.current_cargo[i]}{trade.stock_market[i].units}";
 
                     elite.alg_gfx.DrawTextLeft(180, y, str, GFX_COL.GFX_COL_WHITE);
 					y += 16;

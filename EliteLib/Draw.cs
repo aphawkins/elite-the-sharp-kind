@@ -164,8 +164,6 @@
             elite.alg_gfx.DrawTextLeft(16, 340, $"Cash: {credits / 10, 10:R}.{credits % 10} credits", GFX_COL.GFX_COL_WHITE);
         }
 
-        private static string[] unit_name = { "t", "kg", "g" };
-
         private void display_stock_price(stock_item stockPrice, bool isHighlighted, int currentCargo, int y)
         {
             if (isHighlighted)
@@ -175,15 +173,15 @@
 
             _gfx.DrawTextLeft(16, y, stockPrice.name, GFX_COL.GFX_COL_WHITE);
 
-            _gfx.DrawTextLeft(180, y, unit_name[stockPrice.units], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(180, y, stockPrice.units, GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextRight(285, y, $"{stockPrice.current_price / 10}.{stockPrice.current_price % 10}", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextRight(365, y, stockPrice.current_quantity > 0 ? $"{stockPrice.current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(365, y, stockPrice.current_quantity > 0 ? unit_name[stockPrice.units] : "", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(365, y, stockPrice.current_quantity > 0 ? stockPrice.units : "", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextRight(455, y, currentCargo > 0 ? $"{currentCargo, 2}" : "-", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(455, y, currentCargo > 0 ? unit_name[stockPrice.units] : "", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(455, y, currentCargo > 0 ? stockPrice.units : "", GFX_COL.GFX_COL_WHITE);
         }
     }
 }

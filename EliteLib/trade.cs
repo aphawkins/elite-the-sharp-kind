@@ -26,9 +26,9 @@ namespace Elite
 		const int NARCOTICS = 6;
 		const int FIREARMS = 10;
 
-		internal static int TONNES = 0;
-		internal static int KILOGRAMS = 1;
-		internal static int GRAMS = 2;
+		internal static string TONNES = "t";
+		internal static string KILOGRAMS = "Kg";
+		internal static string GRAMS = "g";
 
 		/*
 		* The following holds the Elite Planet Stock Market.

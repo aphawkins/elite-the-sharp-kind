@@ -468,8 +468,7 @@ namespace Elite
 
 		static void f_pressed()
 		{
-			if ((elite.current_screen == SCR.SCR_GALACTIC_CHART) ||
-				(elite.current_screen == SCR.SCR_SHORT_RANGE))
+			if (elite.current_screen is SCR.SCR_GALACTIC_CHART or SCR.SCR_SHORT_RANGE)
 			{
 				find_input = true;
 				find_name = string.Empty;
