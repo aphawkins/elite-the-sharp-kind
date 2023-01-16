@@ -289,18 +289,24 @@ namespace Elite
             DrawPolygon(points, colour);
 		}
 
-		public void DrawText(int x, int y, string text)
-		{
-			DrawText(x, y, text, GFX_COL.GFX_COL_WHITE);
-        }
-
-		public void DrawText(int x, int y, string text, GFX_COL colour)
+		public void DrawTextLeft(int x, int y, string text, GFX_COL colour)
 		{
             PointF point = new((x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
             _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point);
         }
 
-		public void DrawTextCentre(int y, string text, int psize, GFX_COL colour)
+        public void DrawTextRight(int x, int y, string text, GFX_COL colour)
+        {
+            StringFormat stringFormat = new()
+            {
+                Alignment = StringAlignment.Far,
+            };
+
+            PointF point = new((x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
+            _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point, stringFormat);
+        }
+
+        public void DrawTextCentre(int y, string text, int psize, GFX_COL colour)
 		{
             StringFormat stringFormat = new()
             {

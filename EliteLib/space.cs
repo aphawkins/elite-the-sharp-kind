@@ -1081,7 +1081,7 @@ namespace Elite
 				SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
                 SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
 			{
-                elite.alg_gfx.DrawText(5, 5, str);
+                elite.alg_gfx.DrawTextLeft(5, 5, str, GFX_COL.GFX_COL_WHITE);
 				if (hyper_galactic)
 				{
                     elite.alg_gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
@@ -1095,7 +1095,7 @@ namespace Elite
 			else
 			{
                 elite.alg_gfx.ClearArea(5, 5, 25, 34);
-                elite.alg_gfx.DrawText(5, 5, str);
+                elite.alg_gfx.DrawTextLeft(5, 5, str, GFX_COL.GFX_COL_WHITE);
 			}
 		}
 

@@ -47,9 +47,9 @@ namespace Elite
 
         void DrawSprite(IMG spriteImgage, int x, int y);
 
-        void DrawText(int x, int y, string text, GFX_COL colour);
+        void DrawTextLeft(int x, int y, string text, GFX_COL colour);
 
-        void DrawText(int x, int y, string text);
+        void DrawTextRight(int x, int y, string text, GFX_COL colour);
 
         void DrawTextCentre(int y, string text, int psize, GFX_COL colour);
 

@@ -137,8 +137,8 @@ namespace Elite
 			x = (item & 1) * 250 + 32;
 			y = (item / 2) * 30 + 96;
 
-			elite.alg_gfx.DrawText(x, y, setting_list[item].name, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DrawText(x + 120, y, setting_list[item].value[v], GFX_COL.GFX_COL_WHITE);
+			elite.alg_gfx.DrawTextLeft(x, y, setting_list[item].name, GFX_COL.GFX_COL_WHITE);
+			elite.alg_gfx.DrawTextLeft(x + 120, y, setting_list[item].value[v], GFX_COL.GFX_COL_WHITE);
 		}
 
 		static void highlight_setting(int item)

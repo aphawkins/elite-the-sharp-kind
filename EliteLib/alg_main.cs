@@ -474,7 +474,7 @@ namespace Elite
 				find_input = true;
 				find_name = string.Empty;
                 elite.alg_gfx.ClearTextArea();
-                elite.alg_gfx.DrawText(16, 340, "Planet Name?");
+                elite.alg_gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_WHITE);
 			}
 		}
 
@@ -490,7 +490,7 @@ namespace Elite
 
 			str = "Planet Name? " + find_name;
             elite.alg_gfx.ClearTextArea();
-            elite.alg_gfx.DrawText(16, 340, str);
+            elite.alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
 		}
 
 		static void delete_find_char()
@@ -507,7 +507,7 @@ namespace Elite
 
 			str = "Planet Name? " + find_name;
             elite.alg_gfx.ClearTextArea();
-            elite.alg_gfx.DrawText(16, 340, str);
+            elite.alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
 		}
 
 		static void o_pressed()

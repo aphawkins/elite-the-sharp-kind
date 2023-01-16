@@ -2,6 +2,7 @@
 {
     using System.Numerics;
     using Elite.Enums;
+    using Elite.Structs;
 
     internal class Draw
     {
@@ -37,7 +38,7 @@
             DrawFuelLimitCircle(new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE));
             foreach ((Vector2 position, string name) in planetNames)
             {
-                _gfx.DrawText((int)position.X, (int)position.Y, name);
+                _gfx.DrawTextLeft((int)position.X, (int)position.Y, name, GFX_COL.GFX_COL_WHITE);
             }
             foreach ((Vector2 position, int size) in planetSizes)
             {
@@ -49,11 +50,11 @@
         private void DrawDistanceToPlanet(string planetName, int lightYears)
         {
             _gfx.ClearTextArea();
-            _gfx.DrawText(16, 340, $"{planetName:-18s}");
+            _gfx.DrawTextLeft(16, 340, $"{planetName:-18s}", GFX_COL.GFX_COL_WHITE);
             string str = lightYears > 0
                 ? $"Distance: {lightYears / 10}.{lightYears % 10} Light Years "
                 : "                                                     ";
-            _gfx.DrawText(16, 356, str);
+            _gfx.DrawTextLeft(16, 356, str, GFX_COL.GFX_COL_WHITE);
         }
 
         internal void DrawDataOnPlanet(string planetName, int lightYears, string economy, 
@@ -66,14 +67,14 @@
             string str = lightYears > 0
                 ? $"Distance: {lightYears / 10}.{lightYears % 10} Light Years "
                 : "                                                     ";
-            _gfx.DrawText(16, 42, str);
-            _gfx.DrawText(16, 74, $"Economy: {economy}");
-            _gfx.DrawText(16, 106, $"Government: {government}");
-            _gfx.DrawText(16, 138, $"Tech Level: {techLevel}");
-            _gfx.DrawText(16, 170, $"Population: {population / 10}.{population % 10} Billion");
-            _gfx.DrawText(16, 202, inhabitants);
-            _gfx.DrawText(16, 234, $"Gross Productivity: {productivity} M CR");
-            _gfx.DrawText(16, 266, $"Average Radius: {radius} km");
+            _gfx.DrawTextLeft(16, 42, str, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 74, $"Economy: {economy}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 106, $"Government: {government}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 138, $"Tech Level: {techLevel}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 170, $"Population: {population / 10}.{population % 10} Billion", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 202, inhabitants, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 234, $"Gross Productivity: {productivity} M CR", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 266, $"Average Radius: {radius} km", GFX_COL.GFX_COL_WHITE);
             DrawTextPretty(16, 298, 400, 384, description);
         }
 
@@ -116,7 +117,7 @@
                 }
 
                 i++;
-                _gfx.DrawText(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
                 previous = i;
                 y += 8 * gfx.GFX_SCALE;
             }
@@ -139,6 +140,50 @@
             }
 
             _gfx.ScreenUpdate();
+        }
+
+        internal void DrawMarketPrices(string planetName, stock_item[] stocks, int highlightedStock, int[] currentCargo, int credits)
+        {
+            _gfx.ClearDisplay();
+
+            _gfx.DrawTextCentre(20, $"{planetName} MARKET PRICES", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(0, 36, 511, 36);
+            _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(246, 40, "PRICE", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(314, 40, "FOR SALE", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(420, 40, "IN HOLD", GFX_COL.GFX_COL_GREEN_1);
+
+            for (int i = 0; i < stocks.Length; i++)
+            {
+                int y = (i * 15) + 55;
+                display_stock_price(stocks[i], i == highlightedStock, currentCargo[i], y);
+            }
+
+            elite.alg_gfx.ClearTextArea();
+            elite.alg_gfx.DrawTextLeft(16, 340, $"Cash: {credits / 10, 10:R}.{credits % 10} credits", GFX_COL.GFX_COL_WHITE);
+        }
+
+        private static string[] unit_name = { "t", "kg", "g" };
+
+        private void display_stock_price(stock_item stockPrice, bool isHighlighted, int currentCargo, int y)
+        {
+            if (isHighlighted)
+            {
+                elite.alg_gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+            }
+
+            _gfx.DrawTextLeft(16, y, stockPrice.name, GFX_COL.GFX_COL_WHITE);
+
+            _gfx.DrawTextLeft(180, y, unit_name[stockPrice.units], GFX_COL.GFX_COL_WHITE);
+
+            _gfx.DrawTextRight(285, y, $"{stockPrice.current_price / 10}.{stockPrice.current_price % 10}", GFX_COL.GFX_COL_WHITE);
+
+            _gfx.DrawTextRight(365, y, stockPrice.current_quantity > 0 ? $"{stockPrice.current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(365, y, stockPrice.current_quantity > 0 ? unit_name[stockPrice.units] : "", GFX_COL.GFX_COL_WHITE);
+
+            _gfx.DrawTextRight(455, y, currentCargo > 0 ? $"{currentCargo, 2}" : "-", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(455, y, currentCargo > 0 ? unit_name[stockPrice.units] : "", GFX_COL.GFX_COL_WHITE);
         }
     }
 }
