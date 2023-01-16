@@ -526,6 +526,8 @@ namespace Elite
 			ry += radius * 65536f;
 			float div = radius * 1024f;  /* radius * 2 * LAND_X_MAX >> 16 */
 
+			//Debug.Assert(rx > 0);
+			//Debug.Assert(ry > 0);
 
 			for (; s.X <= ex; s.X++)
 			{
@@ -534,7 +536,8 @@ namespace Elite
 					int lx = (int)(rx / div);
 					int ly = (int)(ry / div);
                     //TODO: fix colours
-                    GFX_COL colour = (GFX_COL)landscape[lx, ly];
+                    //GFX_COL colour = (GFX_COL)landscape[lx, ly];
+                    GFX_COL colour = lx < 0 || lx > 128 || ly < 0 || ly > 128 ? GFX_COL.GFX_COL_PINK_1 : (GFX_COL)landscape[lx, ly];
                     elite.alg_gfx.PlotPixelFast(s, colour);
                 }
 				rx += vx;
@@ -901,8 +904,8 @@ namespace Elite
 						for (int psx = 0; psx < sizex; psx++)
 						{
 							//TODO: Bug - the X or Y could be negative
-                            Debug.Assert(position.X >= 0);
-                            Debug.Assert(position.Y >= 0);
+                            //Debug.Assert(position.X >= 0);
+                            //Debug.Assert(position.Y >= 0);
 
                             elite.alg_gfx.PlotPixel(new(position.X + psx, position.Y + psy), GFX_COL.GFX_COL_WHITE);
 						}

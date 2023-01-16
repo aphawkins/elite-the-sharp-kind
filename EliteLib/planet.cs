@@ -187,28 +187,17 @@ namespace Elite
 		internal static galaxy_seed find_planet(int cx, int cy)
 		{
 			int min_dist = 10000;
-			galaxy_seed glx;
 			galaxy_seed planet = new();
-			int distance;
-			int dx, dy;
-
-			glx = elite.cmdr.galaxy;
+			galaxy_seed glx = elite.cmdr.galaxy;
 
 			for (int i = 0; i < 256; i++)
 			{
-				dx = Math.Abs(cx - glx.d);
-				dy = Math.Abs(cy - glx.b);
+				int dx = Math.Abs(cx - glx.d);
+				int dy = Math.Abs(cy - glx.b);
 
-				if (dx > dy)
-				{
-					distance = (dx + dx + dy) / 2;
-				}
-				else
-				{
-					distance = (dx + dy + dy) / 2;
-				}
+				int distance = dx > dy ? (dx + dx + dy) / 2 : (dx + dy + dy) / 2;
 
-				if (distance < min_dist)
+                if (distance < min_dist)
 				{
 					min_dist = distance;
 					planet = glx;
@@ -225,12 +214,9 @@ namespace Elite
 
 		internal static int find_planet_number(galaxy_seed planet)
 		{
-			galaxy_seed glx;
-			int i;
+			galaxy_seed glx = elite.cmdr.galaxy;
 
-			glx = elite.cmdr.galaxy;
-
-			for (i = 0; i < 256; i++)
+			for (int i = 0; i < 256; i++)
 			{
 
 				if ((planet.a == glx.a) &&
@@ -239,9 +225,11 @@ namespace Elite
 					(planet.d == glx.d) &&
 					(planet.e == glx.e) &&
 					(planet.f == glx.f))
-					return i;
+                {
+                    return i;
+                }
 
-				waggle_galaxy(ref glx);
+                waggle_galaxy(ref glx);
 				waggle_galaxy(ref glx);
 				waggle_galaxy(ref glx);
 				waggle_galaxy(ref glx);
@@ -252,23 +240,12 @@ namespace Elite
 
 		internal static string name_planet(galaxy_seed glx)
 		{
-			int size;
-			int i;
 			string gname = string.Empty;
-			int x;
+			int size = (glx.a & 0x40) == 0 ? 3 : 4;
 
-			if ((glx.a & 0x40) == 0)
+            for (int i = 0; i < size; i++)
 			{
-				size = 3;
-			}
-			else
-			{
-				size = 4;
-			}
-
-			for (i = 0; i < size; i++)
-			{
-				x = glx.f & 0x1F;
+				int x = glx.f & 0x1F;
 				if (x != 0)
 				{
 					x += 12;

@@ -247,6 +247,12 @@ namespace Elite
             //TODO: Fix SNES planet colour issues
             Color colour = _pens.TryGetValue(col, out Pen value) ? value.Color : Color.Magenta;
 
+            //TODO: fix bad values from explosion
+            if (position.X < 0 || position.X > 512 || position.Y < 0 || position.Y > 512)
+            {
+                return;
+            }
+
             _screenBuffer.SetPixel((int)(position.X + gfx.GFX_X_OFFSET), (int)(position.Y + gfx.GFX_Y_OFFSET), colour);
         }
 

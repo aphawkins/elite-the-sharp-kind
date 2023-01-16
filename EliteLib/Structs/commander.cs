@@ -2,47 +2,41 @@
 {
     using Elite;
 
-    internal struct commander
+    public struct Commander
     {
-        internal string name;
-        internal int mission;
-        internal int ship_x;
-        internal int ship_y;
-        internal galaxy_seed galaxy;
-	    internal int credits;
-        internal int fuel;
-        internal int unused1;
-        internal int galaxy_number;
-        internal int front_laser;
-        internal int rear_laser;
-        internal int left_laser;
-        internal int right_laser;
-        internal int unused2;
-        internal int unused3;
-        internal int cargo_capacity;
-        internal int[] current_cargo = new int[trade.NO_OF_STOCK_ITEMS];
-        internal bool ecm;
-        internal bool fuel_scoop;
-        internal bool energy_bomb;
-        internal int energy_unit;
-        internal bool docking_computer;
-        internal bool galactic_hyperdrive;
-        internal bool escape_pod;
-        internal int unused4;
-        internal int unused5;
-        internal int unused6;
-        internal int unused7;
-        internal int missiles;
-        internal int legal_status;
-        internal int[] station_stock = new int[trade.NO_OF_STOCK_ITEMS];
-        internal int market_rnd;
-        internal int score;
-        internal int saved;
+        public string name { get; set; }
+        public int mission { get; set; }
+        public int ship_x { get; set; }
+        public int ship_y { get; set; }
+        public galaxy_seed galaxy { get; set; }
+        public int credits { get; set; }
+        public int fuel { get; set; }
+        public int galaxy_number { get; set; }
+        public int front_laser { get; set; }
+        public int rear_laser { get; set; }
+        public int left_laser { get; set; }
+        public int right_laser { get; set; }
+        public int cargo_capacity { get; set; }
+        public int[] current_cargo { get; set; } = new int[trade.NO_OF_STOCK_ITEMS];
+        public bool ecm { get; set; }
+        public bool fuel_scoop { get; set; }
+        public bool energy_bomb { get; set; }
+        public int energy_unit { get; set; }
+        public bool docking_computer { get; set; }
+        public bool galactic_hyperdrive { get; set; }
+        public bool escape_pod { get; set; }
 
-        public commander(string name, int mission, int ship_x, int ship_y, galaxy_seed galaxy, int credits, int fuel, int unused1, 
-            int galaxy_number, int front_laser, int rear_laser, int left_laser, int right_laser, int unused2, int unused3, int cargo_capacity,
+        public int missiles { get; set; }
+        public int legal_status { get; set; }
+        public int[] station_stock { get; set; } = new int[trade.NO_OF_STOCK_ITEMS];
+        public int market_rnd { get; set; }
+        public int score { get; set; }
+        public int saved { get; set; }
+
+        public Commander(string name, int mission, int ship_x, int ship_y, galaxy_seed galaxy, int credits, int fuel, 
+            int galaxy_number, int front_laser, int rear_laser, int left_laser, int right_laser, int cargo_capacity,
             int[] current_cargo, bool ecm, bool fuel_scoop, bool energy_bomb, int energy_unit, bool docking_computer, bool galactic_hyperdrive, bool escape_pod,
-            int unused4, int unused5, int unused6, int unused7, int missiles, int legal_status, int[] station_stock, int market_rnd, int score, int saved)
+            int missiles, int legal_status, int[] station_stock, int market_rnd, int score, int saved)
         {
             this.name = name;
             this.mission = mission;
@@ -51,14 +45,11 @@
             this.galaxy = galaxy;
             this.credits = credits;
             this.fuel = fuel;
-            this.unused1 = unused1;
             this.galaxy_number = galaxy_number;
             this.front_laser = front_laser;
             this.rear_laser = rear_laser;
             this.left_laser = left_laser;
             this.right_laser = right_laser;
-            this.unused2 = unused2;
-            this.unused3 = unused3;
             this.cargo_capacity = cargo_capacity;
             this.current_cargo = current_cargo;
             this.ecm = ecm;
@@ -68,10 +59,6 @@
             this.docking_computer = docking_computer;
             this.galactic_hyperdrive = galactic_hyperdrive;
             this.escape_pod = escape_pod;
-            this.unused4 = unused4;
-            this.unused5 = unused5;
-            this.unused6 = unused6;
-            this.unused7 = unused7;
             this.missiles = missiles;
             this.legal_status = legal_status;
             this.station_stock = station_stock;

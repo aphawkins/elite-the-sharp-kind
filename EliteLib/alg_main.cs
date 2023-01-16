@@ -56,6 +56,7 @@ namespace Elite
 
     using Elite.Enums;
     using Elite.Structs;
+    using Elite.Save;
 
     public static class alg_main
 	{
@@ -1046,22 +1047,6 @@ namespace Elite
 			}
 		}
 
-		static void set_commander_name(string path)
-		{
-			string fname = Path.GetFileNameWithoutExtension(path);
-			string cname = elite.cmdr.name;
-
-			foreach (char c in fname)
-			{
-				if (char.IsLetter(c))
-				{
-					cname += char.ToUpper(c);
-				}
-			}
-
-			elite.cmdr.name = cname;
-		}
-
 		internal static void save_commander_screen()
 		{
 			//elite.current_screen = SCR.SCR_SAVE_CMDR;
@@ -1103,7 +1088,7 @@ namespace Elite
 			int key;
 			string name = elite.cmdr.name;
 
-            do
+			do
 			{
 				elite.draw.DrawLoadCommander(false, name);
 
@@ -1111,7 +1096,7 @@ namespace Elite
 				if (key is >= 'A' and <= 'Z')
 				{
 					name += (char)key;
-                }
+				}
 				else if (key is (int)CommandKey.Backspace)
 				{
 					if (!string.IsNullOrEmpty(name))
@@ -1119,27 +1104,25 @@ namespace Elite
 						name = name[..^1]; ;
 					}
 				}
-            } while (key != (int)CommandKey.Enter);
+			} while (key != (int)CommandKey.Enter);
 
-            bool isLoaded = SaveFile.load_commander_file(name);
+			Commander? cmdr = SaveFile.LoadCommanderAsync(name).Result;
 
-            if (isLoaded)
+			if (cmdr == null)
 			{
-				elite.saved_cmdr = elite.cmdr;
-				elite.restore_saved_commander();
-				set_commander_name(name);
-				elite.saved_cmdr = elite.cmdr;
-				space.update_console();
-			}
-            else
-			{
-                elite.draw.DrawLoadCommander(true, name);
+				elite.draw.DrawLoadCommander(true, name);
 				do
 				{
 					key = elite.keyboard.ReadKey();
 				} while (key != (int)CommandKey.Space);
-            }
-        }
+
+				cmdr = CommanderFactory.Jameson();
+			}
+
+			elite.saved_cmdr = (Commander)cmdr;
+			elite.restore_saved_commander();
+			space.update_console();
+		}
 
         static void run_first_intro_screen()
 		{

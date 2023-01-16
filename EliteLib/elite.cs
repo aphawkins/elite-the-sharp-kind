@@ -26,10 +26,10 @@ namespace Elite
 		internal static ISound sound;
         internal static IKeyboard keyboard;
 
-        internal const int PULSE_LASER = 0x0F;
-		internal const int BEAM_LASER = 0x8F;
-		internal const int MILITARY_LASER = 0x97;
-		internal const int MINING_LASER = 0x32;
+        internal const int PULSE_LASER = 0x0F;     //  15
+		internal const int BEAM_LASER = 0x8F;      // 143
+		internal const int MILITARY_LASER = 0x97;  // 151
+		internal const int MINING_LASER = 0x32;    //  50
 
 		internal const int MAX_UNIV_OBJECTS = 20;
 
@@ -63,12 +63,12 @@ namespace Elite
 		internal static bool auto_pilot;
 
 #if DEBUG
-        internal static commander saved_cmdr = CommanderFactory.Max();
+        internal static Commander saved_cmdr = CommanderFactory.Max();
 #else
 		internal static commander saved_cmdr = CommanderFactory.Jameson();
 #endif
 
-        internal static commander cmdr;
+        internal static Commander cmdr;
 		internal static player_ship myship;
 		internal static Draw draw;
 

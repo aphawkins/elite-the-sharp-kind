@@ -8,12 +8,12 @@
 - Colours on SNES planet style not working
 - Explosion of other ship can cause an exception
 - Planet can render with black lines through it if filled with colour
+- Sometimes they fly backwards
 
 ## Missions
 - Ship and text in mission brief doesn't clip correctly
 
 ## Charts
-- Stutter on first moving the cursor
 - Find planet not working
 - Incorrect distance show on current planet after hyperspace
 - Hyperspace countdown clip region is overlapping horizontal line

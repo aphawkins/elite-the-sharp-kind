@@ -1109,14 +1109,18 @@ namespace Elite
 			elite.cmdr.galaxy_number++;
 			elite.cmdr.galaxy_number &= 7;
 
-			elite.cmdr.galaxy.a = rotate_byte_left(elite.cmdr.galaxy.a);
-			elite.cmdr.galaxy.b = rotate_byte_left(elite.cmdr.galaxy.b);
-			elite.cmdr.galaxy.c = rotate_byte_left(elite.cmdr.galaxy.c);
-			elite.cmdr.galaxy.d = rotate_byte_left(elite.cmdr.galaxy.d);
-			elite.cmdr.galaxy.e = rotate_byte_left(elite.cmdr.galaxy.e);
-			elite.cmdr.galaxy.f = rotate_byte_left(elite.cmdr.galaxy.f);
+            galaxy_seed glx = new()
+            {
+                a = rotate_byte_left(elite.cmdr.galaxy.a),
+                b = rotate_byte_left(elite.cmdr.galaxy.b),
+                c = rotate_byte_left(elite.cmdr.galaxy.c),
+                d = rotate_byte_left(elite.cmdr.galaxy.d),
+                e = rotate_byte_left(elite.cmdr.galaxy.e),
+                f = rotate_byte_left(elite.cmdr.galaxy.f)
+            };
+            elite.cmdr.galaxy = glx;
 
-			elite.docked_planet = Planet.find_planet(0x60, 0x60);
+            elite.docked_planet = Planet.find_planet(0x60, 0x60);
 			elite.hyperspace_planet = elite.docked_planet;
 		}
 

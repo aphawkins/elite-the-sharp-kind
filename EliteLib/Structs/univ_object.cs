@@ -3,7 +3,7 @@
     using System.Numerics;
     using Elite.Enums;
 
-    internal class univ_object : ICloneable
+    internal struct univ_object : ICloneable
     {
         internal SHIP type;
         internal Vector3 location;
@@ -21,11 +21,7 @@
         internal int exp_seed;
         internal float distance;
 
-        internal univ_object()
-        {
-        }
-
-        protected univ_object(univ_object other)
+        univ_object(univ_object other)
         {
             type = other.type;
             location = other.location.Cloner();

@@ -244,7 +244,7 @@ namespace Elite
 		internal static void display_galactic_chart()
 		{
 			elite.current_screen = SCR.SCR_GALACTIC_CHART;
-            galaxy_seed glx = elite.cmdr.galaxy;
+			galaxy_seed glx = elite.cmdr.galaxy;
 			planetPixels.Clear();
 
             for (int i = 0; i < 256; i++)

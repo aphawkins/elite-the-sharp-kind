@@ -343,13 +343,11 @@ namespace Elite
 
 		internal static void check_target(int un, ref univ_object flip)
 		{
-			univ_object univ;
+			//univ_object univ = space.universe[un];
 
-			univ = space.universe[un];
-
-			if (in_target(univ.type, flip.location.X, flip.location.Y, flip.location.Z))
+			if (in_target(space.universe[un].type, flip.location.X, flip.location.Y, flip.location.Z))
 			{
-				if ((missile_target == MISSILE_ARMED) && (univ.type >= 0))
+				if ((missile_target == MISSILE_ARMED) && (space.universe[un].type >= 0))
 				{
 					missile_target = un;
 					alg_main.info_message("Target Locked");
@@ -360,26 +358,26 @@ namespace Elite
 				{
 					elite.sound.PlaySample(Sfx.HitEnemy);
 
-					if ((univ.type != SHIP.SHIP_CORIOLIS) && (univ.type != SHIP.SHIP_DODEC))
+					if (space.universe[un].type is not SHIP.SHIP_CORIOLIS and not SHIP.SHIP_DODEC)
 					{
-						if ((univ.type == SHIP.SHIP_CONSTRICTOR) || (univ.type == SHIP.SHIP_COUGAR))
+						if (space.universe[un].type is SHIP.SHIP_CONSTRICTOR or SHIP.SHIP_COUGAR)
 						{
 							if (laser == (elite.MILITARY_LASER & 127))
 							{
-								univ.energy -= laser / 4;
+                                space.universe[un].energy -= laser / 4;
 							}
 						}
 						else
 						{
-							univ.energy -= laser;
+                            space.universe[un].energy -= laser;
 						}
 					}
 
-					if (univ.energy <= 0)
+					if (space.universe[un].energy <= 0)
 					{
 						explode_object(un);
 
-						if (univ.type == SHIP.SHIP_ASTEROID)
+						if (space.universe[un].type == SHIP.SHIP_ASTEROID)
 						{
 							if (laser == (elite.MINING_LASER & 127))
 							{
