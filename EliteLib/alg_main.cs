@@ -523,7 +523,7 @@ namespace Elite
 
 		static void auto_dock()
 		{
-			univ_object ship = new univ_object();
+			univ_object ship = new();
 			ship.rotmat = new Vector3[3];
 			ship.location.X = 0;
 			ship.location.Y = 0;

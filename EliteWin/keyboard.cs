@@ -17,7 +17,7 @@ namespace Elite
     public class Keyboard : IKeyboard
     {
         int _lastKeyPressed;
-        private Dictionary<int, bool> _isPressed = new Dictionary<int, bool>();
+        private Dictionary<int, bool> _isPressed = new();
 
         public int kbd_keyboard_startup()
         {

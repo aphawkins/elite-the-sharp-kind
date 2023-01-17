@@ -113,7 +113,7 @@ namespace Elite.Ships
             new ship_face_normal(31,    0,    0,  121),
         };
 
-        internal static ship_data transp_data = new ship_data(
+        internal static ship_data transp_data = new(
             "Transporter",
             37, 46, 14,
             0,
