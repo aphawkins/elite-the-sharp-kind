@@ -249,11 +249,13 @@ namespace Elite
 
             for (int i = 0; i < 256; i++)
 			{
-				Vector2 pixel = new();
-                pixel.X = glx.d * gfx.GFX_SCALE;
-                pixel.Y = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+                Vector2 pixel = new()
+                {
+                    X = glx.d * gfx.GFX_SCALE,
+                    Y = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1
+                };
 
-				planetPixels.Add(pixel);
+                planetPixels.Add(pixel);
 
 				if ((glx.e | 0x50) < 0x90)
 				{

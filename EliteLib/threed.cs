@@ -593,9 +593,11 @@ namespace Elite
 		 */
 		static void draw_planet(ref univ_object planet)
 		{
-			Vector2 position = new();
-            position.X = planet.location.X * 256 / planet.location.Z;
-            position.Y = planet.location.Y * 256 / planet.location.Z;
+            Vector2 position = new()
+            {
+                X = planet.location.X * 256 / planet.location.Z,
+                Y = planet.location.Y * 256 / planet.location.Z
+            };
 
             position.Y = -position.Y;
 

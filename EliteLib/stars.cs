@@ -46,11 +46,13 @@ namespace Elite
 
 			for (int i = 0; i < stars.Length; i++)
 			{
-				/* Plot the stars in their current locations... */
-				Vector2 star = new();
-                star.Y = stars[i].Y;
-                star.X = stars[i].X;
-				float zz = stars[i].Z;
+                /* Plot the stars in their current locations... */
+                Vector2 star = new()
+                {
+                    Y = stars[i].Y,
+                    X = stars[i].X
+                };
+                float zz = stars[i].Z;
 
                 star.X += 128;
                 star.Y += 96;
