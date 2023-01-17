@@ -27,9 +27,9 @@
             DrawDistanceToPlanet(planetName, distanceToPlanet);
         }
 
-        internal void DrawShortRangeChart(IList<(Vector2 position, string name)> planetNames, 
+        internal void DrawShortRangeChart(IList<(Vector2 position, string name)> planetNames,
             IList<(Vector2 position, int size)> planetSizes,
-            string planetName, 
+            string planetName,
             int lightYears)
         {
             _gfx.ClearDisplay();
@@ -57,7 +57,7 @@
             _gfx.DrawTextLeft(16, 356, str, GFX_COL.GFX_COL_WHITE);
         }
 
-        internal void DrawDataOnPlanet(string planetName, int lightYears, string economy, 
+        internal void DrawDataOnPlanet(string planetName, int lightYears, string economy,
             string government, int techLevel, int population, string inhabitants,
             int productivity, int radius, string description)
         {
@@ -157,31 +157,64 @@
             for (int i = 0; i < stocks.Length; i++)
             {
                 int y = (i * 15) + 55;
-                DrawStockPrice(stocks[i], i == highlightedStock, currentCargo[i], y);
+
+                if (i == highlightedStock)
+                {
+                    elite.alg_gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+                }
+
+                _gfx.DrawTextLeft(16, y, stocks[i].name, GFX_COL.GFX_COL_WHITE);
+
+                _gfx.DrawTextLeft(180, y, stocks[i].units, GFX_COL.GFX_COL_WHITE);
+
+                _gfx.DrawTextRight(285, y, $"{stocks[i].current_price / 10}.{stocks[i].current_price % 10}", GFX_COL.GFX_COL_WHITE);
+
+                _gfx.DrawTextRight(365, y, stocks[i].current_quantity > 0 ? $"{stocks[i].current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(365, y, stocks[i].current_quantity > 0 ? stocks[i].units : "", GFX_COL.GFX_COL_WHITE);
+
+                _gfx.DrawTextRight(455, y, currentCargo[i] > 0 ? $"{currentCargo[i],2}" : "-", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(455, y, currentCargo[i] > 0 ? stocks[i].units : "", GFX_COL.GFX_COL_WHITE);
             }
 
-            elite.alg_gfx.ClearTextArea();
-            elite.alg_gfx.DrawTextLeft(16, 340, $"Cash: {credits / 10, 10:R}.{credits % 10} credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.ClearTextArea();
+            _gfx.DrawTextLeft(16, 340, $"Cash: {credits / 10, 10:R}.{credits % 10} credits", GFX_COL.GFX_COL_WHITE);
         }
 
-        private void DrawStockPrice(stock_item stockPrice, bool isHighlighted, int currentCargo, int y)
+        internal void DrawEquipShip(EquipmentItem[] equip_stock, int highlightedItem, int credits)
         {
-            if (isHighlighted)
+            _gfx.ClearDisplay();
+            _gfx.DrawTextCentre(20, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(0, 36, 511, 36);
+            _gfx.ClearArea(2, 55, 508, 325);
+
+            int y = 55;
+
+            for (int i = 0; i < equip_stock.Length; i++)
             {
-                elite.alg_gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+                if (!equip_stock[i].Show)
+                {
+                    continue;
+                }
+
+                if (i == highlightedItem)
+                {
+                    _gfx.DrawRectangleFilled(2, y + 1, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+                }
+
+                GFX_COL col = equip_stock[i].CanBuy ? GFX_COL.GFX_COL_WHITE : GFX_COL.GFX_COL_GREY_1;
+                int x = equip_stock[i].Name[0] == '>' ? 50 : 16;
+                _gfx.DrawTextLeft(x, y, equip_stock[i].Name[1..], col);
+
+                if (equip_stock[i].Price != 0)
+                {
+                    _gfx.DrawTextRight(450, y, $"{equip_stock[i].Price / 10}.{equip_stock[i].Price % 10}", col);
+                }
+
+                y += 15;
             }
 
-            _gfx.DrawTextLeft(16, y, stockPrice.name, GFX_COL.GFX_COL_WHITE);
-
-            _gfx.DrawTextLeft(180, y, stockPrice.units, GFX_COL.GFX_COL_WHITE);
-
-            _gfx.DrawTextRight(285, y, $"{stockPrice.current_price / 10}.{stockPrice.current_price % 10}", GFX_COL.GFX_COL_WHITE);
-
-            _gfx.DrawTextRight(365, y, stockPrice.current_quantity > 0 ? $"{stockPrice.current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(365, y, stockPrice.current_quantity > 0 ? stockPrice.units : "", GFX_COL.GFX_COL_WHITE);
-
-            _gfx.DrawTextRight(455, y, currentCargo > 0 ? $"{currentCargo, 2}" : "-", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(455, y, currentCargo > 0 ? stockPrice.units : "", GFX_COL.GFX_COL_WHITE);
+            _gfx.ClearTextArea();
+            _gfx.DrawTextLeft(16, 340, $"Cash: {credits / 10, 10:R}.{credits % 10} credits", GFX_COL.GFX_COL_WHITE);
         }
     }
 }

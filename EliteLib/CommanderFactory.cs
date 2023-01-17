@@ -62,7 +62,7 @@
                 elite.MILITARY_LASER,                       /* Rear Laser		*/
                 elite.MILITARY_LASER,                       /* Left Laser		*/
                 elite.MILITARY_LASER,                       /* Right Laser		*/
-                20,                                         /* Cargo Capacity	*/
+                35,                                         // Large Cargo Bay
                 new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },        /* Current Cargo	*/
                 true,                                          /* ECM				*/
                 true,                                          /* Fuel Scoop		*/

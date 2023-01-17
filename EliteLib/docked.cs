@@ -662,307 +662,190 @@ namespace Elite
 		}
 
 		/***********************************************************************************/
-
-		enum equip_types
+		static EquipmentItem[] EquipmentStock = new EquipmentItem[]
 		{
-			EQ_FUEL, EQ_MISSILE, EQ_CARGO_BAY, EQ_ECM, EQ_FUEL_SCOOPS,
-			EQ_ESCAPE_POD, EQ_ENERGY_BOMB, EQ_ENERGY_UNIT, EQ_DOCK_COMP,
-			EQ_GAL_DRIVE, EQ_PULSE_LASER, EQ_FRONT_PULSE, EQ_REAR_PULSE,
-			EQ_LEFT_PULSE, EQ_RIGHT_PULSE, EQ_BEAM_LASER, EQ_FRONT_BEAM,
-			EQ_REAR_BEAM, EQ_LEFT_BEAM, EQ_RIGHT_BEAM, EQ_MINING_LASER,
-			EQ_FRONT_MINING, EQ_REAR_MINING, EQ_LEFT_MINING, EQ_RIGHT_MINING,
-			EQ_MILITARY_LASER, EQ_FRONT_MILITARY, EQ_REAR_MILITARY,
-			EQ_LEFT_MILITARY, EQ_RIGHT_MILITARY
+			new(false, true,   1,     2, " Fuel",                EquipmentType.EQ_FUEL),
+			new(false, true,   1,   300, " Missile",             EquipmentType.EQ_MISSILE),
+			new(false, true,   1,  4000, " Large Cargo Bay",     EquipmentType.EQ_CARGO_BAY),
+			new(false, true,   2,  6000, " E.C.M. System",       EquipmentType.EQ_ECM),
+			new(false, true,   5,  5250, " Fuel Scoops",         EquipmentType.EQ_FUEL_SCOOPS),
+			new(false, true,   6, 10000, " Escape Pod",          EquipmentType.EQ_ESCAPE_POD),
+			new(false, true,   7,  9000, " Energy Bomb",         EquipmentType.EQ_ENERGY_BOMB),
+			new(false, true,   8, 15000, " Extra Energy Unit",   EquipmentType.EQ_ENERGY_UNIT),
+			new(false, true,   9, 15000, " Docking Computers",   EquipmentType.EQ_DOCK_COMP),
+			new(false, true,  10, 50000, " Galactic Hyperdrive", EquipmentType.EQ_GAL_DRIVE),
+			new(false, false,  3,  4000, "+Pulse Laser",         EquipmentType.EQ_PULSE_LASER),
+			new(false, true,   3,     0, "-Pulse Laser",         EquipmentType.EQ_PULSE_LASER),
+			new(false, true,   3,  4000, ">Front",               EquipmentType.EQ_FRONT_PULSE),
+			new(false, true,   3,  4000, ">Rear",                EquipmentType.EQ_REAR_PULSE),
+			new(false, true,   3,  4000, ">Left",                EquipmentType.EQ_LEFT_PULSE),
+			new(false, true,   3,  4000, ">Right",               EquipmentType.EQ_RIGHT_PULSE),
+			new(false, true,   4, 10000, "+Beam Laser",          EquipmentType.EQ_BEAM_LASER),
+			new(false, false,  4,     0, "-Beam Laser",          EquipmentType.EQ_BEAM_LASER),
+			new(false, false,  4, 10000, ">Front",               EquipmentType.EQ_FRONT_BEAM),
+			new(false, false,  4, 10000, ">Rear",                EquipmentType.EQ_REAR_BEAM),
+			new(false, false,  4, 10000, ">Left",                EquipmentType.EQ_LEFT_BEAM),
+			new(false, false,  4, 10000, ">Right",               EquipmentType.EQ_RIGHT_BEAM),
+			new(false, true,  10,  8000, "+Mining Laser",        EquipmentType.EQ_MINING_LASER),
+			new(false, false, 10,     0, "-Mining Laser",        EquipmentType.EQ_MINING_LASER),
+			new(false, false, 10,  8000, ">Front",               EquipmentType.EQ_FRONT_MINING),
+			new(false, false, 10,  8000, ">Rear",                EquipmentType.EQ_REAR_MINING),
+			new(false, false, 10,  8000, ">Left",                EquipmentType.EQ_LEFT_MINING),
+			new(false, false, 10,  8000, ">Right",               EquipmentType.EQ_RIGHT_MINING),
+			new(false, true,  10, 60000, "+Military Laser",      EquipmentType.EQ_MILITARY_LASER),
+			new(false, false, 10,     0, "-Military Laser",      EquipmentType.EQ_MILITARY_LASER),
+			new(false, false, 10, 60000, ">Front",               EquipmentType.EQ_FRONT_MILITARY),
+			new(false, false, 10, 60000, ">Rear",                EquipmentType.EQ_REAR_MILITARY),
+			new(false, false, 10, 60000, ">Left",                EquipmentType.EQ_LEFT_MILITARY),
+			new(false, false, 10, 60000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
 		};
 
-		const int NO_OF_EQUIP_ITEMS = 34;
-
-		struct equip_item
-		{
-			internal bool canbuy;
-			internal int y;
-			internal bool show;
-			internal int level;
-			internal int price;
-			internal string name;
-			internal equip_types type;
-
-			internal equip_item(bool canbuy, int y, bool show, int level, int price, string name, equip_types type)
-			{
-				this.canbuy = canbuy;
-				this.y = y;
-				this.show = show;
-				this.level = level;
-				this.price = price;
-				this.name = name;
-				this.type = type;
-			}
-		};
-
-		static equip_item[] equip_stock = new equip_item[NO_OF_EQUIP_ITEMS]
-		{
-			new(false, 0, true, 1,     2, " Fuel",                     equip_types.EQ_FUEL),
-			new(false, 0, true, 1,   300, " Missile",                  equip_types.EQ_MISSILE),
-			new(false, 0, true, 1,  4000, " Large Cargo Bay",          equip_types.EQ_CARGO_BAY),
-			new(false, 0, true, 2,  6000, " E.C.M. System",            equip_types.EQ_ECM),
-			new(false, 0, true, 5,  5250, " Fuel Scoops",              equip_types.EQ_FUEL_SCOOPS),
-			new(false, 0, true, 6, 10000, " Escape Pod",               equip_types.EQ_ESCAPE_POD),
-			new(false, 0, true, 7,  9000, " Energy Bomb",              equip_types.EQ_ENERGY_BOMB),
-			new(false, 0, true, 8, 15000, " Extra Energy Unit",        equip_types.EQ_ENERGY_UNIT),
-			new(false, 0, true, 9, 15000, " Docking Computers",        equip_types.EQ_DOCK_COMP),
-			new(false, 0, true,10, 50000, " Galactic Hyperdrive",      equip_types.EQ_GAL_DRIVE),
-			new(false, 0, false, 3,  4000, "+Pulse Laser",              equip_types.EQ_PULSE_LASER),
-			new(false, 0, true, 3,     0, "-Pulse Laser",              equip_types.EQ_PULSE_LASER),
-			new(false, 0, true, 3,  4000, ">Front",                    equip_types.EQ_FRONT_PULSE),
-			new(false, 0, true, 3,  4000, ">Rear",                     equip_types.EQ_REAR_PULSE),
-			new(false, 0, true, 3,  4000, ">Left",                     equip_types.EQ_LEFT_PULSE),
-			new(false, 0, true, 3,  4000, ">Right",                    equip_types.EQ_RIGHT_PULSE),
-			new(false, 0, true, 4, 10000, "+Beam Laser",               equip_types.EQ_BEAM_LASER),
-			new(false, 0, false, 4,     0, "-Beam Laser",               equip_types.EQ_BEAM_LASER),
-			new(false, 0, false, 4, 10000, ">Front",                    equip_types.EQ_FRONT_BEAM),
-			new(false, 0, false, 4, 10000, ">Rear",                     equip_types.EQ_REAR_BEAM),
-			new(false, 0, false, 4, 10000, ">Left",                     equip_types.EQ_LEFT_BEAM),
-			new(false, 0, false, 4, 10000, ">Right",                    equip_types.EQ_RIGHT_BEAM),
-			new(false, 0, true,10,  8000, "+Mining Laser",             equip_types.EQ_MINING_LASER),
-			new(false, 0, false,10,     0, "-Mining Laser",             equip_types.EQ_MINING_LASER),
-			new(false, 0, false,10,  8000, ">Front",                    equip_types.EQ_FRONT_MINING),
-			new(false, 0, false,10,  8000, ">Rear",                     equip_types.EQ_REAR_MINING),
-			new(false, 0, false,10,  8000, ">Left",                     equip_types.EQ_LEFT_MINING),
-			new(false, 0, false,10,  8000, ">Right",                    equip_types.EQ_RIGHT_MINING),
-			new(false, 0, true,10, 60000, "+Military Laser",           equip_types.EQ_MILITARY_LASER),
-			new(false, 0, false,10,     0, "-Military Laser",           equip_types.EQ_MILITARY_LASER),
-			new(false, 0, false,10, 60000, ">Front",                    equip_types.EQ_FRONT_MILITARY),
-			new(false, 0, false,10, 60000, ">Rear",                     equip_types.EQ_REAR_MILITARY),
-			new(false, 0, false,10, 60000, ">Left",                     equip_types.EQ_LEFT_MILITARY),
-			new(false, 0, false,10, 60000, ">Right",                    equip_types.EQ_RIGHT_MILITARY)
-		};
-
-		static bool equip_present(equip_types type)
+		static bool equip_present(EquipmentType type)
 		{
 			switch (type)
 			{
-				case equip_types.EQ_FUEL:
+				case EquipmentType.EQ_FUEL:
 					return elite.cmdr.fuel >= 70;
 
-				case equip_types.EQ_MISSILE:
+				case EquipmentType.EQ_MISSILE:
 					return elite.cmdr.missiles >= 4;
 
-				case equip_types.EQ_CARGO_BAY:
+				case EquipmentType.EQ_CARGO_BAY:
 					return elite.cmdr.cargo_capacity > 20;
 
-				case equip_types.EQ_ECM:
+				case EquipmentType.EQ_ECM:
 					return elite.cmdr.ecm;
 
-				case equip_types.EQ_FUEL_SCOOPS:
+				case EquipmentType.EQ_FUEL_SCOOPS:
 					return elite.cmdr.fuel_scoop;
 
-				case equip_types.EQ_ESCAPE_POD:
+				case EquipmentType.EQ_ESCAPE_POD:
 					return elite.cmdr.escape_pod;
 
-				case equip_types.EQ_ENERGY_BOMB:
+				case EquipmentType.EQ_ENERGY_BOMB:
 					return elite.cmdr.energy_bomb;
 
-				case equip_types.EQ_ENERGY_UNIT:
+				case EquipmentType.EQ_ENERGY_UNIT:
 					return elite.cmdr.energy_unit != 0;
 
-				case equip_types.EQ_DOCK_COMP:
+				case EquipmentType.EQ_DOCK_COMP:
 					return elite.cmdr.docking_computer;
 
-				case equip_types.EQ_GAL_DRIVE:
+				case EquipmentType.EQ_GAL_DRIVE:
 					return elite.cmdr.galactic_hyperdrive;
 
-				case equip_types.EQ_FRONT_PULSE:
+				case EquipmentType.EQ_FRONT_PULSE:
 					return elite.cmdr.front_laser == elite.PULSE_LASER;
 
-				case equip_types.EQ_REAR_PULSE:
+				case EquipmentType.EQ_REAR_PULSE:
 					return elite.cmdr.rear_laser == elite.PULSE_LASER;
 
-				case equip_types.EQ_LEFT_PULSE:
+				case EquipmentType.EQ_LEFT_PULSE:
 					return elite.cmdr.left_laser == elite.PULSE_LASER;
 
-				case equip_types.EQ_RIGHT_PULSE:
+				case EquipmentType.EQ_RIGHT_PULSE:
 					return elite.cmdr.right_laser == elite.PULSE_LASER;
 
-				case equip_types.EQ_FRONT_BEAM:
+				case EquipmentType.EQ_FRONT_BEAM:
 					return elite.cmdr.front_laser == elite.BEAM_LASER;
 
-				case equip_types.EQ_REAR_BEAM:
+				case EquipmentType.EQ_REAR_BEAM:
 					return elite.cmdr.rear_laser == elite.BEAM_LASER;
 
-				case equip_types.EQ_LEFT_BEAM:
+				case EquipmentType.EQ_LEFT_BEAM:
 					return elite.cmdr.left_laser == elite.BEAM_LASER;
 
-				case equip_types.EQ_RIGHT_BEAM:
+				case EquipmentType.EQ_RIGHT_BEAM:
 					return elite.cmdr.right_laser == elite.BEAM_LASER;
 
-				case equip_types.EQ_FRONT_MINING:
+				case EquipmentType.EQ_FRONT_MINING:
 					return elite.cmdr.front_laser == elite.MINING_LASER;
 
-				case equip_types.EQ_REAR_MINING:
+				case EquipmentType.EQ_REAR_MINING:
 					return elite.cmdr.rear_laser == elite.MINING_LASER;
 
-				case equip_types.EQ_LEFT_MINING:
+				case EquipmentType.EQ_LEFT_MINING:
 					return elite.cmdr.left_laser == elite.MINING_LASER;
 
-				case equip_types.EQ_RIGHT_MINING:
+				case EquipmentType.EQ_RIGHT_MINING:
 					return elite.cmdr.right_laser == elite.MINING_LASER;
 
-				case equip_types.EQ_FRONT_MILITARY:
+				case EquipmentType.EQ_FRONT_MILITARY:
 					return elite.cmdr.front_laser == elite.MILITARY_LASER;
 
-				case equip_types.EQ_REAR_MILITARY:
+				case EquipmentType.EQ_REAR_MILITARY:
 					return elite.cmdr.rear_laser == elite.MILITARY_LASER;
 
-				case equip_types.EQ_LEFT_MILITARY:
+				case EquipmentType.EQ_LEFT_MILITARY:
 					return elite.cmdr.left_laser == elite.MILITARY_LASER;
 
-				case equip_types.EQ_RIGHT_MILITARY:
+				case EquipmentType.EQ_RIGHT_MILITARY:
 					return elite.cmdr.right_laser == elite.MILITARY_LASER;
 			}
 
 			return false;
 		}
 
-		static void display_equip_price(int i)
-		{
-			string str;
-
-			int y = equip_stock[i].y;
-			if (y == 0)
-			{
-				return;
-			}
-
-            GFX_COL col = equip_stock[i].canbuy ? GFX_COL.GFX_COL_WHITE : GFX_COL.GFX_COL_GREY_1;
-
-			int x = equip_stock[i].name[0] == '>' ? 50 : 16;
-
-            elite.alg_gfx.DrawTextLeft(x, y, equip_stock[i].name[1..], col);
-
-			if (equip_stock[i].price != 0)
-			{
-				str = $"{equip_stock[i].price / 10:D}.{equip_stock[i].price % 10:D}";
-                elite.alg_gfx.DrawTextLeft(338, y, str, col);
-			}
-		}
-
-		static void highlight_equip(int i)
-		{
-			int y;
-			string str;
-
-			if ((hilite_item != -1) && (hilite_item != i))
-			{
-				y = equip_stock[hilite_item].y;
-                elite.alg_gfx.ClearArea(2, y + 1, 508, 15);
-				display_equip_price(hilite_item);
-			}
-
-			y = equip_stock[i].y;
-
-            elite.alg_gfx.DrawRectangleFilled(2, y + 1, 508, 15, GFX_COL.GFX_COL_DARK_RED);
-			display_equip_price(i);
-
-			hilite_item = i;
-
-            elite.alg_gfx.ClearTextArea();
-			str = $"Cash: {elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D}";
-            elite.alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
-		}
-
 		internal static void select_next_equip()
 		{
-			int next;
-			int i;
-
-			if (hilite_item == (NO_OF_EQUIP_ITEMS - 1))
+			if (hilite_item == (EquipmentStock.Length - 1))
 			{
 				return;
 			}
 
-			next = hilite_item;
-			for (i = hilite_item + 1; i < NO_OF_EQUIP_ITEMS; i++)
+			for (int i = hilite_item + 1; i < EquipmentStock.Length; i++)
 			{
-				if (equip_stock[i].y != 0)
+				if (EquipmentStock[i].Show)
 				{
-					next = i;
+                    hilite_item = i;
 					break;
 				}
 			}
 
-			if (next != hilite_item)
-			{
-				highlight_equip(next);
-			}
+			elite.draw.DrawEquipShip(EquipmentStock, hilite_item, elite.cmdr.credits);
 		}
 
 		internal static void select_previous_equip()
 		{
-			int i;
-			int prev;
-
 			if (hilite_item == 0)
 			{
 				return;
 			}
 
-			prev = hilite_item;
-			for (i = hilite_item - 1; i >= 0; i--)
+			for (int i = hilite_item - 1; i >= 0; i--)
 			{
-				if (equip_stock[i].y != 0)
+				if (EquipmentStock[i].Show)
 				{
-					prev = i;
+                    hilite_item = i;
 					break;
 				}
 			}
-
-			if (prev != hilite_item)
-			{
-				highlight_equip(prev);
-			}
+               
+			elite.draw.DrawEquipShip(EquipmentStock, hilite_item, elite.cmdr.credits);
 		}
 
 		static void list_equip_prices()
 		{
-			int i;
-
-            elite.alg_gfx.ClearArea(2, 55, 508, 325);
-
 			int tech_level = elite.current_planet_data.techlevel + 1;
 
-			equip_stock[0].price = (70 - elite.cmdr.fuel) * 2;
+			EquipmentStock[0].Price = (70 - elite.cmdr.fuel) * 2;
 
-			int y = 55;
-			for (i = 0; i < NO_OF_EQUIP_ITEMS; i++)
+			for (int i = 0; i < EquipmentStock.Length; i++)
 			{
-				equip_stock[i].canbuy = (!equip_present(equip_stock[i].type)) && (equip_stock[i].price <= elite.cmdr.credits);
+				EquipmentStock[i].CanBuy = (!equip_present(EquipmentStock[i].Type)) && (EquipmentStock[i].Price <= elite.cmdr.credits);
+				EquipmentStock[i].Show = EquipmentStock[i].Show && (tech_level >= EquipmentStock[i].TechLevel);
+            }
 
-				if (equip_stock[i].show && (tech_level >= equip_stock[i].level))
-				{
-					equip_stock[i].y = y;
-					y += 15;
-				}
-				else
-				{
-					equip_stock[i].y = 0;
-				}
-
-				display_equip_price(i);
-			}
-
-			i = hilite_item;
-			hilite_item = -1;
-			highlight_equip(i);
-		}
+			hilite_item = 0;
+			elite.draw.DrawEquipShip(EquipmentStock, hilite_item, elite.cmdr.credits);
+        }
 
 		static void collapse_equip_list()
 		{
-			char ch;
-
-			for (int i = 0; i < NO_OF_EQUIP_ITEMS; i++)
+			for (int i = 0; i < EquipmentStock.Length; i++)
 			{
-				ch = equip_stock[i].name[0];
-				equip_stock[i].show = (ch == ' ') || (ch == '+');
+				char ch = EquipmentStock[i].Name[0];
+				EquipmentStock[i].Show = ch is ' ' or '+';
 			}
 		}
 
@@ -988,153 +871,151 @@ namespace Elite
 
 		internal static void buy_equip()
 		{
-			int i;
-
-			if (equip_stock[hilite_item].name[0] == '+')
+			if (EquipmentStock[hilite_item].Name[0] == '+')
 			{
 				collapse_equip_list();
-				equip_stock[hilite_item].show = false;
+				EquipmentStock[hilite_item].Show = false;
 				hilite_item++;
-				for (i = 0; i < 5; i++)
+				for (int i = 0; i < 5; i++)
 				{
-					equip_stock[hilite_item + i].show = true;
+					EquipmentStock[hilite_item + i].Show = true;
 				}
 
 				list_equip_prices();
 				return;
 			}
 
-			if (!equip_stock[hilite_item].canbuy)
+			if (!EquipmentStock[hilite_item].CanBuy)
 			{
 				return;
 			}
 
-			switch (equip_stock[hilite_item].type)
+			switch (EquipmentStock[hilite_item].Type)
 			{
-				case equip_types.EQ_FUEL:
+				case EquipmentType.EQ_FUEL:
 					elite.cmdr.fuel = elite.myship.max_fuel;
 					space.update_console();
 					break;
 
-				case equip_types.EQ_MISSILE:
+				case EquipmentType.EQ_MISSILE:
 					elite.cmdr.missiles++;
 					space.update_console();
 					break;
 
-				case equip_types.EQ_CARGO_BAY:
+				case EquipmentType.EQ_CARGO_BAY:
 					elite.cmdr.cargo_capacity = 35;
 					break;
 
-				case equip_types.EQ_ECM:
+				case EquipmentType.EQ_ECM:
 					elite.cmdr.ecm = true;
 					break;
 
-				case equip_types.EQ_FUEL_SCOOPS:
+				case EquipmentType.EQ_FUEL_SCOOPS:
 					elite.cmdr.fuel_scoop = true;
 					break;
 
-				case equip_types.EQ_ESCAPE_POD:
+				case EquipmentType.EQ_ESCAPE_POD:
 					elite.cmdr.escape_pod = true;
 					break;
 
-				case equip_types.EQ_ENERGY_BOMB:
+				case EquipmentType.EQ_ENERGY_BOMB:
 					elite.cmdr.energy_bomb = true;
 					break;
 
-				case equip_types.EQ_ENERGY_UNIT:
+				case EquipmentType.EQ_ENERGY_UNIT:
 					elite.cmdr.energy_unit = 1;
 					break;
 
-				case equip_types.EQ_DOCK_COMP:
+				case EquipmentType.EQ_DOCK_COMP:
 					elite.cmdr.docking_computer = true;
 					break;
 
-				case equip_types.EQ_GAL_DRIVE:
+				case EquipmentType.EQ_GAL_DRIVE:
 					elite.cmdr.galactic_hyperdrive = true;
 					break;
 
-				case equip_types.EQ_FRONT_PULSE:
+				case EquipmentType.EQ_FRONT_PULSE:
 					elite.cmdr.credits += laser_refund(elite.cmdr.front_laser);
 					elite.cmdr.front_laser = elite.PULSE_LASER;
 					break;
 
-				case equip_types.EQ_REAR_PULSE:
+				case EquipmentType.EQ_REAR_PULSE:
 					elite.cmdr.credits += laser_refund(elite.cmdr.rear_laser);
 					elite.cmdr.rear_laser = elite.PULSE_LASER;
 					break;
 
-				case equip_types.EQ_LEFT_PULSE:
+				case EquipmentType.EQ_LEFT_PULSE:
 					elite.cmdr.credits += laser_refund(elite.cmdr.left_laser);
 					elite.cmdr.left_laser = elite.PULSE_LASER;
 					break;
 
-				case equip_types.EQ_RIGHT_PULSE:
+				case EquipmentType.EQ_RIGHT_PULSE:
 					elite.cmdr.credits += laser_refund(elite.cmdr.right_laser);
 					elite.cmdr.right_laser = elite.PULSE_LASER;
 					break;
 
-				case equip_types.EQ_FRONT_BEAM:
+				case EquipmentType.EQ_FRONT_BEAM:
 					elite.cmdr.credits += laser_refund(elite.cmdr.front_laser);
 					elite.cmdr.front_laser = elite.BEAM_LASER;
 					break;
 
-				case equip_types.EQ_REAR_BEAM:
+				case EquipmentType.EQ_REAR_BEAM:
 					elite.cmdr.credits += laser_refund(elite.cmdr.rear_laser);
 					elite.cmdr.rear_laser = elite.BEAM_LASER;
 					break;
 
-				case equip_types.EQ_LEFT_BEAM:
+				case EquipmentType.EQ_LEFT_BEAM:
 					elite.cmdr.credits += laser_refund(elite.cmdr.left_laser);
 					elite.cmdr.left_laser = elite.BEAM_LASER;
 					break;
 
-				case equip_types.EQ_RIGHT_BEAM:
+				case EquipmentType.EQ_RIGHT_BEAM:
 					elite.cmdr.credits += laser_refund(elite.cmdr.right_laser);
 					elite.cmdr.right_laser = elite.BEAM_LASER;
 					break;
 
-				case equip_types.EQ_FRONT_MINING:
+				case EquipmentType.EQ_FRONT_MINING:
 					elite.cmdr.credits += laser_refund(elite.cmdr.front_laser);
 					elite.cmdr.front_laser = elite.MINING_LASER;
 					break;
 
-				case equip_types.EQ_REAR_MINING:
+				case EquipmentType.EQ_REAR_MINING:
 					elite.cmdr.credits += laser_refund(elite.cmdr.rear_laser);
 					elite.cmdr.rear_laser = elite.MINING_LASER;
 					break;
 
-				case equip_types.EQ_LEFT_MINING:
+				case EquipmentType.EQ_LEFT_MINING:
 					elite.cmdr.credits += laser_refund(elite.cmdr.left_laser);
 					elite.cmdr.left_laser = elite.MINING_LASER;
 					break;
 
-				case equip_types.EQ_RIGHT_MINING:
+				case EquipmentType.EQ_RIGHT_MINING:
 					elite.cmdr.credits += laser_refund(elite.cmdr.right_laser);
 					elite.cmdr.right_laser = elite.MINING_LASER;
 					break;
 
-				case equip_types.EQ_FRONT_MILITARY:
+				case EquipmentType.EQ_FRONT_MILITARY:
 					elite.cmdr.credits += laser_refund(elite.cmdr.front_laser);
 					elite.cmdr.front_laser = elite.MILITARY_LASER;
 					break;
 
-				case equip_types.EQ_REAR_MILITARY:
+				case EquipmentType.EQ_REAR_MILITARY:
 					elite.cmdr.credits += laser_refund(elite.cmdr.rear_laser);
 					elite.cmdr.rear_laser = elite.MILITARY_LASER;
 					break;
 
-				case equip_types.EQ_LEFT_MILITARY:
+				case EquipmentType.EQ_LEFT_MILITARY:
 					elite.cmdr.credits += laser_refund(elite.cmdr.left_laser);
 					elite.cmdr.left_laser = elite.MILITARY_LASER;
 					break;
 
-				case equip_types.EQ_RIGHT_MILITARY:
+				case EquipmentType.EQ_RIGHT_MILITARY:
 					elite.cmdr.credits += laser_refund(elite.cmdr.right_laser);
 					elite.cmdr.right_laser = elite.MILITARY_LASER;
 					break;
 			}
 
-            elite.cmdr.credits -= equip_stock[hilite_item].price;
+            elite.cmdr.credits -= EquipmentStock[hilite_item].Price;
 			list_equip_prices();
 		}
 
@@ -1142,15 +1023,11 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_EQUIP_SHIP;
 
-            elite.alg_gfx.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
-
 			collapse_equip_list();
 
 			hilite_item = 0;
 
-			list_equip_prices();
+            list_equip_prices();
 		}
 	}
 }
