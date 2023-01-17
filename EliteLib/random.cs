@@ -54,7 +54,7 @@ namespace Elite
 
 		internal static int rand255()
 		{
-			return (randint() & 255);
+			return randint() & 255;
 		}
 
 		internal static int rand()

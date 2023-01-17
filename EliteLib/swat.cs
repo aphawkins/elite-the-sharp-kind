@@ -296,7 +296,7 @@ namespace Elite
 
 			float size = elite.ship_list[(int)type].size;
 
-			return (((x * x) + (y * y)) <= size);
+			return ((x * x) + (y * y)) <= size;
 		}
 
 		static void make_angry(int un)
@@ -563,7 +563,7 @@ namespace Elite
 					return;
 				}
 
-				if ((random.rand255() < 16) && (target.flags.HasFlag(FLG.FLG_HAS_ECM)))
+				if ((random.rand255() < 16) && target.flags.HasFlag(FLG.FLG_HAS_ECM))
 				{
 					activate_ecm(false);
 					return;
@@ -1255,7 +1255,7 @@ namespace Elite
 
 			if (random.rand255() == 136)
 			{
-				if (((int)(space.universe[0].location.Z) & 0x3e) != 0)
+				if (((int)space.universe[0].location.Z & 0x3e) != 0)
 				{
 					create_thargoid();
 				}

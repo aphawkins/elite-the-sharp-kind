@@ -790,7 +790,7 @@ namespace Elite
 			int sx = 417;
             int sy = 384 + 9;
 
-			int len = ((elite.flight_speed * 64) / elite.myship.max_speed) - 1;
+			int len = (elite.flight_speed * 64 / elite.myship.max_speed) - 1;
 
             GFX_COL colour = (elite.flight_speed > (elite.myship.max_speed * 2 / 3)) ? GFX_COL.GFX_COL_DARK_RED : GFX_COL.GFX_COL_GOLD;
 
@@ -902,7 +902,7 @@ namespace Elite
 			sx = 416;
 			sy = 384 + 9 + 14;
 
-			pos = sx - ((elite.flight_roll * 28) / elite.myship.max_roll);
+			pos = sx - (elite.flight_roll * 28 / elite.myship.max_roll);
 			pos += 32;
 
 			for (i = 0; i < 4; i++)
@@ -920,7 +920,7 @@ namespace Elite
 			sx = 416;
 			sy = 384 + 9 + 14 + 16;
 
-			pos = sx + ((elite.flight_climb * 28) / elite.myship.max_climb);
+			pos = sx + (elite.flight_climb * 28 / elite.myship.max_climb);
 			pos += 32;
 
 			for (i = 0; i < 4; i++)
@@ -933,7 +933,7 @@ namespace Elite
 		{
 			if (elite.cmdr.fuel > 0)
 			{
-				display_dial_bar((elite.cmdr.fuel * 64) / elite.myship.max_fuel, 31, 44);
+				display_dial_bar(elite.cmdr.fuel * 64 / elite.myship.max_fuel, 31, 44);
 			}
 		}
 
