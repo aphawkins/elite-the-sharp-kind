@@ -922,10 +922,10 @@ namespace Elite
 		 */
 		internal static void draw_ship(ref univ_object ship)
 		{
-			if ((elite.current_screen != SCR.SCR_FRONT_VIEW) && (elite.current_screen != SCR.SCR_REAR_VIEW) &&
-				(elite.current_screen != SCR.SCR_LEFT_VIEW) && (elite.current_screen != SCR.SCR_RIGHT_VIEW) &&
-				(elite.current_screen != SCR.SCR_INTRO_ONE) && (elite.current_screen != SCR.SCR_INTRO_TWO) &&
-				(elite.current_screen != SCR.SCR_GAME_OVER) && (elite.current_screen != SCR.SCR_ESCAPE_POD))
+			if (elite.current_screen is not SCR.SCR_FRONT_VIEW and not SCR.SCR_REAR_VIEW and
+                not SCR.SCR_LEFT_VIEW and not SCR.SCR_RIGHT_VIEW and
+                not SCR.SCR_INTRO_ONE and not SCR.SCR_INTRO_TWO and
+                not SCR.SCR_GAME_OVER and not SCR.SCR_ESCAPE_POD)
 			{
 				return;
 			}

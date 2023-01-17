@@ -143,7 +143,7 @@ namespace Elite
 
                     space.universe[i].flags = initial_flags[(int)ship_type < 0 ? 0 : (int)ship_type];
 
-					if ((ship_type != SHIP.SHIP_PLANET) && (ship_type != SHIP.SHIP_SUN))
+					if (ship_type is not SHIP.SHIP_PLANET and not SHIP.SHIP_SUN)
 					{
 						space.universe[i].energy = elite.ship_list[(int)ship_type].energy;
 						space.universe[i].missiles = elite.ship_list[(int)ship_type].missiles;
@@ -196,7 +196,7 @@ namespace Elite
 
 			check_missiles(un);
 
-			if ((type == SHIP.SHIP_CORIOLIS) || (type == SHIP.SHIP_DODEC))
+			if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 			{
 				VectorMaths.set_init_matrix(ref rotmat);
 				px = (int)space.universe[un].location.X;
@@ -242,7 +242,7 @@ namespace Elite
 
 			ns = space.universe[newship];
 
-			if ((space.universe[un].type == SHIP.SHIP_CORIOLIS) || (space.universe[un].type == SHIP.SHIP_DODEC))
+			if (space.universe[un].type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 			{
 				ns.velocity = 32;
 				ns.location.X += ns.rotmat[2].X * 2;
@@ -255,7 +255,7 @@ namespace Elite
 			ns.rotz *= 2;
 			ns.bravery = bravery;
 
-			if ((type == SHIP.SHIP_CARGO) || (type == SHIP.SHIP_ALLOY) || (type == SHIP.SHIP_ROCK))
+			if (type is SHIP.SHIP_CARGO or SHIP.SHIP_ALLOY or SHIP.SHIP_ROCK)
 			{
 				ns.rotz = ((random.rand255() * 2) & 255) - 128;
 				ns.rotx = ((random.rand255() * 2) & 255) - 128;
@@ -309,7 +309,7 @@ namespace Elite
 				return;
 			}
 
-			if ((type == SHIP.SHIP_CORIOLIS) || (type == SHIP.SHIP_DODEC))
+			if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 			{
 				space.universe[un].flags |= FLG.FLG_ANGRY;
 				return;
@@ -551,7 +551,7 @@ namespace Elite
 				{
 					missile.flags |= FLG.FLG_DEAD;
 
-					if ((target.type != SHIP.SHIP_CORIOLIS) && (target.type != SHIP.SHIP_DODEC))
+					if (target.type is not SHIP.SHIP_CORIOLIS and not SHIP.SHIP_DODEC)
 					{
 						explode_object(missile.target);
 					}
@@ -636,7 +636,7 @@ namespace Elite
 			type = ship.type;
 			flags = ship.flags;
 
-			if ((type == SHIP.SHIP_PLANET) || (type == SHIP.SHIP_SUN))
+			if (type is SHIP.SHIP_PLANET or SHIP.SHIP_SUN)
 			{
 				return;
 			}
@@ -664,7 +664,7 @@ namespace Elite
 			if (((un ^ alg_main.mcount) & 7) != 0)
 				return;
 
-			if ((type == SHIP.SHIP_CORIOLIS) || (type == SHIP.SHIP_DODEC))
+			if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 			{
 				if (flags.HasFlag(FLG.FLG_ANGRY))
 				{

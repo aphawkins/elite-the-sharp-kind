@@ -161,7 +161,7 @@ namespace Elite
 				rotate_x_first(ref obj.rotmat[2].Y, ref obj.rotmat[1].Y, rotx);
 				rotate_x_first(ref obj.rotmat[2].Z, ref obj.rotmat[1].Z, rotx);
 
-				if ((rotx != 127) && (rotx != -127))
+				if (rotx is not 127 and not (-127))
 					obj.rotx -= (rotx < 0) ? -1 : 1;
 			}
 
@@ -174,7 +174,7 @@ namespace Elite
 				rotate_x_first(ref obj.rotmat[0].Y, ref obj.rotmat[1].Y, rotz);
 				rotate_x_first(ref obj.rotmat[0].Z, ref obj.rotmat[1].Z, rotz);
 
-				if ((rotz != 127) && (rotz != -127))
+				if (rotz is not 127 and not (-127))
 				{
 					obj.rotz -= (rotz < 0) ? -1 : 1;
 				}
@@ -646,7 +646,7 @@ namespace Elite
 
 					if (universe[i].distance < 170)
 					{
-						if ((type == SHIP.SHIP_CORIOLIS) || (type == SHIP.SHIP_DODEC))
+						if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 						{
 							check_docking(i);
 						}
