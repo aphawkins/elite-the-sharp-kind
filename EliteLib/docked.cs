@@ -65,7 +65,6 @@ namespace Elite
 		internal static void show_distance_to_planet()
 		{
 			int px, py;
-			string str;
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
