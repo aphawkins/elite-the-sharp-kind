@@ -168,16 +168,9 @@ namespace Elite
 				y++;
 			}
 
-			if (y > 0xFF)
-			{
-				carry_flag = 1;
-			}
-			else
-			{
-				carry_flag = 0;
-			}
+			carry_flag = y > 0xFF ? 1 : 0;
 
-			x &= 0xFF;
+            x &= 0xFF;
 			y &= 0xFF;
 
 			glx_ptr.e = x;

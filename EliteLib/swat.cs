@@ -841,16 +841,9 @@ namespace Elite
 					return;
 				}
 
-				if (ship.distance < 8192)
-				{
-					ship.acceleration = -1;
-				}
-				else
-				{
-					ship.acceleration = 3;
-				}
+				ship.acceleration = ship.distance < 8192 ? -1 : 3;
 
-				return;
+                return;
 			}
 
 			attacking = 0;
@@ -1137,16 +1130,9 @@ namespace Elite
 				return;
 			}
 
-			if (random.rand255() > 253)
-			{
-				type = SHIP.SHIP_HERMIT;
-			}
-			else
-			{
-				type = SHIP.SHIP_ASTEROID;
-			}
+			type = random.rand255() > 253 ? SHIP.SHIP_HERMIT : SHIP.SHIP_ASTEROID;
 
-			int newship = create_other_ship(type);
+            int newship = create_other_ship(type);
 
 			if (newship != -1)
 			{

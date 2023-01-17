@@ -541,16 +541,9 @@ namespace Elite
 
 			pilot.auto_pilot_ship(ref ship);
 
-			if (ship.velocity > 22)
-			{
-				elite.flight_speed = 22;
-			}
-			else
-			{
-				elite.flight_speed = ship.velocity;
-			}
+			elite.flight_speed = ship.velocity > 22 ? 22 : ship.velocity;
 
-			if (ship.acceleration > 0)
+            if (ship.acceleration > 0)
 			{
 				elite.flight_speed++;
 				if (elite.flight_speed > 22)

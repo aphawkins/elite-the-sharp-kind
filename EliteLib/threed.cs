@@ -466,15 +466,10 @@ namespace Elite
 					dist = (x * x) + (y * y);
 					dark = dist > 10000;
 					h = landscape[x, y];
-					if (h > 166)
-					{
-						landscape[x, y] = (int)(dark ? GFX_COL.GFX_COL_GREEN_1 : GFX_COL.GFX_COL_GREEN_2);
-					}
-					else
-					{
-						landscape[x, y] = (int)(dark ? GFX_COL.GFX_COL_BLUE_2 : GFX_COL.GFX_COL_BLUE_1);
-					}
-				}
+					landscape[x, y] = h > 166
+                        ? (int)(dark ? GFX_COL.GFX_COL_GREEN_1 : GFX_COL.GFX_COL_GREEN_2)
+                        : (int)(dark ? GFX_COL.GFX_COL_BLUE_2 : GFX_COL.GFX_COL_BLUE_1);
+                }
 			}
 
 			random.rand_seed = old_seed;
@@ -865,12 +860,9 @@ namespace Elite
 
 			z = (int)univ.location.Z;
 
-			if (z >= 0x2000)
-				q = 254;
-			else
-				q = (z / 32) | 1;
+			q = z >= 0x2000 ? 254 : (z / 32) | 1;
 
-			pr = univ.exp_delta * 256 / q;
+            pr = univ.exp_delta * 256 / q;
 
 			//	if (pr > 0x1C00)
 			//		q = 254;
