@@ -98,43 +98,23 @@ namespace Elite
 		static void display_setting_item(int item)
 		{
 			int x, y;
-			int v;
-
-			if (item == (NUM_SETTINGS - 1))
+            if (item == (NUM_SETTINGS - 1))
 			{
 				y = ((NUM_SETTINGS + 1) / 2 * 30) + 96 + 32;
 				elite.alg_gfx.DrawTextCentre(y, setting_list[item].name, 120, GFX_COL.GFX_COL_WHITE);
 				return;
 			}
 
-			switch (item)
-			{
-				case 0:
-					v = elite.config.UseWireframe ? 1 : 0;
-					break;
-
-				case 1:
-					v = elite.config.AntiAliasWireframe ? 1 : 0;
-					break;
-
-				case 2:
-					v = (int)elite.config.PlanetRenderStyle;
-					break;
-
-				case 3:
-					v = elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0;
-					break;
-
-				case 4:
-					v = elite.config.InstantDock ? 1 : 0;
-					break;
-
-				default:
-					v = 0;
-					break;
-			}
-
-			x = ((item & 1) * 250) + 32;
+            var v = item switch
+            {
+                0 => elite.config.UseWireframe ? 1 : 0,
+                1 => elite.config.AntiAliasWireframe ? 1 : 0,
+                2 => (int)elite.config.PlanetRenderStyle,
+                3 => elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+                4 => elite.config.InstantDock ? 1 : 0,
+                _ => 0,
+            };
+            x = ((item & 1) * 250) + 32;
 			y = (item / 2 * 30) + 96;
 
 			elite.alg_gfx.DrawTextLeft(x, y, setting_list[item].name, GFX_COL.GFX_COL_WHITE);

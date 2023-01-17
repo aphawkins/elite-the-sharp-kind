@@ -314,23 +314,15 @@ namespace Elite
 
 		static string laser_type(int strength)
 		{
-			switch (strength)
-			{
-				case elite.PULSE_LASER:
-					return laser_name[0];
-
-				case elite.BEAM_LASER:
-					return laser_name[1];
-
-				case elite.MILITARY_LASER:
-					return laser_name[2];
-
-				case elite.MINING_LASER:
-					return laser_name[3];
-			}
-
-			return laser_name[4];
-		}
+            return strength switch
+            {
+                elite.PULSE_LASER => laser_name[0],
+                elite.BEAM_LASER => laser_name[1],
+                elite.MILITARY_LASER => laser_name[2],
+                elite.MINING_LASER => laser_name[3],
+                _ => laser_name[4],
+            };
+        }
 
 		const int EQUIP_START_Y = 202;
 		const int EQUIP_START_X = 50;
@@ -701,89 +693,37 @@ namespace Elite
 
 		static bool equip_present(EquipmentType type)
 		{
-			switch (type)
-			{
-				case EquipmentType.EQ_FUEL:
-					return elite.cmdr.fuel >= 70;
-
-				case EquipmentType.EQ_MISSILE:
-					return elite.cmdr.missiles >= 4;
-
-				case EquipmentType.EQ_CARGO_BAY:
-					return elite.cmdr.cargo_capacity > 20;
-
-				case EquipmentType.EQ_ECM:
-					return elite.cmdr.ecm;
-
-				case EquipmentType.EQ_FUEL_SCOOPS:
-					return elite.cmdr.fuel_scoop;
-
-				case EquipmentType.EQ_ESCAPE_POD:
-					return elite.cmdr.escape_pod;
-
-				case EquipmentType.EQ_ENERGY_BOMB:
-					return elite.cmdr.energy_bomb;
-
-				case EquipmentType.EQ_ENERGY_UNIT:
-					return elite.cmdr.energy_unit != 0;
-
-				case EquipmentType.EQ_DOCK_COMP:
-					return elite.cmdr.docking_computer;
-
-				case EquipmentType.EQ_GAL_DRIVE:
-					return elite.cmdr.galactic_hyperdrive;
-
-				case EquipmentType.EQ_FRONT_PULSE:
-					return elite.cmdr.front_laser == elite.PULSE_LASER;
-
-				case EquipmentType.EQ_REAR_PULSE:
-					return elite.cmdr.rear_laser == elite.PULSE_LASER;
-
-				case EquipmentType.EQ_LEFT_PULSE:
-					return elite.cmdr.left_laser == elite.PULSE_LASER;
-
-				case EquipmentType.EQ_RIGHT_PULSE:
-					return elite.cmdr.right_laser == elite.PULSE_LASER;
-
-				case EquipmentType.EQ_FRONT_BEAM:
-					return elite.cmdr.front_laser == elite.BEAM_LASER;
-
-				case EquipmentType.EQ_REAR_BEAM:
-					return elite.cmdr.rear_laser == elite.BEAM_LASER;
-
-				case EquipmentType.EQ_LEFT_BEAM:
-					return elite.cmdr.left_laser == elite.BEAM_LASER;
-
-				case EquipmentType.EQ_RIGHT_BEAM:
-					return elite.cmdr.right_laser == elite.BEAM_LASER;
-
-				case EquipmentType.EQ_FRONT_MINING:
-					return elite.cmdr.front_laser == elite.MINING_LASER;
-
-				case EquipmentType.EQ_REAR_MINING:
-					return elite.cmdr.rear_laser == elite.MINING_LASER;
-
-				case EquipmentType.EQ_LEFT_MINING:
-					return elite.cmdr.left_laser == elite.MINING_LASER;
-
-				case EquipmentType.EQ_RIGHT_MINING:
-					return elite.cmdr.right_laser == elite.MINING_LASER;
-
-				case EquipmentType.EQ_FRONT_MILITARY:
-					return elite.cmdr.front_laser == elite.MILITARY_LASER;
-
-				case EquipmentType.EQ_REAR_MILITARY:
-					return elite.cmdr.rear_laser == elite.MILITARY_LASER;
-
-				case EquipmentType.EQ_LEFT_MILITARY:
-					return elite.cmdr.left_laser == elite.MILITARY_LASER;
-
-				case EquipmentType.EQ_RIGHT_MILITARY:
-					return elite.cmdr.right_laser == elite.MILITARY_LASER;
-			}
-
-			return false;
-		}
+            return type switch
+            {
+                EquipmentType.EQ_FUEL => elite.cmdr.fuel >= 70,
+                EquipmentType.EQ_MISSILE => elite.cmdr.missiles >= 4,
+                EquipmentType.EQ_CARGO_BAY => elite.cmdr.cargo_capacity > 20,
+                EquipmentType.EQ_ECM => elite.cmdr.ecm,
+                EquipmentType.EQ_FUEL_SCOOPS => elite.cmdr.fuel_scoop,
+                EquipmentType.EQ_ESCAPE_POD => elite.cmdr.escape_pod,
+                EquipmentType.EQ_ENERGY_BOMB => elite.cmdr.energy_bomb,
+                EquipmentType.EQ_ENERGY_UNIT => elite.cmdr.energy_unit != 0,
+                EquipmentType.EQ_DOCK_COMP => elite.cmdr.docking_computer,
+                EquipmentType.EQ_GAL_DRIVE => elite.cmdr.galactic_hyperdrive,
+                EquipmentType.EQ_FRONT_PULSE => elite.cmdr.front_laser == elite.PULSE_LASER,
+                EquipmentType.EQ_REAR_PULSE => elite.cmdr.rear_laser == elite.PULSE_LASER,
+                EquipmentType.EQ_LEFT_PULSE => elite.cmdr.left_laser == elite.PULSE_LASER,
+                EquipmentType.EQ_RIGHT_PULSE => elite.cmdr.right_laser == elite.PULSE_LASER,
+                EquipmentType.EQ_FRONT_BEAM => elite.cmdr.front_laser == elite.BEAM_LASER,
+                EquipmentType.EQ_REAR_BEAM => elite.cmdr.rear_laser == elite.BEAM_LASER,
+                EquipmentType.EQ_LEFT_BEAM => elite.cmdr.left_laser == elite.BEAM_LASER,
+                EquipmentType.EQ_RIGHT_BEAM => elite.cmdr.right_laser == elite.BEAM_LASER,
+                EquipmentType.EQ_FRONT_MINING => elite.cmdr.front_laser == elite.MINING_LASER,
+                EquipmentType.EQ_REAR_MINING => elite.cmdr.rear_laser == elite.MINING_LASER,
+                EquipmentType.EQ_LEFT_MINING => elite.cmdr.left_laser == elite.MINING_LASER,
+                EquipmentType.EQ_RIGHT_MINING => elite.cmdr.right_laser == elite.MINING_LASER,
+                EquipmentType.EQ_FRONT_MILITARY => elite.cmdr.front_laser == elite.MILITARY_LASER,
+                EquipmentType.EQ_REAR_MILITARY => elite.cmdr.rear_laser == elite.MILITARY_LASER,
+                EquipmentType.EQ_LEFT_MILITARY => elite.cmdr.left_laser == elite.MILITARY_LASER,
+                EquipmentType.EQ_RIGHT_MILITARY => elite.cmdr.right_laser == elite.MILITARY_LASER,
+                _ => false,
+            };
+        }
 
 		internal static void select_next_equip()
 		{
@@ -850,23 +790,15 @@ namespace Elite
 
 		static int laser_refund(int laser_type)
 		{
-			switch (laser_type)
-			{
-				case elite.PULSE_LASER:
-					return 4000;
-
-				case elite.BEAM_LASER:
-					return 10000;
-
-				case elite.MILITARY_LASER:
-					return 60000;
-
-				case elite.MINING_LASER:
-					return 8000;
-			}
-
-			return 0;
-		}
+            return laser_type switch
+            {
+                elite.PULSE_LASER => 4000,
+                elite.BEAM_LASER => 10000,
+                elite.MILITARY_LASER => 60000,
+                elite.MINING_LASER => 8000,
+                _ => 0,
+            };
+        }
 
 		internal static void buy_equip()
 		{

@@ -926,30 +926,15 @@ namespace Elite
 		{
 			if ((laser_counter == 0) && (elite.laser_temp < 242))
 			{
-				switch (elite.current_screen)
-				{
-					case SCR.SCR_FRONT_VIEW:
-						laser = elite.cmdr.front_laser;
-						break;
-
-					case SCR.SCR_REAR_VIEW:
-						laser = elite.cmdr.rear_laser;
-						break;
-
-					case SCR.SCR_RIGHT_VIEW:
-						laser = elite.cmdr.right_laser;
-						break;
-
-					case SCR.SCR_LEFT_VIEW:
-						laser = elite.cmdr.left_laser;
-						break;
-
-					default:
-						laser = 0;
-						break;
-				}
-
-				if (laser != 0)
+                laser = elite.current_screen switch
+                {
+                    SCR.SCR_FRONT_VIEW => elite.cmdr.front_laser,
+                    SCR.SCR_REAR_VIEW => elite.cmdr.rear_laser,
+                    SCR.SCR_RIGHT_VIEW => elite.cmdr.right_laser,
+                    SCR.SCR_LEFT_VIEW => elite.cmdr.left_laser,
+                    _ => 0,
+                };
+                if (laser != 0)
 				{
 					laser_counter = (laser > 127) ? 0 : (laser & 0xFA);
 					laser &= 127;
