@@ -10,6 +10,7 @@
 - Planet can render with black lines through it if filled with colour
 - Sometimes ship they fly backwards
 - Sometimes stations render on an incorrect axis
+- Missiles can be targeted against asteroids?
 
 ## Missions
 - Ship and text in mission brief doesn't clip correctly

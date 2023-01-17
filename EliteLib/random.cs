@@ -39,7 +39,7 @@ namespace Elite
 			int ix = rand_seed;
 
 			k1 = ix / 127773;
-			ix = 16807 * (ix - k1 * 127773) - k1 * 2836;
+			ix = (16807 * (ix - (k1 * 127773))) - (k1 * 2836);
 			if (ix < 0)
 			{
 				ix += 2147483647;

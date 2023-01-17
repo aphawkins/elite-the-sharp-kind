@@ -102,7 +102,7 @@ namespace Elite
 
 			if (item == (NUM_SETTINGS - 1))
 			{
-				y = ((NUM_SETTINGS + 1) / 2) * 30 + 96 + 32;
+				y = (((NUM_SETTINGS + 1) / 2) * 30) + 96 + 32;
 				elite.alg_gfx.DrawTextCentre(y, setting_list[item].name, 120, GFX_COL.GFX_COL_WHITE);
 				return;
 			}
@@ -134,8 +134,8 @@ namespace Elite
 					break;
 			}
 
-			x = (item & 1) * 250 + 32;
-			y = (item / 2) * 30 + 96;
+			x = ((item & 1) * 250) + 32;
+			y = ((item / 2) * 30) + 96;
 
 			elite.alg_gfx.DrawTextLeft(x, y, setting_list[item].name, GFX_COL.GFX_COL_WHITE);
 			elite.alg_gfx.DrawTextLeft(x + 120, y, setting_list[item].value[v], GFX_COL.GFX_COL_WHITE);
@@ -151,13 +151,13 @@ namespace Elite
 				if (hilite_item == (NUM_SETTINGS - 1))
 				{
 					x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-					y = ((NUM_SETTINGS + 1) / 2) * 30 + 96 + 32;
+					y = (((NUM_SETTINGS + 1) / 2) * 30) + 96 + 32;
 					width = OPTION_BAR_WIDTH;
 				}
 				else
 				{
-					x = (hilite_item & 1) * 250 + 32 + 120;
-					y = (hilite_item / 2) * 30 + 96;
+					x = ((hilite_item & 1) * 250) + 32 + 120;
+					y = ((hilite_item / 2) * 30) + 96;
 					width = 100;
 				}
 
@@ -168,13 +168,13 @@ namespace Elite
 			if (item == (NUM_SETTINGS - 1))
 			{
 				x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-				y = ((NUM_SETTINGS + 1) / 2) * 30 + 96 + 32;
+				y = (((NUM_SETTINGS + 1) / 2) * 30) + 96 + 32;
 				width = OPTION_BAR_WIDTH;
 			}
 			else
 			{
-				x = (item & 1) * 250 + 32 + 120;
-				y = (item / 2) * 30 + 96;
+				x = ((item & 1) * 250) + 32 + 120;
+				y = ((item / 2) * 30) + 96;
 				width = 100;
 			}
 

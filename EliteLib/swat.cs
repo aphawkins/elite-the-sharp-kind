@@ -125,7 +125,7 @@ namespace Elite
 					space.universe[i].location.Y = y;
 					space.universe[i].location.Z = z;
 
-					space.universe[i].distance = (int)Math.Sqrt(x * x + y * y + z * z);
+					space.universe[i].distance = (int)Math.Sqrt((x * x) + (y * y) + (z * z));
 
 					space.universe[i].rotmat = new Vector3[3];
                     space.universe[i].rotmat[0] = rotmat[0];
@@ -296,7 +296,7 @@ namespace Elite
 
 			float size = elite.ship_list[(int)type].size;
 
-			return ((x * x + y * y) <= size);
+			return (((x * x) + (y * y)) <= size);
 		}
 
 		static void make_angry(int un)

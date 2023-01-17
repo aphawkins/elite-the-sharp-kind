@@ -81,25 +81,25 @@ namespace Elite
 			{
 				if (mat[2].Y is > (-1) and < 1)
 				{
-					mat[1].Z = -(mat[2].X * mat[1].X + mat[2].Y * mat[1].Y) / mat[2].Z;
+					mat[1].Z = -((mat[2].X * mat[1].X) + (mat[2].Y * mat[1].Y)) / mat[2].Z;
 				}
 				else
 				{
-					mat[1].Y = -(mat[2].X * mat[1].X + mat[2].Z * mat[1].Z) / mat[2].Y;
+					mat[1].Y = -((mat[2].X * mat[1].X) + (mat[2].Z * mat[1].Z)) / mat[2].Y;
 				}
 			}
 			else
 			{
-				mat[1].X = -(mat[2].Y * mat[1].Y + mat[2].Z * mat[1].Z) / mat[2].X;
+				mat[1].X = -((mat[2].Y * mat[1].Y) + (mat[2].Z * mat[1].Z)) / mat[2].X;
 			}
 
 			mat[1] = unit_vector(mat[1]);
 
 			/* xyzzy... nothing happens. :-)*/
 
-			mat[0].X = mat[1].Y * mat[2].Z - mat[1].Z * mat[2].Y;
-			mat[0].Y = mat[1].Z * mat[2].X - mat[1].X * mat[2].Z;
-			mat[0].Z = mat[1].X * mat[2].Y - mat[1].Y * mat[2].X;
+			mat[0].X = (mat[1].Y * mat[2].Z) - (mat[1].Z * mat[2].Y);
+			mat[0].Y = (mat[1].Z * mat[2].X) - (mat[1].X * mat[2].Z);
+			mat[0].Z = (mat[1].X * mat[2].Y) - (mat[1].Y * mat[2].X);
 		}
 
         internal static void rotate_vec(ref Vector3[] vec, float alpha, float beta)
@@ -116,10 +116,10 @@ namespace Elite
             float y = vec.Y;
             float z = vec.Z;
 
-            y = y - alpha * x;
-            x = x + alpha * y;
-            y = y - beta * z;
-            z = z + beta * y;
+            y = y - (alpha * x);
+            x = x + (alpha * y);
+            y = y - (beta * z);
+            z = z + (beta * y);
 
             vec.X = x;
             vec.Y = y;

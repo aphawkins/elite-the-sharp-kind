@@ -125,10 +125,10 @@ namespace Elite
 				}
 			}
 
-			k2 = y - alpha * x;
-			z = z + beta * k2;
-			y = k2 - z * beta;
-			x = x + alpha * y;
+			k2 = y - (alpha * x);
+			z = z + (beta * k2);
+			y = k2 - (z * beta);
+			x = x + (alpha * y);
 
 			z = z - elite.flight_speed;
 
@@ -449,9 +449,9 @@ namespace Elite
 
 			vec = VectorMaths.unit_vector(vec);
 
-			sx = px - vec.X * 65792;
-			sy = py - vec.Y * 65792;
-			sz = pz - vec.Z * 65792;
+			sx = px - (vec.X * 65792);
+			sy = py - (vec.Y * 65792);
+			sz = pz - (vec.Z * 65792);
 
 			//	VectorMaths.set_init_matrix (rotmat);
 
@@ -707,7 +707,7 @@ namespace Elite
 
 				float x1 = x;
 				float y1 = -z / 4;
-				float y2 = y1 - y / 2;
+				float y2 = y1 - (y / 2);
 
 				if ((y2 < -28) || (y2 > 28) ||
 					(x1 < -50) || (x1 > 50))
@@ -946,7 +946,7 @@ namespace Elite
 
 			int nomiss = elite.cmdr.missiles > 4 ? 4 : elite.cmdr.missiles;
 
-			int x = (4 - nomiss) * 16 + 35;
+			int x = ((4 - nomiss) * 16) + 35;
 			int y = 113 + 385;
 
 			if (swat.missile_target != swat.MISSILE_UNARMED)
@@ -1188,7 +1188,7 @@ namespace Elite
 			Stars.create_new_stars();
 			swat.clear_universe();
 
-			threed.generate_landscape(elite.docked_planet.a * 251 + elite.docked_planet.b);
+			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
 			VectorMaths.set_init_matrix(ref rotmat);
 
 			pz = (((elite.docked_planet.b) & 7) + 7) / 2;
@@ -1284,7 +1284,7 @@ namespace Elite
 			elite.cmdr.legal_status |= trade.carrying_contraband();
 			Stars.create_new_stars();
 			swat.clear_universe();
-			threed.generate_landscape(elite.docked_planet.a * 251 + elite.docked_planet.b);
+			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
 			VectorMaths.set_init_matrix(ref rotmat);
 			swat.add_new_ship(SHIP.SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
 

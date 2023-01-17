@@ -105,7 +105,7 @@ namespace Elite
 
 		internal static int carrying_contraband()
 		{
-			return (elite.cmdr.current_cargo[SLAVES] + elite.cmdr.current_cargo[NARCOTICS]) * 2 + elite.cmdr.current_cargo[FIREARMS];
+			return ((elite.cmdr.current_cargo[SLAVES] + elite.cmdr.current_cargo[NARCOTICS]) * 2) + elite.cmdr.current_cargo[FIREARMS];
 		}
 
 		internal static int total_cargo()
