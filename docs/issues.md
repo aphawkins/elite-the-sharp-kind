@@ -8,7 +8,8 @@
 - Colours on SNES planet style not working
 - Explosion of other ship can cause an exception
 - Planet can render with black lines through it if filled with colour
-- Sometimes they fly backwards
+- Sometimes ship they fly backwards
+- Sometimes stations render on an incorrect axis
 
 ## Missions
 - Ship and text in mission brief doesn't clip correctly

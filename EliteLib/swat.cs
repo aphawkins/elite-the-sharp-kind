@@ -434,8 +434,6 @@ namespace Elite
 
 		internal static void fire_missile()
 		{
-			int newship;
-			univ_object ns;
 			Vector3[] rotmat = new Vector3[3];
 
 			if (missile_target < 0)
@@ -447,7 +445,7 @@ namespace Elite
 			rotmat[2].Z = 1.0f;
 			rotmat[0].X = -1.0f;
 
-			newship = add_new_ship(SHIP.SHIP_MISSILE, 0, -28, 14, rotmat, 0, 0);
+			int newship = add_new_ship(SHIP.SHIP_MISSILE, 0, -28, 14, rotmat, 0, 0);
 
 			if (newship == -1)
 			{
@@ -455,11 +453,9 @@ namespace Elite
 				return;
 			}
 
-			ns = space.universe[newship];
-
-			ns.velocity = elite.flight_speed * 2;
-			ns.flags = FLG.FLG_ANGRY;
-			ns.target = missile_target;
+            space.universe[newship].velocity = elite.flight_speed * 2;
+            space.universe[newship].flags = FLG.FLG_ANGRY;
+            space.universe[newship].target = missile_target;
 
 			if (space.universe[missile_target].type > SHIP.SHIP_ROCK)
 			{

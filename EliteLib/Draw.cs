@@ -157,14 +157,14 @@
             for (int i = 0; i < stocks.Length; i++)
             {
                 int y = (i * 15) + 55;
-                display_stock_price(stocks[i], i == highlightedStock, currentCargo[i], y);
+                DrawStockPrice(stocks[i], i == highlightedStock, currentCargo[i], y);
             }
 
             elite.alg_gfx.ClearTextArea();
             elite.alg_gfx.DrawTextLeft(16, 340, $"Cash: {credits / 10, 10:R}.{credits % 10} credits", GFX_COL.GFX_COL_WHITE);
         }
 
-        private void display_stock_price(stock_item stockPrice, bool isHighlighted, int currentCargo, int y)
+        private void DrawStockPrice(stock_item stockPrice, bool isHighlighted, int currentCargo, int y)
         {
             if (isHighlighted)
             {
