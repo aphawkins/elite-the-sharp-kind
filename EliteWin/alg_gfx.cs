@@ -248,7 +248,7 @@ namespace Elite
             Color colour = _pens.TryGetValue(col, out Pen value) ? value.Color : Color.Magenta;
 
             //TODO: fix bad values from explosion
-            if (position.X < 0 || position.X > 512 || position.Y < 0 || position.Y > 512)
+            if (position.X < 0 || position.X >= 512 || position.Y < 0 || position.Y >= 512)
             {
                 return;
             }

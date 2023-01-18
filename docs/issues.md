@@ -8,7 +8,7 @@
 - Colours on SNES planet style not working
 - Explosion of other ship can cause an exception
 - Planet can render with black lines through it if filled with colour
-- Sometimes ship they fly backwards
+- Sometimes ships fly backwards
 - Sometimes stations render on an incorrect axis
 - Missiles can be targeted against asteroids?
 
