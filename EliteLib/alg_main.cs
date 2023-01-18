@@ -322,7 +322,7 @@ namespace Elite
 					break;
 
 				case SCR.SCR_EQUIP_SHIP:
-					Docked.select_previous_equip();
+					Equipment.select_previous_equip();
 					break;
 
 				case SCR.SCR_OPTIONS:
@@ -364,7 +364,7 @@ namespace Elite
 					break;
 
 				case SCR.SCR_EQUIP_SHIP:
-					Docked.select_next_equip();
+                    Equipment.select_next_equip();
 					break;
 
 				case SCR.SCR_OPTIONS:
@@ -402,7 +402,7 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_EQUIP_SHIP:
-					Docked.buy_equip();
+                    Equipment.buy_equip();
 					break;
 
 				case SCR.SCR_OPTIONS:
@@ -793,7 +793,7 @@ namespace Elite
 
 				if (elite.docked)
 				{
-					Docked.equip_ship();
+                    Equipment.equip_ship();
 				}
 				else
 				{
