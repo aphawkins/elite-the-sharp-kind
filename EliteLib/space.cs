@@ -127,11 +127,11 @@ namespace Elite
 			}
 
 			k2 = y - (alpha * x);
-			z = z + (beta * k2);
+			z += (beta * k2);
 			y = k2 - (z * beta);
-			x = x + (alpha * y);
+			x += (alpha * y);
 
-			z = z - elite.flight_speed;
+			z -= elite.flight_speed;
 
 			obj.location.X = x;
 			obj.location.Y = y;

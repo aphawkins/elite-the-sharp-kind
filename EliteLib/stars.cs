@@ -87,14 +87,14 @@ namespace Elite
 				float xx = stars[i].X + (stars[i].X * Q);
 				zz = stars[i].Z;
 
-				yy = yy + (xx * alpha);
-				xx = xx - (yy * alpha);
+				yy += (xx * alpha);
+				xx -= (yy * alpha);
 
 				/*
 						tx = yy * beta;
 						xx = xx + (tx * tx * 2);
 				*/
-				yy = yy + beta;
+				yy += beta;
 
 				stars[i].Y = yy;
 				stars[i].X = xx;
@@ -274,7 +274,7 @@ namespace Elite
 				zz = stars[i].Z;
 
 				float delt8 = delta / (zz / 32);
-				xx = xx + delt8;
+				xx += delt8;
 
 				xx += yy * (beta / 256);
 				yy -= xx * (beta / 256);

@@ -102,7 +102,7 @@ namespace Elite
 			rnd_seed.a = a & 0xFF;
 			rnd_seed.c = x;
 
-			a = a / 256;    /* a = any carry left from above */
+			a /= 256;    /* a = any carry left from above */
 			x = rnd_seed.b;
 			a = (a + x + rnd_seed.d) & 0xFF;
 			rnd_seed.b = a;
@@ -426,7 +426,7 @@ namespace Elite
 			pl.economy = planet_seed.b & 7;
 
 			if (pl.government < 2)
-				pl.economy = pl.economy | 2;
+				pl.economy |= 2;
 
 			pl.techlevel = pl.economy ^ 7;
 			pl.techlevel += planet_seed.d & 3;

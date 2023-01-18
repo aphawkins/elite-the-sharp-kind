@@ -115,10 +115,10 @@ namespace Elite
             float y = vec.Y;
             float z = vec.Z;
 
-            y = y - (alpha * x);
-            x = x + (alpha * y);
-            y = y - (beta * z);
-            z = z + (beta * y);
+            y -= (alpha * x);
+            x += (alpha * y);
+            y -= (beta * z);
+            z += (beta * y);
 
             vec.X = x;
             vec.Y = y;
