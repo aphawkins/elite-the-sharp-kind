@@ -21,7 +21,6 @@
 
 namespace Elite
 {
-    using System;
     using System.Numerics;
 
     internal static class VectorMaths

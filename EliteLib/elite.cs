@@ -14,15 +14,11 @@
 
 namespace Elite
 {
-	using Elite.Enums;
-	using Elite.Structs;
-	using Elite.Ships;
-	using System.Numerics;
-	using Elite.Config;
-    using System.Diagnostics;
-    using System.Numerics;
     using Elite.Enums;
     using Elite.Structs;
+    using Elite.Ships;
+    using System.Numerics;
+    using Elite.Config;
     using Elite.Save;
     using Elite.Views;
 
