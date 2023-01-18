@@ -823,7 +823,7 @@ namespace Elite
             if (elite.keyboard.IsKeyPressed(CommandKey.F7))
             {
 				find_input = false;
-				Docked.display_data_on_planet();
+				PlanetData.display_data_on_planet();
 			}
 
 			if (elite.keyboard.IsKeyPressed(CommandKey.F8) && (!elite.witchspace))

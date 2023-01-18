@@ -30,6 +30,7 @@
 namespace Elite
 {
 	using Elite.Enums;
+	using Elite.Views;
 
 	internal static class options
 	{

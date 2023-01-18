@@ -12,7 +12,7 @@
  *
  */
 
-namespace EliteLib.Views
+namespace Elite.Views
 {
     using Elite;
     using Elite.Enums;
