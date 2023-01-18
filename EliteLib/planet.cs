@@ -323,7 +323,7 @@ namespace Elite
 					Debug.Assert(num < desc_list.Length);
 					expanded = temp;
 
-					if (elite.config.PlanetDescriptions == Enums.PlanetDescriptions.HoopyCasinos)
+					if (elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
 					{
 						option = gen_msx_rnd_number();
 					}
@@ -348,13 +348,13 @@ namespace Elite
 					{
 						case 'H':
 							temp = name_planet(elite.hyperspace_planet);
-							temp = Planet.capitalise_name(temp);
+							temp = capitalise_name(temp);
 							planet_description += temp;
 							break;
 
 						case 'I':
 							temp = name_planet(elite.hyperspace_planet);
-							temp = Planet.capitalise_name(temp);
+							temp = capitalise_name(temp);
 							planet_description += temp;
 							planet_description += "ian";
 							break;

@@ -119,7 +119,7 @@ namespace Elite
 			docked_planet = Planet.find_planet(cmdr.ship_x, cmdr.ship_y);
 			hyperspace_planet = docked_planet;
 
-			Planet.generate_planet_data(ref elite.current_planet_data, docked_planet);
+			Planet.generate_planet_data(ref current_planet_data, docked_planet);
 			trade.generate_stock_market();
 			trade.set_stock_quantities(cmdr.station_stock);
 		}
@@ -143,25 +143,25 @@ namespace Elite
         static void initialise_game()
         {
             random.rand_seed = (int)DateTime.UtcNow.Ticks;
-            elite.current_screen = SCR.SCR_INTRO_ONE;
+            current_screen = SCR.SCR_INTRO_ONE;
 
-            elite.restore_saved_commander();
+            restore_saved_commander();
 
-            elite.flight_speed = 1;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
-            elite.docked = true;
-            elite.front_shield = 255;
-            elite.aft_shield = 255;
-            elite.energy = 255;
+            flight_speed = 1;
+            flight_roll = 0;
+            flight_climb = 0;
+            docked = true;
+            front_shield = 255;
+            aft_shield = 255;
+            energy = 255;
             draw_lasers = 0;
             mcount = 0;
             space.hyper_ready = false;
-            elite.detonate_bomb = false;
+            detonate_bomb = false;
             find_input = false;
-            elite.witchspace = false;
+            witchspace = false;
             game_paused = false;
-            elite.auto_pilot = false;
+            auto_pilot = false;
 
             Stars.create_new_stars();
             swat.clear_universe();
@@ -170,16 +170,16 @@ namespace Elite
             GalacticChart.cross_y = -1;
             cross_timer = 0;
 
-            elite.myship.max_speed = 40;      /* 0.27 Light Mach */
-            elite.myship.max_roll = 31;
-            elite.myship.max_climb = 8;       /* CF 8 */
-            elite.myship.max_fuel = 70;       /* 7.0 Light Years */
+            myship.max_speed = 40;      /* 0.27 Light Mach */
+            myship.max_roll = 31;
+            myship.max_climb = 8;       /* CF 8 */
+            myship.max_fuel = 70;       /* 7.0 Light Years */
         }
 
         static void finish_game()
         {
-            elite.finish = true;
-            elite.game_over = true;
+            finish = true;
+            game_over = true;
         }
 
         /*
@@ -189,13 +189,13 @@ namespace Elite
         {
             cross_timer = 5;
 
-            if (elite.current_screen == SCR.SCR_SHORT_RANGE)
+            if (current_screen == SCR.SCR_SHORT_RANGE)
             {
                 GalacticChart.cross_x += dx * 4;
                 GalacticChart.cross_y += dy * 4;
                 return;
             }
-            else if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+            else if (current_screen == SCR.SCR_GALACTIC_CHART)
             {
                 GalacticChart.cross_x += dx * 2;
                 GalacticChart.cross_y += dy * 2;
@@ -227,21 +227,21 @@ namespace Elite
 		 */
         static void draw_cross(int cx, int cy)
         {
-            if (elite.current_screen == SCR.SCR_SHORT_RANGE)
+            if (current_screen == SCR.SCR_SHORT_RANGE)
             {
-                elite.alg_gfx.SetClipRegion(1, 37, 510, 339);
-                elite.alg_gfx.DrawLine(cx - 16, cy, cx + 16, cy, GFX_COL.GFX_COL_RED);
-                elite.alg_gfx.DrawLine(cx, cy - 16, cx, cy + 16, GFX_COL.GFX_COL_RED);
-                elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
+                alg_gfx.SetClipRegion(1, 37, 510, 339);
+                alg_gfx.DrawLine(cx - 16, cy, cx + 16, cy, GFX_COL.GFX_COL_RED);
+                alg_gfx.DrawLine(cx, cy - 16, cx, cy + 16, GFX_COL.GFX_COL_RED);
+                alg_gfx.SetClipRegion(1, 1, 510, 383);
                 return;
             }
 
-            if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+            if (current_screen == SCR.SCR_GALACTIC_CHART)
             {
-                elite.alg_gfx.SetClipRegion(1, 37, 510, 293);
-                elite.alg_gfx.DrawLine(cx - 8, cy, cx + 8, cy, GFX_COL.GFX_COL_RED);
-                elite.alg_gfx.DrawLine(cx, cy - 8, cx, cy + 8, GFX_COL.GFX_COL_RED);
-                elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
+                alg_gfx.SetClipRegion(1, 37, 510, 293);
+                alg_gfx.DrawLine(cx - 8, cy, cx + 8, cy, GFX_COL.GFX_COL_RED);
+                alg_gfx.DrawLine(cx, cy - 8, cx, cy + 8, GFX_COL.GFX_COL_RED);
+                alg_gfx.SetClipRegion(1, 1, 510, 383);
             }
         }
 
@@ -250,26 +250,26 @@ namespace Elite
             int laser = 0;
             int x1, y1, x2, y2;
 
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_FRONT_VIEW:
-                    elite.alg_gfx.DrawTextCentre(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
-                    laser = elite.cmdr.front_laser;
+                    alg_gfx.DrawTextCentre(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
+                    laser = cmdr.front_laser;
                     break;
 
                 case SCR.SCR_REAR_VIEW:
-                    elite.alg_gfx.DrawTextCentre(32, "Rear View", 120, GFX_COL.GFX_COL_WHITE);
-                    laser = elite.cmdr.rear_laser;
+                    alg_gfx.DrawTextCentre(32, "Rear View", 120, GFX_COL.GFX_COL_WHITE);
+                    laser = cmdr.rear_laser;
                     break;
 
                 case SCR.SCR_LEFT_VIEW:
-                    elite.alg_gfx.DrawTextCentre(32, "Left View", 120, GFX_COL.GFX_COL_WHITE);
-                    laser = elite.cmdr.left_laser;
+                    alg_gfx.DrawTextCentre(32, "Left View", 120, GFX_COL.GFX_COL_WHITE);
+                    laser = cmdr.left_laser;
                     break;
 
                 case SCR.SCR_RIGHT_VIEW:
-                    elite.alg_gfx.DrawTextCentre(32, "Right View", 120, GFX_COL.GFX_COL_WHITE);
-                    laser = elite.cmdr.right_laser;
+                    alg_gfx.DrawTextCentre(32, "Right View", 120, GFX_COL.GFX_COL_WHITE);
+                    laser = cmdr.right_laser;
                     break;
             }
 
@@ -279,37 +279,37 @@ namespace Elite
                 y1 = (96 - 8) * gfx.GFX_SCALE;
                 y2 = (96 - 16) * gfx.GFX_SCALE;
 
-                elite.alg_gfx.DrawLine(x1 - 1, y1, x1 - 1, y2, GFX_COL.GFX_COL_GREY_1);
-                elite.alg_gfx.DrawLine(x1, y1, x1, y2, GFX_COL.GFX_COL_WHITE);
-                elite.alg_gfx.DrawLine(x1 + 1, y1, x1 + 1, y2, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(x1 - 1, y1, x1 - 1, y2, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(x1, y1, x1, y2, GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawLine(x1 + 1, y1, x1 + 1, y2, GFX_COL.GFX_COL_GREY_1);
 
                 y1 = (96 + 8) * gfx.GFX_SCALE;
                 y2 = (96 + 16) * gfx.GFX_SCALE;
 
-                elite.alg_gfx.DrawLine(x1 - 1, y1, x1 - 1, y2, GFX_COL.GFX_COL_GREY_1);
-                elite.alg_gfx.DrawLine(x1, y1, x1, y2, GFX_COL.GFX_COL_WHITE);
-                elite.alg_gfx.DrawLine(x1 + 1, y1, x1 + 1, y2, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(x1 - 1, y1, x1 - 1, y2, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(x1, y1, x1, y2, GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawLine(x1 + 1, y1, x1 + 1, y2, GFX_COL.GFX_COL_GREY_1);
 
                 x1 = (128 - 8) * gfx.GFX_SCALE;
                 y1 = 96 * gfx.GFX_SCALE;
                 x2 = (128 - 16) * gfx.GFX_SCALE;
 
-                elite.alg_gfx.DrawLine(x1, y1 - 1, x2, y1 - 1, GFX_COL.GFX_COL_GREY_1);
-                elite.alg_gfx.DrawLine(x1, y1, x2, y1, GFX_COL.GFX_COL_WHITE);
-                elite.alg_gfx.DrawLine(x1, y1 + 1, x2, y1 + 1, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(x1, y1 - 1, x2, y1 - 1, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(x1, y1, x2, y1, GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawLine(x1, y1 + 1, x2, y1 + 1, GFX_COL.GFX_COL_GREY_1);
 
                 x1 = (128 + 8) * gfx.GFX_SCALE;
                 x2 = (128 + 16) * gfx.GFX_SCALE;
 
-                elite.alg_gfx.DrawLine(x1, y1 - 1, x2, y1 - 1, GFX_COL.GFX_COL_GREY_1);
-                elite.alg_gfx.DrawLine(x1, y1, x2, y1, GFX_COL.GFX_COL_WHITE);
-                elite.alg_gfx.DrawLine(x1, y1 + 1, x2, y1 + 1, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(x1, y1 - 1, x2, y1 - 1, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(x1, y1, x2, y1, GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawLine(x1, y1 + 1, x2, y1 + 1, GFX_COL.GFX_COL_GREY_1);
             }
         }
 
         static void arrow_right()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_MARKET_PRICES:
                     Market.buy_stock();
@@ -328,9 +328,9 @@ namespace Elite
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
                 case SCR.SCR_LEFT_VIEW:
-                    if (elite.flight_roll > 0)
+                    if (flight_roll > 0)
                     {
-                        elite.flight_roll = 0;
+                        flight_roll = 0;
                     }
                     else
                     {
@@ -344,7 +344,7 @@ namespace Elite
 
         static void arrow_left()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_MARKET_PRICES:
                     Market.sell_stock();
@@ -363,9 +363,9 @@ namespace Elite
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
                 case SCR.SCR_LEFT_VIEW:
-                    if (elite.flight_roll < 0)
+                    if (flight_roll < 0)
                     {
-                        elite.flight_roll = 0;
+                        flight_roll = 0;
                     }
                     else
                     {
@@ -379,7 +379,7 @@ namespace Elite
 
         static void arrow_up()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_MARKET_PRICES:
                     Market.select_previous_stock();
@@ -406,9 +406,9 @@ namespace Elite
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
                 case SCR.SCR_LEFT_VIEW:
-                    if (elite.flight_climb > 0)
+                    if (flight_climb > 0)
                     {
-                        elite.flight_climb = 0;
+                        flight_climb = 0;
                     }
                     else
                     {
@@ -421,7 +421,7 @@ namespace Elite
 
         static void arrow_down()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_MARKET_PRICES:
                     Market.select_next_stock();
@@ -448,9 +448,9 @@ namespace Elite
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
                 case SCR.SCR_LEFT_VIEW:
-                    if (elite.flight_climb < 0)
+                    if (flight_climb < 0)
                     {
-                        elite.flight_climb = 0;
+                        flight_climb = 0;
                     }
                     else
                     {
@@ -463,7 +463,7 @@ namespace Elite
 
         static void return_pressed()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_EQUIP_SHIP:
                     Equipment.buy_equip();
@@ -481,7 +481,7 @@ namespace Elite
 
         static void y_pressed()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_QUIT:
                     finish_game();
@@ -491,16 +491,16 @@ namespace Elite
 
         static void n_pressed()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_QUIT:
-                    if (elite.docked)
+                    if (docked)
                     {
                         CommanderStatus.display_commander_status();
                     }
                     else
                     {
-                        elite.current_screen = SCR.SCR_FRONT_VIEW;
+                        current_screen = SCR.SCR_FRONT_VIEW;
                     }
 
                     break;
@@ -510,7 +510,7 @@ namespace Elite
 
         static void d_pressed()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_GALACTIC_CHART:
                 case SCR.SCR_SHORT_RANGE:
@@ -521,7 +521,7 @@ namespace Elite
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
                 case SCR.SCR_LEFT_VIEW:
-                    if (elite.auto_pilot)
+                    if (auto_pilot)
                     {
                         pilot.disengage_auto_pilot();
                     }
@@ -532,12 +532,12 @@ namespace Elite
 
         static void f_pressed()
         {
-            if (elite.current_screen is SCR.SCR_GALACTIC_CHART or SCR.SCR_SHORT_RANGE)
+            if (current_screen is SCR.SCR_GALACTIC_CHART or SCR.SCR_SHORT_RANGE)
             {
                 find_input = true;
                 find_name = string.Empty;
-                elite.alg_gfx.ClearTextArea();
-                elite.alg_gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_WHITE);
+                alg_gfx.ClearTextArea();
+                alg_gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_WHITE);
             }
         }
 
@@ -552,8 +552,8 @@ namespace Elite
             find_name += str;
 
             str = "Planet Name? " + find_name;
-            elite.alg_gfx.ClearTextArea();
-            elite.alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
+            alg_gfx.ClearTextArea();
+            alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
         }
 
         static void delete_find_char()
@@ -569,13 +569,13 @@ namespace Elite
             find_name = find_name[..^1];
 
             str = "Planet Name? " + find_name;
-            elite.alg_gfx.ClearTextArea();
-            elite.alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
+            alg_gfx.ClearTextArea();
+            alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
         }
 
         static void o_pressed()
         {
-            switch (elite.current_screen)
+            switch (current_screen)
             {
                 case SCR.SCR_GALACTIC_CHART:
                 case SCR.SCR_SHORT_RANGE:
@@ -599,7 +599,7 @@ namespace Elite
             ship.rotmat[2].Z = 1;
             ship.rotmat[0].X = -1;
             ship.type = (SHIP)(-96);
-            ship.velocity = elite.flight_speed;
+            ship.velocity = flight_speed;
             ship.acceleration = 0;
             ship.bravery = 0;
             ship.rotz = 0;
@@ -607,29 +607,29 @@ namespace Elite
 
             pilot.auto_pilot_ship(ref ship);
 
-            elite.flight_speed = ship.velocity > 22 ? 22 : ship.velocity;
+            flight_speed = ship.velocity > 22 ? 22 : ship.velocity;
 
             if (ship.acceleration > 0)
             {
-                elite.flight_speed++;
-                if (elite.flight_speed > 22)
+                flight_speed++;
+                if (flight_speed > 22)
                 {
-                    elite.flight_speed = 22;
+                    flight_speed = 22;
                 }
             }
 
             if (ship.acceleration < 0)
             {
-                elite.flight_speed--;
-                if (elite.flight_speed < 1)
+                flight_speed--;
+                if (flight_speed < 1)
                 {
-                    elite.flight_speed = 1;
+                    flight_speed = 1;
                 }
             }
 
             if (ship.rotx == 0)
             {
-                elite.flight_climb = 0;
+                flight_climb = 0;
             }
 
             if (ship.rotx < 0)
@@ -654,13 +654,13 @@ namespace Elite
 
             if (ship.rotz == 127)
             {
-                elite.flight_roll = -14;
+                flight_roll = -14;
             }
             else
             {
                 if (ship.rotz == 0)
                 {
-                    elite.flight_roll = 0;
+                    flight_roll = 0;
                 }
 
                 if (ship.rotz > 0)
@@ -690,29 +690,29 @@ namespace Elite
             int i;
             Vector3[] rotmat = new Vector3[3];
 
-            elite.current_screen = SCR.SCR_ESCAPE_POD;
+            current_screen = SCR.SCR_ESCAPE_POD;
 
-            elite.flight_speed = 1;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+            flight_speed = 1;
+            flight_roll = 0;
+            flight_climb = 0;
 
             VectorMaths.set_init_matrix(ref rotmat);
             rotmat[2].Z = 1.0f;
 
             int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
             space.universe[newship].velocity = 7;
-            elite.sound.PlaySample(Sfx.Launch);
+            sound.PlaySample(Sfx.Launch);
 
             for (i = 0; i < 90; i++)
             {
                 if (i == 40)
                 {
                     space.universe[newship].flags |= FLG.FLG_DEAD;
-                    elite.sound.PlaySample(Sfx.Explode);
+                    sound.PlaySample(Sfx.Explode);
                 }
 
-                elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
-                elite.alg_gfx.ClearDisplay();
+                alg_gfx.SetClipRegion(1, 1, 510, 383);
+                alg_gfx.ClearDisplay();
                 Stars.update_starfield();
                 space.update_universe();
 
@@ -720,10 +720,10 @@ namespace Elite
                 space.universe[newship].location.Y = 0;
                 space.universe[newship].location.Z += 2;
 
-                elite.alg_gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
 
                 space.update_console();
-                elite.alg_gfx.ScreenUpdate();
+                alg_gfx.ScreenUpdate();
             }
 
 
@@ -731,9 +731,9 @@ namespace Elite
             {
                 auto_dock();
 
-                if ((Math.Abs(elite.flight_roll) < 3) && (Math.Abs(elite.flight_climb) < 3))
+                if ((Math.Abs(flight_roll) < 3) && (Math.Abs(flight_climb) < 3))
                 {
-                    for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+                    for (i = 0; i < MAX_UNIV_OBJECTS; i++)
                     {
                         if (space.universe[i].type != 0)
                         {
@@ -743,12 +743,12 @@ namespace Elite
                 }
 
                 Stars.warp_stars = true;
-                elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
-                elite.alg_gfx.ClearDisplay();
+                alg_gfx.SetClipRegion(1, 1, 510, 383);
+                alg_gfx.ClearDisplay();
                 Stars.update_starfield();
                 space.update_universe();
                 space.update_console();
-                elite.alg_gfx.ScreenUpdate();
+                alg_gfx.ScreenUpdate();
             }
 
             swat.abandon_ship();
@@ -758,16 +758,16 @@ namespace Elite
         {
             char keyasc;
 
-            if (elite.docked &&
-                ((elite.current_screen == SCR.SCR_MARKET_PRICES) ||
-                 (elite.current_screen == SCR.SCR_OPTIONS) ||
-                 (elite.current_screen == SCR.SCR_SETTINGS) ||
-                 (elite.current_screen == SCR.SCR_EQUIP_SHIP)))
+            if (docked &&
+                ((current_screen == SCR.SCR_MARKET_PRICES) ||
+                 (current_screen == SCR.SCR_OPTIONS) ||
+                 (current_screen == SCR.SCR_SETTINGS) ||
+                 (current_screen == SCR.SCR_EQUIP_SHIP)))
             {
-                elite.keyboard.kbd_read_key();
+                keyboard.kbd_read_key();
             }
 
-            elite.keyboard.kbd_poll_keyboard();
+            keyboard.kbd_poll_keyboard();
 
             //if (have_joystick)
             //{
@@ -797,7 +797,7 @@ namespace Elite
 
             if (game_paused)
             {
-                if (elite.keyboard.IsKeyPressed(CommandKey.Resume))
+                if (keyboard.IsKeyPressed(CommandKey.Resume))
                 {
                     game_paused = false;
                 }
@@ -805,109 +805,109 @@ namespace Elite
                 return;
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F1))
+            if (keyboard.IsKeyPressed(CommandKey.F1))
             {
                 find_input = false;
 
-                if (elite.docked)
+                if (docked)
                 {
                     space.launch_player();
                 }
                 else
                 {
-                    if (elite.current_screen != SCR.SCR_FRONT_VIEW)
+                    if (current_screen != SCR.SCR_FRONT_VIEW)
                     {
-                        elite.current_screen = SCR.SCR_FRONT_VIEW;
+                        current_screen = SCR.SCR_FRONT_VIEW;
                         Stars.flip_stars();
                     }
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F2))
+            if (keyboard.IsKeyPressed(CommandKey.F2))
             {
                 find_input = false;
 
-                if (!elite.docked)
+                if (!docked)
                 {
-                    if (elite.current_screen != SCR.SCR_REAR_VIEW)
+                    if (current_screen != SCR.SCR_REAR_VIEW)
                     {
-                        elite.current_screen = SCR.SCR_REAR_VIEW;
+                        current_screen = SCR.SCR_REAR_VIEW;
                         Stars.flip_stars();
                     }
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F3))
+            if (keyboard.IsKeyPressed(CommandKey.F3))
             {
                 find_input = false;
 
-                if (!elite.docked)
+                if (!docked)
                 {
-                    if (elite.current_screen != SCR.SCR_LEFT_VIEW)
+                    if (current_screen != SCR.SCR_LEFT_VIEW)
                     {
-                        elite.current_screen = SCR.SCR_LEFT_VIEW;
+                        current_screen = SCR.SCR_LEFT_VIEW;
                         Stars.flip_stars();
                     }
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F4))
+            if (keyboard.IsKeyPressed(CommandKey.F4))
             {
                 find_input = false;
 
-                if (elite.docked)
+                if (docked)
                 {
                     Equipment.equip_ship();
                 }
                 else
                 {
-                    if (elite.current_screen != SCR.SCR_RIGHT_VIEW)
+                    if (current_screen != SCR.SCR_RIGHT_VIEW)
                     {
-                        elite.current_screen = SCR.SCR_RIGHT_VIEW;
+                        current_screen = SCR.SCR_RIGHT_VIEW;
                         Stars.flip_stars();
                     }
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F5))
+            if (keyboard.IsKeyPressed(CommandKey.F5))
             {
                 find_input = false;
                 old_cross_x = -1;
                 GalacticChart.display_galactic_chart();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F6))
+            if (keyboard.IsKeyPressed(CommandKey.F6))
             {
                 find_input = false;
                 old_cross_x = -1;
                 GalacticChart.display_short_range_chart();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F7))
+            if (keyboard.IsKeyPressed(CommandKey.F7))
             {
                 find_input = false;
                 PlanetData.display_data_on_planet();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F8) && (!elite.witchspace))
+            if (keyboard.IsKeyPressed(CommandKey.F8) && (!witchspace))
             {
                 find_input = false;
                 Market.display_market_prices();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F9))
+            if (keyboard.IsKeyPressed(CommandKey.F9))
             {
                 find_input = false;
                 CommanderStatus.display_commander_status();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F10))
+            if (keyboard.IsKeyPressed(CommandKey.F10))
             {
                 find_input = false;
                 Market.display_inventory();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.F11))
+            if (keyboard.IsKeyPressed(CommandKey.F11))
             {
                 find_input = false;
                 options.display_options();
@@ -915,16 +915,16 @@ namespace Elite
 
             if (find_input)
             {
-                keyasc = elite.keyboard.kbd_read_key();
+                keyasc = keyboard.kbd_read_key();
 
-                if (elite.keyboard.IsKeyPressed(CommandKey.Enter))
+                if (keyboard.IsKeyPressed(CommandKey.Enter))
                 {
                     find_input = false;
                     GalacticChart.find_planet_by_name(find_name);
                     return;
                 }
 
-                if (elite.keyboard.IsKeyPressed(CommandKey.Backspace))
+                if (keyboard.IsKeyPressed(CommandKey.Backspace))
                 {
                     delete_find_char();
                     return;
@@ -938,29 +938,29 @@ namespace Elite
                 return;
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Y))
+            if (keyboard.IsKeyPressed(CommandKey.Y))
             {
                 y_pressed();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.N))
+            if (keyboard.IsKeyPressed(CommandKey.N))
             {
                 n_pressed();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Fire))
+            if (keyboard.IsKeyPressed(CommandKey.Fire))
             {
-                if ((!elite.docked) && (draw_lasers == 0))
+                if ((!docked) && (draw_lasers == 0))
                 {
                     draw_lasers = swat.fire_laser();
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Dock))
+            if (keyboard.IsKeyPressed(CommandKey.Dock))
             {
-                if (!elite.docked && elite.cmdr.docking_computer)
+                if (!docked && cmdr.docking_computer)
                 {
-                    if (elite.config.InstantDock)
+                    if (config.InstantDock)
                     {
                         space.engage_docking_computer();
                     }
@@ -971,27 +971,27 @@ namespace Elite
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.D))
+            if (keyboard.IsKeyPressed(CommandKey.D))
             {
                 d_pressed();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.ECM))
+            if (keyboard.IsKeyPressed(CommandKey.ECM))
             {
-                if (!elite.docked && elite.cmdr.ecm)
+                if (!docked && cmdr.ecm)
                 {
                     swat.activate_ecm(true);
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Find))
+            if (keyboard.IsKeyPressed(CommandKey.Find))
             {
                 f_pressed();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!elite.docked))
+            if (keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!docked))
             {
-                if (elite.keyboard.IsKeyPressed(CommandKey.CTRL))
+                if (keyboard.IsKeyPressed(CommandKey.CTRL))
                 {
                     space.start_galactic_hyperspace();
                 }
@@ -1001,104 +1001,104 @@ namespace Elite
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Jump) && (!elite.docked) && (!elite.witchspace))
+            if (keyboard.IsKeyPressed(CommandKey.Jump) && (!docked) && (!witchspace))
             {
                 space.jump_warp();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.FireMissile))
+            if (keyboard.IsKeyPressed(CommandKey.FireMissile))
             {
-                if (!elite.docked)
+                if (!docked)
                 {
                     swat.fire_missile();
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Origin))
+            if (keyboard.IsKeyPressed(CommandKey.Origin))
             {
                 o_pressed();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Pause))
+            if (keyboard.IsKeyPressed(CommandKey.Pause))
             {
                 game_paused = true;
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.TargetMissile))
+            if (keyboard.IsKeyPressed(CommandKey.TargetMissile))
             {
-                if (!elite.docked)
+                if (!docked)
                 {
                     swat.arm_missile();
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.UnarmMissile))
+            if (keyboard.IsKeyPressed(CommandKey.UnarmMissile))
             {
-                if (!elite.docked)
+                if (!docked)
                 {
                     swat.unarm_missile();
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.IncSpeed))
+            if (keyboard.IsKeyPressed(CommandKey.IncSpeed))
             {
-                if (!elite.docked)
+                if (!docked)
                 {
-                    if (elite.flight_speed < elite.myship.max_speed)
+                    if (flight_speed < myship.max_speed)
                     {
-                        elite.flight_speed++;
+                        flight_speed++;
                     }
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.DecSpeed))
+            if (keyboard.IsKeyPressed(CommandKey.DecSpeed))
             {
-                if (!elite.docked)
+                if (!docked)
                 {
-                    if (elite.flight_speed > 1)
+                    if (flight_speed > 1)
                     {
-                        elite.flight_speed--;
+                        flight_speed--;
                     }
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Up))
+            if (keyboard.IsKeyPressed(CommandKey.Up))
             {
                 arrow_up();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Down))
+            if (keyboard.IsKeyPressed(CommandKey.Down))
             {
                 arrow_down();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Left))
+            if (keyboard.IsKeyPressed(CommandKey.Left))
             {
                 arrow_left();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Right))
+            if (keyboard.IsKeyPressed(CommandKey.Right))
             {
                 arrow_right();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Enter))
+            if (keyboard.IsKeyPressed(CommandKey.Enter))
             {
                 return_pressed();
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.EnergyBomb))
+            if (keyboard.IsKeyPressed(CommandKey.EnergyBomb))
             {
-                if ((!elite.docked) && elite.cmdr.energy_bomb)
+                if ((!docked) && cmdr.energy_bomb)
                 {
-                    elite.detonate_bomb = true;
-                    elite.cmdr.energy_bomb = false;
+                    detonate_bomb = true;
+                    cmdr.energy_bomb = false;
                 }
             }
 
-            if (elite.keyboard.IsKeyPressed(CommandKey.Escape))
+            if (keyboard.IsKeyPressed(CommandKey.Escape))
             {
-                if ((!elite.docked) && elite.cmdr.escape_pod && (!elite.witchspace))
+                if ((!docked) && cmdr.escape_pod && (!witchspace))
                 {
                     run_escape_sequence();
                 }
@@ -1148,9 +1148,9 @@ namespace Elite
 
             do
             {
-                elite.draw.DrawLoadCommander(false, name);
+                draw.DrawLoadCommander(false, name);
 
-                key = elite.keyboard.ReadKey();
+                key = keyboard.ReadKey();
                 if (key is >= 'A' and <= 'Z')
                 {
                     name += (char)key;
@@ -1168,25 +1168,25 @@ namespace Elite
 
             if (cmdr == null)
             {
-                elite.draw.DrawLoadCommander(true, name);
+                draw.DrawLoadCommander(true, name);
                 do
                 {
-                    key = elite.keyboard.ReadKey();
+                    key = keyboard.ReadKey();
                 } while (key != (int)CommandKey.Space);
 
                 cmdr = CommanderFactory.Jameson();
             }
 
-            elite.saved_cmdr = (Commander)cmdr;
-            elite.restore_saved_commander();
+            saved_cmdr = (Commander)cmdr;
+            restore_saved_commander();
             space.update_console();
         }
 
         static void run_first_intro_screen()
         {
-            elite.current_screen = SCR.SCR_INTRO_ONE;
+            current_screen = SCR.SCR_INTRO_ONE;
 
-            elite.sound.PlayMidi(Music.EliteTheme, true);
+            sound.PlayMidi(Music.EliteTheme, true);
 
             intro.initialise_intro1();
 
@@ -1194,20 +1194,20 @@ namespace Elite
             {
                 intro.update_intro1();
 
-                elite.alg_gfx.ScreenUpdate();
+                alg_gfx.ScreenUpdate();
 
-                elite.keyboard.kbd_poll_keyboard();
+                keyboard.kbd_poll_keyboard();
 
-                if (elite.keyboard.IsKeyPressed(CommandKey.Y))
+                if (keyboard.IsKeyPressed(CommandKey.Y))
                 {
-                    elite.sound.StopMidi();
+                    sound.StopMidi();
                     load_commander_screen();
                     break;
                 }
 
-                if (elite.keyboard.IsKeyPressed(CommandKey.N))
+                if (keyboard.IsKeyPressed(CommandKey.N))
                 {
-                    elite.sound.StopMidi();
+                    sound.StopMidi();
                     break;
                 }
             }
@@ -1216,31 +1216,31 @@ namespace Elite
 
         static void run_second_intro_screen()
         {
-            elite.current_screen = SCR.SCR_INTRO_TWO;
+            current_screen = SCR.SCR_INTRO_TWO;
 
-            elite.sound.PlayMidi(Music.BlueDanube, true);
+            sound.PlayMidi(Music.BlueDanube, true);
 
             intro.initialise_intro2();
 
-            elite.flight_speed = 3;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+            flight_speed = 3;
+            flight_roll = 0;
+            flight_climb = 0;
 
             for (; ; )
             {
                 intro.update_intro2();
 
-                elite.alg_gfx.ScreenUpdate();
+                alg_gfx.ScreenUpdate();
 
-                elite.keyboard.kbd_poll_keyboard();
+                keyboard.kbd_poll_keyboard();
 
-                if (elite.keyboard.IsKeyPressed(CommandKey.Space))
+                if (keyboard.IsKeyPressed(CommandKey.Space))
                 {
                     break;
                 }
             }
 
-            elite.sound.StopMidi();
+            sound.StopMidi();
         }
 
         /*
@@ -1253,12 +1253,12 @@ namespace Elite
             Vector3[] rotmat = new Vector3[3];
             SHIP type;
 
-            elite.current_screen = SCR.SCR_GAME_OVER;
-            elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
+            current_screen = SCR.SCR_GAME_OVER;
+            alg_gfx.SetClipRegion(1, 1, 510, 383);
 
-            elite.flight_speed = 6;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+            flight_speed = 6;
+            flight_roll = 0;
+            flight_climb = 0;
             swat.clear_universe();
 
             VectorMaths.set_init_matrix(ref rotmat);
@@ -1278,11 +1278,11 @@ namespace Elite
 
             for (i = 0; i < 100; i++)
             {
-                elite.alg_gfx.ClearDisplay();
+                alg_gfx.ClearDisplay();
                 Stars.update_starfield();
                 space.update_universe();
-                elite.alg_gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
-                elite.alg_gfx.ScreenUpdate();
+                alg_gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
+                alg_gfx.ScreenUpdate();
             }
         }
 
@@ -1292,16 +1292,16 @@ namespace Elite
 		 */
         static void display_break_pattern()
         {
-            elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
-            elite.alg_gfx.ClearDisplay();
+            alg_gfx.SetClipRegion(1, 1, 510, 383);
+            alg_gfx.ClearDisplay();
 
             for (int i = 0; i < 20; i++)
             {
-                elite.alg_gfx.DrawCircle(new(256f, 192f), 30f + (i * 15f), GFX_COL.GFX_COL_WHITE);
-                elite.alg_gfx.ScreenUpdate();
+                alg_gfx.DrawCircle(new(256f, 192f), 30f + (i * 15f), GFX_COL.GFX_COL_WHITE);
+                alg_gfx.ScreenUpdate();
             }
 
-            if (elite.docked)
+            if (docked)
             {
                 missions.check_mission_brief();
                 CommanderStatus.display_commander_status();
@@ -1309,7 +1309,7 @@ namespace Elite
             }
             else
             {
-                elite.current_screen = SCR.SCR_FRONT_VIEW;
+                current_screen = SCR.SCR_FRONT_VIEW;
             }
         }
 
@@ -1340,27 +1340,27 @@ namespace Elite
             elite.alg_gfx = alg_gfx;
             elite.sound = sound;
             elite.keyboard = keyboard;
-            elite.draw = new Draw(elite.alg_gfx);
+            draw = new Draw(elite.alg_gfx);
 
             initialise_allegro();
-            elite.config = ConfigFile.ReadConfigAsync().Result;
-            elite.alg_gfx.SpeedCap = elite.config.SpeedCap;
+            config = ConfigFile.ReadConfigAsync().Result;
+            elite.alg_gfx.SpeedCap = config.SpeedCap;
 
             /* Do any setup necessary for the keyboard... */
             keyboard.kbd_keyboard_startup();
 
-            elite.finish = false;
-            elite.auto_pilot = false;
+            finish = false;
+            auto_pilot = false;
 
-            while (!elite.finish)
+            while (!finish)
             {
-                elite.game_over = false;
+                game_over = false;
                 initialise_game();
                 space.dock_player();
 
                 space.update_console();
 
-                elite.current_screen = SCR.SCR_FRONT_VIEW;
+                current_screen = SCR.SCR_FRONT_VIEW;
                 run_first_intro_screen();
                 run_second_intro_screen();
 
@@ -1370,7 +1370,7 @@ namespace Elite
                 space.dock_player();
                 CommanderStatus.display_commander_status();
 
-                while (!elite.game_over)
+                while (!game_over)
                 {
                     sound.UpdateSound();
                     elite.alg_gfx.ScreenUpdate();
@@ -1393,12 +1393,12 @@ namespace Elite
 
                     if (!rolling)
                     {
-                        if (elite.flight_roll > 0)
+                        if (flight_roll > 0)
                         {
                             space.decrease_flight_roll();
                         }
 
-                        if (elite.flight_roll < 0)
+                        if (flight_roll < 0)
                         {
                             space.increase_flight_roll();
                         }
@@ -1406,22 +1406,22 @@ namespace Elite
 
                     if (!climbing)
                     {
-                        if (elite.flight_climb > 0)
+                        if (flight_climb > 0)
                         {
                             space.decrease_flight_climb();
                         }
 
-                        if (elite.flight_climb < 0)
+                        if (flight_climb < 0)
                         {
                             space.increase_flight_climb();
                         }
                     }
 
-                    if (!elite.docked)
+                    if (!docked)
                     {
                         elite.alg_gfx.ScreenAcquire();
 
-                        if (elite.current_screen is
+                        if (current_screen is
                             SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
                             SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
                             SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
@@ -1431,7 +1431,7 @@ namespace Elite
                             Stars.update_starfield();
                         }
 
-                        if (elite.auto_pilot)
+                        if (auto_pilot)
                         {
                             auto_dock();
                             if ((mcount & 127) == 0)
@@ -1442,14 +1442,14 @@ namespace Elite
 
                         space.update_universe();
 
-                        if (elite.docked)
+                        if (docked)
                         {
                             space.update_console();
                             elite.alg_gfx.ScreenRelease();
                             continue;
                         }
 
-                        if (elite.current_screen is
+                        if (current_screen is
                             SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
                             SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
                         {
@@ -1491,7 +1491,7 @@ namespace Elite
 
                         if ((mcount & 31) == 10)
                         {
-                            if (elite.energy < 50)
+                            if (energy < 50)
                             {
                                 info_message("ENERGY LOW");
                                 sound.PlaySample(Sfx.Beep);
@@ -1505,7 +1505,7 @@ namespace Elite
                             space.update_cabin_temp();
                         }
 
-                        if ((mcount == 0) && (!elite.witchspace))
+                        if ((mcount == 0) && (!witchspace))
                         {
                             swat.random_encounter();
                         }
@@ -1516,7 +1516,7 @@ namespace Elite
                         space.update_console();
                     }
 
-                    if (elite.current_screen == SCR.SCR_BREAK_PATTERN)
+                    if (current_screen == SCR.SCR_BREAK_PATTERN)
                     {
                         display_break_pattern();
                     }
@@ -1536,20 +1536,20 @@ namespace Elite
                         old_cross_x = GalacticChart.cross_x;
                         old_cross_y = GalacticChart.cross_y;
 
-                        if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+                        if (current_screen == SCR.SCR_GALACTIC_CHART)
                         {
-                            elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, GalacticChart.planetPixels, GalacticChart.planetName, GalacticChart.distanceToPlanet);
+                            draw.DrawGalacticChart(cmdr.galaxy_number + 1, GalacticChart.planetPixels, GalacticChart.planetName, GalacticChart.distanceToPlanet);
                         }
-                        else if (elite.current_screen == SCR.SCR_SHORT_RANGE)
+                        else if (current_screen == SCR.SCR_SHORT_RANGE)
                         {
-                            elite.draw.DrawShortRangeChart(GalacticChart.planetNames, GalacticChart.planetSizes, GalacticChart.planetName, GalacticChart.distanceToPlanet);
+                            draw.DrawShortRangeChart(GalacticChart.planetNames, GalacticChart.planetSizes, GalacticChart.planetName, GalacticChart.distanceToPlanet);
                         }
 
                         draw_cross(old_cross_x, old_cross_y);
                     }
                 }
 
-                if (!elite.finish)
+                if (!finish)
                 {
                     run_game_over_screen();
                 }
