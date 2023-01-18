@@ -319,11 +319,11 @@ namespace Elite
 			switch (hilite_item)
 			{
 				case 0:
-					alg_main.save_commander_screen();
+					elite.save_commander_screen();
 					break;
 
 				case 1:
-					alg_main.load_commander_screen();
+                    elite.load_commander_screen();
                     CommanderStatus.display_commander_status();
 					break;
 

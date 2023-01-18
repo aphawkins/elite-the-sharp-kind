@@ -1,4 +1,4 @@
-﻿namespace Elite
+﻿namespace Elite.Views
 {
     using System.Numerics;
     using Elite.Enums;

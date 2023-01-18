@@ -162,7 +162,7 @@ namespace Elite
 			if (missile_target == un)
 			{
 				missile_target = MISSILE_UNARMED;
-				alg_main.info_message("Target Lost");
+                elite.info_message("Target Lost");
 			}
 
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
@@ -329,7 +329,7 @@ namespace Elite
 
 			if ((elite.cmdr.score & 255) == 0)
 			{
-				alg_main.info_message("Right On Commander!");
+                elite.info_message("Right On Commander!");
 			}
 
 			elite.sound.PlaySample(Sfx.Explode);
@@ -350,7 +350,7 @@ namespace Elite
 				if ((missile_target == MISSILE_ARMED) && (space.universe[un].type >= 0))
 				{
 					missile_target = un;
-					alg_main.info_message("Target Locked");
+                    elite.info_message("Target Locked");
 					elite.sound.PlaySample(Sfx.Beep);
 				}
 
@@ -449,7 +449,7 @@ namespace Elite
 
 			if (newship == -1)
 			{
-				alg_main.info_message("Missile Jammed");
+                elite.info_message("Missile Jammed");
 				return;
 			}
 
@@ -661,7 +661,7 @@ namespace Elite
 				return;
 			}
 
-			if (((un ^ alg_main.mcount) & 7) != 0)
+			if (((un ^ elite.mcount) & 7) != 0)
 				return;
 
 			if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
@@ -790,7 +790,7 @@ namespace Elite
 					else
 					{
 						launch_enemy(un, SHIP.SHIP_MISSILE, FLG.FLG_ANGRY, 126);
-						alg_main.info_message("INCOMING MISSILE");
+                        elite.info_message("INCOMING MISSILE");
 					}
 					return;
 				}

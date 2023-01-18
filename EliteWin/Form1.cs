@@ -31,7 +31,7 @@ namespace EliteWin
             _gfx = new alg_gfx(ref bmp);
             _sound = new Sound();
             _keyboard = new Keyboard();
-            Task.Run(() => alg_main.main(ref _gfx, ref _sound, ref _keyboard));
+            Task.Run(() => elite.main(ref _gfx, ref _sound, ref _keyboard));
         }
 
         private void RefreshScreen()

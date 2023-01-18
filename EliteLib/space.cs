@@ -361,7 +361,7 @@ namespace Elite
 				elite.cmdr.fuel = elite.myship.max_fuel;
 			}
 
-			alg_main.info_message("Fuel Scoop On");
+            elite.info_message("Fuel Scoop On");
 		}
 
 		/*
@@ -591,7 +591,7 @@ namespace Elite
 						{
 							elite.cmdr.credits += bounty;
 							str = $"{elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D} CR";
-							alg_main.info_message(str);
+                            elite.info_message(str);
 						}
 
 						swat.remove_ship(i);
@@ -1243,14 +1243,14 @@ namespace Elite
                     not SHIP.SHIP_ALLOY and not SHIP.SHIP_ROCK and
                     not SHIP.SHIP_BOULDER and not SHIP.SHIP_ESCAPE_CAPSULE)
 				{
-					alg_main.info_message("Mass Locked");
+                    elite.info_message("Mass Locked");
 					return;
 				}
 			}
 
 			if ((universe[0].distance < 75001) || (universe[1].distance < 75001))
 			{
-				alg_main.info_message("Mass Locked");
+                elite.info_message("Mass Locked");
 				return;
 			}
 
@@ -1270,7 +1270,7 @@ namespace Elite
 			}
 
 			Stars.warp_stars = true;
-			alg_main.mcount &= 63;
+            elite.mcount &= 63;
 			swat.in_battle = false;
 		}
 
