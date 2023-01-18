@@ -107,7 +107,7 @@ namespace Elite.Views
                 {
                     type = space.universe[i].type;
 
-                    if (type is SHIP.SHIP_MISSILE or > SHIP.SHIP_ROCK and < SHIP.SHIP_DODEC)
+                    if (type is SHIP.SHIP_MISSILE or (> SHIP.SHIP_ROCK and < SHIP.SHIP_DODEC))
                     {
                         condition = 2;
                         break;
