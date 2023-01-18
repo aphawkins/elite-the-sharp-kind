@@ -57,6 +57,7 @@ namespace Elite
     using Elite.Enums;
     using Elite.Structs;
     using Elite.Save;
+    using Elite.Views;
 
     public static class alg_main
 	{
@@ -248,7 +249,7 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_MARKET_PRICES:
-					Docked.buy_stock();
+					Market.buy_stock();
 					break;
 
 				case SCR.SCR_SETTINGS:
@@ -283,7 +284,7 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_MARKET_PRICES:
-					Docked.sell_stock();
+                    Market.sell_stock();
 					break;
 
 				case SCR.SCR_SETTINGS:
@@ -318,7 +319,7 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_MARKET_PRICES:
-					Docked.select_previous_stock();
+                    Market.select_previous_stock();
 					break;
 
 				case SCR.SCR_EQUIP_SHIP:
@@ -360,7 +361,7 @@ namespace Elite
 			switch (elite.current_screen)
 			{
 				case SCR.SCR_MARKET_PRICES:
-					Docked.select_next_stock();
+                    Market.select_next_stock();
 					break;
 
 				case SCR.SCR_EQUIP_SHIP:
@@ -828,7 +829,7 @@ namespace Elite
 			if (elite.keyboard.IsKeyPressed(CommandKey.F8) && (!elite.witchspace))
 			{
 				find_input = false;
-				Docked.display_market_prices();
+                Market.display_market_prices();
 			}
 
 			if (elite.keyboard.IsKeyPressed(CommandKey.F9))
@@ -840,7 +841,7 @@ namespace Elite
 			if (elite.keyboard.IsKeyPressed(CommandKey.F10))
 			{
 				find_input = false;
-				Docked.display_inventory();
+                Market.display_inventory();
 			}
 
 			if (elite.keyboard.IsKeyPressed(CommandKey.F11))
