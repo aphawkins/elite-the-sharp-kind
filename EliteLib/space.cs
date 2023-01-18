@@ -50,6 +50,7 @@ namespace Elite
 	using Elite.Enums;
 	using Elite.Ships;
 	using Elite.Structs;
+	using Elite.Views;
 
 	internal static class space
 	{
@@ -1037,7 +1038,7 @@ namespace Elite
 				return;
 			}
 
-			hyper_distance = Docked.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
+			hyper_distance = GalacticChart.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
 			if ((hyper_distance == 0) || (hyper_distance > elite.cmdr.fuel))
 			{

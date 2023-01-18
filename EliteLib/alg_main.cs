@@ -103,8 +103,8 @@ namespace Elite
 			Stars.create_new_stars();
 			swat.clear_universe();
 
-			Docked.cross_x = -1;
-			Docked.cross_y = -1;
+            GalacticChart.cross_x = -1;
+            GalacticChart.cross_y = -1;
 			cross_timer = 0;
 
 			elite.myship.max_speed = 40;      /* 0.27 Light Mach */
@@ -128,33 +128,33 @@ namespace Elite
 
 			if (elite.current_screen == SCR.SCR_SHORT_RANGE)
 			{
-				Docked.cross_x += dx * 4;
-				Docked.cross_y += dy * 4;
+                GalacticChart.cross_x += dx * 4;
+                GalacticChart.cross_y += dy * 4;
 				return;
 			}
 			else if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				Docked.cross_x += dx * 2;
-				Docked.cross_y += dy * 2;
+                GalacticChart.cross_x += dx * 2;
+                GalacticChart.cross_y += dy * 2;
 
-				if (Docked.cross_x < 1)
+				if (GalacticChart.cross_x < 1)
 				{
-					Docked.cross_x = 1;
+                    GalacticChart.cross_x = 1;
 				}
 
-				if (Docked.cross_x > 510)
+				if (GalacticChart.cross_x > 510)
 				{
-					Docked.cross_x = 510;
+                    GalacticChart.cross_x = 510;
 				}
 
-				if (Docked.cross_y < 37)
+				if (GalacticChart.cross_y < 37)
 				{
-					Docked.cross_y = 37;
+                    GalacticChart.cross_y = 37;
 				}
 
-				if (Docked.cross_y > 293)
+				if (GalacticChart.cross_y > 293)
 				{
-					Docked.cross_y = 293;
+                    GalacticChart.cross_y = 293;
 				}
 			}
 		}
@@ -451,7 +451,7 @@ namespace Elite
 			{
 				case SCR.SCR_GALACTIC_CHART:
 				case SCR.SCR_SHORT_RANGE:
-					Docked.show_distance_to_planet();
+                    GalacticChart.show_distance_to_planet();
 					break;
 
 				case SCR.SCR_FRONT_VIEW:
@@ -516,7 +516,7 @@ namespace Elite
 			{
 				case SCR.SCR_GALACTIC_CHART:
 				case SCR.SCR_SHORT_RANGE:
-					Docked.move_cursor_to_origin();
+                    GalacticChart.move_cursor_to_origin();
 					break;
 			}
 		}
@@ -810,14 +810,14 @@ namespace Elite
 			{
 				find_input = false;
 				old_cross_x = -1;
-				Docked.display_galactic_chart();
+                GalacticChart.display_galactic_chart();
 			}
 
 			if (elite.keyboard.IsKeyPressed(CommandKey.F6))
 			{
 				find_input = false;
 				old_cross_x = -1;
-				Docked.display_short_range_chart();
+                GalacticChart.display_short_range_chart();
 			}
 
             if (elite.keyboard.IsKeyPressed(CommandKey.F7))
@@ -857,7 +857,7 @@ namespace Elite
 				if (elite.keyboard.IsKeyPressed(CommandKey.Enter))
 				{
 					find_input = false;
-					Docked.find_planet_by_name(find_name);
+                    GalacticChart.find_planet_by_name(find_name);
 					return;
 				}
 
@@ -1463,23 +1463,23 @@ namespace Elite
 						cross_timer--;
 						if (cross_timer == 0)
 						{
-							Docked.show_distance_to_planet();
+                            GalacticChart.show_distance_to_planet();
 						}
 					}
 
-					if ((Docked.cross_x != old_cross_x) ||
-						(Docked.cross_y != old_cross_y))
+					if ((GalacticChart.cross_x != old_cross_x) ||
+						(GalacticChart.cross_y != old_cross_y))
 					{
-                        old_cross_x = Docked.cross_x;
-                        old_cross_y = Docked.cross_y;
+                        old_cross_x = GalacticChart.cross_x;
+                        old_cross_y = GalacticChart.cross_y;
 
                         if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 						{
-							elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, Docked.planetPixels, Docked.planetName, Docked.distanceToPlanet);
+							elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, GalacticChart.planetPixels, GalacticChart.planetName, GalacticChart.distanceToPlanet);
 						}
 						else if(elite.current_screen == SCR.SCR_SHORT_RANGE)
 						{
-							elite.draw.DrawShortRangeChart(Docked.planetNames, Docked.planetSizes, Docked.planetName, Docked.distanceToPlanet);
+							elite.draw.DrawShortRangeChart(GalacticChart.planetNames, GalacticChart.planetSizes, GalacticChart.planetName, GalacticChart.distanceToPlanet);
                         }
 
 						draw_cross(old_cross_x, old_cross_y);

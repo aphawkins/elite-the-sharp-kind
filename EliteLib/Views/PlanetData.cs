@@ -47,7 +47,7 @@ namespace Elite.Views
 			elite.current_screen = SCR.SCR_PLANET_DATA;
 
 			string planetName = Planet.name_planet(elite.hyperspace_planet);
-            int lightYears = Docked.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
+            int lightYears = GalacticChart.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
             Planet.generate_planet_data(ref hyper_planet_data, elite.hyperspace_planet);
 
             elite.draw.DrawDataOnPlanet(planetName, lightYears,

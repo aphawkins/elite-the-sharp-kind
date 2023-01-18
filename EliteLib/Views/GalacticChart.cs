@@ -12,13 +12,13 @@
  *
  */
 
-namespace Elite
+namespace Elite.Views
 {
 	using System.Numerics;
 	using Elite.Enums;
 	using Elite.Structs;
 
-	internal static class Docked
+	internal static class GalacticChart
 	{
 		internal static int cross_x = 0;
 		internal static int cross_y = 0;
