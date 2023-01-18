@@ -331,11 +331,26 @@ namespace Elite
 					{
 						rnd = gen_rnd_number();
 						option = 0;
-						if (rnd >= 0x33) option++;
-						if (rnd >= 0x66) option++;
-						if (rnd >= 0x99) option++;
-						if (rnd >= 0xCC) option++;
-					}
+						if (rnd >= 0x33)
+                        {
+                            option++;
+                        }
+
+                        if (rnd >= 0x66)
+                        {
+                            option++;
+                        }
+
+                        if (rnd >= 0x99)
+                        {
+                            option++;
+                        }
+
+                        if (rnd >= 0xCC)
+                        {
+                            option++;
+                        }
+                    }
 
 					expand_description(desc_list[num][option], ref planet_description);
 					continue;
@@ -426,9 +441,11 @@ namespace Elite
 			pl.economy = planet_seed.b & 7;
 
 			if (pl.government < 2)
-				pl.economy |= 2;
+            {
+                pl.economy |= 2;
+            }
 
-			pl.techlevel = pl.economy ^ 7;
+            pl.techlevel = pl.economy ^ 7;
 			pl.techlevel += planet_seed.d & 3;
 			pl.techlevel += (pl.government / 2) + (pl.government & 1);
 

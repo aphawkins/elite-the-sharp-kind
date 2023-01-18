@@ -167,8 +167,10 @@ namespace Elite
 		internal static void select_left_setting()
 		{
 			if ((hilite_item & 1) != 0)
-				highlight_setting(hilite_item - 1);
-		}
+            {
+                highlight_setting(hilite_item - 1);
+            }
+        }
 
 		internal static void select_right_setting()
 		{
@@ -298,8 +300,10 @@ namespace Elite
 		internal static void select_previous_option()
 		{
 			if (hilite_item > 0)
-				highlight_option(hilite_item - 1);
-		}
+            {
+                highlight_option(hilite_item - 1);
+            }
+        }
 
 		internal static void select_next_option()
 		{

@@ -784,9 +784,11 @@ namespace Elite
 			univ.exp_delta += 4;
 
 			if (univ.location.Z <= 0)
-				return;
+            {
+                return;
+            }
 
-			ship = elite.ship_list[(int)univ.type];
+            ship = elite.ship_list[(int)univ.type];
 
 			for (i = 0; i < 3; i++)
 			{

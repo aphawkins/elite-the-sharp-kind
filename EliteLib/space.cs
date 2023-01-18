@@ -163,8 +163,10 @@ namespace Elite
 				rotate_x_first(ref obj.rotmat[2].Z, ref obj.rotmat[1].Z, rotx);
 
 				if (rotx is not 127 and not (-127))
-					obj.rotx -= (rotx < 0) ? -1 : 1;
-			}
+                {
+                    obj.rotx -= (rotx < 0) ? -1 : 1;
+                }
+            }
 
 
 			/* If necessary rotate the object around the Z axis... */
@@ -337,9 +339,11 @@ namespace Elite
 			dist = ((x * x) + (y * y) + (z * z)) / 256;
 
 			if (dist > 255)
-				return;
+            {
+                return;
+            }
 
-			dist ^= 255;
+            dist ^= 255;
 
 			elite.myship.cabtemp = dist + 30;
 
@@ -521,9 +525,11 @@ namespace Elite
 				flip.location.Z = -tmp;
 
 				if (flip.type < 0)
-					return;
+                {
+                    return;
+                }
 
-				tmp = flip.rotmat[0].X;
+                tmp = flip.rotmat[0].X;
 				flip.rotmat[0].X = flip.rotmat[0].Z;
 				flip.rotmat[0].Z = -tmp;
 
@@ -544,9 +550,11 @@ namespace Elite
 				flip.location.Z = tmp;
 
 				if (flip.type < 0)
-					return;
+                {
+                    return;
+                }
 
-				tmp = flip.rotmat[0].X;
+                tmp = flip.rotmat[0].X;
 				flip.rotmat[0].X = -flip.rotmat[0].Z;
 				flip.rotmat[0].Z = tmp;
 

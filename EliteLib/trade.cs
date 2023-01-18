@@ -79,9 +79,11 @@ namespace Elite
 				quant &= 255;                                                       /* Only need bottom 8 bits		*/
 
 				if (quant > 127)    /* In an 8-bit environment '>127' would be negative */
-					quant = 0;      /* So we set it to a minimum of zero. */
+                {
+                    quant = 0;      /* So we set it to a minimum of zero. */
+                }
 
-				quant &= 63;        /* Quantities range from 0..63 */
+                quant &= 63;        /* Quantities range from 0..63 */
 
 				stock_market[i].current_price = price * 4;
 				stock_market[i].current_quantity = quant;
@@ -98,9 +100,11 @@ namespace Elite
 			int i;
 
 			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
-				stock_market[i].current_quantity = quant[i];
+            {
+                stock_market[i].current_quantity = quant[i];
+            }
 
-			stock_market[ALIEN_ITEMS_IDX].current_quantity = 0;
+            stock_market[ALIEN_ITEMS_IDX].current_quantity = 0;
 		}
 
 		internal static int carrying_contraband()
@@ -139,9 +143,11 @@ namespace Elite
 			type = space.universe[un].type;
 
 			if (type == SHIP.SHIP_MISSILE)
-				return;
+            {
+                return;
+            }
 
-			if ((!elite.cmdr.fuel_scoop) || (space.universe[un].location.Y >= 0) ||
+            if ((!elite.cmdr.fuel_scoop) || (space.universe[un].location.Y >= 0) ||
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
 				swat.explode_object(un);

@@ -275,9 +275,11 @@ namespace Elite
 			{
 				cnt = random.rand255();
 				if (cnt >= 128)
-					return;
+                {
+                    return;
+                }
 
-				cnt &= elite.ship_list[(int)space.universe[un].type].max_loot;
+                cnt &= elite.ship_list[(int)space.universe[un].type].max_loot;
 				cnt &= 15;
 			}
 
@@ -662,9 +664,11 @@ namespace Elite
 			}
 
 			if (((un ^ elite.mcount) & 7) != 0)
-				return;
+            {
+                return;
+            }
 
-			if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
+            if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 			{
 				if (flags.HasFlag(FLG.FLG_ANGRY))
 				{
@@ -835,9 +839,11 @@ namespace Elite
 				{
 					ship.rotx = random.rand255() & 0x87;
 					if (ship.rotx > 127)
-						ship.rotx = -(ship.rotx & 127);
+                    {
+                        ship.rotx = -(ship.rotx & 127);
+                    }
 
-					ship.acceleration = 3;
+                    ship.acceleration = 3;
 					return;
 				}
 
@@ -1151,9 +1157,11 @@ namespace Elite
 			{
 				space.universe[newship].flags = FLG.FLG_ANGRY;
 				if (random.rand255() > 245)
-					space.universe[newship].flags |= FLG.FLG_HAS_ECM;
+                {
+                    space.universe[newship].flags |= FLG.FLG_HAS_ECM;
+                }
 
-				space.universe[newship].bravery = ((random.rand255() * 2) | 64) & 127;
+                space.universe[newship].bravery = ((random.rand255() * 2) | 64) & 127;
 			}
 		}
 
