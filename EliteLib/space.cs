@@ -127,9 +127,9 @@ namespace Elite
 			}
 
 			k2 = y - (alpha * x);
-			z += (beta * k2);
+			z += beta * k2;
 			y = k2 - (z * beta);
-			x += (alpha * y);
+			x += alpha * y;
 
 			z -= elite.flight_speed;
 
