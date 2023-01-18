@@ -12,10 +12,9 @@
  *
  */
 
-using Elite;
-
 namespace Elite.Views
 {
+    using Elite;
     using Elite.Enums;
     using Elite.Structs;
 

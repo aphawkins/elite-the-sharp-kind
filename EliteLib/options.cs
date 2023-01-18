@@ -323,7 +323,7 @@ namespace Elite
 
 				case 1:
 					alg_main.load_commander_screen();
-					Docked.display_commander_status();
+                    CommanderStatus.display_commander_status();
 					break;
 
 				case 2:

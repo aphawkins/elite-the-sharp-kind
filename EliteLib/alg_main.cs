@@ -433,7 +433,7 @@ namespace Elite
 				case SCR.SCR_QUIT:
 					if (elite.docked)
 					{
-						Docked.display_commander_status();
+						CommanderStatus.display_commander_status();
 					}
 					else
 					{
@@ -835,7 +835,7 @@ namespace Elite
 			if (elite.keyboard.IsKeyPressed(CommandKey.F9))
 			{
 				find_input = false;
-				Docked.display_commander_status();
+                CommanderStatus.display_commander_status();
 			}
 
 			if (elite.keyboard.IsKeyPressed(CommandKey.F10))
@@ -1241,7 +1241,7 @@ namespace Elite
             if (elite.docked)
 			{
 				missions.check_mission_brief();
-				Docked.display_commander_status();
+                CommanderStatus.display_commander_status();
 				space.update_console();
 			}
 			else
@@ -1305,7 +1305,7 @@ namespace Elite
 				old_cross_y = -1;
 
 				space.dock_player();
-				Docked.display_commander_status();
+                CommanderStatus.display_commander_status();
 
 				while (!elite.game_over)
 				{
