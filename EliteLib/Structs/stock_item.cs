@@ -1,6 +1,6 @@
 ﻿namespace Elite.Structs
 {
-    internal struct stock_item
+    internal class stock_item
     {
         internal string name;
         internal int current_quantity;

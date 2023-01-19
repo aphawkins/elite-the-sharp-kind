@@ -1275,7 +1275,7 @@ namespace Elite
 			elite.cmdr.legal_status = 0;
 			elite.cmdr.fuel = elite.myship.max_fuel;
 
-			for (i = 0; i < trade.NO_OF_STOCK_ITEMS; i++)
+			for (i = 0; i < trade.stock_market.Length; i++)
 			{
 				elite.cmdr.current_cargo[i] = 0;
 			}

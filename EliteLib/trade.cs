@@ -19,7 +19,6 @@ namespace Elite
 
 	internal static class trade
 	{
-		internal const int NO_OF_STOCK_ITEMS = 17;
 		internal const int ALIEN_ITEMS_IDX = 16;
         private const int SLAVES = 3;
         private const int NARCOTICS = 6;
@@ -32,7 +31,7 @@ namespace Elite
 		/*
 		* The following holds the Elite Planet Stock Market.
 		*/
-		internal static stock_item[] stock_market = new stock_item[NO_OF_STOCK_ITEMS]
+		internal static stock_item[] stock_market = new stock_item[]
 		{
 			new("Food",         0, 0,  19, -2,   6, 0x01, TONNES),
 			new("Textiles",     0, 0,  20, -1,  10, 0x03, TONNES),
@@ -65,7 +64,7 @@ namespace Elite
 			int price;
 			int i;
 
-			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
+			for (i = 0; i < stock_market.Length; i++)
 			{
 				price = stock_market[i].base_price;                             /* Start with the base price	*/
 				price += elite.cmdr.market_rnd & stock_market[i].mask;                  /* Add in a random amount		*/
@@ -98,7 +97,7 @@ namespace Elite
 		{
 			int i;
 
-			for (i = 0; i < NO_OF_STOCK_ITEMS; i++)
+			for (i = 0; i < stock_market.Length; i++)
             {
                 stock_market[i].current_quantity = quant[i];
             }
