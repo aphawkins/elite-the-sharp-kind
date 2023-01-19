@@ -22,7 +22,7 @@ namespace Elite.Ships
             new(  -6,    0,   65,  5,  0,  0,  0,  0),
         };
 
-        internal static ship_line[] moray_line = new ship_line[19]
+        internal static ship_line[] moray_line = new ship_line[]
         {
             new(31,  0,  7,  0,  1),
             new(31,  1,  6,  1,  3),

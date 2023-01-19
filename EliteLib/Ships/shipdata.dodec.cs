@@ -32,7 +32,7 @@ namespace Elite.Ships
             new(  16,  -32,  196, 23,  0,  0,  0,  0),
         };
 
-        internal static ship_line[] dodec_line = new ship_line[34]
+        internal static ship_line[] dodec_line = new ship_line[]
         {
             new(31,  0,  1,  0,  1),
             new(31,  0,  2,  1,  2),

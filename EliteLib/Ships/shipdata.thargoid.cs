@@ -28,7 +28,7 @@ namespace Elite.Ships
             new( -24,  -64,   80, 30,  9,  9,  9,  9),
         };
 
-        internal static ship_line[] thargoid_line = new ship_line[26]
+        internal static ship_line[] thargoid_line = new ship_line[]
         {
             new(31,  8,  4,  0,  7),
             new(31,  4,  0,  0,  1),

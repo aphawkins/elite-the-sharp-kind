@@ -18,7 +18,7 @@ namespace Elite.Ships
             new(   9,   10,  -15, 31,  4,  5,  6,  6),
         };
 
-        internal static ship_line[] thargon_line = new ship_line[15]
+        internal static ship_line[] thargon_line = new ship_line[]
         {
             new(31,  1,  0,  0,  1),
             new(31,  2,  0,  1,  2),

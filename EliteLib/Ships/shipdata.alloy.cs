@@ -12,7 +12,7 @@ namespace Elite.Ships
             new(  10,  -46,    6, 20, 15, 15, 15, 15),
         };
 
-        private static ship_line[] alloy_line = new ship_line[4]
+        private static ship_line[] alloy_line = new ship_line[]
         {
             new(31, 15, 15,  0,  1),
             new(16, 15, 15,  1,  2),

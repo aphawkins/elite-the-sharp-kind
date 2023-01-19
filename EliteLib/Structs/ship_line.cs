@@ -1,6 +1,6 @@
 ﻿namespace Elite.Structs
 {
-    internal struct ship_line
+    internal class ship_line
     {
         internal int dist;
         internal int face1;

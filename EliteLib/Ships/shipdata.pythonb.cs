@@ -19,7 +19,7 @@ namespace Elite.Ships
             new(   0,  -24, -112, 31, 11, 10, 12, 12),
         };
 
-        internal static ship_line[] pythonb_line = new ship_line[26]
+        internal static ship_line[] pythonb_line = new ship_line[]
         {
             new(31,  3,  2,  0,  8),
             new(31,  2,  0,  0,  3),

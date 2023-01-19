@@ -19,7 +19,7 @@ namespace Elite.Ships
             new(   0,   -1,   60, 31,  0,  1,  1,  1),
         };
 
-        internal static ship_line[] cobra1_line = new ship_line[18]
+        internal static ship_line[] cobra1_line = new ship_line[]
         {
             new(31,  0,  1,  1,  0),
             new(31,  2,  3,  0,  2),

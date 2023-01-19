@@ -24,7 +24,7 @@ namespace Elite.Ships
             new( -10,  -30,  160, 30,  0,  0,  0,  0),
         };
 
-        private static ship_line[] coriolis_line = new ship_line[28]
+        private static ship_line[] coriolis_line = new ship_line[]
         {
             new(31,  1,  0,  0,  3),
             new(31,  2,  0,  0,  1),

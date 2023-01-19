@@ -36,7 +36,7 @@ namespace Elite.Ships
             new(  80,   -6,  -40,  8,  9,  9,  9,  9),
         };
 
-        internal static ship_line[] cobra3a_line = new ship_line[38]
+        internal static ship_line[] cobra3a_line = new ship_line[]
         {
             new(31, 11,  0,  0,  1),
             new(31, 12,  4,  0,  4),
