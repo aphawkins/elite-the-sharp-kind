@@ -54,16 +54,16 @@ namespace Elite
 
 	internal static class space
 	{
-		static galaxy_seed destination_planet;
+        private static galaxy_seed destination_planet;
 		internal static bool hyper_ready;
-		static int hyper_countdown;
-		static string hyper_name;
-		static int hyper_distance;
-		static bool hyper_galactic;
+        private static int hyper_countdown;
+        private static string hyper_name;
+        private static int hyper_distance;
+        private static bool hyper_galactic;
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static int[] ship_count = new int[shipdata.NO_OF_SHIPS + 1];  /* many */
 
-		static void rotate_x_first(ref float a, ref float b, int direction)
+        private static void rotate_x_first(ref float a, ref float b, int direction)
 		{
 			float fx = a;
 			float ux = b;
@@ -80,10 +80,10 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Update an objects location in the universe.
 		 */
-		static void move_univ_object(ref univ_object obj)
+        private static void move_univ_object(ref univ_object obj)
 		{
 			float x, y, z;
 			float k2;
@@ -207,10 +207,10 @@ namespace Elite
 			swat.reset_weapons();
 		}
 
-		/*
+        /*
 		 * Check if we are correctly aligned to dock.
 		 */
-		static bool is_docking(int sn)
+        private static bool is_docking(int sn)
 		{
 			Vector3 vec;
 			float fz;
@@ -249,10 +249,10 @@ namespace Elite
 			return true;
 		}
 
-		/*
+        /*
 		 * Game Over...
 		 */
-		static void do_game_over()
+        private static void do_game_over()
 		{
 			elite.sound.PlaySample(Sfx.Gameover);
 			elite.game_over = true;
@@ -437,7 +437,7 @@ namespace Elite
 			}
 		}
 
-		static void make_station_appear()
+        private static void make_station_appear()
 		{
 			float px, py, pz;
 			float sx, sy, sz;
@@ -477,7 +477,7 @@ namespace Elite
 			swat.add_new_station(sx, sy, sz, rotmat);
 		}
 
-		static void check_docking(int i)
+        private static void check_docking(int i)
 		{
 			if (is_docking(i))
 			{
@@ -498,7 +498,7 @@ namespace Elite
 			elite.sound.PlaySample(Sfx.Crash);
 		}
 
-		static void switch_to_view(ref univ_object flip)
+        private static void switch_to_view(ref univ_object flip)
 		{
 			float tmp;
 
@@ -694,10 +694,10 @@ namespace Elite
 			elite.detonate_bomb = false;
 		}
 
-		/*
+        /*
 		 * Update the scanner and draw all the lollipops.
 		 */
-		static void update_scanner()
+        private static void update_scanner()
 		{
             GFX_COL colour;
 
@@ -758,10 +758,10 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Update the compass which tracks the space station / planet.
 		 */
-		static void update_compass()
+        private static void update_compass()
 		{
 			int un = 0;
 
@@ -791,10 +791,10 @@ namespace Elite
 
 		}
 
-		/*
+        /*
 		 * Display the speed bar.
 		 */
-		static void display_speed()
+        private static void display_speed()
 		{
 			int sx = 417;
             int sy = 384 + 9;
@@ -809,11 +809,11 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Draw an indicator bar.
 		 * Used for shields and energy banks.
 		 */
-		static void display_dial_bar(int len, int x, int y)
+        private static void display_dial_bar(int len, int x, int y)
 		{
 			int i = 0;
 
@@ -829,10 +829,10 @@ namespace Elite
             elite.alg_gfx.DrawLine(x, y + i + 384, x + len, y + i + 384, GFX_COL.GFX_COL_DARK_RED);
 		}
 
-		/*
+        /*
 		 * Display the current shield strengths.
 		 */
-		static void display_shields()
+        private static void display_shields()
 		{
 			if (elite.front_shield > 3)
 			{
@@ -845,7 +845,7 @@ namespace Elite
 			}
 		}
 
-		static void display_altitude()
+        private static void display_altitude()
 		{
 			if (elite.myship.altitude > 3)
 			{
@@ -853,7 +853,7 @@ namespace Elite
 			}
 		}
 
-		static void display_cabin_temp()
+        private static void display_cabin_temp()
 		{
 			if (elite.myship.cabtemp > 3)
 			{
@@ -861,7 +861,7 @@ namespace Elite
 			}
 		}
 
-		static void display_laser_temp()
+        private static void display_laser_temp()
 		{
 			if (elite.laser_temp > 0)
 			{
@@ -869,10 +869,10 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Display the energy banks.
 		 */
-		static void display_energy()
+        private static void display_energy()
 		{
 			int e1, e2, e3, e4;
 
@@ -902,7 +902,7 @@ namespace Elite
 			}
 		}
 
-		static void display_flight_roll()
+        private static void display_flight_roll()
 		{
 			int sx, sy;
 			int i;
@@ -920,7 +920,7 @@ namespace Elite
 			}
 		}
 
-		static void display_flight_climb()
+        private static void display_flight_climb()
 		{
 			int sx, sy;
 			int i;
@@ -938,7 +938,7 @@ namespace Elite
 			}
 		}
 
-		static void display_fuel()
+        private static void display_fuel()
 		{
 			if (elite.cmdr.fuel > 0)
 			{
@@ -946,7 +946,7 @@ namespace Elite
 			}
 		}
 
-		static void display_missiles()
+        private static void display_missiles()
 		{
 			if (elite.cmdr.missiles == 0)
 			{
@@ -1108,12 +1108,12 @@ namespace Elite
 			}
 		}
 
-		static int rotate_byte_left(int x)
+        private static int rotate_byte_left(int x)
 		{
 			return ((x << 1) | (x >> 7)) & 255;
 		}
 
-		static void enter_next_galaxy()
+        private static void enter_next_galaxy()
 		{
 			elite.cmdr.galaxy_number++;
 			elite.cmdr.galaxy_number &= 7;
@@ -1133,7 +1133,7 @@ namespace Elite
 			elite.hyperspace_planet = elite.docked_planet;
 		}
 
-		static void enter_witchspace()
+        private static void enter_witchspace()
 		{
 			int i;
 			int nthg;
@@ -1159,7 +1159,7 @@ namespace Elite
 			elite.sound.PlaySample(Sfx.Hyperspace);
 		}
 
-		static void complete_hyperspace()
+        private static void complete_hyperspace()
 		{
 			Vector3[] rotmat = new Vector3[3];
 			int px, py, pz;

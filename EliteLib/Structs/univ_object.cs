@@ -25,7 +25,7 @@
         {
         }
 
-        univ_object(univ_object other)
+        private univ_object(univ_object other)
         {
             type = other.type;
             location = other.location.Cloner();

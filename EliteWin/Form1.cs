@@ -4,10 +4,10 @@ namespace EliteWin
 
     public partial class Form1 : Form
     {
-        System.Windows.Forms.Timer _refreshTimer = new();
-        IGfx _gfx;
-        ISound _sound;
-        IKeyboard _keyboard;
+        private System.Windows.Forms.Timer _refreshTimer = new();
+        private IGfx _gfx;
+        private ISound _sound;
+        private IKeyboard _keyboard;
 
         public Form1()
         {

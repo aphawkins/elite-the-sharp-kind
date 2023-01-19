@@ -16,7 +16,7 @@ namespace Elite
 
     public class Keyboard : IKeyboard
     {
-        int _lastKeyPressed;
+        private int _lastKeyPressed;
         private Dictionary<int, bool> _isPressed = new();
 
         public int kbd_keyboard_startup()
@@ -27,7 +27,7 @@ namespace Elite
             return 0;
         }
 
-        int kbd_keyboard_shutdown()
+        private int kbd_keyboard_shutdown()
         {
             return 0;
         }
@@ -123,7 +123,7 @@ namespace Elite
             return '\0';
         }
 
-        void kbd_clear_key_buffer()
+        private void kbd_clear_key_buffer()
         {
             Debug.WriteLine(nameof(kbd_clear_key_buffer));
 

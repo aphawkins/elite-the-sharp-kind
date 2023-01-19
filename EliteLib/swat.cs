@@ -46,19 +46,17 @@ namespace Elite
 	{
 		internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
-
-		static int laser_counter;
-		static int laser;
-		static int laser2;
-		static int laser_x;
-		static int laser_y;
+        private static int laser_counter;
+        private static int laser;
+        private static int laser2;
+        private static int laser_x;
+        private static int laser_y;
 
 		internal static int ecm_active;
 		internal static int missile_target;
-		static bool ecm_ours;
+        private static bool ecm_ours;
 		internal static bool in_battle;
-
-		static FLG[] initial_flags = new FLG[shipdata.NO_OF_SHIPS + 1]
+        private static FLG[] initial_flags = new FLG[shipdata.NO_OF_SHIPS + 1]
 		{
 			0,											// NULL,
 			0,											// missile 
@@ -157,7 +155,7 @@ namespace Elite
 			return -1;
 		}
 
-		static void check_missiles(int un)
+        private static void check_missiles(int un)
 		{
 			if (missile_target == un)
 			{
@@ -226,7 +224,7 @@ namespace Elite
 			missile_target = MISSILE_UNARMED;
 		}
 
-		static void launch_enemy(int un, SHIP type, FLG flags, int bravery)
+        private static void launch_enemy(int un, SHIP type, FLG flags, int bravery)
 		{
 			int newship;
 			univ_object ns;
@@ -263,7 +261,7 @@ namespace Elite
 			}
 		}
 
-		static void launch_loot(int un, SHIP loot)
+        private static void launch_loot(int un, SHIP loot)
 		{
 			int i, cnt;
 
@@ -289,7 +287,7 @@ namespace Elite
 			}
 		}
 
-		static bool in_target(SHIP type, float x, float y, float z)
+        private static bool in_target(SHIP type, float x, float y, float z)
 		{
 			if (z < 0)
 			{
@@ -301,7 +299,7 @@ namespace Elite
 			return ((x * x) + (y * y)) <= size;
 		}
 
-		static void make_angry(int un)
+        private static void make_angry(int un)
 		{
 			SHIP type = space.universe[un].type;
 			FLG flags = space.universe[un].flags;
@@ -470,7 +468,7 @@ namespace Elite
 			elite.sound.PlaySample(Sfx.Missile);
 		}
 
-		static void track_object(ref univ_object ship, float direction, Vector3 nvec)
+        private static void track_object(ref univ_object ship, float direction, Vector3 nvec)
 		{
 			int rat = 3;
 			float rat2 = 0.111f;
@@ -508,7 +506,7 @@ namespace Elite
 			}
 		}
 
-		static void missile_tactics(int un)
+        private static void missile_tactics(int un)
 		{
 			univ_object missile;
 			univ_object target;
@@ -605,9 +603,7 @@ namespace Elite
             return;
 		}
 
-
-
-		static void launch_shuttle()
+        private static void launch_shuttle()
 		{
 			SHIP type;
 
@@ -983,8 +979,7 @@ namespace Elite
 			}
 		}
 
-
-		static int create_other_ship(SHIP type)
+        private static int create_other_ship(SHIP type)
 		{
 			Vector3[] rotmat = new Vector3[3];
 
@@ -1026,7 +1021,7 @@ namespace Elite
 			}
 		}
 
-		static void create_cougar()
+        private static void create_cougar()
 		{
 			int newship;
 
@@ -1044,9 +1039,7 @@ namespace Elite
 			}
 		}
 
-
-
-		static void create_trader()
+        private static void create_trader()
 		{
 			int newship;
 			int rnd;
@@ -1075,7 +1068,7 @@ namespace Elite
 			}
 		}
 
-		static void create_lone_hunter()
+        private static void create_lone_hunter()
 		{
 			int rnd;
 			SHIP type;
@@ -1110,9 +1103,9 @@ namespace Elite
 
 
 
-		/* Check for a random asteroid encounter... */
+        /* Check for a random asteroid encounter... */
 
-		static void check_for_asteroids()
+        private static void check_for_asteroids()
 		{
 			SHIP type;
 
@@ -1136,9 +1129,9 @@ namespace Elite
 
 
 
-		/* If we've been a bad boy then send the cops after us... */
+        /* If we've been a bad boy then send the cops after us... */
 
-		static void check_for_cops()
+        private static void check_for_cops()
 		{
 			int offense = trade.carrying_contraband() * 2;
 			if (space.ship_count[(int)SHIP.SHIP_VIPER] == 0)
@@ -1165,7 +1158,7 @@ namespace Elite
 			}
 		}
 
-		static void check_for_others()
+        private static void check_for_others()
 		{
 			int x, y, z;
 			int newship;

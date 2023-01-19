@@ -43,10 +43,10 @@ namespace Elite
 
 	internal static class pilot
 	{
-		/*
+        /*
 		 * Fly to a given point in space.
 		 */
-		static void fly_to_vector(ref univ_object ship, Vector3 vec)
+        private static void fly_to_vector(ref univ_object ship, Vector3 vec)
 		{
 			Vector3 nvec;
 			float direction;
@@ -113,10 +113,10 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Fly towards the planet.
 		 */
-		static void fly_to_planet(ref univ_object ship)
+        private static void fly_to_planet(ref univ_object ship)
 		{
 			Vector3 vec;
 
@@ -127,11 +127,11 @@ namespace Elite
 			fly_to_vector(ref ship, vec);
 		}
 
-		/*
+        /*
 		 * Fly to a point in front of the station docking bay.
 		 * Done prior to the final stage of docking.
 		 */
-		static void fly_to_station_front(ref univ_object ship)
+        private static void fly_to_station_front(ref univ_object ship)
 		{
 			Vector3 vec;
 
@@ -146,10 +146,10 @@ namespace Elite
 			fly_to_vector(ref ship, vec);
 		}
 
-		/*
+        /*
 		 * Fly towards the space station.
 		 */
-		static void fly_to_station(ref univ_object ship)
+        private static void fly_to_station(ref univ_object ship)
 		{
 			Vector3 vec;
 
@@ -160,11 +160,11 @@ namespace Elite
 			fly_to_vector(ref ship, vec);
 		}
 
-		/*
+        /*
 		 * Final stage of docking.
 		 * Fly into the docking bay.
 		 */
-		static void fly_to_docking_bay(ref univ_object ship)
+        private static void fly_to_docking_bay(ref univ_object ship)
 		{
 			Vector3 diff;
 			float dir;

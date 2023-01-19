@@ -19,15 +19,14 @@ namespace Elite.Views
 
     internal static class CommanderStatus
     {
-        static string[] condition_txt = new string[]
+        private static string[] condition_txt = new string[]
         {
             "Docked",
             "Green",
             "Yellow",
             "Red"
         };
-
-        static (int score, string title)[] ratings = new (int score, string title)[]
+        private static (int score, string title)[] ratings = new (int score, string title)[]
         {
             new(0x0000, "Harmless"),
             new(0x0008, "Mostly Harmless"),
@@ -39,16 +38,14 @@ namespace Elite.Views
             new(0x0A00, "Deadly"),
             new(0x1900, "---- E L I T E ---")
         };
+        private const int EQUIP_START_Y = 202;
+        private const int EQUIP_START_X = 50;
+        private const int EQUIP_MAX_Y = 290;
+        private const int EQUIP_WIDTH = 200;
+        private const int Y_INC = 16;
+        private static string[] laser_name = new string[5] { "Pulse", "Beam", "Military", "Mining", "Custom" };
 
-        const int EQUIP_START_Y = 202;
-        const int EQUIP_START_X = 50;
-        const int EQUIP_MAX_Y = 290;
-        const int EQUIP_WIDTH = 200;
-        const int Y_INC = 16;
-
-        static string[] laser_name = new string[5] { "Pulse", "Beam", "Military", "Mining", "Custom" };
-
-        static string laser_type(int strength)
+        private static string laser_type(int strength)
         {
             return strength switch
             {

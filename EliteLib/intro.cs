@@ -42,11 +42,10 @@ namespace Elite
 
     internal static class intro
 	{
-		static SHIP ship_no;
-		static int show_time;
-		static int direction;
-
-		static int[] min_dist = new int[shipdata.NO_OF_SHIPS + 1]
+        private static SHIP ship_no;
+        private static int show_time;
+        private static int direction;
+        private static int[] min_dist = new int[shipdata.NO_OF_SHIPS + 1]
 		{
 			0,
 			200, 800, 200, 200, 200, 300, 384, 200,
@@ -55,8 +54,7 @@ namespace Elite
 			384,   0, 384, 384, 700, 384,   0,   0,
 			900
 		};
-
-		static Vector3[] intro_ship_matrix = new Vector3[3];
+        private static Vector3[] intro_ship_matrix = new Vector3[3];
 
 		internal static void initialise_intro1()
 		{

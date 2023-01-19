@@ -25,7 +25,7 @@ namespace Elite
 
     internal static class VectorMaths
 	{
-		static Vector3[] start_matrix = new Vector3[3]
+        private static Vector3[] start_matrix = new Vector3[3]
 		{
 			new Vector3(1f, 0f, 0f),
 			new Vector3(0f, 1f, 0f),
@@ -109,7 +109,7 @@ namespace Elite
             }
         }
 
-        static void rotate_vec(ref Vector3 vec, float alpha, float beta)
+        private static void rotate_vec(ref Vector3 vec, float alpha, float beta)
         {
             float x = vec.X;
             float y = vec.Y;

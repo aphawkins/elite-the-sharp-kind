@@ -25,7 +25,7 @@ namespace Elite
 
 	internal static class Planet
 	{
-		struct random_seed
+        private struct random_seed
 		{
 			internal int a;
 			internal int b;
@@ -33,19 +33,13 @@ namespace Elite
 			internal int d;
 		};
 
-		static random_seed rnd_seed;
-
-		static string digrams = "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
-
-		static string[] inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
-
-		static string[] inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
-
-		static string[] inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
-
-		static string[] inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
-
-		static string[][] desc_list = new string[36][]
+        private static random_seed rnd_seed;
+        private static string digrams = "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
+        private static string[] inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
+        private static string[] inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
+        private static string[] inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
+        private static string[] inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
+        private static string[][] desc_list = new string[36][]
 		{
 		/*  0	*/	new string[] {"fabled", "notable", "well known", "famous", "noted"},
 		/*  1	*/	new string[] {"very", "mildly", "most", "reasonably", ""},
@@ -85,11 +79,11 @@ namespace Elite
 		/* 35	*/	new string[] {"hockey", "cricket", "karate", "polo", "tennis"}
 		};
 
-		/*
+        /*
 		 * Generate a random number between 0 and 255.
 		 * This is the version used in the 6502 Elites.
 		 */
-		static int gen_rnd_number()
+        private static int gen_rnd_number()
 		{
 			int a, x;
 
@@ -110,11 +104,11 @@ namespace Elite
 			return a;
 		}
 
-		/*
+        /*
 		 * Generate a random number between 0 and 255.
 		 * This is the version used in the MSX and 16bit Elites.
 		 */
-		static int gen_msx_rnd_number()
+        private static int gen_msx_rnd_number()
 		{
 			int a, b;
 
@@ -297,7 +291,7 @@ namespace Elite
 			return sb.ToString();
 		}
 
-		static void expand_description(string source, ref string planet_description)
+        private static void expand_description(string source, ref string planet_description)
 		{
 			string temp = string.Empty;
 			string expanded;

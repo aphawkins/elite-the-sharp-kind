@@ -34,16 +34,13 @@ namespace Elite
 
 	internal static class options
 	{
+        private static int hilite_item;
+        private const int NUM_OPTIONS = 4;
+        private const int NUM_SETTINGS = 6;
+        private const int OPTION_BAR_WIDTH = 400;
+        private const int OPTION_BAR_HEIGHT = 15;
 
-		static int hilite_item;
-
-		const int NUM_OPTIONS = 4;
-		const int NUM_SETTINGS = 6;
-
-		const int OPTION_BAR_WIDTH = 400;
-		const int OPTION_BAR_HEIGHT = 15;
-
-		struct option
+        private struct option
 		{
 			internal string text;
 			internal bool docked_only;
@@ -55,7 +52,7 @@ namespace Elite
 			}
 		};
 
-		static option[] option_list = new option[NUM_OPTIONS]
+        private static option[] option_list = new option[NUM_OPTIONS]
 		{
 			new("Save Commander",   true),
 			new("Load Commander",   true),
@@ -63,7 +60,7 @@ namespace Elite
 			new ("Quit",            false)
 		};
 
-		struct setting
+        private struct setting
 		{
 			internal string name;
 			internal string[] value;
@@ -75,7 +72,7 @@ namespace Elite
 			}
 		};
 
-		static setting[] setting_list = new setting[NUM_SETTINGS]
+        private static setting[] setting_list = new setting[NUM_SETTINGS]
 		{
 			new("Graphics:", new string[5] {"Solid", "Wireframe", "", "", ""}),
 			new("Anti Alias:", new string[5] {"Off", "On", "", "", ""}),
@@ -85,7 +82,7 @@ namespace Elite
 			new("Save Settings", new string[5] {"", "", "", "", ""})
 		};
 
-		static void quit_screen()
+        private static void quit_screen()
 		{
 			elite.current_screen = SCR.SCR_QUIT;
 
@@ -96,7 +93,7 @@ namespace Elite
 			elite.alg_gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
 		}
 
-		static void display_setting_item(int item)
+        private static void display_setting_item(int item)
 		{
 			int x, y;
             if (item == (NUM_SETTINGS - 1))
@@ -122,7 +119,7 @@ namespace Elite
 			elite.alg_gfx.DrawTextLeft(x + 120, y, setting_list[item].value[v], GFX_COL.GFX_COL_WHITE);
 		}
 
-		static void highlight_setting(int item)
+        private static void highlight_setting(int item)
 		{
 			int x, y;
 			int width;
@@ -243,8 +240,7 @@ namespace Elite
 			highlight_setting(hilite_item);
 		}
 
-
-		static void game_settings_screen()
+        private static void game_settings_screen()
 		{
 			int i;
 
@@ -263,8 +259,7 @@ namespace Elite
 			highlight_setting(0);
 		}
 
-
-		static void display_option_item(int i)
+        private static void display_option_item(int i)
 		{
 			int y = (384 - (30 * NUM_OPTIONS)) / 2;
 			y += i * 30;
@@ -273,7 +268,7 @@ namespace Elite
 			elite.alg_gfx.DrawTextCentre(y, option_list[i].text, 120, col);
 		}
 
-		static void highlight_option(int i)
+        private static void highlight_option(int i)
 		{
 			int y;
 			int x;

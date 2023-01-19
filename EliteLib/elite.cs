@@ -124,23 +124,23 @@ namespace Elite
 			trade.set_stock_quantities(cmdr.station_stock);
 		}
 
-        static int old_cross_x, old_cross_y;
-        static int cross_timer;
-        static int draw_lasers;
+        private static int old_cross_x, old_cross_y;
+        private static int cross_timer;
+        private static int draw_lasers;
         internal static int mcount;
-        static int message_count;
-        static string message_string;
-        static bool rolling;
-        static bool climbing;
-        static bool game_paused;
-        static bool have_joystick;
-        static bool find_input;
-        static string find_name;
+        private static int message_count;
+        private static string message_string;
+        private static bool rolling;
+        private static bool climbing;
+        private static bool game_paused;
+        private static bool have_joystick;
+        private static bool find_input;
+        private static string find_name;
 
         /*
 		 * Initialise the game parameters.
 		 */
-        static void initialise_game()
+        private static void initialise_game()
         {
             random.rand_seed = (int)DateTime.UtcNow.Ticks;
             current_screen = SCR.SCR_INTRO_ONE;
@@ -176,7 +176,7 @@ namespace Elite
             myship.max_fuel = 70;       /* 7.0 Light Years */
         }
 
-        static void finish_game()
+        private static void finish_game()
         {
             finish = true;
             game_over = true;
@@ -185,7 +185,7 @@ namespace Elite
         /*
 		 * Move the planet chart cross hairs to specified position.
 		 */
-        static void move_cross(int dx, int dy)
+        private static void move_cross(int dx, int dy)
         {
             cross_timer = 5;
 
@@ -225,7 +225,7 @@ namespace Elite
         /*
 		 * Draw the cross hairs at the specified position.
 		 */
-        static void draw_cross(int cx, int cy)
+        private static void draw_cross(int cx, int cy)
         {
             if (current_screen == SCR.SCR_SHORT_RANGE)
             {
@@ -245,7 +245,7 @@ namespace Elite
             }
         }
 
-        static void draw_laser_sights()
+        private static void draw_laser_sights()
         {
             int laser = 0;
             int x1, y1, x2, y2;
@@ -307,7 +307,7 @@ namespace Elite
             }
         }
 
-        static void arrow_right()
+        private static void arrow_right()
         {
             switch (current_screen)
             {
@@ -342,7 +342,7 @@ namespace Elite
             }
         }
 
-        static void arrow_left()
+        private static void arrow_left()
         {
             switch (current_screen)
             {
@@ -377,7 +377,7 @@ namespace Elite
             }
         }
 
-        static void arrow_up()
+        private static void arrow_up()
         {
             switch (current_screen)
             {
@@ -419,7 +419,7 @@ namespace Elite
             }
         }
 
-        static void arrow_down()
+        private static void arrow_down()
         {
             switch (current_screen)
             {
@@ -461,7 +461,7 @@ namespace Elite
             }
         }
 
-        static void return_pressed()
+        private static void return_pressed()
         {
             switch (current_screen)
             {
@@ -479,7 +479,7 @@ namespace Elite
             }
         }
 
-        static void y_pressed()
+        private static void y_pressed()
         {
             switch (current_screen)
             {
@@ -489,7 +489,7 @@ namespace Elite
             }
         }
 
-        static void n_pressed()
+        private static void n_pressed()
         {
             switch (current_screen)
             {
@@ -507,8 +507,7 @@ namespace Elite
             }
         }
 
-
-        static void d_pressed()
+        private static void d_pressed()
         {
             switch (current_screen)
             {
@@ -530,7 +529,7 @@ namespace Elite
             }
         }
 
-        static void f_pressed()
+        private static void f_pressed()
         {
             if (current_screen is SCR.SCR_GALACTIC_CHART or SCR.SCR_SHORT_RANGE)
             {
@@ -541,7 +540,7 @@ namespace Elite
             }
         }
 
-        static void add_find_char(char letter)
+        private static void add_find_char(char letter)
         {
             if (find_name.Length == 16)
             {
@@ -556,7 +555,7 @@ namespace Elite
             alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
         }
 
-        static void delete_find_char()
+        private static void delete_find_char()
         {
             string str;
 
@@ -573,7 +572,7 @@ namespace Elite
             alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
         }
 
-        static void o_pressed()
+        private static void o_pressed()
         {
             switch (current_screen)
             {
@@ -584,8 +583,7 @@ namespace Elite
             }
         }
 
-
-        static void auto_dock()
+        private static void auto_dock()
         {
             univ_object ship = new()
             {
@@ -685,7 +683,7 @@ namespace Elite
             }
         }
 
-        static void run_escape_sequence()
+        private static void run_escape_sequence()
         {
             int i;
             Vector3[] rotmat = new Vector3[3];
@@ -754,7 +752,7 @@ namespace Elite
             swat.abandon_ship();
         }
 
-        static void handle_flight_keys()
+        private static void handle_flight_keys()
         {
             char keyasc;
 
@@ -1182,7 +1180,7 @@ namespace Elite
             space.update_console();
         }
 
-        static void run_first_intro_screen()
+        private static void run_first_intro_screen()
         {
             current_screen = SCR.SCR_INTRO_ONE;
 
@@ -1214,7 +1212,7 @@ namespace Elite
 
         }
 
-        static void run_second_intro_screen()
+        private static void run_second_intro_screen()
         {
             current_screen = SCR.SCR_INTRO_TWO;
 
@@ -1246,7 +1244,7 @@ namespace Elite
         /*
 		 * Draw the game over sequence. 
 		 */
-        static void run_game_over_screen()
+        private static void run_game_over_screen()
         {
             int i;
             int newship;
@@ -1290,7 +1288,7 @@ namespace Elite
 		 * Draw a break pattern (for launching, docking and hyperspacing).
 		 * Just draw a very simple one for the moment.
 		 */
-        static void display_break_pattern()
+        private static void display_break_pattern()
         {
             alg_gfx.SetClipRegion(1, 1, 510, 383);
             alg_gfx.ClearDisplay();
@@ -1320,7 +1318,7 @@ namespace Elite
             //	sound.snd_play_sample (SND_BEEP);
         }
 
-        static void initialise_allegro()
+        private static void initialise_allegro()
         {
             // allegro_init();
             // install_keyboard();

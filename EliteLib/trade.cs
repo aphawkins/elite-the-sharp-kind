@@ -21,10 +21,9 @@ namespace Elite
 	{
 		internal const int NO_OF_STOCK_ITEMS = 17;
 		internal const int ALIEN_ITEMS_IDX = 16;
-
-		const int SLAVES = 3;
-		const int NARCOTICS = 6;
-		const int FIREARMS = 10;
+        private const int SLAVES = 3;
+        private const int NARCOTICS = 6;
+        private const int FIREARMS = 10;
 
 		internal static string TONNES = "t";
 		internal static string KILOGRAMS = "Kg";

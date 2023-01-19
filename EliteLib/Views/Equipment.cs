@@ -20,9 +20,8 @@ namespace Elite.Views
 
     internal static class Equipment
     {
-        static int hilite_item;
-
-        static EquipmentItem[] EquipmentStock = new EquipmentItem[]
+        private static int hilite_item;
+        private static EquipmentItem[] EquipmentStock = new EquipmentItem[]
         {
             new(false, true,   1,     2, " Fuel",                EquipmentType.EQ_FUEL),
             new(false, true,   1,   300, " Missile",             EquipmentType.EQ_MISSILE),
@@ -60,7 +59,7 @@ namespace Elite.Views
             new(false, false, 10, 60000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
         };
 
-        static bool equip_present(EquipmentType type)
+        private static bool equip_present(EquipmentType type)
         {
             return type switch
             {
@@ -132,7 +131,7 @@ namespace Elite.Views
             elite.draw.DrawEquipShip(EquipmentStock, hilite_item, elite.cmdr.credits);
         }
 
-        static void list_equip_prices()
+        private static void list_equip_prices()
         {
             int tech_level = elite.current_planet_data.techlevel + 1;
 
@@ -148,7 +147,7 @@ namespace Elite.Views
             elite.draw.DrawEquipShip(EquipmentStock, hilite_item, elite.cmdr.credits);
         }
 
-        static void collapse_equip_list()
+        private static void collapse_equip_list()
         {
             for (int i = 0; i < EquipmentStock.Length; i++)
             {
@@ -157,7 +156,7 @@ namespace Elite.Views
             }
         }
 
-        static int laser_refund(int laser_type)
+        private static int laser_refund(int laser_type)
         {
             return laser_type switch
             {

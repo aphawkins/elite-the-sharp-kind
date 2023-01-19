@@ -19,7 +19,7 @@ namespace Elite.Views
 
 	internal static class PlanetData
 	{
-        static string[] economy_type = {"Rich Industrial",
+        private static string[] economy_type = {"Rich Industrial",
                                 "Average Industrial",
                                 "Poor Industrial",
                                 "Mainly Industrial",
@@ -27,8 +27,7 @@ namespace Elite.Views
                                 "Rich Agricultural",
                                 "Average Agricultural",
                                 "Poor Agricultural"};
-
-        static string[] government_type = { "Anarchy",
+        private static string[] government_type = { "Anarchy",
                                     "Feudal",
                                     "Multi-Government",
                                     "Dictatorship",

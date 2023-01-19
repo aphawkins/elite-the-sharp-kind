@@ -18,7 +18,7 @@ namespace Elite.Views
 
     internal static class Market
     {
-        static int hilite_item;
+        private static int hilite_item;
 
         internal static void select_previous_stock()
         {

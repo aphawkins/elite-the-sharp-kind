@@ -20,8 +20,7 @@ namespace Elite
 	internal static class Stars
 	{
 		internal static bool warp_stars;
-
-		static Vector3[] stars = new Vector3[20];
+        private static Vector3[] stars = new Vector3[20];
 
 		internal static void create_new_stars()
 		{
@@ -35,7 +34,7 @@ namespace Elite
             warp_stars = false;
 		}
 
-		static void front_starfield()
+        private static void front_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
 			float alpha = elite.flight_roll;
@@ -122,7 +121,7 @@ namespace Elite
             warp_stars = false;
 		}
 
-		static void rear_starfield()
+        private static void rear_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
 			float alpha = -elite.flight_roll;
@@ -223,7 +222,7 @@ namespace Elite
             warp_stars = false;
 		}
 
-		static void side_starfield()
+        private static void side_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
 			float alpha = elite.flight_roll;

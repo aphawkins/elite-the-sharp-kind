@@ -19,21 +19,19 @@ namespace Elite
 
     internal static class threed
 	{
-		const int LAND_X_MAX = 128;
-		const int LAND_Y_MAX = 128;
+        private const int LAND_X_MAX = 128;
+        private const int LAND_Y_MAX = 128;
+        private static int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
+        private static point[] point_list = new point[100];
 
-		static int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
-
-		static point[] point_list = new point[100];
-
-		/*
+        /*
 		 * The following routine is used to draw a wireframe represtation of a ship.
 		 *
 		 * caveat: it is a work in progress.
 		 * A number of features (such as not showing detail at distance) have not yet been implemented.
 		 *
 		 */
-		static void draw_wireframe_ship(ref univ_object univ)
+        private static void draw_wireframe_ship(ref univ_object univ)
 		{
 			Vector3[] trans_mat = new Vector3[3];
 			int i;
@@ -145,13 +143,13 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Hacked version of the draw ship routine to display solid ships...
 		 * This needs a lot of tidying...
 		 *
 		 * Check for hidden surface supplied by T.Harte.
 		 */
-		static void draw_solid_ship(ref univ_object univ)
+        private static void draw_solid_ship(ref univ_object univ)
 		{
 			int sx, sy;
 			float rx, ry, rz;
@@ -313,11 +311,11 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Colour map used to generate a SNES Elite style planet.
 		 * This is a quick hack and needs tidying up.
 		 */
-		static int[] snes_planet_colour = new int[]
+        private static int[] snes_planet_colour = new int[]
 		{
 			102, 102,
 			134, 134, 134, 134,
@@ -341,10 +339,10 @@ namespace Elite
 			102, 102
 		};
 
-		/*
+        /*
 		 * Generate a landscape map for a SNES Elite style planet.
 		 */
-		static void generate_snes_landscape()
+        private static void generate_snes_landscape()
 		{
 			for (int y = 0; y <= LAND_Y_MAX; y++)
 			{
@@ -356,11 +354,11 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Guassian random number generator.
 		 * Returns a number between -7 and +8 with Gaussian distribution.
 		 */
-		static int grand()
+        private static int grand()
 		{
 			int i;
 			int r;
@@ -377,10 +375,10 @@ namespace Elite
 			return r;
 		}
 
-		/*
+        /*
 		 * Calculate the midpoint between two given points.
 		 */
-		static int calc_midpoint(int sx, int sy, int ex, int ey)
+        private static int calc_midpoint(int sx, int sy, int ex, int ey)
 		{
 			int a = landscape[sx, sy];
 			int b = landscape[ex, ey];
@@ -399,10 +397,10 @@ namespace Elite
 			return n;
 		}
 
-		/*
+        /*
 		 * Calculate a square on the midpoint map.
 		 */
-		static void midpoint_square(int tx, int ty, int w)
+        private static void midpoint_square(int tx, int ty, int w)
 		{
 			int d = w / 2;
 			int mx = tx + d;
@@ -427,11 +425,11 @@ namespace Elite
 			midpoint_square(mx, my, d);
 		}
 
-		/*
+        /*
 		 * Generate a fractal landscape.
 		 * Uses midpoint displacement method.
 		 */
-		static void generate_fractal_landscape(int rnd_seed)
+        private static void generate_fractal_landscape(int rnd_seed)
 		{
 			int h;
 			float dist;
@@ -495,10 +493,10 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Draw a line of the planet with appropriate rotation.
 		 */
-		static void render_planet_line(float xo, float yo, float x, float y, float radius, float vx, float vy)
+        private static void render_planet_line(float xo, float yo, float x, float y, float radius, float vx, float vy)
 		{
             Vector2 s = new()
             {
@@ -540,10 +538,10 @@ namespace Elite
 		}
 
 
-		/*
+        /*
 		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
 		 */
-		static void render_planet(Vector2 centre, float radius, Vector3[] vec)
+        private static void render_planet(Vector2 centre, float radius, Vector3[] vec)
 		{
             centre.X += gfx.GFX_X_OFFSET;
             centre.Y += gfx.GFX_Y_OFFSET;
@@ -573,24 +571,24 @@ namespace Elite
 			}
 		}
 
-		/*
+        /*
 		 * Draw a wireframe planet.
 		 * At the moment we just draw a circle.
 		 * Need to add in the two arcs that the original Elite had.
 		 */
-		static void draw_wireframe_planet(Vector2 centre, float radius, Vector3[] vec)
+        private static void draw_wireframe_planet(Vector2 centre, float radius, Vector3[] vec)
 		{
             elite.alg_gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
 		}
 
-		/*
+        /*
 		 * Draw a planet.
 		 * We can currently do three different types of planet...
 		 * - Wireframe.
 		 * - Fractal landscape.
 		 * - SNES Elite style.
 		 */
-		static void draw_planet(ref univ_object planet)
+        private static void draw_planet(ref univ_object planet)
 		{
             Vector2 position = new()
             {
@@ -636,7 +634,7 @@ namespace Elite
 			}
 		}
 
-		static void render_sun_line(float xo, float yo, float x, float y, float radius)
+        private static void render_sun_line(float xo, float yo, float x, float y, float radius)
 		{
             Vector2 s = new()
             {
@@ -699,7 +697,7 @@ namespace Elite
 			}
 		}
 
-		static void render_sun(float xo, float yo, float radius)
+        private static void render_sun(float xo, float yo, float radius)
 		{
 			xo += gfx.GFX_X_OFFSET;
 			yo += gfx.GFX_Y_OFFSET;
@@ -726,7 +724,7 @@ namespace Elite
 			}
 		}
 
-		static void draw_sun(ref univ_object planet)
+        private static void draw_sun(ref univ_object planet)
 		{
 			float x = planet.location.X * 256f / planet.location.Z;
             float y = planet.location.Y * 256f / planet.location.Z;
@@ -754,7 +752,7 @@ namespace Elite
             render_sun(x, y, radius);
 		}
 
-		static void draw_explosion(ref univ_object univ)
+        private static void draw_explosion(ref univ_object univ)
 		{
 			int i;
 			int z;
