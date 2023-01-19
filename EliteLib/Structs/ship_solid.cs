@@ -1,6 +1,6 @@
 ﻿namespace Elite.Structs
 {
-    internal struct ship_solid
+    internal class ship_solid
     {
         internal int num_faces;
         internal ship_face[] face_data;

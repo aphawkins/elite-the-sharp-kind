@@ -671,7 +671,7 @@ namespace Elite
 		};
 
 
-		internal static ship_solid[] ship_solids = new ship_solid[34]
+		internal static ship_solid[] ship_solids = new ship_solid[]
 		{
 			new( 0, null),
 			new(17, missile_face),
