@@ -6,7 +6,7 @@ namespace Elite.Ships
     {
         // # include "shipdata.h" 
 
-        private static ship_point[] missile_point = new ship_point[17]
+        private static ship_point[] missile_point = new ship_point[]
         {
             new(   0,    0,   68, 31,  1,  0,  3,  2),
             new(   8,   -8,   36, 31,  2,  1,  5,  4),

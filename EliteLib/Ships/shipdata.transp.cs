@@ -4,7 +4,7 @@ namespace Elite.Ships
 
     internal static partial class shipdata
     {
-        internal static ship_point[] transp_point = new ship_point[37]
+        internal static ship_point[] transp_point = new ship_point[]
         {
             new(   0,   10,  -26, 31,  0,  6,  7,  7),
             new( -25,    4,  -26, 31,  0,  1,  7,  7),

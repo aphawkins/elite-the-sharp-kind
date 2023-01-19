@@ -4,7 +4,7 @@ namespace Elite.Ships
 
     internal static partial class shipdata
     {
-        internal static ship_point[] viper_point = new ship_point[15]
+        internal static ship_point[] viper_point = new ship_point[]
         {
             new(   0,    0,   72, 31,  2,  1,  4,  3),
             new(   0,   16,   24, 30,  1,  0,  2,  2),

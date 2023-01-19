@@ -1,6 +1,6 @@
 ﻿namespace Elite.Structs
 {
-    internal struct ship_point
+    internal class ship_point
     {
         internal int x;
         internal int y;
