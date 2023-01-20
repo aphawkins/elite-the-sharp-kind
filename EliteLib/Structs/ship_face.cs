@@ -2,7 +2,7 @@
 {
     using Elite.Enums;
 
-    internal struct ship_face
+    internal class ship_face
     {
         internal GFX_COL colour;
         internal int norm_x;
