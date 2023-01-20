@@ -296,7 +296,7 @@ namespace Elite
 						zavg = Math.Max(zavg, point_list[face_data[i].p8].Z);
 					}
 
-                    elite.alg_gfx.DrawPolygon(poly_list, face_data[i].colour, zavg);
+                    DrawPolygonFilled(poly_list, face_data[i].colour, zavg);
 				}
 			}
 
@@ -305,9 +305,13 @@ namespace Elite
 				lasv = elite.ship_list[(int)univ.type].front_laser;
 				col = (univ.type == SHIP.SHIP_VIPER) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
-                elite.alg_gfx.DrawLine(point_list[lasv].X, point_list[lasv].Y,
-								 univ.location.X > 0 ? 0 : 511, random.rand255() * 2,
-								 point_list[lasv].Z, col);
+				Vector2[] pointList = new Vector2[]
+				{
+					new Vector2(point_list[lasv].X, point_list[lasv].Y),
+					new(univ.location.X > 0 ? 0 : 511, random.rand255() * 2)
+				};
+
+                DrawPolygonFilled(pointList, col, point_list[lasv].Z);
 			}
 		}
 
@@ -967,6 +971,99 @@ namespace Elite
 			{
 				draw_solid_ship(ref ship);
 			}
+		}
+
+        private struct poly_data
+        {
+            internal int z;
+            internal GFX_COL face_colour;
+            internal Vector2[] point_list;
+            internal int next;
+        };
+
+        private const int MAX_POLYS = 100;
+        private static int total_polys;
+        private static int start_poly;
+        private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
+
+        internal static void RenderStart()
+        {
+            start_poly = 0;
+            total_polys = 0;
+        }
+
+        internal static void RenderFinish()
+        {
+            if (total_polys == 0)
+            {
+                return;
+            }
+
+            for (int i = start_poly; i != -1; i = poly_chain[i].next)
+            {
+                GFX_COL col = poly_chain[i].face_colour;
+
+                if (poly_chain[i].point_list.Length == 2)
+                {
+                    elite.alg_gfx.DrawLine(poly_chain[i].point_list[0].X, poly_chain[i].point_list[0].Y,
+                        poly_chain[i].point_list[1].X, poly_chain[i].point_list[1].Y,
+                        col);
+                    continue;
+                }
+
+                elite.alg_gfx.DrawPolygonFilled(poly_chain[i].point_list, col);
+            };
+        }
+
+        private static void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour, int zavg)
+		{
+			int i;
+			int nx;
+
+			if (total_polys == MAX_POLYS)
+			{
+				return;
+			}
+
+			int x = total_polys;
+			total_polys++;
+
+			poly_chain[x].face_colour = face_colour;
+			poly_chain[x].z = zavg;
+			poly_chain[x].next = -1;
+			poly_chain[x].point_list = new Vector2[point_list.Length];
+
+			for (i = 0; i < point_list.Length; i++)
+			{
+				poly_chain[x].point_list[i].X = point_list[i].X;
+				poly_chain[x].point_list[i].Y = point_list[i].Y;
+			}
+
+			if (x == 0)
+			{
+				return;
+			}
+
+			if (zavg > poly_chain[start_poly].z)
+			{
+				poly_chain[x].next = start_poly;
+				start_poly = x;
+				return;
+			}
+
+			for (i = start_poly; poly_chain[i].next != -1; i = poly_chain[i].next)
+			{
+				nx = poly_chain[i].next;
+
+				if (zavg > poly_chain[nx].z)
+				{
+					poly_chain[i].next = x;
+					poly_chain[x].next = nx;
+					return;
+				}
+			}
+
+			poly_chain[i].next = x;
 		}
 	}
 }

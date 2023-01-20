@@ -39,10 +39,6 @@ namespace Elite
 
         private volatile int frame_count;
         private object frameCountLock = new();
-        private const int MAX_POLYS = 100;
-        private int start_poly;
-        private int total_polys;
-
         private System.Windows.Forms.Timer _frameTimer;
 
         private readonly Dictionary<GFX_COL, Pen> _pens = new()
@@ -156,15 +152,6 @@ namespace Elite
             _frameTimer.Start();
         }
 
-        private struct poly_data
-		{
-			internal int z;
-            internal GFX_COL face_colour;
-			internal Vector2[] point_list;
-            internal int next;
-		};
-
-        private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
         private bool disposedValue;
 
         private void _frameTimer_Tick(object? sender, EventArgs e)
@@ -277,17 +264,28 @@ namespace Elite
 		}
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)
-		{
-            Vector2[] points = new Vector2[3] { a, b, c };
-            points[0].X += gfx.GFX_X_OFFSET;
-            points[0].Y += gfx.GFX_Y_OFFSET;
-            points[1].X += gfx.GFX_X_OFFSET;
-            points[1].Y += gfx.GFX_Y_OFFSET;
-            points[2].X += gfx.GFX_X_OFFSET;
-            points[2].Y += gfx.GFX_Y_OFFSET;
+        {
+            PointF[] points = new PointF[3]
+            {
+                new(a.X += gfx.GFX_X_OFFSET, a.Y += gfx.GFX_Y_OFFSET),
+                new(b.X += gfx.GFX_X_OFFSET, b.Y += gfx.GFX_Y_OFFSET),
+                new(c.X += gfx.GFX_X_OFFSET, c.Y += gfx.GFX_Y_OFFSET)
+            };
 
-            DrawPolygon(points, colour);
-		}
+            _screenBufferGraphics.DrawLines(_pens[colour], points);
+        }
+
+        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)
+		{
+            PointF[] points = new PointF[3] 
+            { 
+                new(a.X += gfx.GFX_X_OFFSET, a.Y += gfx.GFX_Y_OFFSET), 
+                new(b.X += gfx.GFX_X_OFFSET, b.Y += gfx.GFX_Y_OFFSET), 
+                new(c.X += gfx.GFX_X_OFFSET, c.Y += gfx.GFX_Y_OFFSET)
+            };
+
+            _screenBufferGraphics.FillPolygon(_brushes[colour], points);
+        }
 
 		public void DrawTextLeft(int x, int y, string text, GFX_COL colour)
 		{
@@ -358,99 +356,7 @@ namespace Elite
             _screenBufferGraphics.Clip = new Region(new Rectangle(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET));
         }
 
-		public void RenderStart()
-		{
-			start_poly = 0;
-			total_polys = 0;
-		}
-
-		public void DrawPolygon(Vector2[] point_list, GFX_COL face_colour, int zavg)
-		{
-			int i;
-			int nx;
-
-			if (total_polys == MAX_POLYS)
-			{
-				return;
-			}
-
-			int x = total_polys;
-			total_polys++;
-
-			poly_chain[x].face_colour = face_colour;
-			poly_chain[x].z = zavg;
-			poly_chain[x].next = -1;
-            poly_chain[x].point_list = new Vector2[point_list.Length];
-
-            for (i = 0; i < point_list.Length; i++)
-			{
-				poly_chain[x].point_list[i].X = point_list[i].X;
-                poly_chain[x].point_list[i].Y = point_list[i].Y;
-            }
-
-			if (x == 0)
-			{
-				return;
-			}
-
-			if (zavg > poly_chain[start_poly].z)
-			{
-				poly_chain[x].next = start_poly;
-				start_poly = x;
-				return;
-			}
-
-			for (i = start_poly; poly_chain[i].next != -1; i = poly_chain[i].next)
-			{
-				nx = poly_chain[i].next;
-
-				if (zavg > poly_chain[nx].z)
-				{
-					poly_chain[i].next = x;
-					poly_chain[x].next = nx;
-					return;
-				}
-			}
-
-			poly_chain[i].next = x;
-		}
-
-		public void DrawLine(float x1, float y1, float x2, float y2, int dist, GFX_COL col)
-		{
-			Vector2[] vectors = new Vector2[2];
-
-			vectors[0].X = x1;
-			vectors[0].Y = y1;
-			vectors[1].X = x2;
-			vectors[1].Y = y2;
-
-			DrawPolygon(vectors, col, dist);
-		}
-
-		public void RenderFinish()
-		{
-			if (total_polys == 0)
-            {
-                return;
-            }
-
-            for (int i = start_poly; i != -1; i = poly_chain[i].next)
-			{
-				GFX_COL col = poly_chain[i].face_colour;
-
-				if (poly_chain[i].point_list.Length == 2)
-				{
-					DrawLine(poly_chain[i].point_list[0].X, poly_chain[i].point_list[0].Y, 
-                        poly_chain[i].point_list[1].X, poly_chain[i].point_list[1].Y, 
-                        col);
-					continue;
-				}
-
-                DrawPolygon(poly_chain[i].point_list, col);
-			};
-		}
-
-		private void DrawPolygon(Vector2[] vectors, GFX_COL face_colour)
+        public void DrawPolygonFilled(Vector2[] vectors, GFX_COL face_colour)
 		{
             PointF[] points = new PointF[vectors.Length];
 

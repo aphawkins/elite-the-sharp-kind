@@ -578,7 +578,7 @@ namespace Elite
 			int bounty;
 			string str;
 
-            elite.alg_gfx.RenderStart();
+            threed.RenderStart();
 
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
@@ -690,7 +690,7 @@ namespace Elite
 				}
 			}
 
-            elite.alg_gfx.RenderFinish();
+            threed.RenderFinish();
 			elite.detonate_bomb = false;
 		}
 

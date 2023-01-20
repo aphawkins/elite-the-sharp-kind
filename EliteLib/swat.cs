@@ -912,15 +912,17 @@ namespace Elite
 		{
 			if (elite.config.UseWireframe)
 			{
-                elite.alg_gfx.DrawLine(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, GFX_COL.GFX_COL_WHITE);
-                elite.alg_gfx.DrawLine(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, GFX_COL.GFX_COL_WHITE);
-                elite.alg_gfx.DrawLine(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, GFX_COL.GFX_COL_WHITE);
-                elite.alg_gfx.DrawLine(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY, laser_x, laser_y, GFX_COL.GFX_COL_WHITE);
-			}
+				// Left laser
+                elite.alg_gfx.DrawTriangle(new(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+				// Right laser
+                elite.alg_gfx.DrawTriangle(new(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+            }
 			else
 			{
-                elite.alg_gfx.DrawTriangle(new(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-                elite.alg_gfx.DrawTriangle(new(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+				// Left laser
+                elite.alg_gfx.DrawTriangleFilled(new(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+				// Right laser
+                elite.alg_gfx.DrawTriangleFilled(new(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
 			}
 		}
 

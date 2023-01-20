@@ -35,9 +35,7 @@ namespace Elite
 
         void DrawLine(float x1, float y1, float x2, float y2);
 
-        void DrawLine(float x1, float y1, float x2, float y2, int dist, GFX_COL colour);
-
-        void DrawPolygon(Vector2[] point_list, GFX_COL face_colour, int zavg);
+        void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour);
 
         void DrawRectangleFilled(int x, int y, int width, int height, GFX_COL colour);
 
@@ -55,14 +53,11 @@ namespace Elite
 
         void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
 
+        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
+
         void PlotPixel(Vector2 position, GFX_COL colour);
 
         void PlotPixelFast(Vector2 position, GFX_COL colour);
-
-        void RenderFinish();
-
-        void RenderStart();
-
         void ScreenAcquire();
 
         void ScreenRelease();
