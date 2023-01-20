@@ -15,11 +15,12 @@
 ## Missions
 - Ship and text in mission brief doesn't clip correctly
 
-## Charts
+## Views
 - Find planet not working
 - Incorrect distance show on current planet after hyperspace
 - Hyperspace countdown clip region is overlapping horizontal line
 - Options screen not working
+- Inventory screen freezes
 
 ## File
 - Load/save commander not working
