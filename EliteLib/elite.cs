@@ -37,7 +37,7 @@ namespace Elite
 
 		internal static galaxy_seed docked_planet;
 		internal static galaxy_seed hyperspace_planet;
-		internal static planet_data current_planet_data;
+		internal static planet_data current_planet_data = new();
 
 		//static int curr_galaxy_num = 1;
 		//static int curr_fuel = 70;

@@ -1,6 +1,6 @@
 ﻿namespace Elite.Structs
 {
-    internal struct planet_data
+    internal class planet_data
     {
         internal int government;
         internal int economy;
