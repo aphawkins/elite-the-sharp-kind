@@ -2,7 +2,7 @@
 {
     using Elite;
 
-    public struct Commander
+    public class Commander
     {
         public string name { get; set; }
         public int mission { get; set; }
