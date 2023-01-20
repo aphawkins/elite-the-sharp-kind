@@ -1053,7 +1053,7 @@ namespace Elite
 				return;
 			}
 
-			destination_planet = elite.hyperspace_planet;
+			destination_planet = (galaxy_seed)elite.hyperspace_planet.Clone();
 			hyper_name = Planet.name_planet(destination_planet);
 			hyper_name = Planet.capitalise_name(hyper_name);
 
@@ -1130,7 +1130,7 @@ namespace Elite
             elite.cmdr.galaxy = glx;
 
             elite.docked_planet = Planet.find_planet(0x60, 0x60);
-			elite.hyperspace_planet = elite.docked_planet;
+			elite.hyperspace_planet = (galaxy_seed)elite.docked_planet.Clone();
 		}
 
         private static void enter_witchspace()
@@ -1184,7 +1184,7 @@ namespace Elite
 					return;
 				}
 
-				elite.docked_planet = destination_planet;
+				elite.docked_planet = (galaxy_seed)destination_planet.Clone();
 			}
 
 			elite.cmdr.market_rnd = random.rand255();

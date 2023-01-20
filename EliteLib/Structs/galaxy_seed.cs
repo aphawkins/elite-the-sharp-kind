@@ -1,6 +1,6 @@
 ﻿namespace Elite.Structs
 {
-    public struct galaxy_seed // : ICloneable
+    public class galaxy_seed : ICloneable
     {
         public int a { get; set; }    /* 6c */
         public int b { get; set; }    /* 6d */
@@ -29,19 +29,19 @@
             this.f = f;
         }
 
-        //protected galaxy_seed(galaxy_seed other)
-        //{
-        //    a = other.a;
-        //    b = other.b;
-        //    c = other.c;
-        //    d = other.d;
-        //    e = other.e;
-        //    f = other.f;
-        //}
+        protected galaxy_seed(galaxy_seed other)
+        {
+            a = other.a;
+            b = other.b;
+            c = other.c;
+            d = other.d;
+            e = other.e;
+            f = other.f;
+        }
 
-        //public object Clone()
-        //{
-        //    return new galaxy_seed(this);
-        //}
+        public object Clone()
+        {
+            return new galaxy_seed(this);
+        }
     }
 }

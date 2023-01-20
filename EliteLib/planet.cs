@@ -175,7 +175,7 @@ namespace Elite
 		{
 			int min_dist = 10000;
 			galaxy_seed planet = new();
-			galaxy_seed glx = elite.cmdr.galaxy;
+			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 
 			for (int i = 0; i < 256; i++)
 			{
@@ -187,7 +187,7 @@ namespace Elite
                 if (distance < min_dist)
 				{
 					min_dist = distance;
-					planet = glx;
+					planet = (galaxy_seed)glx.Clone();
 				}
 
 				waggle_galaxy(ref glx);
@@ -201,7 +201,7 @@ namespace Elite
 
 		internal static int find_planet_number(galaxy_seed planet)
 		{
-			galaxy_seed glx = elite.cmdr.galaxy;
+			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 
 			for (int i = 0; i < 256; i++)
 			{
@@ -225,9 +225,11 @@ namespace Elite
 			return -1;
 		}
 
-		internal static string name_planet(galaxy_seed glx)
+		internal static string name_planet(galaxy_seed galaxy)
 		{
-			string gname = string.Empty;
+			galaxy_seed glx = (galaxy_seed)galaxy.Clone();
+
+            string gname = string.Empty;
 			int size = (glx.a & 0x40) == 0 ? 3 : 4;
 
             for (int i = 0; i < size; i++)

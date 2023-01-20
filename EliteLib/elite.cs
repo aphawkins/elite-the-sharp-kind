@@ -117,7 +117,7 @@ namespace Elite
 			cmdr = saved_cmdr;
 
 			docked_planet = Planet.find_planet(cmdr.ship_x, cmdr.ship_y);
-			hyperspace_planet = docked_planet;
+			hyperspace_planet = (galaxy_seed)docked_planet.Clone();
 
 			Planet.generate_planet_data(ref current_planet_data, docked_planet);
 			trade.generate_stock_market();

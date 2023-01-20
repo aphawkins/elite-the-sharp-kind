@@ -95,7 +95,7 @@ namespace Elite.Views
 		{
 			string planet_name = string.Empty;
 			bool found = false;
-			galaxy_seed glx = elite.cmdr.galaxy;
+			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 
 			for (int i = 0; i < 256; i++)
 			{
@@ -148,7 +148,7 @@ namespace Elite.Views
 				row_used[i] = 0;
 			}
 
-			galaxy_seed glx = elite.cmdr.galaxy;
+			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 
 			for (int i = 0; i < 256; i++)
 			{
@@ -225,7 +225,7 @@ namespace Elite.Views
 		internal static void display_galactic_chart()
 		{
 			elite.current_screen = SCR.SCR_GALACTIC_CHART;
-			galaxy_seed glx = elite.cmdr.galaxy;
+			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 			planetPixels.Clear();
 
             for (int i = 0; i < 256; i++)
