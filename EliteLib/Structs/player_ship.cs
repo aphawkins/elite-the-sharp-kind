@@ -1,6 +1,6 @@
 ﻿namespace Elite.Structs
 {
-    internal struct player_ship
+    internal class player_ship
     {
         internal int max_speed;
         internal int max_roll;
