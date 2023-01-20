@@ -2,7 +2,7 @@
 {
     using Elite.Enums;
 
-    internal struct EquipmentItem
+    internal class EquipmentItem
     {
         internal bool CanBuy;
         internal bool Show;
