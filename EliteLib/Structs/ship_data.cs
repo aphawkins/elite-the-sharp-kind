@@ -1,6 +1,6 @@
 ﻿namespace Elite.Structs
 {
-    internal struct ship_data
+    internal class ship_data
     {
         internal string name;
         internal int num_points;
@@ -19,6 +19,10 @@
         internal ship_point[] points;
         internal ship_line[] lines;
         internal ship_face_normal[] normals;
+
+        internal ship_data()
+        {
+        }
 
         internal ship_data(string name, int num_points, int num_lines, int num_faces, int max_loot,
             int scoop_type, float size, int front_laser, int bounty, int vanish_point, int energy,
