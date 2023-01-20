@@ -25,7 +25,7 @@ namespace Elite
 
 	internal static class Planet
 	{
-        private struct random_seed
+        private class random_seed
 		{
 			internal int a;
 			internal int b;

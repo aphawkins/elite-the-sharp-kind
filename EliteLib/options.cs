@@ -40,7 +40,7 @@ namespace Elite
         private const int OPTION_BAR_WIDTH = 400;
         private const int OPTION_BAR_HEIGHT = 15;
 
-        private struct option
+        private class option
 		{
 			internal string text;
 			internal bool docked_only;
@@ -60,7 +60,7 @@ namespace Elite
 			new ("Quit",            false)
 		};
 
-        private struct setting
+        private class setting
 		{
 			internal string name;
 			internal string[] value;
