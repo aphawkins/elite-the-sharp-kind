@@ -74,7 +74,7 @@ namespace Elite.Views
 
             elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
 
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
+            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.alg_gfx.DrawTextLeft(16, 58, "Present System:", GFX_COL.GFX_COL_GREEN_1);
 

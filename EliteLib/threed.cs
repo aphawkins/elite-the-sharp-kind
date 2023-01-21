@@ -22,7 +22,7 @@ namespace Elite
         private const int LAND_X_MAX = 128;
         private const int LAND_Y_MAX = 128;
         private static int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
-        private static point[] point_list = new point[100];
+        private static Vector3[] point_list = new Vector3[100];
 
         /*
 		 * The following routine is used to draw a wireframe represtation of a ship.
@@ -35,7 +35,6 @@ namespace Elite
 		{
 			Vector3[] trans_mat = new Vector3[3];
 			int i;
-			int sx, sy, ex, ey;
 			float rx, ry, rz;
 			bool[] visible = new bool[32];
 			Vector3 vec;
@@ -45,7 +44,6 @@ namespace Elite
 			ship_face_normal[] ship_norm;
 			int num_faces;
 			ship_data ship;
-			int lasv;
 
 			ship = elite.ship_list[(int)univ.type];
 
@@ -104,8 +102,8 @@ namespace Elite
 				ry = vec.Y + univ.location.Y;
 				rz = vec.Z + univ.location.Z;
 
-				sx = (int)(rx * 256 / rz);
-				sy = (int)(ry * 256 / rz);
+				float sx = (int)(rx * 256 / rz);
+				float sy = (int)(ry * 256 / rz);
 
 				sy = -sy;
 
@@ -125,21 +123,15 @@ namespace Elite
 				if (visible[ship.lines[i].face1] ||
 					visible[ship.lines[i].face2])
 				{
-					sx = point_list[ship.lines[i].start_point].X;
-					sy = point_list[ship.lines[i].start_point].Y;
-
-					ex = point_list[ship.lines[i].end_point].X;
-					ey = point_list[ship.lines[i].end_point].Y;
-
-                    elite.alg_gfx.DrawLine(sx, sy, ex, ey);
+                    elite.alg_gfx.DrawLine(point_list[ship.lines[i].start_point].ToVector2(), point_list[ship.lines[i].end_point].ToVector2());
 				}
 			}
 
 
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
-				lasv = elite.ship_list[(int)univ.type].front_laser;
-                elite.alg_gfx.DrawLine(point_list[lasv].X, point_list[lasv].Y, univ.location.X > 0 ? 0 : 511, random.rand255() * 2);
+				int lasv = elite.ship_list[(int)univ.type].front_laser;
+                elite.alg_gfx.DrawLine(point_list[lasv].ToVector2(), new(univ.location.X > 0 ? 0 : 511, random.rand255() * 2));
 			}
 		}
 
@@ -156,7 +148,6 @@ namespace Elite
 			Vector3 vec;
 			Vector3 camera_vec;
 			int num_points;
-			int zavg;
 			Vector3[] trans_mat = new Vector3[3];
 			int lasv;
             GFX_COL col;
@@ -244,56 +235,56 @@ namespace Elite
 					 (point_list[face_data[i].p3].X - point_list[face_data[i].p2].X))) <= 0)
 				{
 					num_points = face_data[i].points;
-                    System.Numerics.Vector2[] poly_list = new System.Numerics.Vector2[num_points];
+                    Vector2[] poly_list = new Vector2[num_points];
 
                     poly_list[0].X = point_list[face_data[i].p1].X;
 					poly_list[0].Y = point_list[face_data[i].p1].Y;
-					zavg = point_list[face_data[i].p1].Z;
+					float zavg = point_list[face_data[i].p1].Z;
 
 					poly_list[1].X = point_list[face_data[i].p2].X;
 					poly_list[1].Y = point_list[face_data[i].p2].Y;
-					zavg = Math.Max(zavg, point_list[face_data[i].p2].Z);
+					zavg = MathF.Max(zavg, point_list[face_data[i].p2].Z);
 
 					if (num_points > 2)
 					{
 						poly_list[2].X = point_list[face_data[i].p3].X;
 						poly_list[2].Y = point_list[face_data[i].p3].Y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p3].Z);
+						zavg = MathF.Max(zavg, point_list[face_data[i].p3].Z);
 					}
 
 					if (num_points > 3)
 					{
 						poly_list[3].X = point_list[face_data[i].p4].X;
 						poly_list[3].Y = point_list[face_data[i].p4].Y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p4].Z);
+						zavg = MathF.Max(zavg, point_list[face_data[i].p4].Z);
 					}
 
 					if (num_points > 4)
 					{
 						poly_list[4].X = point_list[face_data[i].p5].X;
 						poly_list[4].Y = point_list[face_data[i].p5].Y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p5].Z);
+						zavg = MathF.Max(zavg, point_list[face_data[i].p5].Z);
 					}
 
 					if (num_points > 5)
 					{
 						poly_list[5].X = point_list[face_data[i].p6].X;
 						poly_list[5].Y = point_list[face_data[i].p6].Y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p6].Z);
+						zavg = MathF.Max(zavg, point_list[face_data[i].p6].Z);
 					}
 
 					if (num_points > 6)
 					{
 						poly_list[6].X = point_list[face_data[i].p7].X;
 						poly_list[6].Y = point_list[face_data[i].p7].Y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p7].Z);
+						zavg = MathF.Max(zavg, point_list[face_data[i].p7].Z);
 					}
 
 					if (num_points > 7)
 					{
 						poly_list[7].X = point_list[face_data[i].p8].X;
 						poly_list[7].Y = point_list[face_data[i].p8].Y;
-						zavg = Math.Max(zavg, point_list[face_data[i].p8].Z);
+						zavg = MathF.Max(zavg, point_list[face_data[i].p8].Z);
 					}
 
                     DrawPolygonFilled(poly_list, face_data[i].colour, zavg);
@@ -764,7 +755,6 @@ namespace Elite
 			int pr;
 			int cnt;
 			Vector3[] trans_mat = new Vector3[3];
-			int sx, sy;
 			float rx, ry, rz;
 			bool[] visible = new bool[32];
 			Vector3 vec;
@@ -845,13 +835,13 @@ namespace Elite
 					ry = vec.Y + univ.location.Y;
 					rz = vec.Z + univ.location.Z;
 
-					sx = (int)(rx * 256 / rz);
-					sy = (int)(ry * 256 / rz);
+					float sx = rx * 256f / rz;
+					float sy = ry * 256f / rz;
 
 					sy = -sy;
 
-					sx += 128;
-					sy += 96;
+					sx += 128f;
+					sy += 96f;
 
 					sx *= gfx.GFX_SCALE;
 					sy *= gfx.GFX_SCALE;
@@ -880,8 +870,8 @@ namespace Elite
 
 			for (cnt = 0; cnt < np; cnt++)
 			{
-				sx = point_list[cnt].X;
-				sy = point_list[cnt].Y;
+				float sx = point_list[cnt].X;
+				float sy = point_list[cnt].Y;
 
 				for (i = 0; i < 16; i++)
 				{
@@ -975,7 +965,7 @@ namespace Elite
 
         private struct poly_data
         {
-            internal int z;
+            internal float Z;
             internal GFX_COL face_colour;
             internal Vector2[] point_list;
             internal int next;
@@ -1001,24 +991,21 @@ namespace Elite
 
             for (int i = start_poly; i != -1; i = poly_chain[i].next)
             {
-                GFX_COL col = poly_chain[i].face_colour;
+                GFX_COL colour = poly_chain[i].face_colour;
 
                 if (poly_chain[i].point_list.Length == 2)
                 {
-                    elite.alg_gfx.DrawLine(poly_chain[i].point_list[0].X, poly_chain[i].point_list[0].Y,
-                        poly_chain[i].point_list[1].X, poly_chain[i].point_list[1].Y,
-                        col);
+                    elite.alg_gfx.DrawLine(poly_chain[i].point_list[0], poly_chain[i].point_list[1], colour);
                     continue;
                 }
 
-                elite.alg_gfx.DrawPolygonFilled(poly_chain[i].point_list, col);
+                elite.alg_gfx.DrawPolygonFilled(poly_chain[i].point_list, colour);
             };
         }
 
-        private static void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour, int zavg)
+        private static void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour, float zAvg)
 		{
-			int i;
-			int nx;
+            int i;
 
 			if (total_polys == MAX_POLYS)
 			{
@@ -1029,7 +1016,7 @@ namespace Elite
 			total_polys++;
 
 			poly_chain[x].face_colour = face_colour;
-			poly_chain[x].z = zavg;
+			poly_chain[x].Z = zAvg;
 			poly_chain[x].next = -1;
 			poly_chain[x].point_list = new Vector2[point_list.Length];
 
@@ -1044,18 +1031,18 @@ namespace Elite
 				return;
 			}
 
-			if (zavg > poly_chain[start_poly].z)
+			if (zAvg > poly_chain[start_poly].Z)
 			{
 				poly_chain[x].next = start_poly;
 				start_poly = x;
 				return;
 			}
 
-			for (i = start_poly; poly_chain[i].next != -1; i = poly_chain[i].next)
+            for (i = start_poly; poly_chain[i].next != -1; i = poly_chain[i].next)
 			{
-				nx = poly_chain[i].next;
+				int nx = poly_chain[i].next;
 
-				if (zavg > poly_chain[nx].z)
+				if (zAvg > poly_chain[nx].Z)
 				{
 					poly_chain[i].next = x;
 					poly_chain[x].next = nx;

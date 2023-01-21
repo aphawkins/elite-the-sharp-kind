@@ -106,7 +106,7 @@ namespace Elite.Views
 
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
+            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             str = $"{elite.cmdr.fuel / 10:D}.{elite.cmdr.fuel % 10:D} Light Years";
             elite.alg_gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);

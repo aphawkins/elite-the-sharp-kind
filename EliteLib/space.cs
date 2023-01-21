@@ -746,15 +746,14 @@ namespace Elite
 						break;
 				}
 
-                elite.alg_gfx.DrawLine(x1 + 2, y2, x1 - 3, y2, colour);
-                elite.alg_gfx.DrawLine(x1 + 2, y2 + 1, x1 - 3, y2 + 1, colour);
-                elite.alg_gfx.DrawLine(x1 + 2, y2 + 2, x1 - 3, y2 + 2, colour);
-                elite.alg_gfx.DrawLine(x1 + 2, y2 + 3, x1 - 3, y2 + 3, colour);
+                elite.alg_gfx.DrawLine(new(x1 + 2, y2), new(x1 - 3, y2), colour);
+                elite.alg_gfx.DrawLine(new(x1 + 2, y2 + 1), new(x1 - 3, y2 + 1), colour);
+                elite.alg_gfx.DrawLine(new(x1 + 2, y2 + 2), new(x1 - 3, y2 + 2), colour);
+                elite.alg_gfx.DrawLine(new(x1 + 2, y2 + 3), new(x1 - 3, y2 + 3), colour);
 
-
-                elite.alg_gfx.DrawLine(x1, y1, x1, y2, colour);
-                elite.alg_gfx.DrawLine(x1 + 1, y1, x1 + 1, y2, colour);
-                elite.alg_gfx.DrawLine(x1 + 2, y1, x1 + 2, y2, colour);
+                elite.alg_gfx.DrawLine(new(x1, y1), new(x1, y2), colour);
+                elite.alg_gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), colour);
+                elite.alg_gfx.DrawLine(new(x1 + 2, y1), new(x1 + 2, y2), colour);
 			}
 		}
 
@@ -796,8 +795,8 @@ namespace Elite
 		 */
         private static void display_speed()
 		{
-			int sx = 417;
-            int sy = 384 + 9;
+			float sx = 417f;
+            float sy = 384f + 9f;
 
 			int len = (elite.flight_speed * 64 / elite.myship.max_speed) - 1;
 
@@ -805,7 +804,7 @@ namespace Elite
 
 			for (int i = 0; i < 6; i++)
 			{
-                elite.alg_gfx.DrawLine(sx, sy + i, sx + len, sy + i, colour);
+                elite.alg_gfx.DrawLine(new(sx, sy + i), new(sx + len, sy + i), colour);
 			}
 		}
 
@@ -813,20 +812,18 @@ namespace Elite
 		 * Draw an indicator bar.
 		 * Used for shields and energy banks.
 		 */
-        private static void display_dial_bar(int len, int x, int y)
+        private static void display_dial_bar(int len, Vector2 position)
 		{
-			int i = 0;
-
-            elite.alg_gfx.DrawLine(x, y + 384, x + len, y + 384, GFX_COL.GFX_COL_GOLD);
-			i++;
-            elite.alg_gfx.DrawLine(x, y + i + 384, x + len, y + i + 384, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawLine(new(position.X, position.Y + 384f), new(position.X + len, position.Y + 384f), GFX_COL.GFX_COL_GOLD);
+			int i = 1;
+            elite.alg_gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_GOLD);
 
 			for (i = 2; i < 7; i++)
 			{
-				elite.alg_gfx.DrawLine(x, y + i + 384, x + len, y + i + 384, GFX_COL.GFX_COL_YELLOW_1);
+				elite.alg_gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_YELLOW_1);
 			}
 
-            elite.alg_gfx.DrawLine(x, y + i + 384, x + len, y + i + 384, GFX_COL.GFX_COL_DARK_RED);
+            elite.alg_gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_DARK_RED);
 		}
 
         /*
@@ -836,12 +833,12 @@ namespace Elite
 		{
 			if (elite.front_shield > 3)
 			{
-				display_dial_bar(elite.front_shield / 4, 31, 7);
+				display_dial_bar(elite.front_shield / 4, new(31f, 7f));
 			}
 
 			if (elite.aft_shield > 3)
 			{
-				display_dial_bar(elite.aft_shield / 4, 31, 23);
+				display_dial_bar(elite.aft_shield / 4, new(31f, 23));
 			}
 		}
 
@@ -849,7 +846,7 @@ namespace Elite
 		{
 			if (elite.myship.altitude > 3)
 			{
-				display_dial_bar(elite.myship.altitude / 4, 31, 92);
+				display_dial_bar(elite.myship.altitude / 4, new(31f, 92f));
 			}
 		}
 
@@ -857,7 +854,7 @@ namespace Elite
 		{
 			if (elite.myship.cabtemp > 3)
 			{
-				display_dial_bar(elite.myship.cabtemp / 4, 31, 60);
+				display_dial_bar(elite.myship.cabtemp / 4, new(31f, 60f));
 			}
 		}
 
@@ -865,7 +862,7 @@ namespace Elite
 		{
 			if (elite.laser_temp > 0)
 			{
-				display_dial_bar(elite.laser_temp / 4, 31, 76);
+				display_dial_bar(elite.laser_temp / 4, new(31f, 76f));
 			}
 		}
 
@@ -883,58 +880,50 @@ namespace Elite
 
 			if (e4 > 0)
 			{
-				display_dial_bar(e4, 416, 61);
+				display_dial_bar(e4, new(416f, 61f));
 			}
 
 			if (e3 > 0)
 			{
-				display_dial_bar(e3, 416, 79);
+				display_dial_bar(e3, new(416f, 79f));
 			}
 
 			if (e2 > 0)
 			{
-				display_dial_bar(e2, 416, 97);
+				display_dial_bar(e2, new(416f, 97f));
 			}
 
 			if (e1 > 0)
 			{
-				display_dial_bar(e1, 416, 115);
+				display_dial_bar(e1, new(416f, 115f));
 			}
 		}
 
         private static void display_flight_roll()
 		{
-			int sx, sy;
-			int i;
-			int pos;
+			float sx = 416;
+			float sy = 384 + 9 + 14;
 
-			sx = 416;
-			sy = 384 + 9 + 14;
-
-			pos = sx - (elite.flight_roll * 28 / elite.myship.max_roll);
+			float pos = sx - (elite.flight_roll * 28 / elite.myship.max_roll);
 			pos += 32;
 
-			for (i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
-                elite.alg_gfx.DrawLine(pos + i, sy, pos + i, sy + 7, GFX_COL.GFX_COL_GOLD);
+                elite.alg_gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), GFX_COL.GFX_COL_GOLD);
 			}
 		}
 
         private static void display_flight_climb()
 		{
-			int sx, sy;
-			int i;
-			int pos;
+			float sx = 416;
+			float sy = 384 + 9 + 14 + 16;
 
-			sx = 416;
-			sy = 384 + 9 + 14 + 16;
-
-			pos = sx + (elite.flight_climb * 28 / elite.myship.max_climb);
+			float pos = sx + (elite.flight_climb * 28 / elite.myship.max_climb);
 			pos += 32;
 
-			for (i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
-                elite.alg_gfx.DrawLine(pos + i, sy, pos + i, sy + 7, GFX_COL.GFX_COL_GOLD);
+                elite.alg_gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), GFX_COL.GFX_COL_GOLD);
 			}
 		}
 
@@ -942,7 +931,7 @@ namespace Elite
 		{
 			if (elite.cmdr.fuel > 0)
 			{
-				display_dial_bar(elite.cmdr.fuel * 64 / elite.myship.max_fuel, 31, 44);
+				display_dial_bar(elite.cmdr.fuel * 64 / elite.myship.max_fuel, new(31f, 44f));
 			}
 		}
 
@@ -1129,7 +1118,7 @@ namespace Elite
             };
             elite.cmdr.galaxy = glx;
 
-            elite.docked_planet = Planet.find_planet(0x60, 0x60);
+            elite.docked_planet = Planet.find_planet(new(0x60, 0x60));
 			elite.hyperspace_planet = (galaxy_seed)elite.docked_planet.Clone();
 		}
 

@@ -13,8 +13,7 @@
 			return new Commander(
 				"JAMESON",                                  /* Name 			*/
 				0,                                          /* Mission Number 	*/
-				0x14, 0xAD,                                 /* Ship X,Y			*/
-
+				new(0x14, 0xAD),                            // Ship Position
 				new(0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7),    /* Galaxy Seed		*/
 				1000,                                       /* Credits * 10		*/
 				70,                                         /* Fuel	* 10		*/
@@ -52,8 +51,7 @@
             return new Commander(
                 "MAX",                                      /* Name 			*/
                 0,                                          /* Mission Number 	*/
-                0x14, 0xAD,                                 /* Ship X,Y			*/
-
+                new(0x14, 0xAD),                            // Ship Position
                 new(0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7),    /* Galaxy Seed		*/
                 10000,                                      /* Credits * 10		*/
                 70,                                         /* Fuel	* 10		*/

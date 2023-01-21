@@ -17,8 +17,8 @@
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, "GALACTIC CHART " + galaxyNumber, 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(0, 36, 511, 36);
-            _gfx.DrawLine(0, 36 + 258, 511, 36 + 258);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.DrawLine(new(0f, 36f + 258f), new(511f, 36f + 258f));
             DrawFuelLimitCircle(new(elite.docked_planet.d * gfx.GFX_SCALE, (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1));
             foreach (Vector2 pixel in planetPixels)
             {
@@ -34,7 +34,7 @@
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(0, 36, 511, 36);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             DrawFuelLimitCircle(new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE));
             foreach ((Vector2 position, string name) in planetNames)
             {
@@ -63,7 +63,7 @@
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, $"DATA ON {planetName}", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(0, 36, 511, 36);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             string str = lightYears > 0
                 ? $"Distance: {lightYears / 10}.{lightYears % 10} Light Years "
                 : "                                                     ";
@@ -86,17 +86,17 @@
             if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
             {
                 radius = elite.cmdr.fuel / 4 * gfx.GFX_SCALE;
-                cross_size = 7 * gfx.GFX_SCALE;
+                cross_size = 7f * gfx.GFX_SCALE;
             }
             else
             {
                 radius = elite.cmdr.fuel * gfx.GFX_SCALE;
-                cross_size = 16 * gfx.GFX_SCALE;
+                cross_size = 16f * gfx.GFX_SCALE;
             }
 
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawLine(centre.X, centre.Y - cross_size, centre.X, centre.Y + cross_size);
-            _gfx.DrawLine(centre.X - cross_size, centre.Y, centre.X + cross_size, centre.Y);
+            _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
+            _gfx.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
         }
 
         // TOOD: This should be private
@@ -127,7 +127,7 @@
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(0, 36, 511, 36);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             _gfx.DrawTextCentre(75, "Please enter commander name:", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawRectangle(100, 100, 312, 50, GFX_COL.GFX_COL_WHITE);
@@ -147,7 +147,7 @@
             _gfx.ClearDisplay();
 
             _gfx.DrawTextCentre(20, $"{planetName} MARKET PRICES", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(0, 36, 511, 36);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(246, 40, "PRICE", GFX_COL.GFX_COL_GREEN_1);
@@ -160,7 +160,7 @@
 
                 if (i == highlightedStock)
                 {
-                    elite.alg_gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+                    _gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
                 }
 
                 _gfx.DrawTextLeft(16, y, stocks[i].name, GFX_COL.GFX_COL_WHITE);
@@ -184,7 +184,7 @@
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(0, 36, 511, 36);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             _gfx.ClearArea(2, 55, 508, 325);
 
             int y = 55;

@@ -101,7 +101,7 @@ namespace Elite
 
 				if (warp_stars)
 				{
-                    elite.alg_gfx.DrawLine(star.X, star.Y, (xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE);
+                    elite.alg_gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
 				}
 
                 star.X = xx;
@@ -194,7 +194,7 @@ namespace Elite
 					   (ex >= gfx.GFX_VIEW_TX) && (ex <= gfx.GFX_VIEW_BX) &&
 					   (ey >= gfx.GFX_VIEW_TY) && (ey <= gfx.GFX_VIEW_BY))
 					{
-                        elite.alg_gfx.DrawLine(star.X, star.Y, (xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE);
+                        elite.alg_gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
 					}
 				}
 
@@ -288,7 +288,7 @@ namespace Elite
 
 				if (warp_stars)
 				{
-                    elite.alg_gfx.DrawLine(star.X, star.Y, (xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE);
+                    elite.alg_gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
 				}
 
 				if (Math.Abs(stars[i].X) >= 116)

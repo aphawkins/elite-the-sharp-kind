@@ -111,7 +111,7 @@ namespace Elite
         /// <param name="y1"></param>
         /// <param name="x2"></param>
         /// <param name="y2"></param>
-        public override void DrawLine(float x1, float y1, float x2, float y2)
+        public override void DrawLine(Vector2 start, Vector2 end)
         {
             //	fixed grad, xd, yd;
             //	fixed xgap, ygap, xend, yend, xf, yf;

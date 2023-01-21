@@ -1,13 +1,13 @@
 ﻿namespace Elite.Structs
 {
+    using System.Numerics;
     using Elite;
 
     public class Commander
     {
         public string name { get; set; }
         public int mission { get; set; }
-        public int ship_x { get; set; }
-        public int ship_y { get; set; }
+        public Vector2 shiplocation { get; set; }
         public galaxy_seed galaxy { get; set; }
         public int credits { get; set; }
         public int fuel { get; set; }
@@ -33,15 +33,14 @@
         public int score { get; set; }
         public int saved { get; set; }
 
-        public Commander(string name, int mission, int ship_x, int ship_y, galaxy_seed galaxy, int credits, int fuel, 
+        public Commander(string name, int mission, Vector2 shipLocation, galaxy_seed galaxy, int credits, int fuel, 
             int galaxy_number, int front_laser, int rear_laser, int left_laser, int right_laser, int cargo_capacity,
             int[] current_cargo, bool ecm, bool fuel_scoop, bool energy_bomb, int energy_unit, bool docking_computer, bool galactic_hyperdrive, bool escape_pod,
             int missiles, int legal_status, int[] station_stock, int market_rnd, int score, int saved)
         {
             this.name = name;
             this.mission = mission;
-            this.ship_x = ship_x;
-            this.ship_y = ship_y;
+            this.shiplocation = shipLocation;
             this.galaxy = galaxy;
             this.credits = credits;
             this.fuel = fuel;

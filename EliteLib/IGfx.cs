@@ -31,9 +31,9 @@ namespace Elite
 
         void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour);
 
-        void DrawLine(float x1, float y1, float x2, float y2, GFX_COL colour);
+        void DrawLine(Vector2 start, Vector2 end, GFX_COL colour);
 
-        void DrawLine(float x1, float y1, float x2, float y2);
+        void DrawLine(Vector2 start, Vector2 end);
 
         void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour);
 

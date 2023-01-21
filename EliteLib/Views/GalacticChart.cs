@@ -20,9 +20,7 @@ namespace Elite.Views
 
 	internal static class GalacticChart
 	{
-		internal static int cross_x = 0;
-		internal static int cross_y = 0;
-
+		internal static Vector2 cross = new Vector2(0, 0);
 		internal static List<Vector2> planetPixels = new();
         internal static List<(Vector2 position, string name)> planetNames = new();
 		internal static List<(Vector2 position, int size)> planetSizes = new();
@@ -46,32 +44,32 @@ namespace Elite.Views
 
 		internal static void show_distance_to_planet()
 		{
-			int px, py;
+			Vector2 location;
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				px = cross_x / gfx.GFX_SCALE;
-				py = (cross_y - ((18 * gfx.GFX_SCALE) + 1)) * (2 / gfx.GFX_SCALE);
+				location.X = cross.X / gfx.GFX_SCALE;
+				location.Y = (cross.Y - ((18f * gfx.GFX_SCALE) + 1)) * (2f / gfx.GFX_SCALE);
 			}
 			else
 			{
-				px = ((cross_x - gfx.GFX_X_CENTRE) / (4 * gfx.GFX_SCALE)) + elite.docked_planet.d;
-				py = ((cross_y - gfx.GFX_Y_CENTRE) / (2 * gfx.GFX_SCALE)) + elite.docked_planet.b;
+				location.X = ((cross.X - gfx.GFX_X_CENTRE) / (4f * gfx.GFX_SCALE)) + elite.docked_planet.d;
+				location.Y = ((cross.Y - gfx.GFX_Y_CENTRE) / (2f * gfx.GFX_SCALE)) + elite.docked_planet.b;
 			}
 
-			elite.hyperspace_planet = Planet.find_planet(px, py);
+			elite.hyperspace_planet = Planet.find_planet(location);
 			planetName = Planet.name_planet(elite.hyperspace_planet);
 			distanceToPlanet = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				cross_x = elite.hyperspace_planet.d * gfx.GFX_SCALE;
-				cross_y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+				cross.X = elite.hyperspace_planet.d * gfx.GFX_SCALE;
+				cross.Y = (elite.hyperspace_planet.b / (2f / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
-				cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
-				cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
+				cross.X = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+				cross.Y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 			}
 		}
 
@@ -79,13 +77,12 @@ namespace Elite.Views
 		{
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				cross_x = elite.docked_planet.d * gfx.GFX_SCALE;
-				cross_y = (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+				cross.X = elite.docked_planet.d * gfx.GFX_SCALE;
+				cross.Y = (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
-				cross_x = gfx.GFX_X_CENTRE;
-				cross_y = gfx.GFX_Y_CENTRE;
+				cross = new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
 			}
 
 			show_distance_to_planet();
@@ -126,13 +123,13 @@ namespace Elite.Views
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
 			{
-				cross_x = elite.hyperspace_planet.d * gfx.GFX_SCALE;
-				cross_y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+				cross.X = elite.hyperspace_planet.d * gfx.GFX_SCALE;
+				cross.Y = (elite.hyperspace_planet.b / (2f / gfx.GFX_SCALE)) + (18f * gfx.GFX_SCALE) + 1;
 			}
 			else
 			{
-				cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
-				cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
+				cross.X = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4f * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+				cross.Y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2f * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 			}
 		}
 
@@ -218,8 +215,8 @@ namespace Elite.Views
 
 			elite.draw.DrawShortRangeChart(planetNames, planetSizes, planetName, distanceToPlanet);
 
-            cross_x = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
-			cross_y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
+            cross.X = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4f * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+			cross.Y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2f * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 		}
 
 		internal static void display_galactic_chart()
@@ -233,7 +230,7 @@ namespace Elite.Views
                 Vector2 pixel = new()
                 {
                     X = glx.d * gfx.GFX_SCALE,
-                    Y = (glx.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1
+                    Y = (glx.b / (2f / gfx.GFX_SCALE)) + (18f * gfx.GFX_SCALE) + 1
                 };
 
                 planetPixels.Add(pixel);
@@ -251,8 +248,8 @@ namespace Elite.Views
 
             elite.draw.DrawGalacticChart(elite.cmdr.galaxy_number + 1, planetPixels, planetName, distanceToPlanet);
 
-            cross_x = elite.hyperspace_planet.d * gfx.GFX_SCALE;
-			cross_y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+            cross.X = elite.hyperspace_planet.d * gfx.GFX_SCALE;
+			cross.Y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
 		}
 	}
 }

@@ -64,10 +64,10 @@ namespace Elite
 		internal static bool detonate_bomb;
 		internal static bool auto_pilot;
 
-#if DEBUG
+#if !DEBUG
         internal static Commander saved_cmdr = CommanderFactory.Max();
 #else
-		internal static commander saved_cmdr = CommanderFactory.Jameson();
+		internal static Commander saved_cmdr = CommanderFactory.Jameson();
 #endif
 
         internal static Commander cmdr;
@@ -116,7 +116,7 @@ namespace Elite
 		{
 			cmdr = saved_cmdr;
 
-			docked_planet = Planet.find_planet(cmdr.ship_x, cmdr.ship_y);
+			docked_planet = Planet.find_planet(cmdr.shiplocation);
 			hyperspace_planet = (galaxy_seed)docked_planet.Clone();
 
 			Planet.generate_planet_data(ref current_planet_data, docked_planet);
@@ -124,7 +124,7 @@ namespace Elite
 			trade.set_stock_quantities(cmdr.station_stock);
 		}
 
-        private static int old_cross_x, old_cross_y;
+        private static Vector2 old_cross;
         private static int cross_timer;
         private static int draw_lasers;
         internal static int mcount;
@@ -166,8 +166,7 @@ namespace Elite
             Stars.create_new_stars();
             swat.clear_universe();
 
-            GalacticChart.cross_x = -1;
-            GalacticChart.cross_y = -1;
+            GalacticChart.cross = new(-1f, -1f);
             cross_timer = 0;
 
             myship.max_speed = 40;      /* 0.27 Light Mach */
@@ -191,47 +190,49 @@ namespace Elite
 
             if (current_screen == SCR.SCR_SHORT_RANGE)
             {
-                GalacticChart.cross_x += dx * 4;
-                GalacticChart.cross_y += dy * 4;
+                GalacticChart.cross.X += dx * 4;
+                GalacticChart.cross.Y += dy * 4;
                 return;
             }
             else if (current_screen == SCR.SCR_GALACTIC_CHART)
             {
-                GalacticChart.cross_x += dx * 2;
-                GalacticChart.cross_y += dy * 2;
+                GalacticChart.cross.X += dx * 2;
+                GalacticChart.cross.Y += dy * 2;
 
-                if (GalacticChart.cross_x < 1)
+                if (GalacticChart.cross.X < 1)
                 {
-                    GalacticChart.cross_x = 1;
+                    GalacticChart.cross.X = 1;
                 }
 
-                if (GalacticChart.cross_x > 510)
+                if (GalacticChart.cross.X > 510)
                 {
-                    GalacticChart.cross_x = 510;
+                    GalacticChart.cross.X = 510;
                 }
 
-                if (GalacticChart.cross_y < 37)
+                if (GalacticChart.cross.Y < 37)
                 {
-                    GalacticChart.cross_y = 37;
+                    GalacticChart.cross.Y = 37;
                 }
 
-                if (GalacticChart.cross_y > 293)
+                if (GalacticChart.cross.Y > 293)
                 {
-                    GalacticChart.cross_y = 293;
+                    GalacticChart.cross.Y = 293;
                 }
             }
         }
 
-        /*
-		 * Draw the cross hairs at the specified position.
-		 */
-        private static void draw_cross(int cx, int cy)
+        /// <summary>
+        /// Draw the cross hairs at the specified position.
+        /// </summary>
+        /// <param name="cx"></param>
+        /// <param name="cy"></param>
+        private static void draw_cross(Vector2 centre)
         {
             if (current_screen == SCR.SCR_SHORT_RANGE)
             {
                 alg_gfx.SetClipRegion(1, 37, 510, 339);
-                alg_gfx.DrawLine(cx - 16, cy, cx + 16, cy, GFX_COL.GFX_COL_RED);
-                alg_gfx.DrawLine(cx, cy - 16, cx, cy + 16, GFX_COL.GFX_COL_RED);
+                alg_gfx.DrawLine(new(centre.X - 16f, centre.Y), new(centre.X + 16f, centre.Y), GFX_COL.GFX_COL_RED);
+                alg_gfx.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), GFX_COL.GFX_COL_RED);
                 alg_gfx.SetClipRegion(1, 1, 510, 383);
                 return;
             }
@@ -239,8 +240,8 @@ namespace Elite
             if (current_screen == SCR.SCR_GALACTIC_CHART)
             {
                 alg_gfx.SetClipRegion(1, 37, 510, 293);
-                alg_gfx.DrawLine(cx - 8, cy, cx + 8, cy, GFX_COL.GFX_COL_RED);
-                alg_gfx.DrawLine(cx, cy - 8, cx, cy + 8, GFX_COL.GFX_COL_RED);
+                alg_gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), GFX_COL.GFX_COL_RED);
+                alg_gfx.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), GFX_COL.GFX_COL_RED);
                 alg_gfx.SetClipRegion(1, 1, 510, 383);
             }
         }
@@ -248,7 +249,6 @@ namespace Elite
         private static void draw_laser_sights()
         {
             int laser = 0;
-            int x1, y1, x2, y2;
 
             switch (current_screen)
             {
@@ -275,35 +275,35 @@ namespace Elite
 
             if (laser != 0)
             {
-                x1 = 128 * gfx.GFX_SCALE;
-                y1 = (96 - 8) * gfx.GFX_SCALE;
-                y2 = (96 - 16) * gfx.GFX_SCALE;
+                float x1 = 128f * gfx.GFX_SCALE;
+                float y1 = (96f - 8f) * gfx.GFX_SCALE;
+                float y2 = (96f - 16f) * gfx.GFX_SCALE;
 
-                alg_gfx.DrawLine(x1 - 1, y1, x1 - 1, y2, GFX_COL.GFX_COL_GREY_1);
-                alg_gfx.DrawLine(x1, y1, x1, y2, GFX_COL.GFX_COL_WHITE);
-                alg_gfx.DrawLine(x1 + 1, y1, x1 + 1, y2, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
 
-                y1 = (96 + 8) * gfx.GFX_SCALE;
-                y2 = (96 + 16) * gfx.GFX_SCALE;
+                y1 = (96f + 8f) * gfx.GFX_SCALE;
+                y2 = (96f + 16f) * gfx.GFX_SCALE;
 
-                alg_gfx.DrawLine(x1 - 1, y1, x1 - 1, y2, GFX_COL.GFX_COL_GREY_1);
-                alg_gfx.DrawLine(x1, y1, x1, y2, GFX_COL.GFX_COL_WHITE);
-                alg_gfx.DrawLine(x1 + 1, y1, x1 + 1, y2, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
 
-                x1 = (128 - 8) * gfx.GFX_SCALE;
-                y1 = 96 * gfx.GFX_SCALE;
-                x2 = (128 - 16) * gfx.GFX_SCALE;
+                x1 = (128f - 8f) * gfx.GFX_SCALE;
+                y1 = 96f * gfx.GFX_SCALE;
+                float x2 = (128f - 16f) * gfx.GFX_SCALE;
 
-                alg_gfx.DrawLine(x1, y1 - 1, x2, y1 - 1, GFX_COL.GFX_COL_GREY_1);
-                alg_gfx.DrawLine(x1, y1, x2, y1, GFX_COL.GFX_COL_WHITE);
-                alg_gfx.DrawLine(x1, y1 + 1, x2, y1 + 1, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
 
-                x1 = (128 + 8) * gfx.GFX_SCALE;
-                x2 = (128 + 16) * gfx.GFX_SCALE;
+                x1 = (128f + 8f) * gfx.GFX_SCALE;
+                x2 = (128f + 16f) * gfx.GFX_SCALE;
 
-                alg_gfx.DrawLine(x1, y1 - 1, x2, y1 - 1, GFX_COL.GFX_COL_GREY_1);
-                alg_gfx.DrawLine(x1, y1, x2, y1, GFX_COL.GFX_COL_WHITE);
-                alg_gfx.DrawLine(x1, y1 + 1, x2, y1 + 1, GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
+                alg_gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
+                alg_gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
             }
         }
 
@@ -870,14 +870,14 @@ namespace Elite
             if (keyboard.IsKeyPressed(CommandKey.F5))
             {
                 find_input = false;
-                old_cross_x = -1;
+                old_cross.X = -1f;
                 GalacticChart.display_galactic_chart();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F6))
             {
                 find_input = false;
-                old_cross_x = -1;
+                old_cross.X = -1f;
                 GalacticChart.display_short_range_chart();
             }
 
@@ -1362,8 +1362,8 @@ namespace Elite
                 run_first_intro_screen();
                 run_second_intro_screen();
 
-                old_cross_x = -1;
-                old_cross_y = -1;
+                old_cross.X = -1f;
+                old_cross.Y = -1f;
 
                 space.dock_player();
                 CommanderStatus.display_commander_status();
@@ -1528,11 +1528,10 @@ namespace Elite
                         }
                     }
 
-                    if ((GalacticChart.cross_x != old_cross_x) ||
-                        (GalacticChart.cross_y != old_cross_y))
+                    if ((GalacticChart.cross.X != old_cross.X) ||
+                        (GalacticChart.cross.Y != old_cross.Y))
                     {
-                        old_cross_x = GalacticChart.cross_x;
-                        old_cross_y = GalacticChart.cross_y;
+                        old_cross = GalacticChart.cross;
 
                         if (current_screen == SCR.SCR_GALACTIC_CHART)
                         {
@@ -1543,7 +1542,7 @@ namespace Elite
                             draw.DrawShortRangeChart(GalacticChart.planetNames, GalacticChart.planetSizes, GalacticChart.planetName, GalacticChart.distanceToPlanet);
                         }
 
-                        draw_cross(old_cross_x, old_cross_y);
+                        draw_cross(old_cross);
                     }
                 }
 

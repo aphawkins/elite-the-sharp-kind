@@ -21,6 +21,7 @@ namespace Elite
 	using Elite.Enums;
 	using Elite.Structs;
 	using System.Diagnostics;
+	using System.Numerics;
 	using System.Text;
 
 	internal static class Planet
@@ -33,7 +34,7 @@ namespace Elite
 			internal int d;
 		};
 
-        private static random_seed rnd_seed;
+        private static random_seed rnd_seed = new();
         private static string digrams = "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
         private static string[] inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
         private static string[] inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
@@ -171,18 +172,18 @@ namespace Elite
 			glx_ptr.f = y;
 		}
 
-		internal static galaxy_seed find_planet(int cx, int cy)
+		internal static galaxy_seed find_planet(Vector2 centre)
 		{
-			int min_dist = 10000;
+			float min_dist = 10000f;
 			galaxy_seed planet = new();
 			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 
 			for (int i = 0; i < 256; i++)
 			{
-				int dx = Math.Abs(cx - glx.d);
-				int dy = Math.Abs(cy - glx.b);
+				float dx = MathF.Abs(centre.X - glx.d);
+				float dy = MathF.Abs(centre.Y - glx.b);
 
-				int distance = dx > dy ? (dx + dx + dy) / 2 : (dx + dy + dy) / 2;
+				float distance = dx > dy ? (dx + dx + dy) / 2 : (dx + dy + dy) / 2;
 
                 if (distance < min_dist)
 				{

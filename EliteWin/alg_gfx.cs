@@ -133,9 +133,9 @@ namespace Elite
             DrawScanner();
 
             // Draw border
-            DrawLine(0, 0, 0, 384);
-            DrawLine(0, 0, 511, 0);
-            DrawLine(511, 0, 511, 384);
+            DrawLine(new(0f, 0f), new(0f, 384f));
+            DrawLine(new(0f, 0f), new(511f, 0f));
+            DrawLine(new(511f, 0f), new(511f, 384f));
 
             // Install a timer to regulate the speed of the game...
             lock (frameCountLock)
@@ -253,14 +253,14 @@ namespace Elite
             _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + gfx.GFX_X_OFFSET - radius, centre.Y + gfx.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
         }
 
-        public virtual void DrawLine(float x1, float y1, float x2, float y2)
+        public virtual void DrawLine(Vector2 start, Vector2 end)
 		{
-			DrawLine(x1, y1, x2, y2, GFX_COL.GFX_COL_WHITE);
+            _screenBufferGraphics.DrawLine(_pens[GFX_COL.GFX_COL_WHITE], start.X + gfx.GFX_X_OFFSET, start.Y + gfx.GFX_Y_OFFSET, end.X + gfx.GFX_X_OFFSET, end.Y + gfx.GFX_Y_OFFSET);
         }
 
-		public void DrawLine(float x1, float y1, float x2, float y2, GFX_COL line_colour)
+		public void DrawLine(Vector2 start, Vector2 end, GFX_COL line_colour)
 		{
-			_screenBufferGraphics.DrawLine(_pens[line_colour], x1 + gfx.GFX_X_OFFSET, y1 + gfx.GFX_Y_OFFSET, x2 + gfx.GFX_X_OFFSET, y2 + gfx.GFX_Y_OFFSET);
+			_screenBufferGraphics.DrawLine(_pens[line_colour], start.X + gfx.GFX_X_OFFSET, start.Y + gfx.GFX_Y_OFFSET, end.X + gfx.GFX_X_OFFSET, end.Y + gfx.GFX_Y_OFFSET);
 		}
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)

@@ -20,6 +20,11 @@
             return newVecs;
         }
 
+        internal static Vector2 ToVector2(this Vector3 vector)
+        {
+            return new(vector.X, vector.Y);
+        }
+
         public static bool IsOdd(this int value)
         {
             return value % 2 != 0;

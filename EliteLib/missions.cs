@@ -190,7 +190,7 @@ namespace Elite
 
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
+            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.draw.DrawTextPretty(16, 50, 300, 384, mission1_brief_a);
             elite.draw.DrawTextPretty(16, 200, 470, 384, (elite.cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
@@ -224,7 +224,7 @@ namespace Elite
 
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
+            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.alg_gfx.DrawTextCentre(100, "Congratulations Commander!", 140, GFX_COL.GFX_COL_GOLD);
 
@@ -248,7 +248,7 @@ namespace Elite
 
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
+            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.draw.DrawTextPretty(116, 132, 400, 384, mission2_brief_a);
 
@@ -270,7 +270,7 @@ namespace Elite
 
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
+            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.draw.DrawTextPretty(16, 50, 300, 384, mission2_brief_b);
             elite.draw.DrawTextPretty(16, 200, 470, 384, mission2_brief_c);
@@ -297,7 +297,7 @@ namespace Elite
 
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(0, 36, 511, 36);
+            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.alg_gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);
 
