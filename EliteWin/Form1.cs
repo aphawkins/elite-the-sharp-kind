@@ -18,14 +18,6 @@ namespace EliteWin
             _refreshTimer.Start();
 
             Bitmap bmp = new(512, 512);
-            for (int y = 0; y < bmp.Height; y++)
-            {
-                for (int x = 0; x < bmp.Width; x++)
-                {
-                    bmp.SetPixel(x, y, Color.Black);
-                }
-            }
-
             screen.Image = bmp;
 
             _gfx = new alg_gfx(ref bmp);

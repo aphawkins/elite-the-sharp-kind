@@ -48,8 +48,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Silver;
-            this.ClientSize = new System.Drawing.Size(512, 511);
+            this.BackColor = System.Drawing.Color.Magenta;
+            this.ClientSize = new System.Drawing.Size(512, 512);
             this.Controls.Add(this.screen);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.KeyPreview = true;
