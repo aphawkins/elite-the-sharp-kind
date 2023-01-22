@@ -18,32 +18,6 @@
  * This module handles all the flight system and management of the space universe.
  */
 
-//# include <stdio.h>
-//# include <string.h>
-//# include <math.h>
-//# include <stdlib.h>
-
-//# include "vector.h"
-
-//# include "alg_data.h"
-
-//# include "config.h"
-//# include "elite.h"
-//# include "gfx.h"
-//# include "docked.h"
-//# include "intro.h"
-//# include "shipdata.h"
-//# include "shipface.h"
-//# include "space.h" 
-//# include "threed.h"
-//# include "sound.h"
-//# include "main.h"
-//# include "swat.h"
-//# include "random.h"
-//# include "trade.h"
-//# include "stars.h"
-//# include "pilot.h"
-
 namespace Elite
 {
 	using System.Numerics;
@@ -58,7 +32,7 @@ namespace Elite
 		internal static bool hyper_ready;
         private static int hyper_countdown;
         private static string hyper_name;
-        private static int hyper_distance;
+        private static float hyper_distance;
         private static bool hyper_galactic;
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static int[] ship_count = new int[shipdata.NO_OF_SHIPS + 1];  /* many */
@@ -267,9 +241,9 @@ namespace Elite
 				return;
 			}
 
-			float x = Math.Abs(universe[0].location.X);
-			float y = Math.Abs(universe[0].location.Y);
-			float z = Math.Abs(universe[0].location.Z);
+			float x = MathF.Abs(universe[0].location.X);
+			float y = MathF.Abs(universe[0].location.Y);
+			float z = MathF.Abs(universe[0].location.Z);
 
 			if ((x > 65535) || (y > 65535) || (z > 65535))
 			{
@@ -308,9 +282,6 @@ namespace Elite
 
 		internal static void update_cabin_temp()
 		{
-			int x, y, z;
-			int dist;
-
 			elite.myship.cabtemp = 30;
 
 			if (elite.witchspace)
@@ -323,11 +294,11 @@ namespace Elite
 				return;
 			}
 
-			x = Math.Abs((int)universe[1].location.X);
-			y = Math.Abs((int)universe[1].location.Y);
-			z = Math.Abs((int)universe[1].location.Z);
+			float x = MathF.Abs(universe[1].location.X);
+            float y = MathF.Abs(universe[1].location.Y);
+            float z = MathF.Abs(universe[1].location.Z);
 
-			if ((x > 65535) || (y > 65535) || (z > 65535))
+			if ((x > 65535f) || (y > 65535f) || (z > 65535f))
 			{
 				return;
 			}
@@ -336,20 +307,20 @@ namespace Elite
 			y /= 256;
 			z /= 256;
 
-			dist = ((x * x) + (y * y) + (z * z)) / 256;
+			float dist = ((x * x) + (y * y) + (z * z)) / 256;
 
 			if (dist > 255)
             {
                 return;
             }
 
-            dist ^= 255;
+            dist = MathF.Pow(dist, 255f);
 
-			elite.myship.cabtemp = dist + 30;
+			elite.myship.cabtemp = dist + 30f;
 
-			if (elite.myship.cabtemp > 255)
+			if (elite.myship.cabtemp > 255f)
 			{
-				elite.myship.cabtemp = 255;
+				elite.myship.cabtemp = 255f;
 				do_game_over();
 				return;
 			}
@@ -575,9 +546,6 @@ namespace Elite
 		internal static void update_universe()
 		{
 			SHIP type;
-			int bounty;
-			string str;
-
             threed.RenderStart();
 
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
@@ -593,13 +561,12 @@ namespace Elite
 							elite.cmdr.legal_status |= 64;
 						}
 
-						bounty = elite.ship_list[(int)type].bounty;
+						float bounty = elite.ship_list[(int)type].bounty;
 
 						if ((bounty != 0) && (!elite.witchspace))
 						{
 							elite.cmdr.credits += bounty;
-							str = $"{elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D} CR";
-                            elite.info_message(str);
+                            elite.info_message($"{elite.cmdr.credits:N1} Credits");
 						}
 
 						swat.remove_ship(i);
@@ -798,7 +765,7 @@ namespace Elite
 			float sx = 417f;
             float sy = 384f + 9f;
 
-			int len = (elite.flight_speed * 64 / elite.myship.max_speed) - 1;
+			float len = (elite.flight_speed * 64 / elite.myship.max_speed) - 1;
 
             GFX_COL colour = (elite.flight_speed > (elite.myship.max_speed * 2 / 3)) ? GFX_COL.GFX_COL_DARK_RED : GFX_COL.GFX_COL_GOLD;
 
@@ -812,7 +779,7 @@ namespace Elite
 		 * Draw an indicator bar.
 		 * Used for shields and energy banks.
 		 */
-        private static void display_dial_bar(int len, Vector2 position)
+        private static void display_dial_bar(float len, Vector2 position)
 		{
             elite.alg_gfx.DrawLine(new(position.X, position.Y + 384f), new(position.X + len, position.Y + 384f), GFX_COL.GFX_COL_GOLD);
 			int i = 1;
@@ -854,7 +821,7 @@ namespace Elite
 		{
 			if (elite.myship.cabtemp > 3)
 			{
-				display_dial_bar(elite.myship.cabtemp / 4, new(31f, 60f));
+				display_dial_bar(elite.myship.cabtemp / 4f, new(31f, 60f));
 			}
 		}
 
@@ -1073,7 +1040,7 @@ namespace Elite
 
 		internal static void display_hyper_status()
 		{
-			string str = $"{hyper_countdown:D}";
+			string str = $"{hyper_countdown}";
 
 			if (elite.current_screen is 
 				SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or

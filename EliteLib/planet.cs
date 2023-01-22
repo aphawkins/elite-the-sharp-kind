@@ -451,11 +451,13 @@ namespace Elite
 			pl.population += pl.economy;
 			pl.population++;
 
+
 			pl.productivity = (pl.economy ^ 7) + 3;
 			pl.productivity *= pl.government + 4;
-			pl.productivity *= pl.population;
+			pl.productivity *= (int)pl.population;
 			pl.productivity *= 8;
 
+			pl.population /= 10;
 			pl.radius = (((planet_seed.f & 15) + 11) * 256) + planet_seed.d;
 		}
 	}

@@ -12,7 +12,7 @@
         internal int rotz;
         internal FLG flags;
         internal int energy;
-        internal int velocity;
+        internal float velocity;
         internal int acceleration;
         internal int missiles;
         internal int target;

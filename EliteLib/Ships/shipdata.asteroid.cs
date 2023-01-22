@@ -67,7 +67,7 @@ namespace Elite.Ships
             0,
             6400,
             0,
-            5,
+            0.5f,
             50,
             60,
             30,

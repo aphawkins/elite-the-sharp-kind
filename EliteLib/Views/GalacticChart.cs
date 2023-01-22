@@ -25,21 +25,21 @@ namespace Elite.Views
         internal static List<(Vector2 position, string name)> planetNames = new();
 		internal static List<(Vector2 position, int size)> planetSizes = new();
 		internal static string planetName;
-        internal static int distanceToPlanet;
+        internal static float distanceToPlanet;
 
-        internal static int calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
+        internal static float calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
 		{
-            int dx = Math.Abs(to_planet.d - from_planet.d);
-            int dy = Math.Abs(to_planet.b - from_planet.b);
+            float dx = MathF.Abs(to_planet.d - from_planet.d);
+            float dy = MathF.Abs(to_planet.b - from_planet.b);
 
 			dx *= dx;
 			dy /= 2;
 			dy *= dy;
 
-            int light_years = (int)Math.Sqrt(dx + dy);
-			light_years *= 4;
+            float light_years = MathF.Sqrt(dx + dy);
+			light_years *= 4f;
 
-			return light_years;
+			return light_years / 10;
 		}
 
 		internal static void show_distance_to_planet()
@@ -149,8 +149,8 @@ namespace Elite.Views
 
 			for (int i = 0; i < 256; i++)
 			{
-				int dx = Math.Abs(glx.d - elite.docked_planet.d);
-				int dy = Math.Abs(glx.b - elite.docked_planet.b);
+				float dx = MathF.Abs(glx.d - elite.docked_planet.d);
+				float dy = MathF.Abs(glx.b - elite.docked_planet.b);
 
 				if ((dx >= 20) || (dy >= 38))
 				{

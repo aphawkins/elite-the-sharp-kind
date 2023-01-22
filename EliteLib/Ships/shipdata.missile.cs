@@ -4,8 +4,6 @@ namespace Elite.Ships
 
     internal static partial class shipdata
     {
-        // # include "shipdata.h" 
-
         private static ship_point[] missile_point = new ship_point[]
         {
             new(   0,    0,   68, 31,  1,  0,  3,  2),

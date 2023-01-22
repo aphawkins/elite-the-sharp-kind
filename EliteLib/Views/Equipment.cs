@@ -23,40 +23,40 @@ namespace Elite.Views
         private static int hilite_item;
         private static EquipmentItem[] EquipmentStock = new EquipmentItem[]
         {
-            new(false, true,   1,     2, " Fuel",                EquipmentType.EQ_FUEL),
-            new(false, true,   1,   300, " Missile",             EquipmentType.EQ_MISSILE),
-            new(false, true,   1,  4000, " Large Cargo Bay",     EquipmentType.EQ_CARGO_BAY),
-            new(false, true,   2,  6000, " E.C.M. System",       EquipmentType.EQ_ECM),
-            new(false, true,   5,  5250, " Fuel Scoops",         EquipmentType.EQ_FUEL_SCOOPS),
-            new(false, true,   6, 10000, " Escape Pod",          EquipmentType.EQ_ESCAPE_POD),
-            new(false, true,   7,  9000, " Energy Bomb",         EquipmentType.EQ_ENERGY_BOMB),
-            new(false, true,   8, 15000, " Extra Energy Unit",   EquipmentType.EQ_ENERGY_UNIT),
-            new(false, true,   9, 15000, " Docking Computers",   EquipmentType.EQ_DOCK_COMP),
-            new(false, true,  10, 50000, " Galactic Hyperdrive", EquipmentType.EQ_GAL_DRIVE),
-            new(false, false,  3,  4000, "+Pulse Laser",         EquipmentType.EQ_PULSE_LASER),
-            new(false, true,   3,     0, "-Pulse Laser",         EquipmentType.EQ_PULSE_LASER),
-            new(false, true,   3,  4000, ">Front",               EquipmentType.EQ_FRONT_PULSE),
-            new(false, true,   3,  4000, ">Rear",                EquipmentType.EQ_REAR_PULSE),
-            new(false, true,   3,  4000, ">Left",                EquipmentType.EQ_LEFT_PULSE),
-            new(false, true,   3,  4000, ">Right",               EquipmentType.EQ_RIGHT_PULSE),
-            new(false, true,   4, 10000, "+Beam Laser",          EquipmentType.EQ_BEAM_LASER),
-            new(false, false,  4,     0, "-Beam Laser",          EquipmentType.EQ_BEAM_LASER),
-            new(false, false,  4, 10000, ">Front",               EquipmentType.EQ_FRONT_BEAM),
-            new(false, false,  4, 10000, ">Rear",                EquipmentType.EQ_REAR_BEAM),
-            new(false, false,  4, 10000, ">Left",                EquipmentType.EQ_LEFT_BEAM),
-            new(false, false,  4, 10000, ">Right",               EquipmentType.EQ_RIGHT_BEAM),
-            new(false, true,  10,  8000, "+Mining Laser",        EquipmentType.EQ_MINING_LASER),
-            new(false, false, 10,     0, "-Mining Laser",        EquipmentType.EQ_MINING_LASER),
-            new(false, false, 10,  8000, ">Front",               EquipmentType.EQ_FRONT_MINING),
-            new(false, false, 10,  8000, ">Rear",                EquipmentType.EQ_REAR_MINING),
-            new(false, false, 10,  8000, ">Left",                EquipmentType.EQ_LEFT_MINING),
-            new(false, false, 10,  8000, ">Right",               EquipmentType.EQ_RIGHT_MINING),
-            new(false, true,  10, 60000, "+Military Laser",      EquipmentType.EQ_MILITARY_LASER),
-            new(false, false, 10,     0, "-Military Laser",      EquipmentType.EQ_MILITARY_LASER),
-            new(false, false, 10, 60000, ">Front",               EquipmentType.EQ_FRONT_MILITARY),
-            new(false, false, 10, 60000, ">Rear",                EquipmentType.EQ_REAR_MILITARY),
-            new(false, false, 10, 60000, ">Left",                EquipmentType.EQ_LEFT_MILITARY),
-            new(false, false, 10, 60000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
+            new(false, true,   1, 0.2f, " Fuel",                EquipmentType.EQ_FUEL),
+            new(false, true,   1,   30, " Missile",             EquipmentType.EQ_MISSILE),
+            new(false, true,   1,  400, " Large Cargo Bay",     EquipmentType.EQ_CARGO_BAY),
+            new(false, true,   2,  600, " E.C.M. System",       EquipmentType.EQ_ECM),
+            new(false, true,   5,  525, " Fuel Scoops",         EquipmentType.EQ_FUEL_SCOOPS),
+            new(false, true,   6, 1000, " Escape Pod",          EquipmentType.EQ_ESCAPE_POD),
+            new(false, true,   7,  900, " Energy Bomb",         EquipmentType.EQ_ENERGY_BOMB),
+            new(false, true,   8, 1500, " Extra Energy Unit",   EquipmentType.EQ_ENERGY_UNIT),
+            new(false, true,   9, 1500, " Docking Computers",   EquipmentType.EQ_DOCK_COMP),
+            new(false, true,  10, 5000, " Galactic Hyperdrive", EquipmentType.EQ_GAL_DRIVE),
+            new(false, false,  3,  400, "+Pulse Laser",         EquipmentType.EQ_PULSE_LASER),
+            new(false, true,   3,    0, "-Pulse Laser",         EquipmentType.EQ_PULSE_LASER),
+            new(false, true,   3,  400, ">Front",               EquipmentType.EQ_FRONT_PULSE),
+            new(false, true,   3,  400, ">Rear",                EquipmentType.EQ_REAR_PULSE),
+            new(false, true,   3,  400, ">Left",                EquipmentType.EQ_LEFT_PULSE),
+            new(false, true,   3,  400, ">Right",               EquipmentType.EQ_RIGHT_PULSE),
+            new(false, true,   4, 1000, "+Beam Laser",          EquipmentType.EQ_BEAM_LASER),
+            new(false, false,  4,    0, "-Beam Laser",          EquipmentType.EQ_BEAM_LASER),
+            new(false, false,  4, 1000, ">Front",               EquipmentType.EQ_FRONT_BEAM),
+            new(false, false,  4, 1000, ">Rear",                EquipmentType.EQ_REAR_BEAM),
+            new(false, false,  4, 1000, ">Left",                EquipmentType.EQ_LEFT_BEAM),
+            new(false, false,  4, 1000, ">Right",               EquipmentType.EQ_RIGHT_BEAM),
+            new(false, true,  10,  800, "+Mining Laser",        EquipmentType.EQ_MINING_LASER),
+            new(false, false, 10,    0, "-Mining Laser",        EquipmentType.EQ_MINING_LASER),
+            new(false, false, 10,  800, ">Front",               EquipmentType.EQ_FRONT_MINING),
+            new(false, false, 10,  800, ">Rear",                EquipmentType.EQ_REAR_MINING),
+            new(false, false, 10,  800, ">Left",                EquipmentType.EQ_LEFT_MINING),
+            new(false, false, 10,  800, ">Right",               EquipmentType.EQ_RIGHT_MINING),
+            new(false, true,  10, 6000, "+Military Laser",      EquipmentType.EQ_MILITARY_LASER),
+            new(false, false, 10,    0, "-Military Laser",      EquipmentType.EQ_MILITARY_LASER),
+            new(false, false, 10, 6000, ">Front",               EquipmentType.EQ_FRONT_MILITARY),
+            new(false, false, 10, 6000, ">Rear",                EquipmentType.EQ_REAR_MILITARY),
+            new(false, false, 10, 6000, ">Left",                EquipmentType.EQ_LEFT_MILITARY),
+            new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
         };
 
         private static bool equip_present(EquipmentType type)
@@ -135,7 +135,7 @@ namespace Elite.Views
         {
             int tech_level = elite.current_planet_data.techlevel + 1;
 
-            EquipmentStock[0].Price = (70 - elite.cmdr.fuel) * 2;
+            EquipmentStock[0].Price = (7 - elite.cmdr.fuel) * 2;
 
             for (int i = 0; i < EquipmentStock.Length; i++)
             {
@@ -156,14 +156,14 @@ namespace Elite.Views
             }
         }
 
-        private static int laser_refund(int laser_type)
+        private static float laser_refund(int laser_type)
         {
             return laser_type switch
             {
-                elite.PULSE_LASER => 4000,
-                elite.BEAM_LASER => 10000,
-                elite.MILITARY_LASER => 60000,
-                elite.MINING_LASER => 8000,
+                elite.PULSE_LASER => 400,
+                elite.BEAM_LASER => 1000,
+                elite.MILITARY_LASER => 6000,
+                elite.MINING_LASER => 800,
                 _ => 0,
             };
         }

@@ -201,7 +201,7 @@ namespace Elite
 				stars[i].Y = yy;
 				stars[i].X = xx;
 
-				if ((zz >= 300) || (Math.Abs(yy) >= 110))
+				if ((zz >= 300) || (MathF.Abs(yy) >= 110f))
 				{
 					stars[i].Z = (random.rand255() & 127) + 51;
 
@@ -291,13 +291,13 @@ namespace Elite
                     elite.alg_gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
 				}
 
-				if (Math.Abs(stars[i].X) >= 116)
+				if (MathF.Abs(stars[i].X) >= 116f)
 				{
 					stars[i].Y = random.rand255() - 128;
 					stars[i].X = (elite.current_screen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
 					stars[i].Z = random.rand255() | 8;
 				}
-				else if (Math.Abs(stars[i].Y) >= 116)
+				else if (MathF.Abs(stars[i].Y) >= 116f)
 				{
 					stars[i].X = random.rand255() - 128;
 					stars[i].Y = (alpha > 0) ? -110 : 110;

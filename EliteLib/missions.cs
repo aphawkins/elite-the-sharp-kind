@@ -220,7 +220,7 @@ namespace Elite
 
 			elite.cmdr.mission = 3;
 			elite.cmdr.score += 256;
-			elite.cmdr.credits += 50000;
+			elite.cmdr.credits += 5000;
 
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);

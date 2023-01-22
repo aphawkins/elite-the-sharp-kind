@@ -24,17 +24,6 @@
  * I have split it out to make it more understandable and easier to maintain.
  */
 
-//# include <math.h>
-//# include <stdlib.h>
-//# include <string.h>
-//# include "config.h"
-//# include "gfx.h"
-//# include "elite.h"
-//# include "vector.h"
-//# include "main.h"
-//# include "space.h"
-//# include "sound.h"
-
 namespace Elite
 {
 	using System.Numerics;
@@ -78,18 +67,17 @@ namespace Elite
 
 			ship.rotx = 0;
 
-			if ((Math.Abs(dir) * 2) >= rat2)
+			if ((MathF.Abs(dir) * 2) >= rat2)
 			{
 				ship.rotx = (dir < 0) ? rat : -rat;
 			}
 
-			if (Math.Abs(ship.rotz) < 16)
+			if (MathF.Abs(ship.rotz) < 16f)
 			{
 				dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[0]);
-
 				ship.rotz = 0;
 
-				if ((Math.Abs(dir) * 2) >= rat2)
+				if ((MathF.Abs(dir) * 2) >= rat2)
 				{
 					ship.rotz = (dir < 0) ? rat : -rat;
 
@@ -186,19 +174,19 @@ namespace Elite
 					ship.rotz = -ship.rotz;
 				}
 
-				if (Math.Abs(vec.X) >= 0.0625)
+				if (MathF.Abs(vec.X) >= 0.0625f)
 				{
 					ship.acceleration = 0;
 					ship.velocity = 1;
 					return;
 				}
 
-				if (Math.Abs(vec.Y) > 0.002436)
+				if (MathF.Abs(vec.Y) > 0.002436f)
 				{
 					ship.rotx = (vec.Y < 0) ? -1 : 1;
 				}
 
-				if (Math.Abs(vec.Y) >= 0.0625)
+				if (MathF.Abs(vec.Y) >= 0.0625f)
 				{
 					ship.acceleration = 0;
 					ship.velocity = 1;
@@ -210,7 +198,7 @@ namespace Elite
 
 			dir = VectorMaths.vector_dot_product(ship.rotmat[0], space.universe[1].rotmat[1]);
 
-			if (Math.Abs(dir) >= 0.9166)
+			if (MathF.Abs(dir) >= 0.9166f)
 			{
 				ship.acceleration++;
 				ship.rotz = 127;

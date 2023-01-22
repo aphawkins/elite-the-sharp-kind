@@ -13,7 +13,7 @@
             _gfx = gfx;
         }
 
-        internal void DrawGalacticChart(int galaxyNumber, IList<Vector2> planetPixels, string planetName, int distanceToPlanet)
+        internal void DrawGalacticChart(int galaxyNumber, IList<Vector2> planetPixels, string planetName, float distanceToPlanet)
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, "GALACTIC CHART " + galaxyNumber, 140, GFX_COL.GFX_COL_GOLD);
@@ -30,7 +30,7 @@
         internal void DrawShortRangeChart(IList<(Vector2 position, string name)> planetNames,
             IList<(Vector2 position, int size)> planetSizes,
             string planetName,
-            int lightYears)
+            float lightYears)
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
@@ -47,33 +47,33 @@
             DrawDistanceToPlanet(planetName, lightYears);
         }
 
-        private void DrawDistanceToPlanet(string planetName, int lightYears)
+        private void DrawDistanceToPlanet(string planetName, float lightYears)
         {
             _gfx.ClearTextArea();
             _gfx.DrawTextLeft(16, 340, $"{planetName:-18s}", GFX_COL.GFX_COL_WHITE);
             string str = lightYears > 0
-                ? $"Distance: {lightYears / 10}.{lightYears % 10} Light Years "
+                ? $"Distance: {lightYears:N1} Light Years "
                 : "                                                     ";
             _gfx.DrawTextLeft(16, 356, str, GFX_COL.GFX_COL_WHITE);
         }
 
-        internal void DrawDataOnPlanet(string planetName, int lightYears, string economy,
-            string government, int techLevel, int population, string inhabitants,
+        internal void DrawDataOnPlanet(string planetName, float lightYears, string economy,
+            string government, int techLevel, float population, string inhabitants,
             int productivity, int radius, string description)
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, $"DATA ON {planetName}", 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             string str = lightYears > 0
-                ? $"Distance: {lightYears / 10}.{lightYears % 10} Light Years "
+                ? $"Distance: {lightYears:N1} Light Years "
                 : "                                                     ";
             _gfx.DrawTextLeft(16, 42, str, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 74, $"Economy: {economy}", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 106, $"Government: {government}", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 138, $"Tech Level: {techLevel}", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 170, $"Population: {population / 10}.{population % 10} Billion", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 170, $"Population: {population:N1} Billion", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 202, inhabitants, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 234, $"Gross Productivity: {productivity} M CR", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 234, $"Gross Productivity: {productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 266, $"Average Radius: {radius} km", GFX_COL.GFX_COL_WHITE);
             DrawTextPretty(16, 298, 400, 384, description);
         }
@@ -85,12 +85,12 @@
 
             if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
             {
-                radius = elite.cmdr.fuel / 4 * gfx.GFX_SCALE;
+                radius = elite.cmdr.fuel * 2.5f * gfx.GFX_SCALE;
                 cross_size = 7f * gfx.GFX_SCALE;
             }
             else
             {
-                radius = elite.cmdr.fuel * gfx.GFX_SCALE;
+                radius = elite.cmdr.fuel * 10 * gfx.GFX_SCALE;
                 cross_size = 16f * gfx.GFX_SCALE;
             }
 
@@ -142,7 +142,7 @@
             _gfx.ScreenUpdate();
         }
 
-        internal void DrawMarketPrices(string planetName, stock_item[] stocks, int highlightedStock, int[] currentCargo, int credits)
+        internal void DrawMarketPrices(string planetName, stock_item[] stocks, int highlightedStock, int[] currentCargo, float credits)
         {
             _gfx.ClearDisplay();
 
@@ -167,7 +167,7 @@
 
                 _gfx.DrawTextLeft(180, y, stocks[i].units, GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextRight(285, y, $"{stocks[i].current_price / 10}.{stocks[i].current_price % 10}", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextRight(285, y, $"{stocks[i].current_price:N1}", GFX_COL.GFX_COL_WHITE);
 
                 _gfx.DrawTextRight(365, y, stocks[i].current_quantity > 0 ? $"{stocks[i].current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
                 _gfx.DrawTextLeft(365, y, stocks[i].current_quantity > 0 ? stocks[i].units : "", GFX_COL.GFX_COL_WHITE);
@@ -177,10 +177,10 @@
             }
 
             _gfx.ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, $"Cash: {credits / 10, 10:R}.{credits % 10} credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 340, $"Cash: {credits, 10:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
 
-        internal void DrawEquipShip(EquipmentItem[] equip_stock, int highlightedItem, int credits)
+        internal void DrawEquipShip(EquipmentItem[] equip_stock, int highlightedItem, float credits)
         {
             _gfx.ClearDisplay();
             _gfx.DrawTextCentre(20, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
@@ -207,14 +207,14 @@
 
                 if (equip_stock[i].Price != 0)
                 {
-                    _gfx.DrawTextRight(450, y, $"{equip_stock[i].Price / 10}.{equip_stock[i].Price % 10}", col);
+                    _gfx.DrawTextRight(450, y, $"{equip_stock[i].Price:N1}", col);
                 }
 
                 y += 15;
             }
 
             _gfx.ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, $"Cash: {credits / 10, 10:R}.{credits % 10} credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 340, $"Cash: {credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
     }
 }

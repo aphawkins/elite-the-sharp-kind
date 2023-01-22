@@ -9,8 +9,8 @@
         public int mission { get; set; }
         public Vector2 shiplocation { get; set; }
         public galaxy_seed galaxy { get; set; }
-        public int credits { get; set; }
-        public int fuel { get; set; }
+        public float credits { get; set; }
+        public float fuel { get; set; }
         public int galaxy_number { get; set; }
         public int front_laser { get; set; }
         public int rear_laser { get; set; }
@@ -33,7 +33,7 @@
         public int score { get; set; }
         public int saved { get; set; }
 
-        public Commander(string name, int mission, Vector2 shipLocation, galaxy_seed galaxy, int credits, int fuel, 
+        public Commander(string name, int mission, Vector2 shipLocation, galaxy_seed galaxy, float credits, float fuel, 
             int galaxy_number, int front_laser, int rear_laser, int left_laser, int right_laser, int cargo_capacity,
             int[] current_cargo, bool ecm, bool fuel_scoop, bool energy_bomb, int energy_unit, bool docking_computer, bool galactic_hyperdrive, bool escape_pod,
             int missiles, int legal_status, int[] station_stock, int market_rnd, int score, int saved)

@@ -947,8 +947,8 @@ namespace Elite
 				return;
 			}
 
-			if ((Math.Abs(ship.location.X) > ship.location.Z) ||    /* Check for field of vision. */
-				(Math.Abs(ship.location.Y) > ship.location.Z))
+			if ((MathF.Abs(ship.location.X) > ship.location.Z) ||    /* Check for field of vision. */
+				(MathF.Abs(ship.location.Y) > ship.location.Z))
             {
                 return;
             }

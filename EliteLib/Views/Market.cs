@@ -98,34 +98,25 @@ namespace Elite.Views
 
         internal static void display_inventory()
         {
-            int i;
-            int y;
-            string str;
-
             elite.current_screen = SCR.SCR_INVENTORY;
 
             elite.alg_gfx.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
-            str = $"{elite.cmdr.fuel / 10:D}.{elite.cmdr.fuel % 10:D} Light Years";
             elite.alg_gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            elite.alg_gfx.DrawTextLeft(70, 50, str, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.DrawTextLeft(70, 50, $"{elite.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
-            str = $"{elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D} Cr";
             elite.alg_gfx.DrawTextLeft(16, 66, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            elite.alg_gfx.DrawTextLeft(70, 66, str, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.DrawTextLeft(70, 66, $"{elite.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
 
-            y = 98;
-            for (i = 0; i < 17; i++)
+            int y = 98;
+            for (int i = 0; i < 17; i++)
             {
                 if (elite.cmdr.current_cargo[i] > 0)
                 {
                     elite.alg_gfx.DrawTextLeft(16, y, trade.stock_market[i].name, GFX_COL.GFX_COL_WHITE);
-
-                    str = $"{elite.cmdr.current_cargo[i]}{trade.stock_market[i].units}";
-
-                    elite.alg_gfx.DrawTextLeft(180, y, str, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.DrawTextLeft(180, y, $"{elite.cmdr.current_cargo[i]}{trade.stock_market[i].units}", GFX_COL.GFX_COL_WHITE);
                     y += 16;
                 }
             }

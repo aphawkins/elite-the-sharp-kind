@@ -39,8 +39,6 @@ namespace Elite
 		internal static galaxy_seed hyperspace_planet;
 		internal static planet_data current_planet_data = new();
 
-		//static int curr_galaxy_num = 1;
-		//static int curr_fuel = 70;
 		internal static int carry_flag = 0;
 		internal static SCR current_screen = 0;
 		internal static bool witchspace;
@@ -54,7 +52,7 @@ namespace Elite
 		internal static bool game_over;
 		internal static bool docked;
 		internal static bool finish;
-		internal static int flight_speed;
+		internal static float flight_speed;
 		internal static int flight_roll;
 		internal static int flight_climb;
 		internal static int front_shield;
@@ -64,7 +62,7 @@ namespace Elite
 		internal static bool detonate_bomb;
 		internal static bool auto_pilot;
 
-#if !DEBUG
+#if DEBUG
         internal static Commander saved_cmdr = CommanderFactory.Max();
 #else
 		internal static Commander saved_cmdr = CommanderFactory.Jameson();
@@ -172,7 +170,7 @@ namespace Elite
             myship.max_speed = 40;      /* 0.27 Light Mach */
             myship.max_roll = 31;
             myship.max_climb = 8;       /* CF 8 */
-            myship.max_fuel = 70;       /* 7.0 Light Years */
+            myship.max_fuel = 7;        // 7.0 Light Years
         }
 
         private static void finish_game()

@@ -60,7 +60,6 @@ namespace Elite.Views
         internal static void display_commander_status()
         {
             string planet_name;
-            string str;
             int i;
             int x, y;
             int condition;
@@ -70,9 +69,7 @@ namespace Elite.Views
 
             elite.alg_gfx.ClearDisplay();
 
-            str = "COMMANDER " + elite.cmdr.name;
-
-            elite.alg_gfx.DrawTextCentre(20, str, 140, GFX_COL.GFX_COL_GOLD);
+            elite.alg_gfx.DrawTextCentre(20, $"COMMANDER {elite.cmdr.name}", 140, GFX_COL.GFX_COL_GOLD);
 
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
@@ -82,15 +79,13 @@ namespace Elite.Views
             {
                 planet_name = Planet.name_planet(elite.docked_planet);
                 planet_name = Planet.capitalise_name(planet_name);
-                str = planet_name;
-                elite.alg_gfx.DrawTextLeft(190, 58, str, GFX_COL.GFX_COL_WHITE);
+                elite.alg_gfx.DrawTextLeft(190, 58, planet_name, GFX_COL.GFX_COL_WHITE);
             }
 
             elite.alg_gfx.DrawTextLeft(16, 74, "Hyperspace System:", GFX_COL.GFX_COL_GREEN_1);
             planet_name = Planet.name_planet(elite.hyperspace_planet);
             planet_name = Planet.capitalise_name(planet_name);
-            str = planet_name;
-            elite.alg_gfx.DrawTextLeft(190, 74, str, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.DrawTextLeft(190, 74, planet_name, GFX_COL.GFX_COL_WHITE);
 
             if (elite.docked)
             {
@@ -120,19 +115,16 @@ namespace Elite.Views
             elite.alg_gfx.DrawTextLeft(16, 90, "Condition:", GFX_COL.GFX_COL_GREEN_1);
             elite.alg_gfx.DrawTextLeft(190, 90, condition_txt[condition], GFX_COL.GFX_COL_WHITE);
 
-            str = $"{elite.cmdr.fuel / 10:D}.{elite.cmdr.fuel % 10:D} Light Years";
             elite.alg_gfx.DrawTextLeft(16, 106, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            elite.alg_gfx.DrawTextLeft(70, 106, str, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.DrawTextLeft(70, 106, $"{elite.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
-            str = $"{elite.cmdr.credits / 10:D}.{elite.cmdr.credits % 10:D} Cr";
             elite.alg_gfx.DrawTextLeft(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            elite.alg_gfx.DrawTextLeft(70, 122, str, GFX_COL.GFX_COL_WHITE);
-
-            str = elite.cmdr.legal_status == 0 ? "Clean" : elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender";
+            elite.alg_gfx.DrawTextLeft(70, 122, $"{elite.cmdr.credits:N1} credits", GFX_COL.GFX_COL_WHITE);
 
             elite.alg_gfx.DrawTextLeft(16, 138, "Legal Status:", GFX_COL.GFX_COL_GREEN_1);
-            elite.alg_gfx.DrawTextLeft(128, 138, str, GFX_COL.GFX_COL_WHITE);
+            elite.alg_gfx.DrawTextLeft(128, 138, elite.cmdr.legal_status == 0 ? "Clean" : elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);
 
+            string str = string.Empty;
             foreach ((int score, string title) in ratings)
             {
                 if (elite.cmdr.score >= score)

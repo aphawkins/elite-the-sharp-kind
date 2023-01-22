@@ -123,7 +123,7 @@ namespace Elite
 					space.universe[i].location.Y = y;
 					space.universe[i].location.Z = z;
 
-					space.universe[i].distance = (int)Math.Sqrt((x * x) + (y * y) + (z * z));
+					space.universe[i].distance = space.universe[i].location.Length();
 
 					space.universe[i].rotmat = new Vector3[3];
                     space.universe[i].rotmat[0] = rotmat[0];
@@ -483,18 +483,18 @@ namespace Elite
 
 			ship.rotx = 0;
 
-			if ((Math.Abs(dir) * 2) >= rat2)
+			if ((MathF.Abs(dir) * 2f) >= rat2)
 			{
 				ship.rotx = (dir < 0) ? rat : -rat;
 			}
 
-			if (Math.Abs(ship.rotz) < 16)
+			if (MathF.Abs(ship.rotz) < 16f)
 			{
 				dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[0]);
 
 				ship.rotz = 0;
 
-				if ((Math.Abs(dir) * 2) > rat2)
+				if ((MathF.Abs(dir) * 2f) > rat2)
 				{
 					ship.rotz = (dir < 0) ? rat : -rat;
 
@@ -547,7 +547,7 @@ namespace Elite
 				vec.Y = missile.location.Y - target.location.Y;
 				vec.Z = missile.location.Z - target.location.Z;
 
-				if ((Math.Abs(vec.X) < 256) && (Math.Abs(vec.Y) < 256) && (Math.Abs(vec.Z) < 256))
+				if ((MathF.Abs(vec.X) < 256f) && (MathF.Abs(vec.Y) < 256f) && (MathF.Abs(vec.Z) < 256f))
 				{
 					missile.flags |= FLG.FLG_DEAD;
 
@@ -831,7 +831,7 @@ namespace Elite
 				}
 
 				//		if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
-				if (Math.Abs(ship.location.Z) < 768)
+				if (MathF.Abs(ship.location.Z) < 768f)
 				{
 					ship.rotx = random.rand255() & 0x87;
 					if (ship.rotx > 127)
@@ -850,9 +850,9 @@ namespace Elite
 
 			attacking = 0;
 
-			if ((Math.Abs(ship.location.Z) >= 768) ||
-				(Math.Abs(ship.location.X) >= 512) ||
-				(Math.Abs(ship.location.Y) >= 512))
+			if ((MathF.Abs(ship.location.Z) >= 768f) ||
+				(MathF.Abs(ship.location.X) >= 512f) ||
+				(MathF.Abs(ship.location.Y) >= 512f))
 			{
 				if (ship.bravery > (random.rand255() & 127))
 				{

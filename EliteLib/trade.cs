@@ -33,23 +33,23 @@ namespace Elite
 		*/
 		internal static stock_item[] stock_market = new stock_item[]
 		{
-			new("Food",         0, 0,  19, -2,   6, 0x01, TONNES),
-			new("Textiles",     0, 0,  20, -1,  10, 0x03, TONNES),
-			new("Radioactives", 0, 0,  65, -3,   2, 0x07, TONNES),
-			new("Slaves",       0, 0,  40, -5, 226, 0x1F, TONNES),
-			new("Liquor/Wines", 0, 0,  83, -5, 251, 0x0F, TONNES),
-			new("Luxuries",     0, 0, 196,  8,  54, 0x03, TONNES),
-			new("Narcotics",    0, 0, 235, 29,   8, 0x78, TONNES),
-			new("Computers",    0, 0, 154, 14,  56, 0x03, TONNES),
-			new("Machinery",    0, 0, 117,  6,  40, 0x07, TONNES),
-			new("Alloys",       0, 0,  78,  1,  17, 0x1F, TONNES),
-			new("Firearms",     0, 0, 124, 13,  29, 0x07, TONNES),
-			new("Furs",         0, 0, 176, -9, 220, 0x3F, TONNES),
-			new("Minerals",     0, 0,  32, -1,  53, 0x03, TONNES),
-			new("Gold",         0, 0,  97, -1,  66, 0x07, KILOGRAMS),
-			new("Platinum",     0, 0, 171, -2,  55, 0x1F, KILOGRAMS),
-			new("Gem-Stones",   0, 0,  45, -1, 250, 0x0F, GRAMS),
-			new("Alien Items",  0, 0,  53, 15, 192, 0x07, TONNES),
+			new("Food",         0, 0,  1.9f, -2,   6, 0x01, TONNES),
+			new("Textiles",     0, 0,  2.0f, -1,  10, 0x03, TONNES),
+			new("Radioactives", 0, 0,  6.5f, -3,   2, 0x07, TONNES),
+			new("Slaves",       0, 0,  4.0f, -5, 226, 0x1F, TONNES),
+			new("Liquor/Wines", 0, 0,  8.3f, -5, 251, 0x0F, TONNES),
+			new("Luxuries",     0, 0, 19.6f,  8,  54, 0x03, TONNES),
+			new("Narcotics",    0, 0, 23.5f, 29,   8, 0x78, TONNES),
+			new("Computers",    0, 0, 15.4f, 14,  56, 0x03, TONNES),
+			new("Machinery",    0, 0, 11.7f,  6,  40, 0x07, TONNES),
+			new("Alloys",       0, 0,  7.8f,  1,  17, 0x1F, TONNES),
+			new("Firearms",     0, 0, 12.4f, 13,  29, 0x07, TONNES),
+			new("Furs",         0, 0, 17.6f, -9, 220, 0x3F, TONNES),
+			new("Minerals",     0, 0,  3.2f, -1,  53, 0x03, TONNES),
+			new("Gold",         0, 0,  9.7f, -1,  66, 0x07, KILOGRAMS),
+			new("Platinum",     0, 0, 17.1f, -2,  55, 0x1F, KILOGRAMS),
+			new("Gem-Stones",   0, 0,  4.5f, -1, 250, 0x0F, GRAMS),
+			new("Alien Items",  0, 0,  5.3f, 15, 192, 0x07, TONNES),
 		};
 
 		/*
@@ -61,35 +61,25 @@ namespace Elite
 		internal static void generate_stock_market()
 		{
 			int quant;
-			int price;
+			float price;
 			int i;
 
 			for (i = 0; i < stock_market.Length; i++)
 			{
 				price = stock_market[i].base_price;                             /* Start with the base price	*/
-				price += elite.cmdr.market_rnd & stock_market[i].mask;                  /* Add in a random amount		*/
-				price += elite.current_planet_data.economy * stock_market[i].eco_adjust;    /* Adjust for planet economy	*/
-				price &= 255;                                                       /* Only need bottom 8 bits		*/
+				price += (elite.cmdr.market_rnd & stock_market[i].mask) / 10;                  /* Add in a random amount		*/
+				price += elite.current_planet_data.economy * stock_market[i].eco_adjust / 10;    /* Adjust for planet economy	*/
 
 				quant = stock_market[i].base_quantity;                              /* Start with the base quantity */
 				quant += elite.cmdr.market_rnd & stock_market[i].mask;                  /* Add in a random amount		*/
 				quant -= elite.current_planet_data.economy * stock_market[i].eco_adjust;    /* Adjust for planet economy	*/
-				quant &= 255;                                                       /* Only need bottom 8 bits		*/
-
-				if (quant > 127)    /* In an 8-bit environment '>127' would be negative */
-                {
-                    quant = 0;      /* So we set it to a minimum of zero. */
-                }
-
-                quant &= 63;        /* Quantities range from 0..63 */
+				quant = Math.Clamp(quant, 0, 63); // Quantities range from 0..63
 
 				stock_market[i].current_price = price * 4;
 				stock_market[i].current_quantity = quant;
 			}
 
-
 			/* Alien Items are never available for purchase... */
-
 			stock_market[ALIEN_ITEMS_IDX].current_quantity = 0;
 		}
 
