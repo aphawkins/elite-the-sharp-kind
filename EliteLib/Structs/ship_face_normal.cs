@@ -1,18 +1,16 @@
 ﻿namespace Elite.Structs
 {
+    using System.Numerics;
+
     internal class ship_face_normal
     {
         internal int dist;
-        internal int x;
-        internal int y;
-        internal int z;
+        internal Vector3 direction;
 
-        internal ship_face_normal(int dist, int x, int y, int z)
+        internal ship_face_normal(int dist, Vector3 direction)
         {
             this.dist = dist;
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.direction = direction;
         }
     };
 }

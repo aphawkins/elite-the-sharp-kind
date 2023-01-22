@@ -6,16 +6,16 @@ namespace Elite.Ships
     {
         private static ship_point[] cargo_point = new ship_point[]
         {
-            new(  24,   16,    0, 31,  1,  0,  5,  5),
-            new(  24,    5,   15, 31,  1,  0,  2,  2),
-            new(  24,  -13,    9, 31,  2,  0,  3,  3),
-            new(  24,  -13,   -9, 31,  3,  0,  4,  4),
-            new(  24,    5,  -15, 31,  4,  0,  5,  5),
-            new( -24,   16,    0, 31,  5,  1,  6,  6),
-            new( -24,    5,   15, 31,  2,  1,  6,  6),
-            new( -24,  -13,    9, 31,  3,  2,  6,  6),
-            new( -24,  -13,   -9, 31,  4,  3,  6,  6),
-            new( -24,    5,  -15, 31,  5,  4,  6,  6),
+            new(new(  24,   16,    0), 31,  1,  0,  5,  5),
+            new(new(  24,    5,   15), 31,  1,  0,  2,  2),
+            new(new(  24,  -13,    9), 31,  2,  0,  3,  3),
+            new(new(  24,  -13,   -9), 31,  3,  0,  4,  4),
+            new(new(  24,    5,  -15), 31,  4,  0,  5,  5),
+            new(new( -24,   16,    0), 31,  5,  1,  6,  6),
+            new(new( -24,    5,   15), 31,  2,  1,  6,  6),
+            new(new( -24,  -13,    9), 31,  3,  2,  6,  6),
+            new(new( -24,  -13,   -9), 31,  4,  3,  6,  6),
+            new(new( -24,    5,  -15), 31,  5,  4,  6,  6),
         };
 
         private static ship_line[] cargo_line = new ship_line[]
@@ -39,13 +39,13 @@ namespace Elite.Ships
 
         private static ship_face_normal[] cargo_face_normal = new ship_face_normal[7]
         {
-            new ship_face_normal(31,   96,    0,    0),
-            new ship_face_normal(31,    0,   41,   30),
-            new ship_face_normal(31,    0,  -18,   48),
-            new ship_face_normal(31,    0,  -51,    0),
-            new ship_face_normal(31,    0,  -18,  -48),
-            new ship_face_normal(31,    0,   41,  -30),
-            new ship_face_normal(31,  -96,    0,    0),
+            new ship_face_normal(31, new(  96,    0,    0)),
+            new ship_face_normal(31, new(   0,   41,   30)),
+            new ship_face_normal(31, new(   0,  -18,   48)),
+            new ship_face_normal(31, new(   0,  -51,    0)),
+            new ship_face_normal(31, new(   0,  -18,  -48)),
+            new ship_face_normal(31, new(   0,   41,  -30)),
+            new ship_face_normal(31, new( -96,    0,    0)),
         };
 
         internal static ship_data cargo_data = new(

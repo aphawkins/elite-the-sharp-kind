@@ -6,22 +6,22 @@ namespace Elite.Ships
     {
         private static ship_point[] coriolis_point = new ship_point[]
         {
-            new( 160,    0,  160, 31,  1,  0,  6,  2),
-            new(   0,  160,  160, 31,  2,  0,  8,  3),
-            new(-160,    0,  160, 31,  3,  0,  7,  4),
-            new(   0, -160,  160, 31,  1,  0,  5,  4),
-            new( 160, -160,    0, 31,  5,  1, 10,  6),
-            new( 160,  160,    0, 31,  6,  2, 11,  8),
-            new(-160,  160,    0, 31,  7,  3, 12,  8),
-            new(-160, -160,    0, 31,  5,  4,  9,  7),
-            new( 160,    0, -160, 31, 10,  6, 13, 11),
-            new(   0,  160, -160, 31, 11,  8, 13, 12),
-            new(-160,    0, -160, 31,  9,  7, 13, 12),
-            new(   0, -160, -160, 31,  9,  5, 13, 10),
-            new(  10,  -30,  160, 30,  0,  0,  0,  0),
-            new(  10,   30,  160, 30,  0,  0,  0,  0),
-            new( -10,   30,  160, 30,  0,  0,  0,  0),
-            new( -10,  -30,  160, 30,  0,  0,  0,  0),
+            new(new( 160,    0,  160), 31,  1,  0,  6,  2),
+            new(new(   0,  160,  160), 31,  2,  0,  8,  3),
+            new(new(-160,    0,  160), 31,  3,  0,  7,  4),
+            new(new(   0, -160,  160), 31,  1,  0,  5,  4),
+            new(new( 160, -160,    0), 31,  5,  1, 10,  6),
+            new(new( 160,  160,    0), 31,  6,  2, 11,  8),
+            new(new(-160,  160,    0), 31,  7,  3, 12,  8),
+            new(new(-160, -160,    0), 31,  5,  4,  9,  7),
+            new(new( 160,    0, -160), 31, 10,  6, 13, 11),
+            new(new(   0,  160, -160), 31, 11,  8, 13, 12),
+            new(new(-160,    0, -160), 31,  9,  7, 13, 12),
+            new(new(   0, -160, -160), 31,  9,  5, 13, 10),
+            new(new(  10,  -30,  160), 30,  0,  0,  0,  0),
+            new(new(  10,   30,  160), 30,  0,  0,  0,  0),
+            new(new( -10,   30,  160), 30,  0,  0,  0,  0),
+            new(new( -10,  -30,  160), 30,  0,  0,  0,  0),
         };
 
         private static ship_line[] coriolis_line = new ship_line[]
@@ -58,20 +58,20 @@ namespace Elite.Ships
 
         private static ship_face_normal[] coriolis_face_normal = new ship_face_normal[14]
         {
-            new ship_face_normal(31,    0,    0,  160),
-            new ship_face_normal(31,  107, -107,  107),
-            new ship_face_normal(31,  107,  107,  107),
-            new ship_face_normal(31, -107,  107,  107),
-            new ship_face_normal(31, -107, -107,  107),
-            new ship_face_normal(31,    0, -160,    0),
-            new ship_face_normal(31,  160,    0,    0),
-            new ship_face_normal(31, -160,    0,    0),
-            new ship_face_normal(31,    0,  160,    0),
-            new ship_face_normal(31, -107, -107, -107),
-            new ship_face_normal(31,  107, -107, -107),
-            new ship_face_normal(31,  107,  107, -107),
-            new ship_face_normal(31, -107,  107, -107),
-            new ship_face_normal(31,    0,    0, -160),
+            new ship_face_normal(31, new(   0,    0,  160)),
+            new ship_face_normal(31, new( 107, -107,  107)),
+            new ship_face_normal(31, new( 107,  107,  107)),
+            new ship_face_normal(31, new(-107,  107,  107)),
+            new ship_face_normal(31, new(-107, -107,  107)),
+            new ship_face_normal(31, new(   0, -160,    0)),
+            new ship_face_normal(31, new( 160,    0,    0)),
+            new ship_face_normal(31, new(-160,    0,    0)),
+            new ship_face_normal(31, new(   0,  160,    0)),
+            new ship_face_normal(31, new(-107, -107, -107)),
+            new ship_face_normal(31, new( 107, -107, -107)),
+            new ship_face_normal(31, new( 107,  107, -107)),
+            new ship_face_normal(31, new(-107,  107, -107)),
+            new ship_face_normal(31, new(   0,    0, -160)),
         };
 
         internal static ship_data coriolis_data = new(

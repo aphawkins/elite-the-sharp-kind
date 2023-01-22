@@ -6,16 +6,16 @@ namespace Elite.Ships
     {
         internal static ship_point[] sidewnd_point = new ship_point[]
         {
-            new( -32,    0,   36, 31,  1,  0,  5,  4),
-            new(  32,    0,   36, 31,  2,  0,  6,  5),
-            new(  64,    0,  -28, 31,  3,  2,  6,  6),
-            new( -64,    0,  -28, 31,  3,  1,  4,  4),
-            new(   0,   16,  -28, 31,  1,  0,  3,  2),
-            new(   0,  -16,  -28, 31,  4,  3,  6,  5),
-            new( -12,    6,  -28, 15,  3,  3,  3,  3),
-            new(  12,    6,  -28, 15,  3,  3,  3,  3),
-            new(  12,   -6,  -28, 12,  3,  3,  3,  3),
-            new( -12,   -6,  -28, 12,  3,  3,  3,  3),
+            new(new( -32,    0,   36), 31,  1,  0,  5,  4),
+            new(new(  32,    0,   36), 31,  2,  0,  6,  5),
+            new(new(  64,    0,  -28), 31,  3,  2,  6,  6),
+            new(new( -64,    0,  -28), 31,  3,  1,  4,  4),
+            new(new(   0,   16,  -28), 31,  1,  0,  3,  2),
+            new(new(   0,  -16,  -28), 31,  4,  3,  6,  5),
+            new(new( -12,    6,  -28), 15,  3,  3,  3,  3),
+            new(new(  12,    6,  -28), 15,  3,  3,  3,  3),
+            new(new(  12,   -6,  -28), 12,  3,  3,  3,  3),
+            new(new( -12,   -6,  -28), 12,  3,  3,  3,  3),
         };
 
         internal static ship_line[] sidewnd_line = new ship_line[]
@@ -39,13 +39,13 @@ namespace Elite.Ships
 
         internal static ship_face_normal[] sidewnd_face_normal = new ship_face_normal[7]
         {
-            new(31,    0,   32,    8),
-            new(31,  -12,   47,    6),
-            new(31,   12,   47,    6),
-            new(31,    0,    0, -112),
-            new(31,  -12,  -47,    6),
-            new(31,    0,  -32,    8),
-            new(31,   12,  -47,    6),
+            new(31, new(   0,   32,    8)),
+            new(31, new( -12,   47,    6)),
+            new(31, new(  12,   47,    6)),
+            new(31, new(   0,    0, -112)),
+            new(31, new( -12,  -47,    6)),
+            new(31, new(   0,  -32,    8)),
+            new(31, new(  12,  -47,    6)),
         };
 
         internal static ship_data sidewnd_data = new(

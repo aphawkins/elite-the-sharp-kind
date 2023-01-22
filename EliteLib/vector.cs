@@ -32,7 +32,7 @@ namespace Elite
 			new Vector3(0f, 0f,-1f)
 		};
 
-		internal static void mult_vector(ref Vector3 vec, Vector3[] mat)
+		internal static Vector3 mult_vector(Vector3 vec, Vector3[] mat)
 		{
 			Matrix4x4 matrix = new(
 				mat[0].X, mat[0].Y, mat[0].Z, 0f,
@@ -40,7 +40,7 @@ namespace Elite
 				mat[2].X, mat[2].Y, mat[2].Z, 0f,
 				0f, 0f, 0f, 0f);
 
-            vec = Vector3.TransformNormal(vec, matrix);
+            return Vector3.TransformNormal(vec, matrix);
 		}
 
 		/// <summary>

@@ -6,15 +6,15 @@ namespace Elite.Ships
     {
         private static ship_point[]  asteroid_point = new ship_point[]
         {
-            new(   0,   80,    0, 31, 15, 15, 15, 15),
-            new( -80,  -10,    0, 31, 15, 15, 15, 15),
-            new(   0,  -80,    0, 31, 15, 15, 15, 15),
-            new(  70,  -40,    0, 31, 15, 15, 15, 15),
-            new(  60,   50,    0, 31,  6,  5, 13, 12),
-            new(  50,    0,   60, 31, 15, 15, 15, 15),
-            new( -40,    0,   70, 31,  1,  0,  3,  2),
-            new(   0,   30,  -75, 31, 15, 15, 15, 15),
-            new(   0,  -50,  -60, 31,  9,  8, 11, 10),
+            new(new(   0,   80,    0), 31, 15, 15, 15, 15),
+            new(new( -80,  -10,    0), 31, 15, 15, 15, 15),
+            new(new(   0,  -80,    0), 31, 15, 15, 15, 15),
+            new(new(  70,  -40,    0), 31, 15, 15, 15, 15),
+            new(new(  60,   50,    0), 31,  6,  5, 13, 12),
+            new(new(  50,    0,   60), 31, 15, 15, 15, 15),
+            new(new( -40,    0,   70), 31,  1,  0,  3,  2),
+            new(new(   0,   30,  -75), 31, 15, 15, 15, 15),
+            new(new(   0,  -50,  -60), 31,  9,  8, 11, 10),
         };
 
         private static ship_line[] asteroid_line = new ship_line[]
@@ -44,20 +44,20 @@ namespace Elite.Ships
 
         private static ship_face_normal[] asteroid_face_normal = new ship_face_normal[14]
         {
-            new ship_face_normal(31,    9,   66,   81),
-            new ship_face_normal(31,    9,  -66,   81),
-            new ship_face_normal(31,  -72,   64,   31),
-            new ship_face_normal(31,  -64,  -73,   47),
-            new ship_face_normal(31,   45,  -79,   65),
-            new ship_face_normal(31,  135,   15,   35),
-            new ship_face_normal(31,   38,   76,   70),
-            new ship_face_normal(31,  -66,   59,  -39),
-            new ship_face_normal(31,  -67,  -15,  -80),
-            new ship_face_normal(31,   66,  -14,  -75),
-            new ship_face_normal(31,  -70,  -80,  -40),
-            new ship_face_normal(31,   58, -102,  -51),
-            new ship_face_normal(31,   81,    9,  -67),
-            new ship_face_normal(31,   47,   94,  -63),
+            new ship_face_normal(31, new(   9,   66,   81)),
+            new ship_face_normal(31, new(   9,  -66,   81)),
+            new ship_face_normal(31, new( -72,   64,   31)),
+            new ship_face_normal(31, new( -64,  -73,   47)),
+            new ship_face_normal(31, new(  45,  -79,   65)),
+            new ship_face_normal(31, new( 135,   15,   35)),
+            new ship_face_normal(31, new(  38,   76,   70)),
+            new ship_face_normal(31, new( -66,   59,  -39)),
+            new ship_face_normal(31, new( -67,  -15,  -80)),
+            new ship_face_normal(31, new(  66,  -14,  -75)),
+            new ship_face_normal(31, new( -70,  -80,  -40)),
+            new ship_face_normal(31, new(  58, -102,  -51)),
+            new ship_face_normal(31, new(  81,    9,  -67)),
+            new ship_face_normal(31, new(  47,   94,  -63)),
         };
 
         internal static ship_data asteroid_data = new(

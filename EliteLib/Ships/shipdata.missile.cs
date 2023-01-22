@@ -6,23 +6,23 @@ namespace Elite.Ships
     {
         private static ship_point[] missile_point = new ship_point[]
         {
-            new(   0,    0,   68, 31,  1,  0,  3,  2),
-            new(   8,   -8,   36, 31,  2,  1,  5,  4),
-            new(   8,    8,   36, 31,  3,  2,  7,  4),
-            new(  -8,    8,   36, 31,  3,  0,  7,  6),
-            new(  -8,   -8,   36, 31,  1,  0,  6,  5),
-            new(   8,    8,  -44, 31,  7,  4,  8,  8),
-            new(   8,   -8,  -44, 31,  5,  4,  8,  8),
-            new(  -8,   -8,  -44, 31,  6,  5,  8,  8),
-            new(  -8,    8,  -44, 31,  7,  6,  8,  8),
-            new(  12,   12,  -44,  8,  7,  4,  8,  8),
-            new(  12,  -12,  -44,  8,  5,  4,  8,  8),
-            new( -12,  -12,  -44,  8,  6,  5,  8,  8),
-            new( -12,   12,  -44,  8,  7,  6,  8,  8),
-            new(  -8,    8,  -12,  8,  7,  6,  7,  7),
-            new(  -8,   -8,  -12,  8,  6,  5,  6,  6),
-            new(   8,    8,  -12,  8,  7,  4,  7,  7),
-            new(   8,   -8,  -12,  8,  5,  4,  5,  5),
+            new(new(   0,    0,   68), 31,  1,  0,  3,  2),
+            new(new(   8,   -8,   36), 31,  2,  1,  5,  4),
+            new(new(   8,    8,   36), 31,  3,  2,  7,  4),
+            new(new(  -8,    8,   36), 31,  3,  0,  7,  6),
+            new(new(  -8,   -8,   36), 31,  1,  0,  6,  5),
+            new(new(   8,    8,  -44), 31,  7,  4,  8,  8),
+            new(new(   8,   -8,  -44), 31,  5,  4,  8,  8),
+            new(new(  -8,   -8,  -44), 31,  6,  5,  8,  8),
+            new(new(  -8,    8,  -44), 31,  7,  6,  8,  8),
+            new(new(  12,   12,  -44),  8,  7,  4,  8,  8),
+            new(new(  12,  -12,  -44),  8,  5,  4,  8,  8),
+            new(new( -12,  -12,  -44),  8,  6,  5,  8,  8),
+            new(new( -12,   12,  -44),  8,  7,  6,  8,  8),
+            new(new(  -8,    8,  -12),  8,  7,  6,  7,  7),
+            new(new(  -8,   -8,  -12),  8,  6,  5,  6,  6),
+            new(new(   8,    8,  -12),  8,  7,  4,  7,  7),
+            new(new(   8,   -8,  -12),  8,  5,  4,  5,  5),
         };
 
         private static ship_line[] missile_line = new ship_line[]
@@ -55,15 +55,15 @@ namespace Elite.Ships
 
         private static ship_face_normal[] missile_face_normal = new ship_face_normal[9]
         {
-            new ship_face_normal(31,  -64,    0,   16),
-            new ship_face_normal(31,    0,  -64,   16),
-            new ship_face_normal(31,   64,    0,   16),
-            new ship_face_normal(31,    0,   64,   16),
-            new ship_face_normal(31,   32,    0,    0),
-            new ship_face_normal(31,    0,  -32,    0),
-            new ship_face_normal(31,  -32,    0,    0),
-            new ship_face_normal(31,    0,   32,    0),
-            new ship_face_normal(31,    0,    0, -176),
+            new ship_face_normal(31, new( -64,    0,   16)),
+            new ship_face_normal(31, new(   0,  -64,   16)),
+            new ship_face_normal(31, new(  64,    0,   16)),
+            new ship_face_normal(31, new(   0,   64,   16)),
+            new ship_face_normal(31, new(  32,    0,    0)),
+            new ship_face_normal(31, new(   0,  -32,    0)),
+            new ship_face_normal(31, new( -32,    0,    0)),
+            new ship_face_normal(31, new(   0,   32,    0)),
+            new ship_face_normal(31, new(   0,    0, -176)),
         };
 
         internal static ship_data missile_data = new(

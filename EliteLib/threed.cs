@@ -34,40 +34,29 @@ namespace Elite
         private static void draw_wireframe_ship(ref univ_object univ)
 		{
 			Vector3[] trans_mat = new Vector3[3];
-			float rx, ry, rz;
 			bool[] visible = new bool[32];
-			Vector3 vec;
-			Vector3 camera_vec;
-			float cos_angle;
 			float tmp;
-			ship_face_normal[] ship_norm;
-			ship_data ship;
 
-			ship = elite.ship_list[(int)univ.type];
+			ship_data ship = elite.ship_list[(int)univ.type];
 
 			for (int i = 0; i < 3; i++)
 			{
 				trans_mat[i] = univ.rotmat[i];
 			}
 
-			camera_vec = univ.location;
-			VectorMaths.mult_vector(ref camera_vec, trans_mat);
+            Vector3 camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
 
 			for (int i = 0; i < ship.normals.Length; i++)
 			{
-				vec.X = ship.normals[i].x;
-				vec.Y = ship.normals[i].y;
-				vec.Z = ship.normals[i].z;
-
-				if ((vec.X == 0) && (vec.Y == 0) && (vec.Z == 0))
+				if (ship.normals[i].direction == Vector3.Zero)
 				{
 					visible[i] = true;
 				}
 				else
 				{
-					vec = VectorMaths.unit_vector(vec);
-					cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
+                    Vector3 vec = VectorMaths.unit_vector(ship.normals[i].direction);
+					float cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
 					visible[i] = cos_angle < -0.2;
 				}
 			}
@@ -86,18 +75,11 @@ namespace Elite
 
 			for (int i = 0; i < ship.points.Length; i++)
 			{
-				vec.X = ship.points[i].x;
-				vec.Y = ship.points[i].y;
-				vec.Z = ship.points[i].z;
+				Vector3 vec = VectorMaths.mult_vector(ship.points[i].point, trans_mat);
+				Vector3 vecSum = vec + univ.location;
 
-				VectorMaths.mult_vector(ref vec, trans_mat);
-
-				rx = vec.X + univ.location.X;
-				ry = vec.Y + univ.location.Y;
-				rz = vec.Z + univ.location.Z;
-
-				float sx = rx * 256 / rz;
-				float sy = ry * 256 / rz;
+				float sx = vecSum.X * 256 / vecSum.Z;
+				float sy = vecSum.Y * 256 / vecSum.Z;
 
 				sy = -sy;
 
@@ -109,7 +91,6 @@ namespace Elite
 
 				point_list[i].X = sx;
 				point_list[i].Y = sy;
-
 			}
 
 			for (int i = 0; i < ship.lines.Length; i++)
@@ -138,8 +119,6 @@ namespace Elite
         private static void draw_solid_ship(ref univ_object univ)
 		{
 			float rx, ry, rz;
-			Vector3 vec;
-			Vector3 camera_vec;
 			int num_points;
 			Vector3[] trans_mat = new Vector3[3];
 			int lasv;
@@ -153,8 +132,7 @@ namespace Elite
 				trans_mat[i] = univ.rotmat[i];
 			}
 
-			camera_vec = univ.location;
-			VectorMaths.mult_vector(ref camera_vec, trans_mat);
+            Vector3 camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
 
 			int num_faces = solid_data.num_faces;
@@ -189,11 +167,7 @@ namespace Elite
 
 			for (int i = 0; i < ship.points.Length; i++)
 			{
-				vec.X = ship.points[i].x;
-				vec.Y = ship.points[i].y;
-				vec.Z = ship.points[i].z;
-
-				VectorMaths.mult_vector(ref vec, trans_mat);
+				Vector3 vec = VectorMaths.mult_vector(ship.points[i].point, trans_mat);
 
 				rx = vec.X + univ.location.X;
 				ry = vec.Y + univ.location.Y;
@@ -749,7 +723,6 @@ namespace Elite
 			Vector3[] trans_mat = new Vector3[3];
 			float rx, ry, rz;
 			bool[] visible = new bool[32];
-			Vector3 vec;
 			Vector3 camera_vec;
 			float cos_angle;
 			float tmp;
@@ -779,19 +752,14 @@ namespace Elite
 				trans_mat[i] = univ.rotmat[i];
 			}
 
-			camera_vec = univ.location;
-			VectorMaths.mult_vector(ref camera_vec, trans_mat);
+            camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
 
 			ship_norm = ship.normals;
 
 			for (i = 0; i < ship.normals.Length; i++)
 			{
-				vec.X = ship_norm[i].x;
-				vec.Y = ship_norm[i].y;
-				vec.Z = ship_norm[i].z;
-
-				vec = VectorMaths.unit_vector(vec);
+				Vector3 vec = VectorMaths.unit_vector(ship_norm[i].direction);
 				cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
 
 				visible[i] = cos_angle < -0.13;
@@ -817,11 +785,7 @@ namespace Elite
 				if (visible[sp[i].face1] || visible[sp[i].face2] ||
 					visible[sp[i].face3] || visible[sp[i].face4])
 				{
-					vec.X = sp[i].x;
-					vec.Y = sp[i].y;
-					vec.Z = sp[i].z;
-
-					VectorMaths.mult_vector(ref vec, trans_mat);
+					Vector3 vec = VectorMaths.mult_vector(sp[i].point, trans_mat);
 
 					rx = vec.X + univ.location.X;
 					ry = vec.Y + univ.location.Y;

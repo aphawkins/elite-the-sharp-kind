@@ -6,10 +6,10 @@ namespace Elite.Ships
     {
         private static ship_point[] esccaps_point = new ship_point[]
         {
-            new(  -7,    0,   36, 31,  1,  2,  3,  3),
-            new(  -7,  -14,  -12, 31,  0,  2,  3,  3),
-            new(  -7,   14,  -12, 31,  0,  1,  3,  3),
-            new(  21,    0,    0, 31,  0,  1,  2,  2),
+            new(new(  -7,    0,   36), 31,  1,  2,  3,  3),
+            new(new(  -7,  -14,  -12), 31,  0,  2,  3,  3),
+            new(new(  -7,   14,  -12), 31,  0,  1,  3,  3),
+            new(new(  21,    0,    0), 31,  0,  1,  2,  2),
         };
 
         private static ship_line[] esccaps_line = new ship_line[]
@@ -24,10 +24,10 @@ namespace Elite.Ships
 
         private static ship_face_normal[] esccaps_face_normal = new ship_face_normal[4]
         {
-            new ship_face_normal(31,   52,    0, -122),
-            new ship_face_normal(31,   39,  103,   30),
-            new ship_face_normal(31,   39, -103,   30),
-            new ship_face_normal(31, -112,    0,    0),
+            new ship_face_normal(31, new(  52,    0, -122)),
+            new ship_face_normal(31, new(  39,  103,   30)),
+            new ship_face_normal(31, new(  39, -103,   30)),
+            new ship_face_normal(31, new(-112,    0,    0)),
         };
 
         internal static ship_data esccaps_data = new(

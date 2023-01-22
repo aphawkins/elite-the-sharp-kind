@@ -6,10 +6,10 @@ namespace Elite.Ships
     {
         private static ship_point[] alloy_point = new ship_point[]
         {
-            new( -15,  -22,   -9, 31, 15, 15, 15, 15),
-            new( -15,   38,   -9, 31, 15, 15, 15, 15),
-            new(  19,   32,   11, 20, 15, 15, 15, 15),
-            new(  10,  -46,    6, 20, 15, 15, 15, 15),
+            new(new( -15,  -22,   -9), 31, 15, 15, 15, 15),
+            new(new( -15,   38,   -9), 31, 15, 15, 15, 15),
+            new(new(  19,   32,   11), 20, 15, 15, 15, 15),
+            new(new(  10,  -46,    6), 20, 15, 15, 15, 15),
         };
 
         private static ship_line[] alloy_line = new ship_line[]
@@ -22,7 +22,7 @@ namespace Elite.Ships
 
         private static ship_face_normal[] alloy_face_normal = new ship_face_normal[1]
         {
-            new ship_face_normal( 0,    0,    0,    0),
+            new ship_face_normal( 0, new(   0,    0,    0)),
         };
 
         internal static ship_data alloy_data = new(

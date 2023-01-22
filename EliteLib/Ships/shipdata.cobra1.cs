@@ -6,17 +6,17 @@ namespace Elite.Ships
     {
         internal static ship_point[] cobra1_point = new ship_point[]
         {
-            new( -18,   -1,   50, 31,  0,  1,  2,  3),
-            new(  18,   -1,   50, 31,  0,  1,  4,  5),
-            new( -66,    0,    7, 31,  2,  3,  8,  8),
-            new(  66,    0,    7, 31,  4,  5,  9,  9),
-            new( -32,   12,  -38, 31,  2,  6,  7,  8),
-            new(  32,   12,  -38, 31,  4,  6,  7,  9),
-            new( -54,  -12,  -38, 31,  1,  3,  7,  8),
-            new(  54,  -12,  -38, 31,  1,  5,  7,  9),
-            new(   0,   12,   -6, 20,  0,  2,  4,  6),
-            new(   0,   -1,   50,  2,  0,  1,  1,  1),
-            new(   0,   -1,   60, 31,  0,  1,  1,  1),
+            new(new( -18,   -1,   50), 31,  0,  1,  2,  3),
+            new(new(  18,   -1,   50), 31,  0,  1,  4,  5),
+            new(new( -66,    0,    7), 31,  2,  3,  8,  8),
+            new(new(  66,    0,    7), 31,  4,  5,  9,  9),
+            new(new( -32,   12,  -38), 31,  2,  6,  7,  8),
+            new(new(  32,   12,  -38), 31,  4,  6,  7,  9),
+            new(new( -54,  -12,  -38), 31,  1,  3,  7,  8),
+            new(new(  54,  -12,  -38), 31,  1,  5,  7,  9),
+            new(new(   0,   12,   -6), 20,  0,  2,  4,  6),
+            new(new(   0,   -1,   50),  2,  0,  1,  1,  1),
+            new(new(   0,   -1,   60), 31,  0,  1,  1,  1),
         };
 
         internal static ship_line[] cobra1_line = new ship_line[]
@@ -43,16 +43,16 @@ namespace Elite.Ships
 
         internal static ship_face_normal[] cobra1_face_normal = new ship_face_normal[10]
         {
-            new(31,    0,   41,   10),
-            new(31,    0,  -27,    3),
-            new(31,   -8,   46,    8),
-            new(31,  -12,  -57,   12),
-            new(31,    8,   46,    8),
-            new(31,   12,  -57,   12),
-            new(31,    0,   49,    0),
-            new(31,    0,    0, -154),
-            new(31, -121,  111,  -62),
-            new(31,  121,  111,  -62),
+            new(31, new(   0,   41,   10)),
+            new(31, new(   0,  -27,    3)),
+            new(31, new(  -8,   46,    8)),
+            new(31, new( -12,  -57,   12)),
+            new(31, new(   8,   46,    8)),
+            new(31, new(  12,  -57,   12)),
+            new(31, new(   0,   49,    0)),
+            new(31, new(   0,    0, -154)),
+            new(31, new(-121,  111,  -62)),
+            new(31, new( 121,  111,  -62)),
         };
 
         internal static ship_data cobra1_data = new(
