@@ -88,7 +88,6 @@ namespace Elite.Ships
 
         internal static ship_data dodec_data = new(
             "Dodec Space Station",
-            24, 34, 12,
             0,
             0,
             32400,

@@ -50,7 +50,6 @@ namespace Elite.Ships
 
         internal static ship_data thargon_data = new(
             "Thargon",
-            10, 15, 7,
             0,
             15,
             1600,

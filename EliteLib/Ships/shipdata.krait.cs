@@ -62,7 +62,6 @@ namespace Elite.Ships
 
         internal static ship_data krait_data = new(
             "Krait",
-            17, 21, 6,
             1,
             0,
             3600,

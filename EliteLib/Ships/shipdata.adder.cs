@@ -80,7 +80,6 @@ namespace Elite.Ships
 
         internal static ship_data adder_data = new(
             "Adder",
-            18, 29, 15,
             0,
             0,
             2500,

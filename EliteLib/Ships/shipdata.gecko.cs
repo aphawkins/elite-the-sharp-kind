@@ -56,7 +56,6 @@ namespace Elite.Ships
 
         internal static ship_data gecko_data = new(
             "Gecko",
-            12, 17, 9,
             0,
             0,
             9801,

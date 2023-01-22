@@ -76,7 +76,6 @@ namespace Elite.Ships
 
         internal static ship_data coriolis_data = new(
             "Coriolis Space Station",
-            16, 28, 14,
             0,
             0,
             25600,

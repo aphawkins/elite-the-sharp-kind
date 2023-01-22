@@ -68,7 +68,6 @@ namespace Elite.Ships
 
         internal static ship_data missile_data = new(
             "Missile",
-            17, 24, 9,
             0,
             0,
             1600,

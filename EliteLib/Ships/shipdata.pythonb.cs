@@ -68,7 +68,6 @@ namespace Elite.Ships
 
         internal static ship_data pythonb_data = new(
             "Python",
-            11, 26, 13,
             2,
             0,
             6400,

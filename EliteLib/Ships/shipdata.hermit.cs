@@ -62,7 +62,6 @@ namespace Elite.Ships
 
         internal static ship_data hermit_data = new(
             "Rock Hermit",
-            9, 21, 14,
             7,
             0,
             6400,

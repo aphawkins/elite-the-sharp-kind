@@ -80,7 +80,6 @@ namespace Elite.Ships
 
         internal static ship_data orbit_data = new(
             "Orbit Shuttle",
-            19, 30, 13,
             15,
             0,
             2500,

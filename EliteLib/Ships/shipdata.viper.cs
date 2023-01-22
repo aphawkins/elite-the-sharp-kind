@@ -60,7 +60,6 @@ namespace Elite.Ships
 
         internal static ship_data viper_data = new(
             "Viper",
-            15, 20, 7,
             0,
             0,
             5625,

@@ -76,7 +76,6 @@ namespace Elite.Ships
 
         internal static ship_data mamba_data = new(
             "Mamba",
-            25, 28, 5,
             1,
             0,
             4900,

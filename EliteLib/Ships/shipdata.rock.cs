@@ -32,7 +32,6 @@ namespace Elite.Ships
 
         internal static ship_data rock_data = new(
             "Rock",
-            4, 6, 4,
             0,
             11,
             256,

@@ -68,7 +68,6 @@ namespace Elite.Ships
 
         internal static ship_data cougar_data = new(
             "Cougar",
-            19, 25, 6,
             3,
             0,
             4900,

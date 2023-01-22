@@ -50,7 +50,6 @@ namespace Elite.Ships
 
         internal static ship_data cargo_data = new(
             "Cargo Canister",
-            10, 15, 7,
             0,
             0,
             400,

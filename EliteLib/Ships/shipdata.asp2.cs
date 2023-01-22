@@ -77,7 +77,6 @@ namespace Elite.Ships
 
         internal static ship_data asp2_data = new(
             "Asp MkII",
-            19, 28, 12,
             0,
             0,
             3600,

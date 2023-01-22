@@ -52,7 +52,6 @@ namespace Elite.Ships
 
         internal static ship_data worm_data = new(
             "Worm",
-            10, 16, 8,
             0,
             0,
             9801,

@@ -62,7 +62,6 @@ namespace Elite.Ships
 
         internal static ship_data asteroid_data = new(
             "Asteroid",
-            9, 21, 14,
             0,
             0,
             6400,

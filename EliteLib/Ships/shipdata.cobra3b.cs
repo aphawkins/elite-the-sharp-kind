@@ -97,7 +97,6 @@ namespace Elite.Ships
 
         internal static ship_data cobra3b_data = new(
             "Cobra MkIII",
-            28, 38, 13,
             1,
             0,
             9025,

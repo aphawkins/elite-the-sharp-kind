@@ -27,7 +27,6 @@ namespace Elite.Ships
 
         internal static ship_data alloy_data = new(
             "Alloy",
-            4, 4, 1,
             0,
             8,
             100,

@@ -68,7 +68,6 @@ namespace Elite.Ships
 
         internal static ship_data boa_data = new(
             "Boa",
-            13, 24, 13,
             5,
             0,
             4900,

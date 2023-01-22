@@ -69,7 +69,6 @@ namespace Elite.Ships
 
         internal static ship_data constrct_data = new(
             "Constrictor",
-            17, 24, 10,
             3,
             0,
             4225,

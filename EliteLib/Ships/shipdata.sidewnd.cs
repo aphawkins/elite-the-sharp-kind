@@ -50,7 +50,6 @@ namespace Elite.Ships
 
         internal static ship_data sidewnd_data = new(
             "Sidewinder",
-            10, 15, 7,
             0,
             0,
             4225,

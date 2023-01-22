@@ -60,7 +60,6 @@ namespace Elite.Ships
 
         internal static ship_data moray_data = new(
             "Moray Star Boat",
-            14, 19, 9,
             1,
             0,
             900,

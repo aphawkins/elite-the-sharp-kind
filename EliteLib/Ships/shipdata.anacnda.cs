@@ -70,7 +70,6 @@ namespace Elite.Ships
 
         internal static ship_data anacnda_data = new(
             "Anaconda",
-            15, 25, 12,
             7,
             0,
             10000,

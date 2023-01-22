@@ -115,7 +115,6 @@ namespace Elite.Ships
 
         internal static ship_data transp_data = new(
             "Transporter",
-            37, 46, 14,
             0,
             0,
             2500,

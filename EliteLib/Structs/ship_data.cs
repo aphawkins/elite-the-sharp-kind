@@ -3,9 +3,6 @@
     internal class ship_data
     {
         internal string name;
-        internal int num_points;
-        internal int num_lines;
-        internal int num_faces;
         internal int max_loot;
         internal int scoop_type;
         internal float size;
@@ -24,14 +21,11 @@
         {
         }
 
-        internal ship_data(string name, int num_points, int num_lines, int num_faces, int max_loot,
+        internal ship_data(string name, int max_loot,
             int scoop_type, float size, int front_laser, float bounty, int vanish_point, int energy,
             float velocity, int missiles, int laser_strength, ship_point[] points, ship_line[] lines, ship_face_normal[] normals)
         {
             this.name = name;
-            this.num_points = num_points;
-            this.num_lines = num_lines;
-            this.num_faces = num_faces;
             this.max_loot = max_loot;
             this.scoop_type = scoop_type;
             this.size = size;

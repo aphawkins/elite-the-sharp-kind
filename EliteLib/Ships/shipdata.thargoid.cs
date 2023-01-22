@@ -74,7 +74,6 @@ namespace Elite.Ships
 
         internal static ship_data thargoid_data = new(
             "Thargoid",
-            20, 26, 10,
             0,
             0,
             9801,

@@ -50,7 +50,6 @@ namespace Elite.Ships
 
         internal static ship_data boulder_data = new(
             "Boulder",
-            7, 15, 10,
             0,
             0,
             900,

@@ -25,7 +25,7 @@ namespace Elite
         private static Vector3[] point_list = new Vector3[100];
 
         /*
-		 * The following routine is used to draw a wireframe represtation of a ship.
+		 * The following routine is used to draw a wireframe representation of a ship.
 		 *
 		 * caveat: it is a work in progress.
 		 * A number of features (such as not showing detail at distance) have not yet been implemented.
@@ -34,7 +34,6 @@ namespace Elite
         private static void draw_wireframe_ship(ref univ_object univ)
 		{
 			Vector3[] trans_mat = new Vector3[3];
-			int i;
 			float rx, ry, rz;
 			bool[] visible = new bool[32];
 			Vector3 vec;
@@ -42,12 +41,11 @@ namespace Elite
 			float cos_angle;
 			float tmp;
 			ship_face_normal[] ship_norm;
-			int num_faces;
 			ship_data ship;
 
 			ship = elite.ship_list[(int)univ.type];
 
-			for (i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				trans_mat[i] = univ.rotmat[i];
 			}
@@ -56,15 +54,11 @@ namespace Elite
 			VectorMaths.mult_vector(ref camera_vec, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
 
-			num_faces = ship.num_faces;
-
-			for (i = 0; i < num_faces; i++)
+			for (int i = 0; i < ship.normals.Length; i++)
 			{
-				ship_norm = ship.normals;
-
-				vec.X = ship_norm[i].x;
-				vec.Y = ship_norm[i].y;
-				vec.Z = ship_norm[i].z;
+				vec.X = ship.normals[i].x;
+				vec.Y = ship.normals[i].y;
+				vec.Z = ship.normals[i].z;
 
 				if ((vec.X == 0) && (vec.Y == 0) && (vec.Z == 0))
 				{
@@ -90,7 +84,7 @@ namespace Elite
 			trans_mat[1].Z = trans_mat[2].Y;
 			trans_mat[2].Y = tmp;
 
-			for (i = 0; i < ship.num_points; i++)
+			for (int i = 0; i < ship.points.Length; i++)
 			{
 				vec.X = ship.points[i].x;
 				vec.Y = ship.points[i].y;
@@ -118,7 +112,7 @@ namespace Elite
 
 			}
 
-			for (i = 0; i < ship.num_lines; i++)
+			for (int i = 0; i < ship.lines.Length; i++)
 			{
 				if (visible[ship.lines[i].face1] ||
 					visible[ship.lines[i].face2])
@@ -193,7 +187,7 @@ namespace Elite
 			trans_mat[2].Y = tmp;
 
 
-			for (int i = 0; i < ship.num_points; i++)
+			for (int i = 0; i < ship.points.Length; i++)
 			{
 				vec.X = ship.points[i].x;
 				vec.Y = ship.points[i].y;
@@ -791,7 +785,7 @@ namespace Elite
 
 			ship_norm = ship.normals;
 
-			for (i = 0; i < ship.num_faces; i++)
+			for (i = 0; i < ship.normals.Length; i++)
 			{
 				vec.X = ship_norm[i].x;
 				vec.Y = ship_norm[i].y;
@@ -818,7 +812,7 @@ namespace Elite
 			sp = ship.points;
 			np = 0;
 
-			for (i = 0; i < ship.num_points; i++)
+			for (i = 0; i < ship.points.Length; i++)
 			{
 				if (visible[sp[i].face1] || visible[sp[i].face2] ||
 					visible[sp[i].face3] || visible[sp[i].face4])

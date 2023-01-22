@@ -74,7 +74,6 @@ namespace Elite.Ships
 
         internal static ship_data ferdlce_data = new(
             "Fer-de-Lance",
-            19, 27, 10,
             0,
             0,
             1600,

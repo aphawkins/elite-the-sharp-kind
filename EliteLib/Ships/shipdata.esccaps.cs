@@ -32,7 +32,6 @@ namespace Elite.Ships
 
         internal static ship_data esccaps_data = new(
             "Escape Capsule",
-            4, 6, 4,
             0,
             2,
             256,
