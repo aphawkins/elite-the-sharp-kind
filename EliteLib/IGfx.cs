@@ -21,7 +21,7 @@ namespace Elite
     {
         int SpeedCap { get; set; }
 
-        void ClearArea(int x, int y, int width, int height);
+        void ClearArea(float x, float y, float width, float height);
 
         void ClearDisplay();
 
@@ -37,19 +37,19 @@ namespace Elite
 
         void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour);
 
-        void DrawRectangleFilled(int x, int y, int width, int height, GFX_COL colour);
+        void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour);
 
-        void DrawRectangle(int x, int y, int width, int height, GFX_COL colour);
+        void DrawRectangle(float x, float y, float width, float height, GFX_COL colour);
 
         void DrawScanner();
 
-        void DrawSprite(IMG spriteImgage, int x, int y);
+        void DrawSprite(IMG spriteImgage, Vector2 location);
 
-        void DrawTextLeft(int x, int y, string text, GFX_COL colour);
+        void DrawTextLeft(float x, float y, string text, GFX_COL colour);
 
-        void DrawTextRight(int x, int y, string text, GFX_COL colour);
+        void DrawTextRight(float x, float y, string text, GFX_COL colour);
 
-        void DrawTextCentre(int y, string text, int psize, GFX_COL colour);
+        void DrawTextCentre(float y, string text, int psize, GFX_COL colour);
 
         void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
 
@@ -67,6 +67,6 @@ namespace Elite
         /// </summary>
         void ScreenUpdate();
 
-        void SetClipRegion(int x, int y, int width, int height);
+        void SetClipRegion(float x, float y, float width, float height);
     }
 }

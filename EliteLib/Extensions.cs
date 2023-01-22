@@ -29,5 +29,10 @@
         {
             return value % 2 != 0;
         }
+
+        public static bool IsOdd(this float value)
+        {
+            return ((int)value).IsOdd();
+        }
     }
 }

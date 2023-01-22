@@ -277,7 +277,7 @@ namespace Elite
 				return;
 			}
 
-			elite.myship.altitude = (int)dist;
+			elite.myship.altitude = dist;
 		}
 
 		internal static void update_cabin_temp()
@@ -677,9 +677,9 @@ namespace Elite
 					continue;
 				}
 
-                int x = (int)(universe[i].location.X / 256);
-                int y = (int)(universe[i].location.Y / 256);
-                int z = (int)(universe[i].location.Z / 256);
+                float x = universe[i].location.X / 256;
+                float y = universe[i].location.Y / 256;
+                float z = universe[i].location.Z / 256;
 
 				float x1 = x;
 				float y1 = -z / 4;
@@ -743,16 +743,15 @@ namespace Elite
 
 			Vector3 dest = VectorMaths.unit_vector(universe[un].location);
 
-			int compass_x = (int)(elite.compass_centre.X + (dest.X * 16));
-			int compass_y = (int)(elite.compass_centre.Y + (dest.Y * -16));
+			Vector2 compass = new(elite.compass_centre.X + (dest.X * 16), elite.compass_centre.Y + (dest.Y * -16));
 
 			if (dest.Z < 0)
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_RED_DOT, compass_x, compass_y);
+                elite.alg_gfx.DrawSprite(IMG.IMG_RED_DOT, compass);
 			}
 			else
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_GREEN_DOT, compass_x, compass_y);
+                elite.alg_gfx.DrawSprite(IMG.IMG_GREEN_DOT, compass);
 			}
 
 		}
@@ -911,20 +910,19 @@ namespace Elite
 
 			int nomiss = elite.cmdr.missiles > 4 ? 4 : elite.cmdr.missiles;
 
-			int x = ((4 - nomiss) * 16) + 35;
-			int y = 113 + 385;
+			Vector2 location = new(((4 - nomiss) * 16) + 35, 113 + 385);
 
 			if (swat.missile_target != swat.MISSILE_UNARMED)
 			{
-                elite.alg_gfx.DrawSprite((swat.missile_target < 0) ? IMG.IMG_MISSILE_YELLOW : IMG.IMG_MISSILE_RED, x, y);
-				x += 16;
+                elite.alg_gfx.DrawSprite((swat.missile_target < 0) ? IMG.IMG_MISSILE_YELLOW : IMG.IMG_MISSILE_RED, location);
+                location.X += 16;
 				nomiss--;
 			}
 
 			for (; nomiss > 0; nomiss--)
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_MISSILE_GREEN, x, y);
-				x += 16;
+                elite.alg_gfx.DrawSprite(IMG.IMG_MISSILE_GREEN, location);
+                location.X += 16;
 			}
 		}
 
@@ -954,12 +952,12 @@ namespace Elite
 
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_BIG_S, 387, 490);
+                elite.alg_gfx.DrawSprite(IMG.IMG_BIG_S, new(387, 490));
 			}
 
 			if (swat.ecm_active != 0)
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_BIG_E, 115, 490);
+                elite.alg_gfx.DrawSprite(IMG.IMG_BIG_E, new(115, 490));
 			}
 		}
 

@@ -102,8 +102,8 @@ namespace Elite
 				ry = vec.Y + univ.location.Y;
 				rz = vec.Z + univ.location.Z;
 
-				float sx = (int)(rx * 256 / rz);
-				float sy = (int)(ry * 256 / rz);
+				float sx = rx * 256 / rz;
+				float sy = ry * 256 / rz;
 
 				sy = -sy;
 
@@ -143,7 +143,6 @@ namespace Elite
 		 */
         private static void draw_solid_ship(ref univ_object univ)
 		{
-			int sx, sy;
 			float rx, ry, rz;
 			Vector3 vec;
 			Vector3 camera_vec;
@@ -211,8 +210,8 @@ namespace Elite
 					rz = 1;
 				}
 
-				sx = (int)(rx * 256 / rz);
-				sy = (int)(ry * 256 / rz);
+				float sx = rx * 256 / rz;
+				float sy = ry * 256 / rz;
 
 				sy = -sy;
 
@@ -224,7 +223,7 @@ namespace Elite
 
 				point_list[i].X = sx;
 				point_list[i].Y = sy;
-				point_list[i].Z = (int)rz;
+				point_list[i].Z = rz;
 			}
 
 			for (int i = 0; i < num_faces; i++)
@@ -521,7 +520,7 @@ namespace Elite
 				if (s.X is >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET) and <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET))
 				{
 					int lx = (int)(rx / div);
-					int ly = (int)(ry / div);
+                    int ly = (int)(ry / div);
                     //TODO: fix colours
                     //GFX_COL colour = (GFX_COL)landscape[lx, ly];
                     GFX_COL colour = lx < 0 || lx > 128 || ly < 0 || ly > 128 ? GFX_COL.GFX_COL_PINK_1 : (GFX_COL)landscape[lx, ly];
@@ -686,7 +685,7 @@ namespace Elite
 						? GFX_COL.GFX_COL_YELLOW_4
 						: distance < outer
 							? GFX_COL.GFX_COL_ORANGE_3
-							: ((int)MathF.Pow(s.X, y)).IsOdd() ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
+							: MathF.Pow(s.X, y).IsOdd() ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
 
                 elite.alg_gfx.PlotPixelFast(s, colour);
 			}
@@ -750,7 +749,6 @@ namespace Elite
         private static void draw_explosion(ref univ_object univ)
 		{
 			int i;
-			int z;
 			int q;
 			int pr;
 			int cnt;
@@ -852,10 +850,9 @@ namespace Elite
 				}
 			}
 
+			float z = univ.location.Z;
 
-			z = (int)univ.location.Z;
-
-			q = z >= 0x2000 ? 254 : (z / 32) | 1;
+			q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
 
             pr = univ.exp_delta * 256 / q;
 

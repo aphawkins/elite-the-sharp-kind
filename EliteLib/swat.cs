@@ -112,7 +112,7 @@ namespace Elite
 			in_battle = false;
 		}
 
-		internal static int add_new_ship(SHIP ship_type, int x, int y, int z, Vector3[] rotmat, int rotx, int rotz)
+		internal static int add_new_ship(SHIP ship_type, float x, float y, float z, Vector3[] rotmat, int rotx, int rotz)
 		{
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
@@ -212,7 +212,7 @@ namespace Elite
 		{
 			SHIP station = (elite.current_planet_data.techlevel >= 10) ? SHIP.SHIP_DODEC : SHIP.SHIP_CORIOLIS;
 			space.universe[1].type = 0;
-			add_new_ship(station, (int)sx, (int)sy, (int)sz, rotmat, 0, -127);
+			add_new_ship(station, sx, sy, sz, rotmat, 0, -127);
 		}
 
 		internal static void reset_weapons()
@@ -229,9 +229,8 @@ namespace Elite
 			int newship;
 			univ_object ns;
 
-			newship = add_new_ship(type, (int)space.universe[un].location.X, (int)space.universe[un].location.Y,
-									(int)space.universe[un].location.Z, space.universe[un].rotmat,
-									space.universe[un].rotx, space.universe[un].rotz);
+			newship = add_new_ship(type, space.universe[un].location.X, space.universe[un].location.Y, space.universe[un].location.Z, 
+				space.universe[un].rotmat, space.universe[un].rotx, space.universe[un].rotz);
 
 			if (newship == -1)
 			{

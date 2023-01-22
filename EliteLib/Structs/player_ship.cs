@@ -6,7 +6,7 @@
         internal int max_roll;
         internal int max_climb;
         internal float max_fuel;
-        internal int altitude;
+        internal float altitude;
         internal float cabtemp;
     };
 }

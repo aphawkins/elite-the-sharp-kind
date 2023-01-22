@@ -38,7 +38,7 @@
             DrawFuelLimitCircle(new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE));
             foreach ((Vector2 position, string name) in planetNames)
             {
-                _gfx.DrawTextLeft((int)position.X, (int)position.Y, name, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(position.X, position.Y, name, GFX_COL.GFX_COL_WHITE);
             }
             foreach ((Vector2 position, int size) in planetSizes)
             {

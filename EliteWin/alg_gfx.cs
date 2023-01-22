@@ -287,13 +287,13 @@ namespace Elite
             _screenBufferGraphics.FillPolygon(_brushes[colour], points);
         }
 
-		public void DrawTextLeft(int x, int y, string text, GFX_COL colour)
+		public void DrawTextLeft(float x, float y, string text, GFX_COL colour)
 		{
             PointF point = new((x / (2 / gfx.GFX_SCALE)) + gfx.GFX_X_OFFSET, (y / (2 / gfx.GFX_SCALE)) + gfx.GFX_Y_OFFSET);
             _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point);
         }
 
-        public void DrawTextRight(int x, int y, string text, GFX_COL colour)
+        public void DrawTextRight(float x, float y, string text, GFX_COL colour)
         {
             StringFormat stringFormat = new()
             {
@@ -304,7 +304,7 @@ namespace Elite
             _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point, stringFormat);
         }
 
-        public void DrawTextCentre(int y, string text, int psize, GFX_COL colour)
+        public void DrawTextCentre(float y, string text, int psize, GFX_COL colour)
 		{
             StringFormat stringFormat = new()
             {
@@ -331,17 +331,17 @@ namespace Elite
             _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 43 + gfx.GFX_Y_OFFSET);
         }
 
-		public void ClearArea(int x, int y, int width, int height)
+		public void ClearArea(float x, float y, float width, float height)
 		{
 			_screenBufferGraphics.FillRectangle(Brushes.Black, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
-		public void DrawRectangleFilled(int x, int y, int width, int height, GFX_COL colour)
+		public void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour)
 		{
 			_screenBufferGraphics.FillRectangle(_brushes[colour], x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
 
-        public void DrawRectangle(int x, int y, int width, int height, GFX_COL colour)
+        public void DrawRectangle(float x, float y, float width, float height, GFX_COL colour)
         {
             _screenBufferGraphics.DrawRectangle(_pens[colour], x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
         }
@@ -351,9 +351,9 @@ namespace Elite
             _screenBufferGraphics.DrawImage(_imageScanner, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
 
-		public void SetClipRegion(int x, int y, int width, int height)
+		public void SetClipRegion(float x, float y, float width, float height)
 		{
-            _screenBufferGraphics.Clip = new Region(new Rectangle(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET));
+            _screenBufferGraphics.Clip = new Region(new RectangleF(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET));
         }
 
         public void DrawPolygonFilled(Vector2[] vectors, GFX_COL face_colour)
@@ -368,16 +368,16 @@ namespace Elite
 			_screenBufferGraphics.FillPolygon(_brushes[face_colour], points);
 		}
 
-		public void DrawSprite(IMG spriteImgage, int x, int y)
+		public void DrawSprite(IMG spriteImgage, Vector2 position)
         {
             Bitmap sprite = _images[spriteImgage];
 
-            if (x == -1)
+            if (position.X < 0)
             {
-                x = ((256 * gfx.GFX_SCALE) - sprite.Width) / 2;
+                position.X = ((256 * gfx.GFX_SCALE) - sprite.Width) / 2;
             }
 
-            _screenBufferGraphics.DrawImage(sprite, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET);
+            _screenBufferGraphics.DrawImage(sprite, position.X + gfx.GFX_X_OFFSET, position.Y + gfx.GFX_Y_OFFSET);
         }
 
         protected virtual void Dispose(bool disposing)
