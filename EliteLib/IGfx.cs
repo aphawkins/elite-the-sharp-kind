@@ -23,41 +23,36 @@ namespace Elite
 
         void ClearArea(float x, float y, float width, float height);
 
-        void ClearDisplay();
-
-        void ClearTextArea();
-
         void DrawCircle(Vector2 centre, float radius, GFX_COL colour);
 
         void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour);
+
+        void DrawImage(IMG spriteImgage, Vector2 location);
 
         void DrawLine(Vector2 start, Vector2 end, GFX_COL colour);
 
         void DrawLine(Vector2 start, Vector2 end);
 
-        void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour);
+        void DrawPixel(Vector2 position, GFX_COL colour);
 
-        void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour);
+        void DrawPixelFast(Vector2 position, GFX_COL colour);
+
+        void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour);
 
         void DrawRectangle(float x, float y, float width, float height, GFX_COL colour);
 
-        void DrawScanner();
+        void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour);
 
-        void DrawSprite(IMG spriteImgage, Vector2 location);
+        void DrawTextCentre(float y, string text, int psize, GFX_COL colour);
 
         void DrawTextLeft(float x, float y, string text, GFX_COL colour);
 
         void DrawTextRight(float x, float y, string text, GFX_COL colour);
 
-        void DrawTextCentre(float y, string text, int psize, GFX_COL colour);
-
         void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
 
         void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
 
-        void PlotPixel(Vector2 position, GFX_COL colour);
-
-        void PlotPixelFast(Vector2 position, GFX_COL colour);
         void ScreenAcquire();
 
         void ScreenRelease();

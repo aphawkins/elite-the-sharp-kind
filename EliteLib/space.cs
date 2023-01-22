@@ -747,11 +747,11 @@ namespace Elite
 
 			if (dest.Z < 0)
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_RED_DOT, compass);
+                elite.alg_gfx.DrawImage(IMG.IMG_RED_DOT, compass);
 			}
 			else
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_GREEN_DOT, compass);
+                elite.alg_gfx.DrawImage(IMG.IMG_GREEN_DOT, compass);
 			}
 
 		}
@@ -914,14 +914,14 @@ namespace Elite
 
 			if (swat.missile_target != swat.MISSILE_UNARMED)
 			{
-                elite.alg_gfx.DrawSprite((swat.missile_target < 0) ? IMG.IMG_MISSILE_YELLOW : IMG.IMG_MISSILE_RED, location);
+                elite.alg_gfx.DrawImage((swat.missile_target < 0) ? IMG.IMG_MISSILE_YELLOW : IMG.IMG_MISSILE_RED, location);
                 location.X += 16;
 				nomiss--;
 			}
 
 			for (; nomiss > 0; nomiss--)
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_MISSILE_GREEN, location);
+                elite.alg_gfx.DrawImage(IMG.IMG_MISSILE_GREEN, location);
                 location.X += 16;
 			}
 		}
@@ -929,7 +929,7 @@ namespace Elite
 		internal static void update_console()
 		{
             elite.alg_gfx.SetClipRegion(0, 0, 512, 512);
-            elite.alg_gfx.DrawScanner();
+            elite.draw.DrawScanner();
 
 			display_speed();
 			display_flight_climb();
@@ -952,12 +952,12 @@ namespace Elite
 
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_BIG_S, new(387, 490));
+                elite.alg_gfx.DrawImage(IMG.IMG_BIG_S, new(387, 490));
 			}
 
 			if (swat.ecm_active != 0)
 			{
-                elite.alg_gfx.DrawSprite(IMG.IMG_BIG_E, new(115, 490));
+                elite.alg_gfx.DrawImage(IMG.IMG_BIG_E, new(115, 490));
 			}
 		}
 

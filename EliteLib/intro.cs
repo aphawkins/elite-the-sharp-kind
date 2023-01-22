@@ -84,12 +84,12 @@ namespace Elite
 				space.universe[0].location.Z = 384;
 			}
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
 
 			elite.flight_roll = 1;
 			space.update_universe();
 
-            elite.alg_gfx.DrawSprite(IMG.IMG_ELITE_TXT, new(-1, 10));
+            elite.alg_gfx.DrawImage(IMG.IMG_ELITE_TXT, new(-1, 10));
 
             elite.alg_gfx.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL.GFX_COL_WHITE);
             elite.alg_gfx.DrawTextCentre(330, "Re-engineered by C.J.Pinder.", 120, GFX_COL.GFX_COL_WHITE);
@@ -132,11 +132,11 @@ namespace Elite
 				swat.add_new_ship(ship_no, 0, 0, 4500, intro_ship_matrix, -127, -127);
 			}
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
 			Stars.update_starfield();
 			space.update_universe();
 
-            elite.alg_gfx.DrawSprite(IMG.IMG_ELITE_TXT,new(-1, 10));
+            elite.alg_gfx.DrawImage(IMG.IMG_ELITE_TXT,new(-1, 10));
 
             elite.alg_gfx.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawTextCentre(330, elite.ship_list[(int)ship_no].name, 120, GFX_COL.GFX_COL_WHITE);

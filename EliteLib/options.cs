@@ -86,7 +86,7 @@ namespace Elite
 		{
 			elite.current_screen = SCR.SCR_QUIT;
 
-			elite.alg_gfx.ClearDisplay();
+			elite.draw.ClearDisplay();
 			elite.alg_gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
@@ -246,7 +246,7 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_SETTINGS;
 
-			elite.alg_gfx.ClearDisplay();
+			elite.draw.ClearDisplay();
 			elite.alg_gfx.DrawTextCentre(20, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
@@ -342,7 +342,7 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_OPTIONS;
 
-			elite.alg_gfx.ClearDisplay();
+			elite.draw.ClearDisplay();
 			elite.alg_gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
 			elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 			elite.alg_gfx.DrawTextCentre(300, "Version: Release 1.0", 120, GFX_COL.GFX_COL_WHITE);

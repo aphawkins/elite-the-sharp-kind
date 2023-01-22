@@ -15,14 +15,14 @@
 
         internal void DrawGalacticChart(int galaxyNumber, IList<Vector2> planetPixels, string planetName, float distanceToPlanet)
         {
-            _gfx.ClearDisplay();
+            ClearDisplay();
             _gfx.DrawTextCentre(20, "GALACTIC CHART " + galaxyNumber, 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             _gfx.DrawLine(new(0f, 36f + 258f), new(511f, 36f + 258f));
             DrawFuelLimitCircle(new(elite.docked_planet.d * gfx.GFX_SCALE, (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1));
             foreach (Vector2 pixel in planetPixels)
             {
-                _gfx.PlotPixel(pixel, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawPixel(pixel, GFX_COL.GFX_COL_WHITE);
             }
             DrawDistanceToPlanet(planetName, distanceToPlanet);
         }
@@ -32,7 +32,7 @@
             string planetName,
             float lightYears)
         {
-            _gfx.ClearDisplay();
+            ClearDisplay();
             _gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             DrawFuelLimitCircle(new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE));
@@ -49,7 +49,7 @@
 
         private void DrawDistanceToPlanet(string planetName, float lightYears)
         {
-            _gfx.ClearTextArea();
+            ClearTextArea();
             _gfx.DrawTextLeft(16, 340, $"{planetName:-18s}", GFX_COL.GFX_COL_WHITE);
             string str = lightYears > 0
                 ? $"Distance: {lightYears:N1} Light Years "
@@ -61,7 +61,7 @@
             string government, int techLevel, float population, string inhabitants,
             int productivity, int radius, string description)
         {
-            _gfx.ClearDisplay();
+            ClearDisplay();
             _gfx.DrawTextCentre(20, $"DATA ON {planetName}", 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             string str = lightYears > 0
@@ -125,7 +125,7 @@
 
         internal void DrawLoadCommander(bool isError, string name)
         {
-            _gfx.ClearDisplay();
+            ClearDisplay();
             _gfx.DrawTextCentre(20, "LOAD COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
@@ -144,7 +144,7 @@
 
         internal void DrawMarketPrices(string planetName, stock_item[] stocks, int highlightedStock, int[] currentCargo, float credits)
         {
-            _gfx.ClearDisplay();
+            ClearDisplay();
 
             _gfx.DrawTextCentre(20, $"{planetName} MARKET PRICES", 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
@@ -176,13 +176,13 @@
                 _gfx.DrawTextLeft(455, y, currentCargo[i] > 0 ? stocks[i].units : "", GFX_COL.GFX_COL_WHITE);
             }
 
-            _gfx.ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, $"Cash: {credits, 10:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            ClearTextArea();
+            _gfx.DrawTextLeft(16, 340, $"Cash: {credits,10:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
 
         internal void DrawEquipShip(EquipmentItem[] equip_stock, int highlightedItem, float credits)
         {
-            _gfx.ClearDisplay();
+            ClearDisplay();
             _gfx.DrawTextCentre(20, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             _gfx.ClearArea(2, 55, 508, 325);
@@ -213,8 +213,30 @@
                 y += 15;
             }
 
-            _gfx.ClearTextArea();
+            ClearTextArea();
             _gfx.DrawTextLeft(16, 340, $"Cash: {credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+        }
+
+        internal void ClearDisplay()
+        {
+            _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
+        }
+
+        internal void ClearTextArea()
+        {
+            _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 43 + gfx.GFX_Y_OFFSET);
+        }
+
+        public void DrawScanner()
+        {
+            _gfx.DrawImage(IMG.IMG_SCANNER, new(gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET));
+        }
+
+        public void DrawBorder()
+        {
+            _gfx.DrawLine(new(0f, 0f), new(0f, 384f));
+            _gfx.DrawLine(new(0f, 0f), new(511f, 0f));
+            _gfx.DrawLine(new(511f, 0f), new(511f, 384f));
         }
     }
 }

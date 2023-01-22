@@ -112,7 +112,7 @@ namespace Elite.Views
 
 			if (!found)
 			{
-                elite.alg_gfx.ClearTextArea();
+                elite.draw.ClearTextArea();
                 elite.alg_gfx.DrawTextLeft(16, 340, "Unknown Planet", GFX_COL.GFX_COL_WHITE);
 				return;
 			}

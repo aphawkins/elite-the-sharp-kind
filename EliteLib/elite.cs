@@ -533,7 +533,7 @@ namespace Elite
             {
                 find_input = true;
                 find_name = string.Empty;
-                alg_gfx.ClearTextArea();
+                draw.ClearTextArea();
                 alg_gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_WHITE);
             }
         }
@@ -549,7 +549,7 @@ namespace Elite
             find_name += str;
 
             str = "Planet Name? " + find_name;
-            alg_gfx.ClearTextArea();
+            draw.ClearTextArea();
             alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
         }
 
@@ -566,7 +566,7 @@ namespace Elite
             find_name = find_name[..^1];
 
             str = "Planet Name? " + find_name;
-            alg_gfx.ClearTextArea();
+            draw.ClearTextArea();
             alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
         }
 
@@ -708,7 +708,7 @@ namespace Elite
                 }
 
                 alg_gfx.SetClipRegion(1, 1, 510, 383);
-                alg_gfx.ClearDisplay();
+                draw.ClearDisplay();
                 Stars.update_starfield();
                 space.update_universe();
 
@@ -740,7 +740,7 @@ namespace Elite
 
                 Stars.warp_stars = true;
                 alg_gfx.SetClipRegion(1, 1, 510, 383);
-                alg_gfx.ClearDisplay();
+                draw.ClearDisplay();
                 Stars.update_starfield();
                 space.update_universe();
                 space.update_console();
@@ -1274,7 +1274,7 @@ namespace Elite
 
             for (i = 0; i < 100; i++)
             {
-                alg_gfx.ClearDisplay();
+                draw.ClearDisplay();
                 Stars.update_starfield();
                 space.update_universe();
                 alg_gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
@@ -1289,7 +1289,7 @@ namespace Elite
         private static void display_break_pattern()
         {
             alg_gfx.SetClipRegion(1, 1, 510, 383);
-            alg_gfx.ClearDisplay();
+            draw.ClearDisplay();
 
             for (int i = 0; i < 20; i++)
             {
@@ -1337,6 +1337,8 @@ namespace Elite
             elite.sound = sound;
             elite.keyboard = keyboard;
             draw = new Draw(elite.alg_gfx);
+
+            draw.DrawBorder();
 
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;
@@ -1423,7 +1425,7 @@ namespace Elite
                             SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
                             SCR.SCR_GAME_OVER)
                         {
-                            elite.alg_gfx.ClearDisplay();
+                            draw.ClearDisplay();
                             Stars.update_starfield();
                         }
 

@@ -130,13 +130,6 @@ namespace Elite
 
             _screenBufferGraphics.Clear(Color.Black);
 
-            DrawScanner();
-
-            // Draw border
-            DrawLine(new(0f, 0f), new(0f, 384f));
-            DrawLine(new(0f, 0f), new(511f, 0f));
-            DrawLine(new(511f, 0f), new(511f, 384f));
-
             // Install a timer to regulate the speed of the game...
             lock (frameCountLock)
             {
@@ -179,7 +172,8 @@ namespace Elite
                 _images[IMG.IMG_MISSILE_YELLOW] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "missyell.bmp"));
                 _images[IMG.IMG_MISSILE_RED] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "missred.bmp"));
                 _images[IMG.IMG_BLAKE] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "blake.bmp"));
-				return true;
+                _images[IMG.IMG_SCANNER] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "scanner.bmp"));
+                return true;
 			}
 			catch
 			{
@@ -224,12 +218,13 @@ namespace Elite
             //release_bitmap(gfx_screen);
 		}
 
-		public void PlotPixelFast(Vector2 position, GFX_COL col)
+		public void DrawPixelFast(Vector2 position, GFX_COL col)
 		{
-            PlotPixel(position, col);
+            // Is there a faster way of doing this?
+            DrawPixel(position, col);
         }
 
-        public void PlotPixel(Vector2 position, GFX_COL col)
+        public void DrawPixel(Vector2 position, GFX_COL col)
 		{
             //TODO: Fix SNES planet colour issues
             Color colour = _pens.TryGetValue(col, out Pen value) ? value.Color : Color.Magenta;
@@ -321,16 +316,6 @@ namespace Elite
 				stringFormat);
         }
 
-		public void ClearDisplay()
-		{
-            _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
-		}
-
-		public void ClearTextArea()
-		{
-            _screenBufferGraphics.FillRectangle(Brushes.Black, gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 43 + gfx.GFX_Y_OFFSET);
-        }
-
 		public void ClearArea(float x, float y, float width, float height)
 		{
 			_screenBufferGraphics.FillRectangle(Brushes.Black, x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
@@ -344,11 +329,6 @@ namespace Elite
         public void DrawRectangle(float x, float y, float width, float height, GFX_COL colour)
         {
             _screenBufferGraphics.DrawRectangle(_pens[colour], x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET);
-        }
-
-        public void DrawScanner()
-		{
-            _screenBufferGraphics.DrawImage(_imageScanner, gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET);
         }
 
 		public void SetClipRegion(float x, float y, float width, float height)
@@ -368,9 +348,9 @@ namespace Elite
 			_screenBufferGraphics.FillPolygon(_brushes[face_colour], points);
 		}
 
-		public void DrawSprite(IMG spriteImgage, Vector2 position)
+		public void DrawImage(IMG image, Vector2 position)
         {
-            Bitmap sprite = _images[spriteImgage];
+            Bitmap sprite = _images[image];
 
             if (position.X < 0)
             {

@@ -63,17 +63,17 @@ namespace Elite
 					(star.X >= gfx.GFX_VIEW_TX) && (star.X <= gfx.GFX_VIEW_BX) &&
 					(star.Y >= gfx.GFX_VIEW_TY) && (star.Y <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.PlotPixel(star, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.PlotPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.PlotPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.PlotPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
 					}
 				}
 
@@ -150,17 +150,17 @@ namespace Elite
 					(star.X >= gfx.GFX_VIEW_TX) && (star.X <= gfx.GFX_VIEW_BX) &&
 					(star.Y >= gfx.GFX_VIEW_TY) && (star.Y <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.PlotPixel(star, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.PlotPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.PlotPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.PlotPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
 					}
 				}
 
@@ -254,17 +254,17 @@ namespace Elite
 					(star.X >= gfx.GFX_VIEW_TX) && (star.X <= gfx.GFX_VIEW_BX) &&
 					(star.Y >= gfx.GFX_VIEW_TY) && (star.Y <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.PlotPixel(star, GFX_COL.GFX_COL_WHITE);
+                    elite.alg_gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.PlotPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.PlotPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.PlotPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
 					}
 				}
 

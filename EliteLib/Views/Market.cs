@@ -100,7 +100,7 @@ namespace Elite.Views
         {
             elite.current_screen = SCR.SCR_INVENTORY;
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 

@@ -67,7 +67,7 @@ namespace Elite.Views
 
             elite.current_screen = SCR.SCR_CMDR_STATUS;
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
 
             elite.alg_gfx.DrawTextCentre(20, $"COMMANDER {elite.cmdr.name}", 140, GFX_COL.GFX_COL_GOLD);
 

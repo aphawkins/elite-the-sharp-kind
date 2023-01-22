@@ -524,7 +524,7 @@ namespace Elite
                     //TODO: fix colours
                     //GFX_COL colour = (GFX_COL)landscape[lx, ly];
                     GFX_COL colour = lx < 0 || lx > 128 || ly < 0 || ly > 128 ? GFX_COL.GFX_COL_PINK_1 : (GFX_COL)landscape[lx, ly];
-                    elite.alg_gfx.PlotPixelFast(s, colour);
+                    elite.alg_gfx.DrawPixelFast(s, colour);
                 }
 				rx += vx;
 				ry += vy;
@@ -687,7 +687,7 @@ namespace Elite
 							? GFX_COL.GFX_COL_ORANGE_3
 							: MathF.Pow(s.X, y).IsOdd() ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
 
-                elite.alg_gfx.PlotPixelFast(s, colour);
+                elite.alg_gfx.DrawPixelFast(s, colour);
 			}
 		}
 
@@ -891,7 +891,7 @@ namespace Elite
                             //Debug.Assert(position.X >= 0);
                             //Debug.Assert(position.Y >= 0);
 
-                            elite.alg_gfx.PlotPixel(new(position.X + psx, position.Y + psy), GFX_COL.GFX_COL_WHITE);
+                            elite.alg_gfx.DrawPixel(new(position.X + psx, position.Y + psy), GFX_COL.GFX_COL_WHITE);
 						}
 					}
 				}

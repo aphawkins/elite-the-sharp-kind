@@ -36,5 +36,6 @@ namespace Elite.Enums
 		IMG_MISSILE_YELLOW = 8,
 		IMG_MISSILE_RED = 9,
 		IMG_BLAKE = 10,
+		IMG_SCANNER = 11,
 	}
 }

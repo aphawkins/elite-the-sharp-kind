@@ -188,7 +188,7 @@ namespace Elite
 
 			elite.current_screen = SCR.SCR_FRONT_VIEW;
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
@@ -222,7 +222,7 @@ namespace Elite
 			elite.cmdr.score += 256;
 			elite.cmdr.credits += 5000;
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
@@ -246,7 +246,7 @@ namespace Elite
 
 			elite.cmdr.mission = 4;
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
@@ -268,14 +268,14 @@ namespace Elite
 
 			elite.cmdr.mission = 5;
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.draw.DrawTextPretty(16, 50, 300, 384, mission2_brief_b);
             elite.draw.DrawTextPretty(16, 200, 470, 384, mission2_brief_c);
 
-            elite.alg_gfx.DrawSprite(IMG.IMG_BLAKE, new(352, 46));
+            elite.alg_gfx.DrawImage(IMG.IMG_BLAKE, new(352, 46));
 
             elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
@@ -295,7 +295,7 @@ namespace Elite
 			elite.cmdr.score += 256;
 			elite.cmdr.energy_unit = 2;
 
-            elite.alg_gfx.ClearDisplay();
+            elite.draw.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
