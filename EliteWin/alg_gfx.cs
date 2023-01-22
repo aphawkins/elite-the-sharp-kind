@@ -336,19 +336,31 @@ namespace Elite
             _screenBufferGraphics.Clip = new Region(new RectangleF(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, width + gfx.GFX_X_OFFSET, height + gfx.GFX_Y_OFFSET));
         }
 
-        public void DrawPolygonFilled(Vector2[] vectors, GFX_COL face_colour)
-		{
+        public void DrawPolygonFilled(Vector2[] vectors, GFX_COL faceColour)
+        {
             PointF[] points = new PointF[vectors.Length];
 
             for (int i = 0; i < vectors.Length; i++)
-			{
+            {
                 points[i] = new PointF(vectors[i].X + gfx.GFX_X_OFFSET, vectors[i].Y + gfx.GFX_Y_OFFSET);
             }
 
-			_screenBufferGraphics.FillPolygon(_brushes[face_colour], points);
-		}
+            _screenBufferGraphics.FillPolygon(_brushes[faceColour], points);
+        }
 
-		public void DrawImage(IMG image, Vector2 position)
+        public void DrawPolygon(Vector2[] vectors, GFX_COL lineColour)
+        {
+            PointF[] points = new PointF[vectors.Length];
+
+            for (int i = 0; i < vectors.Length; i++)
+            {
+                points[i] = new PointF(vectors[i].X + gfx.GFX_X_OFFSET, vectors[i].Y + gfx.GFX_Y_OFFSET);
+            }
+
+            _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
+        }
+
+        public void DrawImage(IMG image, Vector2 position)
         {
             Bitmap sprite = _images[image];
 

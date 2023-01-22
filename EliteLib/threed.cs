@@ -24,99 +24,15 @@ namespace Elite
         private static int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
         private static Vector3[] point_list = new Vector3[100];
 
-        /*
-		 * The following routine is used to draw a wireframe representation of a ship.
-		 *
-		 * caveat: it is a work in progress.
-		 * A number of features (such as not showing detail at distance) have not yet been implemented.
-		 *
-		 */
-        private static void draw_wireframe_ship(ref univ_object univ)
-		{
-			Vector3[] trans_mat = new Vector3[3];
-			bool[] visible = new bool[32];
-			float tmp;
-
-			ship_data ship = elite.ship_list[(int)univ.type];
-
-			for (int i = 0; i < 3; i++)
-			{
-				trans_mat[i] = univ.rotmat[i];
-			}
-
-            Vector3 camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
-			camera_vec = VectorMaths.unit_vector(camera_vec);
-
-			for (int i = 0; i < ship.normals.Length; i++)
-			{
-				if (ship.normals[i].direction == Vector3.Zero)
-				{
-					visible[i] = true;
-				}
-				else
-				{
-                    Vector3 vec = VectorMaths.unit_vector(ship.normals[i].direction);
-					float cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
-					visible[i] = cos_angle < -0.2;
-				}
-			}
-
-			tmp = trans_mat[0].Y;
-			trans_mat[0].Y = trans_mat[1].X;
-			trans_mat[1].X = tmp;
-
-			tmp = trans_mat[0].Z;
-			trans_mat[0].Z = trans_mat[2].X;
-			trans_mat[2].X = tmp;
-
-			tmp = trans_mat[1].Z;
-			trans_mat[1].Z = trans_mat[2].Y;
-			trans_mat[2].Y = tmp;
-
-			for (int i = 0; i < ship.points.Length; i++)
-			{
-				Vector3 vec = VectorMaths.mult_vector(ship.points[i].point, trans_mat);
-				Vector3 vecSum = vec + univ.location;
-
-				float sx = vecSum.X * 256 / vecSum.Z;
-				float sy = vecSum.Y * 256 / vecSum.Z;
-
-				sy = -sy;
-
-				sx += 128;
-				sy += 96;
-
-				sx *= gfx.GFX_SCALE;
-				sy *= gfx.GFX_SCALE;
-
-				point_list[i].X = sx;
-				point_list[i].Y = sy;
-			}
-
-			for (int i = 0; i < ship.lines.Length; i++)
-			{
-				if (visible[ship.lines[i].face1] ||
-					visible[ship.lines[i].face2])
-				{
-                    elite.alg_gfx.DrawLine(point_list[ship.lines[i].start_point].ToVector2(), point_list[ship.lines[i].end_point].ToVector2());
-				}
-			}
-
-
-			if (univ.flags.HasFlag(FLG.FLG_FIRING))
-			{
-				int lasv = elite.ship_list[(int)univ.type].front_laser;
-                elite.alg_gfx.DrawLine(point_list[lasv].ToVector2(), new(univ.location.X > 0 ? 0 : 511, random.rand255() * 2));
-			}
-		}
-
-        /*
-		 * Hacked version of the draw ship routine to display solid ships...
-		 * This needs a lot of tidying...
-		 *
-		 * Check for hidden surface supplied by T.Harte.
-		 */
-        private static void draw_solid_ship(ref univ_object univ)
+		/// <summary>
+		/// Hacked version of the draw ship routine to display ships...
+		/// This needs a lot of tidying...
+		/// caveat: it is a work in progress.
+		/// A number of features(such as not showing detail at distance) have not yet been implemented.
+        /// Check for hidden surface supplied by T.Harte.
+        /// </summary>
+        /// <param name="univ"></param>
+        private static void DrawShip(ref univ_object univ)
 		{
 			float rx, ry, rz;
 			int num_points;
@@ -156,16 +72,15 @@ namespace Elite
 			trans_mat[0].Y = trans_mat[1].X;
 			trans_mat[1].X = tmp;
 
-			tmp = trans_mat[0].Z;
-			trans_mat[0].Z = trans_mat[2].X;
-			trans_mat[2].X = tmp;
+            tmp = trans_mat[0].Z;
+            trans_mat[0].Z = trans_mat[2].X;
+            trans_mat[2].X = tmp;
 
-			tmp = trans_mat[1].Z;
-			trans_mat[1].Z = trans_mat[2].Y;
-			trans_mat[2].Y = tmp;
+            tmp = trans_mat[1].Z;
+            trans_mat[1].Z = trans_mat[2].Y;
+            trans_mat[2].Y = tmp;
 
-
-			for (int i = 0; i < ship.points.Length; i++)
+            for (int i = 0; i < ship.points.Length; i++)
 			{
 				Vector3 vec = VectorMaths.mult_vector(ship.points[i].point, trans_mat);
 
@@ -858,11 +773,11 @@ namespace Elite
 			random.rand_seed = old_seed;
 		}
 
-		/*
-		 * Draws an object in the universe.
-		 * (Ship, Planet, Sun etc).
-		 */
-		internal static void draw_ship(ref univ_object ship)
+		/// <summary>
+		/// Draws an object in the universe. (Ship, Planet, Sun etc).
+		/// </summary>
+		/// <param name="ship"></param>
+		internal static void DrawObject(ref univ_object ship)
 		{
 			if (elite.current_screen is not SCR.SCR_FRONT_VIEW and not SCR.SCR_REAR_VIEW and
                 not SCR.SCR_LEFT_VIEW and not SCR.SCR_RIGHT_VIEW and
@@ -908,14 +823,7 @@ namespace Elite
                 return;
             }
 
-            if (elite.config.UseWireframe)
-			{
-				draw_wireframe_ship(ref ship);
-			}
-			else
-			{
-				draw_solid_ship(ref ship);
-			}
+            DrawShip(ref ship);
 		}
 
         private struct poly_data
@@ -946,7 +854,7 @@ namespace Elite
 
             for (int i = start_poly; i != -1; i = poly_chain[i].next)
             {
-                GFX_COL colour = poly_chain[i].face_colour;
+                GFX_COL colour = elite.config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].face_colour;
 
                 if (poly_chain[i].point_list.Length == 2)
                 {
@@ -954,7 +862,14 @@ namespace Elite
                     continue;
                 }
 
-                elite.alg_gfx.DrawPolygonFilled(poly_chain[i].point_list, colour);
+				if (elite.config.UseWireframe)
+				{
+					elite.alg_gfx.DrawPolygon(poly_chain[i].point_list, colour);
+				}
+				else
+				{
+                    elite.alg_gfx.DrawPolygonFilled(poly_chain[i].point_list, colour);
+                }
             };
         }
 

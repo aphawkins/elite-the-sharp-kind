@@ -37,7 +37,9 @@ namespace Elite
 
         void DrawPixelFast(Vector2 position, GFX_COL colour);
 
-        void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour);
+        void DrawPolygonFilled(Vector2[] pointList, GFX_COL faceColour);
+
+        void DrawPolygon(Vector2[] pointList, GFX_COL lineColour);
 
         void DrawRectangle(float x, float y, float width, float height, GFX_COL colour);
 

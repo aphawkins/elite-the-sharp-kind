@@ -609,13 +609,13 @@ namespace Elite
 							make_station_appear();
 						}
 
-						threed.draw_ship(ref flip);
+						threed.DrawObject(ref flip);
 						continue;
 					}
 
 					if (type == SHIP.SHIP_SUN)
 					{
-						threed.draw_ship(ref flip);
+						threed.DrawObject(ref flip);
 						continue;
 					}
 
@@ -640,7 +640,7 @@ namespace Elite
 						continue;
 					}
 
-					threed.draw_ship(ref flip);
+					threed.DrawObject(ref flip);
 
 					universe[i].flags = flip.flags;
 					universe[i].exp_seed = flip.exp_seed;
