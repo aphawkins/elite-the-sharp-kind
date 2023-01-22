@@ -50,8 +50,6 @@ namespace Elite
 
             Vector3 camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
-
-			int num_faces = solid_data.num_faces;
 			ship_face[] face_data = solid_data.face_data;
 
 			/*
@@ -109,7 +107,7 @@ namespace Elite
 				point_list[i].Z = rz;
 			}
 
-			for (int i = 0; i < num_faces; i++)
+			for (int i = 0; i < solid_data.face_data.Length; i++)
 			{
 				if ((((point_list[face_data[i].p1].X - point_list[face_data[i].p2].X) *
 					 (point_list[face_data[i].p3].Y - point_list[face_data[i].p2].Y)) -
