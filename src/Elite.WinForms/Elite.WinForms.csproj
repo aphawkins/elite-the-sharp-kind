@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EliteLib\Elite.Engine.csproj" />
+    <ProjectReference Include="..\Elite.Engine\Elite.Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
