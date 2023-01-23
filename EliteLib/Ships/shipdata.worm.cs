@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] worm_point = new ship_point[]
+        internal static readonly ship_point[] worm_point =
         {
             new(new(  10,  -10,   35), 31,  0,  2,  7,  7),
             new(new( -10,  -10,   35), 31,  0,  3,  7,  7),
@@ -18,7 +19,7 @@ namespace Elite.Ships
             new(new(  -8,   14,  -25), 31,  1,  5,  6,  6),
         };
 
-        internal static ship_line[] worm_line = new ship_line[]
+        internal static readonly ship_line[] worm_line =
         {
             new(31,  0,  7,  0,  1),
             new(31,  3,  7,  1,  5),
@@ -38,7 +39,7 @@ namespace Elite.Ships
             new(31,  1,  6,  8,  9),
         };
 
-        internal static ship_face_normal[] worm_face_normal = new ship_face_normal[8]
+        internal static readonly ship_face_normal[] worm_face_normal =
         {
             new(31, new(   0,   88,   70)),
             new(31, new(   0,   69,   14)),
@@ -48,6 +49,20 @@ namespace Elite.Ships
             new(31, new( -64,   49,   14)),
             new(31, new(   0,    0, -200)),
             new(31, new(   0,  -80,    0)),
+        };
+
+        private static readonly ship_face[] worm_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x00, 0x58, 0x46), 4, 1, 0, 2, 3, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x46, 0x42, 0x23), 3, 0, 4, 2, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x46, 0x42, 0x23), 3, 1, 3, 5, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x40, 0x31, 0x0E), 4, 2, 4, 6, 8, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x40, 0x31, 0x0E), 4, 5, 3, 9, 7, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0xC8), 4, 6, 7, 9, 8, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00,-0x50, 0x00), 6, 4, 0, 1, 5, 7, 6, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x45, 0x0E), 4, 9, 3, 2, 8, 0, 0, 0, 0),
         };
 
         internal static ship_data worm_data = new(
@@ -64,6 +79,8 @@ namespace Elite.Ships
             4,
             worm_point,
             worm_line,
-            worm_face_normal);
+            worm_face_normal,
+            worm_face
+        );
     }
 }

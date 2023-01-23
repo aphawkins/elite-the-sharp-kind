@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] ferdlce_point = new ship_point[]
+        internal static readonly ship_point[] ferdlce_point =
         {
             new(new(   0,  -14,  108), 31,  0,  1,  5,  9),
             new(new( -40,  -14,   -4), 31,  1,  2,  9,  9),
@@ -27,7 +28,7 @@ namespace Elite.Ships
             new(new(  14,  -14,   44), 12,  9,  9,  9,  9),
         };
 
-        internal static ship_line[] ferdlce_line = new ship_line[]
+        internal static readonly ship_line[] ferdlce_line =
         {
             new(31,  1,  9,  0,  1),
             new(31,  2,  9,  1,  2),
@@ -58,7 +59,7 @@ namespace Elite.Ships
             new( 8,  9,  9, 17, 18),
         };
 
-        internal static ship_face_normal[] ferdlce_face_normal = new ship_face_normal[10]
+        internal static readonly ship_face_normal[] ferdlce_face_normal =
         {
             new(28, new(   0,   24,    6)),
             new(31, new( -68,    0,   24)),
@@ -70,6 +71,28 @@ namespace Elite.Ships
             new(28, new(   0,   45,  -22)),
             new(28, new(  12,   46,  -19)),
             new(31, new(   0,  -28,    0)),
+        };
+
+        private static readonly ship_face[] fer_de_lance_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x18, 0x06), 4,  5,  0,  8, 9, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2,new( -0x44, 0x00, 0x18), 3,  0,  5,  1, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_2, new(-0x3F, 0x00,-0x25), 4,  2,  1,  5, 6, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x68), 4,  3,  2,  6, 7, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x3F, 0x00,-0x25), 4,  4,  3,  7, 8, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x44, 0x00, 0x18), 3,  4,  8,  0, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_3, new(-0x0C, 0x2E,-0x13), 3,  5,  9,  6, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x2D,-0x16), 3,  6,  9,  7, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_3, new( 0x0C, 0x2E,-0x13), 3,  7,  9,  8, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00,-0x1C, 0x00), 5,  4,  0,  1, 2, 3, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00,-0x1C, 0x00), 3, 16, 18, 17, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x18, 0x06), 3, 11, 10, 12, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x18, 0x06), 3, 15, 13, 14, 0, 0, 0, 0, 0),
         };
 
         internal static ship_data ferdlce_data = new(
@@ -86,6 +109,8 @@ namespace Elite.Ships
             9,
             ferdlce_point,
             ferdlce_line,
-            ferdlce_face_normal);
+            ferdlce_face_normal,
+            fer_de_lance_face
+        );
     }
 }

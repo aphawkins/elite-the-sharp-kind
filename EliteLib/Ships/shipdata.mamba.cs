@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] mamba_point = new ship_point[]
+        internal static readonly ship_point[] mamba_point =
         {
             new(new(   0,    0,   64), 31,  1,  0,  3,  2),
             new(new( -64,   -8,  -32), 31,  2,  0,  4,  4),
@@ -33,7 +34,7 @@ namespace Elite.Ships
             new(new(  38,    0,  -32),  5,  4,  4,  4,  4),
         };
 
-        internal static ship_line[] mamba_line = new ship_line[]
+        internal static readonly ship_line[] mamba_line =
         {
             new(31,  2,  0,  0,  1),
             new(31,  3,  0,  0,  4),
@@ -65,13 +66,29 @@ namespace Elite.Ships
             new(30,  3,  1,  0,  3),
         };
 
-        internal static ship_face_normal[] mamba_face_normal = new ship_face_normal[5]
+        internal static readonly ship_face_normal[] mamba_face_normal =
         {
             new(30, new(   0,  -24,    2)),
             new(30, new(   0,   24,    2)),
             new(30, new( -32,   64,   16)),
             new(30, new(  32,   64,   16)),
             new(30, new(   0,    0, -127)),
+        };
+
+        private static readonly ship_face[] mamba_face =
+        {
+            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x18, 0x02), 3,  1,  4,  0,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREEN_3, new( 0x00, 0x18, 0x02), 3,  2,  0,  3,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREEN_2, new(-0x20, 0x40, 0x10), 3,  1,  0,  2,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREEN_2, new( 0x20, 0x40, 0x10), 3,  3,  0,  4,  0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x7F), 4,  1,  2,  3,  4, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00,-0x18, 0x02), 3, 11, 12,  9,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), 4, 17, 18, 15, 16, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x18, 0x02), 4,  7,  6,  5,  8, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00,-0x18, 0x02), 3, 13, 14, 10,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), 3, 20, 24, 21,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), 3, 22, 23, 19,  0, 0, 0, 0, 0),
         };
 
         internal static ship_data mamba_data = new(
@@ -88,6 +105,8 @@ namespace Elite.Ships
             9,
             mamba_point,
             mamba_line,
-            mamba_face_normal);
+            mamba_face_normal,
+            mamba_face
+        );
     }
 }

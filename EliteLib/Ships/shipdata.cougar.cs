@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] cougar_point = new ship_point[]
+        internal static readonly ship_point[] cougar_point =
         {
             new(new(   0,    5,   67), 31,  0,  2,  4,  4),
             new(new( -20,    0,   40), 31,  0,  1,  2,  2),
@@ -27,7 +28,7 @@ namespace Elite.Ships
             new(new(  10,    6,  -40), 20,  5,  5,  5,  5),
         };
 
-        internal static ship_line[] cougar_line = new ship_line[]
+        internal static readonly ship_line[] cougar_line =
         {
             new(31,  0,  2,  0,  1),
             new(31,  0,  1,  1,  7),
@@ -56,7 +57,7 @@ namespace Elite.Ships
             new(20,  5,  5, 17, 15),
         };
 
-        internal static ship_face_normal[] cougar_face_normal = new ship_face_normal[6]
+        internal static readonly ship_face_normal[] cougar_face_normal =
         {
             new ship_face_normal(31, new( -16,   46,    4)),
             new ship_face_normal(31, new( -16,  -46,    4)),
@@ -64,7 +65,29 @@ namespace Elite.Ships
             new ship_face_normal(31, new(  16,  -46,    4)),
             new ship_face_normal(31, new(  16,   46,    4)),
             new ship_face_normal(30, new(   0,    0, -160)),
-            };
+        };
+
+        private static readonly ship_face[] cougar_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x10,  0x2E,  0x04), 4,  2,  1,  0, 3, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x10, -0x2E,  0x04), 3,  4,  1,  2, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x00, -0x1B,  0x05), 4,  4,  5,  0, 1, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x10, -0x2E,  0x04), 3,  6,  5,  4, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x10,  0x2E,  0x04), 4,  5,  6,  3, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00,  0x00, -0xA0), 4,  6,  4,  2, 3, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_YELLOW_1, new(  -0x10, -0x2E,  0x04), 4,  1,  2,  8, 7, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_YELLOW_1, new(  -0x10,  0x2E,  0x04), 4,  7,  8,  2, 1, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_YELLOW_1, new(   0x10,  0x2E,  0x04), 4,  5,  6, 10, 9, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_YELLOW_1, new(   0x10, -0x2E,  0x04), 4,  9, 10,  6, 5, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_3, new(-0x10,  0x2E,  0x04), 3, 12, 13, 11, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x10,  0x2E,  0x04), 3, 11, 14, 12, 0, 0, 0, 0, 0),
+		/*
+			new(8,	 0x00,  0x00, -0xA0, 3, 15, 16, 19, 0, 0, 0, 0, 0),
+			new(8,	 0x00,  0x00, -0xA0, 3, 19, 18, 17, 0, 0, 0, 0, 0),
+		*/
+		};
 
         internal static ship_data cougar_data = new(
             "Cougar",
@@ -80,7 +103,8 @@ namespace Elite.Ships
             26,
             cougar_point,
             cougar_line,
-            cougar_face_normal
+            cougar_face_normal,
+            cougar_face
         );
     }
 }

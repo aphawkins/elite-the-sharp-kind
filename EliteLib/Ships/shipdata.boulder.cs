@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        private static ship_point[] boulder_point = new ship_point[]
+        private static readonly ship_point[] boulder_point =
         {
             new(new( -18,   37,  -11), 31,  0,  1,  5,  9),
             new(new(  30,    7,   12), 31,  1,  2,  5,  6),
@@ -15,7 +16,7 @@ namespace Elite.Ships
             new(new(  20,   17,  -30), 31, 15, 15, 15, 15),
         };
 
-        private static ship_line[] boulder_line = new ship_line[]
+        private static readonly ship_line[] boulder_line =
         {
             new(31,  1,  5,  0,  1),
             new(31,  2,  6,  1,  2),
@@ -34,7 +35,7 @@ namespace Elite.Ships
             new(31,  8,  9,  4,  6),
         };
 
-        private static ship_face_normal[] boulder_face_normal = new ship_face_normal[10]
+        private static readonly ship_face_normal[] boulder_face_normal =
         {
             new ship_face_normal(31, new( -15,   -3,    8)),
             new ship_face_normal(31, new(  -7,   12,   30)),
@@ -46,6 +47,21 @@ namespace Elite.Ships
             new ship_face_normal(31, new(  76,  -35,  -82)),
             new ship_face_normal(31, new(  22,   56, -137)),
             new ship_face_normal(31, new(  40,  110,  -38)),
+        };
+
+        private static readonly ship_face[] boulder_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x0F,-0x03, 0x08), 3, 0, 4, 5,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x07, 0x0C, 0x1E), 3, 0, 5, 1,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x20,-0x2F, 0x18), 3, 1, 5, 2,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x03,-0x27,-0x07), 3, 2, 5, 3,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x05,-0x04,-0x01), 3, 3, 5, 4,  0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x31, 0x54, 0x08), 3, 1, 6, 0,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x70, 0x15,-0x15), 3, 2, 6, 1,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x4C,-0x23,-0x52), 3, 3, 6, 2,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x16, 0x38,-0x89), 3, 4, 6, 3,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x28, 0x6E,-0x26), 3, 6, 4, 0,  0, 0, 0, 0, 0),
         };
 
         internal static ship_data boulder_data = new(
@@ -62,7 +78,8 @@ namespace Elite.Ships
             0,
             boulder_point,
             boulder_line,
-            boulder_face_normal
+            boulder_face_normal,
+            boulder_face
         );
     } 
 }

@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] thargoid_point = new ship_point[]
+        internal static readonly ship_point[] thargoid_point =
         {
             new(new(  32,  -48,   48), 31,  4,  0,  8,  8),
             new(new(  32,  -68,    0), 31,  1,  0,  4,  4),
@@ -28,7 +29,7 @@ namespace Elite.Ships
             new(new( -24,  -64,   80), 30,  9,  9,  9,  9),
         };
 
-        internal static ship_line[] thargoid_line = new ship_line[]
+        internal static readonly ship_line[] thargoid_line =
         {
             new(31,  8,  4,  0,  7),
             new(31,  4,  0,  0,  1),
@@ -58,7 +59,7 @@ namespace Elite.Ships
             new(30,  9,  9, 18, 19),
         };
 
-        internal static ship_face_normal[] thargoid_face_normal = new ship_face_normal[10]
+        internal static readonly ship_face_normal[] thargoid_face_normal =
         {
             new(31, new( 103,  -60,   25)),
             new(31, new( 103,  -60,  -25)),
@@ -70,6 +71,34 @@ namespace Elite.Ships
             new(31, new( 103,   25,   60)),
             new(31, new( 103,  -25,   60)),
             new(31, new( -48,    0,    0)),
+        };
+
+        private static readonly ship_face[] thargoid_face =
+        {
+            new(GFX_COL.GFX_COL_DARK_RED, new(   0x67,-0x3C, 0x19), 4,  1,  0,  8,  9,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x67,-0x3C,-0x19), 4,  2,  1,  9, 10,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new(   0x67,-0x19,-0x3C), 4,  3,  2, 10, 11,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x67, 0x19,-0x3C), 4,  4,  3, 11, 12,  0,  0, 0, 0),
+		/*
+			new(GFX_COL.GFX_COL_GREY_3,	 0x40, 0x00, 0x00, 8,  7,  6,  5,  4,  3,  2, 1, 0),
+		*/
+			new(GFX_COL.GFX_COL_GREY_3, new( 0x40, 0x00, 0x00), 4,  0,  1,  2,  7,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x40, 0x00, 0x00), 4,  2,  3,  6,  7,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x40, 0x00, 0x00), 4,  3,  4,  5,  6,  0,  0, 0, 0),
+
+            new(GFX_COL.GFX_COL_DARK_RED, new(   0x67, 0x3C,-0x19), 4,  5,  4, 12, 13,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x67, 0x3C, 0x19), 4,  6,  5, 13, 14,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new(   0x67, 0x19, 0x3C), 4,  7,  6, 14, 15,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x67,-0x19, 0x3C), 4,  0,  7, 15,  8,  0,  0, 0, 0),
+		/*
+			new(GFX_COL.GFX_COL_GREY_3,	-0x30, 0x00, 0x00, 8, 15, 14, 13, 12, 11, 10, 9, 8),
+		*/
+			new(GFX_COL.GFX_COL_GREY_3, new(-0x30, 0x00, 0x00), 4,  9,  8, 15, 10, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x30, 0x00, 0x00), 4, 11, 10, 15, 14, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x30, 0x00, 0x00), 4, 12, 11, 14, 13, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_WHITE, new(     -0x30, 0x00, 0x00), 2, 16, 17, 19,  0,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_WHITE, new(     -0x30, 0x00, 0x00), 2, 18, 19, 16,  0,  0,  0, 0, 0),
         };
 
         internal static ship_data thargoid_data = new(
@@ -86,6 +115,8 @@ namespace Elite.Ships
             11,
             thargoid_point,
             thargoid_line,
-            thargoid_face_normal);
+            thargoid_face_normal,
+            thargoid_face
+        );
     }
 }

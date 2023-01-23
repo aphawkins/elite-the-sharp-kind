@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        private static ship_point[] cargo_point = new ship_point[]
+        private static readonly ship_point[] cargo_point =
         {
             new(new(  24,   16,    0), 31,  1,  0,  5,  5),
             new(new(  24,    5,   15), 31,  1,  0,  2,  2),
@@ -18,7 +19,7 @@ namespace Elite.Ships
             new(new( -24,    5,  -15), 31,  5,  4,  6,  6),
         };
 
-        private static ship_line[] cargo_line = new ship_line[]
+        private static readonly ship_line[] cargo_line =
         {
             new(31,  1,  0,  0,  1),
             new(31,  2,  0,  1,  2),
@@ -37,7 +38,7 @@ namespace Elite.Ships
             new(31,  6,  5,  9,  5),
         };
 
-        private static ship_face_normal[] cargo_face_normal = new ship_face_normal[7]
+        private static readonly ship_face_normal[] cargo_face_normal =
         {
             new ship_face_normal(31, new(  96,    0,    0)),
             new ship_face_normal(31, new(   0,   41,   30)),
@@ -46,6 +47,19 @@ namespace Elite.Ships
             new ship_face_normal(31, new(   0,  -18,  -48)),
             new ship_face_normal(31, new(   0,   41,  -30)),
             new ship_face_normal(31, new( -96,    0,    0)),
+        };
+
+        private static readonly ship_face[] cargo_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x60, 0x00, 0x00), 5, 4, 0, 1, 2, 3, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_2, new(  0x00, 0x29, 0x1E), 4, 5, 6, 1, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(  0x00,-0x12, 0x30), 4, 6, 7, 2, 1, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(  0x00,-0x33, 0x00), 4, 7, 8, 3, 2, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(  0x00,-0x12,-0x30), 4, 8, 9, 4, 3, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(  0x00, 0x29,-0x1E), 4, 9, 5, 0, 4, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_4, new( -0x60, 0x00, 0x00), 5, 8, 7, 6, 5, 9, 0, 0, 0),
         };
 
         internal static ship_data cargo_data = new(
@@ -62,7 +76,8 @@ namespace Elite.Ships
             0,
             cargo_point,
             cargo_line,
-            cargo_face_normal
+            cargo_face_normal,
+            cargo_face
         );
     }
 }

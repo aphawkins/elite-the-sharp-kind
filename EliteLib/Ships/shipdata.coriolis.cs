@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        private static ship_point[] coriolis_point = new ship_point[]
+        private static readonly ship_point[] coriolis_point =
         {
             new(new( 160,    0,  160), 31,  1,  0,  6,  2),
             new(new(   0,  160,  160), 31,  2,  0,  8,  3),
@@ -24,7 +25,7 @@ namespace Elite.Ships
             new(new( -10,  -30,  160), 30,  0,  0,  0,  0),
         };
 
-        private static ship_line[] coriolis_line = new ship_line[]
+        private static readonly ship_line[] coriolis_line =
         {
             new(31,  1,  0,  0,  3),
             new(31,  2,  0,  0,  1),
@@ -56,7 +57,7 @@ namespace Elite.Ships
             new(30,  0,  0, 15, 12),
         };
 
-        private static ship_face_normal[] coriolis_face_normal = new ship_face_normal[14]
+        private static readonly ship_face_normal[] coriolis_face_normal =
         {
             new ship_face_normal(31, new(   0,    0,  160)),
             new ship_face_normal(31, new( 107, -107,  107)),
@@ -74,6 +75,29 @@ namespace Elite.Ships
             new ship_face_normal(31, new(   0,    0, -160)),
         };
 
+        private static readonly ship_face[] coriolis_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x6B,-0x6B, 0x6B), 3,  4,  0,  3,  0,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x6B, 0x6B, 0x6B), 3,  0,  5,  1,  0,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x6B, 0x6B, 0x6B), 3,  1,  6,  2,  0,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x6B,-0x6B, 0x6B), 3,  2,  7,  3,  0,  0,  0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0xA0, 0x00), 4, 4,  3,  7, 11,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0xA0, 0x00, 0x00), 4,  8,  5,  0,  4,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0xA0, 0x00, 0x00), 4, 10,  7,  2,  6,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0xA0, 0x00), 4,  1,  5,  9,  6,  0,  0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x6B,-0x6B,-0x6B), 3, 11,  7, 10,  0,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x6B,-0x6B,-0x6B), 3, 11,  8,  4,  0,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x6B, 0x6B,-0x6B), 3,  9,  5,  8,  0,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x6B, 0x6B,-0x6B), 3, 10,  6,  9,  0,  0,  0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x00,-0xA0), 4, 11, 10,  9,  8,  0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00, 0xA0), 4,  0,  1,  2,  3,  0,  0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLACK,  new(0x00, 0x00, 0xA0), 4, 15, 12, 13, 14,  0,  0, 0, 0),
+        };
+
         internal static ship_data coriolis_data = new(
             "Coriolis Space Station",
             0,
@@ -88,7 +112,8 @@ namespace Elite.Ships
             3,
             coriolis_point,
             coriolis_line,
-            coriolis_face_normal
+            coriolis_face_normal,
+            coriolis_face
         );
-    } 
+    }
 }

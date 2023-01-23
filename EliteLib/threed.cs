@@ -39,8 +39,6 @@ namespace Elite
 			Vector3[] trans_mat = new Vector3[3];
 			int lasv;
             GFX_COL col;
-
-			ship_solid solid_data = shipface.ship_solids[(int)univ.type];
 			ship_data ship = elite.ship_list[(int)univ.type];
 
 			for (int i = 0; i < 3; i++)
@@ -50,7 +48,7 @@ namespace Elite
 
             Vector3 camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
-			ship_face[] face_data = solid_data.face_data;
+			ship_face[] face_data = ship.face_data;
 
 			/*
 				for (i = 0; i < num_faces; i++)
@@ -107,7 +105,7 @@ namespace Elite
 				point_list[i].Z = rz;
 			}
 
-			for (int i = 0; i < solid_data.face_data.Length; i++)
+			for (int i = 0; i < ship.face_data.Length; i++)
 			{
 				if ((((point_list[face_data[i].p1].X - point_list[face_data[i].p2].X) *
 					 (point_list[face_data[i].p3].Y - point_list[face_data[i].p2].Y)) -

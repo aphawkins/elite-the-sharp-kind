@@ -12,6 +12,7 @@
 - Sometimes stations render on an incorrect axis
 - Missiles can be targeted against asteroids?
 - Wireframe ships have lines that are excluded too early
+- Missiles don't always hit the commander's ship
 
 ## Missions
 - Ship and text in mission brief doesn't clip correctly

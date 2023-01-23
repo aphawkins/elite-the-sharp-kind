@@ -1,13 +1,12 @@
 ﻿namespace Elite.Structs
 {
+    using System.Numerics;
     using Elite.Enums;
 
     internal class ship_face
     {
         internal GFX_COL colour;
-        internal int norm_x;
-        internal int norm_y;
-        internal int norm_z;
+        internal Vector3 normal;
         internal int points;
         internal int p1;
         internal int p2;
@@ -18,12 +17,10 @@
         internal int p7;
         internal int p8;
 
-        internal ship_face(GFX_COL colour, int norm_x, int norm_y, int norm_z, int points, int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
+        internal ship_face(GFX_COL colour, Vector3 normal, int points, int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
         {
             this.colour = colour;
-            this.norm_x = norm_x;
-            this.norm_y = norm_y;
-            this.norm_z = norm_z;
+            this.normal = normal;
             this.points = points;
             this.p1 = p1;
             this.p2 = p2;

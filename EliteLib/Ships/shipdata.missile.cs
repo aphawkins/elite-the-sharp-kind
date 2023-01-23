@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        private static ship_point[] missile_point = new ship_point[]
+        private static readonly ship_point[] missile_point =
         {
             new(new(   0,    0,   68), 31,  1,  0,  3,  2),
             new(new(   8,   -8,   36), 31,  2,  1,  5,  4),
@@ -25,7 +26,7 @@ namespace Elite.Ships
             new(new(   8,   -8,  -12),  8,  5,  4,  5,  5),
         };
 
-        private static ship_line[] missile_line = new ship_line[]
+        private static readonly ship_line[] missile_line =
         {
             new(31,  2,  1,  0,  1),
             new(31,  3,  2,  0,  2),
@@ -53,7 +54,7 @@ namespace Elite.Ships
             new( 8,  6,  5, 11, 14),
         };
 
-        private static ship_face_normal[] missile_face_normal = new ship_face_normal[9]
+        private static readonly ship_face_normal[] missile_face_normal =
         {
             new ship_face_normal(31, new( -64,    0,   16)),
             new ship_face_normal(31, new(   0,  -64,   16)),
@@ -64,6 +65,37 @@ namespace Elite.Ships
             new ship_face_normal(31, new( -32,    0,    0)),
             new ship_face_normal(31, new(   0,   32,    0)),
             new ship_face_normal(31, new(   0,    0, -176)),
+        };
+
+        private static readonly ship_face[] missile_face =
+        {
+			//fins
+			new(GFX_COL.GFX_COL_RED, new( 0x20, 0x00, 0x00), 3,  5, 9, 15, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x20, 0x00), 3, 15, 9,  5, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_RED, new(-0x20, 0x00, 0x00), 3, 8, 12, 13, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x20, 0x00), 3, 13, 12, 8, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_RED, new(-0x20, 0x00, 0x00), 3, 7, 11, 14, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00,-0x20, 0x00), 3, 14, 11, 7, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_RED, new( 0x20, 0x00, 0x00), 3, 6, 10, 16, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00,-0x20, 0x00), 3, 16, 10, 6, 0, 0, 0, 0, 0),
+
+			//nose cone
+			new(GFX_COL.GFX_COL_DARK_RED, new(-0x40, 0x00, 0x10), 3, 0,  3,  4, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED,      new( 0x00,-0x40, 0x10), 3, 0,  4,  1, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x40, 0x00, 0x10), 3, 0,  1,  2, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED,      new( 0x00, 0x40, 0x10), 3, 0,  2,  3, 0, 0, 0, 0, 0),
+
+			//main body
+			new(GFX_COL.GFX_COL_GREY_3, new( 0x20, 0x00, 0x00), 4, 6,  5,  2, 1, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x20, 0x00), 4, 5,  8,  3, 2, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x20, 0x00, 0x00), 4, 8,  7,  4, 3, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00,-0x20, 0x00), 4, 7,  6,  1, 4, 0, 0, 0, 0),
+
+			//bottom
+			new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x00,-0xB0), 4, 5,  6,  7, 8, 0, 0, 0, 0),
         };
 
         internal static ship_data missile_data = new(
@@ -80,7 +112,8 @@ namespace Elite.Ships
             0,
             missile_point,
             missile_line,
-            missile_face_normal
+            missile_face_normal,
+            missile_face
         );
     }
 }

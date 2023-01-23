@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] pythonb_point = new ship_point[]
+        internal static readonly ship_point[] pythonb_point =
         {
             new(new(   0,    0,  224), 31,  1,  0,  3,  2),
             new(new(   0,   48,   48), 31,  1,  0,  5,  4),
@@ -19,7 +20,7 @@ namespace Elite.Ships
             new(new(   0,  -24, -112), 31, 11, 10, 12, 12),
         };
 
-        internal static ship_line[] pythonb_line = new ship_line[]
+        internal static readonly ship_line[] pythonb_line =
         {
             new(31,  3,  2,  0,  8),
             new(31,  2,  0,  0,  3),
@@ -49,7 +50,7 @@ namespace Elite.Ships
             new(31,  7,  6,  8,  9),
         };
 
-        internal static ship_face_normal[] pythonb_face_normal = new ship_face_normal[13]
+        internal static readonly ship_face_normal[] pythonb_face_normal =
         {
             new(31, new( -27,   40,   11)),
             new(31, new(  27,   40,   11)),
@@ -66,6 +67,26 @@ namespace Elite.Ships
             new(31, new(   0,    0, -112)),
         };
 
+        private static readonly ship_face[] pythonb_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x1B, 0x28, 0x0B), 3, 0,  1,  3, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x1B, 0x28, 0x0B), 3, 2,  1,  0, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x1B,-0x28, 0x0B), 3, 0,  3,  8, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x1B,-0x28, 0x0B), 3, 8,  2,  0, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_YELLOW_1, new(-0x13, 0x26, 0x00), 3, 3,  1,  4, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GOLD, new( 0x13, 0x26, 0x00), 3, 4,  1,  2, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GOLD, new(-0x13,-0x26, 0x00), 3, 3,  9,  8, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_YELLOW_1, new( 0x13,-0x26, 0x00), 3, 8,  9,  2, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x19, 0x25,-0x0B), 4, 3,  4,  5, 6, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x19, 0x25,-0x0B), 4, 2,  7,  5, 4, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x19,-0x25,-0x0B), 4, 2,  9, 10, 7, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x19,-0x25,-0x0B), 4, 3,  6, 10, 9, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0x70), 4, 10, 6 , 5, 7, 0, 0, 0, 0),
+        };
+
         internal static ship_data pythonb_data = new(
             "Python",
             2,
@@ -80,6 +101,8 @@ namespace Elite.Ships
             13,
             pythonb_point,
             pythonb_line,
-            pythonb_face_normal);
+            pythonb_face_normal,
+            pythonb_face
+        );
     }
 }

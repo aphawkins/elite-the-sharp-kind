@@ -16,6 +16,7 @@
         internal ship_point[] points;
         internal ship_line[] lines;
         internal ship_face_normal[] normals;
+        internal ship_face[] face_data;
 
         internal ship_data()
         {
@@ -23,7 +24,7 @@
 
         internal ship_data(string name, int max_loot,
             int scoop_type, float size, int front_laser, float bounty, int vanish_point, int energy,
-            float velocity, int missiles, int laser_strength, ship_point[] points, ship_line[] lines, ship_face_normal[] normals)
+            float velocity, int missiles, int laser_strength, ship_point[] points, ship_line[] lines, ship_face_normal[] normals, ship_face[] face_data)
         {
             this.name = name;
             this.max_loot = max_loot;
@@ -39,6 +40,7 @@
             this.points = points;
             this.lines = lines;
             this.normals = normals;
+            this.face_data = face_data;
         }
     };
 }

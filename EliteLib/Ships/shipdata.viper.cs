@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] viper_point = new ship_point[]
+        internal static readonly ship_point[] viper_point =
         {
             new(new(   0,    0,   72), 31,  2,  1,  4,  3),
             new(new(   0,   16,   24), 30,  1,  0,  2,  2),
@@ -23,7 +24,7 @@ namespace Elite.Ships
             new(new(   8,   -8,  -24), 18,  6,  6,  6,  6),
         };
 
-        internal static ship_line[] viper_line = new ship_line[]
+        internal static readonly ship_line[] viper_line =
         {
             new(31,  4,  2,  0,  3),
             new(30,  2,  1,  0,  1),
@@ -47,7 +48,7 @@ namespace Elite.Ships
             new(16,  6,  6, 12, 13),
         };
 
-        internal static ship_face_normal[] viper_face_normal = new ship_face_normal[7]
+        internal static readonly ship_face_normal[] viper_face_normal =
         {
             new(31, new(   0,   32,    0)),
             new(31, new( -22,   33,   11)),
@@ -56,6 +57,22 @@ namespace Elite.Ships
             new(31, new(  22,  -33,   11)),
             new(31, new(   0,  -32,    0)),
             new(31, new(   0,    0,  -48)),
+        };
+
+        private static readonly ship_face[] viper_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x20, 0x00), 3,  7,  8,  1, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_3, new(-0x16, 0x21, 0x0B), 4,  8,  4,  0, 1, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x16, 0x21, 0x0B), 4,  3,  7,  1, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_2, new(-0x16,-0x21, 0x0B), 4,  2,  0,  4, 6, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_3, new( 0x16,-0x21, 0x0B), 4,  0,  2,  5, 3, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x20, 0x00), 3,  2,  6,  5, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x30), 6,  4,  8,  7, 3, 5, 6, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x30), 3, 12, 13,  9, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x30), 3, 10, 14, 11, 0, 0, 0, 0, 0),
         };
 
         internal static ship_data viper_data = new(
@@ -72,6 +89,8 @@ namespace Elite.Ships
             8,
             viper_point,
             viper_line,
-            viper_face_normal);
+            viper_face_normal,
+            viper_face
+        );
     }
 }

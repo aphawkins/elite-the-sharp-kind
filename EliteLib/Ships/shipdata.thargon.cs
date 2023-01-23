@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] thargon_point = new ship_point[]
+        internal static readonly ship_point[] thargon_point =
         {
             new(new(  -9,    0,   40), 31,  0,  1,  5,  5),
             new(new(  -9,  -38,   12), 31,  0,  1,  2,  2),
@@ -18,7 +19,7 @@ namespace Elite.Ships
             new(new(   9,   10,  -15), 31,  4,  5,  6,  6),
         };
 
-        internal static ship_line[] thargon_line = new ship_line[]
+        internal static readonly ship_line[] thargon_line =
         {
             new(31,  1,  0,  0,  1),
             new(31,  2,  0,  1,  2),
@@ -37,7 +38,7 @@ namespace Elite.Ships
             new(31,  6,  5,  9,  5),
         };
 
-        internal static ship_face_normal[] thargon_face_normal = new ship_face_normal[7]
+        internal static readonly ship_face_normal[] thargon_face_normal =
         {
             new(31, new( -36,    0,    0)),
             new(31, new(  20,   -5,    7)),
@@ -46,6 +47,19 @@ namespace Elite.Ships
             new(31, new(  46,   42,  -14)),
             new(31, new(  20,    5,    7)),
             new(31, new(  36,    0,    0)),
+        };
+
+        private static readonly ship_face[] thargon_face =
+        {
+            new(GFX_COL.GFX_COL_DARK_RED, new(-0x24, 0x00, 0x00), 5, 3, 2, 1, 0, 4, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_1, new(0x14,-0x05, 0x07), 4, 6, 5, 0, 1, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(0x2E,-0x2A,-0x0E), 4, 7, 6, 1, 2, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_4, new(0x24, 0x00,-0x68), 4, 8, 7, 2, 3, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(0x2E, 0x2A,-0x0E), 4, 9, 8, 3, 4, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(0x14, 0x05, 0x07), 4, 4, 0, 5, 9, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x24, 0x00, 0x00), 5, 9, 5, 6, 7, 8, 0, 0, 0),
         };
 
         internal static ship_data thargon_data = new(
@@ -62,6 +76,8 @@ namespace Elite.Ships
             8,
             thargon_point,
             thargon_line,
-            thargon_face_normal);
+            thargon_face_normal,
+            thargon_face
+        );
     }
 }

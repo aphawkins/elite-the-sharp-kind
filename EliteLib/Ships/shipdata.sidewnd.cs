@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] sidewnd_point = new ship_point[]
+        internal static readonly ship_point[] sidewnd_point =
         {
             new(new( -32,    0,   36), 31,  1,  0,  5,  4),
             new(new(  32,    0,   36), 31,  2,  0,  6,  5),
@@ -18,7 +19,7 @@ namespace Elite.Ships
             new(new( -12,   -6,  -28), 12,  3,  3,  3,  3),
         };
 
-        internal static ship_line[] sidewnd_line = new ship_line[]
+        internal static readonly ship_line[] sidewnd_line =
         {
             new(31,  5,  0,  0,  1),
             new(31,  6,  2,  1,  2),
@@ -37,7 +38,7 @@ namespace Elite.Ships
             new(12,  3,  3,  8,  9),
         };
 
-        internal static ship_face_normal[] sidewnd_face_normal = new ship_face_normal[7]
+        internal static readonly ship_face_normal[] sidewnd_face_normal =
         {
             new(31, new(   0,   32,    8)),
             new(31, new( -12,   47,    6)),
@@ -46,6 +47,20 @@ namespace Elite.Ships
             new(31, new( -12,  -47,    6)),
             new(31, new(   0,  -32,    8)),
             new(31, new(  12,  -47,    6)),
+        };
+
+        private static readonly ship_face[] sidewinder_face =
+        {
+            new(GFX_COL.GFX_COL_YELLOW_1, new( 0x00, 0x20, 0x08), 3, 4, 0, 1, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GOLD, new(-0x0C, 0x2F, 0x06), 3, 4, 3, 0, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GOLD, new( 0x0C, 0x2F, 0x06), 3, 2, 4, 1, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x70), 4, 2, 5, 3, 4, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_YELLOW_1, new(-0x0C,-0x2F, 0x06), 3, 5, 0, 3, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GOLD, new( 0x00,-0x20, 0x08), 3, 1, 0, 5, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_YELLOW_1, new( 0x0C,-0x2F, 0x06), 3, 2, 1, 5, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x70), 4, 8, 9, 6, 7, 0, 0, 0, 0),
         };
 
         internal static ship_data sidewnd_data = new(
@@ -62,6 +77,8 @@ namespace Elite.Ships
             8,
             sidewnd_point,
             sidewnd_line,
-            sidewnd_face_normal);
+            sidewnd_face_normal,
+            sidewinder_face
+        );
     }
 }

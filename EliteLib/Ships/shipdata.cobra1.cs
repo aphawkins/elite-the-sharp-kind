@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] cobra1_point = new ship_point[]
+        internal static readonly ship_point[] cobra1_point =
         {
             new(new( -18,   -1,   50), 31,  0,  1,  2,  3),
             new(new(  18,   -1,   50), 31,  0,  1,  4,  5),
@@ -19,7 +20,7 @@ namespace Elite.Ships
             new(new(   0,   -1,   60), 31,  0,  1,  1,  1),
         };
 
-        internal static ship_line[] cobra1_line = new ship_line[]
+        internal static readonly ship_line[] cobra1_line =
         {
             new(31,  0,  1,  1,  0),
             new(31,  2,  3,  0,  2),
@@ -41,7 +42,7 @@ namespace Elite.Ships
             new( 2,  0,  1, 10,  9),
         };
 
-        internal static ship_face_normal[] cobra1_face_normal = new ship_face_normal[10]
+        internal static readonly ship_face_normal[] cobra1_face_normal =
         {
             new(31, new(   0,   41,   10)),
             new(31, new(   0,  -27,    3)),
@@ -53,6 +54,26 @@ namespace Elite.Ships
             new(31, new(   0,    0, -154)),
             new(31, new(-121,  111,  -62)),
             new(31, new( 121,  111,  -62)),
+        };
+
+        private static readonly ship_face[] cobra1_face =
+        {
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x29, 0x0A), 3,  0, 1, 8, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00,-0x1B, 0x03), 4,  6, 7, 1, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_3, new(-0x08, 0x2E, 0x08), 4,  2, 0, 8, 4, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_4, new(-0x0C,-0x39, 0x0C), 3,  6, 0, 2, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_3, new( 0x08, 0x2E, 0x08), 4,  1, 3, 5, 8, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_4, new( 0x0C,-0x39, 0x0C), 3,  1, 7, 3, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x31, 0x00), 3,  4, 8, 5, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_4, new( 0x00, 0x00,-0x9A), 4,  7, 6, 4, 5, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_2, new(-0x79, 0x6F,-0x3E), 3,  2, 4, 6, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x79, 0x6F,-0x3E), 3,  3, 7, 5, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00, 0x29, 0x0A), 2, 9, 10, 0, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x1B, 0x03), 2, 10, 9, 0, 0, 0, 0, 0, 0),
         };
 
         internal static ship_data cobra1_data = new(
@@ -69,6 +90,8 @@ namespace Elite.Ships
             9,
             cobra1_point,
             cobra1_line,
-            cobra1_face_normal);
+            cobra1_face_normal,
+            cobra1_face
+        );
     }
 }

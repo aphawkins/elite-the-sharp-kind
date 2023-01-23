@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] gecko_point = new ship_point[]
+        internal static readonly ship_point[] gecko_point =
         {
             new(new( -10,   -4,   47), 31,  0,  3,  4,  5),
             new(new(  10,   -4,   47), 31,  0,  1,  2,  3),
@@ -20,7 +21,7 @@ namespace Elite.Ships
             new(new(   8,  -13,  -16), 17,  3,  3,  3,  3),
         };
 
-        internal static ship_line[] gecko_line = new ship_line[]
+        internal static readonly ship_line[] gecko_line =
         {
             new(31,  0,  3,  0,  1),
             new(31,  1,  2,  1,  5),
@@ -41,7 +42,7 @@ namespace Elite.Ships
             new(17,  3,  3,  9, 11),
         };
 
-        internal static ship_face_normal[] gecko_face_normal = new ship_face_normal[9]
+        internal static readonly ship_face_normal[] gecko_face_normal =
         {
             new(31, new(   0,   31,    5)),
             new(31, new(   4,   45,    8)),
@@ -52,6 +53,24 @@ namespace Elite.Ships
             new(31, new( -88,   16, -214)),
             new(31, new(   0,    0, -187)),
             new(31, new(  88,   16, -214)),
+        };
+
+        private static readonly ship_face[] gecko_face =
+        {
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x1F, 0x05), 4,  3,  2, 0, 1, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x04, 0x2D, 0x08), 3,  3,  1, 5, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x19,-0x6C, 0x13), 3,  5,  1, 7, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00,-0x54, 0x0C), 4,  1,  0, 6, 7, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x19,-0x6C, 0x13), 3,  4,  6, 0, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x04, 0x2D, 0x08), 3,  0,  2, 4, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_DARK_RED, new(-0x58, 0x10,-0xD6), 3,  4,  2, 6, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0xBB), 4,  2,  3, 7, 6, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x58, 0x10,-0xD6), 3,  5,  7, 3, 0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x54, 0x0C), 2,  8, 10, 9, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x54, 0x0C), 2, 11,  9, 8, 0, 0, 0, 0, 0),
         };
 
         internal static ship_data gecko_data = new(
@@ -68,6 +87,8 @@ namespace Elite.Ships
             8,
             gecko_point,
             gecko_line,
-            gecko_face_normal);
+            gecko_face_normal,
+            gecko_face
+        );
     }
 }

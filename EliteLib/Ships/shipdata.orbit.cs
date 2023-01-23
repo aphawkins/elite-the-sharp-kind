@@ -1,10 +1,11 @@
 namespace Elite.Ships
 {
+    using Elite.Enums;
     using Elite.Structs;
 
     internal static partial class shipdata
     {
-        internal static ship_point[] orbit_point = new ship_point[]
+        internal static readonly ship_point[] orbit_point =
         {
             new(new(   0,  -17,   23), 31, 15, 15, 15, 15),
             new(new( -17,    0,   23), 31, 15, 15, 15, 15),
@@ -27,7 +28,7 @@ namespace Elite.Ships
             new(new( -10,    4,   25),  8,  4, 15,  1,  8),
         };
 
-        internal static ship_line[] orbit_line = new ship_line[]
+        internal static readonly ship_line[] orbit_line =
         {
             new(31,  0,  2,  0,  1),
             new(31,  4, 10,  1,  2),
@@ -61,7 +62,7 @@ namespace Elite.Ships
             new( 7, 10, 10, 16, 18),
         };
 
-        internal static ship_face_normal[] orbit_face_normal = new ship_face_normal[13]
+        internal static readonly ship_face_normal[] orbit_face_normal =
         {
             new ship_face_normal(31, new( -55,  -55,   40)),
             new ship_face_normal(31, new(   0,  -74,    4)),
@@ -78,6 +79,29 @@ namespace Elite.Ships
             new ship_face_normal(31, new(  55,  -55,   40)),
         };
 
+        private static readonly ship_face[] shuttle_face =
+{
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00,-0x4A, 0x04), 3,  0,  4,  7,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x33,-0x33, 0x17), 3,  1,  4,  0,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x4A, 0x00, 0x04), 3,  1,  5,  4,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x33, 0x33, 0x17), 3,  2,  5,  1,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x4A, 0x04), 3,  2,  6,  5,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x33, 0x33, 0x17), 3,  3,  6,  2,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x4A, 0x00, 0x04), 3,  3,  7,  6,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x33,-0x33, 0x17), 3,  0,  7,  3,  0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_3, new(0x00, 0x00,-0x6B), 4,  7,  4,  5,  6, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED,    new(0x00, 0x00,-0x6B), 4, 11,  8,  9, 10, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_GREY_4, new(-0x37, -0x37, 0x28), 3,  0, 12,  1,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x29,  0x29, 0x5A), 3,  1, 12,  2,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x29,  0x29, 0x5A), 3,  2, 12,  3,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x37, -0x37, 0x28), 3,  3, 12,  0,  0, 0, 0, 0, 0),
+
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x29, 0x29, 0x5A), 3, 14, 13, 15,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_1, new(-0x29, 0x29, 0x5A), 3, 18, 16, 17,  0, 0, 0, 0, 0),
+        };
+
         internal static ship_data orbit_data = new(
             "Orbit Shuttle",
             15,
@@ -92,7 +116,8 @@ namespace Elite.Ships
             0,
             orbit_point,
             orbit_line,
-            orbit_face_normal
+            orbit_face_normal,
+            shuttle_face
         );
     }
 }
