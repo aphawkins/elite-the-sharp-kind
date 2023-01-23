@@ -15,6 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Elite.Assets\Elite.Assets.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="sfx\beep.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

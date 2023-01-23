@@ -21,6 +21,8 @@ namespace Elite
     {
         int SpeedCap { get; set; }
 
+        void LoadBitmap(IMG imgType, Stream bitmapStream);
+
         void ClearArea(float x, float y, float width, float height);
 
         void DrawCircle(Vector2 centre, float radius, GFX_COL colour);

@@ -34,7 +34,6 @@ namespace Elite
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
 
 		// Images
-		private Bitmap _imageScanner;
 		private readonly Dictionary<IMG, Bitmap> _images = new();
 
         private volatile int frame_count;
@@ -120,14 +119,6 @@ namespace Elite
             _screenGraphics = Graphics.FromImage(_screen);
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
             _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
-
-            bool imagesLoaded = LoadImages();
-
-            if (!imagesLoaded)
-            {
-                throw new Exception("Failed to load images");
-            }
-
             _screenBufferGraphics.Clear(Color.Black);
 
             // Install a timer to regulate the speed of the game...
@@ -155,31 +146,10 @@ namespace Elite
             }
         }
 
-        private bool LoadImages()
-		{
-			string subFolder = "gfx";
-
-			// TODO: load image from resource
-			try
-			{
-				_imageScanner = (Bitmap)Image.FromFile(Path.Combine(subFolder, "scanner.bmp"));
-				_images[IMG.IMG_GREEN_DOT] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "greendot.bmp"));
-                _images[IMG.IMG_RED_DOT] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "reddot.bmp"));
-                _images[IMG.IMG_BIG_S] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "safe.bmp"));
-                _images[IMG.IMG_ELITE_TXT] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "elitetx3.bmp"));
-                _images[IMG.IMG_BIG_E] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "ecm.bmp"));
-                _images[IMG.IMG_MISSILE_GREEN] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "missgrn.bmp"));
-                _images[IMG.IMG_MISSILE_YELLOW] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "missyell.bmp"));
-                _images[IMG.IMG_MISSILE_RED] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "missred.bmp"));
-                _images[IMG.IMG_BLAKE] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "blake.bmp"));
-                _images[IMG.IMG_SCANNER] = (Bitmap)Image.FromFile(Path.Combine(subFolder, "scanner.bmp"));
-                return true;
-			}
-			catch
-			{
-				return false;
-			}
-		}
+        public void LoadBitmap(IMG imgType, Stream bitmapStream)
+        {
+            _images[imgType] = (Bitmap)Image.FromStream(bitmapStream);
+        }
 
         public int SpeedCap { get; set; } = 75;
 
@@ -387,7 +357,6 @@ namespace Elite
 					_fontLarge.Dispose();
 
 					// Images
-					_imageScanner.Dispose();
 					foreach(KeyValuePair<IMG, Bitmap> image in _images)
 					{
 						image.Value.Dispose();

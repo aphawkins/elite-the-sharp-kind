@@ -1339,6 +1339,7 @@ namespace Elite
             draw = new Draw(elite.alg_gfx);
 
             draw.DrawBorder();
+            draw.LoadImages();
 
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;

@@ -1,8 +1,12 @@
 ﻿namespace Elite.Views
 {
+    using System.IO;
     using System.Numerics;
+    using System.Reflection;
+    using System.Resources;
     using Elite.Enums;
     using Elite.Structs;
+    using static System.Net.Mime.MediaTypeNames;
 
     internal class Draw
     {
@@ -227,16 +231,38 @@
             _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 43 + gfx.GFX_Y_OFFSET);
         }
 
-        public void DrawScanner()
+        internal void DrawScanner()
         {
             _gfx.DrawImage(IMG.IMG_SCANNER, new(gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET));
         }
 
-        public void DrawBorder()
+        internal void DrawBorder()
         {
             _gfx.DrawLine(new(0f, 0f), new(0f, 384f));
             _gfx.DrawLine(new(0f, 0f), new(511f, 0f));
             _gfx.DrawLine(new(511f, 0f), new(511f, 384f));
+        }
+
+        internal void LoadImages()
+        {
+            Assembly assets = Assembly.LoadFrom("Elite.Assets.dll");
+
+            LoadImage(assets, IMG.IMG_GREEN_DOT, "greendot.bmp");
+            LoadImage(assets, IMG.IMG_RED_DOT, "reddot.bmp");
+            LoadImage(assets, IMG.IMG_BIG_S, "safe.bmp");
+            LoadImage(assets, IMG.IMG_ELITE_TXT, "elitetx3.bmp");
+            LoadImage(assets, IMG.IMG_BIG_E, "ecm.bmp");
+            LoadImage(assets, IMG.IMG_MISSILE_GREEN, "missgrn.bmp");
+            LoadImage(assets, IMG.IMG_MISSILE_YELLOW, "missyell.bmp");
+            LoadImage(assets, IMG.IMG_MISSILE_RED, "missred.bmp");
+            LoadImage(assets, IMG.IMG_BLAKE, "blake.bmp");
+            LoadImage(assets, IMG.IMG_SCANNER, "scanner.bmp");
+        }
+
+        internal void LoadImage(Assembly assets, IMG image, string imageName)
+        {
+            string path = "Elite.Assets.gfx.";
+            _gfx.LoadBitmap(image, assets.GetManifestResourceStream(path + imageName));
         }
     }
 }
