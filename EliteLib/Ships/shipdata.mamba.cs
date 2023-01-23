@@ -77,18 +77,18 @@ namespace Elite.Ships
 
         private static readonly ship_face[] mamba_face =
         {
-            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x18, 0x02), 3,  1,  4,  0,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREEN_3, new( 0x00, 0x18, 0x02), 3,  2,  0,  3,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREEN_2, new(-0x20, 0x40, 0x10), 3,  1,  0,  2,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREEN_2, new( 0x20, 0x40, 0x10), 3,  3,  0,  4,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x18, 0x02), new[] {  1,  4,  0 }),
+            new(GFX_COL.GFX_COL_GREEN_3, new( 0x00, 0x18, 0x02), new[] {  2,  0,  3 }),
+            new(GFX_COL.GFX_COL_GREEN_2, new(-0x20, 0x40, 0x10), new[] {  1,  0,  2 }),
+            new(GFX_COL.GFX_COL_GREEN_2, new( 0x20, 0x40, 0x10), new[] {  3,  0,  4 }),
 
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x7F), 4,  1,  2,  3,  4, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00,-0x18, 0x02), 3, 11, 12,  9,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), 4, 17, 18, 15, 16, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x18, 0x02), 4,  7,  6,  5,  8, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00,-0x18, 0x02), 3, 13, 14, 10,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), 3, 20, 24, 21,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), 3, 22, 23, 19,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x7F), new[] {  1,  2,  3,  4 }),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00,-0x18, 0x02), new[] { 11, 12,  9 }),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), new[] { 17, 18, 15, 16 }),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x18, 0x02), new[] {  7,  6,  5,  8 }),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00,-0x18, 0x02), new[] { 13, 14, 10 }),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), new[] { 20, 24, 21 }),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x7F), new[] { 22, 23, 19 }),
         };
 
         internal static ship_data mamba_data = new(

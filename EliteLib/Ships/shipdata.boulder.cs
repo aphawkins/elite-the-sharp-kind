@@ -51,17 +51,17 @@ namespace Elite.Ships
 
         private static readonly ship_face[] boulder_face =
         {
-            new(GFX_COL.GFX_COL_GREY_3, new(-0x0F,-0x03, 0x08), 3, 0, 4, 5,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x07, 0x0C, 0x1E), 3, 0, 5, 1,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x20,-0x2F, 0x18), 3, 1, 5, 2,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(-0x03,-0x27,-0x07), 3, 2, 5, 3,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x05,-0x04,-0x01), 3, 3, 5, 4,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x0F,-0x03, 0x08), new[] { 0, 4, 5 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x07, 0x0C, 0x1E), new[] { 0, 5, 1 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x20,-0x2F, 0x18), new[] { 1, 5, 2 }),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x03,-0x27,-0x07), new[] { 2, 5, 3 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x05,-0x04,-0x01), new[] { 3, 5, 4 }),
 
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x31, 0x54, 0x08), 3, 1, 6, 0,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x70, 0x15,-0x15), 3, 2, 6, 1,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x4C,-0x23,-0x52), 3, 3, 6, 2,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x16, 0x38,-0x89), 3, 4, 6, 3,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x28, 0x6E,-0x26), 3, 6, 4, 0,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x31, 0x54, 0x08), new[] { 1, 6, 0 }),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x70, 0x15,-0x15), new[] { 2, 6, 1 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x4C,-0x23,-0x52), new[] { 3, 6, 2 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x16, 0x38,-0x89), new[] { 4, 6, 3 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x28, 0x6E,-0x26), new[] { 6, 4, 0 }),
         };
 
         internal static ship_data boulder_data = new(

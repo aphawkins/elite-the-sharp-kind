@@ -33,10 +33,10 @@ namespace Elite.Ships
 
         private static readonly ship_face[] rock_face =
         {
-            new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x00, 0x00), 3, 3, 2, 1, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new(0x00, 0x00, 0x00), 3, 0, 2, 3, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(0x00, 0x00, 0x00), 3, 3, 1, 0, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_4, new(0x00, 0x00, 0x00), 3, 0, 1, 2, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x00, 0x00 ), new[] { 3, 2, 1 }),
+            new(GFX_COL.GFX_COL_GREY_2, new(0x00, 0x00, 0x00 ), new[] { 0, 2, 3 }),
+            new(GFX_COL.GFX_COL_GREY_3, new(0x00, 0x00, 0x00 ), new[] { 3, 1 , 0 }),
+            new(GFX_COL.GFX_COL_GREY_4, new(0x00, 0x00, 0x00 ), new[] { 0, 1, 2 }),
         };
 
         internal static ship_data rock_data = new(

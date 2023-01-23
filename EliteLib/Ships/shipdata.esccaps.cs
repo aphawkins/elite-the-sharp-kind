@@ -33,10 +33,10 @@ namespace Elite.Ships
 
         private static readonly ship_face[] escape_face =
         {
-            new ship_face(GFX_COL.GFX_COL_RED,      new( 0x34, 0x00,-0x7A), 3, 3, 1, 2,  0, 0, 0, 0, 0),
-            new ship_face(GFX_COL.GFX_COL_DARK_RED, new( 0x27, 0x67, 0x1E), 3, 0, 3, 2,  0, 0, 0, 0, 0),
-            new ship_face(GFX_COL.GFX_COL_RED_3,    new( 0x27,-0x67, 0x1E), 3, 0, 1, 3,  0, 0, 0, 0, 0),
-            new ship_face(GFX_COL.GFX_COL_RED_4,    new( 0x70, 0x00, 0x00), 3, 0, 2, 1,  0, 0, 0, 0, 0),
+            new ship_face(GFX_COL.GFX_COL_RED,      new( 0x34, 0x00,-0x7A), new[] { 3, 1, 2 }),
+            new ship_face(GFX_COL.GFX_COL_DARK_RED, new( 0x27, 0x67, 0x1E), new[] { 0, 3, 2 }),
+            new ship_face(GFX_COL.GFX_COL_RED_3,    new( 0x27,-0x67, 0x1E), new[] { 0, 1, 3 }),
+            new ship_face(GFX_COL.GFX_COL_RED_4,    new( 0x70, 0x00, 0x00), new[] { 0, 2, 1 }),
         };
 
         internal static ship_data esccaps_data = new(

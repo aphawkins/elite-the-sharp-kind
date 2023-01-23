@@ -51,16 +51,16 @@ namespace Elite.Ships
 
         private static readonly ship_face[] sidewinder_face =
         {
-            new(GFX_COL.GFX_COL_YELLOW_1, new( 0x00, 0x20, 0x08), 3, 4, 0, 1, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GOLD, new(-0x0C, 0x2F, 0x06), 3, 4, 3, 0, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GOLD, new( 0x0C, 0x2F, 0x06), 3, 2, 4, 1, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_YELLOW_1, new( 0x00, 0x20, 0x08), new[] { 4, 0, 1 }),
+            new(GFX_COL.GFX_COL_GOLD, new(-0x0C, 0x2F, 0x06), new[] {  4, 3, 0 }),
+            new (GFX_COL.GFX_COL_GOLD, new( 0x0C, 0x2F, 0x06), new[] {  2, 4, 1 }),
 
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x70), 4, 2, 5, 3, 4, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x70), new[] {  2, 5, 3, 4 }),
 
-            new(GFX_COL.GFX_COL_YELLOW_1, new(-0x0C,-0x2F, 0x06), 3, 5, 0, 3, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GOLD, new( 0x00,-0x20, 0x08), 3, 1, 0, 5, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_YELLOW_1, new( 0x0C,-0x2F, 0x06), 3, 2, 1, 5, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x70), 4, 8, 9, 6, 7, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_YELLOW_1, new(-0x0C,-0x2F, 0x06), new[] { 5, 0, 3 }),
+            new (GFX_COL.GFX_COL_GOLD, new( 0x00,-0x20, 0x08), new[] { 1, 0, 5 }),
+            new (GFX_COL.GFX_COL_YELLOW_1, new( 0x0C,-0x2F, 0x06), new[] { 2, 1, 5 }),
+            new (GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x70), new[] { 8, 9, 6, 7 }),
         };
 
         internal static ship_data sidewnd_data = new(

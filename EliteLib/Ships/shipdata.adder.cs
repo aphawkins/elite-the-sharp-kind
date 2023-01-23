@@ -81,23 +81,23 @@ namespace Elite.Ships
 
         private static readonly ship_face[] adder_face =
         {
-            new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x27, 0x0A), 4, 0, 1,  11,  10, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(0x00,-0x27, 0x0A), 4, 1, 0,  12,  13, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x27, 0x0A), new[] { 0, 1,  11,  10 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(0x00,-0x27, 0x0A), new[] { 1, 0,  12,  13 }),
 
-            new(GFX_COL.GFX_COL_RED_4,    new(  0x45, 0x32, 0x0D), 3,  2, 11,  1,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED,      new(  0x45,-0x32, 0x0D), 3,  1, 13,  2,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x1E, 0x34, 0x00), 4,  9, 11,  2,  3, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED_3,    new( 0x1E,-0x34, 0x00), 4,  3, 2, 13,  4, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_RED_4,    new(  0x45, 0x32, 0x0D), new[] { 2, 11,  1 }),
+            new(GFX_COL.GFX_COL_RED,      new(  0x45,-0x32, 0x0D), new[] { 1, 13,  2 }),
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x1E, 0x34, 0x00), new[] { 9, 11,  2,  3 }),
+            new(GFX_COL.GFX_COL_RED_3,    new( 0x1E,-0x34, 0x00), new[] { 3, 2, 13,  4 }),
 
-            new(GFX_COL.GFX_COL_DARK_RED, new(-0x1E, 0x34, 0x00), 4, 10,  8,  6,  7, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED_3,    new( -0x1E,-0x34, 0x00), 4, 7,  6,  5,  12, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED_4,    new( -0x45, 0x32, 0x0D), 3, 10,  7,  0,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED,      new(-0x45,-0x32, 0x0D), 3, 0,  7,  12,  0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_DARK_RED, new(-0x1E, 0x34, 0x00), new[] { 10,  8,  6,  7 }),
+            new(GFX_COL.GFX_COL_RED_3,    new( -0x1E,-0x34, 0x00), new[] { 7,  6,  5, 12 }),
+            new(GFX_COL.GFX_COL_RED_4,    new( -0x45, 0x32, 0x0D), new[] { 10,  7, 0 }),
+            new(GFX_COL.GFX_COL_RED,      new(-0x45,-0x32, 0x0D), new[] {  0,  7, 12 }),
 
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0xA0), 6,  3,  4,  5,  6, 8, 9, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x1C, 0x00), 4, 10, 11,  9,  8, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x1C, 0x00), 4, 5, 4,  13,  12, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x27, 0x0A), 4, 17, 14, 15, 16, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0xA0), new[] { 3,  4,  5,  6, 8, 9 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x1C, 0x00), new[] { 10, 11,  9, 8 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x1C, 0x00), new[] { 5, 4,  13, 12 }),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x27, 0x0A), new[] { 17, 14, 15, 16 }),
         };
 
         internal static ship_data adder_data = new(

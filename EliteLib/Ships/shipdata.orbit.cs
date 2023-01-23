@@ -81,25 +81,25 @@ namespace Elite.Ships
 
         private static readonly ship_face[] shuttle_face =
 {
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00,-0x4A, 0x04), 3,  0,  4,  7,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x33,-0x33, 0x17), 3,  1,  4,  0,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x4A, 0x00, 0x04), 3,  1,  5,  4,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x33, 0x33, 0x17), 3,  2,  5,  1,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x4A, 0x04), 3,  2,  6,  5,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x33, 0x33, 0x17), 3,  3,  6,  2,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x4A, 0x00, 0x04), 3,  3,  7,  6,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x33,-0x33, 0x17), 3,  0,  7,  3,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00,-0x4A, 0x04), new[] {  0,  4,  7 }),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x33,-0x33, 0x17), new[] {  1,  4,  0 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x4A, 0x00, 0x04), new[] {  1,  5,  4 }),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x33, 0x33, 0x17), new[] {  2,  5,  1 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x4A, 0x04), new[] {  2,  6,  5 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x33, 0x33, 0x17), new[] {  3,  6,  2 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x4A, 0x00, 0x04), new[] {  3,  7,  6 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x33,-0x33, 0x17), new[] {  0,  7,  3 }),
 
-            new(GFX_COL.GFX_COL_GREY_3, new(0x00, 0x00,-0x6B), 4,  7,  4,  5,  6, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED,    new(0x00, 0x00,-0x6B), 4, 11,  8,  9, 10, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new(0x00, 0x00,-0x6B), new[] {  7,  4,  5,  6 }),
+            new(GFX_COL.GFX_COL_RED,    new(0x00, 0x00,-0x6B), new[] {  11,  8,  9, 10 }),
 
-            new(GFX_COL.GFX_COL_GREY_4, new(-0x37, -0x37, 0x28), 3,  0, 12,  1,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x29,  0x29, 0x5A), 3,  1, 12,  2,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_4, new( 0x29,  0x29, 0x5A), 3,  2, 12,  3,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x37, -0x37, 0x28), 3,  3, 12,  0,  0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_GREY_4, new(-0x37, -0x37, 0x28), new[] {  0, 12,  1 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x29,  0x29, 0x5A), new[] {  1, 12,  2 }),
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x29,  0x29, 0x5A), new[] {  2, 12,  3 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x37, -0x37, 0x28), new[] {  3, 12,  0 }),
 
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x29, 0x29, 0x5A), 3, 14, 13, 15,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_1, new(-0x29, 0x29, 0x5A), 3, 18, 16, 17,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x29, 0x29, 0x5A), new[] { 14, 13, 15 }),
+            new(GFX_COL.GFX_COL_BLUE_1, new(-0x29, 0x29, 0x5A), new[] { 18, 16, 17 }),
         };
 
         internal static ship_data orbit_data = new(

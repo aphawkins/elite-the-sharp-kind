@@ -117,43 +117,43 @@ namespace Elite.Ships
         /* Two lines on base & detail of IB DB initials added back in :-) */
         private static readonly ship_face[] transporter_face =
         {
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0x67), 7,  5,  4,  3, 2,  1 ,0, 6, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0x67), new[] { 5,  4,  3, 2,  1 ,0, 6 }),
 
-            new(GFX_COL.GFX_COL_BLUE_1, new(-0x6F, 0x30,-0x07), 4,  9,  8,  1,  2, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_2, new(-0x69,-0x3F,-0x15), 3,  3,  9,  2,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_4, new( 0x00,-0x22, 0x00), 6, 14, 13,  9,  3, 4, 10, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x69,-0x3F,-0x15), 3,  5, 10,  4,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x6F, 0x30,-0x07), 4, 11, 10,  5,  6, 0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_1, new(-0x6F, 0x30,-0x07), new[] { 9,  8,  1,  2 }),
+            new (GFX_COL.GFX_COL_BLUE_2, new(-0x69,-0x3F,-0x15),new[] {  3,  9,  2 }),
+            new(GFX_COL.GFX_COL_BLUE_4, new( 0x00,-0x22, 0x00), new[] {  14, 13,  9,  3, 4, 10 }),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x69,-0x3F,-0x15), new[] {  5, 10,  4 }),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x6F, 0x30,-0x07), new[] { 11, 10,  5,  6 }),
 
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x08, 0x20, 0x03), 4, 6,  0,  7, 11, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x08, 0x20, 0x03), 4,  8,  7,  0,  1, 0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x08, 0x20, 0x03), new[] { 6,  0,  7, 11 }),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x08, 0x20, 0x03), new[] {   8,  7,  0,  1 }),
 
-            new(GFX_COL.GFX_COL_BLUE_1, new(-0x4B, 0x20, 0x4F), 4, 13, 12,  8,  9, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x4B, 0x20, 0x4F), 4, 15, 14, 10, 11, 0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_1, new(-0x4B, 0x20, 0x4F), new[] {  13, 12,  8,  9 }),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x4B, 0x20, 0x4F), new[] {  15, 14, 10, 11 }),
 
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x08, 0x22, 0x0B), 3,  8, 12,  7,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x08, 0x22, 0x0B), 3, 7, 15,  11,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_4, new( 0x00, 0x26, 0x11), 3, 7, 12,  15,  0, 0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x08, 0x22, 0x0B), new[] { 8, 12,  7 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x08, 0x22, 0x0B), new[] { 7, 15, 11 }),
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x00, 0x26, 0x11), new[] { 7, 12,  15 }),
 
-            new(GFX_COL.GFX_COL_WHITE_2, new( 0x00, 0x00, 0x79), 4, 15, 12, 13, 14, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x00,-0x67), 4, 35, 34, 33, 36, 0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_WHITE_2, new( 0x00, 0x00, 0x79), new[] { 15, 12, 13, 14 }),
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x00,-0x67), new[] { 35, 34, 33, 36 }),
 
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x22, 0x00), 2, 30, 29, 31,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x22, 0x00), 2, 31, 32, 29,  0, 0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x22, 0x00), new[] { 30, 29 /*, 31 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x22, 0x00), new[] {  31, 32 /*, 29 */ }),
 
-            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), 2, 17, 16, 18,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), 2, 18, 19, 16,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), 2, 18, 20, 19,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), 2, 20, 21, 18,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), 2, 20, 19, 21,  0, 0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), new[] {  17, 16 /*, 18 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), new[] {  18, 19 /*, 16 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), new[] {  18, 20 /*, 19 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), new[] {  20, 21 /*, 18 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new(-0x08, 0x20, 0x03), new[] { 20, 19 /*, 21 */ }),
 
-            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), 2, 23, 22, 26,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), 2, 25, 26, 23,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), 2, 24, 22, 25,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), 2, 24, 23, 22,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), 2, 28, 27, 23,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), 2, 25, 27, 22,  0, 0,  0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), 2, 27, 26, 22,  0, 0,  0, 0, 0),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), new[] { 23, 22 /*, 26 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), new[] { 25, 26 /*, 23 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), new[] { 24, 22 /*, 25 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), new[] { 24, 23 /*, 22 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), new[] { 28, 27 /*, 23 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), new[] { 25, 27 /*, 22 */ }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x08, 0x20, 0x03), new[] { 27, 26 /*, 22 */ }),
         };
 
         internal static ship_data transp_data = new(

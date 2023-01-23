@@ -70,21 +70,21 @@ namespace Elite.Ships
 
         private static readonly ship_face[] constrictor_face =
         {
-            new(GFX_COL.GFX_COL_GREY_4, new(   0x00,  0x37,  0x0F), 4,  1,  0,  8, 9, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(  -0x18,  0x4B,  0x14), 3,  1,  9,  2, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(   0x18,  0x4B,  0x14), 3,  0,  7,  8, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_4, new(   0x00,  0x37,  0x0F), new[] { 1,  0,  8, 9 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(  -0x18,  0x4B,  0x14), new[] {   1,  9,  2 }),
+            new (GFX_COL.GFX_COL_GREY_1, new(   0x18,  0x4B,  0x14), new[] {   0,  7,  8 }),
 
-            new(GFX_COL.GFX_COL_GOLD, new(   0x2C,  0x4B,  0x00), 3,  7,  6,  8, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GOLD, new(  -0x2C,  0x4B,  0x00), 3,  9,  3,  2, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_GOLD, new(   0x2C,  0x4B,  0x00), new[] {   7,  6,  8 }),
+            new (GFX_COL.GFX_COL_GOLD, new(  -0x2C,  0x4B,  0x00), new[] { 9,  3,  2 }),
 
-            new(GFX_COL.GFX_COL_YELLOW_1, new(  -0x2C,  0x4B,  0x00), 3,  9,  4,  3, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(   0x00,  0x35,  0x00), 4,  8,  5,  4, 9, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_YELLOW_1, new(   0x2C,  0x4B,  0x00), 3,  8,  6,  5, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_YELLOW_1, new(  -0x2C,  0x4B,  0x00), new[] { 9,  4,  3 }),
+            new (GFX_COL.GFX_COL_GREY_1, new(   0x00,  0x35,  0x00), new[] { 8,  5,  4, 9 }),
+            new (GFX_COL.GFX_COL_YELLOW_1, new(   0x2C,  0x4B,  0x00), new[] { 8,  6,  5 }),
 
-            new(GFX_COL.GFX_COL_GREY_2, new(   0x00,  0x00, -0xA0), 4,  6,  3,  4, 5, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(   0x00, -0x1B,  0x00), 6,  3,  6,  7, 0, 1, 2, 0, 0),
-            new(GFX_COL.GFX_COL_DARK_RED, new(   0x00, -0x1B,  0x00), 3, 12, 10, 14, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_DARK_RED, new(   0x00, -0x1B,  0x00), 3, 15, 11, 13, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_GREY_2, new(   0x00,  0x00, -0xA0), new[] { 6,  3,  4, 5 }),
+            new (GFX_COL.GFX_COL_GREY_3, new(   0x00, -0x1B,  0x00), new[] { 3,  6,  7, 0, 1, 2 }),
+            new (GFX_COL.GFX_COL_DARK_RED, new(   0x00, -0x1B,  0x00), new[] { 12, 10, 14 }),
+            new (GFX_COL.GFX_COL_DARK_RED, new(   0x00, -0x1B,  0x00), new[] { 15, 11, 13 }),
         };
 
         internal static ship_data constrct_data = new(

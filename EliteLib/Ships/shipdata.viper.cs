@@ -61,18 +61,18 @@ namespace Elite.Ships
 
         private static readonly ship_face[] viper_face =
         {
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x20, 0x00), 3,  7,  8,  1, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x20, 0x00), new[] { 7,  8,  1 }),
 
-            new(GFX_COL.GFX_COL_BLUE_3, new(-0x16, 0x21, 0x0B), 4,  8,  4,  0, 1, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x16, 0x21, 0x0B), 4,  3,  7,  1, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_3, new(-0x16, 0x21, 0x0B), new[] { 8,  4,  0, 1 }),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x16, 0x21, 0x0B), new[] { 3,  7,  1, 0 }),
 
-            new(GFX_COL.GFX_COL_BLUE_2, new(-0x16,-0x21, 0x0B), 4,  2,  0,  4, 6, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_3, new( 0x16,-0x21, 0x0B), 4,  0,  2,  5, 3, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_2, new(-0x16,-0x21, 0x0B), new[] { 2,  0,  4, 6 }),
+            new(GFX_COL.GFX_COL_BLUE_3, new( 0x16,-0x21, 0x0B), new[] { 0,  2,  5, 3 }),
 
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x20, 0x00), 3,  2,  6,  5, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x30), 6,  4,  8,  7, 3, 5, 6, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x30), 3, 12, 13,  9, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x30), 3, 10, 14, 11, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x20, 0x00), new[] { 2,  6, 5 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0x30), new[] { 4,  8,  7, 3, 5, 6 }),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x30), new[] { 12, 13, 9 }),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x30), new[] { 10, 14, 11 }),
         };
 
         internal static ship_data viper_data = new(

@@ -51,15 +51,15 @@ namespace Elite.Ships
 
         private static readonly ship_face[] cargo_face =
         {
-            new(GFX_COL.GFX_COL_GREY_4, new( 0x60, 0x00, 0x00), 5, 4, 0, 1, 2, 3, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x60, 0x00, 0x00), new [] { 4, 0, 1, 2, 3 }),
 
-            new(GFX_COL.GFX_COL_GREY_2, new(  0x00, 0x29, 0x1E), 4, 5, 6, 1, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(  0x00,-0x12, 0x30), 4, 6, 7, 2, 1, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(  0x00,-0x33, 0x00), 4, 7, 8, 3, 2, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(  0x00,-0x12,-0x30), 4, 8, 9, 4, 3, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(  0x00, 0x29,-0x1E), 4, 9, 5, 0, 4, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(  0x00, 0x29, 0x1E), new [] {  5, 6, 1, 0 }),
+            new (GFX_COL.GFX_COL_GREY_1, new(  0x00,-0x12, 0x30), new [] {  6, 7, 2, 1 }),
+            new (GFX_COL.GFX_COL_GREY_3, new(  0x00,-0x33, 0x00), new [] {  7, 8, 3, 2 }),
+            new (GFX_COL.GFX_COL_GREY_1, new(  0x00,-0x12,-0x30), new[] { 8, 9, 4, 3 }),
+            new (GFX_COL.GFX_COL_GREY_3, new(  0x00, 0x29,-0x1E), new[] { 9, 5, 0, 4 }),
 
-            new(GFX_COL.GFX_COL_GREY_4, new( -0x60, 0x00, 0x00), 5, 8, 7, 6, 5, 9, 0, 0, 0),
+            new (GFX_COL.GFX_COL_GREY_4, new( -0x60, 0x00, 0x00), new[] { 8, 7, 6, 5, 9 }),
         };
 
         internal static ship_data cargo_data = new(

@@ -78,24 +78,24 @@ namespace Elite.Ships
         
         private static readonly ship_face[] asp2_face =
         {
-            new(GFX_COL.GFX_COL_GREY_4, new( 0x00,-0x23, 0x05), 5,  8,  9,  7,  0, 4, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x08,-0x26,-0x07), 5,  3,  4,  0,  1, 2, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x08,-0x26,-0x07), 5,  1,  0,  7,  6, 5, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x3B,-0x40, 0x1F), 3,  8,  4,  3,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(-0x3B,-0x40, 0x1F), 3,  6,  7,  9,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x00,-0x23, 0x05), new[] { 8,  9,  7,  0, 4 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x08,-0x26,-0x07), new[] { 3,  4,  0,  1, 2 }),
+            new (GFX_COL.GFX_COL_GREY_1, new(-0x08,-0x26,-0x07), new[] {  1,  0,  7,  6, 5 }),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x3B,-0x40, 0x1F), new[] {  8,  4, 3 }),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x3B,-0x40, 0x1F), new[] {  6,  7, 9 }),
 
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x18,-0x01), 3, 11, 10, 12,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x2B, 0x13), 4,  9,  8, 10, 11, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_4, new(-0x06, 0x1C,-0x02), 4,  6, 11, 12,  5, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_4, new( 0x06, 0x1C,-0x02), 4,  2, 12, 10,  3, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_3, new( 0x50, 0x2E, 0x32), 3,  3, 10,  8,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_3, new(-0x50, 0x2E, 0x32), 3,  9, 11,  6,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x18,-0x01), new[] { 11, 10, 12 }),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x2B, 0x13), new[] { 9,  8, 10, 11 }),
+            new(GFX_COL.GFX_COL_BLUE_4, new(-0x06, 0x1C,-0x02), new[] { 6, 11, 12, 5 }),
+            new(GFX_COL.GFX_COL_BLUE_4, new( 0x06, 0x1C,-0x02), new[] { 2, 12, 10, 3 }),
+            new(GFX_COL.GFX_COL_BLUE_3, new( 0x50, 0x2E, 0x32), new[] { 3, 10, 8 }),
+            new(GFX_COL.GFX_COL_BLUE_3, new(-0x50, 0x2E, 0x32), new[] { 9, 11, 6 }),
 
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x00,-0x5A), 4, 2,  1,  5,  12, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x5A), 4, 14, 15, 13, 16, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x00,-0x5A), new[] { 2,  1,  5, 12 }),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x5A), new[] { 14, 15, 13, 16 }),
 
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00, 0x2B, 0x13), 2, 18, 17,  0,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x23, 0x05), 2, 17, 18,  0,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00, 0x2B, 0x13), new[] { 18, 17 }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x23, 0x05), new[] {  17, 18 }),
         };
 
         internal static ship_data asp2_data = new(

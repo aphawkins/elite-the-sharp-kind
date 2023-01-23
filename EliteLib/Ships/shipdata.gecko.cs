@@ -57,20 +57,20 @@ namespace Elite.Ships
 
         private static readonly ship_face[] gecko_face =
         {
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x1F, 0x05), 4,  3,  2, 0, 1, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x04, 0x2D, 0x08), 3,  3,  1, 5, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x19,-0x6C, 0x13), 3,  5,  1, 7, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x1F, 0x05), new[] {  3,  2, 0, 1 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x04, 0x2D, 0x08), new[] {  3,  1, 5 }),
+            new (GFX_COL.GFX_COL_GREY_3, new( 0x19,-0x6C, 0x13), new[] {  5,  1, 7 }),
 
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00,-0x54, 0x0C), 4,  1,  0, 6, 7, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(-0x19,-0x6C, 0x13), 3,  4,  6, 0, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x04, 0x2D, 0x08), 3,  0,  2, 4, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_GREY_1, new( 0x00,-0x54, 0x0C), new[] {   1,  0, 6, 7 }),
+            new (GFX_COL.GFX_COL_GREY_3, new(-0x19,-0x6C, 0x13), new[] {   4,  6, 0 }),
+            new (GFX_COL.GFX_COL_GREY_1, new(-0x04, 0x2D, 0x08), new[] { 0,  2, 4 }),
 
-            new(GFX_COL.GFX_COL_DARK_RED, new(-0x58, 0x10,-0xD6), 3,  4,  2, 6, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0xBB), 4,  2,  3, 7, 6, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x58, 0x10,-0xD6), 3,  5,  7, 3, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_DARK_RED, new(-0x58, 0x10,-0xD6), new[] { 4,  2, 6 }),
+            new (GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0xBB), new[] { 2,  3, 7, 6 }),
+            new (GFX_COL.GFX_COL_DARK_RED, new( 0x58, 0x10,-0xD6), new[] { 5,  7, 3 }),
 
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x54, 0x0C), 2,  8, 10, 9, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x54, 0x0C), 2, 11,  9, 8, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_WHITE, new( 0x00,-0x54, 0x0C), new[] { 8, 10 /*, 9 */ }),
+            new (GFX_COL.GFX_COL_WHITE, new( 0x00,-0x54, 0x0C), new[] { 11,  9 /*, 8 */ }),
         };
 
         internal static ship_data gecko_data = new(

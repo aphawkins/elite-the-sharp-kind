@@ -63,24 +63,24 @@ namespace Elite.Ships
 
         private static readonly ship_face[] krait_face =
         {
-            new(GFX_COL.GFX_COL_BLUE_3, new( 0x03, 0x18, 0x03), 3,  0,  3,  1, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x03,-0x18, 0x03), 3,  2,  3,  0, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_3, new( 0x03, 0x18, 0x03), new[] { 0,  3,  1 }),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x03,-0x18, 0x03), new[] {   2,  3,  0 }),
 
-            new(GFX_COL.GFX_COL_BLUE_3, new(-0x03,-0x18, 0x03), 3,  0,  4,  2, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_2, new(-0x03, 0x18, 0x03), 3,  1,  4,  0, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_BLUE_3, new(-0x03,-0x18, 0x03), new[] {  0,  4,  2 }),
+            new (GFX_COL.GFX_COL_BLUE_2, new(-0x03, 0x18, 0x03), new[] {  1,  4,  0 }),
 
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x26, 0x00,-0x4D), 3,  3,  2,  1, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x26, 0x00,-0x4D), 3,  4,  1,  2, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_GREY_3, new( 0x26, 0x00,-0x4D), new[] { 3,  2,  1 }),
+            new (GFX_COL.GFX_COL_GREY_1, new(-0x26, 0x00,-0x4D), new[] { 4,  1,  2 }),
 
-            new(GFX_COL.GFX_COL_WHITE, new( 0x03,-0x18, 0x03), 2,  3,  5,  0, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x03, 0x18, 0x03), 2,  5,  3,  0, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new(-0x03, 0x18, 0x03), 2,  4,  6,  0, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new(-0x03,-0x18, 0x03), 2,  6,  4,  0, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_WHITE, new( 0x03,-0x18, 0x03), new[] { 3,  5 }),
+            new (GFX_COL.GFX_COL_WHITE, new( 0x03, 0x18, 0x03), new[] { 5,  3 }),
+            new (GFX_COL.GFX_COL_WHITE, new(-0x03, 0x18, 0x03), new[] { 4,  6 }),
+            new (GFX_COL.GFX_COL_WHITE, new(-0x03,-0x18, 0x03), new[] { 6,  4 }),
 
-            new(GFX_COL.GFX_COL_RED, new(     0x26, 0x00,-0x4D), 3, 12, 11, 13, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_RED, new(    -0x26, 0x00,-0x4D), 3, 16, 14, 15, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new(   0x03, 0x18, 0x03), 3,  7, 10,  8, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_WHITE, new(  -0x03, 0x18, 0x03), 3,  8,  9,  7, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_RED, new(     0x26, 0x00,-0x4D), new[] {  12, 11, 13 }),
+            new (GFX_COL.GFX_COL_RED, new(    -0x26, 0x00,-0x4D), new[] {  16, 14, 15 }),
+            new (GFX_COL.GFX_COL_WHITE, new(   0x03, 0x18, 0x03), new[] {   7, 10,  8 }),
+            new (GFX_COL.GFX_COL_WHITE, new(  -0x03, 0x18, 0x03), new[] {   8,  9,  7 }),
         };
 
         internal static ship_data krait_data = new(

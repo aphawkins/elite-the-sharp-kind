@@ -53,16 +53,16 @@ namespace Elite.Ships
 
         private static readonly ship_face[] worm_face =
         {
-            new(GFX_COL.GFX_COL_GREY_4, new( 0x00, 0x58, 0x46), 4, 1, 0, 2, 3, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x46, 0x42, 0x23), 3, 0, 4, 2, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x46, 0x42, 0x23), 3, 1, 3, 5, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x00, 0x58, 0x46), new[] { 1, 0, 2, 3 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x46, 0x42, 0x23), new[] { 0, 4, 2 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x46, 0x42, 0x23), new[] { 1, 3, 5 }),
 
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x40, 0x31, 0x0E), 4, 2, 4, 6, 8, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x40, 0x31, 0x0E), 4, 5, 3, 9, 7, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0xC8), 4, 6, 7, 9, 8, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x40, 0x31, 0x0E), new[] { 2, 4, 6, 8 }),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x40, 0x31, 0x0E), new[] { 5, 3, 9, 7 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x00,-0xC8), new[] { 6, 7, 9, 8 }),
 
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x00,-0x50, 0x00), 6, 4, 0, 1, 5, 7, 6, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x45, 0x0E), 4, 9, 3, 2, 8, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00,-0x50, 0x00), new[] { 4, 0, 1, 5, 7, 6 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x45, 0x0E), new[] { 9, 3, 2, 8 }),
         };
 
         internal static ship_data worm_data = new(

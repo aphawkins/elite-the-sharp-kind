@@ -51,15 +51,15 @@ namespace Elite.Ships
 
         private static readonly ship_face[] thargon_face =
         {
-            new(GFX_COL.GFX_COL_DARK_RED, new(-0x24, 0x00, 0x00), 5, 3, 2, 1, 0, 4, 0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new(-0x24, 0x00, 0x00), new[] { 3, 2, 1, 0, 4 }),
 
-            new(GFX_COL.GFX_COL_GREY_1, new(0x14,-0x05, 0x07), 4, 6, 5, 0, 1, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new(0x2E,-0x2A,-0x0E), 4, 7, 6, 1, 2, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_4, new(0x24, 0x00,-0x68), 4, 8, 7, 2, 3, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new(0x2E, 0x2A,-0x0E), 4, 9, 8, 3, 4, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(0x14, 0x05, 0x07), 4, 4, 0, 5, 9, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(0x14,-0x05, 0x07), new[] {  6, 5, 0, 1 }),
+            new (GFX_COL.GFX_COL_GREY_2, new(0x2E,-0x2A,-0x0E), new[] {  7, 6, 1, 2 }),
+            new(GFX_COL.GFX_COL_GREY_4, new(0x24, 0x00,-0x68), new[] { 8, 7, 2, 3 }),
+            new(GFX_COL.GFX_COL_GREY_2, new(0x2E, 0x2A,-0x0E), new[] { 9, 8, 3, 4 }),
+            new(GFX_COL.GFX_COL_GREY_3, new(0x14, 0x05, 0x07), new[] { 4, 0, 5, 9 }),
 
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x24, 0x00, 0x00), 5, 9, 5, 6, 7, 8, 0, 0, 0),
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x24, 0x00, 0x00), new[] {  9, 5, 6, 7, 8 }),
         };
 
         internal static ship_data thargon_data = new(

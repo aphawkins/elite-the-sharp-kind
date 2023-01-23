@@ -28,8 +28,8 @@ namespace Elite.Ships
 
         private static readonly ship_face[] alloy_face =
         {
-            new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x00, 0x00), 4, 0, 1, 2, 3, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new(0x00, 0x00, 0x00), 4, 3, 2, 1, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x00, 0x00), new[] { 0, 1, 2, 3 }),
+            new(GFX_COL.GFX_COL_GREY_3, new(0x00, 0x00, 0x00), new[] { 3, 2, 1, 0, 0, 0, 0, 0 }),
         };
 
         internal static ship_data alloy_data = new(

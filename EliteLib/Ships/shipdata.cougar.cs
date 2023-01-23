@@ -69,20 +69,20 @@ namespace Elite.Ships
 
         private static readonly ship_face[] cougar_face =
         {
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x10,  0x2E,  0x04), 4,  2,  1,  0, 3, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x10, -0x2E,  0x04), 3,  4,  1,  2, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_4, new( 0x00, -0x1B,  0x05), 4,  4,  5,  0, 1, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x10, -0x2E,  0x04), 3,  6,  5,  4, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x10,  0x2E,  0x04), 4,  5,  6,  3, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x00,  0x00, -0xA0), 4,  6,  4,  2, 3, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x10,  0x2E,  0x04), new[] {  2,  1,  0, 3 }),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x10, -0x2E,  0x04), new[] {   4,  1,  2 }),
+            new (GFX_COL.GFX_COL_GREY_4, new( 0x00, -0x1B,  0x05), new[] {   4,  5,  0, 1 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x10, -0x2E,  0x04), new[] {  6,  5, 4 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x10,  0x2E,  0x04), new[] { 5,  6,  3, 0 }),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00,  0x00, -0xA0), new[] { 6,  4,  2, 3 }),
 
-            new(GFX_COL.GFX_COL_YELLOW_1, new(  -0x10, -0x2E,  0x04), 4,  1,  2,  8, 7, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_YELLOW_1, new(  -0x10,  0x2E,  0x04), 4,  7,  8,  2, 1, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_YELLOW_1, new(   0x10,  0x2E,  0x04), 4,  5,  6, 10, 9, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_YELLOW_1, new(   0x10, -0x2E,  0x04), 4,  9, 10,  6, 5, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_YELLOW_1, new(  -0x10, -0x2E,  0x04), new[] { 1,  2,  8, 7 }),
+            new(GFX_COL.GFX_COL_YELLOW_1, new(  -0x10,  0x2E,  0x04), new[] { 7,  8,  2, 1 }),
+            new(GFX_COL.GFX_COL_YELLOW_1, new(   0x10,  0x2E,  0x04), new[] { 5,  6, 10, 9 }),
+            new(GFX_COL.GFX_COL_YELLOW_1, new(   0x10, -0x2E,  0x04), new[] { 9, 10,  6, 5 }),
 
-            new(GFX_COL.GFX_COL_BLUE_3, new(-0x10,  0x2E,  0x04), 3, 12, 13, 11, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x10,  0x2E,  0x04), 3, 11, 14, 12, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_BLUE_3, new(-0x10,  0x2E,  0x04), new[] {  12, 13, 11 }),
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x10,  0x2E,  0x04), new[] {  11, 14, 12 }),
 		/*
 			new(8,	 0x00,  0x00, -0xA0, 3, 15, 16, 19, 0, 0, 0, 0, 0),
 			new(8,	 0x00,  0x00, -0xA0, 3, 19, 18, 17, 0, 0, 0, 0, 0),

@@ -71,21 +71,21 @@ namespace Elite.Ships
 
         private static readonly ship_face[] anaconda_face =
         {
-            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x33,-0x31), 5,  3,  2,  1,  0, 4, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREEN_2, new(-0x33, 0x12,-0x57), 5,  6, 10,  5,  0, 1, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREEN_3, new(-0x4D,-0x39,-0x13), 5,  7, 11,  6,  1, 2, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x33,-0x31), new[] { 3,  2,  1,  0, 4 }),
+            new(GFX_COL.GFX_COL_GREEN_2, new(-0x33, 0x12,-0x57), new[] { 6, 10,  5,  0, 1 }),
+            new (GFX_COL.GFX_COL_GREEN_3, new(-0x4D,-0x39,-0x13), new[] { 7, 11,  6,  1, 2 }),
 
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x5A, 0x10), 5,  8, 12,  7,  2, 3, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x5A, 0x10), new[] { 8, 12,  7,  2, 3 }),
 
-            new(GFX_COL.GFX_COL_GREEN_2, new( 0x4D,-0x39,-0x13), 5,  9, 13,  8,  3, 4, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREEN_3, new( 0x33, 0x12,-0x57), 5, 9,  4,  0,  5, 14, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00, 0x6F,-0x14), 3, 10, 14,  5,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREEN_2, new( 0x4D,-0x39,-0x13), new[] {  9, 13,  8,  3, 4 }),
+            new(GFX_COL.GFX_COL_GREEN_3, new( 0x33, 0x12,-0x57), new[] { 9,  4,  0,  5, 14 }),
+            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00, 0x6F,-0x14), new[] {  10, 14, 5 }),
 
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x61, 0x48, 0x18), 4, 10, 6,  11, 12, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x6C,-0x44, 0x22), 3, 7, 12,  11,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x6C,-0x44, 0x22), 3, 8, 13,  12,  0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x61, 0x48, 0x18), 4, 9, 14,  12, 13, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x5E, 0x12), 3, 10, 12, 14,  0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x61, 0x48, 0x18), new[] {  10, 6,  11, 12 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x6C,-0x44, 0x22), new[] {  7, 12, 11 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x6C,-0x44, 0x22), new[] { 8, 13, 12 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x61, 0x48, 0x18), new[] { 9, 14,  12, 13 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x5E, 0x12), new[] { 10, 12, 14 }),
         };
 
         internal static ship_data anacnda_data = new(

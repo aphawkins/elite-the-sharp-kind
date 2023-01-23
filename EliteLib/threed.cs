@@ -84,63 +84,26 @@ namespace Elite
 
 			for (int i = 0; i < ship.face_data.Length; i++)
 			{
-				if ((((point_list[face_data[i].p1].X - point_list[face_data[i].p2].X) *
-					 (point_list[face_data[i].p3].Y - point_list[face_data[i].p2].Y)) -
-					 ((point_list[face_data[i].p1].Y - point_list[face_data[i].p2].Y) *
-					 (point_list[face_data[i].p3].X - point_list[face_data[i].p2].X))) <= 0)
+				int point0 = face_data[i].points[0];
+                int point1 = face_data[i].points[1];
+				int point2 = face_data[i].points.Length > 2 ? face_data[i].points[2] : 0;
+
+                if ((((point_list[point0].X - point_list[point1].X) *
+					 (point_list[point2].Y - point_list[point1].Y)) -
+					 ((point_list[point0].Y - point_list[point1].Y) *
+					 (point_list[point2].X - point_list[point1].X))) <= 0)
 				{
-					int num_points = face_data[i].points;
+					int num_points = face_data[i].points.Length;
                     Vector2[] poly_list = new Vector2[num_points];
 
-                    poly_list[0].X = point_list[face_data[i].p1].X;
-					poly_list[0].Y = point_list[face_data[i].p1].Y;
-					float zavg = point_list[face_data[i].p1].Z;
+ 					float zavg = 0;
 
-					poly_list[1].X = point_list[face_data[i].p2].X;
-					poly_list[1].Y = point_list[face_data[i].p2].Y;
-					zavg = MathF.Max(zavg, point_list[face_data[i].p2].Z);
-
-					if (num_points > 2)
+                    for (int j = 0; j < num_points; j++)
 					{
-						poly_list[2].X = point_list[face_data[i].p3].X;
-						poly_list[2].Y = point_list[face_data[i].p3].Y;
-						zavg = MathF.Max(zavg, point_list[face_data[i].p3].Z);
-					}
-
-					if (num_points > 3)
-					{
-						poly_list[3].X = point_list[face_data[i].p4].X;
-						poly_list[3].Y = point_list[face_data[i].p4].Y;
-						zavg = MathF.Max(zavg, point_list[face_data[i].p4].Z);
-					}
-
-					if (num_points > 4)
-					{
-						poly_list[4].X = point_list[face_data[i].p5].X;
-						poly_list[4].Y = point_list[face_data[i].p5].Y;
-						zavg = MathF.Max(zavg, point_list[face_data[i].p5].Z);
-					}
-
-					if (num_points > 5)
-					{
-						poly_list[5].X = point_list[face_data[i].p6].X;
-						poly_list[5].Y = point_list[face_data[i].p6].Y;
-						zavg = MathF.Max(zavg, point_list[face_data[i].p6].Z);
-					}
-
-					if (num_points > 6)
-					{
-						poly_list[6].X = point_list[face_data[i].p7].X;
-						poly_list[6].Y = point_list[face_data[i].p7].Y;
-						zavg = MathF.Max(zavg, point_list[face_data[i].p7].Z);
-					}
-
-					if (num_points > 7)
-					{
-						poly_list[7].X = point_list[face_data[i].p8].X;
-						poly_list[7].Y = point_list[face_data[i].p8].Y;
-						zavg = MathF.Max(zavg, point_list[face_data[i].p8].Z);
-					}
+                        poly_list[j].X = point_list[face_data[i].points[j]].X;
+                        poly_list[j].Y = point_list[face_data[i].points[j]].Y;
+                        zavg = MathF.Max(zavg, point_list[face_data[i].points[j]].Z);
+                    }
 
                     DrawPolygonFilled(poly_list, face_data[i].colour, zavg);
 				}

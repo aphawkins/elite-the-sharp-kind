@@ -75,24 +75,24 @@ namespace Elite.Ships
 
         private static readonly ship_face[] fer_de_lance_face =
         {
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x18, 0x06), 4,  5,  0,  8, 9, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2,new( -0x44, 0x00, 0x18), 3,  0,  5,  1, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x18, 0x06), new[] { 5,  0,  8, 9 }),
+            new(GFX_COL.GFX_COL_GREY_2,new( -0x44, 0x00, 0x18), new[] {   0,  5,  1 }),
 
-            new(GFX_COL.GFX_COL_BLUE_2, new(-0x3F, 0x00,-0x25), 4,  2,  1,  5, 6, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_BLUE_2, new(-0x3F, 0x00,-0x25), new[] {   2,  1,  5, 6 }),
 
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x68), 4,  3,  2,  6, 7, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x68), new[] {   3,  2,  6, 7 }),
 
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x3F, 0x00,-0x25), 4,  4,  3,  7, 8, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x44, 0x00, 0x18), 3,  4,  8,  0, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_BLUE_2, new( 0x3F, 0x00,-0x25), new[] { 4,  3,  7, 8 }),
+            new (GFX_COL.GFX_COL_GREY_2, new( 0x44, 0x00, 0x18), new[] { 4,  8,  0 }),
 
-            new(GFX_COL.GFX_COL_BLUE_3, new(-0x0C, 0x2E,-0x13), 3,  5,  9,  6, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x2D,-0x16), 3,  6,  9,  7, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_BLUE_3, new( 0x0C, 0x2E,-0x13), 3,  7,  9,  8, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x00,-0x1C, 0x00), 5,  4,  0,  1, 2, 3, 0, 0, 0),
+            new (GFX_COL.GFX_COL_BLUE_3, new(-0x0C, 0x2E,-0x13), new[] { 5,  9,  6 }),
+            new (GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x2D,-0x16), new[] { 6,  9,  7 }),
+            new (GFX_COL.GFX_COL_BLUE_3, new( 0x0C, 0x2E,-0x13), new[] { 7,  9,  8 }),
+            new (GFX_COL.GFX_COL_GREY_3, new( 0x00,-0x1C, 0x00), new[] { 4,  0,  1, 2, 3 }),
 
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00,-0x1C, 0x00), 3, 16, 18, 17, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x18, 0x06), 3, 11, 10, 12, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x18, 0x06), 3, 15, 13, 14, 0, 0, 0, 0, 0),
+            new (GFX_COL.GFX_COL_DARK_RED, new( 0x00,-0x1C, 0x00), new[] { 16, 18, 17 }),
+            new (GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x18, 0x06), new[] { 11, 10, 12 }),
+            new (GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x18, 0x06), new[] { 15, 13, 14 }),
         };
 
         internal static ship_data ferdlce_data = new(

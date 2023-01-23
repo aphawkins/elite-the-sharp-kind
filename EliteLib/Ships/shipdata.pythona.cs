@@ -69,22 +69,22 @@ namespace Elite.Ships
 
         private static readonly ship_face[] pythona_face =
         {
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x1B, 0x28, 0x0B), 3, 0,  1,  3, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x1B, 0x28, 0x0B), 3, 2,  1,  0, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x1B,-0x28, 0x0B), 3, 0,  3,  8, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x1B,-0x28, 0x0B), 3, 8,  2,  0, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x1B, 0x28, 0x0B ), new[] { 0,  1,  3 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x1B, 0x28, 0x0B ), new[] { 2,  1,  0 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x1B,-0x28, 0x0B ), new[] { 0,  3,  8 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x1B,-0x28, 0x0B ), new[] { 8,  2,  0 }),
 
-            new(GFX_COL.GFX_COL_YELLOW_1, new(-0x13, 0x26, 0x00), 3, 3,  1,  4, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GOLD, new( 0x13, 0x26, 0x00), 3, 4,  1,  2, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GOLD, new(-0x13,-0x26, 0x00), 3, 3,  9,  8, 0, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_YELLOW_1, new( 0x13,-0x26, 0x00), 3, 8,  9,  2, 0, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_YELLOW_1, new(-0x13, 0x26, 0x00 ), new[] { 3,  1,  4 }),
+            new(GFX_COL.GFX_COL_GOLD, new( 0x13, 0x26, 0x00 ), new[] { 4,  1,  2 }),
+            new(GFX_COL.GFX_COL_GOLD, new(-0x13,-0x26, 0x00 ), new[] { 3,  9,  8 }),
+            new(GFX_COL.GFX_COL_YELLOW_1, new( 0x13,-0x26, 0x00 ), new[] { 8,  9,  2 }),
 
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x19, 0x25,-0x0B), 4, 3,  4,  5, 6, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x19, 0x25,-0x0B), 4, 2,  7,  5, 4, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x19,-0x25,-0x0B), 4, 2,  9, 10, 7, 0, 0, 0, 0),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x19,-0x25,-0x0B), 4, 3,  6, 10, 9, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x19, 0x25,-0x0B ), new[] { 3,  4,  5, 6 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x19, 0x25,-0x0B ), new[] { 2,  7,  5, 4 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x19,-0x25,-0x0B ), new[] { 2,  9, 10, 7 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x19,-0x25,-0x0B ), new[] { 3,  6, 10, 9 }),
 
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0x70), 4, 10, 6 , 5, 7, 0, 0, 0, 0),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0x70 ), new[] { 10, 6 , 5, 7 }),
         };
 
         internal static ship_data pythona_data = new(
