@@ -34,8 +34,6 @@ namespace Elite
         /// <param name="univ"></param>
         private static void DrawShip(ref univ_object univ)
 		{
-			float rx, ry, rz;
-			int num_points;
 			Vector3[] trans_mat = new Vector3[3];
 			int lasv;
             GFX_COL col;
@@ -50,7 +48,7 @@ namespace Elite
 			camera_vec = VectorMaths.unit_vector(camera_vec);
 			ship_face[] face_data = ship.face_data;
 
-			/*
+            /*
 				for (i = 0; i < num_faces; i++)
 				{
 					vec.x = face_data[i].norm_x;
@@ -64,45 +62,24 @@ namespace Elite
 				}
 			*/
 
-			float tmp = trans_mat[0].Y;
-			trans_mat[0].Y = trans_mat[1].X;
-			trans_mat[1].X = tmp;
-
-            tmp = trans_mat[0].Z;
-            trans_mat[0].Z = trans_mat[2].X;
-            trans_mat[2].X = tmp;
-
-            tmp = trans_mat[1].Z;
-            trans_mat[1].Z = trans_mat[2].Y;
-            trans_mat[2].Y = tmp;
+            (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
+            (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
+            (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
 
             for (int i = 0; i < ship.points.Length; i++)
 			{
 				Vector3 vec = VectorMaths.mult_vector(ship.points[i].point, trans_mat);
+                vec += univ.location;
 
-				rx = vec.X + univ.location.X;
-				ry = vec.Y + univ.location.Y;
-				rz = vec.Z + univ.location.Z;
-
-				if (rz <= 0)
+				if (vec.Z <= 0)
 				{
-					rz = 1;
+                    vec.Z = 1;
 				}
 
-				float sx = rx * 256 / rz;
-				float sy = ry * 256 / rz;
+                vec.X = ((vec.X * 256 / vec.Z) + 128) * gfx.GFX_SCALE;
+				vec.Y = ((-vec.Y * 256 / vec.Z) + 96) * gfx.GFX_SCALE;
 
-				sy = -sy;
-
-				sx += 128;
-				sy += 96;
-
-				sx *= gfx.GFX_SCALE;
-				sy *= gfx.GFX_SCALE;
-
-				point_list[i].X = sx;
-				point_list[i].Y = sy;
-				point_list[i].Z = rz;
+				point_list[i] = vec;
 			}
 
 			for (int i = 0; i < ship.face_data.Length; i++)
@@ -112,7 +89,7 @@ namespace Elite
 					 ((point_list[face_data[i].p1].Y - point_list[face_data[i].p2].Y) *
 					 (point_list[face_data[i].p3].X - point_list[face_data[i].p2].X))) <= 0)
 				{
-					num_points = face_data[i].points;
+					int num_points = face_data[i].points;
                     Vector2[] poly_list = new Vector2[num_points];
 
                     poly_list[0].X = point_list[face_data[i].p1].X;
