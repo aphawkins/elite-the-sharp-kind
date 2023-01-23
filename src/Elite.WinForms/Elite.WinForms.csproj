@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Elite.Assets\Elite.Assets.csproj" />
     <ProjectReference Include="..\Elite.Engine\Elite.Engine.csproj" />
   </ItemGroup>
 
