@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>EliteSharp</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EliteLib\EliteLib.csproj" />
+    <ProjectReference Include="..\EliteLib\Elite.Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
