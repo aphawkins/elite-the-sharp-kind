@@ -12,12 +12,12 @@
  *
  */
 
-namespace Elite.Views
+namespace Elite.Engine.Views
 {
-	using Elite.Enums;
-	using Elite.Structs;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Types;
 
-	internal static class PlanetData
+    internal static class PlanetData
 	{
         private static string[] economy_type = {"Rich Industrial",
                                 "Average Industrial",

@@ -18,30 +18,13 @@
  * Special Weapons And Tactics.
  */
 
-//# include <math.h>
-//# include <stdlib.h>
-//# include <string.h>
-
-//# include "config.h"
-//# include "gfx.h"
-//# include "elite.h"
-//# include "vector.h"
-//# include "swat.h"
-//# include "shipdata.h"
-//# include "space.h"
-//# include "main.h"
-//# include "sound.h"
-//# include "random.h"
-//# include "trade.h"
-//# include "pilot.h" 
-
-namespace Elite
+namespace Elite.Engine
 {
-	using System.Numerics;
-	using Elite.Common.Enums;
-	using Elite.Enums;
-	using Elite.Ships;
-	using Elite.Structs;
+    using System.Numerics;
+    using Elite.Common.Enums;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Ships;
+	using Elite.Engine.Types;
 
 	internal static class swat
 	{

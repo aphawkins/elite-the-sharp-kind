@@ -1,4 +1,4 @@
-﻿namespace EliteWin
+﻿namespace Elite.WinForms
 {
     partial class Form1
     {

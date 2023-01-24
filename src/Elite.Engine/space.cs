@@ -18,14 +18,14 @@
  * This module handles all the flight system and management of the space universe.
  */
 
-namespace Elite
+namespace Elite.Engine
 {
-	using System.Numerics;
-	using Elite.Common.Enums;
-	using Elite.Enums;
-	using Elite.Ships;
-	using Elite.Structs;
-	using Elite.Views;
+    using System.Numerics;
+    using Elite.Common.Enums;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Ships;
+	using Elite.Engine.Types;
+	using Elite.Engine.Views;
 
 	internal static class space
 	{

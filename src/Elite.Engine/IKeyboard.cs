@@ -1,6 +1,6 @@
-﻿namespace Elite
+﻿namespace Elite.Engine
 {
-    using Elite.Enums;
+    using Elite.Engine.Enums;
 
     public interface IKeyboard
     {

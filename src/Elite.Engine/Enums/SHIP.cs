@@ -1,4 +1,4 @@
-﻿namespace Elite.Enums
+﻿namespace Elite.Engine.Enums
 {
     internal enum SHIP
     {

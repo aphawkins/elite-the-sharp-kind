@@ -12,17 +12,16 @@
  *
  */
 
-namespace Elite
+namespace Elite.Engine
 {
-    using Elite.Enums;
-    using Elite.Structs;
-    using Elite.Ships;
     using System.Numerics;
-    using Elite.Config;
-    using Elite.Save;
-    using Elite.Views;
-    using Elite.Engine;
     using Elite.Common.Enums;
+    using Elite.Engine.Config;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Save;
+    using Elite.Engine.Ships;
+    using Elite.Engine.Types;
+    using Elite.Engine.Views;
 
     public static class elite
 	{

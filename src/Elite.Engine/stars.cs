@@ -12,10 +12,10 @@
  *
  */
 
-namespace Elite
+namespace Elite.Engine
 {
-	using System.Numerics;
-	using Elite.Enums;
+    using System.Numerics;
+	using Elite.Engine.Enums;
 
 	internal static class Stars
 	{

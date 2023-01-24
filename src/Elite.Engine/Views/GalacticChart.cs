@@ -12,11 +12,11 @@
  *
  */
 
-namespace Elite.Views
+namespace Elite.Engine.Views
 {
-	using System.Numerics;
-	using Elite.Enums;
-	using Elite.Structs;
+    using System.Numerics;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Types;
 
 	internal static class GalacticChart
 	{

@@ -12,17 +12,7 @@
  *
  */
 
-/*
- * random.c
- */
-
-
-//# include <stdlib.h>
-//# include "allegro.h"
-
-//# include "random.h"
-
-namespace Elite
+namespace Elite.Engine
 {
 	internal static class random
 	{

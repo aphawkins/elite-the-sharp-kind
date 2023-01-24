@@ -24,12 +24,12 @@
  * I have split it out to make it more understandable and easier to maintain.
  */
 
-namespace Elite
+namespace Elite.Engine
 {
-	using System.Numerics;
-	using Elite.Common.Enums;
-	using Elite.Enums;
-	using Elite.Structs;
+    using System.Numerics;
+    using Elite.Common.Enums;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Types;
 
 	internal static class pilot
 	{

@@ -1,4 +1,4 @@
-﻿namespace Elite
+﻿namespace Elite.Engine
 {
     using System.Numerics;
 

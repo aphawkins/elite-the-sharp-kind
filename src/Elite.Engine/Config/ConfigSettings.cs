@@ -1,6 +1,6 @@
-﻿namespace Elite.Config
+﻿namespace Elite.Engine.Config
 {
-    using Elite.Enums;
+    using Elite.Engine.Enums;
 
     public class ConfigSettings
     {

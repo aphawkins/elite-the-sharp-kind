@@ -22,7 +22,7 @@
  *
  **/
 
-namespace Elite
+namespace Elite.Engine
 {
 	public static class gfx
 	{

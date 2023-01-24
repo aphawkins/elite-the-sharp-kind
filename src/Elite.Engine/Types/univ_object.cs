@@ -1,7 +1,7 @@
-﻿namespace Elite.Structs
+﻿namespace Elite.Engine.Types
 {
     using System.Numerics;
-    using Elite.Enums;
+    using Elite.Engine.Enums;
 
     internal class univ_object : ICloneable
     {

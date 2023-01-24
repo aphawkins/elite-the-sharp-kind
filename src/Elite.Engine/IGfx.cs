@@ -12,11 +12,11 @@
  *
  **/
 
-namespace Elite
+namespace Elite.Engine
 {
     using System.Numerics;
     using Elite.Common.Enums;
-    using Elite.Enums;
+    using Elite.Engine.Enums;
 
     public interface IGfx
     {

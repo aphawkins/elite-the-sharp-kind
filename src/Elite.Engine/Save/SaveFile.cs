@@ -12,12 +12,12 @@
  *
  */
 
-namespace Elite.Save
+namespace Elite.Engine.Save
 {
     using System.Diagnostics;
     using System.Text.Json;
     using System.Text.Json.Serialization;
-    using Elite.Structs;
+    using Elite.Engine.Types;
 
     internal static class SaveFile
     {

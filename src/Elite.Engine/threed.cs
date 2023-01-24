@@ -11,13 +11,13 @@
  *
  */
 
-namespace Elite
+namespace Elite.Engine
 {
     using System.Numerics;
-    using Elite.Enums;
-    using Elite.Structs;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Types;
 
-    internal static class threed
+	internal static class threed
 	{
         private const int LAND_X_MAX = 128;
         private const int LAND_Y_MAX = 128;

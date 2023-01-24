@@ -12,11 +12,10 @@
  *
  */
 
-namespace Elite.Views
+namespace Elite.Engine.Views
 {
-    using Elite;
-    using Elite.Enums;
-    using Elite.Structs;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Types;
 
     internal static class Equipment
     {

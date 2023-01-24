@@ -12,10 +12,9 @@
  *
  */
 
-namespace Elite.Views
+namespace Elite.Engine.Views
 {
-    using Elite;
-    using Elite.Enums;
+    using Elite.Engine.Enums;
 
     internal static class CommanderStatus
     {

@@ -16,13 +16,13 @@
  * Handle the generation of planet info...
  */
 
-namespace Elite
+namespace Elite.Engine
 {
-	using Elite.Enums;
-	using Elite.Structs;
-	using System.Diagnostics;
-	using System.Numerics;
-	using System.Text;
+    using System.Diagnostics;
+    using System.Numerics;
+    using System.Text;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Types;
 
 	internal static class Planet
 	{

@@ -1,7 +1,7 @@
-namespace Elite.Ships
+namespace Elite.Engine.Ships
 {
-    using Elite.Enums;
-    using Elite.Structs;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Types;
 
     internal static partial class shipdata
     {
@@ -89,7 +89,7 @@ namespace Elite.Ships
             new(GFX_COL.GFX_COL_DARK_RED, new( 0x1E, 0x34, 0x00), new[] { 9, 11,  2,  3 }),
             new(GFX_COL.GFX_COL_RED_3,    new( 0x1E,-0x34, 0x00), new[] { 3, 2, 13,  4 }),
 
-            new (GFX_COL.GFX_COL_DARK_RED, new(-0x1E, 0x34, 0x00), new[] { 10,  8,  6,  7 }),
+            new(GFX_COL.GFX_COL_DARK_RED, new(-0x1E, 0x34, 0x00), new[] { 10,  8,  6,  7 }),
             new(GFX_COL.GFX_COL_RED_3,    new( -0x1E,-0x34, 0x00), new[] { 7,  6,  5, 12 }),
             new(GFX_COL.GFX_COL_RED_4,    new( -0x45, 0x32, 0x0D), new[] { 10,  7, 0 }),
             new(GFX_COL.GFX_COL_RED,      new(-0x45,-0x32, 0x0D), new[] {  0,  7, 12 }),

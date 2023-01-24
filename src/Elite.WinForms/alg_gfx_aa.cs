@@ -12,11 +12,11 @@
  *
  **/
 
-namespace Elite
+namespace Elite.WinForms
 {
     using System.Drawing;
     using System.Numerics;
-    using Elite.Enums;
+    using Elite.Engine.Enums;
 
     public class alg_gfx_aa : alg_gfx
     {

@@ -1,6 +1,6 @@
-﻿namespace Elite.Structs
+﻿namespace Elite.Engine.Types
 {
-    using Elite.Enums;
+    using Elite.Engine.Enums;
 
     internal class EquipmentItem
     {

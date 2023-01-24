@@ -1,7 +1,7 @@
-namespace Elite.Ships
+namespace Elite.Engine.Ships
 {
-    using Elite.Enums;
-    using Elite.Structs;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Types;
 
     internal static partial class shipdata
     {

@@ -19,7 +19,7 @@
  * I have, therefore, written a new set of routines which use floating point math.
  */
 
-namespace Elite
+namespace Elite.Engine
 {
     using System.Numerics;
 

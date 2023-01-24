@@ -22,7 +22,7 @@
  *
  **/
 
-namespace Elite.Enums
+namespace Elite.Engine.Enums
 {
 	public enum GFX_COL
 	{

@@ -12,7 +12,7 @@
  *
  */
 
-namespace Elite
+namespace Elite.Engine
 {
     using Elite.Common.Enums;
 

@@ -12,10 +12,10 @@
  *
  */
 
-namespace Elite
+namespace Elite.Engine
 {
-	using Elite.Enums;
-	using Elite.Structs;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Types;
 
 	internal static class trade
 	{

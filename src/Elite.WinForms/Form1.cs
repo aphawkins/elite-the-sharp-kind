@@ -1,6 +1,6 @@
-namespace EliteWin
+namespace Elite.WinForms
 {
-    using Elite;
+    using Elite.Engine;
 
     public partial class Form1 : Form
     {

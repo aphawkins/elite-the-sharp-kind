@@ -1,4 +1,4 @@
-﻿namespace Elite.Structs
+﻿namespace Elite.Engine.Types
 {
     public class galaxy_seed : ICloneable
     {

@@ -18,25 +18,12 @@
  * Code to handle the special missions.
  */
 
-//# include <stdlib.h>
-//# include <string.h>
-
-//# include "config.h"
-//# include "elite.h"
-//# include "gfx.h"
-//# include "vector.h"
-//# include "space.h"
-//# include "planet.h"
-//# include "main.h"
-//# include "missions.h" 
-//# include "keyboard.h"
-
-namespace Elite
+namespace Elite.Engine
 {
-	using System.Numerics;
-	using Elite.Common.Enums;
-	using Elite.Enums;
-	using Elite.Structs;
+    using System.Numerics;
+    using Elite.Common.Enums;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Types;
 
 	internal static class missions
 	{

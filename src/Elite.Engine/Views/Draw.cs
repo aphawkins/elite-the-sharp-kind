@@ -1,10 +1,10 @@
-﻿namespace Elite.Views
+﻿namespace Elite.Engine.Views
 {
     using System.Numerics;
     using Elite.Assets;
     using Elite.Common.Enums;
-    using Elite.Enums;
-    using Elite.Structs;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Types;
 
     internal class Draw
     {

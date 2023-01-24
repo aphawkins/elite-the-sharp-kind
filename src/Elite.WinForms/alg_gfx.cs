@@ -12,15 +12,15 @@
  *
  **/
 
-namespace Elite
+namespace Elite.WinForms
 {
-	using System.Diagnostics;
-	using System.Drawing;
-	using System.Numerics;
-    using Elite.Common.Enums;
-    using Elite.Enums;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.Numerics;
+    using Elite.Engine;
+    using Elite.Engine.Enums;
 
-	public class alg_gfx : IGfx, IDisposable
+    public class alg_gfx : IGfx, IDisposable
 	{
         // Screen buffer
         private readonly Bitmap _screenBuffer;

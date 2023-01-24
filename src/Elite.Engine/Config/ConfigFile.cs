@@ -12,12 +12,12 @@
  *
  */
 
-namespace Elite
+namespace Elite.Engine
 {
     using System.Diagnostics;
     using System.Text.Json;
     using System.Text.Json.Serialization;
-    using Elite.Config;
+    using Elite.Engine.Config;
 
     internal class ConfigFile
 	{

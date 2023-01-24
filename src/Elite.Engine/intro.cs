@@ -21,27 +21,14 @@
  *
  */
 
-
-//# include <stdlib.h>
-
-//# include "config.h"
-//# include "elite.h"
-//# include "gfx.h"
-//# include "vector.h"
-//# include "shipdata.h"
-//# include "shipface.h"
-//# include "threed.h"
-//# include "space.h"
-//# include "stars.h"
-
-namespace Elite
+namespace Elite.Engine
 {
     using System.Numerics;
-	using Elite.Common.Enums;
-	using Elite.Enums;
-    using Elite.Ships;
+    using Elite.Common.Enums;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Ships;
 
-    internal static class intro
+	internal static class intro
 	{
         private static SHIP ship_no;
         private static int show_time;

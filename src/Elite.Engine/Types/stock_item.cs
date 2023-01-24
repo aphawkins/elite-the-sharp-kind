@@ -1,4 +1,4 @@
-﻿namespace Elite.Structs
+﻿namespace Elite.Engine.Types
 {
     internal class stock_item
     {

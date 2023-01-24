@@ -1,4 +1,4 @@
-namespace EliteWin
+namespace Elite.WinForms
 {
     internal static class Program
     {

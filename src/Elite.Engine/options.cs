@@ -12,25 +12,10 @@
  *
  */
 
-/*
- * Options.c
- */
-
-//# include <stdlib.h>
-//# include <string.h>
-
-//# include "elite.h"
-//# include "config.h"
-//# include "gfx.h"
-//# include "options.h"
-//# include "main.h"
-//# include "docked.h"
-//# include "file.h" 
-
-namespace Elite
+namespace Elite.Engine
 {
-	using Elite.Enums;
-	using Elite.Views;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Views;
 
 	internal static class options
 	{

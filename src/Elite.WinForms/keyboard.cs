@@ -9,10 +9,11 @@
  *
  */
 
-namespace Elite
+namespace Elite.WinForms
 {
-	using System.Diagnostics;
-    using Elite.Enums;
+    using System.Diagnostics;
+    using Elite.Engine;
+    using Elite.Engine.Enums;
 
     public class Keyboard : IKeyboard
     {

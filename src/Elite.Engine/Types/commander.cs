@@ -1,7 +1,6 @@
-﻿namespace Elite.Structs
+﻿namespace Elite.Engine.Types
 {
     using System.Numerics;
-    using Elite;
 
     public class Commander
     {

@@ -12,9 +12,9 @@
  *
  */
 
-namespace Elite.Views
+namespace Elite.Engine.Views
 {
-    using Elite.Enums;
+    using Elite.Engine.Enums;
 
     internal static class Market
     {
