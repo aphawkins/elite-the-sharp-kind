@@ -16,7 +16,7 @@ namespace Elite
 {
     using System.Media;
     using Commons.Music.Midi;
-    using Elite.Enums;
+    using Elite.Common.Enums;
 
     public partial class Sound : ISound, IDisposable
     {

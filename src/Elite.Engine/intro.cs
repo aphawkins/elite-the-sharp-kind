@@ -37,7 +37,8 @@
 namespace Elite
 {
     using System.Numerics;
-    using Elite.Enums;
+	using Elite.Common.Enums;
+	using Elite.Enums;
     using Elite.Ships;
 
     internal static class intro

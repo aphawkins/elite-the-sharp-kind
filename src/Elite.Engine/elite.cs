@@ -22,6 +22,7 @@ namespace Elite
     using Elite.Save;
     using Elite.Views;
     using Elite.Engine;
+    using Elite.Common.Enums;
 
     public static class elite
 	{

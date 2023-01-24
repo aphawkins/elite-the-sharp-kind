@@ -17,6 +17,7 @@ namespace Elite
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Numerics;
+    using Elite.Common.Enums;
     using Elite.Enums;
 
 	public class alg_gfx : IGfx, IDisposable

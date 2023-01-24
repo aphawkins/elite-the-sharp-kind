@@ -38,6 +38,7 @@
 namespace Elite
 {
 	using System.Numerics;
+	using Elite.Common.Enums;
 	using Elite.Enums;
 	using Elite.Ships;
 	using Elite.Structs;

@@ -14,7 +14,7 @@
 
 namespace Elite
 {
-    using Elite.Enums;
+    using Elite.Common.Enums;
 
     public interface ISound
     {

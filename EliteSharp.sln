@@ -16,7 +16,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{04F98D02-0
 		docs\readme.md = docs\readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elite.Assets", "src\Elite.Assets\Elite.Assets.csproj", "{310AFA99-725B-422D-BBEA-667D8EBC8FBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elite.Assets", "src\Elite.Assets\Elite.Assets.csproj", "{310AFA99-725B-422D-BBEA-667D8EBC8FBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elite.Common", "src\Elite.Common\Elite.Common.csproj", "{285AA65A-4BB8-4C02-8A4D-CAE5B5478E37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{310AFA99-725B-422D-BBEA-667D8EBC8FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{310AFA99-725B-422D-BBEA-667D8EBC8FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{310AFA99-725B-422D-BBEA-667D8EBC8FBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{285AA65A-4BB8-4C02-8A4D-CAE5B5478E37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{285AA65A-4BB8-4C02-8A4D-CAE5B5478E37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{285AA65A-4BB8-4C02-8A4D-CAE5B5478E37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{285AA65A-4BB8-4C02-8A4D-CAE5B5478E37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

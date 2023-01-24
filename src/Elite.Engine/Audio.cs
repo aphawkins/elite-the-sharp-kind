@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
     using System.Reflection;
+    using Elite.Assets;
+    using Elite.Common.Enums;
     using Elite.Enums;
 
     internal class Audio
@@ -42,36 +44,28 @@
 
         internal void LoadSounds()
         {
-            Assembly assets = Assembly.LoadFrom("Elite.Assets.dll");
+            AssetLoader loader = new();
 
-            Load(assets, Sfx.Launch, "launch.wav");
-            Load(assets, Sfx.Crash, "crash.wav");
-            Load(assets, Sfx.Dock, "dock.wav");
-            Load(assets, Sfx.Gameover, "gameover.wav");
-            Load(assets, Sfx.Pulse, "pulse.wav");
-            Load(assets, Sfx.HitEnemy, "hitem.wav");
-            Load(assets, Sfx.Explode, "explode.wav");
-            Load(assets, Sfx.Ecm, "ecm.wav");
-            Load(assets, Sfx.Missile, "missile.wav");
-            Load(assets, Sfx.Hyperspace, "hyper.wav");
-            Load(assets, Sfx.IncomingFire1, "incom1.wav");
-            Load(assets, Sfx.IncomingFire2, "incom2.wav");
-            Load(assets, Sfx.Beep, "beep.wav");
-            Load(assets, Sfx.Boop, "boop.wav");
+            foreach (Music music in Enum.GetValues<Music>())
+            {
+                Stream? stream = loader.Load(music);
+                if (stream != null)
+                {
+                    _sound.Load(music, stream);
+                }
+            }
 
-            Load(assets, Music.EliteTheme, "theme.mid");
-            Load(assets, Music.BlueDanube, "danube.mid");
+            foreach (Sfx effect in Enum.GetValues<Sfx>())
+            {
+                Stream? stream = loader.Load(effect);
+                if (stream != null)
+                {
+                    _sound.Load(effect, stream);
+                }
+            }
         }
 
-        private void Load(Assembly assets, Sfx effect, string name)
-        {
-            _sound.Load(effect, assets.GetManifestResourceStream("Elite.Assets.sfx." + name));
-        }
 
-        private void Load(Assembly assets, Music music, string name)
-        {
-            _sound.Load(music, assets.GetManifestResourceStream("Elite.Assets.music." + name));
-        }
 
         internal void PlayEffect(Sfx effect)
         {

@@ -1,4 +1,4 @@
-﻿namespace Elite.Enums
+﻿namespace Elite.Common.Enums
 {
     public enum Music
     {

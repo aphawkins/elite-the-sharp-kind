@@ -1,8 +1,5 @@
 ﻿namespace Elite
 {
-    using System.Media;
-    using Elite.Enums;
-
     internal class SfxSample
     {
         private readonly int _runtime;
