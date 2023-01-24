@@ -35,7 +35,7 @@ namespace Elite
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
 
 		// Images
-		private readonly Dictionary<IMG, Bitmap> _images = new();
+		private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
 
         private volatile int frame_count;
         private object frameCountLock = new();
@@ -147,9 +147,9 @@ namespace Elite
             }
         }
 
-        public void LoadBitmap(IMG imgType, Stream bitmapStream)
+        public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream)
         {
-            _images[imgType] = (Bitmap)Image.FromStream(bitmapStream);
+            _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(bitmapStream);
         }
 
         public int SpeedCap { get; set; } = 75;
@@ -331,7 +331,7 @@ namespace Elite
             _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
         }
 
-        public void DrawImage(IMG image, Vector2 position)
+        public void DrawImage(Common.Enums.Image image, Vector2 position)
         {
             Bitmap sprite = _images[image];
 
@@ -358,7 +358,7 @@ namespace Elite
 					_fontLarge.Dispose();
 
 					// Images
-					foreach(KeyValuePair<IMG, Bitmap> image in _images)
+					foreach(KeyValuePair<Common.Enums.Image, Bitmap> image in _images)
 					{
 						image.Value.Dispose();
 					}

@@ -229,7 +229,7 @@ namespace Elite
 		 */
         private static void do_game_over()
 		{
-			elite.audio.PlayEffect(Sfx.Gameover);
+			elite.audio.PlayEffect(SoundEffect.Gameover);
 			elite.game_over = true;
 		}
 
@@ -453,7 +453,7 @@ namespace Elite
 		{
 			if (is_docking(i))
 			{
-				elite.audio.PlayEffect(Sfx.Dock);
+				elite.audio.PlayEffect(SoundEffect.Dock);
 				dock_player();
 				elite.current_screen = SCR.SCR_BREAK_PATTERN;
 				return;
@@ -467,7 +467,7 @@ namespace Elite
 
 			elite.flight_speed = 1;
 			damage_ship(5, universe[i].location.Z > 0);
-			elite.audio.PlayEffect(Sfx.Crash);
+			elite.audio.PlayEffect(SoundEffect.Crash);
 		}
 
         private static void switch_to_view(ref univ_object flip)
@@ -583,7 +583,7 @@ namespace Elite
 						(type != SHIP.SHIP_CORIOLIS) &&
 						(type != SHIP.SHIP_DODEC))
 					{
-						elite.audio.PlayEffect(Sfx.Explode);
+						elite.audio.PlayEffect(SoundEffect.Explode);
 						universe[i].flags |= FLG.FLG_DEAD;
 					}
 
@@ -748,11 +748,11 @@ namespace Elite
 
 			if (dest.Z < 0)
 			{
-                elite.alg_gfx.DrawImage(IMG.IMG_RED_DOT, compass);
+                elite.alg_gfx.DrawImage(Image.DotRed, compass);
 			}
 			else
 			{
-                elite.alg_gfx.DrawImage(IMG.IMG_GREEN_DOT, compass);
+                elite.alg_gfx.DrawImage(Image.GreenDot, compass);
 			}
 
 		}
@@ -915,14 +915,14 @@ namespace Elite
 
 			if (swat.missile_target != swat.MISSILE_UNARMED)
 			{
-                elite.alg_gfx.DrawImage((swat.missile_target < 0) ? IMG.IMG_MISSILE_YELLOW : IMG.IMG_MISSILE_RED, location);
+                elite.alg_gfx.DrawImage((swat.missile_target < 0) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
 				nomiss--;
 			}
 
 			for (; nomiss > 0; nomiss--)
 			{
-                elite.alg_gfx.DrawImage(IMG.IMG_MISSILE_GREEN, location);
+                elite.alg_gfx.DrawImage(Image.MissileGreen, location);
                 location.X += 16;
 			}
 		}
@@ -953,12 +953,12 @@ namespace Elite
 
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-                elite.alg_gfx.DrawImage(IMG.IMG_BIG_S, new(387, 490));
+                elite.alg_gfx.DrawImage(Image.BigS, new(387, 490));
 			}
 
 			if (swat.ecm_active != 0)
 			{
-                elite.alg_gfx.DrawImage(IMG.IMG_BIG_E, new(115, 490));
+                elite.alg_gfx.DrawImage(Image.BigE, new(115, 490));
 			}
 		}
 
@@ -1111,7 +1111,7 @@ namespace Elite
 			}
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.audio.PlayEffect(Sfx.Hyperspace);
+			elite.audio.PlayEffect(SoundEffect.Hyperspace);
 		}
 
         private static void complete_hyperspace()
@@ -1178,7 +1178,7 @@ namespace Elite
 			swat.add_new_ship(SHIP.SHIP_SUN, px, py, pz, rotmat, 0, 0);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.audio.PlayEffect(Sfx.Hyperspace);
+			elite.audio.PlayEffect(SoundEffect.Hyperspace);
 		}
 
 		internal static void countdown_hyperspace()
@@ -1258,7 +1258,7 @@ namespace Elite
 			swat.add_new_station(0, 0, -256, rotmat);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.audio.PlayEffect(Sfx.Launch);
+			elite.audio.PlayEffect(SoundEffect.Launch);
 		}
 
 		/*
@@ -1269,7 +1269,7 @@ namespace Elite
 		{
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-				elite.audio.PlayEffect(Sfx.Dock);
+				elite.audio.PlayEffect(SoundEffect.Dock);
 				dock_player();
 				elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			}

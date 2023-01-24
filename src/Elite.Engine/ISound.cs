@@ -20,11 +20,11 @@ namespace Elite
     {
         void Load(Music midiType, Stream midiStream);
 
-        void Load(Sfx waveType, Stream waveStream);
+        void Load(SoundEffect waveType, Stream waveStream);
 
         void PlayMidi(Music midi_no, bool repeat);
 
-        void PlayWave(Sfx waveType);
+        void PlayWave(SoundEffect waveType);
 
         void StopMidi();
     }

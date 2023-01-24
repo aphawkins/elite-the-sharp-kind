@@ -1,6 +1,6 @@
 ﻿namespace Elite.Common.Enums
 {
-    public enum Sfx
+    public enum SoundEffect
     {
         Launch = 0,
         Crash = 1,

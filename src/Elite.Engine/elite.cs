@@ -699,14 +699,14 @@ namespace Elite
 
             int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
             space.universe[newship].velocity = 7;
-            audio.PlayEffect(Sfx.Launch);
+            audio.PlayEffect(SoundEffect.Launch);
 
             for (i = 0; i < 90; i++)
             {
                 if (i == 40)
                 {
                     space.universe[newship].flags |= FLG.FLG_DEAD;
-                    audio.PlayEffect(Sfx.Explode);
+                    audio.PlayEffect(SoundEffect.Explode);
                 }
 
                 alg_gfx.SetClipRegion(1, 1, 510, 383);
@@ -1499,7 +1499,7 @@ namespace Elite
                             if (energy < 50)
                             {
                                 info_message("ENERGY LOW");
-                                audio.PlayEffect(Sfx.Beep);
+                                audio.PlayEffect(SoundEffect.Beep);
                             }
 
                             space.update_altitude();

@@ -8,14 +8,14 @@
     {
         Assembly? assets = Assembly.GetAssembly(typeof(AssetLoader));
 
-        public Stream? Load(IMG image)
+        public Stream? Load(Image image)
         {
             return assets?.GetManifestResourceStream("Elite.Assets.Images." + GetName(image));
         }
 
-        public Stream? Load(Sfx effect)
+        public Stream? Load(SoundEffect effect)
         {
-            return assets?.GetManifestResourceStream("Elite.Assets.Effects." + GetName(effect));
+            return assets?.GetManifestResourceStream("Elite.Assets.SoundEffects." + GetName(effect));
         }
 
         public Stream? Load(Music music)
@@ -23,42 +23,42 @@
             return assets?.GetManifestResourceStream("Elite.Assets.Music." + GetName(music));
         }
 
-        private string GetName(IMG image)
+        private string GetName(Image image)
         {
             return image switch
             {
-                IMG.IMG_GREEN_DOT => "greendot.bmp",
-                IMG.IMG_RED_DOT => "reddot.bmp",
-                IMG.IMG_BIG_S => "safe.bmp",
-                IMG.IMG_ELITE_TXT => "elitetx3.bmp",
-                IMG.IMG_BIG_E => "ecm.bmp",
-                IMG.IMG_MISSILE_GREEN => "missgrn.bmp",
-                IMG.IMG_MISSILE_YELLOW => "missyell.bmp",
-                IMG.IMG_MISSILE_RED => "missred.bmp",
-                IMG.IMG_BLAKE => "blake.bmp",
-                IMG.IMG_SCANNER => "scanner.bmp",
+                Image.GreenDot => "greendot.bmp",
+                Image.DotRed => "reddot.bmp",
+                Image.BigS => "safe.bmp",
+                Image.EliteText => "elitetx3.bmp",
+                Image.BigE => "ecm.bmp",
+                Image.MissileGreen => "missgrn.bmp",
+                Image.MissileYellow => "missyell.bmp",
+                Image.MissileRed => "missred.bmp",
+                Image.Blake => "blake.bmp",
+                Image.Scanner => "scanner.bmp",
                 _ => throw new NotImplementedException(),
             };
         }
 
-        private string GetName(Sfx effect)
+        private string GetName(SoundEffect effect)
         {
             return effect switch
             {
-                Sfx.Launch => "launch.wav",
-                Sfx.Crash => "crash.wav",
-                Sfx.Dock => "dock.wav",
-                Sfx.Gameover => "gameover.wav",
-                Sfx.Pulse => "pulse.wav",
-                Sfx.HitEnemy => "hitem.wav",
-                Sfx.Explode => "explode.wav",
-                Sfx.Ecm => "ecm.wav",
-                Sfx.Missile => "missile.wav",
-                Sfx.Hyperspace => "hyper.wav",
-                Sfx.IncomingFire1 => "incom1.wav",
-                Sfx.IncomingFire2 => "incom2.wav",
-                Sfx.Beep => "beep.wav",
-                Sfx.Boop => "boop.wav",
+                SoundEffect.Launch => "launch.wav",
+                SoundEffect.Crash => "crash.wav",
+                SoundEffect.Dock => "dock.wav",
+                SoundEffect.Gameover => "gameover.wav",
+                SoundEffect.Pulse => "pulse.wav",
+                SoundEffect.HitEnemy => "hitem.wav",
+                SoundEffect.Explode => "explode.wav",
+                SoundEffect.Ecm => "ecm.wav",
+                SoundEffect.Missile => "missile.wav",
+                SoundEffect.Hyperspace => "hyper.wav",
+                SoundEffect.IncomingFire1 => "incom1.wav",
+                SoundEffect.IncomingFire2 => "incom2.wav",
+                SoundEffect.Beep => "beep.wav",
+                SoundEffect.Boop => "boop.wav",
                 _ => throw new NotImplementedException(),
             };
         }

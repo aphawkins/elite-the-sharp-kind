@@ -24,22 +24,22 @@
 #endif
         }
 
-        private readonly Dictionary<Sfx, SfxSample> _sfx = new()
+        private readonly Dictionary<SoundEffect, SfxSample> _sfx = new()
         {
-            { Sfx.Launch, new(32) },
-            { Sfx.Crash, new(7) },
-            { Sfx.Dock, new(36) },
-            { Sfx.Gameover, new(24) },
-            { Sfx.Pulse, new(4) },
-            { Sfx.HitEnemy, new(4) },
-            { Sfx.Explode, new(23) },
-            { Sfx.Ecm, new(23) },
-            { Sfx.Missile, new(25) },
-            { Sfx.Hyperspace, new(37) },
-            { Sfx.IncomingFire1, new(4) },
-            { Sfx.IncomingFire2, new(5) },
-            { Sfx.Beep, new(2) },
-            { Sfx.Boop, new(7) },
+            { SoundEffect.Launch, new(32) },
+            { SoundEffect.Crash, new(7) },
+            { SoundEffect.Dock, new(36) },
+            { SoundEffect.Gameover, new(24) },
+            { SoundEffect.Pulse, new(4) },
+            { SoundEffect.HitEnemy, new(4) },
+            { SoundEffect.Explode, new(23) },
+            { SoundEffect.Ecm, new(23) },
+            { SoundEffect.Missile, new(25) },
+            { SoundEffect.Hyperspace, new(37) },
+            { SoundEffect.IncomingFire1, new(4) },
+            { SoundEffect.IncomingFire2, new(5) },
+            { SoundEffect.Beep, new(2) },
+            { SoundEffect.Boop, new(7) },
         };
 
         internal void LoadSounds()
@@ -55,7 +55,7 @@
                 }
             }
 
-            foreach (Sfx effect in Enum.GetValues<Sfx>())
+            foreach (SoundEffect effect in Enum.GetValues<SoundEffect>())
             {
                 Stream? stream = loader.Load(effect);
                 if (stream != null)
@@ -67,7 +67,7 @@
 
 
 
-        internal void PlayEffect(Sfx effect)
+        internal void PlayEffect(SoundEffect effect)
         {
             if (!_effectsOn)
             {
@@ -105,7 +105,7 @@
 
         internal void UpdateSound()
         {
-            foreach (KeyValuePair<Sfx, SfxSample> sfx in _sfx)
+            foreach (KeyValuePair<SoundEffect, SfxSample> sfx in _sfx)
             {
                 sfx.Value.ReduceTimeRemaining();
             }

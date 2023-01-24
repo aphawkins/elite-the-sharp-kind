@@ -26,7 +26,7 @@ namespace Elite
         private bool _disposedValue;
         private readonly SoundPlayer _sample;
 
-        private readonly Dictionary<Sfx, SoundPlayer> _waves = new();
+        private readonly Dictionary<SoundEffect, SoundPlayer> _waves = new();
         private readonly Dictionary<Music, MidiMusic> _midis = new();
 
         public Sound()
@@ -40,12 +40,12 @@ namespace Elite
             _midis[midiType] = MidiMusic.Read(midiStream);
         }
 
-        public void Load(Sfx waveType, Stream waveStream)
+        public void Load(SoundEffect waveType, Stream waveStream)
         {
             _waves[waveType] = new(waveStream);
         }
 
-        public void PlayWave(Sfx waveType)
+        public void PlayWave(SoundEffect waveType)
         {
             _waves[waveType].Play();
         }
@@ -93,7 +93,7 @@ namespace Elite
                     _midiPlayer?.Stop();
                     _midiPlayer?.Dispose();
 
-                    foreach (KeyValuePair<Sfx, SoundPlayer> v in _waves)
+                    foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _waves)
                     {
                         v.Value.Dispose();
                     }

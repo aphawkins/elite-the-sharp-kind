@@ -276,7 +276,7 @@ namespace Elite
             elite.draw.DrawTextPretty(16, 50, 300, 384, mission2_brief_b);
             elite.draw.DrawTextPretty(16, 200, 470, 384, mission2_brief_c);
 
-            elite.alg_gfx.DrawImage(IMG.IMG_BLAKE, new(352, 46));
+            elite.alg_gfx.DrawImage(Image.Blake, new(352, 46));
 
             elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 

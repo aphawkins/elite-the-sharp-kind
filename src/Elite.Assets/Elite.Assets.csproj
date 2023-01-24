@@ -49,46 +49,46 @@
     <EmbeddedResource Include="Music\theme.mid">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\beep.wav">
+    <EmbeddedResource Include="SoundEffects\beep.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\boop.wav">
+    <EmbeddedResource Include="SoundEffects\boop.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\crash.wav">
+    <EmbeddedResource Include="SoundEffects\crash.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\dock.wav">
+    <EmbeddedResource Include="SoundEffects\dock.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\ecm.wav">
+    <EmbeddedResource Include="SoundEffects\ecm.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\explode.wav">
+    <EmbeddedResource Include="SoundEffects\explode.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\gameover.wav">
+    <EmbeddedResource Include="SoundEffects\gameover.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\hitem.wav">
+    <EmbeddedResource Include="SoundEffects\hitem.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\hyper.wav">
+    <EmbeddedResource Include="SoundEffects\hyper.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\incom1.wav">
+    <EmbeddedResource Include="SoundEffects\incom1.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\incom2.wav">
+    <EmbeddedResource Include="SoundEffects\incom2.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\launch.wav">
+    <EmbeddedResource Include="SoundEffects\launch.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\missile.wav">
+    <EmbeddedResource Include="SoundEffects\missile.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Effects\pulse.wav">
+    <EmbeddedResource Include="SoundEffects\pulse.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

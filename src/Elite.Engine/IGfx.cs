@@ -22,7 +22,7 @@ namespace Elite
     {
         int SpeedCap { get; set; }
 
-        void LoadBitmap(IMG imgType, Stream bitmapStream);
+        void LoadBitmap(Image imgType, Stream bitmapStream);
 
         void ClearArea(float x, float y, float width, float height);
 
@@ -30,7 +30,7 @@ namespace Elite
 
         void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour);
 
-        void DrawImage(IMG spriteImgage, Vector2 location);
+        void DrawImage(Image spriteImgage, Vector2 location);
 
         void DrawLine(Vector2 start, Vector2 end, GFX_COL colour);
 

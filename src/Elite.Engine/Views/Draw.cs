@@ -231,7 +231,7 @@
 
         internal void DrawScanner()
         {
-            _gfx.DrawImage(IMG.IMG_SCANNER, new(gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET));
+            _gfx.DrawImage(Image.Scanner, new(gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET));
         }
 
         internal void DrawBorder()
@@ -245,7 +245,7 @@
         {
             AssetLoader loader = new();
 
-            foreach (IMG img in Enum.GetValues<IMG>())
+            foreach (Image img in Enum.GetValues<Image>())
             {
                 Stream? stream = loader.Load(img);
                 if (stream != null)

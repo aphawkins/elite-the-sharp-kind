@@ -4,9 +4,9 @@
 
     public interface IAssets
     {
-        public Stream? Load(IMG image);
+        public Stream? Load(Image image);
 
-        public Stream? Load(Sfx effect);
+        public Stream? Load(SoundEffect effect);
 
         public Stream? Load(Music music);
     }

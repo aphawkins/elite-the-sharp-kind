@@ -25,18 +25,18 @@
 **/
 namespace Elite.Common.Enums
 {
-    public enum IMG
+    public enum Image
     {
-        IMG_GREEN_DOT = 1,
-        IMG_RED_DOT = 2,
-        IMG_BIG_S = 3,
-        IMG_ELITE_TXT = 4,
-        IMG_BIG_E = 5,
-        //IMG_DICE = 6,
-        IMG_MISSILE_GREEN = 7,
-        IMG_MISSILE_YELLOW = 8,
-        IMG_MISSILE_RED = 9,
-        IMG_BLAKE = 10,
-        IMG_SCANNER = 11,
+        Scanner,
+        GreenDot,
+        DotRed,
+        BigS,
+        BigE,
+        EliteText,
+        MissileGreen,
+        MissileYellow,
+        MissileRed,
+        Blake,
+        //Dice,
     }
 }
