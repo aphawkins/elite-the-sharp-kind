@@ -7,25 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="music\danube.mid" />
-    <None Remove="music\theme.mid" />
-    <None Remove="sfx\beep.wav" />
-    <None Remove="sfx\boop.wav" />
-    <None Remove="sfx\crash.wav" />
-    <None Remove="sfx\dock.wav" />
-    <None Remove="sfx\ecm.wav" />
-    <None Remove="sfx\explode.wav" />
-    <None Remove="sfx\gameover.wav" />
-    <None Remove="sfx\hitem.wav" />
-    <None Remove="sfx\hyper.wav" />
-    <None Remove="sfx\incom1.wav" />
-    <None Remove="sfx\incom2.wav" />
-    <None Remove="sfx\launch.wav" />
-    <None Remove="sfx\missile.wav" />
-    <None Remove="sfx\pulse.wav" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="gfx\blake.bmp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

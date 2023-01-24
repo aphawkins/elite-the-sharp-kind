@@ -93,11 +93,6 @@ namespace Elite
                     _midiPlayer?.Stop();
                     _midiPlayer?.Dispose();
 
-                    foreach (KeyValuePair<Music, MidiMusic> v in _midis)
-                    {
-                        ((IDisposable)v.Value).Dispose();
-                    }
-
                     foreach (KeyValuePair<Sfx, SoundPlayer> v in _waves)
                     {
                         v.Value.Dispose();
