@@ -331,7 +331,7 @@ namespace Elite
                 elite.info_message("Right On Commander!");
 			}
 
-			elite.sound.PlaySample(Sfx.Explode);
+			elite.audio.PlayEffect(Sfx.Explode);
 			space.universe[un].flags |= FLG.FLG_DEAD;
 
 			if (space.universe[un].type == SHIP.SHIP_CONSTRICTOR)
@@ -350,12 +350,12 @@ namespace Elite
 				{
 					missile_target = un;
                     elite.info_message("Target Locked");
-					elite.sound.PlaySample(Sfx.Beep);
+					elite.audio.PlayEffect(Sfx.Beep);
 				}
 
 				if (laser > 0)
 				{
-					elite.sound.PlaySample(Sfx.HitEnemy);
+					elite.audio.PlayEffect(Sfx.HitEnemy);
 
 					if (space.universe[un].type is not SHIP.SHIP_CORIOLIS and not SHIP.SHIP_DODEC)
 					{
@@ -401,7 +401,7 @@ namespace Elite
 			{
 				ecm_active = 32;
 				ecm_ours = ours;
-				elite.sound.PlaySample(Sfx.Ecm);
+				elite.audio.PlayEffect(Sfx.Ecm);
 			}
 		}
 
@@ -428,7 +428,7 @@ namespace Elite
 		internal static void unarm_missile()
 		{
 			missile_target = MISSILE_UNARMED;
-			elite.sound.PlaySample(Sfx.Boop);
+			elite.audio.PlayEffect(Sfx.Boop);
 		}
 
 		internal static void fire_missile()
@@ -464,7 +464,7 @@ namespace Elite
 			elite.cmdr.missiles--;
 			missile_target = MISSILE_UNARMED;
 
-			elite.sound.PlaySample(Sfx.Missile);
+			elite.audio.PlayEffect(Sfx.Missile);
 		}
 
         private static void track_object(ref univ_object ship, float direction, Vector3 nvec)
@@ -518,7 +518,7 @@ namespace Elite
 
 			if (ecm_active != 0)
 			{
-				elite.sound.PlaySample(Sfx.Explode);
+				elite.audio.PlayEffect(Sfx.Explode);
 
 				missile.flags |= FLG.FLG_DEAD;
 				return;
@@ -529,7 +529,7 @@ namespace Elite
 				if (missile.distance < 256)
 				{
 					missile.flags |= FLG.FLG_DEAD;
-					elite.sound.PlaySample(Sfx.Explode);
+					elite.audio.PlayEffect(Sfx.Explode);
 					space.damage_ship(250, missile.location.Z >= 0.0);
 					return;
 				}
@@ -556,7 +556,7 @@ namespace Elite
 					}
 					else
 					{
-						elite.sound.PlaySample(Sfx.Explode);
+						elite.audio.PlayEffect(Sfx.Explode);
 					}
 
 					return;
@@ -813,11 +813,11 @@ namespace Elite
 					if (((ship.location.Z >= 0.0) && (elite.front_shield == 0)) ||
 						((ship.location.Z < 0.0) && (elite.aft_shield == 0)))
 					{
-						elite.sound.PlaySample(Sfx.IncomingFire2);
+						elite.audio.PlayEffect(Sfx.IncomingFire2);
 					}
 					else
 					{
-						elite.sound.PlaySample(Sfx.IncomingFire1);
+						elite.audio.PlayEffect(Sfx.IncomingFire1);
 					}
 				}
 				else
@@ -943,7 +943,7 @@ namespace Elite
 					laser &= 127;
 					laser2 = laser;
 
-					elite.sound.PlaySample(Sfx.Pulse);
+					elite.audio.PlayEffect(Sfx.Pulse);
 					elite.laser_temp += 8;
 					if (elite.energy > 1)
 					{
@@ -1281,7 +1281,7 @@ namespace Elite
 				elite.cmdr.current_cargo[i] = 0;
 			}
 
-			elite.sound.PlaySample(Sfx.Dock);
+			elite.audio.PlayEffect(Sfx.Dock);
 			space.dock_player();
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
 		}

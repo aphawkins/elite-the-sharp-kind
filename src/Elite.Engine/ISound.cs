@@ -18,12 +18,14 @@ namespace Elite
 
     public interface ISound
     {
+        void Load(Music midiType, Stream midiStream);
+
+        void Load(Sfx waveType, Stream waveStream);
+
         void PlayMidi(Music midi_no, bool repeat);
 
-        void PlaySample(Sfx sample_no);
+        void PlayWave(Sfx waveType);
 
         void StopMidi();
-
-        void UpdateSound();
     }
 }

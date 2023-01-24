@@ -228,7 +228,7 @@ namespace Elite
 		 */
         private static void do_game_over()
 		{
-			elite.sound.PlaySample(Sfx.Gameover);
+			elite.audio.PlayEffect(Sfx.Gameover);
 			elite.game_over = true;
 		}
 
@@ -452,7 +452,7 @@ namespace Elite
 		{
 			if (is_docking(i))
 			{
-				elite.sound.PlaySample(Sfx.Dock);
+				elite.audio.PlayEffect(Sfx.Dock);
 				dock_player();
 				elite.current_screen = SCR.SCR_BREAK_PATTERN;
 				return;
@@ -466,7 +466,7 @@ namespace Elite
 
 			elite.flight_speed = 1;
 			damage_ship(5, universe[i].location.Z > 0);
-			elite.sound.PlaySample(Sfx.Crash);
+			elite.audio.PlayEffect(Sfx.Crash);
 		}
 
         private static void switch_to_view(ref univ_object flip)
@@ -582,7 +582,7 @@ namespace Elite
 						(type != SHIP.SHIP_CORIOLIS) &&
 						(type != SHIP.SHIP_DODEC))
 					{
-						elite.sound.PlaySample(Sfx.Explode);
+						elite.audio.PlayEffect(Sfx.Explode);
 						universe[i].flags |= FLG.FLG_DEAD;
 					}
 
@@ -1110,7 +1110,7 @@ namespace Elite
 			}
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.sound.PlaySample(Sfx.Hyperspace);
+			elite.audio.PlayEffect(Sfx.Hyperspace);
 		}
 
         private static void complete_hyperspace()
@@ -1177,7 +1177,7 @@ namespace Elite
 			swat.add_new_ship(SHIP.SHIP_SUN, px, py, pz, rotmat, 0, 0);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.sound.PlaySample(Sfx.Hyperspace);
+			elite.audio.PlayEffect(Sfx.Hyperspace);
 		}
 
 		internal static void countdown_hyperspace()
@@ -1257,7 +1257,7 @@ namespace Elite
 			swat.add_new_station(0, 0, -256, rotmat);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.sound.PlaySample(Sfx.Launch);
+			elite.audio.PlayEffect(Sfx.Launch);
 		}
 
 		/*
@@ -1268,7 +1268,7 @@ namespace Elite
 		{
 			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
 			{
-				elite.sound.PlaySample(Sfx.Dock);
+				elite.audio.PlayEffect(Sfx.Dock);
 				dock_player();
 				elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			}

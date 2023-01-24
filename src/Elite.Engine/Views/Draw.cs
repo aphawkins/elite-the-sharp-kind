@@ -1,12 +1,9 @@
 ﻿namespace Elite.Views
 {
-    using System.IO;
     using System.Numerics;
     using System.Reflection;
-    using System.Resources;
     using Elite.Enums;
     using Elite.Structs;
-    using static System.Net.Mime.MediaTypeNames;
 
     internal class Draw
     {

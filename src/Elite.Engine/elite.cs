@@ -21,11 +21,12 @@ namespace Elite
     using Elite.Config;
     using Elite.Save;
     using Elite.Views;
+    using Elite.Engine;
 
     public static class elite
 	{
 		internal static IGfx alg_gfx;
-		internal static ISound sound;
+		internal static Audio audio;
         internal static IKeyboard keyboard;
 
         internal const int PULSE_LASER = 0x0F;     //  15
@@ -697,14 +698,14 @@ namespace Elite
 
             int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
             space.universe[newship].velocity = 7;
-            sound.PlaySample(Sfx.Launch);
+            audio.PlayEffect(Sfx.Launch);
 
             for (i = 0; i < 90; i++)
             {
                 if (i == 40)
                 {
                     space.universe[newship].flags |= FLG.FLG_DEAD;
-                    sound.PlaySample(Sfx.Explode);
+                    audio.PlayEffect(Sfx.Explode);
                 }
 
                 alg_gfx.SetClipRegion(1, 1, 510, 383);
@@ -1182,7 +1183,7 @@ namespace Elite
         {
             current_screen = SCR.SCR_INTRO_ONE;
 
-            sound.PlayMidi(Music.EliteTheme, true);
+            audio.PlayMusic(Music.EliteTheme, true);
 
             intro.initialise_intro1();
 
@@ -1196,14 +1197,14 @@ namespace Elite
 
                 if (keyboard.IsKeyPressed(CommandKey.Y))
                 {
-                    sound.StopMidi();
+                    audio.StopMusic();
                     load_commander_screen();
                     break;
                 }
 
                 if (keyboard.IsKeyPressed(CommandKey.N))
                 {
-                    sound.StopMidi();
+                    audio.StopMusic();
                     break;
                 }
             }
@@ -1214,7 +1215,7 @@ namespace Elite
         {
             current_screen = SCR.SCR_INTRO_TWO;
 
-            sound.PlayMidi(Music.BlueDanube, true);
+            audio.PlayMusic(Music.BlueDanube, true);
 
             intro.initialise_intro2();
 
@@ -1236,7 +1237,7 @@ namespace Elite
                 }
             }
 
-            sound.StopMidi();
+            audio.StopMusic();
         }
 
         /*
@@ -1334,12 +1335,16 @@ namespace Elite
         public static int main(ref IGfx alg_gfx, ref ISound sound, ref IKeyboard keyboard)
         {
             elite.alg_gfx = alg_gfx;
-            elite.sound = sound;
-            elite.keyboard = keyboard;
-            draw = new Draw(elite.alg_gfx);
+            elite.audio = new Audio(sound);
+            audio.LoadSounds();
 
-            draw.DrawBorder();
+            elite.keyboard = keyboard;
+            
+            draw = new(elite.alg_gfx);
             draw.LoadImages();
+            draw.DrawBorder();
+
+            
 
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;
@@ -1371,7 +1376,7 @@ namespace Elite
 
                 while (!game_over)
                 {
-                    sound.UpdateSound();
+                    audio.UpdateSound();
                     elite.alg_gfx.ScreenUpdate();
                     elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
 
@@ -1493,7 +1498,7 @@ namespace Elite
                             if (energy < 50)
                             {
                                 info_message("ENERGY LOW");
-                                sound.PlaySample(Sfx.Beep);
+                                audio.PlayEffect(Sfx.Beep);
                             }
 
                             space.update_altitude();
