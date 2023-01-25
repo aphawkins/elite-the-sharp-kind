@@ -7,15 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\elitetext.bmp" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Images\blake.bmp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Images\ecm.bmp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Images\elitetx3.bmp">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Images\elitetext.bmp" />
     <EmbeddedResource Include="Images\font1.bmp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

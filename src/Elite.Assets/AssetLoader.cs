@@ -30,7 +30,7 @@
                 Image.GreenDot => "greendot.bmp",
                 Image.DotRed => "reddot.bmp",
                 Image.BigS => "safe.bmp",
-                Image.EliteText => "elitetx3.bmp",
+                Image.EliteText => "elitetext.bmp",
                 Image.BigE => "ecm.bmp",
                 Image.MissileGreen => "missgrn.bmp",
                 Image.MissileYellow => "missyell.bmp",

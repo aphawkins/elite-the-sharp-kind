@@ -35,7 +35,7 @@ namespace Elite.Engine.Views
             new(0x0080, "Competent"),
             new(0x0200, "Dangerous"),
             new(0x0A00, "Deadly"),
-            new(0x1900, "- - - - E L I T E - - - -")
+            new(0x1900, "- - - E L I T E - - -")
         };
         private const int EQUIP_START_Y = 202;
         private const int EQUIP_START_X = 50;
