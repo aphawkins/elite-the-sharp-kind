@@ -20,7 +20,7 @@ namespace Elite.WinForms
     using Elite.Engine;
     using Elite.Engine.Enums;
 
-    public class alg_gfx : IGfx, IDisposable
+    public class GdiGraphics : IGfx, IDisposable
 	{
         // Screen buffer
         private readonly Bitmap _screenBuffer;
@@ -109,7 +109,7 @@ namespace Elite.WinForms
                 { GFX_COL.UNKNOWN_2, Brushes.DarkOrange }
             };
 
-        public alg_gfx(ref Bitmap screen)
+        public GdiGraphics(ref Bitmap screen)
 		{
             Debug.Assert(screen.Width == 512);
             Debug.Assert(screen.Height == 512);

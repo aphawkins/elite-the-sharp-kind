@@ -18,7 +18,7 @@ namespace Elite.WinForms
     using System.Numerics;
     using Elite.Engine.Enums;
 
-    public class alg_gfx_aa : alg_gfx
+    public class GdiGraphicsAntiAlias : GdiGraphics
     {
         //private const int AA_BITS = 3;
         //private const int AA_AND = 7;
@@ -29,7 +29,7 @@ namespace Elite.WinForms
         //#define invfrac(x) (65535-frac(x))
         //#define plot(x,y,c) putpixel(gfx_screen, (x), (y), (c)+AA_BASE)
 
-        public alg_gfx_aa (ref Bitmap screen) : base(ref screen)
+        public GdiGraphicsAntiAlias (ref Bitmap screen) : base(ref screen)
         {
         }
 

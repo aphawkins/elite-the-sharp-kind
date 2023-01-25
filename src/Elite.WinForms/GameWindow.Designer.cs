@@ -1,6 +1,6 @@
 ﻿namespace Elite.WinForms
 {
-    partial class Form1
+    partial class GameWindow
     {
         /// <summary>
         ///  Required designer variable.
@@ -31,6 +31,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameWindow));
             this.screen = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.screen)).BeginInit();
             this.SuspendLayout();
@@ -44,17 +45,22 @@
             this.screen.TabIndex = 1;
             this.screen.TabStop = false;
             // 
-            // Form1
+            // GameWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Magenta;
             this.ClientSize = new System.Drawing.Size(512, 512);
             this.Controls.Add(this.screen);
+            this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(528, 551);
+            this.MinimumSize = new System.Drawing.Size(528, 551);
+            this.Name = "GameWindow";
+            this.Text = "Elite - The Sharp Kind";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.screen)).EndInit();

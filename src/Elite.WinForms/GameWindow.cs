@@ -2,14 +2,14 @@ namespace Elite.WinForms
 {
     using Elite.Engine;
 
-    public partial class Form1 : Form
+    public partial class GameWindow : Form
     {
         private System.Windows.Forms.Timer _refreshTimer = new();
         private IGfx _gfx;
         private ISound _sound;
         private IKeyboard _keyboard;
 
-        public Form1()
+        public GameWindow()
         {
             InitializeComponent();
 
@@ -20,7 +20,7 @@ namespace Elite.WinForms
             Bitmap bmp = new(512, 512);
             screen.Image = bmp;
 
-            _gfx = new alg_gfx(ref bmp);
+            _gfx = new GdiGraphics(ref bmp);
             _sound = new Sound();
             _keyboard = new Keyboard();
             Task.Run(() => elite.main(ref _gfx, ref _sound, ref _keyboard));
