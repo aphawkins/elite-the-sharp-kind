@@ -113,7 +113,7 @@ namespace Elite.Engine
 
 		internal static void restore_saved_commander()
 		{
-			cmdr = saved_cmdr;
+            cmdr = (Commander)saved_cmdr.Clone();
 
 			docked_planet = Planet.find_planet(cmdr.shiplocation);
 			hyperspace_planet = (galaxy_seed)docked_planet.Clone();
@@ -1174,7 +1174,7 @@ namespace Elite.Engine
                 cmdr = CommanderFactory.Jameson();
             }
 
-            saved_cmdr = (Commander)cmdr;
+            saved_cmdr = (Commander)cmdr.Clone();
             restore_saved_commander();
             space.update_console();
         }

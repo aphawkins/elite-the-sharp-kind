@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\elitetext.bmp" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Images\blake.bmp">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

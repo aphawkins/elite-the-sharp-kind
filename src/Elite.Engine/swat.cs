@@ -491,14 +491,13 @@ namespace Elite.Engine
 
         private static void missile_tactics(int un)
 		{
-			univ_object missile;
 			univ_object target;
 			Vector3 vec;
 			Vector3 nvec;
 			float direction;
 			float cnt2 = 0.223f;
 
-			missile = space.universe[un];
+			univ_object missile = space.universe[un];
 
 			if (ecm_active != 0)
 			{
@@ -518,19 +517,14 @@ namespace Elite.Engine
 					return;
 				}
 
-				vec.X = missile.location.X;
-				vec.Y = missile.location.Y;
-				vec.Z = missile.location.Z;
+				vec = missile.location;
 			}
 			else
 			{
 				target = space.universe[missile.target];
+				vec = missile.location - target.location;
 
-				vec.X = missile.location.X - target.location.X;
-				vec.Y = missile.location.Y - target.location.Y;
-				vec.Z = missile.location.Z - target.location.Z;
-
-				if ((MathF.Abs(vec.X) < 256f) && (MathF.Abs(vec.Y) < 256f) && (MathF.Abs(vec.Z) < 256f))
+				if ((MathF.Abs(vec.X) < 256) && (MathF.Abs(vec.Y) < 256) && (MathF.Abs(vec.Z) < 256))
 				{
 					missile.flags |= FLG.FLG_DEAD;
 
