@@ -96,31 +96,24 @@ namespace Elite.Engine
 			in_battle = false;
 		}
 
-		internal static int add_new_ship(SHIP ship_type, float x, float y, float z, Vector3[] rotmat, int rotx, int rotz)
+		internal static int add_new_ship(SHIP ship_type, Vector3 location, Vector3[] rotmat, int rotx, int rotz)
 		{
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
-				if (space.universe[i].type == 0)
+				if (space.universe[i].type == SHIP.SHIP_NONE)
 				{
 					space.universe[i].type = ship_type;
-					space.universe[i].location.X = x;
-					space.universe[i].location.Y = y;
-					space.universe[i].location.Z = z;
-
+					space.universe[i].location = location;
 					space.universe[i].rotmat = new Vector3[3];
                     space.universe[i].rotmat[0] = rotmat[0];
 					space.universe[i].rotmat[1] = rotmat[1];
 					space.universe[i].rotmat[2] = rotmat[2];
-
 					space.universe[i].rotx = rotx;
 					space.universe[i].rotz = rotz;
-
 					space.universe[i].velocity = 0;
 					space.universe[i].acceleration = 0;
 					space.universe[i].bravery = 0;
 					space.universe[i].target = 0;
-
-
                     space.universe[i].flags = initial_flags[(int)ship_type < 0 ? 0 : (int)ship_type];
 
 					if (ship_type is not SHIP.SHIP_PLANET and not SHIP.SHIP_SUN)
@@ -158,16 +151,14 @@ namespace Elite.Engine
 		{
 			SHIP type;
 			Vector3[] rotmat = new Vector3[3];
-			int px, py, pz;
-
 			type = space.universe[un].type;
 
-			if (type == 0)
+			if (type == SHIP.SHIP_NONE)
 			{
 				return;
 			}
 
-			if (type > 0)
+			if (type > SHIP.SHIP_NONE)
 			{
 				space.ship_count[(int)type]--;
 			}
@@ -179,22 +170,20 @@ namespace Elite.Engine
 			if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 			{
 				VectorMaths.set_init_matrix(ref rotmat);
-				px = (int)space.universe[un].location.X;
-				py = (int)space.universe[un].location.Y;
-				pz = (int)space.universe[un].location.Z;
+				Vector3 position = space.universe[un].location;
 
-				py &= 0xFFFF;
-				py |= 0x60000;
+                position.Y = (int)position.Y & 0xFFFF;
+                position.Y = (int)position.Y | 0x60000;
 
-				add_new_ship(SHIP.SHIP_SUN, px, py, pz, rotmat, 0, 0);
+				add_new_ship(SHIP.SHIP_SUN, position, rotmat, 0, 0);
 			}
 		}
 
-		internal static void add_new_station(float sx, float sy, float sz, Vector3[] rotmat)
+		internal static void add_new_station(Vector3 position, Vector3[] rotmat)
 		{
 			SHIP station = (elite.current_planet_data.techlevel >= 10) ? SHIP.SHIP_DODEC : SHIP.SHIP_CORIOLIS;
 			space.universe[1].type = 0;
-			add_new_ship(station, sx, sy, sz, rotmat, 0, -127);
+			add_new_ship(station, position, rotmat, 0, -127);
 		}
 
 		internal static void reset_weapons()
@@ -211,8 +200,7 @@ namespace Elite.Engine
 			int newship;
 			univ_object ns;
 
-			newship = add_new_ship(type, space.universe[un].location.X, space.universe[un].location.Y, space.universe[un].location.Z, 
-				space.universe[un].rotmat, space.universe[un].rotx, space.universe[un].rotz);
+			newship = add_new_ship(type, space.universe[un].location, space.universe[un].rotmat, space.universe[un].rotx, space.universe[un].rotz);
 
 			if (newship == -1)
 			{
@@ -426,7 +414,7 @@ namespace Elite.Engine
 			rotmat[2].Z = 1.0f;
 			rotmat[0].X = -1.0f;
 
-			int newship = add_new_ship(SHIP.SHIP_MISSILE, 0, -28, 14, rotmat, 0, 0);
+			int newship = add_new_ship(SHIP.SHIP_MISSILE, new(0, -28, 14), rotmat, 0, 0);
 
 			if (newship == -1)
 			{
@@ -951,27 +939,29 @@ namespace Elite.Engine
 			}
 		}
 
-        private static int create_other_ship(SHIP type)
+		private static int create_other_ship(SHIP type)
 		{
 			Vector3[] rotmat = new Vector3[3];
-
 			VectorMaths.set_init_matrix(ref rotmat);
 
-			int z = 12000;
-			int x = 1000 + (random.randint() & 8191);
-			int y = 1000 + (random.randint() & 8191);
+			Vector3 position = new()
+			{
+				X = 1000 + (random.randint() & 8191),
+				Y = 1000 + (random.randint() & 8191),
+				Z = 12000,
+			};
 
 			if (random.rand255() > 127)
 			{
-				x = -x;
+                position.X = -position.X;
 			}
 
 			if (random.rand255() > 127)
 			{
-				y = -y;
+                position.Y = -position.Y;
 			}
 
-			int newship = add_new_ship(type, x, y, z, rotmat, 0, 0);
+			int newship = add_new_ship(type, position, rotmat, 0, 0);
 
 			return newship;
 		}
@@ -1130,9 +1120,8 @@ namespace Elite.Engine
 			}
 		}
 
-        private static void check_for_others()
+		private static void check_for_others()
 		{
-			int x, y, z;
 			int newship;
 			Vector3[] rotmat = new Vector3[3];
 			SHIP type;
@@ -1156,18 +1145,21 @@ namespace Elite.Engine
 
 			VectorMaths.set_init_matrix(ref rotmat);
 
-			z = 12000;
-			x = 1000 + (random.randint() & 8191);
-			y = 1000 + (random.randint() & 8191);
+			Vector3 position = new()
+			{
+				Z = 12000,
+				X = 1000 + (random.randint() & 8191),
+				Y = 1000 + (random.randint() & 8191),
+			};
 
 			if (random.rand255() > 127)
 			{
-				x = -x;
+                position.X = -position.X;
 			}
 
 			if (random.rand255() > 127)
 			{
-				y = -y;
+                position.Y = -position.Y;
 			}
 
 			rnd = random.rand255() & 3;
@@ -1175,7 +1167,7 @@ namespace Elite.Engine
 			for (i = 0; i <= rnd; i++)
 			{
 				type = SHIP.SHIP_SIDEWINDER + (random.rand255() & random.rand255() & 7);
-				newship = add_new_ship(type, x, y, z, rotmat, 0, 0);
+				newship = add_new_ship(type, position, rotmat, 0, 0);
 				if (newship != -1)
 				{
 					space.universe[newship].flags = FLG.FLG_ANGRY;

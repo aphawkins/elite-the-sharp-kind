@@ -684,11 +684,8 @@ namespace Elite.Engine
 
         private static void run_escape_sequence()
         {
-            int i;
             Vector3[] rotmat = new Vector3[3];
-
             current_screen = SCR.SCR_ESCAPE_POD;
-
             flight_speed = 1;
             flight_roll = 0;
             flight_climb = 0;
@@ -696,11 +693,11 @@ namespace Elite.Engine
             VectorMaths.set_init_matrix(ref rotmat);
             rotmat[2].Z = 1.0f;
 
-            int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 200, rotmat, -127, -127);
+            int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 200), rotmat, -127, -127);
             space.universe[newship].velocity = 7;
             audio.PlayEffect(SoundEffect.Launch);
 
-            for (i = 0; i < 90; i++)
+            for (int i = 0; i < 90; i++)
             {
                 if (i == 40)
                 {
@@ -730,7 +727,7 @@ namespace Elite.Engine
 
                 if ((Math.Abs(flight_roll) < 3) && (Math.Abs(flight_climb) < 3))
                 {
-                    for (i = 0; i < MAX_UNIV_OBJECTS; i++)
+                    for (int i = 0; i < MAX_UNIV_OBJECTS; i++)
                     {
                         if (space.universe[i].type != 0)
                         {
@@ -1260,13 +1257,13 @@ namespace Elite.Engine
 
             VectorMaths.set_init_matrix(ref rotmat);
 
-            newship = swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, -400, rotmat, 0, 0);
+            newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, -400), rotmat, 0, 0);
             space.universe[newship].flags |= FLG.FLG_DEAD;
 
             for (i = 0; i < 5; i++)
             {
                 type = random.rand255().IsOdd() ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
-                newship = swat.add_new_ship(type, (random.rand255() & 63) - 32, (random.rand255() & 63) - 32, -400, rotmat, 0, 0);
+                newship = swat.add_new_ship(type, new((random.rand255() & 63) - 32, (random.rand255() & 63) - 32, -400), rotmat, 0, 0);
                 space.universe[newship].rotz = ((random.rand255() * 2) & 255) - 128;
                 space.universe[newship].rotx = ((random.rand255() * 2) & 255) - 128;
                 space.universe[newship].velocity = random.rand255() & 15;

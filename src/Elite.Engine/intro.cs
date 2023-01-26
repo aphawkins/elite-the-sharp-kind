@@ -48,7 +48,7 @@ namespace Elite.Engine
 		{
 			swat.clear_universe();
 			VectorMaths.set_init_matrix(ref intro_ship_matrix);
-			swat.add_new_ship(SHIP.SHIP_COBRA3, 0, 0, 4500, intro_ship_matrix, -127, -127);
+			swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), intro_ship_matrix, -127, -127);
 		}
 
 		internal static void initialise_intro2()
@@ -60,7 +60,7 @@ namespace Elite.Engine
 			swat.clear_universe();
 			Stars.create_new_stars();
 			VectorMaths.set_init_matrix(ref intro_ship_matrix);
-			swat.add_new_ship(SHIP.SHIP_MISSILE, 0, 0, 5000, intro_ship_matrix, -127, -127);
+			swat.add_new_ship(SHIP.SHIP_MISSILE, new(0, 0, 5000), intro_ship_matrix, -127, -127);
 		}
 
 		internal static void update_intro1()
@@ -117,7 +117,7 @@ namespace Elite.Engine
 				space.ship_count[(int)space.universe[0].type] = 0;
 				space.universe[0].type = 0;
 
-				swat.add_new_ship(ship_no, 0, 0, 4500, intro_ship_matrix, -127, -127);
+				swat.add_new_ship(ship_no, new(0, 0, 4500), intro_ship_matrix, -127, -127);
 			}
 
             elite.draw.ClearDisplay();

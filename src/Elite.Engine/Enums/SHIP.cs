@@ -4,6 +4,7 @@
     {
         SHIP_SUN = -2,
         SHIP_PLANET = -1,
+        SHIP_NONE = 0,
         SHIP_MISSILE = 1,
         SHIP_CORIOLIS = 2,
         SHIP_ESCAPE_CAPSULE = 3,

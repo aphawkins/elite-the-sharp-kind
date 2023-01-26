@@ -295,7 +295,7 @@ namespace Elite.Engine
             float y = MathF.Abs(universe[1].location.Y);
             float z = MathF.Abs(universe[1].location.Z);
 
-			if ((x > 65535f) || (y > 65535f) || (z > 65535f))
+			if ((x > 65535) || (y > 65535) || (z > 65535))
 			{
 				return;
 			}
@@ -311,13 +311,13 @@ namespace Elite.Engine
                 return;
             }
 
-            dist = MathF.Pow(dist, 255f);
+            dist = MathF.Pow(dist, 255);
 
-			elite.myship.cabtemp = dist + 30f;
+			elite.myship.cabtemp = dist + 30;
 
-			if (elite.myship.cabtemp > 255f)
+			if (elite.myship.cabtemp > 255)
 			{
-				elite.myship.cabtemp = 255f;
+				elite.myship.cabtemp = 255;
 				do_game_over();
 				return;
 			}
@@ -408,7 +408,6 @@ namespace Elite.Engine
         private static void make_station_appear()
 		{
 			float px, py, pz;
-			float sx, sy, sz;
 			Vector3 vec;
 			Vector3[] rotmat = new Vector3[3];
 
@@ -422,9 +421,12 @@ namespace Elite.Engine
 
 			vec = VectorMaths.unit_vector(vec);
 
-			sx = px - (vec.X * 65792);
-			sy = py - (vec.Y * 65792);
-			sz = pz - (vec.Z * 65792);
+			Vector3 position = new Vector3()
+			{
+				X = px - (vec.X * 65792),
+				Y = py - (vec.Y * 65792),
+				Z = pz - (vec.Z * 65792),
+			};
 
 			//	VectorMaths.set_init_matrix (rotmat);
 
@@ -442,7 +444,7 @@ namespace Elite.Engine
 
 			VectorMaths.tidy_matrix(rotmat);
 
-			swat.add_new_station(sx, sy, sz, rotmat);
+			swat.add_new_station(position, rotmat);
 		}
 
         private static void check_docking(int i)
@@ -1113,8 +1115,6 @@ namespace Elite.Engine
         private static void complete_hyperspace()
 		{
 			Vector3[] rotmat = new Vector3[3];
-			int px, py, pz;
-
 			hyper_ready = false;
 			elite.witchspace = false;
 
@@ -1151,27 +1151,29 @@ namespace Elite.Engine
 			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
 			VectorMaths.set_init_matrix(ref rotmat);
 
-			pz = (((elite.docked_planet.b) & 7) + 7) / 2;
-			px = pz / 2;
-			py = px;
+            Vector3 position = new()
+            {
+                Z = (((elite.docked_planet.b) & 7) + 7) / 2
+            };
+            position.X = position.Z / 2;
+            position.Y = position.X;
 
-			px <<= 16;
-			py <<= 16;
-			pz <<= 16;
+            position.X *= 65536;
+            position.Y *= 65536;
+            position.Z *= 65536;
 
-			if ((elite.docked_planet.b & 1) == 0)
+            if ((elite.docked_planet.b & 1) == 0)
 			{
-				px = -px;
-				py = -py;
+                position.X = -position.X;
+                position.Y = -position.Y;
 			}
 
-			swat.add_new_ship(SHIP.SHIP_PLANET, px, py, pz, rotmat, 0, 0);
+			swat.add_new_ship(SHIP.SHIP_PLANET, position, rotmat, 0, 0);
 
+            position.Z = -(((elite.docked_planet.d & 7) | 1) << 16);
+            position.X = ((elite.docked_planet.f & 3) << 16) | ((elite.docked_planet.f & 3) << 8);
 
-			pz = -(((elite.docked_planet.d & 7) | 1) << 16);
-			px = ((elite.docked_planet.f & 3) << 16) | ((elite.docked_planet.f & 3) << 8);
-
-			swat.add_new_ship(SHIP.SHIP_SUN, px, py, pz, rotmat, 0, 0);
+			swat.add_new_ship(SHIP.SHIP_SUN, position, rotmat, 0, 0);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			elite.audio.PlayEffect(SoundEffect.Hyperspace);
@@ -1246,12 +1248,12 @@ namespace Elite.Engine
 			swat.clear_universe();
 			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
 			VectorMaths.set_init_matrix(ref rotmat);
-			swat.add_new_ship(SHIP.SHIP_PLANET, 0, 0, 65536, rotmat, 0, 0);
+			swat.add_new_ship(SHIP.SHIP_PLANET, new(0, 0, 65536), rotmat, 0, 0);
 
 			rotmat[2].X = -rotmat[2].X;
 			rotmat[2].Y = -rotmat[2].Y;
 			rotmat[2].Z = -rotmat[2].Z;
-			swat.add_new_station(0, 0, -256, rotmat);
+			swat.add_new_station(new(0, 0, -256), rotmat);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			elite.audio.PlayEffect(SoundEffect.Launch);
