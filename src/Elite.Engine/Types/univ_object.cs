@@ -19,7 +19,6 @@
         internal int bravery;
         internal int exp_delta;
         internal int exp_seed;
-        internal float distance;
 
         internal univ_object()
         {
@@ -41,7 +40,6 @@
             bravery = other.bravery;
             exp_delta = other.exp_delta;
             exp_seed = other.exp_seed;
-            distance = other.distance;
         }
 
         public object Clone()

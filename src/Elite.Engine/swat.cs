@@ -107,8 +107,6 @@ namespace Elite.Engine
 					space.universe[i].location.Y = y;
 					space.universe[i].location.Z = z;
 
-					space.universe[i].distance = space.universe[i].location.Length();
-
 					space.universe[i].rotmat = new Vector3[3];
                     space.universe[i].rotmat[0] = rotmat[0];
 					space.universe[i].rotmat[1] = rotmat[1];
@@ -466,18 +464,18 @@ namespace Elite.Engine
 
 			ship.rotx = 0;
 
-			if ((MathF.Abs(dir) * 2f) >= rat2)
+			if ((MathF.Abs(dir) * 2) >= rat2)
 			{
 				ship.rotx = (dir < 0) ? rat : -rat;
 			}
 
-			if (MathF.Abs(ship.rotz) < 16f)
+			if (MathF.Abs(ship.rotz) < 16)
 			{
 				dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[0]);
 
 				ship.rotz = 0;
 
-				if ((MathF.Abs(dir) * 2f) > rat2)
+				if ((MathF.Abs(dir) * 2) > rat2)
 				{
 					ship.rotz = (dir < 0) ? rat : -rat;
 
@@ -489,15 +487,13 @@ namespace Elite.Engine
 			}
 		}
 
-        private static void missile_tactics(int un)
+        private static void missile_tactics(univ_object missile)
 		{
 			univ_object target;
 			Vector3 vec;
 			Vector3 nvec;
 			float direction;
 			float cnt2 = 0.223f;
-
-			univ_object missile = space.universe[un];
 
 			if (ecm_active != 0)
 			{
@@ -509,7 +505,7 @@ namespace Elite.Engine
 
 			if (missile.target == 0)
 			{
-				if (missile.distance < 256)
+				if (missile.location.Length() < 512)
 				{
 					missile.flags |= FLG.FLG_DEAD;
 					elite.audio.PlayEffect(SoundEffect.Explode);
@@ -524,7 +520,7 @@ namespace Elite.Engine
 				target = space.universe[missile.target];
 				vec = missile.location - target.location;
 
-				if ((MathF.Abs(vec.X) < 256) && (MathF.Abs(vec.Y) < 256) && (MathF.Abs(vec.Z) < 256))
+				if (vec.Length() < 512)
 				{
 					missile.flags |= FLG.FLG_DEAD;
 
@@ -597,19 +593,16 @@ namespace Elite.Engine
 
 		internal static void tactics(int un)
 		{
-			SHIP type;
 			int energy;
 			int maxeng;
-			FLG flags;
-			univ_object ship;
 			Vector3 nvec;
 			float cnt2 = 0.223f;
 			float direction;
 			int attacking;
 
-			ship = space.universe[un];
-			type = ship.type;
-			flags = ship.flags;
+			univ_object ship = space.universe[un];
+			SHIP type = ship.type;
+			FLG flags = ship.flags;
 
 			if (type is SHIP.SHIP_PLANET or SHIP.SHIP_SUN)
 			{
@@ -630,7 +623,7 @@ namespace Elite.Engine
 			{
 				if (flags.HasFlag(FLG.FLG_ANGRY))
 				{
-					missile_tactics(un);
+					missile_tactics(ship);
 				}
 
 				return;
@@ -776,7 +769,7 @@ namespace Elite.Engine
 			nvec = VectorMaths.unit_vector(space.universe[un].location);
 			direction = VectorMaths.vector_dot_product(nvec, ship.rotmat[2]);
 
-			if ((ship.distance < 8192) && (direction <= -0.833) &&
+			if ((ship.location.Length() < 8192) && (direction <= -0.833) &&
 				 (elite.ship_list[(int)type].laser_strength != 0))
 			{
 				if (direction <= -0.917)
@@ -820,7 +813,7 @@ namespace Elite.Engine
 					return;
 				}
 
-				ship.acceleration = ship.distance < 8192 ? -1 : 3;
+				ship.acceleration = ship.location.Length() < 8192 ? -1 : 3;
 
                 return;
 			}
@@ -843,7 +836,7 @@ namespace Elite.Engine
 
 			track_object(ref space.universe[un], direction, nvec);
 
-			if ((attacking == 1) && (ship.distance < 2048))
+			if ((attacking == 1) && (ship.location.Length() < 2048))
 			{
 				if (direction >= cnt2)
 				{

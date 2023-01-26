@@ -108,11 +108,7 @@ namespace Elite.Engine
 
 			z -= elite.flight_speed;
 
-			obj.location.X = x;
-			obj.location.Y = y;
-			obj.location.Z = z;
-
-			obj.distance = obj.location.Length();
+			obj.location = new(x, y, z);
 
 			if (obj.type == SHIP.SHIP_PLANET)
 			{
@@ -605,7 +601,7 @@ namespace Elite.Engine
 					{
 						if ((ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) &&
 							(ship_count[(int)SHIP.SHIP_DODEC] == 0) &&
-							(universe[i].distance < 65792)) // was 49152
+							(universe[i].location.Length() < 65792)) // was 49152
 						{
 							make_station_appear();
 						}
@@ -621,7 +617,7 @@ namespace Elite.Engine
 					}
 
 
-					if (universe[i].distance < 170)
+					if (universe[i].location.Length() < 170)
 					{
 						if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 						{
@@ -635,7 +631,7 @@ namespace Elite.Engine
                         continue;
 					}
 
-					if (universe[i].distance > 57344)
+					if (universe[i].location.Length() > 57344)
 					{
 						swat.remove_ship(i);
 						continue;
@@ -1211,13 +1207,13 @@ namespace Elite.Engine
 				}
 			}
 
-			if ((universe[0].distance < 75001) || (universe[1].distance < 75001))
+			if ((universe[0].location.Length() < 75001) || (universe[1].location.Length() < 75001))
 			{
                 elite.info_message("Mass Locked");
 				return;
 			}
 
-			jump = universe[0].distance < universe[1].distance ? universe[0].distance - 75000f : universe[1].distance - 75000f;
+			jump = universe[0].location.Length() < universe[1].location.Length() ? universe[0].location.Length() - 75000f : universe[1].location.Length() - 75000f;
 
             if (jump > 1024)
 			{
