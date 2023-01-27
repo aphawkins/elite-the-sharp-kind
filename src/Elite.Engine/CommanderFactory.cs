@@ -11,11 +11,12 @@
         /// <returns>Commander Jameson.</returns>
         internal static Commander Jameson()
 		{
-			return new Commander()
+            return new Commander()
             {
                 name = "JAMESON",
                 mission = 0,
-                shiplocation = new(0x14, 0xAD),
+                ShipLocationX = 20,
+                ShipLocationY = 173,
                 galaxy = new()
                 {
                     a = 0x4a,
@@ -62,7 +63,8 @@
             {
                 name = "MAX",
                 mission = 0,
-                shiplocation = new(0x14, 0xAD),
+                ShipLocationX = 20,
+                ShipLocationY = 173,
                 galaxy = new() 
                 { 
                     a = 0x4a, 

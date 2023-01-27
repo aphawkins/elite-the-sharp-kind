@@ -17,25 +17,23 @@ namespace Elite.Engine
 	using Elite.Engine.Enums;
 	using Elite.Engine.Views;
 
-	internal static class options
+    internal class option
+    {
+        internal string text;
+        internal bool docked_only;
+
+        internal option(string text, bool docked_only)
+        {
+            this.text = text;
+            this.docked_only = docked_only;
+        }
+    };
+
+    internal static class options
 	{
         private static int hilite_item;
         private const int NUM_OPTIONS = 4;
         private const int NUM_SETTINGS = 6;
-        private const int OPTION_BAR_WIDTH = 400;
-        private const int OPTION_BAR_HEIGHT = 15;
-
-        private class option
-		{
-			internal string text;
-			internal bool docked_only;
-
-			internal option(string text, bool docked_only)
-			{
-				this.text = text;
-				this.docked_only = docked_only;
-			}
-		};
 
         private static readonly option[] option_list = new option[NUM_OPTIONS]
 		{
@@ -108,8 +106,10 @@ namespace Elite.Engine
 		{
 			int x, y;
 			int width;
+            int OPTION_BAR_WIDTH = 400;
+            int OPTION_BAR_HEIGHT = 15;
 
-			if ((hilite_item != -1) && (hilite_item != item))
+            if ((hilite_item != -1) && (hilite_item != item))
 			{
 				if (hilite_item == (NUM_SETTINGS - 1))
 				{
@@ -244,53 +244,24 @@ namespace Elite.Engine
 			highlight_setting(0);
 		}
 
-        private static void display_option_item(int i)
-		{
-			int y = (384 - (30 * NUM_OPTIONS)) / 2;
-			y += i * 30;
-			GFX_COL col = ((!elite.docked) && option_list[i].docked_only) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
-
-			elite.alg_gfx.DrawTextCentre(y, option_list[i].text, 120, col);
-		}
-
-        private static void highlight_option(int i)
-		{
-			int y;
-			int x;
-
-			if ((hilite_item != -1) && (hilite_item != i))
-			{
-				x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-				y = (384 - (30 * NUM_OPTIONS)) / 2;
-				y += hilite_item * 30;
-				elite.alg_gfx.ClearArea(x, y, OPTION_BAR_WIDTH, OPTION_BAR_HEIGHT);
-				display_option_item(hilite_item);
-			}
-
-			x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-			y = (384 - (30 * NUM_OPTIONS)) / 2;
-			y += i * 30;
-
-			elite.alg_gfx.DrawRectangleFilled(x, y, OPTION_BAR_WIDTH, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
-			display_option_item(i);
-
-			hilite_item = i;
-		}
-
 		internal static void select_previous_option()
 		{
 			if (hilite_item > 0)
             {
-                highlight_option(hilite_item - 1);
+                hilite_item--;
             }
+
+            elite.draw.DrawOptions(option_list, hilite_item);
         }
 
 		internal static void select_next_option()
 		{
-			if (hilite_item < (NUM_OPTIONS - 1))
+			if (hilite_item < (option_list.Length - 1))
 			{
-				highlight_option(hilite_item + 1);
+				hilite_item++;
 			}
+
+			elite.draw.DrawOptions(option_list, hilite_item);
 		}
 
 		internal static void do_option()
@@ -323,25 +294,10 @@ namespace Elite.Engine
 
 		internal static void display_options()
 		{
-			int i;
-
 			elite.current_screen = SCR.SCR_OPTIONS;
 
-			elite.draw.ClearDisplay();
-			elite.alg_gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
-			elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-			elite.alg_gfx.DrawTextCentre(300, "Version: Release 1.0", 120, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DrawTextCentre(320, "www.newkind.co.uk", 120, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DrawTextCentre(340, "Written by Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DrawTextCentre(360, "Based on original code by Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);
-
-			for (i = 0; i < NUM_OPTIONS; i++)
-			{
-				display_option_item(i);
-			}
-
-			hilite_item = -1;
-			highlight_option(0);
+			hilite_item = 0;
+			elite.draw.DrawOptions(option_list, hilite_item);
 		}
 	}
 }

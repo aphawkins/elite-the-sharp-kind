@@ -7,7 +7,8 @@
     {
         public string name { get; set; }
         public int mission { get; set; }
-        public Vector2 shiplocation { get; set; }
+        public float ShipLocationX { get; set; }
+        public float ShipLocationY { get; set; }
         public galaxy_seed galaxy { get; set; }
         public float credits { get; set; }
         public float fuel { get; set; }
@@ -41,7 +42,8 @@
         {
             this.name = other.name;
             this.mission = other.mission;
-            this.shiplocation = other.shiplocation;
+            this.ShipLocationX = other.ShipLocationX;
+            this.ShipLocationY = other.ShipLocationY;
             this.galaxy = other.galaxy;
             this.credits = other.credits;
             this.fuel = other.fuel;

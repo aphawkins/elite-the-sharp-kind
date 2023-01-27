@@ -115,7 +115,7 @@ namespace Elite.Engine
 		{
             cmdr = (Commander)saved_cmdr.Clone();
 
-			docked_planet = Planet.find_planet(cmdr.shiplocation);
+			docked_planet = Planet.find_planet(new(cmdr.ShipLocationX, cmdr.ShipLocationY));
 			hyperspace_planet = (galaxy_seed)docked_planet.Clone();
 
 			Planet.generate_planet_data(ref current_planet_data, docked_planet);
@@ -1096,42 +1096,54 @@ namespace Elite.Engine
 
         internal static void save_commander_screen()
         {
-            //elite.current_screen = SCR.SCR_SAVE_CMDR;
+            elite.current_screen = SCR.SCR_SAVE_CMDR;
+            int key;
+            string name = elite.cmdr.name;
 
-            //         elite.alg_gfx.ClearDisplay();
-            //         elite.alg_gfx.DrawTextCentre(20, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
-            //         elite.alg_gfx.DrawLine(0, 36, 511, 36);
-            //         elite.alg_gfx.ScreenUpdate();
+            do
+            {
+                draw.DrawSaveCommander(name);
 
-            //string path = elite.cmdr.name;
-            //path = ".nkc";
+                key = keyboard.ReadKey();
+                if (key is >= 'A' and <= 'Z')
+                {
+                    name += (char)key;
+                }
+                else if (key is (int)CommandKey.Backspace)
+                {
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        name = name[..^1]; ;
+                    }
+                }
+            } while (key != (int)CommandKey.Enter);
 
-            //bool okay = elite.alg_gfx.RequestFile("Save Commander", path, "nkc");
+            elite.cmdr.name = name;
+            elite.cmdr.ShipLocationX = elite.docked_planet.d;
+            elite.cmdr.ShipLocationY = elite.docked_planet.b;
+            bool success = SaveFile.SaveCommanderAsync(elite.cmdr).Result;
+            draw.DrawSaveCommander(name, success);
 
-            //if (!okay)
-            //{
-            //	options.display_options();
-            //	return;
-            //}
+            if (success)
+            {
+                elite.saved_cmdr = (Commander)elite.cmdr.Clone();
+            }
+            else 
+            {
+                elite.cmdr.name = elite.saved_cmdr.name;
+            }
 
-            //bool rv = SaveFile.save_commander_file(path);
+            do
+            {
+                key = keyboard.ReadKey();
+            } while (key != (int)CommandKey.Space);
 
-            //if (rv)
-            //{
-            //             elite.alg_gfx.DrawTextCentre(175, "Error Saving Commander!", 140, GFX_COL.GFX_COL_GOLD);
-            //	return;
-            //}
-
-            //         elite.alg_gfx.DrawTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
-
-            //set_commander_name(path);
-            //elite.saved_cmdr = elite.cmdr;
-            //elite.saved_cmdr.ship_x = elite.docked_planet.d;
-            //elite.saved_cmdr.ship_y = elite.docked_planet.b;
+            options.display_options();
         }
 
         internal static void load_commander_screen()
         {
+            elite.current_screen = SCR.SCR_LOAD_CMDR;
             int key;
             string name = elite.cmdr.name;
 

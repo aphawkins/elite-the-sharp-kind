@@ -144,6 +144,33 @@
             _gfx.ScreenUpdate();
         }
 
+        internal void DrawSaveCommander(string name, bool? isSuccess = null)
+        {
+            ClearDisplay();
+            _gfx.DrawTextCentre(20, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0, 36), new(511, 36));
+
+            _gfx.DrawTextCentre(75, "Please enter commander name:", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawRectangle(100, 100, 312, 50, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(125, name, 140, GFX_COL.GFX_COL_WHITE);
+
+            if (isSuccess.HasValue)
+            {
+                if (isSuccess.Value)
+                {
+                    elite.alg_gfx.DrawTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
+                    _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
+                }
+                else
+                {
+                    _gfx.DrawTextCentre(175, "Error Saving Commander!", 140, GFX_COL.GFX_COL_GOLD);
+                    _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
+                }
+            }
+
+            _gfx.ScreenUpdate();
+        }
+
         internal void DrawMarketPrices(string planetName, stock_item[] stocks, int highlightedStock, int[] currentCargo, float credits)
         {
             ClearDisplay();
@@ -405,6 +432,38 @@
             {
                 _gfx.DrawTextLeft(x, y, $"Right {laser_type(cmdr.right_laser)} Laser", GFX_COL.GFX_COL_WHITE);
             }
+        }
+
+        internal void DrawOptions(option[] option_list, int highlightedItem)
+        {
+            int OPTION_BAR_WIDTH = 400;
+            int OPTION_BAR_HEIGHT = 15;
+
+            ClearDisplay();
+            _gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+
+            for (int i = 0; i < option_list.Length; i++)
+            {
+                int y = (384 - (30 * option_list.Length)) / 2;
+                y += i * 30;
+
+                if (i == highlightedItem)
+                {
+                    int x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
+                    _gfx.DrawRectangleFilled(x, y - 7, OPTION_BAR_WIDTH, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
+                }
+
+                GFX_COL col = ((!elite.docked) && option_list[i].docked_only) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
+
+                _gfx.DrawTextCentre(y, option_list[i].text, 120, col);
+            }
+
+            //TODO: get proper version number from assembly
+            _gfx.DrawTextCentre(300, "Version: Beta 0.1", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(320, "The Sharp Kind by Andy Hawkins 2023", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(340, "The New Kind by Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(360, "Based on original code by Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);
         }
 
         internal void ClearDisplay()

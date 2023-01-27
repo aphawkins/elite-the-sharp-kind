@@ -32,18 +32,24 @@ namespace Elite.Engine.Save
         /// Write the config file.
         /// </summary>
         /// <param name="config">The config to save.</param>
-        internal static async Task SaveCommanderAsync(Commander config)
+        internal static async Task<bool> SaveCommanderAsync(Commander config)
         {
             try
             {
-                using FileStream stream = File.OpenWrite(config.name + fileExtension);
-
+                string path = config.name + fileExtension;
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                using FileStream stream = File.OpenWrite(path);
                 await JsonSerializer.SerializeAsync(stream, config, options);
+                return true;
             }
             catch (Exception ex)
             {
                 //TODO: handle error message better
                 Debug.WriteLine("Failed to save commander.\n" + ex);
+                return false;
             }
         }
 
