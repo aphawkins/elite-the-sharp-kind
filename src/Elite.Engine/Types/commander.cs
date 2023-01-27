@@ -1,6 +1,4 @@
-﻿using Elite.Engine;
-
-namespace Elite.Engine.Types
+﻿namespace Elite.Engine.Types
 {
     using System.Numerics;
     using Elite.Engine.Enums;
