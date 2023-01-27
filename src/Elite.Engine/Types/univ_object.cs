@@ -8,8 +8,8 @@
         internal SHIP type;
         internal Vector3 location;
         internal Vector3[] rotmat;
-        internal int rotx;
-        internal int rotz;
+        internal float rotx;
+        internal float rotz;
         internal FLG flags;
         internal int energy;
         internal float velocity;
@@ -39,7 +39,6 @@
             target = other.target;
             bravery = other.bravery;
             exp_delta = other.exp_delta;
-            exp_seed = other.exp_seed;
         }
 
         public object Clone()

@@ -73,7 +73,7 @@ namespace Elite.Engine
 				ship.rotx = (dir < 0) ? rat : -rat;
 			}
 
-			if (MathF.Abs(ship.rotz) < 16f)
+			if (MathF.Abs(ship.rotz) < 16)
 			{
 				dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[0]);
 				ship.rotz = 0;

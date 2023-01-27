@@ -141,7 +141,6 @@ namespace Elite.Engine
 		 */
         private static void initialise_game()
         {
-            random.rand_seed = (int)DateTime.UtcNow.Ticks;
             current_screen = SCR.SCR_INTRO_ONE;
 
             restore_saved_commander();
@@ -1262,11 +1261,11 @@ namespace Elite.Engine
 
             for (i = 0; i < 5; i++)
             {
-                type = random.rand255().IsOdd() ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
-                newship = swat.add_new_ship(type, new((random.rand255() & 63) - 32, (random.rand255() & 63) - 32, -400), rotmat, 0, 0);
-                space.universe[newship].rotz = ((random.rand255() * 2) & 255) - 128;
-                space.universe[newship].rotx = ((random.rand255() * 2) & 255) - 128;
-                space.universe[newship].velocity = random.rand255() & 15;
+                type = RNG.TrueOrFalse() ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
+                newship = swat.add_new_ship(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), rotmat, 0, 0);
+                space.universe[newship].rotz = ((RNG.Random(255) * 2) & 255) - 128;
+                space.universe[newship].rotx = ((RNG.Random(255) * 2) & 255) - 128;
+                space.universe[newship].velocity = RNG.Random(15);
             }
 
 

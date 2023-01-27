@@ -145,7 +145,7 @@ namespace Elite.Engine
 
 			if (type == SHIP.SHIP_CARGO)
 			{
-				trade = random.rand255() & 7;
+				trade = RNG.Random(7);
 				elite.cmdr.current_cargo[trade]++;
                 elite.info_message(stock_market[trade].name);
 				swat.remove_ship(un);

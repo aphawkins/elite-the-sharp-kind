@@ -117,7 +117,7 @@ namespace Elite.Engine
 				Vector2[] pointList = new Vector2[]
 				{
 					new Vector2(point_list[lasv].X, point_list[lasv].Y),
-					new(univ.location.X > 0 ? 0 : 511, random.rand255() * 2)
+					new(univ.location.X > 0 ? 0 : 511, RNG.Random(255) * 2)
 				};
 
                 DrawPolygonFilled(pointList, col, point_list[lasv].Z);
@@ -179,7 +179,7 @@ namespace Elite.Engine
 			r = 0;
 			for (i = 0; i < 12; i++)
 			{
-				r += random.randint() & 15;
+				r += RNG.Random(15);
 			}
 
 			r /= 12;
@@ -238,26 +238,20 @@ namespace Elite.Engine
 			midpoint_square(mx, my, d);
 		}
 
-        /*
-		 * Generate a fractal landscape.
-		 * Uses midpoint displacement method.
-		 */
-        private static void generate_fractal_landscape(int rnd_seed)
+		/// <summary>
+		/// Generate a fractal landscape. Uses midpoint displacement method.
+		/// </summary>
+		/// <param name="seed">Initial seed for the generation.</param>
+        private static void generate_fractal_landscape(int seed)
 		{
-			int h;
-			float dist;
-			bool dark;
-
-			int old_seed = random.rand_seed;
-			random.rand_seed = rnd_seed;
-
 			int d = LAND_X_MAX / 8;
+			Random random = new(seed);
 
 			for (int y = 0; y <= LAND_Y_MAX; y += d)
 			{
 				for (int x = 0; x <= LAND_X_MAX; x += d)
 				{
-					landscape[x, y] = random.randint() & 255;
+					landscape[x, y] = random.Next(255);
 				}
 			}
 
@@ -273,16 +267,14 @@ namespace Elite.Engine
 			{
 				for (int x = 0; x <= LAND_X_MAX; x++)
 				{
-					dist = (x * x) + (y * y);
-					dark = dist > 10000;
-					h = landscape[x, y];
+					float dist = (x * x) + (y * y);
+					bool dark = dist > 10000;
+					int h = landscape[x, y];
 					landscape[x, y] = h > 166
                         ? (int)(dark ? GFX_COL.GFX_COL_GREEN_1 : GFX_COL.GFX_COL_GREEN_2)
                         : (int)(dark ? GFX_COL.GFX_COL_BLUE_2 : GFX_COL.GFX_COL_BLUE_1);
                 }
 			}
-
-			random.rand_seed = old_seed;
 		}
 
 		internal static void generate_landscape(int rnd_seed)
@@ -463,8 +455,8 @@ namespace Elite.Engine
 			s.X = xo - x;
 			float ex = xo + x;
 
-			s.X -= radius * (2f + (random.randint() & 7)) / 256f;
-			ex += radius * (2f + (random.randint() & 7)) / 256f;
+			s.X -= radius * RNG.Random(2, 9) / 256f;
+			ex += radius * RNG.Random(2, 9) / 256f;
 
 			if ((s.X > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET) ||
 				(ex < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET))
@@ -482,13 +474,13 @@ namespace Elite.Engine
 				ex = gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET;
 			}
 
-			float inner = radius * (200 + (random.randint() & 7)) / 256f;
+			float inner = radius * (200 + RNG.Random(7)) / 256;
 			inner *= inner;
 
-			float inner2 = radius * (220 + (random.randint() & 7)) / 256f;
+			float inner2 = radius * (220 + RNG.Random(7)) / 256;
             inner2 *= inner2;
 
-			float outer = radius * (239 + (random.randint() & 7)) / 256f;
+			float outer = radius * (239 + RNG.Random(7)) / 256;
             outer *= outer;
 
 			float dy = y * y;
@@ -671,9 +663,6 @@ namespace Elite.Engine
 
 			q = pr / 32;
 
-			old_seed = random.rand_seed;
-			random.rand_seed = univ.exp_seed;
-
 			for (cnt = 0; cnt < np; cnt++)
 			{
 				float sx = point_list[cnt].X;
@@ -681,7 +670,7 @@ namespace Elite.Engine
 
 				for (i = 0; i < 16; i++)
 				{
-					Vector2 position = new(random.rand255() - 128, random.rand255() - 128);
+					Vector2 position = new(RNG.Random(-128, 127), RNG.Random(-128, 127));
 
                     position.X = position.X * q / 256;
                     position.Y = position.Y * q / 256;
@@ -689,8 +678,8 @@ namespace Elite.Engine
                     position.X = position.X + position.X + sx;
                     position.Y = position.Y + position.Y + sy;
 
-					int sizex = (random.randint() & 1) + 1;
-					int sizey = (random.randint() & 1) + 1;
+					int sizex = RNG.Random(1, 2);
+					int sizey = RNG.Random(1, 2);
 
 					for (int psy = 0; psy < sizey; psy++)
 					{
@@ -705,8 +694,6 @@ namespace Elite.Engine
 					}
 				}
 			}
-
-			random.rand_seed = old_seed;
 		}
 
 		/// <summary>
@@ -726,7 +713,6 @@ namespace Elite.Engine
 			if (ship.flags.HasFlag(FLG.FLG_DEAD) && !ship.flags.HasFlag(FLG.FLG_EXPLOSION))
 			{
 				ship.flags |= FLG.FLG_EXPLOSION;
-				ship.exp_seed = random.randint();
 				ship.exp_delta = 18;
 			}
 

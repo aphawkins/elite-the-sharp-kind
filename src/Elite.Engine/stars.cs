@@ -26,9 +26,12 @@ namespace Elite.Engine
 		{
 			for (int i = 0; i < stars.Length; i++)
 			{
-				stars[i].X = (random.rand255() - 128) | 8;
-				stars[i].Y = (random.rand255() - 128) | 4;
-				stars[i].Z = random.rand255() | 0x90;
+				stars[i] = new()
+				{
+					X = RNG.Random(-128, 127) | 8,
+					Y = RNG.Random(-128, 127) | 4,
+					Z = RNG.Random(255) | 0x90,
+				};
 			}
 
             warp_stars = false;
@@ -110,9 +113,12 @@ namespace Elite.Engine
 				if ((star.X > 120) || (star.X < -120) ||
 					(star.Y > 120) || (star.Y < -120) || (zz < 16))
 				{
-					stars[i].X = (random.rand255() - 128) | 8;
-					stars[i].Y = (random.rand255() - 128) | 4;
-					stars[i].Z = random.rand255() | 0x90;
+					stars[i] = new()
+					{
+						X = RNG.Random(-128, 127) | 8,
+						Y = RNG.Random(-128, 127) | 4,
+						Z = RNG.Random(255) | 0x90,
+					};
 					continue;
 				}
 
@@ -203,20 +209,19 @@ namespace Elite.Engine
 
 				if ((zz >= 300) || (MathF.Abs(yy) >= 110f))
 				{
-					stars[i].Z = (random.rand255() & 127) + 51;
+					stars[i].Z = RNG.Random(51, 178);
 
-					if (random.rand255().IsOdd())
+					if (RNG.TrueOrFalse())
 					{
-						stars[i].X = random.rand255() - 128;
-						stars[i].Y = random.rand255().IsOdd() ? -115 : 115;
+						stars[i].X = RNG.Random(-128, 127);
+						stars[i].Y = RNG.TrueOrFalse() ? -115 : 115;
 					}
 					else
 					{
-						stars[i].X = random.rand255().IsOdd() ? -126 : 126;
-						stars[i].Y = random.rand255() - 128;
+						stars[i].X = RNG.TrueOrFalse() ? -126 : 126;
+						stars[i].Y = RNG.Random(-128, 127);
 					}
 				}
-
 			}
 
             warp_stars = false;
@@ -293,15 +298,15 @@ namespace Elite.Engine
 
 				if (MathF.Abs(stars[i].X) >= 116f)
 				{
-					stars[i].Y = random.rand255() - 128;
+					stars[i].Y = RNG.Random(-128, 127);
 					stars[i].X = (elite.current_screen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
-					stars[i].Z = random.rand255() | 8;
+					stars[i].Z = RNG.Random(255) | 8;
 				}
 				else if (MathF.Abs(stars[i].Y) >= 116f)
 				{
-					stars[i].X = random.rand255() - 128;
+					stars[i].X = RNG.Random(-128, 127);
 					stars[i].Y = (alpha > 0) ? -110 : 110;
-					stars[i].Z = random.rand255() | 8;
+					stars[i].Z = RNG.Random(255) | 8;
 				}
 
 			}

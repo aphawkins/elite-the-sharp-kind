@@ -38,7 +38,7 @@ namespace Elite.Engine
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static int[] ship_count = new int[shipdata.NO_OF_SHIPS + 1];  /* many */
 
-        private static void rotate_x_first(ref float a, ref float b, int direction)
+        private static void rotate_x_first(ref float a, ref float b, float direction)
 		{
 			float fx = a;
 			float ux = b;
@@ -64,7 +64,7 @@ namespace Elite.Engine
 			float k2;
 			float alpha;
 			float beta;
-			int rotx, rotz;
+			float rotx, rotz;
 			float speed;
 
 			alpha = elite.flight_roll / 256.0f;
@@ -415,9 +415,9 @@ namespace Elite.Engine
 			py = universe[0].location.Y;
 			pz = universe[0].location.Z;
 
-			vec.X = (random.rand() & 32767) - 16384;
-			vec.Y = (random.rand() & 32767) - 16384;
-			vec.Z = random.rand() & 32767;
+			vec.X = RNG.Random(-16384, 16383) ;
+			vec.Y = RNG.Random(-16384, 16383) ;
+			vec.Z = RNG.Random(32767);
 
 			vec = VectorMaths.unit_vector(vec);
 
@@ -642,7 +642,6 @@ namespace Elite.Engine
 					threed.DrawObject(ref flip);
 
 					universe[i].flags = flip.flags;
-					universe[i].exp_seed = flip.exp_seed;
 					universe[i].exp_delta = flip.exp_delta;
 
 					universe[i].flags &= ~FLG.FLG_FIRING;
@@ -1101,7 +1100,7 @@ namespace Elite.Engine
 			Stars.create_new_stars();
 			swat.clear_universe();
 
-			nthg = (random.randint() & 3) + 1;
+			nthg = RNG.Random(1, 4);
 
 			for (i = 0; i < nthg; i++)
 			{
@@ -1129,7 +1128,7 @@ namespace Elite.Engine
 				elite.cmdr.fuel -= hyper_distance;
 				elite.cmdr.legal_status /= 2;
 
-				if ((random.rand255() > 253) || (elite.flight_climb == elite.myship.max_climb))
+				if ((RNG.Random(255) > 253) || (elite.flight_climb == elite.myship.max_climb))
 				{
 					enter_witchspace();
 					return;
@@ -1138,7 +1137,7 @@ namespace Elite.Engine
 				elite.docked_planet = (galaxy_seed)destination_planet.Clone();
 			}
 
-			elite.cmdr.market_rnd = random.rand255();
+			elite.cmdr.market_rnd = RNG.Random(255);
 			Planet.generate_planet_data(ref elite.current_planet_data, elite.docked_planet);
 			trade.generate_stock_market();
 

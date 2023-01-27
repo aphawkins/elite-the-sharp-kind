@@ -14,42 +14,21 @@
 
 namespace Elite.Engine
 {
-	internal static class random
+	internal static class RNG
 	{
-		/*
-		 * Portable random number generator implementing the recursion:
-		 *     IX = 16807 * IX MOD (2**(31) - 1)
-		 * Using only 32 bits, including sign.
-		 *
-		 * Taken from "A Guide to Simulation" by Bratley, Fox and Schrage.
-		 */
-		internal static int randint()
+		internal static int Random(int maxValue)
 		{
-			int k1;
-			int ix = rand_seed;
+			return Random(0, maxValue);
+        }
 
-			k1 = ix / 127773;
-			ix = (16807 * (ix - (k1 * 127773))) - (k1 * 2836);
-			if (ix < 0)
-			{
-				ix += 2147483647;
-			}
+        internal static int Random(int minValue, int maxValue)
+        {
+            return new Random().Next(minValue, maxValue);
+        }
 
-			rand_seed = ix;
-
-			return ix;
-		}
-
-		internal static int rand_seed { get; set; }
-
-		internal static int rand255()
-		{
-			return randint() & 255;
-		}
-
-		internal static int rand()
-		{
-			return new Random().Next();
-		}
-	}
+        internal static bool TrueOrFalse()
+        {
+            return Random(0, 1) == 1;
+        }
+    }
 }

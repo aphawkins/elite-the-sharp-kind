@@ -96,7 +96,7 @@ namespace Elite.Engine
 			in_battle = false;
 		}
 
-		internal static int add_new_ship(SHIP ship_type, Vector3 location, Vector3[] rotmat, int rotx, int rotz)
+		internal static int add_new_ship(SHIP ship_type, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
 		{
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
@@ -224,9 +224,9 @@ namespace Elite.Engine
 
 			if (type is SHIP.SHIP_CARGO or SHIP.SHIP_ALLOY or SHIP.SHIP_ROCK)
 			{
-				ns.rotz = ((random.rand255() * 2) & 255) - 128;
-				ns.rotx = ((random.rand255() * 2) & 255) - 128;
-				ns.velocity = random.rand255() & 15;
+				ns.rotz = ((RNG.Random(255) * 2) & 255) - 128;
+				ns.rotx = ((RNG.Random(255) * 2) & 255) - 128;
+				ns.velocity = RNG.Random(15);
 			}
 		}
 
@@ -236,11 +236,11 @@ namespace Elite.Engine
 
 			if (loot == SHIP.SHIP_ROCK)
 			{
-				cnt = random.rand255() & 3;
+				cnt = RNG.Random(3);
 			}
 			else
 			{
-				cnt = random.rand255();
+				cnt = RNG.Random(255);
 				if (cnt >= 128)
                 {
                     return;
@@ -524,7 +524,7 @@ namespace Elite.Engine
 					return;
 				}
 
-				if ((random.rand255() < 16) && target.flags.HasFlag(FLG.FLG_HAS_ECM))
+				if ((RNG.Random(255) < 16) && target.flags.HasFlag(FLG.FLG_HAS_ECM))
 				{
 					activate_ecm(false);
 					return;
@@ -556,7 +556,7 @@ namespace Elite.Engine
             {
                 missile.acceleration = 3;
             }
-            else if (random.rand255() >= 200)
+            else if (RNG.Random(255) >= 200)
             {
                 missile.acceleration = -2;
             }
@@ -570,12 +570,12 @@ namespace Elite.Engine
 
 			if ((space.ship_count[(int)SHIP.SHIP_TRANSPORTER] != 0) ||
 				(space.ship_count[(int)SHIP.SHIP_SHUTTLE] != 0) ||
-				(random.rand255() < 253) || elite.auto_pilot)
+				(RNG.Random(255) < 253) || elite.auto_pilot)
 			{
 				return;
 			}
 
-			type = (random.rand255() & 1) == 1 ? SHIP.SHIP_SHUTTLE : SHIP.SHIP_TRANSPORTER;
+			type = RNG.TrueOrFalse() ? SHIP.SHIP_SHUTTLE : SHIP.SHIP_TRANSPORTER;
 			launch_enemy(1, type, FLG.FLG_HAS_ECM | FLG.FLG_FLY_TO_PLANET, 113);
 		}
 
@@ -626,7 +626,7 @@ namespace Elite.Engine
 			{
 				if (flags.HasFlag(FLG.FLG_ANGRY))
 				{
-					if ((random.rand() & 255) < 240)
+					if (RNG.Random(255) < 240)
 					{
 						return;
 					}
@@ -646,9 +646,9 @@ namespace Elite.Engine
 
 			if (type == SHIP.SHIP_HERMIT)
 			{
-				if (random.rand255() > 200)
+				if (RNG.Random(255) > 200)
 				{
-					launch_enemy(un, SHIP.SHIP_SIDEWINDER + (random.rand255() & 3), FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 113);
+					launch_enemy(un, SHIP.SHIP_SIDEWINDER + RNG.Random(3), FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 113);
 					ship.flags |= FLG.FLG_INACTIVE;
 				}
 
@@ -670,7 +670,7 @@ namespace Elite.Engine
 
 			if (flags.HasFlag(FLG.FLG_SLOW))
 			{
-				if (random.rand255() > 50)
+				if (RNG.Random(255) > 50)
 				{
 					return;
 				}
@@ -708,19 +708,19 @@ namespace Elite.Engine
 
 			if (type == SHIP.SHIP_ANACONDA)
 			{
-				if (random.rand255() > 200)
+				if (RNG.Random(255) > 200)
 				{
-					launch_enemy(un, random.rand255() > 100 ? SHIP.SHIP_WORM : SHIP.SHIP_SIDEWINDER, FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 113);
+					launch_enemy(un, RNG.Random(255) > 100 ? SHIP.SHIP_WORM : SHIP.SHIP_SIDEWINDER, FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 113);
 					return;
 				}
 			}
 
-			if (random.rand255() >= 250)
+			if (RNG.Random(255) >= 250)
 			{
-				ship.rotz = random.rand255() | 0x68;
+				ship.rotz = RNG.Random(255) | 0x68;
 				if (ship.rotz > 127)
 				{
-					ship.rotz = -(ship.rotz & 127);
+					ship.rotz = -((int)ship.rotz & 127);
 				}
 			}
 
@@ -729,7 +729,7 @@ namespace Elite.Engine
 
 			if (energy < (maxeng / 2))
 			{
-				if ((energy < (maxeng / 8)) && (random.rand255() > 230) && (type != SHIP.SHIP_THARGOID))
+				if ((energy < (maxeng / 8)) && (RNG.Random(255) > 230) && (type != SHIP.SHIP_THARGOID))
 				{
 					ship.flags &= ~FLG.FLG_ANGRY;
 					ship.flags |= FLG.FLG_INACTIVE;
@@ -737,8 +737,7 @@ namespace Elite.Engine
 					return;
 				}
 
-				if ((ship.missiles != 0) && (ecm_active == 0) &&
-					(ship.missiles >= (random.rand255() & 31)))
+				if ((ship.missiles != 0) && (ecm_active == 0) && (ship.missiles >= RNG.Random(31)))
 				{
 					ship.missiles--;
 					if (type == SHIP.SHIP_THARGOID)
@@ -791,10 +790,10 @@ namespace Elite.Engine
 				//		if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
 				if (MathF.Abs(ship.location.Z) < 768f)
 				{
-					ship.rotx = random.rand255() & 0x87;
+					ship.rotx = RNG.Random(135);
 					if (ship.rotx > 127)
                     {
-                        ship.rotx = -(ship.rotx & 127);
+                        ship.rotx = -((int)ship.rotx & 127);
                     }
 
                     ship.acceleration = 3;
@@ -812,7 +811,7 @@ namespace Elite.Engine
 				(MathF.Abs(ship.location.X) >= 512f) ||
 				(MathF.Abs(ship.location.Y) >= 512f))
 			{
-				if (ship.bravery > (random.rand255() & 127))
+				if (ship.bravery > RNG.Random(127))
 				{
 					attacking = 1;
 					nvec.X = -nvec.X;
@@ -836,7 +835,7 @@ namespace Elite.Engine
 				{
 					ship.acceleration = 3;
 				}
-				else if (random.rand255() >= 200)
+				else if (RNG.Random(255) >= 200)
 				{
 					ship.acceleration = -1;
 				}
@@ -860,7 +859,7 @@ namespace Elite.Engine
 			{
 				ship.acceleration = 3;
 			}
-			else if (random.rand255() >= 200)
+			else if (RNG.Random(255) >= 200)
 			{
 				ship.acceleration = -1;
 			}
@@ -909,8 +908,8 @@ namespace Elite.Engine
 						elite.energy--;
 					}
 
-					laser_x = ((random.rand() & 3) + 128 - 2) * gfx.GFX_SCALE;
-					laser_y = ((random.rand() & 3) + 96 - 2) * gfx.GFX_SCALE;
+					laser_x = RNG.Random(126, 129) * gfx.GFX_SCALE;
+					laser_y = RNG.Random(94, 97) * gfx.GFX_SCALE;
 
 					return 2;
 				}
@@ -946,17 +945,17 @@ namespace Elite.Engine
 
 			Vector3 position = new()
 			{
-				X = 1000 + (random.randint() & 8191),
-				Y = 1000 + (random.randint() & 8191),
+				X = 1000 + RNG.Random(8191),
+				Y = 1000 + RNG.Random(8191),
 				Z = 12000,
 			};
 
-			if (random.rand255() > 127)
+			if (RNG.Random(255) > 127)
 			{
                 position.X = -position.X;
 			}
 
-			if (random.rand255() > 127)
+			if (RNG.Random(255) > 127)
 			{
                 position.Y = -position.Y;
 			}
@@ -976,7 +975,7 @@ namespace Elite.Engine
 				space.universe[newship].flags = FLG.FLG_ANGRY | FLG.FLG_HAS_ECM;
 				space.universe[newship].bravery = 113;
 
-				if (random.rand255() > 64)
+				if (RNG.Random(255) > 64)
 				{
 					launch_enemy(newship, SHIP.SHIP_THARGLET, FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 96);
 				}
@@ -1007,16 +1006,16 @@ namespace Elite.Engine
 			int rnd;
 			SHIP type;
 
-			type = SHIP.SHIP_COBRA3 + (random.rand255() & 3);
+			type = SHIP.SHIP_COBRA3 + RNG.Random(3);
 
 			newship = create_other_ship(type);
 
 			if (newship != -1)
 			{
 				space.universe[newship].rotmat[2].Z = -1.0f;
-				space.universe[newship].rotz = random.rand255() & 7;
+				space.universe[newship].rotz = RNG.Random(7);
 
-				rnd = random.rand255();
+				rnd = RNG.Random(255);
 				space.universe[newship].velocity = (rnd & 31) | 16;
 				space.universe[newship].bravery = rnd / 2;
 
@@ -1044,7 +1043,7 @@ namespace Elite.Engine
 			}
 			else
 			{
-				rnd = random.rand255();
+				rnd = RNG.Random(255);
 				type = SHIP.SHIP_COBRA3_LONE + (rnd & 3) + ((rnd > 127) ? 1 : 0);
 			}
 
@@ -1053,12 +1052,12 @@ namespace Elite.Engine
 			if (newship != -1)
 			{
 				space.universe[newship].flags = FLG.FLG_ANGRY;
-				if ((random.rand255() > 200) || (type == SHIP.SHIP_CONSTRICTOR))
+				if ((RNG.Random(255) > 200) || (type == SHIP.SHIP_CONSTRICTOR))
 				{
 					space.universe[newship].flags |= FLG.FLG_HAS_ECM;
 				}
 
-				space.universe[newship].bravery = ((random.rand255() * 2) | 64) & 127;
+				space.universe[newship].bravery = ((RNG.Random(255) * 2) | 64) & 127;
 				in_battle = true;
 			}
 		}
@@ -1071,12 +1070,12 @@ namespace Elite.Engine
 		{
 			SHIP type;
 
-			if ((random.rand255() >= 35) || (space.ship_count[(int)SHIP.SHIP_ASTEROID] >= 3))
+			if ((RNG.Random(255) >= 35) || (space.ship_count[(int)SHIP.SHIP_ASTEROID] >= 3))
 			{
 				return;
 			}
 
-			type = random.rand255() > 253 ? SHIP.SHIP_HERMIT : SHIP.SHIP_ASTEROID;
+			type = RNG.Random(255) > 253 ? SHIP.SHIP_HERMIT : SHIP.SHIP_ASTEROID;
 
             int newship = create_other_ship(type);
 
@@ -1084,15 +1083,12 @@ namespace Elite.Engine
 			{
 				//		space.universe[newship].velocity = (random.rand255() & 31) | 16; 
 				space.universe[newship].velocity = 8;
-				space.universe[newship].rotz = random.rand255() > 127 ? -127 : 127;
+				space.universe[newship].rotz = RNG.TrueOrFalse() ? -127 : 127;
 				space.universe[newship].rotx = 16;
 			}
 		}
 
-
-
         /* If we've been a bad boy then send the cops after us... */
-
         private static void check_for_cops()
 		{
 			int offense = trade.carrying_contraband() * 2;
@@ -1101,7 +1097,7 @@ namespace Elite.Engine
 				offense |= elite.cmdr.legal_status;
 			}
 
-			if (random.rand255() >= offense)
+			if (RNG.Random(255) >= offense)
 			{
 				return;
 			}
@@ -1111,12 +1107,12 @@ namespace Elite.Engine
 			if (newship != -1)
 			{
 				space.universe[newship].flags = FLG.FLG_ANGRY;
-				if (random.rand255() > 245)
+				if (RNG.Random(255) > 245)
                 {
                     space.universe[newship].flags |= FLG.FLG_HAS_ECM;
                 }
 
-                space.universe[newship].bravery = ((random.rand255() * 2) | 64) & 127;
+                space.universe[newship].bravery = ((RNG.Random(255) * 2) | 64) & 127;
 			}
 		}
 
@@ -1128,14 +1124,14 @@ namespace Elite.Engine
 			int i;
 
 			int gov = elite.current_planet_data.government;
-			int rnd = random.rand255();
+			int rnd = RNG.Random(255);
 
 			if ((gov != 0) && ((rnd >= 90) || ((rnd & 7) < gov)))
 			{
 				return;
 			}
 
-			if (random.rand255() < 100)
+			if (RNG.Random(255) < 100)
 			{
 				create_lone_hunter();
 				return;
@@ -1148,35 +1144,35 @@ namespace Elite.Engine
 			Vector3 position = new()
 			{
 				Z = 12000,
-				X = 1000 + (random.randint() & 8191),
-				Y = 1000 + (random.randint() & 8191),
+				X = 1000 + RNG.Random(8191),
+				Y = 1000 + RNG.Random(8191),
 			};
 
-			if (random.rand255() > 127)
+			if (RNG.TrueOrFalse())
 			{
                 position.X = -position.X;
 			}
 
-			if (random.rand255() > 127)
+			if (RNG.TrueOrFalse())
 			{
                 position.Y = -position.Y;
 			}
 
-			rnd = random.rand255() & 3;
+			rnd = RNG.Random(3);
 
 			for (i = 0; i <= rnd; i++)
 			{
-				type = SHIP.SHIP_SIDEWINDER + (random.rand255() & random.rand255() & 7);
+				type = SHIP.SHIP_SIDEWINDER + (RNG.Random(255) & RNG.Random(7));
 				newship = add_new_ship(type, position, rotmat, 0, 0);
 				if (newship != -1)
 				{
 					space.universe[newship].flags = FLG.FLG_ANGRY;
-					if (random.rand255() > 245)
+					if (RNG.Random(255) > 245)
 					{
 						space.universe[newship].flags |= FLG.FLG_HAS_ECM;
 					}
 
-					space.universe[newship].bravery = ((random.rand255() * 2) | 64) & 127;
+					space.universe[newship].bravery = ((RNG.Random(255) * 2) | 64) & 127;
 					in_battle = true;
 				}
 			}
@@ -1189,7 +1185,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (random.rand255() == 136)
+			if (RNG.Random(255) == 136)
 			{
 				if (((int)space.universe[0].location.Z & 0x3e) != 0)
 				{
@@ -1203,7 +1199,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if ((random.rand255() & 7) == 0)
+			if (RNG.Random(7) == 0)
 			{
 				create_trader();
 				return;
@@ -1223,7 +1219,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if ((elite.cmdr.mission == 5) && (random.rand255() >= 200))
+			if ((elite.cmdr.mission == 5) && (RNG.Random(255) >= 200))
 			{
 				create_thargoid();
 			}
@@ -1233,13 +1229,11 @@ namespace Elite.Engine
 
 		internal static void abandon_ship()
 		{
-			int i;
-
 			elite.cmdr.escape_pod = false;
 			elite.cmdr.legal_status = 0;
 			elite.cmdr.fuel = elite.myship.max_fuel;
 
-			for (i = 0; i < trade.stock_market.Length; i++)
+			for (int i = 0; i < trade.stock_market.Length; i++)
 			{
 				elite.cmdr.current_cargo[i] = 0;
 			}
