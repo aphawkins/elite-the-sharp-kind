@@ -38,8 +38,8 @@ namespace Elite.WinForms
 		private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
 
         private volatile int frame_count;
-        private object frameCountLock = new();
-        private System.Windows.Forms.Timer _frameTimer;
+        private readonly object frameCountLock = new();
+        private readonly System.Windows.Forms.Timer _frameTimer;
 
         private readonly Dictionary<GFX_COL, Pen> _pens = new()
             {

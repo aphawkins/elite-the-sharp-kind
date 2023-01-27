@@ -6,7 +6,7 @@
 
     public class AssetLoader : IAssets
     {
-        Assembly? assets = Assembly.GetAssembly(typeof(AssetLoader));
+        readonly Assembly? assets = Assembly.GetAssembly(typeof(AssetLoader));
 
         public Stream? Load(Image image)
         {

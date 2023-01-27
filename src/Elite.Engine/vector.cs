@@ -25,7 +25,7 @@ namespace Elite.Engine
 
     internal static class VectorMaths
 	{
-        private static Vector3[] start_matrix = new Vector3[3]
+        private static readonly Vector3[] start_matrix = new Vector3[3]
 		{
 			new Vector3(1f, 0f, 0f),
 			new Vector3(0f, 1f, 0f),

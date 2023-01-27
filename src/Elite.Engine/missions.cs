@@ -27,31 +27,31 @@ namespace Elite.Engine
 
 	internal static class missions
 	{
-        private static string mission1_brief_a =
+        private static readonly string mission1_brief_a =
 			"Greetings Commander, I am Captain Curruthers of " +
 			"Her Majesty's Space Navy and I beg a moment of your " +
 			"valuable time.  We would like you to do a little job " +
 			"for us.  The ship you see here is a new model, the " +
 			"Constrictor, equiped with a top secret new shield " +
 			"generator.  Unfortunately it's been stolen.";
-        private static string mission1_brief_b =
+        private static readonly string mission1_brief_b =
 			"It went missing from our ship yard on Xeer five months ago " +
 			"and was last seen at Reesdice. Your mission should you decide " +
 			"to accept it, is to seek and destroy this ship. You are " +
 			"cautioned that only Military Lasers will get through the new " +
 			"shields and that the Constrictor is fitted with an E.C.M. " +
 			"System. Good Luck, Commander. ---MESSAGE ENDS.";
-        private static string mission1_brief_c =
+        private static readonly string mission1_brief_c =
 			"It went missing from our ship yard on Xeer five months ago " +
 			"and is believed to have jumped to this galaxy. " +
 			"Your mission should you decide to accept it, is to seek and " +
 			"destroy this ship. You are cautioned that only Military Lasers " +
 			"will get through the new shields and that the Constrictor is " +
 			"fitted with an E.C.M. System. Good Luck, Commander. ---MESSAGE ENDS.";
-        private static string mission1_debrief =
+        private static readonly string mission1_debrief =
 			"There will always be a place for you in Her Majesty's Space Navy. " +
 			"And maybe sooner than you think... ---MESSAGE ENDS.";
-        private static string[] mission1_pdesc =
+        private static readonly string[] mission1_pdesc =
 		{
 			"THE CONSTRICTOR WAS LAST SEEN AT REESDICE, COMMANDER.",
 			"A STRANGE LOOKING SHIP LEFT HERE A WHILE BACK. LOOKED BOUND FOR AREXE.",
@@ -66,23 +66,23 @@ namespace Elite.Engine
 			"BOY ARE YOU IN THE WRONG GALAXY!",
 			"COMING SOON: ELITE - DARKNESS FALLS.",
 		};
-        private static string mission2_brief_a =
+        private static readonly string mission2_brief_a =
 			"Attention Commander, I am Captain Fortesque of Her Majesty's Space Navy. " +
 			"We have need of your services again. If you would be so good as to go to " +
 			"Ceerdi you will be briefed.If succesful, you will be rewarded." +
 			"---MESSAGE ENDS.";
-        private static string mission2_brief_b =
+        private static readonly string mission2_brief_b =
 			"Good Day Commander. I am Agent Blake of Naval Intelligence. As you know, " +
 			"the Navy have been keeping the Thargoids off your ass out in deep space " +
 			"for many years now. Well the situation has changed. Our boys are ready " +
 			"for a push right to the home system of those murderers.";
-        private static string mission2_brief_c =
+        private static readonly string mission2_brief_c =
 			"I have obtained the defence plans for their Hive Worlds. The beetles " +
 			"know we've got something but not what. If I transmit the plans to our " +
 			"base on Birera they'll intercept the transmission. I need a ship to " +
 			"make the run. You're elected. The plans are unipulse coded within " +
 			"this transmission. You will be paid. Good luck Commander. ---MESSAGE ENDS.";
-        private static string mission2_debrief =
+        private static readonly string mission2_debrief =
 			"You have served us well and we shall remember. " +
 			"We did not expect the Thargoids to find out about you." +
 			"For the moment please accept this Navy Extra Energy Unit as payment. " +

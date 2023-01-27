@@ -34,13 +34,13 @@ namespace Elite.Engine
 			internal int d;
 		};
 
-        private static random_seed rnd_seed = new();
-        private static string digrams = "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
-        private static string[] inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
-        private static string[] inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
-        private static string[] inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
-        private static string[] inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
-        private static string[][] desc_list = new string[36][]
+        private static readonly random_seed rnd_seed = new();
+        private static readonly string digrams = "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
+        private static readonly string[] inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
+        private static readonly string[] inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
+        private static readonly string[] inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
+        private static readonly string[] inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
+        private static readonly string[][] desc_list = new string[36][]
 		{
 		/*  0	*/	new string[] {"fabled", "notable", "well known", "famous", "noted"},
 		/*  1	*/	new string[] {"very", "mildly", "most", "reasonably", ""},

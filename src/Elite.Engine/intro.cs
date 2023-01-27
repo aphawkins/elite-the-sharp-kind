@@ -33,7 +33,7 @@ namespace Elite.Engine
         private static SHIP ship_no;
         private static int show_time;
         private static int direction;
-        private static int[] min_dist = new int[shipdata.NO_OF_SHIPS + 1]
+        private static readonly int[] min_dist = new int[shipdata.NO_OF_SHIPS + 1]
 		{
 			0,
 			200, 800, 200, 200, 200, 300, 384, 200,

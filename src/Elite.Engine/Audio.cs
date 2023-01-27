@@ -8,7 +8,7 @@
     {
         private readonly bool _musicOn;
         private readonly bool _effectsOn;
-        private ISound _sound;
+        private readonly ISound _sound;
 
         internal Audio(ISound sound)
         {

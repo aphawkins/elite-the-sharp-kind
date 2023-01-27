@@ -37,7 +37,7 @@ namespace Elite.Engine
 			}
 		};
 
-        private static option[] option_list = new option[NUM_OPTIONS]
+        private static readonly option[] option_list = new option[NUM_OPTIONS]
 		{
 			new("Save Commander",   true),
 			new("Load Commander",   true),
@@ -57,7 +57,7 @@ namespace Elite.Engine
 			}
 		};
 
-        private static setting[] setting_list = new setting[NUM_SETTINGS]
+        private static readonly setting[] setting_list = new setting[NUM_SETTINGS]
 		{
 			new("Graphics:", new string[5] {"Solid", "Wireframe", "", "", ""}),
 			new("Anti Alias:", new string[5] {"Off", "On", "", "", ""}),

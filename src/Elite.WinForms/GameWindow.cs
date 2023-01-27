@@ -4,7 +4,7 @@ namespace Elite.WinForms
 
     public partial class GameWindow : Form
     {
-        private System.Windows.Forms.Timer _refreshTimer = new();
+        private readonly System.Windows.Forms.Timer _refreshTimer = new();
         private IGfx _gfx;
         private ISound _sound;
         private IKeyboard _keyboard;

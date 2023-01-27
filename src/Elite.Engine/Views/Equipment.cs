@@ -20,7 +20,7 @@ namespace Elite.Engine.Views
     internal static class Equipment
     {
         private static int hilite_item;
-        private static EquipmentItem[] EquipmentStock = new EquipmentItem[]
+        private static readonly EquipmentItem[] EquipmentStock = new EquipmentItem[]
         {
             new(false, true,   1, 0.2f, " Fuel",                EquipmentType.EQ_FUEL),
             new(false, true,   1,   30, " Missile",             EquipmentType.EQ_MISSILE),

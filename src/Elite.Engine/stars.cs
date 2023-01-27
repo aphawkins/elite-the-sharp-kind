@@ -20,7 +20,7 @@ namespace Elite.Engine
 	internal static class Stars
 	{
 		internal static bool warp_stars;
-        private static Vector3[] stars = new Vector3[20];
+        private static readonly Vector3[] stars = new Vector3[20];
 
 		internal static void create_new_stars()
 		{

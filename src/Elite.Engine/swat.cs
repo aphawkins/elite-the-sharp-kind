@@ -40,7 +40,7 @@ namespace Elite.Engine
 		internal static int missile_target;
         private static bool ecm_ours;
 		internal static bool in_battle;
-        private static FLG[] initial_flags = new FLG[shipdata.NO_OF_SHIPS + 1]
+        private static readonly FLG[] initial_flags = new FLG[shipdata.NO_OF_SHIPS + 1]
 		{
 			0,											// NULL,
 			0,											// missile 

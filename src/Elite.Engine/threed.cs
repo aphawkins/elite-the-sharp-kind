@@ -21,8 +21,8 @@ namespace Elite.Engine
 	{
         private const int LAND_X_MAX = 128;
         private const int LAND_Y_MAX = 128;
-        private static int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
-        private static Vector3[] point_list = new Vector3[100];
+        private static readonly int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
+        private static readonly Vector3[] point_list = new Vector3[100];
 
 		/// <summary>
 		/// Hacked version of the draw ship routine to display ships...
@@ -128,7 +128,7 @@ namespace Elite.Engine
 		 * Colour map used to generate a SNES Elite style planet.
 		 * This is a quick hack and needs tidying up.
 		 */
-        private static int[] snes_planet_colour = new int[]
+        private static readonly int[] snes_planet_colour = new int[]
 		{
 			102, 102,
 			134, 134, 134, 134,

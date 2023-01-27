@@ -18,7 +18,7 @@ namespace Elite.WinForms
     public class Keyboard : IKeyboard
     {
         private int _lastKeyPressed;
-        private Dictionary<int, bool> _isPressed = new();
+        private readonly Dictionary<int, bool> _isPressed = new();
 
         public int kbd_keyboard_startup()
         {
