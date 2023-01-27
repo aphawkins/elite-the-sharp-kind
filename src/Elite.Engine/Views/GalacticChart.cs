@@ -20,7 +20,7 @@ namespace Elite.Engine.Views
 
 	internal static class GalacticChart
 	{
-		internal static Vector2 cross = new Vector2(0, 0);
+		internal static Vector2 cross = new(0, 0);
 		internal static List<Vector2> planetPixels = new();
         internal static List<(Vector2 position, string name)> planetNames = new();
 		internal static List<(Vector2 position, int size)> planetSizes = new();

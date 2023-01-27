@@ -421,7 +421,7 @@ namespace Elite.Engine
 
 			vec = VectorMaths.unit_vector(vec);
 
-			Vector3 position = new Vector3()
+			Vector3 position = new()
 			{
 				X = px - (vec.X * 65792),
 				Y = py - (vec.Y * 65792),
