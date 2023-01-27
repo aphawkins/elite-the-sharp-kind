@@ -25,8 +25,6 @@ namespace Elite.WinForms
         private readonly IMidiAccess? _access;
         private readonly IMidiOutput? _output;
         private bool _disposedValue;
-        private readonly SoundPlayer _sample;
-
         private readonly Dictionary<SoundEffect, SoundPlayer> _waves = new();
         private readonly Dictionary<Music, MidiMusic> _midis = new();
 
@@ -66,12 +64,6 @@ namespace Elite.WinForms
             {
                 _midiPlayer.Play();
             }
-        }
-
-        private void _midiPlayer_Finished()
-        {
-            _midiPlayer.Seek(0);
-            _midiPlayer.Play();
         }
 
         public void StopMidi()
