@@ -897,7 +897,7 @@ namespace Elite.Engine
             if (keyboard.IsKeyPressed(CommandKey.F10))
             {
                 find_input = false;
-                Market.display_inventory();
+                Inventory.display_inventory();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F11))
