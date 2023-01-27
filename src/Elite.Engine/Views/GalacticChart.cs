@@ -58,7 +58,7 @@ namespace Elite.Engine.Views
 			}
 
 			elite.hyperspace_planet = Planet.find_planet(location);
-			planetName = Planet.name_planet(elite.hyperspace_planet);
+			planetName = Planet.name_planet(elite.hyperspace_planet, false);
 			distanceToPlanet = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
 			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
@@ -96,7 +96,7 @@ namespace Elite.Engine.Views
 
 			for (int i = 0; i < 256; i++)
 			{
-				planet_name = Planet.name_planet(glx);
+				planet_name = Planet.name_planet(glx, false);
 
 				if (planet_name == find_name)
 				{
@@ -193,10 +193,7 @@ namespace Elite.Engine.Views
 				if (row_used[row] == 0)
 				{
 					row_used[row] = 1;
-					string planet_name = Planet.name_planet(glx);
-					planet_name = Planet.capitalise_name(planet_name);
-
-					planetNames.Add((new(px + (4 * gfx.GFX_SCALE), ((row * 8) - 5) * gfx.GFX_SCALE), planet_name));
+					planetNames.Add((new(px + (4 * gfx.GFX_SCALE), ((row * 8) - 5) * gfx.GFX_SCALE), Planet.name_planet(glx, true)));
 				}
 
 				/* The next bit calculates the size of the circle used to represent */

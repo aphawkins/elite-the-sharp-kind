@@ -221,7 +221,7 @@ namespace Elite.Engine.Views
                     break;
 
                 case EquipmentType.EQ_ENERGY_UNIT:
-                    elite.cmdr.energy_unit = 1;
+                    elite.cmdr.energy_unit = EnergyUnit.Extra;
                     break;
 
                 case EquipmentType.EQ_DOCK_COMP:

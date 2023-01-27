@@ -21,7 +21,6 @@
 - Incorrect distance show on current planet after hyperspace
 - Hyperspace countdown clip region is overlapping horizontal line in views
 - Options screen not working
-- Inventory screen freezes
 - Clipping incorrect on bottom line
 
 ## File

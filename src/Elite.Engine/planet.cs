@@ -226,11 +226,11 @@ namespace Elite.Engine
 			return -1;
 		}
 
-		internal static string name_planet(galaxy_seed galaxy)
+		internal static string name_planet(galaxy_seed galaxy, bool capitalise)
 		{
 			galaxy_seed glx = (galaxy_seed)galaxy.Clone();
 
-            string gname = string.Empty;
+            string name = string.Empty;
 			int size = (glx.a & 0x40) == 0 ? 3 : 4;
 
             for (int i = 0; i < size; i++)
@@ -240,22 +240,22 @@ namespace Elite.Engine
 				{
 					x += 12;
 					x *= 2;
-					gname += digrams[x];
+					name += digrams[x];
 					if (digrams[x + 1] != '?')
 					{
-						gname += digrams[x + 1];
+						name += digrams[x + 1];
 					}
 				}
 
 				waggle_galaxy(ref glx);
 			}
 
-			return gname;
-		}
+			if (capitalise)
+			{
+                return char.ToUpper(name[0]) + name[1..].ToLower();
+            }
 
-		internal static string capitalise_name(string name)
-		{
-			return char.ToUpper(name[0]) + name[1..].ToLower();
+			return name;
 		}
 
 		internal static string describe_inhabitants(galaxy_seed planet)
@@ -296,39 +296,39 @@ namespace Elite.Engine
 
         private static void expand_description(string source, ref string planet_description)
 		{
-			string temp = string.Empty;
-			string expanded;
-			int num;
-			int rnd;
+            int num;
+            int rnd;
 			int option;
-			int i, len, x;
+			int i;
+			int len;
+			int x;
 
 			for (int j = 0; j < source.Length; j++)
 			{
-				if (source[j] == '<')
-				{
-					j++;
+                string temp;
+                if (source[j] == '<')
+                {
+                    j++;
                     temp = string.Empty;
 
                     while (source[j] != '>')
-					{
-						temp += source[j];
-						j++;
-					}
+                    {
+                        temp += source[j];
+                        j++;
+                    }
 
-					num = Convert.ToInt32(temp);
-					Debug.Assert(num < desc_list.Length);
-					expanded = temp;
+                    num = Convert.ToInt32(temp);
+                    Debug.Assert(num < desc_list.Length);
 
-					if (elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
-					{
-						option = gen_msx_rnd_number();
-					}
-					else
-					{
-						rnd = gen_rnd_number();
-						option = 0;
-						if (rnd >= 0x33)
+                    if (elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+                    {
+                        option = gen_msx_rnd_number();
+                    }
+                    else
+                    {
+                        rnd = gen_rnd_number();
+                        option = 0;
+                        if (rnd >= 0x33)
                         {
                             option++;
                         }
@@ -349,24 +349,22 @@ namespace Elite.Engine
                         }
                     }
 
-					expand_description(desc_list[num][option], ref planet_description);
-					continue;
-				}
+                    expand_description(desc_list[num][option], ref planet_description);
+                    continue;
+                }
 
-				if (source[j] == '%')
+                if (source[j] == '%')
 				{
 					j++;
 					switch (source[j])
 					{
 						case 'H':
-							temp = name_planet(elite.hyperspace_planet);
-							temp = capitalise_name(temp);
+							temp = name_planet(elite.hyperspace_planet, true);
 							planet_description += temp;
 							break;
 
 						case 'I':
-							temp = name_planet(elite.hyperspace_planet);
-							temp = capitalise_name(temp);
+							temp = name_planet(elite.hyperspace_planet, true);
 							planet_description += temp;
 							planet_description += "ian";
 							break;

@@ -281,7 +281,7 @@ namespace Elite.Engine
 
 			elite.cmdr.mission = 6;
 			elite.cmdr.score += 256;
-			elite.cmdr.energy_unit = 2;
+			elite.cmdr.energy_unit = EnergyUnit.Naval;
 
             elite.draw.ClearDisplay();
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);

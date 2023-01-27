@@ -29,7 +29,7 @@ namespace Elite.Engine.Views
 
             hilite_item--;
 
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
+            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
         }
 
         internal static void select_next_stock()
@@ -41,7 +41,7 @@ namespace Elite.Engine.Views
 
             hilite_item++;
 
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
+            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
         }
 
         internal static void buy_stock()
@@ -67,7 +67,7 @@ namespace Elite.Engine.Views
             trade.stock_market[hilite_item].current_quantity--;
             elite.cmdr.credits -= trade.stock_market[hilite_item].current_price;
 
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
+            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
         }
 
         internal static void sell_stock()
@@ -81,7 +81,7 @@ namespace Elite.Engine.Views
             trade.stock_market[hilite_item].current_quantity++;
             elite.cmdr.credits += trade.stock_market[hilite_item].current_price;
 
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
+            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
         }
 
         internal static void display_market_prices()
@@ -93,7 +93,7 @@ namespace Elite.Engine.Views
                 hilite_item = -1;
             }
 
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
+            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
         }
     }
 }

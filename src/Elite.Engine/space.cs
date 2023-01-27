@@ -357,7 +357,7 @@ namespace Elite.Engine
 			}
 
 			elite.energy++;
-			elite.energy += elite.cmdr.energy_unit;
+			elite.energy += (int)elite.cmdr.energy_unit;
 			if (elite.energy > 255)
 			{
 				elite.energy = 255;
@@ -1006,9 +1006,7 @@ namespace Elite.Engine
 			}
 
 			destination_planet = (galaxy_seed)elite.hyperspace_planet.Clone();
-			hyper_name = Planet.name_planet(destination_planet);
-			hyper_name = Planet.capitalise_name(hyper_name);
-
+			hyper_name = Planet.name_planet(destination_planet, true);
 			hyper_ready = true;
 			hyper_countdown = 15;
 			hyper_galactic = false;
