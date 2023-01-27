@@ -198,7 +198,6 @@ namespace Elite.Engine
 				space.update_universe();
 				space.universe[0].location.Z = 600;
                 elite.alg_gfx.ScreenUpdate();
-				elite.keyboard.kbd_poll_keyboard();
 			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
@@ -224,8 +223,7 @@ namespace Elite.Engine
 
 			do
 			{
-				keyasc = elite.keyboard.kbd_read_key();
-			} while (keyasc != ' ');
+			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
         private static void thargoid_mission_first_brief()
@@ -246,8 +244,7 @@ namespace Elite.Engine
 
 			do
 			{
-				keyasc = elite.keyboard.kbd_read_key();
-			} while (keyasc != ' ');
+			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
         private static void thargoid_mission_second_brief()
@@ -271,8 +268,7 @@ namespace Elite.Engine
 
 			do
 			{
-				keyasc = elite.keyboard.kbd_read_key();
-			} while (keyasc != ' ');
+			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
         private static void thargoid_mission_debrief()
@@ -297,8 +293,7 @@ namespace Elite.Engine
 
 			do
 			{
-				keyasc = elite.keyboard.kbd_read_key();
-			} while (keyasc != ' ');
+			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
 		internal static void check_mission_brief()

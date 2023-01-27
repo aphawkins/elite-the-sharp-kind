@@ -749,18 +749,14 @@ namespace Elite.Engine
 
         private static void handle_flight_keys()
         {
-            char keyasc;
-
-            if (docked &&
-                ((current_screen == SCR.SCR_MARKET_PRICES) ||
-                 (current_screen == SCR.SCR_OPTIONS) ||
-                 (current_screen == SCR.SCR_SETTINGS) ||
-                 (current_screen == SCR.SCR_EQUIP_SHIP)))
-            {
-                keyboard.kbd_read_key();
-            }
-
-            keyboard.kbd_poll_keyboard();
+            //if (docked &&
+            //    ((current_screen == SCR.SCR_MARKET_PRICES) ||
+            //     (current_screen == SCR.SCR_OPTIONS) ||
+            //     (current_screen == SCR.SCR_SETTINGS) ||
+            //     (current_screen == SCR.SCR_EQUIP_SHIP)))
+            //{
+            //    keyboard.kbd_read_key();
+            //}
 
             //if (have_joystick)
             //{
@@ -908,7 +904,7 @@ namespace Elite.Engine
 
             if (find_input)
             {
-                keyasc = keyboard.kbd_read_key();
+                char keyasc = (char)keyboard.ReadKey();
 
                 if (keyboard.IsKeyPressed(CommandKey.Enter))
                 {
@@ -1189,8 +1185,6 @@ namespace Elite.Engine
 
                 alg_gfx.ScreenUpdate();
 
-                keyboard.kbd_poll_keyboard();
-
                 if (keyboard.IsKeyPressed(CommandKey.Y))
                 {
                     audio.StopMusic();
@@ -1219,19 +1213,12 @@ namespace Elite.Engine
             flight_roll = 0;
             flight_climb = 0;
 
-            for (; ; )
+            do
             {
                 intro.update_intro2();
-
                 alg_gfx.ScreenUpdate();
-
-                keyboard.kbd_poll_keyboard();
-
-                if (keyboard.IsKeyPressed(CommandKey.Space))
-                {
-                    break;
-                }
             }
+            while (!keyboard.IsKeyPressed(CommandKey.Space));
 
             audio.StopMusic();
         }
@@ -1345,9 +1332,6 @@ namespace Elite.Engine
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;
             elite.alg_gfx.SpeedCap = config.SpeedCap;
-
-            /* Do any setup necessary for the keyboard... */
-            keyboard.kbd_keyboard_startup();
 
             finish = false;
             auto_pilot = false;
