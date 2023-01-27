@@ -203,8 +203,6 @@ namespace Elite.Engine
 
         private static void constrictor_mission_debrief()
 		{
-			int keyasc;
-
 			elite.cmdr.mission = 3;
 			elite.cmdr.score += 256;
 			elite.cmdr.credits += 5000;
@@ -228,8 +226,6 @@ namespace Elite.Engine
 
         private static void thargoid_mission_first_brief()
 		{
-			int keyasc;
-
 			elite.cmdr.mission = 4;
 
             elite.draw.ClearDisplay();
@@ -249,8 +245,6 @@ namespace Elite.Engine
 
         private static void thargoid_mission_second_brief()
 		{
-			int keyasc;
-
 			elite.cmdr.mission = 5;
 
             elite.draw.ClearDisplay();
@@ -273,8 +267,6 @@ namespace Elite.Engine
 
         private static void thargoid_mission_debrief()
 		{
-			int keyasc;
-
 			elite.cmdr.mission = 6;
 			elite.cmdr.score += 256;
 			elite.cmdr.energy_unit = EnergyUnit.Naval;
