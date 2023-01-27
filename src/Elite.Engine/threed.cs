@@ -559,21 +559,8 @@ namespace Elite.Engine
 
         private static void draw_explosion(ref univ_object univ)
 		{
-			int i;
-			int q;
-			int pr;
-			int cnt;
 			Vector3[] trans_mat = new Vector3[3];
-			float rx, ry, rz;
 			bool[] visible = new bool[32];
-			Vector3 camera_vec;
-			float cos_angle;
-			float tmp;
-			ship_face_normal[] ship_norm;
-			ship_point[] sp;
-			ship_data ship;
-			int np;
-			int old_seed;
 
 			if (univ.exp_delta > 251)
 			{
@@ -588,59 +575,45 @@ namespace Elite.Engine
                 return;
             }
 
-            ship = elite.ship_list[(int)univ.type];
+            ship_data ship = elite.ship_list[(int)univ.type];
 
-			for (i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
 			{
 				trans_mat[i] = univ.rotmat[i];
 			}
 
-            camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
+            Vector3 camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
 			camera_vec = VectorMaths.unit_vector(camera_vec);
 
-			ship_norm = ship.normals;
+            ship_face_normal[] ship_norm = ship.normals;
 
-			for (i = 0; i < ship.normals.Length; i++)
+			for (int i = 0; i < ship.normals.Length; i++)
 			{
 				Vector3 vec = VectorMaths.unit_vector(ship_norm[i].direction);
-				cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
-
+				float cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
 				visible[i] = cos_angle < -0.13;
 			}
 
-			tmp = trans_mat[0].Y;
-			trans_mat[0].Y = trans_mat[1].X;
-			trans_mat[1].X = tmp;
+            (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
+            (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
+            (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
+			int np = 0;
 
-			tmp = trans_mat[0].Z;
-			trans_mat[0].Z = trans_mat[2].X;
-			trans_mat[2].X = tmp;
-
-			tmp = trans_mat[1].Z;
-			trans_mat[1].Z = trans_mat[2].Y;
-			trans_mat[2].Y = tmp;
-
-			sp = ship.points;
-			np = 0;
-
-			for (i = 0; i < ship.points.Length; i++)
+			for (int i = 0; i < ship.points.Length; i++)
 			{
-				if (visible[sp[i].face1] || visible[sp[i].face2] ||
-					visible[sp[i].face3] || visible[sp[i].face4])
+				if (visible[ship.points[i].face1] || visible[ship.points[i].face2] ||
+					visible[ship.points[i].face3] || visible[ship.points[i].face4])
 				{
-					Vector3 vec = VectorMaths.mult_vector(sp[i].point, trans_mat);
+					Vector3 vec = VectorMaths.mult_vector(ship.points[i].point, trans_mat);
+					Vector3 r = vec + univ.location;
 
-					rx = vec.X + univ.location.X;
-					ry = vec.Y + univ.location.Y;
-					rz = vec.Z + univ.location.Z;
-
-					float sx = rx * 256f / rz;
-					float sy = ry * 256f / rz;
+					float sx = r.X * 256f / r.Z;
+					float sy = r.Y * 256f / r.Z;
 
 					sy = -sy;
 
-					sx += 128f;
-					sy += 96f;
+					sx += 128;
+					sy += 96;
 
 					sx *= gfx.GFX_SCALE;
 					sy *= gfx.GFX_SCALE;
@@ -652,10 +625,8 @@ namespace Elite.Engine
 			}
 
 			float z = univ.location.Z;
-
-			q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
-
-            pr = univ.exp_delta * 256 / q;
+			float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
+            float pr = univ.exp_delta * 256 / q;
 
 			//	if (pr > 0x1C00)
 			//		q = 254;
@@ -663,12 +634,12 @@ namespace Elite.Engine
 
 			q = pr / 32;
 
-			for (cnt = 0; cnt < np; cnt++)
+			for (int cnt = 0; cnt < np; cnt++)
 			{
 				float sx = point_list[cnt].X;
 				float sy = point_list[cnt].Y;
 
-				for (i = 0; i < 16; i++)
+				for (int i = 0; i < 16; i++)
 				{
 					Vector2 position = new(RNG.Random(-128, 127), RNG.Random(-128, 127));
 
