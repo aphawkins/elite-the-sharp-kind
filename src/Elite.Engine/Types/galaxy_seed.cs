@@ -11,22 +11,6 @@
 
         public galaxy_seed()
         {
-            a = 0x4a;
-            b = 0x5a;
-            c = 0x48;
-            d = 0x02;
-            e = 0x53;
-            f = 0xb7;
-        }
-
-        public galaxy_seed(int a, int b, int c, int d, int e, int f)
-        {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-            this.d = d;
-            this.e = e;
-            this.f = f;
         }
 
         protected galaxy_seed(galaxy_seed other)

@@ -39,39 +39,6 @@ namespace Elite.Engine.Types
         {
         }
 
-        //public Commander(string name, int mission, Vector2 shipLocation, galaxy_seed galaxy, float credits, float fuel, 
-        //    int galaxy_number, int front_laser, int rear_laser, int left_laser, int right_laser, int cargo_capacity,
-        //    int[] current_cargo, bool ecm, bool fuel_scoop, bool energy_bomb, int energy_unit, bool docking_computer, bool galactic_hyperdrive, bool escape_pod,
-        //    int missiles, int legal_status, int[] station_stock, int market_rnd, int score, int saved)
-        //{
-        //    this.name = name;
-        //    this.mission = mission;
-        //    this.shiplocation = shipLocation;
-        //    this.galaxy = galaxy;
-        //    this.credits = credits;
-        //    this.fuel = fuel;
-        //    this.galaxy_number = galaxy_number;
-        //    this.front_laser = front_laser;
-        //    this.rear_laser = rear_laser;
-        //    this.left_laser = left_laser;
-        //    this.right_laser = right_laser;
-        //    this.cargo_capacity = cargo_capacity;
-        //    this.current_cargo = current_cargo;
-        //    this.ecm = ecm;
-        //    this.fuel_scoop = fuel_scoop;
-        //    this.energy_bomb = energy_bomb;
-        //    this.energy_unit = energy_unit;
-        //    this.docking_computer = docking_computer;
-        //    this.galactic_hyperdrive = galactic_hyperdrive;
-        //    this.escape_pod = escape_pod;
-        //    this.missiles = missiles;
-        //    this.legal_status = legal_status;
-        //    this.station_stock = station_stock;
-        //    this.market_rnd = market_rnd;
-        //    this.score = score;
-        //    this.saved = saved;
-        //}
-
         private Commander(Commander other)
         {
             this.name = other.name;

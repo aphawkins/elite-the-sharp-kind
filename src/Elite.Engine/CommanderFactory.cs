@@ -16,7 +16,15 @@
                 name = "JAMESON",
                 mission = 0,
                 shiplocation = new(0x14, 0xAD),
-                galaxy = new(0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7),
+                galaxy = new()
+                {
+                    a = 0x4a,
+                    b = 0x5a,
+                    c = 0x48,
+                    d = 0x02,
+                    e = 0x53,
+                    f = 0xb7
+                },
                 credits = 100,
                 fuel = 7,
                 galaxy_number = 0,
@@ -55,7 +63,15 @@
                 name = "MAX",
                 mission = 0,
                 shiplocation = new(0x14, 0xAD),
-                galaxy = new(0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7),
+                galaxy = new() 
+                { 
+                    a = 0x4a, 
+                    b = 0x5a, 
+                    c = 0x48, 
+                    d = 0x02, 
+                    e = 0x53, 
+                    f = 0xb7
+                },
                 credits = 10000,
                 fuel = 7,
                 galaxy_number = 0,
