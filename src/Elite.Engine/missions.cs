@@ -88,7 +88,7 @@ namespace Elite.Engine
 			"For the moment please accept this Navy Extra Energy Unit as payment. " +
 			"---MESSAGE ENDS.";
 
-		internal static string mission_planet_desc(galaxy_seed planet)
+		internal static string? mission_planet_desc(galaxy_seed planet)
 		{
 			int pnum;
 

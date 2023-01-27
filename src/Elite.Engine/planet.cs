@@ -397,12 +397,10 @@ namespace Elite.Engine
 
 		internal static string describe_planet(galaxy_seed planet)
 		{
-			string mission_text;
-
 			if (elite.cmdr.mission == 1)
 			{
-				mission_text = missions.mission_planet_desc(planet);
-				if (mission_text != null)
+				string? mission_text = missions.mission_planet_desc(planet);
+				if (!string.IsNullOrEmpty(mission_text))
 				{
 					return mission_text;
 				}
