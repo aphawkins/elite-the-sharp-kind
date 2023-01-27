@@ -198,7 +198,7 @@ namespace Elite.WinForms
         public void DrawPixel(Vector2 position, GFX_COL col)
 		{
             //TODO: Fix SNES planet colour issues
-            Color colour = _pens.TryGetValue(col, out Pen value) ? value.Color : Color.Magenta;
+            Color colour = _pens.TryGetValue(col, out Pen? value) ? value.Color : Color.Magenta;
 
             //TODO: fix bad values from explosion
             if (position.X < 0 || position.X >= 512 || position.Y < 0 || position.Y >= 512)
