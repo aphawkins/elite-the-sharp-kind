@@ -180,8 +180,8 @@ namespace Elite.Engine
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
-            elite.draw.DrawTextPretty(16, 50, 300, 384, mission1_brief_a);
-            elite.draw.DrawTextPretty(16, 200, 470, 384, (elite.cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
+            elite.draw.DrawTextPretty(16, 50, 300, mission1_brief_a);
+            elite.draw.DrawTextPretty(16, 200, 470, (elite.cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
 
             elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
@@ -216,7 +216,7 @@ namespace Elite.Engine
 
             elite.alg_gfx.DrawTextCentre(100, "Congratulations Commander!", 140, GFX_COL.GFX_COL_GOLD);
 
-            elite.draw.DrawTextPretty(116, 132, 400, 384, mission1_debrief);
+            elite.draw.DrawTextPretty(116, 132, 400, mission1_debrief);
 
             elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
@@ -238,7 +238,7 @@ namespace Elite.Engine
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
-            elite.draw.DrawTextPretty(116, 132, 400, 384, mission2_brief_a);
+            elite.draw.DrawTextPretty(116, 132, 400, mission2_brief_a);
 
             elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
@@ -260,8 +260,8 @@ namespace Elite.Engine
             elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
             elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
-            elite.draw.DrawTextPretty(16, 50, 300, 384, mission2_brief_b);
-            elite.draw.DrawTextPretty(16, 200, 470, 384, mission2_brief_c);
+            elite.draw.DrawTextPretty(16, 50, 300, mission2_brief_b);
+            elite.draw.DrawTextPretty(16, 200, 470, mission2_brief_c);
 
             elite.alg_gfx.DrawImage(Image.Blake, new(352, 46));
 
@@ -289,7 +289,7 @@ namespace Elite.Engine
 
             elite.alg_gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);
 
-            elite.draw.DrawTextPretty(116, 132, 400, 384, mission2_debrief);
+            elite.draw.DrawTextPretty(116, 132, 400, mission2_debrief);
 
             elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 

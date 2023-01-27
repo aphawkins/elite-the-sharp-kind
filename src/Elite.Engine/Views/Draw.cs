@@ -77,7 +77,7 @@
             _gfx.DrawTextLeft(16, 202, inhabitants, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 234, $"Gross Productivity: {productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 266, $"Average Radius: {radius} km", GFX_COL.GFX_COL_WHITE);
-            DrawTextPretty(16, 298, 400, 384, description);
+            DrawTextPretty(16, 298, 400, description);
         }
 
         private void DrawFuelLimitCircle(Vector2 centre)
@@ -102,7 +102,7 @@
         }
 
         // TOOD: This should be private
-        internal void DrawTextPretty(int x, int y, int width, int height, string text)
+        internal void DrawTextPretty(int x, int y, int width, string text)
         {
             int i = 0;
             int maxlen = (width - x) / 8;

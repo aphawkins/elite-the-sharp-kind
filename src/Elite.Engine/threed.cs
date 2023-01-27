@@ -381,7 +381,7 @@ namespace Elite.Engine
 		 * At the moment we just draw a circle.
 		 * Need to add in the two arcs that the original Elite had.
 		 */
-        private static void draw_wireframe_planet(Vector2 centre, float radius, Vector3[] vec)
+        private static void draw_wireframe_planet(Vector2 centre, float radius)
 		{
             elite.alg_gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
 		}
@@ -425,7 +425,7 @@ namespace Elite.Engine
 			switch (elite.config.PlanetRenderStyle)
 			{
 				case PlanetRenderStyle.Wireframe:
-					draw_wireframe_planet(position, radius, planet.rotmat);
+					draw_wireframe_planet(position, radius);
 					break;
 
 				case PlanetRenderStyle.Green:
