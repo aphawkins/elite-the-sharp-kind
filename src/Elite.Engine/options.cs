@@ -71,7 +71,7 @@ namespace Elite.Engine
 
 			elite.draw.ClearDisplay();
 			elite.alg_gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
-			elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+			elite.alg_gfx.DrawLine(new(0, 36), new(511, 36));
 
 			elite.alg_gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
 		}
@@ -86,7 +86,7 @@ namespace Elite.Engine
 				return;
 			}
 
-            var v = item switch
+            int v = item switch
             {
                 0 => elite.config.UseWireframe ? 1 : 0,
                 1 => elite.config.AntiAliasWireframe ? 1 : 0,

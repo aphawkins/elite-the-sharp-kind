@@ -364,7 +364,7 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void decrease_energy(int amount)
+		internal static void decrease_energy(float amount)
 		{
 			elite.energy += amount;
 
@@ -379,14 +379,12 @@ namespace Elite.Engine
 		 */
 		internal static void damage_ship(int damage, bool front)
 		{
-			int shield;
-
 			if (damage <= 0)    /* sanity check */
 			{
 				return;
 			}
 
-			shield = front ? elite.front_shield : elite.aft_shield;
+			float shield = front ? elite.front_shield : elite.aft_shield;
 
 			shield -= damage;
 			if (shield < 0)
@@ -835,12 +833,10 @@ namespace Elite.Engine
 		 */
         private static void display_energy()
 		{
-			int e1, e2, e3, e4;
-
-			e1 = elite.energy > 64 ? 64 : elite.energy;
-			e2 = elite.energy > 128 ? 64 : elite.energy - 64;
-			e3 = elite.energy > 192 ? 64 : elite.energy - 128;
-			e4 = elite.energy - 192;
+            float e1 = elite.energy > 64 ? 64 : elite.energy;
+            float e2 = elite.energy > 128 ? 64 : elite.energy - 64;
+            float e3 = elite.energy > 192 ? 64 : elite.energy - 128;
+            float e4 = elite.energy - 192;
 
 			if (e4 > 0)
 			{

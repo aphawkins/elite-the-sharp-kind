@@ -54,12 +54,12 @@ namespace Elite.Engine
 		internal static bool docked;
 		internal static bool finish;
 		internal static float flight_speed;
-		internal static int flight_roll;
-		internal static int flight_climb;
-		internal static int front_shield;
-		internal static int aft_shield;
-		internal static int energy;
-		internal static int laser_temp;
+		internal static float flight_roll;
+		internal static float flight_climb;
+		internal static float front_shield;
+		internal static float aft_shield;
+		internal static float energy;
+		internal static float laser_temp;
 		internal static bool detonate_bomb;
 		internal static bool auto_pilot;
 
