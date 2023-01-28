@@ -36,7 +36,7 @@ namespace Elite.Engine
         private static float hyper_distance;
         private static bool hyper_galactic;
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
-		internal static int[] ship_count = new int[shipdata.NO_OF_SHIPS + 1];  /* many */
+		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
         private static void rotate_x_first(ref float a, ref float b, float direction)
 		{
@@ -286,7 +286,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
+			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{
 				return;
 			}
@@ -599,8 +599,8 @@ namespace Elite.Engine
 
 					if (type == SHIP.SHIP_PLANET)
 					{
-						if ((ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) &&
-							(ship_count[(int)SHIP.SHIP_DODEC] == 0) &&
+						if ((ship_count[SHIP.SHIP_CORIOLIS] == 0) &&
+							(ship_count[SHIP.SHIP_DODEC] == 0) &&
 							(universe[i].location.Length() < 65792)) // was 49152
 						{
 							make_station_appear();
@@ -732,7 +732,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
+			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{
 				un = 1;
 			}
@@ -944,7 +944,7 @@ namespace Elite.Engine
 			update_scanner();
 			update_compass();
 
-			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
+			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{
                 elite.alg_gfx.DrawImage(Image.BigS, new(387, 490));
 			}
@@ -1258,7 +1258,7 @@ namespace Elite.Engine
 		 */
 		internal static void engage_docking_computer()
 		{
-			if (ship_count[(int)SHIP.SHIP_CORIOLIS] != 0 || ship_count[(int)SHIP.SHIP_DODEC] != 0)
+			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{
 				elite.audio.PlayEffect(SoundEffect.Dock);
 				dock_player();

@@ -720,7 +720,7 @@ namespace Elite.Engine
             }
 
 
-            while ((space.ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[(int)SHIP.SHIP_DODEC] == 0))
+            while ((space.ship_count[SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[SHIP.SHIP_DODEC] == 0))
             {
                 auto_dock();
 

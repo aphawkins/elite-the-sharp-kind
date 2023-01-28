@@ -221,7 +221,7 @@ namespace Elite.Engine
 			float dir;
 
 			if (ship.flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
-				((space.ship_count[(int)SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[(int)SHIP.SHIP_DODEC] == 0)))
+				((space.ship_count[SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[SHIP.SHIP_DODEC] == 0)))
 			{
 				fly_to_planet(ref ship);
 				return;
