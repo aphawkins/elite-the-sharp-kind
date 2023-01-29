@@ -115,7 +115,7 @@ namespace Elite.Engine
 				direction = -100;
 
 				space.ship_count[space.universe[0].type] = 0;
-				space.universe[0].type = 0;
+				space.universe[0].type = SHIP.SHIP_NONE;
 
 				swat.add_new_ship(ship_no, new(0, 0, 4500), intro_ship_matrix, -127, -127);
 			}

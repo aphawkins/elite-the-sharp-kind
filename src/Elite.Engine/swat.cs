@@ -163,7 +163,7 @@ namespace Elite.Engine
 				space.ship_count[type]--;
 			}
 
-			space.universe[un].type = 0;
+			space.universe[un].type = SHIP.SHIP_NONE;
 
 			check_missiles(un);
 
@@ -182,7 +182,7 @@ namespace Elite.Engine
 		internal static void add_new_station(Vector3 position, Vector3[] rotmat)
 		{
 			SHIP station = (elite.current_planet_data.techlevel >= 10) ? SHIP.SHIP_DODEC : SHIP.SHIP_CORIOLIS;
-			space.universe[1].type = 0;
+			space.universe[1].type = SHIP.SHIP_NONE;
 			add_new_ship(station, position, rotmat, 0, -127);
 		}
 
