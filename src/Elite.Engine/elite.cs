@@ -28,6 +28,7 @@ namespace Elite.Engine
 		internal static IGfx alg_gfx;
 		internal static Audio audio;
         internal static IKeyboard keyboard;
+        internal static Scanner scanner;
 
         internal const int PULSE_LASER = 0x0F;     //  15
 		internal const int BEAM_LASER = 0x8F;      // 143
@@ -46,7 +47,6 @@ namespace Elite.Engine
 
         public static ConfigSettings config;
 
-        internal static string scanner_filename;
 		internal static Vector2 scanner_centre = new(253, 63 + 385);
 		internal static Vector2 compass_centre = new(382, 22 + 385);
 
@@ -715,7 +715,7 @@ namespace Elite.Engine
 
                 alg_gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
 
-                space.update_console();
+                scanner.update_console();
                 alg_gfx.ScreenUpdate();
             }
 
@@ -740,7 +740,7 @@ namespace Elite.Engine
                 draw.ClearDisplay();
                 Stars.update_starfield();
                 space.update_universe();
-                space.update_console();
+                scanner.update_console();
                 alg_gfx.ScreenUpdate();
             }
 
@@ -1180,7 +1180,7 @@ namespace Elite.Engine
 
             saved_cmdr = (Commander)cmdr.Clone();
             restore_saved_commander();
-            space.update_console();
+            scanner.update_console();
         }
 
         private static void run_first_intro_screen()
@@ -1297,7 +1297,7 @@ namespace Elite.Engine
             {
                 missions.check_mission_brief();
                 CommanderStatus.display_commander_status();
-                space.update_console();
+                scanner.update_console();
             }
             else
             {
@@ -1339,7 +1339,7 @@ namespace Elite.Engine
             draw.LoadImages();
             draw.DrawBorder();
 
-            
+            scanner = new Scanner(space.universe, space.ship_count);
 
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;
@@ -1354,7 +1354,7 @@ namespace Elite.Engine
                 initialise_game();
                 space.dock_player();
 
-                space.update_console();
+                scanner.update_console();
 
                 current_screen = SCR.SCR_FRONT_VIEW;
                 run_first_intro_screen();
@@ -1440,7 +1440,7 @@ namespace Elite.Engine
 
                         if (docked)
                         {
-                            space.update_console();
+                            scanner.update_console();
                             elite.alg_gfx.ScreenRelease();
                             continue;
                         }
@@ -1509,7 +1509,7 @@ namespace Elite.Engine
                         swat.cool_laser();
                         swat.time_ecm();
 
-                        space.update_console();
+                        scanner.update_console();
                     }
 
                     if (current_screen == SCR.SCR_BREAK_PATTERN)

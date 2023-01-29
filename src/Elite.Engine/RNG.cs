@@ -23,7 +23,7 @@ namespace Elite.Engine
 
         internal static int Random(int minValue, int maxValue)
         {
-            return new Random().Next(minValue, maxValue);
+            return new Random().Next(minValue, maxValue + 1);
         }
 
         internal static bool TrueOrFalse()
