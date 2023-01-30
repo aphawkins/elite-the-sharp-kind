@@ -29,8 +29,13 @@ namespace Elite.Engine
 
 	internal class space
 	{
-		private readonly IGfx _gfx;
+		private readonly elite _elite;
+        private readonly IGfx _gfx;
         private readonly threed _threed;
+        private readonly Audio _audio;
+        private readonly pilot _pilot;
+        private readonly swat _swat;
+        private readonly trade _trade;
         private static galaxy_seed destination_planet;
 		internal static bool hyper_ready;
         private static int hyper_countdown;
@@ -40,10 +45,15 @@ namespace Elite.Engine
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
-		internal space(IGfx gfx, threed threed)
+		internal space(elite elite, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade)
 		{
+			_elite = elite;
 			_gfx = gfx;
 			_threed = threed;
+			_audio = audio;
+			_pilot = pilot;
+			_swat = swat;
+			_trade = trade;
         }
 
         private static void rotate_x_first(ref float a, ref float b, float direction)
@@ -168,24 +178,6 @@ namespace Elite.Engine
 			VectorMaths.tidy_matrix(obj.rotmat);
 		}
 
-		/*
-		 * Dock the player into the space station.
-		 */
-		internal static void dock_player()
-		{
-			pilot.disengage_auto_pilot();
-			elite.docked = true;
-			elite.flight_speed = 0;
-			elite.flight_roll = 0;
-			elite.flight_climb = 0;
-			elite.front_shield = 255;
-			elite.aft_shield = 255;
-			elite.energy = 255;
-			elite.myship.altitude = 255;
-			elite.myship.cabtemp = 30;
-			swat.reset_weapons();
-		}
-
         /*
 		 * Check if we are correctly aligned to dock.
 		 */
@@ -228,16 +220,7 @@ namespace Elite.Engine
 			return true;
 		}
 
-        /*
-		 * Game Over...
-		 */
-        private static void do_game_over()
-		{
-			elite.audio.PlayEffect(SoundEffect.Gameover);
-			elite.game_over = true;
-		}
-
-		internal static void update_altitude()
+		internal void update_altitude()
 		{
 			elite.myship.altitude = 255;
 
@@ -270,7 +253,7 @@ namespace Elite.Engine
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
-				do_game_over();
+				_elite.do_game_over();
 				return;
 			}
 
@@ -278,14 +261,14 @@ namespace Elite.Engine
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
-				do_game_over();
+                _elite.do_game_over();
 				return;
 			}
 
 			elite.myship.altitude = dist;
 		}
 
-		internal static void update_cabin_temp()
+		internal void update_cabin_temp()
 		{
 			elite.myship.cabtemp = 30;
 
@@ -326,7 +309,7 @@ namespace Elite.Engine
 			if (elite.myship.cabtemp > 255)
 			{
 				elite.myship.cabtemp = 255;
-				do_game_over();
+                _elite.do_game_over();
 				return;
 			}
 
@@ -372,45 +355,6 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void decrease_energy(float amount)
-		{
-			elite.energy += amount;
-
-			if (elite.energy <= 0)
-			{
-				do_game_over();
-			}
-		}
-
-		/*
-		 * Deplete the shields.  Drain the energy banks if the shields fail.
-		 */
-		internal static void damage_ship(int damage, bool front)
-		{
-			if (damage <= 0)    /* sanity check */
-			{
-				return;
-			}
-
-			float shield = front ? elite.front_shield : elite.aft_shield;
-
-			shield -= damage;
-			if (shield < 0)
-			{
-				decrease_energy(shield);
-				shield = 0;
-			}
-
-			if (front)
-			{
-				elite.front_shield = shield;
-			}
-			else
-			{
-				elite.aft_shield = shield;
-			}
-		}
-
         private static void make_station_appear()
 		{
 			float px, py, pz;
@@ -453,25 +397,25 @@ namespace Elite.Engine
 			swat.add_new_station(position, rotmat);
 		}
 
-        private static void check_docking(int i)
+        private void check_docking(int i)
 		{
 			if (is_docking(i))
 			{
-				elite.audio.PlayEffect(SoundEffect.Dock);
-				dock_player();
+				_audio.PlayEffect(SoundEffect.Dock);
+				_elite.dock_player();
 				elite.current_screen = SCR.SCR_BREAK_PATTERN;
 				return;
 			}
 
 			if (elite.flight_speed >= 5)
 			{
-				do_game_over();
+				_elite.do_game_over();
 				return;
 			}
 
 			elite.flight_speed = 1;
-			damage_ship(5, universe[i].location.Z > 0);
-			elite.audio.PlayEffect(SoundEffect.Crash);
+			_elite.damage_ship(5, universe[i].location.Z > 0);
+			_audio.PlayEffect(SoundEffect.Crash);
 		}
 
         private static void switch_to_view(ref univ_object flip)
@@ -554,112 +498,114 @@ namespace Elite.Engine
             threed.RenderStart();
 
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
-			{
-				type = universe[i].type;
+            {
+                type = universe[i].type;
 
-				if (type != 0)
-				{
-					if (universe[i].flags.HasFlag(FLG.FLG_REMOVE))
-					{
-						if (type == SHIP.SHIP_VIPER)
-						{
-							elite.cmdr.legal_status |= 64;
-						}
+                if (type == SHIP.SHIP_NONE)
+                {
+                    continue;
+                }
 
-						float bounty = elite.ship_list[(int)type].bounty;
+                if (universe[i].flags.HasFlag(FLG.FLG_REMOVE))
+                {
+                    if (type == SHIP.SHIP_VIPER)
+                    {
+                        elite.cmdr.legal_status |= 64;
+                    }
 
-						if ((bounty != 0) && (!elite.witchspace))
-						{
-							elite.cmdr.credits += bounty;
-                            elite.info_message($"{elite.cmdr.credits:N1} Credits");
-						}
+                    float bounty = elite.ship_list[(int)type].bounty;
 
-						swat.remove_ship(i);
-						continue;
-					}
+                    if ((bounty != 0) && (!elite.witchspace))
+                    {
+                        elite.cmdr.credits += bounty;
+                        elite.info_message($"{elite.cmdr.credits:N1} Credits");
+                    }
 
-					if (elite.detonate_bomb &&
-						(!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
-						(type != SHIP.SHIP_PLANET) &&
-						(type != SHIP.SHIP_SUN) &&
-						(type != SHIP.SHIP_CONSTRICTOR) &&
-						(type != SHIP.SHIP_COUGAR) &&
-						(type != SHIP.SHIP_CORIOLIS) &&
-						(type != SHIP.SHIP_DODEC))
-					{
-						elite.audio.PlayEffect(SoundEffect.Explode);
-						universe[i].flags |= FLG.FLG_DEAD;
-					}
+                    swat.remove_ship(i);
+                    continue;
+                }
 
-					if (elite.current_screen is 
-						not SCR.SCR_INTRO_ONE and
-                        not SCR.SCR_INTRO_TWO and
-                        not SCR.SCR_GAME_OVER and
-                        not SCR.SCR_ESCAPE_POD)
-					{
-						swat.tactics(i);
-					}
+                if (elite.detonate_bomb &&
+                    (!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
+                    (type != SHIP.SHIP_PLANET) &&
+                    (type != SHIP.SHIP_SUN) &&
+                    (type != SHIP.SHIP_CONSTRICTOR) &&
+                    (type != SHIP.SHIP_COUGAR) &&
+                    (type != SHIP.SHIP_CORIOLIS) &&
+                    (type != SHIP.SHIP_DODEC))
+                {
+                    _audio.PlayEffect(SoundEffect.Explode);
+                    universe[i].flags |= FLG.FLG_DEAD;
+                }
 
-					move_univ_object(ref universe[i]);
+                if (elite.current_screen is
+                    not SCR.SCR_INTRO_ONE and
+                    not SCR.SCR_INTRO_TWO and
+                    not SCR.SCR_GAME_OVER and
+                    not SCR.SCR_ESCAPE_POD)
+                {
+                    _swat.tactics(i);
+                }
 
-                    univ_object flip = (univ_object)universe[i].Clone();
-					switch_to_view(ref flip);
+                move_univ_object(ref universe[i]);
 
-					if (type == SHIP.SHIP_PLANET)
-					{
-						if ((ship_count[SHIP.SHIP_CORIOLIS] == 0) &&
-							(ship_count[SHIP.SHIP_DODEC] == 0) &&
-							(universe[i].location.Length() < 65792)) // was 49152
-						{
-							make_station_appear();
-						}
+                univ_object flip = (univ_object)universe[i].Clone();
+                switch_to_view(ref flip);
 
-						_threed.DrawObject(ref flip);
-						continue;
-					}
+                if (type == SHIP.SHIP_PLANET)
+                {
+                    if ((ship_count[SHIP.SHIP_CORIOLIS] == 0) &&
+                        (ship_count[SHIP.SHIP_DODEC] == 0) &&
+                        (universe[i].location.Length() < 65792)) // was 49152
+                    {
+                        make_station_appear();
+                    }
 
-					if (type == SHIP.SHIP_SUN)
-					{
-						_threed.DrawObject(ref flip);
-						continue;
-					}
+                    _threed.DrawObject(ref flip);
+                    continue;
+                }
+
+                if (type == SHIP.SHIP_SUN)
+                {
+                    _threed.DrawObject(ref flip);
+                    continue;
+                }
 
 
-					if (universe[i].location.Length() < 170)
-					{
-						if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
-						{
-							check_docking(i);
-						}
-						else
-                        {
-                            trade.scoop_item(i);
-                        }
+                if (universe[i].location.Length() < 170)
+                {
+                    if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
+                    {
+                        check_docking(i);
+                    }
+                    else
+                    {
+                        _trade.scoop_item(i);
+                    }
 
-                        continue;
-					}
+                    continue;
+                }
 
-					if (universe[i].location.Length() > 57344)
-					{
-						swat.remove_ship(i);
-						continue;
-					}
+                if (universe[i].location.Length() > 57344)
+                {
+                    swat.remove_ship(i);
+                    continue;
+                }
 
-					_threed.DrawObject(ref flip);
+                _threed.DrawObject(ref flip);
 
-					universe[i].flags = flip.flags;
-					universe[i].exp_delta = flip.exp_delta;
+                universe[i].flags = flip.flags;
+                universe[i].exp_delta = flip.exp_delta;
 
-					universe[i].flags &= ~FLG.FLG_FIRING;
+                universe[i].flags &= ~FLG.FLG_FIRING;
 
-					if (universe[i].flags.HasFlag(FLG.FLG_DEAD))
-					{
-						continue;
-					}
+                if (universe[i].flags.HasFlag(FLG.FLG_DEAD))
+                {
+                    continue;
+                }
 
-					swat.check_target(i, ref flip);
-				}
-			}
+                _swat.check_target(i, ref flip);
+            }
 
             _threed.RenderFinish();
 			elite.detonate_bomb = false;
@@ -697,7 +643,7 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void start_hyperspace()
+		internal void start_hyperspace()
 		{
 			if (hyper_ready)
 			{
@@ -717,10 +663,10 @@ namespace Elite.Engine
 			hyper_countdown = 15;
 			hyper_galactic = false;
 
-			pilot.disengage_auto_pilot();
+			_pilot.disengage_auto_pilot();
 		}
 
-		internal static void start_galactic_hyperspace()
+		internal void start_galactic_hyperspace()
 		{
 			if (hyper_ready)
 			{
@@ -735,7 +681,7 @@ namespace Elite.Engine
 			hyper_ready = true;
 			hyper_countdown = 2;
 			hyper_galactic = true;
-			pilot.disengage_auto_pilot();
+			_pilot.disengage_auto_pilot();
 		}
 
 		internal void display_hyper_status()
@@ -789,7 +735,7 @@ namespace Elite.Engine
 			elite.hyperspace_planet = (galaxy_seed)elite.docked_planet.Clone();
 		}
 
-        private static void enter_witchspace()
+        private void enter_witchspace()
 		{
 			int i;
 			int nthg;
@@ -812,10 +758,10 @@ namespace Elite.Engine
 			}
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.audio.PlayEffect(SoundEffect.Hyperspace);
+			_audio.PlayEffect(SoundEffect.Hyperspace);
 		}
 
-        private static void complete_hyperspace()
+        private void complete_hyperspace()
 		{
 			Vector3[] rotmat = new Vector3[3];
 			hyper_ready = false;
@@ -879,10 +825,10 @@ namespace Elite.Engine
 			swat.add_new_ship(SHIP.SHIP_SUN, position, rotmat, 0, 0);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.audio.PlayEffect(SoundEffect.Hyperspace);
+			_audio.PlayEffect(SoundEffect.Hyperspace);
 		}
 
-		internal static void countdown_hyperspace()
+		internal void countdown_hyperspace()
 		{
 			if (hyper_countdown == 0)
 			{
@@ -938,7 +884,7 @@ namespace Elite.Engine
 			swat.in_battle = false;
 		}
 
-		internal static void launch_player()
+		internal void launch_player()
 		{
 			Vector3[] rotmat = new Vector3[3];
 
@@ -959,21 +905,21 @@ namespace Elite.Engine
 			swat.add_new_station(new(0, 0, -256), rotmat);
 
 			elite.current_screen = SCR.SCR_BREAK_PATTERN;
-			elite.audio.PlayEffect(SoundEffect.Launch);
+			_audio.PlayEffect(SoundEffect.Launch);
 		}
 
 		/*
 		 * Engage the docking computer.
 		 * For the moment we just do an instant dock if we are in the safe zone.
 		 */
-		internal static void engage_docking_computer()
+		internal void engage_docking_computer()
 		{
 			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{
-				elite.audio.PlayEffect(SoundEffect.Dock);
-				dock_player();
+				_audio.PlayEffect(SoundEffect.Dock);
+				_elite.dock_player();
 				elite.current_screen = SCR.SCR_BREAK_PATTERN;
 			}
 		}
-	}
+    }
 }

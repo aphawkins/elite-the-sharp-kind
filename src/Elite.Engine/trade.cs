@@ -17,14 +17,17 @@ namespace Elite.Engine
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;
 
-	internal static class trade
+	internal class trade
 	{
 		internal const int ALIEN_ITEMS_IDX = 16;
         private const int SLAVES = 3;
         private const int NARCOTICS = 6;
         private const int FIREARMS = 10;
 
-		internal static string TONNES = "t";
+        private readonly elite _elite;
+        private readonly swat _swat;
+
+        internal static string TONNES = "t";
 		internal static string KILOGRAMS = "Kg";
 		internal static string GRAMS = "g";
 
@@ -51,6 +54,12 @@ namespace Elite.Engine
 			new("Gem-Stones",   0, 0,  4.5f, -1, 250, 0x0F, GRAMS),
 			new("Alien Items",  0, 0,  5.3f, 15, 192, 0x07, TONNES),
 		};
+
+		internal trade(elite elite, swat swat)
+		{
+			_elite = elite;
+            _swat = swat;
+        }
 
 		/*
 		 * Generate the Elite stock market.
@@ -118,7 +127,7 @@ namespace Elite.Engine
 			return cargo_held;
 		}
 
-		internal static void scoop_item(int un)
+		internal void scoop_item(int un)
 		{
 			SHIP type;
 			int trade;
@@ -138,8 +147,8 @@ namespace Elite.Engine
             if ((!elite.cmdr.fuel_scoop) || (space.universe[un].location.Y >= 0) ||
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
-				swat.explode_object(un);
-				space.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
+				_swat.explode_object(un);
+				_elite.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
 				return;
 			}
 
@@ -161,8 +170,8 @@ namespace Elite.Engine
 				return;
 			}
 
-			swat.explode_object(un);
-			space.damage_ship(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
+			_swat.explode_object(un);
+			_elite.damage_ship(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
 		}
 	}
 }

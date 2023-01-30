@@ -31,8 +31,15 @@ namespace Elite.Engine
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;
 
-	internal static class pilot
+	internal class pilot
 	{
+		private readonly Audio _audio;
+
+		internal pilot(Audio audio)
+		{
+			_audio = audio;
+		}
+
         /*
 		 * Fly to a given point in space.
 		 */
@@ -259,7 +266,7 @@ namespace Elite.Engine
 			fly_to_station(ref ship);
 		}
 
-		internal static void engage_auto_pilot()
+		internal void engage_auto_pilot()
 		{
 			if (elite.auto_pilot || elite.witchspace || space.hyper_ready)
 			{
@@ -267,15 +274,15 @@ namespace Elite.Engine
 			}
 
 			elite.auto_pilot = true;
-			elite.audio.PlayMusic(Music.BlueDanube, true);
+			_audio.PlayMusic(Music.BlueDanube, true);
 		}
 
-		internal static void disengage_auto_pilot()
+		internal void disengage_auto_pilot()
 		{
 			if (elite.auto_pilot)
 			{
 				elite.auto_pilot = false;
-				elite.audio.StopMusic();
+				_audio.StopMusic();
 			}
 		}
 	}

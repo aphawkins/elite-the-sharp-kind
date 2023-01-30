@@ -28,7 +28,10 @@ namespace Elite.Engine
 
 	internal class swat
 	{
-		internal static int MISSILE_UNARMED = -2;
+		private readonly elite _elite;
+		private readonly Audio _audio;
+
+        internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
         private static int laser_counter;
         private static int laser;
@@ -74,6 +77,12 @@ namespace Elite.Engine
 			FLG.FLG_POLICE | FLG.FLG_CLOAKED,					// cougar
 			0											// dodec
 		};
+
+		internal swat(elite elite, Audio audio)
+		{
+			_elite = elite;
+			_audio = audio;
+        }
 
 		internal static void clear_universe()
 		{
@@ -289,25 +298,25 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void explode_object(int un)
-		{
-			elite.cmdr.score++;
+        internal void explode_object(int un)
+        {
+            elite.cmdr.score++;
 
-			if ((elite.cmdr.score & 255) == 0)
-			{
+            if ((elite.cmdr.score & 255) == 0)
+            {
                 elite.info_message("Right On Commander!");
-			}
+            }
 
-			elite.audio.PlayEffect(SoundEffect.Explode);
-			space.universe[un].flags |= FLG.FLG_DEAD;
+            _audio.PlayEffect(SoundEffect.Explode);
+            space.universe[un].flags |= FLG.FLG_DEAD;
 
-			if (space.universe[un].type == SHIP.SHIP_CONSTRICTOR)
-			{
-				elite.cmdr.mission = 2;
-			}
-		}
+            if (space.universe[un].type == SHIP.SHIP_CONSTRICTOR)
+            {
+                elite.cmdr.mission = 2;
+            }
+        }
 
-		internal static void check_target(int un, ref univ_object flip)
+        internal void check_target(int un, ref univ_object flip)
 		{
 			//univ_object univ = space.universe[un];
 
@@ -317,12 +326,12 @@ namespace Elite.Engine
 				{
 					missile_target = un;
                     elite.info_message("Target Locked");
-					elite.audio.PlayEffect(SoundEffect.Beep);
+					_audio.PlayEffect(SoundEffect.Beep);
 				}
 
 				if (laser > 0)
 				{
-					elite.audio.PlayEffect(SoundEffect.HitEnemy);
+					_audio.PlayEffect(SoundEffect.HitEnemy);
 
 					if (space.universe[un].type is not SHIP.SHIP_CORIOLIS and not SHIP.SHIP_DODEC)
 					{
@@ -362,24 +371,24 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void activate_ecm(bool ours)
+		internal void activate_ecm(bool ours)
 		{
 			if (ecm_active == 0)
 			{
 				ecm_active = 32;
 				ecm_ours = ours;
-				elite.audio.PlayEffect(SoundEffect.Ecm);
+				_audio.PlayEffect(SoundEffect.Ecm);
 			}
 		}
 
-		internal static void time_ecm()
+		internal void time_ecm()
 		{
 			if (ecm_active != 0)
 			{
 				ecm_active--;
 				if (ecm_ours)
 				{
-					space.decrease_energy(-1);
+					_elite.decrease_energy(-1);
 				}
 			}
 		}
@@ -392,13 +401,13 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void unarm_missile()
+		internal void unarm_missile()
 		{
 			missile_target = MISSILE_UNARMED;
-			elite.audio.PlayEffect(SoundEffect.Boop);
+			_audio.PlayEffect(SoundEffect.Boop);
 		}
 
-		internal static void fire_missile()
+		internal void fire_missile()
 		{
 			Vector3[] rotmat = new Vector3[3];
 
@@ -431,7 +440,7 @@ namespace Elite.Engine
 			elite.cmdr.missiles--;
 			missile_target = MISSILE_UNARMED;
 
-			elite.audio.PlayEffect(SoundEffect.Missile);
+			_audio.PlayEffect(SoundEffect.Missile);
 		}
 
         private static void track_object(ref univ_object ship, float direction, Vector3 nvec)
@@ -472,7 +481,7 @@ namespace Elite.Engine
 			}
 		}
 
-        private static void missile_tactics(univ_object missile)
+        private void missile_tactics(univ_object missile)
 		{
 			univ_object target;
 			Vector3 vec;
@@ -482,7 +491,7 @@ namespace Elite.Engine
 
 			if (ecm_active != 0)
 			{
-				elite.audio.PlayEffect(SoundEffect.Explode);
+				_audio.PlayEffect(SoundEffect.Explode);
 
 				missile.flags |= FLG.FLG_DEAD;
 				return;
@@ -493,8 +502,8 @@ namespace Elite.Engine
 				if (missile.location.Length() < 512)
 				{
 					missile.flags |= FLG.FLG_DEAD;
-					elite.audio.PlayEffect(SoundEffect.Explode);
-					space.damage_ship(250, missile.location.Z >= 0.0);
+					_audio.PlayEffect(SoundEffect.Explode);
+					_elite.damage_ship(250, missile.location.Z >= 0.0);
 					return;
 				}
 
@@ -515,7 +524,7 @@ namespace Elite.Engine
 					}
 					else
 					{
-						elite.audio.PlayEffect(SoundEffect.Explode);
+						_audio.PlayEffect(SoundEffect.Explode);
 					}
 
 					return;
@@ -576,7 +585,7 @@ namespace Elite.Engine
 			launch_enemy(1, type, FLG.FLG_HAS_ECM | FLG.FLG_FLY_TO_PLANET, 113);
 		}
 
-		internal static void tactics(int un)
+		internal void tactics(int un)
 		{
 			int energy;
 			int maxeng;
@@ -763,16 +772,16 @@ namespace Elite.Engine
 
 				if (direction <= -0.972)
 				{
-					space.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
+					_elite.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
 					ship.acceleration--;
 					if (((ship.location.Z >= 0.0) && (elite.front_shield == 0)) ||
 						((ship.location.Z < 0.0) && (elite.aft_shield == 0)))
 					{
-						elite.audio.PlayEffect(SoundEffect.IncomingFire2);
+						_audio.PlayEffect(SoundEffect.IncomingFire2);
 					}
 					else
 					{
-						elite.audio.PlayEffect(SoundEffect.IncomingFire1);
+						_audio.PlayEffect(SoundEffect.IncomingFire1);
 					}
 				}
 				else
@@ -862,7 +871,7 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static int fire_laser()
+		internal int fire_laser()
 		{
 			if ((laser_counter == 0) && (elite.laser_temp < 242))
 			{
@@ -880,7 +889,7 @@ namespace Elite.Engine
 					laser &= 127;
 					laser2 = laser;
 
-					elite.audio.PlayEffect(SoundEffect.Pulse);
+					_audio.PlayEffect(SoundEffect.Pulse);
 					elite.laser_temp += 8;
 					if (elite.energy > 1)
 					{
@@ -1194,22 +1203,6 @@ namespace Elite.Engine
 			}
 
 			check_for_others();
-		}
-
-		internal static void abandon_ship()
-		{
-			elite.cmdr.escape_pod = false;
-			elite.cmdr.legal_status = 0;
-			elite.cmdr.fuel = elite.myship.max_fuel;
-
-			for (int i = 0; i < trade.stock_market.Length; i++)
-			{
-				elite.cmdr.current_cargo[i] = 0;
-			}
-
-			elite.audio.PlayEffect(SoundEffect.Dock);
-			space.dock_player();
-			elite.current_screen = SCR.SCR_BREAK_PATTERN;
 		}
 	}
 }

@@ -25,8 +25,8 @@ namespace Elite.Engine
 
     public class elite
 	{
-		private IGfx _gfx;
-		internal static Audio audio;
+		private readonly IGfx _gfx;
+		private readonly Audio _audio;
         internal static IKeyboard keyboard;
         internal static Scanner scanner;
         private readonly Missions _missions;
@@ -34,6 +34,9 @@ namespace Elite.Engine
         private readonly space _space;
         private readonly Stars _stars;
         private readonly threed _threed;
+        private readonly pilot _pilot;
+        private readonly swat _swat;
+        private readonly trade _trade;
 
         internal const int PULSE_LASER = 0x0F;     //  15
 		internal const int BEAM_LASER = 0x8F;      // 143
@@ -510,7 +513,7 @@ namespace Elite.Engine
             }
         }
 
-        private static void d_pressed()
+        private void d_pressed()
         {
             switch (current_screen)
             {
@@ -525,7 +528,7 @@ namespace Elite.Engine
                 case SCR.SCR_LEFT_VIEW:
                     if (auto_pilot)
                     {
-                        pilot.disengage_auto_pilot();
+                        _pilot.disengage_auto_pilot();
                     }
 
                     break;
@@ -699,14 +702,14 @@ namespace Elite.Engine
 
             int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 200), rotmat, -127, -127);
             space.universe[newship].velocity = 7;
-            audio.PlayEffect(SoundEffect.Launch);
+            _audio.PlayEffect(SoundEffect.Launch);
 
             for (int i = 0; i < 90; i++)
             {
                 if (i == 40)
                 {
                     space.universe[newship].flags |= FLG.FLG_DEAD;
-                    audio.PlayEffect(SoundEffect.Explode);
+                    _audio.PlayEffect(SoundEffect.Explode);
                 }
 
                 _gfx.SetClipRegion(1, 1, 510, 383);
@@ -749,7 +752,7 @@ namespace Elite.Engine
                 _gfx.ScreenUpdate();
             }
 
-            swat.abandon_ship();
+            abandon_ship();
         }
 
         private void handle_flight_keys()
@@ -805,7 +808,7 @@ namespace Elite.Engine
 
                 if (docked)
                 {
-                    space.launch_player();
+                    _space.launch_player();
                 }
                 else
                 {
@@ -950,7 +953,7 @@ namespace Elite.Engine
             {
                 if ((!docked) && (draw_lasers == 0))
                 {
-                    draw_lasers = swat.fire_laser();
+                    draw_lasers = _swat.fire_laser();
                 }
             }
 
@@ -960,11 +963,11 @@ namespace Elite.Engine
                 {
                     if (config.InstantDock)
                     {
-                        space.engage_docking_computer();
+                        _space.engage_docking_computer();
                     }
                     else
                     {
-                        pilot.engage_auto_pilot();
+                        _pilot.engage_auto_pilot();
                     }
                 }
             }
@@ -978,7 +981,7 @@ namespace Elite.Engine
             {
                 if (!docked && cmdr.ecm)
                 {
-                    swat.activate_ecm(true);
+                    _swat.activate_ecm(true);
                 }
             }
 
@@ -991,11 +994,11 @@ namespace Elite.Engine
             {
                 if (keyboard.IsKeyPressed(CommandKey.CTRL))
                 {
-                    space.start_galactic_hyperspace();
+                    _space.start_galactic_hyperspace();
                 }
                 else
                 {
-                    space.start_hyperspace();
+                    _space.start_hyperspace();
                 }
             }
 
@@ -1008,7 +1011,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    swat.fire_missile();
+                    _swat.fire_missile();
                 }
             }
 
@@ -1034,7 +1037,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    swat.unarm_missile();
+                    _swat.unarm_missile();
                 }
             }
 
@@ -1195,7 +1198,7 @@ namespace Elite.Engine
         private void run_first_intro_screen()
         {
             current_screen = SCR.SCR_INTRO_ONE;
-            audio.PlayMusic(Music.EliteTheme, true);
+            _audio.PlayMusic(Music.EliteTheme, true);
             Intro1 intro = new(_gfx, _space);
 
             for (; ; )
@@ -1206,14 +1209,14 @@ namespace Elite.Engine
 
                 if (keyboard.IsKeyPressed(CommandKey.Y))
                 {
-                    audio.StopMusic();
+                    _audio.StopMusic();
                     load_commander_screen();
                     break;
                 }
 
                 if (keyboard.IsKeyPressed(CommandKey.N))
                 {
-                    audio.StopMusic();
+                    _audio.StopMusic();
                     break;
                 }
             }
@@ -1222,7 +1225,7 @@ namespace Elite.Engine
         private void run_second_intro_screen()
         {
             current_screen = SCR.SCR_INTRO_TWO;
-            audio.PlayMusic(Music.BlueDanube, true);
+            _audio.PlayMusic(Music.BlueDanube, true);
             Intro2 intro = new(_gfx, _stars, _space);
 
             flight_speed = 3;
@@ -1236,7 +1239,7 @@ namespace Elite.Engine
             }
             while (!keyboard.IsKeyPressed(CommandKey.Space));
 
-            audio.StopMusic();
+            _audio.StopMusic();
         }
 
         /*
@@ -1334,8 +1337,8 @@ namespace Elite.Engine
         public elite(ref IGfx alg_gfx, ref ISound sound, ref IKeyboard keyboard)
         {
             _gfx = alg_gfx;
-            elite.audio = new Audio(sound);
-            audio.LoadSounds();
+            _audio = new Audio(sound);
+            _audio.LoadSounds();
 
             elite.keyboard = keyboard;
             
@@ -1350,8 +1353,11 @@ namespace Elite.Engine
             _gfx.SpeedCap = config.SpeedCap;
 
             _threed = new(_gfx);
-            _space = new(_gfx, _threed);
             _stars = new(_gfx);
+            _pilot = new(_audio);
+            _swat = new(this, _audio);
+            _trade = new(this, _swat);
+            _space = new(this, _gfx, _threed, _audio, _pilot, _swat, _trade);
             _missions = new Missions(_gfx, _space);
             _planetData = new(_missions);
 
@@ -1362,7 +1368,7 @@ namespace Elite.Engine
             {
                 game_over = false;
                 initialise_game();
-                space.dock_player();
+                dock_player();
 
                 scanner.update_console();
 
@@ -1373,12 +1379,12 @@ namespace Elite.Engine
                 old_cross.X = -1f;
                 old_cross.Y = -1f;
 
-                space.dock_player();
+                dock_player();
                 CommanderStatus.display_commander_status();
 
                 while (!game_over)
                 {
-                    audio.UpdateSound();
+                    _audio.UpdateSound();
                     _gfx.ScreenUpdate();
                     _gfx.SetClipRegion(1, 1, 510, 383);
 
@@ -1478,7 +1484,7 @@ namespace Elite.Engine
                             _space.display_hyper_status();
                             if ((mcount & 3) == 0)
                             {
-                                space.countdown_hyperspace();
+                                _space.countdown_hyperspace();
                             }
                         }
 
@@ -1500,15 +1506,15 @@ namespace Elite.Engine
                             if (energy < 50)
                             {
                                 info_message("ENERGY LOW");
-                                audio.PlayEffect(SoundEffect.Beep);
+                                _audio.PlayEffect(SoundEffect.Beep);
                             }
 
-                            space.update_altitude();
+                            _space.update_altitude();
                         }
 
                         if ((mcount & 31) == 20)
                         {
-                            space.update_cabin_temp();
+                            _space.update_cabin_temp();
                         }
 
                         if ((mcount == 0) && (!witchspace))
@@ -1517,7 +1523,7 @@ namespace Elite.Engine
                         }
 
                         swat.cool_laser();
-                        swat.time_ecm();
+                        _swat.time_ecm();
 
                         scanner.update_console();
                     }
@@ -1559,6 +1565,90 @@ namespace Elite.Engine
                     run_game_over_screen();
                 }
             }
+        }
+
+        /// <summary>
+        /// Dock the player into the space station.
+        /// </summary>
+        internal void dock_player()
+        {
+            _pilot.disengage_auto_pilot();
+            elite.docked = true;
+            elite.flight_speed = 0;
+            elite.flight_roll = 0;
+            elite.flight_climb = 0;
+            elite.front_shield = 255;
+            elite.aft_shield = 255;
+            elite.energy = 255;
+            elite.myship.altitude = 255;
+            elite.myship.cabtemp = 30;
+            swat.reset_weapons();
+        }
+
+        internal void decrease_energy(float amount)
+        {
+            elite.energy += amount;
+
+            if (elite.energy <= 0)
+            {
+                do_game_over();
+            }
+        }
+
+        /// <summary>
+        /// Deplete the shields.  Drain the energy banks if the shields fail.
+        /// </summary>
+        /// <param name="damage"></param>
+        /// <param name="front"></param>
+        internal void damage_ship(int damage, bool front)
+        {
+            if (damage <= 0)    /* sanity check */
+            {
+                return;
+            }
+
+            float shield = front ? elite.front_shield : elite.aft_shield;
+
+            shield -= damage;
+            if (shield < 0)
+            {
+                decrease_energy(shield);
+                shield = 0;
+            }
+
+            if (front)
+            {
+                elite.front_shield = shield;
+            }
+            else
+            {
+                elite.aft_shield = shield;
+            }
+        }
+
+        internal void abandon_ship()
+        {
+            elite.cmdr.escape_pod = false;
+            elite.cmdr.legal_status = 0;
+            elite.cmdr.fuel = elite.myship.max_fuel;
+
+            for (int i = 0; i < trade.stock_market.Length; i++)
+            {
+                elite.cmdr.current_cargo[i] = 0;
+            }
+
+            _audio.PlayEffect(SoundEffect.Dock);
+            dock_player();
+            elite.current_screen = SCR.SCR_BREAK_PATTERN;
+        }
+
+        /// <summary>
+        /// Game Over...
+        /// </summary>
+        internal void do_game_over()
+        {
+            _audio.PlayEffect(SoundEffect.Gameover);
+            elite.game_over = true;
         }
     }
 }
