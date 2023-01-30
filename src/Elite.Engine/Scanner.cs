@@ -22,27 +22,20 @@ namespace Elite.Engine
 {
     using System.Numerics;
     using Elite.Common.Enums;
-	using Elite.Engine.Enums;
-	using Elite.Engine.Ships;
-	using Elite.Engine.Types;
-	using Elite.Engine.Views;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Types;
 
-	internal class Scanner
+    internal class Scanner
 	{
-		//      private static galaxy_seed destination_planet;
-		//internal static bool hyper_ready;
-		//      private static int hyper_countdown;
-		//      private static string hyper_name;
-		//      private static float hyper_distance;
-		//      private static bool hyper_galactic;
-		private univ_object[] _universe;
-		private Dictionary<SHIP, int> _shipCount;
+		private readonly IGfx _gfx;
+		private readonly univ_object[] _universe;
+		private readonly Dictionary<SHIP, int> _shipCount;
 
-		internal Scanner(univ_object[] universe, Dictionary<SHIP, int> shipCount)
+		internal Scanner(IGfx gfx, univ_object[] universe, Dictionary<SHIP, int> shipCount)
         { 
+			_gfx = gfx;
 			_universe = universe;
             _shipCount = shipCount;
-
         }
 
         /*
@@ -97,14 +90,14 @@ namespace Elite.Engine
 						break;
 				}
 
-                elite.alg_gfx.DrawLine(new(x1 + 2, y2), new(x1 - 3, y2), colour);
-                elite.alg_gfx.DrawLine(new(x1 + 2, y2 + 1), new(x1 - 3, y2 + 1), colour);
-                elite.alg_gfx.DrawLine(new(x1 + 2, y2 + 2), new(x1 - 3, y2 + 2), colour);
-                elite.alg_gfx.DrawLine(new(x1 + 2, y2 + 3), new(x1 - 3, y2 + 3), colour);
+                _gfx.DrawLine(new(x1 + 2, y2), new(x1 - 3, y2), colour);
+                _gfx.DrawLine(new(x1 + 2, y2 + 1), new(x1 - 3, y2 + 1), colour);
+                _gfx.DrawLine(new(x1 + 2, y2 + 2), new(x1 - 3, y2 + 2), colour);
+                _gfx.DrawLine(new(x1 + 2, y2 + 3), new(x1 - 3, y2 + 3), colour);
 
-                elite.alg_gfx.DrawLine(new(x1, y1), new(x1, y2), colour);
-                elite.alg_gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), colour);
-                elite.alg_gfx.DrawLine(new(x1 + 2, y1), new(x1 + 2, y2), colour);
+                _gfx.DrawLine(new(x1, y1), new(x1, y2), colour);
+                _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), colour);
+                _gfx.DrawLine(new(x1 + 2, y1), new(x1 + 2, y2), colour);
 			}
 		}
 
@@ -131,11 +124,11 @@ namespace Elite.Engine
 
 			if (dest.Z < 0)
 			{
-                elite.alg_gfx.DrawImage(Image.DotRed, compass);
+                _gfx.DrawImage(Image.DotRed, compass);
 			}
 			else
 			{
-                elite.alg_gfx.DrawImage(Image.GreenDot, compass);
+                _gfx.DrawImage(Image.GreenDot, compass);
 			}
 
 		}
@@ -154,7 +147,7 @@ namespace Elite.Engine
 
 			for (int i = 0; i < 6; i++)
 			{
-                elite.alg_gfx.DrawLine(new(sx, sy + i), new(sx + len, sy + i), colour);
+                _gfx.DrawLine(new(sx, sy + i), new(sx + len, sy + i), colour);
 			}
 		}
 
@@ -164,16 +157,16 @@ namespace Elite.Engine
 		 */
         private void display_dial_bar(float len, Vector2 position)
 		{
-            elite.alg_gfx.DrawLine(new(position.X, position.Y + 384f), new(position.X + len, position.Y + 384f), GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(position.X, position.Y + 384f), new(position.X + len, position.Y + 384f), GFX_COL.GFX_COL_GOLD);
 			int i = 1;
-            elite.alg_gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_GOLD);
 
 			for (i = 2; i < 7; i++)
 			{
-				elite.alg_gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_YELLOW_1);
+				_gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_YELLOW_1);
 			}
 
-            elite.alg_gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_DARK_RED);
+            _gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_DARK_RED);
 		}
 
         /*
@@ -257,7 +250,7 @@ namespace Elite.Engine
 
 			for (int i = 0; i < 4; i++)
 			{
-                elite.alg_gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), GFX_COL.GFX_COL_GOLD);
 			}
 		}
 
@@ -271,7 +264,7 @@ namespace Elite.Engine
 
 			for (int i = 0; i < 4; i++)
 			{
-                elite.alg_gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), GFX_COL.GFX_COL_GOLD);
 			}
 		}
 
@@ -296,21 +289,21 @@ namespace Elite.Engine
 
 			if (swat.missile_target != swat.MISSILE_UNARMED)
 			{
-                elite.alg_gfx.DrawImage((swat.missile_target < 0) ? Image.MissileYellow : Image.MissileRed, location);
+                _gfx.DrawImage((swat.missile_target < 0) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
 				nomiss--;
 			}
 
 			for (; nomiss > 0; nomiss--)
 			{
-                elite.alg_gfx.DrawImage(Image.MissileGreen, location);
+                _gfx.DrawImage(Image.MissileGreen, location);
                 location.X += 16;
 			}
 		}
 
 		internal void update_console()
 		{
-            elite.alg_gfx.SetClipRegion(0, 0, 512, 512);
+            _gfx.SetClipRegion(0, 0, 512, 512);
             elite.draw.DrawScanner();
 
 			display_speed();
@@ -334,12 +327,12 @@ namespace Elite.Engine
 
 			if (_shipCount[SHIP.SHIP_CORIOLIS] != 0 || _shipCount[SHIP.SHIP_DODEC] != 0)
 			{
-                elite.alg_gfx.DrawImage(Image.BigS, new(387, 490));
+                _gfx.DrawImage(Image.BigS, new(387, 490));
 			}
 
 			if (swat.ecm_active != 0)
 			{
-                elite.alg_gfx.DrawImage(Image.BigE, new(115, 490));
+                _gfx.DrawImage(Image.BigE, new(115, 490));
 			}
 		}
 	}

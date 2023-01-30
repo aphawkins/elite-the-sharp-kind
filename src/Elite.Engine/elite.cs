@@ -23,12 +23,17 @@ namespace Elite.Engine
     using Elite.Engine.Types;
     using Elite.Engine.Views;
 
-    public static class elite
+    public class elite
 	{
-		internal static IGfx alg_gfx;
+		private IGfx _gfx;
 		internal static Audio audio;
         internal static IKeyboard keyboard;
         internal static Scanner scanner;
+        private readonly Missions _missions;
+        private readonly PlanetData _planetData;
+        private readonly space _space;
+        private readonly Stars _stars;
+        private readonly threed _threed;
 
         internal const int PULSE_LASER = 0x0F;     //  15
 		internal const int BEAM_LASER = 0x8F;      // 143
@@ -224,49 +229,49 @@ namespace Elite.Engine
         /// </summary>
         /// <param name="cx"></param>
         /// <param name="cy"></param>
-        private static void draw_cross(Vector2 centre)
+        private void draw_cross(Vector2 centre)
         {
             if (current_screen == SCR.SCR_SHORT_RANGE)
             {
-                alg_gfx.SetClipRegion(1, 37, 510, 339);
-                alg_gfx.DrawLine(new(centre.X - 16f, centre.Y), new(centre.X + 16f, centre.Y), GFX_COL.GFX_COL_RED);
-                alg_gfx.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), GFX_COL.GFX_COL_RED);
-                alg_gfx.SetClipRegion(1, 1, 510, 383);
+                _gfx.SetClipRegion(1, 37, 510, 339);
+                _gfx.DrawLine(new(centre.X - 16f, centre.Y), new(centre.X + 16f, centre.Y), GFX_COL.GFX_COL_RED);
+                _gfx.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), GFX_COL.GFX_COL_RED);
+                _gfx.SetClipRegion(1, 1, 510, 383);
                 return;
             }
 
             if (current_screen == SCR.SCR_GALACTIC_CHART)
             {
-                alg_gfx.SetClipRegion(1, 37, 510, 293);
-                alg_gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), GFX_COL.GFX_COL_RED);
-                alg_gfx.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), GFX_COL.GFX_COL_RED);
-                alg_gfx.SetClipRegion(1, 1, 510, 383);
+                _gfx.SetClipRegion(1, 37, 510, 293);
+                _gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), GFX_COL.GFX_COL_RED);
+                _gfx.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), GFX_COL.GFX_COL_RED);
+                _gfx.SetClipRegion(1, 1, 510, 383);
             }
         }
 
-        private static void draw_laser_sights()
+        private void draw_laser_sights()
         {
             int laser = 0;
 
             switch (current_screen)
             {
                 case SCR.SCR_FRONT_VIEW:
-                    alg_gfx.DrawTextCentre(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
                     laser = cmdr.front_laser;
                     break;
 
                 case SCR.SCR_REAR_VIEW:
-                    alg_gfx.DrawTextCentre(32, "Rear View", 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(32, "Rear View", 120, GFX_COL.GFX_COL_WHITE);
                     laser = cmdr.rear_laser;
                     break;
 
                 case SCR.SCR_LEFT_VIEW:
-                    alg_gfx.DrawTextCentre(32, "Left View", 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(32, "Left View", 120, GFX_COL.GFX_COL_WHITE);
                     laser = cmdr.left_laser;
                     break;
 
                 case SCR.SCR_RIGHT_VIEW:
-                    alg_gfx.DrawTextCentre(32, "Right View", 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(32, "Right View", 120, GFX_COL.GFX_COL_WHITE);
                     laser = cmdr.right_laser;
                     break;
             }
@@ -277,31 +282,31 @@ namespace Elite.Engine
                 float y1 = (96f - 8f) * gfx.GFX_SCALE;
                 float y2 = (96f - 16f) * gfx.GFX_SCALE;
 
-                alg_gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
-                alg_gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
-                alg_gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
+                _gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
+                _gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
 
                 y1 = (96f + 8f) * gfx.GFX_SCALE;
                 y2 = (96f + 16f) * gfx.GFX_SCALE;
 
-                alg_gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
-                alg_gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
-                alg_gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
+                _gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
+                _gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
 
                 x1 = (128f - 8f) * gfx.GFX_SCALE;
                 y1 = 96f * gfx.GFX_SCALE;
                 float x2 = (128f - 16f) * gfx.GFX_SCALE;
 
-                alg_gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
-                alg_gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
-                alg_gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
+                _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
+                _gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
 
                 x1 = (128f + 8f) * gfx.GFX_SCALE;
                 x2 = (128f + 16f) * gfx.GFX_SCALE;
 
-                alg_gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
-                alg_gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
-                alg_gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
+                _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
+                _gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
             }
         }
 
@@ -527,18 +532,18 @@ namespace Elite.Engine
             }
         }
 
-        private static void f_pressed()
+        private void f_pressed()
         {
             if (current_screen is SCR.SCR_GALACTIC_CHART or SCR.SCR_SHORT_RANGE)
             {
                 find_input = true;
                 find_name = string.Empty;
                 draw.ClearTextArea();
-                alg_gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_WHITE);
             }
         }
 
-        private static void add_find_char(char letter)
+        private void add_find_char(char letter)
         {
             if (find_name.Length == 16)
             {
@@ -550,10 +555,10 @@ namespace Elite.Engine
 
             str = "Planet Name? " + find_name;
             draw.ClearTextArea();
-            alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
         }
 
-        private static void delete_find_char()
+        private void delete_find_char()
         {
             string str;
 
@@ -567,7 +572,7 @@ namespace Elite.Engine
 
             str = "Planet Name? " + find_name;
             draw.ClearTextArea();
-            alg_gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
         }
 
         private static void o_pressed()
@@ -681,7 +686,7 @@ namespace Elite.Engine
             }
         }
 
-        private static void run_escape_sequence()
+        private void run_escape_sequence()
         {
             Vector3[] rotmat = new Vector3[3];
             current_screen = SCR.SCR_ESCAPE_POD;
@@ -704,19 +709,19 @@ namespace Elite.Engine
                     audio.PlayEffect(SoundEffect.Explode);
                 }
 
-                alg_gfx.SetClipRegion(1, 1, 510, 383);
+                _gfx.SetClipRegion(1, 1, 510, 383);
                 draw.ClearDisplay();
-                Stars.update_starfield();
-                space.update_universe();
+                _stars.update_starfield();
+                _space.update_universe();
 
                 space.universe[newship].location.X = 0;
                 space.universe[newship].location.Y = 0;
                 space.universe[newship].location.Z += 2;
 
-                alg_gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
 
                 scanner.update_console();
-                alg_gfx.ScreenUpdate();
+                _gfx.ScreenUpdate();
             }
 
 
@@ -736,18 +741,18 @@ namespace Elite.Engine
                 }
 
                 Stars.warp_stars = true;
-                alg_gfx.SetClipRegion(1, 1, 510, 383);
+                _gfx.SetClipRegion(1, 1, 510, 383);
                 draw.ClearDisplay();
-                Stars.update_starfield();
-                space.update_universe();
+                _stars.update_starfield();
+                _space.update_universe();
                 scanner.update_console();
-                alg_gfx.ScreenUpdate();
+                _gfx.ScreenUpdate();
             }
 
             swat.abandon_ship();
         }
 
-        private static void handle_flight_keys()
+        private void handle_flight_keys()
         {
             //if (docked &&
             //    ((current_screen == SCR.SCR_MARKET_PRICES) ||
@@ -875,7 +880,7 @@ namespace Elite.Engine
             if (keyboard.IsKeyPressed(CommandKey.F7))
             {
                 find_input = false;
-                PlanetData.display_data_on_planet();
+                _planetData.display_data_on_planet();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F8) && (!witchspace))
@@ -909,7 +914,11 @@ namespace Elite.Engine
                 if (keyboard.IsKeyPressed(CommandKey.Enter))
                 {
                     find_input = false;
-                    GalacticChart.find_planet_by_name(find_name);
+                    if (!GalacticChart.find_planet_by_name(find_name))
+                    {
+                        draw.ClearTextArea();
+                        _gfx.DrawTextLeft(16, 340, "Unknown Planet", GFX_COL.GFX_COL_WHITE);
+                    }
                     return;
                 }
 
@@ -1183,19 +1192,17 @@ namespace Elite.Engine
             scanner.update_console();
         }
 
-        private static void run_first_intro_screen()
+        private void run_first_intro_screen()
         {
             current_screen = SCR.SCR_INTRO_ONE;
-
             audio.PlayMusic(Music.EliteTheme, true);
-
-            intro.initialise_intro1();
+            Intro1 intro = new(_gfx, _space);
 
             for (; ; )
             {
-                intro.update_intro1();
+                intro.Update();
 
-                alg_gfx.ScreenUpdate();
+                _gfx.ScreenUpdate();
 
                 if (keyboard.IsKeyPressed(CommandKey.Y))
                 {
@@ -1212,13 +1219,11 @@ namespace Elite.Engine
             }
         }
 
-        private static void run_second_intro_screen()
+        private void run_second_intro_screen()
         {
             current_screen = SCR.SCR_INTRO_TWO;
-
             audio.PlayMusic(Music.BlueDanube, true);
-
-            intro.initialise_intro2();
+            Intro2 intro = new(_gfx, _stars, _space);
 
             flight_speed = 3;
             flight_roll = 0;
@@ -1226,8 +1231,8 @@ namespace Elite.Engine
 
             do
             {
-                intro.update_intro2();
-                alg_gfx.ScreenUpdate();
+                intro.Update();
+                _gfx.ScreenUpdate();
             }
             while (!keyboard.IsKeyPressed(CommandKey.Space));
 
@@ -1237,7 +1242,7 @@ namespace Elite.Engine
         /*
 		 * Draw the game over sequence. 
 		 */
-        private static void run_game_over_screen()
+        private void run_game_over_screen()
         {
             int i;
             int newship;
@@ -1245,7 +1250,7 @@ namespace Elite.Engine
             SHIP type;
 
             current_screen = SCR.SCR_GAME_OVER;
-            alg_gfx.SetClipRegion(1, 1, 510, 383);
+            _gfx.SetClipRegion(1, 1, 510, 383);
 
             flight_speed = 6;
             flight_roll = 0;
@@ -1270,10 +1275,10 @@ namespace Elite.Engine
             for (i = 0; i < 100; i++)
             {
                 draw.ClearDisplay();
-                Stars.update_starfield();
-                space.update_universe();
-                alg_gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
-                alg_gfx.ScreenUpdate();
+                _stars.update_starfield();
+                _space.update_universe();
+                _gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.ScreenUpdate();
             }
         }
 
@@ -1281,20 +1286,20 @@ namespace Elite.Engine
 		 * Draw a break pattern (for launching, docking and hyperspacing).
 		 * Just draw a very simple one for the moment.
 		 */
-        private static void display_break_pattern()
+        private void display_break_pattern()
         {
-            alg_gfx.SetClipRegion(1, 1, 510, 383);
+            _gfx.SetClipRegion(1, 1, 510, 383);
             draw.ClearDisplay();
 
             for (int i = 0; i < 20; i++)
             {
-                alg_gfx.DrawCircle(new(256f, 192f), 30f + (i * 15f), GFX_COL.GFX_COL_WHITE);
-                alg_gfx.ScreenUpdate();
+                _gfx.DrawCircle(new(256f, 192f), 30f + (i * 15f), GFX_COL.GFX_COL_WHITE);
+                _gfx.ScreenUpdate();
             }
 
             if (docked)
             {
-                missions.check_mission_brief();
+                _missions.check_mission_brief();
                 CommanderStatus.display_commander_status();
                 scanner.update_console();
             }
@@ -1326,23 +1331,29 @@ namespace Elite.Engine
             //}
         }
 
-        public static int main(ref IGfx alg_gfx, ref ISound sound, ref IKeyboard keyboard)
+        public elite(ref IGfx alg_gfx, ref ISound sound, ref IKeyboard keyboard)
         {
-            elite.alg_gfx = alg_gfx;
+            _gfx = alg_gfx;
             elite.audio = new Audio(sound);
             audio.LoadSounds();
 
             elite.keyboard = keyboard;
             
-            draw = new(elite.alg_gfx);
+            draw = new(_gfx);
             draw.LoadImages();
             draw.DrawBorder();
 
-            scanner = new Scanner(space.universe, space.ship_count);
+            scanner = new Scanner(_gfx, space.universe, space.ship_count);
 
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;
-            elite.alg_gfx.SpeedCap = config.SpeedCap;
+            _gfx.SpeedCap = config.SpeedCap;
+
+            _threed = new(_gfx);
+            _space = new(_gfx, _threed);
+            _stars = new(_gfx);
+            _missions = new Missions(_gfx, _space);
+            _planetData = new(_missions);
 
             finish = false;
             auto_pilot = false;
@@ -1368,8 +1379,8 @@ namespace Elite.Engine
                 while (!game_over)
                 {
                     audio.UpdateSound();
-                    elite.alg_gfx.ScreenUpdate();
-                    elite.alg_gfx.SetClipRegion(1, 1, 510, 383);
+                    _gfx.ScreenUpdate();
+                    _gfx.SetClipRegion(1, 1, 510, 383);
 
                     rolling = false;
                     climbing = false;
@@ -1414,7 +1425,7 @@ namespace Elite.Engine
 
                     if (!docked)
                     {
-                        elite.alg_gfx.ScreenAcquire();
+                        _gfx.ScreenAcquire();
 
                         if (current_screen is
                             SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
@@ -1423,7 +1434,7 @@ namespace Elite.Engine
                             SCR.SCR_GAME_OVER)
                         {
                             draw.ClearDisplay();
-                            Stars.update_starfield();
+                            _stars.update_starfield();
                         }
 
                         if (auto_pilot)
@@ -1435,12 +1446,12 @@ namespace Elite.Engine
                             }
                         }
 
-                        space.update_universe();
+                        _space.update_universe();
 
                         if (docked)
                         {
                             scanner.update_console();
-                            elite.alg_gfx.ScreenRelease();
+                            _gfx.ScreenRelease();
                             continue;
                         }
 
@@ -1450,7 +1461,7 @@ namespace Elite.Engine
                         {
                             if (draw_lasers != 0)
                             {
-                                swat.draw_laser_lines();
+                                draw.DrawLaserLines();
                                 draw_lasers--;
                             }
 
@@ -1459,19 +1470,19 @@ namespace Elite.Engine
 
                         if (message_count > 0)
                         {
-                            elite.alg_gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
+                            _gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
                         }
 
                         if (space.hyper_ready)
                         {
-                            space.display_hyper_status();
+                            _space.display_hyper_status();
                             if ((mcount & 3) == 0)
                             {
                                 space.countdown_hyperspace();
                             }
                         }
 
-                        elite.alg_gfx.ScreenRelease();
+                        _gfx.ScreenRelease();
 
                         mcount--;
                         if (mcount < 0)
@@ -1548,10 +1559,6 @@ namespace Elite.Engine
                     run_game_over_screen();
                 }
             }
-
-            return 0;
         }
-
-        //END_OF_MAIN();
     }
 }

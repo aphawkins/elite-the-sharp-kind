@@ -23,7 +23,7 @@ namespace Elite.WinForms
             _gfx = new GdiGraphics(ref bmp);
             _sound = new Sound();
             _keyboard = new Keyboard();
-            Task.Run(() => elite.main(ref _gfx, ref _sound, ref _keyboard));
+            Task.Run(() => new elite(ref _gfx, ref _sound, ref _keyboard));
         }
 
         private void RefreshScreen()

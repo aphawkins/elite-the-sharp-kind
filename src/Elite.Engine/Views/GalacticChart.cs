@@ -88,7 +88,7 @@ namespace Elite.Engine.Views
 			show_distance_to_planet();
 		}
 
-		internal static void find_planet_by_name(string find_name)
+		internal static bool find_planet_by_name(string find_name)
 		{
 			string planet_name = string.Empty;
 			bool found = false;
@@ -112,9 +112,7 @@ namespace Elite.Engine.Views
 
 			if (!found)
 			{
-                elite.draw.ClearTextArea();
-                elite.alg_gfx.DrawTextLeft(16, 340, "Unknown Planet", GFX_COL.GFX_COL_WHITE);
-				return;
+				return false;
 			}
 
 			elite.hyperspace_planet = glx;
@@ -131,6 +129,8 @@ namespace Elite.Engine.Views
 				cross.X = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4f * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
 				cross.Y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2f * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
 			}
+
+			return true;
 		}
 
 		internal static void display_short_range_chart()

@@ -26,16 +26,13 @@ namespace Elite.Engine
 	using Elite.Engine.Ships;
 	using Elite.Engine.Types;
 
-	internal static class swat
+	internal class swat
 	{
 		internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
         private static int laser_counter;
         private static int laser;
         private static int laser2;
-        private static int laser_x;
-        private static int laser_y;
-
 		internal static int ecm_active;
 		internal static int missile_target;
         private static bool ecm_ours;
@@ -865,24 +862,6 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void draw_laser_lines()
-		{
-			if (elite.config.UseWireframe)
-			{
-				// Left laser
-                elite.alg_gfx.DrawTriangle(new(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-				// Right laser
-                elite.alg_gfx.DrawTriangle(new(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-            }
-			else
-			{
-				// Left laser
-                elite.alg_gfx.DrawTriangleFilled(new(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-				// Right laser
-                elite.alg_gfx.DrawTriangleFilled(new(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), new(laser_x, laser_y), new(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-			}
-		}
-
 		internal static int fire_laser()
 		{
 			if ((laser_counter == 0) && (elite.laser_temp < 242))
@@ -907,9 +886,6 @@ namespace Elite.Engine
 					{
 						elite.energy--;
 					}
-
-					laser_x = RNG.Random(126, 129) * gfx.GFX_SCALE;
-					laser_y = RNG.Random(94, 97) * gfx.GFX_SCALE;
 
 					return 2;
 				}

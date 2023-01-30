@@ -25,8 +25,11 @@ namespace Elite.Engine
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;
 
-	internal static class missions
+	internal class Missions
 	{
+        private readonly IGfx  _gfx;
+        private readonly space _space;
+
         private static readonly string mission1_brief_a =
 			"Greetings Commander, I am Captain Curruthers of " +
 			"Her Majesty's Space Navy and I beg a moment of your " +
@@ -88,7 +91,7 @@ namespace Elite.Engine
 			"For the moment please accept this Navy Extra Energy Unit as payment. " +
 			"---MESSAGE ENDS.";
 
-		internal static string? mission_planet_desc(galaxy_seed planet)
+		internal string? mission_planet_desc(galaxy_seed planet)
 		{
 			int pnum;
 
@@ -168,7 +171,13 @@ namespace Elite.Engine
 			return null;
 		}
 
-        private static void constrictor_mission_brief()
+        internal Missions(IGfx gfx, space space)
+		{
+			_gfx = gfx;
+			_space = space;
+		}
+
+        private void constrictor_mission_brief()
 		{
 			Vector3[] rotmat = new Vector3[3];
 
@@ -177,13 +186,13 @@ namespace Elite.Engine
 			elite.current_screen = SCR.SCR_FRONT_VIEW;
 
             elite.draw.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.draw.DrawTextPretty(16, 50, 300, mission1_brief_a);
             elite.draw.DrawTextPretty(16, 200, 470, (elite.cmdr.galaxy_number == 0) ? mission1_brief_b : mission1_brief_c);
 
-            elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
 			swat.clear_universe();
 			VectorMaths.set_init_matrix(ref rotmat);
@@ -194,101 +203,101 @@ namespace Elite.Engine
 
 			do
 			{
-                elite.alg_gfx.ClearArea(310, 50, 510, 180);
-				space.update_universe();
+                _gfx.ClearArea(310, 50, 510, 180);
+				_space.update_universe();
 				space.universe[0].location.Z = 600;
-                elite.alg_gfx.ScreenUpdate();
+                _gfx.ScreenUpdate();
 			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
-        private static void constrictor_mission_debrief()
+        private void constrictor_mission_debrief()
 		{
 			elite.cmdr.mission = 3;
 			elite.cmdr.score += 256;
 			elite.cmdr.credits += 5000;
 
             elite.draw.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
-            elite.alg_gfx.DrawTextCentre(100, "Congratulations Commander!", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(100, "Congratulations Commander!", 140, GFX_COL.GFX_COL_GOLD);
 
             elite.draw.DrawTextPretty(116, 132, 400, mission1_debrief);
 
-            elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
-            elite.alg_gfx.ScreenUpdate();
+            _gfx.ScreenUpdate();
 
 			do
 			{
 			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
-        private static void thargoid_mission_first_brief()
+        private void thargoid_mission_first_brief()
 		{
 			elite.cmdr.mission = 4;
 
             elite.draw.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.draw.DrawTextPretty(116, 132, 400, mission2_brief_a);
 
-            elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
-            elite.alg_gfx.ScreenUpdate();
+            _gfx.ScreenUpdate();
 
 			do
 			{
 			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
-        private static void thargoid_mission_second_brief()
+        private void thargoid_mission_second_brief()
 		{
 			elite.cmdr.mission = 5;
 
             elite.draw.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
             elite.draw.DrawTextPretty(16, 50, 300, mission2_brief_b);
             elite.draw.DrawTextPretty(16, 200, 470, mission2_brief_c);
 
-            elite.alg_gfx.DrawImage(Image.Blake, new(352, 46));
+            _gfx.DrawImage(Image.Blake, new(352, 46));
 
-            elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
-            elite.alg_gfx.ScreenUpdate();
+            _gfx.ScreenUpdate();
 
 			do
 			{
 			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
-        private static void thargoid_mission_debrief()
+        private void thargoid_mission_debrief()
 		{
 			elite.cmdr.mission = 6;
 			elite.cmdr.score += 256;
 			elite.cmdr.energy_unit = EnergyUnit.Naval;
 
             elite.draw.ClearDisplay();
-            elite.alg_gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
-            elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.DrawTextCentre(20, "INCOMING MESSAGE", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
 
-            elite.alg_gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);
 
             elite.draw.DrawTextPretty(116, 132, 400, mission2_debrief);
 
-            elite.alg_gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
 
-            elite.alg_gfx.ScreenUpdate();
+            _gfx.ScreenUpdate();
 
 			do
 			{
 			} while (!elite.keyboard.IsKeyPressed(CommandKey.Space));
 		}
 
-		internal static void check_mission_brief()
+		internal void check_mission_brief()
 		{
 			if ((elite.cmdr.mission == 0) && (elite.cmdr.score >= 256) && (elite.cmdr.galaxy_number < 2))
 			{

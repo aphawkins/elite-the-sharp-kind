@@ -17,10 +17,16 @@ namespace Elite.Engine
     using System.Numerics;
 	using Elite.Engine.Enums;
 
-	internal static class Stars
+	internal class Stars
 	{
 		internal static bool warp_stars;
         private static readonly Vector3[] stars = new Vector3[20];
+		private readonly IGfx _gfx;
+
+		internal Stars(IGfx gfx)
+		{
+			_gfx = gfx;
+        }
 
 		internal static void create_new_stars()
 		{
@@ -37,7 +43,7 @@ namespace Elite.Engine
             warp_stars = false;
 		}
 
-        private static void front_starfield()
+        private void front_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
 			float alpha = elite.flight_roll;
@@ -66,17 +72,17 @@ namespace Elite.Engine
 					(star.X >= gfx.GFX_VIEW_TX) && (star.X <= gfx.GFX_VIEW_BX) &&
 					(star.Y >= gfx.GFX_VIEW_TY) && (star.Y <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
 					}
 				}
 
@@ -104,7 +110,7 @@ namespace Elite.Engine
 
 				if (warp_stars)
 				{
-                    elite.alg_gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
+                    _gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
 				}
 
                 star.X = xx;
@@ -127,7 +133,7 @@ namespace Elite.Engine
             warp_stars = false;
 		}
 
-        private static void rear_starfield()
+        private void rear_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
 			float alpha = -elite.flight_roll;
@@ -156,17 +162,17 @@ namespace Elite.Engine
 					(star.X >= gfx.GFX_VIEW_TX) && (star.X <= gfx.GFX_VIEW_BX) &&
 					(star.Y >= gfx.GFX_VIEW_TY) && (star.Y <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
 					}
 				}
 
@@ -200,7 +206,7 @@ namespace Elite.Engine
 					   (ex >= gfx.GFX_VIEW_TX) && (ex <= gfx.GFX_VIEW_BX) &&
 					   (ey >= gfx.GFX_VIEW_TY) && (ey <= gfx.GFX_VIEW_BY))
 					{
-                        elite.alg_gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
+                        _gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
 					}
 				}
 
@@ -227,7 +233,7 @@ namespace Elite.Engine
             warp_stars = false;
 		}
 
-        private static void side_starfield()
+        private void side_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
 			float alpha = elite.flight_roll;
@@ -259,17 +265,17 @@ namespace Elite.Engine
 					(star.X >= gfx.GFX_VIEW_TX) && (star.X <= gfx.GFX_VIEW_BX) &&
 					(star.Y >= gfx.GFX_VIEW_TY) && (star.Y <= gfx.GFX_VIEW_BY))
 				{
-                    elite.alg_gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
 
 					if (zz < 0xC0)
 					{
-                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
 					}
 
 					if (zz < 0x90)
 					{
-                        elite.alg_gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        elite.alg_gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
 					}
 				}
 
@@ -293,7 +299,7 @@ namespace Elite.Engine
 
 				if (warp_stars)
 				{
-                    elite.alg_gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
+                    _gfx.DrawLine(star, new((xx + 128) * gfx.GFX_SCALE, (yy + 96) * gfx.GFX_SCALE));
 				}
 
 				if (MathF.Abs(stars[i].X) >= 116f)
@@ -328,7 +334,7 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void update_starfield()
+		internal void update_starfield()
 		{
 			switch (elite.current_screen)
 			{

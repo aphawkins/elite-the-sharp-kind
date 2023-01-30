@@ -557,5 +557,29 @@
                 }
             }
         }
+
+        internal void DrawLaserLines()
+        {
+            Vector2 point = new()
+            {
+                X = RNG.Random(126, 129) * gfx.GFX_SCALE,
+                Y = RNG.Random(94, 97) * gfx.GFX_SCALE,
+            };
+
+            if (elite.config.UseWireframe)
+            {
+                // Left laser
+                _gfx.DrawTriangle(new(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), point, new(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+                // Right laser
+                _gfx.DrawTriangle(new(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), point, new(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+            }
+            else
+            {
+                // Left laser
+                _gfx.DrawTriangleFilled(new(32 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), point, new(48 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+                // Right laser
+                _gfx.DrawTriangleFilled(new(208 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), point, new(224 * gfx.GFX_SCALE, gfx.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+            }
+        }
     }
 }

@@ -27,8 +27,10 @@ namespace Elite.Engine
 	using Elite.Engine.Types;
 	using Elite.Engine.Views;
 
-	internal static class space
+	internal class space
 	{
+		private readonly IGfx _gfx;
+        private readonly threed _threed;
         private static galaxy_seed destination_planet;
 		internal static bool hyper_ready;
         private static int hyper_countdown;
@@ -37,6 +39,12 @@ namespace Elite.Engine
         private static bool hyper_galactic;
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
+
+		internal space(IGfx gfx, threed threed)
+		{
+			_gfx = gfx;
+			_threed = threed;
+        }
 
         private static void rotate_x_first(ref float a, ref float b, float direction)
 		{
@@ -311,7 +319,7 @@ namespace Elite.Engine
                 return;
             }
 
-            dist = MathF.Pow(dist, 255);
+            dist = (int)dist ^ 255;
 
 			elite.myship.cabtemp = dist + 30;
 
@@ -540,7 +548,7 @@ namespace Elite.Engine
 		/*
 		 * Update all the objects in the universe and render them.
 		 */
-		internal static void update_universe()
+		internal void update_universe()
 		{
 			SHIP type;
             threed.RenderStart();
@@ -606,13 +614,13 @@ namespace Elite.Engine
 							make_station_appear();
 						}
 
-						threed.DrawObject(ref flip);
+						_threed.DrawObject(ref flip);
 						continue;
 					}
 
 					if (type == SHIP.SHIP_SUN)
 					{
-						threed.DrawObject(ref flip);
+						_threed.DrawObject(ref flip);
 						continue;
 					}
 
@@ -637,7 +645,7 @@ namespace Elite.Engine
 						continue;
 					}
 
-					threed.DrawObject(ref flip);
+					_threed.DrawObject(ref flip);
 
 					universe[i].flags = flip.flags;
 					universe[i].exp_delta = flip.exp_delta;
@@ -653,7 +661,7 @@ namespace Elite.Engine
 				}
 			}
 
-            threed.RenderFinish();
+            _threed.RenderFinish();
 			elite.detonate_bomb = false;
 		}
 
@@ -730,7 +738,7 @@ namespace Elite.Engine
 			pilot.disengage_auto_pilot();
 		}
 
-		internal static void display_hyper_status()
+		internal void display_hyper_status()
 		{
 			string str = $"{hyper_countdown}";
 
@@ -738,21 +746,21 @@ namespace Elite.Engine
 				SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
                 SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
 			{
-                elite.alg_gfx.DrawTextLeft(5, 5, str, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(5, 5, str, GFX_COL.GFX_COL_WHITE);
 				if (hyper_galactic)
 				{
-                    elite.alg_gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
 				}
 				else
 				{
 					str = "Hyperspace - " + hyper_name;
-                    elite.alg_gfx.DrawTextCentre(358, str, 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(358, str, 120, GFX_COL.GFX_COL_WHITE);
 				}
 			}
 			else
 			{
-                elite.alg_gfx.ClearArea(5, 5, 25, 34);
-                elite.alg_gfx.DrawTextLeft(5, 5, str, GFX_COL.GFX_COL_WHITE);
+                _gfx.ClearArea(5, 5, 25, 34);
+                _gfx.DrawTextLeft(5, 5, str, GFX_COL.GFX_COL_WHITE);
 			}
 		}
 

@@ -1,6 +1,5 @@
 ﻿namespace Elite.Engine.Types
 {
-    using System.Numerics;
     using Elite.Engine.Enums;
 
     public class Commander : ICloneable

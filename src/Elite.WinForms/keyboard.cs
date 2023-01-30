@@ -11,7 +11,6 @@
 
 namespace Elite.WinForms
 {
-    using System.Diagnostics;
     using Elite.Engine;
     using Elite.Engine.Enums;
 

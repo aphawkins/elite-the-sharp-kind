@@ -17,18 +17,24 @@ namespace Elite.Engine
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;
 
-	internal static class threed
+	internal class threed
 	{
         private const int LAND_X_MAX = 128;
         private const int LAND_Y_MAX = 128;
         private static readonly int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
         private static readonly Vector3[] point_list = new Vector3[100];
+		private readonly IGfx _gfx;
 
-		/// <summary>
-		/// Hacked version of the draw ship routine to display ships...
-		/// This needs a lot of tidying...
-		/// caveat: it is a work in progress.
-		/// A number of features(such as not showing detail at distance) have not yet been implemented.
+        internal threed(IGfx gfx)
+		{
+			_gfx = gfx;
+        }
+
+        /// <summary>
+        /// Hacked version of the draw ship routine to display ships...
+        /// This needs a lot of tidying...
+        /// caveat: it is a work in progress.
+        /// A number of features(such as not showing detail at distance) have not yet been implemented.
         /// Check for hidden surface supplied by T.Harte.
         /// </summary>
         /// <param name="univ"></param>
@@ -301,7 +307,7 @@ namespace Elite.Engine
         /*
 		 * Draw a line of the planet with appropriate rotation.
 		 */
-        private static void render_planet_line(float xo, float yo, float x, float y, float radius, float vx, float vy)
+        private void render_planet_line(float xo, float yo, float x, float y, float radius, float vx, float vy)
 		{
             Vector2 s = new()
             {
@@ -335,7 +341,7 @@ namespace Elite.Engine
                     //TODO: fix colours
                     //GFX_COL colour = (GFX_COL)landscape[lx, ly];
                     GFX_COL colour = lx < 0 || lx > 128 || ly < 0 || ly > 128 ? GFX_COL.GFX_COL_PINK_1 : (GFX_COL)landscape[lx, ly];
-                    elite.alg_gfx.DrawPixelFast(s, colour);
+                    _gfx.DrawPixelFast(s, colour);
                 }
 				rx += vx;
 				ry += vy;
@@ -346,7 +352,7 @@ namespace Elite.Engine
         /*
 		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
 		 */
-        private static void render_planet(Vector2 centre, float radius, Vector3[] vec)
+        private void render_planet(Vector2 centre, float radius, Vector3[] vec)
 		{
             centre.X += gfx.GFX_X_OFFSET;
             centre.Y += gfx.GFX_Y_OFFSET;
@@ -381,9 +387,9 @@ namespace Elite.Engine
 		 * At the moment we just draw a circle.
 		 * Need to add in the two arcs that the original Elite had.
 		 */
-        private static void draw_wireframe_planet(Vector2 centre, float radius)
+        private void draw_wireframe_planet(Vector2 centre, float radius)
 		{
-            elite.alg_gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
 		}
 
         /*
@@ -393,7 +399,7 @@ namespace Elite.Engine
 		 * - Fractal landscape.
 		 * - SNES Elite style.
 		 */
-        private static void draw_planet(ref univ_object planet)
+        private void draw_planet(ref univ_object planet)
 		{
             Vector2 position = new()
             {
@@ -429,7 +435,7 @@ namespace Elite.Engine
 					break;
 
 				case PlanetRenderStyle.Green:
-					elite.alg_gfx.DrawCircleFilled(position, radius, GFX_COL.GFX_COL_GREEN_1);
+					_gfx.DrawCircleFilled(position, radius, GFX_COL.GFX_COL_GREEN_1);
 					break;
 
 				case PlanetRenderStyle.SNES:
@@ -439,7 +445,7 @@ namespace Elite.Engine
 			}
 		}
 
-        private static void render_sun_line(float xo, float yo, float x, float y, float radius)
+        private void render_sun_line(float xo, float yo, float x, float y, float radius)
 		{
             Vector2 s = new()
             {
@@ -496,13 +502,13 @@ namespace Elite.Engine
 						? GFX_COL.GFX_COL_YELLOW_4
 						: distance < outer
 							? GFX_COL.GFX_COL_ORANGE_3
-							: MathF.Pow(s.X, y).IsOdd() ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
+							: ((int)s.X ^ (int)y).IsOdd() ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
 
-                elite.alg_gfx.DrawPixelFast(s, colour);
+                _gfx.DrawPixelFast(s, colour);
 			}
 		}
 
-        private static void render_sun(float xo, float yo, float radius)
+        private void render_sun(float xo, float yo, float radius)
 		{
 			xo += gfx.GFX_X_OFFSET;
 			yo += gfx.GFX_Y_OFFSET;
@@ -529,7 +535,7 @@ namespace Elite.Engine
 			}
 		}
 
-        private static void draw_sun(ref univ_object planet)
+        private void draw_sun(ref univ_object planet)
 		{
 			float x = planet.location.X * 256f / planet.location.Z;
             float y = planet.location.Y * 256f / planet.location.Z;
@@ -557,7 +563,7 @@ namespace Elite.Engine
             render_sun(x, y, radius);
 		}
 
-        private static void draw_explosion(ref univ_object univ)
+        private void draw_explosion(ref univ_object univ)
 		{
 			Vector3[] trans_mat = new Vector3[3];
 			bool[] visible = new bool[32];
@@ -660,7 +666,7 @@ namespace Elite.Engine
                             //Debug.Assert(position.X >= 0);
                             //Debug.Assert(position.Y >= 0);
 
-                            elite.alg_gfx.DrawPixel(new(position.X + psx, position.Y + psy), GFX_COL.GFX_COL_WHITE);
+                            _gfx.DrawPixel(new(position.X + psx, position.Y + psy), GFX_COL.GFX_COL_WHITE);
 						}
 					}
 				}
@@ -671,7 +677,7 @@ namespace Elite.Engine
 		/// Draws an object in the universe. (Ship, Planet, Sun etc).
 		/// </summary>
 		/// <param name="ship"></param>
-		internal static void DrawObject(ref univ_object ship)
+		internal void DrawObject(ref univ_object ship)
 		{
 			if (elite.current_screen is not SCR.SCR_FRONT_VIEW and not SCR.SCR_REAR_VIEW and
                 not SCR.SCR_LEFT_VIEW and not SCR.SCR_RIGHT_VIEW and
@@ -738,7 +744,7 @@ namespace Elite.Engine
             total_polys = 0;
         }
 
-        internal static void RenderFinish()
+        internal void RenderFinish()
         {
             if (total_polys == 0)
             {
@@ -751,17 +757,17 @@ namespace Elite.Engine
 
                 if (poly_chain[i].point_list.Length == 2)
                 {
-                    elite.alg_gfx.DrawLine(poly_chain[i].point_list[0], poly_chain[i].point_list[1], colour);
+                    _gfx.DrawLine(poly_chain[i].point_list[0], poly_chain[i].point_list[1], colour);
                     continue;
                 }
 
 				if (elite.config.UseWireframe)
 				{
-					elite.alg_gfx.DrawPolygon(poly_chain[i].point_list, colour);
+					_gfx.DrawPolygon(poly_chain[i].point_list, colour);
 				}
 				else
 				{
-                    elite.alg_gfx.DrawPolygonFilled(poly_chain[i].point_list, colour);
+                    _gfx.DrawPolygonFilled(poly_chain[i].point_list, colour);
                 }
             };
         }
