@@ -25,10 +25,14 @@
             return new(vector.X, vector.Y);
         }
 
-        public static bool IsOdd(this float value)
+        public static bool IsOdd(this int value)
         {
-            return (int)value % 2 != 0;
+            return value % 2 != 0;
         }
 
+        public static bool IsOdd(this float value)
+        {
+            return ((int)value).IsOdd();
+        }
     }
 }

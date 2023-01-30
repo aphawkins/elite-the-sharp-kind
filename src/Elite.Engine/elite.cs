@@ -314,7 +314,7 @@ namespace Elite.Engine
                     break;
 
                 case SCR.SCR_SETTINGS:
-                    options.select_right_setting();
+                    Settings.select_right_setting();
                     break;
 
                 case SCR.SCR_SHORT_RANGE:
@@ -349,7 +349,7 @@ namespace Elite.Engine
                     break;
 
                 case SCR.SCR_SETTINGS:
-                    options.select_left_setting();
+                    Settings.select_left_setting();
                     break;
 
                 case SCR.SCR_SHORT_RANGE:
@@ -388,11 +388,11 @@ namespace Elite.Engine
                     break;
 
                 case SCR.SCR_OPTIONS:
-                    options.select_previous_option();
+                    Options.select_previous_option();
                     break;
 
                 case SCR.SCR_SETTINGS:
-                    options.select_up_setting();
+                    Settings.select_up_setting();
                     break;
 
                 case SCR.SCR_SHORT_RANGE:
@@ -430,11 +430,11 @@ namespace Elite.Engine
                     break;
 
                 case SCR.SCR_OPTIONS:
-                    options.select_next_option();
+                    Options.select_next_option();
                     break;
 
                 case SCR.SCR_SETTINGS:
-                    options.select_down_setting();
+                    Settings.select_down_setting();
                     break;
 
                 case SCR.SCR_SHORT_RANGE:
@@ -468,11 +468,11 @@ namespace Elite.Engine
                     break;
 
                 case SCR.SCR_OPTIONS:
-                    options.do_option();
+                    Options.do_option();
                     break;
 
                 case SCR.SCR_SETTINGS:
-                    options.toggle_setting();
+                    Settings.toggle_setting();
                     break;
             }
         }
@@ -899,7 +899,7 @@ namespace Elite.Engine
             if (keyboard.IsKeyPressed(CommandKey.F11))
             {
                 find_input = false;
-                options.display_options();
+                Options.display_options();
             }
 
             if (find_input)
@@ -1138,7 +1138,7 @@ namespace Elite.Engine
                 key = keyboard.ReadKey();
             } while (key != (int)CommandKey.Space);
 
-            options.display_options();
+            Options.display_options();
         }
 
         internal static void load_commander_screen()
@@ -1210,7 +1210,6 @@ namespace Elite.Engine
                     break;
                 }
             }
-
         }
 
         private static void run_second_intro_screen()

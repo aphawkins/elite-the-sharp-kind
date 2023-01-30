@@ -29,220 +29,17 @@ namespace Elite.Engine
         }
     };
 
-    internal static class options
+    internal static class Options
 	{
         private static int hilite_item;
-        private const int NUM_OPTIONS = 4;
-        private const int NUM_SETTINGS = 6;
 
-        private static readonly option[] option_list = new option[NUM_OPTIONS]
+        private static readonly option[] option_list =
 		{
 			new("Save Commander",   true),
 			new("Load Commander",   true),
 			new("Game Settings",    false),
 			new ("Quit",            false)
 		};
-
-        private class setting
-		{
-			internal string name;
-			internal string[] value;
-
-			internal setting(string name, string[] value)
-			{
-				this.name = name;
-				this.value = value;
-			}
-		};
-
-        private static readonly setting[] setting_list = new setting[NUM_SETTINGS]
-		{
-			new("Graphics:", new string[5] {"Solid", "Wireframe", "", "", ""}),
-			new("Anti Alias:", new string[5] {"Off", "On", "", "", ""}),
-			new("Planet Style:", new string[5] {"Wireframe", "Green", "SNES", "Fractal", ""}),
-			new("Planet Desc.:", new string[5] {"BBC", "MSX", "", "", ""}),
-			new("Instant Dock:", new string[5] {"Off", "On", "", "", ""}),
-			new("Save Settings", new string[5] {"", "", "", "", ""})
-		};
-
-        private static void quit_screen()
-		{
-			elite.current_screen = SCR.SCR_QUIT;
-
-			elite.draw.ClearDisplay();
-			elite.alg_gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
-			elite.alg_gfx.DrawLine(new(0, 36), new(511, 36));
-
-			elite.alg_gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
-		}
-
-        private static void display_setting_item(int item)
-		{
-			int x, y;
-            if (item == (NUM_SETTINGS - 1))
-			{
-				y = ((NUM_SETTINGS + 1) / 2 * 30) + 96 + 32;
-				elite.alg_gfx.DrawTextCentre(y, setting_list[item].name, 120, GFX_COL.GFX_COL_WHITE);
-				return;
-			}
-
-            int v = item switch
-            {
-                0 => elite.config.UseWireframe ? 1 : 0,
-                1 => elite.config.AntiAliasWireframe ? 1 : 0,
-                2 => (int)elite.config.PlanetRenderStyle,
-                3 => elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-                4 => elite.config.InstantDock ? 1 : 0,
-                _ => 0,
-            };
-            x = ((item & 1) * 250) + 32;
-			y = (item / 2 * 30) + 96;
-
-			elite.alg_gfx.DrawTextLeft(x, y, setting_list[item].name, GFX_COL.GFX_COL_WHITE);
-			elite.alg_gfx.DrawTextLeft(x + 120, y, setting_list[item].value[v], GFX_COL.GFX_COL_WHITE);
-		}
-
-        private static void highlight_setting(int item)
-		{
-			int x, y;
-			int width;
-            int OPTION_BAR_WIDTH = 400;
-            int OPTION_BAR_HEIGHT = 15;
-
-            if ((hilite_item != -1) && (hilite_item != item))
-			{
-				if (hilite_item == (NUM_SETTINGS - 1))
-				{
-					x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-					y = ((NUM_SETTINGS + 1) / 2 * 30) + 96 + 32;
-					width = OPTION_BAR_WIDTH;
-				}
-				else
-				{
-					x = ((hilite_item & 1) * 250) + 32 + 120;
-					y = (hilite_item / 2 * 30) + 96;
-					width = 100;
-				}
-
-				elite.alg_gfx.ClearArea(x, y, width, OPTION_BAR_HEIGHT);
-				display_setting_item(hilite_item);
-			}
-
-			if (item == (NUM_SETTINGS - 1))
-			{
-				x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-				y = ((NUM_SETTINGS + 1) / 2 * 30) + 96 + 32;
-				width = OPTION_BAR_WIDTH;
-			}
-			else
-			{
-				x = ((item & 1) * 250) + 32 + 120;
-				y = (item / 2 * 30) + 96;
-				width = 100;
-			}
-
-			elite.alg_gfx.DrawRectangleFilled(x, y, width, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
-			display_setting_item(item);
-			hilite_item = item;
-		}
-
-		internal static void select_left_setting()
-		{
-			if ((hilite_item & 1) != 0)
-            {
-                highlight_setting(hilite_item - 1);
-            }
-        }
-
-		internal static void select_right_setting()
-		{
-			if (((hilite_item & 1) == 0) && (hilite_item < (NUM_SETTINGS - 1)))
-			{
-				highlight_setting(hilite_item + 1);
-			}
-		}
-
-		internal static void select_up_setting()
-		{
-			if (hilite_item == (NUM_SETTINGS - 1))
-			{
-				highlight_setting(NUM_SETTINGS - 2);
-				return;
-			}
-
-			if (hilite_item > 1)
-			{
-				highlight_setting(hilite_item - 2);
-			}
-		}
-
-		internal static void select_down_setting()
-		{
-			if (hilite_item == (NUM_SETTINGS - 2))
-			{
-				highlight_setting(NUM_SETTINGS - 1);
-				return;
-			}
-
-			if (hilite_item < (NUM_SETTINGS - 2))
-			{
-				highlight_setting(hilite_item + 2);
-			}
-		}
-
-		internal static void toggle_setting()
-		{
-			if (hilite_item == (NUM_SETTINGS - 1))
-			{
-				ConfigFile.WriteConfigAsync(elite.config);
-				display_options();
-				return;
-			}
-
-			switch (hilite_item)
-			{
-				case 0:
-					elite.config.UseWireframe = !elite.config.UseWireframe;
-					break;
-
-				case 1:
-					elite.config.AntiAliasWireframe = !elite.config.AntiAliasWireframe;
-					break;
-
-				case 2:
-					elite.config.PlanetRenderStyle = (PlanetRenderStyle)((int)(elite.config.PlanetRenderStyle + 1) % 4);
-					break;
-
-				case 3:
-					elite.config.PlanetDescriptions = (PlanetDescriptions)((int)(elite.config.PlanetDescriptions + 1) % 2);
-                    break;
-
-				case 4:
-					elite.config.InstantDock = !elite.config.InstantDock;
-					break;
-			}
-
-			highlight_setting(hilite_item);
-		}
-
-        private static void game_settings_screen()
-		{
-			int i;
-
-			elite.current_screen = SCR.SCR_SETTINGS;
-
-			elite.draw.ClearDisplay();
-			elite.alg_gfx.DrawTextCentre(20, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
-			elite.alg_gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-
-			for (i = 0; i < NUM_SETTINGS; i++)
-			{
-				display_setting_item(i);
-			}
-
-			hilite_item = -1;
-			highlight_setting(0);
-		}
 
 		internal static void select_previous_option()
 		{
@@ -283,11 +80,11 @@ namespace Elite.Engine
 					break;
 
 				case 2:
-					game_settings_screen();
+					Settings.game_settings_screen();
 					break;
 
 				case 3:
-					quit_screen();
+                    Settings.quit_screen();
 					break;
 			}
 		}

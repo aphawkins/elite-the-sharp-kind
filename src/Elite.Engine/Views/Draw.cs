@@ -5,6 +5,7 @@
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
+    using static Elite.Engine.Settings;
 
     internal class Draw
     {
@@ -158,7 +159,7 @@
             {
                 if (isSuccess.Value)
                 {
-                    elite.alg_gfx.DrawTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
+                    _gfx.DrawTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
                     _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
                 }
                 else
@@ -464,6 +465,61 @@
             _gfx.DrawTextCentre(320, "The Sharp Kind by Andy Hawkins 2023", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(340, "The New Kind by Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(360, "Based on original code by Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);
+        }
+
+        internal void DrawSettings(Setting[] setting_list, int highlighted)
+        {
+            ClearDisplay();
+            _gfx.DrawTextCentre(20, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+
+            for (int i = 0; i < setting_list.Length; i++)
+            {
+                int x;
+                int y;
+                if (i == (setting_list.Length - 1))
+                {
+                    y = ((setting_list.Length + 1) / 2 * 30) + 96 + 32;
+                    if (i == highlighted)
+                    {
+                        x = gfx.GFX_X_CENTRE - 200;
+                        _gfx.DrawRectangleFilled(x, y - 7, 400, 15, GFX_COL.GFX_COL_DARK_RED);
+                    }
+
+                    _gfx.DrawTextCentre(y, setting_list[i].name, 120, GFX_COL.GFX_COL_WHITE);
+                    return;
+                }
+
+                int v = i switch
+                {
+                    0 => elite.config.UseWireframe ? 1 : 0,
+                    1 => elite.config.AntiAliasWireframe ? 1 : 0,
+                    2 => (int)elite.config.PlanetRenderStyle,
+                    3 => elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+                    4 => elite.config.InstantDock ? 1 : 0,
+                    _ => 0,
+                };
+                x = ((i & 1) * 250) + 32;
+                y = (i / 2 * 30) + 96;
+
+                if (i == highlighted)
+                {
+                    _gfx.DrawRectangleFilled(x, y, 100, 15, GFX_COL.GFX_COL_DARK_RED);
+                }
+                _gfx.DrawTextLeft(x, y, setting_list[i].name, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x + 120, y, setting_list[i].value[v], GFX_COL.GFX_COL_WHITE);
+            }
+        }
+
+        internal void DrawQuit()
+        {
+            ClearDisplay();
+            _gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0, 36), new(511, 36));
+
+            _gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
+
+            _gfx.ScreenUpdate();
         }
 
         internal void ClearDisplay()

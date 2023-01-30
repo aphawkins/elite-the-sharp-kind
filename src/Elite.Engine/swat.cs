@@ -1002,24 +1002,17 @@ namespace Elite.Engine
 
         private static void create_trader()
 		{
-			int newship;
-			int rnd;
-			SHIP type;
-
-			type = SHIP.SHIP_COBRA3 + RNG.Random(3);
-
-			newship = create_other_ship(type);
+			SHIP type = SHIP.SHIP_COBRA3 + RNG.Random(3);
+			int newship = create_other_ship(type);
 
 			if (newship != -1)
 			{
 				space.universe[newship].rotmat[2].Z = -1.0f;
 				space.universe[newship].rotz = RNG.Random(7);
+				space.universe[newship].velocity = RNG.Random(31) | 16;
+				space.universe[newship].bravery = RNG.Random(127);
 
-				rnd = RNG.Random(255);
-				space.universe[newship].velocity = (rnd & 31) | 16;
-				space.universe[newship].bravery = rnd / 2;
-
-				if ((rnd & 1) == 1)
+				if (RNG.TrueOrFalse())
 				{
 					space.universe[newship].flags |= FLG.FLG_HAS_ECM;
 				}
