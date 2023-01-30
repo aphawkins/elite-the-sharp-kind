@@ -132,7 +132,7 @@ namespace Elite.Engine
         private static bool rolling;
         private static bool climbing;
         private static bool game_paused;
-        private static bool have_joystick;
+        //private static bool have_joystick;
         private static bool find_input;
         private static string find_name;
 
