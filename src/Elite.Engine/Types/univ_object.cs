@@ -18,7 +18,6 @@
         internal int target;
         internal int bravery;
         internal int exp_delta;
-        internal int exp_seed;
 
         internal univ_object()
         {

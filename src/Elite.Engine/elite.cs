@@ -1318,7 +1318,7 @@ namespace Elite.Engine
             // install_timer();
             // install_mouse();
 
-            have_joystick = false;
+            //have_joystick = false;
 
             //if (install_joystick(JOY_TYPE_AUTODETECT) == 0)
             //{
