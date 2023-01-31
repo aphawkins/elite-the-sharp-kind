@@ -71,7 +71,7 @@ namespace Elite.Engine
 				switch (_universe[i].type)
 				{
 					case SHIP.SHIP_MISSILE:
-						colour = GFX_COL.GFX_COL_RED;
+						colour = GFX_COL.GFX_COL_PINK_1;
 						break;
 
 					case SHIP.SHIP_DODEC:
@@ -80,7 +80,7 @@ namespace Elite.Engine
 						break;
 
 					case SHIP.SHIP_VIPER:
-						colour = GFX_COL.GFX_COL_BLUE_2;
+						colour = GFX_COL.GFX_COL_BLUE_4;
 						break;
 				}
 
