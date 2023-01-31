@@ -30,5 +30,25 @@ namespace Elite.Engine
         {
             return Random(0, 1) == 1;
         }
+
+        /// <summary>
+        /// Guassian random number generator.
+        /// </summary>
+        /// <param name="min">The lower bound of the distribution (inclusive).</param>
+        /// <param name="max">The upper bound of the distribution (inclusive).</param>
+        /// <returns>A number between min and max with Gaussian distribution.</returns>
+        internal static int GaussianRandom(int min, int max)
+        {
+            int iterations = 12;
+            int r = 0;
+            for (int i = 0; i < iterations; i++)
+            {
+                r += Random(min, max);
+            }
+
+            r /= iterations;
+
+            return r;
+        }
     }
 }

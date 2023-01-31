@@ -13,7 +13,8 @@
 
 namespace Elite.Engine
 {
-    using System.Numerics;
+	using System;
+	using System.Numerics;
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;
 
@@ -173,48 +174,16 @@ namespace Elite.Engine
 			}
 		}
 
-        /*
-		 * Guassian random number generator.
-		 * Returns a number between -7 and +8 with Gaussian distribution.
-		 */
-        private static int grand()
-		{
-			int i;
-			int r;
-
-			r = 0;
-			for (i = 0; i < 12; i++)
-			{
-				r += RNG.Random(15);
-			}
-
-			r /= 12;
-			r -= 7;
-
-			return r;
-		}
-
-        /*
-		 * Calculate the midpoint between two given points.
-		 */
-        private static int calc_midpoint(int sx, int sy, int ex, int ey)
-		{
-			int a = landscape[sx, sy];
-			int b = landscape[ex, ey];
-
-			int n = ((a + b) / 2) + grand();
-			if (n < 0)
-			{
-				n = 0;
-			}
-
-			if (n > 255)
-			{
-				n = 255;
-			}
-
-			return n;
-		}
+		/// <summary>
+		/// Calculate the midpoint between two given points.
+		/// </summary>
+		/// <param name="sx"></param>
+		/// <param name="sy"></param>
+		/// <param name="ex"></param>
+		/// <param name="ey"></param>
+		/// <returns></returns>
+        private static int calc_midpoint(int sx, int sy, int ex, int ey) =>
+			Math.Clamp(((landscape[sx, sy] + landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
         /*
 		 * Calculate a square on the midpoint map.
@@ -307,11 +276,11 @@ namespace Elite.Engine
         /*
 		 * Draw a line of the planet with appropriate rotation.
 		 */
-        private void render_planet_line(float xo, float yo, float x, float y, float radius, float vx, float vy)
+        private void render_planet_line(Vector2 centre, float x, float y, float radius, float vx, float vy)
 		{
             Vector2 s = new()
             {
-                Y = y + yo
+                Y = y + centre.Y
             };
 
             if (s.Y is < (gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) or
@@ -320,14 +289,14 @@ namespace Elite.Engine
 				return;
 			}
 
-			s.X = xo - x;
-			float ex = xo + x;
+			s.X = centre.X - x;
+			float ex = centre.X + x;
 
 			float rx = (-x * vx) - (y * vy);
 			float ry = (-x * vy) + (y * vx);
-			rx += radius * 65536f;
-			ry += radius * 65536f;
-			float div = radius * 1024f;  /* radius * 2 * LAND_X_MAX >> 16 */
+			rx += radius * 65536;
+			ry += radius * 65536;
+			float div = radius * 1024;  /* radius * 2 * LAND_X_MAX >> 16 */
 
 			//Debug.Assert(rx > 0);
 			//Debug.Assert(ry > 0);
@@ -365,14 +334,18 @@ namespace Elite.Engine
             float y = 0;
 
 			s -= x + x;
-			while (y <= x)
+            while (y <= x)
 			{
-				render_planet_line(centre.X, centre.Y, x, y, radius, vx, vy);
-				render_planet_line(centre.X, centre.Y, x, -y, radius, vx, vy);
-				render_planet_line(centre.X, centre.Y, y, x, radius, vx, vy);
-				render_planet_line(centre.X, centre.Y, y, -x, radius, vx, vy);
+                // Top of top half
+				render_planet_line(centre, y, -MathF.Floor(x), radius, vx, vy);
+				// Bottom of top half
+                render_planet_line(centre, x, -y, radius, vx, vy);
+                // Top of bottom half
+                render_planet_line(centre, x, y, radius, vx, vy);
+                // Bottom of bottom half
+                render_planet_line(centre, y, MathF.Floor(x), radius, vx, vy);
 
-				s += y + y + 1;
+                s += y + y + 1;
 				y++;
 				if (s >= 0)
 				{
@@ -380,7 +353,7 @@ namespace Elite.Engine
 					x--;
 				}
 			}
-		}
+        }
 
         /*
 		 * Draw a wireframe planet.
@@ -445,123 +418,6 @@ namespace Elite.Engine
 			}
 		}
 
-        private void render_sun_line(float xo, float yo, float x, float y, float radius)
-		{
-            Vector2 s = new()
-            {
-                Y = yo + y
-            };
-
-			if (s.Y is < (gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) or
-                > (gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
-			{
-				return;
-			}
-
-			s.X = xo - x;
-			float ex = xo + x;
-
-			s.X -= radius * RNG.Random(2, 9) / 256f;
-			ex += radius * RNG.Random(2, 9) / 256f;
-
-			if ((s.X > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET) ||
-				(ex < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET))
-			{
-				return;
-			}
-
-			if (s.X < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)
-			{
-				s.X = gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET;
-			}
-
-			if (ex > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)
-			{
-				ex = gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET;
-			}
-
-			float inner = radius * (200 + RNG.Random(7)) / 256;
-			inner *= inner;
-
-			float inner2 = radius * (220 + RNG.Random(7)) / 256;
-            inner2 *= inner2;
-
-			float outer = radius * (239 + RNG.Random(7)) / 256;
-            outer *= outer;
-
-			float dy = y * y;
-			float dx = s.X - xo;
-
-			for (; s.X <= ex; s.X++, dx++)
-			{
-				float distance = (dx * dx) + dy;
-
-				GFX_COL colour = distance < inner
-                    ? GFX_COL.GFX_COL_WHITE
-                    : distance < inner2
-						? GFX_COL.GFX_COL_YELLOW_4
-						: distance < outer
-							? GFX_COL.GFX_COL_ORANGE_3
-							: ((int)s.X ^ (int)y).IsOdd() ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
-
-                _gfx.DrawPixelFast(s, colour);
-			}
-		}
-
-        private void render_sun(float xo, float yo, float radius)
-		{
-			xo += gfx.GFX_X_OFFSET;
-			yo += gfx.GFX_Y_OFFSET;
-
-			float s = -radius;
-            float x = radius;
-            float y = 0f;
-
-			// s -= x + x;
-			while (y <= x)
-			{
-				render_sun_line(xo, yo, x, y, radius);
-				render_sun_line(xo, yo, x, -y, radius);
-				render_sun_line(xo, yo, y, x, radius);
-				render_sun_line(xo, yo, y, -x, radius);
-
-				s += y + y + 1;
-				y++;
-				if (s >= 0)
-				{
-					s -= x + x + 2;
-					x--;
-				}
-			}
-		}
-
-        private void draw_sun(ref univ_object planet)
-		{
-			float x = planet.location.X * 256f / planet.location.Z;
-            float y = planet.location.Y * 256f / planet.location.Z;
-
-			y = -y;
-
-			x += 128;
-			y += 96;
-
-			x *= gfx.GFX_SCALE;
-			y *= gfx.GFX_SCALE;
-
-			float radius = 6291456f / planet.location.Length();
-
-			radius *= gfx.GFX_SCALE;
-
-			if ((x + radius < 0) ||
-				(x - radius > 511) ||
-				(y + radius < 0) ||
-				(y - radius > 383))
-            {
-                return;
-            }
-
-            render_sun(x, y, radius);
-		}
 
         private void draw_explosion(ref univ_object univ)
 		{
@@ -712,7 +568,7 @@ namespace Elite.Engine
 
 			if (ship.type == SHIP.SHIP_SUN)
 			{
-				draw_sun(ref ship);
+				elite.draw.draw_sun(ship);
 				return;
 			}
 
