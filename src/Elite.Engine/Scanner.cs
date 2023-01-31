@@ -43,8 +43,6 @@ namespace Elite.Engine
 		 */
         private void update_scanner()
 		{
-            GFX_COL colour;
-
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				if ((_universe[i].type <= 0) ||
@@ -54,30 +52,26 @@ namespace Elite.Engine
 					continue;
 				}
 
-                float x = _universe[i].location.X / 256;
-                float y = _universe[i].location.Y / 256;
-                float z = _universe[i].location.Z / 256;
-
-				float x1 = x;
-				float y1 = -z / 4;
-				float y2 = y1 - (y / 2);
+				float x = _universe[i].location.X / 256;
+                float y1 = -_universe[i].location.Z / 1024;
+				float y2 = y1 - (_universe[i].location.Y / 512);
 
 				if ((y2 < -28) || (y2 > 28) ||
-					(x1 < -50) || (x1 > 50))
+					(x < -50) || (x > 50))
 				{
 					continue;
 				}
 
-				x1 += elite.scanner_centre.X;
+				x += elite.scanner_centre.X;
 				y1 += elite.scanner_centre.Y;
 				y2 += elite.scanner_centre.Y;
 
-				colour = _universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
+				GFX_COL colour = _universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
 
 				switch (_universe[i].type)
 				{
 					case SHIP.SHIP_MISSILE:
-						colour = GFX_COL.UNKNOWN_1;
+						colour = GFX_COL.GFX_COL_RED;
 						break;
 
 					case SHIP.SHIP_DODEC:
@@ -86,19 +80,15 @@ namespace Elite.Engine
 						break;
 
 					case SHIP.SHIP_VIPER:
-						colour = GFX_COL.UNKNOWN_2;
+						colour = GFX_COL.GFX_COL_BLUE_2;
 						break;
 				}
 
-                _gfx.DrawLine(new(x1 + 2, y2), new(x1 - 3, y2), colour);
-                _gfx.DrawLine(new(x1 + 2, y2 + 1), new(x1 - 3, y2 + 1), colour);
-                _gfx.DrawLine(new(x1 + 2, y2 + 2), new(x1 - 3, y2 + 2), colour);
-                _gfx.DrawLine(new(x1 + 2, y2 + 3), new(x1 - 3, y2 + 3), colour);
-
-                _gfx.DrawLine(new(x1, y1), new(x1, y2), colour);
-                _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), colour);
-                _gfx.DrawLine(new(x1 + 2, y1), new(x1 + 2, y2), colour);
-			}
+				// ship
+				_gfx.DrawRectangleFilled(x - 3, y2, 5, 3, colour);
+				// stick
+                _gfx.DrawRectangleFilled(x, y2 < y1 ? y2 : y1, 2, MathF.Abs(y2 - y1), colour);
+            }
 		}
 
         /*
@@ -138,8 +128,8 @@ namespace Elite.Engine
 		 */
         private void display_speed()
 		{
-			float sx = 417f;
-            float sy = 384f + 9f;
+			float sx = 417;
+            float sy = 384 + 9;
 
 			float len = (elite.flight_speed * 64 / elite.myship.max_speed) - 1;
 

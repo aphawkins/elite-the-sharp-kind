@@ -64,7 +64,7 @@ namespace Elite.Engine.Enums
 
 		GFX_COL_PINK_1 = 183,
 
-		UNKNOWN_1 = 137,
-        UNKNOWN_2 = 252,
+		//UNKNOWN_1 = 137,
+  //      UNKNOWN_2 = 252,
 	}
 }

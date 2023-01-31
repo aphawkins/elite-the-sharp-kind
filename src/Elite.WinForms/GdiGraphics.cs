@@ -71,8 +71,6 @@ namespace Elite.WinForms
                 { GFX_COL.GFX_COL_GREEN_2, Pens.Green },
                 { GFX_COL.GFX_COL_GREEN_3, Pens.LightGreen },
                 { GFX_COL.GFX_COL_PINK_1, Pens.Pink },
-                { GFX_COL.UNKNOWN_1, Pens.Orange },
-                { GFX_COL.UNKNOWN_2, Pens.DarkOrange }
             };
 
         private readonly Dictionary<GFX_COL, Brush> _brushes = new()
@@ -105,8 +103,6 @@ namespace Elite.WinForms
                 { GFX_COL.GFX_COL_GREEN_2, Brushes.Green },
                 { GFX_COL.GFX_COL_GREEN_3, Brushes.LightGreen },
                 { GFX_COL.GFX_COL_PINK_1, Brushes.Pink },
-                { GFX_COL.UNKNOWN_1, Brushes.Orange },
-                { GFX_COL.UNKNOWN_2, Brushes.DarkOrange }
             };
 
         public GdiGraphics(ref Bitmap screen)
