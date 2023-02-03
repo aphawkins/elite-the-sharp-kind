@@ -20,7 +20,8 @@
 
 namespace Elite.Engine
 {
-    using System.Numerics;
+	using System.Diagnostics;
+	using System.Numerics;
     using Elite.Common.Enums;
 	using Elite.Engine.Enums;
 	using Elite.Engine.Ships;
@@ -104,16 +105,14 @@ namespace Elite.Engine
 
 		internal static int add_new_ship(SHIP ship_type, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
 		{
+			Debug.Assert(rotmat != null);
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				if (space.universe[i].type == SHIP.SHIP_NONE)
 				{
 					space.universe[i].type = ship_type;
 					space.universe[i].location = location;
-					space.universe[i].rotmat = new Vector3[3];
-                    space.universe[i].rotmat[0] = rotmat[0];
-					space.universe[i].rotmat[1] = rotmat[1];
-					space.universe[i].rotmat[2] = rotmat[2];
+					space.universe[i].rotmat = rotmat;
 					space.universe[i].rotx = rotx;
 					space.universe[i].rotz = rotz;
 					space.universe[i].velocity = 0;
@@ -203,17 +202,15 @@ namespace Elite.Engine
 
         private static void launch_enemy(int un, SHIP type, FLG flags, int bravery)
 		{
-			int newship;
-			univ_object ns;
-
-			newship = add_new_ship(type, space.universe[un].location, space.universe[un].rotmat, space.universe[un].rotx, space.universe[un].rotz);
+            Debug.Assert(space.universe[un].rotmat != null);
+            int newship = add_new_ship(type, space.universe[un].location, space.universe[un].rotmat, space.universe[un].rotx, space.universe[un].rotz);
 
 			if (newship == -1)
 			{
 				return;
 			}
 
-			ns = space.universe[newship];
+			univ_object ns = space.universe[newship];
 
 			if (space.universe[un].type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 			{
@@ -572,8 +569,6 @@ namespace Elite.Engine
 
         private static void launch_shuttle()
 		{
-			SHIP type;
-
 			if ((space.ship_count[SHIP.SHIP_TRANSPORTER] != 0) ||
 				(space.ship_count[SHIP.SHIP_SHUTTLE] != 0) ||
 				(RNG.Random(255) < 253) || elite.auto_pilot)
@@ -581,7 +576,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			type = RNG.TrueOrFalse() ? SHIP.SHIP_SHUTTLE : SHIP.SHIP_TRANSPORTER;
+			SHIP type = RNG.TrueOrFalse() ? SHIP.SHIP_SHUTTLE : SHIP.SHIP_TRANSPORTER;
 			launch_enemy(1, type, FLG.FLG_HAS_ECM | FLG.FLG_FLY_TO_PLANET, 113);
 		}
 
@@ -875,7 +870,7 @@ namespace Elite.Engine
 		{
 			if ((laser_counter == 0) && (elite.laser_temp < 242))
 			{
-                laser = elite.current_screen switch
+                laser = elite._state.currentScreen switch
                 {
                     SCR.SCR_FRONT_VIEW => elite.cmdr.front_laser,
                     SCR.SCR_REAR_VIEW => elite.cmdr.rear_laser,
@@ -952,9 +947,7 @@ namespace Elite.Engine
 
 		internal static void create_thargoid()
 		{
-			int newship;
-
-			newship = create_other_ship(SHIP.SHIP_THARGOID);
+			int newship = create_other_ship(SHIP.SHIP_THARGOID);
 			if (newship != -1)
 			{
 				space.universe[newship].flags = FLG.FLG_ANGRY | FLG.FLG_HAS_ECM;

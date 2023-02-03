@@ -2,6 +2,7 @@
 {
     internal enum SCR
     {
+        SCR_NONE = 0,
         SCR_INTRO_ONE = 1,
         SCR_INTRO_TWO = 2,
         SCR_GALACTIC_CHART = 3,
@@ -23,5 +24,6 @@
         SCR_GAME_OVER = 19,
         SCR_SETTINGS = 20,
         SCR_ESCAPE_POD = 21,
+        SCR_MISSION = 22,
     }
 }

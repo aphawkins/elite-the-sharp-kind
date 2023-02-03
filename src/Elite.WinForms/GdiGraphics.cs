@@ -37,9 +37,9 @@ namespace Elite.WinForms
 		// Images
 		private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
 
-        private volatile int frame_count;
-        private readonly object frameCountLock = new();
-        private readonly System.Windows.Forms.Timer _frameTimer;
+        //private volatile int frame_count;
+        //private readonly object frameCountLock = new();
+        //private readonly System.Windows.Forms.Timer _frameTimer;
 
         private readonly Dictionary<GFX_COL, Pen> _pens = new()
             {
@@ -118,54 +118,54 @@ namespace Elite.WinForms
             _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
 
-            // Install a timer to regulate the speed of the game...
-            lock (frameCountLock)
-            {
-                frame_count = 0;
-            }
+            //// Install a timer to regulate the speed of the game...
+            //lock (frameCountLock)
+            //{
+            //    frame_count = 0;
+            //}
 
-            _frameTimer = new()
-            {
-                // Approx matxh the speed of the TNK
-                Interval = 5000 / SpeedCap
-            };
-            _frameTimer.Tick += _frameTimer_Tick;
-            _frameTimer.Start();
+            //_frameTimer = new()
+            //{
+            //    // Approx match the speed of the TNK
+            //    Interval = 5000 / SpeedCap
+            //};
+            //_frameTimer.Tick += _frameTimer_Tick;
+            //_frameTimer.Start();
         }
 
         private bool disposedValue;
 
-        private void _frameTimer_Tick(object? sender, EventArgs e)
-        {
-            lock (frameCountLock)
-            {
-                frame_count++;
-            }
-        }
+        //private void _frameTimer_Tick(object? sender, EventArgs e)
+        //{
+        //    lock (frameCountLock)
+        //    {
+        //        frame_count++;
+        //    }
+        //}
 
         public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream)
         {
             _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(bitmapStream);
         }
 
-        public int SpeedCap { get; set; } = 75;
-
         /// <summary>
         /// Blit the back buffer to the screen.
         /// </summary>
 		public void ScreenUpdate()
 		{
-            while (frame_count < 1)
-            {
-                Thread.Sleep(10);
-                // TODO: find a better way of doing multithreading
-                Application.DoEvents();
-            }
+            //while (frame_count < 1)
+            //{
+            //    Thread.Sleep(10);
+            //    // TODO: find a better way of doing multithreading
+            //    Application.DoEvents();
+            //}
 
-            lock (frameCountLock)
-            {
-                frame_count = 0;
-            }
+            //lock (frameCountLock)
+            //{
+            //    frame_count = 0;
+            //}
+
+            Application.DoEvents();
 
             lock (_screen)
 			{

@@ -20,8 +20,6 @@ namespace Elite.Engine
 
     public interface IGfx
     {
-        int SpeedCap { get; set; }
-
         void LoadBitmap(Image imgType, Stream bitmapStream);
 
         void ClearArea(float x, float y, float width, float height);

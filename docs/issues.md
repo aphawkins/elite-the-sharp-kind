@@ -17,6 +17,7 @@
 - Incorrect distance show on current planet after hyperspace
 - Hyperspace countdown clip region is overlapping horizontal line in views
 - Clipping incorrect on bottom line
+- Intro2 parade doesn't show all ships, maybe it should
 
 ## File
 

@@ -32,7 +32,7 @@ namespace Elite.Engine
 
         internal static void quit_screen()
 		{
-            elite.current_screen = SCR.SCR_QUIT;
+            elite.SetView(SCR.SCR_QUIT);
 
 			elite.draw.DrawQuit();
 
@@ -138,7 +138,7 @@ namespace Elite.Engine
 
         internal static void game_settings_screen()
 		{
-			elite.current_screen = SCR.SCR_SETTINGS;
+			elite.SetView(SCR.SCR_SETTINGS);
 
 			hilite_item = 0;
             elite.draw.DrawSettings(setting_list, hilite_item);

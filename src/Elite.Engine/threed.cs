@@ -533,9 +533,9 @@ namespace Elite.Engine
 		/// Draws an object in the universe. (Ship, Planet, Sun etc).
 		/// </summary>
 		/// <param name="ship"></param>
-		internal void DrawObject(ref univ_object ship)
+		internal void DrawObject(univ_object ship)
 		{
-			if (elite.current_screen is not SCR.SCR_FRONT_VIEW and not SCR.SCR_REAR_VIEW and
+			if (elite._state.currentScreen is not SCR.SCR_FRONT_VIEW and not SCR.SCR_REAR_VIEW and
                 not SCR.SCR_LEFT_VIEW and not SCR.SCR_RIGHT_VIEW and
                 not SCR.SCR_INTRO_ONE and not SCR.SCR_INTRO_TWO and
                 not SCR.SCR_GAME_OVER and not SCR.SCR_ESCAPE_POD)
@@ -594,7 +594,7 @@ namespace Elite.Engine
         private static int start_poly;
         private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
 
-        internal static void RenderStart()
+        internal void RenderStart()
         {
             start_poly = 0;
             total_polys = 0;

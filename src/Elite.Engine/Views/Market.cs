@@ -86,7 +86,7 @@ namespace Elite.Engine.Views
 
         internal static void display_market_prices()
         {
-            elite.current_screen = SCR.SCR_MARKET_PRICES;
+            elite.SetView(SCR.SCR_MARKET_PRICES);
 
             if (!elite.docked)
             {

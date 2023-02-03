@@ -14,10 +14,12 @@
 
 namespace Elite.Engine
 {
+    using System.Diagnostics;
     using System.Numerics;
     using Elite.Common.Enums;
     using Elite.Engine.Config;
     using Elite.Engine.Enums;
+    using Elite.Engine.Missions;
     using Elite.Engine.Save;
     using Elite.Engine.Ships;
     using Elite.Engine.Types;
@@ -29,7 +31,7 @@ namespace Elite.Engine
 		private readonly Audio _audio;
         internal static IKeyboard keyboard;
         internal static Scanner scanner;
-        private readonly Missions _missions;
+        private readonly Mission _mission;
         private readonly PlanetData _planetData;
         private readonly space _space;
         private readonly Stars _stars;
@@ -50,10 +52,10 @@ namespace Elite.Engine
 		internal static planet_data current_planet_data = new();
 
 		internal static int carry_flag = 0;
-		internal static SCR current_screen = 0;
+		//internal static SCR current_screen = 0;
 		internal static bool witchspace;
 
-        public static ConfigSettings config;
+        public static ConfigSettings config = new();
 
 		internal static Vector2 scanner_centre = new(253, 63 + 385);
 		internal static Vector2 compass_centre = new(382, 22 + 385);
@@ -81,7 +83,34 @@ namespace Elite.Engine
 		internal static player_ship myship = new();
 		internal static Draw draw;
 
-		internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]
+        private readonly long startTicks = DateTime.UtcNow.Ticks;
+        private int breakPatternCount = 0;
+
+        
+        readonly long oneSec = TimeSpan.FromSeconds(1).Ticks;
+
+        private System.Timers.Timer aTimer;
+        FC lockObj = new();
+        TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.fps * 2));
+        internal static State _state = new();
+        static Intro1 _introOne;
+        static Intro2 _introTwo;
+
+        internal class FC
+        {
+            internal int drawn = 0;
+            internal int missed = 0;
+            internal List<long> framesDrawn = new();
+        }
+
+        internal class State
+        {
+            internal bool initialised = false;
+            internal SCR currentScreen = SCR.SCR_NONE;
+            internal IView currentView;
+        }
+
+        internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]
 		{
 			new(),
 			shipdata.missile_data,
@@ -147,9 +176,14 @@ namespace Elite.Engine
         /*
 		 * Initialise the game parameters.
 		 */
-        private static void initialise_game()
+        private void initialise_game()
         {
-            current_screen = SCR.SCR_INTRO_ONE;
+            if (_state.initialised)
+            {
+                return;
+            }
+
+            _state.initialised = true;
 
             restore_saved_commander();
 
@@ -179,6 +213,13 @@ namespace Elite.Engine
             myship.max_roll = 31;
             myship.max_climb = 8;       /* CF 8 */
             myship.max_fuel = 7;        // 7.0 Light Years
+
+            game_over = false;
+            dock_player();
+
+            scanner.update_console();
+
+            SetView(SCR.SCR_INTRO_ONE);
         }
 
         private static void finish_game()
@@ -194,13 +235,13 @@ namespace Elite.Engine
         {
             cross_timer = 5;
 
-            if (current_screen == SCR.SCR_SHORT_RANGE)
+            if (_state.currentScreen == SCR.SCR_SHORT_RANGE)
             {
                 GalacticChart.cross.X += dx * 4;
                 GalacticChart.cross.Y += dy * 4;
                 return;
             }
-            else if (current_screen == SCR.SCR_GALACTIC_CHART)
+            else if (_state.currentScreen == SCR.SCR_GALACTIC_CHART)
             {
                 GalacticChart.cross.X += dx * 2;
                 GalacticChart.cross.Y += dy * 2;
@@ -234,7 +275,7 @@ namespace Elite.Engine
         /// <param name="cy"></param>
         private void draw_cross(Vector2 centre)
         {
-            if (current_screen == SCR.SCR_SHORT_RANGE)
+            if (_state.currentScreen == SCR.SCR_SHORT_RANGE)
             {
                 _gfx.SetClipRegion(1, 37, 510, 339);
                 _gfx.DrawLine(new(centre.X - 16f, centre.Y), new(centre.X + 16f, centre.Y), GFX_COL.GFX_COL_RED);
@@ -243,7 +284,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (current_screen == SCR.SCR_GALACTIC_CHART)
+            if (_state.currentScreen == SCR.SCR_GALACTIC_CHART)
             {
                 _gfx.SetClipRegion(1, 37, 510, 293);
                 _gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), GFX_COL.GFX_COL_RED);
@@ -256,7 +297,7 @@ namespace Elite.Engine
         {
             int laser = 0;
 
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_FRONT_VIEW:
                     _gfx.DrawTextCentre(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
@@ -315,7 +356,7 @@ namespace Elite.Engine
 
         private static void arrow_right()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_MARKET_PRICES:
                     Market.buy_stock();
@@ -350,7 +391,7 @@ namespace Elite.Engine
 
         private static void arrow_left()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_MARKET_PRICES:
                     Market.sell_stock();
@@ -385,7 +426,7 @@ namespace Elite.Engine
 
         private static void arrow_up()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_MARKET_PRICES:
                     Market.select_previous_stock();
@@ -427,7 +468,7 @@ namespace Elite.Engine
 
         private static void arrow_down()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_MARKET_PRICES:
                     Market.select_next_stock();
@@ -469,7 +510,7 @@ namespace Elite.Engine
 
         private static void return_pressed()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_EQUIP_SHIP:
                     Equipment.buy_equip();
@@ -487,7 +528,7 @@ namespace Elite.Engine
 
         private static void y_pressed()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_QUIT:
                     finish_game();
@@ -497,7 +538,7 @@ namespace Elite.Engine
 
         private static void n_pressed()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_QUIT:
                     if (docked)
@@ -506,7 +547,7 @@ namespace Elite.Engine
                     }
                     else
                     {
-                        current_screen = SCR.SCR_FRONT_VIEW;
+                        SetView(SCR.SCR_FRONT_VIEW);
                     }
 
                     break;
@@ -515,7 +556,7 @@ namespace Elite.Engine
 
         private void d_pressed()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_GALACTIC_CHART:
                 case SCR.SCR_SHORT_RANGE:
@@ -537,7 +578,7 @@ namespace Elite.Engine
 
         private void f_pressed()
         {
-            if (current_screen is SCR.SCR_GALACTIC_CHART or SCR.SCR_SHORT_RANGE)
+            if (_state.currentScreen is SCR.SCR_GALACTIC_CHART or SCR.SCR_SHORT_RANGE)
             {
                 find_input = true;
                 find_name = string.Empty;
@@ -580,7 +621,7 @@ namespace Elite.Engine
 
         private static void o_pressed()
         {
-            switch (current_screen)
+            switch (_state.currentScreen)
             {
                 case SCR.SCR_GALACTIC_CHART:
                 case SCR.SCR_SHORT_RANGE:
@@ -692,7 +733,7 @@ namespace Elite.Engine
         private void run_escape_sequence()
         {
             Vector3[] rotmat = new Vector3[3];
-            current_screen = SCR.SCR_ESCAPE_POD;
+            SetView(SCR.SCR_ESCAPE_POD);
             flight_speed = 1;
             flight_roll = 0;
             flight_climb = 0;
@@ -812,9 +853,9 @@ namespace Elite.Engine
                 }
                 else
                 {
-                    if (current_screen != SCR.SCR_FRONT_VIEW)
+                    if (_state.currentScreen != SCR.SCR_FRONT_VIEW)
                     {
-                        current_screen = SCR.SCR_FRONT_VIEW;
+                        SetView(SCR.SCR_FRONT_VIEW);
                         Stars.flip_stars();
                     }
                 }
@@ -826,9 +867,9 @@ namespace Elite.Engine
 
                 if (!docked)
                 {
-                    if (current_screen != SCR.SCR_REAR_VIEW)
+                    if (_state.currentScreen != SCR.SCR_REAR_VIEW)
                     {
-                        current_screen = SCR.SCR_REAR_VIEW;
+                        SetView(SCR.SCR_REAR_VIEW);
                         Stars.flip_stars();
                     }
                 }
@@ -840,9 +881,9 @@ namespace Elite.Engine
 
                 if (!docked)
                 {
-                    if (current_screen != SCR.SCR_LEFT_VIEW)
+                    if (_state.currentScreen != SCR.SCR_LEFT_VIEW)
                     {
-                        current_screen = SCR.SCR_LEFT_VIEW;
+                        SetView(SCR.SCR_LEFT_VIEW);
                         Stars.flip_stars();
                     }
                 }
@@ -858,9 +899,9 @@ namespace Elite.Engine
                 }
                 else
                 {
-                    if (current_screen != SCR.SCR_RIGHT_VIEW)
+                    if (_state.currentScreen != SCR.SCR_RIGHT_VIEW)
                     {
-                        current_screen = SCR.SCR_RIGHT_VIEW;
+                        SetView(SCR.SCR_RIGHT_VIEW);
                         Stars.flip_stars();
                     }
                 }
@@ -1108,7 +1149,7 @@ namespace Elite.Engine
 
         internal static void save_commander_screen()
         {
-            elite.current_screen = SCR.SCR_SAVE_CMDR;
+            SetView(SCR.SCR_SAVE_CMDR);
             int key;
             string name = elite.cmdr.name;
 
@@ -1155,7 +1196,7 @@ namespace Elite.Engine
 
         internal static void load_commander_screen()
         {
-            elite.current_screen = SCR.SCR_LOAD_CMDR;
+            SetView(SCR.SCR_LOAD_CMDR);
             int key;
             string name = elite.cmdr.name;
 
@@ -1195,53 +1236,6 @@ namespace Elite.Engine
             scanner.update_console();
         }
 
-        private void run_first_intro_screen()
-        {
-            current_screen = SCR.SCR_INTRO_ONE;
-            _audio.PlayMusic(Music.EliteTheme, true);
-            Intro1 intro = new(_gfx, _space);
-
-            for (; ; )
-            {
-                intro.Update();
-
-                _gfx.ScreenUpdate();
-
-                if (keyboard.IsKeyPressed(CommandKey.Y))
-                {
-                    _audio.StopMusic();
-                    load_commander_screen();
-                    break;
-                }
-
-                if (keyboard.IsKeyPressed(CommandKey.N))
-                {
-                    _audio.StopMusic();
-                    break;
-                }
-            }
-        }
-
-        private void run_second_intro_screen()
-        {
-            current_screen = SCR.SCR_INTRO_TWO;
-            _audio.PlayMusic(Music.BlueDanube, true);
-            Intro2 intro = new(_gfx, _stars, _space);
-
-            flight_speed = 3;
-            flight_roll = 0;
-            flight_climb = 0;
-
-            do
-            {
-                intro.Update();
-                _gfx.ScreenUpdate();
-            }
-            while (!keyboard.IsKeyPressed(CommandKey.Space));
-
-            _audio.StopMusic();
-        }
-
         /*
 		 * Draw the game over sequence. 
 		 */
@@ -1252,7 +1246,7 @@ namespace Elite.Engine
             Vector3[] rotmat = new Vector3[3];
             SHIP type;
 
-            current_screen = SCR.SCR_GAME_OVER;
+            SetView(SCR.SCR_GAME_OVER);
             _gfx.SetClipRegion(1, 1, 510, 383);
 
             flight_speed = 6;
@@ -1294,22 +1288,33 @@ namespace Elite.Engine
             _gfx.SetClipRegion(1, 1, 510, 383);
             draw.ClearDisplay();
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < breakPatternCount; i++)
             {
-                _gfx.DrawCircle(new(256f, 192f), 30f + (i * 15f), GFX_COL.GFX_COL_WHITE);
-                _gfx.ScreenUpdate();
+                _gfx.DrawCircle(new(256, 192), 30 + (i * 15), GFX_COL.GFX_COL_WHITE);
             }
 
-            if (docked)
+            _gfx.ScreenUpdate();
+
+            breakPatternCount++;
+
+            if (breakPatternCount == 20)
             {
-                _missions.check_mission_brief();
-                CommanderStatus.display_commander_status();
-                scanner.update_console();
+                breakPatternCount = 0;
+
+                if (docked)
+                {
+                    SetView(SCR.SCR_MISSION);
+                }
+                else
+                {
+                    SetView(SCR.SCR_FRONT_VIEW);
+                }
             }
-            else
-            {
-                current_screen = SCR.SCR_FRONT_VIEW;
-            }
+        }
+
+        private void DisplayMission()
+        {
+
         }
 
         internal static void info_message(string message)
@@ -1350,7 +1355,6 @@ namespace Elite.Engine
 
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;
-            _gfx.SpeedCap = config.SpeedCap;
 
             _threed = new(_gfx);
             _stars = new(_gfx);
@@ -1358,211 +1362,334 @@ namespace Elite.Engine
             _swat = new(this, _audio);
             _trade = new(this, _swat);
             _space = new(this, _gfx, _threed, _audio, _pilot, _swat, _trade);
-            _missions = new Missions(_gfx, _space);
-            _planetData = new(_missions);
+            _mission = new Mission();
+            _planetData = new(_mission);
+            _introOne = new(_gfx, _audio, keyboard, _space);
+            _introTwo = new(_gfx, _audio, keyboard, _stars, _space);
 
             finish = false;
             auto_pilot = false;
 
-            while (!finish)
+            long startTicks = DateTime.UtcNow.Ticks;
+
+            aTimer = new System.Timers.Timer
             {
-                game_over = false;
-                initialise_game();
-                dock_player();
+                Interval = 1000,
+                AutoReset = true,
+            };
+            aTimer.Elapsed += ATimer_Elapsed;
+            aTimer.Enabled = true;
 
-                scanner.update_console();
-
-                current_screen = SCR.SCR_FRONT_VIEW;
-                run_first_intro_screen();
-                run_second_intro_screen();
-
-                old_cross.X = -1f;
-                old_cross.Y = -1f;
-
-                dock_player();
-                CommanderStatus.display_commander_status();
-
-                while (!game_over)
+            do
+            {
+                long runtime = DateTime.UtcNow.Ticks - startTicks;
+                //Console.WriteLine($"runtime: {runtime / 100}, fps: {(int)(runtime / 1000 % fps)}");
+                if (runtime / 100 % ((int)(100000 / config.fps)) == 0)
                 {
-                    _audio.UpdateSound();
-                    _gfx.ScreenUpdate();
-                    _gfx.SetClipRegion(1, 1, 510, 383);
+                    // Console.WriteLine("DrawFrame");
+                    //Task.Run(() => DrawFrame());
+                    DrawFrame();
+                }
+            } while (true);
 
-                    rolling = false;
-                    climbing = false;
 
-                    handle_flight_keys();
 
-                    if (game_paused)
-                    {
-                        continue;
-                    }
+            //while (!finish)
+            //{
+            //    run_first_intro_screen();
+            //    run_second_intro_screen();
 
-                    if (message_count > 0)
-                    {
-                        message_count--;
-                    }
+            //    old_cross.X = -1f;
+            //    old_cross.Y = -1f;
 
-                    if (!rolling)
-                    {
-                        if (flight_roll > 0)
-                        {
-                            space.decrease_flight_roll();
-                        }
+            //    dock_player();
+            //    CommanderStatus.display_commander_status();
 
-                        if (flight_roll < 0)
-                        {
-                            space.increase_flight_roll();
-                        }
-                    }
+            //    while (!game_over)
+            //    {
+            //        if ((DateTime.UtcNow.Ticks - startTicks) / 100 % (100000 / targetFps) != 0)
+            //        {
+            //            continue;
+            //        }
 
-                    if (!climbing)
-                    {
-                        if (flight_climb > 0)
-                        {
-                            space.decrease_flight_climb();
-                        }
+            //        _audio.UpdateSound();
+            //        _gfx.ScreenUpdate();
+            //        _gfx.SetClipRegion(1, 1, 510, 383);
 
-                        if (flight_climb < 0)
-                        {
-                            space.increase_flight_climb();
-                        }
-                    }
+            //        rolling = false;
+            //        climbing = false;
 
-                    if (!docked)
-                    {
-                        _gfx.ScreenAcquire();
+            //        handle_flight_keys();
 
-                        if (current_screen is
-                            SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
-                            SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
-                            SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
-                            SCR.SCR_GAME_OVER)
-                        {
-                            draw.ClearDisplay();
-                            _stars.update_starfield();
-                        }
+            //        if (game_paused)
+            //        {
+            //            continue;
+            //        }
 
-                        if (auto_pilot)
-                        {
-                            auto_dock();
-                            if ((mcount & 127) == 0)
-                            {
-                                info_message("Docking Computers On");
-                            }
-                        }
+            //        if (message_count > 0)
+            //        {
+            //            message_count--;
+            //        }
 
-                        _space.update_universe();
+            //        if (!rolling)
+            //        {
+            //            if (flight_roll > 0)
+            //            {
+            //                space.decrease_flight_roll();
+            //            }
 
-                        if (docked)
-                        {
-                            scanner.update_console();
-                            _gfx.ScreenRelease();
-                            continue;
-                        }
+            //            if (flight_roll < 0)
+            //            {
+            //                space.increase_flight_roll();
+            //            }
+            //        }
 
-                        if (current_screen is
-                            SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
-                            SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
-                        {
-                            if (draw_lasers != 0)
-                            {
-                                draw.DrawLaserLines();
-                                draw_lasers--;
-                            }
+            //        if (!climbing)
+            //        {
+            //            if (flight_climb > 0)
+            //            {
+            //                space.decrease_flight_climb();
+            //            }
 
-                            draw_laser_sights();
-                        }
+            //            if (flight_climb < 0)
+            //            {
+            //                space.increase_flight_climb();
+            //            }
+            //        }
 
-                        if (message_count > 0)
-                        {
-                            _gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
-                        }
+            //        if (!docked)
+            //        {
+            //            _gfx.ScreenAcquire();
 
-                        if (space.hyper_ready)
-                        {
-                            _space.display_hyper_status();
-                            if ((mcount & 3) == 0)
-                            {
-                                _space.countdown_hyperspace();
-                            }
-                        }
+            //            if (current_screen is
+            //                SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
+            //                SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
+            //                SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
+            //                SCR.SCR_GAME_OVER)
+            //            {
+            //                draw.ClearDisplay();
+            //                _stars.update_starfield();
+            //            }
 
-                        _gfx.ScreenRelease();
+            //            if (auto_pilot)
+            //            {
+            //                auto_dock();
+            //                if ((mcount & 127) == 0)
+            //                {
+            //                    info_message("Docking Computers On");
+            //                }
+            //            }
 
-                        mcount--;
-                        if (mcount < 0)
-                        {
-                            mcount = 255;
-                        }
+            //            _space.update_universe();
 
-                        if ((mcount & 7) == 0)
-                        {
-                            space.regenerate_shields();
-                        }
+            //            if (docked)
+            //            {
+            //                scanner.update_console();
+            //                _gfx.ScreenRelease();
+            //                continue;
+            //            }
 
-                        if ((mcount & 31) == 10)
-                        {
-                            if (energy < 50)
-                            {
-                                info_message("ENERGY LOW");
-                                _audio.PlayEffect(SoundEffect.Beep);
-                            }
+            //            if (current_screen is
+            //                SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
+            //                SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
+            //            {
+            //                if (draw_lasers != 0)
+            //                {
+            //                    draw.DrawLaserLines();
+            //                    draw_lasers--;
+            //                }
 
-                            _space.update_altitude();
-                        }
+            //                draw_laser_sights();
+            //            }
 
-                        if ((mcount & 31) == 20)
-                        {
-                            _space.update_cabin_temp();
-                        }
+            //            if (message_count > 0)
+            //            {
+            //                _gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
+            //            }
 
-                        if ((mcount == 0) && (!witchspace))
-                        {
-                            swat.random_encounter();
-                        }
+            //            if (space.hyper_ready)
+            //            {
+            //                _space.display_hyper_status();
+            //                if ((mcount & 3) == 0)
+            //                {
+            //                    _space.countdown_hyperspace();
+            //                }
+            //            }
 
-                        swat.cool_laser();
-                        _swat.time_ecm();
+            //            _gfx.ScreenRelease();
 
-                        scanner.update_console();
-                    }
+            //            mcount--;
+            //            if (mcount < 0)
+            //            {
+            //                mcount = 255;
+            //            }
 
-                    if (current_screen == SCR.SCR_BREAK_PATTERN)
-                    {
-                        display_break_pattern();
-                    }
+            //            if ((mcount & 7) == 0)
+            //            {
+            //                space.regenerate_shields();
+            //            }
 
-                    if (cross_timer > 0)
-                    {
-                        cross_timer--;
-                        if (cross_timer == 0)
-                        {
-                            GalacticChart.show_distance_to_planet();
-                        }
-                    }
+            //            if ((mcount & 31) == 10)
+            //            {
+            //                if (energy < 50)
+            //                {
+            //                    info_message("ENERGY LOW");
+            //                    _audio.PlayEffect(SoundEffect.Beep);
+            //                }
 
-                    if ((GalacticChart.cross.X != old_cross.X) ||
-                        (GalacticChart.cross.Y != old_cross.Y))
-                    {
-                        old_cross = GalacticChart.cross;
+            //                _space.update_altitude();
+            //            }
 
-                        if (current_screen == SCR.SCR_GALACTIC_CHART)
-                        {
-                            draw.DrawGalacticChart(cmdr.galaxy_number + 1, GalacticChart.planetPixels, GalacticChart.planetName, GalacticChart.distanceToPlanet);
-                        }
-                        else if (current_screen == SCR.SCR_SHORT_RANGE)
-                        {
-                            draw.DrawShortRangeChart(GalacticChart.planetNames, GalacticChart.planetSizes, GalacticChart.planetName, GalacticChart.distanceToPlanet);
-                        }
+            //            if ((mcount & 31) == 20)
+            //            {
+            //                _space.update_cabin_temp();
+            //            }
 
-                        draw_cross(old_cross);
-                    }
+            //            if ((mcount == 0) && (!witchspace))
+            //            {
+            //                swat.random_encounter();
+            //            }
+
+            //            swat.cool_laser();
+            //            _swat.time_ecm();
+
+            //            scanner.update_console();
+            //        }
+
+            //        if (current_screen == SCR.SCR_BREAK_PATTERN)
+            //        {
+            //            display_break_pattern();
+            //        }
+
+            //        if (current_screen == SCR.SCR_MISSION)
+            //        {
+            //            //IMission? mission = _missions.check_mission_brief();
+            //            //mission?.Brief();
+
+            //            ConstrictorMission mission = new(_gfx, _space);
+            //            mission.DrawBrief();
+            //            mission.Update();
+
+            //            if (elite.keyboard.IsKeyPressed(CommandKey.Space))
+            //            {
+            //                //elite.current_screen = SCR.SCR_FRONT_VIEW;
+            //                CommanderStatus.display_commander_status();
+            //                scanner.update_console();
+            //            }
+            //        }
+
+            //        if (current_screen == SCR.SCR_MISSION)
+            //        {
+            //            DisplayMission();
+            //        }
+
+            //        if (cross_timer > 0)
+            //        {
+            //            cross_timer--;
+            //            if (cross_timer == 0)
+            //            {
+            //                GalacticChart.show_distance_to_planet();
+            //            }
+            //        }
+
+            //        if ((GalacticChart.cross.X != old_cross.X) ||
+            //            (GalacticChart.cross.Y != old_cross.Y))
+            //        {
+            //            old_cross = GalacticChart.cross;
+
+            //            if (current_screen == SCR.SCR_GALACTIC_CHART)
+            //            {
+            //                draw.DrawGalacticChart(cmdr.galaxy_number + 1, GalacticChart.planetPixels, GalacticChart.planetName, GalacticChart.distanceToPlanet);
+            //            }
+            //            else if (current_screen == SCR.SCR_SHORT_RANGE)
+            //            {
+            //                draw.DrawShortRangeChart(GalacticChart.planetNames, GalacticChart.planetSizes, GalacticChart.planetName, GalacticChart.distanceToPlanet);
+            //            }
+
+            //            draw_cross(old_cross);
+            //        }
+            //    }
+
+            //    if (!finish)
+            //    {
+            //        run_game_over_screen();
+            //    }
+            //}
+        }
+
+        private void DrawFrameElite()
+        {
+            initialise_game();
+
+            draw.ClearDisplay();
+
+            switch (_state.currentScreen)
+            {
+                case SCR.SCR_INTRO_ONE:
+                    _state.currentView.Draw();
+                    break;
+
+                case SCR.SCR_INTRO_TWO:
+                    _state.currentView.Draw();
+                    break;
+            }
+
+            _space.update_universe();
+
+            _gfx.ScreenUpdate();
+        }
+
+        internal static void SetView(SCR screen)
+        {
+            lock (_state)
+            {
+                _state.currentScreen = screen;
+
+                _state.currentView = screen switch
+                {
+                    SCR.SCR_INTRO_ONE => _introOne,
+                    SCR.SCR_INTRO_TWO => _introTwo,
+                    _ => throw new NotImplementedException(),
+                };
+                
+                _state.currentView.Reset();
+            }
+        }
+
+        private void DrawFrame()
+        {
+            bool lockTaken = false;
+            long now = DateTime.UtcNow.Ticks;
+
+            try
+            {
+                Monitor.TryEnter(lockObj, timeout, ref lockTaken);
+                if (lockTaken)
+                {
+                    // The critical section.
+                    DrawFrameElite();
+                    lockObj.drawn++;
+                    lockObj.framesDrawn.Add(now);
+                }
+                else
+                {
+                    // The lock was not acquired.
+                    lockObj.missed++;
+                    //Console.WriteLine($"Frames: drawn: {lockObj.drawn}, missed: {lockObj.missed}, total: {lockObj.drawn + lockObj.missed}");
                 }
 
-                if (!finish)
+                //Console.WriteLine($"Frames: drawn: {lockObj.drawn}, missed: {lockObj.missed}, total: {lockObj.drawn + lockObj.missed}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception" + ex.Message);
+            }
+            finally
+            {
+                // Ensure that the lock is released.
+                if (lockTaken)
                 {
-                    run_game_over_screen();
+                    Monitor.Exit(lockObj);
                 }
             }
         }
@@ -1639,7 +1766,7 @@ namespace Elite.Engine
 
             _audio.PlayEffect(SoundEffect.Dock);
             dock_player();
-            elite.current_screen = SCR.SCR_BREAK_PATTERN;
+            SetView(SCR.SCR_BREAK_PATTERN);
         }
 
         /// <summary>
@@ -1649,6 +1776,29 @@ namespace Elite.Engine
         {
             _audio.PlayEffect(SoundEffect.Gameover);
             elite.game_over = true;
+        }
+
+        private void ATimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            long secondAgo = DateTime.UtcNow.Ticks - oneSec;
+
+            lock (lockObj)
+            {
+                if (lockObj.framesDrawn.Count > 0)
+                {
+                    int i;
+                    for (i = 0; i < lockObj.framesDrawn.Count; i++)
+                    {
+                        if (lockObj.framesDrawn[i] > secondAgo)
+                        {
+                            break;
+                        }
+                    }
+                    lockObj.framesDrawn.RemoveRange(0, i);
+                }
+
+                Console.Write($"\rFPS: {lockObj.framesDrawn.Count}");
+            }
         }
     }
 }

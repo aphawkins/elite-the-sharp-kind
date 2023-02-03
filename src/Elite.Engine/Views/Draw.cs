@@ -86,7 +86,7 @@
             float radius;
             float cross_size;
 
-            if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+            if (elite._state.currentScreen == SCR.SCR_GALACTIC_CHART)
             {
                 radius = elite.cmdr.fuel * 2.5f * gfx.GFX_SCALE;
                 cross_size = 7f * gfx.GFX_SCALE;

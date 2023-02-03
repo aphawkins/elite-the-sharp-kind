@@ -403,7 +403,7 @@ namespace Elite.Engine
 			{
 				_audio.PlayEffect(SoundEffect.Dock);
 				_elite.dock_player();
-				elite.current_screen = SCR.SCR_BREAK_PATTERN;
+				elite.SetView(SCR.SCR_BREAK_PATTERN);
 				return;
 			}
 
@@ -422,7 +422,7 @@ namespace Elite.Engine
 		{
 			float tmp;
 
-			if (elite.current_screen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
+			if (elite._state.currentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
 			{
 				flip.location.X = -flip.location.X;
 				flip.location.Z = -flip.location.Z;
@@ -438,7 +438,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (elite.current_screen == SCR.SCR_LEFT_VIEW)
+			if (elite._state.currentScreen == SCR.SCR_LEFT_VIEW)
 			{
 				tmp = flip.location.X;
 				flip.location.X = flip.location.Z;
@@ -463,7 +463,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (elite.current_screen == SCR.SCR_RIGHT_VIEW)
+			if (elite._state.currentScreen == SCR.SCR_RIGHT_VIEW)
 			{
 				tmp = flip.location.X;
 				flip.location.X = -flip.location.Z;
@@ -494,12 +494,11 @@ namespace Elite.Engine
 		 */
 		internal void update_universe()
 		{
-			SHIP type;
-            threed.RenderStart();
+            _threed.RenderStart();
 
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
             {
-                type = universe[i].type;
+                SHIP type = universe[i].type;
 
                 if (type == SHIP.SHIP_NONE)
                 {
@@ -538,7 +537,7 @@ namespace Elite.Engine
                     universe[i].flags |= FLG.FLG_DEAD;
                 }
 
-                if (elite.current_screen is
+                if (elite._state.currentScreen is
                     not SCR.SCR_INTRO_ONE and
                     not SCR.SCR_INTRO_TWO and
                     not SCR.SCR_GAME_OVER and
@@ -561,13 +560,13 @@ namespace Elite.Engine
                         make_station_appear();
                     }
 
-                    _threed.DrawObject(ref flip);
+					_threed.DrawObject(flip);
                     continue;
                 }
 
                 if (type == SHIP.SHIP_SUN)
                 {
-                    _threed.DrawObject(ref flip);
+                    _threed.DrawObject(flip);
                     continue;
                 }
 
@@ -592,7 +591,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                _threed.DrawObject(ref flip);
+                _threed.DrawObject(flip);
 
                 universe[i].flags = flip.flags;
                 universe[i].exp_delta = flip.exp_delta;
@@ -688,7 +687,7 @@ namespace Elite.Engine
 		{
 			string str = $"{hyper_countdown}";
 
-			if (elite.current_screen is 
+			if (elite._state.currentScreen is 
 				SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
                 SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
 			{
@@ -757,7 +756,7 @@ namespace Elite.Engine
 				swat.create_thargoid();
 			}
 
-			elite.current_screen = SCR.SCR_BREAK_PATTERN;
+			elite.SetView(SCR.SCR_BREAK_PATTERN);
 			_audio.PlayEffect(SoundEffect.Hyperspace);
 		}
 
@@ -824,7 +823,7 @@ namespace Elite.Engine
 
 			swat.add_new_ship(SHIP.SHIP_SUN, position, rotmat, 0, 0);
 
-			elite.current_screen = SCR.SCR_BREAK_PATTERN;
+			elite.SetView(SCR.SCR_BREAK_PATTERN);
 			_audio.PlayEffect(SoundEffect.Hyperspace);
 		}
 
@@ -904,7 +903,7 @@ namespace Elite.Engine
 			rotmat[2].Z = -rotmat[2].Z;
 			swat.add_new_station(new(0, 0, -256), rotmat);
 
-			elite.current_screen = SCR.SCR_BREAK_PATTERN;
+			elite.SetView(SCR.SCR_BREAK_PATTERN);
 			_audio.PlayEffect(SoundEffect.Launch);
 		}
 
@@ -918,7 +917,7 @@ namespace Elite.Engine
 			{
 				_audio.PlayEffect(SoundEffect.Dock);
 				_elite.dock_player();
-				elite.current_screen = SCR.SCR_BREAK_PATTERN;
+				elite.SetView(SCR.SCR_BREAK_PATTERN);
 			}
 		}
     }

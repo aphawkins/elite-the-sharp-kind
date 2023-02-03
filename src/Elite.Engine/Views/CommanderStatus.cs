@@ -20,7 +20,7 @@ namespace Elite.Engine.Views
     {
         internal static void display_commander_status()
         {
-            elite.current_screen = SCR.SCR_CMDR_STATUS;
+            elite.SetView(SCR.SCR_CMDR_STATUS);
 
             string dockedPlanetName = Planet.name_planet(elite.docked_planet, true);
             string hyperspacePlanetName = Planet.name_planet(elite.hyperspace_planet, true);

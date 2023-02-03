@@ -319,7 +319,7 @@ namespace Elite.Engine.Views
 
         internal static void equip_ship()
         {
-            elite.current_screen = SCR.SCR_EQUIP_SHIP;
+            elite.SetView(SCR.SCR_EQUIP_SHIP);
 
             collapse_equip_list();
 

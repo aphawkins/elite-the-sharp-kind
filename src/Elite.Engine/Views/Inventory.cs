@@ -20,7 +20,7 @@ namespace Elite.Engine.Views
     {
         internal static void display_inventory()
         {
-            elite.current_screen = SCR.SCR_INVENTORY;
+            elite.SetView(SCR.SCR_INVENTORY);
             elite.draw.DrawInventory(elite.cmdr.fuel, elite.cmdr.credits, trade.stock_market, elite.cmdr.current_cargo);
         }
     }

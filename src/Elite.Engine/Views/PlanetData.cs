@@ -16,11 +16,12 @@ namespace Elite.Engine.Views
 {
     using System.Diagnostics;
     using Elite.Engine.Enums;
+    using Elite.Engine.Missions;
     using Elite.Engine.Types;
 
     internal class PlanetData
 	{
-        private Missions _missions;
+        private Mission _mission;
         private random_seed _rnd_seed = new();
 
         private static readonly string[] economy_type = {"Rich Industrial",
@@ -81,9 +82,9 @@ namespace Elite.Engine.Views
 		/* 35	*/	new string[] {"hockey", "cricket", "karate", "polo", "tennis"}
         };
 
-        internal PlanetData(Missions missions)
+        internal PlanetData(Mission mission)
         {
-            _missions = missions;
+            _mission = mission;
         }
 
         /// <summary>
@@ -93,7 +94,7 @@ namespace Elite.Engine.Views
 		{
 			planet_data hyper_planet_data = new();
 
-			elite.current_screen = SCR.SCR_PLANET_DATA;
+			elite.SetView(SCR.SCR_PLANET_DATA);
 
 			string planetName = Planet.name_planet(elite.hyperspace_planet, false);
             float lightYears = GalacticChart.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
@@ -115,7 +116,7 @@ namespace Elite.Engine.Views
         {
             if (elite.cmdr.mission == 1)
             {
-                string? mission_text = _missions.mission_planet_desc(planet);
+                string? mission_text = _mission.mission_planet_desc(planet);
                 if (!string.IsNullOrEmpty(mission_text))
                 {
                     return mission_text;

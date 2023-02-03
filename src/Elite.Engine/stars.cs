@@ -239,7 +239,7 @@ namespace Elite.Engine
 			float alpha = elite.flight_roll;
 			float beta = elite.flight_climb;
 
-			if (elite.current_screen == SCR.SCR_LEFT_VIEW)
+			if (elite._state.currentScreen == SCR.SCR_LEFT_VIEW)
 			{
 				delta = -delta;
 				alpha = -alpha;
@@ -305,7 +305,7 @@ namespace Elite.Engine
 				if (MathF.Abs(stars[i].X) >= 116f)
 				{
 					stars[i].Y = RNG.Random(-128, 127);
-					stars[i].X = (elite.current_screen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
+					stars[i].X = (elite._state.currentScreen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
 					stars[i].Z = RNG.Random(255) | 8;
 				}
 				else if (MathF.Abs(stars[i].Y) >= 116f)
@@ -336,7 +336,7 @@ namespace Elite.Engine
 
 		internal void update_starfield()
 		{
-			switch (elite.current_screen)
+			switch (elite._state.currentScreen)
 			{
 				case SCR.SCR_FRONT_VIEW:
 				case SCR.SCR_INTRO_ONE:

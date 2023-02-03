@@ -4,7 +4,7 @@
 
     public class ConfigSettings
     {
-        public int SpeedCap { get; set; } = 75;
+        public float fps { get; set; } = 13.5f; // Approx speed of TNK
 
         public bool UseWireframe { get; set; } = false;
 

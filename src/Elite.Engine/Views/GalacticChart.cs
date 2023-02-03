@@ -46,7 +46,7 @@ namespace Elite.Engine.Views
 		{
 			Vector2 location;
 
-			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+			if (elite._state.currentScreen == SCR.SCR_GALACTIC_CHART)
 			{
 				location.X = cross.X / gfx.GFX_SCALE;
 				location.Y = (cross.Y - ((18f * gfx.GFX_SCALE) + 1)) * (2f / gfx.GFX_SCALE);
@@ -61,7 +61,7 @@ namespace Elite.Engine.Views
 			planetName = Planet.name_planet(elite.hyperspace_planet, false);
 			distanceToPlanet = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
-			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+			if (elite._state.currentScreen == SCR.SCR_GALACTIC_CHART)
 			{
 				cross.X = elite.hyperspace_planet.d * gfx.GFX_SCALE;
 				cross.Y = (elite.hyperspace_planet.b / (2f / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
@@ -75,7 +75,7 @@ namespace Elite.Engine.Views
 
 		internal static void move_cursor_to_origin()
 		{
-			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+			if (elite._state.currentScreen == SCR.SCR_GALACTIC_CHART)
 			{
 				cross.X = elite.docked_planet.d * gfx.GFX_SCALE;
 				cross.Y = (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
@@ -119,7 +119,7 @@ namespace Elite.Engine.Views
 			planetName = planet_name;
 			distanceToPlanet = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
-			if (elite.current_screen == SCR.SCR_GALACTIC_CHART)
+			if (elite._state.currentScreen == SCR.SCR_GALACTIC_CHART)
 			{
 				cross.X = elite.hyperspace_planet.d * gfx.GFX_SCALE;
 				cross.Y = (elite.hyperspace_planet.b / (2f / gfx.GFX_SCALE)) + (18f * gfx.GFX_SCALE) + 1;
@@ -136,7 +136,7 @@ namespace Elite.Engine.Views
 		internal static void display_short_range_chart()
 		{
 			int[] row_used = new int[64];
-			elite.current_screen = SCR.SCR_SHORT_RANGE;
+			elite.SetView(SCR.SCR_SHORT_RANGE);
 			planetNames.Clear();
 			planetSizes.Clear();
 
@@ -218,7 +218,7 @@ namespace Elite.Engine.Views
 
 		internal static void display_galactic_chart()
 		{
-			elite.current_screen = SCR.SCR_GALACTIC_CHART;
+			elite.SetView(SCR.SCR_GALACTIC_CHART);
 			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 			planetPixels.Clear();
 

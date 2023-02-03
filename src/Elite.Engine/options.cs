@@ -91,7 +91,7 @@ namespace Elite.Engine
 
 		internal static void display_options()
 		{
-			elite.current_screen = SCR.SCR_OPTIONS;
+			elite.SetView(SCR.SCR_OPTIONS);
 
 			hilite_item = 0;
 			elite.draw.DrawOptions(option_list, hilite_item);
