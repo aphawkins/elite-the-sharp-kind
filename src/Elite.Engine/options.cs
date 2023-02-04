@@ -76,7 +76,7 @@ namespace Elite.Engine
 
 				case 1:
                     elite.load_commander_screen();
-                    CommanderStatus.display_commander_status();
+					elite.SetView(SCR.SCR_CMDR_STATUS);
 					break;
 
 				case 2:

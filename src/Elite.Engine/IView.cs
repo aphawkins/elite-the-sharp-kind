@@ -4,6 +4,10 @@
     {
         void Reset();
 
+        void UpdateUniverse();
+
         void Draw();
+
+        void HandleInput();
     }
 }

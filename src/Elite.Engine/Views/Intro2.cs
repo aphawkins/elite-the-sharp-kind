@@ -55,7 +55,7 @@ namespace Elite.Engine.Views
             elite.flight_climb = 0;
         }
 
-        public void Draw()
+        public void UpdateUniverse()
         {
             _showTime++;
 
@@ -91,15 +91,19 @@ namespace Elite.Engine.Views
                 swat.add_new_ship(_shipNo, new(0, 0, 4500), intro_ship_matrix, -127, -127);
             }
 
-            //elite.draw.ClearDisplay();
             _stars.update_starfield();
-            //_space.update_universe();
+        }
 
+        public void Draw()
+        {
             _gfx.DrawImage(Image.EliteText, new(-1, 10));
 
             _gfx.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawTextCentre(330, elite.ship_list[(int)_shipNo].name, 120, GFX_COL.GFX_COL_WHITE);
+        }
 
+        public void HandleInput()
+        {
             if (_keyboard.IsKeyPressed(CommandKey.Space))
             {
                 _audio.StopMusic();

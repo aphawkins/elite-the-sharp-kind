@@ -24,6 +24,7 @@ namespace Elite.Engine
     using Elite.Engine.Ships;
     using Elite.Engine.Types;
     using Elite.Engine.Views;
+    using static Elite.Engine.elite;
 
     public class elite
 	{
@@ -93,8 +94,7 @@ namespace Elite.Engine
         FC lockObj = new();
         TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.fps * 2));
         internal static State _state = new();
-        static Intro1 _introOne;
-        static Intro2 _introTwo;
+        private static Dictionary<SCR, IView> _views = new();
 
         internal class FC
         {
@@ -543,7 +543,7 @@ namespace Elite.Engine
                 case SCR.SCR_QUIT:
                     if (docked)
                     {
-                        CommanderStatus.display_commander_status();
+                        SetView(SCR.SCR_CMDR_STATUS);
                     }
                     else
                     {
@@ -936,7 +936,7 @@ namespace Elite.Engine
             if (keyboard.IsKeyPressed(CommandKey.F9))
             {
                 find_input = false;
-                CommanderStatus.display_commander_status();
+                SetView(SCR.SCR_CMDR_STATUS);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F10))
@@ -1364,8 +1364,9 @@ namespace Elite.Engine
             _space = new(this, _gfx, _threed, _audio, _pilot, _swat, _trade);
             _mission = new Mission();
             _planetData = new(_mission);
-            _introOne = new(_gfx, _audio, keyboard, _space);
-            _introTwo = new(_gfx, _audio, keyboard, _stars, _space);
+            _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gfx, _audio, keyboard));
+            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gfx, _audio, keyboard, _stars, _space));
+            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
 
             finish = false;
             auto_pilot = false;
@@ -1623,18 +1624,10 @@ namespace Elite.Engine
 
             draw.ClearDisplay();
 
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_INTRO_ONE:
-                    _state.currentView.Draw();
-                    break;
-
-                case SCR.SCR_INTRO_TWO:
-                    _state.currentView.Draw();
-                    break;
-            }
-
+            _state.currentView.UpdateUniverse();
             _space.update_universe();
+            _state.currentView.Draw();
+            _state.currentView.HandleInput();
 
             _gfx.ScreenUpdate();
         }
@@ -1644,14 +1637,7 @@ namespace Elite.Engine
             lock (_state)
             {
                 _state.currentScreen = screen;
-
-                _state.currentView = screen switch
-                {
-                    SCR.SCR_INTRO_ONE => _introOne,
-                    SCR.SCR_INTRO_TWO => _introTwo,
-                    _ => throw new NotImplementedException(),
-                };
-                
+                _state.currentView = _views[screen];
                 _state.currentView.Reset();
             }
         }

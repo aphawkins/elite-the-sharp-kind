@@ -12,13 +12,11 @@ namespace Elite.Engine.Views
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
-        private readonly space _space;
         private Vector3[] intro_ship_matrix = new Vector3[3];
 
-        internal Intro1(IGfx gfx, Audio audio, IKeyboard keyboard, space space)
+        internal Intro1(IGfx gfx, Audio audio, IKeyboard keyboard)
         {
             _gfx = gfx;
-            _space = space;
             _audio = audio;
             _keyboard = keyboard;
         }
@@ -33,7 +31,7 @@ namespace Elite.Engine.Views
             _audio.PlayMusic(Music.EliteTheme, true);
         }
 
-        public void Draw()
+        public void UpdateUniverse()
         {
             space.universe[0].location.Z -= 100;
 
@@ -41,13 +39,19 @@ namespace Elite.Engine.Views
             {
                 space.universe[0].location.Z = 384;
             }
+        }
 
+        public void Draw()
+        {
             _gfx.DrawImage(Image.EliteText, new(-1, 10));
 
             _gfx.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(330, "Re-engineered by C.J.Pinder.", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(360, "Load New Commander (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
+        }
 
+        public void HandleInput()
+        {
             if (_keyboard.IsKeyPressed(CommandKey.Y))
             {
                 _audio.StopMusic();
