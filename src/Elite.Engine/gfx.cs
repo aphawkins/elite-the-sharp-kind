@@ -27,16 +27,16 @@ namespace Elite.Engine
 	public static class gfx
 	{
 #if RES_512_512
-		public const int GFX_SCALE = 2;
-		public const int GFX_X_OFFSET = 0;
-		public const int GFX_Y_OFFSET = 0;
-		public const int GFX_X_CENTRE = 256;
-		public const int GFX_Y_CENTRE = 192;
+		public const float GFX_SCALE = 2;
+		public const float GFX_X_OFFSET = 0;
+		public const float GFX_Y_OFFSET = 0;
+		public const float GFX_X_CENTRE = 256;
+		public const float GFX_Y_CENTRE = 192;
 
-		public const int GFX_VIEW_TX = 1;
-		public const int GFX_VIEW_TY = 1;
-		public const int GFX_VIEW_BX = 509;
-		public const int GFX_VIEW_BY = 381;
+		public const float GFX_VIEW_TX = 1;
+		public const float GFX_VIEW_TY = 1;
+		public const float GFX_VIEW_BX = 509;
+		public const float GFX_VIEW_BY = 381;
 #endif
 
 #if RES_800_600

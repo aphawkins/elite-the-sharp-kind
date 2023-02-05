@@ -23,7 +23,7 @@ namespace Elite.Engine.Views
 		internal static Vector2 cross = new(0, 0);
 		internal static List<Vector2> planetPixels = new();
         internal static List<(Vector2 position, string name)> planetNames = new();
-		internal static List<(Vector2 position, int size)> planetSizes = new();
+		internal static List<(Vector2 position, float size)> planetSizes = new();
 		internal static string planetName;
         internal static float distanceToPlanet;
 
@@ -162,13 +162,13 @@ namespace Elite.Engine.Views
 					continue;
 				}
 
-				int px = glx.d - elite.docked_planet.d;
+				float px = glx.d - elite.docked_planet.d;
 				px = (px * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;  /* Convert to screen co-ords */
 
-				int py = glx.b - elite.docked_planet.b;
+				float py = glx.b - elite.docked_planet.b;
 				py = (py * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE; /* Convert to screen co-ords */
 
-				int row = py / (8 * gfx.GFX_SCALE);
+				int row = (int)(py / (8 * gfx.GFX_SCALE));
 
 				if (row_used[row] == 1)
 				{
@@ -199,7 +199,7 @@ namespace Elite.Engine.Views
 				/* The next bit calculates the size of the circle used to represent */
 				/* a planet.  The carry_flag is left over from the name generation. */
 				/* Yes this was how it was done... don't ask :-( */
-				int blob_size = (glx.f & 1) + 2 + elite.carry_flag;
+				float blob_size = (glx.f & 1) + 2 + elite.carry_flag;
 				blob_size *= gfx.GFX_SCALE;
 				planetSizes.Add((new(px, py), blob_size));
                 

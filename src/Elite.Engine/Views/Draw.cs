@@ -31,7 +31,7 @@
         }
 
         internal void DrawShortRangeChart(IList<(Vector2 position, string name)> planetNames,
-            IList<(Vector2 position, int size)> planetSizes,
+            IList<(Vector2 position, float size)> planetSizes,
             string planetName,
             float lightYears)
         {
@@ -43,7 +43,7 @@
             {
                 _gfx.DrawTextLeft(position.X, position.Y, name, GFX_COL.GFX_COL_WHITE);
             }
-            foreach ((Vector2 position, int size) in planetSizes)
+            foreach ((Vector2 position, float size) in planetSizes)
             {
                 _gfx.DrawCircleFilled(position, size, GFX_COL.GFX_COL_GOLD);
             }
@@ -103,15 +103,15 @@
         }
 
         // TOOD: This should be private
-        internal void DrawTextPretty(int x, int y, int width, string text)
+        internal void DrawTextPretty(float x, float y, float width, string text)
         {
             int i = 0;
-            int maxlen = (width - x) / 8;
+            float maxlen = (width - x) / 8;
             int previous = i;
 
             while (i < text.Length)
             {
-                i += maxlen;
+                i += (int)maxlen;
                 i = Math.Clamp(i, 0, text.Length - 1);
 
                 while (text[i] is not ' ' and not ',' and not '.')
@@ -287,7 +287,7 @@
 
                 if (i == highlightedItem)
                 {
-                    int x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
+                    float x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
                     _gfx.DrawRectangleFilled(x, y - 7, OPTION_BAR_WIDTH, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
                 }
 
@@ -311,7 +311,7 @@
 
             for (int i = 0; i < setting_list.Length; i++)
             {
-                int x;
+                float x;
                 int y;
                 if (i == (setting_list.Length - 1))
                 {

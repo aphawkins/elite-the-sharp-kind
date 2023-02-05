@@ -117,31 +117,9 @@ namespace Elite.WinForms
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
             _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
-
-            //// Install a timer to regulate the speed of the game...
-            //lock (frameCountLock)
-            //{
-            //    frame_count = 0;
-            //}
-
-            //_frameTimer = new()
-            //{
-            //    // Approx match the speed of the TNK
-            //    Interval = 5000 / SpeedCap
-            //};
-            //_frameTimer.Tick += _frameTimer_Tick;
-            //_frameTimer.Start();
         }
 
         private bool disposedValue;
-
-        //private void _frameTimer_Tick(object? sender, EventArgs e)
-        //{
-        //    lock (frameCountLock)
-        //    {
-        //        frame_count++;
-        //    }
-        //}
 
         public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream)
         {
@@ -153,18 +131,7 @@ namespace Elite.WinForms
         /// </summary>
 		public void ScreenUpdate()
 		{
-            //while (frame_count < 1)
-            //{
-            //    Thread.Sleep(10);
-            //    // TODO: find a better way of doing multithreading
-            //    Application.DoEvents();
-            //}
-
-            //lock (frameCountLock)
-            //{
-            //    frame_count = 0;
-            //}
-
+            // TODO: find a better way of doing multithreading
             Application.DoEvents();
 
             lock (_screen)

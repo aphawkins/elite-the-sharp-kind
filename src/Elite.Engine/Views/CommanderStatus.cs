@@ -15,7 +15,6 @@
 namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
-    using Elite.Engine.Types;
 
     internal class CommanderStatus : IView
     {
@@ -24,13 +23,6 @@ namespace Elite.Engine.Views
         internal CommanderStatus(IGfx gfx)
         {
             _gfx = gfx;
-
-            //elite.draw.DrawCommanderStatus(elite.cmdr.name,
-            //    elite.witchspace,
-            //    dockedPlanetName,
-            //    hyperspacePlanetName,
-            //    condition,
-            //    elite.cmdr);
         }
 
         public void Draw()
@@ -119,7 +111,7 @@ namespace Elite.Engine.Views
             }
 
             _gfx.DrawTextCentre(20, $"COMMANDER {elite.cmdr.name}", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.DrawLine(new(0, 36), new(511f, 36f));
             _gfx.DrawTextLeft(16, 58, "Present System:", GFX_COL.GFX_COL_GREEN_1);
 
             if (!elite.witchspace)
