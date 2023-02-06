@@ -24,7 +24,6 @@ namespace Elite.Engine
     using Elite.Engine.Ships;
     using Elite.Engine.Types;
     using Elite.Engine.Views;
-    using static Elite.Engine.elite;
 
     public class elite
 	{
@@ -160,8 +159,7 @@ namespace Elite.Engine
 			trade.set_stock_quantities(cmdr.station_stock);
 		}
 
-        private static Vector2 old_cross;
-        private static int cross_timer;
+        internal static Vector2 cross = new(0, 0);
         private static int draw_lasers;
         internal static int mcount;
         private static int message_count;
@@ -172,6 +170,8 @@ namespace Elite.Engine
         //private static bool have_joystick;
         private static bool find_input;
         private static string find_name;
+        internal static string planetName;
+        internal static float distanceToPlanet;
 
         /*
 		 * Initialise the game parameters.
@@ -206,8 +206,7 @@ namespace Elite.Engine
             Stars.create_new_stars();
             swat.clear_universe();
 
-            GalacticChart.cross = new(-1f, -1f);
-            cross_timer = 0;
+            cross = new(-1, -1);
 
             myship.max_speed = 40;      /* 0.27 Light Mach */
             myship.max_roll = 31;
@@ -226,71 +225,6 @@ namespace Elite.Engine
         {
             finish = true;
             game_over = true;
-        }
-
-        /*
-		 * Move the planet chart cross hairs to specified position.
-		 */
-        private static void move_cross(int dx, int dy)
-        {
-            cross_timer = 5;
-
-            if (_state.currentScreen == SCR.SCR_SHORT_RANGE)
-            {
-                GalacticChart.cross.X += dx * 4;
-                GalacticChart.cross.Y += dy * 4;
-                return;
-            }
-            else if (_state.currentScreen == SCR.SCR_GALACTIC_CHART)
-            {
-                GalacticChart.cross.X += dx * 2;
-                GalacticChart.cross.Y += dy * 2;
-
-                if (GalacticChart.cross.X < 1)
-                {
-                    GalacticChart.cross.X = 1;
-                }
-
-                if (GalacticChart.cross.X > 510)
-                {
-                    GalacticChart.cross.X = 510;
-                }
-
-                if (GalacticChart.cross.Y < 37)
-                {
-                    GalacticChart.cross.Y = 37;
-                }
-
-                if (GalacticChart.cross.Y > 293)
-                {
-                    GalacticChart.cross.Y = 293;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Draw the cross hairs at the specified position.
-        /// </summary>
-        /// <param name="cx"></param>
-        /// <param name="cy"></param>
-        private void draw_cross(Vector2 centre)
-        {
-            if (_state.currentScreen == SCR.SCR_SHORT_RANGE)
-            {
-                _gfx.SetClipRegion(1, 37, 510, 339);
-                _gfx.DrawLine(new(centre.X - 16f, centre.Y), new(centre.X + 16f, centre.Y), GFX_COL.GFX_COL_RED);
-                _gfx.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), GFX_COL.GFX_COL_RED);
-                _gfx.SetClipRegion(1, 1, 510, 383);
-                return;
-            }
-
-            if (_state.currentScreen == SCR.SCR_GALACTIC_CHART)
-            {
-                _gfx.SetClipRegion(1, 37, 510, 293);
-                _gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), GFX_COL.GFX_COL_RED);
-                _gfx.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), GFX_COL.GFX_COL_RED);
-                _gfx.SetClipRegion(1, 1, 510, 383);
-            }
         }
 
         private void draw_laser_sights()
@@ -366,11 +300,6 @@ namespace Elite.Engine
                     Settings.select_right_setting();
                     break;
 
-                case SCR.SCR_SHORT_RANGE:
-                case SCR.SCR_GALACTIC_CHART:
-                    move_cross(1, 0);
-                    break;
-
                 case SCR.SCR_FRONT_VIEW:
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
@@ -399,11 +328,6 @@ namespace Elite.Engine
 
                 case SCR.SCR_SETTINGS:
                     Settings.select_left_setting();
-                    break;
-
-                case SCR.SCR_SHORT_RANGE:
-                case SCR.SCR_GALACTIC_CHART:
-                    move_cross(-1, 0);
                     break;
 
                 case SCR.SCR_FRONT_VIEW:
@@ -444,11 +368,6 @@ namespace Elite.Engine
                     Settings.select_up_setting();
                     break;
 
-                case SCR.SCR_SHORT_RANGE:
-                case SCR.SCR_GALACTIC_CHART:
-                    move_cross(0, -1);
-                    break;
-
                 case SCR.SCR_FRONT_VIEW:
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
@@ -484,11 +403,6 @@ namespace Elite.Engine
 
                 case SCR.SCR_SETTINGS:
                     Settings.select_down_setting();
-                    break;
-
-                case SCR.SCR_SHORT_RANGE:
-                case SCR.SCR_GALACTIC_CHART:
-                    move_cross(0, 1);
                     break;
 
                 case SCR.SCR_FRONT_VIEW:
@@ -558,11 +472,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_GALACTIC_CHART:
-                case SCR.SCR_SHORT_RANGE:
-                    GalacticChart.show_distance_to_planet();
-                    break;
-
                 case SCR.SCR_FRONT_VIEW:
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
@@ -617,17 +526,6 @@ namespace Elite.Engine
             str = "Planet Name? " + find_name;
             draw.ClearTextArea();
             _gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
-        }
-
-        private static void o_pressed()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_GALACTIC_CHART:
-                case SCR.SCR_SHORT_RANGE:
-                    GalacticChart.move_cursor_to_origin();
-                    break;
-            }
         }
 
         private static void auto_dock()
@@ -910,15 +808,13 @@ namespace Elite.Engine
             if (keyboard.IsKeyPressed(CommandKey.F5))
             {
                 find_input = false;
-                old_cross.X = -1f;
-                GalacticChart.display_galactic_chart();
+                SetView(SCR.SCR_GALACTIC_CHART);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F6))
             {
                 find_input = false;
-                old_cross.X = -1f;
-                GalacticChart.display_short_range_chart();
+                SetView(SCR.SCR_SHORT_RANGE);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F7))
@@ -958,7 +854,7 @@ namespace Elite.Engine
                 if (keyboard.IsKeyPressed(CommandKey.Enter))
                 {
                     find_input = false;
-                    if (!GalacticChart.find_planet_by_name(find_name))
+                    if (!Planet.find_planet_by_name(find_name))
                     {
                         draw.ClearTextArea();
                         _gfx.DrawTextLeft(16, 340, "Unknown Planet", GFX_COL.GFX_COL_WHITE);
@@ -1056,11 +952,6 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.Origin))
-            {
-                o_pressed();
-            }
-
             if (keyboard.IsKeyPressed(CommandKey.Pause))
             {
                 game_paused = true;
@@ -1151,7 +1042,7 @@ namespace Elite.Engine
         {
             SetView(SCR.SCR_SAVE_CMDR);
             int key;
-            string name = elite.cmdr.name;
+            string name = cmdr.name;
 
             do
             {
@@ -1171,19 +1062,19 @@ namespace Elite.Engine
                 }
             } while (key != (int)CommandKey.Enter);
 
-            elite.cmdr.name = name;
-            elite.cmdr.ShipLocationX = elite.docked_planet.d;
-            elite.cmdr.ShipLocationY = elite.docked_planet.b;
-            bool success = SaveFile.SaveCommanderAsync(elite.cmdr).Result;
+            cmdr.name = name;
+            cmdr.ShipLocationX = docked_planet.d;
+            cmdr.ShipLocationY = docked_planet.b;
+            bool success = SaveFile.SaveCommanderAsync(cmdr).Result;
             draw.DrawSaveCommander(name, success);
 
             if (success)
             {
-                elite.saved_cmdr = (Commander)elite.cmdr.Clone();
+                saved_cmdr = (Commander)cmdr.Clone();
             }
             else 
             {
-                elite.cmdr.name = elite.saved_cmdr.name;
+                cmdr.name = saved_cmdr.name;
             }
 
             do
@@ -1366,7 +1257,10 @@ namespace Elite.Engine
             _planetData = new(_mission);
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gfx, _audio, keyboard));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gfx, _audio, keyboard, _stars, _space));
+            _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gfx, keyboard));
+            _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gfx, keyboard));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
+
 
             finish = false;
             auto_pilot = false;
@@ -1395,68 +1289,7 @@ namespace Elite.Engine
 
 
 
-            //while (!finish)
-            //{
-            //    run_first_intro_screen();
-            //    run_second_intro_screen();
 
-            //    old_cross.X = -1f;
-            //    old_cross.Y = -1f;
-
-            //    dock_player();
-            //    CommanderStatus.display_commander_status();
-
-            //    while (!game_over)
-            //    {
-            //        if ((DateTime.UtcNow.Ticks - startTicks) / 100 % (100000 / targetFps) != 0)
-            //        {
-            //            continue;
-            //        }
-
-            //        _audio.UpdateSound();
-            //        _gfx.ScreenUpdate();
-            //        _gfx.SetClipRegion(1, 1, 510, 383);
-
-            //        rolling = false;
-            //        climbing = false;
-
-            //        handle_flight_keys();
-
-            //        if (game_paused)
-            //        {
-            //            continue;
-            //        }
-
-            //        if (message_count > 0)
-            //        {
-            //            message_count--;
-            //        }
-
-            //        if (!rolling)
-            //        {
-            //            if (flight_roll > 0)
-            //            {
-            //                space.decrease_flight_roll();
-            //            }
-
-            //            if (flight_roll < 0)
-            //            {
-            //                space.increase_flight_roll();
-            //            }
-            //        }
-
-            //        if (!climbing)
-            //        {
-            //            if (flight_climb > 0)
-            //            {
-            //                space.decrease_flight_climb();
-            //            }
-
-            //            if (flight_climb < 0)
-            //            {
-            //                space.increase_flight_climb();
-            //            }
-            //        }
 
             //        if (!docked)
             //        {
@@ -1584,31 +1417,7 @@ namespace Elite.Engine
             //            DisplayMission();
             //        }
 
-            //        if (cross_timer > 0)
-            //        {
-            //            cross_timer--;
-            //            if (cross_timer == 0)
-            //            {
-            //                GalacticChart.show_distance_to_planet();
-            //            }
-            //        }
 
-            //        if ((GalacticChart.cross.X != old_cross.X) ||
-            //            (GalacticChart.cross.Y != old_cross.Y))
-            //        {
-            //            old_cross = GalacticChart.cross;
-
-            //            if (current_screen == SCR.SCR_GALACTIC_CHART)
-            //            {
-            //                draw.DrawGalacticChart(cmdr.galaxy_number + 1, GalacticChart.planetPixels, GalacticChart.planetName, GalacticChart.distanceToPlanet);
-            //            }
-            //            else if (current_screen == SCR.SCR_SHORT_RANGE)
-            //            {
-            //                draw.DrawShortRangeChart(GalacticChart.planetNames, GalacticChart.planetSizes, GalacticChart.planetName, GalacticChart.distanceToPlanet);
-            //            }
-
-            //            draw_cross(old_cross);
-            //        }
             //    }
 
             //    if (!finish)
@@ -1621,6 +1430,52 @@ namespace Elite.Engine
         private void DrawFrameElite()
         {
             initialise_game();
+
+            _audio.UpdateSound();
+            _gfx.ScreenUpdate();
+            _gfx.SetClipRegion(1, 1, 510, 383);
+
+            rolling = false;
+            climbing = false;
+
+            handle_flight_keys();
+
+            if (game_paused)
+            {
+                return;
+            }
+
+            if (message_count > 0)
+            {
+                message_count--;
+            }
+
+            if (!rolling)
+            {
+                if (flight_roll > 0)
+                {
+                    space.decrease_flight_roll();
+                }
+
+                if (flight_roll < 0)
+                {
+                    space.increase_flight_roll();
+                }
+            }
+
+            if (!climbing)
+            {
+                if (flight_climb > 0)
+                {
+                    space.decrease_flight_climb();
+                }
+
+                if (flight_climb < 0)
+                {
+                    space.increase_flight_climb();
+                }
+            }
+
 
             draw.ClearDisplay();
 
@@ -1686,23 +1541,23 @@ namespace Elite.Engine
         internal void dock_player()
         {
             _pilot.disengage_auto_pilot();
-            elite.docked = true;
-            elite.flight_speed = 0;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
-            elite.front_shield = 255;
-            elite.aft_shield = 255;
-            elite.energy = 255;
-            elite.myship.altitude = 255;
-            elite.myship.cabtemp = 30;
+            docked = true;
+            flight_speed = 0;
+            flight_roll = 0;
+            flight_climb = 0;
+            front_shield = 255;
+            aft_shield = 255;
+            energy = 255;
+            myship.altitude = 255;
+            myship.cabtemp = 30;
             swat.reset_weapons();
         }
 
         internal void decrease_energy(float amount)
         {
-            elite.energy += amount;
+            energy += amount;
 
-            if (elite.energy <= 0)
+            if (energy <= 0)
             {
                 do_game_over();
             }
@@ -1720,7 +1575,7 @@ namespace Elite.Engine
                 return;
             }
 
-            float shield = front ? elite.front_shield : elite.aft_shield;
+            float shield = front ? front_shield : aft_shield;
 
             shield -= damage;
             if (shield < 0)
@@ -1731,23 +1586,23 @@ namespace Elite.Engine
 
             if (front)
             {
-                elite.front_shield = shield;
+                front_shield = shield;
             }
             else
             {
-                elite.aft_shield = shield;
+                aft_shield = shield;
             }
         }
 
         internal void abandon_ship()
         {
-            elite.cmdr.escape_pod = false;
-            elite.cmdr.legal_status = 0;
-            elite.cmdr.fuel = elite.myship.max_fuel;
+            cmdr.escape_pod = false;
+            cmdr.legal_status = 0;
+            cmdr.fuel = myship.max_fuel;
 
             for (int i = 0; i < trade.stock_market.Length; i++)
             {
-                elite.cmdr.current_cargo[i] = 0;
+                cmdr.current_cargo[i] = 0;
             }
 
             _audio.PlayEffect(SoundEffect.Dock);
@@ -1761,7 +1616,7 @@ namespace Elite.Engine
         internal void do_game_over()
         {
             _audio.PlayEffect(SoundEffect.Gameover);
-            elite.game_over = true;
+            game_over = true;
         }
 
         private void ATimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)

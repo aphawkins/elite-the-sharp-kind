@@ -17,15 +17,17 @@ namespace Elite.Engine.Views
     using System.Numerics;
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
+    using static Elite.Engine.elite;
 
-    internal class GalacticChart : IView
+    internal class ShortRangeChart : IView
     {
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
-        private readonly List<Vector2> _planetPixels = new();
+        private readonly List<(Vector2 position, string name)> _planetNames = new();
+        private readonly List<(Vector2 position, float size)> _planetSizes = new();
         private int _crossTimer;
 
-        internal GalacticChart(IGfx gfx, IKeyboard keyboard)
+        internal ShortRangeChart(IGfx gfx, IKeyboard keyboard)
         {
             _gfx = gfx;
             _keyboard = keyboard;
@@ -33,23 +35,73 @@ namespace Elite.Engine.Views
 
         public void Reset()
         {
+            int[] row_used = new int[64];
+            _planetNames.Clear();
+            _planetSizes.Clear();
+
+            for (int i = 0; i < 64; i++)
+            {
+                row_used[i] = 0;
+            }
+
             galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
-            _planetPixels.Clear();
 
             for (int i = 0; i < 256; i++)
             {
-                Vector2 pixel = new()
-                {
-                    X = glx.d * gfx.GFX_SCALE,
-                    Y = (glx.b / (2f / gfx.GFX_SCALE)) + (18f * gfx.GFX_SCALE) + 1
-                };
+                float dx = MathF.Abs(glx.d - elite.docked_planet.d);
+                float dy = MathF.Abs(glx.b - elite.docked_planet.b);
 
-                _planetPixels.Add(pixel);
-
-                if ((glx.e | 0x50) < 0x90)
+                if ((dx >= 20) || (dy >= 38))
                 {
-                    _planetPixels.Add(new(pixel.X + 1, pixel.Y));
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+
+                    continue;
                 }
+
+                float px = glx.d - elite.docked_planet.d;
+                px = (px * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;  /* Convert to screen co-ords */
+
+                float py = glx.b - elite.docked_planet.b;
+                py = (py * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE; /* Convert to screen co-ords */
+
+                int row = (int)(py / (8 * gfx.GFX_SCALE));
+
+                if (row_used[row] == 1)
+                {
+                    row++;
+                }
+
+                if (row_used[row] == 1)
+                {
+                    row -= 2;
+                }
+
+                if (row <= 3)
+                {
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+                    Planet.waggle_galaxy(ref glx);
+
+                    continue;
+                }
+
+                if (row_used[row] == 0)
+                {
+                    row_used[row] = 1;
+                    _planetNames.Add((new(px + (4 * gfx.GFX_SCALE), ((row * 8) - 5) * gfx.GFX_SCALE), Planet.name_planet(glx, true)));
+                }
+
+                /* The next bit calculates the size of the circle used to represent */
+                /* a planet.  The carry_flag is left over from the name generation. */
+                /* Yes this was how it was done... don't ask :-( */
+                float blob_size = (glx.f & 1) + 2 + elite.carry_flag;
+                blob_size *= gfx.GFX_SCALE;
+                _planetSizes.Add((new(px, py), blob_size));
+
 
                 Planet.waggle_galaxy(ref glx);
                 Planet.waggle_galaxy(ref glx);
@@ -77,29 +129,32 @@ namespace Elite.Engine.Views
         {
             // Header
             elite.draw.ClearDisplay();
-            _gfx.DrawTextCentre(20, $"GALACTIC CHART {elite.cmdr.galaxy_number + 1}", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
             _gfx.DrawLine(new(0, 36), new(511, 36));
-            _gfx.DrawLine(new(0, 36 + 258), new(511, 36 + 258));
 
             // Fuel radius
-            Vector2 centre = new(elite.docked_planet.d * gfx.GFX_SCALE, (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
-            float radius = elite.cmdr.fuel * 2.5f * gfx.GFX_SCALE;
-            float cross_size = 7 * gfx.GFX_SCALE;
+            Vector2 centre = new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
+            float radius = elite.cmdr.fuel * 10 * gfx.GFX_SCALE;
+            float cross_size = 16 * gfx.GFX_SCALE;
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
             _gfx.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
 
             // Planets
-            foreach (Vector2 pixel in _planetPixels)
+            foreach ((Vector2 position, string name) in _planetNames)
             {
-                _gfx.DrawPixel(pixel, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(position.X, position.Y, name, GFX_COL.GFX_COL_WHITE);
+            }
+            foreach ((Vector2 position, float size) in _planetSizes)
+            {
+                _gfx.DrawCircleFilled(position, size, GFX_COL.GFX_COL_GOLD);
             }
 
             // Moving cross
             centre = new(elite.cross.X, elite.cross.Y);
-            _gfx.SetClipRegion(1, 37, 510, 293);
-            _gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), GFX_COL.GFX_COL_RED);
-            _gfx.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), GFX_COL.GFX_COL_RED);
+            _gfx.SetClipRegion(1, 37, 510, 339);
+            _gfx.DrawLine(new(centre.X - 16f, centre.Y), new(centre.X + 16f, centre.Y), GFX_COL.GFX_COL_RED);
+            _gfx.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), GFX_COL.GFX_COL_RED);
             _gfx.SetClipRegion(1, 1, 510, 383);
 
             // Text
@@ -115,8 +170,7 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Origin))
             {
-                elite.cross.X = elite.docked_planet.d * gfx.GFX_SCALE;
-                elite.cross.Y = (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+                elite.cross = new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
                 CalculateDistanceToPlanet();
             }
             else if (_keyboard.IsKeyPressed(CommandKey.D))
@@ -150,36 +204,16 @@ namespace Elite.Engine.Views
         {
             _crossTimer = 5;
 
-            elite.cross.X += dx * 2;
-            elite.cross.Y += dy * 2;
-
-            if (elite.cross.X < 1)
-            {
-                elite.cross.X = 1;
-            }
-
-            if (elite.cross.X > 510)
-            {
-                elite.cross.X = 510;
-            }
-
-            if (elite.cross.Y < 37)
-            {
-                elite.cross.Y = 37;
-            }
-
-            if (elite.cross.Y > 293)
-            {
-                elite.cross.Y = 293;
-            }
+            elite.cross.X += dx * 4;
+            elite.cross.Y += dy * 4;
         }
 
         private void CalculateDistanceToPlanet()
         {
             Vector2 location = new()
             {
-                X = elite.cross.X / gfx.GFX_SCALE,
-                Y = (elite.cross.Y - ((18 * gfx.GFX_SCALE) + 1)) * (2 / gfx.GFX_SCALE),
+                X = ((elite.cross.X - gfx.GFX_X_CENTRE) / (4f * gfx.GFX_SCALE)) + elite.docked_planet.d,
+                Y = ((elite.cross.Y - gfx.GFX_Y_CENTRE) / (2f * gfx.GFX_SCALE)) + elite.docked_planet.b,
             };
 
             elite.hyperspace_planet = Planet.find_planet(location);
@@ -190,8 +224,8 @@ namespace Elite.Engine.Views
 
         private void CrossFromHyperspacePlanet()
         {
-            elite.cross.X = elite.hyperspace_planet.d * gfx.GFX_SCALE;
-            elite.cross.Y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+            elite.cross.X = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+            elite.cross.Y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
         }
     }
 }

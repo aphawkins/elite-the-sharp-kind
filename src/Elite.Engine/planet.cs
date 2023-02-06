@@ -224,5 +224,65 @@ namespace Elite.Engine
 			pl.population /= 10;
 			pl.radius = (((planet_seed.f & 15) + 11) * 256) + planet_seed.d;
 		}
-	}
+
+        internal static bool find_planet_by_name(string find_name)
+        {
+            string planet_name = string.Empty;
+            bool found = false;
+            galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
+
+            for (int i = 0; i < 256; i++)
+            {
+                planet_name = Planet.name_planet(glx, false);
+
+                if (planet_name == find_name)
+                {
+                    found = true;
+                    break;
+                }
+
+                Planet.waggle_galaxy(ref glx);
+                Planet.waggle_galaxy(ref glx);
+                Planet.waggle_galaxy(ref glx);
+                Planet.waggle_galaxy(ref glx);
+            }
+
+            if (!found)
+            {
+                return false;
+            }
+
+            elite.hyperspace_planet = glx;
+            elite.planetName = planet_name;
+            elite.distanceToPlanet = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
+
+            if (elite._state.currentScreen == SCR.SCR_GALACTIC_CHART)
+            {
+                elite.cross.X = elite.hyperspace_planet.d * gfx.GFX_SCALE;
+                elite.cross.Y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+            }
+            else
+            {
+                elite.cross.X = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
+                elite.cross.Y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
+            }
+
+            return true;
+        }
+
+        internal static float calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
+        {
+            float dx = MathF.Abs(to_planet.d - from_planet.d);
+            float dy = MathF.Abs(to_planet.b - from_planet.b);
+
+            dx *= dx;
+            dy /= 2;
+            dy *= dy;
+
+            float light_years = MathF.Sqrt(dx + dy);
+            light_years *= 4f;
+
+            return light_years / 10;
+        }
+    }
 }

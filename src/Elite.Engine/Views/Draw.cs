@@ -16,49 +16,9 @@
             _gfx = gfx;
         }
 
-        internal void DrawGalacticChart(int galaxyNumber, IList<Vector2> planetPixels, string planetName, float distanceToPlanet)
-        {
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, "GALACTIC CHART " + galaxyNumber, 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-            _gfx.DrawLine(new(0f, 36f + 258f), new(511f, 36f + 258f));
-            DrawFuelLimitCircle(new(elite.docked_planet.d * gfx.GFX_SCALE, (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1));
-            foreach (Vector2 pixel in planetPixels)
-            {
-                _gfx.DrawPixel(pixel, GFX_COL.GFX_COL_WHITE);
-            }
-            DrawDistanceToPlanet(planetName, distanceToPlanet);
-        }
 
-        internal void DrawShortRangeChart(IList<(Vector2 position, string name)> planetNames,
-            IList<(Vector2 position, float size)> planetSizes,
-            string planetName,
-            float lightYears)
-        {
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-            DrawFuelLimitCircle(new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE));
-            foreach ((Vector2 position, string name) in planetNames)
-            {
-                _gfx.DrawTextLeft(position.X, position.Y, name, GFX_COL.GFX_COL_WHITE);
-            }
-            foreach ((Vector2 position, float size) in planetSizes)
-            {
-                _gfx.DrawCircleFilled(position, size, GFX_COL.GFX_COL_GOLD);
-            }
-            DrawDistanceToPlanet(planetName, lightYears);
-        }
 
-        private void DrawDistanceToPlanet(string planetName, float lightYears)
-        {
-            ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, $"{planetName:-18s}", GFX_COL.GFX_COL_WHITE);
-            string str = lightYears > 0
-                ? $"Distance: {lightYears:N1} Light Years "
-                : "                                                     ";
-            _gfx.DrawTextLeft(16, 356, str, GFX_COL.GFX_COL_WHITE);
-        }
+
 
         internal void DrawDataOnPlanet(string planetName, float lightYears, string economy,
             string government, int techLevel, float population, string inhabitants,
@@ -79,27 +39,6 @@
             _gfx.DrawTextLeft(16, 234, $"Gross Productivity: {productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 266, $"Average Radius: {radius} km", GFX_COL.GFX_COL_WHITE);
             DrawTextPretty(16, 298, 400, description);
-        }
-
-        private void DrawFuelLimitCircle(Vector2 centre)
-        {
-            float radius;
-            float cross_size;
-
-            if (elite._state.currentScreen == SCR.SCR_GALACTIC_CHART)
-            {
-                radius = elite.cmdr.fuel * 2.5f * gfx.GFX_SCALE;
-                cross_size = 7f * gfx.GFX_SCALE;
-            }
-            else
-            {
-                radius = elite.cmdr.fuel * 10 * gfx.GFX_SCALE;
-                cross_size = 16f * gfx.GFX_SCALE;
-            }
-
-            _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
-            _gfx.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
         }
 
         // TOOD: This should be private

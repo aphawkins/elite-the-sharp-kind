@@ -649,7 +649,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			hyper_distance = GalacticChart.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
+			hyper_distance = Planet.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
 
 			if ((hyper_distance == 0) || (hyper_distance > elite.cmdr.fuel))
 			{
