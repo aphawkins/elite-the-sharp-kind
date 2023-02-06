@@ -19,12 +19,14 @@ namespace Elite.Engine.Views
     using Elite.Engine.Missions;
     using Elite.Engine.Types;
 
-    internal class PlanetData
+    internal class PlanetData : IView
 	{
-        private Mission _mission;
-        private random_seed _rnd_seed = new();
+        private readonly IGfx _gfx;
+        private readonly Mission _mission;
+        private float _distanceToPlanet = 0;
+        private planet_data _hyperPlanetData = new();
 
-        private static readonly string[] economy_type = {"Rich Industrial",
+        private readonly string[] _economyType = {"Rich Industrial",
                                 "Average Industrial",
                                 "Poor Industrial",
                                 "Mainly Industrial",
@@ -33,7 +35,7 @@ namespace Elite.Engine.Views
                                 "Average Agricultural",
                                 "Poor Agricultural"};
 
-        private static readonly string[] government_type = { "Anarchy",
+        private readonly string[] _governmentType = { "Anarchy",
                                     "Feudal",
                                     "Multi-Government",
                                     "Dictatorship",
@@ -42,7 +44,7 @@ namespace Elite.Engine.Views
                                     "Democracy",
                                     "Corporate State"};
 
-        private static readonly string[][] desc_list = new string[36][]
+        private readonly string[][] _descriptionList = new[]
         {
 		/*  0	*/	new string[] {"fabled", "notable", "well known", "famous", "noted"},
 		/*  1	*/	new string[] {"very", "mildly", "most", "reasonably", ""},
@@ -82,37 +84,13 @@ namespace Elite.Engine.Views
 		/* 35	*/	new string[] {"hockey", "cricket", "karate", "polo", "tennis"}
         };
 
-        internal PlanetData(Mission mission)
+        internal PlanetData(IGfx gfx, Mission mission)
         {
+            _gfx = gfx;
             _mission = mission;
         }
 
-        /// <summary>
-        /// Displays data on the currently selected Hyperspace Planet.
-        /// </summary>
-        internal void display_data_on_planet()
-		{
-			planet_data hyper_planet_data = new();
-
-			elite.SetView(SCR.SCR_PLANET_DATA);
-
-			string planetName = Planet.name_planet(elite.hyperspace_planet, false);
-            float lightYears = Planet.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
-            Planet.generate_planet_data(ref hyper_planet_data, elite.hyperspace_planet);
-
-            elite.draw.DrawDataOnPlanet(planetName, lightYears,
-                economy_type[hyper_planet_data.economy],
-                government_type[hyper_planet_data.government],
-                hyper_planet_data.techlevel + 1,
-				hyper_planet_data.population,
-				Planet.describe_inhabitants(elite.hyperspace_planet),
-                hyper_planet_data.productivity,
-                hyper_planet_data.radius,
-                describe_planet(elite.hyperspace_planet)
-                );
-		}
-
-        internal string describe_planet(galaxy_seed planet)
+        private string DescribePlanet(galaxy_seed planet)
         {
             if (elite.cmdr.mission == 1)
             {
@@ -123,38 +101,28 @@ namespace Elite.Engine.Views
                 }
             }
 
-            random_seed rnd_seed = new()
-            {
-                a = planet.c,
-                b = planet.d,
-                c = planet.e,
-                d = planet.f,
-            };
+            RNG.Seed.a = planet.c;
+            RNG.Seed.b = planet.d;
+            RNG.Seed.c = planet.e;
+            RNG.Seed.d = planet.f;
 
             if (elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
             {
-                rnd_seed.a ^= planet.a;
-                rnd_seed.b ^= planet.b;
-                rnd_seed.c ^= rnd_seed.a;
-                rnd_seed.d ^= rnd_seed.b;
+                RNG.Seed.a ^= planet.a;
+                RNG.Seed.b ^= planet.b;
+                RNG.Seed.c ^= RNG.Seed.a;
+                RNG.Seed.d ^= RNG.Seed.b;
             }
 
             string planet_description = string.Empty;
 
-            expand_description("<14> is <22>.", ref planet_description);
+            ExpandDescription("<14> is <22>.", ref planet_description);
 
             return planet_description;
         }
 
-        private void expand_description(string source, ref string planet_description)
+        private void ExpandDescription(string source, ref string planetDescription)
         {
-            int num;
-            int rnd;
-            int option;
-            int i;
-            int len;
-            int x;
-
             for (int j = 0; j < source.Length; j++)
             {
                 string temp;
@@ -169,16 +137,17 @@ namespace Elite.Engine.Views
                         j++;
                     }
 
-                    num = Convert.ToInt32(temp);
-                    Debug.Assert(num < desc_list.Length);
+                    int num = Convert.ToInt32(temp);
+                    Debug.Assert(num < _descriptionList.Length);
+                    int option;
 
                     if (elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
                     {
-                        option = gen_msx_rnd_number();
+                        option = RNG.gen_msx_rnd_number();
                     }
                     else
                     {
-                        rnd = gen_rnd_number();
+                        int rnd = RNG.gen_rnd_number();
                         option = 0;
                         if (rnd >= 0x33)
                         {
@@ -201,7 +170,7 @@ namespace Elite.Engine.Views
                         }
                     }
 
-                    expand_description(desc_list[num][option], ref planet_description);
+                    ExpandDescription(_descriptionList[num][option], ref planetDescription);
                     continue;
                 }
 
@@ -212,29 +181,29 @@ namespace Elite.Engine.Views
                     {
                         case 'H':
                             temp = Planet.name_planet(elite.hyperspace_planet, true);
-                            planet_description += temp;
+                            planetDescription += temp;
                             break;
 
                         case 'I':
                             temp = Planet.name_planet(elite.hyperspace_planet, true);
-                            planet_description += temp;
-                            planet_description += "ian";
+                            planetDescription += temp;
+                            planetDescription += "ian";
                             break;
 
                         case 'R':
-                            len = gen_rnd_number() & 3;
-                            for (i = 0; i <= len; i++)
+                            int len = RNG.gen_rnd_number() & 3;
+                            for (int i = 0; i <= len; i++)
                             {
-                                x = gen_rnd_number() & 0x3e;
+                                int x = RNG.gen_rnd_number() & 62;
                                 if (i == 0)
                                 {
-                                    planet_description += Planet.digrams[x];
+                                    planetDescription += Planet.digrams[x];
                                 }
                                 else
                                 {
-                                    planet_description += char.ToLower(Planet.digrams[x]);
+                                    planetDescription += char.ToLower(Planet.digrams[x]);
                                 }
-                                planet_description += char.ToLower(Planet.digrams[x + 1]);
+                                planetDescription += char.ToLower(Planet.digrams[x + 1]);
                             }
                             break;
                     }
@@ -242,62 +211,47 @@ namespace Elite.Engine.Views
                     continue;
                 }
 
-                planet_description += source[j];
+                planetDescription += source[j];
             }
         }
 
-        /// <summary>
-        /// Generate a random number between 0 and 255.
-        /// This is the version used in the 6502 Elites.
-        /// </summary>
-        /// <returns>A random number between 0 and 255.</returns>
-        private int gen_rnd_number()
+        public void Reset()
         {
-            int a, x;
-
-            x = (_rnd_seed.a * 2) & 0xFF;
-            a = x + _rnd_seed.c;
-            if (_rnd_seed.a > 127)
-            {
-                a++;
-            }
-
-            _rnd_seed.a = a & 0xFF;
-            _rnd_seed.c = x;
-
-            a /= 256;    /* a = any carry left from above */
-            x = _rnd_seed.b;
-            a = (a + x + _rnd_seed.d) & 0xFF;
-            _rnd_seed.b = a;
-            _rnd_seed.d = x;
-            return a;
         }
 
-        /// <summary>
-        /// Generate a random number between 0 and 255.
-        /// This is the version used in the MSX and 16bit Elites.
-        /// </summary>
-        /// <returns>A random number between 0 and 255.</returns>
-        private int gen_msx_rnd_number()
+        public void UpdateUniverse()
         {
-            int a = _rnd_seed.a;
-            int b = _rnd_seed.b;
+            _distanceToPlanet = Planet.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
+            _hyperPlanetData = Planet.generate_planet_data(elite.hyperspace_planet);
+        }
 
-            _rnd_seed.a = _rnd_seed.c;
-            _rnd_seed.b = _rnd_seed.d;
-
-            a += _rnd_seed.c;
-            b = (b + _rnd_seed.d) & 255;
-            if (a > 255)
+        public void Draw()
+        {
+            elite.draw.ClearDisplay();
+            _gfx.DrawTextCentre(20, $"DATA ON {Planet.name_planet(elite.hyperspace_planet, false)}", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            if (_distanceToPlanet > 0)
             {
-                a &= 255;
-                b++;
+                _gfx.DrawTextLeft(16, 42, "Distance:", GFX_COL.GFX_COL_GREEN_1);
+                _gfx.DrawTextLeft(140, 42, $"{_distanceToPlanet:N1} Light Years", GFX_COL.GFX_COL_WHITE);
             }
+            _gfx.DrawTextLeft(16, 74, "Economy:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 74, _economyType[_hyperPlanetData.economy], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 106, "Government:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 106, _governmentType[_hyperPlanetData.government], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 138, "Tech Level:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 138, $"{_hyperPlanetData.techlevel + 1}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 170, "Population:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.population:N1} Billion {Planet.describe_inhabitants(elite.hyperspace_planet)}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 202, "Gross Productivity:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 234, "Average Radius:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 234, $"{_hyperPlanetData.radius} km", GFX_COL.GFX_COL_WHITE);
+            elite.draw.DrawTextPretty(16, 266, 400, DescribePlanet(elite.hyperspace_planet));
+        }
 
-            _rnd_seed.c = a;
-            _rnd_seed.d = b;
-
-            return _rnd_seed.c / 0x34;
+        public void HandleInput()
+        {
         }
     }
 }

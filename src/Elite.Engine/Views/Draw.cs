@@ -16,31 +16,6 @@
             _gfx = gfx;
         }
 
-
-
-
-
-        internal void DrawDataOnPlanet(string planetName, float lightYears, string economy,
-            string government, int techLevel, float population, string inhabitants,
-            int productivity, int radius, string description)
-        {
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, $"DATA ON {planetName}", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-            string str = lightYears > 0
-                ? $"Distance: {lightYears:N1} Light Years "
-                : "                                                     ";
-            _gfx.DrawTextLeft(16, 42, str, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 74, $"Economy: {economy}", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 106, $"Government: {government}", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 138, $"Tech Level: {techLevel}", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 170, $"Population: {population:N1} Billion", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 202, inhabitants, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 234, $"Gross Productivity: {productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 266, $"Average Radius: {radius} km", GFX_COL.GFX_COL_WHITE);
-            DrawTextPretty(16, 298, 400, description);
-        }
-
         // TOOD: This should be private
         internal void DrawTextPretty(float x, float y, float width, string text)
         {
@@ -466,6 +441,5 @@
                 _gfx.DrawPixelFast(s, colour);
             }
         }
-
     }
 }

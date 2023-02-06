@@ -16,7 +16,9 @@ namespace Elite.Engine
 {
 	internal static class RNG
 	{
-		internal static int Random(int maxValue)
+        internal static random_seed Seed = new();
+
+        internal static int Random(int maxValue)
 		{
 			return Random(0, maxValue);
         }
@@ -49,6 +51,58 @@ namespace Elite.Engine
             r /= iterations;
 
             return r;
+        }
+
+        /// <summary>
+        /// Generate a random number between 0 and 255.
+        /// This is the version used in the MSX and 16bit Elites.
+        /// </summary>
+        /// <returns>A random number between 0 and 255.</returns>
+        internal static int gen_msx_rnd_number()
+        {
+            int a = Seed.a;
+            int b = Seed.b;
+
+            Seed.a = Seed.c;
+            Seed.b = Seed.d;
+
+            a += Seed.c;
+            b = (b + Seed.d) & 255;
+            if (a > 255)
+            {
+                a &= 255;
+                b++;
+            }
+
+            Seed.c = a;
+            Seed.d = b;
+
+            return Seed.c / 0x34;
+        }
+
+        /// <summary>
+        /// Generate a random number between 0 and 255.
+        /// This is the version used in the 6502 Elites.
+        /// </summary>
+        /// <returns>A random number between 0 and 255.</returns>
+        internal static int gen_rnd_number()
+        {
+            int x = (Seed.a * 2) & 0xFF;
+            int a = x + Seed.c;
+            if (Seed.a > 127)
+            {
+                a++;
+            }
+
+            Seed.a = a & 0xFF;
+            Seed.c = x;
+
+            a /= 256;    /* a = any carry left from above */
+            x = Seed.b;
+            a = (a + x + Seed.d) & 0xFF;
+            Seed.b = a;
+            Seed.d = x;
+            return a;
         }
     }
 }

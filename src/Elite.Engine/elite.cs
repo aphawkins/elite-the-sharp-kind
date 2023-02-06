@@ -32,7 +32,6 @@ namespace Elite.Engine
         internal static IKeyboard keyboard;
         internal static Scanner scanner;
         private readonly Mission _mission;
-        private readonly PlanetData _planetData;
         private readonly space _space;
         private readonly Stars _stars;
         private readonly threed _threed;
@@ -150,11 +149,9 @@ namespace Elite.Engine
 		internal static void restore_saved_commander()
 		{
             cmdr = (Commander)saved_cmdr.Clone();
-
 			docked_planet = Planet.find_planet(new(cmdr.ShipLocationX, cmdr.ShipLocationY));
 			hyperspace_planet = (galaxy_seed)docked_planet.Clone();
-
-			Planet.generate_planet_data(ref current_planet_data, docked_planet);
+			current_planet_data = Planet.generate_planet_data(docked_planet);
 			trade.generate_stock_market();
 			trade.set_stock_quantities(cmdr.station_stock);
 		}
@@ -820,7 +817,7 @@ namespace Elite.Engine
             if (keyboard.IsKeyPressed(CommandKey.F7))
             {
                 find_input = false;
-                _planetData.display_data_on_planet();
+                SetView(SCR.SCR_PLANET_DATA);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F8) && (!witchspace))
@@ -1254,13 +1251,12 @@ namespace Elite.Engine
             _trade = new(this, _swat);
             _space = new(this, _gfx, _threed, _audio, _pilot, _swat, _trade);
             _mission = new Mission();
-            _planetData = new(_mission);
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gfx, _audio, keyboard));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gfx, _audio, keyboard, _stars, _space));
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gfx, keyboard));
             _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gfx, keyboard));
+            _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
-
 
             finish = false;
             auto_pilot = false;

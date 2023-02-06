@@ -787,7 +787,7 @@ namespace Elite.Engine
 			}
 
 			elite.cmdr.market_rnd = RNG.Random(255);
-			Planet.generate_planet_data(ref elite.current_planet_data, elite.docked_planet);
+			elite.current_planet_data = Planet.generate_planet_data(elite.docked_planet);
 			trade.generate_stock_market();
 
 			elite.flight_speed = 12;

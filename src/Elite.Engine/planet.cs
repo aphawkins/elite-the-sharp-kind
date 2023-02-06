@@ -194,8 +194,9 @@ namespace Elite.Engine
 		}
 
 
-		internal static void generate_planet_data(ref planet_data pl, galaxy_seed planet_seed)
+		internal static planet_data generate_planet_data(galaxy_seed planet_seed)
 		{
+			planet_data pl = new();
 			pl.government = (planet_seed.c / 8) & 7;
 
 			pl.economy = planet_seed.b & 7;
@@ -223,6 +224,8 @@ namespace Elite.Engine
 
 			pl.population /= 10;
 			pl.radius = (((planet_seed.f & 15) + 11) * 256) + planet_seed.d;
+
+			return pl;
 		}
 
         internal static bool find_planet_by_name(string find_name)
