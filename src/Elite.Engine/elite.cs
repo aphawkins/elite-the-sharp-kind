@@ -250,16 +250,16 @@ namespace Elite.Engine
 
             if (laser != 0)
             {
-                float x1 = 128f * gfx.GFX_SCALE;
-                float y1 = (96f - 8f) * gfx.GFX_SCALE;
-                float y2 = (96f - 16f) * gfx.GFX_SCALE;
+                float x1 = 128 * gfx.GFX_SCALE;
+                float y1 = (96 - 8) * gfx.GFX_SCALE;
+                float y2 = (96 - 16) * gfx.GFX_SCALE;
 
                 _gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
                 _gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
                 _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
 
-                y1 = (96f + 8f) * gfx.GFX_SCALE;
-                y2 = (96f + 16f) * gfx.GFX_SCALE;
+                y1 = (96 + 8) * gfx.GFX_SCALE;
+                y2 = (96 + 16) * gfx.GFX_SCALE;
 
                 _gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
                 _gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
@@ -267,14 +267,14 @@ namespace Elite.Engine
 
                 x1 = (128f - 8f) * gfx.GFX_SCALE;
                 y1 = 96f * gfx.GFX_SCALE;
-                float x2 = (128f - 16f) * gfx.GFX_SCALE;
+                float x2 = (128 - 16) * gfx.GFX_SCALE;
 
                 _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
                 _gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
                 _gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
 
-                x1 = (128f + 8f) * gfx.GFX_SCALE;
-                x2 = (128f + 16f) * gfx.GFX_SCALE;
+                x1 = (128 + 8) * gfx.GFX_SCALE;
+                x2 = (128 + 16) * gfx.GFX_SCALE;
 
                 _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
                 _gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
@@ -342,10 +342,6 @@ namespace Elite.Engine
                     Equipment.select_previous_equip();
                     break;
 
-                case SCR.SCR_OPTIONS:
-                    Options.select_previous_option();
-                    break;
-
                 case SCR.SCR_SETTINGS:
                     Settings.select_up_setting();
                     break;
@@ -375,10 +371,6 @@ namespace Elite.Engine
                     Equipment.select_next_equip();
                     break;
 
-                case SCR.SCR_OPTIONS:
-                    Options.select_next_option();
-                    break;
-
                 case SCR.SCR_SETTINGS:
                     Settings.select_down_setting();
                     break;
@@ -406,10 +398,6 @@ namespace Elite.Engine
             {
                 case SCR.SCR_EQUIP_SHIP:
                     Equipment.buy_equip();
-                    break;
-
-                case SCR.SCR_OPTIONS:
-                    Options.do_option();
                     break;
 
                 case SCR.SCR_SETTINGS:
@@ -764,7 +752,7 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.F11))
             {
-                Options.display_options();
+                SetView(SCR.SCR_OPTIONS);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.Y))
@@ -968,7 +956,7 @@ namespace Elite.Engine
                 key = keyboard.ReadKey();
             } while (key != (int)CommandKey.Space);
 
-            Options.display_options();
+            SetView(SCR.SCR_OPTIONS);
         }
 
         internal static void load_commander_screen()
@@ -1145,8 +1133,9 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gfx, keyboard));
             _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gfx, keyboard));
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));
-            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
+            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
+            _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
 
             finish = false;
             auto_pilot = false;

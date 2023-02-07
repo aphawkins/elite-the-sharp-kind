@@ -147,38 +147,6 @@
             }
         }
 
-        internal void DrawOptions(option[] option_list, int highlightedItem)
-        {
-            int OPTION_BAR_WIDTH = 400;
-            int OPTION_BAR_HEIGHT = 15;
-
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-
-            for (int i = 0; i < option_list.Length; i++)
-            {
-                int y = (384 - (30 * option_list.Length)) / 2;
-                y += i * 30;
-
-                if (i == highlightedItem)
-                {
-                    float x = gfx.GFX_X_CENTRE - (OPTION_BAR_WIDTH / 2);
-                    _gfx.DrawRectangleFilled(x, y - 7, OPTION_BAR_WIDTH, OPTION_BAR_HEIGHT, GFX_COL.GFX_COL_DARK_RED);
-                }
-
-                GFX_COL col = ((!elite.docked) && option_list[i].docked_only) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
-
-                _gfx.DrawTextCentre(y, option_list[i].text, 120, col);
-            }
-
-            //TODO: get proper version number from assembly
-            _gfx.DrawTextCentre(300, "Version: Beta 0.1", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(320, "The Sharp Kind by Andy Hawkins 2023", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(340, "The New Kind by Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(360, "Based on original code by Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);
-        }
-
         internal void DrawSettings(Setting[] setting_list, int highlighted)
         {
             ClearDisplay();
@@ -251,9 +219,15 @@
 
         internal void DrawBorder()
         {
-            _gfx.DrawLine(new(0f, 0f), new(0f, 384f));
-            _gfx.DrawLine(new(0f, 0f), new(511f, 0f));
-            _gfx.DrawLine(new(511f, 0f), new(511f, 384f));
+            _gfx.DrawLine(new(0, 0), new(0, 384));
+            _gfx.DrawLine(new(0, 0), new(511, 0));
+            _gfx.DrawLine(new(511, 0), new(511, 384));
+        }
+
+        internal void DrawViewHeader(string title)
+        {
+            _gfx.DrawTextCentre(20, title, 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0, 36), new(511, 36));
         }
 
         internal void LoadImages()

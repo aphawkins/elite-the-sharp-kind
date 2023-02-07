@@ -15,6 +15,7 @@
 namespace Elite.Engine
 {
     using Elite.Engine.Enums;
+    using Elite.Engine.Views;
 
     internal static partial class Settings
 	{
@@ -106,7 +107,7 @@ namespace Elite.Engine
 			if (hilite_item == (setting_list.Length - 1))
 			{
 				ConfigFile.WriteConfigAsync(elite.config);
-				Options.display_options();
+				elite.SetView(SCR.SCR_OPTIONS);
 				return;
 			}
 

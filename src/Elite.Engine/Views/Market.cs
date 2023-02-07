@@ -40,9 +40,8 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             elite.draw.ClearDisplay();
+            elite.draw.DrawViewHeader($"{Planet.name_planet(elite.docked_planet, false)} MARKET PRICES");
 
-            _gfx.DrawTextCentre(20, $"{Planet.name_planet(elite.docked_planet, false)} MARKET PRICES", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
             _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(246, 40, "PRICE", GFX_COL.GFX_COL_GREEN_1);
@@ -98,6 +97,11 @@ namespace Elite.Engine.Views
 
         private void BuyStock()
         {
+            if (!elite.docked)
+            {
+                return;
+            }
+
             if (trade.stock_market[_highlightedStock].current_quantity == 0 || elite.cmdr.credits < trade.stock_market[_highlightedStock].current_price)
             {
                 return;
@@ -115,6 +119,11 @@ namespace Elite.Engine.Views
 
         private void SellStock()
         {
+            if (!elite.docked)
+            {
+                return;
+            }
+
             if (elite.cmdr.current_cargo[_highlightedStock] == 0)
             {
                 return;

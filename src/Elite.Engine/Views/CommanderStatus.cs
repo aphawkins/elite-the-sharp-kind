@@ -110,8 +110,7 @@ namespace Elite.Engine.Views
                 }
             }
 
-            _gfx.DrawTextCentre(20, $"COMMANDER {elite.cmdr.name}", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0, 36), new(511f, 36f));
+            elite.draw.DrawViewHeader($"COMMANDER {elite.cmdr.name}");
             _gfx.DrawTextLeft(16, 58, "Present System:", GFX_COL.GFX_COL_GREEN_1);
 
             if (!elite.witchspace)

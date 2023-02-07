@@ -81,8 +81,8 @@ namespace Elite.Engine.Views
         {
             // Header
             elite.draw.ClearDisplay();
-            _gfx.DrawTextCentre(20, $"GALACTIC CHART {elite.cmdr.galaxy_number + 1}", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0, 36), new(511, 36));
+            elite.draw.DrawViewHeader($"GALACTIC CHART {elite.cmdr.galaxy_number + 1}");
+
             _gfx.DrawLine(new(0, 36 + 258), new(511, 36 + 258));
 
             // Fuel radius

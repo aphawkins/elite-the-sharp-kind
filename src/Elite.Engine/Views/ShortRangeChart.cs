@@ -132,8 +132,7 @@ namespace Elite.Engine.Views
         {
             // Header
             elite.draw.ClearDisplay();
-            _gfx.DrawTextCentre(20, "SHORT RANGE CHART", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0, 36), new(511, 36));
+            elite.draw.DrawViewHeader("SHORT RANGE CHART");
 
             // Fuel radius
             Vector2 centre = new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);

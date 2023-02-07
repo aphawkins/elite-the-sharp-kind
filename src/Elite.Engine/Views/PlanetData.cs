@@ -228,8 +228,8 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             elite.draw.ClearDisplay();
-            _gfx.DrawTextCentre(20, $"DATA ON {Planet.name_planet(elite.hyperspace_planet, false)}", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            elite.draw.DrawViewHeader($"DATA ON {Planet.name_planet(elite.hyperspace_planet, false)}");
+
             if (_distanceToPlanet > 0)
             {
                 _gfx.DrawTextLeft(16, 42, "Distance:", GFX_COL.GFX_COL_GREEN_1);
