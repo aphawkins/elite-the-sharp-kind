@@ -142,7 +142,7 @@ namespace Elite.Engine.Views
                         _findName = _findName[..^1];
                     }
                 }
-                else if (_keyboard.IsKeyPressed(CommandKey.Enter))
+                if (_keyboard.IsKeyPressed(CommandKey.Enter))
                 {
                     _isFind = false;
                     if (Planet.find_planet_by_name(_findName))
@@ -155,13 +155,11 @@ namespace Elite.Engine.Views
                         elite.planetName = string.Empty;
                     }
                 }
-                else
+
+                int letter = _keyboard.GetKeyPressed();
+                if (_isFind && _findName.Length <= 16 && letter >= 'A' && letter <= 'Z')
                 {
-                    int letter = _keyboard.GetKeyPressed();
-                    if (_isFind && _findName.Length <= 16 && letter >= 'A' && letter <= 'Z')
-                    {
-                        _findName += (char)letter;
-                    }
+                    _findName += (char)letter;
                 }
 
                 return;
@@ -173,27 +171,27 @@ namespace Elite.Engine.Views
                 elite.cross.Y = (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
                 CalculateDistanceToPlanet();
             }
-            else if (_keyboard.IsKeyPressed(CommandKey.D))
+            if (_keyboard.IsKeyPressed(CommandKey.D))
             {
                 CalculateDistanceToPlanet();
             }
-            else if (_keyboard.IsKeyPressed(CommandKey.Up))
+            if (_keyboard.IsKeyPressed(CommandKey.Up))
             {
                 MoveCross(0, -1);
             }
-            else if (_keyboard.IsKeyPressed(CommandKey.Down))
+            if (_keyboard.IsKeyPressed(CommandKey.Down))
             {
                 MoveCross(0, 1);
             }
-            else if (_keyboard.IsKeyPressed(CommandKey.Left))
+            if (_keyboard.IsKeyPressed(CommandKey.Left))
             {
                 MoveCross(-1, 0);
             }
-            else if (_keyboard.IsKeyPressed(CommandKey.Right))
+            if (_keyboard.IsKeyPressed(CommandKey.Right))
             {
                 MoveCross(1, 0);
             }
-            else if (_keyboard.IsKeyPressed(CommandKey.Find))
+            if (_keyboard.IsKeyPressed(CommandKey.Find))
             {
                 _isFind = true;
                 _findName = string.Empty;

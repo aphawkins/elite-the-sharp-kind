@@ -286,10 +286,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_MARKET_PRICES:
-                    Market.buy_stock();
-                    break;
-
                 case SCR.SCR_SETTINGS:
                     Settings.select_right_setting();
                     break;
@@ -316,10 +312,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_MARKET_PRICES:
-                    Market.sell_stock();
-                    break;
-
                 case SCR.SCR_SETTINGS:
                     Settings.select_left_setting();
                     break;
@@ -346,10 +338,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_MARKET_PRICES:
-                    Market.select_previous_stock();
-                    break;
-
                 case SCR.SCR_EQUIP_SHIP:
                     Equipment.select_previous_equip();
                     break;
@@ -383,10 +371,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_MARKET_PRICES:
-                    Market.select_next_stock();
-                    break;
-
                 case SCR.SCR_EQUIP_SHIP:
                     Equipment.select_next_equip();
                     break;
@@ -765,7 +749,7 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.F8) && (!witchspace))
             {
-                Market.display_market_prices();
+                SetView(SCR.SCR_MARKET_PRICES);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F9))
@@ -1162,6 +1146,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gfx, keyboard));
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
+            _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
 
             finish = false;
             auto_pilot = false;

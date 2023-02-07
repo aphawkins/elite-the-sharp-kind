@@ -57,7 +57,7 @@ namespace Elite.Engine.Views
                 _audio.StopMusic();
                 elite.SetView(SCR.SCR_LOAD_CMDR);
             }
-            else if (_keyboard.IsKeyPressed(CommandKey.N))
+            if (_keyboard.IsKeyPressed(CommandKey.N))
             {
                 _audio.StopMusic();
                 elite.SetView(SCR.SCR_INTRO_TWO);

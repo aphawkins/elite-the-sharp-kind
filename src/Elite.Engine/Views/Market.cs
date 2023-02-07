@@ -16,84 +16,113 @@ namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
 
-    internal static class Market
+    internal class Market : IView
     {
-        private static int hilite_item;
+        private readonly IGfx _gfx;
+        private readonly IKeyboard _keyboard;
+        private int _highlightedStock;
 
-        internal static void select_previous_stock()
+        internal Market(IGfx gfx, IKeyboard keyboard)
         {
-            if (!elite.docked || hilite_item <= 0)
-            {
-                return;
-            }
-
-            hilite_item--;
-
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
+            _gfx = gfx;
+            _keyboard = keyboard;
         }
 
-        internal static void select_next_stock()
+        public void Reset()
         {
-            if (!elite.docked || hilite_item >= trade.stock_market.Length - 1)
-            {
-                return;
-            }
-
-            hilite_item++;
-
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
+            _highlightedStock = 0;
         }
 
-        internal static void buy_stock()
+        public void UpdateUniverse()
         {
-            if (!elite.docked)
-            {
-                return;
-            }
-
-            if (trade.stock_market[hilite_item].current_quantity == 0 || elite.cmdr.credits < trade.stock_market[hilite_item].current_price)
-            {
-                return;
-            }
-
-            int cargo_held = trade.total_cargo();
-
-            if (trade.stock_market[hilite_item].units == trade.TONNES && cargo_held == elite.cmdr.cargo_capacity)
-            {
-                return;
-            }
-
-            elite.cmdr.current_cargo[hilite_item]++;
-            trade.stock_market[hilite_item].current_quantity--;
-            elite.cmdr.credits -= trade.stock_market[hilite_item].current_price;
-
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
         }
 
-        internal static void sell_stock()
+        public void Draw()
         {
-            if (!elite.docked || elite.cmdr.current_cargo[hilite_item] == 0)
+            elite.draw.ClearDisplay();
+
+            _gfx.DrawTextCentre(20, $"{Planet.name_planet(elite.docked_planet, false)} MARKET PRICES", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(246, 40, "PRICE", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(314, 40, "FOR SALE", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(420, 40, "IN HOLD", GFX_COL.GFX_COL_GREEN_1);
+
+            for (int i = 0; i < trade.stock_market.Length; i++)
+            {
+                int y = (i * 15) + 55;
+
+                if (i == _highlightedStock)
+                {
+                    _gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+                }
+
+                _gfx.DrawTextLeft(16, y, trade.stock_market[i].name, GFX_COL.GFX_COL_WHITE);
+
+                _gfx.DrawTextLeft(180, y, trade.stock_market[i].units, GFX_COL.GFX_COL_WHITE);
+
+                _gfx.DrawTextRight(285, y, $"{trade.stock_market[i].current_price:N1}", GFX_COL.GFX_COL_WHITE);
+
+                _gfx.DrawTextRight(365, y, trade.stock_market[i].current_quantity > 0 ? $"{trade.stock_market[i].current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(365, y, trade.stock_market[i].current_quantity > 0 ? trade.stock_market[i].units : "", GFX_COL.GFX_COL_WHITE);
+
+                _gfx.DrawTextRight(455, y, elite.cmdr.current_cargo[i] > 0 ? $"{elite.cmdr.current_cargo[i],2}" : "-", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(455, y, elite.cmdr.current_cargo[i] > 0 ? trade.stock_market[i].units : "", GFX_COL.GFX_COL_WHITE);
+            }
+
+            elite.draw.ClearTextArea();
+            _gfx.DrawTextLeft(16, 340, "Cash:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextRight(160, 340, $"{elite.cmdr.credits,10:N1} Credits", GFX_COL.GFX_COL_WHITE);
+        }
+
+        public void HandleInput()
+        {
+            if (_keyboard.IsKeyPressed(CommandKey.Up))
+            {
+                _highlightedStock = Math.Clamp(_highlightedStock - 1, 0, trade.stock_market.Length - 1);
+            }
+            if (_keyboard.IsKeyPressed(CommandKey.Down))
+            {
+                _highlightedStock = Math.Clamp(_highlightedStock + 1, 0, trade.stock_market.Length - 1);
+            }
+            if (_keyboard.IsKeyPressed(CommandKey.Left))
+            {
+                SellStock();
+            }
+            if (_keyboard.IsKeyPressed(CommandKey.Right))
+            {
+                BuyStock();
+            }
+        }
+
+        private void BuyStock()
+        {
+            if (trade.stock_market[_highlightedStock].current_quantity == 0 || elite.cmdr.credits < trade.stock_market[_highlightedStock].current_price)
             {
                 return;
             }
 
-            elite.cmdr.current_cargo[hilite_item]--;
-            trade.stock_market[hilite_item].current_quantity++;
-            elite.cmdr.credits += trade.stock_market[hilite_item].current_price;
-
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
-        }
-
-        internal static void display_market_prices()
-        {
-            elite.SetView(SCR.SCR_MARKET_PRICES);
-
-            if (!elite.docked)
+            if (trade.stock_market[_highlightedStock].units == trade.TONNES && trade.total_cargo() == elite.cmdr.cargo_capacity)
             {
-                hilite_item = -1;
+                return;
             }
 
-            elite.draw.DrawMarketPrices(Planet.name_planet(elite.docked_planet, false), trade.stock_market, hilite_item, elite.cmdr.current_cargo, elite.cmdr.credits);
+            elite.cmdr.current_cargo[_highlightedStock]++;
+            trade.stock_market[_highlightedStock].current_quantity--;
+            elite.cmdr.credits -= trade.stock_market[_highlightedStock].current_price;
+        }
+
+        private void SellStock()
+        {
+            if (elite.cmdr.current_cargo[_highlightedStock] == 0)
+            {
+                return;
+            }
+
+            elite.cmdr.current_cargo[_highlightedStock]--;
+            trade.stock_market[_highlightedStock].current_quantity++;
+            elite.cmdr.credits += trade.stock_market[_highlightedStock].current_price;
         }
     }
 }

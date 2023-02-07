@@ -86,44 +86,6 @@
             _gfx.ScreenUpdate();
         }
 
-        internal void DrawMarketPrices(string planetName, stock_item[] stocks, int highlightedStock, int[] currentCargo, float credits)
-        {
-            ClearDisplay();
-
-            _gfx.DrawTextCentre(20, $"{planetName} MARKET PRICES", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-            _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(246, 40, "PRICE", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(314, 40, "FOR SALE", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(420, 40, "IN HOLD", GFX_COL.GFX_COL_GREEN_1);
-
-            for (int i = 0; i < stocks.Length; i++)
-            {
-                int y = (i * 15) + 55;
-
-                if (i == highlightedStock)
-                {
-                    _gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
-                }
-
-                _gfx.DrawTextLeft(16, y, stocks[i].name, GFX_COL.GFX_COL_WHITE);
-
-                _gfx.DrawTextLeft(180, y, stocks[i].units, GFX_COL.GFX_COL_WHITE);
-
-                _gfx.DrawTextRight(285, y, $"{stocks[i].current_price:N1}", GFX_COL.GFX_COL_WHITE);
-
-                _gfx.DrawTextRight(365, y, stocks[i].current_quantity > 0 ? $"{stocks[i].current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(365, y, stocks[i].current_quantity > 0 ? stocks[i].units : "", GFX_COL.GFX_COL_WHITE);
-
-                _gfx.DrawTextRight(455, y, currentCargo[i] > 0 ? $"{currentCargo[i],2}" : "-", GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(455, y, currentCargo[i] > 0 ? stocks[i].units : "", GFX_COL.GFX_COL_WHITE);
-            }
-
-            ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, $"Cash: {credits,10:N1} Credits", GFX_COL.GFX_COL_WHITE);
-        }
-
         internal void DrawEquipShip(EquipmentItem[] equip_stock, int highlightedItem, float credits)
         {
             ClearDisplay();
