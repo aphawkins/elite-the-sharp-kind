@@ -147,50 +147,6 @@
             }
         }
 
-        internal void DrawSettings(Setting[] setting_list, int highlighted)
-        {
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-
-            for (int i = 0; i < setting_list.Length; i++)
-            {
-                float x;
-                int y;
-                if (i == (setting_list.Length - 1))
-                {
-                    y = ((setting_list.Length + 1) / 2 * 30) + 96 + 32;
-                    if (i == highlighted)
-                    {
-                        x = gfx.GFX_X_CENTRE - 200;
-                        _gfx.DrawRectangleFilled(x, y - 7, 400, 15, GFX_COL.GFX_COL_DARK_RED);
-                    }
-
-                    _gfx.DrawTextCentre(y, setting_list[i].name, 120, GFX_COL.GFX_COL_WHITE);
-                    return;
-                }
-
-                int v = i switch
-                {
-                    0 => elite.config.UseWireframe ? 1 : 0,
-                    1 => elite.config.AntiAliasWireframe ? 1 : 0,
-                    2 => (int)elite.config.PlanetRenderStyle,
-                    3 => elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-                    4 => elite.config.InstantDock ? 1 : 0,
-                    _ => 0,
-                };
-                x = ((i & 1) * 250) + 32;
-                y = (i / 2 * 30) + 96;
-
-                if (i == highlighted)
-                {
-                    _gfx.DrawRectangleFilled(x, y, 100, 15, GFX_COL.GFX_COL_DARK_RED);
-                }
-                _gfx.DrawTextLeft(x, y, setting_list[i].name, GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(x + 120, y, setting_list[i].value[v], GFX_COL.GFX_COL_WHITE);
-            }
-        }
-
         internal void ClearDisplay()
         {
             _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);

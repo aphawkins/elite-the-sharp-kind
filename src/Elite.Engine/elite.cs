@@ -87,7 +87,7 @@ namespace Elite.Engine
 
         private System.Timers.Timer aTimer;
         FC lockObj = new();
-        TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.fps * 2));
+        TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.Fps * 2));
         internal static State _state = new();
         private static Dictionary<SCR, IView> _views = new();
 
@@ -282,10 +282,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_SETTINGS:
-                    Settings.select_right_setting();
-                    break;
-
                 case SCR.SCR_FRONT_VIEW:
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
@@ -308,10 +304,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_SETTINGS:
-                    Settings.select_left_setting();
-                    break;
-
                 case SCR.SCR_FRONT_VIEW:
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
@@ -336,10 +328,6 @@ namespace Elite.Engine
             {
                 case SCR.SCR_EQUIP_SHIP:
                     Equipment.select_previous_equip();
-                    break;
-
-                case SCR.SCR_SETTINGS:
-                    Settings.select_up_setting();
                     break;
 
                 case SCR.SCR_FRONT_VIEW:
@@ -367,10 +355,6 @@ namespace Elite.Engine
                     Equipment.select_next_equip();
                     break;
 
-                case SCR.SCR_SETTINGS:
-                    Settings.select_down_setting();
-                    break;
-
                 case SCR.SCR_FRONT_VIEW:
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
@@ -394,10 +378,6 @@ namespace Elite.Engine
             {
                 case SCR.SCR_EQUIP_SHIP:
                     Equipment.buy_equip();
-                    break;
-
-                case SCR.SCR_SETTINGS:
-                    Settings.toggle_setting();
                     break;
             }
         }
@@ -1095,6 +1075,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
             _views.Add(SCR.SCR_QUIT, new Quit(_gfx, keyboard));
+            _views.Add(SCR.SCR_SETTINGS, new Settings(_gfx, keyboard));
 
             finished = false;
             auto_pilot = false;
@@ -1113,7 +1094,7 @@ namespace Elite.Engine
             {
                 long runtime = DateTime.UtcNow.Ticks - startTicks;
                 //Console.WriteLine($"runtime: {runtime / 100}, fps: {(int)(runtime / 1000 % fps)}");
-                if (runtime / 100 % ((int)(100000 / config.fps)) == 0)
+                if (runtime / 100 % ((int)(100000 / config.Fps)) == 0)
                 {
                     // Console.WriteLine("DrawFrame");
                     //Task.Run(() => DrawFrame());

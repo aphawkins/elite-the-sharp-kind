@@ -107,7 +107,7 @@ namespace Elite.Engine.Views
                         break;
 
                     case 2:
-                        Settings.game_settings_screen();
+                        elite.SetView(SCR.SCR_SETTINGS);
                         break;
 
                     case 3:
