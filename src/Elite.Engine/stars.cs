@@ -339,7 +339,6 @@ namespace Elite.Engine
 			switch (elite._state.currentScreen)
 			{
 				case SCR.SCR_FRONT_VIEW:
-				case SCR.SCR_INTRO_ONE:
 				case SCR.SCR_INTRO_TWO:
 				case SCR.SCR_ESCAPE_POD:
 					front_starfield();

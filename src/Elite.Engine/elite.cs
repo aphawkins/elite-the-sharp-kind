@@ -1295,6 +1295,7 @@ namespace Elite.Engine
             draw.ClearDisplay();
 
             _state.currentView.UpdateUniverse();
+            _stars.update_starfield();
             _space.update_universe();
             _state.currentView.Draw();
             _state.currentView.HandleInput();

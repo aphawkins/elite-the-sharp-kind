@@ -90,8 +90,6 @@ namespace Elite.Engine.Views
 
                 swat.add_new_ship(_shipNo, new(0, 0, 4500), intro_ship_matrix, -127, -127);
             }
-
-            _stars.update_starfield();
         }
 
         public void Draw()
