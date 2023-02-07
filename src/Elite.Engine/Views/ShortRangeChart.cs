@@ -17,7 +17,6 @@ namespace Elite.Engine.Views
     using System.Numerics;
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
-    using static Elite.Engine.elite;
 
     internal class ShortRangeChart : IView
     {
@@ -26,6 +25,8 @@ namespace Elite.Engine.Views
         private readonly List<(Vector2 position, string name)> _planetNames = new();
         private readonly List<(Vector2 position, float size)> _planetSizes = new();
         private int _crossTimer;
+        private bool _isFind;
+        private string _findName;
 
         internal ShortRangeChart(IGfx gfx, IKeyboard keyboard)
         {
@@ -35,6 +36,8 @@ namespace Elite.Engine.Views
 
         public void Reset()
         {
+            _isFind = false;
+            _findName = string.Empty;
             int[] row_used = new int[64];
             _planetNames.Clear();
             _planetSizes.Clear();
@@ -159,15 +162,65 @@ namespace Elite.Engine.Views
 
             // Text
             elite.draw.ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, $"{elite.planetName:-18s}", GFX_COL.GFX_COL_WHITE);
-            string str = elite.distanceToPlanet > 0
-                ? $"Distance: {elite.distanceToPlanet:N1} Light Years "
-                : "                                                     ";
-            _gfx.DrawTextLeft(16, 356, str, GFX_COL.GFX_COL_WHITE);
+            if (_isFind)
+            {
+                _gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_GREEN_1);
+                _gfx.DrawTextLeft(16, 356, _findName, GFX_COL.GFX_COL_WHITE);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(elite.planetName))
+                {
+                    _gfx.DrawTextLeft(16, 340, "Unknown Planet", GFX_COL.GFX_COL_GREEN_1);
+                    _gfx.DrawTextLeft(16, 356, _findName, GFX_COL.GFX_COL_WHITE);
+                }
+                else
+                {
+                    _gfx.DrawTextLeft(16, 340, elite.planetName, GFX_COL.GFX_COL_GREEN_1);
+                    if (elite.distanceToPlanet > 0)
+                    {
+                        _gfx.DrawTextLeft(16, 356, $"Distance: {elite.distanceToPlanet:N1} Light Years ", GFX_COL.GFX_COL_WHITE);
+                    }
+                }
+            }
         }
 
         public void HandleInput()
         {
+            if (_isFind)
+            {
+                if (_keyboard.IsKeyPressed(CommandKey.Backspace))
+                {
+                    if (_isFind && !string.IsNullOrEmpty(_findName))
+                    {
+                        _findName = _findName[..^1];
+                    }
+                }
+                else if (_keyboard.IsKeyPressed(CommandKey.Enter))
+                {
+                    _isFind = false;
+                    if (Planet.find_planet_by_name(_findName))
+                    {
+                        CrossFromHyperspacePlanet();
+                        CalculateDistanceToPlanet();
+                    }
+                    else
+                    {
+                        elite.planetName = string.Empty;
+                    }
+                }
+                else
+                {
+                    int letter = _keyboard.GetKeyPressed();
+                    if (_isFind && _findName.Length <= 16 && letter >= 'A' && letter <= 'Z')
+                    {
+                        _findName += (char)letter;
+                    }
+                }
+
+                return;
+            }
+
             if (_keyboard.IsKeyPressed(CommandKey.Origin))
             {
                 elite.cross = new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
@@ -179,19 +232,25 @@ namespace Elite.Engine.Views
             }
             else if (_keyboard.IsKeyPressed(CommandKey.Up))
             {
-                move_cross(0, -1);
+                MoveCross(0, -1);
             }
             else if (_keyboard.IsKeyPressed(CommandKey.Down))
             {
-                move_cross(0, 1);
+                MoveCross(0, 1);
             }
             else if (_keyboard.IsKeyPressed(CommandKey.Left))
             {
-                move_cross(-1, 0);
+                MoveCross(-1, 0);
             }
             else if (_keyboard.IsKeyPressed(CommandKey.Right))
             {
-                move_cross(1, 0);
+                MoveCross(1, 0);
+            }
+            else if (_keyboard.IsKeyPressed(CommandKey.Find))
+            {
+                _isFind = true;
+                _findName = string.Empty;
+                _keyboard.KeyDown(0);  // Clear the F so that it doesn't appear in the find word
             }
         }
 
@@ -200,15 +259,15 @@ namespace Elite.Engine.Views
         /// </summary>
         /// <param name="dx"></param>
         /// <param name="dy"></param>
-        private void move_cross(int dx, int dy)
+        private void MoveCross(int dx, int dy)
         {
             _crossTimer = 5;
 
-            elite.cross.X += dx * 4;
-            elite.cross.Y += dy * 4;
+            elite.cross.X = Math.Clamp(elite.cross.X + (dx * 4), 1, 510);
+            elite.cross.Y = Math.Clamp(elite.cross.Y + (dy * 4), 37, 339);
         }
 
-        private void CalculateDistanceToPlanet()
+        private static void CalculateDistanceToPlanet()
         {
             Vector2 location = new()
             {
@@ -222,7 +281,7 @@ namespace Elite.Engine.Views
             CrossFromHyperspacePlanet();
         }
 
-        private void CrossFromHyperspacePlanet()
+        private static void CrossFromHyperspacePlanet()
         {
             elite.cross.X = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
             elite.cross.Y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;

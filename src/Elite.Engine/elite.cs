@@ -82,7 +82,6 @@ namespace Elite.Engine
 		internal static player_ship myship = new();
 		internal static Draw draw;
 
-        private readonly long startTicks = DateTime.UtcNow.Ticks;
         private int breakPatternCount = 0;
 
         
@@ -150,6 +149,7 @@ namespace Elite.Engine
 		{
             cmdr = (Commander)saved_cmdr.Clone();
 			docked_planet = Planet.find_planet(new(cmdr.ShipLocationX, cmdr.ShipLocationY));
+            planetName = Planet.name_planet(docked_planet, false);
 			hyperspace_planet = (galaxy_seed)docked_planet.Clone();
 			current_planet_data = Planet.generate_planet_data(docked_planet);
 			trade.generate_stock_market();
@@ -165,8 +165,6 @@ namespace Elite.Engine
         private static bool climbing;
         private static bool game_paused;
         //private static bool have_joystick;
-        private static bool find_input;
-        private static string find_name;
         internal static string planetName;
         internal static float distanceToPlanet;
 
@@ -195,7 +193,6 @@ namespace Elite.Engine
             mcount = 0;
             space.hyper_ready = false;
             detonate_bomb = false;
-            find_input = false;
             witchspace = false;
             game_paused = false;
             auto_pilot = false;
@@ -482,49 +479,6 @@ namespace Elite.Engine
             }
         }
 
-        private void f_pressed()
-        {
-            if (_state.currentScreen is SCR.SCR_GALACTIC_CHART or SCR.SCR_SHORT_RANGE)
-            {
-                find_input = true;
-                find_name = string.Empty;
-                draw.ClearTextArea();
-                _gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_WHITE);
-            }
-        }
-
-        private void add_find_char(char letter)
-        {
-            if (find_name.Length == 16)
-            {
-                return;
-            }
-
-            string str = char.ToUpper(letter).ToString();
-            find_name += str;
-
-            str = "Planet Name? " + find_name;
-            draw.ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
-        }
-
-        private void delete_find_char()
-        {
-            string str;
-
-            int len = find_name.Length;
-            if (len == 0)
-            {
-                return;
-            }
-
-            find_name = find_name[..^1];
-
-            str = "Planet Name? " + find_name;
-            draw.ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, str, GFX_COL.GFX_COL_WHITE);
-        }
-
         private static void auto_dock()
         {
             univ_object ship = new()
@@ -740,8 +694,6 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.F1))
             {
-                find_input = false;
-
                 if (docked)
                 {
                     _space.launch_player();
@@ -758,8 +710,6 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.F2))
             {
-                find_input = false;
-
                 if (!docked)
                 {
                     if (_state.currentScreen != SCR.SCR_REAR_VIEW)
@@ -772,8 +722,6 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.F3))
             {
-                find_input = false;
-
                 if (!docked)
                 {
                     if (_state.currentScreen != SCR.SCR_LEFT_VIEW)
@@ -786,8 +734,6 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.F4))
             {
-                find_input = false;
-
                 if (docked)
                 {
                     Equipment.equip_ship();
@@ -804,73 +750,37 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.F5))
             {
-                find_input = false;
                 SetView(SCR.SCR_GALACTIC_CHART);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F6))
             {
-                find_input = false;
                 SetView(SCR.SCR_SHORT_RANGE);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F7))
             {
-                find_input = false;
                 SetView(SCR.SCR_PLANET_DATA);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F8) && (!witchspace))
             {
-                find_input = false;
                 Market.display_market_prices();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F9))
             {
-                find_input = false;
                 SetView(SCR.SCR_CMDR_STATUS);
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F10))
             {
-                find_input = false;
                 Inventory.display_inventory();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F11))
             {
-                find_input = false;
                 Options.display_options();
-            }
-
-            if (find_input)
-            {
-                char keyasc = (char)keyboard.ReadKey();
-
-                if (keyboard.IsKeyPressed(CommandKey.Enter))
-                {
-                    find_input = false;
-                    if (!Planet.find_planet_by_name(find_name))
-                    {
-                        draw.ClearTextArea();
-                        _gfx.DrawTextLeft(16, 340, "Unknown Planet", GFX_COL.GFX_COL_WHITE);
-                    }
-                    return;
-                }
-
-                if (keyboard.IsKeyPressed(CommandKey.Backspace))
-                {
-                    delete_find_char();
-                    return;
-                }
-
-                if (char.IsLetter(keyasc))
-                {
-                    add_find_char(keyasc);
-                }
-
-                return;
             }
 
             if (keyboard.IsKeyPressed(CommandKey.Y))
@@ -917,11 +827,6 @@ namespace Elite.Engine
                 {
                     _swat.activate_ecm(true);
                 }
-            }
-
-            if (keyboard.IsKeyPressed(CommandKey.Find))
-            {
-                f_pressed();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!docked))

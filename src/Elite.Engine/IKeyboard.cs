@@ -10,6 +10,8 @@
 
         bool IsKeyPressed(CommandKey key);
 
+        int GetKeyPressed();
+
         /// <summary>
         /// Blocks until the next key is pressed.
         /// </summary>

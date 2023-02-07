@@ -230,17 +230,18 @@ namespace Elite.Engine
 
         internal static bool find_planet_by_name(string find_name)
         {
-            string planet_name = string.Empty;
             bool found = false;
             galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 
             for (int i = 0; i < 256; i++)
             {
-                planet_name = Planet.name_planet(glx, false);
+                string planet_name = Planet.name_planet(glx, false);
 
                 if (planet_name == find_name)
                 {
                     found = true;
+					elite.hyperspace_planet = glx;
+					elite.planetName = planet_name;
                     break;
                 }
 
@@ -250,27 +251,7 @@ namespace Elite.Engine
                 Planet.waggle_galaxy(ref glx);
             }
 
-            if (!found)
-            {
-                return false;
-            }
-
-            elite.hyperspace_planet = glx;
-            elite.planetName = planet_name;
-            elite.distanceToPlanet = calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
-
-            if (elite._state.currentScreen == SCR.SCR_GALACTIC_CHART)
-            {
-                elite.cross.X = elite.hyperspace_planet.d * gfx.GFX_SCALE;
-                elite.cross.Y = (elite.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
-            }
-            else
-            {
-                elite.cross.X = ((elite.hyperspace_planet.d - elite.docked_planet.d) * 4 * gfx.GFX_SCALE) + gfx.GFX_X_CENTRE;
-                elite.cross.Y = ((elite.hyperspace_planet.b - elite.docked_planet.b) * 2 * gfx.GFX_SCALE) + gfx.GFX_Y_CENTRE;
-            }
-
-            return true;
+			return found;
         }
 
         internal static float calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)

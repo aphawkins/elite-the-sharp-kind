@@ -36,6 +36,13 @@ namespace Elite.WinForms
             return isPressed;
         }
 
+        public int GetKeyPressed()
+        {
+            int key = _lastKeyPressed;
+            _lastKeyPressed = 0;
+            return key;
+        }
+
         /// <inheritdoc />
         public int ReadKey()
         {
