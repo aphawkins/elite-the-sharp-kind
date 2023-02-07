@@ -191,17 +191,6 @@
             }
         }
 
-        internal void DrawQuit()
-        {
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, "GAME OPTIONS", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0, 36), new(511, 36));
-
-            _gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
-
-            _gfx.ScreenUpdate();
-        }
-
         internal void ClearDisplay()
         {
             _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);

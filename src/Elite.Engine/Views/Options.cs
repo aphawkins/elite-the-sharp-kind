@@ -111,7 +111,7 @@ namespace Elite.Engine.Views
                         break;
 
                     case 3:
-                        Settings.quit_screen();
+                        elite.SetView(SCR.SCR_QUIT);
                         break;
                 }
             }

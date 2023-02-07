@@ -14,10 +14,9 @@
 
 namespace Elite.Engine
 {
-    using Elite.Engine.Enums;
-    using Elite.Engine.Views;
+	using Elite.Engine.Enums;
 
-    internal static partial class Settings
+	internal static partial class Settings
 	{
         private static int hilite_item;
 
@@ -30,27 +29,6 @@ namespace Elite.Engine
 			new("Instant Dock:", new string[5] {"Off", "On", "", "", ""}),
 			new("Save Settings", new string[5] {"", "", "", "", ""})
 		};
-
-        internal static void quit_screen()
-		{
-            elite.SetView(SCR.SCR_QUIT);
-
-			elite.draw.DrawQuit();
-
-            for (; ; )
-            {
-                if (elite.keyboard.IsKeyPressed(CommandKey.Y))
-                {
-					Environment.Exit(0);
-                    break;
-                }
-
-                if (elite.keyboard.IsKeyPressed(CommandKey.N))
-                {
-                    break;
-                }
-            }
-        }
 
 		internal static void select_left_setting()
 		{

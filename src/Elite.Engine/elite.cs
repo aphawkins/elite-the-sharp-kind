@@ -51,7 +51,6 @@ namespace Elite.Engine
 		internal static planet_data current_planet_data = new();
 
 		internal static int carry_flag = 0;
-		//internal static SCR current_screen = 0;
 		internal static bool witchspace;
 
         public static ConfigSettings config = new();
@@ -59,9 +58,8 @@ namespace Elite.Engine
 		internal static Vector2 scanner_centre = new(253, 63 + 385);
 		internal static Vector2 compass_centre = new(382, 22 + 385);
 
-		internal static bool game_over;
 		internal static bool docked;
-		internal static bool finish;
+		internal static bool finished;
 		internal static float flight_speed;
 		internal static float flight_roll;
 		internal static float flight_climb;
@@ -207,7 +205,6 @@ namespace Elite.Engine
             myship.max_climb = 8;       /* CF 8 */
             myship.max_fuel = 7;        // 7.0 Light Years
 
-            game_over = false;
             dock_player();
 
             scanner.update_console();
@@ -215,10 +212,9 @@ namespace Elite.Engine
             SetView(SCR.SCR_INTRO_ONE);
         }
 
-        private static void finish_game()
+        internal static void FinishGame()
         {
-            finish = true;
-            game_over = true;
+            finished = true;
         }
 
         private void draw_laser_sights()
@@ -402,34 +398,6 @@ namespace Elite.Engine
 
                 case SCR.SCR_SETTINGS:
                     Settings.toggle_setting();
-                    break;
-            }
-        }
-
-        private static void y_pressed()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_QUIT:
-                    finish_game();
-                    break;
-            }
-        }
-
-        private static void n_pressed()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_QUIT:
-                    if (docked)
-                    {
-                        SetView(SCR.SCR_CMDR_STATUS);
-                    }
-                    else
-                    {
-                        SetView(SCR.SCR_FRONT_VIEW);
-                    }
-
                     break;
             }
         }
@@ -753,16 +721,6 @@ namespace Elite.Engine
             if (keyboard.IsKeyPressed(CommandKey.F11))
             {
                 SetView(SCR.SCR_OPTIONS);
-            }
-
-            if (keyboard.IsKeyPressed(CommandKey.Y))
-            {
-                y_pressed();
-            }
-
-            if (keyboard.IsKeyPressed(CommandKey.N))
-            {
-                n_pressed();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.Fire))
@@ -1136,8 +1094,9 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
+            _views.Add(SCR.SCR_QUIT, new Quit(_gfx, keyboard));
 
-            finish = false;
+            finished = false;
             auto_pilot = false;
 
             long startTicks = DateTime.UtcNow.Ticks;
@@ -1160,9 +1119,9 @@ namespace Elite.Engine
                     //Task.Run(() => DrawFrame());
                     DrawFrame();
                 }
-            } while (true);
+            } while (!finished);
 
-
+            Environment.Exit(0);
 
 
 
@@ -1491,7 +1450,6 @@ namespace Elite.Engine
         internal void do_game_over()
         {
             _audio.PlayEffect(SoundEffect.Gameover);
-            game_over = true;
         }
 
         private void ATimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
