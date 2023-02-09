@@ -542,7 +542,7 @@ namespace Elite.Engine
             {
                 auto_dock();
 
-                if ((Math.Abs(flight_roll) < 3) && (Math.Abs(flight_climb) < 3))
+                if ((MathF.Abs(flight_roll) < 3) && (MathF.Abs(flight_climb) < 3))
                 {
                     for (int i = 0; i < MAX_UNIV_OBJECTS; i++)
                     {
@@ -1247,7 +1247,6 @@ namespace Elite.Engine
             initialise_game();
 
             _audio.UpdateSound();
-            _gfx.ScreenUpdate();
             _gfx.SetClipRegion(1, 1, 510, 383);
 
             rolling = false;
@@ -1295,10 +1294,13 @@ namespace Elite.Engine
             draw.ClearDisplay();
 
             _state.currentView.UpdateUniverse();
-            _stars.update_starfield();
             _space.update_universe();
             _state.currentView.Draw();
             _state.currentView.HandleInput();
+
+#if DEBUG
+            _gfx.DrawTextLeft(450, 10, $"FPS: {lockObj.framesDrawn.Count}", GFX_COL.GFX_COL_WHITE);
+#endif
 
             _gfx.ScreenUpdate();
         }
@@ -1453,7 +1455,7 @@ namespace Elite.Engine
                     lockObj.framesDrawn.RemoveRange(0, i);
                 }
 
-                Console.Write($"\rFPS: {lockObj.framesDrawn.Count}");
+                //Console.Write($"\rFPS: {lockObj.framesDrawn.Count}");
             }
         }
     }

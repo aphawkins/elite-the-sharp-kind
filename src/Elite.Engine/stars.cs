@@ -43,14 +43,14 @@ namespace Elite.Engine
             warp_stars = false;
 		}
 
-        private void front_starfield()
+        internal void front_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
 			float alpha = elite.flight_roll;
 			float beta = elite.flight_climb;
 
-			alpha /= 256.0f;
-			delta /= 2.0f;
+			alpha /= 256;
+			delta /= 2;
 
 			for (int i = 0; i < stars.Length; i++)
 			{
@@ -123,7 +123,7 @@ namespace Elite.Engine
 					{
 						X = RNG.Random(-128, 127) | 8,
 						Y = RNG.Random(-128, 127) | 4,
-						Z = RNG.Random(255) | 0x90,
+						Z = RNG.Random(255) | 144,
 					};
 					continue;
 				}
@@ -139,8 +139,8 @@ namespace Elite.Engine
 			float alpha = -elite.flight_roll;
 			float beta = -elite.flight_climb;
 
-			alpha /= 256.0f;
-			delta /= 2.0f;
+			alpha /= 256;
+			delta /= 2;
 
 			for (int i = 0; i < stars.Length; i++)
 			{
@@ -339,7 +339,6 @@ namespace Elite.Engine
 			switch (elite._state.currentScreen)
 			{
 				case SCR.SCR_FRONT_VIEW:
-				case SCR.SCR_INTRO_TWO:
 				case SCR.SCR_ESCAPE_POD:
 					front_starfield();
 					break;
