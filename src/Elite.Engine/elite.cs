@@ -76,7 +76,7 @@ namespace Elite.Engine
 		internal static Commander saved_cmdr = CommanderFactory.Jameson();
 #endif
 
-        internal static Commander cmdr;
+        internal static Commander cmdr = (Commander)saved_cmdr.Clone();
         internal static player_ship myship = new();
         internal static Draw draw;
 
@@ -871,48 +871,6 @@ namespace Elite.Engine
             SetView(SCR.SCR_OPTIONS);
         }
 
-        internal static void load_commander_screen()
-        {
-            SetView(SCR.SCR_LOAD_CMDR);
-            int key;
-            string name = elite.cmdr.name;
-
-            do
-            {
-                draw.DrawLoadCommander(false, name);
-
-                key = keyboard.ReadKey();
-                if (key is >= 'A' and <= 'Z')
-                {
-                    name += (char)key;
-                }
-                else if (key is (int)CommandKey.Backspace)
-                {
-                    if (!string.IsNullOrEmpty(name))
-                    {
-                        name = name[..^1]; ;
-                    }
-                }
-            } while (key != (int)CommandKey.Enter);
-
-            Commander? cmdr = SaveFile.LoadCommanderAsync(name).Result;
-
-            if (cmdr == null)
-            {
-                draw.DrawLoadCommander(true, name);
-                do
-                {
-                    key = keyboard.ReadKey();
-                } while (key != (int)CommandKey.Space);
-
-                cmdr = CommanderFactory.Jameson();
-            }
-
-            saved_cmdr = (Commander)cmdr.Clone();
-            restore_saved_commander();
-            scanner.update_console();
-        }
-
         /*
 		 * Draw the game over sequence. 
 		 */
@@ -1050,6 +1008,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
+            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gfx, keyboard));
             _views.Add(SCR.SCR_QUIT, new Quit(_gfx, keyboard));
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gfx, keyboard));
 

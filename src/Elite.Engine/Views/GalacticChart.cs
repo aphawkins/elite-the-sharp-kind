@@ -195,7 +195,7 @@ namespace Elite.Engine.Views
             {
                 _isFind = true;
                 _findName = string.Empty;
-                _keyboard.KeyDown(0);  // Clear the F so that it doesn't appear in the find word
+                _keyboard.ClearKeyPressed();  // Clear the F so that it doesn't appear in the find word
             }
         }
 

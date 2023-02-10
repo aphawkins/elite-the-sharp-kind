@@ -43,6 +43,11 @@ namespace Elite.WinForms
             return key;
         }
 
+        public void ClearKeyPressed()
+        {
+            _lastKeyPressed = 0;
+        }
+
         /// <inheritdoc />
         public int ReadKey()
         {

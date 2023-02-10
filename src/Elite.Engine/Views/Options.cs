@@ -102,8 +102,7 @@ namespace Elite.Engine.Views
                         break;
 
                     case 1:
-                        elite.load_commander_screen();
-                        elite.SetView(SCR.SCR_CMDR_STATUS);
+                        elite.SetView(SCR.SCR_LOAD_CMDR);
                         break;
 
                     case 2:

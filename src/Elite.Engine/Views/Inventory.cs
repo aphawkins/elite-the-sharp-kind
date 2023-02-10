@@ -15,7 +15,6 @@
 namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
-    using Elite.Engine.Types;
 
     internal class Inventory : IView
     {
@@ -29,8 +28,7 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             elite.draw.ClearDisplay();
-            _gfx.DrawTextCentre(20, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            elite.draw.DrawViewHeader("INVENTORY");
 
             _gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(70, 50, $"{elite.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
