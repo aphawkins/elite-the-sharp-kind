@@ -325,10 +325,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_EQUIP_SHIP:
-                    Equipment.select_previous_equip();
-                    break;
-
                 case SCR.SCR_FRONT_VIEW:
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
@@ -350,10 +346,6 @@ namespace Elite.Engine
         {
             switch (_state.currentScreen)
             {
-                case SCR.SCR_EQUIP_SHIP:
-                    Equipment.select_next_equip();
-                    break;
-
                 case SCR.SCR_FRONT_VIEW:
                 case SCR.SCR_REAR_VIEW:
                 case SCR.SCR_RIGHT_VIEW:
@@ -367,16 +359,6 @@ namespace Elite.Engine
                         space.increase_flight_climb();
                     }
                     climbing = true;
-                    break;
-            }
-        }
-
-        private static void return_pressed()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_EQUIP_SHIP:
-                    Equipment.buy_equip();
                     break;
             }
         }
@@ -655,16 +637,14 @@ namespace Elite.Engine
             {
                 if (docked)
                 {
-                    Equipment.equip_ship();
+                    SetView(SCR.SCR_EQUIP_SHIP);
                 }
-                else
+                else if (_state.currentScreen != SCR.SCR_RIGHT_VIEW)
                 {
-                    if (_state.currentScreen != SCR.SCR_RIGHT_VIEW)
-                    {
-                        SetView(SCR.SCR_RIGHT_VIEW);
-                        Stars.flip_stars();
-                    }
+                    SetView(SCR.SCR_RIGHT_VIEW);
+                    Stars.flip_stars();
                 }
+
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F5))
@@ -824,11 +804,6 @@ namespace Elite.Engine
             if (keyboard.IsKeyPressed(CommandKey.Right))
             {
                 arrow_right();
-            }
-
-            if (keyboard.IsKeyPressed(CommandKey.Enter))
-            {
-                return_pressed();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.EnergyBomb))
@@ -1072,10 +1047,11 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
+            _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
+            _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
             _views.Add(SCR.SCR_QUIT, new Quit(_gfx, keyboard));
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gfx, keyboard));
-            _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
 
             finished = false;
             auto_pilot = false;

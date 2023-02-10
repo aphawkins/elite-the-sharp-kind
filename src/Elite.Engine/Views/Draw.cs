@@ -86,43 +86,6 @@
             _gfx.ScreenUpdate();
         }
 
-        internal void DrawEquipShip(EquipmentItem[] equip_stock, int highlightedItem, float credits)
-        {
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-            _gfx.ClearArea(2, 55, 508, 325);
-
-            int y = 55;
-
-            for (int i = 0; i < equip_stock.Length; i++)
-            {
-                if (!equip_stock[i].Show)
-                {
-                    continue;
-                }
-
-                if (i == highlightedItem)
-                {
-                    _gfx.DrawRectangleFilled(2, y + 1, 508, 15, GFX_COL.GFX_COL_DARK_RED);
-                }
-
-                GFX_COL col = equip_stock[i].CanBuy ? GFX_COL.GFX_COL_WHITE : GFX_COL.GFX_COL_GREY_1;
-                int x = equip_stock[i].Name[0] == '>' ? 50 : 16;
-                _gfx.DrawTextLeft(x, y, equip_stock[i].Name[1..], col);
-
-                if (equip_stock[i].Price != 0)
-                {
-                    _gfx.DrawTextRight(450, y, $"{equip_stock[i].Price:N1}", col);
-                }
-
-                y += 15;
-            }
-
-            ClearTextArea();
-            _gfx.DrawTextLeft(16, 340, $"Cash: {credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
-        }
-
         internal void ClearDisplay()
         {
             _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);

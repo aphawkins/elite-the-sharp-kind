@@ -17,10 +17,19 @@ namespace Elite.Engine.Views
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static class Equipment
+    internal class Equipment : IView
     {
-        private static int hilite_item;
-        private static readonly EquipmentItem[] EquipmentStock = new EquipmentItem[]
+        private readonly IGfx _gfx;
+        private readonly IKeyboard _keyboard;
+        private int _highlightedItem;
+
+        internal Equipment(IGfx gfx, IKeyboard keyboard)
+        {
+            _gfx = gfx;
+            _keyboard = keyboard;
+        }
+
+        private readonly EquipmentItem[] EquipmentStock = new EquipmentItem[]
         {
             new(false, true,   1, 0.2f, " Fuel",                EquipmentType.EQ_FUEL),
             new(false, true,   1,   30, " Missile",             EquipmentType.EQ_MISSILE),
@@ -58,11 +67,11 @@ namespace Elite.Engine.Views
             new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
         };
 
-        private static bool equip_present(EquipmentType type)
+        private bool PresentEquipment(EquipmentType type)
         {
             return type switch
             {
-                EquipmentType.EQ_FUEL => elite.cmdr.fuel >= 70,
+                EquipmentType.EQ_FUEL => elite.cmdr.fuel >= 7,
                 EquipmentType.EQ_MISSILE => elite.cmdr.missiles >= 4,
                 EquipmentType.EQ_CARGO_BAY => elite.cmdr.cargo_capacity > 20,
                 EquipmentType.EQ_ECM => elite.cmdr.ecm,
@@ -92,72 +101,132 @@ namespace Elite.Engine.Views
             };
         }
 
-        internal static void select_next_equip()
+        public void Reset()
         {
-            if (hilite_item == EquipmentStock.Length - 1)
+            CollapseList();
+
+            _highlightedItem = 0;
+
+            ListPrices();
+        }
+
+        public void UpdateUniverse()
+        {
+        }
+
+        public void Draw()
+        {
+            elite.draw.ClearDisplay();
+            _gfx.DrawTextCentre(20, "EQUIP SHIP", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            _gfx.ClearArea(2, 55, 508, 325);
+
+            int y = 55;
+
+            for (int i = 0; i < EquipmentStock.Length; i++)
+            {
+                if (!EquipmentStock[i].Show)
+                {
+                    continue;
+                }
+
+                if (i == _highlightedItem)
+                {
+                    _gfx.DrawRectangleFilled(2, y + 1, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+                }
+
+                GFX_COL col = EquipmentStock[i].CanBuy ? GFX_COL.GFX_COL_WHITE : GFX_COL.GFX_COL_GREY_1;
+                int x = EquipmentStock[i].Name[0] == '>' ? 50 : 16;
+                _gfx.DrawTextLeft(x, y, EquipmentStock[i].Name[1..], col);
+
+                if (EquipmentStock[i].Price != 0)
+                {
+                    _gfx.DrawTextRight(450, y, $"{EquipmentStock[i].Price:N1}", col);
+                }
+
+                y += 15;
+            }
+
+            elite.draw.ClearTextArea();
+            _gfx.DrawTextLeft(16, 340, $"Cash: {elite.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+        }
+
+        public void HandleInput()
+        {
+            if (_keyboard.IsKeyPressed(CommandKey.Up))
+            {
+                SelectPrevious();
+            }
+            if (_keyboard.IsKeyPressed(CommandKey.Down))
+            {
+                SelectNext();
+            }
+            if (_keyboard.IsKeyPressed(CommandKey.Enter))
+            {
+                Buy();
+            }
+        }
+
+        internal void SelectNext()
+        {
+            if (_highlightedItem == EquipmentStock.Length - 1)
             {
                 return;
             }
 
-            for (int i = hilite_item + 1; i < EquipmentStock.Length; i++)
+            for (int i = _highlightedItem + 1; i < EquipmentStock.Length; i++)
             {
                 if (EquipmentStock[i].Show)
                 {
-                    hilite_item = i;
+                    _highlightedItem = i;
                     break;
                 }
             }
-
-            elite.draw.DrawEquipShip(EquipmentStock, hilite_item, elite.cmdr.credits);
         }
 
-        internal static void select_previous_equip()
+        internal void SelectPrevious()
         {
-            if (hilite_item == 0)
+            if (_highlightedItem == 0)
             {
                 return;
             }
 
-            for (int i = hilite_item - 1; i >= 0; i--)
+            for (int i = _highlightedItem - 1; i >= 0; i--)
             {
                 if (EquipmentStock[i].Show)
                 {
-                    hilite_item = i;
+                    _highlightedItem = i;
                     break;
                 }
             }
-
-            elite.draw.DrawEquipShip(EquipmentStock, hilite_item, elite.cmdr.credits);
         }
 
-        private static void list_equip_prices()
+        private void ListPrices()
         {
-            int tech_level = elite.current_planet_data.techlevel + 1;
+            int techLevel = elite.current_planet_data.techlevel + 1;
 
             EquipmentStock[0].Price = (7 - elite.cmdr.fuel) * 2;
 
             for (int i = 0; i < EquipmentStock.Length; i++)
             {
-                EquipmentStock[i].CanBuy = !equip_present(EquipmentStock[i].Type) && EquipmentStock[i].Price <= elite.cmdr.credits;
-                EquipmentStock[i].Show = EquipmentStock[i].Show && tech_level >= EquipmentStock[i].TechLevel;
+                EquipmentStock[i].CanBuy = !PresentEquipment(EquipmentStock[i].Type) && EquipmentStock[i].Price <= elite.cmdr.credits;
+                EquipmentStock[i].Show = EquipmentStock[i].Show && techLevel >= EquipmentStock[i].TechLevel;
             }
 
-            hilite_item = 0;
-            elite.draw.DrawEquipShip(EquipmentStock, hilite_item, elite.cmdr.credits);
+            _highlightedItem = 0;
         }
 
-        private static void collapse_equip_list()
+        private void CollapseList()
         {
             for (int i = 0; i < EquipmentStock.Length; i++)
             {
-                char ch = EquipmentStock[i].Name[0];
-                EquipmentStock[i].Show = ch is ' ' or '+';
+                EquipmentStock[i].Show = EquipmentStock[i].Name[0] is ' ' or '+';
             }
         }
 
-        private static float laser_refund(int laser_type)
+        private float LaserRefund(int laserType)
         {
-            return laser_type switch
+            return laserType switch
             {
                 elite.PULSE_LASER => 400,
                 elite.BEAM_LASER => 1000,
@@ -167,28 +236,28 @@ namespace Elite.Engine.Views
             };
         }
 
-        internal static void buy_equip()
+        internal void Buy()
         {
-            if (EquipmentStock[hilite_item].Name[0] == '+')
+            if (EquipmentStock[_highlightedItem].Name[0] == '+')
             {
-                collapse_equip_list();
-                EquipmentStock[hilite_item].Show = false;
-                hilite_item++;
+                CollapseList();
+                EquipmentStock[_highlightedItem].Show = false;
+                _highlightedItem++;
                 for (int i = 0; i < 5; i++)
                 {
-                    EquipmentStock[hilite_item + i].Show = true;
+                    EquipmentStock[_highlightedItem + i].Show = true;
                 }
 
-                list_equip_prices();
+                ListPrices();
                 return;
             }
 
-            if (!EquipmentStock[hilite_item].CanBuy)
+            if (!EquipmentStock[_highlightedItem].CanBuy)
             {
                 return;
             }
 
-            switch (EquipmentStock[hilite_item].Type)
+            switch (EquipmentStock[_highlightedItem].Type)
             {
                 case EquipmentType.EQ_FUEL:
                     elite.cmdr.fuel = elite.myship.max_fuel;
@@ -233,99 +302,88 @@ namespace Elite.Engine.Views
                     break;
 
                 case EquipmentType.EQ_FRONT_PULSE:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.front_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.front_laser);
                     elite.cmdr.front_laser = elite.PULSE_LASER;
                     break;
 
                 case EquipmentType.EQ_REAR_PULSE:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.rear_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.rear_laser);
                     elite.cmdr.rear_laser = elite.PULSE_LASER;
                     break;
 
                 case EquipmentType.EQ_LEFT_PULSE:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.left_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.left_laser);
                     elite.cmdr.left_laser = elite.PULSE_LASER;
                     break;
 
                 case EquipmentType.EQ_RIGHT_PULSE:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.right_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.right_laser);
                     elite.cmdr.right_laser = elite.PULSE_LASER;
                     break;
 
                 case EquipmentType.EQ_FRONT_BEAM:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.front_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.front_laser);
                     elite.cmdr.front_laser = elite.BEAM_LASER;
                     break;
 
                 case EquipmentType.EQ_REAR_BEAM:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.rear_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.rear_laser);
                     elite.cmdr.rear_laser = elite.BEAM_LASER;
                     break;
 
                 case EquipmentType.EQ_LEFT_BEAM:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.left_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.left_laser);
                     elite.cmdr.left_laser = elite.BEAM_LASER;
                     break;
 
                 case EquipmentType.EQ_RIGHT_BEAM:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.right_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.right_laser);
                     elite.cmdr.right_laser = elite.BEAM_LASER;
                     break;
 
                 case EquipmentType.EQ_FRONT_MINING:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.front_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.front_laser);
                     elite.cmdr.front_laser = elite.MINING_LASER;
                     break;
 
                 case EquipmentType.EQ_REAR_MINING:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.rear_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.rear_laser);
                     elite.cmdr.rear_laser = elite.MINING_LASER;
                     break;
 
                 case EquipmentType.EQ_LEFT_MINING:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.left_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.left_laser);
                     elite.cmdr.left_laser = elite.MINING_LASER;
                     break;
 
                 case EquipmentType.EQ_RIGHT_MINING:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.right_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.right_laser);
                     elite.cmdr.right_laser = elite.MINING_LASER;
                     break;
 
                 case EquipmentType.EQ_FRONT_MILITARY:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.front_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.front_laser);
                     elite.cmdr.front_laser = elite.MILITARY_LASER;
                     break;
 
                 case EquipmentType.EQ_REAR_MILITARY:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.rear_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.rear_laser);
                     elite.cmdr.rear_laser = elite.MILITARY_LASER;
                     break;
 
                 case EquipmentType.EQ_LEFT_MILITARY:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.left_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.left_laser);
                     elite.cmdr.left_laser = elite.MILITARY_LASER;
                     break;
 
                 case EquipmentType.EQ_RIGHT_MILITARY:
-                    elite.cmdr.credits += laser_refund(elite.cmdr.right_laser);
+                    elite.cmdr.credits += LaserRefund(elite.cmdr.right_laser);
                     elite.cmdr.right_laser = elite.MILITARY_LASER;
                     break;
             }
 
-            elite.cmdr.credits -= EquipmentStock[hilite_item].Price;
-            list_equip_prices();
-        }
-
-        internal static void equip_ship()
-        {
-            elite.SetView(SCR.SCR_EQUIP_SHIP);
-
-            collapse_equip_list();
-
-            hilite_item = 0;
-
-            list_equip_prices();
+            elite.cmdr.credits -= EquipmentStock[_highlightedItem].Price;
+            ListPrices();
         }
     }
 }
