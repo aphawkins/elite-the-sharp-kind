@@ -85,7 +85,6 @@ namespace Elite.Engine
         
         readonly long oneSec = TimeSpan.FromSeconds(1).Ticks;
 
-        private System.Timers.Timer aTimer;
         FC lockObj = new();
         TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.Fps * 2));
         internal static State _state = new();
@@ -1081,22 +1080,14 @@ namespace Elite.Engine
             auto_pilot = false;
 
             long startTicks = DateTime.UtcNow.Ticks;
-
-            aTimer = new System.Timers.Timer
-            {
-                Interval = 1000,
-                AutoReset = true,
-            };
-            aTimer.Elapsed += ATimer_Elapsed;
-            aTimer.Enabled = true;
+            long interval = (long)(100000 / config.Fps); // *10^-5
 
             do
             {
                 long runtime = DateTime.UtcNow.Ticks - startTicks;
-                //Console.WriteLine($"runtime: {runtime / 100}, fps: {(int)(runtime / 1000 % fps)}");
-                if (runtime / 100 % ((int)(100000 / config.Fps)) == 0)
+
+                if ((runtime / 100 % interval) == 0)
                 {
-                    // Console.WriteLine("DrawFrame");
                     //Task.Run(() => DrawFrame());
                     DrawFrame();
                 }
@@ -1299,7 +1290,7 @@ namespace Elite.Engine
             _state.currentView.HandleInput();
 
 #if DEBUG
-            _gfx.DrawTextLeft(450, 10, $"FPS: {lockObj.framesDrawn.Count}", GFX_COL.GFX_COL_WHITE);
+            DrawFps();
 #endif
 
             _gfx.ScreenUpdate();
@@ -1436,12 +1427,12 @@ namespace Elite.Engine
             _audio.PlayEffect(SoundEffect.Gameover);
         }
 
-        private void ATimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        private void DrawFps()
         {
             long secondAgo = DateTime.UtcNow.Ticks - oneSec;
 
-            lock (lockObj)
-            {
+            //lock (lockObj)
+            //{
                 if (lockObj.framesDrawn.Count > 0)
                 {
                     int i;
@@ -1455,8 +1446,8 @@ namespace Elite.Engine
                     lockObj.framesDrawn.RemoveRange(0, i);
                 }
 
-                //Console.Write($"\rFPS: {lockObj.framesDrawn.Count}");
-            }
+                _gfx.DrawTextLeft(450, 10, $"FPS: {lockObj.framesDrawn.Count}", GFX_COL.GFX_COL_WHITE);
+            //}
         }
     }
 }
