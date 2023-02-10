@@ -15,13 +15,51 @@
 namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
+    using Elite.Engine.Types;
 
-    internal static class Inventory
+    internal class Inventory : IView
     {
-        internal static void display_inventory()
+        private readonly IGfx _gfx;
+
+        internal Inventory(IGfx gfx)
         {
-            elite.SetView(SCR.SCR_INVENTORY);
-            elite.draw.DrawInventory(elite.cmdr.fuel, elite.cmdr.credits, trade.stock_market, elite.cmdr.current_cargo);
+            _gfx = gfx;
+        }
+
+        public void Draw()
+        {
+            elite.draw.ClearDisplay();
+            _gfx.DrawTextCentre(20, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+
+            _gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(70, 50, $"{elite.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+
+            _gfx.DrawTextLeft(16, 66, "Cash:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(70, 66, $"{elite.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+
+            int y = 98;
+            for (int i = 0; i < elite.cmdr.current_cargo.Length; i++)
+            {
+                if (elite.cmdr.current_cargo[i] > 0)
+                {
+                    _gfx.DrawTextLeft(16, y, trade.stock_market[i].name, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextLeft(180, y, $"{elite.cmdr.current_cargo[i]}{trade.stock_market[i].units}", GFX_COL.GFX_COL_WHITE);
+                    y += 16;
+                }
+            }
+        }
+
+        public void HandleInput()
+        {
+        }
+
+        public void Reset()
+        {
+        }
+
+        public void UpdateUniverse()
+        {
         }
     }
 }

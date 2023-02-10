@@ -123,30 +123,6 @@
             _gfx.DrawTextLeft(16, 340, $"Cash: {credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
 
-        internal void DrawInventory(float fuel, float credits, stock_item[] stocks, int[] cargo)
-        {
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, "INVENTORY", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
-
-            _gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 50, $"{fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
-
-            _gfx.DrawTextLeft(16, 66, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 66, $"{credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
-
-            int y = 98;
-            for (int i = 0; i < cargo.Length; i++)
-            {
-                if (cargo[i] > 0)
-                {
-                    _gfx.DrawTextLeft(16, y, stocks[i].name, GFX_COL.GFX_COL_WHITE);
-                    _gfx.DrawTextLeft(180, y, $"{cargo[i]}{stocks[i].units}", GFX_COL.GFX_COL_WHITE);
-                    y += 16;
-                }
-            }
-        }
-
         internal void ClearDisplay()
         {
             _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);

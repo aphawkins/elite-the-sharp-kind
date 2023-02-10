@@ -115,26 +115,26 @@ namespace Elite.Engine.Views
 
             if (!elite.witchspace)
             {
-                _gfx.DrawTextLeft(190, 58, dockedPlanetName, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(150, 58, dockedPlanetName, GFX_COL.GFX_COL_WHITE);
             }
 
             _gfx.DrawTextLeft(16, 74, "Hyperspace System:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(190, 74, hyperspacePlanetName, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 74, hyperspacePlanetName, GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 90, "Condition:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(190, 90, condition_txt[condition], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 90, condition_txt[condition], GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 106, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 106, $"{elite.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 106, $"{elite.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 122, $"{elite.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 122, $"{elite.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 138, "Legal Status:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(128, 138, elite.cmdr.legal_status == 0 ? "Clean" : elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 138, elite.cmdr.legal_status == 0 ? "Clean" : elite.cmdr.legal_status > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 154, "Rating:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(80, 154, rating, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 154, rating, GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 186, "EQUIPMENT:", GFX_COL.GFX_COL_GREEN_1);
 
