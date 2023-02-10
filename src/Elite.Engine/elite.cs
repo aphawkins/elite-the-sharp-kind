@@ -824,53 +824,6 @@ namespace Elite.Engine
             }
         }
 
-        internal static void save_commander_screen()
-        {
-            SetView(SCR.SCR_SAVE_CMDR);
-            int key;
-            string name = cmdr.name;
-
-            do
-            {
-                draw.DrawSaveCommander(name);
-
-                key = keyboard.ReadKey();
-                if (key is >= 'A' and <= 'Z')
-                {
-                    name += (char)key;
-                }
-                else if (key is (int)CommandKey.Backspace)
-                {
-                    if (!string.IsNullOrEmpty(name))
-                    {
-                        name = name[..^1]; ;
-                    }
-                }
-            } while (key != (int)CommandKey.Enter);
-
-            cmdr.name = name;
-            cmdr.ShipLocationX = docked_planet.d;
-            cmdr.ShipLocationY = docked_planet.b;
-            bool success = SaveFile.SaveCommanderAsync(cmdr).Result;
-            draw.DrawSaveCommander(name, success);
-
-            if (success)
-            {
-                saved_cmdr = (Commander)cmdr.Clone();
-            }
-            else
-            {
-                cmdr.name = saved_cmdr.name;
-            }
-
-            do
-            {
-                key = keyboard.ReadKey();
-            } while (key != (int)CommandKey.Space);
-
-            SetView(SCR.SCR_OPTIONS);
-        }
-
         /*
 		 * Draw the game over sequence. 
 		 */
@@ -1009,6 +962,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
             _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gfx, keyboard));
+            _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gfx, keyboard));
             _views.Add(SCR.SCR_QUIT, new Quit(_gfx, keyboard));
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gfx, keyboard));
 
@@ -1238,6 +1192,7 @@ namespace Elite.Engine
             {
                 _state.currentScreen = screen;
                 _state.currentView = _views[screen];
+                keyboard.ClearKeyPressed();
                 _state.currentView.Reset();
             }
         }

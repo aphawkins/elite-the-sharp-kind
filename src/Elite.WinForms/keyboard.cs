@@ -46,19 +46,7 @@ namespace Elite.WinForms
         public void ClearKeyPressed()
         {
             _lastKeyPressed = 0;
-        }
-
-        /// <inheritdoc />
-        public int ReadKey()
-        {
-            _lastKeyPressed = 0;
-
-            while (_lastKeyPressed == 0) 
-            {
-                //Thread.Sleep(100);
-            }
-
-            return _lastKeyPressed;
+            _isPressed.Clear();
         }
     }
 }

@@ -98,7 +98,7 @@ namespace Elite.Engine.Views
                 switch (_highlightedItem)
                 {
                     case 0:
-                        elite.save_commander_screen();
+                        elite.SetView(SCR.SCR_SAVE_CMDR);
                         break;
 
                     case 1:

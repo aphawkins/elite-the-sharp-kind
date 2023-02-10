@@ -40,33 +40,6 @@
             }
         }
 
-        internal void DrawSaveCommander(string name, bool? isSuccess = null)
-        {
-            ClearDisplay();
-            _gfx.DrawTextCentre(20, "SAVE COMMANDER", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0, 36), new(511, 36));
-
-            _gfx.DrawTextCentre(75, "Please enter commander name:", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawRectangle(100, 100, 312, 50, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(125, name, 140, GFX_COL.GFX_COL_WHITE);
-
-            if (isSuccess.HasValue)
-            {
-                if (isSuccess.Value)
-                {
-                    _gfx.DrawTextCentre(175, "Commander Saved.", 140, GFX_COL.GFX_COL_GOLD);
-                    _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
-                }
-                else
-                {
-                    _gfx.DrawTextCentre(175, "Error Saving Commander!", 140, GFX_COL.GFX_COL_GOLD);
-                    _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
-                }
-            }
-
-            _gfx.ScreenUpdate();
-        }
-
         internal void ClearDisplay()
         {
             _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);

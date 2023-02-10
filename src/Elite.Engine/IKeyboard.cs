@@ -13,11 +13,5 @@
         int GetKeyPressed();
 
         void ClearKeyPressed();
-
-        /// <summary>
-        /// Blocks until the next key is pressed.
-        /// </summary>
-        /// <returns></returns>
-        int ReadKey();
     }
 }
