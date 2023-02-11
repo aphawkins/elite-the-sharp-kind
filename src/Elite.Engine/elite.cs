@@ -867,39 +867,6 @@ namespace Elite.Engine
             }
         }
 
-        /*
-		 * Draw a break pattern (for launching, docking and hyperspacing).
-		 * Just draw a very simple one for the moment.
-		 */
-        private void display_break_pattern()
-        {
-            _gfx.SetClipRegion(1, 1, 510, 383);
-            draw.ClearDisplay();
-
-            for (int i = 0; i < breakPatternCount; i++)
-            {
-                _gfx.DrawCircle(new(256, 192), 30 + (i * 15), GFX_COL.GFX_COL_WHITE);
-            }
-
-            _gfx.ScreenUpdate();
-
-            breakPatternCount++;
-
-            if (breakPatternCount == 20)
-            {
-                breakPatternCount = 0;
-
-                if (docked)
-                {
-                    SetView(SCR.SCR_MISSION);
-                }
-                else
-                {
-                    SetView(SCR.SCR_FRONT_VIEW);
-                }
-            }
-        }
-
         private void DisplayMission()
         {
 
@@ -958,6 +925,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
+            _views.Add(SCR.SCR_BREAK_PATTERN, new BreakPattern(_gfx));
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
