@@ -206,8 +206,6 @@ namespace Elite.Engine
 
             dock_player();
 
-            scanner.update_console();
-
             SetView(SCR.SCR_INTRO_ONE);
         }
 
@@ -947,8 +945,6 @@ namespace Elite.Engine
             //            }
 
             //            _swat.time_ecm();
-
-            //            scanner.update_console();
             //        }
 
             //        if (current_screen == SCR.SCR_MISSION)
@@ -1037,6 +1033,7 @@ namespace Elite.Engine
             _state.currentView.UpdateUniverse();
             _space.update_universe();
             _state.currentView.Draw();
+            scanner.update_console();
             _state.currentView.HandleInput();
 
 #if DEBUG
