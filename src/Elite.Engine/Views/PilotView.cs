@@ -5,7 +5,8 @@
     internal abstract class PilotView : IView
     {
         private readonly IGfx _gfx;
-        private Laser _laser;
+        private readonly Laser _laser;
+        private int drawLaserFrames;
 
         internal PilotView(IGfx gfx)
         {
@@ -15,10 +16,9 @@
 
         public virtual void Draw()
         {
-            if (elite.draw_lasers != 0)
+            if (drawLaserFrames > 0)
             {
                 _laser.DrawLaserLines();
-                elite.draw_lasers--;
             }
         }
 
@@ -33,6 +33,7 @@
 
         public virtual void UpdateUniverse()
         {
+            drawLaserFrames = elite.drawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
         }
 
         protected void DrawViewName(string name)
@@ -42,7 +43,7 @@
 
         protected void DrawLaserSights(int laserType)
         {
-            _laser.draw_laser_sights(laserType);
+            _laser.DrawLaserSights(laserType);
         }
     }
 }

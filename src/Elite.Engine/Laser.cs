@@ -12,7 +12,7 @@
             _gfx = gfx;
         }
 
-        internal void draw_laser_sights(int laserType)
+        internal void DrawLaserSights(int laserType)
         {
             if (laserType == 0)
             {

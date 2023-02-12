@@ -39,10 +39,10 @@ namespace Elite.Engine
         private readonly swat _swat;
         private readonly trade _trade;
 
-        internal const int PULSE_LASER = 0x0F;     //  15
-        internal const int BEAM_LASER = 0x8F;      // 143
-        internal const int MILITARY_LASER = 0x97;  // 151
-        internal const int MINING_LASER = 0x32;    //  50
+        internal const int PULSE_LASER = 15;
+        internal const int BEAM_LASER = 143;
+        internal const int MILITARY_LASER = 151;
+        internal const int MINING_LASER = 50;
 
         internal const int MAX_UNIV_OBJECTS = 20;
 
@@ -154,7 +154,7 @@ namespace Elite.Engine
         }
 
         internal static Vector2 cross = new(0, 0);
-        internal static int draw_lasers;
+        internal static bool drawLasers;
         internal static int mcount;
         private static int message_count;
         private static string message_string;
@@ -186,7 +186,7 @@ namespace Elite.Engine
             front_shield = 255;
             aft_shield = 255;
             energy = 255;
-            draw_lasers = 0;
+            drawLasers = false;
             mcount = 0;
             space.hyper_ready = false;
             detonate_bomb = false;
@@ -609,10 +609,7 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.Fire))
             {
-                if ((!docked) && (draw_lasers == 0))
-                {
-                    draw_lasers = _swat.fire_laser();
-                }
+                drawLasers = _swat.FireLaser();
             }
 
             if (keyboard.IsKeyPressed(CommandKey.Dock))

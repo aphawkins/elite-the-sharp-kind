@@ -866,11 +866,14 @@ namespace Elite.Engine
 			}
 		}
 
-		internal int fire_laser()
+		internal bool FireLaser()
         {
-            if (laser_counter != 0 || elite.laser_temp >= 242)
+			if (elite.docked || 
+				elite.drawLasers || 
+				laser_counter != 0 || 
+				elite.laser_temp >= 242)
             {
-                return 0;
+                return false;
             }
 
             laser = elite._state.currentScreen switch
@@ -884,7 +887,7 @@ namespace Elite.Engine
 
             if (laser == 0)
             {
-                return 0;
+                return false;
             }
 
             laser_counter = (laser > 127) ? 0 : (laser & 250);
@@ -898,27 +901,20 @@ namespace Elite.Engine
                 elite.energy--;
             }
 
-            return 2;
+            return true;
         }
 
         internal static void cool_laser()
 		{
 			laser = 0;
+			elite.drawLasers = false;
 
-			if (elite.laser_temp > 0)
+            if (elite.laser_temp > 0)
 			{
 				elite.laser_temp--;
 			}
 
-			if (laser_counter > 0)
-			{
-				laser_counter--;
-			}
-
-			if (laser_counter > 0)
-			{
-				laser_counter--;
-			}
+			laser_counter = Math.Clamp(laser_counter - 2, 0, laser_counter);
 		}
 
 		private static int create_other_ship(SHIP type)
