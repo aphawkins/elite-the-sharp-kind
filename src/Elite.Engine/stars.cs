@@ -133,7 +133,7 @@ namespace Elite.Engine
             warp_stars = false;
 		}
 
-        private void rear_starfield()
+        internal void rear_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
 			float alpha = -elite.flight_roll;
@@ -233,19 +233,20 @@ namespace Elite.Engine
             warp_stars = false;
 		}
 
-        private void side_starfield()
+		internal void LeftStarfield()
 		{
-			float delta = warp_stars ? 50 : elite.flight_speed;
-			float alpha = elite.flight_roll;
-			float beta = elite.flight_climb;
+            float delta = warp_stars ? 50 : elite.flight_speed;
+            SideStarfield(-elite.flight_roll, -elite.flight_climb, -delta);
+        }
 
-			if (elite._state.currentScreen == SCR.SCR_LEFT_VIEW)
-			{
-				delta = -delta;
-				alpha = -alpha;
-				beta = -beta;
-			}
+        internal void RightStarfield()
+        {
+            float delta = warp_stars ? 50 : elite.flight_speed;
+            SideStarfield(elite.flight_roll, elite.flight_climb, delta);
+        }
 
+        private void SideStarfield(float alpha, float beta, float delta)
+		{
 			for (int i = 0; i < stars.Length; i++)
 			{
                 Vector2 star = new()
@@ -331,27 +332,6 @@ namespace Elite.Engine
                 float x = stars[i].X;
                 stars[i].X = y;
                 stars[i].Y = x;
-			}
-		}
-
-		internal void update_starfield()
-		{
-			switch (elite._state.currentScreen)
-			{
-				case SCR.SCR_FRONT_VIEW:
-				case SCR.SCR_ESCAPE_POD:
-					front_starfield();
-					break;
-
-				case SCR.SCR_REAR_VIEW:
-				case SCR.SCR_GAME_OVER:
-					rear_starfield();
-					break;
-
-				case SCR.SCR_LEFT_VIEW:
-				case SCR.SCR_RIGHT_VIEW:
-					side_starfield();
-					break;
 			}
 		}
 	}

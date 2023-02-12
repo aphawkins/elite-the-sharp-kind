@@ -154,7 +154,7 @@ namespace Elite.Engine
         }
 
         internal static Vector2 cross = new(0, 0);
-        private static int draw_lasers;
+        internal static int draw_lasers;
         internal static int mcount;
         private static int message_count;
         private static string message_string;
@@ -214,67 +214,6 @@ namespace Elite.Engine
         internal static void FinishGame()
         {
             finished = true;
-        }
-
-        private void draw_laser_sights()
-        {
-            int laser = 0;
-
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_FRONT_VIEW:
-                    _gfx.DrawTextCentre(32, "Front View", 120, GFX_COL.GFX_COL_WHITE);
-                    laser = cmdr.front_laser;
-                    break;
-
-                case SCR.SCR_REAR_VIEW:
-                    _gfx.DrawTextCentre(32, "Rear View", 120, GFX_COL.GFX_COL_WHITE);
-                    laser = cmdr.rear_laser;
-                    break;
-
-                case SCR.SCR_LEFT_VIEW:
-                    _gfx.DrawTextCentre(32, "Left View", 120, GFX_COL.GFX_COL_WHITE);
-                    laser = cmdr.left_laser;
-                    break;
-
-                case SCR.SCR_RIGHT_VIEW:
-                    _gfx.DrawTextCentre(32, "Right View", 120, GFX_COL.GFX_COL_WHITE);
-                    laser = cmdr.right_laser;
-                    break;
-            }
-
-            if (laser != 0)
-            {
-                float x1 = 128 * gfx.GFX_SCALE;
-                float y1 = (96 - 8) * gfx.GFX_SCALE;
-                float y2 = (96 - 16) * gfx.GFX_SCALE;
-
-                _gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
-                _gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
-
-                y1 = (96 + 8) * gfx.GFX_SCALE;
-                y2 = (96 + 16) * gfx.GFX_SCALE;
-
-                _gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), GFX_COL.GFX_COL_GREY_1);
-                _gfx.DrawLine(new(x1, y1), new(x1, y2), GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), GFX_COL.GFX_COL_GREY_1);
-
-                x1 = (128f - 8f) * gfx.GFX_SCALE;
-                y1 = 96f * gfx.GFX_SCALE;
-                float x2 = (128 - 16) * gfx.GFX_SCALE;
-
-                _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
-                _gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
-
-                x1 = (128 + 8) * gfx.GFX_SCALE;
-                x2 = (128 + 16) * gfx.GFX_SCALE;
-
-                _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
-                _gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
-            }
         }
 
         private static void arrow_right()
@@ -505,7 +444,7 @@ namespace Elite.Engine
 
                 _gfx.SetClipRegion(1, 1, 510, 383);
                 draw.ClearDisplay();
-                _stars.update_starfield();
+                _stars.front_starfield();
                 _space.update_universe();
 
                 space.universe[newship].location.X = 0;
@@ -537,7 +476,7 @@ namespace Elite.Engine
                 Stars.warp_stars = true;
                 _gfx.SetClipRegion(1, 1, 510, 383);
                 draw.ClearDisplay();
-                _stars.update_starfield();
+                _stars.front_starfield();
                 _space.update_universe();
                 scanner.update_console();
                 _gfx.ScreenUpdate();
@@ -601,11 +540,7 @@ namespace Elite.Engine
                 }
                 else
                 {
-                    if (_state.currentScreen != SCR.SCR_FRONT_VIEW)
-                    {
-                        SetView(SCR.SCR_FRONT_VIEW);
-                        Stars.flip_stars();
-                    }
+                    SetView(SCR.SCR_FRONT_VIEW);
                 }
             }
 
@@ -613,11 +548,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    if (_state.currentScreen != SCR.SCR_REAR_VIEW)
-                    {
-                        SetView(SCR.SCR_REAR_VIEW);
-                        Stars.flip_stars();
-                    }
+                    SetView(SCR.SCR_REAR_VIEW);
                 }
             }
 
@@ -625,11 +556,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    if (_state.currentScreen != SCR.SCR_LEFT_VIEW)
-                    {
-                        SetView(SCR.SCR_LEFT_VIEW);
-                        Stars.flip_stars();
-                    }
+                    SetView(SCR.SCR_LEFT_VIEW);
                 }
             }
 
@@ -639,12 +566,10 @@ namespace Elite.Engine
                 {
                     SetView(SCR.SCR_EQUIP_SHIP);
                 }
-                else if (_state.currentScreen != SCR.SCR_RIGHT_VIEW)
+                else
                 {
                     SetView(SCR.SCR_RIGHT_VIEW);
-                    Stars.flip_stars();
                 }
-
             }
 
             if (keyboard.IsKeyPressed(CommandKey.F5))
@@ -860,7 +785,7 @@ namespace Elite.Engine
             for (i = 0; i < 100; i++)
             {
                 draw.ClearDisplay();
-                _stars.update_starfield();
+                _stars.rear_starfield();
                 _space.update_universe();
                 _gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
                 _gfx.ScreenUpdate();
@@ -925,6 +850,10 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
+            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gfx, _stars));
+            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, _stars));
+            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, _stars));
+            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, _stars));
             _views.Add(SCR.SCR_BREAK_PATTERN, new BreakPattern(_gfx));
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
@@ -954,21 +883,6 @@ namespace Elite.Engine
             Environment.Exit(0);
 
 
-
-            //        if (!docked)
-            //        {
-            //            _gfx.ScreenAcquire();
-
-            //            if (current_screen is
-            //                SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
-            //                SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
-            //                SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
-            //                SCR.SCR_GAME_OVER)
-            //            {
-            //                draw.ClearDisplay();
-            //                _stars.update_starfield();
-            //            }
-
             //            if (auto_pilot)
             //            {
             //                auto_dock();
@@ -985,19 +899,6 @@ namespace Elite.Engine
             //                scanner.update_console();
             //                _gfx.ScreenRelease();
             //                continue;
-            //            }
-
-            //            if (current_screen is
-            //                SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
-            //                SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
-            //            {
-            //                if (draw_lasers != 0)
-            //                {
-            //                    draw.DrawLaserLines();
-            //                    draw_lasers--;
-            //                }
-
-            //                draw_laser_sights();
             //            }
 
             //            if (message_count > 0)
@@ -1048,15 +949,9 @@ namespace Elite.Engine
             //                swat.random_encounter();
             //            }
 
-            //            swat.cool_laser();
             //            _swat.time_ecm();
 
             //            scanner.update_console();
-            //        }
-
-            //        if (current_screen == SCR.SCR_BREAK_PATTERN)
-            //        {
-            //            display_break_pattern();
             //        }
 
             //        if (current_screen == SCR.SCR_MISSION)
@@ -1150,6 +1045,8 @@ namespace Elite.Engine
 #if DEBUG
             DrawFps();
 #endif
+
+            swat.cool_laser();
 
             _gfx.ScreenUpdate();
         }

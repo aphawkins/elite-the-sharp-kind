@@ -867,38 +867,41 @@ namespace Elite.Engine
 		}
 
 		internal int fire_laser()
-		{
-			if ((laser_counter == 0) && (elite.laser_temp < 242))
-			{
-                laser = elite._state.currentScreen switch
-                {
-                    SCR.SCR_FRONT_VIEW => elite.cmdr.front_laser,
-                    SCR.SCR_REAR_VIEW => elite.cmdr.rear_laser,
-                    SCR.SCR_RIGHT_VIEW => elite.cmdr.right_laser,
-                    SCR.SCR_LEFT_VIEW => elite.cmdr.left_laser,
-                    _ => 0,
-                };
-                if (laser != 0)
-				{
-					laser_counter = (laser > 127) ? 0 : (laser & 0xFA);
-					laser &= 127;
-					laser2 = laser;
+        {
+            if (laser_counter != 0 || elite.laser_temp >= 242)
+            {
+                return 0;
+            }
 
-					_audio.PlayEffect(SoundEffect.Pulse);
-					elite.laser_temp += 8;
-					if (elite.energy > 1)
-					{
-						elite.energy--;
-					}
+            laser = elite._state.currentScreen switch
+            {
+                SCR.SCR_FRONT_VIEW => elite.cmdr.front_laser,
+                SCR.SCR_REAR_VIEW => elite.cmdr.rear_laser,
+                SCR.SCR_RIGHT_VIEW => elite.cmdr.right_laser,
+                SCR.SCR_LEFT_VIEW => elite.cmdr.left_laser,
+                _ => 0,
+            };
 
-					return 2;
-				}
-			}
+            if (laser == 0)
+            {
+                return 0;
+            }
 
-			return 0;
-		}
+            laser_counter = (laser > 127) ? 0 : (laser & 250);
+            laser &= 127;
+            laser2 = laser;
 
-		internal static void cool_laser()
+            _audio.PlayEffect(SoundEffect.Pulse);
+            elite.laser_temp += 8;
+            if (elite.energy > 1)
+            {
+                elite.energy--;
+            }
+
+            return 2;
+        }
+
+        internal static void cool_laser()
 		{
 			laser = 0;
 
