@@ -877,16 +877,6 @@ namespace Elite.Engine
 
             Environment.Exit(0);
 
-
-            //            if (auto_pilot)
-            //            {
-            //                auto_dock();
-            //                if ((mcount & 127) == 0)
-            //                {
-            //                    info_message("Docking Computers On");
-            //                }
-            //            }
-
             //            _space.update_universe();
 
             //            if (docked)
@@ -1027,6 +1017,14 @@ namespace Elite.Engine
                 }
             }
 
+            if (auto_pilot)
+            {
+                auto_dock();
+                if ((mcount & 127) == 0)
+                {
+                    info_message("Docking Computers On");
+                }
+            }
 
             draw.ClearDisplay();
 
