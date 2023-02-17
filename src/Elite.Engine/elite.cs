@@ -878,19 +878,7 @@ namespace Elite.Engine
 
             Environment.Exit(0);
 
-            //            _space.update_universe();
 
-            //            if (docked)
-            //            {
-            //                scanner.update_console();
-            //                _gfx.ScreenRelease();
-            //                continue;
-            //            }
-
-            //            if (message_count > 0)
-            //            {
-            //                _gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
-            //            }
 
             //            if (space.hyper_ready)
             //            {
@@ -1040,6 +1028,11 @@ namespace Elite.Engine
 #endif
 
             swat.cool_laser();
+
+            if (message_count > 0)
+            {
+                _gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
+            }
 
             _gfx.ScreenUpdate();
         }
