@@ -70,7 +70,6 @@ namespace Elite.Engine.Views
                 _gfx.DrawTextLeft(455, y, elite.cmdr.current_cargo[i] > 0 ? trade.stock_market[i].units : "", GFX_COL.GFX_COL_WHITE);
             }
 
-            elite.draw.ClearTextArea();
             _gfx.DrawTextLeft(16, 340, "Cash:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextRight(160, 340, $"{elite.cmdr.credits,10:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }

@@ -12,7 +12,7 @@ namespace Elite.Engine.Views
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
-        private Vector3[] intro_ship_matrix = new Vector3[3];
+        private Vector3[] _rotmat = new Vector3[3];
 
         internal Intro1(IGfx gfx, Audio audio, IKeyboard keyboard)
         {
@@ -24,8 +24,8 @@ namespace Elite.Engine.Views
         public void Reset()
         {
             swat.clear_universe();
-            VectorMaths.set_init_matrix(ref intro_ship_matrix);
-            swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), intro_ship_matrix, -127, -127);
+            VectorMaths.set_init_matrix(ref _rotmat);
+            swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), _rotmat, -127, -127);
             elite.flight_roll = 1;            
 
             _audio.PlayMusic(Music.EliteTheme, true);
@@ -46,19 +46,22 @@ namespace Elite.Engine.Views
             _gfx.DrawImage(Image.EliteText, new(-1, 10));
 
             _gfx.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(330, "Re-engineered by C.J.Pinder.", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(360, "Load New Commander (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(330, "The New Kind - Christian Pinder.", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(350, "The Sharp Kind - Andy Hawkins.", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(370, "Load New Commander (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
         }
 
         public void HandleInput()
         {
             if (_keyboard.IsKeyPressed(CommandKey.Y))
             {
+                swat.clear_universe();
                 _audio.StopMusic();
                 elite.SetView(SCR.SCR_LOAD_CMDR);
             }
             if (_keyboard.IsKeyPressed(CommandKey.N))
             {
+                swat.clear_universe();
                 _audio.StopMusic();
                 elite.SetView(SCR.SCR_INTRO_TWO);
             }

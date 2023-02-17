@@ -106,6 +106,7 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Space))
             {
+                swat.clear_universe();
                 _audio.StopMusic();
                 elite.SetView(SCR.SCR_CMDR_STATUS);
             }

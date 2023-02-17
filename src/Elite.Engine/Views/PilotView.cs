@@ -20,6 +20,15 @@
             {
                 _laser.DrawLaserLines();
             }
+
+            if (space.hyper_galactic)
+            {
+                _gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
+            }
+            else if (space.hyper_countdown > 0)
+            {
+                _gfx.DrawTextCentre(358, $"Hyperspace - {space.hyper_name}", 120, GFX_COL.GFX_COL_WHITE);
+            }
         }
 
         public virtual void HandleInput()

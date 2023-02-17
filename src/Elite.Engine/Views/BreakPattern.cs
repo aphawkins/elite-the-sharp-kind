@@ -33,6 +33,7 @@
 
         public void Reset()
         {
+            swat.clear_universe();
             _gfx.SetClipRegion(1, 1, 510, 383);
             breakPatternCount = 0;
             _audio.PlayEffect(SoundEffect.Launch);
@@ -48,7 +49,7 @@
 
                 if (elite.docked)
                 {
-                    elite.SetView(SCR.SCR_MISSION);
+                    elite.SetView(SCR.SCR_MISSION_1);
                 }
                 else
                 {

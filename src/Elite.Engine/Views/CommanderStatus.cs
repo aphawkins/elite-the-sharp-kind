@@ -19,53 +19,34 @@ namespace Elite.Engine.Views
     internal class CommanderStatus : IView
     {
         private readonly IGfx _gfx;
+        private readonly string[] laserName = new string[] { "Pulse", "Beam", "Military", "Mining", "Custom" };
+        int EQUIP_START_Y = 202;
+        int Y_INC = 16;
+        int EQUIP_MAX_Y = 290;
+        int EQUIP_WIDTH = 200;
 
-        internal CommanderStatus(IGfx gfx)
+        string laser_type(int strength)
         {
-            _gfx = gfx;
+            return strength switch
+            {
+                elite.PULSE_LASER => laserName[0],
+                elite.BEAM_LASER => laserName[1],
+                elite.MILITARY_LASER => laserName[2],
+                elite.MINING_LASER => laserName[3],
+                _ => laserName[4],
+            };
         }
 
-        public void Draw()
-        {
-            int EQUIP_START_Y = 202;
-            int x = 50;
-            int y = EQUIP_START_Y;
-            int Y_INC = 16;
-            int EQUIP_MAX_Y = 290;
-            int EQUIP_WIDTH = 200;
-            string[] laser_name = new string[5] { "Pulse", "Beam", "Military", "Mining", "Custom" };
-            string laser_type(int strength)
-            {
-                return strength switch
-                {
-                    elite.PULSE_LASER => laser_name[0],
-                    elite.BEAM_LASER => laser_name[1],
-                    elite.MILITARY_LASER => laser_name[2],
-                    elite.MINING_LASER => laser_name[3],
-                    _ => laser_name[4],
-                };
-            }
-
-            void IncrementPosition()
-            {
-                y += Y_INC;
-                if (y > EQUIP_MAX_Y)
-                {
-                    y = EQUIP_START_Y;
-                    x += EQUIP_WIDTH;
-                }
-            };
-
-            string[] condition_txt = new string[]
-            {
+        string[] condition_txt = new string[]
+{
                 "Docked",
                 "Green",
                 "Yellow",
                 "Red"
-            };
+};
 
-            (int score, string title)[] ratings = new (int score, string title)[]
-            {
+        (int score, string title)[] ratings = new (int score, string title)[]
+        {
                 new(0x0000, "Harmless"),
                 new(0x0008, "Mostly Harmless"),
                 new(0x0010, "Poor"),
@@ -75,6 +56,27 @@ namespace Elite.Engine.Views
                 new(0x0200, "Dangerous"),
                 new(0x0A00, "Deadly"),
                 new(0x1900, "- - - E L I T E - - -")
+        };
+
+        internal CommanderStatus(IGfx gfx)
+        {
+            _gfx = gfx;
+        }
+
+        public void Draw()
+        {
+            elite.draw.ClearDisplay();
+            int x = 50;
+            int y = EQUIP_START_Y;
+
+            void IncrementPosition()
+            {
+                y += Y_INC;
+                if (y > EQUIP_MAX_Y)
+                {
+                    y = EQUIP_START_Y;
+                    x += EQUIP_WIDTH;
+                }
             };
 
             string rating = string.Empty;

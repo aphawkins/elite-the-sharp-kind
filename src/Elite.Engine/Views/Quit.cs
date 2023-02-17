@@ -19,8 +19,6 @@
             elite.draw.DrawViewHeader("GAME OPTIONS");
 
             _gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
-
-            _gfx.ScreenUpdate();
         }
 
         public void HandleInput()

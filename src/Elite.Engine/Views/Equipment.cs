@@ -119,8 +119,6 @@ namespace Elite.Engine.Views
             elite.draw.ClearDisplay();
             elite.draw.DrawViewHeader("EQUIP SHIP");
 
-            _gfx.ClearArea(2, 55, 508, 325);
-
             int y = 55;
 
             for (int i = 0; i < EquipmentStock.Length; i++)
@@ -147,7 +145,6 @@ namespace Elite.Engine.Views
                 y += 15;
             }
 
-            elite.draw.ClearTextArea();
             _gfx.DrawTextLeft(16, 340, $"Cash: {elite.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
 

@@ -107,7 +107,6 @@ namespace Elite.Engine.Views
             _gfx.SetClipRegion(1, 1, 510, 383);
 
             // Text
-            elite.draw.ClearTextArea();
             if (_isFind)
             {
                 _gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_GREEN_1);

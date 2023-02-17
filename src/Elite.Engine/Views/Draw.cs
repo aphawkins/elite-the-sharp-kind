@@ -16,7 +16,6 @@
             _gfx = gfx;
         }
 
-        // TOOD: This should be private
         internal void DrawTextPretty(float x, float y, float width, string text)
         {
             int i = 0;
@@ -43,11 +42,6 @@
         internal void ClearDisplay()
         {
             _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
-        }
-
-        internal void ClearTextArea()
-        {
-            _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 340, 510 + gfx.GFX_X_OFFSET, 43 + gfx.GFX_Y_OFFSET);
         }
 
         internal void DrawScanner()

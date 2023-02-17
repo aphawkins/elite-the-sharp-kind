@@ -9,12 +9,10 @@
 - Explosion of other ship can cause an exception
 
 ## Missions
-- Ship and text in mission brief doesn't clip correctly
 
 ## Views
 - Incorrect distance shown on current planet after hyperspace
-- Hyperspace countdown clip region is overlapping horizontal line in views
-- Clipping incorrect on bottom line
+- Clipping incorrect on bottom line (after explosion?)
 - Intro2 parade doesn't show all ships, maybe it should
 
 ## File

@@ -14,6 +14,7 @@
 namespace Elite.Engine
 {
 	using System;
+	using System.Diagnostics;
 	using System.Numerics;
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;
@@ -535,13 +536,11 @@ namespace Elite.Engine
 		/// <param name="ship"></param>
 		internal void DrawObject(univ_object ship)
 		{
-			if (elite._state.currentScreen is not SCR.SCR_FRONT_VIEW and not SCR.SCR_REAR_VIEW and
-                not SCR.SCR_LEFT_VIEW and not SCR.SCR_RIGHT_VIEW and
-                not SCR.SCR_INTRO_ONE and not SCR.SCR_INTRO_TWO and
-                not SCR.SCR_GAME_OVER and not SCR.SCR_ESCAPE_POD)
-			{
-				return;
-			}
+			//Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
+			//	SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
+			//	SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
+			//	SCR.SCR_GAME_OVER or SCR.SCR_ESCAPE_POD or
+			//	SCR.SCR_MISSION_1);
 
 			if (ship.flags.HasFlag(FLG.FLG_DEAD) && !ship.flags.HasFlag(FLG.FLG_EXPLOSION))
 			{

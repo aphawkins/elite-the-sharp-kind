@@ -20,7 +20,6 @@ namespace Elite.Engine
     using Elite.Engine.Config;
     using Elite.Engine.Enums;
     using Elite.Engine.Missions;
-    using Elite.Engine.Save;
     using Elite.Engine.Ships;
     using Elite.Engine.Types;
     using Elite.Engine.Views;
@@ -858,6 +857,8 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gfx, keyboard));
             _views.Add(SCR.SCR_QUIT, new Quit(_gfx, keyboard));
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gfx, keyboard));
+            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gfx, keyboard));
+            _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gfx, keyboard));
 
             finished = false;
             auto_pilot = false;
@@ -1074,6 +1075,7 @@ namespace Elite.Engine
             catch (Exception ex)
             {
                 Debug.WriteLine($"Exception" + ex.Message);
+                throw;
             }
             finally
             {

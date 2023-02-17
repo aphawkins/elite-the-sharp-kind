@@ -91,24 +91,23 @@ namespace Elite.Engine
             }
 		}
 
-        /*
-		 * Update the compass which tracks the space station / planet.
-		 */
-        private void update_compass()
+		/// <summary>
+		/// Update the compass which tracks the space station / planet.
+		/// </summary>
+        private void UpdateCompass()
 		{
-			int un = 0;
-
 			if (elite.witchspace)
 			{
 				return;
 			}
 
-			if (_shipCount[SHIP.SHIP_CORIOLIS] != 0 || _shipCount[SHIP.SHIP_DODEC] != 0)
-			{
-				un = 1;
-			}
+            int un = _shipCount[SHIP.SHIP_CORIOLIS] == 0 && _shipCount[SHIP.SHIP_DODEC] == 0 ? 0 : 1;
+            Vector3 dest = VectorMaths.unit_vector(_universe[un].location);
 
-			Vector3 dest = VectorMaths.unit_vector(_universe[un].location);
+			if (float.IsNaN(dest.X))
+			{
+				return;
+			}
 
 			Vector2 compass = new(elite.compass_centre.X + (dest.X * 16), elite.compass_centre.Y + (dest.Y * -16));
 
@@ -313,7 +312,7 @@ namespace Elite.Engine
 			}
 
 			update_scanner();
-			update_compass();
+			UpdateCompass();
 
 			if (_shipCount[SHIP.SHIP_CORIOLIS] != 0 || _shipCount[SHIP.SHIP_DODEC] != 0)
 			{

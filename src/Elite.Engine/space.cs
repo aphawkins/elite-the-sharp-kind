@@ -38,10 +38,10 @@ namespace Elite.Engine
         private readonly trade _trade;
         private static galaxy_seed destination_planet;
 		internal static bool hyper_ready;
-        private static int hyper_countdown;
-        private static string hyper_name;
+        internal static int hyper_countdown;
+        internal static string hyper_name;
         private static float hyper_distance;
-        private static bool hyper_galactic;
+        internal static bool hyper_galactic;
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
@@ -399,6 +399,11 @@ namespace Elite.Engine
 
         private void check_docking(int i)
 		{
+			if (elite.docked)
+			{
+				return;
+			}
+
 			if (is_docking(i))
 			{
 				_audio.PlayEffect(SoundEffect.Dock);
@@ -684,29 +689,8 @@ namespace Elite.Engine
 		}
 
 		internal void display_hyper_status()
-		{
-			string str = $"{hyper_countdown}";
-
-			if (elite._state.currentScreen is 
-				SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
-                SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW)
-			{
-                _gfx.DrawTextLeft(5, 5, str, GFX_COL.GFX_COL_WHITE);
-				if (hyper_galactic)
-				{
-                    _gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
-				}
-				else
-				{
-					str = "Hyperspace - " + hyper_name;
-                    _gfx.DrawTextCentre(358, str, 120, GFX_COL.GFX_COL_WHITE);
-				}
-			}
-			else
-			{
-                _gfx.ClearArea(5, 5, 25, 34);
-                _gfx.DrawTextLeft(5, 5, str, GFX_COL.GFX_COL_WHITE);
-			}
+		{             
+			_gfx.DrawTextLeft(5, 5, $"{hyper_countdown}", GFX_COL.GFX_COL_WHITE);
 		}
 
         private static int rotate_byte_left(int x)
@@ -894,7 +878,6 @@ namespace Elite.Engine
 			elite.flight_climb = 0;
 			elite.cmdr.legal_status |= trade.carrying_contraband();
 			Stars.create_new_stars();
-			swat.clear_universe();
 			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
 			VectorMaths.set_init_matrix(ref rotmat);
 			swat.add_new_ship(SHIP.SHIP_PLANET, new(0, 0, 65536), rotmat, 0, 0);

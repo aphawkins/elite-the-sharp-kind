@@ -50,8 +50,7 @@ namespace Elite.Engine
         public void Draw()
         {
             elite.draw.ClearDisplay();
-            _gfx.DrawTextCentre(20, "GAME SETTINGS", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0f, 36f), new(511f, 36f));
+            elite.draw.DrawViewHeader("GAME SETTINGS");
 
             for (int i = 0; i < setting_list.Length; i++)
             {
