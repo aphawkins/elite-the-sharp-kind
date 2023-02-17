@@ -203,7 +203,7 @@ namespace Elite.Engine
         private static void launch_enemy(int un, SHIP type, FLG flags, int bravery)
 		{
             Debug.Assert(space.universe[un].rotmat != null);
-            int newship = add_new_ship(type, space.universe[un].location, space.universe[un].rotmat, space.universe[un].rotx, space.universe[un].rotz);
+            int newship = add_new_ship(type, space.universe[un].location, space.universe[un].rotmat.Cloner(), space.universe[un].rotx, space.universe[un].rotz);
 
 			if (newship == -1)
 			{

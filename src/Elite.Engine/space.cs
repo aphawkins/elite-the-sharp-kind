@@ -380,9 +380,9 @@ namespace Elite.Engine
 
 			//	VectorMaths.set_init_matrix (rotmat);
 
-			rotmat[0].X = 1.0f;
-			rotmat[0].Y = 0.0f;
-			rotmat[0].Z = 0.0f;
+			rotmat[0].X = 1;
+			rotmat[0].Y = 0;
+			rotmat[0].Z = 0;
 
 			rotmat[1].X = vec.X;
 			rotmat[1].Y = vec.Z;

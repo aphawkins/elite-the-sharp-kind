@@ -879,53 +879,6 @@ namespace Elite.Engine
             Environment.Exit(0);
 
 
-
-            //            if (space.hyper_ready)
-            //            {
-            //                _space.display_hyper_status();
-            //                if ((mcount & 3) == 0)
-            //                {
-            //                    _space.countdown_hyperspace();
-            //                }
-            //            }
-
-            //            _gfx.ScreenRelease();
-
-            //            mcount--;
-            //            if (mcount < 0)
-            //            {
-            //                mcount = 255;
-            //            }
-
-            //            if ((mcount & 7) == 0)
-            //            {
-            //                space.regenerate_shields();
-            //            }
-
-            //            if ((mcount & 31) == 10)
-            //            {
-            //                if (energy < 50)
-            //                {
-            //                    info_message("ENERGY LOW");
-            //                    _audio.PlayEffect(SoundEffect.Beep);
-            //                }
-
-            //                _space.update_altitude();
-            //            }
-
-            //            if ((mcount & 31) == 20)
-            //            {
-            //                _space.update_cabin_temp();
-            //            }
-
-            //            if ((mcount == 0) && (!witchspace))
-            //            {
-            //                swat.random_encounter();
-            //            }
-
-            //            _swat.time_ecm();
-            //        }
-
             //        if (current_screen == SCR.SCR_MISSION)
             //        {
             //            //IMission? mission = _missions.check_mission_brief();
@@ -1027,11 +980,57 @@ namespace Elite.Engine
             DrawFps();
 #endif
 
-            swat.cool_laser();
-
-            if (message_count > 0)
+            if (!docked)
             {
-                _gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
+                swat.cool_laser();
+
+                if (message_count > 0)
+                {
+                    _gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
+                }
+
+                if (space.hyper_ready)
+                {
+                    _space.display_hyper_status();
+                    if ((mcount & 3) == 0)
+                    {
+                        _space.countdown_hyperspace();
+                    }
+                }
+
+                mcount--;
+                if (mcount < 0)
+                {
+                    mcount = 255;
+                }
+
+                if ((mcount & 7) == 0)
+                {
+                    space.regenerate_shields();
+                }
+
+                if ((mcount & 31) == 10)
+                {
+                    if (energy < 50)
+                    {
+                        info_message("ENERGY LOW");
+                        _audio.PlayEffect(SoundEffect.Beep);
+                    }
+
+                    _space.update_altitude();
+                }
+
+                if ((mcount & 31) == 20)
+                {
+                    _space.update_cabin_temp();
+                }
+
+                if ((mcount == 0) && (!witchspace))
+                {
+                    swat.random_encounter();
+                }
+
+                _swat.time_ecm();
             }
 
             _gfx.ScreenUpdate();

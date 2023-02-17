@@ -64,7 +64,6 @@
         }
 
 
-
         internal void PlayEffect(SoundEffect effect)
         {
             if (!_effectsOn)
