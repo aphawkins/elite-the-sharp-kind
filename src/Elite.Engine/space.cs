@@ -889,7 +889,8 @@ namespace Elite.Engine
 
 			elite.docked = false;
 			elite.flight_speed = 12;
-			elite.flight_roll = -15;
+			// Rotate in the same direction that the station is spinning
+			elite.flight_roll = 15;
 			elite.flight_climb = 0;
 			elite.cmdr.legal_status |= trade.carrying_contraband();
 			Stars.create_new_stars();
@@ -898,14 +899,16 @@ namespace Elite.Engine
 			VectorMaths.set_init_matrix(ref rotmat);
 			swat.add_new_ship(SHIP.SHIP_PLANET, new(0, 0, 65536), rotmat, 0, 0);
 
-			rotmat[2].X = -rotmat[2].X;
+            rotmat = new Vector3[3];
+            VectorMaths.set_init_matrix(ref rotmat);
+
+            rotmat[2].X = -rotmat[2].X;
 			rotmat[2].Y = -rotmat[2].Y;
 			rotmat[2].Z = -rotmat[2].Z;
 			swat.add_new_station(new(0, 0, -256), rotmat);
-
-			elite.SetView(SCR.SCR_BREAK_PATTERN);
-			_audio.PlayEffect(SoundEffect.Launch);
-		}
+			
+            elite.SetView(SCR.SCR_FRONT_VIEW);
+        }
 
 		/*
 		 * Engage the docking computer.

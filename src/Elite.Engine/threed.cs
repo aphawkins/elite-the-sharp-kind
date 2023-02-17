@@ -388,7 +388,7 @@ namespace Elite.Engine
             position.X *= gfx.GFX_SCALE;
             position.Y *= gfx.GFX_SCALE;
 
-			float radius = 6291456f / planet.location.Length();
+			float radius = 6291456 / planet.location.Length();
 			//	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
 
 			radius *= gfx.GFX_SCALE;

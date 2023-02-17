@@ -534,7 +534,8 @@ namespace Elite.Engine
             {
                 if (docked)
                 {
-                    _space.launch_player();
+                    elite.docked = false;
+                    SetView(SCR.SCR_BREAK_PATTERN);
                 }
                 else
                 {
@@ -849,7 +850,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, _stars));
             _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, _stars));
             _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, _stars));
-            _views.Add(SCR.SCR_BREAK_PATTERN, new BreakPattern(_gfx));
+            _views.Add(SCR.SCR_BREAK_PATTERN, new BreakPattern(_gfx, _audio, _space));
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
