@@ -178,7 +178,7 @@ namespace Elite.Engine
 		{
 			if (elite.myship.altitude > 3)
 			{
-				display_dial_bar(elite.myship.altitude / 4, new(31f, 92f));
+				display_dial_bar(elite.myship.altitude / 4, new(31, 92));
 			}
 		}
 
@@ -186,7 +186,7 @@ namespace Elite.Engine
 		{
 			if (elite.myship.cabtemp > 3)
 			{
-				display_dial_bar(elite.myship.cabtemp / 4f, new(31f, 60f));
+				display_dial_bar(elite.myship.cabtemp / 4, new(31, 60));
 			}
 		}
 

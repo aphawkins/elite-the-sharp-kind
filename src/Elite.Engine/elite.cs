@@ -203,7 +203,7 @@ namespace Elite.Engine
             myship.max_climb = 8;       /* CF 8 */
             myship.max_fuel = 7;        // 7.0 Light Years
 
-            dock_player();
+            _space.dock_player();
 
             SetView(SCR.SCR_INTRO_ONE);
         }
@@ -533,7 +533,6 @@ namespace Elite.Engine
             {
                 if (docked)
                 {
-                    elite.docked = false;
                     SetView(SCR.SCR_BREAK_PATTERN);
                 }
                 else
@@ -1087,24 +1086,6 @@ namespace Elite.Engine
             }
         }
 
-        /// <summary>
-        /// Dock the player into the space station.
-        /// </summary>
-        internal void dock_player()
-        {
-            _pilot.disengage_auto_pilot();
-            docked = true;
-            flight_speed = 0;
-            flight_roll = 0;
-            flight_climb = 0;
-            front_shield = 255;
-            aft_shield = 255;
-            energy = 255;
-            myship.altitude = 255;
-            myship.cabtemp = 30;
-            swat.reset_weapons();
-        }
-
         internal void decrease_energy(float amount)
         {
             energy += amount;
@@ -1157,8 +1138,6 @@ namespace Elite.Engine
                 cmdr.current_cargo[i] = 0;
             }
 
-            _audio.PlayEffect(SoundEffect.Dock);
-            dock_player();
             SetView(SCR.SCR_BREAK_PATTERN);
         }
 

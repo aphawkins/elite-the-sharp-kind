@@ -20,7 +20,7 @@
 
 namespace Elite.Engine
 {
-    using System.Numerics;
+	using System.Numerics;
     using Elite.Common.Enums;
 	using Elite.Engine.Enums;
 	using Elite.Engine.Ships;
@@ -233,7 +233,8 @@ namespace Elite.Engine
 			float y = MathF.Abs(universe[0].location.Y);
 			float z = MathF.Abs(universe[0].location.Z);
 
-			if ((x > 65535) || (y > 65535) || (z > 65535))
+			if ((x == 0 && y == 0 && z == 0) ||
+				x > 65535 || y > 65535 || z > 65535)
 			{
 				return;
 			}
@@ -286,12 +287,13 @@ namespace Elite.Engine
             float y = MathF.Abs(universe[1].location.Y);
             float z = MathF.Abs(universe[1].location.Z);
 
-			if ((x > 65535) || (y > 65535) || (z > 65535))
-			{
-				return;
-			}
+            if ((x == 0 && y == 0 && z == 0) ||
+                x > 65535 || y > 65535 || z > 65535)
+            {
+                return;
+            }
 
-			x /= 256;
+            x /= 256;
 			y /= 256;
 			z /= 256;
 
@@ -406,8 +408,6 @@ namespace Elite.Engine
 
 			if (is_docking(i))
 			{
-				_audio.PlayEffect(SoundEffect.Dock);
-				_elite.dock_player();
 				elite.SetView(SCR.SCR_BREAK_PATTERN);
 				return;
 			}
@@ -870,8 +870,6 @@ namespace Elite.Engine
 		internal void launch_player()
 		{
 			Vector3[] rotmat = new Vector3[3];
-
-			elite.docked = false;
 			elite.flight_speed = 12;
 			// Rotate in the same direction that the station is spinning
 			elite.flight_roll = 15;
@@ -889,20 +887,36 @@ namespace Elite.Engine
 			rotmat[2].Y = -rotmat[2].Y;
 			rotmat[2].Z = -rotmat[2].Z;
 			swat.add_new_station(new(0, 0, -256), rotmat);
-			
-            elite.SetView(SCR.SCR_FRONT_VIEW);
+
+            elite.docked = false;
         }
 
-		/*
+        /// <summary>
+        /// Dock the player into the space station.
+        /// </summary>
+        internal void dock_player()
+        {
+            _pilot.disengage_auto_pilot();
+			elite.docked = true;
+            elite.flight_speed = 0;
+            elite.flight_roll = 0;
+            elite.flight_climb = 0;
+            elite.front_shield = 255;
+            elite.aft_shield = 255;
+            elite.energy = 255;
+            elite.myship.altitude = 255;
+            elite.myship.cabtemp = 30;
+            swat.reset_weapons();
+        }
+
+        /*
 		 * Engage the docking computer.
 		 * For the moment we just do an instant dock if we are in the safe zone.
 		 */
-		internal void engage_docking_computer()
+        internal void engage_docking_computer()
 		{
 			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{
-				_audio.PlayEffect(SoundEffect.Dock);
-				_elite.dock_player();
 				elite.SetView(SCR.SCR_BREAK_PATTERN);
 			}
 		}

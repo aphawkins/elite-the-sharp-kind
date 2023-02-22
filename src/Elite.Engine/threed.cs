@@ -14,7 +14,6 @@
 namespace Elite.Engine
 {
 	using System;
-	using System.Diagnostics;
 	using System.Numerics;
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;

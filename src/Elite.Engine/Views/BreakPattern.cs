@@ -36,7 +36,7 @@
             swat.clear_universe();
             _gfx.SetClipRegion(1, 1, 510, 383);
             breakPatternCount = 0;
-            _audio.PlayEffect(SoundEffect.Launch);
+            _audio.PlayEffect(elite.docked ? SoundEffect.Launch : SoundEffect.Dock);
         }
 
         public void UpdateUniverse()
@@ -49,11 +49,13 @@
 
                 if (elite.docked)
                 {
-                    elite.SetView(SCR.SCR_MISSION_1);
+                    _space.launch_player();
+                    elite.SetView(SCR.SCR_FRONT_VIEW);
                 }
                 else
                 {
-                    _space.launch_player();
+                    _space.dock_player();
+                    elite.SetView(SCR.SCR_MISSION_1);
                 }
             }
         }
