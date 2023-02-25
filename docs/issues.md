@@ -6,6 +6,7 @@
 	- Test escape sequence
 	- Test gameover
 	- Test escape pod
+	- Test witchspace
 	- Hyperspace performs an undocking instead of distance from station
 	- screen specific keys
 
@@ -36,3 +37,4 @@
 - Make assests external
 - Add Trumbles mission
 - SDL2 support
+- Separate game speed from framerate
