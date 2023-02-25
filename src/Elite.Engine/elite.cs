@@ -533,7 +533,7 @@ namespace Elite.Engine
             {
                 if (docked)
                 {
-                    SetView(SCR.SCR_BREAK_PATTERN);
+                    SetView(SCR.SCR_UNDOCKING);
                 }
                 else
                 {
@@ -848,7 +848,9 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, _stars));
             _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, _stars));
             _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, _stars));
-            _views.Add(SCR.SCR_BREAK_PATTERN, new BreakPattern(_gfx, _audio, _space));
+            _views.Add(SCR.SCR_DOCKING, new Docking(_gfx, _audio, _space));
+            _views.Add(SCR.SCR_UNDOCKING, new Undocking(_gfx, _audio, _space));
+            _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gfx, _audio, _space));
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
@@ -1138,7 +1140,7 @@ namespace Elite.Engine
                 cmdr.current_cargo[i] = 0;
             }
 
-            SetView(SCR.SCR_BREAK_PATTERN);
+            SetView(SCR.SCR_DOCKING);
         }
 
         /// <summary>

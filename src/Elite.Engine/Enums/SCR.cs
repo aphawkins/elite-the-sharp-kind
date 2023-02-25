@@ -14,7 +14,7 @@
         SCR_REAR_VIEW = 9,
         SCR_LEFT_VIEW = 10,
         SCR_RIGHT_VIEW = 11,
-        SCR_BREAK_PATTERN = 12,
+        SCR_DOCKING = 12,
         SCR_INVENTORY = 13,
         SCR_EQUIP_SHIP = 14,
         SCR_OPTIONS = 15,
@@ -26,5 +26,7 @@
         SCR_ESCAPE_POD = 21,
         SCR_MISSION_1 = 22,
         SCR_MISSION_2 = 23,
+        SCR_UNDOCKING,
+        SCR_HYPERSPACE,
     }
 }

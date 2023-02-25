@@ -408,7 +408,7 @@ namespace Elite.Engine
 
 			if (is_docking(i))
 			{
-				elite.SetView(SCR.SCR_BREAK_PATTERN);
+				elite.SetView(SCR.SCR_DOCKING);
 				return;
 			}
 
@@ -740,8 +740,7 @@ namespace Elite.Engine
 				swat.create_thargoid();
 			}
 
-			elite.SetView(SCR.SCR_BREAK_PATTERN);
-			_audio.PlayEffect(SoundEffect.Hyperspace);
+			elite.SetView(SCR.SCR_HYPERSPACE);
 		}
 
         private void complete_hyperspace()
@@ -807,8 +806,7 @@ namespace Elite.Engine
 
 			swat.add_new_ship(SHIP.SHIP_SUN, position, rotmat, 0, 0);
 
-			elite.SetView(SCR.SCR_BREAK_PATTERN);
-			_audio.PlayEffect(SoundEffect.Hyperspace);
+			elite.SetView(SCR.SCR_HYPERSPACE);
 		}
 
 		internal void countdown_hyperspace()
@@ -917,7 +915,7 @@ namespace Elite.Engine
 		{
 			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{
-				elite.SetView(SCR.SCR_BREAK_PATTERN);
+				elite.SetView(SCR.SCR_DOCKING);
 			}
 		}
     }
