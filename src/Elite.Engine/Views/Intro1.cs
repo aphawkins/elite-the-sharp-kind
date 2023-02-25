@@ -12,7 +12,6 @@ namespace Elite.Engine.Views
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
-        private Vector3[] _rotmat = new Vector3[3];
 
         internal Intro1(IGfx gfx, Audio audio, IKeyboard keyboard)
         {
@@ -24,6 +23,7 @@ namespace Elite.Engine.Views
         public void Reset()
         {
             swat.clear_universe();
+            Vector3[] _rotmat = new Vector3[3];
             VectorMaths.set_init_matrix(ref _rotmat);
             swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), _rotmat, -127, -127);
             elite.flight_roll = 1;            

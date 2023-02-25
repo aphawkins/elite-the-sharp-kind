@@ -316,7 +316,7 @@ namespace Elite.Engine
             }
         }
 
-        private static void auto_dock()
+        internal static void auto_dock()
         {
             univ_object ship = new()
             {
@@ -414,72 +414,6 @@ namespace Elite.Engine
                     }
                 }
             }
-        }
-
-        private void run_escape_sequence()
-        {
-            Vector3[] rotmat = new Vector3[3];
-            SetView(SCR.SCR_ESCAPE_POD);
-            flight_speed = 1;
-            flight_roll = 0;
-            flight_climb = 0;
-
-            VectorMaths.set_init_matrix(ref rotmat);
-            rotmat[2].Z = 1.0f;
-
-            int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 200), rotmat, -127, -127);
-            space.universe[newship].velocity = 7;
-            _audio.PlayEffect(SoundEffect.Launch);
-
-            for (int i = 0; i < 90; i++)
-            {
-                if (i == 40)
-                {
-                    space.universe[newship].flags |= FLG.FLG_DEAD;
-                    _audio.PlayEffect(SoundEffect.Explode);
-                }
-
-                _gfx.SetClipRegion(1, 1, 510, 383);
-                draw.ClearDisplay();
-                _stars.front_starfield();
-                _space.update_universe();
-
-                space.universe[newship].location.X = 0;
-                space.universe[newship].location.Y = 0;
-                space.universe[newship].location.Z += 2;
-
-                _gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
-
-                scanner.update_console();
-                _gfx.ScreenUpdate();
-            }
-
-
-            while ((space.ship_count[SHIP.SHIP_CORIOLIS] == 0) && (space.ship_count[SHIP.SHIP_DODEC] == 0))
-            {
-                auto_dock();
-
-                if ((MathF.Abs(flight_roll) < 3) && (MathF.Abs(flight_climb) < 3))
-                {
-                    for (int i = 0; i < MAX_UNIV_OBJECTS; i++)
-                    {
-                        if (space.universe[i].type != 0)
-                        {
-                            space.universe[i].location.Z -= 1500;
-                        }
-                    }
-                }
-
-                Stars.warp_stars = true;
-                _gfx.SetClipRegion(1, 1, 510, 383);
-                draw.ClearDisplay();
-                _stars.front_starfield();
-                _space.update_universe();
-                scanner.update_console();
-                _gfx.ScreenUpdate();
-            }
-
-            abandon_ship();
         }
 
         private void handle_flight_keys()
@@ -738,7 +672,7 @@ namespace Elite.Engine
             {
                 if ((!docked) && cmdr.escape_pod && (!witchspace))
                 {
-                    run_escape_sequence();
+                    SetView(SCR.SCR_ESCAPE_POD);
                 }
             }
         }
@@ -860,6 +794,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gfx, keyboard));
             _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gfx, keyboard));
             _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gfx, keyboard));
+            _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gfx, _audio, _stars));
 
             finished = false;
             auto_pilot = false;
@@ -879,30 +814,6 @@ namespace Elite.Engine
             } while (!finished);
 
             Environment.Exit(0);
-
-
-            //        if (current_screen == SCR.SCR_MISSION)
-            //        {
-            //            //IMission? mission = _missions.check_mission_brief();
-            //            //mission?.Brief();
-
-            //            ConstrictorMission mission = new(_gfx, _space);
-            //            mission.DrawBrief();
-            //            mission.Update();
-
-            //            if (elite.keyboard.IsKeyPressed(CommandKey.Space))
-            //            {
-            //                //elite.current_screen = SCR.SCR_FRONT_VIEW;
-            //                CommanderStatus.display_commander_status();
-            //                scanner.update_console();
-            //            }
-            //        }
-
-            //        if (current_screen == SCR.SCR_MISSION)
-            //        {
-            //            DisplayMission();
-            //        }
-
 
             //    }
 
@@ -1127,20 +1038,6 @@ namespace Elite.Engine
             {
                 aft_shield = shield;
             }
-        }
-
-        internal void abandon_ship()
-        {
-            cmdr.escape_pod = false;
-            cmdr.legal_status = 0;
-            cmdr.fuel = myship.max_fuel;
-
-            for (int i = 0; i < trade.stock_market.Length; i++)
-            {
-                cmdr.current_cargo[i] = 0;
-            }
-
-            SetView(SCR.SCR_DOCKING);
         }
 
         /// <summary>

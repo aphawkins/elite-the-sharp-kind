@@ -7,7 +7,6 @@
     {
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
-        private Vector3[] _rotmat = new Vector3[3];
 
         private static readonly string mission1_brief_a =
             "Greetings Commander, I am Captain Curruthers of " +
@@ -51,8 +50,10 @@
                 elite.cmdr.mission = 1;
 
                 swat.clear_universe();
+                Vector3[] _rotmat = new Vector3[3];
                 VectorMaths.set_init_matrix(ref _rotmat);
-                swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), _rotmat, -127, -127);
+                int i = swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), _rotmat, -127, -127);
+                space.universe[i].flags = FLG.FLG_NONE;
                 elite.flight_roll = 0;
                 elite.flight_climb = 0;
                 elite.flight_speed = 0;

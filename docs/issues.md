@@ -3,11 +3,8 @@
 ## To get to MVP
 
 - Fix issues from frame rate change
-	- Test escape sequence
 	- Test gameover
-	- Test escape pod
 	- Test witchspace
-	- Hyperspace performs an undocking instead of distance from station
 	- screen specific keys
 
 - Fix TODOs in code
@@ -26,6 +23,7 @@
 - Check ship stats (FAQ)
 - Improve ship/space object types
 - Widescreen support
+- Update docs
 
 ## Future
 

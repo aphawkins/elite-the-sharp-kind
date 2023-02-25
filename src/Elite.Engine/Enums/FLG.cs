@@ -3,6 +3,7 @@
     [Flags]
     internal enum FLG
     {
+        FLG_NONE = 0,
         FLG_DEAD = 1,
         FLG_REMOVE = 2,
         FLG_EXPLOSION = 4,
