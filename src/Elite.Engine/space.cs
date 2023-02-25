@@ -690,7 +690,7 @@ namespace Elite.Engine
 
 		internal void display_hyper_status()
 		{             
-			_gfx.DrawTextLeft(5, 5, $"{hyper_countdown}", GFX_COL.GFX_COL_WHITE);
+			_gfx.DrawTextRight(20, 5, $"{hyper_countdown}", GFX_COL.GFX_COL_WHITE);
 		}
 
         private static int rotate_byte_left(int x)
