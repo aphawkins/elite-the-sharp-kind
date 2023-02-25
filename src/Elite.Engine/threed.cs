@@ -598,7 +598,7 @@ namespace Elite.Engine
             total_polys = 0;
         }
 
-        internal void RenderFinish()
+        internal void RenderEnd()
         {
             if (total_polys == 0)
             {

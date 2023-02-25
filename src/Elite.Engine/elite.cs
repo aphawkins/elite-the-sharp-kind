@@ -58,7 +58,7 @@ namespace Elite.Engine
         internal static Vector2 compass_centre = new(382, 22 + 385);
 
         internal static bool docked;
-        internal static bool finished;
+        internal static bool exitGame;
         internal static float flight_speed;
         internal static float flight_roll;
         internal static float flight_climb;
@@ -98,6 +98,7 @@ namespace Elite.Engine
 
         internal class State
         {
+            internal bool gameOver = false;
             internal bool initialised = false;
             internal SCR currentScreen = SCR.SCR_NONE;
             internal IView currentView;
@@ -208,9 +209,9 @@ namespace Elite.Engine
             SetView(SCR.SCR_INTRO_ONE);
         }
 
-        internal static void FinishGame()
+        internal static void ExitGame()
         {
-            finished = true;
+            exitGame = true;
         }
 
         private static void arrow_right()
@@ -461,13 +462,16 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.F1))
             {
-                if (docked)
+                if (_state.currentScreen is not SCR.SCR_INTRO_ONE and not SCR.SCR_INTRO_TWO)
                 {
-                    SetView(SCR.SCR_UNDOCKING);
-                }
-                else
-                {
-                    SetView(SCR.SCR_FRONT_VIEW);
+                    if (docked)
+                    {
+                        SetView(SCR.SCR_UNDOCKING);
+                    }
+                    else
+                    {
+                        SetView(SCR.SCR_FRONT_VIEW);
+                    }
                 }
             }
 
@@ -667,48 +671,6 @@ namespace Elite.Engine
             }
         }
 
-        /*
-		 * Draw the game over sequence. 
-		 */
-        private void run_game_over_screen()
-        {
-            int i;
-            SHIP type;
-
-            SetView(SCR.SCR_GAME_OVER);
-            _gfx.SetClipRegion(1, 1, 510, 383);
-
-            flight_speed = 6;
-            flight_roll = 0;
-            flight_climb = 0;
-            swat.clear_universe();
-            int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
-            space.universe[newship].flags |= FLG.FLG_DEAD;
-
-            for (i = 0; i < 5; i++)
-            {
-                type = RNG.TrueOrFalse() ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
-                newship = swat.add_new_ship(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0);
-                space.universe[newship].rotz = ((RNG.Random(255) * 2) & 255) - 128;
-                space.universe[newship].rotx = ((RNG.Random(255) * 2) & 255) - 128;
-                space.universe[newship].velocity = RNG.Random(15);
-            }
-
-            for (i = 0; i < 100; i++)
-            {
-                draw.ClearDisplay();
-                _stars.rear_starfield();
-                _space.update_universe();
-                _gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
-                _gfx.ScreenUpdate();
-            }
-        }
-
-        private void DisplayMission()
-        {
-
-        }
-
         internal static void info_message(string message)
         {
             message_string = message;
@@ -779,8 +741,9 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gfx, keyboard));
             _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gfx, keyboard));
             _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gfx, _audio, _stars));
+            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gfx, _audio, _stars));
 
-            finished = false;
+            exitGame = false;
             auto_pilot = false;
 
             long startTicks = DateTime.UtcNow.Ticks;
@@ -795,17 +758,9 @@ namespace Elite.Engine
                     //Task.Run(() => DrawFrame());
                     DrawFrame();
                 }
-            } while (!finished);
+            } while (!exitGame);
 
             Environment.Exit(0);
-
-            //    }
-
-            //    if (!finish)
-            //    {
-            //        run_game_over_screen();
-            //    }
-            //}
         }
 
         private void DrawFrameElite()
@@ -877,7 +832,7 @@ namespace Elite.Engine
             DrawFps();
 #endif
 
-            if (!docked)
+            if (!docked & !_state.gameOver)
             {
                 swat.cool_laser();
 
@@ -989,7 +944,7 @@ namespace Elite.Engine
 
             if (energy <= 0)
             {
-                do_game_over();
+                GameOver();
             }
         }
 
@@ -1027,9 +982,14 @@ namespace Elite.Engine
         /// <summary>
         /// Game Over...
         /// </summary>
-        internal void do_game_over()
+        internal void GameOver()
         {
-            _audio.PlayEffect(SoundEffect.Gameover);
+            if (!_state.gameOver)
+            {
+                SetView(SCR.SCR_GAME_OVER);
+            }
+
+            _state.gameOver = true;
         }
 
         private void DrawFps()

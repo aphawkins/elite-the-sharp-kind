@@ -3,7 +3,6 @@
 ## To get to MVP
 
 - Fix issues from frame rate change
-	- Test gameover
 	- Test witchspace
 	- screen specific keys
 

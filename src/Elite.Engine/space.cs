@@ -254,7 +254,7 @@ namespace Elite.Engine
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
-				_elite.do_game_over();
+				_elite.GameOver();
 				return;
 			}
 
@@ -262,7 +262,7 @@ namespace Elite.Engine
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
-                _elite.do_game_over();
+                _elite.GameOver();
 				return;
 			}
 
@@ -311,7 +311,7 @@ namespace Elite.Engine
 			if (elite.myship.cabtemp > 255)
 			{
 				elite.myship.cabtemp = 255;
-                _elite.do_game_over();
+                _elite.GameOver();
 				return;
 			}
 
@@ -404,7 +404,7 @@ namespace Elite.Engine
 
 			if (elite.flight_speed >= 5)
 			{
-				_elite.do_game_over();
+				_elite.GameOver();
 				return;
 			}
 
@@ -601,21 +601,18 @@ namespace Elite.Engine
                 _swat.check_target(i, ref flip);
             }
 
-            _threed.RenderFinish();
+            _threed.RenderEnd();
 			elite.detonate_bomb = false;
 		}
 
 		internal static void increase_flight_roll()
 		{
-			if (elite.flight_roll < elite.myship.max_roll)
-			{
-				elite.flight_roll++;
-			}
-		}
+            elite.flight_roll = Math.Clamp(elite.flight_roll + 1, -elite.myship.max_roll, elite.myship.max_roll);
+        }
 
 		internal static void decrease_flight_roll()
 		{
-			elite.flight_roll = Math.Clamp(elite.flight_roll + 1, -elite.myship.max_roll, elite.myship.max_roll);
+			elite.flight_roll = Math.Clamp(elite.flight_roll - 1, -elite.myship.max_roll, elite.myship.max_roll);
 		}
 
 		internal static void increase_flight_climb()
@@ -625,11 +622,8 @@ namespace Elite.Engine
 
 		internal static void decrease_flight_climb()
 		{
-			if (elite.flight_climb > -elite.myship.max_climb)
-			{
-				elite.flight_climb--;
-			}
-		}
+            elite.flight_climb = Math.Clamp(elite.flight_climb - 1, -elite.myship.max_climb, elite.myship.max_climb);
+        }
 
 		internal void start_hyperspace()
 		{

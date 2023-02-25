@@ -25,7 +25,7 @@
         {
             if (_keyboard.IsKeyPressed(CommandKey.Y))
             {
-                elite.FinishGame();
+                elite.ExitGame();
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.N))
