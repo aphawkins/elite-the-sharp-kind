@@ -320,13 +320,9 @@ namespace Elite.Engine
         {
             univ_object ship = new()
             {
-                rotmat = new Vector3[3]
+                rotmat = VectorMaths.GetInitialMatrix(),
             };
-            ship.location.X = 0;
-            ship.location.Y = 0;
-            ship.location.Z = 0;
-
-            VectorMaths.set_init_matrix(ref ship.rotmat);
+            ship.location = Vector3.Zero;
             ship.rotmat[2].Z = 1;
             ship.rotmat[0].X = -1;
             ship.type = (SHIP)(-96);
@@ -621,10 +617,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    if (flight_speed < myship.max_speed)
-                    {
-                        flight_speed++;
-                    }
+                    flight_speed = Math.Clamp(flight_speed + 1, 0, myship.max_speed);
                 }
             }
 
@@ -632,10 +625,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    if (flight_speed > 1)
-                    {
-                        flight_speed--;
-                    }
+                    flight_speed = Math.Clamp(flight_speed - 1, 0, myship.max_speed);
                 }
             }
 
@@ -683,8 +673,6 @@ namespace Elite.Engine
         private void run_game_over_screen()
         {
             int i;
-            int newship;
-            Vector3[] rotmat = new Vector3[3];
             SHIP type;
 
             SetView(SCR.SCR_GAME_OVER);
@@ -694,21 +682,17 @@ namespace Elite.Engine
             flight_roll = 0;
             flight_climb = 0;
             swat.clear_universe();
-
-            VectorMaths.set_init_matrix(ref rotmat);
-
-            newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, -400), rotmat, 0, 0);
+            int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
             space.universe[newship].flags |= FLG.FLG_DEAD;
 
             for (i = 0; i < 5; i++)
             {
                 type = RNG.TrueOrFalse() ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
-                newship = swat.add_new_ship(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), rotmat, 0, 0);
+                newship = swat.add_new_ship(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0);
                 space.universe[newship].rotz = ((RNG.Random(255) * 2) & 255) - 128;
                 space.universe[newship].rotx = ((RNG.Random(255) * 2) & 255) - 128;
                 space.universe[newship].velocity = RNG.Random(15);
             }
-
 
             for (i = 0; i < 100; i++)
             {
@@ -772,7 +756,7 @@ namespace Elite.Engine
             _space = new(this, _gfx, _threed, _audio, _pilot, _swat, _trade);
             _mission = new Mission();
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gfx, _audio, keyboard));
-            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gfx, _audio, keyboard, _stars, _space));
+            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gfx, _audio, keyboard, _stars));
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gfx, keyboard));
             _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gfx, keyboard));
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));

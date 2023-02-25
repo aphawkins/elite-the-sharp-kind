@@ -50,9 +50,7 @@
                 elite.cmdr.mission = 1;
 
                 swat.clear_universe();
-                Vector3[] _rotmat = new Vector3[3];
-                VectorMaths.set_init_matrix(ref _rotmat);
-                int i = swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), _rotmat, -127, -127);
+                int i = swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
                 space.universe[i].flags = FLG.FLG_NONE;
                 elite.flight_roll = 0;
                 elite.flight_climb = 0;

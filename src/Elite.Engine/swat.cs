@@ -154,9 +154,7 @@ namespace Elite.Engine
 
 		internal static void remove_ship(int un)
 		{
-			SHIP type;
-			Vector3[] rotmat = new Vector3[3];
-			type = space.universe[un].type;
+			SHIP type = space.universe[un].type;
 
 			if (type == SHIP.SHIP_NONE)
 			{
@@ -174,13 +172,10 @@ namespace Elite.Engine
 
 			if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
 			{
-				VectorMaths.set_init_matrix(ref rotmat);
 				Vector3 position = space.universe[un].location;
-
                 position.Y = (int)position.Y & 0xFFFF;
                 position.Y = (int)position.Y | 0x60000;
-
-				add_new_ship(SHIP.SHIP_SUN, position, rotmat, 0, 0);
+				add_new_ship(SHIP.SHIP_SUN, position, VectorMaths.GetInitialMatrix(), 0, 0);
 			}
 		}
 
@@ -203,7 +198,8 @@ namespace Elite.Engine
         private static void launch_enemy(int un, SHIP type, FLG flags, int bravery)
 		{
             Debug.Assert(space.universe[un].rotmat != null);
-            int newship = add_new_ship(type, space.universe[un].location, space.universe[un].rotmat.Cloner(), space.universe[un].rotx, space.universe[un].rotz);
+			Vector3[] rotmat = space.universe[un].rotmat.Cloner();
+            int newship = add_new_ship(type, space.universe[un].location, rotmat, space.universe[un].rotx, space.universe[un].rotz);
 
 			if (newship == -1)
 			{
@@ -406,16 +402,14 @@ namespace Elite.Engine
 
 		internal void fire_missile()
 		{
-			Vector3[] rotmat = new Vector3[3];
-
 			if (missile_target < 0)
 			{
 				return;
 			}
 
-			VectorMaths.set_init_matrix(ref rotmat);
-			rotmat[2].Z = 1.0f;
-			rotmat[0].X = -1.0f;
+			Vector3[] rotmat = VectorMaths.GetInitialMatrix();
+			rotmat[2].Z = 1;
+			rotmat[0].X = -1;
 
 			int newship = add_new_ship(SHIP.SHIP_MISSILE, new(0, -28, 14), rotmat, 0, 0);
 
@@ -919,9 +913,6 @@ namespace Elite.Engine
 
 		private static int create_other_ship(SHIP type)
 		{
-			Vector3[] rotmat = new Vector3[3];
-			VectorMaths.set_init_matrix(ref rotmat);
-
 			Vector3 position = new()
 			{
 				X = 1000 + RNG.Random(8191),
@@ -939,8 +930,7 @@ namespace Elite.Engine
                 position.Y = -position.Y;
 			}
 
-			int newship = add_new_ship(type, position, rotmat, 0, 0);
-
+			int newship = add_new_ship(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
 			return newship;
 		}
 
@@ -1088,11 +1078,6 @@ namespace Elite.Engine
 
 		private static void check_for_others()
 		{
-			int newship;
-			Vector3[] rotmat = new Vector3[3];
-			SHIP type;
-			int i;
-
 			int gov = elite.current_planet_data.government;
 			int rnd = RNG.Random(255);
 
@@ -1108,9 +1093,6 @@ namespace Elite.Engine
 			}
 
 			/* Pack hunters... */
-
-			VectorMaths.set_init_matrix(ref rotmat);
-
 			Vector3 position = new()
 			{
 				Z = 12000,
@@ -1130,10 +1112,10 @@ namespace Elite.Engine
 
 			rnd = RNG.Random(3);
 
-			for (i = 0; i <= rnd; i++)
+			for (int i = 0; i <= rnd; i++)
 			{
-				type = SHIP.SHIP_SIDEWINDER + (RNG.Random(255) & RNG.Random(7));
-				newship = add_new_ship(type, position, rotmat, 0, 0);
+				SHIP type = SHIP.SHIP_SIDEWINDER + (RNG.Random(255) & RNG.Random(7));
+                int newship = add_new_ship(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
 				if (newship != -1)
 				{
 					space.universe[newship].flags = FLG.FLG_ANGRY;

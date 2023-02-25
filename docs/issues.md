@@ -13,6 +13,7 @@
 - Change statics to objects
 - Incorrect distance shown on current planet after hyperspace
 - Clipping incorrect on bottom line (after explosion?)
+- Stations can not rotate around their entrance
 - Fix all warnings/infos
 - Warnings as errors
 - Add .editor config

@@ -272,18 +272,18 @@ namespace Elite.Engine
 				return;
 			}
 
-			int nomiss = elite.cmdr.missiles > 4 ? 4 : elite.cmdr.missiles;
+			int missileCount = elite.cmdr.missiles > 4 ? 4 : elite.cmdr.missiles;
 
-			Vector2 location = new(((4 - nomiss) * 16) + 35, 113 + 385);
+			Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 
 			if (swat.missile_target != swat.MISSILE_UNARMED)
 			{
                 _gfx.DrawImage((swat.missile_target < 0) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
-				nomiss--;
+                missileCount--;
 			}
 
-			for (; nomiss > 0; nomiss--)
+			for (; missileCount > 0; missileCount--)
 			{
                 _gfx.DrawImage(Image.MissileGreen, location);
                 location.X += 16;

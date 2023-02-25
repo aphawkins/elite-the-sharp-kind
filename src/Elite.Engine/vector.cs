@@ -64,12 +64,9 @@ namespace Elite.Engine
             return Vector3.Divide(vec, vec.Length());
 		}
 
-		internal static void set_init_matrix(ref Vector3[] mat)
+		internal static Vector3[] GetInitialMatrix()
 		{
-			for (int i = 0; i < 3; i++)
-			{
-				mat[i] = start_matrix[i];
-			}
+            return start_matrix.Cloner();
 		}
 
 		internal static void tidy_matrix(Vector3[] mat)

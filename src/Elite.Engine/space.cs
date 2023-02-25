@@ -339,35 +339,24 @@ namespace Elite.Engine
 				if (elite.front_shield < 255)
 				{
 					elite.front_shield++;
-					elite.energy--;
+					elite.energy = Math.Clamp(elite.energy - 1, 0, 255);
 				}
 
 				if (elite.aft_shield < 255)
 				{
 					elite.aft_shield++;
-					elite.energy--;
-				}
+                    elite.energy = Math.Clamp(elite.energy - 1, 0, 255);
+                }
 			}
 
-			elite.energy++;
-			elite.energy += (int)elite.cmdr.energy_unit;
-			if (elite.energy > 255)
-			{
-				elite.energy = 255;
-			}
-		}
+            elite.energy = Math.Clamp(elite.energy + 1 + (int)elite.cmdr.energy_unit, 0, 255);
+        }
 
         private static void make_station_appear()
 		{
-			float px, py, pz;
-			Vector3 vec;
-			Vector3[] rotmat = new Vector3[3];
-
-			px = universe[0].location.X;
-			py = universe[0].location.Y;
-			pz = universe[0].location.Z;
-
-			vec.X = RNG.Random(-16384, 16383) ;
+            Vector3 location = universe[0].location;
+            Vector3 vec;
+            vec.X = RNG.Random(-16384, 16383) ;
 			vec.Y = RNG.Random(-16384, 16383) ;
 			vec.Z = RNG.Random(32767);
 
@@ -375,14 +364,15 @@ namespace Elite.Engine
 
 			Vector3 position = new()
 			{
-				X = px - (vec.X * 65792),
-				Y = py - (vec.Y * 65792),
-				Z = pz - (vec.Z * 65792),
+				X = location.X - (vec.X * 65792),
+				Y = location.Y - (vec.Y * 65792),
+				Z = location.Z - (vec.Z * 65792),
 			};
 
-			//	VectorMaths.set_init_matrix (rotmat);
+            //	VectorMaths.set_init_matrix (rotmat);
+            Vector3[] rotmat = new Vector3[3];
 
-			rotmat[0].X = 1;
+            rotmat[0].X = 1;
 			rotmat[0].Y = 0;
 			rotmat[0].Z = 0;
 
@@ -625,18 +615,12 @@ namespace Elite.Engine
 
 		internal static void decrease_flight_roll()
 		{
-			if (elite.flight_roll > -elite.myship.max_roll)
-			{
-				elite.flight_roll--;
-			}
+			elite.flight_roll = Math.Clamp(elite.flight_roll + 1, -elite.myship.max_roll, elite.myship.max_roll);
 		}
 
 		internal static void increase_flight_climb()
 		{
-			if (elite.flight_climb < elite.myship.max_climb)
-			{
-				elite.flight_climb++;
-			}
+			elite.flight_climb = Math.Clamp(elite.flight_climb + 1, -elite.myship.max_climb, elite.myship.max_climb);
 		}
 
 		internal static void decrease_flight_climb()
@@ -745,7 +729,6 @@ namespace Elite.Engine
 
         private void complete_hyperspace()
 		{
-			Vector3[] rotmat = new Vector3[3];
 			hyper_ready = false;
 			elite.witchspace = false;
 
@@ -780,8 +763,7 @@ namespace Elite.Engine
 			swat.clear_universe();
 
 			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
-			VectorMaths.set_init_matrix(ref rotmat);
-
+			
             Vector3 position = new()
             {
                 Z = (((elite.docked_planet.b) & 7) + 7) / 2
@@ -799,12 +781,12 @@ namespace Elite.Engine
                 position.Y = -position.Y;
 			}
 
-			swat.add_new_ship(SHIP.SHIP_PLANET, position, rotmat, 0, 0);
+            swat.add_new_ship(SHIP.SHIP_PLANET, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
             position.Z = -(((elite.docked_planet.d & 7) | 1) << 16);
             position.X = ((elite.docked_planet.f & 3) << 16) | ((elite.docked_planet.f & 3) << 8);
 
-			swat.add_new_ship(SHIP.SHIP_SUN, position, rotmat, 0, 0);
+            swat.add_new_ship(SHIP.SHIP_SUN, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
 			elite.SetView(SCR.SCR_HYPERSPACE);
 		}
@@ -867,7 +849,6 @@ namespace Elite.Engine
 
 		internal void launch_player()
 		{
-			Vector3[] rotmat = new Vector3[3];
 			elite.flight_speed = 12;
 			// Rotate in the same direction that the station is spinning
 			elite.flight_roll = 15;
@@ -875,12 +856,9 @@ namespace Elite.Engine
 			elite.cmdr.legal_status |= trade.carrying_contraband();
 			Stars.create_new_stars();
 			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
-			VectorMaths.set_init_matrix(ref rotmat);
-			swat.add_new_ship(SHIP.SHIP_PLANET, new(0, 0, 65536), rotmat, 0, 0);
+			swat.add_new_ship(SHIP.SHIP_PLANET, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 
-            rotmat = new Vector3[3];
-            VectorMaths.set_init_matrix(ref rotmat);
-
+			Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].X = -rotmat[2].X;
 			rotmat[2].Y = -rotmat[2].Y;
 			rotmat[2].Z = -rotmat[2].Z;
