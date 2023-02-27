@@ -158,8 +158,8 @@ namespace Elite.Engine
         internal static int mcount;
         private static int message_count;
         private static string message_string;
-        private static bool rolling;
-        private static bool climbing;
+        internal static bool rolling;
+        internal static bool climbing;
         private static bool game_paused;
         //private static bool have_joystick;
         internal static string planetName;
@@ -212,92 +212,6 @@ namespace Elite.Engine
         internal static void ExitGame()
         {
             exitGame = true;
-        }
-
-        private static void arrow_right()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_FRONT_VIEW:
-                case SCR.SCR_REAR_VIEW:
-                case SCR.SCR_RIGHT_VIEW:
-                case SCR.SCR_LEFT_VIEW:
-                    if (flight_roll > 0)
-                    {
-                        flight_roll = 0;
-                    }
-                    else
-                    {
-                        space.decrease_flight_roll();
-                        space.decrease_flight_roll();
-                        rolling = true;
-                    }
-                    break;
-            }
-        }
-
-        private static void arrow_left()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_FRONT_VIEW:
-                case SCR.SCR_REAR_VIEW:
-                case SCR.SCR_RIGHT_VIEW:
-                case SCR.SCR_LEFT_VIEW:
-                    if (flight_roll < 0)
-                    {
-                        flight_roll = 0;
-                    }
-                    else
-                    {
-                        space.increase_flight_roll();
-                        space.increase_flight_roll();
-                        rolling = true;
-                    }
-                    break;
-            }
-        }
-
-        private static void arrow_up()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_FRONT_VIEW:
-                case SCR.SCR_REAR_VIEW:
-                case SCR.SCR_RIGHT_VIEW:
-                case SCR.SCR_LEFT_VIEW:
-                    if (flight_climb > 0)
-                    {
-                        flight_climb = 0;
-                    }
-                    else
-                    {
-                        space.decrease_flight_climb();
-                    }
-                    climbing = true;
-                    break;
-            }
-        }
-
-        private static void arrow_down()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_FRONT_VIEW:
-                case SCR.SCR_REAR_VIEW:
-                case SCR.SCR_RIGHT_VIEW:
-                case SCR.SCR_LEFT_VIEW:
-                    if (flight_climb < 0)
-                    {
-                        flight_climb = 0;
-                    }
-                    else
-                    {
-                        space.increase_flight_climb();
-                    }
-                    climbing = true;
-                    break;
-            }
         }
 
         private void d_pressed()
@@ -633,26 +547,6 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.Up))
-            {
-                arrow_up();
-            }
-
-            if (keyboard.IsKeyPressed(CommandKey.Down))
-            {
-                arrow_down();
-            }
-
-            if (keyboard.IsKeyPressed(CommandKey.Left))
-            {
-                arrow_left();
-            }
-
-            if (keyboard.IsKeyPressed(CommandKey.Right))
-            {
-                arrow_right();
-            }
-
             if (keyboard.IsKeyPressed(CommandKey.EnergyBomb))
             {
                 if ((!docked) && cmdr.energy_bomb)
@@ -724,10 +618,10 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
-            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gfx, _stars));
-            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, _stars));
-            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, _stars));
-            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, _stars));
+            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gfx, keyboard, _stars));
+            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, keyboard, _stars));
+            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, keyboard, _stars));
+            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, keyboard, _stars));
             _views.Add(SCR.SCR_DOCKING, new Docking(_gfx, _audio, _space));
             _views.Add(SCR.SCR_UNDOCKING, new Undocking(_gfx, _audio, _space));
             _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gfx, _audio, _space));

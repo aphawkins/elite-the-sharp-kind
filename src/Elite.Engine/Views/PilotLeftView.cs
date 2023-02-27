@@ -6,7 +6,7 @@
     {
         private readonly Stars _stars;
 
-        internal PilotLeftView(IGfx gfx, Stars stars) : base(gfx)
+        internal PilotLeftView(IGfx gfx, IKeyboard keyboard, Stars stars) : base(gfx, keyboard)
         {
             _stars = stars;
         }
