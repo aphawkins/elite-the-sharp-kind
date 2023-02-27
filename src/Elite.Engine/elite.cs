@@ -215,8 +215,8 @@ namespace Elite.Engine
             univ_object ship = new()
             {
                 rotmat = VectorMaths.GetInitialMatrix(),
+                location = Vector3.Zero
             };
-            ship.location = Vector3.Zero;
             ship.rotmat[2].Z = 1;
             ship.rotmat[0].X = -1;
             ship.type = (SHIP)(-96);

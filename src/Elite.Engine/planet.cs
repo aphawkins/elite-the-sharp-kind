@@ -196,12 +196,13 @@ namespace Elite.Engine
 
 		internal static planet_data generate_planet_data(galaxy_seed planet_seed)
 		{
-			planet_data pl = new();
-			pl.government = (planet_seed.c / 8) & 7;
+            planet_data pl = new()
+            {
+                government = (planet_seed.c / 8) & 7,
+                economy = planet_seed.b & 7
+            };
 
-			pl.economy = planet_seed.b & 7;
-
-			if (pl.government < 2)
+            if (pl.government < 2)
             {
                 pl.economy |= 2;
             }
