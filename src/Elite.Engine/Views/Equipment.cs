@@ -150,11 +150,11 @@ namespace Elite.Engine.Views
 
         public void HandleInput()
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Up))
+            if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
                 SelectPrevious();
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Down))
+            if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 SelectNext();
             }

@@ -23,12 +23,12 @@
 
         public void HandleInput()
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Y))
+            if (_keyboard.IsKeyPressed(CommandKey.Yes))
             {
                 elite.ExitGame();
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.N))
+            if (_keyboard.IsKeyPressed(CommandKey.No))
             {
                 if (elite.docked)
                 {

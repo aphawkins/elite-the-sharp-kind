@@ -211,23 +211,6 @@ namespace Elite.Engine
             exitGame = true;
         }
 
-        private void d_pressed()
-        {
-            switch (_state.currentScreen)
-            {
-                case SCR.SCR_FRONT_VIEW:
-                case SCR.SCR_REAR_VIEW:
-                case SCR.SCR_RIGHT_VIEW:
-                case SCR.SCR_LEFT_VIEW:
-                    if (auto_pilot)
-                    {
-                        _pilot.disengage_auto_pilot();
-                    }
-
-                    break;
-            }
-        }
-
         internal static void auto_dock()
         {
             univ_object ship = new()
@@ -454,7 +437,7 @@ namespace Elite.Engine
                 drawLasers = _swat.FireLaser();
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.Dock))
+            if (keyboard.IsKeyPressed(CommandKey.DockingComputerOn))
             {
                 if (!docked && cmdr.docking_computer)
                 {
@@ -469,11 +452,6 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.D))
-            {
-                d_pressed();
-            }
-
             if (keyboard.IsKeyPressed(CommandKey.ECM))
             {
                 if (!docked && cmdr.ecm)
@@ -484,7 +462,7 @@ namespace Elite.Engine
 
             if (keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!docked))
             {
-                if (keyboard.IsKeyPressed(CommandKey.CTRL))
+                if (keyboard.IsKeyPressed(CommandKey.Ctrl))
                 {
                     _space.start_galactic_hyperspace();
                 }
@@ -528,7 +506,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.IncSpeed))
+            if (keyboard.IsKeyPressed(CommandKey.IncreaseSpeed))
             {
                 if (!docked)
                 {
@@ -536,7 +514,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.DecSpeed))
+            if (keyboard.IsKeyPressed(CommandKey.DecreaseSpeed))
             {
                 if (!docked)
                 {
@@ -553,7 +531,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.Escape))
+            if (keyboard.IsKeyPressed(CommandKey.EscapePod))
             {
                 if ((!docked) && cmdr.escape_pod && (!witchspace))
                 {
@@ -615,10 +593,10 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _mission));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
-            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gfx, keyboard, _stars));
-            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, keyboard, _stars));
-            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, keyboard, _stars));
-            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, keyboard, _stars));
+            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gfx, keyboard, _stars, _pilot));
+            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, keyboard, _stars, _pilot));
+            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, keyboard, _stars, _pilot));
+            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, keyboard, _stars, _pilot));
             _views.Add(SCR.SCR_DOCKING, new Docking(_gfx, _audio, _space));
             _views.Add(SCR.SCR_UNDOCKING, new Undocking(_gfx, _audio, _space));
             _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gfx, _audio, _space));

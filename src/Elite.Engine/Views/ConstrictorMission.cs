@@ -98,7 +98,7 @@
 
         public void HandleInput()
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Space))
+            if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
                 swat.clear_universe();
                 elite.SetView(SCR.SCR_MISSION_2);

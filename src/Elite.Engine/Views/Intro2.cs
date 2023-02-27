@@ -102,7 +102,7 @@ namespace Elite.Engine.Views
 
         public void HandleInput()
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Space))
+            if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
                 swat.clear_universe();
                 _audio.StopMusic();

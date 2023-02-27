@@ -8,7 +8,7 @@
 
         void KeyUp(int keyValue);
 
-        bool IsKeyPressed(CommandKey key);
+        bool IsKeyPressed(params CommandKey[] key);
 
         int GetKeyPressed();
 

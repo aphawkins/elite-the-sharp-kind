@@ -80,7 +80,7 @@ namespace Elite.Engine.Views
                 }
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.Space))
+            if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
                 elite.SetView(SCR.SCR_OPTIONS);
             }

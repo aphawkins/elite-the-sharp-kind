@@ -170,23 +170,23 @@ namespace Elite.Engine.Views
                 elite.cross.Y = (elite.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
                 CalculateDistanceToPlanet();
             }
-            if (_keyboard.IsKeyPressed(CommandKey.D))
+            if (_keyboard.IsKeyPressed(CommandKey.DistanceToPlanet))
             {
                 CalculateDistanceToPlanet();
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Up))
+            if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
                 MoveCross(0, -1);
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Down))
+            if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 MoveCross(0, 1);
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Left))
+            if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
                 MoveCross(-1, 0);
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Right))
+            if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
                 MoveCross(1, 0);
             }

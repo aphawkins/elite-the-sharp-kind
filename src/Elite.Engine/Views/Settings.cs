@@ -92,19 +92,19 @@ namespace Elite.Engine
 
         public void HandleInput()
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Up))
+            if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
                 SelectUp();
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Down))
+            if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 SelectDown();
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Left))
+            if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
                 SelectLeft();
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Right))
+            if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
                 SelectRight();
             }

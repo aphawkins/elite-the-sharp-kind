@@ -76,19 +76,19 @@ namespace Elite.Engine.Views
 
         public void HandleInput()
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Up))
+            if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
                 _highlightedStock = Math.Clamp(_highlightedStock - 1, 0, trade.stock_market.Length - 1);
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Down))
+            if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 _highlightedStock = Math.Clamp(_highlightedStock + 1, 0, trade.stock_market.Length - 1);
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Left))
+            if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
                 SellStock();
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Right))
+            if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
                 BuyStock();
             }

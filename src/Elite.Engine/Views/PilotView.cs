@@ -8,13 +8,15 @@
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private readonly Laser _laser;
+        private readonly pilot _pilot;
         private int drawLaserFrames;
 
-        internal PilotView(IGfx gfx, IKeyboard keyboard)
+        internal PilotView(IGfx gfx, IKeyboard keyboard, pilot pilot)
         {
             _gfx = gfx;
             _keyboard = keyboard;
             _laser = new Laser(_gfx);
+            _pilot = pilot;
         }
 
         public virtual void Draw()
@@ -36,7 +38,7 @@
 
         public virtual void HandleInput()
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Up))
+            if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
                 if (flight_climb > 0)
                 {
@@ -50,7 +52,7 @@
 
                 elite.climbing = true;
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Down))
+            if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 if (flight_climb < 0)
                 {
@@ -63,7 +65,7 @@
                 }
                 elite.climbing = true;
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Left))
+            if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
                 if (flight_roll < 0)
                 {
@@ -76,7 +78,7 @@
                     elite.rolling = true;
                 }
             }
-            if (_keyboard.IsKeyPressed(CommandKey.Right))
+            if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
                 if (flight_roll > 0)
                 {
@@ -87,6 +89,13 @@
                     space.decrease_flight_roll();
                     space.decrease_flight_roll();
                     elite.rolling = true;
+                }
+            }
+            if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOff))
+            {
+                if (auto_pilot)
+                {
+                    _pilot.disengage_auto_pilot();
                 }
             }
         }

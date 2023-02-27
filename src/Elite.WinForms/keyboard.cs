@@ -30,10 +30,17 @@ namespace Elite.WinForms
             _isPressed[keyValue] = false;
         }
 
-        public bool IsKeyPressed(CommandKey key)
+        public bool IsKeyPressed(params CommandKey[] keys)
         {
-            bool isPressed = _isPressed.ContainsKey((int)key) && _isPressed[(int)key];
-            return isPressed;
+            foreach (int key in keys)
+            {
+                if (_isPressed.TryGetValue(key, out bool value) && value) 
+                { 
+                    return true; 
+                }
+            }
+
+            return false;
         }
 
         public int GetKeyPressed()
