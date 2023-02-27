@@ -52,7 +52,7 @@ namespace Elite.Engine
         internal static int carry_flag = 0;
         internal static bool witchspace;
 
-        public static ConfigSettings config = new();
+        internal static ConfigSettings config = new();
 
         internal static Vector2 scanner_centre = new(253, 63 + 385);
         internal static Vector2 compass_centre = new(382, 22 + 385);
