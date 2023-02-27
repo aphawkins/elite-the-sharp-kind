@@ -24,7 +24,6 @@ namespace Elite.Engine
         private const int NARCOTICS = 6;
         private const int FIREARMS = 10;
 
-        private readonly elite _elite;
         private readonly swat _swat;
 
         internal static string TONNES = "t";
@@ -55,9 +54,8 @@ namespace Elite.Engine
 			new("Alien Items",  0, 0,  5.3f, 15, 192, 0x07, TONNES),
 		};
 
-		internal trade(elite elite, swat swat)
+		internal trade(swat swat)
 		{
-			_elite = elite;
             _swat = swat;
         }
 

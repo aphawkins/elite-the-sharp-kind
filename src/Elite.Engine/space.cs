@@ -29,7 +29,6 @@ namespace Elite.Engine
 
 	internal class space
 	{
-		private readonly elite _elite;
         private readonly IGfx _gfx;
         private readonly threed _threed;
         private readonly Audio _audio;
@@ -45,9 +44,8 @@ namespace Elite.Engine
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
-		internal space(elite elite, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade)
+		internal space(IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade)
 		{
-			_elite = elite;
 			_gfx = gfx;
 			_threed = threed;
 			_audio = audio;

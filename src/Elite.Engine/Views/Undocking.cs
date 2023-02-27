@@ -7,14 +7,12 @@
     {
         private readonly IGfx _gfx;
         private readonly Audio _audio;
-        private readonly space _space;
         private readonly BreakPattern _breakPattern;
 
-        internal Undocking(IGfx gfx, Audio audio, space space)
+        internal Undocking(IGfx gfx, Audio audio)
         {
             _gfx = gfx;
             _audio = audio;
-            _space = space;
             _breakPattern = new(_gfx);
         }
 

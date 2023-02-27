@@ -29,9 +29,7 @@ namespace Elite.Engine
 
 	internal class swat
 	{
-		private readonly elite _elite;
 		private readonly Audio _audio;
-
         internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
         private static int laser_counter;
@@ -79,9 +77,8 @@ namespace Elite.Engine
 			0											// dodec
 		};
 
-		internal swat(elite elite, Audio audio)
+		internal swat(Audio audio)
 		{
-			_elite = elite;
 			_audio = audio;
         }
 

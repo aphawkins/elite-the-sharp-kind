@@ -22,7 +22,6 @@ namespace Elite.Engine.Views
     internal class PlanetData : IView
 	{
         private readonly IGfx _gfx;
-        private readonly Mission _mission;
         private float _distanceToPlanet = 0;
         private planet_data _hyperPlanetData = new();
 
@@ -84,10 +83,9 @@ namespace Elite.Engine.Views
 		/* 35	*/	new string[] {"hockey", "cricket", "karate", "polo", "tennis"}
         };
 
-        internal PlanetData(IGfx gfx, Mission mission)
+        internal PlanetData(IGfx gfx)
         {
             _gfx = gfx;
-            _mission = mission;
         }
 
         private string DescribePlanet(galaxy_seed planet)
