@@ -30,7 +30,6 @@ namespace Elite.Engine
         private readonly Audio _audio;
         internal static IKeyboard keyboard;
         internal static Scanner scanner;
-        private readonly Mission _mission;
         private readonly space _space;
         private readonly Stars _stars;
         private readonly threed _threed;
@@ -584,7 +583,6 @@ namespace Elite.Engine
             _swat = new(_audio);
             _trade = new(_swat);
             _space = new(_gfx, _threed, _audio, _pilot, _swat, _trade);
-            _mission = new Mission();
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gfx, _audio, keyboard));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gfx, _audio, keyboard, _stars));
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gfx, keyboard));
