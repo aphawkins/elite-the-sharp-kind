@@ -374,14 +374,14 @@ namespace Elite.Engine
 			}
 		}
 
-		internal void time_ecm()
+		internal static void time_ecm()
 		{
 			if (ecm_active != 0)
 			{
 				ecm_active--;
 				if (ecm_ours)
 				{
-					_elite.decrease_energy(-1);
+                    elite.decrease_energy(-1);
 				}
 			}
 		}
@@ -494,7 +494,7 @@ namespace Elite.Engine
 				{
 					missile.flags |= FLG.FLG_DEAD;
 					_audio.PlayEffect(SoundEffect.Explode);
-					_elite.damage_ship(250, missile.location.Z >= 0.0);
+                    elite.damage_ship(250, missile.location.Z >= 0.0);
 					return;
 				}
 
@@ -761,7 +761,7 @@ namespace Elite.Engine
 
 				if (direction <= -0.972)
 				{
-					_elite.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
+                    elite.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
 					ship.acceleration--;
 					if (((ship.location.Z >= 0.0) && (elite.front_shield == 0)) ||
 						((ship.location.Z < 0.0) && (elite.aft_shield == 0)))

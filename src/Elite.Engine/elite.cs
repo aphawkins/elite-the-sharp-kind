@@ -443,7 +443,7 @@ namespace Elite.Engine
                 {
                     if (config.InstantDock)
                     {
-                        _space.engage_docking_computer();
+                        space.engage_docking_computer();
                     }
                     else
                     {
@@ -715,7 +715,7 @@ namespace Elite.Engine
                     _space.display_hyper_status();
                     if ((mcount & 3) == 0)
                     {
-                        _space.countdown_hyperspace();
+                        space.countdown_hyperspace();
                     }
                 }
 
@@ -738,12 +738,12 @@ namespace Elite.Engine
                         _audio.PlayEffect(SoundEffect.Beep);
                     }
 
-                    _space.update_altitude();
+                    space.update_altitude();
                 }
 
                 if ((mcount & 31) == 20)
                 {
-                    _space.update_cabin_temp();
+                    space.update_cabin_temp();
                 }
 
                 if ((mcount == 0) && (!witchspace))
@@ -751,7 +751,7 @@ namespace Elite.Engine
                     swat.random_encounter();
                 }
 
-                _swat.time_ecm();
+                swat.time_ecm();
             }
 
             _gfx.ScreenUpdate();
@@ -807,7 +807,7 @@ namespace Elite.Engine
             }
         }
 
-        internal void decrease_energy(float amount)
+        internal static void decrease_energy(float amount)
         {
             energy += amount;
 
@@ -822,7 +822,7 @@ namespace Elite.Engine
         /// </summary>
         /// <param name="damage"></param>
         /// <param name="front"></param>
-        internal void damage_ship(int damage, bool front)
+        internal static void damage_ship(int damage, bool front)
         {
             if (damage <= 0)    /* sanity check */
             {
@@ -851,7 +851,7 @@ namespace Elite.Engine
         /// <summary>
         /// Game Over...
         /// </summary>
-        internal void GameOver()
+        internal static void GameOver()
         {
             if (!_state.gameOver)
             {

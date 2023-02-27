@@ -40,7 +40,7 @@ namespace Elite.Engine.Missions
             "COMING SOON: ELITE - DARKNESS FALLS.",
         };
 
-        internal string? mission_planet_desc(galaxy_seed planet)
+        internal static string? mission_planet_desc(galaxy_seed planet)
         {
             int pnum;
 

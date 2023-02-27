@@ -67,7 +67,7 @@ namespace Elite.Engine.Views
             new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
         };
 
-        private bool PresentEquipment(EquipmentType type)
+        private static bool PresentEquipment(EquipmentType type)
         {
             return type switch
             {
@@ -221,7 +221,7 @@ namespace Elite.Engine.Views
             }
         }
 
-        private float LaserRefund(int laserType)
+        private static float LaserRefund(int laserType)
         {
             return laserType switch
             {

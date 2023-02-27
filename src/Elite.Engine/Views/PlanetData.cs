@@ -94,7 +94,7 @@ namespace Elite.Engine.Views
         {
             if (elite.cmdr.mission == 1)
             {
-                string? mission_text = _mission.mission_planet_desc(planet);
+                string? mission_text = Mission.mission_planet_desc(planet);
                 if (!string.IsNullOrEmpty(mission_text))
                 {
                     return mission_text;

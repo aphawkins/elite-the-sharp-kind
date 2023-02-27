@@ -40,7 +40,7 @@
 
             if (_breakPattern.IsComplete)
             {
-                _space.launch_player();
+                space.launch_player();
                 elite.SetView(SCR.SCR_FRONT_VIEW);
             }
         }

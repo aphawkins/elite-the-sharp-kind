@@ -220,7 +220,7 @@ namespace Elite.Engine
 			return true;
 		}
 
-		internal void update_altitude()
+		internal static void update_altitude()
 		{
 			elite.myship.altitude = 255;
 
@@ -254,7 +254,7 @@ namespace Elite.Engine
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
-				_elite.GameOver();
+                elite.GameOver();
 				return;
 			}
 
@@ -262,14 +262,14 @@ namespace Elite.Engine
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
-                _elite.GameOver();
+                elite.GameOver();
 				return;
 			}
 
 			elite.myship.altitude = dist;
 		}
 
-		internal void update_cabin_temp()
+		internal static void update_cabin_temp()
 		{
 			elite.myship.cabtemp = 30;
 
@@ -311,7 +311,7 @@ namespace Elite.Engine
 			if (elite.myship.cabtemp > 255)
 			{
 				elite.myship.cabtemp = 255;
-                _elite.GameOver();
+                elite.GameOver();
 				return;
 			}
 
@@ -404,12 +404,12 @@ namespace Elite.Engine
 
 			if (elite.flight_speed >= 5)
 			{
-				_elite.GameOver();
+                elite.GameOver();
 				return;
 			}
 
 			elite.flight_speed = 1;
-			_elite.damage_ship(5, universe[i].location.Z > 0);
+            elite.damage_ship(5, universe[i].location.Z > 0);
 			_audio.PlayEffect(SoundEffect.Crash);
 		}
 
@@ -489,7 +489,7 @@ namespace Elite.Engine
 		 */
 		internal void update_universe()
 		{
-            _threed.RenderStart();
+            threed.RenderStart();
 
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
             {
@@ -696,7 +696,7 @@ namespace Elite.Engine
 			elite.hyperspace_planet = (galaxy_seed)elite.docked_planet.Clone();
 		}
 
-        private void enter_witchspace()
+        private static void enter_witchspace()
 		{
 			int i;
 			int nthg;
@@ -721,7 +721,7 @@ namespace Elite.Engine
 			elite.SetView(SCR.SCR_HYPERSPACE);
 		}
 
-        private void complete_hyperspace()
+        private static void complete_hyperspace()
 		{
 			hyper_ready = false;
 			elite.witchspace = false;
@@ -740,7 +740,7 @@ namespace Elite.Engine
 
 				if ((RNG.Random(255) > 253) || (elite.flight_climb >= elite.myship.max_climb))
 				{
-					enter_witchspace();
+                    enter_witchspace();
 					return;
 				}
 
@@ -786,11 +786,11 @@ namespace Elite.Engine
 			elite.SetView(SCR.SCR_HYPERSPACE);
 		}
 
-		internal void countdown_hyperspace()
+		internal static void countdown_hyperspace()
 		{
 			if (hyper_countdown == 0)
 			{
-				complete_hyperspace();
+                complete_hyperspace();
 				return;
 			}
 
@@ -842,7 +842,7 @@ namespace Elite.Engine
 			swat.in_battle = false;
 		}
 
-		internal void launch_player()
+		internal static void launch_player()
 		{
 			elite.flight_speed = 12;
 			// Rotate in the same direction that the station is spinning
@@ -884,7 +884,7 @@ namespace Elite.Engine
 		 * Engage the docking computer.
 		 * For the moment we just do an instant dock if we are in the safe zone.
 		 */
-        internal void engage_docking_computer()
+        internal static void engage_docking_computer()
 		{
 			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{

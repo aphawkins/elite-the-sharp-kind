@@ -23,7 +23,7 @@
             return assets?.GetManifestResourceStream("Elite.Assets.Music." + GetName(music));
         }
 
-        private string GetName(Image image)
+        private static string GetName(Image image)
         {
             return image switch
             {
@@ -41,7 +41,7 @@
             };
         }
 
-        private string GetName(SoundEffect effect)
+        private static string GetName(SoundEffect effect)
         {
             return effect switch
             {
@@ -63,7 +63,7 @@
             };
         }
 
-        private string GetName(Music music)
+        private static string GetName(Music music)
         {
             return music switch
             {

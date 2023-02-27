@@ -592,7 +592,7 @@ namespace Elite.Engine
         private static int start_poly;
         private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
 
-        internal void RenderStart()
+        internal static void RenderStart()
         {
             start_poly = 0;
             total_polys = 0;

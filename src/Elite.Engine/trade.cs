@@ -148,7 +148,7 @@ namespace Elite.Engine
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
 				_swat.explode_object(un);
-				_elite.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
+                elite.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
 				return;
 			}
 
@@ -171,7 +171,7 @@ namespace Elite.Engine
 			}
 
 			_swat.explode_object(un);
-			_elite.damage_ship(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
+            elite.damage_ship(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
 		}
 	}
 }
