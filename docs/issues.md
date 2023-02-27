@@ -1,10 +1,6 @@
 # Issues
 
 ## To get to MVP
-
-- Fix issues from frame rate change
-	- Test witchspace
-
 - Fix TODOs in code
 - Colours on SNES planet style not working
 - Explosion of other ship can cause an exception
@@ -25,7 +21,6 @@
 - Update docs
 
 ## Future
-
 - Sun is missing in initial system (stations and suns can't coexist)
 - Laser target shape by type
 - Joystick support needs adding back

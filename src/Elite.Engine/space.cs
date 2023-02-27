@@ -738,7 +738,7 @@ namespace Elite.Engine
 				elite.cmdr.fuel -= hyper_distance;
 				elite.cmdr.legal_status /= 2;
 
-				if ((RNG.Random(255) > 253) || (elite.flight_climb == elite.myship.max_climb))
+				if ((RNG.Random(255) > 253) || (elite.flight_climb >= elite.myship.max_climb))
 				{
 					enter_witchspace();
 					return;

@@ -176,6 +176,7 @@ namespace Elite.Engine
             }
 
             _state.initialised = true;
+            _state.gameOver = false;
 
             restore_saved_commander();
 
