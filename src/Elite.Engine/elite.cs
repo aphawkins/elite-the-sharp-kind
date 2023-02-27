@@ -78,10 +78,6 @@ namespace Elite.Engine
         internal static Commander cmdr = (Commander)saved_cmdr.Clone();
         internal static player_ship myship = new();
         internal static Draw draw;
-
-        private int breakPatternCount = 0;
-
-
         readonly long oneSec = TimeSpan.FromSeconds(1).Ticks;
 
         FC lockObj = new();
