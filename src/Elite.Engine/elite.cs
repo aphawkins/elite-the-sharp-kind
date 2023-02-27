@@ -79,11 +79,10 @@ namespace Elite.Engine
         internal static player_ship myship = new();
         internal static Draw draw;
         readonly long oneSec = TimeSpan.FromSeconds(1).Ticks;
-
-        FC lockObj = new();
-        TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.Fps * 2));
+        readonly FC lockObj = new();
+        readonly TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.Fps * 2));
         internal static State _state = new();
-        private static Dictionary<SCR, IView> _views = new();
+        private static readonly Dictionary<SCR, IView> _views = new();
 
         internal class FC
         {

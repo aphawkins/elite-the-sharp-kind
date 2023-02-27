@@ -8,7 +8,7 @@
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly space _space;
-        private BreakPattern _breakPattern;
+        private readonly BreakPattern _breakPattern;
 
         internal Docking(IGfx gfx, Audio audio, space space)
         {

@@ -20,10 +20,10 @@ namespace Elite.Engine.Views
     {
         private readonly IGfx _gfx;
         private readonly string[] laserName = new string[] { "Pulse", "Beam", "Military", "Mining", "Custom" };
-        int EQUIP_START_Y = 202;
-        int Y_INC = 16;
-        int EQUIP_MAX_Y = 290;
-        int EQUIP_WIDTH = 200;
+        readonly int EQUIP_START_Y = 202;
+        readonly int Y_INC = 16;
+        readonly int EQUIP_MAX_Y = 290;
+        readonly int EQUIP_WIDTH = 200;
 
         string laser_type(int strength)
         {
@@ -37,15 +37,14 @@ namespace Elite.Engine.Views
             };
         }
 
-        string[] condition_txt = new string[]
+        readonly string[] condition_txt = new string[]
 {
                 "Docked",
                 "Green",
                 "Yellow",
                 "Red"
 };
-
-        (int score, string title)[] ratings = new (int score, string title)[]
+        readonly (int score, string title)[] ratings = new (int score, string title)[]
         {
                 new(0x0000, "Harmless"),
                 new(0x0008, "Mostly Harmless"),
