@@ -73,7 +73,7 @@ namespace Elite.Engine
 
 		internal static galaxy_seed find_planet(Vector2 centre)
 		{
-			float min_dist = 10000f;
+			float min_dist = 10000;
 			galaxy_seed planet = new();
 			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 

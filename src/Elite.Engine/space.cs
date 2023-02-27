@@ -729,6 +729,7 @@ namespace Elite.Engine
 			if (hyper_galactic)
 			{
 				elite.cmdr.galactic_hyperdrive = false;
+				hyper_galactic = false;
 				enter_next_galaxy();
 				elite.cmdr.legal_status = 0;
 			}

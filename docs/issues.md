@@ -4,7 +4,6 @@
 
 - Fix issues from frame rate change
 	- Test witchspace
-	- Test Galactic Hyperspace
 
 - Fix TODOs in code
 - Colours on SNES planet style not working

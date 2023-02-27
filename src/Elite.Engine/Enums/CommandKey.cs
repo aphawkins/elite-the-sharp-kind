@@ -31,7 +31,7 @@
                                           // TODO: Fix unhandled TAB
         EnergyBomb = 9, // TAB
         Hyperspace = 72, // H
-        CTRL = 17, // CTRL
+        CTRL = 9, // CTRL
         Jump = 74, // J
         Escape = 27, // ESC
 
