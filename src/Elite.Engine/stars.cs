@@ -48,8 +48,8 @@ namespace Elite.Engine
         internal void front_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
-			float alpha = elite.flight_roll;
-			float beta = elite.flight_climb;
+			float alpha = _gameState.flight_roll;
+			float beta = _gameState.flight_climb;
 
 			alpha /= 256;
 			delta /= 2;
@@ -138,8 +138,8 @@ namespace Elite.Engine
         internal void rear_starfield()
 		{
 			float delta = warp_stars ? 50 : elite.flight_speed;
-			float alpha = -elite.flight_roll;
-			float beta = -elite.flight_climb;
+			float alpha = -_gameState.flight_roll;
+			float beta = -_gameState.flight_climb;
 
 			alpha /= 256;
 			delta /= 2;
@@ -238,13 +238,13 @@ namespace Elite.Engine
 		internal void LeftStarfield()
 		{
             float delta = warp_stars ? 50 : elite.flight_speed;
-            SideStarfield(-elite.flight_roll, -elite.flight_climb, -delta);
+            SideStarfield(-_gameState.flight_roll, -_gameState.flight_climb, -delta);
         }
 
         internal void RightStarfield()
         {
             float delta = warp_stars ? 50 : elite.flight_speed;
-            SideStarfield(elite.flight_roll, elite.flight_climb, delta);
+            SideStarfield(_gameState.flight_roll, _gameState.flight_climb, delta);
         }
 
         private void SideStarfield(float alpha, float beta, float delta)

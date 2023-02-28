@@ -6,7 +6,7 @@
     {
         private readonly Stars _stars;
 
-        internal PilotFrontView(IGfx gfx, IKeyboard keyboard, Stars stars, pilot pilot) : base(gfx, keyboard, pilot)
+        internal PilotFrontView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, pilot pilot) : base(gameState, gfx, keyboard, pilot)
         {
             _stars = stars;
         }

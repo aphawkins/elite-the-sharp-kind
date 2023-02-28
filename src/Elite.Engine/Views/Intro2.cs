@@ -51,8 +51,8 @@ namespace Elite.Engine.Views
             _audio.PlayMusic(Music.BlueDanube, true);
 
             elite.flight_speed = 3;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+            _gameState.flight_roll = 0;
+            _gameState.flight_climb = 0;
         }
 
         public void UpdateUniverse()

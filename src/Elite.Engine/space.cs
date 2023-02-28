@@ -76,7 +76,7 @@ namespace Elite.Engine
         /*
 		 * Update an objects location in the universe.
 		 */
-        private static void move_univ_object(ref univ_object obj)
+        private void move_univ_object(ref univ_object obj)
 		{
 			float x, y, z;
 			float k2;
@@ -85,8 +85,8 @@ namespace Elite.Engine
 			float rotx, rotz;
 			float speed;
 
-			alpha = elite.flight_roll / 256.0f;
-			beta = elite.flight_climb / 256.0f;
+			alpha = _gameState.flight_roll / 256;
+			beta = _gameState.flight_climb / 256;
 
 			x = obj.location.X;
 			y = obj.location.Y;
@@ -582,26 +582,6 @@ namespace Elite.Engine
 			elite.detonate_bomb = false;
 		}
 
-		internal static void increase_flight_roll()
-		{
-            elite.flight_roll = Math.Clamp(elite.flight_roll + 1, -elite.myship.max_roll, elite.myship.max_roll);
-        }
-
-		internal static void decrease_flight_roll()
-		{
-			elite.flight_roll = Math.Clamp(elite.flight_roll - 1, -elite.myship.max_roll, elite.myship.max_roll);
-		}
-
-		internal static void increase_flight_climb()
-		{
-			elite.flight_climb = Math.Clamp(elite.flight_climb + 1, -elite.myship.max_climb, elite.myship.max_climb);
-		}
-
-		internal static void decrease_flight_climb()
-		{
-            elite.flight_climb = Math.Clamp(elite.flight_climb - 1, -elite.myship.max_climb, elite.myship.max_climb);
-        }
-
 		internal void start_hyperspace()
 		{
 			if (hyper_ready)
@@ -683,8 +663,8 @@ namespace Elite.Engine
 			swat.in_battle = true;
 
 			elite.flight_speed = 12;
-			elite.flight_roll = 0;
-			elite.flight_climb = 0;
+            _gameState.flight_roll = 0;
+            _gameState.flight_climb = 0;
 			Stars.create_new_stars();
 			swat.clear_universe();
 
@@ -715,7 +695,7 @@ namespace Elite.Engine
 				elite.cmdr.fuel -= hyper_distance;
 				elite.cmdr.legal_status /= 2;
 
-				if ((RNG.Random(255) > 253) || (elite.flight_climb >= elite.myship.max_climb))
+				if ((RNG.Random(255) > 253) || (_gameState.flight_climb >= elite.myship.max_climb))
 				{
                     enter_witchspace();
 					return;
@@ -729,8 +709,8 @@ namespace Elite.Engine
 			trade.generate_stock_market();
 
 			elite.flight_speed = 12;
-			elite.flight_roll = 0;
-			elite.flight_climb = 0;
+            _gameState.flight_roll = 0;
+            _gameState.flight_climb = 0;
 			Stars.create_new_stars();
 			swat.clear_universe();
 
@@ -819,12 +799,12 @@ namespace Elite.Engine
 			swat.in_battle = false;
 		}
 
-		internal static void launch_player()
+		internal void launch_player()
 		{
 			elite.flight_speed = 12;
 			// Rotate in the same direction that the station is spinning
-			elite.flight_roll = 15;
-			elite.flight_climb = 0;
+			_gameState.flight_roll = 15;
+            _gameState.flight_climb = 0;
 			elite.cmdr.legal_status |= trade.carrying_contraband();
 			Stars.create_new_stars();
 			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
@@ -847,8 +827,8 @@ namespace Elite.Engine
             _pilot.disengage_auto_pilot();
 			elite.docked = true;
             elite.flight_speed = 0;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+            _gameState.flight_roll = 0;
+            _gameState.flight_climb = 0;
 			_gameState.Reset();
             elite.myship.altitude = 255;
             elite.myship.cabtemp = 30;

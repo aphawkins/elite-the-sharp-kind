@@ -36,8 +36,8 @@
         public void Reset()
         {
             elite.flight_speed = 1;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+            _gameState.flight_roll = 0;
+            _gameState.flight_climb = 0;
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
             _newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 200), rotmat, -127, -127);
@@ -66,7 +66,7 @@
             {
                 elite.auto_dock();
 
-                if ((MathF.Abs(elite.flight_roll) < 3) && (MathF.Abs(elite.flight_climb) < 3))
+                if ((MathF.Abs(_gameState.flight_roll) < 3) && (MathF.Abs(_gameState.flight_climb) < 3))
                 {
                     for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
                     {

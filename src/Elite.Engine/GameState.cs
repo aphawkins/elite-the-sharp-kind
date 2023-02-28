@@ -27,6 +27,8 @@ namespace Elite.Engine
         internal float energy { get; set; } = 255;
         internal float fore_shield { get; private set; } = 255;
         internal float aft_shield { get; private set; } = 255;
+        internal float flight_roll;
+        internal float flight_climb;
 
 
         internal GameState(IKeyboard keyboard, Dictionary<SCR, IView> views) 
@@ -37,11 +39,14 @@ namespace Elite.Engine
 
         internal void Reset()
         {
+            IsInitialised = true;
+            IsGameOver = false;
+
             fore_shield = 255;
             aft_shield = 255;
             energy = 255;
-            IsInitialised = true;
-            IsGameOver = false;
+            flight_roll = 0;
+            flight_climb = 0;
         }
 
         internal void SetView(SCR screen)
@@ -135,6 +140,26 @@ namespace Elite.Engine
             }
 
             energy = Math.Clamp(energy + 1 + (int)elite.cmdr.energy_unit, 0, 255);
+        }
+
+        internal void increase_flight_roll()
+        {
+            flight_roll = Math.Clamp(flight_roll + 1, -elite.myship.max_roll, elite.myship.max_roll);
+        }
+
+        internal void decrease_flight_roll()
+        {
+            flight_roll = Math.Clamp(flight_roll - 1, -elite.myship.max_roll, elite.myship.max_roll);
+        }
+
+        internal void increase_flight_climb()
+        {
+            flight_climb = Math.Clamp(flight_climb + 1, -elite.myship.max_climb, elite.myship.max_climb);
+        }
+
+        internal void decrease_flight_climb()
+        {
+            flight_climb = Math.Clamp(flight_climb - 1, -elite.myship.max_climb, elite.myship.max_climb);
         }
     }
 }

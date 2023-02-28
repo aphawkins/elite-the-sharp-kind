@@ -5,14 +5,16 @@
 
     internal abstract class PilotView : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private readonly Laser _laser;
         private readonly pilot _pilot;
         private int drawLaserFrames;
 
-        internal PilotView(IGfx gfx, IKeyboard keyboard, pilot pilot)
+        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, pilot pilot)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
             _laser = new Laser(_gfx);
@@ -40,54 +42,54 @@
         {
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
-                if (flight_climb > 0)
+                if (_gameState.flight_climb > 0)
                 {
-                    flight_climb = 0;
+                    _gameState.flight_climb = 0;
                 }
                 else
                 {
-                    space.decrease_flight_climb();
-                    space.decrease_flight_climb();
+                    _gameState.decrease_flight_climb();
+                    _gameState.decrease_flight_climb();
                 }
 
                 elite.climbing = true;
             }
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
-                if (flight_climb < 0)
+                if (_gameState.flight_climb < 0)
                 {
-                    flight_climb = 0;
+                    _gameState.flight_climb = 0;
                 }
                 else
                 {
-                    space.increase_flight_climb();
-                    space.increase_flight_climb();
+                    _gameState.increase_flight_climb();
+                    _gameState.increase_flight_climb();
                 }
                 elite.climbing = true;
             }
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
-                if (flight_roll < 0)
+                if (_gameState.flight_roll < 0)
                 {
-                    flight_roll = 0;
+                    _gameState.flight_roll = 0;
                 }
                 else
                 {
-                    space.increase_flight_roll();
-                    space.increase_flight_roll();
+                    _gameState.increase_flight_roll();
+                    _gameState.increase_flight_roll();
                     elite.rolling = true;
                 }
             }
             if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
-                if (flight_roll > 0)
+                if (_gameState.flight_roll > 0)
                 {
-                    flight_roll = 0;
+                    _gameState.flight_roll = 0;
                 }
                 else
                 {
-                    space.decrease_flight_roll();
-                    space.decrease_flight_roll();
+                    _gameState.decrease_flight_roll();
+                    _gameState.decrease_flight_roll();
                     elite.rolling = true;
                 }
             }

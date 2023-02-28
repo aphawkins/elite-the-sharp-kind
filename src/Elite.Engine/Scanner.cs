@@ -236,7 +236,7 @@ namespace Elite.Engine
 			float sx = 416;
 			float sy = 384 + 9 + 14;
 
-			float pos = sx - (elite.flight_roll * 28 / elite.myship.max_roll);
+			float pos = sx - (_gameState.flight_roll * 28 / elite.myship.max_roll);
 			pos += 32;
 
 			for (int i = 0; i < 4; i++)
@@ -250,7 +250,7 @@ namespace Elite.Engine
 			float sx = 416;
 			float sy = 384 + 9 + 14 + 16;
 
-			float pos = sx + (elite.flight_climb * 28 / elite.myship.max_climb);
+			float pos = sx + (_gameState.flight_climb * 28 / elite.myship.max_climb);
 			pos += 32;
 
 			for (int i = 0; i < 4; i++)

@@ -38,8 +38,8 @@
         {
             _i = 0;
             elite.flight_speed = 6;
-            elite.flight_roll = 0;
-            elite.flight_climb = 0;
+            _gameState.flight_roll = 0;
+            _gameState.flight_climb = 0;
             swat.clear_universe();
             int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
             space.universe[newship].flags |= FLG.FLG_DEAD;

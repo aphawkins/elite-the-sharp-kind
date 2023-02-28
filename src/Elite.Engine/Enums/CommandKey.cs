@@ -5,7 +5,7 @@
         None = 0,
         Backspace = 8,
         Ctrl = 17,
-        DecreaseSpeed = '/',
+        DecreaseSpeed = 191,    // '/'
         DockingComputerOn = 'C',
         DockingComputerOff = 'D',
         DistanceToPlanet = DockingComputerOff,

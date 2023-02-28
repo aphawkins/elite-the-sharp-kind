@@ -58,8 +58,6 @@ namespace Elite.Engine
         internal static bool docked;
         internal static bool exitGame;
         internal static float flight_speed;
-        internal static float flight_roll;
-        internal static float flight_climb;
         internal static float laser_temp;
         internal static bool detonate_bomb;
         internal static bool auto_pilot;
@@ -162,8 +160,6 @@ namespace Elite.Engine
             restore_saved_commander();
 
             flight_speed = 1;
-            flight_roll = 0;
-            flight_climb = 0;
             docked = true;
             drawLasers = false;
             mcount = 0;
@@ -233,57 +229,57 @@ namespace Elite.Engine
 
             if (ship.rotx == 0)
             {
-                flight_climb = 0;
+                _gameState.flight_climb = 0;
             }
 
             if (ship.rotx < 0)
             {
-                space.increase_flight_climb();
+                _gameState.increase_flight_climb();
 
                 if (ship.rotx < -1)
                 {
-                    space.increase_flight_climb();
+                    _gameState.increase_flight_climb();
                 }
             }
 
             if (ship.rotx > 0)
             {
-                space.decrease_flight_climb();
+                _gameState.decrease_flight_climb();
 
                 if (ship.rotx > 1)
                 {
-                    space.decrease_flight_climb();
+                    _gameState.decrease_flight_climb();
                 }
             }
 
             if (ship.rotz == 127)
             {
-                flight_roll = -14;
+                _gameState.flight_roll = -14;
             }
             else
             {
                 if (ship.rotz == 0)
                 {
-                    flight_roll = 0;
+                    _gameState.flight_roll = 0;
                 }
 
                 if (ship.rotz > 0)
                 {
-                    space.increase_flight_roll();
+                    _gameState.increase_flight_roll();
 
                     if (ship.rotz > 1)
                     {
-                        space.increase_flight_roll();
+                        _gameState.increase_flight_roll();
                     }
                 }
 
                 if (ship.rotz < 0)
                 {
-                    space.decrease_flight_roll();
+                    _gameState.decrease_flight_roll();
 
                     if (ship.rotz < -1)
                     {
-                        space.decrease_flight_roll();
+                        _gameState.decrease_flight_roll();
                     }
                 }
             }
@@ -574,12 +570,12 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gameState, _gfx));
-            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gfx, keyboard, _stars, _pilot));
-            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, keyboard, _stars, _pilot));
-            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, keyboard, _stars, _pilot));
-            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, keyboard, _stars, _pilot));
+            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gameState, _gfx, keyboard, _stars, _pilot));
+            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gameState, _gfx, keyboard, _stars, _pilot));
+            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gameState, _gfx, keyboard, _stars, _pilot));
+            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gameState, _gfx, keyboard, _stars, _pilot));
             _views.Add(SCR.SCR_DOCKING, new Docking(_gameState, _gfx, _audio, _space));
-            _views.Add(SCR.SCR_UNDOCKING, new Launch(_gameState, _gfx, _audio));
+            _views.Add(SCR.SCR_UNDOCKING, new Launch(_gameState, _gfx, _audio, _space));
             _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gameState, _gfx, _audio));
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
@@ -637,27 +633,27 @@ namespace Elite.Engine
 
             if (!rolling)
             {
-                if (flight_roll > 0)
+                if (_gameState.flight_roll > 0)
                 {
-                    space.decrease_flight_roll();
+                    _gameState.decrease_flight_roll();
                 }
 
-                if (flight_roll < 0)
+                if (_gameState.flight_roll < 0)
                 {
-                    space.increase_flight_roll();
+                    _gameState.increase_flight_roll();
                 }
             }
 
             if (!climbing)
             {
-                if (flight_climb > 0)
+                if (_gameState.flight_climb > 0)
                 {
-                    space.decrease_flight_climb();
+                    _gameState.decrease_flight_climb();
                 }
 
-                if (flight_climb < 0)
+                if (_gameState.flight_climb < 0)
                 {
-                    space.increase_flight_climb();
+                    _gameState.increase_flight_climb();
                 }
             }
 

@@ -26,7 +26,7 @@ namespace Elite.Engine.Views
         {
             swat.clear_universe();
             swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
-            elite.flight_roll = 1;            
+            _gameState.flight_roll = 1;            
             _audio.PlayMusic(Music.EliteTheme, true);
         }
 
