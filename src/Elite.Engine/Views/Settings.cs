@@ -18,6 +18,7 @@ namespace Elite.Engine
 
 	internal class Settings : IView
 	{
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private int _highlightedItem;
@@ -32,8 +33,9 @@ namespace Elite.Engine
 			new("Save Settings", new [] {"", "", "", "", ""})
 		};
 
-        internal Settings(IGfx gfx, IKeyboard keyboard)
+        internal Settings(GameState gameState, IGfx gfx, IKeyboard keyboard)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
         }
@@ -161,7 +163,7 @@ namespace Elite.Engine
             if (_highlightedItem == (setting_list.Length - 1))
             {
                 ConfigFile.WriteConfigAsync(elite.config);
-                elite.SetView(SCR.SCR_OPTIONS);
+                _gameState.SetView(SCR.SCR_OPTIONS);
                 return;
             }
 

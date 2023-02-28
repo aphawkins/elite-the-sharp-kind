@@ -9,12 +9,14 @@ namespace Elite.Engine.Views
     /// </summary>
     internal class Intro1 : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
 
-        internal Intro1(IGfx gfx, Audio audio, IKeyboard keyboard)
+        internal Intro1(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _keyboard = keyboard;
@@ -54,13 +56,13 @@ namespace Elite.Engine.Views
             {
                 swat.clear_universe();
                 _audio.StopMusic();
-                elite.SetView(SCR.SCR_LOAD_CMDR);
+                _gameState.SetView(SCR.SCR_LOAD_CMDR);
             }
             if (_keyboard.IsKeyPressed(CommandKey.No))
             {
                 swat.clear_universe();
                 _audio.StopMusic();
-                elite.SetView(SCR.SCR_INTRO_TWO);
+                _gameState.SetView(SCR.SCR_INTRO_TWO);
             }
         }
     }

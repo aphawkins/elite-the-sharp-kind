@@ -29,6 +29,7 @@ namespace Elite.Engine
 
 	internal class space
 	{
+		private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly threed _threed;
         private readonly Audio _audio;
@@ -44,9 +45,10 @@ namespace Elite.Engine
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
-		internal space(IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade)
+		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade)
 		{
-			_gfx = gfx;
+            _gameState = gameState;
+            _gfx = gfx;
 			_threed = threed;
 			_audio = audio;
 			_pilot = pilot;
@@ -218,7 +220,7 @@ namespace Elite.Engine
 			return true;
 		}
 
-		internal static void update_altitude()
+		internal void update_altitude()
 		{
 			elite.myship.altitude = 255;
 
@@ -252,7 +254,7 @@ namespace Elite.Engine
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
-                elite.GameOver();
+                _gameState.GameOver();
 				return;
 			}
 
@@ -260,14 +262,14 @@ namespace Elite.Engine
 			if (dist < 1)
 			{
 				elite.myship.altitude = 0;
-                elite.GameOver();
+                _gameState.GameOver();
 				return;
 			}
 
 			elite.myship.altitude = dist;
 		}
 
-		internal static void update_cabin_temp()
+		internal void update_cabin_temp()
 		{
 			elite.myship.cabtemp = 30;
 
@@ -309,7 +311,7 @@ namespace Elite.Engine
 			if (elite.myship.cabtemp > 255)
 			{
 				elite.myship.cabtemp = 255;
-                elite.GameOver();
+                _gameState.GameOver();
 				return;
 			}
 
@@ -326,29 +328,6 @@ namespace Elite.Engine
 
             elite.info_message("Fuel Scoop On");
 		}
-
-		/*
-		 * Regenerate the shields and the energy banks.
-		 */
-		internal static void regenerate_shields()
-		{
-			if (elite.energy > 127)
-			{
-				if (elite.front_shield < 255)
-				{
-					elite.front_shield++;
-					elite.energy = Math.Clamp(elite.energy - 1, 0, 255);
-				}
-
-				if (elite.aft_shield < 255)
-				{
-					elite.aft_shield++;
-                    elite.energy = Math.Clamp(elite.energy - 1, 0, 255);
-                }
-			}
-
-            elite.energy = Math.Clamp(elite.energy + 1 + (int)elite.cmdr.energy_unit, 0, 255);
-        }
 
         private static void make_station_appear()
 		{
@@ -396,26 +375,26 @@ namespace Elite.Engine
 
 			if (is_docking(i))
 			{
-				elite.SetView(SCR.SCR_DOCKING);
+                _gameState.SetView(SCR.SCR_DOCKING);
 				return;
 			}
 
 			if (elite.flight_speed >= 5)
 			{
-                elite.GameOver();
+                _gameState.GameOver();
 				return;
 			}
 
 			elite.flight_speed = 1;
-            elite.damage_ship(5, universe[i].location.Z > 0);
+            _gameState.damage_ship(5, universe[i].location.Z > 0);
 			_audio.PlayEffect(SoundEffect.Crash);
 		}
 
-        private static void switch_to_view(ref univ_object flip)
+        private void switch_to_view(ref univ_object flip)
 		{
 			float tmp;
 
-			if (elite._state.currentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
+			if (_gameState.currentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
 			{
 				flip.location.X = -flip.location.X;
 				flip.location.Z = -flip.location.Z;
@@ -431,7 +410,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (elite._state.currentScreen == SCR.SCR_LEFT_VIEW)
+			if (_gameState.currentScreen == SCR.SCR_LEFT_VIEW)
 			{
 				tmp = flip.location.X;
 				flip.location.X = flip.location.Z;
@@ -456,7 +435,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (elite._state.currentScreen == SCR.SCR_RIGHT_VIEW)
+			if (_gameState.currentScreen == SCR.SCR_RIGHT_VIEW)
 			{
 				tmp = flip.location.X;
 				flip.location.X = -flip.location.Z;
@@ -530,7 +509,7 @@ namespace Elite.Engine
                     universe[i].flags |= FLG.FLG_DEAD;
                 }
 
-                if (elite._state.currentScreen is
+                if (_gameState.currentScreen is
                     not SCR.SCR_INTRO_ONE and
                     not SCR.SCR_INTRO_TWO and
                     not SCR.SCR_GAME_OVER and
@@ -694,7 +673,7 @@ namespace Elite.Engine
 			elite.hyperspace_planet = (galaxy_seed)elite.docked_planet.Clone();
 		}
 
-        private static void enter_witchspace()
+        private void enter_witchspace()
 		{
 			int i;
 			int nthg;
@@ -716,10 +695,10 @@ namespace Elite.Engine
 				swat.create_thargoid();
 			}
 
-			elite.SetView(SCR.SCR_HYPERSPACE);
+			_gameState.SetView(SCR.SCR_HYPERSPACE);
 		}
 
-        private static void complete_hyperspace()
+        private void complete_hyperspace()
 		{
 			hyper_ready = false;
 			elite.witchspace = false;
@@ -781,10 +760,10 @@ namespace Elite.Engine
 
             swat.add_new_ship(SHIP.SHIP_SUN, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
-			elite.SetView(SCR.SCR_HYPERSPACE);
+            _gameState.SetView(SCR.SCR_HYPERSPACE);
 		}
 
-		internal static void countdown_hyperspace()
+		internal void countdown_hyperspace()
 		{
 			if (hyper_countdown == 0)
 			{
@@ -870,9 +849,7 @@ namespace Elite.Engine
             elite.flight_speed = 0;
             elite.flight_roll = 0;
             elite.flight_climb = 0;
-            elite.front_shield = 255;
-            elite.aft_shield = 255;
-            elite.energy = 255;
+			_gameState.Reset();
             elite.myship.altitude = 255;
             elite.myship.cabtemp = 30;
             swat.reset_weapons();
@@ -882,11 +859,11 @@ namespace Elite.Engine
 		 * Engage the docking computer.
 		 * For the moment we just do an instant dock if we are in the safe zone.
 		 */
-        internal static void engage_docking_computer()
+        internal void engage_docking_computer()
 		{
 			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
 			{
-				elite.SetView(SCR.SCR_DOCKING);
+                _gameState.SetView(SCR.SCR_DOCKING);
 			}
 		}
     }

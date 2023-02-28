@@ -18,6 +18,7 @@ namespace Elite.Engine.Views
 
     internal class CommanderStatus : IView
     {
+        public readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly string[] laserName = new string[] { "Pulse", "Beam", "Military", "Mining", "Custom" };
         readonly int EQUIP_START_Y = 202;
@@ -57,8 +58,9 @@ namespace Elite.Engine.Views
                 new(0x1900, "- - - E L I T E - - -")
         };
 
-        internal CommanderStatus(IGfx gfx)
+        internal CommanderStatus(GameState gameState, IGfx gfx)
         {
+            _gameState = gameState;
             _gfx = gfx;
         }
 
@@ -105,7 +107,7 @@ namespace Elite.Engine.Views
                     }
                 }
 
-                if (condition == 2 && elite.energy < 128)
+                if (condition == 2 && _gameState.energy < 128)
                 {
                     condition = 3;
                 }

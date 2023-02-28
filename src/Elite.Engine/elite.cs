@@ -19,16 +19,15 @@ namespace Elite.Engine
     using Elite.Common.Enums;
     using Elite.Engine.Config;
     using Elite.Engine.Enums;
-    using Elite.Engine.Missions;
     using Elite.Engine.Ships;
     using Elite.Engine.Types;
     using Elite.Engine.Views;
 
-    public class elite
+    public partial class elite
     {
         private readonly IGfx _gfx;
         private readonly Audio _audio;
-        internal static IKeyboard keyboard;
+        private readonly IKeyboard _keyboard;
         internal static Scanner scanner;
         private readonly space _space;
         private readonly Stars _stars;
@@ -61,9 +60,6 @@ namespace Elite.Engine
         internal static float flight_speed;
         internal static float flight_roll;
         internal static float flight_climb;
-        internal static float front_shield;
-        internal static float aft_shield;
-        internal static float energy;
         internal static float laser_temp;
         internal static bool detonate_bomb;
         internal static bool auto_pilot;
@@ -80,7 +76,7 @@ namespace Elite.Engine
         readonly long oneSec = TimeSpan.FromSeconds(1).Ticks;
         readonly FC lockObj = new();
         readonly TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.Fps * 2));
-        internal static State _state = new();
+        private static GameState _gameState;
         private static readonly Dictionary<SCR, IView> _views = new();
 
         internal class FC
@@ -88,14 +84,6 @@ namespace Elite.Engine
             internal int drawn = 0;
             internal int missed = 0;
             internal List<long> framesDrawn = new();
-        }
-
-        internal class State
-        {
-            internal bool gameOver = false;
-            internal bool initialised = false;
-            internal SCR currentScreen = SCR.SCR_NONE;
-            internal IView currentView;
         }
 
         internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]
@@ -164,13 +152,12 @@ namespace Elite.Engine
 		 */
         private void initialise_game()
         {
-            if (_state.initialised)
+            if (_gameState.IsInitialised)
             {
                 return;
             }
 
-            _state.initialised = true;
-            _state.gameOver = false;
+            _gameState.Reset();
 
             restore_saved_commander();
 
@@ -178,9 +165,6 @@ namespace Elite.Engine
             flight_roll = 0;
             flight_climb = 0;
             docked = true;
-            front_shield = 255;
-            aft_shield = 255;
-            energy = 255;
             drawLasers = false;
             mcount = 0;
             space.hyper_ready = false;
@@ -201,7 +185,7 @@ namespace Elite.Engine
 
             _space.dock_player();
 
-            SetView(SCR.SCR_INTRO_ONE);
+            _gameState.SetView(SCR.SCR_INTRO_ONE);
         }
 
         internal static void ExitGame()
@@ -344,7 +328,7 @@ namespace Elite.Engine
 
             if (game_paused)
             {
-                if (keyboard.IsKeyPressed(CommandKey.Resume))
+                if (_keyboard.IsKeyPressed(CommandKey.Resume))
                 {
                     game_paused = false;
                 }
@@ -352,96 +336,96 @@ namespace Elite.Engine
                 return;
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F1))
+            if (_keyboard.IsKeyPressed(CommandKey.F1))
             {
-                if (_state.currentScreen is not SCR.SCR_INTRO_ONE and not SCR.SCR_INTRO_TWO)
+                if (_gameState.currentScreen is not SCR.SCR_INTRO_ONE and not SCR.SCR_INTRO_TWO)
                 {
                     if (docked)
                     {
-                        SetView(SCR.SCR_UNDOCKING);
+                        _gameState.SetView(SCR.SCR_UNDOCKING);
                     }
                     else
                     {
-                        SetView(SCR.SCR_FRONT_VIEW);
+                        _gameState.SetView(SCR.SCR_FRONT_VIEW);
                     }
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F2))
+            if (_keyboard.IsKeyPressed(CommandKey.F2))
             {
                 if (!docked)
                 {
-                    SetView(SCR.SCR_REAR_VIEW);
+                    _gameState.SetView(SCR.SCR_REAR_VIEW);
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F3))
+            if (_keyboard.IsKeyPressed(CommandKey.F3))
             {
                 if (!docked)
                 {
-                    SetView(SCR.SCR_LEFT_VIEW);
+                    _gameState.SetView(SCR.SCR_LEFT_VIEW);
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F4))
+            if (_keyboard.IsKeyPressed(CommandKey.F4))
             {
                 if (docked)
                 {
-                    SetView(SCR.SCR_EQUIP_SHIP);
+                    _gameState.SetView(SCR.SCR_EQUIP_SHIP);
                 }
                 else
                 {
-                    SetView(SCR.SCR_RIGHT_VIEW);
+                    _gameState.SetView(SCR.SCR_RIGHT_VIEW);
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F5))
+            if (_keyboard.IsKeyPressed(CommandKey.F5))
             {
-                SetView(SCR.SCR_GALACTIC_CHART);
+                _gameState.SetView(SCR.SCR_GALACTIC_CHART);
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F6))
+            if (_keyboard.IsKeyPressed(CommandKey.F6))
             {
-                SetView(SCR.SCR_SHORT_RANGE);
+                _gameState.SetView(SCR.SCR_SHORT_RANGE);
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F7))
+            if (_keyboard.IsKeyPressed(CommandKey.F7))
             {
-                SetView(SCR.SCR_PLANET_DATA);
+                _gameState.SetView(SCR.SCR_PLANET_DATA);
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F8) && (!witchspace))
+            if (_keyboard.IsKeyPressed(CommandKey.F8) && (!witchspace))
             {
-                SetView(SCR.SCR_MARKET_PRICES);
+                _gameState.SetView(SCR.SCR_MARKET_PRICES);
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F9))
+            if (_keyboard.IsKeyPressed(CommandKey.F9))
             {
-                SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(SCR.SCR_CMDR_STATUS);
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F10))
+            if (_keyboard.IsKeyPressed(CommandKey.F10))
             {
-                SetView(SCR.SCR_INVENTORY);
+                _gameState.SetView(SCR.SCR_INVENTORY);
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.F11))
+            if (_keyboard.IsKeyPressed(CommandKey.F11))
             {
-                SetView(SCR.SCR_OPTIONS);
+                _gameState.SetView(SCR.SCR_OPTIONS);
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.Fire))
+            if (_keyboard.IsKeyPressed(CommandKey.Fire))
             {
                 drawLasers = _swat.FireLaser();
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.DockingComputerOn))
+            if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn))
             {
                 if (!docked && cmdr.docking_computer)
                 {
                     if (config.InstantDock)
                     {
-                        space.engage_docking_computer();
+                        _space.engage_docking_computer();
                     }
                     else
                     {
@@ -450,7 +434,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.ECM))
+            if (_keyboard.IsKeyPressed(CommandKey.ECM))
             {
                 if (!docked && cmdr.ecm)
                 {
@@ -458,9 +442,9 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!docked))
+            if (_keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!docked))
             {
-                if (keyboard.IsKeyPressed(CommandKey.Ctrl))
+                if (_keyboard.IsKeyPressed(CommandKey.Ctrl))
                 {
                     _space.start_galactic_hyperspace();
                 }
@@ -470,12 +454,12 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.Jump) && (!docked) && (!witchspace))
+            if (_keyboard.IsKeyPressed(CommandKey.Jump) && (!docked) && (!witchspace))
             {
                 space.jump_warp();
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.FireMissile))
+            if (_keyboard.IsKeyPressed(CommandKey.FireMissile))
             {
                 if (!docked)
                 {
@@ -483,12 +467,12 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.Pause))
+            if (_keyboard.IsKeyPressed(CommandKey.Pause))
             {
                 game_paused = true;
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.TargetMissile))
+            if (_keyboard.IsKeyPressed(CommandKey.TargetMissile))
             {
                 if (!docked)
                 {
@@ -496,7 +480,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.UnarmMissile))
+            if (_keyboard.IsKeyPressed(CommandKey.UnarmMissile))
             {
                 if (!docked)
                 {
@@ -504,7 +488,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.IncreaseSpeed))
+            if (_keyboard.IsKeyPressed(CommandKey.IncreaseSpeed))
             {
                 if (!docked)
                 {
@@ -512,7 +496,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.DecreaseSpeed))
+            if (_keyboard.IsKeyPressed(CommandKey.DecreaseSpeed))
             {
                 if (!docked)
                 {
@@ -520,7 +504,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.EnergyBomb))
+            if (_keyboard.IsKeyPressed(CommandKey.EnergyBomb))
             {
                 if ((!docked) && cmdr.energy_bomb)
                 {
@@ -529,11 +513,11 @@ namespace Elite.Engine
                 }
             }
 
-            if (keyboard.IsKeyPressed(CommandKey.EscapePod))
+            if (_keyboard.IsKeyPressed(CommandKey.EscapePod))
             {
                 if ((!docked) && cmdr.escape_pod && (!witchspace))
                 {
-                    SetView(SCR.SCR_ESCAPE_POD);
+                    _gameState.SetView(SCR.SCR_ESCAPE_POD);
                 }
             }
         }
@@ -560,54 +544,54 @@ namespace Elite.Engine
             //}
         }
 
-        public elite(ref IGfx alg_gfx, ref ISound sound, ref IKeyboard keyboard)
+        public elite(IGfx alg_gfx, ISound sound, IKeyboard keyboard)
         {
             _gfx = alg_gfx;
             _audio = new Audio(sound);
             _audio.LoadSounds();
-
-            elite.keyboard = keyboard;
+            _keyboard = keyboard;
+            _gameState = new(_keyboard, _views);
 
             draw = new(_gfx);
             draw.LoadImages();
             draw.DrawBorder();
 
-            scanner = new Scanner(_gfx, space.universe, space.ship_count);
+            scanner = new Scanner(_gameState, _gfx, space.universe, space.ship_count);
 
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;
-
+            
             _threed = new(_gfx);
-            _stars = new(_gfx);
+            _stars = new(_gameState, _gfx);
             _pilot = new(_audio);
-            _swat = new(_audio);
-            _trade = new(_swat);
-            _space = new(_gfx, _threed, _audio, _pilot, _swat, _trade);
-            _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gfx, _audio, keyboard));
-            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gfx, _audio, keyboard, _stars));
+            _swat = new(_gameState, _audio);
+            _trade = new(_gameState, _swat);
+            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade);
+            _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard));
+            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars));
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gfx, keyboard));
             _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gfx, keyboard));
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, keyboard));
-            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gfx));
+            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gameState, _gfx));
             _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gfx, keyboard, _stars, _pilot));
             _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, keyboard, _stars, _pilot));
             _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, keyboard, _stars, _pilot));
             _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gfx, keyboard, _stars, _pilot));
-            _views.Add(SCR.SCR_DOCKING, new Docking(_gfx, _audio, _space));
-            _views.Add(SCR.SCR_UNDOCKING, new Undocking(_gfx, _audio));
-            _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gfx, _audio));
+            _views.Add(SCR.SCR_DOCKING, new Docking(_gameState, _gfx, _audio, _space));
+            _views.Add(SCR.SCR_UNDOCKING, new Launch(_gameState, _gfx, _audio));
+            _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gameState, _gfx, _audio));
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, keyboard));
-            _views.Add(SCR.SCR_OPTIONS, new Options(_gfx, keyboard));
-            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gfx, keyboard));
-            _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gfx, keyboard));
-            _views.Add(SCR.SCR_QUIT, new Quit(_gfx, keyboard));
-            _views.Add(SCR.SCR_SETTINGS, new Settings(_gfx, keyboard));
-            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gfx, keyboard));
-            _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gfx, keyboard));
-            _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gfx, _audio, _stars));
-            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gfx, _audio, _stars));
+            _views.Add(SCR.SCR_OPTIONS, new Options(_gameState, _gfx, keyboard));
+            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gameState, _gfx, keyboard));
+            _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gameState, _gfx, keyboard));
+            _views.Add(SCR.SCR_QUIT, new Quit(_gameState, _gfx, keyboard));
+            _views.Add(SCR.SCR_SETTINGS, new Settings(_gameState, _gfx, keyboard));
+            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gameState, _gfx, keyboard));
+            _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gameState, _gfx, keyboard));
+            _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars));
+            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars));
 
             exitGame = false;
             auto_pilot = false;
@@ -688,17 +672,17 @@ namespace Elite.Engine
 
             draw.ClearDisplay();
 
-            _state.currentView.UpdateUniverse();
+            _gameState.currentView.UpdateUniverse();
             _space.update_universe();
-            _state.currentView.Draw();
+            _gameState.currentView.Draw();
             scanner.update_console();
-            _state.currentView.HandleInput();
+            _gameState.currentView.HandleInput();
 
 #if DEBUG
             DrawFps();
 #endif
 
-            if (!docked & !_state.gameOver)
+            if (!docked & !_gameState.IsGameOver)
             {
                 swat.cool_laser();
 
@@ -712,7 +696,7 @@ namespace Elite.Engine
                     _space.display_hyper_status();
                     if ((mcount & 3) == 0)
                     {
-                        space.countdown_hyperspace();
+                        _space.countdown_hyperspace();
                     }
                 }
 
@@ -724,23 +708,23 @@ namespace Elite.Engine
 
                 if ((mcount & 7) == 0)
                 {
-                    space.regenerate_shields();
+                    _gameState.regenerate_shields();
                 }
 
                 if ((mcount & 31) == 10)
                 {
-                    if (energy < 50)
+                    if (_gameState.IsEnergyLow())
                     {
                         info_message("ENERGY LOW");
                         _audio.PlayEffect(SoundEffect.Beep);
                     }
 
-                    space.update_altitude();
+                    _space.update_altitude();
                 }
 
                 if ((mcount & 31) == 20)
                 {
-                    space.update_cabin_temp();
+                    _space.update_cabin_temp();
                 }
 
                 if ((mcount == 0) && (!witchspace))
@@ -748,21 +732,10 @@ namespace Elite.Engine
                     swat.random_encounter();
                 }
 
-                swat.time_ecm();
+                _swat.time_ecm();
             }
 
             _gfx.ScreenUpdate();
-        }
-
-        internal static void SetView(SCR screen)
-        {
-            lock (_state)
-            {
-                _state.currentScreen = screen;
-                _state.currentView = _views[screen];
-                keyboard.ClearKeyPressed();
-                _state.currentView.Reset();
-            }
         }
 
         private void DrawFrame()
@@ -802,60 +775,6 @@ namespace Elite.Engine
                     Monitor.Exit(lockObj);
                 }
             }
-        }
-
-        internal static void decrease_energy(float amount)
-        {
-            energy += amount;
-
-            if (energy <= 0)
-            {
-                GameOver();
-            }
-        }
-
-        /// <summary>
-        /// Deplete the shields.  Drain the energy banks if the shields fail.
-        /// </summary>
-        /// <param name="damage"></param>
-        /// <param name="front"></param>
-        internal static void damage_ship(int damage, bool front)
-        {
-            if (damage <= 0)    /* sanity check */
-            {
-                return;
-            }
-
-            float shield = front ? front_shield : aft_shield;
-
-            shield -= damage;
-            if (shield < 0)
-            {
-                decrease_energy(shield);
-                shield = 0;
-            }
-
-            if (front)
-            {
-                front_shield = shield;
-            }
-            else
-            {
-                aft_shield = shield;
-            }
-        }
-
-        /// <summary>
-        /// Game Over...
-        /// </summary>
-        internal static void GameOver()
-        {
-            if (!_state.gameOver)
-            {
-                SetView(SCR.SCR_GAME_OVER);
-            }
-
-            _state.gameOver = true;
         }
 
         private void DrawFps()

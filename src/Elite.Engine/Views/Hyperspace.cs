@@ -5,12 +5,14 @@
 
     internal class Hyperspace : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly BreakPattern _breakPattern;
 
-        internal Hyperspace(IGfx gfx, Audio audio)
+        internal Hyperspace(GameState gameState, IGfx gfx, Audio audio)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _breakPattern = new(_gfx);
@@ -37,7 +39,7 @@
 
             if (_breakPattern.IsComplete)
             {
-                elite.SetView(SCR.SCR_FRONT_VIEW);
+                _gameState.SetView(SCR.SCR_FRONT_VIEW);
             }
         }
     }

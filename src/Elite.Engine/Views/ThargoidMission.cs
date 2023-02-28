@@ -5,6 +5,7 @@
 
     internal class ThargoidMission : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
 
@@ -30,8 +31,9 @@
             "For the moment please accept this Navy Extra Energy Unit as payment. " +
             "---MESSAGE ENDS.";
 
-        internal ThargoidMission(IGfx gfx, IKeyboard keyboard)
+        internal ThargoidMission(GameState gameState, IGfx gfx, IKeyboard keyboard)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
         }
@@ -57,7 +59,7 @@
             }
             else
             {
-                elite.SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(SCR.SCR_CMDR_STATUS);
             }
         }
 
@@ -94,7 +96,7 @@
         {
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                elite.SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(SCR.SCR_CMDR_STATUS);
             }
         }
     }

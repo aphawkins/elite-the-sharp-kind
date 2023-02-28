@@ -11,13 +11,15 @@
 
     internal class GameOverView : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly Stars _stars;
         private int _i;
 
-        internal GameOverView(IGfx gfx, Audio audio, Stars stars)
+        internal GameOverView(GameState gameState, IGfx gfx, Audio audio, Stars stars)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _stars = stars;
@@ -59,7 +61,7 @@
         {
             if (_i >= 100)
             {
-                elite._state.initialised = false;
+                _gameState.IsInitialised = false;
             }
 
             _stars.rear_starfield();

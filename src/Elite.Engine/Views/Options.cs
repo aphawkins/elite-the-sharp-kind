@@ -19,6 +19,7 @@ namespace Elite.Engine.Views
 
     internal class Options : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private int _highlightedItem;
@@ -33,8 +34,9 @@ namespace Elite.Engine.Views
             new ("Quit",            false)
         };
 
-        internal Options(IGfx gfx, IKeyboard keyboard)
+        internal Options(GameState gameState, IGfx gfx, IKeyboard keyboard)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
         }
@@ -98,19 +100,19 @@ namespace Elite.Engine.Views
                 switch (_highlightedItem)
                 {
                     case 0:
-                        elite.SetView(SCR.SCR_SAVE_CMDR);
+                        _gameState.SetView(SCR.SCR_SAVE_CMDR);
                         break;
 
                     case 1:
-                        elite.SetView(SCR.SCR_LOAD_CMDR);
+                        _gameState.SetView(SCR.SCR_LOAD_CMDR);
                         break;
 
                     case 2:
-                        elite.SetView(SCR.SCR_SETTINGS);
+                        _gameState.SetView(SCR.SCR_SETTINGS);
                         break;
 
                     case 3:
-                        elite.SetView(SCR.SCR_QUIT);
+                        _gameState.SetView(SCR.SCR_QUIT);
                         break;
                 }
             }

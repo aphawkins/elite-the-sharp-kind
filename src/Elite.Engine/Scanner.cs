@@ -27,13 +27,15 @@ namespace Elite.Engine
 
     internal class Scanner
 	{
-		private readonly IGfx _gfx;
+		private readonly GameState _gameState;
+        private readonly IGfx _gfx;
 		private readonly univ_object[] _universe;
 		private readonly Dictionary<SHIP, int> _shipCount;
 
-		internal Scanner(IGfx gfx, univ_object[] universe, Dictionary<SHIP, int> shipCount)
-        { 
-			_gfx = gfx;
+		internal Scanner(GameState gameState, IGfx gfx, univ_object[] universe, Dictionary<SHIP, int> shipCount)
+        {
+			_gameState = gameState;
+            _gfx = gfx;
 			_universe = universe;
             _shipCount = shipCount;
         }
@@ -146,16 +148,16 @@ namespace Elite.Engine
 		 */
         private void display_dial_bar(float len, Vector2 position)
 		{
-            _gfx.DrawLine(new(position.X, position.Y + 384f), new(position.X + len, position.Y + 384f), GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(position.X, position.Y + 384), new(position.X + len, position.Y + 384), GFX_COL.GFX_COL_GOLD);
 			int i = 1;
-            _gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), GFX_COL.GFX_COL_GOLD);
 
 			for (i = 2; i < 7; i++)
 			{
-				_gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_YELLOW_1);
+				_gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), GFX_COL.GFX_COL_YELLOW_1);
 			}
 
-            _gfx.DrawLine(new(position.X, position.Y + i + 384f), new(position.X + len, position.Y + i + 384f), GFX_COL.GFX_COL_DARK_RED);
+            _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), GFX_COL.GFX_COL_DARK_RED);
 		}
 
         /*
@@ -163,14 +165,14 @@ namespace Elite.Engine
 		 */
         private void display_shields()
 		{
-			if (elite.front_shield > 3)
+			if (_gameState.fore_shield > 3)
 			{
-				display_dial_bar(elite.front_shield / 4, new(31f, 7f));
+				display_dial_bar(_gameState.fore_shield / 4, new(31, 7));
 			}
 
-			if (elite.aft_shield > 3)
+			if (_gameState.aft_shield > 3)
 			{
-				display_dial_bar(elite.aft_shield / 4, new(31f, 23));
+				display_dial_bar(_gameState.aft_shield / 4, new(31, 23));
 			}
 		}
 
@@ -203,29 +205,29 @@ namespace Elite.Engine
 		 */
         private void display_energy()
 		{
-            float e1 = elite.energy > 64 ? 64 : elite.energy;
-            float e2 = elite.energy > 128 ? 64 : elite.energy - 64;
-            float e3 = elite.energy > 192 ? 64 : elite.energy - 128;
-            float e4 = elite.energy - 192;
+            float e1 = _gameState.energy > 64 ? 64 : _gameState.energy;
+            float e2 = _gameState.energy > 128 ? 64 : _gameState.energy - 64;
+            float e3 = _gameState.energy > 192 ? 64 : _gameState.energy - 128;
+            float e4 = _gameState.energy - 192;
 
 			if (e4 > 0)
 			{
-				display_dial_bar(e4, new(416f, 61f));
+				display_dial_bar(e4, new(416, 61));
 			}
 
 			if (e3 > 0)
 			{
-				display_dial_bar(e3, new(416f, 79f));
+				display_dial_bar(e3, new(416, 79));
 			}
 
 			if (e2 > 0)
 			{
-				display_dial_bar(e2, new(416f, 97f));
+				display_dial_bar(e2, new(416, 97));
 			}
 
 			if (e1 > 0)
 			{
-				display_dial_bar(e1, new(416f, 115f));
+				display_dial_bar(e1, new(416, 115));
 			}
 		}
 

@@ -4,11 +4,13 @@
 
     internal class Quit : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
 
-        internal Quit(IGfx gfx, IKeyboard keyboard) 
+        internal Quit(GameState gameState, IGfx gfx, IKeyboard keyboard) 
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
         }
@@ -32,11 +34,11 @@
             {
                 if (elite.docked)
                 {
-                    elite.SetView(SCR.SCR_CMDR_STATUS);
+                    _gameState.SetView(SCR.SCR_CMDR_STATUS);
                 }
                 else
                 {
-                    elite.SetView(SCR.SCR_FRONT_VIEW);
+                    _gameState.SetView(SCR.SCR_FRONT_VIEW);
                 }
             }
         }

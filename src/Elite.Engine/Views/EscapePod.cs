@@ -6,14 +6,16 @@
 
     internal class EscapePod : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly Stars _stars;
         private int _newship;
         private int _i;
 
-        internal EscapePod(IGfx gfx, Audio audio, Stars stars)
+        internal EscapePod(GameState gameState, IGfx gfx, Audio audio, Stars stars)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _stars = stars;
@@ -89,7 +91,7 @@
                     elite.cmdr.current_cargo[i] = 0;
                 }
 
-                elite.SetView(SCR.SCR_DOCKING);
+                _gameState.SetView(SCR.SCR_DOCKING);
             }
         }
     }

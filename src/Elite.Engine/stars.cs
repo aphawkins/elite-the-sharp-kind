@@ -19,13 +19,15 @@ namespace Elite.Engine
 
 	internal class Stars
 	{
+		private readonly GameState _gameState;
+		private readonly IGfx _gfx;
 		internal static bool warp_stars;
         private static readonly Vector3[] stars = new Vector3[20];
-		private readonly IGfx _gfx;
 
-		internal Stars(IGfx gfx)
+		internal Stars(GameState gameState, IGfx gfx)
 		{
-			_gfx = gfx;
+			_gameState = gameState;
+            _gfx = gfx;
         }
 
 		internal static void create_new_stars()
@@ -306,7 +308,7 @@ namespace Elite.Engine
 				if (MathF.Abs(stars[i].X) >= 116f)
 				{
 					stars[i].Y = RNG.Random(-128, 127);
-					stars[i].X = (elite._state.currentScreen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
+					stars[i].X = (_gameState.currentScreen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
 					stars[i].Z = RNG.Random(255) | 8;
 				}
 				else if (MathF.Abs(stars[i].Y) >= 116f)

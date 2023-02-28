@@ -19,7 +19,9 @@ namespace Elite.Engine
 
 	internal class trade
 	{
-		internal const int ALIEN_ITEMS_IDX = 16;
+        private readonly GameState _gameState;
+
+        internal const int ALIEN_ITEMS_IDX = 16;
         private const int SLAVES = 3;
         private const int NARCOTICS = 6;
         private const int FIREARMS = 10;
@@ -54,8 +56,9 @@ namespace Elite.Engine
 			new("Alien Items",  0, 0,  5.3f, 15, 192, 0x07, TONNES),
 		};
 
-		internal trade(swat swat)
+		internal trade(GameState gameState, swat swat)
 		{
+            _gameState = gameState;
             _swat = swat;
         }
 
@@ -146,7 +149,7 @@ namespace Elite.Engine
 				(total_cargo() == elite.cmdr.cargo_capacity))
 			{
 				_swat.explode_object(un);
-                elite.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
+                _gameState.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
 				return;
 			}
 
@@ -169,7 +172,7 @@ namespace Elite.Engine
 			}
 
 			_swat.explode_object(un);
-            elite.damage_ship(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
+            _gameState.damage_ship(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
 		}
 	}
 }

@@ -5,13 +5,15 @@
 
     internal class Docking : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly space _space;
         private readonly BreakPattern _breakPattern;
 
-        internal Docking(IGfx gfx, Audio audio, space space)
+        internal Docking(GameState gameState, IGfx gfx, Audio audio, space space)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _space = space;
@@ -41,7 +43,7 @@
             if (_breakPattern.IsComplete)
             {
                 _space.dock_player();
-                elite.SetView(SCR.SCR_MISSION_1);
+                _gameState.SetView(SCR.SCR_MISSION_1);
             }
         }
     }

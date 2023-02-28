@@ -6,13 +6,15 @@
 
     internal class LoadCommander : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private string _name = elite.cmdr.name;
         private Commander _cmdr = CommanderFactory.Jameson();
 
-        internal LoadCommander(IGfx gfx, IKeyboard keyboard)
+        internal LoadCommander(GameState gameState, IGfx gfx, IKeyboard keyboard)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
         }
@@ -57,13 +59,13 @@
                 {
                     elite.saved_cmdr = (Commander)_cmdr.Clone();
                     elite.restore_saved_commander();
-                    elite.SetView(SCR.SCR_CMDR_STATUS);
+                    _gameState.SetView(SCR.SCR_CMDR_STATUS);
                 }
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                elite.SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(SCR.SCR_CMDR_STATUS);
             }
         }
 

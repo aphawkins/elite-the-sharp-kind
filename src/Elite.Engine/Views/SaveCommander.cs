@@ -1,9 +1,4 @@
-﻿using Elite.Engine.Enums;
-using Elite.Engine.Save;
-using Elite.Engine.Types;
-using Elite.Engine.Views;
-
-namespace Elite.Engine.Views
+﻿namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
     using Elite.Engine.Save;
@@ -11,13 +6,15 @@ namespace Elite.Engine.Views
 
     internal class SaveCommander : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private string _name = elite.cmdr.name;
         private bool? _isSuccess = null;
 
-        internal SaveCommander(IGfx gfx, IKeyboard keyboard)
+        internal SaveCommander(GameState gameState, IGfx gfx, IKeyboard keyboard)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
         }
@@ -82,7 +79,7 @@ namespace Elite.Engine.Views
 
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                elite.SetView(SCR.SCR_OPTIONS);
+                _gameState.SetView(SCR.SCR_OPTIONS);
             }
         }
 

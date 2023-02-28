@@ -5,6 +5,7 @@
 
     internal class ConstrictorMission : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
 
@@ -36,8 +37,9 @@
             "There will always be a place for you in Her Majesty's Space Navy. " +
             "And maybe sooner than you think... ---MESSAGE ENDS.";
 
-        internal ConstrictorMission(IGfx gfx, IKeyboard keyboard)
+        internal ConstrictorMission(GameState gameState, IGfx gfx, IKeyboard keyboard)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
         }
@@ -65,7 +67,7 @@
             }
             else
             {
-                elite.SetView(SCR.SCR_MISSION_2);
+                _gameState.SetView(SCR.SCR_MISSION_2);
             }
         }
 
@@ -101,7 +103,7 @@
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
                 swat.clear_universe();
-                elite.SetView(SCR.SCR_MISSION_2);
+                _gameState.SetView(SCR.SCR_MISSION_2);
             }
         }
     }

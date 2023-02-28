@@ -29,7 +29,8 @@ namespace Elite.Engine
 
 	internal class swat
 	{
-		private readonly Audio _audio;
+		private readonly GameState _gameState;
+        private readonly Audio _audio;
         internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
         private static int laser_counter;
@@ -77,9 +78,10 @@ namespace Elite.Engine
 			0											// dodec
 		};
 
-		internal swat(Audio audio)
+		internal swat(GameState gameState, Audio audio)
 		{
-			_audio = audio;
+			_gameState = gameState;
+            _audio = audio;
         }
 
 		internal static void clear_universe()
@@ -371,14 +373,14 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void time_ecm()
+		internal void time_ecm()
 		{
 			if (ecm_active != 0)
 			{
 				ecm_active--;
 				if (ecm_ours)
 				{
-                    elite.decrease_energy(-1);
+                    _gameState.decrease_energy(-1);
 				}
 			}
 		}
@@ -491,7 +493,7 @@ namespace Elite.Engine
 				{
 					missile.flags |= FLG.FLG_DEAD;
 					_audio.PlayEffect(SoundEffect.Explode);
-                    elite.damage_ship(250, missile.location.Z >= 0.0);
+                    _gameState.damage_ship(250, missile.location.Z >= 0.0);
 					return;
 				}
 
@@ -758,10 +760,10 @@ namespace Elite.Engine
 
 				if (direction <= -0.972)
 				{
-                    elite.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
+                    _gameState.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
 					ship.acceleration--;
-					if (((ship.location.Z >= 0.0) && (elite.front_shield == 0)) ||
-						((ship.location.Z < 0.0) && (elite.aft_shield == 0)))
+					if (((ship.location.Z >= 0.0) && (_gameState.fore_shield == 0)) ||
+						((ship.location.Z < 0.0) && (_gameState.aft_shield == 0)))
 					{
 						_audio.PlayEffect(SoundEffect.IncomingFire2);
 					}
@@ -867,7 +869,7 @@ namespace Elite.Engine
                 return false;
             }
 
-            laser = elite._state.currentScreen switch
+            laser = _gameState.currentScreen switch
             {
                 SCR.SCR_FRONT_VIEW => elite.cmdr.front_laser,
                 SCR.SCR_REAR_VIEW => elite.cmdr.rear_laser,
@@ -887,9 +889,9 @@ namespace Elite.Engine
 
             _audio.PlayEffect(SoundEffect.Pulse);
             elite.laser_temp += 8;
-            if (elite.energy > 1)
+            if (_gameState.energy > 1)
             {
-                elite.energy--;
+                _gameState.energy--;
             }
 
             return true;

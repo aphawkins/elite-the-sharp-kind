@@ -10,6 +10,7 @@ namespace Elite.Engine.Views
     /// </summary>
     internal class Intro2 : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
@@ -28,8 +29,9 @@ namespace Elite.Engine.Views
         };
         private Vector3[] _rotmat = new Vector3[3];
 
-        internal Intro2(IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars)
+        internal Intro2(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars)
         {
+            _gameState = gameStat;
             _gfx = gfx;
             _audio = audio;
             _keyboard = keyboard;
@@ -106,7 +108,7 @@ namespace Elite.Engine.Views
             {
                 swat.clear_universe();
                 _audio.StopMusic();
-                elite.SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(SCR.SCR_CMDR_STATUS);
             }
         }
     }
