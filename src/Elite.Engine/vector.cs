@@ -27,21 +27,21 @@ namespace Elite.Engine
 	{
         private static readonly Vector3[] start_matrix = new Vector3[3]
 		{
-			new Vector3(1f, 0f, 0f),
-			new Vector3(0f, 1f, 0f),
-			new Vector3(0f, 0f,-1f)
+			new Vector3(1, 0, 0),
+			new Vector3(0, 1, 0),
+			new Vector3(0, 0,-1)
 		};
 
 		internal static Vector3 mult_vector(Vector3 vec, Vector3[] mat)
 		{
-			Matrix4x4 matrix = new(
-				mat[0].X, mat[0].Y, mat[0].Z, 0f,
-				mat[1].X, mat[1].Y, mat[1].Z, 0f,
-				mat[2].X, mat[2].Y, mat[2].Z, 0f,
-				0f, 0f, 0f, 0f);
+            Matrix4x4 matrix = new(
+				mat[0].X, mat[1].X, mat[2].X, 0,
+				mat[0].Y, mat[1].Y, mat[2].Y, 0,
+				mat[0].Z, mat[1].Z, mat[2].Z, 0,
+				0, 0, 0, 0);
 
-            return Vector3.TransformNormal(vec, matrix);
-		}
+            return Vector3.Transform(vec, matrix);
+        }
 
 		/// <summary>
 		/// Calculate the dot product of two vectors sharing a common point.
