@@ -298,18 +298,13 @@ namespace Elite.Engine
 			ry += radius * 65536;
 			float div = radius * 1024;  /* radius * 2 * LAND_X_MAX >> 16 */
 
-			//Debug.Assert(rx > 0);
-			//Debug.Assert(ry > 0);
-
 			for (; s.X <= ex; s.X++)
 			{
 				if (s.X is >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET) and <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET))
 				{
-					int lx = (int)(rx / div);
-                    int ly = (int)(ry / div);
-                    //TODO: fix colours
-                    //GFX_COL colour = (GFX_COL)landscape[lx, ly];
-                    GFX_COL colour = lx < 0 || lx > 128 || ly < 0 || ly > 128 ? GFX_COL.GFX_COL_PINK_1 : (GFX_COL)landscape[lx, ly];
+					int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LAND_X_MAX);
+					int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LAND_Y_MAX);
+                    GFX_COL colour = (GFX_COL)landscape[lx, ly];
                     _gfx.DrawPixelFast(s, colour);
                 }
 				rx += vx;
