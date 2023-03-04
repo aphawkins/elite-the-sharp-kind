@@ -224,7 +224,7 @@ namespace Elite.Engine
 		{
 			elite.myship.altitude = 255;
 
-			if (elite.witchspace)
+			if (_gameState.witchspace)
 			{
 				return;
 			}
@@ -273,7 +273,7 @@ namespace Elite.Engine
 		{
 			elite.myship.cabtemp = 30;
 
-			if (elite.witchspace)
+			if (_gameState.witchspace)
 			{
 				return;
 			}
@@ -486,7 +486,7 @@ namespace Elite.Engine
 
                     float bounty = elite.ship_list[(int)type].bounty;
 
-                    if ((bounty != 0) && (!elite.witchspace))
+                    if ((bounty != 0) && (!_gameState.witchspace))
                     {
                         elite.cmdr.credits += bounty;
                         elite.info_message($"{elite.cmdr.credits:N1} Credits");
@@ -658,7 +658,7 @@ namespace Elite.Engine
 			int i;
 			int nthg;
 
-			elite.witchspace = true;
+            _gameState.witchspace = true;
 			elite.docked_planet.b ^= 31;
 			swat.in_battle = true;
 
@@ -681,7 +681,7 @@ namespace Elite.Engine
         private void complete_hyperspace()
 		{
 			hyper_ready = false;
-			elite.witchspace = false;
+            _gameState.witchspace = false;
 
 			if (hyper_galactic)
 			{

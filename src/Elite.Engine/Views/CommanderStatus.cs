@@ -119,7 +119,7 @@ namespace Elite.Engine.Views
             _draw.DrawViewHeader($"COMMANDER {elite.cmdr.name}");
             _gfx.DrawTextLeft(16, 58, "Present System:", GFX_COL.GFX_COL_GREEN_1);
 
-            if (!elite.witchspace)
+            if (!_gameState.witchspace)
             {
                 _gfx.DrawTextLeft(150, 58, dockedPlanetName, GFX_COL.GFX_COL_WHITE);
             }

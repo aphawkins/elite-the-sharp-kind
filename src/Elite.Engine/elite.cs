@@ -35,26 +35,18 @@ namespace Elite.Engine
         private readonly pilot _pilot;
         private readonly swat _swat;
         private readonly trade _trade;
-
         internal const int PULSE_LASER = 15;
         internal const int BEAM_LASER = 143;
         internal const int MILITARY_LASER = 151;
         internal const int MINING_LASER = 50;
-
         internal const int MAX_UNIV_OBJECTS = 20;
-
         internal static galaxy_seed docked_planet;
         internal static galaxy_seed hyperspace_planet;
         internal static planet_data current_planet_data = new();
-
         internal static int carry_flag = 0;
-        internal static bool witchspace;
-
         internal static ConfigSettings config = new();
-
         internal static Vector2 scanner_centre = new(253, 63 + 385);
         internal static Vector2 compass_centre = new(382, 22 + 385);
-
         internal static bool docked;
         internal static bool exitGame;
         internal static float flight_speed;
@@ -165,7 +157,6 @@ namespace Elite.Engine
             mcount = 0;
             space.hyper_ready = false;
             detonate_bomb = false;
-            witchspace = false;
             game_paused = false;
             auto_pilot = false;
 
@@ -390,7 +381,7 @@ namespace Elite.Engine
                 _gameState.SetView(SCR.SCR_PLANET_DATA);
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.F8) && (!witchspace))
+            if (_keyboard.IsKeyPressed(CommandKey.F8) && (!_gameState.witchspace))
             {
                 _gameState.SetView(SCR.SCR_MARKET_PRICES);
             }
@@ -450,7 +441,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.Jump) && (!docked) && (!witchspace))
+            if (_keyboard.IsKeyPressed(CommandKey.Jump) && (!docked) && (!_gameState.witchspace))
             {
                 space.jump_warp();
             }
@@ -511,7 +502,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.EscapePod))
             {
-                if ((!docked) && cmdr.escape_pod && (!witchspace))
+                if ((!docked) && cmdr.escape_pod && (!_gameState.witchspace))
                 {
                     _gameState.SetView(SCR.SCR_ESCAPE_POD);
                 }
@@ -559,7 +550,7 @@ namespace Elite.Engine
             
             _threed = new(_gfx, _draw);
             _stars = new(_gameState, _gfx);
-            _pilot = new(_audio);
+            _pilot = new(_gameState, _audio);
             _swat = new(_gameState, _audio);
             _trade = new(_gameState, _swat);
             _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade);
@@ -723,7 +714,7 @@ namespace Elite.Engine
                     _space.update_cabin_temp();
                 }
 
-                if ((mcount == 0) && (!witchspace))
+                if ((mcount == 0) && (!_gameState.witchspace))
                 {
                     swat.random_encounter();
                 }

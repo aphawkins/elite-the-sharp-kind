@@ -33,10 +33,12 @@ namespace Elite.Engine
 
 	internal class pilot
 	{
-		private readonly Audio _audio;
+		private readonly GameState _gameState;
+        private readonly Audio _audio;
 
-		internal pilot(Audio audio)
+		internal pilot(GameState gameState, Audio audio)
 		{
+			_gameState = gameState;
 			_audio = audio;
 		}
 
@@ -268,7 +270,7 @@ namespace Elite.Engine
 
 		internal void engage_auto_pilot()
 		{
-			if (elite.auto_pilot || elite.witchspace || space.hyper_ready)
+			if (elite.auto_pilot || _gameState.witchspace || space.hyper_ready)
 			{
 				return;
 			}

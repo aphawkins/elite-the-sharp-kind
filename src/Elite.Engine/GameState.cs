@@ -29,7 +29,7 @@ namespace Elite.Engine
         internal float aft_shield { get; private set; } = 255;
         internal float flight_roll;
         internal float flight_climb;
-
+        internal bool witchspace;
 
         internal GameState(IKeyboard keyboard, Dictionary<SCR, IView> views) 
         {
@@ -47,6 +47,7 @@ namespace Elite.Engine
             energy = 255;
             flight_roll = 0;
             flight_climb = 0;
+            witchspace = false;
         }
 
         internal void SetView(SCR screen)
