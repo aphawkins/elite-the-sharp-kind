@@ -21,6 +21,7 @@ namespace Elite.Engine.Views
     internal class ShortRangeChart : IView
     {
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly List<(Vector2 position, string name)> _planetNames = new();
         private readonly List<(Vector2 position, float size)> _planetSizes = new();
@@ -28,9 +29,10 @@ namespace Elite.Engine.Views
         private bool _isFind;
         private string _findName;
 
-        internal ShortRangeChart(IGfx gfx, IKeyboard keyboard)
+        internal ShortRangeChart(IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
@@ -131,8 +133,8 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             // Header
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader("SHORT RANGE CHART");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader("SHORT RANGE CHART");
 
             // Fuel radius
             Vector2 centre = new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);

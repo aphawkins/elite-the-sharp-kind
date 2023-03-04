@@ -19,16 +19,18 @@ namespace Elite.Engine.Views
     internal class Inventory : IView
     {
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
 
-        internal Inventory(IGfx gfx)
+        internal Inventory(IGfx gfx, Draw draw)
         {
             _gfx = gfx;
+            _draw = draw;
         }
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader("INVENTORY");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader("INVENTORY");
 
             _gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(70, 50, $"{elite.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);

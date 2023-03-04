@@ -8,21 +8,23 @@
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private string _name = elite.cmdr.name;
         private Commander _cmdr = CommanderFactory.Jameson();
 
-        internal LoadCommander(GameState gameState, IGfx gfx, IKeyboard keyboard)
+        internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader("LOAD COMMANDER");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader("LOAD COMMANDER");
 
             _gfx.DrawTextCentre(75, "Please enter commander name:", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawRectangle(100, 100, 312, 50, GFX_COL.GFX_COL_WHITE);

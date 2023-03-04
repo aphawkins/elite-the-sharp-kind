@@ -17,6 +17,7 @@ namespace Elite.Engine
 	using System.Numerics;
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;
+	using Elite.Engine.Views;
 
 	internal class threed
 	{
@@ -25,10 +26,12 @@ namespace Elite.Engine
         private static readonly int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
         private static readonly Vector3[] point_list = new Vector3[100];
 		private readonly IGfx _gfx;
+        private readonly Draw _draw;
 
-        internal threed(IGfx gfx)
+        internal threed(IGfx gfx, Draw draw)
 		{
 			_gfx = gfx;
+			_draw = draw;
         }
 
         /// <summary>
@@ -561,7 +564,7 @@ namespace Elite.Engine
 
 			if (ship.type == SHIP.SHIP_SUN)
 			{
-				elite.draw.draw_sun(ship);
+				_draw.draw_sun(ship);
 				return;
 			}
 

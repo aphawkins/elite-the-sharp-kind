@@ -15,11 +15,13 @@
 namespace Elite.Engine
 {
 	using Elite.Engine.Enums;
+    using Elite.Engine.Views;
 
-	internal class Settings : IView
+    internal class Settings : IView
 	{
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private int _highlightedItem;
 
@@ -33,10 +35,11 @@ namespace Elite.Engine
 			new("Save Settings", new [] {"", "", "", "", ""})
 		};
 
-        internal Settings(GameState gameState, IGfx gfx, IKeyboard keyboard)
+        internal Settings(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
@@ -51,8 +54,8 @@ namespace Elite.Engine
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader("GAME SETTINGS");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader("GAME SETTINGS");
 
             for (int i = 0; i < setting_list.Length; i++)
             {

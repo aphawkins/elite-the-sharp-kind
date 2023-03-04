@@ -6,19 +6,21 @@
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
 
-        internal Quit(GameState gameState, IGfx gfx, IKeyboard keyboard) 
+        internal Quit(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard) 
         {
             _gameState = gameState;
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader("GAME OPTIONS");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader("GAME OPTIONS");
 
             _gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
         }

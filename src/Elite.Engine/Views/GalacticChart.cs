@@ -21,15 +21,17 @@ namespace Elite.Engine.Views
     internal class GalacticChart : IView
     {
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly List<Vector2> _planetPixels = new();
         private int _crossTimer;
         private bool _isFind;
         private string _findName;
 
-        internal GalacticChart(IGfx gfx, IKeyboard keyboard)
+        internal GalacticChart(IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
@@ -80,8 +82,8 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             // Header
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader($"GALACTIC CHART {elite.cmdr.galaxy_number + 1}");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader($"GALACTIC CHART {elite.cmdr.galaxy_number + 1}");
 
             _gfx.DrawLine(new(0, 36 + 258), new(511, 36 + 258));
 

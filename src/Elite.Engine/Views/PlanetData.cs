@@ -22,6 +22,7 @@ namespace Elite.Engine.Views
     internal class PlanetData : IView
 	{
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private float _distanceToPlanet = 0;
         private planet_data _hyperPlanetData = new();
 
@@ -83,9 +84,10 @@ namespace Elite.Engine.Views
 		/* 35	*/	new string[] {"hockey", "cricket", "karate", "polo", "tennis"}
         };
 
-        internal PlanetData(IGfx gfx)
+        internal PlanetData(IGfx gfx, Draw draw)
         {
             _gfx = gfx;
+            _draw = draw;
         }
 
         private string DescribePlanet(galaxy_seed planet)
@@ -225,8 +227,8 @@ namespace Elite.Engine.Views
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader($"DATA ON {Planet.name_planet(elite.hyperspace_planet, false)}");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader($"DATA ON {Planet.name_planet(elite.hyperspace_planet, false)}");
 
             if (_distanceToPlanet > 0)
             {
@@ -245,7 +247,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 234, "Average Radius:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(140, 234, $"{_hyperPlanetData.radius} km", GFX_COL.GFX_COL_WHITE);
-            elite.draw.DrawTextPretty(16, 266, 400, DescribePlanet(elite.hyperspace_planet));
+            _draw.DrawTextPretty(16, 266, 400, DescribePlanet(elite.hyperspace_planet));
         }
 
         public void HandleInput()

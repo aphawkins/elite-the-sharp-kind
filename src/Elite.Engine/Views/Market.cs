@@ -19,12 +19,14 @@ namespace Elite.Engine.Views
     internal class Market : IView
     {
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private int _highlightedStock;
 
-        internal Market(IGfx gfx, IKeyboard keyboard)
+        internal Market(IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
@@ -39,8 +41,8 @@ namespace Elite.Engine.Views
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader($"{Planet.name_planet(elite.docked_planet, false)} MARKET PRICES");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader($"{Planet.name_planet(elite.docked_planet, false)} MARKET PRICES");
 
             _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);

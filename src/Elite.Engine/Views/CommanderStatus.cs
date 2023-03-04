@@ -20,6 +20,7 @@ namespace Elite.Engine.Views
     {
         public readonly GameState _gameState;
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly string[] laserName = new string[] { "Pulse", "Beam", "Military", "Mining", "Custom" };
         readonly int EQUIP_START_Y = 202;
         readonly int Y_INC = 16;
@@ -39,12 +40,13 @@ namespace Elite.Engine.Views
         }
 
         readonly string[] condition_txt = new string[]
-{
+        {
                 "Docked",
                 "Green",
                 "Yellow",
                 "Red"
-};
+        };
+
         readonly (int score, string title)[] ratings = new (int score, string title)[]
         {
                 new(0x0000, "Harmless"),
@@ -58,15 +60,16 @@ namespace Elite.Engine.Views
                 new(0x1900, "- - - E L I T E - - -")
         };
 
-        internal CommanderStatus(GameState gameState, IGfx gfx)
+        internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw)
         {
             _gameState = gameState;
             _gfx = gfx;
+            _draw = draw;
         }
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
+            _draw.ClearDisplay();
             int x = 50;
             int y = EQUIP_START_Y;
 
@@ -113,7 +116,7 @@ namespace Elite.Engine.Views
                 }
             }
 
-            elite.draw.DrawViewHeader($"COMMANDER {elite.cmdr.name}");
+            _draw.DrawViewHeader($"COMMANDER {elite.cmdr.name}");
             _gfx.DrawTextLeft(16, 58, "Present System:", GFX_COL.GFX_COL_GREEN_1);
 
             if (!elite.witchspace)

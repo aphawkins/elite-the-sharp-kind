@@ -7,6 +7,7 @@
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
 
         private static readonly string mission2_brief_a =
@@ -31,10 +32,11 @@
             "For the moment please accept this Navy Extra Energy Unit as payment. " +
             "---MESSAGE ENDS.";
 
-        internal ThargoidMission(GameState gameState, IGfx gfx, IKeyboard keyboard)
+        internal ThargoidMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
@@ -71,23 +73,23 @@
         {
             if (elite.cmdr.mission == 4)
             {
-                elite.draw.DrawViewHeader("INCOMING MESSAGE");
-                elite.draw.DrawTextPretty(116, 132, 400, mission2_brief_a);
+                _draw.DrawViewHeader("INCOMING MESSAGE");
+                _draw.DrawTextPretty(116, 132, 400, mission2_brief_a);
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
             else if (elite.cmdr.mission == 5)
             {
-                elite.draw.DrawViewHeader("INCOMING MESSAGE");
-                elite.draw.DrawTextPretty(16, 50, 300, mission2_brief_b);
-                elite.draw.DrawTextPretty(16, 200, 470, mission2_brief_c);
+                _draw.DrawViewHeader("INCOMING MESSAGE");
+                _draw.DrawTextPretty(16, 50, 300, mission2_brief_b);
+                _draw.DrawTextPretty(16, 200, 470, mission2_brief_c);
                 _gfx.DrawImage(Image.Blake, new(352, 46));
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
             else if (elite.cmdr.mission == 6)
             {
-                elite.draw.DrawViewHeader("INCOMING MESSAGE");
+                _draw.DrawViewHeader("INCOMING MESSAGE");
                 _gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);
-                elite.draw.DrawTextPretty(116, 132, 400, mission2_debrief);
+                _draw.DrawTextPretty(116, 132, 400, mission2_debrief);
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
         }

@@ -20,12 +20,14 @@ namespace Elite.Engine.Views
     internal class Equipment : IView
     {
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private int _highlightedItem;
 
-        internal Equipment(IGfx gfx, IKeyboard keyboard)
+        internal Equipment(IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
@@ -116,8 +118,8 @@ namespace Elite.Engine.Views
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader("EQUIP SHIP");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader("EQUIP SHIP");
 
             int y = 55;
 

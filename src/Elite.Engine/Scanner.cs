@@ -24,18 +24,21 @@ namespace Elite.Engine
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
+	using Elite.Engine.Views;
 
-    internal class Scanner
+	internal class Scanner
 	{
 		private readonly GameState _gameState;
         private readonly IGfx _gfx;
 		private readonly univ_object[] _universe;
 		private readonly Dictionary<SHIP, int> _shipCount;
+		private readonly Draw _draw;
 
-		internal Scanner(GameState gameState, IGfx gfx, univ_object[] universe, Dictionary<SHIP, int> shipCount)
+		internal Scanner(GameState gameState, IGfx gfx, Draw draw, univ_object[] universe, Dictionary<SHIP, int> shipCount)
         {
 			_gameState = gameState;
             _gfx = gfx;
+			_draw = draw;
 			_universe = universe;
             _shipCount = shipCount;
         }
@@ -295,7 +298,7 @@ namespace Elite.Engine
 		internal void update_console()
 		{
             _gfx.SetClipRegion(0, 0, 512, 512);
-            elite.draw.DrawScanner();
+            _draw.DrawScanner();
 
 			display_speed();
 			display_flight_climb();

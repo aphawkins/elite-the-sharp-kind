@@ -7,6 +7,7 @@
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
 
         private static readonly string mission1_brief_a =
@@ -37,10 +38,11 @@
             "There will always be a place for you in Her Majesty's Space Navy. " +
             "And maybe sooner than you think... ---MESSAGE ENDS.";
 
-        internal ConstrictorMission(GameState gameState, IGfx gfx, IKeyboard keyboard)
+        internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
@@ -79,20 +81,20 @@
         {
             if (elite.cmdr.mission == 1)
             {
-                elite.draw.DrawViewHeader("INCOMING MESSAGE");
+                _draw.DrawViewHeader("INCOMING MESSAGE");
 
-                elite.draw.DrawTextPretty(16, 50, 300, mission1_brief_a);
-                elite.draw.DrawTextPretty(16, 200, 470, elite.cmdr.galaxy_number == 0 ? mission1_brief_b : mission1_brief_c);
+                _draw.DrawTextPretty(16, 50, 300, mission1_brief_a);
+                _draw.DrawTextPretty(16, 200, 470, elite.cmdr.galaxy_number == 0 ? mission1_brief_b : mission1_brief_c);
 
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
             else if (elite.cmdr.mission == 3)
             {
-                elite.draw.DrawViewHeader("INCOMING MESSAGE");
+                _draw.DrawViewHeader("INCOMING MESSAGE");
 
                 _gfx.DrawTextCentre(100, "Congratulations Commander!", 140, GFX_COL.GFX_COL_GOLD);
 
-                elite.draw.DrawTextPretty(116, 132, 400, mission1_debrief);
+                _draw.DrawTextPretty(116, 132, 400, mission1_debrief);
 
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }

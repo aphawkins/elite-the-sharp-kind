@@ -21,6 +21,7 @@ namespace Elite.Engine.Views
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
+        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private int _highlightedItem;
         private const int OptionBarWidth = 400;
@@ -34,10 +35,11 @@ namespace Elite.Engine.Views
             new ("Quit",            false)
         };
 
-        internal Options(GameState gameState, IGfx gfx, IKeyboard keyboard)
+        internal Options(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _gfx = gfx;
+            _draw = draw;
             _keyboard = keyboard;
         }
 
@@ -52,8 +54,8 @@ namespace Elite.Engine.Views
 
         public void Draw()
         {
-            elite.draw.ClearDisplay();
-            elite.draw.DrawViewHeader("GAME OPTIONS");
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader("GAME OPTIONS");
 
             for (int i = 0; i < optionList.Length; i++)
             {
