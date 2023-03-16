@@ -17,7 +17,7 @@
         public int left_laser { get; set; }
         public int right_laser { get; set; }
         public int cargo_capacity { get; set; }
-        public int[] current_cargo { get; set; } = new int[trade.stock_market.Length];
+        public int[] current_cargo { get; set; }
         public bool ecm { get; set; }
         public bool fuel_scoop { get; set; }
         public bool energy_bomb { get; set; }
@@ -28,7 +28,7 @@
 
         public int missiles { get; set; }
         public int legal_status { get; set; }
-        public int[] station_stock { get; set; } = new int[trade.stock_market.Length];
+        public int[] station_stock { get; set; }
         public int market_rnd { get; set; }
         public int score { get; set; }
         public int saved { get; set; }

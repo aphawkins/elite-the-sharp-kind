@@ -40,28 +40,26 @@ namespace Elite.Engine.Missions
             "COMING SOON: ELITE - DARKNESS FALLS.",
         };
 
-        internal static string? mission_planet_desc(galaxy_seed planet)
+        internal static string? mission_planet_desc(GameState gameState, galaxy_seed planet)
         {
-            int pnum;
-
             if (!elite.docked)
             {
                 return null;
             }
 
-            if (planet.a != elite.docked_planet.a ||
-                planet.b != elite.docked_planet.b ||
-                planet.c != elite.docked_planet.c ||
-                planet.d != elite.docked_planet.d ||
-                planet.e != elite.docked_planet.e ||
-                planet.f != elite.docked_planet.f)
+            if (planet.a != gameState.docked_planet.a ||
+                planet.b != gameState.docked_planet.b ||
+                planet.c != gameState.docked_planet.c ||
+                planet.d != gameState.docked_planet.d ||
+                planet.e != gameState.docked_planet.e ||
+                planet.f != gameState.docked_planet.f)
             {
                 return null;
             }
 
-            pnum = Planet.find_planet_number(planet);
+            int pnum = Planet.find_planet_number(gameState.cmdr.galaxy, planet);
 
-            if (elite.cmdr.galaxy_number == 0)
+            if (gameState.cmdr.galaxy_number == 0)
             {
                 switch (pnum)
                 {
@@ -76,7 +74,7 @@ namespace Elite.Engine.Missions
                 }
             }
 
-            if (elite.cmdr.galaxy_number == 1)
+            if (gameState.cmdr.galaxy_number == 1)
             {
                 switch (pnum)
                 {
@@ -112,7 +110,7 @@ namespace Elite.Engine.Missions
                 }
             }
 
-            if (elite.cmdr.galaxy_number == 2 && pnum == 101)
+            if (gameState.cmdr.galaxy_number == 2 && pnum == 101)
             {
                 return mission1_pdesc[9];
             }

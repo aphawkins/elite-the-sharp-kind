@@ -1,36 +1,38 @@
 ﻿namespace Elite.Engine.Views
 {
-    using Elite.Engine.Enums;
-
-    internal class PilotRearView : PilotView
+    internal class PilotRearView : IView
     {
+        private readonly PilotView _pilotView;
+        private readonly GameState _gameState;
         private readonly Stars _stars;
 
-        internal PilotRearView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, pilot pilot) : base(gameState, gfx, keyboard, pilot)
+        internal PilotRearView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, pilot pilot)
         {
+            _pilotView = new(gameState, gfx, keyboard, pilot);
+            _gameState = gameState;
             _stars = stars;
         }
 
-        public override void Draw()
+        public void Draw()
         {
-            base.Draw();
-            DrawViewName("Rear View");
-            DrawLaserSights(elite.cmdr.front_laser);
+            _pilotView.Draw();
+            _pilotView.DrawViewName("Rear View");
+            _pilotView.DrawLaserSights(_gameState.cmdr.front_laser);
         }
 
-        public override void HandleInput()
+        public void HandleInput()
         {
-            base.HandleInput();
+            _pilotView.HandleInput();
         }
 
-        public override void Reset()
+        public void Reset()
         {
-            base.Reset();
+            _pilotView.Reset();
         }
 
-        public override void UpdateUniverse()
+        public void UpdateUniverse()
         {
-            base.UpdateUniverse();
+            _pilotView.UpdateUniverse();
             _stars.rear_starfield();
         }
     }

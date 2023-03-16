@@ -48,10 +48,10 @@
 
         public void Reset()
         {
-            if (elite.cmdr.mission == 0 && elite.cmdr.score >= 256 && elite.cmdr.galaxy_number < 2)
+            if (_gameState.cmdr.mission == 0 && _gameState.cmdr.score >= 256 && _gameState.cmdr.galaxy_number < 2)
             {
                 // Show brief
-                elite.cmdr.mission = 1;
+                _gameState.cmdr.mission = 1;
 
                 swat.clear_universe();
                 int i = swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
@@ -60,12 +60,12 @@
                 _gameState.flight_climb = 0;
                 elite.flight_speed = 0;
             }
-            else if (elite.cmdr.mission == 2)
+            else if (_gameState.cmdr.mission == 2)
             {
                 // Show debrief
-                elite.cmdr.mission = 3;
-                elite.cmdr.score += 256;
-                elite.cmdr.credits += 5000;
+                _gameState.cmdr.mission = 3;
+                _gameState.cmdr.score += 256;
+                _gameState.cmdr.credits += 5000;
             }
             else
             {
@@ -79,16 +79,16 @@
 
         public void Draw()
         {
-            if (elite.cmdr.mission == 1)
+            if (_gameState.cmdr.mission == 1)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
                 _draw.DrawTextPretty(16, 50, 300, mission1_brief_a);
-                _draw.DrawTextPretty(16, 200, 470, elite.cmdr.galaxy_number == 0 ? mission1_brief_b : mission1_brief_c);
+                _draw.DrawTextPretty(16, 200, 470, _gameState.cmdr.galaxy_number == 0 ? mission1_brief_b : mission1_brief_c);
 
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
-            else if (elite.cmdr.mission == 3)
+            else if (_gameState.cmdr.mission == 3)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 

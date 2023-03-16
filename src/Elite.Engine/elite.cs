@@ -23,7 +23,7 @@ namespace Elite.Engine
     using Elite.Engine.Types;
     using Elite.Engine.Views;
 
-    public partial class elite
+    public class elite
     {
         private readonly IGfx _gfx;
         private readonly Audio _audio;
@@ -35,14 +35,12 @@ namespace Elite.Engine
         private readonly pilot _pilot;
         private readonly swat _swat;
         private readonly trade _trade;
+        private readonly Planet _planet;
         internal const int PULSE_LASER = 15;
         internal const int BEAM_LASER = 143;
         internal const int MILITARY_LASER = 151;
         internal const int MINING_LASER = 50;
         internal const int MAX_UNIV_OBJECTS = 20;
-        internal static galaxy_seed docked_planet;
-        internal static galaxy_seed hyperspace_planet;
-        internal static planet_data current_planet_data = new();
         internal static int carry_flag = 0;
         internal static ConfigSettings config = new();
         internal static Vector2 scanner_centre = new(253, 63 + 385);
@@ -53,14 +51,6 @@ namespace Elite.Engine
         internal static float laser_temp;
         internal static bool detonate_bomb;
         internal static bool auto_pilot;
-
-#if DEBUG
-        internal static Commander saved_cmdr = CommanderFactory.Max();
-#else
-		internal static Commander saved_cmdr = CommanderFactory.Jameson();
-#endif
-
-        internal static Commander cmdr = (Commander)saved_cmdr.Clone();
         internal static player_ship myship = new();
         private readonly Draw _draw;
         readonly long oneSec = TimeSpan.FromSeconds(1).Ticks;
@@ -68,6 +58,16 @@ namespace Elite.Engine
         readonly TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.Fps * 2));
         private static GameState _gameState;
         private static readonly Dictionary<SCR, IView> _views = new();
+        internal static Vector2 cross = new(0, 0);
+        internal static bool drawLasers;
+        internal static int mcount;
+        private static int message_count;
+        private static string message_string;
+        internal static bool rolling;
+        internal static bool climbing;
+        private static bool game_paused;
+        //private static bool have_joystick;
+        internal static float distanceToPlanet;
 
         internal class FC
         {
@@ -114,29 +114,6 @@ namespace Elite.Engine
             shipdata.dodec_data
         };
 
-        internal static void restore_saved_commander()
-        {
-            cmdr = (Commander)saved_cmdr.Clone();
-            docked_planet = Planet.find_planet(new(cmdr.ShipLocationX, cmdr.ShipLocationY));
-            planetName = Planet.name_planet(docked_planet, false);
-            hyperspace_planet = (galaxy_seed)docked_planet.Clone();
-            current_planet_data = Planet.generate_planet_data(docked_planet);
-            trade.generate_stock_market();
-            trade.set_stock_quantities(cmdr.station_stock);
-        }
-
-        internal static Vector2 cross = new(0, 0);
-        internal static bool drawLasers;
-        internal static int mcount;
-        private static int message_count;
-        private static string message_string;
-        internal static bool rolling;
-        internal static bool climbing;
-        private static bool game_paused;
-        //private static bool have_joystick;
-        internal static string planetName;
-        internal static float distanceToPlanet;
-
         /*
 		 * Initialise the game parameters.
 		 */
@@ -149,7 +126,7 @@ namespace Elite.Engine
 
             _gameState.Reset();
 
-            restore_saved_commander();
+            _gameState.restore_saved_commander();
 
             flight_speed = 1;
             docked = true;
@@ -408,7 +385,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn))
             {
-                if (!docked && cmdr.docking_computer)
+                if (!docked && _gameState.cmdr.docking_computer)
                 {
                     if (config.InstantDock)
                     {
@@ -423,7 +400,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.ECM))
             {
-                if (!docked && cmdr.ecm)
+                if (!docked && _gameState.cmdr.ecm)
                 {
                     _swat.activate_ecm(true);
                 }
@@ -463,7 +440,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    swat.arm_missile();
+                    _swat.arm_missile();
                 }
             }
 
@@ -493,16 +470,16 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.EnergyBomb))
             {
-                if ((!docked) && cmdr.energy_bomb)
+                if ((!docked) && _gameState.cmdr.energy_bomb)
                 {
                     detonate_bomb = true;
-                    cmdr.energy_bomb = false;
+                    _gameState.cmdr.energy_bomb = false;
                 }
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.EscapePod))
             {
-                if ((!docked) && cmdr.escape_pod && (!_gameState.witchspace))
+                if ((!docked) && _gameState.cmdr.escape_pod && (!_gameState.witchspace))
                 {
                     _gameState.SetView(SCR.SCR_ESCAPE_POD);
                 }
@@ -538,7 +515,7 @@ namespace Elite.Engine
             _audio.LoadSounds();
             _keyboard = keyboard;
             _gameState = new(_keyboard, _views);
-
+            _planet = new(_gameState);
             _draw = new(_gfx);
             _draw.LoadImages();
             _draw.DrawBorder();
@@ -553,13 +530,13 @@ namespace Elite.Engine
             _pilot = new(_gameState, _audio);
             _swat = new(_gameState, _audio);
             _trade = new(_gameState, _swat);
-            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade);
+            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade, _planet);
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars));
-            _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gfx, _draw));
-            _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gfx, _draw, keyboard));
+            _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gameState, _gfx, _draw, keyboard, _planet));
+            _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gameState, _gfx, _draw, keyboard, _planet));
+            _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gameState, _gfx, _draw));
+            _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gameState, _gfx, _draw, keyboard, _trade));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gameState, _gfx, _draw));
             _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gameState, _gfx, keyboard, _stars, _pilot));
             _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gameState, _gfx, keyboard, _stars, _pilot));
@@ -568,10 +545,10 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_DOCKING, new Docking(_gameState, _gfx, _audio, _space));
             _views.Add(SCR.SCR_UNDOCKING, new Launch(_gameState, _gfx, _audio, _space));
             _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gameState, _gfx, _audio));
-            _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx, _draw));
-            _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gfx, _draw, keyboard));
+            _views.Add(SCR.SCR_INVENTORY, new Inventory(_gameState, _gfx, _draw));
+            _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gameState, _gfx, _draw, keyboard));
+            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gameState, _gfx, _draw, keyboard, _planet));
             _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_QUIT, new Quit(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gameState, _gfx, _draw, keyboard));
@@ -579,6 +556,12 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars));
             _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars));
+
+#if DEBUG
+            _gameState.saved_cmdr = CommanderFactory.Max();
+#else
+		    _gameState.saved_cmdr = CommanderFactory.Jameson();
+#endif
 
             exitGame = false;
             auto_pilot = false;
@@ -716,7 +699,7 @@ namespace Elite.Engine
 
                 if ((mcount == 0) && (!_gameState.witchspace))
                 {
-                    swat.random_encounter();
+                    _swat.random_encounter();
                 }
 
                 _swat.time_ecm();

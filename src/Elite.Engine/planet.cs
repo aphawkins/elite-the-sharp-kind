@@ -18,19 +18,23 @@
 
 namespace Elite.Engine
 {
-    using System.Diagnostics;
-    using System.Numerics;
-    using System.Text;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Types;
+	using System.Numerics;
+	using System.Text;
+	using Elite.Engine.Types;
 
-    internal class Planet
+	internal class Planet
 	{
+		private readonly GameState _gameState;
         internal static string digrams = "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
         private static readonly string[] inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
         private static readonly string[] inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
         private static readonly string[] inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
         private static readonly string[] inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
+
+		internal Planet(GameState gameState)
+		{
+			_gameState = gameState;
+		}
 
 		internal static void waggle_galaxy(ref galaxy_seed glx_ptr)
 		{
@@ -71,11 +75,11 @@ namespace Elite.Engine
 			glx_ptr.f = y;
 		}
 
-		internal static galaxy_seed find_planet(Vector2 centre)
+		internal static galaxy_seed find_planet(galaxy_seed galaxy, Vector2 centre)
 		{
+			galaxy_seed glx = (galaxy_seed)galaxy.Clone();
 			float min_dist = 10000;
 			galaxy_seed planet = new();
-			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
 
 			for (int i = 0; i < 256; i++)
 			{
@@ -99,11 +103,11 @@ namespace Elite.Engine
 			return planet;
 		}
 
-		internal static int find_planet_number(galaxy_seed planet)
+		internal static int find_planet_number(galaxy_seed galaxy, galaxy_seed planet)
 		{
-			galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
+			galaxy_seed glx = (galaxy_seed)galaxy.Clone();
 
-			for (int i = 0; i < 256; i++)
+            for (int i = 0; i < 256; i++)
 			{
 
 				if ((planet.a == glx.a) &&
@@ -229,10 +233,10 @@ namespace Elite.Engine
 			return pl;
 		}
 
-        internal static bool find_planet_by_name(string find_name)
+        internal bool find_planet_by_name(string find_name)
         {
             bool found = false;
-            galaxy_seed glx = (galaxy_seed)elite.cmdr.galaxy.Clone();
+            galaxy_seed glx = (galaxy_seed)_gameState.cmdr.galaxy.Clone();
 
             for (int i = 0; i < 256; i++)
             {
@@ -241,8 +245,8 @@ namespace Elite.Engine
                 if (planet_name == find_name)
                 {
                     found = true;
-					elite.hyperspace_planet = glx;
-					elite.planetName = planet_name;
+					_gameState.hyperspace_planet = glx;
+                    _gameState.planetName = planet_name;
                     break;
                 }
 

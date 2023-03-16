@@ -10,7 +10,7 @@
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
-        private string _name = elite.cmdr.name;
+        private string _name;
         private bool? _isSuccess = null;
 
         internal SaveCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
@@ -64,18 +64,18 @@
 
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
-                elite.cmdr.name = _name;
-                elite.cmdr.ShipLocationX = elite.docked_planet.d;
-                elite.cmdr.ShipLocationY = elite.docked_planet.b;
-                _isSuccess = SaveFile.SaveCommanderAsync(elite.cmdr).Result;
+                _gameState.cmdr.name = _name;
+                _gameState.cmdr.ShipLocationX = _gameState.docked_planet.d;
+                _gameState.cmdr.ShipLocationY = _gameState.docked_planet.b;
+                _isSuccess = SaveFile.SaveCommanderAsync(_gameState.cmdr).Result;
                 
                 if (_isSuccess.HasValue && _isSuccess.Value)
                 {
-                    elite.saved_cmdr = (Commander)elite.cmdr.Clone();
+                    _gameState.saved_cmdr = (Commander)_gameState.cmdr.Clone();
                 }
                 else
                 {
-                    elite.cmdr.name = elite.saved_cmdr.name;
+                    _gameState.cmdr.name = _gameState.saved_cmdr.name;
                 }
             }
 
@@ -88,6 +88,7 @@
         public void Reset()
         {
             _isSuccess = null;
+            _name = _gameState.cmdr.name;
         }
 
         public void UpdateUniverse()

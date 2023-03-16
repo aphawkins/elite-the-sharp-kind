@@ -3,7 +3,7 @@
     using Elite.Engine.Enums;
     using static Elite.Engine.elite;
 
-    internal abstract class PilotView : IView
+    internal class PilotView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -21,7 +21,7 @@
             _pilot = pilot;
         }
 
-        public virtual void Draw()
+        public void Draw()
         {
             if (drawLaserFrames > 0)
             {
@@ -38,7 +38,7 @@
             }
         }
 
-        public virtual void HandleInput()
+        public void HandleInput()
         {
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
@@ -102,22 +102,22 @@
             }
         }
 
-        public virtual void Reset()
+        public void Reset()
         {
             Stars.flip_stars();
         }
 
-        public virtual void UpdateUniverse()
+        public void UpdateUniverse()
         {
             drawLaserFrames = elite.drawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
         }
 
-        protected void DrawViewName(string name)
+        internal void DrawViewName(string name)
         {
             _gfx.DrawTextCentre(32, name, 120, GFX_COL.GFX_COL_WHITE);
         }
 
-        protected void DrawLaserSights(int laserType)
+        internal void DrawLaserSights(int laserType)
         {
             _laser.DrawLaserSights(laserType);
         }

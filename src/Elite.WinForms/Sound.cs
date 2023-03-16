@@ -19,7 +19,7 @@ namespace Elite.WinForms
     using Elite.Common.Enums;
     using Elite.Engine;
 
-    public partial class Sound : ISound, IDisposable
+    public class Sound : ISound, IDisposable
     {
         private MidiPlayer? _midiPlayer;
         private readonly IMidiAccess? _access;

@@ -36,6 +36,7 @@ namespace Elite.Engine
         private readonly pilot _pilot;
         private readonly swat _swat;
         private readonly trade _trade;
+        private readonly Planet _planet;
         private static galaxy_seed destination_planet;
 		internal static bool hyper_ready;
         internal static int hyper_countdown;
@@ -45,7 +46,7 @@ namespace Elite.Engine
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
-		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade)
+		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade, Planet planet)
 		{
             _gameState = gameState;
             _gfx = gfx;
@@ -54,6 +55,7 @@ namespace Elite.Engine
 			_pilot = pilot;
 			_swat = swat;
 			_trade = trade;
+			_planet = planet;
         }
 
         private static void rotate_x_first(ref float a, ref float b, float direction)
@@ -315,21 +317,21 @@ namespace Elite.Engine
 				return;
 			}
 
-			if ((elite.myship.cabtemp < 224) || (!elite.cmdr.fuel_scoop))
+			if ((elite.myship.cabtemp < 224) || (!_gameState.cmdr.fuel_scoop))
 			{
 				return;
 			}
 
-			elite.cmdr.fuel += elite.flight_speed / 2;
-			if (elite.cmdr.fuel > elite.myship.max_fuel)
+            _gameState.cmdr.fuel += elite.flight_speed / 2;
+			if (_gameState.cmdr.fuel > elite.myship.max_fuel)
 			{
-				elite.cmdr.fuel = elite.myship.max_fuel;
+                _gameState.cmdr.fuel = elite.myship.max_fuel;
 			}
 
             elite.info_message("Fuel Scoop On");
 		}
 
-        private static void make_station_appear()
+        private void make_station_appear()
 		{
             Vector3 location = universe[0].location;
             Vector3 vec;
@@ -363,7 +365,7 @@ namespace Elite.Engine
 
 			VectorMaths.tidy_matrix(rotmat);
 
-			swat.add_new_station(position, rotmat);
+			_swat.add_new_station(position, rotmat);
 		}
 
         private void check_docking(int i)
@@ -481,15 +483,15 @@ namespace Elite.Engine
                 {
                     if (type == SHIP.SHIP_VIPER)
                     {
-                        elite.cmdr.legal_status |= 64;
+                        _gameState.cmdr.legal_status |= 64;
                     }
 
                     float bounty = elite.ship_list[(int)type].bounty;
 
                     if ((bounty != 0) && (!_gameState.witchspace))
                     {
-                        elite.cmdr.credits += bounty;
-                        elite.info_message($"{elite.cmdr.credits:N1} Credits");
+                        _gameState.cmdr.credits += bounty;
+                        elite.info_message($"{_gameState.cmdr.credits:N1} Credits");
                     }
 
                     swat.remove_ship(i);
@@ -589,14 +591,14 @@ namespace Elite.Engine
 				return;
 			}
 
-			hyper_distance = Planet.calc_distance_to_planet(elite.docked_planet, elite.hyperspace_planet);
+			hyper_distance = Planet.calc_distance_to_planet(_gameState.docked_planet, _gameState.hyperspace_planet);
 
-			if ((hyper_distance == 0) || (hyper_distance > elite.cmdr.fuel))
+			if ((hyper_distance == 0) || (hyper_distance > _gameState.cmdr.fuel))
 			{
 				return;
 			}
 
-			destination_planet = (galaxy_seed)elite.hyperspace_planet.Clone();
+			destination_planet = (galaxy_seed)_gameState.hyperspace_planet.Clone();
 			hyper_name = Planet.name_planet(destination_planet, true);
 			hyper_ready = true;
 			hyper_countdown = 15;
@@ -612,7 +614,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (!elite.cmdr.galactic_hyperdrive)
+			if (!_gameState.cmdr.galactic_hyperdrive)
 			{
 				return;
 			}
@@ -633,24 +635,24 @@ namespace Elite.Engine
 			return ((x << 1) | (x >> 7)) & 255;
 		}
 
-        private static void enter_next_galaxy()
+        private void enter_next_galaxy()
 		{
-			elite.cmdr.galaxy_number++;
-			elite.cmdr.galaxy_number &= 7;
+            _gameState.cmdr.galaxy_number++;
+            _gameState.cmdr.galaxy_number &= 7;
 
             galaxy_seed glx = new()
             {
-                a = rotate_byte_left(elite.cmdr.galaxy.a),
-                b = rotate_byte_left(elite.cmdr.galaxy.b),
-                c = rotate_byte_left(elite.cmdr.galaxy.c),
-                d = rotate_byte_left(elite.cmdr.galaxy.d),
-                e = rotate_byte_left(elite.cmdr.galaxy.e),
-                f = rotate_byte_left(elite.cmdr.galaxy.f)
+                a = rotate_byte_left(_gameState.cmdr.galaxy.a),
+                b = rotate_byte_left(_gameState.cmdr.galaxy.b),
+                c = rotate_byte_left(_gameState.cmdr.galaxy.c),
+                d = rotate_byte_left(_gameState.cmdr.galaxy.d),
+                e = rotate_byte_left(_gameState.cmdr.galaxy.e),
+                f = rotate_byte_left(_gameState.cmdr.galaxy.f)
             };
-            elite.cmdr.galaxy = glx;
+            _gameState.cmdr.galaxy = glx;
 
-            elite.docked_planet = Planet.find_planet(new(0x60, 0x60));
-			elite.hyperspace_planet = (galaxy_seed)elite.docked_planet.Clone();
+            _gameState.docked_planet = Planet.find_planet(_gameState.cmdr.galaxy, new(0x60, 0x60));
+            _gameState.hyperspace_planet = (galaxy_seed)_gameState.docked_planet.Clone();
 		}
 
         private void enter_witchspace()
@@ -659,7 +661,7 @@ namespace Elite.Engine
 			int nthg;
 
             _gameState.witchspace = true;
-			elite.docked_planet.b ^= 31;
+            _gameState.docked_planet.b ^= 31;
 			swat.in_battle = true;
 
 			elite.flight_speed = 12;
@@ -685,15 +687,15 @@ namespace Elite.Engine
 
 			if (hyper_galactic)
 			{
-				elite.cmdr.galactic_hyperdrive = false;
+                _gameState.cmdr.galactic_hyperdrive = false;
 				hyper_galactic = false;
 				enter_next_galaxy();
-				elite.cmdr.legal_status = 0;
+                _gameState.cmdr.legal_status = 0;
 			}
 			else
 			{
-				elite.cmdr.fuel -= hyper_distance;
-				elite.cmdr.legal_status /= 2;
+                _gameState.cmdr.fuel -= hyper_distance;
+                _gameState.cmdr.legal_status /= 2;
 
 				if ((RNG.Random(255) > 253) || (_gameState.flight_climb >= elite.myship.max_climb))
 				{
@@ -701,12 +703,12 @@ namespace Elite.Engine
 					return;
 				}
 
-				elite.docked_planet = (galaxy_seed)destination_planet.Clone();
+                _gameState.docked_planet = (galaxy_seed)destination_planet.Clone();
 			}
 
-			elite.cmdr.market_rnd = RNG.Random(255);
-			elite.current_planet_data = Planet.generate_planet_data(elite.docked_planet);
-			trade.generate_stock_market();
+            _gameState.cmdr.market_rnd = RNG.Random(255);
+            _gameState.current_planet_data = Planet.generate_planet_data(_gameState.docked_planet);
+            _gameState.generate_stock_market();
 
 			elite.flight_speed = 12;
             _gameState.flight_roll = 0;
@@ -714,11 +716,11 @@ namespace Elite.Engine
 			Stars.create_new_stars();
 			swat.clear_universe();
 
-			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
+			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
 			
             Vector3 position = new()
             {
-                Z = (((elite.docked_planet.b) & 7) + 7) / 2
+                Z = (((_gameState.docked_planet.b) & 7) + 7) / 2
             };
             position.X = position.Z / 2;
             position.Y = position.X;
@@ -727,7 +729,7 @@ namespace Elite.Engine
             position.Y *= 65536;
             position.Z *= 65536;
 
-            if ((elite.docked_planet.b & 1) == 0)
+            if ((_gameState.docked_planet.b & 1) == 0)
 			{
                 position.X = -position.X;
                 position.Y = -position.Y;
@@ -735,8 +737,8 @@ namespace Elite.Engine
 
             swat.add_new_ship(SHIP.SHIP_PLANET, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
-            position.Z = -(((elite.docked_planet.d & 7) | 1) << 16);
-            position.X = ((elite.docked_planet.f & 3) << 16) | ((elite.docked_planet.f & 3) << 8);
+            position.Z = -(((_gameState.docked_planet.d & 7) | 1) << 16);
+            position.X = ((_gameState.docked_planet.f & 3) << 16) | ((_gameState.docked_planet.f & 3) << 8);
 
             swat.add_new_ship(SHIP.SHIP_SUN, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
@@ -805,16 +807,16 @@ namespace Elite.Engine
 			// Rotate in the same direction that the station is spinning
 			_gameState.flight_roll = 15;
             _gameState.flight_climb = 0;
-			elite.cmdr.legal_status |= trade.carrying_contraband();
+            _gameState.cmdr.legal_status |= _gameState.carrying_contraband();
 			Stars.create_new_stars();
-			threed.generate_landscape((elite.docked_planet.a * 251) + elite.docked_planet.b);
+			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
 			swat.add_new_ship(SHIP.SHIP_PLANET, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 
 			Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].X = -rotmat[2].X;
 			rotmat[2].Y = -rotmat[2].Y;
 			rotmat[2].Z = -rotmat[2].Z;
-			swat.add_new_station(new(0, 0, -256), rotmat);
+			_swat.add_new_station(new(0, 0, -256), rotmat);
 
             elite.docked = false;
         }

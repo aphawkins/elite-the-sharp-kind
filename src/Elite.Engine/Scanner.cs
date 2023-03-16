@@ -264,20 +264,20 @@ namespace Elite.Engine
 
         private void display_fuel()
 		{
-			if (elite.cmdr.fuel > 0)
+			if (_gameState.cmdr.fuel > 0)
 			{
-				display_dial_bar(elite.cmdr.fuel * 64 / elite.myship.max_fuel, new(31f, 44f));
+				display_dial_bar(_gameState.cmdr.fuel * 64 / elite.myship.max_fuel, new(31f, 44f));
 			}
 		}
 
         private void display_missiles()
 		{
-			if (elite.cmdr.missiles == 0)
+			if (_gameState.cmdr.missiles == 0)
 			{
 				return;
 			}
 
-			int missileCount = elite.cmdr.missiles > 4 ? 4 : elite.cmdr.missiles;
+			int missileCount = _gameState.cmdr.missiles > 4 ? 4 : _gameState.cmdr.missiles;
 
 			Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 

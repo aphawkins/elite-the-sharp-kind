@@ -178,9 +178,9 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void add_new_station(Vector3 position, Vector3[] rotmat)
+		internal void add_new_station(Vector3 position, Vector3[] rotmat)
 		{
-			SHIP station = (elite.current_planet_data.techlevel >= 10) ? SHIP.SHIP_DODEC : SHIP.SHIP_CORIOLIS;
+			SHIP station = (_gameState.current_planet_data.techlevel >= 10) ? SHIP.SHIP_DODEC : SHIP.SHIP_CORIOLIS;
 			space.universe[1].type = SHIP.SHIP_NONE;
 			add_new_ship(station, position, rotmat, 0, -127);
 		}
@@ -292,9 +292,9 @@ namespace Elite.Engine
 
         internal void explode_object(int un)
         {
-            elite.cmdr.score++;
+            _gameState.cmdr.score++;
 
-            if ((elite.cmdr.score & 255) == 0)
+            if ((_gameState.cmdr.score & 255) == 0)
             {
                 elite.info_message("Right On Commander!");
             }
@@ -304,7 +304,7 @@ namespace Elite.Engine
 
             if (space.universe[un].type == SHIP.SHIP_CONSTRICTOR)
             {
-                elite.cmdr.mission = 2;
+                _gameState.cmdr.mission = 2;
             }
         }
 
@@ -385,9 +385,9 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void arm_missile()
+		internal void arm_missile()
 		{
-			if ((elite.cmdr.missiles != 0) && (missile_target == MISSILE_UNARMED))
+			if ((_gameState.cmdr.missiles != 0) && (missile_target == MISSILE_UNARMED))
 			{
 				missile_target = MISSILE_ARMED;
 			}
@@ -427,7 +427,7 @@ namespace Elite.Engine
 				space.universe[missile_target].flags |= FLG.FLG_ANGRY;
 			}
 
-			elite.cmdr.missiles--;
+            _gameState.cmdr.missiles--;
 			missile_target = MISSILE_UNARMED;
 
 			_audio.PlayEffect(SoundEffect.Missile);
@@ -672,7 +672,7 @@ namespace Elite.Engine
 
 			if (flags.HasFlag(FLG.FLG_POLICE))
 			{
-				if (elite.cmdr.legal_status >= 64)
+				if (_gameState.cmdr.legal_status >= 64)
 				{
 					flags |= FLG.FLG_ANGRY;
 					ship.flags = flags;
@@ -871,10 +871,10 @@ namespace Elite.Engine
 
             laser = _gameState.currentScreen switch
             {
-                SCR.SCR_FRONT_VIEW => elite.cmdr.front_laser,
-                SCR.SCR_REAR_VIEW => elite.cmdr.rear_laser,
-                SCR.SCR_RIGHT_VIEW => elite.cmdr.right_laser,
-                SCR.SCR_LEFT_VIEW => elite.cmdr.left_laser,
+                SCR.SCR_FRONT_VIEW => _gameState.cmdr.front_laser,
+                SCR.SCR_REAR_VIEW => _gameState.cmdr.rear_laser,
+                SCR.SCR_RIGHT_VIEW => _gameState.cmdr.right_laser,
+                SCR.SCR_LEFT_VIEW => _gameState.cmdr.left_laser,
                 _ => 0,
             };
 
@@ -988,14 +988,14 @@ namespace Elite.Engine
 			}
 		}
 
-        private static void create_lone_hunter()
+        private void create_lone_hunter()
 		{
 			int rnd;
 			SHIP type;
 			int newship;
 
-			if ((elite.cmdr.mission == 1) && (elite.cmdr.galaxy_number == 1) &&
-				(elite.docked_planet.d == 144) && (elite.docked_planet.b == 33) &&
+			if ((_gameState.cmdr.mission == 1) && (_gameState.cmdr.galaxy_number == 1) &&
+				(_gameState.docked_planet.d == 144) && (_gameState.docked_planet.b == 33) &&
 				(space.ship_count[SHIP.SHIP_CONSTRICTOR] == 0))
 			{
 				type = SHIP.SHIP_CONSTRICTOR;
@@ -1048,12 +1048,12 @@ namespace Elite.Engine
 		}
 
         /* If we've been a bad boy then send the cops after us... */
-        private static void check_for_cops()
+        private void check_for_cops()
 		{
-			int offense = trade.carrying_contraband() * 2;
+			int offense = _gameState.carrying_contraband() * 2;
 			if (space.ship_count[SHIP.SHIP_VIPER] == 0)
 			{
-				offense |= elite.cmdr.legal_status;
+				offense |= _gameState.cmdr.legal_status;
 			}
 
 			if (RNG.Random(255) >= offense)
@@ -1075,9 +1075,9 @@ namespace Elite.Engine
 			}
 		}
 
-		private static void check_for_others()
+		private void check_for_others()
 		{
-			int gov = elite.current_planet_data.government;
+			int gov = _gameState.current_planet_data.government;
 			int rnd = RNG.Random(255);
 
 			if ((gov != 0) && ((rnd >= 90) || ((rnd & 7) < gov)))
@@ -1129,7 +1129,7 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void random_encounter()
+		internal void random_encounter()
 		{
 			if ((space.ship_count[SHIP.SHIP_CORIOLIS] != 0) || (space.ship_count[SHIP.SHIP_DODEC] != 0))
 			{
@@ -1170,7 +1170,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if ((elite.cmdr.mission == 5) && (RNG.Random(255) >= 200))
+			if ((_gameState.cmdr.mission == 5) && (RNG.Random(255) >= 200))
 			{
 				create_thargoid();
 			}

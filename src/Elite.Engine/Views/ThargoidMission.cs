@@ -42,22 +42,22 @@
 
         public void Reset()
         {
-            if (elite.cmdr.mission == 3 && elite.cmdr.score >= 1280 && elite.cmdr.galaxy_number == 2)
+            if (_gameState.cmdr.mission == 3 && _gameState.cmdr.score >= 1280 && _gameState.cmdr.galaxy_number == 2)
             {
                 // First brief
-                elite.cmdr.mission = 4;
+                _gameState.cmdr.mission = 4;
             }
-            else if (elite.cmdr.mission == 4 && elite.docked_planet.d == 215 && elite.docked_planet.b == 84)
+            else if (_gameState.cmdr.mission == 4 && _gameState.docked_planet.d == 215 && _gameState.docked_planet.b == 84)
             {
                 // Second brief
-                elite.cmdr.mission = 5;
+                _gameState.cmdr.mission = 5;
             }
-            else if (elite.cmdr.mission == 5 && elite.docked_planet.d == 63 && elite.docked_planet.b == 72)
+            else if (_gameState.cmdr.mission == 5 && _gameState.docked_planet.d == 63 && _gameState.docked_planet.b == 72)
             {
                 // Debrief
-                elite.cmdr.mission = 6;
-                elite.cmdr.score += 256;
-                elite.cmdr.energy_unit = EnergyUnit.Naval;
+                _gameState.cmdr.mission = 6;
+                _gameState.cmdr.score += 256;
+                _gameState.cmdr.energy_unit = EnergyUnit.Naval;
             }
             else
             {
@@ -71,13 +71,13 @@
 
         public void Draw()
         {
-            if (elite.cmdr.mission == 4)
+            if (_gameState.cmdr.mission == 4)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _draw.DrawTextPretty(116, 132, 400, mission2_brief_a);
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
-            else if (elite.cmdr.mission == 5)
+            else if (_gameState.cmdr.mission == 5)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _draw.DrawTextPretty(16, 50, 300, mission2_brief_b);
@@ -85,7 +85,7 @@
                 _gfx.DrawImage(Image.Blake, new(352, 46));
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
-            else if (elite.cmdr.mission == 6)
+            else if (_gameState.cmdr.mission == 6)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);

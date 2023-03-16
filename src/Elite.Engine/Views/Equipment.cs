@@ -19,13 +19,15 @@ namespace Elite.Engine.Views
 
     internal class Equipment : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private int _highlightedItem;
 
-        internal Equipment(IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal Equipment(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
@@ -69,36 +71,36 @@ namespace Elite.Engine.Views
             new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
         };
 
-        private static bool PresentEquipment(EquipmentType type)
+        private bool PresentEquipment(EquipmentType type)
         {
             return type switch
             {
-                EquipmentType.EQ_FUEL => elite.cmdr.fuel >= 7,
-                EquipmentType.EQ_MISSILE => elite.cmdr.missiles >= 4,
-                EquipmentType.EQ_CARGO_BAY => elite.cmdr.cargo_capacity > 20,
-                EquipmentType.EQ_ECM => elite.cmdr.ecm,
-                EquipmentType.EQ_FUEL_SCOOPS => elite.cmdr.fuel_scoop,
-                EquipmentType.EQ_ESCAPE_POD => elite.cmdr.escape_pod,
-                EquipmentType.EQ_ENERGY_BOMB => elite.cmdr.energy_bomb,
-                EquipmentType.EQ_ENERGY_UNIT => elite.cmdr.energy_unit != 0,
-                EquipmentType.EQ_DOCK_COMP => elite.cmdr.docking_computer,
-                EquipmentType.EQ_GAL_DRIVE => elite.cmdr.galactic_hyperdrive,
-                EquipmentType.EQ_FRONT_PULSE => elite.cmdr.front_laser == elite.PULSE_LASER,
-                EquipmentType.EQ_REAR_PULSE => elite.cmdr.rear_laser == elite.PULSE_LASER,
-                EquipmentType.EQ_LEFT_PULSE => elite.cmdr.left_laser == elite.PULSE_LASER,
-                EquipmentType.EQ_RIGHT_PULSE => elite.cmdr.right_laser == elite.PULSE_LASER,
-                EquipmentType.EQ_FRONT_BEAM => elite.cmdr.front_laser == elite.BEAM_LASER,
-                EquipmentType.EQ_REAR_BEAM => elite.cmdr.rear_laser == elite.BEAM_LASER,
-                EquipmentType.EQ_LEFT_BEAM => elite.cmdr.left_laser == elite.BEAM_LASER,
-                EquipmentType.EQ_RIGHT_BEAM => elite.cmdr.right_laser == elite.BEAM_LASER,
-                EquipmentType.EQ_FRONT_MINING => elite.cmdr.front_laser == elite.MINING_LASER,
-                EquipmentType.EQ_REAR_MINING => elite.cmdr.rear_laser == elite.MINING_LASER,
-                EquipmentType.EQ_LEFT_MINING => elite.cmdr.left_laser == elite.MINING_LASER,
-                EquipmentType.EQ_RIGHT_MINING => elite.cmdr.right_laser == elite.MINING_LASER,
-                EquipmentType.EQ_FRONT_MILITARY => elite.cmdr.front_laser == elite.MILITARY_LASER,
-                EquipmentType.EQ_REAR_MILITARY => elite.cmdr.rear_laser == elite.MILITARY_LASER,
-                EquipmentType.EQ_LEFT_MILITARY => elite.cmdr.left_laser == elite.MILITARY_LASER,
-                EquipmentType.EQ_RIGHT_MILITARY => elite.cmdr.right_laser == elite.MILITARY_LASER,
+                EquipmentType.EQ_FUEL => _gameState.cmdr.fuel >= 7,
+                EquipmentType.EQ_MISSILE => _gameState.cmdr.missiles >= 4,
+                EquipmentType.EQ_CARGO_BAY => _gameState.cmdr.cargo_capacity > 20,
+                EquipmentType.EQ_ECM => _gameState.cmdr.ecm,
+                EquipmentType.EQ_FUEL_SCOOPS => _gameState.cmdr.fuel_scoop,
+                EquipmentType.EQ_ESCAPE_POD => _gameState.cmdr.escape_pod,
+                EquipmentType.EQ_ENERGY_BOMB => _gameState.cmdr.energy_bomb,
+                EquipmentType.EQ_ENERGY_UNIT => _gameState.cmdr.energy_unit != 0,
+                EquipmentType.EQ_DOCK_COMP => _gameState.cmdr.docking_computer,
+                EquipmentType.EQ_GAL_DRIVE => _gameState.cmdr.galactic_hyperdrive,
+                EquipmentType.EQ_FRONT_PULSE => _gameState.cmdr.front_laser == elite.PULSE_LASER,
+                EquipmentType.EQ_REAR_PULSE => _gameState.cmdr.rear_laser == elite.PULSE_LASER,
+                EquipmentType.EQ_LEFT_PULSE => _gameState.cmdr.left_laser == elite.PULSE_LASER,
+                EquipmentType.EQ_RIGHT_PULSE => _gameState.cmdr.right_laser == elite.PULSE_LASER,
+                EquipmentType.EQ_FRONT_BEAM => _gameState.cmdr.front_laser == elite.BEAM_LASER,
+                EquipmentType.EQ_REAR_BEAM => _gameState.cmdr.rear_laser == elite.BEAM_LASER,
+                EquipmentType.EQ_LEFT_BEAM => _gameState.cmdr.left_laser == elite.BEAM_LASER,
+                EquipmentType.EQ_RIGHT_BEAM => _gameState.cmdr.right_laser == elite.BEAM_LASER,
+                EquipmentType.EQ_FRONT_MINING => _gameState.cmdr.front_laser == elite.MINING_LASER,
+                EquipmentType.EQ_REAR_MINING => _gameState.cmdr.rear_laser == elite.MINING_LASER,
+                EquipmentType.EQ_LEFT_MINING => _gameState.cmdr.left_laser == elite.MINING_LASER,
+                EquipmentType.EQ_RIGHT_MINING => _gameState.cmdr.right_laser == elite.MINING_LASER,
+                EquipmentType.EQ_FRONT_MILITARY => _gameState.cmdr.front_laser == elite.MILITARY_LASER,
+                EquipmentType.EQ_REAR_MILITARY => _gameState.cmdr.rear_laser == elite.MILITARY_LASER,
+                EquipmentType.EQ_LEFT_MILITARY => _gameState.cmdr.left_laser == elite.MILITARY_LASER,
+                EquipmentType.EQ_RIGHT_MILITARY => _gameState.cmdr.right_laser == elite.MILITARY_LASER,
                 _ => false,
             };
         }
@@ -147,7 +149,7 @@ namespace Elite.Engine.Views
                 y += 15;
             }
 
-            _gfx.DrawTextLeft(16, 340, $"Cash: {elite.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 340, $"Cash: {_gameState.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
 
         public void HandleInput()
@@ -202,13 +204,13 @@ namespace Elite.Engine.Views
 
         private void ListPrices()
         {
-            int techLevel = elite.current_planet_data.techlevel + 1;
+            int techLevel = _gameState.current_planet_data.techlevel + 1;
 
-            EquipmentStock[0].Price = (7 - elite.cmdr.fuel) * 2;
+            EquipmentStock[0].Price = (7 - _gameState.cmdr.fuel) * 2;
 
             for (int i = 0; i < EquipmentStock.Length; i++)
             {
-                EquipmentStock[i].CanBuy = !PresentEquipment(EquipmentStock[i].Type) && EquipmentStock[i].Price <= elite.cmdr.credits;
+                EquipmentStock[i].CanBuy = !PresentEquipment(EquipmentStock[i].Type) && EquipmentStock[i].Price <= _gameState.cmdr.credits;
                 EquipmentStock[i].Show = EquipmentStock[i].Show && techLevel >= EquipmentStock[i].TechLevel;
             }
 
@@ -259,129 +261,129 @@ namespace Elite.Engine.Views
             switch (EquipmentStock[_highlightedItem].Type)
             {
                 case EquipmentType.EQ_FUEL:
-                    elite.cmdr.fuel = elite.myship.max_fuel;
+                    _gameState.cmdr.fuel = elite.myship.max_fuel;
                     elite.scanner.update_console();
                     break;
 
                 case EquipmentType.EQ_MISSILE:
-                    elite.cmdr.missiles++;
+                    _gameState.cmdr.missiles++;
                     elite.scanner.update_console();
                     break;
 
                 case EquipmentType.EQ_CARGO_BAY:
-                    elite.cmdr.cargo_capacity = 35;
+                    _gameState.cmdr.cargo_capacity = 35;
                     break;
 
                 case EquipmentType.EQ_ECM:
-                    elite.cmdr.ecm = true;
+                    _gameState.cmdr.ecm = true;
                     break;
 
                 case EquipmentType.EQ_FUEL_SCOOPS:
-                    elite.cmdr.fuel_scoop = true;
+                    _gameState.cmdr.fuel_scoop = true;
                     break;
 
                 case EquipmentType.EQ_ESCAPE_POD:
-                    elite.cmdr.escape_pod = true;
+                    _gameState.cmdr.escape_pod = true;
                     break;
 
                 case EquipmentType.EQ_ENERGY_BOMB:
-                    elite.cmdr.energy_bomb = true;
+                    _gameState.cmdr.energy_bomb = true;
                     break;
 
                 case EquipmentType.EQ_ENERGY_UNIT:
-                    elite.cmdr.energy_unit = EnergyUnit.Extra;
+                    _gameState.cmdr.energy_unit = EnergyUnit.Extra;
                     break;
 
                 case EquipmentType.EQ_DOCK_COMP:
-                    elite.cmdr.docking_computer = true;
+                    _gameState.cmdr.docking_computer = true;
                     break;
 
                 case EquipmentType.EQ_GAL_DRIVE:
-                    elite.cmdr.galactic_hyperdrive = true;
+                    _gameState.cmdr.galactic_hyperdrive = true;
                     break;
 
                 case EquipmentType.EQ_FRONT_PULSE:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.front_laser);
-                    elite.cmdr.front_laser = elite.PULSE_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.front_laser);
+                    _gameState.cmdr.front_laser = elite.PULSE_LASER;
                     break;
 
                 case EquipmentType.EQ_REAR_PULSE:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.rear_laser);
-                    elite.cmdr.rear_laser = elite.PULSE_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.rear_laser);
+                    _gameState.cmdr.rear_laser = elite.PULSE_LASER;
                     break;
 
                 case EquipmentType.EQ_LEFT_PULSE:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.left_laser);
-                    elite.cmdr.left_laser = elite.PULSE_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.left_laser);
+                    _gameState.cmdr.left_laser = elite.PULSE_LASER;
                     break;
 
                 case EquipmentType.EQ_RIGHT_PULSE:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.right_laser);
-                    elite.cmdr.right_laser = elite.PULSE_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.right_laser);
+                    _gameState.cmdr.right_laser = elite.PULSE_LASER;
                     break;
 
                 case EquipmentType.EQ_FRONT_BEAM:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.front_laser);
-                    elite.cmdr.front_laser = elite.BEAM_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.front_laser);
+                    _gameState.cmdr.front_laser = elite.BEAM_LASER;
                     break;
 
                 case EquipmentType.EQ_REAR_BEAM:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.rear_laser);
-                    elite.cmdr.rear_laser = elite.BEAM_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.rear_laser);
+                    _gameState.cmdr.rear_laser = elite.BEAM_LASER;
                     break;
 
                 case EquipmentType.EQ_LEFT_BEAM:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.left_laser);
-                    elite.cmdr.left_laser = elite.BEAM_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.left_laser);
+                    _gameState.cmdr.left_laser = elite.BEAM_LASER;
                     break;
 
                 case EquipmentType.EQ_RIGHT_BEAM:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.right_laser);
-                    elite.cmdr.right_laser = elite.BEAM_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.right_laser);
+                    _gameState.cmdr.right_laser = elite.BEAM_LASER;
                     break;
 
                 case EquipmentType.EQ_FRONT_MINING:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.front_laser);
-                    elite.cmdr.front_laser = elite.MINING_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.front_laser);
+                    _gameState.cmdr.front_laser = elite.MINING_LASER;
                     break;
 
                 case EquipmentType.EQ_REAR_MINING:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.rear_laser);
-                    elite.cmdr.rear_laser = elite.MINING_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.rear_laser);
+                    _gameState.cmdr.rear_laser = elite.MINING_LASER;
                     break;
 
                 case EquipmentType.EQ_LEFT_MINING:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.left_laser);
-                    elite.cmdr.left_laser = elite.MINING_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.left_laser);
+                    _gameState.cmdr.left_laser = elite.MINING_LASER;
                     break;
 
                 case EquipmentType.EQ_RIGHT_MINING:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.right_laser);
-                    elite.cmdr.right_laser = elite.MINING_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.right_laser);
+                    _gameState.cmdr.right_laser = elite.MINING_LASER;
                     break;
 
                 case EquipmentType.EQ_FRONT_MILITARY:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.front_laser);
-                    elite.cmdr.front_laser = elite.MILITARY_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.front_laser);
+                    _gameState.cmdr.front_laser = elite.MILITARY_LASER;
                     break;
 
                 case EquipmentType.EQ_REAR_MILITARY:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.rear_laser);
-                    elite.cmdr.rear_laser = elite.MILITARY_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.rear_laser);
+                    _gameState.cmdr.rear_laser = elite.MILITARY_LASER;
                     break;
 
                 case EquipmentType.EQ_LEFT_MILITARY:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.left_laser);
-                    elite.cmdr.left_laser = elite.MILITARY_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.left_laser);
+                    _gameState.cmdr.left_laser = elite.MILITARY_LASER;
                     break;
 
                 case EquipmentType.EQ_RIGHT_MILITARY:
-                    elite.cmdr.credits += LaserRefund(elite.cmdr.right_laser);
-                    elite.cmdr.right_laser = elite.MILITARY_LASER;
+                    _gameState.cmdr.credits += LaserRefund(_gameState.cmdr.right_laser);
+                    _gameState.cmdr.right_laser = elite.MILITARY_LASER;
                     break;
             }
 
-            elite.cmdr.credits -= EquipmentStock[_highlightedItem].Price;
+            _gameState.cmdr.credits -= EquipmentStock[_highlightedItem].Price;
             ListPrices();
         }
     }

@@ -18,16 +18,20 @@ namespace Elite.Engine.Views
 
     internal class Market : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
+        private readonly trade _trade;
         private int _highlightedStock;
 
-        internal Market(IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal Market(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, trade trade)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
+            _trade = trade;
         }
 
         public void Reset()
@@ -42,7 +46,7 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             _draw.ClearDisplay();
-            _draw.DrawViewHeader($"{Planet.name_planet(elite.docked_planet, false)} MARKET PRICES");
+            _draw.DrawViewHeader($"{Planet.name_planet(_gameState.docked_planet, false)} MARKET PRICES");
 
             _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);
@@ -50,7 +54,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(314, 40, "FOR SALE", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(420, 40, "IN HOLD", GFX_COL.GFX_COL_GREEN_1);
 
-            for (int i = 0; i < trade.stock_market.Length; i++)
+            for (int i = 0; i < _gameState.stock_market.Length; i++)
             {
                 int y = (i * 15) + 55;
 
@@ -59,32 +63,32 @@ namespace Elite.Engine.Views
                     _gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
                 }
 
-                _gfx.DrawTextLeft(16, y, trade.stock_market[i].name, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(16, y, _gameState.stock_market[i].name, GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextLeft(180, y, trade.stock_market[i].units, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(180, y, _gameState.stock_market[i].units, GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextRight(285, y, $"{trade.stock_market[i].current_price:N1}", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextRight(285, y, $"{_gameState.stock_market[i].current_price:N1}", GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextRight(365, y, trade.stock_market[i].current_quantity > 0 ? $"{trade.stock_market[i].current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(365, y, trade.stock_market[i].current_quantity > 0 ? trade.stock_market[i].units : "", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextRight(365, y, _gameState.stock_market[i].current_quantity > 0 ? $"{_gameState.stock_market[i].current_quantity}" : "-", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(365, y, _gameState.stock_market[i].current_quantity > 0 ? _gameState.stock_market[i].units : "", GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextRight(455, y, elite.cmdr.current_cargo[i] > 0 ? $"{elite.cmdr.current_cargo[i],2}" : "-", GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(455, y, elite.cmdr.current_cargo[i] > 0 ? trade.stock_market[i].units : "", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextRight(455, y, _gameState.cmdr.current_cargo[i] > 0 ? $"{_gameState.cmdr.current_cargo[i],2}" : "-", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(455, y, _gameState.cmdr.current_cargo[i] > 0 ? _gameState.stock_market[i].units : "", GFX_COL.GFX_COL_WHITE);
             }
 
             _gfx.DrawTextLeft(16, 340, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextRight(160, 340, $"{elite.cmdr.credits,10:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextRight(160, 340, $"{_gameState.cmdr.credits,10:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
 
         public void HandleInput()
         {
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
-                _highlightedStock = Math.Clamp(_highlightedStock - 1, 0, trade.stock_market.Length - 1);
+                _highlightedStock = Math.Clamp(_highlightedStock - 1, 0, _gameState.stock_market.Length - 1);
             }
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
-                _highlightedStock = Math.Clamp(_highlightedStock + 1, 0, trade.stock_market.Length - 1);
+                _highlightedStock = Math.Clamp(_highlightedStock + 1, 0, _gameState.stock_market.Length - 1);
             }
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
@@ -103,19 +107,19 @@ namespace Elite.Engine.Views
                 return;
             }
 
-            if (trade.stock_market[_highlightedStock].current_quantity == 0 || elite.cmdr.credits < trade.stock_market[_highlightedStock].current_price)
+            if (_gameState.stock_market[_highlightedStock].current_quantity == 0 || _gameState.cmdr.credits < _gameState.stock_market[_highlightedStock].current_price)
             {
                 return;
             }
 
-            if (trade.stock_market[_highlightedStock].units == trade.TONNES && trade.total_cargo() == elite.cmdr.cargo_capacity)
+            if (_gameState.stock_market[_highlightedStock].units == GameState.TONNES && _trade.total_cargo() == _gameState.cmdr.cargo_capacity)
             {
                 return;
             }
 
-            elite.cmdr.current_cargo[_highlightedStock]++;
-            trade.stock_market[_highlightedStock].current_quantity--;
-            elite.cmdr.credits -= trade.stock_market[_highlightedStock].current_price;
+            _gameState.cmdr.current_cargo[_highlightedStock]++;
+            _gameState.stock_market[_highlightedStock].current_quantity--;
+            _gameState.cmdr.credits -= _gameState.stock_market[_highlightedStock].current_price;
         }
 
         private void SellStock()
@@ -125,14 +129,14 @@ namespace Elite.Engine.Views
                 return;
             }
 
-            if (elite.cmdr.current_cargo[_highlightedStock] == 0)
+            if (_gameState.cmdr.current_cargo[_highlightedStock] == 0)
             {
                 return;
             }
 
-            elite.cmdr.current_cargo[_highlightedStock]--;
-            trade.stock_market[_highlightedStock].current_quantity++;
-            elite.cmdr.credits += trade.stock_market[_highlightedStock].current_price;
+            _gameState.cmdr.current_cargo[_highlightedStock]--;
+            _gameState.stock_market[_highlightedStock].current_quantity++;
+            _gameState.cmdr.credits += _gameState.stock_market[_highlightedStock].current_price;
         }
     }
 }

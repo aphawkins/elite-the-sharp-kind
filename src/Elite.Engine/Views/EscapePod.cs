@@ -82,13 +82,13 @@
             }
             else
             {
-                elite.cmdr.escape_pod = false;
-                elite.cmdr.legal_status = 0;
-                elite.cmdr.fuel = elite.myship.max_fuel;
+                _gameState.cmdr.escape_pod = false;
+                _gameState.cmdr.legal_status = 0;
+                _gameState.cmdr.fuel = elite.myship.max_fuel;
 
-                for (int i = 0; i < trade.stock_market.Length; i++)
+                for (int i = 0; i < _gameState.stock_market.Length; i++)
                 {
-                    elite.cmdr.current_cargo[i] = 0;
+                    _gameState.cmdr.current_cargo[i] = 0;
                 }
 
                 _gameState.SetView(SCR.SCR_DOCKING);

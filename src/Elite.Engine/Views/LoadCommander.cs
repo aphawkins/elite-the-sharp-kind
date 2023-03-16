@@ -1,5 +1,7 @@
 ﻿namespace Elite.Engine.Views
 {
+    using System.Diagnostics;
+    using System.Numerics;
     using Elite.Engine.Enums;
     using Elite.Engine.Save;
     using Elite.Engine.Types;
@@ -10,15 +12,17 @@
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
-        private string _name = elite.cmdr.name;
+        private readonly Planet _planet;
+        private string _name;
         private Commander _cmdr = CommanderFactory.Jameson();
 
-        internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
+            _planet = planet;
         }
 
         public void Draw()
@@ -59,8 +63,8 @@
                 _cmdr = SaveFile.LoadCommanderAsync(_name).Result;
                 if (_cmdr != null)
                 {
-                    elite.saved_cmdr = (Commander)_cmdr.Clone();
-                    elite.restore_saved_commander();
+                    _gameState.saved_cmdr = (Commander)_cmdr.Clone();
+                    _gameState.restore_saved_commander();
                     _gameState.SetView(SCR.SCR_CMDR_STATUS);
                 }
             }
@@ -74,6 +78,7 @@
         public void Reset()
         {
             _keyboard.ClearKeyPressed();
+            _name = _gameState.cmdr.name;
         }
 
         public void UpdateUniverse()
