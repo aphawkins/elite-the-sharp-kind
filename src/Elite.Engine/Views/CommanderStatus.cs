@@ -21,23 +21,10 @@ namespace Elite.Engine.Views
         public readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
-        private readonly string[] laserName = new string[] { "Pulse", "Beam", "Military", "Mining", "Custom" };
         readonly int EQUIP_START_Y = 202;
         readonly int Y_INC = 16;
         readonly int EQUIP_MAX_Y = 290;
         readonly int EQUIP_WIDTH = 200;
-
-        string laser_type(int strength)
-        {
-            return strength switch
-            {
-                elite.PULSE_LASER => laserName[0],
-                elite.BEAM_LASER => laserName[1],
-                elite.MILITARY_LASER => laserName[2],
-                elite.MINING_LASER => laserName[3],
-                _ => laserName[4],
-            };
-        }
 
         readonly string[] condition_txt = new string[]
         {
@@ -192,27 +179,27 @@ namespace Elite.Engine.Views
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.front_laser != 0)
+            if (_gameState.cmdr.front_laser.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Front {laser_type(_gameState.cmdr.front_laser)} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Front {_gameState.cmdr.front_laser.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.rear_laser != 0)
+            if (_gameState.cmdr.rear_laser.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Rear {laser_type(_gameState.cmdr.rear_laser)} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Rear {_gameState.cmdr.rear_laser.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.left_laser != 0)
+            if (_gameState.cmdr.left_laser.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Left {laser_type(_gameState.cmdr.left_laser)} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Left {_gameState.cmdr.left_laser.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.right_laser != 0)
+            if (_gameState.cmdr.right_laser.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Right {laser_type(_gameState.cmdr.right_laser)} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Right {_gameState.cmdr.right_laser.Name} Laser", GFX_COL.GFX_COL_WHITE);
             }
         }
 

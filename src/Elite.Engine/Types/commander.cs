@@ -12,10 +12,10 @@
         public float credits { get; set; }
         public float fuel { get; set; }
         public int galaxy_number { get; set; }
-        public int front_laser { get; set; }
-        public int rear_laser { get; set; }
-        public int left_laser { get; set; }
-        public int right_laser { get; set; }
+        public ILaser front_laser { get; set; }
+        public ILaser rear_laser { get; set; }
+        public ILaser left_laser { get; set; }
+        public ILaser right_laser { get; set; }
         public int cargo_capacity { get; set; }
         public int[] current_cargo { get; set; }
         public bool ecm { get; set; }

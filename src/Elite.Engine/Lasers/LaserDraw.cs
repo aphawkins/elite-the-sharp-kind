@@ -1,20 +1,20 @@
-﻿namespace Elite.Engine
+﻿namespace Elite.Engine.Lasers
 {
     using System.Numerics;
     using Elite.Engine.Enums;
 
-    internal class Laser
+    internal class LaserDraw
     {
         private readonly IGfx _gfx;
 
-        internal Laser(IGfx gfx)
+        internal LaserDraw(IGfx gfx)
         {
             _gfx = gfx;
         }
 
-        internal void DrawLaserSights(int laserType)
+        internal void DrawLaserSights(LaserType laserType)
         {
-            if (laserType == 0)
+            if (laserType == LaserType.None)
             {
                 return;
             }

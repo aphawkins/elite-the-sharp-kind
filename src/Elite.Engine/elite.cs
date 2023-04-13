@@ -36,10 +36,6 @@ namespace Elite.Engine
         private readonly swat _swat;
         private readonly trade _trade;
         private readonly Planet _planet;
-        internal const int PULSE_LASER = 15;
-        internal const int BEAM_LASER = 143;
-        internal const int MILITARY_LASER = 151;
-        internal const int MINING_LASER = 50;
         internal const int MAX_UNIV_OBJECTS = 20;
         internal static int carry_flag = 0;
         internal static ConfigSettings config = new();

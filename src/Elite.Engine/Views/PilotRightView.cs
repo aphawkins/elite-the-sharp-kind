@@ -17,7 +17,7 @@
         {
             _pilotView.Draw();
             _pilotView.DrawViewName("Right View");
-            _pilotView.DrawLaserSights(_gameState.cmdr.front_laser);
+            _pilotView.DrawLaserSights(_gameState.cmdr.front_laser.Type);
         }
 
         public void HandleInput()

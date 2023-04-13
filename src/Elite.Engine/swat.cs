@@ -34,9 +34,9 @@ namespace Elite.Engine
         internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
         private static int laser_counter;
-        private static int laser;
-        private static int laser2;
-		internal static int ecm_active;
+        private static int laser_strength;
+        private static LaserType laser_type;
+        internal static int ecm_active;
 		internal static int missile_target;
         private static bool ecm_ours;
 		internal static bool in_battle;
@@ -189,7 +189,8 @@ namespace Elite.Engine
 		{
 			elite.laser_temp = 0;
 			laser_counter = 0;
-			laser = 0;
+			laser_strength = 0;
+			laser_type = LaserType.None;
 			ecm_active = 0;
 			missile_target = MISSILE_UNARMED;
 		}
@@ -321,7 +322,7 @@ namespace Elite.Engine
 					_audio.PlayEffect(SoundEffect.Beep);
 				}
 
-				if (laser > 0)
+				if (laser_strength > 0)
 				{
 					_audio.PlayEffect(SoundEffect.HitEnemy);
 
@@ -329,14 +330,14 @@ namespace Elite.Engine
 					{
 						if (space.universe[un].type is SHIP.SHIP_CONSTRICTOR or SHIP.SHIP_COUGAR)
 						{
-							if (laser == (elite.MILITARY_LASER & 127))
+							if (laser_type == LaserType.Military)
 							{
-                                space.universe[un].energy -= laser / 4;
+                                space.universe[un].energy -= laser_strength / 4;
 							}
 						}
 						else
 						{
-                            space.universe[un].energy -= laser;
+                            space.universe[un].energy -= laser_strength;
 						}
 					}
 
@@ -346,7 +347,7 @@ namespace Elite.Engine
 
 						if (space.universe[un].type == SHIP.SHIP_ASTEROID)
 						{
-							if (laser == (elite.MINING_LASER & 127))
+							if (laser_type is LaserType.Mining or LaserType.Pulse)
 							{
 								launch_loot(un, SHIP.SHIP_ROCK);
 							}
@@ -869,23 +870,31 @@ namespace Elite.Engine
                 return false;
             }
 
-            laser = _gameState.currentScreen switch
+            laser_strength = _gameState.currentScreen switch
             {
-                SCR.SCR_FRONT_VIEW => _gameState.cmdr.front_laser,
-                SCR.SCR_REAR_VIEW => _gameState.cmdr.rear_laser,
-                SCR.SCR_RIGHT_VIEW => _gameState.cmdr.right_laser,
-                SCR.SCR_LEFT_VIEW => _gameState.cmdr.left_laser,
+                SCR.SCR_FRONT_VIEW => _gameState.cmdr.front_laser.Strength,
+                SCR.SCR_REAR_VIEW => _gameState.cmdr.rear_laser.Strength,
+                SCR.SCR_RIGHT_VIEW => _gameState.cmdr.right_laser.Strength,
+                SCR.SCR_LEFT_VIEW => _gameState.cmdr.left_laser.Strength,
                 _ => 0,
             };
 
-            if (laser == 0)
+            if (laser_strength == 0)
             {
                 return false;
             }
 
-            laser_counter = (laser > 127) ? 0 : (laser & 250);
-            laser &= 127;
-            laser2 = laser;
+            laser_type = _gameState.currentScreen switch
+            {
+                SCR.SCR_FRONT_VIEW => _gameState.cmdr.front_laser.Type,
+                SCR.SCR_REAR_VIEW => _gameState.cmdr.rear_laser.Type,
+                SCR.SCR_RIGHT_VIEW => _gameState.cmdr.right_laser.Type,
+                SCR.SCR_LEFT_VIEW => _gameState.cmdr.left_laser.Type,
+                _ => LaserType.None,
+            };
+
+            laser_counter = (laser_strength > 127) ? 0 : (laser_strength & 250);
+            laser_strength &= 127;
 
             _audio.PlayEffect(SoundEffect.Pulse);
             elite.laser_temp += 8;
@@ -899,7 +908,8 @@ namespace Elite.Engine
 
         internal static void cool_laser()
 		{
-			laser = 0;
+			laser_strength = 0;
+			laser_type = LaserType.None;
 			elite.drawLasers = false;
 
             if (elite.laser_temp > 0)

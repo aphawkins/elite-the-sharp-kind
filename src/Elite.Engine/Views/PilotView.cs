@@ -1,6 +1,7 @@
 ﻿namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
+    using Elite.Engine.Lasers;
     using static Elite.Engine.elite;
 
     internal class PilotView : IView
@@ -8,7 +9,7 @@
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
-        private readonly Laser _laser;
+        private readonly LaserDraw _laser;
         private readonly pilot _pilot;
         private int drawLaserFrames;
 
@@ -17,7 +18,7 @@
             _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
-            _laser = new Laser(_gfx);
+            _laser = new LaserDraw(_gfx);
             _pilot = pilot;
         }
 
@@ -117,7 +118,7 @@
             _gfx.DrawTextCentre(32, name, 120, GFX_COL.GFX_COL_WHITE);
         }
 
-        internal void DrawLaserSights(int laserType)
+        internal void DrawLaserSights(LaserType laserType)
         {
             _laser.DrawLaserSights(laserType);
         }

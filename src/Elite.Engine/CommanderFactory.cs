@@ -1,6 +1,7 @@
 ﻿namespace Elite.Engine
 {
     using Elite.Engine.Enums;
+    using Elite.Engine.Lasers;
     using Elite.Engine.Types;
 
     internal static class CommanderFactory
@@ -29,10 +30,10 @@
                 credits = 100,
                 fuel = 7,
                 galaxy_number = 0,
-                front_laser = elite.PULSE_LASER,
-                rear_laser = 0,
-                left_laser = 0,
-                right_laser = 0,
+                front_laser = new PulseLaser(),
+                rear_laser = new LaserNone(),
+                left_laser = new LaserNone(),
+                right_laser = new LaserNone(),
                 cargo_capacity = 20,
                 current_cargo = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 ecm = false,
@@ -77,10 +78,10 @@
                 credits = 10000,
                 fuel = 7,
                 galaxy_number = 0,
-                front_laser = elite.MILITARY_LASER,
-                rear_laser = elite.PULSE_LASER,
-                left_laser = elite.MINING_LASER,
-                right_laser = elite.BEAM_LASER,
+                front_laser = new MilitaryLaser(),
+                rear_laser = new PulseLaser(),
+                left_laser = new MiningLaser(),
+                right_laser = new BeamLaser(),
                 cargo_capacity = 35,
                 current_cargo = new int[] { 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0 },
                 ecm = true,
