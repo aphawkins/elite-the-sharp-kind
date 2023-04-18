@@ -67,7 +67,7 @@
                 _gameState.cmdr.name = _name;
                 _gameState.cmdr.ShipLocationX = _gameState.docked_planet.d;
                 _gameState.cmdr.ShipLocationY = _gameState.docked_planet.b;
-                _isSuccess = SaveFile.SaveCommanderAsync(_gameState.cmdr).Result;
+                _isSuccess = SaveFile.SaveCommanderAsync(_gameState).Result;
                 
                 if (_isSuccess.HasValue && _isSuccess.Value)
                 {

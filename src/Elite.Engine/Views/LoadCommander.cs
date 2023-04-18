@@ -14,7 +14,7 @@
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
         private string _name;
-        private Commander _cmdr = CommanderFactory.Jameson();
+        private bool isLoaded = true;
 
         internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet)
         {
@@ -34,7 +34,7 @@
             _gfx.DrawRectangle(100, 100, 312, 50, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(125, _name, 140, GFX_COL.GFX_COL_WHITE);
 
-            if (_cmdr == null)
+            if (!isLoaded)
             {
                 _gfx.DrawTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
                 _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
@@ -60,10 +60,9 @@
 
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
-                _cmdr = SaveFile.LoadCommanderAsync(_name).Result;
-                if (_cmdr != null)
+                isLoaded = SaveFile.LoadCommanderAsync(_name, _gameState).Result;
+                if (isLoaded)
                 {
-                    _gameState.saved_cmdr = (Commander)_cmdr.Clone();
                     _gameState.restore_saved_commander();
                     _gameState.SetView(SCR.SCR_CMDR_STATUS);
                 }
@@ -79,6 +78,7 @@
         {
             _keyboard.ClearKeyPressed();
             _name = _gameState.cmdr.name;
+            isLoaded = true;
         }
 
         public void UpdateUniverse()
