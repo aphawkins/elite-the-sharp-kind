@@ -9,5 +9,7 @@
         int Strength { get; }
 
         LaserType Type { get; }
+
+        int Temperature { get; set;  }
     }
 }

@@ -9,5 +9,7 @@
         public int Strength => 143;
 
         public LaserType Type => LaserType.Beam;
+
+        public int Temperature { get; set; } = 0;
     }
 }

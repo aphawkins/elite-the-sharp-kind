@@ -14,5 +14,7 @@
         public int Strength => 0;
 
         public LaserType Type => LaserType.None;
+
+        public int Temperature { get; set; } = 0;
     }
 }

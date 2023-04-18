@@ -9,5 +9,7 @@
         public int Strength => 50;
 
         public LaserType Type => LaserType.Mining;
+
+        public int Temperature { get; set; } = 0;
     }
 }

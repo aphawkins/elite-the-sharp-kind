@@ -9,5 +9,7 @@
         public int Strength => 15;
 
         public LaserType Type => LaserType.Pulse;
+
+        public int Temperature { get; set; } = 0;
     }
 }

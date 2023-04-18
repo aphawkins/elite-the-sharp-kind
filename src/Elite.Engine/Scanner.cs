@@ -199,7 +199,7 @@ namespace Elite.Engine
 		{
 			if (elite.laser_temp > 0)
 			{
-				display_dial_bar(elite.laser_temp / 4, new(31f, 76f));
+				display_dial_bar(elite.laser_temp / 4, new(31, 76));
 			}
 		}
 
