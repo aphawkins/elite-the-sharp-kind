@@ -15,6 +15,7 @@
 namespace Elite.Engine
 {
     using Elite.Engine.Enums;
+    using Elite.Engine.Save;
     using Elite.Engine.Types;
 
     internal class GameState
@@ -40,9 +41,8 @@ namespace Elite.Engine
         internal float flight_roll;
         internal float flight_climb;
         internal bool witchspace;
-        internal Commander cmdr;
-        internal Commander saved_cmdr;
-        internal galaxy_seed docked_planet;
+        internal Commander cmdr = new();
+        internal galaxy_seed docked_planet = new();
         internal string planetName;
         internal galaxy_seed hyperspace_planet;
         internal planet_data current_planet_data = new();
@@ -247,8 +247,7 @@ namespace Elite.Engine
 
         internal void restore_saved_commander()
         {
-            cmdr = (Commander)saved_cmdr.Clone();
-            docked_planet = Planet.find_planet(cmdr.galaxy, new(cmdr.ShipLocationX, cmdr.ShipLocationY));
+            docked_planet = Planet.find_planet(cmdr.galaxy, new(docked_planet.d, docked_planet.b));
             planetName = Planet.name_planet(docked_planet, false);
             hyperspace_planet = (galaxy_seed)docked_planet.Clone();
             current_planet_data = Planet.generate_planet_data(docked_planet);

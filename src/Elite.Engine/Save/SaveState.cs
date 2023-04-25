@@ -4,7 +4,7 @@
     {
         public string CommanderName { get; set; }
         public int Mission { get; set; }
-        public float[] ShipLocation { get; set; }
+        public int[] ShipLocation { get; set; }
         public int[] GalaxySeed { get; set; }
         public float Credits { get; set; }
         public float Fuel { get; set; }

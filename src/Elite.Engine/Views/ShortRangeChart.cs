@@ -273,8 +273,8 @@ namespace Elite.Engine.Views
         {
             Vector2 location = new()
             {
-                X = ((elite.cross.X - gfx.GFX_X_CENTRE) / (4f * gfx.GFX_SCALE)) + _gameState.docked_planet.d,
-                Y = ((elite.cross.Y - gfx.GFX_Y_CENTRE) / (2f * gfx.GFX_SCALE)) + _gameState.docked_planet.b,
+                X = ((elite.cross.X - gfx.GFX_X_CENTRE) / (4 * gfx.GFX_SCALE)) + _gameState.docked_planet.d,
+                Y = ((elite.cross.Y - gfx.GFX_Y_CENTRE) / (2 * gfx.GFX_SCALE)) + _gameState.docked_planet.b,
             };
 
             _gameState.hyperspace_planet = Planet.find_planet(_gameState.cmdr.galaxy, location);

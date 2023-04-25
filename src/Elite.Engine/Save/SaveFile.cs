@@ -20,9 +20,12 @@ namespace Elite.Engine.Save
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static class SaveFile
+    internal class SaveFile
     {
         private const string fileExtension = ".cmdr";
+        private readonly GameState _state;
+        private SaveState _lastSaved;
+
         private static readonly JsonSerializerOptions options = new()
         {
             WriteIndented = true,
@@ -30,15 +33,26 @@ namespace Elite.Engine.Save
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
+        internal SaveFile(GameState state)
+        {
+            _state = state;
+
+#if DEBUG
+            _lastSaved = CommanderFactory.Max();
+#else
+		    _lastSaved = CommanderFactory.Jameson();
+#endif
+        }
+
         /// <summary>
-        /// Write the config file.
+        /// Write the save file.
         /// </summary>
-        /// <param name="state">The config to save.</param>
-        internal static async Task<bool> SaveCommanderAsync(GameState state)
+        /// <param name="state">The game state to save.</param>
+        internal async Task<bool> SaveCommanderAsync(string newName)
         {
             try
             {
-                SaveState save = GameStateToSaveState(state);
+                SaveState save = GameStateToSaveState(newName);
 
                 string path = save.CommanderName + fileExtension;
                 if (File.Exists(path))
@@ -47,6 +61,8 @@ namespace Elite.Engine.Save
                 }
                 using FileStream stream = File.OpenWrite(path);
                 await JsonSerializer.SerializeAsync(stream, save, options);
+
+                _lastSaved = save;
                 return true;
             }
             catch (Exception ex)
@@ -58,9 +74,9 @@ namespace Elite.Engine.Save
         }
 
         /// <summary>
-        /// Read the config file.
+        /// Read the save file.
         /// </summary>
-        internal static async Task<bool> LoadCommanderAsync(string name, GameState state)
+        internal async Task<bool> LoadCommanderAsync(string name)
         {
             try
             {
@@ -68,7 +84,8 @@ namespace Elite.Engine.Save
                 SaveState? save = await JsonSerializer.DeserializeAsync<SaveState>(stream, options);
                 if (save != null)
                 {
-                    SaveStateToGameState(save, state);
+                    _lastSaved = save;
+                    SaveStateToGameState();
                     return true;
                 }
             }
@@ -76,94 +93,101 @@ namespace Elite.Engine.Save
             {
                 //TODO: handle error message better
                 Debug.WriteLine("Failed to load commander.\n" + ex);
-                state.saved_cmdr = CommanderFactory.Jameson();
+                _lastSaved = CommanderFactory.Jameson();
             }
 
             return false;
         }
 
-        private static SaveState GameStateToSaveState(GameState state)
+        internal void GetLastSave()
         {
-            SaveState save = new SaveState();
-            save.CargoCapacity = state.cmdr.cargo_capacity;
-            save.CommanderName = state.cmdr.name;
-            save.Credits = state.cmdr.credits;
-            save.CurrentCargo = state.cmdr.current_cargo;
-            save.EnergyUnit = state.cmdr.energy_unit.ToString();
-            save.Fuel = state.cmdr.fuel;
-            save.GalaxyNumber = state.cmdr.galaxy_number;
-            save.GalaxySeed = new int[6] 
-            { 
-                state.cmdr.galaxy.a, 
-                state.cmdr.galaxy.b, 
-                state.cmdr.galaxy.c, 
-                state.cmdr.galaxy.d, 
-                state.cmdr.galaxy.e, 
-                state.cmdr.galaxy.f 
+            SaveStateToGameState();
+        }
+
+        private SaveState GameStateToSaveState(string newName)
+        {
+            SaveState save = new()
+            {
+                CargoCapacity = _state.cmdr.cargo_capacity,
+                CommanderName = newName,
+                Credits = _state.cmdr.credits,
+                CurrentCargo = _state.cmdr.current_cargo,
+                EnergyUnit = _state.cmdr.energy_unit.ToString(),
+                Fuel = _state.cmdr.fuel,
+                GalaxyNumber = _state.cmdr.galaxy_number,
+                GalaxySeed = new int[6]
+                {
+                    _state.cmdr.galaxy.a,
+                    _state.cmdr.galaxy.b,
+                    _state.cmdr.galaxy.c,
+                    _state.cmdr.galaxy.d,
+                    _state.cmdr.galaxy.e,
+                    _state.cmdr.galaxy.f
+                },
+                HasDockingComputer = _state.cmdr.docking_computer,
+                HasECM = _state.cmdr.ecm,
+                HasEnergyBomb = _state.cmdr.energy_bomb,
+                HasEscapePod = _state.cmdr.escape_pod,
+                HasFuelScoop = _state.cmdr.fuel_scoop,
+                HasGalacticHyperdrive = _state.cmdr.galactic_hyperdrive,
+                Lasers = new string[4]
+                {
+                    _state.cmdr.front_laser.Type.ToString(),
+                    _state.cmdr.rear_laser.Type.ToString(),
+                    _state.cmdr.right_laser.Type.ToString(),
+                    _state.cmdr.left_laser.Type.ToString()
+                },
+                LegalStatus = _state.cmdr.legal_status,
+                MarketRandomiser = _state.cmdr.market_rnd,
+                Missiles = _state.cmdr.missiles,
+                Mission = _state.cmdr.mission,
+                Saved = _state.cmdr.saved,
+                Score = _state.cmdr.score,
+                ShipLocation = new int[2]
+                {
+                    _state.docked_planet.d,
+                    _state.docked_planet.b,
+                },
+                StationStock = _state.cmdr.station_stock
             };
-            save.HasDockingComputer = state.cmdr.docking_computer;
-            save.HasECM = state.cmdr.ecm;
-            save.HasEnergyBomb = state.cmdr.energy_bomb;
-            save.HasEscapePod = state.cmdr.escape_pod;
-            save.HasFuelScoop = state.cmdr.fuel_scoop;
-            save.HasGalacticHyperdrive = state.cmdr.galactic_hyperdrive;
-            save.Lasers = new string[4] 
-            { 
-                state.cmdr.front_laser.Type.ToString(),
-                state.cmdr.rear_laser.Type.ToString(),
-                state.cmdr.right_laser.Type.ToString(),
-                state.cmdr.left_laser.Type.ToString()
-            };
-            save.LegalStatus = state.cmdr.legal_status;
-            save.MarketRandomiser = state.cmdr.market_rnd;
-            save.Missiles = state.cmdr.missiles;
-            save.Mission = state.cmdr.mission;
-            save.Saved = state.cmdr.saved;
-            save.Score = state.cmdr.score;
-            save.ShipLocation = new float[2] 
-            { 
-                state.cmdr.ShipLocationX, 
-                state.cmdr.ShipLocationY 
-            };
-            save.StationStock = state.cmdr.station_stock;
 
             return save;
         }
 
-        private static void SaveStateToGameState(SaveState save, GameState state)
+        private void SaveStateToGameState()
         {
-            state.saved_cmdr.cargo_capacity = save.CargoCapacity;
-            state.saved_cmdr.name = save.CommanderName;
-            state.saved_cmdr.credits = save.Credits;
-            state.saved_cmdr.current_cargo = save.CurrentCargo;
-            state.saved_cmdr.energy_unit = Enum.Parse<EnergyUnit>(save.EnergyUnit);
-            state.saved_cmdr.fuel = save.Fuel;
-            state.saved_cmdr.galaxy_number = save.GalaxyNumber;
-            state.saved_cmdr.galaxy.a = save.GalaxySeed[0];
-            state.saved_cmdr.galaxy.b = save.GalaxySeed[1];
-            state.saved_cmdr.galaxy.c = save.GalaxySeed[2];
-            state.saved_cmdr.galaxy.d = save.GalaxySeed[3];
-            state.saved_cmdr.galaxy.e = save.GalaxySeed[4];
-            state.saved_cmdr.galaxy.f = save.GalaxySeed[5];
-            state.saved_cmdr.docking_computer = save.HasDockingComputer;
-            state.saved_cmdr.ecm = save.HasECM;
-            state.saved_cmdr.energy_bomb = save.HasEnergyBomb;
-            state.saved_cmdr.escape_pod = save.HasEscapePod;
-            state.saved_cmdr.fuel_scoop = save.HasFuelScoop;
-            state.saved_cmdr.galactic_hyperdrive = save.HasGalacticHyperdrive;
-            state.saved_cmdr.front_laser = LaserFactory.GetLaser(Enum.Parse<LaserType>(save.Lasers[0]));
-            state.saved_cmdr.rear_laser = LaserFactory.GetLaser(Enum.Parse<LaserType>(save.Lasers[1]));
-            state.saved_cmdr.right_laser = LaserFactory.GetLaser(Enum.Parse<LaserType>(save.Lasers[2]));
-            state.saved_cmdr.left_laser = LaserFactory.GetLaser(Enum.Parse<LaserType>(save.Lasers[3]));
-            state.saved_cmdr.legal_status = save.LegalStatus;
-            state.saved_cmdr.market_rnd = save.MarketRandomiser;
-            state.saved_cmdr.missiles = save.Missiles;
-            state.saved_cmdr.mission = save.Mission;
-            state.saved_cmdr.saved = save.Saved;
-            state.saved_cmdr.score = save.Score;
-            state.saved_cmdr.ShipLocationX = save.ShipLocation[0];
-            state.saved_cmdr.ShipLocationY = save.ShipLocation[1];
-            state.saved_cmdr.station_stock = save.StationStock;
+            _state.cmdr.cargo_capacity = _lastSaved.CargoCapacity;
+            _state.cmdr.name = _lastSaved.CommanderName;
+            _state.cmdr.credits = _lastSaved.Credits;
+            _state.cmdr.current_cargo = _lastSaved.CurrentCargo;
+            _state.cmdr.energy_unit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
+            _state.cmdr.fuel = _lastSaved.Fuel;
+            _state.cmdr.galaxy_number = _lastSaved.GalaxyNumber;
+            _state.cmdr.galaxy.a = _lastSaved.GalaxySeed[0];
+            _state.cmdr.galaxy.b = _lastSaved.GalaxySeed[1];
+            _state.cmdr.galaxy.c = _lastSaved.GalaxySeed[2];
+            _state.cmdr.galaxy.d = _lastSaved.GalaxySeed[3];
+            _state.cmdr.galaxy.e = _lastSaved.GalaxySeed[4];
+            _state.cmdr.galaxy.f = _lastSaved.GalaxySeed[5];
+            _state.cmdr.docking_computer = _lastSaved.HasDockingComputer;
+            _state.cmdr.ecm = _lastSaved.HasECM;
+            _state.cmdr.energy_bomb = _lastSaved.HasEnergyBomb;
+            _state.cmdr.escape_pod = _lastSaved.HasEscapePod;
+            _state.cmdr.fuel_scoop = _lastSaved.HasFuelScoop;
+            _state.cmdr.galactic_hyperdrive = _lastSaved.HasGalacticHyperdrive;
+            _state.cmdr.front_laser = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[0]));
+            _state.cmdr.rear_laser = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[1]));
+            _state.cmdr.right_laser = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));
+            _state.cmdr.left_laser = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[3]));
+            _state.cmdr.legal_status = _lastSaved.LegalStatus;
+            _state.cmdr.market_rnd = _lastSaved.MarketRandomiser;
+            _state.cmdr.missiles = _lastSaved.Missiles;
+            _state.cmdr.mission = _lastSaved.Mission;
+            _state.cmdr.saved = _lastSaved.Saved;
+            _state.cmdr.score = _lastSaved.Score;
+            _state.docked_planet.d = _lastSaved.ShipLocation[0];
+            _state.docked_planet.b = _lastSaved.ShipLocation[1];
+            _state.cmdr.station_stock = _lastSaved.StationStock;
         }
 
         //static int checksum(unsigned char* block)

@@ -19,6 +19,7 @@ namespace Elite.Engine
     using Elite.Common.Enums;
     using Elite.Engine.Config;
     using Elite.Engine.Enums;
+    using Elite.Engine.Save;
     using Elite.Engine.Ships;
     using Elite.Engine.Types;
     using Elite.Engine.Views;
@@ -36,6 +37,7 @@ namespace Elite.Engine
         private readonly swat _swat;
         private readonly trade _trade;
         private readonly Planet _planet;
+        private readonly SaveFile _save;
         internal const int MAX_UNIV_OBJECTS = 20;
         internal static int carry_flag = 0;
         internal static ConfigSettings config = new();
@@ -121,7 +123,7 @@ namespace Elite.Engine
             }
 
             _gameState.Reset();
-
+            _save.GetLastSave();
             _gameState.restore_saved_commander();
 
             flight_speed = 1;
@@ -511,6 +513,7 @@ namespace Elite.Engine
             _audio.LoadSounds();
             _keyboard = keyboard;
             _gameState = new(_keyboard, _views);
+            _save = new(_gameState);
             _planet = new(_gameState);
             _draw = new(_gfx);
             _draw.LoadImages();
@@ -527,6 +530,7 @@ namespace Elite.Engine
             _swat = new(_gameState, _audio);
             _trade = new(_gameState, _swat);
             _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade, _planet);
+
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars));
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gameState, _gfx, _draw, keyboard, _planet));
@@ -544,20 +548,14 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gameState, _gfx, _draw));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gameState, _gfx, _draw, keyboard, _planet));
-            _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gameState, _gfx, _draw, keyboard));
+            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gameState, _gfx, _draw, keyboard, _planet, _save));
+            _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gameState, _gfx, _draw, keyboard, _save));
             _views.Add(SCR.SCR_QUIT, new Quit(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars));
             _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars));
-
-#if DEBUG
-            _gameState.saved_cmdr = CommanderFactory.Max();
-#else
-		    _gameState.saved_cmdr = CommanderFactory.Jameson();
-#endif
 
             exitGame = false;
             auto_pilot = false;

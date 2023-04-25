@@ -10,15 +10,17 @@
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
+        private readonly SaveFile _save;
         private string _name;
         private bool? _isSuccess = null;
 
-        internal SaveCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal SaveCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
+            _save = save;
         }
 
         public void Draw()
@@ -64,18 +66,11 @@
 
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
-                _gameState.cmdr.name = _name;
-                _gameState.cmdr.ShipLocationX = _gameState.docked_planet.d;
-                _gameState.cmdr.ShipLocationY = _gameState.docked_planet.b;
-                _isSuccess = SaveFile.SaveCommanderAsync(_gameState).Result;
+                _isSuccess = _save.SaveCommanderAsync(_name).Result;
                 
                 if (_isSuccess.HasValue && _isSuccess.Value)
                 {
-                    _gameState.saved_cmdr = (Commander)_gameState.cmdr.Clone();
-                }
-                else
-                {
-                    _gameState.cmdr.name = _gameState.saved_cmdr.name;
+                    _save.GetLastSave();
                 }
             }
 

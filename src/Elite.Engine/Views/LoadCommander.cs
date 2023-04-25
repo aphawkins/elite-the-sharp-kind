@@ -13,16 +13,18 @@
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
+        private readonly SaveFile _save;
         private string _name;
         private bool isLoaded = true;
 
-        internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet)
+        internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, SaveFile save)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
             _planet = planet;
+            _save = save;
         }
 
         public void Draw()
@@ -60,9 +62,10 @@
 
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
-                isLoaded = SaveFile.LoadCommanderAsync(_name, _gameState).Result;
+                isLoaded = _save.LoadCommanderAsync(_name).Result;
                 if (isLoaded)
                 {
+                    _save.GetLastSave();
                     _gameState.restore_saved_commander();
                     _gameState.SetView(SCR.SCR_CMDR_STATUS);
                 }
