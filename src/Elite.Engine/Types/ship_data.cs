@@ -4,7 +4,7 @@
     {
         internal string name;
         internal int max_loot;
-        internal int scoop_type;
+        internal StockType scoopedType;
         internal float size;
         internal int front_laser;
         internal float bounty;
@@ -23,12 +23,12 @@
         }
 
         internal ship_data(string name, int max_loot,
-            int scoop_type, float size, int front_laser, float bounty, int vanish_point, int energy,
+            StockType scoopedType, float size, int front_laser, float bounty, int vanish_point, int energy,
             float velocity, int missiles, int laser_strength, ship_point[] points, ship_line[] lines, ship_face_normal[] normals, ship_face[] face_data)
         {
             this.name = name;
             this.max_loot = max_loot;
-            this.scoop_type = scoop_type;
+            this.scoopedType = scoopedType;
             this.size = size;
             this.front_laser = front_laser;
             this.bounty = bounty;

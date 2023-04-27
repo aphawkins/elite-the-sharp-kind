@@ -26,6 +26,7 @@ namespace Elite.Engine.Save
         private const string fileExtension = ".cmdr";
         private readonly GameState _state;
         private readonly PlayerShip _ship;
+        private readonly Trade _trade;
         private SaveState _lastSaved;
 
         private static readonly JsonSerializerOptions options = new()
@@ -35,10 +36,11 @@ namespace Elite.Engine.Save
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
-        internal SaveFile(GameState state, PlayerShip ship)
+        internal SaveFile(GameState state, PlayerShip ship, Trade trade)
         {
             _state = state;
             _ship = ship;
+            _trade = trade;
 
 #if DEBUG
             _lastSaved = CommanderFactory.Max();
@@ -105,6 +107,17 @@ namespace Elite.Engine.Save
         internal void GetLastSave()
         {
             SaveStateToGameState();
+            restore_saved_commander();
+        }
+
+        private void restore_saved_commander()
+        {
+            _state.docked_planet = Planet.find_planet(_state.cmdr.galaxy, new(_state.docked_planet.d, _state.docked_planet.b));
+            _state.planetName = Planet.name_planet(_state.docked_planet, false);
+            _state.hyperspace_planet = (galaxy_seed)_state.docked_planet.Clone();
+            _state.current_planet_data = Planet.generate_planet_data(_state.docked_planet);
+            _trade.GenerateStockMarket(_state.current_planet_data);
+            _trade.SetStockQuantities();
         }
 
         private SaveState GameStateToSaveState(string newName)
@@ -113,8 +126,8 @@ namespace Elite.Engine.Save
             {
                 CargoCapacity = _ship.cargoCapacity,
                 CommanderName = newName,
-                Credits = _state.cmdr.credits,
-                CurrentCargo = _state.cmdr.current_cargo,
+                Credits = _trade.credits,
+                CurrentCargo = _trade.stock_market.Values.Select(x => x.currentCargo).ToArray(),
                 EnergyUnit = _ship.energyUnit.ToString(),
                 Fuel = _ship.fuel,
                 GalaxyNumber = _state.cmdr.galaxy_number,
@@ -141,7 +154,7 @@ namespace Elite.Engine.Save
                     _ship.laserLeft.Type.ToString()
                 },
                 LegalStatus = _state.cmdr.legal_status,
-                MarketRandomiser = _state.cmdr.market_rnd,
+                MarketRandomiser = _trade.marketRandomiser,
                 Missiles = _ship.missileCount,
                 Mission = _state.cmdr.mission,
                 Saved = _state.cmdr.saved,
@@ -151,7 +164,7 @@ namespace Elite.Engine.Save
                     _state.docked_planet.d,
                     _state.docked_planet.b,
                 },
-                StationStock = _state.cmdr.station_stock
+                StationStock = _trade.stock_market.Values.Select(x => x.stationStock).ToArray()
             };
 
             return save;
@@ -161,8 +174,11 @@ namespace Elite.Engine.Save
         {
             _ship.cargoCapacity = _lastSaved.CargoCapacity;
             _state.cmdr.name = _lastSaved.CommanderName;
-            _state.cmdr.credits = _lastSaved.Credits;
-            _state.cmdr.current_cargo = _lastSaved.CurrentCargo;
+            _trade.credits = _lastSaved.Credits;
+            for (int i = 0; i < _trade.stock_market.Count; i++)
+            {
+                _trade.stock_market[(StockType)i + 1].currentCargo = _lastSaved.CurrentCargo[i];
+            }
             _ship.energyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
             _ship.fuel = _lastSaved.Fuel;
             _state.cmdr.galaxy_number = _lastSaved.GalaxyNumber;
@@ -183,14 +199,17 @@ namespace Elite.Engine.Save
             _ship.laserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));
             _ship.laserLeft = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[3]));
             _state.cmdr.legal_status = _lastSaved.LegalStatus;
-            _state.cmdr.market_rnd = _lastSaved.MarketRandomiser;
+            _trade.marketRandomiser = _lastSaved.MarketRandomiser;
             _ship.missileCount = _lastSaved.Missiles;
             _state.cmdr.mission = _lastSaved.Mission;
             _state.cmdr.saved = _lastSaved.Saved;
             _state.cmdr.score = _lastSaved.Score;
             _state.docked_planet.d = _lastSaved.ShipLocation[0];
             _state.docked_planet.b = _lastSaved.ShipLocation[1];
-            _state.cmdr.station_stock = _lastSaved.StationStock;
+            for (int i = 0; i < _trade.stock_market.Count; i++)
+            {
+                _trade.stock_market[(StockType)i + 1].stationStock = _lastSaved.StationStock[i];
+            }
         }
 
         //static int checksum(unsigned char* block)

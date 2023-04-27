@@ -20,18 +20,19 @@
 
 namespace Elite.Engine
 {
-	using System.Diagnostics;
-	using System.Numerics;
+    using System.Diagnostics;
+    using System.Numerics;
     using Elite.Common.Enums;
-	using Elite.Engine.Enums;
-	using Elite.Engine.Ships;
-	using Elite.Engine.Types;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
+    using Elite.Engine.Types;
 
-	internal class swat
+    internal class swat
 	{
 		private readonly GameState _gameState;
         private readonly Audio _audio;
 		private readonly PlayerShip _ship;
+		private readonly Trade _trade;
         internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
         private static int laser_counter;
@@ -79,11 +80,12 @@ namespace Elite.Engine
 			0											// dodec
 		};
 
-		internal swat(GameState gameState, Audio audio, PlayerShip ship)
+		internal swat(GameState gameState, Audio audio, PlayerShip ship, Trade trade)
 		{
 			_gameState = gameState;
             _audio = audio;
 			_ship = ship;
+			_trade = trade;
         }
 
 		internal static void clear_universe()
@@ -1062,7 +1064,7 @@ namespace Elite.Engine
         /* If we've been a bad boy then send the cops after us... */
         private void check_for_cops()
 		{
-			int offense = _gameState.carrying_contraband() * 2;
+			int offense = _trade.IsCarryingContraband() * 2;
 			if (space.ship_count[SHIP.SHIP_VIPER] == 0)
 			{
 				offense |= _gameState.cmdr.legal_status;
@@ -1189,5 +1191,49 @@ namespace Elite.Engine
 
 			check_for_others();
 		}
-	}
+
+        internal void scoop_item(int un)
+        {
+            if (space.universe[un].flags.HasFlag(FLG.FLG_DEAD))
+            {
+                return;
+            }
+
+            SHIP type = space.universe[un].type;
+
+            if (type == SHIP.SHIP_MISSILE)
+            {
+                return;
+            }
+
+            if ((!_ship.hasFuelScoop) || (space.universe[un].location.Y >= 0) ||
+                (_trade.TotalCargoTonnage() == _ship.cargoCapacity))
+            {
+                explode_object(un);
+                _ship.DamageShip(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
+                return;
+            }
+
+            if (type == SHIP.SHIP_CARGO)
+            {
+                StockType trade = (StockType)RNG.Random(1, 8);
+				_trade.AddCargo(trade);
+                elite.info_message(_trade.stock_market[trade].name);
+                remove_ship(un);
+                return;
+            }
+
+            if (elite.ship_list[(int)type].scoopedType != StockType.None)
+            {
+                StockType trade = elite.ship_list[(int)type].scoopedType;
+				_trade.AddCargo(trade);
+                elite.info_message(_trade.stock_market[(StockType)trade].name);
+                remove_ship(un);
+                return;
+            }
+
+            explode_object(un);
+            _ship.DamageShip(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
+        }
+    }
 }

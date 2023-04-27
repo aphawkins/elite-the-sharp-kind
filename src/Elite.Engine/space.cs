@@ -35,7 +35,7 @@ namespace Elite.Engine
         private readonly Audio _audio;
         private readonly pilot _pilot;
         private readonly swat _swat;
-        private readonly trade _trade;
+        private readonly Trade _trade;
         private readonly Planet _planet;
 		private readonly PlayerShip _ship;
 
@@ -48,7 +48,7 @@ namespace Elite.Engine
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
-		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade, Planet planet, PlayerShip ship)
+		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, Trade trade, Planet planet, PlayerShip ship)
 		{
             _gameState = gameState;
             _gfx = gfx;
@@ -493,8 +493,8 @@ namespace Elite.Engine
 
                     if ((bounty != 0) && (!_gameState.witchspace))
                     {
-                        _gameState.cmdr.credits += bounty;
-                        elite.info_message($"{_gameState.cmdr.credits:N1} Credits");
+                        _trade.credits += bounty;
+                        elite.info_message($"{_trade.credits:N1} Credits");
                     }
 
                     swat.remove_ship(i);
@@ -556,7 +556,7 @@ namespace Elite.Engine
                     }
                     else
                     {
-                        _trade.scoop_item(i);
+                        _swat.scoop_item(i);
                     }
 
                     continue;
@@ -709,9 +709,9 @@ namespace Elite.Engine
                 _gameState.docked_planet = (galaxy_seed)destination_planet.Clone();
 			}
 
-            _gameState.cmdr.market_rnd = RNG.Random(255);
+            _trade.marketRandomiser = RNG.Random(255);
             _gameState.current_planet_data = Planet.generate_planet_data(_gameState.docked_planet);
-            _gameState.generate_stock_market();
+            _trade.GenerateStockMarket(_gameState.current_planet_data);
 
             _ship.speed = 12;
             _ship.roll = 0;
@@ -810,7 +810,7 @@ namespace Elite.Engine
             // Rotate in the same direction that the station is spinning
             _ship.roll = 15;
             _ship.climb = 0;
-            _gameState.cmdr.legal_status |= _gameState.carrying_contraband();
+            _gameState.cmdr.legal_status |= _trade.IsCarryingContraband();
 			Stars.create_new_stars();
 			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
 			swat.add_new_ship(SHIP.SHIP_PLANET, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);

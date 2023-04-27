@@ -23,6 +23,7 @@ namespace Elite.Engine.Views
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly PlayerShip _ship;
+        private readonly Trade _trade;
         readonly int EQUIP_START_Y = 202;
         readonly int Y_INC = 16;
         readonly int EQUIP_MAX_Y = 290;
@@ -49,12 +50,13 @@ namespace Elite.Engine.Views
                 new(0x1900, "- - - E L I T E - - -")
         };
 
-        internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship)
+        internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship, Trade trade)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _ship = ship;
+            _trade = trade;
         }
 
         public void Draw()
@@ -124,7 +126,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(150, 106, $"{_ship.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 122, $"{_gameState.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 122, $"{_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 138, "Legal Status:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(150, 138, _gameState.cmdr.legal_status == 0 ? "Clean" : _gameState.cmdr.legal_status > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);

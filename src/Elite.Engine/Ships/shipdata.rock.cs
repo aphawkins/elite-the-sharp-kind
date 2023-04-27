@@ -42,7 +42,7 @@ namespace Elite.Engine.Ships
         internal static ship_data rock_data = new(
             "Rock",
             0,
-            11,
+            StockType.Minerals,
             256,
             0,
             0,

@@ -66,7 +66,6 @@
                 if (isLoaded)
                 {
                     _save.GetLastSave();
-                    _gameState.restore_saved_commander();
                     _gameState.SetView(SCR.SCR_CMDR_STATUS);
                 }
             }

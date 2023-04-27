@@ -1,6 +1,5 @@
 ﻿namespace Elite.Engine.Views
 {
-    using System.Numerics;
     using Elite.Engine.Enums;
     using Elite.Engine.Ships;
 
@@ -11,6 +10,7 @@
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
+        private readonly Trade _trade;
 
         private static readonly string mission1_brief_a =
             "Greetings Commander, I am Captain Curruthers of " +
@@ -40,13 +40,14 @@
             "There will always be a place for you in Her Majesty's Space Navy. " +
             "And maybe sooner than you think... ---MESSAGE ENDS.";
 
-        internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship)
+        internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
             _ship = ship;
+            _trade = trade;
         }
 
         public void Reset()
@@ -68,7 +69,7 @@
                 // Show debrief
                 _gameState.cmdr.mission = 3;
                 _gameState.cmdr.score += 256;
-                _gameState.cmdr.credits += 5000;
+                _trade.credits += 5000;
             }
             else
             {

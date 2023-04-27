@@ -10,8 +10,12 @@
         internal int base_quantity;
         internal int mask;
         internal string units;
+        internal int stationStock;
+        internal int currentCargo;
 
-        internal stock_item(string name, int current_quantity, float current_price, float base_price, int eco_adjust, int base_quantity, int mask, string units)
+        internal stock_item(string name, int current_quantity, float current_price, float base_price, 
+            int eco_adjust, int base_quantity, int mask, string units,
+            int stationStock, int currentCargo)
         {
             this.name = name;
             this.current_quantity = current_quantity;
@@ -21,6 +25,8 @@
             this.base_quantity = base_quantity;
             this.mask = mask;
             this.units = units;
+            this.stationStock = stationStock;
+            this.currentCargo = currentCargo;
         }
     };
 }

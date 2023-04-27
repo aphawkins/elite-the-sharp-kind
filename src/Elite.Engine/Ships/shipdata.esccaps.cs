@@ -42,7 +42,7 @@ namespace Elite.Engine.Ships
         internal static ship_data esccaps_data = new(
             "Escape Capsule",
             0,
-            2,
+            StockType.Slaves,
             256,
             0,
             0,

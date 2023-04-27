@@ -14,22 +14,24 @@
 
 namespace Elite.Engine.Views
 {
+    using System.Diagnostics;
     using Elite.Engine.Enums;
     using Elite.Engine.Ships;
+    using Elite.Engine.Types;
 
     internal class Inventory : IView
     {
-        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly PlayerShip _ship;
+        private readonly Trade _trade;
 
-        internal Inventory(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship)
+        internal Inventory(IGfx gfx, Draw draw, PlayerShip ship, Trade trade)
         {
-            _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _ship = ship;
+            _trade = trade;
         }
 
         public void Draw()
@@ -41,15 +43,15 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(70, 50, $"{_ship.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 66, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 66, $"{_gameState.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(70, 66, $"{_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
 
             int y = 98;
-            for (int i = 0; i < _gameState.cmdr.current_cargo.Length; i++)
+            foreach (var stock in _trade.stock_market)
             {
-                if (_gameState.cmdr.current_cargo[i] > 0)
+                if (stock.Value.currentCargo > 0)
                 {
-                    _gfx.DrawTextLeft(16, y, _gameState.stock_market[i].name, GFX_COL.GFX_COL_WHITE);
-                    _gfx.DrawTextLeft(180, y, $"{_gameState.cmdr.current_cargo[i]}{_gameState.stock_market[i].units}", GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextLeft(16, y, stock.Value.name, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextLeft(180, y, $"{stock.Value.currentCargo}{stock.Value.units}", GFX_COL.GFX_COL_WHITE);
                     y += 16;
                 }
             }

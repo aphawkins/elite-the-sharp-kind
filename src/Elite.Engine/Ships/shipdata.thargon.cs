@@ -65,7 +65,7 @@ namespace Elite.Engine.Ships
         internal static ship_data thargon_data = new(
             "Thargon",
             0,
-            15,
+            StockType.AlienItems,
             1600,
             0,
             5,

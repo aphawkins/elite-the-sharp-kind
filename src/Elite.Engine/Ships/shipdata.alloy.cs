@@ -35,7 +35,7 @@ namespace Elite.Engine.Ships
         internal static ship_data alloy_data = new(
             "Alloy",
             0,
-            8,
+            StockType.Alloys,
             100,
             0,
             0,

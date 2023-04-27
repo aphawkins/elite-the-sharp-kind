@@ -1,9 +1,11 @@
 ﻿namespace Elite.Engine.Views
 {
+    using System.Diagnostics;
     using System.Numerics;
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
     using Elite.Engine.Ships;
+    using Elite.Engine.Types;
 
     internal class EscapePod : IView
     {
@@ -12,17 +14,19 @@
         private readonly Audio _audio;
         private readonly Stars _stars;
         private readonly PlayerShip _ship;
+        private readonly Trade _trade;
 
         private int _newship;
         private int _i;
 
-        internal EscapePod(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship)
+        internal EscapePod(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade)
         {
             _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _stars = stars;
             _ship = ship;
+            _trade = trade;
         }
 
         public void Draw()
@@ -89,12 +93,7 @@
                 _ship.hasEscapePod = false;
                 _gameState.cmdr.legal_status = 0;
                 _ship.fuel = _ship.maxFuel;
-
-                for (int i = 0; i < _gameState.stock_market.Length; i++)
-                {
-                    _gameState.cmdr.current_cargo[i] = 0;
-                }
-
+                _trade.ClearCurrentCargo();
                 _gameState.SetView(SCR.SCR_DOCKING);
             }
         }
