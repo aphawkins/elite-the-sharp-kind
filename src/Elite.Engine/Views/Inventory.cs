@@ -15,18 +15,21 @@
 namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
 
     internal class Inventory : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
+        private readonly PlayerShip _ship;
 
-        internal Inventory(GameState gameState, IGfx gfx, Draw draw)
+        internal Inventory(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
+            _ship = ship;
         }
 
         public void Draw()
@@ -35,7 +38,7 @@ namespace Elite.Engine.Views
             _draw.DrawViewHeader("INVENTORY");
 
             _gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 50, $"{_gameState.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(70, 50, $"{_ship.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 66, "Cash:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(70, 66, $"{_gameState.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);

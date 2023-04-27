@@ -15,7 +15,6 @@
 namespace Elite.Engine
 {
     using Elite.Engine.Enums;
-    using Elite.Engine.Save;
     using Elite.Engine.Types;
 
     internal class GameState
@@ -35,11 +34,7 @@ namespace Elite.Engine
         internal bool IsInitialised { get; set; } = false;
         internal SCR currentScreen = SCR.SCR_NONE;
         internal IView currentView;
-        internal float energy { get; set; } = 255;
-        internal float fore_shield { get; private set; } = 255;
-        internal float aft_shield { get; private set; } = 255;
-        internal float flight_roll;
-        internal float flight_climb;
+
         internal bool witchspace;
         internal Commander cmdr = new();
         internal galaxy_seed docked_planet = new();
@@ -81,12 +76,6 @@ namespace Elite.Engine
         {
             IsInitialised = true;
             IsGameOver = false;
-
-            fore_shield = 255;
-            aft_shield = 255;
-            energy = 255;
-            flight_roll = 0;
-            flight_climb = 0;
             witchspace = false;
         }
 
@@ -112,95 +101,6 @@ namespace Elite.Engine
             }
 
             IsGameOver = true;
-        }
-
-        /// <summary>
-        /// Deplete the shields.  Drain the energy banks if the shields fail.
-        /// </summary>
-        /// <param name="damage"></param>
-        /// <param name="front"></param>
-        internal void damage_ship(int damage, bool front)
-        {
-            if (damage <= 0)    /* sanity check */
-            {
-                return;
-            }
-
-            float shield = front ? fore_shield : aft_shield;
-
-            shield -= damage;
-            if (shield < 0)
-            {
-                decrease_energy(shield);
-                shield = 0;
-            }
-
-            if (front)
-            {
-                fore_shield = shield;
-            }
-            else
-            {
-                aft_shield = shield;
-            }
-        }
-
-        internal void decrease_energy(float amount)
-        {
-            energy += amount;
-
-            if (energy <= 0)
-            {
-                GameOver();
-            }
-        }
-
-        internal bool IsEnergyLow()
-        {
-            return energy < 50;
-        }
-
-        /*
-         * Regenerate the shields and the energy banks.
-         */
-        internal void regenerate_shields()
-        {
-            if (energy > 127)
-            {
-                if (fore_shield < 255)
-                {
-                    fore_shield++;
-                    energy = Math.Clamp(energy - 1, 0, 255);
-                }
-
-                if (aft_shield < 255)
-                {
-                    aft_shield++;
-                    energy = Math.Clamp(energy - 1, 0, 255);
-                }
-            }
-
-            energy = Math.Clamp(energy + 1 + (int)cmdr.energy_unit, 0, 255);
-        }
-
-        internal void increase_flight_roll()
-        {
-            flight_roll = Math.Clamp(flight_roll + 1, -elite.myship.max_roll, elite.myship.max_roll);
-        }
-
-        internal void decrease_flight_roll()
-        {
-            flight_roll = Math.Clamp(flight_roll - 1, -elite.myship.max_roll, elite.myship.max_roll);
-        }
-
-        internal void increase_flight_climb()
-        {
-            flight_climb = Math.Clamp(flight_climb + 1, -elite.myship.max_climb, elite.myship.max_climb);
-        }
-
-        internal void decrease_flight_climb()
-        {
-            flight_climb = Math.Clamp(flight_climb - 1, -elite.myship.max_climb, elite.myship.max_climb);
         }
 
         internal int carrying_contraband()

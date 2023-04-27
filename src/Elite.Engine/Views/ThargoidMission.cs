@@ -2,6 +2,7 @@
 {
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
 
     internal class ThargoidMission : IView
     {
@@ -9,6 +10,7 @@
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
+        private readonly PlayerShip _ship;
 
         private static readonly string mission2_brief_a =
             "Attention Commander, I am Captain Fortesque of Her Majesty's Space Navy. " +
@@ -32,12 +34,13 @@
             "For the moment please accept this Navy Extra Energy Unit as payment. " +
             "---MESSAGE ENDS.";
 
-        internal ThargoidMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal ThargoidMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
+            _ship = ship;
         }
 
         public void Reset()
@@ -57,7 +60,7 @@
                 // Debrief
                 _gameState.cmdr.mission = 6;
                 _gameState.cmdr.score += 256;
-                _gameState.cmdr.energy_unit = EnergyUnit.Naval;
+                _ship.energyUnit = EnergyUnit.Naval;
             }
             else
             {

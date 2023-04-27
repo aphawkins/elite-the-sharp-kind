@@ -2,6 +2,7 @@
 {
     using Elite.Engine.Enums;
     using Elite.Engine.Lasers;
+    using Elite.Engine.Ships;
     using static Elite.Engine.elite;
 
     internal class PilotView : IView
@@ -11,15 +12,17 @@
         private readonly IKeyboard _keyboard;
         private readonly LaserDraw _laser;
         private readonly pilot _pilot;
+        private readonly PlayerShip _ship;
         private int drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, pilot pilot)
+        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, pilot pilot, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
             _laser = new LaserDraw(_gfx);
             _pilot = pilot;
+            _ship = ship;
         }
 
         public void Draw()
@@ -43,55 +46,56 @@
         {
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
-                if (_gameState.flight_climb > 0)
+                if (_ship.climb > 0)
                 {
-                    _gameState.flight_climb = 0;
+                    _ship.climb = 0;
                 }
                 else
                 {
-                    _gameState.decrease_flight_climb();
-                    _gameState.decrease_flight_climb();
+                    _ship.DecreaseClimb();
+                    _ship.DecreaseClimb();
                 }
 
-                elite.climbing = true;
+                _ship.isClimbing = true;
             }
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
-                if (_gameState.flight_climb < 0)
+                if (_ship.climb < 0)
                 {
-                    _gameState.flight_climb = 0;
+                    _ship.climb = 0;
                 }
                 else
                 {
-                    _gameState.increase_flight_climb();
-                    _gameState.increase_flight_climb();
+                    _ship.IncreaseClimb();
+                    _ship.IncreaseClimb();
                 }
-                elite.climbing = true;
+
+                _ship.isClimbing = true;
             }
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
-                if (_gameState.flight_roll < 0)
+                if (_ship.roll < 0)
                 {
-                    _gameState.flight_roll = 0;
+                    _ship.roll = 0;
                 }
                 else
                 {
-                    _gameState.increase_flight_roll();
-                    _gameState.increase_flight_roll();
-                    elite.rolling = true;
+                    _ship.IncreaseRoll();
+                    _ship.IncreaseRoll();
+                    _ship.isRolling = true;
                 }
             }
             if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
-                if (_gameState.flight_roll > 0)
+                if (_ship.roll > 0)
                 {
-                    _gameState.flight_roll = 0;
+                    _ship.roll = 0;
                 }
                 else
                 {
-                    _gameState.decrease_flight_roll();
-                    _gameState.decrease_flight_roll();
-                    elite.rolling = true;
+                    _ship.DecreaseRoll();
+                    _ship.DecreaseRoll();
+                    _ship.isRolling = true;
                 }
             }
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOff))

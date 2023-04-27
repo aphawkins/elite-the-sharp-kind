@@ -15,6 +15,7 @@
 namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
 
     internal class Market : IView
     {
@@ -23,15 +24,17 @@ namespace Elite.Engine.Views
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly trade _trade;
+        private readonly PlayerShip _ship;
         private int _highlightedStock;
 
-        internal Market(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, trade trade)
+        internal Market(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, trade trade, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
             _trade = trade;
+            _ship = ship;
         }
 
         public void Reset()
@@ -112,7 +115,7 @@ namespace Elite.Engine.Views
                 return;
             }
 
-            if (_gameState.stock_market[_highlightedStock].units == GameState.TONNES && _trade.total_cargo() == _gameState.cmdr.cargo_capacity)
+            if (_gameState.stock_market[_highlightedStock].units == GameState.TONNES && _trade.total_cargo() == _ship.cargoCapacity)
             {
                 return;
             }

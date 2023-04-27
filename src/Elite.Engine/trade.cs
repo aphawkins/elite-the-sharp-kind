@@ -15,17 +15,20 @@
 namespace Elite.Engine
 {
 	using Elite.Engine.Enums;
+	using Elite.Engine.Ships;
 	using Elite.Engine.Types;
 
 	internal class trade
 	{
         private readonly GameState _gameState;
         private readonly swat _swat;
+		private readonly PlayerShip _ship;
 
-		internal trade(GameState gameState, swat swat)
+		internal trade(GameState gameState, swat swat, PlayerShip ship)
 		{
             _gameState = gameState;
             _swat = swat;
+			_ship = ship;
         }
 
 		internal int total_cargo()
@@ -61,11 +64,11 @@ namespace Elite.Engine
                 return;
             }
 
-            if ((!_gameState.cmdr.fuel_scoop) || (space.universe[un].location.Y >= 0) ||
-				(total_cargo() == _gameState.cmdr.cargo_capacity))
+            if ((!_ship.hasFuelScoop) || (space.universe[un].location.Y >= 0) ||
+				(total_cargo() == _ship.cargoCapacity))
 			{
 				_swat.explode_object(un);
-                _gameState.damage_ship(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
+                _ship.DamageShip(128 + (space.universe[un].energy / 2), space.universe[un].location.Z > 0);
 				return;
 			}
 
@@ -88,7 +91,7 @@ namespace Elite.Engine
 			}
 
 			_swat.explode_object(un);
-            _gameState.damage_ship(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
+            _ship.DamageShip(space.universe[un].energy / 2, space.universe[un].location.Z > 0);
 		}
 	}
 }

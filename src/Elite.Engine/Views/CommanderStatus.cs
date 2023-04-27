@@ -15,12 +15,14 @@
 namespace Elite.Engine.Views
 {
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
 
     internal class CommanderStatus : IView
     {
         public readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
+        private readonly PlayerShip _ship;
         readonly int EQUIP_START_Y = 202;
         readonly int Y_INC = 16;
         readonly int EQUIP_MAX_Y = 290;
@@ -47,11 +49,12 @@ namespace Elite.Engine.Views
                 new(0x1900, "- - - E L I T E - - -")
         };
 
-        internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw)
+        internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
+            _ship = ship;
         }
 
         public void Draw()
@@ -97,7 +100,7 @@ namespace Elite.Engine.Views
                     }
                 }
 
-                if (condition == 2 && _gameState.energy < 128)
+                if (condition == 2 && _ship.energy < 128)
                 {
                     condition = 3;
                 }
@@ -118,7 +121,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(150, 90, condition_txt[condition], GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 106, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 106, $"{_gameState.cmdr.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 106, $"{_ship.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(150, 122, $"{_gameState.cmdr.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
@@ -131,75 +134,75 @@ namespace Elite.Engine.Views
 
             _gfx.DrawTextLeft(16, 186, "EQUIPMENT:", GFX_COL.GFX_COL_GREEN_1);
 
-            if (_gameState.cmdr.cargo_capacity > 20)
+            if (_ship.cargoCapacity > 20)
             {
                 _gfx.DrawTextLeft(x, y, "Large Cargo Bay", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.escape_pod)
+            if (_ship.hasEscapePod)
             {
                 _gfx.DrawTextLeft(x, y, "Escape Pod", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.fuel_scoop)
+            if (_ship.hasFuelScoop)
             {
                 _gfx.DrawTextLeft(x, y, "Fuel Scoops", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.ecm)
+            if (_ship.hasECM)
             {
                 _gfx.DrawTextLeft(x, y, "E.C.M. System", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.energy_bomb)
+            if (_ship.hasEnergyBomb)
             {
                 _gfx.DrawTextLeft(x, y, "Energy Bomb", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.energy_unit != EnergyUnit.None)
+            if (_ship.energyUnit != EnergyUnit.None)
             {
-                _gfx.DrawTextLeft(x, y, _gameState.cmdr.energy_unit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, _ship.energyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.docking_computer)
+            if (_ship.hasDockingComputer)
             {
                 _gfx.DrawTextLeft(x, y, "Docking Computers", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.galactic_hyperdrive)
+            if (_ship.hasGalacticHyperdrive)
             {
                 _gfx.DrawTextLeft(x, y, "Galactic Hyperspace", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.front_laser.Type != LaserType.None)
+            if (_ship.laserFront.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Front {_gameState.cmdr.front_laser.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Front {_ship.laserFront.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.rear_laser.Type != LaserType.None)
+            if (_ship.laserRear.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Rear {_gameState.cmdr.rear_laser.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Rear {_ship.laserRear.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.left_laser.Type != LaserType.None)
+            if (_ship.laserLeft.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Left {_gameState.cmdr.left_laser.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Left {_ship.laserLeft.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_gameState.cmdr.right_laser.Type != LaserType.None)
+            if (_ship.laserRight.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Right {_gameState.cmdr.right_laser.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Right {_ship.laserRight.Name} Laser", GFX_COL.GFX_COL_WHITE);
             }
         }
 

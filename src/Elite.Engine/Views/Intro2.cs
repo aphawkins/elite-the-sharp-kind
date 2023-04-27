@@ -15,6 +15,7 @@ namespace Elite.Engine.Views
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
         private readonly Stars _stars;
+        private readonly PlayerShip _ship;
         private SHIP _shipNo;
         private int _showTime;
         private int _direction;
@@ -29,13 +30,14 @@ namespace Elite.Engine.Views
         };
         private Vector3[] _rotmat = new Vector3[3];
 
-        internal Intro2(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars)
+        internal Intro2(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship)
         {
             _gameState = gameStat;
             _gfx = gfx;
             _audio = audio;
             _keyboard = keyboard;
             _stars = stars;
+            _ship = ship;
         }
 
         public void Reset()
@@ -50,9 +52,9 @@ namespace Elite.Engine.Views
             swat.add_new_ship(SHIP.SHIP_MISSILE, new(0, 0, 5000), _rotmat, -127, -127);
             _audio.PlayMusic(Music.BlueDanube, true);
 
-            elite.flight_speed = 3;
-            _gameState.flight_roll = 0;
-            _gameState.flight_climb = 0;
+            _ship.speed = 3;
+            _ship.roll = 0;
+            _ship.climb = 0;
         }
 
         public void UpdateUniverse()

@@ -23,7 +23,8 @@ namespace Elite.Engine
     using System.Numerics;
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
-    using Elite.Engine.Types;
+	using Elite.Engine.Ships;
+	using Elite.Engine.Types;
 	using Elite.Engine.Views;
 
 	internal class Scanner
@@ -32,15 +33,17 @@ namespace Elite.Engine
         private readonly IGfx _gfx;
 		private readonly univ_object[] _universe;
 		private readonly Dictionary<SHIP, int> _shipCount;
+		private readonly PlayerShip _ship;
 		private readonly Draw _draw;
 
-		internal Scanner(GameState gameState, IGfx gfx, Draw draw, univ_object[] universe, Dictionary<SHIP, int> shipCount)
+		internal Scanner(GameState gameState, IGfx gfx, Draw draw, univ_object[] universe, Dictionary<SHIP, int> shipCount, PlayerShip ship)
         {
 			_gameState = gameState;
             _gfx = gfx;
 			_draw = draw;
 			_universe = universe;
             _shipCount = shipCount;
+			_ship = ship;
         }
 
         /*
@@ -135,9 +138,9 @@ namespace Elite.Engine
 			float sx = 417;
             float sy = 384 + 9;
 
-			float len = (elite.flight_speed * 64 / elite.myship.max_speed) - 1;
+			float len = (_ship.speed * 64 / _ship.maxSpeed) - 1;
 
-            GFX_COL colour = (elite.flight_speed > (elite.myship.max_speed * 2 / 3)) ? GFX_COL.GFX_COL_DARK_RED : GFX_COL.GFX_COL_GOLD;
+            GFX_COL colour = (_ship.speed > (_ship.maxSpeed * 2 / 3)) ? GFX_COL.GFX_COL_DARK_RED : GFX_COL.GFX_COL_GOLD;
 
 			for (int i = 0; i < 6; i++)
 			{
@@ -168,30 +171,30 @@ namespace Elite.Engine
 		 */
         private void display_shields()
 		{
-			if (_gameState.fore_shield > 3)
+			if (_ship.shieldFront > 3)
 			{
-				display_dial_bar(_gameState.fore_shield / 4, new(31, 7));
+				display_dial_bar(_ship.shieldFront / 4, new(31, 7));
 			}
 
-			if (_gameState.aft_shield > 3)
+			if (_ship.shieldRear > 3)
 			{
-				display_dial_bar(_gameState.aft_shield / 4, new(31, 23));
+				display_dial_bar(_ship.shieldRear / 4, new(31, 23));
 			}
 		}
 
         private void display_altitude()
 		{
-			if (elite.myship.altitude > 3)
+			if (_ship.altitude > 3)
 			{
-				display_dial_bar(elite.myship.altitude / 4, new(31, 92));
+				display_dial_bar(_ship.altitude / 4, new(31, 92));
 			}
 		}
 
         private void display_cabin_temp()
 		{
-			if (elite.myship.cabtemp > 3)
+			if (_ship.cabinTemperature > 3)
 			{
-				display_dial_bar(elite.myship.cabtemp / 4, new(31, 60));
+				display_dial_bar(_ship.cabinTemperature / 4, new(31, 60));
 			}
 		}
 
@@ -208,10 +211,10 @@ namespace Elite.Engine
 		 */
         private void display_energy()
 		{
-            float e1 = _gameState.energy > 64 ? 64 : _gameState.energy;
-            float e2 = _gameState.energy > 128 ? 64 : _gameState.energy - 64;
-            float e3 = _gameState.energy > 192 ? 64 : _gameState.energy - 128;
-            float e4 = _gameState.energy - 192;
+            float e1 = _ship.energy > 64 ? 64 : _ship.energy;
+            float e2 = _ship.energy > 128 ? 64 : _ship.energy - 64;
+            float e3 = _ship.energy > 192 ? 64 : _ship.energy - 128;
+            float e4 = _ship.energy - 192;
 
 			if (e4 > 0)
 			{
@@ -239,7 +242,7 @@ namespace Elite.Engine
 			float sx = 416;
 			float sy = 384 + 9 + 14;
 
-			float pos = sx - (_gameState.flight_roll * 28 / elite.myship.max_roll);
+			float pos = sx - (_ship.roll * 28 / _ship.maxRoll);
 			pos += 32;
 
 			for (int i = 0; i < 4; i++)
@@ -253,7 +256,7 @@ namespace Elite.Engine
 			float sx = 416;
 			float sy = 384 + 9 + 14 + 16;
 
-			float pos = sx + (_gameState.flight_climb * 28 / elite.myship.max_climb);
+			float pos = sx + (_ship.climb * 28 / _ship.maxClimb);
 			pos += 32;
 
 			for (int i = 0; i < 4; i++)
@@ -264,20 +267,20 @@ namespace Elite.Engine
 
         private void display_fuel()
 		{
-			if (_gameState.cmdr.fuel > 0)
+			if (_ship.fuel > 0)
 			{
-				display_dial_bar(_gameState.cmdr.fuel * 64 / elite.myship.max_fuel, new(31f, 44f));
+				display_dial_bar(_ship.fuel * 64 / _ship.maxFuel, new(31, 44));
 			}
 		}
 
         private void display_missiles()
 		{
-			if (_gameState.cmdr.missiles == 0)
+			if (_ship.missileCount == 0)
 			{
 				return;
 			}
 
-			int missileCount = _gameState.cmdr.missiles > 4 ? 4 : _gameState.cmdr.missiles;
+			int missileCount = _ship.missileCount > 4 ? 4 : _ship.missileCount;
 
 			Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 

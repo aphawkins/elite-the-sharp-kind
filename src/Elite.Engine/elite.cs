@@ -38,6 +38,8 @@ namespace Elite.Engine
         private readonly trade _trade;
         private readonly Planet _planet;
         private readonly SaveFile _save;
+        private readonly PlayerShip _ship;
+
         internal const int MAX_UNIV_OBJECTS = 20;
         internal static int carry_flag = 0;
         internal static ConfigSettings config = new();
@@ -45,24 +47,20 @@ namespace Elite.Engine
         internal static Vector2 compass_centre = new(382, 22 + 385);
         internal static bool docked;
         internal static bool exitGame;
-        internal static float flight_speed;
         internal static float laser_temp;
         internal static bool detonate_bomb;
         internal static bool auto_pilot;
-        internal static player_ship myship = new();
         private readonly Draw _draw;
         readonly long oneSec = TimeSpan.FromSeconds(1).Ticks;
         readonly FC lockObj = new();
         readonly TimeSpan timeout = TimeSpan.FromMilliseconds(1000 / (config.Fps * 2));
-        private static GameState _gameState;
+        private readonly GameState _gameState;
         private static readonly Dictionary<SCR, IView> _views = new();
         internal static Vector2 cross = new(0, 0);
         internal static bool drawLasers;
         internal static int mcount;
         private static int message_count;
         private static string message_string;
-        internal static bool rolling;
-        internal static bool climbing;
         private static bool game_paused;
         //private static bool have_joystick;
         internal static float distanceToPlanet;
@@ -123,10 +121,11 @@ namespace Elite.Engine
             }
 
             _gameState.Reset();
+            _ship.Reset();
             _save.GetLastSave();
             _gameState.restore_saved_commander();
 
-            flight_speed = 1;
+            _ship.speed = 1;
             docked = true;
             drawLasers = false;
             mcount = 0;
@@ -140,11 +139,6 @@ namespace Elite.Engine
 
             cross = new(-1, -1);
 
-            myship.max_speed = 40;      /* 0.27 Light Mach */
-            myship.max_roll = 31;
-            myship.max_climb = 8;       /* CF 8 */
-            myship.max_fuel = 7;        // 7.0 Light Years
-
             _space.dock_player();
 
             _gameState.SetView(SCR.SCR_INTRO_ONE);
@@ -153,102 +147,6 @@ namespace Elite.Engine
         internal static void ExitGame()
         {
             exitGame = true;
-        }
-
-        internal static void auto_dock()
-        {
-            univ_object ship = new()
-            {
-                rotmat = VectorMaths.GetInitialMatrix(),
-                location = Vector3.Zero
-            };
-            ship.rotmat[2].Z = 1;
-            ship.rotmat[0].X = -1;
-            ship.type = (SHIP)(-96);
-            ship.velocity = flight_speed;
-            ship.acceleration = 0;
-            ship.bravery = 0;
-            ship.rotz = 0;
-            ship.rotx = 0;
-
-            pilot.auto_pilot_ship(ref ship);
-
-            flight_speed = ship.velocity > 22 ? 22 : ship.velocity;
-
-            if (ship.acceleration > 0)
-            {
-                flight_speed++;
-                if (flight_speed > 22)
-                {
-                    flight_speed = 22;
-                }
-            }
-
-            if (ship.acceleration < 0)
-            {
-                flight_speed--;
-                if (flight_speed < 1)
-                {
-                    flight_speed = 1;
-                }
-            }
-
-            if (ship.rotx == 0)
-            {
-                _gameState.flight_climb = 0;
-            }
-
-            if (ship.rotx < 0)
-            {
-                _gameState.increase_flight_climb();
-
-                if (ship.rotx < -1)
-                {
-                    _gameState.increase_flight_climb();
-                }
-            }
-
-            if (ship.rotx > 0)
-            {
-                _gameState.decrease_flight_climb();
-
-                if (ship.rotx > 1)
-                {
-                    _gameState.decrease_flight_climb();
-                }
-            }
-
-            if (ship.rotz == 127)
-            {
-                _gameState.flight_roll = -14;
-            }
-            else
-            {
-                if (ship.rotz == 0)
-                {
-                    _gameState.flight_roll = 0;
-                }
-
-                if (ship.rotz > 0)
-                {
-                    _gameState.increase_flight_roll();
-
-                    if (ship.rotz > 1)
-                    {
-                        _gameState.increase_flight_roll();
-                    }
-                }
-
-                if (ship.rotz < 0)
-                {
-                    _gameState.decrease_flight_roll();
-
-                    if (ship.rotz < -1)
-                    {
-                        _gameState.decrease_flight_roll();
-                    }
-                }
-            }
         }
 
         private void handle_flight_keys()
@@ -383,7 +281,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn))
             {
-                if (!docked && _gameState.cmdr.docking_computer)
+                if (!docked && _ship.hasDockingComputer)
                 {
                     if (config.InstantDock)
                     {
@@ -398,7 +296,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.ECM))
             {
-                if (!docked && _gameState.cmdr.ecm)
+                if (!docked && _ship.hasECM)
                 {
                     _swat.activate_ecm(true);
                 }
@@ -454,7 +352,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    flight_speed = Math.Clamp(flight_speed + 1, 0, myship.max_speed);
+                    _ship.IncreaseSpeed();
                 }
             }
 
@@ -462,22 +360,22 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    flight_speed = Math.Clamp(flight_speed - 1, 0, myship.max_speed);
+                    _ship.DecreaseSpeed();
                 }
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.EnergyBomb))
             {
-                if ((!docked) && _gameState.cmdr.energy_bomb)
+                if ((!docked) && _ship.hasEnergyBomb)
                 {
                     detonate_bomb = true;
-                    _gameState.cmdr.energy_bomb = false;
+                    _ship.hasEnergyBomb = false;
                 }
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.EscapePod))
             {
-                if ((!docked) && _gameState.cmdr.escape_pod && (!_gameState.witchspace))
+                if ((!docked) && _ship.hasEscapePod && (!_gameState.witchspace))
                 {
                     _gameState.SetView(SCR.SCR_ESCAPE_POD);
                 }
@@ -513,49 +411,50 @@ namespace Elite.Engine
             _audio.LoadSounds();
             _keyboard = keyboard;
             _gameState = new(_keyboard, _views);
-            _save = new(_gameState);
+            _ship = new();
+            _save = new(_gameState, _ship);
             _planet = new(_gameState);
             _draw = new(_gfx);
             _draw.LoadImages();
             _draw.DrawBorder();
 
-            scanner = new Scanner(_gameState, _gfx, _draw, space.universe, space.ship_count);
+            scanner = new Scanner(_gameState, _gfx, _draw, space.universe, space.ship_count, _ship);
 
             initialise_allegro();
             config = ConfigFile.ReadConfigAsync().Result;
             
             _threed = new(_gfx, _draw);
-            _stars = new(_gameState, _gfx);
+            _stars = new(_gameState, _gfx, _ship);
             _pilot = new(_gameState, _audio);
-            _swat = new(_gameState, _audio);
-            _trade = new(_gameState, _swat);
-            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade, _planet);
+            _swat = new(_gameState, _audio, _ship);
+            _trade = new(_gameState, _swat, _ship);
+            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade, _planet, _ship);
 
-            _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard));
-            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars));
-            _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gameState, _gfx, _draw, keyboard, _planet));
-            _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gameState, _gfx, _draw, keyboard, _planet));
+            _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard, _ship));
+            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars, _ship));
+            _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gameState, _gfx, _draw, keyboard, _planet, _ship));
+            _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gameState, _gfx, _draw, keyboard, _planet, _ship));
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gameState, _gfx, _draw));
-            _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gameState, _gfx, _draw, keyboard, _trade));
-            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gameState, _gfx, _draw));
-            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gameState, _gfx, keyboard, _stars, _pilot));
-            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gameState, _gfx, keyboard, _stars, _pilot));
-            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gameState, _gfx, keyboard, _stars, _pilot));
-            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gameState, _gfx, keyboard, _stars, _pilot));
+            _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gameState, _gfx, _draw, keyboard, _trade, _ship));
+            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gameState, _gfx, _draw, _ship));
+            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
+            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
+            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
+            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
             _views.Add(SCR.SCR_DOCKING, new Docking(_gameState, _gfx, _audio, _space));
             _views.Add(SCR.SCR_UNDOCKING, new Launch(_gameState, _gfx, _audio, _space));
             _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gameState, _gfx, _audio));
-            _views.Add(SCR.SCR_INVENTORY, new Inventory(_gameState, _gfx, _draw));
-            _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gameState, _gfx, _draw, keyboard));
+            _views.Add(SCR.SCR_INVENTORY, new Inventory(_gameState, _gfx, _draw, _ship));
+            _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gameState, _gfx, _draw, keyboard, _ship));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gameState, _gfx, _draw, keyboard, _planet, _save));
             _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gameState, _gfx, _draw, keyboard, _save));
             _views.Add(SCR.SCR_QUIT, new Quit(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars));
-            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars));
+            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gameState, _gfx, _draw, keyboard, _ship));
+            _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gameState, _gfx, _draw, keyboard, _ship));
+            _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars, _ship));
+            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars, _ship));
 
             exitGame = false;
             auto_pilot = false;
@@ -584,8 +483,8 @@ namespace Elite.Engine
             _audio.UpdateSound();
             _gfx.SetClipRegion(1, 1, 510, 383);
 
-            rolling = false;
-            climbing = false;
+            _ship.isRolling = false;
+            _ship.isClimbing = false;
 
             handle_flight_keys();
 
@@ -594,40 +493,21 @@ namespace Elite.Engine
                 return;
             }
 
+            if (_ship.energy < 0)
+            {
+                _gameState.GameOver();
+            }
+
             if (message_count > 0)
             {
                 message_count--;
             }
 
-            if (!rolling)
-            {
-                if (_gameState.flight_roll > 0)
-                {
-                    _gameState.decrease_flight_roll();
-                }
-
-                if (_gameState.flight_roll < 0)
-                {
-                    _gameState.increase_flight_roll();
-                }
-            }
-
-            if (!climbing)
-            {
-                if (_gameState.flight_climb > 0)
-                {
-                    _gameState.decrease_flight_climb();
-                }
-
-                if (_gameState.flight_climb < 0)
-                {
-                    _gameState.increase_flight_climb();
-                }
-            }
+            _ship.LevelOut();
 
             if (auto_pilot)
             {
-                auto_dock();
+                _ship.AutoDock();
                 if ((mcount & 127) == 0)
                 {
                     info_message("Docking Computers On");
@@ -672,12 +552,12 @@ namespace Elite.Engine
 
                 if ((mcount & 7) == 0)
                 {
-                    _gameState.regenerate_shields();
+                    _ship.RegenerateShields();
                 }
 
                 if ((mcount & 31) == 10)
                 {
-                    if (_gameState.IsEnergyLow())
+                    if (_ship.IsEnergyLow())
                     {
                         info_message("ENERGY LOW");
                         _audio.PlayEffect(SoundEffect.Beep);

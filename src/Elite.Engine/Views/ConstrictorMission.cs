@@ -2,6 +2,7 @@
 {
     using System.Numerics;
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
 
     internal class ConstrictorMission : IView
     {
@@ -9,6 +10,7 @@
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
+        private readonly PlayerShip _ship;
 
         private static readonly string mission1_brief_a =
             "Greetings Commander, I am Captain Curruthers of " +
@@ -38,12 +40,13 @@
             "There will always be a place for you in Her Majesty's Space Navy. " +
             "And maybe sooner than you think... ---MESSAGE ENDS.";
 
-        internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
+            _ship = ship;
         }
 
         public void Reset()
@@ -56,9 +59,9 @@
                 swat.clear_universe();
                 int i = swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
                 space.universe[i].flags = FLG.FLG_NONE;
-                _gameState.flight_roll = 0;
-                _gameState.flight_climb = 0;
-                elite.flight_speed = 0;
+                _ship.roll = 0;
+                _ship.climb = 0;
+                _ship.speed = 0;
             }
             else if (_gameState.cmdr.mission == 2)
             {

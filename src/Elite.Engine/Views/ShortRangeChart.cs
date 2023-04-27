@@ -16,6 +16,7 @@ namespace Elite.Engine.Views
 {
     using System.Numerics;
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
     using Elite.Engine.Types;
 
     internal class ShortRangeChart : IView
@@ -25,19 +26,21 @@ namespace Elite.Engine.Views
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
+        private readonly PlayerShip _ship;
         private readonly List<(Vector2 position, string name)> _planetNames = new();
         private readonly List<(Vector2 position, float size)> _planetSizes = new();
         private int _crossTimer;
         private bool _isFind;
         private string _findName;
 
-        internal ShortRangeChart(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet)
+        internal ShortRangeChart(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
             _planet = planet;
+            _ship = ship;
         }
 
         public void Reset()
@@ -142,7 +145,7 @@ namespace Elite.Engine.Views
 
             // Fuel radius
             Vector2 centre = new(gfx.GFX_X_CENTRE, gfx.GFX_Y_CENTRE);
-            float radius = _gameState.cmdr.fuel * 10 * gfx.GFX_SCALE;
+            float radius = _ship.fuel * 10 * gfx.GFX_SCALE;
             float cross_size = 16 * gfx.GFX_SCALE;
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));

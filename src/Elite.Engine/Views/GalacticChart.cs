@@ -16,6 +16,7 @@ namespace Elite.Engine.Views
 {
     using System.Numerics;
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
     using Elite.Engine.Types;
 
     internal class GalacticChart : IView
@@ -25,18 +26,20 @@ namespace Elite.Engine.Views
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
+        private readonly PlayerShip _ship;
         private readonly List<Vector2> _planetPixels = new();
         private int _crossTimer;
         private bool _isFind;
         private string _findName;
 
-        internal GalacticChart(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet)
+        internal GalacticChart(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
             _planet = planet;
+            _ship = ship;
         }
 
         public void Reset()
@@ -93,7 +96,7 @@ namespace Elite.Engine.Views
 
             // Fuel radius
             Vector2 centre = new(_gameState.docked_planet.d * gfx.GFX_SCALE, (_gameState.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
-            float radius = _gameState.cmdr.fuel * 2.5f * gfx.GFX_SCALE;
+            float radius = _ship.fuel * 2.5f * gfx.GFX_SCALE;
             float cross_size = 7 * gfx.GFX_SCALE;
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));

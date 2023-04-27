@@ -37,6 +37,8 @@ namespace Elite.Engine
         private readonly swat _swat;
         private readonly trade _trade;
         private readonly Planet _planet;
+		private readonly PlayerShip _ship;
+
         private static galaxy_seed destination_planet;
 		internal static bool hyper_ready;
         internal static int hyper_countdown;
@@ -46,7 +48,7 @@ namespace Elite.Engine
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
 		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
-		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade, Planet planet)
+		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, swat swat, trade trade, Planet planet, PlayerShip ship)
 		{
             _gameState = gameState;
             _gfx = gfx;
@@ -56,6 +58,7 @@ namespace Elite.Engine
 			_swat = swat;
 			_trade = trade;
 			_planet = planet;
+			_ship = ship;
         }
 
         private static void rotate_x_first(ref float a, ref float b, float direction)
@@ -87,8 +90,8 @@ namespace Elite.Engine
 			float rotx, rotz;
 			float speed;
 
-			alpha = _gameState.flight_roll / 256;
-			beta = _gameState.flight_climb / 256;
+			alpha = _ship.roll / 256;
+			beta = _ship.climb / 256;
 
 			x = obj.location.X;
 			y = obj.location.Y;
@@ -126,7 +129,7 @@ namespace Elite.Engine
 			y = k2 - (z * beta);
 			x += alpha * y;
 
-			z -= elite.flight_speed;
+			z -= _ship.speed;
 
 			obj.location = new(x, y, z);
 
@@ -224,7 +227,7 @@ namespace Elite.Engine
 
 		internal void update_altitude()
 		{
-			elite.myship.altitude = 255;
+            _ship.altitude = 255;
 
 			if (_gameState.witchspace)
 			{
@@ -255,7 +258,7 @@ namespace Elite.Engine
 			dist -= 9472;
 			if (dist < 1)
 			{
-				elite.myship.altitude = 0;
+                _ship.altitude = 0;
                 _gameState.GameOver();
 				return;
 			}
@@ -263,17 +266,17 @@ namespace Elite.Engine
 			dist = MathF.Sqrt(dist);
 			if (dist < 1)
 			{
-				elite.myship.altitude = 0;
+                _ship.altitude = 0;
                 _gameState.GameOver();
 				return;
 			}
 
-			elite.myship.altitude = dist;
+            _ship.altitude = dist;
 		}
 
 		internal void update_cabin_temp()
 		{
-			elite.myship.cabtemp = 30;
+            _ship.cabinTemperature = 30;
 
 			if (_gameState.witchspace)
 			{
@@ -308,24 +311,24 @@ namespace Elite.Engine
 
             dist = (int)dist ^ 255;
 
-			elite.myship.cabtemp = dist + 30;
+            _ship.cabinTemperature = dist + 30;
 
-			if (elite.myship.cabtemp > 255)
+			if (_ship.cabinTemperature > 255)
 			{
-				elite.myship.cabtemp = 255;
+                _ship.cabinTemperature = 255;
                 _gameState.GameOver();
 				return;
 			}
 
-			if ((elite.myship.cabtemp < 224) || (!_gameState.cmdr.fuel_scoop))
+			if ((_ship.cabinTemperature < 224) || (!_ship.hasFuelScoop))
 			{
 				return;
 			}
 
-            _gameState.cmdr.fuel += elite.flight_speed / 2;
-			if (_gameState.cmdr.fuel > elite.myship.max_fuel)
+            _ship.fuel += _ship.speed / 2;
+			if (_ship.fuel > _ship.maxFuel)
 			{
-                _gameState.cmdr.fuel = elite.myship.max_fuel;
+                _ship.fuel = _ship.maxFuel;
 			}
 
             elite.info_message("Fuel Scoop On");
@@ -381,14 +384,14 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (elite.flight_speed >= 5)
+			if (_ship.speed >= 5)
 			{
                 _gameState.GameOver();
 				return;
 			}
 
-			elite.flight_speed = 1;
-            _gameState.damage_ship(5, universe[i].location.Z > 0);
+            _ship.speed = 1;
+            _ship.DamageShip(5, universe[i].location.Z > 0);
 			_audio.PlayEffect(SoundEffect.Crash);
 		}
 
@@ -593,7 +596,7 @@ namespace Elite.Engine
 
 			hyper_distance = Planet.calc_distance_to_planet(_gameState.docked_planet, _gameState.hyperspace_planet);
 
-			if ((hyper_distance == 0) || (hyper_distance > _gameState.cmdr.fuel))
+			if ((hyper_distance == 0) || (hyper_distance > _ship.fuel))
 			{
 				return;
 			}
@@ -614,7 +617,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (!_gameState.cmdr.galactic_hyperdrive)
+			if (!_ship.hasGalacticHyperdrive)
 			{
 				return;
 			}
@@ -664,9 +667,9 @@ namespace Elite.Engine
             _gameState.docked_planet.b ^= 31;
 			swat.in_battle = true;
 
-			elite.flight_speed = 12;
-            _gameState.flight_roll = 0;
-            _gameState.flight_climb = 0;
+            _ship.speed = 12;
+            _ship.roll = 0;
+            _ship.climb = 0;
 			Stars.create_new_stars();
 			swat.clear_universe();
 
@@ -687,17 +690,17 @@ namespace Elite.Engine
 
 			if (hyper_galactic)
 			{
-                _gameState.cmdr.galactic_hyperdrive = false;
+                _ship.hasGalacticHyperdrive = false;
 				hyper_galactic = false;
 				enter_next_galaxy();
                 _gameState.cmdr.legal_status = 0;
 			}
 			else
 			{
-                _gameState.cmdr.fuel -= hyper_distance;
+                _ship.fuel -= hyper_distance;
                 _gameState.cmdr.legal_status /= 2;
 
-				if ((RNG.Random(255) > 253) || (_gameState.flight_climb >= elite.myship.max_climb))
+				if ((RNG.Random(255) > 253) || (_ship.climb >= _ship.maxClimb))
 				{
                     enter_witchspace();
 					return;
@@ -710,9 +713,9 @@ namespace Elite.Engine
             _gameState.current_planet_data = Planet.generate_planet_data(_gameState.docked_planet);
             _gameState.generate_stock_market();
 
-			elite.flight_speed = 12;
-            _gameState.flight_roll = 0;
-            _gameState.flight_climb = 0;
+            _ship.speed = 12;
+            _ship.roll = 0;
+            _ship.climb = 0;
 			Stars.create_new_stars();
 			swat.clear_universe();
 
@@ -803,10 +806,10 @@ namespace Elite.Engine
 
 		internal void launch_player()
 		{
-			elite.flight_speed = 12;
-			// Rotate in the same direction that the station is spinning
-			_gameState.flight_roll = 15;
-            _gameState.flight_climb = 0;
+            _ship.speed = 12;
+            // Rotate in the same direction that the station is spinning
+            _ship.roll = 15;
+            _ship.climb = 0;
             _gameState.cmdr.legal_status |= _gameState.carrying_contraband();
 			Stars.create_new_stars();
 			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
@@ -828,12 +831,8 @@ namespace Elite.Engine
         {
             _pilot.disengage_auto_pilot();
 			elite.docked = true;
-            elite.flight_speed = 0;
-            _gameState.flight_roll = 0;
-            _gameState.flight_climb = 0;
 			_gameState.Reset();
-            elite.myship.altitude = 255;
-            elite.myship.cabtemp = 30;
+			_ship.Reset();
             swat.reset_weapons();
         }
 

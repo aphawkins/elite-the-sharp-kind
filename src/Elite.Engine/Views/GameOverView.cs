@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
     using Elite.Engine.Types;
 
     internal class GameOverView : IView
@@ -15,14 +16,16 @@
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly Stars _stars;
+        private readonly PlayerShip _ship;
         private int _i;
 
-        internal GameOverView(GameState gameState, IGfx gfx, Audio audio, Stars stars)
+        internal GameOverView(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _stars = stars;
+            _ship = ship;
         }
 
         public void Draw()
@@ -37,9 +40,9 @@
         public void Reset()
         {
             _i = 0;
-            elite.flight_speed = 6;
-            _gameState.flight_roll = 0;
-            _gameState.flight_climb = 0;
+            _ship.speed = 6;
+            _ship.roll = 0;
+            _ship.climb = 0;
             swat.clear_universe();
             int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
             space.universe[newship].flags |= FLG.FLG_DEAD;

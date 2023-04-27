@@ -16,18 +16,21 @@ namespace Elite.Engine
 {
     using System.Numerics;
 	using Elite.Engine.Enums;
+	using Elite.Engine.Ships;
 
 	internal class Stars
 	{
 		private readonly GameState _gameState;
 		private readonly IGfx _gfx;
-		internal static bool warp_stars;
+		private readonly PlayerShip _ship;
+        internal static bool warp_stars;
         private static readonly Vector3[] stars = new Vector3[20];
 
-		internal Stars(GameState gameState, IGfx gfx)
+		internal Stars(GameState gameState, IGfx gfx, PlayerShip ship)
 		{
 			_gameState = gameState;
             _gfx = gfx;
+			_ship = ship;
         }
 
 		internal static void create_new_stars()
@@ -47,9 +50,9 @@ namespace Elite.Engine
 
         internal void front_starfield()
 		{
-			float delta = warp_stars ? 50 : elite.flight_speed;
-			float alpha = _gameState.flight_roll;
-			float beta = _gameState.flight_climb;
+			float delta = warp_stars ? 50 : _ship.speed;
+			float alpha = _ship.roll;
+			float beta = _ship.climb;
 
 			alpha /= 256;
 			delta /= 2;
@@ -137,9 +140,9 @@ namespace Elite.Engine
 
         internal void rear_starfield()
 		{
-			float delta = warp_stars ? 50 : elite.flight_speed;
-			float alpha = -_gameState.flight_roll;
-			float beta = -_gameState.flight_climb;
+			float delta = warp_stars ? 50 : _ship.speed;
+			float alpha = -_ship.roll;
+			float beta = -_ship.climb;
 
 			alpha /= 256;
 			delta /= 2;
@@ -237,14 +240,14 @@ namespace Elite.Engine
 
 		internal void LeftStarfield()
 		{
-            float delta = warp_stars ? 50 : elite.flight_speed;
-            SideStarfield(-_gameState.flight_roll, -_gameState.flight_climb, -delta);
+            float delta = warp_stars ? 50 : _ship.speed;
+            SideStarfield(-_ship.roll, -_ship.climb, -delta);
         }
 
         internal void RightStarfield()
         {
-            float delta = warp_stars ? 50 : elite.flight_speed;
-            SideStarfield(_gameState.flight_roll, _gameState.flight_climb, delta);
+            float delta = warp_stars ? 50 : _ship.speed;
+            SideStarfield(_ship.roll, _ship.climb, delta);
         }
 
         private void SideStarfield(float alpha, float beta, float delta)

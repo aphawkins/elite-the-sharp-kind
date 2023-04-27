@@ -3,6 +3,7 @@ namespace Elite.Engine.Views
     using System.Numerics;
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
 
     /// <summary>
     /// Rolling Cobra MkIII.
@@ -13,20 +14,22 @@ namespace Elite.Engine.Views
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
+        private readonly PlayerShip _ship;
 
-        internal Intro1(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard)
+        internal Intro1(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _keyboard = keyboard;
+            _ship = ship;
         }
 
         public void Reset()
         {
             swat.clear_universe();
             swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
-            _gameState.flight_roll = 1;            
+            _ship.roll = 1;            
             _audio.PlayMusic(Music.EliteTheme, true);
         }
 

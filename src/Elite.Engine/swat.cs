@@ -31,6 +31,7 @@ namespace Elite.Engine
 	{
 		private readonly GameState _gameState;
         private readonly Audio _audio;
+		private readonly PlayerShip _ship;
         internal static int MISSILE_UNARMED = -2;
 		internal static int MISSILE_ARMED = -1;
         private static int laser_counter;
@@ -78,10 +79,11 @@ namespace Elite.Engine
 			0											// dodec
 		};
 
-		internal swat(GameState gameState, Audio audio)
+		internal swat(GameState gameState, Audio audio, PlayerShip ship)
 		{
 			_gameState = gameState;
             _audio = audio;
+			_ship = ship;
         }
 
 		internal static void clear_universe()
@@ -381,14 +383,14 @@ namespace Elite.Engine
 				ecm_active--;
 				if (ecm_ours)
 				{
-                    _gameState.decrease_energy(-1);
+                    _ship.DecreaseEnergy(-1);
 				}
 			}
 		}
 
 		internal void arm_missile()
 		{
-			if ((_gameState.cmdr.missiles != 0) && (missile_target == MISSILE_UNARMED))
+			if ((_ship.missileCount != 0) && (missile_target == MISSILE_UNARMED))
 			{
 				missile_target = MISSILE_ARMED;
 			}
@@ -419,7 +421,7 @@ namespace Elite.Engine
 				return;
 			}
 
-            space.universe[newship].velocity = elite.flight_speed * 2;
+            space.universe[newship].velocity = _ship.speed * 2;
             space.universe[newship].flags = FLG.FLG_ANGRY;
             space.universe[newship].target = missile_target;
 
@@ -428,7 +430,7 @@ namespace Elite.Engine
 				space.universe[missile_target].flags |= FLG.FLG_ANGRY;
 			}
 
-            _gameState.cmdr.missiles--;
+            _ship.missileCount--;
 			missile_target = MISSILE_UNARMED;
 
 			_audio.PlayEffect(SoundEffect.Missile);
@@ -494,7 +496,7 @@ namespace Elite.Engine
 				{
 					missile.flags |= FLG.FLG_DEAD;
 					_audio.PlayEffect(SoundEffect.Explode);
-                    _gameState.damage_ship(250, missile.location.Z >= 0.0);
+                    _ship.DamageShip(250, missile.location.Z >= 0.0);
 					return;
 				}
 
@@ -761,10 +763,10 @@ namespace Elite.Engine
 
 				if (direction <= -0.972)
 				{
-                    _gameState.damage_ship(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
+                    _ship.DamageShip(elite.ship_list[(int)type].laser_strength, ship.location.Z >= 0.0);
 					ship.acceleration--;
-					if (((ship.location.Z >= 0.0) && (_gameState.fore_shield == 0)) ||
-						((ship.location.Z < 0.0) && (_gameState.aft_shield == 0)))
+					if (((ship.location.Z >= 0.0) && (_ship.shieldFront == 0)) ||
+						((ship.location.Z < 0.0) && (_ship.shieldRear == 0)))
 					{
 						_audio.PlayEffect(SoundEffect.IncomingFire2);
 					}
@@ -872,10 +874,10 @@ namespace Elite.Engine
 
             laser_strength = _gameState.currentScreen switch
             {
-                SCR.SCR_FRONT_VIEW => _gameState.cmdr.front_laser.Strength,
-                SCR.SCR_REAR_VIEW => _gameState.cmdr.rear_laser.Strength,
-                SCR.SCR_RIGHT_VIEW => _gameState.cmdr.right_laser.Strength,
-                SCR.SCR_LEFT_VIEW => _gameState.cmdr.left_laser.Strength,
+                SCR.SCR_FRONT_VIEW => _ship.laserFront.Strength,
+                SCR.SCR_REAR_VIEW => _ship.laserRear.Strength,
+                SCR.SCR_RIGHT_VIEW => _ship.laserRight.Strength,
+                SCR.SCR_LEFT_VIEW => _ship.laserLeft.Strength,
                 _ => 0,
             };
 
@@ -886,10 +888,10 @@ namespace Elite.Engine
 
             laser_type = _gameState.currentScreen switch
             {
-                SCR.SCR_FRONT_VIEW => _gameState.cmdr.front_laser.Type,
-                SCR.SCR_REAR_VIEW => _gameState.cmdr.rear_laser.Type,
-                SCR.SCR_RIGHT_VIEW => _gameState.cmdr.right_laser.Type,
-                SCR.SCR_LEFT_VIEW => _gameState.cmdr.left_laser.Type,
+                SCR.SCR_FRONT_VIEW => _ship.laserFront.Type,
+                SCR.SCR_REAR_VIEW => _ship.laserRear.Type,
+                SCR.SCR_RIGHT_VIEW => _ship.laserRight.Type,
+                SCR.SCR_LEFT_VIEW => _ship.laserLeft.Type,
                 _ => LaserType.None,
             };
 
@@ -898,9 +900,9 @@ namespace Elite.Engine
 
             _audio.PlayEffect(SoundEffect.Pulse);
             elite.laser_temp += 8;
-            if (_gameState.energy > 1)
+            if (_ship.energy > 1)
             {
-                _gameState.energy--;
+                _ship.energy--;
             }
 
             return true;
