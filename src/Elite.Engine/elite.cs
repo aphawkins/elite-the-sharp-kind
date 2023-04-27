@@ -62,7 +62,6 @@ namespace Elite.Engine
         private static int message_count;
         private static string message_string;
         private static bool game_paused;
-        //private static bool have_joystick;
         internal static float distanceToPlanet;
 
         internal class FC
@@ -151,41 +150,6 @@ namespace Elite.Engine
 
         private void handle_flight_keys()
         {
-            //if (docked &&
-            //    ((current_screen == SCR.SCR_MARKET_PRICES) ||
-            //     (current_screen == SCR.SCR_OPTIONS) ||
-            //     (current_screen == SCR.SCR_SETTINGS) ||
-            //     (current_screen == SCR.SCR_EQUIP_SHIP)))
-            //{
-            //    keyboard.kbd_read_key();
-            //}
-
-            //if (have_joystick)
-            //{
-            //	poll_joystick();
-
-            //	if (joy[0].stick[0].axis[1].d1)
-            //		arrow_up();
-
-            //	if (joy[0].stick[0].axis[1].d2)
-            //		arrow_down();
-
-            //	if (joy[0].stick[0].axis[0].d1)
-            //		arrow_left();
-
-            //	if (joy[0].stick[0].axis[0].d2)
-            //		arrow_right();
-
-            //	if (joy[0].button[0].b)
-            //		keyboard.kbd_fire_pressed = true;
-
-            //	if (joy[0].button[1].b)
-            //		keyboard.kbd_inc_speed_pressed = true;
-
-            //	if (joy[0].button[2].b)
-            //		keyboard.kbd_dec_speed_pressed = true;
-            //}
-
             if (game_paused)
             {
                 if (_keyboard.IsKeyPressed(CommandKey.Resume))
@@ -389,21 +353,6 @@ namespace Elite.Engine
             //	sound.snd_play_sample (SND_BEEP);
         }
 
-        private static void initialise_allegro()
-        {
-            // allegro_init();
-            // install_keyboard();
-            // install_timer();
-            // install_mouse();
-
-            //have_joystick = false;
-
-            //if (install_joystick(JOY_TYPE_AUTODETECT) == 0)
-            //{
-            //	have_joystick = (num_joysticks > 0);
-            //}
-        }
-
         public elite(IGfx alg_gfx, ISound sound, IKeyboard keyboard)
         {
             _gfx = alg_gfx;
@@ -416,19 +365,16 @@ namespace Elite.Engine
             _planet = new(_gameState);
             _draw = new(_gfx);
             _draw.LoadImages();
-            _draw.DrawBorder();
-
-            scanner = new Scanner(_gameState, _gfx, _draw, space.universe, space.ship_count, _ship);
-
-            initialise_allegro();
-            config = ConfigFile.ReadConfigAsync().Result;
-            
+            _draw.DrawBorder();        
             _threed = new(_gfx, _draw);
             _stars = new(_gameState, _gfx, _ship);
             _pilot = new(_gameState, _audio);
             _swat = new(_gameState, _audio, _ship);
             _trade = new(_gameState, _swat, _ship);
             _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade, _planet, _ship);
+
+            scanner = new Scanner(_gameState, _gfx, _draw, space.universe, space.ship_count, _ship);
+            config = ConfigFile.ReadConfigAsync().Result;
 
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard, _ship));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars, _ship));
