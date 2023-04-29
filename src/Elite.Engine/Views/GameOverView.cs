@@ -37,15 +37,15 @@
             _ship.speed = 6;
             _ship.roll = 0;
             _ship.climb = 0;
-            swat.clear_universe();
-            int newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
+            Combat.clear_universe();
+            int newship = Combat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
             space.universe[newship].flags |= FLG.FLG_DEAD;
 
             // Cargo
             for (int i = 0; i < 5; i++)
             {
                 SHIP type = RNG.TrueOrFalse() ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
-                newship = swat.add_new_ship(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0);
+                newship = Combat.add_new_ship(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0);
                 space.universe[newship].rotz = ((RNG.Random(255) * 2) & 255) - 128;
                 space.universe[newship].rotx = ((RNG.Random(255) * 2) & 255) - 128;
                 space.universe[newship].velocity = RNG.Random(15);

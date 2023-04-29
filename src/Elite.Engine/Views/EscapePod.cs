@@ -46,7 +46,7 @@
             _ship.climb = 0;
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
-            _newship = swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 200), rotmat, -127, -127);
+            _newship = Combat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 200), rotmat, -127, -127);
             space.universe[_newship].velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;

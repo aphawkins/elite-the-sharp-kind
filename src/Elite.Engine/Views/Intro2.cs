@@ -46,10 +46,10 @@ namespace Elite.Engine.Views
             _showTime = 0;
             _direction = 100;
 
-            swat.clear_universe();
+            Combat.clear_universe();
             Stars.create_new_stars();
             _rotmat = VectorMaths.GetInitialMatrix();
-            swat.add_new_ship(SHIP.SHIP_MISSILE, new(0, 0, 5000), _rotmat, -127, -127);
+            Combat.add_new_ship(SHIP.SHIP_MISSILE, new(0, 0, 5000), _rotmat, -127, -127);
             _audio.PlayMusic(Music.BlueDanube, true);
 
             _ship.speed = 3;
@@ -90,7 +90,7 @@ namespace Elite.Engine.Views
                 space.ship_count[space.universe[0].type] = 0;
                 space.universe[0].type = SHIP.SHIP_NONE;
 
-                swat.add_new_ship(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
+                Combat.add_new_ship(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }
 
             _stars.front_starfield();
@@ -108,7 +108,7 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                swat.clear_universe();
+                Combat.clear_universe();
                 _audio.StopMusic();
                 _gameState.SetView(SCR.SCR_CMDR_STATUS);
             }

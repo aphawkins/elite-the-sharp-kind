@@ -31,7 +31,7 @@
 
         public void Reset()
         {
-            swat.clear_universe();
+            Combat.clear_universe();
             _breakPattern.Reset();
             _audio.PlayEffect(SoundEffect.Launch);
         }

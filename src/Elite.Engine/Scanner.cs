@@ -284,9 +284,9 @@ namespace Elite.Engine
 
 			Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 
-			if (swat.missile_target != swat.MISSILE_UNARMED)
+			if (Combat.missile_target != Combat.MISSILE_UNARMED)
 			{
-                _gfx.DrawImage((swat.missile_target < 0) ? Image.MissileYellow : Image.MissileRed, location);
+                _gfx.DrawImage((Combat.missile_target < 0) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
                 missileCount--;
 			}
@@ -327,7 +327,7 @@ namespace Elite.Engine
                 _gfx.DrawImage(Image.BigS, new(387, 490));
 			}
 
-			if (swat.ecm_active != 0)
+			if (Combat.ecm_active != 0)
 			{
                 _gfx.DrawImage(Image.BigE, new(115, 490));
 			}

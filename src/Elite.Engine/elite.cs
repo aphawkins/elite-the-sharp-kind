@@ -34,7 +34,7 @@ namespace Elite.Engine
         private readonly Stars _stars;
         private readonly threed _threed;
         private readonly pilot _pilot;
-        private readonly swat _swat;
+        private readonly Combat _combat;
         private readonly Trade _trade;
         private readonly Planet _planet;
         private readonly SaveFile _save;
@@ -133,7 +133,7 @@ namespace Elite.Engine
             auto_pilot = false;
 
             Stars.create_new_stars();
-            swat.clear_universe();
+            Combat.clear_universe();
 
             cross = new(-1, -1);
 
@@ -239,7 +239,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.Fire))
             {
-                drawLasers = _swat.FireLaser();
+                drawLasers = _combat.FireLaser();
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn))
@@ -261,7 +261,7 @@ namespace Elite.Engine
             {
                 if (!docked && _ship.hasECM)
                 {
-                    _swat.activate_ecm(true);
+                    _combat.activate_ecm(true);
                 }
             }
 
@@ -286,7 +286,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    _swat.fire_missile();
+                    _combat.fire_missile();
                 }
             }
 
@@ -299,7 +299,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    _swat.arm_missile();
+                    _combat.arm_missile();
                 }
             }
 
@@ -307,7 +307,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    _swat.unarm_missile();
+                    _combat.unarm_missile();
                 }
             }
 
@@ -368,9 +368,9 @@ namespace Elite.Engine
             _threed = new(_gfx, _draw);
             _stars = new(_gameState, _gfx, _ship);
             _pilot = new(_gameState, _audio);
-            _swat = new(_gameState, _audio, _ship, _trade);
+            _combat = new(_gameState, _audio, _ship, _trade);
             _save = new(_gameState, _ship, _trade);
-            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _swat, _trade, _planet, _ship);
+            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _planet, _ship);
 
             scanner = new Scanner(_gameState, _gfx, _draw, space.universe, space.ship_count, _ship);
             config = ConfigFile.ReadConfigAsync().Result;
@@ -473,7 +473,7 @@ namespace Elite.Engine
 
             if (!docked & !_gameState.IsGameOver)
             {
-                swat.cool_laser();
+                Combat.cool_laser();
 
                 if (message_count > 0)
                 {
@@ -518,10 +518,10 @@ namespace Elite.Engine
 
                 if ((mcount == 0) && (!_gameState.witchspace))
                 {
-                    _swat.random_encounter();
+                    _combat.random_encounter();
                 }
 
-                _swat.time_ecm();
+                _combat.time_ecm();
             }
 
             _gfx.ScreenUpdate();

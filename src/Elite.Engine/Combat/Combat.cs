@@ -1,33 +1,13 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
-/*
- * swat.c
- *
- * Special Weapons And Tactics.
- */
-
 namespace Elite.Engine
 {
-    using System.Diagnostics;
-    using System.Numerics;
-    using Elite.Common.Enums;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
-    using Elite.Engine.Types;
+	using System.Diagnostics;
+	using System.Numerics;
+	using Elite.Common.Enums;
+	using Elite.Engine.Enums;
+	using Elite.Engine.Ships;
+	using Elite.Engine.Types;
 
-    internal class swat
+	internal class Combat
 	{
 		private readonly GameState _gameState;
         private readonly Audio _audio;
@@ -80,7 +60,7 @@ namespace Elite.Engine
 			0											// dodec
 		};
 
-		internal swat(GameState gameState, Audio audio, PlayerShip ship, Trade trade)
+		internal Combat(GameState gameState, Audio audio, PlayerShip ship, Trade trade)
 		{
 			_gameState = gameState;
             _audio = audio;

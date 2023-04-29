@@ -57,8 +57,8 @@
                 // Show brief
                 _gameState.cmdr.mission = 1;
 
-                swat.clear_universe();
-                int i = swat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
+                Combat.clear_universe();
+                int i = Combat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
                 space.universe[i].flags = FLG.FLG_NONE;
                 _ship.roll = 0;
                 _ship.climb = 0;
@@ -108,7 +108,7 @@
         {
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                swat.clear_universe();
+                Combat.clear_universe();
                 _gameState.SetView(SCR.SCR_MISSION_2);
             }
         }

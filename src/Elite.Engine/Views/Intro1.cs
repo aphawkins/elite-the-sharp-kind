@@ -26,8 +26,8 @@ namespace Elite.Engine.Views
 
         public void Reset()
         {
-            swat.clear_universe();
-            swat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
+            Combat.clear_universe();
+            Combat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
             _ship.roll = 1;            
             _audio.PlayMusic(Music.EliteTheme, true);
         }
@@ -56,13 +56,13 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Yes))
             {
-                swat.clear_universe();
+                Combat.clear_universe();
                 _audio.StopMusic();
                 _gameState.SetView(SCR.SCR_LOAD_CMDR);
             }
             if (_keyboard.IsKeyPressed(CommandKey.No))
             {
-                swat.clear_universe();
+                Combat.clear_universe();
                 _audio.StopMusic();
                 _gameState.SetView(SCR.SCR_INTRO_TWO);
             }
