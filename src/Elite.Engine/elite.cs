@@ -133,7 +133,7 @@ namespace Elite.Engine
             auto_pilot = false;
 
             Stars.create_new_stars();
-            Combat.clear_universe();
+            _combat.ClearUniverse();
 
             cross = new(-1, -1);
 
@@ -261,7 +261,7 @@ namespace Elite.Engine
             {
                 if (!docked && _ship.hasECM)
                 {
-                    _combat.activate_ecm(true);
+                    _combat.ActivateECM(true);
                 }
             }
 
@@ -279,14 +279,14 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.Jump) && (!docked) && (!_gameState.witchspace))
             {
-                space.jump_warp();
+                _space.jump_warp();
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.FireMissile))
             {
                 if (!docked)
                 {
-                    _combat.fire_missile();
+                    _combat.FireMissile();
                 }
             }
 
@@ -299,7 +299,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    _combat.arm_missile();
+                    _combat.ArmMissile();
                 }
             }
 
@@ -307,7 +307,7 @@ namespace Elite.Engine
             {
                 if (!docked)
                 {
-                    _combat.unarm_missile();
+                    _combat.UnarmMissile();
                 }
             }
 
@@ -372,11 +372,11 @@ namespace Elite.Engine
             _save = new(_gameState, _ship, _trade);
             _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _planet, _ship);
 
-            scanner = new Scanner(_gameState, _gfx, _draw, space.universe, space.ship_count, _ship);
+            scanner = new Scanner(_gameState, _gfx, _draw, space.universe, space.ship_count, _ship, _combat);
             config = ConfigFile.ReadConfigAsync().Result;
 
-            _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard, _ship));
-            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars, _ship));
+            _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard, _ship, _combat));
+            _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars, _ship, _combat));
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gameState, _gfx, _draw, keyboard, _planet, _ship));
             _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gameState, _gfx, _draw, keyboard, _planet, _ship));
             _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gameState, _gfx, _draw));
@@ -386,8 +386,8 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
             _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
             _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
-            _views.Add(SCR.SCR_DOCKING, new Docking(_gameState, _gfx, _audio, _space));
-            _views.Add(SCR.SCR_UNDOCKING, new Launch(_gameState, _gfx, _audio, _space));
+            _views.Add(SCR.SCR_DOCKING, new Docking(_gameState, _gfx, _audio, _space, _combat));
+            _views.Add(SCR.SCR_UNDOCKING, new Launch(_gameState, _gfx, _audio, _space, _combat));
             _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gameState, _gfx, _audio));
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx, _draw, _ship, _trade));
             _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gameState, _gfx, _draw, keyboard, _ship, _trade));
@@ -396,10 +396,10 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gameState, _gfx, _draw, keyboard, _save));
             _views.Add(SCR.SCR_QUIT, new Quit(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_SETTINGS, new Settings(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gameState, _gfx, _draw, keyboard, _ship, _trade));
+            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gameState, _gfx, _draw, keyboard, _ship, _trade, _combat));
             _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gameState, _gfx, _draw, keyboard, _ship));
-            _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars, _ship, _trade));
-            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars, _ship));
+            _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars, _ship, _trade, _combat));
+            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars, _ship, _combat));
 
             exitGame = false;
             auto_pilot = false;
@@ -473,7 +473,7 @@ namespace Elite.Engine
 
             if (!docked & !_gameState.IsGameOver)
             {
-                Combat.cool_laser();
+                _combat.CoolLaser();
 
                 if (message_count > 0)
                 {
@@ -518,10 +518,10 @@ namespace Elite.Engine
 
                 if ((mcount == 0) && (!_gameState.witchspace))
                 {
-                    _combat.random_encounter();
+                    _combat.RandomEncounter();
                 }
 
-                _combat.time_ecm();
+                _combat.TimeECM();
             }
 
             _gfx.ScreenUpdate();

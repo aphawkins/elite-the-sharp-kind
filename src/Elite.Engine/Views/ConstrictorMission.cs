@@ -11,6 +11,7 @@
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
+        private readonly Combat _combat;
 
         private static readonly string mission1_brief_a =
             "Greetings Commander, I am Captain Curruthers of " +
@@ -40,7 +41,7 @@
             "There will always be a place for you in Her Majesty's Space Navy. " +
             "And maybe sooner than you think... ---MESSAGE ENDS.";
 
-        internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade)
+        internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -48,6 +49,7 @@
             _keyboard = keyboard;
             _ship = ship;
             _trade = trade;
+            _combat = combat;
         }
 
         public void Reset()
@@ -57,8 +59,8 @@
                 // Show brief
                 _gameState.cmdr.mission = 1;
 
-                Combat.clear_universe();
-                int i = Combat.add_new_ship(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
+                _combat.ClearUniverse();
+                int i = _combat.AddNewShip(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
                 space.universe[i].flags = FLG.FLG_NONE;
                 _ship.roll = 0;
                 _ship.climb = 0;
@@ -108,7 +110,7 @@
         {
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                Combat.clear_universe();
+                _combat.ClearUniverse();
                 _gameState.SetView(SCR.SCR_MISSION_2);
             }
         }

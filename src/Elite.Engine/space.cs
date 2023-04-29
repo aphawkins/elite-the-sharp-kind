@@ -367,7 +367,7 @@ namespace Elite.Engine
 
 			VectorMaths.tidy_matrix(rotmat);
 
-			_combat.add_new_station(position, rotmat);
+			_combat.AddNewStation(position, rotmat);
 		}
 
         private void check_docking(int i)
@@ -496,7 +496,7 @@ namespace Elite.Engine
                         elite.info_message($"{_trade.credits:N1} Credits");
                     }
 
-                    Combat.remove_ship(i);
+                    _combat.RemoveShip(i);
                     continue;
                 }
 
@@ -519,7 +519,7 @@ namespace Elite.Engine
                     not SCR.SCR_GAME_OVER and
                     not SCR.SCR_ESCAPE_POD)
                 {
-                    _combat.tactics(i);
+                    _combat.Tactics(i);
                 }
 
                 move_univ_object(ref universe[i]);
@@ -555,7 +555,7 @@ namespace Elite.Engine
                     }
                     else
                     {
-                        _combat.scoop_item(i);
+                        _combat.ScoopItem(i);
                     }
 
                     continue;
@@ -563,7 +563,7 @@ namespace Elite.Engine
 
                 if (universe[i].location.Length() > 57344)
                 {
-                    Combat.remove_ship(i);
+                    _combat.RemoveShip(i);
                     continue;
                 }
 
@@ -579,7 +579,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                _combat.check_target(i, ref flip);
+                _combat.CheckTarget(i, ref flip);
             }
 
             _threed.RenderEnd();
@@ -664,19 +664,19 @@ namespace Elite.Engine
 
             _gameState.witchspace = true;
             _gameState.docked_planet.b ^= 31;
-			Combat.in_battle = true;
+			_combat.inBattle = true;
 
             _ship.speed = 12;
             _ship.roll = 0;
             _ship.climb = 0;
 			Stars.create_new_stars();
-			Combat.clear_universe();
+			_combat.ClearUniverse();
 
 			nthg = RNG.Random(1, 4);
 
 			for (i = 0; i < nthg; i++)
 			{
-				Combat.create_thargoid();
+				_combat.CreateThargoid();
 			}
 
 			_gameState.SetView(SCR.SCR_HYPERSPACE);
@@ -716,7 +716,7 @@ namespace Elite.Engine
             _ship.roll = 0;
             _ship.climb = 0;
 			Stars.create_new_stars();
-			Combat.clear_universe();
+			_combat.ClearUniverse();
 
 			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
 			
@@ -737,12 +737,12 @@ namespace Elite.Engine
                 position.Y = -position.Y;
 			}
 
-            Combat.add_new_ship(SHIP.SHIP_PLANET, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            _combat.AddNewShip(SHIP.SHIP_PLANET, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
             position.Z = -(((_gameState.docked_planet.d & 7) | 1) << 16);
             position.X = ((_gameState.docked_planet.f & 3) << 16) | ((_gameState.docked_planet.f & 3) << 8);
 
-            Combat.add_new_ship(SHIP.SHIP_SUN, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            _combat.AddNewShip(SHIP.SHIP_SUN, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
             _gameState.SetView(SCR.SCR_HYPERSPACE);
 		}
@@ -758,7 +758,7 @@ namespace Elite.Engine
 			hyper_countdown--;
 		}
 
-		internal static void jump_warp()
+		internal void jump_warp()
 		{
 			int i;
 			SHIP type;
@@ -800,7 +800,7 @@ namespace Elite.Engine
 
 			Stars.warp_stars = true;
             elite.mcount &= 63;
-			Combat.in_battle = false;
+			_combat.inBattle = false;
 		}
 
 		internal void launch_player()
@@ -812,13 +812,13 @@ namespace Elite.Engine
             _gameState.cmdr.legal_status |= _trade.IsCarryingContraband();
 			Stars.create_new_stars();
 			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
-			Combat.add_new_ship(SHIP.SHIP_PLANET, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
+			_combat.AddNewShip(SHIP.SHIP_PLANET, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 
 			Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].X = -rotmat[2].X;
 			rotmat[2].Y = -rotmat[2].Y;
 			rotmat[2].Z = -rotmat[2].Z;
-			_combat.add_new_station(new(0, 0, -256), rotmat);
+			_combat.AddNewStation(new(0, 0, -256), rotmat);
 
             elite.docked = false;
         }
@@ -832,7 +832,7 @@ namespace Elite.Engine
 			elite.docked = true;
 			_gameState.Reset();
 			_ship.Reset();
-            Combat.reset_weapons();
+            _combat.ResetWeapons();
         }
 
         /*

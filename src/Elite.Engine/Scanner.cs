@@ -34,9 +34,10 @@ namespace Elite.Engine
 		private readonly univ_object[] _universe;
 		private readonly Dictionary<SHIP, int> _shipCount;
 		private readonly PlayerShip _ship;
+		private readonly Combat _combat;
 		private readonly Draw _draw;
 
-		internal Scanner(GameState gameState, IGfx gfx, Draw draw, univ_object[] universe, Dictionary<SHIP, int> shipCount, PlayerShip ship)
+		internal Scanner(GameState gameState, IGfx gfx, Draw draw, univ_object[] universe, Dictionary<SHIP, int> shipCount, PlayerShip ship, Combat combat)
         {
 			_gameState = gameState;
             _gfx = gfx;
@@ -44,6 +45,7 @@ namespace Elite.Engine
 			_universe = universe;
             _shipCount = shipCount;
 			_ship = ship;
+			_combat = combat;
         }
 
         /*
@@ -284,9 +286,9 @@ namespace Elite.Engine
 
 			Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 
-			if (Combat.missile_target != Combat.MISSILE_UNARMED)
+			if (_combat.missileTarget != _combat.MISSILE_UNARMED)
 			{
-                _gfx.DrawImage((Combat.missile_target < 0) ? Image.MissileYellow : Image.MissileRed, location);
+                _gfx.DrawImage((_combat.missileTarget < 0) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
                 missileCount--;
 			}
@@ -327,7 +329,7 @@ namespace Elite.Engine
                 _gfx.DrawImage(Image.BigS, new(387, 490));
 			}
 
-			if (Combat.ecm_active != 0)
+			if (_combat.ecmActive != 0)
 			{
                 _gfx.DrawImage(Image.BigE, new(115, 490));
 			}

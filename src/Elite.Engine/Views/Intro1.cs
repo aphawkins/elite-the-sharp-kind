@@ -14,20 +14,22 @@ namespace Elite.Engine.Views
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
+        private readonly Combat _combat;
 
-        internal Intro1(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard, PlayerShip ship)
+        internal Intro1(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;
             _audio = audio;
             _keyboard = keyboard;
             _ship = ship;
+            _combat = combat;
         }
 
         public void Reset()
         {
-            Combat.clear_universe();
-            Combat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
+            _combat.ClearUniverse();
+            _combat.AddNewShip(SHIP.SHIP_COBRA3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
             _ship.roll = 1;            
             _audio.PlayMusic(Music.EliteTheme, true);
         }
@@ -56,13 +58,13 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Yes))
             {
-                Combat.clear_universe();
+                _combat.ClearUniverse();
                 _audio.StopMusic();
                 _gameState.SetView(SCR.SCR_LOAD_CMDR);
             }
             if (_keyboard.IsKeyPressed(CommandKey.No))
             {
-                Combat.clear_universe();
+                _combat.ClearUniverse();
                 _audio.StopMusic();
                 _gameState.SetView(SCR.SCR_INTRO_TWO);
             }

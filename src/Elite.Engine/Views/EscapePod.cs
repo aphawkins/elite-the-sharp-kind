@@ -13,11 +13,12 @@
         private readonly Stars _stars;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
+        private readonly Combat _combat;
 
         private int _newship;
         private int _i;
 
-        internal EscapePod(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade)
+        internal EscapePod(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -25,6 +26,7 @@
             _stars = stars;
             _ship = ship;
             _trade = trade;
+            _combat = combat;
         }
 
         public void Draw()
@@ -46,7 +48,7 @@
             _ship.climb = 0;
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
-            _newship = Combat.add_new_ship(SHIP.SHIP_COBRA3, new(0, 0, 200), rotmat, -127, -127);
+            _newship = _combat.AddNewShip(SHIP.SHIP_COBRA3, new(0, 0, 200), rotmat, -127, -127);
             space.universe[_newship].velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;

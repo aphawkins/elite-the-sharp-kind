@@ -16,6 +16,7 @@ namespace Elite.Engine.Views
         private readonly IKeyboard _keyboard;
         private readonly Stars _stars;
         private readonly PlayerShip _ship;
+        private readonly Combat _combat;
         private SHIP _shipNo;
         private int _showTime;
         private int _direction;
@@ -30,7 +31,7 @@ namespace Elite.Engine.Views
         };
         private Vector3[] _rotmat = new Vector3[3];
 
-        internal Intro2(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship)
+        internal Intro2(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship, Combat combat)
         {
             _gameState = gameStat;
             _gfx = gfx;
@@ -38,6 +39,7 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
             _stars = stars;
             _ship = ship;
+            _combat = combat;
         }
 
         public void Reset()
@@ -46,10 +48,10 @@ namespace Elite.Engine.Views
             _showTime = 0;
             _direction = 100;
 
-            Combat.clear_universe();
+            _combat.ClearUniverse();
             Stars.create_new_stars();
             _rotmat = VectorMaths.GetInitialMatrix();
-            Combat.add_new_ship(SHIP.SHIP_MISSILE, new(0, 0, 5000), _rotmat, -127, -127);
+            _combat.AddNewShip(SHIP.SHIP_MISSILE, new(0, 0, 5000), _rotmat, -127, -127);
             _audio.PlayMusic(Music.BlueDanube, true);
 
             _ship.speed = 3;
@@ -90,7 +92,7 @@ namespace Elite.Engine.Views
                 space.ship_count[space.universe[0].type] = 0;
                 space.universe[0].type = SHIP.SHIP_NONE;
 
-                Combat.add_new_ship(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
+                _combat.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }
 
             _stars.front_starfield();
@@ -108,7 +110,7 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                Combat.clear_universe();
+                _combat.ClearUniverse();
                 _audio.StopMusic();
                 _gameState.SetView(SCR.SCR_CMDR_STATUS);
             }
