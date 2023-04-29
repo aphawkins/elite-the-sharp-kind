@@ -1,6 +1,5 @@
 ﻿namespace Elite.Engine.Views
 {
-    using Elite.Engine.Enums;
     using Elite.Engine.Ships;
 
     internal class PilotFrontView : IView

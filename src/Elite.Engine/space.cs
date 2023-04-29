@@ -20,14 +20,13 @@
 
 namespace Elite.Engine
 {
-	using System.Numerics;
+    using System.Numerics;
     using Elite.Common.Enums;
-	using Elite.Engine.Enums;
-	using Elite.Engine.Ships;
-	using Elite.Engine.Types;
-	using Elite.Engine.Views;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Ships;
+    using Elite.Engine.Types;
 
-	internal class space
+    internal class space
 	{
 		private readonly GameState _gameState;
         private readonly IGfx _gfx;

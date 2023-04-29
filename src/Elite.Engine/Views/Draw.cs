@@ -5,7 +5,6 @@
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
-    using static Elite.Engine.Settings;
 
     internal class Draw
     {

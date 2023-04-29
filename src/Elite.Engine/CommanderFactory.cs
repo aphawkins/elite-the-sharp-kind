@@ -1,7 +1,5 @@
 ﻿namespace Elite.Engine
 {
-    using Elite.Engine.Enums;
-    using Elite.Engine.Lasers;
     using Elite.Engine.Types;
 
     internal static class CommanderFactory

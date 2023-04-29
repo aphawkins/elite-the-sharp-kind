@@ -1,11 +1,5 @@
 ﻿namespace Elite.Engine
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Elite.Common.Enums;
     using Elite.Engine.Enums;
 
     internal class BreakPattern

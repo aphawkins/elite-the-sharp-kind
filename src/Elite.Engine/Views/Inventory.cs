@@ -14,10 +14,8 @@
 
 namespace Elite.Engine.Views
 {
-    using System.Diagnostics;
     using Elite.Engine.Enums;
     using Elite.Engine.Ships;
-    using Elite.Engine.Types;
 
     internal class Inventory : IView
     {

@@ -1,6 +1,5 @@
 namespace Elite.Engine.Views
 {
-    using System.Numerics;
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
     using Elite.Engine.Ships;

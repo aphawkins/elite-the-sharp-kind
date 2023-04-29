@@ -1,14 +1,8 @@
 ﻿namespace Elite.Engine.Views
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Elite.Common.Enums;
     using Elite.Engine.Enums;
     using Elite.Engine.Ships;
-    using Elite.Engine.Types;
 
     internal class GameOverView : IView
     {
