@@ -16,7 +16,7 @@ namespace Elite.Engine
         /// <summary>
         /// The following holds the Elite Planet Stock Market.
         /// </summary>
-        internal Dictionary<StockType, stock_item> stock_market = new()
+        internal Dictionary<StockType, StockItem> stockMarket = new()
         {
             { StockType.Food,         new("Food",          0, 0,  1.9f, -2,   6,   1, TONNES,    0, 0) },
             { StockType.Textiles,     new("Textiles",      0, 0,  2.0f, -1,  10,   3, TONNES,    0, 0) },
@@ -46,29 +46,29 @@ namespace Elite.Engine
 
         internal void AddCargo(StockType stock)
         {
-            stock_market[stock].currentCargo++;
+            stockMarket[stock].currentCargo++;
         }
 
         internal void BuyStock(StockType stock)
         {
-            if (stock_market[stock].current_quantity == 0 || credits < stock_market[stock].current_price)
+            if (stockMarket[stock].currentQuantity == 0 || credits < stockMarket[stock].currentPrice)
             {
                 return;
             }
 
-            if (stock_market[stock].units == Trade.TONNES && TotalCargoTonnage() == _ship.cargoCapacity)
+            if (stockMarket[stock].units == Trade.TONNES && TotalCargoTonnage() == _ship.cargoCapacity)
             {
                 return;
             }
 
-            stock_market[stock].currentCargo++;
-            stock_market[stock].current_quantity--;
-            credits -= stock_market[stock].current_price;
+            stockMarket[stock].currentCargo++;
+            stockMarket[stock].currentQuantity--;
+            credits -= stockMarket[stock].currentPrice;
         }
 
         internal void ClearCurrentCargo()
         {
-            foreach (var stock in stock_market)
+            foreach (var stock in stockMarket)
             {
                 stock.Value.currentCargo = 0;
             }
@@ -82,62 +82,62 @@ namespace Elite.Engine
         /// </summary>
         internal void GenerateStockMarket(planet_data currentPlanet)
         {
-            foreach (var stock in stock_market)
+            foreach (var stock in stockMarket)
             {
                 // Start with the base price
-                float price = stock.Value.base_price;
+                float price = stock.Value.basePrice;
                 // Add in a random amount
                 price += (marketRandomiser & stock.Value.mask) / 10;
                 // Adjust for planet economy
-                price += currentPlanet.economy * stock.Value.eco_adjust / 10;
+                price += currentPlanet.economy * stock.Value.economyAdjust / 10;
 
                 // Start with the base quantity
-                int quant = stock.Value.base_quantity;
+                int quant = stock.Value.baseQuantity;
                 // Add in a random amount
                 quant += marketRandomiser & stock.Value.mask;
                 // Adjust for planet economy
-                quant -= currentPlanet.economy * stock.Value.eco_adjust;
+                quant -= currentPlanet.economy * stock.Value.economyAdjust;
                 // Quantities range from 0..63
                 quant = Math.Clamp(quant, 0, 63);
 
-                stock.Value.current_price = price * 4;
-                stock.Value.current_quantity = quant;
+                stock.Value.currentPrice = price * 4;
+                stock.Value.currentQuantity = quant;
             }
 
             // Alien Items are never available for purchase
-            stock_market[StockType.AlienItems].current_quantity = 0;
+            stockMarket[StockType.AlienItems].currentQuantity = 0;
         }
 
-        internal int IsCarryingContraband() => ((stock_market[StockType.Slaves].currentCargo + stock_market[StockType.Slaves].currentCargo) * 2) + stock_market[StockType.Firearms].currentCargo;
+        internal int IsCarryingContraband() => ((stockMarket[StockType.Slaves].currentCargo + stockMarket[StockType.Slaves].currentCargo) * 2) + stockMarket[StockType.Firearms].currentCargo;
 
         internal void SellStock(StockType stock)
         {
-            if (stock_market[stock].currentCargo == 0)
+            if (stockMarket[stock].currentCargo == 0)
             {
                 return;
             }
 
-            stock_market[stock].currentCargo--;
-            stock_market[stock].current_quantity++;
-            credits += stock_market[stock].current_price;
+            stockMarket[stock].currentCargo--;
+            stockMarket[stock].currentQuantity++;
+            credits += stockMarket[stock].currentPrice;
         }
 
         internal void SetStockQuantities()
         {
-            foreach (var stock in stock_market)
+            foreach (var stock in stockMarket)
             {
-                stock.Value.current_quantity = stock.Value.stationStock;
+                stock.Value.currentQuantity = stock.Value.stationStock;
             }
 
             // Alien Items are never available for purchase
-            stock_market[StockType.AlienItems].current_quantity = 0;
+            stockMarket[StockType.AlienItems].currentQuantity = 0;
         }
 
         internal int TotalCargoTonnage()
         {
             int cargo = 0;
 
-            foreach (var stock in stock_market)
+            foreach (var stock in stockMarket)
             {
                 if ((stock.Value.currentCargo > 0) && (stock.Value.units == TONNES))
                 {

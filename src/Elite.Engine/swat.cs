@@ -1218,7 +1218,7 @@ namespace Elite.Engine
             {
                 StockType trade = (StockType)RNG.Random(1, 8);
 				_trade.AddCargo(trade);
-                elite.info_message(_trade.stock_market[trade].name);
+                elite.info_message(_trade.stockMarket[trade].name);
                 remove_ship(un);
                 return;
             }
@@ -1227,7 +1227,7 @@ namespace Elite.Engine
             {
                 StockType trade = elite.ship_list[(int)type].scoopedType;
 				_trade.AddCargo(trade);
-                elite.info_message(_trade.stock_market[(StockType)trade].name);
+                elite.info_message(_trade.stockMarket[(StockType)trade].name);
                 remove_ship(un);
                 return;
             }
