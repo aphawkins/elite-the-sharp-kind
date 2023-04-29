@@ -5,7 +5,7 @@
 
     internal class univ_object : ICloneable
     {
-        internal SHIP type;
+        internal ShipType type;
         internal Vector3 location;
         internal Vector3[] rotmat;
         internal float rotx;

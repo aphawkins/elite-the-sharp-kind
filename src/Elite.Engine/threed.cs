@@ -122,7 +122,7 @@ namespace Elite.Engine
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
 				lasv = elite.ship_list[(int)univ.type].front_laser;
-				col = (univ.type == SHIP.SHIP_VIPER) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
+				col = (univ.type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
 				Vector2[] pointList = new Vector2[]
 				{
@@ -556,13 +556,13 @@ namespace Elite.Engine
                 return;
             }
 
-            if (ship.type == SHIP.SHIP_PLANET)
+            if (ship.type == ShipType.Planet)
 			{
 				draw_planet(ref ship);
 				return;
 			}
 
-			if (ship.type == SHIP.SHIP_SUN)
+			if (ship.type == ShipType.Sun)
 			{
 				_draw.draw_sun(ship);
 				return;

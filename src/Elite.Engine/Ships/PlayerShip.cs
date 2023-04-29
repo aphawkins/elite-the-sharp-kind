@@ -56,7 +56,7 @@
 
             ship.rotmat[2].Z = 1;
             ship.rotmat[0].X = -1;
-            ship.type = (SHIP)(-96);
+            ship.type = (ShipType)(-96);
             ship.velocity = speed;
             ship.acceleration = 0;
             ship.bravery = 0;

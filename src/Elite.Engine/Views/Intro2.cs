@@ -17,7 +17,7 @@ namespace Elite.Engine.Views
         private readonly Stars _stars;
         private readonly PlayerShip _ship;
         private readonly Combat _combat;
-        private SHIP _shipNo;
+        private ShipType _shipNo;
         private int _showTime;
         private int _direction;
         private readonly int[] _minDist = new int[]
@@ -51,7 +51,7 @@ namespace Elite.Engine.Views
             _combat.ClearUniverse();
             Stars.create_new_stars();
             _rotmat = VectorMaths.GetInitialMatrix();
-            _combat.AddNewShip(SHIP.SHIP_MISSILE, new(0, 0, 5000), _rotmat, -127, -127);
+            _combat.AddNewShip(ShipType.Missile, new(0, 0, 5000), _rotmat, -127, -127);
             _audio.PlayMusic(Music.BlueDanube, true);
 
             _ship.speed = 3;
@@ -82,7 +82,7 @@ namespace Elite.Engine.Views
                     _shipNo++;
                     if ((int)_shipNo > shipdata.NO_OF_SHIPS)
                     {
-                        _shipNo = SHIP.SHIP_MISSILE;
+                        _shipNo = ShipType.Missile;
                     }
                 } while (_minDist[(int)_shipNo] == 0);
 
@@ -90,7 +90,7 @@ namespace Elite.Engine.Views
                 _direction = -100;
 
                 space.ship_count[space.universe[0].type] = 0;
-                space.universe[0].type = SHIP.SHIP_NONE;
+                space.universe[0].type = ShipType.None;
 
                 _combat.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }

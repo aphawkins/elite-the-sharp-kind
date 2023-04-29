@@ -32,12 +32,12 @@ namespace Elite.Engine
 		private readonly GameState _gameState;
         private readonly IGfx _gfx;
 		private readonly univ_object[] _universe;
-		private readonly Dictionary<SHIP, int> _shipCount;
+		private readonly Dictionary<ShipType, int> _shipCount;
 		private readonly PlayerShip _ship;
 		private readonly Combat _combat;
 		private readonly Draw _draw;
 
-		internal Scanner(GameState gameState, IGfx gfx, Draw draw, univ_object[] universe, Dictionary<SHIP, int> shipCount, PlayerShip ship, Combat combat)
+		internal Scanner(GameState gameState, IGfx gfx, Draw draw, univ_object[] universe, Dictionary<ShipType, int> shipCount, PlayerShip ship, Combat combat)
         {
 			_gameState = gameState;
             _gfx = gfx;
@@ -80,16 +80,16 @@ namespace Elite.Engine
 
 				switch (_universe[i].type)
 				{
-					case SHIP.SHIP_MISSILE:
+					case ShipType.Missile:
 						colour = GFX_COL.GFX_COL_PINK_1;
 						break;
 
-					case SHIP.SHIP_DODEC:
-					case SHIP.SHIP_CORIOLIS:
+					case ShipType.Dodec:
+					case ShipType.Coriolis:
 						colour = GFX_COL.GFX_COL_GREEN_1;
 						break;
 
-					case SHIP.SHIP_VIPER:
+					case ShipType.Viper:
 						colour = GFX_COL.GFX_COL_BLUE_4;
 						break;
 				}
@@ -111,7 +111,7 @@ namespace Elite.Engine
 				return;
 			}
 
-            int un = _shipCount[SHIP.SHIP_CORIOLIS] == 0 && _shipCount[SHIP.SHIP_DODEC] == 0 ? 0 : 1;
+            int un = _shipCount[ShipType.Coriolis] == 0 && _shipCount[ShipType.Dodec] == 0 ? 0 : 1;
             Vector3 dest = VectorMaths.unit_vector(_universe[un].location);
 
 			if (float.IsNaN(dest.X))
@@ -324,7 +324,7 @@ namespace Elite.Engine
 			update_scanner();
 			UpdateCompass();
 
-			if (_shipCount[SHIP.SHIP_CORIOLIS] != 0 || _shipCount[SHIP.SHIP_DODEC] != 0)
+			if (_shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0)
 			{
                 _gfx.DrawImage(Image.BigS, new(387, 490));
 			}

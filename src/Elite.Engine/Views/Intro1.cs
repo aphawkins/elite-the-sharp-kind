@@ -29,7 +29,7 @@ namespace Elite.Engine.Views
         public void Reset()
         {
             _combat.ClearUniverse();
-            _combat.AddNewShip(SHIP.SHIP_COBRA3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
+            _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
             _ship.roll = 1;            
             _audio.PlayMusic(Music.EliteTheme, true);
         }

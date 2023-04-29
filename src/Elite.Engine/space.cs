@@ -45,7 +45,7 @@ namespace Elite.Engine
         private static float hyper_distance;
         internal static bool hyper_galactic;
 		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
-		internal static Dictionary<SHIP, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
+		internal static Dictionary<ShipType, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
 
 		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, Combat combat, Trade trade, Planet planet, PlayerShip ship)
 		{
@@ -132,7 +132,7 @@ namespace Elite.Engine
 
 			obj.location = new(x, y, z);
 
-			if (obj.type == SHIP.SHIP_PLANET)
+			if (obj.type == ShipType.Planet)
 			{
 				beta = 0.0f;
 			}
@@ -282,7 +282,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
+			if (ship_count[ShipType.Coriolis] != 0 || ship_count[ShipType.Dodec] != 0)
 			{
 				return;
 			}
@@ -474,16 +474,16 @@ namespace Elite.Engine
 
 			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
             {
-                SHIP type = universe[i].type;
+                ShipType type = universe[i].type;
 
-                if (type == SHIP.SHIP_NONE)
+                if (type == ShipType.None)
                 {
                     continue;
                 }
 
                 if (universe[i].flags.HasFlag(FLG.FLG_REMOVE))
                 {
-                    if (type == SHIP.SHIP_VIPER)
+                    if (type == ShipType.Viper)
                     {
                         _gameState.cmdr.legal_status |= 64;
                     }
@@ -502,12 +502,12 @@ namespace Elite.Engine
 
                 if (elite.detonate_bomb &&
                     (!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
-                    (type != SHIP.SHIP_PLANET) &&
-                    (type != SHIP.SHIP_SUN) &&
-                    (type != SHIP.SHIP_CONSTRICTOR) &&
-                    (type != SHIP.SHIP_COUGAR) &&
-                    (type != SHIP.SHIP_CORIOLIS) &&
-                    (type != SHIP.SHIP_DODEC))
+                    (type != ShipType.Planet) &&
+                    (type != ShipType.Sun) &&
+                    (type != ShipType.Constrictor) &&
+                    (type != ShipType.Cougar) &&
+                    (type != ShipType.Coriolis) &&
+                    (type != ShipType.Dodec))
                 {
                     _audio.PlayEffect(SoundEffect.Explode);
                     universe[i].flags |= FLG.FLG_DEAD;
@@ -527,10 +527,10 @@ namespace Elite.Engine
                 univ_object flip = (univ_object)universe[i].Clone();
                 switch_to_view(ref flip);
 
-                if (type == SHIP.SHIP_PLANET)
+                if (type == ShipType.Planet)
                 {
-                    if ((ship_count[SHIP.SHIP_CORIOLIS] == 0) &&
-                        (ship_count[SHIP.SHIP_DODEC] == 0) &&
+                    if ((ship_count[ShipType.Coriolis] == 0) &&
+                        (ship_count[ShipType.Dodec] == 0) &&
                         (universe[i].location.Length() < 65792)) // was 49152
                     {
                         make_station_appear();
@@ -540,7 +540,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                if (type == SHIP.SHIP_SUN)
+                if (type == ShipType.Sun)
                 {
                     _threed.DrawObject(flip);
                     continue;
@@ -549,7 +549,7 @@ namespace Elite.Engine
 
                 if (universe[i].location.Length() < 170)
                 {
-                    if (type is SHIP.SHIP_CORIOLIS or SHIP.SHIP_DODEC)
+                    if (type is ShipType.Coriolis or ShipType.Dodec)
                     {
                         check_docking(i);
                     }
@@ -737,12 +737,12 @@ namespace Elite.Engine
                 position.Y = -position.Y;
 			}
 
-            _combat.AddNewShip(SHIP.SHIP_PLANET, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            _combat.AddNewShip(ShipType.Planet, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
             position.Z = -(((_gameState.docked_planet.d & 7) | 1) << 16);
             position.X = ((_gameState.docked_planet.f & 3) << 16) | ((_gameState.docked_planet.f & 3) << 8);
 
-            _combat.AddNewShip(SHIP.SHIP_SUN, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            _combat.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
             _gameState.SetView(SCR.SCR_HYPERSPACE);
 		}
@@ -761,16 +761,16 @@ namespace Elite.Engine
 		internal void jump_warp()
 		{
 			int i;
-			SHIP type;
+			ShipType type;
 			float jump;
 
 			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
 			{
 				type = universe[i].type;
 
-				if (type is > 0 and not SHIP.SHIP_ASTEROID and not SHIP.SHIP_CARGO and
-                    not SHIP.SHIP_ALLOY and not SHIP.SHIP_ROCK and
-                    not SHIP.SHIP_BOULDER and not SHIP.SHIP_ESCAPE_CAPSULE)
+				if (type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
+                    not ShipType.Alloy and not ShipType.Rock and
+                    not ShipType.Boulder and not ShipType.EscapePod)
 				{
                     elite.info_message("Mass Locked");
 					return;
@@ -812,7 +812,7 @@ namespace Elite.Engine
             _gameState.cmdr.legal_status |= _trade.IsCarryingContraband();
 			Stars.create_new_stars();
 			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
-			_combat.AddNewShip(SHIP.SHIP_PLANET, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
+			_combat.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 
 			Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].X = -rotmat[2].X;
@@ -841,7 +841,7 @@ namespace Elite.Engine
 		 */
         internal void engage_docking_computer()
 		{
-			if (ship_count[SHIP.SHIP_CORIOLIS] != 0 || ship_count[SHIP.SHIP_DODEC] != 0)
+			if (ship_count[ShipType.Coriolis] != 0 || ship_count[ShipType.Dodec] != 0)
 			{
                 _gameState.SetView(SCR.SCR_DOCKING);
 			}

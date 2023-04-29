@@ -95,7 +95,7 @@ namespace Elite.Engine.Views
 
                 for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
                 {
-                    if (space.universe[i].type is SHIP.SHIP_MISSILE or (> SHIP.SHIP_ROCK and < SHIP.SHIP_DODEC))
+                    if (space.universe[i].type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
                     {
                         condition = 2;
                         break;

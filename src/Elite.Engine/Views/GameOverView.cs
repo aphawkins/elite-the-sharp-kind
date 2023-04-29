@@ -40,13 +40,13 @@
             _ship.roll = 0;
             _ship.climb = 0;
             _combat.ClearUniverse();
-            int newship = _combat.AddNewShip(SHIP.SHIP_COBRA3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
+            int newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
             space.universe[newship].flags |= FLG.FLG_DEAD;
 
             // Cargo
             for (int i = 0; i < 5; i++)
             {
-                SHIP type = RNG.TrueOrFalse() ? SHIP.SHIP_CARGO : SHIP.SHIP_ALLOY;
+                ShipType type = RNG.TrueOrFalse() ? ShipType.Cargo : ShipType.Alloy;
                 newship = _combat.AddNewShip(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0);
                 space.universe[newship].rotz = ((RNG.Random(255) * 2) & 255) - 128;
                 space.universe[newship].rotx = ((RNG.Random(255) * 2) & 255) - 128;

@@ -60,7 +60,7 @@
                 _gameState.cmdr.mission = 1;
 
                 _combat.ClearUniverse();
-                int i = _combat.AddNewShip(SHIP.SHIP_CONSTRICTOR, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
+                int i = _combat.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
                 space.universe[i].flags = FLG.FLG_NONE;
                 _ship.roll = 0;
                 _ship.climb = 0;
