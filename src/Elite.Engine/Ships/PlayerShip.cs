@@ -39,6 +39,7 @@
         internal float shieldFront;
         internal float shieldRear;
         internal float speed;
+        internal int ecmActive;
 
         internal PlayerShip()
         {

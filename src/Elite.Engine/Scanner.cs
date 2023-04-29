@@ -329,7 +329,7 @@ namespace Elite.Engine
                 _gfx.DrawImage(Image.BigS, new(387, 490));
 			}
 
-			if (_combat.ecmActive != 0)
+			if (_ship.ecmActive != 0)
 			{
                 _gfx.DrawImage(Image.BigE, new(115, 490));
 			}

@@ -9,7 +9,6 @@ namespace Elite.Engine
 
 	internal class Combat
 	{
-        internal int ecmActive;
         internal bool inBattle;
         internal int MISSILE_ARMED = -1;
         internal int MISSILE_UNARMED = -2;
@@ -71,9 +70,9 @@ namespace Elite.Engine
 
         internal void ActivateECM(bool ours)
         {
-            if (ecmActive == 0)
+            if (_ship.ecmActive == 0)
             {
-                ecmActive = 32;
+                _ship.ecmActive = 32;
                 isEcmOurs = ours;
                 _audio.PlayEffect(SoundEffect.Ecm);
             }
@@ -407,7 +406,7 @@ namespace Elite.Engine
             laserCounter = 0;
             laserStrength = 0;
             laserType = LaserType.None;
-            ecmActive = 0;
+            _ship.ecmActive = 0;
             missileTarget = MISSILE_UNARMED;
         }
 
@@ -613,7 +612,7 @@ namespace Elite.Engine
                     return;
                 }
 
-                if ((ship.missiles != 0) && (ecmActive == 0) && (ship.missiles >= RNG.Random(31)))
+                if ((ship.missiles != 0) && (_ship.ecmActive == 0) && (ship.missiles >= RNG.Random(31)))
                 {
                     ship.missiles--;
                     if (type == SHIP.SHIP_THARGOID)
@@ -743,9 +742,9 @@ namespace Elite.Engine
 
         internal void TimeECM()
         {
-            if (ecmActive != 0)
+            if (_ship.ecmActive != 0)
             {
-                ecmActive--;
+                _ship.ecmActive--;
                 if (isEcmOurs)
                 {
                     _ship.DecreaseEnergy(-1);
@@ -1131,7 +1130,7 @@ namespace Elite.Engine
 			float direction;
 			float cnt2 = 0.223f;
 
-			if (ecmActive != 0)
+			if (_ship.ecmActive != 0)
 			{
 				_audio.PlayEffect(SoundEffect.Explode);
 
