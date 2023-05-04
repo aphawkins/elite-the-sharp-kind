@@ -5,14 +5,12 @@
     internal class PilotRightView : IView
     {
         private readonly PilotView _pilotView;
-        private readonly GameState _gameState;
         private readonly Stars _stars;
         private readonly PlayerShip _ship;
 
-        internal PilotRightView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
+        internal PilotRightView(IGfx gfx, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
         {
-            _pilotView = new(gameState, gfx, keyboard, pilot, ship);
-            _gameState = gameState;
+            _pilotView = new(gfx, keyboard, pilot, ship);
             _stars = stars;
             _ship = ship;
         }

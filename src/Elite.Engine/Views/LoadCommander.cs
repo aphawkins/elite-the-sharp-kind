@@ -9,18 +9,16 @@
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
-        private readonly Planet _planet;
         private readonly SaveFile _save;
         private string _name;
         private bool isLoaded = true;
 
-        internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, SaveFile save)
+        internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
-            _planet = planet;
             _save = save;
         }
 

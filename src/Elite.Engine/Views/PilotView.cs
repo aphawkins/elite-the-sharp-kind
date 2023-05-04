@@ -7,7 +7,6 @@
 
     internal class PilotView : IView
     {
-        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private readonly LaserDraw _laser;
@@ -15,9 +14,8 @@
         private readonly PlayerShip _ship;
         private int drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship)
+        internal PilotView(IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship)
         {
-            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
             _laser = new LaserDraw(_gfx);

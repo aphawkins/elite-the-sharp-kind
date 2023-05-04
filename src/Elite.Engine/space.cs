@@ -35,7 +35,6 @@ namespace Elite.Engine
         private readonly Pilot _pilot;
         private readonly Combat _combat;
         private readonly Trade _trade;
-        private readonly Planet _planet;
 		private readonly PlayerShip _ship;
 
         private static GalaxySeed destination_planet;
@@ -47,7 +46,7 @@ namespace Elite.Engine
 		internal static univ_object[] universe = new univ_object[EliteMain.MAX_UNIV_OBJECTS];
 		internal static Dictionary<ShipType, int> ship_count = new(Ship.NO_OF_SHIPS + 1);  /* many */
 
-		internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio, Pilot pilot, Combat combat, Trade trade, Planet planet, PlayerShip ship)
+		internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio, Pilot pilot, Combat combat, Trade trade, PlayerShip ship)
 		{
             _gameState = gameState;
             _gfx = gfx;
@@ -56,7 +55,6 @@ namespace Elite.Engine
 			_pilot = pilot;
 			_combat = combat;
 			_trade = trade;
-			_planet = planet;
 			_ship = ship;
         }
 
