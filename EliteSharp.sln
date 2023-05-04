@@ -11,14 +11,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{04F98D02-0
 	ProjectSection(SolutionItems) = preProject
 		docs\config.md = docs\config.md
 		docs\controls.md = docs\controls.md
-		docs\issues.md = docs\issues.md
 		docs\credits.md = docs\credits.md
+		docs\issues.md = docs\issues.md
 		docs\readme.md = docs\readme.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elite.Assets", "src\Elite.Assets\Elite.Assets.csproj", "{310AFA99-725B-422D-BBEA-667D8EBC8FBC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elite.Common", "src\Elite.Common\Elite.Common.csproj", "{285AA65A-4BB8-4C02-8A4D-CAE5B5478E37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AACE1DCA-34C2-464C-96D7-8D73B86FD819}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
