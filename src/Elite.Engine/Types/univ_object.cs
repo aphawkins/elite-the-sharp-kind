@@ -3,7 +3,7 @@
     using System.Numerics;
     using Elite.Engine.Enums;
 
-    internal class univ_object : ICloneable
+    internal class UniverseObject : ICloneable
     {
         internal ShipType type;
         internal Vector3 location;
@@ -19,11 +19,11 @@
         internal int bravery;
         internal int exp_delta;
 
-        internal univ_object()
+        internal UniverseObject()
         {
         }
 
-        private univ_object(univ_object other)
+        private UniverseObject(UniverseObject other)
         {
             type = other.type;
             location = other.location.Cloner();
@@ -42,7 +42,7 @@
 
         public object Clone()
         {
-            return new univ_object(this);
+            return new UniverseObject(this);
         }
     }
 }

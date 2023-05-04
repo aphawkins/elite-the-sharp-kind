@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] moray_point =
+        internal static readonly ShipPoint[] moray_point =
         {
             new(new(  15,    0,   65), 31,  0,  2,  7,  8),
             new(new( -15,    0,   65), 31,  0,  1,  6,  7),
@@ -23,7 +23,7 @@ namespace Elite.Engine.Ships
             new(new(  -6,    0,   65),  5,  0,  0,  0,  0),
         };
 
-        internal static readonly ship_line[] moray_line =
+        internal static readonly ShipLine[] moray_line =
         {
             new(31,  0,  7,  0,  1),
             new(31,  1,  6,  1,  3),
@@ -46,7 +46,7 @@ namespace Elite.Engine.Ships
             new( 5,  0,  0, 12, 13),
         };
 
-        internal static readonly ship_face_normal[] moray_face_normal =
+        internal static readonly ShipFaceNormal[] moray_face_normal =
         {
             new(31, new(   0,   43,    7)),
             new(31, new( -10,   49,    7)),
@@ -59,7 +59,7 @@ namespace Elite.Engine.Ships
             new(31, new(  72,  -99,   50)),
         };
 
-        private static readonly ship_face[] moray_face =
+        private static readonly ShipFace[] moray_face =
         {
             new(GFX_COL.GFX_COL_BLUE_4, new( 0x00, 0x2B, 0x07), new[] {   0,  2, 1 }),
             new(GFX_COL.GFX_COL_BLUE_3, new(-0x0A, 0x31, 0x07), new[] {   1,  2, 3 }),

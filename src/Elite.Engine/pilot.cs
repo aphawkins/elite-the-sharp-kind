@@ -47,7 +47,7 @@ namespace Elite.Engine
 		/// </summary>
 		/// <param name="ship"></param>
 		/// <param name="vec"></param>
-        private static void FlyToVector(ref univ_object ship, Vector3 vec)
+        private static void FlyToVector(ref UniverseObject ship, Vector3 vec)
 		{
 			Vector3 nvec;
 			float direction;
@@ -60,15 +60,15 @@ namespace Elite.Engine
 			rat2 = 0.1666f;
 			cnt2 = 0.8055f;
 
-			nvec = VectorMaths.unit_vector(vec);
-			direction = VectorMaths.vector_dot_product(nvec, ship.rotmat[2]);
+			nvec = VectorMaths.UnitVector(vec);
+			direction = VectorMaths.VectorDotProduct(nvec, ship.rotmat[2]);
 
 			if (direction < -0.6666)
 			{
 				rat2 = 0;
 			}
 
-			dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[1]);
+			dir = VectorMaths.VectorDotProduct(nvec, ship.rotmat[1]);
 
 			if (direction < -0.861)
 			{
@@ -86,7 +86,7 @@ namespace Elite.Engine
 
 			if (MathF.Abs(ship.rotz) < 16)
 			{
-				dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[0]);
+				dir = VectorMaths.VectorDotProduct(nvec, ship.rotmat[0]);
 				ship.rotz = 0;
 
 				if ((MathF.Abs(dir) * 2) >= rat2)
@@ -117,7 +117,7 @@ namespace Elite.Engine
 		/// Fly towards the planet.
 		/// </summary>
 		/// <param name="ship"></param>
-        private static void FlyToPlanet(ref univ_object ship)
+        private static void FlyToPlanet(ref UniverseObject ship)
 		{
 			Vector3 vec;
 
@@ -132,7 +132,7 @@ namespace Elite.Engine
 		/// Fly to a point in front of the station docking bay. Done prior to the final stage of docking.
 		/// </summary>
 		/// <param name="ship"></param>
-        private static void FlyToStationFront(ref univ_object ship)
+        private static void FlyToStationFront(ref UniverseObject ship)
 		{
 			Vector3 vec;
 
@@ -151,7 +151,7 @@ namespace Elite.Engine
         /// Fly towards the space station.
         /// </summary>
         /// <param name="ship"></param>
-        private static void FlyToStation(ref univ_object ship)
+        private static void FlyToStation(ref UniverseObject ship)
 		{
 			Vector3 vec;
 
@@ -166,7 +166,7 @@ namespace Elite.Engine
         /// Final stage of docking. Fly into the docking bay.
         /// </summary>
         /// <param name="ship"></param>
-        private static void FlyToDockingBay(ref univ_object ship)
+        private static void FlyToDockingBay(ref UniverseObject ship)
 		{
 			Vector3 diff;
 			float dir;
@@ -175,7 +175,7 @@ namespace Elite.Engine
 			diff.Y = ship.location.Y - Space.universe[1].location.Y;
 			diff.Z = ship.location.Z - Space.universe[1].location.Z;
 
-			Vector3 vec = VectorMaths.unit_vector(diff);
+			Vector3 vec = VectorMaths.UnitVector(diff);
 
 			ship.rotx = 0;
 
@@ -210,7 +210,7 @@ namespace Elite.Engine
 
 			ship.rotz = 0;
 
-			dir = VectorMaths.vector_dot_product(ship.rotmat[0], Space.universe[1].rotmat[1]);
+			dir = VectorMaths.VectorDotProduct(ship.rotmat[0], Space.universe[1].rotmat[1]);
 
 			if (MathF.Abs(dir) >= 0.9166f)
 			{
@@ -227,7 +227,7 @@ namespace Elite.Engine
 		/// Fly a ship to the planet or to the space station and dock it.
 		/// </summary>
 		/// <param name="ship"></param>
-		internal static void AutoPilotShip(ref univ_object ship)
+		internal static void AutoPilotShip(ref UniverseObject ship)
 		{
 			Vector3 diff;
 			Vector3 vec;
@@ -253,8 +253,8 @@ namespace Elite.Engine
 				return;
 			}
 
-			vec = VectorMaths.unit_vector(diff);
-			dir = VectorMaths.vector_dot_product(Space.universe[1].rotmat[2], vec);
+			vec = VectorMaths.UnitVector(diff);
+			dir = VectorMaths.VectorDotProduct(Space.universe[1].rotmat[2], vec);
 
 			if (dir < 0.9722)
 			{
@@ -262,7 +262,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			dir = VectorMaths.vector_dot_product(ship.rotmat[2], vec);
+			dir = VectorMaths.VectorDotProduct(ship.rotmat[2], vec);
 
 			if (dir < -0.9444)
 			{

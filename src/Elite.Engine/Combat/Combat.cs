@@ -125,7 +125,7 @@ namespace Elite.Engine
             }
         }
 
-        internal void CheckTarget(int un, ref univ_object flip)
+        internal void CheckTarget(int un, ref UniverseObject flip)
         {
             //univ_object univ = space.universe[un];
 
@@ -463,7 +463,7 @@ namespace Elite.Engine
             float direction;
             int attacking;
 
-            univ_object ship = Space.universe[un];
+            UniverseObject ship = Space.universe[un];
             ShipType type = ship.type;
             FLG flags = ship.flags;
 
@@ -628,8 +628,8 @@ namespace Elite.Engine
                 }
             }
 
-            nvec = VectorMaths.unit_vector(Space.universe[un].location);
-            direction = VectorMaths.vector_dot_product(nvec, ship.rotmat[2]);
+            nvec = VectorMaths.UnitVector(Space.universe[un].location);
+            direction = VectorMaths.VectorDotProduct(nvec, ship.rotmat[2]);
 
             if ((ship.location.Length() < 8192) && (direction <= -0.833) &&
                  (EliteMain.ship_list[(int)type].laser_strength != 0))
@@ -794,11 +794,11 @@ namespace Elite.Engine
             }
         }
 
-        private static void TrackObject(ref univ_object ship, float direction, Vector3 nvec)
+        private static void TrackObject(ref UniverseObject ship, float direction, Vector3 nvec)
         {
             int rat = 3;
             float rat2 = 0.111f;
-            float dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[1]);
+            float dir = VectorMaths.VectorDotProduct(nvec, ship.rotmat[1]);
 
             if (direction < -0.861)
             {
@@ -816,7 +816,7 @@ namespace Elite.Engine
 
             if (MathF.Abs(ship.rotz) < 16)
             {
-                dir = VectorMaths.vector_dot_product(nvec, ship.rotmat[0]);
+                dir = VectorMaths.VectorDotProduct(nvec, ship.rotmat[0]);
 
                 ship.rotz = 0;
 
@@ -1061,7 +1061,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			univ_object ns = Space.universe[newship];
+			UniverseObject ns = Space.universe[newship];
 
 			if (Space.universe[un].type is ShipType.Coriolis or ShipType.Dodec)
 			{
@@ -1122,9 +1122,9 @@ namespace Elite.Engine
             LaunchEnemy(1, type, FLG.FLG_HAS_ECM | FLG.FLG_FLY_TO_PLANET, 113);
         }
 
-        private void MissileTactics(univ_object missile)
+        private void MissileTactics(UniverseObject missile)
         {
-			univ_object target;
+			UniverseObject target;
 			Vector3 vec;
 			Vector3 nvec;
 			float direction;
@@ -1178,8 +1178,8 @@ namespace Elite.Engine
 				}
 			}
 
-			nvec = VectorMaths.unit_vector(vec);
-			direction = VectorMaths.vector_dot_product(nvec, missile.rotmat[2]);
+			nvec = VectorMaths.UnitVector(vec);
+			direction = VectorMaths.VectorDotProduct(nvec, missile.rotmat[2]);
 			nvec.X = -nvec.X;
 			nvec.Y = -nvec.Y;
 			nvec.Z = -nvec.Z;

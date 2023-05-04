@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        private static readonly ship_point[] asteroid_point =
+        private static readonly ShipPoint[] asteroid_point =
         {
             new(new(   0,   80,    0), 31, 15, 15, 15, 15),
             new(new( -80,  -10,    0), 31, 15, 15, 15, 15),
@@ -18,7 +18,7 @@ namespace Elite.Engine.Ships
             new(new(   0,  -50,  -60), 31,  9,  8, 11, 10),
         };
 
-        private static readonly ship_line[] asteroid_line =
+        private static readonly ShipLine[] asteroid_line =
         {
             new(31,  7,  2,  0,  1),
             new(31, 13,  6,  0,  4),
@@ -43,25 +43,25 @@ namespace Elite.Engine.Ships
             new(31,  9,  8,  7,  8),
         };
 
-        private static readonly ship_face_normal[] asteroid_face_normal =
+        private static readonly ShipFaceNormal[] asteroid_face_normal =
         {
-            new ship_face_normal(31, new(   9,   66,   81)),
-            new ship_face_normal(31, new(   9,  -66,   81)),
-            new ship_face_normal(31, new( -72,   64,   31)),
-            new ship_face_normal(31, new( -64,  -73,   47)),
-            new ship_face_normal(31, new(  45,  -79,   65)),
-            new ship_face_normal(31, new( 135,   15,   35)),
-            new ship_face_normal(31, new(  38,   76,   70)),
-            new ship_face_normal(31, new( -66,   59,  -39)),
-            new ship_face_normal(31, new( -67,  -15,  -80)),
-            new ship_face_normal(31, new(  66,  -14,  -75)),
-            new ship_face_normal(31, new( -70,  -80,  -40)),
-            new ship_face_normal(31, new(  58, -102,  -51)),
-            new ship_face_normal(31, new(  81,    9,  -67)),
-            new ship_face_normal(31, new(  47,   94,  -63)),
+            new ShipFaceNormal(31, new(   9,   66,   81)),
+            new ShipFaceNormal(31, new(   9,  -66,   81)),
+            new ShipFaceNormal(31, new( -72,   64,   31)),
+            new ShipFaceNormal(31, new( -64,  -73,   47)),
+            new ShipFaceNormal(31, new(  45,  -79,   65)),
+            new ShipFaceNormal(31, new( 135,   15,   35)),
+            new ShipFaceNormal(31, new(  38,   76,   70)),
+            new ShipFaceNormal(31, new( -66,   59,  -39)),
+            new ShipFaceNormal(31, new( -67,  -15,  -80)),
+            new ShipFaceNormal(31, new(  66,  -14,  -75)),
+            new ShipFaceNormal(31, new( -70,  -80,  -40)),
+            new ShipFaceNormal(31, new(  58, -102,  -51)),
+            new ShipFaceNormal(31, new(  81,    9,  -67)),
+            new ShipFaceNormal(31, new(  47,   94,  -63)),
         };
 
-        private static readonly ship_face[] asteroid_face =
+        private static readonly ShipFace[] asteroid_face =
         {
             new(GFX_COL.GFX_COL_GREY_3, new( 0x09, 0x42, 0x51), new[] { 5, 0, 6 }),
             new(GFX_COL.GFX_COL_GREY_1, new( 0x09,-0x42, 0x51), new[] { 2, 5, 6 }),

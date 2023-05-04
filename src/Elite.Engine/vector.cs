@@ -32,7 +32,7 @@ namespace Elite.Engine
 			new Vector3(0, 0,-1)
 		};
 
-		internal static Vector3 mult_vector(Vector3 vec, Vector3[] mat)
+		internal static Vector3 MultiplyVector(Vector3 vec, Vector3[] mat)
 		{
             Matrix4x4 matrix = new(
 				mat[0].X, mat[1].X, mat[2].X, 0,
@@ -49,7 +49,7 @@ namespace Elite.Engine
 		/// <param name="first"></param>
 		/// <param name="second"></param>
 		/// <returns>The cosine of the angle between the two vectors.</returns>
-		internal static float vector_dot_product(Vector3 first, Vector3 second)
+		internal static float VectorDotProduct(Vector3 first, Vector3 second)
 		{
             return Vector3.Dot(first, second);
         }
@@ -59,7 +59,7 @@ namespace Elite.Engine
 		/// </summary>
 		/// <param name="vec"></param>
 		/// <returns></returns>
-		internal static Vector3 unit_vector(Vector3 vec)
+		internal static Vector3 UnitVector(Vector3 vec)
 		{
             return Vector3.Divide(vec, vec.Length());
 		}
@@ -69,9 +69,9 @@ namespace Elite.Engine
             return start_matrix.Cloner();
 		}
 
-		internal static void tidy_matrix(Vector3[] mat)
+		internal static void TidyMatrix(Vector3[] mat)
 		{
-			mat[2] = unit_vector(mat[2]);
+			mat[2] = UnitVector(mat[2]);
 
 			if (mat[2].X is > (-1) and < 1)
 			{
@@ -89,7 +89,7 @@ namespace Elite.Engine
 				mat[1].X = -((mat[2].Y * mat[1].Y) + (mat[2].Z * mat[1].Z)) / mat[2].X;
 			}
 
-			mat[1] = unit_vector(mat[1]);
+			mat[1] = UnitVector(mat[1]);
 
 			/* xyzzy... nothing happens. :-)*/
 
@@ -98,15 +98,15 @@ namespace Elite.Engine
 			mat[0].Z = (mat[1].X * mat[2].Y) - (mat[1].Y * mat[2].X);
 		}
 
-        internal static void rotate_vec(ref Vector3[] vec, float alpha, float beta)
+        internal static void RotateVector(ref Vector3[] vec, float alpha, float beta)
 		{
 			for (int i = 0; i < vec.Length; i++)
 			{
-				rotate_vec(ref vec[i], alpha, beta);
+				RotateVector(ref vec[i], alpha, beta);
             }
         }
 
-        private static void rotate_vec(ref Vector3 vec, float alpha, float beta)
+        private static void RotateVector(ref Vector3 vec, float alpha, float beta)
         {
             float x = vec.X;
             float y = vec.Y;

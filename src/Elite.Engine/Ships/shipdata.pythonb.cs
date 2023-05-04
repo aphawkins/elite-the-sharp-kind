@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] pythonb_point =
+        internal static readonly ShipPoint[] pythonb_point =
         {
             new(new(   0,    0,  224), 31,  1,  0,  3,  2),
             new(new(   0,   48,   48), 31,  1,  0,  5,  4),
@@ -20,7 +20,7 @@ namespace Elite.Engine.Ships
             new(new(   0,  -24, -112), 31, 11, 10, 12, 12),
         };
 
-        internal static readonly ship_line[] pythonb_line =
+        internal static readonly ShipLine[] pythonb_line =
         {
             new(31,  3,  2,  0,  8),
             new(31,  2,  0,  0,  3),
@@ -50,7 +50,7 @@ namespace Elite.Engine.Ships
             new(31,  7,  6,  8,  9),
         };
 
-        internal static readonly ship_face_normal[] pythonb_face_normal =
+        internal static readonly ShipFaceNormal[] pythonb_face_normal =
         {
             new(31, new( -27,   40,   11)),
             new(31, new(  27,   40,   11)),
@@ -67,7 +67,7 @@ namespace Elite.Engine.Ships
             new(31, new(   0,    0, -112)),
         };
 
-        private static readonly ship_face[] pythonb_face =
+        private static readonly ShipFace[] pythonb_face =
         {
             new(GFX_COL.GFX_COL_GREY_2, new(-0x1B, 0x28, 0x0B ), new[] {  0,  1,  3 }),
             new(GFX_COL.GFX_COL_GREY_1, new( 0x1B, 0x28, 0x0B ), new[] {  2,  1,  0 }),

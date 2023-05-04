@@ -42,7 +42,7 @@ namespace Elite.Engine
         /// Check for hidden surface supplied by T.Harte.
         /// </summary>
         /// <param name="univ"></param>
-        private static void DrawShip(ref univ_object univ)
+        private static void DrawShip(ref UniverseObject univ)
 		{
 			Vector3[] trans_mat = new Vector3[3];
 			int lasv;
@@ -54,9 +54,9 @@ namespace Elite.Engine
 				trans_mat[i] = univ.rotmat[i];
 			}
 
-            Vector3 camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
-			camera_vec = VectorMaths.unit_vector(camera_vec);
-			ship_face[] face_data = ship.face_data;
+            Vector3 camera_vec = VectorMaths.MultiplyVector(univ.location, trans_mat);
+			camera_vec = VectorMaths.UnitVector(camera_vec);
+			ShipFace[] face_data = ship.face_data;
 
             /*
 				for (i = 0; i < num_faces; i++)
@@ -78,7 +78,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < ship.points.Length; i++)
 			{
-				Vector3 vec = VectorMaths.mult_vector(ship.points[i].point, trans_mat);
+				Vector3 vec = VectorMaths.MultiplyVector(ship.points[i].point, trans_mat);
                 vec += univ.location;
 
 				if (vec.Z <= 0)
@@ -380,7 +380,7 @@ namespace Elite.Engine
 		/// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style
 		/// </summary>
 		/// <param name="planet"></param>
-        private void DrawPlanet(ref univ_object planet)
+        private void DrawPlanet(ref UniverseObject planet)
 		{
             Vector2 position = new()
             {
@@ -426,7 +426,7 @@ namespace Elite.Engine
 			}
 		}
 
-        private void DrawExplosion(ref univ_object univ)
+        private void DrawExplosion(ref UniverseObject univ)
 		{
 			Vector3[] trans_mat = new Vector3[3];
 			bool[] visible = new bool[32];
@@ -451,15 +451,15 @@ namespace Elite.Engine
 				trans_mat[i] = univ.rotmat[i];
 			}
 
-            Vector3 camera_vec = VectorMaths.mult_vector(univ.location, trans_mat);
-			camera_vec = VectorMaths.unit_vector(camera_vec);
+            Vector3 camera_vec = VectorMaths.MultiplyVector(univ.location, trans_mat);
+			camera_vec = VectorMaths.UnitVector(camera_vec);
 
-            ship_face_normal[] ship_norm = ship.normals;
+            ShipFaceNormal[] ship_norm = ship.normals;
 
 			for (int i = 0; i < ship.normals.Length; i++)
 			{
-				Vector3 vec = VectorMaths.unit_vector(ship_norm[i].direction);
-				float cos_angle = VectorMaths.vector_dot_product(vec, camera_vec);
+				Vector3 vec = VectorMaths.UnitVector(ship_norm[i].direction);
+				float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
 				visible[i] = cos_angle < -0.13;
 			}
 
@@ -473,7 +473,7 @@ namespace Elite.Engine
 				if (visible[ship.points[i].face1] || visible[ship.points[i].face2] ||
 					visible[ship.points[i].face3] || visible[ship.points[i].face4])
 				{
-					Vector3 vec = VectorMaths.mult_vector(ship.points[i].point, trans_mat);
+					Vector3 vec = VectorMaths.MultiplyVector(ship.points[i].point, trans_mat);
 					Vector3 r = vec + univ.location;
 
 					float sx = r.X * 256f / r.Z;
@@ -540,7 +540,7 @@ namespace Elite.Engine
 		/// Draws an object in the universe. (Ship, Planet, Sun etc).
 		/// </summary>
 		/// <param name="ship"></param>
-		internal void DrawObject(univ_object ship)
+		internal void DrawObject(UniverseObject ship)
 		{
 			//Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
 			//	SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or

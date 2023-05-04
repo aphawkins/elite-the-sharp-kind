@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] dodec_point =
+        internal static readonly ShipPoint[] dodec_point =
         {
             new(new(   0,  150,  196), 31,  0,  1,  5,  5),
             new(new( 143,   46,  196), 31,  0,  1,  2,  2),
@@ -33,7 +33,7 @@ namespace Elite.Engine.Ships
             new(new(  16,  -32,  196), 23,  0,  0,  0,  0),
         };
 
-        internal static readonly ship_line[] dodec_line =
+        internal static readonly ShipLine[] dodec_line =
         {
             new(31,  0,  1,  0,  1),
             new(31,  0,  2,  1,  2),
@@ -71,37 +71,37 @@ namespace Elite.Engine.Ships
             new(20,  0,  0, 22, 20),
         };
 
-        internal static readonly ship_face_normal[] dodec_face_normal =
+        internal static readonly ShipFaceNormal[] dodec_face_normal =
         {
-            new ship_face_normal(31, new(   0,    0,  196)),
-            new ship_face_normal(31, new( 103,  142,   88)),
-            new ship_face_normal(31, new( 169,  -55,   89)),
-            new ship_face_normal(31, new(   0, -176,   88)),
-            new ship_face_normal(31, new(-169,  -55,   89)),
-            new ship_face_normal(31, new(-103,  142,   88)),
-            new ship_face_normal(31, new(   0,  176,  -88)),
-            new ship_face_normal(31, new( 169,   55,  -89)),
-            new ship_face_normal(31, new( 103, -142,  -88)),
-            new ship_face_normal(31, new(-103, -142,  -88)),
-            new ship_face_normal(31, new(-169,   55,  -89)),
-            new ship_face_normal(31, new(   0,    0, -196)),
+            new ShipFaceNormal(31, new(   0,    0,  196)),
+            new ShipFaceNormal(31, new( 103,  142,   88)),
+            new ShipFaceNormal(31, new( 169,  -55,   89)),
+            new ShipFaceNormal(31, new(   0, -176,   88)),
+            new ShipFaceNormal(31, new(-169,  -55,   89)),
+            new ShipFaceNormal(31, new(-103,  142,   88)),
+            new ShipFaceNormal(31, new(   0,  176,  -88)),
+            new ShipFaceNormal(31, new( 169,   55,  -89)),
+            new ShipFaceNormal(31, new( 103, -142,  -88)),
+            new ShipFaceNormal(31, new(-103, -142,  -88)),
+            new ShipFaceNormal(31, new(-169,   55,  -89)),
+            new ShipFaceNormal(31, new(   0,    0, -196)),
         };
 
-        private static readonly ship_face[] dodec_face =
+        private static readonly ShipFace[] dodec_face =
         {
-            new ship_face(GFX_COL.GFX_COL_GREY_4, new(   0x00,  0x00,  0xC4), new[] { 3,  2,  1,  0,  4 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_1, new(   0x67,  0x8E,  0x58), new[] {  6, 10,  5,  0,  1 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_2, new(   0xA9, -0x37,  0x59),new[] {  7, 11,  6,  1,  2 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_3, new(   0x00, -0xB0,  0x58), new[] {   8, 12,  7,  2,  3 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_1, new(  -0xA9, -0x37,  0x59), new[] { 9, 13,  8,  3,  4 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_3, new(  -0x67,  0x8E,  0x58), new[] { 5, 14,  9,  4,  0 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_1, new(   0x00,  0xB0, -0x58), new[] { 15, 19, 14,  5, 10 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_2, new(   0xA9,  0x37, -0x59), new[] { 16, 15, 10,  6, 11 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_1, new(   0x67, -0x8E, -0x58), new[] { 17, 16, 11,  7, 12 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_3, new(  -0x67, -0x8E, -0x58), new[] { 18, 17, 12,  8, 13 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_2, new(  -0xA9,  0x37, -0x59), new[] { 19, 18, 13,  9, 14 }),
-            new ship_face(GFX_COL.GFX_COL_GREY_4, new(   0x00,  0x00, -0xC4), new[] { 19, 15, 16, 17, 18 }),
-            new ship_face(GFX_COL.GFX_COL_BLACK, new(    0x00,  0x00,  0xC4), new[] { 22, 20, 21, 23 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_4, new(   0x00,  0x00,  0xC4), new[] { 3,  2,  1,  0,  4 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_1, new(   0x67,  0x8E,  0x58), new[] {  6, 10,  5,  0,  1 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_2, new(   0xA9, -0x37,  0x59),new[] {  7, 11,  6,  1,  2 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_3, new(   0x00, -0xB0,  0x58), new[] {   8, 12,  7,  2,  3 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_1, new(  -0xA9, -0x37,  0x59), new[] { 9, 13,  8,  3,  4 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_3, new(  -0x67,  0x8E,  0x58), new[] { 5, 14,  9,  4,  0 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_1, new(   0x00,  0xB0, -0x58), new[] { 15, 19, 14,  5, 10 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_2, new(   0xA9,  0x37, -0x59), new[] { 16, 15, 10,  6, 11 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_1, new(   0x67, -0x8E, -0x58), new[] { 17, 16, 11,  7, 12 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_3, new(  -0x67, -0x8E, -0x58), new[] { 18, 17, 12,  8, 13 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_2, new(  -0xA9,  0x37, -0x59), new[] { 19, 18, 13,  9, 14 }),
+            new ShipFace(GFX_COL.GFX_COL_GREY_4, new(   0x00,  0x00, -0xC4), new[] { 19, 15, 16, 17, 18 }),
+            new ShipFace(GFX_COL.GFX_COL_BLACK, new(    0x00,  0x00,  0xC4), new[] { 22, 20, 21, 23 }),
         };
 
         internal static ShipData dodec_data = new(

@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] anacnda_point =
+        internal static readonly ShipPoint[] anacnda_point =
         {
             new(new(   0,    7,  -58), 30,  0,  1,  5,  5),
             new(new( -43,  -13,  -37), 30,  0,  1,  2,  2),
@@ -24,7 +24,7 @@ namespace Elite.Engine.Ships
             new(new(  43,   53,  -23), 31, 15, 15, 15, 15),
         };
 
-        internal static readonly ship_line[] anacnda_line =
+        internal static readonly ShipLine[] anacnda_line =
         {
             new(30,  0,  1,  0,  1),
             new(30,  0,  2,  1,  2),
@@ -53,7 +53,7 @@ namespace Elite.Engine.Ships
             new(31, 10, 11, 12, 14),
         };
 
-        internal static readonly ship_face_normal[] anacnda_face_normal =
+        internal static readonly ShipFaceNormal[] anacnda_face_normal =
         {
             new(30, new(   0,  -51,  -49)),
             new(30, new( -51,   18,  -87)),
@@ -69,7 +69,7 @@ namespace Elite.Engine.Ships
             new(31, new(   0,   94,   18)),
         };
 
-        private static readonly ship_face[] anaconda_face =
+        private static readonly ShipFace[] anaconda_face =
         {
             new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x33,-0x31), new[] { 3,  2,  1,  0, 4 }),
             new(GFX_COL.GFX_COL_GREEN_2, new(-0x33, 0x12,-0x57), new[] { 6, 10,  5,  0, 1 }),

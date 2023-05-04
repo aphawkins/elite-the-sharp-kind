@@ -48,7 +48,7 @@
 
         internal void AutoDock()
         {
-            univ_object ship = new()
+            UniverseObject ship = new()
             {
                 rotmat = VectorMaths.GetInitialMatrix(),
                 location = Vector3.Zero

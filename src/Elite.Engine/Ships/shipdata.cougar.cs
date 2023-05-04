@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] cougar_point =
+        internal static readonly ShipPoint[] cougar_point =
         {
             new(new(   0,    5,   67), 31,  0,  2,  4,  4),
             new(new( -20,    0,   40), 31,  0,  1,  2,  2),
@@ -28,7 +28,7 @@ namespace Elite.Engine.Ships
             new(new(  10,    6,  -40), 20,  5,  5,  5,  5),
         };
 
-        internal static readonly ship_line[] cougar_line =
+        internal static readonly ShipLine[] cougar_line =
         {
             new(31,  0,  2,  0,  1),
             new(31,  0,  1,  1,  7),
@@ -57,17 +57,17 @@ namespace Elite.Engine.Ships
             new(20,  5,  5, 17, 15),
         };
 
-        internal static readonly ship_face_normal[] cougar_face_normal =
+        internal static readonly ShipFaceNormal[] cougar_face_normal =
         {
-            new ship_face_normal(31, new( -16,   46,    4)),
-            new ship_face_normal(31, new( -16,  -46,    4)),
-            new ship_face_normal(31, new(   0,  -27,    5)),
-            new ship_face_normal(31, new(  16,  -46,    4)),
-            new ship_face_normal(31, new(  16,   46,    4)),
-            new ship_face_normal(30, new(   0,    0, -160)),
+            new ShipFaceNormal(31, new( -16,   46,    4)),
+            new ShipFaceNormal(31, new( -16,  -46,    4)),
+            new ShipFaceNormal(31, new(   0,  -27,    5)),
+            new ShipFaceNormal(31, new(  16,  -46,    4)),
+            new ShipFaceNormal(31, new(  16,   46,    4)),
+            new ShipFaceNormal(30, new(   0,    0, -160)),
         };
 
-        private static readonly ship_face[] cougar_face =
+        private static readonly ShipFace[] cougar_face =
         {
             new(GFX_COL.GFX_COL_GREY_1, new(-0x10,  0x2E,  0x04), new[] {  2,  1,  0, 3 }),
             new(GFX_COL.GFX_COL_GREY_2, new(-0x10, -0x2E,  0x04), new[] {   4,  1,  2 }),

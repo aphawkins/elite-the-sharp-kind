@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] gecko_point =
+        internal static readonly ShipPoint[] gecko_point =
         {
             new(new( -10,   -4,   47), 31,  0,  3,  4,  5),
             new(new(  10,   -4,   47), 31,  0,  1,  2,  3),
@@ -21,7 +21,7 @@ namespace Elite.Engine.Ships
             new(new(   8,  -13,  -16), 17,  3,  3,  3,  3),
         };
 
-        internal static readonly ship_line[] gecko_line =
+        internal static readonly ShipLine[] gecko_line =
         {
             new(31,  0,  3,  0,  1),
             new(31,  1,  2,  1,  5),
@@ -42,7 +42,7 @@ namespace Elite.Engine.Ships
             new(17,  3,  3,  9, 11),
         };
 
-        internal static readonly ship_face_normal[] gecko_face_normal =
+        internal static readonly ShipFaceNormal[] gecko_face_normal =
         {
             new(31, new(   0,   31,    5)),
             new(31, new(   4,   45,    8)),
@@ -55,7 +55,7 @@ namespace Elite.Engine.Ships
             new(31, new(  88,   16, -214)),
         };
 
-        private static readonly ship_face[] gecko_face =
+        private static readonly ShipFace[] gecko_face =
         {
             new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x1F, 0x05), new[] {  3,  2, 0, 1 }),
             new(GFX_COL.GFX_COL_GREY_1, new( 0x04, 0x2D, 0x08), new[] {  3,  1, 5 }),

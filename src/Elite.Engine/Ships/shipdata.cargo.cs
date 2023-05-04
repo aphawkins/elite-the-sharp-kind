@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        private static readonly ship_point[] cargo_point =
+        private static readonly ShipPoint[] cargo_point =
         {
             new(new(  24,   16,    0), 31,  1,  0,  5,  5),
             new(new(  24,    5,   15), 31,  1,  0,  2,  2),
@@ -19,7 +19,7 @@ namespace Elite.Engine.Ships
             new(new( -24,    5,  -15), 31,  5,  4,  6,  6),
         };
 
-        private static readonly ship_line[] cargo_line =
+        private static readonly ShipLine[] cargo_line =
         {
             new(31,  1,  0,  0,  1),
             new(31,  2,  0,  1,  2),
@@ -38,18 +38,18 @@ namespace Elite.Engine.Ships
             new(31,  6,  5,  9,  5),
         };
 
-        private static readonly ship_face_normal[] cargo_face_normal =
+        private static readonly ShipFaceNormal[] cargo_face_normal =
         {
-            new ship_face_normal(31, new(  96,    0,    0)),
-            new ship_face_normal(31, new(   0,   41,   30)),
-            new ship_face_normal(31, new(   0,  -18,   48)),
-            new ship_face_normal(31, new(   0,  -51,    0)),
-            new ship_face_normal(31, new(   0,  -18,  -48)),
-            new ship_face_normal(31, new(   0,   41,  -30)),
-            new ship_face_normal(31, new( -96,    0,    0)),
+            new ShipFaceNormal(31, new(  96,    0,    0)),
+            new ShipFaceNormal(31, new(   0,   41,   30)),
+            new ShipFaceNormal(31, new(   0,  -18,   48)),
+            new ShipFaceNormal(31, new(   0,  -51,    0)),
+            new ShipFaceNormal(31, new(   0,  -18,  -48)),
+            new ShipFaceNormal(31, new(   0,   41,  -30)),
+            new ShipFaceNormal(31, new( -96,    0,    0)),
         };
 
-        private static readonly ship_face[] cargo_face =
+        private static readonly ShipFace[] cargo_face =
         {
             new(GFX_COL.GFX_COL_GREY_4, new( 0x60, 0x00, 0x00), new [] { 4, 0, 1, 2, 3 }),
 

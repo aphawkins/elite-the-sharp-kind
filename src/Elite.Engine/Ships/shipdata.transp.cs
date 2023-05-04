@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] transp_point =
+        internal static readonly ShipPoint[] transp_point =
         {
             new(new(   0,   10,  -26), 31,  0,  6,  7,  7),
             new(new( -25,    4,  -26), 31,  0,  1,  7,  7),
@@ -46,7 +46,7 @@ namespace Elite.Engine.Ships
             new(new(  -8,    3,  -26),  5,  0,  0,  0,  0),
         };
 
-        internal static readonly ship_line[] transp_line =
+        internal static readonly ShipLine[] transp_line =
         {
             new(31,  0,  7,  0,  1),
             new(31,  0,  1,  1,  2),
@@ -96,26 +96,26 @@ namespace Elite.Engine.Ships
             new( 5,  0,  0, 36, 33),
         };
 
-        internal static readonly ship_face_normal[] transp_face_normal =
+        internal static readonly ShipFaceNormal[] transp_face_normal =
         {
-            new ship_face_normal(31, new(   0,    0, -103)),
-            new ship_face_normal(31, new(-111,   48,   -7)),
-            new ship_face_normal(31, new(-105,  -63,  -21)),
-            new ship_face_normal(31, new(   0,  -34,    0)),
-            new ship_face_normal(31, new( 105,  -63,  -21)),
-            new ship_face_normal(31, new( 111,   48,   -7)),
-            new ship_face_normal(31, new(   8,   32,    3)),
-            new ship_face_normal(31, new(  -8,   32,    3)),
-            new ship_face_normal(19, new(  -8,   34,   11)),
-            new ship_face_normal(31, new( -75,   32,   79)),
-            new ship_face_normal(31, new(  75,   32,   79)),
-            new ship_face_normal(19, new(   8,   34,   11)),
-            new ship_face_normal(31, new(   0,   38,   17)),
-            new ship_face_normal(31, new(   0,    0,  121)),
+            new ShipFaceNormal(31, new(   0,    0, -103)),
+            new ShipFaceNormal(31, new(-111,   48,   -7)),
+            new ShipFaceNormal(31, new(-105,  -63,  -21)),
+            new ShipFaceNormal(31, new(   0,  -34,    0)),
+            new ShipFaceNormal(31, new( 105,  -63,  -21)),
+            new ShipFaceNormal(31, new( 111,   48,   -7)),
+            new ShipFaceNormal(31, new(   8,   32,    3)),
+            new ShipFaceNormal(31, new(  -8,   32,    3)),
+            new ShipFaceNormal(19, new(  -8,   34,   11)),
+            new ShipFaceNormal(31, new( -75,   32,   79)),
+            new ShipFaceNormal(31, new(  75,   32,   79)),
+            new ShipFaceNormal(19, new(   8,   34,   11)),
+            new ShipFaceNormal(31, new(   0,   38,   17)),
+            new ShipFaceNormal(31, new(   0,    0,  121)),
         };
 
         /* Two lines on base & detail of IB DB initials added back in :-) */
-        private static readonly ship_face[] transporter_face =
+        private static readonly ShipFace[] transporter_face =
         {
             new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0x67), new[] { 5,  4,  3, 2,  1 ,0, 6 }),
 

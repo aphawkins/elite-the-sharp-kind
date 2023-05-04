@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        private static readonly ship_point[] missile_point =
+        private static readonly ShipPoint[] missile_point =
         {
             new(new(   0,    0,   68), 31,  1,  0,  3,  2),
             new(new(   8,   -8,   36), 31,  2,  1,  5,  4),
@@ -26,7 +26,7 @@ namespace Elite.Engine.Ships
             new(new(   8,   -8,  -12),  8,  5,  4,  5,  5),
         };
 
-        private static readonly ship_line[] missile_line =
+        private static readonly ShipLine[] missile_line =
         {
             new(31,  2,  1,  0,  1),
             new(31,  3,  2,  0,  2),
@@ -54,20 +54,20 @@ namespace Elite.Engine.Ships
             new( 8,  6,  5, 11, 14),
         };
 
-        private static readonly ship_face_normal[] missile_face_normal =
+        private static readonly ShipFaceNormal[] missile_face_normal =
         {
-            new ship_face_normal(31, new( -64,    0,   16)),
-            new ship_face_normal(31, new(   0,  -64,   16)),
-            new ship_face_normal(31, new(  64,    0,   16)),
-            new ship_face_normal(31, new(   0,   64,   16)),
-            new ship_face_normal(31, new(  32,    0,    0)),
-            new ship_face_normal(31, new(   0,  -32,    0)),
-            new ship_face_normal(31, new( -32,    0,    0)),
-            new ship_face_normal(31, new(   0,   32,    0)),
-            new ship_face_normal(31, new(   0,    0, -176)),
+            new ShipFaceNormal(31, new( -64,    0,   16)),
+            new ShipFaceNormal(31, new(   0,  -64,   16)),
+            new ShipFaceNormal(31, new(  64,    0,   16)),
+            new ShipFaceNormal(31, new(   0,   64,   16)),
+            new ShipFaceNormal(31, new(  32,    0,    0)),
+            new ShipFaceNormal(31, new(   0,  -32,    0)),
+            new ShipFaceNormal(31, new( -32,    0,    0)),
+            new ShipFaceNormal(31, new(   0,   32,    0)),
+            new ShipFaceNormal(31, new(   0,    0, -176)),
         };
 
-        private static readonly ship_face[] missile_face =
+        private static readonly ShipFace[] missile_face =
         {
 			//fins
 			new(GFX_COL.GFX_COL_RED, new( 0x20, 0x00, 0x00), new[] {  5, 9, 15 }),

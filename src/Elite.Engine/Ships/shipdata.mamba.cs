@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] mamba_point =
+        internal static readonly ShipPoint[] mamba_point =
         {
             new(new(   0,    0,   64), 31,  1,  0,  3,  2),
             new(new( -64,   -8,  -32), 31,  2,  0,  4,  4),
@@ -34,7 +34,7 @@ namespace Elite.Engine.Ships
             new(new(  38,    0,  -32),  5,  4,  4,  4,  4),
         };
 
-        internal static readonly ship_line[] mamba_line =
+        internal static readonly ShipLine[] mamba_line =
         {
             new(31,  2,  0,  0,  1),
             new(31,  3,  0,  0,  4),
@@ -66,7 +66,7 @@ namespace Elite.Engine.Ships
             new(30,  3,  1,  0,  3),
         };
 
-        internal static readonly ship_face_normal[] mamba_face_normal =
+        internal static readonly ShipFaceNormal[] mamba_face_normal =
         {
             new(30, new(   0,  -24,    2)),
             new(30, new(   0,   24,    2)),
@@ -75,7 +75,7 @@ namespace Elite.Engine.Ships
             new(30, new(   0,    0, -127)),
         };
 
-        private static readonly ship_face[] mamba_face =
+        private static readonly ShipFace[] mamba_face =
         {
             new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x18, 0x02), new[] {  1,  4,  0 }),
             new(GFX_COL.GFX_COL_GREEN_3, new( 0x00, 0x18, 0x02), new[] {  2,  0,  3 }),

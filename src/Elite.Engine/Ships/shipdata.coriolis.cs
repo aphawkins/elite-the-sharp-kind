@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        private static readonly ship_point[] coriolis_point =
+        private static readonly ShipPoint[] coriolis_point =
         {
             new(new( 160,    0,  160), 31,  1,  0,  6,  2),
             new(new(   0,  160,  160), 31,  2,  0,  8,  3),
@@ -25,7 +25,7 @@ namespace Elite.Engine.Ships
             new(new( -10,  -30,  160), 30,  0,  0,  0,  0),
         };
 
-        private static readonly ship_line[] coriolis_line =
+        private static readonly ShipLine[] coriolis_line =
         {
             new(31,  1,  0,  0,  3),
             new(31,  2,  0,  0,  1),
@@ -57,25 +57,25 @@ namespace Elite.Engine.Ships
             new(30,  0,  0, 15, 12),
         };
 
-        private static readonly ship_face_normal[] coriolis_face_normal =
+        private static readonly ShipFaceNormal[] coriolis_face_normal =
         {
-            new ship_face_normal(31, new(   0,    0,  160)),
-            new ship_face_normal(31, new( 107, -107,  107)),
-            new ship_face_normal(31, new( 107,  107,  107)),
-            new ship_face_normal(31, new(-107,  107,  107)),
-            new ship_face_normal(31, new(-107, -107,  107)),
-            new ship_face_normal(31, new(   0, -160,    0)),
-            new ship_face_normal(31, new( 160,    0,    0)),
-            new ship_face_normal(31, new(-160,    0,    0)),
-            new ship_face_normal(31, new(   0,  160,    0)),
-            new ship_face_normal(31, new(-107, -107, -107)),
-            new ship_face_normal(31, new( 107, -107, -107)),
-            new ship_face_normal(31, new( 107,  107, -107)),
-            new ship_face_normal(31, new(-107,  107, -107)),
-            new ship_face_normal(31, new(   0,    0, -160)),
+            new ShipFaceNormal(31, new(   0,    0,  160)),
+            new ShipFaceNormal(31, new( 107, -107,  107)),
+            new ShipFaceNormal(31, new( 107,  107,  107)),
+            new ShipFaceNormal(31, new(-107,  107,  107)),
+            new ShipFaceNormal(31, new(-107, -107,  107)),
+            new ShipFaceNormal(31, new(   0, -160,    0)),
+            new ShipFaceNormal(31, new( 160,    0,    0)),
+            new ShipFaceNormal(31, new(-160,    0,    0)),
+            new ShipFaceNormal(31, new(   0,  160,    0)),
+            new ShipFaceNormal(31, new(-107, -107, -107)),
+            new ShipFaceNormal(31, new( 107, -107, -107)),
+            new ShipFaceNormal(31, new( 107,  107, -107)),
+            new ShipFaceNormal(31, new(-107,  107, -107)),
+            new ShipFaceNormal(31, new(   0,    0, -160)),
         };
 
-        private static readonly ship_face[] coriolis_face =
+        private static readonly ShipFace[] coriolis_face =
         {
             new(GFX_COL.GFX_COL_GREY_3, new( 0x6B,-0x6B, 0x6B), new[] {  4,  0,  3 }),
             new(GFX_COL.GFX_COL_GREY_3, new( 0x6B, 0x6B, 0x6B), new[] {  0,  5,  1 }),

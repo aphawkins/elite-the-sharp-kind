@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] viper_point =
+        internal static readonly ShipPoint[] viper_point =
         {
             new(new(   0,    0,   72), 31,  2,  1,  4,  3),
             new(new(   0,   16,   24), 30,  1,  0,  2,  2),
@@ -24,7 +24,7 @@ namespace Elite.Engine.Ships
             new(new(   8,   -8,  -24), 18,  6,  6,  6,  6),
         };
 
-        internal static readonly ship_line[] viper_line =
+        internal static readonly ShipLine[] viper_line =
         {
             new(31,  4,  2,  0,  3),
             new(30,  2,  1,  0,  1),
@@ -48,7 +48,7 @@ namespace Elite.Engine.Ships
             new(16,  6,  6, 12, 13),
         };
 
-        internal static readonly ship_face_normal[] viper_face_normal =
+        internal static readonly ShipFaceNormal[] viper_face_normal =
         {
             new(31, new(   0,   32,    0)),
             new(31, new( -22,   33,   11)),
@@ -59,7 +59,7 @@ namespace Elite.Engine.Ships
             new(31, new(   0,    0,  -48)),
         };
 
-        private static readonly ship_face[] viper_face =
+        private static readonly ShipFace[] viper_face =
         {
             new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x20, 0x00), new[] { 7,  8,  1 }),
 

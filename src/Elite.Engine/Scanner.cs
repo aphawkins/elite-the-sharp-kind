@@ -31,13 +31,13 @@ namespace Elite.Engine
 	{
 		private readonly GameState _gameState;
         private readonly IGfx _gfx;
-		private readonly univ_object[] _universe;
+		private readonly UniverseObject[] _universe;
 		private readonly Dictionary<ShipType, int> _shipCount;
 		private readonly PlayerShip _ship;
 		private readonly Combat _combat;
 		private readonly Draw _draw;
 
-		internal Scanner(GameState gameState, IGfx gfx, Draw draw, univ_object[] universe, Dictionary<ShipType, int> shipCount, PlayerShip ship, Combat combat)
+		internal Scanner(GameState gameState, IGfx gfx, Draw draw, UniverseObject[] universe, Dictionary<ShipType, int> shipCount, PlayerShip ship, Combat combat)
         {
 			_gameState = gameState;
             _gfx = gfx;
@@ -112,7 +112,7 @@ namespace Elite.Engine
 			}
 
             int un = _shipCount[ShipType.Coriolis] == 0 && _shipCount[ShipType.Dodec] == 0 ? 0 : 1;
-            Vector3 dest = VectorMaths.unit_vector(_universe[un].location);
+            Vector3 dest = VectorMaths.UnitVector(_universe[un].location);
 
 			if (float.IsNaN(dest.X))
 			{

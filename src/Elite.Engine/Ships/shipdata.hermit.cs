@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] hermit_point =
+        internal static readonly ShipPoint[] hermit_point =
         {
             new(new(   0,   80,    0), 31, 15, 15, 15, 15),
             new(new( -80,  -10,    0), 31, 15, 15, 15, 15),
@@ -18,7 +18,7 @@ namespace Elite.Engine.Ships
             new(new(   0,  -50,  -60), 31,  9,  8, 11, 10),
         };
 
-        internal static readonly ship_line[] hermit_line =
+        internal static readonly ShipLine[] hermit_line =
         {
             new(31,  7,  2,  0,  1),
             new(31, 13,  6,  0,  4),
@@ -43,7 +43,7 @@ namespace Elite.Engine.Ships
             new(31,  9,  8,  7,  8),
         };
 
-        internal static readonly ship_face_normal[] hermit_face_normal =
+        internal static readonly ShipFaceNormal[] hermit_face_normal =
         {
             new(31, new(   9,   66,   81)),
             new(31, new(   9,  -66,   81)),
@@ -61,7 +61,7 @@ namespace Elite.Engine.Ships
             new(31, new(  47,   94,  -63)),
         };
 
-        private static readonly ship_face[] hermit_face =
+        private static readonly ShipFace[] hermit_face =
         {
             new(GFX_COL.GFX_COL_PINK_1, new( 0x09, 0x42, 0x51), new[] {  5, 0, 6 }),
             new(GFX_COL.GFX_COL_GREY_1, new( 0x09,-0x42, 0x51), new[] {  2, 5, 6 }),

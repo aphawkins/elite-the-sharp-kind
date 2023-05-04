@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        private static readonly ship_point[] boulder_point =
+        private static readonly ShipPoint[] boulder_point =
         {
             new(new( -18,   37,  -11), 31,  0,  1,  5,  9),
             new(new(  30,    7,   12), 31,  1,  2,  5,  6),
@@ -16,7 +16,7 @@ namespace Elite.Engine.Ships
             new(new(  20,   17,  -30), 31, 15, 15, 15, 15),
         };
 
-        private static readonly ship_line[] boulder_line =
+        private static readonly ShipLine[] boulder_line =
         {
             new(31,  1,  5,  0,  1),
             new(31,  2,  6,  1,  2),
@@ -35,21 +35,21 @@ namespace Elite.Engine.Ships
             new(31,  8,  9,  4,  6),
         };
 
-        private static readonly ship_face_normal[] boulder_face_normal =
+        private static readonly ShipFaceNormal[] boulder_face_normal =
         {
-            new ship_face_normal(31, new( -15,   -3,    8)),
-            new ship_face_normal(31, new(  -7,   12,   30)),
-            new ship_face_normal(31, new(  32,  -47,   24)),
-            new ship_face_normal(31, new(  -3,  -39,   -7)),
-            new ship_face_normal(31, new(  -5,   -4,   -1)),
-            new ship_face_normal(31, new(  49,   84,    8)),
-            new ship_face_normal(31, new( 112,   21,  -21)),
-            new ship_face_normal(31, new(  76,  -35,  -82)),
-            new ship_face_normal(31, new(  22,   56, -137)),
-            new ship_face_normal(31, new(  40,  110,  -38)),
+            new ShipFaceNormal(31, new( -15,   -3,    8)),
+            new ShipFaceNormal(31, new(  -7,   12,   30)),
+            new ShipFaceNormal(31, new(  32,  -47,   24)),
+            new ShipFaceNormal(31, new(  -3,  -39,   -7)),
+            new ShipFaceNormal(31, new(  -5,   -4,   -1)),
+            new ShipFaceNormal(31, new(  49,   84,    8)),
+            new ShipFaceNormal(31, new( 112,   21,  -21)),
+            new ShipFaceNormal(31, new(  76,  -35,  -82)),
+            new ShipFaceNormal(31, new(  22,   56, -137)),
+            new ShipFaceNormal(31, new(  40,  110,  -38)),
         };
 
-        private static readonly ship_face[] boulder_face =
+        private static readonly ShipFace[] boulder_face =
         {
             new(GFX_COL.GFX_COL_GREY_3, new(-0x0F,-0x03, 0x08), new[] { 0, 4, 5 }),
             new(GFX_COL.GFX_COL_GREY_1, new(-0x07, 0x0C, 0x1E), new[] { 0, 5, 1 }),

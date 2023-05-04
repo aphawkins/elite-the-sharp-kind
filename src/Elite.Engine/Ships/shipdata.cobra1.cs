@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] cobra1_point =
+        internal static readonly ShipPoint[] cobra1_point =
         {
             new(new( -18,   -1,   50), 31,  0,  1,  2,  3),
             new(new(  18,   -1,   50), 31,  0,  1,  4,  5),
@@ -20,7 +20,7 @@ namespace Elite.Engine.Ships
             new(new(   0,   -1,   60), 31,  0,  1,  1,  1),
         };
 
-        internal static readonly ship_line[] cobra1_line =
+        internal static readonly ShipLine[] cobra1_line =
         {
             new(31,  0,  1,  1,  0),
             new(31,  2,  3,  0,  2),
@@ -42,7 +42,7 @@ namespace Elite.Engine.Ships
             new( 2,  0,  1, 10,  9),
         };
 
-        internal static readonly ship_face_normal[] cobra1_face_normal =
+        internal static readonly ShipFaceNormal[] cobra1_face_normal =
         {
             new(31, new(   0,   41,   10)),
             new(31, new(   0,  -27,    3)),
@@ -56,7 +56,7 @@ namespace Elite.Engine.Ships
             new(31, new( 121,  111,  -62)),
         };
 
-        private static readonly ship_face[] cobra1_face =
+        private static readonly ShipFace[] cobra1_face =
         {
             new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x29, 0x0A), new[] {  0, 1, 8 }),
             new(GFX_COL.GFX_COL_BLUE_2, new( 0x00,-0x1B, 0x03), new[] {  6, 7, 1, 0 }),

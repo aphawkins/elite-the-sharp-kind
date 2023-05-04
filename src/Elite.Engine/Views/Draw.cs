@@ -75,7 +75,7 @@
             }
         }
 
-        internal void DrawSun(univ_object planet)
+        internal void DrawSun(UniverseObject planet)
         {
             Vector2 centre = new()
             {
@@ -104,13 +104,13 @@
             while (y <= x)
             {
                 // Top of top half
-                render_sun_line(centre, y, -MathF.Floor(x), radius);
+                RenderSunLine(centre, y, -MathF.Floor(x), radius);
                 // Top of top half
-                render_sun_line(centre, x, -y, radius);
+                RenderSunLine(centre, x, -y, radius);
                 // Top of bottom half
-                render_sun_line(centre, x, y, radius);
+                RenderSunLine(centre, x, y, radius);
                 // Bottom of bottom half
-                render_sun_line(centre, y, MathF.Floor(x), radius);
+                RenderSunLine(centre, y, MathF.Floor(x), radius);
 
                 s += y + y + 1;
                 y++;
@@ -122,7 +122,7 @@
             }
         }
 
-        private void render_sun_line(Vector2 centre, float x, float y, float radius)
+        private void RenderSunLine(Vector2 centre, float x, float y, float radius)
         {
             Vector2 s = new()
             {

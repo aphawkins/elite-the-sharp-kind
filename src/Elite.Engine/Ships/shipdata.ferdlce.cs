@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] ferdlce_point =
+        internal static readonly ShipPoint[] ferdlce_point =
         {
             new(new(   0,  -14,  108), 31,  0,  1,  5,  9),
             new(new( -40,  -14,   -4), 31,  1,  2,  9,  9),
@@ -28,7 +28,7 @@ namespace Elite.Engine.Ships
             new(new(  14,  -14,   44), 12,  9,  9,  9,  9),
         };
 
-        internal static readonly ship_line[] ferdlce_line =
+        internal static readonly ShipLine[] ferdlce_line =
         {
             new(31,  1,  9,  0,  1),
             new(31,  2,  9,  1,  2),
@@ -59,7 +59,7 @@ namespace Elite.Engine.Ships
             new( 8,  9,  9, 17, 18),
         };
 
-        internal static readonly ship_face_normal[] ferdlce_face_normal =
+        internal static readonly ShipFaceNormal[] ferdlce_face_normal =
         {
             new(28, new(   0,   24,    6)),
             new(31, new( -68,    0,   24)),
@@ -73,7 +73,7 @@ namespace Elite.Engine.Ships
             new(31, new(   0,  -28,    0)),
         };
 
-        private static readonly ship_face[] fer_de_lance_face =
+        private static readonly ShipFace[] fer_de_lance_face =
         {
             new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x18, 0x06), new[] { 5,  0,  8, 9 }),
             new(GFX_COL.GFX_COL_GREY_2,new( -0x44, 0x00, 0x18), new[] {   0,  5,  1 }),

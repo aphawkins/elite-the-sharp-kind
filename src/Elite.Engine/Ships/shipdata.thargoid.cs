@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] thargoid_point =
+        internal static readonly ShipPoint[] thargoid_point =
         {
             new(new(  32,  -48,   48), 31,  4,  0,  8,  8),
             new(new(  32,  -68,    0), 31,  1,  0,  4,  4),
@@ -29,7 +29,7 @@ namespace Elite.Engine.Ships
             new(new( -24,  -64,   80), 30,  9,  9,  9,  9),
         };
 
-        internal static readonly ship_line[] thargoid_line =
+        internal static readonly ShipLine[] thargoid_line =
         {
             new(31,  8,  4,  0,  7),
             new(31,  4,  0,  0,  1),
@@ -59,7 +59,7 @@ namespace Elite.Engine.Ships
             new(30,  9,  9, 18, 19),
         };
 
-        internal static readonly ship_face_normal[] thargoid_face_normal =
+        internal static readonly ShipFaceNormal[] thargoid_face_normal =
         {
             new(31, new( 103,  -60,   25)),
             new(31, new( 103,  -60,  -25)),
@@ -73,7 +73,7 @@ namespace Elite.Engine.Ships
             new(31, new( -48,    0,    0)),
         };
 
-        private static readonly ship_face[] thargoid_face =
+        private static readonly ShipFace[] thargoid_face =
         {
             new(GFX_COL.GFX_COL_DARK_RED, new(   0x67,-0x3C, 0x19), new[] { 1,  0,  8,  9 }),
             new(GFX_COL.GFX_COL_GREY_2, new( 0x67,-0x3C,-0x19), new[] { 2,  1,  9, 10 }),

@@ -5,7 +5,7 @@ namespace Elite.Engine.Ships
 
     internal static partial class Ship
     {
-        internal static readonly ship_point[] cobra3a_point =
+        internal static readonly ShipPoint[] cobra3a_point =
         {
             new(new(  32,    0,   76), 31, 15, 15, 15, 15),
             new(new( -32,    0,   76), 31, 15, 15, 15, 15),
@@ -37,7 +37,7 @@ namespace Elite.Engine.Ships
             new(new(  80,   -6,  -40),  8,  9,  9,  9,  9),
         };
 
-        internal static readonly ship_line[] cobra3a_line =
+        internal static readonly ShipLine[] cobra3a_line =
         {
             new(31, 11,  0,  0,  1),
             new(31, 12,  4,  0,  4),
@@ -79,24 +79,24 @@ namespace Elite.Engine.Ships
             new( 8,  9,  9, 25, 27),
         };
 
-        internal static readonly ship_face_normal[] cobra3a_face_normal =
+        internal static readonly ShipFaceNormal[] cobra3a_face_normal =
         {
-            new ship_face_normal(31, new(   0,   62,   31)),
-            new ship_face_normal(31, new( -18,   55,   16)),
-            new ship_face_normal(31, new(  18,   55,   16)),
-            new ship_face_normal(31, new( -16,   52,   14)),
-            new ship_face_normal(31, new(  16,   52,   14)),
-            new ship_face_normal(31, new( -14,   47,    0)),
-            new ship_face_normal(31, new(  14,   47,    0)),
-            new ship_face_normal(31, new( -61,  102,    0)),
-            new ship_face_normal(31, new(  61,  102,    0)),
-            new ship_face_normal(31, new(   0,    0,  -80)),
-            new ship_face_normal(31, new(  -7,  -42,    9)),
-            new ship_face_normal(31, new(   0,  -30,    6)),
-            new ship_face_normal(31, new(   7,  -42,    9)),
+            new ShipFaceNormal(31, new(   0,   62,   31)),
+            new ShipFaceNormal(31, new( -18,   55,   16)),
+            new ShipFaceNormal(31, new(  18,   55,   16)),
+            new ShipFaceNormal(31, new( -16,   52,   14)),
+            new ShipFaceNormal(31, new(  16,   52,   14)),
+            new ShipFaceNormal(31, new( -14,   47,    0)),
+            new ShipFaceNormal(31, new(  14,   47,    0)),
+            new ShipFaceNormal(31, new( -61,  102,    0)),
+            new ShipFaceNormal(31, new(  61,  102,    0)),
+            new ShipFaceNormal(31, new(   0,    0,  -80)),
+            new ShipFaceNormal(31, new(  -7,  -42,    9)),
+            new ShipFaceNormal(31, new(   0,  -30,    6)),
+            new ShipFaceNormal(31, new(   7,  -42,    9)),
         };
 
-        private static readonly ship_face[] cobra3a_face =
+        private static readonly ShipFace[] cobra3a_face =
 {
             new(GFX_COL.GFX_COL_GREY_2, new(0x00, 0x3E, 0x1F), new[] {  1,  0,  2 }),
             new(GFX_COL.GFX_COL_BLUE_1, new(  -0x12, 0x37, 0x10), new[] {  5,  1,  2 }),

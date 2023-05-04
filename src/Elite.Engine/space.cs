@@ -43,7 +43,7 @@ namespace Elite.Engine
         internal static string hyper_name;
         private static float hyper_distance;
         internal static bool hyper_galactic;
-		internal static univ_object[] universe = new univ_object[EliteMain.MAX_UNIV_OBJECTS];
+		internal static UniverseObject[] universe = new UniverseObject[EliteMain.MAX_UNIV_OBJECTS];
 		internal static Dictionary<ShipType, int> ship_count = new(Ship.NO_OF_SHIPS + 1);  /* many */
 
 		internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio, Pilot pilot, Combat combat, Trade trade, PlayerShip ship)
@@ -79,7 +79,7 @@ namespace Elite.Engine
 		/// Update an objects location in the universe.
 		/// </summary>
 		/// <param name="obj"></param>
-        private void MoveUniverseObject(ref univ_object obj)
+        private void MoveUniverseObject(ref UniverseObject obj)
 		{
 			float x, y, z;
 			float k2;
@@ -136,7 +136,7 @@ namespace Elite.Engine
 				beta = 0.0f;
 			}
 
-            VectorMaths.rotate_vec(ref obj.rotmat, alpha, beta);
+            VectorMaths.RotateVector(ref obj.rotmat, alpha, beta);
 
 			if (obj.flags.HasFlag(FLG.FLG_DEAD))
 			{
@@ -178,7 +178,7 @@ namespace Elite.Engine
 
 			/* Orthonormalize the rotation matrix... */
 
-			VectorMaths.tidy_matrix(obj.rotmat);
+			VectorMaths.TidyMatrix(obj.rotmat);
 		}
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Elite.Engine
 				return false;
 			}
 
-			vec = VectorMaths.unit_vector(universe[sn].location);
+			vec = VectorMaths.UnitVector(universe[sn].location);
 
 			if (vec.Z < 0.927)
 			{
@@ -342,7 +342,7 @@ namespace Elite.Engine
 			vec.Y = RNG.Random(-16384, 16383) ;
 			vec.Z = RNG.Random(32767);
 
-			vec = VectorMaths.unit_vector(vec);
+			vec = VectorMaths.UnitVector(vec);
 
 			Vector3 position = new()
 			{
@@ -366,7 +366,7 @@ namespace Elite.Engine
 			rotmat[2].Y = vec.Y;
 			rotmat[2].Z = vec.Z;
 
-			VectorMaths.tidy_matrix(rotmat);
+			VectorMaths.TidyMatrix(rotmat);
 
 			_combat.AddNewStation(position, rotmat);
 		}
@@ -395,7 +395,7 @@ namespace Elite.Engine
 			_audio.PlayEffect(SoundEffect.Crash);
 		}
 
-        private void SwitchToView(ref univ_object flip)
+        private void SwitchToView(ref UniverseObject flip)
 		{
 			float tmp;
 
@@ -525,7 +525,7 @@ namespace Elite.Engine
 
                 MoveUniverseObject(ref universe[i]);
 
-                univ_object flip = (univ_object)universe[i].Clone();
+                UniverseObject flip = (UniverseObject)universe[i].Clone();
                 SwitchToView(ref flip);
 
                 if (type == ShipType.Planet)
