@@ -76,7 +76,7 @@
         public void Reset()
         {
             _keyboard.ClearKeyPressed();
-            _name = _gameState.cmdr.name;
+            _name = _gameState.cmdr.Name;
             isLoaded = true;
         }
 

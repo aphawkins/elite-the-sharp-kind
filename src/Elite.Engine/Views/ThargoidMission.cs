@@ -45,21 +45,21 @@
 
         public void Reset()
         {
-            if (_gameState.cmdr.mission == 3 && _gameState.cmdr.score >= 1280 && _gameState.cmdr.galaxy_number == 2)
+            if (_gameState.cmdr.Mission == 3 && _gameState.cmdr.Score >= 1280 && _gameState.cmdr.GalaxyNumber == 2)
             {
                 // First brief
-                _gameState.cmdr.mission = 4;
+                _gameState.cmdr.Mission = 4;
             }
-            else if (_gameState.cmdr.mission == 4 && _gameState.docked_planet.d == 215 && _gameState.docked_planet.b == 84)
+            else if (_gameState.cmdr.Mission == 4 && _gameState.docked_planet.D == 215 && _gameState.docked_planet.B == 84)
             {
                 // Second brief
-                _gameState.cmdr.mission = 5;
+                _gameState.cmdr.Mission = 5;
             }
-            else if (_gameState.cmdr.mission == 5 && _gameState.docked_planet.d == 63 && _gameState.docked_planet.b == 72)
+            else if (_gameState.cmdr.Mission == 5 && _gameState.docked_planet.D == 63 && _gameState.docked_planet.B == 72)
             {
                 // Debrief
-                _gameState.cmdr.mission = 6;
-                _gameState.cmdr.score += 256;
+                _gameState.cmdr.Mission = 6;
+                _gameState.cmdr.Score += 256;
                 _ship.energyUnit = EnergyUnit.Naval;
             }
             else
@@ -74,13 +74,13 @@
 
         public void Draw()
         {
-            if (_gameState.cmdr.mission == 4)
+            if (_gameState.cmdr.Mission == 4)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _draw.DrawTextPretty(116, 132, 400, mission2_brief_a);
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
-            else if (_gameState.cmdr.mission == 5)
+            else if (_gameState.cmdr.Mission == 5)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _draw.DrawTextPretty(16, 50, 300, mission2_brief_b);
@@ -88,7 +88,7 @@
                 _gfx.DrawImage(Image.Blake, new(352, 46));
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
-            else if (_gameState.cmdr.mission == 6)
+            else if (_gameState.cmdr.Mission == 6)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);

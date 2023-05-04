@@ -26,28 +26,28 @@ namespace Elite.Engine
     using Elite.Engine.Ships;
     using Elite.Engine.Types;
 
-    internal class space
+    internal class Space
 	{
 		private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly threed _threed;
+        private readonly Threed _threed;
         private readonly Audio _audio;
-        private readonly pilot _pilot;
+        private readonly Pilot _pilot;
         private readonly Combat _combat;
         private readonly Trade _trade;
         private readonly Planet _planet;
 		private readonly PlayerShip _ship;
 
-        private static galaxy_seed destination_planet;
+        private static GalaxySeed destination_planet;
 		internal static bool hyper_ready;
         internal static int hyper_countdown;
         internal static string hyper_name;
         private static float hyper_distance;
         internal static bool hyper_galactic;
-		internal static univ_object[] universe = new univ_object[elite.MAX_UNIV_OBJECTS];
-		internal static Dictionary<ShipType, int> ship_count = new(shipdata.NO_OF_SHIPS + 1);  /* many */
+		internal static univ_object[] universe = new univ_object[EliteMain.MAX_UNIV_OBJECTS];
+		internal static Dictionary<ShipType, int> ship_count = new(Ship.NO_OF_SHIPS + 1);  /* many */
 
-		internal space(GameState gameState, IGfx gfx, threed threed, Audio audio, pilot pilot, Combat combat, Trade trade, Planet planet, PlayerShip ship)
+		internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio, Pilot pilot, Combat combat, Trade trade, Planet planet, PlayerShip ship)
 		{
             _gameState = gameState;
             _gfx = gfx;
@@ -60,7 +60,7 @@ namespace Elite.Engine
 			_ship = ship;
         }
 
-        private static void rotate_x_first(ref float a, ref float b, float direction)
+        private static void RotateXFirst(ref float a, ref float b, float direction)
 		{
 			float fx = a;
 			float ux = b;
@@ -77,10 +77,11 @@ namespace Elite.Engine
 			}
 		}
 
-        /*
-		 * Update an objects location in the universe.
-		 */
-        private void move_univ_object(ref univ_object obj)
+		/// <summary>
+		/// Update an objects location in the universe.
+		/// </summary>
+		/// <param name="obj"></param>
+        private void MoveUniverseObject(ref univ_object obj)
 		{
 			float x, y, z;
 			float k2;
@@ -111,9 +112,9 @@ namespace Elite.Engine
 				{
 					obj.velocity += obj.acceleration;
 					obj.acceleration = 0;
-					if (obj.velocity > elite.ship_list[(int)obj.type].velocity)
+					if (obj.velocity > EliteMain.ship_list[(int)obj.type].velocity)
 					{
-						obj.velocity = elite.ship_list[(int)obj.type].velocity;
+						obj.velocity = EliteMain.ship_list[(int)obj.type].velocity;
 					}
 
 					if (obj.velocity <= 0)
@@ -151,9 +152,9 @@ namespace Elite.Engine
 
 			if (rotx != 0)
 			{
-				rotate_x_first(ref obj.rotmat[2].X, ref obj.rotmat[1].X, rotx);
-				rotate_x_first(ref obj.rotmat[2].Y, ref obj.rotmat[1].Y, rotx);
-				rotate_x_first(ref obj.rotmat[2].Z, ref obj.rotmat[1].Z, rotx);
+				RotateXFirst(ref obj.rotmat[2].X, ref obj.rotmat[1].X, rotx);
+				RotateXFirst(ref obj.rotmat[2].Y, ref obj.rotmat[1].Y, rotx);
+				RotateXFirst(ref obj.rotmat[2].Z, ref obj.rotmat[1].Z, rotx);
 
 				if (rotx is not 127 and not (-127))
                 {
@@ -166,9 +167,9 @@ namespace Elite.Engine
 
 			if (rotz != 0)
 			{
-				rotate_x_first(ref obj.rotmat[0].X, ref obj.rotmat[1].X, rotz);
-				rotate_x_first(ref obj.rotmat[0].Y, ref obj.rotmat[1].Y, rotz);
-				rotate_x_first(ref obj.rotmat[0].Z, ref obj.rotmat[1].Z, rotz);
+                RotateXFirst(ref obj.rotmat[0].X, ref obj.rotmat[1].X, rotz);
+                RotateXFirst(ref obj.rotmat[0].Y, ref obj.rotmat[1].Y, rotz);
+                RotateXFirst(ref obj.rotmat[0].Z, ref obj.rotmat[1].Z, rotz);
 
 				if (rotz is not 127 and not (-127))
 				{
@@ -182,16 +183,18 @@ namespace Elite.Engine
 			VectorMaths.tidy_matrix(obj.rotmat);
 		}
 
-        /*
-		 * Check if we are correctly aligned to dock.
-		 */
-        private static bool is_docking(int sn)
+        /// <summary>
+        /// Check if we are correctly aligned to dock.
+        /// </summary>
+        /// <param name="sn"></param>
+        /// <returns></returns>
+        private static bool IsDocking(int sn)
 		{
 			Vector3 vec;
 			float fz;
 			float ux;
 
-			if (elite.auto_pilot)     // Don't want it to kill anyone!
+			if (EliteMain.auto_pilot)     // Don't want it to kill anyone!
 			{
 				return true;
 			}
@@ -224,7 +227,7 @@ namespace Elite.Engine
 			return true;
 		}
 
-		internal void update_altitude()
+		internal void UpdateAltitude()
 		{
             _ship.altitude = 255;
 
@@ -273,7 +276,7 @@ namespace Elite.Engine
             _ship.altitude = dist;
 		}
 
-		internal void update_cabin_temp()
+		internal void UpdateCabinTemp()
 		{
             _ship.cabinTemperature = 30;
 
@@ -330,10 +333,10 @@ namespace Elite.Engine
                 _ship.fuel = _ship.maxFuel;
 			}
 
-            elite.info_message("Fuel Scoop On");
+            EliteMain.InfoMessage("Fuel Scoop On");
 		}
 
-        private void make_station_appear()
+        private void MakeStationAppear()
 		{
             Vector3 location = universe[0].location;
             Vector3 vec;
@@ -370,14 +373,14 @@ namespace Elite.Engine
 			_combat.AddNewStation(position, rotmat);
 		}
 
-        private void check_docking(int i)
+        private void CheckDocking(int i)
 		{
-			if (elite.docked)
+			if (EliteMain.docked)
 			{
 				return;
 			}
 
-			if (is_docking(i))
+			if (IsDocking(i))
 			{
                 _gameState.SetView(SCR.SCR_DOCKING);
 				return;
@@ -394,7 +397,7 @@ namespace Elite.Engine
 			_audio.PlayEffect(SoundEffect.Crash);
 		}
 
-        private void switch_to_view(ref univ_object flip)
+        private void SwitchToView(ref univ_object flip)
 		{
 			float tmp;
 
@@ -465,14 +468,14 @@ namespace Elite.Engine
 			}
 		}
 
-		/*
-		 * Update all the objects in the universe and render them.
-		 */
-		internal void update_universe()
+        /// <summary>
+        /// Update all the objects in the universe and render them.
+        /// </summary>
+        internal void UpdateUniverse()
 		{
-            threed.RenderStart();
+            Threed.RenderStart();
 
-			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+			for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
             {
                 ShipType type = universe[i].type;
 
@@ -485,22 +488,22 @@ namespace Elite.Engine
                 {
                     if (type == ShipType.Viper)
                     {
-                        _gameState.cmdr.legal_status |= 64;
+                        _gameState.cmdr.LegalStatus |= 64;
                     }
 
-                    float bounty = elite.ship_list[(int)type].bounty;
+                    float bounty = EliteMain.ship_list[(int)type].bounty;
 
                     if ((bounty != 0) && (!_gameState.witchspace))
                     {
                         _trade.credits += bounty;
-                        elite.info_message($"{_trade.credits:N1} Credits");
+                        EliteMain.InfoMessage($"{_trade.credits:N1} Credits");
                     }
 
                     _combat.RemoveShip(i);
                     continue;
                 }
 
-                if (elite.detonate_bomb &&
+                if (EliteMain.detonate_bomb &&
                     (!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
                     (type != ShipType.Planet) &&
                     (type != ShipType.Sun) &&
@@ -522,10 +525,10 @@ namespace Elite.Engine
                     _combat.Tactics(i);
                 }
 
-                move_univ_object(ref universe[i]);
+                MoveUniverseObject(ref universe[i]);
 
                 univ_object flip = (univ_object)universe[i].Clone();
-                switch_to_view(ref flip);
+                SwitchToView(ref flip);
 
                 if (type == ShipType.Planet)
                 {
@@ -533,7 +536,7 @@ namespace Elite.Engine
                         (ship_count[ShipType.Dodec] == 0) &&
                         (universe[i].location.Length() < 65792)) // was 49152
                     {
-                        make_station_appear();
+                        MakeStationAppear();
                     }
 
 					_threed.DrawObject(flip);
@@ -551,7 +554,7 @@ namespace Elite.Engine
                 {
                     if (type is ShipType.Coriolis or ShipType.Dodec)
                     {
-                        check_docking(i);
+                        CheckDocking(i);
                     }
                     else
                     {
@@ -583,33 +586,33 @@ namespace Elite.Engine
             }
 
             _threed.RenderEnd();
-			elite.detonate_bomb = false;
+			EliteMain.detonate_bomb = false;
 		}
 
-		internal void start_hyperspace()
+		internal void StartHyperspace()
 		{
 			if (hyper_ready)
 			{
 				return;
 			}
 
-			hyper_distance = Planet.calc_distance_to_planet(_gameState.docked_planet, _gameState.hyperspace_planet);
+			hyper_distance = Planet.CalculateDistanceToPlanet(_gameState.docked_planet, _gameState.hyperspace_planet);
 
 			if ((hyper_distance == 0) || (hyper_distance > _ship.fuel))
 			{
 				return;
 			}
 
-			destination_planet = (galaxy_seed)_gameState.hyperspace_planet.Clone();
-			hyper_name = Planet.name_planet(destination_planet, true);
+			destination_planet = (GalaxySeed)_gameState.hyperspace_planet.Clone();
+			hyper_name = Planet.NamePlanet(destination_planet, true);
 			hyper_ready = true;
 			hyper_countdown = 15;
 			hyper_galactic = false;
 
-			_pilot.disengage_auto_pilot();
+			_pilot.DisengageAutoPilot();
 		}
 
-		internal void start_galactic_hyperspace()
+		internal void StartGalacticHyperspace()
 		{
 			if (hyper_ready)
 			{
@@ -624,52 +627,52 @@ namespace Elite.Engine
 			hyper_ready = true;
 			hyper_countdown = 2;
 			hyper_galactic = true;
-			_pilot.disengage_auto_pilot();
+			_pilot.DisengageAutoPilot();
 		}
 
-		internal void display_hyper_status()
+		internal void DisplayHyperStatus()
 		{             
 			_gfx.DrawTextRight(22, 5, $"{hyper_countdown}", GFX_COL.GFX_COL_WHITE);
 		}
 
-        private static int rotate_byte_left(int x)
+        private static int RotateByteLeft(int x)
 		{
 			return ((x << 1) | (x >> 7)) & 255;
 		}
 
-        private void enter_next_galaxy()
+        private void EnterNextGalaxy()
 		{
-            _gameState.cmdr.galaxy_number++;
-            _gameState.cmdr.galaxy_number &= 7;
+            _gameState.cmdr.GalaxyNumber++;
+            _gameState.cmdr.GalaxyNumber &= 7;
 
-            galaxy_seed glx = new()
+            GalaxySeed glx = new()
             {
-                a = rotate_byte_left(_gameState.cmdr.galaxy.a),
-                b = rotate_byte_left(_gameState.cmdr.galaxy.b),
-                c = rotate_byte_left(_gameState.cmdr.galaxy.c),
-                d = rotate_byte_left(_gameState.cmdr.galaxy.d),
-                e = rotate_byte_left(_gameState.cmdr.galaxy.e),
-                f = rotate_byte_left(_gameState.cmdr.galaxy.f)
+                A = RotateByteLeft(_gameState.cmdr.Galaxy.A),
+                B = RotateByteLeft(_gameState.cmdr.Galaxy.B),
+                C = RotateByteLeft(_gameState.cmdr.Galaxy.C),
+                D = RotateByteLeft(_gameState.cmdr.Galaxy.D),
+                E = RotateByteLeft(_gameState.cmdr.Galaxy.E),
+                F = RotateByteLeft(_gameState.cmdr.Galaxy.F)
             };
-            _gameState.cmdr.galaxy = glx;
+            _gameState.cmdr.Galaxy = glx;
 
-            _gameState.docked_planet = Planet.find_planet(_gameState.cmdr.galaxy, new(0x60, 0x60));
-            _gameState.hyperspace_planet = (galaxy_seed)_gameState.docked_planet.Clone();
+            _gameState.docked_planet = Planet.FindPlanet(_gameState.cmdr.Galaxy, new(0x60, 0x60));
+            _gameState.hyperspace_planet = (GalaxySeed)_gameState.docked_planet.Clone();
 		}
 
-        private void enter_witchspace()
+        private void EnterWitchspace()
 		{
 			int i;
 			int nthg;
 
             _gameState.witchspace = true;
-            _gameState.docked_planet.b ^= 31;
+            _gameState.docked_planet.B ^= 31;
 			_combat.inBattle = true;
 
             _ship.speed = 12;
             _ship.roll = 0;
             _ship.climb = 0;
-			Stars.create_new_stars();
+			Stars.CreateNewStars();
 			_combat.ClearUniverse();
 
 			nthg = RNG.Random(1, 4);
@@ -682,7 +685,7 @@ namespace Elite.Engine
 			_gameState.SetView(SCR.SCR_HYPERSPACE);
 		}
 
-        private void complete_hyperspace()
+        private void CompleteHyperspace()
 		{
 			hyper_ready = false;
             _gameState.witchspace = false;
@@ -691,38 +694,38 @@ namespace Elite.Engine
 			{
                 _ship.hasGalacticHyperdrive = false;
 				hyper_galactic = false;
-				enter_next_galaxy();
-                _gameState.cmdr.legal_status = 0;
+				EnterNextGalaxy();
+                _gameState.cmdr.LegalStatus = 0;
 			}
 			else
 			{
                 _ship.fuel -= hyper_distance;
-                _gameState.cmdr.legal_status /= 2;
+                _gameState.cmdr.LegalStatus /= 2;
 
 				if ((RNG.Random(255) > 253) || (_ship.climb >= _ship.maxClimb))
 				{
-                    enter_witchspace();
+                    EnterWitchspace();
 					return;
 				}
 
-                _gameState.docked_planet = (galaxy_seed)destination_planet.Clone();
+                _gameState.docked_planet = (GalaxySeed)destination_planet.Clone();
 			}
 
             _trade.marketRandomiser = RNG.Random(255);
-            _gameState.current_planet_data = Planet.generate_planet_data(_gameState.docked_planet);
+            _gameState.current_planet_data = Planet.GeneratePlanetData(_gameState.docked_planet);
             _trade.GenerateStockMarket(_gameState.current_planet_data);
 
             _ship.speed = 12;
             _ship.roll = 0;
             _ship.climb = 0;
-			Stars.create_new_stars();
+			Stars.CreateNewStars();
 			_combat.ClearUniverse();
 
-			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
+			Threed.GenerateLandscape((_gameState.docked_planet.A * 251) + _gameState.docked_planet.B);
 			
             Vector3 position = new()
             {
-                Z = (((_gameState.docked_planet.b) & 7) + 7) / 2
+                Z = (((_gameState.docked_planet.B) & 7) + 7) / 2
             };
             position.X = position.Z / 2;
             position.Y = position.X;
@@ -731,7 +734,7 @@ namespace Elite.Engine
             position.Y *= 65536;
             position.Z *= 65536;
 
-            if ((_gameState.docked_planet.b & 1) == 0)
+            if ((_gameState.docked_planet.B & 1) == 0)
 			{
                 position.X = -position.X;
                 position.Y = -position.Y;
@@ -739,32 +742,32 @@ namespace Elite.Engine
 
             _combat.AddNewShip(ShipType.Planet, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
-            position.Z = -(((_gameState.docked_planet.d & 7) | 1) << 16);
-            position.X = ((_gameState.docked_planet.f & 3) << 16) | ((_gameState.docked_planet.f & 3) << 8);
+            position.Z = -(((_gameState.docked_planet.D & 7) | 1) << 16);
+            position.X = ((_gameState.docked_planet.F & 3) << 16) | ((_gameState.docked_planet.F & 3) << 8);
 
             _combat.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
             _gameState.SetView(SCR.SCR_HYPERSPACE);
 		}
 
-		internal void countdown_hyperspace()
+		internal void CountdownHyperspace()
 		{
 			if (hyper_countdown == 0)
 			{
-                complete_hyperspace();
+                CompleteHyperspace();
 				return;
 			}
 
 			hyper_countdown--;
 		}
 
-		internal void jump_warp()
+		internal void JumpWarp()
 		{
 			int i;
 			ShipType type;
 			float jump;
 
-			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+			for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
 			{
 				type = universe[i].type;
 
@@ -772,14 +775,14 @@ namespace Elite.Engine
                     not ShipType.Alloy and not ShipType.Rock and
                     not ShipType.Boulder and not ShipType.EscapePod)
 				{
-                    elite.info_message("Mass Locked");
+                    EliteMain.InfoMessage("Mass Locked");
 					return;
 				}
 			}
 
 			if ((universe[0].location.Length() < 75001) || (universe[1].location.Length() < 75001))
 			{
-                elite.info_message("Mass Locked");
+                EliteMain.InfoMessage("Mass Locked");
 				return;
 			}
 
@@ -790,7 +793,7 @@ namespace Elite.Engine
 				jump = 1024;
 			}
 
-			for (i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+			for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
 			{
 				if (universe[i].type != 0)
 				{
@@ -799,19 +802,19 @@ namespace Elite.Engine
 			}
 
 			Stars.warp_stars = true;
-            elite.mcount &= 63;
+            EliteMain.mcount &= 63;
 			_combat.inBattle = false;
 		}
 
-		internal void launch_player()
+		internal void LaunchPlayer()
 		{
             _ship.speed = 12;
             // Rotate in the same direction that the station is spinning
             _ship.roll = 15;
             _ship.climb = 0;
-            _gameState.cmdr.legal_status |= _trade.IsCarryingContraband();
-			Stars.create_new_stars();
-			threed.generate_landscape((_gameState.docked_planet.a * 251) + _gameState.docked_planet.b);
+            _gameState.cmdr.LegalStatus |= _trade.IsCarryingContraband();
+			Stars.CreateNewStars();
+			Threed.GenerateLandscape((_gameState.docked_planet.A * 251) + _gameState.docked_planet.B);
 			_combat.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 
 			Vector3[] rotmat = VectorMaths.GetInitialMatrix();
@@ -820,26 +823,25 @@ namespace Elite.Engine
 			rotmat[2].Z = -rotmat[2].Z;
 			_combat.AddNewStation(new(0, 0, -256), rotmat);
 
-            elite.docked = false;
+            EliteMain.docked = false;
         }
 
         /// <summary>
         /// Dock the player into the space station.
         /// </summary>
-        internal void dock_player()
+        internal void DockPlayer()
         {
-            _pilot.disengage_auto_pilot();
-			elite.docked = true;
+            _pilot.DisengageAutoPilot();
+			EliteMain.docked = true;
 			_gameState.Reset();
 			_ship.Reset();
             _combat.ResetWeapons();
         }
 
-        /*
-		 * Engage the docking computer.
-		 * For the moment we just do an instant dock if we are in the safe zone.
-		 */
-        internal void engage_docking_computer()
+        /// <summary>
+        /// Engage the docking computer. For the moment we just do an instant dock if we are in the safe zone.
+        /// </summary>
+        internal void EngageDockingComputer()
 		{
 			if (ship_count[ShipType.Coriolis] != 0 || ship_count[ShipType.Dodec] != 0)
 			{

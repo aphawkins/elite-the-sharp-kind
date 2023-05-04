@@ -29,10 +29,10 @@ namespace Elite.Engine
 
         internal bool witchspace;
         internal Commander cmdr = new();
-        internal galaxy_seed docked_planet = new();
+        internal GalaxySeed docked_planet = new();
         internal string planetName;
-        internal galaxy_seed hyperspace_planet;
-        internal planet_data current_planet_data = new();
+        internal GalaxySeed hyperspace_planet;
+        internal PlanetData current_planet_data = new();
 
         internal GameState(IKeyboard keyboard, Dictionary<SCR, IView> views) 
         {

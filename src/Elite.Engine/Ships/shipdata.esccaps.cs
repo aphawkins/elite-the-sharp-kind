@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         private static readonly ship_point[] esccaps_point =
         {
@@ -39,7 +39,7 @@ namespace Elite.Engine.Ships
             new ship_face(GFX_COL.GFX_COL_RED_4,    new( 0x70, 0x00, 0x00), new[] { 0, 2, 1 }),
         };
 
-        internal static ship_data esccaps_data = new(
+        internal static ShipData esccaps_data = new(
             "Escape Capsule",
             0,
             StockType.Slaves,

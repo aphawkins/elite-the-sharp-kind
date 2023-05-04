@@ -40,26 +40,26 @@ namespace Elite.Engine.Missions
             "COMING SOON: ELITE - DARKNESS FALLS.",
         };
 
-        internal static string? mission_planet_desc(GameState gameState, galaxy_seed planet)
+        internal static string? MissionPlanetDescription(GameState gameState, GalaxySeed planet)
         {
-            if (!elite.docked)
+            if (!EliteMain.docked)
             {
                 return null;
             }
 
-            if (planet.a != gameState.docked_planet.a ||
-                planet.b != gameState.docked_planet.b ||
-                planet.c != gameState.docked_planet.c ||
-                planet.d != gameState.docked_planet.d ||
-                planet.e != gameState.docked_planet.e ||
-                planet.f != gameState.docked_planet.f)
+            if (planet.A != gameState.docked_planet.A ||
+                planet.B != gameState.docked_planet.B ||
+                planet.C != gameState.docked_planet.C ||
+                planet.D != gameState.docked_planet.D ||
+                planet.E != gameState.docked_planet.E ||
+                planet.F != gameState.docked_planet.F)
             {
                 return null;
             }
 
-            int pnum = Planet.find_planet_number(gameState.cmdr.galaxy, planet);
+            int pnum = Planet.FindPlanetNumber(gameState.cmdr.Galaxy, planet);
 
-            if (gameState.cmdr.galaxy_number == 0)
+            if (gameState.cmdr.GalaxyNumber == 0)
             {
                 switch (pnum)
                 {
@@ -74,7 +74,7 @@ namespace Elite.Engine.Missions
                 }
             }
 
-            if (gameState.cmdr.galaxy_number == 1)
+            if (gameState.cmdr.GalaxyNumber == 1)
             {
                 switch (pnum)
                 {
@@ -110,7 +110,7 @@ namespace Elite.Engine.Missions
                 }
             }
 
-            if (gameState.cmdr.galaxy_number == 2 && pnum == 101)
+            if (gameState.cmdr.GalaxyNumber == 2 && pnum == 101)
             {
                 return mission1_pdesc[9];
             }

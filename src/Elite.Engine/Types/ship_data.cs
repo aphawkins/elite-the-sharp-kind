@@ -1,6 +1,6 @@
 ﻿namespace Elite.Engine.Types
 {
-    internal class ship_data
+    internal class ShipData
     {
         internal string name;
         internal int max_loot;
@@ -18,11 +18,11 @@
         internal ship_face_normal[] normals;
         internal ship_face[] face_data;
 
-        internal ship_data()
+        internal ShipData()
         {
         }
 
-        internal ship_data(string name, int max_loot,
+        internal ShipData(string name, int max_loot,
             StockType scoopedType, float size, int front_laser, float bounty, int vanish_point, int energy,
             float velocity, int missiles, int laser_strength, ship_point[] points, ship_line[] lines, ship_face_normal[] normals, ship_face[] face_data)
         {

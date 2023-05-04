@@ -78,24 +78,24 @@ namespace Elite.Engine.Views
             string rating = string.Empty;
             foreach ((int score, string title) in ratings)
             {
-                if (_gameState.cmdr.score >= score)
+                if (_gameState.cmdr.Score >= score)
                 {
                     rating = title;
                 }
             }
 
-            string dockedPlanetName = Planet.name_planet(_gameState.docked_planet, true);
-            string hyperspacePlanetName = Planet.name_planet(_gameState.hyperspace_planet, true);
+            string dockedPlanetName = Planet.NamePlanet(_gameState.docked_planet, true);
+            string hyperspacePlanetName = Planet.NamePlanet(_gameState.hyperspace_planet, true);
 
             int condition = 0;
 
-            if (!elite.docked)
+            if (!EliteMain.docked)
             {
                 condition = 1;
 
-                for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+                for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
                 {
-                    if (space.universe[i].type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
+                    if (Space.universe[i].type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
                     {
                         condition = 2;
                         break;
@@ -108,7 +108,7 @@ namespace Elite.Engine.Views
                 }
             }
 
-            _draw.DrawViewHeader($"COMMANDER {_gameState.cmdr.name}");
+            _draw.DrawViewHeader($"COMMANDER {_gameState.cmdr.Name}");
             _gfx.DrawTextLeft(16, 58, "Present System:", GFX_COL.GFX_COL_GREEN_1);
 
             if (!_gameState.witchspace)
@@ -129,7 +129,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(150, 122, $"{_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 138, "Legal Status:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 138, _gameState.cmdr.legal_status == 0 ? "Clean" : _gameState.cmdr.legal_status > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 138, _gameState.cmdr.LegalStatus == 0 ? "Clean" : _gameState.cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 154, "Rating:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(150, 154, rating, GFX_COL.GFX_COL_WHITE);

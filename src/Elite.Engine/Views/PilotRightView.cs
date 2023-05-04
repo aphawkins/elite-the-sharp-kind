@@ -9,7 +9,7 @@
         private readonly Stars _stars;
         private readonly PlayerShip _ship;
 
-        internal PilotRightView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, pilot pilot, PlayerShip ship)
+        internal PilotRightView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
         {
             _pilotView = new(gameState, gfx, keyboard, pilot, ship);
             _gameState = gameState;

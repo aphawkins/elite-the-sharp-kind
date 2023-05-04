@@ -66,7 +66,7 @@ namespace Elite.Engine
                     y = ((setting_list.Length + 1) / 2 * 30) + 96 + 32;
                     if (i == _highlightedItem)
                     {
-                        x = gfx.GFX_X_CENTRE - 200;
+                        x = Graphics.GFX_X_CENTRE - 200;
                         _gfx.DrawRectangleFilled(x, y - 7, 400, 15, GFX_COL.GFX_COL_DARK_RED);
                     }
 
@@ -76,11 +76,11 @@ namespace Elite.Engine
 
                 int v = i switch
                 {
-                    0 => elite.config.UseWireframe ? 1 : 0,
-                    1 => elite.config.AntiAliasWireframe ? 1 : 0,
-                    2 => (int)elite.config.PlanetRenderStyle,
-                    3 => elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-                    4 => elite.config.InstantDock ? 1 : 0,
+                    0 => EliteMain.config.UseWireframe ? 1 : 0,
+                    1 => EliteMain.config.AntiAliasWireframe ? 1 : 0,
+                    2 => (int)EliteMain.config.PlanetRenderStyle,
+                    3 => EliteMain.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+                    4 => EliteMain.config.InstantDock ? 1 : 0,
                     _ => 0,
                 };
                 x = ((i & 1) * 250) + 32;
@@ -165,7 +165,7 @@ namespace Elite.Engine
         {
             if (_highlightedItem == (setting_list.Length - 1))
             {
-                ConfigFile.WriteConfigAsync(elite.config);
+                ConfigFile.WriteConfigAsync(EliteMain.config);
                 _gameState.SetView(SCR.SCR_OPTIONS);
                 return;
             }
@@ -173,23 +173,23 @@ namespace Elite.Engine
             switch (_highlightedItem)
             {
                 case 0:
-                    elite.config.UseWireframe = !elite.config.UseWireframe;
+                    EliteMain.config.UseWireframe = !EliteMain.config.UseWireframe;
                     break;
 
                 case 1:
-                    elite.config.AntiAliasWireframe = !elite.config.AntiAliasWireframe;
+                    EliteMain.config.AntiAliasWireframe = !EliteMain.config.AntiAliasWireframe;
                     break;
 
                 case 2:
-                    elite.config.PlanetRenderStyle = (PlanetRenderStyle)((int)(elite.config.PlanetRenderStyle + 1) % 4);
+                    EliteMain.config.PlanetRenderStyle = (PlanetRenderStyle)((int)(EliteMain.config.PlanetRenderStyle + 1) % 4);
                     break;
 
                 case 3:
-                    elite.config.PlanetDescriptions = (PlanetDescriptions)((int)(elite.config.PlanetDescriptions + 1) % 2);
+                    EliteMain.config.PlanetDescriptions = (PlanetDescriptions)((int)(EliteMain.config.PlanetDescriptions + 1) % 2);
                     break;
 
                 case 4:
-                    elite.config.InstantDock = !elite.config.InstantDock;
+                    EliteMain.config.InstantDock = !EliteMain.config.InstantDock;
                     break;
             }
         }

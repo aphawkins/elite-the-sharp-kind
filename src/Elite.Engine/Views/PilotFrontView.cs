@@ -9,7 +9,7 @@
         private readonly Stars _stars;
         private readonly PlayerShip _ship;
 
-        internal PilotFrontView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, pilot pilot, PlayerShip ship)
+        internal PilotFrontView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
         {
             _pilotView = new(gameState, gfx, keyboard, pilot, ship);
             _gameState = gameState;
@@ -37,7 +37,7 @@
         public void UpdateUniverse()
         {
             _pilotView.UpdateUniverse();
-            _stars.front_starfield();
+            _stars.FrontStarfield();
         }
     }
 }

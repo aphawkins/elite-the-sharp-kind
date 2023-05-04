@@ -49,7 +49,7 @@ namespace Elite.Engine.Views
             _direction = 100;
 
             _combat.ClearUniverse();
-            Stars.create_new_stars();
+            Stars.CreateNewStars();
             _rotmat = VectorMaths.GetInitialMatrix();
             _combat.AddNewShip(ShipType.Missile, new(0, 0, 5000), _rotmat, -127, -127);
             _audio.PlayMusic(Music.BlueDanube, true);
@@ -68,19 +68,19 @@ namespace Elite.Engine.Views
                 _direction = -_direction;
             }
 
-            space.universe[0].location.Z += _direction;
+            Space.universe[0].location.Z += _direction;
 
-            if (space.universe[0].location.Z < _minDist[(int)_shipNo])
+            if (Space.universe[0].location.Z < _minDist[(int)_shipNo])
             {
-                space.universe[0].location.Z = _minDist[(int)_shipNo];
+                Space.universe[0].location.Z = _minDist[(int)_shipNo];
             }
 
-            if (space.universe[0].location.Z > 4500)
+            if (Space.universe[0].location.Z > 4500)
             {
                 do
                 {
                     _shipNo++;
-                    if ((int)_shipNo > shipdata.NO_OF_SHIPS)
+                    if ((int)_shipNo > Ship.NO_OF_SHIPS)
                     {
                         _shipNo = ShipType.Missile;
                     }
@@ -89,13 +89,13 @@ namespace Elite.Engine.Views
                 _showTime = 0;
                 _direction = -100;
 
-                space.ship_count[space.universe[0].type] = 0;
-                space.universe[0].type = ShipType.None;
+                Space.ship_count[Space.universe[0].type] = 0;
+                Space.universe[0].type = ShipType.None;
 
                 _combat.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }
 
-            _stars.front_starfield();
+            _stars.FrontStarfield();
         }
 
         public void Draw()
@@ -103,7 +103,7 @@ namespace Elite.Engine.Views
             _gfx.DrawImage(Image.EliteText, new(-1, 10));
 
             _gfx.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawTextCentre(330, elite.ship_list[(int)_shipNo].name, 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(330, EliteMain.ship_list[(int)_shipNo].name, 120, GFX_COL.GFX_COL_WHITE);
         }
 
         public void HandleInput()

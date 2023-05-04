@@ -24,7 +24,7 @@
 
 namespace Elite.Engine
 {
-	public static class gfx
+	public static class Graphics
 	{
 #if RES_512_512
 		public const float GFX_SCALE = 2;

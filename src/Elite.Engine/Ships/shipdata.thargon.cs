@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         internal static readonly ship_point[] thargon_point =
         {
@@ -62,7 +62,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_DARK_RED, new( 0x24, 0x00, 0x00), new[] {  9, 5, 6, 7, 8 }),
         };
 
-        internal static ship_data thargon_data = new(
+        internal static ShipData thargon_data = new(
             "Thargon",
             0,
             StockType.AlienItems,

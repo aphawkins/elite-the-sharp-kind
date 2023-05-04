@@ -49,7 +49,7 @@
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
             _newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
-            space.universe[_newship].velocity = 7;
+            Space.universe[_newship].velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;
         }
@@ -60,38 +60,38 @@
             {
                 if (_i == 40)
                 {
-                    space.universe[_newship].flags |= FLG.FLG_DEAD;
+                    Space.universe[_newship].flags |= FLG.FLG_DEAD;
                     _audio.PlayEffect(SoundEffect.Explode);
                 }
                 
-                _stars.front_starfield();
-                space.universe[_newship].location.X = 0;
-                space.universe[_newship].location.Y = 0;
-                space.universe[_newship].location.Z += 2;
+                _stars.FrontStarfield();
+                Space.universe[_newship].location.X = 0;
+                Space.universe[_newship].location.Y = 0;
+                Space.universe[_newship].location.Z += 2;
                 _i++;
             }
-            else if ((space.ship_count[ShipType.Coriolis] == 0) && (space.ship_count[ShipType.Dodec] == 0))
+            else if ((Space.ship_count[ShipType.Coriolis] == 0) && (Space.ship_count[ShipType.Dodec] == 0))
             {
                 _ship.AutoDock();
 
                 if ((MathF.Abs(_ship.roll) < 3) && (MathF.Abs(_ship.climb) < 3))
                 {
-                    for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+                    for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
                     {
-                        if (space.universe[i].type != 0)
+                        if (Space.universe[i].type != 0)
                         {
-                            space.universe[i].location.Z -= 1500;
+                            Space.universe[i].location.Z -= 1500;
                         }
                     }
                 }
 
                 Stars.warp_stars = true;
-                _stars.front_starfield();
+                _stars.FrontStarfield();
             }
             else
             {
                 _ship.hasEscapePod = false;
-                _gameState.cmdr.legal_status = 0;
+                _gameState.cmdr.LegalStatus = 0;
                 _ship.fuel = _ship.maxFuel;
                 _trade.ClearCurrentCargo();
                 _gameState.SetView(SCR.SCR_DOCKING);

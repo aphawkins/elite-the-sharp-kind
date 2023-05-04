@@ -13,13 +13,13 @@
 
 namespace Elite.Engine
 {
-	using System;
-	using System.Numerics;
-	using Elite.Engine.Enums;
-	using Elite.Engine.Types;
-	using Elite.Engine.Views;
+    using System;
+    using System.Numerics;
+    using Elite.Engine.Enums;
+    using Elite.Engine.Types;
+    using Elite.Engine.Views;
 
-	internal class threed
+    internal partial class Threed
 	{
         private const int LAND_X_MAX = 128;
         private const int LAND_Y_MAX = 128;
@@ -28,7 +28,7 @@ namespace Elite.Engine
 		private readonly IGfx _gfx;
         private readonly Draw _draw;
 
-        internal threed(IGfx gfx, Draw draw)
+        internal Threed(IGfx gfx, Draw draw)
 		{
 			_gfx = gfx;
 			_draw = draw;
@@ -47,7 +47,7 @@ namespace Elite.Engine
 			Vector3[] trans_mat = new Vector3[3];
 			int lasv;
             GFX_COL col;
-			ship_data ship = elite.ship_list[(int)univ.type];
+			ShipData ship = EliteMain.ship_list[(int)univ.type];
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -86,8 +86,8 @@ namespace Elite.Engine
                     vec.Z = 1;
 				}
 
-                vec.X = ((vec.X * 256 / vec.Z) + 128) * gfx.GFX_SCALE;
-				vec.Y = ((-vec.Y * 256 / vec.Z) + 96) * gfx.GFX_SCALE;
+                vec.X = ((vec.X * 256 / vec.Z) + 128) * Graphics.GFX_SCALE;
+				vec.Y = ((-vec.Y * 256 / vec.Z) + 96) * Graphics.GFX_SCALE;
 
 				point_list[i] = vec;
 			}
@@ -121,7 +121,7 @@ namespace Elite.Engine
 
 			if (univ.flags.HasFlag(FLG.FLG_FIRING))
 			{
-				lasv = elite.ship_list[(int)univ.type].front_laser;
+				lasv = EliteMain.ship_list[(int)univ.type].front_laser;
 				col = (univ.type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
 				Vector2[] pointList = new Vector2[]
@@ -162,10 +162,10 @@ namespace Elite.Engine
 			102, 102
 		};
 
-        /*
-		 * Generate a landscape map for a SNES Elite style planet.
-		 */
-        private static void generate_snes_landscape()
+		/// <summary>
+		/// Generate a landscape map for a SNES Elite style planet.
+		/// </summary>
+        private static void GenerateSnesLandscape()
 		{
 			for (int y = 0; y <= LAND_Y_MAX; y++)
 			{
@@ -185,13 +185,16 @@ namespace Elite.Engine
 		/// <param name="ex"></param>
 		/// <param name="ey"></param>
 		/// <returns></returns>
-        private static int calc_midpoint(int sx, int sy, int ex, int ey) =>
+        private static int CalcMidpoint(int sx, int sy, int ex, int ey) =>
 			Math.Clamp(((landscape[sx, sy] + landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
-        /*
-		 * Calculate a square on the midpoint map.
-		 */
-        private static void midpoint_square(int tx, int ty, int w)
+        /// <summary>
+        /// Calculate a square on the midpoint map.
+        /// </summary>
+        /// <param name="tx"></param>
+        /// <param name="ty"></param>
+        /// <param name="w"></param>
+        private static void MidpointSquare(int tx, int ty, int w)
 		{
 			int d = w / 2;
 			int mx = tx + d;
@@ -199,28 +202,28 @@ namespace Elite.Engine
 			int bx = tx + w;
 			int by = ty + w;
 
-			landscape[mx, ty] = calc_midpoint(tx, ty, bx, ty);
-			landscape[mx, by] = calc_midpoint(tx, by, bx, by);
-			landscape[tx, my] = calc_midpoint(tx, ty, tx, by);
-			landscape[bx, my] = calc_midpoint(bx, ty, bx, by);
-			landscape[mx, my] = calc_midpoint(tx, my, bx, my);
+			landscape[mx, ty] = CalcMidpoint(tx, ty, bx, ty);
+			landscape[mx, by] = CalcMidpoint(tx, by, bx, by);
+			landscape[tx, my] = CalcMidpoint(tx, ty, tx, by);
+			landscape[bx, my] = CalcMidpoint(bx, ty, bx, by);
+			landscape[mx, my] = CalcMidpoint(tx, my, bx, my);
 
 			if (d == 1)
 			{
 				return;
 			}
 
-			midpoint_square(tx, ty, d);
-			midpoint_square(mx, ty, d);
-			midpoint_square(tx, my, d);
-			midpoint_square(mx, my, d);
+			MidpointSquare(tx, ty, d);
+			MidpointSquare(mx, ty, d);
+			MidpointSquare(tx, my, d);
+			MidpointSquare(mx, my, d);
 		}
 
 		/// <summary>
 		/// Generate a fractal landscape. Uses midpoint displacement method.
 		/// </summary>
 		/// <param name="seed">Initial seed for the generation.</param>
-        private static void generate_fractal_landscape(int seed)
+        private static void GenerateFractalLandscape(int seed)
 		{
 			int d = LAND_X_MAX / 8;
 			Random random = new(seed);
@@ -237,7 +240,7 @@ namespace Elite.Engine
 			{
 				for (int x = 0; x < LAND_X_MAX; x += d)
 				{
-					midpoint_square(x, y, d);
+					MidpointSquare(x, y, d);
 				}
 			}
 
@@ -255,9 +258,9 @@ namespace Elite.Engine
 			}
 		}
 
-		internal static void generate_landscape(int rnd_seed)
+		internal static void GenerateLandscape(int rnd_seed)
 		{
-			switch (elite.config.PlanetRenderStyle)
+			switch (EliteMain.config.PlanetRenderStyle)
 			{
 				case PlanetRenderStyle.Wireframe:     /* Wireframe... do nothing for now... */
 					break;
@@ -267,27 +270,33 @@ namespace Elite.Engine
 					break;
 
 				case PlanetRenderStyle.SNES:
-					generate_snes_landscape();
+					GenerateSnesLandscape();
 					break;
 
 				case PlanetRenderStyle.Fractal:
-					generate_fractal_landscape(rnd_seed);
+					GenerateFractalLandscape(rnd_seed);
 					break;
 			}
 		}
 
-        /*
-		 * Draw a line of the planet with appropriate rotation.
-		 */
-        private void render_planet_line(Vector2 centre, float x, float y, float radius, float vx, float vy)
+		/// <summary>
+		/// Draw a line of the planet with appropriate rotation.
+		/// </summary>
+		/// <param name="centre"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="radius"></param>
+		/// <param name="vx"></param>
+		/// <param name="vy"></param>
+        private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
 		{
             Vector2 s = new()
             {
                 Y = y + centre.Y
             };
 
-            if (s.Y is < (gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) or
-                > (gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
+            if (s.Y is < (Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET) or
+                > (Graphics.GFX_VIEW_BY + Graphics.GFX_Y_OFFSET))
 			{
 				return;
 			}
@@ -303,7 +312,7 @@ namespace Elite.Engine
 
 			for (; s.X <= ex; s.X++)
 			{
-				if (s.X is >= (gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET) and <= (gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET))
+				if (s.X is >= (Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET) and <= (Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET))
 				{
 					int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LAND_X_MAX);
 					int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LAND_Y_MAX);
@@ -315,14 +324,16 @@ namespace Elite.Engine
 			}
 		}
 
-
-        /*
-		 * Draw a solid planet.  Based on Doros circle drawing alogorithm.
-		 */
-        private void render_planet(Vector2 centre, float radius, Vector3[] vec)
+		/// <summary>
+		/// Draw a solid planet. Based on Doros circle drawing alogorithm.
+		/// </summary>
+		/// <param name="centre"></param>
+		/// <param name="radius"></param>
+		/// <param name="vec"></param>
+        private void RenderPlanet(Vector2 centre, float radius, Vector3[] vec)
 		{
-            centre.X += gfx.GFX_X_OFFSET;
-            centre.Y += gfx.GFX_Y_OFFSET;
+            centre.X += Graphics.GFX_X_OFFSET;
+            centre.Y += Graphics.GFX_Y_OFFSET;
 
             float vx = vec[1].X * 65536;
             float vy = vec[1].Y * 65536;
@@ -335,13 +346,13 @@ namespace Elite.Engine
             while (y <= x)
 			{
                 // Top of top half
-				render_planet_line(centre, y, -MathF.Floor(x), radius, vx, vy);
+				RenderPlanetLine(centre, y, -MathF.Floor(x), radius, vx, vy);
 				// Bottom of top half
-                render_planet_line(centre, x, -y, radius, vx, vy);
+                RenderPlanetLine(centre, x, -y, radius, vx, vy);
                 // Top of bottom half
-                render_planet_line(centre, x, y, radius, vx, vy);
+                RenderPlanetLine(centre, x, y, radius, vx, vy);
                 // Bottom of bottom half
-                render_planet_line(centre, y, MathF.Floor(x), radius, vx, vy);
+                RenderPlanetLine(centre, y, MathF.Floor(x), radius, vx, vy);
 
                 s += y + y + 1;
 				y++;
@@ -353,24 +364,23 @@ namespace Elite.Engine
 			}
         }
 
-        /*
-		 * Draw a wireframe planet.
-		 * At the moment we just draw a circle.
-		 * Need to add in the two arcs that the original Elite had.
-		 */
-        private void draw_wireframe_planet(Vector2 centre, float radius)
+		/// <summary>
+		/// Draw a wireframe planet. 
+		/// </summary>
+		/// <param name="centre"></param>
+		/// <param name="radius"></param>
+        private void DrawWireframePlanet(Vector2 centre, float radius)
 		{
+            // TODO: At the moment we just draw a circle. Need to add in the two arcs that the original Elite had.
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
 		}
 
-        /*
-		 * Draw a planet.
-		 * We can currently do three different types of planet...
-		 * - Wireframe.
-		 * - Fractal landscape.
-		 * - SNES Elite style.
-		 */
-        private void draw_planet(ref univ_object planet)
+		/// <summary>
+		/// Draw a planet.
+		/// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style
+		/// </summary>
+		/// <param name="planet"></param>
+        private void DrawPlanet(ref univ_object planet)
 		{
             Vector2 position = new()
             {
@@ -383,13 +393,13 @@ namespace Elite.Engine
             position.X += 128;
             position.Y += 96;
 
-            position.X *= gfx.GFX_SCALE;
-            position.Y *= gfx.GFX_SCALE;
+            position.X *= Graphics.GFX_SCALE;
+            position.Y *= Graphics.GFX_SCALE;
 
 			float radius = 6291456 / planet.location.Length();
 			//	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
 
-			radius *= gfx.GFX_SCALE;
+			radius *= Graphics.GFX_SCALE;
 
 			if ((position.X + radius < 0) ||
 				(position.X - radius > 511) ||
@@ -399,10 +409,10 @@ namespace Elite.Engine
                 return;
             }
 
-			switch (elite.config.PlanetRenderStyle)
+			switch (EliteMain.config.PlanetRenderStyle)
 			{
 				case PlanetRenderStyle.Wireframe:
-					draw_wireframe_planet(position, radius);
+					DrawWireframePlanet(position, radius);
 					break;
 
 				case PlanetRenderStyle.Green:
@@ -411,13 +421,12 @@ namespace Elite.Engine
 
 				case PlanetRenderStyle.SNES:
 				case PlanetRenderStyle.Fractal:
-					render_planet(position, radius, planet.rotmat);
+					RenderPlanet(position, radius, planet.rotmat);
 					break;
 			}
 		}
 
-
-        private void draw_explosion(ref univ_object univ)
+        private void DrawExplosion(ref univ_object univ)
 		{
 			Vector3[] trans_mat = new Vector3[3];
 			bool[] visible = new bool[32];
@@ -435,7 +444,7 @@ namespace Elite.Engine
                 return;
             }
 
-            ship_data ship = elite.ship_list[(int)univ.type];
+            ShipData ship = EliteMain.ship_list[(int)univ.type];
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -475,8 +484,8 @@ namespace Elite.Engine
 					sx += 128;
 					sy += 96;
 
-					sx *= gfx.GFX_SCALE;
-					sy *= gfx.GFX_SCALE;
+					sx *= Graphics.GFX_SCALE;
+					sy *= Graphics.GFX_SCALE;
 
 					point_list[np].X = sx;
 					point_list[np].Y = sy;
@@ -547,7 +556,7 @@ namespace Elite.Engine
 
 			if (ship.flags.HasFlag(FLG.FLG_EXPLOSION))
 			{
-				draw_explosion(ref ship);
+				DrawExplosion(ref ship);
 				return;
 			}
 
@@ -558,13 +567,13 @@ namespace Elite.Engine
 
             if (ship.type == ShipType.Planet)
 			{
-				draw_planet(ref ship);
+				DrawPlanet(ref ship);
 				return;
 			}
 
 			if (ship.type == ShipType.Sun)
 			{
-				_draw.draw_sun(ship);
+				_draw.DrawSun(ship);
 				return;
 			}
 
@@ -577,18 +586,10 @@ namespace Elite.Engine
             DrawShip(ref ship);
 		}
 
-        private struct poly_data
-        {
-            internal float Z;
-            internal GFX_COL face_colour;
-            internal Vector2[] point_list;
-            internal int next;
-        };
-
         private const int MAX_POLYS = 100;
         private static int total_polys;
         private static int start_poly;
-        private static readonly poly_data[] poly_chain = new poly_data[MAX_POLYS];
+        private static readonly PolygonData[] poly_chain = new PolygonData[MAX_POLYS];
 
         internal static void RenderStart()
         {
@@ -605,7 +606,7 @@ namespace Elite.Engine
 
             for (int i = start_poly; i != -1; i = poly_chain[i].next)
             {
-                GFX_COL colour = elite.config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].face_colour;
+                GFX_COL colour = EliteMain.config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].face_colour;
 
                 if (poly_chain[i].point_list.Length == 2)
                 {
@@ -613,7 +614,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-				if (elite.config.UseWireframe)
+				if (EliteMain.config.UseWireframe)
 				{
 					_gfx.DrawPolygon(poly_chain[i].point_list, colour);
 				}

@@ -8,11 +8,11 @@
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Audio _audio;
-        private readonly space _space;
+        private readonly Space _space;
         private readonly Combat _combat;
         private readonly BreakPattern _breakPattern;
 
-        internal Launch(GameState gameState, IGfx gfx, Audio audio, space space, Combat combat)
+        internal Launch(GameState gameState, IGfx gfx, Audio audio, Space space, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -44,7 +44,7 @@
 
             if (_breakPattern.IsComplete)
             {
-                _space.launch_player();
+                _space.LaunchPlayer();
                 _gameState.SetView(SCR.SCR_FRONT_VIEW);
             }
         }

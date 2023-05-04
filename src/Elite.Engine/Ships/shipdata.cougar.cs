@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         internal static readonly ship_point[] cougar_point =
         {
@@ -89,7 +89,7 @@ namespace Elite.Engine.Ships
 		*/
 		};
 
-        internal static ship_data cougar_data = new(
+        internal static ShipData cougar_data = new(
             "Cougar",
             3,
             0,

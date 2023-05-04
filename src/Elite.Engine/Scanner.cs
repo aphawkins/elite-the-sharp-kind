@@ -48,12 +48,12 @@ namespace Elite.Engine
 			_combat = combat;
         }
 
-        /*
-		 * Update the scanner and draw all the lollipops.
-		 */
-        private void update_scanner()
+        /// <summary>
+        /// Update the scanner and draw all the lollipops.
+        /// </summary>
+        private void UpdateScanner()
 		{
-			for (int i = 0; i < elite.MAX_UNIV_OBJECTS; i++)
+			for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
 			{
 				if ((_universe[i].type <= 0) ||
                     _universe[i].flags.HasFlag(FLG.FLG_DEAD) ||
@@ -72,9 +72,9 @@ namespace Elite.Engine
 					continue;
 				}
 
-				x += elite.scanner_centre.X;
-				y1 += elite.scanner_centre.Y;
-				y2 += elite.scanner_centre.Y;
+				x += EliteMain.scanner_centre.X;
+				y1 += EliteMain.scanner_centre.Y;
+				y2 += EliteMain.scanner_centre.Y;
 
 				GFX_COL colour = _universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
 
@@ -119,7 +119,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			Vector2 compass = new(elite.compass_centre.X + (dest.X * 16), elite.compass_centre.Y + (dest.Y * -16));
+			Vector2 compass = new(EliteMain.compass_centre.X + (dest.X * 16), EliteMain.compass_centre.Y + (dest.Y * -16));
 
 			if (dest.Z < 0)
 			{
@@ -132,10 +132,10 @@ namespace Elite.Engine
 
 		}
 
-        /*
-		 * Display the speed bar.
-		 */
-        private void display_speed()
+		/// <summary>
+		/// Display the speed bar.
+		/// </summary>
+        private void DisplaySpeed()
 		{
 			float sx = 417;
             float sy = 384 + 9;
@@ -150,11 +150,12 @@ namespace Elite.Engine
 			}
 		}
 
-        /*
-		 * Draw an indicator bar.
-		 * Used for shields and energy banks.
-		 */
-        private void display_dial_bar(float len, Vector2 position)
+		/// <summary>
+		/// Draw an indicator bar. Used for shields and energy banks.
+		/// </summary>
+		/// <param name="len"></param>
+		/// <param name="position"></param>
+        private void DisplayDialBar(float len, Vector2 position)
 		{
             _gfx.DrawLine(new(position.X, position.Y + 384), new(position.X + len, position.Y + 384), GFX_COL.GFX_COL_GOLD);
 			int i = 1;
@@ -168,50 +169,50 @@ namespace Elite.Engine
             _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), GFX_COL.GFX_COL_DARK_RED);
 		}
 
-        /*
-		 * Display the current shield strengths.
-		 */
-        private void display_shields()
+		/// <summary>
+		/// Display the current shield strengths.
+		/// </summary>
+        private void DisplayShields()
 		{
 			if (_ship.shieldFront > 3)
 			{
-				display_dial_bar(_ship.shieldFront / 4, new(31, 7));
+				DisplayDialBar(_ship.shieldFront / 4, new(31, 7));
 			}
 
 			if (_ship.shieldRear > 3)
 			{
-				display_dial_bar(_ship.shieldRear / 4, new(31, 23));
+				DisplayDialBar(_ship.shieldRear / 4, new(31, 23));
 			}
 		}
 
-        private void display_altitude()
+        private void DisplayAltitude()
 		{
 			if (_ship.altitude > 3)
 			{
-				display_dial_bar(_ship.altitude / 4, new(31, 92));
+				DisplayDialBar(_ship.altitude / 4, new(31, 92));
 			}
 		}
 
-        private void display_cabin_temp()
+        private void DisplayCabinTemp()
 		{
 			if (_ship.cabinTemperature > 3)
 			{
-				display_dial_bar(_ship.cabinTemperature / 4, new(31, 60));
+				DisplayDialBar(_ship.cabinTemperature / 4, new(31, 60));
 			}
 		}
 
-        private void display_laser_temp()
+        private void DisplayLaserTemp()
 		{
-			if (elite.laser_temp > 0)
+			if (EliteMain.laser_temp > 0)
 			{
-				display_dial_bar(elite.laser_temp / 4, new(31, 76));
+				DisplayDialBar(EliteMain.laser_temp / 4, new(31, 76));
 			}
 		}
 
-        /*
-		 * Display the energy banks.
-		 */
-        private void display_energy()
+		/// <summary>
+		/// Display the energy banks.
+		/// </summary>
+        private void DisplayEnergy()
 		{
             float e1 = _ship.energy > 64 ? 64 : _ship.energy;
             float e2 = _ship.energy > 128 ? 64 : _ship.energy - 64;
@@ -220,26 +221,26 @@ namespace Elite.Engine
 
 			if (e4 > 0)
 			{
-				display_dial_bar(e4, new(416, 61));
+				DisplayDialBar(e4, new(416, 61));
 			}
 
 			if (e3 > 0)
 			{
-				display_dial_bar(e3, new(416, 79));
+				DisplayDialBar(e3, new(416, 79));
 			}
 
 			if (e2 > 0)
 			{
-				display_dial_bar(e2, new(416, 97));
+				DisplayDialBar(e2, new(416, 97));
 			}
 
 			if (e1 > 0)
 			{
-				display_dial_bar(e1, new(416, 115));
+				DisplayDialBar(e1, new(416, 115));
 			}
 		}
 
-        private void display_flight_roll()
+        private void DisplayFlightRoll()
 		{
 			float sx = 416;
 			float sy = 384 + 9 + 14;
@@ -253,7 +254,7 @@ namespace Elite.Engine
 			}
 		}
 
-        private void display_flight_climb()
+        private void DisplayFlightClimb()
 		{
 			float sx = 416;
 			float sy = 384 + 9 + 14 + 16;
@@ -267,15 +268,15 @@ namespace Elite.Engine
 			}
 		}
 
-        private void display_fuel()
+        private void DisplayFuel()
 		{
 			if (_ship.fuel > 0)
 			{
-				display_dial_bar(_ship.fuel * 64 / _ship.maxFuel, new(31, 44));
+				DisplayDialBar(_ship.fuel * 64 / _ship.maxFuel, new(31, 44));
 			}
 		}
 
-        private void display_missiles()
+        private void DisplayMissiles()
 		{
 			if (_ship.missileCount == 0)
 			{
@@ -300,28 +301,28 @@ namespace Elite.Engine
 			}
 		}
 
-		internal void update_console()
+		internal void UpdateConsole()
 		{
             _gfx.SetClipRegion(0, 0, 512, 512);
             _draw.DrawScanner();
 
-			display_speed();
-			display_flight_climb();
-			display_flight_roll();
-			display_shields();
-			display_altitude();
-			display_energy();
-			display_cabin_temp();
-			display_laser_temp();
-			display_fuel();
-			display_missiles();
+			DisplaySpeed();
+			DisplayFlightClimb();
+			DisplayFlightRoll();
+			DisplayShields();
+			DisplayAltitude();
+			DisplayEnergy();
+			DisplayCabinTemp();
+			DisplayLaserTemp();
+			DisplayFuel();
+			DisplayMissiles();
 
-			if (elite.docked)
+			if (EliteMain.docked)
 			{
 				return;
 			}
 
-			update_scanner();
+			UpdateScanner();
 			UpdateCompass();
 
 			if (_shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0)

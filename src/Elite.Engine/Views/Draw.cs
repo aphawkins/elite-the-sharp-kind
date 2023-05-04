@@ -32,20 +32,20 @@
                 }
 
                 i++;
-                _gfx.DrawTextLeft(x + gfx.GFX_X_OFFSET, y + gfx.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x + Graphics.GFX_X_OFFSET, y + Graphics.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
                 previous = i;
-                y += 8 * gfx.GFX_SCALE;
+                y += 8 * Graphics.GFX_SCALE;
             }
         }
 
         internal void ClearDisplay()
         {
-            _gfx.ClearArea(gfx.GFX_X_OFFSET + 1, gfx.GFX_Y_OFFSET + 1, 510 + gfx.GFX_X_OFFSET, 383 + gfx.GFX_Y_OFFSET);
+            _gfx.ClearArea(Graphics.GFX_X_OFFSET + 1, Graphics.GFX_Y_OFFSET + 1, 510 + Graphics.GFX_X_OFFSET, 383 + Graphics.GFX_Y_OFFSET);
         }
 
         internal void DrawScanner()
         {
-            _gfx.DrawImage(Image.Scanner, new(gfx.GFX_X_OFFSET, 385 + gfx.GFX_Y_OFFSET));
+            _gfx.DrawImage(Image.Scanner, new(Graphics.GFX_X_OFFSET, 385 + Graphics.GFX_Y_OFFSET));
         }
 
         internal void DrawBorder()
@@ -75,15 +75,15 @@
             }
         }
 
-        internal void draw_sun(univ_object planet)
+        internal void DrawSun(univ_object planet)
         {
             Vector2 centre = new()
             {
-                X = ((planet.location.X * 256 / planet.location.Z) + 128) * gfx.GFX_SCALE,
-                Y = ((-planet.location.Y * 256 / planet.location.Z) + 96) * gfx.GFX_SCALE,
+                X = ((planet.location.X * 256 / planet.location.Z) + 128) * Graphics.GFX_SCALE,
+                Y = ((-planet.location.Y * 256 / planet.location.Z) + 96) * Graphics.GFX_SCALE,
             };
 
-            float radius = 6291456 / planet.location.Length() * gfx.GFX_SCALE;
+            float radius = 6291456 / planet.location.Length() * Graphics.GFX_SCALE;
 
             if ((centre.X + radius < 0) ||
                 (centre.X - radius > 511) ||
@@ -93,8 +93,8 @@
                 return;
             }
 
-            centre.X += gfx.GFX_X_OFFSET;
-            centre.Y += gfx.GFX_Y_OFFSET;
+            centre.X += Graphics.GFX_X_OFFSET;
+            centre.Y += Graphics.GFX_Y_OFFSET;
 
             float s = -radius;
             float x = radius;
@@ -129,8 +129,8 @@
                 Y = centre.Y + y
             };
 
-            if (s.Y is < (gfx.GFX_VIEW_TY + gfx.GFX_Y_OFFSET) or
-                > (gfx.GFX_VIEW_BY + gfx.GFX_Y_OFFSET))
+            if (s.Y is < (Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET) or
+                > (Graphics.GFX_VIEW_BY + Graphics.GFX_Y_OFFSET))
             {
                 return;
             }
@@ -141,20 +141,20 @@
             s.X -= radius * RNG.Random(2, 9) / 256f;
             ex += radius * RNG.Random(2, 9) / 256f;
 
-            if ((s.X > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET) ||
-                (ex < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET))
+            if ((s.X > Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET) ||
+                (ex < Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET))
             {
                 return;
             }
 
-            if (s.X < gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET)
+            if (s.X < Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET)
             {
-                s.X = gfx.GFX_VIEW_TX + gfx.GFX_X_OFFSET;
+                s.X = Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET;
             }
 
-            if (ex > gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET)
+            if (ex > Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET)
             {
-                ex = gfx.GFX_VIEW_BX + gfx.GFX_X_OFFSET;
+                ex = Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET;
             }
 
             float inner = radius * (200 + RNG.Random(7)) / 256;

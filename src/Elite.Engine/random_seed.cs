@@ -18,7 +18,7 @@
 
 namespace Elite.Engine
 {
-	internal class random_seed
+	internal class RandomSeed
 	{
 		internal int a;
 		internal int b;

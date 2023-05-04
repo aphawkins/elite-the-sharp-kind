@@ -1,6 +1,6 @@
 ﻿namespace Elite.Engine.Types
 {
-    internal class planet_data
+    internal class PlanetData
     {
         internal int government;
         internal int economy;

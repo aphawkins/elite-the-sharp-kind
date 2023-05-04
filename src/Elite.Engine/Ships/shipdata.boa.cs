@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         internal static readonly ship_point[] boa_point =
         {
@@ -87,7 +87,7 @@ namespace Elite.Engine.Ships
             new (GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x00,-0x6B), new[] { 12, 10, 11 }),
         };
 
-        internal static ship_data boa_data = new(
+        internal static ShipData boa_data = new(
             "Boa",
             5,
             0,

@@ -82,7 +82,7 @@
         public void Reset()
         {
             _isSuccess = null;
-            _name = _gameState.cmdr.name;
+            _name = _gameState.cmdr.Name;
         }
 
         public void UpdateUniverse()

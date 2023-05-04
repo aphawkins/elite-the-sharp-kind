@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         internal static readonly ship_point[] dodec_point =
         {
@@ -104,7 +104,7 @@ namespace Elite.Engine.Ships
             new ship_face(GFX_COL.GFX_COL_BLACK, new(    0x00,  0x00,  0xC4), new[] { 22, 20, 21, 23 }),
         };
 
-        internal static ship_data dodec_data = new(
+        internal static ShipData dodec_data = new(
             "Dodec Space Station",
             0,
             0,

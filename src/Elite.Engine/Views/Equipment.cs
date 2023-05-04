@@ -268,12 +268,12 @@ namespace Elite.Engine.Views
             {
                 case EquipmentType.EQ_FUEL:
                     _ship.fuel = _ship.maxFuel;
-                    elite.scanner.update_console();
+                    EliteMain.scanner.UpdateConsole();
                     break;
 
                 case EquipmentType.EQ_MISSILE:
                     _ship.missileCount++;
-                    elite.scanner.update_console();
+                    EliteMain.scanner.UpdateConsole();
                     break;
 
                 case EquipmentType.EQ_CARGO_BAY:

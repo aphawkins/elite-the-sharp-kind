@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         private static readonly ship_point[] boulder_point =
         {
@@ -64,7 +64,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_GREY_1, new( 0x28, 0x6E,-0x26), new[] { 6, 4, 0 }),
         };
 
-        internal static ship_data boulder_data = new(
+        internal static ShipData boulder_data = new(
             "Boulder",
             0,
             0,

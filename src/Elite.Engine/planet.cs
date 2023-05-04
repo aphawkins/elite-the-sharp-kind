@@ -36,14 +36,14 @@ namespace Elite.Engine
 			_gameState = gameState;
 		}
 
-		internal static void waggle_galaxy(ref galaxy_seed glx_ptr)
+		internal static void WaggleGalaxy(ref GalaxySeed glx_ptr)
 		{
 			int x;
 			int y;
 			int carry_flag;
 
-			x = glx_ptr.a + glx_ptr.c;
-			y = glx_ptr.b + glx_ptr.d;
+			x = glx_ptr.A + glx_ptr.C;
+			y = glx_ptr.B + glx_ptr.D;
 
 			if (x > 0xFF)
 			{
@@ -53,13 +53,13 @@ namespace Elite.Engine
 			x &= 0xFF;
 			y &= 0xFF;
 
-			glx_ptr.a = glx_ptr.c;
-			glx_ptr.b = glx_ptr.d;
-			glx_ptr.c = glx_ptr.e;
-			glx_ptr.d = glx_ptr.f;
+			glx_ptr.A = glx_ptr.C;
+			glx_ptr.B = glx_ptr.D;
+			glx_ptr.C = glx_ptr.E;
+			glx_ptr.D = glx_ptr.F;
 
-			x += glx_ptr.c;
-			y += glx_ptr.d;
+			x += glx_ptr.C;
+			y += glx_ptr.D;
 
 			if (x > 0xFF)
 			{
@@ -71,74 +71,74 @@ namespace Elite.Engine
             x &= 0xFF;
 			y &= 0xFF;
 
-			glx_ptr.e = x;
-			glx_ptr.f = y;
+			glx_ptr.E = x;
+			glx_ptr.F = y;
 		}
 
-		internal static galaxy_seed find_planet(galaxy_seed galaxy, Vector2 centre)
+		internal static GalaxySeed FindPlanet(GalaxySeed galaxy, Vector2 centre)
 		{
-			galaxy_seed glx = (galaxy_seed)galaxy.Clone();
+			GalaxySeed glx = (GalaxySeed)galaxy.Clone();
 			float min_dist = 10000;
-			galaxy_seed planet = new();
+			GalaxySeed planet = new();
 
 			for (int i = 0; i < 256; i++)
 			{
-				float dx = MathF.Abs(centre.X - glx.d);
-				float dy = MathF.Abs(centre.Y - glx.b);
+				float dx = MathF.Abs(centre.X - glx.D);
+				float dy = MathF.Abs(centre.Y - glx.B);
 
 				float distance = dx > dy ? (dx + dx + dy) / 2 : (dx + dy + dy) / 2;
 
                 if (distance < min_dist)
 				{
 					min_dist = distance;
-					planet = (galaxy_seed)glx.Clone();
+					planet = (GalaxySeed)glx.Clone();
 				}
 
-				waggle_galaxy(ref glx);
-				waggle_galaxy(ref glx);
-				waggle_galaxy(ref glx);
-				waggle_galaxy(ref glx);
+				WaggleGalaxy(ref glx);
+				WaggleGalaxy(ref glx);
+				WaggleGalaxy(ref glx);
+				WaggleGalaxy(ref glx);
 			}
 
 			return planet;
 		}
 
-		internal static int find_planet_number(galaxy_seed galaxy, galaxy_seed planet)
+		internal static int FindPlanetNumber(GalaxySeed galaxy, GalaxySeed planet)
 		{
-			galaxy_seed glx = (galaxy_seed)galaxy.Clone();
+			GalaxySeed glx = (GalaxySeed)galaxy.Clone();
 
             for (int i = 0; i < 256; i++)
 			{
 
-				if ((planet.a == glx.a) &&
-					(planet.b == glx.b) &&
-					(planet.c == glx.c) &&
-					(planet.d == glx.d) &&
-					(planet.e == glx.e) &&
-					(planet.f == glx.f))
+				if ((planet.A == glx.A) &&
+					(planet.B == glx.B) &&
+					(planet.C == glx.C) &&
+					(planet.D == glx.D) &&
+					(planet.E == glx.E) &&
+					(planet.F == glx.F))
                 {
                     return i;
                 }
 
-                waggle_galaxy(ref glx);
-				waggle_galaxy(ref glx);
-				waggle_galaxy(ref glx);
-				waggle_galaxy(ref glx);
+                WaggleGalaxy(ref glx);
+				WaggleGalaxy(ref glx);
+				WaggleGalaxy(ref glx);
+				WaggleGalaxy(ref glx);
 			}
 
 			return -1;
 		}
 
-		internal static string name_planet(galaxy_seed galaxy, bool capitalise)
+		internal static string NamePlanet(GalaxySeed galaxy, bool capitalise)
 		{
-			galaxy_seed glx = (galaxy_seed)galaxy.Clone();
+			GalaxySeed glx = (GalaxySeed)galaxy.Clone();
 
             string name = string.Empty;
-			int size = (glx.a & 0x40) == 0 ? 3 : 4;
+			int size = (glx.A & 0x40) == 0 ? 3 : 4;
 
             for (int i = 0; i < size; i++)
 			{
-				int x = glx.f & 0x1F;
+				int x = glx.F & 0x1F;
 				if (x != 0)
 				{
 					x += 12;
@@ -150,7 +150,7 @@ namespace Elite.Engine
 					}
 				}
 
-				waggle_galaxy(ref glx);
+				WaggleGalaxy(ref glx);
 			}
 
 			if (capitalise)
@@ -161,35 +161,35 @@ namespace Elite.Engine
 			return name;
 		}
 
-		internal static string describe_inhabitants(galaxy_seed planet)
+		internal static string DescribeInhabitants(GalaxySeed planet)
 		{
 			StringBuilder sb = new("(");
 
-			if (planet.e < 128)
+			if (planet.E < 128)
 			{
 				sb.Append("Human Colonial");
 			}
 			else
 			{
-				int inhab = (planet.f / 4) & 7;
+				int inhab = (planet.F / 4) & 7;
 				if (inhab < 3)
 				{
 					sb.Append(inhabitant_desc1[inhab]);
 				}
 
-				inhab = planet.f / 32;
+				inhab = planet.F / 32;
 				if (inhab < 6)
 				{
 					sb.Append(inhabitant_desc2[inhab]);
 				}
 
-				inhab = (planet.d ^ planet.b) & 7;
+				inhab = (planet.D ^ planet.B) & 7;
 				if (inhab < 6)
 				{
 					sb.Append(inhabitant_desc3[inhab]);
 				}
 
-				inhab = (inhab + (planet.f & 3)) & 7;
+				inhab = (inhab + (planet.F & 3)) & 7;
 				sb.Append(inhabitant_desc4[inhab]);
 			}
 
@@ -198,12 +198,12 @@ namespace Elite.Engine
 		}
 
 
-		internal static planet_data generate_planet_data(galaxy_seed planet_seed)
+		internal static PlanetData GeneratePlanetData(GalaxySeed planet_seed)
 		{
-            planet_data pl = new()
+            PlanetData pl = new()
             {
-                government = (planet_seed.c / 8) & 7,
-                economy = planet_seed.b & 7
+                government = (planet_seed.C / 8) & 7,
+                economy = planet_seed.B & 7
             };
 
             if (pl.government < 2)
@@ -212,7 +212,7 @@ namespace Elite.Engine
             }
 
             pl.techlevel = pl.economy ^ 7;
-			pl.techlevel += planet_seed.d & 3;
+			pl.techlevel += planet_seed.D & 3;
 			pl.techlevel += (pl.government / 2) + (pl.government & 1);
 
 
@@ -228,19 +228,19 @@ namespace Elite.Engine
 			pl.productivity *= 8;
 
 			pl.population /= 10;
-			pl.radius = (((planet_seed.f & 15) + 11) * 256) + planet_seed.d;
+			pl.radius = (((planet_seed.F & 15) + 11) * 256) + planet_seed.D;
 
 			return pl;
 		}
 
-        internal bool find_planet_by_name(string find_name)
+        internal bool FindPlanetByName(string find_name)
         {
             bool found = false;
-            galaxy_seed glx = (galaxy_seed)_gameState.cmdr.galaxy.Clone();
+            GalaxySeed glx = (GalaxySeed)_gameState.cmdr.Galaxy.Clone();
 
             for (int i = 0; i < 256; i++)
             {
-                string planet_name = Planet.name_planet(glx, false);
+                string planet_name = Planet.NamePlanet(glx, false);
 
                 if (planet_name == find_name)
                 {
@@ -250,19 +250,19 @@ namespace Elite.Engine
                     break;
                 }
 
-                Planet.waggle_galaxy(ref glx);
-                Planet.waggle_galaxy(ref glx);
-                Planet.waggle_galaxy(ref glx);
-                Planet.waggle_galaxy(ref glx);
+                Planet.WaggleGalaxy(ref glx);
+                Planet.WaggleGalaxy(ref glx);
+                Planet.WaggleGalaxy(ref glx);
+                Planet.WaggleGalaxy(ref glx);
             }
 
 			return found;
         }
 
-        internal static float calc_distance_to_planet(galaxy_seed from_planet, galaxy_seed to_planet)
+        internal static float CalculateDistanceToPlanet(GalaxySeed from_planet, GalaxySeed to_planet)
         {
-            float dx = MathF.Abs(to_planet.d - from_planet.d);
-            float dy = MathF.Abs(to_planet.b - from_planet.b);
+            float dx = MathF.Abs(to_planet.D - from_planet.D);
+            float dy = MathF.Abs(to_planet.B - from_planet.B);
 
             dx *= dx;
             dy /= 2;

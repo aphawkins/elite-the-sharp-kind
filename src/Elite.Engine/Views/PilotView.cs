@@ -3,7 +3,7 @@
     using Elite.Engine.Enums;
     using Elite.Engine.Lasers;
     using Elite.Engine.Ships;
-    using static Elite.Engine.elite;
+    using static Elite.Engine.EliteMain;
 
     internal class PilotView : IView
     {
@@ -11,11 +11,11 @@
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private readonly LaserDraw _laser;
-        private readonly pilot _pilot;
+        private readonly Pilot _pilot;
         private readonly PlayerShip _ship;
         private int drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, pilot pilot, PlayerShip ship)
+        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -32,13 +32,13 @@
                 _laser.DrawLaserLines();
             }
 
-            if (space.hyper_galactic)
+            if (Space.hyper_galactic)
             {
                 _gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
             }
-            else if (space.hyper_countdown > 0)
+            else if (Space.hyper_countdown > 0)
             {
-                _gfx.DrawTextCentre(358, $"Hyperspace - {space.hyper_name}", 120, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextCentre(358, $"Hyperspace - {Space.hyper_name}", 120, GFX_COL.GFX_COL_WHITE);
             }
         }
 
@@ -102,19 +102,19 @@
             {
                 if (auto_pilot)
                 {
-                    _pilot.disengage_auto_pilot();
+                    _pilot.DisengageAutoPilot();
                 }
             }
         }
 
         public void Reset()
         {
-            Stars.flip_stars();
+            Stars.FlipStars();
         }
 
         public void UpdateUniverse()
         {
-            drawLaserFrames = elite.drawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
+            drawLaserFrames = EliteMain.drawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
         }
 
         internal void DrawViewName(string name)

@@ -24,16 +24,16 @@ namespace Elite.Engine
     using Elite.Engine.Types;
     using Elite.Engine.Views;
 
-    public class elite
+    public class EliteMain
     {
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
         internal static Scanner scanner;
-        private readonly space _space;
+        private readonly Space _space;
         private readonly Stars _stars;
-        private readonly threed _threed;
-        private readonly pilot _pilot;
+        private readonly Threed _threed;
+        private readonly Pilot _pilot;
         private readonly Combat _combat;
         private readonly Trade _trade;
         private readonly Planet _planet;
@@ -71,48 +71,48 @@ namespace Elite.Engine
             internal List<long> framesDrawn = new();
         }
 
-        internal static ship_data[] ship_list = new ship_data[shipdata.NO_OF_SHIPS + 1]
+        internal static ShipData[] ship_list = new ShipData[Ship.NO_OF_SHIPS + 1]
         {
             new(),
-            shipdata.missile_data,
-            shipdata.coriolis_data,
-            shipdata.esccaps_data,
-            shipdata.alloy_data,
-            shipdata.cargo_data,
-            shipdata.boulder_data,
-            shipdata.asteroid_data,
-            shipdata.rock_data,
-            shipdata.orbit_data,
-            shipdata.transp_data,
-            shipdata.cobra3a_data,
-            shipdata.pythona_data,
-            shipdata.boa_data,
-            shipdata.anacnda_data,
-            shipdata.hermit_data,
-            shipdata.viper_data,
-            shipdata.sidewnd_data,
-            shipdata.mamba_data,
-            shipdata.krait_data,
-            shipdata.adder_data,
-            shipdata.gecko_data,
-            shipdata.cobra1_data,
-            shipdata.worm_data,
-            shipdata.cobra3b_data,
-            shipdata.asp2_data,
-            shipdata.pythonb_data,
-            shipdata.ferdlce_data,
-            shipdata.moray_data,
-            shipdata.thargoid_data,
-            shipdata.thargon_data,
-            shipdata.constrct_data,
-            shipdata.cougar_data,
-            shipdata.dodec_data
+            Ship.missile_data,
+            Ship.coriolis_data,
+            Ship.esccaps_data,
+            Ship.alloy_data,
+            Ship.cargo_data,
+            Ship.boulder_data,
+            Ship.asteroid_data,
+            Ship.rock_data,
+            Ship.orbit_data,
+            Ship.transp_data,
+            Ship.cobra3a_data,
+            Ship.pythona_data,
+            Ship.boa_data,
+            Ship.anacnda_data,
+            Ship.hermit_data,
+            Ship.viper_data,
+            Ship.sidewnd_data,
+            Ship.mamba_data,
+            Ship.krait_data,
+            Ship.adder_data,
+            Ship.gecko_data,
+            Ship.cobra1_data,
+            Ship.worm_data,
+            Ship.cobra3b_data,
+            Ship.asp2_data,
+            Ship.pythonb_data,
+            Ship.ferdlce_data,
+            Ship.moray_data,
+            Ship.thargoid_data,
+            Ship.thargon_data,
+            Ship.constrct_data,
+            Ship.cougar_data,
+            Ship.dodec_data
         };
 
-        /*
-		 * Initialise the game parameters.
-		 */
-        private void initialise_game()
+        /// <summary>
+        /// Initialise the game parameters.
+        /// </summary>
+        private void InitialiseGame()
         {
             if (_gameState.IsInitialised)
             {
@@ -127,17 +127,17 @@ namespace Elite.Engine
             docked = true;
             drawLasers = false;
             mcount = 0;
-            space.hyper_ready = false;
+            Space.hyper_ready = false;
             detonate_bomb = false;
             game_paused = false;
             auto_pilot = false;
 
-            Stars.create_new_stars();
+            Stars.CreateNewStars();
             _combat.ClearUniverse();
 
             cross = new(-1, -1);
 
-            _space.dock_player();
+            _space.DockPlayer();
 
             _gameState.SetView(SCR.SCR_INTRO_ONE);
         }
@@ -147,7 +147,7 @@ namespace Elite.Engine
             exitGame = true;
         }
 
-        private void handle_flight_keys()
+        private void HandleFlightKeys()
         {
             if (game_paused)
             {
@@ -248,11 +248,11 @@ namespace Elite.Engine
                 {
                     if (config.InstantDock)
                     {
-                        _space.engage_docking_computer();
+                        _space.EngageDockingComputer();
                     }
                     else
                     {
-                        _pilot.engage_auto_pilot();
+                        _pilot.EngageAutoPilot();
                     }
                 }
             }
@@ -269,17 +269,17 @@ namespace Elite.Engine
             {
                 if (_keyboard.IsKeyPressed(CommandKey.Ctrl))
                 {
-                    _space.start_galactic_hyperspace();
+                    _space.StartGalacticHyperspace();
                 }
                 else
                 {
-                    _space.start_hyperspace();
+                    _space.StartHyperspace();
                 }
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.Jump) && (!docked) && (!_gameState.witchspace))
             {
-                _space.jump_warp();
+                _space.JumpWarp();
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.FireMissile))
@@ -345,14 +345,14 @@ namespace Elite.Engine
             }
         }
 
-        internal static void info_message(string message)
+        internal static void InfoMessage(string message)
         {
             message_string = message;
             message_count = 37;
             //	sound.snd_play_sample (SND_BEEP);
         }
 
-        public elite(IGfx alg_gfx, ISound sound, IKeyboard keyboard)
+        public EliteMain(IGfx alg_gfx, ISound sound, IKeyboard keyboard)
         {
             _gfx = alg_gfx;
             _audio = new Audio(sound);
@@ -372,14 +372,14 @@ namespace Elite.Engine
             _save = new(_gameState, _ship, _trade);
             _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _planet, _ship);
 
-            scanner = new Scanner(_gameState, _gfx, _draw, space.universe, space.ship_count, _ship, _combat);
+            scanner = new Scanner(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
             config = ConfigFile.ReadConfigAsync().Result;
 
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard, _ship, _combat));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars, _ship, _combat));
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gameState, _gfx, _draw, keyboard, _planet, _ship));
             _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gameState, _gfx, _draw, keyboard, _planet, _ship));
-            _views.Add(SCR.SCR_PLANET_DATA, new PlanetData(_gameState, _gfx, _draw));
+            _views.Add(SCR.SCR_PLANET_DATA, new PlanetDataView(_gameState, _gfx, _draw));
             _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gameState, _gfx, _draw, keyboard, _trade));
             _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gameState, _gfx, _draw, _ship, _trade));
             _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
@@ -423,7 +423,7 @@ namespace Elite.Engine
 
         private void DrawFrameElite()
         {
-            initialise_game();
+            InitialiseGame();
 
             _audio.UpdateSound();
             _gfx.SetClipRegion(1, 1, 510, 383);
@@ -431,7 +431,7 @@ namespace Elite.Engine
             _ship.isRolling = false;
             _ship.isClimbing = false;
 
-            handle_flight_keys();
+            HandleFlightKeys();
 
             if (game_paused)
             {
@@ -455,16 +455,16 @@ namespace Elite.Engine
                 _ship.AutoDock();
                 if ((mcount & 127) == 0)
                 {
-                    info_message("Docking Computers On");
+                    InfoMessage("Docking Computers On");
                 }
             }
 
             _draw.ClearDisplay();
 
             _gameState.currentView.UpdateUniverse();
-            _space.update_universe();
+            _space.UpdateUniverse();
             _gameState.currentView.Draw();
-            scanner.update_console();
+            scanner.UpdateConsole();
             _gameState.currentView.HandleInput();
 
 #if DEBUG
@@ -480,12 +480,12 @@ namespace Elite.Engine
                     _gfx.DrawTextCentre(358, message_string, 120, GFX_COL.GFX_COL_WHITE);
                 }
 
-                if (space.hyper_ready)
+                if (Space.hyper_ready)
                 {
-                    _space.display_hyper_status();
+                    _space.DisplayHyperStatus();
                     if ((mcount & 3) == 0)
                     {
-                        _space.countdown_hyperspace();
+                        _space.CountdownHyperspace();
                     }
                 }
 
@@ -504,16 +504,16 @@ namespace Elite.Engine
                 {
                     if (_ship.IsEnergyLow())
                     {
-                        info_message("ENERGY LOW");
+                        InfoMessage("ENERGY LOW");
                         _audio.PlayEffect(SoundEffect.Beep);
                     }
 
-                    _space.update_altitude();
+                    _space.UpdateAltitude();
                 }
 
                 if ((mcount & 31) == 20)
                 {
-                    _space.update_cabin_temp();
+                    _space.UpdateCabinTemp();
                 }
 
                 if ((mcount == 0) && (!_gameState.witchspace))

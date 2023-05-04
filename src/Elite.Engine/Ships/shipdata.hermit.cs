@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         internal static readonly ship_point[] hermit_point =
         {
@@ -79,7 +79,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_GREY_1, new( 0x2F, 0x5E,-0x3F), new[] {  4, 7, 0 }),
         };
 
-        internal static ship_data hermit_data = new(
+        internal static ShipData hermit_data = new(
             "Rock Hermit",
             7,
             0,

@@ -31,21 +31,23 @@ namespace Elite.Engine
 	using Elite.Engine.Enums;
 	using Elite.Engine.Types;
 
-	internal class pilot
+	internal class Pilot
 	{
 		private readonly GameState _gameState;
         private readonly Audio _audio;
 
-		internal pilot(GameState gameState, Audio audio)
+		internal Pilot(GameState gameState, Audio audio)
 		{
 			_gameState = gameState;
 			_audio = audio;
 		}
 
-        /*
-		 * Fly to a given point in space.
-		 */
-        private static void fly_to_vector(ref univ_object ship, Vector3 vec)
+		/// <summary>
+		/// Fly to a given point in space.
+		/// </summary>
+		/// <param name="ship"></param>
+		/// <param name="vec"></param>
+        private static void FlyToVector(ref univ_object ship, Vector3 vec)
 		{
 			Vector3 nvec;
 			float direction;
@@ -111,65 +113,67 @@ namespace Elite.Engine
 			}
 		}
 
-        /*
-		 * Fly towards the planet.
-		 */
-        private static void fly_to_planet(ref univ_object ship)
+		/// <summary>
+		/// Fly towards the planet.
+		/// </summary>
+		/// <param name="ship"></param>
+        private static void FlyToPlanet(ref univ_object ship)
 		{
 			Vector3 vec;
 
-			vec.X = space.universe[0].location.X - ship.location.X;
-			vec.Y = space.universe[0].location.Y - ship.location.Y;
-			vec.Z = space.universe[0].location.Z - ship.location.Z;
+			vec.X = Space.universe[0].location.X - ship.location.X;
+			vec.Y = Space.universe[0].location.Y - ship.location.Y;
+			vec.Z = Space.universe[0].location.Z - ship.location.Z;
 
-			fly_to_vector(ref ship, vec);
+			FlyToVector(ref ship, vec);
 		}
 
-        /*
-		 * Fly to a point in front of the station docking bay.
-		 * Done prior to the final stage of docking.
-		 */
-        private static void fly_to_station_front(ref univ_object ship)
+		/// <summary>
+		/// Fly to a point in front of the station docking bay. Done prior to the final stage of docking.
+		/// </summary>
+		/// <param name="ship"></param>
+        private static void FlyToStationFront(ref univ_object ship)
 		{
 			Vector3 vec;
 
-			vec.X = space.universe[1].location.X - ship.location.X;
-			vec.Y = space.universe[1].location.Y - ship.location.Y;
-			vec.Z = space.universe[1].location.Z - ship.location.Z;
+			vec.X = Space.universe[1].location.X - ship.location.X;
+			vec.Y = Space.universe[1].location.Y - ship.location.Y;
+			vec.Z = Space.universe[1].location.Z - ship.location.Z;
 
-			vec.X += space.universe[1].rotmat[2].X * 768;
-			vec.Y += space.universe[1].rotmat[2].Y * 768;
-			vec.Z += space.universe[1].rotmat[2].Z * 768;
+			vec.X += Space.universe[1].rotmat[2].X * 768;
+			vec.Y += Space.universe[1].rotmat[2].Y * 768;
+			vec.Z += Space.universe[1].rotmat[2].Z * 768;
 
-			fly_to_vector(ref ship, vec);
+			FlyToVector(ref ship, vec);
 		}
 
-        /*
-		 * Fly towards the space station.
-		 */
-        private static void fly_to_station(ref univ_object ship)
+        /// <summary>
+        /// Fly towards the space station.
+        /// </summary>
+        /// <param name="ship"></param>
+        private static void FlyToStation(ref univ_object ship)
 		{
 			Vector3 vec;
 
-			vec.X = space.universe[1].location.X - ship.location.X;
-			vec.Y = space.universe[1].location.Y - ship.location.Y;
-			vec.Z = space.universe[1].location.Z - ship.location.Z;
+			vec.X = Space.universe[1].location.X - ship.location.X;
+			vec.Y = Space.universe[1].location.Y - ship.location.Y;
+			vec.Z = Space.universe[1].location.Z - ship.location.Z;
 
-			fly_to_vector(ref ship, vec);
+			FlyToVector(ref ship, vec);
 		}
 
-        /*
-		 * Final stage of docking.
-		 * Fly into the docking bay.
-		 */
-        private static void fly_to_docking_bay(ref univ_object ship)
+        /// <summary>
+        /// Final stage of docking. Fly into the docking bay.
+        /// </summary>
+        /// <param name="ship"></param>
+        private static void FlyToDockingBay(ref univ_object ship)
 		{
 			Vector3 diff;
 			float dir;
 
-			diff.X = ship.location.X - space.universe[1].location.X;
-			diff.Y = ship.location.Y - space.universe[1].location.Y;
-			diff.Z = ship.location.Z - space.universe[1].location.Z;
+			diff.X = ship.location.X - Space.universe[1].location.X;
+			diff.Y = ship.location.Y - Space.universe[1].location.Y;
+			diff.Z = ship.location.Z - Space.universe[1].location.Z;
 
 			Vector3 vec = VectorMaths.unit_vector(diff);
 
@@ -206,7 +210,7 @@ namespace Elite.Engine
 
 			ship.rotz = 0;
 
-			dir = VectorMaths.vector_dot_product(ship.rotmat[0], space.universe[1].rotmat[1]);
+			dir = VectorMaths.vector_dot_product(ship.rotmat[0], Space.universe[1].rotmat[1]);
 
 			if (MathF.Abs(dir) >= 0.9166f)
 			{
@@ -219,10 +223,11 @@ namespace Elite.Engine
 			ship.rotz = 0;
 		}
 
-		/*
-		 * Fly a ship to the planet or to the space station and dock it.
-		 */
-		internal static void auto_pilot_ship(ref univ_object ship)
+		/// <summary>
+		/// Fly a ship to the planet or to the space station and dock it.
+		/// </summary>
+		/// <param name="ship"></param>
+		internal static void AutoPilotShip(ref univ_object ship)
 		{
 			Vector3 diff;
 			Vector3 vec;
@@ -230,15 +235,15 @@ namespace Elite.Engine
 			float dir;
 
 			if (ship.flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
-				((space.ship_count[ShipType.Coriolis] == 0) && (space.ship_count[ShipType.Dodec] == 0)))
+				((Space.ship_count[ShipType.Coriolis] == 0) && (Space.ship_count[ShipType.Dodec] == 0)))
 			{
-				fly_to_planet(ref ship);
+				FlyToPlanet(ref ship);
 				return;
 			}
 
-			diff.X = ship.location.X - space.universe[1].location.X;
-			diff.Y = ship.location.Y - space.universe[1].location.Y;
-			diff.Z = ship.location.Z - space.universe[1].location.Z;
+			diff.X = ship.location.X - Space.universe[1].location.X;
+			diff.Y = ship.location.Y - Space.universe[1].location.Y;
+			diff.Z = ship.location.Z - Space.universe[1].location.Z;
 
 			dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
 
@@ -249,11 +254,11 @@ namespace Elite.Engine
 			}
 
 			vec = VectorMaths.unit_vector(diff);
-			dir = VectorMaths.vector_dot_product(space.universe[1].rotmat[2], vec);
+			dir = VectorMaths.vector_dot_product(Space.universe[1].rotmat[2], vec);
 
 			if (dir < 0.9722)
 			{
-				fly_to_station_front(ref ship);
+				FlyToStationFront(ref ship);
 				return;
 			}
 
@@ -261,29 +266,29 @@ namespace Elite.Engine
 
 			if (dir < -0.9444)
 			{
-				fly_to_docking_bay(ref ship);
+				FlyToDockingBay(ref ship);
 				return;
 			}
 
-			fly_to_station(ref ship);
+			FlyToStation(ref ship);
 		}
 
-		internal void engage_auto_pilot()
+		internal void EngageAutoPilot()
 		{
-			if (elite.auto_pilot || _gameState.witchspace || space.hyper_ready)
+			if (EliteMain.auto_pilot || _gameState.witchspace || Space.hyper_ready)
 			{
 				return;
 			}
 
-			elite.auto_pilot = true;
+			EliteMain.auto_pilot = true;
 			_audio.PlayMusic(Music.BlueDanube, true);
 		}
 
-		internal void disengage_auto_pilot()
+		internal void DisengageAutoPilot()
 		{
-			if (elite.auto_pilot)
+			if (EliteMain.auto_pilot)
 			{
-				elite.auto_pilot = false;
+				EliteMain.auto_pilot = false;
 				_audio.StopMusic();
 			}
 		}

@@ -1,31 +1,31 @@
 ﻿namespace Elite.Engine.Types
 {
-    public class galaxy_seed : ICloneable
+    public class GalaxySeed : ICloneable
     {
-        public int a { get; set; }    /* 6c */
-        public int b { get; set; }    /* 6d */
-        public int c { get; set; }    /* 6e */
-        public int d { get; set; }    /* 6f */
-        public int e { get; set; }    /* 70 */
-        public int f { get; set; }    /* 71 */
+        public int A { get; set; }    /* 6c */
+        public int B { get; set; }    /* 6d */
+        public int C { get; set; }    /* 6e */
+        public int D { get; set; }    /* 6f */
+        public int E { get; set; }    /* 70 */
+        public int F { get; set; }    /* 71 */
 
-        public galaxy_seed()
+        public GalaxySeed()
         {
         }
 
-        protected galaxy_seed(galaxy_seed other)
+        protected GalaxySeed(GalaxySeed other)
         {
-            a = other.a;
-            b = other.b;
-            c = other.c;
-            d = other.d;
-            e = other.e;
-            f = other.f;
+            A = other.A;
+            B = other.B;
+            C = other.C;
+            D = other.D;
+            E = other.E;
+            F = other.F;
         }
 
         public object Clone()
         {
-            return new galaxy_seed(this);
+            return new GalaxySeed(this);
         }
     }
 }

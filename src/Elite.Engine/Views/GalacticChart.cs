@@ -46,28 +46,28 @@ namespace Elite.Engine.Views
         {
             _isFind = false;
             _findName = string.Empty;
-            galaxy_seed glx = (galaxy_seed)_gameState.cmdr.galaxy.Clone();
+            GalaxySeed glx = (GalaxySeed)_gameState.cmdr.Galaxy.Clone();
             _planetPixels.Clear();
 
             for (int i = 0; i < 256; i++)
             {
                 Vector2 pixel = new()
                 {
-                    X = glx.d * gfx.GFX_SCALE,
-                    Y = (glx.b / (2f / gfx.GFX_SCALE)) + (18f * gfx.GFX_SCALE) + 1
+                    X = glx.D * Graphics.GFX_SCALE,
+                    Y = (glx.B / (2f / Graphics.GFX_SCALE)) + (18f * Graphics.GFX_SCALE) + 1
                 };
 
                 _planetPixels.Add(pixel);
 
-                if ((glx.e | 0x50) < 0x90)
+                if ((glx.E | 0x50) < 0x90)
                 {
                     _planetPixels.Add(new(pixel.X + 1, pixel.Y));
                 }
 
-                Planet.waggle_galaxy(ref glx);
-                Planet.waggle_galaxy(ref glx);
-                Planet.waggle_galaxy(ref glx);
-                Planet.waggle_galaxy(ref glx);
+                Planet.WaggleGalaxy(ref glx);
+                Planet.WaggleGalaxy(ref glx);
+                Planet.WaggleGalaxy(ref glx);
+                Planet.WaggleGalaxy(ref glx);
             }
 
             _crossTimer = 0;
@@ -90,14 +90,14 @@ namespace Elite.Engine.Views
         {
             // Header
             _draw.ClearDisplay();
-            _draw.DrawViewHeader($"GALACTIC CHART {_gameState.cmdr.galaxy_number + 1}");
+            _draw.DrawViewHeader($"GALACTIC CHART {_gameState.cmdr.GalaxyNumber + 1}");
 
             _gfx.DrawLine(new(0, 36 + 258), new(511, 36 + 258));
 
             // Fuel radius
-            Vector2 centre = new(_gameState.docked_planet.d * gfx.GFX_SCALE, (_gameState.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1);
-            float radius = _ship.fuel * 2.5f * gfx.GFX_SCALE;
-            float cross_size = 7 * gfx.GFX_SCALE;
+            Vector2 centre = new(_gameState.docked_planet.D * Graphics.GFX_SCALE, (_gameState.docked_planet.B / (2 / Graphics.GFX_SCALE)) + (18 * Graphics.GFX_SCALE) + 1);
+            float radius = _ship.fuel * 2.5f * Graphics.GFX_SCALE;
+            float cross_size = 7 * Graphics.GFX_SCALE;
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
             _gfx.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
@@ -109,7 +109,7 @@ namespace Elite.Engine.Views
             }
 
             // Moving cross
-            centre = new(elite.cross.X, elite.cross.Y);
+            centre = new(EliteMain.cross.X, EliteMain.cross.Y);
             _gfx.SetClipRegion(1, 37, 510, 293);
             _gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), GFX_COL.GFX_COL_RED);
             _gfx.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), GFX_COL.GFX_COL_RED);
@@ -131,9 +131,9 @@ namespace Elite.Engine.Views
                 else
                 {
                     _gfx.DrawTextLeft(16, 340, _gameState.planetName, GFX_COL.GFX_COL_GREEN_1);
-                    if (elite.distanceToPlanet > 0)
+                    if (EliteMain.distanceToPlanet > 0)
                     {
-                        _gfx.DrawTextLeft(16, 356, $"Distance: {elite.distanceToPlanet:N1} Light Years ", GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawTextLeft(16, 356, $"Distance: {EliteMain.distanceToPlanet:N1} Light Years ", GFX_COL.GFX_COL_WHITE);
                     }
                 }
             }
@@ -153,7 +153,7 @@ namespace Elite.Engine.Views
                 if (_keyboard.IsKeyPressed(CommandKey.Enter))
                 {
                     _isFind = false;
-                    if (_planet.find_planet_by_name(_findName))
+                    if (_planet.FindPlanetByName(_findName))
                     {
                         CrossFromHyperspacePlanet();
                         CalculateDistanceToPlanet();
@@ -175,8 +175,8 @@ namespace Elite.Engine.Views
 
             if (_keyboard.IsKeyPressed(CommandKey.Origin))
             {
-                elite.cross.X = _gameState.docked_planet.d * gfx.GFX_SCALE;
-                elite.cross.Y = (_gameState.docked_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+                EliteMain.cross.X = _gameState.docked_planet.D * Graphics.GFX_SCALE;
+                EliteMain.cross.Y = (_gameState.docked_planet.B / (2 / Graphics.GFX_SCALE)) + (18 * Graphics.GFX_SCALE) + 1;
                 CalculateDistanceToPlanet();
             }
             if (_keyboard.IsKeyPressed(CommandKey.DistanceToPlanet))
@@ -216,28 +216,28 @@ namespace Elite.Engine.Views
         {
             _crossTimer = 5;
 
-            elite.cross.X = Math.Clamp(elite.cross.X + (dx * 2), 1, 510);
-            elite.cross.Y = Math.Clamp(elite.cross.Y + (dy * 2), 37, 293);
+            EliteMain.cross.X = Math.Clamp(EliteMain.cross.X + (dx * 2), 1, 510);
+            EliteMain.cross.Y = Math.Clamp(EliteMain.cross.Y + (dy * 2), 37, 293);
         }
 
         private void CalculateDistanceToPlanet()
         {
             Vector2 location = new()
             {
-                X = elite.cross.X / gfx.GFX_SCALE,
-                Y = (elite.cross.Y - ((18 * gfx.GFX_SCALE) + 1)) * (2 / gfx.GFX_SCALE),
+                X = EliteMain.cross.X / Graphics.GFX_SCALE,
+                Y = (EliteMain.cross.Y - ((18 * Graphics.GFX_SCALE) + 1)) * (2 / Graphics.GFX_SCALE),
             };
 
-            _gameState.hyperspace_planet = Planet.find_planet(_gameState.cmdr.galaxy, location);
-            _gameState.planetName = Planet.name_planet(_gameState.hyperspace_planet, false);
-            elite.distanceToPlanet = Planet.calc_distance_to_planet(_gameState.docked_planet, _gameState.hyperspace_planet);
+            _gameState.hyperspace_planet = Planet.FindPlanet(_gameState.cmdr.Galaxy, location);
+            _gameState.planetName = Planet.NamePlanet(_gameState.hyperspace_planet, false);
+            EliteMain.distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.docked_planet, _gameState.hyperspace_planet);
             CrossFromHyperspacePlanet();
         }
 
         private void CrossFromHyperspacePlanet()
         {
-            elite.cross.X = _gameState.hyperspace_planet.d * gfx.GFX_SCALE;
-            elite.cross.Y = (_gameState.hyperspace_planet.b / (2 / gfx.GFX_SCALE)) + (18 * gfx.GFX_SCALE) + 1;
+            EliteMain.cross.X = _gameState.hyperspace_planet.D * Graphics.GFX_SCALE;
+            EliteMain.cross.Y = (_gameState.hyperspace_planet.B / (2 / Graphics.GFX_SCALE)) + (18 * Graphics.GFX_SCALE) + 1;
         }
     }
 }

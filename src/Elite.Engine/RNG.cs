@@ -16,7 +16,7 @@ namespace Elite.Engine
 {
 	internal static class RNG
 	{
-        internal static random_seed Seed = new();
+        internal static RandomSeed Seed = new();
 
         internal static int Random(int maxValue)
 		{
@@ -58,7 +58,7 @@ namespace Elite.Engine
         /// This is the version used in the MSX and 16bit Elites.
         /// </summary>
         /// <returns>A random number between 0 and 255.</returns>
-        internal static int gen_msx_rnd_number()
+        internal static int GenMSXRandomNumber()
         {
             int a = Seed.a;
             int b = Seed.b;
@@ -85,7 +85,7 @@ namespace Elite.Engine
         /// This is the version used in the 6502 Elites.
         /// </summary>
         /// <returns>A random number between 0 and 255.</returns>
-        internal static int gen_rnd_number()
+        internal static int GenerateRandomNumber()
         {
             int x = (Seed.a * 2) & 0xFF;
             int a = x + Seed.c;

@@ -19,13 +19,13 @@ namespace Elite.Engine.Views
     using Elite.Engine.Missions;
     using Elite.Engine.Types;
 
-    internal class PlanetData : IView
+    internal class PlanetDataView : IView
 	{
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private float _distanceToPlanet = 0;
-        private planet_data _hyperPlanetData = new();
+        private Types.PlanetData _hyperPlanetData = new();
 
         private readonly string[] _economyType = {"Rich Industrial",
                                 "Average Industrial",
@@ -85,33 +85,33 @@ namespace Elite.Engine.Views
 		/* 35	*/	new string[] {"hockey", "cricket", "karate", "polo", "tennis"}
         };
 
-        internal PlanetData(GameState gameState, IGfx gfx, Draw draw)
+        internal PlanetDataView(GameState gameState, IGfx gfx, Draw draw)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
         }
 
-        private string DescribePlanet(galaxy_seed planet)
+        private string DescribePlanet(GalaxySeed planet)
         {
-            if (_gameState.cmdr.mission == 1)
+            if (_gameState.cmdr.Mission == 1)
             {
-                string? mission_text = Mission.mission_planet_desc(_gameState, planet);
+                string? mission_text = Mission.MissionPlanetDescription(_gameState, planet);
                 if (!string.IsNullOrEmpty(mission_text))
                 {
                     return mission_text;
                 }
             }
 
-            RNG.Seed.a = planet.c;
-            RNG.Seed.b = planet.d;
-            RNG.Seed.c = planet.e;
-            RNG.Seed.d = planet.f;
+            RNG.Seed.a = planet.C;
+            RNG.Seed.b = planet.D;
+            RNG.Seed.c = planet.E;
+            RNG.Seed.d = planet.F;
 
-            if (elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+            if (EliteMain.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
             {
-                RNG.Seed.a ^= planet.a;
-                RNG.Seed.b ^= planet.b;
+                RNG.Seed.a ^= planet.A;
+                RNG.Seed.b ^= planet.B;
                 RNG.Seed.c ^= RNG.Seed.a;
                 RNG.Seed.d ^= RNG.Seed.b;
             }
@@ -143,13 +143,13 @@ namespace Elite.Engine.Views
                     Debug.Assert(num < _descriptionList.Length);
                     int option;
 
-                    if (elite.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+                    if (EliteMain.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
                     {
-                        option = RNG.gen_msx_rnd_number();
+                        option = RNG.GenMSXRandomNumber();
                     }
                     else
                     {
-                        int rnd = RNG.gen_rnd_number();
+                        int rnd = RNG.GenerateRandomNumber();
                         option = 0;
                         if (rnd >= 0x33)
                         {
@@ -182,21 +182,21 @@ namespace Elite.Engine.Views
                     switch (source[j])
                     {
                         case 'H':
-                            temp = Planet.name_planet(_gameState.hyperspace_planet, true);
+                            temp = Planet.NamePlanet(_gameState.hyperspace_planet, true);
                             planetDescription += temp;
                             break;
 
                         case 'I':
-                            temp = Planet.name_planet(_gameState.hyperspace_planet, true);
+                            temp = Planet.NamePlanet(_gameState.hyperspace_planet, true);
                             planetDescription += temp;
                             planetDescription += "ian";
                             break;
 
                         case 'R':
-                            int len = RNG.gen_rnd_number() & 3;
+                            int len = RNG.GenerateRandomNumber() & 3;
                             for (int i = 0; i <= len; i++)
                             {
-                                int x = RNG.gen_rnd_number() & 62;
+                                int x = RNG.GenerateRandomNumber() & 62;
                                 if (i == 0)
                                 {
                                     planetDescription += Planet.digrams[x];
@@ -223,14 +223,14 @@ namespace Elite.Engine.Views
 
         public void UpdateUniverse()
         {
-            _distanceToPlanet = Planet.calc_distance_to_planet(_gameState.docked_planet, _gameState.hyperspace_planet);
-            _hyperPlanetData = Planet.generate_planet_data(_gameState.hyperspace_planet);
+            _distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.docked_planet, _gameState.hyperspace_planet);
+            _hyperPlanetData = Planet.GeneratePlanetData(_gameState.hyperspace_planet);
         }
 
         public void Draw()
         {
             _draw.ClearDisplay();
-            _draw.DrawViewHeader($"DATA ON {Planet.name_planet(_gameState.hyperspace_planet, false)}");
+            _draw.DrawViewHeader($"DATA ON {Planet.NamePlanet(_gameState.hyperspace_planet, false)}");
 
             if (_distanceToPlanet > 0)
             {
@@ -244,7 +244,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(16, 138, "Tech Level:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(140, 138, $"{_hyperPlanetData.techlevel + 1}", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 170, "Population:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.population:N1} Billion {Planet.describe_inhabitants(_gameState.hyperspace_planet)}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.population:N1} Billion {Planet.DescribeInhabitants(_gameState.hyperspace_planet)}", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 202, "Gross Productivity:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 234, "Average Radius:", GFX_COL.GFX_COL_GREEN_1);

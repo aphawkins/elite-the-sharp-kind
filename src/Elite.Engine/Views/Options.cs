@@ -64,11 +64,11 @@ namespace Elite.Engine.Views
 
                 if (i == _highlightedItem)
                 {
-                    float x = gfx.GFX_X_CENTRE - (OptionBarWidth / 2);
+                    float x = Graphics.GFX_X_CENTRE - (OptionBarWidth / 2);
                     _gfx.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, GFX_COL.GFX_COL_DARK_RED);
                 }
 
-                GFX_COL col = ((!elite.docked) && optionList[i].DockedOnly) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
+                GFX_COL col = ((!EliteMain.docked) && optionList[i].DockedOnly) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
 
                 _gfx.DrawTextCentre(y, optionList[i].Label, 120, col);
             }
@@ -97,7 +97,7 @@ namespace Elite.Engine.Views
 
         private void ExecuteOption()
         {
-            if (elite.docked || !optionList[_highlightedItem].DockedOnly)
+            if (EliteMain.docked || !optionList[_highlightedItem].DockedOnly)
             {
                 switch (_highlightedItem)
                 {

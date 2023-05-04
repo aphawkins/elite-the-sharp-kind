@@ -80,7 +80,7 @@ namespace Elite.Engine
         /// There is also a slight amount of randomness added in.
         /// The random value is changed each time we hyperspace.
         /// </summary>
-        internal void GenerateStockMarket(planet_data currentPlanet)
+        internal void GenerateStockMarket(PlanetData currentPlanet)
         {
             foreach (var stock in stockMarket)
             {

@@ -1,13 +1,13 @@
 ﻿namespace Elite.Engine.Types
 {
-    public class Commander
+    internal class Commander
     {
-        public string name { get; set; }
-        public int mission { get; set; }
-        public galaxy_seed galaxy { get; set; } = new();
-        public int galaxy_number { get; set; }
-        public int legal_status { get; set; }
-        public int score { get; set; }
-        public int saved { get; set; }
+        internal string Name { get; set; }
+        internal int Mission { get; set; }
+        internal GalaxySeed Galaxy { get; set; } = new();
+        internal int GalaxyNumber { get; set; }
+        internal int LegalStatus { get; set; }
+        internal int Score { get; set; }
+        internal int Saved { get; set; }
     }
 }

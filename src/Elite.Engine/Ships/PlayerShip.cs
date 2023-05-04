@@ -63,7 +63,7 @@
             ship.rotz = 0;
             ship.rotx = 0;
 
-            pilot.auto_pilot_ship(ref ship);
+            Pilot.AutoPilotShip(ref ship);
 
             speed = ship.velocity > 22 ? 22 : ship.velocity;
 

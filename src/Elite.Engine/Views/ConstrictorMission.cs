@@ -54,23 +54,23 @@
 
         public void Reset()
         {
-            if (_gameState.cmdr.mission == 0 && _gameState.cmdr.score >= 256 && _gameState.cmdr.galaxy_number < 2)
+            if (_gameState.cmdr.Mission == 0 && _gameState.cmdr.Score >= 256 && _gameState.cmdr.GalaxyNumber < 2)
             {
                 // Show brief
-                _gameState.cmdr.mission = 1;
+                _gameState.cmdr.Mission = 1;
 
                 _combat.ClearUniverse();
                 int i = _combat.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
-                space.universe[i].flags = FLG.FLG_NONE;
+                Space.universe[i].flags = FLG.FLG_NONE;
                 _ship.roll = 0;
                 _ship.climb = 0;
                 _ship.speed = 0;
             }
-            else if (_gameState.cmdr.mission == 2)
+            else if (_gameState.cmdr.Mission == 2)
             {
                 // Show debrief
-                _gameState.cmdr.mission = 3;
-                _gameState.cmdr.score += 256;
+                _gameState.cmdr.Mission = 3;
+                _gameState.cmdr.Score += 256;
                 _trade.credits += 5000;
             }
             else
@@ -85,16 +85,16 @@
 
         public void Draw()
         {
-            if (_gameState.cmdr.mission == 1)
+            if (_gameState.cmdr.Mission == 1)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
                 _draw.DrawTextPretty(16, 50, 300, mission1_brief_a);
-                _draw.DrawTextPretty(16, 200, 470, _gameState.cmdr.galaxy_number == 0 ? mission1_brief_b : mission1_brief_c);
+                _draw.DrawTextPretty(16, 200, 470, _gameState.cmdr.GalaxyNumber == 0 ? mission1_brief_b : mission1_brief_c);
 
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
-            else if (_gameState.cmdr.mission == 3)
+            else if (_gameState.cmdr.Mission == 3)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 

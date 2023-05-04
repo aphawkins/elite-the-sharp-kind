@@ -29,12 +29,12 @@
         {
             if (_keyboard.IsKeyPressed(CommandKey.Yes))
             {
-                elite.ExitGame();
+                EliteMain.ExitGame();
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.No))
             {
-                if (elite.docked)
+                if (EliteMain.docked)
                 {
                     _gameState.SetView(SCR.SCR_CMDR_STATUS);
                 }

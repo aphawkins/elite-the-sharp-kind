@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         internal static readonly ship_point[] orbit_point =
         {
@@ -102,7 +102,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_BLUE_1, new(-0x29, 0x29, 0x5A), new[] { 18, 16, 17 }),
         };
 
-        internal static ship_data orbit_data = new(
+        internal static ShipData orbit_data = new(
             "Orbit Shuttle",
             15,
             0,

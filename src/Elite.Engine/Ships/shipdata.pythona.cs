@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         internal static readonly ship_point[] pythona_point =
         {
@@ -87,7 +87,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0x70 ), new[] { 10, 6 , 5, 7 }),
         };
 
-        internal static ship_data pythona_data = new(
+        internal static ShipData pythona_data = new(
             "Python",
             5,
             0,

@@ -3,7 +3,7 @@ namespace Elite.Engine.Ships
     using Elite.Engine.Enums;
     using Elite.Engine.Types;
 
-    internal static partial class shipdata
+    internal static partial class Ship
     {
         private static readonly ship_point[] coriolis_point =
         {
@@ -98,7 +98,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_BLACK,  new(0x00, 0x00, 0xA0), new[] { 15, 12, 13, 14 }),
         };
 
-        internal static ship_data coriolis_data = new(
+        internal static ShipData coriolis_data = new(
             "Coriolis Space Station",
             0,
             0,
