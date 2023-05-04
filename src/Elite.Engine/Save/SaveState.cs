@@ -32,29 +32,29 @@
 
         public SaveState(SaveState other)
         {
-            this.CommanderName = other.CommanderName;
-            this.Mission = other.Mission;
-            this.ShipLocation = other.ShipLocation;
-            this.GalaxySeed = other.GalaxySeed;
-            this.Credits = other.Credits;
-            this.Fuel = other.Fuel;
-            this.GalaxyNumber = other.GalaxyNumber;
-            this.Lasers = other.Lasers;
-            this.CargoCapacity = other.CargoCapacity;
-            this.CurrentCargo = other.CurrentCargo;
-            this.HasECM = other.HasECM;
-            this.HasFuelScoop = other.HasFuelScoop;
-            this.HasEnergyBomb = other.HasEnergyBomb;
-            this.EnergyUnit = other.EnergyUnit;
-            this.HasDockingComputer = other.HasDockingComputer;
-            this.HasGalacticHyperdrive = other.HasGalacticHyperdrive;
-            this.HasEscapePod = other.HasEscapePod;
-            this.Missiles = other.Missiles;
-            this.LegalStatus = other.LegalStatus;
-            this.StationStock = other.StationStock;
-            this.MarketRandomiser = other.MarketRandomiser;
-            this.Score = other.Score;
-            this.Saved = other.Saved;
+            CommanderName = other.CommanderName;
+            Mission = other.Mission;
+            ShipLocation = other.ShipLocation;
+            GalaxySeed = other.GalaxySeed;
+            Credits = other.Credits;
+            Fuel = other.Fuel;
+            GalaxyNumber = other.GalaxyNumber;
+            Lasers = other.Lasers;
+            CargoCapacity = other.CargoCapacity;
+            CurrentCargo = other.CurrentCargo;
+            HasECM = other.HasECM;
+            HasFuelScoop = other.HasFuelScoop;
+            HasEnergyBomb = other.HasEnergyBomb;
+            EnergyUnit = other.EnergyUnit;
+            HasDockingComputer = other.HasDockingComputer;
+            HasGalacticHyperdrive = other.HasGalacticHyperdrive;
+            HasEscapePod = other.HasEscapePod;
+            Missiles = other.Missiles;
+            LegalStatus = other.LegalStatus;
+            StationStock = other.StationStock;
+            MarketRandomiser = other.MarketRandomiser;
+            Score = other.Score;
+            Saved = other.Saved;
         }
 
         public object Clone()
