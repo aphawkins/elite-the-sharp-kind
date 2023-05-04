@@ -12,13 +12,13 @@
  *
  */
 
+using Elite.Engine.Enums;
+using Elite.Engine.Lasers;
+using Elite.Engine.Ships;
+using Elite.Engine.Types;
+
 namespace Elite.Engine.Views
 {
-    using Elite.Engine.Enums;
-    using Elite.Engine.Lasers;
-    using Elite.Engine.Ships;
-    using Elite.Engine.Types;
-
     internal class Equipment : IView
     {
         private readonly GameState _gameState;

@@ -12,12 +12,12 @@
  *
  **/
 
+using System.Numerics;
+using Elite.Common.Enums;
+using Elite.Engine.Enums;
+
 namespace Elite.Engine
 {
-    using System.Numerics;
-    using Elite.Common.Enums;
-    using Elite.Engine.Enums;
-
     public interface IGfx
     {
         void LoadBitmap(Image imgType, Stream bitmapStream);

@@ -1,7 +1,7 @@
-﻿namespace Elite.Engine.Lasers
-{
-    using Elite.Engine.Enums;
+﻿using Elite.Engine.Enums;
 
+namespace Elite.Engine.Lasers
+{
     public class MilitaryLaser : ILaser
     {
         public string Name => "Military";

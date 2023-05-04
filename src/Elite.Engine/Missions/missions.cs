@@ -12,6 +12,8 @@
  *
  */
 
+using Elite.Engine.Types;
+
 /*
  * missions.c
  *
@@ -20,8 +22,6 @@
 
 namespace Elite.Engine.Missions
 {
-    using Elite.Engine.Types;
-
     internal class Mission
     {
         private static readonly string[] mission1_pdesc =

@@ -12,6 +12,12 @@
  *
  */
 
+using System.Numerics;
+using Elite.Common.Enums;
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
+using Elite.Engine.Types;
+
 /*
  * space.c
  *
@@ -20,12 +26,6 @@
 
 namespace Elite.Engine
 {
-    using System.Numerics;
-    using Elite.Common.Enums;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
-    using Elite.Engine.Types;
-
     internal class Space
 	{
 		private readonly GameState _gameState;

@@ -1,7 +1,7 @@
-﻿namespace Elite.Engine
-{
-    using Elite.Engine.Types;
+﻿using Elite.Engine.Types;
 
+namespace Elite.Engine
+{
     internal static class CommanderFactory
     {
         /// <summary>

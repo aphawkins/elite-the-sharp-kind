@@ -1,8 +1,8 @@
-﻿namespace Elite.Engine.Views
-{
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
+﻿using Elite.Engine.Enums;
+using Elite.Engine.Ships;
 
+namespace Elite.Engine.Views
+{
     internal class ConstrictorMission : IView
     {
         private readonly GameState _gameState;

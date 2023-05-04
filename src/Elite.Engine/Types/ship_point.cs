@@ -1,7 +1,7 @@
-﻿namespace Elite.Engine.Types
-{
-    using System.Numerics;
+﻿using System.Numerics;
 
+namespace Elite.Engine.Types
+{
     internal class ShipPoint
     {
         internal Vector3 point;

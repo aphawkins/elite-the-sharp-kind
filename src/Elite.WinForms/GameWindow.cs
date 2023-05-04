@@ -1,8 +1,8 @@
+using Elite.Engine;
+using Elite.Engine.Enums;
+
 namespace Elite.WinForms
 {
-    using Elite.Engine;
-    using Elite.Engine.Enums;
-
     public partial class GameWindow : Form
     {
         private readonly System.Windows.Forms.Timer _refreshTimer = new();

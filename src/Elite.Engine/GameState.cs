@@ -12,11 +12,11 @@
  *
  */
 
+using Elite.Engine.Enums;
+using Elite.Engine.Types;
+
 namespace Elite.Engine
 {
-    using Elite.Engine.Enums;
-    using Elite.Engine.Types;
-
     internal class GameState
     {
         private readonly IKeyboard _keyboard;

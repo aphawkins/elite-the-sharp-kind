@@ -1,7 +1,7 @@
-﻿namespace Elite.Engine.Types
-{
-    using Elite.Engine.Enums;
+﻿using Elite.Engine.Enums;
 
+namespace Elite.Engine.Types
+{
     internal class EquipmentItem
     {
         internal bool CanBuy;

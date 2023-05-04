@@ -12,14 +12,14 @@
  *
  **/
 
+using System.Diagnostics;
+using System.Drawing;
+using System.Numerics;
+using Elite.Engine;
+using Elite.Engine.Enums;
+
 namespace Elite.WinForms
 {
-    using System.Diagnostics;
-    using System.Drawing;
-    using System.Numerics;
-    using Elite.Engine;
-    using Elite.Engine.Enums;
-
     public class GdiGraphics : IGfx, IDisposable
 	{
         // Screen buffer

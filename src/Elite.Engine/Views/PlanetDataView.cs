@@ -12,13 +12,13 @@
  *
  */
 
+using System.Diagnostics;
+using Elite.Engine.Enums;
+using Elite.Engine.Missions;
+using Elite.Engine.Types;
+
 namespace Elite.Engine.Views
 {
-    using System.Diagnostics;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Missions;
-    using Elite.Engine.Types;
-
     internal class PlanetDataView : IView
 	{
         private readonly GameState _gameState;

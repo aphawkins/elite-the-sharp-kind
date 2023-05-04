@@ -1,9 +1,9 @@
-﻿namespace Elite.Engine.Views
-{
-    using Elite.Common.Enums;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
+﻿using Elite.Common.Enums;
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
 
+namespace Elite.Engine.Views
+{
     internal class ThargoidMission : IView
     {
         private readonly GameState _gameState;

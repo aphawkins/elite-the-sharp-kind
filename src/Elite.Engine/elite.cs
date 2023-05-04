@@ -12,18 +12,18 @@
  *
  */
 
+using System.Diagnostics;
+using System.Numerics;
+using Elite.Common.Enums;
+using Elite.Engine.Config;
+using Elite.Engine.Enums;
+using Elite.Engine.Save;
+using Elite.Engine.Ships;
+using Elite.Engine.Types;
+using Elite.Engine.Views;
+
 namespace Elite.Engine
 {
-    using System.Diagnostics;
-    using System.Numerics;
-    using Elite.Common.Enums;
-    using Elite.Engine.Config;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Save;
-    using Elite.Engine.Ships;
-    using Elite.Engine.Types;
-    using Elite.Engine.Views;
-
     public class EliteMain
     {
         private readonly IGfx _gfx;

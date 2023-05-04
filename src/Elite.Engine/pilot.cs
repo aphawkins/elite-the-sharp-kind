@@ -12,6 +12,11 @@
  *
  */
 
+using System.Numerics;
+using Elite.Common.Enums;
+using Elite.Engine.Enums;
+using Elite.Engine.Types;
+
 /*
  * pilot.c
  *
@@ -26,11 +31,6 @@
 
 namespace Elite.Engine
 {
-    using System.Numerics;
-    using Elite.Common.Enums;
-	using Elite.Engine.Enums;
-	using Elite.Engine.Types;
-
 	internal class Pilot
 	{
 		private readonly GameState _gameState;

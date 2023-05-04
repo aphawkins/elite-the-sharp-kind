@@ -1,7 +1,7 @@
-﻿namespace Elite.Engine.Views
-{
-    using Elite.Engine.Ships;
+﻿using Elite.Engine.Ships;
 
+namespace Elite.Engine.Views
+{
     internal class PilotRearView : IView
     {
         private readonly PilotView _pilotView;

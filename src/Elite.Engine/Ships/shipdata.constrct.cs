@@ -1,8 +1,8 @@
+using Elite.Engine.Enums;
+using Elite.Engine.Types;
+
 namespace Elite.Engine.Ships
 {
-    using Elite.Engine.Enums;
-    using Elite.Engine.Types;
-
     internal static partial class Ship
     {
         internal static readonly ShipPoint[] constrct_point =

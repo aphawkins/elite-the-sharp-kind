@@ -12,13 +12,13 @@
  *
  */
 
+using System.Media;
+using Commons.Music.Midi;
+using Elite.Common.Enums;
+using Elite.Engine;
+
 namespace Elite.WinForms
 {
-    using System.Media;
-    using Commons.Music.Midi;
-    using Elite.Common.Enums;
-    using Elite.Engine;
-
     public class Sound : ISound, IDisposable
     {
         private MidiPlayer? _midiPlayer;

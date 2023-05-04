@@ -1,12 +1,12 @@
-﻿namespace Elite.Engine.Ships
-{
-    using System;
-    using System.Diagnostics;
-    using System.Numerics;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Lasers;
-    using Elite.Engine.Types;
+﻿using System;
+using System.Diagnostics;
+using System.Numerics;
+using Elite.Engine.Enums;
+using Elite.Engine.Lasers;
+using Elite.Engine.Types;
 
+namespace Elite.Engine.Ships
+{
     internal class PlayerShip
     {
         internal readonly float maxClimb = 8;

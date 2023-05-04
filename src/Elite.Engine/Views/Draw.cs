@@ -1,11 +1,11 @@
-﻿namespace Elite.Engine.Views
-{
-    using System.Numerics;
-    using Elite.Assets;
-    using Elite.Common.Enums;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Types;
+﻿using System.Numerics;
+using Elite.Assets;
+using Elite.Common.Enums;
+using Elite.Engine.Enums;
+using Elite.Engine.Types;
 
+namespace Elite.Engine.Views
+{
     internal class Draw
     {
         private readonly IGfx _gfx;

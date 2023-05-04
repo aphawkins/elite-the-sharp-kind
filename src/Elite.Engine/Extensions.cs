@@ -1,7 +1,7 @@
-﻿namespace Elite.Engine
-{
-    using System.Numerics;
+﻿using System.Numerics;
 
+namespace Elite.Engine
+{
     internal static class Extensions
     {
         internal static Vector3 Cloner(this Vector3 vec)

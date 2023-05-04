@@ -12,11 +12,11 @@
  *
  */
 
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
+
 namespace Elite.Engine.Views
 {
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
-
     internal class CommanderStatus : IView
     {
         public readonly GameState _gameState;

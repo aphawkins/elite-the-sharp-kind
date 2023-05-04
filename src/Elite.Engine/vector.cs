@@ -12,6 +12,8 @@
  */
 
 
+using System.Numerics;
+
 /*
  * The original Elite code did all the vector calculations using 8-bit integers.
  *
@@ -21,8 +23,6 @@
 
 namespace Elite.Engine
 {
-    using System.Numerics;
-
     internal static class VectorMaths
 	{
         private static readonly Vector3[] start_matrix = new Vector3[3]

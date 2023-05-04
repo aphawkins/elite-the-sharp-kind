@@ -1,10 +1,10 @@
+using System.Numerics;
+using Elite.Common.Enums;
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
+
 namespace Elite.Engine.Views
 {
-    using System.Numerics;
-    using Elite.Common.Enums;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
-
     /// <summary>
     /// Parade of the various ships.
     /// </summary>

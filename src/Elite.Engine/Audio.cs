@@ -1,9 +1,8 @@
-﻿namespace Elite.Engine
-{
-    using System.Collections.Generic;
-    using Elite.Assets;
-    using Elite.Common.Enums;
+﻿using Elite.Assets;
+using Elite.Common.Enums;
 
+namespace Elite.Engine
+{
     internal class Audio
     {
         private readonly bool _musicOn;

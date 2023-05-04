@@ -9,11 +9,11 @@
  *
  */
 
+using Elite.Engine;
+using Elite.Engine.Enums;
+
 namespace Elite.WinForms
 {
-    using Elite.Engine;
-    using Elite.Engine.Enums;
-
     public class Keyboard : IKeyboard
     {
         private CommandKey _lastKeyPressed;

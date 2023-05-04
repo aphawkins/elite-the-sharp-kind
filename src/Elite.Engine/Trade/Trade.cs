@@ -1,8 +1,8 @@
+using Elite.Engine.Ships;
+using Elite.Engine.Types;
+
 namespace Elite.Engine
 {
-    using Elite.Engine.Ships;
-    using Elite.Engine.Types;
-
     internal class Trade
     {
         internal const string GRAMS = "g";

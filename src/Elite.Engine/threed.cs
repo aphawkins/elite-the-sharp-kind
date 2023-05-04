@@ -11,14 +11,14 @@
  *
  */
 
+using System;
+using System.Numerics;
+using Elite.Engine.Enums;
+using Elite.Engine.Types;
+using Elite.Engine.Views;
+
 namespace Elite.Engine
 {
-    using System;
-    using System.Numerics;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Types;
-    using Elite.Engine.Views;
-
     internal partial class Threed
 	{
         private const int LAND_X_MAX = 128;

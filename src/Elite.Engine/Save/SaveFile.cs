@@ -12,15 +12,15 @@
  *
  */
 
+using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
+using Elite.Engine.Types;
+
 namespace Elite.Engine.Save
 {
-    using System.Diagnostics;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
-    using Elite.Engine.Types;
-
     internal class SaveFile
     {
         private const string fileExtension = ".cmdr";

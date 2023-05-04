@@ -1,8 +1,8 @@
-﻿namespace Elite.Engine.Types
-{
-    using System.Numerics;
-    using Elite.Engine.Enums;
+﻿using System.Numerics;
+using Elite.Engine.Enums;
 
+namespace Elite.Engine.Types
+{
     internal class UniverseObject
     {
         internal ShipType type;

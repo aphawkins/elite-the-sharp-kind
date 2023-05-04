@@ -1,8 +1,8 @@
-﻿namespace Elite.Engine.Views
-{
-    using Elite.Common.Enums;
-    using Elite.Engine.Enums;
+﻿using Elite.Common.Enums;
+using Elite.Engine.Enums;
 
+namespace Elite.Engine.Views
+{
     internal class Launch : IView
     {
         private readonly GameState _gameState;

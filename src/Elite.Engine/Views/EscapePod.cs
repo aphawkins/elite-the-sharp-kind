@@ -1,10 +1,10 @@
-﻿namespace Elite.Engine.Views
-{
-    using System.Numerics;
-    using Elite.Common.Enums;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
+﻿using System.Numerics;
+using Elite.Common.Enums;
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
 
+namespace Elite.Engine.Views
+{
     internal class EscapePod : IView
     {
         private readonly GameState _gameState;

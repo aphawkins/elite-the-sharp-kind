@@ -1,10 +1,10 @@
-﻿namespace Elite.Engine.Views
-{
-    using Elite.Engine.Enums;
-    using Elite.Engine.Lasers;
-    using Elite.Engine.Ships;
-    using static Elite.Engine.EliteMain;
+﻿using Elite.Engine.Enums;
+using Elite.Engine.Lasers;
+using Elite.Engine.Ships;
+using static Elite.Engine.EliteMain;
 
+namespace Elite.Engine.Views
+{
     internal class PilotView : IView
     {
         private readonly IGfx _gfx;

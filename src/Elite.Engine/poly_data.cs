@@ -1,8 +1,8 @@
-﻿namespace Elite.Engine
-{
-    using System.Numerics;
-    using Elite.Engine.Enums;
+﻿using System.Numerics;
+using Elite.Engine.Enums;
 
+namespace Elite.Engine
+{
     internal struct PolygonData
     {
         internal float Z;

@@ -12,12 +12,12 @@
  *
  */
 
+using System.Numerics;
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
+
 namespace Elite.Engine
 {
-    using System.Numerics;
-	using Elite.Engine.Enums;
-	using Elite.Engine.Ships;
-
 	internal class Stars
 	{
 		private readonly GameState _gameState;

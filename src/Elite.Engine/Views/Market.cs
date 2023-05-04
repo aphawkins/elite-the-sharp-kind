@@ -12,10 +12,10 @@
  *
  */
 
+using Elite.Engine.Enums;
+
 namespace Elite.Engine.Views
 {
-    using Elite.Engine.Enums;
-
     internal class Market : IView
     {
         private readonly GameState _gameState;

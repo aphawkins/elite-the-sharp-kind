@@ -1,9 +1,9 @@
-﻿namespace Elite.Assets
-{
-    using System.Reflection;
-    using Elite.Common.Enums;
-    using Elite.Common.Interfaces;
+﻿using System.Reflection;
+using Elite.Common.Enums;
+using Elite.Common.Interfaces;
 
+namespace Elite.Assets
+{
     public class AssetLoader : IAssets
     {
         readonly Assembly? assets = Assembly.GetAssembly(typeof(AssetLoader));

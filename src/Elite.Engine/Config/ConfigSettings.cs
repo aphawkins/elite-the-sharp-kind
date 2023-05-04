@@ -1,7 +1,7 @@
-﻿namespace Elite.Engine.Config
-{
-    using Elite.Engine.Enums;
+﻿using Elite.Engine.Enums;
 
+namespace Elite.Engine.Config
+{
     public class ConfigSettings
     {
         public float Fps { get; set; } = 13.5f; // Approx speed of TNK

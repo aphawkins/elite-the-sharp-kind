@@ -12,10 +12,10 @@
  *
  */
 
+using Elite.Common.Enums;
+
 namespace Elite.Engine
 {
-    using Elite.Common.Enums;
-
     public interface ISound
     {
         void Load(Music midiType, Stream midiStream);

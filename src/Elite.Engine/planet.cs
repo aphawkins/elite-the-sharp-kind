@@ -11,6 +11,10 @@
  *
  */
 
+using System.Numerics;
+using System.Text;
+using Elite.Engine.Types;
+
 /*
  *
  * Handle the generation of planet info...
@@ -18,10 +22,6 @@
 
 namespace Elite.Engine
 {
-	using System.Numerics;
-	using System.Text;
-	using Elite.Engine.Types;
-
 	internal class Planet
 	{
 		private readonly GameState _gameState;

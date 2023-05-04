@@ -12,13 +12,13 @@
  *
  */
 
+using System.Numerics;
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
+using Elite.Engine.Types;
+
 namespace Elite.Engine.Views
 {
-    using System.Numerics;
-    using Elite.Engine.Enums;
-    using Elite.Engine.Ships;
-    using Elite.Engine.Types;
-
     internal class GalacticChart : IView
     {
         private readonly GameState _gameState;

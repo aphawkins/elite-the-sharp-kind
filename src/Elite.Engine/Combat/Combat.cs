@@ -1,12 +1,12 @@
+using System.Diagnostics;
+using System.Numerics;
+using Elite.Common.Enums;
+using Elite.Engine.Enums;
+using Elite.Engine.Ships;
+using Elite.Engine.Types;
+
 namespace Elite.Engine
 {
-	using System.Diagnostics;
-	using System.Numerics;
-	using Elite.Common.Enums;
-	using Elite.Engine.Enums;
-	using Elite.Engine.Ships;
-	using Elite.Engine.Types;
-
 	internal class Combat
 	{
         internal bool inBattle;

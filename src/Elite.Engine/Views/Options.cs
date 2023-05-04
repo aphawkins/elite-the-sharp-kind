@@ -12,11 +12,11 @@
  *
  */
 
+using Elite.Engine;
+using Elite.Engine.Enums;
+
 namespace Elite.Engine.Views
 {
-    using Elite.Engine;
-    using Elite.Engine.Enums;
-
     internal class Options : IView
     {
         private readonly GameState _gameState;

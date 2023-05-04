@@ -1,8 +1,8 @@
-﻿namespace Elite.Engine.Lasers
-{
-    using System.Numerics;
-    using Elite.Engine.Enums;
+﻿using System.Numerics;
+using Elite.Engine.Enums;
 
+namespace Elite.Engine.Lasers
+{
     internal class LaserDraw
     {
         private readonly IGfx _gfx;

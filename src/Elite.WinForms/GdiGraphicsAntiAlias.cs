@@ -12,12 +12,12 @@
  *
  **/
 
+using System.Drawing;
+using System.Numerics;
+using Elite.Engine.Enums;
+
 namespace Elite.WinForms
 {
-    using System.Drawing;
-    using System.Numerics;
-    using Elite.Engine.Enums;
-
     public class GdiGraphicsAntiAlias : GdiGraphics
     {
         //private const int AA_BITS = 3;

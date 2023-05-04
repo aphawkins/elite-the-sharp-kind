@@ -1,8 +1,8 @@
-﻿namespace Elite.Engine
-{
-    using Elite.Engine.Enums;
-    using Elite.Engine.Lasers;
+﻿using Elite.Engine.Enums;
+using Elite.Engine.Lasers;
 
+namespace Elite.Engine
+{
     internal static class LaserFactory
     {
         internal static ILaser GetLaser(LaserType type)

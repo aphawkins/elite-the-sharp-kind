@@ -12,13 +12,13 @@
  *
  */
 
+using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Elite.Engine.Config;
+
 namespace Elite.Engine
 {
-    using System.Diagnostics;
-    using System.Text.Json;
-    using System.Text.Json.Serialization;
-    using Elite.Engine.Config;
-
     internal class ConfigFile
 	{
 		private const string configFileName = "sharpkind.cfg";

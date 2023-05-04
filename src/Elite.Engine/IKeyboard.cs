@@ -1,7 +1,7 @@
-﻿namespace Elite.Engine
-{
-    using Elite.Engine.Enums;
+﻿using Elite.Engine.Enums;
 
+namespace Elite.Engine
+{
     public interface IKeyboard
     {
         void KeyDown(CommandKey keyValue);

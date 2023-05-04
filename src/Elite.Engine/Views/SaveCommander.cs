@@ -1,8 +1,8 @@
-﻿namespace Elite.Engine.Views
-{
-    using Elite.Engine.Enums;
-    using Elite.Engine.Save;
+﻿using Elite.Engine.Enums;
+using Elite.Engine.Save;
 
+namespace Elite.Engine.Views
+{
     internal class SaveCommander : IView
     {
         private readonly GameState _gameState;
