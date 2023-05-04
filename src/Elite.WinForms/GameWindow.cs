@@ -1,6 +1,7 @@
 namespace Elite.WinForms
 {
     using Elite.Engine;
+    using Elite.Engine.Enums;
 
     public partial class GameWindow : Form
     {
@@ -36,12 +37,12 @@ namespace Elite.WinForms
             //Debug.WriteLine("KeyDown KeyCode: " + e.KeyCode);
             //Debug.WriteLine("KeyDown KeyValue: " + e.KeyValue);
 
-            _keyboard.KeyDown(e.KeyValue);
+            _keyboard.KeyDown((CommandKey)e.KeyValue);
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            _keyboard.KeyUp(e.KeyValue);
+            _keyboard.KeyUp((CommandKey)e.KeyValue);
         }
     }
 }

@@ -164,8 +164,8 @@ namespace Elite.Engine.Views
                     }
                 }
 
-                int letter = _keyboard.GetKeyPressed();
-                if (_isFind && _findName.Length <= 16 && letter >= 'A' && letter <= 'Z')
+                CommandKey letter = _keyboard.GetKeyPressed();
+                if (_isFind && _findName.Length <= 16 && (char)letter >= 'A' && (char)letter <= 'Z')
                 {
                     _findName += (char)letter;
                 }

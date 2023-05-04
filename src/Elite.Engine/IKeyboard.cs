@@ -4,13 +4,13 @@
 
     public interface IKeyboard
     {
-        void KeyDown(int keyValue);
+        void KeyDown(CommandKey keyValue);
 
-        void KeyUp(int keyValue);
+        void KeyUp(CommandKey keyValue);
 
         bool IsKeyPressed(params CommandKey[] key);
 
-        int GetKeyPressed();
+        CommandKey GetKeyPressed();
 
         void ClearKeyPressed();
     }

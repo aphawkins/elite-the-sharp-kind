@@ -56,11 +56,11 @@
                 }
             }
 
-            int key = _keyboard.GetKeyPressed();
+            char key = (char)_keyboard.GetKeyPressed();
 
             if (key is >= 'A' and <= 'Z')
             {
-                _name += (char)key;
+                _name += key;
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.Enter))

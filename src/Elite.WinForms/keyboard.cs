@@ -16,23 +16,23 @@ namespace Elite.WinForms
 
     public class Keyboard : IKeyboard
     {
-        private int _lastKeyPressed;
-        private readonly Dictionary<int, bool> _isPressed = new();
+        private CommandKey _lastKeyPressed;
+        private readonly Dictionary<CommandKey, bool> _isPressed = new();
 
-        public void KeyDown(int keyValue)
+        public void KeyDown(CommandKey keyValue)
         {
             _lastKeyPressed = keyValue;
             _isPressed[keyValue] = true;
         }
 
-        public void KeyUp(int keyValue)
+        public void KeyUp(CommandKey keyValue)
         {
             _isPressed[keyValue] = false;
         }
 
         public bool IsKeyPressed(params CommandKey[] keys)
         {
-            foreach (int key in keys)
+            foreach (CommandKey key in keys)
             {
                 if (_isPressed.TryGetValue(key, out bool value) && value) 
                 { 
@@ -43,9 +43,9 @@ namespace Elite.WinForms
             return false;
         }
 
-        public int GetKeyPressed()
+        public CommandKey GetKeyPressed()
         {
-            int key = _lastKeyPressed;
+            CommandKey key = _lastKeyPressed;
             _lastKeyPressed = 0;
             return key;
         }
