@@ -10,7 +10,7 @@
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly SaveFile _save;
-        private string _name;
+        private string _name = string.Empty;
         private bool isLoaded = true;
 
         internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)

@@ -51,7 +51,7 @@ namespace Elite.Engine
 
 			for (int i = 0; i < 3; i++)
 			{
-				trans_mat[i] = univ.rotmat[i];
+				trans_mat[i] = univ.Rotmat[i];
 			}
 
             Vector3 camera_vec = VectorMaths.MultiplyVector(univ.location, trans_mat);
@@ -421,7 +421,7 @@ namespace Elite.Engine
 
 				case PlanetRenderStyle.SNES:
 				case PlanetRenderStyle.Fractal:
-					RenderPlanet(position, radius, planet.rotmat);
+					RenderPlanet(position, radius, planet.Rotmat);
 					break;
 			}
 		}
@@ -448,7 +448,7 @@ namespace Elite.Engine
 
 			for (int i = 0; i < 3; i++)
 			{
-				trans_mat[i] = univ.rotmat[i];
+				trans_mat[i] = univ.Rotmat[i];
 			}
 
             Vector3 camera_vec = VectorMaths.MultiplyVector(univ.location, trans_mat);

@@ -22,7 +22,7 @@ namespace Elite.WinForms
     public class Sound : ISound, IDisposable
     {
         private MidiPlayer? _midiPlayer;
-        private readonly IMidiAccess? _access;
+        //private readonly IMidiAccess2 _access;
         private readonly IMidiOutput? _output;
         private bool _disposedValue;
         private readonly Dictionary<SoundEffect, SoundPlayer> _waves = new();
@@ -30,7 +30,7 @@ namespace Elite.WinForms
 
         public Sound()
         {
-            _access = MidiAccessManager.Default;
+            var _access = MidiAccessManager.Default;
             _output = _access.OpenOutputAsync(_access.Outputs.Last().Id).Result;
         }
 

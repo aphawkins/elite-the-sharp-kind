@@ -3,11 +3,11 @@
     using System.Numerics;
     using Elite.Engine.Enums;
 
-    internal class UniverseObject : ICloneable
+    internal class UniverseObject
     {
         internal ShipType type;
         internal Vector3 location;
-        internal Vector3[] rotmat;
+        internal Vector3[] Rotmat = new Vector3[3];
         internal float rotx;
         internal float rotz;
         internal FLG flags;
@@ -23,11 +23,11 @@
         {
         }
 
-        private UniverseObject(UniverseObject other)
+        internal UniverseObject(UniverseObject other)
         {
             type = other.type;
             location = other.location.Cloner();
-            rotmat = other.rotmat.Cloner();
+            Rotmat = other.Rotmat.Cloner();
             rotx = other.rotx;
             rotz = other.rotz;
             flags = other.flags;
@@ -38,11 +38,6 @@
             target = other.target;
             bravery = other.bravery;
             exp_delta = other.exp_delta;
-        }
-
-        public object Clone()
-        {
-            return new UniverseObject(this);
         }
     }
 }

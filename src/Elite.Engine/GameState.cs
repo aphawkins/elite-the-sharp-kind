@@ -25,19 +25,21 @@ namespace Elite.Engine
         internal bool IsGameOver { get; private set; } = false;
         internal bool IsInitialised { get; set; } = false;
         internal SCR currentScreen = SCR.SCR_NONE;
-        internal IView currentView;
+        internal IView? currentView;
 
         internal bool witchspace;
         internal Commander cmdr = new();
         internal GalaxySeed docked_planet = new();
-        internal string planetName;
-        internal GalaxySeed hyperspace_planet;
+        internal string planetName = string.Empty;
+        internal GalaxySeed hyperspace_planet = new();
         internal PlanetData current_planet_data = new();
 
         internal GameState(IKeyboard keyboard, Dictionary<SCR, IView> views) 
         {
             _views = views;
             _keyboard = keyboard;
+
+            // currentView = _views[SCR.SCR_CMDR_STATUS];
         }
 
         internal void Reset()

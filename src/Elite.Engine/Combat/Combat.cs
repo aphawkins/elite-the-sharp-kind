@@ -87,7 +87,7 @@ namespace Elite.Engine
                 {
                     Space.universe[i].type = ship_type;
                     Space.universe[i].location = location;
-                    Space.universe[i].rotmat = rotmat;
+                    Space.universe[i].Rotmat = rotmat;
                     Space.universe[i].rotx = rotx;
                     Space.universe[i].rotz = rotz;
                     Space.universe[i].velocity = 0;
@@ -629,7 +629,7 @@ namespace Elite.Engine
             }
 
             nvec = VectorMaths.UnitVector(Space.universe[un].location);
-            direction = VectorMaths.VectorDotProduct(nvec, ship.rotmat[2]);
+            direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[2]);
 
             if ((ship.location.Length() < 8192) && (direction <= -0.833) &&
                  (EliteMain.ship_list[(int)type].laser_strength != 0))
@@ -798,7 +798,7 @@ namespace Elite.Engine
         {
             int rat = 3;
             float rat2 = 0.111f;
-            float dir = VectorMaths.VectorDotProduct(nvec, ship.rotmat[1]);
+            float dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[1]);
 
             if (direction < -0.861)
             {
@@ -816,7 +816,7 @@ namespace Elite.Engine
 
             if (MathF.Abs(ship.rotz) < 16)
             {
-                dir = VectorMaths.VectorDotProduct(nvec, ship.rotmat[0]);
+                dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[0]);
 
                 ship.rotz = 0;
 
@@ -1035,7 +1035,7 @@ namespace Elite.Engine
 
             if (newship != -1)
             {
-                Space.universe[newship].rotmat[2].Z = -1.0f;
+                Space.universe[newship].Rotmat[2].Z = -1.0f;
                 Space.universe[newship].rotz = RNG.Random(7);
                 Space.universe[newship].velocity = RNG.Random(31) | 16;
                 Space.universe[newship].bravery = RNG.Random(127);
@@ -1052,8 +1052,8 @@ namespace Elite.Engine
 
         private void LaunchEnemy(int un, ShipType type, FLG flags, int bravery)
         {
-            Debug.Assert(Space.universe[un].rotmat != null);
-			Vector3[] rotmat = Space.universe[un].rotmat.Cloner();
+            Debug.Assert(Space.universe[un].Rotmat != null);
+			Vector3[] rotmat = Space.universe[un].Rotmat.Cloner();
             int newship = AddNewShip(type, Space.universe[un].location, rotmat, Space.universe[un].rotx, Space.universe[un].rotz);
 
 			if (newship == -1)
@@ -1066,9 +1066,9 @@ namespace Elite.Engine
 			if (Space.universe[un].type is ShipType.Coriolis or ShipType.Dodec)
 			{
 				ns.velocity = 32;
-				ns.location.X += ns.rotmat[2].X * 2;
-				ns.location.Y += ns.rotmat[2].Y * 2;
-				ns.location.Z += ns.rotmat[2].Z * 2;
+				ns.location.X += ns.Rotmat[2].X * 2;
+				ns.location.Y += ns.Rotmat[2].Y * 2;
+				ns.location.Z += ns.Rotmat[2].Z * 2;
 			}
 
 			ns.flags |= flags;
@@ -1179,7 +1179,7 @@ namespace Elite.Engine
 			}
 
 			nvec = VectorMaths.UnitVector(vec);
-			direction = VectorMaths.VectorDotProduct(nvec, missile.rotmat[2]);
+			direction = VectorMaths.VectorDotProduct(nvec, missile.Rotmat[2]);
 			nvec.X = -nvec.X;
 			nvec.Y = -nvec.Y;
 			nvec.Z = -nvec.Z;

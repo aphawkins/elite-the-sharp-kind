@@ -37,10 +37,10 @@ namespace Elite.Engine
         private readonly Trade _trade;
 		private readonly PlayerShip _ship;
 
-        private static GalaxySeed destination_planet;
+		private static GalaxySeed destination_planet = new();
 		internal static bool hyper_ready;
         internal static int hyper_countdown;
-        internal static string hyper_name;
+        internal static string hyper_name = string.Empty;
         private static float hyper_distance;
         internal static bool hyper_galactic;
 		internal static UniverseObject[] universe = new UniverseObject[EliteMain.MAX_UNIV_OBJECTS];
@@ -101,9 +101,9 @@ namespace Elite.Engine
 				{
 					speed = obj.velocity;
 					speed *= 1.5f;
-					x += obj.rotmat[2].X * speed;
-					y += obj.rotmat[2].Y * speed;
-					z += obj.rotmat[2].Z * speed;
+					x += obj.Rotmat[2].X * speed;
+					y += obj.Rotmat[2].Y * speed;
+					z += obj.Rotmat[2].Z * speed;
 				}
 
 				if (obj.acceleration != 0)
@@ -136,7 +136,7 @@ namespace Elite.Engine
 				beta = 0.0f;
 			}
 
-            VectorMaths.RotateVector(ref obj.rotmat, alpha, beta);
+            VectorMaths.RotateVector(ref obj.Rotmat, alpha, beta);
 
 			if (obj.flags.HasFlag(FLG.FLG_DEAD))
 			{
@@ -150,9 +150,9 @@ namespace Elite.Engine
 
 			if (rotx != 0)
 			{
-				RotateXFirst(ref obj.rotmat[2].X, ref obj.rotmat[1].X, rotx);
-				RotateXFirst(ref obj.rotmat[2].Y, ref obj.rotmat[1].Y, rotx);
-				RotateXFirst(ref obj.rotmat[2].Z, ref obj.rotmat[1].Z, rotx);
+				RotateXFirst(ref obj.Rotmat[2].X, ref obj.Rotmat[1].X, rotx);
+				RotateXFirst(ref obj.Rotmat[2].Y, ref obj.Rotmat[1].Y, rotx);
+				RotateXFirst(ref obj.Rotmat[2].Z, ref obj.Rotmat[1].Z, rotx);
 
 				if (rotx is not 127 and not (-127))
                 {
@@ -165,9 +165,9 @@ namespace Elite.Engine
 
 			if (rotz != 0)
 			{
-                RotateXFirst(ref obj.rotmat[0].X, ref obj.rotmat[1].X, rotz);
-                RotateXFirst(ref obj.rotmat[0].Y, ref obj.rotmat[1].Y, rotz);
-                RotateXFirst(ref obj.rotmat[0].Z, ref obj.rotmat[1].Z, rotz);
+                RotateXFirst(ref obj.Rotmat[0].X, ref obj.Rotmat[1].X, rotz);
+                RotateXFirst(ref obj.Rotmat[0].Y, ref obj.Rotmat[1].Y, rotz);
+                RotateXFirst(ref obj.Rotmat[0].Z, ref obj.Rotmat[1].Z, rotz);
 
 				if (rotz is not 127 and not (-127))
 				{
@@ -178,7 +178,7 @@ namespace Elite.Engine
 
 			/* Orthonormalize the rotation matrix... */
 
-			VectorMaths.TidyMatrix(obj.rotmat);
+			VectorMaths.TidyMatrix(obj.Rotmat);
 		}
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace Elite.Engine
 				return true;
 			}
 
-			fz = universe[sn].rotmat[2].Z;
+			fz = universe[sn].Rotmat[2].Z;
 
 			if (fz > -0.90)
 			{
@@ -211,7 +211,7 @@ namespace Elite.Engine
 				return false;
 			}
 
-			ux = universe[sn].rotmat[1].X;
+			ux = universe[sn].Rotmat[1].X;
 			if (ux < 0)
 			{
 				ux = -ux;
@@ -404,14 +404,14 @@ namespace Elite.Engine
 				flip.location.X = -flip.location.X;
 				flip.location.Z = -flip.location.Z;
 
-				flip.rotmat[0].X = -flip.rotmat[0].X;
-				flip.rotmat[0].Z = -flip.rotmat[0].Z;
+				flip.Rotmat[0].X = -flip.Rotmat[0].X;
+				flip.Rotmat[0].Z = -flip.Rotmat[0].Z;
 
-				flip.rotmat[1].X = -flip.rotmat[1].X;
-				flip.rotmat[1].Z = -flip.rotmat[1].Z;
+				flip.Rotmat[1].X = -flip.Rotmat[1].X;
+				flip.Rotmat[1].Z = -flip.Rotmat[1].Z;
 
-				flip.rotmat[2].X = -flip.rotmat[2].X;
-				flip.rotmat[2].Z = -flip.rotmat[2].Z;
+				flip.Rotmat[2].X = -flip.Rotmat[2].X;
+				flip.Rotmat[2].Z = -flip.Rotmat[2].Z;
 				return;
 			}
 
@@ -426,17 +426,17 @@ namespace Elite.Engine
                     return;
                 }
 
-                tmp = flip.rotmat[0].X;
-				flip.rotmat[0].X = flip.rotmat[0].Z;
-				flip.rotmat[0].Z = -tmp;
+                tmp = flip.Rotmat[0].X;
+				flip.Rotmat[0].X = flip.Rotmat[0].Z;
+				flip.Rotmat[0].Z = -tmp;
 
-				tmp = flip.rotmat[1].X;
-				flip.rotmat[1].X = flip.rotmat[1].Z;
-				flip.rotmat[1].Z = -tmp;
+				tmp = flip.Rotmat[1].X;
+				flip.Rotmat[1].X = flip.Rotmat[1].Z;
+				flip.Rotmat[1].Z = -tmp;
 
-				tmp = flip.rotmat[2].X;
-				flip.rotmat[2].X = flip.rotmat[2].Z;
-				flip.rotmat[2].Z = -tmp;
+				tmp = flip.Rotmat[2].X;
+				flip.Rotmat[2].X = flip.Rotmat[2].Z;
+				flip.Rotmat[2].Z = -tmp;
 				return;
 			}
 
@@ -451,17 +451,17 @@ namespace Elite.Engine
                     return;
                 }
 
-                tmp = flip.rotmat[0].X;
-				flip.rotmat[0].X = -flip.rotmat[0].Z;
-				flip.rotmat[0].Z = tmp;
+                tmp = flip.Rotmat[0].X;
+				flip.Rotmat[0].X = -flip.Rotmat[0].Z;
+				flip.Rotmat[0].Z = tmp;
 
-				tmp = flip.rotmat[1].X;
-				flip.rotmat[1].X = -flip.rotmat[1].Z;
-				flip.rotmat[1].Z = tmp;
+				tmp = flip.Rotmat[1].X;
+				flip.Rotmat[1].X = -flip.Rotmat[1].Z;
+				flip.Rotmat[1].Z = tmp;
 
-				tmp = flip.rotmat[2].X;
-				flip.rotmat[2].X = -flip.rotmat[2].Z;
-				flip.rotmat[2].Z = tmp;
+				tmp = flip.Rotmat[2].X;
+				flip.Rotmat[2].X = -flip.Rotmat[2].Z;
+				flip.Rotmat[2].Z = tmp;
 
 			}
 		}
@@ -525,7 +525,7 @@ namespace Elite.Engine
 
                 MoveUniverseObject(ref universe[i]);
 
-                UniverseObject flip = (UniverseObject)universe[i].Clone();
+                UniverseObject flip = new(universe[i]);
                 SwitchToView(ref flip);
 
                 if (type == ShipType.Planet)

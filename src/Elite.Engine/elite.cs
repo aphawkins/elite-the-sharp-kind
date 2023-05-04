@@ -29,7 +29,7 @@ namespace Elite.Engine
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
-        internal static Scanner scanner;
+        private readonly Scanner _scanner;
         private readonly Space _space;
         private readonly Stars _stars;
         private readonly Threed _threed;
@@ -60,7 +60,7 @@ namespace Elite.Engine
         internal static bool drawLasers;
         internal static int mcount;
         private static int message_count;
-        private static string message_string;
+        private static string message_string = string.Empty;
         private static bool game_paused;
         internal static float distanceToPlanet;
 
@@ -371,8 +371,8 @@ namespace Elite.Engine
             _combat = new(_gameState, _audio, _ship, _trade);
             _save = new(_gameState, _ship, _trade);
             _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _ship);
+            _scanner = new Scanner(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
 
-            scanner = new Scanner(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
             config = ConfigFile.ReadConfigAsync().Result;
 
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard, _ship, _combat));
@@ -390,7 +390,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_UNDOCKING, new Launch(_gameState, _gfx, _audio, _space, _combat));
             _views.Add(SCR.SCR_HYPERSPACE, new Hyperspace(_gameState, _gfx, _audio));
             _views.Add(SCR.SCR_INVENTORY, new Inventory(_gfx, _draw, _ship, _trade));
-            _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gameState, _gfx, _draw, keyboard, _ship, _trade));
+            _views.Add(SCR.SCR_EQUIP_SHIP, new Equipment(_gameState, _gfx, _draw, keyboard, _ship, _trade, _scanner));
             _views.Add(SCR.SCR_OPTIONS, new Options(_gameState, _gfx, _draw, keyboard));
             _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gameState, _gfx, _draw, keyboard, _save));
             _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gameState, _gfx, _draw, keyboard, _save));
@@ -461,10 +461,10 @@ namespace Elite.Engine
 
             _draw.ClearDisplay();
 
-            _gameState.currentView.UpdateUniverse();
+            _gameState.currentView!.UpdateUniverse();
             _space.UpdateUniverse();
             _gameState.currentView.Draw();
-            scanner.UpdateConsole();
+            _scanner.UpdateConsole();
             _gameState.currentView.HandleInput();
 
 #if DEBUG

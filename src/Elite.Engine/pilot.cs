@@ -61,14 +61,14 @@ namespace Elite.Engine
 			cnt2 = 0.8055f;
 
 			nvec = VectorMaths.UnitVector(vec);
-			direction = VectorMaths.VectorDotProduct(nvec, ship.rotmat[2]);
+			direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[2]);
 
 			if (direction < -0.6666)
 			{
 				rat2 = 0;
 			}
 
-			dir = VectorMaths.VectorDotProduct(nvec, ship.rotmat[1]);
+			dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[1]);
 
 			if (direction < -0.861)
 			{
@@ -86,7 +86,7 @@ namespace Elite.Engine
 
 			if (MathF.Abs(ship.rotz) < 16)
 			{
-				dir = VectorMaths.VectorDotProduct(nvec, ship.rotmat[0]);
+				dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[0]);
 				ship.rotz = 0;
 
 				if ((MathF.Abs(dir) * 2) >= rat2)
@@ -140,9 +140,9 @@ namespace Elite.Engine
 			vec.Y = Space.universe[1].location.Y - ship.location.Y;
 			vec.Z = Space.universe[1].location.Z - ship.location.Z;
 
-			vec.X += Space.universe[1].rotmat[2].X * 768;
-			vec.Y += Space.universe[1].rotmat[2].Y * 768;
-			vec.Z += Space.universe[1].rotmat[2].Z * 768;
+			vec.X += Space.universe[1].Rotmat[2].X * 768;
+			vec.Y += Space.universe[1].Rotmat[2].Y * 768;
+			vec.Z += Space.universe[1].Rotmat[2].Z * 768;
 
 			FlyToVector(ref ship, vec);
 		}
@@ -210,7 +210,7 @@ namespace Elite.Engine
 
 			ship.rotz = 0;
 
-			dir = VectorMaths.VectorDotProduct(ship.rotmat[0], Space.universe[1].rotmat[1]);
+			dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], Space.universe[1].Rotmat[1]);
 
 			if (MathF.Abs(dir) >= 0.9166f)
 			{
@@ -254,7 +254,7 @@ namespace Elite.Engine
 			}
 
 			vec = VectorMaths.UnitVector(diff);
-			dir = VectorMaths.VectorDotProduct(Space.universe[1].rotmat[2], vec);
+			dir = VectorMaths.VectorDotProduct(Space.universe[1].Rotmat[2], vec);
 
 			if (dir < 0.9722)
 			{
@@ -262,7 +262,7 @@ namespace Elite.Engine
 				return;
 			}
 
-			dir = VectorMaths.VectorDotProduct(ship.rotmat[2], vec);
+			dir = VectorMaths.VectorDotProduct(ship.Rotmat[2], vec);
 
 			if (dir < -0.9444)
 			{

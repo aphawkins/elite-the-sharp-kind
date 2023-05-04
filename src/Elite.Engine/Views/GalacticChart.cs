@@ -30,7 +30,7 @@ namespace Elite.Engine.Views
         private readonly List<Vector2> _planetPixels = new();
         private int _crossTimer;
         private bool _isFind;
-        private string _findName;
+        private string _findName = string.Empty;
 
         internal GalacticChart(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {

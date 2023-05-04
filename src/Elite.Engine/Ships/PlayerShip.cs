@@ -50,12 +50,12 @@
         {
             UniverseObject ship = new()
             {
-                rotmat = VectorMaths.GetInitialMatrix(),
+                Rotmat = VectorMaths.GetInitialMatrix(),
                 location = Vector3.Zero
             };
 
-            ship.rotmat[2].Z = 1;
-            ship.rotmat[0].X = -1;
+            ship.Rotmat[2].Z = 1;
+            ship.Rotmat[0].X = -1;
             ship.type = (ShipType)(-96);
             ship.velocity = speed;
             ship.acceleration = 0;

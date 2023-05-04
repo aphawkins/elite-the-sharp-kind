@@ -2,7 +2,7 @@
 {
     internal class ShipData
     {
-        internal string name;
+        internal string name = string.Empty;
         internal int max_loot;
         internal StockType scoopedType;
         internal float size;
@@ -13,10 +13,10 @@
         internal float velocity;
         internal int missiles;
         internal int laser_strength;
-        internal ShipPoint[] points;
-        internal ShipLine[] lines;
-        internal ShipFaceNormal[] normals;
-        internal ShipFace[] face_data;
+        internal ShipPoint[] points = Array.Empty<ShipPoint>();
+        internal ShipLine[] lines = Array.Empty<ShipLine>();
+        internal ShipFaceNormal[] normals = Array.Empty<ShipFaceNormal>();
+        internal ShipFace[] face_data = Array.Empty<ShipFace>();
 
         internal ShipData()
         {

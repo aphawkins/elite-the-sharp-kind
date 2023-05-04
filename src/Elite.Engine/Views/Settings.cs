@@ -165,7 +165,7 @@ namespace Elite.Engine
         {
             if (_highlightedItem == (setting_list.Length - 1))
             {
-                ConfigFile.WriteConfigAsync(EliteMain.config);
+                ConfigFile.WriteConfigAsync(EliteMain.config).Wait();
                 _gameState.SetView(SCR.SCR_OPTIONS);
                 return;
             }

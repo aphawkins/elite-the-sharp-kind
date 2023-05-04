@@ -27,9 +27,10 @@ namespace Elite.Engine.Views
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
+        private readonly Scanner _scanner;
         private int _highlightedItem;
 
-        internal Equipment(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade)
+        internal Equipment(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -37,6 +38,7 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
             _ship = ship;
             _trade = trade;
+            _scanner = scanner;
         }
 
         private readonly EquipmentItem[] EquipmentStock = new EquipmentItem[]
@@ -268,12 +270,12 @@ namespace Elite.Engine.Views
             {
                 case EquipmentType.EQ_FUEL:
                     _ship.fuel = _ship.maxFuel;
-                    EliteMain.scanner.UpdateConsole();
+                    _scanner.UpdateConsole();
                     break;
 
                 case EquipmentType.EQ_MISSILE:
                     _ship.missileCount++;
-                    EliteMain.scanner.UpdateConsole();
+                    _scanner.UpdateConsole();
                     break;
 
                 case EquipmentType.EQ_CARGO_BAY:

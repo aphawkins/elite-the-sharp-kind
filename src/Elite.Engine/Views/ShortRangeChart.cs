@@ -31,7 +31,7 @@ namespace Elite.Engine.Views
         private readonly List<(Vector2 position, float size)> _planetSizes = new();
         private int _crossTimer;
         private bool _isFind;
-        private string _findName;
+        private string _findName = string.Empty;
 
         internal ShortRangeChart(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
