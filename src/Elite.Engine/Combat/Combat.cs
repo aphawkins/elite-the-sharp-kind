@@ -9,15 +9,15 @@ namespace Elite.Engine
 {
 	internal class Combat
 	{
-        internal bool inBattle;
-        internal int MISSILE_ARMED = -1;
-        internal int MISSILE_UNARMED = -2;
-        internal int missileTarget;
+        internal bool _inBattle;
+        internal int _isMISSILE_ARMED = -1;
+        internal int _isMISSILE_UNARMED = -2;
+        internal int _missileTarget;
         private readonly Audio _audio;
         private readonly GameState _gameState;
         private readonly PlayerShip _ship;
 		private readonly Trade _trade;
-        private readonly FLG[] initialFlags = new FLG[Ship.NO_OF_SHIPS + 1]
+        private readonly FLG[] _initialFlags = new FLG[Ship.NO_OF_SHIPS + 1]
         {
             0,											// NULL,
 			0,											// missile 
@@ -55,10 +55,10 @@ namespace Elite.Engine
 			0											// dodec
 		};
 
-        private bool isEcmOurs;
-        private int laserCounter;
-        private int laserStrength;
-        private LaserType laserType;
+        private bool _isEcmOurs;
+        private int _laserCounter;
+        private int _laserStrength;
+        private LaserType _laserType;
 
 		internal Combat(GameState gameState, Audio audio, PlayerShip ship, Trade trade)
 		{
@@ -73,7 +73,7 @@ namespace Elite.Engine
             if (_ship.ecmActive == 0)
             {
                 _ship.ecmActive = 32;
-                isEcmOurs = ours;
+                _isEcmOurs = ours;
                 _audio.PlayEffect(SoundEffect.Ecm);
             }
         }
@@ -94,7 +94,7 @@ namespace Elite.Engine
                     Space.universe[i].acceleration = 0;
                     Space.universe[i].bravery = 0;
                     Space.universe[i].target = 0;
-                    Space.universe[i].flags = initialFlags[(int)ship_type < 0 ? 0 : (int)ship_type];
+                    Space.universe[i].flags = _initialFlags[(int)ship_type < 0 ? 0 : (int)ship_type];
 
                     if (ship_type is not ShipType.Planet and not ShipType.Sun)
                     {
@@ -119,9 +119,9 @@ namespace Elite.Engine
 
         internal void ArmMissile()
         {
-            if ((_ship.missileCount != 0) && (missileTarget == MISSILE_UNARMED))
+            if ((_ship.missileCount != 0) && (_missileTarget == _isMISSILE_UNARMED))
             {
-                missileTarget = MISSILE_ARMED;
+                _missileTarget = _isMISSILE_ARMED;
             }
         }
 
@@ -131,14 +131,14 @@ namespace Elite.Engine
 
             if (IsInTarget(Space.universe[un].type, flip.location.X, flip.location.Y, flip.location.Z))
             {
-                if ((missileTarget == MISSILE_ARMED) && (Space.universe[un].type >= 0))
+                if ((_missileTarget == _isMISSILE_ARMED) && (Space.universe[un].type >= 0))
                 {
-                    missileTarget = un;
+                    _missileTarget = un;
                     EliteMain.InfoMessage("Target Locked");
                     _audio.PlayEffect(SoundEffect.Beep);
                 }
 
-                if (laserStrength > 0)
+                if (_laserStrength > 0)
                 {
                     _audio.PlayEffect(SoundEffect.HitEnemy);
 
@@ -146,14 +146,14 @@ namespace Elite.Engine
                     {
                         if (Space.universe[un].type is ShipType.Constrictor or ShipType.Cougar)
                         {
-                            if (laserType == LaserType.Military)
+                            if (_laserType == LaserType.Military)
                             {
-                                Space.universe[un].energy -= laserStrength / 4;
+                                Space.universe[un].energy -= _laserStrength / 4;
                             }
                         }
                         else
                         {
-                            Space.universe[un].energy -= laserStrength;
+                            Space.universe[un].energy -= _laserStrength;
                         }
                     }
 
@@ -163,7 +163,7 @@ namespace Elite.Engine
 
                         if (Space.universe[un].type == ShipType.Asteroid)
                         {
-                            if (laserType is LaserType.Mining or LaserType.Pulse)
+                            if (_laserType is LaserType.Mining or LaserType.Pulse)
                             {
                                 LaunchLoot(un, ShipType.Rock);
                             }
@@ -195,12 +195,12 @@ namespace Elite.Engine
 				Space.ship_count[(ShipType)i] = 0;
 			}
 
-			inBattle = false;
+			_inBattle = false;
 		}
         internal void CoolLaser()
         {
-            laserStrength = 0;
-            laserType = LaserType.None;
+            _laserStrength = 0;
+            _laserType = LaserType.None;
             EliteMain.drawLasers = false;
 
             if (EliteMain.laser_temp > 0)
@@ -208,7 +208,7 @@ namespace Elite.Engine
                 EliteMain.laser_temp--;
             }
 
-            laserCounter = Math.Clamp(laserCounter - 2, 0, laserCounter);
+            _laserCounter = Math.Clamp(_laserCounter - 2, 0, _laserCounter);
         }
 
         internal void CreateThargoid()
@@ -248,13 +248,13 @@ namespace Elite.Engine
         {
             if (EliteMain.docked ||
                 EliteMain.drawLasers ||
-                laserCounter != 0 ||
+                _laserCounter != 0 ||
                 EliteMain.laser_temp >= 242)
             {
                 return false;
             }
 
-            laserStrength = _gameState.currentScreen switch
+            _laserStrength = _gameState.currentScreen switch
             {
                 SCR.SCR_FRONT_VIEW => _ship.laserFront.Strength,
                 SCR.SCR_REAR_VIEW => _ship.laserRear.Strength,
@@ -263,12 +263,12 @@ namespace Elite.Engine
                 _ => 0,
             };
 
-            if (laserStrength == 0)
+            if (_laserStrength == 0)
             {
                 return false;
             }
 
-            laserType = _gameState.currentScreen switch
+            _laserType = _gameState.currentScreen switch
             {
                 SCR.SCR_FRONT_VIEW => _ship.laserFront.Type,
                 SCR.SCR_REAR_VIEW => _ship.laserRear.Type,
@@ -277,8 +277,8 @@ namespace Elite.Engine
                 _ => LaserType.None,
             };
 
-            laserCounter = (laserStrength > 127) ? 0 : (laserStrength & 250);
-            laserStrength &= 127;
+            _laserCounter = (_laserStrength > 127) ? 0 : (_laserStrength & 250);
+            _laserStrength &= 127;
 
             _audio.PlayEffect(SoundEffect.Pulse);
             EliteMain.laser_temp += 8;
@@ -292,7 +292,7 @@ namespace Elite.Engine
 
         internal void FireMissile()
         {
-            if (missileTarget < 0)
+            if (_missileTarget < 0)
             {
                 return;
             }
@@ -311,15 +311,15 @@ namespace Elite.Engine
 
             Space.universe[newship].velocity = _ship.speed * 2;
             Space.universe[newship].flags = FLG.FLG_ANGRY;
-            Space.universe[newship].target = missileTarget;
+            Space.universe[newship].target = _missileTarget;
 
-            if (Space.universe[missileTarget].type > ShipType.Rock)
+            if (Space.universe[_missileTarget].type > ShipType.Rock)
             {
-                Space.universe[missileTarget].flags |= FLG.FLG_ANGRY;
+                Space.universe[_missileTarget].flags |= FLG.FLG_ANGRY;
             }
 
             _ship.missileCount--;
-            missileTarget = MISSILE_UNARMED;
+            _missileTarget = _isMISSILE_UNARMED;
 
             _audio.PlayEffect(SoundEffect.Missile);
         }
@@ -360,7 +360,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (inBattle)
+            if (_inBattle)
             {
                 return;
             }
@@ -403,11 +403,11 @@ namespace Elite.Engine
         internal void ResetWeapons()
         {
             EliteMain.laser_temp = 0;
-            laserCounter = 0;
-            laserStrength = 0;
-            laserType = LaserType.None;
+            _laserCounter = 0;
+            _laserStrength = 0;
+            _laserType = LaserType.None;
             _ship.ecmActive = 0;
-            missileTarget = MISSILE_UNARMED;
+            _missileTarget = _isMISSILE_UNARMED;
         }
 
         internal void ScoopItem(int un)
@@ -745,7 +745,7 @@ namespace Elite.Engine
             if (_ship.ecmActive != 0)
             {
                 _ship.ecmActive--;
-                if (isEcmOurs)
+                if (_isEcmOurs)
                 {
                     _ship.DecreaseEnergy(-1);
                 }
@@ -754,7 +754,7 @@ namespace Elite.Engine
 
         internal void UnarmMissile()
         {
-            missileTarget = MISSILE_UNARMED;
+            _missileTarget = _isMISSILE_UNARMED;
             _audio.PlayEffect(SoundEffect.Boop);
         }
 
@@ -906,7 +906,7 @@ namespace Elite.Engine
                     }
 
                     Space.universe[newship].bravery = ((RNG.Random(255) * 2) | 64) & 127;
-                    inBattle = true;
+                    _inBattle = true;
                 }
             }
         }
@@ -940,9 +940,9 @@ namespace Elite.Engine
 
         private void CheckMissiles(int un)
         {
-			if (missileTarget == un)
+			if (_missileTarget == un)
 			{
-				missileTarget = MISSILE_UNARMED;
+				_missileTarget = _isMISSILE_UNARMED;
                 EliteMain.InfoMessage("Target Lost");
 			}
 
@@ -1001,7 +1001,7 @@ namespace Elite.Engine
                 }
 
                 Space.universe[newship].bravery = ((RNG.Random(255) * 2) | 64) & 127;
-                inBattle = true;
+                _inBattle = true;
             }
         }
 

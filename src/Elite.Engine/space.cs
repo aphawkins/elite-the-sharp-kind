@@ -665,7 +665,7 @@ namespace Elite.Engine
 
             _gameState.witchspace = true;
             _gameState.docked_planet.B ^= 31;
-			_combat.inBattle = true;
+			_combat._inBattle = true;
 
             _ship.speed = 12;
             _ship.roll = 0;
@@ -801,7 +801,7 @@ namespace Elite.Engine
 
 			Stars.warp_stars = true;
             EliteMain.mcount &= 63;
-			_combat.inBattle = false;
+			_combat._inBattle = false;
 		}
 
 		internal void LaunchPlayer()

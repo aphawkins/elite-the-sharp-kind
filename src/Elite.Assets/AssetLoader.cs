@@ -6,21 +6,21 @@ namespace Elite.Assets
 {
     public class AssetLoader : IAssets
     {
-        readonly Assembly? assets = Assembly.GetAssembly(typeof(AssetLoader));
+        readonly Assembly? _assets = Assembly.GetAssembly(typeof(AssetLoader));
 
         public Stream? Load(Image image)
         {
-            return assets?.GetManifestResourceStream("Elite.Assets.Images." + GetName(image));
+            return _assets?.GetManifestResourceStream("Elite.Assets.Images." + GetName(image));
         }
 
         public Stream? Load(SoundEffect effect)
         {
-            return assets?.GetManifestResourceStream("Elite.Assets.SoundEffects." + GetName(effect));
+            return _assets?.GetManifestResourceStream("Elite.Assets.SoundEffects." + GetName(effect));
         }
 
         public Stream? Load(Music music)
         {
-            return assets?.GetManifestResourceStream("Elite.Assets.Music." + GetName(music));
+            return _assets?.GetManifestResourceStream("Elite.Assets.Music." + GetName(music));
         }
 
         private static string GetName(Image image)

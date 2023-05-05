@@ -39,6 +39,7 @@ namespace Elite.Engine
         private readonly Planet _planet;
         private readonly SaveFile _save;
         private readonly PlayerShip _ship;
+        private readonly ConfigFile _configFile;
 
         internal const int MAX_UNIV_OBJECTS = 20;
         internal static int carry_flag = 0;
@@ -355,7 +356,7 @@ namespace Elite.Engine
         public EliteMain(IGfx alg_gfx, ISound sound, IKeyboard keyboard)
         {
             _gfx = alg_gfx;
-            _audio = new Audio(sound);
+            _audio = new(sound);
             _audio.LoadSounds();
             _keyboard = keyboard;
             _gameState = new(_keyboard, _views);
@@ -371,9 +372,10 @@ namespace Elite.Engine
             _combat = new(_gameState, _audio, _ship, _trade);
             _save = new(_gameState, _ship, _trade);
             _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _ship);
-            _scanner = new Scanner(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
+            _scanner = new(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
+            _configFile = new();
 
-            config = ConfigFile.ReadConfigAsync().Result;
+            config = _configFile.ReadConfigAsync().Result;
 
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard, _ship, _combat));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars, _ship, _combat));
@@ -395,7 +397,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommander(_gameState, _gfx, _draw, keyboard, _save));
             _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommander(_gameState, _gfx, _draw, keyboard, _save));
             _views.Add(SCR.SCR_QUIT, new Quit(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_SETTINGS, new Settings(_gameState, _gfx, _draw, keyboard));
+            _views.Add(SCR.SCR_SETTINGS, new Settings(_gameState, _gfx, _draw, keyboard, _configFile));
             _views.Add(SCR.SCR_MISSION_1, new ConstrictorMission(_gameState, _gfx, _draw, keyboard, _ship, _trade, _combat));
             _views.Add(SCR.SCR_MISSION_2, new ThargoidMission(_gameState, _gfx, _draw, keyboard, _ship));
             _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars, _ship, _trade, _combat));

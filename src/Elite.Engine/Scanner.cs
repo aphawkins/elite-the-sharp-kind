@@ -287,9 +287,9 @@ namespace Elite.Engine
 
 			Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 
-			if (_combat.missileTarget != _combat.MISSILE_UNARMED)
+			if (_combat._missileTarget != _combat._isMISSILE_UNARMED)
 			{
-                _gfx.DrawImage((_combat.missileTarget < 0) ? Image.MissileYellow : Image.MissileRed, location);
+                _gfx.DrawImage((_combat._missileTarget < 0) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
                 missileCount--;
 			}

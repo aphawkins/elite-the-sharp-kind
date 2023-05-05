@@ -23,6 +23,7 @@ namespace Elite.Engine
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
+        private readonly ConfigFile _configFile;
         private int _highlightedItem;
 
         private readonly (string Name, string[] Values)[] setting_list = 
@@ -35,12 +36,13 @@ namespace Elite.Engine
 			new("Save Settings", new [] {"", "", "", "", ""})
 		};
 
-        internal Settings(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal Settings(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, ConfigFile configFile)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
+            _configFile = configFile;
         }
 
         public void Reset()
@@ -165,7 +167,7 @@ namespace Elite.Engine
         {
             if (_highlightedItem == (setting_list.Length - 1))
             {
-                ConfigFile.WriteConfigAsync(EliteMain.config).Wait();
+                _configFile.WriteConfigAsync(EliteMain.config).Wait();
                 _gameState.SetView(SCR.SCR_OPTIONS);
                 return;
             }

@@ -21,8 +21,8 @@ namespace Elite.Engine
 {
     internal class ConfigFile
 	{
-		private const string configFileName = "sharpkind.cfg";
-        private static readonly JsonSerializerOptions options = new()
+		private const string ConfigFileName = "sharpkind.cfg";
+        private readonly JsonSerializerOptions _options = new()
         {
             WriteIndented = true,
             Converters = { new JsonStringEnumConverter() },
@@ -32,17 +32,17 @@ namespace Elite.Engine
         /// Write the config file.
         /// </summary>
         /// <param name="config">The config to save.</param>
-        internal static async Task WriteConfigAsync(ConfigSettings config)
+        internal async Task WriteConfigAsync(ConfigSettings config)
 		{
             try
             {
-                if (File.Exists(configFileName))
+                if (File.Exists(ConfigFileName))
                 {
-                    File.Delete(configFileName);
+                    File.Delete(ConfigFileName);
                 }
-                using FileStream stream = File.OpenWrite(configFileName);
+                using FileStream stream = File.OpenWrite(ConfigFileName);
                 
-                await JsonSerializer.SerializeAsync(stream, config, options);
+                await JsonSerializer.SerializeAsync(stream, config, _options);
             }
             catch (Exception ex)
             {
@@ -54,12 +54,12 @@ namespace Elite.Engine
 		/// <summary>
 		/// Read the config file.
 		/// </summary>
-		internal static async Task<ConfigSettings> ReadConfigAsync()
+		internal async Task<ConfigSettings> ReadConfigAsync()
 		{
             try
             {
-                using FileStream stream = File.OpenRead(configFileName);
-                ConfigSettings? config = await JsonSerializer.DeserializeAsync<ConfigSettings>(stream, options);
+                using FileStream stream = File.OpenRead(ConfigFileName);
+                ConfigSettings? config = await JsonSerializer.DeserializeAsync<ConfigSettings>(stream, _options);
                 if (config != null)
                 {
                     return config;

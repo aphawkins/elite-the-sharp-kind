@@ -38,12 +38,8 @@ namespace Elite.Engine
 
 		internal static void WaggleGalaxy(ref GalaxySeed glx_ptr)
 		{
-			int x;
-			int y;
-			int carry_flag;
-
-			x = glx_ptr.A + glx_ptr.C;
-			y = glx_ptr.B + glx_ptr.D;
+			int x = glx_ptr.A + glx_ptr.C;
+			int y = glx_ptr.B + glx_ptr.D;
 
 			if (x > 0xFF)
 			{
@@ -66,7 +62,7 @@ namespace Elite.Engine
 				y++;
 			}
 
-			carry_flag = y > 0xFF ? 1 : 0;
+			EliteMain.carry_flag = y > 0xFF ? 1 : 0;
 
             x &= 0xFF;
 			y &= 0xFF;
