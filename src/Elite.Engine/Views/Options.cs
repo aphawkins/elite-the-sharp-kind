@@ -1,16 +1,6 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
 
@@ -18,15 +8,13 @@ namespace Elite.Engine.Views
 {
     internal class OptionsView : IView
     {
+        private const int OptionBarHeight = 15;
+        private const int OptionBarWidth = 400;
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
-        private int _highlightedItem;
-        private const int OptionBarWidth = 400;
-        private const int OptionBarHeight = 15;
-
-        private readonly (string Label, bool DockedOnly)[] optionList =
+        private readonly (string Label, bool DockedOnly)[] _optionList =
         {
             new("Save Commander",   true),
             new("Load Commander",   true),
@@ -34,6 +22,7 @@ namespace Elite.Engine.Views
             new ("Quit",            false)
         };
 
+        private int _highlightedItem;
         internal OptionsView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
@@ -42,20 +31,14 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
         }
 
-        public void Reset() => _highlightedItem = 0;
-
-        public void UpdateUniverse()
-        {
-        }
-
         public void Draw()
         {
             _draw.ClearDisplay();
             _draw.DrawViewHeader("GAME OPTIONS");
 
-            for (int i = 0; i < optionList.Length; i++)
+            for (int i = 0; i < _optionList.Length; i++)
             {
-                int y = (384 - (30 * optionList.Length)) / 2;
+                int y = (384 - (30 * _optionList.Length)) / 2;
                 y += i * 30;
 
                 if (i == _highlightedItem)
@@ -64,9 +47,9 @@ namespace Elite.Engine.Views
                     _gfx.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, GFX_COL.GFX_COL_DARK_RED);
                 }
 
-                GFX_COL col = ((!_gameState.IsDocked) && optionList[i].DockedOnly) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
+                GFX_COL col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
 
-                _gfx.DrawTextCentre(y, optionList[i].Label, 120, col);
+                _gfx.DrawTextCentre(y, _optionList[i].Label, 120, col);
             }
 
             _gfx.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", 120, GFX_COL.GFX_COL_WHITE);
@@ -79,11 +62,11 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
-                _highlightedItem = Math.Clamp(_highlightedItem - 1, 0, optionList.Length - 1);
+                _highlightedItem = Math.Clamp(_highlightedItem - 1, 0, _optionList.Length - 1);
             }
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
-                _highlightedItem = Math.Clamp(_highlightedItem + 1, 0, optionList.Length - 1);
+                _highlightedItem = Math.Clamp(_highlightedItem + 1, 0, _optionList.Length - 1);
             }
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
@@ -91,9 +74,15 @@ namespace Elite.Engine.Views
             }
         }
 
+        public void Reset() => _highlightedItem = 0;
+
+        public void UpdateUniverse()
+        {
+        }
+
         private void ExecuteOption()
         {
-            if (_gameState.IsDocked || !optionList[_highlightedItem].DockedOnly)
+            if (_gameState.IsDocked || !_optionList[_highlightedItem].DockedOnly)
             {
                 switch (_highlightedItem)
                 {
