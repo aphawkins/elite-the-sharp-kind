@@ -90,8 +90,8 @@ namespace Elite.Engine
             float rotx, rotz;
             float speed;
 
-            alpha = _ship.roll / 256;
-            beta = _ship.climb / 256;
+            alpha = _ship.Roll / 256;
+            beta = _ship.Climb / 256;
 
             x = obj.location.X;
             y = obj.location.Y;
@@ -129,7 +129,7 @@ namespace Elite.Engine
             y = k2 - (z * beta);
             x += alpha * y;
 
-            z -= _ship.speed;
+            z -= _ship.Speed;
 
             obj.location = new(x, y, z);
 
@@ -224,7 +224,7 @@ namespace Elite.Engine
 
         internal void UpdateAltitude()
         {
-            _ship.altitude = 255;
+            _ship.Altitude = 255;
 
             if (_gameState.InWitchspace)
             {
@@ -255,7 +255,7 @@ namespace Elite.Engine
             dist -= 9472;
             if (dist < 1)
             {
-                _ship.altitude = 0;
+                _ship.Altitude = 0;
                 _gameState.GameOver();
                 return;
             }
@@ -263,17 +263,17 @@ namespace Elite.Engine
             dist = MathF.Sqrt(dist);
             if (dist < 1)
             {
-                _ship.altitude = 0;
+                _ship.Altitude = 0;
                 _gameState.GameOver();
                 return;
             }
 
-            _ship.altitude = dist;
+            _ship.Altitude = dist;
         }
 
         internal void UpdateCabinTemp()
         {
-            _ship.cabinTemperature = 30;
+            _ship.CabinTemperature = 30;
 
             if (_gameState.InWitchspace)
             {
@@ -308,24 +308,24 @@ namespace Elite.Engine
 
             dist = (int)dist ^ 255;
 
-            _ship.cabinTemperature = dist + 30;
+            _ship.CabinTemperature = dist + 30;
 
-            if (_ship.cabinTemperature > 255)
+            if (_ship.CabinTemperature > 255)
             {
-                _ship.cabinTemperature = 255;
+                _ship.CabinTemperature = 255;
                 _gameState.GameOver();
                 return;
             }
 
-            if ((_ship.cabinTemperature < 224) || (!_ship.hasFuelScoop))
+            if ((_ship.CabinTemperature < 224) || (!_ship.HasFuelScoop))
             {
                 return;
             }
 
-            _ship.fuel += _ship.speed / 2;
-            if (_ship.fuel > _ship.maxFuel)
+            _ship.Fuel += _ship.Speed / 2;
+            if (_ship.Fuel > _ship.MaxFuel)
             {
-                _ship.fuel = _ship.maxFuel;
+                _ship.Fuel = _ship.MaxFuel;
             }
 
             _gameState.InfoMessage("Fuel Scoop On");
@@ -381,13 +381,13 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_ship.speed >= 5)
+            if (_ship.Speed >= 5)
             {
                 _gameState.GameOver();
                 return;
             }
 
-            _ship.speed = 1;
+            _ship.Speed = 1;
             _ship.DamageShip(5, universe[i].location.Z > 0);
             _audio.PlayEffect(SoundEffect.Crash);
         }
@@ -593,7 +593,7 @@ namespace Elite.Engine
 
             hyper_distance = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
 
-            if ((hyper_distance == 0) || (hyper_distance > _ship.fuel))
+            if ((hyper_distance == 0) || (hyper_distance > _ship.Fuel))
             {
                 return;
             }
@@ -655,9 +655,9 @@ namespace Elite.Engine
             _gameState.DockedPlanet.B ^= 31;
             _combat.InBattle = true;
 
-            _ship.speed = 12;
-            _ship.roll = 0;
-            _ship.climb = 0;
+            _ship.Speed = 12;
+            _ship.Roll = 0;
+            _ship.Climb = 0;
             Stars.CreateNewStars();
             _combat.ClearUniverse();
 
@@ -685,10 +685,10 @@ namespace Elite.Engine
             }
             else
             {
-                _ship.fuel -= hyper_distance;
+                _ship.Fuel -= hyper_distance;
                 _gameState.Cmdr.LegalStatus /= 2;
 
-                if ((RNG.Random(255) > 253) || (_ship.climb >= _ship.maxClimb))
+                if ((RNG.Random(255) > 253) || (_ship.Climb >= _ship.MaxClimb))
                 {
                     EnterWitchspace();
                     return;
@@ -701,9 +701,9 @@ namespace Elite.Engine
             _gameState.CurrentPlanetData = Planet.GeneratePlanetData(_gameState.DockedPlanet);
             _trade.GenerateStockMarket(_gameState.CurrentPlanetData);
 
-            _ship.speed = 12;
-            _ship.roll = 0;
-            _ship.climb = 0;
+            _ship.Speed = 12;
+            _ship.Roll = 0;
+            _ship.Climb = 0;
             Stars.CreateNewStars();
             _combat.ClearUniverse();
 
@@ -794,10 +794,10 @@ namespace Elite.Engine
 
         internal void LaunchPlayer()
         {
-            _ship.speed = 12;
+            _ship.Speed = 12;
             // Rotate in the same direction that the station is spinning
-            _ship.roll = 15;
-            _ship.climb = 0;
+            _ship.Roll = 15;
+            _ship.Climb = 0;
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             Stars.CreateNewStars();
             _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);

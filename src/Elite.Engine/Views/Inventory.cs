@@ -38,7 +38,7 @@ namespace Elite.Engine.Views
             _draw.DrawViewHeader("INVENTORY");
 
             _gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 50, $"{_ship.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(70, 50, $"{_ship.Fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 66, "Cash:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(70, 66, $"{_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);

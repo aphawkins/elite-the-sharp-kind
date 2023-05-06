@@ -141,9 +141,9 @@ namespace Elite.Engine
             float sx = 417;
             float sy = 384 + 9;
 
-            float len = (_ship.speed * 64 / _ship.maxSpeed) - 1;
+            float len = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
 
-            GFX_COL colour = (_ship.speed > (_ship.maxSpeed * 2 / 3)) ? GFX_COL.GFX_COL_DARK_RED : GFX_COL.GFX_COL_GOLD;
+            GFX_COL colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? GFX_COL.GFX_COL_DARK_RED : GFX_COL.GFX_COL_GOLD;
 
             for (int i = 0; i < 6; i++)
             {
@@ -175,30 +175,30 @@ namespace Elite.Engine
         /// </summary>
         private void DisplayShields()
         {
-            if (_ship.shieldFront > 3)
+            if (_ship.ShieldFront > 3)
             {
-                DisplayDialBar(_ship.shieldFront / 4, new(31, 7));
+                DisplayDialBar(_ship.ShieldFront / 4, new(31, 7));
             }
 
-            if (_ship.shieldRear > 3)
+            if (_ship.ShieldRear > 3)
             {
-                DisplayDialBar(_ship.shieldRear / 4, new(31, 23));
+                DisplayDialBar(_ship.ShieldRear / 4, new(31, 23));
             }
         }
 
         private void DisplayAltitude()
         {
-            if (_ship.altitude > 3)
+            if (_ship.Altitude > 3)
             {
-                DisplayDialBar(_ship.altitude / 4, new(31, 92));
+                DisplayDialBar(_ship.Altitude / 4, new(31, 92));
             }
         }
 
         private void DisplayCabinTemp()
         {
-            if (_ship.cabinTemperature > 3)
+            if (_ship.CabinTemperature > 3)
             {
-                DisplayDialBar(_ship.cabinTemperature / 4, new(31, 60));
+                DisplayDialBar(_ship.CabinTemperature / 4, new(31, 60));
             }
         }
 
@@ -215,10 +215,10 @@ namespace Elite.Engine
         /// </summary>
         private void DisplayEnergy()
         {
-            float e1 = _ship.energy > 64 ? 64 : _ship.energy;
-            float e2 = _ship.energy > 128 ? 64 : _ship.energy - 64;
-            float e3 = _ship.energy > 192 ? 64 : _ship.energy - 128;
-            float e4 = _ship.energy - 192;
+            float e1 = _ship.Energy > 64 ? 64 : _ship.Energy;
+            float e2 = _ship.Energy > 128 ? 64 : _ship.Energy - 64;
+            float e3 = _ship.Energy > 192 ? 64 : _ship.Energy - 128;
+            float e4 = _ship.Energy - 192;
 
             if (e4 > 0)
             {
@@ -246,7 +246,7 @@ namespace Elite.Engine
             float sx = 416;
             float sy = 384 + 9 + 14;
 
-            float pos = sx - (_ship.roll * 28 / _ship.maxRoll);
+            float pos = sx - (_ship.Roll * 28 / _ship.MaxRoll);
             pos += 32;
 
             for (int i = 0; i < 4; i++)
@@ -260,7 +260,7 @@ namespace Elite.Engine
             float sx = 416;
             float sy = 384 + 9 + 14 + 16;
 
-            float pos = sx + (_ship.climb * 28 / _ship.maxClimb);
+            float pos = sx + (_ship.Climb * 28 / _ship.MaxClimb);
             pos += 32;
 
             for (int i = 0; i < 4; i++)
@@ -271,20 +271,20 @@ namespace Elite.Engine
 
         private void DisplayFuel()
         {
-            if (_ship.fuel > 0)
+            if (_ship.Fuel > 0)
             {
-                DisplayDialBar(_ship.fuel * 64 / _ship.maxFuel, new(31, 44));
+                DisplayDialBar(_ship.Fuel * 64 / _ship.MaxFuel, new(31, 44));
             }
         }
 
         private void DisplayMissiles()
         {
-            if (_ship.missileCount == 0)
+            if (_ship.MissileCount == 0)
             {
                 return;
             }
 
-            int missileCount = _ship.missileCount > 4 ? 4 : _ship.missileCount;
+            int missileCount = _ship.MissileCount > 4 ? 4 : _ship.MissileCount;
 
             Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 
@@ -331,7 +331,7 @@ namespace Elite.Engine
                 _gfx.DrawImage(Image.BigS, new(387, 490));
             }
 
-            if (_ship.ecmActive != 0)
+            if (_ship.EcmActive != 0)
             {
                 _gfx.DrawImage(Image.BigE, new(115, 490));
             }

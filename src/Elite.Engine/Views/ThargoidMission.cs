@@ -60,7 +60,7 @@ namespace Elite.Engine.Views
                 // Debrief
                 _gameState.Cmdr.Mission = 6;
                 _gameState.Cmdr.Score += 256;
-                _ship.energyUnit = EnergyUnit.Naval;
+                _ship.EnergyUnit = EnergyUnit.Naval;
             }
             else
             {

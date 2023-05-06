@@ -126,12 +126,12 @@ namespace Elite.Engine.Save
         {
             SaveState save = new()
             {
-                CargoCapacity = _ship.cargoCapacity,
+                CargoCapacity = _ship.CargoCapacity,
                 CommanderName = newName,
                 Credits = _trade.credits,
                 CurrentCargo = _trade.stockMarket.Values.Select(x => x.currentCargo).ToArray(),
-                EnergyUnit = _ship.energyUnit.ToString(),
-                Fuel = _ship.fuel,
+                EnergyUnit = _ship.EnergyUnit.ToString(),
+                Fuel = _ship.Fuel,
                 GalaxyNumber = _state.Cmdr.GalaxyNumber,
                 GalaxySeed = new int[6]
                 {
@@ -142,22 +142,22 @@ namespace Elite.Engine.Save
                     _state.Cmdr.Galaxy.E,
                     _state.Cmdr.Galaxy.F
                 },
-                HasDockingComputer = _ship.hasDockingComputer,
-                HasECM = _ship.hasECM,
-                HasEnergyBomb = _ship.hasEnergyBomb,
-                HasEscapePod = _ship.hasEscapePod,
-                HasFuelScoop = _ship.hasFuelScoop,
+                HasDockingComputer = _ship.HasDockingComputer,
+                HasECM = _ship.HasECM,
+                HasEnergyBomb = _ship.HasEnergyBomb,
+                HasEscapePod = _ship.HasEscapePod,
+                HasFuelScoop = _ship.HasFuelScoop,
                 HasGalacticHyperdrive = _ship.hasGalacticHyperdrive,
                 Lasers = new string[4]
                 {
-                    _ship.laserFront.Type.ToString(),
-                    _ship.laserRear.Type.ToString(),
-                    _ship.laserRight.Type.ToString(),
-                    _ship.laserLeft.Type.ToString()
+                    _ship.LaserFront.Type.ToString(),
+                    _ship.LaserRear.Type.ToString(),
+                    _ship.LaserRight.Type.ToString(),
+                    _ship.LaserLeft.Type.ToString()
                 },
                 LegalStatus = _state.Cmdr.LegalStatus,
                 MarketRandomiser = _trade.marketRandomiser,
-                Missiles = _ship.missileCount,
+                Missiles = _ship.MissileCount,
                 Mission = _state.Cmdr.Mission,
                 Saved = _state.Cmdr.Saved,
                 Score = _state.Cmdr.Score,
@@ -174,15 +174,15 @@ namespace Elite.Engine.Save
 
         private void SaveStateToGameState()
         {
-            _ship.cargoCapacity = _lastSaved.CargoCapacity;
+            _ship.CargoCapacity = _lastSaved.CargoCapacity;
             _state.Cmdr.Name = _lastSaved.CommanderName;
             _trade.credits = _lastSaved.Credits;
             for (int i = 0; i < _trade.stockMarket.Count; i++)
             {
                 _trade.stockMarket[(StockType)i + 1].currentCargo = _lastSaved.CurrentCargo[i];
             }
-            _ship.energyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
-            _ship.fuel = _lastSaved.Fuel;
+            _ship.EnergyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
+            _ship.Fuel = _lastSaved.Fuel;
             _state.Cmdr.GalaxyNumber = _lastSaved.GalaxyNumber;
             _state.Cmdr.Galaxy.A = _lastSaved.GalaxySeed[0];
             _state.Cmdr.Galaxy.B = _lastSaved.GalaxySeed[1];
@@ -190,19 +190,19 @@ namespace Elite.Engine.Save
             _state.Cmdr.Galaxy.D = _lastSaved.GalaxySeed[3];
             _state.Cmdr.Galaxy.E = _lastSaved.GalaxySeed[4];
             _state.Cmdr.Galaxy.F = _lastSaved.GalaxySeed[5];
-            _ship.hasDockingComputer = _lastSaved.HasDockingComputer;
-            _ship.hasECM = _lastSaved.HasECM;
-            _ship.hasEnergyBomb = _lastSaved.HasEnergyBomb;
-            _ship.hasEscapePod = _lastSaved.HasEscapePod;
-            _ship.hasFuelScoop = _lastSaved.HasFuelScoop;
+            _ship.HasDockingComputer = _lastSaved.HasDockingComputer;
+            _ship.HasECM = _lastSaved.HasECM;
+            _ship.HasEnergyBomb = _lastSaved.HasEnergyBomb;
+            _ship.HasEscapePod = _lastSaved.HasEscapePod;
+            _ship.HasFuelScoop = _lastSaved.HasFuelScoop;
             _ship.hasGalacticHyperdrive = _lastSaved.HasGalacticHyperdrive;
-            _ship.laserFront = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[0]));
-            _ship.laserRear = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[1]));
-            _ship.laserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));
-            _ship.laserLeft = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[3]));
+            _ship.LaserFront = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[0]));
+            _ship.LaserRear = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[1]));
+            _ship.LaserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));
+            _ship.LaserLeft = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[3]));
             _state.Cmdr.LegalStatus = _lastSaved.LegalStatus;
             _trade.marketRandomiser = _lastSaved.MarketRandomiser;
-            _ship.missileCount = _lastSaved.Missiles;
+            _ship.MissileCount = _lastSaved.Missiles;
             _state.Cmdr.Mission = _lastSaved.Mission;
             _state.Cmdr.Saved = _lastSaved.Saved;
             _state.Cmdr.Score = _lastSaved.Score;

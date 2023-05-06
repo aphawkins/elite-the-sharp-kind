@@ -94,7 +94,7 @@ namespace Elite.Engine.Views
                     }
                 }
 
-                if (condition == 2 && _ship.energy < 128)
+                if (condition == 2 && _ship.Energy < 128)
                 {
                     condition = 3;
                 }
@@ -115,7 +115,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(150, 90, _conditionText[condition], GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 106, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 106, $"{_ship.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 106, $"{_ship.Fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(150, 122, $"{_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
@@ -128,43 +128,43 @@ namespace Elite.Engine.Views
 
             _gfx.DrawTextLeft(16, 186, "EQUIPMENT:", GFX_COL.GFX_COL_GREEN_1);
 
-            if (_ship.cargoCapacity > 20)
+            if (_ship.CargoCapacity > 20)
             {
                 _gfx.DrawTextLeft(x, y, "Large Cargo Bay", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.hasEscapePod)
+            if (_ship.HasEscapePod)
             {
                 _gfx.DrawTextLeft(x, y, "Escape Pod", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.hasFuelScoop)
+            if (_ship.HasFuelScoop)
             {
                 _gfx.DrawTextLeft(x, y, "Fuel Scoops", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.hasECM)
+            if (_ship.HasECM)
             {
                 _gfx.DrawTextLeft(x, y, "E.C.M. System", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.hasEnergyBomb)
+            if (_ship.HasEnergyBomb)
             {
                 _gfx.DrawTextLeft(x, y, "Energy Bomb", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.energyUnit != EnergyUnit.None)
+            if (_ship.EnergyUnit != EnergyUnit.None)
             {
-                _gfx.DrawTextLeft(x, y, _ship.energyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.hasDockingComputer)
+            if (_ship.HasDockingComputer)
             {
                 _gfx.DrawTextLeft(x, y, "Docking Computers", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
@@ -176,27 +176,27 @@ namespace Elite.Engine.Views
                 IncrementPosition();
             }
 
-            if (_ship.laserFront.Type != LaserType.None)
+            if (_ship.LaserFront.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Front {_ship.laserFront.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Front {_ship.LaserFront.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.laserRear.Type != LaserType.None)
+            if (_ship.LaserRear.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Rear {_ship.laserRear.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Rear {_ship.LaserRear.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.laserLeft.Type != LaserType.None)
+            if (_ship.LaserLeft.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Left {_ship.laserLeft.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Left {_ship.LaserLeft.Name} Laser", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 
-            if (_ship.laserRight.Type != LaserType.None)
+            if (_ship.LaserRight.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Right {_ship.laserRight.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Right {_ship.LaserRight.Name} Laser", GFX_COL.GFX_COL_WHITE);
             }
         }
 

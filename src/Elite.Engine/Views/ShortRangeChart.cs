@@ -144,7 +144,7 @@ namespace Elite.Engine.Views
 
             // Fuel radius
             Vector2 centre = new(Graphics.GFX_X_CENTRE, Graphics.GFX_Y_CENTRE);
-            float radius = _ship.fuel * 10 * Graphics.GFX_SCALE;
+            float radius = _ship.Fuel * 10 * Graphics.GFX_SCALE;
             float cross_size = 16 * Graphics.GFX_SCALE;
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));

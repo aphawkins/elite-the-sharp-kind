@@ -50,7 +50,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (stockMarket[stock].units == TONNES && TotalCargoTonnage() == _ship.cargoCapacity)
+            if (stockMarket[stock].units == TONNES && TotalCargoTonnage() == _ship.CargoCapacity)
             {
                 return;
             }

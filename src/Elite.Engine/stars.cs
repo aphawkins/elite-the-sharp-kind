@@ -50,9 +50,9 @@ namespace Elite.Engine
 
         internal void FrontStarfield()
         {
-            float delta = warp_stars ? 50 : _ship.speed;
-            float alpha = _ship.roll;
-            float beta = _ship.climb;
+            float delta = warp_stars ? 50 : _ship.Speed;
+            float alpha = _ship.Roll;
+            float beta = _ship.Climb;
 
             alpha /= 256;
             delta /= 2;
@@ -140,9 +140,9 @@ namespace Elite.Engine
 
         internal void RearStarfield()
         {
-            float delta = warp_stars ? 50 : _ship.speed;
-            float alpha = -_ship.roll;
-            float beta = -_ship.climb;
+            float delta = warp_stars ? 50 : _ship.Speed;
+            float alpha = -_ship.Roll;
+            float beta = -_ship.Climb;
 
             alpha /= 256;
             delta /= 2;
@@ -240,14 +240,14 @@ namespace Elite.Engine
 
         internal void LeftStarfield()
         {
-            float delta = warp_stars ? 50 : _ship.speed;
-            SideStarfield(-_ship.roll, -_ship.climb, -delta);
+            float delta = warp_stars ? 50 : _ship.Speed;
+            SideStarfield(-_ship.Roll, -_ship.Climb, -delta);
         }
 
         internal void RightStarfield()
         {
-            float delta = warp_stars ? 50 : _ship.speed;
-            SideStarfield(_ship.roll, _ship.climb, delta);
+            float delta = warp_stars ? 50 : _ship.Speed;
+            SideStarfield(_ship.Roll, _ship.Climb, delta);
         }
 
         private void SideStarfield(float alpha, float beta, float delta)

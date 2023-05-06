@@ -54,9 +54,9 @@ namespace Elite.Engine.Views
             _combat.AddNewShip(ShipType.Missile, new(0, 0, 5000), _rotmat, -127, -127);
             _audio.PlayMusic(Music.BlueDanube, true);
 
-            _ship.speed = 3;
-            _ship.roll = 0;
-            _ship.climb = 0;
+            _ship.Speed = 3;
+            _ship.Roll = 0;
+            _ship.Climb = 0;
         }
 
         public void UpdateUniverse()

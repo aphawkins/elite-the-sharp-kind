@@ -96,7 +96,7 @@ namespace Elite.Engine.Views
 
             // Fuel radius
             Vector2 centre = new(_gameState.DockedPlanet.D * Graphics.GFX_SCALE, (_gameState.DockedPlanet.B / (2 / Graphics.GFX_SCALE)) + (18 * Graphics.GFX_SCALE) + 1);
-            float radius = _ship.fuel * 2.5f * Graphics.GFX_SCALE;
+            float radius = _ship.Fuel * 2.5f * Graphics.GFX_SCALE;
             float cross_size = 7 * Graphics.GFX_SCALE;
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));

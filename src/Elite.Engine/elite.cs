@@ -170,8 +170,8 @@ namespace Elite.Engine
             _audio.UpdateSound();
             _gfx.SetClipRegion(1, 1, 510, 383);
 
-            _ship.isRolling = false;
-            _ship.isClimbing = false;
+            _ship.IsRolling = false;
+            _ship.IsClimbing = false;
 
             HandleFlightKeys();
 
@@ -180,7 +180,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_ship.energy < 0)
+            if (_ship.Energy < 0)
             {
                 _gameState.GameOver();
             }
@@ -366,7 +366,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn))
             {
-                if (!_gameState.IsDocked && _ship.hasDockingComputer)
+                if (!_gameState.IsDocked && _ship.HasDockingComputer)
                 {
                     if (_gameState.Config.InstantDock)
                     {
@@ -381,7 +381,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.ECM))
             {
-                if (!_gameState.IsDocked && _ship.hasECM)
+                if (!_gameState.IsDocked && _ship.HasECM)
                 {
                     _combat.ActivateECM(true);
                 }
@@ -451,16 +451,16 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.EnergyBomb))
             {
-                if ((!_gameState.IsDocked) && _ship.hasEnergyBomb)
+                if ((!_gameState.IsDocked) && _ship.HasEnergyBomb)
                 {
                     _gameState.DetonateBomb = true;
-                    _ship.hasEnergyBomb = false;
+                    _ship.HasEnergyBomb = false;
                 }
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.EscapePod))
             {
-                if ((!_gameState.IsDocked) && _ship.hasEscapePod && (!_gameState.InWitchspace))
+                if ((!_gameState.IsDocked) && _ship.HasEscapePod && (!_gameState.InWitchspace))
                 {
                     _gameState.SetView(SCR.SCR_ESCAPE_POD);
                 }
@@ -481,7 +481,7 @@ namespace Elite.Engine
             _ship.Reset();
             _save.GetLastSave();
 
-            _ship.speed = 1;
+            _ship.Speed = 1;
             Space.hyper_ready = false;
             _isGamePaused = false;
 

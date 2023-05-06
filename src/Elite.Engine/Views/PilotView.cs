@@ -49,9 +49,9 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
-                if (_ship.climb > 0)
+                if (_ship.Climb > 0)
                 {
-                    _ship.climb = 0;
+                    _ship.Climb = 0;
                 }
                 else
                 {
@@ -59,13 +59,13 @@ namespace Elite.Engine.Views
                     _ship.DecreaseClimb();
                 }
 
-                _ship.isClimbing = true;
+                _ship.IsClimbing = true;
             }
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
-                if (_ship.climb < 0)
+                if (_ship.Climb < 0)
                 {
-                    _ship.climb = 0;
+                    _ship.Climb = 0;
                 }
                 else
                 {
@@ -73,32 +73,32 @@ namespace Elite.Engine.Views
                     _ship.IncreaseClimb();
                 }
 
-                _ship.isClimbing = true;
+                _ship.IsClimbing = true;
             }
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
-                if (_ship.roll < 0)
+                if (_ship.Roll < 0)
                 {
-                    _ship.roll = 0;
+                    _ship.Roll = 0;
                 }
                 else
                 {
                     _ship.IncreaseRoll();
                     _ship.IncreaseRoll();
-                    _ship.isRolling = true;
+                    _ship.IsRolling = true;
                 }
             }
             if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
-                if (_ship.roll > 0)
+                if (_ship.Roll > 0)
                 {
-                    _ship.roll = 0;
+                    _ship.Roll = 0;
                 }
                 else
                 {
                     _ship.DecreaseRoll();
                     _ship.DecreaseRoll();
-                    _ship.isRolling = true;
+                    _ship.IsRolling = true;
                 }
             }
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOff))

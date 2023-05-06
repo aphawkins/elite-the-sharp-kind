@@ -33,9 +33,9 @@ namespace Elite.Engine.Views
         public void Reset()
         {
             _i = 0;
-            _ship.speed = 6;
-            _ship.roll = 0;
-            _ship.climb = 0;
+            _ship.Speed = 6;
+            _ship.Roll = 0;
+            _ship.Climb = 0;
             _combat.ClearUniverse();
             int newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
             Space.universe[newship].flags |= FLG.FLG_DEAD;

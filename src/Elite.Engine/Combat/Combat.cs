@@ -70,9 +70,9 @@ namespace Elite.Engine
 
         internal void ActivateECM(bool ours)
         {
-            if (_ship.ecmActive == 0)
+            if (_ship.EcmActive == 0)
             {
-                _ship.ecmActive = 32;
+                _ship.EcmActive = 32;
                 _isEcmOurs = ours;
                 _audio.PlayEffect(SoundEffect.Ecm);
             }
@@ -119,7 +119,7 @@ namespace Elite.Engine
 
         internal void ArmMissile()
         {
-            if ((_ship.missileCount != 0) && (MissileTarget == IsMissileUnarmed))
+            if ((_ship.MissileCount != 0) && (MissileTarget == IsMissileUnarmed))
             {
                 MissileTarget = _isMISSILE_ARMED;
             }
@@ -256,10 +256,10 @@ namespace Elite.Engine
 
             _laserStrength = _gameState.CurrentScreen switch
             {
-                SCR.SCR_FRONT_VIEW => _ship.laserFront.Strength,
-                SCR.SCR_REAR_VIEW => _ship.laserRear.Strength,
-                SCR.SCR_RIGHT_VIEW => _ship.laserRight.Strength,
-                SCR.SCR_LEFT_VIEW => _ship.laserLeft.Strength,
+                SCR.SCR_FRONT_VIEW => _ship.LaserFront.Strength,
+                SCR.SCR_REAR_VIEW => _ship.LaserRear.Strength,
+                SCR.SCR_RIGHT_VIEW => _ship.LaserRight.Strength,
+                SCR.SCR_LEFT_VIEW => _ship.LaserLeft.Strength,
                 _ => 0,
             };
 
@@ -270,10 +270,10 @@ namespace Elite.Engine
 
             _laserType = _gameState.CurrentScreen switch
             {
-                SCR.SCR_FRONT_VIEW => _ship.laserFront.Type,
-                SCR.SCR_REAR_VIEW => _ship.laserRear.Type,
-                SCR.SCR_RIGHT_VIEW => _ship.laserRight.Type,
-                SCR.SCR_LEFT_VIEW => _ship.laserLeft.Type,
+                SCR.SCR_FRONT_VIEW => _ship.LaserFront.Type,
+                SCR.SCR_REAR_VIEW => _ship.LaserRear.Type,
+                SCR.SCR_RIGHT_VIEW => _ship.LaserRight.Type,
+                SCR.SCR_LEFT_VIEW => _ship.LaserLeft.Type,
                 _ => LaserType.None,
             };
 
@@ -282,9 +282,9 @@ namespace Elite.Engine
 
             _audio.PlayEffect(SoundEffect.Pulse);
             _gameState.LaserTemp += 8;
-            if (_ship.energy > 1)
+            if (_ship.Energy > 1)
             {
-                _ship.energy--;
+                _ship.Energy--;
             }
 
             return true;
@@ -309,7 +309,7 @@ namespace Elite.Engine
                 return;
             }
 
-            Space.universe[newship].velocity = _ship.speed * 2;
+            Space.universe[newship].velocity = _ship.Speed * 2;
             Space.universe[newship].flags = FLG.FLG_ANGRY;
             Space.universe[newship].target = MissileTarget;
 
@@ -318,7 +318,7 @@ namespace Elite.Engine
                 Space.universe[MissileTarget].flags |= FLG.FLG_ANGRY;
             }
 
-            _ship.missileCount--;
+            _ship.MissileCount--;
             MissileTarget = IsMissileUnarmed;
 
             _audio.PlayEffect(SoundEffect.Missile);
@@ -406,7 +406,7 @@ namespace Elite.Engine
             _laserCounter = 0;
             _laserStrength = 0;
             _laserType = LaserType.None;
-            _ship.ecmActive = 0;
+            _ship.EcmActive = 0;
             MissileTarget = IsMissileUnarmed;
         }
 
@@ -424,8 +424,8 @@ namespace Elite.Engine
                 return;
             }
 
-            if ((!_ship.hasFuelScoop) || (Space.universe[un].location.Y >= 0) ||
-                (_trade.TotalCargoTonnage() == _ship.cargoCapacity))
+            if ((!_ship.HasFuelScoop) || (Space.universe[un].location.Y >= 0) ||
+                (_trade.TotalCargoTonnage() == _ship.CargoCapacity))
             {
                 ExplodeObject(un);
                 _ship.DamageShip(128 + (Space.universe[un].energy / 2), Space.universe[un].location.Z > 0);
@@ -612,7 +612,7 @@ namespace Elite.Engine
                     return;
                 }
 
-                if ((ship.missiles != 0) && (_ship.ecmActive == 0) && (ship.missiles >= RNG.Random(31)))
+                if ((ship.missiles != 0) && (_ship.EcmActive == 0) && (ship.missiles >= RNG.Random(31)))
                 {
                     ship.missiles--;
                     if (type == ShipType.Thargoid)
@@ -643,8 +643,8 @@ namespace Elite.Engine
                 {
                     _ship.DamageShip(_gameState.ShipList[(int)type].laser_strength, ship.location.Z >= 0.0);
                     ship.acceleration--;
-                    if (((ship.location.Z >= 0.0) && (_ship.shieldFront == 0)) ||
-                        ((ship.location.Z < 0.0) && (_ship.shieldRear == 0)))
+                    if (((ship.location.Z >= 0.0) && (_ship.ShieldFront == 0)) ||
+                        ((ship.location.Z < 0.0) && (_ship.ShieldRear == 0)))
                     {
                         _audio.PlayEffect(SoundEffect.IncomingFire2);
                     }
@@ -742,9 +742,9 @@ namespace Elite.Engine
 
         internal void TimeECM()
         {
-            if (_ship.ecmActive != 0)
+            if (_ship.EcmActive != 0)
             {
-                _ship.ecmActive--;
+                _ship.EcmActive--;
                 if (_isEcmOurs)
                 {
                     _ship.DecreaseEnergy(-1);
@@ -1130,7 +1130,7 @@ namespace Elite.Engine
             float direction;
             float cnt2 = 0.223f;
 
-            if (_ship.ecmActive != 0)
+            if (_ship.EcmActive != 0)
             {
                 _audio.PlayEffect(SoundEffect.Explode);
 

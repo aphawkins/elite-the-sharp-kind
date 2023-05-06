@@ -1,4 +1,8 @@
-﻿using System.Diagnostics;
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using System.Diagnostics;
 using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Lasers;
@@ -8,40 +12,39 @@ namespace Elite.Engine.Ships
 {
     internal class PlayerShip
     {
-        internal readonly float maxClimb = 8;
-        internal readonly float maxFuel = 7;
-        internal readonly float maxRoll = 31;
-        // 0.27 Light Mach
-        internal readonly float maxSpeed = 40;
-
-        internal float altitude;
-        internal float cabinTemperature;
-        internal int cargoCapacity;
-        internal float climb;
-        internal float energy;
-        internal EnergyUnit energyUnit;
-        internal float fuel;
-        internal bool hasDockingComputer;
-        internal bool hasECM;
-        internal bool hasEnergyBomb;
-        internal bool hasEscapePod;
-        internal bool hasFuelScoop;
-        internal bool hasGalacticHyperdrive;
-        internal bool isClimbing;
-        internal bool isRolling;
-        internal ILaser laserFront = new LaserNone();
-        internal ILaser laserLeft = new LaserNone();
-        internal ILaser laserRear = new LaserNone();
-        internal ILaser laserRight = new LaserNone();
-        internal int missileCount;
-        internal float roll;
-        internal float shieldFront;
-        internal float shieldRear;
-        internal float speed;
-        internal int ecmActive;
-
         internal PlayerShip() => Reset();
 
+        internal float Altitude { get; set; }
+        internal float CabinTemperature { get; set; }
+        internal int CargoCapacity { get; set; }
+        internal float Climb { get; set; }
+        internal int EcmActive { get; set; }
+        internal float Energy { get; set; }
+        internal EnergyUnit EnergyUnit { get; set; }
+        internal float Fuel { get; set; }
+        internal bool HasDockingComputer { get; set; }
+        internal bool HasECM { get; set; }
+        internal bool HasEnergyBomb { get; set; }
+        internal bool HasEscapePod { get; set; }
+        internal bool HasFuelScoop { get; set; }
+        internal bool hasGalacticHyperdrive { get; set; }
+        internal bool IsClimbing { get; set; }
+        internal bool IsRolling { get; set; }
+        internal ILaser LaserFront { get; set; } = new LaserNone();
+        internal ILaser LaserLeft { get; set; } = new LaserNone();
+        internal ILaser LaserRear { get; set; } = new LaserNone();
+        internal ILaser LaserRight { get; set; } = new LaserNone();
+        internal float MaxClimb { get; } = 8;
+        internal float MaxFuel { get; } = 7;
+        internal float MaxRoll { get; } = 31;
+        // 0.27 Light Mach
+        internal float MaxSpeed { get; } = 40;
+
+        internal int MissileCount { get; set; }
+        internal float Roll { get; set; }
+        internal float ShieldFront { get; set; }
+        internal float ShieldRear { get; set; }
+        internal float Speed { get; set; }
         internal void AutoDock()
         {
             UniverseObject ship = new()
@@ -53,7 +56,7 @@ namespace Elite.Engine.Ships
             ship.Rotmat[2].Z = 1;
             ship.Rotmat[0].X = -1;
             ship.type = (ShipType)(-96);
-            ship.velocity = speed;
+            ship.velocity = Speed;
             ship.acceleration = 0;
             ship.bravery = 0;
             ship.rotz = 0;
@@ -61,29 +64,29 @@ namespace Elite.Engine.Ships
 
             Pilot.AutoPilotShip(ref ship);
 
-            speed = ship.velocity > 22 ? 22 : ship.velocity;
+            Speed = ship.velocity > 22 ? 22 : ship.velocity;
 
             if (ship.acceleration > 0)
             {
-                speed++;
-                if (speed > 22)
+                Speed++;
+                if (Speed > 22)
                 {
-                    speed = 22;
+                    Speed = 22;
                 }
             }
 
             if (ship.acceleration < 0)
             {
-                speed--;
-                if (speed < 1)
+                Speed--;
+                if (Speed < 1)
                 {
-                    speed = 1;
+                    Speed = 1;
                 }
             }
 
             if (ship.rotx == 0)
             {
-                climb = 0;
+                Climb = 0;
             }
 
             if (ship.rotx < 0)
@@ -108,13 +111,13 @@ namespace Elite.Engine.Ships
 
             if (ship.rotz == 127)
             {
-                roll = -14;
+                Roll = -14;
             }
             else
             {
                 if (ship.rotz == 0)
                 {
-                    roll = 0;
+                    Roll = 0;
                 }
                 else if (ship.rotz > 0)
                 {
@@ -146,7 +149,7 @@ namespace Elite.Engine.Ships
         {
             Debug.Assert(damage > 0);
 
-            float shield = front ? shieldFront : shieldRear;
+            float shield = front ? ShieldFront : ShieldRear;
 
             shield -= damage;
             if (shield < 0)
@@ -157,51 +160,51 @@ namespace Elite.Engine.Ships
 
             if (front)
             {
-                shieldFront = shield;
+                ShieldFront = shield;
             }
             else
             {
-                shieldRear = shield;
+                ShieldRear = shield;
             }
         }
 
-        internal void DecreaseClimb() => climb = Math.Clamp(climb - 1, -maxClimb, maxClimb);
+        internal void DecreaseClimb() => Climb = Math.Clamp(Climb - 1, -MaxClimb, MaxClimb);
 
-        internal void DecreaseEnergy(float amount) => energy += amount;
+        internal void DecreaseEnergy(float amount) => Energy += amount;
 
-        internal void DecreaseRoll() => roll = Math.Clamp(roll - 1, -maxRoll, maxRoll);
+        internal void DecreaseRoll() => Roll = Math.Clamp(Roll - 1, -MaxRoll, MaxRoll);
 
-        internal void DecreaseSpeed() => speed = Math.Clamp(speed - 1, 0, maxSpeed);
+        internal void DecreaseSpeed() => Speed = Math.Clamp(Speed - 1, 0, MaxSpeed);
 
-        internal void IncreaseClimb() => climb = Math.Clamp(climb + 1, -maxClimb, maxClimb);
+        internal void IncreaseClimb() => Climb = Math.Clamp(Climb + 1, -MaxClimb, MaxClimb);
 
-        internal void IncreaseRoll() => roll = Math.Clamp(roll + 1, -maxRoll, maxRoll);
+        internal void IncreaseRoll() => Roll = Math.Clamp(Roll + 1, -MaxRoll, MaxRoll);
 
-        internal void IncreaseSpeed() => speed = Math.Clamp(speed + 1, 0, maxSpeed);
+        internal void IncreaseSpeed() => Speed = Math.Clamp(Speed + 1, 0, MaxSpeed);
 
-        internal bool IsEnergyLow() => energy < 50;
+        internal bool IsEnergyLow() => Energy < 50;
 
         internal void LevelOut()
         {
-            if (!isRolling)
+            if (!IsRolling)
             {
-                if (roll > 0)
+                if (Roll > 0)
                 {
                     DecreaseRoll();
                 }
-                else if (roll < 0)
+                else if (Roll < 0)
                 {
                     IncreaseRoll();
                 }
             }
 
-            if (!isClimbing)
+            if (!IsClimbing)
             {
-                if (climb > 0)
+                if (Climb > 0)
                 {
                     DecreaseClimb();
                 }
-                else if (climb < 0)
+                else if (Climb < 0)
                 {
                     IncreaseClimb();
                 }
@@ -213,34 +216,34 @@ namespace Elite.Engine.Ships
         /// </summary>
         internal void RegenerateShields()
         {
-            if (energy > 127)
+            if (Energy > 127)
             {
-                if (shieldFront < 255)
+                if (ShieldFront < 255)
                 {
-                    shieldFront++;
-                    energy = Math.Clamp(energy - 1, 0, 255);
+                    ShieldFront++;
+                    Energy = Math.Clamp(Energy - 1, 0, 255);
                 }
 
-                if (shieldRear < 255)
+                if (ShieldRear < 255)
                 {
-                    shieldRear++;
-                    energy = Math.Clamp(energy - 1, 0, 255);
+                    ShieldRear++;
+                    Energy = Math.Clamp(Energy - 1, 0, 255);
                 }
             }
 
-            energy = Math.Clamp(energy + 1 + (int)energyUnit, 0, 255);
+            Energy = Math.Clamp(Energy + 1 + (int)EnergyUnit, 0, 255);
         }
 
         internal void Reset()
         {
-            altitude = 255;
-            cabinTemperature = 30;
-            roll = 0;
-            climb = 0;
-            speed = 0;
-            energy = 255;
-            shieldFront = 255;
-            shieldRear = 255;
+            Altitude = 255;
+            CabinTemperature = 30;
+            Roll = 0;
+            Climb = 0;
+            Speed = 0;
+            Energy = 255;
+            ShieldFront = 255;
+            ShieldRear = 255;
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Elite.Engine.Views
         {
             _pilotView.Draw();
             _pilotView.DrawViewName("Right View");
-            _pilotView.DrawLaserSights(_ship.laserFront.Type);
+            _pilotView.DrawLaserSights(_ship.LaserFront.Type);
         }
 
         public void HandleInput() => _pilotView.HandleInput();

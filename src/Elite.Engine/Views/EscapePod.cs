@@ -43,9 +43,9 @@ namespace Elite.Engine.Views
 
         public void Reset()
         {
-            _ship.speed = 1;
-            _ship.roll = 0;
-            _ship.climb = 0;
+            _ship.Speed = 1;
+            _ship.Roll = 0;
+            _ship.Climb = 0;
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
             _newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
@@ -74,7 +74,7 @@ namespace Elite.Engine.Views
             {
                 _ship.AutoDock();
 
-                if ((MathF.Abs(_ship.roll) < 3) && (MathF.Abs(_ship.climb) < 3))
+                if ((MathF.Abs(_ship.Roll) < 3) && (MathF.Abs(_ship.Climb) < 3))
                 {
                     for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
                     {
@@ -90,9 +90,9 @@ namespace Elite.Engine.Views
             }
             else
             {
-                _ship.hasEscapePod = false;
+                _ship.HasEscapePod = false;
                 _gameState.Cmdr.LegalStatus = 0;
-                _ship.fuel = _ship.maxFuel;
+                _ship.Fuel = _ship.MaxFuel;
                 _trade.ClearCurrentCargo();
                 _gameState.SetView(SCR.SCR_DOCKING);
             }
