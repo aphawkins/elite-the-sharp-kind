@@ -1,4 +1,8 @@
-﻿using Elite.Engine.Enums;
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using Elite.Engine.Enums;
 using Elite.Engine.Lasers;
 using Elite.Engine.Ships;
 
@@ -12,7 +16,7 @@ namespace Elite.Engine.Views
         private readonly LaserDraw _laser;
         private readonly Pilot _pilot;
         private readonly PlayerShip _ship;
-        private int drawLaserFrames;
+        private int _drawLaserFrames;
 
         internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship)
         {
@@ -26,7 +30,7 @@ namespace Elite.Engine.Views
 
         public void Draw()
         {
-            if (drawLaserFrames > 0)
+            if (_drawLaserFrames > 0)
             {
                 _laser.DrawLaserLines();
             }
@@ -108,10 +112,10 @@ namespace Elite.Engine.Views
 
         public void Reset() => Stars.FlipStars();
 
-        public void UpdateUniverse() => drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
-
-        internal void DrawViewName(string name) => _gfx.DrawTextCentre(32, name, 120, GFX_COL.GFX_COL_WHITE);
+        public void UpdateUniverse() => _drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(_drawLaserFrames - 1, 0, _drawLaserFrames);
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
+
+        internal void DrawViewName(string name) => _gfx.DrawTextCentre(32, name, 120, GFX_COL.GFX_COL_WHITE);
     }
 }
