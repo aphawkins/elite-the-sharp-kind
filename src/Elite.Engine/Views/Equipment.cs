@@ -1,16 +1,6 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
 using Elite.Engine.Lasers;
@@ -21,27 +11,14 @@ namespace Elite.Engine.Views
 {
     internal class Equipment : IView
     {
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
+        private readonly Scanner _scanner;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
-        private readonly Scanner _scanner;
-        private int _highlightedItem;
-
-        internal Equipment(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
-        {
-            _gameState = gameState;
-            _gfx = gfx;
-            _draw = draw;
-            _keyboard = keyboard;
-            _ship = ship;
-            _trade = trade;
-            _scanner = scanner;
-        }
-
-        private readonly EquipmentItem[] EquipmentStock = new EquipmentItem[]
+        private readonly EquipmentItem[] _equipmentStock = new EquipmentItem[]
         {
             new(false, true,   1, 0.2f, " Fuel",                EquipmentType.EQ_FUEL),
             new(false, true,   1,   30, " Missile",             EquipmentType.EQ_MISSILE),
@@ -79,50 +56,18 @@ namespace Elite.Engine.Views
             new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
         };
 
-        private bool PresentEquipment(EquipmentType type) => type switch
+        private int _highlightedItem;
+
+        internal Equipment(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
         {
-            EquipmentType.EQ_FUEL => _ship.fuel >= 7,
-            EquipmentType.EQ_MISSILE => _ship.missileCount >= 4,
-            EquipmentType.EQ_CARGO_BAY => _ship.cargoCapacity > 20,
-            EquipmentType.EQ_ECM => _ship.hasECM,
-            EquipmentType.EQ_FUEL_SCOOPS => _ship.hasFuelScoop,
-            EquipmentType.EQ_ESCAPE_POD => _ship.hasEscapePod,
-            EquipmentType.EQ_ENERGY_BOMB => _ship.hasEnergyBomb,
-            EquipmentType.EQ_ENERGY_UNIT => _ship.energyUnit != EnergyUnit.None,
-            EquipmentType.EQ_DOCK_COMP => _ship.hasDockingComputer,
-            EquipmentType.EQ_GAL_DRIVE => _ship.hasGalacticHyperdrive,
-            EquipmentType.EQ_FRONT_PULSE => _ship.laserFront.Type == LaserType.Pulse,
-            EquipmentType.EQ_REAR_PULSE => _ship.laserRear.Type == LaserType.Pulse,
-            EquipmentType.EQ_LEFT_PULSE => _ship.laserLeft.Type == LaserType.Pulse,
-            EquipmentType.EQ_RIGHT_PULSE => _ship.laserRight.Type == LaserType.Pulse,
-            EquipmentType.EQ_FRONT_BEAM => _ship.laserFront.Type == LaserType.Beam,
-            EquipmentType.EQ_REAR_BEAM => _ship.laserRear.Type == LaserType.Beam,
-            EquipmentType.EQ_LEFT_BEAM => _ship.laserLeft.Type == LaserType.Beam,
-            EquipmentType.EQ_RIGHT_BEAM => _ship.laserRight.Type == LaserType.Beam,
-            EquipmentType.EQ_FRONT_MINING => _ship.laserFront.Type == LaserType.Mining,
-            EquipmentType.EQ_REAR_MINING => _ship.laserRear.Type == LaserType.Mining,
-            EquipmentType.EQ_LEFT_MINING => _ship.laserLeft.Type == LaserType.Mining,
-            EquipmentType.EQ_RIGHT_MINING => _ship.laserRight.Type == LaserType.Mining,
-            EquipmentType.EQ_FRONT_MILITARY => _ship.laserFront.Type == LaserType.Military,
-            EquipmentType.EQ_REAR_MILITARY => _ship.laserRear.Type == LaserType.Military,
-            EquipmentType.EQ_LEFT_MILITARY => _ship.laserLeft.Type == LaserType.Military,
-            EquipmentType.EQ_RIGHT_MILITARY => _ship.laserRight.Type == LaserType.Military,
-            _ => false,
-        };
-
-        public void Reset()
-        {
-            CollapseList();
-
-            _highlightedItem = 0;
-
-            ListPrices();
+            _gameState = gameState;
+            _gfx = gfx;
+            _draw = draw;
+            _keyboard = keyboard;
+            _ship = ship;
+            _trade = trade;
+            _scanner = scanner;
         }
-
-        public void UpdateUniverse()
-        {
-        }
-
         public void Draw()
         {
             _draw.ClearDisplay();
@@ -130,9 +75,9 @@ namespace Elite.Engine.Views
 
             int y = 55;
 
-            for (int i = 0; i < EquipmentStock.Length; i++)
+            for (int i = 0; i < _equipmentStock.Length; i++)
             {
-                if (!EquipmentStock[i].Show)
+                if (!_equipmentStock[i].Show)
                 {
                     continue;
                 }
@@ -142,13 +87,13 @@ namespace Elite.Engine.Views
                     _gfx.DrawRectangleFilled(2, y + 1, 508, 15, GFX_COL.GFX_COL_DARK_RED);
                 }
 
-                GFX_COL col = EquipmentStock[i].CanBuy ? GFX_COL.GFX_COL_WHITE : GFX_COL.GFX_COL_GREY_1;
-                int x = EquipmentStock[i].Name[0] == '>' ? 50 : 16;
-                _gfx.DrawTextLeft(x, y, EquipmentStock[i].Name[1..], col);
+                GFX_COL col = _equipmentStock[i].CanBuy ? GFX_COL.GFX_COL_WHITE : GFX_COL.GFX_COL_GREY_1;
+                int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
+                _gfx.DrawTextLeft(x, y, _equipmentStock[i].Name[1..], col);
 
-                if (EquipmentStock[i].Price != 0)
+                if (_equipmentStock[i].Price != 0)
                 {
-                    _gfx.DrawTextRight(450, y, $"{EquipmentStock[i].Price:N1}", col);
+                    _gfx.DrawTextRight(450, y, $"{_equipmentStock[i].Price:N1}", col);
                 }
 
                 y += 15;
@@ -173,94 +118,41 @@ namespace Elite.Engine.Views
             }
         }
 
-        internal void SelectNext()
+        public void Reset()
         {
-            if (_highlightedItem == EquipmentStock.Length - 1)
-            {
-                return;
-            }
-
-            for (int i = _highlightedItem + 1; i < EquipmentStock.Length; i++)
-            {
-                if (EquipmentStock[i].Show)
-                {
-                    _highlightedItem = i;
-                    break;
-                }
-            }
-        }
-
-        internal void SelectPrevious()
-        {
-            if (_highlightedItem == 0)
-            {
-                return;
-            }
-
-            for (int i = _highlightedItem - 1; i >= 0; i--)
-            {
-                if (EquipmentStock[i].Show)
-                {
-                    _highlightedItem = i;
-                    break;
-                }
-            }
-        }
-
-        private void ListPrices()
-        {
-            int techLevel = _gameState.current_planet_data.techlevel + 1;
-
-            EquipmentStock[0].Price = (7 - _ship.fuel) * 2;
-
-            for (int i = 0; i < EquipmentStock.Length; i++)
-            {
-                EquipmentStock[i].CanBuy = !PresentEquipment(EquipmentStock[i].Type) && EquipmentStock[i].Price <= _trade.credits;
-                EquipmentStock[i].Show = EquipmentStock[i].Show && techLevel >= EquipmentStock[i].TechLevel;
-            }
+            CollapseList();
 
             _highlightedItem = 0;
+
+            ListPrices();
         }
 
-        private void CollapseList()
+        public void UpdateUniverse()
         {
-            for (int i = 0; i < EquipmentStock.Length; i++)
-            {
-                EquipmentStock[i].Show = EquipmentStock[i].Name[0] is ' ' or '+';
-            }
         }
-
-        private static float LaserRefund(LaserType laserType) => laserType switch
-        {
-            LaserType.Pulse => 400,
-            LaserType.Beam => 1000,
-            LaserType.Military => 6000,
-            LaserType.Mining => 800,
-            _ => 0,
-        };
 
         internal void Buy()
         {
-            if (EquipmentStock[_highlightedItem].Name[0] == '+')
+            if (_equipmentStock[_highlightedItem].Name[0] == '+')
             {
                 CollapseList();
-                EquipmentStock[_highlightedItem].Show = false;
+                _equipmentStock[_highlightedItem].Show = false;
                 _highlightedItem++;
                 for (int i = 0; i < 5; i++)
                 {
-                    EquipmentStock[_highlightedItem + i].Show = true;
+                    _equipmentStock[_highlightedItem + i].Show = true;
                 }
 
                 ListPrices();
                 return;
             }
 
-            if (!EquipmentStock[_highlightedItem].CanBuy)
+            if (!_equipmentStock[_highlightedItem].CanBuy)
             {
                 return;
             }
 
-            switch (EquipmentStock[_highlightedItem].Type)
+            switch (_equipmentStock[_highlightedItem].Type)
             {
                 case EquipmentType.EQ_FUEL:
                     _ship.fuel = _ship.maxFuel;
@@ -385,8 +277,105 @@ namespace Elite.Engine.Views
                     break;
             }
 
-            _trade.credits -= EquipmentStock[_highlightedItem].Price;
+            _trade.credits -= _equipmentStock[_highlightedItem].Price;
             ListPrices();
         }
+
+        internal void SelectNext()
+        {
+            if (_highlightedItem == _equipmentStock.Length - 1)
+            {
+                return;
+            }
+
+            for (int i = _highlightedItem + 1; i < _equipmentStock.Length; i++)
+            {
+                if (_equipmentStock[i].Show)
+                {
+                    _highlightedItem = i;
+                    break;
+                }
+            }
+        }
+
+        internal void SelectPrevious()
+        {
+            if (_highlightedItem == 0)
+            {
+                return;
+            }
+
+            for (int i = _highlightedItem - 1; i >= 0; i--)
+            {
+                if (_equipmentStock[i].Show)
+                {
+                    _highlightedItem = i;
+                    break;
+                }
+            }
+        }
+
+        private static float LaserRefund(LaserType laserType) => laserType switch
+        {
+            LaserType.Pulse => 400,
+            LaserType.Beam => 1000,
+            LaserType.Military => 6000,
+            LaserType.Mining => 800,
+            _ => 0,
+        };
+
+        private void CollapseList()
+        {
+            for (int i = 0; i < _equipmentStock.Length; i++)
+            {
+                _equipmentStock[i].Show = _equipmentStock[i].Name[0] is ' ' or '+';
+            }
+        }
+
+        private void ListPrices()
+        {
+            int techLevel = _gameState.current_planet_data.techlevel + 1;
+
+            _equipmentStock[0].Price = (7 - _ship.fuel) * 2;
+
+            for (int i = 0; i < _equipmentStock.Length; i++)
+            {
+                _equipmentStock[i].CanBuy = !PresentEquipment(_equipmentStock[i].Type) && _equipmentStock[i].Price <= _trade.credits;
+                _equipmentStock[i].Show = _equipmentStock[i].Show && techLevel >= _equipmentStock[i].TechLevel;
+            }
+
+            _highlightedItem = 0;
+        }
+
+        private bool PresentEquipment(EquipmentType type) => type switch
+        {
+            EquipmentType.EQ_FUEL => _ship.fuel >= 7,
+            EquipmentType.EQ_MISSILE => _ship.missileCount >= 4,
+            EquipmentType.EQ_CARGO_BAY => _ship.cargoCapacity > 20,
+            EquipmentType.EQ_ECM => _ship.hasECM,
+            EquipmentType.EQ_FUEL_SCOOPS => _ship.hasFuelScoop,
+            EquipmentType.EQ_ESCAPE_POD => _ship.hasEscapePod,
+            EquipmentType.EQ_ENERGY_BOMB => _ship.hasEnergyBomb,
+            EquipmentType.EQ_ENERGY_UNIT => _ship.energyUnit != EnergyUnit.None,
+            EquipmentType.EQ_DOCK_COMP => _ship.hasDockingComputer,
+            EquipmentType.EQ_GAL_DRIVE => _ship.hasGalacticHyperdrive,
+            EquipmentType.EQ_FRONT_PULSE => _ship.laserFront.Type == LaserType.Pulse,
+            EquipmentType.EQ_REAR_PULSE => _ship.laserRear.Type == LaserType.Pulse,
+            EquipmentType.EQ_LEFT_PULSE => _ship.laserLeft.Type == LaserType.Pulse,
+            EquipmentType.EQ_RIGHT_PULSE => _ship.laserRight.Type == LaserType.Pulse,
+            EquipmentType.EQ_FRONT_BEAM => _ship.laserFront.Type == LaserType.Beam,
+            EquipmentType.EQ_REAR_BEAM => _ship.laserRear.Type == LaserType.Beam,
+            EquipmentType.EQ_LEFT_BEAM => _ship.laserLeft.Type == LaserType.Beam,
+            EquipmentType.EQ_RIGHT_BEAM => _ship.laserRight.Type == LaserType.Beam,
+            EquipmentType.EQ_FRONT_MINING => _ship.laserFront.Type == LaserType.Mining,
+            EquipmentType.EQ_REAR_MINING => _ship.laserRear.Type == LaserType.Mining,
+            EquipmentType.EQ_LEFT_MINING => _ship.laserLeft.Type == LaserType.Mining,
+            EquipmentType.EQ_RIGHT_MINING => _ship.laserRight.Type == LaserType.Mining,
+            EquipmentType.EQ_FRONT_MILITARY => _ship.laserFront.Type == LaserType.Military,
+            EquipmentType.EQ_REAR_MILITARY => _ship.laserRear.Type == LaserType.Military,
+            EquipmentType.EQ_LEFT_MILITARY => _ship.laserLeft.Type == LaserType.Military,
+            EquipmentType.EQ_RIGHT_MILITARY => _ship.laserRight.Type == LaserType.Military,
+            _ => false,
+        };
     }
 }
