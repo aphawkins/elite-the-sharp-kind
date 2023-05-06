@@ -334,7 +334,7 @@ namespace Elite.Engine.Views
 
         private void ListPrices()
         {
-            int techLevel = _gameState.CurrentPlanetData.techlevel + 1;
+            int techLevel = _gameState.CurrentPlanetData.TechLevel + 1;
 
             _equipmentStock[0].Price = (7 - _ship.fuel) * 2;
 

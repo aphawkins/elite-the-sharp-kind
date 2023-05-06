@@ -112,7 +112,7 @@ namespace Elite.Engine
 
         internal void AddNewStation(Vector3 position, Vector3[] rotmat)
         {
-            ShipType station = (_gameState.CurrentPlanetData.techlevel >= 10) ? ShipType.Dodec : ShipType.Coriolis;
+            ShipType station = (_gameState.CurrentPlanetData.TechLevel >= 10) ? ShipType.Dodec : ShipType.Coriolis;
             Space.universe[1].type = ShipType.None;
             AddNewShip(station, position, rotmat, 0, -127);
         }
