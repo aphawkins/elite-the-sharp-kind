@@ -1,4 +1,4 @@
-﻿namespace Elite.Engine.Types
+﻿namespace Elite.Engine.Ships
 {
     internal class ShipLine
     {

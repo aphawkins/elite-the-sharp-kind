@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Elite.Engine.Enums;
 
-namespace Elite.Engine.Types
+namespace Elite.Engine.Ships
 {
     internal class ShipFace
     {

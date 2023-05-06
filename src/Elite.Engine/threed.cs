@@ -13,6 +13,7 @@
 
 using System.Numerics;
 using Elite.Engine.Enums;
+using Elite.Engine.Ships;
 using Elite.Engine.Types;
 using Elite.Engine.Views;
 

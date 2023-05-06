@@ -1,5 +1,4 @@
 using Elite.Engine.Enums;
-using Elite.Engine.Types;
 
 namespace Elite.Engine.Ships
 {

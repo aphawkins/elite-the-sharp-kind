@@ -73,7 +73,7 @@ namespace Elite.Engine
             Ship.sidewnd_data,
             Ship.mamba_data,
             Ship.krait_data,
-            Ship.adder_data,
+            new Adder(),
             Ship.gecko_data,
             Ship.cobra1_data,
             Ship.worm_data,
