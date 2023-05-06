@@ -12,7 +12,6 @@
  *
  */
 
-using Elite.Engine;
 using Elite.Engine.Enums;
 
 namespace Elite.Engine.Views

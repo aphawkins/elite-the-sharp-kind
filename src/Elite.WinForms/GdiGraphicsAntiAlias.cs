@@ -12,7 +12,6 @@
  *
  **/
 
-using System.Drawing;
 using System.Numerics;
 using Elite.Engine.Enums;
 

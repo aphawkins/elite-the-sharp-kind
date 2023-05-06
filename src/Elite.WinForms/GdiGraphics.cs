@@ -13,7 +13,6 @@
  **/
 
 using System.Diagnostics;
-using System.Drawing;
 using System.Numerics;
 using Elite.Engine;
 using Elite.Engine.Enums;

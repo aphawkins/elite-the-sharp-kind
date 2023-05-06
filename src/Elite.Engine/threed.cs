@@ -11,7 +11,6 @@
  *
  */
 
-using System;
 using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Types;
