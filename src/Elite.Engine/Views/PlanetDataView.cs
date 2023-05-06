@@ -133,17 +133,17 @@ namespace Elite.Engine.Views
                 }
             }
 
-            RNG.Seed.a = planet.C;
-            RNG.Seed.b = planet.D;
-            RNG.Seed.c = planet.E;
-            RNG.Seed.d = planet.F;
+            RNG.Seed.A = planet.C;
+            RNG.Seed.B = planet.D;
+            RNG.Seed.C = planet.E;
+            RNG.Seed.D = planet.F;
 
             if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
             {
-                RNG.Seed.a ^= planet.A;
-                RNG.Seed.b ^= planet.B;
-                RNG.Seed.c ^= RNG.Seed.a;
-                RNG.Seed.d ^= RNG.Seed.b;
+                RNG.Seed.A ^= planet.A;
+                RNG.Seed.B ^= planet.B;
+                RNG.Seed.C ^= RNG.Seed.A;
+                RNG.Seed.D ^= RNG.Seed.B;
             }
 
             string planet_description = string.Empty;

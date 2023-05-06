@@ -1,28 +1,14 @@
-﻿/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- */
-
-/*
- *
- * Handle the generation of planet info...
- */
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 namespace Elite.Engine
 {
     internal class RandomSeed
     {
-        internal int a;
-        internal int b;
-        internal int c;
-        internal int d;
+        internal int A { get; set; }
+        internal int B { get; set; }
+        internal int C { get; set; }
+        internal int D { get; set; }
     };
 }

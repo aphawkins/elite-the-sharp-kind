@@ -51,24 +51,24 @@ namespace Elite.Engine
         /// <returns>A random number between 0 and 255.</returns>
         internal static int GenMSXRandomNumber()
         {
-            int a = Seed.a;
-            int b = Seed.b;
+            int a = Seed.A;
+            int b = Seed.B;
 
-            Seed.a = Seed.c;
-            Seed.b = Seed.d;
+            Seed.A = Seed.C;
+            Seed.B = Seed.D;
 
-            a += Seed.c;
-            b = (b + Seed.d) & 255;
+            a += Seed.C;
+            b = (b + Seed.D) & 255;
             if (a > 255)
             {
                 a &= 255;
                 b++;
             }
 
-            Seed.c = a;
-            Seed.d = b;
+            Seed.C = a;
+            Seed.D = b;
 
-            return Seed.c / 0x34;
+            return Seed.C / 0x34;
         }
 
         /// <summary>
@@ -78,21 +78,21 @@ namespace Elite.Engine
         /// <returns>A random number between 0 and 255.</returns>
         internal static int GenerateRandomNumber()
         {
-            int x = (Seed.a * 2) & 0xFF;
-            int a = x + Seed.c;
-            if (Seed.a > 127)
+            int x = (Seed.A * 2) & 0xFF;
+            int a = x + Seed.C;
+            if (Seed.A > 127)
             {
                 a++;
             }
 
-            Seed.a = a & 0xFF;
-            Seed.c = x;
+            Seed.A = a & 0xFF;
+            Seed.C = x;
 
             a /= 256;    /* a = any carry left from above */
-            x = Seed.b;
-            a = (a + x + Seed.d) & 0xFF;
-            Seed.b = a;
-            Seed.d = x;
+            x = Seed.B;
+            a = (a + x + Seed.D) & 0xFF;
+            Seed.B = a;
+            Seed.D = x;
             return a;
         }
     }
