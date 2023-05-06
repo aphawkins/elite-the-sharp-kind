@@ -261,7 +261,7 @@ namespace Elite.Engine
 
         internal void GenerateLandscape(int rnd_seed)
         {
-            switch (_gameState.config.PlanetRenderStyle)
+            switch (_gameState.Config.PlanetRenderStyle)
             {
                 case PlanetRenderStyle.Wireframe:     /* Wireframe... do nothing for now... */
                     break;
@@ -408,7 +408,7 @@ namespace Elite.Engine
                 return;
             }
 
-            switch (_gameState.config.PlanetRenderStyle)
+            switch (_gameState.Config.PlanetRenderStyle)
             {
                 case PlanetRenderStyle.Wireframe:
                     DrawWireframePlanet(position, radius);
@@ -605,7 +605,7 @@ namespace Elite.Engine
 
             for (int i = start_poly; i != -1; i = poly_chain[i].next)
             {
-                GFX_COL colour = _gameState.config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].face_colour;
+                GFX_COL colour = _gameState.Config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].face_colour;
 
                 if (poly_chain[i].point_list.Length == 2)
                 {
@@ -613,7 +613,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                if (_gameState.config.UseWireframe)
+                if (_gameState.Config.UseWireframe)
                 {
                     _gfx.DrawPolygon(poly_chain[i].point_list, colour);
                 }

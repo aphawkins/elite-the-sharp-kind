@@ -82,7 +82,7 @@ namespace Elite.Engine.Views
         public void Reset()
         {
             _isSuccess = null;
-            _name = _gameState.cmdr.Name;
+            _name = _gameState.Cmdr.Name;
         }
 
         public void UpdateUniverse()

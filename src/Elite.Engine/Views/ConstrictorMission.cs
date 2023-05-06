@@ -57,16 +57,16 @@ namespace Elite.Engine.Views
 
         public void Draw()
         {
-            if (_gameState.cmdr.Mission == 1)
+            if (_gameState.Cmdr.Mission == 1)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
                 _draw.DrawTextPretty(16, 50, 300, _mission1_brief_a);
-                _draw.DrawTextPretty(16, 200, 470, _gameState.cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
+                _draw.DrawTextPretty(16, 200, 470, _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
-            else if (_gameState.cmdr.Mission == 3)
+            else if (_gameState.Cmdr.Mission == 3)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
@@ -89,10 +89,10 @@ namespace Elite.Engine.Views
 
         public void Reset()
         {
-            if (_gameState.cmdr.Mission == 0 && _gameState.cmdr.Score >= 256 && _gameState.cmdr.GalaxyNumber < 2)
+            if (_gameState.Cmdr.Mission == 0 && _gameState.Cmdr.Score >= 256 && _gameState.Cmdr.GalaxyNumber < 2)
             {
                 // Show brief
-                _gameState.cmdr.Mission = 1;
+                _gameState.Cmdr.Mission = 1;
 
                 _combat.ClearUniverse();
                 int i = _combat.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
@@ -101,11 +101,11 @@ namespace Elite.Engine.Views
                 _ship.climb = 0;
                 _ship.speed = 0;
             }
-            else if (_gameState.cmdr.Mission == 2)
+            else if (_gameState.Cmdr.Mission == 2)
             {
                 // Show debrief
-                _gameState.cmdr.Mission = 3;
-                _gameState.cmdr.Score += 256;
+                _gameState.Cmdr.Mission = 3;
+                _gameState.Cmdr.Score += 256;
                 _trade.credits += 5000;
             }
             else

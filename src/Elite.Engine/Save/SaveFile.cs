@@ -114,11 +114,11 @@ namespace Elite.Engine.Save
 
         private void RestoreSavedCommander()
         {
-            _state.docked_planet = _planet.FindPlanet(_state.cmdr.Galaxy, new(_state.docked_planet.D, _state.docked_planet.B));
-            _state.planetName = _planet.NamePlanet(_state.docked_planet, false);
-            _state.hyperspace_planet = (GalaxySeed)_state.docked_planet.Clone();
-            _state.current_planet_data = Planet.GeneratePlanetData(_state.docked_planet);
-            _trade.GenerateStockMarket(_state.current_planet_data);
+            _state.DockedPlanet = _planet.FindPlanet(_state.Cmdr.Galaxy, new(_state.DockedPlanet.D, _state.DockedPlanet.B));
+            _state.PlanetName = _planet.NamePlanet(_state.DockedPlanet, false);
+            _state.HyperspacePlanet = (GalaxySeed)_state.DockedPlanet.Clone();
+            _state.CurrentPlanetData = Planet.GeneratePlanetData(_state.DockedPlanet);
+            _trade.GenerateStockMarket(_state.CurrentPlanetData);
             _trade.SetStockQuantities();
         }
 
@@ -132,15 +132,15 @@ namespace Elite.Engine.Save
                 CurrentCargo = _trade.stockMarket.Values.Select(x => x.currentCargo).ToArray(),
                 EnergyUnit = _ship.energyUnit.ToString(),
                 Fuel = _ship.fuel,
-                GalaxyNumber = _state.cmdr.GalaxyNumber,
+                GalaxyNumber = _state.Cmdr.GalaxyNumber,
                 GalaxySeed = new int[6]
                 {
-                    _state.cmdr.Galaxy.A,
-                    _state.cmdr.Galaxy.B,
-                    _state.cmdr.Galaxy.C,
-                    _state.cmdr.Galaxy.D,
-                    _state.cmdr.Galaxy.E,
-                    _state.cmdr.Galaxy.F
+                    _state.Cmdr.Galaxy.A,
+                    _state.Cmdr.Galaxy.B,
+                    _state.Cmdr.Galaxy.C,
+                    _state.Cmdr.Galaxy.D,
+                    _state.Cmdr.Galaxy.E,
+                    _state.Cmdr.Galaxy.F
                 },
                 HasDockingComputer = _ship.hasDockingComputer,
                 HasECM = _ship.hasECM,
@@ -155,16 +155,16 @@ namespace Elite.Engine.Save
                     _ship.laserRight.Type.ToString(),
                     _ship.laserLeft.Type.ToString()
                 },
-                LegalStatus = _state.cmdr.LegalStatus,
+                LegalStatus = _state.Cmdr.LegalStatus,
                 MarketRandomiser = _trade.marketRandomiser,
                 Missiles = _ship.missileCount,
-                Mission = _state.cmdr.Mission,
-                Saved = _state.cmdr.Saved,
-                Score = _state.cmdr.Score,
+                Mission = _state.Cmdr.Mission,
+                Saved = _state.Cmdr.Saved,
+                Score = _state.Cmdr.Score,
                 ShipLocation = new int[2]
                 {
-                    _state.docked_planet.D,
-                    _state.docked_planet.B,
+                    _state.DockedPlanet.D,
+                    _state.DockedPlanet.B,
                 },
                 StationStock = _trade.stockMarket.Values.Select(x => x.stationStock).ToArray()
             };
@@ -175,7 +175,7 @@ namespace Elite.Engine.Save
         private void SaveStateToGameState()
         {
             _ship.cargoCapacity = _lastSaved.CargoCapacity;
-            _state.cmdr.Name = _lastSaved.CommanderName;
+            _state.Cmdr.Name = _lastSaved.CommanderName;
             _trade.credits = _lastSaved.Credits;
             for (int i = 0; i < _trade.stockMarket.Count; i++)
             {
@@ -183,13 +183,13 @@ namespace Elite.Engine.Save
             }
             _ship.energyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
             _ship.fuel = _lastSaved.Fuel;
-            _state.cmdr.GalaxyNumber = _lastSaved.GalaxyNumber;
-            _state.cmdr.Galaxy.A = _lastSaved.GalaxySeed[0];
-            _state.cmdr.Galaxy.B = _lastSaved.GalaxySeed[1];
-            _state.cmdr.Galaxy.C = _lastSaved.GalaxySeed[2];
-            _state.cmdr.Galaxy.D = _lastSaved.GalaxySeed[3];
-            _state.cmdr.Galaxy.E = _lastSaved.GalaxySeed[4];
-            _state.cmdr.Galaxy.F = _lastSaved.GalaxySeed[5];
+            _state.Cmdr.GalaxyNumber = _lastSaved.GalaxyNumber;
+            _state.Cmdr.Galaxy.A = _lastSaved.GalaxySeed[0];
+            _state.Cmdr.Galaxy.B = _lastSaved.GalaxySeed[1];
+            _state.Cmdr.Galaxy.C = _lastSaved.GalaxySeed[2];
+            _state.Cmdr.Galaxy.D = _lastSaved.GalaxySeed[3];
+            _state.Cmdr.Galaxy.E = _lastSaved.GalaxySeed[4];
+            _state.Cmdr.Galaxy.F = _lastSaved.GalaxySeed[5];
             _ship.hasDockingComputer = _lastSaved.HasDockingComputer;
             _ship.hasECM = _lastSaved.HasECM;
             _ship.hasEnergyBomb = _lastSaved.HasEnergyBomb;
@@ -200,14 +200,14 @@ namespace Elite.Engine.Save
             _ship.laserRear = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[1]));
             _ship.laserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));
             _ship.laserLeft = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[3]));
-            _state.cmdr.LegalStatus = _lastSaved.LegalStatus;
+            _state.Cmdr.LegalStatus = _lastSaved.LegalStatus;
             _trade.marketRandomiser = _lastSaved.MarketRandomiser;
             _ship.missileCount = _lastSaved.Missiles;
-            _state.cmdr.Mission = _lastSaved.Mission;
-            _state.cmdr.Saved = _lastSaved.Saved;
-            _state.cmdr.Score = _lastSaved.Score;
-            _state.docked_planet.D = _lastSaved.ShipLocation[0];
-            _state.docked_planet.B = _lastSaved.ShipLocation[1];
+            _state.Cmdr.Mission = _lastSaved.Mission;
+            _state.Cmdr.Saved = _lastSaved.Saved;
+            _state.Cmdr.Score = _lastSaved.Score;
+            _state.DockedPlanet.D = _lastSaved.ShipLocation[0];
+            _state.DockedPlanet.B = _lastSaved.ShipLocation[1];
             for (int i = 0; i < _trade.stockMarket.Count; i++)
             {
                 _trade.stockMarket[(StockType)i + 1].stationStock = _lastSaved.StationStock[i];

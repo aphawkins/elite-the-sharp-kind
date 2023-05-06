@@ -51,19 +51,19 @@ namespace Elite.Engine.Missions
                 return null;
             }
 
-            if (planet.A != gameState.docked_planet.A ||
-                planet.B != gameState.docked_planet.B ||
-                planet.C != gameState.docked_planet.C ||
-                planet.D != gameState.docked_planet.D ||
-                planet.E != gameState.docked_planet.E ||
-                planet.F != gameState.docked_planet.F)
+            if (planet.A != gameState.DockedPlanet.A ||
+                planet.B != gameState.DockedPlanet.B ||
+                planet.C != gameState.DockedPlanet.C ||
+                planet.D != gameState.DockedPlanet.D ||
+                planet.E != gameState.DockedPlanet.E ||
+                planet.F != gameState.DockedPlanet.F)
             {
                 return null;
             }
 
-            int pnum = _planet.FindPlanetNumber(gameState.cmdr.Galaxy, planet);
+            int pnum = _planet.FindPlanetNumber(gameState.Cmdr.Galaxy, planet);
 
-            if (gameState.cmdr.GalaxyNumber == 0)
+            if (gameState.Cmdr.GalaxyNumber == 0)
             {
                 switch (pnum)
                 {
@@ -78,7 +78,7 @@ namespace Elite.Engine.Missions
                 }
             }
 
-            if (gameState.cmdr.GalaxyNumber == 1)
+            if (gameState.Cmdr.GalaxyNumber == 1)
             {
                 switch (pnum)
                 {
@@ -114,7 +114,7 @@ namespace Elite.Engine.Missions
                 }
             }
 
-            return gameState.cmdr.GalaxyNumber == 2 && pnum == 101 ? mission1_pdesc[9] : null;
+            return gameState.Cmdr.GalaxyNumber == 2 && pnum == 101 ? mission1_pdesc[9] : null;
         }
     }
 }

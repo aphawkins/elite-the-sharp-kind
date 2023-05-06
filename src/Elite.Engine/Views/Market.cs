@@ -45,7 +45,7 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             _draw.ClearDisplay();
-            _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.docked_planet, false)} MARKET PRICES");
+            _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.DockedPlanet, false)} MARKET PRICES");
 
             _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);

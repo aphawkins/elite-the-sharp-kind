@@ -27,18 +27,18 @@ namespace Elite.Engine
 
         internal bool IsGameOver { get; private set; } = false;
         internal bool IsInitialised { get; set; } = false;
-        internal SCR currentScreen = SCR.SCR_NONE;
-        internal IView? currentView;
-        internal int message_count;
-        internal string message_string = string.Empty;
+        internal SCR CurrentScreen { get; set; } = SCR.SCR_NONE;
+        internal IView? CurrentView { get; set; }
+        internal int MessageCount { get; set; }
+        internal string MessageString { get; set; } = string.Empty;
 
-        internal bool witchspace;
-        internal Commander cmdr = new();
-        internal GalaxySeed docked_planet = new();
-        internal string planetName = string.Empty;
-        internal GalaxySeed hyperspace_planet = new();
-        internal PlanetData current_planet_data = new();
-        internal int carry_flag = 0;
+        internal bool InWitchspace { get; set; }
+        internal Commander Cmdr { get; set; } = new();
+        internal GalaxySeed DockedPlanet { get; set; } = new();
+        internal string PlanetName { get; set; } = string.Empty;
+        internal GalaxySeed HyperspacePlanet { get; set; } = new();
+        internal PlanetData CurrentPlanetData { get; set; } = new();
+        internal int CarryFlag { get; set; } = 0;
         internal bool IsAutoPilotOn { get; set; }
         internal bool IsDocked { get; set; } = true;
         internal Vector2 CompassCentre { get; set; } = new(382, 22 + 385);
@@ -49,7 +49,7 @@ namespace Elite.Engine
         internal bool ExitGame { get; set; }
         internal float LaserTemp { get; set; }
         internal int mcount { get; set; }
-        internal ConfigSettings config = new();
+        internal ConfigSettings Config { get; set; } = new();
 
         internal ShipData[] ShipList { get; private set; } = new ShipData[Ship.NO_OF_SHIPS + 1]
         {
@@ -101,7 +101,7 @@ namespace Elite.Engine
         {
             IsInitialised = true;
             IsGameOver = false;
-            witchspace = false;
+            InWitchspace = false;
             IsAutoPilotOn = false;
             IsDocked = true;
             Cross = new(-1, -1);
@@ -116,10 +116,10 @@ namespace Elite.Engine
         {
             //lock (_state)
             //{
-            currentScreen = screen;
-            currentView = _views[screen];
+            CurrentScreen = screen;
+            CurrentView = _views[screen];
             _keyboard.ClearKeyPressed();
-            currentView.Reset();
+            CurrentView.Reset();
             //}
         }
 
@@ -140,8 +140,8 @@ namespace Elite.Engine
 
         internal void InfoMessage(string message)
         {
-            message_string = message;
-            message_count = 37;
+            MessageString = message;
+            MessageCount = 37;
             //	sound.snd_play_sample (SND_BEEP);
         }
     }

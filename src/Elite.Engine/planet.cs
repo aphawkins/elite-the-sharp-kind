@@ -59,7 +59,7 @@ namespace Elite.Engine
                 y++;
             }
 
-            _gameState.carry_flag = y > 0xFF ? 1 : 0;
+            _gameState.CarryFlag = y > 0xFF ? 1 : 0;
 
             x &= 0xFF;
             y &= 0xFF;
@@ -224,7 +224,7 @@ namespace Elite.Engine
         internal bool FindPlanetByName(string find_name)
         {
             bool found = false;
-            GalaxySeed glx = (GalaxySeed)_gameState.cmdr.Galaxy.Clone();
+            GalaxySeed glx = (GalaxySeed)_gameState.Cmdr.Galaxy.Clone();
 
             for (int i = 0; i < 256; i++)
             {
@@ -233,8 +233,8 @@ namespace Elite.Engine
                 if (planet_name == find_name)
                 {
                     found = true;
-                    _gameState.hyperspace_planet = glx;
-                    _gameState.planetName = planet_name;
+                    _gameState.HyperspacePlanet = glx;
+                    _gameState.PlanetName = planet_name;
                     break;
                 }
 

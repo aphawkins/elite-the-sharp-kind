@@ -311,7 +311,7 @@ namespace Elite.Engine
                 if (MathF.Abs(stars[i].X) >= 116f)
                 {
                     stars[i].Y = RNG.Random(-128, 127);
-                    stars[i].X = (_gameState.currentScreen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
+                    stars[i].X = (_gameState.CurrentScreen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
                     stars[i].Z = RNG.Random(255) | 8;
                 }
                 else if (MathF.Abs(stars[i].Y) >= 116f)

@@ -107,7 +107,7 @@ namespace Elite.Engine
         /// </summary>
         private void UpdateCompass()
         {
-            if (_gameState.witchspace)
+            if (_gameState.InWitchspace)
             {
                 return;
             }

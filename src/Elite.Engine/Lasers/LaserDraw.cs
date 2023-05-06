@@ -60,7 +60,7 @@ namespace Elite.Engine.Lasers
                 Y = RNG.Random(94, 97) * Graphics.GFX_SCALE,
             };
 
-            if (_gameState.config.UseWireframe)
+            if (_gameState.Config.UseWireframe)
             {
                 // Left laser
                 _gfx.DrawTriangle(new(32 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(48 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);

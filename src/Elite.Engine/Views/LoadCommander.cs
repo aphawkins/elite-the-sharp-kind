@@ -74,7 +74,7 @@ namespace Elite.Engine.Views
         public void Reset()
         {
             _keyboard.ClearKeyPressed();
-            _name = _gameState.cmdr.Name;
+            _name = _gameState.Cmdr.Name;
             isLoaded = true;
         }
 

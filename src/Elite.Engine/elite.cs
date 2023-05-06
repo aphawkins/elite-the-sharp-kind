@@ -57,7 +57,7 @@ namespace Elite.Engine
             _scanner = new(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
             _configFile = new();
 
-            _gameState.config = _configFile.ReadConfigAsync().Result;
+            _gameState.Config = _configFile.ReadConfigAsync().Result;
 
             _views.Add(SCR.SCR_INTRO_ONE, new Intro1(_gameState, _gfx, _audio, keyboard, _ship, _combat));
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars, _ship, _combat));
@@ -85,10 +85,10 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_ESCAPE_POD, new EscapePod(_gameState, _gfx, _audio, _stars, _ship, _trade, _combat));
             _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars, _ship, _combat));
 
-            _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.config.Fps * 2));
+            _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
 
             long startTicks = DateTime.UtcNow.Ticks;
-            long interval = (long)(100000 / _gameState.config.Fps); // *10^-5
+            long interval = (long)(100000 / _gameState.Config.Fps); // *10^-5
 
             do
             {
@@ -185,9 +185,9 @@ namespace Elite.Engine
                 _gameState.GameOver();
             }
 
-            if (_gameState.message_count > 0)
+            if (_gameState.MessageCount > 0)
             {
-                _gameState.message_count--;
+                _gameState.MessageCount--;
             }
 
             _ship.LevelOut();
@@ -203,11 +203,11 @@ namespace Elite.Engine
 
             _draw.ClearDisplay();
 
-            _gameState.currentView!.UpdateUniverse();
+            _gameState.CurrentView!.UpdateUniverse();
             _space.UpdateUniverse();
-            _gameState.currentView.Draw();
+            _gameState.CurrentView.Draw();
             _scanner.UpdateConsole();
-            _gameState.currentView.HandleInput();
+            _gameState.CurrentView.HandleInput();
 
 #if DEBUG
             DrawFps();
@@ -217,9 +217,9 @@ namespace Elite.Engine
             {
                 _combat.CoolLaser();
 
-                if (_gameState.message_count > 0)
+                if (_gameState.MessageCount > 0)
                 {
-                    _gfx.DrawTextCentre(358, _gameState.message_string, 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(358, _gameState.MessageString, 120, GFX_COL.GFX_COL_WHITE);
                 }
 
                 if (Space.hyper_ready)
@@ -258,7 +258,7 @@ namespace Elite.Engine
                     _space.UpdateCabinTemp();
                 }
 
-                if ((_gameState.mcount == 0) && (!_gameState.witchspace))
+                if ((_gameState.mcount == 0) && (!_gameState.InWitchspace))
                 {
                     _combat.RandomEncounter();
                 }
@@ -283,7 +283,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.F1))
             {
-                if (_gameState.currentScreen is not SCR.SCR_INTRO_ONE and not SCR.SCR_INTRO_TWO)
+                if (_gameState.CurrentScreen is not SCR.SCR_INTRO_ONE and not SCR.SCR_INTRO_TWO)
                 {
                     if (_gameState.IsDocked)
                     {
@@ -339,7 +339,7 @@ namespace Elite.Engine
                 _gameState.SetView(SCR.SCR_PLANET_DATA);
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.F8) && (!_gameState.witchspace))
+            if (_keyboard.IsKeyPressed(CommandKey.F8) && (!_gameState.InWitchspace))
             {
                 _gameState.SetView(SCR.SCR_MARKET_PRICES);
             }
@@ -368,7 +368,7 @@ namespace Elite.Engine
             {
                 if (!_gameState.IsDocked && _ship.hasDockingComputer)
                 {
-                    if (_gameState.config.InstantDock)
+                    if (_gameState.Config.InstantDock)
                     {
                         _space.EngageDockingComputer();
                     }
@@ -399,7 +399,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.Jump) && (!_gameState.IsDocked) && (!_gameState.witchspace))
+            if (_keyboard.IsKeyPressed(CommandKey.Jump) && (!_gameState.IsDocked) && (!_gameState.InWitchspace))
             {
                 _space.JumpWarp();
             }
@@ -460,7 +460,7 @@ namespace Elite.Engine
 
             if (_keyboard.IsKeyPressed(CommandKey.EscapePod))
             {
-                if ((!_gameState.IsDocked) && _ship.hasEscapePod && (!_gameState.witchspace))
+                if ((!_gameState.IsDocked) && _ship.hasEscapePod && (!_gameState.InWitchspace))
                 {
                     _gameState.SetView(SCR.SCR_ESCAPE_POD);
                 }

@@ -226,7 +226,7 @@ namespace Elite.Engine
         {
             _ship.altitude = 255;
 
-            if (_gameState.witchspace)
+            if (_gameState.InWitchspace)
             {
                 return;
             }
@@ -275,7 +275,7 @@ namespace Elite.Engine
         {
             _ship.cabinTemperature = 30;
 
-            if (_gameState.witchspace)
+            if (_gameState.InWitchspace)
             {
                 return;
             }
@@ -396,7 +396,7 @@ namespace Elite.Engine
         {
             float tmp;
 
-            if (_gameState.currentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
+            if (_gameState.CurrentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
             {
                 flip.location.X = -flip.location.X;
                 flip.location.Z = -flip.location.Z;
@@ -412,7 +412,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_gameState.currentScreen == SCR.SCR_LEFT_VIEW)
+            if (_gameState.CurrentScreen == SCR.SCR_LEFT_VIEW)
             {
                 tmp = flip.location.X;
                 flip.location.X = flip.location.Z;
@@ -437,7 +437,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_gameState.currentScreen == SCR.SCR_RIGHT_VIEW)
+            if (_gameState.CurrentScreen == SCR.SCR_RIGHT_VIEW)
             {
                 tmp = flip.location.X;
                 flip.location.X = -flip.location.Z;
@@ -483,12 +483,12 @@ namespace Elite.Engine
                 {
                     if (type == ShipType.Viper)
                     {
-                        _gameState.cmdr.LegalStatus |= 64;
+                        _gameState.Cmdr.LegalStatus |= 64;
                     }
 
                     float bounty = _gameState.ShipList[(int)type].bounty;
 
-                    if ((bounty != 0) && (!_gameState.witchspace))
+                    if ((bounty != 0) && (!_gameState.InWitchspace))
                     {
                         _trade.credits += bounty;
                         _gameState.InfoMessage($"{_trade.credits:N1} Credits");
@@ -511,7 +511,7 @@ namespace Elite.Engine
                     universe[i].flags |= FLG.FLG_DEAD;
                 }
 
-                if (_gameState.currentScreen is
+                if (_gameState.CurrentScreen is
                     not SCR.SCR_INTRO_ONE and
                     not SCR.SCR_INTRO_TWO and
                     not SCR.SCR_GAME_OVER and
@@ -591,14 +591,14 @@ namespace Elite.Engine
                 return;
             }
 
-            hyper_distance = Planet.CalculateDistanceToPlanet(_gameState.docked_planet, _gameState.hyperspace_planet);
+            hyper_distance = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
 
             if ((hyper_distance == 0) || (hyper_distance > _ship.fuel))
             {
                 return;
             }
 
-            destination_planet = (GalaxySeed)_gameState.hyperspace_planet.Clone();
+            destination_planet = (GalaxySeed)_gameState.HyperspacePlanet.Clone();
             hyper_name = _planet.NamePlanet(destination_planet, true);
             hyper_ready = true;
             hyper_countdown = 15;
@@ -631,28 +631,28 @@ namespace Elite.Engine
 
         private void EnterNextGalaxy()
         {
-            _gameState.cmdr.GalaxyNumber++;
-            _gameState.cmdr.GalaxyNumber &= 7;
+            _gameState.Cmdr.GalaxyNumber++;
+            _gameState.Cmdr.GalaxyNumber &= 7;
 
             GalaxySeed glx = new()
             {
-                A = RotateByteLeft(_gameState.cmdr.Galaxy.A),
-                B = RotateByteLeft(_gameState.cmdr.Galaxy.B),
-                C = RotateByteLeft(_gameState.cmdr.Galaxy.C),
-                D = RotateByteLeft(_gameState.cmdr.Galaxy.D),
-                E = RotateByteLeft(_gameState.cmdr.Galaxy.E),
-                F = RotateByteLeft(_gameState.cmdr.Galaxy.F)
+                A = RotateByteLeft(_gameState.Cmdr.Galaxy.A),
+                B = RotateByteLeft(_gameState.Cmdr.Galaxy.B),
+                C = RotateByteLeft(_gameState.Cmdr.Galaxy.C),
+                D = RotateByteLeft(_gameState.Cmdr.Galaxy.D),
+                E = RotateByteLeft(_gameState.Cmdr.Galaxy.E),
+                F = RotateByteLeft(_gameState.Cmdr.Galaxy.F)
             };
-            _gameState.cmdr.Galaxy = glx;
+            _gameState.Cmdr.Galaxy = glx;
 
-            _gameState.docked_planet = _planet.FindPlanet(_gameState.cmdr.Galaxy, new(0x60, 0x60));
-            _gameState.hyperspace_planet = (GalaxySeed)_gameState.docked_planet.Clone();
+            _gameState.DockedPlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, new(0x60, 0x60));
+            _gameState.HyperspacePlanet = (GalaxySeed)_gameState.DockedPlanet.Clone();
         }
 
         private void EnterWitchspace()
         {
-            _gameState.witchspace = true;
-            _gameState.docked_planet.B ^= 31;
+            _gameState.InWitchspace = true;
+            _gameState.DockedPlanet.B ^= 31;
             _combat.InBattle = true;
 
             _ship.speed = 12;
@@ -674,19 +674,19 @@ namespace Elite.Engine
         private void CompleteHyperspace()
         {
             hyper_ready = false;
-            _gameState.witchspace = false;
+            _gameState.InWitchspace = false;
 
             if (hyper_galactic)
             {
                 _ship.hasGalacticHyperdrive = false;
                 hyper_galactic = false;
                 EnterNextGalaxy();
-                _gameState.cmdr.LegalStatus = 0;
+                _gameState.Cmdr.LegalStatus = 0;
             }
             else
             {
                 _ship.fuel -= hyper_distance;
-                _gameState.cmdr.LegalStatus /= 2;
+                _gameState.Cmdr.LegalStatus /= 2;
 
                 if ((RNG.Random(255) > 253) || (_ship.climb >= _ship.maxClimb))
                 {
@@ -694,12 +694,12 @@ namespace Elite.Engine
                     return;
                 }
 
-                _gameState.docked_planet = (GalaxySeed)destination_planet.Clone();
+                _gameState.DockedPlanet = (GalaxySeed)destination_planet.Clone();
             }
 
             _trade.marketRandomiser = RNG.Random(255);
-            _gameState.current_planet_data = Planet.GeneratePlanetData(_gameState.docked_planet);
-            _trade.GenerateStockMarket(_gameState.current_planet_data);
+            _gameState.CurrentPlanetData = Planet.GeneratePlanetData(_gameState.DockedPlanet);
+            _trade.GenerateStockMarket(_gameState.CurrentPlanetData);
 
             _ship.speed = 12;
             _ship.roll = 0;
@@ -707,11 +707,11 @@ namespace Elite.Engine
             Stars.CreateNewStars();
             _combat.ClearUniverse();
 
-            _threed.GenerateLandscape((_gameState.docked_planet.A * 251) + _gameState.docked_planet.B);
+            _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
 
             Vector3 position = new()
             {
-                Z = (((_gameState.docked_planet.B) & 7) + 7) / 2
+                Z = (((_gameState.DockedPlanet.B) & 7) + 7) / 2
             };
             position.X = position.Z / 2;
             position.Y = position.X;
@@ -720,7 +720,7 @@ namespace Elite.Engine
             position.Y *= 65536;
             position.Z *= 65536;
 
-            if ((_gameState.docked_planet.B & 1) == 0)
+            if ((_gameState.DockedPlanet.B & 1) == 0)
             {
                 position.X = -position.X;
                 position.Y = -position.Y;
@@ -728,8 +728,8 @@ namespace Elite.Engine
 
             _combat.AddNewShip(ShipType.Planet, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
-            position.Z = -(((_gameState.docked_planet.D & 7) | 1) << 16);
-            position.X = ((_gameState.docked_planet.F & 3) << 16) | ((_gameState.docked_planet.F & 3) << 8);
+            position.Z = -(((_gameState.DockedPlanet.D & 7) | 1) << 16);
+            position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
             _combat.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
@@ -798,9 +798,9 @@ namespace Elite.Engine
             // Rotate in the same direction that the station is spinning
             _ship.roll = 15;
             _ship.climb = 0;
-            _gameState.cmdr.LegalStatus |= _trade.IsCarryingContraband();
+            _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             Stars.CreateNewStars();
-            _threed.GenerateLandscape((_gameState.docked_planet.A * 251) + _gameState.docked_planet.B);
+            _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             _combat.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();

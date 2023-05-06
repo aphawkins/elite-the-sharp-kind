@@ -275,7 +275,7 @@ namespace Elite.Engine
 
         internal void EngageAutoPilot()
         {
-            if (_gameState.IsAutoPilotOn || _gameState.witchspace || Space.hyper_ready)
+            if (_gameState.IsAutoPilotOn || _gameState.InWitchspace || Space.hyper_ready)
             {
                 return;
             }

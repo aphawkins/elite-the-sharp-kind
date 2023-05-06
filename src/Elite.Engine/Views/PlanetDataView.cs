@@ -96,7 +96,7 @@ namespace Elite.Engine.Views
 
         private string DescribePlanet(GalaxySeed planet)
         {
-            if (_gameState.cmdr.Mission == 1)
+            if (_gameState.Cmdr.Mission == 1)
             {
                 string? mission_text = new Mission(_planet).MissionPlanetDescription(_gameState, planet);
                 if (!string.IsNullOrEmpty(mission_text))
@@ -110,7 +110,7 @@ namespace Elite.Engine.Views
             RNG.Seed.c = planet.E;
             RNG.Seed.d = planet.F;
 
-            if (_gameState.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+            if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
             {
                 RNG.Seed.a ^= planet.A;
                 RNG.Seed.b ^= planet.B;
@@ -145,7 +145,7 @@ namespace Elite.Engine.Views
                     Debug.Assert(num < _descriptionList.Length);
                     int option;
 
-                    if (_gameState.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+                    if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
                     {
                         option = RNG.GenMSXRandomNumber();
                     }
@@ -184,12 +184,12 @@ namespace Elite.Engine.Views
                     switch (source[j])
                     {
                         case 'H':
-                            temp = _planet.NamePlanet(_gameState.hyperspace_planet, true);
+                            temp = _planet.NamePlanet(_gameState.HyperspacePlanet, true);
                             planetDescription += temp;
                             break;
 
                         case 'I':
-                            temp = _planet.NamePlanet(_gameState.hyperspace_planet, true);
+                            temp = _planet.NamePlanet(_gameState.HyperspacePlanet, true);
                             planetDescription += temp;
                             planetDescription += "ian";
                             break;
@@ -225,14 +225,14 @@ namespace Elite.Engine.Views
 
         public void UpdateUniverse()
         {
-            _distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.docked_planet, _gameState.hyperspace_planet);
-            _hyperPlanetData = Planet.GeneratePlanetData(_gameState.hyperspace_planet);
+            _distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
+            _hyperPlanetData = Planet.GeneratePlanetData(_gameState.HyperspacePlanet);
         }
 
         public void Draw()
         {
             _draw.ClearDisplay();
-            _draw.DrawViewHeader($"DATA ON {_planet.NamePlanet(_gameState.hyperspace_planet, false)}");
+            _draw.DrawViewHeader($"DATA ON {_planet.NamePlanet(_gameState.HyperspacePlanet, false)}");
 
             if (_distanceToPlanet > 0)
             {
@@ -246,12 +246,12 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(16, 138, "Tech Level:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(140, 138, $"{_hyperPlanetData.techlevel + 1}", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 170, "Population:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.population:N1} Billion {Planet.DescribeInhabitants(_gameState.hyperspace_planet)}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.population:N1} Billion {Planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 202, "Gross Productivity:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 234, "Average Radius:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(140, 234, $"{_hyperPlanetData.radius} km", GFX_COL.GFX_COL_WHITE);
-            _draw.DrawTextPretty(16, 266, 400, DescribePlanet(_gameState.hyperspace_planet));
+            _draw.DrawTextPretty(16, 266, 400, DescribePlanet(_gameState.HyperspacePlanet));
         }
 
         public void HandleInput()

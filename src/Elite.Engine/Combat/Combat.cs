@@ -112,7 +112,7 @@ namespace Elite.Engine
 
         internal void AddNewStation(Vector3 position, Vector3[] rotmat)
         {
-            ShipType station = (_gameState.current_planet_data.techlevel >= 10) ? ShipType.Dodec : ShipType.Coriolis;
+            ShipType station = (_gameState.CurrentPlanetData.techlevel >= 10) ? ShipType.Dodec : ShipType.Coriolis;
             Space.universe[1].type = ShipType.None;
             AddNewShip(station, position, rotmat, 0, -127);
         }
@@ -228,9 +228,9 @@ namespace Elite.Engine
 
         internal void ExplodeObject(int un)
         {
-            _gameState.cmdr.Score++;
+            _gameState.Cmdr.Score++;
 
-            if ((_gameState.cmdr.Score & 255) == 0)
+            if ((_gameState.Cmdr.Score & 255) == 0)
             {
                 _gameState.InfoMessage("Right On Commander!");
             }
@@ -240,7 +240,7 @@ namespace Elite.Engine
 
             if (Space.universe[un].type == ShipType.Constrictor)
             {
-                _gameState.cmdr.Mission = 2;
+                _gameState.Cmdr.Mission = 2;
             }
         }
 
@@ -254,7 +254,7 @@ namespace Elite.Engine
                 return false;
             }
 
-            _laserStrength = _gameState.currentScreen switch
+            _laserStrength = _gameState.CurrentScreen switch
             {
                 SCR.SCR_FRONT_VIEW => _ship.laserFront.Strength,
                 SCR.SCR_REAR_VIEW => _ship.laserRear.Strength,
@@ -268,7 +268,7 @@ namespace Elite.Engine
                 return false;
             }
 
-            _laserType = _gameState.currentScreen switch
+            _laserType = _gameState.CurrentScreen switch
             {
                 SCR.SCR_FRONT_VIEW => _ship.laserFront.Type,
                 SCR.SCR_REAR_VIEW => _ship.laserRear.Type,
@@ -365,7 +365,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if ((_gameState.cmdr.Mission == 5) && (RNG.Random(255) >= 200))
+            if ((_gameState.Cmdr.Mission == 5) && (RNG.Random(255) >= 200))
             {
                 CreateThargoid();
             }
@@ -553,7 +553,7 @@ namespace Elite.Engine
 
             if (flags.HasFlag(FLG.FLG_POLICE))
             {
-                if (_gameState.cmdr.LegalStatus >= 64)
+                if (_gameState.Cmdr.LegalStatus >= 64)
                 {
                     flags |= FLG.FLG_ANGRY;
                     ship.flags = flags;
@@ -859,7 +859,7 @@ namespace Elite.Engine
 
         private void CheckForOthers()
         {
-            int gov = _gameState.current_planet_data.government;
+            int gov = _gameState.CurrentPlanetData.government;
             int rnd = RNG.Random(255);
 
             if ((gov != 0) && ((rnd >= 90) || ((rnd & 7) < gov)))
@@ -916,7 +916,7 @@ namespace Elite.Engine
             int offense = _trade.IsCarryingContraband() * 2;
             if (Space.ship_count[ShipType.Viper] == 0)
             {
-                offense |= _gameState.cmdr.LegalStatus;
+                offense |= _gameState.Cmdr.LegalStatus;
             }
 
             if (RNG.Random(255) >= offense)
@@ -978,8 +978,8 @@ namespace Elite.Engine
             ShipType type;
             int newship;
 
-            if ((_gameState.cmdr.Mission == 1) && (_gameState.cmdr.GalaxyNumber == 1) &&
-                (_gameState.docked_planet.D == 144) && (_gameState.docked_planet.B == 33) &&
+            if ((_gameState.Cmdr.Mission == 1) && (_gameState.Cmdr.GalaxyNumber == 1) &&
+                (_gameState.DockedPlanet.D == 144) && (_gameState.DockedPlanet.B == 33) &&
                 (Space.ship_count[ShipType.Constrictor] == 0))
             {
                 type = ShipType.Constrictor;

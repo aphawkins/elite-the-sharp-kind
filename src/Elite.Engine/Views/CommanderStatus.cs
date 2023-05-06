@@ -70,14 +70,14 @@ namespace Elite.Engine.Views
             string rating = string.Empty;
             foreach ((int score, string title) in _ratings)
             {
-                if (_gameState.cmdr.Score >= score)
+                if (_gameState.Cmdr.Score >= score)
                 {
                     rating = title;
                 }
             }
 
-            string dockedPlanetName = _planet.NamePlanet(_gameState.docked_planet, true);
-            string hyperspacePlanetName = _planet.NamePlanet(_gameState.hyperspace_planet, true);
+            string dockedPlanetName = _planet.NamePlanet(_gameState.DockedPlanet, true);
+            string hyperspacePlanetName = _planet.NamePlanet(_gameState.HyperspacePlanet, true);
 
             int condition = 0;
 
@@ -100,10 +100,10 @@ namespace Elite.Engine.Views
                 }
             }
 
-            _draw.DrawViewHeader($"COMMANDER {_gameState.cmdr.Name}");
+            _draw.DrawViewHeader($"COMMANDER {_gameState.Cmdr.Name}");
             _gfx.DrawTextLeft(16, 58, "Present System:", GFX_COL.GFX_COL_GREEN_1);
 
-            if (!_gameState.witchspace)
+            if (!_gameState.InWitchspace)
             {
                 _gfx.DrawTextLeft(150, 58, dockedPlanetName, GFX_COL.GFX_COL_WHITE);
             }
@@ -121,7 +121,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(150, 122, $"{_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 138, "Legal Status:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 138, _gameState.cmdr.LegalStatus == 0 ? "Clean" : _gameState.cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 138, _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 154, "Rating:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(150, 154, rating, GFX_COL.GFX_COL_WHITE);

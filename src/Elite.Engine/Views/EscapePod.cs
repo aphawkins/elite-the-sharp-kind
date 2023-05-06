@@ -91,7 +91,7 @@ namespace Elite.Engine.Views
             else
             {
                 _ship.hasEscapePod = false;
-                _gameState.cmdr.LegalStatus = 0;
+                _gameState.Cmdr.LegalStatus = 0;
                 _ship.fuel = _ship.maxFuel;
                 _trade.ClearCurrentCargo();
                 _gameState.SetView(SCR.SCR_DOCKING);
