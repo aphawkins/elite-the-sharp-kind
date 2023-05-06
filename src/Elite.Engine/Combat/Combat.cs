@@ -859,7 +859,7 @@ namespace Elite.Engine
 
         private void CheckForOthers()
         {
-            int gov = _gameState.CurrentPlanetData.government;
+            int gov = _gameState.CurrentPlanetData.Government;
             int rnd = RNG.Random(255);
 
             if ((gov != 0) && ((rnd >= 90) || ((rnd & 7) < gov)))

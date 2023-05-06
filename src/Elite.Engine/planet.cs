@@ -37,33 +37,33 @@ namespace Elite.Engine
         {
             PlanetData pl = new()
             {
-                government = (planet_seed.C / 8) & 7,
-                economy = planet_seed.B & 7
+                Government = (planet_seed.C / 8) & 7,
+                Economy = planet_seed.B & 7
             };
 
-            if (pl.government < 2)
+            if (pl.Government < 2)
             {
-                pl.economy |= 2;
+                pl.Economy |= 2;
             }
 
-            pl.techlevel = pl.economy ^ 7;
-            pl.techlevel += planet_seed.D & 3;
-            pl.techlevel += (pl.government / 2) + (pl.government & 1);
+            pl.TechLevel = pl.Economy ^ 7;
+            pl.TechLevel += planet_seed.D & 3;
+            pl.TechLevel += (pl.Government / 2) + (pl.Government & 1);
 
 
-            pl.population = pl.techlevel * 4;
-            pl.population += pl.government;
-            pl.population += pl.economy;
-            pl.population++;
+            pl.Population = pl.TechLevel * 4;
+            pl.Population += pl.Government;
+            pl.Population += pl.Economy;
+            pl.Population++;
 
 
-            pl.productivity = (pl.economy ^ 7) + 3;
-            pl.productivity *= pl.government + 4;
-            pl.productivity *= (int)pl.population;
-            pl.productivity *= 8;
+            pl.Productivity = (pl.Economy ^ 7) + 3;
+            pl.Productivity *= pl.Government + 4;
+            pl.Productivity *= (int)pl.Population;
+            pl.Productivity *= 8;
 
-            pl.population /= 10;
-            pl.radius = (((planet_seed.F & 15) + 11) * 256) + planet_seed.D;
+            pl.Population /= 10;
+            pl.Radius = (((planet_seed.F & 15) + 11) * 256) + planet_seed.D;
 
             return pl;
         }

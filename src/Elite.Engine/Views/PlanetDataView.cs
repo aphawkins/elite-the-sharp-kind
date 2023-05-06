@@ -94,17 +94,17 @@ namespace Elite.Engine.Views
                 _gfx.DrawTextLeft(140, 42, $"{_distanceToPlanet:N1} Light Years", GFX_COL.GFX_COL_WHITE);
             }
             _gfx.DrawTextLeft(16, 74, "Economy:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 74, _economyType[_hyperPlanetData.economy], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(140, 74, _economyType[_hyperPlanetData.Economy], GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 106, "Government:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 106, _governmentType[_hyperPlanetData.government], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(140, 106, _governmentType[_hyperPlanetData.Government], GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 138, "Tech Level:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 138, $"{_hyperPlanetData.techlevel + 1}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(140, 138, $"{_hyperPlanetData.TechLevel + 1}", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 170, "Population:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 202, "Gross Productivity:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.Productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextLeft(16, 234, "Average Radius:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 234, $"{_hyperPlanetData.radius} km", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(140, 234, $"{_hyperPlanetData.Radius} km", GFX_COL.GFX_COL_WHITE);
             _draw.DrawTextPretty(16, 266, 400, DescribePlanet(_gameState.HyperspacePlanet));
         }
 
