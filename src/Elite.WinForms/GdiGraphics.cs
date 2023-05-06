@@ -118,7 +118,7 @@ namespace Elite.WinForms
             _screenBufferGraphics.Clear(Color.Black);
         }
 
-        private bool disposedValue;
+        private bool _isDisposed;
 
         public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream) => _images[imgType] = (Bitmap)Image.FromStream(bitmapStream);
 
@@ -280,7 +280,7 @@ namespace Elite.WinForms
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_isDisposed)
             {
                 if (disposing)
                 {
@@ -301,7 +301,7 @@ namespace Elite.WinForms
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
-                disposedValue = true;
+                _isDisposed = true;
             }
         }
 
