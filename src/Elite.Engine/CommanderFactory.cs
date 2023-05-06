@@ -8,7 +8,7 @@ namespace Elite.Engine
         /// The default commander. Do not modify.
         /// </summary>
         /// <returns>Commander Jameson.</returns>
-        internal static SaveState Jameson() => new SaveState()
+        internal static SaveState Jameson() => new()
         {
             CommanderName = "JAMESON",
             Mission = 0,
@@ -39,7 +39,7 @@ namespace Elite.Engine
         /// The maximum equipment level, for testing purposes.
         /// </summary>
         /// <returns>Commander Max.</returns>
-        internal static SaveState Max() => new SaveState()
+        internal static SaveState Max() => new()
         {
             CommanderName = "MAX",
             Mission = 0,

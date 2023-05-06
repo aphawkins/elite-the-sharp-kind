@@ -4,7 +4,7 @@ namespace Elite.Engine
 {
     internal static class Extensions
     {
-        internal static Vector3 Cloner(this Vector3 vec) => new Vector3(vec.X, vec.Y, vec.Z);
+        internal static Vector3 Cloner(this Vector3 vec) => new(vec.X, vec.Y, vec.Z);
 
         internal static Vector3[] Cloner(this Vector3[] vecs)
         {
