@@ -49,7 +49,7 @@ namespace Elite.Engine.Missions
 
         internal string? MissionPlanetDescription(GameState gameState, GalaxySeed planet)
         {
-            if (!EliteMain.docked)
+            if (!gameState.IsDocked)
             {
                 return null;
             }

@@ -275,20 +275,20 @@ namespace Elite.Engine
 
         internal void EngageAutoPilot()
         {
-            if (EliteMain.auto_pilot || _gameState.witchspace || Space.hyper_ready)
+            if (_gameState.IsAutoPilotOn || _gameState.witchspace || Space.hyper_ready)
             {
                 return;
             }
 
-            EliteMain.auto_pilot = true;
+            _gameState.IsAutoPilotOn = true;
             _audio.PlayMusic(Music.BlueDanube, true);
         }
 
         internal void DisengageAutoPilot()
         {
-            if (EliteMain.auto_pilot)
+            if (_gameState.IsAutoPilotOn)
             {
-                EliteMain.auto_pilot = false;
+                _gameState.IsAutoPilotOn = false;
                 _audio.StopMusic();
             }
         }

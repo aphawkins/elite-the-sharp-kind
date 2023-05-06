@@ -110,7 +110,7 @@ namespace Elite.Engine.Views
             RNG.Seed.c = planet.E;
             RNG.Seed.d = planet.F;
 
-            if (EliteMain.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+            if (_gameState.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
             {
                 RNG.Seed.a ^= planet.A;
                 RNG.Seed.b ^= planet.B;
@@ -145,7 +145,7 @@ namespace Elite.Engine.Views
                     Debug.Assert(num < _descriptionList.Length);
                     int option;
 
-                    if (EliteMain.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+                    if (_gameState.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
                     {
                         option = RNG.GenMSXRandomNumber();
                     }

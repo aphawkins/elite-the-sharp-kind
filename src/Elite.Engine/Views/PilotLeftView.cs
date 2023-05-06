@@ -8,9 +8,9 @@ namespace Elite.Engine.Views
         private readonly Stars _stars;
         private readonly PlayerShip _ship;
 
-        internal PilotLeftView(IGfx gfx, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
+        internal PilotLeftView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
         {
-            _pilotView = new(gfx, keyboard, pilot, ship);
+            _pilotView = new(gameState, gfx, keyboard, pilot, ship);
             _stars = stars;
             _ship = ship;
         }

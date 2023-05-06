@@ -36,6 +36,7 @@ namespace Elite.Engine
         private readonly PlayerShip _ship;
         private readonly Combat _combat;
         private readonly Draw _draw;
+        private Vector2 scanner_centre = new(253, 63 + 385);
 
         internal Scanner(GameState gameState, IGfx gfx, Draw draw, UniverseObject[] universe, Dictionary<ShipType, int> shipCount, PlayerShip ship, Combat combat)
         {
@@ -72,9 +73,9 @@ namespace Elite.Engine
                     continue;
                 }
 
-                x += EliteMain.scanner_centre.X;
-                y1 += EliteMain.scanner_centre.Y;
-                y2 += EliteMain.scanner_centre.Y;
+                x += scanner_centre.X;
+                y1 += scanner_centre.Y;
+                y2 += scanner_centre.Y;
 
                 GFX_COL colour = _universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
 
@@ -119,7 +120,7 @@ namespace Elite.Engine
                 return;
             }
 
-            Vector2 compass = new(EliteMain.compass_centre.X + (dest.X * 16), EliteMain.compass_centre.Y + (dest.Y * -16));
+            Vector2 compass = new(_gameState.CompassCentre.X + (dest.X * 16), _gameState.CompassCentre.Y + (dest.Y * -16));
 
             if (dest.Z < 0)
             {
@@ -203,9 +204,9 @@ namespace Elite.Engine
 
         private void DisplayLaserTemp()
         {
-            if (EliteMain.laser_temp > 0)
+            if (_gameState.LaserTemp > 0)
             {
-                DisplayDialBar(EliteMain.laser_temp / 4, new(31, 76));
+                DisplayDialBar(_gameState.LaserTemp / 4, new(31, 76));
             }
         }
 
@@ -287,9 +288,9 @@ namespace Elite.Engine
 
             Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 
-            if (_combat._missileTarget != _combat._isMISSILE_UNARMED)
+            if (_combat.MissileTarget != _combat.IsMissileUnarmed)
             {
-                _gfx.DrawImage((_combat._missileTarget < 0) ? Image.MissileYellow : Image.MissileRed, location);
+                _gfx.DrawImage((_combat.MissileTarget < 0) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
                 missileCount--;
             }
@@ -317,7 +318,7 @@ namespace Elite.Engine
             DisplayFuel();
             DisplayMissiles();
 
-            if (EliteMain.docked)
+            if (_gameState.IsDocked)
             {
                 return;
             }

@@ -67,7 +67,7 @@ namespace Elite.Engine.Views
                     _gfx.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, GFX_COL.GFX_COL_DARK_RED);
                 }
 
-                GFX_COL col = ((!EliteMain.docked) && optionList[i].DockedOnly) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
+                GFX_COL col = ((!_gameState.IsDocked) && optionList[i].DockedOnly) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
 
                 _gfx.DrawTextCentre(y, optionList[i].Label, 120, col);
             }
@@ -96,7 +96,7 @@ namespace Elite.Engine.Views
 
         private void ExecuteOption()
         {
-            if (EliteMain.docked || !optionList[_highlightedItem].DockedOnly)
+            if (_gameState.IsDocked || !optionList[_highlightedItem].DockedOnly)
             {
                 switch (_highlightedItem)
                 {

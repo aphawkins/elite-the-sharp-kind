@@ -78,11 +78,11 @@ namespace Elite.Engine
 
                 int v = i switch
                 {
-                    0 => EliteMain.config.UseWireframe ? 1 : 0,
-                    1 => EliteMain.config.AntiAliasWireframe ? 1 : 0,
-                    2 => (int)EliteMain.config.PlanetRenderStyle,
-                    3 => EliteMain.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-                    4 => EliteMain.config.InstantDock ? 1 : 0,
+                    0 => _gameState.config.UseWireframe ? 1 : 0,
+                    1 => _gameState.config.AntiAliasWireframe ? 1 : 0,
+                    2 => (int)_gameState.config.PlanetRenderStyle,
+                    3 => _gameState.config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+                    4 => _gameState.config.InstantDock ? 1 : 0,
                     _ => 0,
                 };
                 x = ((i & 1) * 250) + 32;
@@ -167,7 +167,7 @@ namespace Elite.Engine
         {
             if (_highlightedItem == (setting_list.Length - 1))
             {
-                _configFile.WriteConfigAsync(EliteMain.config).Wait();
+                _configFile.WriteConfigAsync(_gameState.config).Wait();
                 _gameState.SetView(SCR.SCR_OPTIONS);
                 return;
             }
@@ -175,23 +175,23 @@ namespace Elite.Engine
             switch (_highlightedItem)
             {
                 case 0:
-                    EliteMain.config.UseWireframe = !EliteMain.config.UseWireframe;
+                    _gameState.config.UseWireframe = !_gameState.config.UseWireframe;
                     break;
 
                 case 1:
-                    EliteMain.config.AntiAliasWireframe = !EliteMain.config.AntiAliasWireframe;
+                    _gameState.config.AntiAliasWireframe = !_gameState.config.AntiAliasWireframe;
                     break;
 
                 case 2:
-                    EliteMain.config.PlanetRenderStyle = (PlanetRenderStyle)((int)(EliteMain.config.PlanetRenderStyle + 1) % 4);
+                    _gameState.config.PlanetRenderStyle = (PlanetRenderStyle)((int)(_gameState.config.PlanetRenderStyle + 1) % 4);
                     break;
 
                 case 3:
-                    EliteMain.config.PlanetDescriptions = (PlanetDescriptions)((int)(EliteMain.config.PlanetDescriptions + 1) % 2);
+                    _gameState.config.PlanetDescriptions = (PlanetDescriptions)((int)(_gameState.config.PlanetDescriptions + 1) % 2);
                     break;
 
                 case 4:
-                    EliteMain.config.InstantDock = !EliteMain.config.InstantDock;
+                    _gameState.config.InstantDock = !_gameState.config.InstantDock;
                     break;
             }
         }

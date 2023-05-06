@@ -1,12 +1,12 @@
 ﻿using Elite.Engine.Enums;
 using Elite.Engine.Lasers;
 using Elite.Engine.Ships;
-using static Elite.Engine.EliteMain;
 
 namespace Elite.Engine.Views
 {
     internal class PilotView : IView
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
         private readonly LaserDraw _laser;
@@ -14,11 +14,12 @@ namespace Elite.Engine.Views
         private readonly PlayerShip _ship;
         private int drawLaserFrames;
 
-        internal PilotView(IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship)
+        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _keyboard = keyboard;
-            _laser = new LaserDraw(_gfx);
+            _laser = new LaserDraw(_gameState, _gfx);
             _pilot = pilot;
             _ship = ship;
         }
@@ -98,7 +99,7 @@ namespace Elite.Engine.Views
             }
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOff))
             {
-                if (auto_pilot)
+                if (_gameState.IsAutoPilotOn)
                 {
                     _pilot.DisengageAutoPilot();
                 }
@@ -112,7 +113,7 @@ namespace Elite.Engine.Views
 
         public void UpdateUniverse()
         {
-            drawLaserFrames = EliteMain.drawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
+            drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
         }
 
         internal void DrawViewName(string name)

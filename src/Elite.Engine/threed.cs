@@ -18,17 +18,19 @@ using Elite.Engine.Views;
 
 namespace Elite.Engine
 {
-    internal partial class Threed
+    internal class Threed
     {
         private const int LAND_X_MAX = 128;
         private const int LAND_Y_MAX = 128;
         private static readonly int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
         private static readonly Vector3[] point_list = new Vector3[100];
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
 
-        internal Threed(IGfx gfx, Draw draw)
+        internal Threed(GameState gameState, IGfx gfx, Draw draw)
         {
+            _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
         }
@@ -41,12 +43,12 @@ namespace Elite.Engine
         /// Check for hidden surface supplied by T.Harte.
         /// </summary>
         /// <param name="univ"></param>
-        private static void DrawShip(ref UniverseObject univ)
+        private void DrawShip(ref UniverseObject univ)
         {
             Vector3[] trans_mat = new Vector3[3];
             int lasv;
             GFX_COL col;
-            ShipData ship = EliteMain.ship_list[(int)univ.type];
+            ShipData ship = _gameState.ShipList[(int)univ.type];
 
             for (int i = 0; i < 3; i++)
             {
@@ -120,7 +122,7 @@ namespace Elite.Engine
 
             if (univ.flags.HasFlag(FLG.FLG_FIRING))
             {
-                lasv = EliteMain.ship_list[(int)univ.type].front_laser;
+                lasv = _gameState.ShipList[(int)univ.type].front_laser;
                 col = (univ.type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
                 Vector2[] pointList = new Vector2[]
@@ -257,9 +259,9 @@ namespace Elite.Engine
             }
         }
 
-        internal static void GenerateLandscape(int rnd_seed)
+        internal void GenerateLandscape(int rnd_seed)
         {
-            switch (EliteMain.config.PlanetRenderStyle)
+            switch (_gameState.config.PlanetRenderStyle)
             {
                 case PlanetRenderStyle.Wireframe:     /* Wireframe... do nothing for now... */
                     break;
@@ -408,7 +410,7 @@ namespace Elite.Engine
                 return;
             }
 
-            switch (EliteMain.config.PlanetRenderStyle)
+            switch (_gameState.config.PlanetRenderStyle)
             {
                 case PlanetRenderStyle.Wireframe:
                     DrawWireframePlanet(position, radius);
@@ -443,7 +445,7 @@ namespace Elite.Engine
                 return;
             }
 
-            ShipData ship = EliteMain.ship_list[(int)univ.type];
+            ShipData ship = _gameState.ShipList[(int)univ.type];
 
             for (int i = 0; i < 3; i++)
             {
@@ -605,7 +607,7 @@ namespace Elite.Engine
 
             for (int i = start_poly; i != -1; i = poly_chain[i].next)
             {
-                GFX_COL colour = EliteMain.config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].face_colour;
+                GFX_COL colour = _gameState.config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].face_colour;
 
                 if (poly_chain[i].point_list.Length == 2)
                 {
@@ -613,7 +615,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                if (EliteMain.config.UseWireframe)
+                if (_gameState.config.UseWireframe)
                 {
                     _gfx.DrawPolygon(poly_chain[i].point_list, colour);
                 }

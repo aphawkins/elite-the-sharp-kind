@@ -112,9 +112,9 @@ namespace Elite.Engine
                 {
                     obj.velocity += obj.acceleration;
                     obj.acceleration = 0;
-                    if (obj.velocity > EliteMain.ship_list[(int)obj.type].velocity)
+                    if (obj.velocity > _gameState.ShipList[(int)obj.type].velocity)
                     {
-                        obj.velocity = EliteMain.ship_list[(int)obj.type].velocity;
+                        obj.velocity = _gameState.ShipList[(int)obj.type].velocity;
                     }
 
                     if (obj.velocity <= 0)
@@ -188,13 +188,13 @@ namespace Elite.Engine
         /// </summary>
         /// <param name="sn"></param>
         /// <returns></returns>
-        private static bool IsDocking(int sn)
+        private bool IsDocking(int sn)
         {
             Vector3 vec;
             float fz;
             float ux;
 
-            if (EliteMain.auto_pilot)     // Don't want it to kill anyone!
+            if (_gameState.IsAutoPilotOn)     // Don't want it to kill anyone!
             {
                 return true;
             }
@@ -333,7 +333,7 @@ namespace Elite.Engine
                 _ship.fuel = _ship.maxFuel;
             }
 
-            EliteMain.InfoMessage("Fuel Scoop On");
+            _gameState.InfoMessage("Fuel Scoop On");
         }
 
         private void MakeStationAppear()
@@ -375,7 +375,7 @@ namespace Elite.Engine
 
         private void CheckDocking(int i)
         {
-            if (EliteMain.docked)
+            if (_gameState.IsDocked)
             {
                 return;
             }
@@ -491,19 +491,19 @@ namespace Elite.Engine
                         _gameState.cmdr.LegalStatus |= 64;
                     }
 
-                    float bounty = EliteMain.ship_list[(int)type].bounty;
+                    float bounty = _gameState.ShipList[(int)type].bounty;
 
                     if ((bounty != 0) && (!_gameState.witchspace))
                     {
                         _trade.credits += bounty;
-                        EliteMain.InfoMessage($"{_trade.credits:N1} Credits");
+                        _gameState.InfoMessage($"{_trade.credits:N1} Credits");
                     }
 
                     _combat.RemoveShip(i);
                     continue;
                 }
 
-                if (EliteMain.detonate_bomb &&
+                if (_gameState.DetonateBomb &&
                     (!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
                     (type != ShipType.Planet) &&
                     (type != ShipType.Sun) &&
@@ -586,7 +586,7 @@ namespace Elite.Engine
             }
 
             _threed.RenderEnd();
-            EliteMain.detonate_bomb = false;
+            _gameState.DetonateBomb = false;
         }
 
         internal void StartHyperspace()
@@ -662,12 +662,9 @@ namespace Elite.Engine
 
         private void EnterWitchspace()
         {
-            int i;
-            int nthg;
-
             _gameState.witchspace = true;
             _gameState.docked_planet.B ^= 31;
-            _combat._inBattle = true;
+            _combat.InBattle = true;
 
             _ship.speed = 12;
             _ship.roll = 0;
@@ -675,9 +672,9 @@ namespace Elite.Engine
             Stars.CreateNewStars();
             _combat.ClearUniverse();
 
-            nthg = RNG.Random(1, 4);
+            int nthg = RNG.Random(1, 4);
 
-            for (i = 0; i < nthg; i++)
+            for (int i = 0; i < nthg; i++)
             {
                 _combat.CreateThargoid();
             }
@@ -721,7 +718,7 @@ namespace Elite.Engine
             Stars.CreateNewStars();
             _combat.ClearUniverse();
 
-            Threed.GenerateLandscape((_gameState.docked_planet.A * 251) + _gameState.docked_planet.B);
+            _threed.GenerateLandscape((_gameState.docked_planet.A * 251) + _gameState.docked_planet.B);
 
             Vector3 position = new()
             {
@@ -775,14 +772,14 @@ namespace Elite.Engine
                     not ShipType.Alloy and not ShipType.Rock and
                     not ShipType.Boulder and not ShipType.EscapePod)
                 {
-                    EliteMain.InfoMessage("Mass Locked");
+                    _gameState.InfoMessage("Mass Locked");
                     return;
                 }
             }
 
             if ((universe[0].location.Length() < 75001) || (universe[1].location.Length() < 75001))
             {
-                EliteMain.InfoMessage("Mass Locked");
+                _gameState.InfoMessage("Mass Locked");
                 return;
             }
 
@@ -802,8 +799,8 @@ namespace Elite.Engine
             }
 
             Stars.warp_stars = true;
-            EliteMain.mcount &= 63;
-            _combat._inBattle = false;
+            _gameState.mcount &= 63;
+            _combat.InBattle = false;
         }
 
         internal void LaunchPlayer()
@@ -814,7 +811,7 @@ namespace Elite.Engine
             _ship.climb = 0;
             _gameState.cmdr.LegalStatus |= _trade.IsCarryingContraband();
             Stars.CreateNewStars();
-            Threed.GenerateLandscape((_gameState.docked_planet.A * 251) + _gameState.docked_planet.B);
+            _threed.GenerateLandscape((_gameState.docked_planet.A * 251) + _gameState.docked_planet.B);
             _combat.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
@@ -823,7 +820,7 @@ namespace Elite.Engine
             rotmat[2].Z = -rotmat[2].Z;
             _combat.AddNewStation(new(0, 0, -256), rotmat);
 
-            EliteMain.docked = false;
+            _gameState.IsDocked = false;
         }
 
         /// <summary>
@@ -832,7 +829,7 @@ namespace Elite.Engine
         internal void DockPlayer()
         {
             _pilot.DisengageAutoPilot();
-            EliteMain.docked = true;
+            _gameState.IsDocked = true;
             _gameState.Reset();
             _ship.Reset();
             _combat.ResetWeapons();

@@ -29,12 +29,12 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Yes))
             {
-                EliteMain.ExitGame();
+                _gameState.DoExitGame();
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.No))
             {
-                if (EliteMain.docked)
+                if (_gameState.IsDocked)
                 {
                     _gameState.SetView(SCR.SCR_CMDR_STATUS);
                 }

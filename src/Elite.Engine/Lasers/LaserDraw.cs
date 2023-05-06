@@ -5,10 +5,12 @@ namespace Elite.Engine.Lasers
 {
     internal class LaserDraw
     {
+        private readonly GameState _gameState;
         private readonly IGfx _gfx;
 
-        internal LaserDraw(IGfx gfx)
+        internal LaserDraw(GameState gameState, IGfx gfx)
         {
+            _gameState = gameState;
             _gfx = gfx;
         }
 
@@ -58,7 +60,7 @@ namespace Elite.Engine.Lasers
                 Y = RNG.Random(94, 97) * Graphics.GFX_SCALE,
             };
 
-            if (EliteMain.config.UseWireframe)
+            if (_gameState.config.UseWireframe)
             {
                 // Left laser
                 _gfx.DrawTriangle(new(32 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(48 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);

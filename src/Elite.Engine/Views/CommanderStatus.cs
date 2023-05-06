@@ -81,7 +81,7 @@ namespace Elite.Engine.Views
 
             int condition = 0;
 
-            if (!EliteMain.docked)
+            if (!_gameState.IsDocked)
             {
                 condition = 1;
 
