@@ -36,7 +36,7 @@ namespace Elite.Engine
 			_gameState = gameState;
 		}
 
-		internal static void WaggleGalaxy(ref GalaxySeed glx_ptr)
+		internal void WaggleGalaxy(ref GalaxySeed glx_ptr)
 		{
 			int x = glx_ptr.A + glx_ptr.C;
 			int y = glx_ptr.B + glx_ptr.D;
@@ -62,7 +62,7 @@ namespace Elite.Engine
 				y++;
 			}
 
-			EliteMain.carry_flag = y > 0xFF ? 1 : 0;
+			_gameState.carry_flag = y > 0xFF ? 1 : 0;
 
             x &= 0xFF;
 			y &= 0xFF;
@@ -71,7 +71,7 @@ namespace Elite.Engine
 			glx_ptr.F = y;
 		}
 
-		internal static GalaxySeed FindPlanet(GalaxySeed galaxy, Vector2 centre)
+		internal GalaxySeed FindPlanet(GalaxySeed galaxy, Vector2 centre)
 		{
 			GalaxySeed glx = (GalaxySeed)galaxy.Clone();
 			float min_dist = 10000;
@@ -99,7 +99,7 @@ namespace Elite.Engine
 			return planet;
 		}
 
-		internal static int FindPlanetNumber(GalaxySeed galaxy, GalaxySeed planet)
+		internal int FindPlanetNumber(GalaxySeed galaxy, GalaxySeed planet)
 		{
 			GalaxySeed glx = (GalaxySeed)galaxy.Clone();
 
@@ -125,7 +125,7 @@ namespace Elite.Engine
 			return -1;
 		}
 
-		internal static string NamePlanet(GalaxySeed galaxy, bool capitalise)
+		internal string NamePlanet(GalaxySeed galaxy, bool capitalise)
 		{
 			GalaxySeed glx = (GalaxySeed)galaxy.Clone();
 
@@ -236,7 +236,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < 256; i++)
             {
-                string planet_name = Planet.NamePlanet(glx, false);
+                string planet_name = NamePlanet(glx, false);
 
                 if (planet_name == find_name)
                 {
@@ -246,10 +246,10 @@ namespace Elite.Engine
                     break;
                 }
 
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
+                WaggleGalaxy(ref glx);
+                WaggleGalaxy(ref glx);
+                WaggleGalaxy(ref glx);
+                WaggleGalaxy(ref glx);
             }
 
 			return found;

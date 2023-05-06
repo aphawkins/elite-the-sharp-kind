@@ -24,6 +24,13 @@ namespace Elite.Engine.Missions
 {
     internal class Mission
     {
+        private readonly Planet _planet;
+
+        internal Mission(Planet planet)
+        {
+            _planet = planet;
+        }
+
         private static readonly string[] mission1_pdesc =
         {
             "THE CONSTRICTOR WAS LAST SEEN AT REESDICE, COMMANDER.",
@@ -40,7 +47,7 @@ namespace Elite.Engine.Missions
             "COMING SOON: ELITE - DARKNESS FALLS.",
         };
 
-        internal static string? MissionPlanetDescription(GameState gameState, GalaxySeed planet)
+        internal string? MissionPlanetDescription(GameState gameState, GalaxySeed planet)
         {
             if (!EliteMain.docked)
             {
@@ -57,7 +64,7 @@ namespace Elite.Engine.Missions
                 return null;
             }
 
-            int pnum = Planet.FindPlanetNumber(gameState.cmdr.Galaxy, planet);
+            int pnum = _planet.FindPlanetNumber(gameState.cmdr.Galaxy, planet);
 
             if (gameState.cmdr.GalaxyNumber == 0)
             {

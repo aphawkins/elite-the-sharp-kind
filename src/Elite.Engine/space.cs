@@ -36,6 +36,7 @@ namespace Elite.Engine
         private readonly Combat _combat;
         private readonly Trade _trade;
 		private readonly PlayerShip _ship;
+        private readonly Planet _planet;
 
 		private static GalaxySeed destination_planet = new();
 		internal static bool hyper_ready;
@@ -46,7 +47,7 @@ namespace Elite.Engine
 		internal static UniverseObject[] universe = new UniverseObject[EliteMain.MAX_UNIV_OBJECTS];
 		internal static Dictionary<ShipType, int> ship_count = new(Ship.NO_OF_SHIPS + 1);  /* many */
 
-		internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio, Pilot pilot, Combat combat, Trade trade, PlayerShip ship)
+		internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio, Pilot pilot, Combat combat, Trade trade, PlayerShip ship, Planet planet)
 		{
             _gameState = gameState;
             _gfx = gfx;
@@ -56,6 +57,7 @@ namespace Elite.Engine
 			_combat = combat;
 			_trade = trade;
 			_ship = ship;
+            _planet = planet;
         }
 
         private static void RotateXFirst(ref float a, ref float b, float direction)
@@ -602,7 +604,7 @@ namespace Elite.Engine
 			}
 
 			destination_planet = (GalaxySeed)_gameState.hyperspace_planet.Clone();
-			hyper_name = Planet.NamePlanet(destination_planet, true);
+			hyper_name = _planet.NamePlanet(destination_planet, true);
 			hyper_ready = true;
 			hyper_countdown = 15;
 			hyper_galactic = false;
@@ -654,7 +656,7 @@ namespace Elite.Engine
             };
             _gameState.cmdr.Galaxy = glx;
 
-            _gameState.docked_planet = Planet.FindPlanet(_gameState.cmdr.Galaxy, new(0x60, 0x60));
+            _gameState.docked_planet = _planet.FindPlanet(_gameState.cmdr.Galaxy, new(0x60, 0x60));
             _gameState.hyperspace_planet = (GalaxySeed)_gameState.docked_planet.Clone();
 		}
 

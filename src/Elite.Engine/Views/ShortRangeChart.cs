@@ -65,10 +65,10 @@ namespace Elite.Engine.Views
 
                 if ((dx >= 20) || (dy >= 38))
                 {
-                    Planet.WaggleGalaxy(ref glx);
-                    Planet.WaggleGalaxy(ref glx);
-                    Planet.WaggleGalaxy(ref glx);
-                    Planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
 
                     continue;
                 }
@@ -93,10 +93,10 @@ namespace Elite.Engine.Views
 
                 if (row <= 3)
                 {
-                    Planet.WaggleGalaxy(ref glx);
-                    Planet.WaggleGalaxy(ref glx);
-                    Planet.WaggleGalaxy(ref glx);
-                    Planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
 
                     continue;
                 }
@@ -104,21 +104,20 @@ namespace Elite.Engine.Views
                 if (row_used[row] == 0)
                 {
                     row_used[row] = 1;
-                    _planetNames.Add((new(px + (4 * Graphics.GFX_SCALE), ((row * 8) - 5) * Graphics.GFX_SCALE), Planet.NamePlanet(glx, true)));
+                    _planetNames.Add((new(px + (4 * Graphics.GFX_SCALE), ((row * 8) - 5) * Graphics.GFX_SCALE), _planet.NamePlanet(glx, true)));
                 }
 
                 /* The next bit calculates the size of the circle used to represent */
                 /* a planet.  The carry_flag is left over from the name generation. */
                 /* Yes this was how it was done... don't ask :-( */
-                float blob_size = (glx.F & 1) + 2 + EliteMain.carry_flag;
+                float blob_size = (glx.F & 1) + 2 + _gameState.carry_flag;
                 blob_size *= Graphics.GFX_SCALE;
                 _planetSizes.Add((new(px, py), blob_size));
 
-
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
             }
 
             _crossTimer = 0;
@@ -280,8 +279,8 @@ namespace Elite.Engine.Views
                 Y = ((EliteMain.cross.Y - Graphics.GFX_Y_CENTRE) / (2 * Graphics.GFX_SCALE)) + _gameState.docked_planet.B,
             };
 
-            _gameState.hyperspace_planet = Planet.FindPlanet(_gameState.cmdr.Galaxy, location);
-            _gameState.planetName = Planet.NamePlanet(_gameState.hyperspace_planet, false);
+            _gameState.hyperspace_planet = _planet.FindPlanet(_gameState.cmdr.Galaxy, location);
+            _gameState.planetName = _planet.NamePlanet(_gameState.hyperspace_planet, false);
             EliteMain.distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.docked_planet, _gameState.hyperspace_planet);
             CrossFromHyperspacePlanet();
         }

@@ -13,6 +13,7 @@
  */
 
 using System.Diagnostics;
+using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Missions;
 using Elite.Engine.Types;
@@ -24,6 +25,7 @@ namespace Elite.Engine.Views
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
+        private readonly Planet _planet;
         private float _distanceToPlanet = 0;
         private Types.PlanetData _hyperPlanetData = new();
 
@@ -85,18 +87,19 @@ namespace Elite.Engine.Views
 		/* 35	*/	new string[] {"hockey", "cricket", "karate", "polo", "tennis"}
         };
 
-        internal PlanetDataView(GameState gameState, IGfx gfx, Draw draw)
+        internal PlanetDataView(GameState gameState, IGfx gfx, Draw draw, Planet planet)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
+            _planet = planet;
         }
 
         private string DescribePlanet(GalaxySeed planet)
         {
             if (_gameState.cmdr.Mission == 1)
             {
-                string? mission_text = Mission.MissionPlanetDescription(_gameState, planet);
+                string? mission_text = new Mission(_planet).MissionPlanetDescription(_gameState, planet);
                 if (!string.IsNullOrEmpty(mission_text))
                 {
                     return mission_text;
@@ -182,12 +185,12 @@ namespace Elite.Engine.Views
                     switch (source[j])
                     {
                         case 'H':
-                            temp = Planet.NamePlanet(_gameState.hyperspace_planet, true);
+                            temp = _planet.NamePlanet(_gameState.hyperspace_planet, true);
                             planetDescription += temp;
                             break;
 
                         case 'I':
-                            temp = Planet.NamePlanet(_gameState.hyperspace_planet, true);
+                            temp = _planet.NamePlanet(_gameState.hyperspace_planet, true);
                             planetDescription += temp;
                             planetDescription += "ian";
                             break;
@@ -230,7 +233,7 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             _draw.ClearDisplay();
-            _draw.DrawViewHeader($"DATA ON {Planet.NamePlanet(_gameState.hyperspace_planet, false)}");
+            _draw.DrawViewHeader($"DATA ON {_planet.NamePlanet(_gameState.hyperspace_planet, false)}");
 
             if (_distanceToPlanet > 0)
             {

@@ -12,6 +12,7 @@
  *
  */
 
+using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
 
@@ -24,6 +25,7 @@ namespace Elite.Engine.Views
         private readonly Draw _draw;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
+        private readonly Planet _planet;
         readonly int EQUIP_START_Y = 202;
         readonly int Y_INC = 16;
         readonly int EQUIP_MAX_Y = 290;
@@ -50,13 +52,14 @@ namespace Elite.Engine.Views
                 new(0x1900, "- - - E L I T E - - -")
         };
 
-        internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship, Trade trade)
+        internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship, Trade trade, Planet planet)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _ship = ship;
             _trade = trade;
+            _planet = planet;
         }
 
         public void Draw()
@@ -84,8 +87,8 @@ namespace Elite.Engine.Views
                 }
             }
 
-            string dockedPlanetName = Planet.NamePlanet(_gameState.docked_planet, true);
-            string hyperspacePlanetName = Planet.NamePlanet(_gameState.hyperspace_planet, true);
+            string dockedPlanetName = _planet.NamePlanet(_gameState.docked_planet, true);
+            string hyperspacePlanetName = _planet.NamePlanet(_gameState.hyperspace_planet, true);
 
             int condition = 0;
 

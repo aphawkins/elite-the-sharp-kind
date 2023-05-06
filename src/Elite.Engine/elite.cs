@@ -42,7 +42,6 @@ namespace Elite.Engine
         private readonly ConfigFile _configFile;
 
         internal const int MAX_UNIV_OBJECTS = 20;
-        internal static int carry_flag = 0;
         internal static ConfigSettings config = new();
         internal static Vector2 scanner_centre = new(253, 63 + 385);
         internal static Vector2 compass_centre = new(382, 22 + 385);
@@ -370,8 +369,8 @@ namespace Elite.Engine
             _stars = new(_gameState, _gfx, _ship);
             _pilot = new(_gameState, _audio);
             _combat = new(_gameState, _audio, _ship, _trade);
-            _save = new(_gameState, _ship, _trade);
-            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _ship);
+            _save = new(_gameState, _ship, _trade, _planet);
+            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _ship, _planet);
             _scanner = new(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
             _configFile = new();
 
@@ -381,9 +380,9 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_INTRO_TWO, new Intro2(_gameState, _gfx, _audio, keyboard, _stars, _ship, _combat));
             _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChart(_gameState, _gfx, _draw, keyboard, _planet, _ship));
             _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChart(_gameState, _gfx, _draw, keyboard, _planet, _ship));
-            _views.Add(SCR.SCR_PLANET_DATA, new PlanetDataView(_gameState, _gfx, _draw));
-            _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gameState, _gfx, _draw, keyboard, _trade));
-            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gameState, _gfx, _draw, _ship, _trade));
+            _views.Add(SCR.SCR_PLANET_DATA, new PlanetDataView(_gameState, _gfx, _draw, _planet));
+            _views.Add(SCR.SCR_MARKET_PRICES, new Market(_gameState, _gfx, _draw, keyboard, _trade, _planet));
+            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatus(_gameState, _gfx, _draw, _ship, _trade, _planet));
             _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gfx, keyboard, _stars, _pilot, _ship));
             _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gfx, keyboard, _stars, _pilot, _ship));
             _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gfx, keyboard, _stars, _pilot, _ship));

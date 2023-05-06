@@ -33,6 +33,7 @@ namespace Elite.Engine
         internal string planetName = string.Empty;
         internal GalaxySeed hyperspace_planet = new();
         internal PlanetData current_planet_data = new();
+        internal int carry_flag = 0;
 
         internal GameState(IKeyboard keyboard, Dictionary<SCR, IView> views) 
         {

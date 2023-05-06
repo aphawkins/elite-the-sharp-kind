@@ -64,10 +64,10 @@ namespace Elite.Engine.Views
                     _planetPixels.Add(new(pixel.X + 1, pixel.Y));
                 }
 
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
-                Planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
             }
 
             _crossTimer = 0;
@@ -228,8 +228,8 @@ namespace Elite.Engine.Views
                 Y = (EliteMain.cross.Y - ((18 * Graphics.GFX_SCALE) + 1)) * (2 / Graphics.GFX_SCALE),
             };
 
-            _gameState.hyperspace_planet = Planet.FindPlanet(_gameState.cmdr.Galaxy, location);
-            _gameState.planetName = Planet.NamePlanet(_gameState.hyperspace_planet, false);
+            _gameState.hyperspace_planet = _planet.FindPlanet(_gameState.cmdr.Galaxy, location);
+            _gameState.planetName = _planet.NamePlanet(_gameState.hyperspace_planet, false);
             EliteMain.distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.docked_planet, _gameState.hyperspace_planet);
             CrossFromHyperspacePlanet();
         }

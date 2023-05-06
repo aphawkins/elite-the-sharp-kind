@@ -13,6 +13,7 @@
  */
 
 using System.Diagnostics;
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Elite.Engine.Enums;
@@ -27,6 +28,7 @@ namespace Elite.Engine.Save
         private readonly GameState _state;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
+        private readonly Planet _planet;
         private SaveState _lastSaved;
 
         private static readonly JsonSerializerOptions options = new()
@@ -36,11 +38,12 @@ namespace Elite.Engine.Save
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
-        internal SaveFile(GameState state, PlayerShip ship, Trade trade)
+        internal SaveFile(GameState state, PlayerShip ship, Trade trade, Planet planet)
         {
             _state = state;
             _ship = ship;
             _trade = trade;
+            _planet = planet;
 
 #if DEBUG
             _lastSaved = CommanderFactory.Max();
@@ -112,8 +115,8 @@ namespace Elite.Engine.Save
 
         private void RestoreSavedCommander()
         {
-            _state.docked_planet = Planet.FindPlanet(_state.cmdr.Galaxy, new(_state.docked_planet.D, _state.docked_planet.B));
-            _state.planetName = Planet.NamePlanet(_state.docked_planet, false);
+            _state.docked_planet = _planet.FindPlanet(_state.cmdr.Galaxy, new(_state.docked_planet.D, _state.docked_planet.B));
+            _state.planetName = _planet.NamePlanet(_state.docked_planet, false);
             _state.hyperspace_planet = (GalaxySeed)_state.docked_planet.Clone();
             _state.current_planet_data = Planet.GeneratePlanetData(_state.docked_planet);
             _trade.GenerateStockMarket(_state.current_planet_data);

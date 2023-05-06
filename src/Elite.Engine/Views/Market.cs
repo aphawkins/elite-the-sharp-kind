@@ -23,15 +23,17 @@ namespace Elite.Engine.Views
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly Trade _trade;
+        private readonly Planet _planet;
         private StockType _highlightedStock;
 
-        internal Market(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Trade trade)
+        internal Market(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Trade trade, Planet planet)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _keyboard = keyboard;
             _trade = trade;
+            _planet = planet;
         }
 
         public void Reset()
@@ -46,7 +48,7 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             _draw.ClearDisplay();
-            _draw.DrawViewHeader($"{Planet.NamePlanet(_gameState.docked_planet, false)} MARKET PRICES");
+            _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.docked_planet, false)} MARKET PRICES");
 
             _gfx.DrawTextLeft(16, 40, "PRODUCT", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(166, 40, "UNIT", GFX_COL.GFX_COL_GREEN_1);
