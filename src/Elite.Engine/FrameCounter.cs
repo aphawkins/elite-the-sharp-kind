@@ -4,13 +4,10 @@
 
 namespace Elite.Engine
 {
-    public partial class EliteMain
+    internal class FrameCounter
     {
-        internal class FrameCounter
-        {
-            internal int drawn = 0;
-            internal List<long> framesDrawn = new();
-            internal int missed = 0;
-        }
+        internal int Drawn { get; set; } = 0;
+        internal List<long> FramesDrawn { get; set; } = new();
+        internal int Missed { get; set; } = 0;
     }
 }

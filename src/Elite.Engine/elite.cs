@@ -108,20 +108,20 @@ namespace Elite.Engine
         {
             long secondAgo = DateTime.UtcNow.Ticks - _oneSecond;
 
-            if (_lockObj.framesDrawn.Count > 0)
+            if (_lockObj.FramesDrawn.Count > 0)
             {
                 int i;
-                for (i = 0; i < _lockObj.framesDrawn.Count; i++)
+                for (i = 0; i < _lockObj.FramesDrawn.Count; i++)
                 {
-                    if (_lockObj.framesDrawn[i] > secondAgo)
+                    if (_lockObj.FramesDrawn[i] > secondAgo)
                     {
                         break;
                     }
                 }
-                _lockObj.framesDrawn.RemoveRange(0, i);
+                _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _gfx.DrawTextLeft(450, 10, $"FPS: {_lockObj.framesDrawn.Count}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(450, 10, $"FPS: {_lockObj.FramesDrawn.Count}", GFX_COL.GFX_COL_WHITE);
         }
 
         private void DrawFrame()
@@ -136,13 +136,13 @@ namespace Elite.Engine
                 {
                     // The critical section.
                     DrawFrameElite();
-                    _lockObj.drawn++;
-                    _lockObj.framesDrawn.Add(now);
+                    _lockObj.Drawn++;
+                    _lockObj.FramesDrawn.Add(now);
                 }
                 else
                 {
                     // The lock was not acquired.
-                    _lockObj.missed++;
+                    _lockObj.Missed++;
                     //Console.WriteLine($"Frames: drawn: {lockObj.drawn}, missed: {lockObj.missed}, total: {lockObj.drawn + lockObj.missed}");
                 }
 
