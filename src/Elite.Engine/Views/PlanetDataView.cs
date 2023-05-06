@@ -21,7 +21,7 @@ using Elite.Engine.Types;
 namespace Elite.Engine.Views
 {
     internal class PlanetDataView : IView
-	{
+    {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;

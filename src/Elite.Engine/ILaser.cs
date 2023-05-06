@@ -10,6 +10,6 @@ namespace Elite.Engine
 
         LaserType Type { get; }
 
-        int Temperature { get; set;  }
+        int Temperature { get; set; }
     }
 }

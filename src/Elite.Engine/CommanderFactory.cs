@@ -9,13 +9,13 @@ namespace Elite.Engine
         /// </summary>
         /// <returns>Commander Jameson.</returns>
         internal static SaveState Jameson()
-		{
+        {
             return new SaveState()
             {
                 CommanderName = "JAMESON",
                 Mission = 0,
-                ShipLocation = new [] { 20, 173 },
-                GalaxySeed = new int[] {0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7 },
+                ShipLocation = new[] { 20, 173 },
+                GalaxySeed = new int[] { 0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7 },
                 Credits = 100,
                 Fuel = 7,
                 GalaxyNumber = 0,
@@ -31,12 +31,12 @@ namespace Elite.Engine
                 HasEscapePod = false,
                 Missiles = 3,
                 LegalStatus = 0,
-                StationStock = new int[] {0x10, 0x0F, 0x11, 0x00, 0x03, 0x1C, 0x0E, 0x00, 0x00, 0x0A, 0x00, 0x11, 0x3A, 0x07, 0x09, 0x08, 0x00},
+                StationStock = new int[] { 0x10, 0x0F, 0x11, 0x00, 0x03, 0x1C, 0x0E, 0x00, 0x00, 0x0A, 0x00, 0x11, 0x3A, 0x07, 0x09, 0x08, 0x00 },
                 MarketRandomiser = 0,
                 Score = 0,
                 Saved = 0x80
             };
-		}
+        }
 
         /// <summary>
         /// The maximum equipment level, for testing purposes.
@@ -48,7 +48,7 @@ namespace Elite.Engine
             {
                 CommanderName = "MAX",
                 Mission = 0,
-                ShipLocation = new [] { 20, 173 },
+                ShipLocation = new[] { 20, 173 },
                 GalaxySeed = new int[] { 0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7 },
                 Credits = 10000,
                 Fuel = 7,
@@ -65,7 +65,7 @@ namespace Elite.Engine
                 HasEscapePod = true,
                 Missiles = 4,
                 LegalStatus = 0,
-                StationStock = new int[] {0x10, 0x0F, 0x11, 0x00, 0x03, 0x1C, 0x0E, 0x00, 0x00, 0x0A, 0x00, 0x11, 0x3A, 0x07, 0x09, 0x08, 0x00},
+                StationStock = new int[] { 0x10, 0x0F, 0x11, 0x00, 0x03, 0x1C, 0x0E, 0x00, 0x00, 0x0A, 0x00, 0x11, 0x3A, 0x07, 0x09, 0x08, 0x00 },
                 MarketRandomiser = 0,
                 Score = 0x1900,
                 Saved = 0x80

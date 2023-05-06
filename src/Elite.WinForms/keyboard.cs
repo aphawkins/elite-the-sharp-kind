@@ -34,9 +34,9 @@ namespace Elite.WinForms
         {
             foreach (CommandKey key in keys)
             {
-                if (_isPressed.TryGetValue(key, out bool value) && value) 
-                { 
-                    return true; 
+                if (_isPressed.TryGetValue(key, out bool value) && value)
+                {
+                    return true;
                 }
             }
 

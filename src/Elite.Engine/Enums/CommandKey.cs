@@ -45,7 +45,7 @@
         Right = 190,
         RightArrow = 39,
         TargetMissile = 'T',
-        UnarmMissile ='U',
+        UnarmMissile = 'U',
         Up = 'S',
         UpArrow = 38,
         Yes = 'Y',

@@ -364,7 +364,7 @@ namespace Elite.Engine
             _planet = new(_gameState);
             _draw = new(_gfx);
             _draw.LoadImages();
-            _draw.DrawBorder();        
+            _draw.DrawBorder();
             _threed = new(_gfx, _draw);
             _stars = new(_gameState, _gfx, _ship);
             _pilot = new(_gameState, _audio);

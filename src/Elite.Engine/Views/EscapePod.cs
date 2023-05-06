@@ -63,7 +63,7 @@ namespace Elite.Engine.Views
                     Space.universe[_newship].flags |= FLG.FLG_DEAD;
                     _audio.PlayEffect(SoundEffect.Explode);
                 }
-                
+
                 _stars.FrontStarfield();
                 Space.universe[_newship].location.X = 0;
                 Space.universe[_newship].location.Y = 0;

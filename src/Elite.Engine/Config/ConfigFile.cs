@@ -20,8 +20,8 @@ using Elite.Engine.Config;
 namespace Elite.Engine
 {
     internal class ConfigFile
-	{
-		private const string ConfigFileName = "sharpkind.cfg";
+    {
+        private const string ConfigFileName = "sharpkind.cfg";
         private readonly JsonSerializerOptions _options = new()
         {
             WriteIndented = true,
@@ -33,7 +33,7 @@ namespace Elite.Engine
         /// </summary>
         /// <param name="config">The config to save.</param>
         internal async Task WriteConfigAsync(ConfigSettings config)
-		{
+        {
             try
             {
                 if (File.Exists(ConfigFileName))
@@ -41,7 +41,7 @@ namespace Elite.Engine
                     File.Delete(ConfigFileName);
                 }
                 using FileStream stream = File.OpenWrite(ConfigFileName);
-                
+
                 await JsonSerializer.SerializeAsync(stream, config, _options);
             }
             catch (Exception ex)
@@ -51,11 +51,11 @@ namespace Elite.Engine
             }
         }
 
-		/// <summary>
-		/// Read the config file.
-		/// </summary>
-		internal async Task<ConfigSettings> ReadConfigAsync()
-		{
+        /// <summary>
+        /// Read the config file.
+        /// </summary>
+        internal async Task<ConfigSettings> ReadConfigAsync()
+        {
             try
             {
                 using FileStream stream = File.OpenRead(ConfigFileName);

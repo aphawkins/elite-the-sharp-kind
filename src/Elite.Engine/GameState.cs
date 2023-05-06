@@ -35,7 +35,7 @@ namespace Elite.Engine
         internal PlanetData current_planet_data = new();
         internal int carry_flag = 0;
 
-        internal GameState(IKeyboard keyboard, Dictionary<SCR, IView> views) 
+        internal GameState(IKeyboard keyboard, Dictionary<SCR, IView> views)
         {
             _views = views;
             _keyboard = keyboard;
@@ -54,10 +54,10 @@ namespace Elite.Engine
         {
             //lock (_state)
             //{
-                currentScreen = screen;
-                currentView = _views[screen];
-                _keyboard.ClearKeyPressed();
-                currentView.Reset();
+            currentScreen = screen;
+            currentView = _views[screen];
+            _keyboard.ClearKeyPressed();
+            currentView.Reset();
             //}
         }
 

@@ -7,8 +7,8 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
-	internal class Combat
-	{
+    internal class Combat
+    {
         internal bool _inBattle;
         internal int _isMISSILE_ARMED = -1;
         internal int _isMISSILE_UNARMED = -2;
@@ -16,7 +16,7 @@ namespace Elite.Engine
         private readonly Audio _audio;
         private readonly GameState _gameState;
         private readonly PlayerShip _ship;
-		private readonly Trade _trade;
+        private readonly Trade _trade;
         private readonly FLG[] _initialFlags = new FLG[Ship.NO_OF_SHIPS + 1]
         {
             0,											// NULL,
@@ -60,12 +60,12 @@ namespace Elite.Engine
         private int _laserStrength;
         private LaserType _laserType;
 
-		internal Combat(GameState gameState, Audio audio, PlayerShip ship, Trade trade)
-		{
-			_gameState = gameState;
+        internal Combat(GameState gameState, Audio audio, PlayerShip ship, Trade trade)
+        {
+            _gameState = gameState;
             _audio = audio;
-			_ship = ship;
-			_trade = trade;
+            _ship = ship;
+            _trade = trade;
         }
 
         internal void ActivateECM(bool ours)
@@ -182,21 +182,21 @@ namespace Elite.Engine
 
         internal void ClearUniverse()
         {
-			for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
-			{
+            for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            {
                 Space.universe[i] = new()
                 {
                     type = 0
                 };
             }
 
-			for (int i = 0; i <= Ship.NO_OF_SHIPS; i++)
-			{
-				Space.ship_count[(ShipType)i] = 0;
-			}
+            for (int i = 0; i <= Ship.NO_OF_SHIPS; i++)
+            {
+                Space.ship_count[(ShipType)i] = 0;
+            }
 
-			_inBattle = false;
-		}
+            _inBattle = false;
+        }
         internal void CoolLaser()
         {
             _laserStrength = 0;
@@ -940,20 +940,20 @@ namespace Elite.Engine
 
         private void CheckMissiles(int un)
         {
-			if (_missileTarget == un)
-			{
-				_missileTarget = _isMISSILE_UNARMED;
+            if (_missileTarget == un)
+            {
+                _missileTarget = _isMISSILE_UNARMED;
                 EliteMain.InfoMessage("Target Lost");
-			}
+            }
 
-			for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
-			{
-				if ((Space.universe[i].type == ShipType.Missile) && (Space.universe[i].target == un))
-				{
-					Space.universe[i].flags |= FLG.FLG_DEAD;
-				}
-			}
-		}
+            for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            {
+                if ((Space.universe[i].type == ShipType.Missile) && (Space.universe[i].target == un))
+                {
+                    Space.universe[i].flags |= FLG.FLG_DEAD;
+                }
+            }
+        }
         private void CreateCougar()
         {
             int newship;
@@ -1053,62 +1053,62 @@ namespace Elite.Engine
         private void LaunchEnemy(int un, ShipType type, FLG flags, int bravery)
         {
             Debug.Assert(Space.universe[un].Rotmat != null);
-			Vector3[] rotmat = Space.universe[un].Rotmat.Cloner();
+            Vector3[] rotmat = Space.universe[un].Rotmat.Cloner();
             int newship = AddNewShip(type, Space.universe[un].location, rotmat, Space.universe[un].rotx, Space.universe[un].rotz);
 
-			if (newship == -1)
-			{
-				return;
-			}
+            if (newship == -1)
+            {
+                return;
+            }
 
-			UniverseObject ns = Space.universe[newship];
+            UniverseObject ns = Space.universe[newship];
 
-			if (Space.universe[un].type is ShipType.Coriolis or ShipType.Dodec)
-			{
-				ns.velocity = 32;
-				ns.location.X += ns.Rotmat[2].X * 2;
-				ns.location.Y += ns.Rotmat[2].Y * 2;
-				ns.location.Z += ns.Rotmat[2].Z * 2;
-			}
+            if (Space.universe[un].type is ShipType.Coriolis or ShipType.Dodec)
+            {
+                ns.velocity = 32;
+                ns.location.X += ns.Rotmat[2].X * 2;
+                ns.location.Y += ns.Rotmat[2].Y * 2;
+                ns.location.Z += ns.Rotmat[2].Z * 2;
+            }
 
-			ns.flags |= flags;
-			ns.rotz /= 2;
-			ns.rotz *= 2;
-			ns.bravery = bravery;
+            ns.flags |= flags;
+            ns.rotz /= 2;
+            ns.rotz *= 2;
+            ns.bravery = bravery;
 
-			if (type is ShipType.Cargo or ShipType.Alloy or ShipType.Rock)
-			{
-				ns.rotz = ((RNG.Random(255) * 2) & 255) - 128;
-				ns.rotx = ((RNG.Random(255) * 2) & 255) - 128;
-				ns.velocity = RNG.Random(15);
-			}
-		}
+            if (type is ShipType.Cargo or ShipType.Alloy or ShipType.Rock)
+            {
+                ns.rotz = ((RNG.Random(255) * 2) & 255) - 128;
+                ns.rotx = ((RNG.Random(255) * 2) & 255) - 128;
+                ns.velocity = RNG.Random(15);
+            }
+        }
 
         private void LaunchLoot(int un, ShipType loot)
-		{
-			int i, cnt;
+        {
+            int i, cnt;
 
-			if (loot == ShipType.Rock)
-			{
-				cnt = RNG.Random(3);
-			}
-			else
-			{
-				cnt = RNG.Random(255);
-				if (cnt >= 128)
+            if (loot == ShipType.Rock)
+            {
+                cnt = RNG.Random(3);
+            }
+            else
+            {
+                cnt = RNG.Random(255);
+                if (cnt >= 128)
                 {
                     return;
                 }
 
                 cnt &= EliteMain.ship_list[(int)Space.universe[un].type].max_loot;
-				cnt &= 15;
-			}
+                cnt &= 15;
+            }
 
-			for (i = 0; i < cnt; i++)
-			{
-				LaunchEnemy(un, loot, 0, 0);
-			}
-		}
+            for (i = 0; i < cnt; i++)
+            {
+                LaunchEnemy(un, loot, 0, 0);
+            }
+        }
         private void LaunchShuttle()
         {
             if ((Space.ship_count[ShipType.Transporter] != 0) ||
@@ -1124,82 +1124,82 @@ namespace Elite.Engine
 
         private void MissileTactics(UniverseObject missile)
         {
-			UniverseObject target;
-			Vector3 vec;
-			Vector3 nvec;
-			float direction;
-			float cnt2 = 0.223f;
+            UniverseObject target;
+            Vector3 vec;
+            Vector3 nvec;
+            float direction;
+            float cnt2 = 0.223f;
 
-			if (_ship.ecmActive != 0)
-			{
-				_audio.PlayEffect(SoundEffect.Explode);
+            if (_ship.ecmActive != 0)
+            {
+                _audio.PlayEffect(SoundEffect.Explode);
 
-				missile.flags |= FLG.FLG_DEAD;
-				return;
-			}
+                missile.flags |= FLG.FLG_DEAD;
+                return;
+            }
 
-			if (missile.target == 0)
-			{
-				if (missile.location.Length() < 512)
-				{
-					missile.flags |= FLG.FLG_DEAD;
-					_audio.PlayEffect(SoundEffect.Explode);
+            if (missile.target == 0)
+            {
+                if (missile.location.Length() < 512)
+                {
+                    missile.flags |= FLG.FLG_DEAD;
+                    _audio.PlayEffect(SoundEffect.Explode);
                     _ship.DamageShip(250, missile.location.Z >= 0.0);
-					return;
-				}
+                    return;
+                }
 
-				vec = missile.location;
-			}
-			else
-			{
-				target = Space.universe[missile.target];
-				vec = missile.location - target.location;
+                vec = missile.location;
+            }
+            else
+            {
+                target = Space.universe[missile.target];
+                vec = missile.location - target.location;
 
-				if (vec.Length() < 512)
-				{
-					missile.flags |= FLG.FLG_DEAD;
+                if (vec.Length() < 512)
+                {
+                    missile.flags |= FLG.FLG_DEAD;
 
-					if (target.type is not ShipType.Coriolis and not ShipType.Dodec)
-					{
-						ExplodeObject(missile.target);
-					}
-					else
-					{
-						_audio.PlayEffect(SoundEffect.Explode);
-					}
+                    if (target.type is not ShipType.Coriolis and not ShipType.Dodec)
+                    {
+                        ExplodeObject(missile.target);
+                    }
+                    else
+                    {
+                        _audio.PlayEffect(SoundEffect.Explode);
+                    }
 
-					return;
-				}
+                    return;
+                }
 
-				if ((RNG.Random(255) < 16) && target.flags.HasFlag(FLG.FLG_HAS_ECM))
-				{
-					ActivateECM(false);
-					return;
-				}
-			}
+                if ((RNG.Random(255) < 16) && target.flags.HasFlag(FLG.FLG_HAS_ECM))
+                {
+                    ActivateECM(false);
+                    return;
+                }
+            }
 
-			nvec = VectorMaths.UnitVector(vec);
-			direction = VectorMaths.VectorDotProduct(nvec, missile.Rotmat[2]);
-			nvec.X = -nvec.X;
-			nvec.Y = -nvec.Y;
-			nvec.Z = -nvec.Z;
-			direction = -direction;
+            nvec = VectorMaths.UnitVector(vec);
+            direction = VectorMaths.VectorDotProduct(nvec, missile.Rotmat[2]);
+            nvec.X = -nvec.X;
+            nvec.Y = -nvec.Y;
+            nvec.Z = -nvec.Z;
+            direction = -direction;
 
-			TrackObject(ref missile, direction, nvec);
+            TrackObject(ref missile, direction, nvec);
 
-			if (direction <= -0.167)
-			{
-				missile.acceleration = -2;
-				return;
-			}
+            if (direction <= -0.167)
+            {
+                missile.acceleration = -2;
+                return;
+            }
 
-			if (direction >= cnt2)
-			{
-				missile.acceleration = 3;
-				return;
-			}
+            if (direction >= cnt2)
+            {
+                missile.acceleration = 3;
+                return;
+            }
 
-			if (missile.velocity < 6)
+            if (missile.velocity < 6)
             {
                 missile.acceleration = 3;
             }
@@ -1209,6 +1209,6 @@ namespace Elite.Engine
             }
 
             return;
-		}
+        }
     }
 }

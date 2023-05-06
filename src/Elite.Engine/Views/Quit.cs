@@ -9,7 +9,7 @@ namespace Elite.Engine.Views
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
 
-        internal Quit(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard) 
+        internal Quit(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _gfx = gfx;

@@ -75,7 +75,7 @@ namespace Elite.Engine.Ships
             new(31, new( -80,   46,   50)),
             new(31, new(   0,    0,  -90)),
         };
-        
+
         private static readonly ShipFace[] asp2_face =
         {
             new(GFX_COL.GFX_COL_GREY_4, new( 0x00,-0x23, 0x05), new[] { 8,  9,  7,  0, 4 }),

@@ -24,19 +24,19 @@
 
 namespace Elite.Engine
 {
-	public static class Graphics
-	{
+    public static class Graphics
+    {
 #if RES_512_512
-		public const float GFX_SCALE = 2;
-		public const float GFX_X_OFFSET = 0;
-		public const float GFX_Y_OFFSET = 0;
-		public const float GFX_X_CENTRE = 256;
-		public const float GFX_Y_CENTRE = 192;
+        public const float GFX_SCALE = 2;
+        public const float GFX_X_OFFSET = 0;
+        public const float GFX_Y_OFFSET = 0;
+        public const float GFX_X_CENTRE = 256;
+        public const float GFX_Y_CENTRE = 192;
 
-		public const float GFX_VIEW_TX = 1;
-		public const float GFX_VIEW_TY = 1;
-		public const float GFX_VIEW_BX = 509;
-		public const float GFX_VIEW_BY = 381;
+        public const float GFX_VIEW_TX = 1;
+        public const float GFX_VIEW_TY = 1;
+        public const float GFX_VIEW_BX = 509;
+        public const float GFX_VIEW_BY = 381;
 #endif
 
 #if RES_800_600
@@ -64,5 +64,5 @@ namespace Elite.Engine
 		public const int GFX_VIEW_BX = 253;
 		public const int GFX_VIEW_BY = 191;
 #endif
-	}
+    }
 }

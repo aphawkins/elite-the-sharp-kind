@@ -9,7 +9,6 @@
 - Clipping incorrect on bottom line (after explosion?)
 - Fix all warnings/infos
 - Warnings as errors
-- Add .editor config
 - Add code/stlye analysers
 - Reformat code
 - Fix code directory structure

@@ -14,13 +14,13 @@
 
 namespace Elite.Engine
 {
-	internal static class RNG
-	{
+    internal static class RNG
+    {
         internal static RandomSeed Seed = new();
 
         internal static int Random(int maxValue)
-		{
-			return Random(0, maxValue);
+        {
+            return Random(0, maxValue);
         }
 
         internal static int Random(int minValue, int maxValue)

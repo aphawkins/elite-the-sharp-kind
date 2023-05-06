@@ -18,11 +18,11 @@
 
 namespace Elite.Engine
 {
-	internal class RandomSeed
-	{
-		internal int a;
-		internal int b;
-		internal int c;
-		internal int d;
-	};
+    internal class RandomSeed
+    {
+        internal int a;
+        internal int b;
+        internal int c;
+        internal int d;
+    };
 }

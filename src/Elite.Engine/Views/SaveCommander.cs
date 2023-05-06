@@ -66,7 +66,7 @@ namespace Elite.Engine.Views
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
                 _isSuccess = _save.SaveCommanderAsync(_name).Result;
-                
+
                 if (_isSuccess.HasValue && _isSuccess.Value)
                 {
                     _save.GetLastSave();

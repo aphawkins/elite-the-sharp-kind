@@ -21,7 +21,7 @@ using Elite.Engine.Enums;
 namespace Elite.WinForms
 {
     public class GdiGraphics : IGfx, IDisposable
-	{
+    {
         // Screen buffer
         private readonly Bitmap _screenBuffer;
         private readonly System.Drawing.Graphics _screenBufferGraphics;
@@ -30,12 +30,12 @@ namespace Elite.WinForms
         private readonly Bitmap _screen;
         private readonly System.Drawing.Graphics _screenGraphics;
 
-		// Fonts
-        private readonly Font _fontSmall = new ("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
+        // Fonts
+        private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
 
-		// Images
-		private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
+        // Images
+        private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
 
         //private volatile int frame_count;
         //private readonly object frameCountLock = new();
@@ -106,7 +106,7 @@ namespace Elite.WinForms
             };
 
         public GdiGraphics(ref Bitmap screen)
-		{
+        {
             Debug.Assert(screen.Width == 512);
             Debug.Assert(screen.Height == 512);
             Debug.Assert(_pens.Count == Enum.GetNames(typeof(GFX_COL)).Length);
@@ -130,36 +130,36 @@ namespace Elite.WinForms
         /// Blit the back buffer to the screen.
         /// </summary>
 		public void ScreenUpdate()
-		{
+        {
             // TODO: find a better way of doing multithreading
             Application.DoEvents();
 
             lock (_screen)
-			{
+            {
                 _screenGraphics.DrawImage(_screenBuffer, Engine.Graphics.GFX_X_OFFSET, Engine.Graphics.GFX_Y_OFFSET);
-			}
+            }
 
             Application.DoEvents();
         }
 
         public void ScreenAcquire()
-		{
+        {
             //acquire_bitmap(gfx_screen);
         }
 
         public void ScreenRelease()
-		{
+        {
             //release_bitmap(gfx_screen);
-		}
+        }
 
-		public void DrawPixelFast(Vector2 position, GFX_COL col)
-		{
+        public void DrawPixelFast(Vector2 position, GFX_COL col)
+        {
             // Is there a faster way of doing this?
             DrawPixel(position, col);
         }
 
         public void DrawPixel(Vector2 position, GFX_COL col)
-		{
+        {
             //TODO: Fix SNES planet colour issues
             Color colour = _pens.TryGetValue(col, out Pen? value) ? value.Color : Color.Magenta;
 
@@ -175,24 +175,24 @@ namespace Elite.WinForms
         }
 
         public void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour)
-		{
+        {
             _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
         }
 
         public virtual void DrawCircle(Vector2 centre, float radius, GFX_COL colour)
-		{
+        {
             _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
         }
 
         public virtual void DrawLine(Vector2 start, Vector2 end)
-		{
+        {
             _screenBufferGraphics.DrawLine(_pens[GFX_COL.GFX_COL_WHITE], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
         }
 
-		public void DrawLine(Vector2 start, Vector2 end, GFX_COL line_colour)
-		{
+        public void DrawLine(Vector2 start, Vector2 end, GFX_COL line_colour)
+        {
             _screenBufferGraphics.DrawLine(_pens[line_colour], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
-		}
+        }
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)
         {
@@ -207,19 +207,19 @@ namespace Elite.WinForms
         }
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)
-		{
-            PointF[] points = new PointF[3] 
-            { 
-                new(a.X += Engine.Graphics.GFX_X_OFFSET, a.Y += Engine.Graphics.GFX_Y_OFFSET), 
-                new(b.X += Engine.Graphics.GFX_X_OFFSET, b.Y += Engine.Graphics.GFX_Y_OFFSET), 
+        {
+            PointF[] points = new PointF[3]
+            {
+                new(a.X += Engine.Graphics.GFX_X_OFFSET, a.Y += Engine.Graphics.GFX_Y_OFFSET),
+                new(b.X += Engine.Graphics.GFX_X_OFFSET, b.Y += Engine.Graphics.GFX_Y_OFFSET),
                 new(c.X += Engine.Graphics.GFX_X_OFFSET, c.Y += Engine.Graphics.GFX_Y_OFFSET)
             };
 
             _screenBufferGraphics.FillPolygon(_brushes[colour], points);
         }
 
-		public void DrawTextLeft(float x, float y, string text, GFX_COL colour)
-		{
+        public void DrawTextLeft(float x, float y, string text, GFX_COL colour)
+        {
             PointF point = new((x / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_X_OFFSET, (y / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_Y_OFFSET);
             _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point);
         }
@@ -236,7 +236,7 @@ namespace Elite.WinForms
         }
 
         public void DrawTextCentre(float y, string text, int psize, GFX_COL colour)
-		{
+        {
             StringFormat stringFormat = new()
             {
                 Alignment = StringAlignment.Center,
@@ -245,20 +245,20 @@ namespace Elite.WinForms
 
             PointF point = new((128 * Engine.Graphics.GFX_SCALE) + Engine.Graphics.GFX_X_OFFSET, (y / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_Y_OFFSET);
             _screenBufferGraphics.DrawString(
-				text,
-                psize == 140 ? _fontLarge : _fontSmall, 
-				_brushes[colour], 
-				point, 
-				stringFormat);
+                text,
+                psize == 140 ? _fontLarge : _fontSmall,
+                _brushes[colour],
+                point,
+                stringFormat);
         }
 
-		public void ClearArea(float x, float y, float width, float height)
-		{
+        public void ClearArea(float x, float y, float width, float height)
+        {
             _screenBufferGraphics.FillRectangle(Brushes.Black, x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
         }
 
-		public void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour)
-		{
+        public void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour)
+        {
             _screenBufferGraphics.FillRectangle(_brushes[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
         }
 
@@ -267,8 +267,8 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawRectangle(_pens[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
         }
 
-		public void SetClipRegion(float x, float y, float width, float height)
-		{
+        public void SetClipRegion(float x, float y, float width, float height)
+        {
             _screenBufferGraphics.Clip = new Region(new RectangleF(x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET));
         }
 
@@ -312,22 +312,22 @@ namespace Elite.WinForms
         {
             if (!disposedValue)
             {
-				if (disposing)
-				{
-					// dispose managed state (managed objects)
-					_screenBufferGraphics.Dispose();
-					_screenBuffer.Dispose();
-					_screenGraphics.Dispose();
-					_screen.Dispose();
-					_fontSmall.Dispose();
-					_fontLarge.Dispose();
+                if (disposing)
+                {
+                    // dispose managed state (managed objects)
+                    _screenBufferGraphics.Dispose();
+                    _screenBuffer.Dispose();
+                    _screenGraphics.Dispose();
+                    _screen.Dispose();
+                    _fontSmall.Dispose();
+                    _fontLarge.Dispose();
 
-					// Images
-					foreach(KeyValuePair<Common.Enums.Image, Bitmap> image in _images)
-					{
-						image.Value.Dispose();
-					}
-				}
+                    // Images
+                    foreach (KeyValuePair<Common.Enums.Image, Bitmap> image in _images)
+                    {
+                        image.Value.Dispose();
+                    }
+                }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null

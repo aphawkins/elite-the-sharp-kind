@@ -81,5 +81,5 @@ namespace Elite.Engine.Ships
             boulder_face_normal,
             boulder_face
         );
-    } 
+    }
 }

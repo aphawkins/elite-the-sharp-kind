@@ -18,7 +18,7 @@ using Elite.Engine.Views;
 namespace Elite.Engine
 {
     internal class Settings : IView
-	{
+    {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
@@ -26,15 +26,15 @@ namespace Elite.Engine
         private readonly ConfigFile _configFile;
         private int _highlightedItem;
 
-        private readonly (string Name, string[] Values)[] setting_list = 
-		{
-			new("Graphics:", new [] {"Solid", "Wireframe", "", "", ""}),
-			new("Anti Alias:", new [] {"Off", "On", "", "", ""}),
-			new("Planet Style:", new [] {"Wireframe", "Green", "SNES", "Fractal", ""}),
-			new("Planet Desc.:", new [] {"BBC", "MSX", "", "", ""}),
-			new("Instant Dock:", new [] {"Off", "On", "", "", ""}),
-			new("Save Settings", new [] {"", "", "", "", ""})
-		};
+        private readonly (string Name, string[] Values)[] setting_list =
+        {
+            new("Graphics:", new [] {"Solid", "Wireframe", "", "", ""}),
+            new("Anti Alias:", new [] {"Off", "On", "", "", ""}),
+            new("Planet Style:", new [] {"Wireframe", "Green", "SNES", "Fractal", ""}),
+            new("Planet Desc.:", new [] {"BBC", "MSX", "", "", ""}),
+            new("Instant Dock:", new [] {"Off", "On", "", "", ""}),
+            new("Save Settings", new [] {"", "", "", "", ""})
+        };
 
         internal Settings(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, ConfigFile configFile)
         {
@@ -47,7 +47,7 @@ namespace Elite.Engine
 
         public void Reset()
         {
-			_highlightedItem = 0;
+            _highlightedItem = 0;
         }
 
         public void UpdateUniverse()
