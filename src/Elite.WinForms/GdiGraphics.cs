@@ -120,7 +120,7 @@ namespace Elite.WinForms
 
         private bool disposedValue;
 
-        public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(bitmapStream);
+        public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream) => _images[imgType] = (Bitmap)Image.FromStream(bitmapStream);
 
         /// <summary>
         /// Blit the back buffer to the screen.
