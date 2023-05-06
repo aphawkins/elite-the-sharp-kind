@@ -146,12 +146,7 @@ namespace Elite.Engine
                 WaggleGalaxy(ref glx);
             }
 
-            if (capitalise)
-            {
-                return char.ToUpper(name[0]) + name[1..].ToLower();
-            }
-
-            return name;
+            return capitalise ? char.ToUpper(name[0]) + name[1..].ToLower() : name;
         }
 
         internal static string DescribeInhabitants(GalaxySeed planet)

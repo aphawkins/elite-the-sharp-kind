@@ -219,12 +219,7 @@ namespace Elite.Engine
                 ux = -ux;
             }
 
-            if (ux < 0.84)
-            {
-                return false;
-            }
-
-            return true;
+            return ux >= 0.84;
         }
 
         internal void UpdateAltitude()

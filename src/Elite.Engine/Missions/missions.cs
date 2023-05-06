@@ -114,12 +114,7 @@ namespace Elite.Engine.Missions
                 }
             }
 
-            if (gameState.cmdr.GalaxyNumber == 2 && pnum == 101)
-            {
-                return mission1_pdesc[9];
-            }
-
-            return null;
+            return gameState.cmdr.GalaxyNumber == 2 && pnum == 101 ? mission1_pdesc[9] : null;
         }
     }
 }
