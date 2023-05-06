@@ -44,7 +44,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(70, 66, $"{_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
 
             int y = 98;
-            foreach (var stock in _trade.stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _trade.stockMarket)
             {
                 if (stock.Value.currentCargo > 0)
                 {

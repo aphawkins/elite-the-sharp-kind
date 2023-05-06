@@ -54,7 +54,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(420, 40, "IN HOLD", GFX_COL.GFX_COL_GREEN_1);
 
             int i = 0;
-            foreach (var stock in _trade.stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _trade.stockMarket)
             {
                 int y = (i * 15) + 55;
 

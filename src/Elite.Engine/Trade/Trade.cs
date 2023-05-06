@@ -62,7 +62,7 @@ namespace Elite.Engine
 
         internal void ClearCurrentCargo()
         {
-            foreach (var stock in stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
             {
                 stock.Value.currentCargo = 0;
             }
@@ -76,7 +76,7 @@ namespace Elite.Engine
         /// </summary>
         internal void GenerateStockMarket(PlanetData currentPlanet)
         {
-            foreach (var stock in stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
             {
                 // Start with the base price
                 float price = stock.Value.basePrice;
@@ -118,7 +118,7 @@ namespace Elite.Engine
 
         internal void SetStockQuantities()
         {
-            foreach (var stock in stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
             {
                 stock.Value.currentQuantity = stock.Value.stationStock;
             }
@@ -131,7 +131,7 @@ namespace Elite.Engine
         {
             int cargo = 0;
 
-            foreach (var stock in stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
             {
                 if ((stock.Value.currentCargo > 0) && (stock.Value.units == TONNES))
                 {

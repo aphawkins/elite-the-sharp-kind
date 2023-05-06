@@ -22,7 +22,6 @@ namespace Elite.WinForms
     public class Sound : ISound, IDisposable
     {
         private MidiPlayer? _midiPlayer;
-        //private readonly IMidiAccess2 _access;
         private readonly IMidiOutput? _output;
         private bool _disposedValue;
         private readonly Dictionary<SoundEffect, SoundPlayer> _waves = new();
@@ -30,7 +29,9 @@ namespace Elite.WinForms
 
         public Sound()
         {
-            var _access = MidiAccessManager.Default;
+#pragma warning disable CS0618 // Type or member is obsolete
+            IMidiAccess _access = MidiAccessManager.Default;
+#pragma warning restore CS0618 // Type or member is obsolete
             _output = _access.OpenOutputAsync(_access.Outputs.Last().Id).Result;
         }
 
