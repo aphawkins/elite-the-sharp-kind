@@ -1,16 +1,13 @@
-﻿using Elite.Engine.Enums;
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using Elite.Engine.Enums;
 
 namespace Elite.Engine.Types
 {
     internal class EquipmentItem
     {
-        internal bool CanBuy;
-        internal bool Show;
-        internal int TechLevel;
-        internal float Price;
-        internal string Name;
-        internal EquipmentType Type;
-
         internal EquipmentItem(bool canBuy, bool show, int techLevel, float price, string name, EquipmentType type)
         {
             CanBuy = canBuy;
@@ -20,5 +17,12 @@ namespace Elite.Engine.Types
             Name = name;
             Type = type;
         }
+
+        internal bool CanBuy { get; set; }
+        internal string Name { get; set; }
+        internal float Price { get; set; }
+        internal bool Show { get; set; }
+        internal int TechLevel { get; set; }
+        internal EquipmentType Type { get; set; }
     };
 }
