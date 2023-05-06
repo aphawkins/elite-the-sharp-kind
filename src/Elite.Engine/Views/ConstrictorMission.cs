@@ -9,14 +9,11 @@ namespace Elite.Engine.Views
 {
     internal class ConstrictorMission : IView
     {
+        private readonly Combat _combat;
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
-        private readonly PlayerShip _ship;
-        private readonly Trade _trade;
-        private readonly Combat _combat;
-
         private readonly string _mission1_brief_a =
             "Greetings Commander, I am Captain Curruthers of " +
             "Her Majesty's Space Navy and I beg a moment of your " +
@@ -45,6 +42,8 @@ namespace Elite.Engine.Views
             "There will always be a place for you in Her Majesty's Space Navy. " +
             "And maybe sooner than you think... ---MESSAGE ENDS.";
 
+        private readonly PlayerShip _ship;
+        private readonly Trade _trade;
         internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;
@@ -54,37 +53,6 @@ namespace Elite.Engine.Views
             _ship = ship;
             _trade = trade;
             _combat = combat;
-        }
-
-        public void Reset()
-        {
-            if (_gameState.cmdr.Mission == 0 && _gameState.cmdr.Score >= 256 && _gameState.cmdr.GalaxyNumber < 2)
-            {
-                // Show brief
-                _gameState.cmdr.Mission = 1;
-
-                _combat.ClearUniverse();
-                int i = _combat.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
-                Space.universe[i].flags = FLG.FLG_NONE;
-                _ship.roll = 0;
-                _ship.climb = 0;
-                _ship.speed = 0;
-            }
-            else if (_gameState.cmdr.Mission == 2)
-            {
-                // Show debrief
-                _gameState.cmdr.Mission = 3;
-                _gameState.cmdr.Score += 256;
-                _trade.credits += 5000;
-            }
-            else
-            {
-                _gameState.SetView(SCR.SCR_MISSION_2);
-            }
-        }
-
-        public void UpdateUniverse()
-        {
         }
 
         public void Draw()
@@ -117,6 +85,37 @@ namespace Elite.Engine.Views
                 _combat.ClearUniverse();
                 _gameState.SetView(SCR.SCR_MISSION_2);
             }
+        }
+
+        public void Reset()
+        {
+            if (_gameState.cmdr.Mission == 0 && _gameState.cmdr.Score >= 256 && _gameState.cmdr.GalaxyNumber < 2)
+            {
+                // Show brief
+                _gameState.cmdr.Mission = 1;
+
+                _combat.ClearUniverse();
+                int i = _combat.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
+                Space.universe[i].flags = FLG.FLG_NONE;
+                _ship.roll = 0;
+                _ship.climb = 0;
+                _ship.speed = 0;
+            }
+            else if (_gameState.cmdr.Mission == 2)
+            {
+                // Show debrief
+                _gameState.cmdr.Mission = 3;
+                _gameState.cmdr.Score += 256;
+                _trade.credits += 5000;
+            }
+            else
+            {
+                _gameState.SetView(SCR.SCR_MISSION_2);
+            }
+        }
+
+        public void UpdateUniverse()
+        {
         }
     }
 }
