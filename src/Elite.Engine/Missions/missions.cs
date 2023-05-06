@@ -1,34 +1,14 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Types;
-
-/*
- * missions.c
- *
- * Code to handle the special missions.
- */
 
 namespace Elite.Engine.Missions
 {
     internal class Mission
     {
-        private readonly Planet _planet;
-
-        internal Mission(Planet planet) => _planet = planet;
-
-        private static readonly string[] mission1_pdesc =
+        private readonly string[] _mission1_pdesc =
         {
             "THE CONSTRICTOR WAS LAST SEEN AT REESDICE, COMMANDER.",
             "A STRANGE LOOKING SHIP LEFT HERE A WHILE BACK. LOOKED BOUND FOR AREXE.",
@@ -44,6 +24,9 @@ namespace Elite.Engine.Missions
             "COMING SOON: ELITE - DARKNESS FALLS.",
         };
 
+        private readonly Planet _planet;
+
+        internal Mission(Planet planet) => _planet = planet;
         internal string? MissionPlanetDescription(GameState gameState, GalaxySeed planet)
         {
             if (!gameState.IsDocked)
@@ -68,13 +51,13 @@ namespace Elite.Engine.Missions
                 switch (pnum)
                 {
                     case 150:
-                        return mission1_pdesc[0];
+                        return _mission1_pdesc[0];
 
                     case 36:
-                        return mission1_pdesc[1];
+                        return _mission1_pdesc[1];
 
                     case 28:
-                        return mission1_pdesc[2];
+                        return _mission1_pdesc[2];
                 }
             }
 
@@ -95,26 +78,26 @@ namespace Elite.Engine.Missions
                     case 192:
                     case 184:
                     case 5:
-                        return mission1_pdesc[3];
+                        return _mission1_pdesc[3];
 
                     case 253:
-                        return mission1_pdesc[4];
+                        return _mission1_pdesc[4];
 
                     case 79:
-                        return mission1_pdesc[5];
+                        return _mission1_pdesc[5];
 
                     case 53:
-                        return mission1_pdesc[6];
+                        return _mission1_pdesc[6];
 
                     case 118:
-                        return mission1_pdesc[7];
+                        return _mission1_pdesc[7];
 
                     case 193:
-                        return mission1_pdesc[8];
+                        return _mission1_pdesc[8];
                 }
             }
 
-            return gameState.Cmdr.GalaxyNumber == 2 && pnum == 101 ? mission1_pdesc[9] : null;
+            return gameState.Cmdr.GalaxyNumber == 2 && pnum == 101 ? _mission1_pdesc[9] : null;
         }
     }
 }
