@@ -2,14 +2,14 @@
 
 namespace Elite.Engine.Views
 {
-    internal class Quit : IView
+    internal class QuitView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
 
-        internal Quit(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal QuitView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _gfx = gfx;

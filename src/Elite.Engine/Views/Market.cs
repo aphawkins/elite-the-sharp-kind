@@ -16,7 +16,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Views
 {
-    internal class Market : IView
+    internal class MarketView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -26,7 +26,7 @@ namespace Elite.Engine.Views
         private readonly Planet _planet;
         private StockType _highlightedStock;
 
-        internal Market(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Trade trade, Planet planet)
+        internal MarketView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Trade trade, Planet planet)
         {
             _gameState = gameState;
             _gfx = gfx;

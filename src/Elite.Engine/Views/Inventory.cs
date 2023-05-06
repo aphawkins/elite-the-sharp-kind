@@ -17,14 +17,14 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class Inventory : IView
+    internal class InventoryView : IView
     {
         private readonly IGfx _gfx;
         private readonly Draw _draw;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
 
-        internal Inventory(IGfx gfx, Draw draw, PlayerShip ship, Trade trade)
+        internal InventoryView(IGfx gfx, Draw draw, PlayerShip ship, Trade trade)
         {
             _gfx = gfx;
             _draw = draw;

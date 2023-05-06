@@ -4,7 +4,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class ThargoidMission : IView
+    internal class ThargoidMissionView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -34,7 +34,7 @@ namespace Elite.Engine.Views
             "For the moment please accept this Navy Extra Energy Unit as payment. " +
             "---MESSAGE ENDS.";
 
-        internal ThargoidMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship)
+        internal ThargoidMissionView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;

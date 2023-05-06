@@ -17,7 +17,7 @@ using Elite.Engine.Views;
 
 namespace Elite.Engine
 {
-    internal class Settings : IView
+    internal class SettingsView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -36,7 +36,7 @@ namespace Elite.Engine
             new("Save Settings", new [] {"", "", "", "", ""})
         };
 
-        internal Settings(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, ConfigFile configFile)
+        internal SettingsView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, ConfigFile configFile)
         {
             _gameState = gameState;
             _gfx = gfx;

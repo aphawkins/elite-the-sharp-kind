@@ -5,7 +5,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class EscapePod : IView
+    internal class EscapePodView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -18,7 +18,7 @@ namespace Elite.Engine.Views
         private int _newship;
         private int _i;
 
-        internal EscapePod(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
+        internal EscapePodView(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;

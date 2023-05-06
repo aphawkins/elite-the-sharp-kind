@@ -19,7 +19,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
 {
-    internal class GalacticChart : IView
+    internal class GalacticChartView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -32,7 +32,7 @@ namespace Elite.Engine.Views
         private bool _isFind;
         private string _findName = string.Empty;
 
-        internal GalacticChart(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
+        internal GalacticChartView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;

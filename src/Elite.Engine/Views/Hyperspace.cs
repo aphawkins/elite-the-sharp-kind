@@ -3,14 +3,14 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Views
 {
-    internal class Hyperspace : IView
+    internal class HyperspaceView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly BreakPattern _breakPattern;
 
-        internal Hyperspace(GameState gameState, IGfx gfx, Audio audio)
+        internal HyperspaceView(GameState gameState, IGfx gfx, Audio audio)
         {
             _gameState = gameState;
             _gfx = gfx;

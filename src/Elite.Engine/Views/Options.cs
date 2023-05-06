@@ -16,7 +16,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Views
 {
-    internal class Options : IView
+    internal class OptionsView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -34,7 +34,7 @@ namespace Elite.Engine.Views
             new ("Quit",            false)
         };
 
-        internal Options(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal OptionsView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -69,7 +69,7 @@ namespace Elite.Engine.Views
                 _gfx.DrawTextCentre(y, optionList[i].Label, 120, col);
             }
 
-            _gfx.DrawTextCentre(300, $"Version: {typeof(Options).Assembly.GetName().Version}", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(320, "The Sharp Kind - Andy Hawkins 2023", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(340, "The New Kind - Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(360, "Original Code - Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);

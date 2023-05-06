@@ -7,7 +7,7 @@ using Elite.Engine.Save;
 
 namespace Elite.Engine.Views
 {
-    internal class LoadCommander : IView
+    internal class LoadCommanderView : IView
     {
         private readonly Draw _draw;
         private readonly GameState _gameState;
@@ -16,7 +16,7 @@ namespace Elite.Engine.Views
         private readonly SaveFile _save;
         private bool _isLoaded = true;
         private string _name = string.Empty;
-        internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
+        internal LoadCommanderView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
         {
             _gameState = gameState;
             _gfx = gfx;

@@ -7,7 +7,7 @@ namespace Elite.Engine.Views
     /// <summary>
     /// Rolling Cobra MkIII.
     /// </summary>
-    internal class Intro1 : IView
+    internal class Intro1View : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -16,7 +16,7 @@ namespace Elite.Engine.Views
         private readonly PlayerShip _ship;
         private readonly Combat _combat;
 
-        internal Intro1(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat)
+        internal Intro1View(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;

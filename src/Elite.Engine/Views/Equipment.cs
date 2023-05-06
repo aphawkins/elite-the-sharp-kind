@@ -9,7 +9,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
 {
-    internal class Equipment : IView
+    internal class EquipmentView : IView
     {
         private readonly Draw _draw;
         private readonly GameState _gameState;
@@ -58,7 +58,7 @@ namespace Elite.Engine.Views
 
         private int _highlightedItem;
 
-        internal Equipment(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
+        internal EquipmentView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
         {
             _gameState = gameState;
             _gfx = gfx;

@@ -8,7 +8,7 @@ namespace Elite.Engine.Views
     /// <summary>
     /// Parade of the various ships.
     /// </summary>
-    internal class Intro2 : IView
+    internal class Intro2View : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -31,7 +31,7 @@ namespace Elite.Engine.Views
         };
         private Vector3[] _rotmat = new Vector3[3];
 
-        internal Intro2(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship, Combat combat)
+        internal Intro2View(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship, Combat combat)
         {
             _gameState = gameStat;
             _gfx = gfx;

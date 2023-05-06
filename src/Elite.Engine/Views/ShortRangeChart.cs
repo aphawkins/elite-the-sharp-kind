@@ -19,7 +19,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
 {
-    internal class ShortRangeChart : IView
+    internal class ShortRangeChartView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -33,7 +33,7 @@ namespace Elite.Engine.Views
         private bool _isFind;
         private string _findName = string.Empty;
 
-        internal ShortRangeChart(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
+        internal ShortRangeChartView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
             _gameState = gameState;
             _gfx = gfx;

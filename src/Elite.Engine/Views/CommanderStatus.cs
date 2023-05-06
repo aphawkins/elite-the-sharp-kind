@@ -7,7 +7,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class CommanderStatus : IView
+    internal class CommanderStatusView : IView
     {
         public readonly GameState _gameState;
         private readonly string[] _conditionText = new string[]
@@ -41,7 +41,7 @@ namespace Elite.Engine.Views
         private readonly int _spacingY = 16;
         private readonly Trade _trade;
 
-        internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship, Trade trade, Planet planet)
+        internal CommanderStatusView(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship, Trade trade, Planet planet)
         {
             _gameState = gameState;
             _gfx = gfx;

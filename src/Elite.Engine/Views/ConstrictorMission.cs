@@ -7,7 +7,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class ConstrictorMission : IView
+    internal class ConstrictorMissionView : IView
     {
         private readonly Combat _combat;
         private readonly Draw _draw;
@@ -44,7 +44,7 @@ namespace Elite.Engine.Views
 
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
-        internal ConstrictorMission(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Combat combat)
+        internal ConstrictorMissionView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;

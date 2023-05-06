@@ -3,7 +3,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Views
 {
-    internal class Launch : IView
+    internal class LaunchView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -12,7 +12,7 @@ namespace Elite.Engine.Views
         private readonly Combat _combat;
         private readonly BreakPattern _breakPattern;
 
-        internal Launch(GameState gameState, IGfx gfx, Audio audio, Space space, Combat combat)
+        internal LaunchView(GameState gameState, IGfx gfx, Audio audio, Space space, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;
