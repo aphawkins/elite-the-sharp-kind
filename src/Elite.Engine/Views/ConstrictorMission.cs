@@ -1,4 +1,8 @@
-﻿using Elite.Engine.Enums;
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using Elite.Engine.Enums;
 using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
@@ -13,7 +17,7 @@ namespace Elite.Engine.Views
         private readonly Trade _trade;
         private readonly Combat _combat;
 
-        private static readonly string mission1_brief_a =
+        private readonly string _mission1_brief_a =
             "Greetings Commander, I am Captain Curruthers of " +
             "Her Majesty's Space Navy and I beg a moment of your " +
             "valuable time.  We would like you to do a little job " +
@@ -21,7 +25,7 @@ namespace Elite.Engine.Views
             "Constrictor, equiped with a top secret new shield " +
             "generator.  Unfortunately it's been stolen.";
 
-        private static readonly string mission1_brief_b =
+        private readonly string _mission1_brief_b =
             "It went missing from our ship yard on Xeer five months ago " +
             "and was last seen at Reesdice. Your mission should you decide " +
             "to accept it, is to seek and destroy this ship. You are " +
@@ -29,7 +33,7 @@ namespace Elite.Engine.Views
             "shields and that the Constrictor is fitted with an E.C.M. " +
             "System. Good Luck, Commander. ---MESSAGE ENDS.";
 
-        private static readonly string mission1_brief_c =
+        private readonly string _mission1_brief_c =
             "It went missing from our ship yard on Xeer five months ago " +
             "and is believed to have jumped to this galaxy. " +
             "Your mission should you decide to accept it, is to seek and " +
@@ -37,7 +41,7 @@ namespace Elite.Engine.Views
             "will get through the new shields and that the Constrictor is " +
             "fitted with an E.C.M. System. Good Luck, Commander. ---MESSAGE ENDS.";
 
-        private static readonly string mission1_debrief =
+        private readonly string _mission1_debrief =
             "There will always be a place for you in Her Majesty's Space Navy. " +
             "And maybe sooner than you think... ---MESSAGE ENDS.";
 
@@ -89,8 +93,8 @@ namespace Elite.Engine.Views
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
-                _draw.DrawTextPretty(16, 50, 300, mission1_brief_a);
-                _draw.DrawTextPretty(16, 200, 470, _gameState.cmdr.GalaxyNumber == 0 ? mission1_brief_b : mission1_brief_c);
+                _draw.DrawTextPretty(16, 50, 300, _mission1_brief_a);
+                _draw.DrawTextPretty(16, 200, 470, _gameState.cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
@@ -100,7 +104,7 @@ namespace Elite.Engine.Views
 
                 _gfx.DrawTextCentre(100, "Congratulations Commander!", 140, GFX_COL.GFX_COL_GOLD);
 
-                _draw.DrawTextPretty(116, 132, 400, mission1_debrief);
+                _draw.DrawTextPretty(116, 132, 400, _mission1_debrief);
 
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
