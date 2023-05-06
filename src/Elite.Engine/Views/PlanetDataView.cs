@@ -1,16 +1,6 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
 using Elite.Engine.Enums;
@@ -21,31 +11,6 @@ namespace Elite.Engine.Views
 {
     internal class PlanetDataView : IView
     {
-        private readonly GameState _gameState;
-        private readonly IGfx _gfx;
-        private readonly Draw _draw;
-        private readonly Planet _planet;
-        private float _distanceToPlanet = 0;
-        private Types.PlanetData _hyperPlanetData = new();
-
-        private readonly string[] _economyType = {"Rich Industrial",
-                                "Average Industrial",
-                                "Poor Industrial",
-                                "Mainly Industrial",
-                                "Mainly Agricultural",
-                                "Rich Agricultural",
-                                "Average Agricultural",
-                                "Poor Agricultural"};
-
-        private readonly string[] _governmentType = { "Anarchy",
-                                    "Feudal",
-                                    "Multi-Government",
-                                    "Dictatorship",
-                                    "Communist",
-                                    "Confederacy",
-                                    "Democracy",
-                                    "Corporate State"};
-
         private readonly string[][] _descriptionList = new[]
         {
 		/*  0	*/	new string[] {"fabled", "notable", "well known", "famous", "noted"},
@@ -86,12 +51,75 @@ namespace Elite.Engine.Views
 		/* 35	*/	new string[] {"hockey", "cricket", "karate", "polo", "tennis"}
         };
 
+        private readonly Draw _draw;
+        private readonly string[] _economyType = {"Rich Industrial",
+                                "Average Industrial",
+                                "Poor Industrial",
+                                "Mainly Industrial",
+                                "Mainly Agricultural",
+                                "Rich Agricultural",
+                                "Average Agricultural",
+                                "Poor Agricultural"};
+
+        private readonly GameState _gameState;
+        private readonly IGfx _gfx;
+        private readonly string[] _governmentType = { "Anarchy",
+                                    "Feudal",
+                                    "Multi-Government",
+                                    "Dictatorship",
+                                    "Communist",
+                                    "Confederacy",
+                                    "Democracy",
+                                    "Corporate State"};
+
+        private readonly Planet _planet;
+        private float _distanceToPlanet = 0;
+        private Types.PlanetData _hyperPlanetData = new();
         internal PlanetDataView(GameState gameState, IGfx gfx, Draw draw, Planet planet)
         {
             _gameState = gameState;
             _gfx = gfx;
             _draw = draw;
             _planet = planet;
+        }
+
+        public void Draw()
+        {
+            _draw.ClearDisplay();
+            _draw.DrawViewHeader($"DATA ON {_planet.NamePlanet(_gameState.HyperspacePlanet, false)}");
+
+            if (_distanceToPlanet > 0)
+            {
+                _gfx.DrawTextLeft(16, 42, "Distance:", GFX_COL.GFX_COL_GREEN_1);
+                _gfx.DrawTextLeft(140, 42, $"{_distanceToPlanet:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+            }
+            _gfx.DrawTextLeft(16, 74, "Economy:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 74, _economyType[_hyperPlanetData.economy], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 106, "Government:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 106, _governmentType[_hyperPlanetData.government], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 138, "Tech Level:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 138, $"{_hyperPlanetData.techlevel + 1}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 170, "Population:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 202, "Gross Productivity:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 234, "Average Radius:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(140, 234, $"{_hyperPlanetData.radius} km", GFX_COL.GFX_COL_WHITE);
+            _draw.DrawTextPretty(16, 266, 400, DescribePlanet(_gameState.HyperspacePlanet));
+        }
+
+        public void HandleInput()
+        {
+        }
+
+        public void Reset()
+        {
+        }
+
+        public void UpdateUniverse()
+        {
+            _distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
+            _hyperPlanetData = Planet.GeneratePlanetData(_gameState.HyperspacePlanet);
         }
 
         private string DescribePlanet(GalaxySeed planet)
@@ -201,13 +229,13 @@ namespace Elite.Engine.Views
                                 int x = RNG.GenerateRandomNumber() & 62;
                                 if (i == 0)
                                 {
-                                    planetDescription += Planet.digrams[x];
+                                    planetDescription += _planet.Digrams[x];
                                 }
                                 else
                                 {
-                                    planetDescription += char.ToLower(Planet.digrams[x]);
+                                    planetDescription += char.ToLower(_planet.Digrams[x]);
                                 }
-                                planetDescription += char.ToLower(Planet.digrams[x + 1]);
+                                planetDescription += char.ToLower(_planet.Digrams[x + 1]);
                             }
                             break;
                     }
@@ -217,45 +245,6 @@ namespace Elite.Engine.Views
 
                 planetDescription += source[j];
             }
-        }
-
-        public void Reset()
-        {
-        }
-
-        public void UpdateUniverse()
-        {
-            _distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
-            _hyperPlanetData = Planet.GeneratePlanetData(_gameState.HyperspacePlanet);
-        }
-
-        public void Draw()
-        {
-            _draw.ClearDisplay();
-            _draw.DrawViewHeader($"DATA ON {_planet.NamePlanet(_gameState.HyperspacePlanet, false)}");
-
-            if (_distanceToPlanet > 0)
-            {
-                _gfx.DrawTextLeft(16, 42, "Distance:", GFX_COL.GFX_COL_GREEN_1);
-                _gfx.DrawTextLeft(140, 42, $"{_distanceToPlanet:N1} Light Years", GFX_COL.GFX_COL_WHITE);
-            }
-            _gfx.DrawTextLeft(16, 74, "Economy:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 74, _economyType[_hyperPlanetData.economy], GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 106, "Government:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 106, _governmentType[_hyperPlanetData.government], GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 138, "Tech Level:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 138, $"{_hyperPlanetData.techlevel + 1}", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 170, "Population:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.population:N1} Billion {Planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 202, "Gross Productivity:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.productivity} Million Credits", GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextLeft(16, 234, "Average Radius:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(140, 234, $"{_hyperPlanetData.radius} km", GFX_COL.GFX_COL_WHITE);
-            _draw.DrawTextPretty(16, 266, 400, DescribePlanet(_gameState.HyperspacePlanet));
-        }
-
-        public void HandleInput()
-        {
         }
     }
 }
