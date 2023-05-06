@@ -1,18 +1,21 @@
-﻿using Elite.Engine.Enums;
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using Elite.Engine.Enums;
 using Elite.Engine.Save;
 
 namespace Elite.Engine.Views
 {
     internal class LoadCommander : IView
     {
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly SaveFile _save;
+        private bool _isLoaded = true;
         private string _name = string.Empty;
-        private bool isLoaded = true;
-
         internal LoadCommander(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
         {
             _gameState = gameState;
@@ -31,7 +34,7 @@ namespace Elite.Engine.Views
             _gfx.DrawRectangle(100, 100, 312, 50, GFX_COL.GFX_COL_WHITE);
             _gfx.DrawTextCentre(125, _name, 140, GFX_COL.GFX_COL_WHITE);
 
-            if (!isLoaded)
+            if (!_isLoaded)
             {
                 _gfx.DrawTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
                 _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
@@ -57,8 +60,8 @@ namespace Elite.Engine.Views
 
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
-                isLoaded = _save.LoadCommanderAsync(_name).Result;
-                if (isLoaded)
+                _isLoaded = _save.LoadCommanderAsync(_name).Result;
+                if (_isLoaded)
                 {
                     _save.GetLastSave();
                     _gameState.SetView(SCR.SCR_CMDR_STATUS);
@@ -75,7 +78,7 @@ namespace Elite.Engine.Views
         {
             _keyboard.ClearKeyPressed();
             _name = _gameState.Cmdr.Name;
-            isLoaded = true;
+            _isLoaded = true;
         }
 
         public void UpdateUniverse()
