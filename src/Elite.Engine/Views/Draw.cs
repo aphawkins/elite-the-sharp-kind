@@ -10,10 +10,7 @@ namespace Elite.Engine.Views
     {
         private readonly IGfx _gfx;
 
-        internal Draw(IGfx gfx)
-        {
-            _gfx = gfx;
-        }
+        internal Draw(IGfx gfx) => _gfx = gfx;
 
         internal void DrawTextPretty(float x, float y, float width, string text)
         {

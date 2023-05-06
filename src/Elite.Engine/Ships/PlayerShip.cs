@@ -40,10 +40,7 @@ namespace Elite.Engine.Ships
         internal float speed;
         internal int ecmActive;
 
-        internal PlayerShip()
-        {
-            Reset();
-        }
+        internal PlayerShip() => Reset();
 
         internal void AutoDock()
         {

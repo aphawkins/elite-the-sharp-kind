@@ -26,10 +26,7 @@ namespace Elite.Engine.Missions
     {
         private readonly Planet _planet;
 
-        internal Mission(Planet planet)
-        {
-            _planet = planet;
-        }
+        internal Mission(Planet planet) => _planet = planet;
 
         private static readonly string[] mission1_pdesc =
         {

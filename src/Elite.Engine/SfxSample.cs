@@ -5,10 +5,7 @@
         private readonly int _runtime;
         private int _timeleft = 0;
 
-        internal SfxSample(int runtime)
-        {
-            _runtime = runtime;
-        }
+        internal SfxSample(int runtime) => _runtime = runtime;
 
         internal bool HasTimeRemaining => _timeleft > 0;
 

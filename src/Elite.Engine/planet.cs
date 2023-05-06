@@ -31,10 +31,7 @@ namespace Elite.Engine
         private static readonly string[] inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
         private static readonly string[] inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
 
-        internal Planet(GameState gameState)
-        {
-            _gameState = gameState;
-        }
+        internal Planet(GameState gameState) => _gameState = gameState;
 
         internal void WaggleGalaxy(ref GalaxySeed glx_ptr)
         {

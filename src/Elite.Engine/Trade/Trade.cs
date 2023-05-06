@@ -39,10 +39,7 @@ namespace Elite.Engine
 
         private readonly PlayerShip _ship;
 
-        internal Trade(PlayerShip ship)
-        {
-            _ship = ship;
-        }
+        internal Trade(PlayerShip ship) => _ship = ship;
 
         internal void AddCargo(StockType stock) => stockMarket[stock].currentCargo++;
 

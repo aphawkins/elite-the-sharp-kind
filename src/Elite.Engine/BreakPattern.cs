@@ -7,10 +7,7 @@ namespace Elite.Engine
         private readonly IGfx _gfx;
         private int _breakPatternCount;
 
-        internal BreakPattern(IGfx gfx)
-        {
-            _gfx = gfx;
-        }
+        internal BreakPattern(IGfx gfx) => _gfx = gfx;
 
         internal void Reset()
         {
