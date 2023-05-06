@@ -603,23 +603,23 @@ namespace Elite.Engine
                 return;
             }
 
-            for (int i = start_poly; i != -1; i = poly_chain[i].next)
+            for (int i = start_poly; i != -1; i = poly_chain[i].Next)
             {
-                GFX_COL colour = _gameState.Config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].face_colour;
+                GFX_COL colour = _gameState.Config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].FaceColour;
 
-                if (poly_chain[i].point_list.Length == 2)
+                if (poly_chain[i].PointList.Length == 2)
                 {
-                    _gfx.DrawLine(poly_chain[i].point_list[0], poly_chain[i].point_list[1], colour);
+                    _gfx.DrawLine(poly_chain[i].PointList[0], poly_chain[i].PointList[1], colour);
                     continue;
                 }
 
                 if (_gameState.Config.UseWireframe)
                 {
-                    _gfx.DrawPolygon(poly_chain[i].point_list, colour);
+                    _gfx.DrawPolygon(poly_chain[i].PointList, colour);
                 }
                 else
                 {
-                    _gfx.DrawPolygonFilled(poly_chain[i].point_list, colour);
+                    _gfx.DrawPolygonFilled(poly_chain[i].PointList, colour);
                 }
             };
         }
@@ -636,15 +636,15 @@ namespace Elite.Engine
             int x = total_polys;
             total_polys++;
 
-            poly_chain[x].face_colour = face_colour;
+            poly_chain[x].FaceColour = face_colour;
             poly_chain[x].Z = zAvg;
-            poly_chain[x].next = -1;
-            poly_chain[x].point_list = new Vector2[point_list.Length];
+            poly_chain[x].Next = -1;
+            poly_chain[x].PointList = new Vector2[point_list.Length];
 
             for (i = 0; i < point_list.Length; i++)
             {
-                poly_chain[x].point_list[i].X = point_list[i].X;
-                poly_chain[x].point_list[i].Y = point_list[i].Y;
+                poly_chain[x].PointList[i].X = point_list[i].X;
+                poly_chain[x].PointList[i].Y = point_list[i].Y;
             }
 
             if (x == 0)
@@ -654,24 +654,24 @@ namespace Elite.Engine
 
             if (zAvg > poly_chain[start_poly].Z)
             {
-                poly_chain[x].next = start_poly;
+                poly_chain[x].Next = start_poly;
                 start_poly = x;
                 return;
             }
 
-            for (i = start_poly; poly_chain[i].next != -1; i = poly_chain[i].next)
+            for (i = start_poly; poly_chain[i].Next != -1; i = poly_chain[i].Next)
             {
-                int nx = poly_chain[i].next;
+                int nx = poly_chain[i].Next;
 
                 if (zAvg > poly_chain[nx].Z)
                 {
-                    poly_chain[i].next = x;
-                    poly_chain[x].next = nx;
+                    poly_chain[i].Next = x;
+                    poly_chain[x].Next = nx;
                     return;
                 }
             }
 
-            poly_chain[i].next = x;
+            poly_chain[i].Next = x;
         }
     }
 }
