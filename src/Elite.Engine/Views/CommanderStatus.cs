@@ -1,18 +1,7 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
-using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
 
@@ -21,17 +10,7 @@ namespace Elite.Engine.Views
     internal class CommanderStatus : IView
     {
         public readonly GameState _gameState;
-        private readonly IGfx _gfx;
-        private readonly Draw _draw;
-        private readonly PlayerShip _ship;
-        private readonly Trade _trade;
-        private readonly Planet _planet;
-        readonly int EQUIP_START_Y = 202;
-        readonly int Y_INC = 16;
-        readonly int EQUIP_MAX_Y = 290;
-        readonly int EQUIP_WIDTH = 200;
-
-        readonly string[] condition_txt = new string[]
+        private readonly string[] _conditionText = new string[]
         {
                 "Docked",
                 "Green",
@@ -39,7 +18,13 @@ namespace Elite.Engine.Views
                 "Red"
         };
 
-        readonly (int score, string title)[] ratings = new (int score, string title)[]
+        private readonly Draw _draw;
+        private readonly int _equipmentMaxY = 290;
+        private readonly int _equipmentStartY = 202;
+        private readonly int _equipmentWidth = 200;
+        private readonly IGfx _gfx;
+        private readonly Planet _planet;
+        private readonly (int score, string title)[] _ratings = new (int score, string title)[]
         {
                 new(0x0000, "Harmless"),
                 new(0x0008, "Mostly Harmless"),
@@ -51,6 +36,10 @@ namespace Elite.Engine.Views
                 new(0x0A00, "Deadly"),
                 new(0x1900, "- - - E L I T E - - -")
         };
+
+        private readonly PlayerShip _ship;
+        private readonly int _spacingY = 16;
+        private readonly Trade _trade;
 
         internal CommanderStatus(GameState gameState, IGfx gfx, Draw draw, PlayerShip ship, Trade trade, Planet planet)
         {
@@ -66,20 +55,20 @@ namespace Elite.Engine.Views
         {
             _draw.ClearDisplay();
             int x = 50;
-            int y = EQUIP_START_Y;
+            int y = _equipmentStartY;
 
             void IncrementPosition()
             {
-                y += Y_INC;
-                if (y > EQUIP_MAX_Y)
+                y += _spacingY;
+                if (y > _equipmentMaxY)
                 {
-                    y = EQUIP_START_Y;
-                    x += EQUIP_WIDTH;
+                    y = _equipmentStartY;
+                    x += _equipmentWidth;
                 }
             };
 
             string rating = string.Empty;
-            foreach ((int score, string title) in ratings)
+            foreach ((int score, string title) in _ratings)
             {
                 if (_gameState.cmdr.Score >= score)
                 {
@@ -123,7 +112,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(150, 74, hyperspacePlanetName, GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 90, "Condition:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 90, condition_txt[condition], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 90, _conditionText[condition], GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 106, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(150, 106, $"{_ship.fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);

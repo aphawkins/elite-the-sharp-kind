@@ -155,7 +155,7 @@ csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
 # License header
-file_header_template = Licensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the MIT license.
+file_header_template = 'Elite - The Sharp Kind' - Andy Hawkins 2023.\n'Elite - The New Kind' - C.J.Pinder 1999-2001.\nElite (C) I.Bell & D.Braben 1984.
 csharp_style_namespace_declarations = block_scoped:silent
 csharp_style_prefer_method_group_conversion = true:silent
 csharp_style_prefer_top_level_statements = true:silent
