@@ -22,15 +22,9 @@ namespace Elite.Engine.Views
             _pilotView.DrawLaserSights(_ship.laserFront.Type);
         }
 
-        public void HandleInput()
-        {
-            _pilotView.HandleInput();
-        }
+        public void HandleInput() => _pilotView.HandleInput();
 
-        public void Reset()
-        {
-            _pilotView.Reset();
-        }
+        public void Reset() => _pilotView.Reset();
 
         public void UpdateUniverse()
         {

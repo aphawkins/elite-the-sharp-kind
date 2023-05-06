@@ -106,24 +106,12 @@ namespace Elite.Engine.Views
             }
         }
 
-        public void Reset()
-        {
-            Stars.FlipStars();
-        }
+        public void Reset() => Stars.FlipStars();
 
-        public void UpdateUniverse()
-        {
-            drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
-        }
+        public void UpdateUniverse() => drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(drawLaserFrames - 1, 0, drawLaserFrames);
 
-        internal void DrawViewName(string name)
-        {
-            _gfx.DrawTextCentre(32, name, 120, GFX_COL.GFX_COL_WHITE);
-        }
+        internal void DrawViewName(string name) => _gfx.DrawTextCentre(32, name, 120, GFX_COL.GFX_COL_WHITE);
 
-        internal void DrawLaserSights(LaserType laserType)
-        {
-            _laser.DrawLaserSights(laserType);
-        }
+        internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
     }
 }

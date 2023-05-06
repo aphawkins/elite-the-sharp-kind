@@ -18,10 +18,7 @@ namespace Elite.Engine.Views
             _breakPattern = new(_gfx);
         }
 
-        public void Draw()
-        {
-            _breakPattern.Draw();
-        }
+        public void Draw() => _breakPattern.Draw();
 
         public void HandleInput()
         {

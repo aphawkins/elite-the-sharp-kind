@@ -120,10 +120,7 @@ namespace Elite.WinForms
 
         private bool disposedValue;
 
-        public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream)
-        {
-            _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(bitmapStream);
-        }
+        public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(bitmapStream);
 
         /// <summary>
         /// Blit the back buffer to the screen.
@@ -151,11 +148,9 @@ namespace Elite.WinForms
             //release_bitmap(gfx_screen);
         }
 
-        public void DrawPixelFast(Vector2 position, GFX_COL col)
-        {
+        public void DrawPixelFast(Vector2 position, GFX_COL col) =>
             // Is there a faster way of doing this?
             DrawPixel(position, col);
-        }
 
         public void DrawPixel(Vector2 position, GFX_COL col)
         {
@@ -173,25 +168,13 @@ namespace Elite.WinForms
             _screenBuffer.SetPixel((int)(position.X + Engine.Graphics.GFX_X_OFFSET), (int)(position.Y + Engine.Graphics.GFX_Y_OFFSET), colour);
         }
 
-        public void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour)
-        {
-            _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
-        }
+        public void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour) => _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
 
-        public virtual void DrawCircle(Vector2 centre, float radius, GFX_COL colour)
-        {
-            _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
-        }
+        public virtual void DrawCircle(Vector2 centre, float radius, GFX_COL colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
 
-        public virtual void DrawLine(Vector2 start, Vector2 end)
-        {
-            _screenBufferGraphics.DrawLine(_pens[GFX_COL.GFX_COL_WHITE], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
-        }
+        public virtual void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[GFX_COL.GFX_COL_WHITE], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawLine(Vector2 start, Vector2 end, GFX_COL line_colour)
-        {
-            _screenBufferGraphics.DrawLine(_pens[line_colour], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
-        }
+        public void DrawLine(Vector2 start, Vector2 end, GFX_COL line_colour) => _screenBufferGraphics.DrawLine(_pens[line_colour], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)
         {
@@ -251,25 +234,13 @@ namespace Elite.WinForms
                 stringFormat);
         }
 
-        public void ClearArea(float x, float y, float width, float height)
-        {
-            _screenBufferGraphics.FillRectangle(Brushes.Black, x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
-        }
+        public void ClearArea(float x, float y, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour)
-        {
-            _screenBufferGraphics.FillRectangle(_brushes[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
-        }
+        public void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour) => _screenBufferGraphics.FillRectangle(_brushes[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawRectangle(float x, float y, float width, float height, GFX_COL colour)
-        {
-            _screenBufferGraphics.DrawRectangle(_pens[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
-        }
+        public void DrawRectangle(float x, float y, float width, float height, GFX_COL colour) => _screenBufferGraphics.DrawRectangle(_pens[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void SetClipRegion(float x, float y, float width, float height)
-        {
-            _screenBufferGraphics.Clip = new Region(new RectangleF(x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET));
-        }
+        public void SetClipRegion(float x, float y, float width, float height) => _screenBufferGraphics.Clip = new Region(new RectangleF(x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET));
 
         public void DrawPolygonFilled(Vector2[] vectors, GFX_COL faceColour)
         {

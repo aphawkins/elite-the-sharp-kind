@@ -25,10 +25,7 @@ namespace Elite.WinForms
             _isPressed[keyValue] = true;
         }
 
-        public void KeyUp(CommandKey keyValue)
-        {
-            _isPressed[keyValue] = false;
-        }
+        public void KeyUp(CommandKey keyValue) => _isPressed[keyValue] = false;
 
         public bool IsKeyPressed(params CommandKey[] keys)
         {

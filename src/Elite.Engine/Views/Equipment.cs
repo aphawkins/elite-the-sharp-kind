@@ -79,39 +79,36 @@ namespace Elite.Engine.Views
             new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
         };
 
-        private bool PresentEquipment(EquipmentType type)
+        private bool PresentEquipment(EquipmentType type) => type switch
         {
-            return type switch
-            {
-                EquipmentType.EQ_FUEL => _ship.fuel >= 7,
-                EquipmentType.EQ_MISSILE => _ship.missileCount >= 4,
-                EquipmentType.EQ_CARGO_BAY => _ship.cargoCapacity > 20,
-                EquipmentType.EQ_ECM => _ship.hasECM,
-                EquipmentType.EQ_FUEL_SCOOPS => _ship.hasFuelScoop,
-                EquipmentType.EQ_ESCAPE_POD => _ship.hasEscapePod,
-                EquipmentType.EQ_ENERGY_BOMB => _ship.hasEnergyBomb,
-                EquipmentType.EQ_ENERGY_UNIT => _ship.energyUnit != EnergyUnit.None,
-                EquipmentType.EQ_DOCK_COMP => _ship.hasDockingComputer,
-                EquipmentType.EQ_GAL_DRIVE => _ship.hasGalacticHyperdrive,
-                EquipmentType.EQ_FRONT_PULSE => _ship.laserFront.Type == LaserType.Pulse,
-                EquipmentType.EQ_REAR_PULSE => _ship.laserRear.Type == LaserType.Pulse,
-                EquipmentType.EQ_LEFT_PULSE => _ship.laserLeft.Type == LaserType.Pulse,
-                EquipmentType.EQ_RIGHT_PULSE => _ship.laserRight.Type == LaserType.Pulse,
-                EquipmentType.EQ_FRONT_BEAM => _ship.laserFront.Type == LaserType.Beam,
-                EquipmentType.EQ_REAR_BEAM => _ship.laserRear.Type == LaserType.Beam,
-                EquipmentType.EQ_LEFT_BEAM => _ship.laserLeft.Type == LaserType.Beam,
-                EquipmentType.EQ_RIGHT_BEAM => _ship.laserRight.Type == LaserType.Beam,
-                EquipmentType.EQ_FRONT_MINING => _ship.laserFront.Type == LaserType.Mining,
-                EquipmentType.EQ_REAR_MINING => _ship.laserRear.Type == LaserType.Mining,
-                EquipmentType.EQ_LEFT_MINING => _ship.laserLeft.Type == LaserType.Mining,
-                EquipmentType.EQ_RIGHT_MINING => _ship.laserRight.Type == LaserType.Mining,
-                EquipmentType.EQ_FRONT_MILITARY => _ship.laserFront.Type == LaserType.Military,
-                EquipmentType.EQ_REAR_MILITARY => _ship.laserRear.Type == LaserType.Military,
-                EquipmentType.EQ_LEFT_MILITARY => _ship.laserLeft.Type == LaserType.Military,
-                EquipmentType.EQ_RIGHT_MILITARY => _ship.laserRight.Type == LaserType.Military,
-                _ => false,
-            };
-        }
+            EquipmentType.EQ_FUEL => _ship.fuel >= 7,
+            EquipmentType.EQ_MISSILE => _ship.missileCount >= 4,
+            EquipmentType.EQ_CARGO_BAY => _ship.cargoCapacity > 20,
+            EquipmentType.EQ_ECM => _ship.hasECM,
+            EquipmentType.EQ_FUEL_SCOOPS => _ship.hasFuelScoop,
+            EquipmentType.EQ_ESCAPE_POD => _ship.hasEscapePod,
+            EquipmentType.EQ_ENERGY_BOMB => _ship.hasEnergyBomb,
+            EquipmentType.EQ_ENERGY_UNIT => _ship.energyUnit != EnergyUnit.None,
+            EquipmentType.EQ_DOCK_COMP => _ship.hasDockingComputer,
+            EquipmentType.EQ_GAL_DRIVE => _ship.hasGalacticHyperdrive,
+            EquipmentType.EQ_FRONT_PULSE => _ship.laserFront.Type == LaserType.Pulse,
+            EquipmentType.EQ_REAR_PULSE => _ship.laserRear.Type == LaserType.Pulse,
+            EquipmentType.EQ_LEFT_PULSE => _ship.laserLeft.Type == LaserType.Pulse,
+            EquipmentType.EQ_RIGHT_PULSE => _ship.laserRight.Type == LaserType.Pulse,
+            EquipmentType.EQ_FRONT_BEAM => _ship.laserFront.Type == LaserType.Beam,
+            EquipmentType.EQ_REAR_BEAM => _ship.laserRear.Type == LaserType.Beam,
+            EquipmentType.EQ_LEFT_BEAM => _ship.laserLeft.Type == LaserType.Beam,
+            EquipmentType.EQ_RIGHT_BEAM => _ship.laserRight.Type == LaserType.Beam,
+            EquipmentType.EQ_FRONT_MINING => _ship.laserFront.Type == LaserType.Mining,
+            EquipmentType.EQ_REAR_MINING => _ship.laserRear.Type == LaserType.Mining,
+            EquipmentType.EQ_LEFT_MINING => _ship.laserLeft.Type == LaserType.Mining,
+            EquipmentType.EQ_RIGHT_MINING => _ship.laserRight.Type == LaserType.Mining,
+            EquipmentType.EQ_FRONT_MILITARY => _ship.laserFront.Type == LaserType.Military,
+            EquipmentType.EQ_REAR_MILITARY => _ship.laserRear.Type == LaserType.Military,
+            EquipmentType.EQ_LEFT_MILITARY => _ship.laserLeft.Type == LaserType.Military,
+            EquipmentType.EQ_RIGHT_MILITARY => _ship.laserRight.Type == LaserType.Military,
+            _ => false,
+        };
 
         public void Reset()
         {
@@ -233,17 +230,14 @@ namespace Elite.Engine.Views
             }
         }
 
-        private static float LaserRefund(LaserType laserType)
+        private static float LaserRefund(LaserType laserType) => laserType switch
         {
-            return laserType switch
-            {
-                LaserType.Pulse => 400,
-                LaserType.Beam => 1000,
-                LaserType.Military => 6000,
-                LaserType.Mining => 800,
-                _ => 0,
-            };
-        }
+            LaserType.Pulse => 400,
+            LaserType.Beam => 1000,
+            LaserType.Military => 6000,
+            LaserType.Mining => 800,
+            _ => 0,
+        };
 
         internal void Buy()
         {

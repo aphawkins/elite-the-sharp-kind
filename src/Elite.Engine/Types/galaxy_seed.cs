@@ -23,9 +23,6 @@
             F = other.F;
         }
 
-        public object Clone()
-        {
-            return new GalaxySeed(this);
-        }
+        public object Clone() => new GalaxySeed(this);
     }
 }

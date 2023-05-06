@@ -370,11 +370,9 @@ namespace Elite.Engine
         /// </summary>
         /// <param name="centre"></param>
         /// <param name="radius"></param>
-        private void DrawWireframePlanet(Vector2 centre, float radius)
-        {
+        private void DrawWireframePlanet(Vector2 centre, float radius) =>
             // TODO: At the moment we just draw a circle. Need to add in the two arcs that the original Elite had.
             _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
-        }
 
         /// <summary>
         /// Draw a planet.

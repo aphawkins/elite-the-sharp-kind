@@ -283,10 +283,7 @@ namespace Elite.Engine.Views
             CrossFromHyperspacePlanet();
         }
 
-        private void CrossFromHyperspacePlanet()
-        {
-            _gameState.Cross = new(((_gameState.hyperspace_planet.D - _gameState.docked_planet.D) * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE,
+        private void CrossFromHyperspacePlanet() => _gameState.Cross = new(((_gameState.hyperspace_planet.D - _gameState.docked_planet.D) * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE,
                 ((_gameState.hyperspace_planet.B - _gameState.docked_planet.B) * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE);
-        }
     }
 }

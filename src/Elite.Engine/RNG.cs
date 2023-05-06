@@ -18,20 +18,11 @@ namespace Elite.Engine
     {
         internal static RandomSeed Seed = new();
 
-        internal static int Random(int maxValue)
-        {
-            return Random(0, maxValue);
-        }
+        internal static int Random(int maxValue) => Random(0, maxValue);
 
-        internal static int Random(int minValue, int maxValue)
-        {
-            return new Random().Next(minValue, maxValue + 1);
-        }
+        internal static int Random(int minValue, int maxValue) => new Random().Next(minValue, maxValue + 1);
 
-        internal static bool TrueOrFalse()
-        {
-            return Random(0, 1) == 1;
-        }
+        internal static bool TrueOrFalse() => Random(0, 1) == 1;
 
         /// <summary>
         /// Guassian random number generator.

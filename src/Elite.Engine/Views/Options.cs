@@ -42,10 +42,7 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
         }
 
-        public void Reset()
-        {
-            _highlightedItem = 0;
-        }
+        public void Reset() => _highlightedItem = 0;
 
         public void UpdateUniverse()
         {

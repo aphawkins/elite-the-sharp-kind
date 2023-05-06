@@ -34,20 +34,11 @@ namespace Elite.WinForms
             _output = _access.OpenOutputAsync(_access.Outputs.Last().Id).Result;
         }
 
-        public void Load(Music midiType, Stream midiStream)
-        {
-            _midis[midiType] = MidiMusic.Read(midiStream);
-        }
+        public void Load(Music midiType, Stream midiStream) => _midis[midiType] = MidiMusic.Read(midiStream);
 
-        public void Load(SoundEffect waveType, Stream waveStream)
-        {
-            _waves[waveType] = new(waveStream);
-        }
+        public void Load(SoundEffect waveType, Stream waveStream) => _waves[waveType] = new(waveStream);
 
-        public void PlayWave(SoundEffect waveType)
-        {
-            _waves[waveType].Play();
-        }
+        public void PlayWave(SoundEffect waveType) => _waves[waveType].Play();
 
         public void PlayMidi(Music midiType, bool repeat)
         {

@@ -44,10 +44,7 @@ namespace Elite.Engine
             _ship = ship;
         }
 
-        internal void AddCargo(StockType stock)
-        {
-            stockMarket[stock].currentCargo++;
-        }
+        internal void AddCargo(StockType stock) => stockMarket[stock].currentCargo++;
 
         internal void BuyStock(StockType stock)
         {

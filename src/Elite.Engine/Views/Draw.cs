@@ -38,15 +38,9 @@ namespace Elite.Engine.Views
             }
         }
 
-        internal void ClearDisplay()
-        {
-            _gfx.ClearArea(Graphics.GFX_X_OFFSET + 1, Graphics.GFX_Y_OFFSET + 1, 510 + Graphics.GFX_X_OFFSET, 383 + Graphics.GFX_Y_OFFSET);
-        }
+        internal void ClearDisplay() => _gfx.ClearArea(Graphics.GFX_X_OFFSET + 1, Graphics.GFX_Y_OFFSET + 1, 510 + Graphics.GFX_X_OFFSET, 383 + Graphics.GFX_Y_OFFSET);
 
-        internal void DrawScanner()
-        {
-            _gfx.DrawImage(Image.Scanner, new(Graphics.GFX_X_OFFSET, 385 + Graphics.GFX_Y_OFFSET));
-        }
+        internal void DrawScanner() => _gfx.DrawImage(Image.Scanner, new(Graphics.GFX_X_OFFSET, 385 + Graphics.GFX_Y_OFFSET));
 
         internal void DrawBorder()
         {

@@ -57,9 +57,6 @@
             Saved = other.Saved;
         }
 
-        public object Clone()
-        {
-            return new SaveState(this);
-        }
+        public object Clone() => new SaveState(this);
     }
 }

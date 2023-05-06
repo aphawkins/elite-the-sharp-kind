@@ -45,10 +45,7 @@ namespace Elite.Engine
             _configFile = configFile;
         }
 
-        public void Reset()
-        {
-            _highlightedItem = 0;
-        }
+        public void Reset() => _highlightedItem = 0;
 
         public void UpdateUniverse()
         {

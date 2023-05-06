@@ -630,15 +630,9 @@ namespace Elite.Engine
             _pilot.DisengageAutoPilot();
         }
 
-        internal void DisplayHyperStatus()
-        {
-            _gfx.DrawTextRight(22, 5, $"{hyper_countdown}", GFX_COL.GFX_COL_WHITE);
-        }
+        internal void DisplayHyperStatus() => _gfx.DrawTextRight(22, 5, $"{hyper_countdown}", GFX_COL.GFX_COL_WHITE);
 
-        private static int RotateByteLeft(int x)
-        {
-            return ((x << 1) | (x >> 7)) & 255;
-        }
+        private static int RotateByteLeft(int x) => ((x << 1) | (x >> 7)) & 255;
 
         private void EnterNextGalaxy()
         {

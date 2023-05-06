@@ -49,25 +49,16 @@ namespace Elite.Engine
         /// <param name="first"></param>
         /// <param name="second"></param>
         /// <returns>The cosine of the angle between the two vectors.</returns>
-        internal static float VectorDotProduct(Vector3 first, Vector3 second)
-        {
-            return Vector3.Dot(first, second);
-        }
+        internal static float VectorDotProduct(Vector3 first, Vector3 second) => Vector3.Dot(first, second);
 
         /// <summary>
         /// Convert a vector into a vector of unit (1) length.
         /// </summary>
         /// <param name="vec"></param>
         /// <returns></returns>
-        internal static Vector3 UnitVector(Vector3 vec)
-        {
-            return Vector3.Divide(vec, vec.Length());
-        }
+        internal static Vector3 UnitVector(Vector3 vec) => Vector3.Divide(vec, vec.Length());
 
-        internal static Vector3[] GetInitialMatrix()
-        {
-            return start_matrix.Cloner();
-        }
+        internal static Vector3[] GetInitialMatrix() => start_matrix.Cloner();
 
         internal static void TidyMatrix(Vector3[] mat)
         {

@@ -20,9 +20,6 @@
             }
         }
 
-        internal void ResetTime()
-        {
-            _timeleft = _runtime;
-        }
+        internal void ResetTime() => _timeleft = _runtime;
     }
 }

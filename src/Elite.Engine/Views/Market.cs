@@ -36,10 +36,7 @@ namespace Elite.Engine.Views
             _planet = planet;
         }
 
-        public void Reset()
-        {
-            _highlightedStock = 0;
-        }
+        public void Reset() => _highlightedStock = 0;
 
         public void UpdateUniverse()
         {
