@@ -103,7 +103,7 @@ namespace Elite.Engine.Views
             _gfx.DrawImage(Image.EliteText, new(-1, 10));
 
             _gfx.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawTextCentre(330, _gameState.ShipList[(int)_shipNo].name, 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(330, _gameState.ShipList[_shipNo].name, 120, GFX_COL.GFX_COL_WHITE);
         }
 
         public void HandleInput()

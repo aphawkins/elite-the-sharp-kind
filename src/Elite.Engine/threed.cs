@@ -49,7 +49,7 @@ namespace Elite.Engine
             Vector3[] trans_mat = new Vector3[3];
             int lasv;
             GFX_COL col;
-            ShipData ship = _gameState.ShipList[(int)univ.type];
+            ShipData ship = _gameState.ShipList[univ.type];
 
             for (int i = 0; i < 3; i++)
             {
@@ -123,7 +123,7 @@ namespace Elite.Engine
 
             if (univ.flags.HasFlag(FLG.FLG_FIRING))
             {
-                lasv = _gameState.ShipList[(int)univ.type].front_laser;
+                lasv = _gameState.ShipList[univ.type].front_laser;
                 col = (univ.type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
                 Vector2[] pointList = new Vector2[]
@@ -444,7 +444,7 @@ namespace Elite.Engine
                 return;
             }
 
-            ShipData ship = _gameState.ShipList[(int)univ.type];
+            ShipData ship = _gameState.ShipList[univ.type];
 
             for (int i = 0; i < 3; i++)
             {

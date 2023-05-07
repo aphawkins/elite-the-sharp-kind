@@ -1,6 +1,7 @@
 # Issues
 
 ## To get to MVP
+- When docking the intro music plays
 - Fix TODOs in code
 - Colours on SNES planet style not working
 - Explosion of other ship can cause an exception

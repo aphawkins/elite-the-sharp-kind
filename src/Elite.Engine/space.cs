@@ -112,9 +112,9 @@ namespace Elite.Engine
                 {
                     obj.velocity += obj.acceleration;
                     obj.acceleration = 0;
-                    if (obj.velocity > _gameState.ShipList[(int)obj.type].velocity)
+                    if (obj.velocity > _gameState.ShipList[obj.type].velocity)
                     {
-                        obj.velocity = _gameState.ShipList[(int)obj.type].velocity;
+                        obj.velocity = _gameState.ShipList[obj.type].velocity;
                     }
 
                     if (obj.velocity <= 0)
@@ -486,7 +486,7 @@ namespace Elite.Engine
                         _gameState.Cmdr.LegalStatus |= 64;
                     }
 
-                    float bounty = _gameState.ShipList[(int)type].bounty;
+                    float bounty = _gameState.ShipList[type].bounty;
 
                     if ((bounty != 0) && (!_gameState.InWitchspace))
                     {
