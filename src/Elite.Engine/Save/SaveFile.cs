@@ -14,7 +14,7 @@ namespace Elite.Engine.Save
     internal class SaveFile
     {
         private const string FileExtension = ".cmdr";
-        private static readonly JsonSerializerOptions options = new()
+        private readonly JsonSerializerOptions _options = new()
         {
             WriteIndented = true,
             Converters = { new JsonStringEnumConverter() },
@@ -54,7 +54,7 @@ namespace Elite.Engine.Save
             try
             {
                 using FileStream stream = File.OpenRead(name + FileExtension);
-                SaveState? save = await JsonSerializer.DeserializeAsync<SaveState>(stream, options);
+                SaveState? save = await JsonSerializer.DeserializeAsync<SaveState>(stream, _options);
                 if (save != null)
                 {
                     _lastSaved = save;
@@ -88,7 +88,7 @@ namespace Elite.Engine.Save
                     File.Delete(path);
                 }
                 using FileStream stream = File.OpenWrite(path);
-                await JsonSerializer.SerializeAsync(stream, save, options);
+                await JsonSerializer.SerializeAsync(stream, save, _options);
 
                 _lastSaved = save;
                 return true;
