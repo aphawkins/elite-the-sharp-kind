@@ -57,7 +57,7 @@ namespace Elite.Engine
             Ship.missile_data,
             Ship.coriolis_data,
             Ship.esccaps_data,
-            Ship.alloy_data,
+            new Alloy(),
             Ship.cargo_data,
             Ship.boulder_data,
             Ship.asteroid_data,
