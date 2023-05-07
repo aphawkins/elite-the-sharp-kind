@@ -1,33 +1,30 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal static partial class Ship
+    internal class Asp2 : ShipData
     {
-        internal static readonly ShipPoint[] asp2_point =
+        internal static readonly ShipFaceNormal[] s_faceNormals =
         {
-            new(new(   0,  -18,    0), 22,  0,  1,  2,  2),
-            new(new(   0,   -9,  -45), 31,  1,  2, 11, 11),
-            new(new(  43,    0,  -45), 31,  1,  6, 11, 11),
-            new(new(  69,   -3,    0), 31,  1,  6,  7,  9),
-            new(new(  43,  -14,   28), 31,  0,  1,  7,  7),
-            new(new( -43,    0,  -45), 31,  2,  5, 11, 11),
-            new(new( -69,   -3,    0), 31,  2,  5,  8, 10),
-            new(new( -43,  -14,   28), 31,  0,  2,  8,  8),
-            new(new(  26,   -7,   73), 31,  0,  4,  7,  9),
-            new(new( -26,   -7,   73), 31,  0,  4,  8, 10),
-            new(new(  43,   14,   28), 31,  3,  4,  6,  9),
-            new(new( -43,   14,   28), 31,  3,  4,  5, 10),
-            new(new(   0,    9,  -45), 31,  3,  5,  6, 11),
-            new(new( -17,    0,  -45), 10, 11, 11, 11, 11),
-            new(new(  17,    0,  -45),  9, 11, 11, 11, 11),
-            new(new(   0,   -4,  -45), 10, 11, 11, 11, 11),
-            new(new(   0,    4,  -45),  8, 11, 11, 11, 11),
-            new(new(   0,   -7,   73), 10,  0,  4,  0,  4),
-            new(new(   0,   -7,   83), 10,  0,  4,  0,  4),
+            new(31, new(   0,  -35,    5)),
+            new(31, new(   8,  -38,   -7)),
+            new(31, new(  -8,  -38,   -7)),
+            new(22, new(   0,   24,   -1)),
+            new(31, new(   0,   43,   19)),
+            new(31, new(  -6,   28,   -2)),
+            new(31, new(   6,   28,   -2)),
+            new(31, new(  59,  -64,   31)),
+            new(31, new( -59,  -64,   31)),
+            new(31, new(  80,   46,   50)),
+            new(31, new( -80,   46,   50)),
+            new(31, new(   0,    0,  -90)),
         };
 
-        internal static readonly ShipLine[] asp2_line =
+        internal static readonly ShipLine[] s_lines =
         {
             new(22,  1,  2,  0,  1),
             new(22,  0,  1,  0,  4),
@@ -59,23 +56,29 @@ namespace Elite.Engine.Ships
             new(10,  0,  4, 18, 17),
         };
 
-        internal static readonly ShipFaceNormal[] asp2_face_normal =
-        {
-            new(31, new(   0,  -35,    5)),
-            new(31, new(   8,  -38,   -7)),
-            new(31, new(  -8,  -38,   -7)),
-            new(22, new(   0,   24,   -1)),
-            new(31, new(   0,   43,   19)),
-            new(31, new(  -6,   28,   -2)),
-            new(31, new(   6,   28,   -2)),
-            new(31, new(  59,  -64,   31)),
-            new(31, new( -59,  -64,   31)),
-            new(31, new(  80,   46,   50)),
-            new(31, new( -80,   46,   50)),
-            new(31, new(   0,    0,  -90)),
+        internal static readonly ShipPoint[] s_points =
+                        {
+            new(new(   0,  -18,    0), 22,  0,  1,  2,  2),
+            new(new(   0,   -9,  -45), 31,  1,  2, 11, 11),
+            new(new(  43,    0,  -45), 31,  1,  6, 11, 11),
+            new(new(  69,   -3,    0), 31,  1,  6,  7,  9),
+            new(new(  43,  -14,   28), 31,  0,  1,  7,  7),
+            new(new( -43,    0,  -45), 31,  2,  5, 11, 11),
+            new(new( -69,   -3,    0), 31,  2,  5,  8, 10),
+            new(new( -43,  -14,   28), 31,  0,  2,  8,  8),
+            new(new(  26,   -7,   73), 31,  0,  4,  7,  9),
+            new(new( -26,   -7,   73), 31,  0,  4,  8, 10),
+            new(new(  43,   14,   28), 31,  3,  4,  6,  9),
+            new(new( -43,   14,   28), 31,  3,  4,  5, 10),
+            new(new(   0,    9,  -45), 31,  3,  5,  6, 11),
+            new(new( -17,    0,  -45), 10, 11, 11, 11, 11),
+            new(new(  17,    0,  -45),  9, 11, 11, 11, 11),
+            new(new(   0,   -4,  -45), 10, 11, 11, 11, 11),
+            new(new(   0,    4,  -45),  8, 11, 11, 11, 11),
+            new(new(   0,   -7,   73), 10,  0,  4,  0,  4),
+            new(new(   0,   -7,   83), 10,  0,  4,  0,  4),
         };
-
-        private static readonly ShipFace[] asp2_face =
+        private static readonly ShipFace[] s_faces =
         {
             new(GFX_COL.GFX_COL_GREY_4, new( 0x00,-0x23, 0x05), new[] { 8,  9,  7,  0, 4 }),
             new(GFX_COL.GFX_COL_GREY_2, new( 0x08,-0x26,-0x07), new[] { 3,  4,  0,  1, 2 }),
@@ -97,7 +100,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x23, 0x05), new[] {  17, 18 }),
         };
 
-        internal static ShipData asp2_data = new(
+        internal Asp2() : base(
             "Asp MkII",
             0,
             0,
@@ -109,10 +112,12 @@ namespace Elite.Engine.Ships
             40,
             1,
             20,
-            asp2_point,
-            asp2_line,
-            asp2_face_normal,
-            asp2_face
-        );
+            s_points,
+            s_lines,
+            s_faceNormals,
+            s_faces
+        )
+        {
+        }
     }
 }

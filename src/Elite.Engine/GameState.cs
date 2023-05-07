@@ -74,7 +74,7 @@ namespace Elite.Engine
             { ShipType.CobraMk1, Ship.cobra1_data },
             { ShipType.Worm, Ship.worm_data },
             { ShipType.CobraMk3Lone, Ship.cobra3b_data },
-            { ShipType.Asp2, Ship.asp2_data },
+            { ShipType.Asp2, new Asp2() },
             { ShipType.PythonLone, Ship.pythonb_data },
             { ShipType.FerDeLance, Ship.ferdlce_data },
             { ShipType.Moray, Ship.moray_data },
