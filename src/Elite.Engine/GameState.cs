@@ -63,7 +63,7 @@ namespace Elite.Engine
             { ShipType.CobraMk3, Ship.cobra3a_data },
             { ShipType.Python, Ship.pythona_data },
             { ShipType.Boa, Ship.boa_data },
-            { ShipType.Anaconda, Ship.anacnda_data },
+            { ShipType.Anaconda, new Anaconda() },
             { ShipType.Hermit, Ship.hermit_data },
             { ShipType.Viper, Ship.viper_data },
             { ShipType.Sidewinder, Ship.sidewnd_data },

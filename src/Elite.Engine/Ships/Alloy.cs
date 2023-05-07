@@ -8,18 +8,18 @@ namespace Elite.Engine.Ships
 {
     internal class Alloy : ShipData
     {
-        private static readonly ShipFace[] s_alloy_face =
+        private static readonly ShipFace[] s_faces =
         {
             new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x00, 0x00), new[] { 0, 1, 2, 3 }),
             new(GFX_COL.GFX_COL_GREY_3, new(0x00, 0x00, 0x00), new[] { 3, 2, 1, 0, 0, 0, 0, 0 }),
         };
 
-        private static readonly ShipFaceNormal[] s_alloy_face_normal =
+        private static readonly ShipFaceNormal[] s_faceNormals =
         {
             new ShipFaceNormal(0, new(0, 0, 0)),
         };
 
-        private static readonly ShipLine[] s_alloy_line =
+        private static readonly ShipLine[] s_lines =
         {
             new(31, 15, 15,  0,  1),
             new(16, 15, 15,  1,  2),
@@ -27,7 +27,7 @@ namespace Elite.Engine.Ships
             new(16, 15, 15,  3,  0),
         };
 
-        private static readonly ShipPoint[] s_alloy_point =
+        private static readonly ShipPoint[] s_points =
                                 {
             new(new( -15,  -22,   -9), 31, 15, 15, 15, 15),
             new(new( -15,   38,   -9), 31, 15, 15, 15, 15),
@@ -46,10 +46,10 @@ namespace Elite.Engine.Ships
             16,
             0,
             0,
-            s_alloy_point,
-            s_alloy_line,
-            s_alloy_face_normal,
-            s_alloy_face
+            s_points,
+            s_lines,
+            s_faceNormals,
+            s_faces
         )
         {
         }

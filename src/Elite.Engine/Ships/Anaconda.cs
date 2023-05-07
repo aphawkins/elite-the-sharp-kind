@@ -1,29 +1,30 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal static partial class Ship
+    internal class Anaconda : ShipData
     {
-        internal static readonly ShipPoint[] anacnda_point =
+        internal static readonly ShipFaceNormal[] s_faceNormals =
         {
-            new(new(   0,    7,  -58), 30,  0,  1,  5,  5),
-            new(new( -43,  -13,  -37), 30,  0,  1,  2,  2),
-            new(new( -26,  -47,   -3), 30,  0,  2,  3,  3),
-            new(new(  26,  -47,   -3), 30,  0,  3,  4,  4),
-            new(new(  43,  -13,  -37), 30,  0,  4,  5,  5),
-            new(new(   0,   48,  -49), 30,  1,  5,  6,  6),
-            new(new( -69,   15,  -15), 30,  1,  2,  7,  7),
-            new(new( -43,  -39,   40), 31,  2,  3,  8,  8),
-            new(new(  43,  -39,   40), 31,  3,  4,  9,  9),
-            new(new(  69,   15,  -15), 30,  4,  5, 10, 10),
-            new(new( -43,   53,  -23), 31, 15, 15, 15, 15),
-            new(new( -69,   -1,   32), 31,  2,  7,  8,  8),
-            new(new(   0,    0,  254), 31, 15, 15, 15, 15),
-            new(new(  69,   -1,   32), 31,  4,  9, 10, 10),
-            new(new(  43,   53,  -23), 31, 15, 15, 15, 15),
+            new(30, new(   0,  -51,  -49)),
+            new(30, new( -51,   18,  -87)),
+            new(30, new( -77,  -57,  -19)),
+            new(31, new(   0,  -90,   16)),
+            new(30, new(  77,  -57,  -19)),
+            new(30, new(  51,   18,  -87)),
+            new(30, new(   0,  111,  -20)),
+            new(31, new( -97,   72,   24)),
+            new(31, new(-108,  -68,   34)),
+            new(31, new( 108,  -68,   34)),
+            new(31, new(  97,   72,   24)),
+            new(31, new(   0,   94,   18)),
         };
 
-        internal static readonly ShipLine[] anacnda_line =
+        internal static readonly ShipLine[] s_lines =
         {
             new(30,  0,  1,  0,  1),
             new(30,  0,  2,  1,  2),
@@ -52,23 +53,25 @@ namespace Elite.Engine.Ships
             new(31, 10, 11, 12, 14),
         };
 
-        internal static readonly ShipFaceNormal[] anacnda_face_normal =
-        {
-            new(30, new(   0,  -51,  -49)),
-            new(30, new( -51,   18,  -87)),
-            new(30, new( -77,  -57,  -19)),
-            new(31, new(   0,  -90,   16)),
-            new(30, new(  77,  -57,  -19)),
-            new(30, new(  51,   18,  -87)),
-            new(30, new(   0,  111,  -20)),
-            new(31, new( -97,   72,   24)),
-            new(31, new(-108,  -68,   34)),
-            new(31, new( 108,  -68,   34)),
-            new(31, new(  97,   72,   24)),
-            new(31, new(   0,   94,   18)),
+        internal static readonly ShipPoint[] s_points =
+                        {
+            new(new(   0,    7,  -58), 30,  0,  1,  5,  5),
+            new(new( -43,  -13,  -37), 30,  0,  1,  2,  2),
+            new(new( -26,  -47,   -3), 30,  0,  2,  3,  3),
+            new(new(  26,  -47,   -3), 30,  0,  3,  4,  4),
+            new(new(  43,  -13,  -37), 30,  0,  4,  5,  5),
+            new(new(   0,   48,  -49), 30,  1,  5,  6,  6),
+            new(new( -69,   15,  -15), 30,  1,  2,  7,  7),
+            new(new( -43,  -39,   40), 31,  2,  3,  8,  8),
+            new(new(  43,  -39,   40), 31,  3,  4,  9,  9),
+            new(new(  69,   15,  -15), 30,  4,  5, 10, 10),
+            new(new( -43,   53,  -23), 31, 15, 15, 15, 15),
+            new(new( -69,   -1,   32), 31,  2,  7,  8,  8),
+            new(new(   0,    0,  254), 31, 15, 15, 15, 15),
+            new(new(  69,   -1,   32), 31,  4,  9, 10, 10),
+            new(new(  43,   53,  -23), 31, 15, 15, 15, 15),
         };
-
-        private static readonly ShipFace[] anaconda_face =
+        private static readonly ShipFace[] s_faces =
         {
             new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x33,-0x31), new[] { 3,  2,  1,  0, 4 }),
             new(GFX_COL.GFX_COL_GREEN_2, new(-0x33, 0x12,-0x57), new[] { 6, 10,  5,  0, 1 }),
@@ -87,7 +90,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x5E, 0x12), new[] { 10, 12, 14 }),
         };
 
-        internal static ShipData anacnda_data = new(
+        internal Anaconda() : base(
             "Anaconda",
             7,
             0,
@@ -99,10 +102,12 @@ namespace Elite.Engine.Ships
             14,
             7,
             31,
-            anacnda_point,
-            anacnda_line,
-            anacnda_face_normal,
-            anaconda_face
-        );
+            s_points,
+            s_lines,
+            s_faceNormals,
+            s_faces
+        )
+        {
+        }
     }
 }

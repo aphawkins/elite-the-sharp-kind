@@ -8,7 +8,7 @@ namespace Elite.Engine.Ships
 {
     internal class Adder : ShipData
     {
-        private static readonly ShipFace[] s_adder_face =
+        private static readonly ShipFace[] s_faces =
         {
             new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x27, 0x0A), new[] { 0, 1,  11,  10 }),
             new(GFX_COL.GFX_COL_GREY_1, new(0x00,-0x27, 0x0A), new[] { 1, 0,  12,  13 }),
@@ -29,7 +29,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x27, 0x0A), new[] { 17, 14, 15, 16 }),
         };
 
-        private static readonly ShipFaceNormal[] s_adder_face_normal =
+        private static readonly ShipFaceNormal[] s_faceNormals =
         {
             new(31, new(    0,   39,   10)),
             new(31, new(    0,  -39,   10)),
@@ -48,7 +48,7 @@ namespace Elite.Engine.Ships
             new(31, new(    0,  -28,    0)),
         };
 
-        private static readonly ShipLine[] s_adder_line =
+        private static readonly ShipLine[] s_lines =
         {
             new(31,  0,  1,  0,  1),
             new( 7,  2,  3,  1,  2),
@@ -81,7 +81,7 @@ namespace Elite.Engine.Ships
             new( 3,  0,  0, 17, 14),
         };
 
-        private static readonly ShipPoint[] s_adder_point =
+        private static readonly ShipPoint[] s_points =
         {
             new(new( -18,    0,   40), 31,  0,  1, 11, 12),
             new(new(  18,    0,   40), 31,  0,  1,  2,  3),
@@ -115,10 +115,10 @@ namespace Elite.Engine.Ships
             24,
             0,
             8,
-            s_adder_point,
-            s_adder_line,
-            s_adder_face_normal,
-            s_adder_face
+            s_points,
+            s_lines,
+            s_faceNormals,
+            s_faces
         )
         { }
     }
