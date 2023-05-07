@@ -1,16 +1,6 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
 using System.Text.Json;
@@ -23,13 +13,7 @@ namespace Elite.Engine.Save
 {
     internal class SaveFile
     {
-        private const string fileExtension = ".cmdr";
-        private readonly GameState _state;
-        private readonly PlayerShip _ship;
-        private readonly Trade _trade;
-        private readonly Planet _planet;
-        private SaveState _lastSaved;
-
+        private const string FileExtension = ".cmdr";
         private static readonly JsonSerializerOptions options = new()
         {
             WriteIndented = true,
@@ -37,6 +21,11 @@ namespace Elite.Engine.Save
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
+        private readonly Planet _planet;
+        private readonly PlayerShip _ship;
+        private readonly GameState _state;
+        private readonly Trade _trade;
+        private SaveState _lastSaved;
         internal SaveFile(GameState state, PlayerShip ship, Trade trade, Planet planet)
         {
             _state = state;
@@ -51,33 +40,10 @@ namespace Elite.Engine.Save
 #endif
         }
 
-        /// <summary>
-        /// Write the save file.
-        /// </summary>
-        /// <param name="state">The game state to save.</param>
-        internal async Task<bool> SaveCommanderAsync(string newName)
+        internal void GetLastSave()
         {
-            try
-            {
-                SaveState save = GameStateToSaveState(newName);
-
-                string path = save.CommanderName + fileExtension;
-                if (File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-                using FileStream stream = File.OpenWrite(path);
-                await JsonSerializer.SerializeAsync(stream, save, options);
-
-                _lastSaved = save;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                //TODO: handle error message better
-                Debug.WriteLine("Failed to save commander.\n" + ex);
-                return false;
-            }
+            SaveStateToGameState();
+            RestoreSavedCommander();
         }
 
         /// <summary>
@@ -87,7 +53,7 @@ namespace Elite.Engine.Save
         {
             try
             {
-                using FileStream stream = File.OpenRead(name + fileExtension);
+                using FileStream stream = File.OpenRead(name + FileExtension);
                 SaveState? save = await JsonSerializer.DeserializeAsync<SaveState>(stream, options);
                 if (save != null)
                 {
@@ -106,22 +72,34 @@ namespace Elite.Engine.Save
             return false;
         }
 
-        internal void GetLastSave()
+        /// <summary>
+        /// Write the save file.
+        /// </summary>
+        /// <param name="state">The game state to save.</param>
+        internal async Task<bool> SaveCommanderAsync(string newName)
         {
-            SaveStateToGameState();
-            RestoreSavedCommander();
-        }
+            try
+            {
+                SaveState save = GameStateToSaveState(newName);
 
-        private void RestoreSavedCommander()
-        {
-            _state.DockedPlanet = _planet.FindPlanet(_state.Cmdr.Galaxy, new(_state.DockedPlanet.D, _state.DockedPlanet.B));
-            _state.PlanetName = _planet.NamePlanet(_state.DockedPlanet, false);
-            _state.HyperspacePlanet = (GalaxySeed)_state.DockedPlanet.Clone();
-            _state.CurrentPlanetData = Planet.GeneratePlanetData(_state.DockedPlanet);
-            _trade.GenerateStockMarket(_state.CurrentPlanetData);
-            _trade.SetStockQuantities();
-        }
+                string path = save.CommanderName + FileExtension;
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                using FileStream stream = File.OpenWrite(path);
+                await JsonSerializer.SerializeAsync(stream, save, options);
 
+                _lastSaved = save;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //TODO: handle error message better
+                Debug.WriteLine("Failed to save commander.\n" + ex);
+                return false;
+            }
+        }
         private SaveState GameStateToSaveState(string newName)
         {
             SaveState save = new()
@@ -172,6 +150,15 @@ namespace Elite.Engine.Save
             return save;
         }
 
+        private void RestoreSavedCommander()
+        {
+            _state.DockedPlanet = _planet.FindPlanet(_state.Cmdr.Galaxy, new(_state.DockedPlanet.D, _state.DockedPlanet.B));
+            _state.PlanetName = _planet.NamePlanet(_state.DockedPlanet, false);
+            _state.HyperspacePlanet = (GalaxySeed)_state.DockedPlanet.Clone();
+            _state.CurrentPlanetData = Planet.GeneratePlanetData(_state.DockedPlanet);
+            _trade.GenerateStockMarket(_state.CurrentPlanetData);
+            _trade.SetStockQuantities();
+        }
         private void SaveStateToGameState()
         {
             _ship.CargoCapacity = _lastSaved.CargoCapacity;
