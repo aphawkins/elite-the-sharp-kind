@@ -118,7 +118,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(150, 106, $"{_ship.Fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 122, $"{_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(150, 122, $"{_trade._credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
 
             _gfx.DrawTextLeft(16, 138, "Legal Status:", GFX_COL.GFX_COL_GREEN_1);
             _gfx.DrawTextLeft(150, 138, _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);

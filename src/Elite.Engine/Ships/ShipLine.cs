@@ -1,20 +1,24 @@
-﻿namespace Elite.Engine.Ships
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+namespace Elite.Engine.Ships
 {
     internal class ShipLine
     {
-        internal int dist;
-        internal int face1;
-        internal int face2;
-        internal int start_point;
-        internal int end_point;
-
-        internal ShipLine(int dist, int face1, int face2, int start_point, int end_point)
+        internal ShipLine(int distance, int face1, int face2, int startPoint, int endPoint)
         {
-            this.dist = dist;
-            this.face1 = face1;
-            this.face2 = face2;
-            this.start_point = start_point;
-            this.end_point = end_point;
+            Distance = distance;
+            Face1 = face1;
+            Face2 = face2;
+            StartPoint = startPoint;
+            EndPoint = endPoint;
         }
+
+        internal int Distance { get; set; }
+        internal int EndPoint { get; set; }
+        internal int Face1 { get; set; }
+        internal int Face2 { get; set; }
+        internal int StartPoint { get; set; }
     };
 }

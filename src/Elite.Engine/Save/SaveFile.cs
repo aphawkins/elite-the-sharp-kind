@@ -106,7 +106,7 @@ namespace Elite.Engine.Save
             {
                 CargoCapacity = _ship.CargoCapacity,
                 CommanderName = newName,
-                Credits = _trade.credits,
+                Credits = _trade._credits,
                 CurrentCargo = _trade.stockMarket.Values.Select(x => x.currentCargo).ToArray(),
                 EnergyUnit = _ship.EnergyUnit.ToString(),
                 Fuel = _ship.Fuel,
@@ -134,7 +134,7 @@ namespace Elite.Engine.Save
                     _ship.LaserLeft.Type.ToString()
                 },
                 LegalStatus = _state.Cmdr.LegalStatus,
-                MarketRandomiser = _trade.marketRandomiser,
+                MarketRandomiser = _trade._marketRandomiser,
                 Missiles = _ship.MissileCount,
                 Mission = _state.Cmdr.Mission,
                 Saved = _state.Cmdr.Saved,
@@ -163,7 +163,7 @@ namespace Elite.Engine.Save
         {
             _ship.CargoCapacity = _lastSaved.CargoCapacity;
             _state.Cmdr.Name = _lastSaved.CommanderName;
-            _trade.credits = _lastSaved.Credits;
+            _trade._credits = _lastSaved.Credits;
             for (int i = 0; i < _trade.stockMarket.Count; i++)
             {
                 _trade.stockMarket[(StockType)i + 1].currentCargo = _lastSaved.CurrentCargo[i];
@@ -188,7 +188,7 @@ namespace Elite.Engine.Save
             _ship.LaserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));
             _ship.LaserLeft = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[3]));
             _state.Cmdr.LegalStatus = _lastSaved.LegalStatus;
-            _trade.marketRandomiser = _lastSaved.MarketRandomiser;
+            _trade._marketRandomiser = _lastSaved.MarketRandomiser;
             _ship.MissileCount = _lastSaved.Missiles;
             _state.Cmdr.Mission = _lastSaved.Mission;
             _state.Cmdr.Saved = _lastSaved.Saved;

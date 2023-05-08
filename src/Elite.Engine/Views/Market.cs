@@ -79,7 +79,7 @@ namespace Elite.Engine.Views
             }
 
             _gfx.DrawTextLeft(16, 340, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextRight(160, 340, $"{_trade.credits,10:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextRight(160, 340, $"{_trade._credits,10:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
 
         public void HandleInput()

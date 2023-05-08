@@ -106,7 +106,7 @@ namespace Elite.Engine.Views
                 // Show debrief
                 _gameState.Cmdr.Mission = 3;
                 _gameState.Cmdr.Score += 256;
-                _trade.credits += 5000;
+                _trade._credits += 5000;
             }
             else
             {

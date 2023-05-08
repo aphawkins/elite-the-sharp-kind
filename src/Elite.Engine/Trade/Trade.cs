@@ -1,7 +1,11 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 using Elite.Engine.Ships;
 using Elite.Engine.Types;
 
-namespace Elite.Engine
+namespace Elite.Engine.Trade
 {
     internal class Trade
     {
@@ -9,9 +13,8 @@ namespace Elite.Engine
         internal const string KILOGRAMS = "Kg";
         internal const string TONNES = "t";
 
-        internal float credits;
-
-        internal int marketRandomiser;
+        internal float _credits;
+        internal int _marketRandomiser;
 
         /// <summary>
         /// The following holds the Elite Planet Stock Market.
@@ -45,7 +48,7 @@ namespace Elite.Engine
 
         internal void BuyStock(StockType stock)
         {
-            if (stockMarket[stock].currentQuantity == 0 || credits < stockMarket[stock].currentPrice)
+            if (stockMarket[stock].currentQuantity == 0 || _credits < stockMarket[stock].currentPrice)
             {
                 return;
             }
@@ -57,7 +60,7 @@ namespace Elite.Engine
 
             stockMarket[stock].currentCargo++;
             stockMarket[stock].currentQuantity--;
-            credits -= stockMarket[stock].currentPrice;
+            _credits -= stockMarket[stock].currentPrice;
         }
 
         internal void ClearCurrentCargo()
@@ -81,14 +84,14 @@ namespace Elite.Engine
                 // Start with the base price
                 float price = stock.Value.basePrice;
                 // Add in a random amount
-                price += (marketRandomiser & stock.Value.mask) / 10;
+                price += (_marketRandomiser & stock.Value.mask) / 10;
                 // Adjust for planet economy
                 price += currentPlanet.Economy * stock.Value.economyAdjust / 10;
 
                 // Start with the base quantity
                 int quant = stock.Value.baseQuantity;
                 // Add in a random amount
-                quant += marketRandomiser & stock.Value.mask;
+                quant += _marketRandomiser & stock.Value.mask;
                 // Adjust for planet economy
                 quant -= currentPlanet.Economy * stock.Value.economyAdjust;
                 // Quantities range from 0..63
@@ -113,7 +116,7 @@ namespace Elite.Engine
 
             stockMarket[stock].currentCargo--;
             stockMarket[stock].currentQuantity++;
-            credits += stockMarket[stock].currentPrice;
+            _credits += stockMarket[stock].currentPrice;
         }
 
         internal void SetStockQuantities()
@@ -133,7 +136,7 @@ namespace Elite.Engine
 
             foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
             {
-                if ((stock.Value.currentCargo > 0) && (stock.Value.units == TONNES))
+                if (stock.Value.currentCargo > 0 && stock.Value.units == TONNES)
                 {
                     cargo += stock.Value.currentCargo;
                 }

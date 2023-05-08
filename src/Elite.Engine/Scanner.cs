@@ -36,7 +36,7 @@ namespace Elite.Engine
         private readonly PlayerShip _ship;
         private readonly Combat _combat;
         private readonly Draw _draw;
-        private Vector2 scanner_centre = new(253, 63 + 385);
+        private Vector2 _scannerCentre = new(253, 63 + 385);
 
         internal Scanner(GameState gameState, IGfx gfx, Draw draw, UniverseObject[] universe, Dictionary<ShipType, int> shipCount, PlayerShip ship, Combat combat)
         {
@@ -73,9 +73,9 @@ namespace Elite.Engine
                     continue;
                 }
 
-                x += scanner_centre.X;
-                y1 += scanner_centre.Y;
-                y2 += scanner_centre.Y;
+                x += _scannerCentre.X;
+                y1 += _scannerCentre.Y;
+                y2 += _scannerCentre.Y;
 
                 GFX_COL colour = _universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
 

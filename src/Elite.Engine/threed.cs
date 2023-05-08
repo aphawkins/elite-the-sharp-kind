@@ -80,7 +80,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < ship.Points.Length; i++)
             {
-                Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].point, trans_mat);
+                Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
                 vec += univ.location;
 
                 if (vec.Z <= 0)
@@ -96,28 +96,28 @@ namespace Elite.Engine
 
             for (int i = 0; i < ship.Faces.Length; i++)
             {
-                int point0 = face_data[i].points[0];
-                int point1 = face_data[i].points[1];
-                int point2 = face_data[i].points.Length > 2 ? face_data[i].points[2] : 0;
+                int point0 = face_data[i].Points[0];
+                int point1 = face_data[i].Points[1];
+                int point2 = face_data[i].Points.Length > 2 ? face_data[i].Points[2] : 0;
 
                 if ((((point_list[point0].X - point_list[point1].X) *
                      (point_list[point2].Y - point_list[point1].Y)) -
                      ((point_list[point0].Y - point_list[point1].Y) *
                      (point_list[point2].X - point_list[point1].X))) <= 0)
                 {
-                    int num_points = face_data[i].points.Length;
+                    int num_points = face_data[i].Points.Length;
                     Vector2[] poly_list = new Vector2[num_points];
 
                     float zavg = 0;
 
                     for (int j = 0; j < num_points; j++)
                     {
-                        poly_list[j].X = point_list[face_data[i].points[j]].X;
-                        poly_list[j].Y = point_list[face_data[i].points[j]].Y;
-                        zavg = MathF.Max(zavg, point_list[face_data[i].points[j]].Z);
+                        poly_list[j].X = point_list[face_data[i].Points[j]].X;
+                        poly_list[j].Y = point_list[face_data[i].Points[j]].Y;
+                        zavg = MathF.Max(zavg, point_list[face_data[i].Points[j]].Z);
                     }
 
-                    DrawPolygonFilled(poly_list, face_data[i].colour, zavg);
+                    DrawPolygonFilled(poly_list, face_data[i].Colour, zavg);
                 }
             }
 
@@ -458,7 +458,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < ship.FaceNormals.Length; i++)
             {
-                Vector3 vec = VectorMaths.UnitVector(ship_norm[i].direction);
+                Vector3 vec = VectorMaths.UnitVector(ship_norm[i].Direction);
                 float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
                 visible[i] = cos_angle < -0.13;
             }
@@ -470,10 +470,10 @@ namespace Elite.Engine
 
             for (int i = 0; i < ship.Points.Length; i++)
             {
-                if (visible[ship.Points[i].face1] || visible[ship.Points[i].face2] ||
-                    visible[ship.Points[i].face3] || visible[ship.Points[i].face4])
+                if (visible[ship.Points[i].Face1] || visible[ship.Points[i].Face2] ||
+                    visible[ship.Points[i].Face3] || visible[ship.Points[i].Face4])
                 {
-                    Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].point, trans_mat);
+                    Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
                     Vector3 r = vec + univ.location;
 
                     float sx = r.X * 256f / r.Z;

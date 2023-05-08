@@ -99,7 +99,7 @@ namespace Elite.Engine.Views
                 y += 15;
             }
 
-            _gfx.DrawTextLeft(16, 340, $"Cash: {_trade.credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 340, $"Cash: {_trade._credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
         }
 
         public void HandleInput()
@@ -197,87 +197,87 @@ namespace Elite.Engine.Views
                     break;
 
                 case EquipmentType.EQ_FRONT_PULSE:
-                    _trade.credits += LaserRefund(_ship.LaserFront.Type);
+                    _trade._credits += LaserRefund(_ship.LaserFront.Type);
                     _ship.LaserFront = new PulseLaser();
                     break;
 
                 case EquipmentType.EQ_REAR_PULSE:
-                    _trade.credits += LaserRefund(_ship.LaserRear.Type);
+                    _trade._credits += LaserRefund(_ship.LaserRear.Type);
                     _ship.LaserRear = new PulseLaser();
                     break;
 
                 case EquipmentType.EQ_LEFT_PULSE:
-                    _trade.credits += LaserRefund(_ship.LaserLeft.Type);
+                    _trade._credits += LaserRefund(_ship.LaserLeft.Type);
                     _ship.LaserLeft = new PulseLaser();
                     break;
 
                 case EquipmentType.EQ_RIGHT_PULSE:
-                    _trade.credits += LaserRefund(_ship.LaserRight.Type);
+                    _trade._credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new PulseLaser();
                     break;
 
                 case EquipmentType.EQ_FRONT_BEAM:
-                    _trade.credits += LaserRefund(_ship.LaserFront.Type);
+                    _trade._credits += LaserRefund(_ship.LaserFront.Type);
                     _ship.LaserFront = new BeamLaser();
                     break;
 
                 case EquipmentType.EQ_REAR_BEAM:
-                    _trade.credits += LaserRefund(_ship.LaserRear.Type);
+                    _trade._credits += LaserRefund(_ship.LaserRear.Type);
                     _ship.LaserRear = new BeamLaser();
                     break;
 
                 case EquipmentType.EQ_LEFT_BEAM:
-                    _trade.credits += LaserRefund(_ship.LaserLeft.Type);
+                    _trade._credits += LaserRefund(_ship.LaserLeft.Type);
                     _ship.LaserLeft = new BeamLaser();
                     break;
 
                 case EquipmentType.EQ_RIGHT_BEAM:
-                    _trade.credits += LaserRefund(_ship.LaserRight.Type);
+                    _trade._credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new BeamLaser();
                     break;
 
                 case EquipmentType.EQ_FRONT_MINING:
-                    _trade.credits += LaserRefund(_ship.LaserFront.Type);
+                    _trade._credits += LaserRefund(_ship.LaserFront.Type);
                     _ship.LaserFront = new MiningLaser();
                     break;
 
                 case EquipmentType.EQ_REAR_MINING:
-                    _trade.credits += LaserRefund(_ship.LaserRear.Type);
+                    _trade._credits += LaserRefund(_ship.LaserRear.Type);
                     _ship.LaserRear = new MiningLaser();
                     break;
 
                 case EquipmentType.EQ_LEFT_MINING:
-                    _trade.credits += LaserRefund(_ship.LaserLeft.Type);
+                    _trade._credits += LaserRefund(_ship.LaserLeft.Type);
                     _ship.LaserLeft = new MiningLaser();
                     break;
 
                 case EquipmentType.EQ_RIGHT_MINING:
-                    _trade.credits += LaserRefund(_ship.LaserRight.Type);
+                    _trade._credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new MiningLaser();
                     break;
 
                 case EquipmentType.EQ_FRONT_MILITARY:
-                    _trade.credits += LaserRefund(_ship.LaserFront.Type);
+                    _trade._credits += LaserRefund(_ship.LaserFront.Type);
                     _ship.LaserFront = new MilitaryLaser();
                     break;
 
                 case EquipmentType.EQ_REAR_MILITARY:
-                    _trade.credits += LaserRefund(_ship.LaserRear.Type);
+                    _trade._credits += LaserRefund(_ship.LaserRear.Type);
                     _ship.LaserRear = new MilitaryLaser();
                     break;
 
                 case EquipmentType.EQ_LEFT_MILITARY:
-                    _trade.credits += LaserRefund(_ship.LaserLeft.Type);
+                    _trade._credits += LaserRefund(_ship.LaserLeft.Type);
                     _ship.LaserLeft = new MilitaryLaser();
                     break;
 
                 case EquipmentType.EQ_RIGHT_MILITARY:
-                    _trade.credits += LaserRefund(_ship.LaserRight.Type);
+                    _trade._credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new MilitaryLaser();
                     break;
             }
 
-            _trade.credits -= _equipmentStock[_highlightedItem].Price;
+            _trade._credits -= _equipmentStock[_highlightedItem].Price;
             ListPrices();
         }
 
@@ -340,7 +340,7 @@ namespace Elite.Engine.Views
 
             for (int i = 0; i < _equipmentStock.Length; i++)
             {
-                _equipmentStock[i].CanBuy = !PresentEquipment(_equipmentStock[i].Type) && _equipmentStock[i].Price <= _trade.credits;
+                _equipmentStock[i].CanBuy = !PresentEquipment(_equipmentStock[i].Type) && _equipmentStock[i].Price <= _trade._credits;
                 _equipmentStock[i].Show = _equipmentStock[i].Show && techLevel >= _equipmentStock[i].TechLevel;
             }
 

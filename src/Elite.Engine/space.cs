@@ -490,8 +490,8 @@ namespace Elite.Engine
 
                     if ((bounty != 0) && (!_gameState.InWitchspace))
                     {
-                        _trade.credits += bounty;
-                        _gameState.InfoMessage($"{_trade.credits:N1} Credits");
+                        _trade._credits += bounty;
+                        _gameState.InfoMessage($"{_trade._credits:N1} Credits");
                     }
 
                     _combat.RemoveShip(i);
@@ -697,7 +697,7 @@ namespace Elite.Engine
                 _gameState.DockedPlanet = (GalaxySeed)destination_planet.Clone();
             }
 
-            _trade.marketRandomiser = RNG.Random(255);
+            _trade._marketRandomiser = RNG.Random(255);
             _gameState.CurrentPlanetData = Planet.GeneratePlanetData(_gameState.DockedPlanet);
             _trade.GenerateStockMarket(_gameState.CurrentPlanetData);
 
