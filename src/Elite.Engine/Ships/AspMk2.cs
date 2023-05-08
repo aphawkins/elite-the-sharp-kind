@@ -6,10 +6,14 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class Asp2 : ShipData
+    internal class AspMk2 : IShip
     {
-        internal static readonly ShipFaceNormal[] s_faceNormals =
-        {
+        public float Bounty => 20;
+
+        public int EnergyMax => 150;
+
+        public ShipFaceNormal[] FaceNormals { get; } =
+                        {
             new(31, new(   0,  -35,    5)),
             new(31, new(   8,  -38,   -7)),
             new(31, new(  -8,  -38,   -7)),
@@ -24,9 +28,35 @@ namespace Elite.Engine.Ships
             new(31, new(   0,    0,  -90)),
         };
 
-        internal static readonly ShipLine[] s_lines =
+        public ShipFace[] Faces { get; } =
         {
-            new(22,  1,  2,  0,  1),
+            new(GFX_COL.GFX_COL_GREY_4, new( 0x00,-0x23, 0x05), new[] { 8,  9,  7,  0, 4 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x08,-0x26,-0x07), new[] { 3,  4,  0,  1, 2 }),
+            new (GFX_COL.GFX_COL_GREY_1, new(-0x08,-0x26,-0x07), new[] {  1,  0,  7,  6, 5 }),
+            new(GFX_COL.GFX_COL_GREY_3, new( 0x3B,-0x40, 0x1F), new[] {  8,  4, 3 }),
+            new(GFX_COL.GFX_COL_GREY_3, new(-0x3B,-0x40, 0x1F), new[] {  6,  7, 9 }),
+
+            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x18,-0x01), new[] { 11, 10, 12 }),
+            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x2B, 0x13), new[] { 9,  8, 10, 11 }),
+            new(GFX_COL.GFX_COL_BLUE_4, new(-0x06, 0x1C,-0x02), new[] { 6, 11, 12, 5 }),
+            new(GFX_COL.GFX_COL_BLUE_4, new( 0x06, 0x1C,-0x02), new[] { 2, 12, 10, 3 }),
+            new(GFX_COL.GFX_COL_BLUE_3, new( 0x50, 0x2E, 0x32), new[] { 3, 10, 8 }),
+            new(GFX_COL.GFX_COL_BLUE_3, new(-0x50, 0x2E, 0x32), new[] { 9, 11, 6 }),
+
+            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x00,-0x5A), new[] { 2,  1,  5, 12 }),
+            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x5A), new[] { 14, 15, 13, 16 }),
+
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00, 0x2B, 0x13), new[] { 18, 17 }),
+            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x23, 0x05), new[] {  17, 18 }),
+        };
+
+        public int LaserFront => 8;
+
+        public int LaserStrength => 20;
+
+        public ShipLine[] Lines { get; } =
+                                {
+            new (22,  1,  2,  0,  1),
             new(22,  0,  1,  0,  4),
             new(22,  0,  2,  0,  7),
             new(31,  1, 11,  1,  2),
@@ -55,9 +85,14 @@ namespace Elite.Engine.Ships
             new( 8, 11, 11, 16, 13),
             new(10,  0,  4, 18, 17),
         };
+        public int LootMax => 0;
 
-        internal static readonly ShipPoint[] s_points =
-                        {
+        public int MissilesMax => 1;
+
+        public string Name => "Asp MkII";
+
+        public ShipPoint[] Points { get; } =
+                                {
             new(new(   0,  -18,    0), 22,  0,  1,  2,  2),
             new(new(   0,   -9,  -45), 31,  1,  2, 11, 11),
             new(new(  43,    0,  -45), 31,  1,  6, 11, 11),
@@ -78,46 +113,11 @@ namespace Elite.Engine.Ships
             new(new(   0,   -7,   73), 10,  0,  4,  0,  4),
             new(new(   0,   -7,   83), 10,  0,  4,  0,  4),
         };
-        private static readonly ShipFace[] s_faces =
-        {
-            new(GFX_COL.GFX_COL_GREY_4, new( 0x00,-0x23, 0x05), new[] { 8,  9,  7,  0, 4 }),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x08,-0x26,-0x07), new[] { 3,  4,  0,  1, 2 }),
-            new (GFX_COL.GFX_COL_GREY_1, new(-0x08,-0x26,-0x07), new[] {  1,  0,  7,  6, 5 }),
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x3B,-0x40, 0x1F), new[] {  8,  4, 3 }),
-            new(GFX_COL.GFX_COL_GREY_3, new(-0x3B,-0x40, 0x1F), new[] {  6,  7, 9 }),
+        public StockType ScoopedType => throw new NotImplementedException();
+        public float Size => 3600;
+        public ShipClass Type => ShipClass.LoneWolf;
+        public int VanishPoint => 40;
 
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00, 0x18,-0x01), new[] { 11, 10, 12 }),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x2B, 0x13), new[] { 9,  8, 10, 11 }),
-            new(GFX_COL.GFX_COL_BLUE_4, new(-0x06, 0x1C,-0x02), new[] { 6, 11, 12, 5 }),
-            new(GFX_COL.GFX_COL_BLUE_4, new( 0x06, 0x1C,-0x02), new[] { 2, 12, 10, 3 }),
-            new(GFX_COL.GFX_COL_BLUE_3, new( 0x50, 0x2E, 0x32), new[] { 3, 10, 8 }),
-            new(GFX_COL.GFX_COL_BLUE_3, new(-0x50, 0x2E, 0x32), new[] { 9, 11, 6 }),
-
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x00, 0x00,-0x5A), new[] { 2,  1,  5, 12 }),
-            new(GFX_COL.GFX_COL_RED, new( 0x00, 0x00,-0x5A), new[] { 14, 15, 13, 16 }),
-
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00, 0x2B, 0x13), new[] { 18, 17 }),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00,-0x23, 0x05), new[] {  17, 18 }),
-        };
-
-        internal Asp2() : base(
-            "Asp MkII",
-            0,
-            0,
-            3600,
-            8,
-            20,
-            40,
-            150,
-            40,
-            1,
-            20,
-            s_points,
-            s_lines,
-            s_faceNormals,
-            s_faces
-        )
-        {
-        }
+        public float VelocityMax => 40;
     }
 }

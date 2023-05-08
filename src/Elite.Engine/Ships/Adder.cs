@@ -6,9 +6,32 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class Adder : ShipData
+    internal class Adder : IShip
     {
-        private static readonly ShipFace[] s_faces =
+        public float Bounty => 4;
+
+        public int EnergyMax => 85;
+
+        public ShipFaceNormal[] FaceNormals { get; } =
+        {
+            new(31, new(    0,   39,   10)),
+            new(31, new(    0,  -39,   10)),
+            new(31, new(   69,   50,   13)),
+            new(31, new(   69,  -50,   13)),
+            new(31, new(   30,   52,    0)),
+            new(31, new(   30,  -52,    0)),
+            new(31, new(    0,    0, -160)),
+            new(31, new(    0,    0, -160)),
+            new(31, new(    0,    0, -160)),
+            new(31, new(  -30,   52,    0)),
+            new(31, new(  -30,  -52,    0)),
+            new(31, new(  -69,   50,   13)),
+            new(31, new(  -69,  -50,   13)),
+            new(31, new(    0,   28,    0)),
+            new(31, new(    0,  -28,    0)),
+        };
+
+        public ShipFace[] Faces { get; } =
         {
             new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x27, 0x0A), new[] { 0, 1,  11,  10 }),
             new(GFX_COL.GFX_COL_GREY_1, new(0x00,-0x27, 0x0A), new[] { 1, 0,  12,  13 }),
@@ -29,26 +52,11 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x27, 0x0A), new[] { 17, 14, 15, 16 }),
         };
 
-        private static readonly ShipFaceNormal[] s_faceNormals =
-        {
-            new(31, new(    0,   39,   10)),
-            new(31, new(    0,  -39,   10)),
-            new(31, new(   69,   50,   13)),
-            new(31, new(   69,  -50,   13)),
-            new(31, new(   30,   52,    0)),
-            new(31, new(   30,  -52,    0)),
-            new(31, new(    0,    0, -160)),
-            new(31, new(    0,    0, -160)),
-            new(31, new(    0,    0, -160)),
-            new(31, new(  -30,   52,    0)),
-            new(31, new(  -30,  -52,    0)),
-            new(31, new(  -69,   50,   13)),
-            new(31, new(  -69,  -50,   13)),
-            new(31, new(    0,   28,    0)),
-            new(31, new(    0,  -28,    0)),
-        };
+        public int LaserFront => 0;
 
-        private static readonly ShipLine[] s_lines =
+        public int LaserStrength => 8;
+
+        public ShipLine[] Lines { get; } =
         {
             new(31,  0,  1,  0,  1),
             new( 7,  2,  3,  1,  2),
@@ -81,45 +89,42 @@ namespace Elite.Engine.Ships
             new( 3,  0,  0, 17, 14),
         };
 
-        private static readonly ShipPoint[] s_points =
+        public int LootMax => 0;
+
+        public int MissilesMax => 0;
+
+        public string Name => "Adder";
+
+        public ShipPoint[] Points { get; } =
         {
-            new(new( -18,    0,   40), 31,  0,  1, 11, 12),
-            new(new(  18,    0,   40), 31,  0,  1,  2,  3),
-            new(new(  30,    0,  -24), 31,  2,  3,  4,  5),
-            new(new(  30,    0,  -40), 31,  4,  5,  6,  6),
-            new(new(  18,   -7,  -40), 31,  5,  6,  7, 14),
-            new(new( -18,   -7,  -40), 31,  7,  8, 10, 14),
-            new(new( -30,    0,  -40), 31,  8,  9, 10, 10),
-            new(new( -30,    0,  -24), 31,  9, 10, 11, 12),
-            new(new( -18,    7,  -40), 31,  7,  8,  9, 13),
-            new(new(  18,    7,  -40), 31,  4,  6,  7, 13),
-            new(new( -18,    7,   13), 31,  0,  9, 11, 13),
-            new(new(  18,    7,   13), 31,  0,  2,  4, 13),
-            new(new( -18,   -7,   13), 31,  1, 10, 12, 14),
-            new(new(  18,   -7,   13), 31,  1,  3,  5, 14),
-            new(new( -11,    3,   29),  5,  0,  0,  0,  0),
-            new(new(  11,    3,   29),  5,  0,  0,  0,  0),
-            new(new(  11,    4,   24),  4,  0,  0,  0,  0),
-            new(new( -11,    4,   24),  4,  0,  0,  0,  0),
+            new (new ( -18,    0,   40), 31,  0,  1, 11, 12),
+            new (new (  18,    0,   40), 31,  0,  1,  2,  3),
+            new (new (  30,    0,  -24), 31,  2,  3,  4,  5),
+            new (new (  30,    0,  -40), 31,  4,  5,  6,  6),
+            new (new (  18,   -7,  -40), 31,  5,  6,  7, 14),
+            new (new ( -18,   -7,  -40), 31,  7,  8, 10, 14),
+            new (new ( -30,    0,  -40), 31,  8,  9, 10, 10),
+            new (new ( -30,    0,  -24), 31,  9, 10, 11, 12),
+            new (new ( -18,    7,  -40), 31,  7,  8,  9, 13),
+            new (new (  18,    7,  -40), 31,  4,  6,  7, 13),
+            new (new ( -18,    7,   13), 31,  0,  9, 11, 13),
+            new (new (  18,    7,   13), 31,  0,  2,  4, 13),
+            new (new ( -18,   -7,   13), 31,  1, 10, 12, 14),
+            new (new (  18,   -7,   13), 31,  1,  3,  5, 14),
+            new (new ( -11,    3,   29),  5,  0,  0,  0,  0),
+            new (new (  11,    3,   29),  5,  0,  0,  0,  0),
+            new (new (  11,    4,   24),  4,  0,  0,  0,  0),
+            new (new ( -11,    4,   24),  4,  0,  0,  0,  0),
         };
 
-        internal Adder() : base(
-            "Adder",
-            0,
-            0,
-            2500,
-            0,
-            4,
-            20,
-            85,
-            24,
-            0,
-            8,
-            s_points,
-            s_lines,
-            s_faceNormals,
-            s_faces
-        )
-        { }
+        public StockType ScoopedType => StockType.None;
+
+        public float Size => 2500;
+
+        public ShipClass Type => ShipClass.PackHunter;
+
+        public int VanishPoint => 20;
+
+        public float VelocityMax => 24;
     }
 }

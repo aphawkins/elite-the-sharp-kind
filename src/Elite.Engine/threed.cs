@@ -49,7 +49,7 @@ namespace Elite.Engine
             Vector3[] trans_mat = new Vector3[3];
             int lasv;
             GFX_COL col;
-            ShipData ship = _gameState.ShipList[univ.type];
+            IShip ship = _gameState.ShipList[univ.type];
 
             for (int i = 0; i < 3; i++)
             {
@@ -58,7 +58,7 @@ namespace Elite.Engine
 
             Vector3 camera_vec = VectorMaths.MultiplyVector(univ.location, trans_mat);
             camera_vec = VectorMaths.UnitVector(camera_vec);
-            ShipFace[] face_data = ship.face_data;
+            ShipFace[] face_data = ship.Faces;
 
             /*
 				for (i = 0; i < num_faces; i++)
@@ -78,9 +78,9 @@ namespace Elite.Engine
             (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
             (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
 
-            for (int i = 0; i < ship.points.Length; i++)
+            for (int i = 0; i < ship.Points.Length; i++)
             {
-                Vector3 vec = VectorMaths.MultiplyVector(ship.points[i].point, trans_mat);
+                Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].point, trans_mat);
                 vec += univ.location;
 
                 if (vec.Z <= 0)
@@ -94,7 +94,7 @@ namespace Elite.Engine
                 point_list[i] = vec;
             }
 
-            for (int i = 0; i < ship.face_data.Length; i++)
+            for (int i = 0; i < ship.Faces.Length; i++)
             {
                 int point0 = face_data[i].points[0];
                 int point1 = face_data[i].points[1];
@@ -123,7 +123,7 @@ namespace Elite.Engine
 
             if (univ.flags.HasFlag(FLG.FLG_FIRING))
             {
-                lasv = _gameState.ShipList[univ.type].front_laser;
+                lasv = _gameState.ShipList[univ.type].LaserFront;
                 col = (univ.type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
                 Vector2[] pointList = new Vector2[]
@@ -444,7 +444,7 @@ namespace Elite.Engine
                 return;
             }
 
-            ShipData ship = _gameState.ShipList[univ.type];
+            IShip ship = _gameState.ShipList[univ.type];
 
             for (int i = 0; i < 3; i++)
             {
@@ -454,9 +454,9 @@ namespace Elite.Engine
             Vector3 camera_vec = VectorMaths.MultiplyVector(univ.location, trans_mat);
             camera_vec = VectorMaths.UnitVector(camera_vec);
 
-            ShipFaceNormal[] ship_norm = ship.normals;
+            ShipFaceNormal[] ship_norm = ship.FaceNormals;
 
-            for (int i = 0; i < ship.normals.Length; i++)
+            for (int i = 0; i < ship.FaceNormals.Length; i++)
             {
                 Vector3 vec = VectorMaths.UnitVector(ship_norm[i].direction);
                 float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
@@ -468,12 +468,12 @@ namespace Elite.Engine
             (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
             int np = 0;
 
-            for (int i = 0; i < ship.points.Length; i++)
+            for (int i = 0; i < ship.Points.Length; i++)
             {
-                if (visible[ship.points[i].face1] || visible[ship.points[i].face2] ||
-                    visible[ship.points[i].face3] || visible[ship.points[i].face4])
+                if (visible[ship.Points[i].face1] || visible[ship.Points[i].face2] ||
+                    visible[ship.Points[i].face3] || visible[ship.Points[i].face4])
                 {
-                    Vector3 vec = VectorMaths.MultiplyVector(ship.points[i].point, trans_mat);
+                    Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].point, trans_mat);
                     Vector3 r = vec + univ.location;
 
                     float sx = r.X * 256f / r.Z;

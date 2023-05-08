@@ -17,7 +17,7 @@ namespace Elite.Engine
         private readonly GameState _gameState;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
-        private readonly FLG[] _initialFlags = new FLG[Ship.NO_OF_SHIPS + 1]
+        private readonly FLG[] _initialFlags = new FLG[34]
         {
             0,											// NULL,
 			0,											// missile 
@@ -49,7 +49,7 @@ namespace Elite.Engine
 			FLG.FLG_POLICE,									// fer_de_lance
 			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// moray
 			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// thargoid
-			FLG.FLG_ANGRY,									// thargon
+			FLG.FLG_ANGRY,									// tharlet
 			FLG.FLG_ANGRY,									// constrictor
 			FLG.FLG_POLICE | FLG.FLG_CLOAKED,					// cougar
 			0											// dodec
@@ -98,8 +98,8 @@ namespace Elite.Engine
 
                     if (ship_type is not ShipType.Planet and not ShipType.Sun)
                     {
-                        Space.universe[i].energy = _gameState.ShipList[ship_type].energy;
-                        Space.universe[i].missiles = _gameState.ShipList[ship_type].missiles;
+                        Space.universe[i].energy = _gameState.ShipList[ship_type].EnergyMax;
+                        Space.universe[i].missiles = _gameState.ShipList[ship_type].MissilesMax;
                         Space.ship_count[ship_type]++;
                     }
 
@@ -190,9 +190,9 @@ namespace Elite.Engine
                 };
             }
 
-            for (int i = 0; i <= Ship.NO_OF_SHIPS; i++)
+            foreach (ShipType ship in _gameState.ShipList.Keys.ToList())
             {
-                Space.ship_count[(ShipType)i] = 0;
+                Space.ship_count[ship] = 0;
             }
 
             InBattle = false;
@@ -441,9 +441,9 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_gameState.ShipList[type].scoopedType != StockType.None)
+            if (_gameState.ShipList[type].ScoopedType != StockType.None)
             {
-                StockType trade = _gameState.ShipList[type].scoopedType;
+                StockType trade = _gameState.ShipList[type].ScoopedType;
                 _trade.AddCargo(trade);
                 _gameState.InfoMessage(_trade.stockMarket[(StockType)trade].name);
                 RemoveShip(un);
@@ -530,8 +530,7 @@ namespace Elite.Engine
                 return;
             }
 
-
-            if (ship.energy < _gameState.ShipList[type].energy)
+            if (ship.energy < _gameState.ShipList[type].EnergyMax)
             {
                 ship.energy++;
             }
@@ -599,7 +598,7 @@ namespace Elite.Engine
                 }
             }
 
-            maxeng = _gameState.ShipList[type].energy;
+            maxeng = _gameState.ShipList[type].EnergyMax;
             energy = ship.energy;
 
             if (energy < (maxeng / 2))
@@ -632,7 +631,7 @@ namespace Elite.Engine
             direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[2]);
 
             if ((ship.location.Length() < 8192) && (direction <= -0.833) &&
-                 (_gameState.ShipList[type].laser_strength != 0))
+                 (_gameState.ShipList[type].LaserStrength != 0))
             {
                 if (direction <= -0.917)
                 {
@@ -641,7 +640,7 @@ namespace Elite.Engine
 
                 if (direction <= -0.972)
                 {
-                    _ship.DamageShip(_gameState.ShipList[type].laser_strength, ship.location.Z >= 0.0);
+                    _ship.DamageShip(_gameState.ShipList[type].LaserStrength, ship.location.Z >= 0.0);
                     ship.acceleration--;
                     if (((ship.location.Z >= 0.0) && (_ship.ShieldFront == 0)) ||
                         ((ship.location.Z < 0.0) && (_ship.ShieldRear == 0)))
@@ -765,7 +764,7 @@ namespace Elite.Engine
                 return false;
             }
 
-            float size = _gameState.ShipList[type].size;
+            float size = _gameState.ShipList[type].Size;
 
             return ((x * x) + (y * y)) <= size;
         }
@@ -1100,7 +1099,7 @@ namespace Elite.Engine
                     return;
                 }
 
-                cnt &= _gameState.ShipList[Space.universe[un].type].max_loot;
+                cnt &= _gameState.ShipList[Space.universe[un].type].LootMax;
                 cnt &= 15;
             }
 

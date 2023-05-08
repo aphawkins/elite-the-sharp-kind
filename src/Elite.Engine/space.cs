@@ -45,7 +45,7 @@ namespace Elite.Engine
         private static float hyper_distance;
         internal static bool hyper_galactic;
         internal static UniverseObject[] universe = new UniverseObject[EliteMain.MAX_UNIV_OBJECTS];
-        internal static Dictionary<ShipType, int> ship_count = new(Ship.NO_OF_SHIPS + 1);  /* many */
+        internal static Dictionary<ShipType, int> ship_count = new();
 
         internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio, Pilot pilot, Combat combat, Trade trade, PlayerShip ship, Planet planet)
         {
@@ -112,9 +112,9 @@ namespace Elite.Engine
                 {
                     obj.velocity += obj.acceleration;
                     obj.acceleration = 0;
-                    if (obj.velocity > _gameState.ShipList[obj.type].velocity)
+                    if (obj.velocity > _gameState.ShipList[obj.type].VelocityMax)
                     {
-                        obj.velocity = _gameState.ShipList[obj.type].velocity;
+                        obj.velocity = _gameState.ShipList[obj.type].VelocityMax;
                     }
 
                     if (obj.velocity <= 0)
@@ -486,7 +486,7 @@ namespace Elite.Engine
                         _gameState.Cmdr.LegalStatus |= 64;
                     }
 
-                    float bounty = _gameState.ShipList[type].bounty;
+                    float bounty = _gameState.ShipList[type].Bounty;
 
                     if ((bounty != 0) && (!_gameState.InWitchspace))
                     {

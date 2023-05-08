@@ -6,22 +6,25 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class Missile : ShipData
+    internal class Missile : IShip
     {
-        private static readonly ShipFaceNormal[] s_faceNormals =
-        {
-            new ShipFaceNormal(31, new( -64,    0,   16)),
-            new ShipFaceNormal(31, new(   0,  -64,   16)),
-            new ShipFaceNormal(31, new(  64,    0,   16)),
-            new ShipFaceNormal(31, new(   0,   64,   16)),
-            new ShipFaceNormal(31, new(  32,    0,    0)),
-            new ShipFaceNormal(31, new(   0,  -32,    0)),
-            new ShipFaceNormal(31, new( -32,    0,    0)),
-            new ShipFaceNormal(31, new(   0,   32,    0)),
-            new ShipFaceNormal(31, new(   0,    0, -176)),
-        };
+        public float Bounty => 0;
 
-        private static readonly ShipFace[] s_faces =
+        public int EnergyMax => 2;
+
+        public ShipFaceNormal[] FaceNormals { get; } =
+                        {
+            new(31, new( -64,    0,   16)),
+            new(31, new(   0,  -64,   16)),
+            new(31, new(  64,    0,   16)),
+            new(31, new(   0,   64,   16)),
+            new(31, new(  32,    0,    0)),
+            new(31, new(   0,  -32,    0)),
+            new(31, new( -32,    0,    0)),
+            new(31, new(   0,   32,    0)),
+            new(31, new(   0,    0, -176)),
+        };
+        public ShipFace[] Faces { get; } =
         {
 			//fins
 			new(GFX_COL.GFX_COL_RED, new( 0x20, 0x00, 0x00), new[] {  5, 9, 15 }),
@@ -52,8 +55,13 @@ namespace Elite.Engine.Ships
 			new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x00,-0xB0), new[] { 5,  6,  7, 8 }),
         };
 
-        private static readonly ShipLine[] s_lines =
-        {
+
+        public int LaserFront => 0;
+
+        public int LaserStrength => 0;
+
+        public ShipLine[] Lines { get; } =
+                        {
             new(31,  2,  1,  0,  1),
             new(31,  3,  2,  0,  2),
             new(31,  3,  0,  0,  3),
@@ -79,9 +87,14 @@ namespace Elite.Engine.Ships
             new( 8,  7,  6, 12, 13),
             new( 8,  6,  5, 11, 14),
         };
+        public int LootMax => 0;
 
-        private static readonly ShipPoint[] s_points =
-                                {
+        public int MissilesMax => 0;
+
+        public string Name => "Missile";
+
+        public ShipPoint[] Points { get; } =
+                                                        {
             new(new(   0,    0,   68), 31,  1,  0,  3,  2),
             new(new(   8,   -8,   36), 31,  2,  1,  5,  4),
             new(new(   8,    8,   36), 31,  3,  2,  7,  4),
@@ -100,24 +113,11 @@ namespace Elite.Engine.Ships
             new(new(   8,    8,  -12),  8,  7,  4,  7,  7),
             new(new(   8,   -8,  -12),  8,  5,  4,  5,  5),
         };
-        internal Missile() : base(
-            "Missile",
-            0,
-            0,
-            1600,
-            0,
-            0,
-            14,
-            2,
-            44,
-            0,
-            0,
-            s_points,
-            s_lines,
-            s_faceNormals,
-            s_faces
-        )
-        {
-        }
+        public StockType ScoopedType => StockType.None;
+        public float Size => 1600;
+        public ShipClass Type => ShipClass.Missile;
+        public int VanishPoint => 14;
+
+        public float VelocityMax => 44;
     }
 }

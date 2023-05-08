@@ -6,10 +6,14 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class Anaconda : ShipData
+    internal class Anaconda : IShip
     {
-        internal static readonly ShipFaceNormal[] s_faceNormals =
-        {
+        public float Bounty => 0;
+
+        public int EnergyMax => 252;
+
+        public ShipFaceNormal[] FaceNormals { get; } =
+                        {
             new(30, new(   0,  -51,  -49)),
             new(30, new( -51,   18,  -87)),
             new(30, new( -77,  -57,  -19)),
@@ -24,8 +28,30 @@ namespace Elite.Engine.Ships
             new(31, new(   0,   94,   18)),
         };
 
-        internal static readonly ShipLine[] s_lines =
-        {
+        public ShipFace[] Faces { get; } = {
+            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x33,-0x31), new[] { 3,  2,  1,  0, 4 }),
+            new(GFX_COL.GFX_COL_GREEN_2, new(-0x33, 0x12,-0x57), new[] { 6, 10,  5,  0, 1 }),
+            new(GFX_COL.GFX_COL_GREEN_3, new(-0x4D,-0x39,-0x13), new[] { 7, 11,  6,  1, 2 }),
+
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x5A, 0x10), new[] { 8, 12,  7,  2, 3 }),
+
+            new(GFX_COL.GFX_COL_GREEN_2, new( 0x4D,-0x39,-0x13), new[] {  9, 13,  8,  3, 4 }),
+            new(GFX_COL.GFX_COL_GREEN_3, new( 0x33, 0x12,-0x57), new[] { 9,  4,  0,  5, 14 }),
+            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00, 0x6F,-0x14), new[] {  10, 14, 5 }),
+
+            new(GFX_COL.GFX_COL_GREY_2, new(-0x61, 0x48, 0x18), new[] {  10, 6,  11, 12 }),
+            new(GFX_COL.GFX_COL_GREY_1, new(-0x6C,-0x44, 0x22), new[] {  7, 12, 11 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x6C,-0x44, 0x22), new[] { 8, 13, 12 }),
+            new(GFX_COL.GFX_COL_GREY_2, new( 0x61, 0x48, 0x18), new[] { 9, 14,  12, 13 }),
+            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x5E, 0x12), new[] { 10, 12, 14 }),
+        };
+
+        public int LaserFront => 12;
+
+        public int LaserStrength => 31;
+
+        public ShipLine[] Lines { get; } =
+                                {
             new(30,  0,  1,  0,  1),
             new(30,  0,  2,  1,  2),
             new(30,  0,  3,  2,  3),
@@ -53,8 +79,14 @@ namespace Elite.Engine.Ships
             new(31, 10, 11, 12, 14),
         };
 
-        internal static readonly ShipPoint[] s_points =
-                        {
+        public int LootMax => 7;
+
+        public int MissilesMax => 7;
+
+        public string Name => "Anaconda";
+
+        public ShipPoint[] Points { get; } =
+                                {
             new(new(   0,    7,  -58), 30,  0,  1,  5,  5),
             new(new( -43,  -13,  -37), 30,  0,  1,  2,  2),
             new(new( -26,  -47,   -3), 30,  0,  2,  3,  3),
@@ -71,43 +103,11 @@ namespace Elite.Engine.Ships
             new(new(  69,   -1,   32), 31,  4,  9, 10, 10),
             new(new(  43,   53,  -23), 31, 15, 15, 15, 15),
         };
-        private static readonly ShipFace[] s_faces =
-        {
-            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00,-0x33,-0x31), new[] { 3,  2,  1,  0, 4 }),
-            new(GFX_COL.GFX_COL_GREEN_2, new(-0x33, 0x12,-0x57), new[] { 6, 10,  5,  0, 1 }),
-            new(GFX_COL.GFX_COL_GREEN_3, new(-0x4D,-0x39,-0x13), new[] { 7, 11,  6,  1, 2 }),
+        public StockType ScoopedType => StockType.None;
+        public float Size => 10000;
+        public ShipClass Type => ShipClass.Trader;
+        public int VanishPoint => 36;
 
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x5A, 0x10), new[] { 8, 12,  7,  2, 3 }),
-
-            new(GFX_COL.GFX_COL_GREEN_2, new( 0x4D,-0x39,-0x13), new[] {  9, 13,  8,  3, 4 }),
-            new(GFX_COL.GFX_COL_GREEN_3, new( 0x33, 0x12,-0x57), new[] { 9,  4,  0,  5, 14 }),
-            new(GFX_COL.GFX_COL_GREEN_1, new( 0x00, 0x6F,-0x14), new[] {  10, 14, 5 }),
-
-            new(GFX_COL.GFX_COL_GREY_2, new(-0x61, 0x48, 0x18), new[] {  10, 6,  11, 12 }),
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x6C,-0x44, 0x22), new[] {  7, 12, 11 }),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x6C,-0x44, 0x22), new[] { 8, 13, 12 }),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x61, 0x48, 0x18), new[] { 9, 14,  12, 13 }),
-            new(GFX_COL.GFX_COL_GREY_1, new( 0x00, 0x5E, 0x12), new[] { 10, 12, 14 }),
-        };
-
-        internal Anaconda() : base(
-            "Anaconda",
-            7,
-            0,
-            10000,
-            12,
-            0,
-            36,
-            252,
-            14,
-            7,
-            31,
-            s_points,
-            s_lines,
-            s_faceNormals,
-            s_faces
-        )
-        {
-        }
+        public float VelocityMax => 14;
     }
 }

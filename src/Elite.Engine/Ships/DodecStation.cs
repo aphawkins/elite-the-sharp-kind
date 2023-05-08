@@ -2,9 +2,9 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal static partial class Ship
+    internal class DodecStation : IShip
     {
-        internal static readonly ShipPoint[] dodec_point =
+        public ShipPoint[] Points { get; } =
         {
             new(new(   0,  150,  196), 31,  0,  1,  5,  5),
             new(new( 143,   46,  196), 31,  0,  1,  2,  2),
@@ -31,8 +31,7 @@ namespace Elite.Engine.Ships
             new(new(  16,   32,  196), 23,  0,  0,  0,  0),
             new(new(  16,  -32,  196), 23,  0,  0,  0,  0),
         };
-
-        internal static readonly ShipLine[] dodec_line =
+        public ShipLine[] Lines { get; } =
         {
             new(31,  0,  1,  0,  1),
             new(31,  0,  2,  1,  2),
@@ -69,24 +68,22 @@ namespace Elite.Engine.Ships
             new(23,  0,  0, 23, 22),
             new(20,  0,  0, 22, 20),
         };
-
-        internal static readonly ShipFaceNormal[] dodec_face_normal =
+        public ShipFaceNormal[] FaceNormals { get; } =
         {
-            new ShipFaceNormal(31, new(   0,    0,  196)),
-            new ShipFaceNormal(31, new( 103,  142,   88)),
-            new ShipFaceNormal(31, new( 169,  -55,   89)),
-            new ShipFaceNormal(31, new(   0, -176,   88)),
-            new ShipFaceNormal(31, new(-169,  -55,   89)),
-            new ShipFaceNormal(31, new(-103,  142,   88)),
-            new ShipFaceNormal(31, new(   0,  176,  -88)),
-            new ShipFaceNormal(31, new( 169,   55,  -89)),
-            new ShipFaceNormal(31, new( 103, -142,  -88)),
-            new ShipFaceNormal(31, new(-103, -142,  -88)),
-            new ShipFaceNormal(31, new(-169,   55,  -89)),
-            new ShipFaceNormal(31, new(   0,    0, -196)),
+            new(31, new(   0,    0,  196)),
+            new(31, new( 103,  142,   88)),
+            new(31, new( 169,  -55,   89)),
+            new(31, new(   0, -176,   88)),
+            new(31, new(-169,  -55,   89)),
+            new(31, new(-103,  142,   88)),
+            new(31, new(   0,  176,  -88)),
+            new(31, new( 169,   55,  -89)),
+            new(31, new( 103, -142,  -88)),
+            new(31, new(-103, -142,  -88)),
+            new(31, new(-169,   55,  -89)),
+            new(31, new(   0,    0, -196)),
         };
-
-        private static readonly ShipFace[] dodec_face =
+        public ShipFace[] Faces { get; } =
         {
             new ShipFace(GFX_COL.GFX_COL_GREY_4, new(   0x00,  0x00,  0xC4), new[] { 3,  2,  1,  0,  4 }),
             new ShipFace(GFX_COL.GFX_COL_GREY_1, new(   0x67,  0x8E,  0x58), new[] {  6, 10,  5,  0,  1 }),
@@ -103,22 +100,30 @@ namespace Elite.Engine.Ships
             new ShipFace(GFX_COL.GFX_COL_BLACK, new(    0x00,  0x00,  0xC4), new[] { 22, 20, 21, 23 }),
         };
 
-        internal static ShipData dodec_data = new(
-            "Dodec Space Station",
-            0,
-            0,
-            32400,
-            0,
-            0,
-            125,
-            240,
-            0,
-            0,
-            0,
-            dodec_point,
-            dodec_line,
-            dodec_face_normal,
-            dodec_face
-        );
+        public string Name => "Dodec Space Station";
+
+        public ShipClass Type => ShipClass.Station;
+
+        public float Size => 32400;
+
+        public int EnergyMax => 240;
+
+        public int MissilesMax => 0;
+
+        public int LootMax => 0;
+
+        public float Bounty => 0;
+
+        public StockType ScoopedType => StockType.None;
+
+        public int LaserFront => 0;
+
+        public int VanishPoint => 125;
+
+        public float VelocityMax => 0;
+
+        public int LaserStrength => 0;
+
+
     }
 }
