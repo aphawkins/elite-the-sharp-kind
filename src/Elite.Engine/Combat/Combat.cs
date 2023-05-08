@@ -445,7 +445,7 @@ namespace Elite.Engine
             {
                 StockType trade = _gameState.ShipList[type].ScoopedType;
                 _trade.AddCargo(trade);
-                _gameState.InfoMessage(_trade.stockMarket[(StockType)trade].name);
+                _gameState.InfoMessage(_trade.stockMarket[trade].name);
                 RemoveShip(un);
                 return;
             }
