@@ -26,7 +26,7 @@ namespace Elite.Engine
         private readonly ConfigFile _configFile;
         private int _highlightedItem;
 
-        private readonly (string Name, string[] Values)[] setting_list =
+        private readonly (string Name, string[] Values)[] _settingList =
         {
             new("Graphics:", new [] {"Solid", "Wireframe", "", "", ""}),
             new("Anti Alias:", new [] {"Off", "On", "", "", ""}),
@@ -56,20 +56,20 @@ namespace Elite.Engine
             _draw.ClearDisplay();
             _draw.DrawViewHeader("GAME SETTINGS");
 
-            for (int i = 0; i < setting_list.Length; i++)
+            for (int i = 0; i < _settingList.Length; i++)
             {
                 float x;
                 int y;
-                if (i == (setting_list.Length - 1))
+                if (i == (_settingList.Length - 1))
                 {
-                    y = ((setting_list.Length + 1) / 2 * 30) + 96 + 32;
+                    y = ((_settingList.Length + 1) / 2 * 30) + 96 + 32;
                     if (i == _highlightedItem)
                     {
                         x = Graphics.GFX_X_CENTRE - 200;
                         _gfx.DrawRectangleFilled(x, y - 7, 400, 15, GFX_COL.GFX_COL_DARK_RED);
                     }
 
-                    _gfx.DrawTextCentre(y, setting_list[i].Name, 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(y, _settingList[i].Name, 120, GFX_COL.GFX_COL_WHITE);
                     return;
                 }
 
@@ -89,8 +89,8 @@ namespace Elite.Engine
                 {
                     _gfx.DrawRectangleFilled(x, y, 100, 15, GFX_COL.GFX_COL_DARK_RED);
                 }
-                _gfx.DrawTextLeft(x, y, setting_list[i].Name, GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(x + 120, y, setting_list[i].Values[v], GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, _settingList[i].Name, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x + 120, y, _settingList[i].Values[v], GFX_COL.GFX_COL_WHITE);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Elite.Engine
 
         private void SelectRight()
         {
-            if (!_highlightedItem.IsOdd() && (_highlightedItem < (setting_list.Length - 1)))
+            if (!_highlightedItem.IsOdd() && (_highlightedItem < (_settingList.Length - 1)))
             {
                 _highlightedItem++;
             }
@@ -136,9 +136,9 @@ namespace Elite.Engine
 
         private void SelectUp()
         {
-            if (_highlightedItem == (setting_list.Length - 1))
+            if (_highlightedItem == (_settingList.Length - 1))
             {
-                _highlightedItem = setting_list.Length - 2;
+                _highlightedItem = _settingList.Length - 2;
             }
 
             if (_highlightedItem > 1)
@@ -149,12 +149,12 @@ namespace Elite.Engine
 
         private void SelectDown()
         {
-            if (_highlightedItem == (setting_list.Length - 2))
+            if (_highlightedItem == (_settingList.Length - 2))
             {
-                _highlightedItem = setting_list.Length - 1;
+                _highlightedItem = _settingList.Length - 1;
             }
 
-            if (_highlightedItem < (setting_list.Length - 2))
+            if (_highlightedItem < (_settingList.Length - 2))
             {
                 _highlightedItem += 2;
             }
@@ -162,7 +162,7 @@ namespace Elite.Engine
 
         private void ToggleSetting()
         {
-            if (_highlightedItem == (setting_list.Length - 1))
+            if (_highlightedItem == (_settingList.Length - 1))
             {
                 _configFile.WriteConfigAsync(_gameState.Config).Wait();
                 _gameState.SetView(SCR.SCR_OPTIONS);
