@@ -134,9 +134,9 @@ namespace Elite.Engine.Views
                 IncrementPosition();
             }
 
-            if (_ship.HasEscapePod)
+            if (_ship.HasEscapeCapsule)
             {
-                _gfx.DrawTextLeft(x, y, "Escape Pod", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, "Escape Capsule", GFX_COL.GFX_COL_WHITE);
                 IncrementPosition();
             }
 

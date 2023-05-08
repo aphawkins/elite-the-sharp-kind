@@ -52,7 +52,7 @@ namespace Elite.Engine
             { ShipType.None, new() },
             { ShipType.Missile, new Missile() },
             { ShipType.Coriolis, new Coriolis() },
-            { ShipType.EscapePod, Ship.esccaps_data },
+            { ShipType.EscapeCapsule, new EscapeCapsule() },
             { ShipType.Alloy, new Alloy() },
             { ShipType.Cargo, Ship.cargo_data },
             { ShipType.Boulder, Ship.boulder_data },

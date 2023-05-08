@@ -7,7 +7,7 @@
         None = 0,
         Missile = 1,
         Coriolis = 2,
-        EscapePod = 3,
+        EscapeCapsule = 3,
         Alloy = 4,
         Cargo = 5,
         Boulder = 6,

@@ -82,7 +82,7 @@ namespace Elite.Engine
             _views.Add(SCR.SCR_SETTINGS, new SettingsView(_gameState, _gfx, _draw, keyboard, _configFile));
             _views.Add(SCR.SCR_MISSION_1, new ConstrictorMissionView(_gameState, _gfx, _draw, keyboard, _ship, _trade, _combat));
             _views.Add(SCR.SCR_MISSION_2, new ThargoidMissionView(_gameState, _gfx, _draw, keyboard, _ship));
-            _views.Add(SCR.SCR_ESCAPE_POD, new EscapePodView(_gameState, _gfx, _audio, _stars, _ship, _trade, _combat));
+            _views.Add(SCR.SCR_ESCAPE_CAPSULE, new EscapeCapsuleView(_gameState, _gfx, _audio, _stars, _ship, _trade, _combat));
             _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars, _ship, _combat));
 
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
@@ -458,11 +458,11 @@ namespace Elite.Engine
                 }
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.EscapePod))
+            if (_keyboard.IsKeyPressed(CommandKey.EscapeCapsule))
             {
-                if ((!_gameState.IsDocked) && _ship.HasEscapePod && (!_gameState.InWitchspace))
+                if ((!_gameState.IsDocked) && _ship.HasEscapeCapsule && (!_gameState.InWitchspace))
                 {
-                    _gameState.SetView(SCR.SCR_ESCAPE_POD);
+                    _gameState.SetView(SCR.SCR_ESCAPE_CAPSULE);
                 }
             }
         }

@@ -515,7 +515,7 @@ namespace Elite.Engine
                     not SCR.SCR_INTRO_ONE and
                     not SCR.SCR_INTRO_TWO and
                     not SCR.SCR_GAME_OVER and
-                    not SCR.SCR_ESCAPE_POD)
+                    not SCR.SCR_ESCAPE_CAPSULE)
                 {
                     _combat.Tactics(i);
                 }
@@ -759,7 +759,7 @@ namespace Elite.Engine
 
                 if (type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
                     not ShipType.Alloy and not ShipType.Rock and
-                    not ShipType.Boulder and not ShipType.EscapePod)
+                    not ShipType.Boulder and not ShipType.EscapeCapsule)
                 {
                     _gameState.InfoMessage("Mass Locked");
                     return;

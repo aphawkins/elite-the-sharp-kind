@@ -123,7 +123,7 @@ namespace Elite.Engine.Save
                 HasDockingComputer = _ship.HasDockingComputer,
                 HasECM = _ship.HasECM,
                 HasEnergyBomb = _ship.HasEnergyBomb,
-                HasEscapePod = _ship.HasEscapePod,
+                HasEscapeCapsule = _ship.HasEscapeCapsule,
                 HasFuelScoop = _ship.HasFuelScoop,
                 HasGalacticHyperdrive = _ship.hasGalacticHyperdrive,
                 Lasers = new string[4]
@@ -180,7 +180,7 @@ namespace Elite.Engine.Save
             _ship.HasDockingComputer = _lastSaved.HasDockingComputer;
             _ship.HasECM = _lastSaved.HasECM;
             _ship.HasEnergyBomb = _lastSaved.HasEnergyBomb;
-            _ship.HasEscapePod = _lastSaved.HasEscapePod;
+            _ship.HasEscapeCapsule = _lastSaved.HasEscapeCapsule;
             _ship.HasFuelScoop = _lastSaved.HasFuelScoop;
             _ship.hasGalacticHyperdrive = _lastSaved.HasGalacticHyperdrive;
             _ship.LaserFront = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[0]));

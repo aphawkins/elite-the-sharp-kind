@@ -5,7 +5,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class EscapePodView : IView
+    internal class EscapeCapsuleView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -18,7 +18,7 @@ namespace Elite.Engine.Views
         private int _newship;
         private int _i;
 
-        internal EscapePodView(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
+        internal EscapeCapsuleView(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -33,7 +33,7 @@ namespace Elite.Engine.Views
         {
             if (_i < 90)
             {
-                _gfx.DrawTextCentre(358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextCentre(358, "Escape capsule launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Elite.Engine.Views
             }
             else
             {
-                _ship.HasEscapePod = false;
+                _ship.HasEscapeCapsule = false;
                 _gameState.Cmdr.LegalStatus = 0;
                 _ship.Fuel = _ship.MaxFuel;
                 _trade.ClearCurrentCargo();

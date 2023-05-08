@@ -608,7 +608,7 @@ namespace Elite.Engine
                 {
                     ship.flags &= ~FLG.FLG_ANGRY;
                     ship.flags |= FLG.FLG_INACTIVE;
-                    LaunchEnemy(un, ShipType.EscapePod, 0, 126);
+                    LaunchEnemy(un, ShipType.EscapeCapsule, 0, 126);
                     return;
                 }
 

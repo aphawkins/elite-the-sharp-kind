@@ -16,7 +16,7 @@
         EnergyBomb = Tab,
         Enter = 13,
         Esc = 27,
-        EscapePod = Esc,
+        EscapeCapsule = Esc,
         F1 = 112,
         F2 = 113,
         F3 = 114,

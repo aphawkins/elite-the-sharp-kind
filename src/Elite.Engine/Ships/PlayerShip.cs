@@ -25,7 +25,7 @@ namespace Elite.Engine.Ships
         internal bool HasDockingComputer { get; set; }
         internal bool HasECM { get; set; }
         internal bool HasEnergyBomb { get; set; }
-        internal bool HasEscapePod { get; set; }
+        internal bool HasEscapeCapsule { get; set; }
         internal bool HasFuelScoop { get; set; }
         internal bool hasGalacticHyperdrive { get; set; }
         internal bool IsClimbing { get; set; }

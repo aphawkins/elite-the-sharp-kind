@@ -25,7 +25,7 @@ namespace Elite.Engine.Views
             new(false, true,   1,  400, " Large Cargo Bay",     EquipmentType.EQ_CARGO_BAY),
             new(false, true,   2,  600, " E.C.M. System",       EquipmentType.EQ_ECM),
             new(false, true,   5,  525, " Fuel Scoops",         EquipmentType.EQ_FUEL_SCOOPS),
-            new(false, true,   6, 1000, " Escape Pod",          EquipmentType.EQ_ESCAPE_POD),
+            new(false, true,   6, 1000, " Escape Capsule",      EquipmentType.EQ_ESCAPE_CAPSULE),
             new(false, true,   7,  900, " Energy Bomb",         EquipmentType.EQ_ENERGY_BOMB),
             new(false, true,   8, 1500, " Extra Energy Unit",   EquipmentType.EQ_ENERGY_UNIT),
             new(false, true,   9, 1500, " Docking Computers",   EquipmentType.EQ_DOCK_COMP),
@@ -176,8 +176,8 @@ namespace Elite.Engine.Views
                     _ship.HasFuelScoop = true;
                     break;
 
-                case EquipmentType.EQ_ESCAPE_POD:
-                    _ship.HasEscapePod = true;
+                case EquipmentType.EQ_ESCAPE_CAPSULE:
+                    _ship.HasEscapeCapsule = true;
                     break;
 
                 case EquipmentType.EQ_ENERGY_BOMB:
@@ -354,7 +354,7 @@ namespace Elite.Engine.Views
             EquipmentType.EQ_CARGO_BAY => _ship.CargoCapacity > 20,
             EquipmentType.EQ_ECM => _ship.HasECM,
             EquipmentType.EQ_FUEL_SCOOPS => _ship.HasFuelScoop,
-            EquipmentType.EQ_ESCAPE_POD => _ship.HasEscapePod,
+            EquipmentType.EQ_ESCAPE_CAPSULE => _ship.HasEscapeCapsule,
             EquipmentType.EQ_ENERGY_BOMB => _ship.HasEnergyBomb,
             EquipmentType.EQ_ENERGY_UNIT => _ship.EnergyUnit != EnergyUnit.None,
             EquipmentType.EQ_DOCK_COMP => _ship.HasDockingComputer,

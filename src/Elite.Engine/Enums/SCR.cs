@@ -23,7 +23,7 @@
         SCR_QUIT = 18,
         SCR_GAME_OVER = 19,
         SCR_SETTINGS = 20,
-        SCR_ESCAPE_POD = 21,
+        SCR_ESCAPE_CAPSULE = 21,
         SCR_MISSION_1 = 22,
         SCR_MISSION_2 = 23,
         SCR_UNDOCKING,

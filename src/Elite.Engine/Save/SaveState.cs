@@ -18,7 +18,7 @@
         public string EnergyUnit { get; set; } = string.Empty;
         public bool HasDockingComputer { get; set; }
         public bool HasGalacticHyperdrive { get; set; }
-        public bool HasEscapePod { get; set; }
+        public bool HasEscapeCapsule { get; set; }
         public int Missiles { get; set; }
         public int LegalStatus { get; set; }
         public int[] StationStock { get; set; } = Array.Empty<int>();
@@ -48,7 +48,7 @@
             EnergyUnit = other.EnergyUnit;
             HasDockingComputer = other.HasDockingComputer;
             HasGalacticHyperdrive = other.HasGalacticHyperdrive;
-            HasEscapePod = other.HasEscapePod;
+            HasEscapeCapsule = other.HasEscapeCapsule;
             Missiles = other.Missiles;
             LegalStatus = other.LegalStatus;
             StationStock = other.StationStock;

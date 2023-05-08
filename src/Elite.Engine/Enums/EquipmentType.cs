@@ -7,7 +7,7 @@
         EQ_CARGO_BAY,
         EQ_ECM,
         EQ_FUEL_SCOOPS,
-        EQ_ESCAPE_POD,
+        EQ_ESCAPE_CAPSULE,
         EQ_ENERGY_BOMB,
         EQ_ENERGY_UNIT,
         EQ_DOCK_COMP,
