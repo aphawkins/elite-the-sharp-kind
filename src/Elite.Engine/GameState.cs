@@ -50,7 +50,7 @@ namespace Elite.Engine
         internal Dictionary<ShipType, ShipData> ShipList { get; private set; } = new()
         {
             { ShipType.None, new() },
-            { ShipType.Missile, Ship.missile_data },
+            { ShipType.Missile, new Missile() },
             { ShipType.Coriolis, Ship.coriolis_data },
             { ShipType.EscapePod, Ship.esccaps_data },
             { ShipType.Alloy, new Alloy() },

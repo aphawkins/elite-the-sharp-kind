@@ -8,44 +8,6 @@ namespace Elite.Engine.Ships
 {
     internal class Asteroid : ShipData
     {
-        private static readonly ShipPoint[] s_points =
-        {
-            new(new(   0,   80,    0), 31, 15, 15, 15, 15),
-            new(new( -80,  -10,    0), 31, 15, 15, 15, 15),
-            new(new(   0,  -80,    0), 31, 15, 15, 15, 15),
-            new(new(  70,  -40,    0), 31, 15, 15, 15, 15),
-            new(new(  60,   50,    0), 31,  6,  5, 13, 12),
-            new(new(  50,    0,   60), 31, 15, 15, 15, 15),
-            new(new( -40,    0,   70), 31,  1,  0,  3,  2),
-            new(new(   0,   30,  -75), 31, 15, 15, 15, 15),
-            new(new(   0,  -50,  -60), 31,  9,  8, 11, 10),
-        };
-
-        private static readonly ShipLine[] s_lines =
-        {
-            new(31,  7,  2,  0,  1),
-            new(31, 13,  6,  0,  4),
-            new(31, 12,  5,  3,  4),
-            new(31, 11,  4,  2,  3),
-            new(31, 10,  3,  1,  2),
-            new(31,  3,  2,  1,  6),
-            new(31,  3,  1,  2,  6),
-            new(31,  4,  1,  2,  5),
-            new(31,  1,  0,  5,  6),
-            new(31,  6,  0,  0,  5),
-            new(31,  5,  4,  3,  5),
-            new(31,  2,  0,  0,  6),
-            new(31,  6,  5,  4,  5),
-            new(31, 10,  8,  1,  8),
-            new(31,  8,  7,  1,  7),
-            new(31, 13,  7,  0,  7),
-            new(31, 13, 12,  4,  7),
-            new(31, 12,  9,  3,  7),
-            new(31, 11,  9,  3,  8),
-            new(31, 11, 10,  2,  8),
-            new(31,  9,  8,  7,  8),
-        };
-
         private static readonly ShipFaceNormal[] s_faceNormals =
         {
             new ShipFaceNormal(31, new(   9,   66,   81)),
@@ -85,6 +47,43 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_GREY_1, new( 0x2F, 0x5E,-0x3F), new[] { 4, 7, 0 }),
         };
 
+        private static readonly ShipLine[] s_lines =
+        {
+            new(31,  7,  2,  0,  1),
+            new(31, 13,  6,  0,  4),
+            new(31, 12,  5,  3,  4),
+            new(31, 11,  4,  2,  3),
+            new(31, 10,  3,  1,  2),
+            new(31,  3,  2,  1,  6),
+            new(31,  3,  1,  2,  6),
+            new(31,  4,  1,  2,  5),
+            new(31,  1,  0,  5,  6),
+            new(31,  6,  0,  0,  5),
+            new(31,  5,  4,  3,  5),
+            new(31,  2,  0,  0,  6),
+            new(31,  6,  5,  4,  5),
+            new(31, 10,  8,  1,  8),
+            new(31,  8,  7,  1,  7),
+            new(31, 13,  7,  0,  7),
+            new(31, 13, 12,  4,  7),
+            new(31, 12,  9,  3,  7),
+            new(31, 11,  9,  3,  8),
+            new(31, 11, 10,  2,  8),
+            new(31,  9,  8,  7,  8),
+        };
+
+        private static readonly ShipPoint[] s_points =
+                                {
+            new(new(   0,   80,    0), 31, 15, 15, 15, 15),
+            new(new( -80,  -10,    0), 31, 15, 15, 15, 15),
+            new(new(   0,  -80,    0), 31, 15, 15, 15, 15),
+            new(new(  70,  -40,    0), 31, 15, 15, 15, 15),
+            new(new(  60,   50,    0), 31,  6,  5, 13, 12),
+            new(new(  50,    0,   60), 31, 15, 15, 15, 15),
+            new(new( -40,    0,   70), 31,  1,  0,  3,  2),
+            new(new(   0,   30,  -75), 31, 15, 15, 15, 15),
+            new(new(   0,  -50,  -60), 31,  9,  8, 11, 10),
+        };
         internal Asteroid() : base(
             "Asteroid",
             0,
