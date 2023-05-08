@@ -44,30 +44,30 @@ namespace Elite.Engine
 
         internal Trade(PlayerShip ship) => _ship = ship;
 
-        internal void AddCargo(StockType stock) => _stockMarket[stock].currentCargo++;
+        internal void AddCargo(StockType stock) => _stockMarket[stock].CurrentCargo++;
 
         internal void BuyStock(StockType stock)
         {
-            if (_stockMarket[stock].currentQuantity == 0 || _credits < _stockMarket[stock].currentPrice)
+            if (_stockMarket[stock].CurrentQuantity == 0 || _credits < _stockMarket[stock].CurrentPrice)
             {
                 return;
             }
 
-            if (_stockMarket[stock].units == TONNES && TotalCargoTonnage() == _ship.CargoCapacity)
+            if (_stockMarket[stock].Units == TONNES && TotalCargoTonnage() == _ship.CargoCapacity)
             {
                 return;
             }
 
-            _stockMarket[stock].currentCargo++;
-            _stockMarket[stock].currentQuantity--;
-            _credits -= _stockMarket[stock].currentPrice;
+            _stockMarket[stock].CurrentCargo++;
+            _stockMarket[stock].CurrentQuantity--;
+            _credits -= _stockMarket[stock].CurrentPrice;
         }
 
         internal void ClearCurrentCargo()
         {
             foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
-                stock.Value.currentCargo = 0;
+                stock.Value.CurrentCargo = 0;
             }
         }
 
@@ -82,52 +82,52 @@ namespace Elite.Engine
             foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
                 // Start with the base price
-                float price = stock.Value.basePrice;
+                float price = stock.Value.BasePrice;
                 // Add in a random amount
-                price += (_marketRandomiser & stock.Value.mask) / 10;
+                price += (_marketRandomiser & stock.Value.Mask) / 10;
                 // Adjust for planet economy
-                price += currentPlanet.Economy * stock.Value.economyAdjust / 10;
+                price += currentPlanet.Economy * stock.Value.EconomyAdjust / 10;
 
                 // Start with the base quantity
-                int quant = stock.Value.baseQuantity;
+                int quant = stock.Value.BaseQuantity;
                 // Add in a random amount
-                quant += _marketRandomiser & stock.Value.mask;
+                quant += _marketRandomiser & stock.Value.Mask;
                 // Adjust for planet economy
-                quant -= currentPlanet.Economy * stock.Value.economyAdjust;
+                quant -= currentPlanet.Economy * stock.Value.EconomyAdjust;
                 // Quantities range from 0..63
                 quant = Math.Clamp(quant, 0, 63);
 
-                stock.Value.currentPrice = price * 4;
-                stock.Value.currentQuantity = quant;
+                stock.Value.CurrentPrice = price * 4;
+                stock.Value.CurrentQuantity = quant;
             }
 
             // Alien Items are never available for purchase
-            _stockMarket[StockType.AlienItems].currentQuantity = 0;
+            _stockMarket[StockType.AlienItems].CurrentQuantity = 0;
         }
 
-        internal int IsCarryingContraband() => ((_stockMarket[StockType.Slaves].currentCargo + _stockMarket[StockType.Slaves].currentCargo) * 2) + _stockMarket[StockType.Firearms].currentCargo;
+        internal int IsCarryingContraband() => ((_stockMarket[StockType.Slaves].CurrentCargo + _stockMarket[StockType.Slaves].CurrentCargo) * 2) + _stockMarket[StockType.Firearms].CurrentCargo;
 
         internal void SellStock(StockType stock)
         {
-            if (_stockMarket[stock].currentCargo == 0)
+            if (_stockMarket[stock].CurrentCargo == 0)
             {
                 return;
             }
 
-            _stockMarket[stock].currentCargo--;
-            _stockMarket[stock].currentQuantity++;
-            _credits += _stockMarket[stock].currentPrice;
+            _stockMarket[stock].CurrentCargo--;
+            _stockMarket[stock].CurrentQuantity++;
+            _credits += _stockMarket[stock].CurrentPrice;
         }
 
         internal void SetStockQuantities()
         {
             foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
-                stock.Value.currentQuantity = stock.Value.stationStock;
+                stock.Value.CurrentQuantity = stock.Value.StationStock;
             }
 
             // Alien Items are never available for purchase
-            _stockMarket[StockType.AlienItems].currentQuantity = 0;
+            _stockMarket[StockType.AlienItems].CurrentQuantity = 0;
         }
 
         internal int TotalCargoTonnage()
@@ -136,9 +136,9 @@ namespace Elite.Engine
 
             foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
-                if (stock.Value.currentCargo > 0 && stock.Value.units == TONNES)
+                if (stock.Value.CurrentCargo > 0 && stock.Value.Units == TONNES)
                 {
-                    cargo += stock.Value.currentCargo;
+                    cargo += stock.Value.CurrentCargo;
                 }
             }
 

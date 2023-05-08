@@ -23,8 +23,8 @@ namespace Elite.Engine
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly PlayerShip _ship;
-        internal static bool warp_stars;
-        private static readonly Vector3[] stars = new Vector3[20];
+        internal bool WarpStars { get; set; }
+        private readonly Vector3[] _stars = new Vector3[20];
 
         internal Stars(GameState gameState, IGfx gfx, PlayerShip ship)
         {
@@ -33,11 +33,11 @@ namespace Elite.Engine
             _ship = ship;
         }
 
-        internal static void CreateNewStars()
+        internal void CreateNewStars()
         {
-            for (int i = 0; i < stars.Length; i++)
+            for (int i = 0; i < _stars.Length; i++)
             {
-                stars[i] = new()
+                _stars[i] = new()
                 {
                     X = RNG.Random(-128, 127) | 8,
                     Y = RNG.Random(-128, 127) | 4,
@@ -45,27 +45,27 @@ namespace Elite.Engine
                 };
             }
 
-            warp_stars = false;
+            WarpStars = false;
         }
 
         internal void FrontStarfield()
         {
-            float delta = warp_stars ? 50 : _ship.Speed;
+            float delta = WarpStars ? 50 : _ship.Speed;
             float alpha = _ship.Roll;
             float beta = _ship.Climb;
 
             alpha /= 256;
             delta /= 2;
 
-            for (int i = 0; i < stars.Length; i++)
+            for (int i = 0; i < _stars.Length; i++)
             {
                 /* Plot the stars in their current locations... */
                 Vector2 star = new()
                 {
-                    Y = stars[i].Y,
-                    X = stars[i].X
+                    Y = _stars[i].Y,
+                    X = _stars[i].X
                 };
-                float zz = stars[i].Z;
+                float zz = _stars[i].Z;
 
                 star.X += 128;
                 star.Y += 96;
@@ -73,7 +73,7 @@ namespace Elite.Engine
                 star.X *= Graphics.GFX_SCALE;
                 star.Y *= Graphics.GFX_SCALE;
 
-                if ((!warp_stars) &&
+                if ((!WarpStars) &&
                     (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
                     (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
                 {
@@ -93,12 +93,12 @@ namespace Elite.Engine
 
 
                 /* Move the stars to their new locations...*/
-                float Q = delta / stars[i].Z;
+                float Q = delta / _stars[i].Z;
 
-                stars[i].Z -= delta;
-                float yy = stars[i].Y + (stars[i].Y * Q);
-                float xx = stars[i].X + (stars[i].X * Q);
-                zz = stars[i].Z;
+                _stars[i].Z -= delta;
+                float yy = _stars[i].Y + (_stars[i].Y * Q);
+                float xx = _stars[i].X + (_stars[i].X * Q);
+                zz = _stars[i].Z;
 
                 yy += xx * alpha;
                 xx -= yy * alpha;
@@ -109,11 +109,11 @@ namespace Elite.Engine
 				*/
                 yy += beta;
 
-                stars[i].Y = yy;
-                stars[i].X = xx;
+                _stars[i].Y = yy;
+                _stars[i].X = xx;
 
 
-                if (warp_stars)
+                if (WarpStars)
                 {
                     _gfx.DrawLine(star, new((xx + 128) * Graphics.GFX_SCALE, (yy + 96) * Graphics.GFX_SCALE));
                 }
@@ -124,7 +124,7 @@ namespace Elite.Engine
                 if ((star.X > 120) || (star.X < -120) ||
                     (star.Y > 120) || (star.Y < -120) || (zz < 16))
                 {
-                    stars[i] = new()
+                    _stars[i] = new()
                     {
                         X = RNG.Random(-128, 127) | 8,
                         Y = RNG.Random(-128, 127) | 4,
@@ -135,27 +135,27 @@ namespace Elite.Engine
 
             }
 
-            warp_stars = false;
+            WarpStars = false;
         }
 
         internal void RearStarfield()
         {
-            float delta = warp_stars ? 50 : _ship.Speed;
+            float delta = WarpStars ? 50 : _ship.Speed;
             float alpha = -_ship.Roll;
             float beta = -_ship.Climb;
 
             alpha /= 256;
             delta /= 2;
 
-            for (int i = 0; i < stars.Length; i++)
+            for (int i = 0; i < _stars.Length; i++)
             {
                 /* Plot the stars in their current locations... */
                 Vector2 star = new()
                 {
-                    Y = stars[i].Y,
-                    X = stars[i].X
+                    Y = _stars[i].Y,
+                    X = _stars[i].X
                 };
-                float zz = stars[i].Z;
+                float zz = _stars[i].Z;
 
                 star.X += 128;
                 star.Y += 96;
@@ -163,7 +163,7 @@ namespace Elite.Engine
                 star.X *= Graphics.GFX_SCALE;
                 star.Y *= Graphics.GFX_SCALE;
 
-                if ((!warp_stars) &&
+                if ((!WarpStars) &&
                     (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
                     (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
                 {
@@ -183,12 +183,12 @@ namespace Elite.Engine
 
                 /* Move the stars to their new locations...*/
 
-                float Q = delta / stars[i].Z;
+                float Q = delta / _stars[i].Z;
 
-                stars[i].Z += delta;
-                float yy = stars[i].Y - (stars[i].Y * Q);
-                float xx = stars[i].X - (stars[i].X * Q);
-                zz = stars[i].Z;
+                _stars[i].Z += delta;
+                float yy = _stars[i].Y - (_stars[i].Y * Q);
+                float xx = _stars[i].X - (_stars[i].X * Q);
+                zz = _stars[i].Z;
 
                 yy += xx * alpha;
                 xx -= yy * alpha;
@@ -199,7 +199,7 @@ namespace Elite.Engine
 				*/
                 yy += beta;
 
-                if (warp_stars)
+                if (WarpStars)
                 {
                     float ey = yy;
                     float ex = xx;
@@ -215,51 +215,51 @@ namespace Elite.Engine
                     }
                 }
 
-                stars[i].Y = yy;
-                stars[i].X = xx;
+                _stars[i].Y = yy;
+                _stars[i].X = xx;
 
                 if ((zz >= 300) || (MathF.Abs(yy) >= 110f))
                 {
-                    stars[i].Z = RNG.Random(51, 178);
+                    _stars[i].Z = RNG.Random(51, 178);
 
                     if (RNG.TrueOrFalse())
                     {
-                        stars[i].X = RNG.Random(-128, 127);
-                        stars[i].Y = RNG.TrueOrFalse() ? -115 : 115;
+                        _stars[i].X = RNG.Random(-128, 127);
+                        _stars[i].Y = RNG.TrueOrFalse() ? -115 : 115;
                     }
                     else
                     {
-                        stars[i].X = RNG.TrueOrFalse() ? -126 : 126;
-                        stars[i].Y = RNG.Random(-128, 127);
+                        _stars[i].X = RNG.TrueOrFalse() ? -126 : 126;
+                        _stars[i].Y = RNG.Random(-128, 127);
                     }
                 }
             }
 
-            warp_stars = false;
+            WarpStars = false;
         }
 
         internal void LeftStarfield()
         {
-            float delta = warp_stars ? 50 : _ship.Speed;
+            float delta = WarpStars ? 50 : _ship.Speed;
             SideStarfield(-_ship.Roll, -_ship.Climb, -delta);
         }
 
         internal void RightStarfield()
         {
-            float delta = warp_stars ? 50 : _ship.Speed;
+            float delta = WarpStars ? 50 : _ship.Speed;
             SideStarfield(_ship.Roll, _ship.Climb, delta);
         }
 
         private void SideStarfield(float alpha, float beta, float delta)
         {
-            for (int i = 0; i < stars.Length; i++)
+            for (int i = 0; i < _stars.Length; i++)
             {
                 Vector2 star = new()
                 {
-                    Y = stars[i].Y,
-                    X = stars[i].X
+                    Y = _stars[i].Y,
+                    X = _stars[i].X
                 };
-                float zz = stars[i].Z;
+                float zz = _stars[i].Z;
 
                 star.X += 128;
                 star.Y += 96;
@@ -267,7 +267,7 @@ namespace Elite.Engine
                 star.X *= Graphics.GFX_SCALE;
                 star.Y *= Graphics.GFX_SCALE;
 
-                if ((!warp_stars) &&
+                if ((!WarpStars) &&
                     (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
                     (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
                 {
@@ -285,9 +285,9 @@ namespace Elite.Engine
                     }
                 }
 
-                float yy = stars[i].Y;
-                float xx = stars[i].X;
-                zz = stars[i].Z;
+                float yy = _stars[i].Y;
+                float xx = _stars[i].X;
+                zz = _stars[i].Z;
 
                 float delt8 = delta / (zz / 32);
                 xx += delt8;
@@ -300,43 +300,43 @@ namespace Elite.Engine
 
                 yy += alpha;
 
-                stars[i].Y = yy;
-                stars[i].X = xx;
+                _stars[i].Y = yy;
+                _stars[i].X = xx;
 
-                if (warp_stars)
+                if (WarpStars)
                 {
                     _gfx.DrawLine(star, new((xx + 128) * Graphics.GFX_SCALE, (yy + 96) * Graphics.GFX_SCALE));
                 }
 
-                if (MathF.Abs(stars[i].X) >= 116f)
+                if (MathF.Abs(_stars[i].X) >= 116f)
                 {
-                    stars[i].Y = RNG.Random(-128, 127);
-                    stars[i].X = (_gameState.CurrentScreen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
-                    stars[i].Z = RNG.Random(255) | 8;
+                    _stars[i].Y = RNG.Random(-128, 127);
+                    _stars[i].X = (_gameState.CurrentScreen == SCR.SCR_LEFT_VIEW) ? 115 : -115;
+                    _stars[i].Z = RNG.Random(255) | 8;
                 }
-                else if (MathF.Abs(stars[i].Y) >= 116f)
+                else if (MathF.Abs(_stars[i].Y) >= 116f)
                 {
-                    stars[i].X = RNG.Random(-128, 127);
-                    stars[i].Y = (alpha > 0) ? -110 : 110;
-                    stars[i].Z = RNG.Random(255) | 8;
+                    _stars[i].X = RNG.Random(-128, 127);
+                    _stars[i].Y = (alpha > 0) ? -110 : 110;
+                    _stars[i].Z = RNG.Random(255) | 8;
                 }
 
             }
 
-            warp_stars = false;
+            WarpStars = false;
         }
 
         /// <summary>
         /// When we change view, flip the stars over so they look like other stars.
         /// </summary>
-        internal static void FlipStars()
+        internal void FlipStars()
         {
-            for (int i = 0; i < stars.Length; i++)
+            for (int i = 0; i < _stars.Length; i++)
             {
-                float y = stars[i].Y;
-                float x = stars[i].X;
-                stars[i].X = y;
-                stars[i].Y = x;
+                float y = _stars[i].Y;
+                float x = _stars[i].X;
+                _stars[i].X = y;
+                _stars[i].Y = x;
             }
         }
     }

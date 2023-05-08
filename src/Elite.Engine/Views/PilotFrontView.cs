@@ -10,7 +10,7 @@ namespace Elite.Engine.Views
 
         internal PilotFrontView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
         {
-            _pilotView = new(gameState, gfx, keyboard, pilot, ship);
+            _pilotView = new(gameState, gfx, keyboard, pilot, ship, stars);
             _stars = stars;
             _ship = ship;
         }

@@ -63,17 +63,17 @@ namespace Elite.Engine.Views
                     _gfx.DrawRectangleFilled(2, y, 508, 15, GFX_COL.GFX_COL_DARK_RED);
                 }
 
-                _gfx.DrawTextLeft(16, y, stock.Value.name, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(16, y, stock.Value.Name, GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextLeft(180, y, stock.Value.units, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(180, y, stock.Value.Units, GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextRight(285, y, $"{stock.Value.currentPrice:N1}", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextRight(285, y, $"{stock.Value.CurrentPrice:N1}", GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextRight(365, y, stock.Value.currentQuantity > 0 ? $"{stock.Value.currentQuantity}" : "-", GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(365, y, stock.Value.currentQuantity > 0 ? stock.Value.units : "", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextRight(365, y, stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(365, y, stock.Value.CurrentQuantity > 0 ? stock.Value.Units : "", GFX_COL.GFX_COL_WHITE);
 
-                _gfx.DrawTextRight(455, y, stock.Value.currentCargo > 0 ? $"{stock.Value.currentCargo,2}" : "-", GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(455, y, stock.Value.currentCargo > 0 ? stock.Value.units : "", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextRight(455, y, stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(455, y, stock.Value.CurrentCargo > 0 ? stock.Value.Units : "", GFX_COL.GFX_COL_WHITE);
 
                 i++;
             }

@@ -49,7 +49,7 @@ namespace Elite.Engine.Views
             _direction = 100;
 
             _combat.ClearUniverse();
-            Stars.CreateNewStars();
+            _stars.CreateNewStars();
             _rotmat = VectorMaths.GetInitialMatrix();
             _combat.AddNewShip(ShipType.Missile, new(0, 0, 5000), _rotmat, -127, -127);
             _audio.PlayMusic(Music.BlueDanube, true);

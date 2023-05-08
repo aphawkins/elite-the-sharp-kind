@@ -37,6 +37,7 @@ namespace Elite.Engine
         private readonly Trade _trade;
         private readonly PlayerShip _ship;
         private readonly Planet _planet;
+        private readonly Stars _stars;
 
         private static GalaxySeed destination_planet = new();
         internal static bool hyper_ready;
@@ -47,7 +48,9 @@ namespace Elite.Engine
         internal static UniverseObject[] universe = new UniverseObject[EliteMain.MAX_UNIV_OBJECTS];
         internal static Dictionary<ShipType, int> ship_count = new();
 
-        internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio, Pilot pilot, Combat combat, Trade trade, PlayerShip ship, Planet planet)
+        internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio,
+            Pilot pilot, Combat combat, Trade trade, PlayerShip ship,
+            Planet planet, Stars stars)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -58,6 +61,7 @@ namespace Elite.Engine
             _trade = trade;
             _ship = ship;
             _planet = planet;
+            _stars = stars;
         }
 
         private static void RotateXFirst(ref float a, ref float b, float direction)
@@ -658,7 +662,7 @@ namespace Elite.Engine
             _ship.Speed = 12;
             _ship.Roll = 0;
             _ship.Climb = 0;
-            Stars.CreateNewStars();
+            _stars.CreateNewStars();
             _combat.ClearUniverse();
 
             int nthg = RNG.Random(1, 4);
@@ -704,7 +708,7 @@ namespace Elite.Engine
             _ship.Speed = 12;
             _ship.Roll = 0;
             _ship.Climb = 0;
-            Stars.CreateNewStars();
+            _stars.CreateNewStars();
             _combat.ClearUniverse();
 
             _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
@@ -787,7 +791,7 @@ namespace Elite.Engine
                 }
             }
 
-            Stars.warp_stars = true;
+            _stars.WarpStars = true;
             _gameState.mcount &= 63;
             _combat.InBattle = false;
         }
@@ -799,7 +803,7 @@ namespace Elite.Engine
             _ship.Roll = 15;
             _ship.Climb = 0;
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
-            Stars.CreateNewStars();
+            _stars.CreateNewStars();
             _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             _combat.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 

@@ -85,7 +85,7 @@ namespace Elite.Engine.Views
                     }
                 }
 
-                Stars.warp_stars = true;
+                _stars.WarpStars = true;
                 _stars.FrontStarfield();
             }
             else

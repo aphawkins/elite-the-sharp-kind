@@ -16,9 +16,10 @@ namespace Elite.Engine.Views
         private readonly LaserDraw _laser;
         private readonly Pilot _pilot;
         private readonly PlayerShip _ship;
+        private readonly Stars _stars;
         private int _drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship)
+        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars)
         {
             _gameState = gameState;
             _gfx = gfx;
@@ -26,6 +27,7 @@ namespace Elite.Engine.Views
             _laser = new LaserDraw(_gameState, _gfx);
             _pilot = pilot;
             _ship = ship;
+            _stars = stars;
         }
 
         public void Draw()
@@ -110,7 +112,7 @@ namespace Elite.Engine.Views
             }
         }
 
-        public void Reset() => Stars.FlipStars();
+        public void Reset() => _stars.FlipStars();
 
         public void UpdateUniverse() => _drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(_drawLaserFrames - 1, 0, _drawLaserFrames);
 

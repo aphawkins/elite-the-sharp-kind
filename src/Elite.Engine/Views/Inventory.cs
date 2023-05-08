@@ -46,10 +46,10 @@ namespace Elite.Engine.Views
             int y = 98;
             foreach (KeyValuePair<StockType, StockItem> stock in _trade._stockMarket)
             {
-                if (stock.Value.currentCargo > 0)
+                if (stock.Value.CurrentCargo > 0)
                 {
-                    _gfx.DrawTextLeft(16, y, stock.Value.name, GFX_COL.GFX_COL_WHITE);
-                    _gfx.DrawTextLeft(180, y, $"{stock.Value.currentCargo}{stock.Value.units}", GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextLeft(16, y, stock.Value.Name, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextLeft(180, y, $"{stock.Value.CurrentCargo}{stock.Value.Units}", GFX_COL.GFX_COL_WHITE);
                     y += 16;
                 }
             }

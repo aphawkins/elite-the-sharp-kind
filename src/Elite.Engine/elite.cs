@@ -53,7 +53,7 @@ namespace Elite.Engine
             _pilot = new(_gameState, _audio);
             _combat = new(_gameState, _audio, _ship, _trade);
             _save = new(_gameState, _ship, _trade, _planet);
-            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _ship, _planet);
+            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars);
             _scanner = new(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
             _configFile = new();
 
@@ -485,7 +485,7 @@ namespace Elite.Engine
             Space.hyper_ready = false;
             _isGamePaused = false;
 
-            Stars.CreateNewStars();
+            _stars.CreateNewStars();
             _combat.ClearUniverse();
             _space.DockPlayer();
         }

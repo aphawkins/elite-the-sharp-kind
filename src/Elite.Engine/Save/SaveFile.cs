@@ -107,7 +107,7 @@ namespace Elite.Engine.Save
                 CargoCapacity = _ship.CargoCapacity,
                 CommanderName = newName,
                 Credits = _trade._credits,
-                CurrentCargo = _trade._stockMarket.Values.Select(x => x.currentCargo).ToArray(),
+                CurrentCargo = _trade._stockMarket.Values.Select(x => x.CurrentCargo).ToArray(),
                 EnergyUnit = _ship.EnergyUnit.ToString(),
                 Fuel = _ship.Fuel,
                 GalaxyNumber = _state.Cmdr.GalaxyNumber,
@@ -144,7 +144,7 @@ namespace Elite.Engine.Save
                     _state.DockedPlanet.D,
                     _state.DockedPlanet.B,
                 },
-                StationStock = _trade._stockMarket.Values.Select(x => x.stationStock).ToArray()
+                StationStock = _trade._stockMarket.Values.Select(x => x.StationStock).ToArray()
             };
 
             return save;
@@ -166,7 +166,7 @@ namespace Elite.Engine.Save
             _trade._credits = _lastSaved.Credits;
             for (int i = 0; i < _trade._stockMarket.Count; i++)
             {
-                _trade._stockMarket[(StockType)i + 1].currentCargo = _lastSaved.CurrentCargo[i];
+                _trade._stockMarket[(StockType)i + 1].CurrentCargo = _lastSaved.CurrentCargo[i];
             }
             _ship.EnergyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
             _ship.Fuel = _lastSaved.Fuel;
@@ -197,7 +197,7 @@ namespace Elite.Engine.Save
             _state.DockedPlanet.B = _lastSaved.ShipLocation[1];
             for (int i = 0; i < _trade._stockMarket.Count; i++)
             {
-                _trade._stockMarket[(StockType)i + 1].stationStock = _lastSaved.StationStock[i];
+                _trade._stockMarket[(StockType)i + 1].StationStock = _lastSaved.StationStock[i];
             }
         }
 
