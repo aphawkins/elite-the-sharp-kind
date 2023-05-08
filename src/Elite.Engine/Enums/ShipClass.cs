@@ -6,6 +6,7 @@ namespace Elite.Engine.Enums
 {
     internal enum ShipClass
     {
+        None = 0,
         Station,
         Missile,
         Tharglet,
