@@ -1,10 +1,14 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal static partial class Ship
+    internal class Asteroid : ShipData
     {
-        private static readonly ShipPoint[] asteroid_point =
+        private static readonly ShipPoint[] s_points =
         {
             new(new(   0,   80,    0), 31, 15, 15, 15, 15),
             new(new( -80,  -10,    0), 31, 15, 15, 15, 15),
@@ -17,7 +21,7 @@ namespace Elite.Engine.Ships
             new(new(   0,  -50,  -60), 31,  9,  8, 11, 10),
         };
 
-        private static readonly ShipLine[] asteroid_line =
+        private static readonly ShipLine[] s_lines =
         {
             new(31,  7,  2,  0,  1),
             new(31, 13,  6,  0,  4),
@@ -42,7 +46,7 @@ namespace Elite.Engine.Ships
             new(31,  9,  8,  7,  8),
         };
 
-        private static readonly ShipFaceNormal[] asteroid_face_normal =
+        private static readonly ShipFaceNormal[] s_faceNormals =
         {
             new ShipFaceNormal(31, new(   9,   66,   81)),
             new ShipFaceNormal(31, new(   9,  -66,   81)),
@@ -60,7 +64,7 @@ namespace Elite.Engine.Ships
             new ShipFaceNormal(31, new(  47,   94,  -63)),
         };
 
-        private static readonly ShipFace[] asteroid_face =
+        private static readonly ShipFace[] s_faces =
         {
             new(GFX_COL.GFX_COL_GREY_3, new( 0x09, 0x42, 0x51), new[] { 5, 0, 6 }),
             new(GFX_COL.GFX_COL_GREY_1, new( 0x09,-0x42, 0x51), new[] { 2, 5, 6 }),
@@ -81,7 +85,7 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_GREY_1, new( 0x2F, 0x5E,-0x3F), new[] { 4, 7, 0 }),
         };
 
-        internal static ShipData asteroid_data = new(
+        internal Asteroid() : base(
             "Asteroid",
             0,
             0,
@@ -93,10 +97,12 @@ namespace Elite.Engine.Ships
             30,
             0,
             0,
-            asteroid_point,
-            asteroid_line,
-            asteroid_face_normal,
-            asteroid_face
-        );
+            s_points,
+            s_lines,
+            s_faceNormals,
+            s_faces
+        )
+        {
+        }
     }
 }

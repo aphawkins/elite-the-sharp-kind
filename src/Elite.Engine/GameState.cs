@@ -56,7 +56,7 @@ namespace Elite.Engine
             { ShipType.Alloy, new Alloy() },
             { ShipType.Cargo, Ship.cargo_data },
             { ShipType.Boulder, Ship.boulder_data },
-            { ShipType.Asteroid, Ship.asteroid_data },
+            { ShipType.Asteroid, new Asteroid() },
             { ShipType.Rock, Ship.rock_data },
             { ShipType.Shuttle, Ship.orbit_data },
             { ShipType.Transporter, Ship.transp_data },
