@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class PythonLone : Python
+    internal class PythonLone : Python, IShip
     {
         public new float Bounty => 20;
         public new int LootMax => 2;
