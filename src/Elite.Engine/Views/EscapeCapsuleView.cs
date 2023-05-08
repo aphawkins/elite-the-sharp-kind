@@ -49,7 +49,7 @@ namespace Elite.Engine.Views
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
             _newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
-            Space.universe[_newship].velocity = 7;
+            Space.universe[_newship].Velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;
         }
@@ -60,14 +60,12 @@ namespace Elite.Engine.Views
             {
                 if (_i == 40)
                 {
-                    Space.universe[_newship].flags |= FLG.FLG_DEAD;
+                    Space.universe[_newship].Flags |= FLG.FLG_DEAD;
                     _audio.PlayEffect(SoundEffect.Explode);
                 }
 
                 _stars.FrontStarfield();
-                Space.universe[_newship].location.X = 0;
-                Space.universe[_newship].location.Y = 0;
-                Space.universe[_newship].location.Z += 2;
+                Space.universe[_newship].Location = new(0, 0, Space.universe[_newship].Location.Z + 2);
                 _i++;
             }
             else if ((Space.ship_count[ShipType.Coriolis] == 0) && (Space.ship_count[ShipType.Dodec] == 0))
@@ -78,9 +76,10 @@ namespace Elite.Engine.Views
                 {
                     for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
                     {
-                        if (Space.universe[i].type != 0)
+                        if (Space.universe[i].Type != 0)
                         {
-                            Space.universe[i].location.Z -= 1500;
+                            ;
+                            Space.universe[i].Location = new(Space.universe[i].Location.X, Space.universe[i].Location.Y, Space.universe[i].Location.Z - 1500);
                         }
                     }
                 }

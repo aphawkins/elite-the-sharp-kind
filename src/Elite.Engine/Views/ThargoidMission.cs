@@ -12,23 +12,23 @@ namespace Elite.Engine.Views
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
 
-        private static readonly string mission2_brief_a =
+        private static readonly string s_mission2BriefA =
             "Attention Commander, I am Captain Fortesque of Her Majesty's Space Navy. " +
             "We have need of your services again. If you would be so good as to go to " +
             "Ceerdi you will be briefed.If succesful, you will be rewarded." +
             "---MESSAGE ENDS.";
-        private static readonly string mission2_brief_b =
+        private static readonly string s_mission2BriefB =
             "Good Day Commander. I am Agent Blake of Naval Intelligence. As you know, " +
             "the Navy have been keeping the Thargoids off your ass out in deep space " +
             "for many years now. Well the situation has changed. Our boys are ready " +
             "for a push right to the home system of those murderers.";
-        private static readonly string mission2_brief_c =
+        private static readonly string s_mission2BriefC =
             "I have obtained the defence plans for their Hive Worlds. The beetles " +
             "know we've got something but not what. If I transmit the plans to our " +
             "base on Birera they'll intercept the transmission. I need a ship to " +
             "make the run. You're elected. The plans are unipulse coded within " +
             "this transmission. You will be paid. Good luck Commander. ---MESSAGE ENDS.";
-        private static readonly string mission2_debrief =
+        private static readonly string s_mission2Debrief =
             "You have served us well and we shall remember. " +
             "We did not expect the Thargoids to find out about you." +
             "For the moment please accept this Navy Extra Energy Unit as payment. " +
@@ -77,14 +77,14 @@ namespace Elite.Engine.Views
             if (_gameState.Cmdr.Mission == 4)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(116, 132, 400, mission2_brief_a);
+                _draw.DrawTextPretty(116, 132, 400, s_mission2BriefA);
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
             else if (_gameState.Cmdr.Mission == 5)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(16, 50, 300, mission2_brief_b);
-                _draw.DrawTextPretty(16, 200, 470, mission2_brief_c);
+                _draw.DrawTextPretty(16, 50, 300, s_mission2BriefB);
+                _draw.DrawTextPretty(16, 200, 470, s_mission2BriefC);
                 _gfx.DrawImage(Image.Blake, new(352, 46));
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
@@ -92,7 +92,7 @@ namespace Elite.Engine.Views
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);
-                _draw.DrawTextPretty(116, 132, 400, mission2_debrief);
+                _draw.DrawTextPretty(116, 132, 400, s_mission2Debrief);
                 _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
             }
         }

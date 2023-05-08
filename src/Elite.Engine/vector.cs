@@ -31,12 +31,14 @@ namespace Elite.Engine
             return Vector3.Transform(vec, matrix);
         }
 
-        internal static void RotateVector(ref Vector3[] vec, float alpha, float beta)
+        internal static Vector3[] RotateVector(Vector3[] vec, float alpha, float beta)
         {
             for (int i = 0; i < vec.Length; i++)
             {
                 RotateVector(ref vec[i], alpha, beta);
             }
+
+            return vec;
         }
 
         internal static void TidyMatrix(Vector3[] mat)

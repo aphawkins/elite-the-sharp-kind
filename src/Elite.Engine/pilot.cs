@@ -72,43 +72,43 @@ namespace Elite.Engine
 
             if (direction < -0.861)
             {
-                ship.rotx = (dir < 0) ? 7 : -7;
-                ship.rotz = 0;
+                ship.RotX = (dir < 0) ? 7 : -7;
+                ship.RotZ = 0;
                 return;
             }
 
-            ship.rotx = 0;
+            ship.RotX = 0;
 
             if ((MathF.Abs(dir) * 2) >= rat2)
             {
-                ship.rotx = (dir < 0) ? rat : -rat;
+                ship.RotX = (dir < 0) ? rat : -rat;
             }
 
-            if (MathF.Abs(ship.rotz) < 16)
+            if (MathF.Abs(ship.RotZ) < 16)
             {
                 dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[0]);
-                ship.rotz = 0;
+                ship.RotZ = 0;
 
                 if ((MathF.Abs(dir) * 2) >= rat2)
                 {
-                    ship.rotz = (dir < 0) ? rat : -rat;
+                    ship.RotZ = (dir < 0) ? rat : -rat;
 
-                    if (ship.rotx < 0)
+                    if (ship.RotX < 0)
                     {
-                        ship.rotz = -ship.rotz;
+                        ship.RotZ = -ship.RotZ;
                     }
                 }
             }
 
             if (direction <= -0.167)
             {
-                ship.acceleration = -1;
+                ship.Acceleration = -1;
                 return;
             }
 
             if (direction >= cnt2)
             {
-                ship.acceleration = 3;
+                ship.Acceleration = 3;
                 return;
             }
         }
@@ -121,9 +121,9 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = Space.universe[0].location.X - ship.location.X;
-            vec.Y = Space.universe[0].location.Y - ship.location.Y;
-            vec.Z = Space.universe[0].location.Z - ship.location.Z;
+            vec.X = Space.universe[0].Location.X - ship.Location.X;
+            vec.Y = Space.universe[0].Location.Y - ship.Location.Y;
+            vec.Z = Space.universe[0].Location.Z - ship.Location.Z;
 
             FlyToVector(ref ship, vec);
         }
@@ -136,9 +136,9 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = Space.universe[1].location.X - ship.location.X;
-            vec.Y = Space.universe[1].location.Y - ship.location.Y;
-            vec.Z = Space.universe[1].location.Z - ship.location.Z;
+            vec.X = Space.universe[1].Location.X - ship.Location.X;
+            vec.Y = Space.universe[1].Location.Y - ship.Location.Y;
+            vec.Z = Space.universe[1].Location.Z - ship.Location.Z;
 
             vec.X += Space.universe[1].Rotmat[2].X * 768;
             vec.Y += Space.universe[1].Rotmat[2].Y * 768;
@@ -155,9 +155,9 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = Space.universe[1].location.X - ship.location.X;
-            vec.Y = Space.universe[1].location.Y - ship.location.Y;
-            vec.Z = Space.universe[1].location.Z - ship.location.Z;
+            vec.X = Space.universe[1].Location.X - ship.Location.X;
+            vec.Y = Space.universe[1].Location.Y - ship.Location.Y;
+            vec.Z = Space.universe[1].Location.Z - ship.Location.Z;
 
             FlyToVector(ref ship, vec);
         }
@@ -171,56 +171,56 @@ namespace Elite.Engine
             Vector3 diff;
             float dir;
 
-            diff.X = ship.location.X - Space.universe[1].location.X;
-            diff.Y = ship.location.Y - Space.universe[1].location.Y;
-            diff.Z = ship.location.Z - Space.universe[1].location.Z;
+            diff.X = ship.Location.X - Space.universe[1].Location.X;
+            diff.Y = ship.Location.Y - Space.universe[1].Location.Y;
+            diff.Z = ship.Location.Z - Space.universe[1].Location.Z;
 
             Vector3 vec = VectorMaths.UnitVector(diff);
 
-            ship.rotx = 0;
+            ship.RotX = 0;
 
-            if (ship.type < 0)
+            if (ship.Type < 0)
             {
-                ship.rotz = 1;
+                ship.RotZ = 1;
                 if (((vec.X >= 0) && (vec.Y >= 0)) ||
                      ((vec.X < 0) && (vec.Y < 0)))
                 {
-                    ship.rotz = -ship.rotz;
+                    ship.RotZ = -ship.RotZ;
                 }
 
                 if (MathF.Abs(vec.X) >= 0.0625f)
                 {
-                    ship.acceleration = 0;
-                    ship.velocity = 1;
+                    ship.Acceleration = 0;
+                    ship.Velocity = 1;
                     return;
                 }
 
                 if (MathF.Abs(vec.Y) > 0.002436f)
                 {
-                    ship.rotx = (vec.Y < 0) ? -1 : 1;
+                    ship.RotX = (vec.Y < 0) ? -1 : 1;
                 }
 
                 if (MathF.Abs(vec.Y) >= 0.0625f)
                 {
-                    ship.acceleration = 0;
-                    ship.velocity = 1;
+                    ship.Acceleration = 0;
+                    ship.Velocity = 1;
                     return;
                 }
             }
 
-            ship.rotz = 0;
+            ship.RotZ = 0;
 
             dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], Space.universe[1].Rotmat[1]);
 
             if (MathF.Abs(dir) >= 0.9166f)
             {
-                ship.acceleration++;
-                ship.rotz = 127;
+                ship.Acceleration++;
+                ship.RotZ = 127;
                 return;
             }
 
-            ship.acceleration = 0;
-            ship.rotz = 0;
+            ship.Acceleration = 0;
+            ship.RotZ = 0;
         }
 
         /// <summary>
@@ -234,22 +234,22 @@ namespace Elite.Engine
             float dist;
             float dir;
 
-            if (ship.flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
+            if (ship.Flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
                 ((Space.ship_count[ShipType.Coriolis] == 0) && (Space.ship_count[ShipType.Dodec] == 0)))
             {
                 FlyToPlanet(ref ship);
                 return;
             }
 
-            diff.X = ship.location.X - Space.universe[1].location.X;
-            diff.Y = ship.location.Y - Space.universe[1].location.Y;
-            diff.Z = ship.location.Z - Space.universe[1].location.Z;
+            diff.X = ship.Location.X - Space.universe[1].Location.X;
+            diff.Y = ship.Location.Y - Space.universe[1].Location.Y;
+            diff.Z = ship.Location.Z - Space.universe[1].Location.Z;
 
             dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
 
             if (dist < 160)
             {
-                ship.flags |= FLG.FLG_REMOVE;       // Ship has docked.
+                ship.Flags |= FLG.FLG_REMOVE;       // Ship has docked.
                 return;
             }
 

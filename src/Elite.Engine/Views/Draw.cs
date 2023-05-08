@@ -70,11 +70,11 @@ namespace Elite.Engine.Views
         {
             Vector2 centre = new()
             {
-                X = ((planet.location.X * 256 / planet.location.Z) + 128) * Graphics.GFX_SCALE,
-                Y = ((-planet.location.Y * 256 / planet.location.Z) + 96) * Graphics.GFX_SCALE,
+                X = ((planet.Location.X * 256 / planet.Location.Z) + 128) * Graphics.GFX_SCALE,
+                Y = ((-planet.Location.Y * 256 / planet.Location.Z) + 96) * Graphics.GFX_SCALE,
             };
 
-            float radius = 6291456 / planet.location.Length() * Graphics.GFX_SCALE;
+            float radius = 6291456 / planet.Location.Length() * Graphics.GFX_SCALE;
 
             if ((centre.X + radius < 0) ||
                 (centre.X - radius > 511) ||

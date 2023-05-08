@@ -97,33 +97,33 @@ namespace Elite.Engine
             alpha = _ship.Roll / 256;
             beta = _ship.Climb / 256;
 
-            x = obj.location.X;
-            y = obj.location.Y;
-            z = obj.location.Z;
+            x = obj.Location.X;
+            y = obj.Location.Y;
+            z = obj.Location.Z;
 
-            if (!obj.flags.HasFlag(FLG.FLG_DEAD))
+            if (!obj.Flags.HasFlag(FLG.FLG_DEAD))
             {
-                if (obj.velocity != 0)
+                if (obj.Velocity != 0)
                 {
-                    speed = obj.velocity;
+                    speed = obj.Velocity;
                     speed *= 1.5f;
                     x += obj.Rotmat[2].X * speed;
                     y += obj.Rotmat[2].Y * speed;
                     z += obj.Rotmat[2].Z * speed;
                 }
 
-                if (obj.acceleration != 0)
+                if (obj.Acceleration != 0)
                 {
-                    obj.velocity += obj.acceleration;
-                    obj.acceleration = 0;
-                    if (obj.velocity > _gameState.ShipList[obj.type].VelocityMax)
+                    obj.Velocity += obj.Acceleration;
+                    obj.Acceleration = 0;
+                    if (obj.Velocity > _gameState.ShipList[obj.Type].VelocityMax)
                     {
-                        obj.velocity = _gameState.ShipList[obj.type].VelocityMax;
+                        obj.Velocity = _gameState.ShipList[obj.Type].VelocityMax;
                     }
 
-                    if (obj.velocity <= 0)
+                    if (obj.Velocity <= 0)
                     {
-                        obj.velocity = 1;
+                        obj.Velocity = 1;
                     }
                 }
             }
@@ -135,22 +135,22 @@ namespace Elite.Engine
 
             z -= _ship.Speed;
 
-            obj.location = new(x, y, z);
+            obj.Location = new(x, y, z);
 
-            if (obj.type == ShipType.Planet)
+            if (obj.Type == ShipType.Planet)
             {
                 beta = 0.0f;
             }
 
-            VectorMaths.RotateVector(ref obj.Rotmat, alpha, beta);
+            obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
 
-            if (obj.flags.HasFlag(FLG.FLG_DEAD))
+            if (obj.Flags.HasFlag(FLG.FLG_DEAD))
             {
                 return;
             }
 
-            rotx = obj.rotx;
-            rotz = obj.rotz;
+            rotx = obj.RotX;
+            rotz = obj.RotZ;
 
             /* If necessary rotate the object around the X axis... */
 
@@ -162,7 +162,7 @@ namespace Elite.Engine
 
                 if (rotx is not 127 and not (-127))
                 {
-                    obj.rotx -= (rotx < 0) ? -1 : 1;
+                    obj.RotX -= (rotx < 0) ? -1 : 1;
                 }
             }
 
@@ -177,7 +177,7 @@ namespace Elite.Engine
 
                 if (rotz is not 127 and not (-127))
                 {
-                    obj.rotz -= (rotz < 0) ? -1 : 1;
+                    obj.RotZ -= (rotz < 0) ? -1 : 1;
                 }
             }
 
@@ -210,7 +210,7 @@ namespace Elite.Engine
                 return false;
             }
 
-            vec = VectorMaths.UnitVector(universe[sn].location);
+            vec = VectorMaths.UnitVector(universe[sn].Location);
 
             if (vec.Z < 0.927)
             {
@@ -235,9 +235,9 @@ namespace Elite.Engine
                 return;
             }
 
-            float x = MathF.Abs(universe[0].location.X);
-            float y = MathF.Abs(universe[0].location.Y);
-            float z = MathF.Abs(universe[0].location.Z);
+            float x = MathF.Abs(universe[0].Location.X);
+            float y = MathF.Abs(universe[0].Location.Y);
+            float z = MathF.Abs(universe[0].Location.Z);
 
             if ((x == 0 && y == 0 && z == 0) ||
                 x > 65535 || y > 65535 || z > 65535)
@@ -289,9 +289,9 @@ namespace Elite.Engine
                 return;
             }
 
-            float x = MathF.Abs(universe[1].location.X);
-            float y = MathF.Abs(universe[1].location.Y);
-            float z = MathF.Abs(universe[1].location.Z);
+            float x = MathF.Abs(universe[1].Location.X);
+            float y = MathF.Abs(universe[1].Location.Y);
+            float z = MathF.Abs(universe[1].Location.Z);
 
             if ((x == 0 && y == 0 && z == 0) ||
                 x > 65535 || y > 65535 || z > 65535)
@@ -337,7 +337,7 @@ namespace Elite.Engine
 
         private void MakeStationAppear()
         {
-            Vector3 location = universe[0].location;
+            Vector3 location = universe[0].Location;
             Vector3 vec;
             vec.X = RNG.Random(-16384, 16383);
             vec.Y = RNG.Random(-16384, 16383);
@@ -392,7 +392,7 @@ namespace Elite.Engine
             }
 
             _ship.Speed = 1;
-            _ship.DamageShip(5, universe[i].location.Z > 0);
+            _ship.DamageShip(5, universe[i].Location.Z > 0);
             _audio.PlayEffect(SoundEffect.Crash);
         }
 
@@ -402,8 +402,7 @@ namespace Elite.Engine
 
             if (_gameState.CurrentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
             {
-                flip.location.X = -flip.location.X;
-                flip.location.Z = -flip.location.Z;
+                flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z);
 
                 flip.Rotmat[0].X = -flip.Rotmat[0].X;
                 flip.Rotmat[0].Z = -flip.Rotmat[0].Z;
@@ -418,11 +417,10 @@ namespace Elite.Engine
 
             if (_gameState.CurrentScreen == SCR.SCR_LEFT_VIEW)
             {
-                tmp = flip.location.X;
-                flip.location.X = flip.location.Z;
-                flip.location.Z = -tmp;
+                tmp = flip.Location.X;
+                flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp);
 
-                if (flip.type < 0)
+                if (flip.Type < 0)
                 {
                     return;
                 }
@@ -443,11 +441,10 @@ namespace Elite.Engine
 
             if (_gameState.CurrentScreen == SCR.SCR_RIGHT_VIEW)
             {
-                tmp = flip.location.X;
-                flip.location.X = -flip.location.Z;
-                flip.location.Z = tmp;
+                tmp = flip.Location.X;
+                flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp);
 
-                if (flip.type < 0)
+                if (flip.Type < 0)
                 {
                     return;
                 }
@@ -476,14 +473,14 @@ namespace Elite.Engine
 
             for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
             {
-                ShipType type = universe[i].type;
+                ShipType type = universe[i].Type;
 
                 if (type == ShipType.None)
                 {
                     continue;
                 }
 
-                if (universe[i].flags.HasFlag(FLG.FLG_REMOVE))
+                if (universe[i].Flags.HasFlag(FLG.FLG_REMOVE))
                 {
                     if (type == ShipType.Viper)
                     {
@@ -503,7 +500,7 @@ namespace Elite.Engine
                 }
 
                 if (_gameState.DetonateBomb &&
-                    (!universe[i].flags.HasFlag(FLG.FLG_DEAD)) &&
+                    (!universe[i].Flags.HasFlag(FLG.FLG_DEAD)) &&
                     (type != ShipType.Planet) &&
                     (type != ShipType.Sun) &&
                     (type != ShipType.Constrictor) &&
@@ -512,7 +509,7 @@ namespace Elite.Engine
                     (type != ShipType.Dodec))
                 {
                     _audio.PlayEffect(SoundEffect.Explode);
-                    universe[i].flags |= FLG.FLG_DEAD;
+                    universe[i].Flags |= FLG.FLG_DEAD;
                 }
 
                 if (_gameState.CurrentScreen is
@@ -533,7 +530,7 @@ namespace Elite.Engine
                 {
                     if ((ship_count[ShipType.Coriolis] == 0) &&
                         (ship_count[ShipType.Dodec] == 0) &&
-                        (universe[i].location.Length() < 65792)) // was 49152
+                        (universe[i].Location.Length() < 65792)) // was 49152
                     {
                         MakeStationAppear();
                     }
@@ -549,7 +546,7 @@ namespace Elite.Engine
                 }
 
 
-                if (universe[i].location.Length() < 170)
+                if (universe[i].Location.Length() < 170)
                 {
                     if (type is ShipType.Coriolis or ShipType.Dodec)
                     {
@@ -563,7 +560,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                if (universe[i].location.Length() > 57344)
+                if (universe[i].Location.Length() > 57344)
                 {
                     _combat.RemoveShip(i);
                     continue;
@@ -571,12 +568,12 @@ namespace Elite.Engine
 
                 _threed.DrawObject(flip);
 
-                universe[i].flags = flip.flags;
-                universe[i].exp_delta = flip.exp_delta;
+                universe[i].Flags = flip.Flags;
+                universe[i].ExpDelta = flip.ExpDelta;
 
-                universe[i].flags &= ~FLG.FLG_FIRING;
+                universe[i].Flags &= ~FLG.FLG_FIRING;
 
-                if (universe[i].flags.HasFlag(FLG.FLG_DEAD))
+                if (universe[i].Flags.HasFlag(FLG.FLG_DEAD))
                 {
                     continue;
                 }
@@ -759,7 +756,7 @@ namespace Elite.Engine
 
             for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
             {
-                type = universe[i].type;
+                type = universe[i].Type;
 
                 if (type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
                     not ShipType.Alloy and not ShipType.Rock and
@@ -770,13 +767,13 @@ namespace Elite.Engine
                 }
             }
 
-            if ((universe[0].location.Length() < 75001) || (universe[1].location.Length() < 75001))
+            if ((universe[0].Location.Length() < 75001) || (universe[1].Location.Length() < 75001))
             {
                 _gameState.InfoMessage("Mass Locked");
                 return;
             }
 
-            jump = universe[0].location.Length() < universe[1].location.Length() ? universe[0].location.Length() - 75000f : universe[1].location.Length() - 75000f;
+            jump = universe[0].Location.Length() < universe[1].Location.Length() ? universe[0].Location.Length() - 75000f : universe[1].Location.Length() - 75000f;
 
             if (jump > 1024)
             {
@@ -785,9 +782,9 @@ namespace Elite.Engine
 
             for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
             {
-                if (universe[i].type != 0)
+                if (universe[i].Type != 0)
                 {
-                    universe[i].location.Z -= jump;
+                    universe[i].Location = new(universe[i].Location.X, universe[i].Location.Y, universe[i].Location.Z - jump);
                 }
             }
 

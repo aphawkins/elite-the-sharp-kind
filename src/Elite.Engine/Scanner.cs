@@ -56,16 +56,16 @@ namespace Elite.Engine
         {
             for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
             {
-                if ((_universe[i].type <= 0) ||
-                    _universe[i].flags.HasFlag(FLG.FLG_DEAD) ||
-                    _universe[i].flags.HasFlag(FLG.FLG_CLOAKED))
+                if ((_universe[i].Type <= 0) ||
+                    _universe[i].Flags.HasFlag(FLG.FLG_DEAD) ||
+                    _universe[i].Flags.HasFlag(FLG.FLG_CLOAKED))
                 {
                     continue;
                 }
 
-                float x = _universe[i].location.X / 256;
-                float y1 = -_universe[i].location.Z / 1024;
-                float y2 = y1 - (_universe[i].location.Y / 512);
+                float x = _universe[i].Location.X / 256;
+                float y1 = -_universe[i].Location.Z / 1024;
+                float y2 = y1 - (_universe[i].Location.Y / 512);
 
                 if ((y2 < -28) || (y2 > 28) ||
                     (x < -50) || (x > 50))
@@ -77,9 +77,9 @@ namespace Elite.Engine
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                GFX_COL colour = _universe[i].flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
+                GFX_COL colour = _universe[i].Flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
 
-                switch (_universe[i].type)
+                switch (_universe[i].Type)
                 {
                     case ShipType.Missile:
                         colour = GFX_COL.GFX_COL_PINK_1;
@@ -113,7 +113,7 @@ namespace Elite.Engine
             }
 
             int un = _shipCount[ShipType.Coriolis] == 0 && _shipCount[ShipType.Dodec] == 0 ? 0 : 1;
-            Vector3 dest = VectorMaths.UnitVector(_universe[un].location);
+            Vector3 dest = VectorMaths.UnitVector(_universe[un].Location);
 
             if (float.IsNaN(dest.X))
             {

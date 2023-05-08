@@ -5,19 +5,19 @@ namespace Elite.Engine.Types
 {
     internal class UniverseObject
     {
-        internal ShipType type;
-        internal Vector3 location;
-        internal Vector3[] Rotmat = new Vector3[3];
-        internal float rotx;
-        internal float rotz;
-        internal FLG flags;
-        internal int energy;
-        internal float velocity;
-        internal int acceleration;
-        internal int missiles;
-        internal int target;
-        internal int bravery;
-        internal int exp_delta;
+        internal ShipType Type { get; set; }
+        internal Vector3 Location { get; set; }
+        internal Vector3[] Rotmat { get; set; } = new Vector3[3];
+        internal float RotX { get; set; }
+        internal float RotZ { get; set; }
+        internal FLG Flags { get; set; }
+        internal int Energy { get; set; }
+        internal float Velocity { get; set; }
+        internal int Acceleration { get; set; }
+        internal int Missiles { get; set; }
+        internal int Target { get; set; }
+        internal int Bravery { get; set; }
+        internal int ExpDelta { get; set; }
 
         internal UniverseObject()
         {
@@ -25,19 +25,19 @@ namespace Elite.Engine.Types
 
         internal UniverseObject(UniverseObject other)
         {
-            type = other.type;
-            location = other.location.Cloner();
+            Type = other.Type;
+            Location = other.Location.Cloner();
             Rotmat = other.Rotmat.Cloner();
-            rotx = other.rotx;
-            rotz = other.rotz;
-            flags = other.flags;
-            energy = other.energy;
-            velocity = other.velocity;
-            acceleration = other.acceleration;
-            missiles = other.missiles;
-            target = other.target;
-            bravery = other.bravery;
-            exp_delta = other.exp_delta;
+            RotX = other.RotX;
+            RotZ = other.RotZ;
+            Flags = other.Flags;
+            Energy = other.Energy;
+            Velocity = other.Velocity;
+            Acceleration = other.Acceleration;
+            Missiles = other.Missiles;
+            Target = other.Target;
+            Bravery = other.Bravery;
+            ExpDelta = other.ExpDelta;
         }
     }
 }

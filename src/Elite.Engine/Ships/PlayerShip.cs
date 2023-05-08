@@ -50,23 +50,23 @@ namespace Elite.Engine.Ships
             UniverseObject ship = new()
             {
                 Rotmat = VectorMaths.GetInitialMatrix(),
-                location = Vector3.Zero
+                Location = Vector3.Zero
             };
 
             ship.Rotmat[2].Z = 1;
             ship.Rotmat[0].X = -1;
-            ship.type = (ShipType)(-96);
-            ship.velocity = Speed;
-            ship.acceleration = 0;
-            ship.bravery = 0;
-            ship.rotz = 0;
-            ship.rotx = 0;
+            ship.Type = (ShipType)(-96);
+            ship.Velocity = Speed;
+            ship.Acceleration = 0;
+            ship.Bravery = 0;
+            ship.RotZ = 0;
+            ship.RotX = 0;
 
             Pilot.AutoPilotShip(ref ship);
 
-            Speed = ship.velocity > 22 ? 22 : ship.velocity;
+            Speed = ship.Velocity > 22 ? 22 : ship.Velocity;
 
-            if (ship.acceleration > 0)
+            if (ship.Acceleration > 0)
             {
                 Speed++;
                 if (Speed > 22)
@@ -75,7 +75,7 @@ namespace Elite.Engine.Ships
                 }
             }
 
-            if (ship.acceleration < 0)
+            if (ship.Acceleration < 0)
             {
                 Speed--;
                 if (Speed < 1)
@@ -84,55 +84,55 @@ namespace Elite.Engine.Ships
                 }
             }
 
-            if (ship.rotx == 0)
+            if (ship.RotX == 0)
             {
                 Climb = 0;
             }
 
-            if (ship.rotx < 0)
+            if (ship.RotX < 0)
             {
                 IncreaseClimb();
 
-                if (ship.rotx < -1)
+                if (ship.RotX < -1)
                 {
                     IncreaseClimb();
                 }
             }
 
-            if (ship.rotx > 0)
+            if (ship.RotX > 0)
             {
                 DecreaseClimb();
 
-                if (ship.rotx > 1)
+                if (ship.RotX > 1)
                 {
                     DecreaseClimb();
                 }
             }
 
-            if (ship.rotz == 127)
+            if (ship.RotZ == 127)
             {
                 Roll = -14;
             }
             else
             {
-                if (ship.rotz == 0)
+                if (ship.RotZ == 0)
                 {
                     Roll = 0;
                 }
-                else if (ship.rotz > 0)
+                else if (ship.RotZ > 0)
                 {
                     IncreaseRoll();
 
-                    if (ship.rotz > 1)
+                    if (ship.RotZ > 1)
                     {
                         IncreaseRoll();
                     }
                 }
-                else if (ship.rotz < 0)
+                else if (ship.RotZ < 0)
                 {
                     DecreaseRoll();
 
-                    if (ship.rotz < -1)
+                    if (ship.RotZ < -1)
                     {
                         DecreaseRoll();
                     }

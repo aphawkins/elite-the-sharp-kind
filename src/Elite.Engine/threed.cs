@@ -49,14 +49,14 @@ namespace Elite.Engine
             Vector3[] trans_mat = new Vector3[3];
             int lasv;
             GFX_COL col;
-            IShip ship = _gameState.ShipList[univ.type];
+            IShip ship = _gameState.ShipList[univ.Type];
 
             for (int i = 0; i < 3; i++)
             {
                 trans_mat[i] = univ.Rotmat[i];
             }
 
-            Vector3 camera_vec = VectorMaths.MultiplyVector(univ.location, trans_mat);
+            Vector3 camera_vec = VectorMaths.MultiplyVector(univ.Location, trans_mat);
             camera_vec = VectorMaths.UnitVector(camera_vec);
             ShipFace[] face_data = ship.Faces;
 
@@ -81,7 +81,7 @@ namespace Elite.Engine
             for (int i = 0; i < ship.Points.Length; i++)
             {
                 Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
-                vec += univ.location;
+                vec += univ.Location;
 
                 if (vec.Z <= 0)
                 {
@@ -121,15 +121,15 @@ namespace Elite.Engine
                 }
             }
 
-            if (univ.flags.HasFlag(FLG.FLG_FIRING))
+            if (univ.Flags.HasFlag(FLG.FLG_FIRING))
             {
-                lasv = _gameState.ShipList[univ.type].LaserFront;
-                col = (univ.type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
+                lasv = _gameState.ShipList[univ.Type].LaserFront;
+                col = (univ.Type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
 
                 Vector2[] pointList = new Vector2[]
                 {
                     new Vector2(_pointList[lasv].X, _pointList[lasv].Y),
-                    new(univ.location.X > 0 ? 0 : 511, RNG.Random(255) * 2)
+                    new(univ.Location.X > 0 ? 0 : 511, RNG.Random(255) * 2)
                 };
 
                 DrawPolygonFilled(pointList, col, _pointList[lasv].Z);
@@ -384,8 +384,8 @@ namespace Elite.Engine
         {
             Vector2 position = new()
             {
-                X = planet.location.X * 256 / planet.location.Z,
-                Y = planet.location.Y * 256 / planet.location.Z
+                X = planet.Location.X * 256 / planet.Location.Z,
+                Y = planet.Location.Y * 256 / planet.Location.Z
             };
 
             position.Y = -position.Y;
@@ -396,7 +396,7 @@ namespace Elite.Engine
             position.X *= Graphics.GFX_SCALE;
             position.Y *= Graphics.GFX_SCALE;
 
-            float radius = 6291456 / planet.location.Length();
+            float radius = 6291456 / planet.Location.Length();
             //	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
 
             radius *= Graphics.GFX_SCALE;
@@ -431,27 +431,27 @@ namespace Elite.Engine
             Vector3[] trans_mat = new Vector3[3];
             bool[] visible = new bool[32];
 
-            if (univ.exp_delta > 251)
+            if (univ.ExpDelta > 251)
             {
-                univ.flags |= FLG.FLG_REMOVE;
+                univ.Flags |= FLG.FLG_REMOVE;
                 return;
             }
 
-            univ.exp_delta += 4;
+            univ.ExpDelta += 4;
 
-            if (univ.location.Z <= 0)
+            if (univ.Location.Z <= 0)
             {
                 return;
             }
 
-            IShip ship = _gameState.ShipList[univ.type];
+            IShip ship = _gameState.ShipList[univ.Type];
 
             for (int i = 0; i < 3; i++)
             {
                 trans_mat[i] = univ.Rotmat[i];
             }
 
-            Vector3 camera_vec = VectorMaths.MultiplyVector(univ.location, trans_mat);
+            Vector3 camera_vec = VectorMaths.MultiplyVector(univ.Location, trans_mat);
             camera_vec = VectorMaths.UnitVector(camera_vec);
 
             ShipFaceNormal[] ship_norm = ship.FaceNormals;
@@ -474,7 +474,7 @@ namespace Elite.Engine
                     visible[ship.Points[i].Face3] || visible[ship.Points[i].Face4])
                 {
                     Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
-                    Vector3 r = vec + univ.location;
+                    Vector3 r = vec + univ.Location;
 
                     float sx = r.X * 256f / r.Z;
                     float sy = r.Y * 256f / r.Z;
@@ -493,9 +493,9 @@ namespace Elite.Engine
                 }
             }
 
-            float z = univ.location.Z;
+            float z = univ.Location.Z;
             float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
-            float pr = univ.exp_delta * 256 / q;
+            float pr = univ.ExpDelta * 256 / q;
 
             //	if (pr > 0x1C00)
             //		q = 254;
@@ -548,37 +548,37 @@ namespace Elite.Engine
             //	SCR.SCR_GAME_OVER or SCR.SCR_ESCAPE_CAPSULE or
             //	SCR.SCR_MISSION_1);
 
-            if (ship.flags.HasFlag(FLG.FLG_DEAD) && !ship.flags.HasFlag(FLG.FLG_EXPLOSION))
+            if (ship.Flags.HasFlag(FLG.FLG_DEAD) && !ship.Flags.HasFlag(FLG.FLG_EXPLOSION))
             {
-                ship.flags |= FLG.FLG_EXPLOSION;
-                ship.exp_delta = 18;
+                ship.Flags |= FLG.FLG_EXPLOSION;
+                ship.ExpDelta = 18;
             }
 
-            if (ship.flags.HasFlag(FLG.FLG_EXPLOSION))
+            if (ship.Flags.HasFlag(FLG.FLG_EXPLOSION))
             {
                 DrawExplosion(ref ship);
                 return;
             }
 
-            if (ship.location.Z <= 0)   /* Only display ships in front of us. */
+            if (ship.Location.Z <= 0)   /* Only display ships in front of us. */
             {
                 return;
             }
 
-            if (ship.type == ShipType.Planet)
+            if (ship.Type == ShipType.Planet)
             {
                 DrawPlanet(ref ship);
                 return;
             }
 
-            if (ship.type == ShipType.Sun)
+            if (ship.Type == ShipType.Sun)
             {
                 _draw.DrawSun(ship);
                 return;
             }
 
-            if ((MathF.Abs(ship.location.X) > ship.location.Z) ||    /* Check for field of vision. */
-                (MathF.Abs(ship.location.Y) > ship.location.Z))
+            if ((MathF.Abs(ship.Location.X) > ship.Location.Z) ||    /* Check for field of vision. */
+                (MathF.Abs(ship.Location.Y) > ship.Location.Z))
             {
                 return;
             }

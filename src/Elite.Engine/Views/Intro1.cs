@@ -36,11 +36,11 @@ namespace Elite.Engine.Views
 
         public void UpdateUniverse()
         {
-            Space.universe[0].location.Z -= 100;
+            Space.universe[0].Location = new(Space.universe[0].Location.X, Space.universe[0].Location.Y, Space.universe[0].Location.Z - 100);
 
-            if (Space.universe[0].location.Z < 384)
+            if (Space.universe[0].Location.Z < 384)
             {
-                Space.universe[0].location.Z = 384;
+                Space.universe[0].Location = new(Space.universe[0].Location.X, Space.universe[0].Location.Y, 384);
             }
         }
 
