@@ -54,7 +54,7 @@ namespace Elite.Engine.Views
             _gfx.DrawTextLeft(420, 40, "IN HOLD", GFX_COL.GFX_COL_GREEN_1);
 
             int i = 0;
-            foreach (KeyValuePair<StockType, StockItem> stock in _trade.stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _trade._stockMarket)
             {
                 int y = (i * 15) + 55;
 
@@ -86,11 +86,11 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
-                _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock - 1, 0, _trade.stockMarket.Count - 1);
+                _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock - 1, 0, _trade._stockMarket.Count - 1);
             }
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
-                _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock + 1, 0, _trade.stockMarket.Count - 1);
+                _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock + 1, 0, _trade._stockMarket.Count - 1);
             }
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {

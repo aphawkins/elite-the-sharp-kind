@@ -436,7 +436,7 @@ namespace Elite.Engine
             {
                 StockType trade = (StockType)RNG.Random(1, 8);
                 _trade.AddCargo(trade);
-                _gameState.InfoMessage(_trade.stockMarket[trade].name);
+                _gameState.InfoMessage(_trade._stockMarket[trade].name);
                 RemoveShip(un);
                 return;
             }
@@ -445,7 +445,7 @@ namespace Elite.Engine
             {
                 StockType trade = _gameState.ShipList[type].ScoopedType;
                 _trade.AddCargo(trade);
-                _gameState.InfoMessage(_trade.stockMarket[trade].name);
+                _gameState.InfoMessage(_trade._stockMarket[trade].name);
                 RemoveShip(un);
                 return;
             }

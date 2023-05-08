@@ -107,7 +107,7 @@ namespace Elite.Engine.Save
                 CargoCapacity = _ship.CargoCapacity,
                 CommanderName = newName,
                 Credits = _trade._credits,
-                CurrentCargo = _trade.stockMarket.Values.Select(x => x.currentCargo).ToArray(),
+                CurrentCargo = _trade._stockMarket.Values.Select(x => x.currentCargo).ToArray(),
                 EnergyUnit = _ship.EnergyUnit.ToString(),
                 Fuel = _ship.Fuel,
                 GalaxyNumber = _state.Cmdr.GalaxyNumber,
@@ -144,7 +144,7 @@ namespace Elite.Engine.Save
                     _state.DockedPlanet.D,
                     _state.DockedPlanet.B,
                 },
-                StationStock = _trade.stockMarket.Values.Select(x => x.stationStock).ToArray()
+                StationStock = _trade._stockMarket.Values.Select(x => x.stationStock).ToArray()
             };
 
             return save;
@@ -164,9 +164,9 @@ namespace Elite.Engine.Save
             _ship.CargoCapacity = _lastSaved.CargoCapacity;
             _state.Cmdr.Name = _lastSaved.CommanderName;
             _trade._credits = _lastSaved.Credits;
-            for (int i = 0; i < _trade.stockMarket.Count; i++)
+            for (int i = 0; i < _trade._stockMarket.Count; i++)
             {
-                _trade.stockMarket[(StockType)i + 1].currentCargo = _lastSaved.CurrentCargo[i];
+                _trade._stockMarket[(StockType)i + 1].currentCargo = _lastSaved.CurrentCargo[i];
             }
             _ship.EnergyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
             _ship.Fuel = _lastSaved.Fuel;
@@ -195,9 +195,9 @@ namespace Elite.Engine.Save
             _state.Cmdr.Score = _lastSaved.Score;
             _state.DockedPlanet.D = _lastSaved.ShipLocation[0];
             _state.DockedPlanet.B = _lastSaved.ShipLocation[1];
-            for (int i = 0; i < _trade.stockMarket.Count; i++)
+            for (int i = 0; i < _trade._stockMarket.Count; i++)
             {
-                _trade.stockMarket[(StockType)i + 1].stationStock = _lastSaved.StationStock[i];
+                _trade._stockMarket[(StockType)i + 1].stationStock = _lastSaved.StationStock[i];
             }
         }
 

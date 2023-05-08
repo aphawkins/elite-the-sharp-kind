@@ -23,8 +23,8 @@ namespace Elite.Engine
     {
         private const int LAND_X_MAX = 128;
         private const int LAND_Y_MAX = 128;
-        private static readonly int[,] landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
-        private static readonly Vector3[] point_list = new Vector3[100];
+        private readonly int[,] _landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
+        private readonly Vector3[] _pointList = new Vector3[100];
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly Draw _draw;
@@ -91,7 +91,7 @@ namespace Elite.Engine
                 vec.X = ((vec.X * 256 / vec.Z) + 128) * Graphics.GFX_SCALE;
                 vec.Y = ((-vec.Y * 256 / vec.Z) + 96) * Graphics.GFX_SCALE;
 
-                point_list[i] = vec;
+                _pointList[i] = vec;
             }
 
             for (int i = 0; i < ship.Faces.Length; i++)
@@ -100,10 +100,10 @@ namespace Elite.Engine
                 int point1 = face_data[i].Points[1];
                 int point2 = face_data[i].Points.Length > 2 ? face_data[i].Points[2] : 0;
 
-                if ((((point_list[point0].X - point_list[point1].X) *
-                     (point_list[point2].Y - point_list[point1].Y)) -
-                     ((point_list[point0].Y - point_list[point1].Y) *
-                     (point_list[point2].X - point_list[point1].X))) <= 0)
+                if ((((_pointList[point0].X - _pointList[point1].X) *
+                     (_pointList[point2].Y - _pointList[point1].Y)) -
+                     ((_pointList[point0].Y - _pointList[point1].Y) *
+                     (_pointList[point2].X - _pointList[point1].X))) <= 0)
                 {
                     int num_points = face_data[i].Points.Length;
                     Vector2[] poly_list = new Vector2[num_points];
@@ -112,9 +112,9 @@ namespace Elite.Engine
 
                     for (int j = 0; j < num_points; j++)
                     {
-                        poly_list[j].X = point_list[face_data[i].Points[j]].X;
-                        poly_list[j].Y = point_list[face_data[i].Points[j]].Y;
-                        zavg = MathF.Max(zavg, point_list[face_data[i].Points[j]].Z);
+                        poly_list[j].X = _pointList[face_data[i].Points[j]].X;
+                        poly_list[j].Y = _pointList[face_data[i].Points[j]].Y;
+                        zavg = MathF.Max(zavg, _pointList[face_data[i].Points[j]].Z);
                     }
 
                     DrawPolygonFilled(poly_list, face_data[i].Colour, zavg);
@@ -128,20 +128,20 @@ namespace Elite.Engine
 
                 Vector2[] pointList = new Vector2[]
                 {
-                    new Vector2(point_list[lasv].X, point_list[lasv].Y),
+                    new Vector2(_pointList[lasv].X, _pointList[lasv].Y),
                     new(univ.location.X > 0 ? 0 : 511, RNG.Random(255) * 2)
                 };
 
-                DrawPolygonFilled(pointList, col, point_list[lasv].Z);
+                DrawPolygonFilled(pointList, col, _pointList[lasv].Z);
             }
         }
 
-        /*
-		 * Colour map used to generate a SNES Elite style planet.
-		 * This is a quick hack and needs tidying up.
-		 */
-        private static readonly int[] snes_planet_colour = new int[]
+        /// <summary>
+        /// Colour map used to generate a SNES Elite style planet.
+        /// </summary>
+        private static readonly int[] s_snes_planet_colour = new int[]
         {
+            // TODO: This is a quick hack and needs tidying up.
             102, 102,
             134, 134, 134, 134,
             167, 167, 167, 167,
@@ -167,14 +167,14 @@ namespace Elite.Engine
         /// <summary>
         /// Generate a landscape map for a SNES Elite style planet.
         /// </summary>
-        private static void GenerateSnesLandscape()
+        private void GenerateSnesLandscape()
         {
             for (int y = 0; y <= LAND_Y_MAX; y++)
             {
-                int colour = snes_planet_colour[y * (snes_planet_colour.Length - 1) / LAND_Y_MAX];
+                int colour = s_snes_planet_colour[y * (s_snes_planet_colour.Length - 1) / LAND_Y_MAX];
                 for (int x = 0; x <= LAND_X_MAX; x++)
                 {
-                    landscape[x, y] = colour;
+                    _landscape[x, y] = colour;
                 }
             }
         }
@@ -187,8 +187,8 @@ namespace Elite.Engine
         /// <param name="ex"></param>
         /// <param name="ey"></param>
         /// <returns></returns>
-        private static int CalcMidpoint(int sx, int sy, int ex, int ey) =>
-            Math.Clamp(((landscape[sx, sy] + landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
+        private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
+            Math.Clamp(((_landscape[sx, sy] + _landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
         /// <summary>
         /// Calculate a square on the midpoint map.
@@ -196,7 +196,7 @@ namespace Elite.Engine
         /// <param name="tx"></param>
         /// <param name="ty"></param>
         /// <param name="w"></param>
-        private static void MidpointSquare(int tx, int ty, int w)
+        private void MidpointSquare(int tx, int ty, int w)
         {
             int d = w / 2;
             int mx = tx + d;
@@ -204,11 +204,11 @@ namespace Elite.Engine
             int bx = tx + w;
             int by = ty + w;
 
-            landscape[mx, ty] = CalcMidpoint(tx, ty, bx, ty);
-            landscape[mx, by] = CalcMidpoint(tx, by, bx, by);
-            landscape[tx, my] = CalcMidpoint(tx, ty, tx, by);
-            landscape[bx, my] = CalcMidpoint(bx, ty, bx, by);
-            landscape[mx, my] = CalcMidpoint(tx, my, bx, my);
+            _landscape[mx, ty] = CalcMidpoint(tx, ty, bx, ty);
+            _landscape[mx, by] = CalcMidpoint(tx, by, bx, by);
+            _landscape[tx, my] = CalcMidpoint(tx, ty, tx, by);
+            _landscape[bx, my] = CalcMidpoint(bx, ty, bx, by);
+            _landscape[mx, my] = CalcMidpoint(tx, my, bx, my);
 
             if (d == 1)
             {
@@ -225,7 +225,7 @@ namespace Elite.Engine
         /// Generate a fractal landscape. Uses midpoint displacement method.
         /// </summary>
         /// <param name="seed">Initial seed for the generation.</param>
-        private static void GenerateFractalLandscape(int seed)
+        private void GenerateFractalLandscape(int seed)
         {
             int d = LAND_X_MAX / 8;
             Random random = new(seed);
@@ -234,7 +234,7 @@ namespace Elite.Engine
             {
                 for (int x = 0; x <= LAND_X_MAX; x += d)
                 {
-                    landscape[x, y] = random.Next(255);
+                    _landscape[x, y] = random.Next(255);
                 }
             }
 
@@ -252,8 +252,8 @@ namespace Elite.Engine
                 {
                     float dist = (x * x) + (y * y);
                     bool dark = dist > 10000;
-                    int h = landscape[x, y];
-                    landscape[x, y] = h > 166
+                    int h = _landscape[x, y];
+                    _landscape[x, y] = h > 166
                         ? (int)(dark ? GFX_COL.GFX_COL_GREEN_1 : GFX_COL.GFX_COL_GREEN_2)
                         : (int)(dark ? GFX_COL.GFX_COL_BLUE_2 : GFX_COL.GFX_COL_BLUE_1);
                 }
@@ -318,7 +318,7 @@ namespace Elite.Engine
                 {
                     int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LAND_X_MAX);
                     int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LAND_Y_MAX);
-                    GFX_COL colour = (GFX_COL)landscape[lx, ly];
+                    GFX_COL colour = (GFX_COL)_landscape[lx, ly];
                     _gfx.DrawPixelFast(s, colour);
                 }
                 rx += vx;
@@ -487,8 +487,8 @@ namespace Elite.Engine
                     sx *= Graphics.GFX_SCALE;
                     sy *= Graphics.GFX_SCALE;
 
-                    point_list[np].X = sx;
-                    point_list[np].Y = sy;
+                    _pointList[np].X = sx;
+                    _pointList[np].Y = sy;
                     np++;
                 }
             }
@@ -505,8 +505,8 @@ namespace Elite.Engine
 
             for (int cnt = 0; cnt < np; cnt++)
             {
-                float sx = point_list[cnt].X;
-                float sy = point_list[cnt].Y;
+                float sx = _pointList[cnt].X;
+                float sy = _pointList[cnt].Y;
 
                 for (int i = 0; i < 16; i++)
                 {
@@ -587,65 +587,65 @@ namespace Elite.Engine
         }
 
         private const int MAX_POLYS = 100;
-        private static int total_polys;
-        private static int start_poly;
-        private static readonly PolygonData[] poly_chain = new PolygonData[MAX_POLYS];
+        private int _totalPolys;
+        private int _startPoly;
+        private readonly PolygonData[] _polyChain = new PolygonData[MAX_POLYS];
 
-        internal static void RenderStart()
+        internal void RenderStart()
         {
-            start_poly = 0;
-            total_polys = 0;
+            _startPoly = 0;
+            _totalPolys = 0;
         }
 
         internal void RenderEnd()
         {
-            if (total_polys == 0)
+            if (_totalPolys == 0)
             {
                 return;
             }
 
-            for (int i = start_poly; i != -1; i = poly_chain[i].Next)
+            for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
             {
-                GFX_COL colour = _gameState.Config.UseWireframe ? GFX_COL.GFX_COL_WHITE : poly_chain[i].FaceColour;
+                GFX_COL colour = _gameState.Config.UseWireframe ? GFX_COL.GFX_COL_WHITE : _polyChain[i].FaceColour;
 
-                if (poly_chain[i].PointList.Length == 2)
+                if (_polyChain[i].PointList.Length == 2)
                 {
-                    _gfx.DrawLine(poly_chain[i].PointList[0], poly_chain[i].PointList[1], colour);
+                    _gfx.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], colour);
                     continue;
                 }
 
                 if (_gameState.Config.UseWireframe)
                 {
-                    _gfx.DrawPolygon(poly_chain[i].PointList, colour);
+                    _gfx.DrawPolygon(_polyChain[i].PointList, colour);
                 }
                 else
                 {
-                    _gfx.DrawPolygonFilled(poly_chain[i].PointList, colour);
+                    _gfx.DrawPolygonFilled(_polyChain[i].PointList, colour);
                 }
             };
         }
 
-        private static void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour, float zAvg)
+        private void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour, float zAvg)
         {
             int i;
 
-            if (total_polys == MAX_POLYS)
+            if (_totalPolys == MAX_POLYS)
             {
                 return;
             }
 
-            int x = total_polys;
-            total_polys++;
+            int x = _totalPolys;
+            _totalPolys++;
 
-            poly_chain[x].FaceColour = face_colour;
-            poly_chain[x].Z = zAvg;
-            poly_chain[x].Next = -1;
-            poly_chain[x].PointList = new Vector2[point_list.Length];
+            _polyChain[x].FaceColour = face_colour;
+            _polyChain[x].Z = zAvg;
+            _polyChain[x].Next = -1;
+            _polyChain[x].PointList = new Vector2[point_list.Length];
 
             for (i = 0; i < point_list.Length; i++)
             {
-                poly_chain[x].PointList[i].X = point_list[i].X;
-                poly_chain[x].PointList[i].Y = point_list[i].Y;
+                _polyChain[x].PointList[i].X = point_list[i].X;
+                _polyChain[x].PointList[i].Y = point_list[i].Y;
             }
 
             if (x == 0)
@@ -653,26 +653,26 @@ namespace Elite.Engine
                 return;
             }
 
-            if (zAvg > poly_chain[start_poly].Z)
+            if (zAvg > _polyChain[_startPoly].Z)
             {
-                poly_chain[x].Next = start_poly;
-                start_poly = x;
+                _polyChain[x].Next = _startPoly;
+                _startPoly = x;
                 return;
             }
 
-            for (i = start_poly; poly_chain[i].Next != -1; i = poly_chain[i].Next)
+            for (i = _startPoly; _polyChain[i].Next != -1; i = _polyChain[i].Next)
             {
-                int nx = poly_chain[i].Next;
+                int nx = _polyChain[i].Next;
 
-                if (zAvg > poly_chain[nx].Z)
+                if (zAvg > _polyChain[nx].Z)
                 {
-                    poly_chain[i].Next = x;
-                    poly_chain[x].Next = nx;
+                    _polyChain[i].Next = x;
+                    _polyChain[x].Next = nx;
                     return;
                 }
             }
 
-            poly_chain[i].Next = x;
+            _polyChain[i].Next = x;
         }
     }
 }

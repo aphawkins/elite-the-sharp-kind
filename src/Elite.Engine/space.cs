@@ -468,7 +468,7 @@ namespace Elite.Engine
         /// </summary>
         internal void UpdateUniverse()
         {
-            Threed.RenderStart();
+            _threed.RenderStart();
 
             for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
             {

@@ -5,7 +5,7 @@
 using Elite.Engine.Ships;
 using Elite.Engine.Types;
 
-namespace Elite.Engine.Trade
+namespace Elite.Engine
 {
     internal class Trade
     {
@@ -19,7 +19,7 @@ namespace Elite.Engine.Trade
         /// <summary>
         /// The following holds the Elite Planet Stock Market.
         /// </summary>
-        internal Dictionary<StockType, StockItem> stockMarket = new()
+        internal Dictionary<StockType, StockItem> _stockMarket = new()
         {
             { StockType.Food,         new("Food",          0, 0,  1.9f, -2,   6,   1, TONNES,    0, 0) },
             { StockType.Textiles,     new("Textiles",      0, 0,  2.0f, -1,  10,   3, TONNES,    0, 0) },
@@ -44,28 +44,28 @@ namespace Elite.Engine.Trade
 
         internal Trade(PlayerShip ship) => _ship = ship;
 
-        internal void AddCargo(StockType stock) => stockMarket[stock].currentCargo++;
+        internal void AddCargo(StockType stock) => _stockMarket[stock].currentCargo++;
 
         internal void BuyStock(StockType stock)
         {
-            if (stockMarket[stock].currentQuantity == 0 || _credits < stockMarket[stock].currentPrice)
+            if (_stockMarket[stock].currentQuantity == 0 || _credits < _stockMarket[stock].currentPrice)
             {
                 return;
             }
 
-            if (stockMarket[stock].units == TONNES && TotalCargoTonnage() == _ship.CargoCapacity)
+            if (_stockMarket[stock].units == TONNES && TotalCargoTonnage() == _ship.CargoCapacity)
             {
                 return;
             }
 
-            stockMarket[stock].currentCargo++;
-            stockMarket[stock].currentQuantity--;
-            _credits -= stockMarket[stock].currentPrice;
+            _stockMarket[stock].currentCargo++;
+            _stockMarket[stock].currentQuantity--;
+            _credits -= _stockMarket[stock].currentPrice;
         }
 
         internal void ClearCurrentCargo()
         {
-            foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
                 stock.Value.currentCargo = 0;
             }
@@ -79,7 +79,7 @@ namespace Elite.Engine.Trade
         /// </summary>
         internal void GenerateStockMarket(PlanetData currentPlanet)
         {
-            foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
                 // Start with the base price
                 float price = stock.Value.basePrice;
@@ -102,39 +102,39 @@ namespace Elite.Engine.Trade
             }
 
             // Alien Items are never available for purchase
-            stockMarket[StockType.AlienItems].currentQuantity = 0;
+            _stockMarket[StockType.AlienItems].currentQuantity = 0;
         }
 
-        internal int IsCarryingContraband() => ((stockMarket[StockType.Slaves].currentCargo + stockMarket[StockType.Slaves].currentCargo) * 2) + stockMarket[StockType.Firearms].currentCargo;
+        internal int IsCarryingContraband() => ((_stockMarket[StockType.Slaves].currentCargo + _stockMarket[StockType.Slaves].currentCargo) * 2) + _stockMarket[StockType.Firearms].currentCargo;
 
         internal void SellStock(StockType stock)
         {
-            if (stockMarket[stock].currentCargo == 0)
+            if (_stockMarket[stock].currentCargo == 0)
             {
                 return;
             }
 
-            stockMarket[stock].currentCargo--;
-            stockMarket[stock].currentQuantity++;
-            _credits += stockMarket[stock].currentPrice;
+            _stockMarket[stock].currentCargo--;
+            _stockMarket[stock].currentQuantity++;
+            _credits += _stockMarket[stock].currentPrice;
         }
 
         internal void SetStockQuantities()
         {
-            foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
                 stock.Value.currentQuantity = stock.Value.stationStock;
             }
 
             // Alien Items are never available for purchase
-            stockMarket[StockType.AlienItems].currentQuantity = 0;
+            _stockMarket[StockType.AlienItems].currentQuantity = 0;
         }
 
         internal int TotalCargoTonnage()
         {
             int cargo = 0;
 
-            foreach (KeyValuePair<StockType, StockItem> stock in stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
                 if (stock.Value.currentCargo > 0 && stock.Value.units == TONNES)
                 {
