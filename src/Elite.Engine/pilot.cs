@@ -121,9 +121,9 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = Space.universe[0].Location.X - ship.Location.X;
-            vec.Y = Space.universe[0].Location.Y - ship.Location.Y;
-            vec.Z = Space.universe[0].Location.Z - ship.Location.Z;
+            vec.X = Space.s_universe[0].Location.X - ship.Location.X;
+            vec.Y = Space.s_universe[0].Location.Y - ship.Location.Y;
+            vec.Z = Space.s_universe[0].Location.Z - ship.Location.Z;
 
             FlyToVector(ref ship, vec);
         }
@@ -136,13 +136,13 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = Space.universe[1].Location.X - ship.Location.X;
-            vec.Y = Space.universe[1].Location.Y - ship.Location.Y;
-            vec.Z = Space.universe[1].Location.Z - ship.Location.Z;
+            vec.X = Space.s_universe[1].Location.X - ship.Location.X;
+            vec.Y = Space.s_universe[1].Location.Y - ship.Location.Y;
+            vec.Z = Space.s_universe[1].Location.Z - ship.Location.Z;
 
-            vec.X += Space.universe[1].Rotmat[2].X * 768;
-            vec.Y += Space.universe[1].Rotmat[2].Y * 768;
-            vec.Z += Space.universe[1].Rotmat[2].Z * 768;
+            vec.X += Space.s_universe[1].Rotmat[2].X * 768;
+            vec.Y += Space.s_universe[1].Rotmat[2].Y * 768;
+            vec.Z += Space.s_universe[1].Rotmat[2].Z * 768;
 
             FlyToVector(ref ship, vec);
         }
@@ -155,9 +155,9 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = Space.universe[1].Location.X - ship.Location.X;
-            vec.Y = Space.universe[1].Location.Y - ship.Location.Y;
-            vec.Z = Space.universe[1].Location.Z - ship.Location.Z;
+            vec.X = Space.s_universe[1].Location.X - ship.Location.X;
+            vec.Y = Space.s_universe[1].Location.Y - ship.Location.Y;
+            vec.Z = Space.s_universe[1].Location.Z - ship.Location.Z;
 
             FlyToVector(ref ship, vec);
         }
@@ -171,9 +171,9 @@ namespace Elite.Engine
             Vector3 diff;
             float dir;
 
-            diff.X = ship.Location.X - Space.universe[1].Location.X;
-            diff.Y = ship.Location.Y - Space.universe[1].Location.Y;
-            diff.Z = ship.Location.Z - Space.universe[1].Location.Z;
+            diff.X = ship.Location.X - Space.s_universe[1].Location.X;
+            diff.Y = ship.Location.Y - Space.s_universe[1].Location.Y;
+            diff.Z = ship.Location.Z - Space.s_universe[1].Location.Z;
 
             Vector3 vec = VectorMaths.UnitVector(diff);
 
@@ -210,7 +210,7 @@ namespace Elite.Engine
 
             ship.RotZ = 0;
 
-            dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], Space.universe[1].Rotmat[1]);
+            dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], Space.s_universe[1].Rotmat[1]);
 
             if (MathF.Abs(dir) >= 0.9166f)
             {
@@ -235,15 +235,15 @@ namespace Elite.Engine
             float dir;
 
             if (ship.Flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
-                ((Space.ship_count[ShipType.Coriolis] == 0) && (Space.ship_count[ShipType.Dodec] == 0)))
+                ((Space.s_ship_count[ShipType.Coriolis] == 0) && (Space.s_ship_count[ShipType.Dodec] == 0)))
             {
                 FlyToPlanet(ref ship);
                 return;
             }
 
-            diff.X = ship.Location.X - Space.universe[1].Location.X;
-            diff.Y = ship.Location.Y - Space.universe[1].Location.Y;
-            diff.Z = ship.Location.Z - Space.universe[1].Location.Z;
+            diff.X = ship.Location.X - Space.s_universe[1].Location.X;
+            diff.Y = ship.Location.Y - Space.s_universe[1].Location.Y;
+            diff.Z = ship.Location.Z - Space.s_universe[1].Location.Z;
 
             dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
 
@@ -254,7 +254,7 @@ namespace Elite.Engine
             }
 
             vec = VectorMaths.UnitVector(diff);
-            dir = VectorMaths.VectorDotProduct(Space.universe[1].Rotmat[2], vec);
+            dir = VectorMaths.VectorDotProduct(Space.s_universe[1].Rotmat[2], vec);
 
             if (dir < 0.9722)
             {
@@ -275,7 +275,7 @@ namespace Elite.Engine
 
         internal void EngageAutoPilot()
         {
-            if (_gameState.IsAutoPilotOn || _gameState.InWitchspace || Space.hyper_ready)
+            if (_gameState.IsAutoPilotOn || _gameState.InWitchspace || Space.s_hyper_ready)
             {
                 return;
             }

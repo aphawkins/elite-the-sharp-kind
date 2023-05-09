@@ -68,14 +68,14 @@ namespace Elite.Engine.Views
                 _direction = -_direction;
             }
 
-            Space.universe[0].Location = new(Space.universe[0].Location.X, Space.universe[0].Location.Y, Space.universe[0].Location.Z + _direction);
+            Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, Space.s_universe[0].Location.Z + _direction);
 
-            if (Space.universe[0].Location.Z < _minDist[(int)_shipNo])
+            if (Space.s_universe[0].Location.Z < _minDist[(int)_shipNo])
             {
-                Space.universe[0].Location = new(Space.universe[0].Location.X, Space.universe[0].Location.Y, _minDist[(int)_shipNo]);
+                Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, _minDist[(int)_shipNo]);
             }
 
-            if (Space.universe[0].Location.Z > 4500)
+            if (Space.s_universe[0].Location.Z > 4500)
             {
                 do
                 {
@@ -89,8 +89,8 @@ namespace Elite.Engine.Views
                 _showTime = 0;
                 _direction = -100;
 
-                Space.ship_count[Space.universe[0].Type] = 0;
-                Space.universe[0].Type = ShipType.None;
+                Space.s_ship_count[Space.s_universe[0].Type] = 0;
+                Space.s_universe[0].Type = ShipType.None;
 
                 _combat.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }

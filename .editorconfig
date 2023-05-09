@@ -186,7 +186,7 @@ dotnet_diagnostic.IDE0074.severity = warning
 dotnet_diagnostic.IDE0078.severity = warning
 dotnet_diagnostic.IDE0090.severity = warning
 dotnet_diagnostic.IDE0220.severity = warning
-dotnet_diagnostic.IDE1006.severity = suggestion
+dotnet_diagnostic.IDE1006.severity = warning
 
 # C++ Files
 [*.{cpp,h,in}]

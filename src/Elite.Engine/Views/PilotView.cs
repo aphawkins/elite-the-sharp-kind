@@ -37,13 +37,13 @@ namespace Elite.Engine.Views
                 _laser.DrawLaserLines();
             }
 
-            if (Space.hyper_galactic)
+            if (Space.s_hyper_galactic)
             {
                 _gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, GFX_COL.GFX_COL_WHITE);
             }
-            else if (Space.hyper_countdown > 0)
+            else if (Space.s_hyper_countdown > 0)
             {
-                _gfx.DrawTextCentre(358, $"Hyperspace - {Space.hyper_name}", 120, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextCentre(358, $"Hyperspace - {Space.s_hyper_name}", 120, GFX_COL.GFX_COL_WHITE);
             }
         }
 

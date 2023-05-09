@@ -54,7 +54,7 @@ namespace Elite.Engine
             _combat = new(_gameState, _audio, _ship, _trade);
             _save = new(_gameState, _ship, _trade, _planet);
             _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars);
-            _scanner = new(_gameState, _gfx, _draw, Space.universe, Space.ship_count, _ship, _combat);
+            _scanner = new(_gameState, _gfx, _draw, Space.s_universe, Space.s_ship_count, _ship, _combat);
             _configFile = new();
 
             _gameState.Config = _configFile.ReadConfigAsync().Result;
@@ -222,7 +222,7 @@ namespace Elite.Engine
                     _gfx.DrawTextCentre(358, _gameState.MessageString, 120, GFX_COL.GFX_COL_WHITE);
                 }
 
-                if (Space.hyper_ready)
+                if (Space.s_hyper_ready)
                 {
                     _space.DisplayHyperStatus();
                     if ((_gameState.mcount & 3) == 0)
@@ -482,7 +482,7 @@ namespace Elite.Engine
             _save.GetLastSave();
 
             _ship.Speed = 1;
-            Space.hyper_ready = false;
+            Space.s_hyper_ready = false;
             _isGamePaused = false;
 
             _stars.CreateNewStars();
