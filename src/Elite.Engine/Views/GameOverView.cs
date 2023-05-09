@@ -38,7 +38,7 @@ namespace Elite.Engine.Views
             _ship.Climb = 0;
             _combat.ClearUniverse();
             int newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
-            Space.s_universe[newship].Flags |= FLG.FLG_DEAD;
+            Space.s_universe[newship].Flags |= ShipFlags.Dead;
 
             // Cargo
             for (int i = 0; i < 5; i++)

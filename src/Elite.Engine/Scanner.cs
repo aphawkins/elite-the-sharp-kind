@@ -57,8 +57,8 @@ namespace Elite.Engine
             for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
             {
                 if ((_universe[i].Type <= 0) ||
-                    _universe[i].Flags.HasFlag(FLG.FLG_DEAD) ||
-                    _universe[i].Flags.HasFlag(FLG.FLG_CLOAKED))
+                    _universe[i].Flags.HasFlag(ShipFlags.Dead) ||
+                    _universe[i].Flags.HasFlag(ShipFlags.Cloaked))
                 {
                     continue;
                 }
@@ -77,7 +77,7 @@ namespace Elite.Engine
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                GFX_COL colour = _universe[i].Flags.HasFlag(FLG.FLG_HOSTILE) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
+                GFX_COL colour = _universe[i].Flags.HasFlag(ShipFlags.Hostile) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
 
                 switch (_universe[i].Type)
                 {

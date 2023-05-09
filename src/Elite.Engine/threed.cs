@@ -121,7 +121,7 @@ namespace Elite.Engine
                 }
             }
 
-            if (univ.Flags.HasFlag(FLG.FLG_FIRING))
+            if (univ.Flags.HasFlag(ShipFlags.Firing))
             {
                 lasv = _gameState.ShipList[univ.Type].LaserFront;
                 col = (univ.Type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
@@ -433,7 +433,7 @@ namespace Elite.Engine
 
             if (univ.ExpDelta > 251)
             {
-                univ.Flags |= FLG.FLG_REMOVE;
+                univ.Flags |= ShipFlags.Remove;
                 return;
             }
 
@@ -548,13 +548,13 @@ namespace Elite.Engine
             //	SCR.SCR_GAME_OVER or SCR.SCR_ESCAPE_CAPSULE or
             //	SCR.SCR_MISSION_1);
 
-            if (ship.Flags.HasFlag(FLG.FLG_DEAD) && !ship.Flags.HasFlag(FLG.FLG_EXPLOSION))
+            if (ship.Flags.HasFlag(ShipFlags.Dead) && !ship.Flags.HasFlag(ShipFlags.Explosion))
             {
-                ship.Flags |= FLG.FLG_EXPLOSION;
+                ship.Flags |= ShipFlags.Explosion;
                 ship.ExpDelta = 18;
             }
 
-            if (ship.Flags.HasFlag(FLG.FLG_EXPLOSION))
+            if (ship.Flags.HasFlag(ShipFlags.Explosion))
             {
                 DrawExplosion(ref ship);
                 return;

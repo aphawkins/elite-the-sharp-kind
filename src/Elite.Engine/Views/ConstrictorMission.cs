@@ -96,7 +96,7 @@ namespace Elite.Engine.Views
 
                 _combat.ClearUniverse();
                 int i = _combat.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
-                Space.s_universe[i].Flags = FLG.FLG_NONE;
+                Space.s_universe[i].Flags = ShipFlags.None;
                 _ship.Roll = 0;
                 _ship.Climb = 0;
                 _ship.Speed = 0;

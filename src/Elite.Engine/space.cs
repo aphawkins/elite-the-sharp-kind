@@ -101,7 +101,7 @@ namespace Elite.Engine
             y = obj.Location.Y;
             z = obj.Location.Z;
 
-            if (!obj.Flags.HasFlag(FLG.FLG_DEAD))
+            if (!obj.Flags.HasFlag(ShipFlags.Dead))
             {
                 if (obj.Velocity != 0)
                 {
@@ -144,7 +144,7 @@ namespace Elite.Engine
 
             obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
 
-            if (obj.Flags.HasFlag(FLG.FLG_DEAD))
+            if (obj.Flags.HasFlag(ShipFlags.Dead))
             {
                 return;
             }
@@ -480,7 +480,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                if (s_universe[i].Flags.HasFlag(FLG.FLG_REMOVE))
+                if (s_universe[i].Flags.HasFlag(ShipFlags.Remove))
                 {
                     if (type == ShipType.Viper)
                     {
@@ -500,7 +500,7 @@ namespace Elite.Engine
                 }
 
                 if (_gameState.DetonateBomb &&
-                    (!s_universe[i].Flags.HasFlag(FLG.FLG_DEAD)) &&
+                    (!s_universe[i].Flags.HasFlag(ShipFlags.Dead)) &&
                     (type != ShipType.Planet) &&
                     (type != ShipType.Sun) &&
                     (type != ShipType.Constrictor) &&
@@ -509,7 +509,7 @@ namespace Elite.Engine
                     (type != ShipType.Dodec))
                 {
                     _audio.PlayEffect(SoundEffect.Explode);
-                    s_universe[i].Flags |= FLG.FLG_DEAD;
+                    s_universe[i].Flags |= ShipFlags.Dead;
                 }
 
                 if (_gameState.CurrentScreen is
@@ -571,9 +571,9 @@ namespace Elite.Engine
                 s_universe[i].Flags = flip.Flags;
                 s_universe[i].ExpDelta = flip.ExpDelta;
 
-                s_universe[i].Flags &= ~FLG.FLG_FIRING;
+                s_universe[i].Flags &= ~ShipFlags.Firing;
 
-                if (s_universe[i].Flags.HasFlag(FLG.FLG_DEAD))
+                if (s_universe[i].Flags.HasFlag(ShipFlags.Dead))
                 {
                     continue;
                 }

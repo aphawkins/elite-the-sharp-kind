@@ -15,6 +15,7 @@
 using System.Numerics;
 using Elite.Common.Enums;
 using Elite.Engine.Enums;
+using Elite.Engine.Ships;
 using Elite.Engine.Types;
 
 /*
@@ -234,7 +235,7 @@ namespace Elite.Engine
             float dist;
             float dir;
 
-            if (ship.Flags.HasFlag(FLG.FLG_FLY_TO_PLANET) ||
+            if (ship.Flags.HasFlag(ShipFlags.FlyToPlanet) ||
                 ((Space.s_ship_count[ShipType.Coriolis] == 0) && (Space.s_ship_count[ShipType.Dodec] == 0)))
             {
                 FlyToPlanet(ref ship);
@@ -249,7 +250,7 @@ namespace Elite.Engine
 
             if (dist < 160)
             {
-                ship.Flags |= FLG.FLG_REMOVE;       // Ship has docked.
+                ship.Flags |= ShipFlags.Remove;       // Ship has docked.
                 return;
             }
 

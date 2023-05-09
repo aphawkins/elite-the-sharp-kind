@@ -17,41 +17,41 @@ namespace Elite.Engine
         private readonly GameState _gameState;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
-        private readonly FLG[] _initialFlags = new FLG[34]
+        private readonly ShipFlags[] _initialFlags = new ShipFlags[34]
         {
             0,											// NULL,
 			0,											// missile 
 			0,											// coriolis
-			FLG.FLG_SLOW | FLG.FLG_FLY_TO_PLANET,				// escape
-			FLG.FLG_INACTIVE,								// alloy
-			FLG.FLG_INACTIVE,								// cargo
-			FLG.FLG_INACTIVE,								// boulder
-			FLG.FLG_INACTIVE,								// asteroid
-			FLG.FLG_INACTIVE,								// rock
-			FLG.FLG_FLY_TO_PLANET | FLG.FLG_SLOW,				// shuttle
-			FLG.FLG_FLY_TO_PLANET | FLG.FLG_SLOW,				// transporter
+			ShipFlags.Slow | ShipFlags.FlyToPlanet,				// escape
+			ShipFlags.Inactive,								// alloy
+			ShipFlags.Inactive,								// cargo
+			ShipFlags.Inactive,								// boulder
+			ShipFlags.Inactive,								// asteroid
+			ShipFlags.Inactive,								// rock
+			ShipFlags.FlyToPlanet | ShipFlags.Slow,				// shuttle
+			ShipFlags.FlyToPlanet | ShipFlags.Slow,				// transporter
 			0,											// cobra3
 			0,											// python
 			0,											// boa
-			FLG.FLG_SLOW,									// anaconda
-			FLG.FLG_SLOW,									// hermit
-			FLG.FLG_BOLD | FLG.FLG_POLICE,						// viper
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// sidewinder
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// mamba
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// krait
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// adder
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// gecko
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// cobra1
-			FLG.FLG_SLOW | FLG.FLG_ANGRY,						// worm
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// cobra3
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// asp2
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// python
-			FLG.FLG_POLICE,									// fer_de_lance
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// moray
-			FLG.FLG_BOLD | FLG.FLG_ANGRY,						// thargoid
-			FLG.FLG_ANGRY,									// tharlet
-			FLG.FLG_ANGRY,									// constrictor
-			FLG.FLG_POLICE | FLG.FLG_CLOAKED,					// cougar
+			ShipFlags.Slow,									// anaconda
+			ShipFlags.Slow,									// hermit
+			ShipFlags.Bold | ShipFlags.Police,						// viper
+			ShipFlags.Bold | ShipFlags.Angry,						// sidewinder
+			ShipFlags.Bold | ShipFlags.Angry,						// mamba
+			ShipFlags.Bold | ShipFlags.Angry,						// krait
+			ShipFlags.Bold | ShipFlags.Angry,						// adder
+			ShipFlags.Bold | ShipFlags.Angry,						// gecko
+			ShipFlags.Bold | ShipFlags.Angry,						// cobra1
+			ShipFlags.Slow | ShipFlags.Angry,						// worm
+			ShipFlags.Bold | ShipFlags.Angry,						// cobra3
+			ShipFlags.Bold | ShipFlags.Angry,						// asp2
+			ShipFlags.Bold | ShipFlags.Angry,						// python
+			ShipFlags.Police,									// fer_de_lance
+			ShipFlags.Bold | ShipFlags.Angry,						// moray
+			ShipFlags.Bold | ShipFlags.Angry,						// thargoid
+			ShipFlags.Angry,									// tharlet
+			ShipFlags.Angry,									// constrictor
+			ShipFlags.Police | ShipFlags.Cloaked,					// cougar
 			0											// dodec
 		};
 
@@ -216,12 +216,12 @@ namespace Elite.Engine
             int newship = CreateOtherShip(ShipType.Thargoid);
             if (newship != -1)
             {
-                Space.s_universe[newship].Flags = FLG.FLG_ANGRY | FLG.FLG_HAS_ECM;
+                Space.s_universe[newship].Flags = ShipFlags.Angry | ShipFlags.HasECM;
                 Space.s_universe[newship].Bravery = 113;
 
                 if (RNG.Random(255) > 64)
                 {
-                    LaunchEnemy(newship, ShipType.Tharglet, FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 96);
+                    LaunchEnemy(newship, ShipType.Tharglet, ShipFlags.Angry | ShipFlags.HasECM, 96);
                 }
             }
         }
@@ -236,7 +236,7 @@ namespace Elite.Engine
             }
 
             _audio.PlayEffect(SoundEffect.Explode);
-            Space.s_universe[un].Flags |= FLG.FLG_DEAD;
+            Space.s_universe[un].Flags |= ShipFlags.Dead;
 
             if (Space.s_universe[un].Type == ShipType.Constrictor)
             {
@@ -310,12 +310,12 @@ namespace Elite.Engine
             }
 
             Space.s_universe[newship].Velocity = _ship.Speed * 2;
-            Space.s_universe[newship].Flags = FLG.FLG_ANGRY;
+            Space.s_universe[newship].Flags = ShipFlags.Angry;
             Space.s_universe[newship].Target = MissileTarget;
 
             if (Space.s_universe[MissileTarget].Type > ShipType.Rock)
             {
-                Space.s_universe[MissileTarget].Flags |= FLG.FLG_ANGRY;
+                Space.s_universe[MissileTarget].Flags |= ShipFlags.Angry;
             }
 
             _ship.MissileCount--;
@@ -412,7 +412,7 @@ namespace Elite.Engine
 
         internal void ScoopItem(int un)
         {
-            if (Space.s_universe[un].Flags.HasFlag(FLG.FLG_DEAD))
+            if (Space.s_universe[un].Flags.HasFlag(ShipFlags.Dead))
             {
                 return;
             }
@@ -465,26 +465,26 @@ namespace Elite.Engine
 
             UniverseObject ship = Space.s_universe[un];
             ShipType type = ship.Type;
-            FLG flags = ship.Flags;
+            ShipFlags flags = ship.Flags;
 
             if (type is ShipType.Planet or ShipType.Sun)
             {
                 return;
             }
 
-            if (flags.HasFlag(FLG.FLG_DEAD))
+            if (flags.HasFlag(ShipFlags.Dead))
             {
                 return;
             }
 
-            if (flags.HasFlag(FLG.FLG_INACTIVE))
+            if (flags.HasFlag(ShipFlags.Inactive))
             {
                 return;
             }
 
             if (type == ShipType.Missile)
             {
-                if (flags.HasFlag(FLG.FLG_ANGRY))
+                if (flags.HasFlag(ShipFlags.Angry))
                 {
                     MissileTactics(ship);
                 }
@@ -499,7 +499,7 @@ namespace Elite.Engine
 
             if (type is ShipType.Coriolis or ShipType.Dodec)
             {
-                if (flags.HasFlag(FLG.FLG_ANGRY))
+                if (flags.HasFlag(ShipFlags.Angry))
                 {
                     if (RNG.Random(255) < 240)
                     {
@@ -511,7 +511,7 @@ namespace Elite.Engine
                         return;
                     }
 
-                    LaunchEnemy(un, ShipType.Viper, FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 113);
+                    LaunchEnemy(un, ShipType.Viper, ShipFlags.Angry | ShipFlags.HasECM, 113);
                     return;
                 }
 
@@ -523,8 +523,8 @@ namespace Elite.Engine
             {
                 if (RNG.Random(255) > 200)
                 {
-                    LaunchEnemy(un, ShipType.Sidewinder + RNG.Random(3), FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 113);
-                    ship.Flags |= FLG.FLG_INACTIVE;
+                    LaunchEnemy(un, ShipType.Sidewinder + RNG.Random(3), ShipFlags.Angry | ShipFlags.HasECM, 113);
+                    ship.Flags |= ShipFlags.Inactive;
                 }
 
                 return;
@@ -542,7 +542,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (flags.HasFlag(FLG.FLG_SLOW))
+            if (flags.HasFlag(ShipFlags.Slow))
             {
                 if (RNG.Random(255) > 50)
                 {
@@ -550,18 +550,18 @@ namespace Elite.Engine
                 }
             }
 
-            if (flags.HasFlag(FLG.FLG_POLICE))
+            if (flags.HasFlag(ShipFlags.Police))
             {
                 if (_gameState.Cmdr.LegalStatus >= 64)
                 {
-                    flags |= FLG.FLG_ANGRY;
+                    flags |= ShipFlags.Angry;
                     ship.Flags = flags;
                 }
             }
 
-            if (!flags.HasFlag(FLG.FLG_ANGRY))
+            if (!flags.HasFlag(ShipFlags.Angry))
             {
-                if (flags.HasFlag(FLG.FLG_FLY_TO_PLANET) || flags.HasFlag(FLG.FLG_FLY_TO_STATION))
+                if (flags.HasFlag(ShipFlags.FlyToPlanet) || flags.HasFlag(ShipFlags.FlyToStation))
                 {
                     Pilot.AutoPilotShip(ref Space.s_universe[un]);
                 }
@@ -574,7 +574,7 @@ namespace Elite.Engine
 
             if (Space.s_ship_count[ShipType.Coriolis] != 0 || Space.s_ship_count[ShipType.Dodec] != 0)
             {
-                if (!flags.HasFlag(FLG.FLG_BOLD))
+                if (!flags.HasFlag(ShipFlags.Bold))
                 {
                     ship.Bravery = 0;
                 }
@@ -584,7 +584,7 @@ namespace Elite.Engine
             {
                 if (RNG.Random(255) > 200)
                 {
-                    LaunchEnemy(un, RNG.Random(255) > 100 ? ShipType.Worm : ShipType.Sidewinder, FLG.FLG_ANGRY | FLG.FLG_HAS_ECM, 113);
+                    LaunchEnemy(un, RNG.Random(255) > 100 ? ShipType.Worm : ShipType.Sidewinder, ShipFlags.Angry | ShipFlags.HasECM, 113);
                     return;
                 }
             }
@@ -605,8 +605,8 @@ namespace Elite.Engine
             {
                 if ((energy < (maxeng / 8)) && (RNG.Random(255) > 230) && (type != ShipType.Thargoid))
                 {
-                    ship.Flags &= ~FLG.FLG_ANGRY;
-                    ship.Flags |= FLG.FLG_INACTIVE;
+                    ship.Flags &= ~ShipFlags.Angry;
+                    ship.Flags |= ShipFlags.Inactive;
                     LaunchEnemy(un, ShipType.EscapeCapsule, 0, 126);
                     return;
                 }
@@ -616,11 +616,11 @@ namespace Elite.Engine
                     ship.Missiles--;
                     if (type == ShipType.Thargoid)
                     {
-                        LaunchEnemy(un, ShipType.Tharglet, FLG.FLG_ANGRY, ship.Bravery);
+                        LaunchEnemy(un, ShipType.Tharglet, ShipFlags.Angry, ship.Bravery);
                     }
                     else
                     {
-                        LaunchEnemy(un, ShipType.Missile, FLG.FLG_ANGRY, 126);
+                        LaunchEnemy(un, ShipType.Missile, ShipFlags.Angry, 126);
                         _gameState.InfoMessage("INCOMING MISSILE");
                     }
                     return;
@@ -635,7 +635,7 @@ namespace Elite.Engine
             {
                 if (direction <= -0.917)
                 {
-                    ship.Flags |= FLG.FLG_FIRING | FLG.FLG_HOSTILE;
+                    ship.Flags |= ShipFlags.Firing | ShipFlags.Hostile;
                 }
 
                 if (direction <= -0.972)
@@ -772,16 +772,16 @@ namespace Elite.Engine
         private static void MakeAngry(int un)
         {
             ShipType type = Space.s_universe[un].Type;
-            FLG flags = Space.s_universe[un].Flags;
+            ShipFlags flags = Space.s_universe[un].Flags;
 
-            if (flags.HasFlag(FLG.FLG_INACTIVE))
+            if (flags.HasFlag(ShipFlags.Inactive))
             {
                 return;
             }
 
             if (type is ShipType.Coriolis or ShipType.Dodec)
             {
-                Space.s_universe[un].Flags |= FLG.FLG_ANGRY;
+                Space.s_universe[un].Flags |= ShipFlags.Angry;
                 return;
             }
 
@@ -789,7 +789,7 @@ namespace Elite.Engine
             {
                 Space.s_universe[un].RotX = 4;
                 Space.s_universe[un].Acceleration = 2;
-                Space.s_universe[un].Flags |= FLG.FLG_ANGRY;
+                Space.s_universe[un].Flags |= ShipFlags.Angry;
             }
         }
 
@@ -898,10 +898,10 @@ namespace Elite.Engine
                 int newship = AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
                 if (newship != -1)
                 {
-                    Space.s_universe[newship].Flags = FLG.FLG_ANGRY;
+                    Space.s_universe[newship].Flags = ShipFlags.Angry;
                     if (RNG.Random(255) > 245)
                     {
-                        Space.s_universe[newship].Flags |= FLG.FLG_HAS_ECM;
+                        Space.s_universe[newship].Flags |= ShipFlags.HasECM;
                     }
 
                     Space.s_universe[newship].Bravery = ((RNG.Random(255) * 2) | 64) & 127;
@@ -927,10 +927,10 @@ namespace Elite.Engine
 
             if (newship != -1)
             {
-                Space.s_universe[newship].Flags = FLG.FLG_ANGRY;
+                Space.s_universe[newship].Flags = ShipFlags.Angry;
                 if (RNG.Random(255) > 245)
                 {
-                    Space.s_universe[newship].Flags |= FLG.FLG_HAS_ECM;
+                    Space.s_universe[newship].Flags |= ShipFlags.HasECM;
                 }
 
                 Space.s_universe[newship].Bravery = ((RNG.Random(255) * 2) | 64) & 127;
@@ -949,7 +949,7 @@ namespace Elite.Engine
             {
                 if ((Space.s_universe[i].Type == ShipType.Missile) && (Space.s_universe[i].Target == un))
                 {
-                    Space.s_universe[i].Flags |= FLG.FLG_DEAD;
+                    Space.s_universe[i].Flags |= ShipFlags.Dead;
                 }
             }
         }
@@ -965,7 +965,7 @@ namespace Elite.Engine
             newship = CreateOtherShip(ShipType.Cougar);
             if (newship != -1)
             {
-                Space.s_universe[newship].Flags = FLG.FLG_HAS_ECM; // | FLG_CLOAKED;
+                Space.s_universe[newship].Flags = ShipFlags.HasECM; // | FLG_CLOAKED;
                 Space.s_universe[newship].Bravery = 121;
                 Space.s_universe[newship].Velocity = 18;
             }
@@ -993,10 +993,10 @@ namespace Elite.Engine
 
             if (newship != -1)
             {
-                Space.s_universe[newship].Flags = FLG.FLG_ANGRY;
+                Space.s_universe[newship].Flags = ShipFlags.Angry;
                 if ((RNG.Random(255) > 200) || (type == ShipType.Constrictor))
                 {
-                    Space.s_universe[newship].Flags |= FLG.FLG_HAS_ECM;
+                    Space.s_universe[newship].Flags |= ShipFlags.HasECM;
                 }
 
                 Space.s_universe[newship].Bravery = ((RNG.Random(255) * 2) | 64) & 127;
@@ -1041,7 +1041,7 @@ namespace Elite.Engine
 
                 if (RNG.TrueOrFalse())
                 {
-                    Space.s_universe[newship].Flags |= FLG.FLG_HAS_ECM;
+                    Space.s_universe[newship].Flags |= ShipFlags.HasECM;
                 }
 
                 //		if (rnd & 2)
@@ -1049,7 +1049,7 @@ namespace Elite.Engine
             }
         }
 
-        private void LaunchEnemy(int un, ShipType type, FLG flags, int bravery)
+        private void LaunchEnemy(int un, ShipType type, ShipFlags flags, int bravery)
         {
             Debug.Assert(Space.s_universe[un].Rotmat != null);
             Vector3[] rotmat = Space.s_universe[un].Rotmat.Cloner();
@@ -1116,7 +1116,7 @@ namespace Elite.Engine
             }
 
             ShipType type = RNG.TrueOrFalse() ? ShipType.Shuttle : ShipType.Transporter;
-            LaunchEnemy(1, type, FLG.FLG_HAS_ECM | FLG.FLG_FLY_TO_PLANET, 113);
+            LaunchEnemy(1, type, ShipFlags.HasECM | ShipFlags.FlyToPlanet, 113);
         }
 
         private void MissileTactics(UniverseObject missile)
@@ -1131,7 +1131,7 @@ namespace Elite.Engine
             {
                 _audio.PlayEffect(SoundEffect.Explode);
 
-                missile.Flags |= FLG.FLG_DEAD;
+                missile.Flags |= ShipFlags.Dead;
                 return;
             }
 
@@ -1139,7 +1139,7 @@ namespace Elite.Engine
             {
                 if (missile.Location.Length() < 512)
                 {
-                    missile.Flags |= FLG.FLG_DEAD;
+                    missile.Flags |= ShipFlags.Dead;
                     _audio.PlayEffect(SoundEffect.Explode);
                     _ship.DamageShip(250, missile.Location.Z >= 0.0);
                     return;
@@ -1154,7 +1154,7 @@ namespace Elite.Engine
 
                 if (vec.Length() < 512)
                 {
-                    missile.Flags |= FLG.FLG_DEAD;
+                    missile.Flags |= ShipFlags.Dead;
 
                     if (target.Type is not ShipType.Coriolis and not ShipType.Dodec)
                     {
@@ -1168,7 +1168,7 @@ namespace Elite.Engine
                     return;
                 }
 
-                if ((RNG.Random(255) < 16) && target.Flags.HasFlag(FLG.FLG_HAS_ECM))
+                if ((RNG.Random(255) < 16) && target.Flags.HasFlag(ShipFlags.HasECM))
                 {
                     ActivateECM(false);
                     return;

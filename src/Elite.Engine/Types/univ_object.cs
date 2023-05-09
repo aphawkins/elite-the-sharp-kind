@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Elite.Engine.Enums;
+using Elite.Engine.Ships;
 
 namespace Elite.Engine.Types
 {
@@ -10,7 +11,7 @@ namespace Elite.Engine.Types
         internal Vector3[] Rotmat { get; set; } = new Vector3[3];
         internal float RotX { get; set; }
         internal float RotZ { get; set; }
-        internal FLG Flags { get; set; }
+        internal ShipFlags Flags { get; set; }
         internal int Energy { get; set; }
         internal float Velocity { get; set; }
         internal int Acceleration { get; set; }

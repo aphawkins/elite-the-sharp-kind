@@ -1,6 +1,4 @@
-﻿using Elite.Engine.Enums;
-
-namespace Elite.Engine.Ships
+﻿namespace Elite.Engine.Ships
 {
     internal interface IShip
     {

@@ -60,7 +60,7 @@ namespace Elite.Engine.Views
             {
                 if (_i == 40)
                 {
-                    Space.s_universe[_newship].Flags |= FLG.FLG_DEAD;
+                    Space.s_universe[_newship].Flags |= ShipFlags.Dead;
                     _audio.PlayEffect(SoundEffect.Explode);
                 }
 
