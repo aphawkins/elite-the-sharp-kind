@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Elite.Engine.Ships
 {
-    internal class ShipPoint
+    internal sealed class ShipPoint
     {
         internal ShipPoint(Vector3 point, int distance, int face1, int face2, int face3, int face4)
         {

@@ -4,7 +4,7 @@
 
 namespace Elite.Engine.Types
 {
-    internal class PlanetData
+    internal sealed class PlanetData
     {
         internal int Economy { get; set; }
         internal int Government { get; set; }

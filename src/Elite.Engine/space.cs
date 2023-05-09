@@ -26,7 +26,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
-    internal class Space
+    internal sealed class Space
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

@@ -19,7 +19,7 @@ using Elite.Engine.Views;
 
 namespace Elite.Engine
 {
-    internal class Threed
+    internal sealed class Threed
     {
         private const int LAND_X_MAX = 128;
         private const int LAND_Y_MAX = 128;

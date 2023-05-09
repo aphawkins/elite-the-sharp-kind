@@ -4,7 +4,7 @@
 
 namespace Elite.Engine
 {
-    internal class RandomSeed
+    internal sealed class RandomSeed
     {
         internal int A { get; set; }
         internal int B { get; set; }

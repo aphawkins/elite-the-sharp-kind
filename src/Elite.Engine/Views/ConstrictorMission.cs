@@ -7,7 +7,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class ConstrictorMissionView : IView
+    internal sealed class ConstrictorMissionView : IView
     {
         private readonly Combat _combat;
         private readonly Draw _draw;

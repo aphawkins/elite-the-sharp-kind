@@ -3,7 +3,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Views
 {
-    internal class DockingView : IView
+    internal sealed class DockingView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

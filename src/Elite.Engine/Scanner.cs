@@ -27,7 +27,7 @@ using Elite.Engine.Views;
 
 namespace Elite.Engine
 {
-    internal class Scanner
+    internal sealed class Scanner
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

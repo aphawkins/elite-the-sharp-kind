@@ -7,7 +7,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class CommanderStatusView : IView
+    internal sealed class CommanderStatusView : IView
     {
         public readonly GameState _gameState;
         private readonly string[] _conditionText = new string[]

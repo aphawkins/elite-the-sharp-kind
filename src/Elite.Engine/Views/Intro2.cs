@@ -8,7 +8,7 @@ namespace Elite.Engine.Views
     /// <summary>
     /// Parade of the various ships.
     /// </summary>
-    internal class Intro2View : IView
+    internal sealed class Intro2View : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

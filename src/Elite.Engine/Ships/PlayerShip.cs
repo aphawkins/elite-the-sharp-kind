@@ -10,7 +10,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Ships
 {
-    internal class PlayerShip
+    internal sealed class PlayerShip
     {
         internal PlayerShip() => Reset();
 

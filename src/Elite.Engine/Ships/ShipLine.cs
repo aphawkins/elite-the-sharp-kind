@@ -4,7 +4,7 @@
 
 namespace Elite.Engine.Ships
 {
-    internal class ShipLine
+    internal sealed class ShipLine
     {
         internal ShipLine(int distance, int face1, int face2, int startPoint, int endPoint)
         {

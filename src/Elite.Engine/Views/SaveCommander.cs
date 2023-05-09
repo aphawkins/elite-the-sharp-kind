@@ -3,7 +3,7 @@ using Elite.Engine.Save;
 
 namespace Elite.Engine.Views
 {
-    internal class SaveCommanderView : IView
+    internal sealed class SaveCommanderView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

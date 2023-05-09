@@ -19,7 +19,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
 {
-    internal class ShortRangeChartView : IView
+    internal sealed class ShortRangeChartView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

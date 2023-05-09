@@ -6,7 +6,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Missions
 {
-    internal class Mission
+    internal sealed class Mission
     {
         private readonly string[] _mission1_pdesc =
         {

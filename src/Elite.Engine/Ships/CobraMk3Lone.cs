@@ -4,7 +4,7 @@
 
 namespace Elite.Engine.Ships
 {
-    internal class CobraMk3Lone : CobraMk3, IShip
+    internal sealed class CobraMk3Lone : CobraMk3, IShip
     {
         public new float Bounty => 17.5f;
         public new int LootMax => 1;

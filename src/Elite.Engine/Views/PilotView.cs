@@ -8,7 +8,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class PilotView : IView
+    internal sealed class PilotView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

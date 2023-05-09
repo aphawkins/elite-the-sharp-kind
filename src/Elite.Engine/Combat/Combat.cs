@@ -7,7 +7,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
-    internal class Combat
+    internal sealed class Combat
     {
         internal bool InBattle { get; set; }
         internal int _isMISSILE_ARMED = -1;

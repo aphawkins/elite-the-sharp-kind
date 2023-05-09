@@ -4,7 +4,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Types
 {
-    internal class UniverseObject
+    internal sealed class UniverseObject
     {
         internal ShipType Type { get; set; }
         internal Vector3 Location { get; set; }

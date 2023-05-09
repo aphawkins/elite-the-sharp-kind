@@ -9,7 +9,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
 {
-    internal class PlanetDataView : IView
+    internal sealed class PlanetDataView : IView
     {
         private readonly string[][] _descriptionList = new[]
         {

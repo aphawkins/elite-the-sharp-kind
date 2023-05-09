@@ -32,7 +32,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
-    internal class Pilot
+    internal sealed class Pilot
     {
         private readonly GameState _gameState;
         private readonly Audio _audio;

@@ -5,7 +5,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class EscapeCapsuleView : IView
+    internal sealed class EscapeCapsuleView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

@@ -6,7 +6,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
 {
-    internal class Draw
+    internal sealed class Draw
     {
         private readonly IGfx _gfx;
 

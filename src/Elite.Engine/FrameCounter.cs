@@ -4,7 +4,7 @@
 
 namespace Elite.Engine
 {
-    internal class FrameCounter
+    internal sealed class FrameCounter
     {
         internal int Drawn { get; set; } = 0;
         internal List<long> FramesDrawn { get; set; } = new();

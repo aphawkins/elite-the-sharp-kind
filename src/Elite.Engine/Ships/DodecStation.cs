@@ -2,7 +2,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class DodecStation : IShip
+    internal sealed class DodecStation : IShip
     {
         public ShipPoint[] Points { get; } =
         {

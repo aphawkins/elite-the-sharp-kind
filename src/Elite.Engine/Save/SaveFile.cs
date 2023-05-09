@@ -11,7 +11,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Save
 {
-    internal class SaveFile
+    internal sealed class SaveFile
     {
         private const string FileExtension = ".cmdr";
         private readonly JsonSerializerOptions _options = new()

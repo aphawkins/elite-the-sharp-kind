@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Elite.Engine.Ships
 {
-    internal class ShipFaceNormal
+    internal sealed class ShipFaceNormal
     {
         internal ShipFaceNormal(int distance, Vector3 direction)
         {

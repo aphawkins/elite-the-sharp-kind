@@ -7,7 +7,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class ShipFace
+    internal sealed class ShipFace
     {
         internal ShipFace(GFX_COL colour, Vector3 normal, int[] points)
         {

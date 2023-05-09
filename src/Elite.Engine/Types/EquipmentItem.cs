@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Types
 {
-    internal class EquipmentItem
+    internal sealed class EquipmentItem
     {
         internal EquipmentItem(bool canBuy, bool show, int techLevel, float price, string name, EquipmentType type)
         {

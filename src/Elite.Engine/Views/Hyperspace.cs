@@ -3,7 +3,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Views
 {
-    internal class HyperspaceView : IView
+    internal sealed class HyperspaceView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

@@ -9,7 +9,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
 {
-    internal class EquipmentView : IView
+    internal sealed class EquipmentView : IView
     {
         private readonly Draw _draw;
         private readonly GameState _gameState;

@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class Thargoid : IShip
+    internal sealed class Thargoid : IShip
     {
         public float Bounty => 50;
 

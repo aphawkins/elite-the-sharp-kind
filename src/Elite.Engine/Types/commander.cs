@@ -1,6 +1,6 @@
 ﻿namespace Elite.Engine.Types
 {
-    internal class Commander
+    internal sealed class Commander
     {
         internal string Name { get; set; } = string.Empty;
         internal int Mission { get; set; }

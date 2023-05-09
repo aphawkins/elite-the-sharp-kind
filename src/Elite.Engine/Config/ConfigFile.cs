@@ -19,7 +19,7 @@ using Elite.Engine.Config;
 
 namespace Elite.Engine
 {
-    internal class ConfigFile
+    internal sealed class ConfigFile
     {
         private const string ConfigFileName = "sharpkind.cfg";
         private readonly JsonSerializerOptions _options = new()

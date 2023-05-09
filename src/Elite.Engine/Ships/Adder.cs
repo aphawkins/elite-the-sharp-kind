@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class Adder : IShip
+    internal sealed class Adder : IShip
     {
         public float Bounty => 4;
 

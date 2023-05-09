@@ -3,7 +3,7 @@ using Elite.Common.Enums;
 
 namespace Elite.Engine
 {
-    internal class Audio
+    internal sealed class Audio
     {
         private readonly bool _musicOn;
         private readonly bool _effectsOn;

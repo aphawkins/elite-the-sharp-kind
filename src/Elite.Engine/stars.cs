@@ -18,7 +18,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine
 {
-    internal class Stars
+    internal sealed class Stars
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

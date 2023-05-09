@@ -4,7 +4,7 @@
 
 namespace Elite.Engine.Ships
 {
-    internal class NoShip : IShip
+    internal sealed class NoShip : IShip
     {
         public float Bounty => 0;
 

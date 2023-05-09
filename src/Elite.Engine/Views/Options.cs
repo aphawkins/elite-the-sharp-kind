@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Views
 {
-    internal class OptionsView : IView
+    internal sealed class OptionsView : IView
     {
         private const int OptionBarHeight = 15;
         private const int OptionBarWidth = 400;

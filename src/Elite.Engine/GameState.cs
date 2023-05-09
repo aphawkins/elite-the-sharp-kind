@@ -10,7 +10,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
-    internal class GameState
+    internal sealed class GameState
     {
         private readonly IKeyboard _keyboard;
         private readonly Dictionary<SCR, IView> _views;

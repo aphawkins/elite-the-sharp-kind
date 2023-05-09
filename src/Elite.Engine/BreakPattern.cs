@@ -2,7 +2,7 @@
 
 namespace Elite.Engine
 {
-    internal class BreakPattern
+    internal sealed class BreakPattern
     {
         private readonly IGfx _gfx;
         private int _breakPatternCount;

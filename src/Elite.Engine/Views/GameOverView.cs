@@ -4,7 +4,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class GameOverView : IView
+    internal sealed class GameOverView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

@@ -17,7 +17,7 @@ using Elite.Engine.Views;
 
 namespace Elite.Engine
 {
-    internal class SettingsView : IView
+    internal sealed class SettingsView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

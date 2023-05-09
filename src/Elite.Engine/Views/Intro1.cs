@@ -7,7 +7,7 @@ namespace Elite.Engine.Views
     /// <summary>
     /// Rolling Cobra MkIII.
     /// </summary>
-    internal class Intro1View : IView
+    internal sealed class Intro1View : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

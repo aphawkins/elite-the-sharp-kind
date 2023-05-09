@@ -8,7 +8,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
-    internal class Planet
+    internal sealed class Planet
     {
         private readonly GameState _gameState;
         private readonly string[] _inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };

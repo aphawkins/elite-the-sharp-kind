@@ -19,7 +19,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
 {
-    internal class GalacticChartView : IView
+    internal sealed class GalacticChartView : IView
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

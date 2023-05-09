@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class Tharglet : IShip
+    internal sealed class Tharglet : IShip
     {
         public float Bounty => 5;
 

@@ -7,7 +7,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
-    internal class Trade
+    internal sealed class Trade
     {
         internal const string GRAMS = "g";
         internal const string KILOGRAMS = "Kg";

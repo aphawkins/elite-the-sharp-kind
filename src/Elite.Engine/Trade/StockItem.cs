@@ -4,7 +4,7 @@
 
 namespace Elite.Engine
 {
-    internal class StockItem
+    internal sealed class StockItem
     {
         internal StockItem(string name, int currentQuantity, float currentPrice, float basePrice,
             int economyAdjust, int baseQuantity, int mask, string units,

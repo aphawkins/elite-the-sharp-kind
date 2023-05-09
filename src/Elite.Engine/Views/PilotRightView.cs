@@ -2,7 +2,7 @@
 
 namespace Elite.Engine.Views
 {
-    internal class PilotRightView : IView
+    internal sealed class PilotRightView : IView
     {
         private readonly PilotView _pilotView;
         private readonly Stars _stars;

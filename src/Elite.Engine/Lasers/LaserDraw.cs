@@ -3,7 +3,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Lasers
 {
-    internal class LaserDraw
+    internal sealed class LaserDraw
     {
         private readonly GameState _gameState;
         private readonly IGfx _gfx;

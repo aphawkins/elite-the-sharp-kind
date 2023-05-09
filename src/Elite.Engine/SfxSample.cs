@@ -1,6 +1,6 @@
 ﻿namespace Elite.Engine
 {
-    internal class SfxSample
+    internal sealed class SfxSample
     {
         private readonly int _runtime;
         private int _timeleft = 0;

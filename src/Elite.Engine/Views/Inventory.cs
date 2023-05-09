@@ -17,7 +17,7 @@ using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
-    internal class InventoryView : IView
+    internal sealed class InventoryView : IView
     {
         private readonly IGfx _gfx;
         private readonly Draw _draw;
