@@ -20,5 +20,5 @@ namespace Elite.Engine.Ships
         internal int Face1 { get; set; }
         internal int Face2 { get; set; }
         internal int StartPoint { get; set; }
-    };
+    }
 }

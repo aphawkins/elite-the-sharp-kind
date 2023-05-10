@@ -164,7 +164,7 @@ namespace Elite.Engine
                 {
                     _gfx.DrawPolygonFilled(_polyChain[i].PointList, colour);
                 }
-            };
+            }
         }
 
         internal void RenderStart()

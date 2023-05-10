@@ -12,5 +12,5 @@ namespace Elite.Engine.Types
         internal int Productivity { get; set; }
         internal int Radius { get; set; }
         internal int TechLevel { get; set; }
-    };
+    }
 }

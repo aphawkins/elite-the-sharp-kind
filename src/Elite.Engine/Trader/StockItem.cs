@@ -32,5 +32,5 @@ namespace Elite.Engine.Trader
         internal string Name { get; set; }
         internal int StationStock { get; set; }
         internal string Units { get; set; }
-    };
+    }
 }

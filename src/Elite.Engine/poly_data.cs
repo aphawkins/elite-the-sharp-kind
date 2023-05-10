@@ -13,5 +13,5 @@ namespace Elite.Engine
         internal int Next { get; set; }
         internal Vector2[] PointList { get; set; }
         internal float Z { get; set; }
-    };
+    }
 }

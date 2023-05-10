@@ -24,5 +24,5 @@ namespace Elite.Engine.Types
         internal bool Show { get; set; }
         internal int TechLevel { get; set; }
         internal EquipmentType Type { get; set; }
-    };
+    }
 }

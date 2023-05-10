@@ -56,7 +56,7 @@ namespace Elite.Engine.Views
             {
                 if (!string.IsNullOrEmpty(_name))
                 {
-                    _name = _name[..^1]; ;
+                    _name = _name[..^1];
                 }
             }
 

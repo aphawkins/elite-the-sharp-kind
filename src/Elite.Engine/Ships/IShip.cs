@@ -24,5 +24,5 @@ namespace Elite.Engine.Ships
         ShipClass Type { get; }
         int VanishPoint { get; }
         float VelocityMax { get; }
-    };
+    }
 }

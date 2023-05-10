@@ -83,7 +83,6 @@ namespace Elite.Engine.Views
                     {
                         if (Space.s_universe[i].Type != 0)
                         {
-                            ;
                             Space.s_universe[i].Location = new(Space.s_universe[i].Location.X, Space.s_universe[i].Location.Y, Space.s_universe[i].Location.Z - 1500);
                         }
                     }

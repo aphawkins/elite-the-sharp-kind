@@ -10,5 +10,5 @@ namespace Elite.Engine
         internal int B { get; set; }
         internal int C { get; set; }
         internal int D { get; set; }
-    };
+    }
 }

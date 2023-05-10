@@ -68,7 +68,7 @@ namespace Elite.Engine.Views
                     y = _equipmentStartY;
                     x += _equipmentWidth;
                 }
-            };
+            }
 
             string rating = string.Empty;
             foreach ((int score, string title) in _ratings)
