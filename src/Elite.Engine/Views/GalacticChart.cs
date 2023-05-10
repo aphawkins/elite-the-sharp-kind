@@ -123,8 +123,7 @@ namespace Elite.Engine.Views
             {
                 _gameState.Cross = new(
                     _gameState.DockedPlanet.D * Graphics.GFX_SCALE,
-                    (_gameState.DockedPlanet.B / (2 / Graphics.GFX_SCALE)) + (18 * Graphics.GFX_SCALE) + 1
-                    );
+                    (_gameState.DockedPlanet.B / (2 / Graphics.GFX_SCALE)) + (18 * Graphics.GFX_SCALE) + 1);
                 CalculateDistanceToPlanet();
             }
             if (_keyboard.IsKeyPressed(CommandKey.DistanceToPlanet))
