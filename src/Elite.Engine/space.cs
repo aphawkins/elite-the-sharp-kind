@@ -506,7 +506,7 @@ namespace Elite.Engine
 
             Vector3 position = new()
             {
-                Z = (((_gameState.DockedPlanet.B) & 7) + 7) / 2
+                Z = ((_gameState.DockedPlanet.B & 7) + 7) / 2
             };
             position.X = position.Z / 2;
             position.Y = position.X;
@@ -727,7 +727,7 @@ namespace Elite.Engine
                 RotateXFirst(ref obj.Rotmat[2].Y, ref obj.Rotmat[1].Y, rotx);
                 RotateXFirst(ref obj.Rotmat[2].Z, ref obj.Rotmat[1].Z, rotx);
 
-                if (rotx is not 127 and not (-127))
+                if (rotx is not 127 and not -127)
                 {
                     obj.RotX -= (rotx < 0) ? -1 : 1;
                 }
@@ -741,7 +741,7 @@ namespace Elite.Engine
                 RotateXFirst(ref obj.Rotmat[0].Y, ref obj.Rotmat[1].Y, rotz);
                 RotateXFirst(ref obj.Rotmat[0].Z, ref obj.Rotmat[1].Z, rotz);
 
-                if (rotz is not 127 and not (-127))
+                if (rotz is not 127 and not -127)
                 {
                     obj.RotZ -= (rotz < 0) ? -1 : 1;
                 }

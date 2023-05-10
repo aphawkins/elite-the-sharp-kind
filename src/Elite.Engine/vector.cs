@@ -45,9 +45,9 @@ namespace Elite.Engine
         {
             mat[2] = UnitVector(mat[2]);
 
-            if (mat[2].X is > (-1) and < 1)
+            if (mat[2].X is > -1 and < 1)
             {
-                if (mat[2].Y is > (-1) and < 1)
+                if (mat[2].Y is > -1 and < 1)
                 {
                     mat[1].Z = -((mat[2].X * mat[1].X) + (mat[2].Y * mat[1].Y)) / mat[2].Z;
                 }

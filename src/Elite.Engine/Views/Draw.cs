@@ -124,8 +124,8 @@ namespace Elite.Engine.Views
                 Y = centre.Y + y
             };
 
-            if (s.Y is < (Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET) or
-                > (Graphics.GFX_VIEW_BY + Graphics.GFX_Y_OFFSET))
+            if (s.Y is < Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET or
+                > Graphics.GFX_VIEW_BY + Graphics.GFX_Y_OFFSET)
             {
                 return;
             }

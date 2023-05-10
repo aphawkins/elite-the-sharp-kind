@@ -647,8 +647,8 @@ namespace Elite.Engine
                 Y = y + centre.Y
             };
 
-            if (s.Y is < (Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET) or
-                > (Graphics.GFX_VIEW_BY + Graphics.GFX_Y_OFFSET))
+            if (s.Y is < Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET or
+                > Graphics.GFX_VIEW_BY + Graphics.GFX_Y_OFFSET)
             {
                 return;
             }
@@ -665,7 +665,7 @@ namespace Elite.Engine
 
             for (; s.X <= ex; s.X++)
             {
-                if (s.X is >= (Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET) and <= (Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET))
+                if (s.X is >= Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET and <= Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET)
                 {
                     int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LAND_X_MAX);
                     int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LAND_Y_MAX);
