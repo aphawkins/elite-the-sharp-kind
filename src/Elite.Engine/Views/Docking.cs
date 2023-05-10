@@ -10,12 +10,12 @@ namespace Elite.Engine.Views
 {
     internal sealed class DockingView : IView
     {
+        private readonly Audio _audio;
+        private readonly BreakPattern _breakPattern;
+        private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Audio _audio;
         private readonly Space _space;
-        private readonly Combat _combat;
-        private readonly BreakPattern _breakPattern;
 
         internal DockingView(GameState gameState, IGfx gfx, Audio audio, Space space, Combat combat)
         {

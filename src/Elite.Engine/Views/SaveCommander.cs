@@ -9,13 +9,13 @@ namespace Elite.Engine.Views
 {
     internal sealed class SaveCommanderView : IView
     {
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly SaveFile _save;
-        private string _name = string.Empty;
         private bool? _isSuccess;
+        private string _name = string.Empty;
 
         internal SaveCommanderView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
         {

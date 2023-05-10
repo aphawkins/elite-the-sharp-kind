@@ -14,13 +14,193 @@ namespace Elite.Engine
     /// </summary>
     internal sealed class Pilot
     {
-        private readonly GameState _gameState;
         private readonly Audio _audio;
+        private readonly GameState _gameState;
 
         internal Pilot(GameState gameState, Audio audio)
         {
             _gameState = gameState;
             _audio = audio;
+        }
+
+        /// <summary>
+        /// Fly a ship to the planet or to the space station and dock it.
+        /// </summary>
+        /// <param name="ship"></param>
+        internal static void AutoPilotShip(ref UniverseObject ship)
+        {
+            Vector3 diff;
+            Vector3 vec;
+            float dist;
+            float dir;
+
+            if (ship.Flags.HasFlag(ShipFlags.FlyToPlanet) ||
+                ((Space.s_ship_count[ShipType.Coriolis] == 0) && (Space.s_ship_count[ShipType.Dodec] == 0)))
+            {
+                FlyToPlanet(ref ship);
+                return;
+            }
+
+            diff.X = ship.Location.X - Space.s_universe[1].Location.X;
+            diff.Y = ship.Location.Y - Space.s_universe[1].Location.Y;
+            diff.Z = ship.Location.Z - Space.s_universe[1].Location.Z;
+
+            dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
+
+            if (dist < 160)
+            {
+                ship.Flags |= ShipFlags.Remove;       // Ship has docked.
+                return;
+            }
+
+            vec = VectorMaths.UnitVector(diff);
+            dir = VectorMaths.VectorDotProduct(Space.s_universe[1].Rotmat[2], vec);
+
+            if (dir < 0.9722)
+            {
+                FlyToStationFront(ref ship);
+                return;
+            }
+
+            dir = VectorMaths.VectorDotProduct(ship.Rotmat[2], vec);
+
+            if (dir < -0.9444)
+            {
+                FlyToDockingBay(ref ship);
+                return;
+            }
+
+            FlyToStation(ref ship);
+        }
+
+        internal void DisengageAutoPilot()
+        {
+            if (_gameState.IsAutoPilotOn)
+            {
+                _gameState.IsAutoPilotOn = false;
+                _audio.StopMusic();
+            }
+        }
+
+        internal void EngageAutoPilot()
+        {
+            if (_gameState.IsAutoPilotOn || _gameState.InWitchspace || Space.s_hyper_ready)
+            {
+                return;
+            }
+
+            _gameState.IsAutoPilotOn = true;
+            _audio.PlayMusic(Music.BlueDanube, true);
+        }
+
+        /// <summary>
+        /// Final stage of docking. Fly into the docking bay.
+        /// </summary>
+        /// <param name="ship"></param>
+        private static void FlyToDockingBay(ref UniverseObject ship)
+        {
+            Vector3 diff;
+            float dir;
+
+            diff.X = ship.Location.X - Space.s_universe[1].Location.X;
+            diff.Y = ship.Location.Y - Space.s_universe[1].Location.Y;
+            diff.Z = ship.Location.Z - Space.s_universe[1].Location.Z;
+
+            Vector3 vec = VectorMaths.UnitVector(diff);
+
+            ship.RotX = 0;
+
+            if (ship.Type < 0)
+            {
+                ship.RotZ = 1;
+                if (((vec.X >= 0) && (vec.Y >= 0)) ||
+                     ((vec.X < 0) && (vec.Y < 0)))
+                {
+                    ship.RotZ = -ship.RotZ;
+                }
+
+                if (MathF.Abs(vec.X) >= 0.0625f)
+                {
+                    ship.Acceleration = 0;
+                    ship.Velocity = 1;
+                    return;
+                }
+
+                if (MathF.Abs(vec.Y) > 0.002436f)
+                {
+                    ship.RotX = (vec.Y < 0) ? -1 : 1;
+                }
+
+                if (MathF.Abs(vec.Y) >= 0.0625f)
+                {
+                    ship.Acceleration = 0;
+                    ship.Velocity = 1;
+                    return;
+                }
+            }
+
+            ship.RotZ = 0;
+
+            dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], Space.s_universe[1].Rotmat[1]);
+
+            if (MathF.Abs(dir) >= 0.9166f)
+            {
+                ship.Acceleration++;
+                ship.RotZ = 127;
+                return;
+            }
+
+            ship.Acceleration = 0;
+            ship.RotZ = 0;
+        }
+
+        /// <summary>
+        /// Fly towards the planet.
+        /// </summary>
+        /// <param name="ship"></param>
+        private static void FlyToPlanet(ref UniverseObject ship)
+        {
+            Vector3 vec;
+
+            vec.X = Space.s_universe[0].Location.X - ship.Location.X;
+            vec.Y = Space.s_universe[0].Location.Y - ship.Location.Y;
+            vec.Z = Space.s_universe[0].Location.Z - ship.Location.Z;
+
+            FlyToVector(ref ship, vec);
+        }
+
+        /// <summary>
+        /// Fly towards the space station.
+        /// </summary>
+        /// <param name="ship"></param>
+        private static void FlyToStation(ref UniverseObject ship)
+        {
+            Vector3 vec;
+
+            vec.X = Space.s_universe[1].Location.X - ship.Location.X;
+            vec.Y = Space.s_universe[1].Location.Y - ship.Location.Y;
+            vec.Z = Space.s_universe[1].Location.Z - ship.Location.Z;
+
+            FlyToVector(ref ship, vec);
+        }
+
+        /// <summary>
+        /// Fly to a point in front of the station docking bay. Done prior to the final stage of docking.
+        /// </summary>
+        /// <param name="ship"></param>
+        private static void FlyToStationFront(ref UniverseObject ship)
+        {
+            Vector3 vec;
+
+            vec.X = Space.s_universe[1].Location.X - ship.Location.X;
+            vec.Y = Space.s_universe[1].Location.Y - ship.Location.Y;
+            vec.Z = Space.s_universe[1].Location.Z - ship.Location.Z;
+
+            vec.X += Space.s_universe[1].Rotmat[2].X * 768;
+            vec.Y += Space.s_universe[1].Rotmat[2].Y * 768;
+            vec.Z += Space.s_universe[1].Rotmat[2].Z * 768;
+
+            FlyToVector(ref ship, vec);
         }
 
         /// <summary>
@@ -91,186 +271,6 @@ namespace Elite.Engine
             {
                 ship.Acceleration = 3;
                 return;
-            }
-        }
-
-        /// <summary>
-        /// Fly towards the planet.
-        /// </summary>
-        /// <param name="ship"></param>
-        private static void FlyToPlanet(ref UniverseObject ship)
-        {
-            Vector3 vec;
-
-            vec.X = Space.s_universe[0].Location.X - ship.Location.X;
-            vec.Y = Space.s_universe[0].Location.Y - ship.Location.Y;
-            vec.Z = Space.s_universe[0].Location.Z - ship.Location.Z;
-
-            FlyToVector(ref ship, vec);
-        }
-
-        /// <summary>
-        /// Fly to a point in front of the station docking bay. Done prior to the final stage of docking.
-        /// </summary>
-        /// <param name="ship"></param>
-        private static void FlyToStationFront(ref UniverseObject ship)
-        {
-            Vector3 vec;
-
-            vec.X = Space.s_universe[1].Location.X - ship.Location.X;
-            vec.Y = Space.s_universe[1].Location.Y - ship.Location.Y;
-            vec.Z = Space.s_universe[1].Location.Z - ship.Location.Z;
-
-            vec.X += Space.s_universe[1].Rotmat[2].X * 768;
-            vec.Y += Space.s_universe[1].Rotmat[2].Y * 768;
-            vec.Z += Space.s_universe[1].Rotmat[2].Z * 768;
-
-            FlyToVector(ref ship, vec);
-        }
-
-        /// <summary>
-        /// Fly towards the space station.
-        /// </summary>
-        /// <param name="ship"></param>
-        private static void FlyToStation(ref UniverseObject ship)
-        {
-            Vector3 vec;
-
-            vec.X = Space.s_universe[1].Location.X - ship.Location.X;
-            vec.Y = Space.s_universe[1].Location.Y - ship.Location.Y;
-            vec.Z = Space.s_universe[1].Location.Z - ship.Location.Z;
-
-            FlyToVector(ref ship, vec);
-        }
-
-        /// <summary>
-        /// Final stage of docking. Fly into the docking bay.
-        /// </summary>
-        /// <param name="ship"></param>
-        private static void FlyToDockingBay(ref UniverseObject ship)
-        {
-            Vector3 diff;
-            float dir;
-
-            diff.X = ship.Location.X - Space.s_universe[1].Location.X;
-            diff.Y = ship.Location.Y - Space.s_universe[1].Location.Y;
-            diff.Z = ship.Location.Z - Space.s_universe[1].Location.Z;
-
-            Vector3 vec = VectorMaths.UnitVector(diff);
-
-            ship.RotX = 0;
-
-            if (ship.Type < 0)
-            {
-                ship.RotZ = 1;
-                if (((vec.X >= 0) && (vec.Y >= 0)) ||
-                     ((vec.X < 0) && (vec.Y < 0)))
-                {
-                    ship.RotZ = -ship.RotZ;
-                }
-
-                if (MathF.Abs(vec.X) >= 0.0625f)
-                {
-                    ship.Acceleration = 0;
-                    ship.Velocity = 1;
-                    return;
-                }
-
-                if (MathF.Abs(vec.Y) > 0.002436f)
-                {
-                    ship.RotX = (vec.Y < 0) ? -1 : 1;
-                }
-
-                if (MathF.Abs(vec.Y) >= 0.0625f)
-                {
-                    ship.Acceleration = 0;
-                    ship.Velocity = 1;
-                    return;
-                }
-            }
-
-            ship.RotZ = 0;
-
-            dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], Space.s_universe[1].Rotmat[1]);
-
-            if (MathF.Abs(dir) >= 0.9166f)
-            {
-                ship.Acceleration++;
-                ship.RotZ = 127;
-                return;
-            }
-
-            ship.Acceleration = 0;
-            ship.RotZ = 0;
-        }
-
-        /// <summary>
-        /// Fly a ship to the planet or to the space station and dock it.
-        /// </summary>
-        /// <param name="ship"></param>
-        internal static void AutoPilotShip(ref UniverseObject ship)
-        {
-            Vector3 diff;
-            Vector3 vec;
-            float dist;
-            float dir;
-
-            if (ship.Flags.HasFlag(ShipFlags.FlyToPlanet) ||
-                ((Space.s_ship_count[ShipType.Coriolis] == 0) && (Space.s_ship_count[ShipType.Dodec] == 0)))
-            {
-                FlyToPlanet(ref ship);
-                return;
-            }
-
-            diff.X = ship.Location.X - Space.s_universe[1].Location.X;
-            diff.Y = ship.Location.Y - Space.s_universe[1].Location.Y;
-            diff.Z = ship.Location.Z - Space.s_universe[1].Location.Z;
-
-            dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
-
-            if (dist < 160)
-            {
-                ship.Flags |= ShipFlags.Remove;       // Ship has docked.
-                return;
-            }
-
-            vec = VectorMaths.UnitVector(diff);
-            dir = VectorMaths.VectorDotProduct(Space.s_universe[1].Rotmat[2], vec);
-
-            if (dir < 0.9722)
-            {
-                FlyToStationFront(ref ship);
-                return;
-            }
-
-            dir = VectorMaths.VectorDotProduct(ship.Rotmat[2], vec);
-
-            if (dir < -0.9444)
-            {
-                FlyToDockingBay(ref ship);
-                return;
-            }
-
-            FlyToStation(ref ship);
-        }
-
-        internal void EngageAutoPilot()
-        {
-            if (_gameState.IsAutoPilotOn || _gameState.InWitchspace || Space.s_hyper_ready)
-            {
-                return;
-            }
-
-            _gameState.IsAutoPilotOn = true;
-            _audio.PlayMusic(Music.BlueDanube, true);
-        }
-
-        internal void DisengageAutoPilot()
-        {
-            if (_gameState.IsAutoPilotOn)
-            {
-                _gameState.IsAutoPilotOn = false;
-                _audio.StopMusic();
             }
         }
     }

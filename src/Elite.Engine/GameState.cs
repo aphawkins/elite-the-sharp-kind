@@ -47,6 +47,7 @@ namespace Elite.Engine
         internal int MessageCount { get; set; }
         internal string MessageString { get; set; } = string.Empty;
         internal string PlanetName { get; set; } = string.Empty;
+
         internal Dictionary<ShipType, IShip> ShipList { get; private set; } = new()
         {
             { ShipType.None, new NoShip() },
@@ -84,6 +85,7 @@ namespace Elite.Engine
             { ShipType.Cougar, new Cougar() },
             { ShipType.Dodec, new DodecStation() }
         };
+
         internal void DoExitGame() => ExitGame = true;
 
         /// <summary>

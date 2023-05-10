@@ -11,34 +11,12 @@ namespace Elite.Engine.Config
     internal sealed class ConfigFile
     {
         private const string ConfigFileName = "sharpkind.cfg";
+
         private readonly JsonSerializerOptions _options = new()
         {
             WriteIndented = true,
             Converters = { new JsonStringEnumConverter() },
         };
-
-        /// <summary>
-        /// Write the config file.
-        /// </summary>
-        /// <param name="config">The config to save.</param>
-        internal async Task WriteConfigAsync(ConfigSettings config)
-        {
-            try
-            {
-                if (File.Exists(ConfigFileName))
-                {
-                    File.Delete(ConfigFileName);
-                }
-                using FileStream stream = File.OpenWrite(ConfigFileName);
-
-                await JsonSerializer.SerializeAsync(stream, config, _options).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                //TODO: handle error message better
-                Debug.WriteLine("Failed to save config.\n" + ex);
-            }
-        }
 
         /// <summary>
         /// Read the config file.
@@ -61,6 +39,29 @@ namespace Elite.Engine.Config
             }
 
             return new();
+        }
+
+        /// <summary>
+        /// Write the config file.
+        /// </summary>
+        /// <param name="config">The config to save.</param>
+        internal async Task WriteConfigAsync(ConfigSettings config)
+        {
+            try
+            {
+                if (File.Exists(ConfigFileName))
+                {
+                    File.Delete(ConfigFileName);
+                }
+                using FileStream stream = File.OpenWrite(ConfigFileName);
+
+                await JsonSerializer.SerializeAsync(stream, config, _options).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                //TODO: handle error message better
+                Debug.WriteLine("Failed to save config.\n" + ex);
+            }
         }
     }
 }

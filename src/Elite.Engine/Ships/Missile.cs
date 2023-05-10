@@ -25,6 +25,7 @@ namespace Elite.Engine.Ships
             new(31, new(   0,   32,    0)),
             new(31, new(   0,    0, -176)),
         };
+
         public ShipFace[] Faces { get; } =
         {
 			//fins
@@ -55,7 +56,6 @@ namespace Elite.Engine.Ships
 			//bottom
 			new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x00,-0xB0), new[] { 5,  6,  7, 8 }),
         };
-
 
         public int LaserFront => 0;
 
@@ -88,6 +88,7 @@ namespace Elite.Engine.Ships
             new( 8,  7,  6, 12, 13),
             new( 8,  6,  5, 11, 14),
         };
+
         public int LootMax => 0;
 
         public int MissilesMax => 0;
@@ -114,6 +115,7 @@ namespace Elite.Engine.Ships
             new(new(   8,    8,  -12),  8,  7,  4,  7,  7),
             new(new(   8,   -8,  -12),  8,  5,  4,  5,  5),
         };
+
         public StockType ScoopedType => StockType.None;
         public float Size => 1600;
         public ShipClass Type => ShipClass.Missile;

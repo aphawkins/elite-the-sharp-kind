@@ -9,10 +9,10 @@ namespace Elite.WinForms
 {
     public partial class GameWindow : Form
     {
-        private readonly System.Windows.Forms.Timer _refreshTimer = new();
         private readonly IGfx _gfx;
-        private readonly ISound _sound;
         private readonly IKeyboard _keyboard;
+        private readonly System.Windows.Forms.Timer _refreshTimer = new();
+        private readonly ISound _sound;
 
         public GameWindow()
         {
@@ -31,8 +31,6 @@ namespace Elite.WinForms
             Task.Run(() => new EliteMain(_gfx, _sound, _keyboard));
         }
 
-        private void RefreshScreen() => screen.Refresh();
-
         private void Form1_KeyDown(object sender, KeyEventArgs e) =>
             //Debug.WriteLine("KeyDown KeyCode: " + e.KeyCode);
             //Debug.WriteLine("KeyDown KeyValue: " + e.KeyValue);
@@ -40,5 +38,7 @@ namespace Elite.WinForms
             _keyboard.KeyDown((CommandKey)e.KeyValue);
 
         private void Form1_KeyUp(object sender, KeyEventArgs e) => _keyboard.KeyUp((CommandKey)e.KeyValue);
+
+        private void RefreshScreen() => screen.Refresh();
     }
 }

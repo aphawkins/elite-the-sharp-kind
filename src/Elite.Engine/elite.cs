@@ -38,6 +38,7 @@ namespace Elite.Engine
         private readonly Trade _trade;
         private readonly Dictionary<SCR, IView> _views = new();
         private bool _isGamePaused;
+
         public EliteMain(IGfx algGfx, ISound sound, IKeyboard keyboard)
         {
             _gfx = algGfx;

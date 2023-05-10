@@ -11,17 +11,17 @@ namespace Elite.Engine.Views
 {
     internal sealed class ShortRangeChartView : IView
     {
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
-        private readonly PlayerShip _ship;
         private readonly List<(Vector2 position, string name)> _planetNames = new();
         private readonly List<(Vector2 position, float size)> _planetSizes = new();
+        private readonly PlayerShip _ship;
         private int _crossTimer;
-        private bool _isFind;
         private string _findName = string.Empty;
+        private bool _isFind;
 
         internal ShortRangeChartView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
@@ -31,101 +31,6 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
             _planet = planet;
             _ship = ship;
-        }
-
-        public void Reset()
-        {
-            _isFind = false;
-            _findName = string.Empty;
-            int[] row_used = new int[64];
-            _planetNames.Clear();
-            _planetSizes.Clear();
-
-            for (int i = 0; i < 64; i++)
-            {
-                row_used[i] = 0;
-            }
-
-            GalaxySeed glx = (GalaxySeed)_gameState.Cmdr.Galaxy.Clone();
-
-            for (int i = 0; i < 256; i++)
-            {
-                float dx = MathF.Abs(glx.D - _gameState.DockedPlanet.D);
-                float dy = MathF.Abs(glx.B - _gameState.DockedPlanet.B);
-
-                if ((dx >= 20) || (dy >= 38))
-                {
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-
-                    continue;
-                }
-
-                float px = glx.D - _gameState.DockedPlanet.D;
-                // Convert to screen co-ords
-                px = (px * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE;
-
-                float py = glx.B - _gameState.DockedPlanet.B;
-                // Convert to screen co-ords
-                py = (py * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE; 
-
-                int row = (int)(py / (8 * Graphics.GFX_SCALE));
-
-                if (row_used[row] == 1)
-                {
-                    row++;
-                }
-
-                if (row_used[row] == 1)
-                {
-                    row -= 2;
-                }
-
-                if (row <= 3)
-                {
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-
-                    continue;
-                }
-
-                if (row_used[row] == 0)
-                {
-                    row_used[row] = 1;
-                    _planetNames.Add((new(px + (4 * Graphics.GFX_SCALE), ((row * 8) - 5) * Graphics.GFX_SCALE), _planet.NamePlanet(glx, true)));
-                }
-
-                // The next bit calculates the size of the circle used to represent
-                // a planet.  The carry_flag is left over from the name generation.
-                // Yes this was how it was done... don't ask :-(
-                float blob_size = (glx.F & 1) + 2 + _gameState.CarryFlag;
-                blob_size *= Graphics.GFX_SCALE;
-                _planetSizes.Add((new(px, py), blob_size));
-
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-            }
-
-            _crossTimer = 0;
-            CrossFromHyperspacePlanet();
-        }
-
-        public void UpdateUniverse()
-        {
-            if (_crossTimer > 0)
-            {
-                _crossTimer--;
-                if (_crossTimer == 0)
-                {
-                    CalculateDistanceToPlanet();
-                }
-            }
         }
 
         public void Draw()
@@ -250,15 +155,99 @@ namespace Elite.Engine.Views
             }
         }
 
-        /// <summary>
-        /// Move the planet chart cross hairs to specified position.
-        /// </summary>
-        /// <param name="dx"></param>
-        /// <param name="dy"></param>
-        private void MoveCross(int dx, int dy)
+        public void Reset()
         {
-            _crossTimer = 5;
-            _gameState.Cross = new(Math.Clamp(_gameState.Cross.X + (dx * 4), 1, 510), Math.Clamp(_gameState.Cross.Y + (dy * 4), 37, 339));
+            _isFind = false;
+            _findName = string.Empty;
+            int[] row_used = new int[64];
+            _planetNames.Clear();
+            _planetSizes.Clear();
+
+            for (int i = 0; i < 64; i++)
+            {
+                row_used[i] = 0;
+            }
+
+            GalaxySeed glx = (GalaxySeed)_gameState.Cmdr.Galaxy.Clone();
+
+            for (int i = 0; i < 256; i++)
+            {
+                float dx = MathF.Abs(glx.D - _gameState.DockedPlanet.D);
+                float dy = MathF.Abs(glx.B - _gameState.DockedPlanet.B);
+
+                if ((dx >= 20) || (dy >= 38))
+                {
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+
+                    continue;
+                }
+
+                float px = glx.D - _gameState.DockedPlanet.D;
+                // Convert to screen co-ords
+                px = (px * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE;
+
+                float py = glx.B - _gameState.DockedPlanet.B;
+                // Convert to screen co-ords
+                py = (py * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE;
+
+                int row = (int)(py / (8 * Graphics.GFX_SCALE));
+
+                if (row_used[row] == 1)
+                {
+                    row++;
+                }
+
+                if (row_used[row] == 1)
+                {
+                    row -= 2;
+                }
+
+                if (row <= 3)
+                {
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(ref glx);
+
+                    continue;
+                }
+
+                if (row_used[row] == 0)
+                {
+                    row_used[row] = 1;
+                    _planetNames.Add((new(px + (4 * Graphics.GFX_SCALE), ((row * 8) - 5) * Graphics.GFX_SCALE), _planet.NamePlanet(glx, true)));
+                }
+
+                // The next bit calculates the size of the circle used to represent
+                // a planet.  The carry_flag is left over from the name generation.
+                // Yes this was how it was done... don't ask :-(
+                float blob_size = (glx.F & 1) + 2 + _gameState.CarryFlag;
+                blob_size *= Graphics.GFX_SCALE;
+                _planetSizes.Add((new(px, py), blob_size));
+
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+            }
+
+            _crossTimer = 0;
+            CrossFromHyperspacePlanet();
+        }
+
+        public void UpdateUniverse()
+        {
+            if (_crossTimer > 0)
+            {
+                _crossTimer--;
+                if (_crossTimer == 0)
+                {
+                    CalculateDistanceToPlanet();
+                }
+            }
         }
 
         private void CalculateDistanceToPlanet()
@@ -276,6 +265,17 @@ namespace Elite.Engine.Views
         }
 
         private void CrossFromHyperspacePlanet() => _gameState.Cross = new(((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE,
-                ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE);
+                        ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE);
+
+        /// <summary>
+        /// Move the planet chart cross hairs to specified position.
+        /// </summary>
+        /// <param name="dx"></param>
+        /// <param name="dy"></param>
+        private void MoveCross(int dx, int dy)
+        {
+            _crossTimer = 5;
+            _gameState.Cross = new(Math.Clamp(_gameState.Cross.X + (dx * 4), 1, 510), Math.Clamp(_gameState.Cross.Y + (dy * 4), 37, 339));
+        }
     }
 }

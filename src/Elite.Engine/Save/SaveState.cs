@@ -6,30 +6,6 @@ namespace Elite.Engine.Save
 {
     public class SaveState : ICloneable
     {
-        public string CommanderName { get; set; } = string.Empty;
-        public int Mission { get; set; }
-        public int[] ShipLocation { get; set; } = Array.Empty<int>();
-        public int[] GalaxySeed { get; set; } = Array.Empty<int>();
-        public float Credits { get; set; }
-        public float Fuel { get; set; }
-        public int GalaxyNumber { get; set; }
-        public string[] Lasers { get; set; } = Array.Empty<string>();
-        public int CargoCapacity { get; set; }
-        public int[] CurrentCargo { get; set; } = Array.Empty<int>();
-        public bool HasECM { get; set; }
-        public bool HasFuelScoop { get; set; }
-        public bool HasEnergyBomb { get; set; }
-        public string EnergyUnit { get; set; } = string.Empty;
-        public bool HasDockingComputer { get; set; }
-        public bool HasGalacticHyperdrive { get; set; }
-        public bool HasEscapeCapsule { get; set; }
-        public int Missiles { get; set; }
-        public int LegalStatus { get; set; }
-        public int[] StationStock { get; set; } = Array.Empty<int>();
-        public int MarketRandomiser { get; set; }
-        public int Score { get; set; }
-        public int Saved { get; set; }
-
         public SaveState()
         {
         }
@@ -60,6 +36,30 @@ namespace Elite.Engine.Save
             Score = other.Score;
             Saved = other.Saved;
         }
+
+        public int CargoCapacity { get; set; }
+        public string CommanderName { get; set; } = string.Empty;
+        public float Credits { get; set; }
+        public int[] CurrentCargo { get; set; } = Array.Empty<int>();
+        public string EnergyUnit { get; set; } = string.Empty;
+        public float Fuel { get; set; }
+        public int GalaxyNumber { get; set; }
+        public int[] GalaxySeed { get; set; } = Array.Empty<int>();
+        public bool HasDockingComputer { get; set; }
+        public bool HasECM { get; set; }
+        public bool HasEnergyBomb { get; set; }
+        public bool HasEscapeCapsule { get; set; }
+        public bool HasFuelScoop { get; set; }
+        public bool HasGalacticHyperdrive { get; set; }
+        public string[] Lasers { get; set; } = Array.Empty<string>();
+        public int LegalStatus { get; set; }
+        public int MarketRandomiser { get; set; }
+        public int Missiles { get; set; }
+        public int Mission { get; set; }
+        public int Saved { get; set; }
+        public int Score { get; set; }
+        public int[] ShipLocation { get; set; } = Array.Empty<int>();
+        public int[] StationStock { get; set; } = Array.Empty<int>();
 
         public object Clone() => new SaveState(this);
     }

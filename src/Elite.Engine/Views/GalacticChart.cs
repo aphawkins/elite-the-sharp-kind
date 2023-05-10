@@ -11,16 +11,16 @@ namespace Elite.Engine.Views
 {
     internal sealed class GalacticChartView : IView
     {
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
-        private readonly PlayerShip _ship;
         private readonly List<Vector2> _planetPixels = new();
+        private readonly PlayerShip _ship;
         private int _crossTimer;
-        private bool _isFind;
         private string _findName = string.Empty;
+        private bool _isFind;
 
         internal GalacticChartView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
@@ -30,50 +30,6 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
             _planet = planet;
             _ship = ship;
-        }
-
-        public void Reset()
-        {
-            _isFind = false;
-            _findName = string.Empty;
-            GalaxySeed glx = (GalaxySeed)_gameState.Cmdr.Galaxy.Clone();
-            _planetPixels.Clear();
-
-            for (int i = 0; i < 256; i++)
-            {
-                Vector2 pixel = new()
-                {
-                    X = glx.D * Graphics.GFX_SCALE,
-                    Y = (glx.B / (2f / Graphics.GFX_SCALE)) + (18f * Graphics.GFX_SCALE) + 1
-                };
-
-                _planetPixels.Add(pixel);
-
-                if ((glx.E | 0x50) < 0x90)
-                {
-                    _planetPixels.Add(new(pixel.X + 1, pixel.Y));
-                }
-
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-            }
-
-            _crossTimer = 0;
-            CrossFromHyperspacePlanet();
-        }
-
-        public void UpdateUniverse()
-        {
-            if (_crossTimer > 0)
-            {
-                _crossTimer--;
-                if (_crossTimer == 0)
-                {
-                    CalculateDistanceToPlanet();
-                }
-            }
         }
 
         public void Draw()
@@ -199,15 +155,48 @@ namespace Elite.Engine.Views
             }
         }
 
-        /// <summary>
-        /// Move the planet chart cross hairs to specified position.
-        /// </summary>
-        /// <param name="dx"></param>
-        /// <param name="dy"></param>
-        private void MoveCross(int dx, int dy)
+        public void Reset()
         {
-            _crossTimer = 5;
-            _gameState.Cross = new(Math.Clamp(_gameState.Cross.X + (dx * 2), 1, 510), Math.Clamp(_gameState.Cross.Y + (dy * 2), 37, 293));
+            _isFind = false;
+            _findName = string.Empty;
+            GalaxySeed glx = (GalaxySeed)_gameState.Cmdr.Galaxy.Clone();
+            _planetPixels.Clear();
+
+            for (int i = 0; i < 256; i++)
+            {
+                Vector2 pixel = new()
+                {
+                    X = glx.D * Graphics.GFX_SCALE,
+                    Y = (glx.B / (2f / Graphics.GFX_SCALE)) + (18f * Graphics.GFX_SCALE) + 1
+                };
+
+                _planetPixels.Add(pixel);
+
+                if ((glx.E | 0x50) < 0x90)
+                {
+                    _planetPixels.Add(new(pixel.X + 1, pixel.Y));
+                }
+
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(ref glx);
+            }
+
+            _crossTimer = 0;
+            CrossFromHyperspacePlanet();
+        }
+
+        public void UpdateUniverse()
+        {
+            if (_crossTimer > 0)
+            {
+                _crossTimer--;
+                if (_crossTimer == 0)
+                {
+                    CalculateDistanceToPlanet();
+                }
+            }
         }
 
         private void CalculateDistanceToPlanet()
@@ -225,5 +214,16 @@ namespace Elite.Engine.Views
         }
 
         private void CrossFromHyperspacePlanet() => _gameState.Cross = new(_gameState.HyperspacePlanet.D * Graphics.GFX_SCALE, (_gameState.HyperspacePlanet.B / (2 / Graphics.GFX_SCALE)) + (18 * Graphics.GFX_SCALE) + 1);
+
+        /// <summary>
+        /// Move the planet chart cross hairs to specified position.
+        /// </summary>
+        /// <param name="dx"></param>
+        /// <param name="dy"></param>
+        private void MoveCross(int dx, int dy)
+        {
+            _crossTimer = 5;
+            _gameState.Cross = new(Math.Clamp(_gameState.Cross.X + (dx * 2), 1, 510), Math.Clamp(_gameState.Cross.Y + (dy * 2), 37, 293));
+        }
     }
 }

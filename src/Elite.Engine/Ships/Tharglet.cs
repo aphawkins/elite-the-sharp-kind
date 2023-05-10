@@ -79,6 +79,7 @@ namespace Elite.Engine.Ships
             new(new(   9,    6,  -26), 31,  3,  4,  6,  6),
             new(new(   9,   10,  -15), 31,  4,  5,  6,  6),
         };
+
         public StockType ScoopedType => StockType.AlienItems;
         public float Size => 1600;
         public ShipClass Type => ShipClass.Tharglet;

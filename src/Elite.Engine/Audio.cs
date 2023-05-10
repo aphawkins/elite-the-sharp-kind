@@ -66,7 +66,6 @@ namespace Elite.Engine
             }
         }
 
-
         internal void PlayEffect(SoundEffect effect)
         {
             if (!_effectsOn)

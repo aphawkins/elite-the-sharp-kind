@@ -9,20 +9,6 @@ namespace Elite.Engine.Types
 {
     internal sealed class UniverseObject
     {
-        internal ShipType Type { get; set; }
-        internal Vector3 Location { get; set; }
-        internal Vector3[] Rotmat { get; set; } = new Vector3[3];
-        internal float RotX { get; set; }
-        internal float RotZ { get; set; }
-        internal ShipFlags Flags { get; set; }
-        internal int Energy { get; set; }
-        internal float Velocity { get; set; }
-        internal int Acceleration { get; set; }
-        internal int Missiles { get; set; }
-        internal int Target { get; set; }
-        internal int Bravery { get; set; }
-        internal int ExpDelta { get; set; }
-
         internal UniverseObject()
         {
         }
@@ -43,5 +29,19 @@ namespace Elite.Engine.Types
             Bravery = other.Bravery;
             ExpDelta = other.ExpDelta;
         }
+
+        internal int Acceleration { get; set; }
+        internal int Bravery { get; set; }
+        internal int Energy { get; set; }
+        internal int ExpDelta { get; set; }
+        internal ShipFlags Flags { get; set; }
+        internal Vector3 Location { get; set; }
+        internal int Missiles { get; set; }
+        internal Vector3[] Rotmat { get; set; } = new Vector3[3];
+        internal float RotX { get; set; }
+        internal float RotZ { get; set; }
+        internal int Target { get; set; }
+        internal ShipType Type { get; set; }
+        internal float Velocity { get; set; }
     }
 }

@@ -13,12 +13,7 @@ namespace Elite.Engine
 
         internal BreakPattern(IGfx gfx) => _gfx = gfx;
 
-        internal void Reset()
-        {
-            _gfx.SetClipRegion(1, 1, 510, 383);
-            _breakPatternCount = 0;
-            IsComplete = false;
-        }
+        internal bool IsComplete { get; private set; }
 
         internal void Draw()
         {
@@ -28,6 +23,13 @@ namespace Elite.Engine
             {
                 _gfx.DrawCircle(new(256, 192), 30 + (i * 15), GFX_COL.GFX_COL_WHITE);
             }
+        }
+
+        internal void Reset()
+        {
+            _gfx.SetClipRegion(1, 1, 510, 383);
+            _breakPatternCount = 0;
+            IsComplete = false;
         }
 
         internal void Update()
@@ -40,7 +42,5 @@ namespace Elite.Engine
                 IsComplete = true;
             }
         }
-
-        internal bool IsComplete { get; private set; }
     }
 }

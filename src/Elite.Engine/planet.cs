@@ -15,9 +15,11 @@ namespace Elite.Engine
         private readonly string[] _inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
         private readonly string[] _inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
         private readonly string[] _inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
+
         internal Planet(GameState gameState) => _gameState = gameState;
 
         internal string Digrams { get; } = "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
+
         internal static float CalculateDistanceToPlanet(GalaxySeed from_planet, GalaxySeed to_planet)
         {
             float dx = MathF.Abs(to_planet.D - from_planet.D);
@@ -50,12 +52,10 @@ namespace Elite.Engine
             pl.TechLevel += planet_seed.D & 3;
             pl.TechLevel += (pl.Government / 2) + (pl.Government & 1);
 
-
             pl.Population = pl.TechLevel * 4;
             pl.Population += pl.Government;
             pl.Population += pl.Economy;
             pl.Population++;
-
 
             pl.Productivity = (pl.Economy ^ 7) + 3;
             pl.Productivity *= pl.Government + 4;
@@ -164,7 +164,6 @@ namespace Elite.Engine
 
             for (int i = 0; i < 256; i++)
             {
-
                 if ((planet.A == glx.A) &&
                     (planet.B == glx.B) &&
                     (planet.C == glx.C) &&

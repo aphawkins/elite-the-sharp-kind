@@ -10,8 +10,8 @@ namespace Elite.Engine.Views
 {
     internal sealed class InventoryView : IView
     {
-        private readonly IGfx _gfx;
         private readonly Draw _draw;
+        private readonly IGfx _gfx;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
 

@@ -17,25 +17,24 @@ namespace Elite.Engine
     /// </summary>
     internal sealed class Space
     {
+        internal static int s_hyper_countdown;
+        internal static bool s_hyper_galactic;
+        internal static string s_hyper_name = string.Empty;
+        internal static bool s_hyper_ready;
+        internal static Dictionary<ShipType, int> s_ship_count = new();
+        internal static UniverseObject[] s_universe = new UniverseObject[EliteMain.MAX_UNIV_OBJECTS];
+        private static GalaxySeed s_destination_planet = new();
+        private static float s_hyper_distance;
+        private readonly Audio _audio;
+        private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Threed _threed;
-        private readonly Audio _audio;
         private readonly Pilot _pilot;
-        private readonly Combat _combat;
-        private readonly Trade _trade;
-        private readonly PlayerShip _ship;
         private readonly Planet _planet;
+        private readonly PlayerShip _ship;
         private readonly Stars _stars;
-
-        private static GalaxySeed s_destination_planet = new();
-        internal static bool s_hyper_ready;
-        internal static int s_hyper_countdown;
-        internal static string s_hyper_name = string.Empty;
-        private static float s_hyper_distance;
-        internal static bool s_hyper_galactic;
-        internal static UniverseObject[] s_universe = new UniverseObject[EliteMain.MAX_UNIV_OBJECTS];
-        internal static Dictionary<ShipType, int> s_ship_count = new();
+        private readonly Threed _threed;
+        private readonly Trade _trade;
 
         internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio,
             Pilot pilot, Combat combat, Trade trade, PlayerShip ship,
@@ -53,163 +52,146 @@ namespace Elite.Engine
             _stars = stars;
         }
 
-        private static void RotateXFirst(ref float a, ref float b, float direction)
+        internal void CountdownHyperspace()
         {
-            float fx = a;
-            float ux = b;
+            if (s_hyper_countdown == 0)
+            {
+                CompleteHyperspace();
+                return;
+            }
 
-            if (direction < 0)
-            {
-                a = fx - (fx / 512) + (ux / 19);
-                b = ux - (ux / 512) - (fx / 19);
-            }
-            else
-            {
-                a = fx - (fx / 512) - (ux / 19);
-                b = ux - (ux / 512) + (fx / 19);
-            }
+            s_hyper_countdown--;
+        }
+
+        internal void DisplayHyperStatus() => _gfx.DrawTextRight(22, 5, $"{s_hyper_countdown}", GFX_COL.GFX_COL_WHITE);
+
+        /// <summary>
+        /// Dock the player into the space station.
+        /// </summary>
+        internal void DockPlayer()
+        {
+            _pilot.DisengageAutoPilot();
+            _gameState.IsDocked = true;
+            _gameState.Reset();
+            _ship.Reset();
+            _combat.ResetWeapons();
         }
 
         /// <summary>
-        /// Update an objects location in the universe.
+        /// Engage the docking computer. For the moment we just do an instant dock if we are in the safe zone.
         /// </summary>
-        /// <param name="obj"></param>
-        private void MoveUniverseObject(ref UniverseObject obj)
+        internal void EngageDockingComputer()
         {
-            float x, y, z;
-            float k2;
-            float alpha;
-            float beta;
-            float rotx, rotz;
-            float speed;
-
-            alpha = _ship.Roll / 256;
-            beta = _ship.Climb / 256;
-
-            x = obj.Location.X;
-            y = obj.Location.Y;
-            z = obj.Location.Z;
-
-            if (!obj.Flags.HasFlag(ShipFlags.Dead))
+            if (s_ship_count[ShipType.Coriolis] != 0 || s_ship_count[ShipType.Dodec] != 0)
             {
-                if (obj.Velocity != 0)
-                {
-                    speed = obj.Velocity;
-                    speed *= 1.5f;
-                    x += obj.Rotmat[2].X * speed;
-                    y += obj.Rotmat[2].Y * speed;
-                    z += obj.Rotmat[2].Z * speed;
-                }
+                _gameState.SetView(SCR.SCR_DOCKING);
+            }
+        }
 
-                if (obj.Acceleration != 0)
-                {
-                    obj.Velocity += obj.Acceleration;
-                    obj.Acceleration = 0;
-                    if (obj.Velocity > _gameState.ShipList[obj.Type].VelocityMax)
-                    {
-                        obj.Velocity = _gameState.ShipList[obj.Type].VelocityMax;
-                    }
+        internal void JumpWarp()
+        {
+            int i;
+            ShipType type;
+            float jump;
 
-                    if (obj.Velocity <= 0)
-                    {
-                        obj.Velocity = 1;
-                    }
+            for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            {
+                type = s_universe[i].Type;
+
+                if (type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
+                    not ShipType.Alloy and not ShipType.Rock and
+                    not ShipType.Boulder and not ShipType.EscapeCapsule)
+                {
+                    _gameState.InfoMessage("Mass Locked");
+                    return;
                 }
             }
 
-            k2 = y - (alpha * x);
-            z += beta * k2;
-            y = k2 - (z * beta);
-            x += alpha * y;
-
-            z -= _ship.Speed;
-
-            obj.Location = new(x, y, z);
-
-            if (obj.Type == ShipType.Planet)
+            if ((s_universe[0].Location.Length() < 75001) || (s_universe[1].Location.Length() < 75001))
             {
-                beta = 0.0f;
+                _gameState.InfoMessage("Mass Locked");
+                return;
             }
 
-            obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
+            jump = s_universe[0].Location.Length() < s_universe[1].Location.Length() ? s_universe[0].Location.Length() - 75000f : s_universe[1].Location.Length() - 75000f;
 
-            if (obj.Flags.HasFlag(ShipFlags.Dead))
+            if (jump > 1024)
+            {
+                jump = 1024;
+            }
+
+            for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            {
+                if (s_universe[i].Type != 0)
+                {
+                    s_universe[i].Location = new(s_universe[i].Location.X, s_universe[i].Location.Y, s_universe[i].Location.Z - jump);
+                }
+            }
+
+            _stars.WarpStars = true;
+            _gameState.mcount &= 63;
+            _combat.InBattle = false;
+        }
+
+        internal void LaunchPlayer()
+        {
+            _ship.Speed = 12;
+            // Rotate in the same direction that the station is spinning
+            _ship.Roll = 15;
+            _ship.Climb = 0;
+            _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
+            _stars.CreateNewStars();
+            _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            _combat.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
+
+            Vector3[] rotmat = VectorMaths.GetInitialMatrix();
+            rotmat[2].X = -rotmat[2].X;
+            rotmat[2].Y = -rotmat[2].Y;
+            rotmat[2].Z = -rotmat[2].Z;
+            _combat.AddNewStation(new(0, 0, -256), rotmat);
+
+            _gameState.IsDocked = false;
+        }
+
+        internal void StartGalacticHyperspace()
+        {
+            if (s_hyper_ready)
             {
                 return;
             }
 
-            rotx = obj.RotX;
-            rotz = obj.RotZ;
-
-            // If necessary rotate the object around the X axis...
-            if (rotx != 0)
+            if (!_ship.hasGalacticHyperdrive)
             {
-                RotateXFirst(ref obj.Rotmat[2].X, ref obj.Rotmat[1].X, rotx);
-                RotateXFirst(ref obj.Rotmat[2].Y, ref obj.Rotmat[1].Y, rotx);
-                RotateXFirst(ref obj.Rotmat[2].Z, ref obj.Rotmat[1].Z, rotx);
-
-                if (rotx is not 127 and not (-127))
-                {
-                    obj.RotX -= (rotx < 0) ? -1 : 1;
-                }
+                return;
             }
 
-
-            // If necessary rotate the object around the Z axis...
-
-            if (rotz != 0)
-            {
-                RotateXFirst(ref obj.Rotmat[0].X, ref obj.Rotmat[1].X, rotz);
-                RotateXFirst(ref obj.Rotmat[0].Y, ref obj.Rotmat[1].Y, rotz);
-                RotateXFirst(ref obj.Rotmat[0].Z, ref obj.Rotmat[1].Z, rotz);
-
-                if (rotz is not 127 and not (-127))
-                {
-                    obj.RotZ -= (rotz < 0) ? -1 : 1;
-                }
-            }
-
-            // Orthonormalize the rotation matrix...
-            VectorMaths.TidyMatrix(obj.Rotmat);
+            s_hyper_ready = true;
+            s_hyper_countdown = 2;
+            s_hyper_galactic = true;
+            _pilot.DisengageAutoPilot();
         }
 
-        /// <summary>
-        /// Check if we are correctly aligned to dock.
-        /// </summary>
-        /// <param name="sn"></param>
-        /// <returns></returns>
-        private bool IsDocking(int sn)
+        internal void StartHyperspace()
         {
-            Vector3 vec;
-            float fz;
-            float ux;
-
-            if (_gameState.IsAutoPilotOn)     // Don't want it to kill anyone!
+            if (s_hyper_ready)
             {
-                return true;
+                return;
             }
 
-            fz = s_universe[sn].Rotmat[2].Z;
+            s_hyper_distance = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
 
-            if (fz > -0.90)
+            if ((s_hyper_distance == 0) || (s_hyper_distance > _ship.Fuel))
             {
-                return false;
+                return;
             }
 
-            vec = VectorMaths.UnitVector(s_universe[sn].Location);
+            s_destination_planet = (GalaxySeed)_gameState.HyperspacePlanet.Clone();
+            s_hyper_name = _planet.NamePlanet(s_destination_planet, true);
+            s_hyper_ready = true;
+            s_hyper_countdown = 15;
+            s_hyper_galactic = false;
 
-            if (vec.Z < 0.927)
-            {
-                return false;
-            }
-
-            ux = s_universe[sn].Rotmat[1].X;
-            if (ux < 0)
-            {
-                ux = -ux;
-            }
-
-            return ux >= 0.84;
+            _pilot.DisengageAutoPilot();
         }
 
         internal void UpdateAltitude()
@@ -321,135 +303,6 @@ namespace Elite.Engine
             _gameState.InfoMessage("Fuel Scoop On");
         }
 
-        private void MakeStationAppear()
-        {
-            Vector3 location = s_universe[0].Location;
-            Vector3 vec;
-            vec.X = RNG.Random(-16384, 16383);
-            vec.Y = RNG.Random(-16384, 16383);
-            vec.Z = RNG.Random(32767);
-
-            vec = VectorMaths.UnitVector(vec);
-
-            Vector3 position = new()
-            {
-                X = location.X - (vec.X * 65792),
-                Y = location.Y - (vec.Y * 65792),
-                Z = location.Z - (vec.Z * 65792),
-            };
-
-            //	VectorMaths.set_init_matrix (rotmat);
-            Vector3[] rotmat = new Vector3[3];
-
-            rotmat[0].X = 1;
-            rotmat[0].Y = 0;
-            rotmat[0].Z = 0;
-
-            rotmat[1].X = vec.X;
-            rotmat[1].Y = vec.Z;
-            rotmat[1].Z = -vec.Y;
-
-            rotmat[2].X = vec.X;
-            rotmat[2].Y = vec.Y;
-            rotmat[2].Z = vec.Z;
-
-            VectorMaths.TidyMatrix(rotmat);
-
-            _combat.AddNewStation(position, rotmat);
-        }
-
-        private void CheckDocking(int i)
-        {
-            if (_gameState.IsDocked)
-            {
-                return;
-            }
-
-            if (IsDocking(i))
-            {
-                _gameState.SetView(SCR.SCR_DOCKING);
-                return;
-            }
-
-            if (_ship.Speed >= 5)
-            {
-                _gameState.GameOver();
-                return;
-            }
-
-            _ship.Speed = 1;
-            _ship.DamageShip(5, s_universe[i].Location.Z > 0);
-            _audio.PlayEffect(SoundEffect.Crash);
-        }
-
-        private void SwitchToView(ref UniverseObject flip)
-        {
-            float tmp;
-
-            if (_gameState.CurrentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
-            {
-                flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z);
-
-                flip.Rotmat[0].X = -flip.Rotmat[0].X;
-                flip.Rotmat[0].Z = -flip.Rotmat[0].Z;
-
-                flip.Rotmat[1].X = -flip.Rotmat[1].X;
-                flip.Rotmat[1].Z = -flip.Rotmat[1].Z;
-
-                flip.Rotmat[2].X = -flip.Rotmat[2].X;
-                flip.Rotmat[2].Z = -flip.Rotmat[2].Z;
-                return;
-            }
-
-            if (_gameState.CurrentScreen == SCR.SCR_LEFT_VIEW)
-            {
-                tmp = flip.Location.X;
-                flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp);
-
-                if (flip.Type < 0)
-                {
-                    return;
-                }
-
-                tmp = flip.Rotmat[0].X;
-                flip.Rotmat[0].X = flip.Rotmat[0].Z;
-                flip.Rotmat[0].Z = -tmp;
-
-                tmp = flip.Rotmat[1].X;
-                flip.Rotmat[1].X = flip.Rotmat[1].Z;
-                flip.Rotmat[1].Z = -tmp;
-
-                tmp = flip.Rotmat[2].X;
-                flip.Rotmat[2].X = flip.Rotmat[2].Z;
-                flip.Rotmat[2].Z = -tmp;
-                return;
-            }
-
-            if (_gameState.CurrentScreen == SCR.SCR_RIGHT_VIEW)
-            {
-                tmp = flip.Location.X;
-                flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp);
-
-                if (flip.Type < 0)
-                {
-                    return;
-                }
-
-                tmp = flip.Rotmat[0].X;
-                flip.Rotmat[0].X = -flip.Rotmat[0].Z;
-                flip.Rotmat[0].Z = tmp;
-
-                tmp = flip.Rotmat[1].X;
-                flip.Rotmat[1].X = -flip.Rotmat[1].Z;
-                flip.Rotmat[1].Z = tmp;
-
-                tmp = flip.Rotmat[2].X;
-                flip.Rotmat[2].X = -flip.Rotmat[2].Z;
-                flip.Rotmat[2].Z = tmp;
-
-            }
-        }
-
         /// <summary>
         /// Update all the objects in the universe and render them.
         /// </summary>
@@ -531,7 +384,6 @@ namespace Elite.Engine
                     continue;
                 }
 
-
                 if (s_universe[i].Location.Length() < 170)
                 {
                     if (type is ShipType.Coriolis or ShipType.Dodec)
@@ -571,91 +423,47 @@ namespace Elite.Engine
             _gameState.DetonateBomb = false;
         }
 
-        internal void StartHyperspace()
-        {
-            if (s_hyper_ready)
-            {
-                return;
-            }
-
-            s_hyper_distance = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
-
-            if ((s_hyper_distance == 0) || (s_hyper_distance > _ship.Fuel))
-            {
-                return;
-            }
-
-            s_destination_planet = (GalaxySeed)_gameState.HyperspacePlanet.Clone();
-            s_hyper_name = _planet.NamePlanet(s_destination_planet, true);
-            s_hyper_ready = true;
-            s_hyper_countdown = 15;
-            s_hyper_galactic = false;
-
-            _pilot.DisengageAutoPilot();
-        }
-
-        internal void StartGalacticHyperspace()
-        {
-            if (s_hyper_ready)
-            {
-                return;
-            }
-
-            if (!_ship.hasGalacticHyperdrive)
-            {
-                return;
-            }
-
-            s_hyper_ready = true;
-            s_hyper_countdown = 2;
-            s_hyper_galactic = true;
-            _pilot.DisengageAutoPilot();
-        }
-
-        internal void DisplayHyperStatus() => _gfx.DrawTextRight(22, 5, $"{s_hyper_countdown}", GFX_COL.GFX_COL_WHITE);
-
         private static int RotateByteLeft(int x) => ((x << 1) | (x >> 7)) & 255;
 
-        private void EnterNextGalaxy()
+        private static void RotateXFirst(ref float a, ref float b, float direction)
         {
-            _gameState.Cmdr.GalaxyNumber++;
-            _gameState.Cmdr.GalaxyNumber &= 7;
+            float fx = a;
+            float ux = b;
 
-            GalaxySeed glx = new()
+            if (direction < 0)
             {
-                A = RotateByteLeft(_gameState.Cmdr.Galaxy.A),
-                B = RotateByteLeft(_gameState.Cmdr.Galaxy.B),
-                C = RotateByteLeft(_gameState.Cmdr.Galaxy.C),
-                D = RotateByteLeft(_gameState.Cmdr.Galaxy.D),
-                E = RotateByteLeft(_gameState.Cmdr.Galaxy.E),
-                F = RotateByteLeft(_gameState.Cmdr.Galaxy.F)
-            };
-            _gameState.Cmdr.Galaxy = glx;
-
-            _gameState.DockedPlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, new(0x60, 0x60));
-            _gameState.HyperspacePlanet = (GalaxySeed)_gameState.DockedPlanet.Clone();
+                a = fx - (fx / 512) + (ux / 19);
+                b = ux - (ux / 512) - (fx / 19);
+            }
+            else
+            {
+                a = fx - (fx / 512) - (ux / 19);
+                b = ux - (ux / 512) + (fx / 19);
+            }
         }
 
-        private void EnterWitchspace()
+        private void CheckDocking(int i)
         {
-            _gameState.InWitchspace = true;
-            _gameState.DockedPlanet.B ^= 31;
-            _combat.InBattle = true;
-
-            _ship.Speed = 12;
-            _ship.Roll = 0;
-            _ship.Climb = 0;
-            _stars.CreateNewStars();
-            _combat.ClearUniverse();
-
-            int nthg = RNG.Random(1, 4);
-
-            for (int i = 0; i < nthg; i++)
+            if (_gameState.IsDocked)
             {
-                _combat.CreateThargoid();
+                return;
             }
 
-            _gameState.SetView(SCR.SCR_HYPERSPACE);
+            if (IsDocking(i))
+            {
+                _gameState.SetView(SCR.SCR_DOCKING);
+                return;
+            }
+
+            if (_ship.Speed >= 5)
+            {
+                _gameState.GameOver();
+                return;
+            }
+
+            _ship.Speed = 1;
+            _ship.DamageShip(5, s_universe[i].Location.Z > 0);
+            _audio.PlayEffect(SoundEffect.Crash);
         }
 
         private void CompleteHyperspace()
@@ -723,102 +531,290 @@ namespace Elite.Engine
             _gameState.SetView(SCR.SCR_HYPERSPACE);
         }
 
-        internal void CountdownHyperspace()
+        private void EnterNextGalaxy()
         {
-            if (s_hyper_countdown == 0)
+            _gameState.Cmdr.GalaxyNumber++;
+            _gameState.Cmdr.GalaxyNumber &= 7;
+
+            GalaxySeed glx = new()
             {
-                CompleteHyperspace();
+                A = RotateByteLeft(_gameState.Cmdr.Galaxy.A),
+                B = RotateByteLeft(_gameState.Cmdr.Galaxy.B),
+                C = RotateByteLeft(_gameState.Cmdr.Galaxy.C),
+                D = RotateByteLeft(_gameState.Cmdr.Galaxy.D),
+                E = RotateByteLeft(_gameState.Cmdr.Galaxy.E),
+                F = RotateByteLeft(_gameState.Cmdr.Galaxy.F)
+            };
+            _gameState.Cmdr.Galaxy = glx;
+
+            _gameState.DockedPlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, new(0x60, 0x60));
+            _gameState.HyperspacePlanet = (GalaxySeed)_gameState.DockedPlanet.Clone();
+        }
+
+        private void EnterWitchspace()
+        {
+            _gameState.InWitchspace = true;
+            _gameState.DockedPlanet.B ^= 31;
+            _combat.InBattle = true;
+
+            _ship.Speed = 12;
+            _ship.Roll = 0;
+            _ship.Climb = 0;
+            _stars.CreateNewStars();
+            _combat.ClearUniverse();
+
+            int nthg = RNG.Random(1, 4);
+
+            for (int i = 0; i < nthg; i++)
+            {
+                _combat.CreateThargoid();
+            }
+
+            _gameState.SetView(SCR.SCR_HYPERSPACE);
+        }
+
+        /// <summary>
+        /// Check if we are correctly aligned to dock.
+        /// </summary>
+        /// <param name="sn"></param>
+        /// <returns></returns>
+        private bool IsDocking(int sn)
+        {
+            Vector3 vec;
+            float fz;
+            float ux;
+
+            if (_gameState.IsAutoPilotOn)     // Don't want it to kill anyone!
+            {
+                return true;
+            }
+
+            fz = s_universe[sn].Rotmat[2].Z;
+
+            if (fz > -0.90)
+            {
+                return false;
+            }
+
+            vec = VectorMaths.UnitVector(s_universe[sn].Location);
+
+            if (vec.Z < 0.927)
+            {
+                return false;
+            }
+
+            ux = s_universe[sn].Rotmat[1].X;
+            if (ux < 0)
+            {
+                ux = -ux;
+            }
+
+            return ux >= 0.84;
+        }
+
+        private void MakeStationAppear()
+        {
+            Vector3 location = s_universe[0].Location;
+            Vector3 vec;
+            vec.X = RNG.Random(-16384, 16383);
+            vec.Y = RNG.Random(-16384, 16383);
+            vec.Z = RNG.Random(32767);
+
+            vec = VectorMaths.UnitVector(vec);
+
+            Vector3 position = new()
+            {
+                X = location.X - (vec.X * 65792),
+                Y = location.Y - (vec.Y * 65792),
+                Z = location.Z - (vec.Z * 65792),
+            };
+
+            //	VectorMaths.set_init_matrix (rotmat);
+            Vector3[] rotmat = new Vector3[3];
+
+            rotmat[0].X = 1;
+            rotmat[0].Y = 0;
+            rotmat[0].Z = 0;
+
+            rotmat[1].X = vec.X;
+            rotmat[1].Y = vec.Z;
+            rotmat[1].Z = -vec.Y;
+
+            rotmat[2].X = vec.X;
+            rotmat[2].Y = vec.Y;
+            rotmat[2].Z = vec.Z;
+
+            VectorMaths.TidyMatrix(rotmat);
+
+            _combat.AddNewStation(position, rotmat);
+        }
+
+        /// <summary>
+        /// Update an objects location in the universe.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void MoveUniverseObject(ref UniverseObject obj)
+        {
+            float x, y, z;
+            float k2;
+            float alpha;
+            float beta;
+            float rotx, rotz;
+            float speed;
+
+            alpha = _ship.Roll / 256;
+            beta = _ship.Climb / 256;
+
+            x = obj.Location.X;
+            y = obj.Location.Y;
+            z = obj.Location.Z;
+
+            if (!obj.Flags.HasFlag(ShipFlags.Dead))
+            {
+                if (obj.Velocity != 0)
+                {
+                    speed = obj.Velocity;
+                    speed *= 1.5f;
+                    x += obj.Rotmat[2].X * speed;
+                    y += obj.Rotmat[2].Y * speed;
+                    z += obj.Rotmat[2].Z * speed;
+                }
+
+                if (obj.Acceleration != 0)
+                {
+                    obj.Velocity += obj.Acceleration;
+                    obj.Acceleration = 0;
+                    if (obj.Velocity > _gameState.ShipList[obj.Type].VelocityMax)
+                    {
+                        obj.Velocity = _gameState.ShipList[obj.Type].VelocityMax;
+                    }
+
+                    if (obj.Velocity <= 0)
+                    {
+                        obj.Velocity = 1;
+                    }
+                }
+            }
+
+            k2 = y - (alpha * x);
+            z += beta * k2;
+            y = k2 - (z * beta);
+            x += alpha * y;
+
+            z -= _ship.Speed;
+
+            obj.Location = new(x, y, z);
+
+            if (obj.Type == ShipType.Planet)
+            {
+                beta = 0.0f;
+            }
+
+            obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
+
+            if (obj.Flags.HasFlag(ShipFlags.Dead))
+            {
                 return;
             }
 
-            s_hyper_countdown--;
+            rotx = obj.RotX;
+            rotz = obj.RotZ;
+
+            // If necessary rotate the object around the X axis...
+            if (rotx != 0)
+            {
+                RotateXFirst(ref obj.Rotmat[2].X, ref obj.Rotmat[1].X, rotx);
+                RotateXFirst(ref obj.Rotmat[2].Y, ref obj.Rotmat[1].Y, rotx);
+                RotateXFirst(ref obj.Rotmat[2].Z, ref obj.Rotmat[1].Z, rotx);
+
+                if (rotx is not 127 and not (-127))
+                {
+                    obj.RotX -= (rotx < 0) ? -1 : 1;
+                }
+            }
+
+            // If necessary rotate the object around the Z axis...
+
+            if (rotz != 0)
+            {
+                RotateXFirst(ref obj.Rotmat[0].X, ref obj.Rotmat[1].X, rotz);
+                RotateXFirst(ref obj.Rotmat[0].Y, ref obj.Rotmat[1].Y, rotz);
+                RotateXFirst(ref obj.Rotmat[0].Z, ref obj.Rotmat[1].Z, rotz);
+
+                if (rotz is not 127 and not (-127))
+                {
+                    obj.RotZ -= (rotz < 0) ? -1 : 1;
+                }
+            }
+
+            // Orthonormalize the rotation matrix...
+            VectorMaths.TidyMatrix(obj.Rotmat);
         }
 
-        internal void JumpWarp()
+        private void SwitchToView(ref UniverseObject flip)
         {
-            int i;
-            ShipType type;
-            float jump;
+            float tmp;
 
-            for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            if (_gameState.CurrentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
             {
-                type = s_universe[i].Type;
+                flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z);
 
-                if (type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
-                    not ShipType.Alloy and not ShipType.Rock and
-                    not ShipType.Boulder and not ShipType.EscapeCapsule)
+                flip.Rotmat[0].X = -flip.Rotmat[0].X;
+                flip.Rotmat[0].Z = -flip.Rotmat[0].Z;
+
+                flip.Rotmat[1].X = -flip.Rotmat[1].X;
+                flip.Rotmat[1].Z = -flip.Rotmat[1].Z;
+
+                flip.Rotmat[2].X = -flip.Rotmat[2].X;
+                flip.Rotmat[2].Z = -flip.Rotmat[2].Z;
+                return;
+            }
+
+            if (_gameState.CurrentScreen == SCR.SCR_LEFT_VIEW)
+            {
+                tmp = flip.Location.X;
+                flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp);
+
+                if (flip.Type < 0)
                 {
-                    _gameState.InfoMessage("Mass Locked");
                     return;
                 }
-            }
 
-            if ((s_universe[0].Location.Length() < 75001) || (s_universe[1].Location.Length() < 75001))
-            {
-                _gameState.InfoMessage("Mass Locked");
+                tmp = flip.Rotmat[0].X;
+                flip.Rotmat[0].X = flip.Rotmat[0].Z;
+                flip.Rotmat[0].Z = -tmp;
+
+                tmp = flip.Rotmat[1].X;
+                flip.Rotmat[1].X = flip.Rotmat[1].Z;
+                flip.Rotmat[1].Z = -tmp;
+
+                tmp = flip.Rotmat[2].X;
+                flip.Rotmat[2].X = flip.Rotmat[2].Z;
+                flip.Rotmat[2].Z = -tmp;
                 return;
             }
 
-            jump = s_universe[0].Location.Length() < s_universe[1].Location.Length() ? s_universe[0].Location.Length() - 75000f : s_universe[1].Location.Length() - 75000f;
-
-            if (jump > 1024)
+            if (_gameState.CurrentScreen == SCR.SCR_RIGHT_VIEW)
             {
-                jump = 1024;
-            }
+                tmp = flip.Location.X;
+                flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp);
 
-            for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
-            {
-                if (s_universe[i].Type != 0)
+                if (flip.Type < 0)
                 {
-                    s_universe[i].Location = new(s_universe[i].Location.X, s_universe[i].Location.Y, s_universe[i].Location.Z - jump);
+                    return;
                 }
-            }
 
-            _stars.WarpStars = true;
-            _gameState.mcount &= 63;
-            _combat.InBattle = false;
-        }
+                tmp = flip.Rotmat[0].X;
+                flip.Rotmat[0].X = -flip.Rotmat[0].Z;
+                flip.Rotmat[0].Z = tmp;
 
-        internal void LaunchPlayer()
-        {
-            _ship.Speed = 12;
-            // Rotate in the same direction that the station is spinning
-            _ship.Roll = 15;
-            _ship.Climb = 0;
-            _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
-            _stars.CreateNewStars();
-            _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            _combat.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
+                tmp = flip.Rotmat[1].X;
+                flip.Rotmat[1].X = -flip.Rotmat[1].Z;
+                flip.Rotmat[1].Z = tmp;
 
-            Vector3[] rotmat = VectorMaths.GetInitialMatrix();
-            rotmat[2].X = -rotmat[2].X;
-            rotmat[2].Y = -rotmat[2].Y;
-            rotmat[2].Z = -rotmat[2].Z;
-            _combat.AddNewStation(new(0, 0, -256), rotmat);
-
-            _gameState.IsDocked = false;
-        }
-
-        /// <summary>
-        /// Dock the player into the space station.
-        /// </summary>
-        internal void DockPlayer()
-        {
-            _pilot.DisengageAutoPilot();
-            _gameState.IsDocked = true;
-            _gameState.Reset();
-            _ship.Reset();
-            _combat.ResetWeapons();
-        }
-
-        /// <summary>
-        /// Engage the docking computer. For the moment we just do an instant dock if we are in the safe zone.
-        /// </summary>
-        internal void EngageDockingComputer()
-        {
-            if (s_ship_count[ShipType.Coriolis] != 0 || s_ship_count[ShipType.Dodec] != 0)
-            {
-                _gameState.SetView(SCR.SCR_DOCKING);
+                tmp = flip.Rotmat[2].X;
+                flip.Rotmat[2].X = -flip.Rotmat[2].Z;
+                flip.Rotmat[2].Z = tmp;
             }
         }
     }

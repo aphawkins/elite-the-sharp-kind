@@ -16,32 +16,7 @@ namespace Elite.Engine.Views
 
         internal Draw(IGfx gfx) => _gfx = gfx;
 
-        internal void DrawTextPretty(float x, float y, float width, string text)
-        {
-            int i = 0;
-            float maxlen = (width - x) / 8;
-            int previous = i;
-
-            while (i < text.Length)
-            {
-                i += (int)maxlen;
-                i = Math.Clamp(i, 0, text.Length - 1);
-
-                while (text[i] is not ' ' and not ',' and not '.')
-                {
-                    i--;
-                }
-
-                i++;
-                _gfx.DrawTextLeft(x + Graphics.GFX_X_OFFSET, y + Graphics.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
-                previous = i;
-                y += 8 * Graphics.GFX_SCALE;
-            }
-        }
-
         internal void ClearDisplay() => _gfx.ClearArea(Graphics.GFX_X_OFFSET + 1, Graphics.GFX_Y_OFFSET + 1, 510 + Graphics.GFX_X_OFFSET, 383 + Graphics.GFX_Y_OFFSET);
-
-        internal void DrawScanner() => _gfx.DrawImage(Image.Scanner, new(Graphics.GFX_X_OFFSET, 385 + Graphics.GFX_Y_OFFSET));
 
         internal void DrawBorder()
         {
@@ -50,25 +25,7 @@ namespace Elite.Engine.Views
             _gfx.DrawLine(new(511, 0), new(511, 384));
         }
 
-        internal void DrawViewHeader(string title)
-        {
-            _gfx.DrawTextCentre(20, title, 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawLine(new(0, 36), new(511, 36));
-        }
-
-        internal void LoadImages()
-        {
-            AssetLoader loader = new();
-
-            foreach (Image img in Enum.GetValues<Image>())
-            {
-                Stream? stream = loader.Load(img);
-                if (stream != null)
-                {
-                    _gfx.LoadBitmap(img, stream);
-                }
-            }
-        }
+        internal void DrawScanner() => _gfx.DrawImage(Image.Scanner, new(Graphics.GFX_X_OFFSET, 385 + Graphics.GFX_Y_OFFSET));
 
         internal void DrawSun(UniverseObject planet)
         {
@@ -113,6 +70,49 @@ namespace Elite.Engine.Views
                 {
                     s -= x + x + 2;
                     x--;
+                }
+            }
+        }
+
+        internal void DrawTextPretty(float x, float y, float width, string text)
+        {
+            int i = 0;
+            float maxlen = (width - x) / 8;
+            int previous = i;
+
+            while (i < text.Length)
+            {
+                i += (int)maxlen;
+                i = Math.Clamp(i, 0, text.Length - 1);
+
+                while (text[i] is not ' ' and not ',' and not '.')
+                {
+                    i--;
+                }
+
+                i++;
+                _gfx.DrawTextLeft(x + Graphics.GFX_X_OFFSET, y + Graphics.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
+                previous = i;
+                y += 8 * Graphics.GFX_SCALE;
+            }
+        }
+
+        internal void DrawViewHeader(string title)
+        {
+            _gfx.DrawTextCentre(20, title, 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(0, 36), new(511, 36));
+        }
+
+        internal void LoadImages()
+        {
+            AssetLoader loader = new();
+
+            foreach (Image img in Enum.GetValues<Image>())
+            {
+                Stream? stream = loader.Load(img);
+                if (stream != null)
+                {
+                    _gfx.LoadBitmap(img, stream);
                 }
             }
         }

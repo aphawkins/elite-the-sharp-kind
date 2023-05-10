@@ -13,7 +13,6 @@ namespace Elite.Engine
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly PlayerShip _ship;
-        internal bool WarpStars { get; set; }
         private readonly Vector3[] _stars = new Vector3[20];
 
         internal Stars(GameState gameState, IGfx gfx, PlayerShip ship)
@@ -22,6 +21,8 @@ namespace Elite.Engine
             _gfx = gfx;
             _ship = ship;
         }
+
+        internal bool WarpStars { get; set; }
 
         internal void CreateNewStars()
         {
@@ -36,6 +37,20 @@ namespace Elite.Engine
             }
 
             WarpStars = false;
+        }
+
+        /// <summary>
+        /// When we change view, flip the stars over so they look like other stars.
+        /// </summary>
+        internal void FlipStars()
+        {
+            for (int i = 0; i < _stars.Length; i++)
+            {
+                float y = _stars[i].Y;
+                float x = _stars[i].X;
+                _stars[i].X = y;
+                _stars[i].Y = x;
+            }
         }
 
         internal void FrontStarfield()
@@ -81,7 +96,6 @@ namespace Elite.Engine
                     }
                 }
 
-
                 // Move the stars to their new locations...
                 float Q = delta / _stars[i].Z;
 
@@ -93,14 +107,13 @@ namespace Elite.Engine
                 yy += xx * alpha;
                 xx -= yy * alpha;
 
-				//tx = yy * beta;
-				//xx = xx + (tx * tx * 2);
+                //tx = yy * beta;
+                //xx = xx + (tx * tx * 2);
 
                 yy += beta;
 
                 _stars[i].Y = yy;
                 _stars[i].X = xx;
-
 
                 if (WarpStars)
                 {
@@ -121,10 +134,15 @@ namespace Elite.Engine
                     };
                     continue;
                 }
-
             }
 
             WarpStars = false;
+        }
+
+        internal void LeftStarfield()
+        {
+            float delta = WarpStars ? 50 : _ship.Speed;
+            SideStarfield(-_ship.Roll, -_ship.Climb, -delta);
         }
 
         internal void RearStarfield()
@@ -182,9 +200,9 @@ namespace Elite.Engine
                 yy += xx * alpha;
                 xx -= yy * alpha;
 
-				//tx = yy * beta;
-				//xx = xx + (tx * tx * 2);
-				
+                //tx = yy * beta;
+                //xx = xx + (tx * tx * 2);
+
                 yy += beta;
 
                 if (WarpStars)
@@ -224,12 +242,6 @@ namespace Elite.Engine
             }
 
             WarpStars = false;
-        }
-
-        internal void LeftStarfield()
-        {
-            float delta = WarpStars ? 50 : _ship.Speed;
-            SideStarfield(-_ship.Roll, -_ship.Climb, -delta);
         }
 
         internal void RightStarfield()
@@ -308,24 +320,9 @@ namespace Elite.Engine
                     _stars[i].Y = (alpha > 0) ? -110 : 110;
                     _stars[i].Z = RNG.Random(255) | 8;
                 }
-
             }
 
             WarpStars = false;
-        }
-
-        /// <summary>
-        /// When we change view, flip the stars over so they look like other stars.
-        /// </summary>
-        internal void FlipStars()
-        {
-            for (int i = 0; i < _stars.Length; i++)
-            {
-                float y = _stars[i].Y;
-                float x = _stars[i].X;
-                _stars[i].X = y;
-                _stars[i].Y = x;
-            }
         }
     }
 }

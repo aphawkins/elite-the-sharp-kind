@@ -37,6 +37,7 @@ namespace Elite.Engine.Ships
         internal float MaxClimb { get; } = 8;
         internal float MaxFuel { get; } = 7;
         internal float MaxRoll { get; } = 31;
+
         // 0.27 Light Mach
         internal float MaxSpeed { get; } = 40;
 
@@ -45,6 +46,7 @@ namespace Elite.Engine.Ships
         internal float ShieldFront { get; set; }
         internal float ShieldRear { get; set; }
         internal float Speed { get; set; }
+
         internal void AutoDock()
         {
             UniverseObject ship = new()

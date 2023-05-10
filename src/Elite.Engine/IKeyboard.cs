@@ -8,14 +8,14 @@ namespace Elite.Engine
 {
     public interface IKeyboard
     {
-        void KeyDown(CommandKey keyValue);
-
-        void KeyUp(CommandKey keyValue);
-
-        bool IsKeyPressed(params CommandKey[] key);
+        void ClearKeyPressed();
 
         CommandKey GetKeyPressed();
 
-        void ClearKeyPressed();
+        bool IsKeyPressed(params CommandKey[] keys);
+
+        void KeyDown(CommandKey keyValue);
+
+        void KeyUp(CommandKey keyValue);
     }
 }

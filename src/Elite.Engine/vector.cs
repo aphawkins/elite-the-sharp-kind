@@ -83,6 +83,7 @@ namespace Elite.Engine
         /// <param name="second"></param>
         /// <returns>The cosine of the angle between the two vectors.</returns>
         internal static float VectorDotProduct(Vector3 first, Vector3 second) => Vector3.Dot(first, second);
+
         private static void RotateVector(ref Vector3 vec, float alpha, float beta)
         {
             float x = vec.X;

@@ -15,7 +15,6 @@ namespace Elite.Engine.Ships
         public ShipFaceNormal[] FaceNormals => Array.Empty<ShipFaceNormal>();
         public ShipFace[] Faces => Array.Empty<ShipFace>();
 
-
         public int LaserFront => 0;
 
         public int LaserStrength => 0;

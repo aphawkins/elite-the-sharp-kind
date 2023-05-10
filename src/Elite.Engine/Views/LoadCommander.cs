@@ -16,6 +16,7 @@ namespace Elite.Engine.Views
         private readonly SaveFile _save;
         private bool _isLoaded = true;
         private string _name = string.Empty;
+
         internal LoadCommanderView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
         {
             _gameState = gameState;

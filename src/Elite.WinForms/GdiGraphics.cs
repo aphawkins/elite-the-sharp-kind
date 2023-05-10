@@ -88,6 +88,7 @@ namespace Elite.WinForms
 
         // Screen buffer
         private readonly Bitmap _screenBuffer;
+
         private readonly System.Drawing.Graphics _screenBufferGraphics;
         private readonly System.Drawing.Graphics _screenGraphics;
         private bool _isDisposed;
@@ -108,6 +109,7 @@ namespace Elite.WinForms
             _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
         }
+
         public void ClearArea(float x, float y, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
 
         public void Dispose()
@@ -270,7 +272,9 @@ namespace Elite.WinForms
 
             Application.DoEvents();
         }
+
         public void SetClipRegion(float x, float y, float width, float height) => _screenBufferGraphics.Clip = new Region(new RectangleF(x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET));
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_isDisposed)

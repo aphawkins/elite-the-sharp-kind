@@ -10,8 +10,6 @@ namespace Elite.Engine
 {
     public interface IGfx
     {
-        void LoadBitmap(Image imgType, Stream bitmapStream);
-
         void ClearArea(float x, float y, float width, float height);
 
         void DrawCircle(Vector2 centre, float radius, GFX_COL colour);
@@ -28,9 +26,9 @@ namespace Elite.Engine
 
         void DrawPixelFast(Vector2 position, GFX_COL colour);
 
-        void DrawPolygonFilled(Vector2[] pointList, GFX_COL faceColour);
-
         void DrawPolygon(Vector2[] pointList, GFX_COL lineColour);
+
+        void DrawPolygonFilled(Vector2[] pointList, GFX_COL faceColour);
 
         void DrawRectangle(float x, float y, float width, float height, GFX_COL colour);
 
@@ -45,6 +43,8 @@ namespace Elite.Engine
         void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
 
         void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
+
+        void LoadBitmap(Image imgType, Stream bitmapStream);
 
         void ScreenAcquire();
 

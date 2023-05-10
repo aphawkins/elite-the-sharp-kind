@@ -9,12 +9,11 @@ namespace Elite.Engine.Views
 {
     internal sealed class SettingsView : IView
     {
+        private readonly ConfigFile _configFile;
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
-        private readonly ConfigFile _configFile;
-        private int _highlightedItem;
 
         private readonly (string Name, string[] Values)[] _settingList =
         {
@@ -26,6 +25,8 @@ namespace Elite.Engine.Views
             new("Save Settings", new [] {"", "", "", "", ""})
         };
 
+        private int _highlightedItem;
+
         internal SettingsView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, ConfigFile configFile)
         {
             _gameState = gameState;
@@ -33,12 +34,6 @@ namespace Elite.Engine.Views
             _draw = draw;
             _keyboard = keyboard;
             _configFile = configFile;
-        }
-
-        public void Reset() => _highlightedItem = 0;
-
-        public void UpdateUniverse()
-        {
         }
 
         public void Draw()
@@ -108,6 +103,25 @@ namespace Elite.Engine.Views
             }
         }
 
+        public void Reset() => _highlightedItem = 0;
+
+        public void UpdateUniverse()
+        {
+        }
+
+        private void SelectDown()
+        {
+            if (_highlightedItem == _settingList.Length - 2)
+            {
+                _highlightedItem = _settingList.Length - 1;
+            }
+
+            if (_highlightedItem < _settingList.Length - 2)
+            {
+                _highlightedItem += 2;
+            }
+        }
+
         private void SelectLeft()
         {
             if (_highlightedItem.IsOdd())
@@ -134,19 +148,6 @@ namespace Elite.Engine.Views
             if (_highlightedItem > 1)
             {
                 _highlightedItem -= 2;
-            }
-        }
-
-        private void SelectDown()
-        {
-            if (_highlightedItem == _settingList.Length - 2)
-            {
-                _highlightedItem = _settingList.Length - 1;
-            }
-
-            if (_highlightedItem < _settingList.Length - 2)
-            {
-                _highlightedItem += 2;
             }
         }
 
@@ -180,6 +181,7 @@ namespace Elite.Engine.Views
                 case 4:
                     _gameState.Config.InstantDock = !_gameState.Config.InstantDock;
                     break;
+
                 default:
                     break;
             }

@@ -27,6 +27,7 @@ namespace Elite.Engine.Missions
         private readonly Planet _planet;
 
         internal Mission(Planet planet) => _planet = planet;
+
         internal string? MissionPlanetDescription(GameState gameState, GalaxySeed planet)
         {
             if (!gameState.IsDocked)
@@ -58,6 +59,7 @@ namespace Elite.Engine.Missions
 
                     case 28:
                         return _mission1_pdesc[2];
+
                     default:
                         break;
                 }
@@ -96,6 +98,7 @@ namespace Elite.Engine.Missions
 
                     case 193:
                         return _mission1_pdesc[8];
+
                     default:
                         break;
                 }

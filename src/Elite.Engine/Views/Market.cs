@@ -9,12 +9,12 @@ namespace Elite.Engine.Views
 {
     internal sealed class MarketView : IView
     {
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Draw _draw;
         private readonly IKeyboard _keyboard;
-        private readonly Trade _trade;
         private readonly Planet _planet;
+        private readonly Trade _trade;
         private StockType _highlightedStock;
 
         internal MarketView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Trade trade, Planet planet)
@@ -25,12 +25,6 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
             _trade = trade;
             _planet = planet;
-        }
-
-        public void Reset() => _highlightedStock = 0;
-
-        public void UpdateUniverse()
-        {
         }
 
         public void Draw()
@@ -91,6 +85,12 @@ namespace Elite.Engine.Views
             {
                 _trade.BuyStock(_highlightedStock);
             }
+        }
+
+        public void Reset() => _highlightedStock = 0;
+
+        public void UpdateUniverse()
+        {
         }
     }
 }

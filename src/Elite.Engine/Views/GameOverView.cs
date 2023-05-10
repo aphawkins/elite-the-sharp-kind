@@ -11,12 +11,12 @@ namespace Elite.Engine.Views
 {
     internal sealed class GameOverView : IView
     {
+        private readonly Audio _audio;
+        private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Audio _audio;
-        private readonly Stars _stars;
         private readonly PlayerShip _ship;
-        private readonly Combat _combat;
+        private readonly Stars _stars;
         private int _i;
 
         internal GameOverView(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Combat combat)

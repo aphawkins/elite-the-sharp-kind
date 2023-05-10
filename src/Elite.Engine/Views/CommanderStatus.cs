@@ -11,6 +11,7 @@ namespace Elite.Engine.Views
     internal sealed class CommanderStatusView : IView
     {
         public readonly GameState _gameState;
+
         private readonly string[] _conditionText = new string[]
         {
                 "Docked",
@@ -25,6 +26,7 @@ namespace Elite.Engine.Views
         private readonly int _equipmentWidth = 200;
         private readonly IGfx _gfx;
         private readonly Planet _planet;
+
         private readonly (int score, string title)[] _ratings = new (int score, string title)[]
         {
                 new(0x0000, "Harmless"),

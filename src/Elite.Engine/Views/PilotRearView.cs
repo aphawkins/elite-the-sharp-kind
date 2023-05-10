@@ -9,8 +9,8 @@ namespace Elite.Engine.Views
     internal sealed class PilotRearView : IView
     {
         private readonly PilotView _pilotView;
-        private readonly Stars _stars;
         private readonly PlayerShip _ship;
+        private readonly Stars _stars;
 
         internal PilotRearView(GameState gameState, IGfx gfx, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
         {

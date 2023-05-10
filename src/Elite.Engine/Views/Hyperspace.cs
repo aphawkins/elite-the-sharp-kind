@@ -9,10 +9,10 @@ namespace Elite.Engine.Views
 {
     internal sealed class HyperspaceView : IView
     {
-        private readonly GameState _gameState;
-        private readonly IGfx _gfx;
         private readonly Audio _audio;
         private readonly BreakPattern _breakPattern;
+        private readonly GameState _gameState;
+        private readonly IGfx _gfx;
 
         internal HyperspaceView(GameState gameState, IGfx gfx, Audio audio)
         {

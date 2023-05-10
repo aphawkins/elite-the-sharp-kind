@@ -14,12 +14,12 @@ namespace Elite.Engine.Views
     /// </summary>
     internal sealed class Intro1View : IView
     {
+        private readonly Audio _audio;
+        private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
-        private readonly Combat _combat;
 
         internal Intro1View(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat)
         {
@@ -29,24 +29,6 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
             _ship = ship;
             _combat = combat;
-        }
-
-        public void Reset()
-        {
-            _combat.ClearUniverse();
-            _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
-            _ship.Roll = 1;
-            _audio.PlayMusic(Music.EliteTheme, true);
-        }
-
-        public void UpdateUniverse()
-        {
-            Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, Space.s_universe[0].Location.Z - 100);
-
-            if (Space.s_universe[0].Location.Z < 384)
-            {
-                Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, 384);
-            }
         }
 
         public void Draw()
@@ -72,6 +54,24 @@ namespace Elite.Engine.Views
                 _combat.ClearUniverse();
                 _audio.StopMusic();
                 _gameState.SetView(SCR.SCR_INTRO_TWO);
+            }
+        }
+
+        public void Reset()
+        {
+            _combat.ClearUniverse();
+            _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
+            _ship.Roll = 1;
+            _audio.PlayMusic(Music.EliteTheme, true);
+        }
+
+        public void UpdateUniverse()
+        {
+            Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, Space.s_universe[0].Location.Z - 100);
+
+            if (Space.s_universe[0].Location.Z < 384)
+            {
+                Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, 384);
             }
         }
     }

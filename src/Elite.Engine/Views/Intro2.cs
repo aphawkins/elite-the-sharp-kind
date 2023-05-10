@@ -15,16 +15,12 @@ namespace Elite.Engine.Views
     /// </summary>
     internal sealed class Intro2View : IView
     {
+        private readonly Audio _audio;
+        private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Audio _audio;
         private readonly IKeyboard _keyboard;
-        private readonly Stars _stars;
-        private readonly PlayerShip _ship;
-        private readonly Combat _combat;
-        private ShipType _shipNo;
-        private int _showTime;
-        private int _direction;
+
         private readonly int[] _minDist = new int[]
         {
             0,
@@ -34,7 +30,13 @@ namespace Elite.Engine.Views
             384,   0, 384, 384, 700, 384,   0,   0,
             900
         };
+
+        private readonly PlayerShip _ship;
+        private readonly Stars _stars;
+        private int _direction;
         private Vector3[] _rotmat = new Vector3[3];
+        private ShipType _shipNo;
+        private int _showTime;
 
         internal Intro2View(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship, Combat combat)
         {
@@ -45,6 +47,24 @@ namespace Elite.Engine.Views
             _stars = stars;
             _ship = ship;
             _combat = combat;
+        }
+
+        public void Draw()
+        {
+            _gfx.DrawImage(Image.EliteText, new(-1, 10));
+
+            _gfx.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(330, _gameState.ShipList[_shipNo].Name, 120, GFX_COL.GFX_COL_WHITE);
+        }
+
+        public void HandleInput()
+        {
+            if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
+            {
+                _combat.ClearUniverse();
+                _audio.StopMusic();
+                _gameState.SetView(SCR.SCR_CMDR_STATUS);
+            }
         }
 
         public void Reset()
@@ -101,24 +121,6 @@ namespace Elite.Engine.Views
             }
 
             _stars.FrontStarfield();
-        }
-
-        public void Draw()
-        {
-            _gfx.DrawImage(Image.EliteText, new(-1, 10));
-
-            _gfx.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, GFX_COL.GFX_COL_GOLD);
-            _gfx.DrawTextCentre(330, _gameState.ShipList[_shipNo].Name, 120, GFX_COL.GFX_COL_WHITE);
-        }
-
-        public void HandleInput()
-        {
-            if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
-            {
-                _combat.ClearUniverse();
-                _audio.StopMusic();
-                _gameState.SetView(SCR.SCR_CMDR_STATUS);
-            }
         }
     }
 }

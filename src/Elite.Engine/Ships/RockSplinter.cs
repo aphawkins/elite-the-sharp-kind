@@ -56,6 +56,7 @@ namespace Elite.Engine.Ships
             new(new(  11,   -6,    2), 31,  0,  1,  3,  3),
             new(new(  12,   42,    7), 31,  0,  1,  2,  2),
         };
+
         public StockType ScoopedType => StockType.Minerals;
         public float Size => 256;
         public ShipClass Type => throw new NotImplementedException();

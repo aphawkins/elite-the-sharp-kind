@@ -13,12 +13,7 @@ namespace Elite.Engine.Views
     internal sealed class EquipmentView : IView
     {
         private readonly Draw _draw;
-        private readonly GameState _gameState;
-        private readonly IGfx _gfx;
-        private readonly IKeyboard _keyboard;
-        private readonly Scanner _scanner;
-        private readonly PlayerShip _ship;
-        private readonly Trade _trade;
+
         private readonly EquipmentItem[] _equipmentStock = new EquipmentItem[]
         {
             new(false, true,   1, 0.2f, " Fuel",                EquipmentType.EQ_FUEL),
@@ -57,6 +52,12 @@ namespace Elite.Engine.Views
             new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
         };
 
+        private readonly GameState _gameState;
+        private readonly IGfx _gfx;
+        private readonly IKeyboard _keyboard;
+        private readonly Scanner _scanner;
+        private readonly PlayerShip _ship;
+        private readonly Trade _trade;
         private int _highlightedItem;
 
         internal EquipmentView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
@@ -69,6 +70,7 @@ namespace Elite.Engine.Views
             _trade = trade;
             _scanner = scanner;
         }
+
         public void Draw()
         {
             _draw.ClearDisplay();
@@ -276,14 +278,19 @@ namespace Elite.Engine.Views
                     _trade._credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new MilitaryLaser();
                     break;
+
                 case EquipmentType.EQ_PULSE_LASER:
                     break;
+
                 case EquipmentType.EQ_BEAM_LASER:
                     break;
+
                 case EquipmentType.EQ_MINING_LASER:
                     break;
+
                 case EquipmentType.EQ_MILITARY_LASER:
                     break;
+
                 default:
                     break;
             }

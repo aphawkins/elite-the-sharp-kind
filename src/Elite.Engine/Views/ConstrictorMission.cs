@@ -16,6 +16,7 @@ namespace Elite.Engine.Views
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
+
         private readonly string _mission1_brief_a =
             "Greetings Commander, I am Captain Curruthers of " +
             "Her Majesty's Space Navy and I beg a moment of your " +
@@ -46,6 +47,7 @@ namespace Elite.Engine.Views
 
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
+
         internal ConstrictorMissionView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;

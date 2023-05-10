@@ -13,16 +13,15 @@ namespace Elite.Engine.Views
 {
     internal sealed class EscapeCapsuleView : IView
     {
+        private readonly Audio _audio;
+        private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
-        private readonly Audio _audio;
-        private readonly Stars _stars;
         private readonly PlayerShip _ship;
+        private readonly Stars _stars;
         private readonly Trade _trade;
-        private readonly Combat _combat;
-
-        private int _newship;
         private int _i;
+        private int _newship;
 
         internal EscapeCapsuleView(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
         {

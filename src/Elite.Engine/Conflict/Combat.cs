@@ -14,18 +14,14 @@ namespace Elite.Engine.Conflict
 {
     internal sealed class Combat
     {
-        internal bool InBattle { get; set; }
         internal int _isMISSILE_ARMED = -1;
-        internal int IsMissileUnarmed { get; private set; } = -2;
-        internal int MissileTarget { get; private set; }
         private readonly Audio _audio;
         private readonly GameState _gameState;
-        private readonly PlayerShip _ship;
-        private readonly Trade _trade;
+
         private readonly ShipFlags[] _initialFlags = new ShipFlags[34]
         {
             0,											// NULL,
-			0,											// missile 
+			0,											// missile
 			0,											// coriolis
 			ShipFlags.Slow | ShipFlags.FlyToPlanet,				// escape
 			ShipFlags.Inactive,								// alloy
@@ -60,6 +56,8 @@ namespace Elite.Engine.Conflict
 			0											// dodec
 		};
 
+        private readonly PlayerShip _ship;
+        private readonly Trade _trade;
         private bool _isEcmOurs;
         private int _laserCounter;
         private int _laserStrength;
@@ -72,6 +70,10 @@ namespace Elite.Engine.Conflict
             _ship = ship;
             _trade = trade;
         }
+
+        internal bool InBattle { get; set; }
+        internal int IsMissileUnarmed { get; private set; } = -2;
+        internal int MissileTarget { get; private set; }
 
         internal void ActivateECM(bool ours)
         {
@@ -202,6 +204,7 @@ namespace Elite.Engine.Conflict
 
             InBattle = false;
         }
+
         internal void CoolLaser()
         {
             _laserStrength = 0;
@@ -804,18 +807,6 @@ namespace Elite.Engine.Conflict
             _audio.PlayEffect(SoundEffect.Boop);
         }
 
-        private bool IsInTarget(ShipType type, float x, float y, float z)
-        {
-            if (z < 0)
-            {
-                return false;
-            }
-
-            float size = _gameState.ShipList[type].Size;
-
-            return (x * x) + (y * y) <= size;
-        }
-
         private static void MakeAngry(int un)
         {
             ShipType type = Space.s_universe[un].Type;
@@ -896,7 +887,7 @@ namespace Elite.Engine.Conflict
 
             if (newship != -1)
             {
-                //		space.universe[newship].velocity = (random.rand255() & 31) | 16; 
+                //		space.universe[newship].velocity = (random.rand255() & 31) | 16;
                 Space.s_universe[newship].Velocity = 8;
                 Space.s_universe[newship].RotZ = RNG.TrueOrFalse() ? -127 : 127;
                 Space.s_universe[newship].RotX = 16;
@@ -1000,6 +991,7 @@ namespace Elite.Engine.Conflict
                 }
             }
         }
+
         private void CreateCougar()
         {
             int newship;
@@ -1092,8 +1084,20 @@ namespace Elite.Engine.Conflict
                 }
 
                 //		if (rnd & 2)
-                //			space.universe[newship].flags |= FLG.FLG_ANGRY; 
+                //			space.universe[newship].flags |= FLG.FLG_ANGRY;
             }
+        }
+
+        private bool IsInTarget(ShipType type, float x, float y, float z)
+        {
+            if (z < 0)
+            {
+                return false;
+            }
+
+            float size = _gameState.ShipList[type].Size;
+
+            return (x * x) + (y * y) <= size;
         }
 
         private void LaunchEnemy(int un, ShipType type, ShipFlags flags, int bravery)
@@ -1153,6 +1157,7 @@ namespace Elite.Engine.Conflict
                 LaunchEnemy(un, loot, 0, 0);
             }
         }
+
         private void LaunchShuttle()
         {
             if (Space.s_ship_count[ShipType.Transporter] != 0 ||

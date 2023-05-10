@@ -18,6 +18,30 @@ namespace Elite.Engine.Lasers
             _gfx = gfx;
         }
 
+        internal void DrawLaserLines()
+        {
+            Vector2 point = new()
+            {
+                X = RNG.Random(126, 129) * Graphics.GFX_SCALE,
+                Y = RNG.Random(94, 97) * Graphics.GFX_SCALE,
+            };
+
+            if (_gameState.Config.UseWireframe)
+            {
+                // Left laser
+                _gfx.DrawTriangle(new(32 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(48 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+                // Right laser
+                _gfx.DrawTriangle(new(208 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(224 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+            }
+            else
+            {
+                // Left laser
+                _gfx.DrawTriangleFilled(new(32 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(48 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+                // Right laser
+                _gfx.DrawTriangleFilled(new(208 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(224 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
+            }
+        }
+
         internal void DrawLaserSights(LaserType laserType)
         {
             if (laserType == LaserType.None)
@@ -54,30 +78,6 @@ namespace Elite.Engine.Lasers
             _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), GFX_COL.GFX_COL_GREY_1);
             _gfx.DrawLine(new(x1, y1), new(x2, y1), GFX_COL.GFX_COL_WHITE);
             _gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), GFX_COL.GFX_COL_GREY_1);
-        }
-
-        internal void DrawLaserLines()
-        {
-            Vector2 point = new()
-            {
-                X = RNG.Random(126, 129) * Graphics.GFX_SCALE,
-                Y = RNG.Random(94, 97) * Graphics.GFX_SCALE,
-            };
-
-            if (_gameState.Config.UseWireframe)
-            {
-                // Left laser
-                _gfx.DrawTriangle(new(32 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(48 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-                // Right laser
-                _gfx.DrawTriangle(new(208 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(224 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-            }
-            else
-            {
-                // Left laser
-                _gfx.DrawTriangleFilled(new(32 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(48 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-                // Right laser
-                _gfx.DrawTriangleFilled(new(208 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(224 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), GFX_COL.GFX_COL_RED);
-            }
         }
     }
 }

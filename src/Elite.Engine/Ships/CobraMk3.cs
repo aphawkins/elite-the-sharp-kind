@@ -142,6 +142,7 @@ namespace Elite.Engine.Ships
             new(new(  88,    0,  -40),  6,  9,  9,  9,  9),
             new(new(  80,   -6,  -40),  8,  9,  9,  9,  9),
         };
+
         public StockType ScoopedType => StockType.None;
         public float Size => 9025;
         public ShipClass Type => ShipClass.Trader;

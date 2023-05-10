@@ -29,8 +29,10 @@ namespace Elite.Engine.Enums
         GFX_COL_WHITE_2 = 242,
 
         GFX_COL_YELLOW_1 = 37,
+
         // GFX_COL_YELLOW_2 = GFX_COL_GOLD,
         GFX_COL_YELLOW_3 = 89,
+
         GFX_COL_YELLOW_4 = 160,
         GFX_COL_YELLOW_5 = 251,
 

@@ -14,6 +14,7 @@ namespace Elite.Engine.Views
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
         private readonly IKeyboard _keyboard;
+
         private readonly (string Label, bool DockedOnly)[] _optionList =
         {
             new("Save Commander",   true),
@@ -23,6 +24,7 @@ namespace Elite.Engine.Views
         };
 
         private int _highlightedItem;
+
         internal OptionsView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
@@ -101,6 +103,7 @@ namespace Elite.Engine.Views
                     case 3:
                         _gameState.SetView(SCR.SCR_QUIT);
                         break;
+
                     default:
                         break;
                 }

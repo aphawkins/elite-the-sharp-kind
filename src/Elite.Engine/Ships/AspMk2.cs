@@ -86,6 +86,7 @@ namespace Elite.Engine.Ships
             new( 8, 11, 11, 16, 13),
             new(10,  0,  4, 18, 17),
         };
+
         public int LootMax => 0;
 
         public int MissilesMax => 1;
@@ -114,6 +115,7 @@ namespace Elite.Engine.Ships
             new(new(   0,   -7,   73), 10,  0,  4,  0,  4),
             new(new(   0,   -7,   83), 10,  0,  4,  0,  4),
         };
+
         public StockType ScoopedType => throw new NotImplementedException();
         public float Size => 3600;
         public ShipClass Type => ShipClass.LoneWolf;

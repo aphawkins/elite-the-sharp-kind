@@ -79,6 +79,7 @@ namespace Elite.Engine.Ships
             new(new( -24,  -13,   -9), 31,  4,  3,  6,  6),
             new(new( -24,    5,  -15), 31,  5,  4,  6,  6),
         };
+
         public StockType ScoopedType => StockType.None;
         public float Size => 400;
         public ShipClass Type => ShipClass.SpaceJunk;

@@ -108,6 +108,7 @@ namespace Elite.Engine.Ships
             new(new( -38,    0,  -32),  5,  4,  4,  4,  4),
             new(new(  38,    0,  -32),  5,  4,  4,  4,  4),
         };
+
         public StockType ScoopedType => StockType.None;
         public float Size => 4900;
         public ShipClass Type => ShipClass.PackHunter;

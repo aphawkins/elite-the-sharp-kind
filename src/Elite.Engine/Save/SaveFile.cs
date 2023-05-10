@@ -16,6 +16,7 @@ namespace Elite.Engine.Save
     internal sealed class SaveFile
     {
         private const string FileExtension = ".cmdr";
+
         private readonly JsonSerializerOptions _options = new()
         {
             WriteIndented = true,
@@ -28,6 +29,7 @@ namespace Elite.Engine.Save
         private readonly GameState _state;
         private readonly Trade _trade;
         private SaveState _lastSaved;
+
         internal SaveFile(GameState state, PlayerShip ship, Trade trade, Planet planet)
         {
             _state = state;
@@ -102,6 +104,7 @@ namespace Elite.Engine.Save
                 return false;
             }
         }
+
         private SaveState GameStateToSaveState(string newName)
         {
             SaveState save = new()
@@ -161,6 +164,7 @@ namespace Elite.Engine.Save
             _trade.GenerateStockMarket(_state.CurrentPlanetData);
             _trade.SetStockQuantities();
         }
+
         private void SaveStateToGameState()
         {
             _ship.CargoCapacity = _lastSaved.CargoCapacity;
@@ -220,6 +224,5 @@ namespace Elite.Engine.Save
 
         //	return acc;
         //}
-
     }
 }
