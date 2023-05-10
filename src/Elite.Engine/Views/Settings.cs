@@ -1,3 +1,7 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 /*
  * Elite - The New Kind.
  *
@@ -12,10 +16,10 @@
  *
  */
 
+using Elite.Engine.Config;
 using Elite.Engine.Enums;
-using Elite.Engine.Views;
 
-namespace Elite.Engine
+namespace Elite.Engine.Views
 {
     internal sealed class SettingsView : IView
     {
@@ -60,7 +64,7 @@ namespace Elite.Engine
             {
                 float x;
                 int y;
-                if (i == (_settingList.Length - 1))
+                if (i == _settingList.Length - 1)
                 {
                     y = ((_settingList.Length + 1) / 2 * 30) + 96 + 32;
                     if (i == _highlightedItem)
@@ -128,7 +132,7 @@ namespace Elite.Engine
 
         private void SelectRight()
         {
-            if (!_highlightedItem.IsOdd() && (_highlightedItem < (_settingList.Length - 1)))
+            if (!_highlightedItem.IsOdd() && _highlightedItem < _settingList.Length - 1)
             {
                 _highlightedItem++;
             }
@@ -136,7 +140,7 @@ namespace Elite.Engine
 
         private void SelectUp()
         {
-            if (_highlightedItem == (_settingList.Length - 1))
+            if (_highlightedItem == _settingList.Length - 1)
             {
                 _highlightedItem = _settingList.Length - 2;
             }
@@ -149,12 +153,12 @@ namespace Elite.Engine
 
         private void SelectDown()
         {
-            if (_highlightedItem == (_settingList.Length - 2))
+            if (_highlightedItem == _settingList.Length - 2)
             {
                 _highlightedItem = _settingList.Length - 1;
             }
 
-            if (_highlightedItem < (_settingList.Length - 2))
+            if (_highlightedItem < _settingList.Length - 2)
             {
                 _highlightedItem += 2;
             }
@@ -162,7 +166,7 @@ namespace Elite.Engine
 
         private void ToggleSetting()
         {
-            if (_highlightedItem == (_settingList.Length - 1))
+            if (_highlightedItem == _settingList.Length - 1)
             {
                 _configFile.WriteConfigAsync(_gameState.Config).Wait();
                 _gameState.SetView(SCR.SCR_OPTIONS);
@@ -189,6 +193,8 @@ namespace Elite.Engine
 
                 case 4:
                     _gameState.Config.InstantDock = !_gameState.Config.InstantDock;
+                    break;
+                default:
                     break;
             }
         }

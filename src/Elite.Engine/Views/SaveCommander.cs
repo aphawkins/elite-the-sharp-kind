@@ -1,4 +1,8 @@
-﻿using Elite.Engine.Enums;
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using Elite.Engine.Enums;
 using Elite.Engine.Save;
 
 namespace Elite.Engine.Views
@@ -11,7 +15,7 @@ namespace Elite.Engine.Views
         private readonly IKeyboard _keyboard;
         private readonly SaveFile _save;
         private string _name = string.Empty;
-        private bool? _isSuccess = null;
+        private bool? _isSuccess;
 
         internal SaveCommanderView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
         {

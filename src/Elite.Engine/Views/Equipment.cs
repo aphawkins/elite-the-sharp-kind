@@ -5,6 +5,7 @@
 using Elite.Engine.Enums;
 using Elite.Engine.Lasers;
 using Elite.Engine.Ships;
+using Elite.Engine.Trader;
 using Elite.Engine.Types;
 
 namespace Elite.Engine.Views
@@ -275,6 +276,16 @@ namespace Elite.Engine.Views
                     _trade._credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new MilitaryLaser();
                     break;
+                case EquipmentType.EQ_PULSE_LASER:
+                    break;
+                case EquipmentType.EQ_BEAM_LASER:
+                    break;
+                case EquipmentType.EQ_MINING_LASER:
+                    break;
+                case EquipmentType.EQ_MILITARY_LASER:
+                    break;
+                default:
+                    break;
             }
 
             _trade._credits -= _equipmentStock[_highlightedItem].Price;
@@ -321,6 +332,7 @@ namespace Elite.Engine.Views
             LaserType.Beam => 1000,
             LaserType.Military => 6000,
             LaserType.Mining => 800,
+            LaserType.None => throw new NotImplementedException(),
             _ => 0,
         };
 
@@ -375,6 +387,10 @@ namespace Elite.Engine.Views
             EquipmentType.EQ_REAR_MILITARY => _ship.LaserRear.Type == LaserType.Military,
             EquipmentType.EQ_LEFT_MILITARY => _ship.LaserLeft.Type == LaserType.Military,
             EquipmentType.EQ_RIGHT_MILITARY => _ship.LaserRight.Type == LaserType.Military,
+            EquipmentType.EQ_PULSE_LASER => throw new NotImplementedException(),
+            EquipmentType.EQ_BEAM_LASER => throw new NotImplementedException(),
+            EquipmentType.EQ_MINING_LASER => throw new NotImplementedException(),
+            EquipmentType.EQ_MILITARY_LASER => throw new NotImplementedException(),
             _ => false,
         };
     }

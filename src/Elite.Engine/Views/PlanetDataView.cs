@@ -73,8 +73,8 @@ namespace Elite.Engine.Views
                                     "Corporate State"};
 
         private readonly Planet _planet;
-        private float _distanceToPlanet = 0;
-        private Types.PlanetData _hyperPlanetData = new();
+        private float _distanceToPlanet;
+        private PlanetData _hyperPlanetData = new();
         internal PlanetDataView(GameState gameState, IGfx gfx, Draw draw, Planet planet)
         {
             _gameState = gameState;
@@ -237,6 +237,8 @@ namespace Elite.Engine.Views
                                 }
                                 planetDescription += char.ToLower(_planet.Digrams[x + 1]);
                             }
+                            break;
+                        default:
                             break;
                     }
 

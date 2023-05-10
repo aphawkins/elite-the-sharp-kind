@@ -4,9 +4,12 @@
 
 using System.Diagnostics;
 using Elite.Common.Enums;
+using Elite.Engine.Config;
+using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
 using Elite.Engine.Save;
 using Elite.Engine.Ships;
+using Elite.Engine.Trader;
 using Elite.Engine.Views;
 
 namespace Elite.Engine
@@ -35,9 +38,9 @@ namespace Elite.Engine
         private readonly Trade _trade;
         private readonly Dictionary<SCR, IView> _views = new();
         private bool _isGamePaused;
-        public EliteMain(IGfx alg_gfx, ISound sound, IKeyboard keyboard)
+        public EliteMain(IGfx algGfx, ISound sound, IKeyboard keyboard)
         {
-            _gfx = alg_gfx;
+            _gfx = algGfx;
             _audio = new(sound);
             _audio.LoadSounds();
             _keyboard = keyboard;

@@ -1,3 +1,7 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 /*
  * Elite - The New Kind.
  *
@@ -27,9 +31,9 @@ namespace Elite.WinForms
 
         public void KeyUp(CommandKey keyValue) => _isPressed[keyValue] = false;
 
-        public bool IsKeyPressed(params CommandKey[] keys)
+        public bool IsKeyPressed(params CommandKey[] key)
         {
-            foreach (CommandKey key in keys)
+            foreach (CommandKey key in key)
             {
                 if (_isPressed.TryGetValue(key, out bool value) && value)
                 {

@@ -208,7 +208,7 @@ namespace Elite.Engine
                 WaggleGalaxy(ref glx);
             }
 
-            return capitalise ? char.ToUpper(name[0]) + name[1..].ToLower() : name;
+            return capitalise ? char.ToUpper(name[0]) + name[1..].ToLower(System.Globalization.CultureInfo.CurrentCulture) : name;
         }
 
         internal void WaggleGalaxy(ref GalaxySeed glx_ptr)

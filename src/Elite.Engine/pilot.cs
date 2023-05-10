@@ -1,37 +1,17 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
 using Elite.Common.Enums;
-using Elite.Engine.Enums;
 using Elite.Engine.Ships;
 using Elite.Engine.Types;
 
-/*
- * pilot.c
- *
- * The auto-pilot code.  Used for docking computers and for
- * flying other ships to and from the space station.
- */
-
-/*
- * In the original Elite this code was mixed in with the tactics routines.
- * I have split it out to make it more understandable and easier to maintain.
- */
-
 namespace Elite.Engine
 {
+    /// <summary>
+    /// The auto-pilot code.  Used for docking computers and for flying other ships to and from the space station.
+    /// </summary>
     internal sealed class Pilot
     {
         private readonly GameState _gameState;

@@ -1,3 +1,7 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 /*
  * Elite - The New Kind.
  *
@@ -57,7 +61,7 @@ namespace Elite.Engine
             }
 
             Vector3 camera_vec = VectorMaths.MultiplyVector(univ.Location, trans_mat);
-            camera_vec = VectorMaths.UnitVector(camera_vec);
+            _ = VectorMaths.UnitVector(camera_vec);
             ShipFace[] face_data = ship.Faces;
 
             /*
@@ -278,6 +282,8 @@ namespace Elite.Engine
                 case PlanetRenderStyle.Fractal:
                     GenerateFractalLandscape(rnd_seed);
                     break;
+                default:
+                    break;
             }
         }
 
@@ -422,6 +428,8 @@ namespace Elite.Engine
                 case PlanetRenderStyle.SNES:
                 case PlanetRenderStyle.Fractal:
                     RenderPlanet(position, radius, planet.Rotmat);
+                    break;
+                default:
                     break;
             }
         }

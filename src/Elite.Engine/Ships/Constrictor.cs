@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
+using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
@@ -103,11 +104,13 @@ namespace Elite.Engine.Ships
             new(new( -15,   -7,  -15), 10,  9,  9,  9,  9),
             new(new(   0,   -7,    0),  0,  9, 15,  0,  1),
         };
-        public StockType ScoopedType => StockType.None;
+        public static StockType ScoopedType => StockType.None;
         public float Size => 4225;
         public ShipClass Type => ShipClass.LoneWolf;
         public int VanishPoint => 45;
 
         public float VelocityMax => 36;
+
+        StockType IShip.ScoopedType => throw new NotImplementedException();
     }
 }

@@ -1,3 +1,7 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 /*
  * Elite - The New Kind.
  *
@@ -14,6 +18,7 @@
 
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
+using Elite.Engine.Trader;
 
 namespace Elite.Engine.Views
 {

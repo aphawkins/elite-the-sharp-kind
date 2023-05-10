@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using System.Reflection;
 using Elite.Common.Enums;
 using Elite.Common.Interfaces;
 
@@ -6,7 +10,7 @@ namespace Elite.Assets
 {
     public class AssetLoader : IAssets
     {
-        readonly Assembly? _assets = Assembly.GetAssembly(typeof(AssetLoader));
+        private readonly Assembly? _assets = Assembly.GetAssembly(typeof(AssetLoader));
 
         public Stream? Load(Image image) => _assets?.GetManifestResourceStream("Elite.Assets.Images." + GetName(image));
 

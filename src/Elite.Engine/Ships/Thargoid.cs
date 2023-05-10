@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
+using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
@@ -32,9 +33,9 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_GREY_2, new( 0x67,-0x3C,-0x19), new[] { 2,  1,  9, 10 }),
             new(GFX_COL.GFX_COL_DARK_RED, new(   0x67,-0x19,-0x3C), new[] { 3,  2, 10, 11 }),
             new(GFX_COL.GFX_COL_GREY_2, new( 0x67, 0x19,-0x3C), new[] { 4,  3, 11, 12 }),
-		/*
-			new(GFX_COL.GFX_COL_GREY_3,	 0x40, 0x00, 0x00, 8,  7,  6,  5,  4,  3,  2, 1, 0),
-		*/
+
+			//new(GFX_COL.GFX_COL_GREY_3,	 0x40, 0x00, 0x00, 8,  7,  6,  5,  4,  3,  2, 1, 0),
+
 			new(GFX_COL.GFX_COL_GREY_3, new( 0x40, 0x00, 0x00), new[] { 0,  1,  2,  7 }),
             new(GFX_COL.GFX_COL_GREY_3, new( 0x40, 0x00, 0x00), new[] { 2,  3,  6,  7 }),
             new(GFX_COL.GFX_COL_GREY_3, new( 0x40, 0x00, 0x00), new[] { 3,  4,  5,  6 }),
@@ -43,9 +44,9 @@ namespace Elite.Engine.Ships
             new(GFX_COL.GFX_COL_GREY_2, new( 0x67, 0x3C, 0x19), new[] { 6,  5, 13, 14 }),
             new(GFX_COL.GFX_COL_DARK_RED, new(   0x67, 0x19, 0x3C), new[] { 7,  6, 14, 15 }),
             new(GFX_COL.GFX_COL_GREY_2, new( 0x67,-0x19, 0x3C), new[] { 0,  7, 15,  8 }),
-		/*
-			new(GFX_COL.GFX_COL_GREY_3,	-0x30, 0x00, 0x00, 8, 15, 14, 13, 12, 11, 10, 9, 8),
-		*/
+
+			//new(GFX_COL.GFX_COL_GREY_3,	-0x30, 0x00, 0x00, 8, 15, 14, 13, 12, 11, 10, 9, 8),
+
 			new(GFX_COL.GFX_COL_GREY_3, new(-0x30, 0x00, 0x00), new[] { 9,  8, 15, 10 }),
             new(GFX_COL.GFX_COL_GREY_3, new(-0x30, 0x00, 0x00), new[] { 11, 10, 15, 14 }),
             new (GFX_COL.GFX_COL_GREY_3, new(-0x30, 0x00, 0x00), new[] { 12, 11, 14, 13 }),

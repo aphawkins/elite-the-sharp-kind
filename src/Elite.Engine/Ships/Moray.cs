@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
+using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {

@@ -1,31 +1,20 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
 using Elite.Common.Enums;
+using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
+using Elite.Engine.Trader;
 using Elite.Engine.Types;
-
-/*
- * space.c
- *
- * This module handles all the flight system and management of the space universe.
- */
 
 namespace Elite.Engine
 {
+    /// <summary>
+    /// This module handles all the flight system and management of the space universe.
+    /// </summary>
     internal sealed class Space
     {
         private readonly GameState _gameState;
@@ -152,8 +141,7 @@ namespace Elite.Engine
             rotx = obj.RotX;
             rotz = obj.RotZ;
 
-            /* If necessary rotate the object around the X axis... */
-
+            // If necessary rotate the object around the X axis...
             if (rotx != 0)
             {
                 RotateXFirst(ref obj.Rotmat[2].X, ref obj.Rotmat[1].X, rotx);
@@ -167,7 +155,7 @@ namespace Elite.Engine
             }
 
 
-            /* If necessary rotate the object around the Z axis... */
+            // If necessary rotate the object around the Z axis...
 
             if (rotz != 0)
             {
@@ -181,9 +169,7 @@ namespace Elite.Engine
                 }
             }
 
-
-            /* Orthonormalize the rotation matrix... */
-
+            // Orthonormalize the rotation matrix...
             VectorMaths.TidyMatrix(obj.Rotmat);
         }
 

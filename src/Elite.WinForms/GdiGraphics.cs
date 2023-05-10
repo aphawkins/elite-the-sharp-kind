@@ -121,28 +121,28 @@ namespace Elite.WinForms
 
         public void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour) => _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
 
-        public void DrawImage(Common.Enums.Image image, Vector2 position)
+        public void DrawImage(Common.Enums.Image spriteImgage, Vector2 location)
         {
-            Bitmap sprite = _images[image];
+            Bitmap sprite = _images[spriteImgage];
 
-            if (position.X < 0)
+            if (location.X < 0)
             {
-                position.X = ((256 * Engine.Graphics.GFX_SCALE) - sprite.Width) / 2;
+                location.X = ((256 * Engine.Graphics.GFX_SCALE) - sprite.Width) / 2;
             }
 
-            _screenBufferGraphics.DrawImage(sprite, position.X + Engine.Graphics.GFX_X_OFFSET, position.Y + Engine.Graphics.GFX_Y_OFFSET);
+            _screenBufferGraphics.DrawImage(sprite, location.X + Engine.Graphics.GFX_X_OFFSET, location.Y + Engine.Graphics.GFX_Y_OFFSET);
         }
 
         public virtual void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[GFX_COL.GFX_COL_WHITE], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawLine(Vector2 start, Vector2 end, GFX_COL line_colour) => _screenBufferGraphics.DrawLine(_pens[line_colour], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
+        public void DrawLine(Vector2 start, Vector2 end, GFX_COL colour) => _screenBufferGraphics.DrawLine(_pens[colour], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawPixel(Vector2 position, GFX_COL col)
+        public void DrawPixel(Vector2 position, GFX_COL colour)
         {
             //TODO: Fix SNES planet colour issues
-            Color colour = _pens.TryGetValue(col, out Pen? value) ? value.Color : Color.Magenta;
+            Color color = _pens.TryGetValue(colour, out Pen? value) ? value.Color : Color.Magenta;
 
-            Debug.Assert(colour != Color.Magenta);
+            Debug.Assert(color != Color.Magenta);
 
             //TODO: fix bad values from explosion
             if (position.X < 0 || position.X >= 512 || position.Y < 0 || position.Y >= 512)
@@ -150,32 +150,32 @@ namespace Elite.WinForms
                 return;
             }
 
-            _screenBuffer.SetPixel((int)(position.X + Engine.Graphics.GFX_X_OFFSET), (int)(position.Y + Engine.Graphics.GFX_Y_OFFSET), colour);
+            _screenBuffer.SetPixel((int)(position.X + Engine.Graphics.GFX_X_OFFSET), (int)(position.Y + Engine.Graphics.GFX_Y_OFFSET), color);
         }
 
-        public void DrawPixelFast(Vector2 position, GFX_COL col) =>
+        public void DrawPixelFast(Vector2 position, GFX_COL colour) =>
             // Is there a faster way of doing this?
-            DrawPixel(position, col);
+            DrawPixel(position, colour);
 
-        public void DrawPolygon(Vector2[] vectors, GFX_COL lineColour)
+        public void DrawPolygon(Vector2[] pointList, GFX_COL lineColour)
         {
-            PointF[] points = new PointF[vectors.Length];
+            PointF[] points = new PointF[pointList.Length];
 
-            for (int i = 0; i < vectors.Length; i++)
+            for (int i = 0; i < pointList.Length; i++)
             {
-                points[i] = new PointF(vectors[i].X + Engine.Graphics.GFX_X_OFFSET, vectors[i].Y + Engine.Graphics.GFX_Y_OFFSET);
+                points[i] = new PointF(pointList[i].X + Engine.Graphics.GFX_X_OFFSET, pointList[i].Y + Engine.Graphics.GFX_Y_OFFSET);
             }
 
             _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
         }
 
-        public void DrawPolygonFilled(Vector2[] vectors, GFX_COL faceColour)
+        public void DrawPolygonFilled(Vector2[] pointList, GFX_COL faceColour)
         {
-            PointF[] points = new PointF[vectors.Length];
+            PointF[] points = new PointF[pointList.Length];
 
-            for (int i = 0; i < vectors.Length; i++)
+            for (int i = 0; i < pointList.Length; i++)
             {
-                points[i] = new PointF(vectors[i].X + Engine.Graphics.GFX_X_OFFSET, vectors[i].Y + Engine.Graphics.GFX_Y_OFFSET);
+                points[i] = new PointF(pointList[i].X + Engine.Graphics.GFX_X_OFFSET, pointList[i].Y + Engine.Graphics.GFX_Y_OFFSET);
             }
 
             _screenBufferGraphics.FillPolygon(_brushes[faceColour], points);

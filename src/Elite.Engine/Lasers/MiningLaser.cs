@@ -1,4 +1,8 @@
-﻿using Elite.Engine.Enums;
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using Elite.Engine.Enums;
 
 namespace Elite.Engine.Lasers
 {
@@ -10,6 +14,6 @@ namespace Elite.Engine.Lasers
 
         public LaserType Type => LaserType.Mining;
 
-        public int Temperature { get; set; } = 0;
+        public int Temperature { get; set; }
     }
 }

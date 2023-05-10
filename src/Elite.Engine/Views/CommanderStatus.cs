@@ -4,6 +4,7 @@
 
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
+using Elite.Engine.Trader;
 
 namespace Elite.Engine.Views
 {

@@ -1,32 +1,20 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
 using Elite.Common.Enums;
+using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
 using Elite.Engine.Types;
 using Elite.Engine.Views;
 
-/*
- * space.c
- *
- * This module handles all the flight system and management of the space universe.
- */
-
 namespace Elite.Engine
 {
+    /// <summary>
+    /// This module handles all the flight system and management of the space universe.
+    /// </summary>
     internal sealed class Scanner
     {
         private readonly GameState _gameState;
@@ -92,6 +80,72 @@ namespace Elite.Engine
 
                     case ShipType.Viper:
                         colour = GFX_COL.GFX_COL_BLUE_4;
+                        break;
+                    case ShipType.Sun:
+                        break;
+                    case ShipType.Planet:
+                        break;
+                    case ShipType.None:
+                        break;
+                    case ShipType.EscapeCapsule:
+                        break;
+                    case ShipType.Alloy:
+                        break;
+                    case ShipType.Cargo:
+                        break;
+                    case ShipType.Boulder:
+                        break;
+                    case ShipType.Asteroid:
+                        break;
+                    case ShipType.Rock:
+                        break;
+                    case ShipType.Shuttle:
+                        break;
+                    case ShipType.Transporter:
+                        break;
+                    case ShipType.CobraMk3:
+                        break;
+                    case ShipType.Python:
+                        break;
+                    case ShipType.Boa:
+                        break;
+                    case ShipType.Anaconda:
+                        break;
+                    case ShipType.Hermit:
+                        break;
+                    case ShipType.Sidewinder:
+                        break;
+                    case ShipType.Mamba:
+                        break;
+                    case ShipType.Krait:
+                        break;
+                    case ShipType.Adder:
+                        break;
+                    case ShipType.Gecko:
+                        break;
+                    case ShipType.CobraMk1:
+                        break;
+                    case ShipType.Worm:
+                        break;
+                    case ShipType.CobraMk3Lone:
+                        break;
+                    case ShipType.Asp2:
+                        break;
+                    case ShipType.PythonLone:
+                        break;
+                    case ShipType.FerDeLance:
+                        break;
+                    case ShipType.Moray:
+                        break;
+                    case ShipType.Thargoid:
+                        break;
+                    case ShipType.Tharglet:
+                        break;
+                    case ShipType.Constrictor:
+                        break;
+                    case ShipType.Cougar:
+                        break;
+                    default:
                         break;
                 }
 

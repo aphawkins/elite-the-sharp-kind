@@ -5,7 +5,7 @@
 using Elite.Engine.Ships;
 using Elite.Engine.Types;
 
-namespace Elite.Engine
+namespace Elite.Engine.Trader
 {
     internal sealed class Trade
     {

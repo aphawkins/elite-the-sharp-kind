@@ -6,7 +6,9 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Elite.Engine.Enums;
+using Elite.Engine.Lasers;
 using Elite.Engine.Ships;
+using Elite.Engine.Trader;
 using Elite.Engine.Types;
 
 namespace Elite.Engine.Save
@@ -54,7 +56,7 @@ namespace Elite.Engine.Save
             try
             {
                 using FileStream stream = File.OpenRead(name + FileExtension);
-                SaveState? save = await JsonSerializer.DeserializeAsync<SaveState>(stream, _options);
+                SaveState? save = await JsonSerializer.DeserializeAsync<SaveState>(stream, _options).ConfigureAwait(false);
                 if (save != null)
                 {
                     _lastSaved = save;
@@ -88,7 +90,7 @@ namespace Elite.Engine.Save
                     File.Delete(path);
                 }
                 using FileStream stream = File.OpenWrite(path);
-                await JsonSerializer.SerializeAsync(stream, save, _options);
+                await JsonSerializer.SerializeAsync(stream, save, _options).ConfigureAwait(false);
 
                 _lastSaved = save;
                 return true;

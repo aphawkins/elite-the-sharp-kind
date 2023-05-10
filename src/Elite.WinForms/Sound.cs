@@ -1,3 +1,7 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
 /*
  * Elite - The New Kind.
  *
@@ -41,12 +45,12 @@ namespace Elite.WinForms
 
         public void PlayWave(SoundEffect waveType) => _waves[waveType].Play();
 
-        public void PlayMidi(Music midiType, bool repeat)
+        public void PlayMidi(Music midiNo, bool repeat)
         {
             StopMidi();
 
             //TODO: Get repeat/loop working
-            _midiPlayer = new(_midis[midiType], _output);
+            _midiPlayer = new(_midis[midiNo], _output);
             if (repeat)
             {
                 //_midiPlayer.Finished += _midiPlayer_Finished;

@@ -101,6 +101,8 @@ namespace Elite.Engine.Views
                     case 3:
                         _gameState.SetView(SCR.SCR_QUIT);
                         break;
+                    default:
+                        break;
                 }
             }
         }

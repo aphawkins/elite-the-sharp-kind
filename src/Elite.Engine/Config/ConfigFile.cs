@@ -1,23 +1,12 @@
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Elite.Engine.Config;
 
-namespace Elite.Engine
+namespace Elite.Engine.Config
 {
     internal sealed class ConfigFile
     {
@@ -42,7 +31,7 @@ namespace Elite.Engine
                 }
                 using FileStream stream = File.OpenWrite(ConfigFileName);
 
-                await JsonSerializer.SerializeAsync(stream, config, _options);
+                await JsonSerializer.SerializeAsync(stream, config, _options).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -59,7 +48,7 @@ namespace Elite.Engine
             try
             {
                 using FileStream stream = File.OpenRead(ConfigFileName);
-                ConfigSettings? config = await JsonSerializer.DeserializeAsync<ConfigSettings>(stream, _options);
+                ConfigSettings? config = await JsonSerializer.DeserializeAsync<ConfigSettings>(stream, _options).ConfigureAwait(false);
                 if (config != null)
                 {
                     return config;

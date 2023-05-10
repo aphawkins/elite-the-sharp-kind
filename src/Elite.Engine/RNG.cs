@@ -45,7 +45,7 @@ namespace Elite.Engine
             Seed.A = a & 0xFF;
             Seed.C = x;
 
-            a /= 256;    /* a = any carry left from above */
+            a /= 256;    // a = any carry left from above
             x = Seed.B;
             a = (a + x + Seed.D) & 0xFF;
             Seed.B = a;
