@@ -70,7 +70,7 @@ namespace Elite.Engine.Ships
         public string Name => "Worm";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(  10,  -10,   35), 31,  0,  2,  7,  7),
             new(new( -10,  -10,   35), 31,  0,  3,  7,  7),
             new(new(   5,    6,   15), 31,  0,  1,  2,  4),

@@ -31,7 +31,7 @@ namespace Elite.Engine.Ships
         };
 
         public ShipFace[] Faces { get; } =
-{
+        {
             new(Colour.Grey1, new( 0x00,-0x4A, 0x04), new[] {  0,  4,  7 }),
             new(Colour.Grey2, new(-0x33,-0x33, 0x17), new[] {  1,  4,  0 }),
             new(Colour.Grey1, new(-0x4A, 0x00, 0x04), new[] {  1,  5,  4 }),
@@ -98,7 +98,7 @@ namespace Elite.Engine.Ships
         public string Name => "Orbit Shuttle";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,  -17,   23), 31, 15, 15, 15, 15),
             new(new( -17,    0,   23), 31, 15, 15, 15, 15),
             new(new(   0,   18,   23), 31, 15, 15, 15, 15),

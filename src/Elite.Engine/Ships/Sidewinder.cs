@@ -68,7 +68,7 @@ namespace Elite.Engine.Ships
         public string Name => "Sidewinder";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new( -32,    0,   36), 31,  1,  0,  5,  4),
             new(new(  32,    0,   36), 31,  2,  0,  6,  5),
             new(new(  64,    0,  -28), 31,  3,  2,  6,  6),

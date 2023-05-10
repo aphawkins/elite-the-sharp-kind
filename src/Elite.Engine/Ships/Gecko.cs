@@ -76,7 +76,7 @@ namespace Elite.Engine.Ships
         public string Name => "Gecko";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new( -10,   -4,   47), 31,  0,  3,  4,  5),
             new(new(  10,   -4,   47), 31,  0,  1,  2,  3),
             new(new( -16,    8,  -23), 31,  0,  5,  6,  7),

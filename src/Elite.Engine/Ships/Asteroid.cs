@@ -14,7 +14,7 @@ namespace Elite.Engine.Ships
         public int EnergyMax => 60;
 
         public ShipFaceNormal[] FaceNormals { get; } =
-                        {
+        {
             new(31, new(   9,   66,   81)),
             new(31, new(   9,  -66,   81)),
             new(31, new( -72,   64,   31)),
@@ -57,7 +57,7 @@ namespace Elite.Engine.Ships
         public int LaserStrength => 0;
 
         public ShipLine[] Lines { get; } =
-                        {
+        {
             new(31,  7,  2,  0,  1),
             new(31, 13,  6,  0,  4),
             new(31, 12,  5,  3,  4),
@@ -98,7 +98,7 @@ namespace Elite.Engine.Ships
             new(new( -40,    0,   70), 31,  1,  0,  3,  2),
             new(new(   0,   30,  -75), 31, 15, 15, 15, 15),
             new(new(   0,  -50,  -60), 31,  9,  8, 11, 10),
-        };
+                                };
 
         public StockType ScoopedType => throw new NotImplementedException();
         public float Size => 6400;

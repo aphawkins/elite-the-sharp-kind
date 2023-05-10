@@ -81,7 +81,7 @@ namespace Elite.Engine.Ships
         public string Name => "Krait";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,    0,   96), 31,  0,  1,  2,  3),
             new(new(   0,   18,  -48), 31,  0,  3,  4,  5),
             new(new(   0,  -18,  -48), 31,  1,  2,  4,  5),

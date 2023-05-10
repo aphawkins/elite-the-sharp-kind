@@ -260,7 +260,7 @@ namespace Elite.WinForms
         /// <summary>
         /// Blit the back buffer to the screen.
         /// </summary>
-		public void ScreenUpdate()
+        public void ScreenUpdate()
         {
             // TODO: find a better way of doing multithreading
             Application.DoEvents();

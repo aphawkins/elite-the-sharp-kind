@@ -80,7 +80,7 @@ namespace Elite.Engine.Ships
         public string Name => "Cobra MkI";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new( -18,   -1,   50), 31,  0,  1,  2,  3),
             new(new(  18,   -1,   50), 31,  0,  1,  4,  5),
             new(new( -66,    0,    7), 31,  2,  3,  8,  8),

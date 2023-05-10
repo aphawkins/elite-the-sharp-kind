@@ -134,7 +134,7 @@ namespace Elite.Engine.Ships
         public string Name => "Transporter";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,   10,  -26), 31,  0,  6,  7,  7),
             new(new( -25,    4,  -26), 31,  0,  1,  7,  7),
             new(new( -28,   -3,  -26), 31,  0,  1,  2,  2),

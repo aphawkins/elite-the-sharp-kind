@@ -14,7 +14,7 @@ namespace Elite.Engine.Ships
         public int EnergyMax => 240;
 
         public ShipFaceNormal[] FaceNormals { get; } =
-                        {
+        {
             new(31, new(   0,    0,  160)),
             new(31, new( 107, -107,  107)),
             new(31, new( 107,  107,  107)),
@@ -59,7 +59,7 @@ namespace Elite.Engine.Ships
         public int LaserStrength => 3;
 
         public ShipLine[] Lines { get; } =
-                        {
+        {
             new(31,  1,  0,  0,  3),
             new(31,  2,  0,  0,  1),
             new(31,  3,  0,  1,  2),
@@ -97,7 +97,7 @@ namespace Elite.Engine.Ships
         public string Name => "Coriolis Space Station";
 
         public ShipPoint[] Points { get; } =
-                                {
+        {
             new(new( 160,    0,  160), 31,  1,  0,  6,  2),
             new(new(   0,  160,  160), 31,  2,  0,  8,  3),
             new(new(-160,    0,  160), 31,  3,  0,  7,  4),

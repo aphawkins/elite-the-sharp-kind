@@ -72,7 +72,7 @@ namespace Elite.Engine.Ships
         public string Name => "Boulder";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new( -18,   37,  -11), 31,  0,  1,  5,  9),
             new(new(  30,    7,   12), 31,  1,  2,  5,  6),
             new(new(  28,   -7,  -12), 31,  2,  3,  6,  7),

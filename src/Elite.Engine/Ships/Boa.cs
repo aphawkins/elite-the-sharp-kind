@@ -89,7 +89,7 @@ namespace Elite.Engine.Ships
         public string Name => "Boa";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,    0,   93), 31, 15, 15, 15, 15),
             new(new(   0,   40,  -87), 24,  0,  2,  3,  3),
             new(new(  38,  -25,  -99), 24,  0,  1,  4,  4),

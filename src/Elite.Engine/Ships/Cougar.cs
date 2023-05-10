@@ -42,7 +42,7 @@ namespace Elite.Engine.Ships
 
             //new(8,	 0x00,  0x00, -0xA0, 3, 15, 16, 19, 0, 0, 0, 0, 0),
 			//new(8,	 0x00,  0x00, -0xA0, 3, 19, 18, 17, 0, 0, 0, 0, 0),
-		};
+        };
 
         public int LaserFront => 0;
 
@@ -84,7 +84,7 @@ namespace Elite.Engine.Ships
         public string Name => "Cougar";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,    5,   67), 31,  0,  2,  4,  4),
             new(new( -20,    0,   40), 31,  0,  1,  2,  2),
             new(new( -40,    0,  -40), 31,  0,  1,  5,  5),

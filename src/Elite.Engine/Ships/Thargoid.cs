@@ -36,7 +36,7 @@ namespace Elite.Engine.Ships
 
 			//new(GFX_COL.GFX_COL_GREY_3,	 0x40, 0x00, 0x00, 8,  7,  6,  5,  4,  3,  2, 1, 0),
 
-			new(Colour.Grey3, new( 0x40, 0x00, 0x00), new[] { 0,  1,  2,  7 }),
+            new(Colour.Grey3, new( 0x40, 0x00, 0x00), new[] { 0,  1,  2,  7 }),
             new(Colour.Grey3, new( 0x40, 0x00, 0x00), new[] { 2,  3,  6,  7 }),
             new(Colour.Grey3, new( 0x40, 0x00, 0x00), new[] { 3,  4,  5,  6 }),
 
@@ -47,7 +47,7 @@ namespace Elite.Engine.Ships
 
 			//new(GFX_COL.GFX_COL_GREY_3,	-0x30, 0x00, 0x00, 8, 15, 14, 13, 12, 11, 10, 9, 8),
 
-			new(Colour.Grey3, new(-0x30, 0x00, 0x00), new[] { 9,  8, 15, 10 }),
+            new(Colour.Grey3, new(-0x30, 0x00, 0x00), new[] { 9,  8, 15, 10 }),
             new(Colour.Grey3, new(-0x30, 0x00, 0x00), new[] { 11, 10, 15, 14 }),
             new (Colour.Grey3, new(-0x30, 0x00, 0x00), new[] { 12, 11, 14, 13 }),
 
@@ -96,7 +96,7 @@ namespace Elite.Engine.Ships
         public string Name => "Thargoid";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(  32,  -48,   48), 31,  4,  0,  8,  8),
             new(new(  32,  -68,    0), 31,  1,  0,  4,  4),
             new(new(  32,  -48,  -48), 31,  2,  1,  4,  4),

@@ -21,40 +21,40 @@ namespace Elite.Engine.Conflict
         private readonly ShipFlags[] _initialFlags = new ShipFlags[34]
         {
             0,											// NULL,
-			0,											// missile
-			0,											// coriolis
-			ShipFlags.Slow | ShipFlags.FlyToPlanet,				// escape
-			ShipFlags.Inactive,								// alloy
-			ShipFlags.Inactive,								// cargo
-			ShipFlags.Inactive,								// boulder
-			ShipFlags.Inactive,								// asteroid
-			ShipFlags.Inactive,								// rock
-			ShipFlags.FlyToPlanet | ShipFlags.Slow,				// shuttle
-			ShipFlags.FlyToPlanet | ShipFlags.Slow,				// transporter
-			0,											// cobra3
-			0,											// python
-			0,											// boa
-			ShipFlags.Slow,									// anaconda
-			ShipFlags.Slow,									// hermit
-			ShipFlags.Bold | ShipFlags.Police,						// viper
-			ShipFlags.Bold | ShipFlags.Angry,						// sidewinder
-			ShipFlags.Bold | ShipFlags.Angry,						// mamba
-			ShipFlags.Bold | ShipFlags.Angry,						// krait
-			ShipFlags.Bold | ShipFlags.Angry,						// adder
-			ShipFlags.Bold | ShipFlags.Angry,						// gecko
-			ShipFlags.Bold | ShipFlags.Angry,						// cobra1
-			ShipFlags.Slow | ShipFlags.Angry,						// worm
-			ShipFlags.Bold | ShipFlags.Angry,						// cobra3
-			ShipFlags.Bold | ShipFlags.Angry,						// asp2
-			ShipFlags.Bold | ShipFlags.Angry,						// python
-			ShipFlags.Police,									// fer_de_lance
-			ShipFlags.Bold | ShipFlags.Angry,						// moray
-			ShipFlags.Bold | ShipFlags.Angry,						// thargoid
-			ShipFlags.Angry,									// tharlet
-			ShipFlags.Angry,									// constrictor
-			ShipFlags.Police | ShipFlags.Cloaked,					// cougar
-			0											// dodec
-		};
+            0,											// missile
+            0,											// coriolis
+            ShipFlags.Slow | ShipFlags.FlyToPlanet,				// escape
+            ShipFlags.Inactive,								// alloy
+            ShipFlags.Inactive,								// cargo
+            ShipFlags.Inactive,								// boulder
+            ShipFlags.Inactive,								// asteroid
+            ShipFlags.Inactive,								// rock
+            ShipFlags.FlyToPlanet | ShipFlags.Slow,				// shuttle
+            ShipFlags.FlyToPlanet | ShipFlags.Slow,				// transporter
+            0,											// cobra3
+            0,											// python
+            0,											// boa
+            ShipFlags.Slow,									// anaconda
+            ShipFlags.Slow,									// hermit
+            ShipFlags.Bold | ShipFlags.Police,						// viper
+            ShipFlags.Bold | ShipFlags.Angry,						// sidewinder
+            ShipFlags.Bold | ShipFlags.Angry,						// mamba
+            ShipFlags.Bold | ShipFlags.Angry,						// krait
+            ShipFlags.Bold | ShipFlags.Angry,						// adder
+            ShipFlags.Bold | ShipFlags.Angry,						// gecko
+            ShipFlags.Bold | ShipFlags.Angry,						// cobra1
+            ShipFlags.Slow | ShipFlags.Angry,						// worm
+            ShipFlags.Bold | ShipFlags.Angry,						// cobra3
+            ShipFlags.Bold | ShipFlags.Angry,						// asp2
+            ShipFlags.Bold | ShipFlags.Angry,						// python
+            ShipFlags.Police,									// fer_de_lance
+            ShipFlags.Bold | ShipFlags.Angry,						// moray
+            ShipFlags.Bold | ShipFlags.Angry,						// thargoid
+            ShipFlags.Angry,									// tharlet
+            ShipFlags.Angry,									// constrictor
+            ShipFlags.Police | ShipFlags.Cloaked,					// cougar
+            0											// dodec
+        };
 
         private readonly PlayerShip _ship;
         private readonly Trade _trade;

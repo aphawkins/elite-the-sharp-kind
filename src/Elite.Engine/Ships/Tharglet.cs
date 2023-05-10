@@ -67,7 +67,7 @@ namespace Elite.Engine.Ships
         public string Name => "Tharglet";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(  -9,    0,   40), 31,  0,  1,  5,  5),
             new(new(  -9,  -38,   12), 31,  0,  1,  2,  2),
             new(new(  -9,  -24,  -32), 31,  0,  2,  3,  3),

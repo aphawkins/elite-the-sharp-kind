@@ -50,7 +50,7 @@ namespace Elite.Engine.Ships
         public string Name => "Rock Splinter";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new( -24,  -25,   16), 31,  1,  2,  3,  3),
             new(new(   0,   12,  -10), 31,  0,  2,  3,  3),
             new(new(  11,   -6,    2), 31,  0,  1,  3,  3),

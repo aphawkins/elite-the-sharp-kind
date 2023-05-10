@@ -95,7 +95,7 @@ namespace Elite.Engine.Ships
         public string Name => "Dodec Space Station";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,  150,  196), 31,  0,  1,  5,  5),
             new(new( 143,   46,  196), 31,  0,  1,  2,  2),
             new(new(  88, -121,  196), 31,  0,  2,  3,  3),

@@ -86,7 +86,7 @@ namespace Elite.Engine.Ships
         public string Name => "Constrictor";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(  20,   -7,   80), 31,  0,  2,  9,  9),
             new(new( -20,   -7,   80), 31,  0,  1,  9,  9),
             new(new( -54,   -7,   40), 31,  1,  4,  9,  9),

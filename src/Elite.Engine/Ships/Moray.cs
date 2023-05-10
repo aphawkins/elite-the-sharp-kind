@@ -80,7 +80,7 @@ namespace Elite.Engine.Ships
         public string Name => "Moray Star Boat";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(  15,    0,   65), 31,  0,  2,  7,  8),
             new(new( -15,    0,   65), 31,  0,  1,  6,  7),
             new(new(   0,   18,  -40), 17, 15, 15, 15, 15),

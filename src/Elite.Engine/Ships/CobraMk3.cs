@@ -31,7 +31,7 @@ namespace Elite.Engine.Ships
         };
 
         public ShipFace[] Faces { get; } =
-{
+        {
             new(Colour.Grey2, new(0x00, 0x3E, 0x1F), new[] {  1,  0,  2 }),
             new(Colour.Blue1, new(  -0x12, 0x37, 0x10), new[] {  5,  1,  2 }),
             new(Colour.Blue1, new(0x12, 0x37, 0x10), new[] {  2,  0,  6 }),
@@ -112,7 +112,7 @@ namespace Elite.Engine.Ships
         public string Name => "Cobra MkIII";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(  32,    0,   76), 31, 15, 15, 15, 15),
             new(new( -32,    0,   76), 31, 15, 15, 15, 15),
             new(new(   0,   26,   24), 31, 15, 15, 15, 15),

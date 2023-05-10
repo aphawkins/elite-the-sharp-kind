@@ -14,7 +14,7 @@ namespace Elite.Engine.Ships
         public int EnergyMax => 150;
 
         public ShipFaceNormal[] FaceNormals { get; } =
-                        {
+        {
             new(31, new(   0,  -35,    5)),
             new(31, new(   8,  -38,   -7)),
             new(31, new(  -8,  -38,   -7)),
@@ -56,7 +56,7 @@ namespace Elite.Engine.Ships
         public int LaserStrength => 20;
 
         public ShipLine[] Lines { get; } =
-                                {
+        {
             new (22,  1,  2,  0,  1),
             new(22,  0,  1,  0,  4),
             new(22,  0,  2,  0,  7),
@@ -94,7 +94,7 @@ namespace Elite.Engine.Ships
         public string Name => "Asp MkII";
 
         public ShipPoint[] Points { get; } =
-                                {
+        {
             new(new(   0,  -18,    0), 22,  0,  1,  2,  2),
             new(new(   0,   -9,  -45), 31,  1,  2, 11, 11),
             new(new(  43,    0,  -45), 31,  1,  6, 11, 11),

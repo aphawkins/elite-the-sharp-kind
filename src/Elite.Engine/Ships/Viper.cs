@@ -75,7 +75,7 @@ namespace Elite.Engine.Ships
         public string Name => "Viper";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,    0,   72), 31,  2,  1,  4,  3),
             new(new(   0,   16,   24), 30,  1,  0,  2,  2),
             new(new(   0,  -16,   24), 30,  4,  3,  5,  5),

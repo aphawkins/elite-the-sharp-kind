@@ -91,7 +91,7 @@ namespace Elite.Engine.Ships
         public string Name => "Fer-de-Lance";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,  -14,  108), 31,  0,  1,  5,  9),
             new(new( -40,  -14,   -4), 31,  1,  2,  9,  9),
             new(new( -12,  -14,  -52), 31,  2,  3,  9,  9),

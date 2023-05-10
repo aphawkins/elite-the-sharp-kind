@@ -67,7 +67,7 @@ namespace Elite.Engine.Ships
         public string Name => "Cargo Cannister";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(  24,   16,    0), 31,  1,  0,  5,  5),
             new(new(  24,    5,   15), 31,  1,  0,  2,  2),
             new(new(  24,  -13,    9), 31,  2,  0,  3,  3),

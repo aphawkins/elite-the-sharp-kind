@@ -50,7 +50,7 @@ namespace Elite.Engine.Ships
         public string Name => "Escape Capsule";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(  -7,    0,   36), 31,  1,  2,  3,  3),
             new(new(  -7,  -14,  -12), 31,  0,  2,  3,  3),
             new(new(  -7,   14,  -12), 31,  0,  1,  3,  3),

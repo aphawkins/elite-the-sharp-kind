@@ -91,7 +91,7 @@ namespace Elite.Engine.Ships
         public string Name => "Python";
 
         public ShipPoint[] Points { get; } =
-                                                                                        {
+        {
             new(new(   0,    0,  224), 31,  1,  0,  3,  2),
             new(new(   0,   48,   48), 31,  1,  0,  5,  4),
             new(new(  96,    0,  -16), 31, 15, 15, 15, 15),
