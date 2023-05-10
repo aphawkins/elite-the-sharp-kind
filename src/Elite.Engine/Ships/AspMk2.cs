@@ -33,7 +33,7 @@ namespace Elite.Engine.Ships
         {
             new(Colour.Grey4, new( 0x00,-0x23, 0x05), new[] { 8,  9,  7,  0, 4 }),
             new(Colour.Grey2, new( 0x08,-0x26,-0x07), new[] { 3,  4,  0,  1, 2 }),
-            new (Colour.Grey1, new(-0x08,-0x26,-0x07), new[] {  1,  0,  7,  6, 5 }),
+            new(Colour.Grey1, new(-0x08,-0x26,-0x07), new[] {  1,  0,  7,  6, 5 }),
             new(Colour.Grey3, new( 0x3B,-0x40, 0x1F), new[] {  8,  4, 3 }),
             new(Colour.Grey3, new(-0x3B,-0x40, 0x1F), new[] {  6,  7, 9 }),
 
@@ -57,7 +57,7 @@ namespace Elite.Engine.Ships
 
         public ShipLine[] Lines { get; } =
         {
-            new (22,  1,  2,  0,  1),
+            new(22,  1,  2,  0,  1),
             new(22,  0,  1,  0,  4),
             new(22,  0,  2,  0,  7),
             new(31,  1, 11,  1,  2),

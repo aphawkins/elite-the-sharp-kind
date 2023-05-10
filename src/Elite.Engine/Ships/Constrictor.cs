@@ -32,19 +32,19 @@ namespace Elite.Engine.Ships
         {
             new(Colour.Grey4, new(   0x00,  0x37,  0x0F), new[] { 1,  0,  8, 9 }),
             new(Colour.Grey1, new(  -0x18,  0x4B,  0x14), new[] {   1,  9,  2 }),
-            new (Colour.Grey1, new(   0x18,  0x4B,  0x14), new[] {   0,  7,  8 }),
+            new(Colour.Grey1, new(   0x18,  0x4B,  0x14), new[] {   0,  7,  8 }),
 
-            new (Colour.Gold, new(   0x2C,  0x4B,  0x00), new[] {   7,  6,  8 }),
-            new (Colour.Gold, new(  -0x2C,  0x4B,  0x00), new[] { 9,  3,  2 }),
+            new(Colour.Gold, new(   0x2C,  0x4B,  0x00), new[] {   7,  6,  8 }),
+            new(Colour.Gold, new(  -0x2C,  0x4B,  0x00), new[] { 9,  3,  2 }),
 
-            new (Colour.Yellow1, new(  -0x2C,  0x4B,  0x00), new[] { 9,  4,  3 }),
-            new (Colour.Grey1, new(   0x00,  0x35,  0x00), new[] { 8,  5,  4, 9 }),
-            new (Colour.Yellow1, new(   0x2C,  0x4B,  0x00), new[] { 8,  6,  5 }),
+            new(Colour.Yellow1, new(  -0x2C,  0x4B,  0x00), new[] { 9,  4,  3 }),
+            new(Colour.Grey1, new(   0x00,  0x35,  0x00), new[] { 8,  5,  4, 9 }),
+            new(Colour.Yellow1, new(   0x2C,  0x4B,  0x00), new[] { 8,  6,  5 }),
 
-            new (Colour.Grey2, new(   0x00,  0x00, -0xA0), new[] { 6,  3,  4, 5 }),
-            new (Colour.Grey3, new(   0x00, -0x1B,  0x00), new[] { 3,  6,  7, 0, 1, 2 }),
-            new (Colour.Red2, new(   0x00, -0x1B,  0x00), new[] { 12, 10, 14 }),
-            new (Colour.Red2, new(   0x00, -0x1B,  0x00), new[] { 15, 11, 13 }),
+            new(Colour.Grey2, new(   0x00,  0x00, -0xA0), new[] { 6,  3,  4, 5 }),
+            new(Colour.Grey3, new(   0x00, -0x1B,  0x00), new[] { 3,  6,  7, 0, 1, 2 }),
+            new(Colour.Red2, new(   0x00, -0x1B,  0x00), new[] { 12, 10, 14 }),
+            new(Colour.Red2, new(   0x00, -0x1B,  0x00), new[] { 15, 11, 13 }),
         };
 
         public int LaserFront => 0;

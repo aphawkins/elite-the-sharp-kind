@@ -32,7 +32,7 @@ namespace Elite.Engine.Ships
             new(Colour.Blue2, new( 0x00, 0x29, 0x0A), new[] {  0, 1, 8 }),
             new(Colour.Blue2, new( 0x00,-0x1B, 0x03), new[] {  6, 7, 1, 0 }),
 
-            new (Colour.Blue3, new(-0x08, 0x2E, 0x08), new[] {   2, 0, 8, 4 }),
+            new(Colour.Blue3, new(-0x08, 0x2E, 0x08), new[] {   2, 0, 8, 4 }),
             new(Colour.Blue4, new(-0x0C,-0x39, 0x0C), new[] {   6, 0, 2 }),
             new(Colour.Blue3, new( 0x08, 0x2E, 0x08), new[] { 1, 3, 5, 8 }),
             new(Colour.Blue4, new( 0x0C,-0x39, 0x0C), new[] { 1, 7, 3 }),

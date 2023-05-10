@@ -43,7 +43,7 @@ namespace Elite.Engine.Ships
 
             //nose cone
             new(Colour.Red2, new(-0x40, 0x00, 0x10), new[] { 0,  3,  4 }),
-            new (Colour.Red1,      new( 0x00,-0x40, 0x10), new[] { 0,  4,  1 }),
+            new(Colour.Red1,      new( 0x00,-0x40, 0x10), new[] { 0,  4,  1 }),
             new(Colour.Red2, new( 0x40, 0x00, 0x10), new[] { 0,  1,  2 }),
             new(Colour.Red1,      new( 0x00, 0x40, 0x10), new[] { 0,  2,  3 }),
 

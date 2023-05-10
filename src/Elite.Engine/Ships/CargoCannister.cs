@@ -29,12 +29,12 @@ namespace Elite.Engine.Ships
             new(Colour.Grey4, new( 0x60, 0x00, 0x00), new [] { 4, 0, 1, 2, 3 }),
 
             new(Colour.Grey2, new(  0x00, 0x29, 0x1E), new [] {  5, 6, 1, 0 }),
-            new (Colour.Grey1, new(  0x00,-0x12, 0x30), new [] {  6, 7, 2, 1 }),
-            new (Colour.Grey3, new(  0x00,-0x33, 0x00), new [] {  7, 8, 3, 2 }),
-            new (Colour.Grey1, new(  0x00,-0x12,-0x30), new[] { 8, 9, 4, 3 }),
-            new (Colour.Grey3, new(  0x00, 0x29,-0x1E), new[] { 9, 5, 0, 4 }),
+            new(Colour.Grey1, new(  0x00,-0x12, 0x30), new [] {  6, 7, 2, 1 }),
+            new(Colour.Grey3, new(  0x00,-0x33, 0x00), new [] {  7, 8, 3, 2 }),
+            new(Colour.Grey1, new(  0x00,-0x12,-0x30), new[] { 8, 9, 4, 3 }),
+            new(Colour.Grey3, new(  0x00, 0x29,-0x1E), new[] { 9, 5, 0, 4 }),
 
-            new (Colour.Grey4, new( -0x60, 0x00, 0x00), new[] { 8, 7, 6, 5, 9 }),
+            new(Colour.Grey4, new( -0x60, 0x00, 0x00), new[] { 8, 7, 6, 5, 9 }),
         };
 
         public int LaserFront => 0;

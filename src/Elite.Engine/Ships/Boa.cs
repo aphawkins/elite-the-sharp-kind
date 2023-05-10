@@ -34,20 +34,20 @@ namespace Elite.Engine.Ships
         {
             new(Colour.Blue4, new(0x2B, 0x25,-0x3C), new[] { 11, 10,  1, 5, 6, 2 }),
             new(Colour.Blue2, new( 0x00,-0x2D,-0x59), new[] {  12, 11,  2, 7, 8, 3 }),
-            new (Colour.Blue3, new(-0x2B, 0x25,-0x3C), new[] {  3, 9,  4, 1, 10, 12 }),
+            new(Colour.Blue3, new(-0x2B, 0x25,-0x3C), new[] {  3, 9,  4, 1, 10, 12 }),
 
-            new (Colour.Blue4, new( 0x00, 0x28, 0x00), new[] {  5,  1,  4 }),
-            new (Colour.Blue2, new( 0x3E,-0x20,-0x14), new[] { 7,  2,  6 }),
-            new (Colour.Blue3, new(-0x3E,-0x20,-0x14), new[] { 3,  8,  9 }),
+            new(Colour.Blue4, new( 0x00, 0x28, 0x00), new[] {  5,  1,  4 }),
+            new(Colour.Blue2, new( 0x3E,-0x20,-0x14), new[] { 7,  2,  6 }),
+            new(Colour.Blue3, new(-0x3E,-0x20,-0x14), new[] { 3,  8,  9 }),
 
-            new (Colour.Grey1, new( 0x00, 0x17, 0x06), new[] { 5,  4,  0 }),
-            new (Colour.Grey1, new(-0x17,-0x0F, 0x09), new[] { 9,  8,  0 }),
-            new (Colour.Grey1, new( 0x17,-0x0F, 0x09), new[] { 7,  6,  0 }),
-            new (Colour.Grey2, new(-0x1A, 0x0D, 0x0A), new[] { 0,  4,  9 }),
-            new (Colour.Grey2, new( 0x00,-0x1F, 0x0C), new[] { 0,  8,  7 }),
-            new (Colour.Grey2, new( 0x1A, 0x0D, 0x0A), new[] { 0,  6,  5 }),
+            new(Colour.Grey1, new( 0x00, 0x17, 0x06), new[] { 5,  4,  0 }),
+            new(Colour.Grey1, new(-0x17,-0x0F, 0x09), new[] { 9,  8,  0 }),
+            new(Colour.Grey1, new( 0x17,-0x0F, 0x09), new[] { 7,  6,  0 }),
+            new(Colour.Grey2, new(-0x1A, 0x0D, 0x0A), new[] { 0,  4,  9 }),
+            new(Colour.Grey2, new( 0x00,-0x1F, 0x0C), new[] { 0,  8,  7 }),
+            new(Colour.Grey2, new( 0x1A, 0x0D, 0x0A), new[] { 0,  6,  5 }),
 
-            new (Colour.Red2, new( 0x00, 0x00,-0x6B), new[] { 12, 10, 11 }),
+            new(Colour.Red2, new( 0x00, 0x00,-0x6B), new[] { 12, 10, 11 }),
         };
 
         public int LaserFront => 0;
@@ -56,7 +56,7 @@ namespace Elite.Engine.Ships
 
         public ShipLine[] Lines { get; } =
         {
-            new (31,  6, 11,  0,  5),
+            new(31,  6, 11,  0,  5),
             new(31,  8, 10,  0,  7),
             new(31,  7,  9,  0,  9),
             new(29,  6,  9,  0,  4),
