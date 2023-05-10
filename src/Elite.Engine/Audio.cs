@@ -13,18 +13,6 @@ namespace Elite.Engine
         private readonly bool _effectsOn;
         private readonly ISound _sound;
 
-        internal Audio(ISound sound)
-        {
-            _sound = sound;
-#if DEBUG
-            _musicOn = true;
-            _effectsOn = true;
-#else
-            _musicOn = true;
-            _effectsOn = true;
-#endif
-        }
-
         private readonly Dictionary<SoundEffect, SfxSample> _sfx = new()
         {
             { SoundEffect.Launch, new(32) },
@@ -42,6 +30,18 @@ namespace Elite.Engine
             { SoundEffect.Beep, new(2) },
             { SoundEffect.Boop, new(7) },
         };
+
+        internal Audio(ISound sound)
+        {
+            _sound = sound;
+#if DEBUG
+            _musicOn = true;
+            _effectsOn = true;
+#else
+            _musicOn = true;
+            _effectsOn = true;
+#endif
+        }
 
         internal void LoadSounds()
         {
