@@ -296,7 +296,7 @@ namespace Elite.Engine
 
         /// <summary>
         /// Draw a planet.
-        /// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style
+        /// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style.
         /// </summary>
         /// <param name="planet"></param>
         private void DrawPlanet(ref UniverseObject planet)
