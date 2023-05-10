@@ -15,10 +15,10 @@ namespace Elite.Engine.Ships
 
         public ShipFaceNormal[] FaceNormals { get; } =
         {
-            new(18, new(  30,    0,    0)),
-            new(20, new(  22,   32,   -8)),
-            new( 0, new(   0,    2,    0)),
-            new( 0, new(  17,   23,   95)),
+            new(18, new(30,    0,    0)),
+            new(20, new(22,   32,   -8)),
+            new(0, new(0,    2,    0)),
+            new(0, new(17,   23,   95)),
         };
 
         public ShipFace[] Faces { get; } =
@@ -51,10 +51,10 @@ namespace Elite.Engine.Ships
 
         public ShipPoint[] Points { get; } =
         {
-            new(new( -24,  -25,   16), 31,  1,  2,  3,  3),
-            new(new(   0,   12,  -10), 31,  0,  2,  3,  3),
-            new(new(  11,   -6,    2), 31,  0,  1,  3,  3),
-            new(new(  12,   42,    7), 31,  0,  1,  2,  2),
+            new(new(-24,  -25,   16), 31,  1,  2,  3,  3),
+            new(new(0,   12,  -10), 31,  0,  2,  3,  3),
+            new(new(11,   -6,    2), 31,  0,  1,  3,  3),
+            new(new(12,   42,    7), 31,  0,  1,  2,  2),
         };
 
         public StockType ScoopedType => StockType.Minerals;

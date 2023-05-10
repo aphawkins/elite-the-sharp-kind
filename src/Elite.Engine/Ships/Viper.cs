@@ -15,29 +15,29 @@ namespace Elite.Engine.Ships
 
         public ShipFaceNormal[] FaceNormals { get; } =
         {
-            new(31, new(   0,   32,    0)),
-            new(31, new( -22,   33,   11)),
-            new(31, new(  22,   33,   11)),
-            new(31, new( -22,  -33,   11)),
-            new(31, new(  22,  -33,   11)),
-            new(31, new(   0,  -32,    0)),
-            new(31, new(   0,    0,  -48)),
+            new(31, new(0,   32,    0)),
+            new(31, new(-22,   33,   11)),
+            new(31, new(22,   33,   11)),
+            new(31, new(-22,  -33,   11)),
+            new(31, new(22,  -33,   11)),
+            new(31, new(0,  -32,    0)),
+            new(31, new(0,    0,  -48)),
         };
 
         public ShipFace[] Faces { get; } =
         {
-            new(Colour.Grey2, new( 0x00, 0x20, 0x00), new[] { 7,  8,  1 }),
+            new(Colour.Grey2, new(0x00, 0x20, 0x00), new[] { 7,  8,  1 }),
 
             new(Colour.Blue3, new(-0x16, 0x21, 0x0B), new[] { 8,  4,  0, 1 }),
-            new(Colour.Blue2, new( 0x16, 0x21, 0x0B), new[] { 3,  7,  1, 0 }),
+            new(Colour.Blue2, new(0x16, 0x21, 0x0B), new[] { 3,  7,  1, 0 }),
 
             new(Colour.Blue2, new(-0x16, -0x21, 0x0B), new[] { 2,  0,  4, 6 }),
-            new(Colour.Blue3, new( 0x16, -0x21, 0x0B), new[] { 0,  2,  5, 3 }),
+            new(Colour.Blue3, new(0x16, -0x21, 0x0B), new[] { 0,  2,  5, 3 }),
 
-            new(Colour.Grey2, new( 0x00, -0x20, 0x00), new[] { 2,  6, 5 }),
-            new(Colour.Grey1, new( 0x00, 0x00, -0x30), new[] { 4,  8,  7, 3, 5, 6 }),
-            new(Colour.Red1, new( 0x00, 0x00, -0x30), new[] { 12, 13, 9 }),
-            new(Colour.Red1, new( 0x00, 0x00, -0x30), new[] { 10, 14, 11 }),
+            new(Colour.Grey2, new(0x00, -0x20, 0x00), new[] { 2,  6, 5 }),
+            new(Colour.Grey1, new(0x00, 0x00, -0x30), new[] { 4,  8,  7, 3, 5, 6 }),
+            new(Colour.Red1, new(0x00, 0x00, -0x30), new[] { 12, 13, 9 }),
+            new(Colour.Red1, new(0x00, 0x00, -0x30), new[] { 10, 14, 11 }),
         };
 
         public int LaserFront => 0;
@@ -76,21 +76,21 @@ namespace Elite.Engine.Ships
 
         public ShipPoint[] Points { get; } =
         {
-            new(new(   0,    0,   72), 31,  2,  1,  4,  3),
-            new(new(   0,   16,   24), 30,  1,  0,  2,  2),
-            new(new(   0,  -16,   24), 30,  4,  3,  5,  5),
-            new(new(  48,    0,  -24), 31,  4,  2,  6,  6),
-            new(new( -48,    0,  -24), 31,  3,  1,  6,  6),
-            new(new(  24,  -16,  -24), 30,  5,  4,  6,  6),
-            new(new( -24,  -16,  -24), 30,  3,  5,  6,  6),
-            new(new(  24,   16,  -24), 31,  2,  0,  6,  6),
-            new(new( -24,   16,  -24), 31,  1,  0,  6,  6),
-            new(new( -32,    0,  -24), 19,  6,  6,  6,  6),
-            new(new(  32,    0,  -24), 19,  6,  6,  6,  6),
-            new(new(   8,    8,  -24), 19,  6,  6,  6,  6),
-            new(new(  -8,    8,  -24), 19,  6,  6,  6,  6),
-            new(new(  -8,   -8,  -24), 18,  6,  6,  6,  6),
-            new(new(   8,   -8,  -24), 18,  6,  6,  6,  6),
+            new(new(0,    0,   72), 31,  2,  1,  4,  3),
+            new(new(0,   16,   24), 30,  1,  0,  2,  2),
+            new(new(0,  -16,   24), 30,  4,  3,  5,  5),
+            new(new(48,    0,  -24), 31,  4,  2,  6,  6),
+            new(new(-48,    0,  -24), 31,  3,  1,  6,  6),
+            new(new(24,  -16,  -24), 30,  5,  4,  6,  6),
+            new(new(-24,  -16,  -24), 30,  3,  5,  6,  6),
+            new(new(24,   16,  -24), 31,  2,  0,  6,  6),
+            new(new(-24,   16,  -24), 31,  1,  0,  6,  6),
+            new(new(-32,    0,  -24), 19,  6,  6,  6,  6),
+            new(new(32,    0,  -24), 19,  6,  6,  6,  6),
+            new(new(8,    8,  -24), 19,  6,  6,  6,  6),
+            new(new(-8,    8,  -24), 19,  6,  6,  6,  6),
+            new(new(-8,   -8,  -24), 18,  6,  6,  6,  6),
+            new(new(8,   -8,  -24), 18,  6,  6,  6,  6),
         };
 
         public StockType ScoopedType => StockType.None;

@@ -15,26 +15,26 @@ namespace Elite.Engine.Ships
 
         public ShipFaceNormal[] FaceNormals { get; } =
         {
-            new(31, new(  96,    0,    0)),
-            new(31, new(   0,   41,   30)),
-            new(31, new(   0,  -18,   48)),
-            new(31, new(   0,  -51,    0)),
-            new(31, new(   0,  -18,  -48)),
-            new(31, new(   0,   41,  -30)),
-            new(31, new( -96,    0,    0)),
+            new(31, new(96,    0,    0)),
+            new(31, new(0,   41,   30)),
+            new(31, new(0,  -18,   48)),
+            new(31, new(0,  -51,    0)),
+            new(31, new(0,  -18,  -48)),
+            new(31, new(0,   41,  -30)),
+            new(31, new(-96,    0,    0)),
         };
 
         public ShipFace[] Faces { get; } =
         {
-            new(Colour.Grey4, new( 0x60, 0x00, 0x00), new [] { 4, 0, 1, 2, 3 }),
+            new(Colour.Grey4, new(0x60, 0x00, 0x00), new [] { 4, 0, 1, 2, 3 }),
 
-            new(Colour.Grey2, new(  0x00, 0x29, 0x1E), new [] {  5, 6, 1, 0 }),
-            new(Colour.Grey1, new(  0x00, -0x12, 0x30), new [] {  6, 7, 2, 1 }),
-            new(Colour.Grey3, new(  0x00, -0x33, 0x00), new [] {  7, 8, 3, 2 }),
-            new(Colour.Grey1, new(  0x00, -0x12, -0x30), new[] { 8, 9, 4, 3 }),
-            new(Colour.Grey3, new(  0x00, 0x29, -0x1E), new[] { 9, 5, 0, 4 }),
+            new(Colour.Grey2, new(0x00, 0x29, 0x1E), new [] {  5, 6, 1, 0 }),
+            new(Colour.Grey1, new(0x00, -0x12, 0x30), new [] {  6, 7, 2, 1 }),
+            new(Colour.Grey3, new(0x00, -0x33, 0x00), new [] {  7, 8, 3, 2 }),
+            new(Colour.Grey1, new(0x00, -0x12, -0x30), new[] { 8, 9, 4, 3 }),
+            new(Colour.Grey3, new(0x00, 0x29, -0x1E), new[] { 9, 5, 0, 4 }),
 
-            new(Colour.Grey4, new( -0x60, 0x00, 0x00), new[] { 8, 7, 6, 5, 9 }),
+            new(Colour.Grey4, new(-0x60, 0x00, 0x00), new[] { 8, 7, 6, 5, 9 }),
         };
 
         public int LaserFront => 0;
@@ -68,16 +68,16 @@ namespace Elite.Engine.Ships
 
         public ShipPoint[] Points { get; } =
         {
-            new(new(  24,   16,    0), 31,  1,  0,  5,  5),
-            new(new(  24,    5,   15), 31,  1,  0,  2,  2),
-            new(new(  24,  -13,    9), 31,  2,  0,  3,  3),
-            new(new(  24,  -13,   -9), 31,  3,  0,  4,  4),
-            new(new(  24,    5,  -15), 31,  4,  0,  5,  5),
-            new(new( -24,   16,    0), 31,  5,  1,  6,  6),
-            new(new( -24,    5,   15), 31,  2,  1,  6,  6),
-            new(new( -24,  -13,    9), 31,  3,  2,  6,  6),
-            new(new( -24,  -13,   -9), 31,  4,  3,  6,  6),
-            new(new( -24,    5,  -15), 31,  5,  4,  6,  6),
+            new(new(24,   16,    0), 31,  1,  0,  5,  5),
+            new(new(24,    5,   15), 31,  1,  0,  2,  2),
+            new(new(24,  -13,    9), 31,  2,  0,  3,  3),
+            new(new(24,  -13,   -9), 31,  3,  0,  4,  4),
+            new(new(24,    5,  -15), 31,  4,  0,  5,  5),
+            new(new(-24,   16,    0), 31,  5,  1,  6,  6),
+            new(new(-24,    5,   15), 31,  2,  1,  6,  6),
+            new(new(-24,  -13,    9), 31,  3,  2,  6,  6),
+            new(new(-24,  -13,   -9), 31,  4,  3,  6,  6),
+            new(new(-24,    5,  -15), 31,  5,  4,  6,  6),
         };
 
         public StockType ScoopedType => StockType.None;

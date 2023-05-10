@@ -15,13 +15,13 @@ namespace Elite.Engine.Ships
 
         public ShipFaceNormal[] FaceNormals { get; } =
         {
-            new(31, new( -36,    0,    0)),
-            new(31, new(  20,   -5,    7)),
-            new(31, new(  46,  -42,  -14)),
-            new(31, new(  36,    0, -104)),
-            new(31, new(  46,   42,  -14)),
-            new(31, new(  20,    5,    7)),
-            new(31, new(  36,    0,    0)),
+            new(31, new(-36,    0,    0)),
+            new(31, new(20,   -5,    7)),
+            new(31, new(46,  -42,  -14)),
+            new(31, new(36,    0, -104)),
+            new(31, new(46,   42,  -14)),
+            new(31, new(20,    5,    7)),
+            new(31, new(36,    0,    0)),
         };
 
         public ShipFace[] Faces { get; } =
@@ -34,7 +34,7 @@ namespace Elite.Engine.Ships
             new(Colour.Grey2, new(0x2E, 0x2A, -0x0E), new[] { 9, 8, 3, 4 }),
             new(Colour.Grey3, new(0x14, 0x05, 0x07), new[] { 4, 0, 5, 9 }),
 
-            new(Colour.Red2, new( 0x24, 0x00, 0x00), new[] {  9, 5, 6, 7, 8 }),
+            new(Colour.Red2, new(0x24, 0x00, 0x00), new[] {  9, 5, 6, 7, 8 }),
         };
 
         public int LaserFront => 0;
@@ -68,16 +68,16 @@ namespace Elite.Engine.Ships
 
         public ShipPoint[] Points { get; } =
         {
-            new(new(  -9,    0,   40), 31,  0,  1,  5,  5),
-            new(new(  -9,  -38,   12), 31,  0,  1,  2,  2),
-            new(new(  -9,  -24,  -32), 31,  0,  2,  3,  3),
-            new(new(  -9,   24,  -32), 31,  0,  3,  4,  4),
-            new(new(  -9,   38,   12), 31,  0,  4,  5,  5),
-            new(new(   9,    0,   -8), 31,  1,  5,  6,  6),
-            new(new(   9,  -10,  -15), 31,  1,  2,  6,  6),
-            new(new(   9,   -6,  -26), 31,  2,  3,  6,  6),
-            new(new(   9,    6,  -26), 31,  3,  4,  6,  6),
-            new(new(   9,   10,  -15), 31,  4,  5,  6,  6),
+            new(new(-9,    0,   40), 31,  0,  1,  5,  5),
+            new(new(-9,  -38,   12), 31,  0,  1,  2,  2),
+            new(new(-9,  -24,  -32), 31,  0,  2,  3,  3),
+            new(new(-9,   24,  -32), 31,  0,  3,  4,  4),
+            new(new(-9,   38,   12), 31,  0,  4,  5,  5),
+            new(new(9,    0,   -8), 31,  1,  5,  6,  6),
+            new(new(9,  -10,  -15), 31,  1,  2,  6,  6),
+            new(new(9,   -6,  -26), 31,  2,  3,  6,  6),
+            new(new(9,    6,  -26), 31,  3,  4,  6,  6),
+            new(new(9,   10,  -15), 31,  4,  5,  6,  6),
         };
 
         public StockType ScoopedType => StockType.AlienItems;

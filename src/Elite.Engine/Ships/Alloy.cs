@@ -44,10 +44,10 @@ namespace Elite.Engine.Ships
 
         public ShipPoint[] Points { get; } =
         {
-            new(new( -15,  -22,   -9), 31, 15, 15, 15, 15),
-            new(new( -15,   38,   -9), 31, 15, 15, 15, 15),
-            new(new(  19,   32,   11), 20, 15, 15, 15, 15),
-            new(new(  10,  -46,    6), 20, 15, 15, 15, 15),
+            new(new(-15,  -22,   -9), 31, 15, 15, 15, 15),
+            new(new(-15,   38,   -9), 31, 15, 15, 15, 15),
+            new(new(19,   32,   11), 20, 15, 15, 15, 15),
+            new(new(10,  -46,    6), 20, 15, 15, 15, 15),
         };
 
         public StockType ScoopedType => StockType.Alloys;
