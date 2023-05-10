@@ -28,7 +28,7 @@ namespace Elite.Engine.Views
             200, 200, 420, 900, 500, 800, 384, 384,
             384, 384, 384, 200, 384, 384, 384,   0,
             384,   0, 384, 384, 700, 384,   0,   0,
-            900
+            900,
         };
 
         private readonly PlayerShip _ship;

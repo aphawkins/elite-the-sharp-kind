@@ -49,7 +49,7 @@ namespace Elite.Engine.Views
             new(false, false, 10, 6000, ">Front",               EquipmentType.EQ_FRONT_MILITARY),
             new(false, false, 10, 6000, ">Rear",                EquipmentType.EQ_REAR_MILITARY),
             new(false, false, 10, 6000, ">Left",                EquipmentType.EQ_LEFT_MILITARY),
-            new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY)
+            new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY),
         };
 
         private readonly GameState _gameState;

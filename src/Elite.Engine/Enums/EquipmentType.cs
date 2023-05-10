@@ -35,6 +35,6 @@ namespace Elite.Engine.Enums
         EQ_FRONT_MILITARY,
         EQ_REAR_MILITARY,
         EQ_LEFT_MILITARY,
-        EQ_RIGHT_MILITARY
+        EQ_RIGHT_MILITARY,
     }
 }

@@ -52,7 +52,7 @@ namespace Elite.Engine.Ships
             UniverseObject ship = new()
             {
                 Rotmat = VectorMaths.GetInitialMatrix(),
-                Location = Vector3.Zero
+                Location = Vector3.Zero,
             };
 
             ship.Rotmat[2].Z = 1;

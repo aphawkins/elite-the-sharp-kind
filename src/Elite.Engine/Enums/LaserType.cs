@@ -10,6 +10,6 @@ namespace Elite.Engine.Enums
         Pulse,
         Beam,
         Military,
-        Mining
+        Mining,
     }
 }

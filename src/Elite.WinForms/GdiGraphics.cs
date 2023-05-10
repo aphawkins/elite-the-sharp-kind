@@ -192,7 +192,7 @@ namespace Elite.WinForms
             StringFormat stringFormat = new()
             {
                 Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
+                LineAlignment = StringAlignment.Center,
             };
 
             PointF point = new((128 * Engine.Graphics.GFX_SCALE) + Engine.Graphics.GFX_X_OFFSET, (y / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_Y_OFFSET);
@@ -227,7 +227,7 @@ namespace Elite.WinForms
             {
                 new(a.X += Engine.Graphics.GFX_X_OFFSET, a.Y += Engine.Graphics.GFX_Y_OFFSET),
                 new(b.X += Engine.Graphics.GFX_X_OFFSET, b.Y += Engine.Graphics.GFX_Y_OFFSET),
-                new(c.X += Engine.Graphics.GFX_X_OFFSET, c.Y += Engine.Graphics.GFX_Y_OFFSET)
+                new(c.X += Engine.Graphics.GFX_X_OFFSET, c.Y += Engine.Graphics.GFX_Y_OFFSET),
             };
 
             _screenBufferGraphics.DrawLines(_pens[colour], points);
@@ -239,7 +239,7 @@ namespace Elite.WinForms
             {
                 new(a.X += Engine.Graphics.GFX_X_OFFSET, a.Y += Engine.Graphics.GFX_Y_OFFSET),
                 new(b.X += Engine.Graphics.GFX_X_OFFSET, b.Y += Engine.Graphics.GFX_Y_OFFSET),
-                new(c.X += Engine.Graphics.GFX_X_OFFSET, c.Y += Engine.Graphics.GFX_Y_OFFSET)
+                new(c.X += Engine.Graphics.GFX_X_OFFSET, c.Y += Engine.Graphics.GFX_Y_OFFSET),
             };
 
             _screenBufferGraphics.FillPolygon(_brushes[colour], points);

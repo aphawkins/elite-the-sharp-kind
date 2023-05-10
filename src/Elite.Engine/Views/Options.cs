@@ -20,7 +20,7 @@ namespace Elite.Engine.Views
             new("Save Commander",   true),
             new("Load Commander",   true),
             new("Game Settings",    false),
-            new("Quit",            false)
+            new("Quit",            false),
         };
 
         private int _highlightedItem;

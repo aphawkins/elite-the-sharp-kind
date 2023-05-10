@@ -121,7 +121,7 @@ namespace Elite.Engine.Views
         {
             Vector2 s = new()
             {
-                Y = centre.Y + y
+                Y = centre.Y + y,
             };
 
             if (s.Y is < Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET or

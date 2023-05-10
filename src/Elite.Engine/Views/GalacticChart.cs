@@ -166,7 +166,7 @@ namespace Elite.Engine.Views
                 Vector2 pixel = new()
                 {
                     X = glx.D * Graphics.GFX_SCALE,
-                    Y = (glx.B / (2f / Graphics.GFX_SCALE)) + (18f * Graphics.GFX_SCALE) + 1
+                    Y = (glx.B / (2f / Graphics.GFX_SCALE)) + (18f * Graphics.GFX_SCALE) + 1,
                 };
 
                 _planetPixels.Add(pixel);

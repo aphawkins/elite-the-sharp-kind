@@ -53,7 +53,7 @@ namespace Elite.Engine.Conflict
             ShipFlags.Angry,                                    // tharlet
             ShipFlags.Angry,                                    // constrictor
             ShipFlags.Police | ShipFlags.Cloaked,                   // cougar
-            0 // dodec
+            0, // dodec
         };
 
         private readonly PlayerShip _ship;
@@ -193,7 +193,7 @@ namespace Elite.Engine.Conflict
             {
                 Space.s_universe[i] = new()
                 {
-                    Type = 0
+                    Type = 0,
                 };
             }
 

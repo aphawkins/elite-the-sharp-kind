@@ -48,7 +48,7 @@ namespace Elite.Engine.Views
             new string[] { "<11> <10>", "%I <30> <33>", "its <12> <31> <33>", "<34> <35>", "<11> <10>" },
             new string[] { "meat", "cutlet", "steak", "burgers", "soup" },
             new string[] { "ice", "mud", "Zero-G", "vacuum", "%I ultra" },
-            new string[] { "hockey", "cricket", "karate", "polo", "tennis" }
+            new string[] { "hockey", "cricket", "karate", "polo", "tennis" },
         };
 
         private readonly Draw _draw;
@@ -60,7 +60,7 @@ namespace Elite.Engine.Views
                                 "Mainly Agricultural",
                                 "Rich Agricultural",
                                 "Average Agricultural",
-                                "Poor Agricultural" };
+                                "Poor Agricultural", };
 
         private readonly GameState _gameState;
         private readonly IGfx _gfx;
@@ -72,7 +72,7 @@ namespace Elite.Engine.Views
                                     "Communist",
                                     "Confederacy",
                                     "Democracy",
-                                    "Corporate State" };
+                                    "Corporate State", };
 
         private readonly Planet _planet;
         private float _distanceToPlanet;

@@ -83,7 +83,7 @@ namespace Elite.Engine
             { ShipType.Tharglet, new Tharglet() },
             { ShipType.Constrictor, new Constrictor() },
             { ShipType.Cougar, new Cougar() },
-            { ShipType.Dodec, new DodecStation() }
+            { ShipType.Dodec, new DodecStation() },
         };
 
         internal void DoExitGame() => ExitGame = true;

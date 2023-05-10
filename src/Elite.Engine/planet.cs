@@ -40,7 +40,7 @@ namespace Elite.Engine
             PlanetData pl = new()
             {
                 Government = (planet_seed.C / 8) & 7,
-                Economy = planet_seed.B & 7
+                Economy = planet_seed.B & 7,
             };
 
             if (pl.Government < 2)

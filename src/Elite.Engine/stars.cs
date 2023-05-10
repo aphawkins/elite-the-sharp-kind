@@ -68,7 +68,7 @@ namespace Elite.Engine
                 Vector2 star = new()
                 {
                     Y = _stars[i].Y,
-                    X = _stars[i].X
+                    X = _stars[i].X,
                 };
                 float zz = _stars[i].Z;
 
@@ -160,7 +160,7 @@ namespace Elite.Engine
                 Vector2 star = new()
                 {
                     Y = _stars[i].Y,
-                    X = _stars[i].X
+                    X = _stars[i].X,
                 };
                 float zz = _stars[i].Z;
 
@@ -257,7 +257,7 @@ namespace Elite.Engine
                 Vector2 star = new()
                 {
                     Y = _stars[i].Y,
-                    X = _stars[i].X
+                    X = _stars[i].X,
                 };
                 float zz = _stars[i].Z;
 

@@ -123,7 +123,7 @@ namespace Elite.Engine.Save
                     _state.Cmdr.Galaxy.C,
                     _state.Cmdr.Galaxy.D,
                     _state.Cmdr.Galaxy.E,
-                    _state.Cmdr.Galaxy.F
+                    _state.Cmdr.Galaxy.F,
                 },
                 HasDockingComputer = _ship.HasDockingComputer,
                 HasECM = _ship.HasECM,
@@ -136,7 +136,7 @@ namespace Elite.Engine.Save
                     _ship.LaserFront.Type.ToString(),
                     _ship.LaserRear.Type.ToString(),
                     _ship.LaserRight.Type.ToString(),
-                    _ship.LaserLeft.Type.ToString()
+                    _ship.LaserLeft.Type.ToString(),
                 },
                 LegalStatus = _state.Cmdr.LegalStatus,
                 MarketRandomiser = _trade._marketRandomiser,
@@ -149,7 +149,7 @@ namespace Elite.Engine.Save
                     _state.DockedPlanet.D,
                     _state.DockedPlanet.B,
                 },
-                StationStock = _trade._stockMarket.Values.Select(x => x.StationStock).ToArray()
+                StationStock = _trade._stockMarket.Values.Select(x => x.StationStock).ToArray(),
             };
 
             return save;

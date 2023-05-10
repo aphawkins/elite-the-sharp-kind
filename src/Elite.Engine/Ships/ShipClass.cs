@@ -14,6 +14,6 @@ namespace Elite.Engine.Ships
         Police,
         Trader,
         PackHunter,
-        LoneWolf
+        LoneWolf,
     }
 }

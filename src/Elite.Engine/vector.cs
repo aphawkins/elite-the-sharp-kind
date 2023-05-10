@@ -15,7 +15,7 @@ namespace Elite.Engine
         {
             new Vector3(1, 0, 0),
             new Vector3(0, 1, 0),
-            new Vector3(0, 0, -1)
+            new Vector3(0, 0, -1),
         };
 
         internal static Vector3[] GetInitialMatrix() => s_startMatrix.Cloner();

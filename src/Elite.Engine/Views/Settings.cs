@@ -22,7 +22,7 @@ namespace Elite.Engine.Views
             new("Planet Style:", new[] { "Wireframe", "Green", "SNES", "Fractal", string.Empty }),
             new("Planet Desc.:", new[] { "BBC", "MSX", string.Empty, string.Empty, string.Empty }),
             new("Instant Dock:", new[] { "Off", "On", string.Empty, string.Empty, string.Empty }),
-            new("Save Settings", new[] { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty })
+            new("Save Settings", new[] { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty }),
         };
 
         private int _highlightedItem;

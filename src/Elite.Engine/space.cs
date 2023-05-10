@@ -514,7 +514,7 @@ namespace Elite.Engine
 
             Vector3 position = new()
             {
-                Z = ((_gameState.DockedPlanet.B & 7) + 7) / 2
+                Z = ((_gameState.DockedPlanet.B & 7) + 7) / 2,
             };
             position.X = position.Z / 2;
             position.Y = position.X;
@@ -551,7 +551,7 @@ namespace Elite.Engine
                 C = RotateByteLeft(_gameState.Cmdr.Galaxy.C),
                 D = RotateByteLeft(_gameState.Cmdr.Galaxy.D),
                 E = RotateByteLeft(_gameState.Cmdr.Galaxy.E),
-                F = RotateByteLeft(_gameState.Cmdr.Galaxy.F)
+                F = RotateByteLeft(_gameState.Cmdr.Galaxy.F),
             };
             _gameState.Cmdr.Galaxy = glx;
 

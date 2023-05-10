@@ -41,7 +41,7 @@ namespace Elite.Engine
             213, 213,
             167, 167, 167, 167,
             134, 134, 134, 134,
-            102, 102
+            102, 102,
         };
 
         private readonly Draw _draw;
@@ -304,7 +304,7 @@ namespace Elite.Engine
             Vector2 position = new()
             {
                 X = planet.Location.X * 256 / planet.Location.Z,
-                Y = planet.Location.Y * 256 / planet.Location.Z
+                Y = planet.Location.Y * 256 / planet.Location.Z,
             };
 
             position.Y = -position.Y;
@@ -490,7 +490,7 @@ namespace Elite.Engine
                 Vector2[] pointList = new Vector2[]
                 {
                     new Vector2(_pointList[lasv].X, _pointList[lasv].Y),
-                    new(univ.Location.X > 0 ? 0 : 511, RNG.Random(255) * 2)
+                    new(univ.Location.X > 0 ? 0 : 511, RNG.Random(255) * 2),
                 };
 
                 DrawPolygonFilled(pointList, col, _pointList[lasv].Z);
@@ -644,7 +644,7 @@ namespace Elite.Engine
         {
             Vector2 s = new()
             {
-                Y = y + centre.Y
+                Y = y + centre.Y,
             };
 
             if (s.Y is < Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET or
