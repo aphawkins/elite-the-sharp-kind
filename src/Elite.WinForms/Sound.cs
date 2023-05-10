@@ -11,11 +11,11 @@ namespace Elite.WinForms
 {
     public class Sound : ISound, IDisposable
     {
-        private MidiPlayer? _midiPlayer;
         private readonly IMidiOutput? _output;
-        private bool _disposedValue;
         private readonly Dictionary<SoundEffect, SoundPlayer> _waves = new();
         private readonly Dictionary<Music, MidiMusic> _midis = new();
+        private MidiPlayer? _midiPlayer;
+        private bool _disposedValue;
 
         public Sound()
         {
