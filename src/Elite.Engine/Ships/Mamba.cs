@@ -24,15 +24,15 @@ namespace Elite.Engine.Ships
 
         public ShipFace[] Faces { get; } =
         {
-            new(Colour.Green1, new(0x00, -0x18, 0x02), new[] {  1,  4,  0 }),
-            new(Colour.Green3, new(0x00, 0x18, 0x02), new[] {  2,  0,  3 }),
-            new(Colour.Green2, new(-0x20, 0x40, 0x10), new[] {  1,  0,  2 }),
-            new(Colour.Green2, new(0x20, 0x40, 0x10), new[] {  3,  0,  4 }),
+            new(Colour.Green1, new(0x00, -0x18, 0x02), new[] { 1,  4,  0 }),
+            new(Colour.Green3, new(0x00, 0x18, 0x02), new[] { 2,  0,  3 }),
+            new(Colour.Green2, new(-0x20, 0x40, 0x10), new[] { 1,  0,  2 }),
+            new(Colour.Green2, new(0x20, 0x40, 0x10), new[] { 3,  0,  4 }),
 
-            new(Colour.Grey1, new(0x00, 0x00, -0x7F), new[] {  1,  2,  3,  4 }),
+            new(Colour.Grey1, new(0x00, 0x00, -0x7F), new[] { 1,  2,  3,  4 }),
             new(Colour.Blue1, new(0x00, -0x18, 0x02), new[] { 11, 12,  9 }),
             new(Colour.Red1, new(0x00, 0x00, -0x7F), new[] { 17, 18, 15, 16 }),
-            new(Colour.Blue2, new(0x00, 0x18, 0x02), new[] {  7,  6,  5,  8 }),
+            new(Colour.Blue2, new(0x00, 0x18, 0x02), new[] { 7,  6,  5,  8 }),
             new(Colour.Blue1, new(0x00, -0x18, 0x02), new[] { 13, 14, 10 }),
             new(Colour.Red1, new(0x00, 0x00, -0x7F), new[] { 20, 24, 21 }),
             new(Colour.Red1, new(0x00, 0x00, -0x7F), new[] { 22, 23, 19 }),

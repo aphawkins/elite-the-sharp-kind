@@ -32,9 +32,9 @@ namespace Elite.Engine.Ships
         public ShipFace[] Faces { get; } =
         {
             new ShipFace(Colour.Grey4, new(0x00,  0x00,  0xC4), new[] { 3,  2,  1,  0,  4 }),
-            new ShipFace(Colour.Grey1, new(0x67,  0x8E,  0x58), new[] {  6, 10,  5,  0,  1 }),
-            new ShipFace(Colour.Grey2, new(0xA9, -0x37,  0x59), new[] {  7, 11,  6,  1,  2 }),
-            new ShipFace(Colour.Grey3, new(0x00, -0xB0,  0x58), new[] {   8, 12,  7,  2,  3 }),
+            new ShipFace(Colour.Grey1, new(0x67,  0x8E,  0x58), new[] { 6, 10,  5,  0,  1 }),
+            new ShipFace(Colour.Grey2, new(0xA9, -0x37,  0x59), new[] { 7, 11,  6,  1,  2 }),
+            new ShipFace(Colour.Grey3, new(0x00, -0xB0,  0x58), new[] { 8, 12,  7,  2,  3 }),
             new ShipFace(Colour.Grey1, new(-0xA9, -0x37,  0x59), new[] { 9, 13,  8,  3,  4 }),
             new ShipFace(Colour.Grey3, new(-0x67,  0x8E,  0x58), new[] { 5, 14,  9,  4,  0 }),
             new ShipFace(Colour.Grey1, new(0x00,  0xB0, -0x58), new[] { 15, 19, 14,  5, 10 }),

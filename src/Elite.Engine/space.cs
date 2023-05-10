@@ -584,7 +584,7 @@ namespace Elite.Engine
             float fz;
             float ux;
 
-            if (_gameState.IsAutoPilotOn)     // Don't want it to kill anyone!
+            if (_gameState.IsAutoPilotOn) // Don't want it to kill anyone!
             {
                 return true;
             }

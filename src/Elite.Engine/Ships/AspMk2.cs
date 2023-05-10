@@ -33,9 +33,9 @@ namespace Elite.Engine.Ships
         {
             new(Colour.Grey4, new(0x00, -0x23, 0x05), new[] { 8,  9,  7,  0, 4 }),
             new(Colour.Grey2, new(0x08, -0x26, -0x07), new[] { 3,  4,  0,  1, 2 }),
-            new(Colour.Grey1, new(-0x08, -0x26, -0x07), new[] {  1,  0,  7,  6, 5 }),
-            new(Colour.Grey3, new(0x3B, -0x40, 0x1F), new[] {  8,  4, 3 }),
-            new(Colour.Grey3, new(-0x3B, -0x40, 0x1F), new[] {  6,  7, 9 }),
+            new(Colour.Grey1, new(-0x08, -0x26, -0x07), new[] { 1,  0,  7,  6, 5 }),
+            new(Colour.Grey3, new(0x3B, -0x40, 0x1F), new[] { 8,  4, 3 }),
+            new(Colour.Grey3, new(-0x3B, -0x40, 0x1F), new[] { 6,  7, 9 }),
 
             new(Colour.Blue2, new(0x00, 0x18, -0x01), new[] { 11, 10, 12 }),
             new(Colour.Blue1, new(0x00, 0x2B, 0x13), new[] { 9,  8, 10, 11 }),
@@ -48,7 +48,7 @@ namespace Elite.Engine.Ships
             new(Colour.Red1, new(0x00, 0x00, -0x5A), new[] { 14, 15, 13, 16 }),
 
             new(Colour.White1, new(0x00, 0x2B, 0x13), new[] { 18, 17 }),
-            new(Colour.White1, new(0x00, -0x23, 0x05), new[] {  17, 18 }),
+            new(Colour.White1, new(0x00, -0x23, 0x05), new[] { 17, 18 }),
         };
 
         public int LaserFront => 8;

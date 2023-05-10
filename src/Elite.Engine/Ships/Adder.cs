@@ -45,7 +45,7 @@ namespace Elite.Engine.Ships
             new(Colour.Red2, new(-0x1E, 0x34, 0x00), new[] { 10,  8,  6,  7 }),
             new(Colour.Red3,    new(-0x1E, -0x34, 0x00), new[] { 7,  6,  5, 12 }),
             new(Colour.Red4,    new(-0x45, 0x32, 0x0D), new[] { 10,  7, 0 }),
-            new(Colour.Red1,      new(-0x45, -0x32, 0x0D), new[] {  0,  7, 12 }),
+            new(Colour.Red1,      new(-0x45, -0x32, 0x0D), new[] { 0,  7, 12 }),
 
             new(Colour.Grey3, new(0x00, 0x00, -0xA0), new[] { 3,  4,  5,  6, 8, 9 }),
             new(Colour.Grey2, new(0x00, 0x1C, 0x00), new[] { 10, 11,  9, 8 }),

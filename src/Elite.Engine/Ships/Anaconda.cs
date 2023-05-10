@@ -36,12 +36,12 @@ namespace Elite.Engine.Ships
 
             new(Colour.Grey2, new(0x00, -0x5A, 0x10), new[] { 8, 12,  7,  2, 3 }),
 
-            new(Colour.Green2, new(0x4D, -0x39, -0x13), new[] {  9, 13,  8,  3, 4 }),
+            new(Colour.Green2, new(0x4D, -0x39, -0x13), new[] { 9, 13,  8,  3, 4 }),
             new(Colour.Green3, new(0x33, 0x12, -0x57), new[] { 9,  4,  0,  5, 14 }),
-            new(Colour.Green1, new(0x00, 0x6F, -0x14), new[] {  10, 14, 5 }),
+            new(Colour.Green1, new(0x00, 0x6F, -0x14), new[] { 10, 14, 5 }),
 
-            new(Colour.Grey2, new(-0x61, 0x48, 0x18), new[] {  10, 6,  11, 12 }),
-            new(Colour.Grey1, new(-0x6C, -0x44, 0x22), new[] {  7, 12, 11 }),
+            new(Colour.Grey2, new(-0x61, 0x48, 0x18), new[] { 10, 6,  11, 12 }),
+            new(Colour.Grey1, new(-0x6C, -0x44, 0x22), new[] { 7, 12, 11 }),
             new(Colour.Grey1, new(0x6C, -0x44, 0x22), new[] { 8, 13, 12 }),
             new(Colour.Grey2, new(0x61, 0x48, 0x18), new[] { 9, 14,  12, 13 }),
             new(Colour.Grey1, new(0x00, 0x5E, 0x12), new[] { 10, 12, 14 }),

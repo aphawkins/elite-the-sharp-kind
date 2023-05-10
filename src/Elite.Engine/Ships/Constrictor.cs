@@ -31,10 +31,10 @@ namespace Elite.Engine.Ships
         public ShipFace[] Faces { get; } =
         {
             new(Colour.Grey4, new(0x00,  0x37,  0x0F), new[] { 1,  0,  8, 9 }),
-            new(Colour.Grey1, new(-0x18,  0x4B,  0x14), new[] {   1,  9,  2 }),
-            new(Colour.Grey1, new(0x18,  0x4B,  0x14), new[] {   0,  7,  8 }),
+            new(Colour.Grey1, new(-0x18,  0x4B,  0x14), new[] { 1,  9,  2 }),
+            new(Colour.Grey1, new(0x18,  0x4B,  0x14), new[] { 0,  7,  8 }),
 
-            new(Colour.Gold, new(0x2C,  0x4B,  0x00), new[] {   7,  6,  8 }),
+            new(Colour.Gold, new(0x2C,  0x4B,  0x00), new[] { 7,  6,  8 }),
             new(Colour.Gold, new(-0x2C,  0x4B,  0x00), new[] { 9,  3,  2 }),
 
             new(Colour.Yellow1, new(-0x2C,  0x4B,  0x00), new[] { 9,  4,  3 }),
