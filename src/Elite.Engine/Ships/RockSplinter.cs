@@ -25,7 +25,7 @@ namespace Elite.Engine.Ships
         {
             new(Colour.Grey1, new(0x00, 0x00, 0x00 ), new[] { 3, 2, 1 }),
             new(Colour.Grey2, new(0x00, 0x00, 0x00 ), new[] { 0, 2, 3 }),
-            new(Colour.Grey3, new(0x00, 0x00, 0x00 ), new[] { 3, 1 , 0 }),
+            new(Colour.Grey3, new(0x00, 0x00, 0x00 ), new[] { 3, 1, 0 }),
             new(Colour.Grey4, new(0x00, 0x00, 0x00 ), new[] { 0, 1, 2 }),
         };
 
