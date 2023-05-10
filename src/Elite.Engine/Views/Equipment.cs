@@ -196,7 +196,7 @@ namespace Elite.Engine.Views
                     break;
 
                 case EquipmentType.EQ_GAL_DRIVE:
-                    _ship.hasGalacticHyperdrive = true;
+                    _ship.HasGalacticHyperdrive = true;
                     break;
 
                 case EquipmentType.EQ_FRONT_PULSE:
@@ -377,7 +377,7 @@ namespace Elite.Engine.Views
             EquipmentType.EQ_ENERGY_BOMB => _ship.HasEnergyBomb,
             EquipmentType.EQ_ENERGY_UNIT => _ship.EnergyUnit != EnergyUnit.None,
             EquipmentType.EQ_DOCK_COMP => _ship.HasDockingComputer,
-            EquipmentType.EQ_GAL_DRIVE => _ship.hasGalacticHyperdrive,
+            EquipmentType.EQ_GAL_DRIVE => _ship.HasGalacticHyperdrive,
             EquipmentType.EQ_FRONT_PULSE => _ship.LaserFront.Type == LaserType.Pulse,
             EquipmentType.EQ_REAR_PULSE => _ship.LaserRear.Type == LaserType.Pulse,
             EquipmentType.EQ_LEFT_PULSE => _ship.LaserLeft.Type == LaserType.Pulse,

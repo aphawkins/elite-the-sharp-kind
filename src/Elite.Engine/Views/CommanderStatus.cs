@@ -173,7 +173,7 @@ namespace Elite.Engine.Views
                 IncrementPosition();
             }
 
-            if (_ship.hasGalacticHyperdrive)
+            if (_ship.HasGalacticHyperdrive)
             {
                 _gfx.DrawTextLeft(x, y, "Galactic Hyperspace", Colour.White1);
                 IncrementPosition();

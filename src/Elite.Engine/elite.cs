@@ -199,7 +199,7 @@ namespace Elite.Engine
             if (_gameState.IsAutoPilotOn)
             {
                 _ship.AutoDock();
-                if ((_gameState.mcount & 127) == 0)
+                if ((_gameState.MCount & 127) == 0)
                 {
                     _gameState.InfoMessage("Docking Computers On");
                 }
@@ -229,24 +229,24 @@ namespace Elite.Engine
                 if (Space.s_hyper_ready)
                 {
                     _space.DisplayHyperStatus();
-                    if ((_gameState.mcount & 3) == 0)
+                    if ((_gameState.MCount & 3) == 0)
                     {
                         _space.CountdownHyperspace();
                     }
                 }
 
-                _gameState.mcount--;
-                if (_gameState.mcount < 0)
+                _gameState.MCount--;
+                if (_gameState.MCount < 0)
                 {
-                    _gameState.mcount = 255;
+                    _gameState.MCount = 255;
                 }
 
-                if ((_gameState.mcount & 7) == 0)
+                if ((_gameState.MCount & 7) == 0)
                 {
                     _ship.RegenerateShields();
                 }
 
-                if ((_gameState.mcount & 31) == 10)
+                if ((_gameState.MCount & 31) == 10)
                 {
                     if (_ship.IsEnergyLow())
                     {
@@ -257,12 +257,12 @@ namespace Elite.Engine
                     _space.UpdateAltitude();
                 }
 
-                if ((_gameState.mcount & 31) == 20)
+                if ((_gameState.MCount & 31) == 20)
                 {
                     _space.UpdateCabinTemp();
                 }
 
-                if ((_gameState.mcount == 0) && (!_gameState.InWitchspace))
+                if ((_gameState.MCount == 0) && (!_gameState.InWitchspace))
                 {
                     _combat.RandomEncounter();
                 }

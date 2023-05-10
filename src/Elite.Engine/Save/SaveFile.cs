@@ -130,7 +130,7 @@ namespace Elite.Engine.Save
                 HasEnergyBomb = _ship.HasEnergyBomb,
                 HasEscapeCapsule = _ship.HasEscapeCapsule,
                 HasFuelScoop = _ship.HasFuelScoop,
-                HasGalacticHyperdrive = _ship.hasGalacticHyperdrive,
+                HasGalacticHyperdrive = _ship.HasGalacticHyperdrive,
                 Lasers = new string[4]
                 {
                     _ship.LaserFront.Type.ToString(),
@@ -188,7 +188,7 @@ namespace Elite.Engine.Save
             _ship.HasEnergyBomb = _lastSaved.HasEnergyBomb;
             _ship.HasEscapeCapsule = _lastSaved.HasEscapeCapsule;
             _ship.HasFuelScoop = _lastSaved.HasFuelScoop;
-            _ship.hasGalacticHyperdrive = _lastSaved.HasGalacticHyperdrive;
+            _ship.HasGalacticHyperdrive = _lastSaved.HasGalacticHyperdrive;
             _ship.LaserFront = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[0]));
             _ship.LaserRear = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[1]));
             _ship.LaserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));

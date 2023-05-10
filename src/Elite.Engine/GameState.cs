@@ -43,7 +43,7 @@ namespace Elite.Engine
         internal bool IsGameOver { get; private set; }
         internal bool IsInitialised { get; set; }
         internal float LaserTemp { get; set; }
-        internal int mcount { get; set; }
+        internal int MCount { get; set; }
         internal int MessageCount { get; set; }
         internal string MessageString { get; set; } = string.Empty;
         internal string PlanetName { get; set; } = string.Empty;
@@ -119,7 +119,7 @@ namespace Elite.Engine
             DetonateBomb = false;
             DrawLasers = false;
             ExitGame = false;
-            mcount = 0;
+            MCount = 0;
             SetView(SCR.SCR_INTRO_ONE);
         }
 

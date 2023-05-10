@@ -137,7 +137,7 @@ namespace Elite.Engine
             }
 
             _stars.WarpStars = true;
-            _gameState.mcount &= 63;
+            _gameState.MCount &= 63;
             _combat.InBattle = false;
         }
 
@@ -168,7 +168,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (!_ship.hasGalacticHyperdrive)
+            if (!_ship.HasGalacticHyperdrive)
             {
                 return;
             }
@@ -481,7 +481,7 @@ namespace Elite.Engine
 
             if (s_hyper_galactic)
             {
-                _ship.hasGalacticHyperdrive = false;
+                _ship.HasGalacticHyperdrive = false;
                 s_hyper_galactic = false;
                 EnterNextGalaxy();
                 _gameState.Cmdr.LegalStatus = 0;

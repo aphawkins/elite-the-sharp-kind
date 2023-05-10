@@ -544,7 +544,7 @@ namespace Elite.Engine.Conflict
                 return;
             }
 
-            if (((un ^ _gameState.mcount) & 7) != 0)
+            if (((un ^ _gameState.MCount) & 7) != 0)
             {
                 return;
             }
