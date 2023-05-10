@@ -165,6 +165,16 @@ dotnet_analyzer_diagnostic.severity = warning
 # Diagnostic - Exclusions
 dotnet_diagnostic.IDE0058.severity = none #Expression value is never used
 
+Roslynator Configuration
+# Set severity for all analyzers that are enabled by default (https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2022#set-rule-severity-of-multiple-analyzer-rules-at-once-in-an-editorconfig-file)
+dotnet_analyzer_diagnostic.category-roslynator.severity = warning
+
+# Enable/disable all refactorings
+roslynator_refactorings.enabled = true
+
+# Enable/disable all compiler diagnostic fixes
+roslynator_compiler_diagnostic_fixes.enabled = true
+
 # C++ Files
 [*.{cpp,h,in}]
 curly_bracket_next_line = true
