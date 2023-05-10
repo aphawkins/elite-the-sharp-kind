@@ -46,18 +46,18 @@ namespace Elite.Engine.Views
                 if (i == _highlightedItem)
                 {
                     float x = Graphics.GFX_X_CENTRE - (OptionBarWidth / 2);
-                    _gfx.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, GFX_COL.GFX_COL_DARK_RED);
+                    _gfx.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, Colour.Red2);
                 }
 
-                GFX_COL col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? GFX_COL.GFX_COL_GREY_1 : GFX_COL.GFX_COL_WHITE;
+                Colour col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? Colour.Grey1 : Colour.White1;
 
                 _gfx.DrawTextCentre(y, _optionList[i].Label, 120, col);
             }
 
-            _gfx.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(320, "The Sharp Kind - Andy Hawkins 2023", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(340, "The New Kind - Christian Pinder 1999-2001", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(360, "Original Code - Ian Bell & David Braben", 120, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", 120, Colour.White1);
+            _gfx.DrawTextCentre(320, "The Sharp Kind - Andy Hawkins 2023", 120, Colour.White1);
+            _gfx.DrawTextCentre(340, "The New Kind - Christian Pinder 1999-2001", 120, Colour.White1);
+            _gfx.DrawTextCentre(360, "Original Code - Ian Bell & David Braben", 120, Colour.White1);
         }
 
         public void HandleInput()

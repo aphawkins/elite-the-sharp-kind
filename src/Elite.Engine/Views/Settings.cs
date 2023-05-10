@@ -51,10 +51,10 @@ namespace Elite.Engine.Views
                     if (i == _highlightedItem)
                     {
                         x = Graphics.GFX_X_CENTRE - 200;
-                        _gfx.DrawRectangleFilled(x, y - 7, 400, 15, GFX_COL.GFX_COL_DARK_RED);
+                        _gfx.DrawRectangleFilled(x, y - 7, 400, 15, Colour.Red2);
                     }
 
-                    _gfx.DrawTextCentre(y, _settingList[i].Name, 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(y, _settingList[i].Name, 120, Colour.White1);
                     return;
                 }
 
@@ -72,10 +72,10 @@ namespace Elite.Engine.Views
 
                 if (i == _highlightedItem)
                 {
-                    _gfx.DrawRectangleFilled(x, y, 100, 15, GFX_COL.GFX_COL_DARK_RED);
+                    _gfx.DrawRectangleFilled(x, y, 100, 15, Colour.Red2);
                 }
-                _gfx.DrawTextLeft(x, y, _settingList[i].Name, GFX_COL.GFX_COL_WHITE);
-                _gfx.DrawTextLeft(x + 120, y, _settingList[i].Values[v], GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, _settingList[i].Name, Colour.White1);
+                _gfx.DrawTextLeft(x + 120, y, _settingList[i].Values[v], Colour.White1);
             }
         }
 

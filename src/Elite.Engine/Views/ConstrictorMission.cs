@@ -68,17 +68,17 @@ namespace Elite.Engine.Views
                 _draw.DrawTextPretty(16, 50, 300, _mission1_brief_a);
                 _draw.DrawTextPretty(16, 200, 470, _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
-                _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 3)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
-                _gfx.DrawTextCentre(100, "Congratulations Commander!", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawTextCentre(100, "Congratulations Commander!", 140, Colour.Gold);
 
                 _draw.DrawTextPretty(116, 132, 400, _mission1_debrief);
 
-                _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
             }
         }
 

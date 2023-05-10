@@ -35,10 +35,10 @@ namespace Elite.Engine.Views
         {
             _gfx.DrawImage(Image.EliteText, new(-1, 10));
 
-            _gfx.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(330, "The New Kind - Christian Pinder.", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(350, "The Sharp Kind - Andy Hawkins.", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(370, "Load New Commander (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, Colour.White1);
+            _gfx.DrawTextCentre(330, "The New Kind - Christian Pinder.", 120, Colour.White1);
+            _gfx.DrawTextCentre(350, "The Sharp Kind - Andy Hawkins.", 120, Colour.White1);
+            _gfx.DrawTextCentre(370, "Load New Commander (Y/N)?", 140, Colour.Gold);
         }
 
         public void HandleInput()

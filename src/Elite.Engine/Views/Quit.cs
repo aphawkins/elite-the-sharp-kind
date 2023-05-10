@@ -26,7 +26,7 @@ namespace Elite.Engine.Views
             _draw.ClearDisplay();
             _draw.DrawViewHeader("GAME OPTIONS");
 
-            _gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, Colour.Gold);
         }
 
         public void HandleInput()

@@ -22,7 +22,7 @@ namespace Elite.WinForms
         {
         }
 
-        public override void DrawCircle(Vector2 centre, float radius, GFX_COL colour = GFX_COL.GFX_COL_WHITE)
+        public override void DrawCircle(Vector2 centre, float radius, Colour colour = Colour.White1)
         {
             //	int x, y;
             //	int s;

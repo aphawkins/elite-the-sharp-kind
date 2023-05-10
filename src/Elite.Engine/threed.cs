@@ -148,7 +148,7 @@ namespace Elite.Engine
 
             for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
             {
-                GFX_COL colour = _gameState.Config.UseWireframe ? GFX_COL.GFX_COL_WHITE : _polyChain[i].FaceColour;
+                Colour colour = _gameState.Config.UseWireframe ? Colour.White1 : _polyChain[i].FaceColour;
 
                 if (_polyChain[i].PointList.Length == 2)
                 {
@@ -287,7 +287,7 @@ namespace Elite.Engine
                             //Debug.Assert(position.X >= 0);
                             //Debug.Assert(position.Y >= 0);
 
-                            _gfx.DrawPixel(new(position.X + psx, position.Y + psy), GFX_COL.GFX_COL_WHITE);
+                            _gfx.DrawPixel(new(position.X + psx, position.Y + psy), Colour.White1);
                         }
                     }
                 }
@@ -336,7 +336,7 @@ namespace Elite.Engine
                     break;
 
                 case PlanetRenderStyle.Green:
-                    _gfx.DrawCircleFilled(position, radius, GFX_COL.GFX_COL_GREEN_1);
+                    _gfx.DrawCircleFilled(position, radius, Colour.Green1);
                     break;
 
                 case PlanetRenderStyle.SNES:
@@ -349,7 +349,7 @@ namespace Elite.Engine
             }
         }
 
-        private void DrawPolygonFilled(Vector2[] point_list, GFX_COL face_colour, float zAvg)
+        private void DrawPolygonFilled(Vector2[] point_list, Colour face_colour, float zAvg)
         {
             int i;
 
@@ -411,7 +411,7 @@ namespace Elite.Engine
         {
             Vector3[] trans_mat = new Vector3[3];
             int lasv;
-            GFX_COL col;
+            Colour col;
             IShip ship = _gameState.ShipList[univ.Type];
 
             for (int i = 0; i < 3; i++)
@@ -485,7 +485,7 @@ namespace Elite.Engine
             if (univ.Flags.HasFlag(ShipFlags.Firing))
             {
                 lasv = _gameState.ShipList[univ.Type].LaserFront;
-                col = (univ.Type == ShipType.Viper) ? GFX_COL.GFX_COL_CYAN : GFX_COL.GFX_COL_WHITE;
+                col = (univ.Type == ShipType.Viper) ? Colour.Cyan : Colour.White1;
 
                 Vector2[] pointList = new Vector2[]
                 {
@@ -504,7 +504,7 @@ namespace Elite.Engine
         /// <param name="radius"></param>
         private void DrawWireframePlanet(Vector2 centre, float radius) =>
             // TODO: At the moment we just draw a circle. Need to add in the two arcs that the original Elite had.
-            _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawCircle(centre, radius, Colour.White1);
 
         /// <summary>
         /// Generate a fractal landscape. Uses midpoint displacement method.
@@ -539,8 +539,8 @@ namespace Elite.Engine
                     bool dark = dist > 10000;
                     int h = _landscape[x, y];
                     _landscape[x, y] = h > 166
-                        ? (int)(dark ? GFX_COL.GFX_COL_GREEN_1 : GFX_COL.GFX_COL_GREEN_2)
-                        : (int)(dark ? GFX_COL.GFX_COL_BLUE_2 : GFX_COL.GFX_COL_BLUE_1);
+                        ? (int)(dark ? Colour.Green1 : Colour.Green2)
+                        : (int)(dark ? Colour.Blue2 : Colour.Blue1);
                 }
             }
         }
@@ -669,7 +669,7 @@ namespace Elite.Engine
                 {
                     int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LAND_X_MAX);
                     int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LAND_Y_MAX);
-                    GFX_COL colour = (GFX_COL)_landscape[lx, ly];
+                    Colour colour = (Colour)_landscape[lx, ly];
                     _gfx.DrawPixelFast(s, colour);
                 }
                 rx += vx;

@@ -4,49 +4,47 @@
 
 namespace Elite.Engine.Enums
 {
-    public enum GFX_COL
+    public enum Colour
     {
-        GFX_COL_BLACK = 0,
-        GFX_COL_DARK_RED = 28,
-        GFX_COL_WHITE = 255,
-        GFX_COL_GOLD = 39,
-        GFX_COL_RED = 49,
-        GFX_COL_CYAN = 11,
+        Black = 0,
 
-        GFX_COL_GREY_1 = 248,
-        GFX_COL_GREY_2 = 235,
-        GFX_COL_GREY_3 = 234,
-        GFX_COL_GREY_4 = 237,
+        Cyan = 11,
 
-        GFX_COL_BLUE_1 = 45,
-        GFX_COL_BLUE_2 = 46,
-        GFX_COL_BLUE_3 = 133,
-        GFX_COL_BLUE_4 = 4,
+        Grey1 = 248,
+        Grey2 = 235,
+        Grey3 = 234,
+        Grey4 = 237,
 
-        GFX_COL_RED_3 = 1,
-        GFX_COL_RED_4 = 71,
+        Blue1 = 45,
+        Blue2 = 46,
+        Blue3 = 133,
+        Blue4 = 4,
 
-        GFX_COL_WHITE_2 = 242,
+        Red1 = 49,
+        Red2 = 28,
+        Red3 = 1,
+        Red4 = 71,
 
-        GFX_COL_YELLOW_1 = 37,
+        White1 = 255,
+        White2 = 242,
 
-        // GFX_COL_YELLOW_2 = GFX_COL_GOLD,
-        GFX_COL_YELLOW_3 = 89,
+        Yellow1 = 37,
+        Gold = 39,
+        Yellow3 = 89,
+        Yellow4 = 160,
+        Yellow5 = 251,
 
-        GFX_COL_YELLOW_4 = 160,
-        GFX_COL_YELLOW_5 = 251,
+        Orange1 = 76,
+        Orange2 = 77,
+        Orange3 = 122,
 
-        GFX_COL_ORANGE_1 = 76,
-        GFX_COL_ORANGE_2 = 77,
-        GFX_COL_ORANGE_3 = 122,
+        Green1 = 2,
+        Green2 = 17,
+        Green3 = 86,
 
-        GFX_COL_GREEN_1 = 2,
-        GFX_COL_GREEN_2 = 17,
-        GFX_COL_GREEN_3 = 86,
-
-        GFX_COL_PINK_1 = 183,
+        Pink1 = 183,
 
         //UNKNOWN_1 = 137,
-        //      UNKNOWN_2 = 252,
+        //UNKNOWN_2 = 252,
     }
 }

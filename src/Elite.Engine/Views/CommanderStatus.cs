@@ -104,102 +104,102 @@ namespace Elite.Engine.Views
             }
 
             _draw.DrawViewHeader($"COMMANDER {_gameState.Cmdr.Name}");
-            _gfx.DrawTextLeft(16, 58, "Present System:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(16, 58, "Present System:", Colour.Green1);
 
             if (!_gameState.InWitchspace)
             {
-                _gfx.DrawTextLeft(150, 58, dockedPlanetName, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(150, 58, dockedPlanetName, Colour.White1);
             }
 
-            _gfx.DrawTextLeft(16, 74, "Hyperspace System:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 74, hyperspacePlanetName, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 74, "Hyperspace System:", Colour.Green1);
+            _gfx.DrawTextLeft(150, 74, hyperspacePlanetName, Colour.White1);
 
-            _gfx.DrawTextLeft(16, 90, "Condition:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 90, _conditionText[condition], GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 90, "Condition:", Colour.Green1);
+            _gfx.DrawTextLeft(150, 90, _conditionText[condition], Colour.White1);
 
-            _gfx.DrawTextLeft(16, 106, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 106, $"{_ship.Fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 106, "Fuel:", Colour.Green1);
+            _gfx.DrawTextLeft(150, 106, $"{_ship.Fuel:N1} Light Years", Colour.White1);
 
-            _gfx.DrawTextLeft(16, 122, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 122, $"{_trade._credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 122, "Cash:", Colour.Green1);
+            _gfx.DrawTextLeft(150, 122, $"{_trade._credits:N1} Credits", Colour.White1);
 
-            _gfx.DrawTextLeft(16, 138, "Legal Status:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 138, _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 138, "Legal Status:", Colour.Green1);
+            _gfx.DrawTextLeft(150, 138, _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", Colour.White1);
 
-            _gfx.DrawTextLeft(16, 154, "Rating:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(150, 154, rating, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 154, "Rating:", Colour.Green1);
+            _gfx.DrawTextLeft(150, 154, rating, Colour.White1);
 
-            _gfx.DrawTextLeft(16, 186, "EQUIPMENT:", GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawTextLeft(16, 186, "EQUIPMENT:", Colour.Green1);
 
             if (_ship.CargoCapacity > 20)
             {
-                _gfx.DrawTextLeft(x, y, "Large Cargo Bay", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, "Large Cargo Bay", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.HasEscapeCapsule)
             {
-                _gfx.DrawTextLeft(x, y, "Escape Capsule", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, "Escape Capsule", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.HasFuelScoop)
             {
-                _gfx.DrawTextLeft(x, y, "Fuel Scoops", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, "Fuel Scoops", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.HasECM)
             {
-                _gfx.DrawTextLeft(x, y, "E.C.M. System", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, "E.C.M. System", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.HasEnergyBomb)
             {
-                _gfx.DrawTextLeft(x, y, "Energy Bomb", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, "Energy Bomb", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.EnergyUnit != EnergyUnit.None)
             {
-                _gfx.DrawTextLeft(x, y, _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.HasDockingComputer)
             {
-                _gfx.DrawTextLeft(x, y, "Docking Computers", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, "Docking Computers", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.hasGalacticHyperdrive)
             {
-                _gfx.DrawTextLeft(x, y, "Galactic Hyperspace", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, "Galactic Hyperspace", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.LaserFront.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Front {_ship.LaserFront.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Front {_ship.LaserFront.Name} Laser", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.LaserRear.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Rear {_ship.LaserRear.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Rear {_ship.LaserRear.Name} Laser", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.LaserLeft.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Left {_ship.LaserLeft.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Left {_ship.LaserLeft.Name} Laser", Colour.White1);
                 IncrementPosition();
             }
 
             if (_ship.LaserRight.Type != LaserType.None)
             {
-                _gfx.DrawTextLeft(x, y, $"Right {_ship.LaserRight.Name} Laser", GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x, y, $"Right {_ship.LaserRight.Name} Laser", Colour.White1);
             }
         }
 

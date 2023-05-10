@@ -82,17 +82,17 @@ namespace Elite.Engine
                     (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
                     (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
                 {
-                    _gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawPixel(star, Colour.White1);
 
                     if (zz < 0xC0)
                     {
-                        _gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
                     }
 
                     if (zz < 0x90)
                     {
-                        _gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
                     }
                 }
 
@@ -174,17 +174,17 @@ namespace Elite.Engine
                     (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
                     (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
                 {
-                    _gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawPixel(star, Colour.White1);
 
                     if (zz < 0xC0)
                     {
-                        _gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
                     }
 
                     if (zz < 0x90)
                     {
-                        _gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
                     }
                 }
 
@@ -271,17 +271,17 @@ namespace Elite.Engine
                     (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
                     (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
                 {
-                    _gfx.DrawPixel(star, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawPixel(star, Colour.White1);
 
                     if (zz < 0xC0)
                     {
-                        _gfx.DrawPixel(new(star.X + 1, star.Y), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
                     }
 
                     if (zz < 0x90)
                     {
-                        _gfx.DrawPixel(new(star.X, star.Y + 1), GFX_COL.GFX_COL_WHITE);
-                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
+                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
                     }
                 }
 

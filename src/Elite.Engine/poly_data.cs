@@ -9,7 +9,7 @@ namespace Elite.Engine
 {
     internal struct PolygonData
     {
-        internal GFX_COL FaceColour { get; set; }
+        internal Colour FaceColour { get; set; }
         internal int Next { get; set; }
         internal Vector2[] PointList { get; set; }
         internal float Z { get; set; }

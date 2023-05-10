@@ -28,22 +28,22 @@ namespace Elite.Engine.Ships
 
         public ShipFace[] Faces { get; } =
         {
-            new(GFX_COL.GFX_COL_BLUE_4, new( 0x00, 0x2B, 0x07), new[] {   0,  2, 1 }),
-            new(GFX_COL.GFX_COL_BLUE_3, new(-0x0A, 0x31, 0x07), new[] {   1,  2, 3 }),
-            new (GFX_COL.GFX_COL_BLUE_3, new( 0x0A, 0x31, 0x07), new[] {  4,  2, 0 }),
+            new(Colour.Blue4, new( 0x00, 0x2B, 0x07), new[] {   0,  2, 1 }),
+            new(Colour.Blue3, new(-0x0A, 0x31, 0x07), new[] {   1,  2, 3 }),
+            new (Colour.Blue3, new( 0x0A, 0x31, 0x07), new[] {  4,  2, 0 }),
 
-            new(GFX_COL.GFX_COL_GREY_1, new(-0x3B,-0x1C,-0x65), new[] { 3,  2, 6 }),
-            new (GFX_COL.GFX_COL_GREY_3, new( 0x00,-0x34,-0x4E), new[] { 6,  2, 5 }),
-            new (GFX_COL.GFX_COL_GREY_1, new( 0x3B,-0x1C,-0x65), new[] { 5,  2, 4 }),
+            new(Colour.Grey1, new(-0x3B,-0x1C,-0x65), new[] { 3,  2, 6 }),
+            new (Colour.Grey3, new( 0x00,-0x34,-0x4E), new[] { 6,  2, 5 }),
+            new (Colour.Grey1, new( 0x3B,-0x1C,-0x65), new[] { 5,  2, 4 }),
 
-            new (GFX_COL.GFX_COL_BLUE_1, new(-0x48,-0x63, 0x32), new[] { 6,  1, 3 }),
-            new(GFX_COL.GFX_COL_BLUE_2, new( 0x00,-0x53, 0x1E), new[] { 6,  5, 0, 1 }),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x48,-0x63, 0x32), new[] { 4,  0, 5 }),
+            new (Colour.Blue1, new(-0x48,-0x63, 0x32), new[] { 6,  1, 3 }),
+            new(Colour.Blue2, new( 0x00,-0x53, 0x1E), new[] { 6,  5, 0, 1 }),
+            new(Colour.Blue1, new( 0x48,-0x63, 0x32), new[] { 4,  0, 5 }),
 
-            new(GFX_COL.GFX_COL_DARK_RED, new(0x00,-0x34,-0x4E), new[] { 8,  9, 7 }),
+            new(Colour.Red2, new(0x00,-0x34,-0x4E), new[] { 8,  9, 7 }),
 
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00, 0x2B, 0x07), new[] { 11, 10 /*, 12 */ }),
-            new(GFX_COL.GFX_COL_WHITE, new( 0x00, 0x2B, 0x07), new[] { 12, 13 /*, 10 */ }),
+            new(Colour.White1, new( 0x00, 0x2B, 0x07), new[] { 11, 10 /*, 12 */ }),
+            new(Colour.White1, new( 0x00, 0x2B, 0x07), new[] { 12, 13 /*, 10 */ }),
         };
 
         public int LaserFront => 0;

@@ -91,7 +91,7 @@ namespace Elite.Engine.Views
                 }
 
                 i++;
-                _gfx.DrawTextLeft(x + Graphics.GFX_X_OFFSET, y + Graphics.GFX_Y_OFFSET, text[previous..i], GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(x + Graphics.GFX_X_OFFSET, y + Graphics.GFX_Y_OFFSET, text[previous..i], Colour.White1);
                 previous = i;
                 y += 8 * Graphics.GFX_SCALE;
             }
@@ -99,7 +99,7 @@ namespace Elite.Engine.Views
 
         internal void DrawViewHeader(string title)
         {
-            _gfx.DrawTextCentre(20, title, 140, GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawTextCentre(20, title, 140, Colour.Gold);
             _gfx.DrawLine(new(0, 36), new(511, 36));
         }
 
@@ -168,13 +168,13 @@ namespace Elite.Engine.Views
             {
                 float distance = (dx * dx) + dy;
 
-                GFX_COL colour = distance < inner
-                    ? GFX_COL.GFX_COL_WHITE
+                Colour colour = distance < inner
+                    ? Colour.White1
                     : distance < inner2
-                        ? GFX_COL.GFX_COL_YELLOW_4
+                        ? Colour.Yellow4
                         : distance < outer
-                            ? GFX_COL.GFX_COL_ORANGE_3
-                            : ((int)s.X ^ (int)y).IsOdd() ? GFX_COL.GFX_COL_ORANGE_1 : GFX_COL.GFX_COL_ORANGE_2;
+                            ? Colour.Orange3
+                            : ((int)s.X ^ (int)y).IsOdd() ? Colour.Orange1 : Colour.Orange2;
 
                 _gfx.DrawPixelFast(s, colour);
             }

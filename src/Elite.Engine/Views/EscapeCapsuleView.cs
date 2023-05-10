@@ -38,7 +38,7 @@ namespace Elite.Engine.Views
         {
             if (_i < 90)
             {
-                _gfx.DrawTextCentre(358, "Escape capsule launched - Ship auto-destuct initiated.", 120, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextCentre(358, "Escape capsule launched - Ship auto-destuct initiated.", 120, Colour.White1);
             }
         }
 

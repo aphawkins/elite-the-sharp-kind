@@ -31,14 +31,14 @@ namespace Elite.Engine.Views
             _draw.ClearDisplay();
             _draw.DrawViewHeader("LOAD COMMANDER");
 
-            _gfx.DrawTextCentre(75, "Please enter commander name:", 120, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawRectangle(100, 100, 312, 50, GFX_COL.GFX_COL_WHITE);
-            _gfx.DrawTextCentre(125, _name, 140, GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextCentre(75, "Please enter commander name:", 120, Colour.White1);
+            _gfx.DrawRectangle(100, 100, 312, 50, Colour.White1);
+            _gfx.DrawTextCentre(125, _name, 140, Colour.White1);
 
             if (!_isLoaded)
             {
-                _gfx.DrawTextCentre(175, "Error Loading Commander!", 140, GFX_COL.GFX_COL_GOLD);
-                _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextCentre(175, "Error Loading Commander!", 140, Colour.Gold);
+                _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, Colour.White1);
             }
         }
 

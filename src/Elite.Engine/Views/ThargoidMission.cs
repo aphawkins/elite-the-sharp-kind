@@ -56,7 +56,7 @@ namespace Elite.Engine.Views
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _draw.DrawTextPretty(116, 132, 400, s_mission2BriefA);
-                _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 5)
             {
@@ -64,14 +64,14 @@ namespace Elite.Engine.Views
                 _draw.DrawTextPretty(16, 50, 300, s_mission2BriefB);
                 _draw.DrawTextPretty(16, 200, 470, s_mission2BriefC);
                 _gfx.DrawImage(Image.Blake, new(352, 46));
-                _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 6)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
-                _gfx.DrawTextCentre(100, "Well done Commander.", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawTextCentre(100, "Well done Commander.", 140, Colour.Gold);
                 _draw.DrawTextPretty(116, 132, 400, s_mission2Debrief);
-                _gfx.DrawTextCentre(330, "Press space to continue.", 140, GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
             }
         }
 

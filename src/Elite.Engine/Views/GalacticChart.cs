@@ -44,42 +44,42 @@ namespace Elite.Engine.Views
             Vector2 centre = new(_gameState.DockedPlanet.D * Graphics.GFX_SCALE, (_gameState.DockedPlanet.B / (2 / Graphics.GFX_SCALE)) + (18 * Graphics.GFX_SCALE) + 1);
             float radius = _ship.Fuel * 2.5f * Graphics.GFX_SCALE;
             float cross_size = 7 * Graphics.GFX_SCALE;
-            _gfx.DrawCircle(centre, radius, GFX_COL.GFX_COL_GREEN_1);
+            _gfx.DrawCircle(centre, radius, Colour.Green1);
             _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
             _gfx.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
 
             // Planets
             foreach (Vector2 pixel in _planetPixels)
             {
-                _gfx.DrawPixel(pixel, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawPixel(pixel, Colour.White1);
             }
 
             // Moving cross
             centre = new(_gameState.Cross.X, _gameState.Cross.Y);
             _gfx.SetClipRegion(1, 37, 510, 293);
-            _gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), GFX_COL.GFX_COL_RED);
-            _gfx.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), GFX_COL.GFX_COL_RED);
+            _gfx.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), Colour.Red1);
+            _gfx.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), Colour.Red1);
             _gfx.SetClipRegion(1, 1, 510, 383);
 
             // Text
             if (_isFind)
             {
-                _gfx.DrawTextLeft(16, 340, "Planet Name?", GFX_COL.GFX_COL_GREEN_1);
-                _gfx.DrawTextLeft(16, 356, _findName, GFX_COL.GFX_COL_WHITE);
+                _gfx.DrawTextLeft(16, 340, "Planet Name?", Colour.Green1);
+                _gfx.DrawTextLeft(16, 356, _findName, Colour.White1);
             }
             else
             {
                 if (string.IsNullOrEmpty(_gameState.PlanetName))
                 {
-                    _gfx.DrawTextLeft(16, 340, "Unknown Planet", GFX_COL.GFX_COL_GREEN_1);
-                    _gfx.DrawTextLeft(16, 356, _findName, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextLeft(16, 340, "Unknown Planet", Colour.Green1);
+                    _gfx.DrawTextLeft(16, 356, _findName, Colour.White1);
                 }
                 else
                 {
-                    _gfx.DrawTextLeft(16, 340, _gameState.PlanetName, GFX_COL.GFX_COL_GREEN_1);
+                    _gfx.DrawTextLeft(16, 340, _gameState.PlanetName, Colour.Green1);
                     if (_gameState.DistanceToPlanet > 0)
                     {
-                        _gfx.DrawTextLeft(16, 356, $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", GFX_COL.GFX_COL_WHITE);
+                        _gfx.DrawTextLeft(16, 356, $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White1);
                     }
                 }
             }

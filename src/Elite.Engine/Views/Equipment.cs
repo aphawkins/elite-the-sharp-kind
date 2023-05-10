@@ -87,10 +87,10 @@ namespace Elite.Engine.Views
 
                 if (i == _highlightedItem)
                 {
-                    _gfx.DrawRectangleFilled(2, y + 1, 508, 15, GFX_COL.GFX_COL_DARK_RED);
+                    _gfx.DrawRectangleFilled(2, y + 1, 508, 15, Colour.Red2);
                 }
 
-                GFX_COL col = _equipmentStock[i].CanBuy ? GFX_COL.GFX_COL_WHITE : GFX_COL.GFX_COL_GREY_1;
+                Colour col = _equipmentStock[i].CanBuy ? Colour.White1 : Colour.Grey1;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
                 _gfx.DrawTextLeft(x, y, _equipmentStock[i].Name[1..], col);
 
@@ -102,7 +102,7 @@ namespace Elite.Engine.Views
                 y += 15;
             }
 
-            _gfx.DrawTextLeft(16, 340, $"Cash: {_trade._credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 340, $"Cash: {_trade._credits:N1} Credits", Colour.White1);
         }
 
         public void HandleInput()

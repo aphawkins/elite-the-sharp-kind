@@ -125,7 +125,7 @@ namespace Elite.Engine
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _gfx.DrawTextLeft(450, 10, $"FPS: {_lockObj.FramesDrawn.Count}", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(450, 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White1);
         }
 
         private void DrawFrame()
@@ -223,7 +223,7 @@ namespace Elite.Engine
 
                 if (_gameState.MessageCount > 0)
                 {
-                    _gfx.DrawTextCentre(358, _gameState.MessageString, 120, GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextCentre(358, _gameState.MessageString, 120, Colour.White1);
                 }
 
                 if (Space.s_hyper_ready)

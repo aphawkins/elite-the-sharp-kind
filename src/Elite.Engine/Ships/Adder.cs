@@ -34,23 +34,23 @@ namespace Elite.Engine.Ships
 
         public ShipFace[] Faces { get; } =
         {
-            new(GFX_COL.GFX_COL_GREY_1, new(0x00, 0x27, 0x0A), new[] { 0, 1,  11,  10 }),
-            new(GFX_COL.GFX_COL_GREY_1, new(0x00,-0x27, 0x0A), new[] { 1, 0,  12,  13 }),
+            new(Colour.Grey1, new(0x00, 0x27, 0x0A), new[] { 0, 1,  11,  10 }),
+            new(Colour.Grey1, new(0x00,-0x27, 0x0A), new[] { 1, 0,  12,  13 }),
 
-            new(GFX_COL.GFX_COL_RED_4,    new(  0x45, 0x32, 0x0D), new[] { 2, 11,  1 }),
-            new(GFX_COL.GFX_COL_RED,      new(  0x45,-0x32, 0x0D), new[] { 1, 13,  2 }),
-            new(GFX_COL.GFX_COL_DARK_RED, new( 0x1E, 0x34, 0x00), new[] { 9, 11,  2,  3 }),
-            new(GFX_COL.GFX_COL_RED_3,    new( 0x1E,-0x34, 0x00), new[] { 3, 2, 13,  4 }),
+            new(Colour.Red4,    new(  0x45, 0x32, 0x0D), new[] { 2, 11,  1 }),
+            new(Colour.Red1,      new(  0x45,-0x32, 0x0D), new[] { 1, 13,  2 }),
+            new(Colour.Red2, new( 0x1E, 0x34, 0x00), new[] { 9, 11,  2,  3 }),
+            new(Colour.Red3,    new( 0x1E,-0x34, 0x00), new[] { 3, 2, 13,  4 }),
 
-            new(GFX_COL.GFX_COL_DARK_RED, new(-0x1E, 0x34, 0x00), new[] { 10,  8,  6,  7 }),
-            new(GFX_COL.GFX_COL_RED_3,    new( -0x1E,-0x34, 0x00), new[] { 7,  6,  5, 12 }),
-            new(GFX_COL.GFX_COL_RED_4,    new( -0x45, 0x32, 0x0D), new[] { 10,  7, 0 }),
-            new(GFX_COL.GFX_COL_RED,      new(-0x45,-0x32, 0x0D), new[] {  0,  7, 12 }),
+            new(Colour.Red2, new(-0x1E, 0x34, 0x00), new[] { 10,  8,  6,  7 }),
+            new(Colour.Red3,    new( -0x1E,-0x34, 0x00), new[] { 7,  6,  5, 12 }),
+            new(Colour.Red4,    new( -0x45, 0x32, 0x0D), new[] { 10,  7, 0 }),
+            new(Colour.Red1,      new(-0x45,-0x32, 0x0D), new[] {  0,  7, 12 }),
 
-            new(GFX_COL.GFX_COL_GREY_3, new( 0x00, 0x00,-0xA0), new[] { 3,  4,  5,  6, 8, 9 }),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00, 0x1C, 0x00), new[] { 10, 11,  9, 8 }),
-            new(GFX_COL.GFX_COL_GREY_2, new( 0x00,-0x1C, 0x00), new[] { 5, 4,  13, 12 }),
-            new(GFX_COL.GFX_COL_BLUE_1, new( 0x00, 0x27, 0x0A), new[] { 17, 14, 15, 16 }),
+            new(Colour.Grey3, new( 0x00, 0x00,-0xA0), new[] { 3,  4,  5,  6, 8, 9 }),
+            new(Colour.Grey2, new( 0x00, 0x1C, 0x00), new[] { 10, 11,  9, 8 }),
+            new(Colour.Grey2, new( 0x00,-0x1C, 0x00), new[] { 5, 4,  13, 12 }),
+            new(Colour.Blue1, new( 0x00, 0x27, 0x0A), new[] { 17, 14, 15, 16 }),
         };
 
         public int LaserFront => 0;

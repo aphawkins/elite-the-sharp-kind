@@ -23,10 +23,10 @@ namespace Elite.Engine.Ships
 
         public ShipFace[] Faces { get; } =
         {
-            new ShipFace(GFX_COL.GFX_COL_RED,      new( 0x34, 0x00,-0x7A), new[] { 3, 1, 2 }),
-            new ShipFace(GFX_COL.GFX_COL_DARK_RED, new( 0x27, 0x67, 0x1E), new[] { 0, 3, 2 }),
-            new ShipFace(GFX_COL.GFX_COL_RED_3,    new( 0x27,-0x67, 0x1E), new[] { 0, 1, 3 }),
-            new ShipFace(GFX_COL.GFX_COL_RED_4,    new( 0x70, 0x00, 0x00), new[] { 0, 2, 1 }),
+            new ShipFace(Colour.Red1,      new( 0x34, 0x00,-0x7A), new[] { 3, 1, 2 }),
+            new ShipFace(Colour.Red2, new( 0x27, 0x67, 0x1E), new[] { 0, 3, 2 }),
+            new ShipFace(Colour.Red3,    new( 0x27,-0x67, 0x1E), new[] { 0, 1, 3 }),
+            new ShipFace(Colour.Red4,    new( 0x70, 0x00, 0x00), new[] { 0, 2, 1 }),
         };
 
         public int LaserFront => 0;

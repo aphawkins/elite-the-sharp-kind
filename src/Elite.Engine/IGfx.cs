@@ -12,37 +12,37 @@ namespace Elite.Engine
     {
         void ClearArea(float x, float y, float width, float height);
 
-        void DrawCircle(Vector2 centre, float radius, GFX_COL colour);
+        void DrawCircle(Vector2 centre, float radius, Colour colour);
 
-        void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour);
+        void DrawCircleFilled(Vector2 centre, float radius, Colour colour);
 
         void DrawImage(Image spriteImgage, Vector2 location);
 
-        void DrawLine(Vector2 start, Vector2 end, GFX_COL colour);
+        void DrawLine(Vector2 start, Vector2 end, Colour colour);
 
         void DrawLine(Vector2 start, Vector2 end);
 
-        void DrawPixel(Vector2 position, GFX_COL colour);
+        void DrawPixel(Vector2 position, Colour colour);
 
-        void DrawPixelFast(Vector2 position, GFX_COL colour);
+        void DrawPixelFast(Vector2 position, Colour colour);
 
-        void DrawPolygon(Vector2[] pointList, GFX_COL lineColour);
+        void DrawPolygon(Vector2[] pointList, Colour lineColour);
 
-        void DrawPolygonFilled(Vector2[] pointList, GFX_COL faceColour);
+        void DrawPolygonFilled(Vector2[] pointList, Colour faceColour);
 
-        void DrawRectangle(float x, float y, float width, float height, GFX_COL colour);
+        void DrawRectangle(float x, float y, float width, float height, Colour colour);
 
-        void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour);
+        void DrawRectangleFilled(float x, float y, float width, float height, Colour colour);
 
-        void DrawTextCentre(float y, string text, int psize, GFX_COL colour);
+        void DrawTextCentre(float y, string text, int psize, Colour colour);
 
-        void DrawTextLeft(float x, float y, string text, GFX_COL colour);
+        void DrawTextLeft(float x, float y, string text, Colour colour);
 
-        void DrawTextRight(float x, float y, string text, GFX_COL colour);
+        void DrawTextRight(float x, float y, string text, Colour colour);
 
-        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
+        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Colour colour);
 
-        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour);
+        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, Colour colour);
 
         void LoadBitmap(Image imgType, Stream bitmapStream);
 

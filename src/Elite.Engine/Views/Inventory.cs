@@ -28,19 +28,19 @@ namespace Elite.Engine.Views
             _draw.ClearDisplay();
             _draw.DrawViewHeader("INVENTORY");
 
-            _gfx.DrawTextLeft(16, 50, "Fuel:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 50, $"{_ship.Fuel:N1} Light Years", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 50, "Fuel:", Colour.Green1);
+            _gfx.DrawTextLeft(70, 50, $"{_ship.Fuel:N1} Light Years", Colour.White1);
 
-            _gfx.DrawTextLeft(16, 66, "Cash:", GFX_COL.GFX_COL_GREEN_1);
-            _gfx.DrawTextLeft(70, 66, $"{_trade._credits:N1} Credits", GFX_COL.GFX_COL_WHITE);
+            _gfx.DrawTextLeft(16, 66, "Cash:", Colour.Green1);
+            _gfx.DrawTextLeft(70, 66, $"{_trade._credits:N1} Credits", Colour.White1);
 
             int y = 98;
             foreach (KeyValuePair<StockType, StockItem> stock in _trade._stockMarket)
             {
                 if (stock.Value.CurrentCargo > 0)
                 {
-                    _gfx.DrawTextLeft(16, y, stock.Value.Name, GFX_COL.GFX_COL_WHITE);
-                    _gfx.DrawTextLeft(180, y, $"{stock.Value.CurrentCargo}{stock.Value.Units}", GFX_COL.GFX_COL_WHITE);
+                    _gfx.DrawTextLeft(16, y, stock.Value.Name, Colour.White1);
+                    _gfx.DrawTextLeft(180, y, $"{stock.Value.CurrentCargo}{stock.Value.Units}", Colour.White1);
                     y += 16;
                 }
             }

@@ -95,16 +95,16 @@ namespace Elite.Engine
         /// <param name="position"></param>
         private void DisplayDialBar(float len, Vector2 position)
         {
-            _gfx.DrawLine(new(position.X, position.Y + 384), new(position.X + len, position.Y + 384), GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(position.X, position.Y + 384), new(position.X + len, position.Y + 384), Colour.Gold);
             int i = 1;
-            _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), GFX_COL.GFX_COL_GOLD);
+            _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Gold);
 
             for (i = 2; i < 7; i++)
             {
-                _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), GFX_COL.GFX_COL_YELLOW_1);
+                _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Yellow1);
             }
 
-            _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), GFX_COL.GFX_COL_DARK_RED);
+            _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Red2);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < 4; i++)
             {
-                _gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), Colour.Gold);
             }
         }
 
@@ -162,7 +162,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < 4; i++)
             {
-                _gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), GFX_COL.GFX_COL_GOLD);
+                _gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), Colour.Gold);
             }
         }
 
@@ -233,7 +233,7 @@ namespace Elite.Engine
 
             float len = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
 
-            GFX_COL colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? GFX_COL.GFX_COL_DARK_RED : GFX_COL.GFX_COL_GOLD;
+            Colour colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? Colour.Red2 : Colour.Gold;
 
             for (int i = 0; i < 6; i++)
             {
@@ -299,21 +299,21 @@ namespace Elite.Engine
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                GFX_COL colour = _universe[i].Flags.HasFlag(ShipFlags.Hostile) ? GFX_COL.GFX_COL_YELLOW_5 : GFX_COL.GFX_COL_WHITE;
+                Colour colour = _universe[i].Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow5 : Colour.White1;
 
                 switch (_universe[i].Type)
                 {
                     case ShipType.Missile:
-                        colour = GFX_COL.GFX_COL_PINK_1;
+                        colour = Colour.Pink1;
                         break;
 
                     case ShipType.Dodec:
                     case ShipType.Coriolis:
-                        colour = GFX_COL.GFX_COL_GREEN_1;
+                        colour = Colour.Green1;
                         break;
 
                     case ShipType.Viper:
-                        colour = GFX_COL.GFX_COL_BLUE_4;
+                        colour = Colour.Blue4;
                         break;
 
                     case ShipType.Sun:

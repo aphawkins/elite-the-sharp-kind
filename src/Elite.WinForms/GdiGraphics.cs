@@ -11,36 +11,36 @@ namespace Elite.WinForms
 {
     public class GdiGraphics : IGfx, IDisposable
     {
-        private readonly Dictionary<GFX_COL, Brush> _brushes = new()
+        private readonly Dictionary<Colour, Brush> _brushes = new()
             {
-                { GFX_COL.GFX_COL_BLACK, Brushes.Black },
-                { GFX_COL.GFX_COL_WHITE, Brushes.White },
-                { GFX_COL.GFX_COL_WHITE_2, Brushes.WhiteSmoke },
-                { GFX_COL.GFX_COL_CYAN, Brushes.Cyan },
-                { GFX_COL.GFX_COL_GREY_1, Brushes.LightGray },
-                { GFX_COL.GFX_COL_GREY_2, Brushes.DimGray },
-                { GFX_COL.GFX_COL_GREY_3, Brushes.Gray },
-                { GFX_COL.GFX_COL_GREY_4, Brushes.DarkGray },
-                { GFX_COL.GFX_COL_BLUE_1, Brushes.DarkBlue },
-                { GFX_COL.GFX_COL_BLUE_2, Brushes.Blue },
-                { GFX_COL.GFX_COL_BLUE_3, Brushes.MediumBlue },
-                { GFX_COL.GFX_COL_BLUE_4, Brushes.LightBlue },
-                { GFX_COL.GFX_COL_RED, Brushes.Red },
-                { GFX_COL.GFX_COL_RED_3, Brushes.PaleVioletRed },
-                { GFX_COL.GFX_COL_RED_4, Brushes.MediumVioletRed },
-                { GFX_COL.GFX_COL_DARK_RED, Brushes.DarkRed },
-                { GFX_COL.GFX_COL_YELLOW_1, Brushes.Goldenrod },
-                { GFX_COL.GFX_COL_GOLD, Brushes.Gold },
-                { GFX_COL.GFX_COL_YELLOW_3, Brushes.Yellow },
-                { GFX_COL.GFX_COL_YELLOW_4, Brushes.LightYellow },
-                { GFX_COL.GFX_COL_YELLOW_5, Brushes.LightGoldenrodYellow },
-                { GFX_COL.GFX_COL_ORANGE_1, Brushes.DarkOrange },
-                { GFX_COL.GFX_COL_ORANGE_2, Brushes.OrangeRed },
-                { GFX_COL.GFX_COL_ORANGE_3, Brushes.Orange },
-                { GFX_COL.GFX_COL_GREEN_1, Brushes.DarkGreen },
-                { GFX_COL.GFX_COL_GREEN_2, Brushes.Green },
-                { GFX_COL.GFX_COL_GREEN_3, Brushes.LightGreen },
-                { GFX_COL.GFX_COL_PINK_1, Brushes.Pink },
+                { Colour.Black, Brushes.Black },
+                { Colour.White1, Brushes.White },
+                { Colour.White2, Brushes.WhiteSmoke },
+                { Colour.Cyan, Brushes.Cyan },
+                { Colour.Grey1, Brushes.LightGray },
+                { Colour.Grey2, Brushes.DimGray },
+                { Colour.Grey3, Brushes.Gray },
+                { Colour.Grey4, Brushes.DarkGray },
+                { Colour.Blue1, Brushes.DarkBlue },
+                { Colour.Blue2, Brushes.Blue },
+                { Colour.Blue3, Brushes.MediumBlue },
+                { Colour.Blue4, Brushes.LightBlue },
+                { Colour.Red1, Brushes.Red },
+                { Colour.Red3, Brushes.PaleVioletRed },
+                { Colour.Red4, Brushes.MediumVioletRed },
+                { Colour.Red2, Brushes.DarkRed },
+                { Colour.Yellow1, Brushes.Goldenrod },
+                { Colour.Gold, Brushes.Gold },
+                { Colour.Yellow3, Brushes.Yellow },
+                { Colour.Yellow4, Brushes.LightYellow },
+                { Colour.Yellow5, Brushes.LightGoldenrodYellow },
+                { Colour.Orange1, Brushes.DarkOrange },
+                { Colour.Orange2, Brushes.OrangeRed },
+                { Colour.Orange3, Brushes.Orange },
+                { Colour.Green1, Brushes.DarkGreen },
+                { Colour.Green2, Brushes.Green },
+                { Colour.Green3, Brushes.LightGreen },
+                { Colour.Pink1, Brushes.Pink },
             };
 
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -51,36 +51,36 @@ namespace Elite.WinForms
         // Images
         private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
 
-        private readonly Dictionary<GFX_COL, Pen> _pens = new()
+        private readonly Dictionary<Colour, Pen> _pens = new()
             {
-                { GFX_COL.GFX_COL_BLACK, Pens.Black },
-                { GFX_COL.GFX_COL_WHITE, Pens.White },
-                { GFX_COL.GFX_COL_WHITE_2, Pens.WhiteSmoke },
-                { GFX_COL.GFX_COL_CYAN, Pens.Cyan },
-                { GFX_COL.GFX_COL_GREY_1, Pens.LightGray },
-                { GFX_COL.GFX_COL_GREY_2, Pens.DimGray },
-                { GFX_COL.GFX_COL_GREY_3, Pens.Gray },
-                { GFX_COL.GFX_COL_GREY_4, Pens.DarkGray },
-                { GFX_COL.GFX_COL_BLUE_1, Pens.DarkBlue },
-                { GFX_COL.GFX_COL_BLUE_2, Pens.Blue },
-                { GFX_COL.GFX_COL_BLUE_3, Pens.MediumBlue },
-                { GFX_COL.GFX_COL_BLUE_4, Pens.LightBlue },
-                { GFX_COL.GFX_COL_RED, Pens.Red },
-                { GFX_COL.GFX_COL_RED_3, Pens.PaleVioletRed },
-                { GFX_COL.GFX_COL_RED_4, Pens.MediumVioletRed },
-                { GFX_COL.GFX_COL_DARK_RED, Pens.DarkRed },
-                { GFX_COL.GFX_COL_YELLOW_1, Pens.Goldenrod },
-                { GFX_COL.GFX_COL_GOLD, Pens.Gold },
-                { GFX_COL.GFX_COL_YELLOW_3, Pens.Yellow },
-                { GFX_COL.GFX_COL_YELLOW_4, Pens.LightYellow },
-                { GFX_COL.GFX_COL_YELLOW_5, Pens.LightGoldenrodYellow },
-                { GFX_COL.GFX_COL_ORANGE_1, Pens.DarkOrange },
-                { GFX_COL.GFX_COL_ORANGE_2, Pens.OrangeRed },
-                { GFX_COL.GFX_COL_ORANGE_3, Pens.Orange },
-                { GFX_COL.GFX_COL_GREEN_1, Pens.DarkGreen },
-                { GFX_COL.GFX_COL_GREEN_2, Pens.Green },
-                { GFX_COL.GFX_COL_GREEN_3, Pens.LightGreen },
-                { GFX_COL.GFX_COL_PINK_1, Pens.Pink },
+                { Colour.Black, Pens.Black },
+                { Colour.White1, Pens.White },
+                { Colour.White2, Pens.WhiteSmoke },
+                { Colour.Cyan, Pens.Cyan },
+                { Colour.Grey1, Pens.LightGray },
+                { Colour.Grey2, Pens.DimGray },
+                { Colour.Grey3, Pens.Gray },
+                { Colour.Grey4, Pens.DarkGray },
+                { Colour.Blue1, Pens.DarkBlue },
+                { Colour.Blue2, Pens.Blue },
+                { Colour.Blue3, Pens.MediumBlue },
+                { Colour.Blue4, Pens.LightBlue },
+                { Colour.Red1, Pens.Red },
+                { Colour.Red3, Pens.PaleVioletRed },
+                { Colour.Red4, Pens.MediumVioletRed },
+                { Colour.Red2, Pens.DarkRed },
+                { Colour.Yellow1, Pens.Goldenrod },
+                { Colour.Gold, Pens.Gold },
+                { Colour.Yellow3, Pens.Yellow },
+                { Colour.Yellow4, Pens.LightYellow },
+                { Colour.Yellow5, Pens.LightGoldenrodYellow },
+                { Colour.Orange1, Pens.DarkOrange },
+                { Colour.Orange2, Pens.OrangeRed },
+                { Colour.Orange3, Pens.Orange },
+                { Colour.Green1, Pens.DarkGreen },
+                { Colour.Green2, Pens.Green },
+                { Colour.Green3, Pens.LightGreen },
+                { Colour.Pink1, Pens.Pink },
             };
 
         // Actual screen
@@ -100,8 +100,8 @@ namespace Elite.WinForms
         {
             Debug.Assert(screen.Width == 512);
             Debug.Assert(screen.Height == 512);
-            Debug.Assert(_pens.Count == Enum.GetNames(typeof(GFX_COL)).Length);
-            Debug.Assert(_brushes.Count == Enum.GetNames(typeof(GFX_COL)).Length);
+            Debug.Assert(_pens.Count == Enum.GetNames(typeof(Colour)).Length);
+            Debug.Assert(_brushes.Count == Enum.GetNames(typeof(Colour)).Length);
 
             _screen = screen;
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
@@ -119,9 +119,9 @@ namespace Elite.WinForms
             GC.SuppressFinalize(this);
         }
 
-        public virtual void DrawCircle(Vector2 centre, float radius, GFX_COL colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
+        public virtual void DrawCircle(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
 
-        public void DrawCircleFilled(Vector2 centre, float radius, GFX_COL colour) => _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
+        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
 
         public void DrawImage(Common.Enums.Image spriteImgage, Vector2 location)
         {
@@ -135,11 +135,11 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawImage(sprite, location.X + Engine.Graphics.GFX_X_OFFSET, location.Y + Engine.Graphics.GFX_Y_OFFSET);
         }
 
-        public virtual void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[GFX_COL.GFX_COL_WHITE], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
+        public virtual void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[Colour.White1], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawLine(Vector2 start, Vector2 end, GFX_COL colour) => _screenBufferGraphics.DrawLine(_pens[colour], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
+        public void DrawLine(Vector2 start, Vector2 end, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawPixel(Vector2 position, GFX_COL colour)
+        public void DrawPixel(Vector2 position, Colour colour)
         {
             //TODO: Fix SNES planet colour issues
             Color color = _pens.TryGetValue(colour, out Pen? value) ? value.Color : Color.Magenta;
@@ -155,11 +155,11 @@ namespace Elite.WinForms
             _screenBuffer.SetPixel((int)(position.X + Engine.Graphics.GFX_X_OFFSET), (int)(position.Y + Engine.Graphics.GFX_Y_OFFSET), color);
         }
 
-        public void DrawPixelFast(Vector2 position, GFX_COL colour) =>
+        public void DrawPixelFast(Vector2 position, Colour colour) =>
             // Is there a faster way of doing this?
             DrawPixel(position, colour);
 
-        public void DrawPolygon(Vector2[] pointList, GFX_COL lineColour)
+        public void DrawPolygon(Vector2[] pointList, Colour lineColour)
         {
             PointF[] points = new PointF[pointList.Length];
 
@@ -171,7 +171,7 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
         }
 
-        public void DrawPolygonFilled(Vector2[] pointList, GFX_COL faceColour)
+        public void DrawPolygonFilled(Vector2[] pointList, Colour faceColour)
         {
             PointF[] points = new PointF[pointList.Length];
 
@@ -183,11 +183,11 @@ namespace Elite.WinForms
             _screenBufferGraphics.FillPolygon(_brushes[faceColour], points);
         }
 
-        public void DrawRectangle(float x, float y, float width, float height, GFX_COL colour) => _screenBufferGraphics.DrawRectangle(_pens[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
+        public void DrawRectangle(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.DrawRectangle(_pens[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawRectangleFilled(float x, float y, float width, float height, GFX_COL colour) => _screenBufferGraphics.FillRectangle(_brushes[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
+        public void DrawRectangleFilled(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.FillRectangle(_brushes[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
 
-        public void DrawTextCentre(float y, string text, int psize, GFX_COL colour)
+        public void DrawTextCentre(float y, string text, int psize, Colour colour)
         {
             StringFormat stringFormat = new()
             {
@@ -204,13 +204,13 @@ namespace Elite.WinForms
                 stringFormat);
         }
 
-        public void DrawTextLeft(float x, float y, string text, GFX_COL colour)
+        public void DrawTextLeft(float x, float y, string text, Colour colour)
         {
             PointF point = new((x / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_X_OFFSET, (y / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_Y_OFFSET);
             _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point);
         }
 
-        public void DrawTextRight(float x, float y, string text, GFX_COL colour)
+        public void DrawTextRight(float x, float y, string text, Colour colour)
         {
             StringFormat stringFormat = new()
             {
@@ -221,7 +221,7 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point, stringFormat);
         }
 
-        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)
+        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Colour colour)
         {
             PointF[] points = new PointF[3]
             {
@@ -233,7 +233,7 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawLines(_pens[colour], points);
         }
 
-        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, GFX_COL colour)
+        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, Colour colour)
         {
             PointF[] points = new PointF[3]
             {

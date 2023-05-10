@@ -29,7 +29,7 @@ namespace Elite.Engine.Views
             _combat = combat;
         }
 
-        public void Draw() => _gfx.DrawTextCentre(190, "GAME OVER", 140, GFX_COL.GFX_COL_GOLD);
+        public void Draw() => _gfx.DrawTextCentre(190, "GAME OVER", 140, Colour.Gold);
 
         public void HandleInput()
         {
