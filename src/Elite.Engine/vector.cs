@@ -63,8 +63,7 @@ namespace Elite.Engine
 
             mat[1] = UnitVector(mat[1]);
 
-            /* xyzzy... nothing happens. :-)*/
-
+            // xyzzy... nothing happens.
             mat[0].X = (mat[1].Y * mat[2].Z) - (mat[1].Z * mat[2].Y);
             mat[0].Y = (mat[1].Z * mat[2].X) - (mat[1].X * mat[2].Z);
             mat[0].Z = (mat[1].X * mat[2].Y) - (mat[1].Y * mat[2].X);

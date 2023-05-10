@@ -2,19 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- */
-
 using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
@@ -64,19 +51,17 @@ namespace Elite.Engine
             _ = VectorMaths.UnitVector(camera_vec);
             ShipFace[] face_data = ship.Faces;
 
-            /*
-				for (i = 0; i < num_faces; i++)
-				{
-					vec.x = face_data[i].norm_x;
-					vec.y = face_data[i].norm_y;
-					vec.z = face_data[i].norm_z;
+            //for (i = 0; i < num_faces; i++)
+            //{
+            //	vec.x = face_data[i].norm_x;
+            //	vec.y = face_data[i].norm_y;
+            //	vec.z = face_data[i].norm_z;
 
-					vec = VectorMaths.unit_vector (&vec);
-					cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
+            //	vec = VectorMaths.unit_vector (&vec);
+            //	cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
 
-					visible[i] = (cos_angle < -0.13);
-				}
-			*/
+            //	visible[i] = (cos_angle < -0.13);
+            //}
 
             (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
             (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
@@ -268,11 +253,12 @@ namespace Elite.Engine
         {
             switch (_gameState.Config.PlanetRenderStyle)
             {
-                case PlanetRenderStyle.Wireframe:     /* Wireframe... do nothing for now... */
+                // Wireframe... do nothing for now...
+                case PlanetRenderStyle.Wireframe:     
                     break;
 
                 case PlanetRenderStyle.Green:
-                    /* generate_green_landscape (); */
+                    // generate_green_landscape ();
                     break;
 
                 case PlanetRenderStyle.SNES:
@@ -316,7 +302,8 @@ namespace Elite.Engine
             float ry = (-x * vy) + (y * vx);
             rx += radius * 65536;
             ry += radius * 65536;
-            float div = radius * 1024;  /* radius * 2 * LAND_X_MAX >> 16 */
+            // radius * 2 * LAND_X_MAX >> 16
+            float div = radius * 1024;  
 
             for (; s.X <= ex; s.X++)
             {
@@ -403,7 +390,8 @@ namespace Elite.Engine
             position.Y *= Graphics.GFX_SCALE;
 
             float radius = 6291456 / planet.Location.Length();
-            //	radius = 6291456 / ship_vec.z;   /* Planets are BIG! */
+            // Planets are BIG!
+            //	radius = 6291456 / ship_vec.z;   
 
             radius *= Graphics.GFX_SCALE;
 
@@ -568,7 +556,8 @@ namespace Elite.Engine
                 return;
             }
 
-            if (ship.Location.Z <= 0)   /* Only display ships in front of us. */
+            // Only display ships in front of us.
+            if (ship.Location.Z <= 0)   
             {
                 return;
             }
@@ -585,7 +574,8 @@ namespace Elite.Engine
                 return;
             }
 
-            if ((MathF.Abs(ship.Location.X) > ship.Location.Z) ||    /* Check for field of vision. */
+            // Check for field of vision.
+            if ((MathF.Abs(ship.Location.X) > ship.Location.Z) ||    
                 (MathF.Abs(ship.Location.Y) > ship.Location.Z))
             {
                 return;

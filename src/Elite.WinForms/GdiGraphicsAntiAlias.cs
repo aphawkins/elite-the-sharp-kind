@@ -2,20 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-/**
- *
- * Elite - The New Kind.
- *
- * Allegro version of Graphics routines.
- *
- * The code in this file has not been derived from the original Elite code.
- * Written by C.J.Pinder 1999-2001.
- * email: <christian@newkind.co.uk>
- *
- * Routines for drawing anti-aliased lines and circles by T.Harte.
- *
- **/
-
 using System.Numerics;
 using Elite.Engine.Enums;
 

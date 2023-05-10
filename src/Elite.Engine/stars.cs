@@ -2,20 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
 using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
@@ -63,7 +49,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < _stars.Length; i++)
             {
-                /* Plot the stars in their current locations... */
+                // Plot the stars in their current locations...
                 Vector2 star = new()
                 {
                     Y = _stars[i].Y,
@@ -96,7 +82,7 @@ namespace Elite.Engine
                 }
 
 
-                /* Move the stars to their new locations...*/
+                // Move the stars to their new locations...
                 float Q = delta / _stars[i].Z;
 
                 _stars[i].Z -= delta;
@@ -107,10 +93,9 @@ namespace Elite.Engine
                 yy += xx * alpha;
                 xx -= yy * alpha;
 
-                /*
-						tx = yy * beta;
-						xx = xx + (tx * tx * 2);
-				*/
+				//tx = yy * beta;
+				//xx = xx + (tx * tx * 2);
+
                 yy += beta;
 
                 _stars[i].Y = yy;
@@ -153,7 +138,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < _stars.Length; i++)
             {
-                /* Plot the stars in their current locations... */
+                // Plot the stars in their current locations...
                 Vector2 star = new()
                 {
                     Y = _stars[i].Y,
@@ -185,7 +170,7 @@ namespace Elite.Engine
                     }
                 }
 
-                /* Move the stars to their new locations...*/
+                // Move the stars to their new locations...
 
                 float Q = delta / _stars[i].Z;
 
@@ -197,10 +182,9 @@ namespace Elite.Engine
                 yy += xx * alpha;
                 xx -= yy * alpha;
 
-                /*
-						tx = yy * beta;
-						xx = xx + (tx * tx * 2);
-				*/
+				//tx = yy * beta;
+				//xx = xx + (tx * tx * 2);
+				
                 yy += beta;
 
                 if (WarpStars)

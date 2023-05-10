@@ -6,12 +6,18 @@ namespace Elite.Engine.Types
 {
     public class GalaxySeed : ICloneable
     {
-        public int A { get; set; }    /* 6c */
-        public int B { get; set; }    /* 6d */
-        public int C { get; set; }    /* 6e */
-        public int D { get; set; }    /* 6f */
-        public int E { get; set; }    /* 70 */
-        public int F { get; set; }    /* 71 */
+        // 6c
+        public int A { get; set; }
+        // 6d
+        public int B { get; set; }
+        // 6e
+        public int C { get; set; }
+        // 6f
+        public int D { get; set; }
+        // 70
+        public int E { get; set; }
+        // 71
+        public int F { get; set; }    
 
         public GalaxySeed()
         {

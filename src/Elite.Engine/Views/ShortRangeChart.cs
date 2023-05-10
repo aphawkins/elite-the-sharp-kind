@@ -2,20 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-/*
- * Elite - The New Kind.
- *
- * Reverse engineered from the BBC disk version of Elite.
- * Additional material by C.J.Pinder.
- *
- * The original Elite code is (C) I.Bell & D.Braben 1984.
- * This version re-engineered in C by C.J.Pinder 1999-2001.
- *
- * email: <christian@newkind.co.uk>
- *
- *
- */
-
 using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
@@ -78,10 +64,12 @@ namespace Elite.Engine.Views
                 }
 
                 float px = glx.D - _gameState.DockedPlanet.D;
-                px = (px * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE;  /* Convert to screen co-ords */
+                // Convert to screen co-ords
+                px = (px * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE;
 
                 float py = glx.B - _gameState.DockedPlanet.B;
-                py = (py * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE; /* Convert to screen co-ords */
+                // Convert to screen co-ords
+                py = (py * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE; 
 
                 int row = (int)(py / (8 * Graphics.GFX_SCALE));
 
@@ -111,9 +99,9 @@ namespace Elite.Engine.Views
                     _planetNames.Add((new(px + (4 * Graphics.GFX_SCALE), ((row * 8) - 5) * Graphics.GFX_SCALE), _planet.NamePlanet(glx, true)));
                 }
 
-                /* The next bit calculates the size of the circle used to represent */
-                /* a planet.  The carry_flag is left over from the name generation. */
-                /* Yes this was how it was done... don't ask :-( */
+                // The next bit calculates the size of the circle used to represent
+                // a planet.  The carry_flag is left over from the name generation.
+                // Yes this was how it was done... don't ask :-(
                 float blob_size = (glx.F & 1) + 2 + _gameState.CarryFlag;
                 blob_size *= Graphics.GFX_SCALE;
                 _planetSizes.Add((new(px, py), blob_size));
