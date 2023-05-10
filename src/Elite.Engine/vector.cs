@@ -23,10 +23,22 @@ namespace Elite.Engine
         internal static Vector3 MultiplyVector(Vector3 vec, Vector3[] mat)
         {
             Matrix4x4 matrix = new(
-                mat[0].X, mat[1].X, mat[2].X, 0,
-                mat[0].Y, mat[1].Y, mat[2].Y, 0,
-                mat[0].Z, mat[1].Z, mat[2].Z, 0,
-                0, 0, 0, 0);
+                mat[0].X,
+                mat[1].X,
+                mat[2].X,
+                0,
+                mat[0].Y,
+                mat[1].Y,
+                mat[2].Y,
+                0,
+                mat[0].Z,
+                mat[1].Z,
+                mat[2].Z,
+                0,
+                0,
+                0,
+                0,
+                0);
 
             return Vector3.Transform(vec, matrix);
         }

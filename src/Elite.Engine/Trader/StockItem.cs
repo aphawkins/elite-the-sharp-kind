@@ -6,9 +6,17 @@ namespace Elite.Engine.Trader
 {
     internal sealed class StockItem
     {
-        internal StockItem(string name, int currentQuantity, float currentPrice, float basePrice,
-            int economyAdjust, int baseQuantity, int mask, string units,
-            int stationStock, int currentCargo)
+        internal StockItem(
+            string name,
+            int currentQuantity,
+            float currentPrice,
+            float basePrice,
+            int economyAdjust,
+            int baseQuantity,
+            int mask,
+            string units,
+            int stationStock,
+            int currentCargo)
         {
             Name = name;
             CurrentQuantity = currentQuantity;

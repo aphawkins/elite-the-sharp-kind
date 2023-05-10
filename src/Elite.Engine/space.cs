@@ -36,9 +36,17 @@ namespace Elite.Engine
         private readonly Threed _threed;
         private readonly Trade _trade;
 
-        internal Space(GameState gameState, IGfx gfx, Threed threed, Audio audio,
-            Pilot pilot, Combat combat, Trade trade, PlayerShip ship,
-            Planet planet, Stars stars)
+        internal Space(
+            GameState gameState,
+            IGfx gfx,
+            Threed threed,
+            Audio audio,
+            Pilot pilot,
+            Combat combat,
+            Trade trade,
+            PlayerShip ship,
+            Planet planet,
+            Stars stars)
         {
             _gameState = gameState;
             _gfx = gfx;
