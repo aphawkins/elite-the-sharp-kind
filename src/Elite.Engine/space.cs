@@ -369,7 +369,7 @@ namespace Elite.Engine
                 {
                     if ((s_ship_count[ShipType.Coriolis] == 0) &&
                         (s_ship_count[ShipType.Dodec] == 0) &&
-                        (s_universe[i].Location.Length() < 65792)) // was 49152
+                        (s_universe[i].Location.Length() < 65792 /* was 49152 */ ))
                     {
                         MakeStationAppear();
                     }
@@ -584,7 +584,8 @@ namespace Elite.Engine
             float fz;
             float ux;
 
-            if (_gameState.IsAutoPilotOn) // Don't want it to kill anyone!
+            // Don't want it to kill anyone!
+            if (_gameState.IsAutoPilotOn)
             {
                 return true;
             }
