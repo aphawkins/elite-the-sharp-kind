@@ -629,7 +629,7 @@ namespace Elite.Engine
                 Z = location.Z - (vec.Z * 65792),
             };
 
-            //	VectorMaths.set_init_matrix (rotmat);
+            //  VectorMaths.set_init_matrix (rotmat);
             Vector3[] rotmat = new Vector3[3];
 
             rotmat[0].X = 1;

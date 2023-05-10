@@ -69,10 +69,10 @@ namespace Elite.Engine
         internal void DrawObject(UniverseObject ship)
         {
             //Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
-            //	SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
-            //	SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
-            //	SCR.SCR_GAME_OVER or SCR.SCR_ESCAPE_CAPSULE or
-            //	SCR.SCR_MISSION_1);
+            //  SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
+            //  SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
+            //  SCR.SCR_GAME_OVER or SCR.SCR_ESCAPE_CAPSULE or
+            //  SCR.SCR_MISSION_1);
 
             if (ship.Flags.HasFlag(ShipFlags.Dead) && !ship.Flags.HasFlag(ShipFlags.Explosion))
             {
@@ -255,9 +255,9 @@ namespace Elite.Engine
             float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
             float pr = univ.ExpDelta * 256 / q;
 
-            //	if (pr > 0x1C00)
-            //		q = 254;
-            //	else
+            //  if (pr > 0x1C00)
+            //      q = 254;
+            //  else
 
             q = pr / 32;
 
@@ -317,7 +317,7 @@ namespace Elite.Engine
 
             float radius = 6291456 / planet.Location.Length();
             // Planets are BIG!
-            //	radius = 6291456 / ship_vec.z;
+            //  radius = 6291456 / ship_vec.z;
 
             radius *= Graphics.GFX_SCALE;
 
@@ -425,14 +425,14 @@ namespace Elite.Engine
 
             //for (i = 0; i < num_faces; i++)
             //{
-            //	vec.x = face_data[i].norm_x;
-            //	vec.y = face_data[i].norm_y;
-            //	vec.z = face_data[i].norm_z;
+            //  vec.x = face_data[i].norm_x;
+            //  vec.y = face_data[i].norm_y;
+            //  vec.z = face_data[i].norm_z;
 
-            //	vec = VectorMaths.unit_vector (&vec);
-            //	cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
+            //  vec = VectorMaths.unit_vector (&vec);
+            //  cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
 
-            //	visible[i] = (cos_angle < -0.13);
+            //  visible[i] = (cos_angle < -0.13);
             //}
 
             (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);

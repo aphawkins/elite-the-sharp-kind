@@ -28,8 +28,8 @@ namespace Elite.Engine.Ships
 
         public ShipFace[] Faces { get; } =
         {
-			//fins
-			new(Colour.Red1, new( 0x20, 0x00, 0x00), new[] {  5, 9, 15 }),
+            //fins
+            new(Colour.Red1, new( 0x20, 0x00, 0x00), new[] {  5, 9, 15 }),
             new(Colour.Red1, new( 0x00, 0x20, 0x00), new[] {  15, 9,  5 }),
 
             new(Colour.Red1, new(-0x20, 0x00, 0x00), new[] {  8, 12, 13 }),
@@ -41,20 +41,20 @@ namespace Elite.Engine.Ships
             new(Colour.Red1, new( 0x20, 0x00, 0x00), new[] { 6, 10, 16 }),
             new(Colour.Red1, new( 0x00,-0x20, 0x00), new[] { 16, 10, 6 }),
 
-			//nose cone
-			new(Colour.Red2, new(-0x40, 0x00, 0x10), new[] { 0,  3,  4 }),
+            //nose cone
+            new(Colour.Red2, new(-0x40, 0x00, 0x10), new[] { 0,  3,  4 }),
             new (Colour.Red1,      new( 0x00,-0x40, 0x10), new[] { 0,  4,  1 }),
             new(Colour.Red2, new( 0x40, 0x00, 0x10), new[] { 0,  1,  2 }),
             new(Colour.Red1,      new( 0x00, 0x40, 0x10), new[] { 0,  2,  3 }),
 
-			//main body
-			new(Colour.Grey3, new( 0x20, 0x00, 0x00), new[] { 6,  5,  2, 1 }),
+            //main body
+            new(Colour.Grey3, new( 0x20, 0x00, 0x00), new[] { 6,  5,  2, 1 }),
             new(Colour.Grey1, new( 0x00, 0x20, 0x00), new[] { 5,  8,  3, 2 }),
             new(Colour.Grey3, new(-0x20, 0x00, 0x00), new[] { 8,  7,  4, 3 }),
             new(Colour.Grey1, new( 0x00,-0x20, 0x00), new[] { 7,  6,  1, 4 }),
 
-			//bottom
-			new(Colour.Grey2, new( 0x00, 0x00,-0xB0), new[] { 5,  6,  7, 8 }),
+            //bottom
+            new(Colour.Grey2, new( 0x00, 0x00,-0xB0), new[] { 5,  6,  7, 8 }),
         };
 
         public int LaserFront => 0;

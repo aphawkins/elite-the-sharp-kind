@@ -105,7 +105,7 @@ namespace Elite.Engine
         {
             MessageString = message;
             MessageCount = 37;
-            //	sound.snd_play_sample (SND_BEEP);
+            //  sound.snd_play_sample (SND_BEEP);
         }
 
         internal void Reset()
