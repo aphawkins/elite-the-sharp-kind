@@ -31,9 +31,9 @@ namespace Elite.WinForms
 
         public void KeyUp(CommandKey keyValue) => _isPressed[keyValue] = false;
 
-        public bool IsKeyPressed(params CommandKey[] key)
+        public bool IsKeyPressed(params CommandKey[] keys)
         {
-            foreach (CommandKey key in key)
+            foreach (CommandKey key in keys)
             {
                 if (_isPressed.TryGetValue(key, out bool value) && value)
                 {
