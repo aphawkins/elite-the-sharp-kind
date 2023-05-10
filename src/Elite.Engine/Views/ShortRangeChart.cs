@@ -264,8 +264,9 @@ namespace Elite.Engine.Views
             CrossFromHyperspacePlanet();
         }
 
-        private void CrossFromHyperspacePlanet() => _gameState.Cross = new(((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE,
-                        ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE);
+        private void CrossFromHyperspacePlanet() => _gameState.Cross = new(
+            ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE,
+            ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE);
 
         /// <summary>
         /// Move the planet chart cross hairs to specified position.
