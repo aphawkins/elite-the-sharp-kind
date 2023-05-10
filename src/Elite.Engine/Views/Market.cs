@@ -55,10 +55,10 @@ namespace Elite.Engine.Views
                 _gfx.DrawTextRight(285, y, $"{stock.Value.CurrentPrice:N1}", Colour.White1);
 
                 _gfx.DrawTextRight(365, y, stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", Colour.White1);
-                _gfx.DrawTextLeft(365, y, stock.Value.CurrentQuantity > 0 ? stock.Value.Units : "", Colour.White1);
+                _gfx.DrawTextLeft(365, y, stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, Colour.White1);
 
                 _gfx.DrawTextRight(455, y, stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", Colour.White1);
-                _gfx.DrawTextLeft(455, y, stock.Value.CurrentCargo > 0 ? stock.Value.Units : "", Colour.White1);
+                _gfx.DrawTextLeft(455, y, stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, Colour.White1);
 
                 i++;
             }

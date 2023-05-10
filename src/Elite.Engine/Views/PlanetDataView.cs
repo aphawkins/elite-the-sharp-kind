@@ -14,7 +14,7 @@ namespace Elite.Engine.Views
         private readonly string[][] _descriptionList = new[]
         {
             new string[] { "fabled", "notable", "well known", "famous", "noted" },
-            new string[] { "very", "mildly", "most", "reasonably", "" },
+            new string[] { "very", "mildly", "most", "reasonably", string.Empty },
             new string[] { "ancient", "<20>", "great", "vast", "pink" },
             new string[] { "<29> <28> plantations", "mountains", "<27>", "<19> forests", "oceans" },
             new string[] { "shyness", "silliness", "mating traditions", "loathing of <5>", "love for <5>" },

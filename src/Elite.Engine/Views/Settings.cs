@@ -17,12 +17,12 @@ namespace Elite.Engine.Views
 
         private readonly (string Name, string[] Values)[] _settingList =
         {
-            new("Graphics:", new[] { "Solid", "Wireframe", "", "", "" }),
-            new("Anti Alias:", new[] { "Off", "On", "", "", "" }),
-            new("Planet Style:", new[] { "Wireframe", "Green", "SNES", "Fractal", "" }),
-            new("Planet Desc.:", new[] { "BBC", "MSX", "", "", "" }),
-            new("Instant Dock:", new[] { "Off", "On", "", "", "" }),
-            new("Save Settings", new[] { "", "", "", "", "" })
+            new("Graphics:", new[] { "Solid", "Wireframe", string.Empty, string.Empty, string.Empty }),
+            new("Anti Alias:", new[] { "Off", "On", string.Empty, string.Empty, string.Empty }),
+            new("Planet Style:", new[] { "Wireframe", "Green", "SNES", "Fractal", string.Empty }),
+            new("Planet Desc.:", new[] { "BBC", "MSX", string.Empty, string.Empty, string.Empty }),
+            new("Instant Dock:", new[] { "Off", "On", string.Empty, string.Empty, string.Empty }),
+            new("Save Settings", new[] { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty })
         };
 
         private int _highlightedItem;
