@@ -369,7 +369,7 @@ namespace Elite.Engine
                 {
                     if ((s_ship_count[ShipType.Coriolis] == 0) &&
                         (s_ship_count[ShipType.Dodec] == 0) &&
-                        (s_universe[i].Location.Length() < 65792 /* was 49152 */ ))
+                        (s_universe[i].Location.Length() < 65792 /* was 49152 */))
                     {
                         MakeStationAppear();
                     }
