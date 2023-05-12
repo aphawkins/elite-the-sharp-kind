@@ -161,7 +161,7 @@ csharp_style_prefer_method_group_conversion = true:suggestion
 csharp_style_prefer_top_level_statements = true:suggestion
 
 # Diagnostic
-dotnet_analyzer_diagnostic.severity = warning
+dotnet_analyzer_diagnostic.severity = suggestion
 # Diagnostic - Exclusions
 dotnet_diagnostic.IDE0058.severity = none #Expression value is never used
 
@@ -179,10 +179,9 @@ dotnet_diagnostic.SA1615.severity = none # Element return value should be docume
 dotnet_diagnostic.SA1616.severity = none # Element return value documentation should have text
 dotnet_diagnostic.SA1633.severity = none # The file header XML is invalid.
 
-
 Roslynator Configuration
 # Set severity for all analyzers that are enabled by default (https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2022#set-rule-severity-of-multiple-analyzer-rules-at-once-in-an-editorconfig-file)
-dotnet_analyzer_diagnostic.category-roslynator.severity = warning
+dotnet_analyzer_diagnostic.category-roslynator.severity = suggestion
 
 # Enable/disable all refactorings
 roslynator_refactorings.enabled = true

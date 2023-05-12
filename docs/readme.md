@@ -1,4 +1,4 @@
-# Elite - The Sharp Kind   Beta Release  
+# Elite - The Sharp Kind - Beta Release  
 
 'Elite - The Sharp Kind' re-engineered in C# by Andy Hawkins 2023.  
   Forked from fesh0r/newkind 06 Dec 2022  
