@@ -110,7 +110,17 @@ namespace Elite.WinForms
             _screenBufferGraphics.Clear(Color.Black);
         }
 
-        public void ClearArea(float x, float y, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
+        public Vector2 Centre { get; private set; } = new(256, 192);
+
+        public Vector2 Offset { get; private set; } = new(0, 0);
+
+        public float Scale { get; private set; } = 2;
+
+        public Vector2 ViewB { get; private set; } = new(509, 381);
+
+        public Vector2 ViewT { get; private set; } = new(1, 1);
+
+        public void ClearArea(float x, float y, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
 
         public void Dispose()
         {
@@ -119,9 +129,9 @@ namespace Elite.WinForms
             GC.SuppressFinalize(this);
         }
 
-        public virtual void DrawCircle(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
+        public virtual void DrawCircle(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Engine.Graphics.GFX_X_OFFSET - radius, centre.Y + Engine.Graphics.GFX_Y_OFFSET - radius, 2 * radius, 2 * radius);
+        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
         public void DrawImage(Common.Enums.Image spriteImgage, Vector2 location)
         {
@@ -129,15 +139,15 @@ namespace Elite.WinForms
 
             if (location.X < 0)
             {
-                location.X = ((256 * Engine.Graphics.GFX_SCALE) - sprite.Width) / 2;
+                location.X = ((256 * Scale) - sprite.Width) / 2;
             }
 
-            _screenBufferGraphics.DrawImage(sprite, location.X + Engine.Graphics.GFX_X_OFFSET, location.Y + Engine.Graphics.GFX_Y_OFFSET);
+            _screenBufferGraphics.DrawImage(sprite, location.X + Offset.X, location.Y + Offset.Y);
         }
 
-        public virtual void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[Colour.White1], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
+        public virtual void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[Colour.White1], start.X + Offset.X, start.Y + Offset.Y, end.X + Offset.X, end.Y + Offset.Y);
 
-        public void DrawLine(Vector2 start, Vector2 end, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], start.X + Engine.Graphics.GFX_X_OFFSET, start.Y + Engine.Graphics.GFX_Y_OFFSET, end.X + Engine.Graphics.GFX_X_OFFSET, end.Y + Engine.Graphics.GFX_Y_OFFSET);
+        public void DrawLine(Vector2 start, Vector2 end, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], start.X + Offset.X, start.Y + Offset.Y, end.X + Offset.X, end.Y + Offset.Y);
 
         public void DrawPixel(Vector2 position, Colour colour)
         {
@@ -152,7 +162,7 @@ namespace Elite.WinForms
                 return;
             }
 
-            _screenBuffer.SetPixel((int)(position.X + Engine.Graphics.GFX_X_OFFSET), (int)(position.Y + Engine.Graphics.GFX_Y_OFFSET), color);
+            _screenBuffer.SetPixel((int)(position.X + Offset.X), (int)(position.Y + Offset.Y), color);
         }
 
         public void DrawPixelFast(Vector2 position, Colour colour) =>
@@ -165,7 +175,7 @@ namespace Elite.WinForms
 
             for (int i = 0; i < pointList.Length; i++)
             {
-                points[i] = new PointF(pointList[i].X + Engine.Graphics.GFX_X_OFFSET, pointList[i].Y + Engine.Graphics.GFX_Y_OFFSET);
+                points[i] = new PointF(pointList[i].X + Offset.X, pointList[i].Y + Offset.Y);
             }
 
             _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
@@ -177,15 +187,15 @@ namespace Elite.WinForms
 
             for (int i = 0; i < pointList.Length; i++)
             {
-                points[i] = new PointF(pointList[i].X + Engine.Graphics.GFX_X_OFFSET, pointList[i].Y + Engine.Graphics.GFX_Y_OFFSET);
+                points[i] = new PointF(pointList[i].X + Offset.X, pointList[i].Y + Offset.Y);
             }
 
             _screenBufferGraphics.FillPolygon(_brushes[faceColour], points);
         }
 
-        public void DrawRectangle(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.DrawRectangle(_pens[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
+        public void DrawRectangle(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.DrawRectangle(_pens[colour], x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
 
-        public void DrawRectangleFilled(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.FillRectangle(_brushes[colour], x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET);
+        public void DrawRectangleFilled(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.FillRectangle(_brushes[colour], x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
 
         public void DrawTextCentre(float y, string text, int psize, Colour colour)
         {
@@ -195,7 +205,7 @@ namespace Elite.WinForms
                 LineAlignment = StringAlignment.Center,
             };
 
-            PointF point = new((128 * Engine.Graphics.GFX_SCALE) + Engine.Graphics.GFX_X_OFFSET, (y / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_Y_OFFSET);
+            PointF point = new((128 * Scale) + Offset.X, (y / (2 / Scale)) + Offset.Y);
             _screenBufferGraphics.DrawString(
                 text,
                 psize == 140 ? _fontLarge : _fontSmall,
@@ -206,7 +216,7 @@ namespace Elite.WinForms
 
         public void DrawTextLeft(float x, float y, string text, Colour colour)
         {
-            PointF point = new((x / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_X_OFFSET, (y / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_Y_OFFSET);
+            PointF point = new((x / (2 / Scale)) + Offset.X, (y / (2 / Scale)) + Offset.Y);
             _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point);
         }
 
@@ -217,7 +227,7 @@ namespace Elite.WinForms
                 Alignment = StringAlignment.Far,
             };
 
-            PointF point = new((x / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_X_OFFSET, (y / (2 / Engine.Graphics.GFX_SCALE)) + Engine.Graphics.GFX_Y_OFFSET);
+            PointF point = new((x / (2 / Scale)) + Offset.X, (y / (2 / Scale)) + Offset.Y);
             _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point, stringFormat);
         }
 
@@ -225,9 +235,9 @@ namespace Elite.WinForms
         {
             PointF[] points = new PointF[3]
             {
-                new(a.X += Engine.Graphics.GFX_X_OFFSET, a.Y += Engine.Graphics.GFX_Y_OFFSET),
-                new(b.X += Engine.Graphics.GFX_X_OFFSET, b.Y += Engine.Graphics.GFX_Y_OFFSET),
-                new(c.X += Engine.Graphics.GFX_X_OFFSET, c.Y += Engine.Graphics.GFX_Y_OFFSET),
+                new(a.X += Offset.X, a.Y += Offset.Y),
+                new(b.X += Offset.X, b.Y += Offset.Y),
+                new(c.X += Offset.X, c.Y += Offset.Y),
             };
 
             _screenBufferGraphics.DrawLines(_pens[colour], points);
@@ -237,9 +247,9 @@ namespace Elite.WinForms
         {
             PointF[] points = new PointF[3]
             {
-                new(a.X += Engine.Graphics.GFX_X_OFFSET, a.Y += Engine.Graphics.GFX_Y_OFFSET),
-                new(b.X += Engine.Graphics.GFX_X_OFFSET, b.Y += Engine.Graphics.GFX_Y_OFFSET),
-                new(c.X += Engine.Graphics.GFX_X_OFFSET, c.Y += Engine.Graphics.GFX_Y_OFFSET),
+                new(a.X += Offset.X, a.Y += Offset.Y),
+                new(b.X += Offset.X, b.Y += Offset.Y),
+                new(c.X += Offset.X, c.Y += Offset.Y),
             };
 
             _screenBufferGraphics.FillPolygon(_brushes[colour], points);
@@ -267,13 +277,13 @@ namespace Elite.WinForms
 
             lock (_screen)
             {
-                _screenGraphics.DrawImage(_screenBuffer, Engine.Graphics.GFX_X_OFFSET, Engine.Graphics.GFX_Y_OFFSET);
+                _screenGraphics.DrawImage(_screenBuffer, Offset.X, Offset.Y);
             }
 
             Application.DoEvents();
         }
 
-        public void SetClipRegion(float x, float y, float width, float height) => _screenBufferGraphics.Clip = new Region(new RectangleF(x + Engine.Graphics.GFX_X_OFFSET, y + Engine.Graphics.GFX_Y_OFFSET, width + Engine.Graphics.GFX_X_OFFSET, height + Engine.Graphics.GFX_Y_OFFSET));
+        public void SetClipRegion(float x, float y, float width, float height) => _screenBufferGraphics.Clip = new Region(new RectangleF(x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y));
 
         protected virtual void Dispose(bool disposing)
         {
@@ -301,7 +311,6 @@ namespace Elite.WinForms
                 _isDisposed = true;
             }
         }
-
         // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         // ~alg_gfx()
         // {

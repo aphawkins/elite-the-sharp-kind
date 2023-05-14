@@ -13,7 +13,7 @@ namespace Elite.Engine.Views
     {
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGfx _graphics;
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
         private readonly List<(Vector2 position, string name)> _planetNames = new();
@@ -23,10 +23,10 @@ namespace Elite.Engine.Views
         private string _findName = string.Empty;
         private bool _isFind;
 
-        internal ShortRangeChartView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
+        internal ShortRangeChartView(GameState gameState, IGfx graphics, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _planet = planet;
@@ -40,49 +40,49 @@ namespace Elite.Engine.Views
             _draw.DrawViewHeader("SHORT RANGE CHART");
 
             // Fuel radius
-            Vector2 centre = new(Graphics.GFX_X_CENTRE, Graphics.GFX_Y_CENTRE);
-            float radius = _ship.Fuel * 10 * Graphics.GFX_SCALE;
-            float cross_size = 16 * Graphics.GFX_SCALE;
-            _gfx.DrawCircle(centre, radius, Colour.Green1);
-            _gfx.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
-            _gfx.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
+            Vector2 centre = _graphics.Centre;
+            float radius = _ship.Fuel * 10 * _graphics.Scale;
+            float cross_size = 16 * _graphics.Scale;
+            _graphics.DrawCircle(centre, radius, Colour.Green1);
+            _graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
+            _graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
 
             // Planets
             foreach ((Vector2 position, string name) in _planetNames)
             {
-                _gfx.DrawTextLeft(position.X, position.Y, name, Colour.White1);
+                _graphics.DrawTextLeft(position.X, position.Y, name, Colour.White1);
             }
             foreach ((Vector2 position, float size) in _planetSizes)
             {
-                _gfx.DrawCircleFilled(position, size, Colour.Gold);
+                _graphics.DrawCircleFilled(position, size, Colour.Gold);
             }
 
             // Moving cross
             centre = new(_gameState.Cross.X, _gameState.Cross.Y);
-            _gfx.SetClipRegion(1, 37, 510, 339);
-            _gfx.DrawLine(new(centre.X - 16f, centre.Y), new(centre.X + 16f, centre.Y), Colour.Red1);
-            _gfx.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), Colour.Red1);
-            _gfx.SetClipRegion(1, 1, 510, 383);
+            _graphics.SetClipRegion(1, 37, 510, 339);
+            _graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), Colour.Red1);
+            _graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), Colour.Red1);
+            _graphics.SetClipRegion(1, 1, 510, 383);
 
             // Text
             if (_isFind)
             {
-                _gfx.DrawTextLeft(16, 340, "Planet Name?", Colour.Green1);
-                _gfx.DrawTextLeft(16, 356, _findName, Colour.White1);
+                _graphics.DrawTextLeft(16, 340, "Planet Name?", Colour.Green1);
+                _graphics.DrawTextLeft(16, 356, _findName, Colour.White1);
             }
             else
             {
                 if (string.IsNullOrEmpty(_gameState.PlanetName))
                 {
-                    _gfx.DrawTextLeft(16, 340, "Unknown Planet", Colour.Green1);
-                    _gfx.DrawTextLeft(16, 356, _findName, Colour.White1);
+                    _graphics.DrawTextLeft(16, 340, "Unknown Planet", Colour.Green1);
+                    _graphics.DrawTextLeft(16, 356, _findName, Colour.White1);
                 }
                 else
                 {
-                    _gfx.DrawTextLeft(16, 340, _gameState.PlanetName, Colour.Green1);
+                    _graphics.DrawTextLeft(16, 340, _gameState.PlanetName, Colour.Green1);
                     if (_gameState.DistanceToPlanet > 0)
                     {
-                        _gfx.DrawTextLeft(16, 356, $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White1);
+                        _graphics.DrawTextLeft(16, 356, $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White1);
                     }
                 }
             }
@@ -124,7 +124,7 @@ namespace Elite.Engine.Views
 
             if (_keyboard.IsKeyPressed(CommandKey.Origin))
             {
-                _gameState.Cross = new(Graphics.GFX_X_CENTRE, Graphics.GFX_Y_CENTRE);
+                _gameState.Cross = _graphics.Centre;
                 CalculateDistanceToPlanet();
             }
             if (_keyboard.IsKeyPressed(CommandKey.DistanceToPlanet))
@@ -186,14 +186,16 @@ namespace Elite.Engine.Views
                 }
 
                 float px = glx.D - _gameState.DockedPlanet.D;
+
                 // Convert to screen co-ords
-                px = (px * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE;
+                px = (px * 4 * _graphics.Scale) + _graphics.Centre.X;
 
                 float py = glx.B - _gameState.DockedPlanet.B;
-                // Convert to screen co-ords
-                py = (py * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE;
 
-                int row = (int)(py / (8 * Graphics.GFX_SCALE));
+                // Convert to screen co-ords
+                py = (py * 2 * _graphics.Scale) + _graphics.Centre.Y;
+
+                int row = (int)(py / (8 * _graphics.Scale));
 
                 if (row_used[row] == 1)
                 {
@@ -218,14 +220,14 @@ namespace Elite.Engine.Views
                 if (row_used[row] == 0)
                 {
                     row_used[row] = 1;
-                    _planetNames.Add((new(px + (4 * Graphics.GFX_SCALE), ((row * 8) - 5) * Graphics.GFX_SCALE), _planet.NamePlanet(glx, true)));
+                    _planetNames.Add((new(px + (4 * _graphics.Scale), ((row * 8) - 5) * _graphics.Scale), _planet.NamePlanet(glx, true)));
                 }
 
                 // The next bit calculates the size of the circle used to represent
                 // a planet.  The carry_flag is left over from the name generation.
                 // Yes this was how it was done... don't ask :-(
                 float blob_size = (glx.F & 1) + 2 + _gameState.CarryFlag;
-                blob_size *= Graphics.GFX_SCALE;
+                blob_size *= _graphics.Scale;
                 _planetSizes.Add((new(px, py), blob_size));
 
                 _planet.WaggleGalaxy(ref glx);
@@ -254,8 +256,8 @@ namespace Elite.Engine.Views
         {
             Vector2 location = new()
             {
-                X = ((_gameState.Cross.X - Graphics.GFX_X_CENTRE) / (4 * Graphics.GFX_SCALE)) + _gameState.DockedPlanet.D,
-                Y = ((_gameState.Cross.Y - Graphics.GFX_Y_CENTRE) / (2 * Graphics.GFX_SCALE)) + _gameState.DockedPlanet.B,
+                X = ((_gameState.Cross.X - _graphics.Centre.X) / (4 * _graphics.Scale)) + _gameState.DockedPlanet.D,
+                Y = ((_gameState.Cross.Y - _graphics.Centre.Y) / (2 * _graphics.Scale)) + _gameState.DockedPlanet.B,
             };
 
             _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
@@ -265,8 +267,8 @@ namespace Elite.Engine.Views
         }
 
         private void CrossFromHyperspacePlanet() => _gameState.Cross = new(
-            ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * Graphics.GFX_SCALE) + Graphics.GFX_X_CENTRE,
-            ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * Graphics.GFX_SCALE) + Graphics.GFX_Y_CENTRE);
+            ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _graphics.Scale) + _graphics.Centre.X,
+            ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _graphics.Scale) + _graphics.Centre.Y);
 
         /// <summary>
         /// Move the planet chart cross hairs to specified position.

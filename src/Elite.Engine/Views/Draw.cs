@@ -12,30 +12,30 @@ namespace Elite.Engine.Views
 {
     internal sealed class Draw
     {
-        private readonly IGfx _gfx;
+        private readonly IGfx _graphics;
 
-        internal Draw(IGfx gfx) => _gfx = gfx;
+        internal Draw(IGfx graphics) => _graphics = graphics;
 
-        internal void ClearDisplay() => _gfx.ClearArea(Graphics.GFX_X_OFFSET + 1, Graphics.GFX_Y_OFFSET + 1, 510 + Graphics.GFX_X_OFFSET, 383 + Graphics.GFX_Y_OFFSET);
+        internal void ClearDisplay() => _graphics.ClearArea(_graphics.Offset.X + 1, _graphics.Offset.Y + 1, 510 + _graphics.Offset.X, 383 + _graphics.Offset.Y);
 
         internal void DrawBorder()
         {
-            _gfx.DrawLine(new(0, 0), new(0, 384));
-            _gfx.DrawLine(new(0, 0), new(511, 0));
-            _gfx.DrawLine(new(511, 0), new(511, 384));
+            _graphics.DrawLine(new(0, 0), new(0, 384));
+            _graphics.DrawLine(new(0, 0), new(511, 0));
+            _graphics.DrawLine(new(511, 0), new(511, 384));
         }
 
-        internal void DrawScanner() => _gfx.DrawImage(Image.Scanner, new(Graphics.GFX_X_OFFSET, 385 + Graphics.GFX_Y_OFFSET));
+        internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_graphics.Offset.X, 385 + _graphics.Offset.Y));
 
         internal void DrawSun(UniverseObject planet)
         {
             Vector2 centre = new()
             {
-                X = ((planet.Location.X * 256 / planet.Location.Z) + 128) * Graphics.GFX_SCALE,
-                Y = ((-planet.Location.Y * 256 / planet.Location.Z) + 96) * Graphics.GFX_SCALE,
+                X = ((planet.Location.X * 256 / planet.Location.Z) + 128) * _graphics.Scale,
+                Y = ((-planet.Location.Y * 256 / planet.Location.Z) + 96) * _graphics.Scale,
             };
 
-            float radius = 6291456 / planet.Location.Length() * Graphics.GFX_SCALE;
+            float radius = 6291456 / planet.Location.Length() * _graphics.Scale;
 
             if ((centre.X + radius < 0) ||
                 (centre.X - radius > 511) ||
@@ -45,8 +45,7 @@ namespace Elite.Engine.Views
                 return;
             }
 
-            centre.X += Graphics.GFX_X_OFFSET;
-            centre.Y += Graphics.GFX_Y_OFFSET;
+            centre += _graphics.Offset;
 
             float s = -radius;
             float x = radius;
@@ -91,16 +90,16 @@ namespace Elite.Engine.Views
                 }
 
                 i++;
-                _gfx.DrawTextLeft(x + Graphics.GFX_X_OFFSET, y + Graphics.GFX_Y_OFFSET, text[previous..i], Colour.White1);
+                _graphics.DrawTextLeft(x + _graphics.Offset.X, y + _graphics.Offset.Y, text[previous..i], Colour.White1);
                 previous = i;
-                y += 8 * Graphics.GFX_SCALE;
+                y += 8 * _graphics.Scale;
             }
         }
 
         internal void DrawViewHeader(string title)
         {
-            _gfx.DrawTextCentre(20, title, 140, Colour.Gold);
-            _gfx.DrawLine(new(0, 36), new(511, 36));
+            _graphics.DrawTextCentre(20, title, 140, Colour.Gold);
+            _graphics.DrawLine(new(0, 36), new(511, 36));
         }
 
         internal void LoadImages()
@@ -112,7 +111,7 @@ namespace Elite.Engine.Views
                 Stream? stream = loader.Load(img);
                 if (stream != null)
                 {
-                    _gfx.LoadBitmap(img, stream);
+                    _graphics.LoadBitmap(img, stream);
                 }
             }
         }
@@ -124,8 +123,8 @@ namespace Elite.Engine.Views
                 Y = centre.Y + y,
             };
 
-            if (s.Y is < Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET or
-                > Graphics.GFX_VIEW_BY + Graphics.GFX_Y_OFFSET)
+            if (s.Y < _graphics.ViewT.Y + _graphics.Offset.Y ||
+                s.Y > _graphics.ViewB.Y + _graphics.Offset.Y)
             {
                 return;
             }
@@ -136,20 +135,20 @@ namespace Elite.Engine.Views
             s.X -= radius * RNG.Random(2, 9) / 256f;
             ex += radius * RNG.Random(2, 9) / 256f;
 
-            if ((s.X > Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET) ||
-                (ex < Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET))
+            if ((s.X > _graphics.ViewB.X + _graphics.Offset.X) ||
+                (ex < _graphics.ViewT.X + _graphics.Offset.X))
             {
                 return;
             }
 
-            if (s.X < Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET)
+            if (s.X < _graphics.ViewT.X + _graphics.Offset.X)
             {
-                s.X = Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET;
+                s.X = _graphics.ViewT.X + _graphics.Offset.X;
             }
 
-            if (ex > Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET)
+            if (ex > _graphics.ViewB.X + _graphics.Offset.X)
             {
-                ex = Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET;
+                ex = _graphics.ViewB.X + _graphics.Offset.X;
             }
 
             float inner = radius * (200 + RNG.Random(7)) / 256;
@@ -176,7 +175,7 @@ namespace Elite.Engine.Views
                             ? Colour.Orange3
                             : ((int)s.X ^ (int)y).IsOdd() ? Colour.Orange1 : Colour.Orange2;
 
-                _gfx.DrawPixelFast(s, colour);
+                _graphics.DrawPixelFast(s, colour);
             }
         }
     }

@@ -11,14 +11,14 @@ namespace Elite.Engine
     internal sealed class Stars
     {
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGfx _graphics;
         private readonly PlayerShip _ship;
         private readonly Vector3[] _stars = new Vector3[20];
 
-        internal Stars(GameState gameState, IGfx gfx, PlayerShip ship)
+        internal Stars(GameState gameState, IGfx graphics, PlayerShip ship)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _ship = ship;
         }
 
@@ -75,24 +75,24 @@ namespace Elite.Engine
                 star.X += 128;
                 star.Y += 96;
 
-                star.X *= Graphics.GFX_SCALE;
-                star.Y *= Graphics.GFX_SCALE;
+                star.X *= _graphics.Scale;
+                star.Y *= _graphics.Scale;
 
                 if ((!WarpStars) &&
-                    (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
-                    (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
+                    (star.X >= _graphics.ViewT.X) && (star.X <= _graphics.ViewB.X) &&
+                    (star.Y >= _graphics.ViewT.Y) && (star.Y <= _graphics.ViewB.Y))
                 {
-                    _gfx.DrawPixel(star, Colour.White1);
+                    _graphics.DrawPixel(star, Colour.White1);
 
                     if (zz < 0xC0)
                     {
-                        _gfx.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
                     }
 
                     if (zz < 0x90)
                     {
-                        _gfx.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
-                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
                     }
                 }
 
@@ -117,7 +117,7 @@ namespace Elite.Engine
 
                 if (WarpStars)
                 {
-                    _gfx.DrawLine(star, new((xx + 128) * Graphics.GFX_SCALE, (yy + 96) * Graphics.GFX_SCALE));
+                    _graphics.DrawLine(star, new((xx + 128) * _graphics.Scale, (yy + 96) * _graphics.Scale));
                 }
 
                 star.X = xx;
@@ -167,24 +167,24 @@ namespace Elite.Engine
                 star.X += 128;
                 star.Y += 96;
 
-                star.X *= Graphics.GFX_SCALE;
-                star.Y *= Graphics.GFX_SCALE;
+                star.X *= _graphics.Scale;
+                star.Y *= _graphics.Scale;
 
                 if ((!WarpStars) &&
-                    (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
-                    (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
+                    (star.X >= _graphics.ViewT.X) && (star.X <= _graphics.ViewB.X) &&
+                    (star.Y >= _graphics.ViewT.Y) && (star.Y <= _graphics.ViewB.Y))
                 {
-                    _gfx.DrawPixel(star, Colour.White1);
+                    _graphics.DrawPixel(star, Colour.White1);
 
                     if (zz < 0xC0)
                     {
-                        _gfx.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
                     }
 
                     if (zz < 0x90)
                     {
-                        _gfx.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
-                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
                     }
                 }
 
@@ -209,15 +209,15 @@ namespace Elite.Engine
                 {
                     float ey = yy;
                     float ex = xx;
-                    ex = (ex + 128) * Graphics.GFX_SCALE;
-                    ey = (ey + 96) * Graphics.GFX_SCALE;
+                    ex = (ex + 128) * _graphics.Scale;
+                    ey = (ey + 96) * _graphics.Scale;
 
-                    if ((star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
-                       (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY) &&
-                       (ex >= Graphics.GFX_VIEW_TX) && (ex <= Graphics.GFX_VIEW_BX) &&
-                       (ey >= Graphics.GFX_VIEW_TY) && (ey <= Graphics.GFX_VIEW_BY))
+                    if ((star.X >= _graphics.ViewT.X) && (star.X <= _graphics.ViewB.X) &&
+                       (star.Y >= _graphics.ViewT.Y) && (star.Y <= _graphics.ViewB.Y) &&
+                       (ex >= _graphics.ViewT.X) && (ex <= _graphics.ViewB.X) &&
+                       (ey >= _graphics.ViewT.Y) && (ey <= _graphics.ViewB.Y))
                     {
-                        _gfx.DrawLine(star, new((xx + 128) * Graphics.GFX_SCALE, (yy + 96) * Graphics.GFX_SCALE));
+                        _graphics.DrawLine(star, new((xx + 128) * _graphics.Scale, (yy + 96) * _graphics.Scale));
                     }
                 }
 
@@ -264,24 +264,24 @@ namespace Elite.Engine
                 star.X += 128;
                 star.Y += 96;
 
-                star.X *= Graphics.GFX_SCALE;
-                star.Y *= Graphics.GFX_SCALE;
+                star.X *= _graphics.Scale;
+                star.Y *= _graphics.Scale;
 
                 if ((!WarpStars) &&
-                    (star.X >= Graphics.GFX_VIEW_TX) && (star.X <= Graphics.GFX_VIEW_BX) &&
-                    (star.Y >= Graphics.GFX_VIEW_TY) && (star.Y <= Graphics.GFX_VIEW_BY))
+                    (star.X >= _graphics.ViewT.X) && (star.X <= _graphics.ViewB.X) &&
+                    (star.Y >= _graphics.ViewT.Y) && (star.Y <= _graphics.ViewB.Y))
                 {
-                    _gfx.DrawPixel(star, Colour.White1);
+                    _graphics.DrawPixel(star, Colour.White1);
 
                     if (zz < 0xC0)
                     {
-                        _gfx.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
                     }
 
                     if (zz < 0x90)
                     {
-                        _gfx.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
-                        _gfx.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
                     }
                 }
 
@@ -305,7 +305,7 @@ namespace Elite.Engine
 
                 if (WarpStars)
                 {
-                    _gfx.DrawLine(star, new((xx + 128) * Graphics.GFX_SCALE, (yy + 96) * Graphics.GFX_SCALE));
+                    _graphics.DrawLine(star, new((xx + 128) * _graphics.Scale, (yy + 96) * _graphics.Scale));
                 }
 
                 if (MathF.Abs(_stars[i].X) >= 116f)

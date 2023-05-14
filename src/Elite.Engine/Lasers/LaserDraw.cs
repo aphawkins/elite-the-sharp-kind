@@ -10,35 +10,37 @@ namespace Elite.Engine.Lasers
     internal sealed class LaserDraw
     {
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGfx _graphics;
 
-        internal LaserDraw(GameState gameState, IGfx gfx)
+        internal LaserDraw(GameState gameState, IGfx graphics)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
         }
 
         internal void DrawLaserLines()
         {
             Vector2 point = new()
             {
-                X = RNG.Random(126, 129) * Graphics.GFX_SCALE,
-                Y = RNG.Random(94, 97) * Graphics.GFX_SCALE,
+                X = RNG.Random(126, 129) * _graphics.Scale,
+                Y = RNG.Random(94, 97) * _graphics.Scale,
             };
 
             if (_gameState.Config.UseWireframe)
             {
                 // Left laser
-                _gfx.DrawTriangle(new(32 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(48 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), Colour.Red1);
+                _graphics.DrawTriangle(new(32 * _graphics.Scale, _graphics.ViewB.Y), point, new(48 * _graphics.Scale, _graphics.ViewB.Y), Colour.Red1);
+
                 // Right laser
-                _gfx.DrawTriangle(new(208 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(224 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), Colour.Red1);
+                _graphics.DrawTriangle(new(208 * _graphics.Scale, _graphics.ViewB.Y), point, new(224 * _graphics.Scale, _graphics.ViewB.Y), Colour.Red1);
             }
             else
             {
                 // Left laser
-                _gfx.DrawTriangleFilled(new(32 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(48 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), Colour.Red1);
+                _graphics.DrawTriangleFilled(new(32 * _graphics.Scale, _graphics.ViewB.Y), point, new(48 * _graphics.Scale, _graphics.ViewB.Y), Colour.Red1);
+
                 // Right laser
-                _gfx.DrawTriangleFilled(new(208 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), point, new(224 * Graphics.GFX_SCALE, Graphics.GFX_VIEW_BY), Colour.Red1);
+                _graphics.DrawTriangleFilled(new(208 * _graphics.Scale, _graphics.ViewB.Y), point, new(224 * _graphics.Scale, _graphics.ViewB.Y), Colour.Red1);
             }
         }
 
@@ -49,35 +51,35 @@ namespace Elite.Engine.Lasers
                 return;
             }
 
-            float x1 = 128 * Graphics.GFX_SCALE;
-            float y1 = (96 - 8) * Graphics.GFX_SCALE;
-            float y2 = (96 - 16) * Graphics.GFX_SCALE;
+            float x1 = 128 * _graphics.Scale;
+            float y1 = (96 - 8) * _graphics.Scale;
+            float y2 = (96 - 16) * _graphics.Scale;
 
-            _gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), Colour.Grey1);
-            _gfx.DrawLine(new(x1, y1), new(x1, y2), Colour.White1);
-            _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), Colour.Grey1);
+            _graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), Colour.Grey1);
+            _graphics.DrawLine(new(x1, y1), new(x1, y2), Colour.White1);
+            _graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), Colour.Grey1);
 
-            y1 = (96 + 8) * Graphics.GFX_SCALE;
-            y2 = (96 + 16) * Graphics.GFX_SCALE;
+            y1 = (96 + 8) * _graphics.Scale;
+            y2 = (96 + 16) * _graphics.Scale;
 
-            _gfx.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), Colour.Grey1);
-            _gfx.DrawLine(new(x1, y1), new(x1, y2), Colour.White1);
-            _gfx.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), Colour.Grey1);
+            _graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), Colour.Grey1);
+            _graphics.DrawLine(new(x1, y1), new(x1, y2), Colour.White1);
+            _graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), Colour.Grey1);
 
-            x1 = (128f - 8f) * Graphics.GFX_SCALE;
-            y1 = 96f * Graphics.GFX_SCALE;
-            float x2 = (128 - 16) * Graphics.GFX_SCALE;
+            x1 = (128f - 8f) * _graphics.Scale;
+            y1 = 96f * _graphics.Scale;
+            float x2 = (128 - 16) * _graphics.Scale;
 
-            _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), Colour.Grey1);
-            _gfx.DrawLine(new(x1, y1), new(x2, y1), Colour.White1);
-            _gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), Colour.Grey1);
+            _graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), Colour.Grey1);
+            _graphics.DrawLine(new(x1, y1), new(x2, y1), Colour.White1);
+            _graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), Colour.Grey1);
 
-            x1 = (128 + 8) * Graphics.GFX_SCALE;
-            x2 = (128 + 16) * Graphics.GFX_SCALE;
+            x1 = (128 + 8) * _graphics.Scale;
+            x2 = (128 + 16) * _graphics.Scale;
 
-            _gfx.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), Colour.Grey1);
-            _gfx.DrawLine(new(x1, y1), new(x2, y1), Colour.White1);
-            _gfx.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), Colour.Grey1);
+            _graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), Colour.Grey1);
+            _graphics.DrawLine(new(x1, y1), new(x2, y1), Colour.White1);
+            _graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), Colour.Grey1);
         }
     }
 }

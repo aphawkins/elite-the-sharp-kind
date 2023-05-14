@@ -12,7 +12,7 @@ namespace Elite.Engine.Views
         private readonly ConfigFile _configFile;
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGfx _graphics;
         private readonly IKeyboard _keyboard;
 
         private readonly (string Name, string[] Values)[] _settingList =
@@ -27,10 +27,10 @@ namespace Elite.Engine.Views
 
         private int _highlightedItem;
 
-        internal SettingsView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, ConfigFile configFile)
+        internal SettingsView(GameState gameState, IGfx graphics, Draw draw, IKeyboard keyboard, ConfigFile configFile)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _configFile = configFile;
@@ -50,11 +50,11 @@ namespace Elite.Engine.Views
                     y = ((_settingList.Length + 1) / 2 * 30) + 96 + 32;
                     if (i == _highlightedItem)
                     {
-                        x = Graphics.GFX_X_CENTRE - 200;
-                        _gfx.DrawRectangleFilled(x, y - 7, 400, 15, Colour.Red2);
+                        x = _graphics.Centre.X - 200;
+                        _graphics.DrawRectangleFilled(x, y - 7, 400, 15, Colour.Red2);
                     }
 
-                    _gfx.DrawTextCentre(y, _settingList[i].Name, 120, Colour.White1);
+                    _graphics.DrawTextCentre(y, _settingList[i].Name, 120, Colour.White1);
                     return;
                 }
 
@@ -72,10 +72,11 @@ namespace Elite.Engine.Views
 
                 if (i == _highlightedItem)
                 {
-                    _gfx.DrawRectangleFilled(x, y, 100, 15, Colour.Red2);
+                    _graphics.DrawRectangleFilled(x, y, 100, 15, Colour.Red2);
                 }
-                _gfx.DrawTextLeft(x, y, _settingList[i].Name, Colour.White1);
-                _gfx.DrawTextLeft(x + 120, y, _settingList[i].Values[v], Colour.White1);
+
+                _graphics.DrawTextLeft(x, y, _settingList[i].Name, Colour.White1);
+                _graphics.DrawTextLeft(x + 120, y, _settingList[i].Values[v], Colour.White1);
             }
         }
 

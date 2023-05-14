@@ -56,5 +56,12 @@ namespace Elite.Engine
         void ScreenUpdate();
 
         void SetClipRegion(float x, float y, float width, float height);
+
+        float Scale { get; }
+        Vector2 Offset { get; }
+        Vector2 Centre { get; }
+
+        Vector2 ViewT { get; }
+        Vector2 ViewB { get; }
     }
 }

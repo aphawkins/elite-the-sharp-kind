@@ -46,7 +46,7 @@ namespace Elite.Engine
 
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGfx _graphics;
         private readonly int[,] _landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
         private readonly Vector3[] _pointList = new Vector3[100];
         private readonly PolygonData[] _polyChain = new PolygonData[MAX_POLYS];
@@ -55,10 +55,10 @@ namespace Elite.Engine
 
         private int _totalPolys;
 
-        internal Threed(GameState gameState, IGfx gfx, Draw draw)
+        internal Threed(GameState gameState, IGfx graphics, Draw draw)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
         }
 
@@ -152,17 +152,17 @@ namespace Elite.Engine
 
                 if (_polyChain[i].PointList.Length == 2)
                 {
-                    _gfx.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], colour);
+                    _graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], colour);
                     continue;
                 }
 
                 if (_gameState.Config.UseWireframe)
                 {
-                    _gfx.DrawPolygon(_polyChain[i].PointList, colour);
+                    _graphics.DrawPolygon(_polyChain[i].PointList, colour);
                 }
                 else
                 {
-                    _gfx.DrawPolygonFilled(_polyChain[i].PointList, colour);
+                    _graphics.DrawPolygonFilled(_polyChain[i].PointList, colour);
                 }
             }
         }
@@ -242,8 +242,8 @@ namespace Elite.Engine
                     sx += 128;
                     sy += 96;
 
-                    sx *= Graphics.GFX_SCALE;
-                    sy *= Graphics.GFX_SCALE;
+                    sx *= _graphics.Scale;
+                    sy *= _graphics.Scale;
 
                     _pointList[np].X = sx;
                     _pointList[np].Y = sy;
@@ -287,7 +287,7 @@ namespace Elite.Engine
                             //Debug.Assert(position.X >= 0);
                             //Debug.Assert(position.Y >= 0);
 
-                            _gfx.DrawPixel(new(position.X + psx, position.Y + psy), Colour.White1);
+                            _graphics.DrawPixel(new(position.X + psx, position.Y + psy), Colour.White1);
                         }
                     }
                 }
@@ -312,14 +312,14 @@ namespace Elite.Engine
             position.X += 128;
             position.Y += 96;
 
-            position.X *= Graphics.GFX_SCALE;
-            position.Y *= Graphics.GFX_SCALE;
+            position.X *= _graphics.Scale;
+            position.Y *= _graphics.Scale;
 
             float radius = 6291456 / planet.Location.Length();
             // Planets are BIG!
             //  radius = 6291456 / ship_vec.z;
 
-            radius *= Graphics.GFX_SCALE;
+            radius *= _graphics.Scale;
 
             if ((position.X + radius < 0) ||
                 (position.X - radius > 511) ||
@@ -336,7 +336,7 @@ namespace Elite.Engine
                     break;
 
                 case PlanetRenderStyle.Green:
-                    _gfx.DrawCircleFilled(position, radius, Colour.Green1);
+                    _graphics.DrawCircleFilled(position, radius, Colour.Green1);
                     break;
 
                 case PlanetRenderStyle.SNES:
@@ -449,8 +449,8 @@ namespace Elite.Engine
                     vec.Z = 1;
                 }
 
-                vec.X = ((vec.X * 256 / vec.Z) + 128) * Graphics.GFX_SCALE;
-                vec.Y = ((-vec.Y * 256 / vec.Z) + 96) * Graphics.GFX_SCALE;
+                vec.X = ((vec.X * 256 / vec.Z) + 128) * _graphics.Scale;
+                vec.Y = ((-vec.Y * 256 / vec.Z) + 96) * _graphics.Scale;
 
                 _pointList[i] = vec;
             }
@@ -504,7 +504,7 @@ namespace Elite.Engine
         /// <param name="radius"></param>
         private void DrawWireframePlanet(Vector2 centre, float radius) =>
             // TODO: At the moment we just draw a circle. Need to add in the two arcs that the original Elite had.
-            _gfx.DrawCircle(centre, radius, Colour.White1);
+            _graphics.DrawCircle(centre, radius, Colour.White1);
 
         /// <summary>
         /// Generate a fractal landscape. Uses midpoint displacement method.
@@ -599,8 +599,8 @@ namespace Elite.Engine
         /// <param name="vec"></param>
         private void RenderPlanet(Vector2 centre, float radius, Vector3[] vec)
         {
-            centre.X += Graphics.GFX_X_OFFSET;
-            centre.Y += Graphics.GFX_Y_OFFSET;
+            centre.X += _graphics.Offset.X;
+            centre.Y += _graphics.Offset.Y;
 
             float vx = vec[1].X * 65536;
             float vy = vec[1].Y * 65536;
@@ -647,8 +647,8 @@ namespace Elite.Engine
                 Y = y + centre.Y,
             };
 
-            if (s.Y is < Graphics.GFX_VIEW_TY + Graphics.GFX_Y_OFFSET or
-                > Graphics.GFX_VIEW_BY + Graphics.GFX_Y_OFFSET)
+            if (s.Y < _graphics.ViewT.Y + _graphics.Offset.Y ||
+                s.Y > _graphics.ViewB.Y + _graphics.Offset.Y)
             {
                 return;
             }
@@ -665,12 +665,12 @@ namespace Elite.Engine
 
             for (; s.X <= ex; s.X++)
             {
-                if (s.X is >= Graphics.GFX_VIEW_TX + Graphics.GFX_X_OFFSET and <= Graphics.GFX_VIEW_BX + Graphics.GFX_X_OFFSET)
+                if (s.X >= _graphics.ViewT.X + _graphics.Offset.X && s.X <= _graphics.ViewB.X + _graphics.Offset.X)
                 {
                     int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LAND_X_MAX);
                     int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LAND_Y_MAX);
                     Colour colour = (Colour)_landscape[lx, ly];
-                    _gfx.DrawPixelFast(s, colour);
+                    _graphics.DrawPixelFast(s, colour);
                 }
                 rx += vx;
                 ry += vy;

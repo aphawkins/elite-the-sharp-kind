@@ -12,7 +12,7 @@ namespace Elite.Engine.Views
         private const int OptionBarWidth = 400;
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGfx _graphics;
         private readonly IKeyboard _keyboard;
 
         private readonly (string Label, bool DockedOnly)[] _optionList =
@@ -25,10 +25,10 @@ namespace Elite.Engine.Views
 
         private int _highlightedItem;
 
-        internal OptionsView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal OptionsView(GameState gameState, IGfx graphics, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
         }
@@ -45,19 +45,19 @@ namespace Elite.Engine.Views
 
                 if (i == _highlightedItem)
                 {
-                    float x = Graphics.GFX_X_CENTRE - (OptionBarWidth / 2);
-                    _gfx.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, Colour.Red2);
+                    float x = _graphics.Centre.X - (OptionBarWidth / 2);
+                    _graphics.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, Colour.Red2);
                 }
 
                 Colour col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? Colour.Grey1 : Colour.White1;
 
-                _gfx.DrawTextCentre(y, _optionList[i].Label, 120, col);
+                _graphics.DrawTextCentre(y, _optionList[i].Label, 120, col);
             }
 
-            _gfx.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", 120, Colour.White1);
-            _gfx.DrawTextCentre(320, "The Sharp Kind - Andy Hawkins 2023", 120, Colour.White1);
-            _gfx.DrawTextCentre(340, "The New Kind - Christian Pinder 1999-2001", 120, Colour.White1);
-            _gfx.DrawTextCentre(360, "Original Code - Ian Bell & David Braben", 120, Colour.White1);
+            _graphics.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", 120, Colour.White1);
+            _graphics.DrawTextCentre(320, "The Sharp Kind - Andy Hawkins 2023", 120, Colour.White1);
+            _graphics.DrawTextCentre(340, "The New Kind - Christian Pinder 1999-2001", 120, Colour.White1);
+            _graphics.DrawTextCentre(360, "Original Code - Ian Bell & David Braben", 120, Colour.White1);
         }
 
         public void HandleInput()
