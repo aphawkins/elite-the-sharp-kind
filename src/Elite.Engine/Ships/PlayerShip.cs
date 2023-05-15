@@ -141,29 +141,26 @@ namespace Elite.Engine.Ships
             {
                 Roll = -14;
             }
-            else
+            else if (ship.RotZ == 0)
             {
-                if (ship.RotZ == 0)
-                {
-                    Roll = 0;
-                }
-                else if (ship.RotZ > 0)
+                Roll = 0;
+            }
+            else if (ship.RotZ > 0)
+            {
+                IncreaseRoll();
+
+                if (ship.RotZ > 1)
                 {
                     IncreaseRoll();
-
-                    if (ship.RotZ > 1)
-                    {
-                        IncreaseRoll();
-                    }
                 }
-                else if (ship.RotZ < 0)
+            }
+            else if (ship.RotZ < 0)
+            {
+                DecreaseRoll();
+
+                if (ship.RotZ < -1)
                 {
                     DecreaseRoll();
-
-                    if (ship.RotZ < -1)
-                    {
-                        DecreaseRoll();
-                    }
                 }
             }
         }

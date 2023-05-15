@@ -71,20 +71,17 @@ namespace Elite.Engine.Views
                 _graphics.DrawTextLeft(16, 340, "Planet Name?", Colour.Green1);
                 _graphics.DrawTextLeft(16, 356, _findName, Colour.White1);
             }
+            else if (string.IsNullOrEmpty(_gameState.PlanetName))
+            {
+                _graphics.DrawTextLeft(16, 340, "Unknown Planet", Colour.Green1);
+                _graphics.DrawTextLeft(16, 356, _findName, Colour.White1);
+            }
             else
             {
-                if (string.IsNullOrEmpty(_gameState.PlanetName))
+                _graphics.DrawTextLeft(16, 340, _gameState.PlanetName, Colour.Green1);
+                if (_gameState.DistanceToPlanet > 0)
                 {
-                    _graphics.DrawTextLeft(16, 340, "Unknown Planet", Colour.Green1);
-                    _graphics.DrawTextLeft(16, 356, _findName, Colour.White1);
-                }
-                else
-                {
-                    _graphics.DrawTextLeft(16, 340, _gameState.PlanetName, Colour.Green1);
-                    if (_gameState.DistanceToPlanet > 0)
-                    {
-                        _graphics.DrawTextLeft(16, 356, $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White1);
-                    }
+                    _graphics.DrawTextLeft(16, 356, $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White1);
                 }
             }
         }
