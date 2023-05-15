@@ -56,13 +56,13 @@ namespace Elite.Engine.Views
         private readonly string[] _economyType =
         {
             "Rich Industrial",
-                                "Average Industrial",
-                                "Poor Industrial",
-                                "Mainly Industrial",
-                                "Mainly Agricultural",
-                                "Rich Agricultural",
-                                "Average Agricultural",
-                                "Poor Agricultural",
+            "Average Industrial",
+            "Poor Industrial",
+            "Mainly Industrial",
+            "Mainly Agricultural",
+            "Rich Agricultural",
+            "Average Agricultural",
+            "Poor Agricultural",
         };
 
         private readonly GameState _gameState;
@@ -71,13 +71,13 @@ namespace Elite.Engine.Views
         private readonly string[] _governmentType =
         {
             "Anarchy",
-                                    "Feudal",
-                                    "Multi-Government",
-                                    "Dictatorship",
-                                    "Communist",
-                                    "Confederacy",
-                                    "Democracy",
-                                    "Corporate State",
+            "Feudal",
+            "Multi-Government",
+            "Dictatorship",
+            "Communist",
+            "Confederacy",
+            "Democracy",
+            "Corporate State",
         };
 
         private readonly Planet _planet;
