@@ -96,6 +96,7 @@ namespace Elite.Engine.Views
                         _findName = _findName[..^1];
                     }
                 }
+
                 if (_keyboard.IsKeyPressed(CommandKey.Enter))
                 {
                     _isFind = false;
@@ -126,26 +127,32 @@ namespace Elite.Engine.Views
                     (_gameState.DockedPlanet.B / (2 / _graphics.Scale)) + (18 * _graphics.Scale) + 1);
                 CalculateDistanceToPlanet();
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.DistanceToPlanet))
             {
                 CalculateDistanceToPlanet();
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
                 MoveCross(0, -1);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 MoveCross(0, 1);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
                 MoveCross(-1, 0);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
                 MoveCross(1, 0);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Find))
             {
                 _isFind = true;

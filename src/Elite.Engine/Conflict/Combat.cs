@@ -674,6 +674,7 @@ namespace Elite.Engine.Conflict
                         LaunchEnemy(un, ShipType.Missile, ShipFlags.Angry, 126);
                         _gameState.InfoMessage("INCOMING MISSILE");
                     }
+
                     return;
                 }
             }

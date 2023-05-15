@@ -49,6 +49,7 @@ namespace Elite.Engine.Views
                 _audio.StopMusic();
                 _gameState.SetView(SCR.SCR_LOAD_CMDR);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.No))
             {
                 _combat.ClearUniverse();

@@ -63,6 +63,7 @@ namespace Elite.Engine.Views
 
                 _ship.IsClimbing = true;
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 if (_ship.Climb < 0)
@@ -77,6 +78,7 @@ namespace Elite.Engine.Views
 
                 _ship.IsClimbing = true;
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
                 if (_ship.Roll < 0)
@@ -90,6 +92,7 @@ namespace Elite.Engine.Views
                     _ship.IsRolling = true;
                 }
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
                 if (_ship.Roll > 0)
@@ -103,6 +106,7 @@ namespace Elite.Engine.Views
                     _ship.IsRolling = true;
                 }
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOff))
             {
                 if (_gameState.IsAutoPilotOn)

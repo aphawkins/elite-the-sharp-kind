@@ -73,14 +73,17 @@ namespace Elite.Engine.Views
             {
                 _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock - 1, 0, _trade._stockMarket.Count - 1);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock + 1, 0, _trade._stockMarket.Count - 1);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
                 _trade.SellStock(_highlightedStock);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
                 _trade.BuyStock(_highlightedStock);

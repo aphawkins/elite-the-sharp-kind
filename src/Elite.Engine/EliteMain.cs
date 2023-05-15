@@ -123,6 +123,7 @@ namespace Elite.Engine
                         break;
                     }
                 }
+
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 

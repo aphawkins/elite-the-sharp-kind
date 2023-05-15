@@ -673,6 +673,7 @@ namespace Elite.Engine
                     Colour colour = (Colour)_landscape[lx, ly];
                     _graphics.DrawPixelFast(s, colour);
                 }
+
                 rx += vx;
                 ry += vy;
             }

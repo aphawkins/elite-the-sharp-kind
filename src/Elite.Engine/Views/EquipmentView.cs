@@ -111,10 +111,12 @@ namespace Elite.Engine.Views
             {
                 SelectPrevious();
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 SelectNext();
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
                 Buy();

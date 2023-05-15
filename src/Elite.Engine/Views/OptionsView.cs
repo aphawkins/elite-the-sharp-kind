@@ -66,10 +66,12 @@ namespace Elite.Engine.Views
             {
                 _highlightedItem = Math.Clamp(_highlightedItem - 1, 0, _optionList.Length - 1);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 _highlightedItem = Math.Clamp(_highlightedItem + 1, 0, _optionList.Length - 1);
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
                 ExecuteOption();

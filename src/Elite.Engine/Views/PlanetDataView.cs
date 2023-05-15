@@ -102,6 +102,7 @@ namespace Elite.Engine.Views
                 _graphics.DrawTextLeft(16, 42, "Distance:", Colour.Green1);
                 _graphics.DrawTextLeft(140, 42, $"{_distanceToPlanet:N1} Light Years", Colour.White1);
             }
+
             _graphics.DrawTextLeft(16, 74, "Economy:", Colour.Green1);
             _graphics.DrawTextLeft(140, 74, _economyType[_hyperPlanetData.Economy], Colour.White1);
             _graphics.DrawTextLeft(16, 106, "Government:", Colour.Green1);
@@ -244,8 +245,10 @@ namespace Elite.Engine.Views
                                 {
                                     planetDescription += char.ToLower(_planet.Digrams[x]);
                                 }
+
                                 planetDescription += char.ToLower(_planet.Digrams[x + 1]);
                             }
+
                             break;
 
                         default:

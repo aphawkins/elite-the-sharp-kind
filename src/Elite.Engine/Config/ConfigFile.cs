@@ -53,6 +53,7 @@ namespace Elite.Engine.Config
                 {
                     File.Delete(ConfigFileName);
                 }
+
                 using FileStream stream = File.OpenWrite(ConfigFileName);
 
                 await JsonSerializer.SerializeAsync(stream, config, _options).ConfigureAwait(false);

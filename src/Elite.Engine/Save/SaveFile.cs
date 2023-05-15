@@ -91,6 +91,7 @@ namespace Elite.Engine.Save
                 {
                     File.Delete(path);
                 }
+
                 using FileStream stream = File.OpenWrite(path);
                 await JsonSerializer.SerializeAsync(stream, save, _options).ConfigureAwait(false);
 
@@ -174,6 +175,7 @@ namespace Elite.Engine.Save
             {
                 _trade._stockMarket[(StockType)i + 1].CurrentCargo = _lastSaved.CurrentCargo[i];
             }
+
             _ship.EnergyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
             _ship.Fuel = _lastSaved.Fuel;
             _state.Cmdr.GalaxyNumber = _lastSaved.GalaxyNumber;

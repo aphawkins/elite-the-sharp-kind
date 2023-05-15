@@ -86,18 +86,22 @@ namespace Elite.Engine.Views
             {
                 SelectUp();
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
                 SelectDown();
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
             {
                 SelectLeft();
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
             {
                 SelectRight();
             }
+
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
                 ToggleSetting();
