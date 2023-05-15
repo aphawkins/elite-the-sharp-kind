@@ -16,7 +16,7 @@ namespace Elite.Engine
         /// <returns>A number between min and max with Gaussian distribution.</returns>
         internal static int GaussianRandom(int min, int max)
         {
-            int iterations = 12;
+            const int iterations = 12;
             int r = 0;
             for (int i = 0; i < iterations; i++)
             {

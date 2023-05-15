@@ -162,10 +162,11 @@ csharp_style_prefer_top_level_statements = true:suggestion
 
 # Diagnostic
 dotnet_analyzer_diagnostic.severity = suggestion
+
 # Diagnostic - Exclusions
 dotnet_diagnostic.IDE0058.severity = none #Expression value is never used
 
-# StyleCop
+# StyleCop - Exclusions
 dotnet_diagnostic.SA1005.severity = none # Single line comment should begin with a space
 dotnet_diagnostic.SA1101.severity = none # Prefix local calls with this
 dotnet_diagnostic.SA1309.severity = none # Field '' should not begin with an underscore
@@ -179,15 +180,14 @@ dotnet_diagnostic.SA1615.severity = none # Element return value should be docume
 dotnet_diagnostic.SA1616.severity = none # Element return value documentation should have text
 dotnet_diagnostic.SA1633.severity = none # The file header XML is invalid.
 
-Roslynator Configuration
+# Roslynator
 # Set severity for all analyzers that are enabled by default (https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2022#set-rule-severity-of-multiple-analyzer-rules-at-once-in-an-editorconfig-file)
 dotnet_analyzer_diagnostic.category-roslynator.severity = suggestion
-
-# Enable/disable all refactorings
 roslynator_refactorings.enabled = true
-
-# Enable/disable all compiler diagnostic fixes
 roslynator_compiler_diagnostic_fixes.enabled = true
+
+# Roslynator - Exclusions
+dotnet_diagnostic.RCS1070.severity = silent
 
 # C++ Files
 [*.{cpp,h,in}]

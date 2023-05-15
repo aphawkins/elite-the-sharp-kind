@@ -140,8 +140,8 @@ namespace Elite.Engine
 
         private void DisplayFlightClimb()
         {
-            float sx = 416;
-            float sy = 384 + 9 + 14 + 16;
+            const float sx = 416;
+            const float sy = 384 + 9 + 14 + 16;
 
             float pos = sx + (_ship.Climb * 28 / _ship.MaxClimb);
             pos += 32;
@@ -154,8 +154,8 @@ namespace Elite.Engine
 
         private void DisplayFlightRoll()
         {
-            float sx = 416;
-            float sy = 384 + 9 + 14;
+            const float sx = 416;
+            const float sy = 384 + 9 + 14;
 
             float pos = sx - (_ship.Roll * 28 / _ship.MaxRoll);
             pos += 32;
@@ -228,8 +228,8 @@ namespace Elite.Engine
         /// </summary>
         private void DisplaySpeed()
         {
-            float sx = 417;
-            float sy = 384 + 9;
+            const float sx = 417;
+            const float sy = 384 + 9;
 
             float len = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
 

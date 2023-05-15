@@ -509,7 +509,7 @@ namespace Elite.Engine
         /// <param name="seed">Initial seed for the generation.</param>
         private void GenerateFractalLandscape(int seed)
         {
-            int d = LAND_X_MAX / 8;
+            const int d = LAND_X_MAX / 8;
             Random random = new(seed);
 
             for (int y = 0; y <= LAND_Y_MAX; y += d)

@@ -512,7 +512,7 @@ namespace Elite.Engine.Conflict
             int energy;
             int maxeng;
             Vector3 nvec;
-            float cnt2 = 0.223f;
+            const float cnt2 = 0.223f;
             float direction;
             int attacking;
 
@@ -828,8 +828,8 @@ namespace Elite.Engine.Conflict
 
         private static void TrackObject(ref UniverseObject ship, float direction, Vector3 nvec)
         {
-            int rat = 3;
-            float rat2 = 0.111f;
+            const int rat = 3;
+            const float rat2 = 0.111f;
             float dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[1]);
 
             if (direction < -0.861)
@@ -1172,7 +1172,7 @@ namespace Elite.Engine.Conflict
             Vector3 vec;
             Vector3 nvec;
             float direction;
-            float cnt2 = 0.223f;
+            const float cnt2 = 0.223f;
 
             if (_ship.EcmActive != 0)
             {
