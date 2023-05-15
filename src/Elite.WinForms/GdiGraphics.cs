@@ -89,8 +89,8 @@ namespace Elite.WinForms
         // Screen buffer
         private readonly Bitmap _screenBuffer;
 
-        private readonly System.Drawing.Graphics _screenBufferGraphics;
-        private readonly System.Drawing.Graphics _screenGraphics;
+        private readonly Graphics _screenBufferGraphics;
+        private readonly Graphics _screenGraphics;
         private bool _isDisposed;
 
         //private volatile int frame_count;
@@ -104,9 +104,9 @@ namespace Elite.WinForms
             Debug.Assert(_brushes.Count == Enum.GetNames(typeof(Colour)).Length);
 
             _screen = screen;
-            _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
+            _screenGraphics = Graphics.FromImage(_screen);
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
-            _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
+            _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
         }
 
