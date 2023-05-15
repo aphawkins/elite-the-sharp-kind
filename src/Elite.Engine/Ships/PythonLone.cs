@@ -7,7 +7,9 @@ namespace Elite.Engine.Ships
     internal sealed class PythonLone : Python, IShip
     {
         public new float Bounty => 20;
+
         public new int LootMax => 2;
+
         public new ShipClass Type => ShipClass.LoneWolf;
     }
 }

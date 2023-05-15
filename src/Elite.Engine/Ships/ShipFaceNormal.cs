@@ -15,6 +15,7 @@ namespace Elite.Engine.Ships
         }
 
         internal Vector3 Direction { get; set; }
+
         internal int Distance { get; set; }
     }
 }

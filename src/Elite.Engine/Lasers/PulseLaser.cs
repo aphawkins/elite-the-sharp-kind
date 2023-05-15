@@ -13,6 +13,7 @@ namespace Elite.Engine.Lasers
         public int Strength => 15;
 
         public int Temperature { get; set; }
+
         public LaserType Type => LaserType.Pulse;
     }
 }

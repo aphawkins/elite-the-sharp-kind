@@ -31,14 +31,23 @@ namespace Elite.Engine.Trader
         }
 
         internal float BasePrice { get; set; }
+
         internal int BaseQuantity { get; set; }
+
         internal int CurrentCargo { get; set; }
+
         internal float CurrentPrice { get; set; }
+
         internal int CurrentQuantity { get; set; }
+
         internal int EconomyAdjust { get; set; }
+
         internal int Mask { get; set; }
+
         internal string Name { get; set; }
+
         internal int StationStock { get; set; }
+
         internal string Units { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace Elite.Engine.Ships
     internal sealed class Constrictor : IShip
     {
         public static StockType ScoopedType => StockType.None;
+
         public float Bounty => 0;
 
         public int EnergyMax => 252;
@@ -107,8 +108,11 @@ namespace Elite.Engine.Ships
         };
 
         StockType IShip.ScoopedType => throw new NotImplementedException();
+
         public float Size => 4225;
+
         public ShipClass Type => ShipClass.LoneWolf;
+
         public int VanishPoint => 45;
 
         public float VelocityMax => 36;

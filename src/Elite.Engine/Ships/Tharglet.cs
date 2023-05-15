@@ -81,8 +81,11 @@ namespace Elite.Engine.Ships
         };
 
         public StockType ScoopedType => StockType.AlienItems;
+
         public float Size => 1600;
+
         public ShipClass Type => ShipClass.Tharglet;
+
         public int VanishPoint => 20;
 
         public float VelocityMax => 30;

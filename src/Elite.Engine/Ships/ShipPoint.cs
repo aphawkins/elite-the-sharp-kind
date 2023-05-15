@@ -19,10 +19,15 @@ namespace Elite.Engine.Ships
         }
 
         internal int Distance { get; set; }
+
         internal int Face1 { get; set; }
+
         internal int Face2 { get; set; }
+
         internal int Face3 { get; set; }
+
         internal int Face4 { get; set; }
+
         internal Vector3 Point { get; set; }
     }
 }

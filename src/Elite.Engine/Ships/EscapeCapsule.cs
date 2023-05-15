@@ -58,8 +58,11 @@ namespace Elite.Engine.Ships
         };
 
         public StockType ScoopedType => StockType.Slaves;
+
         public float Size => 256;
+
         public ShipClass Type => ShipClass.SpaceJunk;
+
         public int VanishPoint => 8;
 
         public float VelocityMax => 8;

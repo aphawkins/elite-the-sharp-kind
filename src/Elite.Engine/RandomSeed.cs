@@ -7,8 +7,11 @@ namespace Elite.Engine
     internal sealed class RandomSeed
     {
         internal int A { get; set; }
+
         internal int B { get; set; }
+
         internal int C { get; set; }
+
         internal int D { get; set; }
     }
 }

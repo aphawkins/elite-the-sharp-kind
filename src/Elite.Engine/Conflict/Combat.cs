@@ -72,7 +72,9 @@ namespace Elite.Engine.Conflict
         }
 
         internal bool InBattle { get; set; }
+
         internal int IsMissileUnarmed { get; private set; } = -2;
+
         internal int MissileTarget { get; private set; }
 
         internal void ActivateECM(bool ours)

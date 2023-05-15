@@ -16,9 +16,13 @@ namespace Elite.Engine.Ships
         }
 
         internal int Distance { get; set; }
+
         internal int EndPoint { get; set; }
+
         internal int Face1 { get; set; }
+
         internal int Face2 { get; set; }
+
         internal int StartPoint { get; set; }
     }
 }

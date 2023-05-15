@@ -117,8 +117,11 @@ namespace Elite.Engine.Ships
         };
 
         public StockType ScoopedType => throw new NotImplementedException();
+
         public float Size => 3600;
+
         public ShipClass Type => ShipClass.LoneWolf;
+
         public int VanishPoint => 40;
 
         public float VelocityMax => 40;

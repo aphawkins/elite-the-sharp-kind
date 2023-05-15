@@ -92,8 +92,11 @@ namespace Elite.Engine.Ships
         };
 
         public StockType ScoopedType => StockType.None;
+
         public float Size => 9801;
+
         public ShipClass Type => ShipClass.PackHunter;
+
         public int VanishPoint => 18;
 
         public float VelocityMax => 30;

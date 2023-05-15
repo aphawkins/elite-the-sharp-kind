@@ -51,6 +51,7 @@ namespace Elite.Engine.Ships
         };
 
         public StockType ScoopedType => StockType.Alloys;
+
         public float Size => 100;
 
         public ShipClass Type => ShipClass.SpaceJunk;

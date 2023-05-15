@@ -120,8 +120,11 @@ namespace Elite.Engine.Ships
         };
 
         public StockType ScoopedType => StockType.None;
+
         public float Size => 9801;
+
         public ShipClass Type => ShipClass.LoneWolf;
+
         public int VanishPoint => 55;
 
         public float VelocityMax => 39;

@@ -19,10 +19,15 @@ namespace Elite.Engine.Types
         }
 
         internal bool CanBuy { get; set; }
+
         internal string Name { get; set; }
+
         internal float Price { get; set; }
+
         internal bool Show { get; set; }
+
         internal int TechLevel { get; set; }
+
         internal EquipmentType Type { get; set; }
     }
 }

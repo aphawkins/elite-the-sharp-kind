@@ -24,28 +24,51 @@ namespace Elite.Engine
         }
 
         internal int CarryFlag { get; set; }
+
         internal Commander Cmdr { get; set; } = new();
+
         internal Vector2 CompassCentre { get; set; } = new(382, 22 + 385);
+
         internal ConfigSettings Config { get; set; } = new();
+
         internal Vector2 Cross { get; set; } = new(0, 0);
+
         internal PlanetData CurrentPlanetData { get; set; } = new();
+
         internal SCR CurrentScreen { get; set; } = SCR.SCR_NONE;
+
         internal IView? CurrentView { get; set; }
+
         internal bool DetonateBomb { get; set; }
+
         internal float DistanceToPlanet { get; set; }
+
         internal GalaxySeed DockedPlanet { get; set; } = new();
+
         internal bool DrawLasers { get; set; }
+
         internal bool ExitGame { get; set; }
+
         internal GalaxySeed HyperspacePlanet { get; set; } = new();
+
         internal bool InWitchspace { get; set; }
+
         internal bool IsAutoPilotOn { get; set; }
+
         internal bool IsDocked { get; set; } = true;
+
         internal bool IsGameOver { get; private set; }
+
         internal bool IsInitialised { get; set; }
+
         internal float LaserTemp { get; set; }
+
         internal int MCount { get; set; }
+
         internal int MessageCount { get; set; }
+
         internal string MessageString { get; set; } = string.Empty;
+
         internal string PlanetName { get; set; } = string.Empty;
 
         internal Dictionary<ShipType, IShip> ShipList { get; private set; } = new()

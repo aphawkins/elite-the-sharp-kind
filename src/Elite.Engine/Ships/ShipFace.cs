@@ -17,7 +17,9 @@ namespace Elite.Engine.Ships
         }
 
         internal Colour Colour { get; set; }
+
         internal Vector3 Normal { get; set; }
+
         internal int[] Points { get; set; }
     }
 }

@@ -7,10 +7,15 @@ namespace Elite.Engine.Types
     internal sealed class PlanetData
     {
         internal int Economy { get; set; }
+
         internal int Government { get; set; }
+
         internal float Population { get; set; }
+
         internal int Productivity { get; set; }
+
         internal int Radius { get; set; }
+
         internal int TechLevel { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace Elite.Engine
         int Strength { get; }
 
         int Temperature { get; set; }
+
         LaserType Type { get; }
     }
 }

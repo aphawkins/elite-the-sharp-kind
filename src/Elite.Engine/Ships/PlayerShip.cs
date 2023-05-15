@@ -15,36 +15,62 @@ namespace Elite.Engine.Ships
         internal PlayerShip() => Reset();
 
         internal float Altitude { get; set; }
+
         internal float CabinTemperature { get; set; }
+
         internal int CargoCapacity { get; set; }
+
         internal float Climb { get; set; }
+
         internal int EcmActive { get; set; }
+
         internal float Energy { get; set; }
+
         internal EnergyUnit EnergyUnit { get; set; }
+
         internal float Fuel { get; set; }
+
         internal bool HasDockingComputer { get; set; }
+
         internal bool HasECM { get; set; }
+
         internal bool HasEnergyBomb { get; set; }
+
         internal bool HasEscapeCapsule { get; set; }
+
         internal bool HasFuelScoop { get; set; }
+
         internal bool HasGalacticHyperdrive { get; set; }
+
         internal bool IsClimbing { get; set; }
+
         internal bool IsRolling { get; set; }
+
         internal ILaser LaserFront { get; set; } = new LaserNone();
+
         internal ILaser LaserLeft { get; set; } = new LaserNone();
+
         internal ILaser LaserRear { get; set; } = new LaserNone();
+
         internal ILaser LaserRight { get; set; } = new LaserNone();
+
         internal float MaxClimb { get; } = 8;
+
         internal float MaxFuel { get; } = 7;
+
         internal float MaxRoll { get; } = 31;
 
         // 0.27 Light Mach
         internal float MaxSpeed { get; } = 40;
 
         internal int MissileCount { get; set; }
+
         internal float Roll { get; set; }
+
         internal float ShieldFront { get; set; }
+
         internal float ShieldRear { get; set; }
+
         internal float Speed { get; set; }
 
         internal void AutoDock()
