@@ -103,7 +103,8 @@ namespace Elite.Engine
                     //Task.Run(() => DrawFrame());
                     DrawFrame();
                 }
-            } while (!_gameState.ExitGame);
+            }
+            while (!_gameState.ExitGame);
 
             Environment.Exit(0);
         }

@@ -109,7 +109,8 @@ namespace Elite.Engine.Views
                     {
                         _shipNo = ShipType.Missile;
                     }
-                } while (_minDist[(int)_shipNo] == 0);
+                }
+                while (_minDist[(int)_shipNo] == 0);
 
                 _showTime = 0;
                 _direction = -100;

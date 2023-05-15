@@ -29,7 +29,8 @@ namespace Elite.Engine.Ships
             new(31, new(0,   94,   18)),
         };
 
-        public ShipFace[] Faces { get; } = {
+        public ShipFace[] Faces { get; } =
+        {
             new(Colour.Green1, new(0x00, -0x33, -0x31), new[] { 3,  2,  1,  0, 4 }),
             new(Colour.Green2, new(-0x33, 0x12, -0x57), new[] { 6, 10,  5,  0, 1 }),
             new(Colour.Green3, new(-0x4D, -0x39, -0x13), new[] { 7, 11,  6,  1, 2 }),

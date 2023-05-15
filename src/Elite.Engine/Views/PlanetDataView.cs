@@ -53,26 +53,32 @@ namespace Elite.Engine.Views
 
         private readonly Draw _draw;
 
-        private readonly string[] _economyType = { "Rich Industrial",
+        private readonly string[] _economyType =
+        {
+            "Rich Industrial",
                                 "Average Industrial",
                                 "Poor Industrial",
                                 "Mainly Industrial",
                                 "Mainly Agricultural",
                                 "Rich Agricultural",
                                 "Average Agricultural",
-                                "Poor Agricultural", };
+                                "Poor Agricultural",
+        };
 
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
 
-        private readonly string[] _governmentType = { "Anarchy",
+        private readonly string[] _governmentType =
+        {
+            "Anarchy",
                                     "Feudal",
                                     "Multi-Government",
                                     "Dictatorship",
                                     "Communist",
                                     "Confederacy",
                                     "Democracy",
-                                    "Corporate State", };
+                                    "Corporate State",
+        };
 
         private readonly Planet _planet;
         private float _distanceToPlanet;
