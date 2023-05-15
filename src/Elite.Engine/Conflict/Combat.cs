@@ -1057,8 +1057,7 @@ namespace Elite.Engine.Conflict
                 position.Y = -position.Y;
             }
 
-            int newship = AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
-            return newship;
+            return AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
         }
 
         private void CreateTrader()

@@ -105,18 +105,16 @@ namespace Elite.Engine.Save
             }
         }
 
-        private SaveState GameStateToSaveState(string newName)
+        private SaveState GameStateToSaveState(string newName) => new()
         {
-            SaveState save = new()
-            {
-                CargoCapacity = _ship.CargoCapacity,
-                CommanderName = newName,
-                Credits = _trade._credits,
-                CurrentCargo = _trade._stockMarket.Values.Select(x => x.CurrentCargo).ToArray(),
-                EnergyUnit = _ship.EnergyUnit.ToString(),
-                Fuel = _ship.Fuel,
-                GalaxyNumber = _state.Cmdr.GalaxyNumber,
-                GalaxySeed = new int[6]
+            CargoCapacity = _ship.CargoCapacity,
+            CommanderName = newName,
+            Credits = _trade._credits,
+            CurrentCargo = _trade._stockMarket.Values.Select(x => x.CurrentCargo).ToArray(),
+            EnergyUnit = _ship.EnergyUnit.ToString(),
+            Fuel = _ship.Fuel,
+            GalaxyNumber = _state.Cmdr.GalaxyNumber,
+            GalaxySeed = new int[6]
                 {
                     _state.Cmdr.Galaxy.A,
                     _state.Cmdr.Galaxy.B,
@@ -125,35 +123,32 @@ namespace Elite.Engine.Save
                     _state.Cmdr.Galaxy.E,
                     _state.Cmdr.Galaxy.F,
                 },
-                HasDockingComputer = _ship.HasDockingComputer,
-                HasECM = _ship.HasECM,
-                HasEnergyBomb = _ship.HasEnergyBomb,
-                HasEscapeCapsule = _ship.HasEscapeCapsule,
-                HasFuelScoop = _ship.HasFuelScoop,
-                HasGalacticHyperdrive = _ship.HasGalacticHyperdrive,
-                Lasers = new string[4]
+            HasDockingComputer = _ship.HasDockingComputer,
+            HasECM = _ship.HasECM,
+            HasEnergyBomb = _ship.HasEnergyBomb,
+            HasEscapeCapsule = _ship.HasEscapeCapsule,
+            HasFuelScoop = _ship.HasFuelScoop,
+            HasGalacticHyperdrive = _ship.HasGalacticHyperdrive,
+            Lasers = new string[4]
                 {
                     _ship.LaserFront.Type.ToString(),
                     _ship.LaserRear.Type.ToString(),
                     _ship.LaserRight.Type.ToString(),
                     _ship.LaserLeft.Type.ToString(),
                 },
-                LegalStatus = _state.Cmdr.LegalStatus,
-                MarketRandomiser = _trade._marketRandomiser,
-                Missiles = _ship.MissileCount,
-                Mission = _state.Cmdr.Mission,
-                Saved = _state.Cmdr.Saved,
-                Score = _state.Cmdr.Score,
-                ShipLocation = new int[2]
+            LegalStatus = _state.Cmdr.LegalStatus,
+            MarketRandomiser = _trade._marketRandomiser,
+            Missiles = _ship.MissileCount,
+            Mission = _state.Cmdr.Mission,
+            Saved = _state.Cmdr.Saved,
+            Score = _state.Cmdr.Score,
+            ShipLocation = new int[2]
                 {
                     _state.DockedPlanet.D,
                     _state.DockedPlanet.B,
                 },
-                StationStock = _trade._stockMarket.Values.Select(x => x.StationStock).ToArray(),
-            };
-
-            return save;
-        }
+            StationStock = _trade._stockMarket.Values.Select(x => x.StationStock).ToArray(),
+        };
 
         private void RestoreSavedCommander()
         {

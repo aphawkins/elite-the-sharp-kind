@@ -545,7 +545,7 @@ namespace Elite.Engine
             _gameState.Cmdr.GalaxyNumber++;
             _gameState.Cmdr.GalaxyNumber &= 7;
 
-            GalaxySeed glx = new()
+            _gameState.Cmdr.Galaxy = new()
             {
                 A = RotateByteLeft(_gameState.Cmdr.Galaxy.A),
                 B = RotateByteLeft(_gameState.Cmdr.Galaxy.B),
@@ -554,7 +554,6 @@ namespace Elite.Engine
                 E = RotateByteLeft(_gameState.Cmdr.Galaxy.E),
                 F = RotateByteLeft(_gameState.Cmdr.Galaxy.F),
             };
-            _gameState.Cmdr.Galaxy = glx;
 
             _gameState.DockedPlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, new(0x60, 0x60));
             _gameState.HyperspacePlanet = (GalaxySeed)_gameState.DockedPlanet.Clone();
