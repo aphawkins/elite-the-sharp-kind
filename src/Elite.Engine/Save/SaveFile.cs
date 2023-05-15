@@ -50,9 +50,6 @@ namespace Elite.Engine.Save
             RestoreSavedCommander();
         }
 
-        /// <summary>
-        /// Read the save file.
-        /// </summary>
         internal async Task<bool> LoadCommanderAsync(string name)
         {
             try
@@ -76,9 +73,6 @@ namespace Elite.Engine.Save
             return false;
         }
 
-        /// <summary>
-        /// Write the save file.
-        /// </summary>
         internal async Task<bool> SaveCommanderAsync(string newName)
         {
             try
@@ -156,7 +150,7 @@ namespace Elite.Engine.Save
             _state.PlanetName = _planet.NamePlanet(_state.DockedPlanet, false);
             _state.HyperspacePlanet = (GalaxySeed)_state.DockedPlanet.Clone();
             _state.CurrentPlanetData = Planet.GeneratePlanetData(_state.DockedPlanet);
-            _trade.GenerateStockMarket(_state.CurrentPlanetData);
+            _trade.GenerateStockMarket();
             _trade.SetStockQuantities();
         }
 

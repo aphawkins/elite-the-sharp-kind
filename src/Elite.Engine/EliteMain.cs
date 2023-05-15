@@ -47,7 +47,7 @@ namespace Elite.Engine
             _keyboard = keyboard;
             _gameState = new(_keyboard, _views);
             _ship = new();
-            _trade = new(_ship);
+            _trade = new(_gameState, _ship);
             _planet = new(_gameState);
             _draw = new(_graphics);
             _draw.LoadImages();

@@ -503,7 +503,7 @@ namespace Elite.Engine
 
             _trade._marketRandomiser = RNG.Random(255);
             _gameState.CurrentPlanetData = Planet.GeneratePlanetData(_gameState.DockedPlanet);
-            _trade.GenerateStockMarket(_gameState.CurrentPlanetData);
+            _trade.GenerateStockMarket();
 
             _ship.Speed = 12;
             _ship.Roll = 0;

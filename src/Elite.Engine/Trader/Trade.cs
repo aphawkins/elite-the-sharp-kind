@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Ships;
-using Elite.Engine.Types;
 
 namespace Elite.Engine.Trader
 {
@@ -40,9 +39,14 @@ namespace Elite.Engine.Trader
             { StockType.AlienItems,   new("Alien Items",   0, 0,  5.3f, 15, 192,   7, TONNES,    0, 0) },
         };
 
+        private readonly GameState _gameState;
         private readonly PlayerShip _ship;
 
-        internal Trade(PlayerShip ship) => _ship = ship;
+        internal Trade(GameState gameState, PlayerShip ship)
+        {
+            _gameState = gameState;
+            _ship = ship;
+        }
 
         internal void AddCargo(StockType stock) => _stockMarket[stock].CurrentCargo++;
 
@@ -77,7 +81,7 @@ namespace Elite.Engine.Trader
         /// There is also a slight amount of randomness added in.
         /// The random value is changed each time we hyperspace.
         /// </summary>
-        internal void GenerateStockMarket(PlanetData currentPlanet)
+        internal void GenerateStockMarket()
         {
             foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
             {
@@ -88,7 +92,7 @@ namespace Elite.Engine.Trader
                 price += (_marketRandomiser & stock.Value.Mask) / 10;
 
                 // Adjust for planet economy
-                price += currentPlanet.Economy * stock.Value.EconomyAdjust / 10;
+                price += _gameState.CurrentPlanetData.Economy * stock.Value.EconomyAdjust / 10;
 
                 // Start with the base quantity
                 int quant = stock.Value.BaseQuantity;
@@ -97,7 +101,7 @@ namespace Elite.Engine.Trader
                 quant += _marketRandomiser & stock.Value.Mask;
 
                 // Adjust for planet economy
-                quant -= currentPlanet.Economy * stock.Value.EconomyAdjust;
+                quant -= _gameState.CurrentPlanetData.Economy * stock.Value.EconomyAdjust;
 
                 // Quantities range from 0..63
                 quant = Math.Clamp(quant, 0, 63);
