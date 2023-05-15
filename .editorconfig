@@ -187,6 +187,7 @@ roslynator_refactorings.enabled = true
 roslynator_compiler_diagnostic_fixes.enabled = true
 
 # Roslynator - Exclusions
+dotnet_diagnostic.RCS1069.severity = silent
 dotnet_diagnostic.RCS1070.severity = silent
 
 # C++ Files

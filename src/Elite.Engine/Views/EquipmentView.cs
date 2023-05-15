@@ -282,16 +282,12 @@ namespace Elite.Engine.Views
                     break;
 
                 case EquipmentType.EQ_PULSE_LASER:
-                    break;
 
                 case EquipmentType.EQ_BEAM_LASER:
-                    break;
 
                 case EquipmentType.EQ_MINING_LASER:
-                    break;
 
                 case EquipmentType.EQ_MILITARY_LASER:
-                    break;
 
                 default:
                     break;

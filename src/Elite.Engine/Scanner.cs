@@ -317,100 +317,68 @@ namespace Elite.Engine
                         break;
 
                     case ShipType.Sun:
-                        break;
 
                     case ShipType.Planet:
-                        break;
 
                     case ShipType.None:
-                        break;
 
                     case ShipType.EscapeCapsule:
-                        break;
 
                     case ShipType.Alloy:
-                        break;
 
                     case ShipType.Cargo:
-                        break;
 
                     case ShipType.Boulder:
-                        break;
 
                     case ShipType.Asteroid:
-                        break;
 
                     case ShipType.Rock:
-                        break;
 
                     case ShipType.Shuttle:
-                        break;
 
                     case ShipType.Transporter:
-                        break;
 
                     case ShipType.CobraMk3:
-                        break;
 
                     case ShipType.Python:
-                        break;
 
                     case ShipType.Boa:
-                        break;
 
                     case ShipType.Anaconda:
-                        break;
 
                     case ShipType.Hermit:
-                        break;
 
                     case ShipType.Sidewinder:
-                        break;
 
                     case ShipType.Mamba:
-                        break;
 
                     case ShipType.Krait:
-                        break;
 
                     case ShipType.Adder:
-                        break;
 
                     case ShipType.Gecko:
-                        break;
 
                     case ShipType.CobraMk1:
-                        break;
 
                     case ShipType.Worm:
-                        break;
 
                     case ShipType.CobraMk3Lone:
-                        break;
 
                     case ShipType.Asp2:
-                        break;
 
                     case ShipType.PythonLone:
-                        break;
 
                     case ShipType.FerDeLance:
-                        break;
 
                     case ShipType.Moray:
-                        break;
 
                     case ShipType.Thargoid:
-                        break;
 
                     case ShipType.Tharglet:
-                        break;
 
                     case ShipType.Constrictor:
-                        break;
 
                     case ShipType.Cougar:
-                        break;
 
                     default:
                         break;
