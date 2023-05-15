@@ -87,7 +87,7 @@ namespace Elite.Engine.Views
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
                 _combat.ClearUniverse();
-                _gameState.SetView(SCR.SCR_MISSION_2);
+                _gameState.SetView(Screen.MissionTwo);
             }
         }
 
@@ -114,7 +114,7 @@ namespace Elite.Engine.Views
             }
             else
             {
-                _gameState.SetView(SCR.SCR_MISSION_2);
+                _gameState.SetView(Screen.MissionTwo);
             }
         }
 

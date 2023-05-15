@@ -97,7 +97,7 @@ namespace Elite.Engine.Views
                 _gameState.Cmdr.LegalStatus = 0;
                 _ship.Fuel = _ship.MaxFuel;
                 _trade.ClearCurrentCargo();
-                _gameState.SetView(SCR.SCR_DOCKING);
+                _gameState.SetView(Screen.Docking);
             }
         }
     }

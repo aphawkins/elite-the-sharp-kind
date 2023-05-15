@@ -47,7 +47,7 @@ namespace Elite.Engine.Views
             if (_breakPattern.IsComplete)
             {
                 _space.DockPlayer();
-                _gameState.SetView(SCR.SCR_MISSION_1);
+                _gameState.SetView(Screen.MissionOne);
             }
         }
     }

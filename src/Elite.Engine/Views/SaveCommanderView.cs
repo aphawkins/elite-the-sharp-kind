@@ -79,7 +79,7 @@ namespace Elite.Engine.Views
 
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                _gameState.SetView(SCR.SCR_OPTIONS);
+                _gameState.SetView(Screen.Options);
             }
         }
 

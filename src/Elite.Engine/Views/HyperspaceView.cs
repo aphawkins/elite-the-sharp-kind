@@ -40,7 +40,7 @@ namespace Elite.Engine.Views
 
             if (_breakPattern.IsComplete)
             {
-                _gameState.SetView(SCR.SCR_FRONT_VIEW);
+                _gameState.SetView(Screen.FrontView);
             }
         }
     }

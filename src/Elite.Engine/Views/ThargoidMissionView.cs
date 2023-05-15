@@ -79,7 +79,7 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                _gameState.SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(Screen.CommanderStatus);
             }
         }
 
@@ -104,7 +104,7 @@ namespace Elite.Engine.Views
             }
             else
             {
-                _gameState.SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(Screen.CommanderStatus);
             }
         }
 

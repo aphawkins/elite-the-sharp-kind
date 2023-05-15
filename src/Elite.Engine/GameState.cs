@@ -13,9 +13,9 @@ namespace Elite.Engine
     internal sealed class GameState
     {
         private readonly IKeyboard _keyboard;
-        private readonly Dictionary<SCR, IView> _views;
+        private readonly Dictionary<Screen, IView> _views;
 
-        internal GameState(IKeyboard keyboard, Dictionary<SCR, IView> views)
+        internal GameState(IKeyboard keyboard, Dictionary<Screen, IView> views)
         {
             _views = views;
             _keyboard = keyboard;
@@ -35,7 +35,7 @@ namespace Elite.Engine
 
         internal PlanetData CurrentPlanetData { get; set; } = new();
 
-        internal SCR CurrentScreen { get; set; } = SCR.SCR_NONE;
+        internal Screen CurrentScreen { get; set; } = Screen.None;
 
         internal IView? CurrentView { get; set; }
 
@@ -118,7 +118,7 @@ namespace Elite.Engine
         {
             if (!IsGameOver)
             {
-                SetView(SCR.SCR_GAME_OVER);
+                SetView(Screen.GameOver);
             }
 
             IsGameOver = true;
@@ -144,10 +144,10 @@ namespace Elite.Engine
             DrawLasers = false;
             ExitGame = false;
             MCount = 0;
-            SetView(SCR.SCR_INTRO_ONE);
+            SetView(Screen.IntroOne);
         }
 
-        internal void SetView(SCR screen)
+        internal void SetView(Screen screen)
         {
             //lock (_state)
             //{

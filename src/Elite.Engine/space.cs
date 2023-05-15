@@ -92,7 +92,7 @@ namespace Elite.Engine
         {
             if (s_ship_count[ShipType.Coriolis] != 0 || s_ship_count[ShipType.Dodec] != 0)
             {
-                _gameState.SetView(SCR.SCR_DOCKING);
+                _gameState.SetView(Screen.Docking);
             }
         }
 
@@ -361,10 +361,10 @@ namespace Elite.Engine
                 }
 
                 if (_gameState.CurrentScreen is
-                    not SCR.SCR_INTRO_ONE and
-                    not SCR.SCR_INTRO_TWO and
-                    not SCR.SCR_GAME_OVER and
-                    not SCR.SCR_ESCAPE_CAPSULE)
+                    not Screen.IntroOne and
+                    not Screen.IntroTwo and
+                    not Screen.GameOver and
+                    not Screen.EscapeCapsule)
                 {
                     _combat.Tactics(i);
                 }
@@ -460,7 +460,7 @@ namespace Elite.Engine
 
             if (IsDocking(i))
             {
-                _gameState.SetView(SCR.SCR_DOCKING);
+                _gameState.SetView(Screen.Docking);
                 return;
             }
 
@@ -537,7 +537,7 @@ namespace Elite.Engine
 
             _combat.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
-            _gameState.SetView(SCR.SCR_HYPERSPACE);
+            _gameState.SetView(Screen.Hyperspace);
         }
 
         private void EnterNextGalaxy()
@@ -579,7 +579,7 @@ namespace Elite.Engine
                 _combat.CreateThargoid();
             }
 
-            _gameState.SetView(SCR.SCR_HYPERSPACE);
+            _gameState.SetView(Screen.Hyperspace);
         }
 
         /// <summary>
@@ -764,7 +764,7 @@ namespace Elite.Engine
         {
             float tmp;
 
-            if (_gameState.CurrentScreen is SCR.SCR_REAR_VIEW or SCR.SCR_GAME_OVER)
+            if (_gameState.CurrentScreen is Screen.RearView or Screen.GameOver)
             {
                 flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z);
 
@@ -779,7 +779,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_gameState.CurrentScreen == SCR.SCR_LEFT_VIEW)
+            if (_gameState.CurrentScreen == Screen.LeftView)
             {
                 tmp = flip.Location.X;
                 flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp);
@@ -803,7 +803,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_gameState.CurrentScreen == SCR.SCR_RIGHT_VIEW)
+            if (_gameState.CurrentScreen == Screen.RightView)
             {
                 tmp = flip.Location.X;
                 flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp);

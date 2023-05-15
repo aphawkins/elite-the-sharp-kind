@@ -40,11 +40,11 @@ namespace Elite.Engine.Views
             {
                 if (_gameState.IsDocked)
                 {
-                    _gameState.SetView(SCR.SCR_CMDR_STATUS);
+                    _gameState.SetView(Screen.CommanderStatus);
                 }
                 else
                 {
-                    _gameState.SetView(SCR.SCR_FRONT_VIEW);
+                    _gameState.SetView(Screen.FrontView);
                 }
             }
         }

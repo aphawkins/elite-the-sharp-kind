@@ -63,7 +63,7 @@ namespace Elite.Engine.Views
             {
                 _combat.ClearUniverse();
                 _audio.StopMusic();
-                _gameState.SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(Screen.CommanderStatus);
             }
         }
 

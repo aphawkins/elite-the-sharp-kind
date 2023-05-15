@@ -47,14 +47,14 @@ namespace Elite.Engine.Views
             {
                 _combat.ClearUniverse();
                 _audio.StopMusic();
-                _gameState.SetView(SCR.SCR_LOAD_CMDR);
+                _gameState.SetView(Screen.LoadCommander);
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.No))
             {
                 _combat.ClearUniverse();
                 _audio.StopMusic();
-                _gameState.SetView(SCR.SCR_INTRO_TWO);
+                _gameState.SetView(Screen.IntroTwo);
             }
         }
 

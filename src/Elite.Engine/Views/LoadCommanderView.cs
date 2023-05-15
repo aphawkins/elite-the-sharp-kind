@@ -65,13 +65,13 @@ namespace Elite.Engine.Views
                 if (_isLoaded)
                 {
                     _save.GetLastSave();
-                    _gameState.SetView(SCR.SCR_CMDR_STATUS);
+                    _gameState.SetView(Screen.CommanderStatus);
                 }
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                _gameState.SetView(SCR.SCR_CMDR_STATUS);
+                _gameState.SetView(Screen.CommanderStatus);
             }
         }
 

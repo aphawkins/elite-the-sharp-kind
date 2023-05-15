@@ -91,19 +91,19 @@ namespace Elite.Engine.Views
                 switch (_highlightedItem)
                 {
                     case 0:
-                        _gameState.SetView(SCR.SCR_SAVE_CMDR);
+                        _gameState.SetView(Screen.SaveCommander);
                         break;
 
                     case 1:
-                        _gameState.SetView(SCR.SCR_LOAD_CMDR);
+                        _gameState.SetView(Screen.LoadCommander);
                         break;
 
                     case 2:
-                        _gameState.SetView(SCR.SCR_SETTINGS);
+                        _gameState.SetView(Screen.Settings);
                         break;
 
                     case 3:
-                        _gameState.SetView(SCR.SCR_QUIT);
+                        _gameState.SetView(Screen.Quit);
                         break;
 
                     default:
