@@ -1250,8 +1250,6 @@ namespace Elite.Engine.Conflict
             {
                 missile.Acceleration = -2;
             }
-
-            return;
         }
     }
 }

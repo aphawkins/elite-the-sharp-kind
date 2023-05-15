@@ -131,7 +131,6 @@ namespace Elite.Engine
                         Y = RNG.Random(-128, 127) | 4,
                         Z = RNG.Random(255) | 144,
                     };
-                    continue;
                 }
             }
 

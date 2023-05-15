@@ -270,7 +270,6 @@ namespace Elite.Engine
             if (direction >= cnt2)
             {
                 ship.Acceleration = 3;
-                return;
             }
         }
     }
