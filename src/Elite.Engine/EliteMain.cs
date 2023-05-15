@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -14,7 +14,7 @@ using Elite.Engine.Views;
 
 namespace Elite.Engine
 {
-    public partial class EliteMain
+    public class EliteMain
     {
         internal const int MAX_UNIV_OBJECTS = 20;
         private readonly Audio _audio;
