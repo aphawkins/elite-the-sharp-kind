@@ -128,6 +128,7 @@ namespace Elite.Engine
         {
             MessageString = message;
             MessageCount = 37;
+
             //  sound.snd_play_sample (SND_BEEP);
         }
 
@@ -154,6 +155,7 @@ namespace Elite.Engine
             CurrentView = _views[screen];
             _keyboard.ClearKeyPressed();
             CurrentView.Reset();
+
             //}
         }
     }

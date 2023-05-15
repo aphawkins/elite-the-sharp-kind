@@ -56,10 +56,13 @@ namespace Elite.Engine.Views
             {
                 // Top of top half
                 RenderSunLine(centre, y, -MathF.Floor(x), radius);
+
                 // Top of top half
                 RenderSunLine(centre, x, -y, radius);
+
                 // Top of bottom half
                 RenderSunLine(centre, x, y, radius);
+
                 // Bottom of bottom half
                 RenderSunLine(centre, y, MathF.Floor(x), radius);
 

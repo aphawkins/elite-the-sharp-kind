@@ -166,6 +166,7 @@ namespace Elite.WinForms
         }
 
         public void DrawPixelFast(Vector2 position, Colour colour) =>
+
             // Is there a faster way of doing this?
             DrawPixel(position, colour);
 
@@ -311,6 +312,7 @@ namespace Elite.WinForms
                 _isDisposed = true;
             }
         }
+
         // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         // ~alg_graphics()
         // {

@@ -144,6 +144,7 @@ namespace Elite.Engine
         internal void LaunchPlayer()
         {
             _ship.Speed = 12;
+
             // Rotate in the same direction that the station is spinning
             _ship.Roll = 15;
             _ship.Climb = 0;

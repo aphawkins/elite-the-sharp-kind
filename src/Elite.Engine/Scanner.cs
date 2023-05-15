@@ -418,6 +418,7 @@ namespace Elite.Engine
 
                 // ship
                 _graphics.DrawRectangleFilled(x - 3, y2, 5, 3, colour);
+
                 // stick
                 _graphics.DrawRectangleFilled(x, y2 < y1 ? y2 : y1, 2, MathF.Abs(y2 - y1), colour);
             }

@@ -32,6 +32,7 @@ namespace Elite.WinForms
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e) =>
+
             //Debug.WriteLine("KeyDown KeyCode: " + e.KeyCode);
             //Debug.WriteLine("KeyDown KeyValue: " + e.KeyValue);
 

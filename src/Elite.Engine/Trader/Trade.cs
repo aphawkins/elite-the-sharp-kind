@@ -83,17 +83,22 @@ namespace Elite.Engine.Trader
             {
                 // Start with the base price
                 float price = stock.Value.BasePrice;
+
                 // Add in a random amount
                 price += (_marketRandomiser & stock.Value.Mask) / 10;
+
                 // Adjust for planet economy
                 price += currentPlanet.Economy * stock.Value.EconomyAdjust / 10;
 
                 // Start with the base quantity
                 int quant = stock.Value.BaseQuantity;
+
                 // Add in a random amount
                 quant += _marketRandomiser & stock.Value.Mask;
+
                 // Adjust for planet economy
                 quant -= currentPlanet.Economy * stock.Value.EconomyAdjust;
+
                 // Quantities range from 0..63
                 quant = Math.Clamp(quant, 0, 63);
 

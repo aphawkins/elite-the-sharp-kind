@@ -316,6 +316,7 @@ namespace Elite.Engine
             position.Y *= _graphics.Scale;
 
             float radius = 6291456 / planet.Location.Length();
+
             // Planets are BIG!
             //  radius = 6291456 / ship_vec.z;
 
@@ -503,6 +504,7 @@ namespace Elite.Engine
         /// <param name="centre"></param>
         /// <param name="radius"></param>
         private void DrawWireframePlanet(Vector2 centre, float radius) =>
+
             // TODO: At the moment we just draw a circle. Need to add in the two arcs that the original Elite had.
             _graphics.DrawCircle(centre, radius, Colour.White1);
 
@@ -614,10 +616,13 @@ namespace Elite.Engine
             {
                 // Top of top half
                 RenderPlanetLine(centre, y, -MathF.Floor(x), radius, vx, vy);
+
                 // Bottom of top half
                 RenderPlanetLine(centre, x, -y, radius, vx, vy);
+
                 // Top of bottom half
                 RenderPlanetLine(centre, x, y, radius, vx, vy);
+
                 // Bottom of bottom half
                 RenderPlanetLine(centre, y, MathF.Floor(x), radius, vx, vy);
 
@@ -660,6 +665,7 @@ namespace Elite.Engine
             float ry = (-x * vy) + (y * vx);
             rx += radius * 65536;
             ry += radius * 65536;
+
             // radius * 2 * LAND_X_MAX >> 16
             float div = radius * 1024;
 

@@ -147,6 +147,7 @@ namespace Elite.Engine
                 {
                     // The lock was not acquired.
                     _lockObj.Missed++;
+
                     //Console.WriteLine($"Frames: drawn: {lockObj.drawn}, missed: {lockObj.missed}, total: {lockObj.drawn + lockObj.missed}");
                 }
 
