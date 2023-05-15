@@ -288,35 +288,29 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.F1))
+            if (_keyboard.IsKeyPressed(CommandKey.F1) &&
+                _gameState.CurrentScreen is not Screen.IntroOne and not Screen.IntroTwo)
             {
-                if (_gameState.CurrentScreen is not Screen.IntroOne and not Screen.IntroTwo)
+                if (_gameState.IsDocked)
                 {
-                    if (_gameState.IsDocked)
-                    {
-                        _gameState.SetView(Screen.Undocking);
-                    }
-                    else
-                    {
-                        _gameState.SetView(Screen.FrontView);
-                    }
+                    _gameState.SetView(Screen.Undocking);
+                }
+                else
+                {
+                    _gameState.SetView(Screen.FrontView);
                 }
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.F2))
+            if (_keyboard.IsKeyPressed(CommandKey.F2) &&
+                !_gameState.IsDocked)
             {
-                if (!_gameState.IsDocked)
-                {
-                    _gameState.SetView(Screen.RearView);
-                }
+                _gameState.SetView(Screen.RearView);
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.F3))
+            if (_keyboard.IsKeyPressed(CommandKey.F3) &&
+                !_gameState.IsDocked)
             {
-                if (!_gameState.IsDocked)
-                {
-                    _gameState.SetView(Screen.LeftView);
-                }
+                _gameState.SetView(Screen.LeftView);
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.F4))
@@ -371,27 +365,23 @@ namespace Elite.Engine
                 _gameState.DrawLasers = _combat.FireLaser();
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn))
+            if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn) &&
+                !_gameState.IsDocked && _ship.HasDockingComputer)
             {
-                if (!_gameState.IsDocked && _ship.HasDockingComputer)
+                if (_gameState.Config.InstantDock)
                 {
-                    if (_gameState.Config.InstantDock)
-                    {
-                        _space.EngageDockingComputer();
-                    }
-                    else
-                    {
-                        _pilot.EngageAutoPilot();
-                    }
+                    _space.EngageDockingComputer();
+                }
+                else
+                {
+                    _pilot.EngageAutoPilot();
                 }
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.ECM))
+            if (_keyboard.IsKeyPressed(CommandKey.ECM) &&
+                !_gameState.IsDocked && _ship.HasECM)
             {
-                if (!_gameState.IsDocked && _ship.HasECM)
-                {
-                    _combat.ActivateECM(true);
-                }
+                _combat.ActivateECM(true);
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!_gameState.IsDocked))
@@ -406,17 +396,16 @@ namespace Elite.Engine
                 }
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.Jump) && (!_gameState.IsDocked) && (!_gameState.InWitchspace))
+            if (_keyboard.IsKeyPressed(CommandKey.Jump) &&
+                (!_gameState.IsDocked) && (!_gameState.InWitchspace))
             {
                 _space.JumpWarp();
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.FireMissile))
+            if (_keyboard.IsKeyPressed(CommandKey.FireMissile) &&
+                !_gameState.IsDocked)
             {
-                if (!_gameState.IsDocked)
-                {
-                    _combat.FireMissile();
-                }
+                _combat.FireMissile();
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.Pause))
@@ -424,53 +413,41 @@ namespace Elite.Engine
                 _isGamePaused = true;
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.TargetMissile))
+            if (_keyboard.IsKeyPressed(CommandKey.TargetMissile) &&
+                !_gameState.IsDocked)
             {
-                if (!_gameState.IsDocked)
-                {
-                    _combat.ArmMissile();
-                }
+                _combat.ArmMissile();
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.UnarmMissile))
+            if (_keyboard.IsKeyPressed(CommandKey.UnarmMissile) &&
+                !_gameState.IsDocked)
             {
-                if (!_gameState.IsDocked)
-                {
-                    _combat.UnarmMissile();
-                }
+                _combat.UnarmMissile();
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.IncreaseSpeed))
+            if (_keyboard.IsKeyPressed(CommandKey.IncreaseSpeed) &&
+                !_gameState.IsDocked)
             {
-                if (!_gameState.IsDocked)
-                {
-                    _ship.IncreaseSpeed();
-                }
+                _ship.IncreaseSpeed();
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.DecreaseSpeed))
+            if (_keyboard.IsKeyPressed(CommandKey.DecreaseSpeed) &&
+                !_gameState.IsDocked)
             {
-                if (!_gameState.IsDocked)
-                {
-                    _ship.DecreaseSpeed();
-                }
+                _ship.DecreaseSpeed();
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.EnergyBomb))
+            if (_keyboard.IsKeyPressed(CommandKey.EnergyBomb) &&
+                (!_gameState.IsDocked) && _ship.HasEnergyBomb)
             {
-                if ((!_gameState.IsDocked) && _ship.HasEnergyBomb)
-                {
-                    _gameState.DetonateBomb = true;
-                    _ship.HasEnergyBomb = false;
-                }
+                _gameState.DetonateBomb = true;
+                _ship.HasEnergyBomb = false;
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.EscapeCapsule))
+            if (_keyboard.IsKeyPressed(CommandKey.EscapeCapsule) &&
+                (!_gameState.IsDocked) && _ship.HasEscapeCapsule && (!_gameState.InWitchspace))
             {
-                if ((!_gameState.IsDocked) && _ship.HasEscapeCapsule && (!_gameState.InWitchspace))
-                {
-                    _gameState.SetView(Screen.EscapeCapsule);
-                }
+                _gameState.SetView(Screen.EscapeCapsule);
             }
         }
 

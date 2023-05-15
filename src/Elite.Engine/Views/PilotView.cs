@@ -107,12 +107,10 @@ namespace Elite.Engine.Views
                 }
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOff))
+            if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOff) &&
+                _gameState.IsAutoPilotOn)
             {
-                if (_gameState.IsAutoPilotOn)
-                {
-                    _pilot.DisengageAutoPilot();
-                }
+                _pilot.DisengageAutoPilot();
             }
         }
 

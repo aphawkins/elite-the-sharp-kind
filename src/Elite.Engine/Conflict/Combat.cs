@@ -595,21 +595,17 @@ namespace Elite.Engine.Conflict
                 return;
             }
 
-            if (flags.HasFlag(ShipFlags.Slow))
+            if (flags.HasFlag(ShipFlags.Slow) &&
+                RNG.Random(255) > 50)
             {
-                if (RNG.Random(255) > 50)
-                {
-                    return;
-                }
+                return;
             }
 
-            if (flags.HasFlag(ShipFlags.Police))
+            if (flags.HasFlag(ShipFlags.Police) &&
+                _gameState.Cmdr.LegalStatus >= 64)
             {
-                if (_gameState.Cmdr.LegalStatus >= 64)
-                {
-                    flags |= ShipFlags.Angry;
-                    ship.Flags = flags;
-                }
+                flags |= ShipFlags.Angry;
+                ship.Flags = flags;
             }
 
             if (!flags.HasFlag(ShipFlags.Angry))
@@ -631,13 +627,10 @@ namespace Elite.Engine.Conflict
                 }
             }
 
-            if (type == ShipType.Anaconda)
+            if (type == ShipType.Anaconda && RNG.Random(255) > 200)
             {
-                if (RNG.Random(255) > 200)
-                {
-                    LaunchEnemy(un, RNG.Random(255) > 100 ? ShipType.Worm : ShipType.Sidewinder, ShipFlags.Angry | ShipFlags.HasECM, 113);
-                    return;
-                }
+                LaunchEnemy(un, RNG.Random(255) > 100 ? ShipType.Worm : ShipType.Sidewinder, ShipFlags.Angry | ShipFlags.HasECM, 113);
+                return;
             }
 
             if (RNG.Random(255) >= 250)

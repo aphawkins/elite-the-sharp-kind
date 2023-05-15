@@ -44,12 +44,10 @@ namespace Elite.Engine.Views
 
         public void HandleInput()
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Backspace))
+            if (_keyboard.IsKeyPressed(CommandKey.Backspace) &&
+                !string.IsNullOrEmpty(_name))
             {
-                if (!string.IsNullOrEmpty(_name))
-                {
-                    _name = _name[..^1];
-                }
+                _name = _name[..^1];
             }
 
             char key = (char)_keyboard.GetKeyPressed();

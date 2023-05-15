@@ -90,12 +90,11 @@ namespace Elite.Engine.Views
         {
             if (_isFind)
             {
-                if (_keyboard.IsKeyPressed(CommandKey.Backspace))
+                if (_keyboard.IsKeyPressed(CommandKey.Backspace) &&
+                    _isFind &&
+                    !string.IsNullOrEmpty(_findName))
                 {
-                    if (_isFind && !string.IsNullOrEmpty(_findName))
-                    {
-                        _findName = _findName[..^1];
-                    }
+                    _findName = _findName[..^1];
                 }
 
                 if (_keyboard.IsKeyPressed(CommandKey.Enter))
