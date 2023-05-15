@@ -11,11 +11,11 @@ namespace Elite.Engine
     internal sealed class Stars
     {
         private readonly GameState _gameState;
-        private readonly IGfx _graphics;
+        private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Vector3[] _stars = new Vector3[20];
 
-        internal Stars(GameState gameState, IGfx graphics, PlayerShip ship)
+        internal Stars(GameState gameState, IGraphics graphics, PlayerShip ship)
         {
             _gameState = gameState;
             _graphics = graphics;

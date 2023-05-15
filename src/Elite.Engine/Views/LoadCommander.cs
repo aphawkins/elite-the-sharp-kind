@@ -11,16 +11,16 @@ namespace Elite.Engine.Views
     {
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly SaveFile _save;
         private bool _isLoaded = true;
         private string _name = string.Empty;
 
-        internal LoadCommanderView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, SaveFile save)
+        internal LoadCommanderView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, SaveFile save)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _save = save;
@@ -31,14 +31,14 @@ namespace Elite.Engine.Views
             _draw.ClearDisplay();
             _draw.DrawViewHeader("LOAD COMMANDER");
 
-            _gfx.DrawTextCentre(75, "Please enter commander name:", 120, Colour.White1);
-            _gfx.DrawRectangle(100, 100, 312, 50, Colour.White1);
-            _gfx.DrawTextCentre(125, _name, 140, Colour.White1);
+            _graphics.DrawTextCentre(75, "Please enter commander name:", 120, Colour.White1);
+            _graphics.DrawRectangle(100, 100, 312, 50, Colour.White1);
+            _graphics.DrawTextCentre(125, _name, 140, Colour.White1);
 
             if (!_isLoaded)
             {
-                _gfx.DrawTextCentre(175, "Error Loading Commander!", 140, Colour.Gold);
-                _gfx.DrawTextCentre(200, "Press SPACE to continue.", 120, Colour.White1);
+                _graphics.DrawTextCentre(175, "Error Loading Commander!", 140, Colour.Gold);
+                _graphics.DrawTextCentre(200, "Press SPACE to continue.", 120, Colour.White1);
             }
         }
 

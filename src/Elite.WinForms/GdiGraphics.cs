@@ -9,7 +9,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.WinForms
 {
-    public class GdiGraphics : IGfx, IDisposable
+    public class GdiGraphics : IGraphics, IDisposable
     {
         private readonly Dictionary<Colour, Brush> _brushes = new()
             {
@@ -259,12 +259,12 @@ namespace Elite.WinForms
 
         public void ScreenAcquire()
         {
-            //acquire_bitmap(gfx_screen);
+            //acquire_bitmap(graphics_screen);
         }
 
         public void ScreenRelease()
         {
-            //release_bitmap(gfx_screen);
+            //release_bitmap(graphics_screen);
         }
 
         /// <summary>
@@ -312,7 +312,7 @@ namespace Elite.WinForms
             }
         }
         // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~alg_gfx()
+        // ~alg_graphics()
         // {
         //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         //     Dispose(disposing: false);

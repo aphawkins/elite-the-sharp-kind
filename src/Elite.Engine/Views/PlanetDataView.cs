@@ -63,7 +63,7 @@ namespace Elite.Engine.Views
                                 "Poor Agricultural", };
 
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
 
         private readonly string[] _governmentType = { "Anarchy",
                                     "Feudal",
@@ -78,10 +78,10 @@ namespace Elite.Engine.Views
         private float _distanceToPlanet;
         private PlanetData _hyperPlanetData = new();
 
-        internal PlanetDataView(GameState gameState, IGfx gfx, Draw draw, Planet planet)
+        internal PlanetDataView(GameState gameState, IGraphics graphics, Draw draw, Planet planet)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _planet = planet;
         }
@@ -93,21 +93,21 @@ namespace Elite.Engine.Views
 
             if (_distanceToPlanet > 0)
             {
-                _gfx.DrawTextLeft(16, 42, "Distance:", Colour.Green1);
-                _gfx.DrawTextLeft(140, 42, $"{_distanceToPlanet:N1} Light Years", Colour.White1);
+                _graphics.DrawTextLeft(16, 42, "Distance:", Colour.Green1);
+                _graphics.DrawTextLeft(140, 42, $"{_distanceToPlanet:N1} Light Years", Colour.White1);
             }
-            _gfx.DrawTextLeft(16, 74, "Economy:", Colour.Green1);
-            _gfx.DrawTextLeft(140, 74, _economyType[_hyperPlanetData.Economy], Colour.White1);
-            _gfx.DrawTextLeft(16, 106, "Government:", Colour.Green1);
-            _gfx.DrawTextLeft(140, 106, _governmentType[_hyperPlanetData.Government], Colour.White1);
-            _gfx.DrawTextLeft(16, 138, "Tech Level:", Colour.Green1);
-            _gfx.DrawTextLeft(140, 138, $"{_hyperPlanetData.TechLevel + 1}", Colour.White1);
-            _gfx.DrawTextLeft(16, 170, "Population:", Colour.Green1);
-            _gfx.DrawTextLeft(140, 170, $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", Colour.White1);
-            _gfx.DrawTextLeft(16, 202, "Gross Productivity:", Colour.Green1);
-            _gfx.DrawTextLeft(140, 202, $"{_hyperPlanetData.Productivity} Million Credits", Colour.White1);
-            _gfx.DrawTextLeft(16, 234, "Average Radius:", Colour.Green1);
-            _gfx.DrawTextLeft(140, 234, $"{_hyperPlanetData.Radius} km", Colour.White1);
+            _graphics.DrawTextLeft(16, 74, "Economy:", Colour.Green1);
+            _graphics.DrawTextLeft(140, 74, _economyType[_hyperPlanetData.Economy], Colour.White1);
+            _graphics.DrawTextLeft(16, 106, "Government:", Colour.Green1);
+            _graphics.DrawTextLeft(140, 106, _governmentType[_hyperPlanetData.Government], Colour.White1);
+            _graphics.DrawTextLeft(16, 138, "Tech Level:", Colour.Green1);
+            _graphics.DrawTextLeft(140, 138, $"{_hyperPlanetData.TechLevel + 1}", Colour.White1);
+            _graphics.DrawTextLeft(16, 170, "Population:", Colour.Green1);
+            _graphics.DrawTextLeft(140, 170, $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", Colour.White1);
+            _graphics.DrawTextLeft(16, 202, "Gross Productivity:", Colour.Green1);
+            _graphics.DrawTextLeft(140, 202, $"{_hyperPlanetData.Productivity} Million Credits", Colour.White1);
+            _graphics.DrawTextLeft(16, 234, "Average Radius:", Colour.Green1);
+            _graphics.DrawTextLeft(140, 234, $"{_hyperPlanetData.Radius} km", Colour.White1);
             _draw.DrawTextPretty(16, 266, 400, DescribePlanet(_gameState.HyperspacePlanet));
         }
 

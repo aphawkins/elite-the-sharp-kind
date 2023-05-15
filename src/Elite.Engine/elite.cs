@@ -22,7 +22,7 @@ namespace Elite.Engine
         private readonly ConfigFile _configFile;
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly FrameCounter _lockObj = new();
         private readonly long _oneSecond = TimeSpan.FromSeconds(1).Ticks;
@@ -39,9 +39,9 @@ namespace Elite.Engine
         private readonly Dictionary<SCR, IView> _views = new();
         private bool _isGamePaused;
 
-        public EliteMain(IGfx algGfx, ISound sound, IKeyboard keyboard)
+        public EliteMain(IGraphics alggraphics, ISound sound, IKeyboard keyboard)
         {
-            _gfx = algGfx;
+            _graphics = alggraphics;
             _audio = new(sound);
             _audio.LoadSounds();
             _keyboard = keyboard;
@@ -49,45 +49,45 @@ namespace Elite.Engine
             _ship = new();
             _trade = new(_ship);
             _planet = new(_gameState);
-            _draw = new(_gfx);
+            _draw = new(_graphics);
             _draw.LoadImages();
             _draw.DrawBorder();
-            _threed = new(_gameState, _gfx, _draw);
-            _stars = new(_gameState, _gfx, _ship);
+            _threed = new(_gameState, _graphics, _draw);
+            _stars = new(_gameState, _graphics, _ship);
             _pilot = new(_gameState, _audio);
             _combat = new(_gameState, _audio, _ship, _trade);
             _save = new(_gameState, _ship, _trade, _planet);
-            _space = new(_gameState, _gfx, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars);
-            _scanner = new(_gameState, _gfx, _draw, Space.s_universe, Space.s_ship_count, _ship, _combat);
+            _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars);
+            _scanner = new(_gameState, _graphics, _draw, Space.s_universe, Space.s_ship_count, _ship, _combat);
             _configFile = new();
 
             _gameState.Config = _configFile.ReadConfigAsync().Result;
 
-            _views.Add(SCR.SCR_INTRO_ONE, new Intro1View(_gameState, _gfx, _audio, keyboard, _ship, _combat));
-            _views.Add(SCR.SCR_INTRO_TWO, new Intro2View(_gameState, _gfx, _audio, keyboard, _stars, _ship, _combat));
-            _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChartView(_gameState, _gfx, _draw, keyboard, _planet, _ship));
-            _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChartView(_gameState, _gfx, _draw, keyboard, _planet, _ship));
-            _views.Add(SCR.SCR_PLANET_DATA, new PlanetDataView(_gameState, _gfx, _draw, _planet));
-            _views.Add(SCR.SCR_MARKET_PRICES, new MarketView(_gameState, _gfx, _draw, keyboard, _trade, _planet));
-            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatusView(_gameState, _gfx, _draw, _ship, _trade, _planet));
-            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
-            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
-            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
-            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gameState, _gfx, keyboard, _stars, _pilot, _ship));
-            _views.Add(SCR.SCR_DOCKING, new DockingView(_gameState, _gfx, _audio, _space, _combat));
-            _views.Add(SCR.SCR_UNDOCKING, new LaunchView(_gameState, _gfx, _audio, _space, _combat));
-            _views.Add(SCR.SCR_HYPERSPACE, new HyperspaceView(_gameState, _gfx, _audio));
-            _views.Add(SCR.SCR_INVENTORY, new InventoryView(_gfx, _draw, _ship, _trade));
-            _views.Add(SCR.SCR_EQUIP_SHIP, new EquipmentView(_gameState, _gfx, _draw, keyboard, _ship, _trade, _scanner));
-            _views.Add(SCR.SCR_OPTIONS, new OptionsView(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommanderView(_gameState, _gfx, _draw, keyboard, _save));
-            _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommanderView(_gameState, _gfx, _draw, keyboard, _save));
-            _views.Add(SCR.SCR_QUIT, new QuitView(_gameState, _gfx, _draw, keyboard));
-            _views.Add(SCR.SCR_SETTINGS, new SettingsView(_gameState, _gfx, _draw, keyboard, _configFile));
-            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMissionView(_gameState, _gfx, _draw, keyboard, _ship, _trade, _combat));
-            _views.Add(SCR.SCR_MISSION_2, new ThargoidMissionView(_gameState, _gfx, _draw, keyboard, _ship));
-            _views.Add(SCR.SCR_ESCAPE_CAPSULE, new EscapeCapsuleView(_gameState, _gfx, _audio, _stars, _ship, _trade, _combat));
-            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _gfx, _audio, _stars, _ship, _combat));
+            _views.Add(SCR.SCR_INTRO_ONE, new Intro1View(_gameState, _graphics, _audio, keyboard, _ship, _combat));
+            _views.Add(SCR.SCR_INTRO_TWO, new Intro2View(_gameState, _graphics, _audio, keyboard, _stars, _ship, _combat));
+            _views.Add(SCR.SCR_GALACTIC_CHART, new GalacticChartView(_gameState, _graphics, _draw, keyboard, _planet, _ship));
+            _views.Add(SCR.SCR_SHORT_RANGE, new ShortRangeChartView(_gameState, _graphics, _draw, keyboard, _planet, _ship));
+            _views.Add(SCR.SCR_PLANET_DATA, new PlanetDataView(_gameState, _graphics, _draw, _planet));
+            _views.Add(SCR.SCR_MARKET_PRICES, new MarketView(_gameState, _graphics, _draw, keyboard, _trade, _planet));
+            _views.Add(SCR.SCR_CMDR_STATUS, new CommanderStatusView(_gameState, _graphics, _draw, _ship, _trade, _planet));
+            _views.Add(SCR.SCR_FRONT_VIEW, new PilotFrontView(_gameState, _graphics, keyboard, _stars, _pilot, _ship));
+            _views.Add(SCR.SCR_REAR_VIEW, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship));
+            _views.Add(SCR.SCR_LEFT_VIEW, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship));
+            _views.Add(SCR.SCR_RIGHT_VIEW, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship));
+            _views.Add(SCR.SCR_DOCKING, new DockingView(_gameState, _graphics, _audio, _space, _combat));
+            _views.Add(SCR.SCR_UNDOCKING, new LaunchView(_gameState, _graphics, _audio, _space, _combat));
+            _views.Add(SCR.SCR_HYPERSPACE, new HyperspaceView(_gameState, _graphics, _audio));
+            _views.Add(SCR.SCR_INVENTORY, new InventoryView(_graphics, _draw, _ship, _trade));
+            _views.Add(SCR.SCR_EQUIP_SHIP, new EquipmentView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _scanner));
+            _views.Add(SCR.SCR_OPTIONS, new OptionsView(_gameState, _graphics, _draw, keyboard));
+            _views.Add(SCR.SCR_LOAD_CMDR, new LoadCommanderView(_gameState, _graphics, _draw, keyboard, _save));
+            _views.Add(SCR.SCR_SAVE_CMDR, new SaveCommanderView(_gameState, _graphics, _draw, keyboard, _save));
+            _views.Add(SCR.SCR_QUIT, new QuitView(_gameState, _graphics, _draw, keyboard));
+            _views.Add(SCR.SCR_SETTINGS, new SettingsView(_gameState, _graphics, _draw, keyboard, _configFile));
+            _views.Add(SCR.SCR_MISSION_1, new ConstrictorMissionView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _combat));
+            _views.Add(SCR.SCR_MISSION_2, new ThargoidMissionView(_gameState, _graphics, _draw, keyboard, _ship));
+            _views.Add(SCR.SCR_ESCAPE_CAPSULE, new EscapeCapsuleView(_gameState, _graphics, _audio, _stars, _ship, _trade, _combat));
+            _views.Add(SCR.SCR_GAME_OVER, new GameOverView(_gameState, _graphics, _audio, _stars, _ship, _combat));
 
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
 
@@ -125,7 +125,7 @@ namespace Elite.Engine
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _gfx.DrawTextLeft(450, 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White1);
+            _graphics.DrawTextLeft(450, 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White1);
         }
 
         private void DrawFrame()
@@ -172,7 +172,7 @@ namespace Elite.Engine
             InitialiseGame();
 
             _audio.UpdateSound();
-            _gfx.SetClipRegion(1, 1, 510, 383);
+            _graphics.SetClipRegion(1, 1, 510, 383);
 
             _ship.IsRolling = false;
             _ship.IsClimbing = false;
@@ -223,7 +223,7 @@ namespace Elite.Engine
 
                 if (_gameState.MessageCount > 0)
                 {
-                    _gfx.DrawTextCentre(358, _gameState.MessageString, 120, Colour.White1);
+                    _graphics.DrawTextCentre(358, _gameState.MessageString, 120, Colour.White1);
                 }
 
                 if (Space.s_hyper_ready)
@@ -270,7 +270,7 @@ namespace Elite.Engine
                 _combat.TimeECM();
             }
 
-            _gfx.ScreenUpdate();
+            _graphics.ScreenUpdate();
         }
 
         private void HandleFlightKeys()

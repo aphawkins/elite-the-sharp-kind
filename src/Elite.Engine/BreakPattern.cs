@@ -8,10 +8,10 @@ namespace Elite.Engine
 {
     internal sealed class BreakPattern
     {
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private int _breakPatternCount;
 
-        internal BreakPattern(IGfx gfx) => _gfx = gfx;
+        internal BreakPattern(IGraphics graphics) => _graphics = graphics;
 
         internal bool IsComplete { get; private set; }
 
@@ -21,13 +21,13 @@ namespace Elite.Engine
             // Just draw a very simple one for the moment.
             for (int i = 0; i < _breakPatternCount; i++)
             {
-                _gfx.DrawCircle(new(256, 192), 30 + (i * 15), Colour.White1);
+                _graphics.DrawCircle(new(256, 192), 30 + (i * 15), Colour.White1);
             }
         }
 
         internal void Reset()
         {
-            _gfx.SetClipRegion(1, 1, 510, 383);
+            _graphics.SetClipRegion(1, 1, 510, 383);
             _breakPatternCount = 0;
             IsComplete = false;
         }

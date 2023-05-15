@@ -53,17 +53,17 @@ namespace Elite.Engine.Views
         };
 
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly Scanner _scanner;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
         private int _highlightedItem;
 
-        internal EquipmentView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
+        internal EquipmentView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _ship = ship;
@@ -87,22 +87,22 @@ namespace Elite.Engine.Views
 
                 if (i == _highlightedItem)
                 {
-                    _gfx.DrawRectangleFilled(2, y + 1, 508, 15, Colour.Red2);
+                    _graphics.DrawRectangleFilled(2, y + 1, 508, 15, Colour.Red2);
                 }
 
                 Colour col = _equipmentStock[i].CanBuy ? Colour.White1 : Colour.Grey1;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
-                _gfx.DrawTextLeft(x, y, _equipmentStock[i].Name[1..], col);
+                _graphics.DrawTextLeft(x, y, _equipmentStock[i].Name[1..], col);
 
                 if (_equipmentStock[i].Price != 0)
                 {
-                    _gfx.DrawTextRight(450, y, $"{_equipmentStock[i].Price:N1}", col);
+                    _graphics.DrawTextRight(450, y, $"{_equipmentStock[i].Price:N1}", col);
                 }
 
                 y += 15;
             }
 
-            _gfx.DrawTextLeft(16, 340, $"Cash: {_trade._credits:N1} Credits", Colour.White1);
+            _graphics.DrawTextLeft(16, 340, $"Cash: {_trade._credits:N1} Credits", Colour.White1);
         }
 
         public void HandleInput()

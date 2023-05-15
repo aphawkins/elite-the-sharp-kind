@@ -12,14 +12,14 @@ namespace Elite.Engine.Views
         private readonly Audio _audio;
         private readonly BreakPattern _breakPattern;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
 
-        internal HyperspaceView(GameState gameState, IGfx gfx, Audio audio)
+        internal HyperspaceView(GameState gameState, IGraphics graphics, Audio audio)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _audio = audio;
-            _breakPattern = new(_gfx);
+            _breakPattern = new(_graphics);
         }
 
         public void Draw() => _breakPattern.Draw();

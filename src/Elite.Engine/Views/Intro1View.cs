@@ -17,14 +17,14 @@ namespace Elite.Engine.Views
         private readonly Audio _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
 
-        internal Intro1View(GameState gameState, IGfx gfx, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat)
+        internal Intro1View(GameState gameState, IGraphics graphics, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _audio = audio;
             _keyboard = keyboard;
             _ship = ship;
@@ -33,12 +33,12 @@ namespace Elite.Engine.Views
 
         public void Draw()
         {
-            _gfx.DrawImage(Image.EliteText, new(-1, 10));
+            _graphics.DrawImage(Image.EliteText, new(-1, 10));
 
-            _gfx.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, Colour.White1);
-            _gfx.DrawTextCentre(330, "The New Kind - Christian Pinder.", 120, Colour.White1);
-            _gfx.DrawTextCentre(350, "The Sharp Kind - Andy Hawkins.", 120, Colour.White1);
-            _gfx.DrawTextCentre(370, "Load New Commander (Y/N)?", 140, Colour.Gold);
+            _graphics.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, Colour.White1);
+            _graphics.DrawTextCentre(330, "The New Kind - Christian Pinder.", 120, Colour.White1);
+            _graphics.DrawTextCentre(350, "The Sharp Kind - Andy Hawkins.", 120, Colour.White1);
+            _graphics.DrawTextCentre(370, "Load New Commander (Y/N)?", 140, Colour.Gold);
         }
 
         public void HandleInput()

@@ -9,7 +9,7 @@ namespace Elite.WinForms
 {
     public partial class GameWindow : Form
     {
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly System.Windows.Forms.Timer _refreshTimer = new();
         private readonly ISound _sound;
@@ -25,10 +25,10 @@ namespace Elite.WinForms
             Bitmap bmp = new(512, 512);
             screen.Image = bmp;
 
-            _gfx = new GdiGraphics(ref bmp);
+            _graphics = new GdiGraphics(ref bmp);
             _sound = new Sound();
             _keyboard = new Keyboard();
-            Task.Run(() => new EliteMain(_gfx, _sound, _keyboard));
+            Task.Run(() => new EliteMain(_graphics, _sound, _keyboard));
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e) =>

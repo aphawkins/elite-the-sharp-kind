@@ -18,7 +18,7 @@ namespace Elite.Engine.Views
         private readonly Audio _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
 
         private readonly int[] _minDist = new int[]
@@ -38,10 +38,10 @@ namespace Elite.Engine.Views
         private ShipType _shipNo;
         private int _showTime;
 
-        internal Intro2View(GameState gameStat, IGfx gfx, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship, Combat combat)
+        internal Intro2View(GameState gameStat, IGraphics graphics, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship, Combat combat)
         {
             _gameState = gameStat;
-            _gfx = gfx;
+            _graphics = graphics;
             _audio = audio;
             _keyboard = keyboard;
             _stars = stars;
@@ -51,10 +51,10 @@ namespace Elite.Engine.Views
 
         public void Draw()
         {
-            _gfx.DrawImage(Image.EliteText, new(-1, 10));
+            _graphics.DrawImage(Image.EliteText, new(-1, 10));
 
-            _gfx.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, Colour.Gold);
-            _gfx.DrawTextCentre(330, _gameState.ShipList[_shipNo].Name, 120, Colour.White1);
+            _graphics.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, Colour.Gold);
+            _graphics.DrawTextCentre(330, _gameState.ShipList[_shipNo].Name, 120, Colour.White1);
         }
 
         public void HandleInput()

@@ -14,17 +14,17 @@ namespace Elite.Engine.Views
         private readonly BreakPattern _breakPattern;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly Space _space;
 
-        internal LaunchView(GameState gameState, IGfx gfx, Audio audio, Space space, Combat combat)
+        internal LaunchView(GameState gameState, IGraphics graphics, Audio audio, Space space, Combat combat)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _audio = audio;
             _space = space;
             _combat = combat;
-            _breakPattern = new(_gfx);
+            _breakPattern = new(_graphics);
         }
 
         public void Draw() => _breakPattern.Draw();

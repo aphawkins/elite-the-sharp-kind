@@ -14,22 +14,22 @@ namespace Elite.Engine.Views
         private readonly Audio _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private int _i;
 
-        internal GameOverView(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Combat combat)
+        internal GameOverView(GameState gameState, IGraphics graphics, Audio audio, Stars stars, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _audio = audio;
             _stars = stars;
             _ship = ship;
             _combat = combat;
         }
 
-        public void Draw() => _gfx.DrawTextCentre(190, "GAME OVER", 140, Colour.Gold);
+        public void Draw() => _graphics.DrawTextCentre(190, "GAME OVER", 140, Colour.Gold);
 
         public void HandleInput()
         {

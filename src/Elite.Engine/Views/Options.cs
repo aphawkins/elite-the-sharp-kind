@@ -12,7 +12,7 @@ namespace Elite.Engine.Views
         private const int OptionBarWidth = 400;
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _graphics;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
 
         private readonly (string Label, bool DockedOnly)[] _optionList =
@@ -25,7 +25,7 @@ namespace Elite.Engine.Views
 
         private int _highlightedItem;
 
-        internal OptionsView(GameState gameState, IGfx graphics, Draw draw, IKeyboard keyboard)
+        internal OptionsView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _graphics = graphics;

@@ -11,7 +11,7 @@ namespace Elite.Engine.Views
     internal sealed class PilotView : IView
     {
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly LaserDraw _laser;
         private readonly Pilot _pilot;
@@ -19,12 +19,12 @@ namespace Elite.Engine.Views
         private readonly Stars _stars;
         private int _drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGfx gfx, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars)
+        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _keyboard = keyboard;
-            _laser = new LaserDraw(_gameState, _gfx);
+            _laser = new LaserDraw(_gameState, _graphics);
             _pilot = pilot;
             _ship = ship;
             _stars = stars;
@@ -39,11 +39,11 @@ namespace Elite.Engine.Views
 
             if (Space.s_hyper_galactic)
             {
-                _gfx.DrawTextCentre(358, "Galactic Hyperspace", 120, Colour.White1);
+                _graphics.DrawTextCentre(358, "Galactic Hyperspace", 120, Colour.White1);
             }
             else if (Space.s_hyper_countdown > 0)
             {
-                _gfx.DrawTextCentre(358, $"Hyperspace - {Space.s_hyper_name}", 120, Colour.White1);
+                _graphics.DrawTextCentre(358, $"Hyperspace - {Space.s_hyper_name}", 120, Colour.White1);
             }
         }
 
@@ -118,6 +118,6 @@ namespace Elite.Engine.Views
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
-        internal void DrawViewName(string name) => _gfx.DrawTextCentre(32, name, 120, Colour.White1);
+        internal void DrawViewName(string name) => _graphics.DrawTextCentre(32, name, 120, Colour.White1);
     }
 }

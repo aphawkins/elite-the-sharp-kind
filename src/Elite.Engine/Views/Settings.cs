@@ -12,7 +12,7 @@ namespace Elite.Engine.Views
         private readonly ConfigFile _configFile;
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _graphics;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
 
         private readonly (string Name, string[] Values)[] _settingList =
@@ -27,7 +27,7 @@ namespace Elite.Engine.Views
 
         private int _highlightedItem;
 
-        internal SettingsView(GameState gameState, IGfx graphics, Draw draw, IKeyboard keyboard, ConfigFile configFile)
+        internal SettingsView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, ConfigFile configFile)
         {
             _gameState = gameState;
             _graphics = graphics;

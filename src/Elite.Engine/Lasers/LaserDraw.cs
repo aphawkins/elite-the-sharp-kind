@@ -10,9 +10,9 @@ namespace Elite.Engine.Lasers
     internal sealed class LaserDraw
     {
         private readonly GameState _gameState;
-        private readonly IGfx _graphics;
+        private readonly IGraphics _graphics;
 
-        internal LaserDraw(GameState gameState, IGfx graphics)
+        internal LaserDraw(GameState gameState, IGraphics graphics)
         {
             _gameState = gameState;
             _graphics = graphics;

@@ -16,17 +16,17 @@ namespace Elite.Engine.Views
         private readonly Audio _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Trade _trade;
         private int _i;
         private int _newship;
 
-        internal EscapeCapsuleView(GameState gameState, IGfx gfx, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
+        internal EscapeCapsuleView(GameState gameState, IGraphics graphics, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _audio = audio;
             _stars = stars;
             _ship = ship;
@@ -38,7 +38,7 @@ namespace Elite.Engine.Views
         {
             if (_i < 90)
             {
-                _gfx.DrawTextCentre(358, "Escape capsule launched - Ship auto-destuct initiated.", 120, Colour.White1);
+                _graphics.DrawTextCentre(358, "Escape capsule launched - Ship auto-destuct initiated.", 120, Colour.White1);
             }
         }
 

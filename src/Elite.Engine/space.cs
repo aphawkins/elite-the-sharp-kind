@@ -28,7 +28,7 @@ namespace Elite.Engine
         private readonly Audio _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly Pilot _pilot;
         private readonly Planet _planet;
         private readonly PlayerShip _ship;
@@ -38,7 +38,7 @@ namespace Elite.Engine
 
         internal Space(
             GameState gameState,
-            IGfx gfx,
+            IGraphics graphics,
             Threed threed,
             Audio audio,
             Pilot pilot,
@@ -49,7 +49,7 @@ namespace Elite.Engine
             Stars stars)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _threed = threed;
             _audio = audio;
             _pilot = pilot;
@@ -71,7 +71,7 @@ namespace Elite.Engine
             s_hyper_countdown--;
         }
 
-        internal void DisplayHyperStatus() => _gfx.DrawTextRight(22, 5, $"{s_hyper_countdown}", Colour.White1);
+        internal void DisplayHyperStatus() => _graphics.DrawTextRight(22, 5, $"{s_hyper_countdown}", Colour.White1);
 
         /// <summary>
         /// Dock the player into the space station.

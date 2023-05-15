@@ -12,9 +12,9 @@ namespace Elite.Engine.Views
 {
     internal sealed class Draw
     {
-        private readonly IGfx _graphics;
+        private readonly IGraphics _graphics;
 
-        internal Draw(IGfx graphics) => _graphics = graphics;
+        internal Draw(IGraphics graphics) => _graphics = graphics;
 
         internal void ClearDisplay() => _graphics.ClearArea(_graphics.Offset.X + 1, _graphics.Offset.Y + 1, 510 + _graphics.Offset.X, 383 + _graphics.Offset.Y);
 

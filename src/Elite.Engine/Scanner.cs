@@ -20,16 +20,16 @@ namespace Elite.Engine
         private readonly Combat _combat;
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Dictionary<ShipType, int> _shipCount;
         private readonly UniverseObject[] _universe;
         private Vector2 _scannerCentre = new(253, 63 + 385);
 
-        internal Scanner(GameState gameState, IGfx gfx, Draw draw, UniverseObject[] universe, Dictionary<ShipType, int> shipCount, PlayerShip ship, Combat combat)
+        internal Scanner(GameState gameState, IGraphics graphics, Draw draw, UniverseObject[] universe, Dictionary<ShipType, int> shipCount, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _universe = universe;
             _shipCount = shipCount;
@@ -39,7 +39,7 @@ namespace Elite.Engine
 
         internal void UpdateConsole()
         {
-            _gfx.SetClipRegion(0, 0, 512, 512);
+            _graphics.SetClipRegion(0, 0, 512, 512);
             _draw.DrawScanner();
 
             DisplaySpeed();
@@ -63,12 +63,12 @@ namespace Elite.Engine
 
             if (_shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0)
             {
-                _gfx.DrawImage(Image.BigS, new(387, 490));
+                _graphics.DrawImage(Image.BigS, new(387, 490));
             }
 
             if (_ship.EcmActive != 0)
             {
-                _gfx.DrawImage(Image.BigE, new(115, 490));
+                _graphics.DrawImage(Image.BigE, new(115, 490));
             }
         }
 
@@ -95,16 +95,16 @@ namespace Elite.Engine
         /// <param name="position"></param>
         private void DisplayDialBar(float len, Vector2 position)
         {
-            _gfx.DrawLine(new(position.X, position.Y + 384), new(position.X + len, position.Y + 384), Colour.Gold);
+            _graphics.DrawLine(new(position.X, position.Y + 384), new(position.X + len, position.Y + 384), Colour.Gold);
             int i = 1;
-            _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Gold);
+            _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Gold);
 
             for (i = 2; i < 7; i++)
             {
-                _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Yellow1);
+                _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Yellow1);
             }
 
-            _gfx.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Red2);
+            _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Red2);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < 4; i++)
             {
-                _gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), Colour.Gold);
+                _graphics.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), Colour.Gold);
             }
         }
 
@@ -162,7 +162,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < 4; i++)
             {
-                _gfx.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), Colour.Gold);
+                _graphics.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), Colour.Gold);
             }
         }
 
@@ -195,14 +195,14 @@ namespace Elite.Engine
 
             if (_combat.MissileTarget != _combat.IsMissileUnarmed)
             {
-                _gfx.DrawImage((_combat.MissileTarget < 0) ? Image.MissileYellow : Image.MissileRed, location);
+                _graphics.DrawImage((_combat.MissileTarget < 0) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
                 missileCount--;
             }
 
             for (; missileCount > 0; missileCount--)
             {
-                _gfx.DrawImage(Image.MissileGreen, location);
+                _graphics.DrawImage(Image.MissileGreen, location);
                 location.X += 16;
             }
         }
@@ -237,7 +237,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < 6; i++)
             {
-                _gfx.DrawLine(new(sx, sy + i), new(sx + len, sy + i), colour);
+                _graphics.DrawLine(new(sx, sy + i), new(sx + len, sy + i), colour);
             }
         }
 
@@ -263,11 +263,11 @@ namespace Elite.Engine
 
             if (dest.Z < 0)
             {
-                _gfx.DrawImage(Image.DotRed, compass);
+                _graphics.DrawImage(Image.DotRed, compass);
             }
             else
             {
-                _gfx.DrawImage(Image.GreenDot, compass);
+                _graphics.DrawImage(Image.GreenDot, compass);
             }
         }
 
@@ -417,9 +417,9 @@ namespace Elite.Engine
                 }
 
                 // ship
-                _gfx.DrawRectangleFilled(x - 3, y2, 5, 3, colour);
+                _graphics.DrawRectangleFilled(x - 3, y2, 5, 3, colour);
                 // stick
-                _gfx.DrawRectangleFilled(x, y2 < y1 ? y2 : y1, 2, MathF.Abs(y2 - y1), colour);
+                _graphics.DrawRectangleFilled(x, y2 < y1 ? y2 : y1, 2, MathF.Abs(y2 - y1), colour);
             }
         }
     }

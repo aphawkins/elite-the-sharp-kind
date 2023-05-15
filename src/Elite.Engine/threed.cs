@@ -46,7 +46,7 @@ namespace Elite.Engine
 
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _graphics;
+        private readonly IGraphics _graphics;
         private readonly int[,] _landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
         private readonly Vector3[] _pointList = new Vector3[100];
         private readonly PolygonData[] _polyChain = new PolygonData[MAX_POLYS];
@@ -55,7 +55,7 @@ namespace Elite.Engine
 
         private int _totalPolys;
 
-        internal Threed(GameState gameState, IGfx graphics, Draw draw)
+        internal Threed(GameState gameState, IGraphics graphics, Draw draw)
         {
             _gameState = gameState;
             _graphics = graphics;

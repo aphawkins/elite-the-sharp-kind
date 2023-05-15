@@ -8,7 +8,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine
 {
-    public interface IGfx
+    public interface IGraphics
     {
         void ClearArea(float x, float y, float width, float height);
 

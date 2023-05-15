@@ -10,13 +10,13 @@ namespace Elite.Engine.Views
     {
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
 
-        internal QuitView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard)
+        internal QuitView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
         }
@@ -26,7 +26,7 @@ namespace Elite.Engine.Views
             _draw.ClearDisplay();
             _draw.DrawViewHeader("GAME OPTIONS");
 
-            _gfx.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, Colour.Gold);
+            _graphics.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, Colour.Gold);
         }
 
         public void HandleInput()

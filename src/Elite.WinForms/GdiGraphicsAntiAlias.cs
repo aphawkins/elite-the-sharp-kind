@@ -16,7 +16,7 @@ namespace Elite.WinForms
         //#define trunc(x) ((x) & ~65535)
         //#define frac(x) ((x) & 65535)
         //#define invfrac(x) (65535-frac(x))
-        //#define plot(x,y,c) putpixel(gfx_screen, (x), (y), (c)+AA_BASE)
+        //#define plot(x,y,c) putpixel(graphics_screen, (x), (y), (c)+AA_BASE)
 
         public GdiGraphicsAntiAlias(ref Bitmap screen)
             : base(ref screen)
@@ -29,8 +29,8 @@ namespace Elite.WinForms
             //  int s;
             //  int sx, sy;
 
-            //  cx += gfx.GFX_X_OFFSET;
-            //  cy += gfx.GFX_Y_OFFSET;
+            //  cx += graphics.graphics_X_OFFSET;
+            //  cy += graphics.graphics_Y_OFFSET;
 
             //  radius >>= (16 - AA_BITS);
 
@@ -109,10 +109,10 @@ namespace Elite.WinForms
 
             //  int x, y, ix1, ix2, iy1, iy2;
 
-            //  x1 += itofix(GFX_X_OFFSET);
-            //  x2 += itofix(GFX_X_OFFSET);
-            //  y1 += itofix(GFX_Y_OFFSET);
-            //  y2 += itofix(GFX_Y_OFFSET);
+            //  x1 += itofix(graphics_X_OFFSET);
+            //  x2 += itofix(graphics_X_OFFSET);
+            //  y1 += itofix(graphics_Y_OFFSET);
+            //  y2 += itofix(graphics_Y_OFFSET);
 
             //  xd = x2 - x1;
             //  yd = y2 - y1;

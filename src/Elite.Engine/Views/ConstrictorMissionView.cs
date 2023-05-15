@@ -14,7 +14,7 @@ namespace Elite.Engine.Views
         private readonly Combat _combat;
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _gfx;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
 
         private readonly string _mission1_brief_a =
@@ -48,10 +48,10 @@ namespace Elite.Engine.Views
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
 
-        internal ConstrictorMissionView(GameState gameState, IGfx gfx, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Combat combat)
+        internal ConstrictorMissionView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Combat combat)
         {
             _gameState = gameState;
-            _gfx = gfx;
+            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _ship = ship;
@@ -68,17 +68,17 @@ namespace Elite.Engine.Views
                 _draw.DrawTextPretty(16, 50, 300, _mission1_brief_a);
                 _draw.DrawTextPretty(16, 200, 470, _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
-                _gfx.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
+                _graphics.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 3)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
-                _gfx.DrawTextCentre(100, "Congratulations Commander!", 140, Colour.Gold);
+                _graphics.DrawTextCentre(100, "Congratulations Commander!", 140, Colour.Gold);
 
                 _draw.DrawTextPretty(116, 132, 400, _mission1_debrief);
 
-                _gfx.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
+                _graphics.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
             }
         }
 

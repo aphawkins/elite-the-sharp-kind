@@ -13,7 +13,7 @@ namespace Elite.Engine.Views
     {
         private readonly Draw _draw;
         private readonly GameState _gameState;
-        private readonly IGfx _graphics;
+        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
         private readonly List<(Vector2 position, string name)> _planetNames = new();
@@ -23,7 +23,7 @@ namespace Elite.Engine.Views
         private string _findName = string.Empty;
         private bool _isFind;
 
-        internal ShortRangeChartView(GameState gameState, IGfx graphics, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
+        internal ShortRangeChartView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
         {
             _gameState = gameState;
             _graphics = graphics;

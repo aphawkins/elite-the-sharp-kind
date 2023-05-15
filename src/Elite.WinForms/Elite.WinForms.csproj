@@ -37,34 +37,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="gfx\blake.bmp">
+    <None Update="graphics\blake.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\ecm.bmp">
+    <None Update="graphics\ecm.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\elitetx3.bmp">
+    <None Update="graphics\elitetx3.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\greendot.bmp">
+    <None Update="graphics\greendot.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\missgrn.bmp">
+    <None Update="graphics\missgrn.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\missred.bmp">
+    <None Update="graphics\missred.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\missyell.bmp">
+    <None Update="graphics\missyell.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\reddot.bmp">
+    <None Update="graphics\reddot.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\safe.bmp">
+    <None Update="graphics\safe.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="gfx\scanner.bmp">
+    <None Update="graphics\scanner.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="music\danube.mid">
