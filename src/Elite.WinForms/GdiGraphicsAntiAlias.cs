@@ -96,10 +96,6 @@ namespace Elite.WinForms
         /// Draw anti-aliased line.
         /// By T.Harte.
         /// </summary>
-        /// <param name="x1"></param>
-        /// <param name="y1"></param>
-        /// <param name="x2"></param>
-        /// <param name="y2"></param>
         public override void DrawLine(Vector2 start, Vector2 end)
         {
             //  fixed grad, xd, yd;

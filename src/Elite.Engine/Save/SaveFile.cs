@@ -79,7 +79,6 @@ namespace Elite.Engine.Save
         /// <summary>
         /// Write the save file.
         /// </summary>
-        /// <param name="state">The game state to save.</param>
         internal async Task<bool> SaveCommanderAsync(string newName)
         {
             try
