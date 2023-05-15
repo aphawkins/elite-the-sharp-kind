@@ -744,7 +744,6 @@ namespace Elite.Engine
             }
 
             // If necessary rotate the object around the Z axis...
-
             if (rotz != 0)
             {
                 RotateXFirst(ref obj.Rotmat[0].X, ref obj.Rotmat[1].X, rotz);

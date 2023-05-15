@@ -73,7 +73,6 @@ namespace Elite.Engine
             //  SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
             //  SCR.SCR_GAME_OVER or SCR.SCR_ESCAPE_CAPSULE or
             //  SCR.SCR_MISSION_1);
-
             if (ship.Flags.HasFlag(ShipFlags.Dead) && !ship.Flags.HasFlag(ShipFlags.Explosion))
             {
                 ship.Flags |= ShipFlags.Explosion;
@@ -258,7 +257,6 @@ namespace Elite.Engine
             //  if (pr > 0x1C00)
             //      q = 254;
             //  else
-
             q = pr / 32;
 
             for (int cnt = 0; cnt < np; cnt++)
@@ -286,7 +284,6 @@ namespace Elite.Engine
                             //TODO: Bug - the X or Y could be negative
                             //Debug.Assert(position.X >= 0);
                             //Debug.Assert(position.Y >= 0);
-
                             _graphics.DrawPixel(new(position.X + psx, position.Y + psy), Colour.White1);
                         }
                     }
@@ -319,7 +316,6 @@ namespace Elite.Engine
 
             // Planets are BIG!
             //  radius = 6291456 / ship_vec.z;
-
             radius *= _graphics.Scale;
 
             if ((position.X + radius < 0) ||
@@ -435,7 +431,6 @@ namespace Elite.Engine
 
             //  visible[i] = (cos_angle < -0.13);
             //}
-
             (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
             (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
             (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);

@@ -35,7 +35,6 @@ namespace Elite.Engine.Ships
             new(Colour.Grey2, new(0x67, 0x19, -0x3C), new[] { 4,  3, 11, 12 }),
 
             //new(graphics_COL.graphics_COL_GREY_3,    0x40, 0x00, 0x00, 8,  7,  6,  5,  4,  3,  2, 1, 0),
-
             new(Colour.Grey3, new(0x40, 0x00, 0x00), new[] { 0,  1,  2,  7 }),
             new(Colour.Grey3, new(0x40, 0x00, 0x00), new[] { 2,  3,  6,  7 }),
             new(Colour.Grey3, new(0x40, 0x00, 0x00), new[] { 3,  4,  5,  6 }),
@@ -46,7 +45,6 @@ namespace Elite.Engine.Ships
             new(Colour.Grey2, new(0x67, -0x19, 0x3C), new[] { 0,  7, 15,  8 }),
 
             //new(graphics_COL.graphics_COL_GREY_3,   -0x30, 0x00, 0x00, 8, 15, 14, 13, 12, 11, 10, 9, 8),
-
             new(Colour.Grey3, new(-0x30, 0x00, 0x00), new[] { 9,  8, 15, 10 }),
             new(Colour.Grey3, new(-0x30, 0x00, 0x00), new[] { 11, 10, 15, 14 }),
             new(Colour.Grey3, new(-0x30, 0x00, 0x00), new[] { 12, 11, 14, 13 }),

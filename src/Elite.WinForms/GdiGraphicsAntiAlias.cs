@@ -17,7 +17,6 @@ namespace Elite.WinForms
         //#define frac(x) ((x) & 65535)
         //#define invfrac(x) (65535-frac(x))
         //#define plot(x,y,c) putpixel(graphics_screen, (x), (y), (c)+AA_BASE)
-
         public GdiGraphicsAntiAlias(ref Bitmap screen)
             : base(ref screen)
         {

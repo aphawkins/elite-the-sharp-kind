@@ -137,7 +137,6 @@ namespace Elite.Engine.Conflict
         internal void CheckTarget(int un, ref UniverseObject flip)
         {
             //univ_object univ = space.universe[un];
-
             if (IsInTarget(Space.s_universe[un].Type, flip.Location.X, flip.Location.Y, flip.Location.Z))
             {
                 if (MissileTarget == _isMISSILE_ARMED && Space.s_universe[un].Type >= 0)

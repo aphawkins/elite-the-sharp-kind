@@ -109,7 +109,6 @@ namespace Elite.Engine
 
                 //tx = yy * beta;
                 //xx = xx + (tx * tx * 2);
-
                 yy += beta;
 
                 _stars[i].Y = yy;
@@ -189,7 +188,6 @@ namespace Elite.Engine
                 }
 
                 // Move the stars to their new locations...
-
                 float Q = delta / _stars[i].Z;
 
                 _stars[i].Z += delta;
@@ -202,7 +200,6 @@ namespace Elite.Engine
 
                 //tx = yy * beta;
                 //xx = xx + (tx * tx * 2);
-
                 yy += beta;
 
                 if (WarpStars)

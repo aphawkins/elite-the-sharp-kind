@@ -35,7 +35,6 @@ namespace Elite.WinForms
 
             //Debug.WriteLine("KeyDown KeyCode: " + e.KeyCode);
             //Debug.WriteLine("KeyDown KeyValue: " + e.KeyValue);
-
             _keyboard.KeyDown((CommandKey)e.KeyValue);
 
         private void Form1_KeyUp(object sender, KeyEventArgs e) => _keyboard.KeyUp((CommandKey)e.KeyValue);
