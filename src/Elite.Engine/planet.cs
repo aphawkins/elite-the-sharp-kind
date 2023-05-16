@@ -139,7 +139,7 @@ namespace Elite.Engine
 
             for (int i = 0; i < 256; i++)
             {
-                string planet_name = NamePlanet(glx, false);
+                string planet_name = NamePlanet(glx);
 
                 if (planet_name == find_name)
                 {
@@ -183,16 +183,16 @@ namespace Elite.Engine
             return -1;
         }
 
-        internal string NamePlanet(GalaxySeed galaxy, bool capitalise)
+        internal string NamePlanet(GalaxySeed galaxy)
         {
             GalaxySeed glx = new(galaxy);
 
             string name = string.Empty;
-            int size = (glx.A & 0x40) == 0 ? 3 : 4;
+            int size = (glx.A & 64) == 0 ? 3 : 4;
 
             for (int i = 0; i < size; i++)
             {
-                int x = glx.F & 0x1F;
+                int x = glx.F & 31;
                 if (x != 0)
                 {
                     x += 12;
@@ -207,7 +207,7 @@ namespace Elite.Engine
                 WaggleGalaxy(ref glx);
             }
 
-            return capitalise ? char.ToUpper(name[0]) + name[1..].ToLower(System.Globalization.CultureInfo.CurrentCulture) : name;
+            return name;
         }
 
         internal void WaggleGalaxy(ref GalaxySeed glx_ptr)

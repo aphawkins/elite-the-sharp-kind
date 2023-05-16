@@ -26,5 +26,9 @@ namespace Elite.Engine
         }
 
         internal static Vector2 ToVector2(this Vector3 vector) => new(vector.X, vector.Y);
+
+#pragma warning disable CA1308 // Normalize strings to uppercase
+        internal static string CapitaliseFirstLetter(this string text) => char.ToUpperInvariant(text[0]) + text[1..].ToLowerInvariant();
+#pragma warning restore CA1308 // Normalize strings to uppercase
     }
 }

@@ -79,9 +79,6 @@ namespace Elite.Engine.Views
                 }
             }
 
-            string dockedPlanetName = _planet.NamePlanet(_gameState.DockedPlanet, true);
-            string hyperspacePlanetName = _planet.NamePlanet(_gameState.HyperspacePlanet, true);
-
             int condition = 0;
 
             if (!_gameState.IsDocked)
@@ -108,11 +105,11 @@ namespace Elite.Engine.Views
 
             if (!_gameState.InWitchspace)
             {
-                _graphics.DrawTextLeft(150, 58, dockedPlanetName, Colour.White1);
+                _graphics.DrawTextLeft(150, 58, _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(), Colour.White1);
             }
 
             _graphics.DrawTextLeft(16, 74, "Hyperspace System:", Colour.Green1);
-            _graphics.DrawTextLeft(150, 74, hyperspacePlanetName, Colour.White1);
+            _graphics.DrawTextLeft(150, 74, _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(), Colour.White1);
 
             _graphics.DrawTextLeft(16, 90, "Condition:", Colour.Green1);
             _graphics.DrawTextLeft(150, 90, _conditionText[condition], Colour.White1);

@@ -95,7 +95,7 @@ namespace Elite.Engine.Views
         public void Draw()
         {
             _draw.ClearDisplay();
-            _draw.DrawViewHeader($"DATA ON {_planet.NamePlanet(_gameState.HyperspacePlanet, false)}");
+            _draw.DrawViewHeader($"DATA ON {_planet.NamePlanet(_gameState.HyperspacePlanet)}");
 
             if (_distanceToPlanet > 0)
             {
@@ -222,12 +222,12 @@ namespace Elite.Engine.Views
                     switch (source[j])
                     {
                         case 'H':
-                            temp = _planet.NamePlanet(_gameState.HyperspacePlanet, true);
+                            temp = _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter();
                             planetDescription += temp;
                             break;
 
                         case 'I':
-                            temp = _planet.NamePlanet(_gameState.HyperspacePlanet, true);
+                            temp = _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter();
                             planetDescription += temp;
                             planetDescription += "ian";
                             break;
@@ -243,10 +243,10 @@ namespace Elite.Engine.Views
                                 }
                                 else
                                 {
-                                    planetDescription += char.ToLower(_planet.Digrams[x]);
+                                    planetDescription += char.ToLowerInvariant(_planet.Digrams[x]);
                                 }
 
-                                planetDescription += char.ToLower(_planet.Digrams[x + 1]);
+                                planetDescription += char.ToLowerInvariant(_planet.Digrams[x + 1]);
                             }
 
                             break;

@@ -224,7 +224,7 @@ namespace Elite.Engine.Views
                 if (row_used[row] == 0)
                 {
                     row_used[row] = 1;
-                    _planetNames.Add((new(px + (4 * _graphics.Scale), ((row * 8) - 5) * _graphics.Scale), _planet.NamePlanet(glx, true)));
+                    _planetNames.Add((new(px + (4 * _graphics.Scale), ((row * 8) - 5) * _graphics.Scale), _planet.NamePlanet(glx).CapitaliseFirstLetter()));
                 }
 
                 // The next bit calculates the size of the circle used to represent
@@ -265,7 +265,7 @@ namespace Elite.Engine.Views
             };
 
             _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
-            _gameState.PlanetName = _planet.NamePlanet(_gameState.HyperspacePlanet, false);
+            _gameState.PlanetName = _planet.NamePlanet(_gameState.HyperspacePlanet);
             _gameState.DistanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
             CrossFromHyperspacePlanet();
         }

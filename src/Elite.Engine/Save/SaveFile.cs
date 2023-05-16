@@ -154,7 +154,7 @@ namespace Elite.Engine.Save
         private void RestoreSavedCommander()
         {
             _state.DockedPlanet = _planet.FindPlanet(_state.Cmdr.Galaxy, new(_state.DockedPlanet.D, _state.DockedPlanet.B));
-            _state.PlanetName = _planet.NamePlanet(_state.DockedPlanet, false);
+            _state.PlanetName = _planet.NamePlanet(_state.DockedPlanet);
             _state.HyperspacePlanet = new(_state.DockedPlanet);
             _state.CurrentPlanetData = Planet.GeneratePlanetData(_state.DockedPlanet);
             _trade.GenerateStockMarket();

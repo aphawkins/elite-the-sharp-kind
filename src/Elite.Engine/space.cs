@@ -195,7 +195,7 @@ namespace Elite.Engine
             }
 
             s_destination_planet = new(_gameState.HyperspacePlanet);
-            s_hyper_name = _planet.NamePlanet(s_destination_planet, true);
+            s_hyper_name = _planet.NamePlanet(s_destination_planet).CapitaliseFirstLetter();
             s_hyper_ready = true;
             s_hyper_countdown = 15;
             s_hyper_galactic = false;

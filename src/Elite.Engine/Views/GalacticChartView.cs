@@ -210,7 +210,7 @@ namespace Elite.Engine.Views
             };
 
             _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
-            _gameState.PlanetName = _planet.NamePlanet(_gameState.HyperspacePlanet, false);
+            _gameState.PlanetName = _planet.NamePlanet(_gameState.HyperspacePlanet);
             _gameState.DistanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
             CrossFromHyperspacePlanet();
         }
