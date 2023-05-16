@@ -86,6 +86,8 @@ namespace Elite.WinForms
         // Actual screen
         private readonly Bitmap _screen;
 
+        private readonly object _screenLock = new();
+
         // Screen buffer
         private readonly Bitmap _screenBuffer;
 
@@ -276,7 +278,7 @@ namespace Elite.WinForms
             // TODO: find a better way of doing multithreading
             Application.DoEvents();
 
-            lock (_screen)
+            lock (_screenLock)
             {
                 _screenGraphics.DrawImage(_screenBuffer, Offset.X, Offset.Y);
             }
