@@ -2,8 +2,11 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Elite.Engine.Save
 {
+    [SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Need to be writable for serialisation.")]
     public sealed class SaveState
     {
         public SaveState()
@@ -48,7 +51,7 @@ namespace Elite.Engine.Save
 
         public float Credits { get; set; }
 
-        public int[] CurrentCargo { get; set; } = Array.Empty<int>();
+        public IList<int> CurrentCargo { get; set; } = new List<int>();
 
         public string EnergyUnit { get; set; } = string.Empty;
 
@@ -56,7 +59,7 @@ namespace Elite.Engine.Save
 
         public int GalaxyNumber { get; set; }
 
-        public int[] GalaxySeed { get; set; } = Array.Empty<int>();
+        public IList<int> GalaxySeed { get; set; } = new List<int>();
 
         public bool HasDockingComputer { get; set; }
 
@@ -70,7 +73,7 @@ namespace Elite.Engine.Save
 
         public bool HasGalacticHyperdrive { get; set; }
 
-        public string[] Lasers { get; set; } = Array.Empty<string>();
+        public IList<string> Lasers { get; set; } = new List<string>();
 
         public int LegalStatus { get; set; }
 
@@ -84,8 +87,8 @@ namespace Elite.Engine.Save
 
         public int Score { get; set; }
 
-        public int[] ShipLocation { get; set; } = Array.Empty<int>();
+        public IList<int> ShipLocation { get; set; } = new List<int>();
 
-        public int[] StationStock { get; set; } = Array.Empty<int>();
+        public IList<int> StationStock { get; set; } = new List<int>();
     }
 }

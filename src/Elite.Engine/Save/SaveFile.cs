@@ -111,11 +111,11 @@ namespace Elite.Engine.Save
             CargoCapacity = _ship.CargoCapacity,
             CommanderName = newName,
             Credits = _trade._credits,
-            CurrentCargo = _trade._stockMarket.Values.Select(x => x.CurrentCargo).ToArray(),
+            CurrentCargo = _trade._stockMarket.Values.Select(x => x.CurrentCargo).ToList(),
             EnergyUnit = _ship.EnergyUnit.ToString(),
             Fuel = _ship.Fuel,
             GalaxyNumber = _state.Cmdr.GalaxyNumber,
-            GalaxySeed = new int[6]
+            GalaxySeed = new List<int>()
                 {
                     _state.Cmdr.Galaxy.A,
                     _state.Cmdr.Galaxy.B,
@@ -130,7 +130,7 @@ namespace Elite.Engine.Save
             HasEscapeCapsule = _ship.HasEscapeCapsule,
             HasFuelScoop = _ship.HasFuelScoop,
             HasGalacticHyperdrive = _ship.HasGalacticHyperdrive,
-            Lasers = new string[4]
+            Lasers = new List<string>()
                 {
                     _ship.LaserFront.Type.ToString(),
                     _ship.LaserRear.Type.ToString(),
@@ -143,12 +143,12 @@ namespace Elite.Engine.Save
             Mission = _state.Cmdr.Mission,
             Saved = _state.Cmdr.Saved,
             Score = _state.Cmdr.Score,
-            ShipLocation = new int[2]
+            ShipLocation = new List<int>()
                 {
                     _state.DockedPlanet.D,
                     _state.DockedPlanet.B,
                 },
-            StationStock = _trade._stockMarket.Values.Select(x => x.StationStock).ToArray(),
+            StationStock = _trade._stockMarket.Values.Select(x => x.StationStock).ToList(),
         };
 
         private void RestoreSavedCommander()

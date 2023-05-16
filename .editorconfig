@@ -163,8 +163,11 @@ csharp_style_prefer_top_level_statements = true:suggestion
 # Diagnostic
 dotnet_analyzer_diagnostic.severity = suggestion
 
-# Diagnostic - Exclusions
+# IDE - Exclusions
 dotnet_diagnostic.IDE0058.severity = none #Expression value is never used
+
+# CodeAnalysis - Exclusions
+dotnet_diagnostic.CA1814.severity = none
 
 # StyleCop - Exclusions
 dotnet_diagnostic.SA1005.severity = none # Single line comment should begin with a space
