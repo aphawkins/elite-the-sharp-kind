@@ -31,13 +31,13 @@ namespace Elite.WinForms
             Task.Run(() => new EliteMain(_graphics, _sound, _keyboard));
         }
 
-        private void Form1_KeyDown(object sender, KeyEventArgs e) =>
+        private void GameWindow_KeyDown(object sender, KeyEventArgs e) =>
 
             //Debug.WriteLine("KeyDown KeyCode: " + e.KeyCode);
             //Debug.WriteLine("KeyDown KeyValue: " + e.KeyValue);
             _keyboard.KeyDown((CommandKey)e.KeyValue);
 
-        private void Form1_KeyUp(object sender, KeyEventArgs e) => _keyboard.KeyUp((CommandKey)e.KeyValue);
+        private void GameWindow_KeyUp(object sender, KeyEventArgs e) => _keyboard.KeyUp((CommandKey)e.KeyValue);
 
         private void RefreshScreen() => screen.Refresh();
     }

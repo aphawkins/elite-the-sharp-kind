@@ -18,6 +18,8 @@
                 components?.Dispose();
 
                 ((IDisposable)_sound)?.Dispose();
+
+                _refreshTimer?.Dispose();
             }
 
             base.Dispose(disposing);
@@ -61,8 +63,8 @@
             this.MinimumSize = new System.Drawing.Size(528, 551);
             this.Name = "GameWindow";
             this.Text = "Elite - The Sharp Kind";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameWindow_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameWindow_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.screen)).EndInit();
             this.ResumeLayout(false);
 
