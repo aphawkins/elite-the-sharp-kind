@@ -2,6 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Security.Cryptography;
+
 namespace Elite.Engine
 {
     internal static class RNG
@@ -82,7 +84,7 @@ namespace Elite.Engine
 
         internal static int Random(int maxValue) => Random(0, maxValue);
 
-        internal static int Random(int minValue, int maxValue) => new Random().Next(minValue, maxValue + 1);
+        internal static int Random(int minValue, int maxValue) => RandomNumberGenerator.GetInt32(minValue, maxValue + 1);
 
         internal static bool TrueOrFalse() => Random(0, 1) == 1;
     }

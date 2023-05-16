@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
@@ -507,6 +508,7 @@ namespace Elite.Engine
         /// Generate a fractal landscape. Uses midpoint displacement method.
         /// </summary>
         /// <param name="seed">Initial seed for the generation.</param>
+        [SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "Randomness here requires seed.")]
         private void GenerateFractalLandscape(int seed)
         {
             const int d = LAND_X_MAX / 8;
