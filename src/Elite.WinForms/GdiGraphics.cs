@@ -145,9 +145,9 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawImage(sprite, location.X + Offset.X, location.Y + Offset.Y);
         }
 
-        public void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[Colour.White1], start.X + Offset.X, start.Y + Offset.Y, end.X + Offset.X, end.Y + Offset.Y);
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => _screenBufferGraphics.DrawLine(_pens[Colour.White1], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
 
-        public void DrawLine(Vector2 start, Vector2 end, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], start.X + Offset.X, start.Y + Offset.Y, end.X + Offset.X, end.Y + Offset.Y);
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
 
         public void DrawPixel(Vector2 position, Colour colour)
         {

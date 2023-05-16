@@ -18,9 +18,9 @@ namespace Elite.Engine
 
         void DrawImage(Image spriteImgage, Vector2 location);
 
-        void DrawLine(Vector2 start, Vector2 end, Colour colour);
+        void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour);
 
-        void DrawLine(Vector2 start, Vector2 end);
+        void DrawLine(Vector2 lineStart, Vector2 lineEnd);
 
         void DrawPixel(Vector2 position, Colour colour);
 
