@@ -200,7 +200,7 @@ namespace Elite.WinForms
 
         public void DrawTextCentre(float y, string text, int psize, Colour colour)
         {
-            StringFormat stringFormat = new()
+            using StringFormat stringFormat = new()
             {
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center,
@@ -223,7 +223,7 @@ namespace Elite.WinForms
 
         public void DrawTextRight(float x, float y, string text, Colour colour)
         {
-            StringFormat stringFormat = new()
+            using StringFormat stringFormat = new()
             {
                 Alignment = StringAlignment.Far,
             };
