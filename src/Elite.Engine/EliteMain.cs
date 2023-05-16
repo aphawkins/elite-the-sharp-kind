@@ -14,7 +14,7 @@ using Elite.Engine.Views;
 
 namespace Elite.Engine
 {
-    public class EliteMain
+    public sealed class EliteMain
     {
         internal const int MAX_UNIV_OBJECTS = 20;
         private readonly Audio _audio;

@@ -161,7 +161,7 @@ namespace Elite.Engine.Views
         {
             _isFind = false;
             _findName = string.Empty;
-            GalaxySeed glx = (GalaxySeed)_gameState.Cmdr.Galaxy.Clone();
+            GalaxySeed glx = new(_gameState.Cmdr.Galaxy);
             _planetPixels.Clear();
 
             for (int i = 0; i < 256; i++)

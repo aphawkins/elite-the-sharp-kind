@@ -8,7 +8,7 @@ using Elite.Common.Interfaces;
 
 namespace Elite.Assets
 {
-    public class AssetLoader : IAssets
+    public sealed class AssetLoader : IAssets
     {
         private readonly Assembly? _assets = Assembly.GetAssembly(typeof(AssetLoader));
 

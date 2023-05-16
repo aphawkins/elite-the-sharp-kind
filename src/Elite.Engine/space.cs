@@ -194,7 +194,7 @@ namespace Elite.Engine
                 return;
             }
 
-            s_destination_planet = (GalaxySeed)_gameState.HyperspacePlanet.Clone();
+            s_destination_planet = new(_gameState.HyperspacePlanet);
             s_hyper_name = _planet.NamePlanet(s_destination_planet, true);
             s_hyper_ready = true;
             s_hyper_countdown = 15;
@@ -498,7 +498,7 @@ namespace Elite.Engine
                     return;
                 }
 
-                _gameState.DockedPlanet = (GalaxySeed)s_destination_planet.Clone();
+                _gameState.DockedPlanet = new(s_destination_planet);
             }
 
             _trade._marketRandomiser = RNG.Random(255);
@@ -556,7 +556,7 @@ namespace Elite.Engine
             };
 
             _gameState.DockedPlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, new(0x60, 0x60));
-            _gameState.HyperspacePlanet = (GalaxySeed)_gameState.DockedPlanet.Clone();
+            _gameState.HyperspacePlanet = new(_gameState.DockedPlanet);
         }
 
         private void EnterWitchspace()

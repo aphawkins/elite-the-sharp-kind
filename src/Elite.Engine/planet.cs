@@ -106,7 +106,7 @@ namespace Elite.Engine
 
         internal GalaxySeed FindPlanet(GalaxySeed galaxy, Vector2 centre)
         {
-            GalaxySeed glx = (GalaxySeed)galaxy.Clone();
+            GalaxySeed glx = new(galaxy);
             float min_dist = 10000;
             GalaxySeed planet = new();
 
@@ -120,7 +120,7 @@ namespace Elite.Engine
                 if (distance < min_dist)
                 {
                     min_dist = distance;
-                    planet = (GalaxySeed)glx.Clone();
+                    planet = new(glx);
                 }
 
                 WaggleGalaxy(ref glx);
@@ -135,7 +135,7 @@ namespace Elite.Engine
         internal bool FindPlanetByName(string find_name)
         {
             bool found = false;
-            GalaxySeed glx = (GalaxySeed)_gameState.Cmdr.Galaxy.Clone();
+            GalaxySeed glx = new(_gameState.Cmdr.Galaxy);
 
             for (int i = 0; i < 256; i++)
             {
@@ -160,7 +160,7 @@ namespace Elite.Engine
 
         internal int FindPlanetNumber(GalaxySeed galaxy, GalaxySeed planet)
         {
-            GalaxySeed glx = (GalaxySeed)galaxy.Clone();
+            GalaxySeed glx = new(galaxy);
 
             for (int i = 0; i < 256; i++)
             {
@@ -185,7 +185,7 @@ namespace Elite.Engine
 
         internal string NamePlanet(GalaxySeed galaxy, bool capitalise)
         {
-            GalaxySeed glx = (GalaxySeed)galaxy.Clone();
+            GalaxySeed glx = new(galaxy);
 
             string name = string.Empty;
             int size = (glx.A & 0x40) == 0 ? 3 : 4;

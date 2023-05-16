@@ -9,39 +9,39 @@ using Elite.Engine.Enums;
 
 namespace Elite.WinForms
 {
-    public class GdiGraphics : IGraphics, IDisposable
+    internal sealed class GdiGraphics : IGraphics, IDisposable
     {
         private readonly Dictionary<Colour, Brush> _brushes = new()
-            {
-                { Colour.Black, Brushes.Black },
-                { Colour.White1, Brushes.White },
-                { Colour.White2, Brushes.WhiteSmoke },
-                { Colour.Cyan, Brushes.Cyan },
-                { Colour.Grey1, Brushes.LightGray },
-                { Colour.Grey2, Brushes.DimGray },
-                { Colour.Grey3, Brushes.Gray },
-                { Colour.Grey4, Brushes.DarkGray },
-                { Colour.Blue1, Brushes.DarkBlue },
-                { Colour.Blue2, Brushes.Blue },
-                { Colour.Blue3, Brushes.MediumBlue },
-                { Colour.Blue4, Brushes.LightBlue },
-                { Colour.Red1, Brushes.Red },
-                { Colour.Red3, Brushes.PaleVioletRed },
-                { Colour.Red4, Brushes.MediumVioletRed },
-                { Colour.Red2, Brushes.DarkRed },
-                { Colour.Yellow1, Brushes.Goldenrod },
-                { Colour.Gold, Brushes.Gold },
-                { Colour.Yellow3, Brushes.Yellow },
-                { Colour.Yellow4, Brushes.LightYellow },
-                { Colour.Yellow5, Brushes.LightGoldenrodYellow },
-                { Colour.Orange1, Brushes.DarkOrange },
-                { Colour.Orange2, Brushes.OrangeRed },
-                { Colour.Orange3, Brushes.Orange },
-                { Colour.Green1, Brushes.DarkGreen },
-                { Colour.Green2, Brushes.Green },
-                { Colour.Green3, Brushes.LightGreen },
-                { Colour.Pink1, Brushes.Pink },
-            };
+        {
+            { Colour.Black, Brushes.Black },
+            { Colour.White1, Brushes.White },
+            { Colour.White2, Brushes.WhiteSmoke },
+            { Colour.Cyan, Brushes.Cyan },
+            { Colour.Grey1, Brushes.LightGray },
+            { Colour.Grey2, Brushes.DimGray },
+            { Colour.Grey3, Brushes.Gray },
+            { Colour.Grey4, Brushes.DarkGray },
+            { Colour.Blue1, Brushes.DarkBlue },
+            { Colour.Blue2, Brushes.Blue },
+            { Colour.Blue3, Brushes.MediumBlue },
+            { Colour.Blue4, Brushes.LightBlue },
+            { Colour.Red1, Brushes.Red },
+            { Colour.Red3, Brushes.PaleVioletRed },
+            { Colour.Red4, Brushes.MediumVioletRed },
+            { Colour.Red2, Brushes.DarkRed },
+            { Colour.Yellow1, Brushes.Goldenrod },
+            { Colour.Gold, Brushes.Gold },
+            { Colour.Yellow3, Brushes.Yellow },
+            { Colour.Yellow4, Brushes.LightYellow },
+            { Colour.Yellow5, Brushes.LightGoldenrodYellow },
+            { Colour.Orange1, Brushes.DarkOrange },
+            { Colour.Orange2, Brushes.OrangeRed },
+            { Colour.Orange3, Brushes.Orange },
+            { Colour.Green1, Brushes.DarkGreen },
+            { Colour.Green2, Brushes.Green },
+            { Colour.Green3, Brushes.LightGreen },
+            { Colour.Pink1, Brushes.Pink },
+        };
 
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
 
@@ -129,7 +129,7 @@ namespace Elite.WinForms
             GC.SuppressFinalize(this);
         }
 
-        public virtual void DrawCircle(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
+        public void DrawCircle(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
         public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
@@ -145,7 +145,7 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawImage(sprite, location.X + Offset.X, location.Y + Offset.Y);
         }
 
-        public virtual void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[Colour.White1], start.X + Offset.X, start.Y + Offset.Y, end.X + Offset.X, end.Y + Offset.Y);
+        public void DrawLine(Vector2 start, Vector2 end) => _screenBufferGraphics.DrawLine(_pens[Colour.White1], start.X + Offset.X, start.Y + Offset.Y, end.X + Offset.X, end.Y + Offset.Y);
 
         public void DrawLine(Vector2 start, Vector2 end, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], start.X + Offset.X, start.Y + Offset.Y, end.X + Offset.X, end.Y + Offset.Y);
 
@@ -286,7 +286,7 @@ namespace Elite.WinForms
 
         public void SetClipRegion(float x, float y, float width, float height) => _screenBufferGraphics.Clip = new Region(new RectangleF(x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y));
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_isDisposed)
             {

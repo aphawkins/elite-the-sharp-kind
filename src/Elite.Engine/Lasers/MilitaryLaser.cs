@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Lasers
 {
-    public class MilitaryLaser : ILaser
+    internal sealed class MilitaryLaser : ILaser
     {
         public string Name => "Military";
 

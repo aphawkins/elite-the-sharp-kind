@@ -172,7 +172,7 @@ namespace Elite.Engine.Views
                 row_used[i] = 0;
             }
 
-            GalaxySeed glx = (GalaxySeed)_gameState.Cmdr.Galaxy.Clone();
+            GalaxySeed glx = new(_gameState.Cmdr.Galaxy);
 
             for (int i = 0; i < 256; i++)
             {

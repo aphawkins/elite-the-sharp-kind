@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Config
 {
-    public class ConfigSettings
+    public sealed class ConfigSettings
     {
         public bool AntiAliasWireframe { get; set; }
 

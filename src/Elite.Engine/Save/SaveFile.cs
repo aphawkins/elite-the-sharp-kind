@@ -9,7 +9,6 @@ using Elite.Engine.Enums;
 using Elite.Engine.Lasers;
 using Elite.Engine.Ships;
 using Elite.Engine.Trader;
-using Elite.Engine.Types;
 
 namespace Elite.Engine.Save
 {
@@ -74,7 +73,7 @@ namespace Elite.Engine.Save
             return false;
         }
 
-        internal async Task SaveCommanderAsync(string newName)
+        internal async Task<bool> SaveCommanderAsync(string newName)
         {
             try
             {
@@ -90,6 +89,13 @@ namespace Elite.Engine.Save
                 await JsonSerializer.SerializeAsync(stream, save, _options).ConfigureAwait(false);
 
                 _lastSaved = save;
+
+                return true;
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine("Failed to save commander.\n" + ex);
+                return false;
             }
             catch (Exception ex)
             {
@@ -149,7 +155,7 @@ namespace Elite.Engine.Save
         {
             _state.DockedPlanet = _planet.FindPlanet(_state.Cmdr.Galaxy, new(_state.DockedPlanet.D, _state.DockedPlanet.B));
             _state.PlanetName = _planet.NamePlanet(_state.DockedPlanet, false);
-            _state.HyperspacePlanet = (GalaxySeed)_state.DockedPlanet.Clone();
+            _state.HyperspacePlanet = new(_state.DockedPlanet);
             _state.CurrentPlanetData = Planet.GeneratePlanetData(_state.DockedPlanet);
             _trade.GenerateStockMarket();
             _trade.SetStockQuantities();

@@ -4,7 +4,7 @@
 
 namespace Elite.Engine.Save
 {
-    public class SaveState : ICloneable
+    public sealed class SaveState
     {
         public SaveState()
         {
@@ -12,6 +12,11 @@ namespace Elite.Engine.Save
 
         public SaveState(SaveState other)
         {
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
             CommanderName = other.CommanderName;
             Mission = other.Mission;
             ShipLocation = other.ShipLocation;
@@ -82,7 +87,5 @@ namespace Elite.Engine.Save
         public int[] ShipLocation { get; set; } = Array.Empty<int>();
 
         public int[] StationStock { get; set; } = Array.Empty<int>();
-
-        public object Clone() => new SaveState(this);
     }
 }

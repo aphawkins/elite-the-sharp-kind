@@ -4,13 +4,13 @@
 
 namespace Elite.Engine.Types
 {
-    public class GalaxySeed : ICloneable
+    internal sealed class GalaxySeed
     {
-        public GalaxySeed()
+        internal GalaxySeed()
         {
         }
 
-        protected GalaxySeed(GalaxySeed other)
+        internal GalaxySeed(GalaxySeed other)
         {
             A = other.A;
             B = other.B;
@@ -21,23 +21,21 @@ namespace Elite.Engine.Types
         }
 
         // 6c
-        public int A { get; set; }
+        internal int A { get; set; }
 
         // 6d
-        public int B { get; set; }
+        internal int B { get; set; }
 
         // 6e
-        public int C { get; set; }
+        internal int C { get; set; }
 
         // 6f
-        public int D { get; set; }
+        internal int D { get; set; }
 
         // 70
-        public int E { get; set; }
+        internal int E { get; set; }
 
         // 71
-        public int F { get; set; }
-
-        public object Clone() => new GalaxySeed(this);
+        internal int F { get; set; }
     }
 }

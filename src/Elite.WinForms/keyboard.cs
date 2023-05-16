@@ -7,7 +7,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.WinForms
 {
-    public class Keyboard : IKeyboard
+    internal sealed class Keyboard : IKeyboard
     {
         private readonly Dictionary<CommandKey, bool> _isPressed = new();
         private CommandKey _lastKeyPressed;
@@ -27,6 +27,11 @@ namespace Elite.WinForms
 
         public bool IsKeyPressed(params CommandKey[] keys)
         {
+            if (keys == null)
+            {
+                return false;
+            }
+
             foreach (CommandKey key in keys)
             {
                 if (_isPressed.TryGetValue(key, out bool value) && value)

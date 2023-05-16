@@ -9,7 +9,7 @@ using Elite.Engine;
 
 namespace Elite.WinForms
 {
-    public class Sound : ISound, IDisposable
+    internal sealed class Sound : ISound, IDisposable
     {
         private readonly IMidiOutput? _output;
         private readonly Dictionary<SoundEffect, SoundPlayer> _waves = new();
@@ -65,7 +65,7 @@ namespace Elite.WinForms
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!_disposedValue)
             {
