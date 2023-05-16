@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
+using System.Globalization;
 using Elite.Engine.Enums;
 using Elite.Engine.Missions;
 using Elite.Engine.Types;
@@ -179,7 +180,7 @@ namespace Elite.Engine.Views
                         j++;
                     }
 
-                    int num = Convert.ToInt32(temp);
+                    int num = Convert.ToInt32(temp, CultureInfo.InvariantCulture);
                     Debug.Assert(num < _descriptionList.Length);
                     int option;
 
