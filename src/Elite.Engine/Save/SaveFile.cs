@@ -68,12 +68,13 @@ namespace Elite.Engine.Save
                 //TODO: handle error message better
                 Debug.WriteLine("Failed to load commander.\n" + ex);
                 _lastSaved = CommanderFactory.Jameson();
+                throw;
             }
 
             return false;
         }
 
-        internal async Task<bool> SaveCommanderAsync(string newName)
+        internal async Task SaveCommanderAsync(string newName)
         {
             try
             {
@@ -89,13 +90,13 @@ namespace Elite.Engine.Save
                 await JsonSerializer.SerializeAsync(stream, save, _options).ConfigureAwait(false);
 
                 _lastSaved = save;
-                return true;
             }
             catch (Exception ex)
             {
                 //TODO: handle error message better
                 Debug.WriteLine("Failed to save commander.\n" + ex);
-                return false;
+                Debug.Fail(ex.Message);
+                throw;
             }
         }
 
