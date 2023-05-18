@@ -54,8 +54,8 @@ namespace Elite.Engine
             _draw.DrawBorder();
             _threed = new(_gameState, _graphics, _draw);
             _stars = new(_gameState, _graphics, _ship);
-            _pilot = new(_gameState, _audio);
-            _combat = new(_gameState, _audio, _ship, _trade);
+            _pilot = new(_audio);
+            _combat = new(_gameState, _audio, _ship, _trade, _pilot);
             _save = new(_gameState, _ship, _trade, _planet);
             _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars);
             _scanner = new(_gameState, _graphics, _draw, Space.s_universe, Space.s_ship_count, _ship, _combat);
@@ -199,7 +199,7 @@ namespace Elite.Engine
 
             _ship.LevelOut();
 
-            if (_gameState.IsAutoPilotOn)
+            if (_pilot.IsAutoPilotOn)
             {
                 _ship.AutoDock();
                 if ((_gameState.MCount & 127) == 0)
@@ -374,7 +374,7 @@ namespace Elite.Engine
                 }
                 else
                 {
-                    if (!_gameState.IsAutoPilotOn && !_gameState.InWitchspace && !_space.IsHyperspaceReady)
+                    if (!_gameState.InWitchspace && !_space.IsHyperspaceReady)
                     {
                         _pilot.EngageAutoPilot();
                     }
@@ -465,6 +465,7 @@ namespace Elite.Engine
             }
 
             _gameState.Reset();
+            _pilot.Reset();
             _ship.Reset();
             _save.GetLastSave();
 

@@ -15,13 +15,12 @@ namespace Elite.Engine
     internal sealed class Pilot
     {
         private readonly Audio _audio;
-        private readonly GameState _gameState;
 
-        internal Pilot(GameState gameState, Audio audio)
-        {
-            _gameState = gameState;
-            _audio = audio;
-        }
+        internal Pilot(Audio audio) => _audio = audio;
+
+        internal bool IsAutoPilotOn { get; private set; }
+
+        internal void Reset() => IsAutoPilotOn = false;
 
         /// <summary>
         /// Fly a ship to the planet or to the space station and dock it.
@@ -75,17 +74,20 @@ namespace Elite.Engine
 
         internal void DisengageAutoPilot()
         {
-            if (_gameState.IsAutoPilotOn)
+            if (IsAutoPilotOn)
             {
-                _gameState.IsAutoPilotOn = false;
+                IsAutoPilotOn = false;
                 _audio.StopMusic();
             }
         }
 
         internal void EngageAutoPilot()
         {
-            _gameState.IsAutoPilotOn = true;
-            _audio.PlayMusic(Music.BlueDanube, true);
+            if (!IsAutoPilotOn)
+            {
+                IsAutoPilotOn = true;
+                _audio.PlayMusic(Music.BlueDanube, true);
+            }
         }
 
         /// <summary>

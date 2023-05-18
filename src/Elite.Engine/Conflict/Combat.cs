@@ -58,17 +58,19 @@ namespace Elite.Engine.Conflict
 
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
+        private readonly Pilot _pilot;
         private bool _isEcmOurs;
         private int _laserCounter;
         private int _laserStrength;
         private LaserType _laserType;
 
-        internal Combat(GameState gameState, Audio audio, PlayerShip ship, Trade trade)
+        internal Combat(GameState gameState, Audio audio, PlayerShip ship, Trade trade, Pilot pilot)
         {
             _gameState = gameState;
             _audio = audio;
             _ship = ship;
             _trade = trade;
+            _pilot = pilot;
         }
 
         internal bool InBattle { get; set; }
@@ -1156,7 +1158,7 @@ namespace Elite.Engine.Conflict
         {
             if (Space.s_ship_count[ShipType.Transporter] != 0 ||
                 Space.s_ship_count[ShipType.Shuttle] != 0 ||
-                RNG.Random(255) < 253 || _gameState.IsAutoPilotOn)
+                RNG.Random(255) < 253 || _pilot.IsAutoPilotOn)
             {
                 return;
             }

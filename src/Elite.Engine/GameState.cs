@@ -53,8 +53,6 @@ namespace Elite.Engine
 
         internal bool InWitchspace { get; set; }
 
-        internal bool IsAutoPilotOn { get; set; }
-
         internal bool IsDocked { get; set; } = true;
 
         internal bool IsGameOver { get; private set; }
@@ -137,7 +135,6 @@ namespace Elite.Engine
             IsInitialised = true;
             IsGameOver = false;
             InWitchspace = false;
-            IsAutoPilotOn = false;
             IsDocked = true;
             Cross = new(-1, -1);
             DetonateBomb = false;
