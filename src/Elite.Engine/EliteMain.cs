@@ -70,10 +70,10 @@ namespace Elite.Engine
             _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _graphics, _draw, _planet));
             _views.Add(Screen.MarketPrices, new MarketView(_gameState, _graphics, _draw, keyboard, _trade, _planet));
             _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _graphics, _draw, _ship, _trade, _planet));
-            _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _graphics, keyboard, _stars, _pilot, _ship));
-            _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship));
-            _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship));
-            _views.Add(Screen.RightView, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship));
+            _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
+            _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
+            _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
+            _views.Add(Screen.RightView, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
             _views.Add(Screen.Docking, new DockingView(_gameState, _graphics, _audio, _space, _combat));
             _views.Add(Screen.Undocking, new LaunchView(_gameState, _graphics, _audio, _space, _combat));
             _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _graphics, _audio));
@@ -229,7 +229,7 @@ namespace Elite.Engine
                     _graphics.DrawTextCentre(358, _gameState.MessageString, 120, Colour.White);
                 }
 
-                if (Space.s_hyper_ready)
+                if (_space.IsHyperspaceReady)
                 {
                     _space.DisplayHyperStatus();
                     if ((_gameState.MCount & 3) == 0)
@@ -374,7 +374,10 @@ namespace Elite.Engine
                 }
                 else
                 {
-                    _pilot.EngageAutoPilot();
+                    if (!_gameState.IsAutoPilotOn && !_gameState.InWitchspace && !_space.IsHyperspaceReady)
+                    {
+                        _pilot.EngageAutoPilot();
+                    }
                 }
             }
 
@@ -466,7 +469,7 @@ namespace Elite.Engine
             _save.GetLastSave();
 
             _ship.Speed = 1;
-            Space.s_hyper_ready = false;
+            _space.IsHyperspaceReady = false;
             _isGamePaused = false;
 
             _stars.CreateNewStars();

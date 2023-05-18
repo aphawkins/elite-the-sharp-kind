@@ -12,9 +12,9 @@ namespace Elite.Engine.Views
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
 
-        internal PilotFrontView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship)
+        internal PilotFrontView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship, Space space)
         {
-            _pilotView = new(gameState, graphics, keyboard, pilot, ship, stars);
+            _pilotView = new(gameState, graphics, keyboard, pilot, ship, stars, space);
             _stars = stars;
             _ship = ship;
         }

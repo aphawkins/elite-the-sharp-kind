@@ -84,11 +84,6 @@ namespace Elite.Engine
 
         internal void EngageAutoPilot()
         {
-            if (_gameState.IsAutoPilotOn || _gameState.InWitchspace || Space.s_hyper_ready)
-            {
-                return;
-            }
-
             _gameState.IsAutoPilotOn = true;
             _audio.PlayMusic(Music.BlueDanube, true);
         }

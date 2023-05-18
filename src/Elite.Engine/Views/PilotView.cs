@@ -17,9 +17,10 @@ namespace Elite.Engine.Views
         private readonly Pilot _pilot;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
+        private readonly Space _space;
         private int _drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars)
+        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -28,6 +29,7 @@ namespace Elite.Engine.Views
             _pilot = pilot;
             _ship = ship;
             _stars = stars;
+            _space = space;
         }
 
         public void Draw()
@@ -37,13 +39,13 @@ namespace Elite.Engine.Views
                 _laser.DrawLaserLines();
             }
 
-            if (Space.s_hyper_galactic)
+            if (_space.HyperGalactic)
             {
                 _graphics.DrawTextCentre(358, "Galactic Hyperspace", 120, Colour.White);
             }
-            else if (Space.s_hyper_countdown > 0)
+            else if (_space.HyperCountdown > 0)
             {
-                _graphics.DrawTextCentre(358, $"Hyperspace - {Space.s_hyper_name}", 120, Colour.White);
+                _graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", 120, Colour.White);
             }
         }
 

@@ -17,14 +17,9 @@ namespace Elite.Engine
     /// </summary>
     internal sealed class Space
     {
-        internal static int s_hyper_countdown;
-        internal static bool s_hyper_galactic;
-        internal static string s_hyper_name = string.Empty;
-        internal static bool s_hyper_ready;
         internal static Dictionary<ShipType, int> s_ship_count = new();
         internal static UniverseObject[] s_universe = new UniverseObject[EliteMain.MAX_UNIV_OBJECTS];
-        private static GalaxySeed s_destination_planet = new();
-        private static float s_hyper_distance;
+
         private readonly Audio _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
@@ -35,6 +30,8 @@ namespace Elite.Engine
         private readonly Stars _stars;
         private readonly Threed _threed;
         private readonly Trade _trade;
+        private float _hyperDistance;
+        private GalaxySeed _destinationPlanet = new();
 
         internal Space(
             GameState gameState,
@@ -60,18 +57,26 @@ namespace Elite.Engine
             _stars = stars;
         }
 
+        internal string HyperName { get; private set; } = string.Empty;
+
+        internal int HyperCountdown { get; private set; }
+
+        internal bool IsHyperspaceReady { get; set; }
+
+        internal bool HyperGalactic { get; private set; }
+
         internal void CountdownHyperspace()
         {
-            if (s_hyper_countdown == 0)
+            if (HyperCountdown == 0)
             {
                 CompleteHyperspace();
                 return;
             }
 
-            s_hyper_countdown--;
+            HyperCountdown--;
         }
 
-        internal void DisplayHyperStatus() => _graphics.DrawTextRight(22, 5, $"{s_hyper_countdown}", Colour.White);
+        internal void DisplayHyperStatus() => _graphics.DrawTextRight(22, 5, $"{HyperCountdown}", Colour.White);
 
         /// <summary>
         /// Dock the player into the space station.
@@ -164,7 +169,7 @@ namespace Elite.Engine
 
         internal void StartGalacticHyperspace()
         {
-            if (s_hyper_ready)
+            if (IsHyperspaceReady)
             {
                 return;
             }
@@ -174,31 +179,31 @@ namespace Elite.Engine
                 return;
             }
 
-            s_hyper_ready = true;
-            s_hyper_countdown = 2;
-            s_hyper_galactic = true;
+            IsHyperspaceReady = true;
+            HyperCountdown = 2;
+            HyperGalactic = true;
             _pilot.DisengageAutoPilot();
         }
 
         internal void StartHyperspace()
         {
-            if (s_hyper_ready)
+            if (IsHyperspaceReady)
             {
                 return;
             }
 
-            s_hyper_distance = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
+            _hyperDistance = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
 
-            if ((s_hyper_distance == 0) || (s_hyper_distance > _ship.Fuel))
+            if ((_hyperDistance == 0) || (_hyperDistance > _ship.Fuel))
             {
                 return;
             }
 
-            s_destination_planet = new(_gameState.HyperspacePlanet);
-            s_hyper_name = _planet.NamePlanet(s_destination_planet).CapitaliseFirstLetter();
-            s_hyper_ready = true;
-            s_hyper_countdown = 15;
-            s_hyper_galactic = false;
+            _destinationPlanet = new(_gameState.HyperspacePlanet);
+            HyperName = _planet.NamePlanet(_destinationPlanet).CapitaliseFirstLetter();
+            IsHyperspaceReady = true;
+            HyperCountdown = 15;
+            HyperGalactic = false;
 
             _pilot.DisengageAutoPilot();
         }
@@ -477,19 +482,19 @@ namespace Elite.Engine
 
         private void CompleteHyperspace()
         {
-            s_hyper_ready = false;
+            IsHyperspaceReady = false;
             _gameState.InWitchspace = false;
 
-            if (s_hyper_galactic)
+            if (HyperGalactic)
             {
                 _ship.HasGalacticHyperdrive = false;
-                s_hyper_galactic = false;
+                HyperGalactic = false;
                 EnterNextGalaxy();
                 _gameState.Cmdr.LegalStatus = 0;
             }
             else
             {
-                _ship.Fuel -= s_hyper_distance;
+                _ship.Fuel -= _hyperDistance;
                 _gameState.Cmdr.LegalStatus /= 2;
 
                 if ((RNG.Random(255) > 253) || (_ship.Climb >= _ship.MaxClimb))
@@ -498,7 +503,7 @@ namespace Elite.Engine
                     return;
                 }
 
-                _gameState.DockedPlanet = new(s_destination_planet);
+                _gameState.DockedPlanet = new(_destinationPlanet);
             }
 
             _trade._marketRandomiser = RNG.Random(255);
