@@ -10,6 +10,16 @@ namespace Elite.Engine
 {
     public interface IGraphics
     {
+        Vector2 Centre { get; }
+
+        Vector2 Offset { get; }
+
+        float Scale { get; }
+
+        Vector2 ViewB { get; }
+
+        Vector2 ViewT { get; }
+
         void ClearArea(float x, float y, float width, float height);
 
         void DrawCircle(Vector2 centre, float radius, Colour colour);
@@ -56,15 +66,5 @@ namespace Elite.Engine
         void ScreenUpdate();
 
         void SetClipRegion(float x, float y, float width, float height);
-
-        float Scale { get; }
-
-        Vector2 Offset { get; }
-
-        Vector2 Centre { get; }
-
-        Vector2 ViewT { get; }
-
-        Vector2 ViewB { get; }
     }
 }
