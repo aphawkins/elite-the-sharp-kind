@@ -20,8 +20,6 @@ namespace Elite.Engine
 
         internal bool IsAutoPilotOn { get; private set; }
 
-        internal void Reset() => IsAutoPilotOn = false;
-
         /// <summary>
         /// Fly a ship to the planet or to the space station and dock it.
         /// </summary>
@@ -89,6 +87,8 @@ namespace Elite.Engine
                 _audio.PlayMusic(Music.BlueDanube, true);
             }
         }
+
+        internal void Reset() => IsAutoPilotOn = false;
 
         /// <summary>
         /// Final stage of docking. Fly into the docking bay.
