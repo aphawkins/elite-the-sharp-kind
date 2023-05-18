@@ -148,7 +148,7 @@ namespace Elite.Engine
 
             for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
             {
-                Colour colour = _gameState.Config.UseWireframe ? Colour.White1 : _polyChain[i].FaceColour;
+                Colour colour = _gameState.Config.UseWireframe ? Colour.White : _polyChain[i].FaceColour;
 
                 if (_polyChain[i].PointList.Length == 2)
                 {
@@ -285,7 +285,7 @@ namespace Elite.Engine
                             //TODO: Bug - the X or Y could be negative
                             //Debug.Assert(position.X >= 0);
                             //Debug.Assert(position.Y >= 0);
-                            _graphics.DrawPixel(new(position.X + psx, position.Y + psy), Colour.White1);
+                            _graphics.DrawPixel(new(position.X + psx, position.Y + psy), Colour.White);
                         }
                     }
                 }
@@ -334,7 +334,7 @@ namespace Elite.Engine
                     break;
 
                 case PlanetRenderStyle.Green:
-                    _graphics.DrawCircleFilled(position, radius, Colour.Green1);
+                    _graphics.DrawCircleFilled(position, radius, Colour.Green);
                     break;
 
                 case PlanetRenderStyle.SNES:
@@ -482,7 +482,7 @@ namespace Elite.Engine
             if (univ.Flags.HasFlag(ShipFlags.Firing))
             {
                 lasv = _gameState.ShipList[univ.Type].LaserFront;
-                col = (univ.Type == ShipType.Viper) ? Colour.Cyan : Colour.White1;
+                col = (univ.Type == ShipType.Viper) ? Colour.Cyan : Colour.White;
 
                 Vector2[] pointList = new Vector2[]
                 {
@@ -502,7 +502,7 @@ namespace Elite.Engine
         private void DrawWireframePlanet(Vector2 centre, float radius) =>
 
             // TODO: At the moment we just draw a circle. Need to add in the two arcs that the original Elite had.
-            _graphics.DrawCircle(centre, radius, Colour.White1);
+            _graphics.DrawCircle(centre, radius, Colour.White);
 
         /// <summary>
         /// Generate a fractal landscape. Uses midpoint displacement method.
@@ -538,8 +538,8 @@ namespace Elite.Engine
                     bool dark = dist > 10000;
                     int h = _landscape[x, y];
                     _landscape[x, y] = h > 166
-                        ? (int)(dark ? Colour.Green1 : Colour.Green2)
-                        : (int)(dark ? Colour.Blue2 : Colour.Blue1);
+                        ? (int)(dark ? Colour.Green : Colour.LightGreen)
+                        : (int)(dark ? Colour.Blue : Colour.LightBlue);
                 }
             }
         }

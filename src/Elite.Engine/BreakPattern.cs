@@ -21,7 +21,7 @@ namespace Elite.Engine
             // Just draw a very simple one for the moment.
             for (int i = 0; i < _breakPatternCount; i++)
             {
-                _graphics.DrawCircle(new(256, 192), 30 + (i * 15), Colour.White1);
+                _graphics.DrawCircle(new(256, 192), 30 + (i * 15), Colour.White);
             }
         }
 

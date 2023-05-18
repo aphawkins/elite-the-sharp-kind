@@ -54,7 +54,7 @@ namespace Elite.Engine.Views
             _graphics.DrawImage(Image.EliteText, new(-1, 10));
 
             _graphics.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, Colour.Gold);
-            _graphics.DrawTextCentre(330, _gameState.ShipList[_shipNo].Name, 120, Colour.White1);
+            _graphics.DrawTextCentre(330, _gameState.ShipList[_shipNo].Name, 120, Colour.White);
         }
 
         public void HandleInput()

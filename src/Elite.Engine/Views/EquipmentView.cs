@@ -87,10 +87,10 @@ namespace Elite.Engine.Views
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(2, y + 1, 508, 15, Colour.Red2);
+                    _graphics.DrawRectangleFilled(2, y + 1, 508, 15, Colour.LightRed);
                 }
 
-                Colour col = _equipmentStock[i].CanBuy ? Colour.White1 : Colour.Grey1;
+                Colour col = _equipmentStock[i].CanBuy ? Colour.White : Colour.LightGrey;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
                 _graphics.DrawTextLeft(x, y, _equipmentStock[i].Name[1..], col);
 
@@ -102,7 +102,7 @@ namespace Elite.Engine.Views
                 y += 15;
             }
 
-            _graphics.DrawTextLeft(16, 340, $"Cash: {_trade._credits:N1} Credits", Colour.White1);
+            _graphics.DrawTextLeft(16, 340, $"Cash: {_trade._credits:N1} Credits", Colour.White);
         }
 
         public void HandleInput()

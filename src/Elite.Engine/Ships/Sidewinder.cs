@@ -26,16 +26,16 @@ namespace Elite.Engine.Ships
 
         public ShipFace[] Faces { get; } =
         {
-            new(Colour.Yellow1, new(0x00, 0x20, 0x08), new[] { 4, 0, 1 }),
+            new(Colour.DarkYellow, new(0x00, 0x20, 0x08), new[] { 4, 0, 1 }),
             new(Colour.Gold, new(-0x0C, 0x2F, 0x06), new[] { 4, 3, 0 }),
             new(Colour.Gold, new(0x0C, 0x2F, 0x06), new[] { 2, 4, 1 }),
 
-            new(Colour.Grey1, new(0x00, 0x00, -0x70), new[] { 2, 5, 3, 4 }),
+            new(Colour.LightGrey, new(0x00, 0x00, -0x70), new[] { 2, 5, 3, 4 }),
 
-            new(Colour.Yellow1, new(-0x0C, -0x2F, 0x06), new[] { 5, 0, 3 }),
+            new(Colour.DarkYellow, new(-0x0C, -0x2F, 0x06), new[] { 5, 0, 3 }),
             new(Colour.Gold, new(0x00, -0x20, 0x08), new[] { 1, 0, 5 }),
-            new(Colour.Yellow1, new(0x0C, -0x2F, 0x06), new[] { 2, 1, 5 }),
-            new(Colour.Red1, new(0x00, 0x00, -0x70), new[] { 8, 9, 6, 7 }),
+            new(Colour.DarkYellow, new(0x0C, -0x2F, 0x06), new[] { 2, 1, 5 }),
+            new(Colour.LighterRed, new(0x00, 0x00, -0x70), new[] { 8, 9, 6, 7 }),
         };
 
         public int LaserFront => 0;

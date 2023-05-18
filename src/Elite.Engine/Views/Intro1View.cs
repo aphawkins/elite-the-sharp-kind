@@ -35,9 +35,9 @@ namespace Elite.Engine.Views
         {
             _graphics.DrawImage(Image.EliteText, new(-1, 10));
 
-            _graphics.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, Colour.White1);
-            _graphics.DrawTextCentre(330, "The New Kind - Christian Pinder.", 120, Colour.White1);
-            _graphics.DrawTextCentre(350, "The Sharp Kind - Andy Hawkins.", 120, Colour.White1);
+            _graphics.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", 120, Colour.White);
+            _graphics.DrawTextCentre(330, "The New Kind - Christian Pinder.", 120, Colour.White);
+            _graphics.DrawTextCentre(350, "The Sharp Kind - Andy Hawkins.", 120, Colour.White);
             _graphics.DrawTextCentre(370, "Load New Commander (Y/N)?", 140, Colour.Gold);
         }
 

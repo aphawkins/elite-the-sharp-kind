@@ -3,6 +3,7 @@
 ## To get to MVP
 - When docking the intro music plays
 - Fix TODOs in code
+- Ship in Intro1 doesn't rotate correctly (not all sides are shown)
 - Colours on SNES planet style not working
 - Explosion of other ship can cause an exception
 - Change statics to objects
@@ -10,8 +11,6 @@
 - Clipping incorrect on bottom line (after explosion?)
 - Fix all warnings/infos
 - Warnings as errors
-- Add code/stlye analysers
-- Reformat code
 - Fix code directory structure
 - Bring assets and common into a single lib & remove most publics
 - Check mission triggers (FAQ)

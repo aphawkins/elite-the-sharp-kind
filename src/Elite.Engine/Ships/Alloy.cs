@@ -20,8 +20,8 @@ namespace Elite.Engine.Ships
 
         public ShipFace[] Faces { get; } =
         {
-            new(Colour.Grey1, new(0x00, 0x00, 0x00), new[] { 0, 1, 2, 3 }),
-            new(Colour.Grey3, new(0x00, 0x00, 0x00), new[] { 3, 2, 1, 0, 0, 0, 0, 0 }),
+            new(Colour.LightGrey, new(0x00, 0x00, 0x00), new[] { 0, 1, 2, 3 }),
+            new(Colour.DarkerGrey, new(0x00, 0x00, 0x00), new[] { 3, 2, 1, 0, 0, 0, 0, 0 }),
         };
 
         public int LaserFront => 0;

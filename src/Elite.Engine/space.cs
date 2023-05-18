@@ -71,7 +71,7 @@ namespace Elite.Engine
             s_hyper_countdown--;
         }
 
-        internal void DisplayHyperStatus() => _graphics.DrawTextRight(22, 5, $"{s_hyper_countdown}", Colour.White1);
+        internal void DisplayHyperStatus() => _graphics.DrawTextRight(22, 5, $"{s_hyper_countdown}", Colour.White);
 
         /// <summary>
         /// Dock the player into the space station.

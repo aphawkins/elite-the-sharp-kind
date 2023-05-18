@@ -39,11 +39,11 @@ namespace Elite.Engine.Views
 
             if (Space.s_hyper_galactic)
             {
-                _graphics.DrawTextCentre(358, "Galactic Hyperspace", 120, Colour.White1);
+                _graphics.DrawTextCentre(358, "Galactic Hyperspace", 120, Colour.White);
             }
             else if (Space.s_hyper_countdown > 0)
             {
-                _graphics.DrawTextCentre(358, $"Hyperspace - {Space.s_hyper_name}", 120, Colour.White1);
+                _graphics.DrawTextCentre(358, $"Hyperspace - {Space.s_hyper_name}", 120, Colour.White);
             }
         }
 
@@ -120,6 +120,6 @@ namespace Elite.Engine.Views
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
-        internal void DrawViewName(string name) => _graphics.DrawTextCentre(32, name, 120, Colour.White1);
+        internal void DrawViewName(string name) => _graphics.DrawTextCentre(32, name, 120, Colour.White);
     }
 }

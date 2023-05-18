@@ -93,7 +93,7 @@ namespace Elite.Engine.Views
                 }
 
                 i++;
-                _graphics.DrawTextLeft(x + _graphics.Offset.X, y + _graphics.Offset.Y, text[previous..i], Colour.White1);
+                _graphics.DrawTextLeft(x + _graphics.Offset.X, y + _graphics.Offset.Y, text[previous..i], Colour.White);
                 previous = i;
                 y += 8 * _graphics.Scale;
             }
@@ -171,12 +171,12 @@ namespace Elite.Engine.Views
                 float distance = (dx * dx) + dy;
 
                 Colour colour = distance < inner
-                    ? Colour.White1
+                    ? Colour.White
                     : distance < inner2
-                        ? Colour.Yellow4
+                        ? Colour.LightYellow
                         : distance < outer
-                            ? Colour.Orange3
-                            : ((int)s.X ^ (int)y).IsOdd() ? Colour.Orange1 : Colour.Orange2;
+                            ? Colour.LightOrange
+                            : ((int)s.X ^ (int)y).IsOdd() ? Colour.Orange : Colour.DarkOrange;
 
                 _graphics.DrawPixelFast(s, colour);
             }

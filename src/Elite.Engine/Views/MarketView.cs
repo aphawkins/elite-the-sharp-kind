@@ -32,11 +32,11 @@ namespace Elite.Engine.Views
             _draw.ClearDisplay();
             _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.DockedPlanet)} MARKET PRICES");
 
-            _graphics.DrawTextLeft(16, 40, "PRODUCT", Colour.Green1);
-            _graphics.DrawTextLeft(166, 40, "UNIT", Colour.Green1);
-            _graphics.DrawTextLeft(246, 40, "PRICE", Colour.Green1);
-            _graphics.DrawTextLeft(314, 40, "FOR SALE", Colour.Green1);
-            _graphics.DrawTextLeft(420, 40, "IN HOLD", Colour.Green1);
+            _graphics.DrawTextLeft(16, 40, "PRODUCT", Colour.Green);
+            _graphics.DrawTextLeft(166, 40, "UNIT", Colour.Green);
+            _graphics.DrawTextLeft(246, 40, "PRICE", Colour.Green);
+            _graphics.DrawTextLeft(314, 40, "FOR SALE", Colour.Green);
+            _graphics.DrawTextLeft(420, 40, "IN HOLD", Colour.Green);
 
             int i = 0;
             foreach (KeyValuePair<StockType, StockItem> stock in _trade._stockMarket)
@@ -45,26 +45,26 @@ namespace Elite.Engine.Views
 
                 if (stock.Key == _highlightedStock)
                 {
-                    _graphics.DrawRectangleFilled(2, y, 508, 15, Colour.Red2);
+                    _graphics.DrawRectangleFilled(2, y, 508, 15, Colour.LightRed);
                 }
 
-                _graphics.DrawTextLeft(16, y, stock.Value.Name, Colour.White1);
+                _graphics.DrawTextLeft(16, y, stock.Value.Name, Colour.White);
 
-                _graphics.DrawTextLeft(180, y, stock.Value.Units, Colour.White1);
+                _graphics.DrawTextLeft(180, y, stock.Value.Units, Colour.White);
 
-                _graphics.DrawTextRight(285, y, $"{stock.Value.CurrentPrice:N1}", Colour.White1);
+                _graphics.DrawTextRight(285, y, $"{stock.Value.CurrentPrice:N1}", Colour.White);
 
-                _graphics.DrawTextRight(365, y, stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", Colour.White1);
-                _graphics.DrawTextLeft(365, y, stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, Colour.White1);
+                _graphics.DrawTextRight(365, y, stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", Colour.White);
+                _graphics.DrawTextLeft(365, y, stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, Colour.White);
 
-                _graphics.DrawTextRight(455, y, stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", Colour.White1);
-                _graphics.DrawTextLeft(455, y, stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, Colour.White1);
+                _graphics.DrawTextRight(455, y, stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", Colour.White);
+                _graphics.DrawTextLeft(455, y, stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, Colour.White);
 
                 i++;
             }
 
-            _graphics.DrawTextLeft(16, 340, "Cash:", Colour.Green1);
-            _graphics.DrawTextRight(160, 340, $"{_trade._credits,10:N1} Credits", Colour.White1);
+            _graphics.DrawTextLeft(16, 340, "Cash:", Colour.Green);
+            _graphics.DrawTextRight(160, 340, $"{_trade._credits,10:N1} Credits", Colour.White);
         }
 
         public void HandleInput()

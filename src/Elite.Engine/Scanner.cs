@@ -101,10 +101,10 @@ namespace Elite.Engine
 
             for (i = 2; i < 7; i++)
             {
-                _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Yellow1);
+                _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.DarkYellow);
             }
 
-            _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Red2);
+            _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.LightRed);
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Elite.Engine
 
             float len = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
 
-            Colour colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? Colour.Red2 : Colour.Gold;
+            Colour colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? Colour.LightRed : Colour.Gold;
 
             for (int i = 0; i < 6; i++)
             {
@@ -299,21 +299,21 @@ namespace Elite.Engine
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                Colour colour = _universe[i].Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow5 : Colour.White1;
+                Colour colour = _universe[i].Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow : Colour.White;
 
                 switch (_universe[i].Type)
                 {
                     case ShipType.Missile:
-                        colour = Colour.Pink1;
+                        colour = Colour.Lilac;
                         break;
 
                     case ShipType.Dodec:
                     case ShipType.Coriolis:
-                        colour = Colour.Green1;
+                        colour = Colour.Green;
                         break;
 
                     case ShipType.Viper:
-                        colour = Colour.Blue4;
+                        colour = Colour.Purple;
                         break;
 
                     case ShipType.Sun:

@@ -28,19 +28,19 @@ namespace Elite.Engine.Views
             _draw.ClearDisplay();
             _draw.DrawViewHeader("INVENTORY");
 
-            _graphics.DrawTextLeft(16, 50, "Fuel:", Colour.Green1);
-            _graphics.DrawTextLeft(70, 50, $"{_ship.Fuel:N1} Light Years", Colour.White1);
+            _graphics.DrawTextLeft(16, 50, "Fuel:", Colour.Green);
+            _graphics.DrawTextLeft(70, 50, $"{_ship.Fuel:N1} Light Years", Colour.White);
 
-            _graphics.DrawTextLeft(16, 66, "Cash:", Colour.Green1);
-            _graphics.DrawTextLeft(70, 66, $"{_trade._credits:N1} Credits", Colour.White1);
+            _graphics.DrawTextLeft(16, 66, "Cash:", Colour.Green);
+            _graphics.DrawTextLeft(70, 66, $"{_trade._credits:N1} Credits", Colour.White);
 
             int y = 98;
             foreach (KeyValuePair<StockType, StockItem> stock in _trade._stockMarket)
             {
                 if (stock.Value.CurrentCargo > 0)
                 {
-                    _graphics.DrawTextLeft(16, y, stock.Value.Name, Colour.White1);
-                    _graphics.DrawTextLeft(180, y, $"{stock.Value.CurrentCargo}{stock.Value.Units}", Colour.White1);
+                    _graphics.DrawTextLeft(16, y, stock.Value.Name, Colour.White);
+                    _graphics.DrawTextLeft(180, y, $"{stock.Value.CurrentCargo}{stock.Value.Units}", Colour.White);
                     y += 16;
                 }
             }

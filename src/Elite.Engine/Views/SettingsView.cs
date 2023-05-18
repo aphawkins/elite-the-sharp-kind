@@ -51,10 +51,10 @@ namespace Elite.Engine.Views
                     if (i == _highlightedItem)
                     {
                         x = _graphics.Centre.X - 200;
-                        _graphics.DrawRectangleFilled(x, y - 7, 400, 15, Colour.Red2);
+                        _graphics.DrawRectangleFilled(x, y - 7, 400, 15, Colour.LightRed);
                     }
 
-                    _graphics.DrawTextCentre(y, _settingList[i].Name, 120, Colour.White1);
+                    _graphics.DrawTextCentre(y, _settingList[i].Name, 120, Colour.White);
                     return;
                 }
 
@@ -72,11 +72,11 @@ namespace Elite.Engine.Views
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(x, y, 100, 15, Colour.Red2);
+                    _graphics.DrawRectangleFilled(x, y, 100, 15, Colour.LightRed);
                 }
 
-                _graphics.DrawTextLeft(x, y, _settingList[i].Name, Colour.White1);
-                _graphics.DrawTextLeft(x + 120, y, _settingList[i].Values[v], Colour.White1);
+                _graphics.DrawTextLeft(x, y, _settingList[i].Name, Colour.White);
+                _graphics.DrawTextLeft(x + 120, y, _settingList[i].Values[v], Colour.White);
             }
         }
 

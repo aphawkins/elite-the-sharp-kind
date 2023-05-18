@@ -31,18 +31,18 @@ namespace Elite.Engine.Ships
 
         public ShipFace[] Faces { get; } =
         {
-            new ShipFace(Colour.Grey4, new(0x00,  0x00,  0xC4), new[] { 3,  2,  1,  0,  4 }),
-            new ShipFace(Colour.Grey1, new(0x67,  0x8E,  0x58), new[] { 6, 10,  5,  0,  1 }),
-            new ShipFace(Colour.Grey2, new(0xA9, -0x37,  0x59), new[] { 7, 11,  6,  1,  2 }),
-            new ShipFace(Colour.Grey3, new(0x00, -0xB0,  0x58), new[] { 8, 12,  7,  2,  3 }),
-            new ShipFace(Colour.Grey1, new(-0xA9, -0x37,  0x59), new[] { 9, 13,  8,  3,  4 }),
-            new ShipFace(Colour.Grey3, new(-0x67,  0x8E,  0x58), new[] { 5, 14,  9,  4,  0 }),
-            new ShipFace(Colour.Grey1, new(0x00,  0xB0, -0x58), new[] { 15, 19, 14,  5, 10 }),
-            new ShipFace(Colour.Grey2, new(0xA9,  0x37, -0x59), new[] { 16, 15, 10,  6, 11 }),
-            new ShipFace(Colour.Grey1, new(0x67, -0x8E, -0x58), new[] { 17, 16, 11,  7, 12 }),
-            new ShipFace(Colour.Grey3, new(-0x67, -0x8E, -0x58), new[] { 18, 17, 12,  8, 13 }),
-            new ShipFace(Colour.Grey2, new(-0xA9,  0x37, -0x59), new[] { 19, 18, 13,  9, 14 }),
-            new ShipFace(Colour.Grey4, new(0x00,  0x00, -0xC4), new[] { 19, 15, 16, 17, 18 }),
+            new ShipFace(Colour.Grey, new(0x00,  0x00,  0xC4), new[] { 3,  2,  1,  0,  4 }),
+            new ShipFace(Colour.LightGrey, new(0x67,  0x8E,  0x58), new[] { 6, 10,  5,  0,  1 }),
+            new ShipFace(Colour.DarkGrey, new(0xA9, -0x37,  0x59), new[] { 7, 11,  6,  1,  2 }),
+            new ShipFace(Colour.DarkerGrey, new(0x00, -0xB0,  0x58), new[] { 8, 12,  7,  2,  3 }),
+            new ShipFace(Colour.LightGrey, new(-0xA9, -0x37,  0x59), new[] { 9, 13,  8,  3,  4 }),
+            new ShipFace(Colour.DarkerGrey, new(-0x67,  0x8E,  0x58), new[] { 5, 14,  9,  4,  0 }),
+            new ShipFace(Colour.LightGrey, new(0x00,  0xB0, -0x58), new[] { 15, 19, 14,  5, 10 }),
+            new ShipFace(Colour.DarkGrey, new(0xA9,  0x37, -0x59), new[] { 16, 15, 10,  6, 11 }),
+            new ShipFace(Colour.LightGrey, new(0x67, -0x8E, -0x58), new[] { 17, 16, 11,  7, 12 }),
+            new ShipFace(Colour.DarkerGrey, new(-0x67, -0x8E, -0x58), new[] { 18, 17, 12,  8, 13 }),
+            new ShipFace(Colour.DarkGrey, new(-0xA9,  0x37, -0x59), new[] { 19, 18, 13,  9, 14 }),
+            new ShipFace(Colour.Grey, new(0x00,  0x00, -0xC4), new[] { 19, 15, 16, 17, 18 }),
             new ShipFace(Colour.Black, new(0x00,  0x00,  0xC4), new[] { 22, 20, 21, 23 }),
         };
 

@@ -11,38 +11,6 @@ namespace Elite.WinForms
 {
     internal sealed class GdiGraphics : IGraphics, IDisposable
     {
-        private readonly Dictionary<Colour, Brush> _brushes = new()
-        {
-            { Colour.Black, Brushes.Black },
-            { Colour.White1, Brushes.White },
-            { Colour.White2, Brushes.WhiteSmoke },
-            { Colour.Cyan, Brushes.Cyan },
-            { Colour.Grey1, Brushes.LightGray },
-            { Colour.Grey2, Brushes.DimGray },
-            { Colour.Grey3, Brushes.Gray },
-            { Colour.Grey4, Brushes.DarkGray },
-            { Colour.Blue1, Brushes.DarkBlue },
-            { Colour.Blue2, Brushes.Blue },
-            { Colour.Blue3, Brushes.MediumBlue },
-            { Colour.Blue4, Brushes.LightBlue },
-            { Colour.Red1, Brushes.Red },
-            { Colour.Red3, Brushes.PaleVioletRed },
-            { Colour.Red4, Brushes.MediumVioletRed },
-            { Colour.Red2, Brushes.DarkRed },
-            { Colour.Yellow1, Brushes.Goldenrod },
-            { Colour.Gold, Brushes.Gold },
-            { Colour.Yellow3, Brushes.Yellow },
-            { Colour.Yellow4, Brushes.LightYellow },
-            { Colour.Yellow5, Brushes.LightGoldenrodYellow },
-            { Colour.Orange1, Brushes.DarkOrange },
-            { Colour.Orange2, Brushes.OrangeRed },
-            { Colour.Orange3, Brushes.Orange },
-            { Colour.Green1, Brushes.DarkGreen },
-            { Colour.Green2, Brushes.Green },
-            { Colour.Green3, Brushes.LightGreen },
-            { Colour.Pink1, Brushes.Pink },
-        };
-
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
 
         // Fonts
@@ -51,37 +19,7 @@ namespace Elite.WinForms
         // Images
         private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
 
-        private readonly Dictionary<Colour, Pen> _pens = new()
-            {
-                { Colour.Black, Pens.Black },
-                { Colour.White1, Pens.White },
-                { Colour.White2, Pens.WhiteSmoke },
-                { Colour.Cyan, Pens.Cyan },
-                { Colour.Grey1, Pens.LightGray },
-                { Colour.Grey2, Pens.DimGray },
-                { Colour.Grey3, Pens.Gray },
-                { Colour.Grey4, Pens.DarkGray },
-                { Colour.Blue1, Pens.DarkBlue },
-                { Colour.Blue2, Pens.Blue },
-                { Colour.Blue3, Pens.MediumBlue },
-                { Colour.Blue4, Pens.LightBlue },
-                { Colour.Red1, Pens.Red },
-                { Colour.Red3, Pens.PaleVioletRed },
-                { Colour.Red4, Pens.MediumVioletRed },
-                { Colour.Red2, Pens.DarkRed },
-                { Colour.Yellow1, Pens.Goldenrod },
-                { Colour.Gold, Pens.Gold },
-                { Colour.Yellow3, Pens.Yellow },
-                { Colour.Yellow4, Pens.LightYellow },
-                { Colour.Yellow5, Pens.LightGoldenrodYellow },
-                { Colour.Orange1, Pens.DarkOrange },
-                { Colour.Orange2, Pens.OrangeRed },
-                { Colour.Orange3, Pens.Orange },
-                { Colour.Green1, Pens.DarkGreen },
-                { Colour.Green2, Pens.Green },
-                { Colour.Green3, Pens.LightGreen },
-                { Colour.Pink1, Pens.Pink },
-            };
+        private readonly Dictionary<Colour, Pen> _pens = new();
 
         // Actual screen
         private readonly Bitmap _screen;
@@ -102,14 +40,18 @@ namespace Elite.WinForms
         {
             Debug.Assert(screen.Width == 512);
             Debug.Assert(screen.Height == 512);
-            Debug.Assert(_pens.Count == Enum.GetNames(typeof(Colour)).Length);
-            Debug.Assert(_brushes.Count == Enum.GetNames(typeof(Colour)).Length);
 
             _screen = screen;
             _screenGraphics = Graphics.FromImage(_screen);
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
             _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
+
+            foreach (Colour colour in Enum.GetValues<Colour>())
+            {
+                Pen pen = new(Color.FromArgb((int)colour | unchecked((int)0xFF000000)));
+                _pens.Add(colour, pen);
+            }
         }
 
         public Vector2 Centre { get; private set; } = new(256, 192);
@@ -133,7 +75,7 @@ namespace Elite.WinForms
 
         public void DrawCircle(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_brushes[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
+        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
         public void DrawImage(Common.Enums.Image spriteImgage, Vector2 location)
         {
@@ -147,7 +89,7 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawImage(sprite, location.X + Offset.X, location.Y + Offset.Y);
         }
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => _screenBufferGraphics.DrawLine(_pens[Colour.White1], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => _screenBufferGraphics.DrawLine(_pens[Colour.White], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
 
@@ -193,12 +135,12 @@ namespace Elite.WinForms
                 points[i] = new PointF(pointList[i].X + Offset.X, pointList[i].Y + Offset.Y);
             }
 
-            _screenBufferGraphics.FillPolygon(_brushes[faceColour], points);
+            _screenBufferGraphics.FillPolygon(_pens[faceColour].Brush, points);
         }
 
         public void DrawRectangle(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.DrawRectangle(_pens[colour], x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
 
-        public void DrawRectangleFilled(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.FillRectangle(_brushes[colour], x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+        public void DrawRectangleFilled(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.FillRectangle(_pens[colour].Brush, x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
 
         public void DrawTextCentre(float y, string text, int psize, Colour colour)
         {
@@ -212,7 +154,7 @@ namespace Elite.WinForms
             _screenBufferGraphics.DrawString(
                 text,
                 psize == 140 ? _fontLarge : _fontSmall,
-                _brushes[colour],
+                _pens[colour].Brush,
                 point,
                 stringFormat);
         }
@@ -220,7 +162,7 @@ namespace Elite.WinForms
         public void DrawTextLeft(float x, float y, string text, Colour colour)
         {
             PointF point = new((x / (2 / Scale)) + Offset.X, (y / (2 / Scale)) + Offset.Y);
-            _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point);
+            _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point);
         }
 
         public void DrawTextRight(float x, float y, string text, Colour colour)
@@ -231,7 +173,7 @@ namespace Elite.WinForms
             };
 
             PointF point = new((x / (2 / Scale)) + Offset.X, (y / (2 / Scale)) + Offset.Y);
-            _screenBufferGraphics.DrawString(text, _fontSmall, _brushes[colour], point, stringFormat);
+            _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point, stringFormat);
         }
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Colour colour)
@@ -255,7 +197,7 @@ namespace Elite.WinForms
                 new(c.X += Offset.X, c.Y += Offset.Y),
             };
 
-            _screenBufferGraphics.FillPolygon(_brushes[colour], points);
+            _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
         public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream) => _images[imgType] = (Bitmap)Image.FromStream(bitmapStream);

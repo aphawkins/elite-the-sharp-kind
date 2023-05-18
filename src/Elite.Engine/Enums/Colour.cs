@@ -6,45 +6,40 @@ namespace Elite.Engine.Enums
 {
     public enum Colour
     {
-        Black = 0,
+        White = 0xFFFFFF,
+        LighterGrey = 0xE0E0E0,
+        LightGrey = 0x808080,
+        Grey = 0x727272,
+        DarkGrey = 0x707070,
+        DarkerGrey = 0x606060,
+        Black = 0x000000,
 
-        Cyan = 11,
+        LighterRed = 0xC00000,
+        LightRed = 0x901010,
+        Red = 0x800000,
+        RedOrange = 0xF03030,
 
-        Grey1 = 248,
-        Grey2 = 235,
-        Grey3 = 234,
-        Grey4 = 237,
+        Lilac = 0xE0A0E0,
 
-        Blue1 = 45,
-        Blue2 = 46,
-        Blue3 = 133,
-        Blue4 = 4,
+        LightOrange = 0xF0B070,
+        Orange = 0xF07030,
+        DarkOrange = 0xE06020,
 
-        Red1 = 49,
-        Red2 = 28,
-        Red3 = 1,
-        Red4 = 71,
+        LightYellow = 0xF0F0B0,
+        Yellow = 0xFFFF00,
+        DarkYellow = 0xD09010,
+        Gold = 0xF0B030,
 
-        White1 = 255,
-        White2 = 242,
+        LighterGreen = 0x60E020,
+        LightGreen = 0x80C000,
+        Green = 0x008000,
 
-        Yellow1 = 37,
-        Gold = 39,
-        Yellow3 = 89,
-        Yellow4 = 160,
-        Yellow5 = 251,
+        Cyan = 0x00FFFF,
 
-        Orange1 = 76,
-        Orange2 = 77,
-        Orange3 = 122,
+        LightBlue = 0x105090,
+        Blue = 0x000080,
+        DarkBlue = 0x101090,
 
-        Green1 = 2,
-        Green2 = 17,
-        Green3 = 86,
-
-        Pink1 = 183,
-
-        //UNKNOWN_1 = 137,
-        //UNKNOWN_2 = 252,
+        Purple = 0x404080,
     }
 }

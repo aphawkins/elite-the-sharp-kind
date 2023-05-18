@@ -82,17 +82,17 @@ namespace Elite.Engine
                     (star.X >= _graphics.ViewT.X) && (star.X <= _graphics.ViewB.X) &&
                     (star.Y >= _graphics.ViewT.Y) && (star.Y <= _graphics.ViewB.Y))
                 {
-                    _graphics.DrawPixel(star, Colour.White1);
+                    _graphics.DrawPixel(star, Colour.White);
 
                     if (zz < 0xC0)
                     {
-                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
                     if (zz < 0x90)
                     {
-                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
-                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
                     }
                 }
 
@@ -172,17 +172,17 @@ namespace Elite.Engine
                     (star.X >= _graphics.ViewT.X) && (star.X <= _graphics.ViewB.X) &&
                     (star.Y >= _graphics.ViewT.Y) && (star.Y <= _graphics.ViewB.Y))
                 {
-                    _graphics.DrawPixel(star, Colour.White1);
+                    _graphics.DrawPixel(star, Colour.White);
 
                     if (zz < 0xC0)
                     {
-                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
                     if (zz < 0x90)
                     {
-                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
-                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
                     }
                 }
 
@@ -267,17 +267,17 @@ namespace Elite.Engine
                     (star.X >= _graphics.ViewT.X) && (star.X <= _graphics.ViewB.X) &&
                     (star.Y >= _graphics.ViewT.Y) && (star.Y <= _graphics.ViewB.Y))
                 {
-                    _graphics.DrawPixel(star, Colour.White1);
+                    _graphics.DrawPixel(star, Colour.White);
 
                     if (zz < 0xC0)
                     {
-                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White1);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
                     if (zz < 0x90)
                     {
-                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White1);
-                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White1);
+                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
+                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
                     }
                 }
 
