@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using Elite.Common.Enums;
 using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
@@ -61,13 +62,18 @@ namespace Elite.Engine.Views
         public void Reset()
         {
             _combat.ClearUniverse();
-            _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 4500), VectorMaths.GetInitialMatrix(), -127, -127);
-            _ship.Roll = 1;
+
+            Vector3[] initMatrix = VectorMaths.GetInitialMatrix();
+
+            // Ship faces away
+            initMatrix[2].Z = 1;
+            _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 4500), initMatrix, -127, 127);
             _audio.PlayMusic(Music.EliteTheme, true);
         }
 
         public void UpdateUniverse()
         {
+            _ship.Roll = 1;
             Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, Space.s_universe[0].Location.Z - 100);
 
             if (Space.s_universe[0].Location.Z < 384)

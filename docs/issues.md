@@ -1,9 +1,7 @@
 # Issues
 
 ## To get to MVP
-- When docking the intro music plays
 - Fix TODOs in code
-- Ship in Intro1 doesn't rotate correctly (not all sides are shown)
 - Colours on SNES planet style not working
 - Explosion of other ship can cause an exception
 - Change statics to objects

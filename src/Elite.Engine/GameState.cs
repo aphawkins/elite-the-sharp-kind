@@ -141,7 +141,6 @@ namespace Elite.Engine
             DrawLasers = false;
             ExitGame = false;
             MCount = 0;
-            SetView(Screen.IntroOne);
         }
 
         internal void SetView(Screen screen)

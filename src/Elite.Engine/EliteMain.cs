@@ -476,6 +476,8 @@ namespace Elite.Engine
             _stars.CreateNewStars();
             _combat.ClearUniverse();
             _space.DockPlayer();
+
+            _gameState.SetView(Screen.IntroOne);
         }
     }
 }
