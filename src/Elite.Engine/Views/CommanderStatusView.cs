@@ -88,7 +88,7 @@ namespace Elite.Engine.Views
 
                 for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
                 {
-                    if (_universe._universe[i].Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
+                    if (_universe.Objects[i].Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
                     {
                         condition = 2;
                         break;
@@ -119,7 +119,7 @@ namespace Elite.Engine.Views
             _graphics.DrawTextLeft(150, 106, $"{_ship.Fuel:N1} Light Years", Colour.White);
 
             _graphics.DrawTextLeft(16, 122, "Cash:", Colour.Green);
-            _graphics.DrawTextLeft(150, 122, $"{_trade._credits:N1} Credits", Colour.White);
+            _graphics.DrawTextLeft(150, 122, $"{_trade.Credits:N1} Credits", Colour.White);
 
             _graphics.DrawTextLeft(16, 138, "Legal Status:", Colour.Green);
             _graphics.DrawTextLeft(150, 138, _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", Colour.White);

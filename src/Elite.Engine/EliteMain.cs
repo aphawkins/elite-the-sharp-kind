@@ -60,7 +60,7 @@ namespace Elite.Engine
             _combat = new(_gameState, _audio, _ship, _trade, _pilot, _universe);
             _save = new(_gameState, _ship, _trade, _planet);
             _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars, _universe);
-            _scanner = new(_gameState, _graphics, _draw, _universe._universe, _universe._shipCount, _ship, _combat);
+            _scanner = new(_gameState, _graphics, _draw, _universe.Objects, _universe.ShipCount, _ship, _combat);
             _configFile = new();
 
             _gameState.Config = _configFile.ReadConfigAsync().Result;

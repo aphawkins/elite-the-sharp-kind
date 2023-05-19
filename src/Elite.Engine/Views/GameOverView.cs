@@ -45,16 +45,16 @@ namespace Elite.Engine.Views
             _ship.Climb = 0;
             _combat.ClearUniverse();
             int newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
-            _universe._universe[newship].Flags |= ShipFlags.Dead;
+            _universe.Objects[newship].Flags |= ShipFlags.Dead;
 
             // Cargo
             for (int i = 0; i < 5; i++)
             {
                 ShipType type = RNG.TrueOrFalse() ? ShipType.Cargo : ShipType.Alloy;
                 newship = _combat.AddNewShip(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0);
-                _universe._universe[newship].RotZ = ((RNG.Random(255) * 2) & 255) - 128;
-                _universe._universe[newship].RotX = ((RNG.Random(255) * 2) & 255) - 128;
-                _universe._universe[newship].Velocity = RNG.Random(15);
+                _universe.Objects[newship].RotZ = ((RNG.Random(255) * 2) & 255) - 128;
+                _universe.Objects[newship].RotX = ((RNG.Random(255) * 2) & 255) - 128;
+                _universe.Objects[newship].Velocity = RNG.Random(15);
             }
 
             _audio.PlayEffect(SoundEffect.Gameover);

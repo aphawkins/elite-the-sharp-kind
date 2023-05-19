@@ -9,7 +9,8 @@ namespace Elite.Engine
 {
     internal sealed class Universe
     {
-        internal Dictionary<ShipType, int> _shipCount = new();
-        internal UniverseObject[] _universe = new UniverseObject[EliteMain.MaxUniverseObjects];
+        internal Dictionary<ShipType, int> ShipCount { get; } = new();
+
+        internal UniverseObject[] Objects { get; } = new UniverseObject[EliteMain.MaxUniverseObjects];
     }
 }

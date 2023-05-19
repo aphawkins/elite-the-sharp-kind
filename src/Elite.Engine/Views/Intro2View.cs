@@ -103,14 +103,14 @@ namespace Elite.Engine.Views
                 _direction = -_direction;
             }
 
-            _universe._universe[0].Location = new(_universe._universe[0].Location.X, _universe._universe[0].Location.Y, _universe._universe[0].Location.Z + _direction);
+            _universe.Objects[0].Location = new(_universe.Objects[0].Location.X, _universe.Objects[0].Location.Y, _universe.Objects[0].Location.Z + _direction);
 
-            if (_universe._universe[0].Location.Z < _minDist[(int)_shipNo])
+            if (_universe.Objects[0].Location.Z < _minDist[(int)_shipNo])
             {
-                _universe._universe[0].Location = new(_universe._universe[0].Location.X, _universe._universe[0].Location.Y, _minDist[(int)_shipNo]);
+                _universe.Objects[0].Location = new(_universe.Objects[0].Location.X, _universe.Objects[0].Location.Y, _minDist[(int)_shipNo]);
             }
 
-            if (_universe._universe[0].Location.Z > 4500)
+            if (_universe.Objects[0].Location.Z > 4500)
             {
                 do
                 {
@@ -125,8 +125,8 @@ namespace Elite.Engine.Views
                 _showTime = 0;
                 _direction = -100;
 
-                _universe._shipCount[_universe._universe[0].Type] = 0;
-                _universe._universe[0].Type = ShipType.None;
+                _universe.ShipCount[_universe.Objects[0].Type] = 0;
+                _universe.Objects[0].Type = ShipType.None;
 
                 _combat.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }

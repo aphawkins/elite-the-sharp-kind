@@ -39,7 +39,7 @@ namespace Elite.Engine.Views
             _graphics.DrawTextLeft(420, 40, "IN HOLD", Colour.Green);
 
             int i = 0;
-            foreach (KeyValuePair<StockType, StockItem> stock in _trade._stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
             {
                 int y = (i * 15) + 55;
 
@@ -64,19 +64,19 @@ namespace Elite.Engine.Views
             }
 
             _graphics.DrawTextLeft(16, 340, "Cash:", Colour.Green);
-            _graphics.DrawTextRight(160, 340, $"{_trade._credits,10:N1} Credits", Colour.White);
+            _graphics.DrawTextRight(160, 340, $"{_trade.Credits,10:N1} Credits", Colour.White);
         }
 
         public void HandleInput()
         {
             if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
             {
-                _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock - 1, 0, _trade._stockMarket.Count - 1);
+                _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock - 1, 0, _trade.StockMarket.Count - 1);
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
             {
-                _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock + 1, 0, _trade._stockMarket.Count - 1);
+                _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock + 1, 0, _trade.StockMarket.Count - 1);
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))

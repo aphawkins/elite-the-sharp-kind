@@ -110,8 +110,8 @@ namespace Elite.Engine.Save
         {
             CargoCapacity = _ship.CargoCapacity,
             CommanderName = newName,
-            Credits = _trade._credits,
-            CurrentCargo = _trade._stockMarket.Values.Select(x => x.CurrentCargo).ToList(),
+            Credits = _trade.Credits,
+            CurrentCargo = _trade.StockMarket.Values.Select(x => x.CurrentCargo).ToList(),
             EnergyUnit = _ship.EnergyUnit.ToString(),
             Fuel = _ship.Fuel,
             GalaxyNumber = _state.Cmdr.GalaxyNumber,
@@ -138,7 +138,7 @@ namespace Elite.Engine.Save
                     _ship.LaserLeft.Type.ToString(),
                 },
             LegalStatus = _state.Cmdr.LegalStatus,
-            MarketRandomiser = _trade._marketRandomiser,
+            MarketRandomiser = _trade.MarketRandomiser,
             Missiles = _ship.MissileCount,
             Mission = _state.Cmdr.Mission,
             Saved = _state.Cmdr.Saved,
@@ -148,7 +148,7 @@ namespace Elite.Engine.Save
                     _state.DockedPlanet.D,
                     _state.DockedPlanet.B,
                 },
-            StationStock = _trade._stockMarket.Values.Select(x => x.StationStock).ToList(),
+            StationStock = _trade.StockMarket.Values.Select(x => x.StationStock).ToList(),
         };
 
         private void RestoreSavedCommander()
@@ -165,10 +165,10 @@ namespace Elite.Engine.Save
         {
             _ship.CargoCapacity = _lastSaved.CargoCapacity;
             _state.Cmdr.Name = _lastSaved.CommanderName;
-            _trade._credits = _lastSaved.Credits;
-            for (int i = 0; i < _trade._stockMarket.Count; i++)
+            _trade.Credits = _lastSaved.Credits;
+            for (int i = 0; i < _trade.StockMarket.Count; i++)
             {
-                _trade._stockMarket[(StockType)i + 1].CurrentCargo = _lastSaved.CurrentCargo[i];
+                _trade.StockMarket[(StockType)i + 1].CurrentCargo = _lastSaved.CurrentCargo[i];
             }
 
             _ship.EnergyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
@@ -191,16 +191,16 @@ namespace Elite.Engine.Save
             _ship.LaserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));
             _ship.LaserLeft = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[3]));
             _state.Cmdr.LegalStatus = _lastSaved.LegalStatus;
-            _trade._marketRandomiser = _lastSaved.MarketRandomiser;
+            _trade.MarketRandomiser = _lastSaved.MarketRandomiser;
             _ship.MissileCount = _lastSaved.Missiles;
             _state.Cmdr.Mission = _lastSaved.Mission;
             _state.Cmdr.Saved = _lastSaved.Saved;
             _state.Cmdr.Score = _lastSaved.Score;
             _state.DockedPlanet.D = _lastSaved.ShipLocation[0];
             _state.DockedPlanet.B = _lastSaved.ShipLocation[1];
-            for (int i = 0; i < _trade._stockMarket.Count; i++)
+            for (int i = 0; i < _trade.StockMarket.Count; i++)
             {
-                _trade._stockMarket[(StockType)i + 1].StationStock = _lastSaved.StationStock[i];
+                _trade.StockMarket[(StockType)i + 1].StationStock = _lastSaved.StationStock[i];
             }
         }
 

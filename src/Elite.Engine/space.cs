@@ -95,7 +95,7 @@ namespace Elite.Engine
         /// </summary>
         internal void EngageDockingComputer()
         {
-            if (_universe._shipCount[ShipType.Coriolis] != 0 || _universe._shipCount[ShipType.Dodec] != 0)
+            if (_universe.ShipCount[ShipType.Coriolis] != 0 || _universe.ShipCount[ShipType.Dodec] != 0)
             {
                 _gameState.SetView(Screen.Docking);
             }
@@ -109,7 +109,7 @@ namespace Elite.Engine
 
             for (i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
-                type = _universe._universe[i].Type;
+                type = _universe.Objects[i].Type;
 
                 if (type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
                     not ShipType.Alloy and not ShipType.Rock and
@@ -120,14 +120,14 @@ namespace Elite.Engine
                 }
             }
 
-            if ((_universe._universe[0].Location.Length() < 75001) || (_universe._universe[1].Location.Length() < 75001))
+            if ((_universe.Objects[0].Location.Length() < 75001) || (_universe.Objects[1].Location.Length() < 75001))
             {
                 _gameState.InfoMessage("Mass Locked");
                 return;
             }
 
-            jump = _universe._universe[0].Location.Length() < _universe._universe[1].Location.Length() ?
-                _universe._universe[0].Location.Length() - 75000f : _universe._universe[1].Location.Length() - 75000f;
+            jump = _universe.Objects[0].Location.Length() < _universe.Objects[1].Location.Length() ?
+                _universe.Objects[0].Location.Length() - 75000f : _universe.Objects[1].Location.Length() - 75000f;
 
             if (jump > 1024)
             {
@@ -136,9 +136,9 @@ namespace Elite.Engine
 
             for (i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
-                if (_universe._universe[i].Type != 0)
+                if (_universe.Objects[i].Type != 0)
                 {
-                    _universe._universe[i].Location = new(_universe._universe[i].Location.X, _universe._universe[i].Location.Y, _universe._universe[i].Location.Z - jump);
+                    _universe.Objects[i].Location = new(_universe.Objects[i].Location.X, _universe.Objects[i].Location.Y, _universe.Objects[i].Location.Z - jump);
                 }
             }
 
@@ -218,9 +218,9 @@ namespace Elite.Engine
                 return;
             }
 
-            float x = MathF.Abs(_universe._universe[0].Location.X);
-            float y = MathF.Abs(_universe._universe[0].Location.Y);
-            float z = MathF.Abs(_universe._universe[0].Location.Z);
+            float x = MathF.Abs(_universe.Objects[0].Location.X);
+            float y = MathF.Abs(_universe.Objects[0].Location.Y);
+            float z = MathF.Abs(_universe.Objects[0].Location.Z);
 
             if ((x == 0 && y == 0 && z == 0) ||
                 x > 65535 || y > 65535 || z > 65535)
@@ -267,14 +267,14 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_universe._shipCount[ShipType.Coriolis] != 0 || _universe._shipCount[ShipType.Dodec] != 0)
+            if (_universe.ShipCount[ShipType.Coriolis] != 0 || _universe.ShipCount[ShipType.Dodec] != 0)
             {
                 return;
             }
 
-            float x = MathF.Abs(_universe._universe[1].Location.X);
-            float y = MathF.Abs(_universe._universe[1].Location.Y);
-            float z = MathF.Abs(_universe._universe[1].Location.Z);
+            float x = MathF.Abs(_universe.Objects[1].Location.X);
+            float y = MathF.Abs(_universe.Objects[1].Location.Y);
+            float z = MathF.Abs(_universe.Objects[1].Location.Z);
 
             if ((x == 0 && y == 0 && z == 0) ||
                 x > 65535 || y > 65535 || z > 65535)
@@ -327,14 +327,14 @@ namespace Elite.Engine
 
             for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
-                ShipType type = _universe._universe[i].Type;
+                ShipType type = _universe.Objects[i].Type;
 
                 if (type == ShipType.None)
                 {
                     continue;
                 }
 
-                if (_universe._universe[i].Flags.HasFlag(ShipFlags.Remove))
+                if (_universe.Objects[i].Flags.HasFlag(ShipFlags.Remove))
                 {
                     if (type == ShipType.Viper)
                     {
@@ -345,8 +345,8 @@ namespace Elite.Engine
 
                     if ((bounty != 0) && (!_gameState.InWitchspace))
                     {
-                        _trade._credits += bounty;
-                        _gameState.InfoMessage($"{_trade._credits:N1} Credits");
+                        _trade.Credits += bounty;
+                        _gameState.InfoMessage($"{_trade.Credits:N1} Credits");
                     }
 
                     _combat.RemoveShip(i);
@@ -354,7 +354,7 @@ namespace Elite.Engine
                 }
 
                 if (_gameState.DetonateBomb &&
-                    (!_universe._universe[i].Flags.HasFlag(ShipFlags.Dead)) &&
+                    (!_universe.Objects[i].Flags.HasFlag(ShipFlags.Dead)) &&
                     (type != ShipType.Planet) &&
                     (type != ShipType.Sun) &&
                     (type != ShipType.Constrictor) &&
@@ -363,7 +363,7 @@ namespace Elite.Engine
                     (type != ShipType.Dodec))
                 {
                     _audio.PlayEffect(SoundEffect.Explode);
-                    _universe._universe[i].Flags |= ShipFlags.Dead;
+                    _universe.Objects[i].Flags |= ShipFlags.Dead;
                 }
 
                 if (_gameState.CurrentScreen is
@@ -375,16 +375,16 @@ namespace Elite.Engine
                     _combat.Tactics(i);
                 }
 
-                MoveUniverseObject(ref _universe._universe[i]);
+                MoveUniverseObject(ref _universe.Objects[i]);
 
-                UniverseObject flip = new(_universe._universe[i]);
+                UniverseObject flip = new(_universe.Objects[i]);
                 SwitchToView(ref flip);
 
                 if (type == ShipType.Planet)
                 {
-                    if ((_universe._shipCount[ShipType.Coriolis] == 0) &&
-                        (_universe._shipCount[ShipType.Dodec] == 0) &&
-                        (_universe._universe[i].Location.Length() < 65792 /* was 49152 */))
+                    if ((_universe.ShipCount[ShipType.Coriolis] == 0) &&
+                        (_universe.ShipCount[ShipType.Dodec] == 0) &&
+                        (_universe.Objects[i].Location.Length() < 65792 /* was 49152 */))
                     {
                         MakeStationAppear();
                     }
@@ -399,7 +399,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                if (_universe._universe[i].Location.Length() < 170)
+                if (_universe.Objects[i].Location.Length() < 170)
                 {
                     if (type is ShipType.Coriolis or ShipType.Dodec)
                     {
@@ -413,7 +413,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                if (_universe._universe[i].Location.Length() > 57344)
+                if (_universe.Objects[i].Location.Length() > 57344)
                 {
                     _combat.RemoveShip(i);
                     continue;
@@ -421,12 +421,12 @@ namespace Elite.Engine
 
                 _threed.DrawObject(flip);
 
-                _universe._universe[i].Flags = flip.Flags;
-                _universe._universe[i].ExpDelta = flip.ExpDelta;
+                _universe.Objects[i].Flags = flip.Flags;
+                _universe.Objects[i].ExpDelta = flip.ExpDelta;
 
-                _universe._universe[i].Flags &= ~ShipFlags.Firing;
+                _universe.Objects[i].Flags &= ~ShipFlags.Firing;
 
-                if (_universe._universe[i].Flags.HasFlag(ShipFlags.Dead))
+                if (_universe.Objects[i].Flags.HasFlag(ShipFlags.Dead))
                 {
                     continue;
                 }
@@ -477,7 +477,7 @@ namespace Elite.Engine
             }
 
             _ship.Speed = 1;
-            _ship.DamageShip(5, _universe._universe[i].Location.Z > 0);
+            _ship.DamageShip(5, _universe.Objects[i].Location.Z > 0);
             _audio.PlayEffect(SoundEffect.Crash);
         }
 
@@ -507,7 +507,7 @@ namespace Elite.Engine
                 _gameState.DockedPlanet = new(_destinationPlanet);
             }
 
-            _trade._marketRandomiser = RNG.Random(255);
+            _trade.MarketRandomiser = RNG.Random(255);
             _gameState.CurrentPlanetData = Planet.GeneratePlanetData(_gameState.DockedPlanet);
             _trade.GenerateStockMarket();
 
@@ -604,21 +604,21 @@ namespace Elite.Engine
                 return true;
             }
 
-            fz = _universe._universe[sn].Rotmat[2].Z;
+            fz = _universe.Objects[sn].Rotmat[2].Z;
 
             if (fz > -0.90)
             {
                 return false;
             }
 
-            vec = VectorMaths.UnitVector(_universe._universe[sn].Location);
+            vec = VectorMaths.UnitVector(_universe.Objects[sn].Location);
 
             if (vec.Z < 0.927)
             {
                 return false;
             }
 
-            ux = _universe._universe[sn].Rotmat[1].X;
+            ux = _universe.Objects[sn].Rotmat[1].X;
             if (ux < 0)
             {
                 ux = -ux;
@@ -629,7 +629,7 @@ namespace Elite.Engine
 
         private void MakeStationAppear()
         {
-            Vector3 location = _universe._universe[0].Location;
+            Vector3 location = _universe.Objects[0].Location;
             Vector3 vec;
             vec.X = RNG.Random(-16384, 16383);
             vec.Y = RNG.Random(-16384, 16383);

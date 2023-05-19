@@ -32,10 +32,10 @@ namespace Elite.Engine.Views
             _graphics.DrawTextLeft(70, 50, $"{_ship.Fuel:N1} Light Years", Colour.White);
 
             _graphics.DrawTextLeft(16, 66, "Cash:", Colour.Green);
-            _graphics.DrawTextLeft(70, 66, $"{_trade._credits:N1} Credits", Colour.White);
+            _graphics.DrawTextLeft(70, 66, $"{_trade.Credits:N1} Credits", Colour.White);
 
             int y = 98;
-            foreach (KeyValuePair<StockType, StockItem> stock in _trade._stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
             {
                 if (stock.Value.CurrentCargo > 0)
                 {

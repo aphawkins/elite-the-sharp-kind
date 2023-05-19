@@ -76,11 +76,11 @@ namespace Elite.Engine.Views
         public void UpdateUniverse()
         {
             _ship.Roll = 1;
-            _universe._universe[0].Location = new(_universe._universe[0].Location.X, _universe._universe[0].Location.Y, _universe._universe[0].Location.Z - 100);
+            _universe.Objects[0].Location = new(_universe.Objects[0].Location.X, _universe.Objects[0].Location.Y, _universe.Objects[0].Location.Z - 100);
 
-            if (_universe._universe[0].Location.Z < 384)
+            if (_universe.Objects[0].Location.Z < 384)
             {
-                _universe._universe[0].Location = new(_universe._universe[0].Location.X, _universe._universe[0].Location.Y, 384);
+                _universe.Objects[0].Location = new(_universe.Objects[0].Location.X, _universe.Objects[0].Location.Y, 384);
             }
         }
     }

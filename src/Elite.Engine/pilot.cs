@@ -131,15 +131,15 @@ namespace Elite.Engine
             float dir;
 
             if (ship.Flags.HasFlag(ShipFlags.FlyToPlanet) ||
-                ((_universe._shipCount[ShipType.Coriolis] == 0) && (_universe._shipCount[ShipType.Dodec] == 0)))
+                ((_universe.ShipCount[ShipType.Coriolis] == 0) && (_universe.ShipCount[ShipType.Dodec] == 0)))
             {
                 FlyToPlanet(ref ship);
                 return;
             }
 
-            diff.X = ship.Location.X - _universe._universe[1].Location.X;
-            diff.Y = ship.Location.Y - _universe._universe[1].Location.Y;
-            diff.Z = ship.Location.Z - _universe._universe[1].Location.Z;
+            diff.X = ship.Location.X - _universe.Objects[1].Location.X;
+            diff.Y = ship.Location.Y - _universe.Objects[1].Location.Y;
+            diff.Z = ship.Location.Z - _universe.Objects[1].Location.Z;
 
             dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
 
@@ -150,7 +150,7 @@ namespace Elite.Engine
             }
 
             vec = VectorMaths.UnitVector(diff);
-            dir = VectorMaths.VectorDotProduct(_universe._universe[1].Rotmat[2], vec);
+            dir = VectorMaths.VectorDotProduct(_universe.Objects[1].Rotmat[2], vec);
 
             if (dir < 0.9722)
             {
@@ -268,9 +268,9 @@ namespace Elite.Engine
             Vector3 diff;
             float dir;
 
-            diff.X = ship.Location.X - _universe._universe[1].Location.X;
-            diff.Y = ship.Location.Y - _universe._universe[1].Location.Y;
-            diff.Z = ship.Location.Z - _universe._universe[1].Location.Z;
+            diff.X = ship.Location.X - _universe.Objects[1].Location.X;
+            diff.Y = ship.Location.Y - _universe.Objects[1].Location.Y;
+            diff.Z = ship.Location.Z - _universe.Objects[1].Location.Z;
 
             Vector3 vec = VectorMaths.UnitVector(diff);
 
@@ -307,7 +307,7 @@ namespace Elite.Engine
 
             ship.RotZ = 0;
 
-            dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], _universe._universe[1].Rotmat[1]);
+            dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], _universe.Objects[1].Rotmat[1]);
 
             if (MathF.Abs(dir) >= 0.9166f)
             {
@@ -328,9 +328,9 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = _universe._universe[0].Location.X - ship.Location.X;
-            vec.Y = _universe._universe[0].Location.Y - ship.Location.Y;
-            vec.Z = _universe._universe[0].Location.Z - ship.Location.Z;
+            vec.X = _universe.Objects[0].Location.X - ship.Location.X;
+            vec.Y = _universe.Objects[0].Location.Y - ship.Location.Y;
+            vec.Z = _universe.Objects[0].Location.Z - ship.Location.Z;
 
             FlyToVector(ref ship, vec);
         }
@@ -343,9 +343,9 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = _universe._universe[1].Location.X - ship.Location.X;
-            vec.Y = _universe._universe[1].Location.Y - ship.Location.Y;
-            vec.Z = _universe._universe[1].Location.Z - ship.Location.Z;
+            vec.X = _universe.Objects[1].Location.X - ship.Location.X;
+            vec.Y = _universe.Objects[1].Location.Y - ship.Location.Y;
+            vec.Z = _universe.Objects[1].Location.Z - ship.Location.Z;
 
             FlyToVector(ref ship, vec);
         }
@@ -358,13 +358,13 @@ namespace Elite.Engine
         {
             Vector3 vec;
 
-            vec.X = _universe._universe[1].Location.X - ship.Location.X;
-            vec.Y = _universe._universe[1].Location.Y - ship.Location.Y;
-            vec.Z = _universe._universe[1].Location.Z - ship.Location.Z;
+            vec.X = _universe.Objects[1].Location.X - ship.Location.X;
+            vec.Y = _universe.Objects[1].Location.Y - ship.Location.Y;
+            vec.Z = _universe.Objects[1].Location.Z - ship.Location.Z;
 
-            vec.X += _universe._universe[1].Rotmat[2].X * 768;
-            vec.Y += _universe._universe[1].Rotmat[2].Y * 768;
-            vec.Z += _universe._universe[1].Rotmat[2].Z * 768;
+            vec.X += _universe.Objects[1].Rotmat[2].X * 768;
+            vec.Y += _universe.Objects[1].Rotmat[2].Y * 768;
+            vec.Z += _universe.Objects[1].Rotmat[2].Z * 768;
 
             FlyToVector(ref ship, vec);
         }

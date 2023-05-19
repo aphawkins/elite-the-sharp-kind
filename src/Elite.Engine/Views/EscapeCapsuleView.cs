@@ -67,7 +67,7 @@ namespace Elite.Engine.Views
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
             _newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
-            _universe._universe[_newship].Velocity = 7;
+            _universe.Objects[_newship].Velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;
         }
@@ -78,15 +78,15 @@ namespace Elite.Engine.Views
             {
                 if (_i == 40)
                 {
-                    _universe._universe[_newship].Flags |= ShipFlags.Dead;
+                    _universe.Objects[_newship].Flags |= ShipFlags.Dead;
                     _audio.PlayEffect(SoundEffect.Explode);
                 }
 
                 _stars.FrontStarfield();
-                _universe._universe[_newship].Location = new(0, 0, _universe._universe[_newship].Location.Z + 2);
+                _universe.Objects[_newship].Location = new(0, 0, _universe.Objects[_newship].Location.Z + 2);
                 _i++;
             }
-            else if ((_universe._shipCount[ShipType.Coriolis] == 0) && (_universe._shipCount[ShipType.Dodec] == 0))
+            else if ((_universe.ShipCount[ShipType.Coriolis] == 0) && (_universe.ShipCount[ShipType.Dodec] == 0))
             {
                 _pilot.AutoDock();
 
@@ -94,9 +94,9 @@ namespace Elite.Engine.Views
                 {
                     for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
                     {
-                        if (_universe._universe[i].Type != 0)
+                        if (_universe.Objects[i].Type != 0)
                         {
-                            _universe._universe[i].Location = new(_universe._universe[i].Location.X, _universe._universe[i].Location.Y, _universe._universe[i].Location.Z - 1500);
+                            _universe.Objects[i].Location = new(_universe.Objects[i].Location.X, _universe.Objects[i].Location.Y, _universe.Objects[i].Location.Z - 1500);
                         }
                     }
                 }

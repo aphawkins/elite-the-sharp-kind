@@ -110,7 +110,7 @@ namespace Elite.Engine.Views
 
                 _combat.ClearUniverse();
                 int i = _combat.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
-                _universe._universe[i].Flags = ShipFlags.None;
+                _universe.Objects[i].Flags = ShipFlags.None;
                 _ship.Roll = 0;
                 _ship.Climb = 0;
                 _ship.Speed = 0;
@@ -120,7 +120,7 @@ namespace Elite.Engine.Views
                 // Show debrief
                 _gameState.Cmdr.Mission = 3;
                 _gameState.Cmdr.Score += 256;
-                _trade._credits += 5000;
+                _trade.Credits += 5000;
             }
             else
             {

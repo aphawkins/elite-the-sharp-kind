@@ -12,13 +12,24 @@ namespace Elite.Engine.Trader
         internal const string KILOGRAMS = "Kg";
         internal const string TONNES = "t";
 
-        internal float _credits;
-        internal int _marketRandomiser;
+        private readonly GameState _gameState;
+
+        private readonly PlayerShip _ship;
+
+        internal Trade(GameState gameState, PlayerShip ship)
+        {
+            _gameState = gameState;
+            _ship = ship;
+        }
+
+        internal float Credits { get; set; }
+
+        internal int MarketRandomiser { get; set; }
 
         /// <summary>
-        /// The following holds the Elite Planet Stock Market.
+        /// Gets the following holds the Elite Planet Stock Market.
         /// </summary>
-        internal Dictionary<StockType, StockItem> _stockMarket = new()
+        internal Dictionary<StockType, StockItem> StockMarket { get; } = new()
         {
             { StockType.Food,         new("Food",          0, 0,  1.9f, -2,   6,   1, TONNES,    0, 0) },
             { StockType.Textiles,     new("Textiles",      0, 0,  2.0f, -1,  10,   3, TONNES,    0, 0) },
@@ -39,37 +50,28 @@ namespace Elite.Engine.Trader
             { StockType.AlienItems,   new("Alien Items",   0, 0,  5.3f, 15, 192,   7, TONNES,    0, 0) },
         };
 
-        private readonly GameState _gameState;
-        private readonly PlayerShip _ship;
-
-        internal Trade(GameState gameState, PlayerShip ship)
-        {
-            _gameState = gameState;
-            _ship = ship;
-        }
-
-        internal void AddCargo(StockType stock) => _stockMarket[stock].CurrentCargo++;
+        internal void AddCargo(StockType stock) => StockMarket[stock].CurrentCargo++;
 
         internal void BuyStock(StockType stock)
         {
-            if (_stockMarket[stock].CurrentQuantity == 0 || _credits < _stockMarket[stock].CurrentPrice)
+            if (StockMarket[stock].CurrentQuantity == 0 || Credits < StockMarket[stock].CurrentPrice)
             {
                 return;
             }
 
-            if (_stockMarket[stock].Units == TONNES && TotalCargoTonnage() == _ship.CargoCapacity)
+            if (StockMarket[stock].Units == TONNES && TotalCargoTonnage() == _ship.CargoCapacity)
             {
                 return;
             }
 
-            _stockMarket[stock].CurrentCargo++;
-            _stockMarket[stock].CurrentQuantity--;
-            _credits -= _stockMarket[stock].CurrentPrice;
+            StockMarket[stock].CurrentCargo++;
+            StockMarket[stock].CurrentQuantity--;
+            Credits -= StockMarket[stock].CurrentPrice;
         }
 
         internal void ClearCurrentCargo()
         {
-            foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in StockMarket)
             {
                 stock.Value.CurrentCargo = 0;
             }
@@ -83,13 +85,13 @@ namespace Elite.Engine.Trader
         /// </summary>
         internal void GenerateStockMarket()
         {
-            foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in StockMarket)
             {
                 // Start with the base price
                 float price = stock.Value.BasePrice;
 
                 // Add in a random amount
-                price += (_marketRandomiser & stock.Value.Mask) / 10;
+                price += (MarketRandomiser & stock.Value.Mask) / 10;
 
                 // Adjust for planet economy
                 price += _gameState.CurrentPlanetData.Economy * stock.Value.EconomyAdjust / 10;
@@ -98,7 +100,7 @@ namespace Elite.Engine.Trader
                 int quant = stock.Value.BaseQuantity;
 
                 // Add in a random amount
-                quant += _marketRandomiser & stock.Value.Mask;
+                quant += MarketRandomiser & stock.Value.Mask;
 
                 // Adjust for planet economy
                 quant -= _gameState.CurrentPlanetData.Economy * stock.Value.EconomyAdjust;
@@ -111,39 +113,39 @@ namespace Elite.Engine.Trader
             }
 
             // Alien Items are never available for purchase
-            _stockMarket[StockType.AlienItems].CurrentQuantity = 0;
+            StockMarket[StockType.AlienItems].CurrentQuantity = 0;
         }
 
-        internal int IsCarryingContraband() => ((_stockMarket[StockType.Slaves].CurrentCargo + _stockMarket[StockType.Slaves].CurrentCargo) * 2) + _stockMarket[StockType.Firearms].CurrentCargo;
+        internal int IsCarryingContraband() => ((StockMarket[StockType.Slaves].CurrentCargo + StockMarket[StockType.Slaves].CurrentCargo) * 2) + StockMarket[StockType.Firearms].CurrentCargo;
 
         internal void SellStock(StockType stock)
         {
-            if (_stockMarket[stock].CurrentCargo == 0)
+            if (StockMarket[stock].CurrentCargo == 0)
             {
                 return;
             }
 
-            _stockMarket[stock].CurrentCargo--;
-            _stockMarket[stock].CurrentQuantity++;
-            _credits += _stockMarket[stock].CurrentPrice;
+            StockMarket[stock].CurrentCargo--;
+            StockMarket[stock].CurrentQuantity++;
+            Credits += StockMarket[stock].CurrentPrice;
         }
 
         internal void SetStockQuantities()
         {
-            foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in StockMarket)
             {
                 stock.Value.CurrentQuantity = stock.Value.StationStock;
             }
 
             // Alien Items are never available for purchase
-            _stockMarket[StockType.AlienItems].CurrentQuantity = 0;
+            StockMarket[StockType.AlienItems].CurrentQuantity = 0;
         }
 
         internal int TotalCargoTonnage()
         {
             int cargo = 0;
 
-            foreach (KeyValuePair<StockType, StockItem> stock in _stockMarket)
+            foreach (KeyValuePair<StockType, StockItem> stock in StockMarket)
             {
                 if (stock.Value.CurrentCargo > 0 && stock.Value.Units == TONNES)
                 {
