@@ -16,7 +16,7 @@ namespace Elite.Engine
 {
     public sealed class EliteMain
     {
-        internal const int MAX_UNIV_OBJECTS = 20;
+        internal const int MaxUniverseObjects = 20;
         private readonly Audio _audio;
         private readonly Combat _combat;
         private readonly ConfigFile _configFile;

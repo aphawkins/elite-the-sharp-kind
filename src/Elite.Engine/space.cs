@@ -107,7 +107,7 @@ namespace Elite.Engine
             ShipType type;
             float jump;
 
-            for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            for (i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
                 type = _universe._universe[i].Type;
 
@@ -134,7 +134,7 @@ namespace Elite.Engine
                 jump = 1024;
             }
 
-            for (i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            for (i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
                 if (_universe._universe[i].Type != 0)
                 {
@@ -325,7 +325,7 @@ namespace Elite.Engine
         {
             _threed.RenderStart();
 
-            for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
                 ShipType type = _universe._universe[i].Type;
 

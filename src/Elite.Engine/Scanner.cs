@@ -276,7 +276,7 @@ namespace Elite.Engine
         /// </summary>
         private void UpdateScanner()
         {
-            for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
                 if ((_universe[i].Type <= 0) ||
                     _universe[i].Flags.HasFlag(ShipFlags.Dead) ||

@@ -94,7 +94,7 @@ namespace Elite.Engine.Conflict
         internal int AddNewShip(ShipType ship_type, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
         {
             Debug.Assert(rotmat != null);
-            for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
                 if (_universe._universe[i].Type == ShipType.None)
                 {
@@ -194,7 +194,7 @@ namespace Elite.Engine.Conflict
 
         internal void ClearUniverse()
         {
-            for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
                 _universe._universe[i] = new()
                 {
@@ -958,7 +958,7 @@ namespace Elite.Engine.Conflict
                 _gameState.InfoMessage("Target Lost");
             }
 
-            for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
+            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
                 if (_universe._universe[i].Type == ShipType.Missile && _universe._universe[i].Target == un)
                 {
