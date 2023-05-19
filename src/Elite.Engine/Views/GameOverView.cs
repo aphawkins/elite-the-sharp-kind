@@ -17,9 +17,10 @@ namespace Elite.Engine.Views
         private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
+        private readonly Universe _universe;
         private int _i;
 
-        internal GameOverView(GameState gameState, IGraphics graphics, Audio audio, Stars stars, PlayerShip ship, Combat combat)
+        internal GameOverView(GameState gameState, IGraphics graphics, Audio audio, Stars stars, PlayerShip ship, Combat combat, Universe universe)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -27,6 +28,7 @@ namespace Elite.Engine.Views
             _stars = stars;
             _ship = ship;
             _combat = combat;
+            _universe = universe;
         }
 
         public void Draw() => _graphics.DrawTextCentre(190, "GAME OVER", 140, Colour.Gold);
@@ -43,16 +45,16 @@ namespace Elite.Engine.Views
             _ship.Climb = 0;
             _combat.ClearUniverse();
             int newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
-            Space.s_universe[newship].Flags |= ShipFlags.Dead;
+            _universe._universe[newship].Flags |= ShipFlags.Dead;
 
             // Cargo
             for (int i = 0; i < 5; i++)
             {
                 ShipType type = RNG.TrueOrFalse() ? ShipType.Cargo : ShipType.Alloy;
                 newship = _combat.AddNewShip(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0);
-                Space.s_universe[newship].RotZ = ((RNG.Random(255) * 2) & 255) - 128;
-                Space.s_universe[newship].RotX = ((RNG.Random(255) * 2) & 255) - 128;
-                Space.s_universe[newship].Velocity = RNG.Random(15);
+                _universe._universe[newship].RotZ = ((RNG.Random(255) * 2) & 255) - 128;
+                _universe._universe[newship].RotX = ((RNG.Random(255) * 2) & 255) - 128;
+                _universe._universe[newship].Velocity = RNG.Random(15);
             }
 
             _audio.PlayEffect(SoundEffect.Gameover);

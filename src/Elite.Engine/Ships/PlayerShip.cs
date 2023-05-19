@@ -3,10 +3,8 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
-using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Lasers;
-using Elite.Engine.Types;
 
 namespace Elite.Engine.Ships
 {
@@ -72,98 +70,6 @@ namespace Elite.Engine.Ships
         internal float ShieldRear { get; set; }
 
         internal float Speed { get; set; }
-
-        internal void AutoDock()
-        {
-            UniverseObject ship = new()
-            {
-                Rotmat = VectorMaths.GetInitialMatrix(),
-                Location = Vector3.Zero,
-            };
-
-            ship.Rotmat[2].Z = 1;
-            ship.Rotmat[0].X = -1;
-            ship.Type = (ShipType)(-96);
-            ship.Velocity = Speed;
-            ship.Acceleration = 0;
-            ship.Bravery = 0;
-            ship.RotZ = 0;
-            ship.RotX = 0;
-
-            Pilot.AutoPilotShip(ref ship);
-
-            Speed = ship.Velocity > 22 ? 22 : ship.Velocity;
-
-            if (ship.Acceleration > 0)
-            {
-                Speed++;
-                if (Speed > 22)
-                {
-                    Speed = 22;
-                }
-            }
-
-            if (ship.Acceleration < 0)
-            {
-                Speed--;
-                if (Speed < 1)
-                {
-                    Speed = 1;
-                }
-            }
-
-            if (ship.RotX == 0)
-            {
-                Climb = 0;
-            }
-
-            if (ship.RotX < 0)
-            {
-                IncreaseClimb();
-
-                if (ship.RotX < -1)
-                {
-                    IncreaseClimb();
-                }
-            }
-
-            if (ship.RotX > 0)
-            {
-                DecreaseClimb();
-
-                if (ship.RotX > 1)
-                {
-                    DecreaseClimb();
-                }
-            }
-
-            if (ship.RotZ == 127)
-            {
-                Roll = -14;
-            }
-            else if (ship.RotZ == 0)
-            {
-                Roll = 0;
-            }
-            else if (ship.RotZ > 0)
-            {
-                IncreaseRoll();
-
-                if (ship.RotZ > 1)
-                {
-                    IncreaseRoll();
-                }
-            }
-            else if (ship.RotZ < 0)
-            {
-                DecreaseRoll();
-
-                if (ship.RotZ < -1)
-                {
-                    DecreaseRoll();
-                }
-            }
-        }
 
         /// <summary>
         /// Deplete the shields.  Drain the energy banks if the shields fail.

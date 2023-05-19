@@ -36,6 +36,7 @@ namespace Elite.Engine
         private readonly Threed _threed;
         private readonly TimeSpan _timeout;
         private readonly Trade _trade;
+        private readonly Universe _universe;
         private readonly Dictionary<Screen, IView> _views = new();
         private bool _isGamePaused;
 
@@ -46,6 +47,7 @@ namespace Elite.Engine
             _audio.LoadSounds();
             _keyboard = keyboard;
             _gameState = new(_keyboard, _views);
+            _universe = new();
             _ship = new();
             _trade = new(_gameState, _ship);
             _planet = new(_gameState);
@@ -54,22 +56,22 @@ namespace Elite.Engine
             _draw.DrawBorder();
             _threed = new(_gameState, _graphics, _draw);
             _stars = new(_gameState, _graphics, _ship);
-            _pilot = new(_audio);
-            _combat = new(_gameState, _audio, _ship, _trade, _pilot);
+            _pilot = new(_audio, _universe, _ship);
+            _combat = new(_gameState, _audio, _ship, _trade, _pilot, _universe);
             _save = new(_gameState, _ship, _trade, _planet);
-            _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars);
-            _scanner = new(_gameState, _graphics, _draw, Space.s_universe, Space.s_ship_count, _ship, _combat);
+            _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars, _universe);
+            _scanner = new(_gameState, _graphics, _draw, _universe._universe, _universe._shipCount, _ship, _combat);
             _configFile = new();
 
             _gameState.Config = _configFile.ReadConfigAsync().Result;
 
-            _views.Add(Screen.IntroOne, new Intro1View(_gameState, _graphics, _audio, keyboard, _ship, _combat));
-            _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _graphics, _audio, keyboard, _stars, _ship, _combat));
+            _views.Add(Screen.IntroOne, new Intro1View(_gameState, _graphics, _audio, keyboard, _ship, _combat, _universe));
+            _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _graphics, _audio, keyboard, _stars, _ship, _combat, _universe));
             _views.Add(Screen.GalacticChart, new GalacticChartView(_gameState, _graphics, _draw, keyboard, _planet, _ship));
             _views.Add(Screen.ShortRangeChart, new ShortRangeChartView(_gameState, _graphics, _draw, keyboard, _planet, _ship));
             _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _graphics, _draw, _planet));
             _views.Add(Screen.MarketPrices, new MarketView(_gameState, _graphics, _draw, keyboard, _trade, _planet));
-            _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _graphics, _draw, _ship, _trade, _planet));
+            _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _graphics, _draw, _ship, _trade, _planet, _universe));
             _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
             _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
             _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
@@ -84,10 +86,10 @@ namespace Elite.Engine
             _views.Add(Screen.SaveCommander, new SaveCommanderView(_gameState, _graphics, _draw, keyboard, _save));
             _views.Add(Screen.Quit, new QuitView(_gameState, _graphics, _draw, keyboard));
             _views.Add(Screen.Settings, new SettingsView(_gameState, _graphics, _draw, keyboard, _configFile));
-            _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _combat));
+            _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _combat, _universe));
             _views.Add(Screen.MissionTwo, new ThargoidMissionView(_gameState, _graphics, _draw, keyboard, _ship));
-            _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _graphics, _audio, _stars, _ship, _trade, _combat));
-            _views.Add(Screen.GameOver, new GameOverView(_gameState, _graphics, _audio, _stars, _ship, _combat));
+            _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _graphics, _audio, _stars, _ship, _trade, _combat, _universe, _pilot));
+            _views.Add(Screen.GameOver, new GameOverView(_gameState, _graphics, _audio, _stars, _ship, _combat, _universe));
 
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
 
@@ -201,7 +203,7 @@ namespace Elite.Engine
 
             if (_pilot.IsAutoPilotOn)
             {
-                _ship.AutoDock();
+                _pilot.AutoDock();
                 if ((_gameState.MCount & 127) == 0)
                 {
                     _gameState.InfoMessage("Docking Computers On");

@@ -10,8 +10,6 @@ namespace Elite.Engine.Views
 {
     internal sealed class CommanderStatusView : IView
     {
-        public readonly GameState _gameState;
-
         private readonly string[] _conditionText = new string[]
         {
                 "Docked",
@@ -24,6 +22,7 @@ namespace Elite.Engine.Views
         private readonly int _equipmentMaxY = 290;
         private readonly int _equipmentStartY = 202;
         private readonly int _equipmentWidth = 200;
+        private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly Planet _planet;
 
@@ -43,8 +42,9 @@ namespace Elite.Engine.Views
         private readonly PlayerShip _ship;
         private readonly int _spacingY = 16;
         private readonly Trade _trade;
+        private readonly Universe _universe;
 
-        internal CommanderStatusView(GameState gameState, IGraphics graphics, Draw draw, PlayerShip ship, Trade trade, Planet planet)
+        internal CommanderStatusView(GameState gameState, IGraphics graphics, Draw draw, PlayerShip ship, Trade trade, Planet planet, Universe universe)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -52,6 +52,7 @@ namespace Elite.Engine.Views
             _ship = ship;
             _trade = trade;
             _planet = planet;
+            _universe = universe;
         }
 
         public void Draw()
@@ -87,7 +88,7 @@ namespace Elite.Engine.Views
 
                 for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
                 {
-                    if (Space.s_universe[i].Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
+                    if (_universe._universe[i].Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
                     {
                         condition = 2;
                         break;

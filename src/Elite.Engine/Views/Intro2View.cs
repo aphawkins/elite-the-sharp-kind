@@ -33,12 +33,21 @@ namespace Elite.Engine.Views
 
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
+        private readonly Universe _universe;
         private int _direction;
         private Vector3[] _rotmat = new Vector3[3];
         private ShipType _shipNo;
         private int _showTime;
 
-        internal Intro2View(GameState gameStat, IGraphics graphics, Audio audio, IKeyboard keyboard, Stars stars, PlayerShip ship, Combat combat)
+        internal Intro2View(
+            GameState gameStat,
+            IGraphics graphics,
+            Audio audio,
+            IKeyboard keyboard,
+            Stars stars,
+            PlayerShip ship,
+            Combat combat,
+            Universe universe)
         {
             _gameState = gameStat;
             _graphics = graphics;
@@ -47,6 +56,7 @@ namespace Elite.Engine.Views
             _stars = stars;
             _ship = ship;
             _combat = combat;
+            _universe = universe;
         }
 
         public void Draw()
@@ -93,14 +103,14 @@ namespace Elite.Engine.Views
                 _direction = -_direction;
             }
 
-            Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, Space.s_universe[0].Location.Z + _direction);
+            _universe._universe[0].Location = new(_universe._universe[0].Location.X, _universe._universe[0].Location.Y, _universe._universe[0].Location.Z + _direction);
 
-            if (Space.s_universe[0].Location.Z < _minDist[(int)_shipNo])
+            if (_universe._universe[0].Location.Z < _minDist[(int)_shipNo])
             {
-                Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, _minDist[(int)_shipNo]);
+                _universe._universe[0].Location = new(_universe._universe[0].Location.X, _universe._universe[0].Location.Y, _minDist[(int)_shipNo]);
             }
 
-            if (Space.s_universe[0].Location.Z > 4500)
+            if (_universe._universe[0].Location.Z > 4500)
             {
                 do
                 {
@@ -115,8 +125,8 @@ namespace Elite.Engine.Views
                 _showTime = 0;
                 _direction = -100;
 
-                Space.s_ship_count[Space.s_universe[0].Type] = 0;
-                Space.s_universe[0].Type = ShipType.None;
+                _universe._shipCount[_universe._universe[0].Type] = 0;
+                _universe._universe[0].Type = ShipType.None;
 
                 _combat.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }

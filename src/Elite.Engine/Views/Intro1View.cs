@@ -21,8 +21,9 @@ namespace Elite.Engine.Views
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
+        private readonly Universe _universe;
 
-        internal Intro1View(GameState gameState, IGraphics graphics, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat)
+        internal Intro1View(GameState gameState, IGraphics graphics, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat, Universe universe)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -30,6 +31,7 @@ namespace Elite.Engine.Views
             _keyboard = keyboard;
             _ship = ship;
             _combat = combat;
+            _universe = universe;
         }
 
         public void Draw()
@@ -74,11 +76,11 @@ namespace Elite.Engine.Views
         public void UpdateUniverse()
         {
             _ship.Roll = 1;
-            Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, Space.s_universe[0].Location.Z - 100);
+            _universe._universe[0].Location = new(_universe._universe[0].Location.X, _universe._universe[0].Location.Y, _universe._universe[0].Location.Z - 100);
 
-            if (Space.s_universe[0].Location.Z < 384)
+            if (_universe._universe[0].Location.Z < 384)
             {
-                Space.s_universe[0].Location = new(Space.s_universe[0].Location.X, Space.s_universe[0].Location.Y, 384);
+                _universe._universe[0].Location = new(_universe._universe[0].Location.X, _universe._universe[0].Location.Y, 384);
             }
         }
     }

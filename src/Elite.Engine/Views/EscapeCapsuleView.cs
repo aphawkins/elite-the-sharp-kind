@@ -17,13 +17,24 @@ namespace Elite.Engine.Views
         private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
+        private readonly Pilot _pilot;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Trade _trade;
+        private readonly Universe _universe;
         private int _i;
         private int _newship;
 
-        internal EscapeCapsuleView(GameState gameState, IGraphics graphics, Audio audio, Stars stars, PlayerShip ship, Trade trade, Combat combat)
+        internal EscapeCapsuleView(
+            GameState gameState,
+            IGraphics graphics,
+            Audio audio,
+            Stars stars,
+            PlayerShip ship,
+            Trade trade,
+            Combat combat,
+            Universe universe,
+            Pilot pilot)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -32,6 +43,8 @@ namespace Elite.Engine.Views
             _ship = ship;
             _trade = trade;
             _combat = combat;
+            _universe = universe;
+            _pilot = pilot;
         }
 
         public void Draw()
@@ -54,7 +67,7 @@ namespace Elite.Engine.Views
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
             _newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
-            Space.s_universe[_newship].Velocity = 7;
+            _universe._universe[_newship].Velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;
         }
@@ -65,25 +78,25 @@ namespace Elite.Engine.Views
             {
                 if (_i == 40)
                 {
-                    Space.s_universe[_newship].Flags |= ShipFlags.Dead;
+                    _universe._universe[_newship].Flags |= ShipFlags.Dead;
                     _audio.PlayEffect(SoundEffect.Explode);
                 }
 
                 _stars.FrontStarfield();
-                Space.s_universe[_newship].Location = new(0, 0, Space.s_universe[_newship].Location.Z + 2);
+                _universe._universe[_newship].Location = new(0, 0, _universe._universe[_newship].Location.Z + 2);
                 _i++;
             }
-            else if ((Space.s_ship_count[ShipType.Coriolis] == 0) && (Space.s_ship_count[ShipType.Dodec] == 0))
+            else if ((_universe._shipCount[ShipType.Coriolis] == 0) && (_universe._shipCount[ShipType.Dodec] == 0))
             {
-                _ship.AutoDock();
+                _pilot.AutoDock();
 
                 if ((MathF.Abs(_ship.Roll) < 3) && (MathF.Abs(_ship.Climb) < 3))
                 {
                     for (int i = 0; i < EliteMain.MAX_UNIV_OBJECTS; i++)
                     {
-                        if (Space.s_universe[i].Type != 0)
+                        if (_universe._universe[i].Type != 0)
                         {
-                            Space.s_universe[i].Location = new(Space.s_universe[i].Location.X, Space.s_universe[i].Location.Y, Space.s_universe[i].Location.Z - 1500);
+                            _universe._universe[i].Location = new(_universe._universe[i].Location.X, _universe._universe[i].Location.Y, _universe._universe[i].Location.Z - 1500);
                         }
                     }
                 }
