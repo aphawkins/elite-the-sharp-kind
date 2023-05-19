@@ -20,9 +20,9 @@ namespace Elite.WinForms
         public Sound()
         {
 #pragma warning disable CS0618 // Type or member is obsolete
-            IMidiAccess _access = MidiAccessManager.Default;
+            IMidiAccess access = MidiAccessManager.Default;
 #pragma warning restore CS0618 // Type or member is obsolete
-            _output = _access.OpenOutputAsync(_access.Outputs.Last().Id).Result;
+            _output = access.OpenOutputAsync(access.Outputs.Last().Id).Result;
         }
 
         public void Load(Music midiType, Stream midiStream) => _midis[midiType] = MidiMusic.Read(midiStream);

@@ -97,11 +97,11 @@ namespace Elite.Engine
                 }
 
                 // Move the stars to their new locations...
-                float Q = delta / _stars[i].Z;
+                float q = delta / _stars[i].Z;
 
                 _stars[i].Z -= delta;
-                float yy = _stars[i].Y + (_stars[i].Y * Q);
-                float xx = _stars[i].X + (_stars[i].X * Q);
+                float yy = _stars[i].Y + (_stars[i].Y * q);
+                float xx = _stars[i].X + (_stars[i].X * q);
                 zz = _stars[i].Z;
 
                 yy += xx * alpha;
@@ -187,11 +187,11 @@ namespace Elite.Engine
                 }
 
                 // Move the stars to their new locations...
-                float Q = delta / _stars[i].Z;
+                float q = delta / _stars[i].Z;
 
                 _stars[i].Z += delta;
-                float yy = _stars[i].Y - (_stars[i].Y * Q);
-                float xx = _stars[i].X - (_stars[i].X * Q);
+                float yy = _stars[i].Y - (_stars[i].Y * q);
+                float xx = _stars[i].X - (_stars[i].X * q);
                 zz = _stars[i].Z;
 
                 yy += xx * alpha;
