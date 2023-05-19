@@ -69,7 +69,7 @@ namespace Elite.Engine
 
         internal string PlanetName { get; set; } = string.Empty;
 
-        internal Dictionary<ShipType, IShip> ShipList { get; private set; } = new()
+        internal Dictionary<ShipType, IShip> ShipList { get; } = new()
         {
             { ShipType.None, new NoShip() },
             { ShipType.Missile, new Missile() },

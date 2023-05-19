@@ -77,7 +77,7 @@ namespace Elite.Engine.Conflict
 
         internal bool InBattle { get; set; }
 
-        internal int IsMissileUnarmed { get; private set; } = -2;
+        internal int IsMissileUnarmed { get; } = -2;
 
         internal int MissileTarget { get; private set; }
 

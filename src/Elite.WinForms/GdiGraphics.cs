@@ -12,30 +12,16 @@ namespace Elite.WinForms
     internal sealed class GdiGraphics : IGraphics, IDisposable
     {
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
-
-        // Fonts
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-
-        // Images
         private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
-
         private readonly Dictionary<Colour, Pen> _pens = new();
-
-        // Actual screen
         private readonly Bitmap _screen;
-
-        private readonly object _screenLock = new();
-
-        // Screen buffer
         private readonly Bitmap _screenBuffer;
-
         private readonly Graphics _screenBufferGraphics;
         private readonly Graphics _screenGraphics;
+        private readonly object _screenLock = new();
         private bool _isDisposed;
 
-        //private volatile int frame_count;
-        //private readonly object frameCountLock = new();
-        //private readonly System.Windows.Forms.Timer _frameTimer;
         public GdiGraphics(ref Bitmap screen)
         {
             Debug.Assert(screen.Width == 512, "Screen should be correct width.");
@@ -58,7 +44,7 @@ namespace Elite.WinForms
 
         public Vector2 Offset { get; private set; } = new(0, 0);
 
-        public float Scale { get; private set; } = 2;
+        public float Scale { get; } = 2;
 
         public Vector2 ViewB { get; private set; } = new(509, 381);
 
