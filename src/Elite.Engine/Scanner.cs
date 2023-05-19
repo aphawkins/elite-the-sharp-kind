@@ -7,7 +7,6 @@ using Elite.Common.Enums;
 using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
-using Elite.Engine.Types;
 using Elite.Engine.Views;
 
 namespace Elite.Engine
@@ -22,17 +21,15 @@ namespace Elite.Engine
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
-        private readonly Dictionary<ShipType, int> _shipCount;
-        private readonly UniverseObject[] _universe;
+        private readonly Universe _universe;
         private Vector2 _scannerCentre = new(253, 63 + 385);
 
-        internal Scanner(GameState gameState, IGraphics graphics, Draw draw, UniverseObject[] universe, Dictionary<ShipType, int> shipCount, PlayerShip ship, Combat combat)
+        internal Scanner(GameState gameState, IGraphics graphics, Draw draw, Universe universe, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
             _graphics = graphics;
             _draw = draw;
             _universe = universe;
-            _shipCount = shipCount;
             _ship = ship;
             _combat = combat;
         }
@@ -61,7 +58,7 @@ namespace Elite.Engine
             UpdateScanner();
             UpdateCompass();
 
-            if (_shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0)
+            if (_universe.ShipCount[ShipType.Coriolis] != 0 || _universe.ShipCount[ShipType.Dodec] != 0)
             {
                 _graphics.DrawImage(Image.BigS, new(387, 490));
             }
@@ -251,8 +248,8 @@ namespace Elite.Engine
                 return;
             }
 
-            int un = _shipCount[ShipType.Coriolis] == 0 && _shipCount[ShipType.Dodec] == 0 ? 0 : 1;
-            Vector3 dest = VectorMaths.UnitVector(_universe[un].Location);
+            int un = _universe.ShipCount[ShipType.Coriolis] == 0 && _universe.ShipCount[ShipType.Dodec] == 0 ? 0 : 1;
+            Vector3 dest = VectorMaths.UnitVector(_universe.Objects[un].Location);
 
             if (float.IsNaN(dest.X))
             {
@@ -278,16 +275,16 @@ namespace Elite.Engine
         {
             for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
-                if ((_universe[i].Type <= 0) ||
-                    _universe[i].Flags.HasFlag(ShipFlags.Dead) ||
-                    _universe[i].Flags.HasFlag(ShipFlags.Cloaked))
+                if ((_universe.Objects[i].Type <= 0) ||
+                    _universe.Objects[i].Flags.HasFlag(ShipFlags.Dead) ||
+                    _universe.Objects[i].Flags.HasFlag(ShipFlags.Cloaked))
                 {
                     continue;
                 }
 
-                float x = _universe[i].Location.X / 256;
-                float y1 = -_universe[i].Location.Z / 1024;
-                float y2 = y1 - (_universe[i].Location.Y / 512);
+                float x = _universe.Objects[i].Location.X / 256;
+                float y1 = -_universe.Objects[i].Location.Z / 1024;
+                float y2 = y1 - (_universe.Objects[i].Location.Y / 512);
 
                 if ((y2 < -28) || (y2 > 28) ||
                     (x < -50) || (x > 50))
@@ -299,9 +296,9 @@ namespace Elite.Engine
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                Colour colour = _universe[i].Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow : Colour.White;
+                Colour colour = _universe.Objects[i].Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow : Colour.White;
 
-                switch (_universe[i].Type)
+                switch (_universe.Objects[i].Type)
                 {
                     case ShipType.Missile:
                         colour = Colour.Lilac;
