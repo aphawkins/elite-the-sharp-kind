@@ -93,7 +93,7 @@ namespace Elite.Engine.Conflict
 
         internal int AddNewShip(ShipType ship_type, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
         {
-            Debug.Assert(rotmat != null);
+            Debug.Assert(rotmat != null, "Rotation matrix should not be null.");
             for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
                 if (_universe.Objects[i].Type == ShipType.None)

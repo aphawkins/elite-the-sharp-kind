@@ -78,7 +78,7 @@ namespace Elite.Engine.Ships
         /// <param name="front">True if front, false if rear.</param>
         internal void DamageShip(float damage, bool front)
         {
-            Debug.Assert(damage > 0);
+            Debug.Assert(damage > 0, "Damage should be positive.");
 
             float shield = front ? ShieldFront : ShieldRear;
 

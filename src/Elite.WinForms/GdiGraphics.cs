@@ -38,8 +38,8 @@ namespace Elite.WinForms
         //private readonly System.Windows.Forms.Timer _frameTimer;
         public GdiGraphics(ref Bitmap screen)
         {
-            Debug.Assert(screen.Width == 512);
-            Debug.Assert(screen.Height == 512);
+            Debug.Assert(screen.Width == 512, "Screen should be correct width.");
+            Debug.Assert(screen.Height == 512, "Screen should be correct height.");
 
             _screen = screen;
             _screenGraphics = Graphics.FromImage(_screen);
@@ -98,7 +98,7 @@ namespace Elite.WinForms
             //TODO: Fix SNES planet colour issues
             Color color = _pens.TryGetValue(colour, out Pen? value) ? value.Color : Color.Magenta;
 
-            Debug.Assert(color != Color.Magenta);
+            Debug.Assert(color != Color.Magenta, "Check for valid colour.");
 
             //TODO: fix bad values from explosion
             if (position.X < 0 || position.X >= 512 || position.Y < 0 || position.Y >= 512)

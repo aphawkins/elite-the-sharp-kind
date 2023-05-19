@@ -181,7 +181,7 @@ namespace Elite.Engine.Views
                     }
 
                     int num = Convert.ToInt32(temp, CultureInfo.InvariantCulture);
-                    Debug.Assert(num < _descriptionList.Length);
+                    Debug.Assert(num < _descriptionList.Length, "Number should be within the description range.");
                     int option;
 
                     if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
