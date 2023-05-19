@@ -172,7 +172,9 @@ dotnet_diagnostic.CA1814.severity = none
 # StyleCop - Exclusions
 dotnet_diagnostic.SA1005.severity = none # Single line comment should begin with a space
 dotnet_diagnostic.SA1101.severity = none # Prefix local calls with this
+dotnet_diagnostic.SA1308.severity = none # Field '' should not begin with the prefix 's_'
 dotnet_diagnostic.SA1309.severity = none # Field '' should not begin with an underscore
+dotnet_diagnostic.SA1311.severity = none # Static readonly fields should begin with upper-case letter
 dotnet_diagnostic.SA1407.severity = none # Arithmetic expressions should declare precedence
 dotnet_diagnostic.SA1600.severity = none # Elements should be documented
 dotnet_diagnostic.SA1601.severity = none # Partial elements should be documented

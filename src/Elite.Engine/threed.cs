@@ -13,14 +13,14 @@ namespace Elite.Engine
 {
     internal sealed class Threed
     {
-        private const int LAND_X_MAX = 128;
-        private const int LAND_Y_MAX = 128;
-        private const int MAX_POLYS = 100;
+        private const int LANDXMAX = 128;
+        private const int LANDYMAX = 128;
+        private const int MAXPOLYS = 100;
 
         /// <summary>
         /// Colour map used to generate a SNES Elite style planet.
         /// </summary>
-        private static readonly int[] s_snes_planet_colour = new int[]
+        private static readonly int[] s_snesPlanetColour = new int[]
         {
             // TODO: This is a quick hack and needs tidying up.
             102, 102,
@@ -48,9 +48,9 @@ namespace Elite.Engine
         private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
-        private readonly int[,] _landscape = new int[LAND_X_MAX + 1, LAND_Y_MAX + 1];
+        private readonly int[,] _landscape = new int[LANDXMAX + 1, LANDYMAX + 1];
         private readonly Vector3[] _pointList = new Vector3[100];
-        private readonly PolygonData[] _polyChain = new PolygonData[MAX_POLYS];
+        private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
 
         private int _startPoly;
 
@@ -351,7 +351,7 @@ namespace Elite.Engine
         {
             int i;
 
-            if (_totalPolys == MAX_POLYS)
+            if (_totalPolys == MAXPOLYS)
             {
                 return;
             }
@@ -511,28 +511,28 @@ namespace Elite.Engine
         [SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "Randomness here requires seed.")]
         private void GenerateFractalLandscape(int seed)
         {
-            const int d = LAND_X_MAX / 8;
+            const int d = LANDXMAX / 8;
             Random random = new(seed);
 
-            for (int y = 0; y <= LAND_Y_MAX; y += d)
+            for (int y = 0; y <= LANDYMAX; y += d)
             {
-                for (int x = 0; x <= LAND_X_MAX; x += d)
+                for (int x = 0; x <= LANDXMAX; x += d)
                 {
                     _landscape[x, y] = random.Next(255);
                 }
             }
 
-            for (int y = 0; y < LAND_Y_MAX; y += d)
+            for (int y = 0; y < LANDYMAX; y += d)
             {
-                for (int x = 0; x < LAND_X_MAX; x += d)
+                for (int x = 0; x < LANDXMAX; x += d)
                 {
                     MidpointSquare(x, y, d);
                 }
             }
 
-            for (int y = 0; y <= LAND_Y_MAX; y++)
+            for (int y = 0; y <= LANDYMAX; y++)
             {
-                for (int x = 0; x <= LAND_X_MAX; x++)
+                for (int x = 0; x <= LANDXMAX; x++)
                 {
                     float dist = (x * x) + (y * y);
                     bool dark = dist > 10000;
@@ -549,10 +549,10 @@ namespace Elite.Engine
         /// </summary>
         private void GenerateSnesLandscape()
         {
-            for (int y = 0; y <= LAND_Y_MAX; y++)
+            for (int y = 0; y <= LANDYMAX; y++)
             {
-                int colour = s_snes_planet_colour[y * (s_snes_planet_colour.Length - 1) / LAND_Y_MAX];
-                for (int x = 0; x <= LAND_X_MAX; x++)
+                int colour = s_snesPlanetColour[y * (s_snesPlanetColour.Length - 1) / LANDYMAX];
+                for (int x = 0; x <= LANDXMAX; x++)
                 {
                     _landscape[x, y] = colour;
                 }
@@ -670,8 +670,8 @@ namespace Elite.Engine
             {
                 if (s.X >= _graphics.ViewT.X + _graphics.Offset.X && s.X <= _graphics.ViewB.X + _graphics.Offset.X)
                 {
-                    int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LAND_X_MAX);
-                    int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LAND_Y_MAX);
+                    int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LANDXMAX);
+                    int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LANDYMAX);
                     Colour colour = (Colour)_landscape[lx, ly];
                     _graphics.DrawPixelFast(s, colour);
                 }
