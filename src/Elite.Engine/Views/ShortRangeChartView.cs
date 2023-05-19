@@ -16,8 +16,8 @@ namespace Elite.Engine.Views
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly Planet _planet;
-        private readonly List<(Vector2 position, string name)> _planetNames = new();
-        private readonly List<(Vector2 position, float size)> _planetSizes = new();
+        private readonly List<(Vector2 Position, string Name)> _planetNames = new();
+        private readonly List<(Vector2 Position, float Size)> _planetSizes = new();
         private readonly PlayerShip _ship;
         private int _crossTimer;
         private string _findName = string.Empty;

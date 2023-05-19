@@ -26,7 +26,7 @@ namespace Elite.Engine.Views
         private readonly IGraphics _graphics;
         private readonly Planet _planet;
 
-        private readonly (int score, string title)[] _ratings = new (int score, string title)[]
+        private readonly (int Score, string Title)[] _ratings = new (int Score, string Title)[]
         {
                 new(0x0000, "Harmless"),
                 new(0x0008, "Mostly Harmless"),
