@@ -159,7 +159,7 @@ namespace Elite.Engine
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Exception" + ex.Message);
+                Debug.WriteLine("Exception" + ex.Message);
                 throw;
             }
             finally
@@ -222,7 +222,7 @@ namespace Elite.Engine
             DrawFps();
 #endif
 
-            if (!_gameState.IsDocked & !_gameState.IsGameOver)
+            if (!_gameState.IsDocked && !_gameState.IsGameOver)
             {
                 _combat.CoolLaser();
 
@@ -374,12 +374,9 @@ namespace Elite.Engine
                 {
                     _space.EngageDockingComputer();
                 }
-                else
+                else if (!_gameState.InWitchspace && !_space.IsHyperspaceReady)
                 {
-                    if (!_gameState.InWitchspace && !_space.IsHyperspaceReady)
-                    {
-                        _pilot.EngageAutoPilot();
-                    }
+                    _pilot.EngageAutoPilot();
                 }
             }
 

@@ -164,30 +164,30 @@ csharp_style_prefer_top_level_statements = true:suggestion
 dotnet_analyzer_diagnostic.severity = warning
 
 # IDE - Exclusions
-dotnet_diagnostic.IDE0058.severity = none #Expression value is never used
+dotnet_diagnostic.IDE0058.severity = none # Remove unnecessary expression value
 
 # CodeAnalysis - Exclusions
-dotnet_diagnostic.CA1814.severity = none
+dotnet_diagnostic.CA1814.severity = none # Prefer jagged arrays over multidimensional
 
 # StyleCop - Exclusions
-dotnet_diagnostic.SA1005.severity = none # Single line comment should begin with a space
-dotnet_diagnostic.SA1101.severity = none # Prefix local calls with this
-dotnet_diagnostic.SA1308.severity = none # Field '' should not begin with the prefix 's_'
-dotnet_diagnostic.SA1309.severity = none # Field '' should not begin with an underscore
-dotnet_diagnostic.SA1311.severity = none # Static readonly fields should begin with upper-case letter
-dotnet_diagnostic.SA1407.severity = none # Arithmetic expressions should declare precedence
-dotnet_diagnostic.SA1600.severity = none # Elements should be documented
-dotnet_diagnostic.SA1601.severity = none # Partial elements should be documented
-dotnet_diagnostic.SA1602.severity = none # Enumeration items should be documented
-dotnet_diagnostic.SA1611.severity = none # The documentation for parameter '' is missing
-dotnet_diagnostic.SA1614.severity = none # Element parameter documentation should have text
-dotnet_diagnostic.SA1615.severity = none # Element return value should be documented
-dotnet_diagnostic.SA1616.severity = none # Element return value documentation should have text
-dotnet_diagnostic.SA1633.severity = none # The file header XML is invalid.
+dotnet_diagnostic.SA1005.severity = none # SA1005SingleLineCommentsMustBeginWithSingleSpace
+dotnet_diagnostic.SA1101.severity = none # SA1101PrefixLocalCallsWithThis
+dotnet_diagnostic.SA1308.severity = none # SA1308VariableNamesMustNotBePrefixed
+dotnet_diagnostic.SA1309.severity = none # SA1309FieldNamesMustNotBeginWithUnderscore
+dotnet_diagnostic.SA1311.severity = none # SA1311StaticReadonlyFieldsMustBeginWithUpperCaseLetter
+dotnet_diagnostic.SA1407.severity = none # SA1407ArithmeticExpressionsMustDeclarePrecedence
+dotnet_diagnostic.SA1600.severity = none # SA1600ElementsMustBeDocumented
+dotnet_diagnostic.SA1601.severity = none # SA1601PartialElementsMustBeDocumented
+dotnet_diagnostic.SA1602.severity = none # SA1602EnumerationItemsMustBeDocumented
+dotnet_diagnostic.SA1611.severity = none # SA1611ElementParametersMustBeDocumented
+dotnet_diagnostic.SA1614.severity = none # SA1614ElementParameterDocumentationMustHaveText
+dotnet_diagnostic.SA1615.severity = none # SA1615ElementReturnValueMustBeDocumented
+dotnet_diagnostic.SA1616.severity = none # SA1616ElementReturnValueDocumentationMustHaveText
+dotnet_diagnostic.SA1633.severity = none # SA1633FileMustHaveHeader
 
 # Roslynator
 # Set severity for all analyzers that are enabled by default (https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2022#set-rule-severity-of-multiple-analyzer-rules-at-once-in-an-editorconfig-file)
-dotnet_analyzer_diagnostic.category-roslynator.severity = suggestion
+dotnet_analyzer_diagnostic.category-roslynator.severity = warning
 roslynator_refactorings.enabled = true
 roslynator_compiler_diagnostic_fixes.enabled = true
 
