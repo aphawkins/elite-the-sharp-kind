@@ -1076,7 +1076,7 @@ namespace Elite.Engine.Conflict
 
         private void LaunchEnemy(int un, ShipType type, ShipFlags flags, int bravery)
         {
-            Debug.Assert(_universe.Objects[un].Rotmat != null);
+            Debug.Assert(_universe.Objects[un].Rotmat != null, "Rotation matrix should not be null.");
             Vector3[] rotmat = _universe.Objects[un].Rotmat.Cloner();
             int newship = AddNewShip(type, _universe.Objects[un].Location, rotmat, _universe.Objects[un].RotX, _universe.Objects[un].RotZ);
 
