@@ -192,8 +192,9 @@ roslynator_refactorings.enabled = true
 roslynator_compiler_diagnostic_fixes.enabled = true
 
 # Roslynator - Exclusions
-dotnet_diagnostic.RCS1069.severity = silent
-dotnet_diagnostic.RCS1070.severity = silent
+dotnet_diagnostic.RCS1069.severity = silent # Remove unnecessary case label
+dotnet_diagnostic.RCS1070.severity = silent # Remove redundant default switch section
+dotnet_diagnostic.RCS1181.severity = silent # Convert comment to documentation comment
 
 # C++ Files
 [*.{cpp,h,in}]

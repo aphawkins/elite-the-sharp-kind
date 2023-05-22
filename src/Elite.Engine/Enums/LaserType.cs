@@ -6,10 +6,10 @@ namespace Elite.Engine.Enums
 {
     public enum LaserType
     {
-        None,
-        Pulse,
-        Beam,
-        Military,
-        Mining,
+        None = 0,
+        Pulse = 1,
+        Beam = 2,
+        Military = 3,
+        Mining = 4,
     }
 }

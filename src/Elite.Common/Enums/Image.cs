@@ -6,16 +6,16 @@ namespace Elite.Common.Enums
 {
     public enum Image
     {
-        Scanner,
-        GreenDot,
-        DotRed,
-        BigS,
-        BigE,
-        EliteText,
-        MissileGreen,
-        MissileYellow,
-        MissileRed,
-        Blake,
+        Scanner = 0,
+        GreenDot = 1,
+        DotRed = 2,
+        BigS = 3,
+        BigE = 4,
+        EliteText = 5,
+        MissileGreen = 6,
+        MissileYellow = 7,
+        MissileRed = 8,
+        Blake = 9,
 
         //Dice,
     }

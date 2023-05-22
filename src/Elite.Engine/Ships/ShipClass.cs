@@ -7,13 +7,13 @@ namespace Elite.Engine.Ships
     internal enum ShipClass
     {
         None = 0,
-        Station,
-        Missile,
-        Tharglet,
-        SpaceJunk,
-        Police,
-        Trader,
-        PackHunter,
-        LoneWolf,
+        Station = 1,
+        Missile = 2,
+        Tharglet = 3,
+        SpaceJunk = 4,
+        Police = 5,
+        Trader = 6,
+        PackHunter = 7,
+        LoneWolf = 8,
     }
 }

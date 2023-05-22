@@ -16,40 +16,40 @@ namespace Elite.Engine.Views
 
         private readonly EquipmentItem[] _equipmentStock = new EquipmentItem[]
         {
-            new(false, true,   1, 0.2f, " Fuel",                EquipmentType.EQ_FUEL),
-            new(false, true,   1,   30, " Missile",             EquipmentType.EQ_MISSILE),
-            new(false, true,   1,  400, " Large Cargo Bay",     EquipmentType.EQ_CARGO_BAY),
-            new(false, true,   2,  600, " E.C.M. System",       EquipmentType.EQ_ECM),
-            new(false, true,   5,  525, " Fuel Scoops",         EquipmentType.EQ_FUEL_SCOOPS),
-            new(false, true,   6, 1000, " Escape Capsule",      EquipmentType.EQ_ESCAPE_CAPSULE),
-            new(false, true,   7,  900, " Energy Bomb",         EquipmentType.EQ_ENERGY_BOMB),
-            new(false, true,   8, 1500, " Extra Energy Unit",   EquipmentType.EQ_ENERGY_UNIT),
-            new(false, true,   9, 1500, " Docking Computers",   EquipmentType.EQ_DOCK_COMP),
-            new(false, true,  10, 5000, " Galactic Hyperdrive", EquipmentType.EQ_GAL_DRIVE),
-            new(false, false,  3,  400, "+Pulse Laser",         EquipmentType.EQ_PULSE_LASER),
-            new(false, true,   3,    0, "-Pulse Laser",         EquipmentType.EQ_PULSE_LASER),
-            new(false, true,   3,  400, ">Front",               EquipmentType.EQ_FRONT_PULSE),
-            new(false, true,   3,  400, ">Rear",                EquipmentType.EQ_REAR_PULSE),
-            new(false, true,   3,  400, ">Left",                EquipmentType.EQ_LEFT_PULSE),
-            new(false, true,   3,  400, ">Right",               EquipmentType.EQ_RIGHT_PULSE),
-            new(false, true,   4, 1000, "+Beam Laser",          EquipmentType.EQ_BEAM_LASER),
-            new(false, false,  4,    0, "-Beam Laser",          EquipmentType.EQ_BEAM_LASER),
-            new(false, false,  4, 1000, ">Front",               EquipmentType.EQ_FRONT_BEAM),
-            new(false, false,  4, 1000, ">Rear",                EquipmentType.EQ_REAR_BEAM),
-            new(false, false,  4, 1000, ">Left",                EquipmentType.EQ_LEFT_BEAM),
-            new(false, false,  4, 1000, ">Right",               EquipmentType.EQ_RIGHT_BEAM),
-            new(false, true,  10,  800, "+Mining Laser",        EquipmentType.EQ_MINING_LASER),
-            new(false, false, 10,    0, "-Mining Laser",        EquipmentType.EQ_MINING_LASER),
-            new(false, false, 10,  800, ">Front",               EquipmentType.EQ_FRONT_MINING),
-            new(false, false, 10,  800, ">Rear",                EquipmentType.EQ_REAR_MINING),
-            new(false, false, 10,  800, ">Left",                EquipmentType.EQ_LEFT_MINING),
-            new(false, false, 10,  800, ">Right",               EquipmentType.EQ_RIGHT_MINING),
-            new(false, true,  10, 6000, "+Military Laser",      EquipmentType.EQ_MILITARY_LASER),
-            new(false, false, 10,    0, "-Military Laser",      EquipmentType.EQ_MILITARY_LASER),
-            new(false, false, 10, 6000, ">Front",               EquipmentType.EQ_FRONT_MILITARY),
-            new(false, false, 10, 6000, ">Rear",                EquipmentType.EQ_REAR_MILITARY),
-            new(false, false, 10, 6000, ">Left",                EquipmentType.EQ_LEFT_MILITARY),
-            new(false, false, 10, 6000, ">Right",               EquipmentType.EQ_RIGHT_MILITARY),
+            new(false, true,   1, 0.2f, " Fuel",                EquipmentType.Fuel),
+            new(false, true,   1,   30, " Missile",             EquipmentType.Missile),
+            new(false, true,   1,  400, " Large Cargo Bay",     EquipmentType.CargoBay),
+            new(false, true,   2,  600, " E.C.M. System",       EquipmentType.ECM),
+            new(false, true,   5,  525, " Fuel Scoops",         EquipmentType.FuelScoop),
+            new(false, true,   6, 1000, " Escape Capsule",      EquipmentType.EscapeCapsule),
+            new(false, true,   7,  900, " Energy Bomb",         EquipmentType.EnergyBomb),
+            new(false, true,   8, 1500, " Extra Energy Unit",   EquipmentType.EnergyUnit),
+            new(false, true,   9, 1500, " Docking Computers",   EquipmentType.DockingComputer),
+            new(false, true,  10, 5000, " Galactic Hyperdrive", EquipmentType.GalacticHyperdrive),
+            new(false, false,  3,  400, "+Pulse Laser",         EquipmentType.PulseLaser),
+            new(false, true,   3,    0, "-Pulse Laser",         EquipmentType.PulseLaser),
+            new(false, true,   3,  400, ">Front",               EquipmentType.PulseFront),
+            new(false, true,   3,  400, ">Rear",                EquipmentType.PulseRear),
+            new(false, true,   3,  400, ">Left",                EquipmentType.PulseLeft),
+            new(false, true,   3,  400, ">Right",               EquipmentType.PulseRight),
+            new(false, true,   4, 1000, "+Beam Laser",          EquipmentType.BeamLaser),
+            new(false, false,  4,    0, "-Beam Laser",          EquipmentType.BeamLaser),
+            new(false, false,  4, 1000, ">Front",               EquipmentType.BeamFront),
+            new(false, false,  4, 1000, ">Rear",                EquipmentType.BeamRear),
+            new(false, false,  4, 1000, ">Left",                EquipmentType.BeamLeft),
+            new(false, false,  4, 1000, ">Right",               EquipmentType.BeamRight),
+            new(false, true,  10,  800, "+Mining Laser",        EquipmentType.MiningLaser),
+            new(false, false, 10,    0, "-Mining Laser",        EquipmentType.MiningLaser),
+            new(false, false, 10,  800, ">Front",               EquipmentType.MiningFront),
+            new(false, false, 10,  800, ">Rear",                EquipmentType.MiningRear),
+            new(false, false, 10,  800, ">Left",                EquipmentType.MiningLeft),
+            new(false, false, 10,  800, ">Right",               EquipmentType.MiningRight),
+            new(false, true,  10, 6000, "+Military Laser",      EquipmentType.MilitaryLaser),
+            new(false, false, 10,    0, "-Military Laser",      EquipmentType.MilitaryLaser),
+            new(false, false, 10, 6000, ">Front",               EquipmentType.MilitaryFront),
+            new(false, false, 10, 6000, ">Rear",                EquipmentType.MilitaryRear),
+            new(false, false, 10, 6000, ">Left",                EquipmentType.MilitaryLeft),
+            new(false, false, 10, 6000, ">Right",               EquipmentType.MilitaryRight),
         };
 
         private readonly GameState _gameState;
@@ -159,135 +159,135 @@ namespace Elite.Engine.Views
 
             switch (_equipmentStock[_highlightedItem].Type)
             {
-                case EquipmentType.EQ_FUEL:
+                case EquipmentType.Fuel:
                     _ship.Fuel = _ship.MaxFuel;
                     _scanner.UpdateConsole();
                     break;
 
-                case EquipmentType.EQ_MISSILE:
+                case EquipmentType.Missile:
                     _ship.MissileCount++;
                     _scanner.UpdateConsole();
                     break;
 
-                case EquipmentType.EQ_CARGO_BAY:
+                case EquipmentType.CargoBay:
                     _ship.CargoCapacity = 35;
                     break;
 
-                case EquipmentType.EQ_ECM:
+                case EquipmentType.ECM:
                     _ship.HasECM = true;
                     break;
 
-                case EquipmentType.EQ_FUEL_SCOOPS:
+                case EquipmentType.FuelScoop:
                     _ship.HasFuelScoop = true;
                     break;
 
-                case EquipmentType.EQ_ESCAPE_CAPSULE:
+                case EquipmentType.EscapeCapsule:
                     _ship.HasEscapeCapsule = true;
                     break;
 
-                case EquipmentType.EQ_ENERGY_BOMB:
+                case EquipmentType.EnergyBomb:
                     _ship.HasEnergyBomb = true;
                     break;
 
-                case EquipmentType.EQ_ENERGY_UNIT:
+                case EquipmentType.EnergyUnit:
                     _ship.EnergyUnit = EnergyUnit.Extra;
                     break;
 
-                case EquipmentType.EQ_DOCK_COMP:
+                case EquipmentType.DockingComputer:
                     _ship.HasDockingComputer = true;
                     break;
 
-                case EquipmentType.EQ_GAL_DRIVE:
+                case EquipmentType.GalacticHyperdrive:
                     _ship.HasGalacticHyperdrive = true;
                     break;
 
-                case EquipmentType.EQ_FRONT_PULSE:
+                case EquipmentType.PulseFront:
                     _trade.Credits += LaserRefund(_ship.LaserFront.Type);
                     _ship.LaserFront = new PulseLaser();
                     break;
 
-                case EquipmentType.EQ_REAR_PULSE:
+                case EquipmentType.PulseRear:
                     _trade.Credits += LaserRefund(_ship.LaserRear.Type);
                     _ship.LaserRear = new PulseLaser();
                     break;
 
-                case EquipmentType.EQ_LEFT_PULSE:
+                case EquipmentType.PulseLeft:
                     _trade.Credits += LaserRefund(_ship.LaserLeft.Type);
                     _ship.LaserLeft = new PulseLaser();
                     break;
 
-                case EquipmentType.EQ_RIGHT_PULSE:
+                case EquipmentType.PulseRight:
                     _trade.Credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new PulseLaser();
                     break;
 
-                case EquipmentType.EQ_FRONT_BEAM:
+                case EquipmentType.BeamFront:
                     _trade.Credits += LaserRefund(_ship.LaserFront.Type);
                     _ship.LaserFront = new BeamLaser();
                     break;
 
-                case EquipmentType.EQ_REAR_BEAM:
+                case EquipmentType.BeamRear:
                     _trade.Credits += LaserRefund(_ship.LaserRear.Type);
                     _ship.LaserRear = new BeamLaser();
                     break;
 
-                case EquipmentType.EQ_LEFT_BEAM:
+                case EquipmentType.BeamLeft:
                     _trade.Credits += LaserRefund(_ship.LaserLeft.Type);
                     _ship.LaserLeft = new BeamLaser();
                     break;
 
-                case EquipmentType.EQ_RIGHT_BEAM:
+                case EquipmentType.BeamRight:
                     _trade.Credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new BeamLaser();
                     break;
 
-                case EquipmentType.EQ_FRONT_MINING:
+                case EquipmentType.MiningFront:
                     _trade.Credits += LaserRefund(_ship.LaserFront.Type);
                     _ship.LaserFront = new MiningLaser();
                     break;
 
-                case EquipmentType.EQ_REAR_MINING:
+                case EquipmentType.MiningRear:
                     _trade.Credits += LaserRefund(_ship.LaserRear.Type);
                     _ship.LaserRear = new MiningLaser();
                     break;
 
-                case EquipmentType.EQ_LEFT_MINING:
+                case EquipmentType.MiningLeft:
                     _trade.Credits += LaserRefund(_ship.LaserLeft.Type);
                     _ship.LaserLeft = new MiningLaser();
                     break;
 
-                case EquipmentType.EQ_RIGHT_MINING:
+                case EquipmentType.MiningRight:
                     _trade.Credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new MiningLaser();
                     break;
 
-                case EquipmentType.EQ_FRONT_MILITARY:
+                case EquipmentType.MilitaryFront:
                     _trade.Credits += LaserRefund(_ship.LaserFront.Type);
                     _ship.LaserFront = new MilitaryLaser();
                     break;
 
-                case EquipmentType.EQ_REAR_MILITARY:
+                case EquipmentType.MilitaryRear:
                     _trade.Credits += LaserRefund(_ship.LaserRear.Type);
                     _ship.LaserRear = new MilitaryLaser();
                     break;
 
-                case EquipmentType.EQ_LEFT_MILITARY:
+                case EquipmentType.MilitaryLeft:
                     _trade.Credits += LaserRefund(_ship.LaserLeft.Type);
                     _ship.LaserLeft = new MilitaryLaser();
                     break;
 
-                case EquipmentType.EQ_RIGHT_MILITARY:
+                case EquipmentType.MilitaryRight:
                     _trade.Credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new MilitaryLaser();
                     break;
+                case EquipmentType.None:
+                case EquipmentType.PulseLaser:
 
-                case EquipmentType.EQ_PULSE_LASER:
+                case EquipmentType.BeamLaser:
 
-                case EquipmentType.EQ_BEAM_LASER:
+                case EquipmentType.MiningLaser:
 
-                case EquipmentType.EQ_MINING_LASER:
-
-                case EquipmentType.EQ_MILITARY_LASER:
+                case EquipmentType.MilitaryLaser:
 
                 default:
                     break;
@@ -366,36 +366,37 @@ namespace Elite.Engine.Views
 
         private bool PresentEquipment(EquipmentType type) => type switch
         {
-            EquipmentType.EQ_FUEL => _ship.Fuel >= 7,
-            EquipmentType.EQ_MISSILE => _ship.MissileCount >= 4,
-            EquipmentType.EQ_CARGO_BAY => _ship.CargoCapacity > 20,
-            EquipmentType.EQ_ECM => _ship.HasECM,
-            EquipmentType.EQ_FUEL_SCOOPS => _ship.HasFuelScoop,
-            EquipmentType.EQ_ESCAPE_CAPSULE => _ship.HasEscapeCapsule,
-            EquipmentType.EQ_ENERGY_BOMB => _ship.HasEnergyBomb,
-            EquipmentType.EQ_ENERGY_UNIT => _ship.EnergyUnit != EnergyUnit.None,
-            EquipmentType.EQ_DOCK_COMP => _ship.HasDockingComputer,
-            EquipmentType.EQ_GAL_DRIVE => _ship.HasGalacticHyperdrive,
-            EquipmentType.EQ_FRONT_PULSE => _ship.LaserFront.Type == LaserType.Pulse,
-            EquipmentType.EQ_REAR_PULSE => _ship.LaserRear.Type == LaserType.Pulse,
-            EquipmentType.EQ_LEFT_PULSE => _ship.LaserLeft.Type == LaserType.Pulse,
-            EquipmentType.EQ_RIGHT_PULSE => _ship.LaserRight.Type == LaserType.Pulse,
-            EquipmentType.EQ_FRONT_BEAM => _ship.LaserFront.Type == LaserType.Beam,
-            EquipmentType.EQ_REAR_BEAM => _ship.LaserRear.Type == LaserType.Beam,
-            EquipmentType.EQ_LEFT_BEAM => _ship.LaserLeft.Type == LaserType.Beam,
-            EquipmentType.EQ_RIGHT_BEAM => _ship.LaserRight.Type == LaserType.Beam,
-            EquipmentType.EQ_FRONT_MINING => _ship.LaserFront.Type == LaserType.Mining,
-            EquipmentType.EQ_REAR_MINING => _ship.LaserRear.Type == LaserType.Mining,
-            EquipmentType.EQ_LEFT_MINING => _ship.LaserLeft.Type == LaserType.Mining,
-            EquipmentType.EQ_RIGHT_MINING => _ship.LaserRight.Type == LaserType.Mining,
-            EquipmentType.EQ_FRONT_MILITARY => _ship.LaserFront.Type == LaserType.Military,
-            EquipmentType.EQ_REAR_MILITARY => _ship.LaserRear.Type == LaserType.Military,
-            EquipmentType.EQ_LEFT_MILITARY => _ship.LaserLeft.Type == LaserType.Military,
-            EquipmentType.EQ_RIGHT_MILITARY => _ship.LaserRight.Type == LaserType.Military,
-            EquipmentType.EQ_PULSE_LASER => throw new NotImplementedException(),
-            EquipmentType.EQ_BEAM_LASER => throw new NotImplementedException(),
-            EquipmentType.EQ_MINING_LASER => throw new NotImplementedException(),
-            EquipmentType.EQ_MILITARY_LASER => throw new NotImplementedException(),
+            EquipmentType.Fuel => _ship.Fuel >= 7,
+            EquipmentType.Missile => _ship.MissileCount >= 4,
+            EquipmentType.CargoBay => _ship.CargoCapacity > 20,
+            EquipmentType.ECM => _ship.HasECM,
+            EquipmentType.FuelScoop => _ship.HasFuelScoop,
+            EquipmentType.EscapeCapsule => _ship.HasEscapeCapsule,
+            EquipmentType.EnergyBomb => _ship.HasEnergyBomb,
+            EquipmentType.EnergyUnit => _ship.EnergyUnit != EnergyUnit.None,
+            EquipmentType.DockingComputer => _ship.HasDockingComputer,
+            EquipmentType.GalacticHyperdrive => _ship.HasGalacticHyperdrive,
+            EquipmentType.PulseFront => _ship.LaserFront.Type == LaserType.Pulse,
+            EquipmentType.PulseRear => _ship.LaserRear.Type == LaserType.Pulse,
+            EquipmentType.PulseLeft => _ship.LaserLeft.Type == LaserType.Pulse,
+            EquipmentType.PulseRight => _ship.LaserRight.Type == LaserType.Pulse,
+            EquipmentType.BeamFront => _ship.LaserFront.Type == LaserType.Beam,
+            EquipmentType.BeamRear => _ship.LaserRear.Type == LaserType.Beam,
+            EquipmentType.BeamLeft => _ship.LaserLeft.Type == LaserType.Beam,
+            EquipmentType.BeamRight => _ship.LaserRight.Type == LaserType.Beam,
+            EquipmentType.MiningFront => _ship.LaserFront.Type == LaserType.Mining,
+            EquipmentType.MiningRear => _ship.LaserRear.Type == LaserType.Mining,
+            EquipmentType.MiningLeft => _ship.LaserLeft.Type == LaserType.Mining,
+            EquipmentType.MiningRight => _ship.LaserRight.Type == LaserType.Mining,
+            EquipmentType.MilitaryFront => _ship.LaserFront.Type == LaserType.Military,
+            EquipmentType.MilitaryRear => _ship.LaserRear.Type == LaserType.Military,
+            EquipmentType.MilitaryLeft => _ship.LaserLeft.Type == LaserType.Military,
+            EquipmentType.MilitaryRight => _ship.LaserRight.Type == LaserType.Military,
+            EquipmentType.PulseLaser => throw new NotImplementedException(),
+            EquipmentType.BeamLaser => throw new NotImplementedException(),
+            EquipmentType.MiningLaser => throw new NotImplementedException(),
+            EquipmentType.MilitaryLaser => throw new NotImplementedException(),
+            EquipmentType.None => throw new NotImplementedException(),
             _ => false,
         };
     }
