@@ -591,7 +591,6 @@ namespace Elite.Engine
         /// Check if we are correctly aligned to dock.
         /// </summary>
         /// <param name="sn"></param>
-        /// <returns></returns>
         private bool IsDocking(int sn)
         {
             Vector3 vec;

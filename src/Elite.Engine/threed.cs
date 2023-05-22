@@ -176,11 +176,6 @@ namespace Elite.Engine
         /// <summary>
         /// Calculate the midpoint between two given points.
         /// </summary>
-        /// <param name="sx"></param>
-        /// <param name="sy"></param>
-        /// <param name="ex"></param>
-        /// <param name="ey"></param>
-        /// <returns></returns>
         private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
             Math.Clamp(((_landscape[sx, sy] + _landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 

@@ -84,15 +84,11 @@ namespace Elite.Engine
         /// <summary>
         /// Convert a vector into a vector of unit (1) length.
         /// </summary>
-        /// <param name="vec"></param>
-        /// <returns></returns>
         internal static Vector3 UnitVector(Vector3 vec) => Vector3.Divide(vec, vec.Length());
 
         /// <summary>
         /// Calculate the dot product of two vectors sharing a common point.
         /// </summary>
-        /// <param name="first"></param>
-        /// <param name="second"></param>
         /// <returns>The cosine of the angle between the two vectors.</returns>
         internal static float VectorDotProduct(Vector3 first, Vector3 second) => Vector3.Dot(first, second);
 

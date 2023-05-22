@@ -194,7 +194,10 @@ roslynator_compiler_diagnostic_fixes.enabled = true
 # Roslynator - Exclusions
 dotnet_diagnostic.RCS1069.severity = silent # Remove unnecessary case label
 dotnet_diagnostic.RCS1070.severity = silent # Remove redundant default switch section
+dotnet_diagnostic.RCS1141.severity = silent # Add 'param' element to documentation comment
+dotnet_diagnostic.RCS1154.severity = silent # Sort enum members
 dotnet_diagnostic.RCS1181.severity = silent # Convert comment to documentation comment
+dotnet_diagnostic.RCS1237.severity = silent # ([deprecated] use RCS1254 instead) Use bit shift operator
 
 # C++ Files
 [*.{cpp,h,in}]
