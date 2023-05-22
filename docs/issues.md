@@ -7,8 +7,6 @@
 - Change statics to objects
 - Incorrect distance shown on current planet after hyperspace
 - Clipping incorrect on bottom line (after explosion?)
-- Fix all warnings/infos
-- Warnings as errors
 - Fix code directory structure
 - Bring assets and common into a single lib & remove most publics
 - Check mission triggers (FAQ)

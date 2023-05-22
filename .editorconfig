@@ -170,6 +170,7 @@ dotnet_diagnostic.IDE0058.severity = none # Remove unnecessary expression value
 dotnet_diagnostic.CA1814.severity = none # Prefer jagged arrays over multidimensional
 
 # StyleCop - Exclusions
+dotnet_diagnostic.SA0001.severity = none # SA0001XmlCommentAnalysisDisabled
 dotnet_diagnostic.SA1005.severity = none # SA1005SingleLineCommentsMustBeginWithSingleSpace
 dotnet_diagnostic.SA1101.severity = none # SA1101PrefixLocalCallsWithThis
 dotnet_diagnostic.SA1308.severity = none # SA1308VariableNamesMustNotBePrefixed
