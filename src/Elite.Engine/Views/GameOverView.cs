@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using Elite.Engine.Audio;
 using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
@@ -10,7 +11,7 @@ namespace Elite.Engine.Views
 {
     internal sealed class GameOverView : IView
     {
-        private readonly Audio _audio;
+        private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
@@ -19,7 +20,7 @@ namespace Elite.Engine.Views
         private readonly Universe _universe;
         private int _i;
 
-        internal GameOverView(GameState gameState, IGraphics graphics, Audio audio, Stars stars, PlayerShip ship, Combat combat, Universe universe)
+        internal GameOverView(GameState gameState, IGraphics graphics, AudioController audio, Stars stars, PlayerShip ship, Combat combat, Universe universe)
         {
             _gameState = gameState;
             _graphics = graphics;

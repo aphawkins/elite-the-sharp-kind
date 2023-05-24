@@ -3,11 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Assets;
-using Elite.Engine.Enums;
 
-namespace Elite.Engine
+namespace Elite.Engine.Audio
 {
-    internal sealed class Audio
+    internal sealed class AudioController
     {
         private readonly bool _musicOn;
         private readonly bool _effectsOn;
@@ -31,7 +30,7 @@ namespace Elite.Engine
             { SoundEffect.Boop, new(7) },
         };
 
-        internal Audio(ISound sound)
+        internal AudioController(ISound sound)
         {
             _sound = sound;
 #if DEBUG

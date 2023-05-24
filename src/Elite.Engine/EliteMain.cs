@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
+using Elite.Engine.Audio;
 using Elite.Engine.Config;
 using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
@@ -16,7 +17,7 @@ namespace Elite.Engine
     public sealed class EliteMain
     {
         internal const int MaxUniverseObjects = 20;
-        private readonly Audio _audio;
+        private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly ConfigFile _configFile;
         private readonly Draw _draw;

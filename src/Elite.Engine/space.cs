@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using Elite.Engine.Audio;
 using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
@@ -16,7 +17,7 @@ namespace Elite.Engine
     /// </summary>
     internal sealed class Space
     {
-        private readonly Audio _audio;
+        private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
@@ -34,7 +35,7 @@ namespace Elite.Engine
             GameState gameState,
             IGraphics graphics,
             Threed threed,
-            Audio audio,
+            AudioController audio,
             Pilot pilot,
             Combat combat,
             Trade trade,

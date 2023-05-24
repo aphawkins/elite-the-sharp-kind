@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Enums;
+using Elite.Engine.Audio;
 using Elite.Engine.Ships;
 using Elite.Engine.Types;
 
@@ -14,11 +14,11 @@ namespace Elite.Engine
     /// </summary>
     internal sealed class Pilot
     {
-        private readonly Audio _audio;
+        private readonly AudioController _audio;
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
 
-        internal Pilot(Audio audio, Universe universe, PlayerShip ship)
+        internal Pilot(AudioController audio, Universe universe, PlayerShip ship)
         {
             _audio = audio;
             _universe = universe;

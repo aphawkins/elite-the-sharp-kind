@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using Elite.Engine.Audio;
 using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
@@ -14,7 +15,7 @@ namespace Elite.Engine.Views
     /// </summary>
     internal sealed class Intro1View : IView
     {
-        private readonly Audio _audio;
+        private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
@@ -22,7 +23,7 @@ namespace Elite.Engine.Views
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
 
-        internal Intro1View(GameState gameState, IGraphics graphics, Audio audio, IKeyboard keyboard, PlayerShip ship, Combat combat, Universe universe)
+        internal Intro1View(GameState gameState, IGraphics graphics, AudioController audio, IKeyboard keyboard, PlayerShip ship, Combat combat, Universe universe)
         {
             _gameState = gameState;
             _graphics = graphics;

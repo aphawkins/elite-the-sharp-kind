@@ -2,9 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Elite.Engine.Enums;
-
-namespace Elite.Engine
+namespace Elite.Engine.Audio
 {
     public interface ISound
     {

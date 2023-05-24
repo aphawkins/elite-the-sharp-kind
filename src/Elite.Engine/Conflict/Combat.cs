@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using Elite.Engine.Audio;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
 using Elite.Engine.Trader;
@@ -14,7 +15,7 @@ namespace Elite.Engine.Conflict
     internal sealed class Combat
     {
         private readonly int _isMISSILE_ARMED = -1;
-        private readonly Audio _audio;
+        private readonly AudioController _audio;
         private readonly GameState _gameState;
 
         private readonly ShipFlags[] _initialFlags = new ShipFlags[34]
@@ -64,7 +65,7 @@ namespace Elite.Engine.Conflict
         private int _laserStrength;
         private LaserType _laserType;
 
-        internal Combat(GameState gameState, Audio audio, PlayerShip ship, Trade trade, Pilot pilot, Universe universe)
+        internal Combat(GameState gameState, AudioController audio, PlayerShip ship, Trade trade, Pilot pilot, Universe universe)
         {
             _gameState = gameState;
             _audio = audio;

@@ -4,8 +4,7 @@
 
 using System.Media;
 using Commons.Music.Midi;
-using Elite.Engine;
-using Elite.Engine.Enums;
+using Elite.Engine.Audio;
 
 namespace Elite.WinForms
 {
