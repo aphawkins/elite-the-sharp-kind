@@ -4,8 +4,8 @@
 
 using System.Media;
 using Commons.Music.Midi;
-using Elite.Common.Enums;
 using Elite.Engine;
+using Elite.Engine.Enums;
 
 namespace Elite.WinForms
 {
@@ -27,7 +27,11 @@ namespace Elite.WinForms
 
         public void Load(Music midiType, Stream midiStream) => _midis[midiType] = MidiMusic.Read(midiStream);
 
-        public void Load(SoundEffect waveType, Stream waveStream) => _waves[waveType] = new(waveStream);
+        public void Load(SoundEffect waveType, Stream waveStream)
+        {
+            _waves[waveType] = new(waveStream);
+            _waves[waveType].Load();
+        }
 
         public void PlayWave(SoundEffect waveType) => _waves[waveType].Play();
 

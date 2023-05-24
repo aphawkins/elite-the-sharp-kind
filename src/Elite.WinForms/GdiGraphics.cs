@@ -13,7 +13,7 @@ namespace Elite.WinForms
     {
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-        private readonly Dictionary<Common.Enums.Image, Bitmap> _images = new();
+        private readonly Dictionary<Engine.Enums.Image, Bitmap> _images = new();
         private readonly Dictionary<Colour, Pen> _pens = new();
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
@@ -63,7 +63,7 @@ namespace Elite.WinForms
 
         public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawImage(Common.Enums.Image spriteImgage, Vector2 location)
+        public void DrawImage(Engine.Enums.Image spriteImgage, Vector2 location)
         {
             Bitmap sprite = _images[spriteImgage];
 
@@ -186,7 +186,7 @@ namespace Elite.WinForms
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(Common.Enums.Image imgType, Stream bitmapStream) => _images[imgType] = (Bitmap)Image.FromStream(bitmapStream);
+        public void LoadBitmap(Engine.Enums.Image imgType, Stream bitmapStream) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(bitmapStream);
 
         public void ScreenAcquire()
         {
@@ -231,7 +231,7 @@ namespace Elite.WinForms
                     _fontLarge.Dispose();
 
                     // Images
-                    foreach (KeyValuePair<Common.Enums.Image, Bitmap> image in _images)
+                    foreach (KeyValuePair<Engine.Enums.Image, Bitmap> image in _images)
                     {
                         image.Value.Dispose();
                     }

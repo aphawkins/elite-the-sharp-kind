@@ -2,21 +2,17 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Reflection;
-using Elite.Common.Enums;
-using Elite.Common.Interfaces;
+using Elite.Engine.Enums;
 
-namespace Elite.Assets
+namespace Elite.Engine.Assets
 {
-    public sealed class AssetLoader : IAssets
+    public sealed class AssetFileLoader : IAssets
     {
-        private readonly Assembly? _assets = Assembly.GetAssembly(typeof(AssetLoader));
+        public Stream? Load(Image image) => new FileStream(Path.Combine("Assets", "Images", GetName(image)), FileMode.Open);
 
-        public Stream? Load(Image image) => _assets?.GetManifestResourceStream("Elite.Assets.Images." + GetName(image));
+        public Stream? Load(SoundEffect effect) => new FileStream(Path.Combine("Assets", "SFX", GetName(effect)), FileMode.Open);
 
-        public Stream? Load(SoundEffect effect) => _assets?.GetManifestResourceStream("Elite.Assets.SoundEffects." + GetName(effect));
-
-        public Stream? Load(Music music) => _assets?.GetManifestResourceStream("Elite.Assets.Music." + GetName(music));
+        public Stream? Load(Music music) => new FileStream(Path.Combine("Assets", "Music", GetName(music)), FileMode.Open);
 
         private static string GetName(Image image) => image switch
         {

@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
-using Elite.Common.Enums;
 using Elite.Engine.Config;
 using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
@@ -40,11 +39,10 @@ namespace Elite.Engine
         private readonly Dictionary<Screen, IView> _views = new();
         private bool _isGamePaused;
 
-        public EliteMain(IGraphics alggraphics, ISound sound, IKeyboard keyboard)
+        public EliteMain(IGraphics graphics, ISound sound, IKeyboard keyboard)
         {
-            _graphics = alggraphics;
+            _graphics = graphics;
             _audio = new(sound);
-            _audio.LoadSounds();
             _keyboard = keyboard;
             _gameState = new(_keyboard, _views);
             _universe = new();
@@ -52,8 +50,6 @@ namespace Elite.Engine
             _trade = new(_gameState, _ship);
             _planet = new(_gameState);
             _draw = new(_graphics);
-            _draw.LoadImages();
-            _draw.DrawBorder();
             _threed = new(_gameState, _graphics, _draw);
             _stars = new(_gameState, _graphics, _ship);
             _pilot = new(_audio, _universe, _ship);
@@ -92,6 +88,13 @@ namespace Elite.Engine
             _views.Add(Screen.GameOver, new GameOverView(_gameState, _graphics, _audio, _stars, _ship, _combat, _universe));
 
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
+        }
+
+        public void Run()
+        {
+            _audio.LoadSounds();
+            _draw.LoadImages();
+            _draw.DrawBorder();
 
             long startTicks = DateTime.UtcNow.Ticks;
             long interval = (long)(100000 / _gameState.Config.Fps); // *10^-5

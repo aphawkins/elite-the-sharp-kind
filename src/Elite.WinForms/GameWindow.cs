@@ -9,12 +9,11 @@ namespace Elite.WinForms
 {
     public partial class GameWindow : Form
     {
-        private readonly IGraphics _graphics;
-        private readonly IKeyboard _keyboard;
         private readonly System.Windows.Forms.Timer _refreshTimer = new();
-        private readonly ISound _sound;
+        private readonly IKeyboard _keyboard;
 
-        public GameWindow()
+        //private readonly Task _game;
+        public GameWindow(Bitmap bmp, IKeyboard keyboard)
         {
             InitializeComponent();
 
@@ -22,13 +21,22 @@ namespace Elite.WinForms
             _refreshTimer.Tick += (sender, e) => RefreshScreen();
             _refreshTimer.Start();
 
-            Bitmap bmp = new(512, 512);
+            _keyboard = keyboard;
             screen.Image = bmp;
+        }
 
-            _graphics = new GdiGraphics(ref bmp);
-            _sound = new Sound();
-            _keyboard = new Keyboard();
-            Task.Run(() => new EliteMain(_graphics, _sound, _keyboard));
+        private void DoThrow(Task t)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => DoThrow(t)));
+                return;
+            }
+
+            if (t.IsFaulted && t.Exception != null)
+            {
+                throw t.Exception;
+            }
         }
 
         private void GameWindow_KeyDown(object sender, KeyEventArgs e) =>

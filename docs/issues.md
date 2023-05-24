@@ -8,7 +8,7 @@
 - Incorrect distance shown on current planet after hyperspace
 - Clipping incorrect on bottom line (after explosion?)
 - Fix code directory structure
-- Bring assets and common into a single lib & remove most publics
+- Remove most publics
 - Check mission triggers (FAQ)
 - Check ship stats (FAQ)
 - Improve ship/space object types

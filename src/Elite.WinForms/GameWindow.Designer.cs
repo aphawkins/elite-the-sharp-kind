@@ -1,5 +1,6 @@
 ﻿namespace Elite.WinForms
 {
+    #pragma warning disable CA1031 // Do not catch general exception types
     partial class GameWindow
     {
         /// <summary>
@@ -16,8 +17,6 @@
             if (disposing)
             {
                 components?.Dispose();
-
-                ((IDisposable)_sound)?.Dispose();
 
                 _refreshTimer?.Dispose();
             }

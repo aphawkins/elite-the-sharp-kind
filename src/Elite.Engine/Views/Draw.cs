@@ -3,8 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Assets;
-using Elite.Common.Enums;
+using Elite.Engine.Assets;
 using Elite.Engine.Enums;
 using Elite.Engine.Types;
 
@@ -107,15 +106,12 @@ namespace Elite.Engine.Views
 
         internal void LoadImages()
         {
-            AssetLoader loader = new();
+            AssetFileLoader loader = new();
 
             foreach (Image img in Enum.GetValues<Image>())
             {
-                Stream? stream = loader.Load(img);
-                if (stream != null)
-                {
-                    _graphics.LoadBitmap(img, stream);
-                }
+                using Stream? stream = loader.Load(img) ?? throw new EliteException();
+                _graphics.LoadBitmap(img, stream);
             }
         }
 

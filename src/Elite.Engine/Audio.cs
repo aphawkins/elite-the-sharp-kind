@@ -2,8 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Elite.Assets;
-using Elite.Common.Enums;
+using Elite.Engine.Assets;
+using Elite.Engine.Enums;
 
 namespace Elite.Engine
 {
@@ -45,24 +45,18 @@ namespace Elite.Engine
 
         internal void LoadSounds()
         {
-            AssetLoader loader = new();
+            AssetFileLoader loader = new();
 
             foreach (Music music in Enum.GetValues<Music>())
             {
-                Stream? stream = loader.Load(music);
-                if (stream != null)
-                {
-                    _sound.Load(music, stream);
-                }
+                using Stream? stream = loader.Load(music) ?? throw new EliteException();
+                _sound.Load(music, stream);
             }
 
             foreach (SoundEffect effect in Enum.GetValues<SoundEffect>())
             {
-                Stream? stream = loader.Load(effect);
-                if (stream != null)
-                {
-                    _sound.Load(effect, stream);
-                }
+                using Stream? stream = loader.Load(effect) ?? throw new EliteException();
+                _sound.Load(effect, stream);
             }
         }
 

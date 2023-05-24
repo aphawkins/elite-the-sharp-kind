@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Common.Enums;
+using Elite.Engine.Enums;
 using Elite.Engine.Ships;
 using Elite.Engine.Types;
 
