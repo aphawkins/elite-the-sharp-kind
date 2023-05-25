@@ -8,7 +8,7 @@ using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
-    internal sealed class Planet
+    internal sealed class PlanetController
     {
         private readonly GameState _gameState;
         private readonly string[] _inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
@@ -16,7 +16,7 @@ namespace Elite.Engine
         private readonly string[] _inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
         private readonly string[] _inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
 
-        internal Planet(GameState gameState) => _gameState = gameState;
+        internal PlanetController(GameState gameState) => _gameState = gameState;
 
         internal string Digrams { get; } = "ABOUSEITILETSTONLONUTHNOALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION";
 

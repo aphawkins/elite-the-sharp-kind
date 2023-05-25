@@ -22,7 +22,7 @@ namespace Elite.Engine
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly Pilot _pilot;
-        private readonly Planet _planet;
+        private readonly PlanetController _planet;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Threed _threed;
@@ -40,7 +40,7 @@ namespace Elite.Engine
             Combat combat,
             Trade trade,
             PlayerShip ship,
-            Planet planet,
+            PlanetController planet,
             Stars stars,
             Universe universe)
         {
@@ -193,7 +193,7 @@ namespace Elite.Engine
                 return;
             }
 
-            _hyperDistance = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
+            _hyperDistance = PlanetController.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
 
             if ((_hyperDistance == 0) || (_hyperDistance > _ship.Fuel))
             {
@@ -341,7 +341,7 @@ namespace Elite.Engine
                         _gameState.Cmdr.LegalStatus |= 64;
                     }
 
-                    float bounty = _gameState.ShipList[type].Bounty;
+                    float bounty = _universe.Objects[i].Bounty;
 
                     if ((bounty != 0) && (!_gameState.InWitchspace))
                     {
@@ -377,7 +377,7 @@ namespace Elite.Engine
 
                 MoveUniverseObject(ref _universe.Objects[i]);
 
-                UniverseObject flip = new(_universe.Objects[i]);
+                IShip flip = new Ship(_universe.Objects[i]);
                 SwitchToView(ref flip);
 
                 if (type == ShipType.Planet)
@@ -508,7 +508,7 @@ namespace Elite.Engine
             }
 
             _trade.MarketRandomiser = RNG.Random(255);
-            _gameState.CurrentPlanetData = Planet.GeneratePlanetData(_gameState.DockedPlanet);
+            _gameState.CurrentPlanetData = PlanetController.GeneratePlanetData(_gameState.DockedPlanet);
             _trade.GenerateStockMarket();
 
             _ship.Speed = 12;
@@ -667,7 +667,7 @@ namespace Elite.Engine
         /// Update an objects location in the universe.
         /// </summary>
         /// <param name="obj"></param>
-        private void MoveUniverseObject(ref UniverseObject obj)
+        private void MoveUniverseObject(ref IShip obj)
         {
             float x, y, z;
             float k2;
@@ -698,9 +698,9 @@ namespace Elite.Engine
                 {
                     obj.Velocity += obj.Acceleration;
                     obj.Acceleration = 0;
-                    if (obj.Velocity > _gameState.ShipList[obj.Type].VelocityMax)
+                    if (obj.Velocity > obj.VelocityMax)
                     {
-                        obj.Velocity = _gameState.ShipList[obj.Type].VelocityMax;
+                        obj.Velocity = obj.VelocityMax;
                     }
 
                     if (obj.Velocity <= 0)
@@ -764,7 +764,7 @@ namespace Elite.Engine
             VectorMaths.TidyMatrix(obj.Rotmat);
         }
 
-        private void SwitchToView(ref UniverseObject flip)
+        private void SwitchToView(ref IShip flip)
         {
             float tmp;
 

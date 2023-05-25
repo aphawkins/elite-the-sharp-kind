@@ -15,7 +15,7 @@ namespace Elite.Engine.Views
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
-        private readonly Planet _planet;
+        private readonly PlanetController _planet;
         private readonly List<(Vector2 Position, string Name)> _planetNames = new();
         private readonly List<(Vector2 Position, float Size)> _planetSizes = new();
         private readonly PlayerShip _ship;
@@ -23,7 +23,7 @@ namespace Elite.Engine.Views
         private string _findName = string.Empty;
         private bool _isFind;
 
-        internal ShortRangeChartView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, Planet planet, PlayerShip ship)
+        internal ShortRangeChartView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, PlanetController planet, PlayerShip ship)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -266,7 +266,7 @@ namespace Elite.Engine.Views
 
             _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
             _gameState.PlanetName = _planet.NamePlanet(_gameState.HyperspacePlanet);
-            _gameState.DistanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
+            _gameState.DistanceToPlanet = PlanetController.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
             CrossFromHyperspacePlanet();
         }
 

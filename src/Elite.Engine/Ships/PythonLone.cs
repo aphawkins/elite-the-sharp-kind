@@ -10,6 +10,6 @@ namespace Elite.Engine.Ships
 
         public new int LootMax => 2;
 
-        public new ShipClass Type => ShipClass.LoneWolf;
+        public new ShipClass Class => ShipClass.LoneWolf;
     }
 }

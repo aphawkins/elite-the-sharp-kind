@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
-using Elite.Engine.Types;
 using Elite.Engine.Views;
 
 namespace Elite.Engine
@@ -67,7 +66,7 @@ namespace Elite.Engine
         /// Draws an object in the universe. (Ship, Planet, Sun etc).
         /// </summary>
         /// <param name="ship"></param>
-        internal void DrawObject(UniverseObject ship)
+        internal void DrawObject(IShip ship)
         {
             //Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
             //  SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
@@ -179,32 +178,30 @@ namespace Elite.Engine
         private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
             Math.Clamp(((_landscape[sx, sy] + _landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
-        private void DrawExplosion(ref UniverseObject univ)
+        private void DrawExplosion(ref IShip ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             bool[] visible = new bool[32];
 
-            if (univ.ExpDelta > 251)
+            if (ship.ExpDelta > 251)
             {
-                univ.Flags |= ShipFlags.Remove;
+                ship.Flags |= ShipFlags.Remove;
                 return;
             }
 
-            univ.ExpDelta += 4;
+            ship.ExpDelta += 4;
 
-            if (univ.Location.Z <= 0)
+            if (ship.Location.Z <= 0)
             {
                 return;
             }
-
-            IShip ship = _gameState.ShipList[univ.Type];
 
             for (int i = 0; i < 3; i++)
             {
-                trans_mat[i] = univ.Rotmat[i];
+                trans_mat[i] = ship.Rotmat[i];
             }
 
-            Vector3 camera_vec = VectorMaths.MultiplyVector(univ.Location, trans_mat);
+            Vector3 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat);
             camera_vec = VectorMaths.UnitVector(camera_vec);
 
             ShipFaceNormal[] ship_norm = ship.FaceNormals;
@@ -227,7 +224,7 @@ namespace Elite.Engine
                     visible[ship.Points[i].Face3] || visible[ship.Points[i].Face4])
                 {
                     Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
-                    Vector3 r = vec + univ.Location;
+                    Vector3 r = vec + ship.Location;
 
                     float sx = r.X * 256f / r.Z;
                     float sy = r.Y * 256f / r.Z;
@@ -246,9 +243,9 @@ namespace Elite.Engine
                 }
             }
 
-            float z = univ.Location.Z;
+            float z = ship.Location.Z;
             float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
-            float pr = univ.ExpDelta * 256 / q;
+            float pr = ship.ExpDelta * 256 / q;
 
             //  if (pr > 0x1C00)
             //      q = 254;
@@ -292,7 +289,7 @@ namespace Elite.Engine
         /// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style.
         /// </summary>
         /// <param name="planet"></param>
-        private void DrawPlanet(ref UniverseObject planet)
+        private void DrawPlanet(ref IShip planet)
         {
             Vector2 position = new()
             {
@@ -399,20 +396,19 @@ namespace Elite.Engine
         /// A number of features(such as not showing detail at distance) have not yet been implemented.
         /// Check for hidden surface supplied by T.Harte.
         /// </summary>
-        /// <param name="univ"></param>
-        private void DrawShip(ref UniverseObject univ)
+        /// <param name="ship"></param>
+        private void DrawShip(ref IShip ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             int lasv;
             Colour col;
-            IShip ship = _gameState.ShipList[univ.Type];
 
             for (int i = 0; i < 3; i++)
             {
-                trans_mat[i] = univ.Rotmat[i];
+                trans_mat[i] = ship.Rotmat[i];
             }
 
-            Vector3 camera_vec = VectorMaths.MultiplyVector(univ.Location, trans_mat);
+            Vector3 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat);
             _ = VectorMaths.UnitVector(camera_vec);
             ShipFace[] face_data = ship.Faces;
 
@@ -434,7 +430,7 @@ namespace Elite.Engine
             for (int i = 0; i < ship.Points.Length; i++)
             {
                 Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
-                vec += univ.Location;
+                vec += ship.Location;
 
                 if (vec.Z <= 0)
                 {
@@ -474,15 +470,15 @@ namespace Elite.Engine
                 }
             }
 
-            if (univ.Flags.HasFlag(ShipFlags.Firing))
+            if (ship.Flags.HasFlag(ShipFlags.Firing))
             {
-                lasv = _gameState.ShipList[univ.Type].LaserFront;
-                col = (univ.Type == ShipType.Viper) ? Colour.Cyan : Colour.White;
+                lasv = ship.LaserFront;
+                col = (ship.Type == ShipType.Viper) ? Colour.Cyan : Colour.White;
 
                 Vector2[] pointList = new Vector2[]
                 {
                     new Vector2(_pointList[lasv].X, _pointList[lasv].Y),
-                    new(univ.Location.X > 0 ? 0 : 511, RNG.Random(255) * 2),
+                    new(ship.Location.X > 0 ? 0 : 511, RNG.Random(255) * 2),
                 };
 
                 DrawPolygonFilled(pointList, col, _pointList[lasv].Z);

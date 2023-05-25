@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Ships;
-using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
@@ -11,6 +10,6 @@ namespace Elite.Engine
     {
         internal Dictionary<ShipType, int> ShipCount { get; } = new();
 
-        internal UniverseObject[] Objects { get; } = new UniverseObject[EliteMain.MaxUniverseObjects];
+        internal IShip[] Objects { get; } = new IShip[EliteMain.MaxUniverseObjects];
     }
 }

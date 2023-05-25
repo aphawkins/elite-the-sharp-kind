@@ -13,11 +13,11 @@ namespace Elite.Engine.Views
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
-        private readonly Planet _planet;
+        private readonly PlanetController _planet;
         private readonly Trade _trade;
         private StockType _highlightedStock;
 
-        internal MarketView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, Trade trade, Planet planet)
+        internal MarketView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, Trade trade, PlanetController planet)
         {
             _gameState = gameState;
             _graphics = graphics;

@@ -7,13 +7,11 @@ using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class RockSplinter : IShip
+    internal sealed class RockSplinter : Ship
     {
-        public float Bounty => 0;
+        public override int EnergyMax => 20;
 
-        public int EnergyMax => 20;
-
-        public ShipFaceNormal[] FaceNormals { get; } =
+        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
         {
             new(18, new(30,    0,    0)),
             new(20, new(22,   32,   -8)),
@@ -21,7 +19,7 @@ namespace Elite.Engine.Ships
             new(0, new(17,   23,   95)),
         };
 
-        public ShipFace[] Faces { get; } =
+        public override ShipFace[] Faces { get; protected set; } =
         {
             new(Colour.LightGrey, new(0x00, 0x00, 0x00), new[] { 3, 2, 1 }),
             new(Colour.DarkGrey, new(0x00, 0x00, 0x00), new[] { 0, 2, 3 }),
@@ -29,11 +27,7 @@ namespace Elite.Engine.Ships
             new(Colour.Grey, new(0x00, 0x00, 0x00), new[] { 0, 1, 2 }),
         };
 
-        public int LaserFront => 0;
-
-        public int LaserStrength => 0;
-
-        public ShipLine[] Lines { get; } =
+        public override ShipLine[] Lines { get; protected set; } =
         {
             new(31,  2,  3,  0,  1),
             new(31,  0,  3,  1,  2),
@@ -43,13 +37,9 @@ namespace Elite.Engine.Ships
             new(31,  0,  2,  3,  1),
         };
 
-        public int LootMax => 0;
+        public override string Name => "Rock Splinter";
 
-        public int MissilesMax => 0;
-
-        public string Name => "Rock Splinter";
-
-        public ShipPoint[] Points { get; } =
+        public override ShipPoint[] Points { get; protected set; } =
         {
             new(new(-24,  -25,   16), 31,  1,  2,  3,  3),
             new(new(0,   12,  -10), 31,  0,  2,  3,  3),
@@ -57,14 +47,14 @@ namespace Elite.Engine.Ships
             new(new(12,   42,    7), 31,  0,  1,  2,  2),
         };
 
-        public StockType ScoopedType => StockType.Minerals;
+        public override StockType ScoopedType => StockType.Minerals;
 
-        public float Size => 256;
+        public override float Size => 256;
 
-        public ShipClass Type => throw new NotImplementedException();
+        public override ShipClass Class => ShipClass.SpaceJunk;
 
-        public int VanishPoint => 8;
+        public override int VanishPoint => 8;
 
-        public float VelocityMax => 10;
+        public override float VelocityMax => 10;
     }
 }

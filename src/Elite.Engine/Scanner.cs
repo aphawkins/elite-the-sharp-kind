@@ -360,7 +360,7 @@ namespace Elite.Engine
 
                     case ShipType.CobraMk3Lone:
 
-                    case ShipType.Asp2:
+                    case ShipType.AspMk2:
 
                     case ShipType.PythonLone:
 

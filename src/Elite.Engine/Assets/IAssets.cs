@@ -5,7 +5,7 @@
 using Elite.Engine.Audio;
 using Elite.Engine.Enums;
 
-namespace Elite.Engine
+namespace Elite.Engine.Assets
 {
     public interface IAssets
     {

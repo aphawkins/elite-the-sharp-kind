@@ -3,17 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
-using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Viper : IShip
+    internal sealed class Viper : Ship
     {
-        public float Bounty => 0;
+        public override int EnergyMax => 140;
 
-        public int EnergyMax => 140;
-
-        public ShipFaceNormal[] FaceNormals { get; } =
+        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
         {
             new(31, new(0,   32,    0)),
             new(31, new(-22,   33,   11)),
@@ -24,7 +21,7 @@ namespace Elite.Engine.Ships
             new(31, new(0,    0,  -48)),
         };
 
-        public ShipFace[] Faces { get; } =
+        public override ShipFace[] Faces { get; protected set; } =
         {
             new(Colour.DarkGrey, new(0x00, 0x20, 0x00), new[] { 7,  8,  1 }),
 
@@ -40,11 +37,9 @@ namespace Elite.Engine.Ships
             new(Colour.LighterRed, new(0x00, 0x00, -0x30), new[] { 10, 14, 11 }),
         };
 
-        public int LaserFront => 0;
+        public override int LaserStrength => 8;
 
-        public int LaserStrength => 8;
-
-        public ShipLine[] Lines { get; } =
+        public override ShipLine[] Lines { get; protected set; } =
         {
             new(31,  4,  2,  0,  3),
             new(30,  2,  1,  0,  1),
@@ -68,13 +63,11 @@ namespace Elite.Engine.Ships
             new(16,  6,  6, 12, 13),
         };
 
-        public int LootMax => 0;
+        public override int MissilesMax => 1;
 
-        public int MissilesMax => 1;
+        public override string Name => "Viper";
 
-        public string Name => "Viper";
-
-        public ShipPoint[] Points { get; } =
+        public override ShipPoint[] Points { get; protected set; } =
         {
             new(new(0,    0,   72), 31,  2,  1,  4,  3),
             new(new(0,   16,   24), 30,  1,  0,  2,  2),
@@ -93,14 +86,12 @@ namespace Elite.Engine.Ships
             new(new(8,   -8,  -24), 18,  6,  6,  6,  6),
         };
 
-        public StockType ScoopedType => StockType.None;
+        public override float Size => 5625;
 
-        public float Size => 5625;
+        public override ShipClass Class => ShipClass.Police;
 
-        public ShipClass Type => ShipClass.Police;
+        public override int VanishPoint => 23;
 
-        public int VanishPoint => 23;
-
-        public float VelocityMax => 32;
+        public override float VelocityMax => 32;
     }
 }

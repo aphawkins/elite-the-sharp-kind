@@ -5,7 +5,7 @@
 using System.Numerics;
 using Elite.Engine.Assets;
 using Elite.Engine.Enums;
-using Elite.Engine.Types;
+using Elite.Engine.Ships;
 
 namespace Elite.Engine.Views
 {
@@ -26,7 +26,7 @@ namespace Elite.Engine.Views
 
         internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_graphics.Offset.X, 385 + _graphics.Offset.Y));
 
-        internal void DrawSun(UniverseObject planet)
+        internal void DrawSun(IShip planet)
         {
             Vector2 centre = new()
             {

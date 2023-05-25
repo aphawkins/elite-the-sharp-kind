@@ -3,17 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
-using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class CargoCannister : IShip
+    internal sealed class CargoCannister : Ship
     {
-        public float Bounty => 0;
+        public override int EnergyMax => 17;
 
-        public int EnergyMax => 17;
-
-        public ShipFaceNormal[] FaceNormals { get; } =
+        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
         {
             new(31, new(96,    0,    0)),
             new(31, new(0,   41,   30)),
@@ -24,7 +21,7 @@ namespace Elite.Engine.Ships
             new(31, new(-96,    0,    0)),
         };
 
-        public ShipFace[] Faces { get; } =
+        public override ShipFace[] Faces { get; protected set; } =
         {
             new(Colour.Grey, new(0x60, 0x00, 0x00), new[] { 4, 0, 1, 2, 3 }),
 
@@ -37,11 +34,7 @@ namespace Elite.Engine.Ships
             new(Colour.Grey, new(-0x60, 0x00, 0x00), new[] { 8, 7, 6, 5, 9 }),
         };
 
-        public int LaserFront => 0;
-
-        public int LaserStrength => 0;
-
-        public ShipLine[] Lines { get; } =
+        public override ShipLine[] Lines { get; protected set; } =
         {
             new(31,  1,  0,  0,  1),
             new(31,  2,  0,  1,  2),
@@ -60,13 +53,9 @@ namespace Elite.Engine.Ships
             new(31,  6,  5,  9,  5),
         };
 
-        public int LootMax => 0;
+        public override string Name => "Cargo Cannister";
 
-        public int MissilesMax => 0;
-
-        public string Name => "Cargo Cannister";
-
-        public ShipPoint[] Points { get; } =
+        public override ShipPoint[] Points { get; protected set; } =
         {
             new(new(24,   16,    0), 31,  1,  0,  5,  5),
             new(new(24,    5,   15), 31,  1,  0,  2,  2),
@@ -80,14 +69,12 @@ namespace Elite.Engine.Ships
             new(new(-24,    5,  -15), 31,  5,  4,  6,  6),
         };
 
-        public StockType ScoopedType => StockType.None;
+        public override float Size => 400;
 
-        public float Size => 400;
+        public override ShipClass Class => ShipClass.SpaceJunk;
 
-        public ShipClass Type => ShipClass.SpaceJunk;
+        public override int VanishPoint => 12;
 
-        public int VanishPoint => 12;
-
-        public float VelocityMax => 15;
+        public override float VelocityMax => 15;
     }
 }

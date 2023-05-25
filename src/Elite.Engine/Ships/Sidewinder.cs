@@ -3,17 +3,16 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
-using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Sidewinder : IShip
+    internal sealed class Sidewinder : Ship
     {
-        public float Bounty => 5;
+        public override float Bounty => 5;
 
-        public int EnergyMax => 70;
+        public override int EnergyMax => 70;
 
-        public ShipFaceNormal[] FaceNormals { get; } =
+        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
         {
             new(31, new(0,   32,    8)),
             new(31, new(-12,   47,    6)),
@@ -24,7 +23,7 @@ namespace Elite.Engine.Ships
             new(31, new(12,  -47,    6)),
         };
 
-        public ShipFace[] Faces { get; } =
+        public override ShipFace[] Faces { get; protected set; } =
         {
             new(Colour.DarkYellow, new(0x00, 0x20, 0x08), new[] { 4, 0, 1 }),
             new(Colour.Gold, new(-0x0C, 0x2F, 0x06), new[] { 4, 3, 0 }),
@@ -38,11 +37,9 @@ namespace Elite.Engine.Ships
             new(Colour.LighterRed, new(0x00, 0x00, -0x70), new[] { 8, 9, 6, 7 }),
         };
 
-        public int LaserFront => 0;
+        public override int LaserStrength => 8;
 
-        public int LaserStrength => 8;
-
-        public ShipLine[] Lines { get; } =
+        public override ShipLine[] Lines { get; protected set; } =
         {
             new(31,  5,  0,  0,  1),
             new(31,  6,  2,  1,  2),
@@ -61,13 +58,9 @@ namespace Elite.Engine.Ships
             new(12,  3,  3,  8,  9),
         };
 
-        public int LootMax => 0;
+        public override string Name => "Sidewinder";
 
-        public int MissilesMax => 0;
-
-        public string Name => "Sidewinder";
-
-        public ShipPoint[] Points { get; } =
+        public override ShipPoint[] Points { get; protected set; } =
         {
             new(new(-32,    0,   36), 31,  1,  0,  5,  4),
             new(new(32,    0,   36), 31,  2,  0,  6,  5),
@@ -81,14 +74,12 @@ namespace Elite.Engine.Ships
             new(new(-12,   -6,  -28), 12,  3,  3,  3,  3),
         };
 
-        public StockType ScoopedType => StockType.None;
+        public override float Size => 4225;
 
-        public float Size => 4225;
+        public override ShipClass Class => ShipClass.PackHunter;
 
-        public ShipClass Type => ShipClass.PackHunter;
+        public override int VanishPoint => 20;
 
-        public int VanishPoint => 20;
-
-        public float VelocityMax => 37;
+        public override float VelocityMax => 37;
     }
 }

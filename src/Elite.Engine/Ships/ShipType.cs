@@ -33,7 +33,7 @@ namespace Elite.Engine.Ships
         CobraMk1 = 22,
         Worm = 23,
         CobraMk3Lone = 24,
-        Asp2 = 25,
+        AspMk2 = 25,
         PythonLone = 26,
         FerDeLance = 27,
         Moray = 28,

@@ -64,7 +64,7 @@ namespace Elite.Engine.Views
             _graphics.DrawImage(Image.EliteText, new(-1, 10));
 
             _graphics.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, Colour.Gold);
-            _graphics.DrawTextCentre(330, _gameState.ShipList[_shipNo].Name, 120, Colour.White);
+            _graphics.DrawTextCentre(330, _universe.Objects[0].Name, 120, Colour.White);
         }
 
         public void HandleInput()
@@ -115,7 +115,7 @@ namespace Elite.Engine.Views
                 do
                 {
                     _shipNo++;
-                    if ((int)_shipNo > _gameState.ShipList.Count)
+                    if (_shipNo > ShipType.Dodec)
                     {
                         _shipNo = ShipType.Missile;
                     }

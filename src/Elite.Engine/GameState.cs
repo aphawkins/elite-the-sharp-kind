@@ -5,7 +5,6 @@
 using System.Numerics;
 using Elite.Engine.Config;
 using Elite.Engine.Enums;
-using Elite.Engine.Ships;
 using Elite.Engine.Types;
 
 namespace Elite.Engine
@@ -68,44 +67,6 @@ namespace Elite.Engine
         internal string MessageString { get; set; } = string.Empty;
 
         internal string PlanetName { get; set; } = string.Empty;
-
-        internal Dictionary<ShipType, IShip> ShipList { get; } = new()
-        {
-            { ShipType.None, new NoShip() },
-            { ShipType.Missile, new Missile() },
-            { ShipType.Coriolis, new Coriolis() },
-            { ShipType.EscapeCapsule, new EscapeCapsule() },
-            { ShipType.Alloy, new Alloy() },
-            { ShipType.Cargo, new CargoCannister() },
-            { ShipType.Boulder, new Boulder() },
-            { ShipType.Asteroid, new Asteroid() },
-            { ShipType.Rock, new RockSplinter() },
-            { ShipType.Shuttle, new Shuttle() },
-            { ShipType.Transporter, new Transporter() },
-            { ShipType.CobraMk3, new CobraMk3() },
-            { ShipType.Python, new Python() },
-            { ShipType.Boa, new Boa() },
-            { ShipType.Anaconda, new Anaconda() },
-            { ShipType.Hermit, new RockHermit() },
-            { ShipType.Viper, new Viper() },
-            { ShipType.Sidewinder, new Sidewinder() },
-            { ShipType.Mamba, new Mamba() },
-            { ShipType.Krait, new Krait() },
-            { ShipType.Adder, new Adder() },
-            { ShipType.Gecko, new Gecko() },
-            { ShipType.CobraMk1, new CobraMk1() },
-            { ShipType.Worm, new Worm() },
-            { ShipType.CobraMk3Lone, new CobraMk3Lone() },
-            { ShipType.Asp2, new AspMk2() },
-            { ShipType.PythonLone, new PythonLone() },
-            { ShipType.FerDeLance, new FerDeLance() },
-            { ShipType.Moray, new Moray() },
-            { ShipType.Thargoid, new Thargoid() },
-            { ShipType.Tharglet, new Tharglet() },
-            { ShipType.Constrictor, new Constrictor() },
-            { ShipType.Cougar, new Cougar() },
-            { ShipType.Dodec, new DodecStation() },
-        };
 
         internal void DoExitGame() => ExitGame = true;
 

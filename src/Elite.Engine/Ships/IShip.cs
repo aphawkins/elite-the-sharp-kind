@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
@@ -34,10 +35,36 @@ namespace Elite.Engine.Ships
 
         float Size { get; }
 
-        ShipClass Type { get; }
+        ShipClass Class { get; }
 
         int VanishPoint { get; }
 
         float VelocityMax { get; }
+
+        int Acceleration { get; set; }
+
+        int Bravery { get; set; }
+
+        int Energy { get; set; }
+
+        int ExpDelta { get; set; }
+
+        ShipFlags Flags { get; set; }
+
+        Vector3 Location { get; set; }
+
+        int Missiles { get; set; }
+
+        Vector3[] Rotmat { get; set; }
+
+        float RotX { get; set; }
+
+        float RotZ { get; set; }
+
+        int Target { get; set; }
+
+        ShipType Type { get; set; }
+
+        float Velocity { get; set; }
     }
 }

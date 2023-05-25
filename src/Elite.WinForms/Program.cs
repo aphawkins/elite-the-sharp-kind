@@ -59,7 +59,11 @@ namespace Elite.WinForms
                     }
                     catch (Exception ex)
                     {
+#if DEBUG
+                        MessageBox.Show(ex.ToString(), "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#else
                         MessageBox.Show(ex.Message, "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#endif
                         Application.Exit();
                     }
 #pragma warning restore CA1031 // Do not catch general exception types
@@ -69,7 +73,11 @@ namespace Elite.WinForms
             }
             catch (Exception ex)
             {
+#if DEBUG
+                MessageBox.Show(ex.ToString(), "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#else
                 MessageBox.Show(ex.Message, "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#endif
                 throw;
             }
         }

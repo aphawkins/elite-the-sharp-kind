@@ -7,13 +7,11 @@ using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class EscapeCapsule : IShip
+    internal sealed class EscapeCapsule : Ship
     {
-        public float Bounty => 0;
+        public override int EnergyMax => 17;
 
-        public int EnergyMax => 17;
-
-        public ShipFaceNormal[] FaceNormals { get; } =
+        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
         {
             new(31, new(52,    0, -122)),
             new(31, new(39,  103,   30)),
@@ -21,7 +19,7 @@ namespace Elite.Engine.Ships
             new(31, new(-112,    0,    0)),
         };
 
-        public ShipFace[] Faces { get; } =
+        public override ShipFace[] Faces { get; protected set; } =
         {
             new ShipFace(Colour.LighterRed,      new(0x34, 0x00, -0x7A), new[] { 3, 1, 2 }),
             new ShipFace(Colour.LightRed, new(0x27, 0x67, 0x1E), new[] { 0, 3, 2 }),
@@ -29,11 +27,7 @@ namespace Elite.Engine.Ships
             new ShipFace(Colour.RedOrange,    new(0x70, 0x00, 0x00), new[] { 0, 2, 1 }),
         };
 
-        public int LaserFront => 0;
-
-        public int LaserStrength => 0;
-
-        public ShipLine[] Lines { get; } =
+        public override ShipLine[] Lines { get; protected set; } =
         {
             new(31,  2,  3,  0,  1),
             new(31,  0,  3,  1,  2),
@@ -43,13 +37,9 @@ namespace Elite.Engine.Ships
             new(31,  0,  2,  3,  1),
         };
 
-        public int LootMax => 0;
+        public override string Name => "Escape Capsule";
 
-        public int MissilesMax => 0;
-
-        public string Name => "Escape Capsule";
-
-        public ShipPoint[] Points { get; } =
+        public override ShipPoint[] Points { get; protected set; } =
         {
             new(new(-7,    0,   36), 31,  1,  2,  3,  3),
             new(new(-7,  -14,  -12), 31,  0,  2,  3,  3),
@@ -57,14 +47,14 @@ namespace Elite.Engine.Ships
             new(new(21,    0,    0), 31,  0,  1,  2,  2),
         };
 
-        public StockType ScoopedType => StockType.Slaves;
+        public override StockType ScoopedType => StockType.Slaves;
 
-        public float Size => 256;
+        public override float Size => 256;
 
-        public ShipClass Type => ShipClass.SpaceJunk;
+        public override ShipClass Class => ShipClass.SpaceJunk;
 
-        public int VanishPoint => 8;
+        public override int VanishPoint => 8;
 
-        public float VelocityMax => 8;
+        public override float VelocityMax => 8;
     }
 }

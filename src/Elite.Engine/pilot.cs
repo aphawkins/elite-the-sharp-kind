@@ -5,7 +5,6 @@
 using System.Numerics;
 using Elite.Engine.Audio;
 using Elite.Engine.Ships;
-using Elite.Engine.Types;
 
 namespace Elite.Engine
 {
@@ -29,7 +28,7 @@ namespace Elite.Engine
 
         internal void AutoDock()
         {
-            UniverseObject ship = new()
+            IShip ship = new Ship()
             {
                 Rotmat = VectorMaths.GetInitialMatrix(),
                 Location = Vector3.Zero,
@@ -123,7 +122,7 @@ namespace Elite.Engine
         /// Fly a ship to the planet or to the space station and dock it.
         /// </summary>
         /// <param name="ship"></param>
-        internal void AutoPilotShip(ref UniverseObject ship)
+        internal void AutoPilotShip(ref IShip ship)
         {
             Vector3 diff;
             Vector3 vec;
@@ -194,7 +193,7 @@ namespace Elite.Engine
         /// </summary>
         /// <param name="ship"></param>
         /// <param name="vec"></param>
-        private static void FlyToVector(ref UniverseObject ship, Vector3 vec)
+        private static void FlyToVector(ref IShip ship, Vector3 vec)
         {
             Vector3 nvec;
             float direction;
@@ -263,7 +262,7 @@ namespace Elite.Engine
         /// Final stage of docking. Fly into the docking bay.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToDockingBay(ref UniverseObject ship)
+        private void FlyToDockingBay(ref IShip ship)
         {
             Vector3 diff;
             float dir;
@@ -324,7 +323,7 @@ namespace Elite.Engine
         /// Fly towards the planet.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToPlanet(ref UniverseObject ship)
+        private void FlyToPlanet(ref IShip ship)
         {
             Vector3 vec;
 
@@ -339,7 +338,7 @@ namespace Elite.Engine
         /// Fly towards the space station.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToStation(ref UniverseObject ship)
+        private void FlyToStation(ref IShip ship)
         {
             Vector3 vec;
 
@@ -354,7 +353,7 @@ namespace Elite.Engine
         /// Fly to a point in front of the station docking bay. Done prior to the final stage of docking.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToStationFront(ref UniverseObject ship)
+        private void FlyToStationFront(ref IShip ship)
         {
             Vector3 vec;
 

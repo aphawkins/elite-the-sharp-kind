@@ -337,7 +337,7 @@ namespace Elite.Engine.Views
             LaserType.Beam => 1000,
             LaserType.Military => 6000,
             LaserType.Mining => 800,
-            LaserType.None => throw new NotImplementedException(),
+            LaserType.None => 0,
             _ => 0,
         };
 

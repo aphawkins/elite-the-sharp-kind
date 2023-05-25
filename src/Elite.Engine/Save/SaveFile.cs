@@ -23,13 +23,13 @@ namespace Elite.Engine.Save
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         };
 
-        private readonly Planet _planet;
+        private readonly PlanetController _planet;
         private readonly PlayerShip _ship;
         private readonly GameState _state;
         private readonly Trade _trade;
         private SaveState _lastSaved;
 
-        internal SaveFile(GameState state, PlayerShip ship, Trade trade, Planet planet)
+        internal SaveFile(GameState state, PlayerShip ship, Trade trade, PlanetController planet)
         {
             _state = state;
             _ship = ship;
@@ -156,7 +156,7 @@ namespace Elite.Engine.Save
             _state.DockedPlanet = _planet.FindPlanet(_state.Cmdr.Galaxy, new(_state.DockedPlanet.D, _state.DockedPlanet.B));
             _state.PlanetName = _planet.NamePlanet(_state.DockedPlanet);
             _state.HyperspacePlanet = new(_state.DockedPlanet);
-            _state.CurrentPlanetData = Planet.GeneratePlanetData(_state.DockedPlanet);
+            _state.CurrentPlanetData = PlanetController.GeneratePlanetData(_state.DockedPlanet);
             _trade.GenerateStockMarket();
             _trade.SetStockQuantities();
         }

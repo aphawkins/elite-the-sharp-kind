@@ -24,7 +24,7 @@ namespace Elite.Engine.Views
         private readonly int _equipmentWidth = 200;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
-        private readonly Planet _planet;
+        private readonly PlanetController _planet;
 
         private readonly (int Score, string Title)[] _ratings = new (int Score, string Title)[]
         {
@@ -44,7 +44,7 @@ namespace Elite.Engine.Views
         private readonly Trade _trade;
         private readonly Universe _universe;
 
-        internal CommanderStatusView(GameState gameState, IGraphics graphics, Draw draw, PlayerShip ship, Trade trade, Planet planet, Universe universe)
+        internal CommanderStatusView(GameState gameState, IGraphics graphics, Draw draw, PlayerShip ship, Trade trade, PlanetController planet, Universe universe)
         {
             _gameState = gameState;
             _graphics = graphics;

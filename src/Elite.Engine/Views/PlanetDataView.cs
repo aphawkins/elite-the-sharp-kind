@@ -81,11 +81,11 @@ namespace Elite.Engine.Views
             "Corporate State",
         };
 
-        private readonly Planet _planet;
+        private readonly PlanetController _planet;
         private float _distanceToPlanet;
         private PlanetData _hyperPlanetData = new();
 
-        internal PlanetDataView(GameState gameState, IGraphics graphics, Draw draw, Planet planet)
+        internal PlanetDataView(GameState gameState, IGraphics graphics, Draw draw, PlanetController planet)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -129,8 +129,8 @@ namespace Elite.Engine.Views
 
         public void UpdateUniverse()
         {
-            _distanceToPlanet = Planet.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
-            _hyperPlanetData = Planet.GeneratePlanetData(_gameState.HyperspacePlanet);
+            _distanceToPlanet = PlanetController.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
+            _hyperPlanetData = PlanetController.GeneratePlanetData(_gameState.HyperspacePlanet);
         }
 
         private string DescribePlanet(GalaxySeed planet)

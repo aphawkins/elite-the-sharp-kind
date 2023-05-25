@@ -27,7 +27,7 @@ namespace Elite.Engine
         private readonly FrameCounter _lockObj = new();
         private readonly long _oneSecond = TimeSpan.FromSeconds(1).Ticks;
         private readonly Pilot _pilot;
-        private readonly Planet _planet;
+        private readonly PlanetController _planet;
         private readonly SaveFile _save;
         private readonly Scanner _scanner;
         private readonly PlayerShip _ship;

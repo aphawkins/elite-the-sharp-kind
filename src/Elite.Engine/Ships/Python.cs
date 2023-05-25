@@ -3,17 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
-using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal class Python : IShip
+    internal class Python : Ship
     {
-        public float Bounty => 0;
+        public override int EnergyMax => 250;
 
-        public int EnergyMax => 250;
-
-        public ShipFaceNormal[] FaceNormals { get; } =
+        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
         {
             new(31, new(-27,   40,   11)),
             new(31, new(27,   40,   11)),
@@ -30,7 +27,7 @@ namespace Elite.Engine.Ships
             new(31, new(0,    0, -112)),
         };
 
-        public ShipFace[] Faces { get; } =
+        public override ShipFace[] Faces { get; protected set; } =
         {
             new(Colour.DarkGrey, new(-0x1B, 0x28, 0x0B), new[] { 0,  1,  3 }),
             new(Colour.LightGrey, new(0x1B, 0x28, 0x0B), new[] { 2,  1,  0 }),
@@ -50,11 +47,9 @@ namespace Elite.Engine.Ships
             new(Colour.DarkerGrey, new(0x00, 0x00, -0x70), new[] { 10, 6, 5, 7 }),
         };
 
-        public int LaserFront => 0;
+        public override int LaserStrength => 13;
 
-        public int LaserStrength => 13;
-
-        public ShipLine[] Lines { get; } =
+        public override ShipLine[] Lines { get; protected set; } =
         {
             new(31,  3,  2,  0,  8),
             new(31,  2,  0,  0,  3),
@@ -84,13 +79,13 @@ namespace Elite.Engine.Ships
             new(31,  7,  6,  8,  9),
         };
 
-        public int LootMax => 5;
+        public override int LootMax => 5;
 
-        public int MissilesMax => 3;
+        public override int MissilesMax => 3;
 
-        public string Name => "Python";
+        public override string Name => "Python";
 
-        public ShipPoint[] Points { get; } =
+        public override ShipPoint[] Points { get; protected set; } =
         {
             new(new(0,    0,  224), 31,  1,  0,  3,  2),
             new(new(0,   48,   48), 31,  1,  0,  5,  4),
@@ -105,14 +100,12 @@ namespace Elite.Engine.Ships
             new(new(0,  -24, -112), 31, 11, 10, 12, 12),
         };
 
-        public StockType ScoopedType => StockType.None;
+        public override float Size => 6400;
 
-        public float Size => 6400;
+        public override ShipClass Class => ShipClass.Trader;
 
-        public ShipClass Type => ShipClass.Trader;
+        public override int VanishPoint => 40;
 
-        public int VanishPoint => 40;
-
-        public float VelocityMax => 20;
+        public override float VelocityMax => 20;
     }
 }

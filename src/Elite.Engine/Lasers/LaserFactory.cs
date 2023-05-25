@@ -14,7 +14,7 @@ namespace Elite.Engine.Lasers
             LaserType.Mining => new MiningLaser(),
             LaserType.Pulse => new PulseLaser(),
             LaserType.Beam => new BeamLaser(),
-            LaserType.None => throw new NotImplementedException(),
+            LaserType.None => new LaserNone(),
             _ => new LaserNone(),
         };
     }

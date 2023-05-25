@@ -3,17 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using Elite.Engine.Enums;
-using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Missile : IShip
+    internal sealed class Missile : Ship
     {
-        public float Bounty => 0;
+        public override int EnergyMax => 2;
 
-        public int EnergyMax => 2;
-
-        public ShipFaceNormal[] FaceNormals { get; } =
+        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
         {
             new(31, new(-64,    0,   16)),
             new(31, new(0,  -64,   16)),
@@ -26,7 +23,7 @@ namespace Elite.Engine.Ships
             new(31, new(0,    0, -176)),
         };
 
-        public ShipFace[] Faces { get; } =
+        public override ShipFace[] Faces { get; protected set; } =
         {
             //fins
             new(Colour.LighterRed, new(0x20, 0x00, 0x00), new[] { 5, 9, 15 }),
@@ -57,11 +54,7 @@ namespace Elite.Engine.Ships
             new(Colour.DarkGrey, new(0x00, 0x00, -0xB0), new[] { 5,  6,  7, 8 }),
         };
 
-        public int LaserFront => 0;
-
-        public int LaserStrength => 0;
-
-        public ShipLine[] Lines { get; } =
+        public override ShipLine[] Lines { get; protected set; } =
         {
             new(31,  2,  1,  0,  1),
             new(31,  3,  2,  0,  2),
@@ -89,13 +82,9 @@ namespace Elite.Engine.Ships
             new(8,  6,  5, 11, 14),
         };
 
-        public int LootMax => 0;
+        public override string Name => "Missile";
 
-        public int MissilesMax => 0;
-
-        public string Name => "Missile";
-
-        public ShipPoint[] Points { get; } =
+        public override ShipPoint[] Points { get; protected set; } =
         {
             new(new(0,    0,   68), 31,  1,  0,  3,  2),
             new(new(8,   -8,   36), 31,  2,  1,  5,  4),
@@ -116,14 +105,12 @@ namespace Elite.Engine.Ships
             new(new(8,   -8,  -12),  8,  5,  4,  5,  5),
         };
 
-        public StockType ScoopedType => StockType.None;
+        public override float Size => 1600;
 
-        public float Size => 1600;
+        public override ShipClass Class => ShipClass.Missile;
 
-        public ShipClass Type => ShipClass.Missile;
+        public override int VanishPoint => 14;
 
-        public int VanishPoint => 14;
-
-        public float VelocityMax => 44;
+        public override float VelocityMax => 44;
     }
 }

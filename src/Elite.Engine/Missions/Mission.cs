@@ -24,9 +24,9 @@ namespace Elite.Engine.Missions
             "COMING SOON: ELITE - DARKNESS FALLS.",
         };
 
-        private readonly Planet _planet;
+        private readonly PlanetController _planet;
 
-        internal Mission(Planet planet) => _planet = planet;
+        internal Mission(PlanetController planet) => _planet = planet;
 
         internal string? MissionPlanetDescription(GameState gameState, GalaxySeed planet)
         {
