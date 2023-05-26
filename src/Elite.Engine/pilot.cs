@@ -32,16 +32,17 @@ namespace Elite.Engine
             {
                 Rotmat = VectorMaths.GetInitialMatrix(),
                 Location = Vector3.Zero,
+                Acceleration = 0,
+
+                //Type = (ShipType)(-96),
+                Velocity = _ship.Speed,
+                Bravery = 0,
+                RotZ = 0,
+                RotX = 0,
             };
 
-            ship.Rotmat[2].Z = 1;
             ship.Rotmat[0].X = -1;
-            ship.Type = (ShipType)(-96);
-            ship.Velocity = _ship.Speed;
-            ship.Acceleration = 0;
-            ship.Bravery = 0;
-            ship.RotZ = 0;
-            ship.RotX = 0;
+            ship.Rotmat[2].Z = 1;
 
             AutoPilotShip(ref ship);
 
@@ -264,18 +265,11 @@ namespace Elite.Engine
         /// <param name="ship"></param>
         private void FlyToDockingBay(ref IShip ship)
         {
-            Vector3 diff;
-            float dir;
-
-            diff.X = ship.Location.X - _universe.Objects[1].Location.X;
-            diff.Y = ship.Location.Y - _universe.Objects[1].Location.Y;
-            diff.Z = ship.Location.Z - _universe.Objects[1].Location.Z;
-
+            Vector3 diff = ship.Location - _universe.Objects[1].Location;
             Vector3 vec = VectorMaths.UnitVector(diff);
-
             ship.RotX = 0;
 
-            if (ship.Type < 0)
+            if (ship.Type == ShipType.None)
             {
                 ship.RotZ = 1;
                 if (((vec.X >= 0) && (vec.Y >= 0)) ||
@@ -306,7 +300,7 @@ namespace Elite.Engine
 
             ship.RotZ = 0;
 
-            dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], _universe.Objects[1].Rotmat[1]);
+            float dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], _universe.Objects[1].Rotmat[1]);
 
             if (MathF.Abs(dir) >= 0.9166f)
             {

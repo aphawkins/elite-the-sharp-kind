@@ -4,12 +4,15 @@
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class CobraMk3Lone : CobraMk3, IShip
+    internal sealed class CobraMk3Lone : CobraMk3
     {
-        public new float Bounty => 17.5f;
-
-        public new int LootMax => 1;
-
-        public new int MissilesMax => 2;
+        internal CobraMk3Lone()
+        {
+            Type = ShipType.CobraMk3Lone;
+            Flags = ShipFlags.Bold | ShipFlags.Angry;
+            Bounty = 17.5f;
+            LootMax = 1;
+            MissilesMax = 2;
+        }
     }
 }

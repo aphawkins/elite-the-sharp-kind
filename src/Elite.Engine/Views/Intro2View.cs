@@ -126,7 +126,7 @@ namespace Elite.Engine.Views
                 _direction = -100;
 
                 _universe.ShipCount[_universe.Objects[0].Type] = 0;
-                _universe.Objects[0].Type = ShipType.None;
+                _universe.Objects[0] = new Ship();
 
                 _combat.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }

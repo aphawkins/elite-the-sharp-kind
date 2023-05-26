@@ -15,44 +15,6 @@ namespace Elite.Engine.Conflict
     {
         private readonly AudioController _audio;
         private readonly GameState _gameState;
-        private readonly ShipFlags[] _initialFlags = new ShipFlags[34]
-        {
-            0,                                          // NULL,
-            0,                                          // missile
-            0,                                          // coriolis
-            ShipFlags.Slow | ShipFlags.FlyToPlanet,             // escape
-            ShipFlags.Inactive,                             // alloy
-            ShipFlags.Inactive,                             // cargo
-            ShipFlags.Inactive,                             // boulder
-            ShipFlags.Inactive,                             // asteroid
-            ShipFlags.Inactive,                             // rock
-            ShipFlags.FlyToPlanet | ShipFlags.Slow,             // shuttle
-            ShipFlags.FlyToPlanet | ShipFlags.Slow,             // transporter
-            0,                                          // cobra3
-            0,                                          // python
-            0,                                          // boa
-            ShipFlags.Slow,                                 // anaconda
-            ShipFlags.Slow,                                 // hermit
-            ShipFlags.Bold | ShipFlags.Police,                      // viper
-            ShipFlags.Bold | ShipFlags.Angry,                       // sidewinder
-            ShipFlags.Bold | ShipFlags.Angry,                       // mamba
-            ShipFlags.Bold | ShipFlags.Angry,                       // krait
-            ShipFlags.Bold | ShipFlags.Angry,                       // adder
-            ShipFlags.Bold | ShipFlags.Angry,                       // gecko
-            ShipFlags.Bold | ShipFlags.Angry,                       // cobra1
-            ShipFlags.Slow | ShipFlags.Angry,                       // worm
-            ShipFlags.Bold | ShipFlags.Angry,                       // cobra3
-            ShipFlags.Bold | ShipFlags.Angry,                       // asp2
-            ShipFlags.Bold | ShipFlags.Angry,                       // python
-            ShipFlags.Police,                                   // fer_de_lance
-            ShipFlags.Bold | ShipFlags.Angry,                       // moray
-            ShipFlags.Bold | ShipFlags.Angry,                       // thargoid
-            ShipFlags.Angry,                                    // tharlet
-            ShipFlags.Angry,                                    // constrictor
-            ShipFlags.Police | ShipFlags.Cloaked,                   // cougar
-            0, // dodec
-        };
-
         private readonly int _isMISSILE_ARMED = -1;
         private readonly Pilot _pilot;
         private readonly PlayerShip _ship;
@@ -97,12 +59,10 @@ namespace Elite.Engine.Conflict
                 if (_universe.Objects[i].Type == ShipType.None)
                 {
                     IShip ship = ShipFactory.ConstructShip(ship_type);
-                    ship.Type = ship_type;
                     ship.Location = location;
                     ship.Rotmat = rotmat;
                     ship.RotX = rotx;
                     ship.RotZ = rotz;
-                    ship.Flags = _initialFlags[(int)ship_type < 0 ? 0 : (int)ship_type];
                     ship.Energy = ship.EnergyMax;
                     ship.Missiles = ship.MissilesMax;
                     _universe.Objects[i] = ship;
@@ -117,7 +77,7 @@ namespace Elite.Engine.Conflict
         internal void AddNewStation(Vector3 position, Vector3[] rotmat)
         {
             ShipType station = _gameState.CurrentPlanetData.TechLevel >= 10 ? ShipType.Dodec : ShipType.Coriolis;
-            _universe.Objects[1].Type = ShipType.None;
+            _universe.Objects[1] = new Ship();
             AddNewShip(station, position, rotmat, 0, -127);
         }
 
@@ -187,10 +147,7 @@ namespace Elite.Engine.Conflict
         {
             for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
             {
-                _universe.Objects[i] = new Ship()
-                {
-                    Type = ShipType.None,
-                };
+                _universe.Objects[i] = new Ship();
             }
 
             foreach (ShipType shipType in Enum.GetValues<ShipType>())
@@ -435,7 +392,7 @@ namespace Elite.Engine.Conflict
                 _universe.ShipCount[type]--;
             }
 
-            _universe.Objects[un].Type = ShipType.None;
+            _universe.Objects[un] = new Ship();
 
             CheckMissiles(un);
 

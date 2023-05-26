@@ -8,78 +8,73 @@ namespace Elite.Engine.Ships
 {
     internal sealed class Worm : Ship
     {
-        public override int EnergyMax => 30;
-
-        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
+        internal Worm()
         {
-            new(31, new(0,   88,   70)),
-            new(31, new(0,   69,   14)),
-            new(31, new(70,   66,   35)),
-            new(31, new(-70,   66,   35)),
-            new(31, new(64,   49,   14)),
-            new(31, new(-64,   49,   14)),
-            new(31, new(0,    0, -200)),
-            new(31, new(0,  -80,    0)),
-        };
+            Type = ShipType.Worm;
+            Flags = ShipFlags.Slow | ShipFlags.Angry;
+            EnergyMax = 30;
+            FaceNormals = new ShipFaceNormal[]
+            {
+                new(31, new(0,   88,   70)),
+                new(31, new(0,   69,   14)),
+                new(31, new(70,   66,   35)),
+                new(31, new(-70,   66,   35)),
+                new(31, new(64,   49,   14)),
+                new(31, new(-64,   49,   14)),
+                new(31, new(0,    0, -200)),
+                new(31, new(0,  -80,    0)),
+            };
+            Faces = new ShipFace[]
+            {
+                new(Colour.Grey, new(0x00, 0x58, 0x46), new[] { 1, 0, 2, 3 }),
+                new(Colour.LightGrey, new(0x46, 0x42, 0x23), new[] { 0, 4, 2 }),
+                new(Colour.LightGrey, new(-0x46, 0x42, 0x23), new[] { 1, 3, 5 }),
 
-        public override ShipFace[] Faces { get; protected set; } =
-        {
-            new(Colour.Grey, new(0x00, 0x58, 0x46), new[] { 1, 0, 2, 3 }),
-            new(Colour.LightGrey, new(0x46, 0x42, 0x23), new[] { 0, 4, 2 }),
-            new(Colour.LightGrey, new(-0x46, 0x42, 0x23), new[] { 1, 3, 5 }),
+                new(Colour.DarkGrey, new(0x40, 0x31, 0x0E), new[] { 2, 4, 6, 8 }),
+                new(Colour.DarkGrey, new(-0x40, 0x31, 0x0E), new[] { 5, 3, 9, 7 }),
+                new(Colour.LightGrey, new(0x00, 0x00, -0xC8), new[] { 6, 7, 9, 8 }),
 
-            new(Colour.DarkGrey, new(0x40, 0x31, 0x0E), new[] { 2, 4, 6, 8 }),
-            new(Colour.DarkGrey, new(-0x40, 0x31, 0x0E), new[] { 5, 3, 9, 7 }),
-            new(Colour.LightGrey, new(0x00, 0x00, -0xC8), new[] { 6, 7, 9, 8 }),
-
-            new(Colour.DarkerGrey, new(0x00, -0x50, 0x00), new[] { 4, 0, 1, 5, 7, 6 }),
-            new(Colour.LightGrey, new(0x00, 0x45, 0x0E), new[] { 9, 3, 2, 8 }),
-        };
-
-        public override int LaserStrength => 4;
-
-        public override ShipLine[] Lines { get; protected set; } =
-        {
-            new(31,  0,  7,  0,  1),
-            new(31,  3,  7,  1,  5),
-            new(31,  5,  7,  5,  7),
-            new(31,  6,  7,  7,  6),
-            new(31,  4,  7,  6,  4),
-            new(31,  2,  7,  4,  0),
-            new(31,  0,  2,  0,  2),
-            new(31,  0,  3,  1,  3),
-            new(31,  2,  4,  4,  2),
-            new(31,  3,  5,  5,  3),
-            new(31,  1,  4,  2,  8),
-            new(31,  4,  6,  8,  6),
-            new(31,  1,  5,  3,  9),
-            new(31,  5,  6,  9,  7),
-            new(31,  0,  1,  2,  3),
-            new(31,  1,  6,  8,  9),
-        };
-
-        public override string Name => "Worm";
-
-        public override ShipPoint[] Points { get; protected set; } =
-        {
-            new(new(10,  -10,   35), 31,  0,  2,  7,  7),
-            new(new(-10,  -10,   35), 31,  0,  3,  7,  7),
-            new(new(5,    6,   15), 31,  0,  1,  2,  4),
-            new(new(-5,    6,   15), 31,  0,  1,  3,  5),
-            new(new(15,  -10,   25), 31,  2,  4,  7,  7),
-            new(new(-15,  -10,   25), 31,  3,  5,  7,  7),
-            new(new(26,  -10,  -25), 31,  4,  6,  7,  7),
-            new(new(-26,  -10,  -25), 31,  5,  6,  7,  7),
-            new(new(8,   14,  -25), 31,  1,  4,  6,  6),
-            new(new(-8,   14,  -25), 31,  1,  5,  6,  6),
-        };
-
-        public override float Size => 9801;
-
-        public override ShipClass Class => ShipClass.PackHunter;
-
-        public override int VanishPoint => 19;
-
-        public override float VelocityMax => 23;
+                new(Colour.DarkerGrey, new(0x00, -0x50, 0x00), new[] { 4, 0, 1, 5, 7, 6 }),
+                new(Colour.LightGrey, new(0x00, 0x45, 0x0E), new[] { 9, 3, 2, 8 }),
+            };
+            LaserStrength = 4;
+            Lines = new ShipLine[]
+            {
+                new(31,  0,  7,  0,  1),
+                new(31,  3,  7,  1,  5),
+                new(31,  5,  7,  5,  7),
+                new(31,  6,  7,  7,  6),
+                new(31,  4,  7,  6,  4),
+                new(31,  2,  7,  4,  0),
+                new(31,  0,  2,  0,  2),
+                new(31,  0,  3,  1,  3),
+                new(31,  2,  4,  4,  2),
+                new(31,  3,  5,  5,  3),
+                new(31,  1,  4,  2,  8),
+                new(31,  4,  6,  8,  6),
+                new(31,  1,  5,  3,  9),
+                new(31,  5,  6,  9,  7),
+                new(31,  0,  1,  2,  3),
+                new(31,  1,  6,  8,  9),
+            };
+            Name = "Worm";
+            Points = new ShipPoint[]
+            {
+                new(new(10,  -10,   35), 31,  0,  2,  7,  7),
+                new(new(-10,  -10,   35), 31,  0,  3,  7,  7),
+                new(new(5,    6,   15), 31,  0,  1,  2,  4),
+                new(new(-5,    6,   15), 31,  0,  1,  3,  5),
+                new(new(15,  -10,   25), 31,  2,  4,  7,  7),
+                new(new(-15,  -10,   25), 31,  3,  5,  7,  7),
+                new(new(26,  -10,  -25), 31,  4,  6,  7,  7),
+                new(new(-26,  -10,  -25), 31,  5,  6,  7,  7),
+                new(new(8,   14,  -25), 31,  1,  4,  6,  6),
+                new(new(-8,   14,  -25), 31,  1,  5,  6,  6),
+            };
+            Size = 9801;
+            Class = ShipClass.PackHunter;
+            VanishPoint = 19;
+            VelocityMax = 23;
+        }
     }
 }

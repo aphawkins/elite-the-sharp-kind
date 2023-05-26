@@ -9,52 +9,47 @@ namespace Elite.Engine.Ships
 {
     internal sealed class EscapeCapsule : Ship
     {
-        public override int EnergyMax => 17;
-
-        public override ShipFaceNormal[] FaceNormals { get; protected set; } =
+        internal EscapeCapsule()
         {
-            new(31, new(52,    0, -122)),
-            new(31, new(39,  103,   30)),
-            new(31, new(39, -103,   30)),
-            new(31, new(-112,    0,    0)),
-        };
-
-        public override ShipFace[] Faces { get; protected set; } =
-        {
-            new ShipFace(Colour.LighterRed,      new(0x34, 0x00, -0x7A), new[] { 3, 1, 2 }),
-            new ShipFace(Colour.LightRed, new(0x27, 0x67, 0x1E), new[] { 0, 3, 2 }),
-            new ShipFace(Colour.Red,    new(0x27, -0x67, 0x1E), new[] { 0, 1, 3 }),
-            new ShipFace(Colour.RedOrange,    new(0x70, 0x00, 0x00), new[] { 0, 2, 1 }),
-        };
-
-        public override ShipLine[] Lines { get; protected set; } =
-        {
-            new(31,  2,  3,  0,  1),
-            new(31,  0,  3,  1,  2),
-            new(31,  0,  1,  2,  3),
-            new(31,  1,  2,  3,  0),
-            new(31,  1,  3,  0,  2),
-            new(31,  0,  2,  3,  1),
-        };
-
-        public override string Name => "Escape Capsule";
-
-        public override ShipPoint[] Points { get; protected set; } =
-        {
-            new(new(-7,    0,   36), 31,  1,  2,  3,  3),
-            new(new(-7,  -14,  -12), 31,  0,  2,  3,  3),
-            new(new(-7,   14,  -12), 31,  0,  1,  3,  3),
-            new(new(21,    0,    0), 31,  0,  1,  2,  2),
-        };
-
-        public override StockType ScoopedType => StockType.Slaves;
-
-        public override float Size => 256;
-
-        public override ShipClass Class => ShipClass.SpaceJunk;
-
-        public override int VanishPoint => 8;
-
-        public override float VelocityMax => 8;
+            Type = ShipType.EscapeCapsule;
+            Flags = ShipFlags.Slow | ShipFlags.FlyToPlanet;
+            EnergyMax = 17;
+            FaceNormals = new ShipFaceNormal[]
+            {
+                new(31, new(52,    0, -122)),
+                new(31, new(39,  103,   30)),
+                new(31, new(39, -103,   30)),
+                new(31, new(-112,    0,    0)),
+            };
+            Faces = new ShipFace[]
+            {
+                new ShipFace(Colour.LighterRed,      new(0x34, 0x00, -0x7A), new[] { 3, 1, 2 }),
+                new ShipFace(Colour.LightRed, new(0x27, 0x67, 0x1E), new[] { 0, 3, 2 }),
+                new ShipFace(Colour.Red,    new(0x27, -0x67, 0x1E), new[] { 0, 1, 3 }),
+                new ShipFace(Colour.RedOrange,    new(0x70, 0x00, 0x00), new[] { 0, 2, 1 }),
+            };
+            Lines = new ShipLine[]
+            {
+                new(31,  2,  3,  0,  1),
+                new(31,  0,  3,  1,  2),
+                new(31,  0,  1,  2,  3),
+                new(31,  1,  2,  3,  0),
+                new(31,  1,  3,  0,  2),
+                new(31,  0,  2,  3,  1),
+            };
+            Name = "Escape Capsule";
+            Points = new ShipPoint[]
+            {
+                new(new(-7,    0,   36), 31,  1,  2,  3,  3),
+                new(new(-7,  -14,  -12), 31,  0,  2,  3,  3),
+                new(new(-7,   14,  -12), 31,  0,  1,  3,  3),
+                new(new(21,    0,    0), 31,  0,  1,  2,  2),
+            };
+            ScoopedType = StockType.Slaves;
+            Size = 256;
+            Class = ShipClass.SpaceJunk;
+            VanishPoint = 8;
+            VelocityMax = 8;
+        }
     }
 }

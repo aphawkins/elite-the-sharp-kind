@@ -63,7 +63,7 @@ namespace Elite.Engine.Ships
 
         int Target { get; set; }
 
-        ShipType Type { get; set; }
+        ShipType Type { get; }
 
         float Velocity { get; set; }
     }
