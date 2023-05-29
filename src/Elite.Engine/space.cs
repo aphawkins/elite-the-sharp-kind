@@ -157,7 +157,7 @@ namespace Elite.Engine
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
             _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            _combat.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
+            _universe.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
 
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].X = -rotmat[2].X;
@@ -536,12 +536,12 @@ namespace Elite.Engine
                 position.Y = -position.Y;
             }
 
-            _combat.AddNewShip(ShipType.Planet, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            _universe.AddNewShip(ShipType.Planet, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
             position.Z = -(((_gameState.DockedPlanet.D & 7) | 1) << 16);
             position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
-            _combat.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            _universe.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
 
             _gameState.SetView(Screen.Hyperspace);
         }

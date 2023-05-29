@@ -4,7 +4,6 @@
 
 using System.Numerics;
 using Elite.Engine.Audio;
-using Elite.Engine.Conflict;
 using Elite.Engine.Enums;
 using Elite.Engine.Ships;
 using Elite.Engine.Trader;
@@ -14,7 +13,6 @@ namespace Elite.Engine.Views
     internal sealed class EscapeCapsuleView : IView
     {
         private readonly AudioController _audio;
-        private readonly Combat _combat;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly Pilot _pilot;
@@ -32,7 +30,6 @@ namespace Elite.Engine.Views
             Stars stars,
             PlayerShip ship,
             Trade trade,
-            Combat combat,
             Universe universe,
             Pilot pilot)
         {
@@ -42,7 +39,6 @@ namespace Elite.Engine.Views
             _stars = stars;
             _ship = ship;
             _trade = trade;
-            _combat = combat;
             _universe = universe;
             _pilot = pilot;
         }
@@ -66,7 +62,7 @@ namespace Elite.Engine.Views
             _ship.Climb = 0;
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
-            _newship = _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
+            _newship = _universe.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
             _universe.Objects[_newship].Velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;

@@ -51,34 +51,11 @@ namespace Elite.Engine.Conflict
             }
         }
 
-        internal int AddNewShip(ShipType ship_type, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
-        {
-            Debug.Assert(rotmat != null, "Rotation matrix should not be null.");
-            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
-            {
-                if (_universe.Objects[i].Type == ShipType.None)
-                {
-                    IShip ship = ShipFactory.ConstructShip(ship_type);
-                    ship.Location = location;
-                    ship.Rotmat = rotmat;
-                    ship.RotX = rotx;
-                    ship.RotZ = rotz;
-                    ship.Energy = ship.EnergyMax;
-                    ship.Missiles = ship.MissilesMax;
-                    _universe.Objects[i] = ship;
-                    _universe.ShipCount[ship_type]++;
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
         internal void AddNewStation(Vector3 position, Vector3[] rotmat)
         {
             ShipType station = _gameState.CurrentPlanetData.TechLevel >= 10 ? ShipType.Dodec : ShipType.Coriolis;
             _universe.Objects[1] = new Ship();
-            AddNewShip(station, position, rotmat, 0, -127);
+            _universe.AddNewShip(station, position, rotmat, 0, -127);
         }
 
         internal void ArmMissile()
@@ -306,7 +283,7 @@ namespace Elite.Engine.Conflict
             rotmat[2].Z = 1;
             rotmat[0].X = -1;
 
-            int newship = AddNewShip(ShipType.Missile, new(0, -28, 14), rotmat, 0, 0);
+            int newship = _universe.AddNewShip(ShipType.Missile, new(0, -28, 14), rotmat, 0, 0);
 
             if (newship == -1)
             {
@@ -401,7 +378,7 @@ namespace Elite.Engine.Conflict
                 Vector3 position = _universe.Objects[un].Location;
                 position.Y = (int)position.Y & 0xFFFF;
                 position.Y = (int)position.Y | 0x60000;
-                AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
+                _universe.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
             }
         }
 
@@ -855,7 +832,7 @@ namespace Elite.Engine.Conflict
             for (int i = 0; i <= rnd; i++)
             {
                 ShipType type = ShipType.Sidewinder + (RNG.Random(255) & RNG.Random(7));
-                int newship = AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
+                int newship = _universe.AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
                 if (newship != -1)
                 {
                     _universe.Objects[newship].Flags = ShipFlags.Angry;
@@ -984,7 +961,7 @@ namespace Elite.Engine.Conflict
                 position.Y = -position.Y;
             }
 
-            return AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            return _universe.AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
         }
 
         private void CreateTrader()
@@ -1013,7 +990,7 @@ namespace Elite.Engine.Conflict
         {
             Debug.Assert(_universe.Objects[un].Rotmat != null, "Rotation matrix should not be null.");
             Vector3[] rotmat = _universe.Objects[un].Rotmat.Cloner();
-            int newship = AddNewShip(type, _universe.Objects[un].Location, rotmat, _universe.Objects[un].RotX, _universe.Objects[un].RotZ);
+            int newship = _universe.AddNewShip(type, _universe.Objects[un].Location, rotmat, _universe.Objects[un].RotX, _universe.Objects[un].RotZ);
 
             if (newship == -1)
             {

@@ -109,7 +109,7 @@ namespace Elite.Engine.Views
                 _gameState.Cmdr.Mission = 1;
 
                 _combat.ClearUniverse();
-                int i = _combat.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
+                int i = _universe.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
                 _universe.Objects[i].Flags = ShipFlags.None;
                 _ship.Roll = 0;
                 _ship.Climb = 0;

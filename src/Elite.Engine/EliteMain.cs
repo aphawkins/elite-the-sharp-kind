@@ -85,7 +85,7 @@ namespace Elite.Engine
             _views.Add(Screen.Settings, new SettingsView(_gameState, _graphics, _draw, keyboard, _configFile));
             _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _combat, _universe));
             _views.Add(Screen.MissionTwo, new ThargoidMissionView(_gameState, _graphics, _draw, keyboard, _ship));
-            _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _graphics, _audio, _stars, _ship, _trade, _combat, _universe, _pilot));
+            _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _graphics, _audio, _stars, _ship, _trade, _universe, _pilot));
             _views.Add(Screen.GameOver, new GameOverView(_gameState, _graphics, _audio, _stars, _ship, _combat, _universe));
 
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));

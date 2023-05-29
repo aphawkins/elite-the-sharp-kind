@@ -86,7 +86,7 @@ namespace Elite.Engine.Views
             _combat.ClearUniverse();
             _stars.CreateNewStars();
             _rotmat = VectorMaths.GetInitialMatrix();
-            _combat.AddNewShip(ShipType.Missile, new(0, 0, 5000), _rotmat, -127, -127);
+            _universe.AddNewShip(ShipType.Missile, new(0, 0, 5000), _rotmat, -127, -127);
             _audio.PlayMusic(Music.BlueDanube, true);
 
             _ship.Speed = 3;
@@ -128,7 +128,7 @@ namespace Elite.Engine.Views
                 _universe.ShipCount[_universe.Objects[0].Type] = 0;
                 _universe.Objects[0] = new Ship();
 
-                _combat.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
+                _universe.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }
 
             _stars.FrontStarfield();

@@ -69,7 +69,7 @@ namespace Elite.Engine.Views
 
             // Ship faces away
             initMatrix[2].Z = 1;
-            _combat.AddNewShip(ShipType.CobraMk3, new(0, 0, 4500), initMatrix, -127, 127);
+            _universe.AddNewShip(ShipType.CobraMk3, new(0, 0, 4500), initMatrix, -127, 127);
             _audio.PlayMusic(Music.EliteTheme, true);
         }
 
