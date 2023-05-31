@@ -19,7 +19,7 @@ namespace Elite.Engine
         /// <summary>
         /// Colour map used to generate a SNES Elite style planet.
         /// </summary>
-        private static readonly int[] s_snesPlanetColour = new int[]
+        private readonly int[] _snesPlanetColour = new int[]
         {
             // TODO: This is a quick hack and needs tidying up.
             102, 102,
@@ -540,7 +540,7 @@ namespace Elite.Engine
         {
             for (int y = 0; y <= LANDYMAX; y++)
             {
-                int colour = s_snesPlanetColour[y * (s_snesPlanetColour.Length - 1) / LANDYMAX];
+                int colour = _snesPlanetColour[y * (_snesPlanetColour.Length - 1) / LANDYMAX];
                 for (int x = 0; x <= LANDXMAX; x++)
                 {
                     _landscape[x, y] = colour;
