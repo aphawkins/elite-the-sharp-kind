@@ -7,7 +7,7 @@ using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class RockSplinter : Ship
+    internal sealed class RockSplinter : NullObject
     {
         internal RockSplinter()
         {

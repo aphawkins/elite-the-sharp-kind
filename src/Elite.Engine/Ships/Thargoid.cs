@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Thargoid : Ship
+    internal sealed class Thargoid : NullObject
     {
         internal Thargoid()
         {

@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class RockHermit : Ship
+    internal sealed class RockHermit : NullObject
     {
         internal RockHermit()
         {

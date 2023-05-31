@@ -28,7 +28,7 @@ namespace Elite.Engine
 
         internal void AutoDock()
         {
-            IShip ship = new Ship()
+            IObject ship = new NullObject()
             {
                 Rotmat = VectorMaths.GetInitialMatrix(),
                 Location = Vector3.Zero,
@@ -44,7 +44,7 @@ namespace Elite.Engine
             ship.Rotmat[0].X = -1;
             ship.Rotmat[2].Z = 1;
 
-            AutoPilotShip(ref ship);
+            AutoPilotShip(ship);
 
             _ship.Speed = ship.Velocity > 22 ? 22 : ship.Velocity;
 
@@ -122,8 +122,7 @@ namespace Elite.Engine
         /// <summary>
         /// Fly a ship to the planet or to the space station and dock it.
         /// </summary>
-        /// <param name="ship"></param>
-        internal void AutoPilotShip(ref IShip ship)
+        internal void AutoPilotShip(IObject ship)
         {
             Vector3 diff;
             Vector3 vec;
@@ -137,9 +136,9 @@ namespace Elite.Engine
                 return;
             }
 
-            diff.X = ship.Location.X - _universe.Objects[1].Location.X;
-            diff.Y = ship.Location.Y - _universe.Objects[1].Location.Y;
-            diff.Z = ship.Location.Z - _universe.Objects[1].Location.Z;
+            diff.X = ship.Location.X - _universe.StationOrSun.Location.X;
+            diff.Y = ship.Location.Y - _universe.StationOrSun.Location.Y;
+            diff.Z = ship.Location.Z - _universe.StationOrSun.Location.Z;
 
             dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
 
@@ -150,7 +149,7 @@ namespace Elite.Engine
             }
 
             vec = VectorMaths.UnitVector(diff);
-            dir = VectorMaths.VectorDotProduct(_universe.Objects[1].Rotmat[2], vec);
+            dir = VectorMaths.VectorDotProduct(_universe.StationOrSun.Rotmat[2], vec);
 
             if (dir < 0.9722)
             {
@@ -194,7 +193,7 @@ namespace Elite.Engine
         /// </summary>
         /// <param name="ship"></param>
         /// <param name="vec"></param>
-        private static void FlyToVector(ref IShip ship, Vector3 vec)
+        private static void FlyToVector(ref IObject ship, Vector3 vec)
         {
             Vector3 nvec;
             float direction;
@@ -263,9 +262,9 @@ namespace Elite.Engine
         /// Final stage of docking. Fly into the docking bay.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToDockingBay(ref IShip ship)
+        private void FlyToDockingBay(ref IObject ship)
         {
-            Vector3 diff = ship.Location - _universe.Objects[1].Location;
+            Vector3 diff = ship.Location - _universe.StationOrSun.Location;
             Vector3 vec = VectorMaths.UnitVector(diff);
             ship.RotX = 0;
 
@@ -300,7 +299,7 @@ namespace Elite.Engine
 
             ship.RotZ = 0;
 
-            float dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], _universe.Objects[1].Rotmat[1]);
+            float dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], _universe.StationOrSun.Rotmat[1]);
 
             if (MathF.Abs(dir) >= 0.9166f)
             {
@@ -317,13 +316,13 @@ namespace Elite.Engine
         /// Fly towards the planet.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToPlanet(ref IShip ship)
+        private void FlyToPlanet(ref IObject ship)
         {
             Vector3 vec;
 
-            vec.X = _universe.Objects[0].Location.X - ship.Location.X;
-            vec.Y = _universe.Objects[0].Location.Y - ship.Location.Y;
-            vec.Z = _universe.Objects[0].Location.Z - ship.Location.Z;
+            vec.X = _universe.Planet.Location.X - ship.Location.X;
+            vec.Y = _universe.Planet.Location.Y - ship.Location.Y;
+            vec.Z = _universe.Planet.Location.Z - ship.Location.Z;
 
             FlyToVector(ref ship, vec);
         }
@@ -332,13 +331,13 @@ namespace Elite.Engine
         /// Fly towards the space station.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToStation(ref IShip ship)
+        private void FlyToStation(ref IObject ship)
         {
             Vector3 vec;
 
-            vec.X = _universe.Objects[1].Location.X - ship.Location.X;
-            vec.Y = _universe.Objects[1].Location.Y - ship.Location.Y;
-            vec.Z = _universe.Objects[1].Location.Z - ship.Location.Z;
+            vec.X = _universe.StationOrSun.Location.X - ship.Location.X;
+            vec.Y = _universe.StationOrSun.Location.Y - ship.Location.Y;
+            vec.Z = _universe.StationOrSun.Location.Z - ship.Location.Z;
 
             FlyToVector(ref ship, vec);
         }
@@ -347,17 +346,17 @@ namespace Elite.Engine
         /// Fly to a point in front of the station docking bay. Done prior to the final stage of docking.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToStationFront(ref IShip ship)
+        private void FlyToStationFront(ref IObject ship)
         {
             Vector3 vec;
 
-            vec.X = _universe.Objects[1].Location.X - ship.Location.X;
-            vec.Y = _universe.Objects[1].Location.Y - ship.Location.Y;
-            vec.Z = _universe.Objects[1].Location.Z - ship.Location.Z;
+            vec.X = _universe.StationOrSun.Location.X - ship.Location.X;
+            vec.Y = _universe.StationOrSun.Location.Y - ship.Location.Y;
+            vec.Z = _universe.StationOrSun.Location.Z - ship.Location.Z;
 
-            vec.X += _universe.Objects[1].Rotmat[2].X * 768;
-            vec.Y += _universe.Objects[1].Rotmat[2].Y * 768;
-            vec.Z += _universe.Objects[1].Rotmat[2].Z * 768;
+            vec.X += _universe.StationOrSun.Rotmat[2].X * 768;
+            vec.Y += _universe.StationOrSun.Rotmat[2].Y * 768;
+            vec.Z += _universe.StationOrSun.Rotmat[2].Z * 768;
 
             FlyToVector(ref ship, vec);
         }

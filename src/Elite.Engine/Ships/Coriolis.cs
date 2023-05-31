@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Coriolis : Ship
+    internal sealed class Coriolis : NullObject
     {
         internal Coriolis()
         {

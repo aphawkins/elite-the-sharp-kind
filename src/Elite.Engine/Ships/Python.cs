@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal class Python : Ship
+    internal class Python : NullObject
     {
         internal Python()
         {

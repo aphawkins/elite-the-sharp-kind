@@ -48,14 +48,16 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.Yes))
             {
-                _combat.ClearUniverse();
+                _combat.Reset();
+                _universe.ClearUniverse();
                 _audio.StopMusic();
                 _gameState.SetView(Screen.LoadCommander);
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.No))
             {
-                _combat.ClearUniverse();
+                _combat.Reset();
+                _universe.ClearUniverse();
                 _audio.StopMusic();
                 _gameState.SetView(Screen.IntroTwo);
             }
@@ -63,7 +65,8 @@ namespace Elite.Engine.Views
 
         public void Reset()
         {
-            _combat.ClearUniverse();
+            _combat.Reset();
+            _universe.ClearUniverse();
 
             Vector3[] initMatrix = VectorMaths.GetInitialMatrix();
 
@@ -76,11 +79,11 @@ namespace Elite.Engine.Views
         public void UpdateUniverse()
         {
             _ship.Roll = 1;
-            _universe.Objects[0].Location = new(_universe.Objects[0].Location.X, _universe.Objects[0].Location.Y, _universe.Objects[0].Location.Z - 100);
+            _universe.Planet.Location = new(_universe.Planet.Location.X, _universe.Planet.Location.Y, _universe.Planet.Location.Z - 100);
 
-            if (_universe.Objects[0].Location.Z < 384)
+            if (_universe.Planet.Location.Z < 384)
             {
-                _universe.Objects[0].Location = new(_universe.Objects[0].Location.X, _universe.Objects[0].Location.Y, 384);
+                _universe.Planet.Location = new(_universe.Planet.Location.X, _universe.Planet.Location.Y, 384);
             }
         }
     }

@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Asteroid : Ship
+    internal sealed class Asteroid : NullObject
     {
         public Asteroid()
         {

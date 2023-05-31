@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Worm : Ship
+    internal sealed class Worm : NullObject
     {
         internal Worm()
         {

@@ -7,13 +7,13 @@ using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal class Ship : IShip
+    internal class NullObject : IObject
     {
-        internal Ship()
+        internal NullObject()
         {
         }
 
-        internal Ship(IShip other)
+        internal NullObject(IObject other)
         {
             Bounty = other.Bounty;
             EnergyMax = other.EnergyMax;
@@ -96,7 +96,7 @@ namespace Elite.Engine.Ships
 
         public float Size { get; protected set; }
 
-        public int Target { get; set; }
+        public IObject? Target { get; set; }
 
         public ShipType Type { get; protected set; }
 

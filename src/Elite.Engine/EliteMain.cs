@@ -16,7 +16,6 @@ namespace Elite.Engine
 {
     public sealed class EliteMain
     {
-        internal const int MaxUniverseObjects = 20;
         private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly ConfigFile _configFile;
@@ -73,8 +72,8 @@ namespace Elite.Engine
             _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
             _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
             _views.Add(Screen.RightView, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.Docking, new DockingView(_gameState, _graphics, _audio, _space, _combat));
-            _views.Add(Screen.Undocking, new LaunchView(_gameState, _graphics, _audio, _space, _combat));
+            _views.Add(Screen.Docking, new DockingView(_gameState, _graphics, _audio, _space, _combat, _universe));
+            _views.Add(Screen.Undocking, new LaunchView(_gameState, _graphics, _audio, _space, _combat, _universe));
             _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _graphics, _audio));
             _views.Add(Screen.Inventory, new InventoryView(_graphics, _draw, _ship, _trade));
             _views.Add(Screen.EquipShip, new EquipmentView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _scanner));
@@ -470,6 +469,7 @@ namespace Elite.Engine
             _gameState.Reset();
             _pilot.Reset();
             _ship.Reset();
+            _combat.Reset();
             _save.GetLastSave();
 
             _ship.Speed = 1;
@@ -477,7 +477,7 @@ namespace Elite.Engine
             _isGamePaused = false;
 
             _stars.CreateNewStars();
-            _combat.ClearUniverse();
+            _universe.ClearUniverse();
             _space.DockPlayer();
 
             _gameState.SetView(Screen.IntroOne);

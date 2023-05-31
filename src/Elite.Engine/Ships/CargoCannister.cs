@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class CargoCannister : Ship
+    internal sealed class CargoCannister : NullObject
     {
         internal CargoCannister()
         {

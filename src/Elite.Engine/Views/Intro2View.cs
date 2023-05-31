@@ -64,14 +64,15 @@ namespace Elite.Engine.Views
             _graphics.DrawImage(Image.EliteText, new(-1, 10));
 
             _graphics.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, Colour.Gold);
-            _graphics.DrawTextCentre(330, _universe.Objects[0].Name, 120, Colour.White);
+            _graphics.DrawTextCentre(330, _universe.Planet.Name, 120, Colour.White);
         }
 
         public void HandleInput()
         {
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                _combat.ClearUniverse();
+                _combat.Reset();
+                _universe.ClearUniverse();
                 _audio.StopMusic();
                 _gameState.SetView(Screen.CommanderStatus);
             }
@@ -83,7 +84,8 @@ namespace Elite.Engine.Views
             _showTime = 0;
             _direction = 100;
 
-            _combat.ClearUniverse();
+            _combat.Reset();
+            _universe.ClearUniverse();
             _stars.CreateNewStars();
             _rotmat = VectorMaths.GetInitialMatrix();
             _universe.AddNewShip(ShipType.Missile, new(0, 0, 5000), _rotmat, -127, -127);
@@ -103,14 +105,14 @@ namespace Elite.Engine.Views
                 _direction = -_direction;
             }
 
-            _universe.Objects[0].Location = new(_universe.Objects[0].Location.X, _universe.Objects[0].Location.Y, _universe.Objects[0].Location.Z + _direction);
+            _universe.Planet.Location = new(_universe.Planet.Location.X, _universe.Planet.Location.Y, _universe.Planet.Location.Z + _direction);
 
-            if (_universe.Objects[0].Location.Z < _minDist[(int)_shipNo])
+            if (_universe.Planet.Location.Z < _minDist[(int)_shipNo])
             {
-                _universe.Objects[0].Location = new(_universe.Objects[0].Location.X, _universe.Objects[0].Location.Y, _minDist[(int)_shipNo]);
+                _universe.Planet.Location = new(_universe.Planet.Location.X, _universe.Planet.Location.Y, _minDist[(int)_shipNo]);
             }
 
-            if (_universe.Objects[0].Location.Z > 4500)
+            if (_universe.Planet.Location.Z > 4500)
             {
                 do
                 {
@@ -124,10 +126,7 @@ namespace Elite.Engine.Views
 
                 _showTime = 0;
                 _direction = -100;
-
-                _universe.ShipCount[_universe.Objects[0].Type] = 0;
-                _universe.Objects[0] = new Ship();
-
+                _universe.ClearUniverse();
                 _universe.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
             }
 

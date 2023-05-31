@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Moray : Ship
+    internal sealed class Moray : NullObject
     {
         internal Moray()
         {

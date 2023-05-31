@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Constrictor : Ship
+    internal sealed class Constrictor : NullObject
     {
         internal Constrictor()
         {

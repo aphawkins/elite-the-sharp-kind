@@ -66,7 +66,7 @@ namespace Elite.Engine
         /// Draws an object in the universe. (Ship, Planet, Sun etc).
         /// </summary>
         /// <param name="ship"></param>
-        internal void DrawObject(IShip ship)
+        internal void DrawObject(IObject ship)
         {
             //Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
             //  SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
@@ -178,7 +178,7 @@ namespace Elite.Engine
         private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
             Math.Clamp(((_landscape[sx, sy] + _landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
-        private void DrawExplosion(ref IShip ship)
+        private void DrawExplosion(ref IObject ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             bool[] visible = new bool[32];
@@ -289,7 +289,7 @@ namespace Elite.Engine
         /// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style.
         /// </summary>
         /// <param name="planet"></param>
-        private void DrawPlanet(ref IShip planet)
+        private void DrawPlanet(ref IObject planet)
         {
             Vector2 position = new()
             {
@@ -397,7 +397,7 @@ namespace Elite.Engine
         /// Check for hidden surface supplied by T.Harte.
         /// </summary>
         /// <param name="ship"></param>
-        private void DrawShip(ref IShip ship)
+        private void DrawShip(ref IObject ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             int lasv;

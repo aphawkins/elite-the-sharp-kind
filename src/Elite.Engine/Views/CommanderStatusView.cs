@@ -86,9 +86,9 @@ namespace Elite.Engine.Views
             {
                 condition = 1;
 
-                for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
+                foreach (IObject universeObj in _universe.GetAllObjects())
                 {
-                    if (_universe.Objects[i].Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
+                    if (universeObj.Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
                     {
                         condition = 2;
                         break;

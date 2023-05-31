@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Gecko : Ship
+    internal sealed class Gecko : NullObject
     {
         internal Gecko()
         {

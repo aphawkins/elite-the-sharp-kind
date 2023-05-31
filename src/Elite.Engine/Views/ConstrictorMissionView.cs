@@ -96,7 +96,8 @@ namespace Elite.Engine.Views
         {
             if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
             {
-                _combat.ClearUniverse();
+                _combat.Reset();
+                _universe.ClearUniverse();
                 _gameState.SetView(Screen.MissionTwo);
             }
         }
@@ -108,9 +109,10 @@ namespace Elite.Engine.Views
                 // Show brief
                 _gameState.Cmdr.Mission = 1;
 
-                _combat.ClearUniverse();
-                int i = _universe.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
-                _universe.Objects[i].Flags = ShipFlags.None;
+                _combat.Reset();
+                _universe.ClearUniverse();
+                IObject ship = _universe.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
+                ship.Flags = ShipFlags.None;
                 _ship.Roll = 0;
                 _ship.Climb = 0;
                 _ship.Speed = 0;

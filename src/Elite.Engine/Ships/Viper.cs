@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Viper : Ship
+    internal sealed class Viper : NullObject
     {
         internal Viper()
         {

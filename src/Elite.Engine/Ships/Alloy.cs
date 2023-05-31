@@ -7,7 +7,7 @@ using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Alloy : Ship
+    internal sealed class Alloy : NullObject
     {
         internal Alloy()
         {

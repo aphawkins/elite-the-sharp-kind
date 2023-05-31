@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Krait : Ship
+    internal sealed class Krait : NullObject
     {
         internal Krait()
         {

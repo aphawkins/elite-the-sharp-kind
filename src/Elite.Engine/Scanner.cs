@@ -189,9 +189,9 @@ namespace Elite.Engine
 
             Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
 
-            if (_combat.MissileTarget != _combat.IsMissileUnarmed)
+            if (_combat.IsMissileArmed)
             {
-                _graphics.DrawImage((_combat.MissileTarget < 0) ? Image.MissileYellow : Image.MissileRed, location);
+                _graphics.DrawImage((_combat.MissileTarget == null) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
                 missileCount--;
             }
@@ -247,8 +247,8 @@ namespace Elite.Engine
                 return;
             }
 
-            int un = _universe.ShipCount[ShipType.Coriolis] == 0 && _universe.ShipCount[ShipType.Dodec] == 0 ? 0 : 1;
-            Vector3 dest = VectorMaths.UnitVector(_universe.Objects[un].Location);
+            IObject obj = _universe.ShipCount[ShipType.Coriolis] == 0 && _universe.ShipCount[ShipType.Dodec] == 0 ? _universe.Planet : _universe.StationOrSun;
+            Vector3 dest = VectorMaths.UnitVector(obj.Location);
 
             if (float.IsNaN(dest.X))
             {
@@ -272,18 +272,18 @@ namespace Elite.Engine
         /// </summary>
         private void UpdateScanner()
         {
-            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
+            foreach (IObject universeObj in _universe.GetAllObjects())
             {
-                if ((_universe.Objects[i].Type <= 0) ||
-                    _universe.Objects[i].Flags.HasFlag(ShipFlags.Dead) ||
-                    _universe.Objects[i].Flags.HasFlag(ShipFlags.Cloaked))
+                if ((universeObj.Type <= 0) ||
+                    universeObj.Flags.HasFlag(ShipFlags.Dead) ||
+                    universeObj.Flags.HasFlag(ShipFlags.Cloaked))
                 {
                     continue;
                 }
 
-                float x = _universe.Objects[i].Location.X / 256;
-                float y1 = -_universe.Objects[i].Location.Z / 1024;
-                float y2 = y1 - (_universe.Objects[i].Location.Y / 512);
+                float x = universeObj.Location.X / 256;
+                float y1 = -universeObj.Location.Z / 1024;
+                float y2 = y1 - (universeObj.Location.Y / 512);
 
                 if ((y2 < -28) || (y2 > 28) ||
                     (x < -50) || (x > 50))
@@ -295,9 +295,9 @@ namespace Elite.Engine
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                Colour colour = _universe.Objects[i].Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow : Colour.White;
+                Colour colour = universeObj.Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow : Colour.White;
 
-                switch (_universe.Objects[i].Type)
+                switch (universeObj.Type)
                 {
                     case ShipType.Missile:
                         colour = Colour.Lilac;

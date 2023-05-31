@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class DodecStation : Ship
+    internal sealed class DodecStation : NullObject
     {
         internal DodecStation()
         {

@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class CobraMk1 : Ship
+    internal sealed class CobraMk1 : NullObject
     {
         internal CobraMk1()
         {

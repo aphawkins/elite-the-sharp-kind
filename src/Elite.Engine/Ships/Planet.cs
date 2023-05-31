@@ -4,7 +4,7 @@
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Planet : Ship
+    internal sealed class Planet : NullObject
     {
         internal Planet() => Type = ShipType.Planet;
     }

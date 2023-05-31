@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Sidewinder : Ship
+    internal sealed class Sidewinder : NullObject
     {
         internal Sidewinder()
         {

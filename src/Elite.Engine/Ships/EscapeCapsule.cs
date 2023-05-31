@@ -7,7 +7,7 @@ using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class EscapeCapsule : Ship
+    internal sealed class EscapeCapsule : NullObject
     {
         internal EscapeCapsule()
         {

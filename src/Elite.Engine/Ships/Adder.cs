@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Adder : Ship
+    internal sealed class Adder : NullObject
     {
         internal Adder()
         {

@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class AspMk2 : Ship
+    internal sealed class AspMk2 : NullObject
     {
         internal AspMk2()
         {

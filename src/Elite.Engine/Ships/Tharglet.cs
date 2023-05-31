@@ -7,7 +7,7 @@ using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Tharglet : Ship
+    internal sealed class Tharglet : NullObject
     {
         public Tharglet()
         {

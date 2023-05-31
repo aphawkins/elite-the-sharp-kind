@@ -15,7 +15,6 @@ namespace Elite.Engine.Conflict
     {
         private readonly AudioController _audio;
         private readonly GameState _gameState;
-        private readonly int _isMISSILE_ARMED = -1;
         private readonly Pilot _pilot;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
@@ -37,9 +36,9 @@ namespace Elite.Engine.Conflict
 
         internal bool InBattle { get; set; }
 
-        internal int IsMissileUnarmed { get; } = -2;
+        internal bool IsMissileArmed { get; private set; }
 
-        internal int MissileTarget { get; private set; }
+        internal IObject? MissileTarget { get; private set; } = new NullObject();
 
         internal void ActivateECM(bool ours)
         {
@@ -51,29 +50,22 @@ namespace Elite.Engine.Conflict
             }
         }
 
-        internal void AddNewStation(Vector3 position, Vector3[] rotmat)
-        {
-            ShipType station = _gameState.CurrentPlanetData.TechLevel >= 10 ? ShipType.Dodec : ShipType.Coriolis;
-            _universe.Objects[1] = new Ship();
-            _universe.AddNewShip(station, position, rotmat, 0, -127);
-        }
-
         internal void ArmMissile()
         {
-            if (_ship.MissileCount != 0 && MissileTarget == IsMissileUnarmed)
+            if (_ship.MissileCount != 0)
             {
-                MissileTarget = _isMISSILE_ARMED;
+                IsMissileArmed = true;
             }
         }
 
-        internal void CheckTarget(int un, ref IShip flip)
+        internal void CheckTarget(IObject obj, ref IObject flip)
         {
             //univ_object univ = space.universe[un];
-            if (IsInTarget(_universe.Objects[un], flip.Location))
+            if (IsInTarget(obj, flip.Location))
             {
-                if (MissileTarget == _isMISSILE_ARMED && _universe.Objects[un].Type >= 0)
+                if (MissileTarget == null && IsMissileArmed && obj.Type >= 0)
                 {
-                    MissileTarget = un;
+                    MissileTarget = obj;
                     _gameState.InfoMessage("Target Locked");
                     _audio.PlayEffect(SoundEffect.Beep);
                 }
@@ -82,57 +74,42 @@ namespace Elite.Engine.Conflict
                 {
                     _audio.PlayEffect(SoundEffect.HitEnemy);
 
-                    if (_universe.Objects[un].Type is not ShipType.Coriolis and not ShipType.Dodec)
+                    if (obj.Type is not ShipType.Coriolis and not ShipType.Dodec)
                     {
-                        if (_universe.Objects[un].Type is ShipType.Constrictor or ShipType.Cougar)
+                        if (obj.Type is ShipType.Constrictor or ShipType.Cougar)
                         {
                             if (_laserType == LaserType.Military)
                             {
-                                _universe.Objects[un].Energy -= _laserStrength / 4;
+                                obj.Energy -= _laserStrength / 4;
                             }
                         }
                         else
                         {
-                            _universe.Objects[un].Energy -= _laserStrength;
+                            obj.Energy -= _laserStrength;
                         }
                     }
 
-                    if (_universe.Objects[un].Energy <= 0)
+                    if (obj.Energy <= 0)
                     {
-                        ExplodeObject(un);
+                        ExplodeObject(obj);
 
-                        if (_universe.Objects[un].Type == ShipType.Asteroid)
+                        if (obj.Type == ShipType.Asteroid)
                         {
                             if (_laserType is LaserType.Mining or LaserType.Pulse)
                             {
-                                LaunchLoot(un, ShipType.Rock);
+                                LaunchLoot(obj, ShipType.Rock);
                             }
                         }
                         else
                         {
-                            LaunchLoot(un, ShipType.Alloy);
-                            LaunchLoot(un, ShipType.Cargo);
+                            LaunchLoot(obj, ShipType.Alloy);
+                            LaunchLoot(obj, ShipType.Cargo);
                         }
                     }
 
-                    MakeAngry(un);
+                    MakeAngry(obj);
                 }
             }
-        }
-
-        internal void ClearUniverse()
-        {
-            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
-            {
-                _universe.Objects[i] = new Ship();
-            }
-
-            foreach (ShipType shipType in Enum.GetValues<ShipType>())
-            {
-                _universe.ShipCount[shipType] = 0;
-            }
-
-            InBattle = false;
         }
 
         internal void CoolLaser()
@@ -151,20 +128,25 @@ namespace Elite.Engine.Conflict
 
         internal void CreateThargoid()
         {
-            int newship = CreateOtherShip(ShipType.Thargoid);
-            if (newship != -1)
+            IObject newship = _universe.AddNewShip(ShipType.Thargoid);
+
+            if (newship.Type == ShipType.Thargoid)
             {
-                _universe.Objects[newship].Flags = ShipFlags.Angry | ShipFlags.HasECM;
-                _universe.Objects[newship].Bravery = 113;
+                newship.Flags = ShipFlags.Angry | ShipFlags.HasECM;
+                newship.Bravery = 113;
 
                 if (RNG.Random(255) > 64)
                 {
                     LaunchEnemy(newship, ShipType.Tharglet, ShipFlags.Angry | ShipFlags.HasECM, 96);
                 }
             }
+            else
+            {
+                Debug.Fail("Failed to create Thargoid");
+            }
         }
 
-        internal void ExplodeObject(int un)
+        internal void ExplodeObject(IObject obj)
         {
             _gameState.Cmdr.Score++;
 
@@ -174,9 +156,9 @@ namespace Elite.Engine.Conflict
             }
 
             _audio.PlayEffect(SoundEffect.Explode);
-            _universe.Objects[un].Flags |= ShipFlags.Dead;
+            obj.Flags |= ShipFlags.Dead;
 
-            if (_universe.Objects[un].Type == ShipType.Constrictor)
+            if (obj.Type == ShipType.Constrictor)
             {
                 _gameState.Cmdr.Mission = 2;
             }
@@ -274,7 +256,7 @@ namespace Elite.Engine.Conflict
 
         internal void FireMissile()
         {
-            if (MissileTarget < 0)
+            if (MissileTarget == null || !IsMissileArmed)
             {
                 return;
             }
@@ -283,25 +265,26 @@ namespace Elite.Engine.Conflict
             rotmat[2].Z = 1;
             rotmat[0].X = -1;
 
-            int newship = _universe.AddNewShip(ShipType.Missile, new(0, -28, 14), rotmat, 0, 0);
+            IObject newship = _universe.AddNewShip(ShipType.Missile, new(0, -28, 14), rotmat, 0, 0);
 
-            if (newship == -1)
+            if (newship.Type == ShipType.None)
             {
                 _gameState.InfoMessage("Missile Jammed");
                 return;
             }
 
-            _universe.Objects[newship].Velocity = _ship.Speed * 2;
-            _universe.Objects[newship].Flags = ShipFlags.Angry;
-            _universe.Objects[newship].Target = MissileTarget;
+            newship.Velocity = _ship.Speed * 2;
+            newship.Flags = ShipFlags.Angry;
+            newship.Target = MissileTarget;
 
-            if (_universe.Objects[MissileTarget].Type > ShipType.Rock)
+            if (MissileTarget.Type > ShipType.Rock)
             {
-                _universe.Objects[MissileTarget].Flags |= ShipFlags.Angry;
+                MissileTarget.Flags |= ShipFlags.Angry;
             }
 
             _ship.MissileCount--;
-            MissileTarget = IsMissileUnarmed;
+            IsMissileArmed = false;
+            MissileTarget = null;
 
             _audio.PlayEffect(SoundEffect.Missile);
         }
@@ -315,7 +298,7 @@ namespace Elite.Engine.Conflict
 
             if (RNG.Random(255) == 136)
             {
-                if (((int)_universe.Objects[0].Location.Z & 0x3e) != 0)
+                if (((int)_universe.Planet.Location.Z & 0x3e) != 0)
                 {
                     CreateThargoid();
                 }
@@ -355,32 +338,27 @@ namespace Elite.Engine.Conflict
             CheckForOthers();
         }
 
-        internal void RemoveShip(int un)
+        internal void RemoveShip(IObject ship)
         {
-            ShipType type = _universe.Objects[un].Type;
-
-            if (type == ShipType.None)
+            if (ship.Type == ShipType.None)
             {
                 return;
             }
 
-            if (type > ShipType.None)
+            CheckMissiles(ship);
+
+            if (ship.Type is ShipType.Coriolis or ShipType.Dodec)
             {
-                _universe.ShipCount[type]--;
-            }
-
-            _universe.Objects[un] = new Ship();
-
-            CheckMissiles(un);
-
-            if (type is ShipType.Coriolis or ShipType.Dodec)
-            {
-                Vector3 position = _universe.Objects[un].Location;
+                Vector3 position = ship.Location;
                 position.Y = (int)position.Y & 0xFFFF;
                 position.Y = (int)position.Y | 0x60000;
                 _universe.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
             }
+
+            _universe.RemoveShip(ship);
         }
+
+        internal void Reset() => InBattle = false;
 
         internal void ResetWeapons()
         {
@@ -389,28 +367,28 @@ namespace Elite.Engine.Conflict
             _laserStrength = 0;
             _laserType = LaserType.None;
             _ship.EcmActive = 0;
-            MissileTarget = IsMissileUnarmed;
+            MissileTarget = null;
         }
 
-        internal void ScoopItem(int un)
+        internal void ScoopItem(IObject obj)
         {
-            if (_universe.Objects[un].Flags.HasFlag(ShipFlags.Dead))
+            if (obj.Flags.HasFlag(ShipFlags.Dead))
             {
                 return;
             }
 
-            ShipType type = _universe.Objects[un].Type;
+            ShipType type = obj.Type;
 
             if (type == ShipType.Missile)
             {
                 return;
             }
 
-            if (!_ship.HasFuelScoop || _universe.Objects[un].Location.Y >= 0 ||
+            if (!_ship.HasFuelScoop || obj.Location.Y >= 0 ||
                 _trade.TotalCargoTonnage() == _ship.CargoCapacity)
             {
-                ExplodeObject(un);
-                _ship.DamageShip(128 + (_universe.Objects[un].Energy / 2), _universe.Objects[un].Location.Z > 0);
+                ExplodeObject(obj);
+                _ship.DamageShip(128 + (obj.Energy / 2), obj.Location.Z > 0);
                 return;
             }
 
@@ -419,35 +397,33 @@ namespace Elite.Engine.Conflict
                 StockType trade = (StockType)RNG.Random(1, 8);
                 _trade.AddCargo(trade);
                 _gameState.InfoMessage(_trade.StockMarket[trade].Name);
-                RemoveShip(un);
+                RemoveShip(obj);
                 return;
             }
 
-            if (_universe.Objects[un].ScoopedType != StockType.None)
+            if (obj.ScoopedType != StockType.None)
             {
-                StockType trade = _universe.Objects[un].ScoopedType;
+                StockType trade = obj.ScoopedType;
                 _trade.AddCargo(trade);
                 _gameState.InfoMessage(_trade.StockMarket[trade].Name);
-                RemoveShip(un);
+                RemoveShip(obj);
                 return;
             }
 
-            ExplodeObject(un);
-            _ship.DamageShip(_universe.Objects[un].Energy / 2, _universe.Objects[un].Location.Z > 0);
+            ExplodeObject(obj);
+            _ship.DamageShip(obj.Energy / 2, obj.Location.Z > 0);
         }
 
-        internal void Tactics(int un)
+        internal void Tactics(IObject ship, int un)
         {
             Vector3 nvec;
             const float cnt2 = 0.223f;
             float direction;
             int attacking;
 
-            IShip ship = _universe.Objects[un];
-            ShipType type = ship.Type;
             ShipFlags flags = ship.Flags;
 
-            if (type is ShipType.Planet or ShipType.Sun)
+            if (ship.Type is ShipType.Planet or ShipType.Sun)
             {
                 return;
             }
@@ -462,7 +438,7 @@ namespace Elite.Engine.Conflict
                 return;
             }
 
-            if (type == ShipType.Missile)
+            if (ship.Type == ShipType.Missile)
             {
                 if (flags.HasFlag(ShipFlags.Angry))
                 {
@@ -477,7 +453,7 @@ namespace Elite.Engine.Conflict
                 return;
             }
 
-            if (type is ShipType.Coriolis or ShipType.Dodec)
+            if (ship.Type is ShipType.Coriolis or ShipType.Dodec)
             {
                 if (flags.HasFlag(ShipFlags.Angry))
                 {
@@ -491,7 +467,7 @@ namespace Elite.Engine.Conflict
                         return;
                     }
 
-                    LaunchEnemy(un, ShipType.Viper, ShipFlags.Angry | ShipFlags.HasECM, 113);
+                    LaunchEnemy(ship, ShipType.Viper, ShipFlags.Angry | ShipFlags.HasECM, 113);
                     return;
                 }
 
@@ -499,11 +475,11 @@ namespace Elite.Engine.Conflict
                 return;
             }
 
-            if (type == ShipType.Hermit)
+            if (ship.Type == ShipType.Hermit)
             {
                 if (RNG.Random(255) > 200)
                 {
-                    LaunchEnemy(un, ShipType.Sidewinder + RNG.Random(3), ShipFlags.Angry | ShipFlags.HasECM, 113);
+                    LaunchEnemy(ship, ShipType.Sidewinder + RNG.Random(3), ShipFlags.Angry | ShipFlags.HasECM, 113);
                     ship.Flags |= ShipFlags.Inactive;
                 }
 
@@ -515,7 +491,7 @@ namespace Elite.Engine.Conflict
                 ship.Energy++;
             }
 
-            if (type == ShipType.Tharglet && _universe.ShipCount[ShipType.Thargoid] == 0)
+            if (ship.Type == ShipType.Tharglet && _universe.ShipCount[ShipType.Thargoid] == 0)
             {
                 ship.Flags = 0;
                 ship.Velocity /= 2;
@@ -539,7 +515,7 @@ namespace Elite.Engine.Conflict
             {
                 if (flags.HasFlag(ShipFlags.FlyToPlanet) || flags.HasFlag(ShipFlags.FlyToStation))
                 {
-                    _pilot.AutoPilotShip(ref _universe.Objects[un]);
+                    _pilot.AutoPilotShip(ship);
                 }
 
                 return;
@@ -554,9 +530,9 @@ namespace Elite.Engine.Conflict
                 }
             }
 
-            if (type == ShipType.Anaconda && RNG.Random(255) > 200)
+            if (ship.Type == ShipType.Anaconda && RNG.Random(255) > 200)
             {
-                LaunchEnemy(un, RNG.Random(255) > 100 ? ShipType.Worm : ShipType.Sidewinder, ShipFlags.Angry | ShipFlags.HasECM, 113);
+                LaunchEnemy(ship, RNG.Random(255) > 100 ? ShipType.Worm : ShipType.Sidewinder, ShipFlags.Angry | ShipFlags.HasECM, 113);
                 return;
             }
 
@@ -571,24 +547,24 @@ namespace Elite.Engine.Conflict
 
             if (ship.Energy < ship.EnergyMax / 2)
             {
-                if (ship.Energy < ship.EnergyMax / 8 && RNG.Random(255) > 230 && type != ShipType.Thargoid)
+                if (ship.Energy < ship.EnergyMax / 8 && RNG.Random(255) > 230 && ship.Type != ShipType.Thargoid)
                 {
                     ship.Flags &= ~ShipFlags.Angry;
                     ship.Flags |= ShipFlags.Inactive;
-                    LaunchEnemy(un, ShipType.EscapeCapsule, 0, 126);
+                    LaunchEnemy(ship, ShipType.EscapeCapsule, 0, 126);
                     return;
                 }
 
                 if (ship.Missiles != 0 && _ship.EcmActive == 0 && ship.Missiles >= RNG.Random(31))
                 {
                     ship.Missiles--;
-                    if (type == ShipType.Thargoid)
+                    if (ship.Type == ShipType.Thargoid)
                     {
-                        LaunchEnemy(un, ShipType.Tharglet, ShipFlags.Angry, ship.Bravery);
+                        LaunchEnemy(ship, ShipType.Tharglet, ShipFlags.Angry, ship.Bravery);
                     }
                     else
                     {
-                        LaunchEnemy(un, ShipType.Missile, ShipFlags.Angry, 126);
+                        LaunchEnemy(ship, ShipType.Missile, ShipFlags.Angry, 126);
                         _gameState.InfoMessage("INCOMING MISSILE");
                     }
 
@@ -596,7 +572,7 @@ namespace Elite.Engine.Conflict
                 }
             }
 
-            nvec = VectorMaths.UnitVector(_universe.Objects[un].Location);
+            nvec = VectorMaths.UnitVector(ship.Location);
             direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[2]);
 
             if (ship.Location.Length() < 8192 &&
@@ -628,7 +604,7 @@ namespace Elite.Engine.Conflict
                     nvec.Y = -nvec.Y;
                     nvec.Z = -nvec.Z;
                     direction = -direction;
-                    TrackObject(ref _universe.Objects[un], direction, nvec);
+                    TrackObject(ship, direction, nvec);
                 }
 
                 //      if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
@@ -665,7 +641,7 @@ namespace Elite.Engine.Conflict
                 }
             }
 
-            TrackObject(ref _universe.Objects[un], direction, nvec);
+            TrackObject(ship, direction, nvec);
 
             if (attacking == 1 && ship.Location.Length() < 2048)
             {
@@ -723,14 +699,36 @@ namespace Elite.Engine.Conflict
 
         internal void UnarmMissile()
         {
-            MissileTarget = IsMissileUnarmed;
+            MissileTarget = null;
+            IsMissileArmed = false;
             _audio.PlayEffect(SoundEffect.Boop);
         }
 
-        private static bool IsInTarget(IShip ship, Vector3 position) =>
+        private static bool IsInTarget(IObject ship, Vector3 position) =>
             position.Z >= 0 && (position.X * position.X) + (position.Y * position.Y) <= ship.Size;
 
-        private static void TrackObject(ref IShip ship, float direction, Vector3 nvec)
+        private static void MakeAngry(IObject ship)
+        {
+            if (ship.Flags.HasFlag(ShipFlags.Inactive))
+            {
+                return;
+            }
+
+            if (ship.Type is ShipType.Coriolis or ShipType.Dodec)
+            {
+                ship.Flags |= ShipFlags.Angry;
+                return;
+            }
+
+            if (ship.Type > ShipType.Rock)
+            {
+                ship.RotX = 4;
+                ship.Acceleration = 2;
+                ship.Flags |= ShipFlags.Angry;
+            }
+        }
+
+        private static void TrackObject(IObject ship, float direction, Vector3 nvec)
         {
             const int rat = 3;
             const float rat2 = 0.111f;
@@ -782,14 +780,18 @@ namespace Elite.Engine.Conflict
 
             type = RNG.Random(255) > 253 ? ShipType.Hermit : ShipType.Asteroid;
 
-            int newship = CreateOtherShip(type);
+            IObject newship = _universe.AddNewShip(type);
 
-            if (newship != -1)
+            if (newship.Type == ShipType.Asteroid)
             {
                 //      space.universe[newship].velocity = (random.rand255() & 31) | 16;
-                _universe.Objects[newship].Velocity = 8;
-                _universe.Objects[newship].RotZ = RNG.TrueOrFalse() ? -127 : 127;
-                _universe.Objects[newship].RotX = 16;
+                newship.Velocity = 8;
+                newship.RotZ = RNG.TrueOrFalse() ? -127 : 127;
+                newship.RotX = 16;
+            }
+            else
+            {
+                Debug.Fail("Failed to create Asteroid");
             }
         }
 
@@ -832,17 +834,21 @@ namespace Elite.Engine.Conflict
             for (int i = 0; i <= rnd; i++)
             {
                 ShipType type = ShipType.Sidewinder + (RNG.Random(255) & RNG.Random(7));
-                int newship = _universe.AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
-                if (newship != -1)
+                IObject newship = _universe.AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
+                if (newship.Type == type)
                 {
-                    _universe.Objects[newship].Flags = ShipFlags.Angry;
+                    newship.Flags = ShipFlags.Angry;
                     if (RNG.Random(255) > 245)
                     {
-                        _universe.Objects[newship].Flags |= ShipFlags.HasECM;
+                        newship.Flags |= ShipFlags.HasECM;
                     }
 
-                    _universe.Objects[newship].Bravery = ((RNG.Random(255) * 2) | 64) & 127;
+                    newship.Bravery = ((RNG.Random(255) * 2) | 64) & 127;
                     InBattle = true;
+                }
+                else
+                {
+                    Debug.Fail("Failed to create Pack Hunter");
                 }
             }
         }
@@ -860,60 +866,65 @@ namespace Elite.Engine.Conflict
                 return;
             }
 
-            int newship = CreateOtherShip(ShipType.Viper);
+            IObject newship = _universe.AddNewShip(ShipType.Viper);
 
-            if (newship != -1)
+            if (newship.Type == ShipType.Viper)
             {
-                _universe.Objects[newship].Flags = ShipFlags.Angry;
+                newship.Flags = ShipFlags.Angry;
                 if (RNG.Random(255) > 245)
                 {
-                    _universe.Objects[newship].Flags |= ShipFlags.HasECM;
+                    newship.Flags |= ShipFlags.HasECM;
                 }
 
-                _universe.Objects[newship].Bravery = ((RNG.Random(255) * 2) | 64) & 127;
+                newship.Bravery = ((RNG.Random(255) * 2) | 64) & 127;
+            }
+            else
+            {
+                Debug.Fail("Failed to create Police");
             }
         }
 
-        private void CheckMissiles(int un)
+        private void CheckMissiles(IObject obj)
         {
-            if (MissileTarget == un)
+            if (MissileTarget == obj)
             {
-                MissileTarget = IsMissileUnarmed;
+                MissileTarget = null;
+                IsMissileArmed = false;
                 _gameState.InfoMessage("Target Lost");
             }
 
-            for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
+            foreach (IObject universeObj in _universe.GetAllObjects())
             {
-                if (_universe.Objects[i].Type == ShipType.Missile && _universe.Objects[i].Target == un)
+                if (universeObj.Type == ShipType.Missile && universeObj.Target == obj)
                 {
-                    _universe.Objects[i].Flags |= ShipFlags.Dead;
+                    universeObj.Flags |= ShipFlags.Dead;
                 }
             }
         }
 
         private void CreateCougar()
         {
-            int newship;
-
             if (_universe.ShipCount[ShipType.Cougar] != 0)
             {
                 return;
             }
 
-            newship = CreateOtherShip(ShipType.Cougar);
-            if (newship != -1)
+            IObject newship = _universe.AddNewShip(ShipType.Cougar);
+            if (newship.Type == ShipType.Cougar)
             {
-                _universe.Objects[newship].Flags = ShipFlags.HasECM; // | FLG_CLOAKED;
-                _universe.Objects[newship].Bravery = 121;
-                _universe.Objects[newship].Velocity = 18;
+                newship.Flags = ShipFlags.HasECM; // | FLG_CLOAKED;
+                newship.Bravery = 121;
+                newship.Velocity = 18;
+            }
+            else
+            {
+                Debug.Fail("Failed to create Cougar");
             }
         }
 
         private void CreateLoneHunter()
         {
-            int rnd;
             ShipType type;
-            int newship;
 
             if (_gameState.Cmdr.Mission == 1 && _gameState.Cmdr.GalaxyNumber == 1 &&
                 _gameState.DockedPlanet.D == 144 && _gameState.DockedPlanet.B == 33 &&
@@ -923,104 +934,91 @@ namespace Elite.Engine.Conflict
             }
             else
             {
-                rnd = RNG.Random(255);
+                int rnd = RNG.Random(255);
                 type = ShipType.CobraMk3Lone + (rnd & 3) + (rnd > 127 ? 1 : 0);
             }
 
-            newship = CreateOtherShip(type);
+            IObject newship = _universe.AddNewShip(type);
 
-            if (newship != -1)
+            if (newship.Type == type)
             {
-                _universe.Objects[newship].Flags = ShipFlags.Angry;
+                newship.Flags = ShipFlags.Angry;
                 if (RNG.Random(255) > 200 || type == ShipType.Constrictor)
                 {
-                    _universe.Objects[newship].Flags |= ShipFlags.HasECM;
+                    newship.Flags |= ShipFlags.HasECM;
                 }
 
-                _universe.Objects[newship].Bravery = ((RNG.Random(255) * 2) | 64) & 127;
+                newship.Bravery = ((RNG.Random(255) * 2) | 64) & 127;
                 InBattle = true;
             }
-        }
-
-        private int CreateOtherShip(ShipType type)
-        {
-            Vector3 position = new()
+            else
             {
-                X = 1000 + RNG.Random(8191),
-                Y = 1000 + RNG.Random(8191),
-                Z = 12000,
-            };
-
-            if (RNG.Random(255) > 127)
-            {
-                position.X = -position.X;
+                Debug.Fail("Failed to create Lone Hunter");
             }
-
-            if (RNG.Random(255) > 127)
-            {
-                position.Y = -position.Y;
-            }
-
-            return _universe.AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
         }
 
         private void CreateTrader()
         {
             ShipType type = ShipType.CobraMk3 + RNG.Random(3);
-            int newship = CreateOtherShip(type);
+            IObject newship = _universe.AddNewShip(type);
 
-            if (newship != -1)
+            if (newship.Type == type)
             {
-                _universe.Objects[newship].Rotmat[2].Z = -1.0f;
-                _universe.Objects[newship].RotZ = RNG.Random(7);
-                _universe.Objects[newship].Velocity = RNG.Random(31) | 16;
-                _universe.Objects[newship].Bravery = RNG.Random(127);
+                newship.Rotmat[2].Z = -1.0f;
+                newship.RotZ = RNG.Random(7);
+                newship.Velocity = RNG.Random(31) | 16;
+                newship.Bravery = RNG.Random(127);
 
                 if (RNG.TrueOrFalse())
                 {
-                    _universe.Objects[newship].Flags |= ShipFlags.HasECM;
+                    newship.Flags |= ShipFlags.HasECM;
                 }
 
                 //      if (rnd & 2)
                 //          space.universe[newship].flags |= FLG.FLG_ANGRY;
             }
+            else
+            {
+                Debug.Fail("Failed to create Trader");
+            }
         }
 
-        private void LaunchEnemy(int un, ShipType type, ShipFlags flags, int bravery)
+        private void LaunchEnemy(IObject sourceShip, ShipType newType, ShipFlags flags, int bravery)
         {
-            Debug.Assert(_universe.Objects[un].Rotmat != null, "Rotation matrix should not be null.");
-            Vector3[] rotmat = _universe.Objects[un].Rotmat.Cloner();
-            int newship = _universe.AddNewShip(type, _universe.Objects[un].Location, rotmat, _universe.Objects[un].RotX, _universe.Objects[un].RotZ);
+            Debug.Assert(sourceShip.Rotmat != null, "Rotation matrix should not be null.");
+            Vector3[] rotmat = sourceShip.Rotmat.Cloner();
+            IObject newship = _universe.AddNewShip(newType, sourceShip.Location, rotmat, sourceShip.RotX, sourceShip.RotZ);
 
-            if (newship == -1)
+            if (newship.Type == ShipType.None)
             {
                 return;
             }
 
-            IShip ns = _universe.Objects[newship];
-
-            if (_universe.Objects[un].Type is ShipType.Coriolis or ShipType.Dodec)
+            if (sourceShip.Type is ShipType.Coriolis or ShipType.Dodec)
             {
-                ns.Velocity = 32;
-                ns.Location = new(ns.Location.X + (ns.Rotmat[2].X * 2), ns.Location.Y + (ns.Rotmat[2].Y * 2), ns.Location.Z + (ns.Rotmat[2].Z * 2));
+                newship.Velocity = 32;
+                newship.Location = new(
+                    newship.Location.X + (newship.Rotmat[2].X * 2),
+                    newship.Location.Y + (newship.Rotmat[2].Y * 2),
+                    newship.Location.Z + (newship.Rotmat[2].Z * 2));
             }
 
-            ns.Flags |= flags;
-            ns.RotZ /= 2;
-            ns.RotZ *= 2;
-            ns.Bravery = bravery;
+            newship.Flags |= flags;
+            newship.RotZ /= 2;
+            newship.RotZ *= 2;
+            newship.Bravery = bravery;
 
-            if (type is ShipType.Cargo or ShipType.Alloy or ShipType.Rock)
+            if (newType is ShipType.Cargo or ShipType.Alloy or ShipType.Rock)
             {
-                ns.RotZ = ((RNG.Random(255) * 2) & 255) - 128;
-                ns.RotX = ((RNG.Random(255) * 2) & 255) - 128;
-                ns.Velocity = RNG.Random(15);
+                newship.RotZ = ((RNG.Random(255) * 2) & 255) - 128;
+                newship.RotX = ((RNG.Random(255) * 2) & 255) - 128;
+                newship.Velocity = RNG.Random(15);
             }
         }
 
-        private void LaunchLoot(int un, ShipType loot)
+        private void LaunchLoot(IObject obj, ShipType loot)
         {
-            int i, cnt;
+            int cnt;
 
             if (loot == ShipType.Rock)
             {
@@ -1034,13 +1032,13 @@ namespace Elite.Engine.Conflict
                     return;
                 }
 
-                cnt &= _universe.Objects[un].LootMax;
+                cnt &= obj.LootMax;
                 cnt &= 15;
             }
 
-            for (i = 0; i < cnt; i++)
+            for (int i = 0; i < cnt; i++)
             {
-                LaunchEnemy(un, loot, 0, 0);
+                LaunchEnemy(obj, loot, 0, 0);
             }
         }
 
@@ -1054,36 +1052,12 @@ namespace Elite.Engine.Conflict
             }
 
             ShipType type = RNG.TrueOrFalse() ? ShipType.Shuttle : ShipType.Transporter;
-            LaunchEnemy(1, type, ShipFlags.HasECM | ShipFlags.FlyToPlanet, 113);
+            IObject station = _universe.StationOrSun;
+            LaunchEnemy(station, type, ShipFlags.HasECM | ShipFlags.FlyToPlanet, 113);
         }
 
-        private void MakeAngry(int un)
+        private void MissileTactics(IObject missile)
         {
-            ShipType type = _universe.Objects[un].Type;
-            ShipFlags flags = _universe.Objects[un].Flags;
-
-            if (flags.HasFlag(ShipFlags.Inactive))
-            {
-                return;
-            }
-
-            if (type is ShipType.Coriolis or ShipType.Dodec)
-            {
-                _universe.Objects[un].Flags |= ShipFlags.Angry;
-                return;
-            }
-
-            if (type > ShipType.Rock)
-            {
-                _universe.Objects[un].RotX = 4;
-                _universe.Objects[un].Acceleration = 2;
-                _universe.Objects[un].Flags |= ShipFlags.Angry;
-            }
-        }
-
-        private void MissileTactics(IShip missile)
-        {
-            IShip target;
             Vector3 vec;
             Vector3 nvec;
             float direction;
@@ -1097,9 +1071,10 @@ namespace Elite.Engine.Conflict
                 return;
             }
 
-            if (missile.Target == 0)
+            // TODO: is this correct?
+            if (missile.Target == null)
             {
-                if (missile.Location.Length() < 512)
+                if (missile.Location.Length() < 256)
                 {
                     missile.Flags |= ShipFlags.Dead;
                     _audio.PlayEffect(SoundEffect.Explode);
@@ -1111,14 +1086,13 @@ namespace Elite.Engine.Conflict
             }
             else
             {
-                target = _universe.Objects[missile.Target];
-                vec = missile.Location - target.Location;
+                vec = missile.Location - missile.Target.Location;
 
-                if (vec.Length() < 512)
+                if (vec.Length() < 256)
                 {
                     missile.Flags |= ShipFlags.Dead;
 
-                    if (target.Type is not ShipType.Coriolis and not ShipType.Dodec)
+                    if (missile.Target.Type is not ShipType.Coriolis and not ShipType.Dodec)
                     {
                         ExplodeObject(missile.Target);
                     }
@@ -1130,7 +1104,7 @@ namespace Elite.Engine.Conflict
                     return;
                 }
 
-                if (RNG.Random(255) < 16 && target.Flags.HasFlag(ShipFlags.HasECM))
+                if (RNG.Random(255) < 16 && missile.Target.Flags.HasFlag(ShipFlags.HasECM))
                 {
                     ActivateECM(false);
                     return;
@@ -1144,7 +1118,7 @@ namespace Elite.Engine.Conflict
             nvec.Z = -nvec.Z;
             direction = -direction;
 
-            TrackObject(ref missile, direction, nvec);
+            TrackObject(missile, direction, nvec);
 
             if (direction <= -0.167)
             {

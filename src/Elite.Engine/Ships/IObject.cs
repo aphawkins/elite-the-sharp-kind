@@ -7,7 +7,7 @@ using Elite.Engine.Trader;
 
 namespace Elite.Engine.Ships
 {
-    internal interface IShip
+    internal interface IObject
     {
         float Bounty { get; }
 
@@ -61,7 +61,7 @@ namespace Elite.Engine.Ships
 
         float RotZ { get; set; }
 
-        int Target { get; set; }
+        IObject? Target { get; set; }
 
         ShipType Type { get; }
 

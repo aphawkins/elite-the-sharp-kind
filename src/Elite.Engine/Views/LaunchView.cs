@@ -16,14 +16,16 @@ namespace Elite.Engine.Views
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly Space _space;
+        private readonly Universe _universe;
 
-        internal LaunchView(GameState gameState, IGraphics graphics, AudioController audio, Space space, Combat combat)
+        internal LaunchView(GameState gameState, IGraphics graphics, AudioController audio, Space space, Combat combat, Universe universe)
         {
             _gameState = gameState;
             _graphics = graphics;
             _audio = audio;
             _space = space;
             _combat = combat;
+            _universe = universe;
             _breakPattern = new(_graphics);
         }
 
@@ -35,7 +37,8 @@ namespace Elite.Engine.Views
 
         public void Reset()
         {
-            _combat.ClearUniverse();
+            _combat.Reset();
+            _universe.ClearUniverse();
             _breakPattern.Reset();
             _audio.PlayEffect(SoundEffect.Launch);
         }

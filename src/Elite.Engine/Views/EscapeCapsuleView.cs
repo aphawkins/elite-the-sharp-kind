@@ -21,7 +21,7 @@ namespace Elite.Engine.Views
         private readonly Trade _trade;
         private readonly Universe _universe;
         private int _i;
-        private int _newship;
+        private IObject _newship = new NullObject();
 
         internal EscapeCapsuleView(
             GameState gameState,
@@ -63,7 +63,7 @@ namespace Elite.Engine.Views
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
             _newship = _universe.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
-            _universe.Objects[_newship].Velocity = 7;
+            _newship.Velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;
         }
@@ -74,12 +74,12 @@ namespace Elite.Engine.Views
             {
                 if (_i == 40)
                 {
-                    _universe.Objects[_newship].Flags |= ShipFlags.Dead;
+                    _newship.Flags |= ShipFlags.Dead;
                     _audio.PlayEffect(SoundEffect.Explode);
                 }
 
                 _stars.FrontStarfield();
-                _universe.Objects[_newship].Location = new(0, 0, _universe.Objects[_newship].Location.Z + 2);
+                _newship.Location = new(0, 0, _newship.Location.Z + 2);
                 _i++;
             }
             else if ((_universe.ShipCount[ShipType.Coriolis] == 0) && (_universe.ShipCount[ShipType.Dodec] == 0))
@@ -88,11 +88,11 @@ namespace Elite.Engine.Views
 
                 if ((MathF.Abs(_ship.Roll) < 3) && (MathF.Abs(_ship.Climb) < 3))
                 {
-                    for (int i = 0; i < EliteMain.MaxUniverseObjects; i++)
+                    foreach (IObject universeObj in _universe.GetAllObjects())
                     {
-                        if (_universe.Objects[i].Type != 0)
+                        if (universeObj.Type != 0)
                         {
-                            _universe.Objects[i].Location = new(_universe.Objects[i].Location.X, _universe.Objects[i].Location.Y, _universe.Objects[i].Location.Z - 1500);
+                            universeObj.Location = new(universeObj.Location.X, universeObj.Location.Y, universeObj.Location.Z - 1500);
                         }
                     }
                 }

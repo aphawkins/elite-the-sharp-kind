@@ -6,7 +6,7 @@ using Elite.Engine.Enums;
 
 namespace Elite.Engine.Ships
 {
-    internal sealed class Boulder : Ship
+    internal sealed class Boulder : NullObject
     {
         internal Boulder()
         {
