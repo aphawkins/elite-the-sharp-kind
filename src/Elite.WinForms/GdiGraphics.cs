@@ -86,8 +86,11 @@ namespace Elite.WinForms
 
             Debug.Assert(color != Color.Magenta, "Check for valid colour.");
 
-            //TODO: fix bad values from explosion
-            if (position.X < 0 || position.X >= 512 || position.Y < 0 || position.Y >= 512)
+            // Prevent SetPixel from drawing outside of the clip region
+            if (position.X < _screenBufferGraphics.ClipBounds.Left ||
+                position.X > _screenBufferGraphics.ClipBounds.Right ||
+                position.Y < _screenBufferGraphics.ClipBounds.Top ||
+                position.Y > _screenBufferGraphics.ClipBounds.Bottom)
             {
                 return;
             }

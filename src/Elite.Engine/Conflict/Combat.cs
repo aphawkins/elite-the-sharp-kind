@@ -1068,7 +1068,6 @@ namespace Elite.Engine.Conflict
                 return;
             }
 
-            // TODO: is this correct?
             if (missile.Target == null)
             {
                 if (missile.Location.Length() < 256)

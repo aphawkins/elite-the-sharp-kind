@@ -274,9 +274,6 @@ namespace Elite.Engine
                     {
                         for (int psx = 0; psx < sizex; psx++)
                         {
-                            //TODO: Bug - the X or Y could be negative
-                            //Debug.Assert(position.X >= 0);
-                            //Debug.Assert(position.Y >= 0);
                             _graphics.DrawPixel(new(position.X + psx, position.Y + psy), Colour.White);
                         }
                     }

@@ -3,9 +3,7 @@
 ## To get to MVP
 - Fix TODOs in code
 - Colours on SNES planet style not working
-- Explosion of other ship can cause an exception
 - Incorrect distance shown on current planet after hyperspace
-- Clipping incorrect on bottom line (after explosion?)
 - Fix code directory structure
 - Remove most publics
 - Check mission triggers (FAQ)
