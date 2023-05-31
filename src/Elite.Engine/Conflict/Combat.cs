@@ -58,7 +58,7 @@ namespace Elite.Engine.Conflict
             }
         }
 
-        internal void CheckTarget(IObject obj, ref IObject flip)
+        internal void CheckTarget(IObject obj, IObject flip)
         {
             //univ_object univ = space.universe[un];
             if (IsInTarget(obj, flip.Location))
@@ -291,7 +291,7 @@ namespace Elite.Engine.Conflict
 
         internal void RandomEncounter()
         {
-            if (_universe.ShipCount[ShipType.Coriolis] != 0 || _universe.ShipCount[ShipType.Dodec] != 0)
+            if (_universe.IsStationPresent)
             {
                 return;
             }
@@ -320,7 +320,7 @@ namespace Elite.Engine.Conflict
 
             CheckForPolice();
 
-            if (_universe.ShipCount[ShipType.Viper] != 0)
+            if (_universe.PoliceCount != 0)
             {
                 return;
             }
@@ -462,7 +462,7 @@ namespace Elite.Engine.Conflict
                         return;
                     }
 
-                    if (_universe.ShipCount[ShipType.Viper] >= 4)
+                    if (_universe.PoliceCount >= 4)
                     {
                         return;
                     }
@@ -491,7 +491,7 @@ namespace Elite.Engine.Conflict
                 ship.Energy++;
             }
 
-            if (ship.Type == ShipType.Tharglet && _universe.ShipCount[ShipType.Thargoid] == 0)
+            if (ship.Type == ShipType.Tharglet && _universe.ShipCount(ShipType.Thargoid) == 0)
             {
                 ship.Flags = 0;
                 ship.Velocity /= 2;
@@ -522,12 +522,9 @@ namespace Elite.Engine.Conflict
             }
 
             // If we get to here then the ship is angry so start attacking...
-            if (_universe.ShipCount[ShipType.Coriolis] != 0 || _universe.ShipCount[ShipType.Dodec] != 0)
+            if (_universe.IsStationPresent && !flags.HasFlag(ShipFlags.Bold))
             {
-                if (!flags.HasFlag(ShipFlags.Bold))
-                {
-                    ship.Bravery = 0;
-                }
+                ship.Bravery = 0;
             }
 
             if (ship.Type == ShipType.Anaconda && RNG.Random(255) > 200)
@@ -773,21 +770,21 @@ namespace Elite.Engine.Conflict
         {
             ShipType type;
 
-            if (RNG.Random(255) >= 35 || _universe.ShipCount[ShipType.Asteroid] >= 3)
+            if (RNG.Random(255) >= 35 || _universe.ShipCount(ShipType.Asteroid) >= 3)
             {
                 return;
             }
 
             type = RNG.Random(255) > 253 ? ShipType.Hermit : ShipType.Asteroid;
 
-            IObject newship = _universe.AddNewShip(type);
+            IObject asteroid = _universe.AddNewShip(type);
 
-            if (newship.Type == ShipType.Asteroid)
+            if (asteroid.Type == ShipType.Asteroid)
             {
                 //      space.universe[newship].velocity = (random.rand255() & 31) | 16;
-                newship.Velocity = 8;
-                newship.RotZ = RNG.TrueOrFalse() ? -127 : 127;
-                newship.RotX = 16;
+                asteroid.Velocity = 8;
+                asteroid.RotZ = RNG.TrueOrFalse() ? -127 : 127;
+                asteroid.RotX = 16;
             }
             else
             {
@@ -856,7 +853,7 @@ namespace Elite.Engine.Conflict
         private void CheckForPolice()
         {
             int offense = _trade.IsCarryingContraband() * 2;
-            if (_universe.ShipCount[ShipType.Viper] == 0)
+            if (_universe.PoliceCount == 0)
             {
                 offense |= _gameState.Cmdr.LegalStatus;
             }
@@ -904,7 +901,7 @@ namespace Elite.Engine.Conflict
 
         private void CreateCougar()
         {
-            if (_universe.ShipCount[ShipType.Cougar] != 0)
+            if (_universe.ShipCount(ShipType.Cougar) != 0)
             {
                 return;
             }
@@ -928,7 +925,7 @@ namespace Elite.Engine.Conflict
 
             if (_gameState.Cmdr.Mission == 1 && _gameState.Cmdr.GalaxyNumber == 1 &&
                 _gameState.DockedPlanet.D == 144 && _gameState.DockedPlanet.B == 33 &&
-                _universe.ShipCount[ShipType.Constrictor] == 0)
+                _universe.ShipCount(ShipType.Constrictor) == 0)
             {
                 type = ShipType.Constrictor;
             }
@@ -1044,8 +1041,8 @@ namespace Elite.Engine.Conflict
 
         private void LaunchShuttle()
         {
-            if (_universe.ShipCount[ShipType.Transporter] != 0 ||
-                _universe.ShipCount[ShipType.Shuttle] != 0 ||
+            if (_universe.ShipCount(ShipType.Transporter) != 0 ||
+                _universe.ShipCount(ShipType.Shuttle) != 0 ||
                 RNG.Random(255) < 253 || _pilot.IsAutoPilotOn)
             {
                 return;

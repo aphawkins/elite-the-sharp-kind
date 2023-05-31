@@ -22,7 +22,7 @@ namespace Elite.WinForms
         private readonly object _screenLock = new();
         private bool _isDisposed;
 
-        public GdiGraphics(ref Bitmap screen)
+        public GdiGraphics(Bitmap screen)
         {
             Debug.Assert(screen.Width == 512, "Screen should be correct width.");
             Debug.Assert(screen.Height == 512, "Screen should be correct height.");

@@ -95,7 +95,7 @@ namespace Elite.Engine
         /// </summary>
         internal void EngageDockingComputer()
         {
-            if (_universe.ShipCount[ShipType.Coriolis] != 0 || _universe.ShipCount[ShipType.Dodec] != 0)
+            if (_universe.IsStationPresent)
             {
                 _gameState.SetView(Screen.Docking);
             }
@@ -266,7 +266,7 @@ namespace Elite.Engine
                 return;
             }
 
-            if (_universe.ShipCount[ShipType.Coriolis] != 0 || _universe.ShipCount[ShipType.Dodec] != 0)
+            if (_universe.IsStationPresent)
             {
                 return;
             }
@@ -380,13 +380,11 @@ namespace Elite.Engine
                 MoveUniverseObject(universeObj);
 
                 IObject flip = new NullObject(universeObj);
-                SwitchToView(ref flip);
+                SwitchToView(flip);
 
                 if (type == ShipType.Planet)
                 {
-                    if ((_universe.ShipCount[ShipType.Coriolis] == 0) &&
-                        (_universe.ShipCount[ShipType.Dodec] == 0) &&
-                        (universeObj.Location.Length() < 65792 /* was 49152 */))
+                    if (!_universe.IsStationPresent && (universeObj.Location.Length() < 65792 /* was 49152 */))
                     {
                         MakeStationAppear();
                     }
@@ -433,7 +431,7 @@ namespace Elite.Engine
                     continue;
                 }
 
-                _combat.CheckTarget(universeObj, ref flip);
+                _combat.CheckTarget(universeObj, flip);
             }
 
             _threed.RenderEnd();
@@ -767,7 +765,7 @@ namespace Elite.Engine
             VectorMaths.TidyMatrix(obj.Rotmat);
         }
 
-        private void SwitchToView(ref IObject flip)
+        private void SwitchToView(IObject flip)
         {
             float tmp;
 

@@ -82,7 +82,7 @@ namespace Elite.Engine.Views
                 _newship.Location = new(0, 0, _newship.Location.Z + 2);
                 _i++;
             }
-            else if ((_universe.ShipCount[ShipType.Coriolis] == 0) && (_universe.ShipCount[ShipType.Dodec] == 0))
+            else if (!_universe.IsStationPresent)
             {
                 _pilot.AutoDock();
 

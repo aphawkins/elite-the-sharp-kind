@@ -57,7 +57,7 @@ namespace Elite.Engine
             UpdateScanner();
             UpdateCompass();
 
-            if (_universe.ShipCount[ShipType.Coriolis] != 0 || _universe.ShipCount[ShipType.Dodec] != 0)
+            if (_universe.IsStationPresent)
             {
                 _graphics.DrawImage(Image.BigS, new(387, 490));
             }
@@ -247,7 +247,7 @@ namespace Elite.Engine
                 return;
             }
 
-            IObject obj = _universe.ShipCount[ShipType.Coriolis] == 0 && _universe.ShipCount[ShipType.Dodec] == 0 ? _universe.Planet : _universe.StationOrSun;
+            IObject obj = _universe.IsStationPresent ? _universe.StationOrSun : _universe.Planet;
             Vector3 dest = VectorMaths.UnitVector(obj.Location);
 
             if (float.IsNaN(dest.X))

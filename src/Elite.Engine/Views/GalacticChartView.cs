@@ -179,10 +179,10 @@ namespace Elite.Engine.Views
                     _planetPixels.Add(new(pixel.X + 1, pixel.Y));
                 }
 
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(glx);
+                _planet.WaggleGalaxy(glx);
+                _planet.WaggleGalaxy(glx);
+                _planet.WaggleGalaxy(glx);
             }
 
             _crossTimer = 0;

@@ -81,7 +81,7 @@ namespace Elite.Engine
 
             if (ship.Flags.HasFlag(ShipFlags.Explosion))
             {
-                DrawExplosion(ref ship);
+                DrawExplosion(ship);
                 return;
             }
 
@@ -93,7 +93,7 @@ namespace Elite.Engine
 
             if (ship.Type == ShipType.Planet)
             {
-                DrawPlanet(ref ship);
+                DrawPlanet(ship);
                 return;
             }
 
@@ -110,7 +110,7 @@ namespace Elite.Engine
                 return;
             }
 
-            DrawShip(ref ship);
+            DrawShip(ship);
         }
 
         internal void GenerateLandscape(int rnd_seed)
@@ -178,7 +178,7 @@ namespace Elite.Engine
         private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
             Math.Clamp(((_landscape[sx, sy] + _landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
-        private void DrawExplosion(ref IObject ship)
+        private void DrawExplosion(IObject ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             bool[] visible = new bool[32];
@@ -288,8 +288,7 @@ namespace Elite.Engine
         /// Draw a planet.
         /// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style.
         /// </summary>
-        /// <param name="planet"></param>
-        private void DrawPlanet(ref IObject planet)
+        private void DrawPlanet(IObject planet)
         {
             Vector2 position = new()
             {
@@ -396,8 +395,7 @@ namespace Elite.Engine
         /// A number of features(such as not showing detail at distance) have not yet been implemented.
         /// Check for hidden surface supplied by T.Harte.
         /// </summary>
-        /// <param name="ship"></param>
-        private void DrawShip(ref IObject ship)
+        private void DrawShip(IObject ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             int lasv;

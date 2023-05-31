@@ -12,20 +12,26 @@ namespace Elite.Engine
     {
         private const int MaxUniverseObjects = 20;
 
-        internal Dictionary<ShipType, int> ShipCount { get; } = new();
+        private readonly IObject[] _objects = new IObject[MaxUniverseObjects];
 
-        internal IObject Planet => Objects[0];
+        private readonly Dictionary<ShipType, int> _shipCount = new();
 
-        internal IObject StationOrSun => Objects[1];
+        internal bool IsStationPresent => _shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0;
 
-        private IObject[] Objects { get; } = new IObject[MaxUniverseObjects];
+        internal IObject Planet => _objects[0];
+
+        internal int PoliceCount => _shipCount[ShipType.Viper];
+
+        internal IObject StationOrSun => _objects[1];
+
+        internal int ShipCount(ShipType shipType) => _shipCount[shipType];
 
         internal IObject AddNewShip(ShipType shipType, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
         {
             Debug.Assert(rotmat != null, "Rotation matrix should not be null.");
             for (int i = 0; i < MaxUniverseObjects; i++)
             {
-                if (Objects[i].Type == ShipType.None)
+                if (_objects[i].Type == ShipType.None)
                 {
                     IObject ship = ShipFactory.ConstructShip(shipType);
                     ship.Location = location;
@@ -34,8 +40,8 @@ namespace Elite.Engine
                     ship.RotZ = rotz;
                     ship.Energy = ship.EnergyMax;
                     ship.Missiles = ship.MissilesMax;
-                    Objects[i] = ship;
-                    ShipCount[shipType]++;
+                    _objects[i] = ship;
+                    _shipCount[shipType]++;
                     return ship;
                 }
             }
@@ -68,7 +74,7 @@ namespace Elite.Engine
         internal void AddNewStation(int planetTechLevel, Vector3 position, Vector3[] rotmat)
         {
             ShipType station = planetTechLevel >= 10 ? ShipType.Dodec : ShipType.Coriolis;
-            Objects[1] = new NullObject();
+            _objects[1] = new NullObject();
             AddNewShip(station, position, rotmat, 0, -127);
         }
 
@@ -76,18 +82,18 @@ namespace Elite.Engine
         {
             for (int i = 0; i < MaxUniverseObjects; i++)
             {
-                Objects[i] = new NullObject();
+                _objects[i] = new NullObject();
             }
 
             foreach (ShipType shipType in Enum.GetValues<ShipType>())
             {
-                ShipCount[shipType] = 0;
+                _shipCount[shipType] = 0;
             }
         }
 
         internal IEnumerable<IObject> GetAllObjects()
         {
-            foreach (IObject obj in Objects)
+            foreach (IObject obj in _objects)
             {
                 yield return obj;
             }
@@ -97,14 +103,14 @@ namespace Elite.Engine
         {
             if (ship.Type > ShipType.None)
             {
-                ShipCount[ship.Type]--;
+                _shipCount[ship.Type]--;
             }
 
             for (int i = 0; i < MaxUniverseObjects; i++)
             {
-                if (Objects[i] == ship)
+                if (_objects[i] == ship)
                 {
-                    Objects[i] = new NullObject();
+                    _objects[i] = new NullObject();
                 }
             }
         }

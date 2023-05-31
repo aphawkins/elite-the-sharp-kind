@@ -181,10 +181,10 @@ namespace Elite.Engine.Views
 
                 if ((dx >= 20) || (dy >= 38))
                 {
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(glx);
+                    _planet.WaggleGalaxy(glx);
+                    _planet.WaggleGalaxy(glx);
+                    _planet.WaggleGalaxy(glx);
 
                     continue;
                 }
@@ -213,10 +213,10 @@ namespace Elite.Engine.Views
 
                 if (row <= 3)
                 {
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
-                    _planet.WaggleGalaxy(ref glx);
+                    _planet.WaggleGalaxy(glx);
+                    _planet.WaggleGalaxy(glx);
+                    _planet.WaggleGalaxy(glx);
+                    _planet.WaggleGalaxy(glx);
 
                     continue;
                 }
@@ -234,10 +234,10 @@ namespace Elite.Engine.Views
                 blob_size *= _graphics.Scale;
                 _planetSizes.Add((new(px, py), blob_size));
 
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
-                _planet.WaggleGalaxy(ref glx);
+                _planet.WaggleGalaxy(glx);
+                _planet.WaggleGalaxy(glx);
+                _planet.WaggleGalaxy(glx);
+                _planet.WaggleGalaxy(glx);
             }
 
             _crossTimer = 0;

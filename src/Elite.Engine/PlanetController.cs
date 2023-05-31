@@ -123,10 +123,10 @@ namespace Elite.Engine
                     planet = new(glx);
                 }
 
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
             }
 
             return planet;
@@ -149,10 +149,10 @@ namespace Elite.Engine
                     break;
                 }
 
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
             }
 
             return found;
@@ -174,10 +174,10 @@ namespace Elite.Engine
                     return i;
                 }
 
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
-                WaggleGalaxy(ref glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
+                WaggleGalaxy(glx);
             }
 
             return -1;
@@ -204,13 +204,13 @@ namespace Elite.Engine
                     }
                 }
 
-                WaggleGalaxy(ref glx);
+                WaggleGalaxy(glx);
             }
 
             return name;
         }
 
-        internal void WaggleGalaxy(ref GalaxySeed glx_ptr)
+        internal void WaggleGalaxy(GalaxySeed glx_ptr)
         {
             int x = glx_ptr.A + glx_ptr.C;
             int y = glx_ptr.B + glx_ptr.D;

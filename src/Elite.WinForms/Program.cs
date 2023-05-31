@@ -17,7 +17,7 @@ namespace Elite.WinForms
         public Program()
         {
             _bmp = new(512, 512);
-            _graphics = new GdiGraphics(ref _bmp);
+            _graphics = new GdiGraphics(_bmp);
             _sound = new Sound();
             _keyboard = new Keyboard();
         }
