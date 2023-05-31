@@ -187,6 +187,7 @@ namespace Elite.Engine.Views
 
             _crossTimer = 0;
             CrossFromHyperspacePlanet();
+            CalculateDistanceToPlanet();
         }
 
         public void UpdateUniverse()

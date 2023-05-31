@@ -3,7 +3,6 @@
 ## To get to MVP
 - Fix TODOs in code
 - Colours on SNES planet style not working
-- Incorrect distance shown on current planet after hyperspace
 - Fix code directory structure
 - Remove most publics
 - Check mission triggers (FAQ)
