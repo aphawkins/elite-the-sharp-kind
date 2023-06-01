@@ -4,11 +4,11 @@
 
 using System.Diagnostics;
 using System.Globalization;
-using Elite.Engine.Enums;
-using Elite.Engine.Missions;
-using Elite.Engine.Types;
+using EliteSharp.Enums;
+using EliteSharp.Missions;
+using EliteSharp.Types;
 
-namespace Elite.Engine.Views
+namespace EliteSharp.Views
 {
     internal sealed class PlanetDataView : IView
     {

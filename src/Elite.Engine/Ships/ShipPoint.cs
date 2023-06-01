@@ -4,7 +4,7 @@
 
 using System.Numerics;
 
-namespace Elite.Engine.Ships
+namespace EliteSharp.Ships
 {
     internal sealed class ShipPoint
     {

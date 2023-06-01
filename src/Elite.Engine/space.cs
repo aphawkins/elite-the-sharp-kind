@@ -3,14 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Audio;
-using Elite.Engine.Conflict;
-using Elite.Engine.Enums;
-using Elite.Engine.Ships;
-using Elite.Engine.Trader;
-using Elite.Engine.Types;
+using EliteSharp.Audio;
+using EliteSharp.Conflict;
+using EliteSharp.Enums;
+using EliteSharp.Ships;
+using EliteSharp.Trader;
+using EliteSharp.Types;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     /// <summary>
     /// This module handles all the flight system and management of the space universe.

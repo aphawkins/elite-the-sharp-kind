@@ -3,9 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Trader;
+using EliteSharp.Trader;
 
-namespace Elite.Engine.Ships
+namespace EliteSharp.Ships
 {
     internal class NullObject : IObject
     {

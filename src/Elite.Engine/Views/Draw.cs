@@ -3,11 +3,11 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Assets;
-using Elite.Engine.Enums;
-using Elite.Engine.Ships;
+using EliteSharp.Assets;
+using EliteSharp.Enums;
+using EliteSharp.Ships;
 
-namespace Elite.Engine.Views
+namespace EliteSharp.Views
 {
     internal sealed class Draw
     {

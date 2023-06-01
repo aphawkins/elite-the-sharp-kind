@@ -3,12 +3,12 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Audio;
-using Elite.Engine.Conflict;
-using Elite.Engine.Enums;
-using Elite.Engine.Ships;
+using EliteSharp.Audio;
+using EliteSharp.Conflict;
+using EliteSharp.Enums;
+using EliteSharp.Ships;
 
-namespace Elite.Engine.Views
+namespace EliteSharp.Views
 {
     /// <summary>
     /// Parade of the various ships.

@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Elite.Engine.Config
+namespace EliteSharp.Config
 {
     internal sealed class ConfigFile
     {

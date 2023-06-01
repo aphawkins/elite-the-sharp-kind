@@ -4,9 +4,9 @@
 
 using System.Numerics;
 using System.Text;
-using Elite.Engine.Types;
+using EliteSharp.Types;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     internal sealed class PlanetController
     {

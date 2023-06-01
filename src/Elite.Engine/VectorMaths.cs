@@ -4,7 +4,7 @@
 
 using System.Numerics;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     /// <summary>
     /// The original Elite code did all the vector calculations using 8-bit integers.

@@ -4,7 +4,7 @@
 
 using System.Numerics;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     internal static class Extensions
     {

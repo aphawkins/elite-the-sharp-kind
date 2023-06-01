@@ -3,16 +3,16 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
-using Elite.Engine.Audio;
-using Elite.Engine.Config;
-using Elite.Engine.Conflict;
-using Elite.Engine.Enums;
-using Elite.Engine.Save;
-using Elite.Engine.Ships;
-using Elite.Engine.Trader;
-using Elite.Engine.Views;
+using EliteSharp.Audio;
+using EliteSharp.Config;
+using EliteSharp.Conflict;
+using EliteSharp.Enums;
+using EliteSharp.Save;
+using EliteSharp.Ships;
+using EliteSharp.Trader;
+using EliteSharp.Views;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     public sealed class EliteMain
     {

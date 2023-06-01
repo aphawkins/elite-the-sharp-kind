@@ -3,11 +3,11 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Enums;
-using Elite.Engine.Ships;
-using Elite.Engine.Types;
+using EliteSharp.Enums;
+using EliteSharp.Ships;
+using EliteSharp.Types;
 
-namespace Elite.Engine.Views
+namespace EliteSharp.Views
 {
     internal sealed class GalacticChartView : IView
     {

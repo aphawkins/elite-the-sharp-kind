@@ -4,7 +4,7 @@
 
 using System.Security.Cryptography;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     internal static class RNG
     {

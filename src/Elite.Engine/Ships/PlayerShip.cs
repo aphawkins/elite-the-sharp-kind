@@ -3,10 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
-using Elite.Engine.Enums;
-using Elite.Engine.Lasers;
+using EliteSharp.Enums;
+using EliteSharp.Lasers;
 
-namespace Elite.Engine.Ships
+namespace EliteSharp.Ships
 {
     internal sealed class PlayerShip
     {

@@ -3,12 +3,12 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Audio;
-using Elite.Engine.Enums;
-using Elite.Engine.Ships;
-using Elite.Engine.Trader;
+using EliteSharp.Audio;
+using EliteSharp.Enums;
+using EliteSharp.Ships;
+using EliteSharp.Trader;
 
-namespace Elite.Engine.Views
+namespace EliteSharp.Views
 {
     internal sealed class EscapeCapsuleView : IView
     {

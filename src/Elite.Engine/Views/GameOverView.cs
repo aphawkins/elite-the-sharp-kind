@@ -2,12 +2,12 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Elite.Engine.Audio;
-using Elite.Engine.Conflict;
-using Elite.Engine.Enums;
-using Elite.Engine.Ships;
+using EliteSharp.Audio;
+using EliteSharp.Conflict;
+using EliteSharp.Enums;
+using EliteSharp.Ships;
 
-namespace Elite.Engine.Views
+namespace EliteSharp.Views
 {
     internal sealed class GameOverView : IView
     {

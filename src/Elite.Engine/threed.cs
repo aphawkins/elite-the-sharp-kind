@@ -4,11 +4,11 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
-using Elite.Engine.Enums;
-using Elite.Engine.Ships;
-using Elite.Engine.Views;
+using EliteSharp.Enums;
+using EliteSharp.Ships;
+using EliteSharp.Views;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     internal sealed class Threed
     {

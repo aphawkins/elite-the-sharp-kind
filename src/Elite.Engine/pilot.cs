@@ -3,10 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Audio;
-using Elite.Engine.Ships;
+using EliteSharp.Audio;
+using EliteSharp.Ships;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     /// <summary>
     /// The auto-pilot code.  Used for docking computers and for flying other ships to and from the space station.

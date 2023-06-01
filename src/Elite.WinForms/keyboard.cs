@@ -2,10 +2,9 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Elite.Engine;
-using Elite.Engine.Enums;
+using EliteSharp.Enums;
 
-namespace Elite.WinForms
+namespace EliteSharp.WinForms
 {
     internal sealed class Keyboard : IKeyboard
     {

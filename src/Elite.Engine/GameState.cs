@@ -3,11 +3,11 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Elite.Engine.Config;
-using Elite.Engine.Enums;
-using Elite.Engine.Types;
+using EliteSharp.Config;
+using EliteSharp.Enums;
+using EliteSharp.Types;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     internal sealed class GameState
     {

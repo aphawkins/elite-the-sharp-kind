@@ -2,9 +2,9 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Elite.Engine.Assets;
+using EliteSharp.Assets;
 
-namespace Elite.Engine.Audio
+namespace EliteSharp.Audio
 {
     internal sealed class AudioController
     {

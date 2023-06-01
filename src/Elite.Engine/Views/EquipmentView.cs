@@ -2,13 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Elite.Engine.Enums;
-using Elite.Engine.Lasers;
-using Elite.Engine.Ships;
-using Elite.Engine.Trader;
-using Elite.Engine.Types;
+using EliteSharp.Enums;
+using EliteSharp.Lasers;
+using EliteSharp.Ships;
+using EliteSharp.Trader;
+using EliteSharp.Types;
 
-namespace Elite.Engine.Views
+namespace EliteSharp.Views
 {
     internal sealed class EquipmentView : IView
     {

@@ -4,9 +4,9 @@
 
 using System.Media;
 using Commons.Music.Midi;
-using Elite.Engine.Audio;
+using EliteSharp.Audio;
 
-namespace Elite.WinForms
+namespace EliteSharp.WinForms
 {
     internal sealed class Sound : ISound, IDisposable
     {

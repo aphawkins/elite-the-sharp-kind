@@ -4,9 +4,9 @@
 
 using System.Diagnostics;
 using System.Numerics;
-using Elite.Engine.Ships;
+using EliteSharp.Ships;
 
-namespace Elite.Engine
+namespace EliteSharp
 {
     internal sealed class Universe
     {

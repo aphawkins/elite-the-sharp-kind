@@ -5,12 +5,12 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Elite.Engine.Enums;
-using Elite.Engine.Lasers;
-using Elite.Engine.Ships;
-using Elite.Engine.Trader;
+using EliteSharp.Enums;
+using EliteSharp.Lasers;
+using EliteSharp.Ships;
+using EliteSharp.Trader;
 
-namespace Elite.Engine.Save
+namespace EliteSharp.Save
 {
     internal sealed class SaveFile
     {
