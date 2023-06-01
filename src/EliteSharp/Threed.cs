@@ -2,9 +2,9 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using EliteSharp.Enums;
+using EliteSharp.Planets;
 using EliteSharp.Ships;
 using EliteSharp.Views;
 
@@ -12,44 +12,17 @@ namespace EliteSharp
 {
     internal sealed class Threed
     {
-        private const int LANDXMAX = 128;
-        private const int LANDYMAX = 128;
         private const int MAXPOLYS = 100;
-
-        /// <summary>
-        /// Colour map used to generate a SNES Elite style planet.
-        /// </summary>
-        private readonly int[] _snesPlanetColour = new int[]
-        {
-            // TODO: This is a quick hack and needs tidying up.
-            102, 102,
-            134, 134, 134, 134,
-            167, 167, 167, 167,
-            213, 213,
-            255,
-            83, 83, 83, 83,
-            122,
-            83, 83,
-            249, 249, 249, 249,
-            83,
-            122,
-            249, 249, 249, 249, 249, 249,
-            83, 83,
-            122,
-            83, 83, 83, 83,
-            255,
-            213, 213,
-            167, 167, 167, 167,
-            134, 134, 134, 134,
-            102, 102,
-        };
-
         private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
-        private readonly int[,] _landscape = new int[LANDXMAX + 1, LANDYMAX + 1];
         private readonly Vector3[] _pointList = new Vector3[100];
         private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
+
+        private readonly IPlanetRenderer _wireframePlanet;
+        private readonly IPlanetRenderer _greenPlanet;
+        private readonly IPlanetRenderer _snesPlanet;
+        private readonly IPlanetRenderer _fractalPlanet;
 
         private int _startPoly;
 
@@ -60,6 +33,11 @@ namespace EliteSharp
             _gameState = gameState;
             _graphics = graphics;
             _draw = draw;
+
+            _wireframePlanet = new WireframePlanet(_graphics);
+            _greenPlanet = new GreenPlanet(_graphics);
+            _snesPlanet = new SnesPlanet(_graphics);
+            _fractalPlanet = new FractalPlanet(_graphics);
         }
 
         /// <summary>
@@ -113,24 +91,24 @@ namespace EliteSharp
             DrawShip(ship);
         }
 
-        internal void GenerateLandscape(int rnd_seed)
+        internal void GenerateLandscape(int seed)
         {
             switch (_gameState.Config.PlanetRenderStyle)
             {
-                // Wireframe... do nothing for now...
                 case PlanetRenderStyle.Wireframe:
+                    _wireframePlanet.GenerateLandscape(seed);
                     break;
 
                 case PlanetRenderStyle.Green:
-                    // generate_green_landscape ();
+                    _greenPlanet.GenerateLandscape(seed);
                     break;
 
                 case PlanetRenderStyle.SNES:
-                    GenerateSnesLandscape();
+                    _snesPlanet.GenerateLandscape(seed);
                     break;
 
                 case PlanetRenderStyle.Fractal:
-                    GenerateFractalLandscape(rnd_seed);
+                    _fractalPlanet.GenerateLandscape(seed);
                     break;
 
                 default:
@@ -171,12 +149,6 @@ namespace EliteSharp
             _startPoly = 0;
             _totalPolys = 0;
         }
-
-        /// <summary>
-        /// Calculate the midpoint between two given points.
-        /// </summary>
-        private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
-            Math.Clamp(((_landscape[sx, sy] + _landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
         private void DrawExplosion(IObject ship)
         {
@@ -318,16 +290,19 @@ namespace EliteSharp
             switch (_gameState.Config.PlanetRenderStyle)
             {
                 case PlanetRenderStyle.Wireframe:
-                    DrawWireframePlanet(position, radius);
+                    _wireframePlanet.Draw(position, radius, planet.Rotmat);
                     break;
 
                 case PlanetRenderStyle.Green:
-                    _graphics.DrawCircleFilled(position, radius, Colour.Green);
+                    _greenPlanet.Draw(position, radius, planet.Rotmat);
                     break;
 
                 case PlanetRenderStyle.SNES:
+                    _snesPlanet.Draw(position, radius, planet.Rotmat);
+                    break;
+
                 case PlanetRenderStyle.Fractal:
-                    RenderPlanet(position, radius, planet.Rotmat);
+                    _fractalPlanet.Draw(position, radius, planet.Rotmat);
                     break;
 
                 default:
@@ -477,193 +452,6 @@ namespace EliteSharp
                 };
 
                 DrawPolygonFilled(pointList, col, _pointList[lasv].Z);
-            }
-        }
-
-        /// <summary>
-        /// Draw a wireframe planet.
-        /// </summary>
-        /// <param name="centre"></param>
-        /// <param name="radius"></param>
-        private void DrawWireframePlanet(Vector2 centre, float radius) =>
-
-            // TODO: At the moment we just draw a circle. Need to add in the two arcs that the original Elite had.
-            _graphics.DrawCircle(centre, radius, Colour.White);
-
-        /// <summary>
-        /// Generate a fractal landscape. Uses midpoint displacement method.
-        /// </summary>
-        /// <param name="seed">Initial seed for the generation.</param>
-        [SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "Randomness here requires seed.")]
-        private void GenerateFractalLandscape(int seed)
-        {
-            const int d = LANDXMAX / 8;
-            Random random = new(seed);
-
-            for (int y = 0; y <= LANDYMAX; y += d)
-            {
-                for (int x = 0; x <= LANDXMAX; x += d)
-                {
-                    _landscape[x, y] = random.Next(255);
-                }
-            }
-
-            for (int y = 0; y < LANDYMAX; y += d)
-            {
-                for (int x = 0; x < LANDXMAX; x += d)
-                {
-                    MidpointSquare(x, y, d);
-                }
-            }
-
-            for (int y = 0; y <= LANDYMAX; y++)
-            {
-                for (int x = 0; x <= LANDXMAX; x++)
-                {
-                    float dist = (x * x) + (y * y);
-                    bool dark = dist > 10000;
-                    int h = _landscape[x, y];
-                    _landscape[x, y] = h > 166
-                        ? (int)(dark ? Colour.Green : Colour.LightGreen)
-                        : (int)(dark ? Colour.Blue : Colour.LightBlue);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Generate a landscape map for a SNES Elite style planet.
-        /// </summary>
-        private void GenerateSnesLandscape()
-        {
-            for (int y = 0; y <= LANDYMAX; y++)
-            {
-                int colour = _snesPlanetColour[y * (_snesPlanetColour.Length - 1) / LANDYMAX];
-                for (int x = 0; x <= LANDXMAX; x++)
-                {
-                    _landscape[x, y] = colour;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Calculate a square on the midpoint map.
-        /// </summary>
-        /// <param name="tx"></param>
-        /// <param name="ty"></param>
-        /// <param name="w"></param>
-        private void MidpointSquare(int tx, int ty, int w)
-        {
-            int d = w / 2;
-            int mx = tx + d;
-            int my = ty + d;
-            int bx = tx + w;
-            int by = ty + w;
-
-            _landscape[mx, ty] = CalcMidpoint(tx, ty, bx, ty);
-            _landscape[mx, by] = CalcMidpoint(tx, by, bx, by);
-            _landscape[tx, my] = CalcMidpoint(tx, ty, tx, by);
-            _landscape[bx, my] = CalcMidpoint(bx, ty, bx, by);
-            _landscape[mx, my] = CalcMidpoint(tx, my, bx, my);
-
-            if (d == 1)
-            {
-                return;
-            }
-
-            MidpointSquare(tx, ty, d);
-            MidpointSquare(mx, ty, d);
-            MidpointSquare(tx, my, d);
-            MidpointSquare(mx, my, d);
-        }
-
-        /// <summary>
-        /// Draw a solid planet. Based on Doros circle drawing alogorithm.
-        /// </summary>
-        /// <param name="centre"></param>
-        /// <param name="radius"></param>
-        /// <param name="vec"></param>
-        private void RenderPlanet(Vector2 centre, float radius, Vector3[] vec)
-        {
-            centre.X += _graphics.Offset.X;
-            centre.Y += _graphics.Offset.Y;
-
-            float vx = vec[1].X * 65536;
-            float vy = vec[1].Y * 65536;
-
-            float s = radius;
-            float x = radius;
-            float y = 0;
-
-            s -= x + x;
-            while (y <= x)
-            {
-                // Top of top half
-                RenderPlanetLine(centre, y, -MathF.Floor(x), radius, vx, vy);
-
-                // Bottom of top half
-                RenderPlanetLine(centre, x, -y, radius, vx, vy);
-
-                // Top of bottom half
-                RenderPlanetLine(centre, x, y, radius, vx, vy);
-
-                // Bottom of bottom half
-                RenderPlanetLine(centre, y, MathF.Floor(x), radius, vx, vy);
-
-                s += y + y + 1;
-                y++;
-                if (s >= 0)
-                {
-                    s -= x + x + 2;
-                    x--;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Draw a line of the planet with appropriate rotation.
-        /// </summary>
-        /// <param name="centre"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="radius"></param>
-        /// <param name="vx"></param>
-        /// <param name="vy"></param>
-        private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
-        {
-            Vector2 s = new()
-            {
-                Y = y + centre.Y,
-            };
-
-            if (s.Y < _graphics.ViewT.Y + _graphics.Offset.Y ||
-                s.Y > _graphics.ViewB.Y + _graphics.Offset.Y)
-            {
-                return;
-            }
-
-            s.X = centre.X - x;
-            float ex = centre.X + x;
-
-            float rx = (-x * vx) - (y * vy);
-            float ry = (-x * vy) + (y * vx);
-            rx += radius * 65536;
-            ry += radius * 65536;
-
-            // radius * 2 * LAND_X_MAX >> 16
-            float div = radius * 1024;
-
-            for (; s.X <= ex; s.X++)
-            {
-                if (s.X >= _graphics.ViewT.X + _graphics.Offset.X && s.X <= _graphics.ViewB.X + _graphics.Offset.X)
-                {
-                    int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LANDXMAX);
-                    int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LANDYMAX);
-                    Colour colour = (Colour)_landscape[lx, ly];
-                    _graphics.DrawPixelFast(s, colour);
-                }
-
-                rx += vx;
-                ry += vy;
             }
         }
     }

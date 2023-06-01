@@ -2,13 +2,13 @@
 
 ## To get to MVP
 - Fix TODOs in code
-- Colours on SNES planet style not working
 - Fix code directory structure
 - Remove most publics
 - Check mission triggers (FAQ)
 - Check ship stats (FAQ)
 - Widescreen support
 - Update docs
+- Slow planet rendering (fractal and snes)
 
 ## Future
 - Sun is missing in initial system (stations and suns can't coexist)
@@ -20,3 +20,4 @@
 - Add Trumbles mission
 - SDL2 support
 - Separate game speed from framerate
+- Wireframe planet at the moment we just draw a circle. Need to add in the two arcs and crater that the original Elite had
