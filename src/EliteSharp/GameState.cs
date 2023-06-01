@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharp.Config;
 using EliteSharp.Enums;
 using EliteSharp.Types;
+using EliteSharp.Views;
 
 namespace EliteSharp
 {

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Enums;
+using EliteSharp.Lasers;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
 
