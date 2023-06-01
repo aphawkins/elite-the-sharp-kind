@@ -80,11 +80,6 @@ namespace EliteSharp.WinForms
 
         public void DrawPixel(Vector2 position, Colour colour)
         {
-            //TODO: Fix SNES planet colour issues
-            Color color = _pens.TryGetValue(colour, out Pen? value) ? value.Color : Color.Magenta;
-
-            Debug.Assert(color != Color.Magenta, "Check for valid colour.");
-
             // Prevent SetPixel from drawing outside of the clip region
             if (position.X < _screenBufferGraphics.ClipBounds.Left ||
                 position.X > _screenBufferGraphics.ClipBounds.Right ||
@@ -94,7 +89,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBuffer.SetPixel((int)(position.X + Offset.X), (int)(position.Y + Offset.Y), color);
+            _screenBuffer.SetPixel((int)(position.X + Offset.X), (int)(position.Y + Offset.Y), _pens[colour].Color);
         }
 
         public void DrawPixelFast(Vector2 position, Colour colour) =>
