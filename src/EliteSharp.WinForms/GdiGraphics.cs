@@ -20,6 +20,7 @@ namespace EliteSharp.WinForms
         private readonly Graphics _screenGraphics;
         private readonly object _screenLock = new();
         private bool _isDisposed;
+        private RectangleF _clipRegion;
 
         public GdiGraphics(Bitmap screen)
         {
@@ -81,10 +82,10 @@ namespace EliteSharp.WinForms
         public void DrawPixel(Vector2 position, Colour colour)
         {
             // Prevent SetPixel from drawing outside of the clip region
-            if (position.X < _screenBufferGraphics.ClipBounds.Left ||
-                position.X > _screenBufferGraphics.ClipBounds.Right ||
-                position.Y < _screenBufferGraphics.ClipBounds.Top ||
-                position.Y > _screenBufferGraphics.ClipBounds.Bottom)
+            if (position.X < _clipRegion.Left ||
+                position.X > _clipRegion.Right ||
+                position.Y < _clipRegion.Top ||
+                position.Y > _clipRegion.Bottom)
             {
                 return;
             }
@@ -211,7 +212,11 @@ namespace EliteSharp.WinForms
             Application.DoEvents();
         }
 
-        public void SetClipRegion(float x, float y, float width, float height) => _screenBufferGraphics.Clip = new Region(new RectangleF(x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y));
+        public void SetClipRegion(float x, float y, float width, float height)
+        {
+            _clipRegion = new RectangleF(x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+            _screenBufferGraphics.Clip = new Region(_clipRegion);
+        }
 
         private void Dispose(bool disposing)
         {

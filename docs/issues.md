@@ -8,7 +8,6 @@
 - Check ship stats (FAQ)
 - Widescreen support
 - Update docs
-- Slow planet rendering (fractal and snes)
 
 ## Future
 - Sun is missing in initial system (stations and suns can't coexist)
