@@ -90,10 +90,10 @@ namespace EliteSharp
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
         }
 
-        public void Run()
+        public async void RunAsync(CancellationToken token)
         {
-            _audio.LoadSounds();
-            _draw.LoadImages();
+            await _audio.LoadSoundsAsync(token).ConfigureAwait(false);
+            await _draw.LoadImagesAsync(token).ConfigureAwait(false);
             _draw.DrawBorder();
 
             long startTicks = DateTime.UtcNow.Ticks;

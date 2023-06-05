@@ -45,29 +45,11 @@ namespace EliteSharp.WinForms
         {
             try
             {
+                using CancellationTokenSource source = new();
+                CancellationToken token = source.Token;
                 using GameWindow window = new(_bmp, _keyboard);
-
                 EliteMain game = new(_graphics, _sound, _keyboard);
-
-                Task.Run(() =>
-                {
-#pragma warning disable CA1031 // Do not catch general exception types
-                    try
-                    {
-                        game.Run();
-                    }
-                    catch (Exception ex)
-                    {
-#if DEBUG
-                        MessageBox.Show(ex.ToString(), "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#else
-                        MessageBox.Show(ex.Message, "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#endif
-                        Application.Exit();
-                    }
-#pragma warning restore CA1031 // Do not catch general exception types
-                });
-
+                game.RunAsync(token);
                 Application.Run(window);
             }
             catch (Exception ex)

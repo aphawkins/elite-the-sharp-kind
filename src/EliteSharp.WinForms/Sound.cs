@@ -2,62 +2,56 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Media;
-using Commons.Music.Midi;
 using EliteSharp.Audio;
 
 namespace EliteSharp.WinForms
 {
     internal sealed class Sound : ISound, IDisposable
     {
-        private readonly IMidiOutput? _output;
-        private readonly Dictionary<SoundEffect, SoundPlayer> _waves = new();
-        private readonly Dictionary<Music, MidiMusic> _midis = new();
-        private MidiPlayer? _midiPlayer;
+        private readonly ConcurrentDictionary<SoundEffect, SoundPlayer> _sfxs = new();
+        private readonly ConcurrentDictionary<Music, SoundPlayer> _musics = new();
         private bool _disposedValue;
 
-        public Sound()
+        public void Load(Music musicType, byte[] waveBytes)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            IMidiAccess access = MidiAccessManager.Default;
-#pragma warning restore CS0618 // Type or member is obsolete
-            _output = access.OpenOutputAsync(access.Outputs.Last().Id).Result;
+            Debug.Assert(waveBytes.Length > 0, "Music bytes missing");
+            _musics[musicType] = new(new MemoryStream(waveBytes));
+            _musics[musicType].Load();
+            Debug.Assert(_musics[musicType].IsLoadCompleted, "Sound Effect failed to load");
         }
 
-        public void Load(Music midiType, Stream midiStream) => _midis[midiType] = MidiMusic.Read(midiStream);
-
-        public void Load(SoundEffect waveType, Stream waveStream)
+        public void Load(SoundEffect sfxType, byte[] waveBytes)
         {
-            _waves[waveType] = new(waveStream);
-            _waves[waveType].Load();
+            Debug.Assert(waveBytes.Length > 0, "Sound effects bytes missing");
+            _sfxs[sfxType] = new(new MemoryStream(waveBytes));
+            _sfxs[sfxType].Load();
+            Debug.Assert(_sfxs[sfxType].IsLoadCompleted, "Sound effect failed to load");
         }
 
-        public void PlayWave(SoundEffect waveType) => _waves[waveType].Play();
+        public void Play(SoundEffect sfxType) => _sfxs[sfxType].Play();
 
-        public void PlayMidi(Music midiNo, bool repeat)
+        public void Play(Music musicType, bool repeat)
         {
-            StopMidi();
+            StopMusic();
 
-            //TODO: Get repeat/loop working
-            _midiPlayer = new(_midis[midiNo], _output);
             if (repeat)
             {
-                //_midiPlayer.Finished += _midiPlayer_Finished;
-                _midiPlayer.Play();
+                _musics[musicType].PlayLooping();
             }
             else
             {
-                _midiPlayer.Play();
+                _musics[musicType].Play();
             }
         }
 
-        public void StopMidi()
+        public void StopMusic()
         {
-            if (_midiPlayer != null)
+            foreach (KeyValuePair<Music, SoundPlayer> music in _musics)
             {
-                _midiPlayer.Stop();
-                _midiPlayer.Dispose();
-                _midiPlayer = null;
+                music.Value.Stop();
             }
         }
 
@@ -75,13 +69,15 @@ namespace EliteSharp.WinForms
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
-                    _midiPlayer?.Stop();
-                    _midiPlayer?.Dispose();
-
-                    foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _waves)
+                    foreach (KeyValuePair<Music, SoundPlayer> v in _musics)
                     {
                         v.Value.Dispose();
                     }
+
+                    //foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _sfxs)
+                    //{
+                    //    v.Value.Dispose();
+                    //}
                 }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer

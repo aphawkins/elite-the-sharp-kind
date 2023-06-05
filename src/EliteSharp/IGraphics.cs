@@ -53,7 +53,7 @@ namespace EliteSharp
 
         void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, Colour colour);
 
-        void LoadBitmap(Image imgType, Stream bitmapStream);
+        void LoadBitmap(Image imgType, byte[] bitmapBytes);
 
         void ScreenAcquire();
 

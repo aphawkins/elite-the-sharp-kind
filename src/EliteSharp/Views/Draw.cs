@@ -104,15 +104,19 @@ namespace EliteSharp.Views
             _graphics.DrawLine(new(0, 36), new(511, 36));
         }
 
-        internal void LoadImages()
+        internal async Task LoadImagesAsync(CancellationToken token)
         {
             AssetFileLoader loader = new();
-
-            foreach (Image img in Enum.GetValues<Image>())
+            ParallelOptions options = new()
             {
-                using Stream? stream = loader.Load(img) ?? throw new EliteException();
-                _graphics.LoadBitmap(img, stream);
-            }
+                CancellationToken = token,
+            };
+
+            await Parallel.ForEachAsync(
+                Enum.GetValues<Image>(),
+                options,
+                async (img, token) => _graphics.LoadBitmap(img, await loader.LoadAsync(img, token).ConfigureAwait(false)))
+                .ConfigureAwait(false);
         }
 
         private void RenderSunLine(Vector2 centre, float x, float y, float radius)

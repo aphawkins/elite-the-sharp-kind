@@ -4,16 +4,43 @@
 
 using EliteSharp.Audio;
 using EliteSharp.Enums;
+using NAudio.Vorbis;
+using NAudio.Wave;
 
 namespace EliteSharp.Assets
 {
     public sealed class AssetFileLoader : IAssets
     {
-        public Stream? Load(Image image) => new FileStream(Path.Combine("Assets", "Images", GetName(image)), FileMode.Open);
+        public async Task<byte[]> LoadAsync(Image image, CancellationToken token)
+        {
+            using MemoryStream memStream = new();
+            using FileStream stream = new(Path.Combine("Assets", "Images", GetName(image)), FileMode.Open);
+            await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
+            memStream.Position = 0;
+            return memStream.ToArray();
+        }
 
-        public Stream? Load(SoundEffect effect) => new FileStream(Path.Combine("Assets", "SFX", GetName(effect)), FileMode.Open);
+        public async Task<byte[]> LoadAsync(SoundEffect effect, CancellationToken token)
+        {
+            using MemoryStream memStream = new();
+            using FileStream stream = new(Path.Combine("Assets", "SFX", GetName(effect)), FileMode.Open);
+            await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
+            memStream.Position = 0;
+            return memStream.ToArray();
+        }
 
-        public Stream? Load(Music music) => new FileStream(Path.Combine("Assets", "Music", GetName(music)), FileMode.Open);
+        public async Task<byte[]> LoadAsync(Music music, CancellationToken token) => await Task.Run(
+            () =>
+            {
+                using MemoryStream memStream = new();
+                using VorbisWaveReader vorbisStream = new(Path.Combine("Assets", "Music", GetName(music)));
+
+                WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
+                memStream.Position = 0;
+
+                return memStream.ToArray();
+            },
+            token).ConfigureAwait(false);
 
         private static string GetName(Image image) => image switch
         {
@@ -51,8 +78,8 @@ namespace EliteSharp.Assets
 
         private static string GetName(Music music) => music switch
         {
-            Music.EliteTheme => "theme.mid",
-            Music.BlueDanube => "danube.mid",
+            Music.EliteTheme => "theme.ogg",
+            Music.BlueDanube => "danube.ogg",
             _ => throw new NotImplementedException(),
         };
     }

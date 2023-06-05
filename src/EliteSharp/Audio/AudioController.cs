@@ -34,7 +34,7 @@ namespace EliteSharp.Audio
         {
             _sound = sound;
 #if DEBUG
-            _musicOn = false;
+            _musicOn = true;
             _effectsOn = true;
 #else
             _musicOn = true;
@@ -42,21 +42,25 @@ namespace EliteSharp.Audio
 #endif
         }
 
-        internal void LoadSounds()
+        internal async Task LoadSoundsAsync(CancellationToken token)
         {
             AssetFileLoader loader = new();
-
-            foreach (Music music in Enum.GetValues<Music>())
+            ParallelOptions options = new()
             {
-                using Stream? stream = loader.Load(music) ?? throw new EliteException();
-                _sound.Load(music, stream);
-            }
+                CancellationToken = token,
+            };
 
-            foreach (SoundEffect effect in Enum.GetValues<SoundEffect>())
-            {
-                using Stream? stream = loader.Load(effect) ?? throw new EliteException();
-                _sound.Load(effect, stream);
-            }
+            await Parallel.ForEachAsync(
+                Enum.GetValues<Music>(),
+                options,
+                async (music, token) => _sound.Load(music, await loader.LoadAsync(music, token).ConfigureAwait(false)))
+                .ConfigureAwait(false);
+
+            await Parallel.ForEachAsync(
+                Enum.GetValues<SoundEffect>(),
+                options,
+                async (effect, token) => _sound.Load(effect, await loader.LoadAsync(effect, token).ConfigureAwait(false)))
+                .ConfigureAwait(false);
         }
 
         internal void PlayEffect(SoundEffect effect)
@@ -72,7 +76,7 @@ namespace EliteSharp.Audio
             }
 
             _sfx[effect].ResetTime();
-            _sound.PlayWave(effect);
+            _sound.Play(effect);
         }
 
         internal void PlayMusic(Music music, bool loop)
@@ -82,7 +86,7 @@ namespace EliteSharp.Audio
                 return;
             }
 
-            _sound.PlayMidi(music, loop);
+            _sound.Play(music, loop);
         }
 
         internal void StopMusic()
@@ -92,7 +96,7 @@ namespace EliteSharp.Audio
                 return;
             }
 
-            _sound.StopMidi();
+            _sound.StopMusic();
         }
 
         internal void UpdateSound()

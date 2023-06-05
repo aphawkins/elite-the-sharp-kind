@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Enums;
@@ -12,7 +13,7 @@ namespace EliteSharp.WinForms
     {
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-        private readonly Dictionary<Enums.Image, Bitmap> _images = new();
+        private readonly ConcurrentDictionary<Enums.Image, Bitmap> _images = new();
         private readonly Dictionary<Colour, Pen> _pens = new();
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
@@ -184,7 +185,7 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(Enums.Image imgType, Stream bitmapStream) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(bitmapStream);
+        public void LoadBitmap(Enums.Image imgType, byte[] bitmapBytes) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(new MemoryStream(bitmapBytes));
 
         public void ScreenAcquire()
         {

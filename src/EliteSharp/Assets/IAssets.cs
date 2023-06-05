@@ -9,10 +9,10 @@ namespace EliteSharp.Assets
 {
     public interface IAssets
     {
-        public Stream? Load(Image image);
+        Task<byte[]> LoadAsync(Image image, CancellationToken token);
 
-        public Stream? Load(SoundEffect effect);
+        Task<byte[]> LoadAsync(SoundEffect effect, CancellationToken token);
 
-        public Stream? Load(Music music);
+        Task<byte[]> LoadAsync(Music music, CancellationToken token);
     }
 }

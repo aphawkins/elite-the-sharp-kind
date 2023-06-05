@@ -6,14 +6,14 @@ namespace EliteSharp.Audio
 {
     public interface ISound
     {
-        void Load(Music midiType, Stream midiStream);
+        void Load(Music musicType, byte[] waveBytes);
 
-        void Load(SoundEffect waveType, Stream waveStream);
+        void Load(SoundEffect sfxType, byte[] waveBytes);
 
-        void PlayMidi(Music midiNo, bool repeat);
+        void Play(Music musicType, bool repeat);
 
-        void PlayWave(SoundEffect waveType);
+        void Play(SoundEffect sfxType);
 
-        void StopMidi();
+        void StopMusic();
     }
 }
