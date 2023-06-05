@@ -74,10 +74,10 @@ namespace EliteSharp.WinForms
                         v.Value.Dispose();
                     }
 
-                    //foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _sfxs)
-                    //{
-                    //    v.Value.Dispose();
-                    //}
+                    foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _sfxs)
+                    {
+                        v.Value.Dispose();
+                    }
                 }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
