@@ -6,9 +6,8 @@
 - Check mission triggers (FAQ)
 - Check ship stats (FAQ)
 - Widescreen support
-- Update docs
 
-## Future
+## Future (create github issues)
 - Sun is missing in initial system (stations and suns can't coexist)
 - Laser target shape by type
 - Joystick support needs adding back
@@ -19,3 +18,5 @@
 - SDL2 support
 - Separate game speed from framerate
 - Wireframe planet at the moment we just draw a circle. Need to add in the two arcs and crater that the original Elite had
+- Bits of hidden surfaces on ships sometimes show through.  
+- Buying more than 255g of Gold/Platinum doesn't work.  It didn't in the original Elite either.  Broken as designed.  
