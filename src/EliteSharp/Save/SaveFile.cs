@@ -64,7 +64,6 @@ namespace EliteSharp.Save
             }
             catch (Exception ex)
             {
-                //TODO: handle error message better
                 Debug.WriteLine("Failed to load commander.\n" + ex);
                 _lastSaved = CommanderFactory.Jameson();
                 throw;
@@ -99,7 +98,6 @@ namespace EliteSharp.Save
             }
             catch (Exception ex)
             {
-                //TODO: handle error message better
                 Debug.WriteLine("Failed to save commander.\n" + ex);
                 Debug.Fail(ex.Message);
                 throw;

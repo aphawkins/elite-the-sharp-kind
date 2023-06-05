@@ -202,15 +202,10 @@ namespace EliteSharp.WinForms
         /// </summary>
         public void ScreenUpdate()
         {
-            // TODO: find a better way of doing multithreading
-            Application.DoEvents();
-
             lock (_screenLock)
             {
                 _screenGraphics.DrawImage(_screenBuffer, Offset.X, Offset.Y);
             }
-
-            Application.DoEvents();
         }
 
         public void SetClipRegion(float x, float y, float width, float height)
@@ -246,7 +241,7 @@ namespace EliteSharp.WinForms
             }
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         // ~alg_graphics()
         // {
         //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

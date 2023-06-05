@@ -34,7 +34,6 @@ namespace EliteSharp.Config
             }
             catch (Exception ex)
             {
-                //TODO: handle error message better
                 Debug.WriteLine("Failed to read config.\n" + ex);
                 Debug.Fail(ex.Message);
                 throw;
@@ -62,7 +61,6 @@ namespace EliteSharp.Config
             }
             catch (Exception ex)
             {
-                //TODO: handle error message better
                 Debug.WriteLine("Failed to save config.\n" + ex);
                 Debug.Fail(ex.Message);
                 throw;

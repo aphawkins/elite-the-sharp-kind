@@ -1,7 +1,6 @@
 # Issues
 
 ## To get to MVP
-- Fix TODOs in code
 - Fix code directory structure
 - Remove most publics
 - Check mission triggers (FAQ)
