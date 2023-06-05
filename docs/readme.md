@@ -33,7 +33,7 @@ F11 - Options screen (Save Game, Load Game, Game Settings, Quit).
 A - Fire  
 S or Up Arrow    - Dive  
 X or Down Arrow  - Climb  
-&lt; or Left Arrow  - Roll Left  0
+&lt; or Left Arrow  - Roll Left  
 &gt; or Right Arrow - Roll Right  
 / - Slow Down  
 Space - Speed up  
