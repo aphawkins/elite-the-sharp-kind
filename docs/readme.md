@@ -3,60 +3,79 @@
 A C# port of the classic BBC home computer game 'Elite'.  It is meant to look, feel and play the same as the original 8bit and 16bit versions of the game.  
 
 Currently the objectice of this port is authenticity, object oriented code and cross platform compatibility using dotnet.  
-Framerate is fixed at 13.5, which using the current engine implentation, runs at approximately the same speed as the original.  
+Framerate is fixed at 13.5 fps, which using the current engine implentation, runs at approximately the same speed as the original.  
 Performance, or maximum FPS, are a secondary objective, which may come later.  
 
 ## Controls  
 
-Press Y or N on the intro screen.  
-Press Space on the ship parade screen.  
+Press Y or N on the intro screen   
+Press Space on the ship parade screen  
 
-F1  - Launch when docked, Front View when in flight.  
-F2  - Rear View  
-F3  - Left View  
-F4  - Right View when in flight.  
-	  When docked, buy equipment for ship:  
-      up and down arrow keys to select item  
-      return/enter key to buy.  
-F5  - Display Galactic Chart.  
-F6  - Short Range Chart.  
-F7  - Show information on selected planet.  
-F8  - Buy and sell items on the stock market:  
-      up and down arrow keys to select item  
-      right arrow key to buy  
-      left arrow key to sell  
-F9  - Commander information.  
-F10 - Inventory.  
-F11 - Options screen (Save Game, Load Game, Game Settings, Quit).  
-      Use up and down arrows keys to select option, return/enter to select.  
+| Key | Function |
+| --- | -------- |
+| F1  | Front View (in flight) <br/> Launch (when docked) |
+| F2  | Rear View | 
+| F3  | Left View |
+| F4  | Right View (in flight) <br/> Equip ship (when docked) |
+| F5 | Display Galactic Chart |
+| F6 | Short Range Chart |
+| F7 | Show information on selected planet |
+| F8 | Stock market |
+| F9 | Commander information |
+| F10 | Inventory |
+| F11 | Options |
+| P | Pause game |
+| R | Resume game |
 
-A - Fire  
-S or Up Arrow    - Dive  
-X or Down Arrow  - Climb  
-&lt; or Left Arrow  - Roll Left  
-&gt; or Right Arrow - Roll Right  
-/ - Slow Down  
-Space - Speed up  
-
- C  - Activate docking computer, if fitted.  
- D  - De-activate docking computer if switched on.  
- E  - Active ECM, if fitted.  
- H  - Hyperspace.  
- J  - Warp Jump.  
- M  - Fire missile.  
- T  - Target a missile.  
- U  - Un-target missile.  
-TAB - Detonate energy bomb, if fitted.  
-CTRL+H - Galactic Hyperspace, if fitted.  
-ESC - Launch escape capsule, if fitted.  
- P  - Pause game.  
- R  - Resume game when paused.  
+### Flight Controls  
+| Key | Function |
+| --- | -------- |
+| A | Fire lasers |
+| S or Up Arrow | Dive |
+| X or Down Arrow | Climb |
+| &lt; or Left Arrow | Roll Left |
+| &gt; or Right Arrow | Roll Right |
+| / | Slow Down |
+| Space | Speed up |
+| C | Activate docking computer, if fitted |
+| D | De-activate docking computer if switched on |
+| E | Active ECM, if fitted |
+| H | Hyperspace |
+| J | Warp Jump |
+| M | Fire missile |
+| T | Target a missile |
+| U | Un-target missile |
+| TAB | Detonate energy bomb, if fitted |
+| CTRL+H | Galactic Hyperspace, if fitted |
+| ESC | Launch escape capsule, if fitted |
 
 ### Chart Screens  
-D - Select a planet and show distance to it.  
-F - Find planet by name.  
-O - Return cursor to current planet.  
-Cursor Keys - Move cross hairs around.  
+| Key | Function |
+| --- | -------- |
+| D | Select a planet and show distance to it |
+| F | Find planet by name |
+| O | Return cursor to current planet |
+| Cursor Keys | Move cross hairs around |
+
+### Equipment Screen  
+| Key | Function |
+| --- | -------- |
+| Arrow keys | Navigate options |
+| Enter | Buy item |
+
+### Stock Market   
+| Key | Function |
+| --- | -------- |
+| S or Up Arrow | Select previous item |
+| X or Down Arrow | Select next item |
+| &lt; or Left Arrow | Sell item |
+| &gt; or Right Arrow | Buy item |
+
+### Options Screen   
+| Key | Function |
+| --- | -------- |
+| Arrow keys | Navigate options |
+| Enter | Change option |
 
 ### Game Settings Screen  
 From the Options Screen (F11) you can enter the Game Settings Screen. From here you can change a number of settings that control how the game looks and plays.  Use the cursor keys to select an option and the Enter/Return key to change it. The options can be saved as default for future games by pressing Enter while on the Save Settings option (NB this is not necessary if you want to change the settings just for the current game).  Game settings are held in the newkind.cfg file which should be in the same directory as the newkind.exe file.  
