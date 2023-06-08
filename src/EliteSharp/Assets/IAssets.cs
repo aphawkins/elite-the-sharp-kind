@@ -7,7 +7,7 @@ using EliteSharp.Enums;
 
 namespace EliteSharp.Assets
 {
-    public interface IAssets
+    internal interface IAssets
     {
         Task<byte[]> LoadAsync(Image image, CancellationToken token);
 

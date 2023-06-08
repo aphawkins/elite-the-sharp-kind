@@ -6,7 +6,7 @@ using EliteSharp.Enums;
 
 namespace EliteSharp.WinForms
 {
-    public partial class GameWindow : Form
+    internal sealed partial class GameWindow : Form
     {
         private readonly System.Windows.Forms.Timer _refreshTimer = new();
         private readonly IKeyboard _keyboard;

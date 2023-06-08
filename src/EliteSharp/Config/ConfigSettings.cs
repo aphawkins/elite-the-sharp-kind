@@ -6,18 +6,18 @@ using EliteSharp.Enums;
 
 namespace EliteSharp.Config
 {
-    public sealed class ConfigSettings
+    internal sealed class ConfigSettings
     {
-        public bool AntiAliasWireframe { get; set; }
+        internal bool AntiAliasWireframe { get; set; }
 
-        public float Fps { get; set; } = 13.5f; // Approx speed of TNK
+        internal float Fps { get; set; } = 13.5f; // Approx speed of TNK
 
-        public bool InstantDock { get; set; }
+        internal bool InstantDock { get; set; }
 
-        public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
+        internal PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
-        public PlanetRenderStyle PlanetRenderStyle { get; set; } = PlanetRenderStyle.Fractal;
+        internal PlanetRenderStyle PlanetRenderStyle { get; set; } = PlanetRenderStyle.Fractal;
 
-        public bool UseWireframe { get; set; }
+        internal bool UseWireframe { get; set; }
     }
 }

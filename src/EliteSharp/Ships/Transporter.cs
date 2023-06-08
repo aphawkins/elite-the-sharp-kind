@@ -8,7 +8,7 @@ namespace EliteSharp.Ships
 {
     internal sealed class Transporter : NullObject
     {
-        public Transporter()
+        internal Transporter()
         {
             Type = ShipType.Transporter;
             Flags = ShipFlags.FlyToPlanet | ShipFlags.Slow;

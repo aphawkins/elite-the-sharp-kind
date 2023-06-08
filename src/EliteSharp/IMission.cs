@@ -6,8 +6,8 @@ namespace EliteSharp
 {
     internal interface IMission
     {
-        public void DrawBrief();
+        void DrawBrief();
 
-        public void Update();
+        void Update();
     }
 }

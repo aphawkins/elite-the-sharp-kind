@@ -2,7 +2,6 @@
 
 ## To get to MVP
 - Fix code directory structure
-- Remove most publics
 - Check mission triggers (FAQ)
 - Check ship stats (FAQ)
 - Widescreen support

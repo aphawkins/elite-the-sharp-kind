@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Enums
 {
-    public enum PlanetDescriptions
+    internal enum PlanetDescriptions
     {
         TreeGrubs = 0,
         HoopyCasinos = 1,

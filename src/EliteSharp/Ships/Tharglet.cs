@@ -9,7 +9,7 @@ namespace EliteSharp.Ships
 {
     internal sealed class Tharglet : NullObject
     {
-        public Tharglet()
+        internal Tharglet()
         {
             Type = ShipType.Tharglet;
             Flags = ShipFlags.Angry;

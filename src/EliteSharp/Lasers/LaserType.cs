@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Lasers
 {
-    public enum LaserType
+    internal enum LaserType
     {
         None = 0,
         Pulse = 1,

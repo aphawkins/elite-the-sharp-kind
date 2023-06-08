@@ -13,7 +13,7 @@ namespace EliteSharp.WinForms
         private readonly IKeyboard _keyboard;
         private readonly ISound _sound;
 
-        public Program()
+        internal Program()
         {
             _bmp = new(512, 512);
             _graphics = new GdiGraphics(_bmp);

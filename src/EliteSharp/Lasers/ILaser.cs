@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Lasers
 {
-    public interface ILaser
+    internal interface ILaser
     {
         string Name { get; }
 

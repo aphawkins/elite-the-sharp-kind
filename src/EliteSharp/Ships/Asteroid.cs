@@ -8,7 +8,7 @@ namespace EliteSharp.Ships
 {
     internal sealed class Asteroid : NullObject
     {
-        public Asteroid()
+        internal Asteroid()
         {
             Type = ShipType.Asteroid;
             Flags = ShipFlags.Inactive;

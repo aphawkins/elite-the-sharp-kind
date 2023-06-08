@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Enums
 {
-    public enum EnergyUnit
+    internal enum EnergyUnit
     {
         None = 0,
         Extra = 1,

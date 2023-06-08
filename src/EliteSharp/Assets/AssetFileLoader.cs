@@ -10,7 +10,7 @@ using NAudio.Wave;
 
 namespace EliteSharp.Assets
 {
-    public sealed class AssetFileLoader : IAssets
+    internal sealed class AssetFileLoader : IAssets
     {
         public async Task<byte[]> LoadAsync(Image image, CancellationToken token)
         {

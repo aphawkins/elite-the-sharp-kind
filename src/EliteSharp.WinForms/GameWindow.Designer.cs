@@ -1,7 +1,7 @@
 ﻿namespace EliteSharp.WinForms
 {
     #pragma warning disable CA1031 // Do not catch general exception types
-    partial class GameWindow
+    internal sealed partial class GameWindow
     {
         /// <summary>
         ///  Required designer variable.

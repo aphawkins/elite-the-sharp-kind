@@ -8,9 +8,9 @@ namespace EliteSharp
 {
     internal static class Extensions
     {
-        public static bool IsOdd(this int value) => value % 2 != 0;
+        internal static bool IsOdd(this int value) => value % 2 != 0;
 
-        public static bool IsOdd(this float value) => ((int)value).IsOdd();
+        internal static bool IsOdd(this float value) => ((int)value).IsOdd();
 
         internal static Vector3 Cloner(this Vector3 vec) => new(vec.X, vec.Y, vec.Z);
 
