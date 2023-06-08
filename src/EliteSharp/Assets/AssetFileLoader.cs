@@ -35,10 +35,8 @@ namespace EliteSharp.Assets
             {
                 using MemoryStream memStream = new();
                 using VorbisWaveReader vorbisStream = new(Path.Combine(GetAssetPath(), "Music", GetName(music)));
-
                 WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
                 memStream.Position = 0;
-
                 return memStream.ToArray();
             },
             token).ConfigureAwait(false);
