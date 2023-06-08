@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Reflection;
 using EliteSharp.Audio;
 using EliteSharp.Enums;
 using NAudio.Vorbis;
@@ -14,7 +15,7 @@ namespace EliteSharp.Assets
         public async Task<byte[]> LoadAsync(Image image, CancellationToken token)
         {
             using MemoryStream memStream = new();
-            using FileStream stream = new(Path.Combine("Assets", "Images", GetName(image)), FileMode.Open);
+            using FileStream stream = new(Path.Combine(GetAssetPath(), "Images", GetName(image)), FileMode.Open);
             await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
             memStream.Position = 0;
             return memStream.ToArray();
@@ -23,7 +24,7 @@ namespace EliteSharp.Assets
         public async Task<byte[]> LoadAsync(SoundEffect effect, CancellationToken token)
         {
             using MemoryStream memStream = new();
-            using FileStream stream = new(Path.Combine("Assets", "SFX", GetName(effect)), FileMode.Open);
+            using FileStream stream = new(Path.Combine(GetAssetPath(), "SFX", GetName(effect)), FileMode.Open);
             await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
             memStream.Position = 0;
             return memStream.ToArray();
@@ -33,7 +34,7 @@ namespace EliteSharp.Assets
             () =>
             {
                 using MemoryStream memStream = new();
-                using VorbisWaveReader vorbisStream = new(Path.Combine("Assets", "Music", GetName(music)));
+                using VorbisWaveReader vorbisStream = new(Path.Combine(GetAssetPath(), "Music", GetName(music)));
 
                 WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
                 memStream.Position = 0;
@@ -41,6 +42,8 @@ namespace EliteSharp.Assets
                 return memStream.ToArray();
             },
             token).ConfigureAwait(false);
+
+        private static string GetAssetPath() => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets");
 
         private static string GetName(Image image) => image switch
         {
