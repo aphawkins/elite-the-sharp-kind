@@ -66,7 +66,10 @@ namespace EliteSharp.Views
             _graphics.DrawImage(Image.EliteText, new(-1, 10));
 
             _graphics.DrawTextCentre(360, "Press Fire or Space, Commander.", 140, Colour.Gold);
-            _graphics.DrawTextCentre(330, _universe.Planet.Name, 120, Colour.White);
+            if (_universe.FirstShip != null)
+            {
+                _graphics.DrawTextCentre(330, _universe.FirstShip.Name, 120, Colour.White);
+            }
         }
 
         public void HandleInput()
@@ -112,31 +115,36 @@ namespace EliteSharp.Views
                 _direction = -_direction;
             }
 
-            _universe.Planet.Location = new(_universe.Planet.Location.X, _universe.Planet.Location.Y, _universe.Planet.Location.Z + _direction);
-
-            if (_universe.Planet.Location.Z < _minDist[(int)_shipNo])
+            if (_universe.FirstShip != null)
             {
-                _universe.Planet.Location = new(_universe.Planet.Location.X, _universe.Planet.Location.Y, _minDist[(int)_shipNo]);
-            }
+                _universe.FirstShip.Location =
+                    new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _universe.FirstShip.Location.Z + _direction);
 
-            if (_universe.Planet.Location.Z > 4500)
-            {
-                do
+                if (_universe.FirstShip.Location.Z < _minDist[(int)_shipNo])
                 {
-                    _shipNo++;
-                    if (_shipNo > ShipType.Dodec)
-                    {
-                        _shipNo = ShipType.Missile;
-                    }
+                    _universe.FirstShip.Location =
+                        new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _minDist[(int)_shipNo]);
                 }
-                while (_minDist[(int)_shipNo] == 0);
 
-                _showTime = 0;
-                _direction = -100;
-                _universe.ClearUniverse();
-                if (!_universe.AddNewShip(ShipFactory.Create(_shipNo), new(0, 0, 4500), _rotmat, -127, -127))
+                if (_universe.FirstShip.Location.Z > 4500)
                 {
-                    Debug.WriteLine("Failed to create Parade ship");
+                    do
+                    {
+                        _shipNo++;
+                        if (_shipNo > ShipType.Dodec)
+                        {
+                            _shipNo = ShipType.Missile;
+                        }
+                    }
+                    while (_minDist[(int)_shipNo] == 0);
+
+                    _showTime = 0;
+                    _direction = -100;
+                    _universe.ClearUniverse();
+                    if (!_universe.AddNewShip(ShipFactory.Create(_shipNo), new(0, 0, 4500), _rotmat, -127, -127))
+                    {
+                        Debug.WriteLine("Failed to create Parade ship");
+                    }
                 }
             }
 

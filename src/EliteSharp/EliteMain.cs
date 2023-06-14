@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using EliteSharp.Audio;
 using EliteSharp.Config;
 using EliteSharp.Conflict;
@@ -12,6 +13,8 @@ using EliteSharp.Save;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
 using EliteSharp.Views;
+
+[assembly: InternalsVisibleTo("EliteSharp.Tests")]
 
 namespace EliteSharp
 {

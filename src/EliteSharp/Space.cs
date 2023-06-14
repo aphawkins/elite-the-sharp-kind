@@ -121,7 +121,7 @@ namespace EliteSharp
                 }
             }
 
-            if ((_universe.Planet.Location.Length() < 75001) || (_universe.StationOrSun.Location.Length() < 75001))
+            if ((_universe.Planet!.Location.Length() < 75001) || (_universe.StationOrSun!.Location.Length() < 75001))
             {
                 _gameState.InfoMessage("Mass Locked");
                 return;
@@ -222,21 +222,18 @@ namespace EliteSharp
                 return;
             }
 
-            float x = MathF.Abs(_universe.Planet.Location.X);
-            float y = MathF.Abs(_universe.Planet.Location.Y);
-            float z = MathF.Abs(_universe.Planet.Location.Z);
+            Vector3 vec = Vector3.Abs(_universe.Planet!.Location);
 
-            if ((x == 0 && y == 0 && z == 0) ||
-                x > 65535 || y > 65535 || z > 65535)
+            if ((vec.X == 0 && vec.Y == 0 && vec.Z == 0) ||
+                vec.X > 65535 || vec.Y > 65535 || vec.Z > 65535)
             {
                 return;
             }
 
-            x /= 256;
-            y /= 256;
-            z /= 256;
+            vec /= 256;
+            vec *= vec;
 
-            float dist = (x * x) + (y * y) + (z * z);
+            float dist = vec.X + vec.Y + vec.Z;
 
             if (dist > 65535)
             {
@@ -276,21 +273,18 @@ namespace EliteSharp
                 return;
             }
 
-            float x = MathF.Abs(_universe.StationOrSun.Location.X);
-            float y = MathF.Abs(_universe.StationOrSun.Location.Y);
-            float z = MathF.Abs(_universe.StationOrSun.Location.Z);
+            Vector3 vec = Vector3.Abs(_universe.StationOrSun!.Location);
 
-            if ((x == 0 && y == 0 && z == 0) ||
-                x > 65535 || y > 65535 || z > 65535)
+            if ((vec.X == 0 && vec.Y == 0 && vec.Z == 0) ||
+                vec.X > 65535 || vec.Y > 65535 || vec.Z > 65535)
             {
                 return;
             }
 
-            x /= 256;
-            y /= 256;
-            z /= 256;
+            vec /= 256;
+            vec *= vec;
 
-            float dist = ((x * x) + (y * y) + (z * z)) / 256;
+            float dist = (vec.X + vec.Y + vec.Z) / 256;
 
             if (dist > 255)
             {
@@ -640,11 +634,8 @@ namespace EliteSharp
 
         private void MakeStationAppear()
         {
-            Vector3 location = _universe.Planet.Location;
-            Vector3 vec;
-            vec.X = RNG.Random(-16384, 16383);
-            vec.Y = RNG.Random(-16384, 16383);
-            vec.Z = RNG.Random(32767);
+            Vector3 location = _universe.Planet!.Location;
+            Vector3 vec = new(RNG.Random(-16384, 16383), RNG.Random(-16384, 16383), RNG.Random(32767));
 
             vec = VectorMaths.UnitVector(vec);
 

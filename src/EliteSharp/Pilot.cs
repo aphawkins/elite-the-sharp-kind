@@ -130,7 +130,7 @@ namespace EliteSharp
                 return;
             }
 
-            Vector3 diff = ship.Location - _universe.StationOrSun.Location;
+            Vector3 diff = ship.Location - _universe.StationOrSun!.Location;
 
             float dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
 
@@ -256,7 +256,7 @@ namespace EliteSharp
         /// <param name="ship"></param>
         private void FlyToDockingBay(IObject ship)
         {
-            Vector3 diff = ship.Location - _universe.StationOrSun.Location;
+            Vector3 diff = ship.Location - _universe.StationOrSun!.Location;
             Vector3 vec = VectorMaths.UnitVector(diff);
             ship.RotX = 0;
 
@@ -309,7 +309,7 @@ namespace EliteSharp
         /// </summary>
         private void FlyToPlanet(IObject ship)
         {
-            Vector3 vec = _universe.Planet.Location - ship.Location;
+            Vector3 vec = _universe.Planet!.Location - ship.Location;
             FlyToVector(ship, vec);
         }
 
@@ -318,7 +318,7 @@ namespace EliteSharp
         /// </summary>
         private void FlyToStation(IObject ship)
         {
-            Vector3 vec = _universe.StationOrSun.Location - ship.Location;
+            Vector3 vec = _universe.StationOrSun!.Location - ship.Location;
             FlyToVector(ship, vec);
         }
 
@@ -327,7 +327,7 @@ namespace EliteSharp
         /// </summary>
         private void FlyToStationFront(IObject ship)
         {
-            Vector3 vec = _universe.StationOrSun.Location - ship.Location;
+            Vector3 vec = _universe.StationOrSun!.Location - ship.Location;
 
             vec.X += _universe.StationOrSun.Rotmat[2].X * 768;
             vec.Y += _universe.StationOrSun.Rotmat[2].Y * 768;

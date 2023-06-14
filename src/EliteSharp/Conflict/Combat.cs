@@ -297,7 +297,7 @@ namespace EliteSharp.Conflict
 
             if (RNG.Random(255) == 136)
             {
-                if (((int)_universe.Planet.Location.Z & 0x3e) != 0)
+                if (((int)_universe.Planet!.Location.Z & 0x3e) != 0)
                 {
                     CreateThargoid();
                 }
@@ -1072,7 +1072,8 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            IObject station = _universe.StationOrSun;
+            IObject? station = _universe.StationOrSun;
+            Debug.Assert(station?.Type is ShipType.Coriolis or ShipType.Dodec, "Shuttle must be launched from a station");
             IObject shuttle = RNG.TrueOrFalse() ? new Shuttle() : new Transporter();
             if (!LaunchEnemy(station, shuttle, ShipFlags.HasECM | ShipFlags.FlyToPlanet, 113))
             {

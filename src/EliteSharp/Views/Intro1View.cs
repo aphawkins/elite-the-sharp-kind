@@ -86,11 +86,13 @@ namespace EliteSharp.Views
         public void UpdateUniverse()
         {
             _ship.Roll = 1;
-            _universe.Planet.Location = new(_universe.Planet.Location.X, _universe.Planet.Location.Y, _universe.Planet.Location.Z - 100);
+            _universe.FirstShip!.Location =
+                new(_universe.FirstShip!.Location.X, _universe.FirstShip!.Location.Y, _universe.FirstShip!.Location.Z - 100);
 
-            if (_universe.Planet.Location.Z < 384)
+            if (_universe.FirstShip!.Location.Z < 384)
             {
-                _universe.Planet.Location = new(_universe.Planet.Location.X, _universe.Planet.Location.Y, 384);
+                _universe.FirstShip!.Location =
+                    new(_universe.FirstShip!.Location.X, _universe.FirstShip!.Location.Y, 384);
             }
         }
     }

@@ -247,8 +247,8 @@ namespace EliteSharp
                 return;
             }
 
-            IObject obj = _universe.IsStationPresent ? _universe.StationOrSun : _universe.Planet;
-            Vector3 dest = VectorMaths.UnitVector(obj.Location);
+            IObject? obj = _universe.IsStationPresent ? _universe.StationOrSun : _universe.Planet;
+            Vector3 dest = VectorMaths.UnitVector(obj!.Location);
 
             if (float.IsNaN(dest.X))
             {
