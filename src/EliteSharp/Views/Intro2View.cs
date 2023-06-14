@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
@@ -88,7 +89,12 @@ namespace EliteSharp.Views
             _universe.ClearUniverse();
             _stars.CreateNewStars();
             _rotmat = VectorMaths.GetInitialMatrix();
-            _universe.AddNewShip(ShipType.Missile, new(0, 0, 5000), _rotmat, -127, -127);
+            IObject missile = new Missile();
+            if (!_universe.AddNewShip(missile, new(0, 0, 5000), _rotmat, -127, -127))
+            {
+                Debug.WriteLine("Failed to create Missile");
+            }
+
             _audio.PlayMusic(Music.BlueDanube, true);
 
             _ship.Speed = 3;
@@ -127,7 +133,10 @@ namespace EliteSharp.Views
                 _showTime = 0;
                 _direction = -100;
                 _universe.ClearUniverse();
-                _universe.AddNewShip(_shipNo, new(0, 0, 4500), _rotmat, -127, -127);
+                if (!_universe.AddNewShip(ShipFactory.Create(_shipNo), new(0, 0, 4500), _rotmat, -127, -127))
+                {
+                    Debug.WriteLine("Failed to create Parade ship");
+                }
             }
 
             _stars.FrontStarfield();

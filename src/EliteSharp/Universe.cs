@@ -26,14 +26,13 @@ namespace EliteSharp
 
         internal int ShipCount(ShipType shipType) => _shipCount[shipType];
 
-        internal IObject AddNewShip(ShipType shipType, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
+        internal bool AddNewShip(IObject ship, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
         {
             Debug.Assert(rotmat != null, "Rotation matrix should not be null.");
             for (int i = 0; i < MaxUniverseObjects; i++)
             {
                 if (_objects[i].Type == ShipType.None)
                 {
-                    IObject ship = ShipFactory.ConstructShip(shipType);
                     ship.Location = location;
                     ship.Rotmat = rotmat;
                     ship.RotX = rotx;
@@ -41,15 +40,15 @@ namespace EliteSharp
                     ship.Energy = ship.EnergyMax;
                     ship.Missiles = ship.MissilesMax;
                     _objects[i] = ship;
-                    _shipCount[shipType]++;
-                    return ship;
+                    _shipCount[ship.Type]++;
+                    return true;
                 }
             }
 
-            return new NullObject();
+            return false;
         }
 
-        internal IObject AddNewShip(ShipType type)
+        internal bool AddNewShip(IObject ship)
         {
             Vector3 position = new()
             {
@@ -68,14 +67,14 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            return AddNewShip(type, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            return AddNewShip(ship, position, VectorMaths.GetInitialMatrix(), 0, 0);
         }
 
         internal void AddNewStation(int planetTechLevel, Vector3 position, Vector3[] rotmat)
         {
-            ShipType station = planetTechLevel >= 10 ? ShipType.Dodec : ShipType.Coriolis;
             _objects[1] = new NullObject();
-            AddNewShip(station, position, rotmat, 0, -127);
+            ShipType station = planetTechLevel >= 10 ? ShipType.Dodec : ShipType.Coriolis;
+            AddNewShip(ShipFactory.Create(station), position, rotmat, 0, -127);
         }
 
         internal void ClearUniverse()

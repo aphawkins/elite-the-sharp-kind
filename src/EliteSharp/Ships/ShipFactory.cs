@@ -6,7 +6,7 @@ namespace EliteSharp.Ships
 {
     internal static class ShipFactory
     {
-        internal static IObject ConstructShip(ShipType type) => type switch
+        internal static IObject Create(ShipType type) => type switch
         {
             ShipType.Adder => new Adder(),
             ShipType.Alloy => new Alloy(),

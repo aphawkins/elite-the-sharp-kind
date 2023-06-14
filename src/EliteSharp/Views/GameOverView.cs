@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
 using EliteSharp.Enums;
@@ -45,17 +46,26 @@ namespace EliteSharp.Views
             _ship.Climb = 0;
             _combat.Reset();
             _universe.ClearUniverse();
-            IObject newship = _universe.AddNewShip(ShipType.CobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0);
-            newship.Flags |= ShipFlags.Dead;
+            IObject cobraMk3 = new CobraMk3();
+            if (!_universe.AddNewShip(cobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0))
+            {
+                Debug.WriteLine("Failed to create CobraMk3");
+            }
+
+            cobraMk3.Flags |= ShipFlags.Dead;
 
             // Cargo
             for (int i = 0; i < 5; i++)
             {
-                ShipType type = RNG.TrueOrFalse() ? ShipType.Cargo : ShipType.Alloy;
-                newship = _universe.AddNewShip(type, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0);
-                newship.RotZ = ((RNG.Random(255) * 2) & 255) - 128;
-                newship.RotX = ((RNG.Random(255) * 2) & 255) - 128;
-                newship.Velocity = RNG.Random(15);
+                IObject cargo = RNG.TrueOrFalse() ? new CargoCannister() : new Alloy();
+                if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0))
+                {
+                    Debug.WriteLine("Failed to create Cargo");
+                }
+
+                cargo.RotZ = ((RNG.Random(255) * 2) & 255) - 128;
+                cargo.RotX = ((RNG.Random(255) * 2) & 255) - 128;
+                cargo.Velocity = RNG.Random(15);
             }
 
             _audio.PlayEffect(SoundEffect.Gameover);

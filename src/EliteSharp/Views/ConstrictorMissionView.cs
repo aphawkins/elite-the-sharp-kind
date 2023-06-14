@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using EliteSharp.Conflict;
 using EliteSharp.Enums;
 using EliteSharp.Ships;
@@ -111,8 +112,13 @@ namespace EliteSharp.Views
 
                 _combat.Reset();
                 _universe.ClearUniverse();
-                IObject ship = _universe.AddNewShip(ShipType.Constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127);
-                ship.Flags = ShipFlags.None;
+                IObject constrictor = new Constrictor();
+                if (!_universe.AddNewShip(constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127))
+                {
+                    Debug.Fail("Failed to create Constrictor");
+                }
+
+                constrictor.Flags = ShipFlags.None;
                 _ship.Roll = 0;
                 _ship.Climb = 0;
                 _ship.Speed = 0;

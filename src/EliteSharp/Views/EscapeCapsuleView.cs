@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Enums;
@@ -62,7 +63,12 @@ namespace EliteSharp.Views
             _ship.Climb = 0;
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
-            _newship = _universe.AddNewShip(ShipType.CobraMk3, new(0, 0, 200), rotmat, -127, -127);
+            _newship = new CobraMk3();
+            if (!_universe.AddNewShip(_newship, new(0, 0, 200), rotmat, -127, -127))
+            {
+                Debug.Fail("Failed to create CobraMk3");
+            }
+
             _newship.Velocity = 7;
             _audio.PlayEffect(SoundEffect.Launch);
             _i = 0;

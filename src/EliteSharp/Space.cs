@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
@@ -156,7 +157,10 @@ namespace EliteSharp
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
             _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            _universe.AddNewShip(ShipType.Planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0);
+            if (!_universe.AddNewShip(new Planet(), new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
+            {
+                Debug.WriteLine("Failed to create Planet");
+            }
 
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].X = -rotmat[2].X;
@@ -537,12 +541,18 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            _universe.AddNewShip(ShipType.Planet, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            if (!_universe.AddNewShip(new Planet(), position, VectorMaths.GetInitialMatrix(), 0, 0))
+            {
+                Debug.WriteLine("Failed to create Planet");
+            }
 
             position.Z = -(((_gameState.DockedPlanet.D & 7) | 1) << 16);
             position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
-            _universe.AddNewShip(ShipType.Sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            if (!_universe.AddNewShip(new Sun(), position, VectorMaths.GetInitialMatrix(), 0, 0))
+            {
+                Debug.WriteLine("Failed to create Sun");
+            }
 
             _gameState.SetView(Screen.Hyperspace);
         }
