@@ -6,7 +6,8 @@ using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
-using EliteSharp.Enums;
+using EliteSharp.Controls;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
 namespace EliteSharp.Views

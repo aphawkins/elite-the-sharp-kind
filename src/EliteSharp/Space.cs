@@ -6,10 +6,11 @@ using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
 using EliteSharp.Types;
+using EliteSharp.Views;
 
 namespace EliteSharp
 {

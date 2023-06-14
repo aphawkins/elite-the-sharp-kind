@@ -5,7 +5,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using EliteSharp.Enums;
+using EliteSharp.Equipment;
 using EliteSharp.Lasers;
 using EliteSharp.Ships;
 using EliteSharp.Trader;

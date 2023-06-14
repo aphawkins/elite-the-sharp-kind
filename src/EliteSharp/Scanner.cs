@@ -4,7 +4,7 @@
 
 using System.Numerics;
 using EliteSharp.Conflict;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using EliteSharp.Views;
 

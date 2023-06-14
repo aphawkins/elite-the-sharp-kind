@@ -3,6 +3,8 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Audio;
+using EliteSharp.Controls;
+using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {

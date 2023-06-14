@@ -5,7 +5,7 @@
 using System.Diagnostics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
 namespace EliteSharp.Views

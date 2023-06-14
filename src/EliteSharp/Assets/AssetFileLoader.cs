@@ -4,7 +4,7 @@
 
 using System.Reflection;
 using EliteSharp.Audio;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 using NAudio.Vorbis;
 using NAudio.Wave;
 

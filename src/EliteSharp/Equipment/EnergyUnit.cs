@@ -2,13 +2,12 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp.Enums
+namespace EliteSharp.Equipment
 {
-    internal enum PlanetRenderStyle
+    internal enum EnergyUnit
     {
-        Wireframe = 0,
-        Green = 1,
-        SNES = 2,
-        Fractal = 3,
+        None = 0,
+        Extra = 1,
+        Naval = 2,
     }
 }

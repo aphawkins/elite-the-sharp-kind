@@ -5,7 +5,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Numerics;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
@@ -13,12 +13,12 @@ namespace EliteSharp.WinForms
     {
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-        private readonly ConcurrentDictionary<Enums.Image, Bitmap> _images = new();
+        private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
         private readonly Dictionary<Colour, Pen> _pens = new();
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
-        private readonly Graphics _screenBufferGraphics;
-        private readonly Graphics _screenGraphics;
+        private readonly System.Drawing.Graphics _screenBufferGraphics;
+        private readonly System.Drawing.Graphics _screenGraphics;
         private readonly object _screenLock = new();
         private bool _isDisposed;
         private RectangleF _clipRegion;
@@ -29,9 +29,9 @@ namespace EliteSharp.WinForms
             Debug.Assert(screen.Height == 512, "Screen should be correct height.");
 
             _screen = screen;
-            _screenGraphics = Graphics.FromImage(_screen);
+            _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
-            _screenBufferGraphics = Graphics.FromImage(_screenBuffer);
+            _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
 
             foreach (Colour colour in Enum.GetValues<Colour>())
@@ -64,7 +64,7 @@ namespace EliteSharp.WinForms
 
         public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawImage(Enums.Image spriteImgage, Vector2 location)
+        public void DrawImage(Graphics.Image spriteImgage, Vector2 location)
         {
             Bitmap sprite = _images[spriteImgage];
 
@@ -185,7 +185,7 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(Enums.Image imgType, byte[] bitmapBytes) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(new MemoryStream(bitmapBytes));
+        public void LoadBitmap(Graphics.Image imgType, byte[] bitmapBytes) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(new MemoryStream(bitmapBytes));
 
         public void ScreenAcquire()
         {
@@ -229,7 +229,7 @@ namespace EliteSharp.WinForms
                     _fontLarge.Dispose();
 
                     // Images
-                    foreach (KeyValuePair<Enums.Image, Bitmap> image in _images)
+                    foreach (KeyValuePair<Graphics.Image, Bitmap> image in _images)
                     {
                         image.Value.Dispose();
                     }

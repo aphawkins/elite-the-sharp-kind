@@ -3,8 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
+using EliteSharp.Views;
 
 namespace EliteSharp
 {

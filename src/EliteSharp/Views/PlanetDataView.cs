@@ -4,8 +4,9 @@
 
 using System.Diagnostics;
 using System.Globalization;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 using EliteSharp.Missions;
+using EliteSharp.Planets;
 using EliteSharp.Types;
 
 namespace EliteSharp.Views

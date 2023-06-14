@@ -4,7 +4,7 @@
 
 using System.Numerics;
 using EliteSharp.Assets;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
 namespace EliteSharp.Views

@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
-using EliteSharp.Enums;
+using EliteSharp.Equipment;
 using EliteSharp.Lasers;
 
 namespace EliteSharp.Ships

@@ -3,9 +3,8 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharp.Enums;
 
-namespace EliteSharp
+namespace EliteSharp.Graphics
 {
     public interface IGraphics
     {

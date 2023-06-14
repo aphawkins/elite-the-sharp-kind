@@ -4,7 +4,8 @@
 
 using System.Diagnostics;
 using EliteSharp.Conflict;
-using EliteSharp.Enums;
+using EliteSharp.Controls;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
 

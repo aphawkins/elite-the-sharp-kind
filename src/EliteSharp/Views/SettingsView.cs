@@ -3,7 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Config;
-using EliteSharp.Enums;
+using EliteSharp.Controls;
+using EliteSharp.Graphics;
+using EliteSharp.Planets;
 
 namespace EliteSharp.Views
 {

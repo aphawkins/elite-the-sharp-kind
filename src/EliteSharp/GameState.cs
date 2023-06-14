@@ -4,7 +4,7 @@
 
 using System.Numerics;
 using EliteSharp.Config;
-using EliteSharp.Enums;
+using EliteSharp.Controls;
 using EliteSharp.Types;
 using EliteSharp.Views;
 

@@ -5,10 +5,10 @@
 using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
-using EliteSharp.Enums;
 using EliteSharp.Lasers;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
+using EliteSharp.Views;
 
 namespace EliteSharp.Conflict
 {

@@ -2,6 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Controls;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
 namespace EliteSharp.Views

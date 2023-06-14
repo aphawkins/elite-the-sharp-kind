@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics.CodeAnalysis;
-using EliteSharp.Enums;
+using EliteSharp.Graphics;
 
 namespace EliteSharp.Planets
 {
