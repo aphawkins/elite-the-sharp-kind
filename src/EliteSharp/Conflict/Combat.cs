@@ -39,7 +39,7 @@ namespace EliteSharp.Conflict
 
         internal bool IsMissileArmed { get; private set; }
 
-        internal IShip? MissileTarget { get; private set; } = new ShipBase();
+        internal IShip? MissileTarget { get; private set; }
 
         internal void ActivateECM(bool ours)
         {
