@@ -309,7 +309,12 @@ namespace EliteSharp
         /// </summary>
         private void FlyToPlanet(IObject ship)
         {
-            Vector3 vec = _universe.Planet!.Location - ship.Location;
+            if (_universe.Planet == null)
+            {
+                return;
+            }
+
+            Vector3 vec = _universe.Planet.Location - ship.Location;
             FlyToVector(ship, vec);
         }
 

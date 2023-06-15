@@ -222,7 +222,12 @@ namespace EliteSharp
                 return;
             }
 
-            Vector3 vec = Vector3.Abs(_universe.Planet!.Location);
+            if (_universe.Planet == null)
+            {
+                return;
+            }
+
+            Vector3 vec = Vector3.Abs(_universe.Planet.Location);
 
             if ((vec.X == 0 && vec.Y == 0 && vec.Z == 0) ||
                 vec.X > 65535 || vec.Y > 65535 || vec.Z > 65535)
@@ -636,15 +641,8 @@ namespace EliteSharp
         {
             Vector3 location = _universe.Planet!.Location;
             Vector3 vec = new(RNG.Random(-16384, 16383), RNG.Random(-16384, 16383), RNG.Random(32767));
-
             vec = VectorMaths.UnitVector(vec);
-
-            Vector3 position = new()
-            {
-                X = location.X - (vec.X * 65792),
-                Y = location.Y - (vec.Y * 65792),
-                Z = location.Z - (vec.Z * 65792),
-            };
+            Vector3 position = location - (vec * 65792);
 
             //  VectorMaths.set_init_matrix (rotmat);
             Vector3[] rotmat = new Vector3[3];
