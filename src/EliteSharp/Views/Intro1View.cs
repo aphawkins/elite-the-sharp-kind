@@ -74,7 +74,7 @@ namespace EliteSharp.Views
 
             // Ship faces away
             initMatrix[2].Z = 1;
-            IObject cobraMk3 = new CobraMk3();
+            IShip cobraMk3 = new CobraMk3();
             if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500), initMatrix, -127, 127))
             {
                 Debug.WriteLine("Failed to create CobraMk3");

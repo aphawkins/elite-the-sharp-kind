@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Mamba : NullObject
+    internal sealed class Mamba : ShipBase
     {
         internal Mamba()
         {

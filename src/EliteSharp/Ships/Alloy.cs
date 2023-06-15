@@ -7,7 +7,7 @@ using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Alloy : NullObject
+    internal sealed class Alloy : ShipBase
     {
         internal Alloy()
         {

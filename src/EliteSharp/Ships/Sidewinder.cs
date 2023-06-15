@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Sidewinder : NullObject
+    internal sealed class Sidewinder : ShipBase
     {
         internal Sidewinder()
         {

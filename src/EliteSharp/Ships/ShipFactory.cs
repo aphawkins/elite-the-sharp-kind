@@ -6,13 +6,13 @@ namespace EliteSharp.Ships
 {
     internal static class ShipFactory
     {
-        internal static IObject Create(ShipType type) => type switch
+        internal static IShip Create(ShipType type) => type switch
         {
             ShipType.Adder => new Adder(),
             ShipType.Alloy => new Alloy(),
             ShipType.Anaconda => new Anaconda(),
             ShipType.AspMk2 => new AspMk2(),
-            ShipType.None => new NullObject(),
+            ShipType.None => new ShipBase(),
             ShipType.Missile => new Missile(),
             ShipType.Coriolis => new Coriolis(),
             ShipType.EscapeCapsule => new EscapeCapsule(),

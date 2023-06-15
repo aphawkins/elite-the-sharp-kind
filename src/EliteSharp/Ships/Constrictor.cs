@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Constrictor : NullObject
+    internal sealed class Constrictor : ShipBase
     {
         internal Constrictor()
         {

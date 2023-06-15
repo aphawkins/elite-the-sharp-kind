@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Boa : NullObject
+    internal sealed class Boa : ShipBase
     {
         internal Boa()
         {

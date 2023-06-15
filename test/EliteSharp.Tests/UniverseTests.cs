@@ -13,7 +13,7 @@ namespace EliteSharp.Tests
         {
             // Arrange
             Universe universe = new();
-            IObject ship = new CobraMk3();
+            IShip ship = new CobraMk3();
 
             // Act
             universe.AddNewShip(ship);
@@ -35,7 +35,7 @@ namespace EliteSharp.Tests
         {
             // Arrange
             Universe universe = new();
-            IObject ship = new CobraMk3();
+            IShip ship = new CobraMk3();
 
             // Act
             universe.AddNewShip(ship);

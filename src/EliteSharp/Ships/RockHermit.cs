@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class RockHermit : NullObject
+    internal sealed class RockHermit : ShipBase
     {
         internal RockHermit()
         {

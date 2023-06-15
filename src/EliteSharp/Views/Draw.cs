@@ -26,7 +26,7 @@ namespace EliteSharp.Views
 
         internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_graphics.Offset.X, 385 + _graphics.Offset.Y));
 
-        internal void DrawSun(IObject planet)
+        internal void DrawSun(IShip planet)
         {
             Vector2 centre = new()
             {

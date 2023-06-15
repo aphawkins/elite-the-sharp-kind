@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Cougar : NullObject
+    internal sealed class Cougar : ShipBase
     {
         internal Cougar()
         {

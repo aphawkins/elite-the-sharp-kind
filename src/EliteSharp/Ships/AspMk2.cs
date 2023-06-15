@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class AspMk2 : NullObject
+    internal sealed class AspMk2 : ShipBase
     {
         internal AspMk2()
         {

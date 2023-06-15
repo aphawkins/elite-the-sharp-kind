@@ -46,7 +46,7 @@ namespace EliteSharp.Views
             _ship.Climb = 0;
             _combat.Reset();
             _universe.ClearUniverse();
-            IObject cobraMk3 = new CobraMk3();
+            IShip cobraMk3 = new CobraMk3();
             if (!_universe.AddNewShip(cobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create CobraMk3");
@@ -57,7 +57,7 @@ namespace EliteSharp.Views
             // Cargo
             for (int i = 0; i < 5; i++)
             {
-                IObject cargo = RNG.TrueOrFalse() ? new CargoCannister() : new Alloy();
+                IShip cargo = RNG.TrueOrFalse() ? new CargoCannister() : new Alloy();
                 if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     Debug.WriteLine("Failed to create Cargo");

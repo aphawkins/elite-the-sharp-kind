@@ -7,7 +7,7 @@ using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class EscapeCapsule : NullObject
+    internal sealed class EscapeCapsule : ShipBase
     {
         internal EscapeCapsule()
         {

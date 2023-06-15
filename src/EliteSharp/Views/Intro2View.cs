@@ -93,7 +93,7 @@ namespace EliteSharp.Views
             _universe.ClearUniverse();
             _stars.CreateNewStars();
             _rotmat = VectorMaths.GetInitialMatrix();
-            IObject missile = new Missile();
+            IShip missile = new Missile();
             if (!_universe.AddNewShip(missile, new(0, 0, 5000), _rotmat, -127, -127))
             {
                 Debug.WriteLine("Failed to create Missile");

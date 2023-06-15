@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class CargoCannister : NullObject
+    internal sealed class CargoCannister : ShipBase
     {
         internal CargoCannister()
         {

@@ -7,7 +7,7 @@ using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class RockSplinter : NullObject
+    internal sealed class RockSplinter : ShipBase
     {
         internal RockSplinter()
         {

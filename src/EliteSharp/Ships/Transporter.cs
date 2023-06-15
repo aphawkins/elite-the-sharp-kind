@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Transporter : NullObject
+    internal sealed class Transporter : ShipBase
     {
         internal Transporter()
         {

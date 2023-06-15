@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Planet : NullObject
+    internal sealed class Planet : ShipBase
     {
         internal Planet() => Type = ShipType.Planet;
     }

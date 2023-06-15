@@ -7,7 +7,7 @@ using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Tharglet : NullObject
+    internal sealed class Tharglet : ShipBase
     {
         internal Tharglet()
         {

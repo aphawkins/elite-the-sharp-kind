@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Anaconda : NullObject
+    internal sealed class Anaconda : ShipBase
     {
         internal Anaconda()
         {

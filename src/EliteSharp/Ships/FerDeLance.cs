@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class FerDeLance : NullObject
+    internal sealed class FerDeLance : ShipBase
     {
         internal FerDeLance()
         {

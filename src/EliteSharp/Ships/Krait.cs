@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Krait : NullObject
+    internal sealed class Krait : ShipBase
     {
         internal Krait()
         {

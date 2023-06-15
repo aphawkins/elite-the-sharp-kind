@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Viper : NullObject
+    internal sealed class Viper : ShipBase
     {
         internal Viper()
         {

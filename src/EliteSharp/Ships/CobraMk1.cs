@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class CobraMk1 : NullObject
+    internal sealed class CobraMk1 : ShipBase
     {
         internal CobraMk1()
         {

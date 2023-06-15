@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Adder : NullObject
+    internal sealed class Adder : ShipBase
     {
         internal Adder()
         {

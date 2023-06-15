@@ -7,13 +7,13 @@ using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal class NullObject : IObject
+    internal class ShipBase : IShip
     {
-        internal NullObject()
+        internal ShipBase()
         {
         }
 
-        internal NullObject(IObject other)
+        internal ShipBase(IShip other)
         {
             Bounty = other.Bounty;
             EnergyMax = other.EnergyMax;
@@ -96,7 +96,7 @@ namespace EliteSharp.Ships
 
         public float Size { get; protected set; }
 
-        public IObject? Target { get; set; }
+        public IShip? Target { get; set; }
 
         public ShipType Type { get; protected set; }
 

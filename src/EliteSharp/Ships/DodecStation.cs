@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class DodecStation : NullObject
+    internal sealed class DodecStation : ShipBase
     {
         internal DodecStation()
         {

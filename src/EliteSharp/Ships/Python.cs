@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal class Python : NullObject
+    internal class Python : ShipBase
     {
         internal Python()
         {

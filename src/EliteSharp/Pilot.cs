@@ -28,7 +28,7 @@ namespace EliteSharp
 
         internal void AutoDock()
         {
-            IObject ship = new NullObject()
+            IShip ship = new ShipBase()
             {
                 Rotmat = VectorMaths.GetInitialMatrix(),
                 Location = Vector3.Zero,
@@ -122,7 +122,7 @@ namespace EliteSharp
         /// <summary>
         /// Fly a ship to the planet or to the space station and dock it.
         /// </summary>
-        internal void AutoPilotShip(IObject ship)
+        internal void AutoPilotShip(IShip ship)
         {
             if (ship.Flags.HasFlag(ShipFlags.FlyToPlanet) || !_universe.IsStationPresent)
             {
@@ -185,7 +185,7 @@ namespace EliteSharp
         /// </summary>
         /// <param name="ship"></param>
         /// <param name="vec"></param>
-        private static void FlyToVector(IObject ship, Vector3 vec)
+        private static void FlyToVector(IShip ship, Vector3 vec)
         {
             Vector3 nvec;
             float direction;
@@ -254,7 +254,7 @@ namespace EliteSharp
         /// Final stage of docking. Fly into the docking bay.
         /// </summary>
         /// <param name="ship"></param>
-        private void FlyToDockingBay(IObject ship)
+        private void FlyToDockingBay(IShip ship)
         {
             Vector3 diff = ship.Location - _universe.StationOrSun!.Location;
             Vector3 vec = VectorMaths.UnitVector(diff);
@@ -307,7 +307,7 @@ namespace EliteSharp
         /// <summary>
         /// Fly towards the planet.
         /// </summary>
-        private void FlyToPlanet(IObject ship)
+        private void FlyToPlanet(IShip ship)
         {
             if (_universe.Planet == null)
             {
@@ -321,7 +321,7 @@ namespace EliteSharp
         /// <summary>
         /// Fly towards the space station.
         /// </summary>
-        private void FlyToStation(IObject ship)
+        private void FlyToStation(IShip ship)
         {
             Vector3 vec = _universe.StationOrSun!.Location - ship.Location;
             FlyToVector(ship, vec);
@@ -330,7 +330,7 @@ namespace EliteSharp
         /// <summary>
         /// Fly to a point in front of the station docking bay. Done prior to the final stage of docking.
         /// </summary>
-        private void FlyToStationFront(IObject ship)
+        private void FlyToStationFront(IShip ship)
         {
             Vector3 vec = _universe.StationOrSun!.Location - ship.Location;
 

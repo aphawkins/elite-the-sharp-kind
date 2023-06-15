@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Coriolis : NullObject
+    internal sealed class Coriolis : ShipBase
     {
         internal Coriolis()
         {

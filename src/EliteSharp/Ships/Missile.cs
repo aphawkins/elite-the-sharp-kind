@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Missile : NullObject
+    internal sealed class Missile : ShipBase
     {
         internal Missile()
         {

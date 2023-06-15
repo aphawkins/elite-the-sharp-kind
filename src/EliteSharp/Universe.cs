@@ -12,7 +12,7 @@ namespace EliteSharp
     {
         private const int MaxUniverseObjects = 20;
 
-        private readonly List<IObject> _objects = new();
+        private readonly List<IShip> _objects = new();
 
         private readonly Dictionary<ShipType, int> _shipCount = new();
 
@@ -20,15 +20,15 @@ namespace EliteSharp
 
         internal bool IsStationPresent => _shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0;
 
-        internal IObject? Planet { get; private set; }
+        internal IShip? Planet { get; private set; }
 
-        internal IObject? FirstShip => _objects.Count > 0 ? _objects[0] : StationOrSun;
+        internal IShip? FirstShip => _objects.Count > 0 ? _objects[0] : StationOrSun;
 
         internal int PoliceCount => _shipCount[ShipType.Viper];
 
-        internal IObject? StationOrSun { get; private set; }
+        internal IShip? StationOrSun { get; private set; }
 
-        internal bool AddNewShip(IObject newShip, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
+        internal bool AddNewShip(IShip newShip, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
         {
             Debug.Assert(rotmat != null, "Rotation matrix should not be null.");
 
@@ -61,7 +61,7 @@ namespace EliteSharp
             return true;
         }
 
-        internal bool AddNewShip(IObject ship)
+        internal bool AddNewShip(IShip ship)
         {
             Vector3 position = new()
             {
@@ -101,7 +101,7 @@ namespace EliteSharp
             }
         }
 
-        internal IEnumerable<IObject> GetAllObjects()
+        internal IEnumerable<IShip> GetAllObjects()
         {
             if (Planet != null)
             {
@@ -113,13 +113,13 @@ namespace EliteSharp
                 yield return StationOrSun;
             }
 
-            foreach (IObject obj in _objects.ToList())
+            foreach (IShip obj in _objects.ToList())
             {
                 yield return obj;
             }
         }
 
-        internal void RemoveShip(IObject ship)
+        internal void RemoveShip(IShip ship)
         {
             if (ship.Type > ShipType.None)
             {

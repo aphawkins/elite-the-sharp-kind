@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Gecko : NullObject
+    internal sealed class Gecko : ShipBase
     {
         internal Gecko()
         {

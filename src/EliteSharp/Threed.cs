@@ -44,7 +44,7 @@ namespace EliteSharp
         /// Draws an object in the universe. (Ship, Planet, Sun etc).
         /// </summary>
         /// <param name="ship"></param>
-        internal void DrawObject(IObject ship)
+        internal void DrawObject(IShip ship)
         {
             //Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
             //  SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
@@ -150,7 +150,7 @@ namespace EliteSharp
             _totalPolys = 0;
         }
 
-        private void DrawExplosion(IObject ship)
+        private void DrawExplosion(IShip ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             bool[] visible = new bool[32];
@@ -257,7 +257,7 @@ namespace EliteSharp
         /// Draw a planet.
         /// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style.
         /// </summary>
-        private void DrawPlanet(IObject planet)
+        private void DrawPlanet(IShip planet)
         {
             Vector2 position = new()
             {
@@ -367,7 +367,7 @@ namespace EliteSharp
         /// A number of features(such as not showing detail at distance) have not yet been implemented.
         /// Check for hidden surface supplied by T.Harte.
         /// </summary>
-        private void DrawShip(IObject ship)
+        private void DrawShip(IShip ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             int lasv;

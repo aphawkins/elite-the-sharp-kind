@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Thargoid : NullObject
+    internal sealed class Thargoid : ShipBase
     {
         internal Thargoid()
         {

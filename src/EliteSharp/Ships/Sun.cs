@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Sun : NullObject
+    internal sealed class Sun : ShipBase
     {
         internal Sun() => Type = ShipType.Sun;
     }

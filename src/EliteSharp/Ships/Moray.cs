@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Moray : NullObject
+    internal sealed class Moray : ShipBase
     {
         internal Moray()
         {

@@ -6,7 +6,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Ships
 {
-    internal sealed class Boulder : NullObject
+    internal sealed class Boulder : ShipBase
     {
         internal Boulder()
         {

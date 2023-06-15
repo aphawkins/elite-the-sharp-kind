@@ -7,7 +7,7 @@ using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal interface IObject
+    internal interface IShip
     {
         float Bounty { get; }
 
@@ -61,7 +61,7 @@ namespace EliteSharp.Ships
 
         float RotZ { get; set; }
 
-        IObject? Target { get; set; }
+        IShip? Target { get; set; }
 
         ShipType Type { get; }
 

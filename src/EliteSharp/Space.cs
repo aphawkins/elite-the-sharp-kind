@@ -108,7 +108,7 @@ namespace EliteSharp
             ShipType type;
             float jump;
 
-            foreach (IObject universeObj in _universe.GetAllObjects())
+            foreach (IShip universeObj in _universe.GetAllObjects())
             {
                 type = universeObj.Type;
 
@@ -135,7 +135,7 @@ namespace EliteSharp
                 jump = 1024;
             }
 
-            foreach (IObject universeObj in _universe.GetAllObjects())
+            foreach (IShip universeObj in _universe.GetAllObjects())
             {
                 if (universeObj.Type != 0)
                 {
@@ -329,7 +329,7 @@ namespace EliteSharp
             _threed.RenderStart();
             int i = -1;
 
-            foreach (IObject universeObj in _universe.GetAllObjects())
+            foreach (IShip universeObj in _universe.GetAllObjects())
             {
                 i++;
 
@@ -383,7 +383,7 @@ namespace EliteSharp
 
                 MoveUniverseObject(universeObj);
 
-                IObject flip = new NullObject(universeObj);
+                IShip flip = new ShipBase(universeObj);
                 SwitchToView(flip);
 
                 if (type == ShipType.Planet)
@@ -461,7 +461,7 @@ namespace EliteSharp
             }
         }
 
-        private void CheckDocking(IObject obj)
+        private void CheckDocking(IShip obj)
         {
             if (_gameState.IsDocked)
             {
@@ -602,7 +602,7 @@ namespace EliteSharp
         /// <summary>
         /// Check if we are correctly aligned to dock.
         /// </summary>
-        private bool IsDocking(IObject obj)
+        private bool IsDocking(IShip obj)
         {
             Vector3 vec;
             float fz;
@@ -668,7 +668,7 @@ namespace EliteSharp
         /// Update an objects location in the universe.
         /// </summary>
         /// <param name="obj"></param>
-        private void MoveUniverseObject(IObject obj)
+        private void MoveUniverseObject(IShip obj)
         {
             float x, y, z;
             float k2;
@@ -765,7 +765,7 @@ namespace EliteSharp
             VectorMaths.TidyMatrix(obj.Rotmat);
         }
 
-        private void SwitchToView(IObject flip)
+        private void SwitchToView(IShip flip)
         {
             float tmp;
 
