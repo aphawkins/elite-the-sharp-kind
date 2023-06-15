@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace EliteSharp.Graphics
 {
-    public interface IGraphics
+    public interface IGraphics : IDisposable
     {
         Vector2 Centre { get; }
 

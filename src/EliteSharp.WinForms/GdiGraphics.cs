@@ -3,14 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class GdiGraphics : IGraphics, IDisposable
+    internal sealed class GdiGraphics : IGraphics
     {
+        private const int ScannerHeight = 128;
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
@@ -20,19 +20,17 @@ namespace EliteSharp.WinForms
         private readonly System.Drawing.Graphics _screenBufferGraphics;
         private readonly System.Drawing.Graphics _screenGraphics;
         private readonly object _screenLock = new();
-        private bool _isDisposed;
         private RectangleF _clipRegion;
+        private bool _isDisposed;
 
         public GdiGraphics(Bitmap screen)
         {
-            Debug.Assert(screen.Width == 512, "Screen should be correct width.");
-            Debug.Assert(screen.Height == 512, "Screen should be correct height.");
-
             _screen = screen;
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
             _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
+            Centre = new(screen.Width / 2, (screen.Height - ScannerHeight) / 2);
 
             foreach (Colour colour in Enum.GetValues<Colour>())
             {
@@ -41,7 +39,7 @@ namespace EliteSharp.WinForms
             }
         }
 
-        public Vector2 Centre { get; private set; } = new(256, 192);
+        public Vector2 Centre { get; init; }
 
         public Vector2 Offset { get; private set; } = new(0, 0);
 

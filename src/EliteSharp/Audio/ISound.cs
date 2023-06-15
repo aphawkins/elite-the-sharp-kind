@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Audio
 {
-    public interface ISound
+    public interface ISound : IDisposable
     {
         void Load(Music musicType, byte[] waveBytes);
 

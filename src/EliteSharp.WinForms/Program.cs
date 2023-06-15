@@ -2,33 +2,15 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+//#define WIDESCREEN
 using EliteSharp.Audio;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class Program : IDisposable
+    internal sealed class Program
     {
-        private readonly Bitmap _bmp;
-        private readonly IGraphics _graphics;
-        private readonly IKeyboard _keyboard;
-        private readonly ISound _sound;
-
-        internal Program()
-        {
-            _bmp = new(512, 512);
-            _graphics = new GdiGraphics(_bmp);
-            _sound = new Sound();
-            _keyboard = new Keyboard();
-        }
-
-        public void Dispose()
-        {
-            ((IDisposable)_sound)?.Dispose();
-            _bmp?.Dispose();
-        }
-
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -39,18 +21,24 @@ namespace EliteSharp.WinForms
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            using Program program = new();
-            program.Go();
+            Go();
         }
 
-        private void Go()
+        private static void Go()
         {
             try
             {
+                using ISound sound = new Sound();
+                IKeyboard keyboard = new Keyboard();
                 using CancellationTokenSource source = new();
                 CancellationToken token = source.Token;
-                using GameWindow window = new(_bmp, _keyboard);
-                EliteMain game = new(_graphics, _sound, _keyboard);
+#if WIDESCREEN
+                using GameWindow window = new(960, 540, keyboard);
+#else
+                using GameWindow window = new(512, 512, keyboard);
+#endif
+                using IGraphics graphics = new GdiGraphics(window.ScreenBitmap);
+                EliteMain game = new(graphics, sound, keyboard);
                 game.RunAsync(token);
                 Application.Run(window);
             }

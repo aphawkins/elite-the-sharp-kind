@@ -12,17 +12,25 @@ namespace EliteSharp.WinForms
         private readonly IKeyboard _keyboard;
 
         //private readonly Task _game;
-        public GameWindow(Bitmap bmp, IKeyboard keyboard)
+        public GameWindow(int width, int height, IKeyboard keyboard)
         {
             InitializeComponent();
+
+            screen.Size = new Size(width, height);
+            ClientSize = new Size(width, height);
+            MaximumSize = new Size(width + 16, height + 39);
+            MinimumSize = new Size(width + 16, height + 39);
 
             _refreshTimer.Interval = 100;
             _refreshTimer.Tick += (sender, e) => RefreshScreen();
             _refreshTimer.Start();
 
             _keyboard = keyboard;
-            screen.Image = bmp;
+            ScreenBitmap = new Bitmap(screen.Width, screen.Height);
+            screen.Image = ScreenBitmap;
         }
+
+        internal Bitmap ScreenBitmap { get; }
 
         private void DoThrow(Task t)
         {
