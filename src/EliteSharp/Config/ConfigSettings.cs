@@ -8,16 +8,16 @@ namespace EliteSharp.Config
 {
     internal sealed class ConfigSettings
     {
-        internal bool AntiAliasWireframe { get; set; }
+        public bool AntiAliasWireframe { get; set; }
 
-        internal float Fps { get; set; } = 13.5f; // Approx speed of TNK
+        public float Fps { get; set; } = 13.5f; // Approx speed of TNK
 
-        internal bool InstantDock { get; set; }
+        public bool InstantDock { get; set; }
 
-        internal PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
+        public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
-        internal PlanetType PlanetRenderStyle { get; set; } = PlanetType.Fractal;
+        public PlanetType PlanetRenderStyle { get; set; } = PlanetType.Fractal;
 
-        internal bool UseWireframe { get; set; }
+        public bool UseWireframe { get; set; }
     }
 }
