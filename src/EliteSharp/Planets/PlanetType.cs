@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Planets
 {
-    internal enum PlanetRenderStyle
+    internal enum PlanetType
     {
         Wireframe = 0,
         Green = 1,

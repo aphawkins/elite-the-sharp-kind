@@ -7,6 +7,7 @@ using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
 using EliteSharp.Graphics;
+using EliteSharp.Planets;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
 using EliteSharp.Types;
@@ -157,8 +158,9 @@ namespace EliteSharp
             _ship.Climb = 0;
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
-            _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(new Planet(), new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
+
+            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _graphics, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            if (!_universe.AddNewShip(new Planet(planetRenderer), new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
@@ -278,7 +280,12 @@ namespace EliteSharp
                 return;
             }
 
-            Vector3 vec = Vector3.Abs(_universe.StationOrSun!.Location);
+            if (_universe.StationOrSun == null)
+            {
+                return;
+            }
+
+            Vector3 vec = Vector3.Abs(_universe.StationOrSun.Location);
 
             if ((vec.X == 0 && vec.Y == 0 && vec.Z == 0) ||
                 vec.X > 65535 || vec.Y > 65535 || vec.Z > 65535)
@@ -393,7 +400,7 @@ namespace EliteSharp
                         MakeStationAppear();
                     }
 
-                    _threed.DrawObject(flip);
+                    _threed.DrawObject(flip, ((Planet)universeObj).PlanetRenderer);
                     continue;
                 }
 
@@ -521,9 +528,6 @@ namespace EliteSharp
             _stars.CreateNewStars();
             _combat.Reset();
             _universe.ClearUniverse();
-
-            _threed.GenerateLandscape((_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-
             Vector3 position = new()
             {
                 Z = ((_gameState.DockedPlanet.B & 7) + 7) / 2,
@@ -541,7 +545,8 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            if (!_universe.AddNewShip(new Planet(), position, VectorMaths.GetInitialMatrix(), 0, 0))
+            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _graphics, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            if (!_universe.AddNewShip(new Planet(planetRenderer), position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }

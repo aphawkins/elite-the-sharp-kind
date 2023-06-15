@@ -68,14 +68,12 @@ namespace EliteSharp.Planets
         };
 
         internal SnesPlanet(IGraphics graphics)
-            : base(graphics)
-        {
-        }
+            : base(graphics) => GenerateLandscape();
 
         /// <summary>
         /// Generate a landscape map for a SNES Elite style planet.
         /// </summary>
-        public override void GenerateLandscape(int seed)
+        private void GenerateLandscape()
         {
             for (int y = 0; y <= LANDYMAX; y++)
             {

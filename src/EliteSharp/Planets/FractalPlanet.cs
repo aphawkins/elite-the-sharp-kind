@@ -9,17 +9,15 @@ namespace EliteSharp.Planets
 {
     internal sealed class FractalPlanet : PlanetRenderer
     {
-        internal FractalPlanet(IGraphics graphics)
-            : base(graphics)
-        {
-        }
+        internal FractalPlanet(IGraphics graphics, int seed)
+            : base(graphics) => GenerateLandscape(seed);
 
         /// <summary>
         /// Generate a fractal landscape. Uses midpoint displacement method.
         /// </summary>
         /// <param name="seed">Initial seed for the generation.</param>
         [SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "Randomness here requires seed.")]
-        public override void GenerateLandscape(int seed)
+        private void GenerateLandscape(int seed)
         {
             const int d = LANDXMAX / 8;
             Random random = new(seed);

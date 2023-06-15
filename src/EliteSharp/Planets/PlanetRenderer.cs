@@ -58,8 +58,6 @@ namespace EliteSharp.Planets
             }
         }
 
-        public abstract void GenerateLandscape(int seed);
-
         /// <summary>
         /// Draw a line of the planet with appropriate rotation.
         /// </summary>

@@ -178,7 +178,7 @@ namespace EliteSharp.Views
                     break;
 
                 case 2:
-                    _gameState.Config.PlanetRenderStyle = (PlanetRenderStyle)((int)(_gameState.Config.PlanetRenderStyle + 1) % 4);
+                    _gameState.Config.PlanetRenderStyle = (PlanetType)((int)(_gameState.Config.PlanetRenderStyle + 1) % 4);
                     break;
 
                 case 3:

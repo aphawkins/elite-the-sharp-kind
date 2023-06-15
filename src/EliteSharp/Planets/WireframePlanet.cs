@@ -19,9 +19,5 @@ namespace EliteSharp.Planets
         /// </summary>
         public override void Draw(Vector2 centre, float radius, Vector3[] vec) =>
             _graphics.DrawCircle(centre, radius, Colour.White);
-
-        public override void GenerateLandscape(int seed)
-        {
-        }
     }
 }

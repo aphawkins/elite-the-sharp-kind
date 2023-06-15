@@ -16,7 +16,7 @@ namespace EliteSharp.Config
 
         internal PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
-        internal PlanetRenderStyle PlanetRenderStyle { get; set; } = PlanetRenderStyle.Fractal;
+        internal PlanetType PlanetRenderStyle { get; set; } = PlanetType.Fractal;
 
         internal bool UseWireframe { get; set; }
     }

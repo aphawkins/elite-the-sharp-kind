@@ -43,7 +43,7 @@ namespace EliteSharp.Ships
             ShipType.Cougar => new Cougar(),
             ShipType.Dodec => new DodecStation(),
             ShipType.Sun => new Sun(),
-            ShipType.Planet => new Planet(),
+            ShipType.Planet => throw new NotImplementedException(),
             _ => throw new NotImplementedException(),
         };
     }

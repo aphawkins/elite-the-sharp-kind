@@ -8,8 +8,6 @@ namespace EliteSharp.Planets
 {
     internal interface IPlanetRenderer
     {
-        void GenerateLandscape(int seed);
-
         void Draw(Vector2 centre, float radius, Vector3[] vec);
     }
 }

@@ -18,14 +18,7 @@ namespace EliteSharp
         private readonly IGraphics _graphics;
         private readonly Vector3[] _pointList = new Vector3[100];
         private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
-
-        private readonly IPlanetRenderer _wireframePlanet;
-        private readonly IPlanetRenderer _greenPlanet;
-        private readonly IPlanetRenderer _snesPlanet;
-        private readonly IPlanetRenderer _fractalPlanet;
-
         private int _startPoly;
-
         private int _totalPolys;
 
         internal Threed(GameState gameState, IGraphics graphics, Draw draw)
@@ -33,18 +26,12 @@ namespace EliteSharp
             _gameState = gameState;
             _graphics = graphics;
             _draw = draw;
-
-            _wireframePlanet = new WireframePlanet(_graphics);
-            _greenPlanet = new GreenPlanet(_graphics);
-            _snesPlanet = new SnesPlanet(_graphics);
-            _fractalPlanet = new FractalPlanet(_graphics);
         }
 
         /// <summary>
         /// Draws an object in the universe. (Ship, Planet, Sun etc).
         /// </summary>
-        /// <param name="ship"></param>
-        internal void DrawObject(IShip ship)
+        internal void DrawObject(IShip ship, IPlanetRenderer? planetRenderer = null)
         {
             //Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
             //  SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
@@ -69,9 +56,9 @@ namespace EliteSharp
                 return;
             }
 
-            if (ship.Type == ShipType.Planet)
+            if (ship.Type == ShipType.Planet && planetRenderer != null)
             {
-                DrawPlanet(ship);
+                DrawPlanet(ship, planetRenderer);
                 return;
             }
 
@@ -89,31 +76,6 @@ namespace EliteSharp
             }
 
             DrawShip(ship);
-        }
-
-        internal void GenerateLandscape(int seed)
-        {
-            switch (_gameState.Config.PlanetRenderStyle)
-            {
-                case PlanetRenderStyle.Wireframe:
-                    _wireframePlanet.GenerateLandscape(seed);
-                    break;
-
-                case PlanetRenderStyle.Green:
-                    _greenPlanet.GenerateLandscape(seed);
-                    break;
-
-                case PlanetRenderStyle.SNES:
-                    _snesPlanet.GenerateLandscape(seed);
-                    break;
-
-                case PlanetRenderStyle.Fractal:
-                    _fractalPlanet.GenerateLandscape(seed);
-                    break;
-
-                default:
-                    break;
-            }
         }
 
         internal void RenderEnd()
@@ -257,7 +219,7 @@ namespace EliteSharp
         /// Draw a planet.
         /// We can currently do three different types of planet: Wireframe, Fractal landscape or SNES Elite style.
         /// </summary>
-        private void DrawPlanet(IShip planet)
+        private void DrawPlanet(IShip planet, IPlanetRenderer planetRenderer)
         {
             Vector2 position = new()
             {
@@ -287,27 +249,7 @@ namespace EliteSharp
                 return;
             }
 
-            switch (_gameState.Config.PlanetRenderStyle)
-            {
-                case PlanetRenderStyle.Wireframe:
-                    _wireframePlanet.Draw(position, radius, planet.Rotmat);
-                    break;
-
-                case PlanetRenderStyle.Green:
-                    _greenPlanet.Draw(position, radius, planet.Rotmat);
-                    break;
-
-                case PlanetRenderStyle.SNES:
-                    _snesPlanet.Draw(position, radius, planet.Rotmat);
-                    break;
-
-                case PlanetRenderStyle.Fractal:
-                    _fractalPlanet.Draw(position, radius, planet.Rotmat);
-                    break;
-
-                default:
-                    break;
-            }
+            planetRenderer.Draw(position, radius, planet.Rotmat);
         }
 
         private void DrawPolygonFilled(Vector2[] point_list, Colour face_colour, float zAvg)
