@@ -31,6 +31,8 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
             Centre = new(screen.Width / 2, (screen.Height - ScannerHeight) / 2);
+            Width = screen.Width;
+            Height = screen.Height;
 
             foreach (Colour colour in Enum.GetValues<Colour>())
             {
@@ -41,6 +43,8 @@ namespace EliteSharp.WinForms
 
         public Vector2 Centre { get; init; }
 
+        public int Height { get; }
+
         public Vector2 Offset { get; private set; } = new(0, 0);
 
         public float Scale { get; } = 2;
@@ -48,6 +52,8 @@ namespace EliteSharp.WinForms
         public Vector2 ViewB { get; private set; } = new(509, 381);
 
         public Vector2 ViewT { get; private set; } = new(1, 1);
+
+        public int Width { get; }
 
         public void ClearArea(float x, float y, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
 
@@ -121,9 +127,11 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[faceColour].Brush, points);
         }
 
-        public void DrawRectangle(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.DrawRectangle(_pens[colour], x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+        public void DrawRectangle(Vector2 position, float width, float height, Colour colour) =>
+            _screenBufferGraphics.DrawRectangle(_pens[colour], position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
 
-        public void DrawRectangleFilled(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.FillRectangle(_pens[colour].Brush, x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+        public void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour) =>
+            _screenBufferGraphics.FillRectangle(_pens[colour].Brush, position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour)
         {

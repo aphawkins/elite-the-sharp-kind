@@ -46,7 +46,7 @@ namespace EliteSharp.Views
 
                 if (stock.Key == _highlightedStock)
                 {
-                    _graphics.DrawRectangleFilled(2, y, 508, 15, Colour.LightRed);
+                    _graphics.DrawRectangleFilled(new(2, y), 508, 15, Colour.LightRed);
                 }
 
                 _graphics.DrawTextLeft(16, y, stock.Value.Name, Colour.White);

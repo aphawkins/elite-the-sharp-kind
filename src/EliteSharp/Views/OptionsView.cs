@@ -47,7 +47,7 @@ namespace EliteSharp.Views
                 if (i == _highlightedItem)
                 {
                     float x = _graphics.Centre.X - (OptionBarWidth / 2);
-                    _graphics.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, Colour.LightRed);
+                    _graphics.DrawRectangleFilled(new(x, y - 7), OptionBarWidth, OptionBarHeight, Colour.LightRed);
                 }
 
                 Colour col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? Colour.LightGrey : Colour.White;

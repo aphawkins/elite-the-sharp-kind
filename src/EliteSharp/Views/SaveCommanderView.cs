@@ -33,7 +33,7 @@ namespace EliteSharp.Views
             _draw.DrawViewHeader("SAVE COMMANDER");
 
             _graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, Colour.White);
-            _graphics.DrawRectangle(100, 100, 312, 50, Colour.White);
+            _graphics.DrawRectangle(new(100, 100), 312, 50, Colour.White);
             _graphics.DrawTextCentre(125, _name, FontSize.Large, Colour.White);
 
             if (_isSuccess.HasValue)

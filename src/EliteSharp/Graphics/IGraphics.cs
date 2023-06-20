@@ -10,6 +10,8 @@ namespace EliteSharp.Graphics
     {
         Vector2 Centre { get; }
 
+        int Height { get; }
+
         Vector2 Offset { get; }
 
         float Scale { get; }
@@ -17,6 +19,8 @@ namespace EliteSharp.Graphics
         Vector2 ViewB { get; }
 
         Vector2 ViewT { get; }
+
+        int Width { get; }
 
         void ClearArea(float x, float y, float width, float height);
 
@@ -38,9 +42,9 @@ namespace EliteSharp.Graphics
 
         void DrawPolygonFilled(Vector2[] pointList, Colour faceColour);
 
-        void DrawRectangle(float x, float y, float width, float height, Colour colour);
+        void DrawRectangle(Vector2 position, float width, float height, Colour colour);
 
-        void DrawRectangleFilled(float x, float y, float width, float height, Colour colour);
+        void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour);
 
         void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour);
 

@@ -53,7 +53,7 @@ namespace EliteSharp.Views
                     if (i == _highlightedItem)
                     {
                         x = _graphics.Centre.X - 200;
-                        _graphics.DrawRectangleFilled(x, y - 7, 400, 15, Colour.LightRed);
+                        _graphics.DrawRectangleFilled(new(x, y - 7), 400, 15, Colour.LightRed);
                     }
 
                     _graphics.DrawTextCentre(y, _settingList[i].Name, FontSize.Small, Colour.White);
@@ -74,7 +74,7 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(x, y, 100, 15, Colour.LightRed);
+                    _graphics.DrawRectangleFilled(new(x, y), 100, 15, Colour.LightRed);
                 }
 
                 _graphics.DrawTextLeft(x, y, _settingList[i].Name, Colour.White);

@@ -89,7 +89,7 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(2, y + 1, 508, 15, Colour.LightRed);
+                    _graphics.DrawRectangleFilled(new(2, y + 1), 508, 15, Colour.LightRed);
                 }
 
                 Colour col = _equipmentStock[i].CanBuy ? Colour.White : Colour.LightGrey;
