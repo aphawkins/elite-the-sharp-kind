@@ -80,17 +80,17 @@ namespace EliteSharp.Views
                 _draw.DrawTextPretty(16, 50, 300, _mission1_brief_a);
                 _draw.DrawTextPretty(16, 200, 470, _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
-                _graphics.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
+                _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 3)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
-                _graphics.DrawTextCentre(100, "Congratulations Commander!", 140, Colour.Gold);
+                _graphics.DrawTextCentre(100, "Congratulations Commander!", FontSize.Large, Colour.Gold);
 
                 _draw.DrawTextPretty(116, 132, 400, _mission1_debrief);
 
-                _graphics.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
+                _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
         }
 

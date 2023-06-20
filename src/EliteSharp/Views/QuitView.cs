@@ -27,7 +27,7 @@ namespace EliteSharp.Views
             _draw.ClearDisplay();
             _draw.DrawViewHeader("GAME OPTIONS");
 
-            _graphics.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, Colour.Gold);
+            _graphics.DrawTextCentre(175, "QUIT GAME (Y/N)?", FontSize.Large, Colour.Gold);
         }
 
         public void HandleInput()

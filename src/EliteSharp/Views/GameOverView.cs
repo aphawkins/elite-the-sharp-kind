@@ -32,7 +32,7 @@ namespace EliteSharp.Views
             _universe = universe;
         }
 
-        public void Draw() => _graphics.DrawTextCentre(190, "GAME OVER", 140, Colour.Gold);
+        public void Draw() => _graphics.DrawTextCentre(190, "GAME OVER", FontSize.Large, Colour.Gold);
 
         public void HandleInput()
         {

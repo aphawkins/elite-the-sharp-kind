@@ -42,7 +42,7 @@ namespace EliteSharp.Graphics
 
         void DrawRectangleFilled(float x, float y, float width, float height, Colour colour);
 
-        void DrawTextCentre(float y, string text, int psize, Colour colour);
+        void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour);
 
         void DrawTextLeft(float x, float y, string text, Colour colour);
 

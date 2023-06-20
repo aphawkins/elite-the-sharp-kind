@@ -235,7 +235,7 @@ namespace EliteSharp
 
                 if (_gameState.MessageCount > 0)
                 {
-                    _graphics.DrawTextCentre(358, _gameState.MessageString, 120, Colour.White);
+                    _graphics.DrawTextCentre(358, _gameState.MessageString, FontSize.Small, Colour.White);
                 }
 
                 if (_space.IsHyperspaceReady)

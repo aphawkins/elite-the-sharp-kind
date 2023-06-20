@@ -100,7 +100,7 @@ namespace EliteSharp.Views
 
         internal void DrawViewHeader(string title)
         {
-            _graphics.DrawTextCentre(20, title, 140, Colour.Gold);
+            _graphics.DrawTextCentre(20, title, FontSize.Large, Colour.Gold);
             _graphics.DrawLine(new(0, 36), new(511, 36));
         }
 

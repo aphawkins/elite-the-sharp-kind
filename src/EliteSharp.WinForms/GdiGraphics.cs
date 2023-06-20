@@ -125,7 +125,7 @@ namespace EliteSharp.WinForms
 
         public void DrawRectangleFilled(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.FillRectangle(_pens[colour].Brush, x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
 
-        public void DrawTextCentre(float y, string text, int psize, Colour colour)
+        public void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour)
         {
             using StringFormat stringFormat = new()
             {
@@ -136,7 +136,7 @@ namespace EliteSharp.WinForms
             PointF point = new((128 * Scale) + Offset.X, (y / (2 / Scale)) + Offset.Y);
             _screenBufferGraphics.DrawString(
                 text,
-                psize == 140 ? _fontLarge : _fontSmall,
+                fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 _pens[colour].Brush,
                 point,
                 stringFormat);

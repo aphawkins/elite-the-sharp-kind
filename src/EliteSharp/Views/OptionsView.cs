@@ -52,13 +52,13 @@ namespace EliteSharp.Views
 
                 Colour col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? Colour.LightGrey : Colour.White;
 
-                _graphics.DrawTextCentre(y, _optionList[i].Label, 120, col);
+                _graphics.DrawTextCentre(y, _optionList[i].Label, FontSize.Small, col);
             }
 
-            _graphics.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", 120, Colour.White);
-            _graphics.DrawTextCentre(320, "The Sharp Kind - Andy Hawkins 2023", 120, Colour.White);
-            _graphics.DrawTextCentre(340, "The New Kind - Christian Pinder 1999-2001", 120, Colour.White);
-            _graphics.DrawTextCentre(360, "Original Code - Ian Bell & David Braben", 120, Colour.White);
+            _graphics.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", FontSize.Small, Colour.White);
+            _graphics.DrawTextCentre(320, "The Sharp Kind - Andy Hawkins 2023", FontSize.Small, Colour.White);
+            _graphics.DrawTextCentre(340, "The New Kind - Christian Pinder 1999-2001", FontSize.Small, Colour.White);
+            _graphics.DrawTextCentre(360, "Original Code - Ian Bell & David Braben", FontSize.Small, Colour.White);
         }
 
         public void HandleInput()

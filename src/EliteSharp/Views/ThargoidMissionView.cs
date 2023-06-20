@@ -57,7 +57,7 @@ namespace EliteSharp.Views
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _draw.DrawTextPretty(116, 132, 400, Mission2BriefA);
-                _graphics.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
+                _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 5)
             {
@@ -65,14 +65,14 @@ namespace EliteSharp.Views
                 _draw.DrawTextPretty(16, 50, 300, Mission2BriefB);
                 _draw.DrawTextPretty(16, 200, 470, Mission2BriefC);
                 _graphics.DrawImage(Image.Blake, new(352, 46));
-                _graphics.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
+                _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 6)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
-                _graphics.DrawTextCentre(100, "Well done Commander.", 140, Colour.Gold);
+                _graphics.DrawTextCentre(100, "Well done Commander.", FontSize.Large, Colour.Gold);
                 _draw.DrawTextPretty(116, 132, 400, Mission2Debrief);
-                _graphics.DrawTextCentre(330, "Press space to continue.", 140, Colour.Gold);
+                _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
         }
 

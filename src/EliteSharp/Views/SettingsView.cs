@@ -56,7 +56,7 @@ namespace EliteSharp.Views
                         _graphics.DrawRectangleFilled(x, y - 7, 400, 15, Colour.LightRed);
                     }
 
-                    _graphics.DrawTextCentre(y, _settingList[i].Name, 120, Colour.White);
+                    _graphics.DrawTextCentre(y, _settingList[i].Name, FontSize.Small, Colour.White);
                     return;
                 }
 
