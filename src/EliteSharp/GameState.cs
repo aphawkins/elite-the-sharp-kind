@@ -27,8 +27,6 @@ namespace EliteSharp
 
         internal Commander Cmdr { get; set; } = new();
 
-        internal Vector2 CompassCentre { get; set; } = new(382, 22 + 385);
-
         internal ConfigSettings Config { get; set; } = new();
 
         internal Vector2 Cross { get; set; } = new(0, 0);

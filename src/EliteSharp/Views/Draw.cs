@@ -11,20 +11,32 @@ namespace EliteSharp.Views
 {
     internal sealed class Draw
     {
-        internal const int Top = 0;
-        internal const int Left = 0;
-        internal const int ScannerHeight = 128;
-
-        // internal const int ViewHeight = 384;
         private readonly IGraphics _graphics;
 
-        internal Draw(IGraphics graphics) => _graphics = graphics;
+        internal Draw(IGraphics graphics)
+        {
+            _graphics = graphics;
+            ScannerWidth = 512;
+            ScannerHeight = 129;
+            ScannerLeft = _graphics.Centre.X - (ScannerWidth / 2);
+            ScannerTop = _graphics.Height - ScannerHeight;
+        }
+
+        internal float Left { get; }
+
+        internal float ScannerHeight { get; }
+
+        internal float ScannerLeft { get; }
+
+        internal float ScannerTop { get; }
+
+        internal float ScannerWidth { get; }
+
+        internal float Top { get; }
 
         internal void ClearDisplay() => _graphics.ClearArea(_graphics.Offset.X + 1, _graphics.Offset.Y + 1, 510 + _graphics.Offset.X, 383 + _graphics.Offset.Y);
 
         internal void DrawBorder() => _graphics.DrawRectangle(new(Left, Top), _graphics.Width - 1, _graphics.Height - ScannerHeight, Colour.White);
-
-        internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_graphics.Offset.X, 385 + _graphics.Offset.Y));
 
         internal void DrawSun(IShip planet)
         {
