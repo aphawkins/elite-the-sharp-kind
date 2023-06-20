@@ -98,8 +98,6 @@ namespace EliteSharp
         {
             await _audio.LoadSoundsAsync(token).ConfigureAwait(false);
             await _draw.LoadImagesAsync(token).ConfigureAwait(false);
-            _draw.DrawBorder();
-
             long startTicks = DateTime.UtcNow.Ticks;
             long interval = (long)(100000 / _gameState.Config.Fps); // *10^-5
 
@@ -109,7 +107,6 @@ namespace EliteSharp
 
                 if ((runtime / 100 % interval) == 0)
                 {
-                    //Task.Run(() => DrawFrame());
                     DrawFrame();
                 }
             }
@@ -184,6 +181,7 @@ namespace EliteSharp
             InitialiseGame();
 
             _audio.UpdateSound();
+            _draw.DrawBorder();
             _graphics.SetClipRegion(1, 1, 510, 383);
 
             _ship.IsRolling = false;

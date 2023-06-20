@@ -17,12 +17,7 @@ namespace EliteSharp.Views
 
         internal void ClearDisplay() => _graphics.ClearArea(_graphics.Offset.X + 1, _graphics.Offset.Y + 1, 510 + _graphics.Offset.X, 383 + _graphics.Offset.Y);
 
-        internal void DrawBorder()
-        {
-            _graphics.DrawLine(new(0, 0), new(0, 384));
-            _graphics.DrawLine(new(0, 0), new(511, 0));
-            _graphics.DrawLine(new(511, 0), new(511, 384));
-        }
+        internal void DrawBorder() => _graphics.DrawRectangle(0, 0, 512, 384, Colour.White);
 
         internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_graphics.Offset.X, 385 + _graphics.Offset.Y));
 

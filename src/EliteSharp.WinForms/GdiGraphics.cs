@@ -13,12 +13,12 @@ namespace EliteSharp.WinForms
         private const int ScannerHeight = 128;
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-        private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
-        private readonly Dictionary<Colour, Pen> _pens = new();
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
         private readonly System.Drawing.Graphics _screenBufferGraphics;
         private readonly System.Drawing.Graphics _screenGraphics;
+        private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
+        private readonly Dictionary<Colour, Pen> _pens = new();
         private readonly object _screenLock = new();
         private RectangleF _clipRegion;
         private bool _isDisposed;

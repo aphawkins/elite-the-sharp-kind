@@ -34,7 +34,7 @@ namespace EliteSharp.Audio
         {
             _sound = sound;
 #if DEBUG
-            _musicOn = true;
+            _musicOn = false;
             _effectsOn = true;
 #else
             _musicOn = true;
