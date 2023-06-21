@@ -4,13 +4,14 @@
 
 using System.Numerics;
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Planets
 {
     internal sealed class GreenPlanet : PlanetRenderer
     {
-        internal GreenPlanet(IGraphics graphics)
-            : base(graphics)
+        internal GreenPlanet(IGraphics graphics, Draw draw)
+            : base(graphics, draw)
         {
         }
 

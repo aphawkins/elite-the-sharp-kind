@@ -10,15 +10,11 @@ namespace EliteSharp.Graphics
     {
         Vector2 Centre { get; }
 
-        float Height { get; }
+        float ScreenHeight { get; }
 
         float Scale { get; }
 
-        Vector2 ViewB { get; }
-
-        Vector2 ViewT { get; }
-
-        float Width { get; }
+        float ScreenWidth { get; }
 
         void ClearArea(Vector2 position, float width, float height);
 

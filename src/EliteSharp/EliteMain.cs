@@ -55,11 +55,11 @@ namespace EliteSharp
             _planet = new(_gameState);
             _draw = new(_graphics);
             _threed = new(_gameState, _graphics, _draw);
-            _stars = new(_gameState, _graphics, _ship);
+            _stars = new(_gameState, _graphics, _draw, _ship);
             _pilot = new(_audio, _universe, _ship);
             _combat = new(_gameState, _audio, _ship, _trade, _pilot, _universe);
             _save = new(_gameState, _ship, _trade, _planet);
-            _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars, _universe);
+            _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars, _universe, _draw);
             _scanner = new(_gameState, _graphics, _draw, _universe, _ship, _combat);
             _configFile = new();
 
@@ -72,10 +72,10 @@ namespace EliteSharp
             _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _graphics, _draw, _planet));
             _views.Add(Screen.MarketPrices, new MarketView(_gameState, _graphics, _draw, keyboard, _trade, _planet));
             _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _graphics, _draw, _ship, _trade, _planet, _universe));
-            _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.RightView, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
+            _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space, _draw));
+            _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space, _draw));
+            _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space, _draw));
+            _views.Add(Screen.RightView, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space, _draw));
             _views.Add(Screen.Docking, new DockingView(_gameState, _graphics, _audio, _space, _combat, _universe, _draw));
             _views.Add(Screen.Undocking, new LaunchView(_gameState, _graphics, _audio, _space, _combat, _universe, _draw));
             _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _graphics, _audio, _draw));
@@ -133,7 +133,7 @@ namespace EliteSharp
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _graphics.DrawTextLeft(_graphics.Width - _draw.BorderWidth - 60, _draw.BorderWidth + 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
+            _graphics.DrawTextLeft(_draw.Right - 60, _draw.Top + 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
         }
 
         private void DrawFrame()

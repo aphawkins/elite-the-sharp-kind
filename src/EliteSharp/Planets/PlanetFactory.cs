@@ -3,17 +3,18 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Planets
 {
     internal static class PlanetFactory
     {
-        internal static IPlanetRenderer Create(PlanetType type, IGraphics graphics, int seed) => type switch
+        internal static IPlanetRenderer Create(PlanetType type, IGraphics graphics, Draw draw, int seed) => type switch
         {
-            PlanetType.Fractal => new FractalPlanet(graphics, seed),
-            PlanetType.Wireframe => new WireframePlanet(graphics),
-            PlanetType.Green => new GreenPlanet(graphics),
-            PlanetType.SNES => new SnesPlanet(graphics),
+            PlanetType.Fractal => new FractalPlanet(graphics, draw, seed),
+            PlanetType.Wireframe => new WireframePlanet(graphics, draw),
+            PlanetType.Green => new GreenPlanet(graphics, draw),
+            PlanetType.SNES => new SnesPlanet(graphics, draw),
             _ => throw new NotImplementedException(),
         };
     }

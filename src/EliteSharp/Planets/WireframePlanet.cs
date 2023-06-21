@@ -4,13 +4,14 @@
 
 using System.Numerics;
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Planets
 {
     internal sealed class WireframePlanet : PlanetRenderer
     {
-        internal WireframePlanet(IGraphics graphics)
-            : base(graphics)
+        internal WireframePlanet(IGraphics graphics, Draw draw)
+            : base(graphics, draw)
         {
         }
 

@@ -31,6 +31,7 @@ namespace EliteSharp
         private readonly Threed _threed;
         private readonly Trade _trade;
         private readonly Universe _universe;
+        private readonly Draw _draw;
         private GalaxySeed _destinationPlanet = new();
         private float _hyperDistance;
 
@@ -45,7 +46,8 @@ namespace EliteSharp
             PlayerShip ship,
             PlanetController planet,
             Stars stars,
-            Universe universe)
+            Universe universe,
+            Draw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -58,6 +60,7 @@ namespace EliteSharp
             _planet = planet;
             _stars = stars;
             _universe = universe;
+            _draw = draw;
         }
 
         internal int HyperCountdown { get; private set; }
@@ -157,7 +160,7 @@ namespace EliteSharp
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
 
-            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _graphics, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _graphics, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(new Planet(planetRenderer), new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
@@ -543,7 +546,7 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _graphics, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _graphics, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(new Planet(planetRenderer), position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");

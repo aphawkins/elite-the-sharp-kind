@@ -21,12 +21,12 @@ namespace EliteSharp.Views
         private readonly Space _space;
         private int _drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space)
+        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space, Draw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
             _keyboard = keyboard;
-            _laser = new LaserDraw(_gameState, _graphics);
+            _laser = new LaserDraw(_gameState, _graphics, draw);
             _pilot = pilot;
             _ship = ship;
             _stars = stars;

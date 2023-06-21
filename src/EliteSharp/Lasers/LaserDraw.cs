@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Lasers
 {
@@ -11,11 +12,13 @@ namespace EliteSharp.Lasers
     {
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
+        private readonly Draw _draw;
 
-        internal LaserDraw(GameState gameState, IGraphics graphics)
+        internal LaserDraw(GameState gameState, IGraphics graphics, Draw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
+            _draw = draw;
         }
 
         internal void DrawLaserLines()
@@ -29,18 +32,18 @@ namespace EliteSharp.Lasers
             if (_gameState.Config.UseWireframe)
             {
                 // Left laser
-                _graphics.DrawTriangle(new(32 * _graphics.Scale, _graphics.ViewB.Y), point, new(48 * _graphics.Scale, _graphics.ViewB.Y), Colour.LighterRed);
+                _graphics.DrawTriangle(new(32 * _graphics.Scale, _draw.Bottom), point, new(48 * _graphics.Scale, _draw.Bottom), Colour.LighterRed);
 
                 // Right laser
-                _graphics.DrawTriangle(new(208 * _graphics.Scale, _graphics.ViewB.Y), point, new(224 * _graphics.Scale, _graphics.ViewB.Y), Colour.LighterRed);
+                _graphics.DrawTriangle(new(208 * _graphics.Scale, _draw.Bottom), point, new(224 * _graphics.Scale, _draw.Bottom), Colour.LighterRed);
             }
             else
             {
                 // Left laser
-                _graphics.DrawTriangleFilled(new(32 * _graphics.Scale, _graphics.ViewB.Y), point, new(48 * _graphics.Scale, _graphics.ViewB.Y), Colour.LighterRed);
+                _graphics.DrawTriangleFilled(new(32 * _graphics.Scale, _draw.Bottom), point, new(48 * _graphics.Scale, _draw.Bottom), Colour.LighterRed);
 
                 // Right laser
-                _graphics.DrawTriangleFilled(new(208 * _graphics.Scale, _graphics.ViewB.Y), point, new(224 * _graphics.Scale, _graphics.ViewB.Y), Colour.LighterRed);
+                _graphics.DrawTriangleFilled(new(208 * _graphics.Scale, _draw.Bottom), point, new(224 * _graphics.Scale, _draw.Bottom), Colour.LighterRed);
             }
         }
 

@@ -32,8 +32,8 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
             Centre = new(screen.Width / 2, (screen.Height - ScannerHeight) / 2);
-            Width = screen.Width;
-            Height = screen.Height;
+            ScreenWidth = screen.Width;
+            ScreenHeight = screen.Height;
 
             foreach (Colour colour in Enum.GetValues<Colour>())
             {
@@ -44,15 +44,11 @@ namespace EliteSharp.WinForms
 
         public Vector2 Centre { get; init; }
 
-        public float Height { get; }
+        public float ScreenHeight { get; }
 
         public float Scale { get; } = 2;
 
-        public Vector2 ViewB { get; private set; } = new(509, 381);
-
-        public Vector2 ViewT { get; private set; } = new(1, 1);
-
-        public float Width { get; }
+        public float ScreenWidth { get; }
 
         public void ClearArea(Vector2 position, float width, float height) =>
             _screenBufferGraphics.FillRectangle(Brushes.Black, position.X, position.Y, width, height);
@@ -74,7 +70,7 @@ namespace EliteSharp.WinForms
 
         public void DrawImageCentre(Graphics.Image image, float y)
         {
-            float x = (Width - _images[image].Width) / 2;
+            float x = (ScreenWidth - _images[image].Width) / 2;
             DrawImage(image, new(x, y));
         }
 

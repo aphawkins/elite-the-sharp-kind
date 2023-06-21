@@ -20,12 +20,24 @@ namespace EliteSharp.Views
             ScannerWidth = 512;
             ScannerHeight = 129;
             ScannerLeft = _graphics.Centre.X - (ScannerWidth / 2);
-            ScannerTop = _graphics.Height - ScannerHeight;
+            ScannerTop = _graphics.ScreenHeight - ScannerHeight;
+            Top = BorderWidth;
+            Bottom = ScannerTop;
+            Left = BorderWidth;
+            Right = _graphics.ScreenWidth - BorderWidth;
+            Width = _graphics.ScreenWidth - (2 * BorderWidth);
+            Height = ScannerTop - BorderWidth;
         }
 
         internal float BorderWidth { get; }
 
+        internal float Height { get; }
+
+        internal float Width { get; }
+
         internal float Left { get; }
+
+        internal float Right { get; }
 
         internal float ScannerHeight { get; }
 
@@ -37,19 +49,21 @@ namespace EliteSharp.Views
 
         internal float Top { get; }
 
-        internal void ClearDisplay() => _graphics.ClearArea(new(Left + BorderWidth, Top + BorderWidth), _graphics.Width - (2 * BorderWidth), ScannerTop - BorderWidth);
+        internal float Bottom { get; }
 
-        internal void SetDisplayClipRegion() => _graphics.SetClipRegion(new(Left + BorderWidth, Top + BorderWidth), _graphics.Width - (2 * BorderWidth), ScannerTop - BorderWidth);
+        internal void ClearDisplay() => _graphics.ClearArea(new(Left, Top), Width, Height);
+
+        internal void SetDisplayClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
 
         internal void SetScannerClipRegion() => _graphics.SetClipRegion(new(ScannerLeft, ScannerTop), ScannerWidth, ScannerHeight);
 
-        internal void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(21 + BorderWidth, 4 + BorderWidth, $"{countdown}", Colour.White);
+        internal void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", Colour.White);
 
         internal void DrawBorder()
         {
             for (int i = 0; i < BorderWidth; i++)
             {
-                _graphics.DrawRectangle(new(Left + i, Top + i), _graphics.Width - 1 - (2 * i), ScannerTop + BorderWidth - (2 * i), Colour.White);
+                _graphics.DrawRectangle(new(i, i), _graphics.ScreenWidth - 1 - (2 * i), ScannerTop + BorderWidth - (2 * i), Colour.White);
             }
         }
 
@@ -151,7 +165,7 @@ namespace EliteSharp.Views
                 Y = centre.Y + y,
             };
 
-            if (s.Y < _graphics.ViewT.Y || s.Y > _graphics.ViewB.Y)
+            if (s.Y < Top || s.Y > Bottom)
             {
                 return;
             }
@@ -162,19 +176,19 @@ namespace EliteSharp.Views
             s.X -= radius * RNG.Random(2, 9) / 256f;
             ex += radius * RNG.Random(2, 9) / 256f;
 
-            if ((s.X > _graphics.ViewB.X) || (ex < _graphics.ViewT.X))
+            if (ex < Left || s.X > Right)
             {
                 return;
             }
 
-            if (s.X < _graphics.ViewT.X)
+            if (s.X < Left)
             {
-                s.X = _graphics.ViewT.X;
+                s.X = Left;
             }
 
-            if (ex > _graphics.ViewB.X)
+            if (ex > Right)
             {
-                ex = _graphics.ViewB.X;
+                ex = Right;
             }
 
             float inner = radius * (200 + RNG.Random(7)) / 256;
