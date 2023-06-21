@@ -8,8 +8,6 @@ namespace EliteSharp.Graphics
 {
     public interface IGraphics : IDisposable
     {
-        Vector2 Centre { get; }
-
         float ScreenHeight { get; }
 
         float Scale { get; }

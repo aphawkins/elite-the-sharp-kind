@@ -19,7 +19,8 @@ namespace EliteSharp.Views
             BorderWidth = 1;
             ScannerWidth = 512;
             ScannerHeight = 129;
-            ScannerLeft = _graphics.Centre.X - (ScannerWidth / 2);
+            Centre = new(_graphics.ScreenWidth / 2, (Height / 2) + BorderWidth);
+            ScannerLeft = Centre.X - (ScannerWidth / 2);
             ScannerTop = _graphics.ScreenHeight - ScannerHeight;
             Top = BorderWidth;
             Bottom = ScannerTop;
@@ -28,6 +29,8 @@ namespace EliteSharp.Views
             Width = _graphics.ScreenWidth - (2 * BorderWidth);
             Height = ScannerTop - BorderWidth;
         }
+
+        public Vector2 Centre { get; }
 
         internal float BorderWidth { get; }
 

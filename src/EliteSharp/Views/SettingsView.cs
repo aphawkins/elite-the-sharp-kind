@@ -52,7 +52,7 @@ namespace EliteSharp.Views
                     y = ((_settingList.Length + 1) / 2 * 30) + 96 + 32;
                     if (i == _highlightedItem)
                     {
-                        x = _graphics.Centre.X - 200;
+                        x = _draw.Centre.X - 200;
                         _graphics.DrawRectangleFilled(new(x, y - 7), 400, 15, Colour.LightRed);
                     }
 

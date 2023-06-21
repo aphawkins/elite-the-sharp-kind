@@ -41,7 +41,7 @@ namespace EliteSharp.Views
             _draw.DrawViewHeader("SHORT RANGE CHART");
 
             // Fuel radius
-            Vector2 centre = _graphics.Centre;
+            Vector2 centre = _draw.Centre;
             float radius = _ship.Fuel * 10 * _graphics.Scale;
             float cross_size = 16 * _graphics.Scale;
             _graphics.DrawCircle(centre, radius, Colour.Green);
@@ -123,7 +123,7 @@ namespace EliteSharp.Views
 
             if (_keyboard.IsKeyPressed(CommandKey.Origin))
             {
-                _gameState.Cross = _graphics.Centre;
+                _gameState.Cross = _draw.Centre;
                 CalculateDistanceToPlanet();
             }
 
@@ -193,12 +193,12 @@ namespace EliteSharp.Views
                 float px = glx.D - _gameState.DockedPlanet.D;
 
                 // Convert to screen co-ords
-                px = (px * 4 * _graphics.Scale) + _graphics.Centre.X;
+                px = (px * 4 * _graphics.Scale) + _draw.Centre.X;
 
                 float py = glx.B - _gameState.DockedPlanet.B;
 
                 // Convert to screen co-ords
-                py = (py * 2 * _graphics.Scale) + _graphics.Centre.Y;
+                py = (py * 2 * _graphics.Scale) + _draw.Centre.Y;
 
                 int row = (int)(py / (8 * _graphics.Scale));
 
@@ -262,8 +262,8 @@ namespace EliteSharp.Views
         {
             Vector2 location = new()
             {
-                X = ((_gameState.Cross.X - _graphics.Centre.X) / (4 * _graphics.Scale)) + _gameState.DockedPlanet.D,
-                Y = ((_gameState.Cross.Y - _graphics.Centre.Y) / (2 * _graphics.Scale)) + _gameState.DockedPlanet.B,
+                X = ((_gameState.Cross.X - _draw.Centre.X) / (4 * _graphics.Scale)) + _gameState.DockedPlanet.D,
+                Y = ((_gameState.Cross.Y - _draw.Centre.Y) / (2 * _graphics.Scale)) + _gameState.DockedPlanet.B,
             };
 
             _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
@@ -273,8 +273,8 @@ namespace EliteSharp.Views
         }
 
         private void CrossFromHyperspacePlanet() => _gameState.Cross = new(
-            ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _graphics.Scale) + _graphics.Centre.X,
-            ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _graphics.Scale) + _graphics.Centre.Y);
+            ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _graphics.Scale) + _draw.Centre.X,
+            ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _graphics.Scale) + _draw.Centre.Y);
 
         /// <summary>
         /// Move the planet chart cross hairs to specified position.

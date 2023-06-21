@@ -10,7 +10,6 @@ namespace EliteSharp.WinForms
 {
     internal sealed class GdiGraphics : IGraphics
     {
-        private const int ScannerHeight = 128;
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
@@ -31,7 +30,6 @@ namespace EliteSharp.WinForms
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
             _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
-            Centre = new(screen.Width / 2, (screen.Height - ScannerHeight) / 2);
             ScreenWidth = screen.Width;
             ScreenHeight = screen.Height;
 
@@ -41,8 +39,6 @@ namespace EliteSharp.WinForms
                 _pens.Add(colour, pen);
             }
         }
-
-        public Vector2 Centre { get; init; }
 
         public float ScreenHeight { get; }
 

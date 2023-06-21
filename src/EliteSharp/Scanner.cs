@@ -31,7 +31,7 @@ namespace EliteSharp
             _universe = universe;
             _ship = ship;
             _combat = combat;
-            _scannerCentre = new(_graphics.Centre.X - 3, _draw.ScannerTop + 63);
+            _scannerCentre = new(_draw.Centre.X - 3, _draw.ScannerTop + 63);
         }
 
         internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));

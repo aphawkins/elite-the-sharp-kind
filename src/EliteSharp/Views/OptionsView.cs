@@ -46,7 +46,7 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    float x = _graphics.Centre.X - (OptionBarWidth / 2);
+                    float x = _draw.Centre.X - (OptionBarWidth / 2);
                     _graphics.DrawRectangleFilled(new(x, y - 7), OptionBarWidth, OptionBarHeight, Colour.LightRed);
                 }
 
