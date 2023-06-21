@@ -7,7 +7,8 @@
 - Widescreen support
 
 ## Future (create github issues)
-- Sun is missing in initial system (stations and suns can't coexist)
+- Fix graphics scale setting rendering issues
+- Make Sun and Stations coexist?
 - Laser target shape by type
 - Joystick support needs adding back
 - Intro2 parade doesn't show all ships, maybe it should

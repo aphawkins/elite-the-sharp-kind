@@ -133,7 +133,7 @@ namespace EliteSharp.WinForms
                 LineAlignment = StringAlignment.Center,
             };
 
-            PointF point = new(128 * Scale, y / (2 / Scale));
+            PointF point = new(ScreenWidth / 2, y / (2 / Scale));
             _screenBufferGraphics.DrawString(
                 text,
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
