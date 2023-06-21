@@ -46,8 +46,6 @@ namespace EliteSharp.WinForms
 
         public float Height { get; }
 
-        public Vector2 Offset { get; private set; } = new(0, 0);
-
         public float Scale { get; } = 2;
 
         public Vector2 ViewB { get; private set; } = new(509, 381);
@@ -56,7 +54,8 @@ namespace EliteSharp.WinForms
 
         public float Width { get; }
 
-        public void ClearArea(Vector2 position, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
+        public void ClearArea(Vector2 position, float width, float height) =>
+            _screenBufferGraphics.FillRectangle(Brushes.Black, position.X, position.Y, width, height);
 
         public void Dispose()
         {
@@ -65,9 +64,11 @@ namespace EliteSharp.WinForms
             GC.SuppressFinalize(this);
         }
 
-        public void DrawCircle(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
+        public void DrawCircle(Vector2 centre, float radius, Colour colour) =>
+            _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
+        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) =>
+            _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
 
         public void DrawImage(Graphics.Image image, Vector2 position) => _screenBufferGraphics.DrawImage(_images[image], position.X, position.Y);
 
@@ -77,9 +78,11 @@ namespace EliteSharp.WinForms
             DrawImage(image, new(x, y));
         }
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => _screenBufferGraphics.DrawLine(_pens[Colour.White], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) =>
+            _screenBufferGraphics.DrawLine(_pens[Colour.White], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour) =>
+            _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
 
         public void DrawPixel(Vector2 position, Colour colour)
         {
@@ -92,7 +95,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBuffer.SetPixel((int)(position.X + Offset.X), (int)(position.Y + Offset.Y), _pens[colour].Color);
+            _screenBuffer.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color);
         }
 
         public void DrawPixelFast(Vector2 position, Colour colour) =>
@@ -106,7 +109,7 @@ namespace EliteSharp.WinForms
 
             for (int i = 0; i < pointList.Length; i++)
             {
-                points[i] = new PointF(pointList[i].X + Offset.X, pointList[i].Y + Offset.Y);
+                points[i] = new PointF(pointList[i].X, pointList[i].Y);
             }
 
             _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
@@ -118,17 +121,17 @@ namespace EliteSharp.WinForms
 
             for (int i = 0; i < pointList.Length; i++)
             {
-                points[i] = new PointF(pointList[i].X + Offset.X, pointList[i].Y + Offset.Y);
+                points[i] = new PointF(pointList[i].X, pointList[i].Y);
             }
 
             _screenBufferGraphics.FillPolygon(_pens[faceColour].Brush, points);
         }
 
         public void DrawRectangle(Vector2 position, float width, float height, Colour colour) =>
-            _screenBufferGraphics.DrawRectangle(_pens[colour], position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
+            _screenBufferGraphics.DrawRectangle(_pens[colour], position.X, position.Y, width, height);
 
         public void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour) =>
-            _screenBufferGraphics.FillRectangle(_pens[colour].Brush, position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
+            _screenBufferGraphics.FillRectangle(_pens[colour].Brush, position.X, position.Y, width, height);
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour)
         {
@@ -138,7 +141,7 @@ namespace EliteSharp.WinForms
                 LineAlignment = StringAlignment.Center,
             };
 
-            PointF point = new((128 * Scale) + Offset.X, (y / (2 / Scale)) + Offset.Y);
+            PointF point = new(128 * Scale, y / (2 / Scale));
             _screenBufferGraphics.DrawString(
                 text,
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
@@ -149,7 +152,7 @@ namespace EliteSharp.WinForms
 
         public void DrawTextLeft(float x, float y, string text, Colour colour)
         {
-            PointF point = new((x / (2 / Scale)) + Offset.X, (y / (2 / Scale)) + Offset.Y);
+            PointF point = new(x / (2 / Scale), y / (2 / Scale));
             _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point);
         }
 
@@ -160,7 +163,7 @@ namespace EliteSharp.WinForms
                 Alignment = StringAlignment.Far,
             };
 
-            PointF point = new((x / (2 / Scale)) + Offset.X, (y / (2 / Scale)) + Offset.Y);
+            PointF point = new(x / (2 / Scale), y / (2 / Scale));
             _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point, stringFormat);
         }
 
@@ -168,9 +171,9 @@ namespace EliteSharp.WinForms
         {
             PointF[] points = new PointF[3]
             {
-                new(a.X += Offset.X, a.Y += Offset.Y),
-                new(b.X += Offset.X, b.Y += Offset.Y),
-                new(c.X += Offset.X, c.Y += Offset.Y),
+                new(a.X, a.Y),
+                new(b.X, b.Y),
+                new(c.X, c.Y),
             };
 
             _screenBufferGraphics.DrawLines(_pens[colour], points);
@@ -180,9 +183,9 @@ namespace EliteSharp.WinForms
         {
             PointF[] points = new PointF[3]
             {
-                new(a.X += Offset.X, a.Y += Offset.Y),
-                new(b.X += Offset.X, b.Y += Offset.Y),
-                new(c.X += Offset.X, c.Y += Offset.Y),
+                new(a.X, a.Y),
+                new(b.X, b.Y),
+                new(c.X, c.Y),
             };
 
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
@@ -211,13 +214,13 @@ namespace EliteSharp.WinForms
         {
             lock (_screenLock)
             {
-                _screenGraphics.DrawImage(_screenBuffer, Offset.X, Offset.Y);
+                _screenGraphics.DrawImage(_screenBuffer, 0, 0);
             }
         }
 
         public void SetClipRegion(Vector2 position, float width, float height)
         {
-            _clipRegion = new RectangleF(position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
+            _clipRegion = new RectangleF(position.X, position.Y, width, height);
             _screenBufferGraphics.Clip = new Region(_clipRegion);
         }
 

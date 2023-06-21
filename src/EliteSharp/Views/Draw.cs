@@ -69,8 +69,6 @@ namespace EliteSharp.Views
                 return;
             }
 
-            centre += _graphics.Offset;
-
             float s = -radius;
             float x = radius;
             float y = 0;
@@ -117,7 +115,7 @@ namespace EliteSharp.Views
                 }
 
                 i++;
-                _graphics.DrawTextLeft(x + _graphics.Offset.X, y + _graphics.Offset.Y, text[previous..i], Colour.White);
+                _graphics.DrawTextLeft(x, y, text[previous..i], Colour.White);
                 previous = i;
                 y += 8 * _graphics.Scale;
             }
@@ -151,8 +149,7 @@ namespace EliteSharp.Views
                 Y = centre.Y + y,
             };
 
-            if (s.Y < _graphics.ViewT.Y + _graphics.Offset.Y ||
-                s.Y > _graphics.ViewB.Y + _graphics.Offset.Y)
+            if (s.Y < _graphics.ViewT.Y || s.Y > _graphics.ViewB.Y)
             {
                 return;
             }
@@ -163,20 +160,19 @@ namespace EliteSharp.Views
             s.X -= radius * RNG.Random(2, 9) / 256f;
             ex += radius * RNG.Random(2, 9) / 256f;
 
-            if ((s.X > _graphics.ViewB.X + _graphics.Offset.X) ||
-                (ex < _graphics.ViewT.X + _graphics.Offset.X))
+            if ((s.X > _graphics.ViewB.X) || (ex < _graphics.ViewT.X))
             {
                 return;
             }
 
-            if (s.X < _graphics.ViewT.X + _graphics.Offset.X)
+            if (s.X < _graphics.ViewT.X)
             {
-                s.X = _graphics.ViewT.X + _graphics.Offset.X;
+                s.X = _graphics.ViewT.X;
             }
 
-            if (ex > _graphics.ViewB.X + _graphics.Offset.X)
+            if (ex > _graphics.ViewB.X)
             {
-                ex = _graphics.ViewB.X + _graphics.Offset.X;
+                ex = _graphics.ViewB.X;
             }
 
             float inner = radius * (200 + RNG.Random(7)) / 256;

@@ -12,8 +12,6 @@ namespace EliteSharp.Graphics
 
         float Height { get; }
 
-        Vector2 Offset { get; }
-
         float Scale { get; }
 
         Vector2 ViewB { get; }
