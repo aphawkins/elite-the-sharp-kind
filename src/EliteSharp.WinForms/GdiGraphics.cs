@@ -13,13 +13,14 @@ namespace EliteSharp.WinForms
         private const int ScannerHeight = 128;
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
+        private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
+        private readonly Dictionary<Colour, Pen> _pens = new();
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
         private readonly System.Drawing.Graphics _screenBufferGraphics;
         private readonly System.Drawing.Graphics _screenGraphics;
-        private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
-        private readonly Dictionary<Colour, Pen> _pens = new();
         private readonly object _screenLock = new();
+        private readonly Color _transparentColour = Color.FromArgb(0, 255, 0, 255);
         private RectangleF _clipRegion;
         private bool _isDisposed;
 
@@ -191,7 +192,11 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(Graphics.Image imgType, byte[] bitmapBytes) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(new MemoryStream(bitmapBytes));
+        public void LoadBitmap(Graphics.Image imgType, byte[] bitmapBytes)
+        {
+            _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(new MemoryStream(bitmapBytes));
+            _images[imgType].MakeTransparent(_transparentColour);
+        }
 
         public void ScreenAcquire()
         {
