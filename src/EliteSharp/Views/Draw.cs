@@ -43,6 +43,8 @@ namespace EliteSharp.Views
 
         internal void SetScannerClipRegion() => _graphics.SetClipRegion(new(ScannerLeft, ScannerTop), ScannerWidth, ScannerHeight);
 
+        internal void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(21 + BorderWidth, 4 + BorderWidth, $"{countdown}", Colour.White);
+
         internal void DrawBorder()
         {
             for (int i = 0; i < BorderWidth; i++)

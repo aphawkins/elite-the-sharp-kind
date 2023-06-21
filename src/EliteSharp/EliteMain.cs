@@ -223,8 +223,6 @@ namespace EliteSharp
 #if DEBUG
             DrawFps();
 #endif
-            _scanner.UpdateConsole();
-            _gameState.CurrentView.HandleInput();
 
             if (!_gameState.IsDocked && !_gameState.IsGameOver)
             {
@@ -237,7 +235,7 @@ namespace EliteSharp
 
                 if (_space.IsHyperspaceReady)
                 {
-                    _space.DisplayHyperStatus();
+                    _draw.DrawHyperspaceCountdown(_space.HyperCountdown);
                     if ((_gameState.MCount & 3) == 0)
                     {
                         _space.CountdownHyperspace();
@@ -278,6 +276,9 @@ namespace EliteSharp
 
                 _combat.TimeECM();
             }
+
+            _scanner.UpdateConsole();
+            _gameState.CurrentView.HandleInput();
 
             _graphics.ScreenUpdate();
         }

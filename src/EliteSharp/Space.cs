@@ -79,8 +79,6 @@ namespace EliteSharp
             HyperCountdown--;
         }
 
-        internal void DisplayHyperStatus() => _graphics.DrawTextRight(22, 5, $"{HyperCountdown}", Colour.White);
-
         /// <summary>
         /// Dock the player into the space station.
         /// </summary>
