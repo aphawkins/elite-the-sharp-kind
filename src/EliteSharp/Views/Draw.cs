@@ -43,7 +43,13 @@ namespace EliteSharp.Views
 
         internal void SetScannerClipRegion() => _graphics.SetClipRegion(new(ScannerLeft, ScannerTop), ScannerWidth, ScannerHeight);
 
-        internal void DrawBorder() => _graphics.DrawRectangle(new(Left, Top), _graphics.Width - 1, _graphics.Height - ScannerHeight, Colour.White);
+        internal void DrawBorder()
+        {
+            for (int i = 0; i < BorderWidth; i++)
+            {
+                _graphics.DrawRectangle(new(Left + i, Top + i), _graphics.Width - 1 - (2 * i), ScannerTop + BorderWidth - (2 * i), Colour.White);
+            }
+        }
 
         internal void DrawSun(IShip planet)
         {

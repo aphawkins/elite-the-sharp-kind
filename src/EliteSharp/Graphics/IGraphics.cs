@@ -10,7 +10,7 @@ namespace EliteSharp.Graphics
     {
         Vector2 Centre { get; }
 
-        int Height { get; }
+        float Height { get; }
 
         Vector2 Offset { get; }
 
@@ -20,7 +20,7 @@ namespace EliteSharp.Graphics
 
         Vector2 ViewT { get; }
 
-        int Width { get; }
+        float Width { get; }
 
         void ClearArea(Vector2 position, float width, float height);
 
@@ -28,7 +28,9 @@ namespace EliteSharp.Graphics
 
         void DrawCircleFilled(Vector2 centre, float radius, Colour colour);
 
-        void DrawImage(Image spriteImgage, Vector2 location);
+        void DrawImage(Image image, Vector2 position);
+
+        void DrawImageCentre(Image image, float y);
 
         void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour);
 

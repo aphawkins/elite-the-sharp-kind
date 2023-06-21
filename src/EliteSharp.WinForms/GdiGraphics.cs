@@ -44,7 +44,7 @@ namespace EliteSharp.WinForms
 
         public Vector2 Centre { get; init; }
 
-        public int Height { get; }
+        public float Height { get; }
 
         public Vector2 Offset { get; private set; } = new(0, 0);
 
@@ -54,7 +54,7 @@ namespace EliteSharp.WinForms
 
         public Vector2 ViewT { get; private set; } = new(1, 1);
 
-        public int Width { get; }
+        public float Width { get; }
 
         public void ClearArea(Vector2 position, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
 
@@ -69,16 +69,12 @@ namespace EliteSharp.WinForms
 
         public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawImage(Graphics.Image spriteImgage, Vector2 location)
+        public void DrawImage(Graphics.Image image, Vector2 position) => _screenBufferGraphics.DrawImage(_images[image], position.X, position.Y);
+
+        public void DrawImageCentre(Graphics.Image image, float y)
         {
-            Bitmap sprite = _images[spriteImgage];
-
-            if (location.X < 0)
-            {
-                location.X = ((256 * Scale) - sprite.Width) / 2;
-            }
-
-            _screenBufferGraphics.DrawImage(sprite, location.X + Offset.X, location.Y + Offset.Y);
+            float x = (Width - _images[image].Width) / 2;
+            DrawImage(image, new(x, y));
         }
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => _screenBufferGraphics.DrawLine(_pens[Colour.White], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);

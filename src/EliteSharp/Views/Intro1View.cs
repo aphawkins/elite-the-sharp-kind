@@ -24,8 +24,9 @@ namespace EliteSharp.Views
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
+        private readonly Draw _draw;
 
-        internal Intro1View(GameState gameState, IGraphics graphics, AudioController audio, IKeyboard keyboard, PlayerShip ship, Combat combat, Universe universe)
+        internal Intro1View(GameState gameState, IGraphics graphics, AudioController audio, IKeyboard keyboard, PlayerShip ship, Combat combat, Universe universe, Draw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -34,11 +35,12 @@ namespace EliteSharp.Views
             _ship = ship;
             _combat = combat;
             _universe = universe;
+            _draw = draw;
         }
 
         public void Draw()
         {
-            _graphics.DrawImage(Image.EliteText, new(-1, 10));
+            _graphics.DrawImageCentre(Image.EliteText, _draw.BorderWidth + 10);
 
             _graphics.DrawTextCentre(310, "Original Game (C) I.Bell & D.Braben.", FontSize.Small, Colour.White);
             _graphics.DrawTextCentre(330, "The New Kind - Christian Pinder.", FontSize.Small, Colour.White);

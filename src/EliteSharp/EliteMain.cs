@@ -65,8 +65,8 @@ namespace EliteSharp
 
             _gameState.Config = _configFile.ReadConfigAsync().Result;
 
-            _views.Add(Screen.IntroOne, new Intro1View(_gameState, _graphics, _audio, keyboard, _ship, _combat, _universe));
-            _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _graphics, _audio, keyboard, _stars, _ship, _combat, _universe));
+            _views.Add(Screen.IntroOne, new Intro1View(_gameState, _graphics, _audio, keyboard, _ship, _combat, _universe, _draw));
+            _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _graphics, _audio, keyboard, _stars, _ship, _combat, _universe, _draw));
             _views.Add(Screen.GalacticChart, new GalacticChartView(_gameState, _graphics, _draw, keyboard, _planet, _ship));
             _views.Add(Screen.ShortRangeChart, new ShortRangeChartView(_gameState, _graphics, _draw, keyboard, _planet, _ship));
             _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _graphics, _draw, _planet));
@@ -133,7 +133,7 @@ namespace EliteSharp
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _graphics.DrawTextLeft(_graphics.Width - 60, 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
+            _graphics.DrawTextLeft(_graphics.Width - _draw.BorderWidth - 60, _draw.BorderWidth + 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
         }
 
         private void DrawFrame()
