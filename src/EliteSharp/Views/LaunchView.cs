@@ -18,7 +18,7 @@ namespace EliteSharp.Views
         private readonly Space _space;
         private readonly Universe _universe;
 
-        internal LaunchView(GameState gameState, IGraphics graphics, AudioController audio, Space space, Combat combat, Universe universe)
+        internal LaunchView(GameState gameState, IGraphics graphics, AudioController audio, Space space, Combat combat, Universe universe, Draw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -26,7 +26,7 @@ namespace EliteSharp.Views
             _space = space;
             _combat = combat;
             _universe = universe;
-            _breakPattern = new(_graphics);
+            _breakPattern = new(_graphics, draw);
         }
 
         public void Draw() => _breakPattern.Draw();

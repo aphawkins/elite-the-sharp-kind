@@ -22,7 +22,7 @@ namespace EliteSharp.Graphics
 
         int Width { get; }
 
-        void ClearArea(float x, float y, float width, float height);
+        void ClearArea(Vector2 position, float width, float height);
 
         void DrawCircle(Vector2 centre, float radius, Colour colour);
 
@@ -67,6 +67,6 @@ namespace EliteSharp.Graphics
         /// </summary>
         void ScreenUpdate();
 
-        void SetClipRegion(float x, float y, float width, float height);
+        void SetClipRegion(Vector2 position, float width, float height);
     }
 }

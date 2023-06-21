@@ -56,7 +56,7 @@ namespace EliteSharp.WinForms
 
         public int Width { get; }
 
-        public void ClearArea(float x, float y, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+        public void ClearArea(Vector2 position, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
 
         public void Dispose()
         {
@@ -219,9 +219,9 @@ namespace EliteSharp.WinForms
             }
         }
 
-        public void SetClipRegion(float x, float y, float width, float height)
+        public void SetClipRegion(Vector2 position, float width, float height)
         {
-            _clipRegion = new RectangleF(x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+            _clipRegion = new RectangleF(position.X + Offset.X, position.Y + Offset.Y, width + Offset.X, height + Offset.Y);
             _screenBufferGraphics.Clip = new Region(_clipRegion);
         }
 

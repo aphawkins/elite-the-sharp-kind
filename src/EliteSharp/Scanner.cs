@@ -21,7 +21,7 @@ namespace EliteSharp
         private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
-        private Vector2 _scannerCentre = new(253, 63 + 385);
+        private Vector2 _scannerCentre;
 
         internal Scanner(GameState gameState, IGraphics graphics, Draw draw, Universe universe, PlayerShip ship, Combat combat)
         {
@@ -31,15 +31,15 @@ namespace EliteSharp
             _universe = universe;
             _ship = ship;
             _combat = combat;
+            _scannerCentre = new(_graphics.Centre.X - 3, _draw.ScannerTop + 63);
         }
 
         internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));
 
         internal void UpdateConsole()
         {
-            _graphics.SetClipRegion(_draw.Left, _draw.Top, _graphics.Width, _graphics.Height);
+            _draw.SetScannerClipRegion();
             DrawScanner();
-
             DisplaySpeed();
             DisplayFlightClimb();
             DisplayFlightRoll();

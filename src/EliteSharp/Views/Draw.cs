@@ -16,11 +16,14 @@ namespace EliteSharp.Views
         internal Draw(IGraphics graphics)
         {
             _graphics = graphics;
+            BorderWidth = 1;
             ScannerWidth = 512;
             ScannerHeight = 129;
             ScannerLeft = _graphics.Centre.X - (ScannerWidth / 2);
             ScannerTop = _graphics.Height - ScannerHeight;
         }
+
+        internal float BorderWidth { get; }
 
         internal float Left { get; }
 
@@ -34,7 +37,11 @@ namespace EliteSharp.Views
 
         internal float Top { get; }
 
-        internal void ClearDisplay() => _graphics.ClearArea(_graphics.Offset.X + 1, _graphics.Offset.Y + 1, 510 + _graphics.Offset.X, 383 + _graphics.Offset.Y);
+        internal void ClearDisplay() => _graphics.ClearArea(new(Left + BorderWidth, Top + BorderWidth), _graphics.Width - (2 * BorderWidth), ScannerTop - BorderWidth);
+
+        internal void SetDisplayClipRegion() => _graphics.SetClipRegion(new(Left + BorderWidth, Top + BorderWidth), _graphics.Width - (2 * BorderWidth), ScannerTop - BorderWidth);
+
+        internal void SetScannerClipRegion() => _graphics.SetClipRegion(new(ScannerLeft, ScannerTop), ScannerWidth, ScannerHeight);
 
         internal void DrawBorder() => _graphics.DrawRectangle(new(Left, Top), _graphics.Width - 1, _graphics.Height - ScannerHeight, Colour.White);
 

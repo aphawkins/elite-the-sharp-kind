@@ -76,9 +76,9 @@ namespace EliteSharp
             _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
             _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
             _views.Add(Screen.RightView, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.Docking, new DockingView(_gameState, _graphics, _audio, _space, _combat, _universe));
-            _views.Add(Screen.Undocking, new LaunchView(_gameState, _graphics, _audio, _space, _combat, _universe));
-            _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _graphics, _audio));
+            _views.Add(Screen.Docking, new DockingView(_gameState, _graphics, _audio, _space, _combat, _universe, _draw));
+            _views.Add(Screen.Undocking, new LaunchView(_gameState, _graphics, _audio, _space, _combat, _universe, _draw));
+            _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _graphics, _audio, _draw));
             _views.Add(Screen.Inventory, new InventoryView(_graphics, _draw, _ship, _trade));
             _views.Add(Screen.EquipShip, new EquipmentView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _scanner));
             _views.Add(Screen.Options, new OptionsView(_gameState, _graphics, _draw, keyboard));
@@ -133,7 +133,7 @@ namespace EliteSharp
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _graphics.DrawTextLeft(450, 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
+            _graphics.DrawTextLeft(_graphics.Width - 60, 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
         }
 
         private void DrawFrame()
@@ -182,7 +182,7 @@ namespace EliteSharp
 
             _audio.UpdateSound();
             _draw.DrawBorder();
-            _graphics.SetClipRegion(1, 1, 510, 383);
+            _draw.SetDisplayClipRegion();
 
             _ship.IsRolling = false;
             _ship.IsClimbing = false;
@@ -220,12 +220,11 @@ namespace EliteSharp
             _gameState.CurrentView!.UpdateUniverse();
             _space.UpdateUniverse();
             _gameState.CurrentView.Draw();
-            _scanner.UpdateConsole();
-            _gameState.CurrentView.HandleInput();
-
 #if DEBUG
             DrawFps();
 #endif
+            _scanner.UpdateConsole();
+            _gameState.CurrentView.HandleInput();
 
             if (!_gameState.IsDocked && !_gameState.IsGameOver)
             {

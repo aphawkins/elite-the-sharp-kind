@@ -3,15 +3,21 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp
 {
     internal sealed class BreakPattern
     {
         private readonly IGraphics _graphics;
+        private readonly Draw _draw;
         private int _breakPatternCount;
 
-        internal BreakPattern(IGraphics graphics) => _graphics = graphics;
+        internal BreakPattern(IGraphics graphics, Draw draw)
+        {
+            _graphics = graphics;
+            _draw = draw;
+        }
 
         internal bool IsComplete { get; private set; }
 
@@ -27,7 +33,7 @@ namespace EliteSharp
 
         internal void Reset()
         {
-            _graphics.SetClipRegion(1, 1, 510, 383);
+            _draw.SetDisplayClipRegion();
             _breakPatternCount = 0;
             IsComplete = false;
         }

@@ -14,12 +14,12 @@ namespace EliteSharp.Views
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
 
-        internal HyperspaceView(GameState gameState, IGraphics graphics, AudioController audio)
+        internal HyperspaceView(GameState gameState, IGraphics graphics, AudioController audio, Draw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
             _audio = audio;
-            _breakPattern = new(_graphics);
+            _breakPattern = new(_graphics, draw);
         }
 
         public void Draw() => _breakPattern.Draw();

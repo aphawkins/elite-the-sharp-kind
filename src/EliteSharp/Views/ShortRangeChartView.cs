@@ -61,10 +61,10 @@ namespace EliteSharp.Views
 
             // Moving cross
             centre = new(_gameState.Cross.X, _gameState.Cross.Y);
-            _graphics.SetClipRegion(1, 37, 510, 339);
+            _graphics.SetClipRegion(new(1, 37), 510, 339);
             _graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), Colour.LighterRed);
             _graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), Colour.LighterRed);
-            _graphics.SetClipRegion(1, 1, 510, 383);
+            _draw.SetDisplayClipRegion();
 
             // Text
             if (_isFind)
