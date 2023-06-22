@@ -11,9 +11,9 @@ namespace EliteSharp
 {
     internal sealed class Stars
     {
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
-        private readonly Draw _draw;
         private readonly PlayerShip _ship;
         private readonly Vector3[] _stars = new Vector3[20];
 
@@ -31,12 +31,7 @@ namespace EliteSharp
         {
             for (int i = 0; i < _stars.Length; i++)
             {
-                _stars[i] = new()
-                {
-                    X = RNG.Random(-128, 127) | 8,
-                    Y = RNG.Random(-128, 127) | 4,
-                    Z = RNG.Random(255) | 0x90,
-                };
+                _stars[i] = CreateNewStar();
             }
 
             WarpStars = false;
@@ -49,10 +44,8 @@ namespace EliteSharp
         {
             for (int i = 0; i < _stars.Length; i++)
             {
-                float y = _stars[i].Y;
-                float x = _stars[i].X;
-                _stars[i].X = y;
-                _stars[i].Y = x;
+                _stars[i].X = -_stars[i].X;
+                _stars[i].Y = -_stars[i].Y;
             }
         }
 
@@ -73,13 +66,10 @@ namespace EliteSharp
                     Y = _stars[i].Y,
                     X = _stars[i].X,
                 };
+
                 float zz = _stars[i].Z;
-
-                star.X += 128;
-                star.Y += 96;
-
-                star.X *= _graphics.Scale;
-                star.Y *= _graphics.Scale;
+                star += _draw.Centre / 2;
+                star *= _graphics.Scale;
 
                 if ((!WarpStars) &&
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
@@ -87,12 +77,12 @@ namespace EliteSharp
                 {
                     _graphics.DrawPixel(star, Colour.White);
 
-                    if (zz < 0xC0)
+                    if (zz < 192)
                     {
                         _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
-                    if (zz < 0x90)
+                    if (zz < 144)
                     {
                         _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
                         _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
@@ -119,21 +109,17 @@ namespace EliteSharp
 
                 if (WarpStars)
                 {
-                    _graphics.DrawLine(star, new((xx + 128) * _graphics.Scale, (yy + 96) * _graphics.Scale));
+                    _graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _graphics.Scale));
                 }
 
                 star.X = xx;
                 star.Y = yy;
 
-                if ((star.X > 120) || (star.X < -120) ||
-                    (star.Y > 120) || (star.Y < -120) || (zz < 16))
+                if ((star.X > _draw.Centre.X / 2) || (star.X < -_draw.Centre.X / 2) ||
+                    (star.Y > _draw.Centre.Y / 2) || (star.Y < -_draw.Centre.Y / 2) ||
+                    (zz < 16))
                 {
-                    _stars[i] = new()
-                    {
-                        X = RNG.Random(-128, 127) | 8,
-                        Y = RNG.Random(-128, 127) | 4,
-                        Z = RNG.Random(255) | 144,
-                    };
+                    _stars[i] = CreateNewStar();
                 }
             }
 
@@ -165,11 +151,8 @@ namespace EliteSharp
                 };
                 float zz = _stars[i].Z;
 
-                star.X += 128;
-                star.Y += 96;
-
-                star.X *= _graphics.Scale;
-                star.Y *= _graphics.Scale;
+                star += _draw.Centre / 2;
+                star *= _graphics.Scale;
 
                 if ((!WarpStars) &&
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
@@ -177,12 +160,12 @@ namespace EliteSharp
                 {
                     _graphics.DrawPixel(star, Colour.White);
 
-                    if (zz < 0xC0)
+                    if (zz < 192)
                     {
                         _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
-                    if (zz < 0x90)
+                    if (zz < 144)
                     {
                         _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
                         _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
@@ -208,34 +191,34 @@ namespace EliteSharp
                 {
                     float ey = yy;
                     float ex = xx;
-                    ex = (ex + 128) * _graphics.Scale;
-                    ey = (ey + 96) * _graphics.Scale;
+                    ex = (ex + (_draw.Centre.X / 2)) * _graphics.Scale;
+                    ey = (ey + (_draw.Centre.Y / 2)) * _graphics.Scale;
 
                     if ((star.X >= _draw.Left) && (star.X <= _draw.Right) &&
                        (star.Y >= _draw.Top) && (star.Y <= _draw.Bottom) &&
                        (ex >= _draw.Left) && (ex <= _draw.Right) &&
                        (ey >= _draw.Top) && (ey <= _draw.Bottom))
                     {
-                        _graphics.DrawLine(star, new((xx + 128) * _graphics.Scale, (yy + 96) * _graphics.Scale));
+                        _graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _graphics.Scale));
                     }
                 }
 
                 _stars[i].Y = yy;
                 _stars[i].X = xx;
 
-                if ((zz >= 300) || (MathF.Abs(yy) >= 110f))
+                if ((zz >= 300) || (MathF.Abs(yy) >= 110))
                 {
                     _stars[i].Z = RNG.Random(51, 178);
 
                     if (RNG.TrueOrFalse())
                     {
-                        _stars[i].X = RNG.Random(-128, 127);
-                        _stars[i].Y = RNG.TrueOrFalse() ? -115 : 115;
+                        _stars[i].X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
+                        _stars[i].Y = RNG.TrueOrFalse() ? -(int)_draw.Centre.Y / 2 : (int)_draw.Centre.Y / 2;
                     }
                     else
                     {
-                        _stars[i].X = RNG.TrueOrFalse() ? -126 : 126;
-                        _stars[i].Y = RNG.Random(-128, 127);
+                        _stars[i].X = RNG.TrueOrFalse() ? -(int)_draw.Centre.X / 2 : (int)_draw.Centre.X / 2;
+                        _stars[i].Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
                     }
                 }
             }
@@ -249,6 +232,13 @@ namespace EliteSharp
             SideStarfield(_ship.Roll, _ship.Climb, delta);
         }
 
+        private Vector3 CreateNewStar() => new()
+        {
+            X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2) | 8,
+            Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2) | 4,
+            Z = RNG.Random(255) | 144,
+        };
+
         private void SideStarfield(float alpha, float beta, float delta)
         {
             for (int i = 0; i < _stars.Length; i++)
@@ -260,11 +250,8 @@ namespace EliteSharp
                 };
                 float zz = _stars[i].Z;
 
-                star.X += 128;
-                star.Y += 96;
-
-                star.X *= _graphics.Scale;
-                star.Y *= _graphics.Scale;
+                star += _draw.Centre / 2;
+                star *= _graphics.Scale;
 
                 if ((!WarpStars) &&
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
@@ -272,12 +259,12 @@ namespace EliteSharp
                 {
                     _graphics.DrawPixel(star, Colour.White);
 
-                    if (zz < 0xC0)
+                    if (zz < 192)
                     {
                         _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
-                    if (zz < 0x90)
+                    if (zz < 144)
                     {
                         _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
                         _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
@@ -304,19 +291,19 @@ namespace EliteSharp
 
                 if (WarpStars)
                 {
-                    _graphics.DrawLine(star, new((xx + 128) * _graphics.Scale, (yy + 96) * _graphics.Scale));
+                    _graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _graphics.Scale));
                 }
 
-                if (MathF.Abs(_stars[i].X) >= 116f)
+                if (MathF.Abs(_stars[i].X) >= _draw.Centre.X / 2)
                 {
-                    _stars[i].Y = RNG.Random(-128, 127);
-                    _stars[i].X = (_gameState.CurrentScreen == Screen.LeftView) ? 115 : -115;
+                    _stars[i].X = (_gameState.CurrentScreen == Screen.LeftView) ? _draw.Centre.X / 2 : -_draw.Centre.X / 2;
+                    _stars[i].Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
                     _stars[i].Z = RNG.Random(255) | 8;
                 }
-                else if (MathF.Abs(_stars[i].Y) >= 116f)
+                else if (MathF.Abs(_stars[i].Y) >= 116)
                 {
-                    _stars[i].X = RNG.Random(-128, 127);
-                    _stars[i].Y = (alpha > 0) ? -110 : 110;
+                    _stars[i].X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
+                    _stars[i].Y = (alpha > 0) ? -_draw.Centre.Y / 2 : _draw.Centre.Y / 2;
                     _stars[i].Z = RNG.Random(255) | 8;
                 }
             }
