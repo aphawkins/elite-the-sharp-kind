@@ -36,7 +36,7 @@ namespace EliteSharp.Views
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Universe _universe;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private int _direction;
         private Vector3[] _rotmat = new Vector3[3];
         private ShipType _shipNo;
@@ -51,7 +51,7 @@ namespace EliteSharp.Views
             PlayerShip ship,
             Combat combat,
             Universe universe,
-            Draw draw)
+            IDraw draw)
         {
             _gameState = gameStat;
             _graphics = graphics;
@@ -66,7 +66,7 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _graphics.DrawImageCentre(Image.EliteText, _draw.BorderWidth + 10);
+            _graphics.DrawImageCentre(Image.EliteText, _draw.Top + 10);
 
             _graphics.DrawTextCentre(360, "Press Fire or Space, Commander.", FontSize.Large, Colour.Gold);
             if (_universe.FirstShip != null)

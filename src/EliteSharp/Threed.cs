@@ -349,8 +349,8 @@ namespace EliteSharp
                     vec.Z = 1;
                 }
 
-                vec.X = ((vec.X * 256 / vec.Z) + 128) * _graphics.Scale;
-                vec.Y = ((-vec.Y * 256 / vec.Z) + 96) * _graphics.Scale;
+                vec.X = ((vec.X * 256 / vec.Z) + (_draw.Centre.X / 2)) * _graphics.Scale;
+                vec.Y = ((-vec.Y * 256 / vec.Z) + (_draw.Centre.Y / 2)) * _graphics.Scale;
 
                 _pointList[i] = vec;
             }

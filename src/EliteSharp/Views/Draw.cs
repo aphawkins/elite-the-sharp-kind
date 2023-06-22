@@ -9,58 +9,37 @@ using EliteSharp.Ships;
 
 namespace EliteSharp.Views
 {
-    internal sealed class Draw
+    internal sealed class Draw : IDraw
     {
         private readonly IGraphics _graphics;
 
-        internal Draw(IGraphics graphics)
-        {
-            _graphics = graphics;
-            BorderWidth = 1;
-            ScannerWidth = 512;
-            ScannerHeight = 129;
-            Centre = new(_graphics.ScreenWidth / 2, (Height / 2) + BorderWidth);
-            ScannerLeft = Centre.X - (ScannerWidth / 2);
-            ScannerTop = _graphics.ScreenHeight - ScannerHeight;
-            Top = BorderWidth;
-            Bottom = ScannerTop;
-            Left = BorderWidth;
-            Right = _graphics.ScreenWidth - BorderWidth;
-            Width = _graphics.ScreenWidth - (2 * BorderWidth);
-            Height = ScannerTop - BorderWidth;
-        }
+        internal Draw(IGraphics graphics) => _graphics = graphics;
 
-        public Vector2 Centre { get; }
+        public Vector2 Centre => new(_graphics.ScreenWidth / 2, (Height / 2) + BorderWidth);
 
-        internal float BorderWidth { get; }
+        public float Left => BorderWidth;
 
-        internal float Height { get; }
+        public float Top => BorderWidth;
 
-        internal float Width { get; }
+        internal float Bottom => ScannerTop;
 
-        internal float Left { get; }
+        internal float Height => ScannerTop - BorderWidth;
 
-        internal float Right { get; }
+        internal float Right => _graphics.ScreenWidth - BorderWidth;
 
-        internal float ScannerHeight { get; }
+        internal float ScannerLeft => Centre.X - (ScannerWidth / 2);
 
-        internal float ScannerLeft { get; }
+        internal float ScannerTop => _graphics.ScreenHeight - ScannerHeight;
 
-        internal float ScannerTop { get; }
+        internal float Width => _graphics.ScreenWidth - (2 * BorderWidth);
 
-        internal float ScannerWidth { get; }
+        private static float BorderWidth => 1;
 
-        internal float Top { get; }
+        private static float ScannerHeight => 129;
 
-        internal float Bottom { get; }
+        private static float ScannerWidth => 512;
 
         internal void ClearDisplay() => _graphics.ClearArea(new(Left, Top), Width, Height);
-
-        internal void SetDisplayClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
-
-        internal void SetScannerClipRegion() => _graphics.SetClipRegion(new(ScannerLeft, ScannerTop), ScannerWidth, ScannerHeight);
-
-        internal void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", Colour.White);
 
         internal void DrawBorder()
         {
@@ -69,6 +48,8 @@ namespace EliteSharp.Views
                 _graphics.DrawRectangle(new(i, i), _graphics.ScreenWidth - 1 - (2 * i), ScannerTop + BorderWidth - (2 * i), Colour.White);
             }
         }
+
+        internal void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", Colour.White);
 
         internal void DrawSun(IShip planet)
         {
@@ -160,6 +141,10 @@ namespace EliteSharp.Views
                 async (img, token) => _graphics.LoadBitmap(img, await loader.LoadAsync(img, token).ConfigureAwait(false)))
                 .ConfigureAwait(false);
         }
+
+        internal void SetDisplayClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
+
+        internal void SetScannerClipRegion() => _graphics.SetClipRegion(new(ScannerLeft, ScannerTop), ScannerWidth, ScannerHeight);
 
         private void RenderSunLine(Vector2 centre, float x, float y, float radius)
         {
