@@ -53,18 +53,18 @@ namespace EliteSharp.Views
 
         internal void DrawSun(IShip planet)
         {
-            Vector2 centre = new()
-            {
-                X = ((planet.Location.X * 256 / planet.Location.Z) + 128) * _graphics.Scale,
-                Y = ((-planet.Location.Y * 256 / planet.Location.Z) + 96) * _graphics.Scale,
-            };
+            Vector2 centre = new(planet.Location.X, -planet.Location.Y);
+
+            centre *= 256 / planet.Location.Z;
+            centre += Centre / 2;
+            centre *= _graphics.Scale;
 
             float radius = 6291456 / planet.Location.Length() * _graphics.Scale;
 
-            if ((centre.X + radius < 0) ||
-                (centre.X - radius > 511) ||
-                (centre.Y + radius < 0) ||
-                (centre.Y - radius > 383))
+            if ((centre.X + radius < Left) ||
+                (centre.X - radius > Right) ||
+                (centre.Y + radius < Top) ||
+                (centre.Y - radius > Bottom))
             {
                 return;
             }

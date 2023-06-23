@@ -221,14 +221,8 @@ namespace EliteSharp
         /// </summary>
         private void DrawPlanet(IShip planet, IPlanetRenderer planetRenderer)
         {
-            Vector2 position = new()
-            {
-                X = planet.Location.X * 256 / planet.Location.Z,
-                Y = planet.Location.Y * 256 / planet.Location.Z,
-            };
-
-            position.Y = -position.Y;
-
+            Vector2 position = new(planet.Location.X, -planet.Location.Y);
+            position *= 256 / planet.Location.Z;
             position += _draw.Centre / 2;
             position *= _graphics.Scale;
 
