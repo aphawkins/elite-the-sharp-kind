@@ -229,11 +229,8 @@ namespace EliteSharp
 
             position.Y = -position.Y;
 
-            position.X += 128;
-            position.Y += 96;
-
-            position.X *= _graphics.Scale;
-            position.Y *= _graphics.Scale;
+            position += _draw.Centre / 2;
+            position *= _graphics.Scale;
 
             float radius = 6291456 / planet.Location.Length();
 
@@ -241,10 +238,10 @@ namespace EliteSharp
             //  radius = 6291456 / ship_vec.z;
             radius *= _graphics.Scale;
 
-            if ((position.X + radius < 0) ||
-                (position.X - radius > 511) ||
-                (position.Y + radius < 0) ||
-                (position.Y - radius > 383))
+            if ((position.X + radius < _draw.Left) ||
+                (position.X - radius > _draw.Right) ||
+                (position.Y + radius < _draw.Top) ||
+                (position.Y - radius > _draw.Bottom))
             {
                 return;
             }
