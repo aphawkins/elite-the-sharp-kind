@@ -25,8 +25,8 @@ namespace EliteSharp.Lasers
         {
             Vector2 point = new()
             {
-                X = RNG.Random(126, 129) * _graphics.Scale,
-                Y = RNG.Random(94, 97) * _graphics.Scale,
+                X = RNG.Random(126, 130) * _graphics.Scale,
+                Y = RNG.Random(94, 98) * _graphics.Scale,
             };
 
             if (_gameState.Config.UseWireframe)

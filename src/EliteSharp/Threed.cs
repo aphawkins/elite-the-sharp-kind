@@ -193,7 +193,7 @@ namespace EliteSharp
 
                 for (int i = 0; i < 16; i++)
                 {
-                    Vector2 position = new(RNG.Random(-128, 127), RNG.Random(-128, 127));
+                    Vector2 position = new(RNG.Random(-128, 128), RNG.Random(-128, 128));
 
                     position.X = position.X * q / 256;
                     position.Y = position.Y * q / 256;
@@ -201,8 +201,8 @@ namespace EliteSharp
                     position.X = position.X + position.X + sx;
                     position.Y = position.Y + position.Y + sy;
 
-                    int sizex = RNG.Random(1, 2);
-                    int sizey = RNG.Random(1, 2);
+                    int sizex = RNG.Random(1, 3);
+                    int sizey = RNG.Random(1, 3);
 
                     for (int psy = 0; psy < sizey; psy++)
                     {
@@ -390,7 +390,7 @@ namespace EliteSharp
                 Vector2[] pointList = new Vector2[]
                 {
                     new Vector2(_pointList[lasv].X, _pointList[lasv].Y),
-                    new(ship.Location.X > 0 ? 0 : 511, RNG.Random(255) * 2),
+                    new(ship.Location.X > 0 ? 0 : 511, RNG.Random(256) * 2),
                 };
 
                 DrawPolygonFilled(pointList, col, _pointList[lasv].Z);

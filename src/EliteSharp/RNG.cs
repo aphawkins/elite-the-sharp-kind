@@ -14,7 +14,7 @@ namespace EliteSharp
         /// Guassian random number generator.
         /// </summary>
         /// <param name="min">The lower bound of the distribution (inclusive).</param>
-        /// <param name="max">The upper bound of the distribution (inclusive).</param>
+        /// <param name="max">The upper bound of the distribution (exclusive).</param>
         /// <returns>A number between min and max with Gaussian distribution.</returns>
         internal static int GaussianRandom(int min, int max)
         {
@@ -79,13 +79,24 @@ namespace EliteSharp
             Seed.C = a;
             Seed.D = b;
 
-            return Seed.C / 0x34;
+            return Seed.C / 52;
         }
 
-        internal static int Random(int maxValue) => Random(0, maxValue);
+        /// <summary>
+        /// Generates a random number from zero to the exclusive upper bound.
+        /// </summary>
+        /// <param name="toExclusive"></param>
+        /// <returns>A random number.</returns>
+        internal static int Random(int toExclusive) => Random(0, toExclusive);
 
-        internal static int Random(int minValue, int maxValue) => RandomNumberGenerator.GetInt32(minValue, maxValue + 1);
+        /// <summary>
+        /// Generates a random number.
+        /// </summary>
+        /// <param name="fromInclusive">The exclusive lower bound of the random range.</param>
+        /// <param name="toExclusive">The exclusive upper bound of the random range.</param>
+        /// <returns>A random number.</returns>
+        internal static int Random(int fromInclusive, int toExclusive) => RandomNumberGenerator.GetInt32(fromInclusive, toExclusive);
 
-        internal static bool TrueOrFalse() => Random(0, 1) == 1;
+        internal static bool TrueOrFalse() => Random(0, 2) != 0;
     }
 }

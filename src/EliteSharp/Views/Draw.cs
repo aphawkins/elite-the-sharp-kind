@@ -161,8 +161,8 @@ namespace EliteSharp.Views
             s.X = centre.X - x;
             float ex = centre.X + x;
 
-            s.X -= radius * RNG.Random(2, 9) / 256f;
-            ex += radius * RNG.Random(2, 9) / 256f;
+            s.X -= radius * RNG.Random(2, 10) / 256f;
+            ex += radius * RNG.Random(2, 10) / 256f;
 
             if (ex < Left || s.X > Right)
             {
@@ -179,13 +179,13 @@ namespace EliteSharp.Views
                 ex = Right;
             }
 
-            float inner = radius * (200 + RNG.Random(7)) / 256;
+            float inner = radius * (200 + RNG.Random(8)) / 256;
             inner *= inner;
 
-            float inner2 = radius * (220 + RNG.Random(7)) / 256;
+            float inner2 = radius * (220 + RNG.Random(8)) / 256;
             inner2 *= inner2;
 
-            float outer = radius * (239 + RNG.Random(7)) / 256;
+            float outer = radius * (239 + RNG.Random(8)) / 256;
             outer *= outer;
 
             float dy = y * y;

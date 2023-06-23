@@ -58,14 +58,14 @@ namespace EliteSharp.Views
             for (int i = 0; i < 5; i++)
             {
                 IShip cargo = RNG.TrueOrFalse() ? new CargoCannister() : new Alloy();
-                if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0))
+                if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 32), RNG.Random(-32, 32), -400), VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     Debug.WriteLine("Failed to create Cargo");
                 }
 
-                cargo.RotZ = ((RNG.Random(255) * 2) & 255) - 128;
-                cargo.RotX = ((RNG.Random(255) * 2) & 255) - 128;
-                cargo.Velocity = RNG.Random(15);
+                cargo.RotZ = ((RNG.Random(256) * 2) & 255) - 128;
+                cargo.RotX = ((RNG.Random(256) * 2) & 255) - 128;
+                cargo.Velocity = RNG.Random(16);
             }
 
             _audio.PlayEffect(SoundEffect.Gameover);

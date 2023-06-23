@@ -510,7 +510,7 @@ namespace EliteSharp
                 _ship.Fuel -= _hyperDistance;
                 _gameState.Cmdr.LegalStatus /= 2;
 
-                if ((RNG.Random(255) > 253) || (_ship.Climb >= _ship.MaxClimb))
+                if ((RNG.Random(256) > 253) || (_ship.Climb >= _ship.MaxClimb))
                 {
                     EnterWitchspace();
                     return;
@@ -519,7 +519,7 @@ namespace EliteSharp
                 _gameState.DockedPlanet = new(_destinationPlanet);
             }
 
-            _trade.MarketRandomiser = RNG.Random(255);
+            _trade.MarketRandomiser = RNG.Random(256);
             _gameState.CurrentPlanetData = PlanetController.GeneratePlanetData(_gameState.DockedPlanet);
             _trade.GenerateStockMarket();
 
@@ -595,7 +595,7 @@ namespace EliteSharp
             _combat.Reset();
             _universe.ClearUniverse();
 
-            int nthg = RNG.Random(1, 4);
+            int nthg = RNG.Random(1, 5);
 
             for (int i = 0; i < nthg; i++)
             {
@@ -646,7 +646,7 @@ namespace EliteSharp
         private void MakeStationAppear()
         {
             Vector3 location = _universe.Planet!.Location;
-            Vector3 vec = new(RNG.Random(-16384, 16383), RNG.Random(-16384, 16383), RNG.Random(32767));
+            Vector3 vec = new(RNG.Random(-16384, 16384), RNG.Random(-16384, 16384), RNG.Random(32768));
             vec = VectorMaths.UnitVector(vec);
             Vector3 position = location - (vec * 65792);
 

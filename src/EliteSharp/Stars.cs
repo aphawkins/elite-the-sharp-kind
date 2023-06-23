@@ -208,7 +208,7 @@ namespace EliteSharp
 
                 if ((zz >= 300) || (MathF.Abs(yy) >= 110))
                 {
-                    _stars[i].Z = RNG.Random(51, 178);
+                    _stars[i].Z = RNG.Random(51, 179);
 
                     if (RNG.TrueOrFalse())
                     {
@@ -236,7 +236,7 @@ namespace EliteSharp
         {
             X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2) | 8,
             Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2) | 4,
-            Z = RNG.Random(255) | 144,
+            Z = RNG.Random(256) | 144,
         };
 
         private void SideStarfield(float alpha, float beta, float delta)
@@ -298,13 +298,13 @@ namespace EliteSharp
                 {
                     _stars[i].X = (_gameState.CurrentScreen == Screen.LeftView) ? _draw.Centre.X / 2 : -_draw.Centre.X / 2;
                     _stars[i].Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
-                    _stars[i].Z = RNG.Random(255) | 8;
+                    _stars[i].Z = RNG.Random(256) | 8;
                 }
                 else if (MathF.Abs(_stars[i].Y) >= 116)
                 {
                     _stars[i].X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
                     _stars[i].Y = (alpha > 0) ? -_draw.Centre.Y / 2 : _draw.Centre.Y / 2;
-                    _stars[i].Z = RNG.Random(255) | 8;
+                    _stars[i].Z = RNG.Random(256) | 8;
                 }
             }
 
