@@ -29,7 +29,6 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("LOAD COMMANDER");
 
             _graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, Colour.White);

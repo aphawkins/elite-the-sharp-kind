@@ -37,7 +37,6 @@ namespace EliteSharp.Views
         public void Draw()
         {
             // Header
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("SHORT RANGE CHART");
 
             // Fuel radius
@@ -64,7 +63,7 @@ namespace EliteSharp.Views
             _graphics.SetClipRegion(new(1, 37), 510, 339);
             _graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), Colour.LighterRed);
             _graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), Colour.LighterRed);
-            _draw.SetDisplayClipRegion();
+            _draw.SetViewClipRegion();
 
             // Text
             if (_isFind)

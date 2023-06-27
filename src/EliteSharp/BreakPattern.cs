@@ -33,7 +33,7 @@ namespace EliteSharp
 
         internal void Reset()
         {
-            _draw.SetDisplayClipRegion();
+            _draw.SetViewClipRegion();
             _breakPatternCount = 0;
             IsComplete = false;
         }

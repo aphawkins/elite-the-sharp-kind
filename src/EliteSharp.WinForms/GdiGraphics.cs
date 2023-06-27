@@ -130,7 +130,6 @@ namespace EliteSharp.WinForms
             using StringFormat stringFormat = new()
             {
                 Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center,
             };
 
             PointF point = new(ScreenWidth / 2, y / (2 / Scale));

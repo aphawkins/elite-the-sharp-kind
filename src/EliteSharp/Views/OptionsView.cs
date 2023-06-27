@@ -36,7 +36,6 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("GAME OPTIONS");
 
             for (int i = 0; i < _optionList.Length; i++)

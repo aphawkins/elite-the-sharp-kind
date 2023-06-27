@@ -25,7 +25,6 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("INVENTORY");
 
             _graphics.DrawTextLeft(16, 50, "Fuel:", Colour.Green);

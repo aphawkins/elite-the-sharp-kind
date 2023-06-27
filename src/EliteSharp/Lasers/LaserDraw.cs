@@ -12,9 +12,9 @@ namespace EliteSharp.Lasers
     {
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
 
-        internal LaserDraw(GameState gameState, IGraphics graphics, Draw draw)
+        internal LaserDraw(GameState gameState, IGraphics graphics, IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;

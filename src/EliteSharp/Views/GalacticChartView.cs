@@ -36,7 +36,6 @@ namespace EliteSharp.Views
         public void Draw()
         {
             // Header
-            _draw.ClearDisplay();
             _draw.DrawViewHeader($"GALACTIC CHART {_gameState.Cmdr.GalaxyNumber + 1}");
 
             _graphics.DrawLine(new(0, 36 + 258), new(511, 36 + 258));
@@ -60,7 +59,7 @@ namespace EliteSharp.Views
             _graphics.SetClipRegion(new(1, 37), 510, 293);
             _graphics.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), Colour.LighterRed);
             _graphics.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), Colour.LighterRed);
-            _draw.SetDisplayClipRegion();
+            _draw.SetViewClipRegion();
 
             // Text
             if (_isFind)

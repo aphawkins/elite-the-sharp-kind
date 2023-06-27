@@ -59,7 +59,6 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             int x = 50;
             int y = _equipmentStartY;
 

@@ -12,18 +12,25 @@ namespace EliteSharp.Views
     internal sealed class Draw : IDraw
     {
         private readonly IGraphics _graphics;
+        private readonly bool _isViewFullFrame;
 
-        internal Draw(IGraphics graphics) => _graphics = graphics;
+        internal Draw(IGraphics graphics, bool isViewFullFrame)
+        {
+            _graphics = graphics;
+            _isViewFullFrame = isViewFullFrame;
+        }
 
-        public Vector2 Centre => new(_graphics.ScreenWidth / 2, (Height / 2) + BorderWidth);
+        public float Bottom => _isViewFullFrame ? _graphics.ScreenHeight - BorderWidth : _graphics.ScreenHeight - ScannerHeight;
+
+        public Vector2 Centre => new(_graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
+
+        public bool IsWidescreen { get; }
 
         public float Left => BorderWidth;
 
         public float Top => BorderWidth;
 
-        internal float Bottom => ScannerTop;
-
-        internal float Height => ScannerTop - BorderWidth;
+        internal float Height => Bottom - BorderWidth;
 
         internal float Right => _graphics.ScreenWidth - BorderWidth;
 
@@ -39,13 +46,17 @@ namespace EliteSharp.Views
 
         private static float ScannerWidth => 512;
 
-        internal void ClearDisplay() => _graphics.ClearArea(new(Left, Top), Width, Height);
+        public void ClearDisplay() => _graphics.ClearArea(new(Left, Top), Width, Height);
+
+        public void SetFullScreenClipRegion() => _graphics.SetClipRegion(new(0, 0), _graphics.ScreenWidth, _graphics.ScreenHeight);
+
+        public void SetViewClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
 
         internal void DrawBorder()
         {
             for (int i = 0; i < BorderWidth; i++)
             {
-                _graphics.DrawRectangle(new(i, i), _graphics.ScreenWidth - 1 - (2 * i), ScannerTop + BorderWidth - (2 * i), Colour.White);
+                _graphics.DrawRectangle(new(i, i), _graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), Colour.White);
             }
         }
 
@@ -141,10 +152,6 @@ namespace EliteSharp.Views
                 async (img, token) => _graphics.LoadBitmap(img, await loader.LoadAsync(img, token).ConfigureAwait(false)))
                 .ConfigureAwait(false);
         }
-
-        internal void SetDisplayClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
-
-        internal void SetScannerClipRegion() => _graphics.SetClipRegion(new(ScannerLeft, ScannerTop), ScannerWidth, ScannerHeight);
 
         private void RenderSunLine(Vector2 centre, float x, float y, float radius)
         {

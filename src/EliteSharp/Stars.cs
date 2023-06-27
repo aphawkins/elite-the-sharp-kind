@@ -116,7 +116,7 @@ namespace EliteSharp
                 star.Y = yy;
 
                 if ((star.X > _draw.Centre.X / 2) || (star.X < -_draw.Centre.X / 2) ||
-                    (star.Y > _draw.Centre.Y / 2) || (star.Y < -_draw.Centre.Y / 2) ||
+                    (star.Y > (_draw.Bottom - _draw.Centre.Y) / 2) || (star.Y < -_draw.Centre.Y / 2) ||
                     (zz < 16))
                 {
                     _stars[i] = CreateNewStar();

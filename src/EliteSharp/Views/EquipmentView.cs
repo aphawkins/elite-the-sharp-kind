@@ -75,7 +75,6 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("EQUIP SHIP");
 
             int y = 55;

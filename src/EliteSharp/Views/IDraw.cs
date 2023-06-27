@@ -8,10 +8,18 @@ namespace EliteSharp.Views
 {
     internal interface IDraw
     {
+        float Bottom { get; }
+
         Vector2 Centre { get; }
 
         float Left { get; }
 
         float Top { get; }
+
+        void ClearDisplay();
+
+        void SetFullScreenClipRegion();
+
+        void SetViewClipRegion();
     }
 }

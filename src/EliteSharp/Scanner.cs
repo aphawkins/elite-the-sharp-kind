@@ -38,7 +38,6 @@ namespace EliteSharp
 
         internal void UpdateConsole()
         {
-            _draw.SetScannerClipRegion();
             DrawScanner();
             DisplaySpeed();
             DisplayFlightClimb();

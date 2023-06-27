@@ -96,7 +96,6 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader($"DATA ON {_planet.NamePlanet(_gameState.HyperspacePlanet)}");
 
             if (_distanceToPlanet > 0)

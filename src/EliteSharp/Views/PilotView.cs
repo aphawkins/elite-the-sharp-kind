@@ -19,9 +19,10 @@ namespace EliteSharp.Views
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Space _space;
+        private readonly IDraw _draw;
         private int _drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space, Draw draw)
+        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space, IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -31,6 +32,7 @@ namespace EliteSharp.Views
             _ship = ship;
             _stars = stars;
             _space = space;
+            _draw = draw;
         }
 
         public void Draw()
@@ -122,6 +124,6 @@ namespace EliteSharp.Views
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
-        internal void DrawViewName(string name) => _graphics.DrawTextCentre(32, name, FontSize.Small, Colour.White);
+        internal void DrawViewName(string name) => _graphics.DrawTextCentre(_draw.Top + 10, name, FontSize.Small, Colour.White);
     }
 }

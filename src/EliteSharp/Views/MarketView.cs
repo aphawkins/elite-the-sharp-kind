@@ -30,7 +30,6 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.DockedPlanet)} MARKET PRICES");
 
             _graphics.DrawTextLeft(16, 40, "PRODUCT", Colour.Green);

@@ -48,12 +48,17 @@ namespace EliteSharp
             _graphics = graphics;
             _audio = new(sound);
             _keyboard = keyboard;
-            _gameState = new(_keyboard, _views);
+            _configFile = new();
+            _gameState = new(_keyboard, _views)
+            {
+                Config = _configFile.ReadConfigAsync().Result,
+            };
+
             _universe = new();
             _ship = new();
             _trade = new(_gameState, _ship);
             _planet = new(_gameState);
-            _draw = new(_graphics);
+            _draw = new(_graphics, _gameState.Config.IsViewFullFrame);
             _threed = new(_gameState, _graphics, _draw);
             _stars = new(_gameState, _graphics, _draw, _ship);
             _pilot = new(_audio, _universe, _ship);
@@ -61,9 +66,6 @@ namespace EliteSharp
             _save = new(_gameState, _ship, _trade, _planet);
             _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars, _universe, _draw);
             _scanner = new(_gameState, _graphics, _draw, _universe, _ship, _combat);
-            _configFile = new();
-
-            _gameState.Config = _configFile.ReadConfigAsync().Result;
 
             _views.Add(Screen.IntroOne, new Intro1View(_gameState, _graphics, _audio, keyboard, _ship, _combat, _universe, _draw));
             _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _graphics, _audio, keyboard, _stars, _ship, _combat, _universe, _draw));
@@ -182,7 +184,7 @@ namespace EliteSharp
 
             _audio.UpdateSound();
             _draw.DrawBorder();
-            _draw.SetDisplayClipRegion();
+            _draw.SetViewClipRegion();
 
             _ship.IsRolling = false;
             _ship.IsClimbing = false;
@@ -276,6 +278,8 @@ namespace EliteSharp
 
                 _combat.TimeECM();
             }
+
+            _draw.SetFullScreenClipRegion();
 
             _scanner.UpdateConsole();
             _gameState.CurrentView.HandleInput();
