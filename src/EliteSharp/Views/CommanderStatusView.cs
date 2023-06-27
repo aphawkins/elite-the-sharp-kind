@@ -60,7 +60,8 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            Vector2 position = new(50, _equipmentStartY);
+            float offsetX = _draw.ScannerLeft;
+            Vector2 position = new(50 + offsetX, _equipmentStartY);
 
             void IncrementPosition()
             {
@@ -103,32 +104,33 @@ namespace EliteSharp.Views
             }
 
             _draw.DrawViewHeader($"COMMANDER {_gameState.Cmdr.Name}");
-            _graphics.DrawTextLeft(new(16, 58), "Present System:", Colour.Green);
+
+            _graphics.DrawTextLeft(new(16 + offsetX, 58), "Present System:", Colour.Green);
 
             if (!_gameState.InWitchspace)
             {
-                _graphics.DrawTextLeft(new(150, 58), _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(), Colour.White);
+                _graphics.DrawTextLeft(new(150 + offsetX, 58), _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(), Colour.White);
             }
 
-            _graphics.DrawTextLeft(new(16, 74), "Hyperspace System:", Colour.Green);
-            _graphics.DrawTextLeft(new(150, 74), _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(), Colour.White);
+            _graphics.DrawTextLeft(new(16 + offsetX, 74), "Hyperspace System:", Colour.Green);
+            _graphics.DrawTextLeft(new(150 + offsetX, 74), _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(), Colour.White);
 
-            _graphics.DrawTextLeft(new(16, 90), "Condition:", Colour.Green);
-            _graphics.DrawTextLeft(new(150, 90), _conditionText[condition], Colour.White);
+            _graphics.DrawTextLeft(new(16 + offsetX, 90), "Condition:", Colour.Green);
+            _graphics.DrawTextLeft(new(150 + offsetX, 90), _conditionText[condition], Colour.White);
 
-            _graphics.DrawTextLeft(new(16, 106), "Fuel:", Colour.Green);
-            _graphics.DrawTextLeft(new(150, 106), $"{_ship.Fuel:N1} Light Years", Colour.White);
+            _graphics.DrawTextLeft(new(16 + offsetX, 106), "Fuel:", Colour.Green);
+            _graphics.DrawTextLeft(new(150 + offsetX, 106), $"{_ship.Fuel:N1} Light Years", Colour.White);
 
-            _graphics.DrawTextLeft(new(16, 122), "Cash:", Colour.Green);
-            _graphics.DrawTextLeft(new(150, 122), $"{_trade.Credits:N1} Credits", Colour.White);
+            _graphics.DrawTextLeft(new(16 + offsetX, 122), "Cash:", Colour.Green);
+            _graphics.DrawTextLeft(new(150 + offsetX, 122), $"{_trade.Credits:N1} Credits", Colour.White);
 
-            _graphics.DrawTextLeft(new(16, 138), "Legal Status:", Colour.Green);
-            _graphics.DrawTextLeft(new(150, 138), _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", Colour.White);
+            _graphics.DrawTextLeft(new(16 + offsetX, 138), "Legal Status:", Colour.Green);
+            _graphics.DrawTextLeft(new(150 + offsetX, 138), _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", Colour.White);
 
-            _graphics.DrawTextLeft(new(16, 154), "Rating:", Colour.Green);
-            _graphics.DrawTextLeft(new(150, 154), rating, Colour.White);
+            _graphics.DrawTextLeft(new(16 + offsetX, 154), "Rating:", Colour.Green);
+            _graphics.DrawTextLeft(new(150 + offsetX, 154), rating, Colour.White);
 
-            _graphics.DrawTextLeft(new(16, 186), "EQUIPMENT:", Colour.Green);
+            _graphics.DrawTextLeft(new(16 + offsetX, 186), "EQUIPMENT:", Colour.Green);
 
             if (_ship.CargoCapacity > 20)
             {

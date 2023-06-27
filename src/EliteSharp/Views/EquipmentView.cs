@@ -393,11 +393,11 @@ namespace EliteSharp.Views
             EquipmentType.MilitaryRear => _ship.LaserRear.Type == LaserType.Military,
             EquipmentType.MilitaryLeft => _ship.LaserLeft.Type == LaserType.Military,
             EquipmentType.MilitaryRight => _ship.LaserRight.Type == LaserType.Military,
-            EquipmentType.PulseLaser => throw new NotImplementedException(),
-            EquipmentType.BeamLaser => throw new NotImplementedException(),
-            EquipmentType.MiningLaser => throw new NotImplementedException(),
-            EquipmentType.MilitaryLaser => throw new NotImplementedException(),
-            EquipmentType.None => throw new NotImplementedException(),
+            EquipmentType.PulseLaser => false,
+            EquipmentType.BeamLaser => false,
+            EquipmentType.MiningLaser => false,
+            EquipmentType.MilitaryLaser => false,
+            EquipmentType.None => false,
             _ => false,
         };
     }

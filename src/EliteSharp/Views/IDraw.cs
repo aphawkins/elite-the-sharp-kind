@@ -19,6 +19,8 @@ namespace EliteSharp.Views
 
         float ScannerLeft { get; }
 
+        float ScannerRight { get; }
+
         float ScannerTop { get; }
 
         float Top { get; }

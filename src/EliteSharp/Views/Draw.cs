@@ -32,6 +32,8 @@ namespace EliteSharp.Views
 
         public float ScannerLeft => Centre.X - (ScannerWidth / 2);
 
+        public float ScannerRight => ScannerLeft + ScannerWidth - 1;
+
         public float ScannerTop => _graphics.ScreenHeight - ScannerHeight;
 
         public float Top => BorderWidth;
@@ -130,8 +132,12 @@ namespace EliteSharp.Views
 
         public void DrawViewHeader(string title)
         {
-            _graphics.DrawTextCentre(20, title, FontSize.Large, Colour.Gold);
-            _graphics.DrawLine(new(0, 36), new(511, 36));
+            _graphics.DrawTextCentre(10, title, FontSize.Large, Colour.Gold);
+            _graphics.DrawLine(new(Left, 36), new(Right, 36));
+
+            // Vertical lines
+            _graphics.DrawLine(new(ScannerLeft, 37), new(ScannerLeft, ScannerTop), Colour.Yellow);
+            _graphics.DrawLine(new(ScannerRight, 37), new(ScannerRight, ScannerTop), Colour.Yellow);
         }
 
         public async Task LoadImagesAsync(CancellationToken token)
