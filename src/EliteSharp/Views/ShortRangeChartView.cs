@@ -58,30 +58,28 @@ namespace EliteSharp.Views
                 _graphics.DrawCircleFilled(position, size, Colour.Gold);
             }
 
-            // Moving cross
+            // Cross
             centre = new(_gameState.Cross.X, _gameState.Cross.Y);
-            _graphics.SetClipRegion(new(1, 37), 510, 339);
             _graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), Colour.LighterRed);
             _graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), Colour.LighterRed);
-            _draw.SetViewClipRegion();
 
             // Text
             if (_isFind)
             {
-                _graphics.DrawTextLeft(new(16, 340), "Planet Name?", Colour.Green);
-                _graphics.DrawTextLeft(new(16, 356), _findName, Colour.White);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", Colour.Green);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, Colour.White);
             }
             else if (string.IsNullOrEmpty(_gameState.PlanetName))
             {
-                _graphics.DrawTextLeft(new(16, 340), "Unknown Planet", Colour.Green);
-                _graphics.DrawTextLeft(new(16, 356), _findName, Colour.White);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", Colour.Green);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, Colour.White);
             }
             else
             {
-                _graphics.DrawTextLeft(new(16, 340), _gameState.PlanetName, Colour.Green);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), _gameState.PlanetName, Colour.Green);
                 if (_gameState.DistanceToPlanet > 0)
                 {
-                    _graphics.DrawTextLeft(new(16, 356), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White);
+                    _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White);
                 }
             }
         }
