@@ -28,6 +28,8 @@ namespace EliteSharp.Views
 
         public float Left => BorderWidth;
 
+        public float Offset => ScannerLeft;
+
         public float Right => _graphics.ScreenWidth - BorderWidth;
 
         public float ScannerLeft => Centre.X - (ScannerWidth / 2);
@@ -110,7 +112,7 @@ namespace EliteSharp.Views
         public void DrawTextPretty(Vector2 position, float width, string text)
         {
             int i = 0;
-            float maxlen = (width - position.X) / 8;
+            float maxlen = width / 8;
             int previous = i;
 
             while (i < text.Length)
