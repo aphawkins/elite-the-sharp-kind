@@ -14,7 +14,7 @@ namespace EliteSharp.Views
     internal sealed class ConstrictorMissionView : IView
     {
         private readonly Combat _combat;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -54,7 +54,7 @@ namespace EliteSharp.Views
         internal ConstrictorMissionView(
             GameState gameState,
             IGraphics graphics,
-            Draw draw,
+            IDraw draw,
             IKeyboard keyboard,
             PlayerShip ship,
             Trade trade,
@@ -77,8 +77,8 @@ namespace EliteSharp.Views
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
-                _draw.DrawTextPretty(16, 50, 300, _mission1_brief_a);
-                _draw.DrawTextPretty(16, 200, 470, _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
+                _draw.DrawTextPretty(new(16, 50), 300, _mission1_brief_a);
+                _draw.DrawTextPretty(new(16, 200), 470, _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
                 _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
@@ -88,7 +88,7 @@ namespace EliteSharp.Views
 
                 _graphics.DrawTextCentre(100, "Congratulations Commander!", FontSize.Large, Colour.Gold);
 
-                _draw.DrawTextPretty(116, 132, 400, _mission1_debrief);
+                _draw.DrawTextPretty(new(116, 132), 400, _mission1_debrief);
 
                 _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }

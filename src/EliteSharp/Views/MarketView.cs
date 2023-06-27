@@ -10,7 +10,7 @@ namespace EliteSharp.Views
 {
     internal sealed class MarketView : IView
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -18,7 +18,7 @@ namespace EliteSharp.Views
         private readonly Trade _trade;
         private StockType _highlightedStock;
 
-        internal MarketView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, Trade trade, PlanetController planet)
+        internal MarketView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, Trade trade, PlanetController planet)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -32,11 +32,11 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.DockedPlanet)} MARKET PRICES");
 
-            _graphics.DrawTextLeft(16, 40, "PRODUCT", Colour.Green);
-            _graphics.DrawTextLeft(166, 40, "UNIT", Colour.Green);
-            _graphics.DrawTextLeft(246, 40, "PRICE", Colour.Green);
-            _graphics.DrawTextLeft(314, 40, "FOR SALE", Colour.Green);
-            _graphics.DrawTextLeft(420, 40, "IN HOLD", Colour.Green);
+            _graphics.DrawTextLeft(new(16, 40), "PRODUCT", Colour.Green);
+            _graphics.DrawTextLeft(new(166, 40), "UNIT", Colour.Green);
+            _graphics.DrawTextLeft(new(246, 40), "PRICE", Colour.Green);
+            _graphics.DrawTextLeft(new(314, 40), "FOR SALE", Colour.Green);
+            _graphics.DrawTextLeft(new(420, 40), "IN HOLD", Colour.Green);
 
             int i = 0;
             foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
@@ -48,22 +48,22 @@ namespace EliteSharp.Views
                     _graphics.DrawRectangleFilled(new(2, y), 508, 15, Colour.LightRed);
                 }
 
-                _graphics.DrawTextLeft(16, y, stock.Value.Name, Colour.White);
+                _graphics.DrawTextLeft(new(16, y), stock.Value.Name, Colour.White);
 
-                _graphics.DrawTextLeft(180, y, stock.Value.Units, Colour.White);
+                _graphics.DrawTextLeft(new(180, y), stock.Value.Units, Colour.White);
 
                 _graphics.DrawTextRight(285, y, $"{stock.Value.CurrentPrice:N1}", Colour.White);
 
                 _graphics.DrawTextRight(365, y, stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", Colour.White);
-                _graphics.DrawTextLeft(365, y, stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, Colour.White);
+                _graphics.DrawTextLeft(new(365, y), stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, Colour.White);
 
                 _graphics.DrawTextRight(455, y, stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", Colour.White);
-                _graphics.DrawTextLeft(455, y, stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, Colour.White);
+                _graphics.DrawTextLeft(new(455, y), stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, Colour.White);
 
                 i++;
             }
 
-            _graphics.DrawTextLeft(16, 340, "Cash:", Colour.Green);
+            _graphics.DrawTextLeft(new(16, 340), "Cash:", Colour.Green);
             _graphics.DrawTextRight(160, 340, $"{_trade.Credits,10:N1} Credits", Colour.White);
         }
 

@@ -12,7 +12,7 @@ namespace EliteSharp.Views
     internal sealed class SettingsView : IView
     {
         private readonly ConfigFile _configFile;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -29,7 +29,7 @@ namespace EliteSharp.Views
 
         private int _highlightedItem;
 
-        internal SettingsView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, ConfigFile configFile)
+        internal SettingsView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, ConfigFile configFile)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -76,8 +76,8 @@ namespace EliteSharp.Views
                     _graphics.DrawRectangleFilled(new(x, y), 100, 15, Colour.LightRed);
                 }
 
-                _graphics.DrawTextLeft(x, y, _settingList[i].Name, Colour.White);
-                _graphics.DrawTextLeft(x + 120, y, _settingList[i].Values[v], Colour.White);
+                _graphics.DrawTextLeft(new(x, y), _settingList[i].Name, Colour.White);
+                _graphics.DrawTextLeft(new(x + 120, y), _settingList[i].Values[v], Colour.White);
             }
         }
 

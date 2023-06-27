@@ -23,7 +23,7 @@ namespace EliteSharp
         private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly ConfigFile _configFile;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -58,7 +58,7 @@ namespace EliteSharp
             _ship = new();
             _trade = new(_gameState, _ship);
             _planet = new(_gameState);
-            _draw = new(_graphics, _gameState.Config.IsViewFullFrame);
+            _draw = new Draw(_graphics, _gameState.Config.IsViewFullFrame);
             _threed = new(_gameState, _graphics, _draw);
             _stars = new(_gameState, _graphics, _draw, _ship);
             _pilot = new(_audio, _universe, _ship);
@@ -135,7 +135,7 @@ namespace EliteSharp
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _graphics.DrawTextLeft(_draw.Right - 60, _draw.Top + 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
+            _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
         }
 
         private void DrawFrame()

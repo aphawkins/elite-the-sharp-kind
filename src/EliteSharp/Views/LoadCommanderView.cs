@@ -10,7 +10,7 @@ namespace EliteSharp.Views
 {
     internal sealed class LoadCommanderView : IView
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -18,7 +18,7 @@ namespace EliteSharp.Views
         private bool _isLoaded = true;
         private string _name = string.Empty;
 
-        internal LoadCommanderView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, SaveFile save)
+        internal LoadCommanderView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, SaveFile save)
         {
             _gameState = gameState;
             _graphics = graphics;

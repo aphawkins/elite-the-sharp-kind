@@ -10,7 +10,7 @@ namespace EliteSharp.Planets
 {
     internal sealed class FractalPlanet : PlanetRenderer
     {
-        internal FractalPlanet(IGraphics graphics, Draw draw, int seed)
+        internal FractalPlanet(IGraphics graphics, IDraw draw, int seed)
             : base(graphics, draw) => GenerateLandscape(seed);
 
         /// <summary>

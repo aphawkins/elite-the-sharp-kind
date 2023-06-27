@@ -36,13 +36,13 @@ namespace EliteSharp.Views
             "For the moment please accept this Navy Extra Energy Unit as payment. " +
             "---MESSAGE ENDS.";
 
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
 
-        internal ThargoidMissionView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, PlayerShip ship)
+        internal ThargoidMissionView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, PlayerShip ship)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -56,14 +56,14 @@ namespace EliteSharp.Views
             if (_gameState.Cmdr.Mission == 4)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(116, 132, 400, Mission2BriefA);
+                _draw.DrawTextPretty(new(116, 132), 400, Mission2BriefA);
                 _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 5)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(16, 50, 300, Mission2BriefB);
-                _draw.DrawTextPretty(16, 200, 470, Mission2BriefC);
+                _draw.DrawTextPretty(new(16, 50), 300, Mission2BriefB);
+                _draw.DrawTextPretty(new(16, 200), 470, Mission2BriefC);
                 _graphics.DrawImage(Image.Blake, new(352, 46));
                 _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
@@ -71,7 +71,7 @@ namespace EliteSharp.Views
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _graphics.DrawTextCentre(100, "Well done Commander.", FontSize.Large, Colour.Gold);
-                _draw.DrawTextPretty(116, 132, 400, Mission2Debrief);
+                _draw.DrawTextPretty(new(116, 132), 400, Mission2Debrief);
                 _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
         }

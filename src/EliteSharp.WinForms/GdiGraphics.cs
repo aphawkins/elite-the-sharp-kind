@@ -141,9 +141,9 @@ namespace EliteSharp.WinForms
                 stringFormat);
         }
 
-        public void DrawTextLeft(float x, float y, string text, Colour colour)
+        public void DrawTextLeft(Vector2 position, string text, Colour colour)
         {
-            PointF point = new(x / (2 / Scale), y / (2 / Scale));
+            PointF point = new(position.X / (2 / Scale), position.Y / (2 / Scale));
             _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point);
         }
 

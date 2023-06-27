@@ -28,15 +28,15 @@ namespace EliteSharp.Views
 
         public float Left => BorderWidth;
 
+        public float Right => _graphics.ScreenWidth - BorderWidth;
+
+        public float ScannerLeft => Centre.X - (ScannerWidth / 2);
+
+        public float ScannerTop => _graphics.ScreenHeight - ScannerHeight;
+
         public float Top => BorderWidth;
 
         internal float Height => Bottom - BorderWidth;
-
-        internal float Right => _graphics.ScreenWidth - BorderWidth;
-
-        internal float ScannerLeft => Centre.X - (ScannerWidth / 2);
-
-        internal float ScannerTop => _graphics.ScreenHeight - ScannerHeight;
 
         internal float Width => _graphics.ScreenWidth - (2 * BorderWidth);
 
@@ -48,11 +48,7 @@ namespace EliteSharp.Views
 
         public void ClearDisplay() => _graphics.ClearArea(new(Left, Top), Width, Height);
 
-        public void SetFullScreenClipRegion() => _graphics.SetClipRegion(new(0, 0), _graphics.ScreenWidth, _graphics.ScreenHeight);
-
-        public void SetViewClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
-
-        internal void DrawBorder()
+        public void DrawBorder()
         {
             for (int i = 0; i < BorderWidth; i++)
             {
@@ -60,9 +56,9 @@ namespace EliteSharp.Views
             }
         }
 
-        internal void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", Colour.White);
+        public void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", Colour.White);
 
-        internal void DrawSun(IShip planet)
+        public void DrawSun(IShip planet)
         {
             Vector2 centre = new(planet.Location.X, -planet.Location.Y);
 
@@ -109,10 +105,10 @@ namespace EliteSharp.Views
             }
         }
 
-        internal void DrawTextPretty(float x, float y, float width, string text)
+        public void DrawTextPretty(Vector2 position, float width, string text)
         {
             int i = 0;
-            float maxlen = (width - x) / 8;
+            float maxlen = (width - position.X) / 8;
             int previous = i;
 
             while (i < text.Length)
@@ -126,19 +122,19 @@ namespace EliteSharp.Views
                 }
 
                 i++;
-                _graphics.DrawTextLeft(x, y, text[previous..i], Colour.White);
+                _graphics.DrawTextLeft(position, text[previous..i], Colour.White);
                 previous = i;
-                y += 8 * _graphics.Scale;
+                position.Y += 8 * _graphics.Scale;
             }
         }
 
-        internal void DrawViewHeader(string title)
+        public void DrawViewHeader(string title)
         {
             _graphics.DrawTextCentre(20, title, FontSize.Large, Colour.Gold);
             _graphics.DrawLine(new(0, 36), new(511, 36));
         }
 
-        internal async Task LoadImagesAsync(CancellationToken token)
+        public async Task LoadImagesAsync(CancellationToken token)
         {
             AssetFileLoader loader = new();
             ParallelOptions options = new()
@@ -152,6 +148,10 @@ namespace EliteSharp.Views
                 async (img, token) => _graphics.LoadBitmap(img, await loader.LoadAsync(img, token).ConfigureAwait(false)))
                 .ConfigureAwait(false);
         }
+
+        public void SetFullScreenClipRegion() => _graphics.SetClipRegion(new(0, 0), _graphics.ScreenWidth, _graphics.ScreenHeight);
+
+        public void SetViewClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
 
         private void RenderSunLine(Vector2 centre, float x, float y, float radius)
         {

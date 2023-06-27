@@ -11,7 +11,7 @@ namespace EliteSharp.Views
     {
         private const int OptionBarHeight = 15;
         private const int OptionBarWidth = 400;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -26,7 +26,7 @@ namespace EliteSharp.Views
 
         private int _highlightedItem;
 
-        internal OptionsView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard)
+        internal OptionsView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _graphics = graphics;

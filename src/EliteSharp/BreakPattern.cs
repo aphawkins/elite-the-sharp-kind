@@ -10,10 +10,10 @@ namespace EliteSharp
     internal sealed class BreakPattern
     {
         private readonly IGraphics _graphics;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private int _breakPatternCount;
 
-        internal BreakPattern(IGraphics graphics, Draw draw)
+        internal BreakPattern(IGraphics graphics, IDraw draw)
         {
             _graphics = graphics;
             _draw = draw;

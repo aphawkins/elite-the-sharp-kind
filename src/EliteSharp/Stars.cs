@@ -11,13 +11,13 @@ namespace EliteSharp
 {
     internal sealed class Stars
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Vector3[] _stars = new Vector3[20];
 
-        internal Stars(GameState gameState, IGraphics graphics, Draw draw, PlayerShip ship)
+        internal Stars(GameState gameState, IGraphics graphics, IDraw draw, PlayerShip ship)
         {
             _gameState = gameState;
             _graphics = graphics;

@@ -14,7 +14,7 @@ namespace EliteSharp.Views
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
 
-        internal PilotLeftView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship, Space space, Draw draw)
+        internal PilotLeftView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship, Space space, IDraw draw)
         {
             _pilotView = new(gameState, graphics, keyboard, pilot, ship, stars, space, draw);
             _stars = stars;

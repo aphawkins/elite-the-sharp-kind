@@ -18,7 +18,7 @@ namespace EliteSharp.Views
         private readonly Space _space;
         private readonly Universe _universe;
 
-        internal LaunchView(GameState gameState, IGraphics graphics, AudioController audio, Space space, Combat combat, Universe universe, Draw draw)
+        internal LaunchView(GameState gameState, IGraphics graphics, AudioController audio, Space space, Combat combat, Universe universe, IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;

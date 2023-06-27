@@ -10,7 +10,7 @@ namespace EliteSharp.Planets
 {
     internal sealed class WireframePlanet : PlanetRenderer
     {
-        internal WireframePlanet(IGraphics graphics, Draw draw)
+        internal WireframePlanet(IGraphics graphics, IDraw draw)
             : base(graphics, draw)
         {
         }

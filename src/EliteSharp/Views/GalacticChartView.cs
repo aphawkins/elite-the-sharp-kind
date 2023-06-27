@@ -12,7 +12,7 @@ namespace EliteSharp.Views
 {
     internal sealed class GalacticChartView : IView
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -23,7 +23,7 @@ namespace EliteSharp.Views
         private string _findName = string.Empty;
         private bool _isFind;
 
-        internal GalacticChartView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, PlanetController planet, PlayerShip ship)
+        internal GalacticChartView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, PlanetController planet, PlayerShip ship)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -64,20 +64,20 @@ namespace EliteSharp.Views
             // Text
             if (_isFind)
             {
-                _graphics.DrawTextLeft(16, 340, "Planet Name?", Colour.Green);
-                _graphics.DrawTextLeft(16, 356, _findName, Colour.White);
+                _graphics.DrawTextLeft(new(16, 340), "Planet Name?", Colour.Green);
+                _graphics.DrawTextLeft(new(16, 356), _findName, Colour.White);
             }
             else if (string.IsNullOrEmpty(_gameState.PlanetName))
             {
-                _graphics.DrawTextLeft(16, 340, "Unknown Planet", Colour.Green);
-                _graphics.DrawTextLeft(16, 356, _findName, Colour.White);
+                _graphics.DrawTextLeft(new(16, 340), "Unknown Planet", Colour.Green);
+                _graphics.DrawTextLeft(new(16, 356), _findName, Colour.White);
             }
             else
             {
-                _graphics.DrawTextLeft(16, 340, _gameState.PlanetName, Colour.Green);
+                _graphics.DrawTextLeft(new(16, 340), _gameState.PlanetName, Colour.Green);
                 if (_gameState.DistanceToPlanet > 0)
                 {
-                    _graphics.DrawTextLeft(16, 356, $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White);
+                    _graphics.DrawTextLeft(new(16, 356), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White);
                 }
             }
         }

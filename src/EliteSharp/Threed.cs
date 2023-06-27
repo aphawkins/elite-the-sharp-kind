@@ -13,7 +13,7 @@ namespace EliteSharp
     internal sealed class Threed
     {
         private const int MAXPOLYS = 100;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly Vector3[] _pointList = new Vector3[100];
@@ -21,7 +21,7 @@ namespace EliteSharp
         private int _startPoly;
         private int _totalPolys;
 
-        internal Threed(GameState gameState, IGraphics graphics, Draw draw)
+        internal Threed(GameState gameState, IGraphics graphics, IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;

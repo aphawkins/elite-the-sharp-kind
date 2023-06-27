@@ -16,9 +16,9 @@ namespace EliteSharp.Planets
         protected readonly int[,] _landscape = new int[LANDXMAX + 1, LANDYMAX + 1];
         protected IGraphics _graphics;
 #pragma warning restore SA1401 // Fields should be private
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
 
-        internal PlanetRenderer(IGraphics graphics, Draw draw)
+        internal PlanetRenderer(IGraphics graphics, IDraw draw)
         {
             _graphics = graphics;
             _draw = draw;

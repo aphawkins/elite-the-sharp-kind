@@ -68,7 +68,7 @@ namespace EliteSharp.Planets
             Colour.Purple,
         };
 
-        internal SnesPlanet(IGraphics graphics, Draw draw)
+        internal SnesPlanet(IGraphics graphics, IDraw draw)
             : base(graphics, draw) => GenerateLandscape();
 
         /// <summary>

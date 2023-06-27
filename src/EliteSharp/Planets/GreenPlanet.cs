@@ -10,7 +10,7 @@ namespace EliteSharp.Planets
 {
     internal sealed class GreenPlanet : PlanetRenderer
     {
-        internal GreenPlanet(IGraphics graphics, Draw draw)
+        internal GreenPlanet(IGraphics graphics, IDraw draw)
             : base(graphics, draw)
         {
         }

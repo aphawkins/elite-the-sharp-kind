@@ -16,14 +16,14 @@ namespace EliteSharp
     internal sealed class Scanner
     {
         private readonly Combat _combat;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
         private Vector2 _scannerCentre;
 
-        internal Scanner(GameState gameState, IGraphics graphics, Draw draw, Universe universe, PlayerShip ship, Combat combat)
+        internal Scanner(GameState gameState, IGraphics graphics, IDraw draw, Universe universe, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
             _graphics = graphics;

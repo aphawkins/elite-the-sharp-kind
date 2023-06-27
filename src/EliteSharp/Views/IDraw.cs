@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Ships;
 
 namespace EliteSharp.Views
 {
@@ -14,9 +15,27 @@ namespace EliteSharp.Views
 
         float Left { get; }
 
+        float Right { get; }
+
+        float ScannerLeft { get; }
+
+        float ScannerTop { get; }
+
         float Top { get; }
 
         void ClearDisplay();
+
+        void DrawBorder();
+
+        void DrawHyperspaceCountdown(int countdown);
+
+        void DrawSun(IShip planet);
+
+        void DrawTextPretty(Vector2 position, float width, string text);
+
+        void DrawViewHeader(string title);
+
+        Task LoadImagesAsync(CancellationToken token);
 
         void SetFullScreenClipRegion();
 

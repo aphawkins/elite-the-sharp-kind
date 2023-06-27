@@ -14,7 +14,7 @@ namespace EliteSharp.Views
 {
     internal sealed class EquipmentView : IView
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
 
         private readonly EquipmentItem[] _equipmentStock = new EquipmentItem[]
         {
@@ -62,7 +62,7 @@ namespace EliteSharp.Views
         private readonly Trade _trade;
         private int _highlightedItem;
 
-        internal EquipmentView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
+        internal EquipmentView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -93,7 +93,7 @@ namespace EliteSharp.Views
 
                 Colour col = _equipmentStock[i].CanBuy ? Colour.White : Colour.LightGrey;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
-                _graphics.DrawTextLeft(x, y, _equipmentStock[i].Name[1..], col);
+                _graphics.DrawTextLeft(new(x, y), _equipmentStock[i].Name[1..], col);
 
                 if (_equipmentStock[i].Price != 0)
                 {
@@ -103,7 +103,7 @@ namespace EliteSharp.Views
                 y += 15;
             }
 
-            _graphics.DrawTextLeft(16, 340, $"Cash: {_trade.Credits:N1} Credits", Colour.White);
+            _graphics.DrawTextLeft(new(16, 340), $"Cash: {_trade.Credits:N1} Credits", Colour.White);
         }
 
         public void HandleInput()

@@ -31,7 +31,7 @@ namespace EliteSharp
         private readonly Threed _threed;
         private readonly Trade _trade;
         private readonly Universe _universe;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private GalaxySeed _destinationPlanet = new();
         private float _hyperDistance;
 
@@ -47,7 +47,7 @@ namespace EliteSharp
             PlanetController planet,
             Stars stars,
             Universe universe,
-            Draw draw)
+            IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
