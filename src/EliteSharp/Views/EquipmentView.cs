@@ -77,7 +77,7 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader("EQUIP SHIP");
 
-            int y = 55;
+            float y = 55;
 
             for (int i = 0; i < _equipmentStock.Length; i++)
             {
@@ -88,22 +88,22 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(new(2, y + 1), 508, 15, Colour.LightRed);
+                    _graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, Colour.LightRed);
                 }
 
                 Colour col = _equipmentStock[i].CanBuy ? Colour.White : Colour.LightGrey;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
-                _graphics.DrawTextLeft(new(x, y), _equipmentStock[i].Name[1..], col);
+                _graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], col);
 
                 if (_equipmentStock[i].Price != 0)
                 {
-                    _graphics.DrawTextRight(450, y, $"{_equipmentStock[i].Price:N1}", col);
+                    _graphics.DrawTextRight(450 + _draw.Offset, y, $"{_equipmentStock[i].Price:N1}", col);
                 }
 
                 y += 15;
             }
 
-            _graphics.DrawTextLeft(new(16, 340), $"Cash: {_trade.Credits:N1} Credits", Colour.White);
+            _graphics.DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", Colour.White);
         }
 
         public void HandleInput()
