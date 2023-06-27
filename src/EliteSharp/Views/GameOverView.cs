@@ -19,9 +19,18 @@ namespace EliteSharp.Views
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Universe _universe;
+        private readonly IDraw _draw;
         private int _i;
 
-        internal GameOverView(GameState gameState, IGraphics graphics, AudioController audio, Stars stars, PlayerShip ship, Combat combat, Universe universe)
+        internal GameOverView(
+            GameState gameState,
+            IGraphics graphics,
+            AudioController audio,
+            Stars stars,
+            PlayerShip ship,
+            Combat combat,
+            Universe universe,
+            IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -30,9 +39,10 @@ namespace EliteSharp.Views
             _ship = ship;
             _combat = combat;
             _universe = universe;
+            _draw = draw;
         }
 
-        public void Draw() => _graphics.DrawTextCentre(190, "GAME OVER", FontSize.Large, Colour.Gold);
+        public void Draw() => _graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", FontSize.Large, Colour.Gold);
 
         public void HandleInput()
         {

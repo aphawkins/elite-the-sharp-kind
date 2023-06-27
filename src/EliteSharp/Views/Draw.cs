@@ -134,12 +134,12 @@ namespace EliteSharp.Views
 
         public void DrawViewHeader(string title)
         {
-            _graphics.DrawTextCentre(10, title, FontSize.Large, Colour.Gold);
+            _graphics.DrawTextCentre(Top + 10, title, FontSize.Large, Colour.Gold);
             _graphics.DrawLine(new(Left, 36), new(Right, 36));
 
             // Vertical lines
-            _graphics.DrawLine(new(ScannerLeft, 37), new(ScannerLeft, ScannerTop), Colour.Yellow);
-            _graphics.DrawLine(new(ScannerRight, 37), new(ScannerRight, ScannerTop), Colour.Yellow);
+            _graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), Colour.Yellow);
+            _graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), Colour.Yellow);
         }
 
         public async Task LoadImagesAsync(CancellationToken token)

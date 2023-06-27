@@ -9,8 +9,9 @@ namespace EliteSharp
 {
     internal sealed class BreakPattern
     {
-        private readonly IGraphics _graphics;
+        private const int MaxRings = 20;
         private readonly IDraw _draw;
+        private readonly IGraphics _graphics;
         private int _breakPatternCount;
 
         internal BreakPattern(IGraphics graphics, IDraw draw)
@@ -27,7 +28,7 @@ namespace EliteSharp
             // Just draw a very simple one for the moment.
             for (int i = 0; i < _breakPatternCount; i++)
             {
-                _graphics.DrawCircle(new(256, 192), 30 + (i * 15), Colour.White);
+                _graphics.DrawCircle(_draw.Centre, 30 + (i * _draw.Centre.X / MaxRings), Colour.White);
             }
         }
 
@@ -42,7 +43,7 @@ namespace EliteSharp
         {
             _breakPatternCount++;
 
-            if (_breakPatternCount >= 20)
+            if (_breakPatternCount >= MaxRings)
             {
                 _breakPatternCount = 0;
                 IsComplete = true;

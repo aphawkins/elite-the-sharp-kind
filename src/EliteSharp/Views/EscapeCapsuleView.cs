@@ -21,6 +21,7 @@ namespace EliteSharp.Views
         private readonly Stars _stars;
         private readonly Trade _trade;
         private readonly Universe _universe;
+        private readonly IDraw _draw;
         private int _i;
         private IShip _newship = new ShipBase();
 
@@ -32,7 +33,8 @@ namespace EliteSharp.Views
             PlayerShip ship,
             Trade trade,
             Universe universe,
-            Pilot pilot)
+            Pilot pilot,
+            IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -42,13 +44,14 @@ namespace EliteSharp.Views
             _trade = trade;
             _universe = universe;
             _pilot = pilot;
+            _draw = draw;
         }
 
         public void Draw()
         {
             if (_i < 90)
             {
-                _graphics.DrawTextCentre(358, "Escape capsule launched - Ship auto-destuct initiated.", FontSize.Small, Colour.White);
+                _graphics.DrawTextCentre(_draw.ScannerTop - 40, "Escape capsule launched - Ship auto-destuct initiated.", FontSize.Small, Colour.White);
             }
         }
 
