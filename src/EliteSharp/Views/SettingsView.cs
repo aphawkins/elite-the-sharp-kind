@@ -49,7 +49,7 @@ namespace EliteSharp.Views
 
                 if (i == _settingList.Length - 1)
                 {
-                    position.Y = ((_settingList.Length + 1) / 2 * 30) + 96 + 32;
+                    position.Y = ((_settingList.Length + 1) / 2 * 30) + (_draw.Centre.Y / 2) + 32;
                     if (i == _highlightedItem)
                     {
                         position.X = _draw.Centre.X - 200;
@@ -71,7 +71,7 @@ namespace EliteSharp.Views
                 };
 
                 position.X = ((i & 1) * 250) + 32 + _draw.Offset;
-                position.Y = (i / 2 * 30) + 96;
+                position.Y = (i / 2 * 30) + (_draw.Centre.Y / 2);
 
                 if (i == _highlightedItem)
                 {
