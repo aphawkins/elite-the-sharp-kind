@@ -122,6 +122,14 @@ namespace EliteSharp.WinForms
         public void DrawRectangle(Vector2 position, float width, float height, Colour colour) =>
             _screenBufferGraphics.DrawRectangle(_pens[colour], position.X, position.Y, width, height);
 
+        public void DrawRectangleCentre(float y, float width, float height, Colour colour) =>
+            _screenBufferGraphics.DrawRectangle(
+                _pens[colour],
+                (ScreenWidth - width) / 2,
+                y / (2 / Scale),
+                width,
+                height);
+
         public void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour) =>
             _screenBufferGraphics.FillRectangle(_pens[colour].Brush, position.X, position.Y, width, height);
 
@@ -132,12 +140,12 @@ namespace EliteSharp.WinForms
                 Alignment = StringAlignment.Center,
             };
 
-            PointF point = new(ScreenWidth / 2, y / (2 / Scale));
             _screenBufferGraphics.DrawString(
                 text,
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 _pens[colour].Brush,
-                point,
+                ScreenWidth / 2,
+                y / (2 / Scale),
                 stringFormat);
         }
 
@@ -154,8 +162,13 @@ namespace EliteSharp.WinForms
                 Alignment = StringAlignment.Far,
             };
 
-            PointF point = new(x / (2 / Scale), y / (2 / Scale));
-            _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point, stringFormat);
+            _screenBufferGraphics.DrawString(
+                text,
+                _fontSmall,
+                _pens[colour].Brush,
+                x / (2 / Scale),
+                y / (2 / Scale),
+                stringFormat);
         }
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Colour colour)

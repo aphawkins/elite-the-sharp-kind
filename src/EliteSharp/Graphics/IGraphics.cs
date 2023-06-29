@@ -38,6 +38,8 @@ namespace EliteSharp.Graphics
 
         void DrawRectangle(Vector2 position, float width, float height, Colour colour);
 
+        void DrawRectangleCentre(float y, float width, float height, Colour colour);
+
         void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour);
 
         void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour);

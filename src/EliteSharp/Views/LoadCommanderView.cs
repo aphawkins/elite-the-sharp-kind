@@ -32,8 +32,8 @@ namespace EliteSharp.Views
             _draw.DrawViewHeader("LOAD COMMANDER");
 
             _graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, Colour.White);
-            _graphics.DrawRectangle(new(100, 100), 312, 50, Colour.White);
-            _graphics.DrawTextCentre(125, _name, FontSize.Large, Colour.White);
+            _graphics.DrawRectangleCentre(100, 312, 50, Colour.White);
+            _graphics.DrawTextCentre(112, _name, FontSize.Large, Colour.White);
 
             if (!_isLoaded)
             {

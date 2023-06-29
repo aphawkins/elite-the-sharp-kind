@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using EliteSharp.Config;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
@@ -44,18 +45,18 @@ namespace EliteSharp.Views
 
             for (int i = 0; i < _settingList.Length; i++)
             {
-                float x;
-                int y;
+                Vector2 position;
+
                 if (i == _settingList.Length - 1)
                 {
-                    y = ((_settingList.Length + 1) / 2 * 30) + 96 + 32;
+                    position.Y = ((_settingList.Length + 1) / 2 * 30) + 96 + 32;
                     if (i == _highlightedItem)
                     {
-                        x = _draw.Centre.X - 200;
-                        _graphics.DrawRectangleFilled(new(x, y - 7), 400, 15, Colour.LightRed);
+                        position.X = _draw.Centre.X - 200;
+                        _graphics.DrawRectangleFilled(position, 400, 15, Colour.LightRed);
                     }
 
-                    _graphics.DrawTextCentre(y, _settingList[i].Name, FontSize.Small, Colour.White);
+                    _graphics.DrawTextCentre(position.Y, _settingList[i].Name, FontSize.Small, Colour.White);
                     return;
                 }
 
@@ -68,16 +69,18 @@ namespace EliteSharp.Views
                     4 => _gameState.Config.InstantDock ? 1 : 0,
                     _ => 0,
                 };
-                x = ((i & 1) * 250) + 32;
-                y = (i / 2 * 30) + 96;
+
+                position.X = ((i & 1) * 250) + 32 + _draw.Offset;
+                position.Y = (i / 2 * 30) + 96;
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(new(x, y), 100, 15, Colour.LightRed);
+                    _graphics.DrawRectangleFilled(position, 100, 15, Colour.LightRed);
                 }
 
-                _graphics.DrawTextLeft(new(x, y), _settingList[i].Name, Colour.White);
-                _graphics.DrawTextLeft(new(x + 120, y), _settingList[i].Values[v], Colour.White);
+                _graphics.DrawTextLeft(position, _settingList[i].Name, Colour.White);
+                position.X += 120;
+                _graphics.DrawTextLeft(position, _settingList[i].Values[v], Colour.White);
             }
         }
 
