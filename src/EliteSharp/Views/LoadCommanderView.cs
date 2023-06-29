@@ -10,7 +10,7 @@ namespace EliteSharp.Views
 {
     internal sealed class LoadCommanderView : IView
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -18,7 +18,7 @@ namespace EliteSharp.Views
         private bool _isLoaded = true;
         private string _name = string.Empty;
 
-        internal LoadCommanderView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, SaveFile save)
+        internal LoadCommanderView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, SaveFile save)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -29,17 +29,16 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("LOAD COMMANDER");
 
-            _graphics.DrawTextCentre(75, "Please enter commander name:", 120, Colour.White);
-            _graphics.DrawRectangle(100, 100, 312, 50, Colour.White);
-            _graphics.DrawTextCentre(125, _name, 140, Colour.White);
+            _graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, Colour.White);
+            _graphics.DrawRectangleCentre(100, 312, 50, Colour.White);
+            _graphics.DrawTextCentre(112, _name, FontSize.Large, Colour.White);
 
             if (!_isLoaded)
             {
-                _graphics.DrawTextCentre(175, "Error Loading Commander!", 140, Colour.Gold);
-                _graphics.DrawTextCentre(200, "Press SPACE to continue.", 120, Colour.White);
+                _graphics.DrawTextCentre(175, "Error Loading Commander!", FontSize.Large, Colour.Gold);
+                _graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, Colour.White);
             }
         }
 

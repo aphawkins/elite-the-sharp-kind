@@ -16,14 +16,14 @@ namespace EliteSharp
     internal sealed class Scanner
     {
         private readonly Combat _combat;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
-        private Vector2 _scannerCentre = new(253, 63 + 385);
+        private Vector2 _scannerCentre;
 
-        internal Scanner(GameState gameState, IGraphics graphics, Draw draw, Universe universe, PlayerShip ship, Combat combat)
+        internal Scanner(GameState gameState, IGraphics graphics, IDraw draw, Universe universe, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -31,13 +31,14 @@ namespace EliteSharp
             _universe = universe;
             _ship = ship;
             _combat = combat;
+            _scannerCentre = new(_draw.Centre.X - 3, _draw.ScannerTop + 63);
         }
+
+        internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));
 
         internal void UpdateConsole()
         {
-            _graphics.SetClipRegion(0, 0, 512, 512);
-            _draw.DrawScanner();
-
+            DrawScanner();
             DisplaySpeed();
             DisplayFlightClimb();
             DisplayFlightRoll();
@@ -59,12 +60,12 @@ namespace EliteSharp
 
             if (_universe.IsStationPresent)
             {
-                _graphics.DrawImage(Image.BigS, new(387, 490));
+                _graphics.DrawImage(Image.BigS, new(_draw.ScannerLeft + 387, _draw.ScannerTop + 105));
             }
 
             if (_ship.EcmActive != 0)
             {
-                _graphics.DrawImage(Image.BigE, new(115, 490));
+                _graphics.DrawImage(Image.BigE, new(_draw.ScannerLeft + 115, _draw.ScannerTop + 105));
             }
         }
 
@@ -87,20 +88,21 @@ namespace EliteSharp
         /// <summary>
         /// Draw an indicator bar. Used for shields and energy banks.
         /// </summary>
-        /// <param name="len"></param>
-        /// <param name="position"></param>
         private void DisplayDialBar(float len, Vector2 position)
         {
-            _graphics.DrawLine(new(position.X, position.Y + 384), new(position.X + len, position.Y + 384), Colour.Gold);
+            float x = _draw.ScannerLeft + position.X;
+            float y = _draw.ScannerTop + position.Y;
+
+            _graphics.DrawLine(new(x, y), new(x + len, y), Colour.Gold);
             int i = 1;
-            _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.Gold);
+            _graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.Gold);
 
             for (i = 2; i < 7; i++)
             {
-                _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.DarkYellow);
+                _graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.DarkYellow);
             }
 
-            _graphics.DrawLine(new(position.X, position.Y + i + 384), new(position.X + len, position.Y + i + 384), Colour.LightRed);
+            _graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.LightRed);
         }
 
         /// <summary>
@@ -136,29 +138,27 @@ namespace EliteSharp
 
         private void DisplayFlightClimb()
         {
-            const float sx = 416;
-            const float sy = 384 + 9 + 14 + 16;
-
-            float pos = sx + (_ship.Climb * 28 / _ship.MaxClimb);
-            pos += 32;
+            float x = _draw.ScannerLeft + 416;
+            float y = _draw.ScannerTop + 9 + 14 + 16;
+            float position = x + (_ship.Climb * 28 / _ship.MaxClimb);
+            position += 32;
 
             for (int i = 0; i < 4; i++)
             {
-                _graphics.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), Colour.Gold);
+                _graphics.DrawLine(new(position + i, y), new(position + i, y + 7), Colour.Gold);
             }
         }
 
         private void DisplayFlightRoll()
         {
-            const float sx = 416;
-            const float sy = 384 + 9 + 14;
-
-            float pos = sx - (_ship.Roll * 28 / _ship.MaxRoll);
-            pos += 32;
+            float x = _draw.ScannerLeft + 416;
+            float y = _draw.ScannerTop + 9 + 14;
+            float position = x - (_ship.Roll * 28 / _ship.MaxRoll);
+            position += 32;
 
             for (int i = 0; i < 4; i++)
             {
-                _graphics.DrawLine(new(pos + i, sy), new(pos + i, sy + 7), Colour.Gold);
+                _graphics.DrawLine(new(position + i, y), new(position + i, y + 7), Colour.Gold);
             }
         }
 
@@ -187,7 +187,7 @@ namespace EliteSharp
 
             int missileCount = _ship.MissileCount > 4 ? 4 : _ship.MissileCount;
 
-            Vector2 location = new(((4 - missileCount) * 16) + 35, 113 + 385);
+            Vector2 location = new(_draw.ScannerLeft + ((4 - missileCount) * 16) + 35, _draw.ScannerTop + 113);
 
             if (_combat.IsMissileArmed)
             {
@@ -224,16 +224,14 @@ namespace EliteSharp
         /// </summary>
         private void DisplaySpeed()
         {
-            const float sx = 417;
-            const float sy = 384 + 9;
-
-            float len = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
-
+            float x = _draw.ScannerLeft + 417;
+            float y = _draw.ScannerTop + 9;
+            float length = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
             Colour colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? Colour.LightRed : Colour.Gold;
 
             for (int i = 0; i < 6; i++)
             {
-                _graphics.DrawLine(new(sx, sy + i), new(sx + len, sy + i), colour);
+                _graphics.DrawLine(new(x, y + i), new(x + length, y + i), colour);
             }
         }
 
@@ -260,15 +258,15 @@ namespace EliteSharp
                 return;
             }
 
-            Vector2 compass = new(_gameState.CompassCentre.X + (dest.X * 16), _gameState.CompassCentre.Y + (dest.Y * -16));
+            Vector2 position = new(_draw.ScannerLeft + 382 + (dest.X * 16), _draw.ScannerTop + 22 + (dest.Y * -16));
 
             if (dest.Z < 0)
             {
-                _graphics.DrawImage(Image.DotRed, compass);
+                _graphics.DrawImage(Image.DotRed, position);
             }
             else
             {
-                _graphics.DrawImage(Image.GreenDot, compass);
+                _graphics.DrawImage(Image.GreenDot, position);
             }
         }
 
@@ -386,10 +384,10 @@ namespace EliteSharp
                 }
 
                 // ship
-                _graphics.DrawRectangleFilled(x - 3, y2, 5, 3, colour);
+                _graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, colour);
 
                 // stick
-                _graphics.DrawRectangleFilled(x, y2 < y1 ? y2 : y1, 2, MathF.Abs(y2 - y1), colour);
+                _graphics.DrawRectangleFilled(new(x, y2 < y1 ? y2 : y1), 2, MathF.Abs(y2 - y1), colour);
             }
         }
     }

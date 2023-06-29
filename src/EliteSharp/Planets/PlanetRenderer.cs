@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Planets
 {
@@ -15,17 +16,19 @@ namespace EliteSharp.Planets
         protected readonly int[,] _landscape = new int[LANDXMAX + 1, LANDYMAX + 1];
         protected IGraphics _graphics;
 #pragma warning restore SA1401 // Fields should be private
+        private readonly IDraw _draw;
 
-        internal PlanetRenderer(IGraphics graphics) => _graphics = graphics;
+        internal PlanetRenderer(IGraphics graphics, IDraw draw)
+        {
+            _graphics = graphics;
+            _draw = draw;
+        }
 
         /// <summary>
         /// Draw a solid planet. Based on Doros circle drawing alogorithm.
         /// </summary>
         public virtual void Draw(Vector2 centre, float radius, Vector3[] vec)
         {
-            centre.X += _graphics.Offset.X;
-            centre.Y += _graphics.Offset.Y;
-
             float vx = vec[1].X * 65536;
             float vy = vec[1].Y * 65536;
 
@@ -68,8 +71,7 @@ namespace EliteSharp.Planets
                 Y = y + centre.Y,
             };
 
-            if (s.Y < _graphics.ViewT.Y + _graphics.Offset.Y ||
-                s.Y > _graphics.ViewB.Y + _graphics.Offset.Y)
+            if (s.Y < _draw.Top || s.Y > _draw.Bottom)
             {
                 return;
             }
@@ -87,7 +89,7 @@ namespace EliteSharp.Planets
 
             for (; s.X <= ex; s.X++)
             {
-                if (s.X >= _graphics.ViewT.X + _graphics.Offset.X && s.X <= _graphics.ViewB.X + _graphics.Offset.X)
+                if (s.X >= _draw.Left && s.X <= _draw.Right)
                 {
                     int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LANDXMAX);
                     int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LANDYMAX);

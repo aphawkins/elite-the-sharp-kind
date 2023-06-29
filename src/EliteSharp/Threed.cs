@@ -13,7 +13,7 @@ namespace EliteSharp
     internal sealed class Threed
     {
         private const int MAXPOLYS = 100;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly Vector3[] _pointList = new Vector3[100];
@@ -21,7 +21,7 @@ namespace EliteSharp
         private int _startPoly;
         private int _totalPolys;
 
-        internal Threed(GameState gameState, IGraphics graphics, Draw draw)
+        internal Threed(GameState gameState, IGraphics graphics, IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -33,11 +33,15 @@ namespace EliteSharp
         /// </summary>
         internal void DrawObject(IShip ship, IPlanetRenderer? planetRenderer = null)
         {
-            //Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
-            //  SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
-            //  SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
-            //  SCR.SCR_GAME_OVER or SCR.SCR_ESCAPE_CAPSULE or
-            //  SCR.SCR_MISSION_1);
+            if (_gameState.CurrentScreen is not Screen.FrontView and not Screen.RearView and
+                not Screen.LeftView and not Screen.RightView and
+                not Screen.IntroOne and not Screen.IntroTwo and
+                not Screen.GameOver and not Screen.EscapeCapsule and
+                not Screen.MissionOne)
+            {
+                return;
+            }
+
             if (ship.Flags.HasFlag(ShipFlags.Dead) && !ship.Flags.HasFlag(ShipFlags.Explosion))
             {
                 ship.Flags |= ShipFlags.Explosion;
@@ -159,20 +163,12 @@ namespace EliteSharp
                 {
                     Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
                     Vector3 r = vec + ship.Location;
-
-                    float sx = r.X * 256f / r.Z;
-                    float sy = r.Y * 256f / r.Z;
-
-                    sy = -sy;
-
-                    sx += 128;
-                    sy += 96;
-
-                    sx *= _graphics.Scale;
-                    sy *= _graphics.Scale;
-
-                    _pointList[np].X = sx;
-                    _pointList[np].Y = sy;
+                    Vector2 position = new(r.X, -r.Y);
+                    position *= 256 / r.Z;
+                    position += _draw.Centre / 2;
+                    position *= _graphics.Scale;
+                    _pointList[np].X = position.X;
+                    _pointList[np].Y = position.Y;
                     np++;
                 }
             }
@@ -193,7 +189,7 @@ namespace EliteSharp
 
                 for (int i = 0; i < 16; i++)
                 {
-                    Vector2 position = new(RNG.Random(-128, 127), RNG.Random(-128, 127));
+                    Vector2 position = new(RNG.Random(-128, 128), RNG.Random(-128, 128));
 
                     position.X = position.X * q / 256;
                     position.Y = position.Y * q / 256;
@@ -201,8 +197,8 @@ namespace EliteSharp
                     position.X = position.X + position.X + sx;
                     position.Y = position.Y + position.Y + sy;
 
-                    int sizex = RNG.Random(1, 2);
-                    int sizey = RNG.Random(1, 2);
+                    int sizex = RNG.Random(1, 3);
+                    int sizey = RNG.Random(1, 3);
 
                     for (int psy = 0; psy < sizey; psy++)
                     {
@@ -221,19 +217,10 @@ namespace EliteSharp
         /// </summary>
         private void DrawPlanet(IShip planet, IPlanetRenderer planetRenderer)
         {
-            Vector2 position = new()
-            {
-                X = planet.Location.X * 256 / planet.Location.Z,
-                Y = planet.Location.Y * 256 / planet.Location.Z,
-            };
-
-            position.Y = -position.Y;
-
-            position.X += 128;
-            position.Y += 96;
-
-            position.X *= _graphics.Scale;
-            position.Y *= _graphics.Scale;
+            Vector2 position = new(planet.Location.X, -planet.Location.Y);
+            position *= 256 / planet.Location.Z;
+            position += _draw.Centre / 2;
+            position *= _graphics.Scale;
 
             float radius = 6291456 / planet.Location.Length();
 
@@ -241,10 +228,10 @@ namespace EliteSharp
             //  radius = 6291456 / ship_vec.z;
             radius *= _graphics.Scale;
 
-            if ((position.X + radius < 0) ||
-                (position.X - radius > 511) ||
-                (position.Y + radius < 0) ||
-                (position.Y - radius > 383))
+            if ((position.X + radius < _draw.Left) ||
+                (position.X - radius > _draw.Right) ||
+                (position.Y + radius < _draw.Top) ||
+                (position.Y - radius > _draw.Bottom))
             {
                 return;
             }
@@ -349,8 +336,8 @@ namespace EliteSharp
                     vec.Z = 1;
                 }
 
-                vec.X = ((vec.X * 256 / vec.Z) + 128) * _graphics.Scale;
-                vec.Y = ((-vec.Y * 256 / vec.Z) + 96) * _graphics.Scale;
+                vec.X = ((vec.X * 256 / vec.Z) + (_draw.Centre.X / 2)) * _graphics.Scale;
+                vec.Y = ((-vec.Y * 256 / vec.Z) + (_draw.Centre.Y / 2)) * _graphics.Scale;
 
                 _pointList[i] = vec;
             }
@@ -390,7 +377,7 @@ namespace EliteSharp
                 Vector2[] pointList = new Vector2[]
                 {
                     new Vector2(_pointList[lasv].X, _pointList[lasv].Y),
-                    new(ship.Location.X > 0 ? 0 : 511, RNG.Random(255) * 2),
+                    new(ship.Location.X > 0 ? 0 : 511, RNG.Random(256) * 2),
                 };
 
                 DrawPolygonFilled(pointList, col, _pointList[lasv].Z);

@@ -9,12 +9,12 @@ namespace EliteSharp.Views
 {
     internal sealed class QuitView : IView
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
 
-        internal QuitView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard)
+        internal QuitView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -24,10 +24,9 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("GAME OPTIONS");
 
-            _graphics.DrawTextCentre(175, "QUIT GAME (Y/N)?", 140, Colour.Gold);
+            _graphics.DrawTextCentre(_draw.Centre.Y, "QUIT GAME (Y/N)?", FontSize.Large, Colour.Gold);
         }
 
         public void HandleInput()

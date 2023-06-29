@@ -19,9 +19,18 @@ namespace EliteSharp.Views
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Universe _universe;
+        private readonly IDraw _draw;
         private int _i;
 
-        internal GameOverView(GameState gameState, IGraphics graphics, AudioController audio, Stars stars, PlayerShip ship, Combat combat, Universe universe)
+        internal GameOverView(
+            GameState gameState,
+            IGraphics graphics,
+            AudioController audio,
+            Stars stars,
+            PlayerShip ship,
+            Combat combat,
+            Universe universe,
+            IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -30,9 +39,10 @@ namespace EliteSharp.Views
             _ship = ship;
             _combat = combat;
             _universe = universe;
+            _draw = draw;
         }
 
-        public void Draw() => _graphics.DrawTextCentre(190, "GAME OVER", 140, Colour.Gold);
+        public void Draw() => _graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", FontSize.Large, Colour.Gold);
 
         public void HandleInput()
         {
@@ -58,14 +68,14 @@ namespace EliteSharp.Views
             for (int i = 0; i < 5; i++)
             {
                 IShip cargo = RNG.TrueOrFalse() ? new CargoCannister() : new Alloy();
-                if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 31), RNG.Random(-32, 31), -400), VectorMaths.GetInitialMatrix(), 0, 0))
+                if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 32), RNG.Random(-32, 32), -400), VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     Debug.WriteLine("Failed to create Cargo");
                 }
 
-                cargo.RotZ = ((RNG.Random(255) * 2) & 255) - 128;
-                cargo.RotX = ((RNG.Random(255) * 2) & 255) - 128;
-                cargo.Velocity = RNG.Random(15);
+                cargo.RotZ = ((RNG.Random(256) * 2) & 255) - 128;
+                cargo.RotX = ((RNG.Random(256) * 2) & 255) - 128;
+                cargo.Velocity = RNG.Random(16);
             }
 
             _audio.PlayEffect(SoundEffect.Gameover);

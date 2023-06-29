@@ -14,7 +14,7 @@ namespace EliteSharp.Views
 {
     internal sealed class EquipmentView : IView
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
 
         private readonly EquipmentItem[] _equipmentStock = new EquipmentItem[]
         {
@@ -62,7 +62,7 @@ namespace EliteSharp.Views
         private readonly Trade _trade;
         private int _highlightedItem;
 
-        internal EquipmentView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
+        internal EquipmentView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -75,10 +75,9 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("EQUIP SHIP");
 
-            int y = 55;
+            float y = 55;
 
             for (int i = 0; i < _equipmentStock.Length; i++)
             {
@@ -89,22 +88,22 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(2, y + 1, 508, 15, Colour.LightRed);
+                    _graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, Colour.LightRed);
                 }
 
                 Colour col = _equipmentStock[i].CanBuy ? Colour.White : Colour.LightGrey;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
-                _graphics.DrawTextLeft(x, y, _equipmentStock[i].Name[1..], col);
+                _graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], col);
 
                 if (_equipmentStock[i].Price != 0)
                 {
-                    _graphics.DrawTextRight(450, y, $"{_equipmentStock[i].Price:N1}", col);
+                    _graphics.DrawTextRight(450 + _draw.Offset, y, $"{_equipmentStock[i].Price:N1}", col);
                 }
 
                 y += 15;
             }
 
-            _graphics.DrawTextLeft(16, 340, $"Cash: {_trade.Credits:N1} Credits", Colour.White);
+            _graphics.DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", Colour.White);
         }
 
         public void HandleInput()
@@ -394,11 +393,11 @@ namespace EliteSharp.Views
             EquipmentType.MilitaryRear => _ship.LaserRear.Type == LaserType.Military,
             EquipmentType.MilitaryLeft => _ship.LaserLeft.Type == LaserType.Military,
             EquipmentType.MilitaryRight => _ship.LaserRight.Type == LaserType.Military,
-            EquipmentType.PulseLaser => throw new NotImplementedException(),
-            EquipmentType.BeamLaser => throw new NotImplementedException(),
-            EquipmentType.MiningLaser => throw new NotImplementedException(),
-            EquipmentType.MilitaryLaser => throw new NotImplementedException(),
-            EquipmentType.None => throw new NotImplementedException(),
+            EquipmentType.PulseLaser => false,
+            EquipmentType.BeamLaser => false,
+            EquipmentType.MiningLaser => false,
+            EquipmentType.MilitaryLaser => false,
+            EquipmentType.None => false,
             _ => false,
         };
     }

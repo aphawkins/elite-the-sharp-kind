@@ -53,6 +53,11 @@ namespace EliteSharp.Save
         {
             try
             {
+                if (!File.Exists(name + FileExtension))
+                {
+                    return false;
+                }
+
                 using FileStream stream = File.OpenRead(name + FileExtension);
                 SaveState? save = await JsonSerializer.DeserializeAsync<SaveState>(stream, _options).ConfigureAwait(false);
                 if (save != null)

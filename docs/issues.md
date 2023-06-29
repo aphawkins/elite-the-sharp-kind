@@ -5,9 +5,14 @@
 - Check mission triggers (FAQ)
 - Check ship stats (FAQ)
 - Widescreen support
+- Remove all anti-alias references
+- Make number of stars proportional to screen size
+- Shouldn't have to clear display on views
 
 ## Future (create github issues)
-- Sun is missing in initial system (stations and suns can't coexist)
+- Inject options
+- Fix graphics scale setting rendering issues
+- Make Sun and Stations coexist?
 - Laser target shape by type
 - Joystick support needs adding back
 - Intro2 parade doesn't show all ships, maybe it should
@@ -18,4 +23,8 @@
 - Separate game speed from framerate
 - Wireframe planet at the moment we just draw a circle. Need to add in the two arcs and crater that the original Elite had
 - Bits of hidden surfaces on ships sometimes show through.  
-- Buying more than 255g of Gold/Platinum doesn't work.  It didn't in the original Elite either.  Broken as designed.  
+- Buying more than 255g of Gold/Platinum doesn't work.  It didn't in the original Elite either.  Broken as designed.
+- Add more Sun styles
+- Make window resizable
+- Use System.Numerics for all matrix and vector maths
+- Separate tactics from rendering?

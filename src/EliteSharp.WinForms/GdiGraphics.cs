@@ -10,7 +10,6 @@ namespace EliteSharp.WinForms
 {
     internal sealed class GdiGraphics : IGraphics
     {
-        private const int ScannerHeight = 128;
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
@@ -20,6 +19,7 @@ namespace EliteSharp.WinForms
         private readonly System.Drawing.Graphics _screenBufferGraphics;
         private readonly System.Drawing.Graphics _screenGraphics;
         private readonly object _screenLock = new();
+        private readonly Color _transparentColour = Color.FromArgb(0, 255, 0, 255);
         private RectangleF _clipRegion;
         private bool _isDisposed;
 
@@ -30,7 +30,8 @@ namespace EliteSharp.WinForms
             _screenBuffer = new Bitmap(screen.Width, screen.Height);
             _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
-            Centre = new(screen.Width / 2, (screen.Height - ScannerHeight) / 2);
+            ScreenWidth = screen.Width;
+            ScreenHeight = screen.Height;
 
             foreach (Colour colour in Enum.GetValues<Colour>())
             {
@@ -39,17 +40,14 @@ namespace EliteSharp.WinForms
             }
         }
 
-        public Vector2 Centre { get; init; }
-
-        public Vector2 Offset { get; private set; } = new(0, 0);
+        public float ScreenHeight { get; }
 
         public float Scale { get; } = 2;
 
-        public Vector2 ViewB { get; private set; } = new(509, 381);
+        public float ScreenWidth { get; }
 
-        public Vector2 ViewT { get; private set; } = new(1, 1);
-
-        public void ClearArea(float x, float y, float width, float height) => _screenBufferGraphics.FillRectangle(Brushes.Black, x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+        public void ClearArea(Vector2 position, float width, float height) =>
+            _screenBufferGraphics.FillRectangle(Brushes.Black, position.X, position.Y, width, height);
 
         public void Dispose()
         {
@@ -58,25 +56,25 @@ namespace EliteSharp.WinForms
             GC.SuppressFinalize(this);
         }
 
-        public void DrawCircle(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
+        public void DrawCircle(Vector2 centre, float radius, Colour colour) =>
+            _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) => _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X + Offset.X - radius, centre.Y + Offset.Y - radius, 2 * radius, 2 * radius);
+        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) =>
+            _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawImage(Graphics.Image spriteImgage, Vector2 location)
+        public void DrawImage(Graphics.Image image, Vector2 position) => _screenBufferGraphics.DrawImage(_images[image], position.X, position.Y);
+
+        public void DrawImageCentre(Graphics.Image image, float y)
         {
-            Bitmap sprite = _images[spriteImgage];
-
-            if (location.X < 0)
-            {
-                location.X = ((256 * Scale) - sprite.Width) / 2;
-            }
-
-            _screenBufferGraphics.DrawImage(sprite, location.X + Offset.X, location.Y + Offset.Y);
+            float x = (ScreenWidth - _images[image].Width) / 2;
+            DrawImage(image, new(x, y));
         }
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => _screenBufferGraphics.DrawLine(_pens[Colour.White], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) =>
+            _screenBufferGraphics.DrawLine(_pens[Colour.White], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour) => _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X + Offset.X, lineStart.Y + Offset.Y, lineEnd.X + Offset.X, lineEnd.Y + Offset.Y);
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour) =>
+            _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
 
         public void DrawPixel(Vector2 position, Colour colour)
         {
@@ -89,7 +87,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBuffer.SetPixel((int)(position.X + Offset.X), (int)(position.Y + Offset.Y), _pens[colour].Color);
+            _screenBuffer.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color);
         }
 
         public void DrawPixelFast(Vector2 position, Colour colour) =>
@@ -103,7 +101,7 @@ namespace EliteSharp.WinForms
 
             for (int i = 0; i < pointList.Length; i++)
             {
-                points[i] = new PointF(pointList[i].X + Offset.X, pointList[i].Y + Offset.Y);
+                points[i] = new PointF(pointList[i].X, pointList[i].Y);
             }
 
             _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
@@ -115,36 +113,45 @@ namespace EliteSharp.WinForms
 
             for (int i = 0; i < pointList.Length; i++)
             {
-                points[i] = new PointF(pointList[i].X + Offset.X, pointList[i].Y + Offset.Y);
+                points[i] = new PointF(pointList[i].X, pointList[i].Y);
             }
 
             _screenBufferGraphics.FillPolygon(_pens[faceColour].Brush, points);
         }
 
-        public void DrawRectangle(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.DrawRectangle(_pens[colour], x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+        public void DrawRectangle(Vector2 position, float width, float height, Colour colour) =>
+            _screenBufferGraphics.DrawRectangle(_pens[colour], position.X, position.Y, width, height);
 
-        public void DrawRectangleFilled(float x, float y, float width, float height, Colour colour) => _screenBufferGraphics.FillRectangle(_pens[colour].Brush, x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+        public void DrawRectangleCentre(float y, float width, float height, Colour colour) =>
+            _screenBufferGraphics.DrawRectangle(
+                _pens[colour],
+                (ScreenWidth - width) / 2,
+                y / (2 / Scale),
+                width,
+                height);
 
-        public void DrawTextCentre(float y, string text, int psize, Colour colour)
+        public void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour) =>
+            _screenBufferGraphics.FillRectangle(_pens[colour].Brush, position.X, position.Y, width, height);
+
+        public void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour)
         {
             using StringFormat stringFormat = new()
             {
                 Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center,
             };
 
-            PointF point = new((128 * Scale) + Offset.X, (y / (2 / Scale)) + Offset.Y);
             _screenBufferGraphics.DrawString(
                 text,
-                psize == 140 ? _fontLarge : _fontSmall,
+                fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 _pens[colour].Brush,
-                point,
+                ScreenWidth / 2,
+                y / (2 / Scale),
                 stringFormat);
         }
 
-        public void DrawTextLeft(float x, float y, string text, Colour colour)
+        public void DrawTextLeft(Vector2 position, string text, Colour colour)
         {
-            PointF point = new((x / (2 / Scale)) + Offset.X, (y / (2 / Scale)) + Offset.Y);
+            PointF point = new(position.X / (2 / Scale), position.Y / (2 / Scale));
             _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point);
         }
 
@@ -155,17 +162,22 @@ namespace EliteSharp.WinForms
                 Alignment = StringAlignment.Far,
             };
 
-            PointF point = new((x / (2 / Scale)) + Offset.X, (y / (2 / Scale)) + Offset.Y);
-            _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point, stringFormat);
+            _screenBufferGraphics.DrawString(
+                text,
+                _fontSmall,
+                _pens[colour].Brush,
+                x / (2 / Scale),
+                y / (2 / Scale),
+                stringFormat);
         }
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Colour colour)
         {
             PointF[] points = new PointF[3]
             {
-                new(a.X += Offset.X, a.Y += Offset.Y),
-                new(b.X += Offset.X, b.Y += Offset.Y),
-                new(c.X += Offset.X, c.Y += Offset.Y),
+                new(a.X, a.Y),
+                new(b.X, b.Y),
+                new(c.X, c.Y),
             };
 
             _screenBufferGraphics.DrawLines(_pens[colour], points);
@@ -175,15 +187,19 @@ namespace EliteSharp.WinForms
         {
             PointF[] points = new PointF[3]
             {
-                new(a.X += Offset.X, a.Y += Offset.Y),
-                new(b.X += Offset.X, b.Y += Offset.Y),
-                new(c.X += Offset.X, c.Y += Offset.Y),
+                new(a.X, a.Y),
+                new(b.X, b.Y),
+                new(c.X, c.Y),
             };
 
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(Graphics.Image imgType, byte[] bitmapBytes) => _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(new MemoryStream(bitmapBytes));
+        public void LoadBitmap(Graphics.Image imgType, byte[] bitmapBytes)
+        {
+            _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(new MemoryStream(bitmapBytes));
+            _images[imgType].MakeTransparent(_transparentColour);
+        }
 
         public void ScreenAcquire()
         {
@@ -202,13 +218,13 @@ namespace EliteSharp.WinForms
         {
             lock (_screenLock)
             {
-                _screenGraphics.DrawImage(_screenBuffer, Offset.X, Offset.Y);
+                _screenGraphics.DrawImage(_screenBuffer, 0, 0);
             }
         }
 
-        public void SetClipRegion(float x, float y, float width, float height)
+        public void SetClipRegion(Vector2 position, float width, float height)
         {
-            _clipRegion = new RectangleF(x + Offset.X, y + Offset.Y, width + Offset.X, height + Offset.Y);
+            _clipRegion = new RectangleF(position.X, position.Y, width, height);
             _screenBufferGraphics.Clip = new Region(_clipRegion);
         }
 

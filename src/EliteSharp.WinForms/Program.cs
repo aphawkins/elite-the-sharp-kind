@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-//#define WIDESCREEN
 using EliteSharp.Audio;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
@@ -32,12 +31,14 @@ namespace EliteSharp.WinForms
                 IKeyboard keyboard = new Keyboard();
                 using CancellationTokenSource source = new();
                 CancellationToken token = source.Token;
-#if WIDESCREEN
+#if QHD
                 using GameWindow window = new(960, 540, keyboard);
 #else
                 using GameWindow window = new(512, 512, keyboard);
 #endif
-                using IGraphics graphics = new GdiGraphics(window.ScreenBitmap);
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                IGraphics graphics = new GdiGraphics(window.ScreenBitmap);
+#pragma warning restore CA2000 // Dispose objects before losing scope
                 EliteMain game = new(graphics, sound, keyboard);
                 game.RunAsync(token);
                 Application.Run(window);

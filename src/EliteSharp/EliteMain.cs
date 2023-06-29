@@ -23,7 +23,7 @@ namespace EliteSharp
         private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly ConfigFile _configFile;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -48,37 +48,39 @@ namespace EliteSharp
             _graphics = graphics;
             _audio = new(sound);
             _keyboard = keyboard;
-            _gameState = new(_keyboard, _views);
+            _configFile = new();
+            _gameState = new(_keyboard, _views)
+            {
+                Config = _configFile.ReadConfigAsync().Result,
+            };
+
             _universe = new();
             _ship = new();
             _trade = new(_gameState, _ship);
             _planet = new(_gameState);
-            _draw = new(_graphics);
+            _draw = new Draw(_graphics, _gameState.Config.IsViewFullFrame);
             _threed = new(_gameState, _graphics, _draw);
-            _stars = new(_gameState, _graphics, _ship);
+            _stars = new(_gameState, _graphics, _draw, _ship);
             _pilot = new(_audio, _universe, _ship);
             _combat = new(_gameState, _audio, _ship, _trade, _pilot, _universe);
             _save = new(_gameState, _ship, _trade, _planet);
-            _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars, _universe);
+            _space = new(_gameState, _graphics, _threed, _audio, _pilot, _combat, _trade, _ship, _planet, _stars, _universe, _draw);
             _scanner = new(_gameState, _graphics, _draw, _universe, _ship, _combat);
-            _configFile = new();
 
-            _gameState.Config = _configFile.ReadConfigAsync().Result;
-
-            _views.Add(Screen.IntroOne, new Intro1View(_gameState, _graphics, _audio, keyboard, _ship, _combat, _universe));
-            _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _graphics, _audio, keyboard, _stars, _ship, _combat, _universe));
+            _views.Add(Screen.IntroOne, new Intro1View(_gameState, _graphics, _audio, keyboard, _ship, _combat, _universe, _draw));
+            _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _graphics, _audio, keyboard, _stars, _ship, _combat, _universe, _draw));
             _views.Add(Screen.GalacticChart, new GalacticChartView(_gameState, _graphics, _draw, keyboard, _planet, _ship));
             _views.Add(Screen.ShortRangeChart, new ShortRangeChartView(_gameState, _graphics, _draw, keyboard, _planet, _ship));
             _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _graphics, _draw, _planet));
             _views.Add(Screen.MarketPrices, new MarketView(_gameState, _graphics, _draw, keyboard, _trade, _planet));
             _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _graphics, _draw, _ship, _trade, _planet, _universe));
-            _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.RightView, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space));
-            _views.Add(Screen.Docking, new DockingView(_gameState, _graphics, _audio, _space, _combat, _universe));
-            _views.Add(Screen.Undocking, new LaunchView(_gameState, _graphics, _audio, _space, _combat, _universe));
-            _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _graphics, _audio));
+            _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space, _draw));
+            _views.Add(Screen.RearView, new PilotRearView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space, _draw));
+            _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space, _draw));
+            _views.Add(Screen.RightView, new PilotRightView(_gameState, _graphics, keyboard, _stars, _pilot, _ship, _space, _draw));
+            _views.Add(Screen.Docking, new DockingView(_gameState, _graphics, _audio, _space, _combat, _universe, _draw));
+            _views.Add(Screen.Undocking, new LaunchView(_gameState, _graphics, _audio, _space, _combat, _universe, _draw));
+            _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _graphics, _audio, _draw));
             _views.Add(Screen.Inventory, new InventoryView(_graphics, _draw, _ship, _trade));
             _views.Add(Screen.EquipShip, new EquipmentView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _scanner));
             _views.Add(Screen.Options, new OptionsView(_gameState, _graphics, _draw, keyboard));
@@ -88,8 +90,8 @@ namespace EliteSharp
             _views.Add(Screen.Settings, new SettingsView(_gameState, _graphics, _draw, keyboard, _configFile));
             _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _graphics, _draw, keyboard, _ship, _trade, _combat, _universe));
             _views.Add(Screen.MissionTwo, new ThargoidMissionView(_gameState, _graphics, _draw, keyboard, _ship));
-            _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _graphics, _audio, _stars, _ship, _trade, _universe, _pilot));
-            _views.Add(Screen.GameOver, new GameOverView(_gameState, _graphics, _audio, _stars, _ship, _combat, _universe));
+            _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _graphics, _audio, _stars, _ship, _trade, _universe, _pilot, _draw));
+            _views.Add(Screen.GameOver, new GameOverView(_gameState, _graphics, _audio, _stars, _ship, _combat, _universe, _draw));
 
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
         }
@@ -98,8 +100,6 @@ namespace EliteSharp
         {
             await _audio.LoadSoundsAsync(token).ConfigureAwait(false);
             await _draw.LoadImagesAsync(token).ConfigureAwait(false);
-            _draw.DrawBorder();
-
             long startTicks = DateTime.UtcNow.Ticks;
             long interval = (long)(100000 / _gameState.Config.Fps); // *10^-5
 
@@ -109,7 +109,6 @@ namespace EliteSharp
 
                 if ((runtime / 100 % interval) == 0)
                 {
-                    //Task.Run(() => DrawFrame());
                     DrawFrame();
                 }
             }
@@ -136,7 +135,7 @@ namespace EliteSharp
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _graphics.DrawTextLeft(450, 10, $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
+            _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
         }
 
         private void DrawFrame()
@@ -184,7 +183,8 @@ namespace EliteSharp
             InitialiseGame();
 
             _audio.UpdateSound();
-            _graphics.SetClipRegion(1, 1, 510, 383);
+            _draw.DrawBorder();
+            _draw.SetViewClipRegion();
 
             _ship.IsRolling = false;
             _ship.IsClimbing = false;
@@ -222,9 +222,6 @@ namespace EliteSharp
             _gameState.CurrentView!.UpdateUniverse();
             _space.UpdateUniverse();
             _gameState.CurrentView.Draw();
-            _scanner.UpdateConsole();
-            _gameState.CurrentView.HandleInput();
-
 #if DEBUG
             DrawFps();
 #endif
@@ -235,12 +232,12 @@ namespace EliteSharp
 
                 if (_gameState.MessageCount > 0)
                 {
-                    _graphics.DrawTextCentre(358, _gameState.MessageString, 120, Colour.White);
+                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontSize.Small, Colour.White);
                 }
 
                 if (_space.IsHyperspaceReady)
                 {
-                    _space.DisplayHyperStatus();
+                    _draw.DrawHyperspaceCountdown(_space.HyperCountdown);
                     if ((_gameState.MCount & 3) == 0)
                     {
                         _space.CountdownHyperspace();
@@ -281,6 +278,11 @@ namespace EliteSharp
 
                 _combat.TimeECM();
             }
+
+            _draw.SetFullScreenClipRegion();
+
+            _scanner.UpdateConsole();
+            _gameState.CurrentView.HandleInput();
 
             _graphics.ScreenUpdate();
         }

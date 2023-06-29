@@ -65,17 +65,17 @@ namespace EliteSharp
         {
             Vector3 position = new()
             {
-                X = 1000 + RNG.Random(8191),
-                Y = 1000 + RNG.Random(8191),
+                X = 1000 + RNG.Random(8192),
+                Y = 1000 + RNG.Random(8192),
                 Z = 12000,
             };
 
-            if (RNG.Random(255) > 127)
+            if (RNG.Random(256) > 127)
             {
                 position.X = -position.X;
             }
 
-            if (RNG.Random(255) > 127)
+            if (RNG.Random(256) > 127)
             {
                 position.Y = -position.Y;
             }

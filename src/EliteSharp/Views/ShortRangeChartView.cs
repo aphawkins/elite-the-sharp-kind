@@ -12,7 +12,7 @@ namespace EliteSharp.Views
 {
     internal sealed class ShortRangeChartView : IView
     {
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -24,7 +24,7 @@ namespace EliteSharp.Views
         private string _findName = string.Empty;
         private bool _isFind;
 
-        internal ShortRangeChartView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard, PlanetController planet, PlayerShip ship)
+        internal ShortRangeChartView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, PlanetController planet, PlayerShip ship)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -37,11 +37,10 @@ namespace EliteSharp.Views
         public void Draw()
         {
             // Header
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("SHORT RANGE CHART");
 
             // Fuel radius
-            Vector2 centre = _graphics.Centre;
+            Vector2 centre = _draw.Centre;
             float radius = _ship.Fuel * 10 * _graphics.Scale;
             float cross_size = 16 * _graphics.Scale;
             _graphics.DrawCircle(centre, radius, Colour.Green);
@@ -51,7 +50,7 @@ namespace EliteSharp.Views
             // Planets
             foreach ((Vector2 position, string name) in _planetNames)
             {
-                _graphics.DrawTextLeft(position.X, position.Y, name, Colour.White);
+                _graphics.DrawTextLeft(position, name, Colour.White);
             }
 
             foreach ((Vector2 position, float size) in _planetSizes)
@@ -59,30 +58,28 @@ namespace EliteSharp.Views
                 _graphics.DrawCircleFilled(position, size, Colour.Gold);
             }
 
-            // Moving cross
+            // Cross
             centre = new(_gameState.Cross.X, _gameState.Cross.Y);
-            _graphics.SetClipRegion(1, 37, 510, 339);
             _graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), Colour.LighterRed);
             _graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), Colour.LighterRed);
-            _graphics.SetClipRegion(1, 1, 510, 383);
 
             // Text
             if (_isFind)
             {
-                _graphics.DrawTextLeft(16, 340, "Planet Name?", Colour.Green);
-                _graphics.DrawTextLeft(16, 356, _findName, Colour.White);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", Colour.Green);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, Colour.White);
             }
             else if (string.IsNullOrEmpty(_gameState.PlanetName))
             {
-                _graphics.DrawTextLeft(16, 340, "Unknown Planet", Colour.Green);
-                _graphics.DrawTextLeft(16, 356, _findName, Colour.White);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", Colour.Green);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, Colour.White);
             }
             else
             {
-                _graphics.DrawTextLeft(16, 340, _gameState.PlanetName, Colour.Green);
+                _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), _gameState.PlanetName, Colour.Green);
                 if (_gameState.DistanceToPlanet > 0)
                 {
-                    _graphics.DrawTextLeft(16, 356, $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White);
+                    _graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White);
                 }
             }
         }
@@ -123,7 +120,7 @@ namespace EliteSharp.Views
 
             if (_keyboard.IsKeyPressed(CommandKey.Origin))
             {
-                _gameState.Cross = _graphics.Centre;
+                _gameState.Cross = _draw.Centre;
                 CalculateDistanceToPlanet();
             }
 
@@ -193,12 +190,12 @@ namespace EliteSharp.Views
                 float px = glx.D - _gameState.DockedPlanet.D;
 
                 // Convert to screen co-ords
-                px = (px * 4 * _graphics.Scale) + _graphics.Centre.X;
+                px = (px * 4 * _graphics.Scale) + _draw.Centre.X;
 
                 float py = glx.B - _gameState.DockedPlanet.B;
 
                 // Convert to screen co-ords
-                py = (py * 2 * _graphics.Scale) + _graphics.Centre.Y;
+                py = (py * 2 * _graphics.Scale) + _draw.Centre.Y;
 
                 int row = (int)(py / (8 * _graphics.Scale));
 
@@ -262,8 +259,8 @@ namespace EliteSharp.Views
         {
             Vector2 location = new()
             {
-                X = ((_gameState.Cross.X - _graphics.Centre.X) / (4 * _graphics.Scale)) + _gameState.DockedPlanet.D,
-                Y = ((_gameState.Cross.Y - _graphics.Centre.Y) / (2 * _graphics.Scale)) + _gameState.DockedPlanet.B,
+                X = ((_gameState.Cross.X - _draw.Centre.X) / (4 * _graphics.Scale)) + _gameState.DockedPlanet.D,
+                Y = ((_gameState.Cross.Y - _draw.Centre.Y) / (2 * _graphics.Scale)) + _gameState.DockedPlanet.B,
             };
 
             _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
@@ -273,8 +270,8 @@ namespace EliteSharp.Views
         }
 
         private void CrossFromHyperspacePlanet() => _gameState.Cross = new(
-            ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _graphics.Scale) + _graphics.Centre.X,
-            ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _graphics.Scale) + _graphics.Centre.Y);
+            ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _graphics.Scale) + _draw.Centre.X,
+            ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _graphics.Scale) + _draw.Centre.Y);
 
         /// <summary>
         /// Move the planet chart cross hairs to specified position.

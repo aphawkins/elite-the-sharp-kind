@@ -19,18 +19,20 @@ namespace EliteSharp.Views
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Space _space;
+        private readonly IDraw _draw;
         private int _drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space)
+        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space, IDraw draw)
         {
             _gameState = gameState;
             _graphics = graphics;
             _keyboard = keyboard;
-            _laser = new LaserDraw(_gameState, _graphics);
+            _laser = new LaserDraw(_gameState, _graphics, draw);
             _pilot = pilot;
             _ship = ship;
             _stars = stars;
             _space = space;
+            _draw = draw;
         }
 
         public void Draw()
@@ -42,11 +44,11 @@ namespace EliteSharp.Views
 
             if (_space.HyperGalactic)
             {
-                _graphics.DrawTextCentre(358, "Galactic Hyperspace", 120, Colour.White);
+                _graphics.DrawTextCentre(358, "Galactic Hyperspace", FontSize.Small, Colour.White);
             }
             else if (_space.HyperCountdown > 0)
             {
-                _graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", 120, Colour.White);
+                _graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", FontSize.Small, Colour.White);
             }
         }
 
@@ -122,6 +124,6 @@ namespace EliteSharp.Views
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
-        internal void DrawViewName(string name) => _graphics.DrawTextCentre(32, name, 120, Colour.White);
+        internal void DrawViewName(string name) => _graphics.DrawTextCentre(_draw.Top + 10, name, FontSize.Small, Colour.White);
     }
 }

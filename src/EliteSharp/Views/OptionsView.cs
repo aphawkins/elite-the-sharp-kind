@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 
@@ -11,7 +12,7 @@ namespace EliteSharp.Views
     {
         private const int OptionBarHeight = 15;
         private const int OptionBarWidth = 400;
-        private readonly Draw _draw;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -26,7 +27,7 @@ namespace EliteSharp.Views
 
         private int _highlightedItem;
 
-        internal OptionsView(GameState gameState, IGraphics graphics, Draw draw, IKeyboard keyboard)
+        internal OptionsView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard)
         {
             _gameState = gameState;
             _graphics = graphics;
@@ -36,29 +37,26 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.ClearDisplay();
             _draw.DrawViewHeader("GAME OPTIONS");
 
             for (int i = 0; i < _optionList.Length; i++)
             {
-                int y = (384 - (30 * _optionList.Length)) / 2;
-                y += i * 30;
+                Vector2 position = new(_draw.Centre.X - (OptionBarWidth / 2), ((_draw.ScannerTop - (30 * _optionList.Length)) / 2) + (i * 30));
 
                 if (i == _highlightedItem)
                 {
-                    float x = _graphics.Centre.X - (OptionBarWidth / 2);
-                    _graphics.DrawRectangleFilled(x, y - 7, OptionBarWidth, OptionBarHeight, Colour.LightRed);
+                    _graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, Colour.LightRed);
                 }
 
                 Colour col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? Colour.LightGrey : Colour.White;
 
-                _graphics.DrawTextCentre(y, _optionList[i].Label, 120, col);
+                _graphics.DrawTextCentre(position.Y, _optionList[i].Label, FontSize.Small, col);
             }
 
-            _graphics.DrawTextCentre(300, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", 120, Colour.White);
-            _graphics.DrawTextCentre(320, "The Sharp Kind - Andy Hawkins 2023", 120, Colour.White);
-            _graphics.DrawTextCentre(340, "The New Kind - Christian Pinder 1999-2001", 120, Colour.White);
-            _graphics.DrawTextCentre(360, "Original Code - Ian Bell & David Braben", 120, Colour.White);
+            _graphics.DrawTextCentre(_draw.ScannerTop - 80, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", FontSize.Small, Colour.White);
+            _graphics.DrawTextCentre(_draw.ScannerTop - 60, "The Sharp Kind - Andy Hawkins 2023", FontSize.Small, Colour.White);
+            _graphics.DrawTextCentre(_draw.ScannerTop - 40, "The New Kind - Christian Pinder 1999-2001", FontSize.Small, Colour.White);
+            _graphics.DrawTextCentre(_draw.ScannerTop - 20, "Original Code - Ian Bell & David Braben", FontSize.Small, Colour.White);
         }
 
         public void HandleInput()

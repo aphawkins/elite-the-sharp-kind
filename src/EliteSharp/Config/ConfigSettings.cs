@@ -19,5 +19,10 @@ namespace EliteSharp.Config
         public PlanetType PlanetRenderStyle { get; set; } = PlanetType.Fractal;
 
         public bool UseWireframe { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether to use all of the area to render the view.
+        /// </summary>
+        public bool IsViewFullFrame { get; }
     }
 }

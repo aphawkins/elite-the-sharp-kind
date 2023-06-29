@@ -9,42 +9,76 @@ using EliteSharp.Ships;
 
 namespace EliteSharp.Views
 {
-    internal sealed class Draw
+    internal sealed class Draw : IDraw
     {
         private readonly IGraphics _graphics;
+        private readonly bool _isViewFullFrame;
 
-        internal Draw(IGraphics graphics) => _graphics = graphics;
-
-        internal void ClearDisplay() => _graphics.ClearArea(_graphics.Offset.X + 1, _graphics.Offset.Y + 1, 510 + _graphics.Offset.X, 383 + _graphics.Offset.Y);
-
-        internal void DrawBorder()
+        internal Draw(IGraphics graphics, bool isViewFullFrame)
         {
-            _graphics.DrawLine(new(0, 0), new(0, 384));
-            _graphics.DrawLine(new(0, 0), new(511, 0));
-            _graphics.DrawLine(new(511, 0), new(511, 384));
+            _graphics = graphics;
+            _isViewFullFrame = isViewFullFrame;
         }
 
-        internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_graphics.Offset.X, 385 + _graphics.Offset.Y));
+        public float Bottom => _isViewFullFrame ? _graphics.ScreenHeight - BorderWidth : _graphics.ScreenHeight - ScannerHeight;
 
-        internal void DrawSun(IShip planet)
+        public Vector2 Centre => new(_graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
+
+        public bool IsWidescreen { get; }
+
+        public float Left => BorderWidth;
+
+        public float Offset => ScannerLeft;
+
+        public float Right => _graphics.ScreenWidth - BorderWidth;
+
+        public float ScannerLeft => Centre.X - (ScannerWidth / 2);
+
+        public float ScannerRight => ScannerLeft + ScannerWidth - 1;
+
+        public float ScannerTop => _graphics.ScreenHeight - ScannerHeight;
+
+        public float Top => BorderWidth;
+
+        internal float Height => Bottom - BorderWidth;
+
+        internal float Width => _graphics.ScreenWidth - (2 * BorderWidth);
+
+        private static float BorderWidth => 1;
+
+        private static float ScannerHeight => 129;
+
+        private static float ScannerWidth => 512;
+
+        public void ClearDisplay() => _graphics.ClearArea(new(Left, Top), Width, Height);
+
+        public void DrawBorder()
         {
-            Vector2 centre = new()
+            for (int i = 0; i < BorderWidth; i++)
             {
-                X = ((planet.Location.X * 256 / planet.Location.Z) + 128) * _graphics.Scale,
-                Y = ((-planet.Location.Y * 256 / planet.Location.Z) + 96) * _graphics.Scale,
-            };
+                _graphics.DrawRectangle(new(i, i), _graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), Colour.White);
+            }
+        }
+
+        public void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", Colour.White);
+
+        public void DrawSun(IShip planet)
+        {
+            Vector2 centre = new(planet.Location.X, -planet.Location.Y);
+
+            centre *= 256 / planet.Location.Z;
+            centre += Centre / 2;
+            centre *= _graphics.Scale;
 
             float radius = 6291456 / planet.Location.Length() * _graphics.Scale;
 
-            if ((centre.X + radius < 0) ||
-                (centre.X - radius > 511) ||
-                (centre.Y + radius < 0) ||
-                (centre.Y - radius > 383))
+            if ((centre.X + radius < Left) ||
+                (centre.X - radius > Right) ||
+                (centre.Y + radius < Top) ||
+                (centre.Y - radius > Bottom))
             {
                 return;
             }
-
-            centre += _graphics.Offset;
 
             float s = -radius;
             float x = radius;
@@ -75,10 +109,10 @@ namespace EliteSharp.Views
             }
         }
 
-        internal void DrawTextPretty(float x, float y, float width, string text)
+        public void DrawTextPretty(Vector2 position, float width, string text)
         {
             int i = 0;
-            float maxlen = (width - x) / 8;
+            float maxlen = width / 8;
             int previous = i;
 
             while (i < text.Length)
@@ -92,19 +126,23 @@ namespace EliteSharp.Views
                 }
 
                 i++;
-                _graphics.DrawTextLeft(x + _graphics.Offset.X, y + _graphics.Offset.Y, text[previous..i], Colour.White);
+                _graphics.DrawTextLeft(position, text[previous..i], Colour.White);
                 previous = i;
-                y += 8 * _graphics.Scale;
+                position.Y += 8 * _graphics.Scale;
             }
         }
 
-        internal void DrawViewHeader(string title)
+        public void DrawViewHeader(string title)
         {
-            _graphics.DrawTextCentre(20, title, 140, Colour.Gold);
-            _graphics.DrawLine(new(0, 36), new(511, 36));
+            _graphics.DrawTextCentre(Top + 10, title, FontSize.Large, Colour.Gold);
+            _graphics.DrawLine(new(Left, 36), new(Right, 36));
+
+            // Vertical lines
+            _graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), Colour.Yellow);
+            _graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), Colour.Yellow);
         }
 
-        internal async Task LoadImagesAsync(CancellationToken token)
+        public async Task LoadImagesAsync(CancellationToken token)
         {
             AssetFileLoader loader = new();
             ParallelOptions options = new()
@@ -119,6 +157,10 @@ namespace EliteSharp.Views
                 .ConfigureAwait(false);
         }
 
+        public void SetFullScreenClipRegion() => _graphics.SetClipRegion(new(0, 0), _graphics.ScreenWidth, _graphics.ScreenHeight);
+
+        public void SetViewClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
+
         private void RenderSunLine(Vector2 centre, float x, float y, float radius)
         {
             Vector2 s = new()
@@ -126,8 +168,7 @@ namespace EliteSharp.Views
                 Y = centre.Y + y,
             };
 
-            if (s.Y < _graphics.ViewT.Y + _graphics.Offset.Y ||
-                s.Y > _graphics.ViewB.Y + _graphics.Offset.Y)
+            if (s.Y < Top || s.Y > Bottom)
             {
                 return;
             }
@@ -135,32 +176,31 @@ namespace EliteSharp.Views
             s.X = centre.X - x;
             float ex = centre.X + x;
 
-            s.X -= radius * RNG.Random(2, 9) / 256f;
-            ex += radius * RNG.Random(2, 9) / 256f;
+            s.X -= radius * RNG.Random(2, 10) / 256f;
+            ex += radius * RNG.Random(2, 10) / 256f;
 
-            if ((s.X > _graphics.ViewB.X + _graphics.Offset.X) ||
-                (ex < _graphics.ViewT.X + _graphics.Offset.X))
+            if (ex < Left || s.X > Right)
             {
                 return;
             }
 
-            if (s.X < _graphics.ViewT.X + _graphics.Offset.X)
+            if (s.X < Left)
             {
-                s.X = _graphics.ViewT.X + _graphics.Offset.X;
+                s.X = Left;
             }
 
-            if (ex > _graphics.ViewB.X + _graphics.Offset.X)
+            if (ex > Right)
             {
-                ex = _graphics.ViewB.X + _graphics.Offset.X;
+                ex = Right;
             }
 
-            float inner = radius * (200 + RNG.Random(7)) / 256;
+            float inner = radius * (200 + RNG.Random(8)) / 256;
             inner *= inner;
 
-            float inner2 = radius * (220 + RNG.Random(7)) / 256;
+            float inner2 = radius * (220 + RNG.Random(8)) / 256;
             inner2 *= inner2;
 
-            float outer = radius * (239 + RNG.Random(7)) / 256;
+            float outer = radius * (239 + RNG.Random(8)) / 256;
             outer *= outer;
 
             float dy = y * y;

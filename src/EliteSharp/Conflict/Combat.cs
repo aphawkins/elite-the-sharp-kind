@@ -135,7 +135,7 @@ namespace EliteSharp.Conflict
                 thargoid.Flags = ShipFlags.Angry | ShipFlags.HasECM;
                 thargoid.Bravery = 113;
 
-                if (RNG.Random(255) > 64 && !LaunchEnemy(thargoid, new Tharglet(), ShipFlags.Angry | ShipFlags.HasECM, 96))
+                if (RNG.Random(256) > 64 && !LaunchEnemy(thargoid, new Tharglet(), ShipFlags.Angry | ShipFlags.HasECM, 96))
                 {
                     Debug.Fail("Failed to create Tharglet");
                 }
@@ -295,7 +295,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (RNG.Random(255) == 136)
+            if (RNG.Random(256) == 136)
             {
                 if (((int)_universe.Planet!.Location.Z & 0x3e) != 0)
                 {
@@ -309,7 +309,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (RNG.Random(7) == 0)
+            if (RNG.Random(8) == 0)
             {
                 CreateTrader();
                 return;
@@ -329,7 +329,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (_gameState.Cmdr.Mission == 5 && RNG.Random(255) >= 200)
+            if (_gameState.Cmdr.Mission == 5 && RNG.Random(256) >= 200)
             {
                 CreateThargoid();
             }
@@ -393,7 +393,7 @@ namespace EliteSharp.Conflict
 
             if (type == ShipType.Cargo)
             {
-                StockType trade = (StockType)RNG.Random(1, 8);
+                StockType trade = (StockType)RNG.Random(1, 9);
                 _trade.AddCargo(trade);
                 _gameState.InfoMessage(_trade.StockMarket[trade].Name);
                 RemoveShip(obj);
@@ -456,7 +456,7 @@ namespace EliteSharp.Conflict
             {
                 if (flags.HasFlag(ShipFlags.Angry))
                 {
-                    if (RNG.Random(255) < 240)
+                    if (RNG.Random(256) < 240)
                     {
                         return;
                     }
@@ -480,9 +480,9 @@ namespace EliteSharp.Conflict
 
             if (ship.Type == ShipType.Hermit)
             {
-                if (RNG.Random(255) > 200)
+                if (RNG.Random(256) > 200)
                 {
-                    IShip hermitPirate = ShipFactory.Create(ShipType.Sidewinder + RNG.Random(3));
+                    IShip hermitPirate = ShipFactory.Create(ShipType.Sidewinder + RNG.Random(4));
                     if (!LaunchEnemy(ship, hermitPirate, ShipFlags.Angry | ShipFlags.HasECM, 113))
                     {
                         Debug.Fail("Failed to create Hermit Pirate");
@@ -507,7 +507,7 @@ namespace EliteSharp.Conflict
             }
 
             if (flags.HasFlag(ShipFlags.Slow) &&
-                RNG.Random(255) > 50)
+                RNG.Random(256) > 50)
             {
                 return;
             }
@@ -535,9 +535,9 @@ namespace EliteSharp.Conflict
                 ship.Bravery = 0;
             }
 
-            if (ship.Type == ShipType.Anaconda && RNG.Random(255) > 200)
+            if (ship.Type == ShipType.Anaconda && RNG.Random(256) > 200)
             {
-                IShip anacondaHunter = RNG.Random(255) > 100 ? new Worm() : new Sidewinder();
+                IShip anacondaHunter = RNG.Random(256) > 100 ? new Worm() : new Sidewinder();
                 if (!LaunchEnemy(ship, anacondaHunter, ShipFlags.Angry | ShipFlags.HasECM, 113))
                 {
                     Debug.Fail("Failed to create Anaconda Hunter");
@@ -546,9 +546,9 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (RNG.Random(255) >= 250)
+            if (RNG.Random(256) >= 250)
             {
-                ship.RotZ = RNG.Random(255) | 0x68;
+                ship.RotZ = RNG.Random(256) | 0x68;
                 if (ship.RotZ > 127)
                 {
                     ship.RotZ = -((int)ship.RotZ & 127);
@@ -557,7 +557,7 @@ namespace EliteSharp.Conflict
 
             if (ship.Energy < ship.EnergyMax / 2)
             {
-                if (ship.Energy < ship.EnergyMax / 8 && RNG.Random(255) > 230 && ship.Type != ShipType.Thargoid)
+                if (ship.Energy < ship.EnergyMax / 8 && RNG.Random(256) > 230 && ship.Type != ShipType.Thargoid)
                 {
                     ship.Flags &= ~ShipFlags.Angry;
                     ship.Flags |= ShipFlags.Inactive;
@@ -569,7 +569,7 @@ namespace EliteSharp.Conflict
                     return;
                 }
 
-                if (ship.Missiles != 0 && _ship.EcmActive == 0 && ship.Missiles >= RNG.Random(31))
+                if (ship.Missiles != 0 && _ship.EcmActive == 0 && ship.Missiles >= RNG.Random(32))
                 {
                     ship.Missiles--;
                     if (ship.Type == ShipType.Thargoid)
@@ -631,7 +631,7 @@ namespace EliteSharp.Conflict
                 //      if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
                 if (MathF.Abs(ship.Location.Z) < 768f)
                 {
-                    ship.RotX = RNG.Random(135);
+                    ship.RotX = RNG.Random(136);
                     if (ship.RotX > 127)
                     {
                         ship.RotX = -((int)ship.RotX & 127);
@@ -648,11 +648,11 @@ namespace EliteSharp.Conflict
 
             attacking = 0;
 
-            if (MathF.Abs(ship.Location.Z) >= 768f ||
-                MathF.Abs(ship.Location.X) >= 512f ||
-                MathF.Abs(ship.Location.Y) >= 512f)
+            if (MathF.Abs(ship.Location.Z) >= 768 ||
+                MathF.Abs(ship.Location.X) >= 512 ||
+                MathF.Abs(ship.Location.Y) >= 512)
             {
-                if (ship.Bravery > RNG.Random(127))
+                if (ship.Bravery > RNG.Random(128))
                 {
                     attacking = 1;
                     nvec.X = -nvec.X;
@@ -676,7 +676,7 @@ namespace EliteSharp.Conflict
                 {
                     ship.Acceleration = 3;
                 }
-                else if (RNG.Random(255) >= 200)
+                else if (RNG.Random(256) >= 200)
                 {
                     ship.Acceleration = -1;
                 }
@@ -700,7 +700,7 @@ namespace EliteSharp.Conflict
             {
                 ship.Acceleration = 3;
             }
-            else if (RNG.Random(255) >= 200)
+            else if (RNG.Random(256) >= 200)
             {
                 ship.Acceleration = -1;
             }
@@ -792,12 +792,12 @@ namespace EliteSharp.Conflict
         /// </summary>
         private void CheckForAsteroids()
         {
-            if (RNG.Random(255) >= 35 || _universe.ShipCount(ShipType.Asteroid) >= 3)
+            if (RNG.Random(256) >= 35 || _universe.ShipCount(ShipType.Asteroid) >= 3)
             {
                 return;
             }
 
-            ShipType type = RNG.Random(255) > 253 ? ShipType.Hermit : ShipType.Asteroid;
+            ShipType type = RNG.Random(256) > 253 ? ShipType.Hermit : ShipType.Asteroid;
             IShip asteroid = ShipFactory.Create(type);
             if (_universe.AddNewShip(asteroid))
             {
@@ -815,14 +815,14 @@ namespace EliteSharp.Conflict
         private void CheckForOthers()
         {
             int gov = _gameState.CurrentPlanetData.Government;
-            int rnd = RNG.Random(255);
+            int rnd = RNG.Random(256);
 
             if (gov != 0 && (rnd >= 90 || (rnd & 7) < gov))
             {
                 return;
             }
 
-            if (RNG.Random(255) < 100)
+            if (RNG.Random(256) < 100)
             {
                 CreateLoneWolf();
                 return;
@@ -832,8 +832,8 @@ namespace EliteSharp.Conflict
             Vector3 position = new()
             {
                 Z = 12000,
-                X = 1000 + RNG.Random(8191),
-                Y = 1000 + RNG.Random(8191),
+                X = 1000 + RNG.Random(8192),
+                Y = 1000 + RNG.Random(8192),
             };
 
             if (RNG.TrueOrFalse())
@@ -846,21 +846,21 @@ namespace EliteSharp.Conflict
                 position.Y = -position.Y;
             }
 
-            rnd = RNG.Random(3);
+            rnd = RNG.Random(4);
 
             for (int i = 0; i <= rnd; i++)
             {
-                ShipType type = ShipType.Sidewinder + (RNG.Random(255) & RNG.Random(7));
+                ShipType type = ShipType.Sidewinder + (RNG.Random(256) & RNG.Random(8));
                 IShip packHunter = ShipFactory.Create(type);
                 if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     packHunter.Flags = ShipFlags.Angry;
-                    if (RNG.Random(255) > 245)
+                    if (RNG.Random(256) > 245)
                     {
                         packHunter.Flags |= ShipFlags.HasECM;
                     }
 
-                    packHunter.Bravery = ((RNG.Random(255) * 2) | 64) & 127;
+                    packHunter.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
                     InBattle = true;
                 }
                 else
@@ -878,7 +878,7 @@ namespace EliteSharp.Conflict
                 offense |= _gameState.Cmdr.LegalStatus;
             }
 
-            if (RNG.Random(255) >= offense)
+            if (RNG.Random(256) >= offense)
             {
                 return;
             }
@@ -888,12 +888,12 @@ namespace EliteSharp.Conflict
             if (_universe.AddNewShip(police))
             {
                 police.Flags = ShipFlags.Angry;
-                if (RNG.Random(255) > 245)
+                if (RNG.Random(256) > 245)
                 {
                     police.Flags |= ShipFlags.HasECM;
                 }
 
-                police.Bravery = ((RNG.Random(255) * 2) | 64) & 127;
+                police.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
             }
             else
             {
@@ -951,7 +951,7 @@ namespace EliteSharp.Conflict
             }
             else
             {
-                int rnd = RNG.Random(255);
+                int rnd = RNG.Random(256);
                 type = ShipType.CobraMk3Lone + (rnd & 3) + (rnd > 127 ? 1 : 0);
             }
 
@@ -960,12 +960,12 @@ namespace EliteSharp.Conflict
             if (_universe.AddNewShip(loneWolf))
             {
                 loneWolf.Flags = ShipFlags.Angry;
-                if (RNG.Random(255) > 200 || type == ShipType.Constrictor)
+                if (RNG.Random(256) > 200 || type == ShipType.Constrictor)
                 {
                     loneWolf.Flags |= ShipFlags.HasECM;
                 }
 
-                loneWolf.Bravery = ((RNG.Random(255) * 2) | 64) & 127;
+                loneWolf.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
                 InBattle = true;
             }
             else
@@ -976,15 +976,15 @@ namespace EliteSharp.Conflict
 
         private void CreateTrader()
         {
-            ShipType type = ShipType.CobraMk3 + RNG.Random(3);
+            ShipType type = ShipType.CobraMk3 + RNG.Random(4);
             IShip trader = ShipFactory.Create(type);
 
             if (_universe.AddNewShip(trader))
             {
                 trader.Rotmat[2].Z = -1.0f;
-                trader.RotZ = RNG.Random(7);
-                trader.Velocity = RNG.Random(31) | 16;
-                trader.Bravery = RNG.Random(127);
+                trader.RotZ = RNG.Random(8);
+                trader.Velocity = RNG.Random(32) | 16;
+                trader.Bravery = RNG.Random(128);
 
                 if (RNG.TrueOrFalse())
                 {
@@ -1026,9 +1026,9 @@ namespace EliteSharp.Conflict
 
             if (newShip.Type is ShipType.Cargo or ShipType.Alloy or ShipType.Rock)
             {
-                newShip.RotZ = ((RNG.Random(255) * 2) & 255) - 128;
-                newShip.RotX = ((RNG.Random(255) * 2) & 255) - 128;
-                newShip.Velocity = RNG.Random(15);
+                newShip.RotZ = ((RNG.Random(256) * 2) & 255) - 128;
+                newShip.RotX = ((RNG.Random(256) * 2) & 255) - 128;
+                newShip.Velocity = RNG.Random(16);
             }
 
             return true;
@@ -1040,11 +1040,11 @@ namespace EliteSharp.Conflict
 
             if (loot.Type == ShipType.Rock)
             {
-                cnt = RNG.Random(3);
+                cnt = RNG.Random(4);
             }
             else
             {
-                cnt = RNG.Random(255);
+                cnt = RNG.Random(256);
                 if (cnt >= 128)
                 {
                     return;
@@ -1067,7 +1067,7 @@ namespace EliteSharp.Conflict
         {
             if (_universe.ShipCount(ShipType.Transporter) != 0 ||
                 _universe.ShipCount(ShipType.Shuttle) != 0 ||
-                RNG.Random(255) < 253 || _pilot.IsAutoPilotOn)
+                RNG.Random(256) < 253 || _pilot.IsAutoPilotOn)
             {
                 return;
             }
@@ -1128,7 +1128,7 @@ namespace EliteSharp.Conflict
                     return;
                 }
 
-                if (RNG.Random(255) < 16 && missile.Target.Flags.HasFlag(ShipFlags.HasECM))
+                if (RNG.Random(256) < 16 && missile.Target.Flags.HasFlag(ShipFlags.HasECM))
                 {
                     ActivateECM(false);
                     return;
@@ -1160,7 +1160,7 @@ namespace EliteSharp.Conflict
             {
                 missile.Acceleration = 3;
             }
-            else if (RNG.Random(255) >= 200)
+            else if (RNG.Random(256) >= 200)
             {
                 missile.Acceleration = -2;
             }

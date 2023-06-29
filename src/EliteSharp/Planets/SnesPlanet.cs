@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Planets
 {
@@ -67,8 +68,8 @@ namespace EliteSharp.Planets
             Colour.Purple,
         };
 
-        internal SnesPlanet(IGraphics graphics)
-            : base(graphics) => GenerateLandscape();
+        internal SnesPlanet(IGraphics graphics, IDraw draw)
+            : base(graphics, draw) => GenerateLandscape();
 
         /// <summary>
         /// Generate a landscape map for a SNES Elite style planet.

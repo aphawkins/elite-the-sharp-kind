@@ -8,23 +8,21 @@ namespace EliteSharp.Graphics
 {
     public interface IGraphics : IDisposable
     {
-        Vector2 Centre { get; }
-
-        Vector2 Offset { get; }
+        float ScreenHeight { get; }
 
         float Scale { get; }
 
-        Vector2 ViewB { get; }
+        float ScreenWidth { get; }
 
-        Vector2 ViewT { get; }
-
-        void ClearArea(float x, float y, float width, float height);
+        void ClearArea(Vector2 position, float width, float height);
 
         void DrawCircle(Vector2 centre, float radius, Colour colour);
 
         void DrawCircleFilled(Vector2 centre, float radius, Colour colour);
 
-        void DrawImage(Image spriteImgage, Vector2 location);
+        void DrawImage(Image image, Vector2 position);
+
+        void DrawImageCentre(Image image, float y);
 
         void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour);
 
@@ -38,13 +36,15 @@ namespace EliteSharp.Graphics
 
         void DrawPolygonFilled(Vector2[] pointList, Colour faceColour);
 
-        void DrawRectangle(float x, float y, float width, float height, Colour colour);
+        void DrawRectangle(Vector2 position, float width, float height, Colour colour);
 
-        void DrawRectangleFilled(float x, float y, float width, float height, Colour colour);
+        void DrawRectangleCentre(float y, float width, float height, Colour colour);
 
-        void DrawTextCentre(float y, string text, int psize, Colour colour);
+        void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour);
 
-        void DrawTextLeft(float x, float y, string text, Colour colour);
+        void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour);
+
+        void DrawTextLeft(Vector2 position, string text, Colour colour);
 
         void DrawTextRight(float x, float y, string text, Colour colour);
 
@@ -63,6 +63,6 @@ namespace EliteSharp.Graphics
         /// </summary>
         void ScreenUpdate();
 
-        void SetClipRegion(float x, float y, float width, float height);
+        void SetClipRegion(Vector2 position, float width, float height);
     }
 }
