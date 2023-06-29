@@ -23,27 +23,33 @@ namespace EliteSharp.Lasers
 
         internal void DrawLaserLines()
         {
-            Vector2 point = new()
+            Vector2 target = new()
             {
-                X = RNG.Random(126, 130) * _graphics.Scale,
-                Y = RNG.Random(94, 98) * _graphics.Scale,
+                X = RNG.Random((int)_draw.Centre.X / 2, (int)(_draw.Centre.X / 2) + 2) * _graphics.Scale,
+                Y = RNG.Random((int)_draw.Centre.Y / 2, (int)(_draw.Centre.Y / 2) + 2) * _graphics.Scale,
             };
+
+            Vector2 leftA = new((32 + (_draw.ScannerLeft / 2)) * _graphics.Scale, _draw.Bottom);
+            Vector2 leftB = new((48 + (_draw.ScannerLeft / 2)) * _graphics.Scale, _draw.Bottom);
+
+            Vector2 rightA = new(((_draw.ScannerRight / 2) - 32) * _graphics.Scale, _draw.Bottom);
+            Vector2 rightB = new(((_draw.ScannerRight / 2) - 48) * _graphics.Scale, _draw.Bottom);
 
             if (_gameState.Config.UseWireframe)
             {
                 // Left laser
-                _graphics.DrawTriangle(new(32 * _graphics.Scale, _draw.Bottom), point, new(48 * _graphics.Scale, _draw.Bottom), Colour.LighterRed);
+                _graphics.DrawTriangle(leftA, target, leftB, Colour.LighterRed);
 
                 // Right laser
-                _graphics.DrawTriangle(new(208 * _graphics.Scale, _draw.Bottom), point, new(224 * _graphics.Scale, _draw.Bottom), Colour.LighterRed);
+                _graphics.DrawTriangle(rightA, target, rightB, Colour.LighterRed);
             }
             else
             {
                 // Left laser
-                _graphics.DrawTriangleFilled(new(32 * _graphics.Scale, _draw.Bottom), point, new(48 * _graphics.Scale, _draw.Bottom), Colour.LighterRed);
+                _graphics.DrawTriangleFilled(leftA, target, leftB, Colour.LighterRed);
 
                 // Right laser
-                _graphics.DrawTriangleFilled(new(208 * _graphics.Scale, _draw.Bottom), point, new(224 * _graphics.Scale, _draw.Bottom), Colour.LighterRed);
+                _graphics.DrawTriangleFilled(rightA, target, rightB, Colour.LighterRed);
             }
         }
 
@@ -54,32 +60,32 @@ namespace EliteSharp.Lasers
                 return;
             }
 
-            float x1 = 128 * _graphics.Scale;
-            float y1 = (96 - 8) * _graphics.Scale;
-            float y2 = (96 - 16) * _graphics.Scale;
-
+            // Top line
+            float x1 = _draw.Centre.X / 2 * _graphics.Scale;
+            float y1 = ((_draw.Centre.Y / 2) - 8) * _graphics.Scale;
+            float y2 = ((_draw.Centre.Y / 2) - 16) * _graphics.Scale;
             _graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), Colour.LightGrey);
             _graphics.DrawLine(new(x1, y1), new(x1, y2), Colour.White);
             _graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), Colour.LightGrey);
 
-            y1 = (96 + 8) * _graphics.Scale;
-            y2 = (96 + 16) * _graphics.Scale;
-
+            // Bottom line
+            y1 = ((_draw.Centre.Y / 2) + 8) * _graphics.Scale;
+            y2 = ((_draw.Centre.Y / 2) + 16) * _graphics.Scale;
             _graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), Colour.LightGrey);
             _graphics.DrawLine(new(x1, y1), new(x1, y2), Colour.White);
             _graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), Colour.LightGrey);
 
-            x1 = (128f - 8f) * _graphics.Scale;
-            y1 = 96f * _graphics.Scale;
-            float x2 = (128 - 16) * _graphics.Scale;
-
+            // Left line
+            x1 = ((_draw.Centre.X / 2) - 8) * _graphics.Scale;
+            y1 = _draw.Centre.Y / 2 * _graphics.Scale;
+            float x2 = ((_draw.Centre.X / 2) - 16) * _graphics.Scale;
             _graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), Colour.LightGrey);
             _graphics.DrawLine(new(x1, y1), new(x2, y1), Colour.White);
             _graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), Colour.LightGrey);
 
-            x1 = (128 + 8) * _graphics.Scale;
-            x2 = (128 + 16) * _graphics.Scale;
-
+            // Right line
+            x1 = ((_draw.Centre.X / 2) + 8) * _graphics.Scale;
+            x2 = ((_draw.Centre.X / 2) + 16) * _graphics.Scale;
             _graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), Colour.LightGrey);
             _graphics.DrawLine(new(x1, y1), new(x2, y1), Colour.White);
             _graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), Colour.LightGrey);
