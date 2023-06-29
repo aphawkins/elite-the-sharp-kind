@@ -33,11 +33,15 @@ namespace EliteSharp
         /// </summary>
         internal void DrawObject(IShip ship, IPlanetRenderer? planetRenderer = null)
         {
-            //Debug.Assert(elite._state.currentScreen is SCR.SCR_FRONT_VIEW or SCR.SCR_REAR_VIEW or
-            //  SCR.SCR_LEFT_VIEW or SCR.SCR_RIGHT_VIEW or
-            //  SCR.SCR_INTRO_ONE or SCR.SCR_INTRO_TWO or
-            //  SCR.SCR_GAME_OVER or SCR.SCR_ESCAPE_CAPSULE or
-            //  SCR.SCR_MISSION_1);
+            if (_gameState.CurrentScreen is not Screen.FrontView and not Screen.RearView and
+                not Screen.LeftView and not Screen.RightView and
+                not Screen.IntroOne and not Screen.IntroTwo and
+                not Screen.GameOver and not Screen.EscapeCapsule and
+                not Screen.MissionOne)
+            {
+                return;
+            }
+
             if (ship.Flags.HasFlag(ShipFlags.Dead) && !ship.Flags.HasFlag(ShipFlags.Explosion))
             {
                 ship.Flags |= ShipFlags.Explosion;
