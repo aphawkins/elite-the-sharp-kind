@@ -5,8 +5,12 @@
 - Check mission triggers (FAQ)
 - Check ship stats (FAQ)
 - Widescreen support
+- Remove all anti-alias references
+- Make number of stars proportional to screen size
+- Shouldn't have to clear display on views
 
 ## Future (create github issues)
+- Inject options
 - Fix graphics scale setting rendering issues
 - Make Sun and Stations coexist?
 - Laser target shape by type
@@ -21,3 +25,6 @@
 - Bits of hidden surfaces on ships sometimes show through.  
 - Buying more than 255g of Gold/Platinum doesn't work.  It didn't in the original Elite either.  Broken as designed.
 - Add more Sun styles
+- Make window resizable
+- Use System.Numerics for all matrix and vector maths
+- Separate tactics from rendering?

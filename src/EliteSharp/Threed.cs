@@ -159,12 +159,10 @@ namespace EliteSharp
                 {
                     Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
                     Vector3 r = vec + ship.Location;
-
                     Vector2 position = new(r.X, -r.Y);
                     position *= 256 / r.Z;
                     position += _draw.Centre / 2;
                     position *= _graphics.Scale;
-
                     _pointList[np].X = position.X;
                     _pointList[np].Y = position.Y;
                     np++;
