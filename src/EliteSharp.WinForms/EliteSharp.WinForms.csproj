@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -10,6 +10,7 @@
     <AnalysisMode>All</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+    <ApplicationIcon>elite.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,6 +24,10 @@
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <DefineConstants>$(DefineConstants);QHD</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="elite.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Roslynator.Analyzers" Version="4.3.0">
