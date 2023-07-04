@@ -6,44 +6,49 @@ namespace EliteSharp.Ships
 {
     internal static class ShipFactory
     {
-        internal static IShip Create(ShipType type) => type switch
+        internal static IShip CreateAsteroid() => RNG.Random(256) > 253 ? new RockHermit() : new Asteroid();
+
+        internal static IShip CreateLoneWolf()
         {
-            ShipType.Adder => new Adder(),
-            ShipType.Alloy => new Alloy(),
-            ShipType.Anaconda => new Anaconda(),
-            ShipType.AspMk2 => new AspMk2(),
-            ShipType.None => new ShipBase(),
-            ShipType.Missile => new Missile(),
-            ShipType.Coriolis => new Coriolis(),
-            ShipType.EscapeCapsule => new EscapeCapsule(),
-            ShipType.Cargo => new CargoCannister(),
-            ShipType.Boulder => new Boulder(),
-            ShipType.Asteroid => new Asteroid(),
-            ShipType.Rock => new RockSplinter(),
-            ShipType.Shuttle => new Shuttle(),
-            ShipType.Transporter => new Transporter(),
-            ShipType.CobraMk3 => new CobraMk3(),
-            ShipType.Python => new Python(),
-            ShipType.Boa => new Boa(),
-            ShipType.Hermit => new RockHermit(),
-            ShipType.Viper => new Viper(),
-            ShipType.Sidewinder => new Sidewinder(),
-            ShipType.Mamba => new Mamba(),
-            ShipType.Krait => new Krait(),
-            ShipType.Gecko => new Gecko(),
-            ShipType.CobraMk1 => new CobraMk1(),
-            ShipType.Worm => new Worm(),
-            ShipType.CobraMk3Lone => new CobraMk3Lone(),
-            ShipType.PythonLone => new PythonLone(),
-            ShipType.FerDeLance => new FerDeLance(),
-            ShipType.Moray => new Moray(),
-            ShipType.Thargoid => new Thargoid(),
-            ShipType.Tharglet => new Tharglet(),
-            ShipType.Constrictor => new Constrictor(),
-            ShipType.Cougar => new Cougar(),
-            ShipType.Dodec => new DodecStation(),
-            ShipType.Sun => new Sun(),
-            ShipType.Planet => throw new NotImplementedException(),
+            int rnd = RNG.Random(256);
+            return ((rnd & 3) + (rnd > 127 ? 1 : 0)) switch
+            {
+                0 => new CobraMk3Lone(),
+                1 => new AspMk2(),
+                2 => new PythonLone(),
+                3 => new FerDeLance(),
+                4 => new Moray(),
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        internal static IShip CreatePackHunter() => RNG.Random(7) switch
+        {
+            0 => new Sidewinder(),
+            1 => new Mamba(),
+            2 => new Krait(),
+            3 => new Adder(),
+            4 => new Gecko(),
+            5 => new CobraMk1(),
+            6 => new Worm(),
+            _ => throw new NotImplementedException(),
+        };
+
+        internal static IShip CreatePirate() => RNG.Random(4) switch
+        {
+            0 => new Sidewinder(),
+            1 => new Mamba(),
+            2 => new Krait(),
+            3 => new Adder(),
+            _ => throw new NotImplementedException(),
+        };
+
+        internal static IShip CreateTrader() => RNG.Random(4) switch
+        {
+            0 => new CobraMk3(),
+            1 => new Python(),
+            2 => new Boa(),
+            3 => new Anaconda(),
             _ => throw new NotImplementedException(),
         };
     }

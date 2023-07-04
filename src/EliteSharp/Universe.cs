@@ -85,8 +85,8 @@ namespace EliteSharp
 
         internal void AddNewStation(int planetTechLevel, Vector3 position, Vector3[] rotmat)
         {
-            ShipType station = planetTechLevel >= 10 ? ShipType.Dodec : ShipType.Coriolis;
-            AddNewShip(ShipFactory.Create(station), position, rotmat, 0, -127);
+            IShip station = planetTechLevel >= 10 ? new DodecStation() : new Coriolis();
+            AddNewShip(station, position, rotmat, 0, -127);
         }
 
         internal void ClearUniverse()

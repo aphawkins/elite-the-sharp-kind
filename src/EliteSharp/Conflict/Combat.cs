@@ -482,8 +482,8 @@ namespace EliteSharp.Conflict
             {
                 if (RNG.Random(256) > 200)
                 {
-                    IShip hermitPirate = ShipFactory.Create(ShipType.Sidewinder + RNG.Random(4));
-                    if (!LaunchEnemy(ship, hermitPirate, ShipFlags.Angry | ShipFlags.HasECM, 113))
+                    IShip pirate = ShipFactory.CreatePirate();
+                    if (!LaunchEnemy(ship, pirate, ShipFlags.Angry | ShipFlags.HasECM, 113))
                     {
                         Debug.Fail("Failed to create Hermit Pirate");
                     }
@@ -797,8 +797,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            ShipType type = RNG.Random(256) > 253 ? ShipType.Hermit : ShipType.Asteroid;
-            IShip asteroid = ShipFactory.Create(type);
+            IShip asteroid = ShipFactory.CreateAsteroid();
             if (_universe.AddNewShip(asteroid))
             {
                 //      space.universe[newship].velocity = (random.rand255() & 31) | 16;
@@ -850,8 +849,7 @@ namespace EliteSharp.Conflict
 
             for (int i = 0; i <= rnd; i++)
             {
-                ShipType type = ShipType.Sidewinder + (RNG.Random(256) & RNG.Random(8));
-                IShip packHunter = ShipFactory.Create(type);
+                IShip packHunter = ShipFactory.CreatePackHunter();
                 if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     packHunter.Flags = ShipFlags.Angry;
@@ -941,26 +939,16 @@ namespace EliteSharp.Conflict
 
         private void CreateLoneWolf()
         {
-            ShipType type;
-
-            if (_gameState.Cmdr.Mission == 1 && _gameState.Cmdr.GalaxyNumber == 1 &&
+            IShip loneWolf = _gameState.Cmdr.Mission == 1 && _gameState.Cmdr.GalaxyNumber == 1 &&
                 _gameState.DockedPlanet.D == 144 && _gameState.DockedPlanet.B == 33 &&
-                _universe.ShipCount(ShipType.Constrictor) == 0)
-            {
-                type = ShipType.Constrictor;
-            }
-            else
-            {
-                int rnd = RNG.Random(256);
-                type = ShipType.CobraMk3Lone + (rnd & 3) + (rnd > 127 ? 1 : 0);
-            }
-
-            IShip loneWolf = ShipFactory.Create(type);
+                _universe.ShipCount(ShipType.Constrictor) == 0
+                ? new Constrictor()
+                : ShipFactory.CreateLoneWolf();
 
             if (_universe.AddNewShip(loneWolf))
             {
                 loneWolf.Flags = ShipFlags.Angry;
-                if (RNG.Random(256) > 200 || type == ShipType.Constrictor)
+                if (RNG.Random(256) > 200 || loneWolf.Type == ShipType.Constrictor)
                 {
                     loneWolf.Flags |= ShipFlags.HasECM;
                 }
@@ -976,8 +964,7 @@ namespace EliteSharp.Conflict
 
         private void CreateTrader()
         {
-            ShipType type = ShipType.CobraMk3 + RNG.Random(4);
-            IShip trader = ShipFactory.Create(type);
+            IShip trader = ShipFactory.CreateTrader();
 
             if (_universe.AddNewShip(trader))
             {

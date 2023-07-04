@@ -4,10 +4,12 @@
 - Fix code directory structure
 - Check mission triggers (FAQ)
 - Check ship stats (FAQ)
-- Widescreen support
 - Remove all anti-alias references
 - Make number of stars proportional to screen size
-- Shouldn't have to clear display on views
+- Make random class mockable
+- Measure/improve code complexity
+- Add Github actions
+- Remove conditional compilation
 
 ## Future (create github issues)
 - Inject options
@@ -17,7 +19,6 @@
 - Joystick support needs adding back
 - Intro2 parade doesn't show all ships, maybe it should
 - Add unit tests
-- Make assests external
 - Add Trumbles mission
 - SDL2 support
 - Separate game speed from framerate

@@ -19,27 +19,49 @@ namespace EliteSharp.Views
     {
         private readonly AudioController _audio;
         private readonly Combat _combat;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
-
-        private readonly int[] _minDist = new int[]
+        private readonly PlayerShip _ship;
+        private readonly List<(IShip Ship, int MinDistance)> _shipDistances = new()
         {
-            0,
-            200, 800, 200, 200, 200, 300, 384, 200,
-            200, 200, 420, 900, 500, 800, 384, 384,
-            384, 384, 384, 200, 384, 384, 384,   0,
-            384,   0, 384, 384, 700, 384,   0,   0,
-            900,
+            { (new Missile(), 200) },
+            { (new Coriolis(), 800) },
+            { (new EscapeCapsule(), 200) },
+            { (new Alloy(), 200) },
+            { (new CargoCannister(), 200) },
+            { (new Boulder(), 300) },
+            { (new Asteroid(), 384) },
+            { (new RockSplinter(), 200) },
+            { (new Shuttle(), 200) },
+            { (new Transporter(), 200) },
+            { (new CobraMk3(), 420) },
+            { (new Python(), 900) },
+            { (new Boa(), 500) },
+            { (new Anaconda(), 800) },
+            { (new RockHermit(), 384) },
+            { (new Viper(), 384) },
+            { (new Sidewinder(), 384) },
+            { (new Mamba(), 384) },
+            { (new Krait(), 384) },
+            { (new Adder(), 200) },
+            { (new Gecko(), 384) },
+            { (new CobraMk1(), 384) },
+            { (new Worm(), 384) },
+            { (new AspMk2(), 384) },
+            { (new FerDeLance(), 384) },
+            { (new Moray(), 384) },
+            { (new Thargoid(), 700) },
+            { (new Tharglet(), 384) },
+            { (new DodecStation(), 900) },
         };
 
-        private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Universe _universe;
-        private readonly IDraw _draw;
         private int _direction;
         private Vector3[] _rotmat = new Vector3[3];
-        private ShipType _shipNo;
+        private int _shipNo;
         private int _showTime;
 
         internal Intro2View(
@@ -89,24 +111,15 @@ namespace EliteSharp.Views
         public void Reset()
         {
             _shipNo = 0;
-            _showTime = 0;
-            _direction = 100;
-
-            _combat.Reset();
-            _universe.ClearUniverse();
-            _stars.CreateNewStars();
-            _rotmat = VectorMaths.GetInitialMatrix();
-            IShip missile = new Missile();
-            if (!_universe.AddNewShip(missile, new(0, 0, 5000), _rotmat, -127, -127))
-            {
-                Debug.WriteLine("Failed to create Missile");
-            }
-
-            _audio.PlayMusic(Music.BlueDanube, true);
-
             _ship.Speed = 3;
             _ship.Roll = 0;
             _ship.Climb = 0;
+            _combat.Reset();
+            _stars.CreateNewStars();
+            _rotmat = VectorMaths.GetInitialMatrix();
+            _audio.PlayMusic(Music.BlueDanube, true);
+
+            AddNewShip();
         }
 
         public void UpdateUniverse()
@@ -123,35 +136,36 @@ namespace EliteSharp.Views
                 _universe.FirstShip.Location =
                     new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _universe.FirstShip.Location.Z + _direction);
 
-                if (_universe.FirstShip.Location.Z < _minDist[(int)_shipNo])
+                if (_universe.FirstShip.Location.Z < _shipDistances[_shipNo].MinDistance)
                 {
                     _universe.FirstShip.Location =
-                        new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _minDist[(int)_shipNo]);
+                        new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _shipDistances[_shipNo].MinDistance);
                 }
 
                 if (_universe.FirstShip.Location.Z > 4500)
                 {
-                    do
+                    _shipNo++;
+                    if (_shipNo >= _shipDistances.Count)
                     {
-                        _shipNo++;
-                        if (_shipNo > ShipType.Dodec)
-                        {
-                            _shipNo = ShipType.Missile;
-                        }
+                        _shipNo = 0;
                     }
-                    while (_minDist[(int)_shipNo] == 0);
 
-                    _showTime = 0;
-                    _direction = -100;
-                    _universe.ClearUniverse();
-                    if (!_universe.AddNewShip(ShipFactory.Create(_shipNo), new(0, 0, 4500), _rotmat, -127, -127))
-                    {
-                        Debug.WriteLine("Failed to create Parade ship");
-                    }
+                    AddNewShip();
                 }
             }
 
             _stars.FrontStarfield();
+        }
+
+        private void AddNewShip()
+        {
+            _showTime = 0;
+            _direction = -100;
+            _universe.ClearUniverse();
+            if (!_universe.AddNewShip(_shipDistances[_shipNo].Ship, new(0, 0, 4500), _rotmat, -127, -127))
+            {
+                Debug.WriteLine("Failed to create first Parade ship");
+            }
         }
     }
 }
