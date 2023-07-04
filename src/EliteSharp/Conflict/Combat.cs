@@ -98,13 +98,13 @@ namespace EliteSharp.Conflict
                         {
                             if (_laserType is LaserType.Mining or LaserType.Pulse)
                             {
-                                LaunchLoot(obj, new RockSplinter());
+                                LaunchLoot(obj, ShipType.Rock);
                             }
                         }
                         else
                         {
-                            LaunchLoot(obj, new Alloy());
-                            LaunchLoot(obj, new CargoCannister());
+                            LaunchLoot(obj, ShipType.Alloy);
+                            LaunchLoot(obj, ShipType.Cargo);
                         }
                     }
 
@@ -1021,28 +1021,47 @@ namespace EliteSharp.Conflict
             return true;
         }
 
-        private void LaunchLoot(IShip obj, IShip loot)
+        private void LaunchLoot(IShip obj, ShipType lootType)
         {
-            int cnt;
+            int count;
 
-            if (loot.Type == ShipType.Rock)
+            if (lootType == ShipType.Rock)
             {
-                cnt = RNG.Random(4);
+                count = RNG.Random(4);
             }
             else
             {
-                cnt = RNG.Random(256);
-                if (cnt >= 128)
+                count = RNG.Random(256);
+                if (count >= 128)
                 {
                     return;
                 }
 
-                cnt &= obj.LootMax;
-                cnt &= 15;
+                count &= obj.LootMax;
+                count &= 15;
             }
 
-            for (int i = 0; i < cnt; i++)
+            for (int i = 0; i < count; i++)
             {
+                IShip loot;
+                if (lootType == ShipType.Rock)
+                {
+                    loot = new RockSplinter();
+                }
+                else if (lootType == ShipType.Alloy)
+                {
+                    loot = new Alloy();
+                }
+                else if (lootType == ShipType.Cargo)
+                {
+                    loot = new CargoCannister();
+                }
+                else
+                {
+                    Debug.Fail("Incorrect loot type");
+                    return;
+                }
+
                 if (!LaunchEnemy(obj, loot, 0, 0))
                 {
                     Debug.Fail("Failed to create Loot");
