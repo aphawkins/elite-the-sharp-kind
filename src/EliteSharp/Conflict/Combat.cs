@@ -5,6 +5,7 @@
 using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
+using EliteSharp.Graphics;
 using EliteSharp.Lasers;
 using EliteSharp.Ships;
 using EliteSharp.Trader;

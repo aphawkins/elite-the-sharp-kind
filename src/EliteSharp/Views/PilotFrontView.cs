@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Controls;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
 namespace EliteSharp.Views

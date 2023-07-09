@@ -4,7 +4,6 @@
 
 using EliteSharp.Graphics;
 using EliteSharp.Trader;
-using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {

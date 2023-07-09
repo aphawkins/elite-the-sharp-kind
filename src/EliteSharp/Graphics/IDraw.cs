@@ -3,10 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
-namespace EliteSharp.Views
+namespace EliteSharp.Graphics
 {
     internal interface IDraw
     {

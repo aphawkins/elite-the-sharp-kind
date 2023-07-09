@@ -4,7 +4,6 @@
 
 using System.Diagnostics.CodeAnalysis;
 using EliteSharp.Graphics;
-using EliteSharp.Views;
 
 namespace EliteSharp.Planets
 {

@@ -4,10 +4,10 @@
 
 using System.Numerics;
 using EliteSharp.Assets;
-using EliteSharp.Graphics;
 using EliteSharp.Ships;
+using EliteSharp.Views;
 
-namespace EliteSharp.Views
+namespace EliteSharp.Graphics
 {
     internal sealed class Draw : IDraw
     {
@@ -215,8 +215,8 @@ namespace EliteSharp.Views
             }
 
             // Check for field of vision.
-            if ((MathF.Abs(ship.Location.X) > ship.Location.Z) ||
-                (MathF.Abs(ship.Location.Y) > ship.Location.Z))
+            if (MathF.Abs(ship.Location.X) > ship.Location.Z ||
+                MathF.Abs(ship.Location.Y) > ship.Location.Z)
             {
                 return;
             }

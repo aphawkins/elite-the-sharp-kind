@@ -4,8 +4,8 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
-using EliteSharp.Views;
 
 namespace EliteSharp
 {

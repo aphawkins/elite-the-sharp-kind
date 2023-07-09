@@ -6,7 +6,6 @@ using System.Numerics;
 using EliteSharp.Conflict;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
-using EliteSharp.Views;
 
 namespace EliteSharp
 {

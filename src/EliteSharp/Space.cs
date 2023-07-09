@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
+using EliteSharp.Graphics;
 using EliteSharp.Planets;
 using EliteSharp.Ships;
 using EliteSharp.Trader;

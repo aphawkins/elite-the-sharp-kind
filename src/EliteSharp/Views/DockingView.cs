@@ -4,6 +4,7 @@
 
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
+using EliteSharp.Graphics;
 
 namespace EliteSharp.Views
 {
