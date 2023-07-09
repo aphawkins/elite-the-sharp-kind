@@ -272,18 +272,18 @@ namespace EliteSharp
         /// </summary>
         private void UpdateScanner()
         {
-            foreach (IShip universeObj in _universe.GetAllObjects())
+            foreach (IShip obj in _universe.GetAllObjects())
             {
-                if ((universeObj.Type <= 0) ||
-                    universeObj.Flags.HasFlag(ShipFlags.Dead) ||
-                    universeObj.Flags.HasFlag(ShipFlags.Cloaked))
+                if ((obj.Type <= 0) ||
+                    obj.Flags.HasFlag(ShipFlags.Dead) ||
+                    obj.Flags.HasFlag(ShipFlags.Cloaked))
                 {
                     continue;
                 }
 
-                float x = universeObj.Location.X / 256;
-                float y1 = -universeObj.Location.Z / 1024;
-                float y2 = y1 - (universeObj.Location.Y / 512);
+                float x = obj.Location.X / 256;
+                float y1 = -obj.Location.Z / 1024;
+                float y2 = y1 - (obj.Location.Y / 512);
 
                 if ((y2 < -28) || (y2 > 28) ||
                     (x < -50) || (x > 50))
@@ -295,89 +295,19 @@ namespace EliteSharp
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                Colour colour = universeObj.Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow : Colour.White;
+                Colour colour = obj.Flags.HasFlag(ShipFlags.Hostile) ? Colour.Yellow : Colour.White;
 
-                switch (universeObj.Type)
+                if (obj.Flags.HasFlag(ShipFlags.Station))
                 {
-                    case ShipType.Missile:
-                        colour = Colour.Lilac;
-                        break;
-
-                    case ShipType.Dodec:
-                    case ShipType.Coriolis:
-                        colour = Colour.Green;
-                        break;
-
-                    case ShipType.Viper:
-                        colour = Colour.Purple;
-                        break;
-
-                    case ShipType.Sun:
-
-                    case ShipType.Planet:
-
-                    case ShipType.None:
-
-                    case ShipType.EscapeCapsule:
-
-                    case ShipType.Alloy:
-
-                    case ShipType.Cargo:
-
-                    case ShipType.Boulder:
-
-                    case ShipType.Asteroid:
-
-                    case ShipType.Rock:
-
-                    case ShipType.Shuttle:
-
-                    case ShipType.Transporter:
-
-                    case ShipType.CobraMk3:
-
-                    case ShipType.Python:
-
-                    case ShipType.Boa:
-
-                    case ShipType.Anaconda:
-
-                    case ShipType.Hermit:
-
-                    case ShipType.Sidewinder:
-
-                    case ShipType.Mamba:
-
-                    case ShipType.Krait:
-
-                    case ShipType.Adder:
-
-                    case ShipType.Gecko:
-
-                    case ShipType.CobraMk1:
-
-                    case ShipType.Worm:
-
-                    case ShipType.CobraMk3Lone:
-
-                    case ShipType.AspMk2:
-
-                    case ShipType.PythonLone:
-
-                    case ShipType.FerDeLance:
-
-                    case ShipType.Moray:
-
-                    case ShipType.Thargoid:
-
-                    case ShipType.Tharglet:
-
-                    case ShipType.Constrictor:
-
-                    case ShipType.Cougar:
-
-                    default:
-                        break;
+                    colour = Colour.Green;
+                }
+                else if (obj.Type == ShipType.Missile)
+                {
+                    colour = Colour.Lilac;
+                }
+                else if (obj.Flags.HasFlag(ShipFlags.Police))
+                {
+                    colour = Colour.Purple;
                 }
 
                 // ship

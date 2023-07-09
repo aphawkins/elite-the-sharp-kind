@@ -10,6 +10,7 @@
 - Measure/improve code complexity
 - Add Github actions
 - Remove conditional compilation
+- Enemy lasers don't always reach the full extent of the view
 
 ## Future (create github issues)
 - Lone ships are flagged not separate ships

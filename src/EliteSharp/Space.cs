@@ -326,25 +326,23 @@ namespace EliteSharp
             _draw.RenderStart();
             int i = -1;
 
-            foreach (IShip universeObj in _universe.GetAllObjects())
+            foreach (IShip obj in _universe.GetAllObjects())
             {
                 i++;
 
-                ShipType type = universeObj.Type;
-
-                if (type == ShipType.None)
+                if (obj.Type == ShipType.None)
                 {
                     continue;
                 }
 
-                if (universeObj.Flags.HasFlag(ShipFlags.Remove))
+                if (obj.Flags.HasFlag(ShipFlags.Remove))
                 {
-                    if (type == ShipType.Viper)
+                    if (obj.Type == ShipType.Viper)
                     {
                         _gameState.Cmdr.LegalStatus |= 64;
                     }
 
-                    float bounty = universeObj.Bounty;
+                    float bounty = obj.Bounty;
 
                     if ((bounty != 0) && (!_gameState.InWitchspace))
                     {
@@ -352,21 +350,20 @@ namespace EliteSharp
                         _gameState.InfoMessage($"{_trade.Credits:N1} Credits");
                     }
 
-                    _combat.RemoveShip(universeObj);
+                    _combat.RemoveShip(obj);
                     continue;
                 }
 
                 if (_gameState.DetonateBomb &&
-                    (!universeObj.Flags.HasFlag(ShipFlags.Dead)) &&
-                    (type != ShipType.Planet) &&
-                    (type != ShipType.Sun) &&
-                    (type != ShipType.Constrictor) &&
-                    (type != ShipType.Cougar) &&
-                    (type != ShipType.Coriolis) &&
-                    (type != ShipType.Dodec))
+                    (!obj.Flags.HasFlag(ShipFlags.Dead)) &&
+                    (obj.Type != ShipType.Planet) &&
+                    (obj.Type != ShipType.Sun) &&
+                    (obj.Type != ShipType.Constrictor) &&
+                    (obj.Type != ShipType.Cougar) &&
+                    !obj.Flags.HasFlag(ShipFlags.Station))
                 {
                     _audio.PlayEffect(SoundEffect.Explode);
-                    universeObj.Flags |= ShipFlags.Dead;
+                    obj.Flags |= ShipFlags.Dead;
                 }
 
                 if (_gameState.CurrentScreen is
@@ -375,16 +372,16 @@ namespace EliteSharp
                     not Screen.GameOver and
                     not Screen.EscapeCapsule)
                 {
-                    _combat.Tactics(universeObj, i);
+                    _combat.Tactics(obj, i);
                 }
 
-                MoveUniverseObject(universeObj);
-                IShip flip = universeObj.Clone();
+                MoveUniverseObject(obj);
+                IShip flip = obj.Clone();
                 SwitchToView(flip);
 
-                if (type == ShipType.Planet)
+                if (obj.Type == ShipType.Planet)
                 {
-                    if (!_universe.IsStationPresent && (universeObj.Location.Length() < 65792 /* was 49152 */))
+                    if (!_universe.IsStationPresent && (obj.Location.Length() < 65792 /* was 49152 */))
                     {
                         MakeStationAppear();
                     }
@@ -393,43 +390,43 @@ namespace EliteSharp
                     continue;
                 }
 
-                if (type == ShipType.Sun)
+                if (obj.Type == ShipType.Sun)
                 {
                     _draw.DrawObject(flip);
                     continue;
                 }
 
-                if (universeObj.Location.Length() < 170)
+                if (obj.Location.Length() < 170)
                 {
-                    if (type is ShipType.Coriolis or ShipType.Dodec)
+                    if (obj.Flags.HasFlag(ShipFlags.Station))
                     {
-                        CheckDocking(universeObj);
+                        CheckDocking(obj);
                     }
                     else
                     {
-                        _combat.ScoopItem(universeObj);
+                        _combat.ScoopItem(obj);
                     }
 
                     continue;
                 }
 
-                if (universeObj.Location.Length() > 57344)
+                if (obj.Location.Length() > 57344)
                 {
-                    _combat.RemoveShip(universeObj);
+                    _combat.RemoveShip(obj);
                     continue;
                 }
 
                 _draw.DrawObject(flip);
-                universeObj.Flags = flip.Flags;
-                universeObj.ExpDelta = flip.ExpDelta;
-                universeObj.Flags &= ~ShipFlags.Firing;
+                obj.Flags = flip.Flags;
+                obj.ExpDelta = flip.ExpDelta;
+                obj.Flags &= ~ShipFlags.Firing;
 
-                if (universeObj.Flags.HasFlag(ShipFlags.Dead))
+                if (obj.Flags.HasFlag(ShipFlags.Dead))
                 {
                     continue;
                 }
 
-                _combat.CheckTarget(universeObj, flip);
+                _combat.CheckTarget(obj, flip);
             }
 
             _draw.RenderEnd();

@@ -78,7 +78,7 @@ namespace EliteSharp.Conflict
                 {
                     _audio.PlayEffect(SoundEffect.HitEnemy);
 
-                    if (obj.Type is not ShipType.Coriolis and not ShipType.Dodec)
+                    if (!obj.Flags.HasFlag(ShipFlags.Station))
                     {
                         if (obj.Type is ShipType.Constrictor or ShipType.Cougar)
                         {
@@ -349,7 +349,7 @@ namespace EliteSharp.Conflict
 
             CheckMissiles(ship);
 
-            if (ship.Type is ShipType.Coriolis or ShipType.Dodec)
+            if (ship.Flags.HasFlag(ShipFlags.Station))
             {
                 Vector3 position = ship.Location;
                 position.Y = (int)position.Y & 0xFFFF;
@@ -455,7 +455,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (ship.Type is ShipType.Coriolis or ShipType.Dodec)
+            if (ship.Flags.HasFlag(ShipFlags.Station))
             {
                 if (flags.HasFlag(ShipFlags.Angry))
                 {
@@ -738,7 +738,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (ship.Type is ShipType.Coriolis or ShipType.Dodec)
+            if (ship.Flags.HasFlag(ShipFlags.Station))
             {
                 ship.Flags |= ShipFlags.Angry;
                 return;
@@ -1000,13 +1000,10 @@ namespace EliteSharp.Conflict
                 return false;
             }
 
-            if (sourceShip.Type is ShipType.Coriolis or ShipType.Dodec)
+            if (sourceShip.Flags.HasFlag(ShipFlags.Station))
             {
                 newShip.Velocity = 32;
-                newShip.Location = new(
-                    newShip.Location.X + (newShip.Rotmat[2].X * 2),
-                    newShip.Location.Y + (newShip.Rotmat[2].Y * 2),
-                    newShip.Location.Z + (newShip.Rotmat[2].Z * 2));
+                newShip.Location += newShip.Rotmat[2] * 2;
             }
 
             newShip.Flags |= flags;
@@ -1082,7 +1079,12 @@ namespace EliteSharp.Conflict
             }
 
             IShip? station = _universe.StationOrSun;
-            Debug.Assert(station?.Type is ShipType.Coriolis or ShipType.Dodec, "Shuttle must be launched from a station");
+            if (station == null)
+            {
+                return;
+            }
+
+            Debug.Assert(station.Flags.HasFlag(ShipFlags.Station), "Shuttle must be launched from a station");
             IShip shuttle = RNG.TrueOrFalse() ? new Shuttle(_draw) : new Transporter(_draw);
             if (!LaunchEnemy(station, shuttle, ShipFlags.HasECM | ShipFlags.FlyToPlanet, 113))
             {
@@ -1125,7 +1127,7 @@ namespace EliteSharp.Conflict
                 {
                     missile.Flags |= ShipFlags.Dead;
 
-                    if (missile.Target.Type is not ShipType.Coriolis and not ShipType.Dodec)
+                    if (!missile.Target.Flags.HasFlag(ShipFlags.Station))
                     {
                         ExplodeObject(missile.Target);
                     }
