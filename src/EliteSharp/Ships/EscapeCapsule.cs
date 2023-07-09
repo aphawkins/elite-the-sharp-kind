@@ -13,7 +13,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.EscapeCapsule;
-            Flags = ShipFlags.Slow | ShipFlags.FlyToPlanet;
+            Flags = ShipFlags.SpaceJunk | ShipFlags.Slow | ShipFlags.FlyToPlanet;
             EnergyMax = 17;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -49,7 +49,6 @@ namespace EliteSharp.Ships
             };
             ScoopedType = StockType.Slaves;
             Size = 256;
-            Class = ShipClass.SpaceJunk;
             VanishPoint = 8;
             VelocityMax = 8;
         }

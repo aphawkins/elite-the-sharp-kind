@@ -33,7 +33,6 @@ namespace EliteSharp.Ships
             Points = Points,
             ScoopedType = ScoopedType,
             Size = Size,
-            Class = Class,
             VanishPoint = VanishPoint,
             VelocityMax = VelocityMax,
             ExpDelta = ExpDelta,

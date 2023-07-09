@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Thargoid;
-            Flags = ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipFlags.LoneWolf | ShipFlags.Bold | ShipFlags.Angry;
             Bounty = 50;
             EnergyMax = 240;
             FaceNormals = new ShipFaceNormal[]
@@ -111,7 +111,6 @@ namespace EliteSharp.Ships
                 new(new(-24,  -64,   80), 30,  9,  9,  9,  9),
             };
             Size = 9801;
-            Class = ShipClass.LoneWolf;
             VanishPoint = 55;
             VelocityMax = 39;
         }

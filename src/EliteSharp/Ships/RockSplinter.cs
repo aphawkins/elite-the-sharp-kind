@@ -13,7 +13,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Rock;
-            Flags = ShipFlags.Inactive;
+            Flags = ShipFlags.SpaceJunk | ShipFlags.Inactive;
             EnergyMax = 20;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -49,7 +49,6 @@ namespace EliteSharp.Ships
             };
             ScoopedType = StockType.Minerals;
             Size = 256;
-            Class = ShipClass.SpaceJunk;
             VanishPoint = 8;
             VelocityMax = 10;
         }

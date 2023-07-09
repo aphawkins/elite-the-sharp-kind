@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Anaconda;
-            Flags = ShipFlags.Slow;
+            Flags = ShipFlags.Trader | ShipFlags.Slow;
             EnergyMax = 252;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -100,7 +100,6 @@ namespace EliteSharp.Ships
                 new(new(43,   53,  -23), 31, 15, 15, 15, 15),
             };
             Size = 10000;
-            Class = ShipClass.Trader;
             VanishPoint = 36;
             VelocityMax = 14;
         }

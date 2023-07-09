@@ -12,6 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Boa;
+            Flags = ShipFlags.Trader;
             EnergyMax = 250;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -97,7 +98,6 @@ namespace EliteSharp.Ships
                 new(new(-13,   -9, -107), 22,  1,  2, 12, 12),
             };
             Size = 4900;
-            Class = ShipClass.Trader;
             VanishPoint = 40;
             VelocityMax = 24;
         }

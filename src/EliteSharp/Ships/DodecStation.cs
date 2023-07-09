@@ -12,6 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Dodec;
+            Flags = ShipFlags.Station;
             EnergyMax = 240;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -111,7 +112,6 @@ namespace EliteSharp.Ships
                 new(new(16,  -32,  196), 23,  0,  0,  0,  0),
             };
             Size = 32400;
-            Class = ShipClass.Station;
             VanishPoint = 125;
         }
     }

@@ -12,6 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Coriolis;
+            Flags = ShipFlags.Station;
             EnergyMax = 240;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -107,7 +108,6 @@ namespace EliteSharp.Ships
                 new(new(-10,  -30,  160), 30,  0,  0,  0,  0),
             };
             Size = 25600;
-            Class = ShipClass.Station;
             VanishPoint = 120;
         }
     }

@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Boulder;
-            Flags = ShipFlags.Inactive;
+            Flags = ShipFlags.SpaceJunk | ShipFlags.Inactive;
             Bounty = 0.1f;
             EnergyMax = 20;
             FaceNormals = new ShipFaceNormal[]
@@ -73,7 +73,6 @@ namespace EliteSharp.Ships
                 new(new(20,   17,  -30), 31, 15, 15, 15, 15),
             };
             Size = 900;
-            Class = ShipClass.SpaceJunk;
             VanishPoint = 20;
             VelocityMax = 30;
         }

@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Shuttle;
-            Flags = ShipFlags.FlyToPlanet | ShipFlags.Slow;
+            Flags = ShipFlags.SpaceJunk | ShipFlags.FlyToPlanet | ShipFlags.Slow;
             EnergyMax = 32;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -111,7 +111,6 @@ namespace EliteSharp.Ships
                 new(new(-10,    4,   25),  8,  4, 15,  1,  8),
             };
             Size = 2500;
-            Class = ShipClass.SpaceJunk;
             VanishPoint = 22;
             VelocityMax = 8;
         }

@@ -13,7 +13,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Tharglet;
-            Flags = ShipFlags.Angry;
+            Flags = ShipFlags.Tharglet | ShipFlags.Angry;
             Bounty = 5;
             EnergyMax = 20;
             FaceNormals = new ShipFaceNormal[]
@@ -74,7 +74,6 @@ namespace EliteSharp.Ships
             };
             ScoopedType = StockType.AlienItems;
             Size = 1600;
-            Class = ShipClass.Tharglet;
             VanishPoint = 20;
             VelocityMax = 30;
         }

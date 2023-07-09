@@ -15,8 +15,6 @@ namespace EliteSharp.Ships
 
         int Bravery { get; set; }
 
-        ShipClass Class { get; }
-
         int Energy { get; set; }
 
         int EnergyMax { get; }

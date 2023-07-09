@@ -12,10 +12,9 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.PythonLone;
-            Flags = ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipFlags.LoneWolf | ShipFlags.Bold | ShipFlags.Angry;
             Bounty = 20;
             LootMax = 2;
-            Class = ShipClass.LoneWolf;
         }
     }
 }

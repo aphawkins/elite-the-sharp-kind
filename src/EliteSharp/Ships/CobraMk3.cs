@@ -12,6 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.CobraMk3;
+            Flags = ShipFlags.Trader;
             EnergyMax = 150;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -136,7 +137,6 @@ namespace EliteSharp.Ships
                 new(new(80,   -6,  -40),  8,  9,  9,  9,  9),
             };
             Size = 9025;
-            Class = ShipClass.Trader;
             VanishPoint = 50;
             VelocityMax = 28;
         }

@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Viper;
-            Flags = ShipFlags.Bold | ShipFlags.Police;
+            Flags = ShipFlags.Police | ShipFlags.Bold | ShipFlags.Police;
             EnergyMax = 140;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -85,7 +85,6 @@ namespace EliteSharp.Ships
                 new(new(8,   -8,  -24), 18,  6,  6,  6,  6),
             };
             Size = 5625;
-            Class = ShipClass.Police;
             VanishPoint = 23;
             VelocityMax = 32;
         }

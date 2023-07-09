@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
         : base(draw)
         {
             Type = ShipType.Sidewinder;
-            Flags = ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipFlags.PackHunter | ShipFlags.Bold | ShipFlags.Angry;
             Bounty = 5;
             EnergyMax = 70;
             FaceNormals = new ShipFaceNormal[]
@@ -73,7 +73,6 @@ namespace EliteSharp.Ships
                 new(new(-12,   -6,  -28), 12,  3,  3,  3,  3),
             };
             Size = 4225;
-            Class = ShipClass.PackHunter;
             VanishPoint = 20;
             VelocityMax = 37;
         }

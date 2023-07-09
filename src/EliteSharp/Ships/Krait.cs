@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Krait;
-            Flags = ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipFlags.PackHunter | ShipFlags.Bold | ShipFlags.Angry;
             Bounty = 10;
             EnergyMax = 80;
             FaceNormals = new ShipFaceNormal[]
@@ -94,7 +94,6 @@ namespace EliteSharp.Ships
                 new(new(-36,    0,  -30),  8,  5,  5,  5,  5),
             };
             Size = 3600;
-            Class = ShipClass.PackHunter;
             VanishPoint = 20;
             VelocityMax = 30;
         }

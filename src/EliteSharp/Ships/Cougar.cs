@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Cougar;
-            Flags = ShipFlags.Police | ShipFlags.Cloaked;
+            Flags = ShipFlags.LoneWolf | ShipFlags.Police | ShipFlags.Cloaked;
             EnergyMax = 252;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -98,7 +98,6 @@ namespace EliteSharp.Ships
                 new(new(10,    6,  -40), 20,  5,  5,  5,  5),
             };
             Size = 4900;
-            Class = ShipClass.LoneWolf;
             VanishPoint = 34;
             VelocityMax = 40;
         }

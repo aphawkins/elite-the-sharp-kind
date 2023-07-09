@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.CobraMk1;
-            Flags = ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipFlags.PackHunter | ShipFlags.Bold | ShipFlags.Angry;
             Bounty = 7.5f;
             EnergyMax = 90;
             FaceNormals = new ShipFaceNormal[]
@@ -89,7 +89,6 @@ namespace EliteSharp.Ships
                 new(new(0,   -1,   60), 31,  0,  1,  1,  1),
             };
             Size = 9801;
-            Class = ShipClass.PackHunter;
             VanishPoint = 19;
             VelocityMax = 26;
         }

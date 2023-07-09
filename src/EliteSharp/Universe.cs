@@ -49,7 +49,7 @@ namespace EliteSharp
             newShip.Missiles = newShip.MissilesMax;
             _shipCount[newShip.Type]++;
 
-            if (newShip.Class is ShipClass.Station || newShip.Type == ShipType.Sun)
+            if (newShip.Flags.HasFlag(ShipFlags.Station) || newShip.Type == ShipType.Sun)
             {
                 StationOrSun = newShip;
             }

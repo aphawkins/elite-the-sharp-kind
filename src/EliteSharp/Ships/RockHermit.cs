@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Hermit;
-            Flags = ShipFlags.Slow;
+            Flags = ShipFlags.SpaceJunk | ShipFlags.Slow;
             EnergyMax = 180;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -90,7 +90,6 @@ namespace EliteSharp.Ships
                 new(new(0,  -50,  -60), 31,  9,  8, 11, 10),
             };
             Size = 6400;
-            Class = ShipClass.SpaceJunk;
             VanishPoint = 50;
             VelocityMax = 30;
         }

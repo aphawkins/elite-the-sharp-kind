@@ -20,8 +20,6 @@ namespace EliteSharp.Ships
 
         public int Bravery { get; set; }
 
-        public ShipClass Class { get; protected set; }
-
         public int Energy { get; set; }
 
         public int EnergyMax { get; protected set; }
@@ -184,7 +182,6 @@ namespace EliteSharp.Ships
             Points = Points,
             ScoopedType = ScoopedType,
             Size = Size,
-            Class = Class,
             VanishPoint = VanishPoint,
             VelocityMax = VelocityMax,
             ExpDelta = ExpDelta,

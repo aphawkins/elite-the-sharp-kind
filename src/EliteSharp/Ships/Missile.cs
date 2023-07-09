@@ -12,6 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Missile;
+            Flags = ShipFlags.Missile;
             EnergyMax = 2;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -105,7 +106,6 @@ namespace EliteSharp.Ships
                 new(new(8,   -8,  -12),  8,  5,  4,  5,  5),
             };
             Size = 1600;
-            Class = ShipClass.Missile;
             VanishPoint = 14;
             VelocityMax = 44;
         }

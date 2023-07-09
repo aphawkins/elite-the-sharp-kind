@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.FerDeLance;
-            Flags = ShipFlags.Police;
+            Flags = ShipFlags.LoneWolf | ShipFlags.Police;
             EnergyMax = 160;
             FaceNormals = new ShipFaceNormal[]
             {
@@ -105,7 +105,6 @@ namespace EliteSharp.Ships
                 new(new(14,  -14,   44), 12,  9,  9,  9,  9),
             };
             Size = 1600;
-            Class = ShipClass.LoneWolf;
             VanishPoint = 40;
             VelocityMax = 30;
         }
