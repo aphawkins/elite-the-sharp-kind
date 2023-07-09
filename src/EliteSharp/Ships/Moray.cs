@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Moray : ShipBase
     {
-        internal Moray()
+        internal Moray(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Moray;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -69,6 +71,7 @@ namespace EliteSharp.Ships
                 new(5,  0,  0, 12, 13),
             };
             LootMax = 1;
+            MinDistance = 384;
             Name = "Moray Star Boat";
             Points = new ShipPoint[]
             {

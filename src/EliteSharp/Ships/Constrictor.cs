@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Constrictor : ShipBase
     {
-        internal Constrictor()
+        internal Constrictor(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Constrictor;
             Flags = ShipFlags.Angry;

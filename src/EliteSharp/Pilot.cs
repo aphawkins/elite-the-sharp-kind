@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Ships;
+using EliteSharp.Views;
 
 namespace EliteSharp
 {
@@ -13,12 +14,14 @@ namespace EliteSharp
     /// </summary>
     internal sealed class Pilot
     {
+        private readonly IDraw _draw;
         private readonly AudioController _audio;
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
 
-        internal Pilot(AudioController audio, Universe universe, PlayerShip ship)
+        internal Pilot(IDraw draw, AudioController audio, Universe universe, PlayerShip ship)
         {
+            _draw = draw;
             _audio = audio;
             _universe = universe;
             _ship = ship;
@@ -28,7 +31,7 @@ namespace EliteSharp
 
         internal void AutoDock()
         {
-            IShip ship = new ShipBase()
+            IShip ship = new ShipBase(_draw)
             {
                 Rotmat = VectorMaths.GetInitialMatrix(),
                 Location = Vector3.Zero,

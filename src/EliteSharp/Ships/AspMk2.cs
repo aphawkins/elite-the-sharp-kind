@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class AspMk2 : ShipBase
     {
-        internal AspMk2()
+        internal AspMk2(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.AspMk2;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -83,6 +85,7 @@ namespace EliteSharp.Ships
                 new(8, 11, 11, 16, 13),
                 new(10,  0,  4, 18, 17),
             };
+            MinDistance = 384;
             MissilesMax = 1;
             Name = "Asp MkII";
             Points = new ShipPoint[]

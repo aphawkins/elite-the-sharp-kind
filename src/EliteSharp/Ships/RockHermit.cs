@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class RockHermit : ShipBase
     {
-        internal RockHermit()
+        internal RockHermit(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Hermit;
             Flags = ShipFlags.Slow;
@@ -73,6 +75,7 @@ namespace EliteSharp.Ships
                 new(31,  9,  8,  7,  8),
             };
             LootMax = 7;
+            MinDistance = 384;
             MissilesMax = 2;
             Name = "Rock Hermit";
             Points = new ShipPoint[]

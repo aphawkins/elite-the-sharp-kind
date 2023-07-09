@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class FerDeLance : ShipBase
     {
-        internal FerDeLance()
+        internal FerDeLance(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.FerDeLance;
             Flags = ShipFlags.Police;
@@ -78,6 +80,7 @@ namespace EliteSharp.Ships
                 new(12,  9,  9, 16, 18),
                 new(8,  9,  9, 17, 18),
             };
+            MinDistance = 384;
             MissilesMax = 2;
             Name = "Fer-de-Lance";
             Points = new ShipPoint[]

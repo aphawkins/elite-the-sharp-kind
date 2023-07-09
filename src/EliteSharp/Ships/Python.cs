@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal class Python : ShipBase
     {
-        internal Python()
+        internal Python(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Python;
             EnergyMax = 250;
@@ -78,6 +80,7 @@ namespace EliteSharp.Ships
                 new(31,  7,  6,  8,  9),
             };
             LootMax = 5;
+            MinDistance = 900;
             MissilesMax = 3;
             Name = "Python";
             Points = new ShipPoint[]

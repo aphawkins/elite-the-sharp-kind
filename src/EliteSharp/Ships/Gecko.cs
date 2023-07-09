@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Gecko : ShipBase
     {
-        internal Gecko()
+        internal Gecko(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Gecko;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -64,6 +66,7 @@ namespace EliteSharp.Ships
                 new(16,  3,  3,  8, 10),
                 new(17,  3,  3,  9, 11),
             };
+            MinDistance = 384;
             Name = "Gecko";
             Points = new ShipPoint[]
             {

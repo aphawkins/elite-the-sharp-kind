@@ -5,18 +5,22 @@
 using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Ships;
+using EliteSharp.Views;
 
 namespace EliteSharp
 {
     internal sealed class Universe
     {
         private const int MaxUniverseObjects = 20;
-
+        private readonly IDraw _draw;
         private readonly List<IShip> _objects = new();
-
         private readonly Dictionary<ShipType, int> _shipCount = new();
 
-        internal Universe() => ClearUniverse();
+        internal Universe(IDraw draw)
+        {
+            _draw = draw;
+            ClearUniverse();
+        }
 
         internal bool IsStationPresent => _shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0;
 
@@ -85,7 +89,7 @@ namespace EliteSharp
 
         internal void AddNewStation(int planetTechLevel, Vector3 position, Vector3[] rotmat)
         {
-            IShip station = planetTechLevel >= 10 ? new DodecStation() : new Coriolis();
+            IShip station = planetTechLevel >= 10 ? new DodecStation(_draw) : new Coriolis(_draw);
             AddNewShip(station, position, rotmat, 0, -127);
         }
 

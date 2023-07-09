@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Adder : ShipBase
     {
-        internal Adder()
+        internal Adder(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Adder;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -85,6 +87,7 @@ namespace EliteSharp.Ships
                 new(4,  0,  0, 16, 17),
                 new(3,  0,  0, 17, 14),
             };
+            MinDistance = 200;
             Name = "Adder";
             Points = new ShipPoint[]
             {

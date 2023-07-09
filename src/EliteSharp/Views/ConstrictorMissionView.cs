@@ -16,7 +16,6 @@ namespace EliteSharp.Views
         private readonly Combat _combat;
         private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
 
         private readonly string _mission1_brief_a =
@@ -53,7 +52,6 @@ namespace EliteSharp.Views
 
         internal ConstrictorMissionView(
             GameState gameState,
-            IGraphics graphics,
             IDraw draw,
             IKeyboard keyboard,
             PlayerShip ship,
@@ -62,7 +60,6 @@ namespace EliteSharp.Views
             Universe universe)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _ship = ship;
@@ -80,17 +77,17 @@ namespace EliteSharp.Views
                 _draw.DrawTextPretty(new(16 + _draw.Offset, 50), 300, _mission1_brief_a);
                 _draw.DrawTextPretty(new(16 + _draw.Offset, 200), 470, _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
-                _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
+                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
             else if (_gameState.Cmdr.Mission == 3)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
-                _graphics.DrawTextCentre(100, "Congratulations Commander!", FontSize.Large, Colour.Gold);
+                _draw.Graphics.DrawTextCentre(100, "Congratulations Commander!", FontSize.Large, Colour.Gold);
 
                 _draw.DrawTextPretty(new(116 + _draw.Offset, 132), 400, _mission1_debrief);
 
-                _graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
+                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, Colour.Gold);
             }
         }
 
@@ -113,7 +110,7 @@ namespace EliteSharp.Views
 
                 _combat.Reset();
                 _universe.ClearUniverse();
-                IShip constrictor = new Constrictor();
+                IShip constrictor = new Constrictor(_draw);
                 if (!_universe.AddNewShip(constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127))
                 {
                     Debug.Fail("Failed to create Constrictor");

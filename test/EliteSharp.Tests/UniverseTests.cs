@@ -3,6 +3,8 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Ships;
+using EliteSharp.Views;
+using Moq;
 
 namespace EliteSharp.Tests
 {
@@ -12,8 +14,9 @@ namespace EliteSharp.Tests
         public void UniverseAddShip()
         {
             // Arrange
-            Universe universe = new();
-            IShip ship = new CobraMk3();
+            Mock<IDraw> drawMoq = new();
+            Universe universe = new(drawMoq.Object);
+            IShip ship = new CobraMk3(drawMoq.Object);
 
             // Act
             universe.AddNewShip(ship);
@@ -34,8 +37,9 @@ namespace EliteSharp.Tests
         public void UniverseRemoveShip()
         {
             // Arrange
-            Universe universe = new();
-            IShip ship = new CobraMk3();
+            Mock<IDraw> drawMoq = new();
+            Universe universe = new(drawMoq.Object);
+            IShip ship = new CobraMk3(drawMoq.Object);
 
             // Act
             universe.AddNewShip(ship);

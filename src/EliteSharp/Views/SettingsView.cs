@@ -15,7 +15,6 @@ namespace EliteSharp.Views
         private readonly ConfigFile _configFile;
         private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
 
         private readonly (string Name, string[] Values)[] _settingList =
@@ -30,10 +29,9 @@ namespace EliteSharp.Views
 
         private int _highlightedItem;
 
-        internal SettingsView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, ConfigFile configFile)
+        internal SettingsView(GameState gameState, IDraw draw, IKeyboard keyboard, ConfigFile configFile)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _configFile = configFile;
@@ -53,10 +51,10 @@ namespace EliteSharp.Views
                     if (i == _highlightedItem)
                     {
                         position.X = _draw.Centre.X - 200;
-                        _graphics.DrawRectangleFilled(position, 400, 15, Colour.LightRed);
+                        _draw.Graphics.DrawRectangleFilled(position, 400, 15, Colour.LightRed);
                     }
 
-                    _graphics.DrawTextCentre(position.Y, _settingList[i].Name, FontSize.Small, Colour.White);
+                    _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, FontSize.Small, Colour.White);
                     return;
                 }
 
@@ -75,12 +73,12 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(position, 100, 15, Colour.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(position, 100, 15, Colour.LightRed);
                 }
 
-                _graphics.DrawTextLeft(position, _settingList[i].Name, Colour.White);
+                _draw.Graphics.DrawTextLeft(position, _settingList[i].Name, Colour.White);
                 position.X += 120;
-                _graphics.DrawTextLeft(position, _settingList[i].Values[v], Colour.White);
+                _draw.Graphics.DrawTextLeft(position, _settingList[i].Values[v], Colour.White);
             }
         }
 

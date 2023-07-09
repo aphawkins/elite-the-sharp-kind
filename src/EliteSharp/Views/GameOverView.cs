@@ -15,7 +15,6 @@ namespace EliteSharp.Views
         private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
         private readonly Universe _universe;
@@ -24,7 +23,6 @@ namespace EliteSharp.Views
 
         internal GameOverView(
             GameState gameState,
-            IGraphics graphics,
             AudioController audio,
             Stars stars,
             PlayerShip ship,
@@ -33,7 +31,6 @@ namespace EliteSharp.Views
             IDraw draw)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _audio = audio;
             _stars = stars;
             _ship = ship;
@@ -42,7 +39,7 @@ namespace EliteSharp.Views
             _draw = draw;
         }
 
-        public void Draw() => _graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", FontSize.Large, Colour.Gold);
+        public void Draw() => _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", FontSize.Large, Colour.Gold);
 
         public void HandleInput()
         {
@@ -56,7 +53,7 @@ namespace EliteSharp.Views
             _ship.Climb = 0;
             _combat.Reset();
             _universe.ClearUniverse();
-            IShip cobraMk3 = new CobraMk3();
+            IShip cobraMk3 = new CobraMk3(_draw);
             if (!_universe.AddNewShip(cobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create CobraMk3");
@@ -67,7 +64,7 @@ namespace EliteSharp.Views
             // Cargo
             for (int i = 0; i < 5; i++)
             {
-                IShip cargo = RNG.TrueOrFalse() ? new CargoCannister() : new Alloy();
+                IShip cargo = RNG.TrueOrFalse() ? new CargoCannister(_draw) : new Alloy(_draw);
                 if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 32), RNG.Random(-32, 32), -400), VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     Debug.WriteLine("Failed to create Cargo");

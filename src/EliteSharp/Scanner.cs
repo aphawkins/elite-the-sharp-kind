@@ -18,15 +18,13 @@ namespace EliteSharp
         private readonly Combat _combat;
         private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
         private Vector2 _scannerCentre;
 
-        internal Scanner(GameState gameState, IGraphics graphics, IDraw draw, Universe universe, PlayerShip ship, Combat combat)
+        internal Scanner(GameState gameState, IDraw draw, Universe universe, PlayerShip ship, Combat combat)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _draw = draw;
             _universe = universe;
             _ship = ship;
@@ -34,7 +32,7 @@ namespace EliteSharp
             _scannerCentre = new(_draw.Centre.X - 3, _draw.ScannerTop + 63);
         }
 
-        internal void DrawScanner() => _graphics.DrawImage(Image.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));
+        internal void DrawScanner() => _draw.Graphics.DrawImage(Image.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));
 
         internal void UpdateConsole()
         {
@@ -60,12 +58,12 @@ namespace EliteSharp
 
             if (_universe.IsStationPresent)
             {
-                _graphics.DrawImage(Image.BigS, new(_draw.ScannerLeft + 387, _draw.ScannerTop + 105));
+                _draw.Graphics.DrawImage(Image.BigS, new(_draw.ScannerLeft + 387, _draw.ScannerTop + 105));
             }
 
             if (_ship.EcmActive != 0)
             {
-                _graphics.DrawImage(Image.BigE, new(_draw.ScannerLeft + 115, _draw.ScannerTop + 105));
+                _draw.Graphics.DrawImage(Image.BigE, new(_draw.ScannerLeft + 115, _draw.ScannerTop + 105));
             }
         }
 
@@ -93,16 +91,16 @@ namespace EliteSharp
             float x = _draw.ScannerLeft + position.X;
             float y = _draw.ScannerTop + position.Y;
 
-            _graphics.DrawLine(new(x, y), new(x + len, y), Colour.Gold);
+            _draw.Graphics.DrawLine(new(x, y), new(x + len, y), Colour.Gold);
             int i = 1;
-            _graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.Gold);
+            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.Gold);
 
             for (i = 2; i < 7; i++)
             {
-                _graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.DarkYellow);
+                _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.DarkYellow);
             }
 
-            _graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.LightRed);
+            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), Colour.LightRed);
         }
 
         /// <summary>
@@ -145,7 +143,7 @@ namespace EliteSharp
 
             for (int i = 0; i < 4; i++)
             {
-                _graphics.DrawLine(new(position + i, y), new(position + i, y + 7), Colour.Gold);
+                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), Colour.Gold);
             }
         }
 
@@ -158,7 +156,7 @@ namespace EliteSharp
 
             for (int i = 0; i < 4; i++)
             {
-                _graphics.DrawLine(new(position + i, y), new(position + i, y + 7), Colour.Gold);
+                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), Colour.Gold);
             }
         }
 
@@ -191,14 +189,14 @@ namespace EliteSharp
 
             if (_combat.IsMissileArmed)
             {
-                _graphics.DrawImage((_combat.MissileTarget == null) ? Image.MissileYellow : Image.MissileRed, location);
+                _draw.Graphics.DrawImage((_combat.MissileTarget == null) ? Image.MissileYellow : Image.MissileRed, location);
                 location.X += 16;
                 missileCount--;
             }
 
             for (; missileCount > 0; missileCount--)
             {
-                _graphics.DrawImage(Image.MissileGreen, location);
+                _draw.Graphics.DrawImage(Image.MissileGreen, location);
                 location.X += 16;
             }
         }
@@ -231,7 +229,7 @@ namespace EliteSharp
 
             for (int i = 0; i < 6; i++)
             {
-                _graphics.DrawLine(new(x, y + i), new(x + length, y + i), colour);
+                _draw.Graphics.DrawLine(new(x, y + i), new(x + length, y + i), colour);
             }
         }
 
@@ -262,11 +260,11 @@ namespace EliteSharp
 
             if (dest.Z < 0)
             {
-                _graphics.DrawImage(Image.DotRed, position);
+                _draw.Graphics.DrawImage(Image.DotRed, position);
             }
             else
             {
-                _graphics.DrawImage(Image.GreenDot, position);
+                _draw.Graphics.DrawImage(Image.GreenDot, position);
             }
         }
 
@@ -384,10 +382,10 @@ namespace EliteSharp
                 }
 
                 // ship
-                _graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, colour);
+                _draw.Graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, colour);
 
                 // stick
-                _graphics.DrawRectangleFilled(new(x, y2 < y1 ? y2 : y1), 2, MathF.Abs(y2 - y1), colour);
+                _draw.Graphics.DrawRectangleFilled(new(x, y2 < y1 ? y2 : y1), 2, MathF.Abs(y2 - y1), colour);
             }
         }
     }

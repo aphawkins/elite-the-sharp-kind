@@ -20,16 +20,14 @@ namespace EliteSharp.Views
         private readonly AudioController _audio;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
         private readonly Universe _universe;
         private readonly IDraw _draw;
 
-        internal Intro1View(GameState gameState, IGraphics graphics, AudioController audio, IKeyboard keyboard, PlayerShip ship, Combat combat, Universe universe, IDraw draw)
+        internal Intro1View(GameState gameState, AudioController audio, IKeyboard keyboard, PlayerShip ship, Combat combat, Universe universe, IDraw draw)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _audio = audio;
             _keyboard = keyboard;
             _ship = ship;
@@ -40,12 +38,12 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _graphics.DrawImageCentre(Image.EliteText, _draw.Top + 10);
+            _draw.Graphics.DrawImageCentre(Image.EliteText, _draw.Top + 10);
 
-            _graphics.DrawTextCentre(_draw.ScannerTop - 90, "Original Game (C) I.Bell & D.Braben.", FontSize.Small, Colour.White);
-            _graphics.DrawTextCentre(_draw.ScannerTop - 70, "The New Kind - Christian Pinder.", FontSize.Small, Colour.White);
-            _graphics.DrawTextCentre(_draw.ScannerTop - 50, "The Sharp Kind - Andy Hawkins.", FontSize.Small, Colour.White);
-            _graphics.DrawTextCentre(_draw.ScannerTop - 30, "Load New Commander (Y/N)?", FontSize.Large, Colour.Gold);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 90, "Original Game (C) I.Bell & D.Braben.", FontSize.Small, Colour.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 70, "The New Kind - Christian Pinder.", FontSize.Small, Colour.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 50, "The Sharp Kind - Andy Hawkins.", FontSize.Small, Colour.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Load New Commander (Y/N)?", FontSize.Large, Colour.Gold);
         }
 
         public void HandleInput()
@@ -76,7 +74,7 @@ namespace EliteSharp.Views
 
             // Ship faces away
             initMatrix[2].Z = 1;
-            IShip cobraMk3 = new CobraMk3();
+            IShip cobraMk3 = new CobraMk3(_draw);
             if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500), initMatrix, -127, 127))
             {
                 Debug.WriteLine("Failed to create CobraMk3");

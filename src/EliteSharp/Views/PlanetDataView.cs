@@ -68,7 +68,6 @@ namespace EliteSharp.Views
         };
 
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
 
         private readonly string[] _governmentType =
         {
@@ -86,10 +85,9 @@ namespace EliteSharp.Views
         private float _distanceToPlanet;
         private PlanetData _hyperPlanetData = new();
 
-        internal PlanetDataView(GameState gameState, IGraphics graphics, IDraw draw, PlanetController planet)
+        internal PlanetDataView(GameState gameState, IDraw draw, PlanetController planet)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _draw = draw;
             _planet = planet;
         }
@@ -100,22 +98,22 @@ namespace EliteSharp.Views
 
             if (_distanceToPlanet > 0)
             {
-                _graphics.DrawTextLeft(new(16 + _draw.Offset, 42), "Distance:", Colour.Green);
-                _graphics.DrawTextLeft(new(140 + _draw.Offset, 42), $"{_distanceToPlanet:N1} Light Years", Colour.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 42), "Distance:", Colour.Green);
+                _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 42), $"{_distanceToPlanet:N1} Light Years", Colour.White);
             }
 
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Economy:", Colour.Green);
-            _graphics.DrawTextLeft(new(140 + _draw.Offset, 74), _economyType[_hyperPlanetData.Economy], Colour.White);
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Government:", Colour.Green);
-            _graphics.DrawTextLeft(new(140 + _draw.Offset, 106), _governmentType[_hyperPlanetData.Government], Colour.White);
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", Colour.Green);
-            _graphics.DrawTextLeft(new(140 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", Colour.White);
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", Colour.Green);
-            _graphics.DrawTextLeft(new(140 + _draw.Offset, 170), $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", Colour.White);
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 202), "Gross Productivity:", Colour.Green);
-            _graphics.DrawTextLeft(new(140 + _draw.Offset, 202), $"{_hyperPlanetData.Productivity} Million Credits", Colour.White);
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 234), "Average Radius:", Colour.Green);
-            _graphics.DrawTextLeft(new(140 + _draw.Offset, 234), $"{_hyperPlanetData.Radius} km", Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Economy:", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 74), _economyType[_hyperPlanetData.Economy], Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Government:", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 106), _governmentType[_hyperPlanetData.Government], Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 170), $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 202), "Gross Productivity:", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 202), $"{_hyperPlanetData.Productivity} Million Credits", Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 234), "Average Radius:", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 234), $"{_hyperPlanetData.Radius} km", Colour.White);
             _draw.DrawTextPretty(new(16 + _draw.Offset, 266), 400, DescribePlanet(_gameState.HyperspacePlanet));
         }
 

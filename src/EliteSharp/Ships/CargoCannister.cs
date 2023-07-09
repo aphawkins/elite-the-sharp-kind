@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class CargoCannister : ShipBase
     {
-        internal CargoCannister()
+        internal CargoCannister(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Cargo;
             Flags = ShipFlags.Inactive;
@@ -53,6 +55,7 @@ namespace EliteSharp.Ships
                 new(31,  6,  4,  8,  9),
                 new(31,  6,  5,  9,  5),
             };
+            MinDistance = 200;
             Name = "Cargo Cannister";
             Points = new ShipPoint[]
             {

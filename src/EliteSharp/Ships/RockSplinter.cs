@@ -4,12 +4,14 @@
 
 using EliteSharp.Graphics;
 using EliteSharp.Trader;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class RockSplinter : ShipBase
     {
-        internal RockSplinter()
+        internal RockSplinter(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Rock;
             Flags = ShipFlags.Inactive;
@@ -37,6 +39,7 @@ namespace EliteSharp.Ships
                 new(31,  1,  3,  0,  2),
                 new(31,  0,  2,  3,  1),
             };
+            MinDistance = 200;
             Name = "Rock Splinter";
             Points = new ShipPoint[]
             {

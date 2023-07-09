@@ -4,12 +4,14 @@
 
 using EliteSharp.Graphics;
 using EliteSharp.Trader;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Tharglet : ShipBase
     {
-        internal Tharglet()
+        internal Tharglet(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Tharglet;
             Flags = ShipFlags.Angry;
@@ -56,6 +58,7 @@ namespace EliteSharp.Ships
                 new(31,  6,  4,  8,  9),
                 new(31,  6,  5,  9,  5),
             };
+            MinDistance = 384;
             Name = "Tharglet";
             Points = new ShipPoint[]
             {

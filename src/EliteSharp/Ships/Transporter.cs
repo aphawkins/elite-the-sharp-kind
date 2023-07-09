@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Transporter : ShipBase
     {
-        internal Transporter()
+        internal Transporter(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Transporter;
             Flags = ShipFlags.FlyToPlanet | ShipFlags.Slow;
@@ -120,6 +122,7 @@ namespace EliteSharp.Ships
                 new(5,  0,  0, 35, 36),
                 new(5,  0,  0, 36, 33),
             };
+            MinDistance = 200;
             Name = "Transporter";
             Points = new ShipPoint[]
             {

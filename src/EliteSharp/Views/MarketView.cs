@@ -12,16 +12,14 @@ namespace EliteSharp.Views
     {
         private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly PlanetController _planet;
         private readonly Trade _trade;
         private StockType _highlightedStock;
 
-        internal MarketView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, Trade trade, PlanetController planet)
+        internal MarketView(GameState gameState, IDraw draw, IKeyboard keyboard, Trade trade, PlanetController planet)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _trade = trade;
@@ -32,11 +30,11 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.DockedPlanet)} MARKET PRICES");
 
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 40), "PRODUCT", Colour.Green);
-            _graphics.DrawTextLeft(new(166 + _draw.Offset, 40), "UNIT", Colour.Green);
-            _graphics.DrawTextLeft(new(246 + _draw.Offset, 40), "PRICE", Colour.Green);
-            _graphics.DrawTextLeft(new(314 + _draw.Offset, 40), "FOR SALE", Colour.Green);
-            _graphics.DrawTextLeft(new(420 + _draw.Offset, 40), "IN HOLD", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 40), "PRODUCT", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(166 + _draw.Offset, 40), "UNIT", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(246 + _draw.Offset, 40), "PRICE", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(314 + _draw.Offset, 40), "FOR SALE", Colour.Green);
+            _draw.Graphics.DrawTextLeft(new(420 + _draw.Offset, 40), "IN HOLD", Colour.Green);
 
             int i = 0;
             foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
@@ -45,26 +43,26 @@ namespace EliteSharp.Views
 
                 if (stock.Key == _highlightedStock)
                 {
-                    _graphics.DrawRectangleFilled(new(2 + _draw.Offset, y), 508, 15, Colour.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y), 508, 15, Colour.LightRed);
                 }
 
-                _graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, Colour.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, Colour.White);
 
-                _graphics.DrawTextLeft(new(180 + _draw.Offset, y), stock.Value.Units, Colour.White);
+                _draw.Graphics.DrawTextLeft(new(180 + _draw.Offset, y), stock.Value.Units, Colour.White);
 
-                _graphics.DrawTextRight(285 + _draw.Offset, y, $"{stock.Value.CurrentPrice:N1}", Colour.White);
+                _draw.Graphics.DrawTextRight(285 + _draw.Offset, y, $"{stock.Value.CurrentPrice:N1}", Colour.White);
 
-                _graphics.DrawTextRight(365 + _draw.Offset, y, stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", Colour.White);
-                _graphics.DrawTextLeft(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, Colour.White);
+                _draw.Graphics.DrawTextRight(365 + _draw.Offset, y, stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", Colour.White);
+                _draw.Graphics.DrawTextLeft(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, Colour.White);
 
-                _graphics.DrawTextRight(455 + _draw.Offset, y, stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", Colour.White);
-                _graphics.DrawTextLeft(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, Colour.White);
+                _draw.Graphics.DrawTextRight(455 + _draw.Offset, y, stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", Colour.White);
+                _draw.Graphics.DrawTextLeft(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, Colour.White);
 
                 i++;
             }
 
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 340), "Cash:", Colour.Green);
-            _graphics.DrawTextRight(160 + _draw.Offset, 340, $"{_trade.Credits,10:N1} Credits", Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), "Cash:", Colour.Green);
+            _draw.Graphics.DrawTextRight(160 + _draw.Offset, 340, $"{_trade.Credits,10:N1} Credits", Colour.White);
         }
 
         public void HandleInput()

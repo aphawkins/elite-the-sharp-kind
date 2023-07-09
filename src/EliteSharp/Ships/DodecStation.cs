@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class DodecStation : ShipBase
     {
-        internal DodecStation()
+        internal DodecStation(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Dodec;
             EnergyMax = 240;
@@ -80,6 +82,7 @@ namespace EliteSharp.Ships
                 new(23,  0,  0, 23, 22),
                 new(20,  0,  0, 22, 20),
             };
+            MinDistance = 900;
             Name = "Dodec Space Station";
             Points = new ShipPoint[]
             {

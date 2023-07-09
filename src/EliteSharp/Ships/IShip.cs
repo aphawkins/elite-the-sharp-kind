@@ -9,13 +9,25 @@ namespace EliteSharp.Ships
 {
     internal interface IShip
     {
+        int Acceleration { get; set; }
+
         float Bounty { get; }
 
+        int Bravery { get; set; }
+
+        ShipClass Class { get; }
+
+        int Energy { get; set; }
+
         int EnergyMax { get; }
+
+        int ExpDelta { get; set; }
 
         ShipFaceNormal[] FaceNormals { get; }
 
         ShipFace[] Faces { get; }
+
+        ShipFlags Flags { get; set; }
 
         int LaserFront { get; }
 
@@ -23,7 +35,13 @@ namespace EliteSharp.Ships
 
         ShipLine[] Lines { get; }
 
+        Vector3 Location { get; set; }
+
         int LootMax { get; }
+
+        float MinDistance { get; }
+
+        int Missiles { get; set; }
 
         int MissilesMax { get; }
 
@@ -31,40 +49,28 @@ namespace EliteSharp.Ships
 
         ShipPoint[] Points { get; }
 
-        StockType ScoopedType { get; }
-
-        float Size { get; }
-
-        ShipClass Class { get; }
-
-        int VanishPoint { get; }
-
-        float VelocityMax { get; }
-
-        int Acceleration { get; set; }
-
-        int Bravery { get; set; }
-
-        int Energy { get; set; }
-
-        int ExpDelta { get; set; }
-
-        ShipFlags Flags { get; set; }
-
-        Vector3 Location { get; set; }
-
-        int Missiles { get; set; }
-
         Vector3[] Rotmat { get; set; }
 
         float RotX { get; set; }
 
         float RotZ { get; set; }
 
+        StockType ScoopedType { get; }
+
+        float Size { get; }
+
         IShip? Target { get; set; }
 
         ShipType Type { get; }
 
+        int VanishPoint { get; }
+
         float Velocity { get; set; }
+
+        float VelocityMax { get; }
+
+        IShip Clone();
+
+        void Draw();
     }
 }

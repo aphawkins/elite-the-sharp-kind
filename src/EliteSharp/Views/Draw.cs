@@ -11,18 +11,24 @@ namespace EliteSharp.Views
 {
     internal sealed class Draw : IDraw
     {
-        private readonly IGraphics _graphics;
-        private readonly bool _isViewFullFrame;
+        private const int MAXPOLYS = 100;
+        private readonly GameState _gameState;
+        private readonly Vector3[] _pointList = new Vector3[100];
+        private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
+        private int _startPoly;
+        private int _totalPolys;
 
-        internal Draw(IGraphics graphics, bool isViewFullFrame)
+        internal Draw(GameState gameState, IGraphics graphics)
         {
-            _graphics = graphics;
-            _isViewFullFrame = isViewFullFrame;
+            _gameState = gameState;
+            Graphics = graphics;
         }
 
-        public float Bottom => _isViewFullFrame ? _graphics.ScreenHeight - BorderWidth : _graphics.ScreenHeight - ScannerHeight;
+        public float Bottom => _gameState.Config.IsViewFullFrame ? Graphics.ScreenHeight - BorderWidth : Graphics.ScreenHeight - ScannerHeight;
 
-        public Vector2 Centre => new(_graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
+        public Vector2 Centre => new(Graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
+
+        public IGraphics Graphics { get; }
 
         public bool IsWidescreen { get; }
 
@@ -30,19 +36,19 @@ namespace EliteSharp.Views
 
         public float Offset => ScannerLeft;
 
-        public float Right => _graphics.ScreenWidth - BorderWidth;
+        public float Right => Graphics.ScreenWidth - BorderWidth;
 
         public float ScannerLeft => Centre.X - (ScannerWidth / 2);
 
         public float ScannerRight => ScannerLeft + ScannerWidth - 1;
 
-        public float ScannerTop => _graphics.ScreenHeight - ScannerHeight;
+        public float ScannerTop => Graphics.ScreenHeight - ScannerHeight;
 
         public float Top => BorderWidth;
 
         internal float Height => Bottom - BorderWidth;
 
-        internal float Width => _graphics.ScreenWidth - (2 * BorderWidth);
+        internal float Width => Graphics.ScreenWidth - (2 * BorderWidth);
 
         private static float BorderWidth => 1;
 
@@ -50,63 +56,66 @@ namespace EliteSharp.Views
 
         private static float ScannerWidth => 512;
 
-        public void ClearDisplay() => _graphics.ClearArea(new(Left, Top), Width, Height);
+        public void ClearDisplay() => Graphics.ClearArea(new(Left, Top), Width, Height);
 
         public void DrawBorder()
         {
             for (int i = 0; i < BorderWidth; i++)
             {
-                _graphics.DrawRectangle(new(i, i), _graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), Colour.White);
+                Graphics.DrawRectangle(new(i, i), Graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), Colour.White);
             }
         }
 
-        public void DrawHyperspaceCountdown(int countdown) => _graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", Colour.White);
+        public void DrawHyperspaceCountdown(int countdown) => Graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", Colour.White);
 
-        public void DrawSun(IShip planet)
+        public void DrawPolygonFilled(Vector2[] point_list, Colour face_colour, float zAvg)
         {
-            Vector2 centre = new(planet.Location.X, -planet.Location.Y);
+            int i;
 
-            centre *= 256 / planet.Location.Z;
-            centre += Centre / 2;
-            centre *= _graphics.Scale;
-
-            float radius = 6291456 / planet.Location.Length() * _graphics.Scale;
-
-            if ((centre.X + radius < Left) ||
-                (centre.X - radius > Right) ||
-                (centre.Y + radius < Top) ||
-                (centre.Y - radius > Bottom))
+            if (_totalPolys == MAXPOLYS)
             {
                 return;
             }
 
-            float s = -radius;
-            float x = radius;
-            float y = 0;
+            int x = _totalPolys;
+            _totalPolys++;
 
-            // s -= x + x;
-            while (y <= x)
+            _polyChain[x].FaceColour = face_colour;
+            _polyChain[x].Z = zAvg;
+            _polyChain[x].Next = -1;
+            _polyChain[x].PointList = new Vector2[point_list.Length];
+
+            for (i = 0; i < point_list.Length; i++)
             {
-                // Top of top half
-                RenderSunLine(centre, y, -MathF.Floor(x), radius);
+                _polyChain[x].PointList[i].X = point_list[i].X;
+                _polyChain[x].PointList[i].Y = point_list[i].Y;
+            }
 
-                // Top of top half
-                RenderSunLine(centre, x, -y, radius);
+            if (x == 0)
+            {
+                return;
+            }
 
-                // Top of bottom half
-                RenderSunLine(centre, x, y, radius);
+            if (zAvg > _polyChain[_startPoly].Z)
+            {
+                _polyChain[x].Next = _startPoly;
+                _startPoly = x;
+                return;
+            }
 
-                // Bottom of bottom half
-                RenderSunLine(centre, y, MathF.Floor(x), radius);
+            for (i = _startPoly; _polyChain[i].Next != -1; i = _polyChain[i].Next)
+            {
+                int nx = _polyChain[i].Next;
 
-                s += y + y + 1;
-                y++;
-                if (s >= 0)
+                if (zAvg > _polyChain[nx].Z)
                 {
-                    s -= x + x + 2;
-                    x--;
+                    _polyChain[i].Next = x;
+                    _polyChain[x].Next = nx;
+                    return;
                 }
             }
+
+            _polyChain[i].Next = x;
         }
 
         public void DrawTextPretty(Vector2 position, float width, string text)
@@ -126,20 +135,20 @@ namespace EliteSharp.Views
                 }
 
                 i++;
-                _graphics.DrawTextLeft(position, text[previous..i], Colour.White);
+                Graphics.DrawTextLeft(position, text[previous..i], Colour.White);
                 previous = i;
-                position.Y += 8 * _graphics.Scale;
+                position.Y += 8 * Graphics.Scale;
             }
         }
 
         public void DrawViewHeader(string title)
         {
-            _graphics.DrawTextCentre(Top + 10, title, FontSize.Large, Colour.Gold);
-            _graphics.DrawLine(new(Left, 36), new(Right, 36));
+            Graphics.DrawTextCentre(Top + 10, title, FontSize.Large, Colour.Gold);
+            Graphics.DrawLine(new(Left, 36), new(Right, 36));
 
             // Vertical lines
-            _graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), Colour.Yellow);
-            _graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), Colour.Yellow);
+            Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), Colour.Yellow);
+            Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), Colour.Yellow);
         }
 
         public async Task LoadImagesAsync(CancellationToken token)
@@ -153,72 +162,194 @@ namespace EliteSharp.Views
             await Parallel.ForEachAsync(
                 Enum.GetValues<Image>(),
                 options,
-                async (img, token) => _graphics.LoadBitmap(img, await loader.LoadAsync(img, token).ConfigureAwait(false)))
+                async (img, token) => Graphics.LoadBitmap(img, await loader.LoadAsync(img, token).ConfigureAwait(false)))
                 .ConfigureAwait(false);
         }
 
-        public void SetFullScreenClipRegion() => _graphics.SetClipRegion(new(0, 0), _graphics.ScreenWidth, _graphics.ScreenHeight);
+        public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);
 
-        public void SetViewClipRegion() => _graphics.SetClipRegion(new(Left, Top), Width, Height);
+        public void SetViewClipRegion() => Graphics.SetClipRegion(new(Left, Top), Width, Height);
 
-        private void RenderSunLine(Vector2 centre, float x, float y, float radius)
+        /// <summary>
+        /// Draws an object in the universe. (Ship, Planet, Sun etc).
+        /// </summary>
+        public void DrawObject(IShip ship)
         {
-            Vector2 s = new()
-            {
-                Y = centre.Y + y,
-            };
-
-            if (s.Y < Top || s.Y > Bottom)
-            {
-                return;
-            }
-
-            s.X = centre.X - x;
-            float ex = centre.X + x;
-
-            s.X -= radius * RNG.Random(2, 10) / 256f;
-            ex += radius * RNG.Random(2, 10) / 256f;
-
-            if (ex < Left || s.X > Right)
+            if (_gameState.CurrentScreen is not Screen.FrontView and not Screen.RearView and
+                not Screen.LeftView and not Screen.RightView and
+                not Screen.IntroOne and not Screen.IntroTwo and
+                not Screen.GameOver and not Screen.EscapeCapsule and
+                not Screen.MissionOne)
             {
                 return;
             }
 
-            if (s.X < Left)
+            if (ship.Flags.HasFlag(ShipFlags.Dead) && !ship.Flags.HasFlag(ShipFlags.Explosion))
             {
-                s.X = Left;
+                ship.Flags |= ShipFlags.Explosion;
+                ship.ExpDelta = 18;
             }
 
-            if (ex > Right)
+            if (ship.Flags.HasFlag(ShipFlags.Explosion))
             {
-                ex = Right;
+                DrawExplosion(ship);
+                return;
             }
 
-            float inner = radius * (200 + RNG.Random(8)) / 256;
-            inner *= inner;
-
-            float inner2 = radius * (220 + RNG.Random(8)) / 256;
-            inner2 *= inner2;
-
-            float outer = radius * (239 + RNG.Random(8)) / 256;
-            outer *= outer;
-
-            float dy = y * y;
-            float dx = s.X - centre.X;
-
-            for (; s.X <= ex; s.X++, dx++)
+            // Only display ships in front of us.
+            if (ship.Location.Z <= 0)
             {
-                float distance = (dx * dx) + dy;
+                return;
+            }
 
-                Colour colour = distance < inner
-                    ? Colour.White
-                    : distance < inner2
-                        ? Colour.LightYellow
-                        : distance < outer
-                            ? Colour.LightOrange
-                            : ((int)s.X ^ (int)y).IsOdd() ? Colour.Orange : Colour.DarkOrange;
+            if (ship.Type == ShipType.Planet)
+            {
+                ship.Draw();
+                return;
+            }
 
-                _graphics.DrawPixelFast(s, colour);
+            if (ship.Type == ShipType.Sun)
+            {
+                ship.Draw();
+                return;
+            }
+
+            // Check for field of vision.
+            if ((MathF.Abs(ship.Location.X) > ship.Location.Z) ||
+                (MathF.Abs(ship.Location.Y) > ship.Location.Z))
+            {
+                return;
+            }
+
+            ship.Draw();
+        }
+
+        public void RenderEnd()
+        {
+            if (_totalPolys == 0)
+            {
+                return;
+            }
+
+            for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
+            {
+                Colour colour = _gameState.Config.UseWireframe ? Colour.White : _polyChain[i].FaceColour;
+
+                if (_polyChain[i].PointList.Length == 2)
+                {
+                    Graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], colour);
+                    continue;
+                }
+
+                if (_gameState.Config.UseWireframe)
+                {
+                    Graphics.DrawPolygon(_polyChain[i].PointList, colour);
+                }
+                else
+                {
+                    Graphics.DrawPolygonFilled(_polyChain[i].PointList, colour);
+                }
+            }
+        }
+
+        public void RenderStart()
+        {
+            _startPoly = 0;
+            _totalPolys = 0;
+        }
+
+        private void DrawExplosion(IShip ship)
+        {
+            Vector3[] trans_mat = new Vector3[3];
+            bool[] visible = new bool[32];
+
+            if (ship.ExpDelta > 251)
+            {
+                ship.Flags |= ShipFlags.Remove;
+                return;
+            }
+
+            ship.ExpDelta += 4;
+
+            if (ship.Location.Z <= 0)
+            {
+                return;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                trans_mat[i] = ship.Rotmat[i];
+            }
+
+            Vector3 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat);
+            camera_vec = VectorMaths.UnitVector(camera_vec);
+
+            ShipFaceNormal[] ship_norm = ship.FaceNormals;
+
+            for (int i = 0; i < ship.FaceNormals.Length; i++)
+            {
+                Vector3 vec = VectorMaths.UnitVector(ship_norm[i].Direction);
+                float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
+                visible[i] = cos_angle < -0.13;
+            }
+
+            (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
+            (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
+            (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
+            int np = 0;
+
+            for (int i = 0; i < ship.Points.Length; i++)
+            {
+                if (visible[ship.Points[i].Face1] || visible[ship.Points[i].Face2] ||
+                    visible[ship.Points[i].Face3] || visible[ship.Points[i].Face4])
+                {
+                    Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
+                    Vector3 r = vec + ship.Location;
+                    Vector2 position = new(r.X, -r.Y);
+                    position *= 256 / r.Z;
+                    position += Centre / 2;
+                    position *= Graphics.Scale;
+                    _pointList[np].X = position.X;
+                    _pointList[np].Y = position.Y;
+                    np++;
+                }
+            }
+
+            float z = ship.Location.Z;
+            float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
+            float pr = ship.ExpDelta * 256 / q;
+
+            //  if (pr > 0x1C00)
+            //      q = 254;
+            //  else
+            q = pr / 32;
+
+            for (int cnt = 0; cnt < np; cnt++)
+            {
+                float sx = _pointList[cnt].X;
+                float sy = _pointList[cnt].Y;
+
+                for (int i = 0; i < 16; i++)
+                {
+                    Vector2 position = new(RNG.Random(-128, 128), RNG.Random(-128, 128));
+
+                    position.X = position.X * q / 256;
+                    position.Y = position.Y * q / 256;
+
+                    position.X = position.X + position.X + sx;
+                    position.Y = position.Y + position.Y + sy;
+
+                    int sizex = RNG.Random(1, 3);
+                    int sizey = RNG.Random(1, 3);
+
+                    for (int psy = 0; psy < sizey; psy++)
+                    {
+                        for (int psx = 0; psx < sizex; psx++)
+                        {
+                            Graphics.DrawPixel(new(position.X + psx, position.Y + psy), Colour.White);
+                        }
+                    }
+                }
             }
         }
     }

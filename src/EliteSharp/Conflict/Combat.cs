@@ -20,12 +20,13 @@ namespace EliteSharp.Conflict
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
         private readonly Universe _universe;
+        private readonly IDraw _draw;
         private bool _isEcmOurs;
         private int _laserCounter;
         private int _laserStrength;
         private LaserType _laserType;
 
-        internal Combat(GameState gameState, AudioController audio, PlayerShip ship, Trade trade, Pilot pilot, Universe universe)
+        internal Combat(GameState gameState, AudioController audio, PlayerShip ship, Trade trade, Pilot pilot, Universe universe, IDraw draw)
         {
             _gameState = gameState;
             _audio = audio;
@@ -33,6 +34,7 @@ namespace EliteSharp.Conflict
             _trade = trade;
             _pilot = pilot;
             _universe = universe;
+            _draw = draw;
         }
 
         internal bool InBattle { get; set; }
@@ -129,13 +131,13 @@ namespace EliteSharp.Conflict
 
         internal void CreateThargoid()
         {
-            IShip thargoid = new Thargoid();
+            IShip thargoid = new Thargoid(_draw);
             if (_universe.AddNewShip(thargoid))
             {
                 thargoid.Flags = ShipFlags.Angry | ShipFlags.HasECM;
                 thargoid.Bravery = 113;
 
-                if (RNG.Random(256) > 64 && !LaunchEnemy(thargoid, new Tharglet(), ShipFlags.Angry | ShipFlags.HasECM, 96))
+                if (RNG.Random(256) > 64 && !LaunchEnemy(thargoid, new Tharglet(_draw), ShipFlags.Angry | ShipFlags.HasECM, 96))
                 {
                     Debug.Fail("Failed to create Tharglet");
                 }
@@ -265,7 +267,7 @@ namespace EliteSharp.Conflict
             rotmat[2].Z = 1;
             rotmat[0].X = -1;
 
-            IShip missile = new Missile();
+            IShip missile = new Missile(_draw);
             if (!_universe.AddNewShip(missile, new(0, -28, 14), rotmat, 0, 0))
             {
                 _gameState.InfoMessage("Missile Jammed");
@@ -351,7 +353,7 @@ namespace EliteSharp.Conflict
                 Vector3 position = ship.Location;
                 position.Y = (int)position.Y & 0xFFFF;
                 position.Y = (int)position.Y | 0x60000;
-                _universe.AddNewShip(new Sun(), position, VectorMaths.GetInitialMatrix(), 0, 0);
+                _universe.AddNewShip(new Sun(_draw), position, VectorMaths.GetInitialMatrix(), 0, 0);
             }
 
             _universe.RemoveShip(ship);
@@ -466,7 +468,7 @@ namespace EliteSharp.Conflict
                         return;
                     }
 
-                    if (!LaunchEnemy(ship, new Viper(), ShipFlags.Angry | ShipFlags.HasECM, 113))
+                    if (!LaunchEnemy(ship, new Viper(_draw), ShipFlags.Angry | ShipFlags.HasECM, 113))
                     {
                         Debug.Fail("Failed to create Police");
                     }
@@ -482,7 +484,7 @@ namespace EliteSharp.Conflict
             {
                 if (RNG.Random(256) > 200)
                 {
-                    IShip pirate = ShipFactory.CreatePirate();
+                    IShip pirate = new ShipFactory(_draw).CreatePirate();
                     if (!LaunchEnemy(ship, pirate, ShipFlags.Angry | ShipFlags.HasECM, 113))
                     {
                         Debug.Fail("Failed to create Hermit Pirate");
@@ -537,7 +539,7 @@ namespace EliteSharp.Conflict
 
             if (ship.Type == ShipType.Anaconda && RNG.Random(256) > 200)
             {
-                IShip anacondaHunter = RNG.Random(256) > 100 ? new Worm() : new Sidewinder();
+                IShip anacondaHunter = RNG.Random(256) > 100 ? new Worm(_draw) : new Sidewinder(_draw);
                 if (!LaunchEnemy(ship, anacondaHunter, ShipFlags.Angry | ShipFlags.HasECM, 113))
                 {
                     Debug.Fail("Failed to create Anaconda Hunter");
@@ -561,7 +563,7 @@ namespace EliteSharp.Conflict
                 {
                     ship.Flags &= ~ShipFlags.Angry;
                     ship.Flags |= ShipFlags.Inactive;
-                    if (!LaunchEnemy(ship, new EscapeCapsule(), 0, 126))
+                    if (!LaunchEnemy(ship, new EscapeCapsule(_draw), 0, 126))
                     {
                         Debug.Fail("Failed to create Escape Capsule");
                     }
@@ -574,14 +576,14 @@ namespace EliteSharp.Conflict
                     ship.Missiles--;
                     if (ship.Type == ShipType.Thargoid)
                     {
-                        if (!LaunchEnemy(ship, new Tharglet(), ShipFlags.Angry, ship.Bravery))
+                        if (!LaunchEnemy(ship, new Tharglet(_draw), ShipFlags.Angry, ship.Bravery))
                         {
                             Debug.Fail("Failed to create Tharglet");
                         }
                     }
                     else
                     {
-                        if (!LaunchEnemy(ship, new Missile(), ShipFlags.Angry, 126))
+                        if (!LaunchEnemy(ship, new Missile(_draw), ShipFlags.Angry, 126))
                         {
                             Debug.Fail("Failed to create Missile");
                         }
@@ -797,7 +799,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            IShip asteroid = ShipFactory.CreateAsteroid();
+            IShip asteroid = new ShipFactory(_draw).CreateAsteroid();
             if (_universe.AddNewShip(asteroid))
             {
                 //      space.universe[newship].velocity = (random.rand255() & 31) | 16;
@@ -849,7 +851,7 @@ namespace EliteSharp.Conflict
 
             for (int i = 0; i <= rnd; i++)
             {
-                IShip packHunter = ShipFactory.CreatePackHunter();
+                IShip packHunter = new ShipFactory(_draw).CreatePackHunter();
                 if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     packHunter.Flags = ShipFlags.Angry;
@@ -881,7 +883,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            IShip police = new Viper();
+            IShip police = new Viper(_draw);
 
             if (_universe.AddNewShip(police))
             {
@@ -924,7 +926,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            IShip cougar = new Cougar();
+            IShip cougar = new Cougar(_draw);
             if (_universe.AddNewShip(cougar))
             {
                 cougar.Flags = ShipFlags.HasECM; // | FLG_CLOAKED;
@@ -942,8 +944,8 @@ namespace EliteSharp.Conflict
             IShip loneWolf = _gameState.Cmdr.Mission == 1 && _gameState.Cmdr.GalaxyNumber == 1 &&
                 _gameState.DockedPlanet.D == 144 && _gameState.DockedPlanet.B == 33 &&
                 _universe.ShipCount(ShipType.Constrictor) == 0
-                ? new Constrictor()
-                : ShipFactory.CreateLoneWolf();
+                ? new Constrictor(_draw)
+                : new ShipFactory(_draw).CreateLoneWolf();
 
             if (_universe.AddNewShip(loneWolf))
             {
@@ -964,7 +966,7 @@ namespace EliteSharp.Conflict
 
         private void CreateTrader()
         {
-            IShip trader = ShipFactory.CreateTrader();
+            IShip trader = new ShipFactory(_draw).CreateTrader();
 
             if (_universe.AddNewShip(trader))
             {
@@ -1046,15 +1048,15 @@ namespace EliteSharp.Conflict
                 IShip loot;
                 if (lootType == ShipType.Rock)
                 {
-                    loot = new RockSplinter();
+                    loot = new RockSplinter(_draw);
                 }
                 else if (lootType == ShipType.Alloy)
                 {
-                    loot = new Alloy();
+                    loot = new Alloy(_draw);
                 }
                 else if (lootType == ShipType.Cargo)
                 {
-                    loot = new CargoCannister();
+                    loot = new CargoCannister(_draw);
                 }
                 else
                 {
@@ -1080,7 +1082,7 @@ namespace EliteSharp.Conflict
 
             IShip? station = _universe.StationOrSun;
             Debug.Assert(station?.Type is ShipType.Coriolis or ShipType.Dodec, "Shuttle must be launched from a station");
-            IShip shuttle = RNG.TrueOrFalse() ? new Shuttle() : new Transporter();
+            IShip shuttle = RNG.TrueOrFalse() ? new Shuttle(_draw) : new Transporter(_draw);
             if (!LaunchEnemy(station, shuttle, ShipFlags.HasECM | ShipFlags.FlyToPlanet, 113))
             {
                 Debug.Fail("Failed to create Shuttle");

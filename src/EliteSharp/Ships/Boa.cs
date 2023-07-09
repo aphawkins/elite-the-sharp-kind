@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Boa : ShipBase
     {
-        internal Boa()
+        internal Boa(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Boa;
             EnergyMax = 250;
@@ -76,6 +78,7 @@ namespace EliteSharp.Ships
                 new(14,  2, 12, 12, 10),
             };
             LootMax = 5;
+            MinDistance = 500;
             MissilesMax = 4;
             Name = "Boa";
             Points = new ShipPoint[]

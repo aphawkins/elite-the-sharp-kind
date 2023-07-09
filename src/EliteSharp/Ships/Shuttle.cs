@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Shuttle : ShipBase
     {
-        internal Shuttle()
+        internal Shuttle(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Shuttle;
             Flags = ShipFlags.FlyToPlanet | ShipFlags.Slow;
@@ -85,6 +87,7 @@ namespace EliteSharp.Ships
                 new(7, 10, 10, 16, 18),
             };
             LootMax = 15;
+            MinDistance = 200;
             Name = "Orbit Shuttle";
             Points = new ShipPoint[]
             {

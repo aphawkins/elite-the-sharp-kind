@@ -12,6 +12,7 @@
 - Remove conditional compilation
 
 ## Future (create github issues)
+- Lone ships are flagged not separate ships
 - Inject options
 - Fix graphics scale setting rendering issues
 - Make Sun and Stations coexist?

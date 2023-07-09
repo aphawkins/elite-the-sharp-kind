@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Boulder : ShipBase
     {
-        internal Boulder()
+        internal Boulder(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Boulder;
             Flags = ShipFlags.Inactive;
@@ -59,6 +61,7 @@ namespace EliteSharp.Ships
                 new(31,  7,  8,  3,  6),
                 new(31,  8,  9,  4,  6),
             };
+            MinDistance = 300;
             Name = "Boulder";
             Points = new ShipPoint[]
             {

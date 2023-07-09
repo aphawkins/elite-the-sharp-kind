@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Mamba : ShipBase
     {
-        internal Mamba()
+        internal Mamba(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Mamba;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -70,6 +72,7 @@ namespace EliteSharp.Ships
                 new(30,  3,  1,  0,  3),
             };
             LootMax = 1;
+            MinDistance = 384;
             MissilesMax = 2;
             Name = "Mamba";
             Points = new ShipPoint[]

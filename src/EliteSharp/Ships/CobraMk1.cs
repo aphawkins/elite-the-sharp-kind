@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class CobraMk1 : ShipBase
     {
-        internal CobraMk1()
+        internal CobraMk1(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.CobraMk1;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -70,6 +72,7 @@ namespace EliteSharp.Ships
                 new(2,  0,  1, 10,  9),
             };
             LootMax = 3;
+            MinDistance = 384;
             MissilesMax = 2;
             Name = "Cobra MkI";
             Points = new ShipPoint[]

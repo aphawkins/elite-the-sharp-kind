@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Controls;
-using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
 namespace EliteSharp.Views
@@ -14,9 +13,9 @@ namespace EliteSharp.Views
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
 
-        internal PilotFrontView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship, Space space, IDraw draw)
+        internal PilotFrontView(GameState gameState, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship, Space space, IDraw draw)
         {
-            _pilotView = new(gameState, graphics, keyboard, pilot, ship, stars, space, draw);
+            _pilotView = new(gameState, keyboard, pilot, ship, stars, space, draw);
             _stars = stars;
             _ship = ship;
         }

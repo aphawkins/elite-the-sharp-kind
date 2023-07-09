@@ -12,7 +12,6 @@ namespace EliteSharp.Views
     internal sealed class PilotView : IView
     {
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly LaserDraw _laser;
         private readonly Pilot _pilot;
@@ -22,12 +21,11 @@ namespace EliteSharp.Views
         private readonly IDraw _draw;
         private int _drawLaserFrames;
 
-        internal PilotView(GameState gameState, IGraphics graphics, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space, IDraw draw)
+        internal PilotView(GameState gameState, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space, IDraw draw)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _keyboard = keyboard;
-            _laser = new LaserDraw(_gameState, _graphics, draw);
+            _laser = new LaserDraw(_gameState, draw);
             _pilot = pilot;
             _ship = ship;
             _stars = stars;
@@ -44,11 +42,11 @@ namespace EliteSharp.Views
 
             if (_space.HyperGalactic)
             {
-                _graphics.DrawTextCentre(358, "Galactic Hyperspace", FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", FontSize.Small, Colour.White);
             }
             else if (_space.HyperCountdown > 0)
             {
-                _graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", FontSize.Small, Colour.White);
             }
         }
 
@@ -124,6 +122,6 @@ namespace EliteSharp.Views
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
-        internal void DrawViewName(string name) => _graphics.DrawTextCentre(_draw.Top + 10, name, FontSize.Small, Colour.White);
+        internal void DrawViewName(string name) => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, FontSize.Small, Colour.White);
     }
 }

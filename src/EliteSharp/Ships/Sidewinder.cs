@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Sidewinder : ShipBase
     {
-        internal Sidewinder()
+        internal Sidewinder(IDraw draw)
+        : base(draw)
         {
             Type = ShipType.Sidewinder;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -56,6 +58,7 @@ namespace EliteSharp.Ships
                 new(12,  3,  3,  6,  9),
                 new(12,  3,  3,  8,  9),
             };
+            MinDistance = 384;
             Name = "Sidewinder";
             Points = new ShipPoint[]
             {

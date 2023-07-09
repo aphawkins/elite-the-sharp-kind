@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Viper : ShipBase
     {
-        internal Viper()
+        internal Viper(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Viper;
             Flags = ShipFlags.Bold | ShipFlags.Police;
@@ -62,6 +64,7 @@ namespace EliteSharp.Ships
                 new(16,  6,  6, 11, 14),
                 new(16,  6,  6, 12, 13),
             };
+            MinDistance = 384;
             MissilesMax = 1;
             Name = "Viper";
             Points = new ShipPoint[]

@@ -4,12 +4,14 @@
 
 using EliteSharp.Graphics;
 using EliteSharp.Trader;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Alloy : ShipBase
     {
-        internal Alloy()
+        internal Alloy(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Alloy;
             Flags = ShipFlags.Inactive;
@@ -30,6 +32,7 @@ namespace EliteSharp.Ships
                 new(20, 15, 15,  2,  3),
                 new(16, 15, 15,  3,  0),
             };
+            MinDistance = 200;
             Name = "Alloy";
             Points = new ShipPoint[]
             {

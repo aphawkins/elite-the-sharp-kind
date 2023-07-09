@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Coriolis : ShipBase
     {
-        internal Coriolis()
+        internal Coriolis(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Coriolis;
             EnergyMax = 240;
@@ -83,6 +85,7 @@ namespace EliteSharp.Ships
                 new(30,  0,  0, 14, 15),
                 new(30,  0,  0, 15, 12),
             };
+            MinDistance = 800;
             MissilesMax = 6;
             Name = "Coriolis Space Station";
             Points = new ShipPoint[]

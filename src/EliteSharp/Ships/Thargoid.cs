@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Thargoid : ShipBase
     {
-        internal Thargoid()
+        internal Thargoid(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Thargoid;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -83,6 +85,7 @@ namespace EliteSharp.Ships
                 new(30,  9,  9, 16, 17),
                 new(30,  9,  9, 18, 19),
             };
+            MinDistance = 700;
             MissilesMax = 6;
             Name = "Thargoid";
             Points = new ShipPoint[]

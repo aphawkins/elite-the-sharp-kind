@@ -4,7 +4,6 @@
 
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
-using EliteSharp.Graphics;
 
 namespace EliteSharp.Views
 {
@@ -14,19 +13,17 @@ namespace EliteSharp.Views
         private readonly BreakPattern _breakPattern;
         private readonly Combat _combat;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly Space _space;
         private readonly Universe _universe;
 
-        internal DockingView(GameState gameState, IGraphics graphics, AudioController audio, Space space, Combat combat, Universe universe, IDraw draw)
+        internal DockingView(GameState gameState, AudioController audio, Space space, Combat combat, Universe universe, IDraw draw)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _audio = audio;
             _space = space;
             _combat = combat;
             _universe = universe;
-            _breakPattern = new(_graphics, draw);
+            _breakPattern = new(draw);
         }
 
         public void Draw() => _breakPattern.Draw();

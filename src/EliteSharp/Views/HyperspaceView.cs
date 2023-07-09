@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Audio;
-using EliteSharp.Graphics;
 
 namespace EliteSharp.Views
 {
@@ -12,14 +11,12 @@ namespace EliteSharp.Views
         private readonly AudioController _audio;
         private readonly BreakPattern _breakPattern;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
 
-        internal HyperspaceView(GameState gameState, IGraphics graphics, AudioController audio, IDraw draw)
+        internal HyperspaceView(GameState gameState, AudioController audio, IDraw draw)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _audio = audio;
-            _breakPattern = new(_graphics, draw);
+            _breakPattern = new(draw);
         }
 
         public void Draw() => _breakPattern.Draw();

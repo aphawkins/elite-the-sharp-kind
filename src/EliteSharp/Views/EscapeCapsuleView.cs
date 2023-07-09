@@ -15,7 +15,6 @@ namespace EliteSharp.Views
     {
         private readonly AudioController _audio;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly Pilot _pilot;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
@@ -23,11 +22,10 @@ namespace EliteSharp.Views
         private readonly Universe _universe;
         private readonly IDraw _draw;
         private int _i;
-        private IShip _newship = new ShipBase();
+        private IShip _newship;
 
         internal EscapeCapsuleView(
             GameState gameState,
-            IGraphics graphics,
             AudioController audio,
             Stars stars,
             PlayerShip ship,
@@ -37,7 +35,6 @@ namespace EliteSharp.Views
             IDraw draw)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _audio = audio;
             _stars = stars;
             _ship = ship;
@@ -45,13 +42,14 @@ namespace EliteSharp.Views
             _universe = universe;
             _pilot = pilot;
             _draw = draw;
+            _newship = new ShipBase(draw);
         }
 
         public void Draw()
         {
             if (_i < 90)
             {
-                _graphics.DrawTextCentre(_draw.ScannerTop - 40, "Escape capsule launched - Ship auto-destuct initiated.", FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 40, "Escape capsule launched - Ship auto-destuct initiated.", FontSize.Small, Colour.White);
             }
         }
 
@@ -66,7 +64,7 @@ namespace EliteSharp.Views
             _ship.Climb = 0;
             Vector3[] rotmat = VectorMaths.GetInitialMatrix();
             rotmat[2].Z = 1;
-            _newship = new CobraMk3();
+            _newship = new CobraMk3(_draw);
             if (!_universe.AddNewShip(_newship, new(0, 0, 200), rotmat, -127, -127))
             {
                 Debug.Fail("Failed to create CobraMk3");

@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Asteroid : ShipBase
     {
-        internal Asteroid()
+        internal Asteroid(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Asteroid;
             Flags = ShipFlags.Inactive;
@@ -75,6 +77,7 @@ namespace EliteSharp.Ships
                 new(31, 11, 10,  2,  8),
                 new(31,  9,  8,  7,  8),
             };
+            MinDistance = 384;
             Name = "Asteroid";
             Points = new ShipPoint[]
             {

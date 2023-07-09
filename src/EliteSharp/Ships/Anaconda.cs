@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Anaconda : ShipBase
     {
-        internal Anaconda()
+        internal Anaconda(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Anaconda;
             Flags = ShipFlags.Slow;
@@ -77,6 +79,7 @@ namespace EliteSharp.Ships
                 new(31, 10, 11, 12, 14),
             };
             LootMax = 7;
+            MinDistance = 800;
             MissilesMax = 7;
             Name = "Anaconda";
             Points = new ShipPoint[]

@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
-using EliteSharp.Graphics;
 using EliteSharp.Planets;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
@@ -22,23 +21,19 @@ namespace EliteSharp
     {
         private readonly AudioController _audio;
         private readonly Combat _combat;
+        private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly Pilot _pilot;
         private readonly PlanetController _planet;
         private readonly PlayerShip _ship;
         private readonly Stars _stars;
-        private readonly Threed _threed;
         private readonly Trade _trade;
         private readonly Universe _universe;
-        private readonly IDraw _draw;
         private GalaxySeed _destinationPlanet = new();
         private float _hyperDistance;
 
         internal Space(
             GameState gameState,
-            IGraphics graphics,
-            Threed threed,
             AudioController audio,
             Pilot pilot,
             Combat combat,
@@ -50,8 +45,6 @@ namespace EliteSharp
             IDraw draw)
         {
             _gameState = gameState;
-            _graphics = graphics;
-            _threed = threed;
             _audio = audio;
             _pilot = pilot;
             _combat = combat;
@@ -155,8 +148,8 @@ namespace EliteSharp
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
 
-            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _graphics, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(new Planet(planetRenderer), new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
+            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw.Graphics, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            if (!_universe.AddNewShip(new Planet(_draw, planetRenderer), new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
@@ -329,7 +322,7 @@ namespace EliteSharp
         /// </summary>
         internal void UpdateUniverse()
         {
-            _threed.RenderStart();
+            _draw.RenderStart();
             int i = -1;
 
             foreach (IShip universeObj in _universe.GetAllObjects())
@@ -385,8 +378,7 @@ namespace EliteSharp
                 }
 
                 MoveUniverseObject(universeObj);
-
-                IShip flip = new ShipBase(universeObj);
+                IShip flip = universeObj.Clone();
                 SwitchToView(flip);
 
                 if (type == ShipType.Planet)
@@ -396,13 +388,13 @@ namespace EliteSharp
                         MakeStationAppear();
                     }
 
-                    _threed.DrawObject(flip, ((Planet)universeObj).PlanetRenderer);
+                    _draw.DrawObject(flip);
                     continue;
                 }
 
                 if (type == ShipType.Sun)
                 {
-                    _threed.DrawObject(flip);
+                    _draw.DrawObject(flip);
                     continue;
                 }
 
@@ -426,11 +418,9 @@ namespace EliteSharp
                     continue;
                 }
 
-                _threed.DrawObject(flip);
-
+                _draw.DrawObject(flip);
                 universeObj.Flags = flip.Flags;
                 universeObj.ExpDelta = flip.ExpDelta;
-
                 universeObj.Flags &= ~ShipFlags.Firing;
 
                 if (universeObj.Flags.HasFlag(ShipFlags.Dead))
@@ -441,7 +431,7 @@ namespace EliteSharp
                 _combat.CheckTarget(universeObj, flip);
             }
 
-            _threed.RenderEnd();
+            _draw.RenderEnd();
             _gameState.DetonateBomb = false;
         }
 
@@ -461,6 +451,71 @@ namespace EliteSharp
             {
                 a = fx - (fx / 512) - (ux / 19);
                 b = ux - (ux / 512) + (fx / 19);
+            }
+        }
+
+        private void SwitchToView(IShip flip)
+        {
+            if (_gameState.CurrentScreen is Screen.RearView or Screen.GameOver)
+            {
+                flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z);
+
+                flip.Rotmat[0].X = -flip.Rotmat[0].X;
+                flip.Rotmat[0].Z = -flip.Rotmat[0].Z;
+
+                flip.Rotmat[1].X = -flip.Rotmat[1].X;
+                flip.Rotmat[1].Z = -flip.Rotmat[1].Z;
+
+                flip.Rotmat[2].X = -flip.Rotmat[2].X;
+                flip.Rotmat[2].Z = -flip.Rotmat[2].Z;
+                return;
+            }
+
+            if (_gameState.CurrentScreen == Screen.LeftView)
+            {
+                float tmp = flip.Location.X;
+                flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp);
+
+                if (flip.Type < 0)
+                {
+                    return;
+                }
+
+                tmp = flip.Rotmat[0].X;
+                flip.Rotmat[0].X = flip.Rotmat[0].Z;
+                flip.Rotmat[0].Z = -tmp;
+
+                tmp = flip.Rotmat[1].X;
+                flip.Rotmat[1].X = flip.Rotmat[1].Z;
+                flip.Rotmat[1].Z = -tmp;
+
+                tmp = flip.Rotmat[2].X;
+                flip.Rotmat[2].X = flip.Rotmat[2].Z;
+                flip.Rotmat[2].Z = -tmp;
+                return;
+            }
+
+            if (_gameState.CurrentScreen == Screen.RightView)
+            {
+                float tmp = flip.Location.X;
+                flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp);
+
+                if (flip.Type < 0)
+                {
+                    return;
+                }
+
+                tmp = flip.Rotmat[0].X;
+                flip.Rotmat[0].X = -flip.Rotmat[0].Z;
+                flip.Rotmat[0].Z = tmp;
+
+                tmp = flip.Rotmat[1].X;
+                flip.Rotmat[1].X = -flip.Rotmat[1].Z;
+                flip.Rotmat[1].Z = tmp;
+
+                tmp = flip.Rotmat[2].X;
+                flip.Rotmat[2].X = -flip.Rotmat[2].Z;
+                flip.Rotmat[2].Z = tmp;
             }
         }
 
@@ -541,8 +596,8 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _graphics, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(new Planet(planetRenderer), position, VectorMaths.GetInitialMatrix(), 0, 0))
+            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw.Graphics, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            if (!_universe.AddNewShip(new Planet(_draw, planetRenderer), position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
@@ -550,7 +605,7 @@ namespace EliteSharp
             position.Z = -(((_gameState.DockedPlanet.D & 7) | 1) << 16);
             position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
-            if (!_universe.AddNewShip(new Sun(), position, VectorMaths.GetInitialMatrix(), 0, 0))
+            if (!_universe.AddNewShip(new Sun(_draw), position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Sun");
             }
@@ -747,71 +802,6 @@ namespace EliteSharp
 
             // Orthonormalize the rotation matrix...
             VectorMaths.TidyMatrix(ship.Rotmat);
-        }
-
-        private void SwitchToView(IShip flip)
-        {
-            if (_gameState.CurrentScreen is Screen.RearView or Screen.GameOver)
-            {
-                flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z);
-
-                flip.Rotmat[0].X = -flip.Rotmat[0].X;
-                flip.Rotmat[0].Z = -flip.Rotmat[0].Z;
-
-                flip.Rotmat[1].X = -flip.Rotmat[1].X;
-                flip.Rotmat[1].Z = -flip.Rotmat[1].Z;
-
-                flip.Rotmat[2].X = -flip.Rotmat[2].X;
-                flip.Rotmat[2].Z = -flip.Rotmat[2].Z;
-                return;
-            }
-
-            if (_gameState.CurrentScreen == Screen.LeftView)
-            {
-                float tmp = flip.Location.X;
-                flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp);
-
-                if (flip.Type < 0)
-                {
-                    return;
-                }
-
-                tmp = flip.Rotmat[0].X;
-                flip.Rotmat[0].X = flip.Rotmat[0].Z;
-                flip.Rotmat[0].Z = -tmp;
-
-                tmp = flip.Rotmat[1].X;
-                flip.Rotmat[1].X = flip.Rotmat[1].Z;
-                flip.Rotmat[1].Z = -tmp;
-
-                tmp = flip.Rotmat[2].X;
-                flip.Rotmat[2].X = flip.Rotmat[2].Z;
-                flip.Rotmat[2].Z = -tmp;
-                return;
-            }
-
-            if (_gameState.CurrentScreen == Screen.RightView)
-            {
-                float tmp = flip.Location.X;
-                flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp);
-
-                if (flip.Type < 0)
-                {
-                    return;
-                }
-
-                tmp = flip.Rotmat[0].X;
-                flip.Rotmat[0].X = -flip.Rotmat[0].Z;
-                flip.Rotmat[0].Z = tmp;
-
-                tmp = flip.Rotmat[1].X;
-                flip.Rotmat[1].X = -flip.Rotmat[1].Z;
-                flip.Rotmat[1].Z = tmp;
-
-                tmp = flip.Rotmat[2].X;
-                flip.Rotmat[2].X = -flip.Rotmat[2].Z;
-                flip.Rotmat[2].Z = tmp;
-            }
         }
     }
 }

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
 namespace EliteSharp.Views
@@ -12,6 +13,8 @@ namespace EliteSharp.Views
         float Bottom { get; }
 
         Vector2 Centre { get; }
+
+        IGraphics Graphics { get; }
 
         float Left { get; }
 
@@ -33,13 +36,19 @@ namespace EliteSharp.Views
 
         void DrawHyperspaceCountdown(int countdown);
 
-        void DrawSun(IShip planet);
+        void DrawObject(IShip ship);
+
+        void DrawPolygonFilled(Vector2[] point_list, Colour face_colour, float zAvg);
 
         void DrawTextPretty(Vector2 position, float width, string text);
 
         void DrawViewHeader(string title);
 
         Task LoadImagesAsync(CancellationToken token);
+
+        void RenderEnd();
+
+        void RenderStart();
 
         void SetFullScreenClipRegion();
 

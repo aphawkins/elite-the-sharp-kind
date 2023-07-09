@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Cougar : ShipBase
     {
-        internal Cougar()
+        internal Cougar(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Cougar;
             Flags = ShipFlags.Police | ShipFlags.Cloaked;

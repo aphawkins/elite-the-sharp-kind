@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Worm : ShipBase
     {
-        internal Worm()
+        internal Worm(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Worm;
             Flags = ShipFlags.Slow | ShipFlags.Angry;
@@ -57,6 +59,7 @@ namespace EliteSharp.Ships
                 new(31,  0,  1,  2,  3),
                 new(31,  1,  6,  8,  9),
             };
+            MinDistance = 384;
             Name = "Worm";
             Points = new ShipPoint[]
             {

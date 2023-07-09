@@ -55,17 +55,15 @@ namespace EliteSharp.Views
         };
 
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly Scanner _scanner;
         private readonly PlayerShip _ship;
         private readonly Trade _trade;
         private int _highlightedItem;
 
-        internal EquipmentView(GameState gameState, IGraphics graphics, IDraw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
+        internal EquipmentView(GameState gameState, IDraw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _draw = draw;
             _keyboard = keyboard;
             _ship = ship;
@@ -88,22 +86,22 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, Colour.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, Colour.LightRed);
                 }
 
                 Colour col = _equipmentStock[i].CanBuy ? Colour.White : Colour.LightGrey;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
-                _graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], col);
+                _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], col);
 
                 if (_equipmentStock[i].Price != 0)
                 {
-                    _graphics.DrawTextRight(450 + _draw.Offset, y, $"{_equipmentStock[i].Price:N1}", col);
+                    _draw.Graphics.DrawTextRight(450 + _draw.Offset, y, $"{_equipmentStock[i].Price:N1}", col);
                 }
 
                 y += 15;
             }
 
-            _graphics.DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", Colour.White);
         }
 
         public void HandleInput()

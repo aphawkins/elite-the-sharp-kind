@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Krait : ShipBase
     {
-        internal Krait()
+        internal Krait(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Krait;
             Flags = ShipFlags.Bold | ShipFlags.Angry;
@@ -70,6 +72,7 @@ namespace EliteSharp.Ships
                 new(8,  5,  5, 16, 14),
             };
             LootMax = 1;
+            MinDistance = 384;
             Name = "Krait";
             Points = new ShipPoint[]
             {

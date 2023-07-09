@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Views;
 
 namespace EliteSharp.Ships
 {
     internal sealed class Missile : ShipBase
     {
-        internal Missile()
+        internal Missile(IDraw draw)
+            : base(draw)
         {
             Type = ShipType.Missile;
             EnergyMax = 2;
@@ -81,6 +83,7 @@ namespace EliteSharp.Ships
                 new(8,  7,  6, 12, 13),
                 new(8,  6,  5, 11, 14),
             };
+            MinDistance = 200;
             Name = "Missile";
             Points = new ShipPoint[]
             {

@@ -13,14 +13,12 @@ namespace EliteSharp
     {
         private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly PlayerShip _ship;
         private readonly Vector3[] _stars = new Vector3[20];
 
-        internal Stars(GameState gameState, IGraphics graphics, IDraw draw, PlayerShip ship)
+        internal Stars(GameState gameState, IDraw draw, PlayerShip ship)
         {
             _gameState = gameState;
-            _graphics = graphics;
             _ship = ship;
             _draw = draw;
         }
@@ -69,23 +67,23 @@ namespace EliteSharp
 
                 float zz = _stars[i].Z;
                 star += _draw.Centre / 2;
-                star *= _graphics.Scale;
+                star *= _draw.Graphics.Scale;
 
                 if ((!WarpStars) &&
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
                     (star.Y >= _draw.Top) && (star.Y <= _draw.Bottom))
                 {
-                    _graphics.DrawPixel(star, Colour.White);
+                    _draw.Graphics.DrawPixel(star, Colour.White);
 
                     if (zz < 192)
                     {
-                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
                     if (zz < 144)
                     {
-                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
-                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
                     }
                 }
 
@@ -109,7 +107,7 @@ namespace EliteSharp
 
                 if (WarpStars)
                 {
-                    _graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _graphics.Scale));
+                    _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale));
                 }
 
                 star.X = xx;
@@ -152,23 +150,23 @@ namespace EliteSharp
                 float zz = _stars[i].Z;
 
                 star += _draw.Centre / 2;
-                star *= _graphics.Scale;
+                star *= _draw.Graphics.Scale;
 
                 if ((!WarpStars) &&
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
                     (star.Y >= _draw.Top) && (star.Y <= _draw.Bottom))
                 {
-                    _graphics.DrawPixel(star, Colour.White);
+                    _draw.Graphics.DrawPixel(star, Colour.White);
 
                     if (zz < 192)
                     {
-                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
                     if (zz < 144)
                     {
-                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
-                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
                     }
                 }
 
@@ -191,15 +189,15 @@ namespace EliteSharp
                 {
                     float ey = yy;
                     float ex = xx;
-                    ex = (ex + (_draw.Centre.X / 2)) * _graphics.Scale;
-                    ey = (ey + (_draw.Centre.Y / 2)) * _graphics.Scale;
+                    ex = (ex + (_draw.Centre.X / 2)) * _draw.Graphics.Scale;
+                    ey = (ey + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale;
 
                     if ((star.X >= _draw.Left) && (star.X <= _draw.Right) &&
                        (star.Y >= _draw.Top) && (star.Y <= _draw.Bottom) &&
                        (ex >= _draw.Left) && (ex <= _draw.Right) &&
                        (ey >= _draw.Top) && (ey <= _draw.Bottom))
                     {
-                        _graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _graphics.Scale));
+                        _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale));
                     }
                 }
 
@@ -251,23 +249,23 @@ namespace EliteSharp
                 float zz = _stars[i].Z;
 
                 star += _draw.Centre / 2;
-                star *= _graphics.Scale;
+                star *= _draw.Graphics.Scale;
 
                 if ((!WarpStars) &&
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
                     (star.Y >= _draw.Top) && (star.Y <= _draw.Bottom))
                 {
-                    _graphics.DrawPixel(star, Colour.White);
+                    _draw.Graphics.DrawPixel(star, Colour.White);
 
                     if (zz < 192)
                     {
-                        _graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
                     }
 
                     if (zz < 144)
                     {
-                        _graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
-                        _graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
                     }
                 }
 
@@ -291,7 +289,7 @@ namespace EliteSharp
 
                 if (WarpStars)
                 {
-                    _graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _graphics.Scale));
+                    _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale));
                 }
 
                 if (MathF.Abs(_stars[i].X) >= _draw.Centre.X / 2)
