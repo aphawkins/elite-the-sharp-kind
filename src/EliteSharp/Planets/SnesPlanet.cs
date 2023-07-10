@@ -2,12 +2,15 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class SnesPlanet : PlanetRenderer
+    internal sealed class SnesPlanet : IPlanetRenderer
     {
+        private readonly PlanetRenderer _planetRenderer;
+
         /// <summary>
         /// Colour map used to generate a SNES Elite style planet.
         /// </summary>
@@ -67,20 +70,25 @@ namespace EliteSharp.Planets
             Colour.Purple,
         };
 
-        internal SnesPlanet(IGraphics graphics, IDraw draw)
-            : base(graphics, draw) => GenerateLandscape();
+        internal SnesPlanet(IDraw draw)
+        {
+            _planetRenderer = new(draw);
+            GenerateLandscape();
+        }
+
+        public void Draw(Vector2 centre, float radius, Vector3[] vec) => _planetRenderer.Draw(centre, radius, vec);
 
         /// <summary>
         /// Generate a landscape map for a SNES Elite style planet.
         /// </summary>
         private void GenerateLandscape()
         {
-            for (int y = 0; y <= LANDYMAX; y++)
+            for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
             {
-                int colour = (int)_snesPlanetColour[y * (_snesPlanetColour.Length - 1) / LANDYMAX];
-                for (int x = 0; x <= LANDXMAX; x++)
+                int colour = (int)_snesPlanetColour[y * (_snesPlanetColour.Length - 1) / PlanetRenderer.LandYMax];
+                for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
                 {
-                    _landscape[x, y] = colour;
+                    _planetRenderer._landscape[x, y] = colour;
                 }
             }
         }

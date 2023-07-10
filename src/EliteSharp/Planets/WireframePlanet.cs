@@ -7,17 +7,16 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class WireframePlanet : PlanetRenderer
+    internal sealed class WireframePlanet : IPlanetRenderer
     {
-        internal WireframePlanet(IGraphics graphics, IDraw draw)
-            : base(graphics, draw)
-        {
-        }
+        private readonly IDraw _draw;
+
+        internal WireframePlanet(IDraw draw) => _draw = draw;
 
         /// <summary>
         /// Draw a wireframe planet.
         /// </summary>
-        public override void Draw(Vector2 centre, float radius, Vector3[] vec) =>
-            _graphics.DrawCircle(centre, radius, Colour.White);
+        public void Draw(Vector2 centre, float radius, Vector3[] vec) =>
+            _draw.Graphics.DrawCircle(centre, radius, Colour.White);
     }
 }

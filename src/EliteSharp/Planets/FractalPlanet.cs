@@ -3,14 +3,28 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class FractalPlanet : PlanetRenderer
+    internal sealed class FractalPlanet : IPlanetRenderer
     {
-        internal FractalPlanet(IGraphics graphics, IDraw draw, int seed)
-            : base(graphics, draw) => GenerateLandscape(seed);
+        private readonly PlanetRenderer _planetRenderer;
+
+        internal FractalPlanet(IDraw draw, int seed)
+        {
+            _planetRenderer = new(draw);
+            GenerateLandscape(seed);
+        }
+
+        public void Draw(Vector2 centre, float radius, Vector3[] vec) => _planetRenderer.Draw(centre, radius, vec);
+
+        /// <summary>
+        /// Calculate the midpoint between two given points.
+        /// </summary>
+        private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
+            Math.Clamp(((_planetRenderer._landscape[sx, sy] + _planetRenderer._landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
         /// <summary>
         /// Generate a fractal landscape. Uses midpoint displacement method.
@@ -19,44 +33,38 @@ namespace EliteSharp.Planets
         [SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "Randomness here requires seed.")]
         private void GenerateLandscape(int seed)
         {
-            const int d = LANDXMAX / 8;
+            const int d = PlanetRenderer.LandXMax / 8;
             Random random = new(seed);
 
-            for (int y = 0; y <= LANDYMAX; y += d)
+            for (int y = 0; y <= PlanetRenderer.LandYMax; y += d)
             {
-                for (int x = 0; x <= LANDXMAX; x += d)
+                for (int x = 0; x <= PlanetRenderer.LandXMax; x += d)
                 {
-                    _landscape[x, y] = random.Next(255);
+                    _planetRenderer._landscape[x, y] = random.Next(255);
                 }
             }
 
-            for (int y = 0; y < LANDYMAX; y += d)
+            for (int y = 0; y < PlanetRenderer.LandYMax; y += d)
             {
-                for (int x = 0; x < LANDXMAX; x += d)
+                for (int x = 0; x < PlanetRenderer.LandXMax; x += d)
                 {
                     MidpointSquare(x, y, d);
                 }
             }
 
-            for (int y = 0; y <= LANDYMAX; y++)
+            for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
             {
-                for (int x = 0; x <= LANDXMAX; x++)
+                for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
                 {
                     float dist = (x * x) + (y * y);
                     bool dark = dist > 10000;
-                    int h = _landscape[x, y];
-                    _landscape[x, y] = h > 166
+                    int h = _planetRenderer._landscape[x, y];
+                    _planetRenderer._landscape[x, y] = h > 166
                         ? (int)(dark ? Colour.Green : Colour.LightGreen)
                         : (int)(dark ? Colour.Blue : Colour.LightBlue);
                 }
             }
         }
-
-        /// <summary>
-        /// Calculate the midpoint between two given points.
-        /// </summary>
-        private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
-            Math.Clamp(((_landscape[sx, sy] + _landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
         /// <summary>
         /// Calculate a square on the midpoint map.
@@ -72,11 +80,11 @@ namespace EliteSharp.Planets
             int bx = tx + w;
             int by = ty + w;
 
-            _landscape[mx, ty] = CalcMidpoint(tx, ty, bx, ty);
-            _landscape[mx, by] = CalcMidpoint(tx, by, bx, by);
-            _landscape[tx, my] = CalcMidpoint(tx, ty, tx, by);
-            _landscape[bx, my] = CalcMidpoint(bx, ty, bx, by);
-            _landscape[mx, my] = CalcMidpoint(tx, my, bx, my);
+            _planetRenderer._landscape[mx, ty] = CalcMidpoint(tx, ty, bx, ty);
+            _planetRenderer._landscape[mx, by] = CalcMidpoint(tx, by, bx, by);
+            _planetRenderer._landscape[tx, my] = CalcMidpoint(tx, ty, tx, by);
+            _planetRenderer._landscape[bx, my] = CalcMidpoint(bx, ty, bx, by);
+            _planetRenderer._landscape[mx, my] = CalcMidpoint(tx, my, bx, my);
 
             if (d == 1)
             {

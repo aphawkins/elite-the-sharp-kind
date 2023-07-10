@@ -7,13 +7,12 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class GreenPlanet : PlanetRenderer
+    internal sealed class GreenPlanet : IPlanetRenderer
     {
-        internal GreenPlanet(IGraphics graphics, IDraw draw)
-            : base(graphics, draw)
-        {
-        }
+        private readonly IDraw _draw;
 
-        public override void Draw(Vector2 centre, float radius, Vector3[] vec) => _graphics.DrawCircleFilled(centre, radius, Colour.Green);
+        internal GreenPlanet(IDraw draw) => _draw = draw;
+
+        public void Draw(Vector2 centre, float radius, Vector3[] vec) => _draw.Graphics.DrawCircleFilled(centre, radius, Colour.Green);
     }
 }

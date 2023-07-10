@@ -149,7 +149,7 @@ namespace EliteSharp
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
 
-            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw.Graphics, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(new Planet(_draw, planetRenderer), new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
@@ -594,7 +594,7 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw.Graphics, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(new Planet(_draw, planetRenderer), position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");

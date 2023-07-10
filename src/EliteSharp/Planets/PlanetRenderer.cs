@@ -7,26 +7,21 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Planets
 {
-    internal abstract class PlanetRenderer : IPlanetRenderer
+    internal class PlanetRenderer
     {
-        protected const int LANDXMAX = 128;
-        protected const int LANDYMAX = 128;
+        internal const int LandXMax = 128;
+        internal const int LandYMax = 128;
 #pragma warning disable SA1401 // Fields should be private
-        protected readonly int[,] _landscape = new int[LANDXMAX + 1, LANDYMAX + 1];
-        protected IGraphics _graphics;
+        internal readonly int[,] _landscape = new int[LandXMax + 1, LandYMax + 1];
 #pragma warning restore SA1401 // Fields should be private
         private readonly IDraw _draw;
 
-        internal PlanetRenderer(IGraphics graphics, IDraw draw)
-        {
-            _graphics = graphics;
-            _draw = draw;
-        }
+        internal PlanetRenderer(IDraw draw) => _draw = draw;
 
         /// <summary>
         /// Draw a solid planet. Based on Doros circle drawing alogorithm.
         /// </summary>
-        public virtual void Draw(Vector2 centre, float radius, Vector3[] vec)
+        internal void Draw(Vector2 centre, float radius, Vector3[] vec)
         {
             float vx = vec[1].X * 65536;
             float vy = vec[1].Y * 65536;
@@ -63,7 +58,7 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Draw a line of the planet with appropriate rotation.
         /// </summary>
-        protected void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
+        private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
         {
             Vector2 s = new()
             {
@@ -90,10 +85,10 @@ namespace EliteSharp.Planets
             {
                 if (s.X >= _draw.Left && s.X <= _draw.Right)
                 {
-                    int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LANDXMAX);
-                    int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LANDYMAX);
+                    int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
+                    int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);
                     Colour colour = (Colour)_landscape[lx, ly];
-                    _graphics.DrawPixelFast(s, colour);
+                    _draw.Graphics.DrawPixelFast(s, colour);
                 }
 
                 rx += vx;
