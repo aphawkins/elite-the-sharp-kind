@@ -14,7 +14,9 @@ using EliteSharp.Ships;
 using EliteSharp.Trader;
 using EliteSharp.Views;
 
+// For unit testing
 [assembly: InternalsVisibleTo("EliteSharp.Tests")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 namespace EliteSharp
 {
@@ -103,11 +105,12 @@ namespace EliteSharp
 
             do
             {
-                long runtime = DateTime.UtcNow.Ticks - startTicks;
+                long nowTicks = DateTime.UtcNow.Ticks;
+                long runtime = nowTicks - startTicks;
 
                 if ((runtime / 100 % interval) == 0)
                 {
-                    DrawFrame();
+                    DrawFrame(nowTicks);
                 }
             }
             while (!_gameState.ExitGame);
@@ -136,10 +139,9 @@ namespace EliteSharp
             _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
         }
 
-        private void DrawFrame()
+        private void DrawFrame(long ticks)
         {
             bool lockTaken = false;
-            long now = DateTime.UtcNow.Ticks;
 
             try
             {
@@ -149,7 +151,7 @@ namespace EliteSharp
                     // The critical section.
                     DrawFrameElite();
                     _lockObj.Drawn++;
-                    _lockObj.FramesDrawn.Add(now);
+                    _lockObj.FramesDrawn.Add(ticks);
                 }
                 else
                 {

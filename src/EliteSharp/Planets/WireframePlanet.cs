@@ -4,19 +4,54 @@
 
 using System.Numerics;
 using EliteSharp.Graphics;
+using EliteSharp.Ships;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class WireframePlanet : IPlanetRenderer
+    internal sealed class WireframePlanet : IShip
     {
         private readonly IDraw _draw;
+        private readonly PlanetRenderer _planetRenderer;
 
-        internal WireframePlanet(IDraw draw) => _draw = draw;
+        internal WireframePlanet(IDraw draw)
+        {
+            _draw = draw;
+            _planetRenderer = new(draw);
+            Type = ShipType.Planet;
+        }
 
-        /// <summary>
-        /// Draw a wireframe planet.
-        /// </summary>
-        public void Draw(Vector2 centre, float radius, Vector3[] vec) =>
-            _draw.Graphics.DrawCircle(centre, radius, Colour.White);
+        private WireframePlanet(WireframePlanet other)
+        {
+            _draw = other._draw;
+            _planetRenderer = other._planetRenderer;
+        }
+
+        public Vector3 Location { get; set; }
+
+        public Vector3[] Rotmat { get; set; } = new Vector3[3];
+
+        public ShipFlags Flags { get; set; }
+
+        public ShipType Type { get; set; }
+
+        public float RotX { get; set; }
+
+        public float RotZ { get; set; }
+
+        public IShip Clone()
+        {
+            WireframePlanet planet = new(this);
+            this.Copy(planet);
+            return planet;
+        }
+
+        public void Draw()
+        {
+            (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
+            if (v != null)
+            {
+                _draw.Graphics.DrawCircle(v.Value.Position, v.Value.Radius, Colour.White);
+            }
+        }
     }
 }

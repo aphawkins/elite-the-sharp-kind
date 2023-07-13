@@ -187,12 +187,12 @@ namespace EliteSharp.Graphics
             if (ship.Flags.HasFlag(ShipFlags.Dead) && !ship.Flags.HasFlag(ShipFlags.Explosion))
             {
                 ship.Flags |= ShipFlags.Explosion;
-                ship.ExpDelta = 18;
+                ((IShipEx)ship).ExpDelta = 18;
             }
 
             if (ship.Flags.HasFlag(ShipFlags.Explosion))
             {
-                DrawExplosion(ship);
+                DrawExplosion((IShipEx)ship);
                 return;
             }
 
@@ -258,7 +258,7 @@ namespace EliteSharp.Graphics
             _totalPolys = 0;
         }
 
-        private void DrawExplosion(IShip ship)
+        private void DrawExplosion(IShipEx ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             bool[] visible = new bool[32];

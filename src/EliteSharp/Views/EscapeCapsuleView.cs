@@ -22,7 +22,7 @@ namespace EliteSharp.Views
         private readonly Universe _universe;
         private readonly IDraw _draw;
         private int _i;
-        private IShip _newship;
+        private IShipEx _newship;
 
         internal EscapeCapsuleView(
             GameState gameState,

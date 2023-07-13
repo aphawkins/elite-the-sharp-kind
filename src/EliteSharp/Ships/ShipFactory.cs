@@ -12,9 +12,9 @@ namespace EliteSharp.Ships
 
         internal ShipFactory(IDraw draw) => _draw = draw;
 
-        internal IShip CreateAsteroid() => RNG.Random(256) > 253 ? new RockHermit(_draw) : new Asteroid(_draw);
+        internal IShipEx CreateAsteroid() => RNG.Random(256) > 253 ? new RockHermit(_draw) : new Asteroid(_draw);
 
-        internal IShip CreateLoneWolf()
+        internal IShipEx CreateLoneWolf()
         {
             int rnd = RNG.Random(256);
             return ((rnd & 3) + (rnd > 127 ? 1 : 0)) switch
@@ -28,7 +28,7 @@ namespace EliteSharp.Ships
             };
         }
 
-        internal IShip CreatePackHunter() => RNG.Random(7) switch
+        internal IShipEx CreatePackHunter() => RNG.Random(7) switch
         {
             0 => new Sidewinder(_draw),
             1 => new Mamba(_draw),
@@ -40,7 +40,7 @@ namespace EliteSharp.Ships
             _ => throw new NotImplementedException(),
         };
 
-        internal IShip CreatePirate() => RNG.Random(4) switch
+        internal IShipEx CreatePirate() => RNG.Random(4) switch
         {
             0 => new Sidewinder(_draw),
             1 => new Mamba(_draw),
@@ -49,7 +49,7 @@ namespace EliteSharp.Ships
             _ => throw new NotImplementedException(),
         };
 
-        internal IShip CreateTrader() => RNG.Random(4) switch
+        internal IShipEx CreateTrader() => RNG.Random(4) switch
         {
             0 => new CobraMk3(_draw),
             1 => new Python(_draw),
@@ -58,7 +58,7 @@ namespace EliteSharp.Ships
             _ => throw new NotImplementedException(),
         };
 
-        internal List<IShip> CreateParade() => new()
+        internal List<IShipEx> CreateParade() => new()
         {
             { new Missile(_draw) },
             { new Coriolis(_draw) },

@@ -43,10 +43,14 @@ namespace EliteSharp
 
             newShip.Location = location;
             newShip.Rotmat = rotmat;
-            newShip.RotX = rotx;
-            newShip.RotZ = rotz;
-            newShip.Energy = newShip.EnergyMax;
-            newShip.Missiles = newShip.MissilesMax;
+            if (newShip is IShipEx newShipEx)
+            {
+                newShipEx.RotX = rotx;
+                newShipEx.RotZ = rotz;
+                newShipEx.Energy = newShipEx.EnergyMax;
+                newShipEx.Missiles = newShipEx.MissilesMax;
+            }
+
             _shipCount[newShip.Type]++;
 
             if (newShip.Flags.HasFlag(ShipFlags.Station) || newShip.Type == ShipType.Sun)
@@ -65,7 +69,7 @@ namespace EliteSharp
             return true;
         }
 
-        internal bool AddNewShip(IShip ship)
+        internal bool AddNewShip(IShipEx ship)
         {
             Vector3 position = new()
             {
@@ -89,7 +93,7 @@ namespace EliteSharp
 
         internal void AddNewStation(int planetTechLevel, Vector3 position, Vector3[] rotmat)
         {
-            IShip station = planetTechLevel >= 10 ? new DodecStation(_draw) : new Coriolis(_draw);
+            IShipEx station = planetTechLevel >= 10 ? new DodecStation(_draw) : new Coriolis(_draw);
             AddNewShip(station, position, rotmat, 0, -127);
         }
 

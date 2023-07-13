@@ -5,20 +5,59 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using EliteSharp.Graphics;
+using EliteSharp.Ships;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class FractalPlanet : IPlanetRenderer
+    internal sealed class FractalPlanet : IShip
     {
+        private readonly IDraw _draw;
+        private readonly int _seed;
         private readonly PlanetRenderer _planetRenderer;
 
         internal FractalPlanet(IDraw draw, int seed)
         {
+            _draw = draw;
+            _seed = seed;
             _planetRenderer = new(draw);
             GenerateLandscape(seed);
+            Type = ShipType.Planet;
         }
 
-        public void Draw(Vector2 centre, float radius, Vector3[] vec) => _planetRenderer.Draw(centre, radius, vec);
+        private FractalPlanet(FractalPlanet other)
+        {
+            _draw = other._draw;
+            _seed = other._seed;
+            _planetRenderer = other._planetRenderer;
+        }
+
+        public Vector3[] Rotmat { get; set; } = new Vector3[3];
+
+        public ShipType Type { get; set; }
+
+        public ShipFlags Flags { get; set; }
+
+        public Vector3 Location { get; set; }
+
+        public float RotX { get; set; }
+
+        public float RotZ { get; set; }
+
+        public IShip Clone()
+        {
+            FractalPlanet planet = new(this);
+            this.Copy(planet);
+            return planet;
+        }
+
+        public void Draw()
+        {
+            (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
+            if (v != null)
+            {
+                _planetRenderer.Draw(v.Value.Position, v.Value.Radius, Rotmat);
+            }
+        }
 
         /// <summary>
         /// Calculate the midpoint between two given points.

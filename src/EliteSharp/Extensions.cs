@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Ships;
 
 namespace EliteSharp
 {
@@ -30,5 +31,47 @@ namespace EliteSharp
 #pragma warning disable CA1308 // Normalize strings to uppercase
         internal static string CapitaliseFirstLetter(this string text) => char.ToUpperInvariant(text[0]) + text[1..].ToLowerInvariant();
 #pragma warning restore CA1308 // Normalize strings to uppercase
+
+        internal static void Copy(this IShipEx from, IShipEx to)
+        {
+            ((IShip)from).Copy(to);
+
+            to.Bounty = from.Bounty;
+            to.EnergyMax = from.EnergyMax;
+            to.FaceNormals = from.FaceNormals;
+            to.Faces = from.Faces;
+            to.LaserFront = from.LaserFront;
+            to.LaserStrength = from.LaserStrength;
+            to.Lines = from.Lines;
+            to.LootMax = from.LootMax;
+            to.MissilesMax = from.MissilesMax;
+            to.Name = from.Name;
+            to.Points = from.Points;
+            to.ScoopedType = from.ScoopedType;
+            to.Size = from.Size;
+            to.VanishPoint = from.VanishPoint;
+            to.VelocityMax = from.VelocityMax;
+            to.ExpDelta = from.ExpDelta;
+            to.Flags = from.Flags;
+            to.Type = from.Type;
+            to.Location = from.Location.Cloner();
+            to.Energy = from.Energy;
+            to.Velocity = from.Velocity;
+            to.Acceleration = from.Acceleration;
+            to.Missiles = from.Missiles;
+            to.Target = from.Target;
+            to.Bravery = from.Bravery;
+            to.MinDistance = from.MinDistance;
+        }
+
+        internal static void Copy(this IShip from, IShip to)
+        {
+            to.Flags = from.Flags;
+            to.Rotmat = from.Rotmat.Cloner();
+            to.RotX = from.RotX;
+            to.RotZ = from.RotZ;
+            to.Type = from.Type;
+            to.Location = from.Location.Cloner();
+        }
     }
 }

@@ -3,12 +3,13 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Graphics;
+using EliteSharp.Ships;
 
 namespace EliteSharp.Planets
 {
     internal static class PlanetFactory
     {
-        internal static IPlanetRenderer Create(PlanetType type, IDraw draw, int seed) => type switch
+        internal static IShip Create(PlanetType type, IDraw draw, int seed) => type switch
         {
             PlanetType.Fractal => new FractalPlanet(draw, seed),
             PlanetType.Wireframe => new WireframePlanet(draw),

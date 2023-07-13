@@ -18,6 +18,27 @@ namespace EliteSharp.Planets
 
         internal PlanetRenderer(IDraw draw) => _draw = draw;
 
+        internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector3 location)
+        {
+            Vector2 position = new(location.X, -location.Y);
+            position *= 256 / location.Z;
+            position += _draw.Centre / 2;
+            position *= _draw.Graphics.Scale;
+
+            float radius = 6291456 / location.Length();
+
+            // Planets are BIG!
+            //  radius = 6291456 / ship_vec.z;
+            radius *= _draw.Graphics.Scale;
+
+            return (position.X + radius < _draw.Left) ||
+                (position.X - radius > _draw.Right) ||
+                (position.Y + radius < _draw.Top) ||
+                (position.Y - radius > _draw.Bottom)
+                ? null
+                : (position, radius);
+        }
+
         /// <summary>
         /// Draw a solid planet. Based on Doros circle drawing alogorithm.
         /// </summary>

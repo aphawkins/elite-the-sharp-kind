@@ -8,7 +8,7 @@ using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal class ShipBase : IShip
+    internal class ShipBase : IShipEx
     {
         private readonly IDraw _draw;
 
@@ -16,41 +16,41 @@ namespace EliteSharp.Ships
 
         public int Acceleration { get; set; }
 
-        public float Bounty { get; protected set; }
+        public float Bounty { get; set; }
 
         public int Bravery { get; set; }
 
         public int Energy { get; set; }
 
-        public int EnergyMax { get; protected set; }
+        public int EnergyMax { get; set; }
 
         public int ExpDelta { get; set; }
 
-        public ShipFaceNormal[] FaceNormals { get; protected set; } = Array.Empty<ShipFaceNormal>();
+        public ShipFaceNormal[] FaceNormals { get; set; } = Array.Empty<ShipFaceNormal>();
 
-        public ShipFace[] Faces { get; protected set; } = Array.Empty<ShipFace>();
+        public ShipFace[] Faces { get; set; } = Array.Empty<ShipFace>();
 
         public ShipFlags Flags { get; set; } = ShipFlags.None;
 
-        public int LaserFront { get; protected set; }
+        public int LaserFront { get; set; }
 
-        public int LaserStrength { get; protected set; }
+        public int LaserStrength { get; set; }
 
-        public ShipLine[] Lines { get; protected set; } = Array.Empty<ShipLine>();
+        public ShipLine[] Lines { get; set; } = Array.Empty<ShipLine>();
 
         public Vector3 Location { get; set; }
 
-        public int LootMax { get; protected set; }
+        public int LootMax { get; set; }
 
-        public float MinDistance { get; protected set; }
+        public float MinDistance { get; set; }
 
         public int Missiles { get; set; }
 
-        public int MissilesMax { get; protected set; }
+        public int MissilesMax { get; set; }
 
-        public string Name { get; protected set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public ShipPoint[] Points { get; protected set; } = Array.Empty<ShipPoint>();
+        public ShipPoint[] Points { get; set; } = Array.Empty<ShipPoint>();
 
         public Vector3[] Rotmat { get; set; } = new Vector3[3];
 
@@ -58,19 +58,19 @@ namespace EliteSharp.Ships
 
         public float RotZ { get; set; }
 
-        public StockType ScoopedType { get; protected set; }
+        public StockType ScoopedType { get; set; }
 
-        public float Size { get; protected set; }
+        public float Size { get; set; }
 
         public IShip? Target { get; set; }
 
-        public ShipType Type { get; protected set; }
+        public ShipType Type { get; set; }
 
-        public int VanishPoint { get; protected set; }
+        public int VanishPoint { get; set; }
 
         public float Velocity { get; set; }
 
-        public float VelocityMax { get; protected set; }
+        public float VelocityMax { get; set; }
 
         /// <summary>
         /// Hacked version of the draw ship routine to display ships...

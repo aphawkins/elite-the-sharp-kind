@@ -149,8 +149,8 @@ namespace EliteSharp
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
 
-            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(new Planet(_draw, planetRenderer), new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
+            IShip planet = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
@@ -342,7 +342,7 @@ namespace EliteSharp
                         _gameState.Cmdr.LegalStatus |= 64;
                     }
 
-                    float bounty = obj.Bounty;
+                    float bounty = ((IShipEx)obj).Bounty;
 
                     if ((bounty != 0) && (!_gameState.InWitchspace))
                     {
@@ -366,13 +366,16 @@ namespace EliteSharp
                     obj.Flags |= ShipFlags.Dead;
                 }
 
-                if (_gameState.CurrentScreen is
+                if ((_gameState.CurrentScreen is
                     not Screen.IntroOne and
                     not Screen.IntroTwo and
                     not Screen.GameOver and
-                    not Screen.EscapeCapsule)
+                    not Screen.EscapeCapsule) &&
+                    (obj.Type is not ShipType.Planet and not ShipType.Sun) &&
+                    !obj.Flags.HasFlag(ShipFlags.Dead) &&
+                    !obj.Flags.HasFlag(ShipFlags.Inactive))
                 {
-                    _combat.Tactics(obj, i);
+                    _combat.Tactics((IShipEx)obj, i);
                 }
 
                 MoveUniverseObject(obj);
@@ -404,7 +407,7 @@ namespace EliteSharp
                     }
                     else
                     {
-                        _combat.ScoopItem(obj);
+                        _combat.ScoopItem((IShipEx)obj);
                     }
 
                     continue;
@@ -418,7 +421,7 @@ namespace EliteSharp
 
                 _draw.DrawObject(flip);
                 obj.Flags = flip.Flags;
-                obj.ExpDelta = flip.ExpDelta;
+                ((IShipEx)obj).ExpDelta = ((IShipEx)flip).ExpDelta;
                 obj.Flags &= ~ShipFlags.Firing;
 
                 if (obj.Flags.HasFlag(ShipFlags.Dead))
@@ -426,7 +429,7 @@ namespace EliteSharp
                     continue;
                 }
 
-                _combat.CheckTarget(obj, flip);
+                _combat.CheckTarget((IShipEx)obj, flip);
             }
 
             _draw.RenderEnd();
@@ -594,8 +597,8 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            IPlanetRenderer planetRenderer = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(new Planet(_draw, planetRenderer), position, VectorMaths.GetInitialMatrix(), 0, 0))
+            IShip planet = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
@@ -724,26 +727,27 @@ namespace EliteSharp
             float beta = _ship.Climb / 256;
 
             Vector3 position = ship.Location.Cloner();
-
-            if (!ship.Flags.HasFlag(ShipFlags.Dead))
+            if (ship is IShipEx shipEx &&
+                !ship.Flags.HasFlag(ShipFlags.Dead) &&
+                ship.Type != ShipType.Sun && ship.Type != ShipType.Planet)
             {
-                if (ship.Velocity != 0)
+                if (shipEx.Velocity != 0)
                 {
-                    position += ship.Rotmat[2] * ship.Velocity * 1.5f;
+                    position += shipEx.Rotmat[2] * shipEx.Velocity * 1.5f;
                 }
 
-                if (ship.Acceleration != 0)
+                if (shipEx.Acceleration != 0)
                 {
-                    ship.Velocity += ship.Acceleration;
-                    ship.Acceleration = 0;
-                    if (ship.Velocity > ship.VelocityMax)
+                    shipEx.Velocity += shipEx.Acceleration;
+                    shipEx.Acceleration = 0;
+                    if (shipEx.Velocity > shipEx.VelocityMax)
                     {
-                        ship.Velocity = ship.VelocityMax;
+                        shipEx.Velocity = shipEx.VelocityMax;
                     }
 
-                    if (ship.Velocity <= 0)
+                    if (shipEx.Velocity <= 0)
                     {
-                        ship.Velocity = 1;
+                        shipEx.Velocity = 1;
                     }
                 }
             }
