@@ -23,7 +23,7 @@ namespace EliteSharp.Views
         private readonly GameState _gameState;
         private readonly IKeyboard _keyboard;
         private readonly PlayerShip _ship;
-        private readonly List<IShipEx> _parade;
+        private readonly List<IShip> _parade;
 
         private readonly Stars _stars;
         private readonly Universe _universe;
@@ -60,7 +60,7 @@ namespace EliteSharp.Views
             _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", FontSize.Large, Colour.Gold);
             if (_universe.FirstShip != null)
             {
-                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, ((IShipEx)_universe.FirstShip).Name, FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, FontSize.Small, Colour.White);
             }
         }
 

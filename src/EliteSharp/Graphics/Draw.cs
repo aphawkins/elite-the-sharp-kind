@@ -173,7 +173,7 @@ namespace EliteSharp.Graphics
         /// <summary>
         /// Draws an object in the universe. (Ship, Planet, Sun etc).
         /// </summary>
-        public void DrawObject(IShip ship)
+        public void DrawObject(IObject obj)
         {
             if (_gameState.CurrentScreen is not Screen.FrontView and not Screen.RearView and
                 not Screen.LeftView and not Screen.RightView and
@@ -184,44 +184,44 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            if (ship.Flags.HasFlag(ShipFlags.Dead) && !ship.Flags.HasFlag(ShipFlags.Explosion))
+            if (obj.Flags.HasFlag(ShipFlags.Dead) && !obj.Flags.HasFlag(ShipFlags.Explosion))
             {
-                ship.Flags |= ShipFlags.Explosion;
-                ((IShipEx)ship).ExpDelta = 18;
+                obj.Flags |= ShipFlags.Explosion;
+                ((IShip)obj).ExpDelta = 18;
             }
 
-            if (ship.Flags.HasFlag(ShipFlags.Explosion))
+            if (obj.Flags.HasFlag(ShipFlags.Explosion))
             {
-                DrawExplosion((IShipEx)ship);
+                DrawExplosion((IShip)obj);
                 return;
             }
 
             // Only display ships in front of us.
-            if (ship.Location.Z <= 0)
+            if (obj.Location.Z <= 0)
             {
                 return;
             }
 
-            if (ship.Type == ShipType.Planet)
+            if (obj.Type == ShipType.Planet)
             {
-                ship.Draw();
+                obj.Draw();
                 return;
             }
 
-            if (ship.Type == ShipType.Sun)
+            if (obj.Type == ShipType.Sun)
             {
-                ship.Draw();
+                obj.Draw();
                 return;
             }
 
             // Check for field of vision.
-            if (MathF.Abs(ship.Location.X) > ship.Location.Z ||
-                MathF.Abs(ship.Location.Y) > ship.Location.Z)
+            if (MathF.Abs(obj.Location.X) > obj.Location.Z ||
+                MathF.Abs(obj.Location.Y) > obj.Location.Z)
             {
                 return;
             }
 
-            ship.Draw();
+            obj.Draw();
         }
 
         public void RenderEnd()
@@ -258,7 +258,7 @@ namespace EliteSharp.Graphics
             _totalPolys = 0;
         }
 
-        private void DrawExplosion(IShipEx ship)
+        private void DrawExplosion(IShip ship)
         {
             Vector3[] trans_mat = new Vector3[3];
             bool[] visible = new bool[32];

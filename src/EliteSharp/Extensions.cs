@@ -32,9 +32,9 @@ namespace EliteSharp
         internal static string CapitaliseFirstLetter(this string text) => char.ToUpperInvariant(text[0]) + text[1..].ToLowerInvariant();
 #pragma warning restore CA1308 // Normalize strings to uppercase
 
-        internal static void Copy(this IShipEx from, IShipEx to)
+        internal static void CopyTo(this IShip from, IShip to)
         {
-            ((IShip)from).Copy(to);
+            from.CopyTo((IObject)to);
 
             to.Bounty = from.Bounty;
             to.EnergyMax = from.EnergyMax;
@@ -64,7 +64,7 @@ namespace EliteSharp
             to.MinDistance = from.MinDistance;
         }
 
-        internal static void Copy(this IShip from, IShip to)
+        internal static void CopyTo(this IObject from, IObject to)
         {
             to.Flags = from.Flags;
             to.Rotmat = from.Rotmat.Cloner();

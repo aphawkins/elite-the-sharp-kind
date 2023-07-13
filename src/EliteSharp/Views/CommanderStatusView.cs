@@ -85,9 +85,9 @@ namespace EliteSharp.Views
             {
                 condition = 1;
 
-                foreach (IShip universeObj in _universe.GetAllObjects())
+                foreach (IObject obj in _universe.GetAllObjects())
                 {
-                    if (universeObj.Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
+                    if (obj.Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
                     {
                         condition = 2;
                         break;

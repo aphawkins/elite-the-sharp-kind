@@ -2,26 +2,56 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Numerics;
+using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal interface IShip
+    internal interface IShip : IObject
     {
-        ShipFlags Flags { get; set; }
+        int Acceleration { get; set; }
 
-        Vector3 Location { get; set; }
+        float Bounty { get; set; }
 
-        Vector3[] Rotmat { get; set; }
+        int Bravery { get; set; }
 
-        float RotX { get; set; }
+        int Energy { get; set; }
 
-        float RotZ { get; set; }
+        int EnergyMax { get; set; }
 
-        ShipType Type { get; set; }
+        int ExpDelta { get; set; }
 
-        IShip Clone();
+        ShipFaceNormal[] FaceNormals { get; set; }
 
-        void Draw();
+        ShipFace[] Faces { get; set; }
+
+        int LaserFront { get; set; }
+
+        int LaserStrength { get; set; }
+
+        ShipLine[] Lines { get; set; }
+
+        int LootMax { get; set; }
+
+        float MinDistance { get; set; }
+
+        int Missiles { get; set; }
+
+        int MissilesMax { get; set; }
+
+        string Name { get; set; }
+
+        ShipPoint[] Points { get; set; }
+
+        StockType ScoopedType { get; set; }
+
+        float Size { get; set; }
+
+        IObject? Target { get; set; }
+
+        int VanishPoint { get; set; }
+
+        float Velocity { get; set; }
+
+        float VelocityMax { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using EliteSharp.Trader;
 
 namespace EliteSharp.Ships
 {
-    internal class ShipBase : IShipEx
+    internal class ShipBase : IShip
     {
         private readonly IDraw _draw;
 
@@ -62,7 +62,7 @@ namespace EliteSharp.Ships
 
         public float Size { get; set; }
 
-        public IShip? Target { get; set; }
+        public IObject? Target { get; set; }
 
         public ShipType Type { get; set; }
 
@@ -167,7 +167,7 @@ namespace EliteSharp.Ships
             }
         }
 
-        public virtual IShip Clone() => new ShipBase(_draw)
+        public virtual IObject Clone() => new ShipBase(_draw)
         {
             Bounty = Bounty,
             EnergyMax = EnergyMax,

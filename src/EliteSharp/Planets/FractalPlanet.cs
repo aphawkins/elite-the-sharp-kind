@@ -9,7 +9,7 @@ using EliteSharp.Ships;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class FractalPlanet : IShip
+    internal sealed class FractalPlanet : IObject
     {
         private readonly IDraw _draw;
         private readonly int _seed;
@@ -43,10 +43,10 @@ namespace EliteSharp.Planets
 
         public float RotZ { get; set; }
 
-        public IShip Clone()
+        public IObject Clone()
         {
             FractalPlanet planet = new(this);
-            this.Copy(planet);
+            this.CopyTo(planet);
             return planet;
         }
 

@@ -13,7 +13,7 @@ namespace EliteSharp
     {
         private const int MaxUniverseObjects = 20;
         private readonly IDraw _draw;
-        private readonly List<IShip> _objects = new();
+        private readonly List<IObject> _objects = new();
         private readonly Dictionary<ShipType, int> _shipCount = new();
 
         internal Universe(IDraw draw)
@@ -24,15 +24,15 @@ namespace EliteSharp
 
         internal bool IsStationPresent => _shipCount[ShipType.Coriolis] != 0 || _shipCount[ShipType.Dodec] != 0;
 
-        internal IShip? Planet { get; private set; }
+        internal IObject? Planet { get; private set; }
 
-        internal IShip? FirstShip => _objects.Count > 0 ? _objects[0] : StationOrSun;
+        internal IObject? FirstShip => _objects.Count > 0 ? _objects[0] : StationOrSun;
 
         internal int PoliceCount => _shipCount[ShipType.Viper];
 
-        internal IShip? StationOrSun { get; private set; }
+        internal IObject? StationOrSun { get; private set; }
 
-        internal bool AddNewShip(IShip newShip, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
+        internal bool AddNewShip(IObject newObj, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
         {
             Debug.Assert(rotmat != null, "Rotation matrix should not be null.");
 
@@ -41,35 +41,35 @@ namespace EliteSharp
                 return false;
             }
 
-            newShip.Location = location;
-            newShip.Rotmat = rotmat;
-            if (newShip is IShipEx newShipEx)
+            newObj.Location = location;
+            newObj.Rotmat = rotmat;
+            if (newObj is IShip newShip)
             {
-                newShipEx.RotX = rotx;
-                newShipEx.RotZ = rotz;
-                newShipEx.Energy = newShipEx.EnergyMax;
-                newShipEx.Missiles = newShipEx.MissilesMax;
+                newShip.RotX = rotx;
+                newShip.RotZ = rotz;
+                newShip.Energy = newShip.EnergyMax;
+                newShip.Missiles = newShip.MissilesMax;
             }
 
-            _shipCount[newShip.Type]++;
+            _shipCount[newObj.Type]++;
 
-            if (newShip.Flags.HasFlag(ShipFlags.Station) || newShip.Type == ShipType.Sun)
+            if (newObj.Flags.HasFlag(ShipFlags.Station) || newObj.Type == ShipType.Sun)
             {
-                StationOrSun = newShip;
+                StationOrSun = newObj;
             }
-            else if (newShip.Type is ShipType.Planet)
+            else if (newObj.Type is ShipType.Planet)
             {
-                Planet = newShip;
+                Planet = newObj;
             }
             else
             {
-                _objects.Add(newShip);
+                _objects.Add(newObj);
             }
 
             return true;
         }
 
-        internal bool AddNewShip(IShipEx ship)
+        internal bool AddNewShip(IShip ship)
         {
             Vector3 position = new()
             {
@@ -93,7 +93,7 @@ namespace EliteSharp
 
         internal void AddNewStation(int planetTechLevel, Vector3 position, Vector3[] rotmat)
         {
-            IShipEx station = planetTechLevel >= 10 ? new DodecStation(_draw) : new Coriolis(_draw);
+            IShip station = planetTechLevel >= 10 ? new DodecStation(_draw) : new Coriolis(_draw);
             AddNewShip(station, position, rotmat, 0, -127);
         }
 
@@ -109,7 +109,7 @@ namespace EliteSharp
             }
         }
 
-        internal IEnumerable<IShip> GetAllObjects()
+        internal IEnumerable<IObject> GetAllObjects()
         {
             if (Planet != null)
             {
@@ -121,13 +121,13 @@ namespace EliteSharp
                 yield return StationOrSun;
             }
 
-            foreach (IShip obj in _objects.ToList())
+            foreach (IObject obj in _objects.ToList())
             {
                 yield return obj;
             }
         }
 
-        internal void RemoveShip(IShip ship)
+        internal void RemoveShip(IObject ship)
         {
             if (ship.Type > ShipType.None)
             {

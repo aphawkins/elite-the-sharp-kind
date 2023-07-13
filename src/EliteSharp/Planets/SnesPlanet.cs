@@ -8,7 +8,7 @@ using EliteSharp.Ships;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class SnesPlanet : IShip
+    internal sealed class SnesPlanet : IObject
     {
         private readonly PlanetRenderer _planetRenderer;
 
@@ -92,10 +92,10 @@ namespace EliteSharp.Planets
 
         public float RotZ { get; set; }
 
-        public IShip Clone()
+        public IObject Clone()
         {
             SnesPlanet planet = new(this);
-            this.Copy(planet);
+            this.CopyTo(planet);
             return planet;
         }
 

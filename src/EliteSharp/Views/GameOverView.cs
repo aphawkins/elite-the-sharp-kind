@@ -64,7 +64,7 @@ namespace EliteSharp.Views
             // Cargo
             for (int i = 0; i < 5; i++)
             {
-                IShipEx cargo = RNG.TrueOrFalse() ? new CargoCannister(_draw) : new Alloy(_draw);
+                IShip cargo = RNG.TrueOrFalse() ? new CargoCannister(_draw) : new Alloy(_draw);
                 if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 32), RNG.Random(-32, 32), -400), VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     Debug.WriteLine("Failed to create Cargo");

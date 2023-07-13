@@ -242,7 +242,7 @@ namespace EliteSharp
                 return;
             }
 
-            IShip? obj = _universe.IsStationPresent ? _universe.StationOrSun : _universe.Planet;
+            IObject? obj = _universe.IsStationPresent ? _universe.StationOrSun : _universe.Planet;
             if (obj == null)
             {
                 return;
@@ -272,7 +272,7 @@ namespace EliteSharp
         /// </summary>
         private void UpdateScanner()
         {
-            foreach (IShip obj in _universe.GetAllObjects())
+            foreach (IObject obj in _universe.GetAllObjects())
             {
                 if ((obj.Type <= 0) ||
                     obj.Flags.HasFlag(ShipFlags.Dead) ||

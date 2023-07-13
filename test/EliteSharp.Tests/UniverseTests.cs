@@ -16,7 +16,7 @@ namespace EliteSharp.Tests
             // Arrange
             Mock<IDraw> drawMoq = new();
             Universe universe = new(drawMoq.Object);
-            IShipEx ship = new CobraMk3(drawMoq.Object);
+            IShip ship = new CobraMk3(drawMoq.Object);
 
             // Act
             universe.AddNewShip(ship);
@@ -39,10 +39,10 @@ namespace EliteSharp.Tests
             // Arrange
             Mock<IDraw> drawMoq = new();
             Universe universe = new(drawMoq.Object);
-            IShip ship = new CobraMk3(drawMoq.Object);
+            IObject ship = new CobraMk3(drawMoq.Object);
 
             // Act
-            universe.AddNewShip((IShipEx)ship);
+            universe.AddNewShip((IShip)ship);
             universe.RemoveShip(ship);
 
             // Assert

@@ -35,7 +35,7 @@ namespace EliteSharp.Graphics
 
         void DrawHyperspaceCountdown(int countdown);
 
-        void DrawObject(IShip ship);
+        void DrawObject(IObject obj);
 
         void DrawPolygonFilled(Vector2[] point_list, Colour face_colour, float zAvg);
 

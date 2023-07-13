@@ -18,7 +18,7 @@ namespace EliteSharp.Ships
             Type = ShipType.Sun;
         }
 
-        public override IShip Clone() => new Sun(_draw)
+        public override IObject Clone() => new Sun(_draw)
         {
             Bounty = Bounty,
             EnergyMax = EnergyMax,

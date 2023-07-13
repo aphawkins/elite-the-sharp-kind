@@ -9,7 +9,7 @@ namespace EliteSharp.Planets
 {
     internal static class PlanetFactory
     {
-        internal static IShip Create(PlanetType type, IDraw draw, int seed) => type switch
+        internal static IObject Create(PlanetType type, IDraw draw, int seed) => type switch
         {
             PlanetType.Fractal => new FractalPlanet(draw, seed),
             PlanetType.Wireframe => new WireframePlanet(draw),

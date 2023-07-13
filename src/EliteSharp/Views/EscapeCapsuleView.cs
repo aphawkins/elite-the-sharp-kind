@@ -22,7 +22,7 @@ namespace EliteSharp.Views
         private readonly Universe _universe;
         private readonly IDraw _draw;
         private int _i;
-        private IShipEx _newship;
+        private IShip _newship;
 
         internal EscapeCapsuleView(
             GameState gameState,
@@ -95,7 +95,7 @@ namespace EliteSharp.Views
 
                 if ((MathF.Abs(_ship.Roll) < 3) && (MathF.Abs(_ship.Climb) < 3))
                 {
-                    foreach (IShip universeObj in _universe.GetAllObjects())
+                    foreach (IObject universeObj in _universe.GetAllObjects())
                     {
                         if (universeObj.Type != 0)
                         {

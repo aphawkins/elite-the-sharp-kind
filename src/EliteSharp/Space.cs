@@ -101,9 +101,9 @@ namespace EliteSharp
 
         internal void JumpWarp()
         {
-            foreach (IShip ship in _universe.GetAllObjects())
+            foreach (IObject obj in _universe.GetAllObjects())
             {
-                if (ship.Type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
+                if (obj.Type is > 0 and not ShipType.Asteroid and not ShipType.Cargo and
                     not ShipType.Alloy and not ShipType.Rock and
                     not ShipType.Boulder and not ShipType.EscapeCapsule)
                 {
@@ -126,11 +126,11 @@ namespace EliteSharp
                 jump = 1024;
             }
 
-            foreach (IShip universeObj in _universe.GetAllObjects())
+            foreach (IObject obj in _universe.GetAllObjects())
             {
-                if (universeObj.Type != 0)
+                if (obj.Type != 0)
                 {
-                    universeObj.Location = new(universeObj.Location.X, universeObj.Location.Y, universeObj.Location.Z - jump);
+                    obj.Location = new(obj.Location.X, obj.Location.Y, obj.Location.Z - jump);
                 }
             }
 
@@ -149,7 +149,7 @@ namespace EliteSharp
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
 
-            IShip planet = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IObject planet = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
@@ -326,7 +326,7 @@ namespace EliteSharp
             _draw.RenderStart();
             int i = -1;
 
-            foreach (IShip obj in _universe.GetAllObjects())
+            foreach (IObject obj in _universe.GetAllObjects())
             {
                 i++;
 
@@ -342,7 +342,7 @@ namespace EliteSharp
                         _gameState.Cmdr.LegalStatus |= 64;
                     }
 
-                    float bounty = ((IShipEx)obj).Bounty;
+                    float bounty = ((IShip)obj).Bounty;
 
                     if ((bounty != 0) && (!_gameState.InWitchspace))
                     {
@@ -375,11 +375,11 @@ namespace EliteSharp
                     !obj.Flags.HasFlag(ShipFlags.Dead) &&
                     !obj.Flags.HasFlag(ShipFlags.Inactive))
                 {
-                    _combat.Tactics((IShipEx)obj, i);
+                    _combat.Tactics((IShip)obj, i);
                 }
 
                 MoveUniverseObject(obj);
-                IShip flip = obj.Clone();
+                IObject flip = obj.Clone();
                 SwitchToView(flip);
 
                 if (obj.Type == ShipType.Planet)
@@ -407,7 +407,7 @@ namespace EliteSharp
                     }
                     else
                     {
-                        _combat.ScoopItem((IShipEx)obj);
+                        _combat.ScoopItem((IShip)obj);
                     }
 
                     continue;
@@ -421,7 +421,7 @@ namespace EliteSharp
 
                 _draw.DrawObject(flip);
                 obj.Flags = flip.Flags;
-                ((IShipEx)obj).ExpDelta = ((IShipEx)flip).ExpDelta;
+                ((IShip)obj).ExpDelta = ((IShip)flip).ExpDelta;
                 obj.Flags &= ~ShipFlags.Firing;
 
                 if (obj.Flags.HasFlag(ShipFlags.Dead))
@@ -429,7 +429,7 @@ namespace EliteSharp
                     continue;
                 }
 
-                _combat.CheckTarget((IShipEx)obj, flip);
+                _combat.CheckTarget((IShip)obj, flip);
             }
 
             _draw.RenderEnd();
@@ -455,7 +455,7 @@ namespace EliteSharp
             }
         }
 
-        private void SwitchToView(IShip flip)
+        private void SwitchToView(IObject flip)
         {
             if (_gameState.CurrentScreen is Screen.RearView or Screen.GameOver)
             {
@@ -520,7 +520,7 @@ namespace EliteSharp
             }
         }
 
-        private void CheckDocking(IShip obj)
+        private void CheckDocking(IObject obj)
         {
             if (_gameState.IsDocked)
             {
@@ -597,7 +597,7 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            IShip planet = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IObject planet = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
@@ -659,7 +659,7 @@ namespace EliteSharp
         /// <summary>
         /// Check if we are correctly aligned to dock.
         /// </summary>
-        private bool IsDocking(IShip ship)
+        private bool IsDocking(IObject ship)
         {
             // Don't want it to kill anyone!
             if (_pilot.IsAutoPilotOn)
@@ -720,16 +720,15 @@ namespace EliteSharp
         /// <summary>
         /// Update an objects location in the universe.
         /// </summary>
-        /// <param name="ship"></param>
-        private void MoveUniverseObject(IShip ship)
+        private void MoveUniverseObject(IObject obj)
         {
             float alpha = _ship.Roll / 256;
             float beta = _ship.Climb / 256;
 
-            Vector3 position = ship.Location.Cloner();
-            if (ship is IShipEx shipEx &&
-                !ship.Flags.HasFlag(ShipFlags.Dead) &&
-                ship.Type != ShipType.Sun && ship.Type != ShipType.Planet)
+            Vector3 position = obj.Location.Cloner();
+            if (obj is IShip shipEx &&
+                !obj.Flags.HasFlag(ShipFlags.Dead) &&
+                obj.Type != ShipType.Sun && obj.Type != ShipType.Planet)
             {
                 if (shipEx.Velocity != 0)
                 {
@@ -759,51 +758,51 @@ namespace EliteSharp
 
             position.Z -= _ship.Speed;
 
-            ship.Location = position.Cloner();
+            obj.Location = position.Cloner();
 
-            if (ship.Type == ShipType.Planet)
+            if (obj.Type == ShipType.Planet)
             {
                 beta = 0.0f;
             }
 
-            ship.Rotmat = VectorMaths.RotateVector(ship.Rotmat, alpha, beta);
+            obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
 
-            if (ship.Flags.HasFlag(ShipFlags.Dead))
+            if (obj.Flags.HasFlag(ShipFlags.Dead))
             {
                 return;
             }
 
-            float rotx = ship.RotX;
-            float rotz = ship.RotZ;
+            float rotx = obj.RotX;
+            float rotz = obj.RotZ;
 
             // If necessary rotate the object around the X axis...
             if (rotx != 0)
             {
-                RotateXFirst(ref ship.Rotmat[2].X, ref ship.Rotmat[1].X, rotx);
-                RotateXFirst(ref ship.Rotmat[2].Y, ref ship.Rotmat[1].Y, rotx);
-                RotateXFirst(ref ship.Rotmat[2].Z, ref ship.Rotmat[1].Z, rotx);
+                RotateXFirst(ref obj.Rotmat[2].X, ref obj.Rotmat[1].X, rotx);
+                RotateXFirst(ref obj.Rotmat[2].Y, ref obj.Rotmat[1].Y, rotx);
+                RotateXFirst(ref obj.Rotmat[2].Z, ref obj.Rotmat[1].Z, rotx);
 
                 if (rotx is not 127 and not -127)
                 {
-                    ship.RotX -= (rotx < 0) ? -1 : 1;
+                    obj.RotX -= (rotx < 0) ? -1 : 1;
                 }
             }
 
             // If necessary rotate the object around the Z axis...
             if (rotz != 0)
             {
-                RotateXFirst(ref ship.Rotmat[0].X, ref ship.Rotmat[1].X, rotz);
-                RotateXFirst(ref ship.Rotmat[0].Y, ref ship.Rotmat[1].Y, rotz);
-                RotateXFirst(ref ship.Rotmat[0].Z, ref ship.Rotmat[1].Z, rotz);
+                RotateXFirst(ref obj.Rotmat[0].X, ref obj.Rotmat[1].X, rotz);
+                RotateXFirst(ref obj.Rotmat[0].Y, ref obj.Rotmat[1].Y, rotz);
+                RotateXFirst(ref obj.Rotmat[0].Z, ref obj.Rotmat[1].Z, rotz);
 
                 if (rotz is not 127 and not -127)
                 {
-                    ship.RotZ -= (rotz < 0) ? -1 : 1;
+                    obj.RotZ -= (rotz < 0) ? -1 : 1;
                 }
             }
 
             // Orthonormalize the rotation matrix...
-            VectorMaths.TidyMatrix(ship.Rotmat);
+            VectorMaths.TidyMatrix(obj.Rotmat);
         }
     }
 }
