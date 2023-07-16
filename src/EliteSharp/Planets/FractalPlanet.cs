@@ -21,7 +21,6 @@ namespace EliteSharp.Planets
             _seed = seed;
             _planetRenderer = new(draw);
             GenerateLandscape(seed);
-            Type = ShipType.Planet;
         }
 
         private FractalPlanet(FractalPlanet other)
@@ -33,11 +32,11 @@ namespace EliteSharp.Planets
 
         public Vector3[] Rotmat { get; set; } = new Vector3[3];
 
-        public ShipType Type { get; set; }
+        public ShipType Type { get; set; } = ShipType.Planet;
 
         public ShipFlags Flags { get; set; }
 
-        public Vector3 Location { get; set; }
+        public Vector3 Location { get; set; } = new(0, 0, 123456);
 
         public float RotX { get; set; }
 

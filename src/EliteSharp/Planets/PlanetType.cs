@@ -8,7 +8,7 @@ namespace EliteSharp.Planets
     {
         Wireframe = 0,
         Green = 1,
-        SNES = 2,
+        Striped = 2,
         Fractal = 3,
     }
 }

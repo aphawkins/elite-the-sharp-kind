@@ -8,19 +8,20 @@ using EliteSharp.Ships;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class GreenPlanet : IObject
+    internal sealed class SolidPlanet : IObject
     {
+        private readonly Colour _colour;
         private readonly IDraw _draw;
         private readonly PlanetRenderer _planetRenderer;
 
-        internal GreenPlanet(IDraw draw)
+        internal SolidPlanet(IDraw draw, Colour colour)
         {
             _draw = draw;
+            _colour = colour;
             _planetRenderer = new(draw);
-            Type = ShipType.Planet;
         }
 
-        private GreenPlanet(GreenPlanet other)
+        private SolidPlanet(SolidPlanet other)
         {
             _draw = other._draw;
             _planetRenderer = other._planetRenderer;
@@ -28,19 +29,19 @@ namespace EliteSharp.Planets
 
         public ShipFlags Flags { get; set; }
 
-        public Vector3 Location { get; set; }
+        public Vector3 Location { get; set; } = new(0, 0, 123456);
 
         public Vector3[] Rotmat { get; set; } = new Vector3[3];
-
-        public ShipType Type { get; set; }
 
         public float RotX { get; set; }
 
         public float RotZ { get; set; }
 
+        public ShipType Type { get; set; } = ShipType.Planet;
+
         public IObject Clone()
         {
-            GreenPlanet planet = new(this);
+            SolidPlanet planet = new(this);
             this.CopyTo(planet);
             return planet;
         }
@@ -50,7 +51,7 @@ namespace EliteSharp.Planets
             (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
             if (v != null)
             {
-                _draw.Graphics.DrawCircleFilled(v.Value.Position, v.Value.Radius, Colour.Green);
+                _draw.Graphics.DrawCircleFilled(v.Value.Position, v.Value.Radius, _colour);
             }
         }
     }

@@ -17,7 +17,6 @@ namespace EliteSharp.Planets
         {
             _draw = draw;
             _planetRenderer = new(draw);
-            Type = ShipType.Planet;
         }
 
         private WireframePlanet(WireframePlanet other)
@@ -26,13 +25,13 @@ namespace EliteSharp.Planets
             _planetRenderer = other._planetRenderer;
         }
 
-        public Vector3 Location { get; set; }
+        public Vector3 Location { get; set; } = new(0, 0, 123456);
 
         public Vector3[] Rotmat { get; set; } = new Vector3[3];
 
         public ShipFlags Flags { get; set; }
 
-        public ShipType Type { get; set; }
+        public ShipType Type { get; set; } = ShipType.Planet;
 
         public float RotX { get; set; }
 

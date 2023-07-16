@@ -39,7 +39,7 @@ namespace EliteSharp.Save
 #if DEBUG
             _lastSaved = CommanderFactory.Max();
 #else
-		    _lastSaved = CommanderFactory.Jameson();
+            _lastSaved = CommanderFactory.Jameson();
 #endif
         }
 

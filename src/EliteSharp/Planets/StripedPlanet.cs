@@ -8,7 +8,7 @@ using EliteSharp.Ships;
 
 namespace EliteSharp.Planets
 {
-    internal sealed class SnesPlanet : IObject
+    internal sealed class StripedPlanet : IObject
     {
         private readonly PlanetRenderer _planetRenderer;
 
@@ -71,22 +71,21 @@ namespace EliteSharp.Planets
             Colour.Purple,
         };
 
-        internal SnesPlanet(IDraw draw)
+        internal StripedPlanet(IDraw draw)
         {
             _planetRenderer = new(draw);
             GenerateLandscape();
-            Type = ShipType.Planet;
         }
 
-        private SnesPlanet(SnesPlanet other) => _planetRenderer = other._planetRenderer;
+        private StripedPlanet(StripedPlanet other) => _planetRenderer = other._planetRenderer;
 
         public ShipFlags Flags { get; set; }
 
-        public Vector3 Location { get; set; }
+        public Vector3 Location { get; set; } = new(0, 0, 123456);
 
         public Vector3[] Rotmat { get; set; } = new Vector3[3];
 
-        public ShipType Type { get; set; }
+        public ShipType Type { get; set; } = ShipType.Planet;
 
         public float RotX { get; set; }
 
@@ -94,7 +93,7 @@ namespace EliteSharp.Planets
 
         public IObject Clone()
         {
-            SnesPlanet planet = new(this);
+            StripedPlanet planet = new(this);
             this.CopyTo(planet);
             return planet;
         }

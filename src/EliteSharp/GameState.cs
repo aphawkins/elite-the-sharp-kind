@@ -13,9 +13,9 @@ namespace EliteSharp
     internal sealed class GameState
     {
         private readonly IKeyboard _keyboard;
-        private readonly Dictionary<Screen, IView> _views;
+        private readonly IDictionary<Screen, IView> _views;
 
-        internal GameState(IKeyboard keyboard, Dictionary<Screen, IView> views)
+        internal GameState(IKeyboard keyboard, IDictionary<Screen, IView> views)
         {
             _views = views;
             _keyboard = keyboard;

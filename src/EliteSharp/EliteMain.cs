@@ -18,6 +18,9 @@ using EliteSharp.Views;
 [assembly: InternalsVisibleTo("EliteSharp.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
+// For benchmarks
+[assembly: InternalsVisibleTo("EliteSharp.Benchmarks")]
+
 namespace EliteSharp
 {
     public sealed class EliteMain
@@ -30,7 +33,9 @@ namespace EliteSharp
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly FrameCounter _lockObj = new();
+#if DEBUG
         private readonly long _oneSecond = TimeSpan.FromSeconds(1).Ticks;
+#endif
         private readonly Pilot _pilot;
         private readonly PlanetController _planet;
         private readonly SaveFile _save;
@@ -118,6 +123,7 @@ namespace EliteSharp
             Environment.Exit(0);
         }
 
+#if DEBUG
         private void DrawFps()
         {
             long secondAgo = DateTime.UtcNow.Ticks - _oneSecond;
@@ -138,6 +144,7 @@ namespace EliteSharp
 
             _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
         }
+#endif
 
         private void DrawFrame(long ticks)
         {
