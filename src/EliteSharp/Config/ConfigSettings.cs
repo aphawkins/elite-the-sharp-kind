@@ -8,8 +8,6 @@ namespace EliteSharp.Config
 {
     internal sealed class ConfigSettings
     {
-        public bool AntiAliasWireframe { get; set; }
-
         public float Fps { get; set; } = 13.5f; // Approx speed of TNK
 
         public bool InstantDock { get; set; }

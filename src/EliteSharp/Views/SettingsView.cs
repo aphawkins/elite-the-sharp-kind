@@ -20,7 +20,6 @@ namespace EliteSharp.Views
         private readonly (string Name, string[] Values)[] _settingList =
         {
             new("Graphics:", new[] { "Solid", "Wireframe", string.Empty, string.Empty, string.Empty }),
-            new("Anti Alias:", new[] { "Off", "On", string.Empty, string.Empty, string.Empty }),
             new("Planet Style:", new[] { "Wireframe", "Green", "SNES", "Fractal", string.Empty }),
             new("Planet Desc.:", new[] { "BBC", "MSX", string.Empty, string.Empty, string.Empty }),
             new("Instant Dock:", new[] { "Off", "On", string.Empty, string.Empty, string.Empty }),
@@ -61,10 +60,9 @@ namespace EliteSharp.Views
                 int v = i switch
                 {
                     0 => _gameState.Config.UseWireframe ? 1 : 0,
-                    1 => _gameState.Config.AntiAliasWireframe ? 1 : 0,
-                    2 => (int)_gameState.Config.PlanetRenderStyle,
-                    3 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-                    4 => _gameState.Config.InstantDock ? 1 : 0,
+                    1 => (int)_gameState.Config.PlanetRenderStyle,
+                    2 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+                    3 => _gameState.Config.InstantDock ? 1 : 0,
                     _ => 0,
                 };
 
@@ -174,18 +172,14 @@ namespace EliteSharp.Views
                     break;
 
                 case 1:
-                    _gameState.Config.AntiAliasWireframe = !_gameState.Config.AntiAliasWireframe;
-                    break;
-
-                case 2:
                     _gameState.Config.PlanetRenderStyle = (PlanetType)((int)(_gameState.Config.PlanetRenderStyle + 1) % 4);
                     break;
 
-                case 3:
+                case 2:
                     _gameState.Config.PlanetDescriptions = (PlanetDescriptions)((int)(_gameState.Config.PlanetDescriptions + 1) % 2);
                     break;
 
-                case 4:
+                case 3:
                     _gameState.Config.InstantDock = !_gameState.Config.InstantDock;
                     break;
 

@@ -4,7 +4,6 @@
 - Fix code directory structure
 - Check mission triggers (FAQ)
 - Check ship stats (FAQ)
-- Remove all anti-alias references
 - Make number of stars proportional to screen size
 - Make random class mockable
 - Measure/improve code complexity
