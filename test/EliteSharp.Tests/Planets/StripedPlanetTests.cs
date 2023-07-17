@@ -9,26 +9,23 @@ using Moq;
 
 namespace EliteSharp.Tests.Planets
 {
-    public class WireframePlanetTests
+    public class StripedPlanetTests
     {
         private readonly Mock<IDraw> _drawMoq;
 
-        public WireframePlanetTests() => _drawMoq = MockSetup.MockDraw();
+        public StripedPlanetTests() => _drawMoq = MockSetup.MockDraw();
 
         [Fact]
-        public void DrawWireframePlanet()
+        public void DrawFractalPlanet()
         {
             // Arrange
-            WireframePlanet planet = new(_drawMoq.Object);
+            FractalPlanet planet = new(_drawMoq.Object, 12345);
 
             // Act
             planet.Draw();
 
             // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawCircle(
-                It.IsAny<Vector2>(),
-                It.IsAny<float>(),
-                It.IsAny<Colour>()));
+            _drawMoq.Verify(x => x.Graphics.DrawPixelFast(It.IsAny<Vector2>(), It.IsAny<Colour>()));
         }
     }
 }

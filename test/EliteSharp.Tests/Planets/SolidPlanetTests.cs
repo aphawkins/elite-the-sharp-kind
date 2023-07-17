@@ -9,26 +9,26 @@ using Moq;
 
 namespace EliteSharp.Tests.Planets
 {
-    public class WireframePlanetTests
+    public class SolidPlanetTests
     {
         private readonly Mock<IDraw> _drawMoq;
 
-        public WireframePlanetTests() => _drawMoq = MockSetup.MockDraw();
+        public SolidPlanetTests() => _drawMoq = MockSetup.MockDraw();
 
         [Fact]
         public void DrawWireframePlanet()
         {
             // Arrange
-            WireframePlanet planet = new(_drawMoq.Object);
+            SolidPlanet planet = new(_drawMoq.Object, Colour.Cyan);
 
             // Act
             planet.Draw();
 
             // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawCircle(
+            _drawMoq.Verify(x => x.Graphics.DrawCircleFilled(
                 It.IsAny<Vector2>(),
                 It.IsAny<float>(),
-                It.IsAny<Colour>()));
+                It.Is<Colour>(x => x == Colour.Cyan)));
         }
     }
 }
