@@ -14,6 +14,8 @@ namespace EliteSharp.Ships
 
         internal ShipBase(IDraw draw) => _draw = draw;
 
+        private ShipBase(ShipBase other) => _draw = other._draw;
+
         public int Acceleration { get; set; }
 
         public float Bounty { get; set; }
@@ -71,6 +73,13 @@ namespace EliteSharp.Ships
         public float Velocity { get; set; }
 
         public float VelocityMax { get; set; }
+
+        public IObject Clone()
+        {
+            ShipBase ship = new(this);
+            this.CopyTo(ship);
+            return ship;
+        }
 
         /// <summary>
         /// Hacked version of the draw ship routine to display ships...
@@ -166,38 +175,5 @@ namespace EliteSharp.Ships
                 _draw.DrawPolygonFilled(laserPoints, colour, pointList[lasv].Z);
             }
         }
-
-        public virtual IObject Clone() => new ShipBase(_draw)
-        {
-            Bounty = Bounty,
-            EnergyMax = EnergyMax,
-            FaceNormals = FaceNormals,
-            Faces = Faces,
-            LaserFront = LaserFront,
-            LaserStrength = LaserStrength,
-            Lines = Lines,
-            LootMax = LootMax,
-            MissilesMax = MissilesMax,
-            Name = Name,
-            Points = Points,
-            ScoopedType = ScoopedType,
-            Size = Size,
-            VanishPoint = VanishPoint,
-            VelocityMax = VelocityMax,
-            ExpDelta = ExpDelta,
-            Flags = Flags,
-            Type = Type,
-            Location = Location.Cloner(),
-            Rotmat = Rotmat.Cloner(),
-            RotX = RotX,
-            RotZ = RotZ,
-            Energy = Energy,
-            Velocity = Velocity,
-            Acceleration = Acceleration,
-            Missiles = Missiles,
-            Target = Target,
-            Bravery = Bravery,
-            MinDistance = MinDistance,
-        };
     }
 }

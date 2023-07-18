@@ -4,54 +4,38 @@
 
 using System.Numerics;
 using EliteSharp.Graphics;
+using EliteSharp.Ships;
 
-namespace EliteSharp.Ships
+namespace EliteSharp.Suns
 {
-    internal sealed class Sun : ShipBase
+    internal sealed class GradientSun : IObject
     {
         private readonly IDraw _draw;
 
-        internal Sun(IDraw draw)
-            : base(draw)
+        internal GradientSun(IDraw draw) => _draw = draw;
+
+        private GradientSun(GradientSun other) => _draw = other._draw;
+
+        public ShipFlags Flags { get; set; }
+
+        public Vector3 Location { get; set; } = new(0, 0, 123456);
+
+        public Vector3[] Rotmat { get; set; } = new Vector3[3];
+
+        public float RotX { get; set; }
+
+        public float RotZ { get; set; }
+
+        public ShipType Type { get; set; } = ShipType.Sun;
+
+        public IObject Clone()
         {
-            _draw = draw;
-            Type = ShipType.Sun;
+            GradientSun sun = new(this);
+            this.CopyTo(sun);
+            return sun;
         }
 
-        public override IObject Clone() => new Sun(_draw)
-        {
-            Bounty = Bounty,
-            EnergyMax = EnergyMax,
-            FaceNormals = FaceNormals,
-            Faces = Faces,
-            LaserFront = LaserFront,
-            LaserStrength = LaserStrength,
-            Lines = Lines,
-            LootMax = LootMax,
-            MissilesMax = MissilesMax,
-            Name = Name,
-            Points = Points,
-            ScoopedType = ScoopedType,
-            Size = Size,
-            VanishPoint = VanishPoint,
-            VelocityMax = VelocityMax,
-            ExpDelta = ExpDelta,
-            Flags = Flags,
-            Type = Type,
-            Location = Location.Cloner(),
-            Rotmat = Rotmat.Cloner(),
-            RotX = RotX,
-            RotZ = RotZ,
-            Energy = Energy,
-            Velocity = Velocity,
-            Acceleration = Acceleration,
-            Missiles = Missiles,
-            Target = Target,
-            Bravery = Bravery,
-            MinDistance = MinDistance,
-        };
-
-        public override void Draw()
+        public void Draw()
         {
             Vector2 centre = new(Location.X, -Location.Y);
 
@@ -61,10 +45,10 @@ namespace EliteSharp.Ships
 
             float radius = 6291456 / Location.Length() * _draw.Graphics.Scale;
 
-            if ((centre.X + radius < _draw.Left) ||
-                (centre.X - radius > _draw.Right) ||
-                (centre.Y + radius < _draw.Top) ||
-                (centre.Y - radius > _draw.Bottom))
+            if (centre.X + radius < _draw.Left ||
+                centre.X - radius > _draw.Right ||
+                centre.Y + radius < _draw.Top ||
+                centre.Y - radius > _draw.Bottom)
             {
                 return;
             }

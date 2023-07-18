@@ -109,9 +109,39 @@ namespace EliteSharp.Graphics
 
         public void DrawImageCentre(Image image, float y) => throw new NotImplementedException();
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour) => throw new NotImplementedException();
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour)
+        {
+            float dx = MathF.Abs(lineStart.X - lineEnd.X);
+            float dy = MathF.Abs(lineStart.Y - lineEnd.Y);
+            int sx = lineStart.X < lineEnd.X ? 1 : -1;
+            int sy = lineEnd.X < lineEnd.Y ? 1 : -1;
+            float err = dx - dy;
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => throw new NotImplementedException();
+            while (true)
+            {
+                _buffer[(int)lineStart.X, (int)lineStart.Y] = (int)colour;
+
+                if ((int)lineStart.X == (int)lineEnd.X && (int)lineStart.Y == (int)lineEnd.Y)
+                {
+                    break;
+                }
+
+                float err2 = 2 * err;
+                if (err2 > -dy)
+                {
+                    err -= dy;
+                    lineStart.X += sx;
+                }
+
+                if (err2 < dx)
+                {
+                    err += dx;
+                    lineStart.Y += sy;
+                }
+            }
+        }
+
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => DrawLine(lineStart, lineEnd, Colour.White);
 
         public void DrawPixel(Vector2 position, Colour colour) => _buffer[(int)position.X, (int)position.Y] = (int)colour;
 

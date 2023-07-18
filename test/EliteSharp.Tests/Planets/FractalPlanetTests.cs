@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharp.Graphics;
 using EliteSharp.Planets;
+using EliteSharp.Ships;
 using Moq;
 
 namespace EliteSharp.Tests.Planets
@@ -26,6 +27,21 @@ namespace EliteSharp.Tests.Planets
 
             // Assert
             _drawMoq.Verify(x => x.Graphics.DrawPixelFast(It.IsAny<Vector2>(), It.IsAny<Colour>()));
+        }
+
+        [Fact]
+        public void CloneFractalPlanet()
+        {
+            // Arrange
+            FractalPlanet planet = new(_drawMoq.Object, 12345);
+
+            // Act
+            IObject obj = planet.Clone();
+            obj.Draw();
+
+            // Assert
+            Assert.IsType<FractalPlanet>(obj);
+            Assert.Equal(planet.Seed, ((FractalPlanet)obj).Seed);
         }
     }
 }

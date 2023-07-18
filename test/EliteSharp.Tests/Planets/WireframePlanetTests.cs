@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharp.Graphics;
 using EliteSharp.Planets;
+using EliteSharp.Ships;
 using Moq;
 
 namespace EliteSharp.Tests.Planets
@@ -29,6 +30,19 @@ namespace EliteSharp.Tests.Planets
                 It.IsAny<Vector2>(),
                 It.IsAny<float>(),
                 It.IsAny<Colour>()));
+        }
+
+        [Fact]
+        public void CloneWireframePlanet()
+        {
+            // Arrange
+            WireframePlanet planet = new(_drawMoq.Object);
+
+            // Act
+            IObject obj = planet.Clone();
+
+            // Assert
+            Assert.IsType<WireframePlanet>(obj);
         }
     }
 }

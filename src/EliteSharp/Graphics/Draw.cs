@@ -233,7 +233,7 @@ namespace EliteSharp.Graphics
 
             for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
             {
-                Colour colour = _gameState.Config.UseWireframe ? Colour.White : _polyChain[i].FaceColour;
+                Colour colour = _gameState.Config.ShipWireframe ? Colour.White : _polyChain[i].FaceColour;
 
                 if (_polyChain[i].PointList.Length == 2)
                 {
@@ -241,7 +241,7 @@ namespace EliteSharp.Graphics
                     continue;
                 }
 
-                if (_gameState.Config.UseWireframe)
+                if (_gameState.Config.ShipWireframe)
                 {
                     Graphics.DrawPolygon(_polyChain[i].PointList, colour);
                 }

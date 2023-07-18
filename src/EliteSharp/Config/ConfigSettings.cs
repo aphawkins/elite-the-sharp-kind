@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Planets;
+using EliteSharp.Suns;
 
 namespace EliteSharp.Config
 {
@@ -14,9 +15,11 @@ namespace EliteSharp.Config
 
         public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
-        public PlanetType PlanetRenderStyle { get; set; } = PlanetType.Fractal;
+        public PlanetType PlanetStyle { get; set; } = PlanetType.Fractal;
 
-        public bool UseWireframe { get; set; }
+        public bool ShipWireframe { get; set; }
+
+        public SunType SunStyle { get; set; } = SunType.Gradient;
 
         /// <summary>
         /// Gets a value indicating whether to use all of the area to render the view.

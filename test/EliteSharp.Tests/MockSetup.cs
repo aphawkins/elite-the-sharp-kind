@@ -15,10 +15,10 @@ namespace EliteSharp.Tests
             Mock<IDraw> drawMoq = new();
             drawMoq.Setup(x => x.Graphics).Returns(MockGraphics().Object);
             drawMoq.Setup(x => x.Left).Returns(0);
-            drawMoq.Setup(x => x.Right).Returns(512);
+            drawMoq.Setup(x => x.Right).Returns(511);
             drawMoq.Setup(x => x.Top).Returns(0);
-            drawMoq.Setup(x => x.Bottom).Returns(512);
-            drawMoq.Setup(x => x.Centre).Returns(new Vector2(256, 256));
+            drawMoq.Setup(x => x.Bottom).Returns(511);
+            drawMoq.Setup(x => x.Centre).Returns(new Vector2(255, 255));
             return drawMoq;
         }
 

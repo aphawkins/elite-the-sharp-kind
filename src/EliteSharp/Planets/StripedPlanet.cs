@@ -13,9 +13,9 @@ namespace EliteSharp.Planets
         private readonly PlanetRenderer _planetRenderer;
 
         /// <summary>
-        /// Colour map used to generate a SNES Elite style planet.
+        /// Colour map used to generate a striped style planet.
         /// </summary>
-        private readonly Colour[] _snesPlanetColour = new Colour[]
+        private readonly Colour[] _stripeColours = new Colour[]
         {
             Colour.Purple,
             Colour.Purple,
@@ -108,13 +108,13 @@ namespace EliteSharp.Planets
         }
 
         /// <summary>
-        /// Generate a landscape map for a SNES Elite style planet.
+        /// Generate a landscape map.
         /// </summary>
         private void GenerateLandscape()
         {
             for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
             {
-                int colour = (int)_snesPlanetColour[y * (_snesPlanetColour.Length - 1) / PlanetRenderer.LandYMax];
+                int colour = (int)_stripeColours[y * (_stripeColours.Length - 1) / PlanetRenderer.LandYMax];
                 for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
                 {
                     _planetRenderer._landscape[x, y] = colour;

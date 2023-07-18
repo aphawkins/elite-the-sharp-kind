@@ -12,13 +12,13 @@ namespace EliteSharp.Planets
     internal sealed class FractalPlanet : IObject
     {
         private readonly IDraw _draw;
-        private readonly int _seed;
+
         private readonly PlanetRenderer _planetRenderer;
 
         internal FractalPlanet(IDraw draw, int seed)
         {
             _draw = draw;
-            _seed = seed;
+            Seed = seed;
             _planetRenderer = new(draw);
             GenerateLandscape(seed);
         }
@@ -26,21 +26,23 @@ namespace EliteSharp.Planets
         private FractalPlanet(FractalPlanet other)
         {
             _draw = other._draw;
-            _seed = other._seed;
+            Seed = other.Seed;
             _planetRenderer = other._planetRenderer;
         }
-
-        public Vector3[] Rotmat { get; set; } = new Vector3[3];
-
-        public ShipType Type { get; set; } = ShipType.Planet;
 
         public ShipFlags Flags { get; set; }
 
         public Vector3 Location { get; set; } = new(0, 0, 123456);
 
+        public Vector3[] Rotmat { get; set; } = new Vector3[3];
+
         public float RotX { get; set; }
 
         public float RotZ { get; set; }
+
+        public ShipType Type { get; set; } = ShipType.Planet;
+
+        internal int Seed { get; }
 
         public IObject Clone()
         {

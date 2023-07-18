@@ -9,6 +9,7 @@ using EliteSharp.Conflict;
 using EliteSharp.Graphics;
 using EliteSharp.Planets;
 using EliteSharp.Ships;
+using EliteSharp.Suns;
 using EliteSharp.Trader;
 using EliteSharp.Types;
 using EliteSharp.Views;
@@ -149,7 +150,7 @@ namespace EliteSharp
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
 
-            IObject planet = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IObject planet = PlanetFactory.Create(_gameState.Config.PlanetStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
@@ -597,7 +598,7 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            IObject planet = PlanetFactory.Create(_gameState.Config.PlanetRenderStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IObject planet = PlanetFactory.Create(_gameState.Config.PlanetStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
@@ -606,7 +607,8 @@ namespace EliteSharp
             position.Z = -(((_gameState.DockedPlanet.D & 7) | 1) << 16);
             position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
-            if (!_universe.AddNewShip(new Sun(_draw), position, VectorMaths.GetInitialMatrix(), 0, 0))
+            IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
+            if (!_universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Sun");
             }

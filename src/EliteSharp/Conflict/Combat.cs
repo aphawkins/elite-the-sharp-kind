@@ -8,6 +8,7 @@ using EliteSharp.Audio;
 using EliteSharp.Graphics;
 using EliteSharp.Lasers;
 using EliteSharp.Ships;
+using EliteSharp.Suns;
 using EliteSharp.Trader;
 using EliteSharp.Views;
 
@@ -354,7 +355,8 @@ namespace EliteSharp.Conflict
                 Vector3 position = obj.Location;
                 position.Y = (int)position.Y & 0xFFFF;
                 position.Y = (int)position.Y | 0x60000;
-                _universe.AddNewShip(new Sun(_draw), position, VectorMaths.GetInitialMatrix(), 0, 0);
+                IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
+                _universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
             }
 
             _universe.RemoveShip(obj);

@@ -7,6 +7,7 @@ using EliteSharp.Config;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Planets;
+using EliteSharp.Suns;
 
 namespace EliteSharp.Views
 {
@@ -19,8 +20,9 @@ namespace EliteSharp.Views
 
         private readonly (string Name, string[] Values)[] _settingList =
         {
-            new("Graphics:", new[] { "Solid", "Wireframe", string.Empty, string.Empty, string.Empty }),
-            new("Planet Style:", new[] { "Wireframe", "Green", "SNES", "Fractal", string.Empty }),
+            new("Ship Style:", new[] { "Solid", "Wireframe", string.Empty, string.Empty, string.Empty }),
+            new("Planet Style:", new[] { "Wireframe", "Solid", "Striped", "Fractal", string.Empty }),
+            new("Sun Style:", new[] { "Solid", "Gradient", string.Empty }),
             new("Planet Desc.:", new[] { "BBC", "MSX", string.Empty, string.Empty, string.Empty }),
             new("Instant Dock:", new[] { "Off", "On", string.Empty, string.Empty, string.Empty }),
             new("Save Settings", new[] { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty }),
@@ -59,10 +61,11 @@ namespace EliteSharp.Views
 
                 int v = i switch
                 {
-                    0 => _gameState.Config.UseWireframe ? 1 : 0,
-                    1 => (int)_gameState.Config.PlanetRenderStyle,
-                    2 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-                    3 => _gameState.Config.InstantDock ? 1 : 0,
+                    0 => _gameState.Config.ShipWireframe ? 1 : 0,
+                    1 => (int)_gameState.Config.PlanetStyle,
+                    2 => (int)_gameState.Config.SunStyle,
+                    3 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+                    4 => _gameState.Config.InstantDock ? 1 : 0,
                     _ => 0,
                 };
 
@@ -168,18 +171,22 @@ namespace EliteSharp.Views
             switch (_highlightedItem)
             {
                 case 0:
-                    _gameState.Config.UseWireframe = !_gameState.Config.UseWireframe;
+                    _gameState.Config.ShipWireframe = !_gameState.Config.ShipWireframe;
                     break;
 
                 case 1:
-                    _gameState.Config.PlanetRenderStyle = (PlanetType)((int)(_gameState.Config.PlanetRenderStyle + 1) % 4);
+                    _gameState.Config.PlanetStyle = (PlanetType)((int)(_gameState.Config.PlanetStyle + 1) % Enum.GetValues<PlanetType>().Length);
                     break;
 
                 case 2:
-                    _gameState.Config.PlanetDescriptions = (PlanetDescriptions)((int)(_gameState.Config.PlanetDescriptions + 1) % 2);
+                    _gameState.Config.SunStyle = (SunType)((int)(_gameState.Config.SunStyle + 1) % Enum.GetValues<SunType>().Length);
                     break;
 
                 case 3:
+                    _gameState.Config.PlanetDescriptions = (PlanetDescriptions)((int)(_gameState.Config.PlanetDescriptions + 1) % 2);
+                    break;
+
+                case 4:
                     _gameState.Config.InstantDock = !_gameState.Config.InstantDock;
                     break;
 

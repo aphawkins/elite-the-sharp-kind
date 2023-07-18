@@ -32,7 +32,7 @@ namespace EliteSharp.Lasers
             Vector2 rightA = new(((_draw.ScannerRight / 2) - 32) * _draw.Graphics.Scale, _draw.Bottom);
             Vector2 rightB = new(((_draw.ScannerRight / 2) - 48) * _draw.Graphics.Scale, _draw.Bottom);
 
-            if (_gameState.Config.UseWireframe)
+            if (_gameState.Config.ShipWireframe)
             {
                 // Left laser
                 _draw.Graphics.DrawTriangle(leftA, target, leftB, Colour.LighterRed);

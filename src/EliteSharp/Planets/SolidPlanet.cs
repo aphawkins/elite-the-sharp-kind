@@ -10,20 +10,20 @@ namespace EliteSharp.Planets
 {
     internal sealed class SolidPlanet : IObject
     {
-        private readonly Colour _colour;
         private readonly IDraw _draw;
         private readonly PlanetRenderer _planetRenderer;
 
         internal SolidPlanet(IDraw draw, Colour colour)
         {
             _draw = draw;
-            _colour = colour;
+            Colour = colour;
             _planetRenderer = new(draw);
         }
 
         private SolidPlanet(SolidPlanet other)
         {
             _draw = other._draw;
+            Colour = other.Colour;
             _planetRenderer = other._planetRenderer;
         }
 
@@ -39,6 +39,8 @@ namespace EliteSharp.Planets
 
         public ShipType Type { get; set; } = ShipType.Planet;
 
+        internal Colour Colour { get; }
+
         public IObject Clone()
         {
             SolidPlanet planet = new(this);
@@ -51,7 +53,7 @@ namespace EliteSharp.Planets
             (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
             if (v != null)
             {
-                _draw.Graphics.DrawCircleFilled(v.Value.Position, v.Value.Radius, _colour);
+                _draw.Graphics.DrawCircleFilled(v.Value.Position, v.Value.Radius, Colour);
             }
         }
     }

@@ -8,6 +8,10 @@ namespace EliteSharp.Benchmarks
 {
     public static class Program
     {
-        public static void Main() => BenchmarkRunner.Run<PlanetBenchmarks>();
+        public static void Main()
+        {
+            BenchmarkRunner.Run<PlanetBenchmarks>();
+            BenchmarkRunner.Run<SunBenchmarks>();
+        }
     }
 }
