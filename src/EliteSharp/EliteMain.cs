@@ -18,8 +18,11 @@ using EliteSharp.Views;
 [assembly: InternalsVisibleTo("EliteSharp.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
-// For benchmarks
+// For benchmarking
 [assembly: InternalsVisibleTo("EliteSharp.Benchmarks")]
+
+// For test renderering
+[assembly: InternalsVisibleTo("EliteSharp.Renderer")]
 
 namespace EliteSharp
 {

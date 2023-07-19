@@ -12,6 +12,7 @@ namespace EliteSharp.Benchmarks
         {
             BenchmarkRunner.Run<PlanetBenchmarks>();
             BenchmarkRunner.Run<SunBenchmarks>();
+            BenchmarkRunner.Run<SoftwareGraphicsBenchmarks>();
         }
     }
 }

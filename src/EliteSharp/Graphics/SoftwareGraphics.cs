@@ -24,7 +24,16 @@ namespace EliteSharp.Graphics
 
         public float ScreenWidth { get; }
 
-        public void ClearArea(Vector2 position, float width, float height) => throw new NotImplementedException();
+        public void ClearArea(Vector2 position, float width, float height)
+        {
+            for (float y = position.Y; y < position.Y + width; y++)
+            {
+                for (float x = position.X; x < position.X + height; x++)
+                {
+                    _buffer[(int)x, (int)y] = 0;
+                }
+            }
+        }
 
         public void Dispose()
         {
@@ -32,23 +41,23 @@ namespace EliteSharp.Graphics
 
         public void DrawCircle(Vector2 centre, float radius, Colour colour)
         {
-            int diameter = (int)(radius * 2);
-            int x = (int)(radius - 1);
-            int y = 0;
-            int tx = 1;
-            int ty = 1;
-            int error = tx - diameter;
+            float diameter = radius * 2;
+            float x = radius - 1;
+            float y = 0;
+            float tx = 1;
+            float ty = 1;
+            float error = tx - diameter;
 
             while (x >= y)
             {
-                _buffer[(int)(radius + x + centre.X), (int)(radius + y + centre.Y)] = (int)colour;
-                _buffer[(int)(radius + x + centre.X), (int)(radius - y + centre.Y)] = (int)colour;
-                _buffer[(int)(radius - x + centre.X), (int)(radius + y + centre.Y)] = (int)colour;
-                _buffer[(int)(radius - x + centre.X), (int)(radius - y + centre.Y)] = (int)colour;
-                _buffer[(int)(radius + y + centre.X), (int)(radius + x + centre.Y)] = (int)colour;
-                _buffer[(int)(radius + y + centre.X), (int)(radius - x + centre.Y)] = (int)colour;
-                _buffer[(int)(radius - y + centre.X), (int)(radius + x + centre.Y)] = (int)colour;
-                _buffer[(int)(radius - y + centre.X), (int)(radius - x + centre.Y)] = (int)colour;
+                _buffer[(int)(centre.X + x), (int)(centre.Y + y)] = (int)colour;
+                _buffer[(int)(centre.X + x), (int)(centre.Y - y)] = (int)colour;
+                _buffer[(int)(centre.X - x), (int)(centre.Y + y)] = (int)colour;
+                _buffer[(int)(centre.X - x), (int)(centre.Y - y)] = (int)colour;
+                _buffer[(int)(centre.X + y), (int)(centre.Y + x)] = (int)colour;
+                _buffer[(int)(centre.X + y), (int)(centre.Y - x)] = (int)colour;
+                _buffer[(int)(centre.X - y), (int)(centre.Y + x)] = (int)colour;
+                _buffer[(int)(centre.X - y), (int)(centre.Y - x)] = (int)colour;
 
                 if (error <= 0)
                 {
@@ -68,25 +77,25 @@ namespace EliteSharp.Graphics
 
         public void DrawCircleFilled(Vector2 centre, float radius, Colour colour)
         {
-            int diameter = (int)(radius * 2);
-            int x = (int)(radius - 1);
-            int y = 0;
-            int tx = 1;
-            int ty = 1;
-            int error = tx - diameter;
+            float diameter = radius * 2;
+            float x = radius - 1;
+            float y = 0;
+            float tx = 1;
+            float ty = 1;
+            float error = tx - diameter;
 
             while (x >= y)
             {
-                for (int i = y; i <= x; i++)
+                for (float i = y; i <= x; i++)
                 {
-                    _buffer[(int)(radius + i + centre.X), (int)(radius + y + centre.Y)] = (byte)colour;
-                    _buffer[(int)(radius + i + centre.X), (int)(radius - y + centre.Y)] = (byte)colour;
-                    _buffer[(int)(radius + y + centre.X), (int)(radius + i + centre.Y)] = (byte)colour;
-                    _buffer[(int)(radius - y + centre.X), (int)(radius + i + centre.Y)] = (byte)colour;
-                    _buffer[(int)(radius - i + centre.X), (int)(radius + y + centre.Y)] = (byte)colour;
-                    _buffer[(int)(radius - i + centre.X), (int)(radius - y + centre.Y)] = (byte)colour;
-                    _buffer[(int)(radius + y + centre.X), (int)(radius - i + centre.Y)] = (byte)colour;
-                    _buffer[(int)(radius - y + centre.X), (int)(radius - i + centre.Y)] = (byte)colour;
+                    _buffer[(int)(centre.X + i), (int)(centre.Y + y)] = (int)colour;
+                    _buffer[(int)(centre.X + i), (int)(centre.Y - y)] = (int)colour;
+                    _buffer[(int)(centre.X + y), (int)(centre.Y + i)] = (int)colour;
+                    _buffer[(int)(centre.X - y), (int)(centre.Y + i)] = (int)colour;
+                    _buffer[(int)(centre.X - i), (int)(centre.Y + y)] = (int)colour;
+                    _buffer[(int)(centre.X - i), (int)(centre.Y - y)] = (int)colour;
+                    _buffer[(int)(centre.X + y), (int)(centre.Y - i)] = (int)colour;
+                    _buffer[(int)(centre.X - y), (int)(centre.Y - i)] = (int)colour;
                 }
 
                 if (error <= 0)
