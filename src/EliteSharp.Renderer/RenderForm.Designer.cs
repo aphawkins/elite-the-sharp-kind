@@ -37,8 +37,12 @@ namespace EliteSharp.Renderer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RenderForm));
             renderBox = new PictureBox();
             btnRender = new Button();
-            comboPlanets = new ComboBox();
+            comboObjects = new ComboBox();
+            lblObject = new Label();
+            numLocationZ = new NumericUpDown();
+            lblLocationZ = new Label();
             ((System.ComponentModel.ISupportInitialize)renderBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numLocationZ).BeginInit();
             SuspendLayout();
             // 
             // renderBox
@@ -62,34 +66,67 @@ namespace EliteSharp.Renderer
             btnRender.UseVisualStyleBackColor = true;
             btnRender.Click += BtnRender_Click;
             // 
-            // comboPlanets
+            // comboObjects
             // 
-            comboPlanets.FormattingEnabled = true;
-            comboPlanets.Location = new Point(609, 41);
-            comboPlanets.Name = "comboPlanets";
-            comboPlanets.Size = new Size(103, 23);
-            comboPlanets.TabIndex = 2;
-            comboPlanets.SelectedIndexChanged += ComboPlanets_SelectedIndexChanged;
+            comboObjects.FormattingEnabled = true;
+            comboObjects.Location = new Point(638, 41);
+            comboObjects.Name = "comboObjects";
+            comboObjects.Size = new Size(103, 23);
+            comboObjects.TabIndex = 2;
+            comboObjects.SelectedIndexChanged += ComboPlanets_SelectedIndexChanged;
             // 
-            // frmRender
+            // lblObject
+            // 
+            lblObject.AutoSize = true;
+            lblObject.Location = new Point(565, 44);
+            lblObject.Name = "lblObject";
+            lblObject.Size = new Size(42, 15);
+            lblObject.TabIndex = 3;
+            lblObject.Text = "Object";
+            // 
+            // numLocationZ
+            // 
+            numLocationZ.Location = new Point(638, 70);
+            numLocationZ.Name = "numLocationZ";
+            numLocationZ.Size = new Size(103, 23);
+            numLocationZ.TabIndex = 4;
+            // 
+            // lblLocationZ
+            // 
+            lblLocationZ.AutoSize = true;
+            lblLocationZ.Location = new Point(569, 72);
+            lblLocationZ.Name = "lblLocationZ";
+            lblLocationZ.Size = new Size(63, 15);
+            lblLocationZ.TabIndex = 5;
+            lblLocationZ.Text = "Location Z";
+            // 
+            // RenderForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(884, 536);
-            Controls.Add(comboPlanets);
+            Controls.Add(lblLocationZ);
+            Controls.Add(numLocationZ);
+            Controls.Add(lblObject);
+            Controls.Add(comboObjects);
             Controls.Add(btnRender);
             Controls.Add(renderBox);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            Name = "frmRender";
+            Name = "RenderForm";
             Text = "Elite Sharp Renderer";
             ((System.ComponentModel.ISupportInitialize)renderBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numLocationZ).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private PictureBox renderBox;
         private Button btnRender;
-        private ComboBox comboPlanets;
+        private ComboBox comboObjects;
+        private Label lblObject;
+        private NumericUpDown numLocationZ;
+        private Label lblLocationZ;
     }
 }

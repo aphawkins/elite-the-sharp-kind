@@ -19,7 +19,7 @@ namespace EliteSharp.Renderer
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly IDictionary<Views.Screen, Views.IView> _views;
-        private IObject _planet;
+        private IObject _obj;
 
         public RenderForm()
         {
@@ -29,10 +29,14 @@ namespace EliteSharp.Renderer
             _gameState = new GameState(_keyboard, _views);
             _graphics = new SoftwareGraphics(_buffer);
             _draw = new Draw(_gameState, _graphics);
-            _planet = new WireframePlanet(_draw);
+            _obj = new WireframePlanet(_draw);
 
-            comboPlanets.Items.AddRange(new[] { "Wireframe", "Solid", "Striped", "Fractal" });
-            comboPlanets.SelectedIndex = 0;
+            numLocationZ.Minimum = 0;
+            numLocationZ.Maximum = 9999999;
+            numLocationZ.Value = (decimal)_obj.Location.Z;
+
+            comboObjects.Items.AddRange(new[] { "Wireframe", "Solid", "Striped", "Fractal" });
+            comboObjects.SelectedIndex = 0;
         }
 
         private void BtnRender_Click(object sender, EventArgs e)
@@ -45,7 +49,8 @@ namespace EliteSharp.Renderer
 
             _draw.ClearDisplay();
 
-            _planet.Draw();
+            _obj.Location = new(_obj.Location.X, _obj.Location.Y, (float)numLocationZ.Value);
+            _obj.Draw();
 
             for (int y = 0; y < 512; y++)
             {
@@ -60,17 +65,17 @@ namespace EliteSharp.Renderer
 
         private void ComboPlanets_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (comboPlanets.SelectedIndex)
+            switch (comboObjects.SelectedIndex)
             {
-                case 0: _planet = new WireframePlanet(_draw); break;
-                case 1: _planet = new SolidPlanet(_draw, Colour.Green); break;
-                case 2: _planet = new StripedPlanet(_draw); break;
-                case 3: _planet = new FractalPlanet(_draw, 14229); break;
+                case 0: _obj = new WireframePlanet(_draw); break;
+                case 1: _obj = new SolidPlanet(_draw, Colour.Green); break;
+                case 2: _obj = new StripedPlanet(_draw); break;
+                case 3: _obj = new FractalPlanet(_draw, 14229); break;
                 default:
                     break;
             }
 
-            _planet.Rotmat = VectorMaths.GetInitialMatrix();
+            _obj.Rotmat = VectorMaths.GetInitialMatrix();
         }
     }
 }
