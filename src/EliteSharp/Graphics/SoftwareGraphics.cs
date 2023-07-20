@@ -27,9 +27,9 @@ namespace EliteSharp.Graphics
 
         public void ClearArea(Vector2 position, float width, float height)
         {
-            for (float y = position.Y; y < position.Y + width; y++)
+            for (float y = MathF.Max(0, position.Y); y < MathF.Min(ScreenWidth, position.Y + height); y++)
             {
-                for (float x = position.X; x < position.X + height; x++)
+                for (float x = MathF.Max(0, position.X); x < MathF.Min(ScreenWidth, position.X + width); x++)
                 {
                     _buffer[(int)x, (int)y] = 0;
                 }
@@ -43,7 +43,7 @@ namespace EliteSharp.Graphics
         public void DrawCircle(Vector2 centre, float radius, Colour colour)
         {
             float diameter = radius * 2;
-            float x = radius - 1;
+            float x = radius;
             float y = 0;
             float tx = 1;
             float ty = 1;
@@ -51,14 +51,14 @@ namespace EliteSharp.Graphics
 
             while (x >= y)
             {
-                _buffer[(int)(centre.X + x), (int)(centre.Y + y)] = (int)colour;
-                _buffer[(int)(centre.X + x), (int)(centre.Y - y)] = (int)colour;
-                _buffer[(int)(centre.X - x), (int)(centre.Y + y)] = (int)colour;
-                _buffer[(int)(centre.X - x), (int)(centre.Y - y)] = (int)colour;
-                _buffer[(int)(centre.X + y), (int)(centre.Y + x)] = (int)colour;
-                _buffer[(int)(centre.X + y), (int)(centre.Y - x)] = (int)colour;
-                _buffer[(int)(centre.X - y), (int)(centre.Y + x)] = (int)colour;
-                _buffer[(int)(centre.X - y), (int)(centre.Y - x)] = (int)colour;
+                DrawPixel(new(centre.X + x, centre.Y + y), colour);
+                DrawPixel(new(centre.X + x, centre.Y - y), colour);
+                DrawPixel(new(centre.X - x, centre.Y + y), colour);
+                DrawPixel(new(centre.X - x, centre.Y - y), colour);
+                DrawPixel(new(centre.X + y, centre.Y + x), colour);
+                DrawPixel(new(centre.X + y, centre.Y - x), colour);
+                DrawPixel(new(centre.X - y, centre.Y + x), colour);
+                DrawPixel(new(centre.X - y, centre.Y - x), colour);
 
                 if (error <= 0)
                 {
@@ -78,8 +78,8 @@ namespace EliteSharp.Graphics
 
         public void DrawCircleFilled(Vector2 centre, float radius, Colour colour)
         {
-            float diameter = radius * 2;
-            float x = MathF.Floor(radius - 1);
+            float diameter = MathF.Floor(radius) * 2;
+            float x = MathF.Floor(radius);
             float y = 0;
             float tx = 1;
             float ty = 1;
@@ -101,17 +101,6 @@ namespace EliteSharp.Graphics
                 // Bottom of bottom half
                 DrawLine(new(centre.X - y, centre.Y + x), new(centre.X + y, centre.Y + x), colour);
 
-                //for (float i = y; i <= x; i++)
-                //{
-                //    _buffer[(int)(centre.X + i), (int)(centre.Y + y)] = (int)colour;
-                //    _buffer[(int)(centre.X + i), (int)(centre.Y - y)] = (int)colour;
-                //    _buffer[(int)(centre.X + y), (int)(centre.Y + i)] = (int)colour;
-                //    _buffer[(int)(centre.X - y), (int)(centre.Y + i)] = (int)colour;
-                //    _buffer[(int)(centre.X - i), (int)(centre.Y + y)] = (int)colour;
-                //    _buffer[(int)(centre.X - i), (int)(centre.Y - y)] = (int)colour;
-                //    _buffer[(int)(centre.X + y), (int)(centre.Y - i)] = (int)colour;
-                //    _buffer[(int)(centre.X - y), (int)(centre.Y - i)] = (int)colour;
-                //}
                 if (error <= 0)
                 {
                     y++;
@@ -136,13 +125,13 @@ namespace EliteSharp.Graphics
         {
             float dx = MathF.Abs(lineStart.X - lineEnd.X);
             float dy = MathF.Abs(lineStart.Y - lineEnd.Y);
-            int sx = lineStart.X < lineEnd.X ? 1 : -1;
-            int sy = lineEnd.X < lineEnd.Y ? 1 : -1;
+            int sx = lineStart.X <= lineEnd.X ? 1 : -1;
+            int sy = lineEnd.X <= lineEnd.Y ? 1 : -1;
             float err = dx - dy;
 
             while (true)
             {
-                _buffer[(int)lineStart.X, (int)lineStart.Y] = (int)colour;
+                DrawPixel(new(lineStart.X, lineStart.Y), colour);
 
                 if ((int)lineStart.X == (int)lineEnd.X && (int)lineStart.Y == (int)lineEnd.Y)
                 {
@@ -166,9 +155,17 @@ namespace EliteSharp.Graphics
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => DrawLine(lineStart, lineEnd, Colour.White);
 
-        public void DrawPixel(Vector2 position, Colour colour) => _buffer[(int)position.X, (int)position.Y] = (int)colour;
+        public void DrawPixel(Vector2 position, Colour colour)
+        {
+            if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)
+            {
+                return;
+            }
 
-        public void DrawPixelFast(Vector2 position, Colour colour) => _buffer[(int)position.X, (int)position.Y] = (int)colour;
+            _buffer[(int)position.X, (int)position.Y] = (int)colour;
+        }
+
+        public void DrawPixelFast(Vector2 position, Colour colour) => DrawPixel(position, colour);
 
         public void DrawPolygon(Vector2[] pointList, Colour lineColour) => throw new NotImplementedException();
 
