@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using System.Numerics;
 
 namespace EliteSharp.Graphics
@@ -78,7 +79,7 @@ namespace EliteSharp.Graphics
         public void DrawCircleFilled(Vector2 centre, float radius, Colour colour)
         {
             float diameter = radius * 2;
-            float x = radius - 1;
+            float x = MathF.Floor(radius - 1);
             float y = 0;
             float tx = 1;
             float ty = 1;
@@ -86,18 +87,31 @@ namespace EliteSharp.Graphics
 
             while (x >= y)
             {
-                for (float i = y; i <= x; i++)
-                {
-                    _buffer[(int)(centre.X + i), (int)(centre.Y + y)] = (int)colour;
-                    _buffer[(int)(centre.X + i), (int)(centre.Y - y)] = (int)colour;
-                    _buffer[(int)(centre.X + y), (int)(centre.Y + i)] = (int)colour;
-                    _buffer[(int)(centre.X - y), (int)(centre.Y + i)] = (int)colour;
-                    _buffer[(int)(centre.X - i), (int)(centre.Y + y)] = (int)colour;
-                    _buffer[(int)(centre.X - i), (int)(centre.Y - y)] = (int)colour;
-                    _buffer[(int)(centre.X + y), (int)(centre.Y - i)] = (int)colour;
-                    _buffer[(int)(centre.X - y), (int)(centre.Y - i)] = (int)colour;
-                }
+                Debug.WriteLine($"{x},{y}");
 
+                // Top of top half
+                DrawLine(new(centre.X - y, centre.Y - x), new(centre.X + y, centre.Y - x), colour);
+
+                // Bottom of top half
+                DrawLine(new(centre.X - x, centre.Y - y), new(centre.X + x, centre.Y - y), colour);
+
+                // Top of bottom half
+                DrawLine(new(centre.X - x, centre.Y + y), new(centre.X + x, centre.Y + y), colour);
+
+                // Bottom of bottom half
+                DrawLine(new(centre.X - y, centre.Y + x), new(centre.X + y, centre.Y + x), colour);
+
+                //for (float i = y; i <= x; i++)
+                //{
+                //    _buffer[(int)(centre.X + i), (int)(centre.Y + y)] = (int)colour;
+                //    _buffer[(int)(centre.X + i), (int)(centre.Y - y)] = (int)colour;
+                //    _buffer[(int)(centre.X + y), (int)(centre.Y + i)] = (int)colour;
+                //    _buffer[(int)(centre.X - y), (int)(centre.Y + i)] = (int)colour;
+                //    _buffer[(int)(centre.X - i), (int)(centre.Y + y)] = (int)colour;
+                //    _buffer[(int)(centre.X - i), (int)(centre.Y - y)] = (int)colour;
+                //    _buffer[(int)(centre.X + y), (int)(centre.Y - i)] = (int)colour;
+                //    _buffer[(int)(centre.X - y), (int)(centre.Y - i)] = (int)colour;
+                //}
                 if (error <= 0)
                 {
                     y++;

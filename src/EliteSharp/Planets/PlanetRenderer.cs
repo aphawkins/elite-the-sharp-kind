@@ -46,16 +46,14 @@ namespace EliteSharp.Planets
         {
             float vx = vec[1].X * 65536;
             float vy = vec[1].Y * 65536;
-
-            float s = radius;
-            float x = radius;
+            float x = MathF.Floor(radius);
+            float s = -x;
             float y = 0;
 
-            s -= x + x;
             while (y <= x)
             {
                 // Top of top half
-                RenderPlanetLine(centre, y, -MathF.Floor(x), radius, vx, vy);
+                RenderPlanetLine(centre, y, -x, radius, vx, vy);
 
                 // Bottom of top half
                 RenderPlanetLine(centre, x, -y, radius, vx, vy);
@@ -64,7 +62,7 @@ namespace EliteSharp.Planets
                 RenderPlanetLine(centre, x, y, radius, vx, vy);
 
                 // Bottom of bottom half
-                RenderPlanetLine(centre, y, MathF.Floor(x), radius, vx, vy);
+                RenderPlanetLine(centre, y, x, radius, vx, vy);
 
                 s += y + y + 1;
                 y++;

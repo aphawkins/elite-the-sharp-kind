@@ -33,6 +33,7 @@ namespace EliteSharp.Renderer
 
             numLocationZ.Minimum = 0;
             numLocationZ.Maximum = 9999999;
+            numLocationZ.Increment = 10000;
             numLocationZ.Value = (decimal)_obj.Location.Z;
 
             comboObjects.Items.AddRange(new[] { "Wireframe", "Solid", "Striped", "Fractal" });
