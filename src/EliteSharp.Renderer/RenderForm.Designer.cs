@@ -2,6 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System;
+
 namespace EliteSharp.Renderer
 {
     public partial class RenderForm
@@ -19,8 +21,8 @@ namespace EliteSharp.Renderer
         {
             if (disposing && (components != null))
             {
-                _graphics.Dispose();
-                _bmp.Dispose();
+                _graphics?.Dispose();
+                _bmp?.Dispose();
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -41,6 +43,8 @@ namespace EliteSharp.Renderer
             lblObject = new Label();
             numLocationZ = new NumericUpDown();
             lblLocationZ = new Label();
+            comboRenderer = new ComboBox();
+            lblRenderer = new Label();
             ((System.ComponentModel.ISupportInitialize)renderBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numLocationZ).BeginInit();
             SuspendLayout();
@@ -69,7 +73,7 @@ namespace EliteSharp.Renderer
             // comboObjects
             // 
             comboObjects.FormattingEnabled = true;
-            comboObjects.Location = new Point(638, 41);
+            comboObjects.Location = new Point(638, 78);
             comboObjects.Name = "comboObjects";
             comboObjects.Size = new Size(103, 23);
             comboObjects.TabIndex = 2;
@@ -78,7 +82,7 @@ namespace EliteSharp.Renderer
             // lblObject
             // 
             lblObject.AutoSize = true;
-            lblObject.Location = new Point(565, 44);
+            lblObject.Location = new Point(565, 81);
             lblObject.Name = "lblObject";
             lblObject.Size = new Size(42, 15);
             lblObject.TabIndex = 3;
@@ -86,7 +90,7 @@ namespace EliteSharp.Renderer
             // 
             // numLocationZ
             // 
-            numLocationZ.Location = new Point(638, 70);
+            numLocationZ.Location = new Point(638, 107);
             numLocationZ.Name = "numLocationZ";
             numLocationZ.Size = new Size(103, 23);
             numLocationZ.TabIndex = 4;
@@ -94,17 +98,37 @@ namespace EliteSharp.Renderer
             // lblLocationZ
             // 
             lblLocationZ.AutoSize = true;
-            lblLocationZ.Location = new Point(569, 72);
+            lblLocationZ.Location = new Point(565, 109);
             lblLocationZ.Name = "lblLocationZ";
             lblLocationZ.Size = new Size(63, 15);
             lblLocationZ.TabIndex = 5;
             lblLocationZ.Text = "Location Z";
+            // 
+            // comboRenderer
+            // 
+            comboRenderer.FormattingEnabled = true;
+            comboRenderer.Location = new Point(638, 49);
+            comboRenderer.Name = "comboRenderer";
+            comboRenderer.Size = new Size(103, 23);
+            comboRenderer.TabIndex = 6;
+            comboRenderer.SelectedIndexChanged += ComboRenderer_SelectedIndexChanged;
+            // 
+            // lblRenderer
+            // 
+            lblRenderer.AutoSize = true;
+            lblRenderer.Location = new Point(565, 52);
+            lblRenderer.Name = "lblRenderer";
+            lblRenderer.Size = new Size(54, 15);
+            lblRenderer.TabIndex = 7;
+            lblRenderer.Text = "Renderer";
             // 
             // RenderForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(884, 536);
+            Controls.Add(lblRenderer);
+            Controls.Add(comboRenderer);
             Controls.Add(lblLocationZ);
             Controls.Add(numLocationZ);
             Controls.Add(lblObject);
@@ -128,5 +152,7 @@ namespace EliteSharp.Renderer
         private Label lblObject;
         private NumericUpDown numLocationZ;
         private Label lblLocationZ;
+        private ComboBox comboRenderer;
+        private Label lblRenderer;
     }
 }

@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Drawing.Imaging;
 using EliteSharp.Controls;
 
 namespace EliteSharp.WinForms
@@ -26,7 +27,7 @@ namespace EliteSharp.WinForms
             _refreshTimer.Start();
 
             _keyboard = keyboard;
-            ScreenBitmap = new Bitmap(screen.Width, screen.Height);
+            ScreenBitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb);
             screen.Image = ScreenBitmap;
         }
 

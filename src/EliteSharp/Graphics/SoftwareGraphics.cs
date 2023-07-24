@@ -19,19 +19,19 @@ namespace EliteSharp.Graphics
             Scale = 2;
         }
 
-        public float ScreenHeight { get; }
-
         public float Scale { get; }
+
+        public float ScreenHeight { get; }
 
         public float ScreenWidth { get; }
 
-        public void ClearArea(Vector2 position, float width, float height)
+        public void Clear()
         {
-            for (float y = MathF.Max(0, position.Y); y < MathF.Min(ScreenWidth, position.Y + height); y++)
+            for (int y = 0; y < ScreenHeight; y++)
             {
-                for (float x = MathF.Max(0, position.X); x < MathF.Min(ScreenWidth, position.X + width); x++)
+                for (int x = 0; x < ScreenWidth; x++)
                 {
-                    _buffer[(int)x, (int)y] = 0;
+                    _buffer[x, y] = 0;
                 }
             }
         }
@@ -189,12 +189,13 @@ namespace EliteSharp.Graphics
 
         public void LoadBitmap(Image imgType, byte[] bitmapBytes) => throw new NotImplementedException();
 
-        public void ScreenAcquire() => throw new NotImplementedException();
+        public void ScreenUpdate()
+        {
+        }
 
-        public void ScreenRelease() => throw new NotImplementedException();
-
-        public void ScreenUpdate() => throw new NotImplementedException();
-
-        public void SetClipRegion(Vector2 position, float width, float height) => throw new NotImplementedException();
+        public void SetClipRegion(Vector2 position, float width, float height)
+        {
+            // TODO: implement this
+        }
     }
 }

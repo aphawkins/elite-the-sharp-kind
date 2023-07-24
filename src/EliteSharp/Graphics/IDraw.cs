@@ -29,8 +29,6 @@ namespace EliteSharp.Graphics
 
         float Top { get; }
 
-        void ClearDisplay();
-
         void DrawBorder();
 
         void DrawHyperspaceCountdown(int countdown);

@@ -23,7 +23,7 @@ namespace EliteSharp.Benchmarks
         }
 
         [Benchmark]
-        public void ClearArea() => _graphics.ClearArea(new(0, 0), 511, 511);
+        public void ClearArea() => _graphics.Clear();
 
         [Benchmark]
         public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, Colour.White);

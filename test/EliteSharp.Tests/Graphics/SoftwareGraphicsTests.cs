@@ -72,13 +72,8 @@ namespace EliteSharp.Tests.Graphics
             // Assert
         }
 
-        [Theory]
-        [InlineData(0, 0, 4, 4, Colour.Black)]
-        [InlineData(0, 0, 9, 9, Colour.Black)]
-        [InlineData(-9, -9, 18, 18, Colour.Black)]
-        [InlineData(-9, -9, 9, 9, Colour.White)]
-        [InlineData(3, 3, 9, 9, Colour.White)]
-        public void ClearArea(float top, float left, float width, float height, Colour centreColour)
+        [Fact]
+        public void Clear()
         {
             // Arrange
             int[,] buffer = new int[5, 5];
@@ -86,10 +81,10 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawPixel(new(2, 2), Colour.White);
-            graphics.ClearArea(new(top, left), width, height);
+            graphics.Clear();
 
             // Assert
-            Assert.Equal((int)centreColour, buffer[2, 2]);
+            Assert.Equal((int)Colour.Black, buffer[2, 2]);
         }
 
         [Fact]

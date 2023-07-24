@@ -8,7 +8,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class GdiGraphics : IGraphics
+    public sealed class GdiGraphics : IGraphics
     {
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -27,11 +27,11 @@ namespace EliteSharp.WinForms
         {
             _screen = screen;
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
-            _screenBuffer = new Bitmap(screen.Width, screen.Height);
+            _screenBuffer = new Bitmap(_screen.Width, _screen.Height, _screen.PixelFormat);
             _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
             _screenBufferGraphics.Clear(Color.Black);
-            ScreenWidth = screen.Width;
-            ScreenHeight = screen.Height;
+            ScreenWidth = _screen.Width;
+            ScreenHeight = _screen.Height;
 
             foreach (Colour colour in Enum.GetValues<Colour>())
             {
@@ -46,8 +46,7 @@ namespace EliteSharp.WinForms
 
         public float ScreenWidth { get; }
 
-        public void ClearArea(Vector2 position, float width, float height) =>
-            _screenBufferGraphics.FillRectangle(Brushes.Black, position.X, position.Y, width, height);
+        public void Clear() => _screenBufferGraphics.Clear(Color.Black);
 
         public void Dispose()
         {
@@ -97,6 +96,11 @@ namespace EliteSharp.WinForms
 
         public void DrawPolygon(Vector2[] pointList, Colour lineColour)
         {
+            if (pointList == null)
+            {
+                return;
+            }
+
             PointF[] points = new PointF[pointList.Length];
 
             for (int i = 0; i < pointList.Length; i++)
@@ -109,6 +113,11 @@ namespace EliteSharp.WinForms
 
         public void DrawPolygonFilled(Vector2[] pointList, Colour faceColour)
         {
+            if (pointList == null)
+            {
+                return;
+            }
+
             PointF[] points = new PointF[pointList.Length];
 
             for (int i = 0; i < pointList.Length; i++)
@@ -201,16 +210,6 @@ namespace EliteSharp.WinForms
             _images[imgType].MakeTransparent(_transparentColour);
         }
 
-        public void ScreenAcquire()
-        {
-            //acquire_bitmap(graphics_screen);
-        }
-
-        public void ScreenRelease()
-        {
-            //release_bitmap(graphics_screen);
-        }
-
         /// <summary>
         /// Blit the back buffer to the screen.
         /// </summary>
@@ -235,12 +234,12 @@ namespace EliteSharp.WinForms
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
-                    _screenBufferGraphics.Dispose();
-                    _screenBuffer.Dispose();
-                    _screenGraphics.Dispose();
-                    _screen.Dispose();
-                    _fontSmall.Dispose();
-                    _fontLarge.Dispose();
+                    _screenBufferGraphics?.Dispose();
+                    _screenBuffer?.Dispose();
+                    _screenGraphics?.Dispose();
+                    _screen?.Dispose();
+                    _fontSmall?.Dispose();
+                    _fontLarge?.Dispose();
 
                     // Images
                     foreach (KeyValuePair<Graphics.Image, Bitmap> image in _images)
@@ -254,12 +253,5 @@ namespace EliteSharp.WinForms
                 _isDisposed = true;
             }
         }
-
-        // // Override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~alg_graphics()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
     }
 }

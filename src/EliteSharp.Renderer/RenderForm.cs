@@ -7,18 +7,19 @@ using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Planets;
 using EliteSharp.Ships;
+using EliteSharp.WinForms;
 
 namespace EliteSharp.Renderer
 {
     public partial class RenderForm : Form
     {
-        private readonly Bitmap _bmp = new(512, 512, PixelFormat.Format32bppRgb);
+        private readonly Bitmap _bmp = new(512, 512, PixelFormat.Format32bppArgb);
         private readonly int[,] _buffer = new int[512, 512];
-        private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
         private readonly IDictionary<Views.Screen, Views.IView> _views;
+        private IDraw _draw;
+        private IGraphics _graphics;
         private IObject _obj;
 
         public RenderForm()
@@ -27,7 +28,10 @@ namespace EliteSharp.Renderer
             _keyboard = new SoftwareKeyboard();
             _views = new Dictionary<Views.Screen, Views.IView>();
             _gameState = new GameState(_keyboard, _views);
-            _graphics = new SoftwareGraphics(_buffer);
+            comboRenderer.Items.AddRange(new[] { "GDI", "Software" });
+            comboRenderer.SelectedIndex = 0;
+
+            _graphics = new GdiGraphics(_bmp);
             _draw = new Draw(_gameState, _graphics);
             _obj = new WireframePlanet(_draw);
 
@@ -48,20 +52,11 @@ namespace EliteSharp.Renderer
                 return;
             }
 
-            _draw.ClearDisplay();
-
+            _graphics.Clear();
+            _draw.SetFullScreenClipRegion();
             _obj.Location = new(_obj.Location.X, _obj.Location.Y, (float)numLocationZ.Value);
             _obj.Draw();
-
-            for (int y = 0; y < 512; y++)
-            {
-                for (int x = 0; x < 512; x++)
-                {
-                    _bmp.SetPixel(x, y, Color.FromArgb(_buffer[x, y]));
-                }
-            }
-
-            renderBox.Image = _bmp;
+            UpdateScreen();
         }
 
         private void ComboPlanets_SelectedIndexChanged(object sender, EventArgs e)
@@ -77,6 +72,44 @@ namespace EliteSharp.Renderer
             }
 
             _obj.Rotmat = VectorMaths.GetInitialMatrix();
+        }
+
+        private void ComboRenderer_SelectedIndexChanged(object sender, EventArgs e) => SelectRenderer();
+
+        private void SelectRenderer()
+        {
+            _graphics = comboRenderer.SelectedIndex switch
+            {
+                1 => new SoftwareGraphics(_buffer),
+                _ => new GdiGraphics(_bmp),
+            };
+
+            _draw = new Draw(_gameState, _graphics);
+            _obj = new WireframePlanet(_draw);
+        }
+
+        private void UpdateScreen()
+        {
+            _graphics.ScreenUpdate();
+
+            switch (comboRenderer.SelectedIndex)
+            {
+                case 1:
+                    for (int y = 0; y < 512; y++)
+                    {
+                        for (int x = 0; x < 512; x++)
+                        {
+                            _bmp.SetPixel(x, y, Color.FromArgb(_buffer[x, y] | unchecked((int)0xFF000000)));
+                        }
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+
+            renderBox.Image = _bmp;
         }
     }
 }

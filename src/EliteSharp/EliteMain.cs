@@ -227,7 +227,7 @@ namespace EliteSharp
                 }
             }
 
-            _draw.ClearDisplay();
+            _graphics.Clear();
 
             _gameState.CurrentView!.UpdateUniverse();
             _space.UpdateUniverse();

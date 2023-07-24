@@ -56,8 +56,6 @@ namespace EliteSharp.Graphics
 
         private static float ScannerWidth => 512;
 
-        public void ClearDisplay() => Graphics.ClearArea(new(Left, Top), Width, Height);
-
         public void DrawBorder()
         {
             for (int i = 0; i < BorderWidth; i++)

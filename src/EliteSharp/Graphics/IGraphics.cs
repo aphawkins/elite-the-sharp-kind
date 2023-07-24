@@ -14,8 +14,6 @@ namespace EliteSharp.Graphics
 
         float ScreenWidth { get; }
 
-        void ClearArea(Vector2 position, float width, float height);
-
         void DrawCircle(Vector2 centre, float radius, Colour colour);
 
         void DrawCircleFilled(Vector2 centre, float radius, Colour colour);
@@ -54,15 +52,13 @@ namespace EliteSharp.Graphics
 
         void LoadBitmap(Image imgType, byte[] bitmapBytes);
 
-        void ScreenAcquire();
-
-        void ScreenRelease();
-
         /// <summary>
         /// Blit the back buffer to the screen.
         /// </summary>
         void ScreenUpdate();
 
         void SetClipRegion(Vector2 position, float width, float height);
+
+        void Clear();
     }
 }

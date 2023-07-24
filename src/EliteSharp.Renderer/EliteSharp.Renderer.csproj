@@ -48,6 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EliteSharp.WinForms\EliteSharp.WinForms.csproj" />
     <ProjectReference Include="..\EliteSharp\EliteSharp.csproj" />
   </ItemGroup>
 
