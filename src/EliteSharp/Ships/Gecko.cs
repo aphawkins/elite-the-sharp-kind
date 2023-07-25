@@ -29,20 +29,20 @@ namespace EliteSharp.Ships
             };
             Faces = new ShipFace[]
             {
-                new(Colour.DarkGrey, new(0x00, 0x1F, 0x05), new[] { 3,  2, 0, 1 }),
-                new(Colour.LightGrey, new(0x04, 0x2D, 0x08), new[] { 3,  1, 5 }),
-                new(Colour.DarkerGrey, new(0x19, -0x6C, 0x13), new[] { 5,  1, 7 }),
+                new(EColor.DarkGrey, new(0x00, 0x1F, 0x05), new[] { 3,  2, 0, 1 }),
+                new(EColor.LightGrey, new(0x04, 0x2D, 0x08), new[] { 3,  1, 5 }),
+                new(EColor.DarkerGrey, new(0x19, -0x6C, 0x13), new[] { 5,  1, 7 }),
 
-                new(Colour.LightGrey, new(0x00, -0x54, 0x0C), new[] { 1,  0, 6, 7 }),
-                new(Colour.DarkerGrey, new(-0x19, -0x6C, 0x13), new[] { 4,  6, 0 }),
-                new(Colour.LightGrey, new(-0x04, 0x2D, 0x08), new[] { 0,  2, 4 }),
+                new(EColor.LightGrey, new(0x00, -0x54, 0x0C), new[] { 1,  0, 6, 7 }),
+                new(EColor.DarkerGrey, new(-0x19, -0x6C, 0x13), new[] { 4,  6, 0 }),
+                new(EColor.LightGrey, new(-0x04, 0x2D, 0x08), new[] { 0,  2, 4 }),
 
-                new(Colour.LightRed, new(-0x58, 0x10, -0xD6), new[] { 4,  2, 6 }),
-                new(Colour.LighterRed, new(0x00, 0x00, -0xBB), new[] { 2,  3, 7, 6 }),
-                new(Colour.LightRed, new(0x58, 0x10, -0xD6), new[] { 5,  7, 3 }),
+                new(EColor.LightRed, new(-0x58, 0x10, -0xD6), new[] { 4,  2, 6 }),
+                new(EColor.LighterRed, new(0x00, 0x00, -0xBB), new[] { 2,  3, 7, 6 }),
+                new(EColor.LightRed, new(0x58, 0x10, -0xD6), new[] { 5,  7, 3 }),
 
-                new(Colour.White, new(0x00, -0x54, 0x0C), new[] { 8, 10 /*, 9 */ }),
-                new(Colour.White, new(0x00, -0x54, 0x0C), new[] { 11,  9 /*, 8 */ }),
+                new(EColor.White, new(0x00, -0x54, 0x0C), new[] { 8, 10 /*, 9 */ }),
+                new(EColor.White, new(0x00, -0x54, 0x0C), new[] { 11,  9 /*, 8 */ }),
             };
             LaserStrength = 8;
             Lines = new ShipLine[]

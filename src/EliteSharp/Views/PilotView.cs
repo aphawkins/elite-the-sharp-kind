@@ -42,11 +42,11 @@ namespace EliteSharp.Views
 
             if (_space.HyperGalactic)
             {
-                _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", FontSize.Small, EColor.White);
             }
             else if (_space.HyperCountdown > 0)
             {
-                _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", FontSize.Small, EColor.White);
             }
         }
 
@@ -122,6 +122,6 @@ namespace EliteSharp.Views
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
-        internal void DrawViewName(string name) => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, FontSize.Small, Colour.White);
+        internal void DrawViewName(string name) => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, FontSize.Small, EColor.White);
     }
 }

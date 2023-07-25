@@ -13,7 +13,7 @@ namespace EliteSharp.Planets
         private readonly IDraw _draw;
         private readonly PlanetRenderer _planetRenderer;
 
-        internal SolidPlanet(IDraw draw, Colour colour)
+        internal SolidPlanet(IDraw draw, EColor colour)
         {
             _draw = draw;
             Colour = colour;
@@ -39,7 +39,7 @@ namespace EliteSharp.Planets
 
         public ShipType Type { get; set; } = ShipType.Planet;
 
-        internal Colour Colour { get; }
+        internal EColor Colour { get; }
 
         public IObject Clone()
         {

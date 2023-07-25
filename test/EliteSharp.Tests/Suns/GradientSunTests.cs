@@ -28,7 +28,7 @@ namespace EliteSharp.Tests.Suns
             // Assert
             _drawMoq.Verify(x => x.Graphics.DrawPixelFast(
                 It.IsAny<Vector2>(),
-                It.IsAny<Colour>()));
+                It.IsAny<EColor>()));
         }
 
         [Fact]

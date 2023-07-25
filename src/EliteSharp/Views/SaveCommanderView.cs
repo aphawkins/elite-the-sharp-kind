@@ -29,21 +29,21 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader("SAVE COMMANDER");
 
-            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, Colour.White);
-            _draw.Graphics.DrawRectangle(new(100 + _draw.Offset, 100), 312, 50, Colour.White);
-            _draw.Graphics.DrawTextCentre(112, _name, FontSize.Large, Colour.White);
+            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, EColor.White);
+            _draw.Graphics.DrawRectangle(new(100 + _draw.Offset, 100), 312, 50, EColor.White);
+            _draw.Graphics.DrawTextCentre(112, _name, FontSize.Large, EColor.White);
 
             if (_isSuccess.HasValue)
             {
                 if (_isSuccess.Value)
                 {
-                    _draw.Graphics.DrawTextCentre(175, "Commander Saved.", FontSize.Large, Colour.Gold);
-                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, Colour.White);
+                    _draw.Graphics.DrawTextCentre(175, "Commander Saved.", FontSize.Large, EColor.Gold);
+                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, EColor.White);
                 }
                 else
                 {
-                    _draw.Graphics.DrawTextCentre(175, "Error Saving Commander!", FontSize.Large, Colour.Gold);
-                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, Colour.White);
+                    _draw.Graphics.DrawTextCentre(175, "Error Saving Commander!", FontSize.Large, EColor.Gold);
+                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, EColor.White);
                 }
             }
         }

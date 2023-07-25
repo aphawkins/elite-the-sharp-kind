@@ -52,10 +52,10 @@ namespace EliteSharp.Views
                     if (i == _highlightedItem)
                     {
                         position.X = _draw.Centre.X - 200;
-                        _draw.Graphics.DrawRectangleFilled(position, 400, 15, Colour.LightRed);
+                        _draw.Graphics.DrawRectangleFilled(position, 400, 15, EColor.LightRed);
                     }
 
-                    _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, FontSize.Small, Colour.White);
+                    _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, FontSize.Small, EColor.White);
                     return;
                 }
 
@@ -74,12 +74,12 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _draw.Graphics.DrawRectangleFilled(position, 100, 15, Colour.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(position, 100, 15, EColor.LightRed);
                 }
 
-                _draw.Graphics.DrawTextLeft(position, _settingList[i].Name, Colour.White);
+                _draw.Graphics.DrawTextLeft(position, _settingList[i].Name, EColor.White);
                 position.X += 120;
-                _draw.Graphics.DrawTextLeft(position, _settingList[i].Values[v], Colour.White);
+                _draw.Graphics.DrawTextLeft(position, _settingList[i].Values[v], EColor.White);
             }
         }
 

@@ -73,17 +73,17 @@ namespace EliteSharp
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
                     (star.Y >= _draw.Top) && (star.Y <= _draw.Bottom))
                 {
-                    _draw.Graphics.DrawPixel(star, Colour.White);
+                    _draw.Graphics.DrawPixel(star, EColor.White);
 
                     if (zz < 192)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EColor.White);
                     }
 
                     if (zz < 144)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EColor.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EColor.White);
                     }
                 }
 
@@ -156,17 +156,17 @@ namespace EliteSharp
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
                     (star.Y >= _draw.Top) && (star.Y <= _draw.Bottom))
                 {
-                    _draw.Graphics.DrawPixel(star, Colour.White);
+                    _draw.Graphics.DrawPixel(star, EColor.White);
 
                     if (zz < 192)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EColor.White);
                     }
 
                     if (zz < 144)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EColor.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EColor.White);
                     }
                 }
 
@@ -255,17 +255,17 @@ namespace EliteSharp
                     (star.X >= _draw.Left) && (star.X <= _draw.Right) &&
                     (star.Y >= _draw.Top) && (star.Y <= _draw.Bottom))
                 {
-                    _draw.Graphics.DrawPixel(star, Colour.White);
+                    _draw.Graphics.DrawPixel(star, EColor.White);
 
                     if (zz < 192)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EColor.White);
                     }
 
                     if (zz < 144)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), Colour.White);
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), Colour.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EColor.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EColor.White);
                     }
                 }
 

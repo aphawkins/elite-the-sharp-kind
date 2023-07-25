@@ -15,14 +15,14 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelInBounds(float x, float y)
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixel(new(x, y), Colour.White);
+            graphics.DrawPixel(new(x, y), EColor.White);
 
             // Assert
-            Assert.Equal((int)Colour.White, buffer[(int)x, (int)y]);
+            Assert.Equal(EColor.White, screen.GetPixel((int)x, (int)y));
         }
 
         [Theory]
@@ -31,11 +31,11 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelOutOfBounds(float x, float y)
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixel(new(x, y), Colour.White);
+            graphics.DrawPixel(new(x, y), EColor.White);
 
             // Assert
         }
@@ -47,14 +47,14 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelFastInBounds(float x, float y)
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixelFast(new(x, y), Colour.White);
+            graphics.DrawPixelFast(new(x, y), EColor.White);
 
             // Assert
-            Assert.Equal((int)Colour.White, buffer[(int)x, (int)y]);
+            Assert.Equal(EColor.White, screen.GetPixel((int)x, (int)y));
         }
 
         [Theory]
@@ -63,11 +63,11 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelFastOutOfBounds(float x, float y)
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixelFast(new(x, y), Colour.White);
+            graphics.DrawPixelFast(new(x, y), EColor.White);
 
             // Assert
         }
@@ -76,47 +76,47 @@ namespace EliteSharp.Tests.Graphics
         public void Clear()
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixel(new(2, 2), Colour.White);
+            graphics.DrawPixel(new(2, 2), EColor.White);
             graphics.Clear();
 
             // Assert
-            Assert.Equal((int)Colour.Black, buffer[2, 2]);
+            Assert.Equal(EColor.Black, screen.GetPixel(2, 2));
         }
 
         [Fact]
         public void DrawCircleInBounds()
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircle(new(2, 2), 2, Colour.White);
+            graphics.DrawCircle(new(2, 2), 2, EColor.White);
 
             // Assert
-            Assert.Equal((int)Colour.White, buffer[0, 2]);
-            Assert.Equal((int)Colour.White, buffer[4, 2]);
-            Assert.Equal((int)Colour.White, buffer[2, 0]);
-            Assert.Equal((int)Colour.White, buffer[2, 4]);
+            Assert.Equal(EColor.White, screen.GetPixel(0, 2));
+            Assert.Equal(EColor.White, screen.GetPixel(4, 2));
+            Assert.Equal(EColor.White, screen.GetPixel(2, 0));
+            Assert.Equal(EColor.White, screen.GetPixel(2, 4));
         }
 
         [Fact]
         public void DrawCirclePartialInBounds()
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircle(new(0, 0), 4, Colour.White);
+            graphics.DrawCircle(new(0, 0), 4, EColor.White);
 
             // Assert
-            Assert.Equal((int)Colour.White, buffer[0, 4]);
-            Assert.Equal((int)Colour.White, buffer[4, 0]);
+            Assert.Equal(EColor.White, screen.GetPixel(0, 4));
+            Assert.Equal(EColor.White, screen.GetPixel(4, 0));
         }
 
         [Theory]
@@ -127,18 +127,18 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleOutOfBounds(float x, float y, float radius)
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircle(new(x, y), radius, Colour.White);
+            graphics.DrawCircle(new(x, y), radius, EColor.White);
 
             // Assert
-            for (int bufferY = 0; bufferY < 5; bufferY++)
+            for (int screenY = 0; screenY < 5; screenY++)
             {
-                for (int bufferX = 0; bufferX < 5; bufferX++)
+                for (int screenX = 0; screenX < 5; screenX++)
                 {
-                    Assert.Equal((int)Colour.Black, buffer[bufferX, bufferY]);
+                    Assert.Equal(EColor.Black, screen.GetPixel(screenX, screenY));
                 }
             }
         }
@@ -147,40 +147,40 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleFilledInBounds()
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircleFilled(new(2, 2), 2, Colour.White);
+            graphics.DrawCircleFilled(new(2, 2), 2, EColor.White);
 
             // Assert
-            Assert.Equal((int)Colour.White, buffer[0, 2]);
-            Assert.Equal((int)Colour.White, buffer[4, 2]);
-            Assert.Equal((int)Colour.White, buffer[2, 0]);
-            Assert.Equal((int)Colour.White, buffer[2, 4]);
-            Assert.Equal((int)Colour.White, buffer[2, 2]);
+            Assert.Equal(EColor.White, screen.GetPixel(0, 2));
+            Assert.Equal(EColor.White, screen.GetPixel(4, 2));
+            Assert.Equal(EColor.White, screen.GetPixel(2, 0));
+            Assert.Equal(EColor.White, screen.GetPixel(2, 4));
+            Assert.Equal(EColor.White, screen.GetPixel(2, 2));
         }
 
         [Theory]
-        [InlineData(2, 2, 3, Colour.White)]
-        [InlineData(2, 2, 9, Colour.White)]
-        [InlineData(-9, -9, 3, Colour.Black)]
-        [InlineData(9, 9, 3, Colour.Black)]
-        public void DrawCircleFilledOutOfBounds(float x, float y, float radius, Colour centreColour)
+        [InlineData(2, 2, 3, 0xFFFFFF)]
+        [InlineData(2, 2, 9, 0xFFFFFF)]
+        [InlineData(-9, -9, 3, 0x000000)]
+        [InlineData(9, 9, 3, 0x000000)]
+        public void DrawCircleFilledOutOfBounds(float x, float y, float radius, int centreColour)
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircleFilled(new(x, y), radius, Colour.White);
+            graphics.DrawCircleFilled(new(x, y), radius, EColor.White);
 
             // Assert
-            for (int bufferY = 0; bufferY < 5; bufferY++)
+            for (int screenY = 0; screenY < 5; screenY++)
             {
-                for (int bufferX = 0; bufferX < 5; bufferX++)
+                for (int screenX = 0; screenX < 5; screenX++)
                 {
-                    Assert.Equal((int)centreColour, buffer[bufferX, bufferY]);
+                    Assert.Equal(new EColor(centreColour), screen.GetPixel(screenX, screenY));
                 }
             }
         }
@@ -193,15 +193,15 @@ namespace EliteSharp.Tests.Graphics
         public void DrawLineInBounds(float startX, float startY, float endX, float endY)
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawLine(new(startX, startY), new(endX, endY), Colour.White);
+            graphics.DrawLine(new(startX, startY), new(endX, endY), EColor.White);
 
             // Assert
-            Assert.Equal((int)Colour.White, buffer[(int)startX, (int)startY]);
-            Assert.Equal((int)Colour.White, buffer[(int)endX, (int)endY]);
+            Assert.Equal(EColor.White, screen.GetPixel((int)startX, (int)startY));
+            Assert.Equal(EColor.White, screen.GetPixel((int)endX, (int)endY));
         }
 
         [Theory]
@@ -212,14 +212,14 @@ namespace EliteSharp.Tests.Graphics
         public void DrawLineOutOfBounds(float startX, float startY, float endX, float endY)
         {
             // Arrange
-            int[,] buffer = new int[5, 5];
-            using SoftwareGraphics graphics = new(buffer);
+            EBitmap screen = new(5, 5);
+            using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawLine(new(startX, startY), new(endX, endY), Colour.White);
+            graphics.DrawLine(new(startX, startY), new(endX, endY), EColor.White);
 
             // Assert
-            Assert.Equal((int)Colour.White, buffer[2, 2]);
+            Assert.Equal(EColor.White, screen.GetPixel(2, 2));
         }
     }
 }

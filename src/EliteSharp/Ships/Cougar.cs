@@ -25,20 +25,20 @@ namespace EliteSharp.Ships
             };
             Faces = new ShipFace[]
             {
-                new(Colour.LightGrey, new(-0x10,  0x2E,  0x04), new[] { 2,  1,  0, 3 }),
-                new(Colour.DarkGrey, new(-0x10, -0x2E,  0x04), new[] { 4,  1,  2 }),
-                new(Colour.Grey, new(0x00, -0x1B,  0x05), new[] { 4,  5,  0, 1 }),
-                new(Colour.DarkGrey, new(0x10, -0x2E,  0x04), new[] { 6,  5, 4 }),
-                new(Colour.DarkGrey, new(0x10,  0x2E,  0x04), new[] { 5,  6,  3, 0 }),
-                new(Colour.DarkerGrey, new(0x00,  0x00, -0xA0), new[] { 6,  4,  2, 3 }),
+                new(EColor.LightGrey, new(-0x10,  0x2E,  0x04), new[] { 2,  1,  0, 3 }),
+                new(EColor.DarkGrey, new(-0x10, -0x2E,  0x04), new[] { 4,  1,  2 }),
+                new(EColor.Grey, new(0x00, -0x1B,  0x05), new[] { 4,  5,  0, 1 }),
+                new(EColor.DarkGrey, new(0x10, -0x2E,  0x04), new[] { 6,  5, 4 }),
+                new(EColor.DarkGrey, new(0x10,  0x2E,  0x04), new[] { 5,  6,  3, 0 }),
+                new(EColor.DarkerGrey, new(0x00,  0x00, -0xA0), new[] { 6,  4,  2, 3 }),
 
-                new(Colour.DarkYellow, new(-0x10, -0x2E,  0x04), new[] { 1,  2,  8, 7 }),
-                new(Colour.DarkYellow, new(-0x10,  0x2E,  0x04), new[] { 7,  8,  2, 1 }),
-                new(Colour.DarkYellow, new(0x10,  0x2E,  0x04), new[] { 5,  6, 10, 9 }),
-                new(Colour.DarkYellow, new(0x10, -0x2E,  0x04), new[] { 9, 10,  6, 5 }),
+                new(EColor.DarkYellow, new(-0x10, -0x2E,  0x04), new[] { 1,  2,  8, 7 }),
+                new(EColor.DarkYellow, new(-0x10,  0x2E,  0x04), new[] { 7,  8,  2, 1 }),
+                new(EColor.DarkYellow, new(0x10,  0x2E,  0x04), new[] { 5,  6, 10, 9 }),
+                new(EColor.DarkYellow, new(0x10, -0x2E,  0x04), new[] { 9, 10,  6, 5 }),
 
-                new(Colour.DarkBlue, new(-0x10,  0x2E,  0x04), new[] { 12, 13, 11 }),
-                new(Colour.Blue, new(0x10,  0x2E,  0x04), new[] { 11, 14, 12 }),
+                new(EColor.DarkBlue, new(-0x10,  0x2E,  0x04), new[] { 12, 13, 11 }),
+                new(EColor.Blue, new(0x10,  0x2E,  0x04), new[] { 11, 14, 12 }),
 
                 //new(8,     0x00,  0x00, -0xA0, 3, 15, 16, 19, 0, 0, 0, 0, 0),
                 //new(8,     0x00,  0x00, -0xA0, 3, 19, 18, 17, 0, 0, 0, 0, 0),

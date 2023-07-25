@@ -100,8 +100,8 @@ namespace EliteSharp.Planets
                     bool dark = dist > 10000;
                     int h = _planetRenderer._landscape[x, y];
                     _planetRenderer._landscape[x, y] = h > 166
-                        ? (int)(dark ? Colour.Green : Colour.LightGreen)
-                        : (int)(dark ? Colour.Blue : Colour.LightBlue);
+                        ? (dark ? EColor.Green : EColor.LightGreen).ToArgb()
+                        : (dark ? EColor.Blue : EColor.LightBlue).ToArgb();
                 }
             }
         }

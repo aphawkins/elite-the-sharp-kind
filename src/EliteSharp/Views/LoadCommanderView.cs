@@ -29,14 +29,14 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader("LOAD COMMANDER");
 
-            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, Colour.White);
-            _draw.Graphics.DrawRectangleCentre(100, 312, 50, Colour.White);
-            _draw.Graphics.DrawTextCentre(112, _name, FontSize.Large, Colour.White);
+            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, EColor.White);
+            _draw.Graphics.DrawRectangleCentre(100, 312, 50, EColor.White);
+            _draw.Graphics.DrawTextCentre(112, _name, FontSize.Large, EColor.White);
 
             if (!_isLoaded)
             {
-                _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", FontSize.Large, Colour.Gold);
-                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", FontSize.Large, EColor.Gold);
+                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, EColor.White);
             }
         }
 

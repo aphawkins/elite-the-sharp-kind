@@ -49,7 +49,7 @@ namespace EliteSharp.Views
         {
             if (_i < 90)
             {
-                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 40, "Escape capsule launched - Ship auto-destuct initiated.", FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 40, "Escape capsule launched - Ship auto-destuct initiated.", FontSize.Small, EColor.White);
             }
         }
 

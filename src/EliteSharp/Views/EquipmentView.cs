@@ -86,22 +86,22 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, Colour.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, EColor.LightRed);
                 }
 
-                Colour col = _equipmentStock[i].CanBuy ? Colour.White : Colour.LightGrey;
+                EColor colour = _equipmentStock[i].CanBuy ? EColor.White : EColor.LightGrey;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
-                _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], col);
+                _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], colour);
 
                 if (_equipmentStock[i].Price != 0)
                 {
-                    _draw.Graphics.DrawTextRight(450 + _draw.Offset, y, $"{_equipmentStock[i].Price:N1}", col);
+                    _draw.Graphics.DrawTextRight(450 + _draw.Offset, y, $"{_equipmentStock[i].Price:N1}", colour);
                 }
 
                 y += 15;
             }
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", EColor.White);
         }
 
         public void HandleInput()

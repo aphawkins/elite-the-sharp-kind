@@ -41,43 +41,43 @@ namespace EliteSharp.Views
             Vector2 centre = _draw.Centre;
             float radius = _ship.Fuel * 10 * _draw.Graphics.Scale;
             float cross_size = 16 * _draw.Graphics.Scale;
-            _draw.Graphics.DrawCircle(centre, radius, Colour.Green);
+            _draw.Graphics.DrawCircle(centre, radius, EColor.Green);
             _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
             _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
 
             // Planets
             foreach ((Vector2 position, string name) in _planetNames)
             {
-                _draw.Graphics.DrawTextLeft(position, name, Colour.White);
+                _draw.Graphics.DrawTextLeft(position, name, EColor.White);
             }
 
             foreach ((Vector2 position, float size) in _planetSizes)
             {
-                _draw.Graphics.DrawCircleFilled(position, size, Colour.Gold);
+                _draw.Graphics.DrawCircleFilled(position, size, EColor.Gold);
             }
 
             // Cross
             centre = new(_gameState.Cross.X, _gameState.Cross.Y);
-            _draw.Graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), Colour.LighterRed);
-            _draw.Graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), Colour.LighterRed);
+            _draw.Graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), EColor.LighterRed);
+            _draw.Graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), EColor.LighterRed);
 
             // Text
             if (_isFind)
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", Colour.Green);
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, Colour.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", EColor.Green);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, EColor.White);
             }
             else if (string.IsNullOrEmpty(_gameState.PlanetName))
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", Colour.Green);
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, Colour.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", EColor.Green);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, EColor.White);
             }
             else
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), _gameState.PlanetName, Colour.Green);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), _gameState.PlanetName, EColor.Green);
                 if (_gameState.DistanceToPlanet > 0)
                 {
-                    _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", Colour.White);
+                    _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", EColor.White);
                 }
             }
         }

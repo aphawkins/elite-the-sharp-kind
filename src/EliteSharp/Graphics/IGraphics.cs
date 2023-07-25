@@ -14,41 +14,41 @@ namespace EliteSharp.Graphics
 
         float ScreenWidth { get; }
 
-        void DrawCircle(Vector2 centre, float radius, Colour colour);
+        void DrawCircle(Vector2 centre, float radius, EColor colour);
 
-        void DrawCircleFilled(Vector2 centre, float radius, Colour colour);
+        void DrawCircleFilled(Vector2 centre, float radius, EColor colour);
 
         void DrawImage(Image image, Vector2 position);
 
         void DrawImageCentre(Image image, float y);
 
-        void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour);
+        void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour);
 
         void DrawLine(Vector2 lineStart, Vector2 lineEnd);
 
-        void DrawPixel(Vector2 position, Colour colour);
+        void DrawPixel(Vector2 position, EColor colour);
 
-        void DrawPixelFast(Vector2 position, Colour colour);
+        void DrawPixelFast(Vector2 position, EColor colour);
 
-        void DrawPolygon(Vector2[] pointList, Colour lineColour);
+        void DrawPolygon(Vector2[] pointList, EColor lineColour);
 
-        void DrawPolygonFilled(Vector2[] pointList, Colour faceColour);
+        void DrawPolygonFilled(Vector2[] pointList, EColor faceColour);
 
-        void DrawRectangle(Vector2 position, float width, float height, Colour colour);
+        void DrawRectangle(Vector2 position, float width, float height, EColor colour);
 
-        void DrawRectangleCentre(float y, float width, float height, Colour colour);
+        void DrawRectangleCentre(float y, float width, float height, EColor colour);
 
-        void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour);
+        void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour);
 
-        void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour);
+        void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour);
 
-        void DrawTextLeft(Vector2 position, string text, Colour colour);
+        void DrawTextLeft(Vector2 position, string text, EColor colour);
 
-        void DrawTextRight(float x, float y, string text, Colour colour);
+        void DrawTextRight(float x, float y, string text, EColor colour);
 
-        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Colour colour);
+        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour);
 
-        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, Colour colour);
+        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour);
 
         void LoadBitmap(Image imgType, byte[] bitmapBytes);
 

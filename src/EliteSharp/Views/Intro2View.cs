@@ -57,10 +57,10 @@ namespace EliteSharp.Views
         {
             _draw.Graphics.DrawImageCentre(Image.EliteText, _draw.Top + 10);
 
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", FontSize.Large, Colour.Gold);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", FontSize.Large, EColor.Gold);
             if (_universe.FirstShip != null)
             {
-                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, FontSize.Small, Colour.White);
+                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, FontSize.Small, EColor.White);
             }
         }
 

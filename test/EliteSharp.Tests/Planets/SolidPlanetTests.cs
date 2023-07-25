@@ -20,7 +20,7 @@ namespace EliteSharp.Tests.Planets
         public void DrawSolidPlanet()
         {
             // Arrange
-            SolidPlanet planet = new(_drawMoq.Object, Colour.Cyan);
+            SolidPlanet planet = new(_drawMoq.Object, EColor.Cyan);
 
             // Act
             planet.Draw();
@@ -29,14 +29,14 @@ namespace EliteSharp.Tests.Planets
             _drawMoq.Verify(x => x.Graphics.DrawCircleFilled(
                 It.IsAny<Vector2>(),
                 It.IsAny<float>(),
-                It.Is<Colour>(x => x == Colour.Cyan)));
+                It.Is<EColor>(x => x == EColor.Cyan)));
         }
 
         [Fact]
         public void CloneSolidPlanet()
         {
             // Arrange
-            SolidPlanet planet = new(_drawMoq.Object, Colour.Cyan);
+            SolidPlanet planet = new(_drawMoq.Object, EColor.Cyan);
 
             // Act
             IObject obj = planet.Clone();

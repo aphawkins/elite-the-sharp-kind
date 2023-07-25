@@ -13,7 +13,7 @@ namespace EliteSharp.WinForms
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
-        private readonly Dictionary<Colour, Pen> _pens = new();
+        private readonly Dictionary<EColor, Pen> _pens = new();
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
         private readonly System.Drawing.Graphics _screenBufferGraphics;
@@ -33,9 +33,9 @@ namespace EliteSharp.WinForms
             ScreenWidth = _screen.Width;
             ScreenHeight = _screen.Height;
 
-            foreach (Colour colour in Enum.GetValues<Colour>())
+            foreach (EColor colour in EColor.AllColors())
             {
-                Pen pen = new(Color.FromArgb((int)colour | unchecked((int)0xFF000000)));
+                Pen pen = new(Color.FromArgb(colour.ToArgb()));
                 _pens.Add(colour, pen);
             }
         }
@@ -55,10 +55,10 @@ namespace EliteSharp.WinForms
             GC.SuppressFinalize(this);
         }
 
-        public void DrawCircle(Vector2 centre, float radius, Colour colour) =>
+        public void DrawCircle(Vector2 centre, float radius, EColor colour) =>
             _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawCircleFilled(Vector2 centre, float radius, Colour colour) =>
+        public void DrawCircleFilled(Vector2 centre, float radius, EColor colour) =>
             _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
 
         public void DrawImage(Graphics.Image image, Vector2 position) => _screenBufferGraphics.DrawImage(_images[image], position.X, position.Y);
@@ -70,12 +70,12 @@ namespace EliteSharp.WinForms
         }
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd) =>
-            _screenBufferGraphics.DrawLine(_pens[Colour.White], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
+            _screenBufferGraphics.DrawLine(_pens[EColor.White], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, Colour colour) =>
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour) =>
             _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
 
-        public void DrawPixel(Vector2 position, Colour colour)
+        public void DrawPixel(Vector2 position, EColor colour)
         {
             // Prevent SetPixel from drawing outside of the clip region
             if (position.X < _clipRegion.Left ||
@@ -89,12 +89,12 @@ namespace EliteSharp.WinForms
             _screenBuffer.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color);
         }
 
-        public void DrawPixelFast(Vector2 position, Colour colour) =>
+        public void DrawPixelFast(Vector2 position, EColor colour) =>
 
             // Is there a faster way of doing this?
             DrawPixel(position, colour);
 
-        public void DrawPolygon(Vector2[] pointList, Colour lineColour)
+        public void DrawPolygon(Vector2[] pointList, EColor lineColour)
         {
             if (pointList == null)
             {
@@ -111,7 +111,7 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
         }
 
-        public void DrawPolygonFilled(Vector2[] pointList, Colour faceColour)
+        public void DrawPolygonFilled(Vector2[] pointList, EColor faceColour)
         {
             if (pointList == null)
             {
@@ -128,10 +128,10 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[faceColour].Brush, points);
         }
 
-        public void DrawRectangle(Vector2 position, float width, float height, Colour colour) =>
+        public void DrawRectangle(Vector2 position, float width, float height, EColor colour) =>
             _screenBufferGraphics.DrawRectangle(_pens[colour], position.X, position.Y, width, height);
 
-        public void DrawRectangleCentre(float y, float width, float height, Colour colour) =>
+        public void DrawRectangleCentre(float y, float width, float height, EColor colour) =>
             _screenBufferGraphics.DrawRectangle(
                 _pens[colour],
                 (ScreenWidth - width) / 2,
@@ -139,10 +139,10 @@ namespace EliteSharp.WinForms
                 width,
                 height);
 
-        public void DrawRectangleFilled(Vector2 position, float width, float height, Colour colour) =>
+        public void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour) =>
             _screenBufferGraphics.FillRectangle(_pens[colour].Brush, position.X, position.Y, width, height);
 
-        public void DrawTextCentre(float y, string text, FontSize fontSize, Colour colour)
+        public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
         {
             using StringFormat stringFormat = new()
             {
@@ -158,13 +158,13 @@ namespace EliteSharp.WinForms
                 stringFormat);
         }
 
-        public void DrawTextLeft(Vector2 position, string text, Colour colour)
+        public void DrawTextLeft(Vector2 position, string text, EColor colour)
         {
             PointF point = new(position.X / (2 / Scale), position.Y / (2 / Scale));
             _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point);
         }
 
-        public void DrawTextRight(float x, float y, string text, Colour colour)
+        public void DrawTextRight(float x, float y, string text, EColor colour)
         {
             using StringFormat stringFormat = new()
             {
@@ -180,7 +180,7 @@ namespace EliteSharp.WinForms
                 stringFormat);
         }
 
-        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, Colour colour)
+        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour)
         {
             PointF[] points = new PointF[3]
             {
@@ -192,7 +192,7 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.DrawLines(_pens[colour], points);
         }
 
-        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, Colour colour)
+        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour)
         {
             PointF[] points = new PointF[3]
             {

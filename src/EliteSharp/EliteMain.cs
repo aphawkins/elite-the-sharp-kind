@@ -145,7 +145,7 @@ namespace EliteSharp
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", Colour.White);
+            _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", EColor.White);
         }
 #endif
 
@@ -242,7 +242,7 @@ namespace EliteSharp
 
                 if (_gameState.MessageCount > 0)
                 {
-                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontSize.Small, Colour.White);
+                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontSize.Small, EColor.White);
                 }
 
                 if (_space.IsHyperspaceReady)

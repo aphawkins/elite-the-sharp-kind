@@ -13,7 +13,7 @@ namespace EliteSharp.Benchmarks
     {
         private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly int[,] _buffer = new int[512, 512];
+        private readonly EBitmap _buffer = new(512, 512);
         private readonly IGraphics _graphics;
         private readonly SolidSun _solidSun;
         private readonly IKeyboard _keyboard;
@@ -29,7 +29,7 @@ namespace EliteSharp.Benchmarks
             _graphics = new SoftwareGraphics(_buffer);
             _draw = new Draw(_gameState, _graphics);
             _gradientSun = new(_draw);
-            _solidSun = new(_draw, Colour.White);
+            _solidSun = new(_draw, EColor.White);
         }
 
         // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources

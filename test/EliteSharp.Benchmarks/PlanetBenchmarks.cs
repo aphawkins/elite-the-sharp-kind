@@ -13,7 +13,7 @@ namespace EliteSharp.Benchmarks
     {
         private readonly IDraw _draw;
         private readonly GameState _gameState;
-        private readonly int[,] _buffer = new int[512, 512];
+        private readonly EBitmap _buffer = new(512, 512);
         private readonly IGraphics _graphics;
         private readonly SolidPlanet _solidPlanet;
         private readonly IKeyboard _keyboard;
@@ -31,7 +31,7 @@ namespace EliteSharp.Benchmarks
             _graphics = new SoftwareGraphics(_buffer);
             _draw = new Draw(_gameState, _graphics);
             _wireframePlanet = new(_draw);
-            _solidPlanet = new(_draw, Colour.White);
+            _solidPlanet = new(_draw, EColor.White);
             _fractalPlanet = new(_draw, 12345);
             _stripedPlanet = new(_draw);
         }

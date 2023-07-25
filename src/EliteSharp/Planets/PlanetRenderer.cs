@@ -106,7 +106,7 @@ namespace EliteSharp.Planets
                 {
                     int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
                     int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);
-                    Colour colour = (Colour)_landscape[lx, ly];
+                    EColor colour = new(_landscape[lx, ly]);
                     _draw.Graphics.DrawPixelFast(s, colour);
                 }
 

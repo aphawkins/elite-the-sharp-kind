@@ -98,22 +98,22 @@ namespace EliteSharp.Views
 
             if (_distanceToPlanet > 0)
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 42), "Distance:", Colour.Green);
-                _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 42), $"{_distanceToPlanet:N1} Light Years", Colour.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 42), "Distance:", EColor.Green);
+                _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 42), $"{_distanceToPlanet:N1} Light Years", EColor.White);
             }
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Economy:", Colour.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 74), _economyType[_hyperPlanetData.Economy], Colour.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Government:", Colour.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 106), _governmentType[_hyperPlanetData.Government], Colour.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", Colour.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", Colour.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", Colour.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 170), $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", Colour.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 202), "Gross Productivity:", Colour.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 202), $"{_hyperPlanetData.Productivity} Million Credits", Colour.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 234), "Average Radius:", Colour.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 234), $"{_hyperPlanetData.Radius} km", Colour.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Economy:", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 74), _economyType[_hyperPlanetData.Economy], EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Government:", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 106), _governmentType[_hyperPlanetData.Government], EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 170), $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 202), "Gross Productivity:", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 202), $"{_hyperPlanetData.Productivity} Million Credits", EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 234), "Average Radius:", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 234), $"{_hyperPlanetData.Radius} km", EColor.White);
             _draw.DrawTextPretty(new(16 + _draw.Offset, 266), 400, DescribePlanet(_gameState.HyperspacePlanet));
         }
 

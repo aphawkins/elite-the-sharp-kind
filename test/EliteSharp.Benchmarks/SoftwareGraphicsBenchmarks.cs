@@ -9,7 +9,7 @@ namespace EliteSharp.Benchmarks
 {
     public class SoftwareGraphicsBenchmarks : IDisposable
     {
-        private readonly int[,] _buffer = new int[512, 512];
+        private readonly EBitmap _buffer = new(512, 512);
         private readonly IGraphics _graphics;
         private bool _disposedValue;
 
@@ -26,19 +26,19 @@ namespace EliteSharp.Benchmarks
         public void ClearArea() => _graphics.Clear();
 
         [Benchmark]
-        public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, Colour.White);
+        public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, EColor.White);
 
         [Benchmark]
-        public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, Colour.White);
+        public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, EColor.White);
 
         [Benchmark]
-        public void DrawLine() => _graphics.DrawLine(new(0, 0), new(511, 511), Colour.White);
+        public void DrawLine() => _graphics.DrawLine(new(0, 0), new(511, 511), EColor.White);
 
         [Benchmark]
-        public void DrawPixel() => _graphics.DrawPixel(new(255, 255), Colour.White);
+        public void DrawPixel() => _graphics.DrawPixel(new(255, 255), EColor.White);
 
         [Benchmark]
-        public void DrawPixelFast() => _graphics.DrawPixelFast(new(255, 255), Colour.White);
+        public void DrawPixelFast() => _graphics.DrawPixelFast(new(255, 255), EColor.White);
 
         protected virtual void Dispose(bool disposing)
         {

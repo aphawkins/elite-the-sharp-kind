@@ -14,7 +14,7 @@ namespace EliteSharp.Renderer
     public partial class RenderForm : Form
     {
         private readonly Bitmap _bmp = new(512, 512, PixelFormat.Format32bppArgb);
-        private readonly int[,] _buffer = new int[512, 512];
+        private readonly EBitmap _buffer = new(512, 512);
         private readonly GameState _gameState;
         private readonly IKeyboard _keyboard;
         private readonly IDictionary<Views.Screen, Views.IView> _views;
@@ -64,7 +64,7 @@ namespace EliteSharp.Renderer
             switch (comboObjects.SelectedIndex)
             {
                 case 0: _obj = new WireframePlanet(_draw); break;
-                case 1: _obj = new SolidPlanet(_draw, Colour.Green); break;
+                case 1: _obj = new SolidPlanet(_draw, EColor.Green); break;
                 case 2: _obj = new StripedPlanet(_draw); break;
                 case 3: _obj = new FractalPlanet(_draw, 14229); break;
                 default:
@@ -99,7 +99,7 @@ namespace EliteSharp.Renderer
                     {
                         for (int x = 0; x < 512; x++)
                         {
-                            _bmp.SetPixel(x, y, Color.FromArgb(_buffer[x, y] | unchecked((int)0xFF000000)));
+                            _bmp.SetPixel(x, y, Color.FromArgb(_buffer.GetPixel(x, y).ToArgb()));
                         }
                     }
 
