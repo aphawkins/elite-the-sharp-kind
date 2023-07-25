@@ -95,7 +95,7 @@ namespace EliteSharp.Views
 
                 if (_equipmentStock[i].Price != 0)
                 {
-                    _draw.Graphics.DrawTextRight(450 + _draw.Offset, y, $"{_equipmentStock[i].Price:N1}", colour);
+                    _draw.Graphics.DrawTextRight(new(450 + _draw.Offset, y), $"{_equipmentStock[i].Price:N1}", colour);
                 }
 
                 y += 15;

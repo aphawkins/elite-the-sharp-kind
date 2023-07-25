@@ -164,7 +164,7 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point);
         }
 
-        public void DrawTextRight(float x, float y, string text, EColor colour)
+        public void DrawTextRight(Vector2 position, string text, EColor colour)
         {
             using StringFormat stringFormat = new()
             {
@@ -175,8 +175,8 @@ namespace EliteSharp.WinForms
                 text,
                 _fontSmall,
                 _pens[colour].Brush,
-                x / (2 / Scale),
-                y / (2 / Scale),
+                position.X / (2 / Scale),
+                position.Y / (2 / Scale),
                 stringFormat);
         }
 

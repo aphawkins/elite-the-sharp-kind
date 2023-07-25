@@ -64,7 +64,7 @@ namespace EliteSharp.Graphics
             }
         }
 
-        public void DrawHyperspaceCountdown(int countdown) => Graphics.DrawTextRight(Left + 21, Top + 4, $"{countdown}", EColor.White);
+        public void DrawHyperspaceCountdown(int countdown) => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EColor.White);
 
         public void DrawPolygonFilled(Vector2[] point_list, EColor face_colour, float zAvg)
         {

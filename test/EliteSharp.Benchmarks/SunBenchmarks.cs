@@ -32,12 +32,6 @@ namespace EliteSharp.Benchmarks
             _solidSun = new(_draw, EColor.White);
         }
 
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~PlanetBenchmarks()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -49,7 +43,7 @@ namespace EliteSharp.Benchmarks
         public void SolidSun() => _solidSun.Draw();
 
         [Benchmark]
-        public void GradientPlanet() => _gradientSun.Draw();
+        public void GradientSun() => _gradientSun.Draw();
 
         protected virtual void Dispose(bool disposing)
         {

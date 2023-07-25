@@ -50,19 +50,19 @@ namespace EliteSharp.Views
 
                 _draw.Graphics.DrawTextLeft(new(180 + _draw.Offset, y), stock.Value.Units, EColor.White);
 
-                _draw.Graphics.DrawTextRight(285 + _draw.Offset, y, $"{stock.Value.CurrentPrice:N1}", EColor.White);
+                _draw.Graphics.DrawTextRight(new(285 + _draw.Offset, y), $"{stock.Value.CurrentPrice:N1}", EColor.White);
 
-                _draw.Graphics.DrawTextRight(365 + _draw.Offset, y, stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", EColor.White);
+                _draw.Graphics.DrawTextRight(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", EColor.White);
                 _draw.Graphics.DrawTextLeft(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, EColor.White);
 
-                _draw.Graphics.DrawTextRight(455 + _draw.Offset, y, stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", EColor.White);
+                _draw.Graphics.DrawTextRight(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", EColor.White);
                 _draw.Graphics.DrawTextLeft(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, EColor.White);
 
                 i++;
             }
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), "Cash:", EColor.Green);
-            _draw.Graphics.DrawTextRight(160 + _draw.Offset, 340, $"{_trade.Credits,10:N1} Credits", EColor.White);
+            _draw.Graphics.DrawTextRight(new(160 + _draw.Offset, 340), $"{_trade.Credits,10:N1} Credits", EColor.White);
         }
 
         public void HandleInput()

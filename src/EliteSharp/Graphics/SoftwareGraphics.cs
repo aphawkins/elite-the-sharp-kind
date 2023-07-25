@@ -25,9 +25,9 @@ namespace EliteSharp.Graphics
 
         public void Clear()
         {
-            for (int y = 0; y < ScreenHeight; y++)
+            for (int y = 0; y < _screen.Height; y++)
             {
-                for (int x = 0; x < ScreenWidth; x++)
+                for (int x = 0; x < _screen.Width; x++)
                 {
                     _screen.SetPixel(x, y, EColor.Black);
                 }
@@ -179,7 +179,7 @@ namespace EliteSharp.Graphics
 
         public void DrawTextLeft(Vector2 position, string text, EColor colour) => throw new NotImplementedException();
 
-        public void DrawTextRight(float x, float y, string text, EColor colour) => throw new NotImplementedException();
+        public void DrawTextRight(Vector2 position, string text, EColor colour) => throw new NotImplementedException();
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour) => throw new NotImplementedException();
 

@@ -44,7 +44,7 @@ namespace EliteSharp.Graphics
 
         void DrawTextLeft(Vector2 position, string text, EColor colour);
 
-        void DrawTextRight(float x, float y, string text, EColor colour);
+        void DrawTextRight(Vector2 position, string text, EColor colour);
 
         void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour);
 
