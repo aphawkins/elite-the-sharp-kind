@@ -265,12 +265,12 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            Vector3[] rotmat = VectorMaths.GetInitialMatrix().ToVectors();
-            rotmat[2].Z = 1;
-            rotmat[0].X = -1;
+            Matrix4x4 rotmat = VectorMaths.GetInitialMatrix();
+            rotmat[0, 0] = -1;
+            rotmat[2, 2] = 1;
 
             IShip missile = new Missile(_draw);
-            if (!_universe.AddNewShip(missile, new(0, -28, 14), rotmat, 0, 0))
+            if (!_universe.AddNewShip(missile, new(0, -28, 14), rotmat.ToVectors(), 0, 0))
             {
                 _gameState.InfoMessage("Missile Jammed");
                 return;

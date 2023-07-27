@@ -258,7 +258,6 @@ namespace EliteSharp.Graphics
 
         private void DrawExplosion(IShip ship)
         {
-            Vector3[] trans_mat = new Vector3[3];
             bool[] visible = new bool[32];
 
             if (ship.ExpDelta > 251)
@@ -274,12 +273,8 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            for (int i = 0; i < 3; i++)
-            {
-                trans_mat[i] = ship.Rotmat[i];
-            }
-
-            Vector3 camera_vec = Vector3.Transform(ship.Location, trans_mat.ToMatrix());
+            Matrix4x4 trans_mat = ship.Rotmat.ToMatrix();
+            Vector3 camera_vec = Vector3.Transform(ship.Location, trans_mat);
             camera_vec = VectorMaths.UnitVector(camera_vec);
 
             ShipFaceNormal[] ship_norm = ship.FaceNormals;
@@ -291,9 +286,9 @@ namespace EliteSharp.Graphics
                 visible[i] = cos_angle < -0.13;
             }
 
-            (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
-            (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
-            (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
+            (trans_mat[1, 0], trans_mat[0, 1]) = (trans_mat[0, 1], trans_mat[1, 0]);
+            (trans_mat[2, 0], trans_mat[0, 2]) = (trans_mat[0, 2], trans_mat[2, 0]);
+            (trans_mat[2, 1], trans_mat[1, 2]) = (trans_mat[1, 2], trans_mat[2, 1]);
             int np = 0;
 
             for (int i = 0; i < ship.Points.Length; i++)
@@ -301,7 +296,7 @@ namespace EliteSharp.Graphics
                 if (visible[ship.Points[i].Face1] || visible[ship.Points[i].Face2] ||
                     visible[ship.Points[i].Face3] || visible[ship.Points[i].Face4])
                 {
-                    Vector3 vec = Vector3.Transform(ship.Points[i].Point, trans_mat.ToMatrix());
+                    Vector3 vec = Vector3.Transform(ship.Points[i].Point, trans_mat);
                     Vector3 r = vec + ship.Location;
                     Vector2 position = new(r.X, -r.Y);
                     position *= 256 / r.Z;
