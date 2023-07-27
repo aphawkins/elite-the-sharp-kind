@@ -767,7 +767,7 @@ namespace EliteSharp
                 beta = 0.0f;
             }
 
-            obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
+            obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat.ToMatrix(), alpha, beta).ToVectors();
 
             if (obj.Flags.HasFlag(ShipFlags.Dead))
             {

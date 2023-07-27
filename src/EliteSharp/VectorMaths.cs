@@ -20,14 +20,13 @@ namespace EliteSharp
 
         internal static Vector3[] GetInitialMatrix() => s_startMatrix.Cloner();
 
-        internal static Vector3[] RotateVector(Vector3[] vec, float alpha, float beta)
+        internal static Matrix4x4 RotateVector(Matrix4x4 mat, float alpha, float beta)
         {
-            for (int i = 0; i < vec.Length; i++)
-            {
-                RotateVector(ref vec[i], alpha, beta);
-            }
+            mat = mat.SetRow(0, RotateVector(mat.GetRow(0), alpha, beta));
+            mat = mat.SetRow(1, RotateVector(mat.GetRow(1), alpha, beta));
+            mat = mat.SetRow(2, RotateVector(mat.GetRow(2), alpha, beta));
 
-            return vec;
+            return mat;
         }
 
         internal static void TidyMatrix(Vector3[] mat)
@@ -69,20 +68,16 @@ namespace EliteSharp
         /// <returns>The cosine of the angle between the two vectors.</returns>
         internal static float VectorDotProduct(Vector3 first, Vector3 second) => Vector3.Dot(first, second);
 
-        private static void RotateVector(ref Vector3 vec, float alpha, float beta)
+        private static Vector3 RotateVector(Vector3 vec, float alpha, float beta)
         {
-            float x = vec.X;
-            float y = vec.Y;
-            float z = vec.Z;
+            Vector3 ret = vec;
 
-            y -= alpha * x;
-            x += alpha * y;
-            y -= beta * z;
-            z += beta * y;
+            ret.Y -= alpha * ret.X;
+            ret.X += alpha * ret.Y;
+            ret.Y -= beta * ret.Z;
+            ret.Z += beta * ret.Y;
 
-            vec.X = x;
-            vec.Y = y;
-            vec.Z = z;
+            return ret;
         }
     }
 }

@@ -46,6 +46,36 @@ namespace EliteSharp
                 0,
                 0);
 
+        internal static Vector3[] ToVectors(this Matrix4x4 mat)
+        {
+            Vector3[] vecs = new Vector3[3];
+
+            vecs[0].X = mat[0, 0];
+            vecs[1].X = mat[0, 1];
+            vecs[2].X = mat[0, 2];
+
+            vecs[0].Y = mat[1, 0];
+            vecs[1].Y = mat[1, 1];
+            vecs[2].Y = mat[1, 2];
+
+            vecs[0].Z = mat[2, 0];
+            vecs[1].Z = mat[2, 1];
+            vecs[2].Z = mat[2, 2];
+
+            return vecs;
+        }
+
+        internal static Vector3 GetRow(this Matrix4x4 mat, int row) => new(mat[0, row], mat[1, row], mat[2, row]);
+
+        internal static Matrix4x4 SetRow(this Matrix4x4 mat, int row, Vector3 vec)
+        {
+            Matrix4x4 ret = mat;
+            ret[0, row] = vec.X;
+            ret[1, row] = vec.Y;
+            ret[2, row] = vec.Z;
+            return ret;
+        }
+
 #pragma warning disable CA1308 // Normalize strings to uppercase
         internal static string CapitaliseFirstLetter(this string text) => char.ToUpperInvariant(text[0]) + text[1..].ToLowerInvariant();
 #pragma warning restore CA1308 // Normalize strings to uppercase
