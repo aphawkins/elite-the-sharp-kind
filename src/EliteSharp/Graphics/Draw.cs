@@ -279,7 +279,7 @@ namespace EliteSharp.Graphics
                 trans_mat[i] = ship.Rotmat[i];
             }
 
-            Vector3 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat);
+            Vector3 camera_vec = Vector3.Transform(ship.Location, trans_mat.ToMatrix());
             camera_vec = VectorMaths.UnitVector(camera_vec);
 
             ShipFaceNormal[] ship_norm = ship.FaceNormals;
@@ -301,7 +301,7 @@ namespace EliteSharp.Graphics
                 if (visible[ship.Points[i].Face1] || visible[ship.Points[i].Face2] ||
                     visible[ship.Points[i].Face3] || visible[ship.Points[i].Face4])
                 {
-                    Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
+                    Vector3 vec = Vector3.Transform(ship.Points[i].Point, trans_mat.ToMatrix());
                     Vector3 r = vec + ship.Location;
                     Vector2 position = new(r.X, -r.Y);
                     position *= 256 / r.Z;

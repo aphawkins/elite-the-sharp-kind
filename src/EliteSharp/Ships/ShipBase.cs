@@ -99,7 +99,7 @@ namespace EliteSharp.Ships
                 trans_mat[i] = Rotmat[i];
             }
 
-            Vector3 camera_vec = VectorMaths.MultiplyVector(Location, trans_mat);
+            Vector3 camera_vec = Vector3.Transform(Location, trans_mat.ToMatrix());
             _ = VectorMaths.UnitVector(camera_vec);
             ShipFace[] face_data = Faces;
 
@@ -120,7 +120,7 @@ namespace EliteSharp.Ships
 
             for (int i = 0; i < Points.Length; i++)
             {
-                Vector3 vec = VectorMaths.MultiplyVector(Points[i].Point, trans_mat);
+                Vector3 vec = Vector3.Transform(Points[i].Point, trans_mat.ToMatrix());
                 vec += Location;
 
                 if (vec.Z <= 0)

@@ -28,6 +28,24 @@ namespace EliteSharp
 
         internal static Vector2 ToVector2(this Vector3 vector) => new(vector.X, vector.Y);
 
+        internal static Matrix4x4 ToMatrix(this Vector3[] mat) => new(
+                mat[0].X,
+                mat[1].X,
+                mat[2].X,
+                0,
+                mat[0].Y,
+                mat[1].Y,
+                mat[2].Y,
+                0,
+                mat[0].Z,
+                mat[1].Z,
+                mat[2].Z,
+                0,
+                0,
+                0,
+                0,
+                0);
+
 #pragma warning disable CA1308 // Normalize strings to uppercase
         internal static string CapitaliseFirstLetter(this string text) => char.ToUpperInvariant(text[0]) + text[1..].ToLowerInvariant();
 #pragma warning restore CA1308 // Normalize strings to uppercase
