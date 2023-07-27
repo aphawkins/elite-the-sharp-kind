@@ -270,7 +270,7 @@ namespace EliteSharp.Conflict
             rotmat[2, 2] = 1;
 
             IShip missile = new Missile(_draw);
-            if (!_universe.AddNewShip(missile, new(0, -28, 14), rotmat.ToVectors(), 0, 0))
+            if (!_universe.AddNewShip(missile, new(0, -28, 14), rotmat, 0, 0))
             {
                 _gameState.InfoMessage("Missile Jammed");
                 return;
@@ -356,7 +356,7 @@ namespace EliteSharp.Conflict
                 position.Y = (int)position.Y & 0xFFFF;
                 position.Y = (int)position.Y | 0x60000;
                 IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
-                _universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0);
+                _universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
             }
 
             _universe.RemoveShip(obj);
@@ -840,7 +840,7 @@ namespace EliteSharp.Conflict
             for (int i = 0; i <= rnd; i++)
             {
                 IShip packHunter = new ShipFactory(_draw).CreatePackHunter();
-                if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0))
+                if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix(), 0, 0))
                 {
                     packHunter.Flags = ShipFlags.Angry;
                     if (RNG.Random(256) > 245)
@@ -980,7 +980,7 @@ namespace EliteSharp.Conflict
         private bool LaunchEnemy(IShip sourceShip, IShip newShip, ShipFlags flags, int bravery)
         {
             Debug.Assert(sourceShip.Rotmat != null, "Rotation matrix should not be null.");
-            Vector3[] rotmat = sourceShip.Rotmat.Cloner();
+            Matrix4x4 rotmat = sourceShip.Rotmat.ToMatrix();
 
             if (!_universe.AddNewShip(newShip, sourceShip.Location, rotmat, sourceShip.RotX, sourceShip.RotZ))
             {

@@ -28,7 +28,7 @@ namespace EliteSharp.Views
         private readonly Stars _stars;
         private readonly Universe _universe;
         private int _direction;
-        private Vector3[] _rotmat = new Vector3[3];
+        private Matrix4x4 _rotmat;
         private int _shipNo;
         private int _showTime;
 
@@ -83,7 +83,7 @@ namespace EliteSharp.Views
             _ship.Climb = 0;
             _combat.Reset();
             _stars.CreateNewStars();
-            _rotmat = VectorMaths.GetInitialMatrix().ToVectors();
+            _rotmat = VectorMaths.GetInitialMatrix();
             _audio.PlayMusic(Music.BlueDanube, true);
 
             AddNewShip();

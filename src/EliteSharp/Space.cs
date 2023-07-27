@@ -151,14 +151,14 @@ namespace EliteSharp
             _stars.CreateNewStars();
 
             IObject planet = PlanetFactory.Create(_gameState.Config.PlanetStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix().ToVectors(), 0, 0))
+            if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
 
             Matrix4x4 rotmat = VectorMaths.GetInitialMatrix();
             rotmat = rotmat.SetRow(2, -rotmat.GetRow(2));
-            _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256), rotmat.ToVectors());
+            _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256), rotmat);
 
             _gameState.IsDocked = false;
         }
@@ -597,7 +597,7 @@ namespace EliteSharp
             }
 
             IObject planet = PlanetFactory.Create(_gameState.Config.PlanetStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0))
+            if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
@@ -606,7 +606,7 @@ namespace EliteSharp
             position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
             IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
-            if (!_universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0))
+            if (!_universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Sun");
             }
@@ -712,9 +712,10 @@ namespace EliteSharp
             rotmat[2, 1] = vec.Y;
             rotmat[2, 2] = vec.Z;
 
-            VectorMaths.TidyMatrix(rotmat.ToVectors());
+            Vector3[] vecs = rotmat.ToVectors();
+            VectorMaths.TidyMatrix(vecs);
 
-            _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, rotmat.ToVectors());
+            _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, vecs.ToMatrix());
         }
 
         /// <summary>

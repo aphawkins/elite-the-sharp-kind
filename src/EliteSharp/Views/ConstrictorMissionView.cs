@@ -111,7 +111,7 @@ namespace EliteSharp.Views
                 _combat.Reset();
                 _universe.ClearUniverse();
                 IShip constrictor = new Constrictor(_draw);
-                if (!_universe.AddNewShip(constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix().ToVectors(), -127, -127))
+                if (!_universe.AddNewShip(constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127))
                 {
                     Debug.Fail("Failed to create Constrictor");
                 }

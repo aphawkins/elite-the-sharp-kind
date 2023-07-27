@@ -70,10 +70,10 @@ namespace EliteSharp.Views
             _combat.Reset();
             _universe.ClearUniverse();
 
-            Vector3[] initMatrix = VectorMaths.GetInitialMatrix().ToVectors();
+            Matrix4x4 initMatrix = VectorMaths.GetInitialMatrix();
 
             // Ship faces away
-            initMatrix[2].Z = 1;
+            initMatrix[2, 2] = 1;
             IShip cobraMk3 = new CobraMk3(_draw);
             if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500), initMatrix, -127, 127))
             {
