@@ -71,7 +71,7 @@ namespace EliteSharp.Renderer
                     break;
             }
 
-            _obj.Rotmat = VectorMaths.GetInitialMatrix();
+            _obj.Rotmat = VectorMaths.GetInitialMatrix().ToVectors();
         }
 
         private void ComboRenderer_SelectedIndexChanged(object sender, EventArgs e) => SelectRenderer();

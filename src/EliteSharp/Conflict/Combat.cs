@@ -265,7 +265,7 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            Vector3[] rotmat = VectorMaths.GetInitialMatrix();
+            Vector3[] rotmat = VectorMaths.GetInitialMatrix().ToVectors();
             rotmat[2].Z = 1;
             rotmat[0].X = -1;
 
@@ -356,7 +356,7 @@ namespace EliteSharp.Conflict
                 position.Y = (int)position.Y & 0xFFFF;
                 position.Y = (int)position.Y | 0x60000;
                 IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
-                _universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
+                _universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0);
             }
 
             _universe.RemoveShip(obj);
@@ -840,7 +840,7 @@ namespace EliteSharp.Conflict
             for (int i = 0; i <= rnd; i++)
             {
                 IShip packHunter = new ShipFactory(_draw).CreatePackHunter();
-                if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix(), 0, 0))
+                if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0))
                 {
                     packHunter.Flags = ShipFlags.Angry;
                     if (RNG.Random(256) > 245)

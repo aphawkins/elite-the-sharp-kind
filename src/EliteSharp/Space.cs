@@ -151,12 +151,12 @@ namespace EliteSharp
             _stars.CreateNewStars();
 
             IObject planet = PlanetFactory.Create(_gameState.Config.PlanetStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
+            if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix().ToVectors(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
 
-            Vector3[] rotmat = VectorMaths.GetInitialMatrix();
+            Vector3[] rotmat = VectorMaths.GetInitialMatrix().ToVectors();
             rotmat[2].X = -rotmat[2].X;
             rotmat[2].Y = -rotmat[2].Y;
             rotmat[2].Z = -rotmat[2].Z;
@@ -599,7 +599,7 @@ namespace EliteSharp
             }
 
             IObject planet = PlanetFactory.Create(_gameState.Config.PlanetStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-            if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix(), 0, 0))
+            if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
             }
@@ -608,7 +608,7 @@ namespace EliteSharp
             position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
             IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
-            if (!_universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix(), 0, 0))
+            if (!_universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Sun");
             }

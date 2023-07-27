@@ -62,7 +62,7 @@ namespace EliteSharp.Views
             _ship.Speed = 1;
             _ship.Roll = 0;
             _ship.Climb = 0;
-            Vector3[] rotmat = VectorMaths.GetInitialMatrix();
+            Vector3[] rotmat = VectorMaths.GetInitialMatrix().ToVectors();
             rotmat[2].Z = 1;
             _newship = new CobraMk3(_draw);
             if (!_universe.AddNewShip(_newship, new(0, 0, 200), rotmat, -127, -127))

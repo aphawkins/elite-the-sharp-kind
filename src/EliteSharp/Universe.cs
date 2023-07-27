@@ -88,7 +88,7 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            return AddNewShip(ship, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            return AddNewShip(ship, position, VectorMaths.GetInitialMatrix().ToVectors(), 0, 0);
         }
 
         internal void AddNewStation(int planetTechLevel, Vector3 position, Vector3[] rotmat)

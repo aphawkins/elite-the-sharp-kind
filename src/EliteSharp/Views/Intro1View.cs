@@ -70,7 +70,7 @@ namespace EliteSharp.Views
             _combat.Reset();
             _universe.ClearUniverse();
 
-            Vector3[] initMatrix = VectorMaths.GetInitialMatrix();
+            Vector3[] initMatrix = VectorMaths.GetInitialMatrix().ToVectors();
 
             // Ship faces away
             initMatrix[2].Z = 1;

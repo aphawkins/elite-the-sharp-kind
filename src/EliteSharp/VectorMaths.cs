@@ -11,14 +11,14 @@ namespace EliteSharp
     /// </summary>
     internal static class VectorMaths
     {
-        private static readonly Vector3[] s_startMatrix = new Vector3[3]
+        internal static Matrix4x4 GetInitialMatrix()
         {
-            new Vector3(1, 0, 0),
-            new Vector3(0, 1, 0),
-            new Vector3(0, 0, -1),
-        };
-
-        internal static Vector3[] GetInitialMatrix() => s_startMatrix.Cloner();
+            Matrix4x4 mat = default;
+            mat[0, 0] = 1;
+            mat[1, 1] = 1;
+            mat[2, 2] = -1;
+            return mat;
+        }
 
         internal static Matrix4x4 RotateVector(Matrix4x4 mat, float alpha, float beta)
         {

@@ -33,7 +33,7 @@ namespace EliteSharp
         {
             IShip ship = new ShipBase(_draw)
             {
-                Rotmat = VectorMaths.GetInitialMatrix(),
+                Rotmat = VectorMaths.GetInitialMatrix().ToVectors(),
                 Location = Vector3.Zero,
                 Acceleration = 0,
 

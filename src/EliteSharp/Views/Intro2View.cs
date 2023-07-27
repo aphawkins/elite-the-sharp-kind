@@ -83,7 +83,7 @@ namespace EliteSharp.Views
             _ship.Climb = 0;
             _combat.Reset();
             _stars.CreateNewStars();
-            _rotmat = VectorMaths.GetInitialMatrix();
+            _rotmat = VectorMaths.GetInitialMatrix().ToVectors();
             _audio.PlayMusic(Music.BlueDanube, true);
 
             AddNewShip();
