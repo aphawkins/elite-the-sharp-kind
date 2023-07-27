@@ -42,10 +42,9 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Draw a solid planet. Based on Doros circle drawing alogorithm.
         /// </summary>
-        internal void Draw(Vector2 centre, float radius, Vector3[] vec)
+        internal void Draw(Vector2 centre, float radius, Matrix4x4 mat)
         {
-            float vx = vec[1].X * 65536;
-            float vy = vec[1].Y * 65536;
+            Vector2 vec = (mat.GetRow(1) * 65536).ToVector2();
             float x = MathF.Floor(radius);
             float s = -x;
             float y = 0;
@@ -53,16 +52,16 @@ namespace EliteSharp.Planets
             while (y <= x)
             {
                 // Top of top half
-                RenderPlanetLine(centre, y, -x, radius, vx, vy);
+                RenderPlanetLine(centre, y, -x, radius, vec);
 
                 // Bottom of top half
-                RenderPlanetLine(centre, x, -y, radius, vx, vy);
+                RenderPlanetLine(centre, x, -y, radius, vec);
 
                 // Top of bottom half
-                RenderPlanetLine(centre, x, y, radius, vx, vy);
+                RenderPlanetLine(centre, x, y, radius, vec);
 
                 // Bottom of bottom half
-                RenderPlanetLine(centre, y, x, radius, vx, vy);
+                RenderPlanetLine(centre, y, x, radius, vec);
 
                 s += y + y + 1;
                 y++;
@@ -77,7 +76,7 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Draw a line of the planet with appropriate rotation.
         /// </summary>
-        private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
+        private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, Vector2 vec)
         {
             Vector2 s = new()
             {
@@ -92,8 +91,8 @@ namespace EliteSharp.Planets
             s.X = centre.X - x;
             float ex = centre.X + x;
 
-            float rx = (-x * vx) - (y * vy);
-            float ry = (-x * vy) + (y * vx);
+            float rx = (-x * vec.X) - (y * vec.Y);
+            float ry = (-x * vec.Y) + (y * vec.X);
             rx += radius * 65536;
             ry += radius * 65536;
 
@@ -110,8 +109,8 @@ namespace EliteSharp.Planets
                     _draw.Graphics.DrawPixelFast(s, colour);
                 }
 
-                rx += vx;
-                ry += vy;
+                rx += vec.X;
+                ry += vec.Y;
             }
         }
     }

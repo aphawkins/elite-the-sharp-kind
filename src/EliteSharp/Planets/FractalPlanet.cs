@@ -56,7 +56,7 @@ namespace EliteSharp.Planets
             (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
             if (v != null)
             {
-                _planetRenderer.Draw(v.Value.Position, v.Value.Radius, Rotmat);
+                _planetRenderer.Draw(v.Value.Position, v.Value.Radius, Rotmat.ToMatrix());
             }
         }
 
