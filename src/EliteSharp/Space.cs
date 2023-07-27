@@ -698,23 +698,23 @@ namespace EliteSharp
             Vector3 position = location - (vec * 65792);
 
             //  VectorMaths.set_init_matrix (rotmat);
-            Vector3[] rotmat = new Vector3[3];
+            Matrix4x4 rotmat = default;
 
-            rotmat[0].X = 1;
-            rotmat[0].Y = 0;
-            rotmat[0].Z = 0;
+            rotmat[0, 0] = 1;
+            rotmat[0, 1] = 0;
+            rotmat[0, 2] = 0;
 
-            rotmat[1].X = vec.X;
-            rotmat[1].Y = vec.Z;
-            rotmat[1].Z = -vec.Y;
+            rotmat[1, 0] = vec.X;
+            rotmat[1, 1] = vec.Z;
+            rotmat[1, 2] = -vec.Y;
 
-            rotmat[2].X = vec.X;
-            rotmat[2].Y = vec.Y;
-            rotmat[2].Z = vec.Z;
+            rotmat[2, 0] = vec.X;
+            rotmat[2, 1] = vec.Y;
+            rotmat[2, 2] = vec.Z;
 
-            VectorMaths.TidyMatrix(rotmat);
+            VectorMaths.TidyMatrix(rotmat.ToVectors());
 
-            _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, rotmat);
+            _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, rotmat.ToVectors());
         }
 
         /// <summary>
