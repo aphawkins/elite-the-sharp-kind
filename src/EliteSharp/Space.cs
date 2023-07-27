@@ -156,11 +156,9 @@ namespace EliteSharp
                 Debug.WriteLine("Failed to create Planet");
             }
 
-            Vector3[] rotmat = VectorMaths.GetInitialMatrix().ToVectors();
-            rotmat[2].X = -rotmat[2].X;
-            rotmat[2].Y = -rotmat[2].Y;
-            rotmat[2].Z = -rotmat[2].Z;
-            _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256), rotmat);
+            Matrix4x4 rotmat = VectorMaths.GetInitialMatrix();
+            rotmat = rotmat.SetRow(2, -rotmat.GetRow(2));
+            _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256), rotmat.ToVectors());
 
             _gameState.IsDocked = false;
         }
