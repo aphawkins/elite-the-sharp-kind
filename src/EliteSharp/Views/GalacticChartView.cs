@@ -36,7 +36,7 @@ namespace EliteSharp.Views
             // Header
             _draw.DrawViewHeader($"GALACTIC CHART {_gameState.Cmdr.GalaxyNumber + 1}");
 
-            _draw.Graphics.DrawLine(new(0 + _draw.Offset, 36 + 258), new(_draw.ScannerRight, 36 + 258));
+            _draw.Graphics.DrawLine(new(0 + _draw.Offset, 36 + 258), new(_draw.ScannerRight, 36 + 258), EColor.White);
 
             // Fuel radius
             Vector2 centre = new(
@@ -45,8 +45,8 @@ namespace EliteSharp.Views
             float radius = _ship.Fuel * 2.5f * _draw.Graphics.Scale;
             float cross_size = 7 * _draw.Graphics.Scale;
             _draw.Graphics.DrawCircle(centre, radius, EColor.Green);
-            _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
-            _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
+            _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), EColor.White);
+            _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), EColor.White);
 
             // Planets
             foreach (Vector2 pixel in _planetPixels)

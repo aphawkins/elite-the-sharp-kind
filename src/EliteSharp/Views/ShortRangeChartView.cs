@@ -42,8 +42,8 @@ namespace EliteSharp.Views
             float radius = _ship.Fuel * 10 * _draw.Graphics.Scale;
             float cross_size = 16 * _draw.Graphics.Scale;
             _draw.Graphics.DrawCircle(centre, radius, EColor.Green);
-            _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size));
-            _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y));
+            _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), EColor.White);
+            _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), EColor.White);
 
             // Planets
             foreach ((Vector2 position, string name) in _planetNames)

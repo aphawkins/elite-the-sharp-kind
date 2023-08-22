@@ -19,13 +19,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteSharp.Tests", "test\EliteSharp.Tests\EliteSharp.Tests.csproj", "{D9C4A414-9A4E-4139-9510-0FC8CE95DCA0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteSharp.Benchmarks", "test\EliteSharp.Benchmarks\EliteSharp.Benchmarks.csproj", "{FE09F2A0-C010-486C-A176-96BA409398CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteSharp.Renderer", "src\EliteSharp.Renderer\EliteSharp.Renderer.csproj", "{6A8DBC21-7133-468B-82FB-81225B37AC74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteSharp.Renderer", "src\EliteSharp.Renderer\EliteSharp.Renderer.csproj", "{6A8DBC21-7133-468B-82FB-81225B37AC74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{26681FCC-D133-4A8F-B57B-F2AC966D3EFB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EliteSharp.SDL", "src\EliteSharp.SDL\EliteSharp.SDL.csproj", "{13F142D2-AEE1-42B5-8A23-9D7D7EC73AA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,9 +58,18 @@ Global
 		{6A8DBC21-7133-468B-82FB-81225B37AC74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A8DBC21-7133-468B-82FB-81225B37AC74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A8DBC21-7133-468B-82FB-81225B37AC74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13F142D2-AEE1-42B5-8A23-9D7D7EC73AA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13F142D2-AEE1-42B5-8A23-9D7D7EC73AA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13F142D2-AEE1-42B5-8A23-9D7D7EC73AA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13F142D2-AEE1-42B5-8A23-9D7D7EC73AA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D9C4A414-9A4E-4139-9510-0FC8CE95DCA0} = {26681FCC-D133-4A8F-B57B-F2AC966D3EFB}
+		{FE09F2A0-C010-486C-A176-96BA409398CE} = {26681FCC-D133-4A8F-B57B-F2AC966D3EFB}
+		{6A8DBC21-7133-468B-82FB-81225B37AC74} = {26681FCC-D133-4A8F-B57B-F2AC966D3EFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {ED87E059-B16F-490F-87DD-3831F8603138}

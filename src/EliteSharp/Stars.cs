@@ -107,7 +107,7 @@ namespace EliteSharp
 
                 if (WarpStars)
                 {
-                    _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale));
+                    _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale), EColor.White);
                 }
 
                 star.X = xx;
@@ -197,7 +197,7 @@ namespace EliteSharp
                        (ex >= _draw.Left) && (ex <= _draw.Right) &&
                        (ey >= _draw.Top) && (ey <= _draw.Bottom))
                     {
-                        _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale));
+                        _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale), EColor.White);
                     }
                 }
 
@@ -289,7 +289,7 @@ namespace EliteSharp
 
                 if (WarpStars)
                 {
-                    _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale));
+                    _draw.Graphics.DrawLine(star, new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale), EColor.White);
                 }
 
                 if (MathF.Abs(_stars[i].X) >= _draw.Centre.X / 2)

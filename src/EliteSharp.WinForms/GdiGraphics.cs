@@ -69,9 +69,6 @@ namespace EliteSharp.WinForms
             DrawImage(image, new(x, y));
         }
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) =>
-            _screenBufferGraphics.DrawLine(_pens[EColor.White], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
-
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour) =>
             _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
 

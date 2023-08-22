@@ -151,8 +151,6 @@ namespace EliteSharp.Graphics
             }
         }
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd) => DrawLine(lineStart, lineEnd, EColor.White);
-
         public void DrawPixel(Vector2 position, EColor colour)
         {
             if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)

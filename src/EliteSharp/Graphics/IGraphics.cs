@@ -24,8 +24,6 @@ namespace EliteSharp.Graphics
 
         void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour);
 
-        void DrawLine(Vector2 lineStart, Vector2 lineEnd);
-
         void DrawPixel(Vector2 position, EColor colour);
 
         void DrawPixelFast(Vector2 position, EColor colour);

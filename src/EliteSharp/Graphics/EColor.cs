@@ -64,6 +64,14 @@ namespace EliteSharp.Graphics
 
         public static EColor Yellow => new(0xFFFF00);
 
+        public byte A => (byte)(_argbColour >> 24);
+
+        public byte B => (byte)_argbColour;
+
+        public byte G => (byte)(_argbColour >> 8);
+
+        public byte R => (byte)(_argbColour >> 16);
+
         public static bool operator !=(EColor left, EColor right) => !(left == right);
 
         public static bool operator ==(EColor left, EColor right) => left.ToArgb() == right.ToArgb();
