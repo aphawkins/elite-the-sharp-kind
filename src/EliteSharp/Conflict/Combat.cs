@@ -583,8 +583,8 @@ namespace EliteSharp.Conflict
                 }
             }
 
-            nvec = VectorMaths.UnitVector(ship.Location);
-            direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[2]);
+            nvec = Vector3.Normalize(ship.Location);
+            direction = Vector3.Dot(nvec, ship.Rotmat[2]);
 
             if (ship.Location.Length() < 8192 &&
                 direction <= -0.833 &&
@@ -743,7 +743,7 @@ namespace EliteSharp.Conflict
         {
             const int rat = 3;
             const float rat2 = 0.111f;
-            float dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[1]);
+            float dir = Vector3.Dot(nvec, ship.Rotmat[1]);
 
             if (direction < -0.861)
             {
@@ -761,7 +761,7 @@ namespace EliteSharp.Conflict
 
             if (MathF.Abs(ship.RotZ) < 16)
             {
-                dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[0]);
+                dir = Vector3.Dot(nvec, ship.Rotmat[0]);
 
                 ship.RotZ = 0;
 
@@ -1133,8 +1133,8 @@ namespace EliteSharp.Conflict
                 }
             }
 
-            nvec = VectorMaths.UnitVector(vec);
-            direction = VectorMaths.VectorDotProduct(nvec, missile.Rotmat[2]);
+            nvec = Vector3.Normalize(vec);
+            direction = Vector3.Dot(nvec, missile.Rotmat[2]);
             nvec.X = -nvec.X;
             nvec.Y = -nvec.Y;
             nvec.Z = -nvec.Z;

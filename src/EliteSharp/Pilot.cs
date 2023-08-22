@@ -143,8 +143,8 @@ namespace EliteSharp
                 return;
             }
 
-            Vector3 vec = VectorMaths.UnitVector(diff);
-            float dir = VectorMaths.VectorDotProduct(_universe.StationOrSun.Rotmat[2], vec);
+            Vector3 vec = Vector3.Normalize(diff);
+            float dir = Vector3.Dot(_universe.StationOrSun.Rotmat[2], vec);
 
             if (dir < 0.9722)
             {
@@ -152,7 +152,7 @@ namespace EliteSharp
                 return;
             }
 
-            dir = VectorMaths.VectorDotProduct(ship.Rotmat[2], vec);
+            dir = Vector3.Dot(ship.Rotmat[2], vec);
 
             if (dir < -0.9444)
             {
@@ -201,15 +201,15 @@ namespace EliteSharp
             rat2 = 0.1666f;
             cnt2 = 0.8055f;
 
-            nvec = VectorMaths.UnitVector(vec);
-            direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[2]);
+            nvec = Vector3.Normalize(vec);
+            direction = Vector3.Dot(nvec, ship.Rotmat[2]);
 
             if (direction < -0.6666)
             {
                 rat2 = 0;
             }
 
-            dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[1]);
+            dir = Vector3.Dot(nvec, ship.Rotmat[1]);
 
             if (direction < -0.861)
             {
@@ -227,7 +227,7 @@ namespace EliteSharp
 
             if (MathF.Abs(ship.RotZ) < 16)
             {
-                dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[0]);
+                dir = Vector3.Dot(nvec, ship.Rotmat[0]);
                 ship.RotZ = 0;
 
                 if ((MathF.Abs(dir) * 2) >= rat2)
@@ -260,7 +260,7 @@ namespace EliteSharp
         private void FlyToDockingBay(IShip ship)
         {
             Vector3 diff = ship.Location - _universe.StationOrSun!.Location;
-            Vector3 vec = VectorMaths.UnitVector(diff);
+            Vector3 vec = Vector3.Normalize(diff);
             ship.RotX = 0;
 
             if (ship.Type == ShipType.None)
@@ -294,7 +294,7 @@ namespace EliteSharp
 
             ship.RotZ = 0;
 
-            float dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], _universe.StationOrSun.Rotmat[1]);
+            float dir = Vector3.Dot(ship.Rotmat[0], _universe.StationOrSun.Rotmat[1]);
 
             if (MathF.Abs(dir) >= 0.9166f)
             {

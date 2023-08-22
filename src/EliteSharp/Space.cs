@@ -674,7 +674,7 @@ namespace EliteSharp
                 return false;
             }
 
-            Vector3 vec = VectorMaths.UnitVector(ship.Location);
+            Vector3 vec = Vector3.Normalize(ship.Location);
 
             if (vec.Z < 0.927)
             {
@@ -694,7 +694,7 @@ namespace EliteSharp
         {
             Vector3 location = _universe.Planet!.Location;
             Vector3 vec = new(RNG.Random(-16384, 16384), RNG.Random(-16384, 16384), RNG.Random(32768));
-            vec = VectorMaths.UnitVector(vec);
+            vec = Vector3.Normalize(vec);
             Vector3 position = location - (vec * 65792);
 
             //  VectorMaths.set_init_matrix (rotmat);
@@ -766,7 +766,7 @@ namespace EliteSharp
                 beta = 0.0f;
             }
 
-            obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat.ToMatrix(), alpha, beta).ToVectors();
+            obj.Rotmat = VectorMaths.Rotate(obj.Rotmat.ToMatrix(), alpha, beta).ToVectors();
 
             if (obj.Flags.HasFlag(ShipFlags.Dead))
             {

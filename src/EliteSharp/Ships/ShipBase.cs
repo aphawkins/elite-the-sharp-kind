@@ -96,7 +96,7 @@ namespace EliteSharp.Ships
             Matrix4x4 trans_mat = Rotmat.ToMatrix();
 
             Vector3 camera_vec = Vector3.Transform(Location, trans_mat);
-            _ = VectorMaths.UnitVector(camera_vec);
+            _ = Vector3.Normalize(camera_vec);
             ShipFace[] face_data = Faces;
 
             //for (i = 0; i < num_faces; i++)

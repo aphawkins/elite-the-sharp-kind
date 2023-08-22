@@ -275,14 +275,14 @@ namespace EliteSharp.Graphics
 
             Matrix4x4 trans_mat = ship.Rotmat.ToMatrix();
             Vector3 camera_vec = Vector3.Transform(ship.Location, trans_mat);
-            camera_vec = VectorMaths.UnitVector(camera_vec);
+            camera_vec = Vector3.Normalize(camera_vec);
 
             ShipFaceNormal[] ship_norm = ship.FaceNormals;
 
             for (int i = 0; i < ship.FaceNormals.Length; i++)
             {
-                Vector3 vec = VectorMaths.UnitVector(ship_norm[i].Direction);
-                float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
+                Vector3 vec = Vector3.Normalize(ship_norm[i].Direction);
+                float cos_angle = Vector3.Dot(vec, camera_vec);
                 visible[i] = cos_angle < -0.13;
             }
 

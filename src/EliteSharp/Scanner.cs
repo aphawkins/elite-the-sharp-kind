@@ -248,7 +248,7 @@ namespace EliteSharp
                 return;
             }
 
-            Vector3 dest = VectorMaths.UnitVector(obj!.Location);
+            Vector3 dest = Vector3.Normalize(obj!.Location);
 
             if (float.IsNaN(dest.X))
             {
