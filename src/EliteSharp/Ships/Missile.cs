@@ -29,32 +29,32 @@ namespace EliteSharp.Ships
             Faces = new ShipFace[]
             {
                 //fins
-                new(EColor.LighterRed, new(0x20, 0x00, 0x00), new[] { 5, 9, 15 }),
-                new(EColor.LighterRed, new(0x00, 0x20, 0x00), new[] { 15, 9,  5 }),
+                new(EColors.LighterRed, new(0x20, 0x00, 0x00), new[] { 5, 9, 15 }),
+                new(EColors.LighterRed, new(0x00, 0x20, 0x00), new[] { 15, 9,  5 }),
 
-                new(EColor.LighterRed, new(-0x20, 0x00, 0x00), new[] { 8, 12, 13 }),
-                new(EColor.LighterRed, new(0x00, 0x20, 0x00), new[] { 13, 12, 8 }),
+                new(EColors.LighterRed, new(-0x20, 0x00, 0x00), new[] { 8, 12, 13 }),
+                new(EColors.LighterRed, new(0x00, 0x20, 0x00), new[] { 13, 12, 8 }),
 
-                new(EColor.LighterRed, new(-0x20, 0x00, 0x00), new[] { 7, 11, 14 }),
-                new(EColor.LighterRed, new(0x00, -0x20, 0x00), new[] { 14, 11, 7 }),
+                new(EColors.LighterRed, new(-0x20, 0x00, 0x00), new[] { 7, 11, 14 }),
+                new(EColors.LighterRed, new(0x00, -0x20, 0x00), new[] { 14, 11, 7 }),
 
-                new(EColor.LighterRed, new(0x20, 0x00, 0x00), new[] { 6, 10, 16 }),
-                new(EColor.LighterRed, new(0x00, -0x20, 0x00), new[] { 16, 10, 6 }),
+                new(EColors.LighterRed, new(0x20, 0x00, 0x00), new[] { 6, 10, 16 }),
+                new(EColors.LighterRed, new(0x00, -0x20, 0x00), new[] { 16, 10, 6 }),
 
                 //nose cone
-                new(EColor.LightRed, new(-0x40, 0x00, 0x10), new[] { 0,  3,  4 }),
-                new(EColor.LighterRed,      new(0x00, -0x40, 0x10), new[] { 0,  4,  1 }),
-                new(EColor.LightRed, new(0x40, 0x00, 0x10), new[] { 0,  1,  2 }),
-                new(EColor.LighterRed,      new(0x00, 0x40, 0x10), new[] { 0,  2,  3 }),
+                new(EColors.LightRed, new(-0x40, 0x00, 0x10), new[] { 0,  3,  4 }),
+                new(EColors.LighterRed,      new(0x00, -0x40, 0x10), new[] { 0,  4,  1 }),
+                new(EColors.LightRed, new(0x40, 0x00, 0x10), new[] { 0,  1,  2 }),
+                new(EColors.LighterRed,      new(0x00, 0x40, 0x10), new[] { 0,  2,  3 }),
 
                 //main body
-                new(EColor.DarkerGrey, new(0x20, 0x00, 0x00), new[] { 6,  5,  2, 1 }),
-                new(EColor.LightGrey, new(0x00, 0x20, 0x00), new[] { 5,  8,  3, 2 }),
-                new(EColor.DarkerGrey, new(-0x20, 0x00, 0x00), new[] { 8,  7,  4, 3 }),
-                new(EColor.LightGrey, new(0x00, -0x20, 0x00), new[] { 7,  6,  1, 4 }),
+                new(EColors.DarkerGrey, new(0x20, 0x00, 0x00), new[] { 6,  5,  2, 1 }),
+                new(EColors.LightGrey, new(0x00, 0x20, 0x00), new[] { 5,  8,  3, 2 }),
+                new(EColors.DarkerGrey, new(-0x20, 0x00, 0x00), new[] { 8,  7,  4, 3 }),
+                new(EColors.LightGrey, new(0x00, -0x20, 0x00), new[] { 7,  6,  1, 4 }),
 
                 //bottom
-                new(EColor.DarkGrey, new(0x00, 0x00, -0xB0), new[] { 5,  6,  7, 8 }),
+                new(EColors.DarkGrey, new(0x00, 0x00, -0xB0), new[] { 5,  6,  7, 8 }),
             };
             Lines = new ShipLine[]
             {

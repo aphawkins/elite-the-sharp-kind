@@ -16,9 +16,9 @@ namespace EliteSharp.Tests.Graphics
             // Act
 
             // Assert
-            Assert.True(EColor.DarkerGrey.Equals(EColor.DarkerGrey));
-            Assert.Equal(EColor.DarkerGrey, EColor.DarkerGrey);
-            Assert.Equal(EColor.DarkerGrey, new EColor(0x606060));
+            Assert.True(EColors.DarkerGrey.Equals(EColors.DarkerGrey));
+            Assert.Equal(EColors.DarkerGrey, EColors.DarkerGrey);
+            Assert.Equal(EColors.DarkerGrey, new EColor(0x606060));
         }
     }
 }

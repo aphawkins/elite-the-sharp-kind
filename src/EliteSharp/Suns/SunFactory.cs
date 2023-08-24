@@ -11,7 +11,7 @@ namespace EliteSharp.Suns
     {
         internal static IObject Create(SunType type, IDraw draw) => type switch
         {
-            SunType.Solid => new SolidSun(draw, EColor.White),
+            SunType.Solid => new SolidSun(draw, EColors.White),
             SunType.Gradient => new GradientSun(draw),
             _ => throw new NotImplementedException(),
         };

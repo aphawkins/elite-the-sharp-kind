@@ -107,7 +107,7 @@ namespace EliteSharp
         public async Task RunAsync(CancellationToken token)
         {
             await _audio.LoadSoundsAsync(token).ConfigureAwait(false);
-            await _draw.LoadImagesAsync(token).ConfigureAwait(false);
+            _draw.LoadImages(token);
             long startTicks = DateTime.UtcNow.Ticks;
             long interval = (long)(100000 / _gameState.Config.Fps); // *10^-5
 
@@ -145,7 +145,7 @@ namespace EliteSharp
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
 
-            _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", EColor.White);
+            _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", EColors.White);
         }
 #endif
 
@@ -242,7 +242,7 @@ namespace EliteSharp
 
                 if (_gameState.MessageCount > 0)
                 {
-                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontSize.Small, EColor.White);
+                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontSize.Small, EColors.White);
                 }
 
                 if (_space.IsHyperspaceReady)

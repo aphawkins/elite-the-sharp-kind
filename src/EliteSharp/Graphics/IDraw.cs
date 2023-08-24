@@ -41,7 +41,7 @@ namespace EliteSharp.Graphics
 
         void DrawViewHeader(string title);
 
-        Task LoadImagesAsync(CancellationToken token);
+        void LoadImages(CancellationToken token);
 
         void RenderEnd();
 

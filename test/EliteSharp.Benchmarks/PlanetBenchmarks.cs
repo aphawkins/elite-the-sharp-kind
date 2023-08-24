@@ -31,7 +31,7 @@ namespace EliteSharp.Benchmarks
             _graphics = new SoftwareGraphics(_buffer);
             _draw = new Draw(_gameState, _graphics);
             _wireframePlanet = new(_draw);
-            _solidPlanet = new(_draw, EColor.White);
+            _solidPlanet = new(_draw, EColors.White);
             _fractalPlanet = new(_draw, 12345);
             _stripedPlanet = new(_draw);
         }

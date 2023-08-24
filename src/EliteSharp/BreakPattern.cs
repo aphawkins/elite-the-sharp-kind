@@ -22,7 +22,7 @@ namespace EliteSharp
             // Just draw a very simple one for the moment.
             for (int i = 0; i < _breakPatternCount; i++)
             {
-                _draw.Graphics.DrawCircle(_draw.Centre, 30 + (i * _draw.Centre.X / MaxRings), EColor.White);
+                _draw.Graphics.DrawCircle(_draw.Centre, 30 + (i * _draw.Centre.X / MaxRings), EColors.White);
             }
         }
 

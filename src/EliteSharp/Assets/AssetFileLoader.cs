@@ -12,14 +12,7 @@ namespace EliteSharp.Assets
 {
     internal sealed class AssetFileLoader : IAssets
     {
-        public async Task<byte[]> LoadAsync(Image image, CancellationToken token)
-        {
-            using MemoryStream memStream = new();
-            using FileStream stream = new(Path.Combine(GetAssetPath(), "Images", GetName(image)), FileMode.Open);
-            await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
-            memStream.Position = 0;
-            return memStream.ToArray();
-        }
+        public string AssetPath(ImageType image) => Path.Combine(GetAssetPath(), "Images", GetName(image));
 
         public async Task<byte[]> LoadAsync(SoundEffect effect, CancellationToken token)
         {
@@ -43,18 +36,18 @@ namespace EliteSharp.Assets
 
         private static string GetAssetPath() => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets");
 
-        private static string GetName(Image image) => image switch
+        private static string GetName(ImageType image) => image switch
         {
-            Image.GreenDot => "greendot.bmp",
-            Image.DotRed => "reddot.bmp",
-            Image.BigS => "safe.bmp",
-            Image.EliteText => "elitetext.bmp",
-            Image.BigE => "ecm.bmp",
-            Image.MissileGreen => "missgrn.bmp",
-            Image.MissileYellow => "missyell.bmp",
-            Image.MissileRed => "missred.bmp",
-            Image.Blake => "blake.bmp",
-            Image.Scanner => "scanner.bmp",
+            ImageType.GreenDot => "greendot.bmp",
+            ImageType.DotRed => "reddot.bmp",
+            ImageType.BigS => "safe.bmp",
+            ImageType.EliteText => "elitetext.bmp",
+            ImageType.BigE => "ecm.bmp",
+            ImageType.MissileGreen => "missgrn.bmp",
+            ImageType.MissileYellow => "missyell.bmp",
+            ImageType.MissileRed => "missred.bmp",
+            ImageType.Blake => "blake.bmp",
+            ImageType.Scanner => "scanner.bmp",
             _ => throw new NotImplementedException(),
         };
 

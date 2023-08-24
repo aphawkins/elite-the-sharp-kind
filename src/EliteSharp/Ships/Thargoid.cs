@@ -30,28 +30,28 @@ namespace EliteSharp.Ships
             };
             Faces = new ShipFace[]
             {
-                new(EColor.LightRed, new(0x67, -0x3C, 0x19), new[] { 1,  0,  8,  9 }),
-                new(EColor.DarkGrey, new(0x67, -0x3C, -0x19), new[] { 2,  1,  9, 10 }),
-                new(EColor.LightRed, new(0x67, -0x19, -0x3C), new[] { 3,  2, 10, 11 }),
-                new(EColor.DarkGrey, new(0x67, 0x19, -0x3C), new[] { 4,  3, 11, 12 }),
+                new(EColors.LightRed, new(0x67, -0x3C, 0x19), new[] { 1,  0,  8,  9 }),
+                new(EColors.DarkGrey, new(0x67, -0x3C, -0x19), new[] { 2,  1,  9, 10 }),
+                new(EColors.LightRed, new(0x67, -0x19, -0x3C), new[] { 3,  2, 10, 11 }),
+                new(EColors.DarkGrey, new(0x67, 0x19, -0x3C), new[] { 4,  3, 11, 12 }),
 
                 //new(graphics_COL.graphics_COL_GREY_3,    0x40, 0x00, 0x00, 8,  7,  6,  5,  4,  3,  2, 1, 0),
-                new(EColor.DarkerGrey, new(0x40, 0x00, 0x00), new[] { 0,  1,  2,  7 }),
-                new(EColor.DarkerGrey, new(0x40, 0x00, 0x00), new[] { 2,  3,  6,  7 }),
-                new(EColor.DarkerGrey, new(0x40, 0x00, 0x00), new[] { 3,  4,  5,  6 }),
+                new(EColors.DarkerGrey, new(0x40, 0x00, 0x00), new[] { 0,  1,  2,  7 }),
+                new(EColors.DarkerGrey, new(0x40, 0x00, 0x00), new[] { 2,  3,  6,  7 }),
+                new(EColors.DarkerGrey, new(0x40, 0x00, 0x00), new[] { 3,  4,  5,  6 }),
 
-                new(EColor.LightRed, new(0x67, 0x3C, -0x19), new[] { 5,  4, 12, 13 }),
-                new(EColor.DarkGrey, new(0x67, 0x3C, 0x19), new[] { 6,  5, 13, 14 }),
-                new(EColor.LightRed, new(0x67, 0x19, 0x3C), new[] { 7,  6, 14, 15 }),
-                new(EColor.DarkGrey, new(0x67, -0x19, 0x3C), new[] { 0,  7, 15,  8 }),
+                new(EColors.LightRed, new(0x67, 0x3C, -0x19), new[] { 5,  4, 12, 13 }),
+                new(EColors.DarkGrey, new(0x67, 0x3C, 0x19), new[] { 6,  5, 13, 14 }),
+                new(EColors.LightRed, new(0x67, 0x19, 0x3C), new[] { 7,  6, 14, 15 }),
+                new(EColors.DarkGrey, new(0x67, -0x19, 0x3C), new[] { 0,  7, 15,  8 }),
 
                 //new(graphics_COL.graphics_COL_GREY_3,   -0x30, 0x00, 0x00, 8, 15, 14, 13, 12, 11, 10, 9, 8),
-                new(EColor.DarkerGrey, new(-0x30, 0x00, 0x00), new[] { 9,  8, 15, 10 }),
-                new(EColor.DarkerGrey, new(-0x30, 0x00, 0x00), new[] { 11, 10, 15, 14 }),
-                new(EColor.DarkerGrey, new(-0x30, 0x00, 0x00), new[] { 12, 11, 14, 13 }),
+                new(EColors.DarkerGrey, new(-0x30, 0x00, 0x00), new[] { 9,  8, 15, 10 }),
+                new(EColors.DarkerGrey, new(-0x30, 0x00, 0x00), new[] { 11, 10, 15, 14 }),
+                new(EColors.DarkerGrey, new(-0x30, 0x00, 0x00), new[] { 12, 11, 14, 13 }),
 
-                new(EColor.White, new(-0x30, 0x00, 0x00), new[] { 16, 17 /*, 19 */ }),
-                new(EColor.White, new(-0x30, 0x00, 0x00), new[] { 18, 19 /*, 16 */ }),
+                new(EColors.White, new(-0x30, 0x00, 0x00), new[] { 16, 17 /*, 19 */ }),
+                new(EColors.White, new(-0x30, 0x00, 0x00), new[] { 18, 19 /*, 16 */ }),
             };
             LaserFront = 15;
             LaserStrength = 11;

@@ -26,18 +26,18 @@ namespace EliteSharp.Ships
             };
             Faces = new ShipFace[]
             {
-                new(EColor.DarkGrey, new(0x00, 0x20, 0x00), new[] { 7,  8,  1 }),
+                new(EColors.DarkGrey, new(0x00, 0x20, 0x00), new[] { 7,  8,  1 }),
 
-                new(EColor.DarkBlue, new(-0x16, 0x21, 0x0B), new[] { 8,  4,  0, 1 }),
-                new(EColor.Blue, new(0x16, 0x21, 0x0B), new[] { 3,  7,  1, 0 }),
+                new(EColors.DarkBlue, new(-0x16, 0x21, 0x0B), new[] { 8,  4,  0, 1 }),
+                new(EColors.Blue, new(0x16, 0x21, 0x0B), new[] { 3,  7,  1, 0 }),
 
-                new(EColor.Blue, new(-0x16, -0x21, 0x0B), new[] { 2,  0,  4, 6 }),
-                new(EColor.DarkBlue, new(0x16, -0x21, 0x0B), new[] { 0,  2,  5, 3 }),
+                new(EColors.Blue, new(-0x16, -0x21, 0x0B), new[] { 2,  0,  4, 6 }),
+                new(EColors.DarkBlue, new(0x16, -0x21, 0x0B), new[] { 0,  2,  5, 3 }),
 
-                new(EColor.DarkGrey, new(0x00, -0x20, 0x00), new[] { 2,  6, 5 }),
-                new(EColor.LightGrey, new(0x00, 0x00, -0x30), new[] { 4,  8,  7, 3, 5, 6 }),
-                new(EColor.LighterRed, new(0x00, 0x00, -0x30), new[] { 12, 13, 9 }),
-                new(EColor.LighterRed, new(0x00, 0x00, -0x30), new[] { 10, 14, 11 }),
+                new(EColors.DarkGrey, new(0x00, -0x20, 0x00), new[] { 2,  6, 5 }),
+                new(EColors.LightGrey, new(0x00, 0x00, -0x30), new[] { 4,  8,  7, 3, 5, 6 }),
+                new(EColors.LighterRed, new(0x00, 0x00, -0x30), new[] { 12, 13, 9 }),
+                new(EColors.LighterRed, new(0x00, 0x00, -0x30), new[] { 10, 14, 11 }),
             };
             LaserStrength = 8;
             Lines = new ShipLine[]

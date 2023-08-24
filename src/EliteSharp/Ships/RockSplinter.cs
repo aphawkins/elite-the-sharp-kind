@@ -24,10 +24,10 @@ namespace EliteSharp.Ships
             };
             Faces = new ShipFace[]
             {
-                new(EColor.LightGrey, new(0x00, 0x00, 0x00), new[] { 3, 2, 1 }),
-                new(EColor.DarkGrey, new(0x00, 0x00, 0x00), new[] { 0, 2, 3 }),
-                new(EColor.DarkerGrey, new(0x00, 0x00, 0x00), new[] { 3, 1, 0 }),
-                new(EColor.Grey, new(0x00, 0x00, 0x00), new[] { 0, 1, 2 }),
+                new(EColors.LightGrey, new(0x00, 0x00, 0x00), new[] { 3, 2, 1 }),
+                new(EColors.DarkGrey, new(0x00, 0x00, 0x00), new[] { 0, 2, 3 }),
+                new(EColors.DarkerGrey, new(0x00, 0x00, 0x00), new[] { 3, 1, 0 }),
+                new(EColors.Grey, new(0x00, 0x00, 0x00), new[] { 0, 1, 2 }),
             };
             Lines = new ShipLine[]
             {

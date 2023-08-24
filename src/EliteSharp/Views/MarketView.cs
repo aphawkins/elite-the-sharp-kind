@@ -30,11 +30,11 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.DockedPlanet)} MARKET PRICES");
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 40), "PRODUCT", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(166 + _draw.Offset, 40), "UNIT", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(246 + _draw.Offset, 40), "PRICE", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(314 + _draw.Offset, 40), "FOR SALE", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(420 + _draw.Offset, 40), "IN HOLD", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 40), "PRODUCT", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(166 + _draw.Offset, 40), "UNIT", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(246 + _draw.Offset, 40), "PRICE", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(314 + _draw.Offset, 40), "FOR SALE", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(420 + _draw.Offset, 40), "IN HOLD", EColors.Green);
 
             int i = 0;
             foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
@@ -43,26 +43,26 @@ namespace EliteSharp.Views
 
                 if (stock.Key == _highlightedStock)
                 {
-                    _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y), 508, 15, EColor.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y), 508, 15, EColors.LightRed);
                 }
 
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, EColor.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, EColors.White);
 
-                _draw.Graphics.DrawTextLeft(new(180 + _draw.Offset, y), stock.Value.Units, EColor.White);
+                _draw.Graphics.DrawTextLeft(new(180 + _draw.Offset, y), stock.Value.Units, EColors.White);
 
-                _draw.Graphics.DrawTextRight(new(285 + _draw.Offset, y), $"{stock.Value.CurrentPrice:N1}", EColor.White);
+                _draw.Graphics.DrawTextRight(new(285 + _draw.Offset, y), $"{stock.Value.CurrentPrice:N1}", EColors.White);
 
-                _draw.Graphics.DrawTextRight(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", EColor.White);
-                _draw.Graphics.DrawTextLeft(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, EColor.White);
+                _draw.Graphics.DrawTextRight(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", EColors.White);
+                _draw.Graphics.DrawTextLeft(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, EColors.White);
 
-                _draw.Graphics.DrawTextRight(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", EColor.White);
-                _draw.Graphics.DrawTextLeft(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, EColor.White);
+                _draw.Graphics.DrawTextRight(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", EColors.White);
+                _draw.Graphics.DrawTextLeft(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, EColors.White);
 
                 i++;
             }
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), "Cash:", EColor.Green);
-            _draw.Graphics.DrawTextRight(new(160 + _draw.Offset, 340), $"{_trade.Credits,10:N1} Credits", EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), "Cash:", EColors.Green);
+            _draw.Graphics.DrawTextRight(new(160 + _draw.Offset, 340), $"{_trade.Credits,10:N1} Credits", EColors.White);
         }
 
         public void HandleInput()

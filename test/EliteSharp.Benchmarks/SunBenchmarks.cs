@@ -29,7 +29,7 @@ namespace EliteSharp.Benchmarks
             _graphics = new SoftwareGraphics(_buffer);
             _draw = new Draw(_gameState, _graphics);
             _gradientSun = new(_draw);
-            _solidSun = new(_draw, EColor.White);
+            _solidSun = new(_draw, EColors.White);
         }
 
         public void Dispose()

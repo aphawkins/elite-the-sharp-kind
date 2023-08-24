@@ -31,7 +31,7 @@ namespace EliteSharp
             _scannerCentre = new(_draw.Centre.X - 3, _draw.ScannerTop + 63);
         }
 
-        internal void DrawScanner() => _draw.Graphics.DrawImage(Image.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));
+        internal void DrawScanner() => _draw.Graphics.DrawImage(ImageType.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));
 
         internal void UpdateConsole()
         {
@@ -57,12 +57,12 @@ namespace EliteSharp
 
             if (_universe.IsStationPresent)
             {
-                _draw.Graphics.DrawImage(Image.BigS, new(_draw.ScannerLeft + 387, _draw.ScannerTop + 105));
+                _draw.Graphics.DrawImage(ImageType.BigS, new(_draw.ScannerLeft + 387, _draw.ScannerTop + 105));
             }
 
             if (_ship.EcmActive != 0)
             {
-                _draw.Graphics.DrawImage(Image.BigE, new(_draw.ScannerLeft + 115, _draw.ScannerTop + 105));
+                _draw.Graphics.DrawImage(ImageType.BigE, new(_draw.ScannerLeft + 115, _draw.ScannerTop + 105));
             }
         }
 
@@ -90,16 +90,16 @@ namespace EliteSharp
             float x = _draw.ScannerLeft + position.X;
             float y = _draw.ScannerTop + position.Y;
 
-            _draw.Graphics.DrawLine(new(x, y), new(x + len, y), EColor.Gold);
+            _draw.Graphics.DrawLine(new(x, y), new(x + len, y), EColors.Gold);
             int i = 1;
-            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EColor.Gold);
+            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EColors.Gold);
 
             for (i = 2; i < 7; i++)
             {
-                _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EColor.DarkYellow);
+                _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EColors.DarkYellow);
             }
 
-            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EColor.LightRed);
+            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EColors.LightRed);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace EliteSharp
 
             for (int i = 0; i < 4; i++)
             {
-                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), EColor.Gold);
+                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), EColors.Gold);
             }
         }
 
@@ -155,7 +155,7 @@ namespace EliteSharp
 
             for (int i = 0; i < 4; i++)
             {
-                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), EColor.Gold);
+                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), EColors.Gold);
             }
         }
 
@@ -188,14 +188,14 @@ namespace EliteSharp
 
             if (_combat.IsMissileArmed)
             {
-                _draw.Graphics.DrawImage((_combat.MissileTarget == null) ? Image.MissileYellow : Image.MissileRed, location);
+                _draw.Graphics.DrawImage((_combat.MissileTarget == null) ? ImageType.MissileYellow : ImageType.MissileRed, location);
                 location.X += 16;
                 missileCount--;
             }
 
             for (; missileCount > 0; missileCount--)
             {
-                _draw.Graphics.DrawImage(Image.MissileGreen, location);
+                _draw.Graphics.DrawImage(ImageType.MissileGreen, location);
                 location.X += 16;
             }
         }
@@ -224,7 +224,7 @@ namespace EliteSharp
             float x = _draw.ScannerLeft + 417;
             float y = _draw.ScannerTop + 9;
             float length = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
-            EColor colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? EColor.LightRed : EColor.Gold;
+            EColor colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? EColors.LightRed : EColors.Gold;
 
             for (int i = 0; i < 6; i++)
             {
@@ -259,11 +259,11 @@ namespace EliteSharp
 
             if (dest.Z < 0)
             {
-                _draw.Graphics.DrawImage(Image.DotRed, position);
+                _draw.Graphics.DrawImage(ImageType.DotRed, position);
             }
             else
             {
-                _draw.Graphics.DrawImage(Image.GreenDot, position);
+                _draw.Graphics.DrawImage(ImageType.GreenDot, position);
             }
         }
 
@@ -295,19 +295,19 @@ namespace EliteSharp
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                EColor colour = obj.Flags.HasFlag(ShipFlags.Hostile) ? EColor.Yellow : EColor.White;
+                EColor colour = obj.Flags.HasFlag(ShipFlags.Hostile) ? EColors.Yellow : EColors.White;
 
                 if (obj.Flags.HasFlag(ShipFlags.Station))
                 {
-                    colour = EColor.Green;
+                    colour = EColors.Green;
                 }
                 else if (obj.Type == ShipType.Missile)
                 {
-                    colour = EColor.Lilac;
+                    colour = EColors.Lilac;
                 }
                 else if (obj.Flags.HasFlag(ShipFlags.Police))
                 {
-                    colour = EColor.Purple;
+                    colour = EColors.Purple;
                 }
 
                 // ship

@@ -12,7 +12,7 @@ namespace EliteSharp.WinForms
     {
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
-        private readonly ConcurrentDictionary<Graphics.Image, Bitmap> _images = new();
+        private readonly ConcurrentDictionary<ImageType, Bitmap> _images = new();
         private readonly Dictionary<EColor, Pen> _pens = new();
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
@@ -33,7 +33,7 @@ namespace EliteSharp.WinForms
             ScreenWidth = _screen.Width;
             ScreenHeight = _screen.Height;
 
-            foreach (EColor colour in EColor.AllColors())
+            foreach (EColor colour in EColors.AllColors())
             {
                 Pen pen = new(Color.FromArgb(colour.ToArgb()));
                 _pens.Add(colour, pen);
@@ -61,9 +61,9 @@ namespace EliteSharp.WinForms
         public void DrawCircleFilled(Vector2 centre, float radius, EColor colour) =>
             _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
 
-        public void DrawImage(Graphics.Image image, Vector2 position) => _screenBufferGraphics.DrawImage(_images[image], position.X, position.Y);
+        public void DrawImage(ImageType image, Vector2 position) => _screenBufferGraphics.DrawImage(_images[image], position.X, position.Y);
 
-        public void DrawImageCentre(Graphics.Image image, float y)
+        public void DrawImageCentre(ImageType image, float y)
         {
             float x = (ScreenWidth - _images[image].Width) / 2;
             DrawImage(image, new(x, y));
@@ -201,9 +201,9 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(Graphics.Image imgType, byte[] bitmapBytes)
+        public void LoadBitmap(ImageType imgType, string bitmapPath)
         {
-            _images[imgType] = (Bitmap)System.Drawing.Image.FromStream(new MemoryStream(bitmapBytes));
+            _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
             _images[imgType].MakeTransparent(_transparentColour);
         }
 
@@ -239,7 +239,7 @@ namespace EliteSharp.WinForms
                     _fontLarge?.Dispose();
 
                     // Images
-                    foreach (KeyValuePair<Graphics.Image, Bitmap> image in _images)
+                    foreach (KeyValuePair<ImageType, Bitmap> image in _images)
                     {
                         image.Value.Dispose();
                     }

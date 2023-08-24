@@ -36,7 +36,7 @@ namespace EliteSharp.Views
             // Header
             _draw.DrawViewHeader($"GALACTIC CHART {_gameState.Cmdr.GalaxyNumber + 1}");
 
-            _draw.Graphics.DrawLine(new(0 + _draw.Offset, 36 + 258), new(_draw.ScannerRight, 36 + 258), EColor.White);
+            _draw.Graphics.DrawLine(new(0 + _draw.Offset, 36 + 258), new(_draw.ScannerRight, 36 + 258), EColors.White);
 
             // Fuel radius
             Vector2 centre = new(
@@ -44,39 +44,39 @@ namespace EliteSharp.Views
                 (_gameState.DockedPlanet.B / (2 / _draw.Graphics.Scale)) + (18 * _draw.Graphics.Scale) + 1);
             float radius = _ship.Fuel * 2.5f * _draw.Graphics.Scale;
             float cross_size = 7 * _draw.Graphics.Scale;
-            _draw.Graphics.DrawCircle(centre, radius, EColor.Green);
-            _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), EColor.White);
-            _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), EColor.White);
+            _draw.Graphics.DrawCircle(centre, radius, EColors.Green);
+            _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), EColors.White);
+            _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), EColors.White);
 
             // Planets
             foreach (Vector2 pixel in _planetPixels)
             {
-                _draw.Graphics.DrawPixel(pixel, EColor.White);
+                _draw.Graphics.DrawPixel(pixel, EColors.White);
             }
 
             // Cross
             centre = new(_gameState.Cross.X + _draw.Offset, _gameState.Cross.Y);
 
-            _draw.Graphics.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), EColor.LighterRed);
-            _draw.Graphics.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), EColor.LighterRed);
+            _draw.Graphics.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), EColors.LighterRed);
+            _draw.Graphics.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), EColors.LighterRed);
 
             // Text
             if (_isFind)
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", EColor.Green);
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, EColor.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", EColors.Green);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, EColors.White);
             }
             else if (string.IsNullOrEmpty(_gameState.PlanetName))
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", EColor.Green);
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, EColor.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", EColors.Green);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, EColors.White);
             }
             else
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), _gameState.PlanetName, EColor.Green);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), _gameState.PlanetName, EColors.Green);
                 if (_gameState.DistanceToPlanet > 0)
                 {
-                    _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", EColor.White);
+                    _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", EColors.White);
                 }
             }
         }

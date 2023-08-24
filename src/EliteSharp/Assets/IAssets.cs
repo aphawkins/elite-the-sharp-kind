@@ -9,7 +9,7 @@ namespace EliteSharp.Assets
 {
     internal interface IAssets
     {
-        Task<byte[]> LoadAsync(Image image, CancellationToken token);
+        string AssetPath(ImageType image);
 
         Task<byte[]> LoadAsync(SoundEffect effect, CancellationToken token);
 

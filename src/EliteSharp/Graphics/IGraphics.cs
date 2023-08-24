@@ -18,9 +18,9 @@ namespace EliteSharp.Graphics
 
         void DrawCircleFilled(Vector2 centre, float radius, EColor colour);
 
-        void DrawImage(Image image, Vector2 position);
+        void DrawImage(ImageType image, Vector2 position);
 
-        void DrawImageCentre(Image image, float y);
+        void DrawImageCentre(ImageType image, float y);
 
         void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour);
 
@@ -48,7 +48,7 @@ namespace EliteSharp.Graphics
 
         void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour);
 
-        void LoadBitmap(Image imgType, byte[] bitmapBytes);
+        void LoadBitmap(ImageType imgType, string bitmapPath);
 
         /// <summary>
         /// Blit the back buffer to the screen.

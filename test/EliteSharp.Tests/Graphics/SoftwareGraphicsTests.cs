@@ -19,10 +19,10 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixel(new(x, y), EColor.White);
+            graphics.DrawPixel(new(x, y), EColors.White);
 
             // Assert
-            Assert.Equal(EColor.White, screen.GetPixel((int)x, (int)y));
+            Assert.Equal(EColors.White, screen.GetPixel((int)x, (int)y));
         }
 
         [Theory]
@@ -35,7 +35,7 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixel(new(x, y), EColor.White);
+            graphics.DrawPixel(new(x, y), EColors.White);
 
             // Assert
         }
@@ -51,10 +51,10 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixelFast(new(x, y), EColor.White);
+            graphics.DrawPixelFast(new(x, y), EColors.White);
 
             // Assert
-            Assert.Equal(EColor.White, screen.GetPixel((int)x, (int)y));
+            Assert.Equal(EColors.White, screen.GetPixel((int)x, (int)y));
         }
 
         [Theory]
@@ -67,7 +67,7 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixelFast(new(x, y), EColor.White);
+            graphics.DrawPixelFast(new(x, y), EColors.White);
 
             // Assert
         }
@@ -80,11 +80,11 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawPixel(new(2, 2), EColor.White);
+            graphics.DrawPixel(new(2, 2), EColors.White);
             graphics.Clear();
 
             // Assert
-            Assert.Equal(EColor.Black, screen.GetPixel(2, 2));
+            Assert.Equal(EColors.Black, screen.GetPixel(2, 2));
         }
 
         [Fact]
@@ -95,13 +95,13 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircle(new(2, 2), 2, EColor.White);
+            graphics.DrawCircle(new(2, 2), 2, EColors.White);
 
             // Assert
-            Assert.Equal(EColor.White, screen.GetPixel(0, 2));
-            Assert.Equal(EColor.White, screen.GetPixel(4, 2));
-            Assert.Equal(EColor.White, screen.GetPixel(2, 0));
-            Assert.Equal(EColor.White, screen.GetPixel(2, 4));
+            Assert.Equal(EColors.White, screen.GetPixel(0, 2));
+            Assert.Equal(EColors.White, screen.GetPixel(4, 2));
+            Assert.Equal(EColors.White, screen.GetPixel(2, 0));
+            Assert.Equal(EColors.White, screen.GetPixel(2, 4));
         }
 
         [Fact]
@@ -112,11 +112,11 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircle(new(0, 0), 4, EColor.White);
+            graphics.DrawCircle(new(0, 0), 4, EColors.White);
 
             // Assert
-            Assert.Equal(EColor.White, screen.GetPixel(0, 4));
-            Assert.Equal(EColor.White, screen.GetPixel(4, 0));
+            Assert.Equal(EColors.White, screen.GetPixel(0, 4));
+            Assert.Equal(EColors.White, screen.GetPixel(4, 0));
         }
 
         [Theory]
@@ -131,14 +131,14 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircle(new(x, y), radius, EColor.White);
+            graphics.DrawCircle(new(x, y), radius, EColors.White);
 
             // Assert
             for (int screenY = 0; screenY < 5; screenY++)
             {
                 for (int screenX = 0; screenX < 5; screenX++)
                 {
-                    Assert.Equal(EColor.Black, screen.GetPixel(screenX, screenY));
+                    Assert.Equal(EColors.Black, screen.GetPixel(screenX, screenY));
                 }
             }
         }
@@ -151,14 +151,14 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircleFilled(new(2, 2), 2, EColor.White);
+            graphics.DrawCircleFilled(new(2, 2), 2, EColors.White);
 
             // Assert
-            Assert.Equal(EColor.White, screen.GetPixel(0, 2));
-            Assert.Equal(EColor.White, screen.GetPixel(4, 2));
-            Assert.Equal(EColor.White, screen.GetPixel(2, 0));
-            Assert.Equal(EColor.White, screen.GetPixel(2, 4));
-            Assert.Equal(EColor.White, screen.GetPixel(2, 2));
+            Assert.Equal(EColors.White, screen.GetPixel(0, 2));
+            Assert.Equal(EColors.White, screen.GetPixel(4, 2));
+            Assert.Equal(EColors.White, screen.GetPixel(2, 0));
+            Assert.Equal(EColors.White, screen.GetPixel(2, 4));
+            Assert.Equal(EColors.White, screen.GetPixel(2, 2));
         }
 
         [Theory]
@@ -173,7 +173,7 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawCircleFilled(new(x, y), radius, EColor.White);
+            graphics.DrawCircleFilled(new(x, y), radius, EColors.White);
 
             // Assert
             for (int screenY = 0; screenY < 5; screenY++)
@@ -197,11 +197,11 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawLine(new(startX, startY), new(endX, endY), EColor.White);
+            graphics.DrawLine(new(startX, startY), new(endX, endY), EColors.White);
 
             // Assert
-            Assert.Equal(EColor.White, screen.GetPixel((int)startX, (int)startY));
-            Assert.Equal(EColor.White, screen.GetPixel((int)endX, (int)endY));
+            Assert.Equal(EColors.White, screen.GetPixel((int)startX, (int)startY));
+            Assert.Equal(EColors.White, screen.GetPixel((int)endX, (int)endY));
         }
 
         [Theory]
@@ -216,10 +216,10 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(screen);
 
             // Act
-            graphics.DrawLine(new(startX, startY), new(endX, endY), EColor.White);
+            graphics.DrawLine(new(startX, startY), new(endX, endY), EColors.White);
 
             // Assert
-            Assert.Equal(EColor.White, screen.GetPixel(2, 2));
+            Assert.Equal(EColors.White, screen.GetPixel(2, 2));
         }
     }
 }

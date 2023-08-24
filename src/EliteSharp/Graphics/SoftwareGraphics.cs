@@ -29,7 +29,7 @@ namespace EliteSharp.Graphics
             {
                 for (int x = 0; x < _screen.Width; x++)
                 {
-                    _screen.SetPixel(x, y, EColor.Black);
+                    _screen.SetPixel(x, y, EColors.Black);
                 }
             }
         }
@@ -115,9 +115,9 @@ namespace EliteSharp.Graphics
             }
         }
 
-        public void DrawImage(Image image, Vector2 position) => throw new NotImplementedException();
+        public void DrawImage(ImageType image, Vector2 position) => throw new NotImplementedException();
 
-        public void DrawImageCentre(Image image, float y) => throw new NotImplementedException();
+        public void DrawImageCentre(ImageType image, float y) => throw new NotImplementedException();
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour)
         {
@@ -183,7 +183,7 @@ namespace EliteSharp.Graphics
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour) => throw new NotImplementedException();
 
-        public void LoadBitmap(Image imgType, byte[] bitmapBytes) => throw new NotImplementedException();
+        public void LoadBitmap(ImageType imgType, string bitmapPath) => throw new NotImplementedException();
 
         public void ScreenUpdate()
         {

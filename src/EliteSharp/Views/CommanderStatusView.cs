@@ -102,102 +102,102 @@ namespace EliteSharp.Views
 
             _draw.DrawViewHeader($"COMMANDER {_gameState.Cmdr.Name}");
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 58), "Present System:", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 58), "Present System:", EColors.Green);
 
             if (!_gameState.InWitchspace)
             {
-                _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 58), _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(), EColor.White);
+                _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 58), _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(), EColors.White);
             }
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Hyperspace System:", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 74), _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(), EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Hyperspace System:", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 74), _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(), EColors.White);
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 90), "Condition:", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 90), _conditionText[condition], EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 90), "Condition:", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 90), _conditionText[condition], EColors.White);
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Fuel:", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 106), $"{_ship.Fuel:N1} Light Years", EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Fuel:", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 106), $"{_ship.Fuel:N1} Light Years", EColors.White);
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 122), "Cash:", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 122), $"{_trade.Credits:N1} Credits", EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 122), "Cash:", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 122), $"{_trade.Credits:N1} Credits", EColors.White);
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Legal Status:", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 138), _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Legal Status:", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 138), _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", EColors.White);
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 154), "Rating:", EColor.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 154), rating, EColor.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 154), "Rating:", EColors.Green);
+            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 154), rating, EColors.White);
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 186), "EQUIPMENT:", EColor.Green);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 186), "EQUIPMENT:", EColors.Green);
 
             if (_ship.CargoCapacity > 20)
             {
-                _draw.Graphics.DrawTextLeft(position, "Large Cargo Bay", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, "Large Cargo Bay", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.HasEscapeCapsule)
             {
-                _draw.Graphics.DrawTextLeft(position, "Escape Capsule", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, "Escape Capsule", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.HasFuelScoop)
             {
-                _draw.Graphics.DrawTextLeft(position, "Fuel Scoops", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, "Fuel Scoops", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.HasECM)
             {
-                _draw.Graphics.DrawTextLeft(position, "E.C.M. System", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, "E.C.M. System", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.HasEnergyBomb)
             {
-                _draw.Graphics.DrawTextLeft(position, "Energy Bomb", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, "Energy Bomb", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.EnergyUnit != EnergyUnit.None)
             {
-                _draw.Graphics.DrawTextLeft(position, _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.HasDockingComputer)
             {
-                _draw.Graphics.DrawTextLeft(position, "Docking Computers", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, "Docking Computers", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.HasGalacticHyperdrive)
             {
-                _draw.Graphics.DrawTextLeft(position, "Galactic Hyperspace", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, "Galactic Hyperspace", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.LaserFront.Type != LaserType.None)
             {
-                _draw.Graphics.DrawTextLeft(position, $"Front {_ship.LaserFront.Name} Laser", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, $"Front {_ship.LaserFront.Name} Laser", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.LaserRear.Type != LaserType.None)
             {
-                _draw.Graphics.DrawTextLeft(position, $"Rear {_ship.LaserRear.Name} Laser", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, $"Rear {_ship.LaserRear.Name} Laser", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.LaserLeft.Type != LaserType.None)
             {
-                _draw.Graphics.DrawTextLeft(position, $"Left {_ship.LaserLeft.Name} Laser", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, $"Left {_ship.LaserLeft.Name} Laser", EColors.White);
                 IncrementPosition();
             }
 
             if (_ship.LaserRight.Type != LaserType.None)
             {
-                _draw.Graphics.DrawTextLeft(position, $"Right {_ship.LaserRight.Name} Laser", EColor.White);
+                _draw.Graphics.DrawTextLeft(position, $"Right {_ship.LaserRight.Name} Laser", EColors.White);
             }
         }
 

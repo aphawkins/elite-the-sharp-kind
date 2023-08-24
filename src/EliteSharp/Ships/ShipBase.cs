@@ -164,7 +164,7 @@ namespace EliteSharp.Ships
             if (Flags.HasFlag(ShipFlags.Firing))
             {
                 lasv = LaserFront;
-                EColor colour = (Type == ShipType.Viper) ? EColor.Cyan : EColor.White;
+                EColor colour = (Type == ShipType.Viper) ? EColors.Cyan : EColors.White;
 
                 Vector2[] laserPoints = new Vector2[]
                 {

@@ -132,12 +132,12 @@ namespace EliteSharp.Suns
                 float distance = (dx * dx) + dy;
 
                 EColor colour = distance < inner
-                    ? EColor.White
+                    ? EColors.White
                     : distance < inner2
-                        ? EColor.LightYellow
+                        ? EColors.LightYellow
                         : distance < outer
-                            ? EColor.LightOrange
-                            : ((int)s.X ^ (int)y).IsOdd() ? EColor.Orange : EColor.DarkOrange;
+                            ? EColors.LightOrange
+                            : ((int)s.X ^ (int)y).IsOdd() ? EColors.Orange : EColors.DarkOrange;
 
                 _draw.Graphics.DrawPixelFast(s, colour);
             }

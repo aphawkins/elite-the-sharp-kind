@@ -38,12 +38,12 @@ namespace EliteSharp.Views
 
         public void Draw()
         {
-            _draw.Graphics.DrawImageCentre(Image.EliteText, _draw.Top + 10);
+            _draw.Graphics.DrawImageCentre(ImageType.EliteText, _draw.Top + 10);
 
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 90, "Original Game (C) I.Bell & D.Braben.", FontSize.Small, EColor.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 70, "The New Kind - Christian Pinder.", FontSize.Small, EColor.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 50, "The Sharp Kind - Andy Hawkins.", FontSize.Small, EColor.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Load New Commander (Y/N)?", FontSize.Large, EColor.Gold);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 90, "Original Game (C) I.Bell & D.Braben.", FontSize.Small, EColors.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 70, "The New Kind - Christian Pinder.", FontSize.Small, EColors.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 50, "The Sharp Kind - Andy Hawkins.", FontSize.Small, EColors.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Load New Commander (Y/N)?", FontSize.Large, EColors.Gold);
         }
 
         public void HandleInput()

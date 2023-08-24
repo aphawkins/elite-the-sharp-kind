@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Graphics
 {
-    public enum Image
+    public enum ImageType
     {
         Scanner = 0,
         GreenDot = 1,
