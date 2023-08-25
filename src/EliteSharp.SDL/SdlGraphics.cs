@@ -119,12 +119,44 @@ namespace EliteSharp.SDL
         {
         }
 
-        public void DrawPolygon(Vector2[] pointList, EColor lineColour)
+        public void DrawPolygon(Vector2[] points, EColor lineColour)
         {
+            if (points == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                DrawLine(points[i], points[i + 1], lineColour);
+            }
+
+            DrawLine(points[0], points[points.Length - 1], lineColour);
         }
 
-        public void DrawPolygonFilled(Vector2[] pointList, EColor faceColour)
+        public void DrawPolygonFilled(Vector2[] points, EColor faceColour)
         {
+            if (points == null)
+            {
+                return;
+            }
+
+            // SDL_RenderGeometry only renders triangles and quads?
+            // Create triangles of which each share the first vertex
+            for (int i = 1; i < points.Length - 1; i++)
+            {
+                SDL2.SDL.SDL_Vertex[] vertices = new SDL2.SDL.SDL_Vertex[3]
+                {
+                    BuildVertex(points[0], faceColour),
+                    BuildVertex(points[i], faceColour),
+                    BuildVertex(points[i + 1], faceColour),
+                };
+
+                if (SDL2.SDL.SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
+                {
+                    LogError(nameof(SDL2.SDL.SDL_RenderGeometry));
+                }
+            }
         }
 
         public void DrawRectangle(Vector2 position, float width, float height, EColor colour)
@@ -166,6 +198,13 @@ namespace EliteSharp.SDL
         public void SetClipRegion(Vector2 position, float width, float height)
         {
         }
+
+        private static SDL2.SDL.SDL_Vertex BuildVertex(Vector2 point, EColor colour) => new()
+        {
+            position = new() { x = point.X, y = point.Y },
+            tex_coord = new() { x = 0.0f, y = 0.0f },
+            color = new() { a = colour.A, r = colour.R, g = colour.G, b = colour.B },
+        };
 
         private static void LogError(string methodName) => Debug.WriteLine($"Failed to {methodName}. Error: " + SDL2.SDL.SDL_GetError());
 

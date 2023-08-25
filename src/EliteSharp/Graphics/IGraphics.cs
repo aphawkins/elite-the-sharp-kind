@@ -28,9 +28,9 @@ namespace EliteSharp.Graphics
 
         void DrawPixelFast(Vector2 position, EColor colour);
 
-        void DrawPolygon(Vector2[] pointList, EColor lineColour);
+        void DrawPolygon(Vector2[] points, EColor lineColour);
 
-        void DrawPolygonFilled(Vector2[] pointList, EColor faceColour);
+        void DrawPolygonFilled(Vector2[] points, EColor faceColour);
 
         void DrawRectangle(Vector2 position, float width, float height, EColor colour);
 

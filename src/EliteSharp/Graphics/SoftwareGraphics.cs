@@ -163,9 +163,9 @@ namespace EliteSharp.Graphics
 
         public void DrawPixelFast(Vector2 position, EColor colour) => DrawPixel(position, colour);
 
-        public void DrawPolygon(Vector2[] pointList, EColor lineColour) => throw new NotImplementedException();
+        public void DrawPolygon(Vector2[] points, EColor lineColour) => throw new NotImplementedException();
 
-        public void DrawPolygonFilled(Vector2[] pointList, EColor faceColour) => throw new NotImplementedException();
+        public void DrawPolygonFilled(Vector2[] points, EColor faceColour) => throw new NotImplementedException();
 
         public void DrawRectangle(Vector2 position, float width, float height, EColor colour) => throw new NotImplementedException();
 

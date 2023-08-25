@@ -90,38 +90,38 @@ namespace EliteSharp.WinForms
             // Is there a faster way of doing this?
             DrawPixel(position, colour);
 
-        public void DrawPolygon(Vector2[] pointList, EColor lineColour)
+        public void DrawPolygon(Vector2[] points, EColor lineColour)
         {
-            if (pointList == null)
+            if (points == null)
             {
                 return;
             }
 
-            PointF[] points = new PointF[pointList.Length];
+            PointF[] drawPoints = new PointF[points.Length];
 
-            for (int i = 0; i < pointList.Length; i++)
+            for (int i = 0; i < points.Length; i++)
             {
-                points[i] = new PointF(pointList[i].X, pointList[i].Y);
+                drawPoints[i] = new PointF(points[i].X, points[i].Y);
             }
 
-            _screenBufferGraphics.DrawPolygon(_pens[lineColour], points);
+            _screenBufferGraphics.DrawPolygon(_pens[lineColour], drawPoints);
         }
 
-        public void DrawPolygonFilled(Vector2[] pointList, EColor faceColour)
+        public void DrawPolygonFilled(Vector2[] points, EColor faceColour)
         {
-            if (pointList == null)
+            if (points == null)
             {
                 return;
             }
 
-            PointF[] points = new PointF[pointList.Length];
+            PointF[] drawPoints = new PointF[points.Length];
 
-            for (int i = 0; i < pointList.Length; i++)
+            for (int i = 0; i < points.Length; i++)
             {
-                points[i] = new PointF(pointList[i].X, pointList[i].Y);
+                drawPoints[i] = new PointF(points[i].X, points[i].Y);
             }
 
-            _screenBufferGraphics.FillPolygon(_pens[faceColour].Brush, points);
+            _screenBufferGraphics.FillPolygon(_pens[faceColour].Brush, drawPoints);
         }
 
         public void DrawRectangle(Vector2 position, float width, float height, EColor colour) =>
