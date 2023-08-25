@@ -145,17 +145,7 @@ namespace EliteSharp.SDL
             // Create triangles of which each share the first vertex
             for (int i = 1; i < points.Length - 1; i++)
             {
-                SDL2.SDL.SDL_Vertex[] vertices = new SDL2.SDL.SDL_Vertex[3]
-                {
-                    BuildVertex(points[0], faceColour),
-                    BuildVertex(points[i], faceColour),
-                    BuildVertex(points[i + 1], faceColour),
-                };
-
-                if (SDL2.SDL.SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
-                {
-                    LogError(nameof(SDL2.SDL.SDL_RenderGeometry));
-                }
+                DrawTriangleFilled(points[0], points[i], points[i + 1], faceColour);
             }
         }
 
@@ -185,10 +175,24 @@ namespace EliteSharp.SDL
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour)
         {
+            DrawLine(a, b, colour);
+            DrawLine(b, c, colour);
+            DrawLine(c, a, colour);
         }
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour)
         {
+            SDL2.SDL.SDL_Vertex[] vertices = new SDL2.SDL.SDL_Vertex[3]
+            {
+                BuildVertex(a, colour),
+                BuildVertex(b, colour),
+                BuildVertex(c, colour),
+            };
+
+            if (SDL2.SDL.SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
+            {
+                LogError(nameof(SDL2.SDL.SDL_RenderGeometry));
+            }
         }
 
         public void LoadBitmap(ImageType imgType, string bitmapPath) => _images[imgType] = SDL2.SDL.SDL_LoadBMP(bitmapPath);
