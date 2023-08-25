@@ -19,7 +19,6 @@ namespace EliteSharp.WinForms
         private readonly System.Drawing.Graphics _screenBufferGraphics;
         private readonly System.Drawing.Graphics _screenGraphics;
         private readonly object _screenLock = new();
-        private readonly Color _transparentColour = Color.FromArgb(0, 255, 0, 255);
         private RectangleF _clipRegion;
         private bool _isDisposed;
 
@@ -201,11 +200,7 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath)
-        {
-            _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
-            _images[imgType].MakeTransparent(_transparentColour);
-        }
+        public void LoadBitmap(ImageType imgType, string bitmapPath) => _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
 
         /// <summary>
         /// Blit the back buffer to the screen.
