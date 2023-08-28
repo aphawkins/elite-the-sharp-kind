@@ -12,6 +12,9 @@ namespace EliteSharp.SDL
 {
     public sealed class SdlGraphics : IGraphics
     {
+        private readonly nint _fontLarge;
+        private readonly string _fontPath = Path.Combine("Assets", "Fonts", "OpenSans-Regular.ttf");
+        private readonly nint _fontSmall;
         private readonly ConcurrentDictionary<ImageType, nint> _images = new();
         private readonly nint _renderer;
         private readonly nint _window;
@@ -19,9 +22,19 @@ namespace EliteSharp.SDL
 
         public SdlGraphics()
         {
+            // When running C# applications under the Visual Studio debugger, native code that
+            // names threads with the 0x406D1388 exception will silently exit. To prevent this
+            // exception from being thrown by SDL, add this line before your SDL_Init call:
+            SDL2.SDL.SDL_SetHint(SDL2.SDL.SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
+
             if (SDL2.SDL.SDL_Init(SDL2.SDL.SDL_INIT_VIDEO) < 0)
             {
                 LogError(nameof(SDL2.SDL.SDL_Init));
+            }
+
+            if (SDL2.SDL_ttf.TTF_Init() < 0)
+            {
+                LogError(nameof(SDL2.SDL_ttf.TTF_Init));
             }
 
             _window = SDL2.SDL.SDL_CreateWindow(
@@ -33,6 +46,18 @@ namespace EliteSharp.SDL
                 SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
             _renderer = SDL2.SDL.SDL_CreateRenderer(_window, -1, SDL2.SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+
+            _fontLarge = SDL2.SDL_ttf.TTF_OpenFont(_fontPath, 18);
+            if (_fontLarge == nint.Zero)
+            {
+                LogError(nameof(SDL2.SDL_ttf.TTF_OpenFont));
+            }
+
+            _fontSmall = SDL2.SDL_ttf.TTF_OpenFont(_fontPath, 12);
+            if (_fontLarge == nint.Zero)
+            {
+                LogError(nameof(SDL2.SDL_ttf.TTF_OpenFont));
+            }
         }
 
         // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -163,14 +188,68 @@ namespace EliteSharp.SDL
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
         {
+            SDL2.SDL.SDL_Color color = ConvertColour(colour);
+
+            nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
+                fontSize == FontSize.Large ? _fontLarge : _fontSmall,
+                text,
+                color);
+            SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
+
+            SDL2.SDL.SDL_Rect dest = surface.clip_rect;
+            dest.x = (int)((ScreenWidth / 2) - (dest.w / 2));
+            dest.y = (int)(y / (2 / Scale));
+
+            nint texture = SDL2.SDL.SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+
+            if (SDL2.SDL.SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
+            {
+                LogError(nameof(SDL2.SDL.SDL_RenderCopy));
+            }
         }
 
         public void DrawTextLeft(Vector2 position, string text, EColor colour)
         {
+            SDL2.SDL.SDL_Color color = ConvertColour(colour);
+
+            nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
+                _fontSmall,
+                text,
+                color);
+            SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
+
+            SDL2.SDL.SDL_Rect dest = surface.clip_rect;
+            dest.x = (int)(position.X / (2 / Scale));
+            dest.y = (int)(position.Y / (2 / Scale));
+
+            nint texture = SDL2.SDL.SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+
+            if (SDL2.SDL.SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
+            {
+                LogError(nameof(SDL2.SDL.SDL_RenderCopy));
+            }
         }
 
         public void DrawTextRight(Vector2 position, string text, EColor colour)
         {
+            SDL2.SDL.SDL_Color color = ConvertColour(colour);
+
+            nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
+                _fontSmall,
+                text,
+                color);
+            SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
+
+            SDL2.SDL.SDL_Rect dest = surface.clip_rect;
+            dest.x = (int)(position.X / (2 / Scale));
+            dest.y = (int)(position.Y / (2 / Scale));
+
+            nint texture = SDL2.SDL.SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+
+            if (SDL2.SDL.SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
+            {
+                LogError(nameof(SDL2.SDL.SDL_RenderCopy));
+            }
         }
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour)
@@ -184,9 +263,9 @@ namespace EliteSharp.SDL
         {
             SDL2.SDL.SDL_Vertex[] vertices = new SDL2.SDL.SDL_Vertex[3]
             {
-                BuildVertex(a, colour),
-                BuildVertex(b, colour),
-                BuildVertex(c, colour),
+                ConvertVertex(a, colour),
+                ConvertVertex(b, colour),
+                ConvertVertex(c, colour),
             };
 
             if (SDL2.SDL.SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
@@ -203,11 +282,19 @@ namespace EliteSharp.SDL
         {
         }
 
-        private static SDL2.SDL.SDL_Vertex BuildVertex(Vector2 point, EColor colour) => new()
+        private static SDL2.SDL.SDL_Color ConvertColour(EColor colour) => new()
+        {
+            a = colour.A,
+            r = colour.R,
+            b = colour.B,
+            g = colour.G,
+        };
+
+        private static SDL2.SDL.SDL_Vertex ConvertVertex(Vector2 point, EColor colour) => new()
         {
             position = new() { x = point.X, y = point.Y },
             tex_coord = new() { x = 0.0f, y = 0.0f },
-            color = new() { a = colour.A, r = colour.R, g = colour.G, b = colour.B },
+            color = ConvertColour(colour),
         };
 
         private static void LogError(string methodName) => Debug.WriteLine($"Failed to {methodName}. Error: " + SDL2.SDL.SDL_GetError());
