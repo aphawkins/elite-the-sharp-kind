@@ -12,6 +12,7 @@ namespace EliteSharp.SDL
 {
     public sealed class SdlGraphics : IGraphics
     {
+        private readonly Dictionary<EColor, SDL2.SDL.SDL_Color> _sdlColors = new();
         private readonly nint _fontLarge;
         private readonly string _fontPath = Path.Combine("Assets", "Fonts", "OpenSans-Regular.ttf");
         private readonly nint _fontSmall;
@@ -46,6 +47,18 @@ namespace EliteSharp.SDL
                 SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
             _renderer = SDL2.SDL.SDL_CreateRenderer(_window, -1, SDL2.SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+
+            foreach (EColor colour in EColors.AllColors())
+            {
+                SDL2.SDL.SDL_Color sdlColor = new()
+                {
+                    a = colour.A,
+                    r = colour.R,
+                    b = colour.B,
+                    g = colour.G,
+                };
+                _sdlColors.Add(colour, sdlColor);
+            }
 
             _fontLarge = SDL2.SDL_ttf.TTF_OpenFont(_fontPath, 18);
             if (_fontLarge == nint.Zero)
@@ -188,12 +201,10 @@ namespace EliteSharp.SDL
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
         {
-            SDL2.SDL.SDL_Color color = ConvertColour(colour);
-
             nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 text,
-                color);
+                _sdlColors[colour]);
             SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
 
             SDL2.SDL.SDL_Rect dest = surface.clip_rect;
@@ -210,12 +221,10 @@ namespace EliteSharp.SDL
 
         public void DrawTextLeft(Vector2 position, string text, EColor colour)
         {
-            SDL2.SDL.SDL_Color color = ConvertColour(colour);
-
             nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
                 _fontSmall,
                 text,
-                color);
+                _sdlColors[colour]);
             SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
 
             SDL2.SDL.SDL_Rect dest = surface.clip_rect;
@@ -232,12 +241,10 @@ namespace EliteSharp.SDL
 
         public void DrawTextRight(Vector2 position, string text, EColor colour)
         {
-            SDL2.SDL.SDL_Color color = ConvertColour(colour);
-
             nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
                 _fontSmall,
                 text,
-                color);
+                _sdlColors[colour]);
             SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
 
             SDL2.SDL.SDL_Rect dest = surface.clip_rect;
@@ -282,22 +289,14 @@ namespace EliteSharp.SDL
         {
         }
 
-        private static SDL2.SDL.SDL_Color ConvertColour(EColor colour) => new()
-        {
-            a = colour.A,
-            r = colour.R,
-            b = colour.B,
-            g = colour.G,
-        };
+        private static void LogError(string methodName) => Debug.WriteLine($"Failed to {methodName}. Error: " + SDL2.SDL.SDL_GetError());
 
-        private static SDL2.SDL.SDL_Vertex ConvertVertex(Vector2 point, EColor colour) => new()
+        private SDL2.SDL.SDL_Vertex ConvertVertex(Vector2 point, EColor colour) => new()
         {
             position = new() { x = point.X, y = point.Y },
             tex_coord = new() { x = 0.0f, y = 0.0f },
-            color = ConvertColour(colour),
+            color = _sdlColors[colour],
         };
-
-        private static void LogError(string methodName) => Debug.WriteLine($"Failed to {methodName}. Error: " + SDL2.SDL.SDL_GetError());
 
         private void Dispose(bool disposing)
         {
