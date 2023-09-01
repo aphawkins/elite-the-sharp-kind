@@ -5,6 +5,7 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Numerics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using EliteSharp.Graphics;
 using static SDL2.SDL;
@@ -15,7 +16,8 @@ namespace EliteSharp.SDL
     {
         private readonly Dictionary<EColor, SDL_Color> _sdlColors = new();
         private readonly nint _fontLarge;
-        private readonly string _fontPath = Path.Combine("Assets", "Fonts", "OpenSans-Regular.ttf");
+
+        private readonly string _fontPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets", "Fonts", "OpenSans-Regular.ttf");
         private readonly nint _fontSmall;
         private readonly ConcurrentDictionary<ImageType, nint> _images = new();
         private readonly nint _renderer;
