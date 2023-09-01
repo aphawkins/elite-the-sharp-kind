@@ -7,12 +7,13 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using EliteSharp.Graphics;
+using static SDL2.SDL;
 
 namespace EliteSharp.SDL
 {
     public sealed class SdlGraphics : IGraphics
     {
-        private readonly Dictionary<EColor, SDL2.SDL.SDL_Color> _sdlColors = new();
+        private readonly Dictionary<EColor, SDL_Color> _sdlColors = new();
         private readonly nint _fontLarge;
         private readonly string _fontPath = Path.Combine("Assets", "Fonts", "OpenSans-Regular.ttf");
         private readonly nint _fontSmall;
@@ -26,11 +27,11 @@ namespace EliteSharp.SDL
             // When running C# applications under the Visual Studio debugger, native code that
             // names threads with the 0x406D1388 exception will silently exit. To prevent this
             // exception from being thrown by SDL, add this line before your SDL_Init call:
-            SDL2.SDL.SDL_SetHint(SDL2.SDL.SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
+            SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
 
-            if (SDL2.SDL.SDL_Init(SDL2.SDL.SDL_INIT_VIDEO) < 0)
+            if (SDL_Init(SDL_INIT_VIDEO) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_Init));
+                LogError(nameof(SDL_Init));
             }
 
             if (SDL2.SDL_ttf.TTF_Init() < 0)
@@ -38,19 +39,19 @@ namespace EliteSharp.SDL
                 LogError(nameof(SDL2.SDL_ttf.TTF_Init));
             }
 
-            _window = SDL2.SDL.SDL_CreateWindow(
+            _window = SDL_CreateWindow(
                 "Elite - The Sharp Kind",
-                SDL2.SDL.SDL_WINDOWPOS_CENTERED,
-                SDL2.SDL.SDL_WINDOWPOS_CENTERED,
-                512,
-                512,
-                SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN);
+                SDL_WINDOWPOS_CENTERED,
+                SDL_WINDOWPOS_CENTERED,
+                (int)ScreenWidth,
+                (int)ScreenHeight,
+                SDL_WindowFlags.SDL_WINDOW_SHOWN);
 
-            _renderer = SDL2.SDL.SDL_CreateRenderer(_window, -1, SDL2.SDL.SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+            _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
 
             foreach (EColor colour in EColors.AllColors())
             {
-                SDL2.SDL.SDL_Color sdlColor = new()
+                SDL_Color sdlColor = new()
                 {
                     a = colour.A,
                     r = colour.R,
@@ -82,17 +83,17 @@ namespace EliteSharp.SDL
 
         public float Scale { get; } = 2;
 
-        public float ScreenHeight { get; } = 512;
+        public float ScreenHeight { get; } = 540;
 
-        public float ScreenWidth { get; } = 512;
+        public float ScreenWidth { get; } = 960;
 
         public void Clear()
         {
             SetRenderDrawColor(EColors.Black);
 
-            if (SDL2.SDL.SDL_RenderClear(_renderer) < 0)
+            if (SDL_RenderClear(_renderer) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_RenderClear));
+                LogError(nameof(SDL_RenderClear));
             }
         }
 
@@ -113,10 +114,10 @@ namespace EliteSharp.SDL
 
         public void DrawImage(ImageType image, Vector2 position)
         {
-            SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(_images[image]);
-            nint texture = SDL2.SDL.SDL_CreateTextureFromSurface(_renderer, _images[image]);
+            SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(_images[image]);
+            nint texture = SDL_CreateTextureFromSurface(_renderer, _images[image]);
 
-            SDL2.SDL.SDL_Rect dest = new()
+            SDL_Rect dest = new()
             {
                 x = (int)position.X,
                 y = (int)position.Y,
@@ -124,17 +125,17 @@ namespace EliteSharp.SDL
                 w = surface.w,
             };
 
-            if (SDL2.SDL.SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
+            if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_RenderCopy));
+                LogError(nameof(SDL_RenderCopy));
             }
 
-            SDL2.SDL.SDL_DestroyTexture(texture);
+            SDL_DestroyTexture(texture);
         }
 
         public void DrawImageCentre(ImageType image, float y)
         {
-            SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(_images[image]);
+            SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(_images[image]);
             float x = (ScreenWidth - surface.w) / 2;
             DrawImage(image, new(x, y));
         }
@@ -143,9 +144,9 @@ namespace EliteSharp.SDL
         {
             SetRenderDrawColor(colour);
 
-            if (SDL2.SDL.SDL_RenderDrawLineF(_renderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y) < 0)
+            if (SDL_RenderDrawLineF(_renderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_RenderDrawLineF));
+                LogError(nameof(SDL_RenderDrawLineF));
             }
         }
 
@@ -189,6 +190,20 @@ namespace EliteSharp.SDL
 
         public void DrawRectangle(Vector2 position, float width, float height, EColor colour)
         {
+            SetRenderDrawColor(colour);
+
+            SDL_FRect rectangle = new()
+            {
+                x = (int)(position.X / (2 / Scale)) + 1,
+                y = (int)((position.Y / (2 / Scale)) + 1),
+                w = (int)width - 1,
+                h = (int)height,
+            };
+
+            if (SDL_RenderDrawRectF(_renderer, ref rectangle) < 0)
+            {
+                LogError(nameof(SDL_RenderDrawRectF));
+            }
         }
 
         public void DrawRectangleCentre(float y, float width, float height, EColor colour)
@@ -197,6 +212,20 @@ namespace EliteSharp.SDL
 
         public void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour)
         {
+            SetRenderDrawColor(colour);
+
+            SDL_FRect rectangle = new()
+            {
+                x = (int)(position.X / (2 / Scale)),
+                y = (int)((position.Y / (2 / Scale)) + 1),
+                w = (int)width,
+                h = (int)height,
+            };
+
+            if (SDL_RenderFillRectF(_renderer, ref rectangle) < 0)
+            {
+                LogError(nameof(SDL_RenderFillRectF));
+            }
         }
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
@@ -205,17 +234,17 @@ namespace EliteSharp.SDL
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 text,
                 _sdlColors[colour]);
-            SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
+            SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
 
-            SDL2.SDL.SDL_Rect dest = surface.clip_rect;
+            SDL_Rect dest = surface.clip_rect;
             dest.x = (int)((ScreenWidth / 2) - (dest.w / 2));
             dest.y = (int)(y / (2 / Scale));
 
-            nint texture = SDL2.SDL.SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+            nint texture = SDL_CreateTextureFromSurface(_renderer, surfacePtr);
 
-            if (SDL2.SDL.SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
+            if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_RenderCopy));
+                LogError(nameof(SDL_RenderCopy));
             }
         }
 
@@ -225,17 +254,17 @@ namespace EliteSharp.SDL
                 _fontSmall,
                 text,
                 _sdlColors[colour]);
-            SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
+            SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
 
-            SDL2.SDL.SDL_Rect dest = surface.clip_rect;
+            SDL_Rect dest = surface.clip_rect;
             dest.x = (int)(position.X / (2 / Scale));
             dest.y = (int)(position.Y / (2 / Scale));
 
-            nint texture = SDL2.SDL.SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+            nint texture = SDL_CreateTextureFromSurface(_renderer, surfacePtr);
 
-            if (SDL2.SDL.SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
+            if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_RenderCopy));
+                LogError(nameof(SDL_RenderCopy));
             }
         }
 
@@ -245,17 +274,17 @@ namespace EliteSharp.SDL
                 _fontSmall,
                 text,
                 _sdlColors[colour]);
-            SDL2.SDL.SDL_Surface surface = Marshal.PtrToStructure<SDL2.SDL.SDL_Surface>(surfacePtr);
+            SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
 
-            SDL2.SDL.SDL_Rect dest = surface.clip_rect;
+            SDL_Rect dest = surface.clip_rect;
             dest.x = (int)(position.X / (2 / Scale));
             dest.y = (int)(position.Y / (2 / Scale));
 
-            nint texture = SDL2.SDL.SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+            nint texture = SDL_CreateTextureFromSurface(_renderer, surfacePtr);
 
-            if (SDL2.SDL.SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
+            if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_RenderCopy));
+                LogError(nameof(SDL_RenderCopy));
             }
         }
 
@@ -268,30 +297,42 @@ namespace EliteSharp.SDL
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour)
         {
-            SDL2.SDL.SDL_Vertex[] vertices = new SDL2.SDL.SDL_Vertex[3]
+            SDL_Vertex[] vertices = new SDL_Vertex[3]
             {
                 ConvertVertex(a, colour),
                 ConvertVertex(b, colour),
                 ConvertVertex(c, colour),
             };
 
-            if (SDL2.SDL.SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
+            if (SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_RenderGeometry));
+                LogError(nameof(SDL_RenderGeometry));
             }
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath) => _images[imgType] = SDL2.SDL.SDL_LoadBMP(bitmapPath);
+        public void LoadBitmap(ImageType imgType, string bitmapPath) => _images[imgType] = SDL_LoadBMP(bitmapPath);
 
-        public void ScreenUpdate() => SDL2.SDL.SDL_RenderPresent(_renderer);
+        public void ScreenUpdate() => SDL_RenderPresent(_renderer);
 
         public void SetClipRegion(Vector2 position, float width, float height)
         {
+            SDL_Rect rectangle = new()
+            {
+                x = (int)(position.X / (2 / Scale)),
+                y = (int)(position.Y / (2 / Scale)),
+                w = (int)width,
+                h = (int)height,
+            };
+
+            if (SDL_RenderSetClipRect(_renderer, ref rectangle) < 0)
+            {
+                LogError(nameof(SDL_RenderSetClipRect));
+            }
         }
 
-        private static void LogError(string methodName) => Debug.WriteLine($"Failed to {methodName}. Error: " + SDL2.SDL.SDL_GetError());
+        private static void LogError(string methodName) => Debug.WriteLine($"Failed to {methodName}. Error: " + SDL_GetError());
 
-        private SDL2.SDL.SDL_Vertex ConvertVertex(Vector2 point, EColor colour) => new()
+        private SDL_Vertex ConvertVertex(Vector2 point, EColor colour) => new()
         {
             position = new() { x = point.X, y = point.Y },
             tex_coord = new() { x = 0.0f, y = 0.0f },
@@ -308,12 +349,12 @@ namespace EliteSharp.SDL
                     // Images
                     foreach (KeyValuePair<ImageType, nint> image in _images)
                     {
-                        SDL2.SDL.SDL_FreeSurface(image.Value);
+                        SDL_FreeSurface(image.Value);
                     }
 
-                    SDL2.SDL.SDL_DestroyRenderer(_renderer);
-                    SDL2.SDL.SDL_DestroyWindow(_window);
-                    SDL2.SDL.SDL_Quit();
+                    SDL_DestroyRenderer(_renderer);
+                    SDL_DestroyWindow(_window);
+                    SDL_Quit();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
@@ -324,9 +365,9 @@ namespace EliteSharp.SDL
 
         private void SetRenderDrawColor(EColor colour)
         {
-            if (SDL2.SDL.SDL_SetRenderDrawColor(_renderer, colour.R, colour.G, colour.B, colour.A) < 0)
+            if (SDL_SetRenderDrawColor(_renderer, colour.R, colour.G, colour.B, colour.A) < 0)
             {
-                LogError(nameof(SDL2.SDL.SDL_SetRenderDrawColor));
+                LogError(nameof(SDL_SetRenderDrawColor));
             }
         }
     }
