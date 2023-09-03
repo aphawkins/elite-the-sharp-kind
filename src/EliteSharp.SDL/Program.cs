@@ -10,7 +10,7 @@ namespace EliteSharp.SDL
 {
     internal static class Program
     {
-        public static async Task Main()
+        public static void Main()
         {
             using ISound sound = new Sound();
             IKeyboard keyboard = new Keyboard();
@@ -22,7 +22,7 @@ namespace EliteSharp.SDL
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
             EliteMain game = new(graphics, sound, keyboard);
-            await game.RunAsync(token).ConfigureAwait(false);
+            game.Run(token);
         }
     }
 }

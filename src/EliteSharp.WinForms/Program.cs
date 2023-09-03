@@ -39,10 +39,9 @@ namespace EliteSharp.WinForms
 #pragma warning disable CA2000 // Dispose objects before losing scope
                 IGraphics graphics = new GdiGraphics(window.ScreenBitmap);
 #pragma warning restore CA2000 // Dispose objects before losing scope
+
                 EliteMain game = new(graphics, sound, keyboard);
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                game.RunAsync(token);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                Task.Run(() => game.Run(token));
                 Application.Run(window);
             }
             catch (Exception ex)
