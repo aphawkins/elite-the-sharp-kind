@@ -18,6 +18,15 @@ generated_code = true
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4
 end_of_line = crlf
+dotnet_style_coalesce_expression = true:warning
+dotnet_style_null_propagation = true:warning
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+dotnet_style_prefer_auto_properties = true:warning
+dotnet_style_object_initializer = true:warning
+dotnet_style_collection_initializer = true:warning
+dotnet_style_prefer_simplified_boolean_expressions = true:warning
+dotnet_style_prefer_conditional_expression_over_assignment = true:warning
+dotnet_style_prefer_conditional_expression_over_return = true:warning
 
 # C# files
 [*.cs]
@@ -164,7 +173,9 @@ csharp_style_prefer_top_level_statements = true:suggestion
 dotnet_analyzer_diagnostic.severity = warning
 
 # IDE - Exclusions
+dotnet_diagnostic.IDE0010.severity = none # Add missing cases to switch statement
 dotnet_diagnostic.IDE0058.severity = none # Remove unnecessary expression value
+dotnet_diagnostic.IDE0072.severity = none # Add missing cases to switch expression
 
 # CodeAnalysis - Exclusions
 dotnet_diagnostic.CA1814.severity = none # Prefer jagged arrays over multidimensional

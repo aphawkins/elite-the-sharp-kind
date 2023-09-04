@@ -3,16 +3,16 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using EliteSharp.Graphics;
 using static SDL2.SDL;
+using static SDL2.SDL_ttf;
 
 namespace EliteSharp.SDL
 {
-    public sealed class SdlGraphics : IGraphics
+    public sealed class SDLGraphics : IGraphics
     {
         private readonly Dictionary<EColor, SDL_Color> _sdlColors = new();
         private readonly nint _fontLarge;
@@ -24,21 +24,21 @@ namespace EliteSharp.SDL
         private readonly nint _window;
         private bool _disposedValue;
 
-        public SdlGraphics()
+        public SDLGraphics()
         {
             // When running C# applications under the Visual Studio debugger, native code that
             // names threads with the 0x406D1388 exception will silently exit. To prevent this
             // exception from being thrown by SDL, add this line before your SDL_Init call:
             SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
 
-            if (SDL_Init(SDL_INIT_VIDEO) < 0)
+            if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
             {
-                LogError(nameof(SDL_Init));
+                SDLHelper.Throw(nameof(SDL_Init));
             }
 
-            if (SDL2.SDL_ttf.TTF_Init() < 0)
+            if (TTF_Init() < 0)
             {
-                LogError(nameof(SDL2.SDL_ttf.TTF_Init));
+                SDLHelper.Throw(nameof(TTF_Init));
             }
 
             _window = SDL_CreateWindow(
@@ -63,21 +63,21 @@ namespace EliteSharp.SDL
                 _sdlColors.Add(colour, sdlColor);
             }
 
-            _fontLarge = SDL2.SDL_ttf.TTF_OpenFont(_fontPath, 18);
+            _fontLarge = TTF_OpenFont(_fontPath, 18);
             if (_fontLarge == nint.Zero)
             {
-                LogError(nameof(SDL2.SDL_ttf.TTF_OpenFont));
+                SDLHelper.Throw(nameof(TTF_OpenFont));
             }
 
-            _fontSmall = SDL2.SDL_ttf.TTF_OpenFont(_fontPath, 12);
+            _fontSmall = TTF_OpenFont(_fontPath, 12);
             if (_fontLarge == nint.Zero)
             {
-                LogError(nameof(SDL2.SDL_ttf.TTF_OpenFont));
+                SDLHelper.Throw(nameof(TTF_OpenFont));
             }
         }
 
         // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~SdlGraphics()
+        ~SDLGraphics()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: false);
@@ -95,7 +95,7 @@ namespace EliteSharp.SDL
 
             if (SDL_RenderClear(_renderer) < 0)
             {
-                LogError(nameof(SDL_RenderClear));
+                SDLHelper.Throw(nameof(SDL_RenderClear));
             }
         }
 
@@ -129,7 +129,7 @@ namespace EliteSharp.SDL
 
             if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
             {
-                LogError(nameof(SDL_RenderCopy));
+                SDLHelper.Throw(nameof(SDL_RenderCopy));
             }
 
             SDL_DestroyTexture(texture);
@@ -148,7 +148,7 @@ namespace EliteSharp.SDL
 
             if (SDL_RenderDrawLineF(_renderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y) < 0)
             {
-                LogError(nameof(SDL_RenderDrawLineF));
+                SDLHelper.Throw(nameof(SDL_RenderDrawLineF));
             }
         }
 
@@ -204,7 +204,7 @@ namespace EliteSharp.SDL
 
             if (SDL_RenderDrawRectF(_renderer, ref rectangle) < 0)
             {
-                LogError(nameof(SDL_RenderDrawRectF));
+                SDLHelper.Throw(nameof(SDL_RenderDrawRectF));
             }
         }
 
@@ -226,16 +226,21 @@ namespace EliteSharp.SDL
 
             if (SDL_RenderFillRectF(_renderer, ref rectangle) < 0)
             {
-                LogError(nameof(SDL_RenderFillRectF));
+                SDLHelper.Throw(nameof(SDL_RenderFillRectF));
             }
         }
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
         {
-            nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
+            nint surfacePtr = TTF_RenderText_Solid(
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 text,
                 _sdlColors[colour]);
+            if (surfacePtr == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(TTF_RenderText_Solid));
+            }
+
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
 
             SDL_Rect dest = surface.clip_rect;
@@ -243,19 +248,28 @@ namespace EliteSharp.SDL
             dest.y = (int)(y / (2 / Scale));
 
             nint texture = SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+            if (texture == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
+            }
 
             if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
             {
-                LogError(nameof(SDL_RenderCopy));
+                SDLHelper.Throw(nameof(SDL_RenderCopy));
             }
         }
 
         public void DrawTextLeft(Vector2 position, string text, EColor colour)
         {
-            nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
+            nint surfacePtr = TTF_RenderText_Solid(
                 _fontSmall,
                 text,
                 _sdlColors[colour]);
+            if (surfacePtr == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(TTF_RenderText_Solid));
+            }
+
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
 
             SDL_Rect dest = surface.clip_rect;
@@ -263,19 +277,28 @@ namespace EliteSharp.SDL
             dest.y = (int)(position.Y / (2 / Scale));
 
             nint texture = SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+            if (texture == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
+            }
 
             if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
             {
-                LogError(nameof(SDL_RenderCopy));
+                SDLHelper.Throw(nameof(SDL_RenderCopy));
             }
         }
 
         public void DrawTextRight(Vector2 position, string text, EColor colour)
         {
-            nint surfacePtr = SDL2.SDL_ttf.TTF_RenderText_Solid(
+            nint surfacePtr = TTF_RenderText_Solid(
                 _fontSmall,
                 text,
                 _sdlColors[colour]);
+            if (surfacePtr == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(TTF_RenderText_Solid));
+            }
+
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
 
             SDL_Rect dest = surface.clip_rect;
@@ -283,10 +306,14 @@ namespace EliteSharp.SDL
             dest.y = (int)(position.Y / (2 / Scale));
 
             nint texture = SDL_CreateTextureFromSurface(_renderer, surfacePtr);
+            if (texture == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
+            }
 
             if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
             {
-                LogError(nameof(SDL_RenderCopy));
+                SDLHelper.Throw(nameof(SDL_RenderCopy));
             }
         }
 
@@ -308,7 +335,7 @@ namespace EliteSharp.SDL
 
             if (SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
             {
-                LogError(nameof(SDL_RenderGeometry));
+                SDLHelper.Throw(nameof(SDL_RenderGeometry));
             }
         }
 
@@ -328,11 +355,9 @@ namespace EliteSharp.SDL
 
             if (SDL_RenderSetClipRect(_renderer, ref rectangle) < 0)
             {
-                LogError(nameof(SDL_RenderSetClipRect));
+                SDLHelper.Throw(nameof(SDL_RenderSetClipRect));
             }
         }
-
-        private static void LogError(string methodName) => Debug.WriteLine($"Failed to {methodName}. Error: " + SDL_GetError());
 
         private SDL_Vertex ConvertVertex(Vector2 point, EColor colour) => new()
         {
@@ -369,7 +394,7 @@ namespace EliteSharp.SDL
         {
             if (SDL_SetRenderDrawColor(_renderer, colour.R, colour.G, colour.B, colour.A) < 0)
             {
-                LogError(nameof(SDL_SetRenderDrawColor));
+                SDLHelper.Throw(nameof(SDL_SetRenderDrawColor));
             }
         }
     }
