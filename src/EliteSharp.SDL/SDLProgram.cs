@@ -10,19 +10,27 @@ namespace EliteSharp.SDL
     {
         public static void Main()
         {
-            using ISound sound = new Sound();
-            using CancellationTokenSource source = new();
-            CancellationToken token = source.Token;
-
-            using SDLGraphics graphics = new();
-            SDLKeyboard keyboard = new();
-
-            EliteMain game = new(graphics, sound, keyboard);
-            Task.Run(() => game.Run(token));
-
-            while (!keyboard.Close)
+            try
             {
-                keyboard.Poll();
+                using ISound sound = new Sound();
+                using CancellationTokenSource source = new();
+                CancellationToken token = source.Token;
+
+                using SDLGraphics graphics = new();
+                SDLKeyboard keyboard = new();
+
+                EliteMain game = new(graphics, sound, keyboard);
+                Task.Run(() => game.Run(token));
+
+                while (!keyboard.Close)
+                {
+                    keyboard.Poll();
+                }
+            }
+            catch
+            {
+                Environment.Exit(-1);
+                throw;
             }
         }
     }

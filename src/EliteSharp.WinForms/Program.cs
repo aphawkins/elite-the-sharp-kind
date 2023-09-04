@@ -4,7 +4,6 @@
 
 using EliteSharp.Audio;
 using EliteSharp.Controls;
-using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
@@ -36,9 +35,7 @@ namespace EliteSharp.WinForms
 #else
                 using GameWindow window = new(512, 512, keyboard);
 #endif
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                IGraphics graphics = new GdiGraphics(window.ScreenBitmap);
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                using GdiGraphics graphics = new(window.ScreenBitmap);
 
                 EliteMain game = new(graphics, sound, keyboard);
                 Task.Run(() => game.Run(token));
