@@ -154,11 +154,15 @@ namespace EliteSharp.SDL
 
         public void DrawPixel(Vector2 position, EColor colour)
         {
+            SetRenderDrawColor(colour);
+
+            if (SDL_RenderDrawPointF(_renderer, position.X, position.Y) < 0)
+            {
+                SDLHelper.Throw(nameof(SDL_RenderDrawPointF));
+            }
         }
 
-        public void DrawPixelFast(Vector2 position, EColor colour)
-        {
-        }
+        public void DrawPixelFast(Vector2 position, EColor colour) => DrawPixel(position, colour);
 
         public void DrawPolygon(Vector2[] points, EColor lineColour)
         {
