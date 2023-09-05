@@ -14,13 +14,12 @@ namespace EliteSharp.SDL
 {
     public sealed class SDLGraphics : IGraphics
     {
-        private readonly Dictionary<EColor, SDL_Color> _sdlColors = new();
         private readonly nint _fontLarge;
-
         private readonly string _fontPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets", "Fonts", "OpenSans-Regular.ttf");
         private readonly nint _fontSmall;
         private readonly ConcurrentDictionary<ImageType, nint> _images = new();
         private readonly nint _renderer;
+        private readonly Dictionary<EColor, SDL_Color> _sdlColors = new();
         private readonly nint _window;
         private bool _disposedValue;
 
@@ -108,10 +107,78 @@ namespace EliteSharp.SDL
 
         public void DrawCircle(Vector2 centre, float radius, EColor colour)
         {
+            float diameter = radius * 2;
+            float x = MathF.Floor(radius);
+            float y = 0;
+            float tx = 1;
+            float ty = 1;
+            float error = tx - diameter;
+
+            List<SDL_FPoint> points = new();
+
+            while (x >= y)
+            {
+                points.Add(new() { x = centre.X + x, y = centre.Y + y });
+                points.Add(new() { x = centre.X + x, y = centre.Y - y });
+                points.Add(new() { x = centre.X - x, y = centre.Y + y });
+                points.Add(new() { x = centre.X - x, y = centre.Y - y });
+                points.Add(new() { x = centre.X + y, y = centre.Y + x });
+                points.Add(new() { x = centre.X + y, y = centre.Y - x });
+                points.Add(new() { x = centre.X - y, y = centre.Y + x });
+                points.Add(new() { x = centre.X - y, y = centre.Y - x });
+
+                if (error <= 0)
+                {
+                    y++;
+                    error += ty;
+                    ty += 2;
+                }
+
+                if (error > 0)
+                {
+                    x--;
+                    tx += 2;
+                    error += tx - diameter;
+                }
+            }
+
+            DrawPixels(points.ToArray(), colour);
         }
 
         public void DrawCircleFilled(Vector2 centre, float radius, EColor colour)
         {
+            float diameter = radius * 2;
+            float x = MathF.Floor(radius);
+            float y = 0;
+            float tx = 1;
+            float ty = 1;
+            float error = tx - diameter;
+
+            List<(SDL_FPoint Start, SDL_FPoint End)> lines = new();
+
+            while (x >= y)
+            {
+                lines.Add((new() { x = centre.X + x, y = centre.Y + y }, new() { x = centre.X + x, y = centre.Y - y }));
+                lines.Add((new() { x = centre.X - x, y = centre.Y + y }, new() { x = centre.X - x, y = centre.Y - y }));
+                lines.Add((new() { x = centre.X + y, y = centre.Y + x }, new() { x = centre.X + y, y = centre.Y - x }));
+                lines.Add((new() { x = centre.X - y, y = centre.Y + x }, new() { x = centre.X - y, y = centre.Y - x }));
+
+                if (error <= 0)
+                {
+                    y++;
+                    error += ty;
+                    ty += 2;
+                }
+
+                if (error > 0)
+                {
+                    x--;
+                    tx += 2;
+                    error += tx - diameter;
+                }
+            }
+
+            DrawLines(lines, colour);
         }
 
         public void DrawImage(ImageType image, Vector2 position)
@@ -391,6 +458,29 @@ namespace EliteSharp.SDL
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
                 _disposedValue = true;
+            }
+        }
+
+        private void DrawLines(List<(SDL_FPoint Start, SDL_FPoint End)> points, EColor colour)
+        {
+            SetRenderDrawColor(colour);
+
+            foreach ((SDL_FPoint start, SDL_FPoint end) in points)
+            {
+                if (SDL_RenderDrawLineF(_renderer, start.x, start.y, end.x, end.y) < 0)
+                {
+                    SDLHelper.Throw(nameof(SDL_RenderDrawLinesF));
+                }
+            }
+        }
+
+        private void DrawPixels(SDL_FPoint[] points, EColor colour)
+        {
+            SetRenderDrawColor(colour);
+
+            if (SDL_RenderDrawPointsF(_renderer, points, points.Length) < 0)
+            {
+                SDLHelper.Throw(nameof(SDL_RenderDrawPointF));
             }
         }
 

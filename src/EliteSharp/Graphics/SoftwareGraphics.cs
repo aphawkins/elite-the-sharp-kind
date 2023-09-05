@@ -41,7 +41,7 @@ namespace EliteSharp.Graphics
         public void DrawCircle(Vector2 centre, float radius, EColor colour)
         {
             float diameter = radius * 2;
-            float x = radius;
+            float x = MathF.Floor(radius);
             float y = 0;
             float tx = 1;
             float ty = 1;
