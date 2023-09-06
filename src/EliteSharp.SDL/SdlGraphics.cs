@@ -21,7 +21,7 @@ namespace EliteSharp.SDL
         private readonly nint _renderer;
         private readonly Dictionary<EColor, SDL_Color> _sdlColors = new();
         private readonly nint _window;
-        private bool _disposedValue;
+        private bool _isDisposed;
 
         public SDLGraphics()
         {
@@ -90,6 +90,11 @@ namespace EliteSharp.SDL
 
         public void Clear()
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SetRenderDrawColor(EColors.Black);
 
             if (SDL_RenderClear(_renderer) < 0)
@@ -183,6 +188,11 @@ namespace EliteSharp.SDL
 
         public void DrawImage(ImageType image, Vector2 position)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(_images[image]);
             nint texture = SDL_CreateTextureFromSurface(_renderer, _images[image]);
 
@@ -204,6 +214,11 @@ namespace EliteSharp.SDL
 
         public void DrawImageCentre(ImageType image, float y)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(_images[image]);
             float x = (ScreenWidth - surface.w) / 2;
             DrawImage(image, new(x, y));
@@ -211,6 +226,11 @@ namespace EliteSharp.SDL
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SetRenderDrawColor(colour);
 
             if (SDL_RenderDrawLineF(_renderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y) < 0)
@@ -263,6 +283,11 @@ namespace EliteSharp.SDL
 
         public void DrawRectangle(Vector2 position, float width, float height, EColor colour)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SetRenderDrawColor(colour);
 
             SDL_FRect rectangle = new()
@@ -285,6 +310,11 @@ namespace EliteSharp.SDL
 
         public void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SetRenderDrawColor(colour);
 
             SDL_FRect rectangle = new()
@@ -303,7 +333,7 @@ namespace EliteSharp.SDL
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (_isDisposed || string.IsNullOrWhiteSpace(text))
             {
                 return;
             }
@@ -318,7 +348,6 @@ namespace EliteSharp.SDL
             }
 
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
-
             SDL_Rect dest = surface.clip_rect;
             dest.x = (int)((ScreenWidth / 2) - (dest.w / 2));
             dest.y = (int)(y / (2 / Scale));
@@ -340,7 +369,7 @@ namespace EliteSharp.SDL
 
         public void DrawTextLeft(Vector2 position, string text, EColor colour)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (_isDisposed || string.IsNullOrWhiteSpace(text))
             {
                 return;
             }
@@ -355,7 +384,6 @@ namespace EliteSharp.SDL
             }
 
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
-
             SDL_Rect dest = surface.clip_rect;
             dest.x = (int)(position.X / (2 / Scale));
             dest.y = (int)(position.Y / (2 / Scale));
@@ -377,7 +405,7 @@ namespace EliteSharp.SDL
 
         public void DrawTextRight(Vector2 position, string text, EColor colour)
         {
-            if (string.IsNullOrWhiteSpace(text))
+            if (_isDisposed || string.IsNullOrWhiteSpace(text))
             {
                 return;
             }
@@ -392,9 +420,8 @@ namespace EliteSharp.SDL
             }
 
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
-
             SDL_Rect dest = surface.clip_rect;
-            dest.x = (int)(position.X / (2 / Scale));
+            dest.x = (int)((position.X - dest.w) / (2 / Scale));
             dest.y = (int)(position.Y / (2 / Scale));
 
             nint texture = SDL_CreateTextureFromSurface(_renderer, surfacePtr);
@@ -421,6 +448,11 @@ namespace EliteSharp.SDL
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SDL_Vertex[] vertices = new SDL_Vertex[3]
             {
                 ConvertVertex(a, colour),
@@ -434,12 +466,33 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath) => _images[imgType] = SDL_LoadBMP(bitmapPath);
+        public void LoadBitmap(ImageType imgType, string bitmapPath)
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
 
-        public void ScreenUpdate() => SDL_RenderPresent(_renderer);
+            _images[imgType] = SDL_LoadBMP(bitmapPath);
+        }
+
+        public void ScreenUpdate()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            SDL_RenderPresent(_renderer);
+        }
 
         public void SetClipRegion(Vector2 position, float width, float height)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SDL_Rect rectangle = new()
             {
                 x = (int)(position.X / (2 / Scale)),
@@ -463,8 +516,10 @@ namespace EliteSharp.SDL
 
         private void Dispose(bool disposing)
         {
-            if (!_disposedValue)
+            if (!_isDisposed)
             {
+                _isDisposed = true;
+
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
@@ -481,7 +536,6 @@ namespace EliteSharp.SDL
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
                 // TODO: set large fields to null
-                _disposedValue = true;
             }
         }
 
