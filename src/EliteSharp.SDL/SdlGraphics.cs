@@ -303,6 +303,11 @@ namespace EliteSharp.SDL
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
             nint surfacePtr = TTF_RenderText_Solid(
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 text,
@@ -328,10 +333,18 @@ namespace EliteSharp.SDL
             {
                 SDLHelper.Throw(nameof(SDL_RenderCopy));
             }
+
+            SDL_FreeSurface(surfacePtr);
+            SDL_DestroyTexture(texture);
         }
 
         public void DrawTextLeft(Vector2 position, string text, EColor colour)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
             nint surfacePtr = TTF_RenderText_Solid(
                 _fontSmall,
                 text,
@@ -357,10 +370,18 @@ namespace EliteSharp.SDL
             {
                 SDLHelper.Throw(nameof(SDL_RenderCopy));
             }
+
+            SDL_FreeSurface(surfacePtr);
+            SDL_DestroyTexture(texture);
         }
 
         public void DrawTextRight(Vector2 position, string text, EColor colour)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
             nint surfacePtr = TTF_RenderText_Solid(
                 _fontSmall,
                 text,
@@ -386,6 +407,9 @@ namespace EliteSharp.SDL
             {
                 SDLHelper.Throw(nameof(SDL_RenderCopy));
             }
+
+            SDL_FreeSurface(surfacePtr);
+            SDL_DestroyTexture(texture);
         }
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour)
