@@ -27,8 +27,9 @@ namespace EliteSharp.SDL
                     keyboard.Poll();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 Environment.Exit(-1);
                 throw;
             }
