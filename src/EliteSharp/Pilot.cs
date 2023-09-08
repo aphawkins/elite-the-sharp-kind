@@ -177,7 +177,7 @@ namespace EliteSharp
             if (!IsAutoPilotOn)
             {
                 IsAutoPilotOn = true;
-                _audio.PlayMusic(Music.BlueDanube, true);
+                _audio.PlayMusic(MusicType.BlueDanube, true);
             }
         }
 

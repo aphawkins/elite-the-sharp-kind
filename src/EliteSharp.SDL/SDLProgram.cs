@@ -20,7 +20,7 @@ namespace EliteSharp.SDL
                 SDLKeyboard keyboard = new();
 
                 EliteMain game = new(graphics, sound, keyboard);
-                Task.Run(() => game.Run(token));
+                game.RunAsync(token).ConfigureAwait(false);
 
                 while (!keyboard.Close)
                 {

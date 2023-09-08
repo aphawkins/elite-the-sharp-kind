@@ -23,7 +23,7 @@ namespace EliteSharp.Assets
             return memStream.ToArray();
         }
 
-        public async Task<byte[]> LoadAsync(Music music, CancellationToken token) => await Task.Run(
+        public async Task<byte[]> LoadAsync(MusicType music, CancellationToken token) => await Task.Run(
             () =>
             {
                 using MemoryStream memStream = new();
@@ -70,10 +70,10 @@ namespace EliteSharp.Assets
             _ => throw new NotImplementedException(),
         };
 
-        private static string GetName(Music music) => music switch
+        private static string GetName(MusicType music) => music switch
         {
-            Music.EliteTheme => "theme.ogg",
-            Music.BlueDanube => "danube.ogg",
+            MusicType.EliteTheme => "theme.ogg",
+            MusicType.BlueDanube => "danube.ogg",
             _ => throw new NotImplementedException(),
         };
     }

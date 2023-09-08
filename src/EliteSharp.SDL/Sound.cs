@@ -10,7 +10,7 @@ namespace EliteSharp.SDL
     {
         private bool _disposedValue;
 
-        public void Load(Music musicType, byte[] waveBytes)
+        public void Load(MusicType musicType, byte[] waveBytes)
         {
         }
 
@@ -22,7 +22,7 @@ namespace EliteSharp.SDL
         {
         }
 
-        public void Play(Music musicType, bool repeat) => StopMusic();
+        public void Play(MusicType musicType, bool repeat) => StopMusic();
 
         public void StopMusic()
         {

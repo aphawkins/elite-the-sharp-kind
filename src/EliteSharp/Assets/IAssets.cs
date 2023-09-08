@@ -13,6 +13,6 @@ namespace EliteSharp.Assets
 
         Task<byte[]> LoadAsync(SoundEffect effect, CancellationToken token);
 
-        Task<byte[]> LoadAsync(Music music, CancellationToken token);
+        Task<byte[]> LoadAsync(MusicType music, CancellationToken token);
     }
 }

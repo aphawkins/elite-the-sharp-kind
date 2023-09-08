@@ -80,7 +80,7 @@ namespace EliteSharp.Views
                 Debug.WriteLine("Failed to create CobraMk3");
             }
 
-            _audio.PlayMusic(Music.EliteTheme, true);
+            _audio.PlayMusic(MusicType.EliteTheme, true);
         }
 
         public void UpdateUniverse()

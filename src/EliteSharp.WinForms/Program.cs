@@ -38,7 +38,7 @@ namespace EliteSharp.WinForms
                 using GdiGraphics graphics = new(window.ScreenBitmap);
 
                 EliteMain game = new(graphics, sound, keyboard);
-                Task.Run(() => game.Run(token));
+                game.RunAsync(token).ConfigureAwait(false);
                 Application.Run(window);
             }
             catch (Exception ex)

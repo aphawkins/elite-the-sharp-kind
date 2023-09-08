@@ -12,10 +12,10 @@ namespace EliteSharp.WinForms
     internal sealed class Sound : ISound
     {
         private readonly ConcurrentDictionary<SoundEffect, SoundPlayer> _sfxs = new();
-        private readonly ConcurrentDictionary<Music, SoundPlayer> _musics = new();
+        private readonly ConcurrentDictionary<MusicType, SoundPlayer> _musics = new();
         private bool _disposedValue;
 
-        public void Load(Music musicType, byte[] waveBytes)
+        public void Load(MusicType musicType, byte[] waveBytes)
         {
             Debug.Assert(waveBytes.Length > 0, "Music bytes missing");
             _musics[musicType] = new(new MemoryStream(waveBytes));
@@ -33,7 +33,7 @@ namespace EliteSharp.WinForms
 
         public void Play(SoundEffect sfxType) => _sfxs[sfxType].Play();
 
-        public void Play(Music musicType, bool repeat)
+        public void Play(MusicType musicType, bool repeat)
         {
             StopMusic();
 
@@ -49,7 +49,7 @@ namespace EliteSharp.WinForms
 
         public void StopMusic()
         {
-            foreach (KeyValuePair<Music, SoundPlayer> music in _musics)
+            foreach (KeyValuePair<MusicType, SoundPlayer> music in _musics)
             {
                 music.Value.Stop();
             }
@@ -69,7 +69,7 @@ namespace EliteSharp.WinForms
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
-                    foreach (KeyValuePair<Music, SoundPlayer> v in _musics)
+                    foreach (KeyValuePair<MusicType, SoundPlayer> v in _musics)
                     {
                         v.Value.Dispose();
                     }

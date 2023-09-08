@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Audio
 {
-    public enum Music
+    public enum MusicType
     {
         EliteTheme = 0,
         BlueDanube = 1,

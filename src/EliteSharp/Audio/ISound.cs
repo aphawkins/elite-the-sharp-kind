@@ -6,11 +6,11 @@ namespace EliteSharp.Audio
 {
     public interface ISound : IDisposable
     {
-        void Load(Music musicType, byte[] waveBytes);
+        void Load(MusicType musicType, byte[] waveBytes);
 
         void Load(SoundEffect sfxType, byte[] waveBytes);
 
-        void Play(Music musicType, bool repeat);
+        void Play(MusicType musicType, bool repeat);
 
         void Play(SoundEffect sfxType);
 

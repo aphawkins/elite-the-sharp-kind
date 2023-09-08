@@ -34,7 +34,7 @@ namespace EliteSharp.Audio
         {
             _sound = sound;
 #if DEBUG
-            _musicOn = false;
+            _musicOn = true;
             _effectsOn = true;
 #else
             _musicOn = true;
@@ -51,7 +51,7 @@ namespace EliteSharp.Audio
             };
 
             await Parallel.ForEachAsync(
-                Enum.GetValues<Music>(),
+                Enum.GetValues<MusicType>(),
                 options,
                 async (music, token) => _sound.Load(music, await loader.LoadAsync(music, token).ConfigureAwait(false)))
                 .ConfigureAwait(false);
@@ -79,7 +79,7 @@ namespace EliteSharp.Audio
             _sound.Play(effect);
         }
 
-        internal void PlayMusic(Music music, bool loop)
+        internal void PlayMusic(MusicType music, bool loop)
         {
             if (!_musicOn)
             {

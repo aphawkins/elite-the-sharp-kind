@@ -84,7 +84,7 @@ namespace EliteSharp.Views
             _combat.Reset();
             _stars.CreateNewStars();
             _rotmat = VectorMaths.GetInitialMatrix();
-            _audio.PlayMusic(Music.BlueDanube, true);
+            _audio.PlayMusic(MusicType.BlueDanube, true);
 
             AddNewShip();
         }
