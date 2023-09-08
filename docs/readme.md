@@ -80,12 +80,18 @@ Press Space on the ship parade screen
 ### Game Settings Screen  
 From the Options Screen (F11) you can enter the Game Settings Screen. From here you can change a number of settings that control how the game looks and plays.  Use the cursor keys to select an option and the Enter/Return key to change it. The options can be saved as default for future games by pressing Enter while on the Save Settings option (NB this is not necessary if you want to change the settings just for the current game).  Game settings are held in the newkind.cfg file which should be in the same directory as the newkind.exe file.  
 
-## Development Setup
+## SDL - Development Setup
+
+### Windows
+Nuget packages are in the projects that copy the necessary libraries.
+These are: SDL2.dll, SDL2_ttf.dll
 
 ### Ubuntu
+The following packages will need to be installed to get the necessary libraries:
+``` bash
 sudo apt-get install libsdl2-dev
 sudo apt-get install libsdl2-ttf-dev
-
+```
 ## Credits  
 
 'Elite - The Sharp Kind' re-engineered in C# by Andy Hawkins 2023.  
