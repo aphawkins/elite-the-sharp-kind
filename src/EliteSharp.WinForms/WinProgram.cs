@@ -7,7 +7,7 @@ using EliteSharp.Controls;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class Program
+    internal sealed class WinProgram
     {
         /// <summary>
         ///  The main entry point for the application.
@@ -26,12 +26,12 @@ namespace EliteSharp.WinForms
         {
             try
             {
-                using ISound sound = new Sound();
-                IKeyboard keyboard = new Keyboard();
+                using ISound sound = new WinSound();
+                IKeyboard keyboard = new WinKeyboard();
                 using CancellationTokenSource source = new();
                 CancellationToken token = source.Token;
 #if QHD
-                using GameWindow window = new(960, 540, keyboard);
+                using WinWindow window = new(960, 540, keyboard);
 #else
                 using GameWindow window = new(512, 512, keyboard);
 #endif

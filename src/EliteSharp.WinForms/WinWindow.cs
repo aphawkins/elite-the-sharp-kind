@@ -7,13 +7,13 @@ using EliteSharp.Controls;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed partial class GameWindow : Form
+    internal sealed partial class WinWindow : Form
     {
         private readonly System.Windows.Forms.Timer _refreshTimer = new();
         private readonly IKeyboard _keyboard;
 
         //private readonly Task _game;
-        public GameWindow(int width, int height, IKeyboard keyboard)
+        public WinWindow(int width, int height, IKeyboard keyboard)
         {
             InitializeComponent();
 

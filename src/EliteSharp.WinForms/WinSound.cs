@@ -9,7 +9,7 @@ using EliteSharp.Audio;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class Sound : ISound
+    internal sealed class WinSound : ISound
     {
         private readonly ConcurrentDictionary<SoundEffect, SoundPlayer> _sfxs = new();
         private readonly ConcurrentDictionary<MusicType, SoundPlayer> _musics = new();

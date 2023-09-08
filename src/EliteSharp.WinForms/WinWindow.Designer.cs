@@ -1,7 +1,7 @@
 ﻿namespace EliteSharp.WinForms
 {
     #pragma warning disable CA1031 // Do not catch general exception types
-    internal sealed partial class GameWindow
+    internal sealed partial class WinWindow
     {
         /// <summary>
         ///  Required designer variable.
@@ -32,7 +32,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WinWindow));
             this.screen = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.screen)).BeginInit();
             this.SuspendLayout();

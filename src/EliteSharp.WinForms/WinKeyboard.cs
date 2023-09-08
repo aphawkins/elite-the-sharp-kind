@@ -6,7 +6,7 @@ using EliteSharp.Controls;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class Keyboard : IKeyboard
+    internal sealed class WinKeyboard : IKeyboard
     {
         private readonly Dictionary<CommandKey, bool> _isPressed = new();
         private CommandKey _lastKeyPressed;
