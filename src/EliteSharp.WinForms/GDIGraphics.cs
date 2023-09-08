@@ -8,7 +8,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
-    public sealed class GdiGraphics : IGraphics
+    public sealed class GDIGraphics : IGraphics
     {
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
@@ -22,7 +22,7 @@ namespace EliteSharp.WinForms
         private RectangleF _clipRegion;
         private bool _isDisposed;
 
-        public GdiGraphics(Bitmap screen)
+        public GDIGraphics(Bitmap screen)
         {
             _screen = screen;
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);

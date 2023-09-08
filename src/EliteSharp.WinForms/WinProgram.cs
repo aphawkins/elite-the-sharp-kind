@@ -35,7 +35,7 @@ namespace EliteSharp.WinForms
 #else
                 using GameWindow window = new(512, 512, keyboard);
 #endif
-                using GdiGraphics graphics = new(window.ScreenBitmap);
+                using GDIGraphics graphics = new(window.ScreenBitmap);
 
                 EliteMain game = new(graphics, sound, keyboard);
                 game.RunAsync(token).ConfigureAwait(false);

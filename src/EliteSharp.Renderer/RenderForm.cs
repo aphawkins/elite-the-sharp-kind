@@ -31,7 +31,7 @@ namespace EliteSharp.Renderer
             comboRenderer.Items.AddRange(new[] { "GDI", "Software" });
             comboRenderer.SelectedIndex = 0;
 
-            _graphics = new GdiGraphics(_bmp);
+            _graphics = new GDIGraphics(_bmp);
             _draw = new Draw(_gameState, _graphics);
             _obj = new WireframePlanet(_draw);
 
@@ -81,7 +81,7 @@ namespace EliteSharp.Renderer
             _graphics = comboRenderer.SelectedIndex switch
             {
                 1 => new SoftwareGraphics(_buffer),
-                _ => new GdiGraphics(_bmp),
+                _ => new GDIGraphics(_bmp),
             };
 
             _draw = new Draw(_gameState, _graphics);
