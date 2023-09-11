@@ -6,6 +6,8 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Media;
 using EliteSharp.Audio;
+using NAudio.Vorbis;
+using NAudio.Wave;
 
 namespace EliteSharp.WinForms
 {
@@ -15,19 +17,37 @@ namespace EliteSharp.WinForms
         private readonly ConcurrentDictionary<MusicType, SoundPlayer> _musics = new();
         private bool _disposedValue;
 
-        public void Load(MusicType musicType, byte[] waveBytes)
+        public async Task LoadAsync(MusicType musicType, string filePath, CancellationToken token)
         {
-            Debug.Assert(waveBytes.Length > 0, "Music bytes missing");
-            _musics[musicType] = new(new MemoryStream(waveBytes));
-            _musics[musicType].Load();
+            Debug.Assert(!string.IsNullOrWhiteSpace(filePath), "Music is missing");
+
+            await Task.Run(
+                () =>
+                {
+                    using MemoryStream memStream = new();
+                    using VorbisWaveReader vorbisStream = new(filePath);
+                    WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
+                    memStream.Position = 0;
+                    _musics[musicType] = new(memStream);
+                    _musics[musicType].Load();
+                },
+                token).ConfigureAwait(false);
+
             Debug.Assert(_musics[musicType].IsLoadCompleted, "Sound Effect failed to load");
         }
 
-        public void Load(SoundEffect sfxType, byte[] waveBytes)
+        public async Task LoadAsync(SoundEffect sfxType, string filePath, CancellationToken token)
         {
-            Debug.Assert(waveBytes.Length > 0, "Sound effects bytes missing");
-            _sfxs[sfxType] = new(new MemoryStream(waveBytes));
-            _sfxs[sfxType].Load();
+            Debug.Assert(!string.IsNullOrWhiteSpace(filePath), "Sound effect is missing");
+
+            await Task.Run(
+                () =>
+                {
+                    _sfxs[sfxType] = new(filePath);
+                    _sfxs[sfxType].Load();
+                },
+                token).ConfigureAwait(false);
+
             Debug.Assert(_sfxs[sfxType].IsLoadCompleted, "Sound effect failed to load");
         }
 

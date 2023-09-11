@@ -200,7 +200,8 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath) => _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
+        public async Task LoadBitmapAsync(ImageType imgType, string bitmapPath, CancellationToken token) =>
+            await Task.Run(() => _images[imgType] = (Bitmap)Image.FromFile(bitmapPath), token).ConfigureAwait(false);
 
         /// <summary>
         /// Blit the back buffer to the screen.

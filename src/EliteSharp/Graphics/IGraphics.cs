@@ -48,7 +48,7 @@ namespace EliteSharp.Graphics
 
         void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour);
 
-        void LoadBitmap(ImageType imgType, string bitmapPath);
+        Task LoadBitmapAsync(ImageType imgType, string bitmapPath, CancellationToken token);
 
         /// <summary>
         /// Blit the back buffer to the screen.

@@ -12,11 +12,12 @@ namespace EliteSharp.SDL
         {
             try
             {
-                using ISound sound = new Sound();
+                // TODO: Move SDL init here
                 using CancellationTokenSource source = new();
                 CancellationToken token = source.Token;
 
                 using SDLGraphics graphics = new();
+                using ISound sound = new SDLSound();
                 SDLKeyboard keyboard = new();
 
                 EliteMain game = new(graphics, sound, keyboard);

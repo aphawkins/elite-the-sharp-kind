@@ -47,8 +47,16 @@ namespace EliteSharp.SDL
                 (int)ScreenWidth,
                 (int)ScreenHeight,
                 SDL_WindowFlags.SDL_WINDOW_SHOWN);
+            if (_window == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateWindow));
+            }
 
             _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+            if (_renderer == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateRenderer));
+            }
 
             foreach (EColor colour in EColors.AllColors())
             {
@@ -466,14 +474,14 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath)
+        public async Task LoadBitmapAsync(ImageType imgType, string bitmapPath, CancellationToken token)
         {
             if (_isDisposed)
             {
                 return;
             }
 
-            _images[imgType] = SDL_LoadBMP(bitmapPath);
+            await Task.Run(() => _images[imgType] = SDL_LoadBMP(bitmapPath)).ConfigureAwait(false);
         }
 
         public void ScreenUpdate()
@@ -523,6 +531,11 @@ namespace EliteSharp.SDL
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
+
+                    //Fonts
+                    TTF_CloseFont(_fontSmall);
+                    TTF_CloseFont(_fontLarge);
+
                     // Images
                     foreach (KeyValuePair<ImageType, nint> image in _images)
                     {

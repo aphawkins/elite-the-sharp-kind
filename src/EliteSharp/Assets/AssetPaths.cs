@@ -3,36 +3,21 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Reflection;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
-using NAudio.Vorbis;
-using NAudio.Wave;
 
 namespace EliteSharp.Assets
 {
-    internal sealed class AssetFileLoader : IAssets
+    internal sealed class AssetPaths : IAssets
     {
         public string AssetPath(ImageType image) => Path.Combine(GetAssetPath(), "Images", GetName(image));
 
-        public async Task<byte[]> LoadAsync(SoundEffect effect, CancellationToken token)
-        {
-            using MemoryStream memStream = new();
-            using FileStream stream = new(Path.Combine(GetAssetPath(), "SFX", GetName(effect)), FileMode.Open);
-            await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
-            memStream.Position = 0;
-            return memStream.ToArray();
-        }
+        public string AssetPath(SoundEffect effect) => Path.Combine(GetAssetPath(), "SFX", GetName(effect));
 
-        public async Task<byte[]> LoadAsync(MusicType music, CancellationToken token) => await Task.Run(
-            () =>
-            {
-                using MemoryStream memStream = new();
-                using VorbisWaveReader vorbisStream = new(Path.Combine(GetAssetPath(), "Music", GetName(music)));
-                WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
-                memStream.Position = 0;
-                return memStream.ToArray();
-            },
-            token).ConfigureAwait(false);
+        public string AssetPath(MusicType music) => Path.Combine(GetAssetPath(), "Music", GetName(music));
+
+        public string AssetPath(FontType font) => Path.Combine(GetAssetPath(), "Fonts", "OpenSans-Regular.ttf");
 
         private static string GetAssetPath() => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets");
 

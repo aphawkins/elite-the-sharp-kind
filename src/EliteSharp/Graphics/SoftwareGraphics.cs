@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Numerics;
 
@@ -9,6 +10,7 @@ namespace EliteSharp.Graphics
 {
     internal class SoftwareGraphics : IGraphics
     {
+        private readonly ConcurrentDictionary<ImageType, EBitmap> _images = new();
         private readonly EBitmap _screen;
 
         internal SoftwareGraphics(EBitmap screen)
@@ -183,7 +185,14 @@ namespace EliteSharp.Graphics
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour) => throw new NotImplementedException();
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath) => throw new NotImplementedException();
+        public async Task LoadBitmapAsync(ImageType imgType, string bitmapPath, CancellationToken token)
+        {
+            using MemoryStream memStream = new();
+            using FileStream stream = new(bitmapPath, FileMode.Open);
+            await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
+            memStream.Position = 0;
+            _images[imgType] = new(memStream.ToArray());
+        }
 
         public void ScreenUpdate()
         {
