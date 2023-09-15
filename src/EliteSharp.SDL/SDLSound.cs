@@ -4,7 +4,6 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using EliteSharp.Audio;
 using static SDL2.SDL;
 
@@ -61,6 +60,8 @@ namespace EliteSharp.SDL
 
         public void Play(SoundEffect sfxType)
         {
+            SDL_PauseAudioDevice(_deviceId, 1);
+
             if (SDL_QueueAudio(_deviceId, _sfxs[sfxType].Data, _sfxs[sfxType].Len) < 0)
             {
                 SDLHelper.Throw(nameof(SDL_QueueAudio));

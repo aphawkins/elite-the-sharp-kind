@@ -104,9 +104,9 @@ namespace EliteSharp
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
         }
 
-        public async Task RunAsync(CancellationToken token)
+        public void Run(CancellationToken token)
         {
-            await _audio.LoadSoundsAsync(token).ConfigureAwait(false);
+            Task.Run(() => _audio.LoadSoundsAsync(token).ConfigureAwait(false));
             _draw.LoadImages(token);
             long startTicks = DateTime.UtcNow.Ticks;
             long interval = (long)(100000 / _gameState.Config.Fps); // *10^-5
@@ -114,14 +114,14 @@ namespace EliteSharp
             do
             {
                 long nowTicks = DateTime.UtcNow.Ticks;
-                long runtime = nowTicks - startTicks;
 
-                if ((runtime / 100 % interval) == 0)
+                if (((nowTicks - startTicks) / 100 % interval) == 0)
                 {
+                    _keyboard.Poll();
                     DrawFrame(nowTicks);
                 }
             }
-            while (!_gameState.ExitGame);
+            while (!_gameState.ExitGame && !_keyboard.Close);
 
             Environment.Exit(0);
         }

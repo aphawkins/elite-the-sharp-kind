@@ -6,6 +6,8 @@ namespace EliteSharp.Controls
 {
     internal class SoftwareKeyboard : IKeyboard
     {
+        public bool Close => throw new NotImplementedException();
+
         public void ClearKeyPressed() => throw new NotImplementedException();
 
         public CommandKey GetKeyPressed() => throw new NotImplementedException();
@@ -15,5 +17,7 @@ namespace EliteSharp.Controls
         public void KeyDown(CommandKey keyValue) => throw new NotImplementedException();
 
         public void KeyUp(CommandKey keyValue) => throw new NotImplementedException();
+
+        public void Poll() => throw new NotImplementedException();
     }
 }

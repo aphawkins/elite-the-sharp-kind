@@ -6,6 +6,8 @@ namespace EliteSharp.Controls
 {
     public interface IKeyboard
     {
+        bool Close { get; }
+
         void ClearKeyPressed();
 
         CommandKey GetKeyPressed();
@@ -15,5 +17,7 @@ namespace EliteSharp.Controls
         void KeyDown(CommandKey keyValue);
 
         void KeyUp(CommandKey keyValue);
+
+        void Poll();
     }
 }

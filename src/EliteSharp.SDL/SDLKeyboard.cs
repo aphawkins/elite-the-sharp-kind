@@ -55,7 +55,9 @@ namespace EliteSharp.SDL
 
         public void Poll()
         {
-            if (PollEvent(out SDL_Event sdlEvent) && !Close)
+            while (PollEvent(out SDL_Event sdlEvent) &&
+                sdlEvent.type != SDL_EventType.SDL_POLLSENTINEL &&
+                !Close)
             {
                 switch (sdlEvent.type)
                 {
