@@ -17,36 +17,26 @@ namespace EliteSharp.WinForms
         private readonly ConcurrentDictionary<MusicType, SoundPlayer> _musics = new();
         private bool _disposedValue;
 
-        public async Task LoadAsync(MusicType musicType, string filePath, CancellationToken token)
+        public void Load(MusicType musicType, string filePath)
         {
             Debug.Assert(!string.IsNullOrWhiteSpace(filePath), "Music is missing");
 
-            await Task.Run(
-                () =>
-                {
-                    using MemoryStream memStream = new();
-                    using VorbisWaveReader vorbisStream = new(filePath);
-                    WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
-                    memStream.Position = 0;
-                    _musics[musicType] = new(memStream);
-                    _musics[musicType].Load();
-                },
-                token).ConfigureAwait(false);
+            using MemoryStream memStream = new();
+            using VorbisWaveReader vorbisStream = new(filePath);
+            WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
+            memStream.Position = 0;
+            _musics[musicType] = new(memStream);
+            _musics[musicType].Load();
 
             Debug.Assert(_musics[musicType].IsLoadCompleted, "Sound Effect failed to load");
         }
 
-        public async Task LoadAsync(SoundEffect sfxType, string filePath, CancellationToken token)
+        public void Load(SoundEffect sfxType, string filePath)
         {
             Debug.Assert(!string.IsNullOrWhiteSpace(filePath), "Sound effect is missing");
 
-            await Task.Run(
-                () =>
-                {
-                    _sfxs[sfxType] = new(filePath);
-                    _sfxs[sfxType].Load();
-                },
-                token).ConfigureAwait(false);
+            _sfxs[sfxType] = new(filePath);
+            _sfxs[sfxType].Load();
 
             Debug.Assert(_sfxs[sfxType].IsLoadCompleted, "Sound effect failed to load");
         }

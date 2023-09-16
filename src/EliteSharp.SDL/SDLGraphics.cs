@@ -474,14 +474,14 @@ namespace EliteSharp.SDL
             }
         }
 
-        public async Task LoadBitmapAsync(ImageType imgType, string bitmapPath, CancellationToken token)
+        public void LoadBitmap(ImageType imgType, string bitmapPath)
         {
             if (_isDisposed)
             {
                 return;
             }
 
-            await Task.Run(() => _images[imgType] = SDL_LoadBMP(bitmapPath)).ConfigureAwait(false);
+            _images[imgType] = SDL_LoadBMP(bitmapPath);
         }
 
         public void ScreenUpdate()

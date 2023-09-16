@@ -42,25 +42,17 @@ namespace EliteSharp.Audio
 #endif
         }
 
-        internal async Task LoadSoundsAsync(CancellationToken token)
+        internal void LoadSounds()
         {
             AssetPaths loader = new();
-            ParallelOptions options = new()
-            {
-                CancellationToken = token,
-            };
 
-            await Parallel.ForEachAsync(
+            Parallel.ForEach(
                 Enum.GetValues<MusicType>(),
-                options,
-                async (music, token) => await _sound.LoadAsync(music, loader.AssetPath(music), token).ConfigureAwait(false))
-                .ConfigureAwait(false);
+                (music) => _sound.Load(music, loader.AssetPath(music)));
 
-            await Parallel.ForEachAsync(
+            Parallel.ForEach(
                 Enum.GetValues<SoundEffect>(),
-                options,
-                async (effect, token) => await _sound.LoadAsync(effect, loader.AssetPath(effect), token).ConfigureAwait(false))
-                .ConfigureAwait(false);
+                (effect) => _sound.Load(effect, loader.AssetPath(effect)));
         }
 
         internal void PlayEffect(SoundEffect effect)

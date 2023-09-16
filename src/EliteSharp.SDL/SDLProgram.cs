@@ -13,15 +13,12 @@ namespace EliteSharp.SDL
             try
             {
                 // TODO: Move SDL init here
-                using CancellationTokenSource source = new();
-                CancellationToken token = source.Token;
-
                 using SDLGraphics graphics = new();
                 using ISound sound = new SDLSound();
                 SDLKeyboard keyboard = new();
 
                 EliteMain game = new(graphics, sound, keyboard);
-                game.Run(token);
+                game.Run();
             }
             catch (Exception ex)
             {

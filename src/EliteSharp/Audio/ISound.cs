@@ -6,9 +6,9 @@ namespace EliteSharp.Audio
 {
     public interface ISound : IDisposable
     {
-        Task LoadAsync(MusicType musicType, string filePath, CancellationToken token);
+        void Load(MusicType musicType, string filePath);
 
-        Task LoadAsync(SoundEffect sfxType, string filePath, CancellationToken token);
+        void Load(SoundEffect sfxType, string filePath);
 
         void Play(MusicType musicType, bool repeat);
 

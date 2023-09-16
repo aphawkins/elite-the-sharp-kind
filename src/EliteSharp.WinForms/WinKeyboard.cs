@@ -11,6 +11,8 @@ namespace EliteSharp.WinForms
         private readonly Dictionary<CommandKey, bool> _isPressed = new();
         private CommandKey _lastKeyPressed;
 
+        public bool Close { get; }
+
         public void ClearKeyPressed()
         {
             _lastKeyPressed = 0;
@@ -49,5 +51,9 @@ namespace EliteSharp.WinForms
         }
 
         public void KeyUp(CommandKey keyValue) => _isPressed[keyValue] = false;
+
+        public void Poll()
+        {
+        }
     }
 }

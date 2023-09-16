@@ -28,8 +28,6 @@ namespace EliteSharp.WinForms
             {
                 using ISound sound = new WinSound();
                 IKeyboard keyboard = new WinKeyboard();
-                using CancellationTokenSource source = new();
-                CancellationToken token = source.Token;
 #if QHD
                 using WinWindow window = new(960, 540, keyboard);
 #else
@@ -38,7 +36,7 @@ namespace EliteSharp.WinForms
                 using GDIGraphics graphics = new(window.ScreenBitmap);
 
                 EliteMain game = new(graphics, sound, keyboard);
-                game.RunAsync(token).ConfigureAwait(false);
+                Task.Run(game.Run);
                 Application.Run(window);
             }
             catch (Exception ex)

@@ -14,20 +14,20 @@ namespace EliteSharp.Graphics
 
         public void Dispose() => throw new NotImplementedException();
 
-        public async Task LoadAsync(MusicType musicType, string filePath, CancellationToken token)
+        public void Load(MusicType musicType, string filePath)
         {
             using MemoryStream memStream = new();
             using FileStream stream = new(filePath, FileMode.Open);
-            await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
+            stream.CopyToAsync(memStream).ConfigureAwait(false);
             memStream.Position = 0;
             _musics[musicType] = new(memStream.ToArray());
         }
 
-        public async Task LoadAsync(SoundEffect sfxType, string filePath, CancellationToken token)
+        public void Load(SoundEffect sfxType, string filePath)
         {
             using MemoryStream memStream = new();
             using FileStream stream = new(filePath, FileMode.Open);
-            await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
+            stream.CopyToAsync(memStream).ConfigureAwait(false);
             memStream.Position = 0;
             _sfxs[sfxType] = new(memStream.ToArray());
         }

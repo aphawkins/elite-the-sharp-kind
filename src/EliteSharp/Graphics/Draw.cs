@@ -149,18 +149,12 @@ namespace EliteSharp.Graphics
             Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), EColors.Yellow);
         }
 
-        public void LoadImages(CancellationToken token)
+        public void LoadImages()
         {
             AssetPaths loader = new();
-            ParallelOptions options = new()
-            {
-                CancellationToken = token,
-            };
-
-            Parallel.ForEachAsync(
+            Parallel.ForEach(
                 Enum.GetValues<ImageType>(),
-                options,
-                async (img, token) => await Graphics.LoadBitmapAsync(img, loader.AssetPath(img), token).ConfigureAwait(false));
+                (img) => Graphics.LoadBitmap(img, loader.AssetPath(img)));
         }
 
         public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);

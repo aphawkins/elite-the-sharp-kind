@@ -185,11 +185,11 @@ namespace EliteSharp.Graphics
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour) => throw new NotImplementedException();
 
-        public async Task LoadBitmapAsync(ImageType imgType, string bitmapPath, CancellationToken token)
+        public void LoadBitmap(ImageType imgType, string bitmapPath)
         {
             using MemoryStream memStream = new();
             using FileStream stream = new(bitmapPath, FileMode.Open);
-            await stream.CopyToAsync(memStream, token).ConfigureAwait(false);
+            stream.CopyToAsync(memStream).ConfigureAwait(false);
             memStream.Position = 0;
             _images[imgType] = new(memStream.ToArray());
         }

@@ -39,24 +39,21 @@ namespace EliteSharp.SDL
             GC.SuppressFinalize(this);
         }
 
-        public Task LoadAsync(MusicType musicType, string filePath, CancellationToken token) =>
-                    Task.CompletedTask;
+        public void Load(MusicType musicType, string filePath)
+        {
+        }
 
-        public async Task LoadAsync(SoundEffect sfxType, string filePath, CancellationToken token) =>
+        public void Load(SoundEffect sfxType, string filePath)
+        {
+            nint sfxPtr = SDL_LoadWAV(filePath, out SDL_AudioSpec audioSpec, out nint data, out uint len);
+            if (sfxPtr == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_LoadWAV));
+            }
 
-            await Task.Run(
-                () =>
-                {
-                    nint sfxPtr = SDL_LoadWAV(filePath, out SDL_AudioSpec audioSpec, out nint data, out uint len);
-                    if (sfxPtr == nint.Zero)
-                    {
-                        SDLHelper.Throw(nameof(SDL_LoadWAV));
-                    }
-
-                    _sfxs[sfxType] = (sfxPtr, data, len);
-                    _audioSpec = audioSpec;
-                },
-                token).ConfigureAwait(false);
+            _sfxs[sfxType] = (sfxPtr, data, len);
+            _audioSpec = audioSpec;
+        }
 
         public void Play(SoundEffect sfxType)
         {
