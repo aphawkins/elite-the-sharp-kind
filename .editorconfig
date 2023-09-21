@@ -168,6 +168,26 @@ csharp_style_unused_value_expression_statement_preference = unused_local_variabl
 csharp_style_unused_value_assignment_preference = unused_local_variable:warning
 # visual_basic_style_unused_value_assignment_preference
 
+# IDE0060	Remove unused parameter
+dotnet_code_quality_unused_parameters = all:warning
+
+# IDE0061	Use expression body for local functions
+csharp_style_expression_bodied_local_functions = true:warning
+
+# IDE0062	Make local function static
+csharp_prefer_static_local_function = true:warning
+
+# IDE0063	Use simple using statement
+csharp_prefer_simple_using_statement = true:warning
+
+# IDE0064	Make struct fields writable
+
+# IDE0065	using directive placement
+csharp_using_directive_placement = outside_namespace:warning
+
+# IDE0066	Use switch expression
+csharp_style_prefer_switch_expression = true:warning
+
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true
@@ -226,16 +246,9 @@ dotnet_naming_style.camel_case_underscore_style.required_prefix = _
 dotnet_naming_style.camel_case_underscore_style.capitalization = camel_case
 
 # Code style defaults
-csharp_using_directive_placement = outside_namespace:suggestion
 dotnet_sort_system_directives_first = true
 csharp_preserve_single_line_blocks = true:none
 csharp_preserve_single_line_statements = false:none
-csharp_prefer_static_local_function = true:suggestion
-csharp_prefer_simple_using_statement = false:none
-csharp_style_prefer_switch_expression = true:suggestion
-
-# Expression-bodied members
-csharp_style_expression_bodied_local_functions = true:suggestion
 
 # Null checking preferences
 csharp_style_conditional_delegate_call = true:suggestion
