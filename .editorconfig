@@ -53,6 +53,7 @@ csharp_style_inlined_variable_declaration = true:warning
 csharp_style_pattern_matching_over_as_with_null_check = true:warning
 
 # IDE0020	Use pattern matching to avoid is check followed by a cast (with variable)
+# IDE0038	Use pattern matching to avoid is check followed by a cast (without variable)
 csharp_style_pattern_matching_over_is_with_cast_check = true:warning
 
 # IDE0021	Use expression body for constructors
@@ -80,17 +81,43 @@ dotnet_style_collection_initializer = true:warning
 # IDE0029	Null check can be simplified
 dotnet_style_coalesce_expression = true:warning
 
+# IDE0030	Null check can be simplified
+dotnet_style_coalesce_expression = true:warning
+
+# IDE0031	Use null propagation
+dotnet_style_null_propagation = true:warning
+
+# IDE0032	Use auto property
+dotnet_style_prefer_auto_properties = true:warning
+
+# IDE0033	Use explicitly provided tuple name
+dotnet_style_explicit_tuple_names = true:warning
+
+# IDE0034	Simplify default expression
+csharp_prefer_simple_default_expression = true:warning
+
+# IDE0035	Remove unreachable code
+
+# IDE0036	Order modifiers
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:suggestion
+# visual_basic_preferred_modifier_order
+
+# IDE0037	Use inferred member name
+dotnet_style_prefer_inferred_tuple_names = true:warning
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:warning
+
+# IDE0038 => IDE0020
+
+# IDE0039	Use local function instead of lambda
+csharp_style_prefer_local_over_anonymous_function = true:warning
+
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4
 end_of_line = crlf
-dotnet_style_coalesce_expression = true:warning
-dotnet_style_null_propagation = true:warning
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
-dotnet_style_prefer_auto_properties = true:warning
-dotnet_style_collection_initializer = true:warning
 dotnet_style_prefer_simplified_boolean_expressions = true:warning
 dotnet_style_prefer_conditional_expression_over_assignment = true:warning
 dotnet_style_prefer_conditional_expression_over_return = true:warning
@@ -113,9 +140,6 @@ csharp_indent_case_contents = true
 csharp_indent_case_contents_when_block = true
 csharp_indent_switch_labels = true
 csharp_indent_labels = one_less_than_current
-
-# Modifier preferences
-csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:suggestion
 
 # Types: use keywords instead of BCL types, and permit var only when the type is clear
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
@@ -159,15 +183,9 @@ csharp_style_prefer_switch_expression = true:suggestion
 dotnet_style_readonly_field = true:suggestion
 
 # Expression-level preferences
-dotnet_style_explicit_tuple_names = true:suggestion
-dotnet_style_null_propagation = true:suggestion
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
-dotnet_style_prefer_inferred_tuple_names = true:suggestion
-dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
-dotnet_style_prefer_auto_properties = true:suggestion
 dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
 dotnet_style_prefer_conditional_expression_over_return = true:suggestion
-csharp_prefer_simple_default_expression = true:suggestion
 
 # Expression-bodied members
 csharp_style_expression_bodied_lambdas = true:suggestion
