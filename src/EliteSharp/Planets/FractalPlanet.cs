@@ -63,8 +63,8 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Calculate the midpoint between two given points.
         /// </summary>
-        private int CalcMidpoint(int sx, int sy, int ex, int ey) =>
-            Math.Clamp(((_planetRenderer._landscape[sx, sy] + _planetRenderer._landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
+        private int CalcMidpoint(int sx, int sy, int ex, int ey)
+            => Math.Clamp(((_planetRenderer._landscape[sx, sy] + _planetRenderer._landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8), 0, 255);
 
         /// <summary>
         /// Generate a fractal landscape. Uses midpoint displacement method.

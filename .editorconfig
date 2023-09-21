@@ -22,6 +22,29 @@ file_header_template = 'Elite - The Sharp Kind' - Andy Hawkins 2023.\n'Elite - T
 # Diagnostic
 dotnet_analyzer_diagnostic.severity = warning
 
+# Rules that are not enabled by default
+dotnet_diagnostic.CA1002.severity = warning
+dotnet_diagnostic.CA1003.severity = warning
+dotnet_diagnostic.CA1005.severity = warning
+dotnet_diagnostic.CA1008.severity = warning
+dotnet_diagnostic.CA1012.severity = warning
+dotnet_diagnostic.CA1014.severity = warning
+dotnet_diagnostic.CA1017.severity = warning
+dotnet_diagnostic.CA1019.severity = warning
+dotnet_diagnostic.CA1021.severity = warning
+dotnet_diagnostic.CA1024.severity = warning
+dotnet_diagnostic.CA1027.severity = warning
+dotnet_diagnostic.CA1028.severity = warning
+dotnet_diagnostic.CA1030.severity = warning
+dotnet_diagnostic.CA1032.severity = warning
+dotnet_diagnostic.CA2207.severity = warning
+dotnet_diagnostic.CA2213.severity = warning
+dotnet_diagnostic.CA2214.severity = warning
+dotnet_diagnostic.CA2234.severity = warning
+dotnet_diagnostic.SA1412.severity = warning
+
+#dotnet_code_quality.api_surface = all
+
 # IDE0001	Simplify name
 
 # IDE0002	Simplify member access
@@ -296,6 +319,25 @@ csharp_style_conditional_delegate_call = true:warning
 
 # IDE1006	Naming styles
 
+# IDE2000: Allow multiple blank lines
+dotnet_style_allow_multiple_blank_lines_experimental = false:warning
+
+# IDE2001: Embedded statements must be on their own line
+csharp_style_allow_embedded_statements_on_same_line_experimental = false:warning
+
+# IDE2002: Consecutive braces must not have blank line between them
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false:warning
+
+# IDE2003: Blank line required between block and subsequent statement
+dotnet_style_allow_statement_immediately_after_block_experimental = false:warning
+
+# IDE2004: Blank line not allowed after constructor initializer colon
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = false:warning
+
+csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = false:warning
+
+csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = false:warning
+
 # CodeAnalysis - Exclusions
 dotnet_diagnostic.CA1814.severity = none # Prefer jagged arrays over multidimensional
 
@@ -412,7 +454,7 @@ csharp_space_between_square_brackets = false
 generated_code = true
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4
-end_of_line = crlf
+end_of_line = lf
 
 # C# files
 [*.cs]

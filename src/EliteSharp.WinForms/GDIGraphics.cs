@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -127,10 +127,10 @@ namespace EliteSharp.WinForms
             _screenBuffer.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color);
         }
 
-        public void DrawPixelFast(Vector2 position, EColor colour) =>
+        public void DrawPixelFast(Vector2 position, EColor colour)
 
             // Is there a faster way of doing this?
-            DrawPixel(position, colour);
+            => DrawPixel(position, colour);
 
         public void DrawPolygon(Vector2[] points, EColor lineColour)
         {
@@ -288,8 +288,8 @@ namespace EliteSharp.WinForms
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath) =>
-            _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
+        public void LoadBitmap(ImageType imgType, string bitmapPath)
+            => _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
 
         /// <summary>
         /// Blit the back buffer to the screen.

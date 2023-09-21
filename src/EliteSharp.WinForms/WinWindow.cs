@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -47,11 +47,11 @@ namespace EliteSharp.WinForms
             }
         }
 
-        private void GameWindow_KeyDown(object sender, KeyEventArgs e) =>
+        private void GameWindow_KeyDown(object sender, KeyEventArgs e)
 
             //Debug.WriteLine("KeyDown KeyCode: " + e.KeyCode);
             //Debug.WriteLine("KeyDown KeyValue: " + e.KeyValue);
-            _keyboard.KeyDown((CommandKey)e.KeyValue);
+            => _keyboard.KeyDown((CommandKey)e.KeyValue);
 
         private void GameWindow_KeyUp(object sender, KeyEventArgs e) => _keyboard.KeyUp((CommandKey)e.KeyValue);
 
