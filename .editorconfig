@@ -140,6 +140,34 @@ dotnet_style_parentheses_in_other_operators = always_for_clarity:warning
 dotnet_style_predefined_type_for_locals_parameters_members = true:warning
 dotnet_style_predefined_type_for_member_access = true:warning
 
+# IDE0050	Convert anonymous type to tuple
+
+# IDE0051	Remove unused private member
+
+# IDE0052	Remove unread private member
+
+# IDE0053	Use expression body for lambdas
+csharp_style_expression_bodied_lambdas = true:warning
+
+# IDE0054	Use compound assignment
+dotnet_style_prefer_compound_assignment = true:warning
+
+# IDE0055	Fix formatting	(Too many to list here. See .NET formatting options and C# formatting options.)
+
+# IDE0056	Use index operator
+csharp_style_prefer_index_operator = true:warning
+
+# IDE0057	Use range operator
+csharp_style_prefer_range_operator = true:warning
+
+# IDE0058	Remove unused expression value
+csharp_style_unused_value_expression_statement_preference = unused_local_variable:warning
+# visual_basic_style_unused_value_expression_statement_preference
+
+# IDE0059	Remove unnecessary value assignment
+csharp_style_unused_value_assignment_preference = unused_local_variable:warning
+# visual_basic_style_unused_value_assignment_preference
+
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true
@@ -207,15 +235,12 @@ csharp_prefer_simple_using_statement = false:none
 csharp_style_prefer_switch_expression = true:suggestion
 
 # Expression-bodied members
-csharp_style_expression_bodied_lambdas = true:suggestion
 csharp_style_expression_bodied_local_functions = true:suggestion
 
 # Null checking preferences
 csharp_style_conditional_delegate_call = true:suggestion
 
 # Other features
-csharp_style_prefer_index_operator = false:none
-csharp_style_prefer_range_operator = false:none
 csharp_style_pattern_local_over_anonymous_function = false:none
 
 # Space preferences

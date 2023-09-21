@@ -271,7 +271,7 @@ namespace EliteSharp.SDL
                 DrawLine(points[i], points[i + 1], lineColour);
             }
 
-            DrawLine(points[0], points[points.Length - 1], lineColour);
+            DrawLine(points[0], points[^1], lineColour);
         }
 
         public void DrawPolygonFilled(Vector2[] points, EColor faceColour)
