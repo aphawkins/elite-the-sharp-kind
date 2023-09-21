@@ -3,16 +3,24 @@
 # top-most EditorConfig file
 root = true
 
-# Default settings:
-# A newline ending every file
-# Use 4 spaces as indentation
+####################
+# Default Settings #
+####################
 [*]
 insert_final_newline = true
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 
-# CA Rules
+# License header
+file_header_template = 'Elite - The Sharp Kind' - Andy Hawkins 2023.\n'Elite - The New Kind' - C.J.Pinder 1999-2001.\nElite (C) I.Bell & D.Braben 1984.
+
+#################
+# Code Analysis #
+#################
+
+# Diagnostic
+dotnet_analyzer_diagnostic.severity = warning
 
 # IDE0001	Simplify name
 
@@ -36,6 +44,7 @@ csharp_style_var_when_type_is_apparent = false:warning
 csharp_style_var_elsewhere = false:warning
 
 # IDE0010	Add missing cases to switch statement
+dotnet_diagnostic.IDE0010.severity = none
 
 # IDE0011	Add braces
 csharp_prefer_braces = true:warning
@@ -99,7 +108,7 @@ csharp_prefer_simple_default_expression = true:warning
 # IDE0035	Remove unreachable code
 
 # IDE0036	Order modifiers
-csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:suggestion
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:warning
 # visual_basic_preferred_modifier_order
 
 # IDE0037	Use inferred member name
@@ -164,6 +173,7 @@ csharp_style_prefer_range_operator = true:warning
 # IDE0058	Remove unused expression value
 csharp_style_unused_value_expression_statement_preference = unused_local_variable:warning
 # visual_basic_style_unused_value_expression_statement_preference
+dotnet_diagnostic.IDE0058.severity = none# visual_basic_style_unused_value_expression_statement_preference
 
 # IDE0059	Remove unnecessary value assignment
 csharp_style_unused_value_assignment_preference = unused_local_variable:warning
@@ -195,6 +205,7 @@ csharp_style_prefer_switch_expression = true:warning
 dotnet_style_prefer_simplified_interpolation = true:warning
 
 # IDE0072	Add missing cases to switch expression
+dotnet_diagnostic.IDE0072.severity = none # Add missing cases to switch expression
 
 # IDE0073 => IDE0054
 
@@ -285,6 +296,41 @@ csharp_style_conditional_delegate_call = true:warning
 
 # IDE1006	Naming styles
 
+# CodeAnalysis - Exclusions
+dotnet_diagnostic.CA1814.severity = none # Prefer jagged arrays over multidimensional
+
+# StyleCop - Exclusions
+dotnet_diagnostic.SA0001.severity = none # SA0001XmlCommentAnalysisDisabled
+dotnet_diagnostic.SA1005.severity = none # SA1005SingleLineCommentsMustBeginWithSingleSpace
+dotnet_diagnostic.SA1101.severity = none # SA1101PrefixLocalCallsWithThis
+dotnet_diagnostic.SA1308.severity = none # SA1308VariableNamesMustNotBePrefixed
+dotnet_diagnostic.SA1309.severity = none # SA1309FieldNamesMustNotBeginWithUnderscore
+dotnet_diagnostic.SA1311.severity = none # SA1311StaticReadonlyFieldsMustBeginWithUpperCaseLetter
+dotnet_diagnostic.SA1407.severity = none # SA1407ArithmeticExpressionsMustDeclarePrecedence
+dotnet_diagnostic.SA1600.severity = none # SA1600ElementsMustBeDocumented
+dotnet_diagnostic.SA1601.severity = none # SA1601PartialElementsMustBeDocumented
+dotnet_diagnostic.SA1602.severity = none # SA1602EnumerationItemsMustBeDocumented
+dotnet_diagnostic.SA1611.severity = none # SA1611ElementParametersMustBeDocumented
+dotnet_diagnostic.SA1614.severity = none # SA1614ElementParameterDocumentationMustHaveText
+dotnet_diagnostic.SA1615.severity = none # SA1615ElementReturnValueMustBeDocumented
+dotnet_diagnostic.SA1616.severity = none # SA1616ElementReturnValueDocumentationMustHaveText
+dotnet_diagnostic.SA1633.severity = none # SA1633FileMustHaveHeader
+
+# Roslynator
+# Set severity for all analyzers that are enabled by default (https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2022#set-rule-severity-of-multiple-analyzer-rules-at-once-in-an-editorconfig-file)
+dotnet_analyzer_diagnostic.category-roslynator.severity = warning
+roslynator_refactorings.enabled = true
+roslynator_compiler_diagnostic_fixes.enabled = true
+
+# Roslynator - Exclusions
+dotnet_diagnostic.RCS1069.severity = silent # Remove unnecessary case label
+dotnet_diagnostic.RCS1070.severity = silent # Remove redundant default switch section
+dotnet_diagnostic.RCS1141.severity = silent # Add 'param' element to documentation comment
+dotnet_diagnostic.RCS1154.severity = silent # Sort enum members
+dotnet_diagnostic.RCS1181.severity = silent # Convert comment to documentation comment
+dotnet_diagnostic.RCS1237.severity = silent # ([deprecated] use RCS1254 instead) Use bit shift operator
+dotnet_diagnostic.RCS1238.severity = silent # Avoid nested ?: operators
+
 # New line preferences
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
@@ -331,11 +377,11 @@ dotnet_naming_style.camel_case_underscore_style.capitalization = camel_case
 
 # Code style defaults
 dotnet_sort_system_directives_first = true
-csharp_preserve_single_line_blocks = true:none
-csharp_preserve_single_line_statements = false:none
+csharp_preserve_single_line_blocks = true:warning
+csharp_preserve_single_line_statements = false:warning
 
 # Other features
-csharp_style_pattern_local_over_anonymous_function = false:none
+csharp_style_pattern_local_over_anonymous_function = false:warning
 
 # Space preferences
 csharp_space_after_cast = false
@@ -360,52 +406,6 @@ csharp_space_between_method_declaration_name_and_open_parenthesis = false
 csharp_space_between_method_declaration_parameter_list_parentheses = false
 csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
-
-# License header
-file_header_template = 'Elite - The Sharp Kind' - Andy Hawkins 2023.\n'Elite - The New Kind' - C.J.Pinder 1999-2001.\nElite (C) I.Bell & D.Braben 1984.
-
-# Diagnostic
-dotnet_analyzer_diagnostic.severity = warning
-
-# IDE - Exclusions
-dotnet_diagnostic.IDE0010.severity = none # Add missing cases to switch statement
-dotnet_diagnostic.IDE0058.severity = none # Remove unnecessary expression value
-dotnet_diagnostic.IDE0072.severity = none # Add missing cases to switch expression
-
-# CodeAnalysis - Exclusions
-dotnet_diagnostic.CA1814.severity = none # Prefer jagged arrays over multidimensional
-
-# StyleCop - Exclusions
-dotnet_diagnostic.SA0001.severity = none # SA0001XmlCommentAnalysisDisabled
-dotnet_diagnostic.SA1005.severity = none # SA1005SingleLineCommentsMustBeginWithSingleSpace
-dotnet_diagnostic.SA1101.severity = none # SA1101PrefixLocalCallsWithThis
-dotnet_diagnostic.SA1308.severity = none # SA1308VariableNamesMustNotBePrefixed
-dotnet_diagnostic.SA1309.severity = none # SA1309FieldNamesMustNotBeginWithUnderscore
-dotnet_diagnostic.SA1311.severity = none # SA1311StaticReadonlyFieldsMustBeginWithUpperCaseLetter
-dotnet_diagnostic.SA1407.severity = none # SA1407ArithmeticExpressionsMustDeclarePrecedence
-dotnet_diagnostic.SA1600.severity = none # SA1600ElementsMustBeDocumented
-dotnet_diagnostic.SA1601.severity = none # SA1601PartialElementsMustBeDocumented
-dotnet_diagnostic.SA1602.severity = none # SA1602EnumerationItemsMustBeDocumented
-dotnet_diagnostic.SA1611.severity = none # SA1611ElementParametersMustBeDocumented
-dotnet_diagnostic.SA1614.severity = none # SA1614ElementParameterDocumentationMustHaveText
-dotnet_diagnostic.SA1615.severity = none # SA1615ElementReturnValueMustBeDocumented
-dotnet_diagnostic.SA1616.severity = none # SA1616ElementReturnValueDocumentationMustHaveText
-dotnet_diagnostic.SA1633.severity = none # SA1633FileMustHaveHeader
-
-# Roslynator
-# Set severity for all analyzers that are enabled by default (https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2022#set-rule-severity-of-multiple-analyzer-rules-at-once-in-an-editorconfig-file)
-dotnet_analyzer_diagnostic.category-roslynator.severity = warning
-roslynator_refactorings.enabled = true
-roslynator_compiler_diagnostic_fixes.enabled = true
-
-# Roslynator - Exclusions
-dotnet_diagnostic.RCS1069.severity = silent # Remove unnecessary case label
-dotnet_diagnostic.RCS1070.severity = silent # Remove redundant default switch section
-dotnet_diagnostic.RCS1141.severity = silent # Add 'param' element to documentation comment
-dotnet_diagnostic.RCS1154.severity = silent # Sort enum members
-dotnet_diagnostic.RCS1181.severity = silent # Convert comment to documentation comment
-dotnet_diagnostic.RCS1237.severity = silent # ([deprecated] use RCS1254 instead) Use bit shift operator
-dotnet_diagnostic.RCS1238.severity = silent # Avoid nested ?: operators
 
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
