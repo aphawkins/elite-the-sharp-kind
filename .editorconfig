@@ -285,15 +285,6 @@ csharp_style_conditional_delegate_call = true:warning
 
 # IDE1006	Naming styles
 
-# Generated code
-[*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
-generated_code = true
-dotnet_style_operator_placement_when_wrapping = beginning_of_line
-tab_width = 4
-end_of_line = crlf
-
-# C# files
-[*.cs]
 # New line preferences
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
@@ -415,6 +406,22 @@ dotnet_diagnostic.RCS1154.severity = silent # Sort enum members
 dotnet_diagnostic.RCS1181.severity = silent # Convert comment to documentation comment
 dotnet_diagnostic.RCS1237.severity = silent # ([deprecated] use RCS1254 instead) Use bit shift operator
 dotnet_diagnostic.RCS1238.severity = silent # Avoid nested ?: operators
+
+# Generated code
+[*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
+generated_code = true
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+end_of_line = crlf
+
+# C# files
+[*.cs]
+curly_bracket_next_line = true
+indent_brace_style = Allman
+tab_width = 4
+indent_size = 4
+charset = utf-8
+end_of_line = lf
 
 # C++ Files
 [*.{cpp,h,in}]
