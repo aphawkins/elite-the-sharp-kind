@@ -52,6 +52,34 @@ csharp_style_inlined_variable_declaration = true:warning
 # IDE0019	Use pattern matching to avoid as followed by a null check
 csharp_style_pattern_matching_over_as_with_null_check = true:warning
 
+# IDE0020	Use pattern matching to avoid is check followed by a cast (with variable)
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+
+# IDE0021	Use expression body for constructors
+csharp_style_expression_bodied_constructors = true:warning
+
+# IDE0022	Use expression body for methods
+csharp_style_expression_bodied_methods = true:warning
+
+# IDE0023	Use expression body for conversion operators
+# IDE0024	Use expression body for operators
+csharp_style_expression_bodied_operators = true:warning
+
+# IDE0025	Use expression body for properties
+csharp_style_expression_bodied_properties = true:warning
+
+# IDE0026	Use expression body for indexers
+csharp_style_expression_bodied_indexers = true:warning
+
+# IDE0027	Use expression body for accessors
+csharp_style_expression_bodied_accessors = true:warning
+
+# IDE0028	Use collection initializers
+dotnet_style_collection_initializer = true:warning
+
+# IDE0029	Null check can be simplified
+dotnet_style_coalesce_expression = true:warning
+
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true
@@ -131,9 +159,7 @@ csharp_style_prefer_switch_expression = true:suggestion
 dotnet_style_readonly_field = true:suggestion
 
 # Expression-level preferences
-dotnet_style_collection_initializer = true:suggestion
 dotnet_style_explicit_tuple_names = true:suggestion
-dotnet_style_coalesce_expression = true:suggestion
 dotnet_style_null_propagation = true:suggestion
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
 dotnet_style_prefer_inferred_tuple_names = true:suggestion
@@ -144,18 +170,8 @@ dotnet_style_prefer_conditional_expression_over_return = true:suggestion
 csharp_prefer_simple_default_expression = true:suggestion
 
 # Expression-bodied members
-csharp_style_expression_bodied_methods = true:suggestion
-csharp_style_expression_bodied_constructors = true:suggestion
-csharp_style_expression_bodied_operators = true:suggestion
-csharp_style_expression_bodied_properties = true:suggestion
-csharp_style_expression_bodied_indexers = true:suggestion
-csharp_style_expression_bodied_accessors = true:suggestion
 csharp_style_expression_bodied_lambdas = true:suggestion
 csharp_style_expression_bodied_local_functions = true:suggestion
-
-# Pattern matching
-csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
-
 
 # Null checking preferences
 csharp_style_conditional_delegate_call = true:suggestion
