@@ -211,16 +211,27 @@ csharp_style_prefer_pattern_matching = true:warning
 # IDE0079	Remove unnecessary suppression
 dotnet_remove_unnecessary_suppression_exclusions = none:warning
 
+# IDE0080	Remove unnecessary suppression operator
+
+# IDE0081	Remove ByVal
+
+# IDE0082	Convert typeof to nameof
+
+# IDE0083	Use pattern matching (not operator)
+csharp_style_prefer_not_pattern = true:warning
+
+# IDE0084	Use pattern matching (IsNot operator)
+# visual_basic_style_prefer_isnot_expression
+
+# IDE0090	Simplify new expression
+csharp_style_implicit_object_creation_when_type_is_apparent = true:warning
+
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
 tab_width = 4
 end_of_line = crlf
-
-
-dotnet_style_prefer_conditional_expression_over_assignment = true:warning
-dotnet_style_prefer_conditional_expression_over_return = true:warning
 
 # C# files
 [*.cs]
