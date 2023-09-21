@@ -50,6 +50,7 @@ dotnet_style_object_initializer = true:warning
 csharp_style_inlined_variable_declaration = true:warning
 
 # IDE0019	Use pattern matching to avoid as followed by a null check
+# IDE0260	Use pattern matching
 csharp_style_pattern_matching_over_as_with_null_check = true:warning
 
 # IDE0020	Use pattern matching to avoid is check followed by a cast (with variable)
@@ -79,9 +80,8 @@ csharp_style_expression_bodied_accessors = true:warning
 dotnet_style_collection_initializer = true:warning
 
 # IDE0029	Null check can be simplified
-dotnet_style_coalesce_expression = true:warning
-
 # IDE0030	Null check can be simplified
+# IDE0270	Null check can be simplified
 dotnet_style_coalesce_expression = true:warning
 
 # IDE0031	Use null propagation
@@ -251,6 +251,40 @@ csharp_style_prefer_extended_property_pattern = true:warning
 # IDE0180	Use tuple to swap values
 csharp_style_prefer_tuple_swap = true:warning
 
+# IDE0200	Remove unnecessary lambda expression
+csharp_style_prefer_method_group_conversion = true:warning
+
+# IDE0210	Convert to top-level statements
+# IDE0211	Convert to 'Program.Main' style program
+csharp_style_prefer_top_level_statements = true:warning
+
+# IDE0220	Add explicit cast in foreach loop
+dotnet_style_prefer_foreach_explicit_cast_in_source = always:warrning
+
+# IDE0230	Use UTF-8 string literal
+csharp_style_prefer_utf8_string_literals = true:warning
+
+# IDE0240	Nullable directive is redundant
+
+# IDE0241	Nullable directive is unnecessary
+
+# IDE0250	Struct can be made 'readonly'
+csharp_style_prefer_readonly_struct = true:warning
+
+# IDE0251	Member can be made 'readonly'
+csharp_style_prefer_readonly_struct_member = true:warning
+
+# IDE0260 => IDE0019
+
+# IDE0270 => IDE0029 => IDE0030
+
+# IDE0280	Use nameof
+
+# IDE1005	Use conditional delegate call
+csharp_style_conditional_delegate_call = true:warning
+
+# IDE1006	Naming styles
+
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
 generated_code = true
@@ -309,9 +343,6 @@ dotnet_sort_system_directives_first = true
 csharp_preserve_single_line_blocks = true:none
 csharp_preserve_single_line_statements = false:none
 
-# Null checking preferences
-csharp_style_conditional_delegate_call = true:suggestion
-
 # Other features
 csharp_style_pattern_local_over_anonymous_function = false:none
 
@@ -341,8 +372,6 @@ csharp_space_between_square_brackets = false
 
 # License header
 file_header_template = 'Elite - The Sharp Kind' - Andy Hawkins 2023.\n'Elite - The New Kind' - C.J.Pinder 1999-2001.\nElite (C) I.Bell & D.Braben 1984.
-csharp_style_prefer_method_group_conversion = true:suggestion
-csharp_style_prefer_top_level_statements = true:suggestion
 
 # Diagnostic
 dotnet_analyzer_diagnostic.severity = warning
