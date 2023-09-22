@@ -11,6 +11,10 @@
     <WarningLevel>9999</WarningLevel>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
+    <!-- Fix for IDE0005 -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+    <!-- Fix for IDE0005 end -->
   </PropertyGroup>
 
   <ItemGroup>
