@@ -128,9 +128,7 @@ namespace EliteSharp.WinForms
         }
 
         public void DrawPixelFast(Vector2 position, EColor colour)
-
-            // Is there a faster way of doing this?
-            => DrawPixel(position, colour);
+            => DrawPixel(position, colour); // Is there a faster way of doing this?
 
         public void DrawPolygon(Vector2[] points, EColor lineColour)
         {
