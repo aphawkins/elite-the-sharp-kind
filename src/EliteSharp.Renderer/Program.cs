@@ -15,9 +15,7 @@ namespace EliteSharp.Renderer
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-#pragma warning disable CA2000 // Dispose objects before losing scope
-            RenderForm form = new();
-#pragma warning restore CA2000 // Dispose objects before losing scope
+            using RenderForm form = new();
             Application.Run(form);
         }
     }

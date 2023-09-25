@@ -21,12 +21,12 @@ namespace EliteSharp.Config
         /// <summary>
         /// Read the config file.
         /// </summary>
-        internal async Task<ConfigSettings> ReadConfigAsync()
+        internal ConfigSettings ReadConfig()
         {
             try
             {
                 using FileStream stream = File.OpenRead(ConfigFileName);
-                ConfigSettings? config = await JsonSerializer.DeserializeAsync<ConfigSettings>(stream, _options).ConfigureAwait(false);
+                ConfigSettings? config = JsonSerializer.Deserialize<ConfigSettings>(stream, _options);
                 if (config != null)
                 {
                     return config;
@@ -46,7 +46,7 @@ namespace EliteSharp.Config
         /// Write the config file.
         /// </summary>
         /// <param name="config">The config to save.</param>
-        internal async Task WriteConfigAsync(ConfigSettings config)
+        internal void WriteConfig(ConfigSettings config)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace EliteSharp.Config
 
                 using FileStream stream = File.OpenWrite(ConfigFileName);
 
-                await JsonSerializer.SerializeAsync(stream, config, _options).ConfigureAwait(false);
+                JsonSerializer.Serialize(stream, config, _options);
             }
             catch (Exception ex)
             {

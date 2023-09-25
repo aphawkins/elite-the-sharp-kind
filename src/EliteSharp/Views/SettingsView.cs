@@ -163,7 +163,7 @@ namespace EliteSharp.Views
         {
             if (_highlightedItem == _settingList.Length - 1)
             {
-                _configFile.WriteConfigAsync(_gameState.Config).Wait();
+                _configFile.WriteConfig(_gameState.Config);
                 _gameState.SetView(Screen.Options);
                 return;
             }

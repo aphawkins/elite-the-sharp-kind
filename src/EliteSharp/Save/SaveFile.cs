@@ -49,7 +49,7 @@ namespace EliteSharp.Save
             RestoreSavedCommander();
         }
 
-        internal async Task<bool> LoadCommanderAsync(string name)
+        internal bool LoadCommander(string name)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace EliteSharp.Save
                 }
 
                 using FileStream stream = File.OpenRead(name + FileExtension);
-                SaveState? save = await JsonSerializer.DeserializeAsync<SaveState>(stream, _options).ConfigureAwait(false);
+                SaveState? save = JsonSerializer.Deserialize<SaveState>(stream, _options);
                 if (save != null)
                 {
                     _lastSaved = save;
@@ -77,7 +77,7 @@ namespace EliteSharp.Save
             return false;
         }
 
-        internal async Task<bool> SaveCommanderAsync(string newName)
+        internal bool SaveCommander(string newName)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace EliteSharp.Save
                 }
 
                 using FileStream stream = File.OpenWrite(path);
-                await JsonSerializer.SerializeAsync(stream, save, _options).ConfigureAwait(false);
+                JsonSerializer.Serialize(stream, save, _options);
 
                 _lastSaved = save;
 

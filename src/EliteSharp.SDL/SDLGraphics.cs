@@ -239,6 +239,11 @@ namespace EliteSharp.SDL
 
         public void DrawPixel(Vector2 position, EColor colour)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
             SetRenderDrawColor(colour);
 
             if (SDL_RenderDrawPointF(_renderer, position.X, position.Y) < 0)

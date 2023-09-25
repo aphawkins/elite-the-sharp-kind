@@ -65,7 +65,7 @@ namespace EliteSharp.Views
 
             if (_keyboard.IsKeyPressed(CommandKey.Enter))
             {
-                _isSuccess = _save.SaveCommanderAsync(_name).Result;
+                _isSuccess = _save.SaveCommander(_name);
 
                 if (_isSuccess.Value)
                 {

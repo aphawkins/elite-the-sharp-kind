@@ -55,7 +55,10 @@ namespace EliteSharp
             _audio = new(sound);
             _keyboard = keyboard;
             ConfigFile configFile = new();
-            _gameState = new(_keyboard, _views) { Config = configFile.ReadConfigAsync().Result };
+            _gameState = new(_keyboard, _views)
+            {
+                Config = configFile.ReadConfig(),
+            };
 
             _ship = new();
             Trade trade = new(_gameState, _ship);
