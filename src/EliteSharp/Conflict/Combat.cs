@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -28,7 +28,14 @@ namespace EliteSharp.Conflict
         private int _laserStrength;
         private LaserType _laserType;
 
-        internal Combat(GameState gameState, AudioController audio, PlayerShip ship, Trade trade, Pilot pilot, Universe universe, IDraw draw)
+        internal Combat(
+            GameState gameState,
+            AudioController audio,
+            PlayerShip ship,
+            Trade trade,
+            Pilot pilot,
+            Universe universe,
+            IDraw draw)
         {
             _gameState = gameState;
             _audio = audio;
@@ -183,28 +190,6 @@ namespace EliteSharp.Conflict
                 Screen.RearView => _ship.LaserRear.Strength,
                 Screen.RightView => _ship.LaserRight.Strength,
                 Screen.LeftView => _ship.LaserLeft.Strength,
-                Screen.None => throw new NotImplementedException(),
-                Screen.IntroOne => throw new NotImplementedException(),
-                Screen.IntroTwo => throw new NotImplementedException(),
-                Screen.GalacticChart => throw new NotImplementedException(),
-                Screen.ShortRangeChart => throw new NotImplementedException(),
-                Screen.PlanetData => throw new NotImplementedException(),
-                Screen.MarketPrices => throw new NotImplementedException(),
-                Screen.CommanderStatus => throw new NotImplementedException(),
-                Screen.Docking => throw new NotImplementedException(),
-                Screen.Inventory => throw new NotImplementedException(),
-                Screen.EquipShip => throw new NotImplementedException(),
-                Screen.Options => throw new NotImplementedException(),
-                Screen.LoadCommander => throw new NotImplementedException(),
-                Screen.SaveCommander => throw new NotImplementedException(),
-                Screen.Quit => throw new NotImplementedException(),
-                Screen.GameOver => throw new NotImplementedException(),
-                Screen.Settings => throw new NotImplementedException(),
-                Screen.EscapeCapsule => throw new NotImplementedException(),
-                Screen.MissionOne => throw new NotImplementedException(),
-                Screen.MissionTwo => throw new NotImplementedException(),
-                Screen.Undocking => throw new NotImplementedException(),
-                Screen.Hyperspace => throw new NotImplementedException(),
                 _ => 0,
             };
 
@@ -219,28 +204,6 @@ namespace EliteSharp.Conflict
                 Screen.RearView => _ship.LaserRear.Type,
                 Screen.RightView => _ship.LaserRight.Type,
                 Screen.LeftView => _ship.LaserLeft.Type,
-                Screen.None => throw new NotImplementedException(),
-                Screen.IntroOne => throw new NotImplementedException(),
-                Screen.IntroTwo => throw new NotImplementedException(),
-                Screen.GalacticChart => throw new NotImplementedException(),
-                Screen.ShortRangeChart => throw new NotImplementedException(),
-                Screen.PlanetData => throw new NotImplementedException(),
-                Screen.MarketPrices => throw new NotImplementedException(),
-                Screen.CommanderStatus => throw new NotImplementedException(),
-                Screen.Docking => throw new NotImplementedException(),
-                Screen.Inventory => throw new NotImplementedException(),
-                Screen.EquipShip => throw new NotImplementedException(),
-                Screen.Options => throw new NotImplementedException(),
-                Screen.LoadCommander => throw new NotImplementedException(),
-                Screen.SaveCommander => throw new NotImplementedException(),
-                Screen.Quit => throw new NotImplementedException(),
-                Screen.GameOver => throw new NotImplementedException(),
-                Screen.Settings => throw new NotImplementedException(),
-                Screen.EscapeCapsule => throw new NotImplementedException(),
-                Screen.MissionOne => throw new NotImplementedException(),
-                Screen.MissionTwo => throw new NotImplementedException(),
-                Screen.Undocking => throw new NotImplementedException(),
-                Screen.Hyperspace => throw new NotImplementedException(),
                 _ => LaserType.None,
             };
 
@@ -387,7 +350,8 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (!_ship.HasFuelScoop || obj.Location.Y >= 0 ||
+            if (!_ship.HasFuelScoop
+                || obj.Location.Y >= 0 ||
                 _trade.TotalCargoTonnage() == _ship.CargoCapacity)
             {
                 ExplodeObject(obj);
@@ -926,8 +890,10 @@ namespace EliteSharp.Conflict
 
         private void CreateLoneWolf()
         {
-            IShip loneWolf = _gameState.Cmdr.Mission == 1 && _gameState.Cmdr.GalaxyNumber == 1 &&
-                _gameState.DockedPlanet.D == 144 && _gameState.DockedPlanet.B == 33 &&
+            IShip loneWolf = _gameState.Cmdr.Mission == 1
+                && _gameState.Cmdr.GalaxyNumber == 1 &&
+                _gameState.DockedPlanet.D == 144
+                && _gameState.DockedPlanet.B == 33 &&
                 _universe.ShipCount(ShipType.Constrictor) == 0
                 ? new Constrictor(_draw)
                 : new ShipFactory(_draw).CreateLoneWolf();
@@ -1057,7 +1023,8 @@ namespace EliteSharp.Conflict
         {
             if (_universe.ShipCount(ShipType.Transporter) != 0 ||
                 _universe.ShipCount(ShipType.Shuttle) != 0 ||
-                RNG.Random(256) < 253 || _pilot.IsAutoPilotOn)
+                RNG.Random(256) < 253
+                || _pilot.IsAutoPilotOn)
             {
                 return;
             }

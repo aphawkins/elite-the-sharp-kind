@@ -63,11 +63,20 @@ namespace EliteSharp.Renderer
         {
             switch (comboObjects.SelectedIndex)
             {
-                case 0: _obj = new WireframePlanet(_draw); break;
-                case 1: _obj = new SolidPlanet(_draw, EColors.Green); break;
-                case 2: _obj = new StripedPlanet(_draw); break;
-                case 3: _obj = new FractalPlanet(_draw, 14229); break;
-                default:
+                case 0:
+                    _obj = new WireframePlanet(_draw);
+                    break;
+
+                case 1:
+                    _obj = new SolidPlanet(_draw, EColors.Green);
+                    break;
+
+                case 2:
+                    _obj = new StripedPlanet(_draw);
+                    break;
+
+                case 3:
+                    _obj = new FractalPlanet(_draw, 14229);
                     break;
             }
 
@@ -103,9 +112,6 @@ namespace EliteSharp.Renderer
                         }
                     }
 
-                    break;
-
-                default:
                     break;
             }
 

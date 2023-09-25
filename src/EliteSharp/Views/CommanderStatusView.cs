@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -15,10 +15,10 @@ namespace EliteSharp.Views
     {
         private readonly string[] _conditionText = new string[]
         {
-                "Docked",
-                "Green",
-                "Yellow",
-                "Red",
+            "Docked",
+            "Green",
+            "Yellow",
+            "Red",
         };
 
         private readonly IDraw _draw;
@@ -30,15 +30,15 @@ namespace EliteSharp.Views
 
         private readonly (int Score, string Title)[] _ratings = new (int Score, string Title)[]
         {
-                new(0x0000, "Harmless"),
-                new(0x0008, "Mostly Harmless"),
-                new(0x0010, "Poor"),
-                new(0x0020, "Average"),
-                new(0x0040, "Above Average"),
-                new(0x0080, "Competent"),
-                new(0x0200, "Dangerous"),
-                new(0x0A00, "Deadly"),
-                new(0x1900, "- - - E L I T E - - -"),
+            new(0x0000, "Harmless"),
+            new(0x0008, "Mostly Harmless"),
+            new(0x0010, "Poor"),
+            new(0x0020, "Average"),
+            new(0x0040, "Above Average"),
+            new(0x0080, "Competent"),
+            new(0x0200, "Dangerous"),
+            new(0x0A00, "Deadly"),
+            new(0x1900, "- - - E L I T E - - -"),
         };
 
         private readonly PlayerShip _ship;
@@ -46,7 +46,13 @@ namespace EliteSharp.Views
         private readonly Trade _trade;
         private readonly Universe _universe;
 
-        internal CommanderStatusView(GameState gameState, IDraw draw, PlayerShip ship, Trade trade, PlanetController planet, Universe universe)
+        internal CommanderStatusView(
+            GameState gameState,
+            IDraw draw,
+            PlayerShip ship,
+            Trade trade,
+            PlanetController planet,
+            Universe universe)
         {
             _gameState = gameState;
             _draw = draw;
@@ -106,11 +112,17 @@ namespace EliteSharp.Views
 
             if (!_gameState.InWitchspace)
             {
-                _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 58), _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(), EColors.White);
+                _draw.Graphics.DrawTextLeft(
+                    new(150 + _draw.Offset, 58),
+                    _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(),
+                    EColors.White);
             }
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Hyperspace System:", EColors.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 74), _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(), EColors.White);
+            _draw.Graphics.DrawTextLeft(
+                new(150 + _draw.Offset, 74),
+                _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(),
+                EColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 90), "Condition:", EColors.Green);
             _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 90), _conditionText[condition], EColors.White);
@@ -122,7 +134,10 @@ namespace EliteSharp.Views
             _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 122), $"{_trade.Credits:N1} Credits", EColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Legal Status:", EColors.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 138), _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender", EColors.White);
+            _draw.Graphics.DrawTextLeft(
+                new(150 + _draw.Offset, 138),
+                _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender",
+                EColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 154), "Rating:", EColors.Green);
             _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 154), rating, EColors.White);
@@ -161,7 +176,10 @@ namespace EliteSharp.Views
 
             if (_ship.EnergyUnit != EnergyUnit.None)
             {
-                _draw.Graphics.DrawTextLeft(position, _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit", EColors.White);
+                _draw.Graphics.DrawTextLeft(
+                    position,
+                    _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit",
+                    EColors.White);
                 IncrementPosition();
             }
 

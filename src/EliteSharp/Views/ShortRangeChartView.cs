@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -77,7 +77,10 @@ namespace EliteSharp.Views
                 _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), _gameState.PlanetName, EColors.Green);
                 if (_gameState.DistanceToPlanet > 0)
                 {
-                    _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", EColors.White);
+                    _draw.Graphics.DrawTextLeft(
+                        new(16 + _draw.Offset, _draw.ScannerTop - 40),
+                        $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ",
+                        EColors.White);
                 }
             }
         }
@@ -219,7 +222,10 @@ namespace EliteSharp.Views
                 if (row_used[row] == 0)
                 {
                     row_used[row] = 1;
-                    _planetNames.Add((new(px + (4 * _draw.Graphics.Scale), ((row * 8) - 5) * _draw.Graphics.Scale), _planet.NamePlanet(glx).CapitaliseFirstLetter()));
+                    _planetNames.Add((
+                        new(px + (4 * _draw.Graphics.Scale), ((row * 8) - 5) * _draw.Graphics.Scale),
+                        _planet.NamePlanet(glx)
+                            .CapitaliseFirstLetter()));
                 }
 
                 // The next bit calculates the size of the circle used to represent

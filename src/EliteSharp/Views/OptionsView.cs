@@ -39,7 +39,9 @@ namespace EliteSharp.Views
 
             for (int i = 0; i < _optionList.Length; i++)
             {
-                Vector2 position = new(_draw.Centre.X - (OptionBarWidth / 2), ((_draw.ScannerTop - (30 * _optionList.Length)) / 2) + (i * 30));
+                Vector2 position = new(
+                    _draw.Centre.X - (OptionBarWidth / 2),
+                    ((_draw.ScannerTop - (30 * _optionList.Length)) / 2) + (i * 30));
 
                 if (i == _highlightedItem)
                 {
@@ -51,9 +53,14 @@ namespace EliteSharp.Views
                 _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, FontSize.Small, col);
             }
 
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 80, $"Version: {typeof(OptionsView).Assembly.GetName().Version}", FontSize.Small, EColors.White);
+            _draw.Graphics.DrawTextCentre(
+                _draw.ScannerTop - 80,
+                $"Version: {typeof(OptionsView).Assembly.GetName().Version}",
+                FontSize.Small,
+                EColors.White);
             _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, "The Sharp Kind - Andy Hawkins 2023", FontSize.Small, EColors.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 40, "The New Kind - Christian Pinder 1999-2001", FontSize.Small, EColors.White);
+            _draw.Graphics
+                .DrawTextCentre(_draw.ScannerTop - 40, "The New Kind - Christian Pinder 1999-2001", FontSize.Small, EColors.White);
             _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 20, "Original Code - Ian Bell & David Braben", FontSize.Small, EColors.White);
         }
 
@@ -101,9 +108,6 @@ namespace EliteSharp.Views
 
                     case 3:
                         _gameState.SetView(Screen.Quit);
-                        break;
-
-                    default:
                         break;
                 }
             }

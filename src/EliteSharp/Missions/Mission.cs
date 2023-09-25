@@ -59,9 +59,6 @@ namespace EliteSharp.Missions
 
                     case 28:
                         return _mission1_pdesc[2];
-
-                    default:
-                        break;
                 }
             }
 
@@ -98,9 +95,6 @@ namespace EliteSharp.Missions
 
                     case 193:
                         return _mission1_pdesc[8];
-
-                    default:
-                        break;
                 }
             }
 

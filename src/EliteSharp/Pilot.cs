@@ -267,7 +267,7 @@ namespace EliteSharp
             {
                 ship.RotZ = 1;
                 if (((vec.X >= 0) && (vec.Y >= 0)) ||
-                     ((vec.X < 0) && (vec.Y < 0)))
+                    ((vec.X < 0) && (vec.Y < 0)))
                 {
                     ship.RotZ = -ship.RotZ;
                 }

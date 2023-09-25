@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -24,7 +24,7 @@ namespace EliteSharp.Ships
                 2 => new PythonLone(_draw),
                 3 => new FerDeLance(_draw),
                 4 => new Moray(_draw),
-                _ => throw new NotImplementedException(),
+                _ => throw new EliteException(),
             };
         }
 
@@ -37,7 +37,7 @@ namespace EliteSharp.Ships
             4 => new Gecko(_draw),
             5 => new CobraMk1(_draw),
             6 => new Worm(_draw),
-            _ => throw new NotImplementedException(),
+            _ => throw new EliteException(),
         };
 
         internal IShip CreatePirate() => RNG.Random(4) switch
@@ -46,7 +46,7 @@ namespace EliteSharp.Ships
             1 => new Mamba(_draw),
             2 => new Krait(_draw),
             3 => new Adder(_draw),
-            _ => throw new NotImplementedException(),
+            _ => throw new EliteException(),
         };
 
         internal IShip CreateTrader() => RNG.Random(4) switch
@@ -55,7 +55,7 @@ namespace EliteSharp.Ships
             1 => new Python(_draw),
             2 => new Boa(_draw),
             3 => new Anaconda(_draw),
-            _ => throw new NotImplementedException(),
+            _ => throw new EliteException(),
         };
 
         internal List<IShip> CreateParade() => new()

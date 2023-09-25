@@ -150,7 +150,10 @@ namespace EliteSharp
             _gameState.Cmdr.LegalStatus |= _trade.IsCarryingContraband();
             _stars.CreateNewStars();
 
-            IObject planet = PlanetFactory.Create(_gameState.Config.PlanetStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IObject planet = PlanetFactory.Create(
+                _gameState.Config.PlanetStyle,
+                _draw,
+                (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
@@ -223,7 +226,9 @@ namespace EliteSharp
             Vector3 vec = Vector3.Abs(_universe.Planet.Location);
 
             if ((vec.X == 0 && vec.Y == 0 && vec.Z == 0) ||
-                vec.X > 65535 || vec.Y > 65535 || vec.Z > 65535)
+                vec.X > 65535
+                || vec.Y > 65535
+                || vec.Z > 65535)
             {
                 return;
             }
@@ -279,7 +284,9 @@ namespace EliteSharp
             Vector3 vec = Vector3.Abs(_universe.StationOrSun.Location);
 
             if ((vec.X == 0 && vec.Y == 0 && vec.Z == 0) ||
-                vec.X > 65535 || vec.Y > 65535 || vec.Z > 65535)
+                vec.X > 65535
+                || vec.Y > 65535
+                || vec.Z > 65535)
             {
                 return;
             }
@@ -598,7 +605,10 @@ namespace EliteSharp
                 position.Y = -position.Y;
             }
 
-            IObject planet = PlanetFactory.Create(_gameState.Config.PlanetStyle, _draw, (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            IObject planet = PlanetFactory.Create(
+                _gameState.Config.PlanetStyle,
+                _draw,
+                (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
             if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix(), 0, 0))
             {
                 Debug.WriteLine("Failed to create Planet");
@@ -730,7 +740,8 @@ namespace EliteSharp
             Vector3 position = obj.Location.Cloner();
             if (obj is IShip shipEx &&
                 !obj.Flags.HasFlag(ShipProperties.Dead) &&
-                obj.Type != ShipType.Sun && obj.Type != ShipType.Planet)
+                obj.Type != ShipType.Sun
+                && obj.Type != ShipType.Planet)
             {
                 if (shipEx.Velocity != 0)
                 {

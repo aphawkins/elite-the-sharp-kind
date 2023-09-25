@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -285,8 +285,10 @@ namespace EliteSharp
                 float y1 = -obj.Location.Z / 1024;
                 float y2 = y1 - (obj.Location.Y / 512);
 
-                if ((y2 < -28) || (y2 > 28) ||
-                    (x < -50) || (x > 50))
+                if ((y2 < -28)
+                    || (y2 > 28) ||
+                    (x < -50)
+                    || (x > 50))
                 {
                     continue;
                 }
@@ -295,20 +297,13 @@ namespace EliteSharp
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                EColor colour = obj.Flags.HasFlag(ShipProperties.Hostile) ? EColors.Yellow : EColors.White;
-
-                if (obj.Flags.HasFlag(ShipProperties.Station))
-                {
-                    colour = EColors.Green;
-                }
-                else if (obj.Type == ShipType.Missile)
-                {
-                    colour = EColors.Lilac;
-                }
-                else if (obj.Flags.HasFlag(ShipProperties.Police))
-                {
-                    colour = EColors.Purple;
-                }
+                EColor colour = obj.Flags.HasFlag(ShipProperties.Station)
+                    ? EColors.Green
+                    : obj.Type == ShipType.Missile
+                        ? EColors.Lilac
+                        : obj.Flags.HasFlag(ShipProperties.Police)
+                            ? EColors.Purple
+                            : obj.Flags.HasFlag(ShipProperties.Hostile) ? EColors.Yellow : EColors.White;
 
                 // ship
                 _draw.Graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, colour);

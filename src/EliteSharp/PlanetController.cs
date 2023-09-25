@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -14,7 +14,17 @@ namespace EliteSharp
         private readonly string[] _inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
         private readonly string[] _inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
         private readonly string[] _inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
-        private readonly string[] _inhabitant_desc4 = new string[] { "Rodent", "Frog", "Lizard", "Lobster", "Bird", "Humanoid", "Feline", "Insect" };
+        private readonly string[] _inhabitant_desc4 = new string[]
+        {
+            "Rodent",
+            "Frog",
+            "Lizard",
+            "Lobster",
+            "Bird",
+            "Humanoid",
+            "Feline",
+            "Insect",
+        };
 
         internal PlanetController(GameState gameState) => _gameState = gameState;
 

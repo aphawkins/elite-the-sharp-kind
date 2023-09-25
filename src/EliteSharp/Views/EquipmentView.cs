@@ -279,17 +279,6 @@ namespace EliteSharp.Views
                     _trade.Credits += LaserRefund(_ship.LaserRight.Type);
                     _ship.LaserRight = new MilitaryLaser();
                     break;
-                case EquipmentType.None:
-                case EquipmentType.PulseLaser:
-
-                case EquipmentType.BeamLaser:
-
-                case EquipmentType.MiningLaser:
-
-                case EquipmentType.MilitaryLaser:
-
-                default:
-                    break;
             }
 
             _trade.Credits -= _equipmentStock[_highlightedItem].Price;

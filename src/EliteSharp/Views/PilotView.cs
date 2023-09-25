@@ -118,7 +118,8 @@ namespace EliteSharp.Views
 
         public void Reset() => _stars.FlipStars();
 
-        public void UpdateUniverse() => _drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(_drawLaserFrames - 1, 0, _drawLaserFrames);
+        public void UpdateUniverse()
+            => _drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(_drawLaserFrames - 1, 0, _drawLaserFrames);
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 

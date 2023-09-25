@@ -175,7 +175,8 @@ namespace EliteSharp.Views
                     break;
 
                 case 1:
-                    _gameState.Config.PlanetStyle = (PlanetType)((int)(_gameState.Config.PlanetStyle + 1) % Enum.GetValues<PlanetType>().Length);
+                    _gameState.Config.PlanetStyle = (PlanetType)((int)(_gameState.Config.PlanetStyle + 1)
+                        % Enum.GetValues<PlanetType>().Length);
                     break;
 
                 case 2:
@@ -188,9 +189,6 @@ namespace EliteSharp.Views
 
                 case 4:
                     _gameState.Config.InstantDock = !_gameState.Config.InstantDock;
-                    break;
-
-                default:
                     break;
             }
         }

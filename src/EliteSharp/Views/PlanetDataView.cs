@@ -110,7 +110,10 @@ namespace EliteSharp.Views
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", EColors.Green);
             _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", EColors.White);
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", EColors.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 170), $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}", EColors.White);
+            _draw.Graphics.DrawTextLeft(
+                new(140 + _draw.Offset, 170),
+                $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}",
+                EColors.White);
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 202), "Gross Productivity:", EColors.Green);
             _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 202), $"{_hyperPlanetData.Productivity} Million Credits", EColors.White);
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 234), "Average Radius:", EColors.Green);
@@ -252,9 +255,6 @@ namespace EliteSharp.Views
                                 planetDescription += char.ToLowerInvariant(_planet.Digrams[x + 1]);
                             }
 
-                            break;
-
-                        default:
                             break;
                     }
 

@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -19,7 +19,8 @@ namespace EliteSharp.Assets
 
         public string AssetPath(FontType font) => Path.Combine(GetAssetPath(), "Fonts", "OpenSans-Regular.ttf");
 
-        private static string GetAssetPath() => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets");
+        private static string GetAssetPath()
+            => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets");
 
         private static string GetName(ImageType image) => image switch
         {
@@ -33,7 +34,7 @@ namespace EliteSharp.Assets
             ImageType.MissileRed => "missred.bmp",
             ImageType.Blake => "blake.bmp",
             ImageType.Scanner => "scanner.bmp",
-            _ => throw new NotImplementedException(),
+            _ => throw new EliteException(),
         };
 
         private static string GetName(SoundEffect effect) => effect switch
@@ -52,14 +53,14 @@ namespace EliteSharp.Assets
             SoundEffect.IncomingFire2 => "incom2.wav",
             SoundEffect.Beep => "beep.wav",
             SoundEffect.Boop => "boop.wav",
-            _ => throw new NotImplementedException(),
+            _ => throw new EliteException(),
         };
 
         private static string GetName(MusicType music) => music switch
         {
             MusicType.EliteTheme => "theme.ogg",
             MusicType.BlueDanube => "danube.ogg",
-            _ => throw new NotImplementedException(),
+            _ => throw new EliteException(),
         };
     }
 }

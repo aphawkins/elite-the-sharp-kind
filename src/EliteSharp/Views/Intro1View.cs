@@ -25,7 +25,14 @@ namespace EliteSharp.Views
         private readonly Universe _universe;
         private readonly IDraw _draw;
 
-        internal Intro1View(GameState gameState, AudioController audio, IKeyboard keyboard, PlayerShip ship, Combat combat, Universe universe, IDraw draw)
+        internal Intro1View(
+            GameState gameState,
+            AudioController audio,
+            IKeyboard keyboard,
+            PlayerShip ship,
+            Combat combat,
+            Universe universe,
+            IDraw draw)
         {
             _gameState = gameState;
             _audio = audio;

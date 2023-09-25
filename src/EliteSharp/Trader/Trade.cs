@@ -116,7 +116,9 @@ namespace EliteSharp.Trader
             StockMarket[StockType.AlienItems].CurrentQuantity = 0;
         }
 
-        internal int IsCarryingContraband() => ((StockMarket[StockType.Slaves].CurrentCargo + StockMarket[StockType.Slaves].CurrentCargo) * 2) + StockMarket[StockType.Firearms].CurrentCargo;
+        internal int IsCarryingContraband() => ((StockMarket[StockType.Slaves].CurrentCargo + StockMarket[StockType.Slaves].CurrentCargo)
+            * 2)
+            + StockMarket[StockType.Firearms].CurrentCargo;
 
         internal void SellStock(StockType stock)
         {

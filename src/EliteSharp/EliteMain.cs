@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -55,10 +55,7 @@ namespace EliteSharp
             _audio = new(sound);
             _keyboard = keyboard;
             ConfigFile configFile = new();
-            _gameState = new(_keyboard, _views)
-            {
-                Config = configFile.ReadConfigAsync().Result,
-            };
+            _gameState = new(_keyboard, _views) { Config = configFile.ReadConfigAsync().Result };
 
             _ship = new();
             Trade trade = new(_gameState, _ship);
@@ -380,7 +377,8 @@ namespace EliteSharp
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn) &&
-                !_gameState.IsDocked && _ship.HasDockingComputer)
+                !_gameState.IsDocked
+                && _ship.HasDockingComputer)
             {
                 if (_gameState.Config.InstantDock)
                 {
@@ -393,7 +391,8 @@ namespace EliteSharp
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.ECM) &&
-                !_gameState.IsDocked && _ship.HasECM)
+                !_gameState.IsDocked
+                && _ship.HasECM)
             {
                 _combat.ActivateECM(true);
             }
@@ -411,7 +410,8 @@ namespace EliteSharp
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.Jump) &&
-                (!_gameState.IsDocked) && (!_gameState.InWitchspace))
+                (!_gameState.IsDocked)
+                && (!_gameState.InWitchspace))
             {
                 _space.JumpWarp();
             }
@@ -452,14 +452,17 @@ namespace EliteSharp
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.EnergyBomb) &&
-                (!_gameState.IsDocked) && _ship.HasEnergyBomb)
+                (!_gameState.IsDocked)
+                && _ship.HasEnergyBomb)
             {
                 _gameState.DetonateBomb = true;
                 _ship.HasEnergyBomb = false;
             }
 
             if (_keyboard.IsKeyPressed(CommandKey.EscapeCapsule) &&
-                (!_gameState.IsDocked) && _ship.HasEscapeCapsule && (!_gameState.InWitchspace))
+                (!_gameState.IsDocked)
+                && _ship.HasEscapeCapsule
+                && (!_gameState.InWitchspace))
             {
                 _gameState.SetView(Screen.EscapeCapsule);
             }

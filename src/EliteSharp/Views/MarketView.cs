@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -52,11 +52,23 @@ namespace EliteSharp.Views
 
                 _draw.Graphics.DrawTextRight(new(285 + _draw.Offset, y), $"{stock.Value.CurrentPrice:N1}", EColors.White);
 
-                _draw.Graphics.DrawTextRight(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-", EColors.White);
-                _draw.Graphics.DrawTextLeft(new(365 + _draw.Offset, y), stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty, EColors.White);
+                _draw.Graphics.DrawTextRight(
+                    new(365 + _draw.Offset, y),
+                    stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-",
+                    EColors.White);
+                _draw.Graphics.DrawTextLeft(
+                    new(365 + _draw.Offset, y),
+                    stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty,
+                    EColors.White);
 
-                _draw.Graphics.DrawTextRight(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-", EColors.White);
-                _draw.Graphics.DrawTextLeft(new(455 + _draw.Offset, y), stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty, EColors.White);
+                _draw.Graphics.DrawTextRight(
+                    new(455 + _draw.Offset, y),
+                    stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-",
+                    EColors.White);
+                _draw.Graphics.DrawTextLeft(
+                    new(455 + _draw.Offset, y),
+                    stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty,
+                    EColors.White);
 
                 i++;
             }

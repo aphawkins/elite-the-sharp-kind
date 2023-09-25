@@ -141,9 +141,9 @@ namespace EliteSharp.Ships
                 int point2 = face_data[i].Points.Length > 2 ? face_data[i].Points[2] : 0;
 
                 if ((((pointList[point0].X - pointList[point1].X) *
-                     (pointList[point2].Y - pointList[point1].Y)) -
-                     ((pointList[point0].Y - pointList[point1].Y) *
-                     (pointList[point2].X - pointList[point1].X))) <= 0)
+                    (pointList[point2].Y - pointList[point1].Y)) -
+                    ((pointList[point0].Y - pointList[point1].Y) *
+                        (pointList[point2].X - pointList[point1].X))) <= 0)
                 {
                     int num_points = face_data[i].Points.Length;
                     Vector2[] poly_list = new Vector2[num_points];

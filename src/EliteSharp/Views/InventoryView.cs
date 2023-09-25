@@ -37,7 +37,10 @@ namespace EliteSharp.Views
                 if (stock.Value.CurrentCargo > 0)
                 {
                     _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, EColors.White);
-                    _draw.Graphics.DrawTextLeft(new(180 + _draw.Offset, y), $"{stock.Value.CurrentCargo}{stock.Value.Units}", EColors.White);
+                    _draw.Graphics.DrawTextLeft(
+                        new(180 + _draw.Offset, y),
+                        $"{stock.Value.CurrentCargo}{stock.Value.Units}",
+                        EColors.White);
                     y += 16;
                 }
             }

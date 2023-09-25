@@ -76,7 +76,10 @@ namespace EliteSharp.Views
                 _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), _gameState.PlanetName, EColors.Green);
                 if (_gameState.DistanceToPlanet > 0)
                 {
-                    _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ", EColors.White);
+                    _draw.Graphics.DrawTextLeft(
+                        new(16 + _draw.Offset, _draw.ScannerTop - 40),
+                        $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ",
+                        EColors.White);
                 }
             }
         }

@@ -28,7 +28,8 @@ namespace EliteSharp.SDL
             }
         }
 
-        internal static void Throw(string methodName) => throw new EliteException($"SDL2 Error. Method '{methodName}' failed. Error: " + SDL_GetError());
+        internal static void Throw(string methodName)
+            => throw new EliteException($"SDL2 Error. Method '{methodName}' failed. Error: " + SDL_GetError());
 
         internal static CommandKey KeyConverter(SDL_Keycode sdlKey) => sdlKey switch
         {

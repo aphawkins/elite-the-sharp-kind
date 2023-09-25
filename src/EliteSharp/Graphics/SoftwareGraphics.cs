@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -117,9 +117,13 @@ namespace EliteSharp.Graphics
             }
         }
 
-        public void DrawImage(ImageType image, Vector2 position) => throw new NotImplementedException();
+        public void DrawImage(ImageType image, Vector2 position)
+        {
+        }
 
-        public void DrawImageCentre(ImageType image, float y) => throw new NotImplementedException();
+        public void DrawImageCentre(ImageType image, float y)
+        {
+        }
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour)
         {
@@ -165,25 +169,45 @@ namespace EliteSharp.Graphics
 
         public void DrawPixelFast(Vector2 position, EColor colour) => DrawPixel(position, colour);
 
-        public void DrawPolygon(Vector2[] points, EColor lineColour) => throw new NotImplementedException();
+        public void DrawPolygon(Vector2[] points, EColor lineColour)
+        {
+        }
 
-        public void DrawPolygonFilled(Vector2[] points, EColor faceColour) => throw new NotImplementedException();
+        public void DrawPolygonFilled(Vector2[] points, EColor faceColour)
+        {
+        }
 
-        public void DrawRectangle(Vector2 position, float width, float height, EColor colour) => throw new NotImplementedException();
+        public void DrawRectangle(Vector2 position, float width, float height, EColor colour)
+        {
+        }
 
-        public void DrawRectangleCentre(float y, float width, float height, EColor colour) => throw new NotImplementedException();
+        public void DrawRectangleCentre(float y, float width, float height, EColor colour)
+        {
+        }
 
-        public void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour) => throw new NotImplementedException();
+        public void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour)
+        {
+        }
 
-        public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour) => throw new NotImplementedException();
+        public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
+        {
+        }
 
-        public void DrawTextLeft(Vector2 position, string text, EColor colour) => throw new NotImplementedException();
+        public void DrawTextLeft(Vector2 position, string text, EColor colour)
+        {
+        }
 
-        public void DrawTextRight(Vector2 position, string text, EColor colour) => throw new NotImplementedException();
+        public void DrawTextRight(Vector2 position, string text, EColor colour)
+        {
+        }
 
-        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour) => throw new NotImplementedException();
+        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour)
+        {
+        }
 
-        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour) => throw new NotImplementedException();
+        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour)
+        {
+        }
 
         public void LoadBitmap(ImageType imgType, string bitmapPath)
         {

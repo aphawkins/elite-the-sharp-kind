@@ -24,7 +24,8 @@ namespace EliteSharp.Graphics
             Graphics = graphics;
         }
 
-        public float Bottom => _gameState.Config.IsViewFullFrame ? Graphics.ScreenHeight - BorderWidth : Graphics.ScreenHeight - ScannerHeight;
+        public float Bottom
+            => _gameState.Config.IsViewFullFrame ? Graphics.ScreenHeight - BorderWidth : Graphics.ScreenHeight - ScannerHeight;
 
         public Vector2 Centre => new(Graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
 
@@ -64,7 +65,8 @@ namespace EliteSharp.Graphics
             }
         }
 
-        public void DrawHyperspaceCountdown(int countdown) => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EColors.White);
+        public void DrawHyperspaceCountdown(int countdown)
+            => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EColors.White);
 
         public void DrawPolygonFilled(Vector2[] point_list, EColor face_colour, float zAvg)
         {
@@ -291,8 +293,10 @@ namespace EliteSharp.Graphics
 
             for (int i = 0; i < ship.Points.Length; i++)
             {
-                if (visible[ship.Points[i].Face1] || visible[ship.Points[i].Face2] ||
-                    visible[ship.Points[i].Face3] || visible[ship.Points[i].Face4])
+                if (visible[ship.Points[i].Face1]
+                    || visible[ship.Points[i].Face2] ||
+                    visible[ship.Points[i].Face3]
+                    || visible[ship.Points[i].Face4])
                 {
                     Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
                     Vector3 r = vec + ship.Location;
