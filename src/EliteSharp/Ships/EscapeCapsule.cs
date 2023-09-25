@@ -13,7 +13,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.EscapeCapsule;
-            Flags = ShipFlags.SpaceJunk | ShipFlags.Slow | ShipFlags.FlyToPlanet;
+            Flags = ShipProperties.SpaceJunk | ShipProperties.Slow | ShipProperties.FlyToPlanet;
             EnergyMax = 17;
             FaceNormals = new ShipFaceNormal[]
             {

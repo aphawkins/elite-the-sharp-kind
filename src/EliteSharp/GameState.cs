@@ -19,8 +19,6 @@ namespace EliteSharp
         {
             _views = views;
             _keyboard = keyboard;
-
-            // currentView = _views[SCR.SCR_CMDR_STATUS];
         }
 
         internal int CarryFlag { get; set; }
@@ -86,8 +84,6 @@ namespace EliteSharp
         {
             MessageString = message;
             MessageCount = 37;
-
-            //  sound.snd_play_sample (SND_BEEP);
         }
 
         internal void Reset()
@@ -105,14 +101,10 @@ namespace EliteSharp
 
         internal void SetView(Screen screen)
         {
-            //lock (_state)
-            //{
             CurrentScreen = screen;
             CurrentView = _views[screen];
             _keyboard.ClearKeyPressed();
             CurrentView.Reset();
-
-            //}
         }
     }
 }

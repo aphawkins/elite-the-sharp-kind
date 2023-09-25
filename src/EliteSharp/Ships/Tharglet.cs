@@ -13,7 +13,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Tharglet;
-            Flags = ShipFlags.Tharglet | ShipFlags.Angry;
+            Flags = ShipProperties.Tharglet | ShipProperties.Angry;
             Bounty = 5;
             EnergyMax = 20;
             FaceNormals = new ShipFaceNormal[]

@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Dodec;
-            Flags = ShipFlags.Station;
+            Flags = ShipProperties.Station;
             EnergyMax = 240;
             FaceNormals = new ShipFaceNormal[]
             {

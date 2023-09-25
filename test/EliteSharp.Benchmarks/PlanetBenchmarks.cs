@@ -11,13 +11,9 @@ namespace EliteSharp.Benchmarks
 {
     public class PlanetBenchmarks : IDisposable
     {
-        private readonly IDraw _draw;
-        private readonly GameState _gameState;
         private readonly EBitmap _buffer = new(512, 512);
-        private readonly IGraphics _graphics;
+        private readonly SoftwareGraphics _graphics;
         private readonly SolidPlanet _solidPlanet;
-        private readonly IKeyboard _keyboard;
-        private readonly IDictionary<Views.Screen, Views.IView> _views;
         private readonly WireframePlanet _wireframePlanet;
         private readonly FractalPlanet _fractalPlanet;
         private readonly StripedPlanet _stripedPlanet;
@@ -25,15 +21,15 @@ namespace EliteSharp.Benchmarks
 
         public PlanetBenchmarks()
         {
-            _keyboard = new SoftwareKeyboard();
-            _views = new Dictionary<Views.Screen, Views.IView>();
-            _gameState = new GameState(_keyboard, _views);
+            SoftwareKeyboard keyboard = new();
+            Dictionary<Views.Screen, Views.IView> views = new();
+            GameState gameState = new(keyboard, views);
             _graphics = new SoftwareGraphics(_buffer);
-            _draw = new Draw(_gameState, _graphics);
-            _wireframePlanet = new(_draw);
-            _solidPlanet = new(_draw, EColors.White);
-            _fractalPlanet = new(_draw, 12345);
-            _stripedPlanet = new(_draw);
+            Draw draw = new(gameState, _graphics);
+            _wireframePlanet = new(draw);
+            _solidPlanet = new(draw, EColors.White);
+            _fractalPlanet = new(draw, 12345);
+            _stripedPlanet = new(draw);
         }
 
         public void Dispose()

@@ -127,7 +127,7 @@ namespace EliteSharp
         /// </summary>
         internal void AutoPilotShip(IShip ship)
         {
-            if (ship.Flags.HasFlag(ShipFlags.FlyToPlanet) || !_universe.IsStationPresent)
+            if (ship.Flags.HasFlag(ShipProperties.FlyToPlanet) || !_universe.IsStationPresent)
             {
                 FlyToPlanet(ship);
                 return;
@@ -139,7 +139,7 @@ namespace EliteSharp
 
             if (dist < 160)
             {
-                ship.Flags |= ShipFlags.Remove;       // Ship has docked.
+                ship.Flags |= ShipProperties.Remove;       // Ship has docked.
                 return;
             }
 

@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Constrictor;
-            Flags = ShipFlags.LoneWolf | ShipFlags.Angry;
+            Flags = ShipProperties.LoneWolf | ShipProperties.Angry;
             EnergyMax = 252;
             FaceNormals = new ShipFaceNormal[]
             {

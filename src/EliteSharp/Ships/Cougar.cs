@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Cougar;
-            Flags = ShipFlags.LoneWolf | ShipFlags.Police | ShipFlags.Cloaked;
+            Flags = ShipProperties.LoneWolf | ShipProperties.Police | ShipProperties.Cloaked;
             EnergyMax = 252;
             FaceNormals = new ShipFaceNormal[]
             {

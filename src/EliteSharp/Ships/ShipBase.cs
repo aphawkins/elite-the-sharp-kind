@@ -32,7 +32,7 @@ namespace EliteSharp.Ships
 
         public ShipFace[] Faces { get; set; } = Array.Empty<ShipFace>();
 
-        public ShipFlags Flags { get; set; } = ShipFlags.None;
+        public ShipProperties Flags { get; set; } = ShipProperties.None;
 
         public int LaserFront { get; set; }
 
@@ -103,17 +103,17 @@ namespace EliteSharp.Ships
             _ = VectorMaths.UnitVector(camera_vec);
             ShipFace[] face_data = Faces;
 
-            //for (i = 0; i < num_faces; i++)
-            //{
-            //  vec.x = face_data[i].norm_x;
-            //  vec.y = face_data[i].norm_y;
-            //  vec.z = face_data[i].norm_z;
+            ////for (i = 0; i < num_faces; i++)
+            ////{
+            ////  vec.x = face_data[i].norm_x;
+            ////  vec.y = face_data[i].norm_y;
+            ////  vec.z = face_data[i].norm_z;
 
-            //  vec = VectorMaths.unit_vector (&vec);
-            //  cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
+            ////  vec = VectorMaths.unit_vector (&vec);
+            ////  cos_angle = VectorMaths.vector_dot_product (&vec, &camera_vec);
 
-            //  visible[i] = (cos_angle < -0.13);
-            //}
+            ////  visible[i] = (cos_angle < -0.13);
+            ////}
             (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
             (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
             (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
@@ -161,7 +161,7 @@ namespace EliteSharp.Ships
                 }
             }
 
-            if (Flags.HasFlag(ShipFlags.Firing))
+            if (Flags.HasFlag(ShipProperties.Firing))
             {
                 lasv = LaserFront;
                 EColor colour = (Type == ShipType.Viper) ? EColors.Cyan : EColors.White;

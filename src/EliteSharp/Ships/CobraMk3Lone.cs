@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.CobraMk3Lone;
-            Flags = ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipProperties.Bold | ShipProperties.Angry;
             Bounty = 17.5f;
             LootMax = 1;
             MissilesMax = 2;

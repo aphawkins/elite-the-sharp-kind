@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Missile;
-            Flags = ShipFlags.Missile;
+            Flags = ShipProperties.Missile;
             EnergyMax = 2;
             FaceNormals = new ShipFaceNormal[]
             {

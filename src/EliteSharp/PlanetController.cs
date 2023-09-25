@@ -187,7 +187,7 @@ namespace EliteSharp
         {
             GalaxySeed glx = new(galaxy);
 
-            string name = string.Empty;
+            StringBuilder name = new();
             int size = (glx.A & 64) == 0 ? 3 : 4;
 
             for (int i = 0; i < size; i++)
@@ -197,17 +197,17 @@ namespace EliteSharp
                 {
                     x += 12;
                     x *= 2;
-                    name += Digrams[x];
+                    name.Append(Digrams[x]);
                     if (Digrams[x + 1] != '?')
                     {
-                        name += Digrams[x + 1];
+                        name.Append(Digrams[x + 1]);
                     }
                 }
 
                 WaggleGalaxy(glx);
             }
 
-            return name;
+            return name.ToString();
         }
 
         internal void WaggleGalaxy(GalaxySeed glx_ptr)

@@ -5,7 +5,7 @@
 namespace EliteSharp.Ships
 {
     [Flags]
-    internal enum ShipFlags
+    internal enum ShipProperties
     {
         None = 0,
         Dead = 1 << 0,

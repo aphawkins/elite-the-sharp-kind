@@ -71,9 +71,6 @@ namespace EliteSharp.Graphics
             byte[] bppBytes = new byte[2];
             Array.Copy(Bytes, 28, bppBytes, 0, 2);
             BitDepth = BitConverter.ToInt16(bppBytes, 0);
-
-            // Debug.Assert(BitConverter.ToInt16(bppBytes, 0) == BitDepth, "BPP is correct");
-            //Debug.Assert(HeaderLength + (Width * Height * BitDepth / 8) == Bytes.Length, "Calculated length equals actual length");
         }
 
 #pragma warning disable CA1819 // Properties should not return arrays

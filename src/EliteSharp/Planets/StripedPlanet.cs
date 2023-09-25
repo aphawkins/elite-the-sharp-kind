@@ -79,7 +79,7 @@ namespace EliteSharp.Planets
 
         private StripedPlanet(StripedPlanet other) => _planetRenderer = other._planetRenderer;
 
-        public ShipFlags Flags { get; set; }
+        public ShipProperties Flags { get; set; }
 
         public Vector3 Location { get; set; } = new(0, 0, 123456);
 

@@ -95,12 +95,5 @@ namespace EliteSharp.WinForms
                 _disposedValue = true;
             }
         }
-
-        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~Sound()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
     }
 }

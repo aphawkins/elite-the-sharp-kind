@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Thargoid;
-            Flags = ShipFlags.LoneWolf | ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry;
             Bounty = 50;
             EnergyMax = 240;
             FaceNormals = new ShipFaceNormal[]

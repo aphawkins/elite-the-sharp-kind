@@ -91,10 +91,10 @@ namespace EliteSharp.Trader
                 float price = stock.Value.BasePrice;
 
                 // Add in a random amount
-                price += (MarketRandomiser & stock.Value.Mask) / 10;
+                price += (MarketRandomiser & stock.Value.Mask) / 10f;
 
                 // Adjust for planet economy
-                price += _gameState.CurrentPlanetData.Economy * stock.Value.EconomyAdjust / 10;
+                price += _gameState.CurrentPlanetData.Economy * stock.Value.EconomyAdjust / 10f;
 
                 // Start with the base quantity
                 int quant = stock.Value.BaseQuantity;

@@ -8,7 +8,7 @@ namespace EliteSharp.Ships
 {
     internal interface IObject
     {
-        ShipFlags Flags { get; set; }
+        ShipProperties Flags { get; set; }
 
         Vector3 Location { get; set; }
 

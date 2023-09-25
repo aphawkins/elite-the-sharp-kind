@@ -98,8 +98,8 @@ namespace EliteSharp
                 yy += xx * alpha;
                 xx -= yy * alpha;
 
-                //tx = yy * beta;
-                //xx = xx + (tx * tx * 2);
+                ////tx = yy * beta;
+                ////xx = xx + (tx * tx * 2);
                 yy += beta;
 
                 _stars[i].Y = yy;
@@ -181,8 +181,8 @@ namespace EliteSharp
                 yy += xx * alpha;
                 xx -= yy * alpha;
 
-                //tx = yy * beta;
-                //xx = xx + (tx * tx * 2);
+                ////tx = yy * beta;
+                ////xx = xx + (tx * tx * 2);
                 yy += beta;
 
                 if (WarpStars)

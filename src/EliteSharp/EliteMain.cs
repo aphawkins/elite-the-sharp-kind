@@ -30,7 +30,6 @@ namespace EliteSharp
     {
         private readonly AudioController _audio;
         private readonly Combat _combat;
-        private readonly ConfigFile _configFile;
         private readonly IDraw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
@@ -40,14 +39,12 @@ namespace EliteSharp
         private readonly long _oneSecond = TimeSpan.FromSeconds(1).Ticks;
 #endif
         private readonly Pilot _pilot;
-        private readonly PlanetController _planet;
         private readonly SaveFile _save;
         private readonly Scanner _scanner;
         private readonly PlayerShip _ship;
         private readonly Space _space;
         private readonly Stars _stars;
         private readonly TimeSpan _timeout;
-        private readonly Trade _trade;
         private readonly Universe _universe;
         private readonly Dictionary<Screen, IView> _views = new();
         private bool _isGamePaused;
@@ -57,31 +54,31 @@ namespace EliteSharp
             _graphics = graphics;
             _audio = new(sound);
             _keyboard = keyboard;
-            _configFile = new();
+            ConfigFile configFile = new();
             _gameState = new(_keyboard, _views)
             {
-                Config = _configFile.ReadConfigAsync().Result,
+                Config = configFile.ReadConfigAsync().Result,
             };
 
             _ship = new();
-            _trade = new(_gameState, _ship);
-            _planet = new(_gameState);
+            Trade trade = new(_gameState, _ship);
+            PlanetController planet = new(_gameState);
             _draw = new Draw(_gameState, _graphics);
             _universe = new(_draw);
             _stars = new(_gameState, _draw, _ship);
             _pilot = new(_draw, _audio, _universe, _ship);
-            _combat = new(_gameState, _audio, _ship, _trade, _pilot, _universe, _draw);
-            _save = new(_gameState, _ship, _trade, _planet);
-            _space = new(_gameState, _audio, _pilot, _combat, _trade, _ship, _planet, _stars, _universe, _draw);
+            _combat = new(_gameState, _audio, _ship, trade, _pilot, _universe, _draw);
+            _save = new(_gameState, _ship, trade, planet);
+            _space = new(_gameState, _audio, _pilot, _combat, trade, _ship, planet, _stars, _universe, _draw);
             _scanner = new(_gameState, _draw, _universe, _ship, _combat);
 
             _views.Add(Screen.IntroOne, new Intro1View(_gameState, _audio, keyboard, _ship, _combat, _universe, _draw));
             _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _audio, keyboard, _stars, _ship, _combat, _universe, _draw));
-            _views.Add(Screen.GalacticChart, new GalacticChartView(_gameState, _draw, keyboard, _planet, _ship));
-            _views.Add(Screen.ShortRangeChart, new ShortRangeChartView(_gameState, _draw, keyboard, _planet, _ship));
-            _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _draw, _planet));
-            _views.Add(Screen.MarketPrices, new MarketView(_gameState, _draw, keyboard, _trade, _planet));
-            _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _draw, _ship, _trade, _planet, _universe));
+            _views.Add(Screen.GalacticChart, new GalacticChartView(_gameState, _draw, keyboard, planet, _ship));
+            _views.Add(Screen.ShortRangeChart, new ShortRangeChartView(_gameState, _draw, keyboard, planet, _ship));
+            _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _draw, planet));
+            _views.Add(Screen.MarketPrices, new MarketView(_gameState, _draw, keyboard, trade, planet));
+            _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _draw, _ship, trade, planet, _universe));
             _views.Add(Screen.FrontView, new PilotFrontView(_gameState, keyboard, _stars, _pilot, _ship, _space, _draw));
             _views.Add(Screen.RearView, new PilotRearView(_gameState, keyboard, _stars, _pilot, _ship, _space, _draw));
             _views.Add(Screen.LeftView, new PilotLeftView(_gameState, keyboard, _stars, _pilot, _ship, _space, _draw));
@@ -89,16 +86,16 @@ namespace EliteSharp
             _views.Add(Screen.Docking, new DockingView(_gameState, _audio, _space, _combat, _universe, _draw));
             _views.Add(Screen.Undocking, new LaunchView(_gameState, _audio, _space, _combat, _universe, _draw));
             _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _audio, _draw));
-            _views.Add(Screen.Inventory, new InventoryView(_draw, _ship, _trade));
-            _views.Add(Screen.EquipShip, new EquipmentView(_gameState, _draw, keyboard, _ship, _trade, _scanner));
+            _views.Add(Screen.Inventory, new InventoryView(_draw, _ship, trade));
+            _views.Add(Screen.EquipShip, new EquipmentView(_gameState, _draw, keyboard, _ship, trade, _scanner));
             _views.Add(Screen.Options, new OptionsView(_gameState, _draw, keyboard));
             _views.Add(Screen.LoadCommander, new LoadCommanderView(_gameState, _draw, keyboard, _save));
             _views.Add(Screen.SaveCommander, new SaveCommanderView(_gameState, _draw, keyboard, _save));
             _views.Add(Screen.Quit, new QuitView(_gameState, _draw, keyboard));
-            _views.Add(Screen.Settings, new SettingsView(_gameState, _draw, keyboard, _configFile));
-            _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _draw, keyboard, _ship, _trade, _combat, _universe));
+            _views.Add(Screen.Settings, new SettingsView(_gameState, _draw, keyboard, configFile));
+            _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _draw, keyboard, _ship, trade, _combat, _universe));
             _views.Add(Screen.MissionTwo, new ThargoidMissionView(_gameState, _draw, keyboard, _ship));
-            _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _audio, _stars, _ship, _trade, _universe, _pilot, _draw));
+            _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _audio, _stars, _ship, trade, _universe, _pilot, _draw));
             _views.Add(Screen.GameOver, new GameOverView(_gameState, _audio, _stars, _ship, _combat, _universe, _draw));
 
             _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
@@ -167,11 +164,7 @@ namespace EliteSharp
                 {
                     // The lock was not acquired.
                     _lockObj.Missed++;
-
-                    //Console.WriteLine($"Frames: drawn: {lockObj.drawn}, missed: {lockObj.missed}, total: {lockObj.drawn + lockObj.missed}");
                 }
-
-                //Console.WriteLine($"Frames: drawn: {lockObj.drawn}, missed: {lockObj.missed}, total: {lockObj.drawn + lockObj.missed}");
             }
             catch (Exception ex)
             {

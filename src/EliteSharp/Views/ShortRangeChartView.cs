@@ -87,7 +87,6 @@ namespace EliteSharp.Views
             if (_isFind)
             {
                 if (_keyboard.IsKeyPressed(CommandKey.Backspace) &&
-                    _isFind &&
                     !string.IsNullOrEmpty(_findName))
                 {
                     _findName = _findName[..^1];

@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Moray;
-            Flags = ShipFlags.LoneWolf | ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry;
             Bounty = 5;
             EnergyMax = 100;
             FaceNormals = new ShipFaceNormal[]

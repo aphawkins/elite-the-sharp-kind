@@ -11,25 +11,21 @@ namespace EliteSharp.Benchmarks
 {
     public class SunBenchmarks : IDisposable
     {
-        private readonly IDraw _draw;
-        private readonly GameState _gameState;
         private readonly EBitmap _buffer = new(512, 512);
-        private readonly IGraphics _graphics;
+        private readonly SoftwareGraphics _graphics;
         private readonly SolidSun _solidSun;
-        private readonly IKeyboard _keyboard;
-        private readonly IDictionary<Views.Screen, Views.IView> _views;
         private readonly GradientSun _gradientSun;
         private bool _disposedValue;
 
         public SunBenchmarks()
         {
-            _keyboard = new SoftwareKeyboard();
-            _views = new Dictionary<Views.Screen, Views.IView>();
-            _gameState = new GameState(_keyboard, _views);
+            SoftwareKeyboard keyboard = new();
+            Dictionary<Views.Screen, Views.IView> views = new();
+            GameState gameState = new(keyboard, views);
             _graphics = new SoftwareGraphics(_buffer);
-            _draw = new Draw(_gameState, _graphics);
-            _gradientSun = new(_draw);
-            _solidSun = new(_draw, EColors.White);
+            Draw draw = new(gameState, _graphics);
+            _gradientSun = new(draw);
+            _solidSun = new(draw, EColors.White);
         }
 
         public void Dispose()

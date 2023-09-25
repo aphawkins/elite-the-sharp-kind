@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 using EliteSharp.Graphics;
 using EliteSharp.Missions;
 using EliteSharp.Planets;
@@ -164,17 +165,20 @@ namespace EliteSharp.Views
 
         private void ExpandDescription(string source, ref string planetDescription)
         {
+            StringBuilder temp = new();
+
             for (int j = 0; j < source.Length; j++)
             {
-                string temp;
+                temp.Clear();
+
                 if (source[j] == '<')
                 {
                     j++;
-                    temp = string.Empty;
+                    temp.Clear();
 
                     while (source[j] != '>')
                     {
-                        temp += source[j];
+                        temp.Append(source[j]);
                         j++;
                     }
 
@@ -221,12 +225,12 @@ namespace EliteSharp.Views
                     switch (source[j])
                     {
                         case 'H':
-                            temp = _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter();
+                            temp = new(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter());
                             planetDescription += temp;
                             break;
 
                         case 'I':
-                            temp = _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter();
+                            temp = new(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter());
                             planetDescription += temp;
                             planetDescription += "ian";
                             break;

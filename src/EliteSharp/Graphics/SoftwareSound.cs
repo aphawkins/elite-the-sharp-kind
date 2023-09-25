@@ -7,12 +7,14 @@ using EliteSharp.Audio;
 
 namespace EliteSharp.Graphics
 {
-    internal class SoftwareSound : ISound
+    internal sealed class SoftwareSound : ISound
     {
         private readonly ConcurrentDictionary<SoundEffect, EWave> _sfxs = new();
         private readonly ConcurrentDictionary<MusicType, EWave> _musics = new();
 
-        public void Dispose() => throw new NotImplementedException();
+        public void Dispose()
+        {
+        }
 
         public void Load(MusicType musicType, string filePath)
         {

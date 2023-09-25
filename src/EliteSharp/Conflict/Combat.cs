@@ -65,7 +65,6 @@ namespace EliteSharp.Conflict
 
         internal void CheckTarget(IShip obj, IObject flip)
         {
-            //univ_object univ = space.universe[un];
             if (IsInTarget(obj, flip.Location))
             {
                 if (MissileTarget == null && IsMissileArmed && obj.Type >= 0)
@@ -79,7 +78,7 @@ namespace EliteSharp.Conflict
                 {
                     _audio.PlayEffect(SoundEffect.HitEnemy);
 
-                    if (!obj.Flags.HasFlag(ShipFlags.Station))
+                    if (!obj.Flags.HasFlag(ShipProperties.Station))
                     {
                         if (obj.Type is ShipType.Constrictor or ShipType.Cougar)
                         {
@@ -136,10 +135,10 @@ namespace EliteSharp.Conflict
             IShip thargoid = new Thargoid(_draw);
             if (_universe.AddNewShip(thargoid))
             {
-                thargoid.Flags = ShipFlags.Angry | ShipFlags.HasECM;
+                thargoid.Flags = ShipProperties.Angry | ShipProperties.HasECM;
                 thargoid.Bravery = 113;
 
-                if (RNG.Random(256) > 64 && !LaunchEnemy(thargoid, new Tharglet(_draw), ShipFlags.Angry | ShipFlags.HasECM, 96))
+                if (RNG.Random(256) > 64 && !LaunchEnemy(thargoid, new Tharglet(_draw), ShipProperties.Angry | ShipProperties.HasECM, 96))
                 {
                     Debug.Fail("Failed to create Tharglet");
                 }
@@ -160,7 +159,7 @@ namespace EliteSharp.Conflict
             }
 
             _audio.PlayEffect(SoundEffect.Explode);
-            obj.Flags |= ShipFlags.Dead;
+            obj.Flags |= ShipProperties.Dead;
 
             if (obj.Type == ShipType.Constrictor)
             {
@@ -277,12 +276,12 @@ namespace EliteSharp.Conflict
             }
 
             missile.Velocity = _ship.Speed * 2;
-            missile.Flags = ShipFlags.Angry;
+            missile.Flags = ShipProperties.Angry;
             missile.Target = MissileTarget;
 
             if (MissileTarget.Type > ShipType.Rock)
             {
-                MissileTarget.Flags |= ShipFlags.Angry;
+                MissileTarget.Flags |= ShipProperties.Angry;
             }
 
             _ship.MissileCount--;
@@ -350,7 +349,7 @@ namespace EliteSharp.Conflict
 
             CheckMissiles(obj);
 
-            if (obj.Flags.HasFlag(ShipFlags.Station))
+            if (obj.Flags.HasFlag(ShipProperties.Station))
             {
                 Vector3 position = obj.Location;
                 position.Y = (int)position.Y & 0xFFFF;
@@ -376,7 +375,7 @@ namespace EliteSharp.Conflict
 
         internal void ScoopItem(IShip obj)
         {
-            if (obj.Flags.HasFlag(ShipFlags.Dead))
+            if (obj.Flags.HasFlag(ShipProperties.Dead))
             {
                 return;
             }
@@ -415,7 +414,7 @@ namespace EliteSharp.Conflict
             }
 
             ExplodeObject(obj);
-            _ship.DamageShip(obj.Energy / 2, obj.Location.Z > 0);
+            _ship.DamageShip(obj.Energy / 2f, obj.Location.Z > 0);
         }
 
         internal void Tactics(IShip ship, int un)
@@ -425,11 +424,11 @@ namespace EliteSharp.Conflict
             float direction;
             int attacking;
 
-            ShipFlags flags = ship.Flags;
+            ShipProperties flags = ship.Flags;
 
             if (ship.Type == ShipType.Missile)
             {
-                if (flags.HasFlag(ShipFlags.Angry))
+                if (flags.HasFlag(ShipProperties.Angry))
                 {
                     MissileTactics(ship);
                 }
@@ -442,9 +441,9 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (ship.Flags.HasFlag(ShipFlags.Station))
+            if (ship.Flags.HasFlag(ShipProperties.Station))
             {
-                if (flags.HasFlag(ShipFlags.Angry))
+                if (flags.HasFlag(ShipProperties.Angry))
                 {
                     if (RNG.Random(256) < 240)
                     {
@@ -456,7 +455,7 @@ namespace EliteSharp.Conflict
                         return;
                     }
 
-                    if (!LaunchEnemy(ship, new Viper(_draw), ShipFlags.Angry | ShipFlags.HasECM, 113))
+                    if (!LaunchEnemy(ship, new Viper(_draw), ShipProperties.Angry | ShipProperties.HasECM, 113))
                     {
                         Debug.Fail("Failed to create Police");
                     }
@@ -473,12 +472,12 @@ namespace EliteSharp.Conflict
                 if (RNG.Random(256) > 200)
                 {
                     IShip pirate = new ShipFactory(_draw).CreatePirate();
-                    if (!LaunchEnemy(ship, pirate, ShipFlags.Angry | ShipFlags.HasECM, 113))
+                    if (!LaunchEnemy(ship, pirate, ShipProperties.Angry | ShipProperties.HasECM, 113))
                     {
                         Debug.Fail("Failed to create Hermit Pirate");
                     }
 
-                    ship.Flags |= ShipFlags.Inactive;
+                    ship.Flags |= ShipProperties.Inactive;
                 }
 
                 return;
@@ -496,22 +495,22 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            if (flags.HasFlag(ShipFlags.Slow) &&
+            if (flags.HasFlag(ShipProperties.Slow) &&
                 RNG.Random(256) > 50)
             {
                 return;
             }
 
-            if (flags.HasFlag(ShipFlags.Police) &&
+            if (flags.HasFlag(ShipProperties.Police) &&
                 _gameState.Cmdr.LegalStatus >= 64)
             {
-                flags |= ShipFlags.Angry;
+                flags |= ShipProperties.Angry;
                 ship.Flags = flags;
             }
 
-            if (!flags.HasFlag(ShipFlags.Angry))
+            if (!flags.HasFlag(ShipProperties.Angry))
             {
-                if (flags.HasFlag(ShipFlags.FlyToPlanet) || flags.HasFlag(ShipFlags.FlyToStation))
+                if (flags.HasFlag(ShipProperties.FlyToPlanet) || flags.HasFlag(ShipProperties.FlyToStation))
                 {
                     _pilot.AutoPilotShip(ship);
                 }
@@ -520,7 +519,7 @@ namespace EliteSharp.Conflict
             }
 
             // If we get to here then the ship is angry so start attacking...
-            if (_universe.IsStationPresent && !flags.HasFlag(ShipFlags.Bold))
+            if (_universe.IsStationPresent && !flags.HasFlag(ShipProperties.Bold))
             {
                 ship.Bravery = 0;
             }
@@ -528,7 +527,7 @@ namespace EliteSharp.Conflict
             if (ship.Type == ShipType.Anaconda && RNG.Random(256) > 200)
             {
                 IShip anacondaHunter = RNG.Random(256) > 100 ? new Worm(_draw) : new Sidewinder(_draw);
-                if (!LaunchEnemy(ship, anacondaHunter, ShipFlags.Angry | ShipFlags.HasECM, 113))
+                if (!LaunchEnemy(ship, anacondaHunter, ShipProperties.Angry | ShipProperties.HasECM, 113))
                 {
                     Debug.Fail("Failed to create Anaconda Hunter");
                 }
@@ -549,8 +548,8 @@ namespace EliteSharp.Conflict
             {
                 if (ship.Energy < ship.EnergyMax / 8 && RNG.Random(256) > 230 && ship.Type != ShipType.Thargoid)
                 {
-                    ship.Flags &= ~ShipFlags.Angry;
-                    ship.Flags |= ShipFlags.Inactive;
+                    ship.Flags &= ~ShipProperties.Angry;
+                    ship.Flags |= ShipProperties.Inactive;
                     if (!LaunchEnemy(ship, new EscapeCapsule(_draw), 0, 126))
                     {
                         Debug.Fail("Failed to create Escape Capsule");
@@ -564,14 +563,14 @@ namespace EliteSharp.Conflict
                     ship.Missiles--;
                     if (ship.Type == ShipType.Thargoid)
                     {
-                        if (!LaunchEnemy(ship, new Tharglet(_draw), ShipFlags.Angry, ship.Bravery))
+                        if (!LaunchEnemy(ship, new Tharglet(_draw), ShipProperties.Angry, ship.Bravery))
                         {
                             Debug.Fail("Failed to create Tharglet");
                         }
                     }
                     else
                     {
-                        if (!LaunchEnemy(ship, new Missile(_draw), ShipFlags.Angry, 126))
+                        if (!LaunchEnemy(ship, new Missile(_draw), ShipProperties.Angry, 126))
                         {
                             Debug.Fail("Failed to create Missile");
                         }
@@ -592,7 +591,7 @@ namespace EliteSharp.Conflict
             {
                 if (direction <= -0.917)
                 {
-                    ship.Flags |= ShipFlags.Firing | ShipFlags.Hostile;
+                    ship.Flags |= ShipProperties.Firing | ShipProperties.Hostile;
                 }
 
                 if (direction <= -0.972)
@@ -618,7 +617,7 @@ namespace EliteSharp.Conflict
                     TrackObject(ship, direction, nvec);
                 }
 
-                //      if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
+                ////      if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
                 if (MathF.Abs(ship.Location.Z) < 768f)
                 {
                     ship.RotX = RNG.Random(136);
@@ -638,18 +637,16 @@ namespace EliteSharp.Conflict
 
             attacking = 0;
 
-            if (MathF.Abs(ship.Location.Z) >= 768 ||
+            if ((MathF.Abs(ship.Location.Z) >= 768 ||
                 MathF.Abs(ship.Location.X) >= 512 ||
-                MathF.Abs(ship.Location.Y) >= 512)
+                MathF.Abs(ship.Location.Y) >= 512) &&
+                ship.Bravery > RNG.Random(128))
             {
-                if (ship.Bravery > RNG.Random(128))
-                {
-                    attacking = 1;
-                    nvec.X = -nvec.X;
-                    nvec.Y = -nvec.Y;
-                    nvec.Z = -nvec.Z;
-                    direction = -direction;
-                }
+                attacking = 1;
+                nvec.X = -nvec.X;
+                nvec.Y = -nvec.Y;
+                nvec.Z = -nvec.Z;
+                direction = -direction;
             }
 
             TrackObject(ship, direction, nvec);
@@ -720,14 +717,14 @@ namespace EliteSharp.Conflict
 
         private static void MakeAngry(IShip ship)
         {
-            if (ship.Flags.HasFlag(ShipFlags.Inactive))
+            if (ship.Flags.HasFlag(ShipProperties.Inactive))
             {
                 return;
             }
 
-            if (ship.Flags.HasFlag(ShipFlags.Station))
+            if (ship.Flags.HasFlag(ShipProperties.Station))
             {
-                ship.Flags |= ShipFlags.Angry;
+                ship.Flags |= ShipProperties.Angry;
                 return;
             }
 
@@ -735,7 +732,7 @@ namespace EliteSharp.Conflict
             {
                 ship.RotX = 4;
                 ship.Acceleration = 2;
-                ship.Flags |= ShipFlags.Angry;
+                ship.Flags |= ShipProperties.Angry;
             }
         }
 
@@ -790,7 +787,7 @@ namespace EliteSharp.Conflict
             IShip asteroid = new ShipFactory(_draw).CreateAsteroid();
             if (_universe.AddNewShip(asteroid))
             {
-                //      space.universe[newship].velocity = (random.rand255() & 31) | 16;
+                //// space.universe[newship].velocity = (random.rand255() & 31) | 16;
                 asteroid.Velocity = 8;
                 asteroid.RotZ = RNG.TrueOrFalse() ? -127 : 127;
                 asteroid.RotX = 16;
@@ -842,10 +839,10 @@ namespace EliteSharp.Conflict
                 IShip packHunter = new ShipFactory(_draw).CreatePackHunter();
                 if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix(), 0, 0))
                 {
-                    packHunter.Flags = ShipFlags.Angry;
+                    packHunter.Flags = ShipProperties.Angry;
                     if (RNG.Random(256) > 245)
                     {
-                        packHunter.Flags |= ShipFlags.HasECM;
+                        packHunter.Flags |= ShipProperties.HasECM;
                     }
 
                     packHunter.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
@@ -875,10 +872,10 @@ namespace EliteSharp.Conflict
 
             if (_universe.AddNewShip(police))
             {
-                police.Flags = ShipFlags.Angry;
+                police.Flags = ShipProperties.Angry;
                 if (RNG.Random(256) > 245)
                 {
-                    police.Flags |= ShipFlags.HasECM;
+                    police.Flags |= ShipProperties.HasECM;
                 }
 
                 police.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
@@ -902,7 +899,7 @@ namespace EliteSharp.Conflict
             {
                 if (universeObj.Type == ShipType.Missile && ((IShip)universeObj).Target == obj)
                 {
-                    universeObj.Flags |= ShipFlags.Dead;
+                    universeObj.Flags |= ShipProperties.Dead;
                 }
             }
         }
@@ -917,7 +914,7 @@ namespace EliteSharp.Conflict
             IShip cougar = new Cougar(_draw);
             if (_universe.AddNewShip(cougar))
             {
-                cougar.Flags = ShipFlags.HasECM; // | FLG_CLOAKED;
+                cougar.Flags = ShipProperties.HasECM; //// | FLG_CLOAKED;
                 cougar.Bravery = 121;
                 cougar.Velocity = 18;
             }
@@ -937,10 +934,10 @@ namespace EliteSharp.Conflict
 
             if (_universe.AddNewShip(loneWolf))
             {
-                loneWolf.Flags = ShipFlags.Angry;
+                loneWolf.Flags = ShipProperties.Angry;
                 if (RNG.Random(256) > 200 || loneWolf.Type == ShipType.Constrictor)
                 {
-                    loneWolf.Flags |= ShipFlags.HasECM;
+                    loneWolf.Flags |= ShipProperties.HasECM;
                 }
 
                 loneWolf.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
@@ -965,11 +962,11 @@ namespace EliteSharp.Conflict
 
                 if (RNG.TrueOrFalse())
                 {
-                    trader.Flags |= ShipFlags.HasECM;
+                    trader.Flags |= ShipProperties.HasECM;
                 }
 
-                //      if (rnd & 2)
-                //          space.universe[newship].flags |= FLG.FLG_ANGRY;
+                //// if (rnd & 2)
+                ////   space.universe[newship].flags |= FLG.FLG_ANGRY;
             }
             else
             {
@@ -977,7 +974,7 @@ namespace EliteSharp.Conflict
             }
         }
 
-        private bool LaunchEnemy(IShip sourceShip, IShip newShip, ShipFlags flags, int bravery)
+        private bool LaunchEnemy(IShip sourceShip, IShip newShip, ShipProperties flags, int bravery)
         {
             Debug.Assert(sourceShip.Rotmat != null, "Rotation matrix should not be null.");
             Vector3[] rotmat = sourceShip.Rotmat.Cloner();
@@ -987,7 +984,7 @@ namespace EliteSharp.Conflict
                 return false;
             }
 
-            if (sourceShip.Flags.HasFlag(ShipFlags.Station))
+            if (sourceShip.Flags.HasFlag(ShipProperties.Station))
             {
                 newShip.Velocity = 32;
                 newShip.Location += newShip.Rotmat[2] * 2;
@@ -1071,9 +1068,9 @@ namespace EliteSharp.Conflict
                 return;
             }
 
-            Debug.Assert(station.Flags.HasFlag(ShipFlags.Station), "Shuttle must be launched from a station");
+            Debug.Assert(station.Flags.HasFlag(ShipProperties.Station), "Shuttle must be launched from a station");
             IShip shuttle = RNG.TrueOrFalse() ? new Shuttle(_draw) : new Transporter(_draw);
-            if (!LaunchEnemy((IShip)station, shuttle, ShipFlags.HasECM | ShipFlags.FlyToPlanet, 113))
+            if (!LaunchEnemy((IShip)station, shuttle, ShipProperties.HasECM | ShipProperties.FlyToPlanet, 113))
             {
                 Debug.Fail("Failed to create Shuttle");
             }
@@ -1090,7 +1087,7 @@ namespace EliteSharp.Conflict
             {
                 _audio.PlayEffect(SoundEffect.Explode);
 
-                missile.Flags |= ShipFlags.Dead;
+                missile.Flags |= ShipProperties.Dead;
                 return;
             }
 
@@ -1098,7 +1095,7 @@ namespace EliteSharp.Conflict
             {
                 if (missile.Location.Length() < 256)
                 {
-                    missile.Flags |= ShipFlags.Dead;
+                    missile.Flags |= ShipProperties.Dead;
                     _audio.PlayEffect(SoundEffect.Explode);
                     _ship.DamageShip(250, missile.Location.Z >= 0.0);
                     return;
@@ -1112,9 +1109,9 @@ namespace EliteSharp.Conflict
 
                 if (vec.Length() < 256)
                 {
-                    missile.Flags |= ShipFlags.Dead;
+                    missile.Flags |= ShipProperties.Dead;
 
-                    if (!missile.Target.Flags.HasFlag(ShipFlags.Station))
+                    if (!missile.Target.Flags.HasFlag(ShipProperties.Station))
                     {
                         ExplodeObject(missile.Target);
                     }
@@ -1126,7 +1123,7 @@ namespace EliteSharp.Conflict
                     return;
                 }
 
-                if (RNG.Random(256) < 16 && missile.Target.Flags.HasFlag(ShipFlags.HasECM))
+                if (RNG.Random(256) < 16 && missile.Target.Flags.HasFlag(ShipProperties.HasECM))
                 {
                     ActivateECM(false);
                     return;

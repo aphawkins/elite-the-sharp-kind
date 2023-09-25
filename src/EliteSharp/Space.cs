@@ -336,7 +336,7 @@ namespace EliteSharp
                     continue;
                 }
 
-                if (obj.Flags.HasFlag(ShipFlags.Remove))
+                if (obj.Flags.HasFlag(ShipProperties.Remove))
                 {
                     if (obj.Type == ShipType.Viper)
                     {
@@ -356,15 +356,15 @@ namespace EliteSharp
                 }
 
                 if (_gameState.DetonateBomb &&
-                    (!obj.Flags.HasFlag(ShipFlags.Dead)) &&
+                    (!obj.Flags.HasFlag(ShipProperties.Dead)) &&
                     (obj.Type != ShipType.Planet) &&
                     (obj.Type != ShipType.Sun) &&
                     (obj.Type != ShipType.Constrictor) &&
                     (obj.Type != ShipType.Cougar) &&
-                    !obj.Flags.HasFlag(ShipFlags.Station))
+                    !obj.Flags.HasFlag(ShipProperties.Station))
                 {
                     _audio.PlayEffect(SoundEffect.Explode);
-                    obj.Flags |= ShipFlags.Dead;
+                    obj.Flags |= ShipProperties.Dead;
                 }
 
                 if ((_gameState.CurrentScreen is
@@ -373,8 +373,8 @@ namespace EliteSharp
                     not Screen.GameOver and
                     not Screen.EscapeCapsule) &&
                     (obj.Type is not ShipType.Planet and not ShipType.Sun) &&
-                    !obj.Flags.HasFlag(ShipFlags.Dead) &&
-                    !obj.Flags.HasFlag(ShipFlags.Inactive))
+                    !obj.Flags.HasFlag(ShipProperties.Dead) &&
+                    !obj.Flags.HasFlag(ShipProperties.Inactive))
                 {
                     _combat.Tactics((IShip)obj, i);
                 }
@@ -402,7 +402,7 @@ namespace EliteSharp
 
                 if (obj.Location.Length() < 170)
                 {
-                    if (obj.Flags.HasFlag(ShipFlags.Station))
+                    if (obj.Flags.HasFlag(ShipProperties.Station))
                     {
                         CheckDocking(obj);
                     }
@@ -423,9 +423,9 @@ namespace EliteSharp
                 _draw.DrawObject(flip);
                 obj.Flags = flip.Flags;
                 ((IShip)obj).ExpDelta = ((IShip)flip).ExpDelta;
-                obj.Flags &= ~ShipFlags.Firing;
+                obj.Flags &= ~ShipProperties.Firing;
 
-                if (obj.Flags.HasFlag(ShipFlags.Dead))
+                if (obj.Flags.HasFlag(ShipProperties.Dead))
                 {
                     continue;
                 }
@@ -583,7 +583,7 @@ namespace EliteSharp
             _universe.ClearUniverse();
             Vector3 position = new()
             {
-                Z = ((_gameState.DockedPlanet.B & 7) + 7) / 2,
+                Z = ((_gameState.DockedPlanet.B & 7) + 7) / 2f,
             };
             position.X = position.Z / 2;
             position.Y = position.X;
@@ -699,7 +699,7 @@ namespace EliteSharp
             vec = VectorMaths.UnitVector(vec);
             Vector3 position = location - (vec * 65792);
 
-            //  VectorMaths.set_init_matrix (rotmat);
+            ////  VectorMaths.set_init_matrix (rotmat);
             Vector3[] rotmat = new Vector3[3];
 
             rotmat[0].X = 1;
@@ -729,7 +729,7 @@ namespace EliteSharp
 
             Vector3 position = obj.Location.Cloner();
             if (obj is IShip shipEx &&
-                !obj.Flags.HasFlag(ShipFlags.Dead) &&
+                !obj.Flags.HasFlag(ShipProperties.Dead) &&
                 obj.Type != ShipType.Sun && obj.Type != ShipType.Planet)
             {
                 if (shipEx.Velocity != 0)
@@ -769,7 +769,7 @@ namespace EliteSharp
 
             obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
 
-            if (obj.Flags.HasFlag(ShipFlags.Dead))
+            if (obj.Flags.HasFlag(ShipProperties.Dead))
             {
                 return;
             }

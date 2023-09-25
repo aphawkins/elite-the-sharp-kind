@@ -2,8 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharp.Audio;
-
 namespace EliteSharp.SDL
 {
     internal static class SDLProgram
@@ -12,11 +10,10 @@ namespace EliteSharp.SDL
         {
             try
             {
-                // TODO: Move SDL init here
+                SDLHelper.Initialise();
                 using SDLGraphics graphics = new();
-                using ISound sound = new SDLSound();
+                using SDLSound sound = new();
                 SDLKeyboard keyboard = new();
-
                 EliteMain game = new(graphics, sound, keyboard);
                 game.Run();
             }

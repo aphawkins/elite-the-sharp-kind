@@ -175,13 +175,13 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            if (obj.Flags.HasFlag(ShipFlags.Dead) && !obj.Flags.HasFlag(ShipFlags.Explosion))
+            if (obj.Flags.HasFlag(ShipProperties.Dead) && !obj.Flags.HasFlag(ShipProperties.Explosion))
             {
-                obj.Flags |= ShipFlags.Explosion;
+                obj.Flags |= ShipProperties.Explosion;
                 ((IShip)obj).ExpDelta = 18;
             }
 
-            if (obj.Flags.HasFlag(ShipFlags.Explosion))
+            if (obj.Flags.HasFlag(ShipProperties.Explosion))
             {
                 DrawExplosion((IShip)obj);
                 return;
@@ -256,7 +256,7 @@ namespace EliteSharp.Graphics
 
             if (ship.ExpDelta > 251)
             {
-                ship.Flags |= ShipFlags.Remove;
+                ship.Flags |= ShipProperties.Remove;
                 return;
             }
 
@@ -310,9 +310,9 @@ namespace EliteSharp.Graphics
             float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
             float pr = ship.ExpDelta * 256 / q;
 
-            //  if (pr > 0x1C00)
-            //      q = 254;
-            //  else
+            ////  if (pr > 0x1C00)
+            ////      q = 254;
+            ////  else
             q = pr / 32;
 
             for (int cnt = 0; cnt < np; cnt++)

@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.FerDeLance;
-            Flags = ShipFlags.LoneWolf | ShipFlags.Police;
+            Flags = ShipProperties.LoneWolf | ShipProperties.Police;
             EnergyMax = 160;
             FaceNormals = new ShipFaceNormal[]
             {

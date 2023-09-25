@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Python;
-            Flags = ShipFlags.Trader;
+            Flags = ShipProperties.Trader;
             EnergyMax = 250;
             FaceNormals = new ShipFaceNormal[]
             {

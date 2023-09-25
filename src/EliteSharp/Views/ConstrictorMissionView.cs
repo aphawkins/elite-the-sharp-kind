@@ -116,7 +116,7 @@ namespace EliteSharp.Views
                     Debug.Fail("Failed to create Constrictor");
                 }
 
-                constrictor.Flags = ShipFlags.None;
+                constrictor.Flags = ShipProperties.None;
                 _ship.Roll = 0;
                 _ship.Climb = 0;
                 _ship.Speed = 0;

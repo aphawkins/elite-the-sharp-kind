@@ -206,23 +206,5 @@ namespace EliteSharp.Save
                 _trade.StockMarket[(StockType)i + 1].StationStock = _lastSaved.StationStock[i];
             }
         }
-
-        //static int checksum(unsigned char* block)
-        //{
-        //  int acc, carry;
-        //  int i;
-
-        //  acc = 0x49;
-        //  carry = 0;
-        //  for (i = 0x49; i > 0; i--)
-        //  {
-        //      acc += block[i - 1] + carry;
-        //      carry = acc >> 8;
-        //      acc &= 255;
-        //      acc ^= block[i];
-        //  }
-
-        //  return acc;
-        //}
     }
 }

@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Krait;
-            Flags = ShipFlags.PackHunter | ShipFlags.Bold | ShipFlags.Angry;
+            Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;
             Bounty = 10;
             EnergyMax = 80;
             FaceNormals = new ShipFaceNormal[]

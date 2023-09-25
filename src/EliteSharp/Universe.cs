@@ -53,7 +53,7 @@ namespace EliteSharp
 
             _shipCount[newObj.Type]++;
 
-            if (newObj.Flags.HasFlag(ShipFlags.Station) || newObj.Type == ShipType.Sun)
+            if (newObj.Flags.HasFlag(ShipProperties.Station) || newObj.Type == ShipType.Sun)
             {
                 StationOrSun = newObj;
             }

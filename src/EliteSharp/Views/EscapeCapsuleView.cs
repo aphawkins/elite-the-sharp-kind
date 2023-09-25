@@ -81,7 +81,7 @@ namespace EliteSharp.Views
             {
                 if (_i == 40)
                 {
-                    _newship.Flags |= ShipFlags.Dead;
+                    _newship.Flags |= ShipProperties.Dead;
                     _audio.PlayEffect(SoundEffect.Explode);
                 }
 

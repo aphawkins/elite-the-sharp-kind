@@ -275,8 +275,8 @@ namespace EliteSharp
             foreach (IObject obj in _universe.GetAllObjects())
             {
                 if ((obj.Type <= 0) ||
-                    obj.Flags.HasFlag(ShipFlags.Dead) ||
-                    obj.Flags.HasFlag(ShipFlags.Cloaked))
+                    obj.Flags.HasFlag(ShipProperties.Dead) ||
+                    obj.Flags.HasFlag(ShipProperties.Cloaked))
                 {
                     continue;
                 }
@@ -295,9 +295,9 @@ namespace EliteSharp
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                EColor colour = obj.Flags.HasFlag(ShipFlags.Hostile) ? EColors.Yellow : EColors.White;
+                EColor colour = obj.Flags.HasFlag(ShipProperties.Hostile) ? EColors.Yellow : EColors.White;
 
-                if (obj.Flags.HasFlag(ShipFlags.Station))
+                if (obj.Flags.HasFlag(ShipProperties.Station))
                 {
                     colour = EColors.Green;
                 }
@@ -305,7 +305,7 @@ namespace EliteSharp
                 {
                     colour = EColors.Lilac;
                 }
-                else if (obj.Flags.HasFlag(ShipFlags.Police))
+                else if (obj.Flags.HasFlag(ShipProperties.Police))
                 {
                     colour = EColors.Purple;
                 }

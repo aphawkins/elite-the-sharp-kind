@@ -12,7 +12,6 @@ namespace EliteSharp.WinForms
         private readonly System.Windows.Forms.Timer _refreshTimer = new();
         private readonly IKeyboard _keyboard;
 
-        //private readonly Task _game;
         public WinWindow(int width, int height, IKeyboard keyboard)
         {
             InitializeComponent();

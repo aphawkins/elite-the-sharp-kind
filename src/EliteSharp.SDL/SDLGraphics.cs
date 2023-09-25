@@ -25,21 +25,6 @@ namespace EliteSharp.SDL
 
         public SDLGraphics()
         {
-            // When running C# applications under the Visual Studio debugger, native code that
-            // names threads with the 0x406D1388 exception will silently exit. To prevent this
-            // exception from being thrown by SDL, add this line before your SDL_Init call:
-            SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
-
-            if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_Init));
-            }
-
-            if (TTF_Init() < 0)
-            {
-                SDLHelper.Throw(nameof(TTF_Init));
-            }
-
             _window = SDL_CreateWindow(
                 "Elite - The Sharp Kind",
                 SDL_WINDOWPOS_CENTERED,
@@ -83,7 +68,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         ~SDLGraphics()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -530,25 +515,25 @@ namespace EliteSharp.SDL
 
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
-
-                    //Fonts
-                    TTF_CloseFont(_fontSmall);
-                    TTF_CloseFont(_fontLarge);
-
-                    // Images
-                    foreach (KeyValuePair<ImageType, nint> image in _images)
-                    {
-                        SDL_FreeSurface(image.Value);
-                    }
-
-                    SDL_DestroyRenderer(_renderer);
-                    SDL_DestroyWindow(_window);
-                    SDL_Quit();
+                    // dispose managed state (managed objects)
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
+
+                //Fonts
+                TTF_CloseFont(_fontSmall);
+                TTF_CloseFont(_fontLarge);
+
+                // Images
+                foreach (KeyValuePair<ImageType, nint> image in _images)
+                {
+                    SDL_FreeSurface(image.Value);
+                }
+
+                SDL_DestroyRenderer(_renderer);
+                SDL_DestroyWindow(_window);
+                SDL_Quit();
             }
         }
 

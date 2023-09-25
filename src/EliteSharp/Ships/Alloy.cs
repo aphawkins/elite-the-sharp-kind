@@ -13,7 +13,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Alloy;
-            Flags = ShipFlags.SpaceJunk | ShipFlags.Inactive;
+            Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;
             EnergyMax = 16;
             FaceNormals = new ShipFaceNormal[]
             {

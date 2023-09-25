@@ -24,7 +24,7 @@ namespace EliteSharp.Suns
             Colour = other.Colour;
         }
 
-        public ShipFlags Flags { get; set; }
+        public ShipProperties Flags { get; set; }
 
         public Vector3 Location { get; set; } = new(0, 0, 123456);
 
@@ -67,7 +67,6 @@ namespace EliteSharp.Suns
             float x = radius;
             float y = 0;
 
-            // s -= x + x;
             while (y <= x)
             {
                 // Top of top half

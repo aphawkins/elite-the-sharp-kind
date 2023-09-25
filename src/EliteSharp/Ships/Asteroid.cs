@@ -12,7 +12,7 @@ namespace EliteSharp.Ships
             : base(draw)
         {
             Type = ShipType.Asteroid;
-            Flags = ShipFlags.SpaceJunk | ShipFlags.Inactive;
+            Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;
             Bounty = 0.5f;
             EnergyMax = 60;
             FaceNormals = new ShipFaceNormal[]

@@ -29,7 +29,7 @@ namespace EliteSharp.Planets
 
         public Vector3[] Rotmat { get; set; } = new Vector3[3];
 
-        public ShipFlags Flags { get; set; }
+        public ShipProperties Flags { get; set; }
 
         public ShipType Type { get; set; } = ShipType.Planet;
 

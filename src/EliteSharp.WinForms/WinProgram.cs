@@ -7,7 +7,7 @@ using EliteSharp.Controls;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class WinProgram
+    internal static class WinProgram
     {
         /// <summary>
         ///  The main entry point for the application.

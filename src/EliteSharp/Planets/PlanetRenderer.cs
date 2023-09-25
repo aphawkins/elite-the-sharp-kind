@@ -28,7 +28,7 @@ namespace EliteSharp.Planets
             float radius = 6291456 / location.Length();
 
             // Planets are BIG!
-            //  radius = 6291456 / ship_vec.z;
+            ////  radius = 6291456 / ship_vec.z;
             radius *= _draw.Graphics.Scale;
 
             return (position.X + radius < _draw.Left) ||

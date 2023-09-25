@@ -14,7 +14,6 @@ namespace EliteSharp.SDL
         private readonly uint _deviceId;
         private readonly ConcurrentDictionary<MusicType, nint> _musics = new();
         private readonly ConcurrentDictionary<SoundEffect, (nint SfxPtr, nint Data, uint Len)> _sfxs = new();
-        private SDL_AudioSpec _audioSpec;
         private bool _disposedValue;
 
         public SDLSound()
@@ -52,7 +51,6 @@ namespace EliteSharp.SDL
             }
 
             _sfxs[sfxType] = (sfxPtr, data, len);
-            _audioSpec = audioSpec;
         }
 
         public void Play(SoundEffect sfxType)
@@ -104,12 +102,5 @@ namespace EliteSharp.SDL
                 // set large fields to null
             }
         }
-
-        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~Sound()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
     }
 }

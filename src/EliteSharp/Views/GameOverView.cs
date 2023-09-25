@@ -59,7 +59,7 @@ namespace EliteSharp.Views
                 Debug.WriteLine("Failed to create CobraMk3");
             }
 
-            cobraMk3.Flags |= ShipFlags.Dead;
+            cobraMk3.Flags |= ShipProperties.Dead;
 
             // Cargo
             for (int i = 0; i < 5; i++)

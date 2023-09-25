@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace EliteSharp.Graphics
 {
-    internal class SoftwareGraphics : IGraphics
+    internal sealed class SoftwareGraphics : IGraphics
     {
         private readonly ConcurrentDictionary<ImageType, EBitmap> _images = new();
         private readonly EBitmap _screen;
@@ -200,7 +200,6 @@ namespace EliteSharp.Graphics
 
         public void SetClipRegion(Vector2 position, float width, float height)
         {
-            // TODO: implement this
         }
     }
 }
