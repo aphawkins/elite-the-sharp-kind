@@ -68,7 +68,7 @@ namespace EliteSharp.Graphics
         public void DrawHyperspaceCountdown(int countdown)
             => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EColors.White);
 
-        public void DrawPolygonFilled(Vector2[] point_list, EColor face_colour, float zAvg)
+        public void DrawPolygonFilled(Vector2[] points, EColor faceColour, float averageZ)
         {
             int i;
 
@@ -80,15 +80,15 @@ namespace EliteSharp.Graphics
             int x = _totalPolys;
             _totalPolys++;
 
-            _polyChain[x].FaceColour = face_colour;
-            _polyChain[x].Z = zAvg;
+            _polyChain[x].FaceColour = faceColour;
+            _polyChain[x].Z = averageZ;
             _polyChain[x].Next = -1;
-            _polyChain[x].PointList = new Vector2[point_list.Length];
+            _polyChain[x].PointList = new Vector2[points.Length];
 
-            for (i = 0; i < point_list.Length; i++)
+            for (i = 0; i < points.Length; i++)
             {
-                _polyChain[x].PointList[i].X = point_list[i].X;
-                _polyChain[x].PointList[i].Y = point_list[i].Y;
+                _polyChain[x].PointList[i].X = points[i].X;
+                _polyChain[x].PointList[i].Y = points[i].Y;
             }
 
             if (x == 0)
@@ -96,7 +96,7 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            if (zAvg > _polyChain[_startPoly].Z)
+            if (averageZ > _polyChain[_startPoly].Z)
             {
                 _polyChain[x].Next = _startPoly;
                 _startPoly = x;
@@ -107,7 +107,7 @@ namespace EliteSharp.Graphics
             {
                 int nx = _polyChain[i].Next;
 
-                if (zAvg > _polyChain[nx].Z)
+                if (averageZ > _polyChain[nx].Z)
                 {
                     _polyChain[i].Next = x;
                     _polyChain[x].Next = nx;

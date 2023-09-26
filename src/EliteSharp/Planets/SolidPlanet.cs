@@ -13,7 +13,7 @@ namespace EliteSharp.Planets
         private readonly IDraw _draw;
         private readonly PlanetRenderer _planetRenderer;
 
-        internal SolidPlanet(IDraw draw, EColor colour)
+        internal SolidPlanet(IDraw draw, in EColor colour)
         {
             _draw = draw;
             Colour = colour;

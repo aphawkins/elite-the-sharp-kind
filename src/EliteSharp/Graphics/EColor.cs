@@ -30,9 +30,9 @@ namespace EliteSharp.Graphics
 
         public byte R { get; }
 
-        public static bool operator !=(EColor left, EColor right) => !(left == right);
+        public static bool operator !=(in EColor left, in EColor right) => !(left == right);
 
-        public static bool operator ==(EColor left, EColor right) => left.ToArgb() == right.ToArgb();
+        public static bool operator ==(in EColor left, in EColor right) => left.ToArgb() == right.ToArgb();
 
         public override bool Equals(object? obj) => obj is EColor other && Equals(other);
 

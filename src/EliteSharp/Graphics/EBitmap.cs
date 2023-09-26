@@ -98,7 +98,7 @@ namespace EliteSharp.Graphics
                 Bytes[offset + 0]);
         }
 
-        public void SetPixel(int x, int y, EColor color)
+        public void SetPixel(int x, int y, in EColor color)
         {
             if (BitDepth != 32 || x < 0 || x > Width - 1 || y < 0 || y > Height - 1)
             {

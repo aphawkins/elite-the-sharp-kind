@@ -12,7 +12,7 @@ namespace EliteSharp.Suns
     {
         private readonly IDraw _draw;
 
-        internal SolidSun(IDraw draw, EColor colour)
+        internal SolidSun(IDraw draw, in EColor colour)
         {
             _draw = draw;
             Colour = colour;

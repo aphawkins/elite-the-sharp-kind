@@ -519,7 +519,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        private SDL_Vertex ConvertVertex(Vector2 point, EColor colour) => new()
+        private SDL_Vertex ConvertVertex(Vector2 point, in EColor colour) => new()
         {
             position = new() { x = point.X, y = point.Y },
             tex_coord = new() { x = 0.0f, y = 0.0f },
@@ -556,7 +556,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        private void DrawLines(List<(SDL_FPoint Start, SDL_FPoint End)> points, EColor colour)
+        private void DrawLines(List<(SDL_FPoint Start, SDL_FPoint End)> points, in EColor colour)
         {
             SetRenderDrawColor(colour);
 
@@ -569,7 +569,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        private void DrawPixels(SDL_FPoint[] points, EColor colour)
+        private void DrawPixels(SDL_FPoint[] points, in EColor colour)
         {
             SetRenderDrawColor(colour);
 
@@ -579,7 +579,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        private void SetRenderDrawColor(EColor colour)
+        private void SetRenderDrawColor(in EColor colour)
         {
             if (SDL_SetRenderDrawColor(_renderer, colour.R, colour.G, colour.B, colour.A) < 0)
             {
