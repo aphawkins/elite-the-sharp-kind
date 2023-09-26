@@ -184,14 +184,13 @@ namespace EliteSharp
         private void DrawFrameElite()
         {
             InitialiseGame();
-
+            _draw.SetFullScreenClipRegion();
+            _graphics.Clear();
             _audio.UpdateSound();
             _draw.DrawBorder();
             _draw.SetViewClipRegion();
-
             _ship.IsRolling = false;
             _ship.IsClimbing = false;
-
             HandleFlightKeys();
 
             if (_isGamePaused)
@@ -219,8 +218,6 @@ namespace EliteSharp
                     _gameState.InfoMessage("Docking Computers On");
                 }
             }
-
-            _graphics.Clear();
 
             _gameState.CurrentView!.UpdateUniverse();
             _space.UpdateUniverse();

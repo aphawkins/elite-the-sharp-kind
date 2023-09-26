@@ -305,10 +305,10 @@ namespace EliteSharp.SDL
 
             SDL_FRect rectangle = new()
             {
-                x = (int)(position.X / (2 / Scale)) + 1,
-                y = (int)((position.Y / (2 / Scale)) + 1),
-                w = (int)width - 1,
-                h = (int)height,
+                x = position.X / (2 / Scale),
+                y = position.Y / (2 / Scale),
+                w = width + 1,
+                h = height + 1,
             };
 
             if (SDL_RenderDrawRectF(_renderer, ref rectangle) < 0)
@@ -318,27 +318,7 @@ namespace EliteSharp.SDL
         }
 
         public void DrawRectangleCentre(float y, float width, float height, EColor colour)
-        {
-            if (_isDisposed)
-            {
-                return;
-            }
-
-            SetRenderDrawColor(colour);
-
-            SDL_FRect rectangle = new()
-            {
-                x = (int)((ScreenWidth - width) / Scale) + 1,
-                y = (int)((y / (2 / Scale)) + 1),
-                w = (int)width - 1,
-                h = (int)height,
-            };
-
-            if (SDL_RenderDrawRectF(_renderer, ref rectangle) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderDrawRectF));
-            }
-        }
+            => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, colour);
 
         public void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour)
         {
@@ -351,10 +331,10 @@ namespace EliteSharp.SDL
 
             SDL_FRect rectangle = new()
             {
-                x = (int)(position.X / (2 / Scale)),
-                y = (int)((position.Y / (2 / Scale)) + 1),
-                w = (int)width,
-                h = (int)height,
+                x = position.X / (2 / Scale),
+                y = position.Y / (2 / Scale),
+                w = width + 1,
+                h = height + 1,
             };
 
             if (SDL_RenderFillRectF(_renderer, ref rectangle) < 0)
