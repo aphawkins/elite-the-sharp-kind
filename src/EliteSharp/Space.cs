@@ -195,7 +195,7 @@ namespace EliteSharp
 
             _hyperDistance = PlanetController.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
 
-            if ((_hyperDistance == 0) || (_hyperDistance > _ship.Fuel))
+            if (((int)_hyperDistance == 0) || (_hyperDistance > _ship.Fuel))
             {
                 return;
             }
@@ -225,10 +225,10 @@ namespace EliteSharp
 
             Vector3 vec = Vector3.Abs(_universe.Planet.Location);
 
-            if ((vec.X == 0 && vec.Y == 0 && vec.Z == 0) ||
-                vec.X > 65535
-                || vec.Y > 65535
-                || vec.Z > 65535)
+            if (vec == Vector3.Zero ||
+                vec.X > 65535 ||
+                vec.Y > 65535 ||
+                vec.Z > 65535)
             {
                 return;
             }
@@ -283,10 +283,10 @@ namespace EliteSharp
 
             Vector3 vec = Vector3.Abs(_universe.StationOrSun.Location);
 
-            if ((vec.X == 0 && vec.Y == 0 && vec.Z == 0) ||
-                vec.X > 65535
-                || vec.Y > 65535
-                || vec.Z > 65535)
+            if (vec == Vector3.Zero ||
+                vec.X > 65535 ||
+                vec.Y > 65535 ||
+                vec.Z > 65535)
             {
                 return;
             }
@@ -352,7 +352,7 @@ namespace EliteSharp
 
                     float bounty = ((IShip)obj).Bounty;
 
-                    if ((bounty != 0) && (!_gameState.InWitchspace))
+                    if (((int)bounty != 0) && (!_gameState.InWitchspace))
                     {
                         _trade.Credits += bounty;
                         _gameState.InfoMessage($"{_trade.Credits:N1} Credits");
@@ -743,7 +743,7 @@ namespace EliteSharp
                 obj.Type != ShipType.Sun
                 && obj.Type != ShipType.Planet)
             {
-                if (shipEx.Velocity != 0)
+                if ((int)shipEx.Velocity != 0)
                 {
                     position += shipEx.Rotmat[2] * shipEx.Velocity * 1.5f;
                 }
@@ -789,7 +789,7 @@ namespace EliteSharp
             float rotz = obj.RotZ;
 
             // If necessary rotate the object around the X axis...
-            if (rotx != 0)
+            if ((int)rotx != 0)
             {
                 RotateXFirst(ref obj.Rotmat[2].X, ref obj.Rotmat[1].X, rotx);
                 RotateXFirst(ref obj.Rotmat[2].Y, ref obj.Rotmat[1].Y, rotx);
@@ -802,7 +802,7 @@ namespace EliteSharp
             }
 
             // If necessary rotate the object around the Z axis...
-            if (rotz != 0)
+            if ((int)rotz != 0)
             {
                 RotateXFirst(ref obj.Rotmat[0].X, ref obj.Rotmat[1].X, rotz);
                 RotateXFirst(ref obj.Rotmat[0].Y, ref obj.Rotmat[1].Y, rotz);

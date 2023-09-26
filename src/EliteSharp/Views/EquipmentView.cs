@@ -93,7 +93,7 @@ namespace EliteSharp.Views
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
                 _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], colour);
 
-                if (_equipmentStock[i].Price != 0)
+                if ((int)_equipmentStock[i].Price != 0)
                 {
                     _draw.Graphics.DrawTextRight(new(450 + _draw.Offset, y), $"{_equipmentStock[i].Price:N1}", colour);
                 }

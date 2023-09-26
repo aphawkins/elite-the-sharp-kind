@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -26,9 +26,6 @@ namespace EliteSharp.Trader
 
         internal int MarketRandomiser { get; set; }
 
-        /// <summary>
-        /// Gets the following holds the Elite Planet Stock Market.
-        /// </summary>
         internal Dictionary<StockType, StockItem> StockMarket { get; } = new()
         {
             { StockType.Food,         new("Food",          0, 0,  1.9f, -2,   6,   1, TONNES,    0, 0) },

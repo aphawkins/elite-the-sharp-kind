@@ -562,8 +562,8 @@ namespace EliteSharp.Conflict
                 {
                     _ship.DamageShip(ship.LaserStrength, ship.Location.Z >= 0.0);
                     ship.Acceleration--;
-                    if ((ship.Location.Z >= 0.0 && _ship.ShieldFront == 0) ||
-                        (ship.Location.Z < 0.0 && _ship.ShieldRear == 0))
+                    if ((ship.Location.Z >= 0.0 && (int)_ship.ShieldFront == 0) ||
+                        (ship.Location.Z < 0.0 && (int)_ship.ShieldRear == 0))
                     {
                         _audio.PlayEffect(SoundEffect.IncomingFire2);
                     }

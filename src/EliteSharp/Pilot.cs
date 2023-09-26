@@ -69,7 +69,7 @@ namespace EliteSharp
                 }
             }
 
-            if (ship.RotX == 0)
+            if ((int)ship.RotX == 0)
             {
                 _ship.Climb = 0;
             }
@@ -94,11 +94,11 @@ namespace EliteSharp
                 }
             }
 
-            if (ship.RotZ == 127)
+            if ((int)ship.RotZ == 127)
             {
                 _ship.Roll = -14;
             }
-            else if (ship.RotZ == 0)
+            else if ((int)ship.RotZ == 0)
             {
                 _ship.Roll = 0;
             }
