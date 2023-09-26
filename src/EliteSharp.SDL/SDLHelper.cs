@@ -1,33 +1,14 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Controls;
 using static SDL2.SDL;
-using static SDL2.SDL_ttf;
 
 namespace EliteSharp.SDL
 {
     internal static class SDLHelper
     {
-        internal static void Initialise()
-        {
-            // When running C# applications under the Visual Studio debugger, native code that
-            // names threads with the 0x406D1388 exception will silently exit. To prevent this
-            // exception from being thrown by SDL, add this line before your SDL_Init call:
-            SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
-
-            if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-            {
-                Throw(nameof(SDL_Init));
-            }
-
-            if (TTF_Init() < 0)
-            {
-                Throw(nameof(TTF_Init));
-            }
-        }
-
         internal static void Throw(string methodName)
             => throw new EliteException($"SDL2 Error. Method '{methodName}' failed. Error: " + SDL_GetError());
 

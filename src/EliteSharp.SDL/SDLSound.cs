@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using EliteSharp.Audio;
 using static SDL2.SDL;
+using static SDL2.SDL_mixer;
 
 namespace EliteSharp.SDL
 {
@@ -18,18 +19,41 @@ namespace EliteSharp.SDL
 
         public SDLSound()
         {
+            if (SDL_Init(SDL_INIT_AUDIO) < 0)
+            {
+                SDLHelper.Throw(nameof(SDL_Init));
+            }
+
+            if (Mix_Init(MIX_InitFlags.MIX_INIT_OGG) < 0)
+            {
+                SDLHelper.Throw(nameof(Mix_Init));
+            }
+
             SDL_AudioSpec audioSpecDesired = default;
             audioSpecDesired.channels = 1;
             audioSpecDesired.format = 32784;
             audioSpecDesired.freq = 44100;
             audioSpecDesired.samples = 4096;
-            string device = SDL_GetAudioDeviceName(0, 0);
-            _deviceId = SDL_OpenAudioDevice(device, 0, ref audioSpecDesired, out SDL_AudioSpec audioSpecObtained, 0);
+            _deviceId = SDL_OpenAudioDevice(null, 0, ref audioSpecDesired, out SDL_AudioSpec audioSpecObtained, 0);
             Debug.Assert(AreEqual(audioSpecDesired, audioSpecObtained), "Failed to meet the desired audio spec.");
+
+            if (Mix_OpenAudio(audioSpecDesired.freq, audioSpecDesired.format, audioSpecDesired.channels, audioSpecDesired.samples) < 0)
+            {
+                SDLHelper.Throw(nameof(Mix_OpenAudio));
+            }
+
+            if (Mix_AllocateChannels(2) < 0)
+            {
+                SDLHelper.Throw(nameof(Mix_AllocateChannels));
+            }
         }
 
-        ////public async Task LoadAsync(MusicType musicType, string filePath, CancellationToken token) =>
-        ////    await Task.Run(() => _musics[musicType] = Marshal.PtrToStructure<SDL_AudioSpec>(SDL_LoadWAV(filePath, out _, out _, out _)), token).ConfigureAwait(false);
+        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~SDLSound()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
 
         public void Dispose()
         {
@@ -40,6 +64,15 @@ namespace EliteSharp.SDL
 
         public void Load(MusicType musicType, string filePath)
         {
+            Debug.Assert(!string.IsNullOrWhiteSpace(filePath), "Music is missing");
+
+            nint music = Mix_LoadMUS(filePath);
+            if (music == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(Mix_LoadMUS));
+            }
+
+            _musics[musicType] = music;
         }
 
         public void Load(SoundEffect sfxType, string filePath)
@@ -65,10 +98,22 @@ namespace EliteSharp.SDL
             SDL_PauseAudioDevice(_deviceId, 0);
         }
 
-        public void Play(MusicType musicType, bool repeat) => StopMusic();
+        public void Play(MusicType musicType, bool repeat)
+        {
+            StopMusic();
+
+            if (Mix_PlayMusic(_musics[musicType], repeat ? -1 : 1) < 0)
+            {
+                SDLHelper.Throw(nameof(Mix_PlayMusic));
+            }
+        }
 
         public void StopMusic()
         {
+            if (Mix_HaltMusic() < 0)
+            {
+                SDLHelper.Throw(nameof(Mix_HaltMusic));
+            }
         }
 
         private static bool AreEqual(SDL_AudioSpec x, SDL_AudioSpec y) => x.channels == y.channels &&
@@ -85,21 +130,33 @@ namespace EliteSharp.SDL
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
-                    SDL_CloseAudioDevice(_deviceId);
-
-                    foreach (KeyValuePair<MusicType, nint> v in _musics)
-                    {
-                        SDL_FreeWAV(v.Value);
-                    }
-
-                    foreach (KeyValuePair<SoundEffect, (nint WavPtr, nint Data, uint Len)> v in _sfxs)
-                    {
-                        SDL_FreeWAV(v.Value.WavPtr);
-                    }
                 }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
+                SDL_CloseAudioDevice(_deviceId);
+
+                foreach (KeyValuePair<MusicType, nint> v in _musics)
+                {
+                    SDL_FreeWAV(v.Value);
+                }
+
+                foreach (KeyValuePair<SoundEffect, (nint WavPtr, nint Data, uint Len)> v in _sfxs)
+                {
+                    SDL_FreeWAV(v.Value.WavPtr);
+                }
+
+                if (Mix_HaltMusic() < 0)
+                {
+                    // Ignore
+                }
+
+                foreach (KeyValuePair<MusicType, nint> music in _musics)
+                {
+                    Mix_FreeMusic(music.Value);
+                }
+
+                Mix_CloseAudio();
             }
         }
     }

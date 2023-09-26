@@ -11,6 +11,7 @@
 - Remove conditional compilation
 - Enemy lasers don't always reach the full extent of the view
 - Don't include a default config and don't error if one doesn't exist
+- WinSound isn't playing music and sfx simoultaneously (e.g. docking computer and laser)
 
 ## Future (create github issues)
 - Lone ships are flagged not separate ships

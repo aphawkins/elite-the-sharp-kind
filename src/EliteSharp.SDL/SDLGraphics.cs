@@ -30,6 +30,16 @@ namespace EliteSharp.SDL
 
         public SDLGraphics()
         {
+            if (SDL_Init(SDL_INIT_VIDEO) < 0)
+            {
+                SDLHelper.Throw(nameof(SDL_Init));
+            }
+
+            if (TTF_Init() < 0)
+            {
+                SDLHelper.Throw(nameof(TTF_Init));
+            }
+
             _window = SDL_CreateWindow(
                 "Elite - The Sharp Kind",
                 SDL_WINDOWPOS_CENTERED,
