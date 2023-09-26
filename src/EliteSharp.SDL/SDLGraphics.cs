@@ -319,6 +319,25 @@ namespace EliteSharp.SDL
 
         public void DrawRectangleCentre(float y, float width, float height, EColor colour)
         {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            SetRenderDrawColor(colour);
+
+            SDL_FRect rectangle = new()
+            {
+                x = (int)((ScreenWidth - width) / Scale) + 1,
+                y = (int)((y / (2 / Scale)) + 1),
+                w = (int)width - 1,
+                h = (int)height,
+            };
+
+            if (SDL_RenderDrawRectF(_renderer, ref rectangle) < 0)
+            {
+                SDLHelper.Throw(nameof(SDL_RenderDrawRectF));
+            }
         }
 
         public void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour)
