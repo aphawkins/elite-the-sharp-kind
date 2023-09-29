@@ -1,10 +1,19 @@
-# Elite - The Sharp Kind - Beta Release  
+# Elite - The Sharp Kind
 
 A C# port of the classic BBC home computer game 'Elite'.  It is meant to look, feel and play the same as the original 8bit and 16bit versions of the game.  
 
 Currently the objectice of this port is authenticity, object oriented code and cross platform compatibility using dotnet.  
 Framerate is fixed at 13.5 fps, which using the current engine implentation, runs at approximately the same speed as the original.  
 Performance, or maximum FPS, are a secondary objective, which may come later.  
+
+## Getting Started
+
+The program has been tested to run on the following platforms and architectures:
+- Windows 10 (x64)  
+- Ubuntu 23.04 (x64)  
+- Raspberry Pi 4 (ARM64)  
+
+The dotnet runtime 7 will need to be installed until such time a self-contained exe is published.
 
 ## Controls  
 
@@ -82,16 +91,23 @@ From the Options Screen (F11) you can enter the Game Settings Screen. From here 
 
 ## SDL - Development Setup
 
-### Windows
-Nuget packages are in the projects that copy the necessary libraries.
-These are: SDL2.dll, SDL2_ttf.dll
+EliteSharp can be developed using either Visual Studio 2022 or VSCode.  
+For all platfroms, ensure that the dotnet SDK and runtime are installed.
+Start the EliteSharp.SDL project, which supports most platforms, to get straight into the trading and combat!  
+There is also an EliteSharp.WinForms project that will run only for Windows.
 
-### Ubuntu
-The following packages will need to be installed to get the necessary libraries:
+### Windows (x64)
+Nuget packages are in the projects that copy the necessary libraries.  
+These are: SDL2.dll, SDL2_ttf.dll, SDL2_mixer.dll
+
+### Ubuntu (x64 & ARM64)
+The following packages will need to be installed to get the necessary SDL libraries:
 ``` bash
 sudo apt-get install libsdl2-dev
 sudo apt-get install libsdl2-ttf-dev
+sudo apt-get install libsdl2-mixer-dev
 ```
+
 ## Credits  
 
 'Elite - The Sharp Kind' re-engineered in C# by Andy Hawkins 2023.  
