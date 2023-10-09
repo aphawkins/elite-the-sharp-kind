@@ -2,20 +2,21 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Numerics;
 
 namespace EliteSharp.Graphics
 {
-    internal sealed class SoftwareGraphics : IGraphics
+    public sealed class SoftwareGraphics : IGraphics
     {
-        private readonly ConcurrentDictionary<ImageType, EBitmap> _images = new();
+        ////private readonly ConcurrentDictionary<ImageType, EBitmap> _images = new();
         private readonly EBitmap _screen;
+        private readonly Action _screenUpdate;
 
-        internal SoftwareGraphics(EBitmap screen)
+        public SoftwareGraphics(EBitmap screen, Action screenUpdate)
         {
             _screen = screen;
+            _screenUpdate = screenUpdate;
             Clear();
         }
 
@@ -127,34 +128,39 @@ namespace EliteSharp.Graphics
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour)
         {
-            float dx = MathF.Abs(lineStart.X - lineEnd.X);
-            float dy = MathF.Abs(lineStart.Y - lineEnd.Y);
-            int sx = lineStart.X <= lineEnd.X ? 1 : -1;
-            int sy = lineEnd.X <= lineEnd.Y ? 1 : -1;
-            float err = dx - dy;
-
-            while (true)
+            for (int i = 0; i < 100; i++)
             {
-                DrawPixel(new(lineStart.X, lineStart.Y), colour);
-
-                if ((int)lineStart.X == (int)lineEnd.X && (int)lineStart.Y == (int)lineEnd.Y)
-                {
-                    break;
-                }
-
-                float err2 = 2 * err;
-                if (err2 > -dy)
-                {
-                    err -= dy;
-                    lineStart.X += sx;
-                }
-
-                if (err2 < dx)
-                {
-                    err += dx;
-                    lineStart.Y += sy;
-                }
+                DrawPixel(new(i, i), colour);
             }
+
+            ////float dx = MathF.Abs(lineStart.X - lineEnd.X);
+            ////float dy = MathF.Abs(lineStart.Y - lineEnd.Y);
+            ////int sx = lineStart.X <= lineEnd.X ? 1 : -1;
+            ////int sy = lineStart.Y <= lineEnd.Y ? 1 : -1;
+            ////float err = dx - dy;
+
+            ////while (true)
+            ////{
+            ////    DrawPixel(lineStart, colour);
+
+            ////    if ((int)lineStart.X == (int)lineEnd.X && (int)lineStart.Y == (int)lineEnd.Y)
+            ////    {
+            ////        break;
+            ////    }
+
+            ////    float err2 = 2 * err;
+            ////    if (err2 > -dy)
+            ////    {
+            ////        err -= dy;
+            ////        lineStart.X += sx;
+            ////    }
+
+            ////    if (err2 < dx)
+            ////    {
+            ////        err += dx;
+            ////        lineStart.Y += sy;
+            ////    }
+            ////}
         }
 
         public void DrawPixel(Vector2 position, EColor colour)
@@ -211,16 +217,14 @@ namespace EliteSharp.Graphics
 
         public void LoadBitmap(ImageType imgType, string bitmapPath)
         {
-            using MemoryStream memStream = new();
-            using FileStream stream = new(bitmapPath, FileMode.Open);
-            stream.CopyToAsync(memStream).ConfigureAwait(false);
-            memStream.Position = 0;
-            _images[imgType] = new(memStream.ToArray());
+            ////using MemoryStream memStream = new();
+            ////using FileStream stream = new(bitmapPath, FileMode.Open);
+            ////stream.CopyToAsync(memStream).ConfigureAwait(false);
+            ////memStream.Position = 0;
+            ////_images[imgType] = new(memStream.ToArray());
         }
 
-        public void ScreenUpdate()
-        {
-        }
+        public void ScreenUpdate() => _screenUpdate();
 
         public void SetClipRegion(Vector2 position, float width, float height)
         {

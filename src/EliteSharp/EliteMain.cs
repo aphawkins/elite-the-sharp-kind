@@ -281,10 +281,18 @@ namespace EliteSharp
 
             _draw.SetFullScreenClipRegion();
 
-            _scanner.UpdateConsole();
-            _gameState.CurrentView.HandleInput();
-
-            _graphics.ScreenUpdate();
+#pragma warning disable CA1031
+            try
+            {
+                _scanner.UpdateConsole();
+                _gameState.CurrentView.HandleInput();
+                _graphics.ScreenUpdate();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+#pragma warning restore CA1031
         }
 
         private void HandleFlightKeys()

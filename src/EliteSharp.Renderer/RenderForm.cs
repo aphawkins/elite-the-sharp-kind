@@ -89,7 +89,7 @@ namespace EliteSharp.Renderer
         {
             _graphics = comboRenderer.SelectedIndex switch
             {
-                1 => new SoftwareGraphics(_buffer),
+                1 => new SoftwareGraphics(_buffer, ScreenUpdate),
                 _ => new GDIGraphics(_bmp),
             };
 
@@ -97,10 +97,10 @@ namespace EliteSharp.Renderer
             _obj = new WireframePlanet(_draw);
         }
 
-        private void UpdateScreen()
-        {
-            _graphics.ScreenUpdate();
+        private void UpdateScreen() => _graphics.ScreenUpdate();
 
+        private void ScreenUpdate()
+        {
             switch (comboRenderer.SelectedIndex)
             {
                 case 1:

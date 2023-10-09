@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -8,6 +8,8 @@ namespace EliteSharp.Tests.Graphics
 {
     public class SoftwareGraphicsTests
     {
+        private readonly Action _doNothing = () => { };
+
         [Theory]
         [InlineData(0, 0)]
         [InlineData(2, 2)]
@@ -16,7 +18,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawPixel(new(x, y), EColors.White);
@@ -32,7 +34,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawPixel(new(x, y), EColors.White);
@@ -48,7 +50,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawPixelFast(new(x, y), EColors.White);
@@ -64,7 +66,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawPixelFast(new(x, y), EColors.White);
@@ -77,7 +79,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawPixel(new(2, 2), EColors.White);
@@ -92,7 +94,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawCircle(new(2, 2), 2, EColors.White);
@@ -109,7 +111,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawCircle(new(0, 0), 4, EColors.White);
@@ -128,7 +130,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawCircle(new(x, y), radius, EColors.White);
@@ -148,7 +150,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawCircleFilled(new(2, 2), 2, EColors.White);
@@ -170,7 +172,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawCircleFilled(new(x, y), radius, EColors.White);
@@ -194,7 +196,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawLine(new(startX, startY), new(endX, endY), EColors.White);
@@ -213,7 +215,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen);
+            using SoftwareGraphics graphics = new(screen, _doNothing);
 
             // Act
             graphics.DrawLine(new(startX, startY), new(endX, endY), EColors.White);

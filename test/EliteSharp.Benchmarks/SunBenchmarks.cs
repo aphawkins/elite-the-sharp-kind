@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -15,6 +15,7 @@ namespace EliteSharp.Benchmarks
         private readonly SoftwareGraphics _graphics;
         private readonly SolidSun _solidSun;
         private readonly GradientSun _gradientSun;
+        private readonly Action _doNothing = () => { };
         private bool _disposedValue;
 
         public SunBenchmarks()
@@ -22,7 +23,7 @@ namespace EliteSharp.Benchmarks
             SoftwareKeyboard keyboard = new();
             Dictionary<Views.Screen, Views.IView> views = new();
             GameState gameState = new(keyboard, views);
-            _graphics = new SoftwareGraphics(_buffer);
+            _graphics = new SoftwareGraphics(_buffer, _doNothing);
             Draw draw = new(gameState, _graphics);
             _gradientSun = new(draw);
             _solidSun = new(draw, EColors.White);

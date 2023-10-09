@@ -569,6 +569,7 @@ dotnet_diagnostic.S131.severity = none # "switch/Select" statements should conta
 dotnet_diagnostic.S134.severity = none # Control flow statements "if", "switch", "for", "foreach", "while", "do" and "try" should not be nested too deeply
 dotnet_diagnostic.S1067.severity = none # Expressions should not be too complex
 dotnet_diagnostic.S1147.severity = none # Exit methods should not be called
+dotnet_diagnostic.S1186.severity = none # Methods should not be empty
 dotnet_diagnostic.S1226.severity = warning
 dotnet_diagnostic.S1244.severity = warning
 dotnet_diagnostic.S1309.severity = none # Track uses of in-source issue suppressions
