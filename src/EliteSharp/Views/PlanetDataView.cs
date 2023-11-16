@@ -16,7 +16,7 @@ namespace EliteSharp.Views
     {
         private readonly string[][] _descriptionList =
         [
-            new string[] { "fabled", "notable", "well known", "famous", "noted" },
+            ["fabled", "notable", "well known", "famous", "noted"],
             ["very", "mildly", "most", "reasonably", string.Empty],
             ["ancient", "<20>", "great", "vast", "pink"],
             ["<29> <28> plantations", "mountains", "<27>", "<19> forests", "oceans"],
