@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -28,7 +28,8 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                //fins
+
+                // fins
                 new(EColors.LighterRed, new(0x20, 0x00, 0x00), [5, 9, 15]),
                 new(EColors.LighterRed, new(0x00, 0x20, 0x00), [15, 9, 5]),
 
