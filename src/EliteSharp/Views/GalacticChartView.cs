@@ -16,7 +16,7 @@ namespace EliteSharp.Views
         private readonly GameState _gameState;
         private readonly IKeyboard _keyboard;
         private readonly PlanetController _planet;
-        private readonly List<Vector2> _planetPixels = new();
+        private readonly List<Vector2> _planetPixels = [];
         private readonly PlayerShip _ship;
         private int _crossTimer;
         private string _findName = string.Empty;

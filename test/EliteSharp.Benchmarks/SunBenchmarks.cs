@@ -20,7 +20,7 @@ namespace EliteSharp.Benchmarks
         public SunBenchmarks()
         {
             SoftwareKeyboard keyboard = new();
-            Dictionary<Views.Screen, Views.IView> views = new();
+            Dictionary<Views.Screen, Views.IView> views = [];
             GameState gameState = new(keyboard, views);
             _graphics = new SoftwareGraphics(_buffer);
             Draw draw = new(gameState, _graphics);

@@ -24,7 +24,7 @@ namespace EliteSharp.SDL
         private readonly nint _fontSmall;
         private readonly ConcurrentDictionary<ImageType, nint> _images = new();
         private readonly nint _renderer;
-        private readonly Dictionary<EColor, SDL_Color> _sdlColors = new();
+        private readonly Dictionary<EColor, SDL_Color> _sdlColors = [];
         private readonly nint _window;
         private bool _isDisposed;
 
@@ -127,7 +127,7 @@ namespace EliteSharp.SDL
             float ty = 1;
             float error = tx - diameter;
 
-            List<SDL_FPoint> points = new();
+            List<SDL_FPoint> points = [];
 
             while (x >= y)
             {
@@ -167,7 +167,7 @@ namespace EliteSharp.SDL
             float ty = 1;
             float error = tx - diameter;
 
-            List<(SDL_FPoint Start, SDL_FPoint End)> lines = new();
+            List<(SDL_FPoint Start, SDL_FPoint End)> lines = [];
 
             while (x >= y)
             {
