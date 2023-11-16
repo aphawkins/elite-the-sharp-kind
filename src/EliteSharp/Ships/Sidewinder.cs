@@ -27,16 +27,16 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.DarkYellow, new(0x00, 0x20, 0x08),[4, 0, 1]),
-                new(EColors.Gold, new(-0x0C, 0x2F, 0x06),[4, 3, 0]),
-                new(EColors.Gold, new(0x0C, 0x2F, 0x06),[2, 4, 1]),
+                new(EColors.DarkYellow, new(0x00, 0x20, 0x08), [4, 0, 1]),
+                new(EColors.Gold, new(-0x0C, 0x2F, 0x06), [4, 3, 0]),
+                new(EColors.Gold, new(0x0C, 0x2F, 0x06), [2, 4, 1]),
 
-                new(EColors.LightGrey, new(0x00, 0x00, -0x70),[2, 5, 3, 4]),
+                new(EColors.LightGrey, new(0x00, 0x00, -0x70), [2, 5, 3, 4]),
 
-                new(EColors.DarkYellow, new(-0x0C, -0x2F, 0x06),[5, 0, 3]),
-                new(EColors.Gold, new(0x00, -0x20, 0x08),[1, 0, 5]),
-                new(EColors.DarkYellow, new(0x0C, -0x2F, 0x06),[2, 1, 5]),
-                new(EColors.LighterRed, new(0x00, 0x00, -0x70),[8, 9, 6, 7]),
+                new(EColors.DarkYellow, new(-0x0C, -0x2F, 0x06), [5, 0, 3]),
+                new(EColors.Gold, new(0x00, -0x20, 0x08), [1, 0, 5]),
+                new(EColors.DarkYellow, new(0x0C, -0x2F, 0x06), [2, 1, 5]),
+                new(EColors.LighterRed, new(0x00, 0x00, -0x70), [8, 9, 6, 7]),
             ];
             LaserStrength = 8;
             Lines =
