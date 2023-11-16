@@ -15,8 +15,8 @@ namespace EliteSharp.Ships
             Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;
             Bounty = 4;
             EnergyMax = 85;
-            FaceNormals = new ShipFaceNormal[]
-            {
+            FaceNormals =
+            [
                 new(31, new(0,   39,   10)),
                 new(31, new(0,  -39,   10)),
                 new(31, new(69,   50,   13)),
@@ -32,30 +32,30 @@ namespace EliteSharp.Ships
                 new(31, new(-69,  -50,   13)),
                 new(31, new(0,   28,    0)),
                 new(31, new(0,  -28,    0)),
-            };
-            Faces = new ShipFace[]
-            {
-                new(EColors.LightGrey, new(0x00, 0x27, 0x0A), new[] { 0, 1,  11,  10 }),
-                new(EColors.LightGrey, new(0x00, -0x27, 0x0A), new[] { 1, 0,  12,  13 }),
+            ];
+            Faces =
+            [
+                new(EColors.LightGrey, new(0x00, 0x27, 0x0A), [0, 1,  11,  10]),
+                new(EColors.LightGrey, new(0x00, -0x27, 0x0A), [1, 0,  12,  13]),
 
-                new(EColors.RedOrange,    new(0x45, 0x32, 0x0D), new[] { 2, 11,  1 }),
-                new(EColors.LighterRed,      new(0x45, -0x32, 0x0D), new[] { 1, 13,  2 }),
-                new(EColors.LightRed, new(0x1E, 0x34, 0x00), new[] { 9, 11,  2,  3 }),
-                new(EColors.Red,    new(0x1E, -0x34, 0x00), new[] { 3, 2, 13,  4 }),
+                new(EColors.RedOrange,    new(0x45, 0x32, 0x0D), [2, 11,  1]),
+                new(EColors.LighterRed,      new(0x45, -0x32, 0x0D), [1, 13,  2]),
+                new(EColors.LightRed, new(0x1E, 0x34, 0x00), [9, 11,  2,  3]),
+                new(EColors.Red,    new(0x1E, -0x34, 0x00), [3, 2, 13,  4]),
 
-                new(EColors.LightRed, new(-0x1E, 0x34, 0x00), new[] { 10,  8,  6,  7 }),
-                new(EColors.Red,    new(-0x1E, -0x34, 0x00), new[] { 7,  6,  5, 12 }),
-                new(EColors.RedOrange,    new(-0x45, 0x32, 0x0D), new[] { 10,  7, 0 }),
-                new(EColors.LighterRed,      new(-0x45, -0x32, 0x0D), new[] { 0,  7, 12 }),
+                new(EColors.LightRed, new(-0x1E, 0x34, 0x00), [10,  8,  6,  7]),
+                new(EColors.Red,    new(-0x1E, -0x34, 0x00), [7,  6,  5, 12]),
+                new(EColors.RedOrange,    new(-0x45, 0x32, 0x0D), [10,  7, 0]),
+                new(EColors.LighterRed,      new(-0x45, -0x32, 0x0D), [0,  7, 12]),
 
-                new(EColors.DarkerGrey, new(0x00, 0x00, -0xA0), new[] { 3,  4,  5,  6, 8, 9 }),
-                new(EColors.DarkGrey, new(0x00, 0x1C, 0x00), new[] { 10, 11,  9, 8 }),
-                new(EColors.DarkGrey, new(0x00, -0x1C, 0x00), new[] { 5, 4,  13, 12 }),
-                new(EColors.LightBlue, new(0x00, 0x27, 0x0A), new[] { 17, 14, 15, 16 }),
-            };
+                new(EColors.DarkerGrey, new(0x00, 0x00, -0xA0), [3,  4,  5,  6, 8, 9]),
+                new(EColors.DarkGrey, new(0x00, 0x1C, 0x00), [10, 11,  9, 8]),
+                new(EColors.DarkGrey, new(0x00, -0x1C, 0x00), [5, 4,  13, 12]),
+                new(EColors.LightBlue, new(0x00, 0x27, 0x0A), [17, 14, 15, 16]),
+            ];
             LaserStrength = 8;
-            Lines = new ShipLine[]
-            {
+            Lines =
+            [
                 new(31,  0,  1,  0,  1),
                 new(7,  2,  3,  1,  2),
                 new(31,  4,  5,  2,  3),
@@ -85,11 +85,11 @@ namespace EliteSharp.Ships
                 new(3,  0,  0, 15, 16),
                 new(4,  0,  0, 16, 17),
                 new(3,  0,  0, 17, 14),
-            };
+            ];
             MinDistance = 200;
             Name = "Adder";
-            Points = new ShipPoint[]
-            {
+            Points =
+            [
                 new(new(-18,    0,   40), 31,  0,  1, 11, 12),
                 new(new(18,    0,   40), 31,  0,  1,  2,  3),
                 new(new(30,    0,  -24), 31,  2,  3,  4,  5),
@@ -108,7 +108,7 @@ namespace EliteSharp.Ships
                 new(new(11,    3,   29),  5,  0,  0,  0,  0),
                 new(new(11,    4,   24),  4,  0,  0,  0,  0),
                 new(new(-11,    4,   24),  4,  0,  0,  0,  0),
-            };
+            ];
             Size = 2500;
             VanishPoint = 20;
             VelocityMax = 24;

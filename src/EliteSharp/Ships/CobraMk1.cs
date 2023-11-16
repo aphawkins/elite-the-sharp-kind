@@ -15,8 +15,8 @@ namespace EliteSharp.Ships
             Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;
             Bounty = 7.5f;
             EnergyMax = 90;
-            FaceNormals = new ShipFaceNormal[]
-            {
+            FaceNormals =
+            [
                 new(31, new(0,   41,   10)),
                 new(31, new(0,  -27,    3)),
                 new(31, new(-8,   46,    8)),
@@ -27,30 +27,30 @@ namespace EliteSharp.Ships
                 new(31, new(0,    0, -154)),
                 new(31, new(-121,  111,  -62)),
                 new(31, new(121,  111,  -62)),
-            };
-            Faces = new ShipFace[]
-            {
-                new(EColors.Blue, new(0x00, 0x29, 0x0A), new[] { 0, 1, 8 }),
-                new(EColors.Blue, new(0x00, -0x1B, 0x03), new[] { 6, 7, 1, 0 }),
+            ];
+            Faces =
+            [
+                new(EColors.Blue, new(0x00, 0x29, 0x0A), [0, 1, 8]),
+                new(EColors.Blue, new(0x00, -0x1B, 0x03), [6, 7, 1, 0]),
 
-                new(EColors.DarkBlue, new(-0x08, 0x2E, 0x08), new[] { 2, 0, 8, 4 }),
-                new(EColors.Purple, new(-0x0C, -0x39, 0x0C), new[] { 6, 0, 2 }),
-                new(EColors.DarkBlue, new(0x08, 0x2E, 0x08), new[] { 1, 3, 5, 8 }),
-                new(EColors.Purple, new(0x0C, -0x39, 0x0C), new[] { 1, 7, 3 }),
+                new(EColors.DarkBlue, new(-0x08, 0x2E, 0x08), [2, 0, 8, 4]),
+                new(EColors.Purple, new(-0x0C, -0x39, 0x0C), [6, 0, 2]),
+                new(EColors.DarkBlue, new(0x08, 0x2E, 0x08), [1, 3, 5, 8]),
+                new(EColors.Purple, new(0x0C, -0x39, 0x0C), [1, 7, 3]),
 
-                new(EColors.Blue, new(0x00, 0x31, 0x00), new[] { 4, 8, 5 }),
-                new(EColors.Purple, new(0x00, 0x00, -0x9A), new[] { 7, 6, 4, 5 }),
+                new(EColors.Blue, new(0x00, 0x31, 0x00), [4, 8, 5]),
+                new(EColors.Purple, new(0x00, 0x00, -0x9A), [7, 6, 4, 5]),
 
-                new(EColors.Blue, new(-0x79, 0x6F, -0x3E), new[] { 2, 4, 6 }),
-                new(EColors.Blue, new(0x79, 0x6F, -0x3E), new[] { 3, 7, 5 }),
+                new(EColors.Blue, new(-0x79, 0x6F, -0x3E), [2, 4, 6]),
+                new(EColors.Blue, new(0x79, 0x6F, -0x3E), [3, 7, 5]),
 
-                new(EColors.White, new(0x00, 0x29, 0x0A), new[] { 9, 10 }),
-                new(EColors.White, new(0x00, -0x1B, 0x03), new[] { 10, 9 }),
-            };
+                new(EColors.White, new(0x00, 0x29, 0x0A), [9, 10]),
+                new(EColors.White, new(0x00, -0x1B, 0x03), [10, 9]),
+            ];
             LaserFront = 10;
             LaserStrength = 9;
-            Lines = new ShipLine[]
-            {
+            Lines =
+            [
                 new(31,  0,  1,  1,  0),
                 new(31,  2,  3,  0,  2),
                 new(31,  3,  8,  2,  6),
@@ -69,13 +69,13 @@ namespace EliteSharp.Ships
                 new(20,  1,  3,  0,  6),
                 new(20,  1,  5,  1,  7),
                 new(2,  0,  1, 10,  9),
-            };
+            ];
             LootMax = 3;
             MinDistance = 384;
             MissilesMax = 2;
             Name = "Cobra MkI";
-            Points = new ShipPoint[]
-            {
+            Points =
+            [
                 new(new(-18,   -1,   50), 31,  0,  1,  2,  3),
                 new(new(18,   -1,   50), 31,  0,  1,  4,  5),
                 new(new(-66,    0,    7), 31,  2,  3,  8,  8),
@@ -87,7 +87,7 @@ namespace EliteSharp.Ships
                 new(new(0,   12,   -6), 20,  0,  2,  4,  6),
                 new(new(0,   -1,   50),  2,  0,  1,  1,  1),
                 new(new(0,   -1,   60), 31,  0,  1,  1,  1),
-            };
+            ];
             Size = 9801;
             VanishPoint = 19;
             VelocityMax = 26;

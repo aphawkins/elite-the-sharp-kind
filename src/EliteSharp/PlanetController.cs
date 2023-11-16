@@ -11,11 +11,11 @@ namespace EliteSharp
     internal sealed class PlanetController
     {
         private readonly GameState _gameState;
-        private readonly string[] _inhabitant_desc1 = new string[] { "Large ", "Fierce ", "Small " };
-        private readonly string[] _inhabitant_desc2 = new string[] { "Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless " };
-        private readonly string[] _inhabitant_desc3 = new string[] { "Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry " };
-        private readonly string[] _inhabitant_desc4 = new string[]
-        {
+        private readonly string[] _inhabitant_desc1 = ["Large ", "Fierce ", "Small "];
+        private readonly string[] _inhabitant_desc2 = ["Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless "];
+        private readonly string[] _inhabitant_desc3 = ["Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry "];
+        private readonly string[] _inhabitant_desc4 =
+        [
             "Rodent",
             "Frog",
             "Lizard",
@@ -24,7 +24,7 @@ namespace EliteSharp
             "Humanoid",
             "Feline",
             "Insect",
-        };
+        ];
 
         internal PlanetController(GameState gameState) => _gameState = gameState;
 

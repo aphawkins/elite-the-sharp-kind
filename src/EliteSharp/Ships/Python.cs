@@ -14,8 +14,8 @@ namespace EliteSharp.Ships
             Type = ShipType.Python;
             Flags = ShipProperties.Trader;
             EnergyMax = 250;
-            FaceNormals = new ShipFaceNormal[]
-            {
+            FaceNormals =
+            [
                 new(31, new(-27,   40,   11)),
                 new(31, new(27,   40,   11)),
                 new(31, new(-27,  -40,   11)),
@@ -29,29 +29,29 @@ namespace EliteSharp.Ships
                 new(31, new(25,  -37,  -11)),
                 new(31, new(-25,  -37,  -11)),
                 new(31, new(0,    0, -112)),
-            };
-            Faces = new ShipFace[]
-            {
-                new(EColors.DarkGrey, new(-0x1B, 0x28, 0x0B), new[] { 0,  1,  3 }),
-                new(EColors.LightGrey, new(0x1B, 0x28, 0x0B), new[] { 2,  1,  0 }),
-                new(EColors.LightGrey, new(-0x1B, -0x28, 0x0B), new[] { 0,  3,  8 }),
-                new(EColors.DarkGrey, new(0x1B, -0x28, 0x0B), new[] { 8,  2,  0 }),
+            ];
+            Faces =
+            [
+                new(EColors.DarkGrey, new(-0x1B, 0x28, 0x0B), [0,  1,  3]),
+                new(EColors.LightGrey, new(0x1B, 0x28, 0x0B), [2,  1,  0]),
+                new(EColors.LightGrey, new(-0x1B, -0x28, 0x0B), [0,  3,  8]),
+                new(EColors.DarkGrey, new(0x1B, -0x28, 0x0B), [8,  2,  0]),
 
-                new(EColors.DarkYellow, new(-0x13, 0x26, 0x00), new[] { 3,  1,  4 }),
-                new(EColors.Gold, new(0x13, 0x26, 0x00), new[] { 4,  1,  2 }),
-                new(EColors.Gold, new(-0x13, -0x26, 0x00), new[] { 3,  9,  8 }),
-                new(EColors.DarkYellow, new(0x13, -0x26, 0x00), new[] { 8,  9,  2 }),
+                new(EColors.DarkYellow, new(-0x13, 0x26, 0x00), [3,  1,  4]),
+                new(EColors.Gold, new(0x13, 0x26, 0x00), [4,  1,  2]),
+                new(EColors.Gold, new(-0x13, -0x26, 0x00), [3,  9,  8]),
+                new(EColors.DarkYellow, new(0x13, -0x26, 0x00), [8,  9,  2]),
 
-                new(EColors.DarkGrey, new(-0x19, 0x25, -0x0B), new[] { 3,  4,  5, 6 }),
-                new(EColors.LightGrey, new(0x19, 0x25, -0x0B), new[] { 2,  7,  5, 4 }),
-                new(EColors.DarkGrey, new(0x19, -0x25, -0x0B), new[] { 2,  9, 10, 7 }),
-                new(EColors.LightGrey, new(-0x19, -0x25, -0x0B), new[] { 3,  6, 10, 9 }),
+                new(EColors.DarkGrey, new(-0x19, 0x25, -0x0B), [3,  4,  5, 6]),
+                new(EColors.LightGrey, new(0x19, 0x25, -0x0B), [2,  7,  5, 4]),
+                new(EColors.DarkGrey, new(0x19, -0x25, -0x0B), [2,  9, 10, 7]),
+                new(EColors.LightGrey, new(-0x19, -0x25, -0x0B), [3,  6, 10, 9]),
 
-                new(EColors.DarkerGrey, new(0x00, 0x00, -0x70), new[] { 10, 6, 5, 7 }),
-            };
+                new(EColors.DarkerGrey, new(0x00, 0x00, -0x70), [10, 6, 5, 7]),
+            ];
             LaserStrength = 13;
-            Lines = new ShipLine[]
-            {
+            Lines =
+            [
                 new(31,  3,  2,  0,  8),
                 new(31,  2,  0,  0,  3),
                 new(31,  3,  1,  0,  2),
@@ -78,13 +78,13 @@ namespace EliteSharp.Ships
                 new(31, 11, 10,  9, 10),
                 new(31,  5,  4,  1,  4),
                 new(31,  7,  6,  8,  9),
-            };
+            ];
             LootMax = 5;
             MinDistance = 900;
             MissilesMax = 3;
             Name = "Python";
-            Points = new ShipPoint[]
-            {
+            Points =
+            [
                 new(new(0,    0,  224), 31,  1,  0,  3,  2),
                 new(new(0,   48,   48), 31,  1,  0,  5,  4),
                 new(new(96,    0,  -16), 31, 15, 15, 15, 15),
@@ -96,7 +96,7 @@ namespace EliteSharp.Ships
                 new(new(0,  -48,   48), 31,  3,  2,  7,  6),
                 new(new(0,  -48,  -32), 31,  7,  6, 11, 10),
                 new(new(0,  -24, -112), 31, 11, 10, 12, 12),
-            };
+            ];
             Size = 6400;
             VanishPoint = 40;
             VelocityMax = 20;

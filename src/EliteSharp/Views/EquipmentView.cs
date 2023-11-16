@@ -16,8 +16,8 @@ namespace EliteSharp.Views
     {
         private readonly IDraw _draw;
 
-        private readonly EquipmentItem[] _equipmentStock = new EquipmentItem[]
-        {
+        private readonly EquipmentItem[] _equipmentStock =
+        [
             new(false, true,   1, 0.2f, " Fuel",                EquipmentType.Fuel),
             new(false, true,   1,   30, " Missile",             EquipmentType.Missile),
             new(false, true,   1,  400, " Large Cargo Bay",     EquipmentType.CargoBay),
@@ -52,7 +52,7 @@ namespace EliteSharp.Views
             new(false, false, 10, 6000, ">Rear",                EquipmentType.MilitaryRear),
             new(false, false, 10, 6000, ">Left",                EquipmentType.MilitaryLeft),
             new(false, false, 10, 6000, ">Right",               EquipmentType.MilitaryRight),
-        };
+        ];
 
         private readonly GameState _gameState;
         private readonly IKeyboard _keyboard;

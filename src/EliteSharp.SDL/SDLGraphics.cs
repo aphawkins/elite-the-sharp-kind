@@ -465,12 +465,12 @@ namespace EliteSharp.SDL
                 return;
             }
 
-            SDL_Vertex[] vertices = new SDL_Vertex[3]
-            {
+            SDL_Vertex[] vertices =
+            [
                 ConvertVertex(a, colour),
                 ConvertVertex(b, colour),
                 ConvertVertex(c, colour),
-            };
+            ];
 
             if (SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
             {

@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -9,7 +9,7 @@ namespace EliteSharp.Missions
     internal sealed class Mission
     {
         private readonly string[] _mission1_pdesc =
-        {
+        [
             "THE CONSTRICTOR WAS LAST SEEN AT REESDICE, COMMANDER.",
             "A STRANGE LOOKING SHIP LEFT HERE A WHILE BACK. LOOKED BOUND FOR AREXE.",
             "YEP, AN UNUSUAL NEW SHIP HAD A GALACTIC HYPERDRIVE FITTED HERE, USED IT TOO.",
@@ -22,7 +22,7 @@ namespace EliteSharp.Missions
             "THERE'S A REAL DEADLY PIRATE OUT THERE.",
             "BOY ARE YOU IN THE WRONG GALAXY!",
             "COMING SOON: ELITE - DARKNESS FALLS.",
-        };
+        ];
 
         private readonly PlanetController _planet;
 

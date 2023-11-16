@@ -14,8 +14,8 @@ namespace EliteSharp.Ships
             Type = ShipType.Transporter;
             Flags = ShipProperties.SpaceJunk | ShipProperties.FlyToPlanet | ShipProperties.Slow;
             EnergyMax = 32;
-            FaceNormals = new ShipFaceNormal[]
-            {
+            FaceNormals =
+            [
                 new(31, new(0, 0, -103)),
                 new(31, new(-111, 48, -7)),
                 new(31, new(-105, -63, -21)),
@@ -30,50 +30,50 @@ namespace EliteSharp.Ships
                 new(19, new(8, 34, 11)),
                 new(31, new(0, 38, 17)),
                 new(31, new(0, 0, 121)),
-            };
-            Faces = new ShipFace[]
-            {
-                new(EColors.DarkerGrey, new(0x00, 0x00, -0x67), new[] { 5,  4,  3, 2,  1, 0, 6 }),
+            ];
+            Faces =
+            [
+                new(EColors.DarkerGrey, new(0x00, 0x00, -0x67), [5,  4,  3, 2,  1, 0, 6]),
 
-                new(EColors.LightBlue, new(-0x6F, 0x30, -0x07), new[] { 9,  8,  1,  2 }),
-                new(EColors.Blue, new(-0x69, -0x3F, -0x15), new[] { 3,  9,  2 }),
-                new(EColors.Purple, new(0x00, -0x22, 0x00), new[] { 14, 13,  9,  3, 4, 10 }),
-                new(EColors.Blue, new(0x69, -0x3F, -0x15), new[] { 5, 10,  4 }),
-                new(EColors.LightBlue, new(0x6F, 0x30, -0x07), new[] { 11, 10,  5,  6 }),
+                new(EColors.LightBlue, new(-0x6F, 0x30, -0x07), [9,  8,  1,  2]),
+                new(EColors.Blue, new(-0x69, -0x3F, -0x15), [3,  9,  2]),
+                new(EColors.Purple, new(0x00, -0x22, 0x00), [14, 13,  9,  3, 4, 10]),
+                new(EColors.Blue, new(0x69, -0x3F, -0x15), [5, 10,  4]),
+                new(EColors.LightBlue, new(0x6F, 0x30, -0x07), [11, 10,  5,  6]),
 
-                new(EColors.LightGrey, new(0x08, 0x20, 0x03), new[] { 6,  0,  7, 11 }),
-                new(EColors.DarkGrey, new(-0x08, 0x20, 0x03), new[] { 8,  7,  0,  1 }),
+                new(EColors.LightGrey, new(0x08, 0x20, 0x03), [6,  0,  7, 11]),
+                new(EColors.DarkGrey, new(-0x08, 0x20, 0x03), [8,  7,  0,  1]),
 
-                new(EColors.LightBlue, new(-0x4B, 0x20, 0x4F), new[] { 13, 12,  8,  9 }),
-                new(EColors.LightBlue, new(0x4B, 0x20, 0x4F), new[] { 15, 14, 10, 11 }),
+                new(EColors.LightBlue, new(-0x4B, 0x20, 0x4F), [13, 12,  8,  9]),
+                new(EColors.LightBlue, new(0x4B, 0x20, 0x4F), [15, 14, 10, 11]),
 
-                new(EColors.LightGrey, new(-0x08, 0x22, 0x0B), new[] { 8, 12,  7 }),
-                new(EColors.DarkGrey, new(0x08, 0x22, 0x0B), new[] { 7, 15, 11 }),
-                new(EColors.Grey, new(0x00, 0x26, 0x11), new[] { 7, 12,  15 }),
+                new(EColors.LightGrey, new(-0x08, 0x22, 0x0B), [8, 12,  7]),
+                new(EColors.DarkGrey, new(0x08, 0x22, 0x0B), [7, 15, 11]),
+                new(EColors.Grey, new(0x00, 0x26, 0x11), [7, 12,  15]),
 
-                new(EColors.LighterGrey, new(0x00, 0x00, 0x79), new[] { 15, 12, 13, 14 }),
-                new(EColors.LightRed, new(0x00, 0x00, -0x67), new[] { 35, 34, 33, 36 }),
+                new(EColors.LighterGrey, new(0x00, 0x00, 0x79), [15, 12, 13, 14]),
+                new(EColors.LightRed, new(0x00, 0x00, -0x67), [35, 34, 33, 36]),
 
-                new(EColors.White, new(0x00, -0x22, 0x00), new[] { 30, 29 /*, 31 */ }),
-                new(EColors.White, new(0x00, -0x22, 0x00), new[] { 31, 32 /*, 29 */ }),
+                new(EColors.White, new(0x00, -0x22, 0x00), [30, 29 /*, 31 */]),
+                new(EColors.White, new(0x00, -0x22, 0x00), [31, 32 /*, 29 */]),
 
-                new(EColors.White, new(-0x08, 0x20, 0x03), new[] { 17, 16 /*, 18 */ }),
-                new(EColors.White, new(-0x08, 0x20, 0x03), new[] { 18, 19 /*, 16 */ }),
-                new(EColors.White, new(-0x08, 0x20, 0x03), new[] { 18, 20 /*, 19 */ }),
-                new(EColors.White, new(-0x08, 0x20, 0x03), new[] { 20, 21 /*, 18 */ }),
-                new(EColors.White, new(-0x08, 0x20, 0x03), new[] { 20, 19 /*, 21 */ }),
+                new(EColors.White, new(-0x08, 0x20, 0x03), [17, 16 /*, 18 */]),
+                new(EColors.White, new(-0x08, 0x20, 0x03), [18, 19 /*, 16 */]),
+                new(EColors.White, new(-0x08, 0x20, 0x03), [18, 20 /*, 19 */]),
+                new(EColors.White, new(-0x08, 0x20, 0x03), [20, 21 /*, 18 */]),
+                new(EColors.White, new(-0x08, 0x20, 0x03), [20, 19 /*, 21 */]),
 
-                new(EColors.White, new(0x08, 0x20, 0x03), new[] { 23, 22 /*, 26 */ }),
-                new(EColors.White, new(0x08, 0x20, 0x03), new[] { 25, 26 /*, 23 */ }),
-                new(EColors.White, new(0x08, 0x20, 0x03), new[] { 24, 22 /*, 25 */ }),
-                new(EColors.White, new(0x08, 0x20, 0x03), new[] { 24, 23 /*, 22 */ }),
-                new(EColors.White, new(0x08, 0x20, 0x03), new[] { 28, 27 /*, 23 */ }),
-                new(EColors.White, new(0x08, 0x20, 0x03), new[] { 25, 27 /*, 22 */ }),
-                new(EColors.White, new(0x08, 0x20, 0x03), new[] { 27, 26 /*, 22 */ }),
-            };
+                new(EColors.White, new(0x08, 0x20, 0x03), [23, 22 /*, 26 */]),
+                new(EColors.White, new(0x08, 0x20, 0x03), [25, 26 /*, 23 */]),
+                new(EColors.White, new(0x08, 0x20, 0x03), [24, 22 /*, 25 */]),
+                new(EColors.White, new(0x08, 0x20, 0x03), [24, 23 /*, 22 */]),
+                new(EColors.White, new(0x08, 0x20, 0x03), [28, 27 /*, 23 */]),
+                new(EColors.White, new(0x08, 0x20, 0x03), [25, 27 /*, 22 */]),
+                new(EColors.White, new(0x08, 0x20, 0x03), [27, 26 /*, 22 */]),
+            ];
             LaserFront = 12;
-            Lines = new ShipLine[]
-            {
+            Lines =
+            [
                 new(31,  0,  7,  0,  1),
                 new(31,  0,  1,  1,  2),
                 new(31,  0,  2,  2,  3),
@@ -120,11 +120,11 @@ namespace EliteSharp.Ships
                 new(5,  0,  0, 34, 35),
                 new(5,  0,  0, 35, 36),
                 new(5,  0,  0, 36, 33),
-            };
+            ];
             MinDistance = 200;
             Name = "Transporter";
-            Points = new ShipPoint[]
-            {
+            Points =
+            [
                 new(new(0,   10,  -26), 31,  0,  6,  7,  7),
                 new(new(-25,    4,  -26), 31,  0,  1,  7,  7),
                 new(new(-28,   -3,  -26), 31,  0,  1,  2,  2),
@@ -162,7 +162,7 @@ namespace EliteSharp.Ships
                 new(new(13,   -3,  -26),  8,  0,  0,  0,  0),
                 new(new(9,    3,  -26),  5,  0,  0,  0,  0),
                 new(new(-8,    3,  -26),  5,  0,  0,  0,  0),
-            };
+            ];
             Size = 2500;
             VanishPoint = 16;
             VelocityMax = 10;

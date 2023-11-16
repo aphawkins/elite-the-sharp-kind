@@ -15,39 +15,39 @@ namespace EliteSharp.Ships
             Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;
             Bounty = 10;
             EnergyMax = 80;
-            FaceNormals = new ShipFaceNormal[]
-            {
+            FaceNormals =
+            [
                 new(31, new(3,   24,    3)),
                 new(31, new(3,  -24,    3)),
                 new(31, new(-3,  -24,    3)),
                 new(31, new(-3,   24,    3)),
                 new(31, new(38,    0,  -77)),
                 new(31, new(-38,    0,  -77)),
-            };
-            Faces = new ShipFace[]
-            {
-                new(EColors.DarkBlue, new(0x03, 0x18, 0x03), new[] { 0,  3,  1 }),
-                new(EColors.Blue, new(0x03, -0x18, 0x03), new[] { 2,  3,  0 }),
+            ];
+            Faces =
+            [
+                new(EColors.DarkBlue, new(0x03, 0x18, 0x03), [0,  3,  1]),
+                new(EColors.Blue, new(0x03, -0x18, 0x03), [2,  3,  0]),
 
-                new(EColors.DarkBlue, new(-0x03, -0x18, 0x03), new[] { 0,  4,  2 }),
-                new(EColors.Blue, new(-0x03, 0x18, 0x03), new[] { 1,  4,  0 }),
+                new(EColors.DarkBlue, new(-0x03, -0x18, 0x03), [0,  4,  2]),
+                new(EColors.Blue, new(-0x03, 0x18, 0x03), [1,  4,  0]),
 
-                new(EColors.DarkerGrey, new(0x26, 0x00, -0x4D), new[] { 3,  2,  1 }),
-                new(EColors.LightGrey, new(-0x26, 0x00, -0x4D), new[] { 4,  1,  2 }),
+                new(EColors.DarkerGrey, new(0x26, 0x00, -0x4D), [3,  2,  1]),
+                new(EColors.LightGrey, new(-0x26, 0x00, -0x4D), [4,  1,  2]),
 
-                new(EColors.White, new(0x03, -0x18, 0x03), new[] { 3,  5 }),
-                new(EColors.White, new(0x03, 0x18, 0x03), new[] { 5,  3 }),
-                new(EColors.White, new(-0x03, 0x18, 0x03), new[] { 4,  6 }),
-                new(EColors.White, new(-0x03, -0x18, 0x03), new[] { 6,  4 }),
+                new(EColors.White, new(0x03, -0x18, 0x03), [3,  5]),
+                new(EColors.White, new(0x03, 0x18, 0x03), [5,  3]),
+                new(EColors.White, new(-0x03, 0x18, 0x03), [4,  6]),
+                new(EColors.White, new(-0x03, -0x18, 0x03), [6,  4]),
 
-                new(EColors.LighterRed, new(0x26, 0x00, -0x4D), new[] { 12, 11, 13 }),
-                new(EColors.LighterRed, new(-0x26, 0x00, -0x4D), new[] { 16, 14, 15 }),
-                new(EColors.White, new(0x03, 0x18, 0x03), new[] { 7, 10,  8 }),
-                new(EColors.White, new(-0x03, 0x18, 0x03), new[] { 8,  9,  7 }),
-            };
+                new(EColors.LighterRed, new(0x26, 0x00, -0x4D), [12, 11, 13]),
+                new(EColors.LighterRed, new(-0x26, 0x00, -0x4D), [16, 14, 15]),
+                new(EColors.White, new(0x03, 0x18, 0x03), [7, 10,  8]),
+                new(EColors.White, new(-0x03, 0x18, 0x03), [8,  9,  7]),
+            ];
             LaserStrength = 8;
-            Lines = new ShipLine[]
-            {
+            Lines =
+            [
                 new(31,  0,  3,  0,  1),
                 new(31,  1,  2,  0,  2),
                 new(31,  0,  1,  0,  3),
@@ -69,12 +69,12 @@ namespace EliteSharp.Ships
                 new(7,  5,  5, 14, 15),
                 new(8,  5,  5, 15, 16),
                 new(8,  5,  5, 16, 14),
-            };
+            ];
             LootMax = 1;
             MinDistance = 384;
             Name = "Krait";
-            Points = new ShipPoint[]
-            {
+            Points =
+            [
                 new(new(0,    0,   96), 31,  0,  1,  2,  3),
                 new(new(0,   18,  -48), 31,  0,  3,  4,  5),
                 new(new(0,  -18,  -48), 31,  1,  2,  4,  5),
@@ -92,7 +92,7 @@ namespace EliteSharp.Ships
                 new(new(-18,   11,  -39),  8,  5,  5,  5,  5),
                 new(new(-18,  -11,  -39),  8,  5,  5,  5,  5),
                 new(new(-36,    0,  -30),  8,  5,  5,  5,  5),
-            };
+            ];
             Size = 3600;
             VanishPoint = 20;
             VelocityMax = 30;

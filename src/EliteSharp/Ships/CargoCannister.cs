@@ -14,8 +14,8 @@ namespace EliteSharp.Ships
             Type = ShipType.Cargo;
             Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;
             EnergyMax = 17;
-            FaceNormals = new ShipFaceNormal[]
-            {
+            FaceNormals =
+            [
                 new(31, new(96,    0,    0)),
                 new(31, new(0,   41,   30)),
                 new(31, new(0,  -18,   48)),
@@ -23,21 +23,21 @@ namespace EliteSharp.Ships
                 new(31, new(0,  -18,  -48)),
                 new(31, new(0,   41,  -30)),
                 new(31, new(-96,    0,    0)),
-            };
-            Faces = new ShipFace[]
-            {
-                new(EColors.Grey, new(0x60, 0x00, 0x00), new[] { 4, 0, 1, 2, 3 }),
+            ];
+            Faces =
+            [
+                new(EColors.Grey, new(0x60, 0x00, 0x00), [4, 0, 1, 2, 3]),
 
-                new(EColors.DarkGrey, new(0x00, 0x29, 0x1E), new[] { 5, 6, 1, 0 }),
-                new(EColors.LightGrey, new(0x00, -0x12, 0x30), new[] { 6, 7, 2, 1 }),
-                new(EColors.DarkerGrey, new(0x00, -0x33, 0x00), new[] { 7, 8, 3, 2 }),
-                new(EColors.LightGrey, new(0x00, -0x12, -0x30), new[] { 8, 9, 4, 3 }),
-                new(EColors.DarkerGrey, new(0x00, 0x29, -0x1E), new[] { 9, 5, 0, 4 }),
+                new(EColors.DarkGrey, new(0x00, 0x29, 0x1E), [5, 6, 1, 0]),
+                new(EColors.LightGrey, new(0x00, -0x12, 0x30), [6, 7, 2, 1]),
+                new(EColors.DarkerGrey, new(0x00, -0x33, 0x00), [7, 8, 3, 2]),
+                new(EColors.LightGrey, new(0x00, -0x12, -0x30), [8, 9, 4, 3]),
+                new(EColors.DarkerGrey, new(0x00, 0x29, -0x1E), [9, 5, 0, 4]),
 
-                new(EColors.Grey, new(-0x60, 0x00, 0x00), new[] { 8, 7, 6, 5, 9 }),
-            };
-            Lines = new ShipLine[]
-            {
+                new(EColors.Grey, new(-0x60, 0x00, 0x00), [8, 7, 6, 5, 9]),
+            ];
+            Lines =
+            [
                 new(31,  1,  0,  0,  1),
                 new(31,  2,  0,  1,  2),
                 new(31,  3,  0,  2,  3),
@@ -53,11 +53,11 @@ namespace EliteSharp.Ships
                 new(31,  6,  3,  7,  8),
                 new(31,  6,  4,  8,  9),
                 new(31,  6,  5,  9,  5),
-            };
+            ];
             MinDistance = 200;
             Name = "Cargo Cannister";
-            Points = new ShipPoint[]
-            {
+            Points =
+            [
                 new(new(24,   16,    0), 31,  1,  0,  5,  5),
                 new(new(24,    5,   15), 31,  1,  0,  2,  2),
                 new(new(24,  -13,    9), 31,  2,  0,  3,  3),
@@ -68,7 +68,7 @@ namespace EliteSharp.Ships
                 new(new(-24,  -13,    9), 31,  3,  2,  6,  6),
                 new(new(-24,  -13,   -9), 31,  4,  3,  6,  6),
                 new(new(-24,    5,  -15), 31,  5,  4,  6,  6),
-            };
+            ];
             Size = 400;
             VanishPoint = 12;
             VelocityMax = 15;

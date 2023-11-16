@@ -166,11 +166,11 @@ namespace EliteSharp.Ships
                 lasv = LaserFront;
                 EColor colour = (Type == ShipType.Viper) ? EColors.Cyan : EColors.White;
 
-                Vector2[] laserPoints = new Vector2[]
-                {
+                Vector2[] laserPoints =
+                [
                     new(pointList[lasv].X, pointList[lasv].Y),
                     new(Location.X > 0 ? 0 : 511, RNG.Random(256) * 2),
-                };
+                ];
 
                 _draw.DrawPolygonFilled(laserPoints, colour, pointList[lasv].Z);
             }

@@ -16,8 +16,8 @@ namespace EliteSharp.Ships
             Flags = ShipProperties.Tharglet | ShipProperties.Angry;
             Bounty = 5;
             EnergyMax = 20;
-            FaceNormals = new ShipFaceNormal[]
-            {
+            FaceNormals =
+            [
                 new(31, new(-36,    0,    0)),
                 new(31, new(20,   -5,    7)),
                 new(31, new(46,  -42,  -14)),
@@ -25,22 +25,22 @@ namespace EliteSharp.Ships
                 new(31, new(46,   42,  -14)),
                 new(31, new(20,    5,    7)),
                 new(31, new(36,    0,    0)),
-            };
-            Faces = new ShipFace[]
-            {
-                new(EColors.LightRed, new(-0x24, 0x00, 0x00), new[] { 3, 2, 1, 0, 4 }),
+            ];
+            Faces =
+            [
+                new(EColors.LightRed, new(-0x24, 0x00, 0x00), [3, 2, 1, 0, 4]),
 
-                new(EColors.LightGrey, new(0x14, -0x05, 0x07), new[] { 6, 5, 0, 1 }),
-                new(EColors.DarkGrey, new(0x2E, -0x2A, -0x0E), new[] { 7, 6, 1, 2 }),
-                new(EColors.Grey, new(0x24, 0x00, -0x68), new[] { 8, 7, 2, 3 }),
-                new(EColors.DarkGrey, new(0x2E, 0x2A, -0x0E), new[] { 9, 8, 3, 4 }),
-                new(EColors.DarkerGrey, new(0x14, 0x05, 0x07), new[] { 4, 0, 5, 9 }),
+                new(EColors.LightGrey, new(0x14, -0x05, 0x07), [6, 5, 0, 1]),
+                new(EColors.DarkGrey, new(0x2E, -0x2A, -0x0E), [7, 6, 1, 2]),
+                new(EColors.Grey, new(0x24, 0x00, -0x68), [8, 7, 2, 3]),
+                new(EColors.DarkGrey, new(0x2E, 0x2A, -0x0E), [9, 8, 3, 4]),
+                new(EColors.DarkerGrey, new(0x14, 0x05, 0x07), [4, 0, 5, 9]),
 
-                new(EColors.LightRed, new(0x24, 0x00, 0x00), new[] { 9, 5, 6, 7, 8 }),
-            };
+                new(EColors.LightRed, new(0x24, 0x00, 0x00), [9, 5, 6, 7, 8]),
+            ];
             LaserStrength = 8;
-            Lines = new ShipLine[]
-            {
+            Lines =
+            [
                 new(31,  1,  0,  0,  1),
                 new(31,  2,  0,  1,  2),
                 new(31,  3,  0,  2,  3),
@@ -56,11 +56,11 @@ namespace EliteSharp.Ships
                 new(31,  6,  3,  7,  8),
                 new(31,  6,  4,  8,  9),
                 new(31,  6,  5,  9,  5),
-            };
+            ];
             MinDistance = 384;
             Name = "Tharglet";
-            Points = new ShipPoint[]
-            {
+            Points =
+            [
                 new(new(-9,    0,   40), 31,  0,  1,  5,  5),
                 new(new(-9,  -38,   12), 31,  0,  1,  2,  2),
                 new(new(-9,  -24,  -32), 31,  0,  2,  3,  3),
@@ -71,7 +71,7 @@ namespace EliteSharp.Ships
                 new(new(9,   -6,  -26), 31,  2,  3,  6,  6),
                 new(new(9,    6,  -26), 31,  3,  4,  6,  6),
                 new(new(9,   10,  -15), 31,  4,  5,  6,  6),
-            };
+            ];
             ScoopedType = StockType.AlienItems;
             Size = 1600;
             VanishPoint = 20;

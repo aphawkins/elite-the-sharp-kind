@@ -264,12 +264,12 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            PointF[] points = new PointF[3]
-            {
+            PointF[] points =
+            [
                 new(a.X, a.Y),
                 new(b.X, b.Y),
                 new(c.X, c.Y),
-            };
+            ];
 
             _screenBufferGraphics.DrawLines(_pens[colour], points);
         }
@@ -281,12 +281,12 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            PointF[] points = new PointF[3]
-            {
+            PointF[] points =
+            [
                 new(a.X, a.Y),
                 new(b.X, b.Y),
                 new(c.X, c.Y),
-            };
+            ];
 
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
