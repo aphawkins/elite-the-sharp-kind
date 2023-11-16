@@ -28,7 +28,7 @@ namespace EliteSharp.Renderer
             _keyboard = new SoftwareKeyboard();
             _views = new Dictionary<Views.Screen, Views.IView>();
             _gameState = new GameState(_keyboard, _views);
-            comboRenderer.Items.AddRange(new object[] { "GDI", "Software" });
+            comboRenderer.Items.AddRange(["GDI", "Software"]);
             comboRenderer.SelectedIndex = 0;
 
             _graphics = new GDIGraphics(_bmp);
@@ -40,7 +40,7 @@ namespace EliteSharp.Renderer
             numLocationZ.Increment = 10000;
             numLocationZ.Value = (decimal)_obj.Location.Z;
 
-            comboObjects.Items.AddRange(new object[] { "Wireframe", "Solid", "Striped", "Fractal" });
+            comboObjects.Items.AddRange(["Wireframe", "Solid", "Striped", "Fractal"]);
             comboObjects.SelectedIndex = 0;
         }
 
