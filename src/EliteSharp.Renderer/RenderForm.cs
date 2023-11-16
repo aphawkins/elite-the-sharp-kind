@@ -18,7 +18,7 @@ namespace EliteSharp.Renderer
         private readonly GameState _gameState;
         private readonly IKeyboard _keyboard;
         private readonly IDictionary<Views.Screen, Views.IView> _views;
-        private IDraw _draw;
+        private Draw _draw;
         private IGraphics _graphics;
         private IObject _obj;
 

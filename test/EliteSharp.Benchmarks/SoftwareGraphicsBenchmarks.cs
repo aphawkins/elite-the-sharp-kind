@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -10,10 +10,10 @@ namespace EliteSharp.Benchmarks
     public class SoftwareGraphicsBenchmarks : IDisposable
     {
         private readonly EBitmap _buffer = new(512, 512);
-        private readonly IGraphics _graphics;
+        private readonly SoftwareGraphics _graphics;
         private bool _disposedValue;
 
-        public SoftwareGraphicsBenchmarks() => _graphics = new SoftwareGraphics(_buffer);
+        public SoftwareGraphicsBenchmarks() => _graphics = new(_buffer);
 
         public void Dispose()
         {

@@ -30,7 +30,7 @@ namespace EliteSharp
     {
         private readonly AudioController _audio;
         private readonly Combat _combat;
-        private readonly IDraw _draw;
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
