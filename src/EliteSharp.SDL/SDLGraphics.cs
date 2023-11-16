@@ -155,7 +155,7 @@ namespace EliteSharp.SDL
                 }
             }
 
-            DrawPixels(points.ToArray(), colour);
+            DrawPixels([.. points], colour);
         }
 
         public void DrawCircleFilled(Vector2 centre, float radius, EColor colour)
