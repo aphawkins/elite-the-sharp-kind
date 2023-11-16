@@ -599,6 +599,7 @@ dotnet_diagnostic.S3267.severity = none # Loops should be simplified with "LINQ"
 dotnet_diagnostic.S3353.severity = warning
 dotnet_diagnostic.S3358.severity = none # Ternary operators should not be nested
 dotnet_diagnostic.S3441.severity = warning
+dotnet_diagnostic.S3604.severity = none # Member initializer values should not be redundant
 dotnet_diagnostic.S3776.severity = none # Cognitive Complexity of methods should not be too high
 dotnet_diagnostic.S3874.severity = warning
 dotnet_diagnostic.S3884.severity = warning
