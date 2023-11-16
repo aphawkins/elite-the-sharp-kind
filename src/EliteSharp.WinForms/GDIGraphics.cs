@@ -13,7 +13,7 @@ namespace EliteSharp.WinForms
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly ConcurrentDictionary<ImageType, Bitmap> _images = new();
-        private readonly Dictionary<EColor, Pen> _pens = new();
+        private readonly Dictionary<EColor, Pen> _pens = [];
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
         private readonly System.Drawing.Graphics _screenBufferGraphics;

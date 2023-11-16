@@ -168,7 +168,7 @@ namespace EliteSharp.Ships
 
                 Vector2[] laserPoints = new Vector2[]
                 {
-                    new Vector2(pointList[lasv].X, pointList[lasv].Y),
+                    new(pointList[lasv].X, pointList[lasv].Y),
                     new(Location.X > 0 ? 0 : 511, RNG.Random(256) * 2),
                 };
 

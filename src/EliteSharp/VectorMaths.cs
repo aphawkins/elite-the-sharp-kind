@@ -13,9 +13,9 @@ namespace EliteSharp
     {
         private static readonly Vector3[] s_startMatrix = new Vector3[3]
         {
-            new Vector3(1, 0, 0),
-            new Vector3(0, 1, 0),
-            new Vector3(0, 0, -1),
+            new(1, 0, 0),
+            new(0, 1, 0),
+            new(0, 0, -1),
         };
 
         internal static Vector3[] GetInitialMatrix() => s_startMatrix.Cloner();
