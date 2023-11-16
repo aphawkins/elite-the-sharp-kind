@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -28,9 +28,9 @@ namespace EliteSharp.Ships
 
         public int ExpDelta { get; set; }
 
-        public ShipFaceNormal[] FaceNormals { get; set; } = Array.Empty<ShipFaceNormal>();
+        public ShipFaceNormal[] FaceNormals { get; set; } = [];
 
-        public ShipFace[] Faces { get; set; } = Array.Empty<ShipFace>();
+        public ShipFace[] Faces { get; set; } = [];
 
         public ShipProperties Flags { get; set; } = ShipProperties.None;
 
@@ -38,7 +38,7 @@ namespace EliteSharp.Ships
 
         public int LaserStrength { get; set; }
 
-        public ShipLine[] Lines { get; set; } = Array.Empty<ShipLine>();
+        public ShipLine[] Lines { get; set; } = [];
 
         public Vector3 Location { get; set; }
 
@@ -52,7 +52,7 @@ namespace EliteSharp.Ships
 
         public string Name { get; set; } = string.Empty;
 
-        public ShipPoint[] Points { get; set; } = Array.Empty<ShipPoint>();
+        public ShipPoint[] Points { get; set; } = [];
 
         public Vector3[] Rotmat { get; set; } = new Vector3[3];
 
