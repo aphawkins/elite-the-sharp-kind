@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -45,10 +45,10 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, EColors.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, FastColors.LightRed);
                 }
 
-                EColor col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? EColors.LightGrey : EColors.White;
+                FastColor col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? FastColors.LightGrey : FastColors.White;
 
                 _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, FontSize.Small, col);
             }
@@ -57,11 +57,23 @@ namespace EliteSharp.Views
                 _draw.ScannerTop - 80,
                 $"Version: {typeof(OptionsView).Assembly.GetName().Version}",
                 FontSize.Small,
-                EColors.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, "The Sharp Kind - Andy Hawkins 2023", FontSize.Small, EColors.White);
+                FastColors.White);
+            _draw.Graphics.DrawTextCentre(
+                _draw.ScannerTop - 60,
+                "The Sharp Kind - Andy Hawkins 2023",
+                FontSize.Small,
+                FastColors.White);
             _draw.Graphics
-                .DrawTextCentre(_draw.ScannerTop - 40, "The New Kind - Christian Pinder 1999-2001", FontSize.Small, EColors.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 20, "Original Code - Ian Bell & David Braben", FontSize.Small, EColors.White);
+                .DrawTextCentre(
+                    _draw.ScannerTop - 40,
+                    "The New Kind - Christian Pinder 1999-2001",
+                    FontSize.Small,
+                    FastColors.White);
+            _draw.Graphics.DrawTextCentre(
+                _draw.ScannerTop - 20,
+                "Original Code - Ian Bell & David Braben",
+                FontSize.Small,
+                FastColors.White);
         }
 
         public void HandleInput()

@@ -9,7 +9,7 @@ namespace EliteSharp
 {
     internal struct PolygonData
     {
-        internal EColor FaceColour { get; set; }
+        internal FastColor FaceColour { get; set; }
 
         internal int Next { get; set; }
 

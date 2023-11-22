@@ -13,7 +13,7 @@ namespace EliteSharp.Planets
         {
             PlanetType.Fractal => new FractalPlanet(draw, seed),
             PlanetType.Wireframe => new WireframePlanet(draw),
-            PlanetType.Solid => new SolidPlanet(draw, EColors.Green),
+            PlanetType.Solid => new SolidPlanet(draw, FastColors.Green),
             PlanetType.Striped => new StripedPlanet(draw),
             _ => throw new EliteException(),
         };

@@ -10,6 +10,19 @@ namespace EliteSharp.WinForms
 {
     internal sealed class WinProgram : IDisposable
     {
+#if QHD
+        private const int ScreenWidth = 960;
+        private const int ScreenHeight = 540;
+#else
+        private const int ScreenWidth = 512;
+        private const int ScreenHeight = 512;
+#endif
+
+#if SOFTWAREGRAPHICS
+        private const GraphicsType GraphicsRender = GraphicsType.Software;
+#else
+        private const GraphicsType GraphicsRender = GraphicsType.GDI;
+#endif
         private bool _disposedValue;
 
         public void Dispose()
@@ -25,15 +38,9 @@ namespace EliteSharp.WinForms
             {
                 using WinSound sound = new();
                 WinKeyboard keyboard = new();
-
-#if QHD
-                using WinWindow window = new(960, 540, keyboard);
-#else
-                using WinWindow window = new(512, 512, keyboard);
-#endif
-
+                using WinWindow window = new(ScreenWidth, ScreenHeight, keyboard);
                 using GraphicsFactory graphicsFactory = new(window);
-                using IGraphics graphics = graphicsFactory.GetGraphics(GraphicsType.Software);
+                using IGraphics graphics = graphicsFactory.GetGraphics(ScreenWidth, ScreenHeight, GraphicsRender);
 
                 EliteMain game = new(graphics, sound, keyboard);
                 Task.Run(game.Run);

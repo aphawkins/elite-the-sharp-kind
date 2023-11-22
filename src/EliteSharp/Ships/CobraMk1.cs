@@ -30,22 +30,22 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.Blue, new(0x00, 0x29, 0x0A), [0, 1, 8]),
-                new(EColors.Blue, new(0x00, -0x1B, 0x03), [6, 7, 1, 0]),
+                new(FastColors.Blue, new(0x00, 0x29, 0x0A), [0, 1, 8]),
+                new(FastColors.Blue, new(0x00, -0x1B, 0x03), [6, 7, 1, 0]),
 
-                new(EColors.DarkBlue, new(-0x08, 0x2E, 0x08), [2, 0, 8, 4]),
-                new(EColors.Purple, new(-0x0C, -0x39, 0x0C), [6, 0, 2]),
-                new(EColors.DarkBlue, new(0x08, 0x2E, 0x08), [1, 3, 5, 8]),
-                new(EColors.Purple, new(0x0C, -0x39, 0x0C), [1, 7, 3]),
+                new(FastColors.DarkBlue, new(-0x08, 0x2E, 0x08), [2, 0, 8, 4]),
+                new(FastColors.Purple, new(-0x0C, -0x39, 0x0C), [6, 0, 2]),
+                new(FastColors.DarkBlue, new(0x08, 0x2E, 0x08), [1, 3, 5, 8]),
+                new(FastColors.Purple, new(0x0C, -0x39, 0x0C), [1, 7, 3]),
 
-                new(EColors.Blue, new(0x00, 0x31, 0x00), [4, 8, 5]),
-                new(EColors.Purple, new(0x00, 0x00, -0x9A), [7, 6, 4, 5]),
+                new(FastColors.Blue, new(0x00, 0x31, 0x00), [4, 8, 5]),
+                new(FastColors.Purple, new(0x00, 0x00, -0x9A), [7, 6, 4, 5]),
 
-                new(EColors.Blue, new(-0x79, 0x6F, -0x3E), [2, 4, 6]),
-                new(EColors.Blue, new(0x79, 0x6F, -0x3E), [3, 7, 5]),
+                new(FastColors.Blue, new(-0x79, 0x6F, -0x3E), [2, 4, 6]),
+                new(FastColors.Blue, new(0x79, 0x6F, -0x3E), [3, 7, 5]),
 
-                new(EColors.White, new(0x00, 0x29, 0x0A), [9, 10]),
-                new(EColors.White, new(0x00, -0x1B, 0x03), [10, 9]),
+                new(FastColors.White, new(0x00, 0x29, 0x0A), [9, 10]),
+                new(FastColors.White, new(0x00, -0x1B, 0x03), [10, 9]),
             ];
             LaserFront = 10;
             LaserStrength = 9;

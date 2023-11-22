@@ -33,20 +33,20 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.Lilac, new(0x09, 0x42, 0x51), [5, 0, 6]),
-                new(EColors.LightGrey, new(0x09, -0x42, 0x51), [2, 5, 6]),
-                new(EColors.DarkGrey, new(-0x48, 0x40, 0x1F), [6, 0, 1]),
-                new(EColors.Lilac, new(-0x40, -0x49, 0x2F), [2, 6, 1]),
-                new(EColors.DarkGrey, new(0x2D, -0x4F, 0x41), [3, 5, 2]),
-                new(EColors.LightGrey, new(0x87, 0x0F, 0x23), [4, 5, 3]),
-                new(EColors.DarkGrey, new(0x26, 0x4C, 0x46), [0, 5, 4]),
-                new(EColors.Lilac, new(-0x42, 0x3B, -0x27), [1, 0, 7]),
-                new(EColors.LightGrey, new(-0x43, -0x0F, -0x50), [1, 7, 8]),
-                new(EColors.DarkGrey, new(0x42, -0x0E, -0x4B), [3, 8, 7]),
-                new(EColors.DarkGrey, new(-0x46, -0x50, -0x28), [1, 8, 2]),
-                new(EColors.Lilac, new(0x3A, -0x66, -0x33), [3, 2, 8]),
-                new(EColors.Lilac, new(0x51, 0x09, -0x43), [4, 3, 7]),
-                new(EColors.LightGrey, new(0x2F, 0x5E, -0x3F), [4, 7, 0]),
+                new(FastColors.Lilac, new(0x09, 0x42, 0x51), [5, 0, 6]),
+                new(FastColors.LightGrey, new(0x09, -0x42, 0x51), [2, 5, 6]),
+                new(FastColors.DarkGrey, new(-0x48, 0x40, 0x1F), [6, 0, 1]),
+                new(FastColors.Lilac, new(-0x40, -0x49, 0x2F), [2, 6, 1]),
+                new(FastColors.DarkGrey, new(0x2D, -0x4F, 0x41), [3, 5, 2]),
+                new(FastColors.LightGrey, new(0x87, 0x0F, 0x23), [4, 5, 3]),
+                new(FastColors.DarkGrey, new(0x26, 0x4C, 0x46), [0, 5, 4]),
+                new(FastColors.Lilac, new(-0x42, 0x3B, -0x27), [1, 0, 7]),
+                new(FastColors.LightGrey, new(-0x43, -0x0F, -0x50), [1, 7, 8]),
+                new(FastColors.DarkGrey, new(0x42, -0x0E, -0x4B), [3, 8, 7]),
+                new(FastColors.DarkGrey, new(-0x46, -0x50, -0x28), [1, 8, 2]),
+                new(FastColors.Lilac, new(0x3A, -0x66, -0x33), [3, 2, 8]),
+                new(FastColors.Lilac, new(0x51, 0x09, -0x43), [4, 3, 7]),
+                new(FastColors.LightGrey, new(0x2F, 0x5E, -0x3F), [4, 7, 0]),
             ];
             LaserStrength = 1;
             Lines =

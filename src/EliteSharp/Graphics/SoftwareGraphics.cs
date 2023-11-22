@@ -10,21 +10,23 @@ namespace EliteSharp.Graphics
     public sealed class SoftwareGraphics : IGraphics
     {
         ////private readonly ConcurrentDictionary<ImageType, EBitmap> _images = new();
-        private readonly EBitmap _screen;
-        private readonly Action _screenUpdate;
+        private readonly FastBitmap _screen;
+        private readonly Action<FastBitmap> _screenUpdate;
 
-        public SoftwareGraphics(EBitmap screen, Action screenUpdate)
+        public SoftwareGraphics(float screenWidth, float screenHeight, Action<FastBitmap> screenUpdate)
         {
-            _screen = screen;
+            ScreenWidth = screenWidth;
+            ScreenHeight = screenHeight;
+            _screen = new((int)screenWidth, (int)screenHeight);
             _screenUpdate = screenUpdate;
             Clear();
         }
 
         public float Scale { get; } = 2;
 
-        public float ScreenHeight => _screen.Height;
+        public float ScreenHeight { get; }
 
-        public float ScreenWidth => _screen.Width;
+        public float ScreenWidth { get; }
 
         public void Clear()
         {
@@ -32,7 +34,7 @@ namespace EliteSharp.Graphics
             {
                 for (int x = 0; x < _screen.Width; x++)
                 {
-                    _screen.SetPixel(x, y, EColors.Black);
+                    _screen.SetPixel(x, y, FastColors.Black);
                 }
             }
         }
@@ -41,7 +43,7 @@ namespace EliteSharp.Graphics
         {
         }
 
-        public void DrawCircle(Vector2 centre, float radius, EColor colour)
+        public void DrawCircle(Vector2 centre, float radius, FastColor colour)
         {
             float diameter = radius * 2;
             float x = MathF.Floor(radius);
@@ -77,7 +79,7 @@ namespace EliteSharp.Graphics
             }
         }
 
-        public void DrawCircleFilled(Vector2 centre, float radius, EColor colour)
+        public void DrawCircleFilled(Vector2 centre, float radius, FastColor colour)
         {
             float diameter = MathF.Floor(radius) * 2;
             float x = MathF.Floor(radius);
@@ -126,7 +128,7 @@ namespace EliteSharp.Graphics
         {
         }
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour)
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor colour)
         {
             for (int i = 0; i < 100; i++)
             {
@@ -163,7 +165,7 @@ namespace EliteSharp.Graphics
             ////}
         }
 
-        public void DrawPixel(Vector2 position, EColor colour)
+        public void DrawPixel(Vector2 position, FastColor colour)
         {
             if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)
             {
@@ -173,45 +175,45 @@ namespace EliteSharp.Graphics
             _screen.SetPixel((int)position.X, (int)position.Y, colour);
         }
 
-        public void DrawPixelFast(Vector2 position, EColor colour) => DrawPixel(position, colour);
+        public void DrawPixelFast(Vector2 position, FastColor colour) => DrawPixel(position, colour);
 
-        public void DrawPolygon(Vector2[] points, EColor lineColour)
+        public void DrawPolygon(Vector2[] points, FastColor lineColour)
         {
         }
 
-        public void DrawPolygonFilled(Vector2[] points, EColor faceColour)
+        public void DrawPolygonFilled(Vector2[] points, FastColor faceColour)
         {
         }
 
-        public void DrawRectangle(Vector2 position, float width, float height, EColor colour)
+        public void DrawRectangle(Vector2 position, float width, float height, FastColor colour)
         {
         }
 
-        public void DrawRectangleCentre(float y, float width, float height, EColor colour)
+        public void DrawRectangleCentre(float y, float width, float height, FastColor colour)
         {
         }
 
-        public void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour)
+        public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor colour)
         {
         }
 
-        public void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour)
+        public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor colour)
         {
         }
 
-        public void DrawTextLeft(Vector2 position, string text, EColor colour)
+        public void DrawTextLeft(Vector2 position, string text, FastColor colour)
         {
         }
 
-        public void DrawTextRight(Vector2 position, string text, EColor colour)
+        public void DrawTextRight(Vector2 position, string text, FastColor colour)
         {
         }
 
-        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour)
+        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor colour)
         {
         }
 
-        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour)
+        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor colour)
         {
         }
 
@@ -224,7 +226,7 @@ namespace EliteSharp.Graphics
             ////_images[imgType] = new(memStream.ToArray());
         }
 
-        public void ScreenUpdate() => _screenUpdate();
+        public void ScreenUpdate() => _screenUpdate(_screen);
 
         public void SetClipRegion(Vector2 position, float width, float height)
         {

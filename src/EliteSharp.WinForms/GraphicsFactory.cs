@@ -2,23 +2,17 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Drawing.Imaging;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
     internal sealed class GraphicsFactory : IDisposable
     {
-        private readonly Bitmap _bmp = new(960, 540);
-        private readonly EBitmap _ebmp = new(960, 540);
-        private readonly System.Drawing.Graphics _screenGraphics;
         private readonly WinWindow _window;
         private bool _disposedValue;
 
-        internal GraphicsFactory(WinWindow window)
-        {
-            _window = window;
-            _screenGraphics = System.Drawing.Graphics.FromImage(_bmp);
-        }
+        internal GraphicsFactory(WinWindow window) => _window = window;
 
         public void Dispose()
         {
@@ -27,10 +21,10 @@ namespace EliteSharp.WinForms
             GC.SuppressFinalize(this);
         }
 
-        internal IGraphics GetGraphics(GraphicsType graphicsType) => graphicsType switch
+        internal IGraphics GetGraphics(float screenWidth, float screenHeight, GraphicsType graphicsType) => graphicsType switch
         {
-            GraphicsType.Software => new SoftwareGraphics(_ebmp, SoftwareScreenUpdate),
-            _ => new GDIGraphics(_bmp, GDIScreenUpdate),
+            GraphicsType.Software => new SoftwareGraphics(screenWidth, screenHeight, SoftwareScreenUpdate),
+            _ => new GDIGraphics(screenWidth, screenHeight, GDIScreenUpdate),
         };
 
         private void Dispose(bool disposing)
@@ -40,9 +34,7 @@ namespace EliteSharp.WinForms
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
-                    _screenGraphics?.Dispose();
-                    _bmp?.Dispose();
-                    _window?.Dispose();
+                    ////_window?.Dispose();
                 }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
@@ -51,20 +43,21 @@ namespace EliteSharp.WinForms
             }
         }
 
-        private void GDIScreenUpdate() => _window.SetImage(_bmp);
+        private void GDIScreenUpdate(Bitmap bitmap) => _window.SetImage(bitmap);
 
-        private void SoftwareScreenUpdate()
+        private void SoftwareScreenUpdate(FastBitmap fastBitmap)
         {
-            _screenGraphics.DrawImage(_bmp, 0, 0);
+            Bitmap bitmap = new(fastBitmap.Width, fastBitmap.Height, PixelFormat.Format32bppArgb);
+
             for (int y = 0; y < 540; y++)
             {
                 for (int x = 0; x < 960; x++)
                 {
-                    _bmp.SetPixel(x, y, Color.FromArgb(_ebmp.GetPixel(x, y).ToArgb()));
+                    bitmap.SetPixel(x, y, Color.FromArgb(fastBitmap.GetPixel(x, y).Argb));
                 }
             }
 
-            _window.SetImage(_bmp);
+            _window.SetImage(bitmap);
         }
     }
 }

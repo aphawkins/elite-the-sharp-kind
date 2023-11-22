@@ -8,8 +8,6 @@ namespace EliteSharp.Tests.Graphics
 {
     public class SoftwareGraphicsTests
     {
-        private readonly Action _doNothing = () => { };
-
         [Theory]
         [InlineData(0, 0)]
         [InlineData(2, 2)]
@@ -17,14 +15,14 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelInBounds(float x, float y)
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawPixel(new(x, y), EColors.White);
+            graphics.DrawPixel(new(x, y), FastColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
-            Assert.Equal(EColors.White, screen.GetPixel((int)x, (int)y));
+            void DoAssert(FastBitmap bmp) => Assert.Equal(FastColors.White, bmp.GetPixel((int)x, (int)y));
         }
 
         [Theory]
@@ -33,11 +31,10 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelOutOfBounds(float x, float y)
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, (_) => { });
 
             // Act
-            graphics.DrawPixel(new(x, y), EColors.White);
+            graphics.DrawPixel(new(x, y), FastColors.White);
 
             // Assert
         }
@@ -49,14 +46,13 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelFastInBounds(float x, float y)
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawPixelFast(new(x, y), EColors.White);
+            graphics.DrawPixelFast(new(x, y), FastColors.White);
 
             // Assert
-            Assert.Equal(EColors.White, screen.GetPixel((int)x, (int)y));
+            void DoAssert(FastBitmap bmp) => Assert.Equal(FastColors.White, bmp.GetPixel((int)x, (int)y));
         }
 
         [Theory]
@@ -65,11 +61,10 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelFastOutOfBounds(float x, float y)
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, (_) => { });
 
             // Act
-            graphics.DrawPixelFast(new(x, y), EColors.White);
+            graphics.DrawPixelFast(new(x, y), FastColors.White);
 
             // Assert
         }
@@ -78,47 +73,50 @@ namespace EliteSharp.Tests.Graphics
         public void Clear()
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawPixel(new(2, 2), EColors.White);
+            graphics.DrawPixel(new(2, 2), FastColors.White);
             graphics.Clear();
 
             // Assert
-            Assert.Equal(EColors.Black, screen.GetPixel(2, 2));
+            static void DoAssert(FastBitmap bmp) => Assert.Equal(FastColors.Black, bmp.GetPixel(2, 2));
         }
 
         [Fact]
         public void DrawCircleInBounds()
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircle(new(2, 2), 2, EColors.White);
+            graphics.DrawCircle(new(2, 2), 2, FastColors.White);
 
             // Assert
-            Assert.Equal(EColors.White, screen.GetPixel(0, 2));
-            Assert.Equal(EColors.White, screen.GetPixel(4, 2));
-            Assert.Equal(EColors.White, screen.GetPixel(2, 0));
-            Assert.Equal(EColors.White, screen.GetPixel(2, 4));
+            static void DoAssert(FastBitmap bmp)
+            {
+                Assert.Equal(FastColors.White, bmp.GetPixel(0, 2));
+                Assert.Equal(FastColors.White, bmp.GetPixel(4, 2));
+                Assert.Equal(FastColors.White, bmp.GetPixel(2, 0));
+                Assert.Equal(FastColors.White, bmp.GetPixel(2, 4));
+            }
         }
 
         [Fact]
         public void DrawCirclePartialInBounds()
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircle(new(0, 0), 4, EColors.White);
+            graphics.DrawCircle(new(0, 0), 4, FastColors.White);
 
             // Assert
-            Assert.Equal(EColors.White, screen.GetPixel(0, 4));
-            Assert.Equal(EColors.White, screen.GetPixel(4, 0));
+            static void DoAssert(FastBitmap bmp)
+            {
+                Assert.Equal(FastColors.White, bmp.GetPixel(0, 4));
+                Assert.Equal(FastColors.White, bmp.GetPixel(4, 0));
+            }
         }
 
         [Theory]
@@ -129,18 +127,20 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleOutOfBounds(float x, float y, float radius)
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircle(new(x, y), radius, EColors.White);
+            graphics.DrawCircle(new(x, y), radius, FastColors.White);
 
             // Assert
-            for (int screenY = 0; screenY < 5; screenY++)
+            static void DoAssert(FastBitmap bmp)
             {
-                for (int screenX = 0; screenX < 5; screenX++)
+                for (int screenY = 0; screenY < 5; screenY++)
                 {
-                    Assert.Equal(EColors.Black, screen.GetPixel(screenX, screenY));
+                    for (int screenX = 0; screenX < 5; screenX++)
+                    {
+                        Assert.Equal(FastColors.Black, bmp.GetPixel(screenX, screenY));
+                    }
                 }
             }
         }
@@ -149,18 +149,20 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleFilledInBounds()
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircleFilled(new(2, 2), 2, EColors.White);
+            graphics.DrawCircleFilled(new(2, 2), 2, FastColors.White);
 
             // Assert
-            Assert.Equal(EColors.White, screen.GetPixel(0, 2));
-            Assert.Equal(EColors.White, screen.GetPixel(4, 2));
-            Assert.Equal(EColors.White, screen.GetPixel(2, 0));
-            Assert.Equal(EColors.White, screen.GetPixel(2, 4));
-            Assert.Equal(EColors.White, screen.GetPixel(2, 2));
+            static void DoAssert(FastBitmap bmp)
+            {
+                Assert.Equal(FastColors.White, bmp.GetPixel(0, 2));
+                Assert.Equal(FastColors.White, bmp.GetPixel(4, 2));
+                Assert.Equal(FastColors.White, bmp.GetPixel(2, 0));
+                Assert.Equal(FastColors.White, bmp.GetPixel(2, 4));
+                Assert.Equal(FastColors.White, bmp.GetPixel(2, 2));
+            }
         }
 
         [Theory]
@@ -171,18 +173,20 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleFilledOutOfBounds(float x, float y, float radius, int centreColour)
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircleFilled(new(x, y), radius, EColors.White);
+            graphics.DrawCircleFilled(new(x, y), radius, FastColors.White);
 
             // Assert
-            for (int screenY = 0; screenY < 5; screenY++)
+            void DoAssert(FastBitmap bmp)
             {
-                for (int screenX = 0; screenX < 5; screenX++)
+                for (int screenY = 0; screenY < 5; screenY++)
                 {
-                    Assert.Equal(new EColor(centreColour), screen.GetPixel(screenX, screenY));
+                    for (int screenX = 0; screenX < 5; screenX++)
+                    {
+                        Assert.Equal(new FastColor(centreColour), bmp.GetPixel(screenX, screenY));
+                    }
                 }
             }
         }
@@ -195,15 +199,17 @@ namespace EliteSharp.Tests.Graphics
         public void DrawLineInBounds(float startX, float startY, float endX, float endY)
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawLine(new(startX, startY), new(endX, endY), EColors.White);
+            graphics.DrawLine(new(startX, startY), new(endX, endY), FastColors.White);
 
             // Assert
-            Assert.Equal(EColors.White, screen.GetPixel((int)startX, (int)startY));
-            Assert.Equal(EColors.White, screen.GetPixel((int)endX, (int)endY));
+            void DoAssert(FastBitmap bmp)
+            {
+                Assert.Equal(FastColors.White, bmp.GetPixel((int)startX, (int)startY));
+                Assert.Equal(FastColors.White, bmp.GetPixel((int)endX, (int)endY));
+            }
         }
 
         [Theory]
@@ -214,14 +220,13 @@ namespace EliteSharp.Tests.Graphics
         public void DrawLineOutOfBounds(float startX, float startY, float endX, float endY)
         {
             // Arrange
-            EBitmap screen = new(5, 5);
-            using SoftwareGraphics graphics = new(screen, _doNothing);
+            using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawLine(new(startX, startY), new(endX, endY), EColors.White);
+            graphics.DrawLine(new(startX, startY), new(endX, endY), FastColors.White);
 
             // Assert
-            Assert.Equal(EColors.White, screen.GetPixel(2, 2));
+            static void DoAssert(FastBitmap bmp) => Assert.Equal(FastColors.White, bmp.GetPixel(2, 2));
         }
     }
 }

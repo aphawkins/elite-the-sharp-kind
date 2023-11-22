@@ -11,7 +11,8 @@ namespace EliteSharp.Benchmarks
 {
     public class PlanetBenchmarks : IDisposable
     {
-        private readonly EBitmap _buffer = new(512, 512);
+        private const int ScreenWidth = 512;
+        private const int ScreenHeight = 512;
         private readonly SoftwareGraphics _graphics;
         private readonly SolidPlanet _solidPlanet;
         private readonly WireframePlanet _wireframePlanet;
@@ -24,16 +25,12 @@ namespace EliteSharp.Benchmarks
             SoftwareKeyboard keyboard = new();
             Dictionary<Views.Screen, Views.IView> views = [];
             GameState gameState = new(keyboard, views);
-            _graphics = new SoftwareGraphics(_buffer, ScreenUpdate);
+            _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });
             Draw draw = new(gameState, _graphics);
             _wireframePlanet = new(draw);
-            _solidPlanet = new(draw, EColors.White);
+            _solidPlanet = new(draw, FastColors.White);
             _fractalPlanet = new(draw, 12345);
             _stripedPlanet = new(draw);
-        }
-
-        public static void ScreenUpdate()
-        {
         }
 
         public void Dispose()

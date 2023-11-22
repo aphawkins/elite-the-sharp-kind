@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -15,60 +15,60 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Colour map used to generate a striped style planet.
         /// </summary>
-        private readonly EColor[] _stripeColours =
+        private readonly FastColor[] _stripeColours =
         [
-            EColors.Purple,
-            EColors.Purple,
-            EColors.DarkBlue,
-            EColors.DarkBlue,
-            EColors.DarkBlue,
-            EColors.DarkBlue,
-            EColors.Blue,
-            EColors.Blue,
-            EColors.Blue,
-            EColors.Blue,
-            EColors.LightBlue,
-            EColors.LightBlue,
-            EColors.LighterGrey,
-            EColors.Orange,
-            EColors.Orange,
-            EColors.Orange,
-            EColors.Orange,
-            EColors.LightOrange,
-            EColors.Orange,
-            EColors.Orange,
-            EColors.DarkOrange,
-            EColors.DarkOrange,
-            EColors.DarkOrange,
-            EColors.DarkOrange,
-            EColors.Orange,
-            EColors.LightOrange,
-            EColors.DarkOrange,
-            EColors.DarkOrange,
-            EColors.DarkOrange,
-            EColors.DarkOrange,
-            EColors.DarkOrange,
-            EColors.DarkOrange,
-            EColors.Orange,
-            EColors.Orange,
-            EColors.LightOrange,
-            EColors.Orange,
-            EColors.Orange,
-            EColors.Orange,
-            EColors.Orange,
-            EColors.LighterGrey,
-            EColors.LightBlue,
-            EColors.LightBlue,
-            EColors.Blue,
-            EColors.Blue,
-            EColors.Blue,
-            EColors.Blue,
-            EColors.DarkBlue,
-            EColors.DarkBlue,
-            EColors.DarkBlue,
-            EColors.DarkBlue,
-            EColors.Purple,
-            EColors.Purple,
+            FastColors.Purple,
+            FastColors.Purple,
+            FastColors.DarkBlue,
+            FastColors.DarkBlue,
+            FastColors.DarkBlue,
+            FastColors.DarkBlue,
+            FastColors.Blue,
+            FastColors.Blue,
+            FastColors.Blue,
+            FastColors.Blue,
+            FastColors.LightBlue,
+            FastColors.LightBlue,
+            FastColors.LighterGrey,
+            FastColors.Orange,
+            FastColors.Orange,
+            FastColors.Orange,
+            FastColors.Orange,
+            FastColors.LightOrange,
+            FastColors.Orange,
+            FastColors.Orange,
+            FastColors.DarkOrange,
+            FastColors.DarkOrange,
+            FastColors.DarkOrange,
+            FastColors.DarkOrange,
+            FastColors.Orange,
+            FastColors.LightOrange,
+            FastColors.DarkOrange,
+            FastColors.DarkOrange,
+            FastColors.DarkOrange,
+            FastColors.DarkOrange,
+            FastColors.DarkOrange,
+            FastColors.DarkOrange,
+            FastColors.Orange,
+            FastColors.Orange,
+            FastColors.LightOrange,
+            FastColors.Orange,
+            FastColors.Orange,
+            FastColors.Orange,
+            FastColors.Orange,
+            FastColors.LighterGrey,
+            FastColors.LightBlue,
+            FastColors.LightBlue,
+            FastColors.Blue,
+            FastColors.Blue,
+            FastColors.Blue,
+            FastColors.Blue,
+            FastColors.DarkBlue,
+            FastColors.DarkBlue,
+            FastColors.DarkBlue,
+            FastColors.DarkBlue,
+            FastColors.Purple,
+            FastColors.Purple,
         ];
 
         internal StripedPlanet(IDraw draw)
@@ -114,7 +114,7 @@ namespace EliteSharp.Planets
         {
             for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
             {
-                int colour = _stripeColours[y * (_stripeColours.Length - 1) / PlanetRenderer.LandYMax].ToArgb();
+                int colour = _stripeColours[y * (_stripeColours.Length - 1) / PlanetRenderer.LandYMax].Argb;
                 for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
                 {
                     _planetRenderer._landscape[x, y] = colour;

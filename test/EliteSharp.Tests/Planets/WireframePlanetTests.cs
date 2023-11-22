@@ -29,7 +29,7 @@ namespace EliteSharp.Tests.Planets
             _drawMoq.Verify(x => x.Graphics.DrawCircle(
                 It.IsAny<Vector2>(),
                 It.IsAny<float>(),
-                It.IsAny<EColor>()));
+                It.IsAny<FastColor>()));
         }
 
         [Fact]

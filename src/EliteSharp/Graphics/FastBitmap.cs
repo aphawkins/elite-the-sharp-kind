@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -6,11 +6,11 @@ using System.Diagnostics;
 
 namespace EliteSharp.Graphics
 {
-    public class EBitmap
+    public class FastBitmap
     {
         private const int HeaderLength = 54;
 
-        public EBitmap(int width, int height)
+        public FastBitmap(int width, int height)
         {
             BitDepth = 32;
             int imageLength = width * height * BitDepth / 8;
@@ -44,7 +44,7 @@ namespace EliteSharp.Graphics
             Array.Copy(BitConverter.GetBytes(imageLength), 0, Bytes, 34, 4);
         }
 
-        public EBitmap(byte[] bytes)
+        public FastBitmap(byte[] bytes)
         {
             Bytes = bytes;
 
@@ -88,7 +88,7 @@ namespace EliteSharp.Graphics
 
         public int BitDepth { get; }
 
-        public EColor GetPixel(int x, int y)
+        public FastColor GetPixel(int x, int y)
         {
             if (BitDepth != 32 || x < 0 || x > Width - 1 || y < 0 || y > Height - 1)
             {
@@ -103,7 +103,7 @@ namespace EliteSharp.Graphics
                 Bytes[offset + 0]);
         }
 
-        public void SetPixel(int x, int y, in EColor color)
+        public void SetPixel(int x, int y, in FastColor color)
         {
             if (BitDepth != 32 || x < 0 || x > Width - 1 || y < 0 || y > Height - 1)
             {

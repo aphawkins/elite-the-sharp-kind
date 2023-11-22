@@ -39,7 +39,7 @@ namespace EliteSharp.Views
             _draw = draw;
         }
 
-        public void Draw() => _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", FontSize.Large, EColors.Gold);
+        public void Draw() => _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", FontSize.Large, FastColors.Gold);
 
         public void HandleInput()
         {

@@ -12,7 +12,7 @@ namespace EliteSharp.Suns
     {
         private readonly IDraw _draw;
 
-        internal SolidSun(IDraw draw, in EColor colour)
+        internal SolidSun(IDraw draw, in FastColor colour)
         {
             _draw = draw;
             Colour = colour;
@@ -36,7 +36,7 @@ namespace EliteSharp.Suns
 
         public ShipType Type { get; set; } = ShipType.Sun;
 
-        internal EColor Colour { get; }
+        internal FastColor Colour { get; }
 
         public IObject Clone()
         {

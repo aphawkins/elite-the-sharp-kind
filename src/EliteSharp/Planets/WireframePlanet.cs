@@ -49,7 +49,7 @@ namespace EliteSharp.Planets
             (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
             if (v != null)
             {
-                _draw.Graphics.DrawCircle(v.Value.Position, v.Value.Radius, EColors.White);
+                _draw.Graphics.DrawCircle(v.Value.Position, v.Value.Radius, FastColors.White);
             }
         }
     }

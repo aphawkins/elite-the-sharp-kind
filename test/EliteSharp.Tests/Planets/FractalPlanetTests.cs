@@ -26,7 +26,7 @@ namespace EliteSharp.Tests.Planets
             planet.Draw();
 
             // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawPixelFast(It.IsAny<Vector2>(), It.IsAny<EColor>()));
+            _drawMoq.Verify(x => x.Graphics.DrawPixelFast(It.IsAny<Vector2>(), It.IsAny<FastColor>()));
         }
 
         [Fact]
