@@ -9,7 +9,7 @@ namespace EliteSharp.SDL
 {
     internal sealed class SDLKeyboard : IKeyboard
     {
-        private readonly Dictionary<CommandKey, bool> _isPressed = new();
+        private readonly Dictionary<CommandKey, bool> _isPressed = [];
         private CommandKey _lastKeyPressed;
 
         public bool Close { get; private set; }

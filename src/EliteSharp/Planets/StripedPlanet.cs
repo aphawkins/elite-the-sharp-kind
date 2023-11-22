@@ -15,8 +15,8 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Colour map used to generate a striped style planet.
         /// </summary>
-        private readonly EColor[] _stripeColours = new EColor[]
-        {
+        private readonly EColor[] _stripeColours =
+        [
             EColors.Purple,
             EColors.Purple,
             EColors.DarkBlue,
@@ -69,7 +69,7 @@ namespace EliteSharp.Planets
             EColors.DarkBlue,
             EColors.Purple,
             EColors.Purple,
-        };
+        ];
 
         internal StripedPlanet(IDraw draw)
         {

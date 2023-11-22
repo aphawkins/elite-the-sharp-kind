@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -13,18 +13,20 @@ namespace EliteSharp.WinForms
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly ConcurrentDictionary<ImageType, Bitmap> _images = new();
-        private readonly Dictionary<EColor, Pen> _pens = new();
+        private readonly Dictionary<EColor, Pen> _pens = [];
         private readonly Bitmap _screen;
         private readonly Bitmap _screenBuffer;
         private readonly System.Drawing.Graphics _screenBufferGraphics;
         private readonly System.Drawing.Graphics _screenGraphics;
         private readonly object _screenLock = new();
+        private readonly Action _screenUpdate;
         private RectangleF _clipRegion;
         private bool _isDisposed;
 
-        public GDIGraphics(Bitmap screen)
+        public GDIGraphics(Bitmap screen, Action screenUpdate)
         {
             _screen = screen;
+            _screenUpdate = screenUpdate;
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
             _screenBuffer = new Bitmap(_screen.Width, _screen.Height, _screen.PixelFormat);
             _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
@@ -89,7 +91,12 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.DrawImage(_images[image], position.X, position.Y);
+            _screenBufferGraphics.DrawImage(
+                _images[image],
+                position.X,
+                position.Y,
+                _images[image].Width,
+                _images[image].Height);
         }
 
         public void DrawImageCentre(ImageType image, float y)
@@ -259,12 +266,12 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            PointF[] points = new PointF[3]
-            {
+            PointF[] points =
+            [
                 new(a.X, a.Y),
                 new(b.X, b.Y),
                 new(c.X, c.Y),
-            };
+            ];
 
             _screenBufferGraphics.DrawLines(_pens[colour], points);
         }
@@ -276,12 +283,12 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            PointF[] points = new PointF[3]
-            {
+            PointF[] points =
+            [
                 new(a.X, a.Y),
                 new(b.X, b.Y),
                 new(c.X, c.Y),
-            };
+            ];
 
             _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
         }
@@ -303,6 +310,8 @@ namespace EliteSharp.WinForms
             {
                 _screenGraphics.DrawImage(_screenBuffer, 0, 0);
             }
+
+            _screenUpdate();
         }
 
         public void SetClipRegion(Vector2 position, float width, float height)

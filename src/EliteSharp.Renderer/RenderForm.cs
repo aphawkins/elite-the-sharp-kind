@@ -18,7 +18,7 @@ namespace EliteSharp.Renderer
         private readonly GameState _gameState;
         private readonly IKeyboard _keyboard;
         private readonly IDictionary<Views.Screen, Views.IView> _views;
-        private IDraw _draw;
+        private Draw _draw;
         private IGraphics _graphics;
         private IObject _obj;
 
@@ -28,10 +28,10 @@ namespace EliteSharp.Renderer
             _keyboard = new SoftwareKeyboard();
             _views = new Dictionary<Views.Screen, Views.IView>();
             _gameState = new GameState(_keyboard, _views);
-            comboRenderer.Items.AddRange(new object[] { "GDI", "Software" });
+            comboRenderer.Items.AddRange(["GDI", "Software"]);
             comboRenderer.SelectedIndex = 0;
 
-            _graphics = new GDIGraphics(_bmp);
+            _graphics = new GDIGraphics(_bmp, ScreenUpdate);
             _draw = new Draw(_gameState, _graphics);
             _obj = new WireframePlanet(_draw);
 
@@ -40,7 +40,7 @@ namespace EliteSharp.Renderer
             numLocationZ.Increment = 10000;
             numLocationZ.Value = (decimal)_obj.Location.Z;
 
-            comboObjects.Items.AddRange(new object[] { "Wireframe", "Solid", "Striped", "Fractal" });
+            comboObjects.Items.AddRange(["Wireframe", "Solid", "Striped", "Fractal"]);
             comboObjects.SelectedIndex = 0;
         }
 
@@ -90,7 +90,7 @@ namespace EliteSharp.Renderer
             _graphics = comboRenderer.SelectedIndex switch
             {
                 1 => new SoftwareGraphics(_buffer, ScreenUpdate),
-                _ => new GDIGraphics(_bmp),
+                _ => new GDIGraphics(_bmp, ScreenUpdate),
             };
 
             _draw = new Draw(_gameState, _graphics);

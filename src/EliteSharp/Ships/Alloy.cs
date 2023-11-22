@@ -15,31 +15,31 @@ namespace EliteSharp.Ships
             Type = ShipType.Alloy;
             Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;
             EnergyMax = 16;
-            FaceNormals = new ShipFaceNormal[]
-            {
+            FaceNormals =
+            [
                 new(0, new(0, 0, 0)),
-            };
-            Faces = new ShipFace[]
-            {
-                new(EColors.LightGrey, new(0x00, 0x00, 0x00), new[] { 0, 1, 2, 3 }),
-                new(EColors.DarkerGrey, new(0x00, 0x00, 0x00), new[] { 3, 2, 1, 0, 0, 0, 0, 0 }),
-            };
-            Lines = new ShipLine[]
-            {
-                new(31, 15, 15,  0,  1),
-                new(16, 15, 15,  1,  2),
-                new(20, 15, 15,  2,  3),
-                new(16, 15, 15,  3,  0),
-            };
+            ];
+            Faces =
+            [
+                new(EColors.LightGrey, new(0x00, 0x00, 0x00), [0, 1, 2, 3]),
+                new(EColors.DarkerGrey, new(0x00, 0x00, 0x00), [3, 2, 1, 0, 0, 0, 0, 0]),
+            ];
+            Lines =
+            [
+                new(31, 15, 15, 0, 1),
+                new(16, 15, 15, 1, 2),
+                new(20, 15, 15, 2, 3),
+                new(16, 15, 15, 3, 0),
+            ];
             MinDistance = 200;
             Name = "Alloy";
-            Points = new ShipPoint[]
-            {
-                new(new(-15,  -22,   -9), 31, 15, 15, 15, 15),
-                new(new(-15,   38,   -9), 31, 15, 15, 15, 15),
-                new(new(19,   32,   11), 20, 15, 15, 15, 15),
-                new(new(10,  -46,    6), 20, 15, 15, 15, 15),
-            };
+            Points =
+            [
+                new(new(-15, -22, -9), 31, 15, 15, 15, 15),
+                new(new(-15, 38, -9), 31, 15, 15, 15, 15),
+                new(new(19, 32, 11), 20, 15, 15, 15, 15),
+                new(new(10, -46, 6), 20, 15, 15, 15, 15),
+            ];
             ScoopedType = StockType.Alloys;
             Size = 100;
             VanishPoint = 5;

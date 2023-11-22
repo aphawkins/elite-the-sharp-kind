@@ -13,13 +13,13 @@ namespace EliteSharp.Views
 {
     internal sealed class CommanderStatusView : IView
     {
-        private readonly string[] _conditionText = new string[]
-        {
+        private readonly string[] _conditionText =
+        [
             "Docked",
             "Green",
             "Yellow",
             "Red",
-        };
+        ];
 
         private readonly IDraw _draw;
         private readonly int _equipmentMaxY = 290;
@@ -28,8 +28,8 @@ namespace EliteSharp.Views
         private readonly GameState _gameState;
         private readonly PlanetController _planet;
 
-        private readonly (int Score, string Title)[] _ratings = new (int Score, string Title)[]
-        {
+        private readonly (int Score, string Title)[] _ratings =
+        [
             new(0x0000, "Harmless"),
             new(0x0008, "Mostly Harmless"),
             new(0x0010, "Poor"),
@@ -39,7 +39,7 @@ namespace EliteSharp.Views
             new(0x0200, "Dangerous"),
             new(0x0A00, "Deadly"),
             new(0x1900, "- - - E L I T E - - -"),
-        };
+        ];
 
         private readonly PlayerShip _ship;
         private readonly int _spacingY = 16;

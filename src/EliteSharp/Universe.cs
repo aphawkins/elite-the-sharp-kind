@@ -13,8 +13,8 @@ namespace EliteSharp
     {
         private const int MaxUniverseObjects = 20;
         private readonly IDraw _draw;
-        private readonly List<IObject> _objects = new();
-        private readonly Dictionary<ShipType, int> _shipCount = new();
+        private readonly List<IObject> _objects = [];
+        private readonly Dictionary<ShipType, int> _shipCount = [];
 
         internal Universe(IDraw draw)
         {

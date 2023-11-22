@@ -8,7 +8,7 @@ namespace EliteSharp
     {
         internal int Drawn { get; set; }
 
-        internal List<long> FramesDrawn { get; set; } = new();
+        internal List<long> FramesDrawn { get; set; } = [];
 
         internal int Missed { get; set; }
     }

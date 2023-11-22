@@ -8,7 +8,7 @@ namespace EliteSharp.WinForms
 {
     internal sealed class WinKeyboard : IKeyboard
     {
-        private readonly Dictionary<CommandKey, bool> _isPressed = new();
+        private readonly Dictionary<CommandKey, bool> _isPressed = [];
         private CommandKey _lastKeyPressed;
 
         public bool Close { get; }

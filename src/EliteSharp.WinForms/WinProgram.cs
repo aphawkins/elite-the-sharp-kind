@@ -2,18 +2,18 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharp.Audio;
-using EliteSharp.Graphics;
+////using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
     internal sealed class WinProgram : IDisposable
     {
-        private readonly EBitmap _ebmp = new(960, 540);
+        ////private readonly EBitmap _ebmp = new(960, 540);
         private readonly WinKeyboard _keyboard;
         private readonly WinWindow _window;
         private readonly Bitmap _bmp = new(960, 540);
         private readonly object _locker;
+        private readonly System.Drawing.Graphics _screenGraphics;
         private bool _disposedValue;
 
         public WinProgram(object locker)
@@ -21,6 +21,7 @@ namespace EliteSharp.WinForms
             _locker = locker;
             _keyboard = new();
             _window = new(960, 540, _keyboard, _locker, _bmp);
+            _screenGraphics = System.Drawing.Graphics.FromImage(_window.ScreenImage);
         }
 
         public void Dispose()
@@ -51,6 +52,7 @@ namespace EliteSharp.WinForms
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
+                    _screenGraphics?.Dispose();
                     _bmp?.Dispose();
                     _window?.Dispose();
                 }
@@ -65,8 +67,18 @@ namespace EliteSharp.WinForms
         {
             try
             {
-                using ISound sound = new WinSound();
-                using SoftwareGraphics graphics = new(_ebmp, ScreenUpdate);
+                using WinSound sound = new();
+                WinKeyboard keyboard = new();
+
+#if QHD
+                using WinWindow window = new(960, 540, keyboard, _locker, _bmp);
+#else
+                using WinWindow window = new(512, 512, keyboard);
+#endif
+
+                using GDIGraphics graphics = new(_bmp, ScreenUpdate);
+
+                //// using SoftwareGraphics graphics = new(_ebmp, ScreenUpdate);
 
                 EliteMain game = new(graphics, sound, _keyboard);
                 Task.Run(game.Run);
@@ -83,20 +95,6 @@ namespace EliteSharp.WinForms
             }
         }
 
-        private void ScreenUpdate()
-        {
-            lock (_locker)
-            {
-                for (int y = 0; y < 540; y++)
-                {
-                    for (int x = 0; x < 960; x++)
-                    {
-                        _bmp.SetPixel(x, y, Color.FromArgb(_ebmp.GetPixel(x, y).ToArgb()));
-                    }
-                }
-
-                _window.ScreenImage = _bmp;
-            }
-        }
+        private void ScreenUpdate() => _window.ScreenImage = _bmp; ////lock (_locker)////{////    _screenGraphics.DrawImage(_bmp, 0, 0);////    for (int y = 0; y < 540; y++)////    {////        for (int x = 0; x < 960; x++)////        {////            _bmp.SetPixel(x, y, Color.FromArgb(_ebmp.GetPixel(x, y).ToArgb()));////        }////    }////    _window.ScreenImage = _bmp;////}
     }
 }

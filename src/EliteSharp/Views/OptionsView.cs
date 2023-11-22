@@ -17,12 +17,12 @@ namespace EliteSharp.Views
         private readonly IKeyboard _keyboard;
 
         private readonly (string Label, bool DockedOnly)[] _optionList =
-        {
-            new("Save Commander",   true),
-            new("Load Commander",   true),
-            new("Game Settings",    false),
-            new("Quit",            false),
-        };
+        [
+            new("Save Commander", true),
+            new("Load Commander", true),
+            new("Game Settings", false),
+            new("Quit", false),
+        ];
 
         private int _highlightedItem;
 

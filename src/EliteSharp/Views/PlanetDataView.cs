@@ -14,50 +14,50 @@ namespace EliteSharp.Views
 {
     internal sealed class PlanetDataView : IView
     {
-        private readonly string[][] _descriptionList = new[]
-        {
-            new string[] { "fabled", "notable", "well known", "famous", "noted" },
-            new string[] { "very", "mildly", "most", "reasonably", string.Empty },
-            new string[] { "ancient", "<20>", "great", "vast", "pink" },
-            new string[] { "<29> <28> plantations", "mountains", "<27>", "<19> forests", "oceans" },
-            new string[] { "shyness", "silliness", "mating traditions", "loathing of <5>", "love for <5>" },
-            new string[] { "food blenders", "tourists", "poetry", "discos", "<13>" },
-            new string[] { "talking tree", "crab", "bat", "lobst", "%R" },
-            new string[] { "beset", "plagued", "ravaged", "cursed", "scourged" },
-            new string[] { "<21> civil war", "<26> <23> <24>s", "a <26> disease", "<21> earthquakes", "<21> solar activity" },
-            new string[] { "its <2> <3>", "the %I <23> <24>", "its inhabitants' <25> <4>", "<32>", "its <12> <13>" },
-            new string[] { "juice", "brandy", "water", "brew", "gargle blasters" },
-            new string[] { "%R", "%I <24>", "%I %R", "%I <26>", "<26> %R" },
-            new string[] { "fabulous", "exotic", "hoopy", "unusual", "exciting" },
-            new string[] { "cuisine", "night life", "casinos", "sit coms", " <32> " },
-            new string[] { "%H", "The planet %H", "The world %H", "This planet", "This world" },
-            new string[] { "n unremarkable", " boring", " dull", " tedious", " revolting" },
-            new string[] { "planet", "world", "place", "little planet", "dump" },
-            new string[] { "wasp", "moth", "grub", "ant", "%R" },
-            new string[] { "poet", "arts graduate", "yak", "snail", "slug" },
-            new string[] { "tropical", "dense", "rain", "impenetrable", "exuberant" },
-            new string[] { "funny", "wierd", "unusual", "strange", "peculiar" },
-            new string[] { "frequent", "occasional", "unpredictable", "dreadful", "deadly" },
-            new string[] { "<1> <0> for <9>", "<1> <0> for <9> and <9>", "<7> by <8>", "<1> <0> for <9> but <7> by <8>", " a<15> <16>" },
-            new string[] { "<26>", "mountain", "edible", "tree", "spotted" },
-            new string[] { "<30>", "<31>", "<6>oid", "<18>", "<17>" },
-            new string[] { "ancient", "exceptional", "eccentric", "ingrained", "<20>" },
-            new string[] { "killer", "deadly", "evil", "lethal", "vicious" },
-            new string[] { "parking meters", "dust clouds", "ice bergs", "rock formations", "volcanoes" },
-            new string[] { "plant", "tulip", "banana", "corn", "%Rweed" },
-            new string[] { "%R", "%I %R", "%I <26>", "inhabitant", "%I %R" },
-            new string[] { "shrew", "beast", "bison", "snake", "wolf" },
-            new string[] { "leopard", "cat", "monkey", "goat", "fish" },
-            new string[] { "<11> <10>", "%I <30> <33>", "its <12> <31> <33>", "<34> <35>", "<11> <10>" },
-            new string[] { "meat", "cutlet", "steak", "burgers", "soup" },
-            new string[] { "ice", "mud", "Zero-G", "vacuum", "%I ultra" },
-            new string[] { "hockey", "cricket", "karate", "polo", "tennis" },
-        };
+        private readonly string[][] _descriptionList =
+        [
+            ["fabled", "notable", "well known", "famous", "noted"],
+            ["very", "mildly", "most", "reasonably", string.Empty],
+            ["ancient", "<20>", "great", "vast", "pink"],
+            ["<29> <28> plantations", "mountains", "<27>", "<19> forests", "oceans"],
+            ["shyness", "silliness", "mating traditions", "loathing of <5>", "love for <5>"],
+            ["food blenders", "tourists", "poetry", "discos", "<13>"],
+            ["talking tree", "crab", "bat", "lobst", "%R"],
+            ["beset", "plagued", "ravaged", "cursed", "scourged"],
+            ["<21> civil war", "<26> <23> <24>s", "a <26> disease", "<21> earthquakes", "<21> solar activity"],
+            ["its <2> <3>", "the %I <23> <24>", "its inhabitants' <25> <4>", "<32>", "its <12> <13>"],
+            ["juice", "brandy", "water", "brew", "gargle blasters"],
+            ["%R", "%I <24>", "%I %R", "%I <26>", "<26> %R"],
+            ["fabulous", "exotic", "hoopy", "unusual", "exciting"],
+            ["cuisine", "night life", "casinos", "sit coms", " <32> "],
+            ["%H", "The planet %H", "The world %H", "This planet", "This world"],
+            ["n unremarkable", " boring", " dull", " tedious", " revolting"],
+            ["planet", "world", "place", "little planet", "dump"],
+            ["wasp", "moth", "grub", "ant", "%R"],
+            ["poet", "arts graduate", "yak", "snail", "slug"],
+            ["tropical", "dense", "rain", "impenetrable", "exuberant"],
+            ["funny", "wierd", "unusual", "strange", "peculiar"],
+            ["frequent", "occasional", "unpredictable", "dreadful", "deadly"],
+            ["<1> <0> for <9>", "<1> <0> for <9> and <9>", "<7> by <8>", "<1> <0> for <9> but <7> by <8>", " a<15> <16>"],
+            ["<26>", "mountain", "edible", "tree", "spotted"],
+            ["<30>", "<31>", "<6>oid", "<18>", "<17>"],
+            ["ancient", "exceptional", "eccentric", "ingrained", "<20>"],
+            ["killer", "deadly", "evil", "lethal", "vicious"],
+            ["parking meters", "dust clouds", "ice bergs", "rock formations", "volcanoes"],
+            ["plant", "tulip", "banana", "corn", "%Rweed"],
+            ["%R", "%I %R", "%I <26>", "inhabitant", "%I %R"],
+            ["shrew", "beast", "bison", "snake", "wolf"],
+            ["leopard", "cat", "monkey", "goat", "fish"],
+            ["<11> <10>", "%I <30> <33>", "its <12> <31> <33>", "<34> <35>", "<11> <10>"],
+            ["meat", "cutlet", "steak", "burgers", "soup"],
+            ["ice", "mud", "Zero-G", "vacuum", "%I ultra"],
+            ["hockey", "cricket", "karate", "polo", "tennis"],
+        ];
 
         private readonly IDraw _draw;
 
         private readonly string[] _economyType =
-        {
+        [
             "Rich Industrial",
             "Average Industrial",
             "Poor Industrial",
@@ -66,12 +66,12 @@ namespace EliteSharp.Views
             "Rich Agricultural",
             "Average Agricultural",
             "Poor Agricultural",
-        };
+        ];
 
         private readonly GameState _gameState;
 
         private readonly string[] _governmentType =
-        {
+        [
             "Anarchy",
             "Feudal",
             "Multi-Government",
@@ -80,7 +80,7 @@ namespace EliteSharp.Views
             "Confederacy",
             "Democracy",
             "Corporate State",
-        };
+        ];
 
         private readonly PlanetController _planet;
         private float _distanceToPlanet;

@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -19,14 +19,14 @@ namespace EliteSharp.Views
         private readonly IKeyboard _keyboard;
 
         private readonly (string Name, string[] Values)[] _settingList =
-        {
-            new("Ship Style:", new[] { "Solid", "Wireframe", string.Empty, string.Empty, string.Empty }),
-            new("Planet Style:", new[] { "Wireframe", "Solid", "Striped", "Fractal", string.Empty }),
-            new("Sun Style:", new[] { "Solid", "Gradient", string.Empty }),
-            new("Planet Desc.:", new[] { "BBC", "MSX", string.Empty, string.Empty, string.Empty }),
-            new("Instant Dock:", new[] { "Off", "On", string.Empty, string.Empty, string.Empty }),
-            new("Save Settings", new[] { string.Empty, string.Empty, string.Empty, string.Empty, string.Empty }),
-        };
+        [
+            new("Ship Style:", ["Solid", "Wireframe", string.Empty, string.Empty, string.Empty]),
+            new("Planet Style:", ["Wireframe", "Solid", "Striped", "Fractal", string.Empty]),
+            new("Sun Style:", ["Solid", "Gradient", string.Empty]),
+            new("Planet Desc.:", ["BBC", "MSX", string.Empty, string.Empty, string.Empty]),
+            new("Instant Dock:", ["Off", "On", string.Empty, string.Empty, string.Empty]),
+            new("Save Settings", [string.Empty, string.Empty, string.Empty, string.Empty, string.Empty]),
+        ];
 
         private int _highlightedItem;
 

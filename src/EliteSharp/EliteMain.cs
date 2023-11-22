@@ -30,7 +30,7 @@ namespace EliteSharp
     {
         private readonly AudioController _audio;
         private readonly Combat _combat;
-        private readonly IDraw _draw;
+        private readonly Draw _draw;
         private readonly GameState _gameState;
         private readonly IGraphics _graphics;
         private readonly IKeyboard _keyboard;
@@ -46,7 +46,7 @@ namespace EliteSharp
         private readonly Stars _stars;
         private readonly TimeSpan _timeout;
         private readonly Universe _universe;
-        private readonly Dictionary<Screen, IView> _views = new();
+        private readonly Dictionary<Screen, IView> _views = [];
         private bool _isGamePaused;
 
         public EliteMain(IGraphics graphics, ISound sound, IKeyboard keyboard)
