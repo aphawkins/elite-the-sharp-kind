@@ -4,25 +4,13 @@
 
 ////using EliteSharp.Graphics;
 
+using EliteSharp.Graphics;
+
 namespace EliteSharp.WinForms
 {
     internal sealed class WinProgram : IDisposable
     {
-        ////private readonly EBitmap _ebmp = new(960, 540);
-        private readonly WinKeyboard _keyboard;
-        private readonly WinWindow _window;
-        private readonly Bitmap _bmp = new(960, 540);
-        private readonly object _locker;
-        private readonly System.Drawing.Graphics _screenGraphics;
         private bool _disposedValue;
-
-        public WinProgram(object locker)
-        {
-            _locker = locker;
-            _keyboard = new();
-            _window = new(960, 540, _keyboard, _locker, _bmp);
-            _screenGraphics = System.Drawing.Graphics.FromImage(_window.ScreenImage);
-        }
 
         public void Dispose()
         {
@@ -31,39 +19,7 @@ namespace EliteSharp.WinForms
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        private static void Main()
-        {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-
-            using WinProgram program = new(new object());
-            program.Go();
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
-            {
-                if (disposing)
-                {
-                    // dispose managed state (managed objects)
-                    _screenGraphics?.Dispose();
-                    _bmp?.Dispose();
-                    _window?.Dispose();
-                }
-
-                // free unmanaged resources (unmanaged objects) and override finalizer
-                // set large fields to null
-                _disposedValue = true;
-            }
-        }
-
-        private void Go()
+        private static void Go()
         {
             try
             {
@@ -71,18 +27,17 @@ namespace EliteSharp.WinForms
                 WinKeyboard keyboard = new();
 
 #if QHD
-                using WinWindow window = new(960, 540, keyboard, _locker, _bmp);
+                using WinWindow window = new(960, 540, keyboard);
 #else
                 using WinWindow window = new(512, 512, keyboard);
 #endif
 
-                using GDIGraphics graphics = new(_bmp, ScreenUpdate);
+                using GraphicsFactory graphicsFactory = new(window);
+                using IGraphics graphics = graphicsFactory.GetGraphics(GraphicsType.Software);
 
-                //// using SoftwareGraphics graphics = new(_ebmp, ScreenUpdate);
-
-                EliteMain game = new(graphics, sound, _keyboard);
+                EliteMain game = new(graphics, sound, keyboard);
                 Task.Run(game.Run);
-                Application.Run(_window);
+                Application.Run(window);
             }
             catch (Exception ex)
             {
@@ -95,6 +50,33 @@ namespace EliteSharp.WinForms
             }
         }
 
-        private void ScreenUpdate() => _window.ScreenImage = _bmp; ////lock (_locker)////{////    _screenGraphics.DrawImage(_bmp, 0, 0);////    for (int y = 0; y < 540; y++)////    {////        for (int x = 0; x < 960; x++)////        {////            _bmp.SetPixel(x, y, Color.FromArgb(_ebmp.GetPixel(x, y).ToArgb()));////        }////    }////    _window.ScreenImage = _bmp;////}
+        /// <summary>
+        ///  The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        private static void Main()
+        {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+
+            using WinProgram program = new();
+            Go();
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposedValue)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects)
+                }
+
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
+                _disposedValue = true;
+            }
+        }
     }
 }

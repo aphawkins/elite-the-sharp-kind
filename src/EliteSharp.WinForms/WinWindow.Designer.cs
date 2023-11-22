@@ -1,4 +1,4 @@
-﻿namespace EliteSharp.WinForms
+namespace EliteSharp.WinForms
 {
     #pragma warning disable CA1031 // Do not catch general exception types
     internal sealed partial class WinWindow
@@ -17,8 +17,6 @@
             if (disposing)
             {
                 components?.Dispose();
-
-                _refreshTimer?.Dispose();
             }
 
             base.Dispose(disposing);
