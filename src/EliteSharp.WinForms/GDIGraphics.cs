@@ -16,10 +16,7 @@ namespace EliteSharp.WinForms
         private readonly ConcurrentDictionary<ImageType, Bitmap> _images = new();
         private readonly Dictionary<FastColor, Pen> _pens = [];
         private readonly Bitmap _screen;
-        private readonly Bitmap _screenBuffer;
-        private readonly System.Drawing.Graphics _screenBufferGraphics;
         private readonly System.Drawing.Graphics _screenGraphics;
-        private readonly object _screenLock = new();
         private readonly Action<Bitmap> _screenUpdate;
         private RectangleF _clipRegion;
         private bool _isDisposed;
@@ -28,14 +25,9 @@ namespace EliteSharp.WinForms
         {
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
-            _screen = new((int)screenWidth, (int)screenHeight, PixelFormat.Format32bppArgb);
             _screenUpdate = screenUpdate;
+            _screen = new((int)screenWidth, (int)screenHeight, PixelFormat.Format32bppArgb);
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
-            _screenBuffer = new Bitmap(_screen.Width, _screen.Height, _screen.PixelFormat);
-            _screenBufferGraphics = System.Drawing.Graphics.FromImage(_screenBuffer);
-            _screenBufferGraphics.Clear(Color.Black);
-            ScreenWidth = _screen.Width;
-            ScreenHeight = _screen.Height;
 
             foreach (FastColor colour in FastColors.AllColors())
             {
@@ -57,7 +49,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.Clear(Color.Black);
+            _screenGraphics.Clear(Color.Black);
         }
 
         public void Dispose()
@@ -74,7 +66,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.DrawEllipse(_pens[colour], centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
+            _screenGraphics.DrawEllipse(_pens[colour], centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
         }
 
         public void DrawCircleFilled(Vector2 centre, float radius, FastColor colour)
@@ -84,7 +76,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.FillEllipse(_pens[colour].Brush, centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
+            _screenGraphics.FillEllipse(_pens[colour].Brush, centre.X - radius, centre.Y - radius, 2 * radius, 2 * radius);
         }
 
         public void DrawImage(ImageType image, Vector2 position)
@@ -94,7 +86,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.DrawImage(
+            _screenGraphics.DrawImage(
                 _images[image],
                 position.X,
                 position.Y,
@@ -115,7 +107,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.DrawLine(_pens[colour], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
+            _screenGraphics.DrawLine(_pens[colour], lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y);
         }
 
         public void DrawPixel(Vector2 position, FastColor colour)
@@ -134,7 +126,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBuffer.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color);
+            _screen.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color);
         }
 
         public void DrawPixelFast(Vector2 position, FastColor colour)
@@ -154,7 +146,7 @@ namespace EliteSharp.WinForms
                 drawPoints[i] = new PointF(points[i].X, points[i].Y);
             }
 
-            _screenBufferGraphics.DrawPolygon(_pens[lineColour], drawPoints);
+            _screenGraphics.DrawPolygon(_pens[lineColour], drawPoints);
         }
 
         public void DrawPolygonFilled(Vector2[] points, FastColor faceColour)
@@ -171,7 +163,7 @@ namespace EliteSharp.WinForms
                 drawPoints[i] = new PointF(points[i].X, points[i].Y);
             }
 
-            _screenBufferGraphics.FillPolygon(_pens[faceColour].Brush, drawPoints);
+            _screenGraphics.FillPolygon(_pens[faceColour].Brush, drawPoints);
         }
 
         public void DrawRectangle(Vector2 position, float width, float height, FastColor colour)
@@ -181,7 +173,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.DrawRectangle(_pens[colour], position.X, position.Y, width, height);
+            _screenGraphics.DrawRectangle(_pens[colour], position.X, position.Y, width, height);
         }
 
         public void DrawRectangleCentre(float y, float width, float height, FastColor colour)
@@ -191,7 +183,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.DrawRectangle(
+            _screenGraphics.DrawRectangle(
                 _pens[colour],
                 (ScreenWidth - width) / 2,
                 y / (2 / Scale),
@@ -206,7 +198,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screenBufferGraphics.FillRectangle(_pens[colour].Brush, position.X, position.Y, width, height);
+            _screenGraphics.FillRectangle(_pens[colour].Brush, position.X, position.Y, width, height);
         }
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor colour)
@@ -221,7 +213,7 @@ namespace EliteSharp.WinForms
                 Alignment = StringAlignment.Center,
             };
 
-            _screenBufferGraphics.DrawString(
+            _screenGraphics.DrawString(
                 text,
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 _pens[colour].Brush,
@@ -238,7 +230,7 @@ namespace EliteSharp.WinForms
             }
 
             PointF point = new(position.X / (2 / Scale), position.Y / (2 / Scale));
-            _screenBufferGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point);
+            _screenGraphics.DrawString(text, _fontSmall, _pens[colour].Brush, point);
         }
 
         public void DrawTextRight(Vector2 position, string text, FastColor colour)
@@ -253,7 +245,7 @@ namespace EliteSharp.WinForms
                 Alignment = StringAlignment.Far,
             };
 
-            _screenBufferGraphics.DrawString(
+            _screenGraphics.DrawString(
                 text,
                 _fontSmall,
                 _pens[colour].Brush,
@@ -276,7 +268,7 @@ namespace EliteSharp.WinForms
                 new(c.X, c.Y),
             ];
 
-            _screenBufferGraphics.DrawLines(_pens[colour], points);
+            _screenGraphics.DrawLines(_pens[colour], points);
         }
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor colour)
@@ -293,25 +285,17 @@ namespace EliteSharp.WinForms
                 new(c.X, c.Y),
             ];
 
-            _screenBufferGraphics.FillPolygon(_pens[colour].Brush, points);
+            _screenGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
         public void LoadBitmap(ImageType imgType, string bitmapPath)
             => _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
 
-        /// <summary>
-        /// Blit the back buffer to the screen.
-        /// </summary>
         public void ScreenUpdate()
         {
             if (_isDisposed)
             {
                 return;
-            }
-
-            lock (_screenLock)
-            {
-                _screenGraphics.DrawImage(_screenBuffer, 0, 0);
             }
 
             _screenUpdate(_screen);
@@ -325,7 +309,7 @@ namespace EliteSharp.WinForms
             }
 
             _clipRegion = new RectangleF(position.X, position.Y, width, height);
-            _screenBufferGraphics.Clip = new Region(_clipRegion);
+            _screenGraphics.Clip = new Region(_clipRegion);
         }
 
         private void Dispose(bool disposing)
@@ -335,8 +319,6 @@ namespace EliteSharp.WinForms
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
-                    _screenBufferGraphics?.Dispose();
-                    _screenBuffer?.Dispose();
                     _screenGraphics?.Dispose();
                     _screen?.Dispose();
                     _fontSmall?.Dispose();

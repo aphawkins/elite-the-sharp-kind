@@ -4,6 +4,7 @@
 
 ////using EliteSharp.Graphics;
 
+using System.Drawing.Imaging;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
@@ -23,6 +24,16 @@ namespace EliteSharp.WinForms
 #else
         private const GraphicsType GraphicsRender = GraphicsType.GDI;
 #endif
+        private static readonly WinKeyboard s_keyboard = new();
+        private static readonly WinSound s_sound = new();
+        private static readonly IGraphics s_graphics = GraphicsRender switch
+        {
+            GraphicsType.Software => new SoftwareGraphics(ScreenWidth, ScreenHeight, SoftwareScreenUpdate),
+            _ => new GDIGraphics(ScreenWidth, ScreenHeight, ScreenUpdate),
+        };
+
+        private static readonly WinWindow s_window = new(ScreenWidth, ScreenHeight, s_keyboard);
+        private static readonly EliteMain s_game = new(s_graphics, s_sound, s_keyboard);
         private bool _disposedValue;
 
         public void Dispose()
@@ -30,31 +41,6 @@ namespace EliteSharp.WinForms
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        private static void Go()
-        {
-            try
-            {
-                using WinSound sound = new();
-                WinKeyboard keyboard = new();
-                using WinWindow window = new(ScreenWidth, ScreenHeight, keyboard);
-                using GraphicsFactory graphicsFactory = new(window);
-                using IGraphics graphics = graphicsFactory.GetGraphics(ScreenWidth, ScreenHeight, GraphicsRender);
-
-                EliteMain game = new(graphics, sound, keyboard);
-                Task.Run(game.Run);
-                Application.Run(window);
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                MessageBox.Show(ex.ToString(), "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#else
-                MessageBox.Show(ex.Message, "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#endif
-                throw;
-            }
         }
 
         /// <summary>
@@ -67,8 +53,37 @@ namespace EliteSharp.WinForms
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
 
-            using WinProgram program = new();
-            Go();
+            try
+            {
+                Task.Run(s_game.Run);
+                Application.Run(s_window);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                MessageBox.Show(ex.ToString(), "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#else
+                MessageBox.Show(ex.Message, "Critial Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#endif
+                throw;
+            }
+        }
+
+        private static void ScreenUpdate(Bitmap bitmap) => s_window.SetImage(bitmap);
+
+        private static void SoftwareScreenUpdate(FastBitmap fastBitmap)
+        {
+            Bitmap bitmap = new(fastBitmap.Width, fastBitmap.Height, PixelFormat.Format32bppArgb);
+
+            for (int y = 0; y < 540; y++)
+            {
+                for (int x = 0; x < 960; x++)
+                {
+                    bitmap.SetPixel(x, y, Color.FromArgb(fastBitmap.GetPixel(x, y).Argb));
+                }
+            }
+
+            ScreenUpdate(bitmap);
         }
 
         private void Dispose(bool disposing)
@@ -78,6 +93,9 @@ namespace EliteSharp.WinForms
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
+                    s_window?.Dispose();
+                    s_graphics?.Dispose();
+                    s_sound?.Dispose();
                 }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
