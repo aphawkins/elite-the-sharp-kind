@@ -1,120 +1,118 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace EliteSharp.Graphics
 {
-    public class FastBitmap
+    public class FastBitmap : IDisposable
     {
+        private const int BitDepth = 32;
         private const int HeaderLength = 54;
+        private readonly FastColor[] _colours = [];
+        private readonly int _height;
+        private readonly int _width;
+        private bool _isDisposed;
 
         public FastBitmap(int width, int height)
         {
-            BitDepth = 32;
+            _width = width;
+            _height = height;
+
             int imageLength = width * height * BitDepth / 8;
-            Bytes = new byte[HeaderLength + imageLength];
+            _colours = new FastColor[imageLength];
 
-            // Identifier
-            Bytes[0] = (byte)'B';
-            Bytes[1] = (byte)'M';
-
-            // File Size
-            Array.Copy(BitConverter.GetBytes(Bytes.Length), 0, Bytes, 2, 4);
-
-            // Total header size (Offset to the image bytes)
-            Array.Copy(BitConverter.GetBytes(HeaderLength), 0, Bytes, 10, 4);
-
-            // DIB Header Size
-            Bytes[14] = 40;
-
-            // Width
-            Width = width;
-            Array.Copy(BitConverter.GetBytes(width), 0, Bytes, 18, 4);
-
-            // Height
-            Height = height;
-            Array.Copy(BitConverter.GetBytes(height), 0, Bytes, 22, 4);
-
-            // Bits Per Pixel
-            Array.Copy(BitConverter.GetBytes(BitDepth), 0, Bytes, 28, 2);
-
-            // Pixel bytes length
-            Array.Copy(BitConverter.GetBytes(imageLength), 0, Bytes, 34, 4);
+            BitsHandle = GCHandle.Alloc(_colours, GCHandleType.Pinned);
         }
 
         public FastBitmap(byte[] bytes)
         {
-            Bytes = bytes;
-
             if (bytes == null || bytes.Length == 0)
             {
                 return;
             }
 
             // Identifier
-            Debug.Assert(Bytes[0] == 'B', "Identifier is correct");
-            Debug.Assert(Bytes[1] == 'M', "Identifier is correct");
-
-            // File Size
-            byte[] lengthBytes = new byte[4];
-            Array.Copy(Bytes, 2, lengthBytes, 0, 4);
-            Debug.Assert(BitConverter.ToInt32(lengthBytes, 0) == Bytes.Length, "File Size is correct");
+            Debug.Assert(bytes[0] == 'B', "Identifier is incorrect");
+            Debug.Assert(bytes[1] == 'M', "Identifier is incorrect");
 
             // Width
             byte[] widthBytes = new byte[4];
-            Array.Copy(Bytes, 18, widthBytes, 0, 4);
-            Width = BitConverter.ToInt32(widthBytes, 0);
+            Array.Copy(bytes, 18, widthBytes, 0, 4);
+            _width = BitConverter.ToInt32(widthBytes, 0);
 
             // Height
             byte[] heightBytes = new byte[4];
-            Array.Copy(Bytes, 22, heightBytes, 0, 4);
-            Height = BitConverter.ToInt32(heightBytes, 0);
+            Array.Copy(bytes, 22, heightBytes, 0, 4);
+            _height = BitConverter.ToInt32(heightBytes, 0);
 
             // Bits Per Pixel
             byte[] bppBytes = new byte[2];
-            Array.Copy(Bytes, 28, bppBytes, 0, 2);
-            BitDepth = BitConverter.ToInt16(bppBytes, 0);
-        }
+            Array.Copy(bytes, 28, bppBytes, 0, 2);
+            ////BitDepth = BitConverter.ToInt16(bppBytes, 0);
+            Debug.Assert(BitConverter.ToInt32(bppBytes, 0) == BitDepth, "Bit Depth is incorrect");
 
-#pragma warning disable CA1819 // Properties should not return arrays
-        public byte[] Bytes { get; }
-#pragma warning restore CA1819 // Properties should not return arrays
+            // File Size
+            byte[] lengthBytes = new byte[4];
+            Array.Copy(bytes, 2, lengthBytes, 0, 4);
+            Debug.Assert(
+                BitConverter.ToInt32(lengthBytes, 0) == HeaderLength + (_width * _height * BitDepth / 8),
+                "File Size is incorrect");
 
-        public int Height { get; }
-
-        public int Width { get; }
-
-        public int BitDepth { get; }
-
-        public FastColor GetPixel(int x, int y)
-        {
-            if (BitDepth != 32 || x < 0 || x > Width - 1 || y < 0 || y > Height - 1)
+            ////byte[] imageBytes = new byte[_width * _height * BitDepth / 8];
+            ////Array.Copy(bytes, HeaderLength, imageBytes, 0, imageBytes.Length);
+            _colours = new FastColor[_width * _height * 4];
+            for (int i = 0; i < _colours.Length; i++)
             {
-                return new(255, 0, 0, 0);
+                byte[] colorBytes = [4];
+                Array.Copy(bytes, HeaderLength + (i * 4), colorBytes, 0, 4);
+                if (BitConverter.IsLittleEndian)
+                {
+                    Array.Reverse(colorBytes);
+                }
+
+                _colours[i] = new(BitConverter.ToInt32(bytes, 0));
             }
 
-            int offset = HeaderLength + ((((Height - y - 1) * Width) + x) * (BitDepth / 8));
-            return new(
-                Bytes[offset + 3],
-                Bytes[offset + 2],
-                Bytes[offset + 1],
-                Bytes[offset + 0]);
+            BitsHandle = GCHandle.Alloc(_colours, GCHandleType.Pinned);
         }
 
-        public void SetPixel(int x, int y, in FastColor color)
+        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        ~FastBitmap()
         {
-            if (BitDepth != 32 || x < 0 || x > Width - 1 || y < 0 || y > Height - 1)
-            {
-                return;
-            }
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
 
-            int offset = HeaderLength + ((((Height - y - 1) * Width) + x) * (BitDepth / 8));
-            Bytes[offset + 0] = color.B;
-            Bytes[offset + 1] = color.G;
-            Bytes[offset + 2] = color.R;
-            Bytes[offset + 3] = color.A;
+        protected GCHandle BitsHandle { get; private set; }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        public FastColor GetPixel(int x, int y) => _colours[x + (y * _width)];
+
+        public void SetPixel(int x, int y, in FastColor color) => _colours[x + (y * _width)] = color;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects)
+                }
+
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
+                _isDisposed = true;
+                BitsHandle.Free();
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ namespace EliteSharp.Graphics
         ////private readonly ConcurrentDictionary<ImageType, EBitmap> _images = new();
         private readonly FastBitmap _screen;
         private readonly Action<FastBitmap> _screenUpdate;
+        private bool _isDisposed;
 
         public SoftwareGraphics(float screenWidth, float screenHeight, Action<FastBitmap> screenUpdate)
         {
@@ -30,9 +31,9 @@ namespace EliteSharp.Graphics
 
         public void Clear()
         {
-            for (int y = 0; y < _screen.Height; y++)
+            for (int y = 0; y < ScreenHeight; y++)
             {
-                for (int x = 0; x < _screen.Width; x++)
+                for (int x = 0; x < ScreenWidth; x++)
                 {
                     _screen.SetPixel(x, y, EliteColors.Black);
                 }
@@ -41,6 +42,9 @@ namespace EliteSharp.Graphics
 
         public void Dispose()
         {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         public void DrawCircle(Vector2 centre, float radius, FastColor colour)
@@ -231,5 +235,28 @@ namespace EliteSharp.Graphics
         public void SetClipRegion(Vector2 position, float width, float height)
         {
         }
+
+        private void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects)
+                    _screen?.Dispose();
+                }
+
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
+                _isDisposed = true;
+            }
+        }
+
+        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~SoftwareGraphics()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
     }
 }
