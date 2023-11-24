@@ -29,16 +29,7 @@ namespace EliteSharp.Graphics
 
         public float ScreenWidth { get; }
 
-        public void Clear()
-        {
-            for (int y = 0; y < ScreenHeight; y++)
-            {
-                for (int x = 0; x < ScreenWidth; x++)
-                {
-                    _screen.SetPixel(x, y, EliteColors.Black);
-                }
-            }
-        }
+        public void Clear() => _screen.Clear();
 
         public void Dispose()
         {

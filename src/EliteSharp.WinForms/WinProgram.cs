@@ -73,16 +73,7 @@ namespace EliteSharp.WinForms
 
         private static void SoftwareScreenUpdate(FastBitmap fastBitmap)
         {
-            Bitmap bitmap = new(ScreenWidth, ScreenHeight, PixelFormat.Format32bppArgb);
-
-            for (int y = 0; y < 540; y++)
-            {
-                for (int x = 0; x < 960; x++)
-                {
-                    bitmap.SetPixel(x, y, Color.FromArgb(fastBitmap.GetPixel(x, y).Argb));
-                }
-            }
-
+            Bitmap bitmap = new(ScreenWidth, ScreenHeight, ScreenWidth * 4, PixelFormat.Format32bppArgb, fastBitmap.BitmapHandle);
             ScreenUpdate(bitmap);
         }
 

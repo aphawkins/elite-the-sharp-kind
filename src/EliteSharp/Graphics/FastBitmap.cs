@@ -11,20 +11,22 @@ namespace EliteSharp.Graphics
     {
         private const int BitDepth = 32;
         private const int HeaderLength = 54;
-        private readonly FastColor[] _colours = [];
         private readonly int _height;
+        private readonly int _imageLength;
         private readonly int _width;
+        private int[] _pixels = [];
         private bool _isDisposed;
+        private GCHandle _bitmapHandle;
 
         public FastBitmap(int width, int height)
         {
             _width = width;
             _height = height;
 
-            int imageLength = width * height * BitDepth / 8;
-            _colours = new FastColor[imageLength];
+            _imageLength = width * height * BitDepth / 8;
+            _pixels = new int[_imageLength];
 
-            BitsHandle = GCHandle.Alloc(_colours, GCHandleType.Pinned);
+            _bitmapHandle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
         }
 
         public FastBitmap(byte[] bytes)
@@ -51,20 +53,17 @@ namespace EliteSharp.Graphics
             // Bits Per Pixel
             byte[] bppBytes = new byte[2];
             Array.Copy(bytes, 28, bppBytes, 0, 2);
-            ////BitDepth = BitConverter.ToInt16(bppBytes, 0);
             Debug.Assert(BitConverter.ToInt32(bppBytes, 0) == BitDepth, "Bit Depth is incorrect");
 
             // File Size
             byte[] lengthBytes = new byte[4];
             Array.Copy(bytes, 2, lengthBytes, 0, 4);
             Debug.Assert(
-                BitConverter.ToInt32(lengthBytes, 0) == HeaderLength + (_width * _height * BitDepth / 8),
+                BitConverter.ToInt32(lengthBytes, 0) == HeaderLength + _imageLength,
                 "File Size is incorrect");
 
-            ////byte[] imageBytes = new byte[_width * _height * BitDepth / 8];
-            ////Array.Copy(bytes, HeaderLength, imageBytes, 0, imageBytes.Length);
-            _colours = new FastColor[_width * _height * 4];
-            for (int i = 0; i < _colours.Length; i++)
+            _pixels = new int[_imageLength];
+            for (int i = 0; i < _pixels.Length; i++)
             {
                 byte[] colorBytes = [4];
                 Array.Copy(bytes, HeaderLength + (i * 4), colorBytes, 0, 4);
@@ -73,10 +72,10 @@ namespace EliteSharp.Graphics
                     Array.Reverse(colorBytes);
                 }
 
-                _colours[i] = new(BitConverter.ToInt32(bytes, 0));
+                _pixels[i] = BitConverter.ToInt32(bytes, 0);
             }
 
-            BitsHandle = GCHandle.Alloc(_colours, GCHandleType.Pinned);
+            _bitmapHandle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
         }
 
         // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -86,7 +85,14 @@ namespace EliteSharp.Graphics
             Dispose(disposing: false);
         }
 
-        protected GCHandle BitsHandle { get; private set; }
+        public nint BitmapHandle => _bitmapHandle.AddrOfPinnedObject();
+
+        public void Clear()
+        {
+            _bitmapHandle.Free();
+            _pixels = new int[_imageLength];
+            _bitmapHandle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
+        }
 
         public void Dispose()
         {
@@ -95,9 +101,9 @@ namespace EliteSharp.Graphics
             GC.SuppressFinalize(this);
         }
 
-        public FastColor GetPixel(int x, int y) => _colours[x + (y * _width)];
+        public FastColor GetPixel(int x, int y) => new(_pixels[x + (y * _width)]);
 
-        public void SetPixel(int x, int y, in FastColor color) => _colours[x + (y * _width)] = color;
+        public void SetPixel(int x, int y, in FastColor color) => _pixels[x + (y * _width)] = color.Argb;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -111,7 +117,7 @@ namespace EliteSharp.Graphics
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
                 _isDisposed = true;
-                BitsHandle.Free();
+                _bitmapHandle.Free();
             }
         }
     }
