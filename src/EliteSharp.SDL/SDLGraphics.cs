@@ -265,8 +265,6 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void DrawPixelFast(Vector2 position, FastColor colour) => DrawPixel(position, colour);
-
         public void DrawPolygon(Vector2[] points, FastColor lineColour)
         {
             if (points == null)

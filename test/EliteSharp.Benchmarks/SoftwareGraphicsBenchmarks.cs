@@ -38,9 +38,6 @@ namespace EliteSharp.Benchmarks
         [Benchmark]
         public void DrawPixel() => _graphics.DrawPixel(new(255, 255), EliteColors.White);
 
-        [Benchmark]
-        public void DrawPixelFast() => _graphics.DrawPixelFast(new(255, 255), EliteColors.White);
-
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposedValue)

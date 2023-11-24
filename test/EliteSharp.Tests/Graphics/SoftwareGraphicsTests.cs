@@ -39,36 +39,6 @@ namespace EliteSharp.Tests.Graphics
             // Assert
         }
 
-        [Theory]
-        [InlineData(0, 0)]
-        [InlineData(2, 2)]
-        [InlineData(4, 4)]
-        public void DrawPixelFastInBounds(float x, float y)
-        {
-            // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
-
-            // Act
-            graphics.DrawPixelFast(new(x, y), EliteColors.White);
-
-            // Assert
-            void DoAssert(FastBitmap bmp) => Assert.Equal(EliteColors.White, bmp.GetPixel((int)x, (int)y));
-        }
-
-        [Theory]
-        [InlineData(-9, -9)]
-        [InlineData(9, 9)]
-        public void DrawPixelFastOutOfBounds(float x, float y)
-        {
-            // Arrange
-            using SoftwareGraphics graphics = new(5, 5, (_) => { });
-
-            // Act
-            graphics.DrawPixelFast(new(x, y), EliteColors.White);
-
-            // Assert
-        }
-
         [Fact]
         public void Clear()
         {

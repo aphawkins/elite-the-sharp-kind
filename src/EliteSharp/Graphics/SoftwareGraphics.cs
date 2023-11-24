@@ -170,8 +170,6 @@ namespace EliteSharp.Graphics
             _screen.SetPixel((int)position.X, (int)position.Y, colour);
         }
 
-        public void DrawPixelFast(Vector2 position, FastColor colour) => DrawPixel(position, colour);
-
         public void DrawPolygon(Vector2[] points, FastColor lineColour)
         {
         }

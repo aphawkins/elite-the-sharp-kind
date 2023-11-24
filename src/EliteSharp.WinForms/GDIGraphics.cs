@@ -11,6 +11,7 @@ namespace EliteSharp.WinForms
 {
     public sealed class GDIGraphics : IGraphics
     {
+        private readonly FastBitmap _fastScreen;
         private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
         private readonly ConcurrentDictionary<ImageType, Bitmap> _images = new();
@@ -26,7 +27,8 @@ namespace EliteSharp.WinForms
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
             _screenUpdate = screenUpdate;
-            _screen = new((int)screenWidth, (int)screenHeight, PixelFormat.Format32bppArgb);
+            _fastScreen = new((int)screenWidth, (int)screenHeight);
+            _screen = new((int)screenWidth, (int)screenHeight, (int)screenWidth * 4, PixelFormat.Format32bppArgb, _fastScreen.BitmapHandle);
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
 
             foreach (FastColor colour in EliteColors.AllColors())
@@ -36,9 +38,9 @@ namespace EliteSharp.WinForms
             }
         }
 
-        public float ScreenHeight { get; }
-
         public float Scale { get; } = 2;
+
+        public float ScreenHeight { get; }
 
         public float ScreenWidth { get; }
 
@@ -126,11 +128,8 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _screen.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color);
+            _fastScreen.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color.ToArgb());
         }
-
-        public void DrawPixelFast(Vector2 position, FastColor colour)
-            => DrawPixel(position, colour); // Is there a faster way of doing this?
 
         public void DrawPolygon(Vector2[] points, FastColor lineColour)
         {
@@ -321,6 +320,7 @@ namespace EliteSharp.WinForms
                     // dispose managed state (managed objects)
                     _screenGraphics?.Dispose();
                     _screen?.Dispose();
+                    _fastScreen?.Dispose();
                     _fontSmall?.Dispose();
                     _fontLarge?.Dispose();
 

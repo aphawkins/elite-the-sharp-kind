@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -25,8 +25,6 @@ namespace EliteSharp.Graphics
         void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor colour);
 
         void DrawPixel(Vector2 position, FastColor colour);
-
-        void DrawPixelFast(Vector2 position, FastColor colour);
 
         void DrawPolygon(Vector2[] points, FastColor lineColour);
 

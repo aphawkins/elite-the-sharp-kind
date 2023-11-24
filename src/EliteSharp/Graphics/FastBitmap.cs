@@ -105,6 +105,8 @@ namespace EliteSharp.Graphics
 
         public void SetPixel(int x, int y, in FastColor color) => _pixels[x + (y * _width)] = color.Argb;
 
+        public void SetPixel(int x, int y, in int argb) => _pixels[x + (y * _width)] = argb;
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_isDisposed)

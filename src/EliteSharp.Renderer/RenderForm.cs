@@ -103,18 +103,11 @@ namespace EliteSharp.Renderer
         private void GDIScreenUpdate(Bitmap bitmap) => renderBox.Image = bitmap;
 
         private void SoftwareScreenUpdate(FastBitmap fastBitmap)
-        {
-            Bitmap bitmap = new(ScreenWidth, ScreenHeight, PixelFormat.Format32bppArgb);
-
-            for (int y = 0; y < ScreenHeight; y++)
-            {
-                for (int x = 0; x < ScreenWidth; x++)
-                {
-                    bitmap.SetPixel(x, y, Color.FromArgb(fastBitmap.GetPixel(x, y).Argb));
-                }
-            }
-
-            renderBox.Image = bitmap;
-        }
+            => renderBox.Image = (Bitmap)new(
+                ScreenWidth,
+                ScreenHeight,
+                ScreenWidth * 4,
+                PixelFormat.Format32bppArgb,
+                fastBitmap.BitmapHandle);
     }
 }
