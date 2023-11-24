@@ -90,16 +90,16 @@ namespace EliteSharp
             float x = _draw.ScannerLeft + position.X;
             float y = _draw.ScannerTop + position.Y;
 
-            _draw.Graphics.DrawLine(new(x, y), new(x + len, y), FastColors.Gold);
+            _draw.Graphics.DrawLine(new(x, y), new(x + len, y), EliteColors.Gold);
             int i = 1;
-            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), FastColors.Gold);
+            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EliteColors.Gold);
 
             for (i = 2; i < 7; i++)
             {
-                _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), FastColors.DarkYellow);
+                _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EliteColors.DarkYellow);
             }
 
-            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), FastColors.LightRed);
+            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EliteColors.LightRed);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace EliteSharp
 
             for (int i = 0; i < 4; i++)
             {
-                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), FastColors.Gold);
+                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), EliteColors.Gold);
             }
         }
 
@@ -155,7 +155,7 @@ namespace EliteSharp
 
             for (int i = 0; i < 4; i++)
             {
-                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), FastColors.Gold);
+                _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), EliteColors.Gold);
             }
         }
 
@@ -224,7 +224,7 @@ namespace EliteSharp
             float x = _draw.ScannerLeft + 417;
             float y = _draw.ScannerTop + 9;
             float length = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
-            FastColor colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? FastColors.LightRed : FastColors.Gold;
+            FastColor colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? EliteColors.LightRed : EliteColors.Gold;
 
             for (int i = 0; i < 6; i++)
             {
@@ -298,12 +298,12 @@ namespace EliteSharp
                 y2 += _scannerCentre.Y;
 
                 FastColor colour = obj.Flags.HasFlag(ShipProperties.Station)
-                    ? FastColors.Green
+                    ? EliteColors.Green
                     : obj.Type == ShipType.Missile
-                        ? FastColors.Lilac
+                        ? EliteColors.Lilac
                         : obj.Flags.HasFlag(ShipProperties.Police)
-                            ? FastColors.Purple
-                            : obj.Flags.HasFlag(ShipProperties.Hostile) ? FastColors.Yellow : FastColors.White;
+                            ? EliteColors.Purple
+                            : obj.Flags.HasFlag(ShipProperties.Hostile) ? EliteColors.Yellow : EliteColors.White;
 
                 // ship
                 _draw.Graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, colour);

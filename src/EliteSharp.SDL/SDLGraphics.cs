@@ -61,7 +61,7 @@ namespace EliteSharp.SDL
                 SDLHelper.Throw(nameof(SDL_CreateRenderer));
             }
 
-            foreach (FastColor colour in FastColors.AllColors())
+            foreach (FastColor colour in EliteColors.AllColors())
             {
                 SDL_Color sdlColor = new()
                 {
@@ -106,7 +106,7 @@ namespace EliteSharp.SDL
                 return;
             }
 
-            SetRenderDrawColor(FastColors.Black);
+            SetRenderDrawColor(EliteColors.Black);
 
             if (SDL_RenderClear(_renderer) < 0)
             {

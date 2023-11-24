@@ -30,32 +30,32 @@ namespace EliteSharp.Ships
             [
 
                 // fins
-                new(FastColors.LighterRed, new(0x20, 0x00, 0x00), [5, 9, 15]),
-                new(FastColors.LighterRed, new(0x00, 0x20, 0x00), [15, 9, 5]),
+                new(EliteColors.LighterRed, new(0x20, 0x00, 0x00), [5, 9, 15]),
+                new(EliteColors.LighterRed, new(0x00, 0x20, 0x00), [15, 9, 5]),
 
-                new(FastColors.LighterRed, new(-0x20, 0x00, 0x00), [8, 12, 13]),
-                new(FastColors.LighterRed, new(0x00, 0x20, 0x00), [13, 12, 8]),
+                new(EliteColors.LighterRed, new(-0x20, 0x00, 0x00), [8, 12, 13]),
+                new(EliteColors.LighterRed, new(0x00, 0x20, 0x00), [13, 12, 8]),
 
-                new(FastColors.LighterRed, new(-0x20, 0x00, 0x00), [7, 11, 14]),
-                new(FastColors.LighterRed, new(0x00, -0x20, 0x00), [14, 11, 7]),
+                new(EliteColors.LighterRed, new(-0x20, 0x00, 0x00), [7, 11, 14]),
+                new(EliteColors.LighterRed, new(0x00, -0x20, 0x00), [14, 11, 7]),
 
-                new(FastColors.LighterRed, new(0x20, 0x00, 0x00), [6, 10, 16]),
-                new(FastColors.LighterRed, new(0x00, -0x20, 0x00), [16, 10, 6]),
+                new(EliteColors.LighterRed, new(0x20, 0x00, 0x00), [6, 10, 16]),
+                new(EliteColors.LighterRed, new(0x00, -0x20, 0x00), [16, 10, 6]),
 
                 //nose cone
-                new(FastColors.LightRed, new(-0x40, 0x00, 0x10), [0, 3, 4]),
-                new(FastColors.LighterRed, new(0x00, -0x40, 0x10), [0, 4, 1]),
-                new(FastColors.LightRed, new(0x40, 0x00, 0x10), [0, 1, 2]),
-                new(FastColors.LighterRed, new(0x00, 0x40, 0x10), [0, 2, 3]),
+                new(EliteColors.LightRed, new(-0x40, 0x00, 0x10), [0, 3, 4]),
+                new(EliteColors.LighterRed, new(0x00, -0x40, 0x10), [0, 4, 1]),
+                new(EliteColors.LightRed, new(0x40, 0x00, 0x10), [0, 1, 2]),
+                new(EliteColors.LighterRed, new(0x00, 0x40, 0x10), [0, 2, 3]),
 
                 //main body
-                new(FastColors.DarkerGrey, new(0x20, 0x00, 0x00), [6, 5, 2, 1]),
-                new(FastColors.LightGrey, new(0x00, 0x20, 0x00), [5, 8, 3, 2]),
-                new(FastColors.DarkerGrey, new(-0x20, 0x00, 0x00), [8, 7, 4, 3]),
-                new(FastColors.LightGrey, new(0x00, -0x20, 0x00), [7, 6, 1, 4]),
+                new(EliteColors.DarkerGrey, new(0x20, 0x00, 0x00), [6, 5, 2, 1]),
+                new(EliteColors.LightGrey, new(0x00, 0x20, 0x00), [5, 8, 3, 2]),
+                new(EliteColors.DarkerGrey, new(-0x20, 0x00, 0x00), [8, 7, 4, 3]),
+                new(EliteColors.LightGrey, new(0x00, -0x20, 0x00), [7, 6, 1, 4]),
 
                 //bottom
-                new(FastColors.DarkGrey, new(0x00, 0x00, -0xB0), [5, 6, 7, 8]),
+                new(EliteColors.DarkGrey, new(0x00, 0x00, -0xB0), [5, 6, 7, 8]),
             ];
             Lines =
             [

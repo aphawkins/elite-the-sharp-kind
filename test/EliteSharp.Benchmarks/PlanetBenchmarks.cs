@@ -28,7 +28,7 @@ namespace EliteSharp.Benchmarks
             _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });
             Draw draw = new(gameState, _graphics);
             _wireframePlanet = new(draw);
-            _solidPlanet = new(draw, FastColors.White);
+            _solidPlanet = new(draw, EliteColors.White);
             _fractalPlanet = new(draw, 12345);
             _stripedPlanet = new(draw);
         }

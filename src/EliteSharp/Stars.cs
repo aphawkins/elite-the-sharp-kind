@@ -75,17 +75,17 @@ namespace EliteSharp
                     (star.Y >= _draw.Top)
                     && (star.Y <= _draw.Bottom))
                 {
-                    _draw.Graphics.DrawPixel(star, FastColors.White);
+                    _draw.Graphics.DrawPixel(star, EliteColors.White);
 
                     if (zz < 192)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), FastColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EliteColors.White);
                     }
 
                     if (zz < 144)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), FastColors.White);
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), FastColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EliteColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EliteColors.White);
                     }
                 }
 
@@ -112,7 +112,7 @@ namespace EliteSharp
                     _draw.Graphics.DrawLine(
                         star,
                         new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
-                        FastColors.White);
+                        EliteColors.White);
                 }
 
                 star.X = xx;
@@ -165,17 +165,17 @@ namespace EliteSharp
                     (star.Y >= _draw.Top)
                     && (star.Y <= _draw.Bottom))
                 {
-                    _draw.Graphics.DrawPixel(star, FastColors.White);
+                    _draw.Graphics.DrawPixel(star, EliteColors.White);
 
                     if (zz < 192)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), FastColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EliteColors.White);
                     }
 
                     if (zz < 144)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), FastColors.White);
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), FastColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EliteColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EliteColors.White);
                     }
                 }
 
@@ -213,7 +213,7 @@ namespace EliteSharp
                         _draw.Graphics.DrawLine(
                             star,
                             new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
-                            FastColors.White);
+                            EliteColors.White);
                     }
                 }
 
@@ -273,17 +273,17 @@ namespace EliteSharp
                     (star.Y >= _draw.Top)
                     && (star.Y <= _draw.Bottom))
                 {
-                    _draw.Graphics.DrawPixel(star, FastColors.White);
+                    _draw.Graphics.DrawPixel(star, EliteColors.White);
 
                     if (zz < 192)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), FastColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EliteColors.White);
                     }
 
                     if (zz < 144)
                     {
-                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), FastColors.White);
-                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), FastColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EliteColors.White);
+                        _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EliteColors.White);
                     }
                 }
 
@@ -310,7 +310,7 @@ namespace EliteSharp
                     _draw.Graphics.DrawLine(
                         star,
                         new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
-                        FastColors.White);
+                        EliteColors.White);
                 }
 
                 if (MathF.Abs(_stars[i].X) >= _draw.Centre.X / 2)

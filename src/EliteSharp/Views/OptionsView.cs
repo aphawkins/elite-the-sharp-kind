@@ -45,10 +45,10 @@ namespace EliteSharp.Views
 
                 if (i == _highlightedItem)
                 {
-                    _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, FastColors.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, EliteColors.LightRed);
                 }
 
-                FastColor col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? FastColors.LightGrey : FastColors.White;
+                FastColor col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? EliteColors.LightGrey : EliteColors.White;
 
                 _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, FontSize.Small, col);
             }
@@ -57,23 +57,23 @@ namespace EliteSharp.Views
                 _draw.ScannerTop - 80,
                 $"Version: {typeof(OptionsView).Assembly.GetName().Version}",
                 FontSize.Small,
-                FastColors.White);
+                EliteColors.White);
             _draw.Graphics.DrawTextCentre(
                 _draw.ScannerTop - 60,
                 "The Sharp Kind - Andy Hawkins 2023",
                 FontSize.Small,
-                FastColors.White);
+                EliteColors.White);
             _draw.Graphics
                 .DrawTextCentre(
                     _draw.ScannerTop - 40,
                     "The New Kind - Christian Pinder 1999-2001",
                     FontSize.Small,
-                    FastColors.White);
+                    EliteColors.White);
             _draw.Graphics.DrawTextCentre(
                 _draw.ScannerTop - 20,
                 "Original Code - Ian Bell & David Braben",
                 FontSize.Small,
-                FastColors.White);
+                EliteColors.White);
         }
 
         public void HandleInput()

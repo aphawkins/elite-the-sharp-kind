@@ -30,28 +30,28 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(FastColors.LightRed, new(0x67, -0x3C, 0x19), [1, 0, 8, 9]),
-                new(FastColors.DarkGrey, new(0x67, -0x3C, -0x19), [2, 1, 9, 10]),
-                new(FastColors.LightRed, new(0x67, -0x19, -0x3C), [3, 2, 10, 11]),
-                new(FastColors.DarkGrey, new(0x67, 0x19, -0x3C), [4, 3, 11, 12]),
+                new(EliteColors.LightRed, new(0x67, -0x3C, 0x19), [1, 0, 8, 9]),
+                new(EliteColors.DarkGrey, new(0x67, -0x3C, -0x19), [2, 1, 9, 10]),
+                new(EliteColors.LightRed, new(0x67, -0x19, -0x3C), [3, 2, 10, 11]),
+                new(EliteColors.DarkGrey, new(0x67, 0x19, -0x3C), [4, 3, 11, 12]),
 
                 //new(graphics_COL.graphics_COL_GREY_3,    0x40, 0x00, 0x00, 8,  7,  6,  5,  4,  3,  2, 1, 0),
-                new(FastColors.DarkerGrey, new(0x40, 0x00, 0x00), [0, 1, 2, 7]),
-                new(FastColors.DarkerGrey, new(0x40, 0x00, 0x00), [2, 3, 6, 7]),
-                new(FastColors.DarkerGrey, new(0x40, 0x00, 0x00), [3, 4, 5, 6]),
+                new(EliteColors.DarkerGrey, new(0x40, 0x00, 0x00), [0, 1, 2, 7]),
+                new(EliteColors.DarkerGrey, new(0x40, 0x00, 0x00), [2, 3, 6, 7]),
+                new(EliteColors.DarkerGrey, new(0x40, 0x00, 0x00), [3, 4, 5, 6]),
 
-                new(FastColors.LightRed, new(0x67, 0x3C, -0x19), [5, 4, 12, 13]),
-                new(FastColors.DarkGrey, new(0x67, 0x3C, 0x19), [6, 5, 13, 14]),
-                new(FastColors.LightRed, new(0x67, 0x19, 0x3C), [7, 6, 14, 15]),
-                new(FastColors.DarkGrey, new(0x67, -0x19, 0x3C), [0, 7, 15, 8]),
+                new(EliteColors.LightRed, new(0x67, 0x3C, -0x19), [5, 4, 12, 13]),
+                new(EliteColors.DarkGrey, new(0x67, 0x3C, 0x19), [6, 5, 13, 14]),
+                new(EliteColors.LightRed, new(0x67, 0x19, 0x3C), [7, 6, 14, 15]),
+                new(EliteColors.DarkGrey, new(0x67, -0x19, 0x3C), [0, 7, 15, 8]),
 
                 //new(graphics_COL.graphics_COL_GREY_3,   -0x30, 0x00, 0x00, 8, 15, 14, 13, 12, 11, 10, 9, 8),
-                new(FastColors.DarkerGrey, new(-0x30, 0x00, 0x00), [9, 8, 15, 10]),
-                new(FastColors.DarkerGrey, new(-0x30, 0x00, 0x00), [11, 10, 15, 14]),
-                new(FastColors.DarkerGrey, new(-0x30, 0x00, 0x00), [12, 11, 14, 13]),
+                new(EliteColors.DarkerGrey, new(-0x30, 0x00, 0x00), [9, 8, 15, 10]),
+                new(EliteColors.DarkerGrey, new(-0x30, 0x00, 0x00), [11, 10, 15, 14]),
+                new(EliteColors.DarkerGrey, new(-0x30, 0x00, 0x00), [12, 11, 14, 13]),
 
-                new(FastColors.White, new(-0x30, 0x00, 0x00), [16, 17 /*, 19 */]),
-                new(FastColors.White, new(-0x30, 0x00, 0x00), [18, 19 /*, 16 */]),
+                new(EliteColors.White, new(-0x30, 0x00, 0x00), [16, 17 /*, 19 */]),
+                new(EliteColors.White, new(-0x30, 0x00, 0x00), [18, 19 /*, 16 */]),
             ];
             LaserFront = 15;
             LaserStrength = 11;

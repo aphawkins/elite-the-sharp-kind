@@ -29,7 +29,7 @@ namespace EliteSharp.WinForms
             _screen = new((int)screenWidth, (int)screenHeight, PixelFormat.Format32bppArgb);
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
 
-            foreach (FastColor colour in FastColors.AllColors())
+            foreach (FastColor colour in EliteColors.AllColors())
             {
                 Pen pen = new(Color.FromArgb(colour.Argb));
                 _pens.Add(colour, pen);

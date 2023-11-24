@@ -25,22 +25,22 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader("INVENTORY");
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 50), "Fuel:", FastColors.Green);
-            _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 50), $"{_ship.Fuel:N1} Light Years", FastColors.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 50), "Fuel:", EliteColors.Green);
+            _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 50), $"{_ship.Fuel:N1} Light Years", EliteColors.White);
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 66), "Cash:", FastColors.Green);
-            _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 66), $"{_trade.Credits:N1} Credits", FastColors.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 66), "Cash:", EliteColors.Green);
+            _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 66), $"{_trade.Credits:N1} Credits", EliteColors.White);
 
             int y = 98;
             foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
             {
                 if (stock.Value.CurrentCargo > 0)
                 {
-                    _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, FastColors.White);
+                    _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, EliteColors.White);
                     _draw.Graphics.DrawTextLeft(
                         new(180 + _draw.Offset, y),
                         $"{stock.Value.CurrentCargo}{stock.Value.Units}",
-                        FastColors.White);
+                        EliteColors.White);
                     y += 16;
                 }
             }

@@ -26,7 +26,7 @@ namespace EliteSharp.Benchmarks
             _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });
             Draw draw = new(gameState, _graphics);
             _gradientSun = new(draw);
-            _solidSun = new(draw, FastColors.White);
+            _solidSun = new(draw, EliteColors.White);
         }
 
         public void Dispose()

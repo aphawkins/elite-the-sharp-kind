@@ -27,19 +27,19 @@ namespace EliteSharp.Benchmarks
         public void Clear() => _graphics.Clear();
 
         [Benchmark]
-        public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, FastColors.White);
+        public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, EliteColors.White);
 
         [Benchmark]
-        public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, FastColors.White);
+        public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, EliteColors.White);
 
         [Benchmark]
-        public void DrawLine() => _graphics.DrawLine(new(0, 0), new(511, 511), FastColors.White);
+        public void DrawLine() => _graphics.DrawLine(new(0, 0), new(511, 511), EliteColors.White);
 
         [Benchmark]
-        public void DrawPixel() => _graphics.DrawPixel(new(255, 255), FastColors.White);
+        public void DrawPixel() => _graphics.DrawPixel(new(255, 255), EliteColors.White);
 
         [Benchmark]
-        public void DrawPixelFast() => _graphics.DrawPixelFast(new(255, 255), FastColors.White);
+        public void DrawPixelFast() => _graphics.DrawPixelFast(new(255, 255), EliteColors.White);
 
         protected virtual void Dispose(bool disposing)
         {

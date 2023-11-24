@@ -21,8 +21,8 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(FastColors.LightGrey, new(0x00, 0x00, 0x00), [0, 1, 2, 3]),
-                new(FastColors.DarkerGrey, new(0x00, 0x00, 0x00), [3, 2, 1, 0, 0, 0, 0, 0]),
+                new(EliteColors.LightGrey, new(0x00, 0x00, 0x00), [0, 1, 2, 3]),
+                new(EliteColors.DarkerGrey, new(0x00, 0x00, 0x00), [3, 2, 1, 0, 0, 0, 0, 0]),
             ];
             Lines =
             [

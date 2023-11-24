@@ -99,25 +99,37 @@ namespace EliteSharp.Views
 
             if (_distanceToPlanet > 0)
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 42), "Distance:", FastColors.Green);
-                _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 42), $"{_distanceToPlanet:N1} Light Years", FastColors.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 42), "Distance:", EliteColors.Green);
+                _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 42), $"{_distanceToPlanet:N1} Light Years", EliteColors.White);
             }
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Economy:", FastColors.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 74), _economyType[_hyperPlanetData.Economy], FastColors.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Government:", FastColors.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 106), _governmentType[_hyperPlanetData.Government], FastColors.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", FastColors.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", FastColors.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", FastColors.Green);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Economy:", EliteColors.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 74), _economyType[_hyperPlanetData.Economy], EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Government:", EliteColors.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 106), _governmentType[_hyperPlanetData.Government], EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", EliteColors.Green);
+            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", EliteColors.Green);
             _draw.Graphics.DrawTextLeft(
                 new(140 + _draw.Offset, 170),
                 $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}",
-                FastColors.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 202), "Gross Productivity:", FastColors.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 202), $"{_hyperPlanetData.Productivity} Million Credits", FastColors.White);
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 234), "Average Radius:", FastColors.Green);
-            _draw.Graphics.DrawTextLeft(new(140 + _draw.Offset, 234), $"{_hyperPlanetData.Radius} km", FastColors.White);
+                EliteColors.White);
+            _draw.Graphics.DrawTextLeft(
+                new(16 + _draw.Offset, 202),
+                "Gross Productivity:",
+                EliteColors.Green);
+            _draw.Graphics.DrawTextLeft(
+                new(140 + _draw.Offset, 202),
+                $"{_hyperPlanetData.Productivity} Million Credits",
+                EliteColors.White);
+            _draw.Graphics.DrawTextLeft(
+                new(16 + _draw.Offset, 234),
+                "Average Radius:",
+                EliteColors.Green);
+            _draw.Graphics.DrawTextLeft(
+                new(140 + _draw.Offset, 234),
+                $"{_hyperPlanetData.Radius} km",
+                EliteColors.White);
             _draw.DrawTextPretty(new(16 + _draw.Offset, 266), 400, DescribePlanet(_gameState.HyperspacePlanet));
         }
 

@@ -24,10 +24,10 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(FastColors.LighterRed, new(0x34, 0x00, -0x7A), [3, 1, 2]),
-                new(FastColors.LightRed, new(0x27, 0x67, 0x1E), [0, 3, 2]),
-                new(FastColors.Red, new(0x27, -0x67, 0x1E), [0, 1, 3]),
-                new(FastColors.RedOrange, new(0x70, 0x00, 0x00), [0, 2, 1]),
+                new(EliteColors.LighterRed, new(0x34, 0x00, -0x7A), [3, 1, 2]),
+                new(EliteColors.LightRed, new(0x27, 0x67, 0x1E), [0, 3, 2]),
+                new(EliteColors.Red, new(0x27, -0x67, 0x1E), [0, 1, 3]),
+                new(EliteColors.RedOrange, new(0x70, 0x00, 0x00), [0, 2, 1]),
             ];
             Lines =
             [

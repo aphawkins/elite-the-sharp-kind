@@ -69,7 +69,7 @@ namespace EliteSharp.Renderer
                     break;
 
                 case 1:
-                    _obj = new SolidPlanet(_draw, FastColors.Green);
+                    _obj = new SolidPlanet(_draw, EliteColors.Green);
                     break;
 
                 case 2:

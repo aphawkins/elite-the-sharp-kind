@@ -4,7 +4,7 @@
 
 namespace EliteSharp.Graphics
 {
-    public static class FastColors
+    public static class EliteColors
     {
         public static FastColor Black => new(0x000000);
 

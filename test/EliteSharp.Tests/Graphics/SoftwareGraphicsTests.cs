@@ -18,11 +18,11 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawPixel(new(x, y), FastColors.White);
+            graphics.DrawPixel(new(x, y), EliteColors.White);
             graphics.ScreenUpdate();
 
             // Assert
-            void DoAssert(FastBitmap bmp) => Assert.Equal(FastColors.White, bmp.GetPixel((int)x, (int)y));
+            void DoAssert(FastBitmap bmp) => Assert.Equal(EliteColors.White, bmp.GetPixel((int)x, (int)y));
         }
 
         [Theory]
@@ -34,7 +34,7 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, (_) => { });
 
             // Act
-            graphics.DrawPixel(new(x, y), FastColors.White);
+            graphics.DrawPixel(new(x, y), EliteColors.White);
 
             // Assert
         }
@@ -49,10 +49,10 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawPixelFast(new(x, y), FastColors.White);
+            graphics.DrawPixelFast(new(x, y), EliteColors.White);
 
             // Assert
-            void DoAssert(FastBitmap bmp) => Assert.Equal(FastColors.White, bmp.GetPixel((int)x, (int)y));
+            void DoAssert(FastBitmap bmp) => Assert.Equal(EliteColors.White, bmp.GetPixel((int)x, (int)y));
         }
 
         [Theory]
@@ -64,7 +64,7 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, (_) => { });
 
             // Act
-            graphics.DrawPixelFast(new(x, y), FastColors.White);
+            graphics.DrawPixelFast(new(x, y), EliteColors.White);
 
             // Assert
         }
@@ -76,11 +76,11 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawPixel(new(2, 2), FastColors.White);
+            graphics.DrawPixel(new(2, 2), EliteColors.White);
             graphics.Clear();
 
             // Assert
-            static void DoAssert(FastBitmap bmp) => Assert.Equal(FastColors.Black, bmp.GetPixel(2, 2));
+            static void DoAssert(FastBitmap bmp) => Assert.Equal(EliteColors.Black, bmp.GetPixel(2, 2));
         }
 
         [Fact]
@@ -90,15 +90,15 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircle(new(2, 2), 2, FastColors.White);
+            graphics.DrawCircle(new(2, 2), 2, EliteColors.White);
 
             // Assert
             static void DoAssert(FastBitmap bmp)
             {
-                Assert.Equal(FastColors.White, bmp.GetPixel(0, 2));
-                Assert.Equal(FastColors.White, bmp.GetPixel(4, 2));
-                Assert.Equal(FastColors.White, bmp.GetPixel(2, 0));
-                Assert.Equal(FastColors.White, bmp.GetPixel(2, 4));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(0, 2));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(4, 2));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(2, 0));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(2, 4));
             }
         }
 
@@ -109,13 +109,13 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircle(new(0, 0), 4, FastColors.White);
+            graphics.DrawCircle(new(0, 0), 4, EliteColors.White);
 
             // Assert
             static void DoAssert(FastBitmap bmp)
             {
-                Assert.Equal(FastColors.White, bmp.GetPixel(0, 4));
-                Assert.Equal(FastColors.White, bmp.GetPixel(4, 0));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(0, 4));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(4, 0));
             }
         }
 
@@ -130,7 +130,7 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircle(new(x, y), radius, FastColors.White);
+            graphics.DrawCircle(new(x, y), radius, EliteColors.White);
 
             // Assert
             static void DoAssert(FastBitmap bmp)
@@ -139,7 +139,7 @@ namespace EliteSharp.Tests.Graphics
                 {
                     for (int screenX = 0; screenX < 5; screenX++)
                     {
-                        Assert.Equal(FastColors.Black, bmp.GetPixel(screenX, screenY));
+                        Assert.Equal(EliteColors.Black, bmp.GetPixel(screenX, screenY));
                     }
                 }
             }
@@ -152,16 +152,16 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircleFilled(new(2, 2), 2, FastColors.White);
+            graphics.DrawCircleFilled(new(2, 2), 2, EliteColors.White);
 
             // Assert
             static void DoAssert(FastBitmap bmp)
             {
-                Assert.Equal(FastColors.White, bmp.GetPixel(0, 2));
-                Assert.Equal(FastColors.White, bmp.GetPixel(4, 2));
-                Assert.Equal(FastColors.White, bmp.GetPixel(2, 0));
-                Assert.Equal(FastColors.White, bmp.GetPixel(2, 4));
-                Assert.Equal(FastColors.White, bmp.GetPixel(2, 2));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(0, 2));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(4, 2));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(2, 0));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(2, 4));
+                Assert.Equal(EliteColors.White, bmp.GetPixel(2, 2));
             }
         }
 
@@ -176,7 +176,7 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawCircleFilled(new(x, y), radius, FastColors.White);
+            graphics.DrawCircleFilled(new(x, y), radius, EliteColors.White);
 
             // Assert
             void DoAssert(FastBitmap bmp)
@@ -202,13 +202,13 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawLine(new(startX, startY), new(endX, endY), FastColors.White);
+            graphics.DrawLine(new(startX, startY), new(endX, endY), EliteColors.White);
 
             // Assert
             void DoAssert(FastBitmap bmp)
             {
-                Assert.Equal(FastColors.White, bmp.GetPixel((int)startX, (int)startY));
-                Assert.Equal(FastColors.White, bmp.GetPixel((int)endX, (int)endY));
+                Assert.Equal(EliteColors.White, bmp.GetPixel((int)startX, (int)startY));
+                Assert.Equal(EliteColors.White, bmp.GetPixel((int)endX, (int)endY));
             }
         }
 
@@ -223,10 +223,10 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
 
             // Act
-            graphics.DrawLine(new(startX, startY), new(endX, endY), FastColors.White);
+            graphics.DrawLine(new(startX, startY), new(endX, endY), EliteColors.White);
 
             // Assert
-            static void DoAssert(FastBitmap bmp) => Assert.Equal(FastColors.White, bmp.GetPixel(2, 2));
+            static void DoAssert(FastBitmap bmp) => Assert.Equal(EliteColors.White, bmp.GetPixel(2, 2));
         }
     }
 }

@@ -34,7 +34,7 @@ namespace EliteSharp.Graphics
             {
                 for (int x = 0; x < _screen.Width; x++)
                 {
-                    _screen.SetPixel(x, y, FastColors.Black);
+                    _screen.SetPixel(x, y, EliteColors.Black);
                 }
             }
         }
