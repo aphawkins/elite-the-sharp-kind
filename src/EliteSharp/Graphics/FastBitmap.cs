@@ -14,7 +14,7 @@ namespace EliteSharp.Graphics
         private readonly int _height;
         private readonly int _imageLength;
         private readonly int _width;
-        private int[] _pixels = [];
+        private readonly int[] _pixels = [];
         private bool _isDisposed;
         private GCHandle _bitmapHandle;
 
@@ -87,12 +87,7 @@ namespace EliteSharp.Graphics
 
         public nint BitmapHandle => _bitmapHandle.AddrOfPinnedObject();
 
-        public void Clear()
-        {
-            _bitmapHandle.Free();
-            _pixels = new int[_imageLength];
-            _bitmapHandle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
-        }
+        public void Clear() => Array.Clear(_pixels);
 
         public void Dispose()
         {
