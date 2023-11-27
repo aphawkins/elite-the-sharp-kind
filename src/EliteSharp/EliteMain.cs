@@ -36,7 +36,7 @@ namespace EliteSharp
         private readonly IKeyboard _keyboard;
         private readonly FrameCounter _lockObj = new();
 #if DEBUG
-        private readonly long _oneSecond = TimeSpan.FromSeconds(1).Ticks;
+        private readonly long _oneSecondinTicks = TimeSpan.FromSeconds(1).Ticks;
 #endif
         private readonly Pilot _pilot;
         private readonly SaveFile _save;
@@ -105,14 +105,14 @@ namespace EliteSharp
         {
             _audio.LoadSounds();
             _draw.LoadImages();
-            long startTicks = DateTime.UtcNow.Ticks;
-            long interval = (long)(100000 / _gameState.Config.Fps); // *10^-5
+            long startTicks = Stopwatch.GetTimestamp();
+            long intervalTicks = (long)(10000000 / _gameState.Config.Fps); // *1000 = ms; *10000 = ticks
 
             do
             {
-                long nowTicks = DateTime.UtcNow.Ticks;
+                long nowTicks = Stopwatch.GetTimestamp();
 
-                if (((nowTicks - startTicks) / 100 % interval) == 0)
+                if (((nowTicks - startTicks) % intervalTicks) == 0)
                 {
                     _keyboard.Poll();
                     DrawFrame(nowTicks);
@@ -126,14 +126,15 @@ namespace EliteSharp
 #if DEBUG
         private void DrawFps()
         {
-            long secondAgo = DateTime.UtcNow.Ticks - _oneSecond;
+            _graphics.DrawTextLeft(new(_draw.Right - 65, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", EliteColors.White);
+            _graphics.DrawTextLeft(new(_draw.Right - 65, _draw.Top + 25), $"MISS: {_lockObj.Missed}", EliteColors.White);
 
             if (_lockObj.FramesDrawn.Count > 0)
             {
                 int i;
                 for (i = 0; i < _lockObj.FramesDrawn.Count; i++)
                 {
-                    if (_lockObj.FramesDrawn[i] > secondAgo)
+                    if (_lockObj.FramesDrawn[i] > Stopwatch.GetTimestamp() - _oneSecondinTicks)
                     {
                         break;
                     }
@@ -141,8 +142,6 @@ namespace EliteSharp
 
                 _lockObj.FramesDrawn.RemoveRange(0, i);
             }
-
-            _graphics.DrawTextLeft(new(_draw.Right - 60, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", EColors.White);
         }
 #endif
 
@@ -232,7 +231,7 @@ namespace EliteSharp
 
                 if (_gameState.MessageCount > 0)
                 {
-                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontSize.Small, EColors.White);
+                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontSize.Small, EliteColors.White);
                 }
 
                 if (_space.IsHyperspaceReady)
@@ -281,10 +280,18 @@ namespace EliteSharp
 
             _draw.SetFullScreenClipRegion();
 
-            _scanner.UpdateConsole();
-            _gameState.CurrentView.HandleInput();
-
-            _graphics.ScreenUpdate();
+#pragma warning disable CA1031
+            try
+            {
+                _scanner.UpdateConsole();
+                _gameState.CurrentView.HandleInput();
+                _graphics.ScreenUpdate();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+#pragma warning restore CA1031
         }
 
         private void HandleFlightKeys()

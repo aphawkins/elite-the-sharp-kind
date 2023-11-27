@@ -61,14 +61,14 @@ namespace EliteSharp.Graphics
         {
             for (int i = 0; i < BorderWidth; i++)
             {
-                Graphics.DrawRectangle(new(i, i), Graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), EColors.White);
+                Graphics.DrawRectangle(new(i, i), Graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), EliteColors.White);
             }
         }
 
         public void DrawHyperspaceCountdown(int countdown)
-            => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EColors.White);
+            => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EliteColors.White);
 
-        public void DrawPolygonFilled(Vector2[] points, EColor faceColour, float averageZ)
+        public void DrawPolygonFilled(Vector2[] points, FastColor faceColour, float averageZ)
         {
             int i;
 
@@ -135,7 +135,7 @@ namespace EliteSharp.Graphics
                 }
 
                 i++;
-                Graphics.DrawTextLeft(position, text[previous..i], EColors.White);
+                Graphics.DrawTextLeft(position, text[previous..i], EliteColors.White);
                 previous = i;
                 position.Y += 8 * Graphics.Scale;
             }
@@ -143,12 +143,12 @@ namespace EliteSharp.Graphics
 
         public void DrawViewHeader(string title)
         {
-            Graphics.DrawTextCentre(Top + 10, title, FontSize.Large, EColors.Gold);
-            Graphics.DrawLine(new(Left, 36), new(Right, 36), EColors.White);
+            Graphics.DrawTextCentre(Top + 10, title, FontSize.Large, EliteColors.Gold);
+            Graphics.DrawLine(new(Left, 36), new(Right, 36), EliteColors.White);
 
             // Vertical lines
-            Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), EColors.Yellow);
-            Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), EColors.Yellow);
+            Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), EliteColors.Yellow);
+            Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), EliteColors.Yellow);
         }
 
         public void LoadImages()
@@ -226,7 +226,7 @@ namespace EliteSharp.Graphics
 
             for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
             {
-                EColor colour = _gameState.Config.ShipWireframe ? EColors.White : _polyChain[i].FaceColour;
+                FastColor colour = _gameState.Config.ShipWireframe ? EliteColors.White : _polyChain[i].FaceColour;
 
                 if (_polyChain[i].PointList.Length == 2)
                 {
@@ -341,7 +341,7 @@ namespace EliteSharp.Graphics
                     {
                         for (int psx = 0; psx < sizex; psx++)
                         {
-                            Graphics.DrawPixel(new(position.X + psx, position.Y + psy), EColors.White);
+                            Graphics.DrawPixel(new(position.X + psx, position.Y + psy), EliteColors.White);
                         }
                     }
                 }

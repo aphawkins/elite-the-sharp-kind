@@ -17,7 +17,7 @@ namespace EliteSharp.SDL
                 // exception from being thrown by SDL, add this line before your SDL_Init call:
                 SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
 
-                using SDLGraphics graphics = new();
+                using SDLGraphics graphics = new(960, 540);
                 using SDLSound sound = new();
                 SDLKeyboard keyboard = new();
                 EliteMain game = new(graphics, sound, keyboard);

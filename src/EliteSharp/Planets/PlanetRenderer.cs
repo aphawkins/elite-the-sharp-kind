@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -106,8 +106,8 @@ namespace EliteSharp.Planets
                 {
                     int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
                     int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);
-                    EColor colour = new(_landscape[lx, ly]);
-                    _draw.Graphics.DrawPixelFast(s, colour);
+                    FastColor colour = new(_landscape[lx, ly]);
+                    _draw.Graphics.DrawPixel(s, colour);
                 }
 
                 rx += vx;

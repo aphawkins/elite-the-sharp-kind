@@ -53,7 +53,7 @@ namespace EliteSharp.Views
                     _draw.ScannerTop - 40,
                     "Escape capsule launched - Ship auto-destuct initiated.",
                     FontSize.Small,
-                    EColors.White);
+                    EliteColors.White);
             }
         }
 

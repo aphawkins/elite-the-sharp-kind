@@ -20,7 +20,7 @@ namespace EliteSharp.Tests.Suns
         public void DrawSolidSun()
         {
             // Arrange
-            SolidSun sun = new(_drawMoq.Object, EColors.Cyan);
+            SolidSun sun = new(_drawMoq.Object, EliteColors.Cyan);
 
             // Act
             sun.Draw();
@@ -29,14 +29,14 @@ namespace EliteSharp.Tests.Suns
             _drawMoq.Verify(x => x.Graphics.DrawLine(
                 It.IsAny<Vector2>(),
                 It.IsAny<Vector2>(),
-                It.Is<EColor>(x => x == EColors.Cyan)));
+                It.Is<FastColor>(x => x == EliteColors.Cyan)));
         }
 
         [Fact]
         public void CloneSolidSun()
         {
             // Arrange
-            SolidSun sun = new(_drawMoq.Object, EColors.Cyan);
+            SolidSun sun = new(_drawMoq.Object, EliteColors.Cyan);
 
             // Act
             IObject obj = sun.Clone();

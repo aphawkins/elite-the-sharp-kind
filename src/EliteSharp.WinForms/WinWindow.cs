@@ -1,15 +1,13 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Drawing.Imaging;
 using EliteSharp.Controls;
 
 namespace EliteSharp.WinForms
 {
     internal sealed partial class WinWindow : Form
     {
-        private readonly System.Windows.Forms.Timer _refreshTimer = new();
         private readonly IKeyboard _keyboard;
 
         public WinWindow(int width, int height, IKeyboard keyboard)
@@ -21,16 +19,20 @@ namespace EliteSharp.WinForms
             MaximumSize = new Size(width + 16, height + 39);
             MinimumSize = new Size(width + 16, height + 39);
 
-            _refreshTimer.Interval = 100;
-            _refreshTimer.Tick += (sender, e) => RefreshScreen();
-            _refreshTimer.Start();
-
             _keyboard = keyboard;
-            ScreenBitmap = new Bitmap(screen.Width, screen.Height, PixelFormat.Format32bppArgb);
-            screen.Image = ScreenBitmap;
         }
 
-        internal Bitmap ScreenBitmap { get; }
+        public void SetImage(Image image)
+        {
+            if (screen.InvokeRequired)
+            {
+                screen.Invoke(SetImage, image);
+                return;
+            }
+
+            screen.Image = image;
+            screen.Refresh();
+        }
 
         private void DoThrow(Task t)
         {
@@ -50,7 +52,5 @@ namespace EliteSharp.WinForms
             => _keyboard.KeyDown((CommandKey)e.KeyValue);
 
         private void GameWindow_KeyUp(object sender, KeyEventArgs e) => _keyboard.KeyUp((CommandKey)e.KeyValue);
-
-        private void RefreshScreen() => screen.Refresh();
     }
 }

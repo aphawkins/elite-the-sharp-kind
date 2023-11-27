@@ -31,19 +31,19 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.Grey, new(0x00, 0x00, 0xC4), [3, 2, 1, 0, 4]),
-                new(EColors.LightGrey, new(0x67, 0x8E, 0x58), [6, 10, 5, 0, 1]),
-                new(EColors.DarkGrey, new(0xA9, -0x37, 0x59), [7, 11, 6, 1, 2]),
-                new(EColors.DarkerGrey, new(0x00, -0xB0, 0x58), [8, 12, 7, 2, 3]),
-                new(EColors.LightGrey, new(-0xA9, -0x37, 0x59), [9, 13, 8, 3, 4]),
-                new(EColors.DarkerGrey, new(-0x67, 0x8E, 0x58), [5, 14, 9, 4, 0]),
-                new(EColors.LightGrey, new(0x00, 0xB0, -0x58), [15, 19, 14, 5, 10]),
-                new(EColors.DarkGrey, new(0xA9, 0x37, -0x59), [16, 15, 10, 6, 11]),
-                new(EColors.LightGrey, new(0x67, -0x8E, -0x58), [17, 16, 11, 7, 12]),
-                new(EColors.DarkerGrey, new(-0x67, -0x8E, -0x58), [18, 17, 12, 8, 13]),
-                new(EColors.DarkGrey, new(-0xA9, 0x37, -0x59), [19, 18, 13, 9, 14]),
-                new(EColors.Grey, new(0x00, 0x00, -0xC4), [19, 15, 16, 17, 18]),
-                new(EColors.Black, new(0x00, 0x00, 0xC4), [22, 20, 21, 23]),
+                new(EliteColors.Grey, new(0x00, 0x00, 0xC4), [3, 2, 1, 0, 4]),
+                new(EliteColors.LightGrey, new(0x67, 0x8E, 0x58), [6, 10, 5, 0, 1]),
+                new(EliteColors.DarkGrey, new(0xA9, -0x37, 0x59), [7, 11, 6, 1, 2]),
+                new(EliteColors.DarkerGrey, new(0x00, -0xB0, 0x58), [8, 12, 7, 2, 3]),
+                new(EliteColors.LightGrey, new(-0xA9, -0x37, 0x59), [9, 13, 8, 3, 4]),
+                new(EliteColors.DarkerGrey, new(-0x67, 0x8E, 0x58), [5, 14, 9, 4, 0]),
+                new(EliteColors.LightGrey, new(0x00, 0xB0, -0x58), [15, 19, 14, 5, 10]),
+                new(EliteColors.DarkGrey, new(0xA9, 0x37, -0x59), [16, 15, 10, 6, 11]),
+                new(EliteColors.LightGrey, new(0x67, -0x8E, -0x58), [17, 16, 11, 7, 12]),
+                new(EliteColors.DarkerGrey, new(-0x67, -0x8E, -0x58), [18, 17, 12, 8, 13]),
+                new(EliteColors.DarkGrey, new(-0xA9, 0x37, -0x59), [19, 18, 13, 9, 14]),
+                new(EliteColors.Grey, new(0x00, 0x00, -0xC4), [19, 15, 16, 17, 18]),
+                new(EliteColors.Black, new(0x00, 0x00, 0xC4), [22, 20, 21, 23]),
             ];
             Lines =
             [

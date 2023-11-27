@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -14,39 +14,37 @@ namespace EliteSharp.Graphics
 
         float ScreenWidth { get; }
 
-        void DrawCircle(Vector2 centre, float radius, EColor colour);
+        void DrawCircle(Vector2 centre, float radius, FastColor colour);
 
-        void DrawCircleFilled(Vector2 centre, float radius, EColor colour);
+        void DrawCircleFilled(Vector2 centre, float radius, FastColor colour);
 
         void DrawImage(ImageType image, Vector2 position);
 
         void DrawImageCentre(ImageType image, float y);
 
-        void DrawLine(Vector2 lineStart, Vector2 lineEnd, EColor colour);
+        void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor colour);
 
-        void DrawPixel(Vector2 position, EColor colour);
+        void DrawPixel(Vector2 position, FastColor colour);
 
-        void DrawPixelFast(Vector2 position, EColor colour);
+        void DrawPolygon(Vector2[] points, FastColor lineColour);
 
-        void DrawPolygon(Vector2[] points, EColor lineColour);
+        void DrawPolygonFilled(Vector2[] points, FastColor faceColour);
 
-        void DrawPolygonFilled(Vector2[] points, EColor faceColour);
+        void DrawRectangle(Vector2 position, float width, float height, FastColor colour);
 
-        void DrawRectangle(Vector2 position, float width, float height, EColor colour);
+        void DrawRectangleCentre(float y, float width, float height, FastColor colour);
 
-        void DrawRectangleCentre(float y, float width, float height, EColor colour);
+        void DrawRectangleFilled(Vector2 position, float width, float height, FastColor colour);
 
-        void DrawRectangleFilled(Vector2 position, float width, float height, EColor colour);
+        void DrawTextCentre(float y, string text, FontSize fontSize, FastColor colour);
 
-        void DrawTextCentre(float y, string text, FontSize fontSize, EColor colour);
+        void DrawTextLeft(Vector2 position, string text, FastColor colour);
 
-        void DrawTextLeft(Vector2 position, string text, EColor colour);
+        void DrawTextRight(Vector2 position, string text, FastColor colour);
 
-        void DrawTextRight(Vector2 position, string text, EColor colour);
+        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor colour);
 
-        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, EColor colour);
-
-        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, EColor colour);
+        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor colour);
 
         void LoadBitmap(ImageType imgType, string bitmapPath);
 

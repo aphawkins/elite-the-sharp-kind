@@ -29,22 +29,22 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.Purple, new(0x00, 0x2B, 0x07), [0, 2, 1]),
-                new(EColors.DarkBlue, new(-0x0A, 0x31, 0x07), [1, 2, 3]),
-                new(EColors.DarkBlue, new(0x0A, 0x31, 0x07), [4, 2, 0]),
+                new(EliteColors.Purple, new(0x00, 0x2B, 0x07), [0, 2, 1]),
+                new(EliteColors.DarkBlue, new(-0x0A, 0x31, 0x07), [1, 2, 3]),
+                new(EliteColors.DarkBlue, new(0x0A, 0x31, 0x07), [4, 2, 0]),
 
-                new(EColors.LightGrey, new(-0x3B, -0x1C, -0x65), [3, 2, 6]),
-                new(EColors.DarkerGrey, new(0x00, -0x34, -0x4E), [6, 2, 5]),
-                new(EColors.LightGrey, new(0x3B, -0x1C, -0x65), [5, 2, 4]),
+                new(EliteColors.LightGrey, new(-0x3B, -0x1C, -0x65), [3, 2, 6]),
+                new(EliteColors.DarkerGrey, new(0x00, -0x34, -0x4E), [6, 2, 5]),
+                new(EliteColors.LightGrey, new(0x3B, -0x1C, -0x65), [5, 2, 4]),
 
-                new(EColors.LightBlue, new(-0x48, -0x63, 0x32), [6, 1, 3]),
-                new(EColors.Blue, new(0x00, -0x53, 0x1E), [6, 5, 0, 1]),
-                new(EColors.LightBlue, new(0x48, -0x63, 0x32), [4, 0, 5]),
+                new(EliteColors.LightBlue, new(-0x48, -0x63, 0x32), [6, 1, 3]),
+                new(EliteColors.Blue, new(0x00, -0x53, 0x1E), [6, 5, 0, 1]),
+                new(EliteColors.LightBlue, new(0x48, -0x63, 0x32), [4, 0, 5]),
 
-                new(EColors.LightRed, new(0x00, -0x34, -0x4E), [8, 9, 7]),
+                new(EliteColors.LightRed, new(0x00, -0x34, -0x4E), [8, 9, 7]),
 
-                new(EColors.White, new(0x00, 0x2B, 0x07), [11, 10 /*, 12 */]),
-                new(EColors.White, new(0x00, 0x2B, 0x07), [12, 13 /*, 10 */]),
+                new(EliteColors.White, new(0x00, 0x2B, 0x07), [11, 10 /*, 12 */]),
+                new(EliteColors.White, new(0x00, 0x2B, 0x07), [12, 13 /*, 10 */]),
             ];
             LaserStrength = 8;
             Lines =

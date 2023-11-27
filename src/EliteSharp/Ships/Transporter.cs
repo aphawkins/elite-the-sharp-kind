@@ -33,43 +33,43 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.DarkerGrey, new(0x00, 0x00, -0x67), [5, 4, 3, 2, 1, 0, 6]),
+                new(EliteColors.DarkerGrey, new(0x00, 0x00, -0x67), [5, 4, 3, 2, 1, 0, 6]),
 
-                new(EColors.LightBlue, new(-0x6F, 0x30, -0x07), [9, 8, 1, 2]),
-                new(EColors.Blue, new(-0x69, -0x3F, -0x15), [3, 9, 2]),
-                new(EColors.Purple, new(0x00, -0x22, 0x00), [14, 13, 9, 3, 4, 10]),
-                new(EColors.Blue, new(0x69, -0x3F, -0x15), [5, 10, 4]),
-                new(EColors.LightBlue, new(0x6F, 0x30, -0x07), [11, 10, 5, 6]),
+                new(EliteColors.LightBlue, new(-0x6F, 0x30, -0x07), [9, 8, 1, 2]),
+                new(EliteColors.Blue, new(-0x69, -0x3F, -0x15), [3, 9, 2]),
+                new(EliteColors.Purple, new(0x00, -0x22, 0x00), [14, 13, 9, 3, 4, 10]),
+                new(EliteColors.Blue, new(0x69, -0x3F, -0x15), [5, 10, 4]),
+                new(EliteColors.LightBlue, new(0x6F, 0x30, -0x07), [11, 10, 5, 6]),
 
-                new(EColors.LightGrey, new(0x08, 0x20, 0x03), [6, 0, 7, 11]),
-                new(EColors.DarkGrey, new(-0x08, 0x20, 0x03), [8, 7, 0, 1]),
+                new(EliteColors.LightGrey, new(0x08, 0x20, 0x03), [6, 0, 7, 11]),
+                new(EliteColors.DarkGrey, new(-0x08, 0x20, 0x03), [8, 7, 0, 1]),
 
-                new(EColors.LightBlue, new(-0x4B, 0x20, 0x4F), [13, 12, 8, 9]),
-                new(EColors.LightBlue, new(0x4B, 0x20, 0x4F), [15, 14, 10, 11]),
+                new(EliteColors.LightBlue, new(-0x4B, 0x20, 0x4F), [13, 12, 8, 9]),
+                new(EliteColors.LightBlue, new(0x4B, 0x20, 0x4F), [15, 14, 10, 11]),
 
-                new(EColors.LightGrey, new(-0x08, 0x22, 0x0B), [8, 12, 7]),
-                new(EColors.DarkGrey, new(0x08, 0x22, 0x0B), [7, 15, 11]),
-                new(EColors.Grey, new(0x00, 0x26, 0x11), [7, 12, 15]),
+                new(EliteColors.LightGrey, new(-0x08, 0x22, 0x0B), [8, 12, 7]),
+                new(EliteColors.DarkGrey, new(0x08, 0x22, 0x0B), [7, 15, 11]),
+                new(EliteColors.Grey, new(0x00, 0x26, 0x11), [7, 12, 15]),
 
-                new(EColors.LighterGrey, new(0x00, 0x00, 0x79), [15, 12, 13, 14]),
-                new(EColors.LightRed, new(0x00, 0x00, -0x67), [35, 34, 33, 36]),
+                new(EliteColors.LighterGrey, new(0x00, 0x00, 0x79), [15, 12, 13, 14]),
+                new(EliteColors.LightRed, new(0x00, 0x00, -0x67), [35, 34, 33, 36]),
 
-                new(EColors.White, new(0x00, -0x22, 0x00), [30, 29 /*, 31 */]),
-                new(EColors.White, new(0x00, -0x22, 0x00), [31, 32 /*, 29 */]),
+                new(EliteColors.White, new(0x00, -0x22, 0x00), [30, 29 /*, 31 */]),
+                new(EliteColors.White, new(0x00, -0x22, 0x00), [31, 32 /*, 29 */]),
 
-                new(EColors.White, new(-0x08, 0x20, 0x03), [17, 16 /*, 18 */]),
-                new(EColors.White, new(-0x08, 0x20, 0x03), [18, 19 /*, 16 */]),
-                new(EColors.White, new(-0x08, 0x20, 0x03), [18, 20 /*, 19 */]),
-                new(EColors.White, new(-0x08, 0x20, 0x03), [20, 21 /*, 18 */]),
-                new(EColors.White, new(-0x08, 0x20, 0x03), [20, 19 /*, 21 */]),
+                new(EliteColors.White, new(-0x08, 0x20, 0x03), [17, 16 /*, 18 */]),
+                new(EliteColors.White, new(-0x08, 0x20, 0x03), [18, 19 /*, 16 */]),
+                new(EliteColors.White, new(-0x08, 0x20, 0x03), [18, 20 /*, 19 */]),
+                new(EliteColors.White, new(-0x08, 0x20, 0x03), [20, 21 /*, 18 */]),
+                new(EliteColors.White, new(-0x08, 0x20, 0x03), [20, 19 /*, 21 */]),
 
-                new(EColors.White, new(0x08, 0x20, 0x03), [23, 22 /*, 26 */]),
-                new(EColors.White, new(0x08, 0x20, 0x03), [25, 26 /*, 23 */]),
-                new(EColors.White, new(0x08, 0x20, 0x03), [24, 22 /*, 25 */]),
-                new(EColors.White, new(0x08, 0x20, 0x03), [24, 23 /*, 22 */]),
-                new(EColors.White, new(0x08, 0x20, 0x03), [28, 27 /*, 23 */]),
-                new(EColors.White, new(0x08, 0x20, 0x03), [25, 27 /*, 22 */]),
-                new(EColors.White, new(0x08, 0x20, 0x03), [27, 26 /*, 22 */]),
+                new(EliteColors.White, new(0x08, 0x20, 0x03), [23, 22 /*, 26 */]),
+                new(EliteColors.White, new(0x08, 0x20, 0x03), [25, 26 /*, 23 */]),
+                new(EliteColors.White, new(0x08, 0x20, 0x03), [24, 22 /*, 25 */]),
+                new(EliteColors.White, new(0x08, 0x20, 0x03), [24, 23 /*, 22 */]),
+                new(EliteColors.White, new(0x08, 0x20, 0x03), [28, 27 /*, 23 */]),
+                new(EliteColors.White, new(0x08, 0x20, 0x03), [25, 27 /*, 22 */]),
+                new(EliteColors.White, new(0x08, 0x20, 0x03), [27, 26 /*, 22 */]),
             ];
             LaserFront = 12;
             Lines =

@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -130,15 +130,15 @@ namespace EliteSharp.Suns
             {
                 float distance = (dx * dx) + dy;
 
-                EColor colour = distance < inner
-                    ? EColors.White
+                FastColor colour = distance < inner
+                    ? EliteColors.White
                     : distance < inner2
-                        ? EColors.LightYellow
+                        ? EliteColors.LightYellow
                         : distance < outer
-                            ? EColors.LightOrange
-                            : ((int)s.X ^ (int)y).IsOdd() ? EColors.Orange : EColors.DarkOrange;
+                            ? EliteColors.LightOrange
+                            : ((int)s.X ^ (int)y).IsOdd() ? EliteColors.Orange : EliteColors.DarkOrange;
 
-                _draw.Graphics.DrawPixelFast(s, colour);
+                _draw.Graphics.DrawPixel(s, colour);
             }
         }
     }

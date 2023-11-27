@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -47,10 +47,10 @@ namespace EliteSharp.Views
         {
             _draw.Graphics.DrawImageCentre(ImageType.EliteText, _draw.Top + 10);
 
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 90, "Original Game (C) I.Bell & D.Braben.", FontSize.Small, EColors.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 70, "The New Kind - Christian Pinder.", FontSize.Small, EColors.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 50, "The Sharp Kind - Andy Hawkins.", FontSize.Small, EColors.White);
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Load New Commander (Y/N)?", FontSize.Large, EColors.Gold);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 90, "Original Game (C) I.Bell & D.Braben.", FontSize.Small, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 70, "The New Kind - Christian Pinder.", FontSize.Small, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 50, "The Sharp Kind - Andy Hawkins.", FontSize.Small, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Load New Commander (Y/N)?", FontSize.Large, EliteColors.Gold);
         }
 
         public void HandleInput()

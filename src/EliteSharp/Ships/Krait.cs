@@ -26,24 +26,24 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.DarkBlue, new(0x03, 0x18, 0x03), [0, 3, 1]),
-                new(EColors.Blue, new(0x03, -0x18, 0x03), [2, 3, 0]),
+                new(EliteColors.DarkBlue, new(0x03, 0x18, 0x03), [0, 3, 1]),
+                new(EliteColors.Blue, new(0x03, -0x18, 0x03), [2, 3, 0]),
 
-                new(EColors.DarkBlue, new(-0x03, -0x18, 0x03), [0, 4, 2]),
-                new(EColors.Blue, new(-0x03, 0x18, 0x03), [1, 4, 0]),
+                new(EliteColors.DarkBlue, new(-0x03, -0x18, 0x03), [0, 4, 2]),
+                new(EliteColors.Blue, new(-0x03, 0x18, 0x03), [1, 4, 0]),
 
-                new(EColors.DarkerGrey, new(0x26, 0x00, -0x4D), [3, 2, 1]),
-                new(EColors.LightGrey, new(-0x26, 0x00, -0x4D), [4, 1, 2]),
+                new(EliteColors.DarkerGrey, new(0x26, 0x00, -0x4D), [3, 2, 1]),
+                new(EliteColors.LightGrey, new(-0x26, 0x00, -0x4D), [4, 1, 2]),
 
-                new(EColors.White, new(0x03, -0x18, 0x03), [3, 5]),
-                new(EColors.White, new(0x03, 0x18, 0x03), [5, 3]),
-                new(EColors.White, new(-0x03, 0x18, 0x03), [4, 6]),
-                new(EColors.White, new(-0x03, -0x18, 0x03), [6, 4]),
+                new(EliteColors.White, new(0x03, -0x18, 0x03), [3, 5]),
+                new(EliteColors.White, new(0x03, 0x18, 0x03), [5, 3]),
+                new(EliteColors.White, new(-0x03, 0x18, 0x03), [4, 6]),
+                new(EliteColors.White, new(-0x03, -0x18, 0x03), [6, 4]),
 
-                new(EColors.LighterRed, new(0x26, 0x00, -0x4D), [12, 11, 13]),
-                new(EColors.LighterRed, new(-0x26, 0x00, -0x4D), [16, 14, 15]),
-                new(EColors.White, new(0x03, 0x18, 0x03), [7, 10, 8]),
-                new(EColors.White, new(-0x03, 0x18, 0x03), [8, 9, 7]),
+                new(EliteColors.LighterRed, new(0x26, 0x00, -0x4D), [12, 11, 13]),
+                new(EliteColors.LighterRed, new(-0x26, 0x00, -0x4D), [16, 14, 15]),
+                new(EliteColors.White, new(0x03, 0x18, 0x03), [7, 10, 8]),
+                new(EliteColors.White, new(-0x03, 0x18, 0x03), [8, 9, 7]),
             ];
             LaserStrength = 8;
             Lines =

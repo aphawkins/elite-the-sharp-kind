@@ -9,11 +9,12 @@ namespace EliteSharp.Benchmarks
 {
     public class SoftwareGraphicsBenchmarks : IDisposable
     {
-        private readonly EBitmap _buffer = new(512, 512);
+        private const int ScreenWidth = 512;
+        private const int ScreenHeight = 512;
         private readonly SoftwareGraphics _graphics;
         private bool _disposedValue;
 
-        public SoftwareGraphicsBenchmarks() => _graphics = new(_buffer);
+        public SoftwareGraphicsBenchmarks() => _graphics = new(ScreenWidth, ScreenHeight, (_) => { });
 
         public void Dispose()
         {
@@ -26,19 +27,16 @@ namespace EliteSharp.Benchmarks
         public void Clear() => _graphics.Clear();
 
         [Benchmark]
-        public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, EColors.White);
+        public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, EliteColors.White);
 
         [Benchmark]
-        public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, EColors.White);
+        public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, EliteColors.White);
 
         [Benchmark]
-        public void DrawLine() => _graphics.DrawLine(new(0, 0), new(511, 511), EColors.White);
+        public void DrawLine() => _graphics.DrawLine(new(0, 0), new(511, 511), EliteColors.White);
 
         [Benchmark]
-        public void DrawPixel() => _graphics.DrawPixel(new(255, 255), EColors.White);
-
-        [Benchmark]
-        public void DrawPixelFast() => _graphics.DrawPixelFast(new(255, 255), EColors.White);
+        public void DrawPixel() => _graphics.DrawPixel(new(255, 255), EliteColors.White);
 
         protected virtual void Dispose(bool disposing)
         {

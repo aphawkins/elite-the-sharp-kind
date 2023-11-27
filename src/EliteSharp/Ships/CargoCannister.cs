@@ -26,15 +26,15 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.Grey, new(0x60, 0x00, 0x00), [4, 0, 1, 2, 3]),
+                new(EliteColors.Grey, new(0x60, 0x00, 0x00), [4, 0, 1, 2, 3]),
 
-                new(EColors.DarkGrey, new(0x00, 0x29, 0x1E), [5, 6, 1, 0]),
-                new(EColors.LightGrey, new(0x00, -0x12, 0x30), [6, 7, 2, 1]),
-                new(EColors.DarkerGrey, new(0x00, -0x33, 0x00), [7, 8, 3, 2]),
-                new(EColors.LightGrey, new(0x00, -0x12, -0x30), [8, 9, 4, 3]),
-                new(EColors.DarkerGrey, new(0x00, 0x29, -0x1E), [9, 5, 0, 4]),
+                new(EliteColors.DarkGrey, new(0x00, 0x29, 0x1E), [5, 6, 1, 0]),
+                new(EliteColors.LightGrey, new(0x00, -0x12, 0x30), [6, 7, 2, 1]),
+                new(EliteColors.DarkerGrey, new(0x00, -0x33, 0x00), [7, 8, 3, 2]),
+                new(EliteColors.LightGrey, new(0x00, -0x12, -0x30), [8, 9, 4, 3]),
+                new(EliteColors.DarkerGrey, new(0x00, 0x29, -0x1E), [9, 5, 0, 4]),
 
-                new(EColors.Grey, new(-0x60, 0x00, 0x00), [8, 7, 6, 5, 9]),
+                new(EliteColors.Grey, new(-0x60, 0x00, 0x00), [8, 7, 6, 5, 9]),
             ];
             Lines =
             [

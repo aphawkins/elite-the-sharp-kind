@@ -25,20 +25,20 @@ namespace EliteSharp.Ships
             ];
             Faces =
             [
-                new(EColors.LightGrey, new(-0x10, 0x2E, 0x04), [2, 1, 0, 3]),
-                new(EColors.DarkGrey, new(-0x10, -0x2E, 0x04), [4, 1, 2]),
-                new(EColors.Grey, new(0x00, -0x1B, 0x05), [4, 5, 0, 1]),
-                new(EColors.DarkGrey, new(0x10, -0x2E, 0x04), [6, 5, 4]),
-                new(EColors.DarkGrey, new(0x10, 0x2E, 0x04), [5, 6, 3, 0]),
-                new(EColors.DarkerGrey, new(0x00, 0x00, -0xA0), [6, 4, 2, 3]),
+                new(EliteColors.LightGrey, new(-0x10, 0x2E, 0x04), [2, 1, 0, 3]),
+                new(EliteColors.DarkGrey, new(-0x10, -0x2E, 0x04), [4, 1, 2]),
+                new(EliteColors.Grey, new(0x00, -0x1B, 0x05), [4, 5, 0, 1]),
+                new(EliteColors.DarkGrey, new(0x10, -0x2E, 0x04), [6, 5, 4]),
+                new(EliteColors.DarkGrey, new(0x10, 0x2E, 0x04), [5, 6, 3, 0]),
+                new(EliteColors.DarkerGrey, new(0x00, 0x00, -0xA0), [6, 4, 2, 3]),
 
-                new(EColors.DarkYellow, new(-0x10, -0x2E, 0x04), [1, 2, 8, 7]),
-                new(EColors.DarkYellow, new(-0x10, 0x2E, 0x04), [7, 8, 2, 1]),
-                new(EColors.DarkYellow, new(0x10, 0x2E, 0x04), [5, 6, 10, 9]),
-                new(EColors.DarkYellow, new(0x10, -0x2E, 0x04), [9, 10, 6, 5]),
+                new(EliteColors.DarkYellow, new(-0x10, -0x2E, 0x04), [1, 2, 8, 7]),
+                new(EliteColors.DarkYellow, new(-0x10, 0x2E, 0x04), [7, 8, 2, 1]),
+                new(EliteColors.DarkYellow, new(0x10, 0x2E, 0x04), [5, 6, 10, 9]),
+                new(EliteColors.DarkYellow, new(0x10, -0x2E, 0x04), [9, 10, 6, 5]),
 
-                new(EColors.DarkBlue, new(-0x10, 0x2E, 0x04), [12, 13, 11]),
-                new(EColors.Blue, new(0x10, 0x2E, 0x04), [11, 14, 12]),
+                new(EliteColors.DarkBlue, new(-0x10, 0x2E, 0x04), [12, 13, 11]),
+                new(EliteColors.Blue, new(0x10, 0x2E, 0x04), [11, 14, 12]),
 
                 //new(8,     0x00,  0x00, -0xA0, 3, 15, 16, 19, 0, 0, 0, 0, 0),
                 //new(8,     0x00,  0x00, -0xA0, 3, 19, 18, 17, 0, 0, 0, 0, 0),
