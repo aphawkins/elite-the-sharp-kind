@@ -126,8 +126,8 @@ namespace EliteSharp
 #if DEBUG
         private void DrawFps()
         {
-            _graphics.DrawTextLeft(new(_draw.Right - 65, _draw.Top + 10), $"FPS: {_lockObj.FramesDrawn.Count}", EliteColors.White);
-            _graphics.DrawTextLeft(new(_draw.Right - 65, _draw.Top + 25), $"MISS: {_lockObj.Missed}", EliteColors.White);
+            _graphics.DrawTextLeft(new(_draw.Right - 65, _draw.Top + 3), $"FPS: {_lockObj.FramesDrawn.Count}", EliteColors.White);
+            _graphics.DrawTextLeft(new(_draw.Right - 65, _draw.Top + 18), $"MISS: {_lockObj.Missed}", EliteColors.White);
 
             if (_lockObj.FramesDrawn.Count > 0)
             {
