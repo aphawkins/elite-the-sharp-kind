@@ -124,41 +124,12 @@ namespace EliteSharp.Graphics
         }
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor colour)
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                DrawPixel(new(i, i), colour);
-            }
-
-            ////float dx = MathF.Abs(lineStart.X - lineEnd.X);
-            ////float dy = MathF.Abs(lineStart.Y - lineEnd.Y);
-            ////int sx = lineStart.X <= lineEnd.X ? 1 : -1;
-            ////int sy = lineStart.Y <= lineEnd.Y ? 1 : -1;
-            ////float err = dx - dy;
-
-            ////while (true)
-            ////{
-            ////    DrawPixel(lineStart, colour);
-
-            ////    if ((int)lineStart.X == (int)lineEnd.X && (int)lineStart.Y == (int)lineEnd.Y)
-            ////    {
-            ////        break;
-            ////    }
-
-            ////    float err2 = 2 * err;
-            ////    if (err2 > -dy)
-            ////    {
-            ////        err -= dy;
-            ////        lineStart.X += sx;
-            ////    }
-
-            ////    if (err2 < dx)
-            ////    {
-            ////        err += dx;
-            ////        lineStart.Y += sy;
-            ////    }
-            ////}
-        }
+            => DrawLineInt(
+                (int)Math.Round(lineStart.X),
+                (int)Math.Round(lineStart.Y),
+                (int)Math.Round(lineEnd.X),
+                (int)Math.Round(lineEnd.Y),
+                colour);
 
         public void DrawPixel(Vector2 position, FastColor colour)
         {
@@ -179,16 +150,24 @@ namespace EliteSharp.Graphics
         }
 
         public void DrawRectangle(Vector2 position, float width, float height, FastColor colour)
-        {
-        }
+            => DrawRectangleInt(
+                (int)Math.Round(position.X),
+                (int)Math.Round(position.Y),
+                (int)Math.Round(width),
+                (int)Math.Round(height),
+                colour);
 
         public void DrawRectangleCentre(float y, float width, float height, FastColor colour)
         {
         }
 
         public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor colour)
-        {
-        }
+            => DrawRectangleFilledInt(
+                (int)Math.Round(position.X),
+                (int)Math.Round(position.Y),
+                (int)Math.Round(width),
+                (int)Math.Round(height),
+                colour);
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor colour)
         {
@@ -238,6 +217,85 @@ namespace EliteSharp.Graphics
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
                 _isDisposed = true;
+            }
+        }
+
+        private void DrawLineInt(int startX, int startY, int endX, int endY, in FastColor colour)
+        {
+            int deltaX = Math.Abs(endX - startX);
+            int deltaY = Math.Abs(endY - startY);
+
+            int signX = Math.Sign(endX - startX);
+            int signY = Math.Sign(endY - startY);
+
+            int error = deltaX - deltaY;
+
+            int currentX = startX;
+            int currentY = startY;
+
+            while (true)
+            {
+                if (currentX >= 0 && currentX < ScreenWidth && currentY >= 0 && currentY < ScreenHeight)
+                {
+                    _screen.SetPixel(currentX, currentY, colour);
+                }
+
+                if (currentX == endX && currentY == endY)
+                {
+                    break;
+                }
+
+                float doubleError = error * 2;
+
+                if (doubleError > -deltaY)
+                {
+                    error -= deltaY;
+                    currentX += signX;
+                }
+
+                if (doubleError < deltaX)
+                {
+                    error += deltaX;
+                    currentY += signY;
+                }
+            }
+        }
+
+        private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in FastColor colour)
+        {
+            startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth);
+            startY = Math.Min(Math.Max(startY, 0), (int)ScreenWidth);
+            int endX = Math.Min(Math.Max(startX + width, 0), (int)ScreenWidth);
+            int endY = Math.Min(Math.Max(startY + height, 0), (int)ScreenWidth);
+
+            // Draw horizontal lined
+            for (int x = startX; x <= endX; x++)
+            {
+                for (int y = startY; y <= endY; y++)
+                {
+                    _screen.SetPixel(x, y, colour);
+                }
+            }
+        }
+
+        private void DrawRectangleInt(int startX, int startY, int width, int height, in FastColor colour)
+        {
+            startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth);
+            startY = Math.Min(Math.Max(startY, 0), (int)ScreenWidth);
+            int endX = Math.Min(Math.Max(startX + width, 0), (int)ScreenWidth);
+            int endY = Math.Min(Math.Max(startY + height, 0), (int)ScreenWidth);
+
+            // Draw horizontal lines
+            for (int x = startX; x <= endX; x++)
+            {
+                _screen.SetPixel(x, startY, colour);
+                _screen.SetPixel(x, endY, colour);
+            }
+
+            for (int y = startY; y <= endY; y++)
+            {
+                _screen.SetPixel(startX, y, colour);
+                _screen.SetPixel(endX, y, colour);
             }
         }
 
