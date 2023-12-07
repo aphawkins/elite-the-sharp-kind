@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -85,7 +85,7 @@ namespace EliteSharp
         /// <summary>
         /// Generates a random number from zero to the exclusive upper bound.
         /// </summary>
-        /// <param name="toExclusive"></param>
+        /// <param name="toExclusive">The exclusive upper bound of the random range.</param>
         /// <returns>A random number.</returns>
         internal static int Random(int toExclusive) => Random(0, toExclusive);
 

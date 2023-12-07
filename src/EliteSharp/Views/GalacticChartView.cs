@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -224,8 +224,6 @@ namespace EliteSharp.Views
         /// <summary>
         /// Move the planet chart cross hairs to specified position.
         /// </summary>
-        /// <param name="dx"></param>
-        /// <param name="dy"></param>
         private void MoveCross(int dx, int dy)
         {
             _crossTimer = 5;

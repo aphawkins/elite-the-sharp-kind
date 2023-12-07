@@ -279,8 +279,6 @@ namespace EliteSharp.Views
         /// <summary>
         /// Move the planet chart cross hairs to specified position.
         /// </summary>
-        /// <param name="dx"></param>
-        /// <param name="dy"></param>
         private void MoveCross(int dx, int dy)
         {
             _crossTimer = 5;

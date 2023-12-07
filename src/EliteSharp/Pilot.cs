@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -186,8 +186,6 @@ namespace EliteSharp
         /// <summary>
         /// Fly to a given point in space.
         /// </summary>
-        /// <param name="ship"></param>
-        /// <param name="vec"></param>
         private static void FlyToVector(IShip ship, Vector3 vec)
         {
             Vector3 nvec;
@@ -256,7 +254,6 @@ namespace EliteSharp
         /// <summary>
         /// Final stage of docking. Fly into the docking bay.
         /// </summary>
-        /// <param name="ship"></param>
         private void FlyToDockingBay(IShip ship)
         {
             Vector3 diff = ship.Location - _universe.StationOrSun!.Location;

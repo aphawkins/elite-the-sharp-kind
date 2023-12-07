@@ -112,9 +112,6 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Calculate a square on the midpoint map.
         /// </summary>
-        /// <param name="tx"></param>
-        /// <param name="ty"></param>
-        /// <param name="w"></param>
         private void MidpointSquare(int tx, int ty, int w)
         {
             int d = w / 2;
