@@ -179,8 +179,7 @@ namespace EliteSharp.Graphics
                 colour);
 
         public void DrawRectangleCentre(float y, float width, float height, FastColor colour)
-        {
-        }
+            => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, colour);
 
         public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor colour)
             => DrawRectangleFilledInt(
