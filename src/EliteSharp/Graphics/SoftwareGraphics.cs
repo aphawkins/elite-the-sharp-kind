@@ -289,38 +289,36 @@ namespace EliteSharp.Graphics
 
         private void DrawLineInt(int startX, int startY, int endX, int endY, in FastColor colour)
         {
-            int deltaX = Math.Abs(endX - startX);
-            int deltaY = Math.Abs(endY - startY);
-
-            int signX = Math.Sign(endX - startX);
-            int signY = Math.Sign(endY - startY);
-
-            int error = deltaX - deltaY;
-
-            int currentX = startX;
-            int currentY = startY;
-
-            while (true)
+            if (Math.Abs(endX - startX) > Math.Abs(endY - startY))
             {
-                DrawPixel(currentX, currentY, colour);
-
-                if (currentX == endX && currentY == endY)
+                // Line is horizontal-ish
+                // Make sure startX < endX
+                if (startX > endX)
                 {
-                    break;
+                    (endX, startX) = (startX, endX);
+                    (endY, startY) = (startY, endY);
                 }
 
-                float doubleError = error * 2;
-
-                if (doubleError > -deltaY)
+                int[] ys = Interpolate(startX, startY, endX, endY);
+                for (int x = startX; x <= endX; x++)
                 {
-                    error -= deltaY;
-                    currentX += signX;
+                    _screen.SetPixel(x, ys[x - startX], colour);
+                }
+            }
+            else
+            {
+                // Line is vertical-ish
+                // Make sure startY < endY
+                if (startY > endY)
+                {
+                    (endX, startX) = (startX, endX);
+                    (endY, startY) = (startY, endY);
                 }
 
-                if (doubleError < deltaX)
+                int[] xs = Interpolate(startY, startX, endY, endX);
+                for (int y = startY; y <= endY; y++)
                 {
-                    error += deltaX;
-                    currentY += signY;
+                    _screen.SetPixel(xs[y - startY], y, colour);
                 }
             }
         }
