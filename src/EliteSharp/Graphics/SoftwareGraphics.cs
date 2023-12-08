@@ -125,10 +125,10 @@ namespace EliteSharp.Graphics
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor colour)
             => DrawLineInt(
-                (int)Math.Round(lineStart.X),
-                (int)Math.Round(lineStart.Y),
-                (int)Math.Round(lineEnd.X),
-                (int)Math.Round(lineEnd.Y),
+                (int)MathF.Floor(lineStart.X),
+                (int)MathF.Floor(lineStart.Y),
+                (int)MathF.Floor(lineEnd.X),
+                (int)MathF.Floor(lineEnd.Y),
                 colour);
 
         public void DrawPixel(Vector2 position, FastColor colour)
@@ -143,18 +143,39 @@ namespace EliteSharp.Graphics
 
         public void DrawPolygon(Vector2[] points, FastColor lineColour)
         {
+            if (points == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                DrawLine(points[i], points[i + 1], lineColour);
+            }
+
+            DrawLine(points[0], points[^1], lineColour);
         }
 
         public void DrawPolygonFilled(Vector2[] points, FastColor faceColour)
         {
+            if (points == null)
+            {
+                return;
+            }
+
+            // Create triangles of which each share the first vertex
+            for (int i = 1; i < points.Length - 1; i++)
+            {
+                DrawTriangleFilled(points[0], points[i], points[i + 1], faceColour);
+            }
         }
 
         public void DrawRectangle(Vector2 position, float width, float height, FastColor colour)
             => DrawRectangleInt(
-                (int)Math.Round(position.X),
-                (int)Math.Round(position.Y),
-                (int)Math.Round(width),
-                (int)Math.Round(height),
+                (int)MathF.Floor(position.X),
+                (int)MathF.Floor(position.Y),
+                (int)MathF.Floor(width),
+                (int)MathF.Floor(height),
                 colour);
 
         public void DrawRectangleCentre(float y, float width, float height, FastColor colour)
@@ -163,10 +184,10 @@ namespace EliteSharp.Graphics
 
         public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor colour)
             => DrawRectangleFilledInt(
-                (int)Math.Round(position.X),
-                (int)Math.Round(position.Y),
-                (int)Math.Round(width),
-                (int)Math.Round(height),
+                (int)MathF.Floor(position.X),
+                (int)MathF.Floor(position.Y),
+                (int)MathF.Floor(width),
+                (int)MathF.Floor(height),
                 colour);
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor colour)
@@ -183,10 +204,49 @@ namespace EliteSharp.Graphics
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor colour)
         {
+            DrawLine(a, b, colour);
+            DrawLine(b, c, colour);
+            DrawLine(c, a, colour);
         }
 
         public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor colour)
         {
+            // Sort the points so that a <= b <= c
+            (a, b, c) = SortPointsByY(a, b, c);
+
+            // Compute the x coordinates of the triangle edges
+            int[] ab = Interpolate(a.Y, a.X, b.Y, b.X);
+            int[] bc = Interpolate(b.Y, b.X, c.Y, c.X);
+            int[] ac = Interpolate(a.Y, a.X, c.Y, c.X);
+
+            // Concatenate the short sides
+            ab = ab.Length > 0 ? ab[..^1] : ab;  // all items in the array except the last
+            int[] abc = [.. ab, .. bc];
+
+            // Determine which is left and which is right
+            int m = abc.Length / 2;
+            int[] leftX = abc;
+            int[] rightX = ac;
+
+            if (ac.Length > m && abc.Length > m && ac[m] < abc[m])
+            {
+                (leftX, rightX) = (rightX, leftX);
+            }
+
+            // Draw the horizontal segments
+            int ay = (int)MathF.Floor(a.Y);
+            int cy = (int)Math.Floor(c.Y);
+
+            for (int y = ay; y <= cy; y++)
+            {
+                if (leftX.Length > y - ay && rightX.Length > y - ay)
+                {
+                    for (int x = leftX[y - ay]; x <= rightX[y - ay]; x++)
+                    {
+                        DrawPixel(x, y, colour);
+                    }
+                }
+            }
         }
 
         public void LoadBitmap(ImageType imgType, string bitmapPath)
@@ -202,6 +262,13 @@ namespace EliteSharp.Graphics
 
         public void SetClipRegion(Vector2 position, float width, float height)
         {
+        }
+
+        private static (Vector2 A, Vector2 B, Vector2 C) SortPointsByY(Vector2 a, Vector2 b, Vector2 c)
+        {
+            Vector2[] sorted = [a, b, c];
+            Array.Sort(sorted, (i, j) => i.Y.CompareTo(j.Y));
+            return (sorted[0], sorted[1], sorted[2]);
         }
 
         private void Dispose(bool disposing)
@@ -235,10 +302,7 @@ namespace EliteSharp.Graphics
 
             while (true)
             {
-                if (currentX >= 0 && currentX < ScreenWidth && currentY >= 0 && currentY < ScreenHeight)
-                {
-                    _screen.SetPixel(currentX, currentY, colour);
-                }
+                DrawPixel(currentX, currentY, colour);
 
                 if (currentX == endX && currentY == endY)
                 {
@@ -259,6 +323,16 @@ namespace EliteSharp.Graphics
                     currentY += signY;
                 }
             }
+        }
+
+        private void DrawPixel(int x, int y, in FastColor colour)
+        {
+            if (x < 0 || y < 0 || x >= ScreenWidth || y >= ScreenHeight)
+            {
+                return;
+            }
+
+            _screen.SetPixel(x, y, colour);
         }
 
         private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in FastColor colour)
@@ -297,6 +371,30 @@ namespace EliteSharp.Graphics
                 _screen.SetPixel(startX, y, colour);
                 _screen.SetPixel(endX, y, colour);
             }
+        }
+
+        private int[] Interpolate(float i0, float d0, float i1, float d1)
+        {
+            if ((int)MathF.Floor(i0) == (int)MathF.Floor(i1))
+            {
+                return [(int)MathF.Floor(d0)];
+            }
+
+            List<int> values = [];
+
+            float a = (d1 - d0) / (i1 - i0);
+            float d = d0;
+            for (int i = (int)MathF.Floor(i0); i <= (int)MathF.Floor(i1); i++)
+            {
+                if (d >= 0 && d <= ScreenWidth)
+                {
+                    values.Add((int)MathF.Floor(d));
+                }
+
+                d += a;
+            }
+
+            return [.. values];
         }
 
         // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources

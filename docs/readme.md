@@ -124,3 +124,6 @@ sudo apt-get install libsdl2-mixer-dev
 - Check for hidden surface supplied by T.Harte.  
 
 The original Elite code is (C) I.Bell & D.Braben 1984.  
+
+Gabriel Gambetta - Computer Graphics from Scratch
+https://gabrielgambetta.com/computer-graphics-from-scratch/
