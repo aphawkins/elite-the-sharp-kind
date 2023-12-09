@@ -9,7 +9,7 @@ namespace EliteSharp.Graphics
 {
     public sealed class SoftwareGraphics : IGraphics
     {
-        ////private readonly ConcurrentDictionary<ImageType, EBitmap> _images = new();
+        ////private readonly ConcurrentDictionary<ImageType, FastBitmap> _images = new();
         private readonly FastBitmap _screen;
         private readonly Action<FastBitmap> _screenUpdate;
         private bool _isDisposed;
@@ -254,7 +254,8 @@ namespace EliteSharp.Graphics
             ////using FileStream stream = new(bitmapPath, FileMode.Open);
             ////stream.CopyToAsync(memStream).ConfigureAwait(false);
             ////memStream.Position = 0;
-            ////_images[imgType] = new(memStream.ToArray());
+            ////using BitmapFile bitmap = new(memStream.ToArray());
+            ////_images[imgType] = bitmap.BitmapBytes!;
         }
 
         public void ScreenUpdate() => _screenUpdate(_screen);
@@ -301,7 +302,10 @@ namespace EliteSharp.Graphics
                 int[] ys = Interpolate(startX, startY, endX, endY);
                 for (int x = startX; x <= endX; x++)
                 {
-                    _screen.SetPixel(x, ys[x - startX], colour);
+                    if ((x - startX) < ys.Length)
+                    {
+                        DrawPixel(x, ys[x - startX], colour);
+                    }
                 }
             }
             else
@@ -317,7 +321,10 @@ namespace EliteSharp.Graphics
                 int[] xs = Interpolate(startY, startX, endY, endX);
                 for (int y = startY; y <= endY; y++)
                 {
-                    _screen.SetPixel(xs[y - startY], y, colour);
+                    if ((y - startY) < xs.Length)
+                    {
+                        DrawPixel(xs[y - startY], y, colour);
+                    }
                 }
             }
         }
