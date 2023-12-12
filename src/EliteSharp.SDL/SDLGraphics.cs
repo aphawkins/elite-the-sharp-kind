@@ -479,7 +479,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath)
+        public void LoadImage(ImageType imgType, string bitmapPath)
         {
             if (_isDisposed)
             {

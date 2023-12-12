@@ -33,7 +33,7 @@ namespace EliteSharp.WinForms
 
             foreach (FastColor colour in EliteColors.AllColors())
             {
-                Pen pen = new(Color.FromArgb(colour.Argb));
+                Pen pen = new(Color.FromArgb((int)colour.Argb));
                 _pens.Add(colour, pen);
             }
         }
@@ -128,7 +128,7 @@ namespace EliteSharp.WinForms
                 return;
             }
 
-            _fastScreen.SetPixel((int)position.X, (int)position.Y, _pens[colour].Color.ToArgb());
+            _fastScreen.SetPixel((int)position.X, (int)position.Y, (uint)_pens[colour].Color.ToArgb());
         }
 
         public void DrawPolygon(Vector2[] points, FastColor lineColour)
@@ -287,7 +287,7 @@ namespace EliteSharp.WinForms
             _screenGraphics.FillPolygon(_pens[colour].Brush, points);
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath)
+        public void LoadImage(ImageType imgType, string bitmapPath)
             => _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
 
         public void ScreenUpdate()

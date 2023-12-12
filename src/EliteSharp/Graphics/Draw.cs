@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -156,7 +156,7 @@ namespace EliteSharp.Graphics
             AssetPaths loader = new();
             Parallel.ForEach(
                 Enum.GetValues<ImageType>(),
-                (img) => Graphics.LoadBitmap(img, loader.AssetPath(img)));
+                (img) => Graphics.LoadImage(img, loader.AssetPath(img)));
         }
 
         public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);

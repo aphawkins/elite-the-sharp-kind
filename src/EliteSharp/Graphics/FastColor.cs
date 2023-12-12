@@ -6,10 +6,8 @@ namespace EliteSharp.Graphics
 {
     public readonly struct FastColor : IEquatable<FastColor>
     {
-        public FastColor(int argbColour)
+        public FastColor(uint argbColour)
         {
-            argbColour |= 0xFF << 24;
-
             Argb = argbColour;
 
             A = (byte)(argbColour >> 24);
@@ -20,19 +18,17 @@ namespace EliteSharp.Graphics
 
         public FastColor(byte a, byte r, byte g, byte b)
         {
-            a |= 0xFF;
-
             A = a;
             R = r;
             G = g;
             B = b;
 
-            Argb = (a << 24) | (r << 16) | (g << 8) | b;
+            Argb = (uint)((a << 24) | (r << 16) | (g << 8) | b);
         }
 
         public byte A { get; }
 
-        public int Argb { get; }
+        public uint Argb { get; }
 
         public byte B { get; }
 

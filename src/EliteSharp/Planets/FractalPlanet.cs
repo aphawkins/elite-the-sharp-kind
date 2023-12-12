@@ -63,11 +63,11 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Calculate the midpoint between two given points.
         /// </summary>
-        private int CalcMidpoint(int sx, int sy, int ex, int ey)
-            => Math.Clamp(
-                ((_planetRenderer._landscape[sx, sy] + _planetRenderer._landscape[ex, ey]) / 2) + RNG.GaussianRandom(-7, 8),
+        private FastColor CalcMidpointColour(int sx, int sy, int ex, int ey)
+            => new(Math.Clamp(
+                ((_planetRenderer._landscape[sx, sy].Argb + _planetRenderer._landscape[ex, ey].Argb) / 2) + (uint)RNG.GaussianRandom(-7, 8),
                 0,
-                255);
+                255));
 
         /// <summary>
         /// Generate a fractal landscape. Uses midpoint displacement method.
@@ -83,7 +83,7 @@ namespace EliteSharp.Planets
             {
                 for (int x = 0; x <= PlanetRenderer.LandXMax; x += d)
                 {
-                    _planetRenderer._landscape[x, y] = random.Next(255);
+                    _planetRenderer._landscape[x, y] = new((uint)random.Next(255));
                 }
             }
 
@@ -101,10 +101,10 @@ namespace EliteSharp.Planets
                 {
                     float dist = (x * x) + (y * y);
                     bool dark = dist > 10000;
-                    int h = _planetRenderer._landscape[x, y];
-                    _planetRenderer._landscape[x, y] = h > 166
-                        ? (dark ? EliteColors.Green : EliteColors.LightGreen).Argb
-                        : (dark ? EliteColors.Blue : EliteColors.LightBlue).Argb;
+                    FastColor colour = _planetRenderer._landscape[x, y];
+                    _planetRenderer._landscape[x, y] = colour.Argb > 166
+                        ? (dark ? EliteColors.Green : EliteColors.LightGreen)
+                        : (dark ? EliteColors.Blue : EliteColors.LightBlue);
                 }
             }
         }
@@ -120,11 +120,11 @@ namespace EliteSharp.Planets
             int bx = tx + w;
             int by = ty + w;
 
-            _planetRenderer._landscape[mx, ty] = CalcMidpoint(tx, ty, bx, ty);
-            _planetRenderer._landscape[mx, by] = CalcMidpoint(tx, by, bx, by);
-            _planetRenderer._landscape[tx, my] = CalcMidpoint(tx, ty, tx, by);
-            _planetRenderer._landscape[bx, my] = CalcMidpoint(bx, ty, bx, by);
-            _planetRenderer._landscape[mx, my] = CalcMidpoint(tx, my, bx, my);
+            _planetRenderer._landscape[mx, ty] = CalcMidpointColour(tx, ty, bx, ty);
+            _planetRenderer._landscape[mx, by] = CalcMidpointColour(tx, by, bx, by);
+            _planetRenderer._landscape[tx, my] = CalcMidpointColour(tx, ty, tx, by);
+            _planetRenderer._landscape[bx, my] = CalcMidpointColour(bx, ty, bx, by);
+            _planetRenderer._landscape[mx, my] = CalcMidpointColour(tx, my, bx, my);
 
             if (d == 1)
             {

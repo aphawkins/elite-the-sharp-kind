@@ -136,11 +136,11 @@ namespace EliteSharp.Tests.Graphics
         }
 
         [Theory]
-        [InlineData(2, 2, 3, 0xFFFFFF)]
-        [InlineData(2, 2, 9, 0xFFFFFF)]
-        [InlineData(-9, -9, 3, 0x000000)]
-        [InlineData(9, 9, 3, 0x000000)]
-        public void DrawCircleFilledOutOfBounds(float x, float y, float radius, int centreColour)
+        [InlineData(2, 2, 3, 0xFFFFFFFF)]
+        [InlineData(2, 2, 9, 0xFFFFFFFF)]
+        [InlineData(-9, -9, 3, 0xFF000000)]
+        [InlineData(9, 9, 3, 0xFF000000)]
+        public void DrawCircleFilledOutOfBounds(float x, float y, float radius, uint centreColour)
         {
             // Arrange
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
@@ -197,6 +197,49 @@ namespace EliteSharp.Tests.Graphics
 
             // Assert
             static void DoAssert(FastBitmap bmp) => Assert.Equal(EliteColors.White, bmp.GetPixel(2, 2));
+        }
+
+        [Theory]
+        [InlineData("2x2blacktopleft.bmp", 2, 2)]
+        public void LoadImage(string filename, int width, int height)
+        {
+            // Arrange
+            using SoftwareGraphics graphics = new(width, height, (_) => { });
+
+            // Act
+            graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+
+            // Assert
+        }
+
+        [Theory]
+        [InlineData("2x2blacktopleft.bmp", 2, 2)]
+        public void DrawImage(string filename, int width, int height)
+        {
+            // Arrange
+            using SoftwareGraphics graphics = new(width, height, DoAssert);
+            graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+
+            // Act
+            graphics.DrawImage(ImageType.EliteText, new(0, 0));
+
+            // Assert
+            static void DoAssert(FastBitmap bmp) => Assert.Equal(TestColors.Black, bmp.GetPixel(0, 0));
+        }
+
+        [Theory]
+        [InlineData("2x2blacktopleft.bmp", 2, 2)]
+        public void DrawImageOutOfBounds(string filename, int width, int height)
+        {
+            // Arrange
+            using SoftwareGraphics graphics = new(width, height, DoAssert);
+            graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+
+            // Act
+            graphics.DrawImage(ImageType.EliteText, new(1, 1));
+
+            // Assert
+            static void DoAssert(FastBitmap bmp) => Assert.Equal(TestColors.Black, bmp.GetPixel(1, 1));
         }
     }
 }

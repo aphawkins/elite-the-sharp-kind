@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Numerics;
 
@@ -9,7 +10,7 @@ namespace EliteSharp.Graphics
 {
     public sealed class SoftwareGraphics : IGraphics
     {
-        ////private readonly ConcurrentDictionary<ImageType, FastBitmap> _images = new();
+        private readonly ConcurrentDictionary<ImageType, FastBitmap> _images = new();
         private readonly FastBitmap _screen;
         private readonly Action<FastBitmap> _screenUpdate;
         private bool _isDisposed;
@@ -117,6 +118,14 @@ namespace EliteSharp.Graphics
 
         public void DrawImage(ImageType image, Vector2 position)
         {
+            FastBitmap bitmap = _images[image];
+            for (int y = 0; y < ScreenHeight - bitmap.Height; y++)
+            {
+                for (int x = 0; x < ScreenWidth - bitmap.Width; x++)
+                {
+                    _screen.SetPixel((int)(position.X + x), (int)(position.Y + y), bitmap.GetPixel(x, y));
+                }
+            }
         }
 
         public void DrawImageCentre(ImageType image, float y)
@@ -248,15 +257,8 @@ namespace EliteSharp.Graphics
             }
         }
 
-        public void LoadBitmap(ImageType imgType, string bitmapPath)
-        {
-            ////using MemoryStream memStream = new();
-            ////using FileStream stream = new(bitmapPath, FileMode.Open);
-            ////stream.CopyToAsync(memStream).ConfigureAwait(false);
-            ////memStream.Position = 0;
-            ////using BitmapFile bitmap = new(memStream.ToArray());
-            ////_images[imgType] = bitmap.BitmapBytes!;
-        }
+        public void LoadImage(ImageType imgType, string bitmapPath)
+            => _images[imgType] = BitmapFile.Read(bitmapPath);
 
         public void ScreenUpdate() => _screenUpdate(_screen);
 

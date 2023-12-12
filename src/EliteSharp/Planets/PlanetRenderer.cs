@@ -12,7 +12,7 @@ namespace EliteSharp.Planets
         internal const int LandXMax = 128;
         internal const int LandYMax = 128;
 #pragma warning disable SA1401 // Fields should be private
-        internal readonly int[,] _landscape = new int[LandXMax + 1, LandYMax + 1];
+        internal readonly FastColor[,] _landscape = new FastColor[LandXMax + 1, LandYMax + 1];
 #pragma warning restore SA1401 // Fields should be private
         private readonly IDraw _draw;
 
@@ -106,8 +106,7 @@ namespace EliteSharp.Planets
                 {
                     int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
                     int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);
-                    FastColor colour = new(_landscape[lx, ly]);
-                    _draw.Graphics.DrawPixel(s, colour);
+                    _draw.Graphics.DrawPixel(s, _landscape[lx, ly]);
                 }
 
                 rx += vx;

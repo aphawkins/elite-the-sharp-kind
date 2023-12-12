@@ -39,4 +39,10 @@
     <ProjectReference Include="..\..\src\EliteSharp\EliteSharp.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Graphics\2x2blacktopleft.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

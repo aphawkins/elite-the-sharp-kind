@@ -114,7 +114,7 @@ namespace EliteSharp.Planets
         {
             for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
             {
-                int colour = _stripeColours[y * (_stripeColours.Length - 1) / PlanetRenderer.LandYMax].Argb;
+                FastColor colour = _stripeColours[y * (_stripeColours.Length - 1) / PlanetRenderer.LandYMax];
                 for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
                 {
                     _planetRenderer._landscape[x, y] = colour;
