@@ -130,7 +130,7 @@ namespace EliteSharp.Suns
             {
                 float distance = (dx * dx) + dy;
 
-                FastColor colour = distance < inner
+                FastColor color = distance < inner
                     ? EliteColors.White
                     : distance < inner2
                         ? EliteColors.LightYellow
@@ -138,7 +138,7 @@ namespace EliteSharp.Suns
                             ? EliteColors.LightOrange
                             : ((int)s.X ^ (int)y).IsOdd() ? EliteColors.Orange : EliteColors.DarkOrange;
 
-                _draw.Graphics.DrawPixel(s, colour);
+                _draw.Graphics.DrawPixel(s, color);
             }
         }
     }

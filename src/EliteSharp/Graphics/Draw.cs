@@ -68,7 +68,7 @@ namespace EliteSharp.Graphics
         public void DrawHyperspaceCountdown(int countdown)
             => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EliteColors.White);
 
-        public void DrawPolygonFilled(Vector2[] points, FastColor faceColour, float averageZ)
+        public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float averageZ)
         {
             int i;
 
@@ -80,7 +80,7 @@ namespace EliteSharp.Graphics
             int x = _totalPolys;
             _totalPolys++;
 
-            _polyChain[x].FaceColour = faceColour;
+            _polyChain[x].FaceColor = faceColor;
             _polyChain[x].Z = averageZ;
             _polyChain[x].Next = -1;
             _polyChain[x].PointList = new Vector2[points.Length];
@@ -226,21 +226,21 @@ namespace EliteSharp.Graphics
 
             for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
             {
-                FastColor colour = _gameState.Config.ShipWireframe ? EliteColors.White : _polyChain[i].FaceColour;
+                FastColor color = _gameState.Config.ShipWireframe ? EliteColors.White : _polyChain[i].FaceColor;
 
                 if (_polyChain[i].PointList.Length == 2)
                 {
-                    Graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], colour);
+                    Graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], color);
                     continue;
                 }
 
                 if (_gameState.Config.ShipWireframe)
                 {
-                    Graphics.DrawPolygon(_polyChain[i].PointList, colour);
+                    Graphics.DrawPolygon(_polyChain[i].PointList, color);
                 }
                 else
                 {
-                    Graphics.DrawPolygonFilled(_polyChain[i].PointList, colour);
+                    Graphics.DrawPolygonFilled(_polyChain[i].PointList, color);
                 }
             }
         }

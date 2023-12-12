@@ -14,37 +14,37 @@ namespace EliteSharp.Graphics
 
         float ScreenWidth { get; }
 
-        void DrawCircle(Vector2 centre, float radius, FastColor colour);
+        void DrawCircle(Vector2 centre, float radius, FastColor color);
 
-        void DrawCircleFilled(Vector2 centre, float radius, FastColor colour);
+        void DrawCircleFilled(Vector2 centre, float radius, FastColor color);
 
         void DrawImage(ImageType image, Vector2 position);
 
         void DrawImageCentre(ImageType image, float y);
 
-        void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor colour);
+        void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color);
 
-        void DrawPixel(Vector2 position, FastColor colour);
+        void DrawPixel(Vector2 position, FastColor color);
 
-        void DrawPolygon(Vector2[] points, FastColor lineColour);
+        void DrawPolygon(Vector2[] points, FastColor lineColor);
 
-        void DrawPolygonFilled(Vector2[] points, FastColor faceColour);
+        void DrawPolygonFilled(Vector2[] points, FastColor faceColor);
 
-        void DrawRectangle(Vector2 position, float width, float height, FastColor colour);
+        void DrawRectangle(Vector2 position, float width, float height, FastColor color);
 
-        void DrawRectangleCentre(float y, float width, float height, FastColor colour);
+        void DrawRectangleCentre(float y, float width, float height, FastColor color);
 
-        void DrawRectangleFilled(Vector2 position, float width, float height, FastColor colour);
+        void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color);
 
-        void DrawTextCentre(float y, string text, FontSize fontSize, FastColor colour);
+        void DrawTextCentre(float y, string text, FontSize fontSize, FastColor color);
 
-        void DrawTextLeft(Vector2 position, string text, FastColor colour);
+        void DrawTextLeft(Vector2 position, string text, FastColor color);
 
-        void DrawTextRight(Vector2 position, string text, FastColor colour);
+        void DrawTextRight(Vector2 position, string text, FastColor color);
 
-        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor colour);
+        void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor color);
 
-        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor colour);
+        void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor color);
 
         void LoadImage(ImageType imgType, string bitmapPath);
 

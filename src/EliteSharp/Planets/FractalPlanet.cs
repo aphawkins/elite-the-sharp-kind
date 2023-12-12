@@ -63,7 +63,7 @@ namespace EliteSharp.Planets
         /// <summary>
         /// Calculate the midpoint between two given points.
         /// </summary>
-        private FastColor CalcMidpointColour(int sx, int sy, int ex, int ey)
+        private FastColor CalcMidpointColor(int sx, int sy, int ex, int ey)
             => new(Math.Clamp(
                 ((_planetRenderer._landscape[sx, sy].Argb + _planetRenderer._landscape[ex, ey].Argb) / 2) + (uint)RNG.GaussianRandom(-7, 8),
                 0,
@@ -101,8 +101,8 @@ namespace EliteSharp.Planets
                 {
                     float dist = (x * x) + (y * y);
                     bool dark = dist > 10000;
-                    FastColor colour = _planetRenderer._landscape[x, y];
-                    _planetRenderer._landscape[x, y] = colour.Argb > 166
+                    FastColor color = _planetRenderer._landscape[x, y];
+                    _planetRenderer._landscape[x, y] = color.Argb > 166
                         ? (dark ? EliteColors.Green : EliteColors.LightGreen)
                         : (dark ? EliteColors.Blue : EliteColors.LightBlue);
                 }
@@ -120,11 +120,11 @@ namespace EliteSharp.Planets
             int bx = tx + w;
             int by = ty + w;
 
-            _planetRenderer._landscape[mx, ty] = CalcMidpointColour(tx, ty, bx, ty);
-            _planetRenderer._landscape[mx, by] = CalcMidpointColour(tx, by, bx, by);
-            _planetRenderer._landscape[tx, my] = CalcMidpointColour(tx, ty, tx, by);
-            _planetRenderer._landscape[bx, my] = CalcMidpointColour(bx, ty, bx, by);
-            _planetRenderer._landscape[mx, my] = CalcMidpointColour(tx, my, bx, my);
+            _planetRenderer._landscape[mx, ty] = CalcMidpointColor(tx, ty, bx, ty);
+            _planetRenderer._landscape[mx, by] = CalcMidpointColor(tx, by, bx, by);
+            _planetRenderer._landscape[tx, my] = CalcMidpointColor(tx, ty, tx, by);
+            _planetRenderer._landscape[bx, my] = CalcMidpointColor(bx, ty, bx, by);
+            _planetRenderer._landscape[mx, my] = CalcMidpointColor(tx, my, bx, my);
 
             if (d == 1)
             {

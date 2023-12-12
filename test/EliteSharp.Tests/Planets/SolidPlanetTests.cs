@@ -44,7 +44,7 @@ namespace EliteSharp.Tests.Planets
 
             // Assert
             Assert.IsType<SolidPlanet>(obj);
-            Assert.Equal(planet.Colour, ((SolidPlanet)obj).Colour);
+            Assert.Equal(planet.Color, ((SolidPlanet)obj).Color);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace EliteSharp.Graphics
 
         void DrawObject(IObject obj);
 
-        void DrawPolygonFilled(Vector2[] points, FastColor faceColour, float averageZ);
+        void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float averageZ);
 
         void DrawTextPretty(Vector2 position, float width, string text);
 

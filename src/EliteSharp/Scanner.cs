@@ -224,11 +224,11 @@ namespace EliteSharp
             float x = _draw.ScannerLeft + 417;
             float y = _draw.ScannerTop + 9;
             float length = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
-            FastColor colour = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? EliteColors.LightRed : EliteColors.Gold;
+            FastColor color = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? EliteColors.LightRed : EliteColors.Gold;
 
             for (int i = 0; i < 6; i++)
             {
-                _draw.Graphics.DrawLine(new(x, y + i), new(x + length, y + i), colour);
+                _draw.Graphics.DrawLine(new(x, y + i), new(x + length, y + i), color);
             }
         }
 
@@ -297,7 +297,7 @@ namespace EliteSharp
                 y1 += _scannerCentre.Y;
                 y2 += _scannerCentre.Y;
 
-                FastColor colour = obj.Flags.HasFlag(ShipProperties.Station)
+                FastColor color = obj.Flags.HasFlag(ShipProperties.Station)
                     ? EliteColors.Green
                     : obj.Type == ShipType.Missile
                         ? EliteColors.Lilac
@@ -306,10 +306,10 @@ namespace EliteSharp
                             : obj.Flags.HasFlag(ShipProperties.Hostile) ? EliteColors.Yellow : EliteColors.White;
 
                 // ship
-                _draw.Graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, colour);
+                _draw.Graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, color);
 
                 // stick
-                _draw.Graphics.DrawRectangleFilled(new(x, y2 < y1 ? y2 : y1), 2, MathF.Abs(y2 - y1), colour);
+                _draw.Graphics.DrawRectangleFilled(new(x, y2 < y1 ? y2 : y1), 2, MathF.Abs(y2 - y1), color);
             }
         }
     }

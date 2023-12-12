@@ -89,13 +89,13 @@ namespace EliteSharp.Views
                     _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, EliteColors.LightRed);
                 }
 
-                FastColor colour = _equipmentStock[i].CanBuy ? EliteColors.White : EliteColors.LightGrey;
+                FastColor color = _equipmentStock[i].CanBuy ? EliteColors.White : EliteColors.LightGrey;
                 int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
-                _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], colour);
+                _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], color);
 
                 if ((int)_equipmentStock[i].Price != 0)
                 {
-                    _draw.Graphics.DrawTextRight(new(450 + _draw.Offset, y), $"{_equipmentStock[i].Price:N1}", colour);
+                    _draw.Graphics.DrawTextRight(new(450 + _draw.Offset, y), $"{_equipmentStock[i].Price:N1}", color);
                 }
 
                 y += 15;

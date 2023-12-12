@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -9,7 +9,7 @@ namespace EliteSharp
 {
     internal struct PolygonData
     {
-        internal FastColor FaceColour { get; set; }
+        internal FastColor FaceColor { get; set; }
 
         internal int Next { get; set; }
 

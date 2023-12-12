@@ -43,7 +43,7 @@ namespace EliteSharp.Tests.Suns
 
             // Assert
             Assert.IsType<SolidSun>(obj);
-            Assert.Equal(sun.Colour, ((SolidSun)obj).Colour);
+            Assert.Equal(sun.Color, ((SolidSun)obj).Color);
         }
     }
 }

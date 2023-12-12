@@ -140,7 +140,7 @@ namespace EliteSharp.Tests.Graphics
         [InlineData(2, 2, 9, 0xFFFFFFFF)]
         [InlineData(-9, -9, 3, 0xFF000000)]
         [InlineData(9, 9, 3, 0xFF000000)]
-        public void DrawCircleFilledOutOfBounds(float x, float y, float radius, uint centreColour)
+        public void DrawCircleFilledOutOfBounds(float x, float y, float radius, uint centreColor)
         {
             // Arrange
             using SoftwareGraphics graphics = new(5, 5, DoAssert);
@@ -155,7 +155,7 @@ namespace EliteSharp.Tests.Graphics
                 {
                     for (int screenX = 0; screenX < 5; screenX++)
                     {
-                        Assert.Equal(new FastColor(centreColour), bmp.GetPixel(screenX, screenY));
+                        Assert.Equal(new FastColor(centreColor), bmp.GetPixel(screenX, screenY));
                     }
                 }
             }

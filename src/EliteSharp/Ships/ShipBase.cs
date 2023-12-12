@@ -157,14 +157,14 @@ namespace EliteSharp.Ships
                         zavg = MathF.Max(zavg, pointList[face_data[i].Points[j]].Z);
                     }
 
-                    _draw.DrawPolygonFilled(poly_list, face_data[i].Colour, zavg);
+                    _draw.DrawPolygonFilled(poly_list, face_data[i].Color, zavg);
                 }
             }
 
             if (Flags.HasFlag(ShipProperties.Firing))
             {
                 lasv = LaserFront;
-                FastColor colour = (Type == ShipType.Viper) ? EliteColors.Cyan : EliteColors.White;
+                FastColor color = (Type == ShipType.Viper) ? EliteColors.Cyan : EliteColors.White;
 
                 Vector2[] laserPoints =
                 [
@@ -172,7 +172,7 @@ namespace EliteSharp.Ships
                     new(Location.X > 0 ? 0 : 511, RNG.Random(256) * 2),
                 ];
 
-                _draw.DrawPolygonFilled(laserPoints, colour, pointList[lasv].Z);
+                _draw.DrawPolygonFilled(laserPoints, color, pointList[lasv].Z);
             }
         }
     }

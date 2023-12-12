@@ -9,14 +9,14 @@ namespace EliteSharp.Ships
 {
     internal sealed class ShipFace
     {
-        internal ShipFace(in FastColor colour, Vector3 normal, int[] points)
+        internal ShipFace(in FastColor color, Vector3 normal, int[] points)
         {
-            Colour = colour;
+            Color = color;
             Normal = normal;
             Points = points;
         }
 
-        internal FastColor Colour { get; set; }
+        internal FastColor Color { get; set; }
 
         internal Vector3 Normal { get; set; }
 

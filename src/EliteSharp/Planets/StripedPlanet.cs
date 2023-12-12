@@ -13,9 +13,9 @@ namespace EliteSharp.Planets
         private readonly PlanetRenderer _planetRenderer;
 
         /// <summary>
-        /// Colour map used to generate a striped style planet.
+        /// Color map used to generate a striped style planet.
         /// </summary>
-        private readonly FastColor[] _stripeColours =
+        private readonly FastColor[] _stripeColors =
         [
             EliteColors.Purple,
             EliteColors.Purple,
@@ -114,10 +114,10 @@ namespace EliteSharp.Planets
         {
             for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
             {
-                FastColor colour = _stripeColours[y * (_stripeColours.Length - 1) / PlanetRenderer.LandYMax];
+                FastColor color = _stripeColors[y * (_stripeColors.Length - 1) / PlanetRenderer.LandYMax];
                 for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
                 {
-                    _planetRenderer._landscape[x, y] = colour;
+                    _planetRenderer._landscape[x, y] = color;
                 }
             }
         }

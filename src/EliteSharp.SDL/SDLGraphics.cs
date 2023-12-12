@@ -61,16 +61,16 @@ namespace EliteSharp.SDL
                 SDLHelper.Throw(nameof(SDL_CreateRenderer));
             }
 
-            foreach (FastColor colour in EliteColors.AllColors())
+            foreach (FastColor color in EliteColors.AllColors())
             {
                 SDL_Color sdlColor = new()
                 {
-                    a = colour.A,
-                    r = colour.R,
-                    b = colour.B,
-                    g = colour.G,
+                    a = color.A,
+                    r = color.R,
+                    b = color.B,
+                    g = color.G,
                 };
-                _sdlColors.Add(colour, sdlColor);
+                _sdlColors.Add(color, sdlColor);
             }
 
             _fontLarge = TTF_OpenFont(_fontPath, 18);
@@ -121,7 +121,7 @@ namespace EliteSharp.SDL
             GC.SuppressFinalize(this);
         }
 
-        public void DrawCircle(Vector2 centre, float radius, FastColor colour)
+        public void DrawCircle(Vector2 centre, float radius, FastColor color)
         {
             float diameter = radius * 2;
             float x = MathF.Floor(radius);
@@ -158,10 +158,10 @@ namespace EliteSharp.SDL
                 }
             }
 
-            DrawPixels([.. points], colour);
+            DrawPixels([.. points], color);
         }
 
-        public void DrawCircleFilled(Vector2 centre, float radius, FastColor colour)
+        public void DrawCircleFilled(Vector2 centre, float radius, FastColor color)
         {
             float diameter = radius * 2;
             float x = MathF.Floor(radius);
@@ -194,7 +194,7 @@ namespace EliteSharp.SDL
                 }
             }
 
-            DrawLines(lines, colour);
+            DrawLines(lines, color);
         }
 
         public void DrawImage(ImageType image, Vector2 position)
@@ -235,14 +235,14 @@ namespace EliteSharp.SDL
             DrawImage(image, new(x, y));
         }
 
-        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor colour)
+        public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
         {
             if (_isDisposed)
             {
                 return;
             }
 
-            SetRenderDrawColor(colour);
+            SetRenderDrawColor(color);
 
             if (SDL_RenderDrawLineF(_renderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y) < 0)
             {
@@ -250,14 +250,14 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void DrawPixel(Vector2 position, FastColor colour)
+        public void DrawPixel(Vector2 position, FastColor color)
         {
             if (_isDisposed)
             {
                 return;
             }
 
-            SetRenderDrawColor(colour);
+            SetRenderDrawColor(color);
 
             if (SDL_RenderDrawPointF(_renderer, position.X, position.Y) < 0)
             {
@@ -265,7 +265,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void DrawPolygon(Vector2[] points, FastColor lineColour)
+        public void DrawPolygon(Vector2[] points, FastColor lineColor)
         {
             if (points == null)
             {
@@ -274,13 +274,13 @@ namespace EliteSharp.SDL
 
             for (int i = 0; i < points.Length - 1; i++)
             {
-                DrawLine(points[i], points[i + 1], lineColour);
+                DrawLine(points[i], points[i + 1], lineColor);
             }
 
-            DrawLine(points[0], points[^1], lineColour);
+            DrawLine(points[0], points[^1], lineColor);
         }
 
-        public void DrawPolygonFilled(Vector2[] points, FastColor faceColour)
+        public void DrawPolygonFilled(Vector2[] points, FastColor faceColor)
         {
             if (points == null)
             {
@@ -291,18 +291,18 @@ namespace EliteSharp.SDL
             // Create triangles of which each share the first vertex
             for (int i = 1; i < points.Length - 1; i++)
             {
-                DrawTriangleFilled(points[0], points[i], points[i + 1], faceColour);
+                DrawTriangleFilled(points[0], points[i], points[i + 1], faceColor);
             }
         }
 
-        public void DrawRectangle(Vector2 position, float width, float height, FastColor colour)
+        public void DrawRectangle(Vector2 position, float width, float height, FastColor color)
         {
             if (_isDisposed)
             {
                 return;
             }
 
-            SetRenderDrawColor(colour);
+            SetRenderDrawColor(color);
 
             SDL_FRect rectangle = new()
             {
@@ -318,17 +318,17 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void DrawRectangleCentre(float y, float width, float height, FastColor colour)
-            => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, colour);
+        public void DrawRectangleCentre(float y, float width, float height, FastColor color)
+            => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, color);
 
-        public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor colour)
+        public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color)
         {
             if (_isDisposed)
             {
                 return;
             }
 
-            SetRenderDrawColor(colour);
+            SetRenderDrawColor(color);
 
             SDL_FRect rectangle = new()
             {
@@ -344,7 +344,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor colour)
+        public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor color)
         {
             if (_isDisposed || string.IsNullOrWhiteSpace(text))
             {
@@ -354,7 +354,7 @@ namespace EliteSharp.SDL
             nint surfacePtr = TTF_RenderText_Solid(
                 fontSize == FontSize.Large ? _fontLarge : _fontSmall,
                 text,
-                _sdlColors[colour]);
+                _sdlColors[color]);
             if (surfacePtr == nint.Zero)
             {
                 SDLHelper.Throw(nameof(TTF_RenderText_Solid));
@@ -380,7 +380,7 @@ namespace EliteSharp.SDL
             SDL_DestroyTexture(texture);
         }
 
-        public void DrawTextLeft(Vector2 position, string text, FastColor colour)
+        public void DrawTextLeft(Vector2 position, string text, FastColor color)
         {
             if (_isDisposed || string.IsNullOrWhiteSpace(text))
             {
@@ -390,7 +390,7 @@ namespace EliteSharp.SDL
             nint surfacePtr = TTF_RenderText_Solid(
                 _fontSmall,
                 text,
-                _sdlColors[colour]);
+                _sdlColors[color]);
             if (surfacePtr == nint.Zero)
             {
                 SDLHelper.Throw(nameof(TTF_RenderText_Solid));
@@ -416,7 +416,7 @@ namespace EliteSharp.SDL
             SDL_DestroyTexture(texture);
         }
 
-        public void DrawTextRight(Vector2 position, string text, FastColor colour)
+        public void DrawTextRight(Vector2 position, string text, FastColor color)
         {
             if (_isDisposed || string.IsNullOrWhiteSpace(text))
             {
@@ -426,7 +426,7 @@ namespace EliteSharp.SDL
             nint surfacePtr = TTF_RenderText_Solid(
                 _fontSmall,
                 text,
-                _sdlColors[colour]);
+                _sdlColors[color]);
             if (surfacePtr == nint.Zero)
             {
                 SDLHelper.Throw(nameof(TTF_RenderText_Solid));
@@ -452,14 +452,14 @@ namespace EliteSharp.SDL
             SDL_DestroyTexture(texture);
         }
 
-        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor colour)
+        public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor color)
         {
-            DrawLine(a, b, colour);
-            DrawLine(b, c, colour);
-            DrawLine(c, a, colour);
+            DrawLine(a, b, color);
+            DrawLine(b, c, color);
+            DrawLine(c, a, color);
         }
 
-        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor colour)
+        public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor color)
         {
             if (_isDisposed)
             {
@@ -468,9 +468,9 @@ namespace EliteSharp.SDL
 
             SDL_Vertex[] vertices =
             [
-                ConvertVertex(a, colour),
-                ConvertVertex(b, colour),
-                ConvertVertex(c, colour),
+                ConvertVertex(a, color),
+                ConvertVertex(b, color),
+                ConvertVertex(c, color),
             ];
 
             if (SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
@@ -520,11 +520,11 @@ namespace EliteSharp.SDL
             }
         }
 
-        private SDL_Vertex ConvertVertex(Vector2 point, in FastColor colour) => new()
+        private SDL_Vertex ConvertVertex(Vector2 point, in FastColor color) => new()
         {
             position = new() { x = point.X, y = point.Y },
             tex_coord = new() { x = 0.0f, y = 0.0f },
-            color = _sdlColors[colour],
+            color = _sdlColors[color],
         };
 
         private void Dispose(bool disposing)
@@ -557,9 +557,9 @@ namespace EliteSharp.SDL
             }
         }
 
-        private void DrawLines(List<(SDL_FPoint Start, SDL_FPoint End)> points, in FastColor colour)
+        private void DrawLines(List<(SDL_FPoint Start, SDL_FPoint End)> points, in FastColor color)
         {
-            SetRenderDrawColor(colour);
+            SetRenderDrawColor(color);
 
             foreach ((SDL_FPoint start, SDL_FPoint end) in points)
             {
@@ -570,9 +570,9 @@ namespace EliteSharp.SDL
             }
         }
 
-        private void DrawPixels(SDL_FPoint[] points, in FastColor colour)
+        private void DrawPixels(SDL_FPoint[] points, in FastColor color)
         {
-            SetRenderDrawColor(colour);
+            SetRenderDrawColor(color);
 
             if (SDL_RenderDrawPointsF(_renderer, points, points.Length) < 0)
             {
@@ -580,9 +580,9 @@ namespace EliteSharp.SDL
             }
         }
 
-        private void SetRenderDrawColor(in FastColor colour)
+        private void SetRenderDrawColor(in FastColor color)
         {
-            if (SDL_SetRenderDrawColor(_renderer, colour.R, colour.G, colour.B, colour.A) < 0)
+            if (SDL_SetRenderDrawColor(_renderer, color.R, color.G, color.B, color.A) < 0)
             {
                 SDLHelper.Throw(nameof(SDL_SetRenderDrawColor));
             }

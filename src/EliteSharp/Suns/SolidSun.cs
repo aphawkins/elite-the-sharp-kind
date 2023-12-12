@@ -12,16 +12,16 @@ namespace EliteSharp.Suns
     {
         private readonly IDraw _draw;
 
-        internal SolidSun(IDraw draw, in FastColor colour)
+        internal SolidSun(IDraw draw, in FastColor color)
         {
             _draw = draw;
-            Colour = colour;
+            Color = color;
         }
 
         private SolidSun(SolidSun other)
         {
             _draw = other._draw;
-            Colour = other.Colour;
+            Color = other.Color;
         }
 
         public ShipProperties Flags { get; set; }
@@ -36,7 +36,7 @@ namespace EliteSharp.Suns
 
         public ShipType Type { get; set; } = ShipType.Sun;
 
-        internal FastColor Colour { get; }
+        internal FastColor Color { get; }
 
         public IObject Clone()
         {
@@ -124,7 +124,7 @@ namespace EliteSharp.Suns
                 ex = _draw.Right;
             }
 
-            _draw.Graphics.DrawLine(s, new(ex, s.Y), Colour);
+            _draw.Graphics.DrawLine(s, new(ex, s.Y), Color);
         }
     }
 }
