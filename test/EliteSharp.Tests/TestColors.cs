@@ -8,12 +8,14 @@ namespace EliteSharp.Tests
 {
     public static class TestColors
     {
-        public static FastColor Black => new(0xFF000000);
+        public static FastColor OpaqueBlack => new(0xFF000000);
 
         public static FastColor TransparentBlack => new(0x00000000);
 
-        public static FastColor White => new(0xFFFFFFFF);
+        public static FastColor OpaqueWhite => new(0xFFFFFFFF);
 
         public static FastColor TransparentWhite => new(0x00FFFFFF);
+
+        public static FastColor OpaqueRed => new(0xFFFF0000);
     }
 }

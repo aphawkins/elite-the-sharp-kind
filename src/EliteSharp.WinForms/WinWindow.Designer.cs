@@ -31,40 +31,39 @@ namespace EliteSharp.WinForms
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WinWindow));
-            this.screen = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.screen)).BeginInit();
-            this.SuspendLayout();
+            screen = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)screen).BeginInit();
+            SuspendLayout();
             // 
             // screen
             // 
-            this.screen.BackColor = System.Drawing.Color.Black;
-            this.screen.Location = new System.Drawing.Point(0, 0);
-            this.screen.Name = "screen";
-            this.screen.Size = new System.Drawing.Size(512, 512);
-            this.screen.TabIndex = 1;
-            this.screen.TabStop = false;
+            screen.BackColor = Color.Gray;
+            screen.Location = new Point(0, 0);
+            screen.Name = "screen";
+            screen.Size = new Size(512, 512);
+            screen.TabIndex = 1;
+            screen.TabStop = false;
             // 
-            // GameWindow
+            // WinWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Magenta;
-            this.ClientSize = new System.Drawing.Size(512, 512);
-            this.Controls.Add(this.screen);
-            this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.KeyPreview = true;
-            this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(528, 551);
-            this.MinimumSize = new System.Drawing.Size(528, 551);
-            this.Name = "GameWindow";
-            this.Text = "Elite - The Sharp Kind";
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.GameWindow_KeyDown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.GameWindow_KeyUp);
-            ((System.ComponentModel.ISupportInitialize)(this.screen)).EndInit();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Magenta;
+            ClientSize = new Size(512, 512);
+            Controls.Add(screen);
+            DoubleBuffered = true;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            KeyPreview = true;
+            MaximizeBox = false;
+            MaximumSize = new Size(528, 551);
+            MinimumSize = new Size(528, 551);
+            Name = "WinWindow";
+            Text = "Elite - The Sharp Kind";
+            KeyDown += GameWindow_KeyDown;
+            KeyUp += GameWindow_KeyUp;
+            ((System.ComponentModel.ISupportInitialize)screen).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion

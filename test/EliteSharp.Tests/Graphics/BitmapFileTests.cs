@@ -9,7 +9,7 @@ namespace EliteSharp.Tests.Graphics
     public class BitmapFileTests
     {
         [Theory]
-        [InlineData("2x2blacktopleft.bmp", 2, 2)]
+        [InlineData("2x2redtopleft.bmp", 2, 2)]
         public void LoadBitmapOrientation(string filename, int width, int height)
         {
             // Arrange
@@ -22,7 +22,7 @@ namespace EliteSharp.Tests.Graphics
             Assert.Equal(width, bitmap.Width);
             Assert.Equal(height, bitmap.Height);
             Assert.Equal(32, bitmap.BitsPerPixel);
-            Assert.Equal(TestColors.Black, bitmap.GetPixel(0, 0));
+            Assert.Equal(TestColors.OpaqueRed, bitmap.GetPixel(0, 0));
             Assert.Equal(TestColors.TransparentBlack, bitmap.GetPixel(0, 1));
             Assert.Equal(TestColors.TransparentBlack, bitmap.GetPixel(1, 0));
             Assert.Equal(TestColors.TransparentBlack, bitmap.GetPixel(1, 1));

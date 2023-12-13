@@ -35,6 +35,7 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawPixel(new(x, y), EliteColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
         }
@@ -48,6 +49,7 @@ namespace EliteSharp.Tests.Graphics
             // Act
             graphics.DrawPixel(new(2, 2), EliteColors.White);
             graphics.Clear();
+            graphics.ScreenUpdate();
 
             // Assert
             static void DoAssert(FastBitmap bmp) => Assert.Equal(EliteColors.Black, bmp.GetPixel(2, 2));
@@ -61,6 +63,7 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawCircle(new(2, 2), 2, EliteColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
             static void DoAssert(FastBitmap bmp)
@@ -80,6 +83,7 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawCircle(new(0, 0), 4, EliteColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
             static void DoAssert(FastBitmap bmp)
@@ -101,6 +105,7 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawCircle(new(x, y), radius, EliteColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
             static void DoAssert(FastBitmap bmp)
@@ -123,6 +128,7 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawCircleFilled(new(2, 2), 2, EliteColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
             static void DoAssert(FastBitmap bmp)
@@ -147,6 +153,7 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawCircleFilled(new(x, y), radius, EliteColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
             void DoAssert(FastBitmap bmp)
@@ -173,6 +180,7 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawLine(new(startX, startY), new(endX, endY), EliteColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
             void DoAssert(FastBitmap bmp)
@@ -194,13 +202,14 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.DrawLine(new(startX, startY), new(endX, endY), EliteColors.White);
+            graphics.ScreenUpdate();
 
             // Assert
             static void DoAssert(FastBitmap bmp) => Assert.Equal(EliteColors.White, bmp.GetPixel(2, 2));
         }
 
         [Theory]
-        [InlineData("2x2blacktopleft.bmp", 2, 2)]
+        [InlineData("2x2redtopleft.bmp", 2, 2)]
         public void LoadImage(string filename, int width, int height)
         {
             // Arrange
@@ -208,38 +217,65 @@ namespace EliteSharp.Tests.Graphics
 
             // Act
             graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+            graphics.ScreenUpdate();
 
             // Assert
         }
 
         [Theory]
-        [InlineData("2x2blacktopleft.bmp", 2, 2)]
-        public void DrawImage(string filename, int width, int height)
+        [InlineData(2, 2, "2x2redtopleft.bmp", 0, 0)]
+        [InlineData(4, 4, "2x2redtopleft.bmp", 2, 2)]
+        public void DrawImage(int width, int height, string filename, int imageX, int imageY)
         {
             // Arrange
             using SoftwareGraphics graphics = new(width, height, DoAssert);
             graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
 
             // Act
-            graphics.DrawImage(ImageType.EliteText, new(0, 0));
+            graphics.DrawImage(ImageType.EliteText, new(imageX, imageY));
+            graphics.ScreenUpdate();
 
             // Assert
-            static void DoAssert(FastBitmap bmp) => Assert.Equal(TestColors.Black, bmp.GetPixel(0, 0));
+            void DoAssert(FastBitmap bmp) => Assert.Equal(TestColors.OpaqueRed, bmp.GetPixel(imageX, imageY));
         }
 
         [Theory]
-        [InlineData("2x2blacktopleft.bmp", 2, 2)]
-        public void DrawImageOutOfBounds(string filename, int width, int height)
+        [InlineData("2x2redtopleft.bmp", 2, 2)]
+        public void DrawImageOutOfBounds(string filename, int imageWidth, int imageHeight)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(width, height, DoAssert);
+            using SoftwareGraphics graphics = new(imageWidth, imageHeight, DoAssert);
             graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
 
             // Act
             graphics.DrawImage(ImageType.EliteText, new(1, 1));
+            graphics.ScreenUpdate();
 
             // Assert
-            static void DoAssert(FastBitmap bmp) => Assert.Equal(TestColors.Black, bmp.GetPixel(1, 1));
+            static void DoAssert(FastBitmap bmp) => Assert.Equal(TestColors.OpaqueRed, bmp.GetPixel(1, 1));
+        }
+
+        [Theory]
+        [InlineData("2x2redtopleft.bmp")]
+        public void DrawImageTransparent(string filename)
+        {
+            // Arrange
+            using SoftwareGraphics graphics = new(2, 2, DoAssert);
+            graphics.DrawPixel(new(1, 1), TestColors.OpaqueWhite);
+            graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+
+            // Act
+            graphics.DrawImage(ImageType.EliteText, new(0, 0));
+            graphics.ScreenUpdate();
+
+            // Assert
+            static void DoAssert(FastBitmap bmp)
+            {
+                Assert.Equal(TestColors.OpaqueRed, bmp.GetPixel(0, 0));
+                Assert.Equal(TestColors.OpaqueBlack, bmp.GetPixel(0, 1));
+                Assert.Equal(TestColors.OpaqueBlack, bmp.GetPixel(1, 0));
+                Assert.Equal(TestColors.OpaqueWhite, bmp.GetPixel(1, 1));
+            }
         }
     }
 }

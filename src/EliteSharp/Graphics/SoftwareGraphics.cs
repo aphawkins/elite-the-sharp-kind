@@ -119,17 +119,25 @@ namespace EliteSharp.Graphics
         public void DrawImage(ImageType image, Vector2 position)
         {
             FastBitmap bitmap = _images[image];
-            for (int y = 0; y < ScreenHeight - bitmap.Height; y++)
+            for (int y = 0; y < bitmap.Height; y++)
             {
-                for (int x = 0; x < ScreenWidth - bitmap.Width; x++)
+                for (int x = 0; x < bitmap.Width; x++)
                 {
-                    _screen.SetPixel((int)(position.X + x), (int)(position.Y + y), bitmap.GetPixel(x, y));
+                    FastColor color = bitmap.GetPixel(x, y);
+                    if (color.A != 0)
+                    {
+                        // TODO: should mix the transparent colors correctly here
+                        // but the only transparency being used is transparent or opaque
+                        DrawPixel((int)(position.X + x), (int)(position.Y + y), color);
+                    }
                 }
             }
         }
 
         public void DrawImageCentre(ImageType image, float y)
         {
+            float x = (ScreenWidth - _images[image].Width) / 2;
+            DrawImage(image, new(x, y));
         }
 
         public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
@@ -392,10 +400,7 @@ namespace EliteSharp.Graphics
             float d = d0;
             for (int i = (int)MathF.Floor(i0); i <= (int)MathF.Floor(i1); i++)
             {
-                if (d >= 0 && d <= ScreenWidth)
-                {
-                    values.Add((int)MathF.Floor(d));
-                }
+                values.Add((int)MathF.Floor(d));
 
                 d += a;
             }

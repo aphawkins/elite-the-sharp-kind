@@ -42,7 +42,7 @@ namespace EliteSharp.Graphics
 
         public int BitsPerPixel { get; } = 32;
 
-        public void Clear() => Array.Clear(_pixels);
+        public void Clear() => Array.Fill(_pixels, EliteColors.Black.Argb);
 
         public void Dispose()
         {
