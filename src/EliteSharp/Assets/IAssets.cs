@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -10,7 +10,7 @@ namespace EliteSharp.Assets
 {
     internal interface IAssets
     {
-        string AssetPath(ImageType image);
+        FastBitmap AssetPath(ImageType image);
 
         string AssetPath(SoundEffect effect);
 

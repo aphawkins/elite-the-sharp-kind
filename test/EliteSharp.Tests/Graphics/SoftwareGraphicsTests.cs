@@ -216,7 +216,7 @@ namespace EliteSharp.Tests.Graphics
             using SoftwareGraphics graphics = new(width, height, (_) => { });
 
             // Act
-            graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+            graphics.LoadImage(ImageType.EliteText, BitmapFile.Read(Path.Combine("Graphics", filename)));
             graphics.ScreenUpdate();
 
             // Assert
@@ -229,7 +229,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             using SoftwareGraphics graphics = new(width, height, DoAssert);
-            graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+            graphics.LoadImage(ImageType.EliteText, BitmapFile.Read(Path.Combine("Graphics", filename)));
 
             // Act
             graphics.DrawImage(ImageType.EliteText, new(imageX, imageY));
@@ -245,7 +245,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             using SoftwareGraphics graphics = new(imageWidth, imageHeight, DoAssert);
-            graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+            graphics.LoadImage(ImageType.EliteText, BitmapFile.Read(Path.Combine("Graphics", filename)));
 
             // Act
             graphics.DrawImage(ImageType.EliteText, new(1, 1));
@@ -262,7 +262,7 @@ namespace EliteSharp.Tests.Graphics
             // Arrange
             using SoftwareGraphics graphics = new(2, 2, DoAssert);
             graphics.DrawPixel(new(1, 1), TestColors.OpaqueWhite);
-            graphics.LoadImage(ImageType.EliteText, Path.Combine("Graphics", filename));
+            graphics.LoadImage(ImageType.EliteText, BitmapFile.Read(Path.Combine("Graphics", filename)));
 
             // Act
             graphics.DrawImage(ImageType.EliteText, new(0, 0));

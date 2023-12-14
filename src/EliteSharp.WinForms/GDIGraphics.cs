@@ -287,8 +287,20 @@ namespace EliteSharp.WinForms
             _screenGraphics.FillPolygon(_pens[color].Brush, points);
         }
 
-        public void LoadImage(ImageType imgType, string bitmapPath)
-            => _images[imgType] = (Bitmap)Image.FromFile(bitmapPath);
+        public void LoadImage(ImageType imgType, FastBitmap bitmap)
+        {
+            if (bitmap == null)
+            {
+                return;
+            }
+
+            _images[imgType] = new Bitmap(
+                bitmap.Width,
+                bitmap.Height,
+                bitmap.Width * 4,
+                PixelFormat.Format32bppArgb,
+                bitmap.BitmapHandle);
+        }
 
         public void ScreenUpdate()
         {

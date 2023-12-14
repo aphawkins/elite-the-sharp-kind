@@ -265,8 +265,8 @@ namespace EliteSharp.Graphics
             }
         }
 
-        public void LoadImage(ImageType imgType, string bitmapPath)
-            => _images[imgType] = BitmapFile.Read(bitmapPath);
+        public void LoadImage(ImageType imgType, FastBitmap bitmap)
+            => _images[imgType] = bitmap;
 
         public void ScreenUpdate() => _screenUpdate(_screen);
 

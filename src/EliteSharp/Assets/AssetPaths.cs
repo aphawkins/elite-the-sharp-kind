@@ -11,7 +11,7 @@ namespace EliteSharp.Assets
 {
     internal sealed class AssetPaths : IAssets
     {
-        public string AssetPath(ImageType image) => Path.Combine(GetAssetPath(), "Images", GetName(image));
+        public FastBitmap AssetPath(ImageType image) => BitmapFile.Read(Path.Combine(GetAssetPath(), "Images", GetName(image)));
 
         public string AssetPath(SoundEffect effect) => Path.Combine(GetAssetPath(), "SFX", GetName(effect));
 

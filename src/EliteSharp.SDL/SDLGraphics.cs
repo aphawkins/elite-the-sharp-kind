@@ -22,7 +22,7 @@ namespace EliteSharp.SDL
             "OpenSans-Regular.ttf");
 
         private readonly nint _fontSmall;
-        private readonly ConcurrentDictionary<ImageType, nint> _images = new();
+        private readonly ConcurrentDictionary<ImageType, FastBitmap> _images = new();
         private readonly nint _renderer;
         private readonly Dictionary<FastColor, SDL_Color> _sdlColors = [];
         private readonly nint _window;
@@ -204,15 +204,48 @@ namespace EliteSharp.SDL
                 return;
             }
 
-            SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(_images[image]);
-            nint texture = SDL_CreateTextureFromSurface(_renderer, _images[image]);
+            FastBitmap bitmap = _images[image];
+
+            IntPtr surface = BitConverter.IsLittleEndian
+                ? SDL_CreateRGBSurfaceFrom(
+                    bitmap.BitmapHandle,
+                    bitmap.Width,
+                    bitmap.Height,
+                    bitmap.BitsPerPixel,
+                    bitmap.Width * 4,
+                    0x00FF0000,
+                    0x0000FF00,
+                    0x000000FF,
+                    0xFF000000)
+                : SDL_CreateRGBSurfaceFrom(
+                    bitmap.BitmapHandle,
+                    bitmap.Width,
+                    bitmap.Height,
+                    bitmap.BitsPerPixel,
+                    bitmap.Width * 4,
+                    0x0000FF00,
+                    0x00FF0000,
+                    0xFF000000,
+                    0x000000FF);
+            if (surface == IntPtr.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateRGBSurfaceFrom));
+            }
+
+            IntPtr texture = SDL_CreateTextureFromSurface(_renderer, surface);
+            if (texture == IntPtr.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
+            }
+
+            SDL_FreeSurface(surface);
 
             SDL_Rect dest = new()
             {
                 x = (int)position.X,
                 y = (int)position.Y,
-                h = surface.h,
-                w = surface.w,
+                w = bitmap.Width,
+                h = bitmap.Height,
             };
 
             if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
@@ -230,8 +263,7 @@ namespace EliteSharp.SDL
                 return;
             }
 
-            SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(_images[image]);
-            float x = (ScreenWidth - surface.w) / 2;
+            float x = (ScreenWidth - _images[image].Width) / 2;
             DrawImage(image, new(x, y));
         }
 
@@ -479,14 +511,15 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void LoadImage(ImageType imgType, string bitmapPath)
+        public void LoadImage(ImageType imgType, FastBitmap bitmap)
         {
-            if (_isDisposed)
+            if (_isDisposed ||
+                bitmap == null)
             {
                 return;
             }
 
-            _images[imgType] = SDL_LoadBMP(bitmapPath);
+            _images[imgType] = bitmap;
         }
 
         public void ScreenUpdate()
@@ -546,9 +579,9 @@ namespace EliteSharp.SDL
                 TTF_CloseFont(_fontLarge);
 
                 // Images
-                foreach (KeyValuePair<ImageType, nint> image in _images)
+                foreach (KeyValuePair<ImageType, FastBitmap> image in _images)
                 {
-                    SDL_FreeSurface(image.Value);
+                    image.Value.Dispose();
                 }
 
                 SDL_DestroyRenderer(_renderer);
