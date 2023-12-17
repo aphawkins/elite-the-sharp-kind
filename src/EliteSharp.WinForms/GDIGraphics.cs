@@ -4,7 +4,9 @@
 
 using System.Collections.Concurrent;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.Numerics;
+using System.Reflection;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
@@ -12,8 +14,9 @@ namespace EliteSharp.WinForms
     public sealed class GDIGraphics : IGraphics
     {
         private readonly FastBitmap _fastScreen;
-        private readonly Font _fontLarge = new("Arial", 18, FontStyle.Bold, GraphicsUnit.Pixel);
-        private readonly Font _fontSmall = new("Arial", 12, FontStyle.Bold, GraphicsUnit.Pixel);
+        private readonly Font _fontLarge;
+        private readonly Font _fontSmall;
+        private readonly PrivateFontCollection _privateFontCollection = new();
         private readonly ConcurrentDictionary<ImageType, Bitmap> _images = new();
         private readonly Dictionary<FastColor, Pen> _pens = [];
         private readonly Bitmap _screen;
@@ -30,6 +33,18 @@ namespace EliteSharp.WinForms
             _fastScreen = new((int)screenWidth, (int)screenHeight);
             _screen = new((int)screenWidth, (int)screenHeight, (int)screenWidth * 4, PixelFormat.Format32bppArgb, _fastScreen.BitmapHandle);
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
+
+            _privateFontCollection.AddFontFile(Path.Combine(
+                Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty,
+                "Assets",
+                "Fonts",
+                "OpenSans-Regular.ttf"));
+
+            FontFamily[] fontFamilies = _privateFontCollection.Families;
+            string fontName = fontFamilies[0].Name;
+
+            _fontLarge = new(fontName, 18, FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontSmall = new(fontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
 
             foreach (FastColor color in EliteColors.AllColors())
             {
@@ -335,6 +350,7 @@ namespace EliteSharp.WinForms
                     _fastScreen?.Dispose();
                     _fontSmall?.Dispose();
                     _fontLarge?.Dispose();
+                    _privateFontCollection?.Dispose();
 
                     // Images
                     foreach (KeyValuePair<ImageType, Bitmap> image in _images)
