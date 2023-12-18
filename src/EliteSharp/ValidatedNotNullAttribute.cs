@@ -2,12 +2,10 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp.Assets.Fonts
+namespace EliteSharp
 {
-    public enum FontType
+    [AttributeUsage(AttributeTargets.Parameter)]
+    internal sealed class ValidatedNotNullAttribute : Attribute
     {
-        Regular = 0,
-        Small = 1,
-        Large = 2,
     }
 }

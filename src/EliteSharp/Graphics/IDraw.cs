@@ -41,8 +41,6 @@ namespace EliteSharp.Graphics
 
         void DrawViewHeader(string title);
 
-        void LoadImages();
-
         void RenderEnd();
 
         void RenderStart();

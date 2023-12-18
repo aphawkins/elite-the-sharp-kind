@@ -3,21 +3,24 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Reflection;
-using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.Assets
 {
-    internal sealed class AssetPaths : IAssets
+    public sealed class AssetPaths : IAssetLocator
     {
-        public FastBitmap AssetPath(ImageType image) => BitmapFile.Read(Path.Combine(GetAssetPath(), "Images", GetName(image)));
+        public IDictionary<ImageType, string> ImageAssetPaths()
+            => Enum.GetValues<ImageType>().ToDictionary(x => x, x => Path.Combine(GetAssetPath(), "Images", GetName(x)));
 
-        public string AssetPath(SoundEffect effect) => Path.Combine(GetAssetPath(), "SFX", GetName(effect));
+        public IDictionary<SoundEffect, string> SfxAssetPaths()
+            => Enum.GetValues<SoundEffect>().ToDictionary(x => x, effect => Path.Combine(GetAssetPath(), "SFX", GetName(effect)));
 
-        public string AssetPath(MusicType music) => Path.Combine(GetAssetPath(), "Music", GetName(music));
+        public IDictionary<MusicType, string> MusicAssetPaths()
+            => Enum.GetValues<MusicType>().ToDictionary(x => x, music => Path.Combine(GetAssetPath(), "Music", GetName(music)));
 
-        public string AssetPath(FontType font) => Path.Combine(GetAssetPath(), "Fonts", "OpenSans-Regular.ttf");
+        public IEnumerable<string> FontAssetPaths()
+            => new string[] { Path.Combine(GetAssetPath(), "Fonts", "OpenSans-Regular.ttf"), };
 
         private static string GetAssetPath()
             => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets");

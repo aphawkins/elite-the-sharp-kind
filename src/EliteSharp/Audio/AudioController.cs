@@ -11,6 +11,7 @@ namespace EliteSharp.Audio
         private readonly bool _musicOn;
         private readonly bool _effectsOn;
         private readonly ISound _sound;
+        private readonly IAssetLocator _assetLocator;
 
         private readonly Dictionary<SoundEffect, SfxSample> _sfx = new()
         {
@@ -30,9 +31,10 @@ namespace EliteSharp.Audio
             { SoundEffect.Boop, new(7) },
         };
 
-        internal AudioController(ISound sound)
+        internal AudioController(ISound sound, IAssetLocator assetLocator)
         {
             _sound = sound;
+            _assetLocator = assetLocator;
 #if DEBUG
             _musicOn = false;
             _effectsOn = true;
@@ -47,12 +49,12 @@ namespace EliteSharp.Audio
             AssetPaths loader = new();
 
             Parallel.ForEach(
-                Enum.GetValues<MusicType>(),
-                (music) => _sound.Load(music, loader.AssetPath(music)));
+                _assetLocator.MusicAssetPaths(),
+                (music) => _sound.Load(music.Key, music.Value));
 
             Parallel.ForEach(
-                Enum.GetValues<SoundEffect>(),
-                (effect) => _sound.Load(effect, loader.AssetPath(effect)));
+                _assetLocator.SfxAssetPaths(),
+                (effect) => _sound.Load(effect.Key, effect.Value));
         }
 
         internal void PlayEffect(SoundEffect effect)

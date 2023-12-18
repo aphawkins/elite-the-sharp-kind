@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Numerics;
 
@@ -10,15 +9,18 @@ namespace EliteSharp.Graphics
 {
     public sealed class SoftwareGraphics : IGraphics
     {
-        private readonly ConcurrentDictionary<ImageType, FastBitmap> _images = new();
+        private readonly Dictionary<ImageType, FastBitmap> _images;
         private readonly FastBitmap _screen;
         private readonly Action<FastBitmap> _screenUpdate;
         private bool _isDisposed;
 
-        public SoftwareGraphics(float screenWidth, float screenHeight, Action<FastBitmap> screenUpdate)
+        public SoftwareGraphics(float screenWidth, float screenHeight, SoftwareAssetLoader assetLoader, Action<FastBitmap> screenUpdate)
         {
+            Guard.ArgumentNull(assetLoader);
+
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
+            _images = assetLoader.LoadImages();
             _screen = new((int)screenWidth, (int)screenHeight);
             _screenUpdate = screenUpdate;
             Clear();
@@ -264,9 +266,6 @@ namespace EliteSharp.Graphics
                 }
             }
         }
-
-        public void LoadImage(ImageType imgType, FastBitmap bitmap)
-            => _images[imgType] = bitmap;
 
         public void ScreenUpdate() => _screenUpdate(_screen);
 

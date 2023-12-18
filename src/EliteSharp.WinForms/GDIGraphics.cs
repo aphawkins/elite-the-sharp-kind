@@ -2,11 +2,9 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Collections.Concurrent;
 using System.Drawing.Imaging;
-using System.Drawing.Text;
 using System.Numerics;
-using System.Reflection;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
@@ -14,10 +12,10 @@ namespace EliteSharp.WinForms
     public sealed class GDIGraphics : IGraphics
     {
         private readonly FastBitmap _fastScreen;
-        private readonly Font _fontLarge;
+        private readonly Dictionary<FontType, Font> _fonts;
         private readonly Font _fontSmall;
-        private readonly PrivateFontCollection _privateFontCollection = new();
-        private readonly ConcurrentDictionary<ImageType, Bitmap> _images = new();
+        private readonly Font _fontLarge;
+        private readonly Dictionary<ImageType, Bitmap> _images;
         private readonly Dictionary<FastColor, Pen> _pens = [];
         private readonly Bitmap _screen;
         private readonly System.Drawing.Graphics _screenGraphics;
@@ -25,26 +23,24 @@ namespace EliteSharp.WinForms
         private RectangleF _clipRegion;
         private bool _isDisposed;
 
-        public GDIGraphics(float screenWidth, float screenHeight, Action<Bitmap> screenUpdate)
+        public GDIGraphics(
+            float screenWidth,
+            float screenHeight,
+            GDIAssetLoader assetLoader,
+            Action<Bitmap> screenUpdate)
         {
+            Guard.ArgumentNull(assetLoader);
+
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
+            _images = assetLoader.LoadImages();
+            _fonts = assetLoader.LoadFonts();
             _screenUpdate = screenUpdate;
             _fastScreen = new((int)screenWidth, (int)screenHeight);
             _screen = new((int)screenWidth, (int)screenHeight, (int)screenWidth * 4, PixelFormat.Format32bppArgb, _fastScreen.BitmapHandle);
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
-
-            _privateFontCollection.AddFontFile(Path.Combine(
-                Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty,
-                "Assets",
-                "Fonts",
-                "OpenSans-Regular.ttf"));
-
-            FontFamily[] fontFamilies = _privateFontCollection.Families;
-            string fontName = fontFamilies[0].Name;
-
-            _fontLarge = new(fontName, 18, FontStyle.Regular, GraphicsUnit.Pixel);
-            _fontSmall = new(fontName, 12, FontStyle.Regular, GraphicsUnit.Pixel);
+            _fontLarge = _fonts[FontType.Large];
+            _fontSmall = _fonts[FontType.Small];
 
             foreach (FastColor color in EliteColors.AllColors())
             {
@@ -302,21 +298,6 @@ namespace EliteSharp.WinForms
             _screenGraphics.FillPolygon(_pens[color].Brush, points);
         }
 
-        public void LoadImage(ImageType imgType, FastBitmap bitmap)
-        {
-            if (bitmap == null)
-            {
-                return;
-            }
-
-            _images[imgType] = new Bitmap(
-                bitmap.Width,
-                bitmap.Height,
-                bitmap.Width * 4,
-                PixelFormat.Format32bppArgb,
-                bitmap.BitmapHandle);
-        }
-
         public void ScreenUpdate()
         {
             if (_isDisposed)
@@ -350,7 +331,6 @@ namespace EliteSharp.WinForms
                     _fastScreen?.Dispose();
                     _fontSmall?.Dispose();
                     _fontLarge?.Dispose();
-                    _privateFontCollection?.Dispose();
 
                     // Images
                     foreach (KeyValuePair<ImageType, Bitmap> image in _images)

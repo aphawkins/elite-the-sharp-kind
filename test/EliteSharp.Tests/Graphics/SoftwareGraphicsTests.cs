@@ -2,7 +2,9 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Assets;
 using EliteSharp.Graphics;
+using Moq;
 
 namespace EliteSharp.Tests.Graphics
 {
@@ -15,7 +17,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelInBounds(float x, float y)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawPixel(new(x, y), EliteColors.White);
@@ -31,7 +33,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawPixelOutOfBounds(float x, float y)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, (_) => { });
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), (_) => { });
 
             // Act
             graphics.DrawPixel(new(x, y), EliteColors.White);
@@ -44,7 +46,7 @@ namespace EliteSharp.Tests.Graphics
         public void Clear()
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawPixel(new(2, 2), EliteColors.White);
@@ -59,7 +61,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleInBounds()
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawCircle(new(2, 2), 2, EliteColors.White);
@@ -79,7 +81,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCirclePartialInBounds()
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawCircle(new(0, 0), 4, EliteColors.White);
@@ -101,7 +103,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleOutOfBounds(float x, float y, float radius)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawCircle(new(x, y), radius, EliteColors.White);
@@ -124,7 +126,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleFilledInBounds()
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawCircleFilled(new(2, 2), 2, EliteColors.White);
@@ -149,7 +151,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawCircleFilledOutOfBounds(float x, float y, float radius, uint centreColor)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawCircleFilled(new(x, y), radius, EliteColors.White);
@@ -176,7 +178,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawLineInBounds(float startX, float startY, float endX, float endY)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawLine(new(startX, startY), new(endX, endY), EliteColors.White);
@@ -198,7 +200,7 @@ namespace EliteSharp.Tests.Graphics
         public void DrawLineOutOfBounds(float startX, float startY, float endX, float endY)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(5, 5, DoAssert);
+            using SoftwareGraphics graphics = new(5, 5, new(new AssetPaths()), DoAssert);
 
             // Act
             graphics.DrawLine(new(startX, startY), new(endX, endY), EliteColors.White);
@@ -213,10 +215,13 @@ namespace EliteSharp.Tests.Graphics
         public void LoadImage(string filename, int width, int height)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(width, height, (_) => { });
+            Mock<IAssetLocator> moqAssetPaths = new();
+            moqAssetPaths.Setup(x => x.ImageAssetPaths())
+                .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
+
+            using SoftwareGraphics graphics = new(width, height, new(moqAssetPaths.Object), (_) => { });
 
             // Act
-            graphics.LoadImage(ImageType.EliteText, BitmapFile.Read(Path.Combine("Graphics", filename)));
             graphics.ScreenUpdate();
 
             // Assert
@@ -228,8 +233,10 @@ namespace EliteSharp.Tests.Graphics
         public void DrawImage(int width, int height, string filename, int imageX, int imageY)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(width, height, DoAssert);
-            graphics.LoadImage(ImageType.EliteText, BitmapFile.Read(Path.Combine("Graphics", filename)));
+            Mock<IAssetLocator> moqAssetPaths = new();
+            moqAssetPaths.Setup(x => x.ImageAssetPaths())
+                .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
+            using SoftwareGraphics graphics = new(width, height, new(moqAssetPaths.Object), DoAssert);
 
             // Act
             graphics.DrawImage(ImageType.EliteText, new(imageX, imageY));
@@ -244,8 +251,10 @@ namespace EliteSharp.Tests.Graphics
         public void DrawImageOutOfBounds(string filename, int imageWidth, int imageHeight)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(imageWidth, imageHeight, DoAssert);
-            graphics.LoadImage(ImageType.EliteText, BitmapFile.Read(Path.Combine("Graphics", filename)));
+            Mock<IAssetLocator> moqAssetPaths = new();
+            moqAssetPaths.Setup(x => x.ImageAssetPaths())
+                .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
+            using SoftwareGraphics graphics = new(imageWidth, imageHeight, new(moqAssetPaths.Object), DoAssert);
 
             // Act
             graphics.DrawImage(ImageType.EliteText, new(1, 1));
@@ -260,9 +269,11 @@ namespace EliteSharp.Tests.Graphics
         public void DrawImageTransparent(string filename)
         {
             // Arrange
-            using SoftwareGraphics graphics = new(2, 2, DoAssert);
+            Mock<IAssetLocator> moqAssetPaths = new();
+            moqAssetPaths.Setup(x => x.ImageAssetPaths())
+                .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
+            using SoftwareGraphics graphics = new(2, 2, new(moqAssetPaths.Object), DoAssert);
             graphics.DrawPixel(new(1, 1), TestColors.OpaqueWhite);
-            graphics.LoadImage(ImageType.EliteText, BitmapFile.Read(Path.Combine("Graphics", filename)));
 
             // Act
             graphics.DrawImage(ImageType.EliteText, new(0, 0));
@@ -277,5 +288,8 @@ namespace EliteSharp.Tests.Graphics
                 Assert.Equal(TestColors.OpaqueWhite, bmp.GetPixel(1, 1));
             }
         }
+
+        private static string GraphicsFilename(string filename)
+            => Path.Combine("Graphics", filename);
     }
 }

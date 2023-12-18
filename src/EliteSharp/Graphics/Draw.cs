@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharp.Assets;
 using EliteSharp.Ships;
 using EliteSharp.Views;
 
@@ -149,14 +148,6 @@ namespace EliteSharp.Graphics
             // Vertical lines
             Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), EliteColors.Yellow);
             Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), EliteColors.Yellow);
-        }
-
-        public void LoadImages()
-        {
-            AssetPaths loader = new();
-            Parallel.ForEach(
-                Enum.GetValues<ImageType>(),
-                (img) => Graphics.LoadImage(img, loader.AssetPath(img)));
         }
 
         public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);

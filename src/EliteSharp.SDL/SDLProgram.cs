@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Assets;
 using static SDL2.SDL;
 
 namespace EliteSharp.SDL
@@ -16,8 +17,8 @@ namespace EliteSharp.SDL
                 // names threads with the 0x406D1388 exception will silently exit. To prevent this
                 // exception from being thrown by SDL, add this line before your SDL_Init call:
                 SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
-
-                using SDLGraphics graphics = new(960, 540);
+                SDLAssetLoader assetLoader = new(new AssetPaths());
+                using SDLGraphics graphics = new(960, 540, assetLoader);
                 using SDLSound sound = new();
                 SDLKeyboard keyboard = new();
                 EliteMain game = new(graphics, sound, keyboard);

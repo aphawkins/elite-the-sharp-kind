@@ -2,10 +2,10 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-////using EliteSharp.Graphics;
+////using System.Drawing.Imaging;
 
-using System.Drawing.Imaging;
-using EliteSharp.Graphics;
+using EliteSharp.Assets;
+////using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
@@ -20,17 +20,12 @@ namespace EliteSharp.WinForms
 #endif
 
 #if SOFTWAREGRAPHICS
-        private const GraphicsType GraphicsRender = GraphicsType.Software;
+        private static readonly SoftwareGraphics s_graphics = GetSoftwareGraphics();
 #else
-        private const GraphicsType GraphicsRender = GraphicsType.GDI;
+        private static readonly GDIGraphics s_graphics = GetGDIGraphics();
 #endif
         private static readonly WinKeyboard s_keyboard = new();
         private static readonly WinSound s_sound = new();
-        private static readonly IGraphics s_graphics = GraphicsRender switch
-        {
-            GraphicsType.Software => new SoftwareGraphics(ScreenWidth, ScreenHeight, SoftwareScreenUpdate),
-            _ => new GDIGraphics(ScreenWidth, ScreenHeight, ScreenUpdate),
-        };
 
         private static readonly WinWindow s_window = new(ScreenWidth, ScreenHeight, s_keyboard);
         private static readonly EliteMain s_game = new(s_graphics, s_sound, s_keyboard);
@@ -71,11 +66,19 @@ namespace EliteSharp.WinForms
 
         private static void ScreenUpdate(Bitmap bitmap) => s_window.SetImage(bitmap);
 
+#if SOFTWAREGRAPHICS
+        private static SoftwareGraphics GetSoftwareGraphics()
+            => new(ScreenWidth, ScreenHeight, new SoftwareAssetLoader(new AssetPaths()), SoftwareScreenUpdate);
+
         private static void SoftwareScreenUpdate(FastBitmap fastBitmap)
         {
             Bitmap bitmap = new(ScreenWidth, ScreenHeight, ScreenWidth * 4, PixelFormat.Format32bppArgb, fastBitmap.BitmapHandle);
             ScreenUpdate(bitmap);
         }
+#else
+        private static GDIGraphics GetGDIGraphics()
+            => new(ScreenWidth, ScreenHeight, new GDIAssetLoader(new AssetPaths()), ScreenUpdate);
+#endif
 
         private void Dispose(bool disposing)
         {

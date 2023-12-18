@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Drawing.Imaging;
+using EliteSharp.Assets;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Planets;
@@ -32,7 +33,9 @@ namespace EliteSharp.Renderer
             comboRenderer.Items.AddRange(["GDI", "Software"]);
             comboRenderer.SelectedIndex = 0;
 
-            _graphics = new GDIGraphics(ScreenWidth, ScreenHeight, GDIScreenUpdate);
+            GDIAssetLoader assetLoader = new(new AssetPaths());
+
+            _graphics = new GDIGraphics(ScreenWidth, ScreenHeight, assetLoader, GDIScreenUpdate);
             _draw = new Draw(_gameState, _graphics);
             _obj = new WireframePlanet(_draw);
 
@@ -90,8 +93,8 @@ namespace EliteSharp.Renderer
         {
             _graphics = comboRenderer.SelectedIndex switch
             {
-                1 => new SoftwareGraphics(ScreenWidth, ScreenHeight, SoftwareScreenUpdate),
-                _ => new GDIGraphics(ScreenWidth, ScreenHeight, GDIScreenUpdate),
+                1 => new SoftwareGraphics(ScreenWidth, ScreenHeight, new(new AssetPaths()), SoftwareScreenUpdate),
+                _ => new GDIGraphics(ScreenWidth, ScreenHeight, new(new AssetPaths()), GDIScreenUpdate),
             };
 
             _draw = new Draw(_gameState, _graphics);

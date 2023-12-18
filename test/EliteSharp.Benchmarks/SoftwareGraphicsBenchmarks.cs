@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using BenchmarkDotNet.Attributes;
+using EliteSharp.Assets;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.Benchmarks
@@ -14,7 +15,7 @@ namespace EliteSharp.Benchmarks
         private readonly SoftwareGraphics _graphics;
         private bool _disposedValue;
 
-        public SoftwareGraphicsBenchmarks() => _graphics = new(ScreenWidth, ScreenHeight, (_) => { });
+        public SoftwareGraphicsBenchmarks() => _graphics = new(ScreenWidth, ScreenHeight, new(new AssetPaths()), (_) => { });
 
         public void Dispose()
         {
