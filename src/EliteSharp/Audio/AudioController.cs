@@ -2,8 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharp.Assets;
-
 namespace EliteSharp.Audio
 {
     internal sealed class AudioController
@@ -11,7 +9,6 @@ namespace EliteSharp.Audio
         private readonly bool _musicOn;
         private readonly bool _effectsOn;
         private readonly ISound _sound;
-        private readonly IAssetLocator _assetLocator;
 
         private readonly Dictionary<SoundEffect, SfxSample> _sfx = new()
         {
@@ -31,30 +28,16 @@ namespace EliteSharp.Audio
             { SoundEffect.Boop, new(7) },
         };
 
-        internal AudioController(ISound sound, IAssetLocator assetLocator)
+        internal AudioController(ISound sound)
         {
             _sound = sound;
-            _assetLocator = assetLocator;
 #if DEBUG
-            _musicOn = false;
+            _musicOn = true;
             _effectsOn = true;
 #else
             _musicOn = true;
             _effectsOn = true;
 #endif
-        }
-
-        internal void LoadSounds()
-        {
-            AssetPaths loader = new();
-
-            Parallel.ForEach(
-                _assetLocator.MusicAssetPaths(),
-                (music) => _sound.Load(music.Key, music.Value));
-
-            Parallel.ForEach(
-                _assetLocator.SfxAssetPaths(),
-                (effect) => _sound.Load(effect.Key, effect.Value));
         }
 
         internal void PlayEffect(SoundEffect effect)

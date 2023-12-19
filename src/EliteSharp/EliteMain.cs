@@ -4,7 +4,6 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using EliteSharp.Assets;
 using EliteSharp.Audio;
 using EliteSharp.Config;
 using EliteSharp.Conflict;
@@ -53,7 +52,7 @@ namespace EliteSharp
         public EliteMain(IGraphics graphics, ISound sound, IKeyboard keyboard)
         {
             _graphics = graphics;
-            _audio = new(sound, new AssetPaths());
+            _audio = new(sound);
             _keyboard = keyboard;
             ConfigFile configFile = new();
             _gameState = new(_keyboard, _views)
@@ -104,7 +103,6 @@ namespace EliteSharp
 
         public void Run()
         {
-            _audio.LoadSounds();
             long startTicks = Stopwatch.GetTimestamp();
             long intervalTicks = (long)(10000000 / _gameState.Config.Fps); // *1000 = ms; *10000 = ticks
 

@@ -2,11 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-////using System.Drawing.Imaging;
-
-using EliteSharp.Assets;
-////using EliteSharp.Graphics;
-
 namespace EliteSharp.WinForms
 {
     internal sealed class WinProgram : IDisposable
@@ -19,17 +14,13 @@ namespace EliteSharp.WinForms
         private const int ScreenHeight = 512;
 #endif
 
-#if SOFTWAREGRAPHICS
-        private static readonly SoftwareGraphics s_graphics = GetSoftwareGraphics();
+#if SOFTWARERENDERER
+        private static readonly GameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "GDI");
 #else
-        private static readonly GDIGraphics s_graphics = GetGDIGraphics();
+        private static readonly GameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "SOFTWARE");
 #endif
-        private static readonly WinKeyboard s_keyboard = new();
-        private static readonly WinSound s_sound = new();
 
-        private static readonly WinWindow s_window = new(ScreenWidth, ScreenHeight, s_keyboard);
-        private static readonly EliteMain s_game = new(s_graphics, s_sound, s_keyboard);
-        private bool _disposedValue;
+        private bool _isDisposed;
 
         public void Dispose()
         {
@@ -50,8 +41,8 @@ namespace EliteSharp.WinForms
 
             try
             {
-                Task.Run(s_game.Run);
-                Application.Run(s_window);
+                Task.Run(s_gameFactory.Game.Run);
+                Application.Run(s_gameFactory.Window);
             }
             catch (Exception ex)
             {
@@ -64,37 +55,19 @@ namespace EliteSharp.WinForms
             }
         }
 
-        private static void ScreenUpdate(Bitmap bitmap) => s_window.SetImage(bitmap);
-
-#if SOFTWAREGRAPHICS
-        private static SoftwareGraphics GetSoftwareGraphics()
-            => new(ScreenWidth, ScreenHeight, new SoftwareAssetLoader(new AssetPaths()), SoftwareScreenUpdate);
-
-        private static void SoftwareScreenUpdate(FastBitmap fastBitmap)
-        {
-            Bitmap bitmap = new(ScreenWidth, ScreenHeight, ScreenWidth * 4, PixelFormat.Format32bppArgb, fastBitmap.BitmapHandle);
-            ScreenUpdate(bitmap);
-        }
-#else
-        private static GDIGraphics GetGDIGraphics()
-            => new(ScreenWidth, ScreenHeight, new GDIAssetLoader(new AssetPaths()), ScreenUpdate);
-#endif
-
         private void Dispose(bool disposing)
         {
-            if (!_disposedValue)
+            if (!_isDisposed)
             {
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
-                    s_window?.Dispose();
-                    s_graphics?.Dispose();
-                    s_sound?.Dispose();
+                    s_gameFactory?.Dispose();
                 }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
-                _disposedValue = true;
+                _isDisposed = true;
             }
         }
     }

@@ -1,47 +1,19 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Media;
 using EliteSharp.Audio;
-using NAudio.Vorbis;
-using NAudio.Wave;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class WinSound : ISound
+    internal sealed class WinSound(GDIAssetLoader assetLoader) : ISound
     {
-        private readonly ConcurrentDictionary<SoundEffect, SoundPlayer> _sfxs = new();
-        private readonly ConcurrentDictionary<MusicType, SoundPlayer> _musics = new();
+        private readonly Dictionary<SoundEffect, SoundPlayer> _sfx = assetLoader.LoadSfx();
+        private readonly Dictionary<MusicType, SoundPlayer> _music = assetLoader.LoadMusic();
         private bool _disposedValue;
 
-        public void Load(MusicType musicType, string filePath)
-        {
-            Debug.Assert(!string.IsNullOrWhiteSpace(filePath), "Music is missing");
-
-            using MemoryStream memStream = new();
-            using VorbisWaveReader vorbisStream = new(filePath);
-            WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
-            memStream.Position = 0;
-            _musics[musicType] = new(memStream);
-            _musics[musicType].Load();
-
-            Debug.Assert(_musics[musicType].IsLoadCompleted, "Sound Effect failed to load");
-        }
-
-        public void Load(SoundEffect sfxType, string filePath)
-        {
-            Debug.Assert(!string.IsNullOrWhiteSpace(filePath), "Sound effect is missing");
-
-            _sfxs[sfxType] = new(filePath);
-            _sfxs[sfxType].Load();
-
-            Debug.Assert(_sfxs[sfxType].IsLoadCompleted, "Sound effect failed to load");
-        }
-
-        public void Play(SoundEffect sfxType) => _sfxs[sfxType].Play();
+        public void Play(SoundEffect sfxType) => _sfx[sfxType].Play();
 
         public void Play(MusicType musicType, bool repeat)
         {
@@ -49,17 +21,17 @@ namespace EliteSharp.WinForms
 
             if (repeat)
             {
-                _musics[musicType].PlayLooping();
+                _music[musicType].PlayLooping();
             }
             else
             {
-                _musics[musicType].Play();
+                _music[musicType].Play();
             }
         }
 
         public void StopMusic()
         {
-            foreach (KeyValuePair<MusicType, SoundPlayer> music in _musics)
+            foreach (KeyValuePair<MusicType, SoundPlayer> music in _music)
             {
                 music.Value.Stop();
             }
@@ -79,12 +51,12 @@ namespace EliteSharp.WinForms
                 if (disposing)
                 {
                     // dispose managed state (managed objects)
-                    foreach (KeyValuePair<MusicType, SoundPlayer> v in _musics)
+                    foreach (KeyValuePair<MusicType, SoundPlayer> v in _music)
                     {
                         v.Value.Dispose();
                     }
 
-                    foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _sfxs)
+                    foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _sfx)
                     {
                         v.Value.Dispose();
                     }

@@ -19,7 +19,7 @@ namespace EliteSharp.SDL
                 SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
                 SDLAssetLoader assetLoader = new(new AssetPaths());
                 using SDLGraphics graphics = new(960, 540, assetLoader);
-                using SDLSound sound = new();
+                using SDLSound sound = new(assetLoader);
                 SDLKeyboard keyboard = new();
                 EliteMain game = new(graphics, sound, keyboard);
                 game.Run();

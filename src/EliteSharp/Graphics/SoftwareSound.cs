@@ -2,36 +2,23 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Collections.Concurrent;
 using EliteSharp.Audio;
 
 namespace EliteSharp.Graphics
 {
-    internal sealed class SoftwareSound : ISound
+    public sealed class SoftwareSound(SoftwareAssetLoader assetLoader) : ISound
     {
-        private readonly ConcurrentDictionary<SoundEffect, EWave> _sfxs = new();
-        private readonly ConcurrentDictionary<MusicType, EWave> _musics = new();
+#pragma warning disable IDE0052 // Remove unread private members
+#pragma warning disable CA1823 // Avoid unused private fields
+#pragma warning disable RCS1213 // Remove unused member declaration
+        private readonly Dictionary<SoundEffect, EWave> _sfx = assetLoader.LoadSfx();
+        private readonly Dictionary<MusicType, EWave> _music = assetLoader.LoadMusic();
+#pragma warning restore RCS1213 // Remove unused member declaration
+#pragma warning restore IDE0052 // Remove unread private members
+#pragma warning restore CA1823 // Avoid unused private fields
 
         public void Dispose()
         {
-        }
-
-        public void Load(MusicType musicType, string filePath)
-        {
-            using MemoryStream memStream = new();
-            using FileStream stream = new(filePath, FileMode.Open);
-            stream.CopyToAsync(memStream).ConfigureAwait(false);
-            memStream.Position = 0;
-            _musics[musicType] = new(memStream.ToArray());
-        }
-
-        public void Load(SoundEffect sfxType, string filePath)
-        {
-            using MemoryStream memStream = new();
-            using FileStream stream = new(filePath, FileMode.Open);
-            stream.CopyToAsync(memStream).ConfigureAwait(false);
-            memStream.Position = 0;
-            _sfxs[sfxType] = new(memStream.ToArray());
         }
 
         public void Play(MusicType musicType, bool repeat)

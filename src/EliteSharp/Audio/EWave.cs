@@ -4,8 +4,10 @@
 
 namespace EliteSharp.Audio
 {
-    internal class EWave(byte[] bytes)
+    public class EWave(byte[] bytes)
     {
+#pragma warning disable CA1819 // Properties should not return arrays
         public byte[] Bytes { get; } = bytes;
+#pragma warning restore CA1819 // Properties should not return arrays
     }
 }
