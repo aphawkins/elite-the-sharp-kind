@@ -18,7 +18,7 @@ namespace EliteSharp.SDL
         private readonly IAssetLocator _assets = assets;
 
         public Dictionary<ImageType, nint> LoadImages()
-            => _assets.ImageAssetPaths().ToDictionary(
+            => _assets.ImageAssets().ToDictionary(
                 x => x.Key,
                 x =>
                 {
@@ -33,7 +33,7 @@ namespace EliteSharp.SDL
 
         public Dictionary<FontType, nint> LoadFonts()
         {
-            string fontPath = _assets.FontAssetPaths().ToList()[0];
+            string fontPath = _assets.FontAssets().ToList()[0];
 
             nint fontLarge = TTF_OpenFont(fontPath, 18);
             if (fontLarge == nint.Zero)
@@ -55,7 +55,7 @@ namespace EliteSharp.SDL
         }
 
         public Dictionary<MusicType, nint> LoadMusic()
-            => _assets.MusicAssetPaths().ToDictionary(
+            => _assets.MusicAssets().ToDictionary(
                 x => x.Key,
                 x =>
                 {
@@ -69,18 +69,18 @@ namespace EliteSharp.SDL
                     return music;
                 });
 
-        public Dictionary<SoundEffect, (nint SfxPtr, nint Data, uint Len)> LoadSfx()
-            => _assets.SfxAssetPaths().ToDictionary(
+        public Dictionary<SoundEffect, nint> LoadSfx()
+            => _assets.SfxAssets().ToDictionary(
                 x => x.Key,
                 x =>
                 {
-                    nint sfxPtr = SDL_LoadWAV(x.Value, out SDL_AudioSpec audioSpec, out nint data, out uint len);
-                    if (sfxPtr == nint.Zero)
+                    nint sfx = Mix_LoadWAV(x.Value);
+                    if (sfx == nint.Zero)
                     {
-                        SDLHelper.Throw(nameof(SDL_LoadWAV));
+                        SDLHelper.Throw(nameof(Mix_LoadWAV));
                     }
 
-                    return (sfxPtr, data, len);
+                    return sfx;
                 });
     }
 }

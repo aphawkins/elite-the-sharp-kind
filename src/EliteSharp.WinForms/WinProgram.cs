@@ -15,9 +15,9 @@ namespace EliteSharp.WinForms
 #endif
 
 #if SOFTWARERENDERER
-        private static readonly GameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "GDI");
-#else
         private static readonly GameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "SOFTWARE");
+#else
+        private static readonly GameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "GDI");
 #endif
 
         private bool _isDisposed;

@@ -10,16 +10,16 @@ namespace EliteSharp.Assets
 {
     public sealed class AssetPaths : IAssetLocator
     {
-        public IDictionary<ImageType, string> ImageAssetPaths()
+        public IDictionary<ImageType, string> ImageAssets()
             => Enum.GetValues<ImageType>().ToDictionary(x => x, x => Path.Combine(GetAssetPath(), "Images", GetName(x)));
 
-        public IDictionary<SoundEffect, string> SfxAssetPaths()
+        public IDictionary<SoundEffect, string> SfxAssets()
             => Enum.GetValues<SoundEffect>().ToDictionary(x => x, effect => Path.Combine(GetAssetPath(), "SFX", GetName(effect)));
 
-        public IDictionary<MusicType, string> MusicAssetPaths()
+        public IDictionary<MusicType, string> MusicAssets()
             => Enum.GetValues<MusicType>().ToDictionary(x => x, music => Path.Combine(GetAssetPath(), "Music", GetName(music)));
 
-        public IEnumerable<string> FontAssetPaths()
+        public IEnumerable<string> FontAssets()
             => new string[] { Path.Combine(GetAssetPath(), "Fonts", "OpenSans-Regular.ttf"), };
 
         private static string GetAssetPath()
@@ -42,20 +42,20 @@ namespace EliteSharp.Assets
 
         private static string GetName(SoundEffect effect) => effect switch
         {
-            SoundEffect.Launch => "launch.wav",
-            SoundEffect.Crash => "crash.wav",
-            SoundEffect.Dock => "dock.wav",
-            SoundEffect.Gameover => "gameover.wav",
-            SoundEffect.Pulse => "pulse.wav",
-            SoundEffect.HitEnemy => "hitem.wav",
-            SoundEffect.Explode => "explode.wav",
-            SoundEffect.Ecm => "ecm.wav",
-            SoundEffect.Missile => "missile.wav",
-            SoundEffect.Hyperspace => "hyper.wav",
-            SoundEffect.IncomingFire1 => "incom1.wav",
-            SoundEffect.IncomingFire2 => "incom2.wav",
-            SoundEffect.Beep => "beep.wav",
-            SoundEffect.Boop => "boop.wav",
+            SoundEffect.Launch => "launch.ogg",
+            SoundEffect.Crash => "crash.ogg",
+            SoundEffect.Dock => "dock.ogg",
+            SoundEffect.Gameover => "gameover.ogg",
+            SoundEffect.Pulse => "pulse.ogg",
+            SoundEffect.HitEnemy => "hitem.ogg",
+            SoundEffect.Explode => "explode.ogg",
+            SoundEffect.Ecm => "ecm.ogg",
+            SoundEffect.Missile => "missile.ogg",
+            SoundEffect.Hyperspace => "hyper.ogg",
+            SoundEffect.IncomingFire1 => "incom1.ogg",
+            SoundEffect.IncomingFire2 => "incom2.ogg",
+            SoundEffect.Beep => "beep.ogg",
+            SoundEffect.Boop => "boop.ogg",
             _ => throw new EliteException(),
         };
 

@@ -19,13 +19,13 @@ namespace EliteSharp.WinForms
         private readonly IAssetLocator _assets = assets;
 
         public Dictionary<ImageType, Bitmap> LoadImages()
-            => _assets.ImageAssetPaths().ToDictionary(x => x.Key, x => new Bitmap(x.Value));
+            => _assets.ImageAssets().ToDictionary(x => x.Key, x => new Bitmap(x.Value));
 
         public Dictionary<FontType, Font> LoadFonts()
         {
             using PrivateFontCollection fonts = new();
 
-            foreach (string fontPath in _assets.FontAssetPaths())
+            foreach (string fontPath in _assets.FontAssets())
             {
                 fonts.AddFontFile(fontPath);
             }
@@ -41,36 +41,33 @@ namespace EliteSharp.WinForms
         }
 
         public Dictionary<MusicType, SoundPlayer> LoadMusic()
-            => _assets.MusicAssetPaths().ToDictionary(
+            => _assets.MusicAssets().ToDictionary(
                 x => x.Key,
                 x =>
                 {
                     Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Music is missing");
-                    using MemoryStream memStream = new();
-                    using VorbisWaveReader vorbisStream = new(x.Value);
-                    WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
-                    memStream.Position = 0;
-                    SoundPlayer player = new(memStream);
-                    player.Load();
-
-                    Debug.Assert(player.IsLoadCompleted, "Sound Effect failed to load");
-
-                    return player;
+                    return SoundPlayerFromVorbis(x.Value);
                 });
 
         public Dictionary<SoundEffect, SoundPlayer> LoadSfx()
-            => _assets.SfxAssetPaths().ToDictionary(
+            => _assets.SfxAssets().ToDictionary(
                 x => x.Key,
                 x =>
                 {
                     Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Sound effect is missing");
-
-                    SoundPlayer player = new(x.Value);
-                    player.Load();
-
-                    Debug.Assert(player.IsLoadCompleted, "Sound effect failed to load");
-
-                    return player;
+                    return SoundPlayerFromVorbis(x.Value);
                 });
+
+        private static SoundPlayer SoundPlayerFromVorbis(string fileName)
+        {
+            using MemoryStream memStream = new();
+            using VorbisWaveReader vorbisStream = new(fileName);
+            WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
+            memStream.Position = 0;
+            SoundPlayer player = new(memStream);
+            player.Load();
+            Debug.Assert(player.IsLoadCompleted, "Sound failed to load");
+            return player;
+        }
     }
 }

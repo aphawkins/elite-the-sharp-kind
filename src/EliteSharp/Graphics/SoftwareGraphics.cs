@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using EliteSharp.Assets;
 
 namespace EliteSharp.Graphics
 {

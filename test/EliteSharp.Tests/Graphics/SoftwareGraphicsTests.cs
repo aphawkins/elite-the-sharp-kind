@@ -216,7 +216,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             Mock<IAssetLocator> moqAssetPaths = new();
-            moqAssetPaths.Setup(x => x.ImageAssetPaths())
+            moqAssetPaths.Setup(x => x.ImageAssets())
                 .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
 
             using SoftwareGraphics graphics = new(width, height, new(moqAssetPaths.Object), (_) => { });
@@ -234,7 +234,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             Mock<IAssetLocator> moqAssetPaths = new();
-            moqAssetPaths.Setup(x => x.ImageAssetPaths())
+            moqAssetPaths.Setup(x => x.ImageAssets())
                 .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
             using SoftwareGraphics graphics = new(width, height, new(moqAssetPaths.Object), DoAssert);
 
@@ -252,7 +252,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             Mock<IAssetLocator> moqAssetPaths = new();
-            moqAssetPaths.Setup(x => x.ImageAssetPaths())
+            moqAssetPaths.Setup(x => x.ImageAssets())
                 .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
             using SoftwareGraphics graphics = new(imageWidth, imageHeight, new(moqAssetPaths.Object), DoAssert);
 
@@ -270,7 +270,7 @@ namespace EliteSharp.Tests.Graphics
         {
             // Arrange
             Mock<IAssetLocator> moqAssetPaths = new();
-            moqAssetPaths.Setup(x => x.ImageAssetPaths())
+            moqAssetPaths.Setup(x => x.ImageAssets())
                 .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
             using SoftwareGraphics graphics = new(2, 2, new(moqAssetPaths.Object), DoAssert);
             graphics.DrawPixel(new(1, 1), TestColors.OpaqueWhite);

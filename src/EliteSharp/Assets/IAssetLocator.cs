@@ -9,12 +9,12 @@ namespace EliteSharp.Assets
 {
     public interface IAssetLocator
     {
-        IDictionary<ImageType, string> ImageAssetPaths();
+        IDictionary<ImageType, string> ImageAssets();
 
-        IDictionary<SoundEffect, string> SfxAssetPaths();
+        IDictionary<SoundEffect, string> SfxAssets();
 
-        IDictionary<MusicType, string> MusicAssetPaths();
+        IDictionary<MusicType, string> MusicAssets();
 
-        IEnumerable<string> FontAssetPaths();
+        IEnumerable<string> FontAssets();
     }
 }
