@@ -25,9 +25,9 @@ namespace EliteSharp.WinForms
         {
             using PrivateFontCollection fonts = new();
 
-            foreach (string fontPath in _assets.FontAssets())
+            foreach (KeyValuePair<FontType, string> fontPath in _assets.FontAssets())
             {
-                fonts.AddFontFile(fontPath);
+                fonts.AddFontFile(fontPath.Value);
             }
 
             FontFamily[] fontFamilies = fonts.Families;

@@ -5,11 +5,17 @@
 using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Assets;
+using EliteSharp.Assets.Fonts;
 
 namespace EliteSharp.Graphics
 {
     public sealed class SoftwareGraphics : IGraphics
     {
+        private readonly int _fontHeight = 20;
+        private readonly FastBitmap _fontLarge;
+        private readonly Dictionary<FontType, FastBitmap> _fonts;
+        private readonly FastBitmap _fontSmall;
+        private readonly int _fontWidth = 12;
         private readonly Dictionary<ImageType, FastBitmap> _images;
         private readonly FastBitmap _screen;
         private readonly Action<FastBitmap> _screenUpdate;
@@ -21,9 +27,12 @@ namespace EliteSharp.Graphics
 
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
-            _images = assetLoader.LoadImages();
             _screen = new((int)screenWidth, (int)screenHeight);
             _screenUpdate = screenUpdate;
+            _images = assetLoader.LoadImages();
+            _fonts = assetLoader.LoadFonts();
+            _fontLarge = _fonts[FontType.Large];
+            _fontSmall = _fonts[FontType.Small];
             Clear();
         }
 
@@ -211,6 +220,40 @@ namespace EliteSharp.Graphics
 
         public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor color)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            int i = 0;
+            foreach (char letter in text)
+            {
+                int fontRow = (letter >> 4) - 2;
+                int fontColumn = letter & 0xF;
+                int x = (int)((ScreenWidth / 2) - (text.Length * _fontWidth / 2));
+
+                for (int fontY = 0; fontY < _fontHeight; fontY++)
+                {
+                    for (int fontX = 0; fontX < _fontWidth; fontX++)
+                    {
+                        FastColor pixelColor = _fontLarge.GetPixel(
+                            fontX + (32 * fontColumn) + 1,
+                            fontY + (32 * fontRow) + 1);
+
+                        if (pixelColor.A != 0)
+                        {
+                            // TODO: should mix the transparent colors correctly here
+                            // but the only transparency being used is transparent or opaque
+                            DrawPixel(
+                                x + fontX + (i * _fontWidth),
+                                (int)y + fontY,
+                                pixelColor);
+                        }
+                    }
+                }
+
+                i++;
+            }
         }
 
         public void DrawTextLeft(Vector2 position, string text, FastColor color)
@@ -407,12 +450,5 @@ namespace EliteSharp.Graphics
 
             return [.. values];
         }
-
-        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~SoftwareGraphics()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
     }
 }

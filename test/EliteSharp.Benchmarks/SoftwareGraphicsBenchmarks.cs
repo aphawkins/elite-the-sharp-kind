@@ -15,7 +15,7 @@ namespace EliteSharp.Benchmarks
         private readonly SoftwareGraphics _graphics;
         private bool _disposedValue;
 
-        public SoftwareGraphicsBenchmarks() => _graphics = new(ScreenWidth, ScreenHeight, new(new AssetPaths()), (_) => { });
+        public SoftwareGraphicsBenchmarks() => _graphics = new(ScreenWidth, ScreenHeight, new(new SoftwareAssetLocator()), (_) => { });
 
         public void Dispose()
         {

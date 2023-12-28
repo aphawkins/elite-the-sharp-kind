@@ -3,15 +3,16 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Reflection;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.Assets
 {
-    public sealed class AssetPaths : IAssetLocator
+    public class AssetLocator : IAssetLocator
     {
         public IDictionary<ImageType, string> ImageAssets()
-            => Enum.GetValues<ImageType>().ToDictionary(x => x, x => Path.Combine(GetAssetPath(), "Images", GetName(x)));
+            => Enum.GetValues<ImageType>().ToDictionary(x => x, image => Path.Combine(GetAssetPath(), "Images", GetName(image)));
 
         public IDictionary<SoundEffect, string> SfxAssets()
             => Enum.GetValues<SoundEffect>().ToDictionary(x => x, effect => Path.Combine(GetAssetPath(), "SFX", GetName(effect)));
@@ -19,13 +20,13 @@ namespace EliteSharp.Assets
         public IDictionary<MusicType, string> MusicAssets()
             => Enum.GetValues<MusicType>().ToDictionary(x => x, music => Path.Combine(GetAssetPath(), "Music", GetName(music)));
 
-        public IEnumerable<string> FontAssets()
-            => new string[] { Path.Combine(GetAssetPath(), "Fonts", "OpenSans-Regular.ttf"), };
+        public IDictionary<FontType, string> FontAssets()
+            => Enum.GetValues<FontType>().ToDictionary(x => x, font => Path.Combine(GetAssetPath(), "Fonts", GetName(font)));
 
-        private static string GetAssetPath()
+        protected virtual string GetAssetPath()
             => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets");
 
-        private static string GetName(ImageType image) => image switch
+        protected virtual string GetName(ImageType image) => image switch
         {
             ImageType.GreenDot => "greendot.bmp",
             ImageType.DotRed => "reddot.bmp",
@@ -40,7 +41,7 @@ namespace EliteSharp.Assets
             _ => throw new EliteException(),
         };
 
-        private static string GetName(SoundEffect effect) => effect switch
+        protected virtual string GetName(SoundEffect effect) => effect switch
         {
             SoundEffect.Launch => "launch.ogg",
             SoundEffect.Crash => "crash.ogg",
@@ -59,10 +60,17 @@ namespace EliteSharp.Assets
             _ => throw new EliteException(),
         };
 
-        private static string GetName(MusicType music) => music switch
+        protected virtual string GetName(MusicType music) => music switch
         {
             MusicType.EliteTheme => "theme.ogg",
             MusicType.BlueDanube => "danube.ogg",
+            _ => throw new EliteException(),
+        };
+
+        protected virtual string GetName(FontType font) => font switch
+        {
+            FontType.Small => "OpenSans-Regular.ttf",
+            FontType.Large => "OpenSans-Regular.ttf",
             _ => throw new EliteException(),
         };
     }

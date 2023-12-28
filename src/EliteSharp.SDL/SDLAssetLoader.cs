@@ -33,15 +33,15 @@ namespace EliteSharp.SDL
 
         public Dictionary<FontType, nint> LoadFonts()
         {
-            string fontPath = _assets.FontAssets().ToList()[0];
+            IDictionary<FontType, string> fontPaths = _assets.FontAssets();
 
-            nint fontLarge = TTF_OpenFont(fontPath, 18);
+            nint fontLarge = TTF_OpenFont(fontPaths[FontType.Large], 18);
             if (fontLarge == nint.Zero)
             {
                 SDLHelper.Throw(nameof(TTF_OpenFont));
             }
 
-            nint fontSmall = TTF_OpenFont(fontPath, 12);
+            nint fontSmall = TTF_OpenFont(fontPaths[FontType.Small], 12);
             if (fontSmall == nint.Zero)
             {
                 SDLHelper.Throw(nameof(TTF_OpenFont));

@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 
@@ -15,6 +16,6 @@ namespace EliteSharp.Assets
 
         IDictionary<MusicType, string> MusicAssets();
 
-        IEnumerable<string> FontAssets();
+        IDictionary<FontType, string> FontAssets();
     }
 }

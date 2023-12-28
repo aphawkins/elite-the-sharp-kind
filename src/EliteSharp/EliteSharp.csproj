@@ -50,10 +50,10 @@
     <None Update="Assets\Images\elitetext.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Images\font1.bmp">
+    <None Update="Assets\Fonts\font1.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Images\font2.bmp">
+    <None Update="Assets\Fonts\font2.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Images\greendot.bmp">

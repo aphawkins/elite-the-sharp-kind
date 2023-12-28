@@ -14,7 +14,7 @@ namespace EliteSharp.WinForms
         private const int ScreenHeight = 512;
 #endif
 
-#if SOFTWARERENDERER
+#if !SOFTWARERENDERER
         private static readonly GameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "SOFTWARE");
 #else
         private static readonly GameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "GDI");

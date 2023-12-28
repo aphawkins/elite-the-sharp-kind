@@ -17,7 +17,7 @@ namespace EliteSharp.SDL
                 // names threads with the 0x406D1388 exception will silently exit. To prevent this
                 // exception from being thrown by SDL, add this line before your SDL_Init call:
                 SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
-                SDLAssetLoader assetLoader = new(new AssetPaths());
+                SDLAssetLoader assetLoader = new(new AssetLocator());
                 using SDLGraphics graphics = new(960, 540, assetLoader);
                 using SDLSound sound = new(assetLoader);
                 SDLKeyboard keyboard = new();

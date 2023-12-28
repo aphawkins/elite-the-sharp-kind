@@ -27,18 +27,19 @@ namespace EliteSharp.WinForms
 
             if (type == "SOFTWARE")
             {
+                SoftwareAssetLoader assetLoader = new(new SoftwareAssetLocator());
                 _graphics = new SoftwareGraphics(
                     _screenWidth,
                     _screenHeight,
-                    new SoftwareAssetLoader(new AssetPaths()),
+                    assetLoader,
                     SoftwareScreenUpdate);
-                _sound = new SoftwareSound(new SoftwareAssetLoader(new AssetPaths()));
+                _sound = new SoftwareSound(assetLoader);
                 Game = new EliteMain(_graphics, _sound, _keyboard);
             }
             else
             {
-                _graphics = new GDIGraphics(_screenWidth, _screenHeight, new GDIAssetLoader(new AssetPaths()), ScreenUpdate);
-                _sound = new WinSound(new GDIAssetLoader(new AssetPaths()));
+                _graphics = new GDIGraphics(_screenWidth, _screenHeight, new GDIAssetLoader(new AssetLocator()), ScreenUpdate);
+                _sound = new WinSound(new(new AssetLocator()));
 
                 Game = new EliteMain(_graphics, _sound, _keyboard);
             }

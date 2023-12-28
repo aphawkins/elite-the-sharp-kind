@@ -33,7 +33,7 @@ namespace EliteSharp.Renderer
             comboRenderer.Items.AddRange(["GDI", "Software"]);
             comboRenderer.SelectedIndex = 0;
 
-            GDIAssetLoader assetLoader = new(new AssetPaths());
+            GDIAssetLoader assetLoader = new(new AssetLocator());
 
             _graphics = new GDIGraphics(ScreenWidth, ScreenHeight, assetLoader, GDIScreenUpdate);
             _draw = new Draw(_gameState, _graphics);
@@ -93,8 +93,8 @@ namespace EliteSharp.Renderer
         {
             _graphics = comboRenderer.SelectedIndex switch
             {
-                1 => new SoftwareGraphics(ScreenWidth, ScreenHeight, new(new AssetPaths()), SoftwareScreenUpdate),
-                _ => new GDIGraphics(ScreenWidth, ScreenHeight, new(new AssetPaths()), GDIScreenUpdate),
+                1 => new SoftwareGraphics(ScreenWidth, ScreenHeight, new(new SoftwareAssetLocator()), SoftwareScreenUpdate),
+                _ => new GDIGraphics(ScreenWidth, ScreenHeight, new(new AssetLocator()), GDIScreenUpdate),
             };
 
             _draw = new Draw(_gameState, _graphics);

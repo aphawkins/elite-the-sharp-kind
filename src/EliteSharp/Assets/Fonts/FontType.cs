@@ -6,8 +6,7 @@ namespace EliteSharp.Assets.Fonts
 {
     public enum FontType
     {
-        Regular = 0,
-        Small = 1,
-        Large = 2,
+        Small = 0,
+        Large = 1,
     }
 }

@@ -24,7 +24,7 @@ namespace EliteSharp.Benchmarks
             SoftwareKeyboard keyboard = new();
             Dictionary<Views.Screen, Views.IView> views = [];
             GameState gameState = new(keyboard, views);
-            _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, new(new AssetPaths()), (_) => { });
+            _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, new(new SoftwareAssetLocator()), (_) => { });
             Draw draw = new(gameState, _graphics);
             _gradientSun = new(draw);
             _solidSun = new(draw, EliteColors.White);
