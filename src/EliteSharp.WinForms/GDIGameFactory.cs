@@ -9,7 +9,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
-    internal sealed class GameFactory : IDisposable
+    internal sealed class GDIGameFactory : IDisposable
     {
         private readonly IGraphics _graphics;
         private readonly WinKeyboard _keyboard;
@@ -18,7 +18,7 @@ namespace EliteSharp.WinForms
         private readonly ISound _sound;
         private bool _isDisposed;
 
-        internal GameFactory(int screenWidth, int screenHeight, string type = "GDI")
+        internal GDIGameFactory(int screenWidth, int screenHeight, string type = "GDI")
         {
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
@@ -34,15 +34,15 @@ namespace EliteSharp.WinForms
                     assetLoader,
                     SoftwareScreenUpdate);
                 _sound = new SoftwareSound(assetLoader);
-                Game = new EliteMain(_graphics, _sound, _keyboard);
             }
             else
             {
-                _graphics = new GDIGraphics(_screenWidth, _screenHeight, new GDIAssetLoader(new AssetLocator()), ScreenUpdate);
+                GDIAssetLoader assetLoader = new(new AssetLocator());
+                _graphics = new GDIGraphics(_screenWidth, _screenHeight, assetLoader, ScreenUpdate);
                 _sound = new WinSound(new(new AssetLocator()));
-
-                Game = new EliteMain(_graphics, _sound, _keyboard);
             }
+
+            Game = new EliteMain(_graphics, _sound, _keyboard);
         }
 
         internal EliteMain Game { get; }

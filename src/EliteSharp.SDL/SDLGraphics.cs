@@ -25,37 +25,11 @@ namespace EliteSharp.SDL
         {
             Guard.ArgumentNull(assetLoader);
 
-            if (SDL_Init(SDL_INIT_VIDEO) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_Init));
-            }
-
-            if (TTF_Init() < 0)
-            {
-                SDLHelper.Throw(nameof(TTF_Init));
-            }
-
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
             _assetLoader = assetLoader;
 
-            _window = SDL_CreateWindow(
-                "Elite - The Sharp Kind",
-                SDL_WINDOWPOS_CENTERED,
-                SDL_WINDOWPOS_CENTERED,
-                (int)ScreenWidth,
-                (int)ScreenHeight,
-                SDL_WindowFlags.SDL_WINDOW_SHOWN);
-            if (_window == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(SDL_CreateWindow));
-            }
-
-            _renderer = SDL_CreateRenderer(_window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
-            if (_renderer == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(SDL_CreateRenderer));
-            }
+            (_renderer, _window) = CreateRenderer((int)screenWidth, (int)screenHeight);
 
             foreach (FastColor color in EliteColors.AllColors())
             {
@@ -499,6 +473,43 @@ namespace EliteSharp.SDL
             {
                 SDLHelper.Throw(nameof(SDL_RenderSetClipRect));
             }
+        }
+
+        internal static (nint Renderer, nint Window) CreateRenderer(int screenWidth, int screenHeight)
+        {
+            nint renderer;
+            nint window;
+
+            if (SDL_Init(SDL_INIT_VIDEO) < 0)
+            {
+                SDLHelper.Throw(nameof(SDL_Init));
+            }
+
+            if (TTF_Init() < 0)
+            {
+                SDLHelper.Throw(nameof(TTF_Init));
+            }
+
+            window = SDL_CreateWindow(
+                "Elite - The Sharp Kind",
+                SDL_WINDOWPOS_CENTERED,
+                SDL_WINDOWPOS_CENTERED,
+                screenWidth,
+                screenHeight,
+                SDL_WindowFlags.SDL_WINDOW_SHOWN);
+
+            if (window == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateWindow));
+            }
+
+            renderer = SDL_CreateRenderer(window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED);
+            if (renderer == nint.Zero)
+            {
+                SDLHelper.Throw(nameof(SDL_CreateRenderer));
+            }
+
+            return (renderer, window);
         }
 
         private SDL_Vertex ConvertVertex(Vector2 point, in FastColor color) => new()

@@ -4,7 +4,6 @@
 
 using System.Diagnostics;
 using System.Numerics;
-using System.Runtime.Caching;
 using EliteSharp.Assets;
 using EliteSharp.Assets.Fonts;
 
@@ -16,8 +15,7 @@ namespace EliteSharp.Graphics
         private readonly Dictionary<ImageType, FastBitmap> _images;
         private readonly FastBitmap _screen;
         private readonly Action<FastBitmap> _screenUpdate;
-        private readonly MemoryCache _textCache;
-        private readonly CacheItemPolicy _cachePolicy;
+        private readonly Dictionary<string, FastBitmap> _textCache = [];
         private bool _isDisposed;
 
         public SoftwareGraphics(float screenWidth, float screenHeight, SoftwareAssetLoader assetLoader, Action<FastBitmap> screenUpdate)
@@ -30,8 +28,6 @@ namespace EliteSharp.Graphics
             _screenUpdate = screenUpdate;
             _images = assetLoader.LoadImages();
             _fonts = assetLoader.LoadFonts();
-            _textCache = MemoryCache.Default;
-            _cachePolicy = new CacheItemPolicy();
             Clear();
         }
 
@@ -426,7 +422,7 @@ namespace EliteSharp.Graphics
         {
             string key = $"{fontType}_{color}_{text}";
 
-            if (_textCache.Contains(key) && _textCache[key] is FastBitmap cacheBitmap)
+            if (_textCache.TryGetValue(key, out FastBitmap? cacheBitmap))
             {
                 return cacheBitmap;
             }
@@ -479,7 +475,7 @@ namespace EliteSharp.Graphics
             }
 
             FastBitmap bitmap = temp.Resize(totalWidth, BitmapFont.CharSize);
-            _textCache.Add(key, bitmap, _cachePolicy);
+            _textCache.Add(key, bitmap);
             return bitmap;
         }
 
