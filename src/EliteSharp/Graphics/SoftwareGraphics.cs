@@ -212,7 +212,7 @@ namespace EliteSharp.Graphics
             }
 
             BitmapFont font = fontSize == FontSize.Large ? _fontLarge : _fontSmall;
-            using FastBitmap bitmapText = GenerateTextBitmap(text, font);
+            using FastBitmap bitmapText = GenerateTextBitmap(text, font, color);
             int x = (int)((ScreenWidth / 2) - (bitmapText.Width / 2));
             DrawImage(bitmapText, new(x, y));
         }
@@ -224,7 +224,7 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            using FastBitmap bitmapText = GenerateTextBitmap(text, _fontSmall);
+            using FastBitmap bitmapText = GenerateTextBitmap(text, _fontSmall, color);
             DrawImage(bitmapText, position);
         }
 
@@ -235,7 +235,7 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            using FastBitmap bitmapText = GenerateTextBitmap(text, _fontSmall);
+            using FastBitmap bitmapText = GenerateTextBitmap(text, _fontSmall, color);
             DrawImage(bitmapText, position - new Vector2(bitmapText.Width, 0));
         }
 
@@ -292,7 +292,7 @@ namespace EliteSharp.Graphics
         {
         }
 
-        private static FastBitmap GenerateTextBitmap(string text, BitmapFont font)
+        private static FastBitmap GenerateTextBitmap(string text, BitmapFont font, FastColor color)
         {
             using FastBitmap temp = new(text.Length * BitmapFont.CharSize, BitmapFont.CharSize);
             int totalWidth = 0;
@@ -305,9 +305,14 @@ namespace EliteSharp.Graphics
                 int charY = 0;
                 int maxCharWidth = 0;
 
-                FastColor GetPixel() => font.Image.GetPixel(
-                    charX + (BitmapFont.CharSize * charColumn) + 1,
-                    charY + (BitmapFont.CharSize * charRow) + 1);
+                FastColor GetPixel()
+                {
+                    FastColor pixelColor = font.Image.GetPixel(
+                        charX + (BitmapFont.CharSize * charColumn) + 1,
+                        charY + (BitmapFont.CharSize * charRow) + 1);
+
+                    return pixelColor == BaseColors.Cyan ? color : pixelColor;
+                }
 
                 FastColor pixelColor = GetPixel();
 
