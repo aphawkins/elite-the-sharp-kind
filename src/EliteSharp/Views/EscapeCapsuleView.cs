@@ -1,9 +1,10 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
 using System.Numerics;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
@@ -52,7 +53,7 @@ namespace EliteSharp.Views
                 _draw.Graphics.DrawTextCentre(
                     _draw.ScannerTop - 40,
                     "Escape capsule launched - Ship auto-destuct initiated.",
-                    FontSize.Small,
+                    FontType.Small,
                     EliteColors.White);
             }
         }

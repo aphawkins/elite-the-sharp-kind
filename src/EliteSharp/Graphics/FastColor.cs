@@ -45,5 +45,7 @@ namespace EliteSharp.Graphics
         public bool Equals(FastColor other) => this == other;
 
         public override int GetHashCode() => Argb.GetHashCode();
+
+        public override string ToString() => $"0x{Argb:X}";
     }
 }

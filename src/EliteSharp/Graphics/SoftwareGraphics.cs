@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.Caching;
 using EliteSharp.Assets;
 using EliteSharp.Assets.Fonts;
 
@@ -11,12 +12,12 @@ namespace EliteSharp.Graphics
 {
     public sealed class SoftwareGraphics : IGraphics
     {
-        private readonly BitmapFont _fontLarge;
         private readonly Dictionary<FontType, BitmapFont> _fonts;
-        private readonly BitmapFont _fontSmall;
         private readonly Dictionary<ImageType, FastBitmap> _images;
         private readonly FastBitmap _screen;
         private readonly Action<FastBitmap> _screenUpdate;
+        private readonly MemoryCache _textCache;
+        private readonly CacheItemPolicy _cachePolicy;
         private bool _isDisposed;
 
         public SoftwareGraphics(float screenWidth, float screenHeight, SoftwareAssetLoader assetLoader, Action<FastBitmap> screenUpdate)
@@ -29,8 +30,8 @@ namespace EliteSharp.Graphics
             _screenUpdate = screenUpdate;
             _images = assetLoader.LoadImages();
             _fonts = assetLoader.LoadFonts();
-            _fontLarge = _fonts[FontType.Large];
-            _fontSmall = _fonts[FontType.Small];
+            _textCache = MemoryCache.Default;
+            _cachePolicy = new CacheItemPolicy();
             Clear();
         }
 
@@ -204,15 +205,14 @@ namespace EliteSharp.Graphics
                 (int)MathF.Floor(height),
                 color);
 
-        public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor color)
+        public void DrawTextCentre(float y, string text, FontType fontType, FastColor color)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
                 return;
             }
 
-            BitmapFont font = fontSize == FontSize.Large ? _fontLarge : _fontSmall;
-            using FastBitmap bitmapText = GenerateTextBitmap(text, font, color);
+            using FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
             int x = (int)((ScreenWidth / 2) - (bitmapText.Width / 2));
             DrawImage(bitmapText, new(x, y));
         }
@@ -224,7 +224,7 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            using FastBitmap bitmapText = GenerateTextBitmap(text, _fontSmall, color);
+            using FastBitmap bitmapText = GenerateTextBitmap(text, FontType.Small, color);
             DrawImage(bitmapText, position);
         }
 
@@ -235,7 +235,7 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            using FastBitmap bitmapText = GenerateTextBitmap(text, _fontSmall, color);
+            using FastBitmap bitmapText = GenerateTextBitmap(text, FontType.Small, color);
             DrawImage(bitmapText, position - new Vector2(bitmapText.Width, 0));
         }
 
@@ -290,56 +290,6 @@ namespace EliteSharp.Graphics
 
         public void SetClipRegion(Vector2 position, float width, float height)
         {
-        }
-
-        private static FastBitmap GenerateTextBitmap(string text, BitmapFont font, FastColor color)
-        {
-            using FastBitmap temp = new(text.Length * BitmapFont.CharSize, BitmapFont.CharSize);
-            int totalWidth = 0;
-
-            foreach (char letter in text)
-            {
-                int charRow = (letter >> 4) - 2;
-                int charColumn = letter & 0xF;
-                int charX = 0;
-                int charY = 0;
-                int maxCharWidth = 0;
-
-                FastColor GetPixel()
-                {
-                    FastColor pixelColor = font.Image.GetPixel(
-                        charX + (BitmapFont.CharSize * charColumn) + 1,
-                        charY + (BitmapFont.CharSize * charRow) + 1);
-
-                    return pixelColor == BaseColors.Cyan ? color : pixelColor;
-                }
-
-                FastColor pixelColor = GetPixel();
-
-                do
-                {
-                    maxCharWidth = 0;
-
-                    do
-                    {
-                        temp.SetPixel(totalWidth + charX, charY, pixelColor);
-                        charX++;
-                        pixelColor = GetPixel();
-                    }
-                    while (pixelColor != BaseColors.Magenta);
-
-                    maxCharWidth = Math.Max(maxCharWidth, charX);
-                    charX = 0;
-                    charY++;
-
-                    pixelColor = GetPixel();
-                }
-                while (pixelColor != BaseColors.Magenta);
-
-                totalWidth += maxCharWidth;
-            }
-
-            return temp.Resize(totalWidth, BitmapFont.CharSize);
         }
 
         private static (Vector2 A, Vector2 B, Vector2 C) SortPointsByY(Vector2 a, Vector2 b, Vector2 c)
@@ -470,6 +420,67 @@ namespace EliteSharp.Graphics
                 _screen.SetPixel(startX, y, color);
                 _screen.SetPixel(endX, y, color);
             }
+        }
+
+        private FastBitmap GenerateTextBitmap(string text, FontType fontType, FastColor color)
+        {
+            string key = $"{fontType}_{color}_{text}";
+
+            if (_textCache.Contains(key) && _textCache[key] is FastBitmap cacheBitmap)
+            {
+                return cacheBitmap;
+            }
+
+            BitmapFont font = _fonts[fontType];
+
+            using FastBitmap temp = new(text.Length * BitmapFont.CharSize, BitmapFont.CharSize);
+            int totalWidth = 0;
+
+            foreach (char letter in text)
+            {
+                int charRow = (letter >> 4) - 2;
+                int charColumn = letter & 0xF;
+                int charX = 0;
+                int charY = 0;
+                int maxCharWidth = 0;
+
+                FastColor GetPixel()
+                {
+                    FastColor pixelColor = font.Image.GetPixel(
+                        charX + (BitmapFont.CharSize * charColumn) + 1,
+                        charY + (BitmapFont.CharSize * charRow) + 1);
+
+                    return pixelColor == BaseColors.Cyan ? color : pixelColor;
+                }
+
+                FastColor pixelColor = GetPixel();
+
+                do
+                {
+                    maxCharWidth = 0;
+
+                    do
+                    {
+                        temp.SetPixel(totalWidth + charX, charY, pixelColor);
+                        charX++;
+                        pixelColor = GetPixel();
+                    }
+                    while (pixelColor != BaseColors.Magenta);
+
+                    maxCharWidth = Math.Max(maxCharWidth, charX);
+                    charX = 0;
+                    charY++;
+
+                    pixelColor = GetPixel();
+                }
+                while (pixelColor != BaseColors.Magenta);
+
+                totalWidth += maxCharWidth;
+            }
+
+            FastBitmap bitmap = temp.Resize(totalWidth, BitmapFont.CharSize);
+            _textCache.Add(key, bitmap, _cachePolicy);
+            return bitmap;
         }
 
         private int[] Interpolate(float i0, float d0, float i1, float d1)

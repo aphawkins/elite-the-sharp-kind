@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Save;
@@ -29,14 +30,14 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader("LOAD COMMANDER");
 
-            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontType.Small, EliteColors.White);
             _draw.Graphics.DrawRectangleCentre(100, 312, 50, EliteColors.White);
-            _draw.Graphics.DrawTextCentre(112, _name, FontSize.Large, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(112, _name, FontType.Large, EliteColors.White);
 
             if (!_isLoaded)
             {
-                _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", FontSize.Large, EliteColors.Gold);
-                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, EliteColors.White);
+                _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", FontType.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontType.Small, EliteColors.White);
             }
         }
 

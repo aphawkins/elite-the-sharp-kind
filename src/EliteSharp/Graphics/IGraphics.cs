@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Assets.Fonts;
 
 namespace EliteSharp.Graphics
 {
@@ -36,7 +37,7 @@ namespace EliteSharp.Graphics
 
         void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color);
 
-        void DrawTextCentre(float y, string text, FontSize fontSize, FastColor color);
+        void DrawTextCentre(float y, string text, FontType fontType, FastColor color);
 
         void DrawTextLeft(Vector2 position, string text, FastColor color);
 

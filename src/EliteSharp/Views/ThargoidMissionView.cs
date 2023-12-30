@@ -1,7 +1,8 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Controls;
 using EliteSharp.Equipment;
 using EliteSharp.Graphics;
@@ -55,7 +56,7 @@ namespace EliteSharp.Views
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
                 _draw.DrawTextPretty(new(116, 132), 400, Mission2BriefA);
-                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontType.Large, EliteColors.Gold);
             }
             else if (_gameState.Cmdr.Mission == 5)
             {
@@ -63,14 +64,14 @@ namespace EliteSharp.Views
                 _draw.DrawTextPretty(new(16, 50), 300, Mission2BriefB);
                 _draw.DrawTextPretty(new(16, 200), 470, Mission2BriefC);
                 _draw.Graphics.DrawImage(ImageType.Blake, new(352, 46));
-                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontType.Large, EliteColors.Gold);
             }
             else if (_gameState.Cmdr.Mission == 6)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.Graphics.DrawTextCentre(100, "Well done Commander.", FontSize.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(100, "Well done Commander.", FontType.Large, EliteColors.Gold);
                 _draw.DrawTextPretty(new(116, 132), 400, Mission2Debrief);
-                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontType.Large, EliteColors.Gold);
             }
         }
 

@@ -4,6 +4,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Config;
 using EliteSharp.Conflict;
@@ -229,7 +230,7 @@ namespace EliteSharp
 
                 if (_gameState.MessageCount > 0)
                 {
-                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontSize.Small, EliteColors.White);
+                    _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, FontType.Small, EliteColors.White);
                 }
 
                 if (_space.IsHyperspaceReady)

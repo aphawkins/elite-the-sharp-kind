@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 
@@ -50,29 +51,29 @@ namespace EliteSharp.Views
 
                 FastColor col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? EliteColors.LightGrey : EliteColors.White;
 
-                _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, FontSize.Small, col);
+                _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, FontType.Small, col);
             }
 
             _draw.Graphics.DrawTextCentre(
                 _draw.ScannerTop - 80,
                 $"Version: {typeof(OptionsView).Assembly.GetName().Version}",
-                FontSize.Small,
+                FontType.Small,
                 EliteColors.White);
             _draw.Graphics.DrawTextCentre(
                 _draw.ScannerTop - 60,
                 "The Sharp Kind - Andy Hawkins 2023",
-                FontSize.Small,
+                FontType.Small,
                 EliteColors.White);
             _draw.Graphics
                 .DrawTextCentre(
                     _draw.ScannerTop - 40,
                     "The New Kind - Christian Pinder 1999-2001",
-                    FontSize.Small,
+                    FontType.Small,
                     EliteColors.White);
             _draw.Graphics.DrawTextCentre(
                 _draw.ScannerTop - 20,
                 "Original Code - Ian Bell & David Braben",
-                FontSize.Small,
+                FontType.Small,
                 EliteColors.White);
         }
 

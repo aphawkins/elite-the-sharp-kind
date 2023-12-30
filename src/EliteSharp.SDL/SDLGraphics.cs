@@ -15,8 +15,6 @@ namespace EliteSharp.SDL
     {
         private readonly SDLAssetLoader _assetLoader;
         private readonly Dictionary<FontType, nint> _fonts;
-        private readonly nint _fontSmall;
-        private readonly nint _fontLarge;
         private readonly Dictionary<ImageType, nint> _images;
         private readonly nint _renderer;
         private readonly Dictionary<FastColor, SDL_Color> _sdlColors = [];
@@ -73,8 +71,6 @@ namespace EliteSharp.SDL
 
             _images = assetLoader.LoadImages();
             _fonts = assetLoader.LoadFonts();
-            _fontSmall = _fonts[FontType.Small];
-            _fontLarge = _fonts[FontType.Large];
         }
 
         // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -339,7 +335,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor color)
+        public void DrawTextCentre(float y, string text, FontType fontType, FastColor color)
         {
             if (_isDisposed || string.IsNullOrWhiteSpace(text))
             {
@@ -347,7 +343,7 @@ namespace EliteSharp.SDL
             }
 
             nint surfacePtr = TTF_RenderText_Solid(
-                fontSize == FontSize.Large ? _fontLarge : _fontSmall,
+                _fonts[fontType],
                 text,
                 _sdlColors[color]);
             if (surfacePtr == nint.Zero)
@@ -383,7 +379,7 @@ namespace EliteSharp.SDL
             }
 
             nint surfacePtr = TTF_RenderText_Solid(
-                _fontSmall,
+                _fonts[FontType.Small],
                 text,
                 _sdlColors[color]);
             if (surfacePtr == nint.Zero)
@@ -419,7 +415,7 @@ namespace EliteSharp.SDL
             }
 
             nint surfacePtr = TTF_RenderText_Solid(
-                _fontSmall,
+                _fonts[FontType.Small],
                 text,
                 _sdlColors[color]);
             if (surfacePtr == nint.Zero)
@@ -527,8 +523,10 @@ namespace EliteSharp.SDL
                 // set large fields to null
 
                 //Fonts
-                TTF_CloseFont(_fontSmall);
-                TTF_CloseFont(_fontLarge);
+                foreach (KeyValuePair<FontType, nint> font in _fonts)
+                {
+                    TTF_CloseFont(font.Value);
+                }
 
                 // Images
                 foreach (KeyValuePair<ImageType, nint> image in _images)

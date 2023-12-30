@@ -1,7 +1,8 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Save;
@@ -29,21 +30,21 @@ namespace EliteSharp.Views
         {
             _draw.DrawViewHeader("SAVE COMMANDER");
 
-            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontSize.Small, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontType.Small, EliteColors.White);
             _draw.Graphics.DrawRectangle(new(100 + _draw.Offset, 100), 312, 50, EliteColors.White);
-            _draw.Graphics.DrawTextCentre(112, _name, FontSize.Large, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(112, _name, FontType.Large, EliteColors.White);
 
             if (_isSuccess.HasValue)
             {
                 if (_isSuccess.Value)
                 {
-                    _draw.Graphics.DrawTextCentre(175, "Commander Saved.", FontSize.Large, EliteColors.Gold);
-                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, EliteColors.White);
+                    _draw.Graphics.DrawTextCentre(175, "Commander Saved.", FontType.Large, EliteColors.Gold);
+                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontType.Small, EliteColors.White);
                 }
                 else
                 {
-                    _draw.Graphics.DrawTextCentre(175, "Error Saving Commander!", FontSize.Large, EliteColors.Gold);
-                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontSize.Small, EliteColors.White);
+                    _draw.Graphics.DrawTextCentre(175, "Error Saving Commander!", FontType.Large, EliteColors.Gold);
+                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontType.Small, EliteColors.White);
                 }
             }
         }

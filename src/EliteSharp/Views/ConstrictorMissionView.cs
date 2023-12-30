@@ -1,8 +1,9 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Conflict;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
@@ -80,17 +81,17 @@ namespace EliteSharp.Views
                     470,
                     _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
-                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontType.Large, EliteColors.Gold);
             }
             else if (_gameState.Cmdr.Mission == 3)
             {
                 _draw.DrawViewHeader("INCOMING MESSAGE");
 
-                _draw.Graphics.DrawTextCentre(100, "Congratulations Commander!", FontSize.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(100, "Congratulations Commander!", FontType.Large, EliteColors.Gold);
 
                 _draw.DrawTextPretty(new(116 + _draw.Offset, 132), 400, _mission1_debrief);
 
-                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontSize.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(330, "Press space to continue.", FontType.Large, EliteColors.Gold);
             }
         }
 

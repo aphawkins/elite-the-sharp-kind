@@ -13,8 +13,6 @@ namespace EliteSharp.WinForms
     {
         private readonly FastBitmap _fastScreen;
         private readonly Dictionary<FontType, Font> _fonts;
-        private readonly Font _fontSmall;
-        private readonly Font _fontLarge;
         private readonly Dictionary<ImageType, Bitmap> _images;
         private readonly Dictionary<FastColor, Pen> _pens = [];
         private readonly Bitmap _screen;
@@ -39,8 +37,6 @@ namespace EliteSharp.WinForms
             _fastScreen = new((int)screenWidth, (int)screenHeight);
             _screen = new((int)screenWidth, (int)screenHeight, (int)screenWidth * 4, PixelFormat.Format32bppArgb, _fastScreen.BitmapHandle);
             _screenGraphics = System.Drawing.Graphics.FromImage(_screen);
-            _fontLarge = _fonts[FontType.Large];
-            _fontSmall = _fonts[FontType.Small];
 
             foreach (FastColor color in EliteColors.AllColors())
             {
@@ -211,7 +207,7 @@ namespace EliteSharp.WinForms
             _screenGraphics.FillRectangle(_pens[color].Brush, position.X, position.Y, width, height);
         }
 
-        public void DrawTextCentre(float y, string text, FontSize fontSize, FastColor color)
+        public void DrawTextCentre(float y, string text, FontType fontType, FastColor color)
         {
             if (_isDisposed)
             {
@@ -225,7 +221,7 @@ namespace EliteSharp.WinForms
 
             _screenGraphics.DrawString(
                 text,
-                fontSize == FontSize.Large ? _fontLarge : _fontSmall,
+                _fonts[fontType],
                 _pens[color].Brush,
                 ScreenWidth / 2,
                 y / (2 / Scale),
@@ -240,7 +236,7 @@ namespace EliteSharp.WinForms
             }
 
             PointF point = new(position.X / (2 / Scale), position.Y / (2 / Scale));
-            _screenGraphics.DrawString(text, _fontSmall, _pens[color].Brush, point);
+            _screenGraphics.DrawString(text, _fonts[FontType.Small], _pens[color].Brush, point);
         }
 
         public void DrawTextRight(Vector2 position, string text, FastColor color)
@@ -257,7 +253,7 @@ namespace EliteSharp.WinForms
 
             _screenGraphics.DrawString(
                 text,
-                _fontSmall,
+                _fonts[FontType.Small],
                 _pens[color].Brush,
                 position.X / (2 / Scale),
                 position.Y / (2 / Scale),
@@ -329,8 +325,12 @@ namespace EliteSharp.WinForms
                     _screenGraphics?.Dispose();
                     _screen?.Dispose();
                     _fastScreen?.Dispose();
-                    _fontSmall?.Dispose();
-                    _fontLarge?.Dispose();
+
+                    // Images
+                    foreach (KeyValuePair<FontType, Font> font in _fonts)
+                    {
+                        font.Value.Dispose();
+                    }
 
                     // Images
                     foreach (KeyValuePair<ImageType, Bitmap> image in _images)

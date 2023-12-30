@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Config;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
@@ -55,7 +56,7 @@ namespace EliteSharp.Views
                         _draw.Graphics.DrawRectangleFilled(position, 400, 15, EliteColors.LightRed);
                     }
 
-                    _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, FontSize.Small, EliteColors.White);
+                    _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, FontType.Small, EliteColors.White);
                     return;
                 }
 

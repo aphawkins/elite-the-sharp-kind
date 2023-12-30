@@ -1,9 +1,10 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
 using System.Numerics;
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Conflict;
 using EliteSharp.Controls;
@@ -57,10 +58,10 @@ namespace EliteSharp.Views
         {
             _draw.Graphics.DrawImageCentre(ImageType.EliteText, _draw.Top + 10);
 
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", FontSize.Large, EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", FontType.Large, EliteColors.Gold);
             if (_universe.FirstShip != null)
             {
-                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, FontSize.Small, EliteColors.White);
+                _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, FontType.Small, EliteColors.White);
             }
         }
 

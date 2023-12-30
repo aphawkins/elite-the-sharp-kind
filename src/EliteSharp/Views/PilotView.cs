@@ -1,7 +1,8 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Assets.Fonts;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Lasers;
@@ -42,11 +43,11 @@ namespace EliteSharp.Views
 
             if (_space.HyperGalactic)
             {
-                _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", FontSize.Small, EliteColors.White);
+                _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", FontType.Small, EliteColors.White);
             }
             else if (_space.HyperCountdown > 0)
             {
-                _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", FontSize.Small, EliteColors.White);
+                _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", FontType.Small, EliteColors.White);
             }
         }
 
@@ -123,6 +124,6 @@ namespace EliteSharp.Views
 
         internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
-        internal void DrawViewName(string name) => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, FontSize.Small, EliteColors.White);
+        internal void DrawViewName(string name) => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, FontType.Small, EliteColors.White);
     }
 }
