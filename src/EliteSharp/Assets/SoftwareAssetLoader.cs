@@ -27,9 +27,9 @@ namespace EliteSharp.Assets
                 x => x.Key,
                 x => new SoundSampleProvider(x.Value));
 
-        public Dictionary<FontType, FastBitmap> LoadFonts()
+        public Dictionary<FontType, BitmapFont> LoadFonts()
             => _assets.FontAssets().ToDictionary(
                 x => x.Key,
-                x => BitmapFile.Read(x.Value));
+                x => new BitmapFont(BitmapFile.Read(x.Value)));
     }
 }

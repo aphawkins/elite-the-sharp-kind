@@ -11,11 +11,9 @@ namespace EliteSharp.Graphics
 {
     public sealed class SoftwareGraphics : IGraphics
     {
-        private readonly int _fontHeight = 20;
-        private readonly FastBitmap _fontLarge;
-        private readonly Dictionary<FontType, FastBitmap> _fonts;
-        private readonly FastBitmap _fontSmall;
-        private readonly int _fontWidth = 12;
+        private readonly BitmapFont _fontLarge;
+        private readonly Dictionary<FontType, BitmapFont> _fonts;
+        private readonly BitmapFont _fontSmall;
         private readonly Dictionary<ImageType, FastBitmap> _images;
         private readonly FastBitmap _screen;
         private readonly Action<FastBitmap> _screenUpdate;
@@ -131,19 +129,7 @@ namespace EliteSharp.Graphics
         public void DrawImage(ImageType image, Vector2 position)
         {
             FastBitmap bitmap = _images[image];
-            for (int y = 0; y < bitmap.Height; y++)
-            {
-                for (int x = 0; x < bitmap.Width; x++)
-                {
-                    FastColor color = bitmap.GetPixel(x, y);
-                    if (color.A != 0)
-                    {
-                        // TODO: should mix the transparent colors correctly here
-                        // but the only transparency being used is transparent or opaque
-                        DrawPixel((int)(position.X + x), (int)(position.Y + y), color);
-                    }
-                }
-            }
+            DrawImage(bitmap, position);
         }
 
         public void DrawImageCentre(ImageType image, float y)
@@ -225,43 +211,32 @@ namespace EliteSharp.Graphics
                 return;
             }
 
-            int i = 0;
-            foreach (char letter in text)
-            {
-                int fontRow = (letter >> 4) - 2;
-                int fontColumn = letter & 0xF;
-                int x = (int)((ScreenWidth / 2) - (text.Length * _fontWidth / 2));
-
-                for (int fontY = 0; fontY < _fontHeight; fontY++)
-                {
-                    for (int fontX = 0; fontX < _fontWidth; fontX++)
-                    {
-                        FastColor pixelColor = _fontLarge.GetPixel(
-                            fontX + (32 * fontColumn) + 1,
-                            fontY + (32 * fontRow) + 1);
-
-                        if (pixelColor.A != 0)
-                        {
-                            // TODO: should mix the transparent colors correctly here
-                            // but the only transparency being used is transparent or opaque
-                            DrawPixel(
-                                x + fontX + (i * _fontWidth),
-                                (int)y + fontY,
-                                pixelColor);
-                        }
-                    }
-                }
-
-                i++;
-            }
+            BitmapFont font = fontSize == FontSize.Large ? _fontLarge : _fontSmall;
+            using FastBitmap bitmapText = GenerateTextBitmap(text, font);
+            int x = (int)((ScreenWidth / 2) - (bitmapText.Width / 2));
+            DrawImage(bitmapText, new(x, y));
         }
 
         public void DrawTextLeft(Vector2 position, string text, FastColor color)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            using FastBitmap bitmapText = GenerateTextBitmap(text, _fontSmall);
+            DrawImage(bitmapText, position);
         }
 
         public void DrawTextRight(Vector2 position, string text, FastColor color)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            using FastBitmap bitmapText = GenerateTextBitmap(text, _fontSmall);
+            DrawImage(bitmapText, position - new Vector2(bitmapText.Width, 0));
         }
 
         public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor color)
@@ -317,6 +292,51 @@ namespace EliteSharp.Graphics
         {
         }
 
+        private static FastBitmap GenerateTextBitmap(string text, BitmapFont font)
+        {
+            using FastBitmap temp = new(text.Length * BitmapFont.CharSize, BitmapFont.CharSize);
+            int totalWidth = 0;
+
+            foreach (char letter in text)
+            {
+                int charRow = (letter >> 4) - 2;
+                int charColumn = letter & 0xF;
+                int charX = 0;
+                int charY = 0;
+                int maxCharWidth = 0;
+
+                FastColor GetPixel() => font.Image.GetPixel(
+                    charX + (BitmapFont.CharSize * charColumn) + 1,
+                    charY + (BitmapFont.CharSize * charRow) + 1);
+
+                FastColor pixelColor = GetPixel();
+
+                do
+                {
+                    maxCharWidth = 0;
+
+                    do
+                    {
+                        temp.SetPixel(totalWidth + charX, charY, pixelColor);
+                        charX++;
+                        pixelColor = GetPixel();
+                    }
+                    while (pixelColor != BaseColors.Magenta);
+
+                    maxCharWidth = Math.Max(maxCharWidth, charX);
+                    charX = 0;
+                    charY++;
+
+                    pixelColor = GetPixel();
+                }
+                while (pixelColor != BaseColors.Magenta);
+
+                totalWidth += maxCharWidth;
+            }
+
+            return temp.Resize(totalWidth, BitmapFont.CharSize);
+        }
+
         private static (Vector2 A, Vector2 B, Vector2 C) SortPointsByY(Vector2 a, Vector2 b, Vector2 c)
         {
             Vector2[] sorted = [a, b, c];
@@ -337,6 +357,23 @@ namespace EliteSharp.Graphics
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
                 _isDisposed = true;
+            }
+        }
+
+        private void DrawImage(FastBitmap bitmap, Vector2 position)
+        {
+            for (int y = 0; y < bitmap.Height; y++)
+            {
+                for (int x = 0; x < bitmap.Width; x++)
+                {
+                    FastColor color = bitmap.GetPixel(x, y);
+                    if (color.A != 0)
+                    {
+                        // TODO: should mix the transparent colors correctly here
+                        // but the only transparency being used is transparent or opaque
+                        DrawPixel((int)(position.X + x), (int)(position.Y + y), color);
+                    }
+                }
             }
         }
 

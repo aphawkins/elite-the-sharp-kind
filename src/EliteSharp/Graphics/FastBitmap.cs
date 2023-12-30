@@ -57,6 +57,37 @@ namespace EliteSharp.Graphics
 
         public void SetPixel(int x, int y, in uint argb) => _pixels[x + (y * Width)] = argb;
 
+        public FastBitmap Resize(int newWidth, int newHeight)
+        {
+            FastBitmap temp = new(newWidth, newHeight);
+            for (int y = 0; y < newHeight; y++)
+            {
+                if (y > Height)
+                {
+                    for (int x = 0; x < newWidth; x++)
+                    {
+                        temp.SetPixel(x, y, BaseColors.TransparentBlack);
+                    }
+                }
+                else
+                {
+                    for (int x = 0; x < newWidth; x++)
+                    {
+                        if (x > Width)
+                        {
+                            temp.SetPixel(x, y, BaseColors.TransparentBlack);
+                        }
+                        else
+                        {
+                            temp.SetPixel(x, y, GetPixel(x, y));
+                        }
+                    }
+                }
+            }
+
+            return temp;
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!_isDisposed)

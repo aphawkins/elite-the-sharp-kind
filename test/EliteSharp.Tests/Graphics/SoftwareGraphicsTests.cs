@@ -243,7 +243,7 @@ namespace EliteSharp.Tests.Graphics
             graphics.ScreenUpdate();
 
             // Assert
-            void DoAssert(FastBitmap bmp) => Assert.Equal(TestColors.OpaqueRed, bmp.GetPixel(imageX, imageY));
+            void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Red, bmp.GetPixel(imageX, imageY));
         }
 
         [Theory]
@@ -261,7 +261,7 @@ namespace EliteSharp.Tests.Graphics
             graphics.ScreenUpdate();
 
             // Assert
-            static void DoAssert(FastBitmap bmp) => Assert.Equal(TestColors.OpaqueRed, bmp.GetPixel(1, 1));
+            static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Red, bmp.GetPixel(1, 1));
         }
 
         [Theory]
@@ -273,7 +273,7 @@ namespace EliteSharp.Tests.Graphics
             moqAssetPaths.Setup(x => x.ImageAssets())
                 .Returns(new Dictionary<ImageType, string>() { { ImageType.EliteText, GraphicsFilename(filename) } });
             using SoftwareGraphics graphics = new(2, 2, new(moqAssetPaths.Object), DoAssert);
-            graphics.DrawPixel(new(1, 1), TestColors.OpaqueWhite);
+            graphics.DrawPixel(new(1, 1), BaseColors.White);
 
             // Act
             graphics.DrawImage(ImageType.EliteText, new(0, 0));
@@ -282,10 +282,10 @@ namespace EliteSharp.Tests.Graphics
             // Assert
             static void DoAssert(FastBitmap bmp)
             {
-                Assert.Equal(TestColors.OpaqueRed, bmp.GetPixel(0, 0));
-                Assert.Equal(TestColors.OpaqueBlack, bmp.GetPixel(0, 1));
-                Assert.Equal(TestColors.OpaqueBlack, bmp.GetPixel(1, 0));
-                Assert.Equal(TestColors.OpaqueWhite, bmp.GetPixel(1, 1));
+                Assert.Equal(BaseColors.Red, bmp.GetPixel(0, 0));
+                Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 1));
+                Assert.Equal(BaseColors.Black, bmp.GetPixel(1, 0));
+                Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
             }
         }
 

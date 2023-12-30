@@ -22,10 +22,10 @@ namespace EliteSharp.Tests.Graphics
             Assert.Equal(width, bitmap.Width);
             Assert.Equal(height, bitmap.Height);
             Assert.Equal(32, bitmap.BitsPerPixel);
-            Assert.Equal(TestColors.OpaqueRed, bitmap.GetPixel(0, 0));
-            Assert.Equal(TestColors.TransparentBlack, bitmap.GetPixel(0, 1));
-            Assert.Equal(TestColors.TransparentBlack, bitmap.GetPixel(1, 0));
-            Assert.Equal(TestColors.TransparentBlack, bitmap.GetPixel(1, 1));
+            Assert.Equal(BaseColors.Red, bitmap.GetPixel(0, 0));
+            Assert.Equal(BaseColors.TransparentBlack, bitmap.GetPixel(0, 1));
+            Assert.Equal(BaseColors.TransparentBlack, bitmap.GetPixel(1, 0));
+            Assert.Equal(BaseColors.TransparentBlack, bitmap.GetPixel(1, 1));
         }
     }
 }

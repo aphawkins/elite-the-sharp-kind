@@ -16,9 +16,9 @@ namespace EliteSharp.Tests.Graphics
             // Act
 
             // Assert
-            Assert.True(TestColors.TransparentWhite.Equals(TestColors.TransparentWhite));
-            Assert.Equal(TestColors.TransparentWhite, TestColors.TransparentWhite);
-            Assert.Equal(TestColors.TransparentWhite, new FastColor(0x00FFFFFF));
+            Assert.True(BaseColors.TransparentWhite.Equals(BaseColors.TransparentWhite));
+            Assert.Equal(BaseColors.TransparentWhite, BaseColors.TransparentWhite);
+            Assert.Equal(BaseColors.TransparentWhite, new FastColor(0x00FFFFFF));
         }
     }
 }
