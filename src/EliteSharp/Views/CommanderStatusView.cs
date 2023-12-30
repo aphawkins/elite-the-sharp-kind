@@ -113,34 +113,34 @@ namespace EliteSharp.Views
             if (!_gameState.InWitchspace)
             {
                 _draw.Graphics.DrawTextLeft(
-                    new(150 + _draw.Offset, 58),
+                    new(200 + _draw.Offset, 58),
                     _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(),
                     EliteColors.White);
             }
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Hyperspace System:", EliteColors.Green);
             _draw.Graphics.DrawTextLeft(
-                new(150 + _draw.Offset, 74),
+                new(200 + _draw.Offset, 74),
                 _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(),
                 EliteColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 90), "Condition:", EliteColors.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 90), _conditionText[condition], EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 90), _conditionText[condition], EliteColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Fuel:", EliteColors.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 106), $"{_ship.Fuel:N1} Light Years", EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 106), $"{_ship.Fuel:N1} Light Years", EliteColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 122), "Cash:", EliteColors.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 122), $"{_trade.Credits:N1} Credits", EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 122), $"{_trade.Credits:N1} Credits", EliteColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Legal Status:", EliteColors.Green);
             _draw.Graphics.DrawTextLeft(
-                new(150 + _draw.Offset, 138),
+                new(200 + _draw.Offset, 138),
                 _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender",
                 EliteColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 154), "Rating:", EliteColors.Green);
-            _draw.Graphics.DrawTextLeft(new(150 + _draw.Offset, 154), rating, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 154), rating, EliteColors.White);
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 186), "EQUIPMENT:", EliteColors.Green);
 

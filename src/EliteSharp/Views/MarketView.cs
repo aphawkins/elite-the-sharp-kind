@@ -74,7 +74,7 @@ namespace EliteSharp.Views
             }
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), "Cash:", EliteColors.Green);
-            _draw.Graphics.DrawTextRight(new(160 + _draw.Offset, 340), $"{_trade.Credits,10:N1} Credits", EliteColors.White);
+            _draw.Graphics.DrawTextRight(new(225 + _draw.Offset, 340), $"{_trade.Credits,10:N1} Credits", EliteColors.White);
         }
 
         public void HandleInput()

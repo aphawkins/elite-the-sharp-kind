@@ -143,7 +143,7 @@ namespace EliteSharp.Graphics
 
         public void DrawViewHeader(string title)
         {
-            Graphics.DrawTextCentre(Top + 10, title, FontType.Large, EliteColors.Gold);
+            Graphics.DrawTextCentre(Top + 6, title, FontType.Large, EliteColors.Gold);
             Graphics.DrawLine(new(Left, 36), new(Right, 36), EliteColors.White);
 
             // Vertical lines
