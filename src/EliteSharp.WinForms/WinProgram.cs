@@ -2,8 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Runtime.Versioning;
+
+[assembly: CLSCompliant(false)]
+
 namespace EliteSharp.WinForms
 {
+    [SupportedOSPlatform("windows")]
     internal sealed class WinProgram : IDisposable
     {
 #if QHD

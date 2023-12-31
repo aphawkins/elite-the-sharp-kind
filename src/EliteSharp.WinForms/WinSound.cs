@@ -3,10 +3,12 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Media;
+using System.Runtime.Versioning;
 using EliteSharp.Audio;
 
 namespace EliteSharp.WinForms
 {
+    [SupportedOSPlatform("windows")]
     internal sealed class WinSound(GDIAssetLoader assetLoader) : ISound
     {
         private readonly Dictionary<SoundEffect, SoundPlayer> _sfx = assetLoader.LoadSfx();

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Drawing.Imaging;
+using System.Runtime.Versioning;
 using EliteSharp.Assets;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
@@ -12,6 +13,7 @@ using EliteSharp.WinForms;
 
 namespace EliteSharp.Renderer
 {
+    [SupportedOSPlatform("windows")]
     public partial class RenderForm : Form
     {
         private const int ScreenWidth = 512;

@@ -15,6 +15,8 @@ using EliteSharp.Ships;
 using EliteSharp.Trader;
 using EliteSharp.Views;
 
+[assembly: CLSCompliant(false)]
+
 // For unit testing
 [assembly: InternalsVisibleTo("EliteSharp.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

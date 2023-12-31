@@ -2,10 +2,12 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Runtime.Versioning;
 using EliteSharp.Controls;
 
 namespace EliteSharp.WinForms
 {
+    [SupportedOSPlatform("windows")]
     internal sealed partial class WinWindow : Form
     {
         private readonly IKeyboard _keyboard;

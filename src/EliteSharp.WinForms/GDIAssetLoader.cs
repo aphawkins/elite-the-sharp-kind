@@ -5,6 +5,7 @@
 using System.Diagnostics;
 using System.Drawing.Text;
 using System.Media;
+using System.Runtime.Versioning;
 using EliteSharp.Assets;
 using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
@@ -14,6 +15,7 @@ using NAudio.Wave;
 
 namespace EliteSharp.WinForms
 {
+    [SupportedOSPlatform("windows")]
     public class GDIAssetLoader(IAssetLocator assets)
     {
         private readonly IAssetLocator _assets = assets;

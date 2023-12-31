@@ -4,11 +4,13 @@
 
 using System.Drawing.Imaging;
 using System.Numerics;
+using System.Runtime.Versioning;
 using EliteSharp.Assets.Fonts;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
+    [SupportedOSPlatform("windows")]
     public sealed class GDIGraphics : IGraphics
     {
         private readonly FastBitmap _fastScreen;

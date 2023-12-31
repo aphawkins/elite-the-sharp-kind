@@ -3,12 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Drawing.Imaging;
+using System.Runtime.Versioning;
 using EliteSharp.Assets;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 
 namespace EliteSharp.WinForms
 {
+    [SupportedOSPlatform("windows")]
     internal sealed class GDIGameFactory : IDisposable
     {
         private readonly IGraphics _graphics;

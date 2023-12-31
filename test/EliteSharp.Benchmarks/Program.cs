@@ -4,6 +4,8 @@
 
 using BenchmarkDotNet.Running;
 
+[assembly: CLSCompliant(false)]
+
 namespace EliteSharp.Benchmarks
 {
     public static class Program

@@ -6,6 +6,8 @@ using System.Numerics;
 using EliteSharp.Graphics;
 using Moq;
 
+[assembly: CLSCompliant(false)]
+
 namespace EliteSharp.Tests
 {
     internal static class MockSetup
