@@ -8,7 +8,7 @@ using EliteSharp.Graphics;
 
 namespace EliteSharp.Assets
 {
-    public class SoftwareAssetLoader(IAssetLocator assets)
+    public class SoftwareAssetLoader(IAssetLocator assets) : ISoftwareAssetLoader
     {
         private readonly IAssetLocator _assets = assets;
 

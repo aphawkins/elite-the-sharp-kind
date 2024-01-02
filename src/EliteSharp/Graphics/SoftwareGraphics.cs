@@ -18,7 +18,7 @@ namespace EliteSharp.Graphics
         private readonly Dictionary<string, FastBitmap> _textCache = [];
         private bool _isDisposed;
 
-        public SoftwareGraphics(float screenWidth, float screenHeight, SoftwareAssetLoader assetLoader, Action<FastBitmap> screenUpdate)
+        public SoftwareGraphics(float screenWidth, float screenHeight, ISoftwareAssetLoader assetLoader, Action<FastBitmap> screenUpdate)
         {
             Guard.ArgumentNull(assetLoader);
 

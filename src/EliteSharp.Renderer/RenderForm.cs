@@ -95,7 +95,11 @@ namespace EliteSharp.Renderer
         {
             _graphics = comboRenderer.SelectedIndex switch
             {
-                1 => new SoftwareGraphics(ScreenWidth, ScreenHeight, new(new SoftwareAssetLocator()), SoftwareScreenUpdate),
+                1 => new SoftwareGraphics(
+                    ScreenWidth,
+                    ScreenHeight,
+                    new SoftwareAssetLoader(new SoftwareAssetLocator()),
+                    SoftwareScreenUpdate),
                 _ => new GDIGraphics(ScreenWidth, ScreenHeight, new(new AssetLocator()), GDIScreenUpdate),
             };
 
