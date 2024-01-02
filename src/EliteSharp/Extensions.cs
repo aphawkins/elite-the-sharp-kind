@@ -1,4 +1,4 @@
-﻿// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -29,7 +29,9 @@ namespace EliteSharp
         internal static Vector2 ToVector2(this Vector3 vector) => new(vector.X, vector.Y);
 
 #pragma warning disable CA1308 // Normalize strings to uppercase
+
         internal static string CapitaliseFirstLetter(this string text) => char.ToUpperInvariant(text[0]) + text[1..].ToLowerInvariant();
+
 #pragma warning restore CA1308 // Normalize strings to uppercase
 
         internal static void CopyTo(this IShip from, IShip to)

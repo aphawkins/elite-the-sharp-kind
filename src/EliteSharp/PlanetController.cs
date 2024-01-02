@@ -14,6 +14,7 @@ namespace EliteSharp
         private readonly string[] _inhabitant_desc1 = ["Large ", "Fierce ", "Small "];
         private readonly string[] _inhabitant_desc2 = ["Green ", "Red ", "Yellow ", "Blue ", "Black ", "Harmless "];
         private readonly string[] _inhabitant_desc3 = ["Slimy ", "Bug-Eyed ", "Horned ", "Bony ", "Fat ", "Furry "];
+
         private readonly string[] _inhabitant_desc4 =
         [
             "Rodent",
