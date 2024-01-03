@@ -10,7 +10,7 @@ namespace EliteSharp
     {
         public static void ArgumentNull<T>(
             [ValidatedNotNull] T argument,
-            [CallerArgumentExpression(nameof(argument))] string callerArg = "")
+            [CallerArgumentExpression(nameof(argument))] string? callerArg = null)
             where T : class
         {
             if (argument == null)

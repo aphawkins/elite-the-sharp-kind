@@ -15,7 +15,7 @@ namespace EliteSharp.Save
 
         public SaveState(SaveState other)
         {
-            ArgumentNullException.ThrowIfNull(other);
+            Guard.ArgumentNull(other);
 
             CommanderName = other.CommanderName;
             Mission = other.Mission;
