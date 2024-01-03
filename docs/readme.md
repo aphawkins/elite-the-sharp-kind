@@ -104,8 +104,9 @@ These are: SDL2.dll, SDL2_ttf.dll, SDL2_mixer.dll
 The following packages will need to be installed to get the necessary SDL libraries:
 ``` bash
 sudo apt-get install libsdl2-dev
-sudo apt-get install libsdl2-ttf-dev
+sudo apt-get install libsdl2-gfx-dev
 sudo apt-get install libsdl2-mixer-dev
+sudo apt-get install libsdl2-ttf-dev
 ```
 
 ## Credits  

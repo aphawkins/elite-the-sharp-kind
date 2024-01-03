@@ -16,7 +16,7 @@ namespace EliteSharp.SDL
         private readonly int _screenHeight;
         private readonly int _screenWidth;
         private readonly ISound _sound;
-        private readonly nint _renderer;
+        private readonly SDLRenderer _renderer;
         private readonly SDLWindow _window;
         private bool _isDisposed;
 
@@ -25,8 +25,8 @@ namespace EliteSharp.SDL
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
             _keyboard = new();
-            _window = new(_screenWidth, _screenHeight, title, _keyboard);
-            _renderer = _window.Renderer;
+            _window = new(_screenWidth, _screenHeight, title);
+            _renderer = new(_window);
 
             if (type == "SOFTWARE")
             {
@@ -41,7 +41,7 @@ namespace EliteSharp.SDL
             else
             {
                 SDLAssetLoader assetLoader = new(new AssetLocator());
-                _graphics = new SDLGraphics(_window, _screenWidth, _screenHeight, assetLoader);
+                _graphics = new SDLGraphics(_window, _renderer, _screenWidth, _screenHeight, assetLoader);
                 _sound = new SDLSound(assetLoader);
             }
 
@@ -66,6 +66,7 @@ namespace EliteSharp.SDL
                     // dispose managed state (managed objects)
                     _graphics?.Dispose();
                     _sound?.Dispose();
+                    _renderer?.Dispose();
                     _window?.Dispose();
                 }
 
@@ -77,7 +78,7 @@ namespace EliteSharp.SDL
 
         private void SoftwareScreenUpdate(FastBitmap bitmap)
         {
-            IntPtr surface = BitConverter.IsLittleEndian
+            IntPtr surface = SDLGuard.Execute(() => BitConverter.IsLittleEndian
                 ? SDL_CreateRGBSurfaceFrom(
                     bitmap.BitmapHandle,
                     bitmap.Width,
@@ -97,18 +98,9 @@ namespace EliteSharp.SDL
                     0x0000FF00,
                     0x00FF0000,
                     0xFF000000,
-                    0x000000FF);
+                    0x000000FF));
 
-            if (surface == IntPtr.Zero)
-            {
-                SDLHelper.Throw(nameof(SDL_CreateRGBSurfaceFrom));
-            }
-
-            IntPtr texture = SDL_CreateTextureFromSurface(_renderer, surface);
-            if (texture == IntPtr.Zero)
-            {
-                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
-            }
+            IntPtr texture = SDLGuard.Execute(() => SDL_CreateTextureFromSurface(_renderer, surface));
 
             SDL_FreeSurface(surface);
 
@@ -120,10 +112,7 @@ namespace EliteSharp.SDL
                 h = bitmap.Height,
             };
 
-            if (SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderCopy));
-            }
+            SDLGuard.Execute(() => SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest));
 
             SDL_DestroyTexture(texture);
 

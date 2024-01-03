@@ -18,15 +18,8 @@ namespace EliteSharp.SDL
         {
             Guard.ArgumentNull(assetLoader);
 
-            if (SDL_Init(SDL_INIT_AUDIO) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_Init));
-            }
-
-            if (Mix_Init(MIX_InitFlags.MIX_INIT_OGG) < 0)
-            {
-                SDLHelper.Throw(nameof(Mix_Init));
-            }
+            SDLGuard.Execute(() => SDL_Init(SDL_INIT_AUDIO));
+            SDLGuard.Execute(() => Mix_Init(MIX_InitFlags.MIX_INIT_OGG));
 
             SDL_AudioSpec audioSpecDesired = default;
             audioSpecDesired.channels = 2;
@@ -34,15 +27,9 @@ namespace EliteSharp.SDL
             audioSpecDesired.freq = 44100;
             audioSpecDesired.samples = 1024;
 
-            if (Mix_OpenAudio(audioSpecDesired.freq, audioSpecDesired.format, audioSpecDesired.channels, audioSpecDesired.samples) < 0)
-            {
-                SDLHelper.Throw(nameof(Mix_OpenAudio));
-            }
-
-            if (Mix_AllocateChannels(2) < 0)
-            {
-                SDLHelper.Throw(nameof(Mix_AllocateChannels));
-            }
+            SDLGuard.Execute(
+                () => Mix_OpenAudio(audioSpecDesired.freq, audioSpecDesired.format, audioSpecDesired.channels, audioSpecDesired.samples));
+            SDLGuard.Execute(() => Mix_AllocateChannels(2));
 
             _music = assetLoader.LoadMusic();
             _sfx = assetLoader.LoadSfx();
@@ -62,31 +49,16 @@ namespace EliteSharp.SDL
             GC.SuppressFinalize(this);
         }
 
-        public void Play(SoundEffect sfxType)
-        {
-            if (Mix_PlayChannel(-1, _sfx[sfxType], 0) < 0)
-            {
-                SDLHelper.Throw(nameof(Mix_PlayChannel));
-            }
-        }
+        public void Play(SoundEffect sfxType) => SDLGuard.Execute(() => Mix_PlayChannel(-1, _sfx[sfxType], 0));
 
         public void Play(MusicType musicType, bool repeat)
         {
             StopMusic();
 
-            if (Mix_PlayMusic(_music[musicType], repeat ? -1 : 1) < 0)
-            {
-                SDLHelper.Throw(nameof(Mix_PlayMusic));
-            }
+            SDLGuard.Execute(() => Mix_PlayMusic(_music[musicType], repeat ? -1 : 1));
         }
 
-        public void StopMusic()
-        {
-            if (Mix_HaltMusic() < 0)
-            {
-                SDLHelper.Throw(nameof(Mix_HaltMusic));
-            }
-        }
+        public void StopMusic() => SDLGuard.Execute(Mix_HaltMusic);
 
         private void Dispose(bool disposing)
         {

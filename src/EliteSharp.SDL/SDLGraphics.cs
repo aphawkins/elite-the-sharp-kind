@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using EliteSharp.Assets.Fonts;
 using EliteSharp.Graphics;
 using static SDL2.SDL;
+using static SDL2.SDL_gfx;
 using static SDL2.SDL_ttf;
 
 namespace EliteSharp.SDL
@@ -18,14 +19,17 @@ namespace EliteSharp.SDL
         private readonly Dictionary<ImageType, nint> _images;
         private readonly Dictionary<FastColor, SDL_Color> _sdlColors = [];
         private readonly SDLWindow _window;
+        private readonly SDLRenderer _renderer;
         private bool _isDisposed;
 
-        public SDLGraphics(in SDLWindow window, float screenWidth, float screenHeight, SDLAssetLoader assetLoader)
+        public SDLGraphics(in SDLWindow window, SDLRenderer renderer, float screenWidth, float screenHeight, SDLAssetLoader assetLoader)
         {
             Guard.ArgumentNull(window);
+            Guard.ArgumentNull(renderer);
             Guard.ArgumentNull(assetLoader);
 
             _window = window;
+            _renderer = renderer;
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
             _assetLoader = assetLoader;
@@ -68,10 +72,7 @@ namespace EliteSharp.SDL
 
             SetRenderDrawColor(EliteColors.Black);
 
-            if (SDL_RenderClear(_window.Renderer) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderClear));
-            }
+            SDLGuard.Execute(() => SDL_RenderClear(_renderer));
         }
 
         public void Dispose()
@@ -82,80 +83,10 @@ namespace EliteSharp.SDL
         }
 
         public void DrawCircle(Vector2 centre, float radius, FastColor color)
-        {
-            float diameter = radius * 2;
-            float x = MathF.Floor(radius);
-            float y = 0;
-            float tx = 1;
-            float ty = 1;
-            float error = tx - diameter;
-
-            List<SDL_FPoint> points = [];
-
-            while (x >= y)
-            {
-                points.Add(new() { x = centre.X + x, y = centre.Y + y });
-                points.Add(new() { x = centre.X + x, y = centre.Y - y });
-                points.Add(new() { x = centre.X - x, y = centre.Y + y });
-                points.Add(new() { x = centre.X - x, y = centre.Y - y });
-                points.Add(new() { x = centre.X + y, y = centre.Y + x });
-                points.Add(new() { x = centre.X + y, y = centre.Y - x });
-                points.Add(new() { x = centre.X - y, y = centre.Y + x });
-                points.Add(new() { x = centre.X - y, y = centre.Y - x });
-
-                if (error <= 0)
-                {
-                    y++;
-                    error += ty;
-                    ty += 2;
-                }
-
-                if (error > 0)
-                {
-                    x--;
-                    tx += 2;
-                    error += tx - diameter;
-                }
-            }
-
-            DrawPixels([.. points], color);
-        }
+            => SDLGuard.Execute(() => circleColor(_renderer, (short)centre.X, (short)centre.Y, (short)radius, color.Argb));
 
         public void DrawCircleFilled(Vector2 centre, float radius, FastColor color)
-        {
-            float diameter = radius * 2;
-            float x = MathF.Floor(radius);
-            float y = 0;
-            float tx = 1;
-            float ty = 1;
-            float error = tx - diameter;
-
-            List<(SDL_FPoint Start, SDL_FPoint End)> lines = [];
-
-            while (x >= y)
-            {
-                lines.Add((new() { x = centre.X + x, y = centre.Y + y }, new() { x = centre.X + x, y = centre.Y - y }));
-                lines.Add((new() { x = centre.X - x, y = centre.Y + y }, new() { x = centre.X - x, y = centre.Y - y }));
-                lines.Add((new() { x = centre.X + y, y = centre.Y + x }, new() { x = centre.X + y, y = centre.Y - x }));
-                lines.Add((new() { x = centre.X - y, y = centre.Y + x }, new() { x = centre.X - y, y = centre.Y - x }));
-
-                if (error <= 0)
-                {
-                    y++;
-                    error += ty;
-                    ty += 2;
-                }
-
-                if (error > 0)
-                {
-                    x--;
-                    tx += 2;
-                    error += tx - diameter;
-                }
-            }
-
-            DrawLines(lines, color);
-        }
+            => SDLGuard.Execute(() => filledCircleColor(_renderer, (short)centre.X, (short)centre.Y, (short)radius, color.Argb));
 
         public void DrawImage(ImageType image, Vector2 position)
         {
@@ -165,11 +96,7 @@ namespace EliteSharp.SDL
             }
 
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(_images[image]);
-            nint texture = SDL_CreateTextureFromSurface(_window.Renderer, _images[image]);
-            if (texture == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
-            }
+            nint texture = SDLGuard.Execute(() => SDL_CreateTextureFromSurface(_renderer, _images[image]));
 
             SDL_Rect dest = new()
             {
@@ -179,10 +106,7 @@ namespace EliteSharp.SDL
                 h = surface.h,
             };
 
-            if (SDL_RenderCopy(_window.Renderer, texture, nint.Zero, ref dest) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderCopy));
-            }
+            SDLGuard.Execute(() => SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest));
 
             SDL_DestroyTexture(texture);
         }
@@ -208,10 +132,7 @@ namespace EliteSharp.SDL
 
             SetRenderDrawColor(color);
 
-            if (SDL_RenderDrawLineF(_window.Renderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderDrawLineF));
-            }
+            SDLGuard.Execute(() => SDL_RenderDrawLineF(_renderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y));
         }
 
         public void DrawPixel(Vector2 position, FastColor color)
@@ -223,10 +144,7 @@ namespace EliteSharp.SDL
 
             SetRenderDrawColor(color);
 
-            if (SDL_RenderDrawPointF(_window.Renderer, position.X, position.Y) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderDrawPointF));
-            }
+            SDLGuard.Execute(() => SDL_RenderDrawPointF(_renderer, position.X, position.Y));
         }
 
         public void DrawPolygon(Vector2[] points, FastColor lineColor)
@@ -276,10 +194,7 @@ namespace EliteSharp.SDL
                 h = height + 1,
             };
 
-            if (SDL_RenderDrawRectF(_window.Renderer, ref rectangle) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderDrawRectF));
-            }
+            SDLGuard.Execute(() => SDL_RenderDrawRectF(_renderer, ref rectangle));
         }
 
         public void DrawRectangleCentre(float y, float width, float height, FastColor color)
@@ -302,10 +217,7 @@ namespace EliteSharp.SDL
                 h = height + 1,
             };
 
-            if (SDL_RenderFillRectF(_window.Renderer, ref rectangle) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderFillRectF));
-            }
+            SDLGuard.Execute(() => SDL_RenderFillRectF(_renderer, ref rectangle));
         }
 
         public void DrawTextCentre(float y, string text, FontType fontType, FastColor color)
@@ -315,30 +227,18 @@ namespace EliteSharp.SDL
                 return;
             }
 
-            nint surfacePtr = TTF_RenderText_Solid(
+            nint surfacePtr = SDLGuard.Execute(() => TTF_RenderText_Solid(
                 _fonts[fontType],
                 text,
-                _sdlColors[color]);
-            if (surfacePtr == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(TTF_RenderText_Solid));
-            }
+                _sdlColors[color]));
 
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
             SDL_Rect dest = surface.clip_rect;
             dest.x = (int)((ScreenWidth / 2) - (dest.w / 2));
             dest.y = (int)(y / (2 / Scale));
 
-            nint texture = SDL_CreateTextureFromSurface(_window.Renderer, surfacePtr);
-            if (texture == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
-            }
-
-            if (SDL_RenderCopy(_window.Renderer, texture, nint.Zero, ref dest) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderCopy));
-            }
+            nint texture = SDLGuard.Execute(() => SDL_CreateTextureFromSurface(_renderer, surfacePtr));
+            SDLGuard.Execute(() => SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest));
 
             SDL_FreeSurface(surfacePtr);
             SDL_DestroyTexture(texture);
@@ -351,30 +251,18 @@ namespace EliteSharp.SDL
                 return;
             }
 
-            nint surfacePtr = TTF_RenderText_Solid(
+            nint surfacePtr = SDLGuard.Execute(() => TTF_RenderText_Solid(
                 _fonts[FontType.Small],
                 text,
-                _sdlColors[color]);
-            if (surfacePtr == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(TTF_RenderText_Solid));
-            }
+                _sdlColors[color]));
 
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
             SDL_Rect dest = surface.clip_rect;
             dest.x = (int)(position.X / (2 / Scale));
             dest.y = (int)(position.Y / (2 / Scale));
 
-            nint texture = SDL_CreateTextureFromSurface(_window.Renderer, surfacePtr);
-            if (texture == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
-            }
-
-            if (SDL_RenderCopy(_window.Renderer, texture, nint.Zero, ref dest) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderCopy));
-            }
+            nint texture = SDLGuard.Execute(() => SDL_CreateTextureFromSurface(_renderer, surfacePtr));
+            SDLGuard.Execute(() => SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest));
 
             SDL_FreeSurface(surfacePtr);
             SDL_DestroyTexture(texture);
@@ -387,30 +275,18 @@ namespace EliteSharp.SDL
                 return;
             }
 
-            nint surfacePtr = TTF_RenderText_Solid(
+            nint surfacePtr = SDLGuard.Execute(() => TTF_RenderText_Solid(
                 _fonts[FontType.Small],
                 text,
-                _sdlColors[color]);
-            if (surfacePtr == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(TTF_RenderText_Solid));
-            }
+                _sdlColors[color]));
 
             SDL_Surface surface = Marshal.PtrToStructure<SDL_Surface>(surfacePtr);
             SDL_Rect dest = surface.clip_rect;
             dest.x = (int)((position.X - dest.w) / (2 / Scale));
             dest.y = (int)(position.Y / (2 / Scale));
 
-            nint texture = SDL_CreateTextureFromSurface(_window.Renderer, surfacePtr);
-            if (texture == nint.Zero)
-            {
-                SDLHelper.Throw(nameof(SDL_CreateTextureFromSurface));
-            }
-
-            if (SDL_RenderCopy(_window.Renderer, texture, nint.Zero, ref dest) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderCopy));
-            }
+            nint texture = SDLGuard.Execute(() => SDL_CreateTextureFromSurface(_renderer, surfacePtr));
+            SDLGuard.Execute(() => SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest));
 
             SDL_FreeSurface(surfacePtr);
             SDL_DestroyTexture(texture);
@@ -437,10 +313,7 @@ namespace EliteSharp.SDL
                 ConvertVertex(c, color),
             ];
 
-            if (SDL_RenderGeometry(_window.Renderer, nint.Zero, vertices, vertices.Length, null, 0) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderGeometry));
-            }
+            SDLGuard.Execute(() => SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0));
         }
 
         public void ScreenUpdate()
@@ -450,7 +323,7 @@ namespace EliteSharp.SDL
                 return;
             }
 
-            SDL_RenderPresent(_window.Renderer);
+            SDL_RenderPresent(_renderer);
         }
 
         public void SetClipRegion(Vector2 position, float width, float height)
@@ -468,10 +341,7 @@ namespace EliteSharp.SDL
                 h = (int)height,
             };
 
-            if (SDL_RenderSetClipRect(_window.Renderer, ref rectangle) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderSetClipRect));
-            }
+            SDLGuard.Execute(() => SDL_RenderSetClipRect(_renderer, ref rectangle));
         }
 
         private SDL_Vertex ConvertVertex(Vector2 point, in FastColor color) => new()
@@ -509,35 +379,7 @@ namespace EliteSharp.SDL
             }
         }
 
-        private void DrawLines(List<(SDL_FPoint Start, SDL_FPoint End)> points, in FastColor color)
-        {
-            SetRenderDrawColor(color);
-
-            foreach ((SDL_FPoint start, SDL_FPoint end) in points)
-            {
-                if (SDL_RenderDrawLineF(_window.Renderer, start.x, start.y, end.x, end.y) < 0)
-                {
-                    SDLHelper.Throw(nameof(SDL_RenderDrawLinesF));
-                }
-            }
-        }
-
-        private void DrawPixels(SDL_FPoint[] points, in FastColor color)
-        {
-            SetRenderDrawColor(color);
-
-            if (SDL_RenderDrawPointsF(_window.Renderer, points, points.Length) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_RenderDrawPointF));
-            }
-        }
-
-        private void SetRenderDrawColor(in FastColor color)
-        {
-            if (SDL_SetRenderDrawColor(_window.Renderer, color.R, color.G, color.B, color.A) < 0)
-            {
-                SDLHelper.Throw(nameof(SDL_SetRenderDrawColor));
-            }
-        }
+        private void SetRenderDrawColor(FastColor color)
+            => SDLGuard.Execute(() => SDL_SetRenderDrawColor(_renderer, color.R, color.G, color.B, color.A));
     }
 }
