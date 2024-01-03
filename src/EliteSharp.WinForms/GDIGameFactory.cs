@@ -20,12 +20,12 @@ namespace EliteSharp.WinForms
         private readonly ISound _sound;
         private bool _isDisposed;
 
-        internal GDIGameFactory(int screenWidth, int screenHeight, string type = "GDI")
+        internal GDIGameFactory(int screenWidth, int screenHeight, string title, string type)
         {
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
             _keyboard = new();
-            Window = new(_screenWidth, _screenHeight, _keyboard);
+            Window = new(_screenWidth, _screenHeight, title, _keyboard);
 
             if (type == "SOFTWARE")
             {

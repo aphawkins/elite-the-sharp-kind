@@ -11,6 +11,8 @@ namespace EliteSharp.WinForms
     [SupportedOSPlatform("windows")]
     internal sealed class WinProgram : IDisposable
     {
+        private const string Title = "Elite - The Sharp Kind";
+
 #if QHD
         private const int ScreenWidth = 960;
         private const int ScreenHeight = 540;
@@ -20,9 +22,9 @@ namespace EliteSharp.WinForms
 #endif
 
 #if !SOFTWARERENDERER
-        private static readonly GDIGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "SOFTWARE");
+        private static readonly GDIGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SOFTWARE");
 #else
-        private static readonly GDIGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "GDI");
+        private static readonly GDIGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "GDI");
 #endif
 
         private bool _isDisposed;

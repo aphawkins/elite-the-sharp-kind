@@ -59,7 +59,6 @@ namespace EliteSharp.WinForms
             MaximumSize = new Size(528, 551);
             MinimumSize = new Size(528, 551);
             Name = "WinWindow";
-            Text = "Elite - The Sharp Kind";
             KeyDown += GameWindow_KeyDown;
             KeyUp += GameWindow_KeyUp;
             ((System.ComponentModel.ISupportInitialize)screen).EndInit();

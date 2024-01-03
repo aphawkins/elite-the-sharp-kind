@@ -12,7 +12,7 @@ namespace EliteSharp.WinForms
     {
         private readonly IKeyboard _keyboard;
 
-        public WinWindow(int width, int height, IKeyboard keyboard)
+        public WinWindow(int width, int height, string title, IKeyboard keyboard)
         {
             InitializeComponent();
 
@@ -21,6 +21,7 @@ namespace EliteSharp.WinForms
             MaximumSize = new Size(width + 16, height + 39);
             MinimumSize = new Size(width + 16, height + 39);
 
+            Text = title;
             _keyboard = keyboard;
         }
 

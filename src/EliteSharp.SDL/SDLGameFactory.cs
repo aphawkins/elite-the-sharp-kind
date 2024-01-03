@@ -17,19 +17,19 @@ namespace EliteSharp.SDL
         private readonly int _screenWidth;
         private readonly ISound _sound;
         private readonly nint _renderer;
-        private readonly nint _window;
+        private readonly SDLWindow _window;
         private bool _isDisposed;
 
-        internal SDLGameFactory(int screenWidth, int screenHeight, string type = "SDL")
+        internal SDLGameFactory(int screenWidth, int screenHeight, string title, string type)
         {
             _screenWidth = screenWidth;
             _screenHeight = screenHeight;
             _keyboard = new();
+            _window = new(_screenWidth, _screenHeight, title, _keyboard);
+            _renderer = _window.Renderer;
 
             if (type == "SOFTWARE")
             {
-                (_renderer, _window) = SDLGraphics.CreateRenderer(_screenWidth, _screenHeight);
-
                 SoftwareAssetLoader assetLoader = new(new SoftwareAssetLocator());
                 _graphics = new SoftwareGraphics(
                     _screenWidth,
@@ -40,12 +40,8 @@ namespace EliteSharp.SDL
             }
             else
             {
-                // When running C# applications under the Visual Studio debugger, native code that
-                // names threads with the 0x406D1388 exception will silently exit. To prevent this
-                // exception from being thrown by SDL, add this line before your SDL_Init call:
-                SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
                 SDLAssetLoader assetLoader = new(new AssetLocator());
-                _graphics = new SDLGraphics(_screenWidth, _screenHeight, assetLoader);
+                _graphics = new SDLGraphics(_window, _screenWidth, _screenHeight, assetLoader);
                 _sound = new SDLSound(assetLoader);
             }
 
@@ -70,10 +66,7 @@ namespace EliteSharp.SDL
                     // dispose managed state (managed objects)
                     _graphics?.Dispose();
                     _sound?.Dispose();
-
-                    SDL_DestroyRenderer(_renderer);
-                    SDL_DestroyWindow(_window);
-                    SDL_Quit();
+                    _window?.Dispose();
                 }
 
                 // free unmanaged resources (unmanaged objects) and override finalizer

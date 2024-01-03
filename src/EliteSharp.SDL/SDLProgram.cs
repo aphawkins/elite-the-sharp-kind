@@ -8,6 +8,8 @@ namespace EliteSharp.SDL
 {
     internal static class SDLProgram
     {
+        private const string Title = "Elite - The Sharp Kind";
+
 #if QHD
         private const int ScreenWidth = 960;
         private const int ScreenHeight = 540;
@@ -16,10 +18,10 @@ namespace EliteSharp.SDL
         private const int ScreenHeight = 512;
 #endif
 
-#if !SOFTWARERENDERER
-        private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "SOFTWARE");
+#if SOFTWARERENDERER
+        private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SOFTWARE");
 #else
-        private static readonly GameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, "SDL");
+        private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SDL");
 #endif
 
         public static void Main()
