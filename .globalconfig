@@ -2205,3 +2205,6 @@ dotnet_diagnostic.S4212.severity = warning
 dotnet_diagnostic.S4462.severity = warning
 dotnet_diagnostic.S4564.severity = warning
 dotnet_diagnostic.S6507.severity = warning
+
+# xUnit Analyzer
+dotnet_diagnostic.xUnit1004.severity = none
