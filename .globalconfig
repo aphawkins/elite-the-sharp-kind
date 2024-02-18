@@ -1119,7 +1119,10 @@ dotnet_diagnostic.RS2007.severity = warning
 dotnet_diagnostic.RS2008.severity = warning
 
 # SA0001: XML comments
-dotnet_diagnostic.SA0001.severity = warning
+dotnet_diagnostic.SA0001.severity = none
+
+# SA1002: Semicolons Must Be Spaced Correctly
+dotnet_diagnostic.SA0002.severity = warning
 
 # SA1000: Spacing around keywords
 # warning until https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/3478 is resolved
@@ -1140,7 +1143,13 @@ dotnet_diagnostic.SA1004.severity = warning
 # SA1005: Single line comment should begin with a space
 dotnet_diagnostic.SA1005.severity = warning
 
-# SA1008: Opening parenthesis should not be preceded by a space
+# SA1006: Preprocessor Keywords Must Not Be Preceded By Space
+dotnet_diagnostic.SA1006.severity = warning
+
+# SA1007: Operator Keyword Must Be Followed By Space
+dotnet_diagnostic.SA1007.severity = warning
+
+# SA1008: Opening Parenthesis Must Be Spaced Correctly
 dotnet_diagnostic.SA1008.severity = warning
 
 # SA1009: Closing parenthesis should not be followed by a space
@@ -1164,8 +1173,17 @@ dotnet_diagnostic.SA1014.severity = warning
 # SA1015: Closing generic bracket should not be followed by a space
 dotnet_diagnostic.SA1015.severity = warning
 
+# SA1016: Opening Attribute Brackets Must Be Spaced Correctly
+dotnet_diagnostic.SA1016.severity = warning
+
+# SA1017: Closing Attribute Brackets Must Be Spaced Correctly
+dotnet_diagnostic.SA1017.severity = warning
+
 # SA1018: Nullable type symbol should not be preceded by a space
 dotnet_diagnostic.SA1018.severity = warning
+
+# SA1019: Member Access Symbols Must Be Spaced Correctly
+dotnet_diagnostic.SA1019.severity = warning
 
 # SA1020: Increment symbol should not be preceded by a space
 dotnet_diagnostic.SA1020.severity = warning
@@ -1195,10 +1213,16 @@ dotnet_diagnostic.SA1028.severity = warning
 dotnet_diagnostic.SA1100.severity = warning
 
 # SA1101: Prefix local calls with this
-dotnet_diagnostic.SA1101.severity = warning
+dotnet_diagnostic.SA1101.severity = none
 
 # SA1102: Query clause should follow previous clause
 dotnet_diagnostic.SA1102.severity = warning
+
+# SA1103: Query clauses should be on separate lines or all on one line
+dotnet_diagnostic.SA1103.severity = warning
+
+# SA1104: Query clause should begin on new line when previous clause spans multiple lines
+dotnet_diagnostic.SA1104.severity = warning
 
 # SA1105: Query clauses spanning multiple lines should begin on own line
 dotnet_diagnostic.SA1105.severity = warning
@@ -1212,11 +1236,17 @@ dotnet_diagnostic.SA1107.severity = warning
 # SA1108: Block statements should not contain embedded comments
 dotnet_diagnostic.SA1108.severity = warning
 
+# SA1109: Block Statements Must Not Contain Embedded Regions
+dotnet_diagnostic.SA1109.severity = warning
+
 # SA1110: Opening parenthesis or bracket should be on declaration line
 dotnet_diagnostic.SA1110.severity = warning
 
 # SA1111: Closing parenthesis should be on line of last parameter
 dotnet_diagnostic.SA1111.severity = warning
+
+# SA1112: Closing Parenthesis Must Be On Line Of Opening Parenthesis
+dotnet_diagnostic.SA1112.severity = warning
 
 # SA1113: Comma should be on the same line as previous parameter
 dotnet_diagnostic.SA1113.severity = warning
@@ -1256,6 +1286,9 @@ dotnet_diagnostic.SA1124.severity = warning
 
 # SA1125: Use shorthand for nullable types
 dotnet_diagnostic.SA1125.severity = warning
+
+# SA1126: Prefix Calls Correctly
+dotnet_diagnostic.SA1126.severity = warning
 
 # SA1127: Generic type constraints should be on their own line
 dotnet_diagnostic.SA1127.severity = warning
@@ -1320,6 +1353,9 @@ dotnet_diagnostic.SA1205.severity = warning
 # SA1206: Keyword ordering - TODO Re-enable as warning after https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/3527
 dotnet_diagnostic.SA1206.severity = warning
 
+# SA1207: Protected Must Come Before Internal
+dotnet_diagnostic.SA1207.severity = warning
+
 # SA1208: Using directive ordering
 dotnet_diagnostic.SA1208.severity = warning
 
@@ -1335,14 +1371,26 @@ dotnet_diagnostic.SA1211.severity = warning
 # SA1212: A get accessor appears after a set accessor within a property or indexer
 dotnet_diagnostic.SA1212.severity = warning
 
+# SA1213: Event Accessors Must Follow Order
+dotnet_diagnostic.SA1213.severity = warning
+
 # SA1214: Readonly fields should appear before non-readonly fields
 dotnet_diagnostic.SA1214.severity = warning
+
+# SA1215: Instance Readonly Elements Must Appear Before Instance Non Readonly Elements
+dotnet_diagnostic.SA1215.severity = warning
 
 # SA1216: Using static directives should be placed at the correct location
 dotnet_diagnostic.SA1216.severity = warning
 
+# SA1217: Using Static Directives Must Be Ordered Alphabetically
+dotnet_diagnostic.SA1217.severity = warning
+
 # SA1300: Element should begin with an uppercase letter
 dotnet_diagnostic.SA1300.severity = warning
+
+# SA1301: Element Must Begin With Lower Case Letter
+dotnet_diagnostic.SA1301.severity = warning
 
 # SA1302: Interface names should begin with I
 dotnet_diagnostic.SA1302.severity = warning
@@ -1353,6 +1401,9 @@ dotnet_diagnostic.SA1303.severity = warning
 # SA1304: Non-private readonly fields should begin with upper-case letter
 dotnet_diagnostic.SA1304.severity = warning
 
+# SA1305: Field Names Must Not Use Hungarian Notation
+dotnet_diagnostic.SA1305.severity = warning
+
 # SA1306: Field should begin with lower-case letter
 dotnet_diagnostic.SA1306.severity = warning
 
@@ -1360,16 +1411,16 @@ dotnet_diagnostic.SA1306.severity = warning
 dotnet_diagnostic.SA1307.severity = warning
 
 # SA1308: Field should not begin with the prefix 's_'
-dotnet_diagnostic.SA1308.severity = warning
+dotnet_diagnostic.SA1308.severity = none
 
 # SA1309: Field names should not begin with underscore
-dotnet_diagnostic.SA1309.severity = warning
+dotnet_diagnostic.SA1309.severity = none
 
 # SA1310: Field should not contain an underscore
 dotnet_diagnostic.SA1310.severity = warning
 
 # SA1311: Static readonly fields should begin with upper-case letter
-dotnet_diagnostic.SA1311.severity = warning
+dotnet_diagnostic.SA1311.severity = none
 
 # SA1312: Variable should begin with lower-case letter
 dotnet_diagnostic.SA1312.severity = warning
@@ -1401,17 +1452,26 @@ dotnet_diagnostic.SA1404.severity = warning
 # SA1405: Debug.Assert should provide message text
 dotnet_diagnostic.SA1405.severity = warning
 
+# SA1406: Debug Fail Must Provide Message Text
+dotnet_diagnostic.SA1406.severity = warning
+
 # SA1407: Arithmetic expressions should declare precedence
 dotnet_diagnostic.SA1407.severity = warning
 
 # SA1408: Conditional expressions should declare precedence
 dotnet_diagnostic.SA1408.severity = warning
 
+# SA1409: Remove Unnecessary Code
+dotnet_diagnostic.SA1409.severity = warning
+
 # SA1410: Remove delegate parens when possible
 dotnet_diagnostic.SA1410.severity = warning
 
 # SA1411: Attribute constructor shouldn't use unnecessary parenthesis
 dotnet_diagnostic.SA1411.severity = warning
+
+# SA1412: Store Files As Utf8
+dotnet_diagnostic.SA1412.severity = none
 
 # SA1413: Use trailing comma in multi-line initializers
 dotnet_diagnostic.SA1413.severity = warning
@@ -1452,6 +1512,9 @@ dotnet_diagnostic.SA1509.severity = warning
 # SA1510: 'else' statement should not be preceded by a blank line
 dotnet_diagnostic.SA1510.severity = warning
 
+# SA1511: While Do Footer Must Not Be Preceded By Blank Line
+dotnet_diagnostic.SA1511.severity = warning
+
 # SA1512: Single-line comments should not be followed by blank line
 dotnet_diagnostic.SA1512.severity = warning
 
@@ -1480,13 +1543,16 @@ dotnet_diagnostic.SA1519.severity = warning
 dotnet_diagnostic.SA1520.severity = warning
 
 # SA1600: Elements should be documented
-dotnet_diagnostic.SA1600.severity = warning
+dotnet_diagnostic.SA1600.severity = none
 
 # SA1601: Partial elements should be documented
-dotnet_diagnostic.SA1601.severity = warning
+dotnet_diagnostic.SA1601.severity = none
 
 # SA1602: Enumeration items should be documented
-dotnet_diagnostic.SA1602.severity = warning
+dotnet_diagnostic.SA1602.severity = none
+
+# SA1603: Documentation Must Contain Valid Xml
+dotnet_diagnostic.SA1603.severity = warning
 
 # SA1604: Element documentation should have summary
 dotnet_diagnostic.SA1604.severity = warning
@@ -1497,32 +1563,50 @@ dotnet_diagnostic.SA1605.severity = warning
 # SA1606: Element documentation should have summary text
 dotnet_diagnostic.SA1606.severity = warning
 
+# SA1607: Partial Element Documentation Must Have Summary Text
+dotnet_diagnostic.SA1607.severity = warning
+
 # SA1608: Element documentation should not have default summary
 dotnet_diagnostic.SA1608.severity = warning
+
+# SA1609: Property Documentation Must Have Value
+dotnet_diagnostic.SA1609.severity = none
 
 # SA1610: Property documentation should have value text
 dotnet_diagnostic.SA1610.severity = warning
 
 # SA1611: The documentation for parameter 'message' is missing
-dotnet_diagnostic.SA1611.severity = warning
+dotnet_diagnostic.SA1611.severity = none
 
 # SA1612: The parameter documentation is at incorrect position
 dotnet_diagnostic.SA1612.severity = warning
+
+# SA1613: Element Parameter Documentation Must Declare Parameter Name
+dotnet_diagnostic.SA1613.severity = warning
 
 # SA1614: Element parameter documentation should have text
 dotnet_diagnostic.SA1614.severity = warning
 
 # SA1615: Element return value should be documented
-dotnet_diagnostic.SA1615.severity = warning
+dotnet_diagnostic.SA1615.severity = none
 
 # SA1616: Element return value documentation should have text
-dotnet_diagnostic.SA1616.severity = warning
+dotnet_diagnostic.SA1616.severity = none
+
+# SA1617: Void Return Value Must Not Be Documented
+dotnet_diagnostic.SA1617.severity = warning
 
 # SA1618: The documentation for type parameter is missing
 dotnet_diagnostic.SA1618.severity = warning
 
 # SA1619: The documentation for type parameter is missing
 dotnet_diagnostic.SA1619.severity = warning
+
+# SA1620: Generic Type Parameter Documentation Must Match Type Parameters
+dotnet_diagnostic.SA1620.severity = warning
+
+# SA1621: Generic Type Parameter Documentation Must Declare Parameter Name
+dotnet_diagnostic.SA1621.severity = warning
 
 # SA1622: Generic type parameter documentation should have text
 dotnet_diagnostic.SA1622.severity = warning
@@ -1542,11 +1626,47 @@ dotnet_diagnostic.SA1626.severity = warning
 # SA1627: The documentation text within the \'exception\' tag should not be empty
 dotnet_diagnostic.SA1627.severity = warning
 
+# SA1628: Documentation Text Must Begin With A Capital Letter
+dotnet_diagnostic.SA1628.severity = warning
+
 # SA1629: Documentation text should end with a period
 dotnet_diagnostic.SA1629.severity = warning
 
+# SA1630: Documentation Text Must Contain Whitespace
+dotnet_diagnostic.SA1630.severity = warning
+
+# SA1631: Documentation Must Meet Character Percentage
+dotnet_diagnostic.SA1631.severity = warning
+
+# SA1632: Documentation Text Must Meet Minimum Character Length
+dotnet_diagnostic.SA1632.severity = warning
+
 # SA1633: File should have header
-dotnet_diagnostic.SA1633.severity = warning
+dotnet_diagnostic.SA1633.severity = none
+
+# SA1634: File Header Must Show Copyright
+dotnet_diagnostic.SA1634.severity = warning
+
+# SA1635: File Header Must Have Copyright Text
+dotnet_diagnostic.SA1635.severity = warning
+
+# SA1636: File Header Copyright Text Must Match
+dotnet_diagnostic.SA1636.severity = warning
+
+# SA1637: File Header Must Contain File Name
+dotnet_diagnostic.SA1637.severity = warning
+
+# SA1638: File Header File Name Documentation Must Match File Name
+dotnet_diagnostic.SA1638.severity = warning
+
+# SA1639: File Header Must Have Summary
+dotnet_diagnostic.SA1639.severity = warning
+
+# SA1640: File Header Must Have Valid Company Text
+dotnet_diagnostic.SA1640.severity = warning
+
+# SA1641: File Header Company Name Text Must Match
+dotnet_diagnostic.SA1641.severity = warning
 
 # SA1642: Constructor summary documentation should begin with standard text
 dotnet_diagnostic.SA1642.severity = warning
@@ -1554,8 +1674,41 @@ dotnet_diagnostic.SA1642.severity = warning
 # SA1643: Destructor summary documentation should begin with standard text
 dotnet_diagnostic.SA1643.severity = warning
 
+# SA1644: Documentation Headers Must Not Contain Blank Lines
+dotnet_diagnostic.SA1644.severity = warning
+
+# SA1645: Included Documentation File Does Not Exist
+dotnet_diagnostic.SA1645.severity = warning
+
+# SA1646: Included Documentation XPath Does Not Exist
+dotnet_diagnostic.SA1646.severity = warning
+
+# SA1647: Include Node Does Not Contain Valid File And Path
+dotnet_diagnostic.SA1647.severity = warning
+
+# SA1648: Inherit Doc Must Be Used With Inheriting Class
+dotnet_diagnostic.SA1648.severity = warning
+
 # SA1649: File name should match first type name
 dotnet_diagnostic.SA1649.severity = warning
+
+# SA1650: Element Documentation Must Be Spelled Correctly
+dotnet_diagnostic.SA1650.severity = warning
+
+# SA1651: Do Not Use Placeholder Elements
+dotnet_diagnostic.SA1651.severity = warning
+
+# SA1652: Enable Xml Documentation Output
+dotnet_diagnostic.SA1652.severity = warning
+
+# SX1101: Do Not Prefix Local Members With This
+dotnet_diagnostic.SX1101.severity = warning
+
+# SX1309: Field Names Must Begin With Underscore
+dotnet_diagnostic.SX1309.severity = warning
+
+# SX1309S: Static Field Names Must Begin With Underscore
+dotnet_diagnostic.SX1309S.severity = warning
 
 # IDE0001: Simplify name
 dotnet_diagnostic.IDE0001.severity = warning
@@ -1874,33 +2027,6 @@ dotnet_diagnostic.IDE2003.severity = warning
 
 # IDE2004: Blank line not allowed after constructor initializer colon
 dotnet_diagnostic.IDE2004.severity = warning
-
-# StyleCop - Exclusions & Rules that are not enabled by default
-dotnet_diagnostic.SA0001.severity = none # SA0001XmlCommentAnalysisDisabled
-dotnet_diagnostic.SA1005.severity = none # SA1005SingleLineCommentsMustBeginWithSingleSpace
-dotnet_diagnostic.SA1010.severity = none # SA1010OpeningSquareBracketsMustBeSpacedCorrectly
-dotnet_diagnostic.SA1101.severity = none # SA1101PrefixLocalCallsWithThis
-dotnet_diagnostic.SA1126.severity = warning
-dotnet_diagnostic.SA1305.severity = warning
-dotnet_diagnostic.SA1308.severity = none # SA1308VariableNamesMustNotBePrefixed
-dotnet_diagnostic.SA1309.severity = none # SA1309FieldNamesMustNotBeginWithUnderscore
-dotnet_diagnostic.SA1311.severity = none # SA1311StaticReadonlyFieldsMustBeginWithUpperCaseLetter
-dotnet_diagnostic.SA1407.severity = none # SA1407ArithmeticExpressionsMustDeclarePrecedence
-dotnet_diagnostic.SA1412.severity = none
-dotnet_diagnostic.SA1600.severity = none # SA1600ElementsMustBeDocumented
-dotnet_diagnostic.SA1601.severity = none # SA1601PartialElementsMustBeDocumented
-dotnet_diagnostic.SA1602.severity = none # SA1602EnumerationItemsMustBeDocumented
-dotnet_diagnostic.SA1603.severity = warning
-dotnet_diagnostic.SA1609.severity = warning
-dotnet_diagnostic.SA1611.severity = none # SA1611ElementParametersMustBeDocumented
-dotnet_diagnostic.SA1614.severity = none # SA1614ElementParameterDocumentationMustHaveText
-dotnet_diagnostic.SA1615.severity = none # SA1615ElementReturnValueMustBeDocumented
-dotnet_diagnostic.SA1616.severity = none # SA1616ElementReturnValueDocumentationMustHaveText
-dotnet_diagnostic.SA1633.severity = none # SA1633FileMustHaveHeader
-dotnet_diagnostic.SA1639.severity = warning
-dotnet_diagnostic.SX1101.severity = none
-dotnet_diagnostic.SX1309.severity = none
-dotnet_diagnostic.SX1309S.severity = none
 
 # Roslynator - Exclusions & Rules that are not enabled by default
 dotnet_diagnostic.RCS0001.severity = warning

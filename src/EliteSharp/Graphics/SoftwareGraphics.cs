@@ -288,6 +288,27 @@ namespace EliteSharp.Graphics
         {
         }
 
+        private static int[] Interpolate(float i0, float d0, float i1, float d1)
+        {
+            if ((int)MathF.Floor(i0) == (int)MathF.Floor(i1))
+            {
+                return [(int)MathF.Floor(d0)];
+            }
+
+            List<int> values = [];
+
+            float a = (d1 - d0) / (i1 - i0);
+            float d = d0;
+            for (int i = (int)MathF.Floor(i0); i <= (int)MathF.Floor(i1); i++)
+            {
+                values.Add((int)MathF.Floor(d));
+
+                d += a;
+            }
+
+            return [.. values];
+        }
+
         private static (Vector2 A, Vector2 B, Vector2 C) SortPointsByY(Vector2 a, Vector2 b, Vector2 c)
         {
             Vector2[] sorted = [a, b, c];
@@ -477,27 +498,6 @@ namespace EliteSharp.Graphics
             FastBitmap bitmap = temp.Resize(totalWidth, BitmapFont.CharSize);
             _textCache.Add(key, bitmap);
             return bitmap;
-        }
-
-        private int[] Interpolate(float i0, float d0, float i1, float d1)
-        {
-            if ((int)MathF.Floor(i0) == (int)MathF.Floor(i1))
-            {
-                return [(int)MathF.Floor(d0)];
-            }
-
-            List<int> values = [];
-
-            float a = (d1 - d0) / (i1 - i0);
-            float d = d0;
-            for (int i = (int)MathF.Floor(i0); i <= (int)MathF.Floor(i1); i++)
-            {
-                values.Add((int)MathF.Floor(d));
-
-                d += a;
-            }
-
-            return [.. values];
         }
     }
 }

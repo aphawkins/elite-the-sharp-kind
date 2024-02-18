@@ -42,19 +42,19 @@ namespace EliteSharp.Ships
                 new(EliteColors.LighterRed, new(0x20, 0x00, 0x00), [6, 10, 16]),
                 new(EliteColors.LighterRed, new(0x00, -0x20, 0x00), [16, 10, 6]),
 
-                //nose cone
+                // Nose cone
                 new(EliteColors.LightRed, new(-0x40, 0x00, 0x10), [0, 3, 4]),
                 new(EliteColors.LighterRed, new(0x00, -0x40, 0x10), [0, 4, 1]),
                 new(EliteColors.LightRed, new(0x40, 0x00, 0x10), [0, 1, 2]),
                 new(EliteColors.LighterRed, new(0x00, 0x40, 0x10), [0, 2, 3]),
 
-                //main body
+                // Main body
                 new(EliteColors.DarkerGrey, new(0x20, 0x00, 0x00), [6, 5, 2, 1]),
                 new(EliteColors.LightGrey, new(0x00, 0x20, 0x00), [5, 8, 3, 2]),
                 new(EliteColors.DarkerGrey, new(-0x20, 0x00, 0x00), [8, 7, 4, 3]),
                 new(EliteColors.LightGrey, new(0x00, -0x20, 0x00), [7, 6, 1, 4]),
 
-                //bottom
+                // Bottom
                 new(EliteColors.DarkGrey, new(0x00, 0x00, -0xB0), [5, 6, 7, 8]),
             ];
             Lines =

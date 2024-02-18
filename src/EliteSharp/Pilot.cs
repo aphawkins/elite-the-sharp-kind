@@ -37,7 +37,7 @@ namespace EliteSharp
                 Location = Vector3.Zero,
                 Acceleration = 0,
 
-                //Type = (ShipType)(-96),
+                ////Type = (ShipType)(-96),
                 Velocity = _ship.Speed,
                 Bravery = 0,
                 RotZ = 0,

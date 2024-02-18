@@ -5,7 +5,5 @@
 namespace EliteSharp
 {
     [AttributeUsage(AttributeTargets.Parameter)]
-    internal sealed class ValidatedNotNullAttribute : Attribute
-    {
-    }
+    internal sealed class ValidatedNotNullAttribute : Attribute;
 }

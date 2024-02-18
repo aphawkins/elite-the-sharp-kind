@@ -44,7 +44,7 @@ namespace EliteSharp.Graphics
                 throw new EliteException($"Bit Depth is incorrect. Found: {fileBitDepth}. Should be: {BitDepth}");
             }
 
-            //int imageLength = width * height * BitDepth / 8;
+            ////int imageLength = width * height * BitDepth / 8;
 
             ////// File Size
             ////byte[] lengthBytes = new byte[4];

@@ -40,8 +40,8 @@ namespace EliteSharp.Ships
                 new(EliteColors.DarkBlue, new(-0x10, 0x2E, 0x04), [12, 13, 11]),
                 new(EliteColors.Blue, new(0x10, 0x2E, 0x04), [11, 14, 12]),
 
-                //new(8,     0x00,  0x00, -0xA0, 3, 15, 16, 19, 0, 0, 0, 0, 0),
-                //new(8,     0x00,  0x00, -0xA0, 3, 19, 18, 17, 0, 0, 0, 0, 0),
+                ////new(8,     0x00,  0x00, -0xA0, 3, 15, 16, 19, 0, 0, 0, 0, 0),
+                ////new(8,     0x00,  0x00, -0xA0, 3, 19, 18, 17, 0, 0, 0, 0, 0),
             ];
             LaserStrength = 26;
             Lines =

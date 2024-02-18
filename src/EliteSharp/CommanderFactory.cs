@@ -16,14 +16,14 @@ namespace EliteSharp
         {
             CommanderName = "JAMESON",
             Mission = 0,
-            ShipLocation = new List<int>() { 20, 173 },
-            GalaxySeed = new List<int> { 0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7 },
+            ShipLocation = [20, 173],
+            GalaxySeed = [0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7],
             Credits = 100,
             Fuel = 7,
             GalaxyNumber = 0,
-            Lasers = new List<string>() { "Pulse", "None", "None", "None" },
+            Lasers = ["Pulse", "None", "None", "None"],
             CargoCapacity = 20,
-            CurrentCargo = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            CurrentCargo = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             HasECM = false,
             HasFuelScoop = false,
             HasEnergyBomb = false,
@@ -33,8 +33,8 @@ namespace EliteSharp
             HasEscapeCapsule = false,
             Missiles = 3,
             LegalStatus = 0,
-            StationStock = new List<int>()
-            {
+            StationStock =
+            [
                 0x10,
                 0x0F,
                 0x11,
@@ -52,7 +52,7 @@ namespace EliteSharp
                 0x09,
                 0x08,
                 0x00,
-            },
+            ],
             MarketRandomiser = 0,
             Score = 0,
             Saved = 0x80,
@@ -66,14 +66,14 @@ namespace EliteSharp
         {
             CommanderName = "MAX",
             Mission = 0,
-            ShipLocation = new List<int>() { 20, 173 },
-            GalaxySeed = new List<int>() { 0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7 },
+            ShipLocation = [20, 173],
+            GalaxySeed = [0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7],
             Credits = 10000,
             Fuel = 7,
             GalaxyNumber = 0,
-            Lasers = new List<string>() { "Military", "Pulse", "Beam", "Mining" },
+            Lasers = ["Military", "Pulse", "Beam", "Mining"],
             CargoCapacity = 35,
-            CurrentCargo = new List<int>() { 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0 },
+            CurrentCargo = [1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0],
             HasECM = true,
             HasFuelScoop = true,
             HasEnergyBomb = true,
@@ -83,8 +83,8 @@ namespace EliteSharp
             HasEscapeCapsule = true,
             Missiles = 4,
             LegalStatus = 0,
-            StationStock = new List<int>()
-            {
+            StationStock =
+            [
                 0x10,
                 0x0F,
                 0x11,
@@ -102,7 +102,7 @@ namespace EliteSharp
                 0x09,
                 0x08,
                 0x00,
-            },
+            ],
             MarketRandomiser = 0,
             Score = 0x1900,
             Saved = 0x80,

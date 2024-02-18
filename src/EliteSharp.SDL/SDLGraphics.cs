@@ -14,25 +14,20 @@ namespace EliteSharp.SDL
 {
     public sealed class SDLGraphics : IGraphics
     {
-        private readonly SDLAssetLoader _assetLoader;
         private readonly Dictionary<FontType, nint> _fonts;
         private readonly Dictionary<ImageType, nint> _images;
         private readonly Dictionary<FastColor, SDL_Color> _sdlColors = [];
-        private readonly SDLWindow _window;
         private readonly SDLRenderer _renderer;
         private bool _isDisposed;
 
-        public SDLGraphics(in SDLWindow window, SDLRenderer renderer, float screenWidth, float screenHeight, SDLAssetLoader assetLoader)
+        public SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight, SDLAssetLoader assetLoader)
         {
-            Guard.ArgumentNull(window);
             Guard.ArgumentNull(renderer);
             Guard.ArgumentNull(assetLoader);
 
-            _window = window;
             _renderer = renderer;
             ScreenWidth = screenWidth;
             ScreenHeight = screenHeight;
-            _assetLoader = assetLoader;
 
             foreach (FastColor color in EliteColors.AllColors())
             {
@@ -365,7 +360,7 @@ namespace EliteSharp.SDL
                 // free unmanaged resources (unmanaged objects) and override finalizer
                 // set large fields to null
 
-                //Fonts
+                // Fonts
                 foreach (KeyValuePair<FontType, nint> font in _fonts)
                 {
                     TTF_CloseFont(font.Value);

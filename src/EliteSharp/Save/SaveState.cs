@@ -48,7 +48,7 @@ namespace EliteSharp.Save
 
         public float Credits { get; set; }
 
-        public IList<int> CurrentCargo { get; set; } = new List<int>();
+        public IList<int> CurrentCargo { get; set; } = [];
 
         public string EnergyUnit { get; set; } = string.Empty;
 
@@ -56,7 +56,7 @@ namespace EliteSharp.Save
 
         public int GalaxyNumber { get; set; }
 
-        public IList<int> GalaxySeed { get; set; } = new List<int>();
+        public IList<int> GalaxySeed { get; set; } = [];
 
         public bool HasDockingComputer { get; set; }
 
@@ -70,7 +70,7 @@ namespace EliteSharp.Save
 
         public bool HasGalacticHyperdrive { get; set; }
 
-        public IList<string> Lasers { get; set; } = new List<string>();
+        public IList<string> Lasers { get; set; } = [];
 
         public int LegalStatus { get; set; }
 
@@ -84,8 +84,8 @@ namespace EliteSharp.Save
 
         public int Score { get; set; }
 
-        public IList<int> ShipLocation { get; set; } = new List<int>();
+        public IList<int> ShipLocation { get; set; } = [];
 
-        public IList<int> StationStock { get; set; } = new List<int>();
+        public IList<int> StationStock { get; set; } = [];
     }
 }

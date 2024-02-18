@@ -41,7 +41,7 @@ namespace EliteSharp.SDL
             else
             {
                 SDLAssetLoader assetLoader = new(new AssetLocator());
-                _graphics = new SDLGraphics(_window, _renderer, _screenWidth, _screenHeight, assetLoader);
+                _graphics = new SDLGraphics(_renderer, _screenWidth, _screenHeight, assetLoader);
                 _sound = new SDLSound(assetLoader);
             }
 

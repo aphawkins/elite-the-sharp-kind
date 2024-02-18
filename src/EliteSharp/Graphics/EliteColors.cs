@@ -60,8 +60,8 @@ namespace EliteSharp.Graphics
 
         public static FastColor Yellow => new(0xFFFFFF00);
 
-        public static IEnumerable<FastColor> AllColors() => new List<FastColor>()
-        {
+        public static IEnumerable<FastColor> AllColors()
+        => [
             Black,
             Blue,
             Cyan,
@@ -89,6 +89,6 @@ namespace EliteSharp.Graphics
             RedOrange,
             White,
             Yellow,
-        };
+        ];
     }
 }

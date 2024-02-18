@@ -284,7 +284,7 @@ namespace EliteSharp.Tests.Graphics
         private static string GraphicsFilename(string filename)
             => Path.Combine("Graphics", filename);
 
-        private Mock<ISoftwareAssetLoader> ArrangeAssets(string filename)
+        private static Mock<ISoftwareAssetLoader> ArrangeAssets(string filename)
         {
             Mock<IAssetLocator> moqAssetLocator = new();
             moqAssetLocator.Setup(x => x.ImageAssets())
