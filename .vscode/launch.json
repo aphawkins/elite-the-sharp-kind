@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/EliteSharp.SDL/bin/Debug/net7.0/EliteSharp.SDL.dll",
+            "program": "${workspaceFolder}/src/EliteSharp.SDL/bin/Debug/net8.0/EliteSharp.SDL.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/EliteSharp.SDL",
             "console": "internalConsole",

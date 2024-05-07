@@ -10,10 +10,10 @@ Performance, or maximum FPS, are a secondary objective, which may come later.
 
 The program has been tested to run on the following platforms and architectures:
 - Windows 10 (x64)  
-- Ubuntu 23.04 (x64)  
+- Ubuntu 24.04 (x64)  
 - Raspberry Pi 4 (ARM64)  
 
-The dotnet runtime 7 will need to be installed until such time a self-contained exe is published.
+The dotnet runtime 8 will need to be installed until such time a self-contained exe is published.
 
 ## Controls  
 
