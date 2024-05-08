@@ -39,7 +39,7 @@ namespace EliteSharp
         private readonly IKeyboard _keyboard;
         private readonly FrameCounter _lockObj = new();
         private readonly long _oneSecondinTicks = TimeSpan.FromSeconds(1).Ticks;
-        private readonly long _timerResolution = Stopwatch.Frequency / TimeSpan.FromSeconds(1).Ticks;
+        private readonly long _timerResolution = TimeSpan.FromSeconds(1).Ticks / Stopwatch.Frequency;
         private readonly Pilot _pilot;
         private readonly SaveFile _save;
         private readonly Scanner _scanner;
@@ -105,12 +105,12 @@ namespace EliteSharp
 
         public void Run()
         {
-            long startTicks = Stopwatch.GetTimestamp() / _timerResolution;
+            long startTicks = Stopwatch.GetTimestamp() * _timerResolution;
             long intervalTicks = (long)(_oneSecondinTicks / _gameState.Config.Fps); // *1000 = ms; *10000 = ticks
 
             do
             {
-                long nowTicks = Stopwatch.GetTimestamp() / _timerResolution;
+                long nowTicks = Stopwatch.GetTimestamp() * _timerResolution;
                 if (((nowTicks - startTicks) % intervalTicks) == 0)
                 {
                     _keyboard.Poll();
@@ -134,7 +134,7 @@ namespace EliteSharp
                 int i;
                 for (i = 0; i < _lockObj.FramesDrawn.Count; i++)
                 {
-                    if (_lockObj.FramesDrawn[i] > (Stopwatch.GetTimestamp() / _timerResolution) - _oneSecondinTicks)
+                    if (_lockObj.FramesDrawn[i] > (Stopwatch.GetTimestamp() * _timerResolution) - _oneSecondinTicks)
                     {
                         break;
                     }
