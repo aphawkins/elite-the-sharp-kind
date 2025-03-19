@@ -6,140 +6,139 @@ using System.Numerics;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
-namespace EliteSharp.Suns
+namespace EliteSharp.Suns;
+
+internal sealed class GradientSun : IObject
 {
-    internal sealed class GradientSun : IObject
+    private readonly IDraw _draw;
+
+    internal GradientSun(IDraw draw) => _draw = draw;
+
+    private GradientSun(GradientSun other) => _draw = other._draw;
+
+    public ShipProperties Flags { get; set; }
+
+    public Vector3 Location { get; set; } = new(0, 0, 123456);
+
+    public Vector3[] Rotmat { get; set; } = new Vector3[3];
+
+    public float RotX { get; set; }
+
+    public float RotZ { get; set; }
+
+    public ShipType Type { get; set; } = ShipType.Sun;
+
+    public IObject Clone()
     {
-        private readonly IDraw _draw;
+        GradientSun sun = new(this);
+        this.CopyTo(sun);
+        return sun;
+    }
 
-        internal GradientSun(IDraw draw) => _draw = draw;
+    public void Draw()
+    {
+        Vector2 centre = new(Location.X, -Location.Y);
 
-        private GradientSun(GradientSun other) => _draw = other._draw;
+        centre *= 256 / Location.Z;
+        centre += _draw.Centre / 2;
+        centre *= _draw.Graphics.Scale;
 
-        public ShipProperties Flags { get; set; }
+        float radius = 6291456 / Location.Length() * _draw.Graphics.Scale;
 
-        public Vector3 Location { get; set; } = new(0, 0, 123456);
-
-        public Vector3[] Rotmat { get; set; } = new Vector3[3];
-
-        public float RotX { get; set; }
-
-        public float RotZ { get; set; }
-
-        public ShipType Type { get; set; } = ShipType.Sun;
-
-        public IObject Clone()
+        if (centre.X + radius < _draw.Left ||
+            centre.X - radius > _draw.Right ||
+            centre.Y + radius < _draw.Top ||
+            centre.Y - radius > _draw.Bottom)
         {
-            GradientSun sun = new(this);
-            this.CopyTo(sun);
-            return sun;
+            return;
         }
 
-        public void Draw()
+        float s = -radius;
+        float x = radius;
+        float y = 0;
+
+        while (y <= x)
         {
-            Vector2 centre = new(Location.X, -Location.Y);
+            // Top of top half
+            RenderSunLine(centre, y, -MathF.Floor(x), radius);
 
-            centre *= 256 / Location.Z;
-            centre += _draw.Centre / 2;
-            centre *= _draw.Graphics.Scale;
+            // Top of top half
+            RenderSunLine(centre, x, -y, radius);
 
-            float radius = 6291456 / Location.Length() * _draw.Graphics.Scale;
+            // Top of bottom half
+            RenderSunLine(centre, x, y, radius);
 
-            if (centre.X + radius < _draw.Left ||
-                centre.X - radius > _draw.Right ||
-                centre.Y + radius < _draw.Top ||
-                centre.Y - radius > _draw.Bottom)
+            // Bottom of bottom half
+            RenderSunLine(centre, y, MathF.Floor(x), radius);
+
+            s += y + y + 1;
+            y++;
+            if (s >= 0)
             {
-                return;
-            }
-
-            float s = -radius;
-            float x = radius;
-            float y = 0;
-
-            while (y <= x)
-            {
-                // Top of top half
-                RenderSunLine(centre, y, -MathF.Floor(x), radius);
-
-                // Top of top half
-                RenderSunLine(centre, x, -y, radius);
-
-                // Top of bottom half
-                RenderSunLine(centre, x, y, radius);
-
-                // Bottom of bottom half
-                RenderSunLine(centre, y, MathF.Floor(x), radius);
-
-                s += y + y + 1;
-                y++;
-                if (s >= 0)
-                {
-                    s -= x + x + 2;
-                    x--;
-                }
+                s -= x + x + 2;
+                x--;
             }
         }
+    }
 
-        private void RenderSunLine(Vector2 centre, float x, float y, float radius)
+    private void RenderSunLine(Vector2 centre, float x, float y, float radius)
+    {
+        Vector2 s = new()
         {
-            Vector2 s = new()
-            {
-                Y = centre.Y + y,
-            };
+            Y = centre.Y + y,
+        };
 
-            if (s.Y < _draw.Top || s.Y > _draw.Bottom)
-            {
-                return;
-            }
+        if (s.Y < _draw.Top || s.Y > _draw.Bottom)
+        {
+            return;
+        }
 
-            s.X = centre.X - x;
-            float ex = centre.X + x;
+        s.X = centre.X - x;
+        float ex = centre.X + x;
 
-            s.X -= radius * RNG.Random(2, 10) / 256f;
-            ex += radius * RNG.Random(2, 10) / 256f;
+        s.X -= radius * RNG.Random(2, 10) / 256f;
+        ex += radius * RNG.Random(2, 10) / 256f;
 
-            if (ex < _draw.Left || s.X > _draw.Right)
-            {
-                return;
-            }
+        if (ex < _draw.Left || s.X > _draw.Right)
+        {
+            return;
+        }
 
-            if (s.X < _draw.Left)
-            {
-                s.X = _draw.Left;
-            }
+        if (s.X < _draw.Left)
+        {
+            s.X = _draw.Left;
+        }
 
-            if (ex > _draw.Right)
-            {
-                ex = _draw.Right;
-            }
+        if (ex > _draw.Right)
+        {
+            ex = _draw.Right;
+        }
 
-            float inner = radius * (200 + RNG.Random(8)) / 256;
-            inner *= inner;
+        float inner = radius * (200 + RNG.Random(8)) / 256;
+        inner *= inner;
 
-            float inner2 = radius * (220 + RNG.Random(8)) / 256;
-            inner2 *= inner2;
+        float inner2 = radius * (220 + RNG.Random(8)) / 256;
+        inner2 *= inner2;
 
-            float outer = radius * (239 + RNG.Random(8)) / 256;
-            outer *= outer;
+        float outer = radius * (239 + RNG.Random(8)) / 256;
+        outer *= outer;
 
-            float dy = y * y;
-            float dx = s.X - centre.X;
+        float dy = y * y;
+        float dx = s.X - centre.X;
 
-            for (; s.X <= ex; s.X++, dx++)
-            {
-                float distance = (dx * dx) + dy;
+        for (; s.X <= ex; s.X++, dx++)
+        {
+            float distance = (dx * dx) + dy;
 
-                FastColor color = distance < inner
-                    ? EliteColors.White
-                    : distance < inner2
-                        ? EliteColors.LightYellow
-                        : distance < outer
-                            ? EliteColors.LightOrange
-                            : ((int)s.X ^ (int)y).IsOdd() ? EliteColors.Orange : EliteColors.DarkOrange;
+            FastColor color = distance < inner
+                ? EliteColors.White
+                : distance < inner2
+                    ? EliteColors.LightYellow
+                    : distance < outer
+                        ? EliteColors.LightOrange
+                        : ((int)s.X ^ (int)y).IsOdd() ? EliteColors.Orange : EliteColors.DarkOrange;
 
-                _draw.Graphics.DrawPixel(s, color);
-            }
+            _draw.Graphics.DrawPixel(s, color);
         }
     }
 }

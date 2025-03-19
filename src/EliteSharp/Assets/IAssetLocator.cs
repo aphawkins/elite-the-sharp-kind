@@ -6,16 +6,15 @@ using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Assets
+namespace EliteSharp.Assets;
+
+public interface IAssetLocator
 {
-    public interface IAssetLocator
-    {
-        IDictionary<ImageType, string> ImageAssets();
+    public IDictionary<ImageType, string> ImageAssets();
 
-        IDictionary<SoundEffect, string> SfxAssets();
+    public IDictionary<SoundEffect, string> SfxAssets();
 
-        IDictionary<MusicType, string> MusicAssets();
+    public IDictionary<MusicType, string> MusicAssets();
 
-        IDictionary<FontType, string> FontAssets();
-    }
+    public IDictionary<FontType, string> FontAssets();
 }

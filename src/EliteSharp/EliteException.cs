@@ -2,22 +2,21 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp
+namespace EliteSharp;
+
+public sealed class EliteException : Exception
 {
-    public sealed class EliteException : Exception
+    public EliteException(string message)
+        : base(message)
     {
-        public EliteException(string message)
-            : base(message)
-        {
-        }
+    }
 
-        public EliteException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
+    public EliteException(string message, Exception innerException)
+        : base(message, innerException)
+    {
+    }
 
-        public EliteException()
-        {
-        }
+    public EliteException()
+    {
     }
 }

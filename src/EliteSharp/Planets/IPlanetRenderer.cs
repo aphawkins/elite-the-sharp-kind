@@ -4,10 +4,9 @@
 
 using System.Numerics;
 
-namespace EliteSharp.Planets
+namespace EliteSharp.Planets;
+
+internal interface IPlanetRenderer
 {
-    internal interface IPlanetRenderer
-    {
-        void Draw(Vector2 centre, float radius, Vector3[] vec);
-    }
+    public void Draw(Vector2 centre, float radius, Vector3[] vec);
 }

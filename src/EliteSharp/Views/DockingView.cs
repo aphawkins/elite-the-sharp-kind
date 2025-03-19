@@ -6,50 +6,49 @@ using EliteSharp.Audio;
 using EliteSharp.Conflict;
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Views
+namespace EliteSharp.Views;
+
+internal sealed class DockingView : IView
 {
-    internal sealed class DockingView : IView
+    private readonly AudioController _audio;
+    private readonly BreakPattern _breakPattern;
+    private readonly Combat _combat;
+    private readonly GameState _gameState;
+    private readonly Space _space;
+    private readonly Universe _universe;
+
+    internal DockingView(GameState gameState, AudioController audio, Space space, Combat combat, Universe universe, IDraw draw)
     {
-        private readonly AudioController _audio;
-        private readonly BreakPattern _breakPattern;
-        private readonly Combat _combat;
-        private readonly GameState _gameState;
-        private readonly Space _space;
-        private readonly Universe _universe;
+        _gameState = gameState;
+        _audio = audio;
+        _space = space;
+        _combat = combat;
+        _universe = universe;
+        _breakPattern = new(draw);
+    }
 
-        internal DockingView(GameState gameState, AudioController audio, Space space, Combat combat, Universe universe, IDraw draw)
+    public void Draw() => _breakPattern.Draw();
+
+    public void HandleInput()
+    {
+    }
+
+    public void Reset()
+    {
+        _combat.Reset();
+        _universe.ClearUniverse();
+        _breakPattern.Reset();
+        _audio.PlayEffect(SoundEffect.Dock);
+    }
+
+    public void UpdateUniverse()
+    {
+        _breakPattern.Update();
+
+        if (_breakPattern.IsComplete)
         {
-            _gameState = gameState;
-            _audio = audio;
-            _space = space;
-            _combat = combat;
-            _universe = universe;
-            _breakPattern = new(draw);
-        }
-
-        public void Draw() => _breakPattern.Draw();
-
-        public void HandleInput()
-        {
-        }
-
-        public void Reset()
-        {
-            _combat.Reset();
-            _universe.ClearUniverse();
-            _breakPattern.Reset();
-            _audio.PlayEffect(SoundEffect.Dock);
-        }
-
-        public void UpdateUniverse()
-        {
-            _breakPattern.Update();
-
-            if (_breakPattern.IsComplete)
-            {
-                _space.DockPlayer();
-                _gameState.SetView(Screen.MissionOne);
-            }
+            _space.DockPlayer();
+            _gameState.SetView(Screen.MissionOne);
         }
     }
 }

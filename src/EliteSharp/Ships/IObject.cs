@@ -4,24 +4,23 @@
 
 using System.Numerics;
 
-namespace EliteSharp.Ships
+namespace EliteSharp.Ships;
+
+internal interface IObject
 {
-    internal interface IObject
-    {
-        ShipProperties Flags { get; set; }
+    public ShipProperties Flags { get; set; }
 
-        Vector3 Location { get; set; }
+    public Vector3 Location { get; set; }
 
-        Vector3[] Rotmat { get; set; }
+    public Vector3[] Rotmat { get; set; }
 
-        float RotX { get; set; }
+    public float RotX { get; set; }
 
-        float RotZ { get; set; }
+    public float RotZ { get; set; }
 
-        ShipType Type { get; set; }
+    public ShipType Type { get; set; }
 
-        IObject Clone();
+    public IObject Clone();
 
-        void Draw();
-    }
+    public void Draw();
 }

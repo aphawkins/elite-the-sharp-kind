@@ -5,113 +5,112 @@
 using System.Numerics;
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Planets
+namespace EliteSharp.Planets;
+
+internal class PlanetRenderer
 {
-    internal class PlanetRenderer
-    {
-        internal const int LandXMax = 128;
-        internal const int LandYMax = 128;
+    internal const int LandXMax = 128;
+    internal const int LandYMax = 128;
 #pragma warning disable SA1401 // Fields should be private
-        internal readonly FastColor[,] _landscape = new FastColor[LandXMax + 1, LandYMax + 1];
+    internal readonly FastColor[,] _landscape = new FastColor[LandXMax + 1, LandYMax + 1];
 #pragma warning restore SA1401 // Fields should be private
-        private readonly IDraw _draw;
+    private readonly IDraw _draw;
 
-        internal PlanetRenderer(IDraw draw) => _draw = draw;
+    internal PlanetRenderer(IDraw draw) => _draw = draw;
 
-        internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector3 location)
+    internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector3 location)
+    {
+        Vector2 position = new(location.X, -location.Y);
+        position *= 256 / location.Z;
+        position += _draw.Centre / 2;
+        position *= _draw.Graphics.Scale;
+
+        float radius = 6291456 / location.Length();
+
+        // Planets are BIG!
+        ////  radius = 6291456 / ship_vec.z;
+        radius *= _draw.Graphics.Scale;
+
+        return (position.X + radius < _draw.Left) ||
+            (position.X - radius > _draw.Right) ||
+            (position.Y + radius < _draw.Top) ||
+            (position.Y - radius > _draw.Bottom)
+            ? null
+            : (position, radius);
+    }
+
+    /// <summary>
+    /// Draw a solid planet. Based on Doros circle drawing alogorithm.
+    /// </summary>
+    internal void Draw(Vector2 centre, float radius, Vector3[] vec)
+    {
+        float vx = vec[1].X * 65536;
+        float vy = vec[1].Y * 65536;
+        float x = MathF.Floor(radius);
+        float s = -x;
+        float y = 0;
+
+        while (y <= x)
         {
-            Vector2 position = new(location.X, -location.Y);
-            position *= 256 / location.Z;
-            position += _draw.Centre / 2;
-            position *= _draw.Graphics.Scale;
+            // Top of top half
+            RenderPlanetLine(centre, y, -x, radius, vx, vy);
 
-            float radius = 6291456 / location.Length();
+            // Bottom of top half
+            RenderPlanetLine(centre, x, -y, radius, vx, vy);
 
-            // Planets are BIG!
-            ////  radius = 6291456 / ship_vec.z;
-            radius *= _draw.Graphics.Scale;
+            // Top of bottom half
+            RenderPlanetLine(centre, x, y, radius, vx, vy);
 
-            return (position.X + radius < _draw.Left) ||
-                (position.X - radius > _draw.Right) ||
-                (position.Y + radius < _draw.Top) ||
-                (position.Y - radius > _draw.Bottom)
-                ? null
-                : (position, radius);
-        }
+            // Bottom of bottom half
+            RenderPlanetLine(centre, y, x, radius, vx, vy);
 
-        /// <summary>
-        /// Draw a solid planet. Based on Doros circle drawing alogorithm.
-        /// </summary>
-        internal void Draw(Vector2 centre, float radius, Vector3[] vec)
-        {
-            float vx = vec[1].X * 65536;
-            float vy = vec[1].Y * 65536;
-            float x = MathF.Floor(radius);
-            float s = -x;
-            float y = 0;
-
-            while (y <= x)
+            s += y + y + 1;
+            y++;
+            if (s >= 0)
             {
-                // Top of top half
-                RenderPlanetLine(centre, y, -x, radius, vx, vy);
-
-                // Bottom of top half
-                RenderPlanetLine(centre, x, -y, radius, vx, vy);
-
-                // Top of bottom half
-                RenderPlanetLine(centre, x, y, radius, vx, vy);
-
-                // Bottom of bottom half
-                RenderPlanetLine(centre, y, x, radius, vx, vy);
-
-                s += y + y + 1;
-                y++;
-                if (s >= 0)
-                {
-                    s -= x + x + 2;
-                    x--;
-                }
+                s -= x + x + 2;
+                x--;
             }
         }
+    }
 
-        /// <summary>
-        /// Draw a line of the planet with appropriate rotation.
-        /// </summary>
-        private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
+    /// <summary>
+    /// Draw a line of the planet with appropriate rotation.
+    /// </summary>
+    private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
+    {
+        Vector2 s = new()
         {
-            Vector2 s = new()
-            {
-                Y = y + centre.Y,
-            };
+            Y = y + centre.Y,
+        };
 
-            if (s.Y < _draw.Top || s.Y > _draw.Bottom)
+        if (s.Y < _draw.Top || s.Y > _draw.Bottom)
+        {
+            return;
+        }
+
+        s.X = centre.X - x;
+        float ex = centre.X + x;
+
+        float rx = (-x * vx) - (y * vy);
+        float ry = (-x * vy) + (y * vx);
+        rx += radius * 65536;
+        ry += radius * 65536;
+
+        // radius * 2 * LAND_X_MAX >> 16
+        float div = radius * 1024;
+
+        for (; s.X <= ex; s.X++)
+        {
+            if (s.X >= _draw.Left && s.X <= _draw.Right)
             {
-                return;
+                int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
+                int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);
+                _draw.Graphics.DrawPixel(s, _landscape[lx, ly]);
             }
 
-            s.X = centre.X - x;
-            float ex = centre.X + x;
-
-            float rx = (-x * vx) - (y * vy);
-            float ry = (-x * vy) + (y * vx);
-            rx += radius * 65536;
-            ry += radius * 65536;
-
-            // radius * 2 * LAND_X_MAX >> 16
-            float div = radius * 1024;
-
-            for (; s.X <= ex; s.X++)
-            {
-                if (s.X >= _draw.Left && s.X <= _draw.Right)
-                {
-                    int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
-                    int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);
-                    _draw.Graphics.DrawPixel(s, _landscape[lx, ly]);
-                }
-
-                rx += vx;
-                ry += vy;
-            }
+            rx += vx;
+            ry += vy;
         }
     }
 }

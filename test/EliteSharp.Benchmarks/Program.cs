@@ -6,15 +6,14 @@ using BenchmarkDotNet.Running;
 
 [assembly: CLSCompliant(false)]
 
-namespace EliteSharp.Benchmarks
+namespace EliteSharp.Benchmarks;
+
+internal static class Program
 {
-    public static class Program
+    public static void Main()
     {
-        public static void Main()
-        {
-            BenchmarkRunner.Run<PlanetBenchmarks>();
-            BenchmarkRunner.Run<SunBenchmarks>();
-            BenchmarkRunner.Run<SoftwareGraphicsBenchmarks>();
-        }
+        BenchmarkRunner.Run<PlanetBenchmarks>();
+        BenchmarkRunner.Run<SunBenchmarks>();
+        BenchmarkRunner.Run<SoftwareGraphicsBenchmarks>();
     }
 }

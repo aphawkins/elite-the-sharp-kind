@@ -2,11 +2,10 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp.Audio
+namespace EliteSharp.Audio;
+
+public enum MusicType
 {
-    public enum MusicType
-    {
-        EliteTheme = 0,
-        BlueDanube = 1,
-    }
+    EliteTheme = 0,
+    BlueDanube = 1,
 }

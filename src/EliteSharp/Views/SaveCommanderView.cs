@@ -7,87 +7,86 @@ using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Save;
 
-namespace EliteSharp.Views
+namespace EliteSharp.Views;
+
+internal sealed class SaveCommanderView : IView
 {
-    internal sealed class SaveCommanderView : IView
+    private readonly IDraw _draw;
+    private readonly GameState _gameState;
+    private readonly IKeyboard _keyboard;
+    private readonly SaveFile _save;
+    private bool? _isSuccess;
+    private string _name = string.Empty;
+
+    internal SaveCommanderView(GameState gameState, IDraw draw, IKeyboard keyboard, SaveFile save)
     {
-        private readonly IDraw _draw;
-        private readonly GameState _gameState;
-        private readonly IKeyboard _keyboard;
-        private readonly SaveFile _save;
-        private bool? _isSuccess;
-        private string _name = string.Empty;
+        _gameState = gameState;
+        _draw = draw;
+        _keyboard = keyboard;
+        _save = save;
+    }
 
-        internal SaveCommanderView(GameState gameState, IDraw draw, IKeyboard keyboard, SaveFile save)
+    public void Draw()
+    {
+        _draw.DrawViewHeader("SAVE COMMANDER");
+
+        _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontType.Small, EliteColors.White);
+        _draw.Graphics.DrawRectangle(new(100 + _draw.Offset, 100), 312, 50, EliteColors.White);
+        _draw.Graphics.DrawTextCentre(112, _name, FontType.Large, EliteColors.White);
+
+        if (_isSuccess.HasValue)
         {
-            _gameState = gameState;
-            _draw = draw;
-            _keyboard = keyboard;
-            _save = save;
+            if (_isSuccess.Value)
+            {
+                _draw.Graphics.DrawTextCentre(175, "Commander Saved.", FontType.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontType.Small, EliteColors.White);
+            }
+            else
+            {
+                _draw.Graphics.DrawTextCentre(175, "Error Saving Commander!", FontType.Large, EliteColors.Gold);
+                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontType.Small, EliteColors.White);
+            }
+        }
+    }
+
+    public void HandleInput()
+    {
+        if (_keyboard.IsKeyPressed(CommandKey.Backspace) &&
+            !string.IsNullOrEmpty(_name))
+        {
+            _name = _name[..^1];
         }
 
-        public void Draw()
+        char key = (char)_keyboard.GetKeyPressed();
+
+        if (key is >= 'A' and <= 'Z')
         {
-            _draw.DrawViewHeader("SAVE COMMANDER");
+            _name += key;
+        }
 
-            _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", FontType.Small, EliteColors.White);
-            _draw.Graphics.DrawRectangle(new(100 + _draw.Offset, 100), 312, 50, EliteColors.White);
-            _draw.Graphics.DrawTextCentre(112, _name, FontType.Large, EliteColors.White);
+        if (_keyboard.IsKeyPressed(CommandKey.Enter))
+        {
+            _isSuccess = _save.SaveCommander(_name);
 
-            if (_isSuccess.HasValue)
+            if (_isSuccess.Value)
             {
-                if (_isSuccess.Value)
-                {
-                    _draw.Graphics.DrawTextCentre(175, "Commander Saved.", FontType.Large, EliteColors.Gold);
-                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontType.Small, EliteColors.White);
-                }
-                else
-                {
-                    _draw.Graphics.DrawTextCentre(175, "Error Saving Commander!", FontType.Large, EliteColors.Gold);
-                    _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", FontType.Small, EliteColors.White);
-                }
+                _save.GetLastSave();
             }
         }
 
-        public void HandleInput()
+        if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Backspace) &&
-                !string.IsNullOrEmpty(_name))
-            {
-                _name = _name[..^1];
-            }
-
-            char key = (char)_keyboard.GetKeyPressed();
-
-            if (key is >= 'A' and <= 'Z')
-            {
-                _name += key;
-            }
-
-            if (_keyboard.IsKeyPressed(CommandKey.Enter))
-            {
-                _isSuccess = _save.SaveCommander(_name);
-
-                if (_isSuccess.Value)
-                {
-                    _save.GetLastSave();
-                }
-            }
-
-            if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
-            {
-                _gameState.SetView(Screen.Options);
-            }
+            _gameState.SetView(Screen.Options);
         }
+    }
 
-        public void Reset()
-        {
-            _isSuccess = null;
-            _name = _gameState.Cmdr.Name;
-        }
+    public void Reset()
+    {
+        _isSuccess = null;
+        _name = _gameState.Cmdr.Name;
+    }
 
-        public void UpdateUniverse()
-        {
-        }
+    public void UpdateUniverse()
+    {
     }
 }

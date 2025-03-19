@@ -6,54 +6,53 @@ using EliteSharp.Assets.Fonts;
 using EliteSharp.Controls;
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Views
+namespace EliteSharp.Views;
+
+internal sealed class QuitView : IView
 {
-    internal sealed class QuitView : IView
+    private readonly IDraw _draw;
+    private readonly GameState _gameState;
+    private readonly IKeyboard _keyboard;
+
+    internal QuitView(GameState gameState, IDraw draw, IKeyboard keyboard)
     {
-        private readonly IDraw _draw;
-        private readonly GameState _gameState;
-        private readonly IKeyboard _keyboard;
+        _gameState = gameState;
+        _draw = draw;
+        _keyboard = keyboard;
+    }
 
-        internal QuitView(GameState gameState, IDraw draw, IKeyboard keyboard)
+    public void Draw()
+    {
+        _draw.DrawViewHeader("GAME OPTIONS");
+
+        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "QUIT GAME (Y/N)?", FontType.Large, EliteColors.Gold);
+    }
+
+    public void HandleInput()
+    {
+        if (_keyboard.IsKeyPressed(CommandKey.Yes))
         {
-            _gameState = gameState;
-            _draw = draw;
-            _keyboard = keyboard;
+            _gameState.DoExitGame();
         }
 
-        public void Draw()
+        if (_keyboard.IsKeyPressed(CommandKey.No))
         {
-            _draw.DrawViewHeader("GAME OPTIONS");
-
-            _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "QUIT GAME (Y/N)?", FontType.Large, EliteColors.Gold);
-        }
-
-        public void HandleInput()
-        {
-            if (_keyboard.IsKeyPressed(CommandKey.Yes))
+            if (_gameState.IsDocked)
             {
-                _gameState.DoExitGame();
+                _gameState.SetView(Screen.CommanderStatus);
             }
-
-            if (_keyboard.IsKeyPressed(CommandKey.No))
+            else
             {
-                if (_gameState.IsDocked)
-                {
-                    _gameState.SetView(Screen.CommanderStatus);
-                }
-                else
-                {
-                    _gameState.SetView(Screen.FrontView);
-                }
+                _gameState.SetView(Screen.FrontView);
             }
         }
+    }
 
-        public void Reset()
-        {
-        }
+    public void Reset()
+    {
+    }
 
-        public void UpdateUniverse()
-        {
-        }
+    public void UpdateUniverse()
+    {
     }
 }

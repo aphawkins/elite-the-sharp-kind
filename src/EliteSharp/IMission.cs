@@ -2,12 +2,11 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp
-{
-    internal interface IMission
-    {
-        void DrawBrief();
+namespace EliteSharp;
 
-        void Update();
-    }
+internal interface IMission
+{
+    public void DrawBrief();
+
+    public void Update();
 }

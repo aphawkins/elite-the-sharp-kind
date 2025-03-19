@@ -4,18 +4,17 @@
 
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Ships
+namespace EliteSharp.Ships;
+
+internal sealed class CobraMk3Lone : CobraMk3
 {
-    internal sealed class CobraMk3Lone : CobraMk3
+    internal CobraMk3Lone(IDraw draw)
+        : base(draw)
     {
-        internal CobraMk3Lone(IDraw draw)
-            : base(draw)
-        {
-            Type = ShipType.CobraMk3Lone;
-            Flags = ShipProperties.Bold | ShipProperties.Angry;
-            Bounty = 17.5f;
-            LootMax = 1;
-            MissilesMax = 2;
-        }
+        Type = ShipType.CobraMk3Lone;
+        Flags = ShipProperties.Bold | ShipProperties.Angry;
+        Bounty = 17.5f;
+        LootMax = 1;
+        MissilesMax = 2;
     }
 }

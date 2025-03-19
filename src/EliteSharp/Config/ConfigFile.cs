@@ -6,65 +6,64 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace EliteSharp.Config
+namespace EliteSharp.Config;
+
+internal sealed class ConfigFile
 {
-    internal sealed class ConfigFile
+    private const string ConfigFileName = "sharpkind.cfg";
+
+    private readonly JsonSerializerOptions _options = new()
     {
-        private const string ConfigFileName = "sharpkind.cfg";
+        WriteIndented = true,
+        Converters = { new JsonStringEnumConverter() },
+    };
 
-        private readonly JsonSerializerOptions _options = new()
+    /// <summary>
+    /// Read the config file.
+    /// </summary>
+    internal ConfigSettings ReadConfig()
+    {
+        try
         {
-            WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() },
-        };
-
-        /// <summary>
-        /// Read the config file.
-        /// </summary>
-        internal ConfigSettings ReadConfig()
+            using FileStream stream = File.OpenRead(ConfigFileName);
+            ConfigSettings? config = JsonSerializer.Deserialize<ConfigSettings>(stream, _options);
+            if (config != null)
+            {
+                return config;
+            }
+        }
+        catch (Exception ex)
         {
-            try
-            {
-                using FileStream stream = File.OpenRead(ConfigFileName);
-                ConfigSettings? config = JsonSerializer.Deserialize<ConfigSettings>(stream, _options);
-                if (config != null)
-                {
-                    return config;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Failed to read config.\n" + ex);
-                Debug.Fail(ex.Message);
-                throw;
-            }
-
-            return new();
+            Debug.WriteLine("Failed to read config.\n" + ex);
+            Debug.Fail(ex.Message);
+            throw;
         }
 
-        /// <summary>
-        /// Write the config file.
-        /// </summary>
-        /// <param name="config">The config to save.</param>
-        internal void WriteConfig(ConfigSettings config)
+        return new();
+    }
+
+    /// <summary>
+    /// Write the config file.
+    /// </summary>
+    /// <param name="config">The config to save.</param>
+    internal void WriteConfig(ConfigSettings config)
+    {
+        try
         {
-            try
+            if (File.Exists(ConfigFileName))
             {
-                if (File.Exists(ConfigFileName))
-                {
-                    File.Delete(ConfigFileName);
-                }
-
-                using FileStream stream = File.OpenWrite(ConfigFileName);
-
-                JsonSerializer.Serialize(stream, config, _options);
+                File.Delete(ConfigFileName);
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Failed to save config.\n" + ex);
-                Debug.Fail(ex.Message);
-                throw;
-            }
+
+            using FileStream stream = File.OpenWrite(ConfigFileName);
+
+            JsonSerializer.Serialize(stream, config, _options);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("Failed to save config.\n" + ex);
+            Debug.Fail(ex.Message);
+            throw;
         }
     }
 }

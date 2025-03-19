@@ -13,63 +13,62 @@ using EliteSharp.Graphics;
 using NAudio.Vorbis;
 using NAudio.Wave;
 
-namespace EliteSharp.WinForms
+namespace EliteSharp.WinForms;
+
+[SupportedOSPlatform("windows")]
+public class GDIAssetLoader(IAssetLocator assets)
 {
-    [SupportedOSPlatform("windows")]
-    public class GDIAssetLoader(IAssetLocator assets)
+    private readonly IAssetLocator _assets = assets;
+
+    public Dictionary<ImageType, Bitmap> LoadImages()
+        => _assets.ImageAssets().ToDictionary(x => x.Key, x => new Bitmap(x.Value));
+
+    public Dictionary<FontType, Font> LoadFonts()
     {
-        private readonly IAssetLocator _assets = assets;
+        using PrivateFontCollection fonts = new();
 
-        public Dictionary<ImageType, Bitmap> LoadImages()
-            => _assets.ImageAssets().ToDictionary(x => x.Key, x => new Bitmap(x.Value));
-
-        public Dictionary<FontType, Font> LoadFonts()
+        foreach (KeyValuePair<FontType, string> fontPath in _assets.FontAssets())
         {
-            using PrivateFontCollection fonts = new();
-
-            foreach (KeyValuePair<FontType, string> fontPath in _assets.FontAssets())
-            {
-                fonts.AddFontFile(fontPath.Value);
-            }
-
-            FontFamily[] fontFamilies = fonts.Families;
-            string fontName = fontFamilies[0].Name;
-
-            return new()
-            {
-                { FontType.Small, new(fontName, 12, FontStyle.Regular, GraphicsUnit.Pixel) },
-                { FontType.Large, new(fontName, 18, FontStyle.Regular, GraphicsUnit.Pixel) },
-            };
+            fonts.AddFontFile(fontPath.Value);
         }
 
-        public Dictionary<MusicType, SoundPlayer> LoadMusic()
-            => _assets.MusicAssets().ToDictionary(
-                x => x.Key,
-                x =>
-                {
-                    Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Music is missing");
-                    return SoundPlayerFromVorbis(x.Value);
-                });
+        FontFamily[] fontFamilies = fonts.Families;
+        string fontName = fontFamilies[0].Name;
 
-        public Dictionary<SoundEffect, SoundPlayer> LoadSfx()
-            => _assets.SfxAssets().ToDictionary(
-                x => x.Key,
-                x =>
-                {
-                    Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Sound effect is missing");
-                    return SoundPlayerFromVorbis(x.Value);
-                });
-
-        private static SoundPlayer SoundPlayerFromVorbis(string fileName)
+        return new()
         {
-            using MemoryStream memStream = new();
-            using VorbisWaveReader vorbisStream = new(fileName);
-            WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
-            memStream.Position = 0;
-            SoundPlayer player = new(memStream);
-            player.Load();
-            Debug.Assert(player.IsLoadCompleted, "Sound failed to load");
-            return player;
-        }
+            { FontType.Small, new(fontName, 12, FontStyle.Regular, GraphicsUnit.Pixel) },
+            { FontType.Large, new(fontName, 18, FontStyle.Regular, GraphicsUnit.Pixel) },
+        };
+    }
+
+    public Dictionary<MusicType, SoundPlayer> LoadMusic()
+        => _assets.MusicAssets().ToDictionary(
+            x => x.Key,
+            x =>
+            {
+                Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Music is missing");
+                return SoundPlayerFromVorbis(x.Value);
+            });
+
+    public Dictionary<SoundEffect, SoundPlayer> LoadSfx()
+        => _assets.SfxAssets().ToDictionary(
+            x => x.Key,
+            x =>
+            {
+                Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Sound effect is missing");
+                return SoundPlayerFromVorbis(x.Value);
+            });
+
+    private static SoundPlayer SoundPlayerFromVorbis(string fileName)
+    {
+        using MemoryStream memStream = new();
+        using VorbisWaveReader vorbisStream = new(fileName);
+        WaveFileWriter.WriteWavFileToStream(memStream, vorbisStream);
+        memStream.Position = 0;
+        SoundPlayer player = new(memStream);
+        player.Load();
+        Debug.Assert(player.IsLoadCompleted, "Sound failed to load");
+        return player;
     }
 }

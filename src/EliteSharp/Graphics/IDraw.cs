@@ -5,48 +5,47 @@
 using System.Numerics;
 using EliteSharp.Ships;
 
-namespace EliteSharp.Graphics
+namespace EliteSharp.Graphics;
+
+internal interface IDraw
 {
-    internal interface IDraw
-    {
-        float Bottom { get; }
+    public float Bottom { get; }
 
-        Vector2 Centre { get; }
+    public Vector2 Centre { get; }
 
-        IGraphics Graphics { get; }
+    public IGraphics Graphics { get; }
 
-        float Left { get; }
+    public float Left { get; }
 
-        float Offset { get; }
+    public float Offset { get; }
 
-        float Right { get; }
+    public float Right { get; }
 
-        float ScannerLeft { get; }
+    public float ScannerLeft { get; }
 
-        float ScannerRight { get; }
+    public float ScannerRight { get; }
 
-        float ScannerTop { get; }
+    public float ScannerTop { get; }
 
-        float Top { get; }
+    public float Top { get; }
 
-        void DrawBorder();
+    public void DrawBorder();
 
-        void DrawHyperspaceCountdown(int countdown);
+    public void DrawHyperspaceCountdown(int countdown);
 
-        void DrawObject(IObject obj);
+    public void DrawObject(IObject obj);
 
-        void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float averageZ);
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float averageZ);
 
-        void DrawTextPretty(Vector2 position, float width, string text);
+    public void DrawTextPretty(Vector2 position, float width, string text);
 
-        void DrawViewHeader(string title);
+    public void DrawViewHeader(string title);
 
-        void RenderEnd();
+    public void RenderEnd();
 
-        void RenderStart();
+    public void RenderStart();
 
-        void SetFullScreenClipRegion();
+    public void SetFullScreenClipRegion();
 
-        void SetViewClipRegion();
-    }
+    public void SetViewClipRegion();
 }

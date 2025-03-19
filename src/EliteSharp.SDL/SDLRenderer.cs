@@ -4,54 +4,53 @@
 
 using static SDL2.SDL;
 
-namespace EliteSharp.SDL
+namespace EliteSharp.SDL;
+
+internal sealed class SDLRenderer : IDisposable
 {
-    public sealed class SDLRenderer : IDisposable
+    private readonly nint _renderer;
+    private bool _isDisposed;
+
+    internal SDLRenderer(SDLWindow window)
+        => _renderer = SDLGuard.Execute(() => SDL_CreateRenderer(window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED));
+
+    // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    ~SDLRenderer()
     {
-        private readonly nint _renderer;
-        private bool _isDisposed;
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: false);
+    }
 
-        internal SDLRenderer(SDLWindow window)
-            => _renderer = SDLGuard.Execute(() => SDL_CreateRenderer(window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED));
+    public static implicit operator nint(SDLRenderer renderer)
+    {
+        Guard.ArgumentNull(renderer);
 
-        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~SDLRenderer()
+        return renderer._renderer;
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    public nint ToIntPtr() => _renderer;
+
+    private void Dispose(bool disposing)
+    {
+        if (!_isDisposed)
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
+            _isDisposed = true;
 
-        public static implicit operator nint(SDLRenderer renderer)
-        {
-            Guard.ArgumentNull(renderer);
-
-            return renderer._renderer;
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        public nint ToIntPtr() => _renderer;
-
-        private void Dispose(bool disposing)
-        {
-            if (!_isDisposed)
+            if (disposing)
             {
-                _isDisposed = true;
-
-                if (disposing)
-                {
-                    // dispose managed state (managed objects)
-                }
-
-                // free unmanaged resources (unmanaged objects) and override finalizer
-                // set large fields to null
-                SDL_DestroyRenderer(_renderer);
+                // dispose managed state (managed objects)
             }
+
+            // free unmanaged resources (unmanaged objects) and override finalizer
+            // set large fields to null
+            SDL_DestroyRenderer(_renderer);
         }
     }
 }

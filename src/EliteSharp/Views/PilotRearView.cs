@@ -6,36 +6,35 @@ using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
-namespace EliteSharp.Views
+namespace EliteSharp.Views;
+
+internal sealed class PilotRearView : IView
 {
-    internal sealed class PilotRearView : IView
+    private readonly PilotView _pilotView;
+    private readonly PlayerShip _ship;
+    private readonly Stars _stars;
+
+    internal PilotRearView(GameState gameState, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship, Space space, IDraw draw)
     {
-        private readonly PilotView _pilotView;
-        private readonly PlayerShip _ship;
-        private readonly Stars _stars;
+        _pilotView = new(gameState, keyboard, pilot, ship, stars, space, draw);
+        _stars = stars;
+        _ship = ship;
+    }
 
-        internal PilotRearView(GameState gameState, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship, Space space, IDraw draw)
-        {
-            _pilotView = new(gameState, keyboard, pilot, ship, stars, space, draw);
-            _stars = stars;
-            _ship = ship;
-        }
+    public void Draw()
+    {
+        _pilotView.Draw();
+        _pilotView.DrawViewName("Rear View");
+        _pilotView.DrawLaserSights(_ship.LaserFront.Type);
+    }
 
-        public void Draw()
-        {
-            _pilotView.Draw();
-            _pilotView.DrawViewName("Rear View");
-            _pilotView.DrawLaserSights(_ship.LaserFront.Type);
-        }
+    public void HandleInput() => _pilotView.HandleInput();
 
-        public void HandleInput() => _pilotView.HandleInput();
+    public void Reset() => _pilotView.Reset();
 
-        public void Reset() => _pilotView.Reset();
-
-        public void UpdateUniverse()
-        {
-            _pilotView.UpdateUniverse();
-            _stars.RearStarfield();
-        }
+    public void UpdateUniverse()
+    {
+        _pilotView.UpdateUniverse();
+        _stars.RearStarfield();
     }
 }

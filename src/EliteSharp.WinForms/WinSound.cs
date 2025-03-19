@@ -6,68 +6,67 @@ using System.Media;
 using System.Runtime.Versioning;
 using EliteSharp.Audio;
 
-namespace EliteSharp.WinForms
+namespace EliteSharp.WinForms;
+
+[SupportedOSPlatform("windows")]
+public sealed class WinSound(GDIAssetLoader assetLoader) : ISound
 {
-    [SupportedOSPlatform("windows")]
-    internal sealed class WinSound(GDIAssetLoader assetLoader) : ISound
+    private readonly Dictionary<SoundEffect, SoundPlayer> _sfx = assetLoader.LoadSfx();
+    private readonly Dictionary<MusicType, SoundPlayer> _music = assetLoader.LoadMusic();
+    private bool _disposedValue;
+
+    public void Play(SoundEffect sfxType) => _sfx[sfxType].Play();
+
+    public void Play(MusicType musicType, bool repeat)
     {
-        private readonly Dictionary<SoundEffect, SoundPlayer> _sfx = assetLoader.LoadSfx();
-        private readonly Dictionary<MusicType, SoundPlayer> _music = assetLoader.LoadMusic();
-        private bool _disposedValue;
+        StopMusic();
 
-        public void Play(SoundEffect sfxType) => _sfx[sfxType].Play();
-
-        public void Play(MusicType musicType, bool repeat)
+        if (repeat)
         {
-            StopMusic();
-
-            if (repeat)
-            {
-                _music[musicType].PlayLooping();
-            }
-            else
-            {
-                _music[musicType].Play();
-            }
+            _music[musicType].PlayLooping();
         }
-
-        public void StopMusic()
+        else
         {
-            foreach (KeyValuePair<MusicType, SoundPlayer> music in _music)
-            {
-                music.Value.Stop();
-            }
+            _music[musicType].Play();
         }
+    }
 
-        public void Dispose()
+    public void StopMusic()
+    {
+        foreach (KeyValuePair<MusicType, SoundPlayer> music in _music)
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
+            music.Value.Stop();
         }
+    }
 
-        private void Dispose(bool disposing)
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
         {
-            if (!_disposedValue)
+            if (disposing)
             {
-                if (disposing)
+                // dispose managed state (managed objects)
+                foreach (KeyValuePair<MusicType, SoundPlayer> v in _music)
                 {
-                    // dispose managed state (managed objects)
-                    foreach (KeyValuePair<MusicType, SoundPlayer> v in _music)
-                    {
-                        v.Value.Dispose();
-                    }
-
-                    foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _sfx)
-                    {
-                        v.Value.Dispose();
-                    }
+                    v.Value.Dispose();
                 }
 
-                // free unmanaged resources (unmanaged objects) and override finalizer
-                // set large fields to null
-                _disposedValue = true;
+                foreach (KeyValuePair<SoundEffect, SoundPlayer> v in _sfx)
+                {
+                    v.Value.Dispose();
+                }
             }
+
+            // free unmanaged resources (unmanaged objects) and override finalizer
+            // set large fields to null
+            _disposedValue = true;
         }
     }
 }

@@ -8,55 +8,54 @@ using EliteSharp.Controls;
 using EliteSharp.Graphics;
 using EliteSharp.Suns;
 
-namespace EliteSharp.Benchmarks
+namespace EliteSharp.Benchmarks;
+
+public class SunBenchmarks : IDisposable
 {
-    public class SunBenchmarks : IDisposable
+    private const int ScreenWidth = 512;
+    private const int ScreenHeight = 512;
+    private readonly SoftwareGraphics _graphics;
+    private readonly SolidSun _solidSun;
+    private readonly GradientSun _gradientSun;
+    private bool _disposedValue;
+
+    public SunBenchmarks()
     {
-        private const int ScreenWidth = 512;
-        private const int ScreenHeight = 512;
-        private readonly SoftwareGraphics _graphics;
-        private readonly SolidSun _solidSun;
-        private readonly GradientSun _gradientSun;
-        private bool _disposedValue;
+        SoftwareKeyboard keyboard = new();
+        Dictionary<Views.Screen, Views.IView> views = [];
+        GameState gameState = new(keyboard, views);
+        _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, new SoftwareAssetLoader(new SoftwareAssetLocator()), (_) => { });
+        Draw draw = new(gameState, _graphics);
+        _gradientSun = new(draw);
+        _solidSun = new(draw, EliteColors.White);
+    }
 
-        public SunBenchmarks()
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    [Benchmark]
+    public void SolidSun() => _solidSun.Draw();
+
+    [Benchmark]
+    public void GradientSun() => _gradientSun.Draw();
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
         {
-            SoftwareKeyboard keyboard = new();
-            Dictionary<Views.Screen, Views.IView> views = [];
-            GameState gameState = new(keyboard, views);
-            _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, new SoftwareAssetLoader(new SoftwareAssetLocator()), (_) => { });
-            Draw draw = new(gameState, _graphics);
-            _gradientSun = new(draw);
-            _solidSun = new(draw, EliteColors.White);
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        [Benchmark]
-        public void SolidSun() => _solidSun.Draw();
-
-        [Benchmark]
-        public void GradientSun() => _gradientSun.Draw();
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    // dispose managed state (managed objects)
-                    _graphics.Dispose();
-                }
-
-                // free unmanaged resources (unmanaged objects) and override finalizer
-                // set large fields to null
-                _disposedValue = true;
+                // dispose managed state (managed objects)
+                _graphics.Dispose();
             }
+
+            // free unmanaged resources (unmanaged objects) and override finalizer
+            // set large fields to null
+            _disposedValue = true;
         }
     }
 }

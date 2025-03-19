@@ -8,38 +8,37 @@ using EliteSharp.Planets;
 using EliteSharp.Ships;
 using Moq;
 
-namespace EliteSharp.Tests.Planets
+namespace EliteSharp.Tests.Planets;
+
+public sealed class StripedPlanetTests
 {
-    public class StripedPlanetTests
+    private readonly Mock<IDraw> _drawMoq;
+
+    public StripedPlanetTests() => _drawMoq = MockSetup.MockDraw();
+
+    [Fact]
+    public void DrawStripedPlanet()
     {
-        private readonly Mock<IDraw> _drawMoq;
+        // Arrange
+        FractalPlanet planet = new(_drawMoq.Object, 12345);
 
-        public StripedPlanetTests() => _drawMoq = MockSetup.MockDraw();
+        // Act
+        planet.Draw();
 
-        [Fact]
-        public void DrawStripedPlanet()
-        {
-            // Arrange
-            FractalPlanet planet = new(_drawMoq.Object, 12345);
+        // Assert
+        _drawMoq.Verify(x => x.Graphics.DrawPixel(It.IsAny<Vector2>(), It.IsAny<FastColor>()));
+    }
 
-            // Act
-            planet.Draw();
+    [Fact]
+    public void CloneStripedPlanet()
+    {
+        // Arrange
+        StripedPlanet planet = new(_drawMoq.Object);
 
-            // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawPixel(It.IsAny<Vector2>(), It.IsAny<FastColor>()));
-        }
+        // Act
+        IObject obj = planet.Clone();
 
-        [Fact]
-        public void CloneStripedPlanet()
-        {
-            // Arrange
-            StripedPlanet planet = new(_drawMoq.Object);
-
-            // Act
-            IObject obj = planet.Clone();
-
-            // Assert
-            Assert.IsType<StripedPlanet>(obj);
-        }
+        // Assert
+        Assert.IsType<StripedPlanet>(obj);
     }
 }

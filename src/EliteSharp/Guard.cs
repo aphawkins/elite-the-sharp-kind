@@ -4,19 +4,18 @@
 
 using System.Runtime.CompilerServices;
 
-namespace EliteSharp
+namespace EliteSharp;
+
+public static class Guard
 {
-    public static class Guard
+    public static void ArgumentNull<T>(
+        [ValidatedNotNull] T argument,
+        [CallerArgumentExpression(nameof(argument))] string? callerArg = null)
+        where T : class
     {
-        public static void ArgumentNull<T>(
-            [ValidatedNotNull] T argument,
-            [CallerArgumentExpression(nameof(argument))] string? callerArg = null)
-            where T : class
+        if (argument == null)
         {
-            if (argument == null)
-            {
-                throw new ArgumentNullException(callerArg);
-            }
+            throw new ArgumentNullException(callerArg);
         }
     }
 }

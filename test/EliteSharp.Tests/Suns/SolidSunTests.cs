@@ -8,42 +8,41 @@ using EliteSharp.Ships;
 using EliteSharp.Suns;
 using Moq;
 
-namespace EliteSharp.Tests.Suns
+namespace EliteSharp.Tests.Suns;
+
+public class SolidSunTests
 {
-    public class SolidSunTests
+    private readonly Mock<IDraw> _drawMoq;
+
+    public SolidSunTests() => _drawMoq = MockSetup.MockDraw();
+
+    [Fact]
+    public void DrawSolidSun()
     {
-        private readonly Mock<IDraw> _drawMoq;
+        // Arrange
+        SolidSun sun = new(_drawMoq.Object, EliteColors.Cyan);
 
-        public SolidSunTests() => _drawMoq = MockSetup.MockDraw();
+        // Act
+        sun.Draw();
 
-        [Fact]
-        public void DrawSolidSun()
-        {
-            // Arrange
-            SolidSun sun = new(_drawMoq.Object, EliteColors.Cyan);
+        // Assert
+        _drawMoq.Verify(x => x.Graphics.DrawLine(
+            It.IsAny<Vector2>(),
+            It.IsAny<Vector2>(),
+            It.Is<FastColor>(x => x == EliteColors.Cyan)));
+    }
 
-            // Act
-            sun.Draw();
+    [Fact]
+    public void CloneSolidSun()
+    {
+        // Arrange
+        SolidSun sun = new(_drawMoq.Object, EliteColors.Cyan);
 
-            // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawLine(
-                It.IsAny<Vector2>(),
-                It.IsAny<Vector2>(),
-                It.Is<FastColor>(x => x == EliteColors.Cyan)));
-        }
+        // Act
+        IObject obj = sun.Clone();
 
-        [Fact]
-        public void CloneSolidSun()
-        {
-            // Arrange
-            SolidSun sun = new(_drawMoq.Object, EliteColors.Cyan);
-
-            // Act
-            IObject obj = sun.Clone();
-
-            // Assert
-            Assert.IsType<SolidSun>(obj);
-            Assert.Equal(sun.Color, ((SolidSun)obj).Color);
-        }
+        // Assert
+        Assert.IsType<SolidSun>(obj);
+        Assert.Equal(sun.Color, ((SolidSun)obj).Color);
     }
 }

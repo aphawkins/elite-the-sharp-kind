@@ -6,30 +6,29 @@ using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Assets
+namespace EliteSharp.Assets;
+
+public class SoftwareAssetLoader(IAssetLocator assets) : ISoftwareAssetLoader
 {
-    public class SoftwareAssetLoader(IAssetLocator assets) : ISoftwareAssetLoader
-    {
-        private readonly IAssetLocator _assets = assets;
+    private readonly IAssetLocator _assets = assets;
 
-        public Dictionary<ImageType, FastBitmap> LoadImages()
-            => _assets.ImageAssets().ToDictionary(
-                x => x.Key,
-                x => BitmapFile.Read(x.Value));
+    public Dictionary<ImageType, FastBitmap> LoadImages()
+        => _assets.ImageAssets().ToDictionary(
+            x => x.Key,
+            x => BitmapFile.Read(x.Value));
 
-        public Dictionary<MusicType, SoundSampleProvider> LoadMusic()
-            => _assets.MusicAssets().ToDictionary(
-                x => x.Key,
-                x => new SoundSampleProvider(x.Value));
+    public Dictionary<MusicType, SoundSampleProvider> LoadMusic()
+        => _assets.MusicAssets().ToDictionary(
+            x => x.Key,
+            x => new SoundSampleProvider(x.Value));
 
-        public Dictionary<SoundEffect, SoundSampleProvider> LoadSfx()
-            => _assets.SfxAssets().ToDictionary(
-                x => x.Key,
-                x => new SoundSampleProvider(x.Value));
+    public Dictionary<SoundEffect, SoundSampleProvider> LoadSfx()
+        => _assets.SfxAssets().ToDictionary(
+            x => x.Key,
+            x => new SoundSampleProvider(x.Value));
 
-        public Dictionary<FontType, BitmapFont> LoadFonts()
-            => _assets.FontAssets().ToDictionary(
-                x => x.Key,
-                x => new BitmapFont(BitmapFile.Read(x.Value)));
-    }
+    public Dictionary<FontType, BitmapFont> LoadFonts()
+        => _assets.FontAssets().ToDictionary(
+            x => x.Key,
+            x => new BitmapFont(BitmapFile.Read(x.Value)));
 }

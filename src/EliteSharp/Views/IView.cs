@@ -2,16 +2,15 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp.Views
+namespace EliteSharp.Views;
+
+internal interface IView
 {
-    internal interface IView
-    {
-        void Draw();
+    public void Draw();
 
-        void HandleInput();
+    public void HandleInput();
 
-        void Reset();
+    public void Reset();
 
-        void UpdateUniverse();
-    }
+    public void UpdateUniverse();
 }

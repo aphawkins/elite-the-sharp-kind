@@ -5,41 +5,40 @@
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Views
+namespace EliteSharp.Views;
+
+internal sealed class HyperspaceView : IView
 {
-    internal sealed class HyperspaceView : IView
+    private readonly AudioController _audio;
+    private readonly BreakPattern _breakPattern;
+    private readonly GameState _gameState;
+
+    internal HyperspaceView(GameState gameState, AudioController audio, IDraw draw)
     {
-        private readonly AudioController _audio;
-        private readonly BreakPattern _breakPattern;
-        private readonly GameState _gameState;
+        _gameState = gameState;
+        _audio = audio;
+        _breakPattern = new(draw);
+    }
 
-        internal HyperspaceView(GameState gameState, AudioController audio, IDraw draw)
+    public void Draw() => _breakPattern.Draw();
+
+    public void HandleInput()
+    {
+    }
+
+    public void Reset()
+    {
+        _breakPattern.Reset();
+        _audio.PlayEffect(SoundEffect.Hyperspace);
+    }
+
+    public void UpdateUniverse()
+    {
+        _breakPattern.Update();
+
+        if (_breakPattern.IsComplete)
         {
-            _gameState = gameState;
-            _audio = audio;
-            _breakPattern = new(draw);
-        }
-
-        public void Draw() => _breakPattern.Draw();
-
-        public void HandleInput()
-        {
-        }
-
-        public void Reset()
-        {
-            _breakPattern.Reset();
-            _audio.PlayEffect(SoundEffect.Hyperspace);
-        }
-
-        public void UpdateUniverse()
-        {
-            _breakPattern.Update();
-
-            if (_breakPattern.IsComplete)
-            {
-                _gameState.SetView(Screen.FrontView);
-            }
+            _gameState.SetView(Screen.FrontView);
         }
     }
 }

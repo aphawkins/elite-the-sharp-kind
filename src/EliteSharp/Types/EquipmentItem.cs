@@ -4,30 +4,29 @@
 
 using EliteSharp.Equipment;
 
-namespace EliteSharp.Types
+namespace EliteSharp.Types;
+
+internal sealed class EquipmentItem
 {
-    internal sealed class EquipmentItem
+    internal EquipmentItem(bool canBuy, bool show, int techLevel, float price, string name, EquipmentType type)
     {
-        internal EquipmentItem(bool canBuy, bool show, int techLevel, float price, string name, EquipmentType type)
-        {
-            CanBuy = canBuy;
-            Show = show;
-            TechLevel = techLevel;
-            Price = price;
-            Name = name;
-            Type = type;
-        }
-
-        internal bool CanBuy { get; set; }
-
-        internal string Name { get; set; }
-
-        internal float Price { get; set; }
-
-        internal bool Show { get; set; }
-
-        internal int TechLevel { get; set; }
-
-        internal EquipmentType Type { get; set; }
+        CanBuy = canBuy;
+        Show = show;
+        TechLevel = techLevel;
+        Price = price;
+        Name = name;
+        Type = type;
     }
+
+    internal bool CanBuy { get; set; }
+
+    internal string Name { get; set; }
+
+    internal float Price { get; set; }
+
+    internal bool Show { get; set; }
+
+    internal int TechLevel { get; set; }
+
+    internal EquipmentType Type { get; set; }
 }

@@ -2,32 +2,31 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp.Controls
+namespace EliteSharp.Controls;
+
+internal class SoftwareKeyboard : IKeyboard
 {
-    internal class SoftwareKeyboard : IKeyboard
+    public bool Close { get; }
+
+    public void ClearKeyPressed()
     {
-        public bool Close { get; }
+    }
 
-        public void ClearKeyPressed()
-        {
-        }
+    public CommandKey GetKeyPressed()
+        => CommandKey.None;
 
-        public CommandKey GetKeyPressed()
-            => CommandKey.None;
+    public bool IsKeyPressed(params CommandKey[] keys)
+        => false;
 
-        public bool IsKeyPressed(params CommandKey[] keys)
-            => false;
+    public void KeyDown(CommandKey keyValue)
+    {
+    }
 
-        public void KeyDown(CommandKey keyValue)
-        {
-        }
+    public void KeyUp(CommandKey keyValue)
+    {
+    }
 
-        public void KeyUp(CommandKey keyValue)
-        {
-        }
-
-        public void Poll()
-        {
-        }
+    public void Poll()
+    {
     }
 }

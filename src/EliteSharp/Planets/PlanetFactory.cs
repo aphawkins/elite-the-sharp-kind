@@ -5,17 +5,16 @@
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
-namespace EliteSharp.Planets
+namespace EliteSharp.Planets;
+
+internal static class PlanetFactory
 {
-    internal static class PlanetFactory
+    internal static IObject Create(PlanetType type, IDraw draw, int seed) => type switch
     {
-        internal static IObject Create(PlanetType type, IDraw draw, int seed) => type switch
-        {
-            PlanetType.Fractal => new FractalPlanet(draw, seed),
-            PlanetType.Wireframe => new WireframePlanet(draw),
-            PlanetType.Solid => new SolidPlanet(draw, EliteColors.Green),
-            PlanetType.Striped => new StripedPlanet(draw),
-            _ => throw new EliteException(),
-        };
-    }
+        PlanetType.Fractal => new FractalPlanet(draw, seed),
+        PlanetType.Wireframe => new WireframePlanet(draw),
+        PlanetType.Solid => new SolidPlanet(draw, EliteColors.Green),
+        PlanetType.Striped => new StripedPlanet(draw),
+        _ => throw new EliteException(),
+    };
 }

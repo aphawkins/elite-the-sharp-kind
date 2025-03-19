@@ -4,18 +4,17 @@
 
 using System.Numerics;
 
-namespace EliteSharp.Ships
+namespace EliteSharp.Ships;
+
+internal sealed class ShipFaceNormal
 {
-    internal sealed class ShipFaceNormal
+    internal ShipFaceNormal(int distance, Vector3 direction)
     {
-        internal ShipFaceNormal(int distance, Vector3 direction)
-        {
-            Distance = distance;
-            Direction = direction;
-        }
-
-        internal Vector3 Direction { get; set; }
-
-        internal int Distance { get; set; }
+        Distance = distance;
+        Direction = direction;
     }
+
+    internal Vector3 Direction { get; set; }
+
+    internal int Distance { get; set; }
 }

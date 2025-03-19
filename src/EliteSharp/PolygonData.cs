@@ -5,16 +5,15 @@
 using System.Numerics;
 using EliteSharp.Graphics;
 
-namespace EliteSharp
+namespace EliteSharp;
+
+internal struct PolygonData
 {
-    internal struct PolygonData
-    {
-        internal FastColor FaceColor { get; set; }
+    internal FastColor FaceColor { get; set; }
 
-        internal int Next { get; set; }
+    internal int Next { get; set; }
 
-        internal Vector2[] PointList { get; set; }
+    internal Vector2[] PointList { get; set; }
 
-        internal float Z { get; set; }
-    }
+    internal float Z { get; set; }
 }

@@ -8,43 +8,42 @@ using EliteSharp.Planets;
 using EliteSharp.Ships;
 using Moq;
 
-namespace EliteSharp.Tests.Planets
+namespace EliteSharp.Tests.Planets;
+
+public class SolidPlanetTests
 {
-    public class SolidPlanetTests
+    private readonly Mock<IDraw> _drawMoq;
+
+    public SolidPlanetTests() => _drawMoq = MockSetup.MockDraw();
+
+    [Fact]
+    public void DrawSolidPlanet()
     {
-        private readonly Mock<IDraw> _drawMoq;
+        // Arrange
+        SolidPlanet planet = new(_drawMoq.Object, EliteColors.Cyan);
 
-        public SolidPlanetTests() => _drawMoq = MockSetup.MockDraw();
+        // Act
+        planet.Draw();
 
-        [Fact]
-        public void DrawSolidPlanet()
-        {
-            // Arrange
-            SolidPlanet planet = new(_drawMoq.Object, EliteColors.Cyan);
+        // Assert
+        _drawMoq.Verify(x => x.Graphics.DrawCircleFilled(
+            It.IsAny<Vector2>(),
+            It.IsAny<float>(),
+            It.Is<FastColor>(x => x == EliteColors.Cyan)));
+    }
 
-            // Act
-            planet.Draw();
+    [Fact]
+    public void CloneSolidPlanet()
+    {
+        // Arrange
+        SolidPlanet planet = new(_drawMoq.Object, EliteColors.Cyan);
 
-            // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawCircleFilled(
-                It.IsAny<Vector2>(),
-                It.IsAny<float>(),
-                It.Is<FastColor>(x => x == EliteColors.Cyan)));
-        }
+        // Act
+        IObject obj = planet.Clone();
+        obj.Draw();
 
-        [Fact]
-        public void CloneSolidPlanet()
-        {
-            // Arrange
-            SolidPlanet planet = new(_drawMoq.Object, EliteColors.Cyan);
-
-            // Act
-            IObject obj = planet.Clone();
-            obj.Draw();
-
-            // Assert
-            Assert.IsType<SolidPlanet>(obj);
-            Assert.Equal(planet.Color, ((SolidPlanet)obj).Color);
-        }
+        // Assert
+        Assert.IsType<SolidPlanet>(obj);
+        Assert.Equal(planet.Color, ((SolidPlanet)obj).Color);
     }
 }

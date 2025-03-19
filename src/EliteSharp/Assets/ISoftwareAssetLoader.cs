@@ -6,16 +6,15 @@ using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Assets
+namespace EliteSharp.Assets;
+
+public interface ISoftwareAssetLoader
 {
-    public interface ISoftwareAssetLoader
-    {
-        Dictionary<FontType, BitmapFont> LoadFonts();
+    public Dictionary<FontType, BitmapFont> LoadFonts();
 
-        Dictionary<ImageType, FastBitmap> LoadImages();
+    public Dictionary<ImageType, FastBitmap> LoadImages();
 
-        Dictionary<MusicType, SoundSampleProvider> LoadMusic();
+    public Dictionary<MusicType, SoundSampleProvider> LoadMusic();
 
-        Dictionary<SoundEffect, SoundSampleProvider> LoadSfx();
-    }
+    public Dictionary<SoundEffect, SoundSampleProvider> LoadSfx();
 }

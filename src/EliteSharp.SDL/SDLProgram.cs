@@ -4,38 +4,37 @@
 
 [assembly: CLSCompliant(false)]
 
-namespace EliteSharp.SDL
+namespace EliteSharp.SDL;
+
+internal static class SDLProgram
 {
-    internal static class SDLProgram
-    {
-        private const string Title = "Elite - The Sharp Kind";
+    private const string Title = "Elite - The Sharp Kind";
 
 #if QHD
-        private const int ScreenWidth = 960;
-        private const int ScreenHeight = 540;
+    private const int ScreenWidth = 960;
+    private const int ScreenHeight = 540;
 #else
-        private const int ScreenWidth = 512;
-        private const int ScreenHeight = 512;
+    private const int ScreenWidth = 512;
+    private const int ScreenHeight = 512;
 #endif
 
 #if SOFTWARERENDERER
-        private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SOFTWARE");
+    private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SOFTWARE");
 #else
-        private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SDL");
+    private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SDL");
 #endif
 
-        public static void Main()
+    public static void Main()
+    {
+        try
         {
-            try
-            {
-                s_gameFactory.Game.Run();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                Environment.Exit(-1);
-                throw;
-            }
+            s_gameFactory.Game.Run();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            Environment.Exit(-1);
+            throw;
         }
     }
 }

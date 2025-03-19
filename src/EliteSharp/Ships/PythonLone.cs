@@ -4,17 +4,16 @@
 
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Ships
+namespace EliteSharp.Ships;
+
+internal sealed class PythonLone : Python
 {
-    internal sealed class PythonLone : Python
+    internal PythonLone(IDraw draw)
+        : base(draw)
     {
-        internal PythonLone(IDraw draw)
-            : base(draw)
-        {
-            Type = ShipType.PythonLone;
-            Flags = ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry;
-            Bounty = 20;
-            LootMax = 2;
-        }
+        Type = ShipType.PythonLone;
+        Flags = ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry;
+        Bounty = 20;
+        LootMax = 2;
     }
 }

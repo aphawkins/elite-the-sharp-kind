@@ -4,36 +4,35 @@
 
 using System.Runtime.CompilerServices;
 
-namespace EliteSharp.SDL
+namespace EliteSharp.SDL;
+
+internal static class SDLGuard
 {
-    internal static class SDLGuard
+    internal static nint Execute(Func<nint> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
     {
-        internal static nint Execute(Func<nint> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
+        nint result = sdlMethod();
+        if (result == nint.Zero)
         {
-            nint result = sdlMethod();
-            if (result == nint.Zero)
-            {
-                SDLHelper.Throw(
-                    callerArgument?.StartsWith("() => ", StringComparison.OrdinalIgnoreCase) == true
+            SDLHelper.Throw(
+                callerArgument?.StartsWith("() => ", StringComparison.OrdinalIgnoreCase) == true
+                ? callerArgument[6..]
+                : callerArgument);
+        }
+
+        return result;
+    }
+
+    internal static int Execute(Func<int> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
+    {
+        int result = sdlMethod();
+        if (result < 0)
+        {
+            SDLHelper.Throw(
+                callerArgument?.StartsWith("() => ", StringComparison.OrdinalIgnoreCase) == true
                     ? callerArgument[6..]
                     : callerArgument);
-            }
-
-            return result;
         }
 
-        internal static int Execute(Func<int> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
-        {
-            int result = sdlMethod();
-            if (result < 0)
-            {
-                SDLHelper.Throw(
-                    callerArgument?.StartsWith("() => ", StringComparison.OrdinalIgnoreCase) == true
-                        ? callerArgument[6..]
-                        : callerArgument);
-            }
-
-            return result;
-        }
+        return result;
     }
 }

@@ -5,22 +5,21 @@
 using EliteSharp.Planets;
 using EliteSharp.Suns;
 
-namespace EliteSharp.Config
+namespace EliteSharp.Config;
+
+internal sealed class ConfigSettings
 {
-    internal sealed class ConfigSettings
-    {
-        public float Fps { get; set; } = 13.5f; // Approx speed of TNK
+    public float Fps { get; set; } = 13.5f; // Approx speed of TNK
 
-        public bool InstantDock { get; set; }
+    public bool InstantDock { get; set; }
 
-        public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
+    public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
-        public PlanetType PlanetStyle { get; set; } = PlanetType.Fractal;
+    public PlanetType PlanetStyle { get; set; } = PlanetType.Fractal;
 
-        public bool ShipWireframe { get; set; }
+    public bool ShipWireframe { get; set; }
 
-        public SunType SunStyle { get; set; } = SunType.Gradient;
+    public SunType SunStyle { get; set; } = SunType.Gradient;
 
-        public bool IsViewFullFrame { get; }
-    }
+    public bool IsViewFullFrame { get; }
 }

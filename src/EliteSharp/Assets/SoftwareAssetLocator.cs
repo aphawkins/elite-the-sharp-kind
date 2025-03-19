@@ -4,15 +4,14 @@
 
 using EliteSharp.Assets.Fonts;
 
-namespace EliteSharp.Assets
+namespace EliteSharp.Assets;
+
+public class SoftwareAssetLocator : AssetLocator
 {
-    public class SoftwareAssetLocator : AssetLocator
+    protected override string GetName(FontType font) => font switch
     {
-        protected override string GetName(FontType font) => font switch
-        {
-            FontType.Small => "font1.bmp",
-            FontType.Large => "font2.bmp",
-            _ => throw new EliteException(),
-        };
-    }
+        FontType.Small => "font1.bmp",
+        FontType.Large => "font2.bmp",
+        _ => throw new EliteException(),
+    };
 }

@@ -6,119 +6,118 @@ using System.Numerics;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
-namespace EliteSharp.Planets
+namespace EliteSharp.Planets;
+
+internal sealed class StripedPlanet : IObject
 {
-    internal sealed class StripedPlanet : IObject
+    private readonly PlanetRenderer _planetRenderer;
+
+    /// <summary>
+    /// Color map used to generate a striped style planet.
+    /// </summary>
+    private readonly FastColor[] _stripeColors =
+    [
+        EliteColors.Purple,
+        EliteColors.Purple,
+        EliteColors.DarkBlue,
+        EliteColors.DarkBlue,
+        EliteColors.DarkBlue,
+        EliteColors.DarkBlue,
+        EliteColors.Blue,
+        EliteColors.Blue,
+        EliteColors.Blue,
+        EliteColors.Blue,
+        EliteColors.LightBlue,
+        EliteColors.LightBlue,
+        EliteColors.LighterGrey,
+        EliteColors.Orange,
+        EliteColors.Orange,
+        EliteColors.Orange,
+        EliteColors.Orange,
+        EliteColors.LightOrange,
+        EliteColors.Orange,
+        EliteColors.Orange,
+        EliteColors.DarkOrange,
+        EliteColors.DarkOrange,
+        EliteColors.DarkOrange,
+        EliteColors.DarkOrange,
+        EliteColors.Orange,
+        EliteColors.LightOrange,
+        EliteColors.DarkOrange,
+        EliteColors.DarkOrange,
+        EliteColors.DarkOrange,
+        EliteColors.DarkOrange,
+        EliteColors.DarkOrange,
+        EliteColors.DarkOrange,
+        EliteColors.Orange,
+        EliteColors.Orange,
+        EliteColors.LightOrange,
+        EliteColors.Orange,
+        EliteColors.Orange,
+        EliteColors.Orange,
+        EliteColors.Orange,
+        EliteColors.LighterGrey,
+        EliteColors.LightBlue,
+        EliteColors.LightBlue,
+        EliteColors.Blue,
+        EliteColors.Blue,
+        EliteColors.Blue,
+        EliteColors.Blue,
+        EliteColors.DarkBlue,
+        EliteColors.DarkBlue,
+        EliteColors.DarkBlue,
+        EliteColors.DarkBlue,
+        EliteColors.Purple,
+        EliteColors.Purple,
+    ];
+
+    internal StripedPlanet(IDraw draw)
     {
-        private readonly PlanetRenderer _planetRenderer;
+        _planetRenderer = new(draw);
+        GenerateLandscape();
+    }
 
-        /// <summary>
-        /// Color map used to generate a striped style planet.
-        /// </summary>
-        private readonly FastColor[] _stripeColors =
-        [
-            EliteColors.Purple,
-            EliteColors.Purple,
-            EliteColors.DarkBlue,
-            EliteColors.DarkBlue,
-            EliteColors.DarkBlue,
-            EliteColors.DarkBlue,
-            EliteColors.Blue,
-            EliteColors.Blue,
-            EliteColors.Blue,
-            EliteColors.Blue,
-            EliteColors.LightBlue,
-            EliteColors.LightBlue,
-            EliteColors.LighterGrey,
-            EliteColors.Orange,
-            EliteColors.Orange,
-            EliteColors.Orange,
-            EliteColors.Orange,
-            EliteColors.LightOrange,
-            EliteColors.Orange,
-            EliteColors.Orange,
-            EliteColors.DarkOrange,
-            EliteColors.DarkOrange,
-            EliteColors.DarkOrange,
-            EliteColors.DarkOrange,
-            EliteColors.Orange,
-            EliteColors.LightOrange,
-            EliteColors.DarkOrange,
-            EliteColors.DarkOrange,
-            EliteColors.DarkOrange,
-            EliteColors.DarkOrange,
-            EliteColors.DarkOrange,
-            EliteColors.DarkOrange,
-            EliteColors.Orange,
-            EliteColors.Orange,
-            EliteColors.LightOrange,
-            EliteColors.Orange,
-            EliteColors.Orange,
-            EliteColors.Orange,
-            EliteColors.Orange,
-            EliteColors.LighterGrey,
-            EliteColors.LightBlue,
-            EliteColors.LightBlue,
-            EliteColors.Blue,
-            EliteColors.Blue,
-            EliteColors.Blue,
-            EliteColors.Blue,
-            EliteColors.DarkBlue,
-            EliteColors.DarkBlue,
-            EliteColors.DarkBlue,
-            EliteColors.DarkBlue,
-            EliteColors.Purple,
-            EliteColors.Purple,
-        ];
+    private StripedPlanet(StripedPlanet other) => _planetRenderer = other._planetRenderer;
 
-        internal StripedPlanet(IDraw draw)
+    public ShipProperties Flags { get; set; }
+
+    public Vector3 Location { get; set; } = new(0, 0, 123456);
+
+    public Vector3[] Rotmat { get; set; } = new Vector3[3];
+
+    public ShipType Type { get; set; } = ShipType.Planet;
+
+    public float RotX { get; set; }
+
+    public float RotZ { get; set; }
+
+    public IObject Clone()
+    {
+        StripedPlanet planet = new(this);
+        this.CopyTo(planet);
+        return planet;
+    }
+
+    public void Draw()
+    {
+        (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
+        if (v != null)
         {
-            _planetRenderer = new(draw);
-            GenerateLandscape();
+            _planetRenderer.Draw(v.Value.Position, v.Value.Radius, Rotmat);
         }
+    }
 
-        private StripedPlanet(StripedPlanet other) => _planetRenderer = other._planetRenderer;
-
-        public ShipProperties Flags { get; set; }
-
-        public Vector3 Location { get; set; } = new(0, 0, 123456);
-
-        public Vector3[] Rotmat { get; set; } = new Vector3[3];
-
-        public ShipType Type { get; set; } = ShipType.Planet;
-
-        public float RotX { get; set; }
-
-        public float RotZ { get; set; }
-
-        public IObject Clone()
+    /// <summary>
+    /// Generate a landscape map.
+    /// </summary>
+    private void GenerateLandscape()
+    {
+        for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
         {
-            StripedPlanet planet = new(this);
-            this.CopyTo(planet);
-            return planet;
-        }
-
-        public void Draw()
-        {
-            (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
-            if (v != null)
+            FastColor color = _stripeColors[y * (_stripeColors.Length - 1) / PlanetRenderer.LandYMax];
+            for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
             {
-                _planetRenderer.Draw(v.Value.Position, v.Value.Radius, Rotmat);
-            }
-        }
-
-        /// <summary>
-        /// Generate a landscape map.
-        /// </summary>
-        private void GenerateLandscape()
-        {
-            for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
-            {
-                FastColor color = _stripeColors[y * (_stripeColors.Length - 1) / PlanetRenderer.LandYMax];
-                for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
-                {
-                    _planetRenderer._landscape[x, y] = color;
-                }
+                _planetRenderer._landscape[x, y] = color;
             }
         }
     }

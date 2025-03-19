@@ -4,22 +4,21 @@
 
 using System.Diagnostics;
 
-namespace EliteSharp.Graphics
+namespace EliteSharp.Graphics;
+
+public class BitmapFont
 {
-    public class BitmapFont
+    public BitmapFont(FastBitmap fontImage)
     {
-        public BitmapFont(FastBitmap fontImage)
-        {
-            Guard.ArgumentNull(fontImage);
+        Guard.ArgumentNull(fontImage);
 
-            Debug.Assert(fontImage.Width == 513, "Font bitmap is not the correct width.");
-            Debug.Assert(fontImage.Height == 193, "Font bitmap is not the correct height.");
+        Debug.Assert(fontImage.Width == 513, "Font bitmap is not the correct width.");
+        Debug.Assert(fontImage.Height == 193, "Font bitmap is not the correct height.");
 
-            Image = fontImage;
-        }
-
-        public static int CharSize => 32;
-
-        public FastBitmap Image { get; }
+        Image = fontImage;
     }
+
+    public static int CharSize => 32;
+
+    public FastBitmap Image { get; }
 }

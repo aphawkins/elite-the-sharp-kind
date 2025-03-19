@@ -7,334 +7,333 @@ using EliteSharp.Assets.Fonts;
 using EliteSharp.Ships;
 using EliteSharp.Views;
 
-namespace EliteSharp.Graphics
+namespace EliteSharp.Graphics;
+
+internal sealed class Draw : IDraw
 {
-    internal sealed class Draw : IDraw
+    private const int MAXPOLYS = 100;
+    private readonly GameState _gameState;
+    private readonly Vector3[] _pointList = new Vector3[100];
+    private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
+    private int _startPoly;
+    private int _totalPolys;
+
+    internal Draw(GameState gameState, IGraphics graphics)
     {
-        private const int MAXPOLYS = 100;
-        private readonly GameState _gameState;
-        private readonly Vector3[] _pointList = new Vector3[100];
-        private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
-        private int _startPoly;
-        private int _totalPolys;
+        _gameState = gameState;
+        Graphics = graphics;
+    }
 
-        internal Draw(GameState gameState, IGraphics graphics)
+    public float Bottom
+        => _gameState.Config.IsViewFullFrame ? Graphics.ScreenHeight - BorderWidth : Graphics.ScreenHeight - ScannerHeight;
+
+    public Vector2 Centre => new(Graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
+
+    public IGraphics Graphics { get; }
+
+    public bool IsWidescreen { get; }
+
+    public float Left => BorderWidth;
+
+    public float Offset => ScannerLeft;
+
+    public float Right => Graphics.ScreenWidth - BorderWidth;
+
+    public float ScannerLeft => Centre.X - (ScannerWidth / 2);
+
+    public float ScannerRight => ScannerLeft + ScannerWidth - 1;
+
+    public float ScannerTop => Graphics.ScreenHeight - ScannerHeight;
+
+    public float Top => BorderWidth;
+
+    internal float Height => Bottom - BorderWidth;
+
+    internal float Width => Graphics.ScreenWidth - (2 * BorderWidth);
+
+    private static float BorderWidth => 1;
+
+    private static float ScannerHeight => 129;
+
+    private static float ScannerWidth => 512;
+
+    public void DrawBorder()
+    {
+        for (int i = 0; i < BorderWidth; i++)
         {
-            _gameState = gameState;
-            Graphics = graphics;
+            Graphics.DrawRectangle(new(i, i), Graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), EliteColors.White);
+        }
+    }
+
+    public void DrawHyperspaceCountdown(int countdown)
+        => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EliteColors.White);
+
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float averageZ)
+    {
+        int i;
+
+        if (_totalPolys == MAXPOLYS)
+        {
+            return;
         }
 
-        public float Bottom
-            => _gameState.Config.IsViewFullFrame ? Graphics.ScreenHeight - BorderWidth : Graphics.ScreenHeight - ScannerHeight;
+        int x = _totalPolys;
+        _totalPolys++;
 
-        public Vector2 Centre => new(Graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
+        _polyChain[x].FaceColor = faceColor;
+        _polyChain[x].Z = averageZ;
+        _polyChain[x].Next = -1;
+        _polyChain[x].PointList = new Vector2[points.Length];
 
-        public IGraphics Graphics { get; }
-
-        public bool IsWidescreen { get; }
-
-        public float Left => BorderWidth;
-
-        public float Offset => ScannerLeft;
-
-        public float Right => Graphics.ScreenWidth - BorderWidth;
-
-        public float ScannerLeft => Centre.X - (ScannerWidth / 2);
-
-        public float ScannerRight => ScannerLeft + ScannerWidth - 1;
-
-        public float ScannerTop => Graphics.ScreenHeight - ScannerHeight;
-
-        public float Top => BorderWidth;
-
-        internal float Height => Bottom - BorderWidth;
-
-        internal float Width => Graphics.ScreenWidth - (2 * BorderWidth);
-
-        private static float BorderWidth => 1;
-
-        private static float ScannerHeight => 129;
-
-        private static float ScannerWidth => 512;
-
-        public void DrawBorder()
+        for (i = 0; i < points.Length; i++)
         {
-            for (int i = 0; i < BorderWidth; i++)
-            {
-                Graphics.DrawRectangle(new(i, i), Graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), EliteColors.White);
-            }
+            _polyChain[x].PointList[i].X = points[i].X;
+            _polyChain[x].PointList[i].Y = points[i].Y;
         }
 
-        public void DrawHyperspaceCountdown(int countdown)
-            => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", EliteColors.White);
-
-        public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float averageZ)
+        if (x == 0)
         {
-            int i;
-
-            if (_totalPolys == MAXPOLYS)
-            {
-                return;
-            }
-
-            int x = _totalPolys;
-            _totalPolys++;
-
-            _polyChain[x].FaceColor = faceColor;
-            _polyChain[x].Z = averageZ;
-            _polyChain[x].Next = -1;
-            _polyChain[x].PointList = new Vector2[points.Length];
-
-            for (i = 0; i < points.Length; i++)
-            {
-                _polyChain[x].PointList[i].X = points[i].X;
-                _polyChain[x].PointList[i].Y = points[i].Y;
-            }
-
-            if (x == 0)
-            {
-                return;
-            }
-
-            if (averageZ > _polyChain[_startPoly].Z)
-            {
-                _polyChain[x].Next = _startPoly;
-                _startPoly = x;
-                return;
-            }
-
-            for (i = _startPoly; _polyChain[i].Next != -1; i = _polyChain[i].Next)
-            {
-                int nx = _polyChain[i].Next;
-
-                if (averageZ > _polyChain[nx].Z)
-                {
-                    _polyChain[i].Next = x;
-                    _polyChain[x].Next = nx;
-                    return;
-                }
-            }
-
-            _polyChain[i].Next = x;
+            return;
         }
 
-        public void DrawTextPretty(Vector2 position, float width, string text)
+        if (averageZ > _polyChain[_startPoly].Z)
         {
-            int i = 0;
-            float maxlen = width / 8;
-            int previous = i;
+            _polyChain[x].Next = _startPoly;
+            _startPoly = x;
+            return;
+        }
 
-            while (i < text.Length)
+        for (i = _startPoly; _polyChain[i].Next != -1; i = _polyChain[i].Next)
+        {
+            int nx = _polyChain[i].Next;
+
+            if (averageZ > _polyChain[nx].Z)
             {
-                i += (int)maxlen;
-                i = Math.Clamp(i, 0, text.Length - 1);
-
-                while (text[i] is not ' ' and not ',' and not '.')
-                {
-                    i--;
-                }
-
-                i++;
-                Graphics.DrawTextLeft(position, text[previous..i], EliteColors.White);
-                previous = i;
-                position.Y += 8 * Graphics.Scale;
+                _polyChain[i].Next = x;
+                _polyChain[x].Next = nx;
+                return;
             }
         }
 
-        public void DrawViewHeader(string title)
-        {
-            Graphics.DrawTextCentre(Top + 6, title, FontType.Large, EliteColors.Gold);
-            Graphics.DrawLine(new(Left, 36), new(Right, 36), EliteColors.White);
+        _polyChain[i].Next = x;
+    }
 
-            // Vertical lines
-            Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), EliteColors.Yellow);
-            Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), EliteColors.Yellow);
+    public void DrawTextPretty(Vector2 position, float width, string text)
+    {
+        int i = 0;
+        float maxlen = width / 8;
+        int previous = i;
+
+        while (i < text.Length)
+        {
+            i += (int)maxlen;
+            i = Math.Clamp(i, 0, text.Length - 1);
+
+            while (text[i] is not ' ' and not ',' and not '.')
+            {
+                i--;
+            }
+
+            i++;
+            Graphics.DrawTextLeft(position, text[previous..i], EliteColors.White);
+            previous = i;
+            position.Y += 8 * Graphics.Scale;
+        }
+    }
+
+    public void DrawViewHeader(string title)
+    {
+        Graphics.DrawTextCentre(Top + 6, title, FontType.Large, EliteColors.Gold);
+        Graphics.DrawLine(new(Left, 36), new(Right, 36), EliteColors.White);
+
+        // Vertical lines
+        Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), EliteColors.Yellow);
+        Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), EliteColors.Yellow);
+    }
+
+    public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);
+
+    public void SetViewClipRegion() => Graphics.SetClipRegion(new(Left, Top), Width, Height);
+
+    /// <summary>
+    /// Draws an object in the universe. (Ship, Planet, Sun etc).
+    /// </summary>
+    public void DrawObject(IObject obj)
+    {
+        if (_gameState.CurrentScreen is not Screen.FrontView and not Screen.RearView and
+            not Screen.LeftView and not Screen.RightView and
+            not Screen.IntroOne and not Screen.IntroTwo and
+            not Screen.GameOver and not Screen.EscapeCapsule and
+            not Screen.MissionOne)
+        {
+            return;
         }
 
-        public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);
-
-        public void SetViewClipRegion() => Graphics.SetClipRegion(new(Left, Top), Width, Height);
-
-        /// <summary>
-        /// Draws an object in the universe. (Ship, Planet, Sun etc).
-        /// </summary>
-        public void DrawObject(IObject obj)
+        if (obj.Flags.HasFlag(ShipProperties.Dead) && !obj.Flags.HasFlag(ShipProperties.Explosion))
         {
-            if (_gameState.CurrentScreen is not Screen.FrontView and not Screen.RearView and
-                not Screen.LeftView and not Screen.RightView and
-                not Screen.IntroOne and not Screen.IntroTwo and
-                not Screen.GameOver and not Screen.EscapeCapsule and
-                not Screen.MissionOne)
-            {
-                return;
-            }
+            obj.Flags |= ShipProperties.Explosion;
+            ((IShip)obj).ExpDelta = 18;
+        }
 
-            if (obj.Flags.HasFlag(ShipProperties.Dead) && !obj.Flags.HasFlag(ShipProperties.Explosion))
-            {
-                obj.Flags |= ShipProperties.Explosion;
-                ((IShip)obj).ExpDelta = 18;
-            }
+        if (obj.Flags.HasFlag(ShipProperties.Explosion))
+        {
+            DrawExplosion((IShip)obj);
+            return;
+        }
 
-            if (obj.Flags.HasFlag(ShipProperties.Explosion))
-            {
-                DrawExplosion((IShip)obj);
-                return;
-            }
+        // Only display ships in front of us.
+        if (obj.Location.Z <= 0)
+        {
+            return;
+        }
 
-            // Only display ships in front of us.
-            if (obj.Location.Z <= 0)
-            {
-                return;
-            }
-
-            if (obj.Type == ShipType.Planet)
-            {
-                obj.Draw();
-                return;
-            }
-
-            if (obj.Type == ShipType.Sun)
-            {
-                obj.Draw();
-                return;
-            }
-
-            // Check for field of vision.
-            if (MathF.Abs(obj.Location.X) > obj.Location.Z ||
-                MathF.Abs(obj.Location.Y) > obj.Location.Z)
-            {
-                return;
-            }
-
+        if (obj.Type == ShipType.Planet)
+        {
             obj.Draw();
+            return;
         }
 
-        public void RenderEnd()
+        if (obj.Type == ShipType.Sun)
         {
-            if (_totalPolys == 0)
+            obj.Draw();
+            return;
+        }
+
+        // Check for field of vision.
+        if (MathF.Abs(obj.Location.X) > obj.Location.Z ||
+            MathF.Abs(obj.Location.Y) > obj.Location.Z)
+        {
+            return;
+        }
+
+        obj.Draw();
+    }
+
+    public void RenderEnd()
+    {
+        if (_totalPolys == 0)
+        {
+            return;
+        }
+
+        for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
+        {
+            FastColor color = _gameState.Config.ShipWireframe ? EliteColors.White : _polyChain[i].FaceColor;
+
+            if (_polyChain[i].PointList.Length == 2)
             {
-                return;
+                Graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], color);
+                continue;
             }
 
-            for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
+            if (_gameState.Config.ShipWireframe)
             {
-                FastColor color = _gameState.Config.ShipWireframe ? EliteColors.White : _polyChain[i].FaceColor;
+                Graphics.DrawPolygon(_polyChain[i].PointList, color);
+            }
+            else
+            {
+                Graphics.DrawPolygonFilled(_polyChain[i].PointList, color);
+            }
+        }
+    }
 
-                if (_polyChain[i].PointList.Length == 2)
-                {
-                    Graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], color);
-                    continue;
-                }
+    public void RenderStart()
+    {
+        _startPoly = 0;
+        _totalPolys = 0;
+    }
 
-                if (_gameState.Config.ShipWireframe)
-                {
-                    Graphics.DrawPolygon(_polyChain[i].PointList, color);
-                }
-                else
-                {
-                    Graphics.DrawPolygonFilled(_polyChain[i].PointList, color);
-                }
+    private void DrawExplosion(IShip ship)
+    {
+        Vector3[] trans_mat = new Vector3[3];
+        bool[] visible = new bool[32];
+
+        if (ship.ExpDelta > 251)
+        {
+            ship.Flags |= ShipProperties.Remove;
+            return;
+        }
+
+        ship.ExpDelta += 4;
+
+        if (ship.Location.Z <= 0)
+        {
+            return;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            trans_mat[i] = ship.Rotmat[i];
+        }
+
+        Vector3 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat);
+        camera_vec = VectorMaths.UnitVector(camera_vec);
+
+        ShipFaceNormal[] ship_norm = ship.FaceNormals;
+
+        for (int i = 0; i < ship.FaceNormals.Length; i++)
+        {
+            Vector3 vec = VectorMaths.UnitVector(ship_norm[i].Direction);
+            float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
+            visible[i] = cos_angle < -0.13;
+        }
+
+        (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
+        (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
+        (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
+        int np = 0;
+
+        for (int i = 0; i < ship.Points.Length; i++)
+        {
+            if (visible[ship.Points[i].Face1]
+                || visible[ship.Points[i].Face2] ||
+                visible[ship.Points[i].Face3]
+                || visible[ship.Points[i].Face4])
+            {
+                Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
+                Vector3 r = vec + ship.Location;
+                Vector2 position = new(r.X, -r.Y);
+                position *= 256 / r.Z;
+                position += Centre / 2;
+                position *= Graphics.Scale;
+                _pointList[np].X = position.X;
+                _pointList[np].Y = position.Y;
+                np++;
             }
         }
 
-        public void RenderStart()
+        float z = ship.Location.Z;
+        float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
+        float pr = ship.ExpDelta * 256 / q;
+
+        ////  if (pr > 0x1C00)
+        ////      q = 254;
+        ////  else
+        q = pr / 32;
+
+        for (int cnt = 0; cnt < np; cnt++)
         {
-            _startPoly = 0;
-            _totalPolys = 0;
-        }
+            float sx = _pointList[cnt].X;
+            float sy = _pointList[cnt].Y;
 
-        private void DrawExplosion(IShip ship)
-        {
-            Vector3[] trans_mat = new Vector3[3];
-            bool[] visible = new bool[32];
-
-            if (ship.ExpDelta > 251)
+            for (int i = 0; i < 16; i++)
             {
-                ship.Flags |= ShipProperties.Remove;
-                return;
-            }
+                Vector2 position = new(RNG.Random(-128, 128), RNG.Random(-128, 128));
 
-            ship.ExpDelta += 4;
+                position.X = position.X * q / 256;
+                position.Y = position.Y * q / 256;
 
-            if (ship.Location.Z <= 0)
-            {
-                return;
-            }
+                position.X = position.X + position.X + sx;
+                position.Y = position.Y + position.Y + sy;
 
-            for (int i = 0; i < 3; i++)
-            {
-                trans_mat[i] = ship.Rotmat[i];
-            }
+                int sizex = RNG.Random(1, 3);
+                int sizey = RNG.Random(1, 3);
 
-            Vector3 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat);
-            camera_vec = VectorMaths.UnitVector(camera_vec);
-
-            ShipFaceNormal[] ship_norm = ship.FaceNormals;
-
-            for (int i = 0; i < ship.FaceNormals.Length; i++)
-            {
-                Vector3 vec = VectorMaths.UnitVector(ship_norm[i].Direction);
-                float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
-                visible[i] = cos_angle < -0.13;
-            }
-
-            (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
-            (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
-            (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
-            int np = 0;
-
-            for (int i = 0; i < ship.Points.Length; i++)
-            {
-                if (visible[ship.Points[i].Face1]
-                    || visible[ship.Points[i].Face2] ||
-                    visible[ship.Points[i].Face3]
-                    || visible[ship.Points[i].Face4])
+                for (int psy = 0; psy < sizey; psy++)
                 {
-                    Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
-                    Vector3 r = vec + ship.Location;
-                    Vector2 position = new(r.X, -r.Y);
-                    position *= 256 / r.Z;
-                    position += Centre / 2;
-                    position *= Graphics.Scale;
-                    _pointList[np].X = position.X;
-                    _pointList[np].Y = position.Y;
-                    np++;
-                }
-            }
-
-            float z = ship.Location.Z;
-            float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
-            float pr = ship.ExpDelta * 256 / q;
-
-            ////  if (pr > 0x1C00)
-            ////      q = 254;
-            ////  else
-            q = pr / 32;
-
-            for (int cnt = 0; cnt < np; cnt++)
-            {
-                float sx = _pointList[cnt].X;
-                float sy = _pointList[cnt].Y;
-
-                for (int i = 0; i < 16; i++)
-                {
-                    Vector2 position = new(RNG.Random(-128, 128), RNG.Random(-128, 128));
-
-                    position.X = position.X * q / 256;
-                    position.Y = position.Y * q / 256;
-
-                    position.X = position.X + position.X + sx;
-                    position.Y = position.Y + position.Y + sy;
-
-                    int sizex = RNG.Random(1, 3);
-                    int sizey = RNG.Random(1, 3);
-
-                    for (int psy = 0; psy < sizey; psy++)
+                    for (int psx = 0; psx < sizex; psx++)
                     {
-                        for (int psx = 0; psx < sizex; psx++)
-                        {
-                            Graphics.DrawPixel(new(position.X + psx, position.Y + psy), EliteColors.White);
-                        }
+                        Graphics.DrawPixel(new(position.X + psx, position.Y + psy), EliteColors.White);
                     }
                 }
             }

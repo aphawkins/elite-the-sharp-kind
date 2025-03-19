@@ -6,52 +6,51 @@ using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using Moq;
 
-namespace EliteSharp.Tests
+namespace EliteSharp.Tests;
+
+public class UniverseTests
 {
-    public class UniverseTests
+    [Fact]
+    public void UniverseAddShip()
     {
-        [Fact]
-        public void UniverseAddShip()
-        {
-            // Arrange
-            Mock<IDraw> drawMoq = new();
-            Universe universe = new(drawMoq.Object);
-            IShip ship = new CobraMk3(drawMoq.Object);
+        // Arrange
+        Mock<IDraw> drawMoq = new();
+        Universe universe = new(drawMoq.Object);
+        IShip ship = new CobraMk3(drawMoq.Object);
 
-            // Act
-            universe.AddNewShip(ship);
+        // Act
+        universe.AddNewShip(ship);
 
-            // Assert
-            Assert.Single(universe.GetAllObjects());
-            Assert.Equal(ship, universe.GetAllObjects().First());
-            Assert.Equal(ship, universe.FirstShip);
-            Assert.Null(universe.Planet);
-            Assert.Null(universe.StationOrSun);
-            Assert.False(universe.IsStationPresent);
-            Assert.Equal(0, universe.PoliceCount);
-            Assert.Equal(1, universe.ShipCount(ShipType.CobraMk3));
-            Assert.Equal(0, universe.ShipCount(ShipType.Planet));
-        }
+        // Assert
+        Assert.Single(universe.GetAllObjects());
+        Assert.Equal(ship, universe.GetAllObjects().First());
+        Assert.Equal(ship, universe.FirstShip);
+        Assert.Null(universe.Planet);
+        Assert.Null(universe.StationOrSun);
+        Assert.False(universe.IsStationPresent);
+        Assert.Equal(0, universe.PoliceCount);
+        Assert.Equal(1, universe.ShipCount(ShipType.CobraMk3));
+        Assert.Equal(0, universe.ShipCount(ShipType.Planet));
+    }
 
-        [Fact]
-        public void UniverseRemoveShip()
-        {
-            // Arrange
-            Mock<IDraw> drawMoq = new();
-            Universe universe = new(drawMoq.Object);
-            IObject ship = new CobraMk3(drawMoq.Object);
+    [Fact]
+    public void UniverseRemoveShip()
+    {
+        // Arrange
+        Mock<IDraw> drawMoq = new();
+        Universe universe = new(drawMoq.Object);
+        IObject ship = new CobraMk3(drawMoq.Object);
 
-            // Act
-            universe.AddNewShip((IShip)ship);
-            universe.RemoveShip(ship);
+        // Act
+        universe.AddNewShip((IShip)ship);
+        universe.RemoveShip(ship);
 
-            // Assert
-            Assert.False(universe.GetAllObjects().Any());
-            Assert.Null(universe.Planet);
-            Assert.Null(universe.StationOrSun);
-            Assert.False(universe.IsStationPresent);
-            Assert.Equal(0, universe.PoliceCount);
-            Assert.Equal(0, universe.ShipCount(ShipType.CobraMk3));
-        }
+        // Assert
+        Assert.False(universe.GetAllObjects().Any());
+        Assert.Null(universe.Planet);
+        Assert.Null(universe.StationOrSun);
+        Assert.False(universe.IsStationPresent);
+        Assert.Equal(0, universe.PoliceCount);
+        Assert.Equal(0, universe.ShipCount(ShipType.CobraMk3));
     }
 }

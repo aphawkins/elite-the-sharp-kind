@@ -8,40 +8,39 @@ using EliteSharp.Planets;
 using EliteSharp.Ships;
 using Moq;
 
-namespace EliteSharp.Tests.Planets
+namespace EliteSharp.Tests.Planets;
+
+public sealed class FractalPlanetTests
 {
-    public class FractalPlanetTests
+    private readonly Mock<IDraw> _drawMoq;
+
+    public FractalPlanetTests() => _drawMoq = MockSetup.MockDraw();
+
+    [Fact]
+    public void DrawFractalPlanet()
     {
-        private readonly Mock<IDraw> _drawMoq;
+        // Arrange
+        FractalPlanet planet = new(_drawMoq.Object, 12345);
 
-        public FractalPlanetTests() => _drawMoq = MockSetup.MockDraw();
+        // Act
+        planet.Draw();
 
-        [Fact]
-        public void DrawFractalPlanet()
-        {
-            // Arrange
-            FractalPlanet planet = new(_drawMoq.Object, 12345);
+        // Assert
+        _drawMoq.Verify(x => x.Graphics.DrawPixel(It.IsAny<Vector2>(), It.IsAny<FastColor>()));
+    }
 
-            // Act
-            planet.Draw();
+    [Fact]
+    public void CloneFractalPlanet()
+    {
+        // Arrange
+        FractalPlanet planet = new(_drawMoq.Object, 12345);
 
-            // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawPixel(It.IsAny<Vector2>(), It.IsAny<FastColor>()));
-        }
+        // Act
+        IObject obj = planet.Clone();
+        obj.Draw();
 
-        [Fact]
-        public void CloneFractalPlanet()
-        {
-            // Arrange
-            FractalPlanet planet = new(_drawMoq.Object, 12345);
-
-            // Act
-            IObject obj = planet.Clone();
-            obj.Draw();
-
-            // Assert
-            Assert.IsType<FractalPlanet>(obj);
-            Assert.Equal(planet.Seed, ((FractalPlanet)obj).Seed);
-        }
+        // Assert
+        Assert.IsType<FractalPlanet>(obj);
+        Assert.Equal(planet.Seed, ((FractalPlanet)obj).Seed);
     }
 }

@@ -4,56 +4,55 @@
 
 using EliteSharp.Controls;
 
-namespace EliteSharp.WinForms
+namespace EliteSharp.WinForms;
+
+internal sealed class WinKeyboard : IKeyboard
 {
-    internal sealed class WinKeyboard : IKeyboard
+    private readonly Dictionary<CommandKey, bool> _isPressed = [];
+    private CommandKey _lastKeyPressed;
+
+    public bool Close { get; }
+
+    public void ClearKeyPressed()
     {
-        private readonly Dictionary<CommandKey, bool> _isPressed = [];
-        private CommandKey _lastKeyPressed;
+        _lastKeyPressed = 0;
+        _isPressed.Clear();
+    }
 
-        public bool Close { get; }
+    public CommandKey GetKeyPressed()
+    {
+        CommandKey key = _lastKeyPressed;
+        _lastKeyPressed = 0;
+        return key;
+    }
 
-        public void ClearKeyPressed()
+    public bool IsKeyPressed(params CommandKey[] keys)
+    {
+        if (keys == null)
         {
-            _lastKeyPressed = 0;
-            _isPressed.Clear();
-        }
-
-        public CommandKey GetKeyPressed()
-        {
-            CommandKey key = _lastKeyPressed;
-            _lastKeyPressed = 0;
-            return key;
-        }
-
-        public bool IsKeyPressed(params CommandKey[] keys)
-        {
-            if (keys == null)
-            {
-                return false;
-            }
-
-            foreach (CommandKey key in keys)
-            {
-                if (_isPressed.TryGetValue(key, out bool value) && value)
-                {
-                    return true;
-                }
-            }
-
             return false;
         }
 
-        public void KeyDown(CommandKey keyValue)
+        foreach (CommandKey key in keys)
         {
-            _lastKeyPressed = keyValue;
-            _isPressed[keyValue] = true;
+            if (_isPressed.TryGetValue(key, out bool value) && value)
+            {
+                return true;
+            }
         }
 
-        public void KeyUp(CommandKey keyValue) => _isPressed[keyValue] = false;
+        return false;
+    }
 
-        public void Poll()
-        {
-        }
+    public void KeyDown(CommandKey keyValue)
+    {
+        _lastKeyPressed = keyValue;
+        _isPressed[keyValue] = true;
+    }
+
+    public void KeyUp(CommandKey keyValue) => _isPressed[keyValue] = false;
+
+    public void Poll()
+    {
     }
 }

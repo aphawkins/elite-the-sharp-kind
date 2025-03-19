@@ -2,86 +2,85 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp.Audio
+namespace EliteSharp.Audio;
+
+internal sealed class AudioController
 {
-    internal sealed class AudioController
+    private readonly bool _musicOn;
+    private readonly bool _effectsOn;
+    private readonly ISound _sound;
+
+    private readonly Dictionary<SoundEffect, SfxSample> _sfx = new()
     {
-        private readonly bool _musicOn;
-        private readonly bool _effectsOn;
-        private readonly ISound _sound;
+        { SoundEffect.Launch, new(32) },
+        { SoundEffect.Crash, new(7) },
+        { SoundEffect.Dock, new(36) },
+        { SoundEffect.Gameover, new(24) },
+        { SoundEffect.Pulse, new(4) },
+        { SoundEffect.HitEnemy, new(4) },
+        { SoundEffect.Explode, new(23) },
+        { SoundEffect.Ecm, new(23) },
+        { SoundEffect.Missile, new(25) },
+        { SoundEffect.Hyperspace, new(37) },
+        { SoundEffect.IncomingFire1, new(4) },
+        { SoundEffect.IncomingFire2, new(5) },
+        { SoundEffect.Beep, new(2) },
+        { SoundEffect.Boop, new(7) },
+    };
 
-        private readonly Dictionary<SoundEffect, SfxSample> _sfx = new()
-        {
-            { SoundEffect.Launch, new(32) },
-            { SoundEffect.Crash, new(7) },
-            { SoundEffect.Dock, new(36) },
-            { SoundEffect.Gameover, new(24) },
-            { SoundEffect.Pulse, new(4) },
-            { SoundEffect.HitEnemy, new(4) },
-            { SoundEffect.Explode, new(23) },
-            { SoundEffect.Ecm, new(23) },
-            { SoundEffect.Missile, new(25) },
-            { SoundEffect.Hyperspace, new(37) },
-            { SoundEffect.IncomingFire1, new(4) },
-            { SoundEffect.IncomingFire2, new(5) },
-            { SoundEffect.Beep, new(2) },
-            { SoundEffect.Boop, new(7) },
-        };
-
-        internal AudioController(ISound sound)
-        {
-            _sound = sound;
+    internal AudioController(ISound sound)
+    {
+        _sound = sound;
 #if DEBUG
-            _musicOn = true;
-            _effectsOn = true;
+        _musicOn = true;
+        _effectsOn = true;
 #else
-            _musicOn = true;
-            _effectsOn = true;
+        _musicOn = true;
+        _effectsOn = true;
 #endif
+    }
+
+    internal void PlayEffect(SoundEffect effect)
+    {
+        if (!_effectsOn)
+        {
+            return;
         }
 
-        internal void PlayEffect(SoundEffect effect)
+        if (_sfx[effect].HasTimeRemaining)
         {
-            if (!_effectsOn)
-            {
-                return;
-            }
-
-            if (_sfx[effect].HasTimeRemaining)
-            {
-                return;
-            }
-
-            _sfx[effect].ResetTime();
-            _sound.Play(effect);
+            return;
         }
 
-        internal void PlayMusic(MusicType music, bool loop)
-        {
-            if (!_musicOn)
-            {
-                return;
-            }
+        _sfx[effect].ResetTime();
+        _sound.Play(effect);
+    }
 
-            _sound.Play(music, loop);
+    internal void PlayMusic(MusicType music, bool loop)
+    {
+        if (!_musicOn)
+        {
+            return;
         }
 
-        internal void StopMusic()
-        {
-            if (!_musicOn)
-            {
-                return;
-            }
+        _sound.Play(music, loop);
+    }
 
-            _sound.StopMusic();
+    internal void StopMusic()
+    {
+        if (!_musicOn)
+        {
+            return;
         }
 
-        internal void UpdateSound()
+        _sound.StopMusic();
+    }
+
+    internal void UpdateSound()
+    {
+        foreach (KeyValuePair<SoundEffect, SfxSample> sfx in _sfx)
         {
-            foreach (KeyValuePair<SoundEffect, SfxSample> sfx in _sfx)
-            {
-                sfx.Value.ReduceTimeRemaining();
-            }
+            sfx.Value.ReduceTimeRemaining();
         }
     }
 }

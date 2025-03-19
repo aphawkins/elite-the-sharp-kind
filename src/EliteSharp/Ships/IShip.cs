@@ -4,54 +4,53 @@
 
 using EliteSharp.Trader;
 
-namespace EliteSharp.Ships
+namespace EliteSharp.Ships;
+
+internal interface IShip : IObject
 {
-    internal interface IShip : IObject
-    {
-        int Acceleration { get; set; }
+    public int Acceleration { get; set; }
 
-        float Bounty { get; set; }
+    public float Bounty { get; set; }
 
-        int Bravery { get; set; }
+    public int Bravery { get; set; }
 
-        int Energy { get; set; }
+    public int Energy { get; set; }
 
-        int EnergyMax { get; set; }
+    public int EnergyMax { get; set; }
 
-        int ExpDelta { get; set; }
+    public int ExpDelta { get; set; }
 
-        ShipFaceNormal[] FaceNormals { get; set; }
+    public ShipFaceNormal[] FaceNormals { get; set; }
 
-        ShipFace[] Faces { get; set; }
+    public ShipFace[] Faces { get; set; }
 
-        int LaserFront { get; set; }
+    public int LaserFront { get; set; }
 
-        int LaserStrength { get; set; }
+    public int LaserStrength { get; set; }
 
-        ShipLine[] Lines { get; set; }
+    public ShipLine[] Lines { get; set; }
 
-        int LootMax { get; set; }
+    public int LootMax { get; set; }
 
-        float MinDistance { get; set; }
+    public float MinDistance { get; set; }
 
-        int Missiles { get; set; }
+    public int Missiles { get; set; }
 
-        int MissilesMax { get; set; }
+    public int MissilesMax { get; set; }
 
-        string Name { get; set; }
+    public string Name { get; set; }
 
-        ShipPoint[] Points { get; set; }
+    public ShipPoint[] Points { get; set; }
 
-        StockType ScoopedType { get; set; }
+    public StockType ScoopedType { get; set; }
 
-        float Size { get; set; }
+    public float Size { get; set; }
 
-        IObject? Target { get; set; }
+    public IObject? Target { get; set; }
 
-        int VanishPoint { get; set; }
+    public int VanishPoint { get; set; }
 
-        float Velocity { get; set; }
+    public float Velocity { get; set; }
 
-        float VelocityMax { get; set; }
-    }
+    public float VelocityMax { get; set; }
 }

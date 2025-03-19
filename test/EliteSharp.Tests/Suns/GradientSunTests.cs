@@ -8,40 +8,39 @@ using EliteSharp.Ships;
 using EliteSharp.Suns;
 using Moq;
 
-namespace EliteSharp.Tests.Suns
+namespace EliteSharp.Tests.Suns;
+
+public class GradientSunTests
 {
-    public class GradientSunTests
+    private readonly Mock<IDraw> _drawMoq;
+
+    public GradientSunTests() => _drawMoq = MockSetup.MockDraw();
+
+    [Fact]
+    public void DrawGradientSun()
     {
-        private readonly Mock<IDraw> _drawMoq;
+        // Arrange
+        GradientSun sun = new(_drawMoq.Object);
 
-        public GradientSunTests() => _drawMoq = MockSetup.MockDraw();
+        // Act
+        sun.Draw();
 
-        [Fact]
-        public void DrawGradientSun()
-        {
-            // Arrange
-            GradientSun sun = new(_drawMoq.Object);
+        // Assert
+        _drawMoq.Verify(x => x.Graphics.DrawPixel(
+            It.IsAny<Vector2>(),
+            It.IsAny<FastColor>()));
+    }
 
-            // Act
-            sun.Draw();
+    [Fact]
+    public void CloneGradientSun()
+    {
+        // Arrange
+        GradientSun sun = new(_drawMoq.Object);
 
-            // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawPixel(
-                It.IsAny<Vector2>(),
-                It.IsAny<FastColor>()));
-        }
+        // Act
+        IObject obj = sun.Clone();
 
-        [Fact]
-        public void CloneGradientSun()
-        {
-            // Arrange
-            GradientSun sun = new(_drawMoq.Object);
-
-            // Act
-            IObject obj = sun.Clone();
-
-            // Assert
-            Assert.IsType<GradientSun>(obj);
-        }
+        // Assert
+        Assert.IsType<GradientSun>(obj);
     }
 }

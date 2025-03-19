@@ -5,15 +5,14 @@
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 
-namespace EliteSharp.Suns
+namespace EliteSharp.Suns;
+
+internal static class SunFactory
 {
-    internal static class SunFactory
+    internal static IObject Create(SunType type, IDraw draw) => type switch
     {
-        internal static IObject Create(SunType type, IDraw draw) => type switch
-        {
-            SunType.Solid => new SolidSun(draw, EliteColors.White),
-            SunType.Gradient => new GradientSun(draw),
-            _ => throw new EliteException(),
-        };
-    }
+        SunType.Solid => new SolidSun(draw, EliteColors.White),
+        SunType.Gradient => new GradientSun(draw),
+        _ => throw new EliteException(),
+    };
 }

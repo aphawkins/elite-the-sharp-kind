@@ -2,16 +2,15 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp.Lasers
+namespace EliteSharp.Lasers;
+
+internal interface ILaser
 {
-    internal interface ILaser
-    {
-        string Name { get; }
+    public string Name { get; }
 
-        int Strength { get; }
+    public int Strength { get; }
 
-        int Temperature { get; set; }
+    public int Temperature { get; set; }
 
-        LaserType Type { get; }
-    }
+    public LaserType Type { get; }
 }

@@ -4,21 +4,20 @@
 
 using EliteSharp.Graphics;
 
-namespace EliteSharp.Tests.Graphics
+namespace EliteSharp.Tests.Graphics;
+
+public sealed class FastColorTests
 {
-    public class FastColorTests
+    [Fact]
+    public void FastColorEquals()
     {
-        [Fact]
-        public void FastColorEquals()
-        {
-            // Arrange
+        // Arrange
 
-            // Act
+        // Act
 
-            // Assert
-            Assert.True(BaseColors.TransparentWhite.Equals(BaseColors.TransparentWhite));
-            Assert.Equal(BaseColors.TransparentWhite, BaseColors.TransparentWhite);
-            Assert.Equal(BaseColors.TransparentWhite, new FastColor(0x00FFFFFF));
-        }
+        // Assert
+        Assert.True(BaseColors.TransparentWhite.Equals(BaseColors.TransparentWhite));
+        Assert.Equal(BaseColors.TransparentWhite, BaseColors.TransparentWhite);
+        Assert.Equal(BaseColors.TransparentWhite, new FastColor(0x00FFFFFF));
     }
 }

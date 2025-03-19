@@ -2,16 +2,15 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp
+namespace EliteSharp;
+
+internal sealed class RandomSeed
 {
-    internal sealed class RandomSeed
-    {
-        internal int A { get; set; }
+    internal int A { get; set; }
 
-        internal int B { get; set; }
+    internal int B { get; set; }
 
-        internal int C { get; set; }
+    internal int C { get; set; }
 
-        internal int D { get; set; }
-    }
+    internal int D { get; set; }
 }

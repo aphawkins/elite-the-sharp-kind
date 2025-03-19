@@ -4,44 +4,43 @@
 
 using EliteSharp.Graphics;
 
-namespace EliteSharp
+namespace EliteSharp;
+
+internal sealed class BreakPattern
 {
-    internal sealed class BreakPattern
+    private const int MaxRings = 20;
+    private readonly IDraw _draw;
+    private int _breakPatternCount;
+
+    internal BreakPattern(IDraw draw) => _draw = draw;
+
+    internal bool IsComplete { get; private set; }
+
+    internal void Draw()
     {
-        private const int MaxRings = 20;
-        private readonly IDraw _draw;
-        private int _breakPatternCount;
-
-        internal BreakPattern(IDraw draw) => _draw = draw;
-
-        internal bool IsComplete { get; private set; }
-
-        internal void Draw()
+        // Draw a break pattern (for launching, docking and hyperspacing).
+        // Just draw a very simple one for the moment.
+        for (int i = 0; i < _breakPatternCount; i++)
         {
-            // Draw a break pattern (for launching, docking and hyperspacing).
-            // Just draw a very simple one for the moment.
-            for (int i = 0; i < _breakPatternCount; i++)
-            {
-                _draw.Graphics.DrawCircle(_draw.Centre, 30 + (i * _draw.Centre.X / MaxRings), EliteColors.White);
-            }
+            _draw.Graphics.DrawCircle(_draw.Centre, 30 + (i * _draw.Centre.X / MaxRings), EliteColors.White);
         }
+    }
 
-        internal void Reset()
+    internal void Reset()
+    {
+        _draw.SetViewClipRegion();
+        _breakPatternCount = 0;
+        IsComplete = false;
+    }
+
+    internal void Update()
+    {
+        _breakPatternCount++;
+
+        if (_breakPatternCount >= MaxRings)
         {
-            _draw.SetViewClipRegion();
             _breakPatternCount = 0;
-            IsComplete = false;
-        }
-
-        internal void Update()
-        {
-            _breakPatternCount++;
-
-            if (_breakPatternCount >= MaxRings)
-            {
-                _breakPatternCount = 0;
-                IsComplete = true;
-            }
+            IsComplete = true;
         }
     }
 }

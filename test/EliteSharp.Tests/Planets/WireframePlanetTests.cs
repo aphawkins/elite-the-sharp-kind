@@ -8,41 +8,40 @@ using EliteSharp.Planets;
 using EliteSharp.Ships;
 using Moq;
 
-namespace EliteSharp.Tests.Planets
+namespace EliteSharp.Tests.Planets;
+
+public class WireframePlanetTests
 {
-    public class WireframePlanetTests
+    private readonly Mock<IDraw> _drawMoq;
+
+    public WireframePlanetTests() => _drawMoq = MockSetup.MockDraw();
+
+    [Fact]
+    public void DrawWireframePlanet()
     {
-        private readonly Mock<IDraw> _drawMoq;
+        // Arrange
+        WireframePlanet planet = new(_drawMoq.Object);
 
-        public WireframePlanetTests() => _drawMoq = MockSetup.MockDraw();
+        // Act
+        planet.Draw();
 
-        [Fact]
-        public void DrawWireframePlanet()
-        {
-            // Arrange
-            WireframePlanet planet = new(_drawMoq.Object);
+        // Assert
+        _drawMoq.Verify(x => x.Graphics.DrawCircle(
+            It.IsAny<Vector2>(),
+            It.IsAny<float>(),
+            It.IsAny<FastColor>()));
+    }
 
-            // Act
-            planet.Draw();
+    [Fact]
+    public void CloneWireframePlanet()
+    {
+        // Arrange
+        WireframePlanet planet = new(_drawMoq.Object);
 
-            // Assert
-            _drawMoq.Verify(x => x.Graphics.DrawCircle(
-                It.IsAny<Vector2>(),
-                It.IsAny<float>(),
-                It.IsAny<FastColor>()));
-        }
+        // Act
+        IObject obj = planet.Clone();
 
-        [Fact]
-        public void CloneWireframePlanet()
-        {
-            // Arrange
-            WireframePlanet planet = new(_drawMoq.Object);
-
-            // Act
-            IObject obj = planet.Clone();
-
-            // Assert
-            Assert.IsType<WireframePlanet>(obj);
-        }
+        // Assert
+        Assert.IsType<WireframePlanet>(obj);
     }
 }
