@@ -15,6 +15,8 @@ public interface IGraphics : IDisposable
 
     public float ScreenWidth { get; }
 
+    public void Load();
+
     public void DrawCircle(Vector2 centre, float radius, FastColor color);
 
     public void DrawCircleFilled(Vector2 centre, float radius, FastColor color);

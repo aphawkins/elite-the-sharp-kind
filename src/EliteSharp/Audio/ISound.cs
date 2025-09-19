@@ -6,6 +6,8 @@ namespace EliteSharp.Audio;
 
 public interface ISound : IDisposable
 {
+    public void Load();
+
     public void Play(MusicType musicType, bool repeat);
 
     public void Play(SoundEffect sfxType);

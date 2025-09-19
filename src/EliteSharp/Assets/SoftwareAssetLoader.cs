@@ -20,12 +20,12 @@ public class SoftwareAssetLoader(IAssetLocator assets) : ISoftwareAssetLoader
     public Dictionary<MusicType, SoundSampleProvider> LoadMusic()
         => _assets.MusicAssets().ToDictionary(
             x => x.Key,
-            x => new SoundSampleProvider(x.Value));
+            x => SoundSampleProvider.Create(x.Value));
 
     public Dictionary<SoundEffect, SoundSampleProvider> LoadSfx()
         => _assets.SfxAssets().ToDictionary(
             x => x.Key,
-            x => new SoundSampleProvider(x.Value));
+            x => SoundSampleProvider.Create(x.Value));
 
     public Dictionary<FontType, BitmapFont> LoadFonts()
         => _assets.FontAssets().ToDictionary(

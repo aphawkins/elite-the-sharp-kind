@@ -10,13 +10,16 @@ namespace EliteSharp.SDL;
 
 internal sealed class SDLSound : ISound
 {
-    private readonly Dictionary<MusicType, nint> _music;
-    private readonly Dictionary<SoundEffect, nint> _sfx;
+    private readonly SDLAssetLoader _assetLoader;
+    private Dictionary<MusicType, nint> _music = [];
+    private Dictionary<SoundEffect, nint> _sfx = [];
     private bool _disposedValue;
 
     public SDLSound(SDLAssetLoader assetLoader)
     {
         Guard.ArgumentNull(assetLoader);
+
+        _assetLoader = assetLoader;
 
         SDLGuard.Execute(() => SDL_Init(SDL_INIT_AUDIO));
         SDLGuard.Execute(() => Mix_Init(MIX_InitFlags.MIX_INIT_OGG));
@@ -30,9 +33,6 @@ internal sealed class SDLSound : ISound
         SDLGuard.Execute(
             () => Mix_OpenAudio(audioSpecDesired.freq, audioSpecDesired.format, audioSpecDesired.channels, audioSpecDesired.samples));
         SDLGuard.Execute(() => Mix_AllocateChannels(2));
-
-        _music = assetLoader.LoadMusic();
-        _sfx = assetLoader.LoadSfx();
     }
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -47,6 +47,12 @@ internal sealed class SDLSound : ISound
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    public void Load()
+    {
+        _music = _assetLoader.LoadMusic();
+        _sfx = _assetLoader.LoadSfx();
     }
 
     public void Play(SoundEffect sfxType) => SDLGuard.Execute(() => Mix_PlayChannel(-1, _sfx[sfxType], 0));

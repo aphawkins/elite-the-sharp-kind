@@ -62,8 +62,8 @@ public class AssetLocator : IAssetLocator
 
     protected virtual string GetName(MusicType music) => music switch
     {
-        MusicType.EliteTheme => "theme.ogg",
-        MusicType.BlueDanube => "danube.ogg",
+        MusicType.EliteTheme => "theme.mid",
+        MusicType.BlueDanube => "danube.mid",
         _ => throw new EliteException(),
     };
 

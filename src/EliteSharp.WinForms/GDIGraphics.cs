@@ -14,12 +14,13 @@ namespace EliteSharp.WinForms;
 public sealed class GDIGraphics : IGraphics
 {
     private readonly FastBitmap _fastScreen;
-    private readonly Dictionary<FontType, Font> _fonts;
-    private readonly Dictionary<ImageType, Bitmap> _images;
     private readonly Dictionary<FastColor, Pen> _pens = [];
     private readonly Bitmap _screen;
     private readonly System.Drawing.Graphics _screenGraphics;
     private readonly Action<Bitmap> _screenUpdate;
+    private readonly GDIAssetLoader _assetLoader;
+    private Dictionary<FontType, Font> _fonts = [];
+    private Dictionary<ImageType, Bitmap> _images = [];
     private RectangleF _clipRegion;
     private bool _isDisposed;
 
@@ -31,10 +32,10 @@ public sealed class GDIGraphics : IGraphics
     {
         Guard.ArgumentNull(assetLoader);
 
+        _assetLoader = assetLoader;
+
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
-        _images = assetLoader.LoadImages();
-        _fonts = assetLoader.LoadFonts();
         _screenUpdate = screenUpdate;
         _fastScreen = new((int)screenWidth, (int)screenHeight);
         _screen = new((int)screenWidth, (int)screenHeight, (int)screenWidth * 4, PixelFormat.Format32bppArgb, _fastScreen.BitmapHandle);
@@ -52,6 +53,12 @@ public sealed class GDIGraphics : IGraphics
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }
+
+    public void Load()
+    {
+        _images = _assetLoader.LoadImages();
+        _fonts = _assetLoader.LoadFonts();
+    }
 
     public void Clear()
     {

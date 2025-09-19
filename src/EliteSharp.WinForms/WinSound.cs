@@ -11,9 +11,15 @@ namespace EliteSharp.WinForms;
 [SupportedOSPlatform("windows")]
 public sealed class WinSound(GDIAssetLoader assetLoader) : ISound
 {
-    private readonly Dictionary<SoundEffect, SoundPlayer> _sfx = assetLoader.LoadSfx();
-    private readonly Dictionary<MusicType, SoundPlayer> _music = assetLoader.LoadMusic();
+    private Dictionary<SoundEffect, SoundPlayer> _sfx = [];
+    private Dictionary<MusicType, SoundPlayer> _music = [];
     private bool _disposedValue;
+
+    public void Load()
+    {
+        _sfx = assetLoader.LoadSfx();
+        _music = assetLoader.LoadMusic();
+    }
 
     public void Play(SoundEffect sfxType) => _sfx[sfxType].Play();
 

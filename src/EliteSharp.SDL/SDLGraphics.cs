@@ -14,10 +14,11 @@ namespace EliteSharp.SDL;
 
 internal sealed class SDLGraphics : IGraphics
 {
-    private readonly Dictionary<FontType, nint> _fonts;
-    private readonly Dictionary<ImageType, nint> _images;
     private readonly Dictionary<FastColor, SDL_Color> _sdlColors = [];
     private readonly SDLRenderer _renderer;
+    private readonly SDLAssetLoader _assetLoader;
+    private Dictionary<FontType, nint> _fonts = [];
+    private Dictionary<ImageType, nint> _images = [];
     private bool _isDisposed;
 
     public SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight, SDLAssetLoader assetLoader)
@@ -28,6 +29,7 @@ internal sealed class SDLGraphics : IGraphics
         _renderer = renderer;
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
+        _assetLoader = assetLoader;
 
         foreach (FastColor color in EliteColors.AllColors())
         {
@@ -40,9 +42,6 @@ internal sealed class SDLGraphics : IGraphics
             };
             _sdlColors.Add(color, sdlColor);
         }
-
-        _images = assetLoader.LoadImages();
-        _fonts = assetLoader.LoadFonts();
     }
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -57,6 +56,12 @@ internal sealed class SDLGraphics : IGraphics
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }
+
+    public void Load()
+    {
+        _images = _assetLoader.LoadImages();
+        _fonts = _assetLoader.LoadFonts();
+    }
 
     public void Clear()
     {

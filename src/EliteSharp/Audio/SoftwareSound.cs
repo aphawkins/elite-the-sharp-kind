@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using EliteSharp.Assets;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
@@ -11,18 +12,17 @@ namespace EliteSharp.Audio;
 public sealed class SoftwareSound : ISound
 {
     private readonly MixingSampleProvider _mixer;
-
-    private readonly Dictionary<SoundEffect, SoundSampleProvider> _sfx;
-    private readonly Dictionary<MusicType, SoundSampleProvider> _music;
+    private readonly SoftwareAssetLoader _assetLoader;
     private readonly WaveOutEvent _outputDevice;
+    private Dictionary<SoundEffect, SoundSampleProvider> _sfx = [];
+    private Dictionary<MusicType, SoundSampleProvider> _music = [];
     private bool _isDisposed;
 
     public SoftwareSound(SoftwareAssetLoader assetLoader)
     {
         Guard.ArgumentNull(assetLoader);
 
-        _music = assetLoader.LoadMusic();
-        _sfx = assetLoader.LoadSfx();
+        _assetLoader = assetLoader;
 
         _outputDevice = new();
         _mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(44100, 2))
@@ -40,8 +40,16 @@ public sealed class SoftwareSound : ISound
         GC.SuppressFinalize(this);
     }
 
+    public void Load()
+    {
+        _music = _assetLoader.LoadMusic();
+        _sfx = _assetLoader.LoadSfx();
+    }
+
     public void Play(MusicType musicType, bool repeat)
     {
+        Debug.Assert(_music.ContainsKey(musicType), "Music has not been loaded");
+
         StopMusic();
         SoundSampleProvider sampleProvider = _music[musicType];
         AddMixerInput(sampleProvider, repeat);
@@ -50,6 +58,8 @@ public sealed class SoftwareSound : ISound
 
     public void Play(SoundEffect sfxType)
     {
+        Debug.Assert(_sfx.ContainsKey(sfxType), "Sound effect has not been loaded");
+
         SoundSampleProvider sampleProvider = _sfx[sfxType];
         AddMixerInput(sampleProvider);
         _outputDevice.Play();

@@ -11,23 +11,24 @@ namespace EliteSharp.Graphics;
 
 public sealed class SoftwareGraphics : IGraphics
 {
-    private readonly Dictionary<FontType, BitmapFont> _fonts;
-    private readonly Dictionary<ImageType, FastBitmap> _images;
     private readonly FastBitmap _screen;
     private readonly Action<FastBitmap> _screenUpdate;
     private readonly Dictionary<string, FastBitmap> _textCache = [];
+    private readonly ISoftwareAssetLoader _assetLoader;
+    private Dictionary<FontType, BitmapFont> _fonts = [];
+    private Dictionary<ImageType, FastBitmap> _images = [];
     private bool _isDisposed;
 
     public SoftwareGraphics(float screenWidth, float screenHeight, ISoftwareAssetLoader assetLoader, Action<FastBitmap> screenUpdate)
     {
         Guard.ArgumentNull(assetLoader);
 
+        _assetLoader = assetLoader;
+
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
         _screen = new((int)screenWidth, (int)screenHeight);
         _screenUpdate = screenUpdate;
-        _images = assetLoader.LoadImages();
-        _fonts = assetLoader.LoadFonts();
         Clear();
     }
 
@@ -36,6 +37,12 @@ public sealed class SoftwareGraphics : IGraphics
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }
+
+    public void Load()
+    {
+        _images = _assetLoader.LoadImages();
+        _fonts = _assetLoader.LoadFonts();
+    }
 
     public void Clear() => _screen.Clear();
 

@@ -53,6 +53,12 @@ public sealed class EliteMain
 
     public EliteMain(IGraphics graphics, ISound sound, IKeyboard keyboard)
     {
+        Guard.ArgumentNull(graphics);
+        Guard.ArgumentNull(sound);
+
+        graphics.Load();
+        sound.Load();
+
         _graphics = graphics;
         _audio = new(sound);
         _keyboard = keyboard;
