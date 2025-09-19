@@ -146,6 +146,7 @@ public class SoftwareGraphicsTests
         // Arrange
         Mock<ISoftwareAssetLoader> moqAssetLoader = ArrangeAssets(filename);
         using SoftwareGraphics graphics = new(width, height, moqAssetLoader.Object, DoAssert);
+        graphics.Load();
 
         // Act
         graphics.DrawImage(ImageType.EliteText, new(imageX, imageY));
@@ -162,6 +163,7 @@ public class SoftwareGraphicsTests
         // Arrange
         Mock<ISoftwareAssetLoader> moqAssetLoader = ArrangeAssets(filename);
         using SoftwareGraphics graphics = new(imageWidth, imageHeight, moqAssetLoader.Object, DoAssert);
+        graphics.Load();
 
         // Act
         graphics.DrawImage(ImageType.EliteText, new(1, 1));
@@ -178,6 +180,7 @@ public class SoftwareGraphicsTests
         // Arrange
         Mock<ISoftwareAssetLoader> moqAssetLoader = ArrangeAssets(filename);
         using SoftwareGraphics graphics = new(2, 2, moqAssetLoader.Object, DoAssert);
+        graphics.Load();
         graphics.DrawPixel(new(1, 1), BaseColors.White);
 
         // Act

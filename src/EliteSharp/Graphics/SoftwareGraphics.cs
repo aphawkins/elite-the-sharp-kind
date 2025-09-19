@@ -132,6 +132,8 @@ public sealed class SoftwareGraphics : IGraphics
 
     public void DrawImage(ImageType image, Vector2 position)
     {
+        Debug.Assert(_images.ContainsKey(image), "Image has not been loaded");
+
         FastBitmap bitmap = _images[image];
         DrawImage(bitmap, position);
     }
