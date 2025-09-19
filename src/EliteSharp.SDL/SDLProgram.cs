@@ -30,9 +30,9 @@ internal static class SDLProgram
         {
             s_gameFactory.Game.Run();
         }
-        catch (Exception ex)
+        catch //// (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            //// Console.WriteLine(ex.ToString());
             Environment.Exit(-1);
             throw;
         }
