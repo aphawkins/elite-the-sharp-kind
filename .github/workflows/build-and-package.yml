@@ -28,14 +28,20 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity normal
 
-      - name: Publish EliteSharp.SDL
-        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish
-
-      - name: Zip published output
-        run: zip -r EliteSharp-Windows.zip ./publish
+      - name: Publish EliteSharp.SDL Windows
+        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileWindows
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: EliteSharp-Windows
-          path: EliteSharp-Windows.zip
+          path: publish/win-x64/*
+
+      - name: Publish EliteSharp.SDL Linux
+        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileLinux
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EliteSharp-Linux
+          path: publish/linux-x64/*
