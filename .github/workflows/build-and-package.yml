@@ -20,16 +20,22 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore --verbosity detailed
 
-      - name: Build solution
-        run: dotnet build --configuration Release --no-restore
+      - name: Build solution (detailed)
+        run: dotnet build --configuration Release --no-restore --verbosity detailed
 
-      - name: Run tests
-        run: dotnet test --no-build --verbosity normal
+      - name: List build output
+        run: Get-ChildItem -Recurse ./ | Out-String
+
+      - name: Run tests (diagnostics)
+        run: dotnet test --no-build --verbosity diag
 
       - name: Publish EliteSharp.SDL
-        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish
+        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish --verbosity detailed
+
+      - name: List publish output
+        run: Get-ChildItem -Recurse ./publish | Out-String
 
       - name: Zip published output
         run: Compress-Archive -Path ./publish/* -DestinationPath ./EliteSharp-Windows.zip
