@@ -1,0 +1,41 @@
+name: Build and Package EliteSharp.SDL
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-test-package:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
+      - name: Publish EliteSharp.SDL
+        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish
+
+      - name: Zip published output
+        run: Compress-Archive -Path ./publish/* -DestinationPath ./EliteSharp-Windows.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EliteSharp-Windows
+          path: EliteSharp-Windows.zip
