@@ -32,7 +32,7 @@ jobs:
         run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj --configuration Release --runtime win-x64 --self-contained true --output ./publish
 
       - name: Zip published output
-        run: Compress-Archive -Path ./publish/* -DestinationPath ./EliteSharp-Windows.zip
+        run: zip -r EliteSharp-Windows.zip ./publish
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
