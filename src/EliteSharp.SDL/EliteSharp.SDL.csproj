@@ -49,7 +49,9 @@
   <ItemGroup>
     <None Update="SDL2_gfx.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+			<CopyToPublishDirectory>true</CopyToPublishDirectory>
+			<ExcludeFromSingleFile>false</ExcludeFromSingleFile>
+		</None>
     <None Update="sharpkind.cfg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
