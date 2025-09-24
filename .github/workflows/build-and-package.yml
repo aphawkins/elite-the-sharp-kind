@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: EliteSharp-Windows
-          path: publish/win-x64/*
+          path: ./publish/win-x64/*
 
       - name: Publish EliteSharp.SDL Linux
         run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileLinux
@@ -44,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: EliteSharp-Linux
-          path: publish/linux-x64/*
+          path: ./publish/linux-x64/*
