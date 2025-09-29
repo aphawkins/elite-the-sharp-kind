@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Reflection;
 using EliteSharp.Assets.Fonts;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
@@ -24,7 +23,8 @@ public class AssetLocator : IAssetLocator
         => Enum.GetValues<FontType>().ToDictionary(x => x, font => Path.Combine(GetAssetPath(), "Fonts", GetName(font)));
 
     protected virtual string GetAssetPath()
-        => Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? string.Empty, "Assets");
+        //// => Path.Combine(Path.GetDirectoryName(AppContext.BaseDirectory) ?? string.Empty, "Assets");
+        => Path.Combine(".", "Assets");
 
     protected virtual string GetName(ImageType image) => image switch
     {

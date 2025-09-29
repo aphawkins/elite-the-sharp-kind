@@ -45,3 +45,8 @@ jobs:
         with:
           name: EliteSharp-Linux
           path: ./publish/linux-x64/*
+
+      - name: Delete XML documentation files
+        run: |
+          $publishPath = "./publish/win-x64"
+          Get-ChildItem -Path $publishPath -Filter *.xml -Recurse | Remove-Item

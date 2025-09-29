@@ -6,7 +6,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
-  </PropertyGroup>
+	</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MeltySynth" Version="2.4.1" />
