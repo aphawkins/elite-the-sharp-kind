@@ -31,6 +31,11 @@ jobs:
       - name: Publish EliteSharp.SDL Windows
         run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileWindows
 
+      - name: Delete XML documentation files
+        run: |
+          $publishPath = "./publish/win-x64"
+          Get-ChildItem -Path $publishPath -Filter *.xml -Recurse | Remove-Item
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -45,8 +50,3 @@ jobs:
         with:
           name: EliteSharp-Linux
           path: ./publish/linux-x64/*
-
-      - name: Delete XML documentation files
-        run: |
-          $publishPath = "./publish/win-x64"
-          Get-ChildItem -Path $publishPath -Filter *.xml -Recurse | Remove-Item
