@@ -22,22 +22,20 @@ jobs:
       - name: Set version variables
         id: vars
         run: |
-          file_version=0.$(date +%y%j).${GITHUB_RUN_NUMBER}.0
-          product_version=0.$(date +%y%j).${GITHUB_RUN_NUMBER}.${GITHUB_SHA::7}
-          echo "file_version=$file_version" >> $GITHUB_OUTPUT
-          echo "product_version=$product_version" >> $GITHUB_OUTPUT
+          version=0.$(date +%y%j).${GITHUB_RUN_NUMBER}.0
+          echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build solution
-        run: dotnet build --configuration Release --no-restore /p:FileVersion=${{ steps.vars.outputs.file_version }} /p:Version=${{ steps.vars.outputs.product_version }}
+        run: dotnet build --configuration Release --no-restore /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-build --verbosity normal /p:FileVersion=${{ steps.vars.outputs.file_version }} /p:Version=${{ steps.vars.outputs.product_version }}
+        run: dotnet test --configuration Release --no-build --verbosity normal /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Publish EliteSharp.SDL Windows
-        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileWindows /p:FileVersion=${{ steps.vars.outputs.file_version }} /p:Version=${{ steps.vars.outputs.product_version }}
+        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileWindows /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Delete XML documentation files
         run: find ./publish/win-x64 -name "*.xml" -type f -delete
@@ -49,7 +47,7 @@ jobs:
           path: ./publish/win-x64/*
 
       - name: Publish EliteSharp.SDL Linux
-        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileLinux /p:FileVersion=${{ steps.vars.outputs.file_version }} /p:Version=${{ steps.vars.outputs.product_version }}
+        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileLinux /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Delete XML documentation files
         run: find ./publish/linux-x64 -name "*.xml" -type f -delete
