@@ -19,17 +19,21 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Set version variable
+        id: vars
+        run: echo "version=0.0.${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build solution
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet test --configuration Release --no-build --verbosity normal /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Publish EliteSharp.SDL Windows
-        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileWindows
+        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileWindows /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Delete XML documentation files
         run: find ./publish/win-x64 -name "*.xml" -type f -delete
@@ -37,11 +41,11 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: EliteSharp-Windows
+          name: EliteSharp-Windows-${{ steps.vars.outputs.version }}
           path: ./publish/win-x64/*
 
       - name: Publish EliteSharp.SDL Linux
-        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileLinux
+        run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileLinux /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Delete XML documentation files
         run: find ./publish/linux-x64 -name "*.xml" -type f -delete
@@ -49,5 +53,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: EliteSharp-Linux
+          name: EliteSharp-Linux-${{ steps.vars.outputs.version }}
           path: ./publish/linux-x64/*
+            
