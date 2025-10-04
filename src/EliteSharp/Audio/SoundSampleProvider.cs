@@ -71,7 +71,7 @@ public class SoundSampleProvider : ISampleProvider
         {
             const int sampleRate = 44100;
             Synthesizer synthesizer = new(
-                "C:/code/github/aphawkins/elite-the-sharp-kind/src/EliteSharp.SDL/bin/Debug/net9.0/Assets/Music/TimGM6mb.sf2",
+                "C:/code/github/aphawkins/elite-the-sharp-kind/src/EliteSharp.SDL/bin/Debug/net10.0/Assets/Music/TimGM6mb.sf2",
                 sampleRate);
             MidiFile midiFile = new(filename);
             MidiFileSequencer sequencer = new(synthesizer);

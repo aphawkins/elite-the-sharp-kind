@@ -37,7 +37,7 @@ jobs:
       - name: Publish EliteSharp.SDL Windows
         run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileWindows /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
-      - name: Delete XML documentation files
+      - name: Delete superfluous files
         run: find ./publish/win-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
 
       - name: Upload artifact
@@ -49,7 +49,7 @@ jobs:
       - name: Publish EliteSharp.SDL Linux
         run: dotnet publish ./src/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileLinux /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
-      - name: Delete XML documentation files
+      - name: Delete superfluous files
         run: find ./publish/linux-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
 
       - name: Upload artifact
