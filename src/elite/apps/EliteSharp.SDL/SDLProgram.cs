@@ -28,7 +28,7 @@ internal static class SDLProgram
 
     private static readonly EliteAssetLocator s_assetLocator = new();
 
-#if !SOFTWARERENDERER
+#if SOFTWARERENDERER
     private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SOFTWARE", s_assetLocator);
 #else
     private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SDL", s_assetLocator);

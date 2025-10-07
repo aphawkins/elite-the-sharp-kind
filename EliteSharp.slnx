@@ -39,5 +39,4 @@
   <Folder Name="/src/useful/test/">
     <Project Path="src/useful/test/Useful.Graphics.Tests/Useful.Graphics.Tests.csproj" />
   </Folder>
-  <Folder Name="/Tests/" />
 </Solution>

@@ -72,7 +72,7 @@ public class EliteAssetLocator : IAssetLocator
 
     protected virtual string GetName(FontType font) => font switch
     {
-#if !SOFTWARERENDERER
+#if SOFTWARERENDERER
         FontType.Small => "font1.bmp",
         FontType.Large => "font2.bmp",
 #else
