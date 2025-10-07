@@ -12,10 +12,32 @@
     <File Path=".globalconfig" />
     <File Path="Directory.Build.props" />
   </Folder>
-  <Folder Name="/Tests/">
-    <Project Path="test/EliteSharp.Benchmarks/EliteSharp.Benchmarks.csproj" />
-    <Project Path="test/EliteSharp.Tests/EliteSharp.Tests.csproj" />
+  <Folder Name="/src/" />
+  <Folder Name="/src/elite/" />
+  <Folder Name="/src/elite/apps/">
+    <Project Path="src/elite/apps/EliteSharp.SDL/EliteSharp.SDL.csproj">
+      <BuildDependency Project="src/elite/libs/EliteSharp/EliteSharp.csproj" />
+      <BuildDependency Project="src/useful/libs/Useful.SDL/Useful.SDL.csproj" />
+    </Project>
   </Folder>
-  <Project Path="src/EliteSharp.SDL/EliteSharp.SDL.csproj" />
-  <Project Path="src/EliteSharp/EliteSharp.csproj" />
+  <Folder Name="/src/elite/libs/">
+    <Project Path="src/elite/libs/EliteSharp/EliteSharp.csproj" />
+  </Folder>
+  <Folder Name="/src/elite/test/">
+    <Project Path="src/elite/test/EliteSharp.Benchmarks/EliteSharp.Benchmarks.csproj" />
+    <Project Path="src/elite/test/EliteSharp.Tests/EliteSharp.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/useful/" />
+  <Folder Name="/src/useful/libs/">
+    <Project Path="src/useful/libs/Useful.Assets/Useful.Assets.csproj" />
+    <Project Path="src/useful/libs/Useful.Audio/Useful.Audio.csproj" Id="f905b754-5b15-4e1e-95a5-0ae5c0543175" />
+    <Project Path="src/useful/libs/Useful.Controls/Useful.Controls.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
+    <Project Path="src/useful/libs/Useful.Graphics/Useful.Graphics.csproj" />
+    <Project Path="src/useful/libs/Useful.SDL/Useful.SDL.csproj" />
+    <Project Path="src/useful/libs/Useful/Useful.csproj" />
+  </Folder>
+  <Folder Name="/src/useful/test/">
+    <Project Path="src/useful/test/Useful.Graphics.Tests/Useful.Graphics.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Tests/" />
 </Solution>

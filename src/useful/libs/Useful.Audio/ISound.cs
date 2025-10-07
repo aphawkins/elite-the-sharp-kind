@@ -1,0 +1,16 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+namespace Useful.Audio;
+
+public interface ISound
+{
+    public void Load();
+
+    public void Play(string musicType, bool repeat);
+
+    public void Play(string sfxType);
+
+    public void StopMusic();
+}
