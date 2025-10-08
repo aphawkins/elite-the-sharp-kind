@@ -11,10 +11,10 @@ public sealed class AudioController
 {
     private readonly bool _effectsOn;
     private readonly bool _musicOn;
-    private readonly IDictionary<string, SfxSample> _sfx;
+    private readonly IDictionary<int, SfxSample> _sfx;
     private readonly ISound _sound;
 
-    public AudioController(ISound sound, IDictionary<string, SfxSample> sfx)
+    public AudioController(ISound sound, IDictionary<int, SfxSample> sfx)
     {
         _sound = sound;
         _sfx = sfx;
@@ -27,7 +27,7 @@ public sealed class AudioController
 #endif
     }
 
-    public void PlayEffect(string effectType)
+    public void PlayEffect(int effectType)
     {
         if (!_effectsOn)
         {
@@ -43,7 +43,7 @@ public sealed class AudioController
         _sound.Play(effectType);
     }
 
-    public void PlayMusic(string musicType, bool loop)
+    public void PlayMusic(int musicType, bool loop)
     {
         if (!_musicOn)
         {
@@ -65,7 +65,7 @@ public sealed class AudioController
 
     public void UpdateSound()
     {
-        foreach (KeyValuePair<string, SfxSample> sfx in _sfx)
+        foreach (KeyValuePair<int, SfxSample> sfx in _sfx)
         {
             sfx.Value.ReduceTimeRemaining();
         }

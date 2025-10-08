@@ -51,29 +51,28 @@ internal sealed class OptionsView : IView
 
             FastColor col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? EliteColors.LightGrey : EliteColors.White;
 
-            _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, nameof(FontType.Small), col);
+            _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, (int)FontType.Small, col);
         }
 
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 80,
             $"Version: {typeof(OptionsView).Assembly.GetName().Version}",
-            nameof(FontType.Small),
+            (int)FontType.Small,
             EliteColors.White);
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 60,
             "The Sharp Kind - Andy Hawkins 2023",
-            nameof(FontType.Small),
+            (int)FontType.Small,
             EliteColors.White);
-        _draw.Graphics
-            .DrawTextCentre(
-                _draw.ScannerTop - 40,
-                "The New Kind - Christian Pinder 1999-2001",
-                nameof(FontType.Small),
-                EliteColors.White);
+        _draw.Graphics.DrawTextCentre(
+            _draw.ScannerTop - 40,
+            "The New Kind - Christian Pinder 1999-2001",
+            (int)FontType.Small,
+            EliteColors.White);
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 20,
             "Original Code - Ian Bell & David Braben",
-            nameof(FontType.Small),
+            (int)FontType.Small,
             EliteColors.White);
     }
 

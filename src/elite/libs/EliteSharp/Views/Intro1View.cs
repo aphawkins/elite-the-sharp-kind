@@ -46,13 +46,13 @@ internal sealed class Intro1View : IView
 
     public void Draw()
     {
-        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Top + 10);
+        _draw.Graphics.DrawImageCentre((int)ImageType.EliteText, _draw.Top + 10);
 
         _draw.Graphics
-            .DrawTextCentre(_draw.ScannerTop - 90, "Original Game (C) I.Bell & D.Braben", nameof(FontType.Small), EliteColors.White);
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 70, "The New Kind - Christian Pinder", nameof(FontType.Small), EliteColors.White);
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 50, "The Sharp Kind - Andy Hawkins", nameof(FontType.Small), EliteColors.White);
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Load New Commander (Y/N)?", nameof(FontType.Large), EliteColors.Gold);
+            .DrawTextCentre(_draw.ScannerTop - 90, "Original Game (C) I.Bell & D.Braben", (int)FontType.Small, EliteColors.White);
+        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 70, "The New Kind - Christian Pinder", (int)FontType.Small, EliteColors.White);
+        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 50, "The Sharp Kind - Andy Hawkins", (int)FontType.Small, EliteColors.White);
+        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Load New Commander (Y/N)?", (int)FontType.Large, EliteColors.Gold);
     }
 
     public void HandleInput()
@@ -89,7 +89,7 @@ internal sealed class Intro1View : IView
             Debug.WriteLine("Failed to create CobraMk3");
         }
 
-        _audio.PlayMusic(nameof(MusicType.EliteTheme), true);
+        _audio.PlayMusic((int)MusicType.EliteTheme, true);
     }
 
     public void UpdateUniverse()

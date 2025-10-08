@@ -154,7 +154,7 @@ public class SoftwareGraphicsTests
         graphics.Load();
 
         // Act
-        graphics.DrawImage("TestText", new(imageX, imageY));
+        graphics.DrawImage(123, new(imageX, imageY));
         graphics.ScreenUpdate();
 
         // Assert
@@ -171,7 +171,7 @@ public class SoftwareGraphicsTests
         graphics.Load();
 
         // Act
-        graphics.DrawImage("TestText", new(1, 1));
+        graphics.DrawImage(123, new(1, 1));
         graphics.ScreenUpdate();
 
         // Assert
@@ -189,7 +189,7 @@ public class SoftwareGraphicsTests
         graphics.DrawPixel(new(1, 1), BaseColors.White);
 
         // Act
-        graphics.DrawImage("TestText", new(0, 0));
+        graphics.DrawImage(123, new(0, 0));
         graphics.ScreenUpdate();
 
         // Assert
@@ -300,10 +300,10 @@ public class SoftwareGraphicsTests
     {
         Mock<IAssetLocator> moqAssetLocator = new();
         moqAssetLocator.Setup(x => x.ImageAssets)
-            .Returns(new Dictionary<string, string>() { { "TestText", GraphicsFilename(filename) } });
+            .Returns(new Dictionary<int, string>() { { 123, GraphicsFilename(filename) } });
 
         moqAssetLocator.Setup(x => x.FontAssets)
-            .Returns(new Dictionary<string, string>());
+            .Returns(new Dictionary<int, string>());
 
         return moqAssetLocator;
     }

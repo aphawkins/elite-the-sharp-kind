@@ -6,13 +6,13 @@ namespace Useful.Assets;
 
 public interface IAssetLocator
 {
-    public IDictionary<string, string> ImageAssets { get; }
+    public IDictionary<int, string> ImageAssets { get; }
 
-    public IDictionary<string, string> SfxAssets { get; }
+    public IDictionary<int, string> SfxAssets { get; }
 
-    public IDictionary<string, string> MusicAssets { get; }
+    public IDictionary<int, string> MusicAssets { get; }
 
-    public IDictionary<string, string> FontAssets { get; }
+    public IDictionary<int, string> FontAssets { get; }
 
-    public IDictionary<string, uint> Colors { get; }
+    public IList<uint> Colors { get; }
 }

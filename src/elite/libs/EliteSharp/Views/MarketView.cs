@@ -30,11 +30,11 @@ internal sealed class MarketView : IView
     {
         _draw.DrawViewHeader($"{_planet.NamePlanet(_gameState.DockedPlanet)} MARKET PRICES");
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 40), "PRODUCT", nameof(FontType.Small), EliteColors.Green);
-        _draw.Graphics.DrawTextLeft(new(166 + _draw.Offset, 40), "UNIT", nameof(FontType.Small), EliteColors.Green);
-        _draw.Graphics.DrawTextLeft(new(246 + _draw.Offset, 40), "PRICE", nameof(FontType.Small), EliteColors.Green);
-        _draw.Graphics.DrawTextLeft(new(314 + _draw.Offset, 40), "FOR SALE", nameof(FontType.Small), EliteColors.Green);
-        _draw.Graphics.DrawTextLeft(new(420 + _draw.Offset, 40), "IN HOLD", nameof(FontType.Small), EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 40), "PRODUCT", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(166 + _draw.Offset, 40), "UNIT", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(246 + _draw.Offset, 40), "PRICE", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(314 + _draw.Offset, 40), "FOR SALE", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(420 + _draw.Offset, 40), "IN HOLD", (int)FontType.Small, EliteColors.Green);
 
         int i = 0;
         foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
@@ -46,41 +46,41 @@ internal sealed class MarketView : IView
                 _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y), 508, 15, EliteColors.LightRed);
             }
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, nameof(FontType.Small), EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, (int)FontType.Small, EliteColors.White);
 
-            _draw.Graphics.DrawTextLeft(new(180 + _draw.Offset, y), stock.Value.Units, nameof(FontType.Small), EliteColors.White);
+            _draw.Graphics.DrawTextLeft(new(180 + _draw.Offset, y), stock.Value.Units, (int)FontType.Small, EliteColors.White);
 
             _draw.Graphics
-                .DrawTextRight(new(285 + _draw.Offset, y), $"{stock.Value.CurrentPrice:N1}", nameof(FontType.Small), EliteColors.White);
+                .DrawTextRight(new(285 + _draw.Offset, y), $"{stock.Value.CurrentPrice:N1}", (int)FontType.Small, EliteColors.White);
 
             _draw.Graphics.DrawTextRight(
                 new(365 + _draw.Offset, y),
                 stock.Value.CurrentQuantity > 0 ? $"{stock.Value.CurrentQuantity}" : "-",
-                nameof(FontType.Small),
+                (int)FontType.Small,
                 EliteColors.White);
             _draw.Graphics.DrawTextLeft(
                 new(365 + _draw.Offset, y),
                 stock.Value.CurrentQuantity > 0 ? stock.Value.Units : string.Empty,
-                nameof(FontType.Small),
+                (int)FontType.Small,
                 EliteColors.White);
 
             _draw.Graphics.DrawTextRight(
                 new(455 + _draw.Offset, y),
                 stock.Value.CurrentCargo > 0 ? $"{stock.Value.CurrentCargo,2}" : "-",
-                nameof(FontType.Small),
+                (int)FontType.Small,
                 EliteColors.White);
             _draw.Graphics.DrawTextLeft(
                 new(455 + _draw.Offset, y),
                 stock.Value.CurrentCargo > 0 ? stock.Value.Units : string.Empty,
-                nameof(FontType.Small),
+                (int)FontType.Small,
                 EliteColors.White);
 
             i++;
         }
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), "Cash:", nameof(FontType.Small), EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 340), "Cash:", (int)FontType.Small, EliteColors.Green);
         _draw.Graphics
-            .DrawTextRight(new(225 + _draw.Offset, 340), $"{_trade.Credits,10:N1} Credits", nameof(FontType.Small), EliteColors.White);
+            .DrawTextRight(new(225 + _draw.Offset, 340), $"{_trade.Credits,10:N1} Credits", (int)FontType.Small, EliteColors.White);
     }
 
     public void HandleInput()

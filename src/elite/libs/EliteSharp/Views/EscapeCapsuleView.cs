@@ -53,7 +53,7 @@ internal sealed class EscapeCapsuleView : IView
             _draw.Graphics.DrawTextCentre(
                 _draw.ScannerTop - 40,
                 "Escape capsule launched - Ship auto-destuct initiated.",
-                nameof(FontType.Small),
+                (int)FontType.Small,
                 EliteColors.White);
         }
     }
@@ -76,7 +76,7 @@ internal sealed class EscapeCapsuleView : IView
         }
 
         _newship.Velocity = 7;
-        _audio.PlayEffect(nameof(SoundEffect.Launch));
+        _audio.PlayEffect((int)SoundEffect.Launch);
         _i = 0;
     }
 
@@ -87,7 +87,7 @@ internal sealed class EscapeCapsuleView : IView
             if (_i == 40)
             {
                 _newship.Flags |= ShipProperties.Dead;
-                _audio.PlayEffect(nameof(SoundEffect.Explode));
+                _audio.PlayEffect((int)SoundEffect.Explode);
             }
 
             _stars.FrontStarfield();

@@ -64,30 +64,30 @@ internal sealed class GalacticChartView : IView
         if (_isFind)
         {
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", nameof(FontType.Small), EliteColors.Green);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", (int)FontType.Small, EliteColors.Green);
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, nameof(FontType.Small), EliteColors.White);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, EliteColors.White);
         }
         else if (string.IsNullOrEmpty(_gameState.PlanetName))
         {
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", nameof(FontType.Small), EliteColors.Green);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", (int)FontType.Small, EliteColors.Green);
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, nameof(FontType.Small), EliteColors.White);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, EliteColors.White);
         }
         else
         {
             _draw.Graphics.DrawTextLeft(
                 new(16 + _draw.Offset, _draw.ScannerTop - 55),
                 _gameState.PlanetName,
-                nameof(FontType.Small),
+                (int)FontType.Small,
                 EliteColors.Green);
             if (_gameState.DistanceToPlanet > 0)
             {
                 _draw.Graphics.DrawTextLeft(
                     new(16 + _draw.Offset, _draw.ScannerTop - 40),
                     $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ",
-                    nameof(FontType.Small),
+                    (int)FontType.Small,
                     EliteColors.White);
             }
         }

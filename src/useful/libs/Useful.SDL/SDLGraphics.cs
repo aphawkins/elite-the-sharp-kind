@@ -17,8 +17,8 @@ public sealed class SDLGraphics : IGraphics, IDisposable
     private readonly IAssetLocator _assetLocator;
     private readonly SDLRenderer _renderer;
     private readonly Dictionary<FastColor, SDL_Color> _sdlColors = [];
-    private Dictionary<string, nint> _fonts = [];
-    private Dictionary<string, nint> _images = [];
+    private Dictionary<int, nint> _fonts = [];
+    private Dictionary<int, nint> _images = [];
     private bool _isDisposed;
 
     public SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight, IAssetLocator assetLocator)
@@ -31,9 +31,9 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         ScreenHeight = screenHeight;
         _assetLocator = assetLocator;
 
-        foreach (KeyValuePair<string, uint> color in assetLocator.Colors)
+        foreach (uint color in assetLocator.Colors)
         {
-            FastColor fastColor = new(color.Value);
+            FastColor fastColor = new(color);
             SDL_Color sdlColor = new()
             {
                 a = fastColor.A,
@@ -83,7 +83,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
     public void DrawCircleFilled(Vector2 centre, float radius, FastColor color)
         => SDLGuard.Execute(() => filledCircleColor(_renderer, (short)centre.X, (short)centre.Y, (short)radius, color.Argb));
 
-    public void DrawImage(string imageType, Vector2 position)
+    public void DrawImage(int imageType, Vector2 position)
     {
         if (_isDisposed)
         {
@@ -106,7 +106,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDL_DestroyTexture(texture);
     }
 
-    public void DrawImageCentre(string imageType, float y)
+    public void DrawImageCentre(int imageType, float y)
     {
         if (_isDisposed)
         {
@@ -215,7 +215,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderFillRectF(_renderer, ref rectangle));
     }
 
-    public void DrawTextCentre(float y, string text, string fontType, FastColor color)
+    public void DrawTextCentre(float y, string text, int fontType, FastColor color)
     {
         if (_isDisposed || string.IsNullOrWhiteSpace(text))
         {
@@ -239,7 +239,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDL_DestroyTexture(texture);
     }
 
-    public void DrawTextLeft(Vector2 position, string text, string fontType, FastColor color)
+    public void DrawTextLeft(Vector2 position, string text, int fontType, FastColor color)
     {
         if (_isDisposed || string.IsNullOrWhiteSpace(text))
         {
@@ -263,7 +263,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDL_DestroyTexture(texture);
     }
 
-    public void DrawTextRight(Vector2 position, string text, string fontType, FastColor color)
+    public void DrawTextRight(Vector2 position, string text, int fontType, FastColor color)
     {
         if (_isDisposed || string.IsNullOrWhiteSpace(text))
         {
@@ -350,10 +350,10 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderSetClipRect(_renderer, ref rectangle));
     }
 
-    private static nint LoadFont(string fontType, string fontPath) => fontType switch
+    private static nint LoadFont(int fontType, string fontPath) => fontType switch
     {
-        "Small" => SDLGuard.Execute(() => TTF_OpenFont(fontPath, 12)),
-        "Large" => SDLGuard.Execute(() => TTF_OpenFont(fontPath, 18)),
+        0 => SDLGuard.Execute(() => TTF_OpenFont(fontPath, 12)),
+        1 => SDLGuard.Execute(() => TTF_OpenFont(fontPath, 18)),
         _ => throw new ArgumentOutOfRangeException(nameof(fontType), fontType, null),
     };
 
@@ -379,13 +379,13 @@ public sealed class SDLGraphics : IGraphics, IDisposable
             // set large fields to null
 
             // Fonts
-            foreach (KeyValuePair<string, nint> font in _fonts)
+            foreach (KeyValuePair<int, nint> font in _fonts)
             {
                 TTF_CloseFont(font.Value);
             }
 
             // Images
-            foreach (KeyValuePair<string, nint> image in _images)
+            foreach (KeyValuePair<int, nint> image in _images)
             {
                 SDL_FreeSurface(image.Value);
             }

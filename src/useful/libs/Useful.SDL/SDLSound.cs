@@ -13,8 +13,8 @@ namespace Useful.SDL;
 public sealed class SDLSound : ISound, IDisposable
 {
     private readonly IAssetLocator _assetLocator;
-    private Dictionary<string, nint> _music = [];
-    private Dictionary<string, nint> _sfx = [];
+    private Dictionary<int, nint> _music = [];
+    private Dictionary<int, nint> _sfx = [];
     private bool _disposedValue;
 
     public SDLSound(IAssetLocator assetLocator)
@@ -66,9 +66,9 @@ public sealed class SDLSound : ISound, IDisposable
             x => SDLGuard.Execute(() => Mix_LoadWAV(x.Value)));
     }
 
-    public void Play(string sfxType) => SDLGuard.Execute(() => Mix_PlayChannel(-1, _sfx[sfxType], 0));
+    public void Play(int sfxType) => SDLGuard.Execute(() => Mix_PlayChannel(-1, _sfx[sfxType], 0));
 
-    public void Play(string musicType, bool repeat)
+    public void Play(int musicType, bool repeat)
     {
         StopMusic();
 
@@ -95,17 +95,17 @@ public sealed class SDLSound : ISound, IDisposable
                 // Ignore
             }
 
-            foreach (KeyValuePair<string, nint> v in _music)
+            foreach (KeyValuePair<int, nint> v in _music)
             {
                 SDL_FreeWAV(v.Value);
             }
 
-            foreach (KeyValuePair<string, nint> v in _sfx)
+            foreach (KeyValuePair<int, nint> v in _sfx)
             {
                 Mix_FreeMusic(v.Value);
             }
 
-            foreach (KeyValuePair<string, nint> music in _music)
+            foreach (KeyValuePair<int, nint> music in _music)
             {
                 Mix_FreeMusic(music.Value);
             }

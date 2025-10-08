@@ -10,20 +10,20 @@ namespace EliteSharp.Assets;
 
 public class EliteAssetLocator : IAssetLocator
 {
-    public IDictionary<string, string> ImageAssets
-        => Enum.GetValues<ImageType>().ToDictionary(x => x.ToString(), image => Path.Combine(GetAssetPath(), "Images", GetName(image)));
+    public IDictionary<int, string> ImageAssets
+        => Enum.GetValues<ImageType>().ToDictionary(x => (int)x, image => Path.Combine(GetAssetPath(), "Images", GetName(image)));
 
-    public IDictionary<string, string> SfxAssets
-        => Enum.GetValues<SoundEffect>().ToDictionary(x => x.ToString(), effect => Path.Combine(GetAssetPath(), "SFX", GetName(effect)));
+    public IDictionary<int, string> SfxAssets
+        => Enum.GetValues<SoundEffect>().ToDictionary(x => (int)x, effect => Path.Combine(GetAssetPath(), "SFX", GetName(effect)));
 
-    public IDictionary<string, string> MusicAssets
-        => Enum.GetValues<MusicType>().ToDictionary(x => x.ToString(), music => Path.Combine(GetAssetPath(), "Music", GetName(music)));
+    public IDictionary<int, string> MusicAssets
+        => Enum.GetValues<MusicType>().ToDictionary(x => (int)x, music => Path.Combine(GetAssetPath(), "Music", GetName(music)));
 
-    public IDictionary<string, string> FontAssets
-        => Enum.GetValues<FontType>().ToDictionary(x => x.ToString(), font => Path.Combine(GetAssetPath(), "Fonts", GetName(font)));
+    public IDictionary<int, string> FontAssets
+        => Enum.GetValues<FontType>().ToDictionary(x => (int)x, font => Path.Combine(GetAssetPath(), "Fonts", GetName(font)));
 
-    public IDictionary<string, uint> Colors
-        => EliteColors.AllColors().ToDictionary(x => x.ToString(), color => color.Argb);
+    public IList<uint> Colors
+        => EliteColors.AllColors().Select(color => color.Argb).ToList();
 
     protected virtual string GetAssetPath()
         //// => Path.Combine(Path.GetDirectoryName(AppContext.BaseDirectory) ?? string.Empty, "Assets");

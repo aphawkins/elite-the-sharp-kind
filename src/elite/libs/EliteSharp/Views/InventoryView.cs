@@ -25,22 +25,22 @@ internal sealed class InventoryView : IView
     {
         _draw.DrawViewHeader("INVENTORY");
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 50), "Fuel:", nameof(FontType.Small), EliteColors.Green);
-        _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 50), $"{_ship.Fuel:N1} Light Years", nameof(FontType.Small), EliteColors.White);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 50), "Fuel:", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 50), $"{_ship.Fuel:N1} Light Years", (int)FontType.Small, EliteColors.White);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 66), "Cash:", nameof(FontType.Small), EliteColors.Green);
-        _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 66), $"{_trade.Credits:N1} Credits", nameof(FontType.Small), EliteColors.White);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 66), "Cash:", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 66), $"{_trade.Credits:N1} Credits", (int)FontType.Small, EliteColors.White);
 
         int y = 98;
         foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
         {
             if (stock.Value.CurrentCargo > 0)
             {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, nameof(FontType.Small), EliteColors.White);
+                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, (int)FontType.Small, EliteColors.White);
                 _draw.Graphics.DrawTextLeft(
                     new(180 + _draw.Offset, y),
                     $"{stock.Value.CurrentCargo}{stock.Value.Units}",
-                    nameof(FontType.Small),
+                    (int)FontType.Small,
                     EliteColors.White);
                 y += 16;
             }

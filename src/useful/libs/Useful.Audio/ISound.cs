@@ -8,9 +8,9 @@ public interface ISound
 {
     public void Load();
 
-    public void Play(string musicType, bool repeat);
+    public void Play(int musicType, bool repeat);
 
-    public void Play(string sfxType);
+    public void Play(int sfxType);
 
     public void StopMusic();
 }

@@ -178,7 +178,7 @@ internal sealed class Pilot
         if (!IsAutoPilotOn)
         {
             IsAutoPilotOn = true;
-            _audio.PlayMusic(nameof(MusicType.BlueDanube), true);
+            _audio.PlayMusic((int)MusicType.BlueDanube, true);
         }
     }
 

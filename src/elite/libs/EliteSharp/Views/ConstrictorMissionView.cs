@@ -80,17 +80,17 @@ internal sealed class ConstrictorMissionView : IView
                 470,
                 _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, EliteColors.Gold);
         }
         else if (_gameState.Cmdr.Mission == 3)
         {
             _draw.DrawViewHeader("INCOMING MESSAGE");
 
-            _draw.Graphics.DrawTextCentre(100, "Congratulations Commander!", nameof(FontType.Large), EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(100, "Congratulations Commander!", (int)FontType.Large, EliteColors.Gold);
 
             _draw.DrawTextPretty(new(116 + _draw.Offset, 132), 400, _mission1_debrief);
 
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, EliteColors.Gold);
         }
     }
 

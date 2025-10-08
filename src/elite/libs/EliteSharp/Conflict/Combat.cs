@@ -59,7 +59,7 @@ internal sealed class Combat
         {
             _ship.EcmActive = 32;
             _isEcmOurs = ours;
-            _audio.PlayEffect(nameof(SoundEffect.Ecm));
+            _audio.PlayEffect((int)SoundEffect.Ecm);
         }
     }
 
@@ -79,12 +79,12 @@ internal sealed class Combat
             {
                 MissileTarget = obj;
                 _gameState.InfoMessage("Target Locked");
-                _audio.PlayEffect(nameof(SoundEffect.Beep));
+                _audio.PlayEffect((int)SoundEffect.Beep);
             }
 
             if (_laserStrength > 0)
             {
-                _audio.PlayEffect(nameof(SoundEffect.HitEnemy));
+                _audio.PlayEffect((int)SoundEffect.HitEnemy);
 
                 if (!obj.Flags.HasFlag(ShipProperties.Station))
                 {
@@ -166,7 +166,7 @@ internal sealed class Combat
             _gameState.InfoMessage("Right On Commander!");
         }
 
-        _audio.PlayEffect(nameof(SoundEffect.Explode));
+        _audio.PlayEffect((int)SoundEffect.Explode);
         obj.Flags |= ShipProperties.Dead;
 
         if (obj.Type == ShipType.Constrictor)
@@ -211,7 +211,7 @@ internal sealed class Combat
         _laserCounter = _laserStrength > 127 ? 0 : _laserStrength & 250;
         _laserStrength &= 127;
 
-        _audio.PlayEffect(nameof(SoundEffect.Pulse));
+        _audio.PlayEffect((int)SoundEffect.Pulse);
         _gameState.LaserTemp += 8;
         if (_ship.Energy > 1)
         {
@@ -252,7 +252,7 @@ internal sealed class Combat
         IsMissileArmed = false;
         MissileTarget = null;
 
-        _audio.PlayEffect(nameof(SoundEffect.Missile));
+        _audio.PlayEffect((int)SoundEffect.Missile);
     }
 
     internal void RandomEncounter()
@@ -566,11 +566,11 @@ internal sealed class Combat
                 if ((ship.Location.Z >= 0.0 && (int)_ship.ShieldFront == 0) ||
                     (ship.Location.Z < 0.0 && (int)_ship.ShieldRear == 0))
                 {
-                    _audio.PlayEffect(nameof(SoundEffect.IncomingFire2));
+                    _audio.PlayEffect((int)SoundEffect.IncomingFire2);
                 }
                 else
                 {
-                    _audio.PlayEffect(nameof(SoundEffect.IncomingFire1));
+                    _audio.PlayEffect((int)SoundEffect.IncomingFire1);
                 }
             }
             else
@@ -674,7 +674,7 @@ internal sealed class Combat
     {
         MissileTarget = null;
         IsMissileArmed = false;
-        _audio.PlayEffect(nameof(SoundEffect.Boop));
+        _audio.PlayEffect((int)SoundEffect.Boop);
     }
 
     private static bool IsInTarget(IShip ship, Vector3 position)
@@ -1053,7 +1053,7 @@ internal sealed class Combat
 
         if (_ship.EcmActive != 0)
         {
-            _audio.PlayEffect(nameof(SoundEffect.Explode));
+            _audio.PlayEffect((int)SoundEffect.Explode);
 
             missile.Flags |= ShipProperties.Dead;
             return;
@@ -1064,7 +1064,7 @@ internal sealed class Combat
             if (missile.Location.Length() < 256)
             {
                 missile.Flags |= ShipProperties.Dead;
-                _audio.PlayEffect(nameof(SoundEffect.Explode));
+                _audio.PlayEffect((int)SoundEffect.Explode);
                 _ship.DamageShip(250, missile.Location.Z >= 0.0);
                 return;
             }
@@ -1085,7 +1085,7 @@ internal sealed class Combat
                 }
                 else
                 {
-                    _audio.PlayEffect(nameof(SoundEffect.Explode));
+                    _audio.PlayEffect((int)SoundEffect.Explode);
                 }
 
                 return;

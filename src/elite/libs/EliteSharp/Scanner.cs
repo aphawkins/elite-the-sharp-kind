@@ -32,7 +32,7 @@ internal sealed class Scanner
         _scannerCentre = new(_draw.Centre.X - 3, _draw.ScannerTop + 63);
     }
 
-    internal void DrawScanner() => _draw.Graphics.DrawImage(nameof(ImageType.Scanner), new(_draw.ScannerLeft, _draw.ScannerTop));
+    internal void DrawScanner() => _draw.Graphics.DrawImage((int)ImageType.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));
 
     internal void UpdateConsole()
     {
@@ -58,12 +58,12 @@ internal sealed class Scanner
 
         if (_universe.IsStationPresent)
         {
-            _draw.Graphics.DrawImage(nameof(ImageType.BigS), new(_draw.ScannerLeft + 387, _draw.ScannerTop + 105));
+            _draw.Graphics.DrawImage((int)ImageType.BigS, new(_draw.ScannerLeft + 387, _draw.ScannerTop + 105));
         }
 
         if (_ship.EcmActive != 0)
         {
-            _draw.Graphics.DrawImage(nameof(ImageType.BigE), new(_draw.ScannerLeft + 115, _draw.ScannerTop + 105));
+            _draw.Graphics.DrawImage((int)ImageType.BigE, new(_draw.ScannerLeft + 115, _draw.ScannerTop + 105));
         }
     }
 
@@ -190,14 +190,14 @@ internal sealed class Scanner
         if (_combat.IsMissileArmed)
         {
             _draw.Graphics
-                .DrawImage((_combat.MissileTarget == null) ? nameof(ImageType.MissileYellow) : nameof(ImageType.MissileRed), location);
+                .DrawImage((_combat.MissileTarget == null) ? (int)ImageType.MissileYellow : (int)ImageType.MissileRed, location);
             location.X += 16;
             missileCount--;
         }
 
         for (; missileCount > 0; missileCount--)
         {
-            _draw.Graphics.DrawImage(nameof(ImageType.MissileGreen), location);
+            _draw.Graphics.DrawImage((int)ImageType.MissileGreen, location);
             location.X += 16;
         }
     }
@@ -261,11 +261,11 @@ internal sealed class Scanner
 
         if (dest.Z < 0)
         {
-            _draw.Graphics.DrawImage(nameof(ImageType.DotRed), position);
+            _draw.Graphics.DrawImage((int)ImageType.DotRed, position);
         }
         else
         {
-            _draw.Graphics.DrawImage(nameof(ImageType.GreenDot), position);
+            _draw.Graphics.DrawImage((int)ImageType.GreenDot, position);
         }
     }
 

@@ -39,7 +39,7 @@ internal sealed class DockingView : IView
         _combat.Reset();
         _universe.ClearUniverse();
         _breakPattern.Reset();
-        _audio.PlayEffect(nameof(SoundEffect.Dock));
+        _audio.PlayEffect((int)SoundEffect.Dock);
     }
 
     public void UpdateUniverse()

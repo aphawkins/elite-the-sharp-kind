@@ -55,22 +55,22 @@ internal sealed class ThargoidMissionView : IView
         {
             _draw.DrawViewHeader("INCOMING MESSAGE");
             _draw.DrawTextPretty(new(116, 132), 400, Mission2BriefA);
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, EliteColors.Gold);
         }
         else if (_gameState.Cmdr.Mission == 5)
         {
             _draw.DrawViewHeader("INCOMING MESSAGE");
             _draw.DrawTextPretty(new(16, 50), 300, Mission2BriefB);
             _draw.DrawTextPretty(new(16, 200), 470, Mission2BriefC);
-            _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(352, 46));
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), EliteColors.Gold);
+            _draw.Graphics.DrawImage((int)ImageType.Blake, new(352, 46));
+            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, EliteColors.Gold);
         }
         else if (_gameState.Cmdr.Mission == 6)
         {
             _draw.DrawViewHeader("INCOMING MESSAGE");
-            _draw.Graphics.DrawTextCentre(100, "Well done Commander.", nameof(FontType.Large), EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(100, "Well done Commander.", (int)FontType.Large, EliteColors.Gold);
             _draw.DrawTextPretty(new(116, 132), 400, Mission2Debrief);
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, EliteColors.Gold);
         }
     }
 

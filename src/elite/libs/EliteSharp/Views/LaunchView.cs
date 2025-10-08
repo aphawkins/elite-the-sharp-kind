@@ -39,7 +39,7 @@ internal sealed class LaunchView : IView
         _combat.Reset();
         _universe.ClearUniverse();
         _breakPattern.Reset();
-        _audio.PlayEffect(nameof(SoundEffect.Launch));
+        _audio.PlayEffect((int)SoundEffect.Launch);
     }
 
     public void UpdateUniverse()
