@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+////using System.Reflection;
 using EliteSharp.Audio;
 using EliteSharp.Graphics;
 using Useful.Assets;
@@ -26,9 +27,8 @@ public class EliteAssetLocator : IAssetLocator
         => EliteColors.AllColors().Select(color => color.Argb).ToList();
 
     protected virtual string GetAssetPath()
-        //// => Path.Combine(Path.GetDirectoryName(AppContext.BaseDirectory) ?? string.Empty, "Assets");
-        => Path.Combine(".", "Assets");
-
+        => Path.Combine(Path.GetDirectoryName(AppContext.BaseDirectory) ?? string.Empty, "Assets");
+ 
     protected virtual string GetName(ImageType image) => image switch
     {
         ImageType.GreenDot => "greendot.bmp",
