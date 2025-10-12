@@ -2,11 +2,15 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using Useful.Assets;
+
 namespace Useful.Audio;
 
 public interface ISound
 {
-    public void Load();
+    public bool IsInitialized { get; }
+
+    public void Initialize(IAssetLocator assetLocator);
 
     public void Play(int musicType, bool repeat);
 

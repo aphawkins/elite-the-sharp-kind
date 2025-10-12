@@ -13,16 +13,13 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     private readonly FastBitmap _screen;
     private readonly Action<FastBitmap> _screenUpdate;
     private readonly Dictionary<string, FastBitmap> _textCache = [];
-    private readonly IAssetLocator _assetLocator;
     private Dictionary<int, BitmapFont> _fonts = [];
     private Dictionary<int, FastBitmap> _images = [];
     private bool _isDisposed;
 
-    public SoftwareGraphics(float screenWidth, float screenHeight, IAssetLocator assetLocator, Action<FastBitmap> screenUpdate)
+    public SoftwareGraphics(float screenWidth, float screenHeight, Action<FastBitmap> screenUpdate)
     {
-        Guard.ArgumentNull(assetLocator);
-
-        _assetLocator = assetLocator;
+        Guard.ArgumentNull(screenUpdate);
 
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
@@ -31,22 +28,13 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         Clear();
     }
 
+    public bool IsInitialized { get; set; }
+
     public float Scale { get; } = 2;
 
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }
-
-    public void Load()
-    {
-        _images = _assetLocator.ImageAssets.ToDictionary(
-            x => x.Key,
-            x => BitmapFile.Read(x.Value));
-
-        _fonts = _assetLocator.FontAssets.ToDictionary(
-            x => x.Key,
-            x => new BitmapFont(BitmapFile.Read(x.Value)));
-    }
 
     public void Clear() => _screen.Clear();
 
@@ -293,6 +281,22 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                 }
             }
         }
+    }
+
+    public void Initialize(IAssetLocator assetLocator, IEnumerable<FastColor> colors)
+    {
+        Guard.ArgumentNull(assetLocator);
+        Guard.ArgumentNull(colors);
+
+        _images = assetLocator.ImagePaths.ToDictionary(
+            x => x.Key,
+            x => BitmapFile.Read(x.Value));
+
+        _fonts = assetLocator.FontBitmapPaths.ToDictionary(
+            x => x.Key,
+            x => new BitmapFont(BitmapFile.Read(x.Value)));
+
+        IsInitialized = true;
     }
 
     public void ScreenUpdate() => _screenUpdate(_screen);

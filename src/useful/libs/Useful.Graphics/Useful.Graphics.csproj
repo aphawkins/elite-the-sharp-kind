@@ -22,7 +22,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Useful.Assets\Useful.Assets.csproj" />
     <ProjectReference Include="..\Useful\Useful.csproj" />
   </ItemGroup>
 </Project>

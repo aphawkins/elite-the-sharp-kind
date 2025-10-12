@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Globalization;
-using EliteSharp.Assets;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
@@ -25,14 +24,6 @@ internal static class SDLProgram
     private const int ScreenHeight = 512;
 #endif
 
-    private static readonly EliteAssetLocator s_assetLocator = new();
-
-#if SOFTWARERENDERER
-    private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SOFTWARE", s_assetLocator);
-#else
-    private static readonly SDLGameFactory s_gameFactory = new(ScreenWidth, ScreenHeight, Title, "SDL", s_assetLocator);
-#endif
-
     public static void Main()
     {
         Logger seriLogger = new LoggerConfiguration()
@@ -49,12 +40,18 @@ internal static class SDLProgram
 
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(SDLProgram));
 
-        EliteMain game = new(s_gameFactory.Graphics, s_gameFactory.Sound, s_gameFactory.Keyboard);
+#if SOFTWARERENDERER
+        using SoftwareAbstraction abstraction = new(ScreenWidth, ScreenHeight, Title);
+#else
+        using SDLAbstraction abstraction = new(ScreenWidth, ScreenHeight, Title);
+#endif
+
+        EliteMain elite = new(abstraction);
 
         try
         {
             LogMessages.StartingTitle(logger, Title);
-            game.Run();
+            elite.Run();
         }
         catch (Exception ex)
         {

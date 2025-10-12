@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using BenchmarkDotNet.Attributes;
-using EliteSharp.Assets;
 using EliteSharp.Graphics;
 using EliteSharp.Suns;
 using Useful.Controls;
@@ -25,7 +24,7 @@ public class SunBenchmarks : IDisposable
         SoftwareKeyboard keyboard = new();
         Dictionary<Views.Screen, Views.IView> views = [];
         GameState gameState = new(keyboard, views);
-        _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, new EliteAssetLocator(), (_) => { });
+        _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });
         EliteDraw draw = new(gameState, _graphics);
         _gradientSun = new(draw);
         _solidSun = new(draw, EliteColors.White);

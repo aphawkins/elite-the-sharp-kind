@@ -2,14 +2,15 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using Useful.Assets;
+using Useful.Abstraction;
 using Useful.Audio;
+using Useful.Controls;
 using Useful.Graphics;
 using static SDL2.SDL;
 
 namespace Useful.SDL;
 
-public sealed class SDLGameFactory : IDisposable
+public sealed class SoftwareAbstraction : IAbstraction, IDisposable
 {
     private readonly int _screenHeight;
     private readonly int _screenWidth;
@@ -17,35 +18,26 @@ public sealed class SDLGameFactory : IDisposable
     private readonly SDLWindow _window;
     private bool _isDisposed;
 
-    public SDLGameFactory(int screenWidth, int screenHeight, string title, string type, IAssetLocator assetLocator)
+    public SoftwareAbstraction(int screenWidth, int screenHeight, string title)
     {
         _screenWidth = screenWidth;
         _screenHeight = screenHeight;
-        Keyboard = new();
         _window = new(_screenWidth, _screenHeight, title);
         _renderer = new(_window);
 
-        if (type == "SOFTWARE")
-        {
-            Graphics = new SoftwareGraphics(
-                _screenWidth,
-                _screenHeight,
-                assetLocator,
-                SoftwareScreenUpdate);
-            Sound = new SoftwareSound(assetLocator);
-        }
-        else
-        {
-            Graphics = new SDLGraphics(_renderer, _screenWidth, _screenHeight, assetLocator);
-            Sound = new SDLSound(assetLocator);
-        }
+        Graphics = new SoftwareGraphics(
+            _screenWidth,
+            _screenHeight,
+            SoftwareScreenUpdate);
+        Sound = new SoftwareSound();
+        Keyboard = new SDLKeyboard();
     }
 
     public IGraphics Graphics { get; }
 
     public ISound Sound { get; }
 
-    public SDLKeyboard Keyboard { get; }
+    public IKeyboard Keyboard { get; }
 
     public void Dispose()
     {

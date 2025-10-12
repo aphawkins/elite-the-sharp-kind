@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using BenchmarkDotNet.Attributes;
-using EliteSharp.Assets;
 using EliteSharp.Graphics;
 using EliteSharp.Planets;
 using Useful.Controls;
@@ -27,7 +26,7 @@ public class PlanetBenchmarks : IDisposable
         SoftwareKeyboard keyboard = new();
         Dictionary<Views.Screen, Views.IView> views = [];
         GameState gameState = new(keyboard, views);
-        _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, new EliteAssetLocator(), (_) => { });
+        _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });
         EliteDraw draw = new(gameState, _graphics);
         _wireframePlanet = new(draw);
         _solidPlanet = new(draw, EliteColors.White);

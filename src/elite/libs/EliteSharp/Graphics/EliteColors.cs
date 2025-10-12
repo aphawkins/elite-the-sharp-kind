@@ -62,7 +62,7 @@ public static class EliteColors
 
     public static FastColor Yellow => new(0xFFFFFF00);
 
-    public static IEnumerable<FastColor> AllColors()
+    public static IEnumerable<FastColor> AllColors
     => [
         Black,
         Blue,

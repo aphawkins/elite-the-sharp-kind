@@ -13,6 +13,8 @@ using EliteSharp.Ships;
 using EliteSharp.Trader;
 using EliteSharp.Views;
 using Useful;
+using Useful.Abstraction;
+using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
@@ -33,12 +35,14 @@ namespace EliteSharp;
 
 public sealed class EliteMain
 {
+    private readonly IGraphics _graphics;
+    private readonly ISound _sound;
+    private readonly IKeyboard _keyboard;
+
     private readonly AudioController _audio;
     private readonly Combat _combat;
     private readonly EliteDraw _draw;
     private readonly GameState _gameState;
-    private readonly IGraphics _graphics;
-    private readonly IKeyboard _keyboard;
     private readonly FrameCounter _lockObj = new();
     private readonly long _oneSecondinTicks = TimeSpan.FromSeconds(1).Ticks;
     private readonly long _timerResolution = TimeSpan.FromSeconds(1).Ticks / Stopwatch.Frequency;
@@ -53,15 +57,19 @@ public sealed class EliteMain
     private readonly Dictionary<Screen, IView> _views = [];
     private bool _isGamePaused;
 
-    public EliteMain(IGraphics graphics, ISound sound, IKeyboard keyboard)
+    public EliteMain(IAbstraction abstraction)
     {
-        Guard.ArgumentNull(graphics);
-        Guard.ArgumentNull(sound);
+        Guard.ArgumentNull(abstraction);
 
-        graphics.Load();
-        sound.Load();
+        AssetLocator assetLocator = new();
+        assetLocator.Initialize();
 
-        _graphics = graphics;
+        _graphics = abstraction.Graphics;
+        _sound = abstraction.Sound;
+        _keyboard = abstraction.Keyboard;
+
+        _graphics.Initialize(assetLocator, EliteColors.AllColors);
+        _sound.Initialize(assetLocator);
 
         // TODO: improve this
         Dictionary<int, SfxSample> sfx = new()
@@ -81,8 +89,7 @@ public sealed class EliteMain
             { (int)SoundEffect.Beep, new(2) },
             { (int)SoundEffect.Boop, new(7) },
         };
-        _audio = new(sound, sfx);
-        _keyboard = keyboard;
+        _audio = new(_sound, sfx);
         ConfigFile configFile = new();
         _gameState = new(_keyboard, _views)
         {
@@ -101,29 +108,29 @@ public sealed class EliteMain
         _space = new(_gameState, _audio, _pilot, _combat, trade, _ship, planet, _stars, _universe, _draw);
         _scanner = new(_gameState, _draw, _universe, _ship, _combat);
 
-        _views.Add(Screen.IntroOne, new Intro1View(_gameState, _audio, keyboard, _ship, _combat, _universe, _draw));
-        _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _audio, keyboard, _stars, _ship, _combat, _universe, _draw));
-        _views.Add(Screen.GalacticChart, new GalacticChartView(_gameState, _draw, keyboard, planet, _ship));
-        _views.Add(Screen.ShortRangeChart, new ShortRangeChartView(_gameState, _draw, keyboard, planet, _ship));
+        _views.Add(Screen.IntroOne, new Intro1View(_gameState, _audio, _keyboard, _ship, _combat, _universe, _draw));
+        _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _audio, _keyboard, _stars, _ship, _combat, _universe, _draw));
+        _views.Add(Screen.GalacticChart, new GalacticChartView(_gameState, _draw, _keyboard, planet, _ship));
+        _views.Add(Screen.ShortRangeChart, new ShortRangeChartView(_gameState, _draw, _keyboard, planet, _ship));
         _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _draw, planet));
-        _views.Add(Screen.MarketPrices, new MarketView(_gameState, _draw, keyboard, trade, planet));
+        _views.Add(Screen.MarketPrices, new MarketView(_gameState, _draw, _keyboard, trade, planet));
         _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _draw, _ship, trade, planet, _universe));
-        _views.Add(Screen.FrontView, new PilotFrontView(_gameState, keyboard, _stars, _pilot, _ship, _space, _draw));
-        _views.Add(Screen.RearView, new PilotRearView(_gameState, keyboard, _stars, _pilot, _ship, _space, _draw));
-        _views.Add(Screen.LeftView, new PilotLeftView(_gameState, keyboard, _stars, _pilot, _ship, _space, _draw));
-        _views.Add(Screen.RightView, new PilotRightView(_gameState, keyboard, _stars, _pilot, _ship, _space, _draw));
+        _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw));
+        _views.Add(Screen.RearView, new PilotRearView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw));
+        _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw));
+        _views.Add(Screen.RightView, new PilotRightView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw));
         _views.Add(Screen.Docking, new DockingView(_gameState, _audio, _space, _combat, _universe, _draw));
         _views.Add(Screen.Undocking, new LaunchView(_gameState, _audio, _space, _combat, _universe, _draw));
         _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _audio, _draw));
         _views.Add(Screen.Inventory, new InventoryView(_draw, _ship, trade));
-        _views.Add(Screen.EquipShip, new EquipmentView(_gameState, _draw, keyboard, _ship, trade, _scanner));
-        _views.Add(Screen.Options, new OptionsView(_gameState, _draw, keyboard));
-        _views.Add(Screen.LoadCommander, new LoadCommanderView(_gameState, _draw, keyboard, _save));
-        _views.Add(Screen.SaveCommander, new SaveCommanderView(_gameState, _draw, keyboard, _save));
-        _views.Add(Screen.Quit, new QuitView(_gameState, _draw, keyboard));
-        _views.Add(Screen.Settings, new SettingsView(_gameState, _draw, keyboard, configFile));
-        _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _draw, keyboard, _ship, trade, _combat, _universe));
-        _views.Add(Screen.MissionTwo, new ThargoidMissionView(_gameState, _draw, keyboard, _ship));
+        _views.Add(Screen.EquipShip, new EquipmentView(_gameState, _draw, _keyboard, _ship, trade, _scanner));
+        _views.Add(Screen.Options, new OptionsView(_gameState, _draw, _keyboard));
+        _views.Add(Screen.LoadCommander, new LoadCommanderView(_gameState, _draw, _keyboard, _save));
+        _views.Add(Screen.SaveCommander, new SaveCommanderView(_gameState, _draw, _keyboard, _save));
+        _views.Add(Screen.Quit, new QuitView(_gameState, _draw, _keyboard));
+        _views.Add(Screen.Settings, new SettingsView(_gameState, _draw, _keyboard, configFile));
+        _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _draw, _keyboard, _ship, trade, _combat, _universe));
+        _views.Add(Screen.MissionTwo, new ThargoidMissionView(_gameState, _draw, _keyboard, _ship));
         _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _audio, _stars, _ship, trade, _universe, _pilot, _draw));
         _views.Add(Screen.GameOver, new GameOverView(_gameState, _audio, _stars, _ship, _combat, _universe, _draw));
 

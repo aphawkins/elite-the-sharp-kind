@@ -28,6 +28,7 @@
 
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\useful\libs\Useful.Abstraction\Useful.Abstraction.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Audio\Useful.Audio.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Controls\Useful.Controls.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Graphics\Useful.Graphics.csproj" />
@@ -35,7 +36,10 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\Fonts\OpenSans-Regular.ttf">
+    <None Update="Assets\AssetManifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\FontsTrueType\OpenSans-Regular.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Images\blake.bmp">
@@ -47,10 +51,10 @@
     <None Update="Assets\Images\elitetext.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Fonts\font1.bmp">
+    <None Update="Assets\FontsBitmap\font1.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Fonts\font2.bmp">
+    <None Update="Assets\FontsBitmap\font2.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Images\greendot.bmp">

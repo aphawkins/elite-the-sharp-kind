@@ -24,4 +24,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Useful.Audio\Useful.Audio.csproj" />
+    <ProjectReference Include="..\Useful.Controls\Useful.Controls.csproj" />
+    <ProjectReference Include="..\Useful.Graphics\Useful.Graphics.csproj" />
+    <ProjectReference Include="..\Useful\Useful.csproj" />
+  </ItemGroup>
 </Project>

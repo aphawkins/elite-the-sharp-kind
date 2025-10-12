@@ -2,14 +2,17 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Useful.SDL;
 
-internal static class SDLGuard
+public static class SDLGuard
 {
-    internal static nint Execute(Func<nint> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
+    public static nint Execute(Func<nint> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
     {
+        Debug.Assert(sdlMethod != null, "sdlMethod should not be null");
+
         nint result = sdlMethod();
         if (result == nint.Zero)
         {
@@ -22,8 +25,10 @@ internal static class SDLGuard
         return result;
     }
 
-    internal static int Execute(Func<int> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
+    public static int Execute(Func<int> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
     {
+        Debug.Assert(sdlMethod != null, "sdlMethod should not be null");
+
         int result = sdlMethod();
         if (result < 0)
         {

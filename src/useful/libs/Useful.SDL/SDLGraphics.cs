@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Useful.Assets;
@@ -14,35 +15,19 @@ namespace Useful.SDL;
 
 public sealed class SDLGraphics : IGraphics, IDisposable
 {
-    private readonly IAssetLocator _assetLocator;
     private readonly SDLRenderer _renderer;
     private readonly Dictionary<FastColor, SDL_Color> _sdlColors = [];
     private Dictionary<int, nint> _fonts = [];
     private Dictionary<int, nint> _images = [];
     private bool _isDisposed;
 
-    public SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight, IAssetLocator assetLocator)
+    public SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight)
     {
         Guard.ArgumentNull(renderer);
-        Guard.ArgumentNull(assetLocator);
 
         _renderer = renderer;
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
-        _assetLocator = assetLocator;
-
-        foreach (uint color in assetLocator.Colors)
-        {
-            FastColor fastColor = new(color);
-            SDL_Color sdlColor = new()
-            {
-                a = fastColor.A,
-                r = fastColor.R,
-                b = fastColor.B,
-                g = fastColor.G,
-            };
-            _sdlColors.Add(fastColor, sdlColor);
-        }
     }
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -51,6 +36,8 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: false);
     }
+
+    public bool IsInitialized { get; }
 
     public float Scale { get; } = 2;
 
@@ -311,15 +298,30 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderGeometry(_renderer, nint.Zero, vertices, vertices.Length, null, 0));
     }
 
-    public void Load()
+    public void Initialize(IAssetLocator assetLocator, IEnumerable<FastColor> colors)
     {
-        _images = _assetLocator.ImageAssets.ToDictionary(
+        Guard.ArgumentNull(assetLocator);
+        Guard.ArgumentNull(colors);
+
+        _images = assetLocator.ImagePaths.ToDictionary(
             x => x.Key,
             x => SDLGuard.Execute(() => SDL_LoadBMP(x.Value)));
 
-        _fonts = _assetLocator.FontAssets.ToDictionary(
+        _fonts = assetLocator.FontTrueTypePaths.ToDictionary(
             x => x.Key,
             x => LoadFont(x.Key, x.Value));
+
+        foreach (FastColor fastColor in colors)
+        {
+            SDL_Color sdlColor = new()
+            {
+                a = fastColor.A,
+                r = fastColor.R,
+                b = fastColor.B,
+                g = fastColor.G,
+            };
+            _sdlColors.Add(fastColor, sdlColor);
+        }
     }
 
     public void ScreenUpdate()
@@ -350,12 +352,20 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderSetClipRect(_renderer, ref rectangle));
     }
 
-    private static nint LoadFont(int fontType, string fontPath) => fontType switch
+    private static nint LoadFont(int fontType, string fontPath)
     {
-        0 => SDLGuard.Execute(() => TTF_OpenFont(fontPath, 12)),
-        1 => SDLGuard.Execute(() => TTF_OpenFont(fontPath, 18)),
-        _ => throw new ArgumentOutOfRangeException(nameof(fontType), fontType, null),
-    };
+        Debug.Assert(File.Exists(fontPath), $"Font file '{fontPath}' does not exist.");
+        Debug.Assert(
+            string.Equals(Path.GetExtension(fontPath), ".ttf", StringComparison.OrdinalIgnoreCase),
+            $"Font file '{fontPath}' must be a TTF file.");
+
+        return fontType switch
+        {
+            0 => SDLGuard.Execute(() => TTF_OpenFont(fontPath, 12)),
+            1 => SDLGuard.Execute(() => TTF_OpenFont(fontPath, 18)),
+            _ => throw new ArgumentOutOfRangeException(nameof(fontType), fontType, null),
+        };
+    }
 
     private SDL_Vertex ConvertVertex(Vector2 point, in FastColor color) => new()
     {

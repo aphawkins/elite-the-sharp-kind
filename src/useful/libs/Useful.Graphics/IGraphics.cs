@@ -3,18 +3,21 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using Useful.Assets;
 
 namespace Useful.Graphics;
 
 public interface IGraphics
 {
-    public float ScreenHeight { get; }
+    public bool IsInitialized { get; }
 
     public float Scale { get; }
 
+    public float ScreenHeight { get; }
+
     public float ScreenWidth { get; }
 
-    public void Load();
+    public void Clear();
 
     public void DrawCircle(Vector2 centre, float radius, FastColor color);
 
@@ -48,12 +51,12 @@ public interface IGraphics
 
     public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor color);
 
+    public void Initialize(IAssetLocator assetLocator, IEnumerable<FastColor> colors);
+
     /// <summary>
     /// Blit the back buffer to the screen.
     /// </summary>
     public void ScreenUpdate();
 
     public void SetClipRegion(Vector2 position, float width, float height);
-
-    public void Clear();
 }

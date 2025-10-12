@@ -13,8 +13,9 @@ public class SoftwareGraphicsTests
     public void Clear()
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawPixel(new(2, 2), BaseColors.White);
@@ -29,8 +30,9 @@ public class SoftwareGraphicsTests
     public void DrawCircleFilledInBounds()
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawCircleFilled(new(2, 2), 2, BaseColors.White);
@@ -55,8 +57,9 @@ public class SoftwareGraphicsTests
     public void DrawCircleFilledOutOfBounds(float x, float y, float radius, uint centreColor)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawCircleFilled(new(x, y), radius, BaseColors.White);
@@ -79,8 +82,9 @@ public class SoftwareGraphicsTests
     public void DrawCircleInBounds()
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawCircle(new(2, 2), 2, BaseColors.White);
@@ -104,8 +108,9 @@ public class SoftwareGraphicsTests
     public void DrawCircleOutOfBounds(float x, float y, float radius)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawCircle(new(x, y), radius, BaseColors.White);
@@ -128,8 +133,9 @@ public class SoftwareGraphicsTests
     public void DrawCirclePartialInBounds()
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawCircle(new(0, 0), 4, BaseColors.White);
@@ -149,9 +155,9 @@ public class SoftwareGraphicsTests
     public void DrawImage(int width, int height, string filename, int imageX, int imageY)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLoader = ArrangeAssets(filename);
-        using SoftwareGraphics graphics = new(width, height, moqAssetLoader.Object, DoAssert);
-        graphics.Load();
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets(filename);
+        using SoftwareGraphics graphics = new(width, height, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawImage(123, new(imageX, imageY));
@@ -166,9 +172,9 @@ public class SoftwareGraphicsTests
     public void DrawImageOutOfBounds(string filename, int imageWidth, int imageHeight)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLoader = ArrangeAssets(filename);
-        using SoftwareGraphics graphics = new(imageWidth, imageHeight, moqAssetLoader.Object, DoAssert);
-        graphics.Load();
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets(filename);
+        using SoftwareGraphics graphics = new(imageWidth, imageHeight, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawImage(123, new(1, 1));
@@ -183,9 +189,9 @@ public class SoftwareGraphicsTests
     public void DrawImageTransparent(string filename)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLoader = ArrangeAssets(filename);
-        using SoftwareGraphics graphics = new(2, 2, moqAssetLoader.Object, DoAssert);
-        graphics.Load();
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets(filename);
+        using SoftwareGraphics graphics = new(2, 2, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
         graphics.DrawPixel(new(1, 1), BaseColors.White);
 
         // Act
@@ -210,8 +216,9 @@ public class SoftwareGraphicsTests
     public void DrawLineInBounds(float startX, float startY, float endX, float endY)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawLine(new(startX, startY), new(endX, endY), BaseColors.White);
@@ -233,8 +240,9 @@ public class SoftwareGraphicsTests
     public void DrawLineOutOfBounds(float startX, float startY, float endX, float endY)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawLine(new(startX, startY), new(endX, endY), BaseColors.White);
@@ -251,8 +259,9 @@ public class SoftwareGraphicsTests
     public void DrawPixelInBounds(float x, float y)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, DoAssert);
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, DoAssert);
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawPixel(new(x, y), BaseColors.White);
@@ -268,8 +277,9 @@ public class SoftwareGraphicsTests
     public void DrawPixelOutOfBounds(float x, float y)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLocator = new();
-        using SoftwareGraphics graphics = new(5, 5, moqAssetLocator.Object, (_) => { });
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = new(5, 5, (_) => { });
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.DrawPixel(new(x, y), BaseColors.White);
@@ -283,9 +293,9 @@ public class SoftwareGraphicsTests
     public void LoadImage(string filename, int width, int height)
     {
         // Arrange
-        Mock<IAssetLocator> moqAssetLoader = ArrangeAssets(filename);
-
-        using SoftwareGraphics graphics = new(width, height, moqAssetLoader.Object, (_) => { });
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets(filename);
+        using SoftwareGraphics graphics = new(width, height, (_) => { });
+        graphics.Initialize(moqAssetLocator.Object, []);
 
         // Act
         graphics.ScreenUpdate();
@@ -296,13 +306,22 @@ public class SoftwareGraphicsTests
     private static string GraphicsFilename(string filename)
         => Path.Combine("golden", filename);
 
-    private static Mock<IAssetLocator> ArrangeAssets(string filename)
+    private static Mock<IAssetLocator> ArrangeAssets(string filename = "")
     {
         Mock<IAssetLocator> moqAssetLocator = new();
-        moqAssetLocator.Setup(x => x.ImageAssets)
-            .Returns(new Dictionary<int, string>() { { 123, GraphicsFilename(filename) } });
 
-        moqAssetLocator.Setup(x => x.FontAssets)
+        if (string.IsNullOrEmpty(filename))
+        {
+            moqAssetLocator.Setup(x => x.ImagePaths)
+                .Returns(new Dictionary<int, string>());
+        }
+        else
+        {
+            moqAssetLocator.Setup(x => x.ImagePaths)
+                .Returns(new Dictionary<int, string>() { { 123, GraphicsFilename(filename) } });
+        }
+
+        moqAssetLocator.Setup(x => x.FontBitmapPaths)
             .Returns(new Dictionary<int, string>());
 
         return moqAssetLocator;

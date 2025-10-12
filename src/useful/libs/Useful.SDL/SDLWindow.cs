@@ -7,12 +7,12 @@ using static SDL2.SDL_ttf;
 
 namespace Useful.SDL;
 
-internal sealed class SDLWindow : IDisposable
+public sealed class SDLWindow : IDisposable
 {
     private readonly nint _window;
     private bool _isDisposed;
 
-    internal SDLWindow(int screenWidth, int screenHeight, string title)
+    public SDLWindow(int screenWidth, int screenHeight, string title)
     {
         // When running C# applications under the Visual Studio debugger, native code that
         // names threads with the 0x406D1388 exception will silently exit. To prevent this

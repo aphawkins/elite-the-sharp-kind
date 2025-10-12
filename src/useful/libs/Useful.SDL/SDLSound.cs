@@ -12,17 +12,12 @@ namespace Useful.SDL;
 
 public sealed class SDLSound : ISound, IDisposable
 {
-    private readonly IAssetLocator _assetLocator;
+    private bool _disposedValue;
     private Dictionary<int, nint> _music = [];
     private Dictionary<int, nint> _sfx = [];
-    private bool _disposedValue;
 
-    public SDLSound(IAssetLocator assetLocator)
+    public SDLSound()
     {
-        Guard.ArgumentNull(assetLocator);
-
-        _assetLocator = assetLocator;
-
         SDLGuard.Execute(() => SDL_Init(SDL_INIT_AUDIO));
         SDLGuard.Execute(() => Mix_Init(MIX_InitFlags.MIX_INIT_OGG));
 
@@ -44,6 +39,8 @@ public sealed class SDLSound : ISound, IDisposable
         Dispose(disposing: false);
     }
 
+    public bool IsInitialized { get; }
+
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -51,9 +48,11 @@ public sealed class SDLSound : ISound, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public void Load()
+    public void Initialize(IAssetLocator assetLocator)
     {
-        _music = _assetLocator.MusicAssets.ToDictionary(
+        Guard.ArgumentNull(assetLocator);
+
+        _music = assetLocator.MusicPaths.ToDictionary(
             x => x.Key,
             x =>
             {
@@ -61,7 +60,7 @@ public sealed class SDLSound : ISound, IDisposable
                 return SDLGuard.Execute(() => Mix_LoadMUS(x.Value));
             });
 
-        _sfx = _assetLocator.SfxAssets.ToDictionary(
+        _sfx = assetLocator.SfxPaths.ToDictionary(
             x => x.Key,
             x => SDLGuard.Execute(() => Mix_LoadWAV(x.Value)));
     }

@@ -11,7 +11,7 @@ public sealed class SDLRenderer : IDisposable
     private readonly nint _renderer;
     private bool _isDisposed;
 
-    internal SDLRenderer(SDLWindow window)
+    public SDLRenderer(SDLWindow window)
         => _renderer = SDLGuard.Execute(() => SDL_CreateRenderer(window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED));
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources

@@ -12,18 +12,13 @@ namespace Useful.Audio;
 public sealed class SoftwareSound : ISound, IDisposable
 {
     private readonly MixingSampleProvider _mixer;
-    private readonly IAssetLocator _assetLocator;
     private readonly WaveOutEvent _outputDevice;
-    private Dictionary<int, SoundSampleProvider> _sfx = [];
-    private Dictionary<int, SoundSampleProvider> _music = [];
     private bool _isDisposed;
+    private Dictionary<int, SoundSampleProvider> _music = [];
+    private Dictionary<int, SoundSampleProvider> _sfx = [];
 
-    public SoftwareSound(IAssetLocator assetLocator)
+    public SoftwareSound()
     {
-        Guard.ArgumentNull(assetLocator);
-
-        _assetLocator = assetLocator;
-
         _outputDevice = new();
         _mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(44100, 2))
         {
@@ -33,6 +28,8 @@ public sealed class SoftwareSound : ISound, IDisposable
         _outputDevice.Init(_mixer);
     }
 
+    public bool IsInitialized { get; set; }
+
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -40,15 +37,19 @@ public sealed class SoftwareSound : ISound, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public void Load()
+    public void Initialize(IAssetLocator assetLocator)
     {
-        _music = _assetLocator.MusicAssets.ToDictionary(
+        Guard.ArgumentNull(assetLocator);
+
+        _music = assetLocator.MusicPaths.ToDictionary(
             x => x.Key,
             x => SoundSampleProvider.Create(x.Value));
 
-        _sfx = _assetLocator.SfxAssets.ToDictionary(
+        _sfx = assetLocator.SfxPaths.ToDictionary(
             x => x.Key,
             x => SoundSampleProvider.Create(x.Value));
+
+        IsInitialized = true;
     }
 
     public void Play(int musicType, bool repeat)
@@ -76,15 +77,6 @@ public sealed class SoftwareSound : ISound, IDisposable
         _outputDevice.Stop();
     }
 
-    private void MixerInputEnded(SampleProviderEventArgs e)
-    {
-        SoundSampleProvider provider = (SoundSampleProvider)e.SampleProvider;
-        if (provider.Repeat)
-        {
-            AddMixerInput(provider);
-        }
-    }
-
     private void AddMixerInput(SoundSampleProvider input, bool repeat = false)
     {
         input.Repeat = repeat;
@@ -105,6 +97,15 @@ public sealed class SoftwareSound : ISound, IDisposable
             // free unmanaged resources (unmanaged objects) and override finalizer
             // set large fields to null
             _isDisposed = true;
+        }
+    }
+
+    private void MixerInputEnded(SampleProviderEventArgs e)
+    {
+        SoundSampleProvider provider = (SoundSampleProvider)e.SampleProvider;
+        if (provider.Repeat)
+        {
+            AddMixerInput(provider);
         }
     }
 }

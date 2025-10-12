@@ -1,0 +1,42 @@
+{
+  "Images": {
+    "Scanner": "scanner.bmp",
+    "GreenDot": "greendot.bmp",
+    "DotRed": "reddot.bmp",
+    "BigS": "safe.bmp",
+    "BigE": "ecm.bmp",
+    "EliteText": "elitetext.bmp",
+    "MissileGreen": "missgrn.bmp",
+    "MissileYellow": "missyell.bmp",
+    "MissileRed": "missred.bmp",
+    "Blake": "blake.bmp"
+  },
+  "Sfx": {
+    "Launch": "launch.ogg",
+    "Crash": "crash.ogg",
+    "Dock": "dock.ogg",
+    "Gameover": "gameover.ogg",
+    "Pulse": "pulse.ogg",
+    "HitEnemy": "hitem.ogg",
+    "Explode": "explode.ogg",
+    "Ecm": "ecm.ogg",
+    "Missile": "missile.ogg",
+    "Hyperspace": "hyper.ogg",
+    "IncomingFire1": "incom1.ogg",
+    "IncomingFire2": "incom2.ogg",
+    "Beep": "beep.ogg",
+    "Boop": "boop.ogg"
+  },
+  "Music": {
+    "EliteTheme": "theme.mid",
+    "BlueDanube": "danube.mid"
+  },
+  "FontsBitmap": {
+    "Small": "font1.bmp",
+    "Large": "font2.bmp"
+  },
+  "FontsTrueType": {
+    "Small": "OpenSans-Regular.ttf",
+    "Large": "OpenSans-Regular.ttf"
+  }
+}
