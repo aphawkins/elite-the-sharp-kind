@@ -10,22 +10,18 @@ namespace Useful.SDL;
 
 public sealed class SoftwareAbstraction : IAbstraction, IDisposable
 {
-    private readonly int _screenHeight;
-    private readonly int _screenWidth;
     private readonly SDLRenderer _renderer;
     private readonly SDLWindow _window;
     private bool _isDisposed;
 
     public SoftwareAbstraction(int screenWidth, int screenHeight, string title)
     {
-        _screenWidth = screenWidth;
-        _screenHeight = screenHeight;
-        _window = new(_screenWidth, _screenHeight, title);
+        _window = new(screenWidth, screenHeight, title);
         _renderer = new(_window);
 
         Graphics = new SoftwareGraphics(
-            _screenWidth,
-            _screenHeight,
+            screenWidth,
+            screenHeight,
             SoftwareScreenUpdate);
         Sound = new SoftwareSound();
         Keyboard = new SDLKeyboard();

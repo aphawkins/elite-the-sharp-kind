@@ -114,7 +114,7 @@ internal sealed class SaveFile
         CargoCapacity = _ship.CargoCapacity,
         CommanderName = newName,
         Credits = _trade.Credits,
-        CurrentCargo = _trade.StockMarket.Values.Select(x => x.CurrentCargo).ToList(),
+        CurrentCargo = [.. _trade.StockMarket.Values.Select(x => x.CurrentCargo)],
         EnergyUnit = _ship.EnergyUnit.ToString(),
         Fuel = _ship.Fuel,
         GalaxyNumber = _state.Cmdr.GalaxyNumber,
@@ -151,7 +151,7 @@ internal sealed class SaveFile
                 _state.DockedPlanet.D,
                 _state.DockedPlanet.B,
             ],
-        StationStock = _trade.StockMarket.Values.Select(x => x.StationStock).ToList(),
+        StationStock = [.. _trade.StockMarket.Values.Select(x => x.StationStock)],
     };
 
     private void RestoreSavedCommander()

@@ -197,19 +197,21 @@ internal sealed class PlanetDataView : IView
     {
         StringBuilder temp = new();
 
+        int k = 0;
+
         for (int j = 0; j < source.Length; j++)
         {
             temp.Clear();
 
-            if (source[j] == '<')
+            if (source[j + k] == '<')
             {
-                j++;
+                k++;
                 temp.Clear();
 
-                while (source[j] != '>')
+                while (source[j + k] != '>')
                 {
-                    temp.Append(source[j]);
-                    j++;
+                    temp.Append(source[j + k]);
+                    k++;
                 }
 
                 int num = Convert.ToInt32(temp.ToString(), CultureInfo.InvariantCulture);
@@ -249,10 +251,10 @@ internal sealed class PlanetDataView : IView
                 continue;
             }
 
-            if (source[j] == '%')
+            if (source[j + k] == '%')
             {
-                j++;
-                switch (source[j])
+                k++;
+                switch (source[j + k])
                 {
                     case 'H':
                         temp = new(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter());
@@ -288,7 +290,7 @@ internal sealed class PlanetDataView : IView
                 continue;
             }
 
-            planetDescription += source[j];
+            planetDescription += source[j + k];
         }
     }
 }

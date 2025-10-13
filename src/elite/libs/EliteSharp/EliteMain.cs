@@ -36,7 +36,6 @@ namespace EliteSharp;
 public sealed class EliteMain
 {
     private readonly IGraphics _graphics;
-    private readonly ISound _sound;
     private readonly IKeyboard _keyboard;
 
     private readonly AudioController _audio;
@@ -65,11 +64,11 @@ public sealed class EliteMain
         assetLocator.Initialize();
 
         _graphics = abstraction.Graphics;
-        _sound = abstraction.Sound;
+        ISound sound = abstraction.Sound;
         _keyboard = abstraction.Keyboard;
 
         _graphics.Initialize(assetLocator, EliteColors.AllColors);
-        _sound.Initialize(assetLocator);
+        sound.Initialize(assetLocator);
 
         // TODO: improve this
         Dictionary<int, SfxSample> sfx = new()
@@ -89,7 +88,7 @@ public sealed class EliteMain
             { (int)SoundEffect.Beep, new(2) },
             { (int)SoundEffect.Boop, new(7) },
         };
-        _audio = new(_sound, sfx);
+        _audio = new(sound, sfx);
         ConfigFile configFile = new();
         _gameState = new(_keyboard, _views)
         {

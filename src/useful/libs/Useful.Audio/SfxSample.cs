@@ -2,12 +2,10 @@
 
 namespace Useful.Audio;
 
-public sealed class SfxSample
+public sealed class SfxSample(int runtime)
 {
-    private readonly int _runtime;
+    private readonly int _runtime = runtime;
     private int _timeleft;
-
-    public SfxSample(int runtime) => _runtime = runtime;
 
     internal bool HasTimeRemaining => _timeleft > 0;
 

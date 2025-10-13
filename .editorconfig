@@ -1,4 +1,4 @@
-# editorconfig.org
+﻿# editorconfig.org
 
 # top-most EditorConfig file
 root = true
@@ -6,25 +6,37 @@ root = true
 ####################
 # Default Settings #
 ####################
-[*.cs]
+[*]
 insert_final_newline = true
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
+insert_final_newline = true
+
+# C# files
+[*.cs]
 curly_bracket_next_line = true
 indent_brace_style = Allman
-tab_width = 4
-indent_size = 4
 charset = utf-8
 end_of_line = lf
+indent_size = 4
+indent_style = space
+tab_width = 4
 
 #################
 # Code Analysis #
 #################
 
 # Set default analyzer level
-dotnet_analyzer_diagnostic.severity = none
+dotnet_analyzer_diagnostic.severity = warning
+dotnet_diagnostic.severity = warning
+dotnet_diagnostic.*.severity = warning
+
 # dotnet_code_quality.api_surface = all
+
+#######
+# IDE #
+#######
 
 # IDE0001: Simplify name
 
@@ -312,17 +324,8 @@ dotnet_style_allow_statement_immediately_after_block_experimental = false:warnin
 
 # IDE2004: Blank line not allowed after constructor initializer colon
 csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = false:warning
-
 csharp_style_allow_blank_line_after_token_in_conditional_expression_experimental = false:warning
-
 csharp_style_allow_blank_line_after_token_in_arrow_expression_clause_experimental = false:warning
-
-# Roslynator
-# Set severity for all analyzers that are enabled by default (https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2022#set-rule-severity-of-multiple-analyzer-rules-at-once-in-an-editorconfig-file)
-dotnet_analyzer_diagnostic.category-roslynator.severity = warning
-roslynator_refactorings.enabled = true
-roslynator_compiler_diagnostic_fixes.enabled = true
-roslynator_accessor_braces_style = single_line_when_expression_is_on_single_line
 
 # New line preferences
 csharp_new_line_before_open_brace = all
@@ -400,6 +403,10 @@ csharp_space_between_method_declaration_name_and_open_parenthesis = false
 csharp_space_between_method_declaration_parameter_list_parentheses = false
 csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
+
+###################################################################################################
+# CORE Code Analysis #
+######################
 
 # AD0001: Analyzer threw an exception
 dotnet_diagnostic.AD0001.severity = warning
@@ -1518,6 +1525,10 @@ dotnet_diagnostic.RS2007.severity = warning
 # RS2008: Enable analyzer release tracking
 dotnet_diagnostic.RS2008.severity = warning
 
+###################################################################################################
+# StyleCop #
+############
+
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.AlternativeRules.severity = warning
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity = warning
 dotnet_analyzer_diagnostic.category-StyleCop.CSharp.LayoutRules.severity = warning
@@ -2120,6 +2131,10 @@ dotnet_diagnostic.SX1309.severity = warning
 # SX1309S: Static Field Names Must Begin With Underscore
 dotnet_diagnostic.SX1309S.severity = warning
 
+###################################################################################################
+# IDE #
+#######
+
 # IDE0001: Simplify name
 dotnet_diagnostic.IDE0001.severity = warning
 
@@ -2438,7 +2453,17 @@ dotnet_diagnostic.IDE2003.severity = warning
 # IDE2004: Blank line not allowed after constructor initializer colon
 dotnet_diagnostic.IDE2004.severity = warning
 
-# Roslynator - Exclusions & Rules that are not enabled by default
+###################################################################################################
+# Roslynator #
+##############
+
+# Set severity for all analyzers that are enabled by default (https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2022#set-rule-severity-of-multiple-analyzer-rules-at-once-in-an-editorconfig-file)
+dotnet_analyzer_diagnostic.category-roslynator.severity = warning
+roslynator_refactorings.enabled = true
+roslynator_compiler_diagnostic_fixes.enabled = true
+roslynator_accessor_braces_style = single_line_when_expression_is_on_single_line
+
+# Exclusions & Rules that are not enabled by default
 dotnet_diagnostic.RCS0001.severity = warning
 dotnet_diagnostic.RCS0002.severity = warning
 dotnet_diagnostic.RCS0003.severity = none # Add blank line between single-line declarations of different kind
@@ -2559,7 +2584,11 @@ dotnet_diagnostic.RCS1255.severity = warning
 dotnet_diagnostic.RCS1260.severity = warning
 dotnet_diagnostic.RCS1305.severity = warning
 
-# SonarAnalyzer - Exclusions & Rules that are not enabled by default
+###################################################################################################
+# SonarQube #
+#############
+
+# Exclusions & Rules that are not enabled by default
 dotnet_diagnostic.S101.severity = none # Types should be named in PascalCase
 dotnet_diagnostic.S103.severity = warning
 dotnet_diagnostic.S104.severity = warning
@@ -2572,6 +2601,7 @@ dotnet_diagnostic.S126.severity = none # "if ... else if" constructs should end 
 dotnet_diagnostic.S131.severity = none # "switch/Select" statements should contain a "default/Case Else" clauses
 dotnet_diagnostic.S134.severity = none # Control flow statements "if", "switch", "for", "foreach", "while", "do" and "try" should not be nested too deeply
 dotnet_diagnostic.S1067.severity = none # Expressions should not be too complex
+dotnet_diagnostic.S1135.severity = none # Track uses of "TODO" tags
 dotnet_diagnostic.S1147.severity = none # Exit methods should not be called
 dotnet_diagnostic.S1186.severity = none # Methods should not be empty
 dotnet_diagnostic.S1226.severity = warning
@@ -2616,10 +2646,21 @@ dotnet_diagnostic.S4462.severity = warning
 dotnet_diagnostic.S4564.severity = warning
 dotnet_diagnostic.S6507.severity = warning
 
+###################################################################################################
+# Nuget #
+#########
+
+# Nuget Analyzer
+dotnet_diagnostic.NU1701.severity = none # This package may not be fully compatible with your project.
+
+###################################################################################################
+# XUnit #
+#########
+
 # xUnit Analyzer
 dotnet_diagnostic.xUnit1004.severity = none
 
-dotnet_diagnostic.IDE0160.severity = none
+###################################################################################################
 
 # Generated code
 [*{_AssemblyInfo.cs,.notsupported.cs,AsmOffsets.cs}]
@@ -2661,3 +2702,7 @@ indent_size = 2
 end_of_line = lf
 [*.{cmd,bat}]
 end_of_line = crlf
+
+# JSON config files
+[*.{json}]
+indent_size = 2

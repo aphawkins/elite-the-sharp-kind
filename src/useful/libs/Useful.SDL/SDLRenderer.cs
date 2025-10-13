@@ -4,13 +4,10 @@ using static SDL2.SDL;
 
 namespace Useful.SDL;
 
-public sealed class SDLRenderer : IDisposable
+public sealed class SDLRenderer(SDLWindow window) : IDisposable
 {
-    private readonly nint _renderer;
+    private readonly nint _renderer = SDLGuard.Execute(() => SDL_CreateRenderer(window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED));
     private bool _isDisposed;
-
-    public SDLRenderer(SDLWindow window)
-        => _renderer = SDLGuard.Execute(() => SDL_CreateRenderer(window, -1, SDL_RendererFlags.SDL_RENDERER_ACCELERATED));
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
     ~SDLRenderer()

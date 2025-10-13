@@ -83,7 +83,7 @@ public sealed class SDLKeyboard : IKeyboard
         }
     }
 
-    private bool PollEvent(out SDL_Event sdlEvent)
+    private static bool PollEvent(out SDL_Event sdlEvent)
     {
         if (SDL_PollEvent(out sdlEvent) < 0)
         {

@@ -5,10 +5,12 @@
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest-all</AnalysisLevel>
     <AnalysisMode>All</AnalysisMode>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <WarningLevel>9999</WarningLevel>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
     <LangVersion>latest</LangVersion>
     <!-- Fix for IDE0005 -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -24,5 +26,5 @@
 		<DefineConstants>$(DefineConstants);QHD;SOFTWARERENDERER</DefineConstants>
 		<DebugType>none</DebugType>
 		<DebugSymbols>false</DebugSymbols>
-	</PropertyGroup>
+  </PropertyGroup>
 </Project>

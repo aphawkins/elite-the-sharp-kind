@@ -9,20 +9,16 @@ namespace Useful.SDL;
 
 public sealed class SDLAbstraction : IAbstraction, IDisposable
 {
-    private readonly int _screenHeight;
-    private readonly int _screenWidth;
     private readonly SDLRenderer _renderer;
     private readonly SDLWindow _window;
     private bool _isDisposed;
 
     public SDLAbstraction(int screenWidth, int screenHeight, string title)
     {
-        _screenWidth = screenWidth;
-        _screenHeight = screenHeight;
-        _window = new(_screenWidth, _screenHeight, title);
+        _window = new(screenWidth, screenHeight, title);
         _renderer = new(_window);
 
-        Graphics = new SDLGraphics(_renderer, _screenWidth, _screenHeight);
+        Graphics = new SDLGraphics(_renderer, screenWidth, screenHeight);
         Sound = new SDLSound();
         Keyboard = new SDLKeyboard();
     }
