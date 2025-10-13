@@ -1,0 +1,8 @@
+# editorconfig.org
+
+# inherits higher configs
+
+[*.cs]
+
+# License header
+file_header_template = 'Useful Libraries' - Andy Hawkins 2025.

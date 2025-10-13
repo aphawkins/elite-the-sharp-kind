@@ -18,9 +18,6 @@ indent_size = 4
 charset = utf-8
 end_of_line = lf
 
-# License header
-file_header_template = 'Elite - The Sharp Kind' - Andy Hawkins 2023.\n'Elite - The New Kind' - C.J.Pinder 1999-2001.\nElite (C) I.Bell & D.Braben 1984.
-
 #################
 # Code Analysis #
 #################

@@ -1,6 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
-// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
-// Elite (C) I.Bell & D.Braben 1984.
+// 'Useful Libraries' - Andy Hawkins 2025.
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
