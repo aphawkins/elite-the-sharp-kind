@@ -98,13 +98,13 @@ internal sealed class ShortRangeChartView : IView
     {
         if (_isFind)
         {
-            if (_keyboard.IsKeyPressed(CommandKey.Backspace) &&
+            if (_keyboard.IsPressed(ConsoleKey.Backspace) &&
                 !string.IsNullOrEmpty(_findName))
             {
                 _findName = _findName[..^1];
             }
 
-            if (_keyboard.IsKeyPressed(CommandKey.Enter))
+            if (_keyboard.IsPressed(ConsoleKey.Enter))
             {
                 _isFind = false;
                 if (_planet.FindPlanetByName(_findName))
@@ -118,51 +118,51 @@ internal sealed class ShortRangeChartView : IView
                 }
             }
 
-            char letter = (char)_keyboard.GetKeyPressed();
-            if (_isFind && _findName.Length <= 16 && letter >= 'A' && letter <= 'Z')
+            (ConsoleKey key, ConsoleModifiers _) = _keyboard.LastPressed();
+            if (key is >= ConsoleKey.A and <= ConsoleKey.Z)
             {
-                _findName += letter;
+                _findName += (char)key;
             }
 
             return;
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Origin))
+        if (_keyboard.IsPressed(ConsoleKey.O))
         {
             _gameState.Cross = _draw.Centre;
             CalculateDistanceToPlanet();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.DistanceToPlanet))
+        if (_keyboard.IsPressed(ConsoleKey.D))
         {
             CalculateDistanceToPlanet();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
+        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
             MoveCross(0, -1);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
+        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
             MoveCross(0, 1);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
+        if (_keyboard.IsPressed(ConsoleKey.OemComma) || _keyboard.IsPressed(ConsoleKey.LeftArrow))
         {
             MoveCross(-1, 0);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
+        if (_keyboard.IsPressed(ConsoleKey.OemPeriod) || _keyboard.IsPressed(ConsoleKey.RightArrow))
         {
             MoveCross(1, 0);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Find))
+        if (_keyboard.IsPressed(ConsoleKey.F))
         {
             _isFind = true;
             _findName = string.Empty;
-            _keyboard.ClearKeyPressed();  // Clear the F so that it doesn't appear in the find word
+            _keyboard.ClearPressed();  // Clear the F so that it doesn't appear in the find word
         }
     }
 

@@ -78,17 +78,17 @@ internal sealed class OptionsView : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
+        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
             _highlightedItem = Math.Clamp(_highlightedItem - 1, 0, _optionList.Length - 1);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
+        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
             _highlightedItem = Math.Clamp(_highlightedItem + 1, 0, _optionList.Length - 1);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Enter))
+        if (_keyboard.IsPressed(ConsoleKey.Enter))
         {
             ExecuteOption();
         }

@@ -108,17 +108,17 @@ internal sealed class EquipmentView : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
+        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
             SelectPrevious();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
+        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
             SelectNext();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Enter))
+        if (_keyboard.IsPressed(ConsoleKey.Enter))
         {
             Buy();
         }

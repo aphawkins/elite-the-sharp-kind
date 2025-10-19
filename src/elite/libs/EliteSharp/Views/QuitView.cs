@@ -29,12 +29,12 @@ internal sealed class QuitView : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.Yes))
+        if (_keyboard.IsPressed(ConsoleKey.Y))
         {
             _gameState.DoExitGame();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.No))
+        if (_keyboard.IsPressed(ConsoleKey.N))
         {
             if (_gameState.IsDocked)
             {

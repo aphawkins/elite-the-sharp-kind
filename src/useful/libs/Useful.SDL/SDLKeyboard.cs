@@ -7,49 +7,98 @@ namespace Useful.SDL;
 
 public sealed class SDLKeyboard : IKeyboard
 {
-    private readonly Dictionary<CommandKey, bool> _isPressed = [];
-    private CommandKey _lastKeyPressed;
+    private readonly Dictionary<ConsoleKey, bool> _pressedKeys = [];
+    private ConsoleKey _lastKeyPressed;
+    private ConsoleModifiers _lastModifierPressed;
+    private ConsoleModifiers _pressedModifiers = ConsoleModifiers.None;
 
     public bool Close { get; private set; }
 
-    public void ClearKeyPressed()
+    public void ClearPressed()
     {
-        _lastKeyPressed = 0;
-        _isPressed.Clear();
+        _lastKeyPressed = ConsoleKey.None;
+        _pressedKeys.Clear();
+        _lastModifierPressed = ConsoleModifiers.None;
+        _pressedModifiers = ConsoleModifiers.None;
     }
 
-    public CommandKey GetKeyPressed()
+    public bool IsPressed(ConsoleKey key)
     {
-        CommandKey key = _lastKeyPressed;
-        _lastKeyPressed = 0;
-        return key;
-    }
-
-    public bool IsKeyPressed(params CommandKey[] keys)
-    {
-        if (keys == null)
+        if (key == ConsoleKey.None)
         {
             return false;
         }
 
-        foreach (CommandKey key in keys)
+        if (_lastKeyPressed == key)
         {
-            if (_isPressed.TryGetValue(key, out bool value) && value)
-            {
-                return true;
-            }
+            _lastKeyPressed = ConsoleKey.None;
+            ClearPressed(key);
+            return true;
+        }
+
+        if (_pressedKeys.TryGetValue(key, out bool value) && value)
+        {
+            ClearPressed(key);
+            return true;
         }
 
         return false;
     }
 
-    public void KeyDown(CommandKey keyValue)
+    public bool IsPressed(ConsoleModifiers modifiers)
     {
-        _lastKeyPressed = keyValue;
-        _isPressed[keyValue] = true;
+        if (_lastModifierPressed.HasFlag(modifiers))
+        {
+            _lastModifierPressed &= ~modifiers;
+            ClearPressed(modifiers);
+            return true;
+        }
+
+        if (_pressedModifiers.HasFlag(modifiers))
+        {
+            ClearPressed(modifiers);
+            return true;
+        }
+
+        return false;
     }
 
-    public void KeyUp(CommandKey keyValue) => _isPressed[keyValue] = false;
+    public void KeyDown(ConsoleKey key, ConsoleModifiers modifiers)
+    {
+        _lastKeyPressed = key;
+        _lastModifierPressed = modifiers;
+        _pressedKeys[key] = true;
+        _pressedModifiers |= modifiers;
+    }
+
+    public void KeyUp(ConsoleKey key, ConsoleModifiers modifiers)
+    {
+        _pressedKeys[key] = false;
+        ClearPressed(key);
+        if (_lastKeyPressed == key)
+        {
+            _lastKeyPressed = ConsoleKey.None;
+        }
+
+        ClearPressed(modifiers);
+        if (_lastModifierPressed.HasFlag(modifiers))
+        {
+            _lastModifierPressed &= ~modifiers;
+        }
+    }
+
+    public (ConsoleKey Key, ConsoleModifiers Modifiers) LastPressed()
+    {
+        if ((_lastKeyPressed == ConsoleKey.None) && (_lastModifierPressed == ConsoleModifiers.None))
+        {
+            return (ConsoleKey.None, ConsoleModifiers.None);
+        }
+
+        (ConsoleKey Key, ConsoleModifiers Modifiers) keys = (_lastKeyPressed, _lastModifierPressed);
+        _lastKeyPressed = ConsoleKey.None;
+        _lastModifierPressed = ConsoleModifiers.None;
+        return keys;
+    }
 
     public void Poll()
     {
@@ -63,7 +112,8 @@ public sealed class SDLKeyboard : IKeyboard
                     break;
 
                 case SDL_EventType.SDL_KEYDOWN:
-                    KeyDown(SDLHelper.KeyConverter(sdlEvent.key.keysym.sym));
+                    (ConsoleKey key, ConsoleModifiers modifiers) = SDLHelper.KeyConverter(sdlEvent.key.keysym.sym);
+                    KeyDown(key, modifiers);
                     if (sdlEvent.key.keysym.sym == SDL_Keycode.SDLK_ESCAPE)
                     {
                         Close = true;
@@ -73,7 +123,8 @@ public sealed class SDLKeyboard : IKeyboard
                     break;
 
                 case SDL_EventType.SDL_KEYUP:
-                    KeyUp(SDLHelper.KeyConverter(sdlEvent.key.keysym.sym));
+                    (ConsoleKey key1, ConsoleModifiers modifiers1) = SDLHelper.KeyConverter(sdlEvent.key.keysym.sym);
+                    KeyUp(key1, modifiers1);
                     break;
 
                 case SDL_EventType.SDL_QUIT:
@@ -92,4 +143,8 @@ public sealed class SDLKeyboard : IKeyboard
 
         return true;
     }
+
+    private void ClearPressed(ConsoleKey key) => _pressedKeys[key] = false;
+
+    private void ClearPressed(ConsoleModifiers modifiers) => _pressedModifiers &= ~modifiers;
 }

@@ -54,7 +54,6 @@ public sealed class EliteMain
     private readonly TimeSpan _timeout;
     private readonly Universe _universe;
     private readonly Dictionary<Screen, IView> _views = [];
-    private bool _isGamePaused;
 
     public EliteMain(IAbstraction abstraction)
     {
@@ -114,10 +113,10 @@ public sealed class EliteMain
         _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _draw, planet));
         _views.Add(Screen.MarketPrices, new MarketView(_gameState, _draw, _keyboard, trade, planet));
         _views.Add(Screen.CommanderStatus, new CommanderStatusView(_gameState, _draw, _ship, trade, planet, _universe));
-        _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw));
-        _views.Add(Screen.RearView, new PilotRearView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw));
-        _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw));
-        _views.Add(Screen.RightView, new PilotRightView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw));
+        _views.Add(Screen.FrontView, new PilotFrontView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw, _combat));
+        _views.Add(Screen.RearView, new PilotRearView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw, _combat));
+        _views.Add(Screen.LeftView, new PilotLeftView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw, _combat));
+        _views.Add(Screen.RightView, new PilotRightView(_gameState, _keyboard, _stars, _pilot, _ship, _space, _draw, _combat));
         _views.Add(Screen.Docking, new DockingView(_gameState, _audio, _space, _combat, _universe, _draw));
         _views.Add(Screen.Undocking, new LaunchView(_gameState, _audio, _space, _combat, _universe, _draw));
         _views.Add(Screen.Hyperspace, new HyperspaceView(_gameState, _audio, _draw));
@@ -232,9 +231,9 @@ public sealed class EliteMain
         _draw.SetViewClipRegion();
         _ship.IsRolling = false;
         _ship.IsClimbing = false;
-        HandleFlightKeys();
+        HandleViewKeys();
 
-        if (_isGamePaused)
+        if (_gameState.IsGamePaused)
         {
             return;
         }
@@ -326,7 +325,7 @@ public sealed class EliteMain
         try
         {
             _scanner.UpdateConsole();
-            _gameState.CurrentView.HandleInput();
+            _gameState.CurrentView!.HandleInput();
             _graphics.ScreenUpdate();
         }
         catch (Exception ex)
@@ -336,19 +335,9 @@ public sealed class EliteMain
 #pragma warning restore CA1031
     }
 
-    private void HandleFlightKeys()
+    private void HandleViewKeys()
     {
-        if (_isGamePaused)
-        {
-            if (_keyboard.IsKeyPressed(CommandKey.Resume))
-            {
-                _isGamePaused = false;
-            }
-
-            return;
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.F1) &&
+        if (_keyboard.IsPressed(ConsoleKey.F1) &&
             _gameState.CurrentScreen is not Screen.IntroOne and not Screen.IntroTwo)
         {
             if (_gameState.IsDocked)
@@ -361,19 +350,19 @@ public sealed class EliteMain
             }
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F2) &&
+        if (_keyboard.IsPressed(ConsoleKey.F2) &&
             !_gameState.IsDocked)
         {
             _gameState.SetView(Screen.RearView);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F3) &&
+        if (_keyboard.IsPressed(ConsoleKey.F3) &&
             !_gameState.IsDocked)
         {
             _gameState.SetView(Screen.LeftView);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F4))
+        if (_keyboard.IsPressed(ConsoleKey.F4))
         {
             if (_gameState.IsDocked)
             {
@@ -385,135 +374,39 @@ public sealed class EliteMain
             }
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F5))
+        if (_keyboard.IsPressed(ConsoleKey.F5))
         {
             _gameState.SetView(Screen.GalacticChart);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F6))
+        if (_keyboard.IsPressed(ConsoleKey.F6))
         {
             _gameState.SetView(Screen.ShortRangeChart);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F7))
+        if (_keyboard.IsPressed(ConsoleKey.F7))
         {
             _gameState.SetView(Screen.PlanetData);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F8) && (!_gameState.InWitchspace))
+        if (_keyboard.IsPressed(ConsoleKey.F8) && (!_gameState.InWitchspace))
         {
             _gameState.SetView(Screen.MarketPrices);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F9))
+        if (_keyboard.IsPressed(ConsoleKey.F9))
         {
             _gameState.SetView(Screen.CommanderStatus);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F10))
+        if (_keyboard.IsPressed(ConsoleKey.F10))
         {
             _gameState.SetView(Screen.Inventory);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.F11))
+        if (_keyboard.IsPressed(ConsoleKey.F11))
         {
             _gameState.SetView(Screen.Options);
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.Fire))
-        {
-            _gameState.DrawLasers = _combat.FireLaser();
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOn) &&
-            !_gameState.IsDocked
-            && _ship.HasDockingComputer)
-        {
-            if (_gameState.Config.InstantDock)
-            {
-                _space.EngageDockingComputer();
-            }
-            else if (!_gameState.InWitchspace && !_space.IsHyperspaceReady)
-            {
-                _pilot.EngageAutoPilot();
-            }
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.ECM) &&
-            !_gameState.IsDocked
-            && _ship.HasECM)
-        {
-            _combat.ActivateECM(true);
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.Hyperspace) && (!_gameState.IsDocked))
-        {
-            if (_keyboard.IsKeyPressed(CommandKey.Ctrl))
-            {
-                _space.StartGalacticHyperspace();
-            }
-            else
-            {
-                _space.StartHyperspace();
-            }
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.Jump) &&
-            (!_gameState.IsDocked)
-            && (!_gameState.InWitchspace))
-        {
-            _space.JumpWarp();
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.FireMissile) &&
-            !_gameState.IsDocked)
-        {
-            _combat.FireMissile();
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.Pause))
-        {
-            _isGamePaused = true;
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.TargetMissile) &&
-            !_gameState.IsDocked)
-        {
-            _combat.ArmMissile();
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.UnarmMissile) &&
-            !_gameState.IsDocked)
-        {
-            _combat.UnarmMissile();
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.IncreaseSpeed) &&
-            !_gameState.IsDocked)
-        {
-            _ship.IncreaseSpeed();
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.DecreaseSpeed) &&
-            !_gameState.IsDocked)
-        {
-            _ship.DecreaseSpeed();
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.EnergyBomb) &&
-            (!_gameState.IsDocked)
-            && _ship.HasEnergyBomb)
-        {
-            _gameState.DetonateBomb = true;
-            _ship.HasEnergyBomb = false;
-        }
-
-        if (_keyboard.IsKeyPressed(CommandKey.EscapeCapsule) &&
-            (!_gameState.IsDocked)
-            && _ship.HasEscapeCapsule
-            && (!_gameState.InWitchspace))
-        {
-            _gameState.SetView(Screen.EscapeCapsule);
         }
     }
 
@@ -535,7 +428,7 @@ public sealed class EliteMain
 
         _ship.Speed = 1;
         _space.IsHyperspaceReady = false;
-        _isGamePaused = false;
+        _gameState.IsGamePaused = false;
 
         _stars.CreateNewStars();
         _universe.ClearUniverse();

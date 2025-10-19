@@ -196,10 +196,8 @@ internal sealed class PlanetDataView : IView
     private void ExpandDescription(string source, ref string planetDescription)
     {
         StringBuilder temp = new();
-
         int k = 0;
-
-        for (int j = 0; j < source.Length; j++)
+        for (int j = 0; (j + k) < source.Length; j++)
         {
             temp.Clear();
 

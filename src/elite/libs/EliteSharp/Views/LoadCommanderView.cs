@@ -42,20 +42,19 @@ internal sealed class LoadCommanderView : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.Backspace) &&
+        if (_keyboard.IsPressed(ConsoleKey.Backspace) &&
             !string.IsNullOrEmpty(_name))
         {
             _name = _name[..^1];
         }
 
-        char key = (char)_keyboard.GetKeyPressed();
-
-        if (key is >= 'A' and <= 'Z')
+        (ConsoleKey key, ConsoleModifiers _) = _keyboard.LastPressed();
+        if (key is >= ConsoleKey.A and <= ConsoleKey.Z)
         {
-            _name += key;
+            _name += (char)key;
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Enter))
+        if (_keyboard.IsPressed(ConsoleKey.Enter))
         {
             _isLoaded = _save.LoadCommander(_name);
             if (_isLoaded)
@@ -65,7 +64,7 @@ internal sealed class LoadCommanderView : IView
             }
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
+        if (_keyboard.IsPressed(ConsoleKey.Spacebar))
         {
             _gameState.SetView(Screen.CommanderStatus);
         }
@@ -73,7 +72,7 @@ internal sealed class LoadCommanderView : IView
 
     public void Reset()
     {
-        _keyboard.ClearKeyPressed();
+        _keyboard.ClearPressed();
         _name = _gameState.Cmdr.Name;
         _isLoaded = true;
     }

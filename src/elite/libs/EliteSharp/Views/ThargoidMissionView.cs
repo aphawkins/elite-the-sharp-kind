@@ -76,7 +76,7 @@ internal sealed class ThargoidMissionView : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
+        if (_keyboard.IsPressed(ConsoleKey.Spacebar))
         {
             _gameState.SetView(Screen.CommanderStatus);
         }

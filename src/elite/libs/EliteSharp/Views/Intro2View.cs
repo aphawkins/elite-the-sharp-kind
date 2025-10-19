@@ -68,7 +68,7 @@ internal sealed class Intro2View : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.SpaceBar))
+        if (_keyboard.IsPressed(ConsoleKey.Spacebar))
         {
             _combat.Reset();
             _universe.ClearUniverse();

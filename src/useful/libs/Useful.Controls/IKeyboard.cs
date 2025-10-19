@@ -6,15 +6,17 @@ public interface IKeyboard
 {
     public bool Close { get; }
 
-    public void ClearKeyPressed();
+    public void ClearPressed();
 
-    public CommandKey GetKeyPressed();
+    public bool IsPressed(ConsoleKey key);
 
-    public bool IsKeyPressed(params CommandKey[] keys);
+    public bool IsPressed(ConsoleModifiers modifiers);
 
-    public void KeyDown(CommandKey keyValue);
+    public void KeyDown(ConsoleKey key, ConsoleModifiers modifiers);
 
-    public void KeyUp(CommandKey keyValue);
+    public void KeyUp(ConsoleKey key, ConsoleModifiers modifiers);
+
+    public (ConsoleKey Key, ConsoleModifiers Modifiers) LastPressed();
 
     public void Poll();
 }

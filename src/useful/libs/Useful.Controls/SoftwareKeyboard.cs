@@ -6,23 +6,23 @@ public class SoftwareKeyboard : IKeyboard
 {
     public bool Close { get; }
 
-    public void ClearKeyPressed()
+    public void ClearPressed()
     {
     }
 
-    public CommandKey GetKeyPressed()
-        => CommandKey.None;
+    public bool IsPressed(ConsoleKey key) => false;
 
-    public bool IsKeyPressed(params CommandKey[] keys)
-        => false;
+    public bool IsPressed(ConsoleModifiers modifiers) => false;
 
-    public void KeyDown(CommandKey keyValue)
+    public void KeyDown(ConsoleKey key, ConsoleModifiers modifiers)
     {
     }
 
-    public void KeyUp(CommandKey keyValue)
+    public void KeyUp(ConsoleKey key, ConsoleModifiers modifiers)
     {
     }
+
+    public (ConsoleKey Key, ConsoleModifiers Modifiers) LastPressed() => (ConsoleKey.None, ConsoleModifiers.None);
 
     public void Poll()
     {

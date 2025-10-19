@@ -85,22 +85,22 @@ internal sealed class MarketView : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
+        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
             _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock - 1, 0, _trade.StockMarket.Count - 1);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
+        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
             _highlightedStock = (StockType)Math.Clamp((int)_highlightedStock + 1, 0, _trade.StockMarket.Count - 1);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
+        if (_keyboard.IsPressed(ConsoleKey.OemComma) || _keyboard.IsPressed(ConsoleKey.LeftArrow))
         {
             _trade.SellStock(_highlightedStock);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
+        if (_keyboard.IsPressed(ConsoleKey.OemPeriod) || _keyboard.IsPressed(ConsoleKey.RightArrow))
         {
             _trade.BuyStock(_highlightedStock);
         }

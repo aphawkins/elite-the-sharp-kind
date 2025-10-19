@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Conflict;
 using EliteSharp.Graphics;
 using EliteSharp.Lasers;
 using EliteSharp.Ships;
@@ -19,9 +20,18 @@ internal sealed class PilotView : IView
     private readonly Stars _stars;
     private readonly Space _space;
     private readonly IEliteDraw _draw;
+    private readonly Combat _combat;
     private int _drawLaserFrames;
 
-    internal PilotView(GameState gameState, IKeyboard keyboard, Pilot pilot, PlayerShip ship, Stars stars, Space space, IEliteDraw draw)
+    internal PilotView(
+        GameState gameState,
+        IKeyboard keyboard,
+        Pilot pilot,
+        PlayerShip ship,
+        Stars stars,
+        Space space,
+        IEliteDraw draw,
+        Combat combat)
     {
         _gameState = gameState;
         _keyboard = keyboard;
@@ -31,6 +41,7 @@ internal sealed class PilotView : IView
         _stars = stars;
         _space = space;
         _draw = draw;
+        _combat = combat;
     }
 
     public void Draw()
@@ -52,7 +63,78 @@ internal sealed class PilotView : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
+        if (_keyboard.IsPressed(ConsoleKey.A))
+        {
+            _gameState.DrawLasers = _combat.FireLaser();
+        }
+
+        if (_gameState.IsGamePaused)
+        {
+            if (_keyboard.IsPressed(ConsoleKey.R))
+            {
+                _gameState.IsGamePaused = false;
+            }
+
+            return;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.C) &&
+            !_gameState.IsDocked
+            && _ship.HasDockingComputer)
+        {
+            if (_gameState.Config.InstantDock)
+            {
+                _space.EngageDockingComputer();
+            }
+            else if (!_gameState.InWitchspace && !_space.IsHyperspaceReady)
+            {
+                _pilot.EngageAutoPilot();
+            }
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.D))
+        {
+            _pilot.DisengageAutoPilot();
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.E) &&
+            !_gameState.IsDocked
+            && _ship.HasECM)
+        {
+            _combat.ActivateECM(true);
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.H) && (!_gameState.IsDocked))
+        {
+            if (_keyboard.IsPressed(ConsoleModifiers.Control))
+            {
+                _space.StartGalacticHyperspace();
+            }
+            else
+            {
+                _space.StartHyperspace();
+            }
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.J) &&
+            (!_gameState.IsDocked)
+            && (!_gameState.InWitchspace))
+        {
+            _space.JumpWarp();
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.M) &&
+            !_gameState.IsDocked)
+        {
+            _combat.FireMissile();
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.P))
+        {
+            _gameState.IsGamePaused = true;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
             if (_ship.Climb > 0)
             {
@@ -67,7 +149,7 @@ internal sealed class PilotView : IView
             _ship.IsClimbing = true;
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
+        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
             if (_ship.Climb < 0)
             {
@@ -82,7 +164,7 @@ internal sealed class PilotView : IView
             _ship.IsClimbing = true;
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
+        if (_keyboard.IsPressed(ConsoleKey.OemComma) || _keyboard.IsPressed(ConsoleKey.LeftArrow))
         {
             if (_ship.Roll < 0)
             {
@@ -96,7 +178,7 @@ internal sealed class PilotView : IView
             }
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
+        if (_keyboard.IsPressed(ConsoleKey.OemPeriod) || _keyboard.IsPressed(ConsoleKey.RightArrow))
         {
             if (_ship.Roll > 0)
             {
@@ -110,9 +192,44 @@ internal sealed class PilotView : IView
             }
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.DockingComputerOff))
+        if (_keyboard.IsPressed(ConsoleKey.T) &&
+            !_gameState.IsDocked)
         {
-            _pilot.DisengageAutoPilot();
+            _combat.ArmMissile();
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.U) &&
+            !_gameState.IsDocked)
+        {
+            _combat.UnarmMissile();
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.Spacebar) &&
+            !_gameState.IsDocked)
+        {
+            _ship.IncreaseSpeed();
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.Oem2) &&
+            !_gameState.IsDocked)
+        {
+            _ship.DecreaseSpeed();
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.Tab) &&
+            (!_gameState.IsDocked)
+            && _ship.HasEnergyBomb)
+        {
+            _gameState.DetonateBomb = true;
+            _ship.HasEnergyBomb = false;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.Escape) &&
+            (!_gameState.IsDocked)
+            && _ship.HasEscapeCapsule
+            && (!_gameState.InWitchspace))
+        {
+            _gameState.SetView(Screen.EscapeCapsule);
         }
     }
 

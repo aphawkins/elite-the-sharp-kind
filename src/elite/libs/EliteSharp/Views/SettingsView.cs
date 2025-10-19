@@ -85,27 +85,27 @@ internal sealed class SettingsView : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.Up, CommandKey.UpArrow))
+        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
         {
             SelectUp();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Down, CommandKey.DownArrow))
+        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
         {
             SelectDown();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Left, CommandKey.LeftArrow))
+        if (_keyboard.IsPressed(ConsoleKey.OemComma) || _keyboard.IsPressed(ConsoleKey.LeftArrow))
         {
             SelectLeft();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Right, CommandKey.RightArrow))
+        if (_keyboard.IsPressed(ConsoleKey.OemPeriod) || _keyboard.IsPressed(ConsoleKey.RightArrow))
         {
             SelectRight();
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.Enter))
+        if (_keyboard.IsPressed(ConsoleKey.Enter))
         {
             ToggleSetting();
         }

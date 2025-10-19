@@ -53,6 +53,8 @@ internal sealed class GameState
 
     internal bool IsGameOver { get; private set; }
 
+    internal bool IsGamePaused { get; set; }
+
     internal bool IsInitialised { get; set; }
 
     internal float LaserTemp { get; set; }
@@ -103,7 +105,7 @@ internal sealed class GameState
     {
         CurrentScreen = screen;
         CurrentView = _views[screen];
-        _keyboard.ClearKeyPressed();
+        _keyboard.ClearPressed();
         CurrentView.Reset();
     }
 }

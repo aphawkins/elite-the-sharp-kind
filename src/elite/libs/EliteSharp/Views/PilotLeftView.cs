@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Conflict;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using Useful.Controls;
@@ -14,9 +15,17 @@ internal sealed class PilotLeftView : IView
     private readonly PlayerShip _ship;
     private readonly Stars _stars;
 
-    internal PilotLeftView(GameState gameState, IKeyboard keyboard, Stars stars, Pilot pilot, PlayerShip ship, Space space, IEliteDraw draw)
+    internal PilotLeftView(
+        GameState gameState,
+        IKeyboard keyboard,
+        Stars stars,
+        Pilot pilot,
+        PlayerShip ship,
+        Space space,
+        IEliteDraw draw,
+        Combat combat)
     {
-        _pilotView = new(gameState, keyboard, pilot, ship, stars, space, draw);
+        _pilotView = new(gameState, keyboard, pilot, ship, stars, space, draw, combat);
         _stars = stars;
         _ship = ship;
     }

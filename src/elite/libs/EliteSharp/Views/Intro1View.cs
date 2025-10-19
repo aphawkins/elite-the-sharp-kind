@@ -57,7 +57,7 @@ internal sealed class Intro1View : IView
 
     public void HandleInput()
     {
-        if (_keyboard.IsKeyPressed(CommandKey.Yes))
+        if (_keyboard.IsPressed(ConsoleKey.Y))
         {
             _combat.Reset();
             _universe.ClearUniverse();
@@ -65,7 +65,7 @@ internal sealed class Intro1View : IView
             _gameState.SetView(Screen.LoadCommander);
         }
 
-        if (_keyboard.IsKeyPressed(CommandKey.No))
+        if (_keyboard.IsPressed(ConsoleKey.N))
         {
             _combat.Reset();
             _universe.ClearUniverse();
