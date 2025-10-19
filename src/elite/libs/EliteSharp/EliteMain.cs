@@ -235,6 +235,11 @@ public sealed class EliteMain
 
         if (_gameState.IsGamePaused)
         {
+            if (_keyboard.IsPressed(ConsoleKey.R))
+            {
+                _gameState.IsGamePaused = false;
+            }
+
             return;
         }
 

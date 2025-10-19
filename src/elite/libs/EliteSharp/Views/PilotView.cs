@@ -68,16 +68,6 @@ internal sealed class PilotView : IView
             _gameState.DrawLasers = _combat.FireLaser();
         }
 
-        if (_gameState.IsGamePaused)
-        {
-            if (_keyboard.IsPressed(ConsoleKey.R))
-            {
-                _gameState.IsGamePaused = false;
-            }
-
-            return;
-        }
-
         if (_keyboard.IsPressed(ConsoleKey.C) &&
             !_gameState.IsDocked
             && _ship.HasDockingComputer)
