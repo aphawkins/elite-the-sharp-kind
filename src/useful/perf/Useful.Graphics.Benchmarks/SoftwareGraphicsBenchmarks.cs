@@ -1,12 +1,8 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
-// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
-// Elite (C) I.Bell & D.Braben 1984.
+// 'Useful Libraries' - Andy Hawkins 2025.
 
 using BenchmarkDotNet.Attributes;
-using EliteSharp.Graphics;
-using Useful.Graphics;
 
-namespace EliteSharp.Benchmarks;
+namespace Useful.Graphics.Benchmarks;
 
 public class SoftwareGraphicsBenchmarks : IDisposable
 {
@@ -29,16 +25,16 @@ public class SoftwareGraphicsBenchmarks : IDisposable
     public void Clear() => _graphics.Clear();
 
     [Benchmark]
-    public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, EliteColors.White);
+    public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, BaseColors.White);
 
     [Benchmark]
-    public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, EliteColors.White);
+    public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, BaseColors.White);
 
     [Benchmark]
-    public void DrawLine() => _graphics.DrawLine(new(0, 0), new(511, 511), EliteColors.White);
+    public void DrawLine() => _graphics.DrawLine(new(0, 0), new(511, 511), BaseColors.White);
 
     [Benchmark]
-    public void DrawPixel() => _graphics.DrawPixel(new(255, 255), EliteColors.White);
+    public void DrawPixel() => _graphics.DrawPixel(new(255, 255), BaseColors.White);
 
     protected virtual void Dispose(bool disposing)
     {

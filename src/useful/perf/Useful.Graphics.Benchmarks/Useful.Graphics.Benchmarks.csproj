@@ -29,9 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\useful\libs\Useful.Controls\Useful.Controls.csproj" />
-    <ProjectReference Include="..\..\..\useful\libs\Useful.Graphics\Useful.Graphics.csproj" />
-    <ProjectReference Include="..\..\libs\EliteSharp\EliteSharp.csproj" />
+    <ProjectReference Include="..\..\libs\Useful.Graphics\Useful.Graphics.csproj" />
   </ItemGroup>
 
 </Project>
