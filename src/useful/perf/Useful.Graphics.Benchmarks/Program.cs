@@ -1,5 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 
 [assembly: CLSCompliant(false)]
@@ -8,5 +9,9 @@ namespace Useful.Graphics.Benchmarks;
 
 internal static class Program
 {
-    public static void Main() => BenchmarkRunner.Run<SoftwareGraphicsBenchmarks>();
+    public static void Main() => BenchmarkRunner
+        .Run<SoftwareGraphicsBenchmarks>(
+            ManualConfig
+                .Create(DefaultConfig.Instance)
+                .WithArtifactsPath("../../../reports"));
 }

@@ -22,8 +22,10 @@
   <Folder Name="/src/elite/libs/">
     <Project Path="src/elite/libs/EliteSharp/EliteSharp.csproj" />
   </Folder>
+  <Folder Name="/src/elite/perf/">
+    <Project Path="src/elite/perf/EliteSharp.Benchmarks/EliteSharp.Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/src/elite/test/">
-    <Project Path="src/elite/test/EliteSharp.Benchmarks/EliteSharp.Benchmarks.csproj" />
     <Project Path="src/elite/test/EliteSharp.Tests/EliteSharp.Tests.csproj" />
   </Folder>
   <Folder Name="/src/useful/" />
@@ -34,6 +36,9 @@
     <Project Path="src/useful/libs/Useful.Graphics/Useful.Graphics.csproj" />
     <Project Path="src/useful/libs/Useful.SDL/Useful.SDL.csproj" />
     <Project Path="src/useful/libs/Useful/Useful.csproj" />
+  </Folder>
+  <Folder Name="/src/useful/perf/">
+    <Project Path="src/useful/perf/Useful.Graphics.Benchmarks/Useful.Graphics.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/useful/test/">
     <Project Path="src/useful/test/Useful.Controls.Tests/Useful.Controls.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />

@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+////using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Ships;
 using EliteSharp.Views;
@@ -87,8 +88,9 @@ internal sealed class EliteDraw : IEliteDraw
 
         for (i = 0; i < points.Length; i++)
         {
-            _polyChain[x].PointList[i].X = points[i].X;
-            _polyChain[x].PointList[i].Y = points[i].Y;
+            ////Debug.Assert(points[i].X >= 0 && points[i].X <= Graphics.ScreenWidth, "X should be within the screen bounds");
+            ////Debug.Assert(points[i].Y >= 0 && points[i].Y <= Graphics.ScreenHeight, "Y should be within the screen bounds");
+            _polyChain[x].PointList[i] = points[i];
         }
 
         if (x == 0)

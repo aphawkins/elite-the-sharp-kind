@@ -6,13 +6,16 @@ namespace Useful.Graphics.Benchmarks;
 
 public class SoftwareGraphicsBenchmarks : IDisposable
 {
-    private const int ScreenWidth = 512;
     private const int ScreenHeight = 512;
-    private readonly SoftwareGraphics _graphics;
-    private bool _disposedValue;
+    private const int ScreenWidth = 512;
 
-    public SoftwareGraphicsBenchmarks()
-        => _graphics = new(ScreenWidth, ScreenHeight, (_) => { });
+    private readonly SoftwareGraphics _graphics;
+    private bool _isDisposed;
+
+    public SoftwareGraphicsBenchmarks() => _graphics = new(ScreenWidth, ScreenHeight, (_) => { });
+
+    [Benchmark]
+    public void Clear() => _graphics.Clear();
 
     public void Dispose()
     {
@@ -20,9 +23,6 @@ public class SoftwareGraphicsBenchmarks : IDisposable
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
-
-    [Benchmark]
-    public void Clear() => _graphics.Clear();
 
     [Benchmark]
     public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, BaseColors.White);
@@ -38,17 +38,17 @@ public class SoftwareGraphicsBenchmarks : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposedValue)
+        if (!_isDisposed)
         {
             if (disposing)
             {
                 // dispose managed state (managed objects)
-                _graphics.Dispose();
+                _graphics?.Dispose();
             }
 
             // free unmanaged resources (unmanaged objects) and override finalizer
             // set large fields to null
-            _disposedValue = true;
+            _isDisposed = true;
         }
     }
 }
