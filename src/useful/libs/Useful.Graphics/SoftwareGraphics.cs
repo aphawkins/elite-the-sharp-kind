@@ -11,8 +11,6 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     private readonly FastBitmap _screen;
     private readonly Action<FastBitmap> _screenUpdate;
     private readonly Dictionary<string, FastBitmap> _textCache = [];
-    private Dictionary<int, BitmapFont> _fonts = [];
-    private Dictionary<int, FastBitmap> _images = [];
     private bool _isDisposed;
 
     public SoftwareGraphics(float screenWidth, float screenHeight, Action<FastBitmap> screenUpdate)
@@ -33,6 +31,10 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }
+
+    internal Dictionary<int, BitmapFont> Fonts { get; set; } = [];
+
+    internal Dictionary<int, FastBitmap> Images { get; set; } = [];
 
     public void Clear() => _screen.Clear();
 
@@ -122,15 +124,15 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     public void DrawImage(int imageType, Vector2 position)
     {
-        Debug.Assert(_images.ContainsKey(imageType), "Image has not been loaded");
+        Debug.Assert(Images.ContainsKey(imageType), "Image has not been loaded");
 
-        FastBitmap bitmap = _images[imageType];
+        FastBitmap bitmap = Images[imageType];
         DrawImage(bitmap, position);
     }
 
     public void DrawImageCentre(int imageType, float y)
     {
-        float x = (ScreenWidth - _images[imageType].Width) / 2;
+        float x = (ScreenWidth - Images[imageType].Width) / 2;
         DrawImage(imageType, new(x, y));
     }
 
@@ -286,11 +288,11 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         Guard.ArgumentNull(assetLocator);
         Guard.ArgumentNull(colors);
 
-        _images = assetLocator.ImagePaths.ToDictionary(
+        Images = assetLocator.ImagePaths.ToDictionary(
             x => x.Key,
             x => BitmapFile.Read(x.Value));
 
-        _fonts = assetLocator.FontBitmapPaths.ToDictionary(
+        Fonts = assetLocator.FontBitmapPaths.ToDictionary(
             x => x.Key,
             x => new BitmapFont(BitmapFile.Read(x.Value)));
 
@@ -420,8 +422,8 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     {
         startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth);
         startY = Math.Min(Math.Max(startY, 0), (int)ScreenWidth);
-        int endX = Math.Min(Math.Max(startX + width, 0), (int)ScreenWidth);
-        int endY = Math.Min(Math.Max(startY + height, 0), (int)ScreenWidth);
+        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth);
+        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenWidth);
 
         // Draw horizontal lined
         for (int x = startX; x <= endX; x++)
@@ -437,8 +439,8 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     {
         startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth);
         startY = Math.Min(Math.Max(startY, 0), (int)ScreenWidth);
-        int endX = Math.Min(Math.Max(startX + width, 0), (int)ScreenWidth);
-        int endY = Math.Min(Math.Max(startY + height, 0), (int)ScreenWidth);
+        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth);
+        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenWidth);
 
         // Draw horizontal lines
         for (int x = startX; x <= endX; x++)
@@ -447,7 +449,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             _screen.SetPixel(x, endY, color);
         }
 
-        for (int y = startY; y <= endY; y++)
+        for (int y = startY + 1; y <= endY - 1; y++)
         {
             _screen.SetPixel(startX, y, color);
             _screen.SetPixel(endX, y, color);
@@ -463,7 +465,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             return cacheBitmap;
         }
 
-        BitmapFont font = _fonts[fontType];
+        BitmapFont font = Fonts[fontType];
 
         using FastBitmap temp = new(text.Length * BitmapFont.CharSize, BitmapFont.CharSize);
         int totalWidth = 0;

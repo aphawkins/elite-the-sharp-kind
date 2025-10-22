@@ -8,10 +8,13 @@ Intel Core i5-14600K 3.50GHz, 1 CPU, 20 logical and 14 physical cores
 
 
 ```
-| Method           | Mean            | Error       | StdDev      |
-|----------------- |----------------:|------------:|------------:|
-| Clear            |  15,340.8988 ns | 304.6746 ns | 396.1631 ns |
-| DrawCircle       |     997.4499 ns |   2.9922 ns |   2.7989 ns |
-| DrawCircleFilled | 134,649.7754 ns | 948.1352 ns | 886.8863 ns |
-| DrawLine         |   1,860.9377 ns |  21.2752 ns |  19.9009 ns |
-| DrawPixel        |       0.3790 ns |   0.0032 ns |   0.0030 ns |
+| Method           | Mean            | Error         | StdDev        | Median          |
+|----------------- |----------------:|--------------:|--------------:|----------------:|
+| Clear            |  16,606.5855 ns |   307.9335 ns |   288.0412 ns |  16,605.2246 ns |
+| DrawCircle       |   1,046.4827 ns |     6.3503 ns |     5.9401 ns |   1,047.9958 ns |
+| DrawCircleFilled | 135,979.1829 ns | 1,861.5248 ns | 1,741.2715 ns | 135,765.5518 ns |
+| DrawImage        |     197.6575 ns |     0.7449 ns |     0.6603 ns |     197.3906 ns |
+| DrawImageCentre  |     182.0331 ns |     0.4272 ns |     0.3996 ns |     182.1143 ns |
+| DrawLine         |   2,507.2296 ns |   151.2974 ns |   446.1037 ns |   2,780.0663 ns |
+| DrawPixel        |       0.3800 ns |     0.0041 ns |     0.0038 ns |       0.3791 ns |
+| DrawPolygon      |     214.2701 ns |     4.0927 ns |     4.3792 ns |     215.5464 ns |
