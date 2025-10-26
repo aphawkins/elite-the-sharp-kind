@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libs\Useful.Graphics\Useful.Graphics.csproj" />
+    <ProjectReference Include="..\..\test\Useful.Fakes\Useful.Fakes.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ namespace Useful.Controls;
 
 public interface IKeyboard
 {
-    public bool Close { get; }
+    public bool Close { get; set; }
 
     public void ClearPressed();
 

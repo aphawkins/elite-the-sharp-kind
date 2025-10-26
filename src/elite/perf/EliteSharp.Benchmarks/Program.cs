@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 
 [assembly: CLSCompliant(false)]
@@ -12,7 +13,14 @@ internal static class Program
 {
     public static void Main()
     {
-        BenchmarkRunner.Run<PlanetBenchmarks>();
-        BenchmarkRunner.Run<SunBenchmarks>();
+        BenchmarkRunner.Run<PlanetBenchmarks>(
+            ManualConfig
+                .Create(DefaultConfig.Instance)
+                .WithArtifactsPath("../../../reports"));
+
+        BenchmarkRunner.Run<PlanetBenchmarks>(
+            ManualConfig
+                .Create(DefaultConfig.Instance)
+                .WithArtifactsPath("../../../reports"));
     }
 }

@@ -7,6 +7,7 @@ using EliteSharp.Graphics;
 using EliteSharp.Suns;
 using Useful.Controls;
 using Useful.Graphics;
+using Useful.SDL;
 
 namespace EliteSharp.Benchmarks;
 
@@ -21,7 +22,7 @@ public class SunBenchmarks : IDisposable
 
     public SunBenchmarks()
     {
-        SoftwareKeyboard keyboard = new();
+        SoftwareKeyboard keyboard = new(new SDLInput());
         Dictionary<Views.Screen, Views.IView> views = [];
         GameState gameState = new(keyboard, views);
         _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });

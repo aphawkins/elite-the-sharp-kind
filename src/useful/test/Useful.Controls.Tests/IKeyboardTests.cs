@@ -1,5 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
+using Useful.Fakes.Controls;
+
 namespace Useful.Controls.Tests;
 
 public class IKeyboardTests

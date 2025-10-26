@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>EliteSharp.Benchmarks.PlanetBenchmarks-20251026-221912</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.4, Windows 11 (10.0.26200.6899)
+Intel Core i5-14600K 3.50GHz, 1 CPU, 20 logical and 14 physical cores
+.NET SDK 10.0.100-rc.2.25502.107
+  [Host]     : .NET 10.0.0 (10.0.0-rc.2.25502.107, 10.0.25.50307), X64 RyuJIT x86-64-v3 [AttachedDebugger]
+  DefaultJob : .NET 10.0.0 (10.0.0-rc.2.25502.107, 10.0.25.50307), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method   </th><th>Mean</th><th>Error</th><th>StdDev</th>
+</tr>
+</thead><tbody><tr><td>SolidPlanet</td><td>138.534 &mu;s</td><td>1.2825 &mu;s</td><td>1.1369 &mu;s</td>
+</tr><tr><td>WireframePlanet</td><td>1.155 &mu;s</td><td>0.0047 &mu;s</td><td>0.0044 &mu;s</td>
+</tr><tr><td>FractalPlanet</td><td>171.375 &mu;s</td><td>0.4663 &mu;s</td><td>0.4362 &mu;s</td>
+</tr><tr><td>StripedPlanet</td><td>170.588 &mu;s</td><td>0.2306 &mu;s</td><td>0.2044 &mu;s</td>
+</tr></tbody></table>
+</body>
+</html>

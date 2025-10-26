@@ -1,5 +1,8 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
+using Useful.Controls;
+using Useful.Fakes.Controls;
+
 namespace Useful.SDL.Tests;
 
 public class SDLKeyboardTests
@@ -7,7 +10,8 @@ public class SDLKeyboardTests
     [Fact]
     public void InitialStateDefaults()
     {
-        SDLKeyboard kb = new();
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
 
         Assert.False(kb.IsPressed(ConsoleKey.A));
         Assert.False(kb.IsPressed(ConsoleModifiers.Shift));
@@ -19,7 +23,8 @@ public class SDLKeyboardTests
     [Fact]
     public void KeyDownLastPressedReturnsAndClears()
     {
-        SDLKeyboard kb = new();
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
 
         kb.KeyDown(ConsoleKey.A, ConsoleModifiers.Shift);
 
@@ -36,7 +41,8 @@ public class SDLKeyboardTests
     [Fact]
     public void KeyDownIsPressedKeyConsumedThenNotPressed()
     {
-        SDLKeyboard kb = new();
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
 
         kb.KeyDown(ConsoleKey.B, ConsoleModifiers.None);
 
@@ -50,7 +56,8 @@ public class SDLKeyboardTests
     [Fact]
     public void KeyDownIsPressedModifierConsumedThenNotPressed()
     {
-        SDLKeyboard kb = new();
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
 
         kb.KeyDown(ConsoleKey.C, ConsoleModifiers.Control);
 
@@ -64,7 +71,8 @@ public class SDLKeyboardTests
     [Fact]
     public void KeyUpRemovesPressed()
     {
-        SDLKeyboard kb = new();
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
 
         kb.KeyDown(ConsoleKey.D, ConsoleModifiers.Alt);
 
@@ -79,7 +87,8 @@ public class SDLKeyboardTests
     [Fact]
     public void ClearPressedResetsAllState()
     {
-        SDLKeyboard kb = new();
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
 
         kb.KeyDown(ConsoleKey.E, ConsoleModifiers.Shift | ConsoleModifiers.Control);
         Assert.True(kb.IsPressed(ConsoleKey.E) || kb.IsPressed(ConsoleModifiers.Shift) || kb.IsPressed(ConsoleModifiers.Control));

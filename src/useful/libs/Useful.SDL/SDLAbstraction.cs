@@ -20,7 +20,8 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
 
         Graphics = new SDLGraphics(_renderer, screenWidth, screenHeight);
         Sound = new SDLSound();
-        Keyboard = new SDLKeyboard();
+        SDLInput input = new();
+        Keyboard = new SoftwareKeyboard(input);
     }
 
     public IGraphics Graphics { get; }

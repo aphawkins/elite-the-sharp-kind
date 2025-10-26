@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\Useful.Controls\Useful.Controls.csproj" />
+    <ProjectReference Include="..\..\libs\Useful\Useful.csproj" />
+  </ItemGroup>
+</Project>

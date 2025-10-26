@@ -38,10 +38,12 @@
     <Project Path="src/useful/libs/Useful/Useful.csproj" />
   </Folder>
   <Folder Name="/src/useful/perf/">
+    <Project Path="src/useful/perf/Useful.Controls.Benchmarks/Useful.Controls.Benchmarks.csproj" />
     <Project Path="src/useful/perf/Useful.Graphics.Benchmarks/Useful.Graphics.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/useful/test/">
     <Project Path="src/useful/test/Useful.Controls.Tests/Useful.Controls.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
+    <Project Path="src/useful/test/Useful.Fakes/Useful.Fakes.csproj" />
     <Project Path="src/useful/test/Useful.Graphics.Tests/Useful.Graphics.Tests.csproj" />
     <Project Path="src/useful/test/Useful.SDL.Tests/Useful.SDL.Tests.csproj" />
   </Folder>

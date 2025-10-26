@@ -1,14 +1,16 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-namespace Useful.Controls.Tests;
+using Useful.Controls;
+
+namespace Useful.Fakes.Controls;
 
 // Minimal in-test fake implementation of IKeyboard to validate contract behavior.
-internal sealed class FakeKeyboard : IKeyboard
+public sealed class FakeKeyboard : IKeyboard
 {
     private readonly HashSet<(ConsoleKey Key, ConsoleModifiers Modifiers)> _pressed = [];
     private (ConsoleKey Key, ConsoleModifiers Modifiers)? _last;
 
-    public bool Close { get; private set; }
+    public bool Close { get; set; }
 
     public void ClearPressed() => _pressed.Clear();
 

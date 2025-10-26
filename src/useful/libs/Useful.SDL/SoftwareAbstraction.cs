@@ -24,7 +24,7 @@ public sealed class SoftwareAbstraction : IAbstraction, IDisposable
             screenHeight,
             SoftwareScreenUpdate);
         Sound = new SoftwareSound();
-        Keyboard = new SDLKeyboard();
+        Keyboard = new SoftwareKeyboard(new SDLInput());
     }
 
     public IGraphics Graphics { get; }

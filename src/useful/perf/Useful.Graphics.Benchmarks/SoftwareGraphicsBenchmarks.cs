@@ -2,7 +2,7 @@
 
 using System.Numerics;
 using BenchmarkDotNet.Attributes;
-using Useful.Assets;
+using Useful.Fakes.Assets;
 
 namespace Useful.Graphics.Benchmarks;
 
@@ -18,7 +18,7 @@ public class SoftwareGraphicsBenchmarks : IDisposable
     public SoftwareGraphicsBenchmarks()
     {
         _graphics = new(ScreenWidthPixels, ScreenHeightPixels, (_) => { });
-        _graphics.Initialize(new DummyAssetLocator(), [BaseColors.White]);
+        _graphics.Initialize(new FakeAssetLocator(), [BaseColors.White]);
         _graphics.Images = new() { { 123, new FastBitmap(16, 16) } };
 
         _fontBitmap = new(8, 8);
@@ -61,74 +61,74 @@ public class SoftwareGraphicsBenchmarks : IDisposable
         _graphics.DrawPolygon(points, BaseColors.White);
     }
 
-    ////[Benchmark]
-    ////public void DrawPolygonFilled()
-    ////{
-    ////    Vector2[] tri = [new(1, 1), new(3, 1), new(2, 3)];
-    ////    _graphics.DrawPolygonFilled(tri, BaseColors.White);
-    ////}
+    [Benchmark]
+    public void DrawPolygonFilled()
+    {
+        Vector2[] tri = [new(1, 1), new(3, 1), new(2, 3)];
+        _graphics.DrawPolygonFilled(tri, BaseColors.White);
+    }
 
-    ////// Rectangle functions
-    ////[Benchmark]
-    ////public void DrawRectangle() => _graphics.DrawRectangle(new(1, 1), 10, 6, BaseColors.White);
+    // Rectangle functions
+    [Benchmark]
+    public void DrawRectangle() => _graphics.DrawRectangle(new(1, 1), 10, 6, BaseColors.White);
 
-    ////[Benchmark]
-    ////public void DrawRectangleCentre() => _graphics.DrawRectangleCentre(10f, 10, 6, BaseColors.White);
+    [Benchmark]
+    public void DrawRectangleCentre() => _graphics.DrawRectangleCentre(10f, 10, 6, BaseColors.White);
 
-    ////[Benchmark]
-    ////public void DrawRectangleFilled() => _graphics.DrawRectangleFilled(new(1, 1), 10, 6, BaseColors.White);
+    [Benchmark]
+    public void DrawRectangleFilled() => _graphics.DrawRectangleFilled(new(1, 1), 10, 6, BaseColors.White);
 
-    ////// Text functions - use whitespace where appropriate to exercise early-return paths quickly
-    ////[Benchmark]
-    ////public void DrawTextCentreWhitespace() => _graphics.DrawTextCentre(0f, "   ", 0, BaseColors.White);
+    // Text functions - use whitespace where appropriate to exercise early-return paths quickly
+    [Benchmark]
+    public void DrawTextCentreWhitespace() => _graphics.DrawTextCentre(0f, "   ", 0, BaseColors.White);
 
-    ////[Benchmark]
-    ////public void DrawTextLeftWhitespace() => _graphics.DrawTextLeft(new(0, 0), " ", 0, BaseColors.White);
+    [Benchmark]
+    public void DrawTextLeftWhitespace() => _graphics.DrawTextLeft(new(0, 0), " ", 0, BaseColors.White);
 
-    ////[Benchmark]
-    ////public void DrawTextRightWhitespace() => _graphics.DrawTextRight(new(0, 0), string.Empty, 0, BaseColors.White);
+    [Benchmark]
+    public void DrawTextRightWhitespace() => _graphics.DrawTextRight(new(0, 0), string.Empty, 0, BaseColors.White);
 
-    ////// Triangle functions
-    ////[Benchmark]
-    ////public void DrawTriangle()
-    ////{
-    ////    Vector2 a = new(1, 1);
-    ////    Vector2 b = new(3, 1);
-    ////    Vector2 c = new(2, 3);
-    ////    _graphics.DrawTriangle(a, b, c, BaseColors.White);
-    ////}
+    // Triangle functions
+    [Benchmark]
+    public void DrawTriangle()
+    {
+        Vector2 a = new(1, 1);
+        Vector2 b = new(3, 1);
+        Vector2 c = new(2, 3);
+        _graphics.DrawTriangle(a, b, c, BaseColors.White);
+    }
 
-    ////[Benchmark]
-    ////public void DrawTriangleFilled()
-    ////{
-    ////    Vector2 a = new(1, 1);
-    ////    Vector2 b = new(3, 1);
-    ////    Vector2 c = new(2, 3);
-    ////    _graphics.DrawTriangleFilled(a, b, c, BaseColors.White);
-    ////}
+    [Benchmark]
+    public void DrawTriangleFilled()
+    {
+        Vector2 a = new(1, 1);
+        Vector2 b = new(3, 1);
+        Vector2 c = new(2, 3);
+        _graphics.DrawTriangleFilled(a, b, c, BaseColors.White);
+    }
 
-    ////[Benchmark]
-    ////public void Initialize() => _graphics.Initialize(new DummyAssetLocator(), [BaseColors.White]);
+    [Benchmark]
+    public void Initialize() => _graphics.Initialize(new FakeAssetLocator(), [BaseColors.White]);
 
-    ////[Benchmark]
-    ////public bool IsInitialized() => _graphics.IsInitialized;
+    [Benchmark]
+    public bool IsInitialized() => _graphics.IsInitialized;
 
-    ////[Benchmark]
-    ////public float Scale() => _graphics.Scale;
+    [Benchmark]
+    public float Scale() => _graphics.Scale;
 
-    ////[Benchmark]
-    ////public float ScreenHeight() => _graphics.ScreenHeight;
+    [Benchmark]
+    public float ScreenHeight() => _graphics.ScreenHeight;
 
-    ////// Screen update and clip region
-    ////[Benchmark]
-    ////public void ScreenUpdate() => _graphics.ScreenUpdate();
+    // Screen update and clip region
+    [Benchmark]
+    public void ScreenUpdate() => _graphics.ScreenUpdate();
 
-    ////// Property getters
-    ////[Benchmark]
-    ////public float ScreenWidth() => _graphics.ScreenWidth;
+    // Property getters
+    [Benchmark]
+    public float ScreenWidth() => _graphics.ScreenWidth;
 
-    ////[Benchmark]
-    ////public void SetClipRegion() => _graphics.SetClipRegion(new Vector2(1, 1), 10, 10);
+    [Benchmark]
+    public void SetClipRegion() => _graphics.SetClipRegion(new Vector2(1, 1), 10, 10);
 
     protected virtual void Dispose(bool disposing)
     {
@@ -145,23 +145,5 @@ public class SoftwareGraphicsBenchmarks : IDisposable
             // set large fields to null
             _isDisposed = true;
         }
-    }
-
-    // Minimal IAssetLocator implementation for initialize benchmark.
-    private sealed class DummyAssetLocator : IAssetLocator
-    {
-        public IDictionary<int, string> FontBitmapPaths { get; } = new Dictionary<int, string>();
-
-        public IDictionary<int, string> FontTrueTypePaths { get; } = new Dictionary<int, string>();
-
-        public IDictionary<int, string> ImagePaths { get; } = new Dictionary<int, string>();
-
-        public bool IsInitialized { get; private set; }
-
-        public IDictionary<int, string> MusicPaths { get; } = new Dictionary<int, string>();
-
-        public IDictionary<int, string> SfxPaths { get; } = new Dictionary<int, string>();
-
-        public void Initialize() => IsInitialized = true;
     }
 }

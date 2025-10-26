@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Useful.Controls.Benchmarks.KeyboardBenchmarks-20251026-222235</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.4, Windows 11 (10.0.26200.6899)
+Intel Core i5-14600K 3.50GHz, 1 CPU, 20 logical and 14 physical cores
+.NET SDK 10.0.100-rc.2.25502.107
+  [Host]     : .NET 10.0.0 (10.0.0-rc.2.25502.107, 10.0.25.50307), X64 RyuJIT x86-64-v3 [AttachedDebugger]
+  Job-CNUJVU : .NET 10.0.0 (10.0.0-rc.2.25502.107, 10.0.25.50307), X64 RyuJIT x86-64-v3
+</code></pre>
+<pre><code>InvocationCount=1  UnrollFactor=1  
+</code></pre>
+
+<table>
+<thead><tr><th>Method     </th><th>Mean </th><th>Error</th><th>StdDev</th><th>Median </th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>KeyDown</td><td>175.64 ns</td><td>16.737 ns</td><td>43.20 ns</td><td>200.0000 ns</td><td>-</td>
+</tr><tr><td>KeyUp</td><td>766.33 ns</td><td>72.001 ns</td><td>210.03 ns</td><td>700.0000 ns</td><td>48 B</td>
+</tr><tr><td>IsPressedKey</td><td>362.11 ns</td><td>25.510 ns</td><td>73.19 ns</td><td>300.0000 ns</td><td>-</td>
+</tr><tr><td>IsPressedModifier</td><td>505.00 ns</td><td>41.851 ns</td><td>123.40 ns</td><td>500.0000 ns</td><td>48 B</td>
+</tr><tr><td>LastPressed</td><td>240.00 ns</td><td>27.093 ns</td><td>77.73 ns</td><td>200.0000 ns</td><td>-</td>
+</tr><tr><td>ClearPressed</td><td>30.00 ns</td><td>15.620 ns</td><td>46.06 ns</td><td>0.0000 ns</td><td>-</td>
+</tr><tr><td>PollNoEvents</td><td>93.67 ns</td><td>9.428 ns</td><td>24.50 ns</td><td>100.0000 ns</td><td>-</td>
+</tr><tr><td>PollWithEvents</td><td>2,158.95 ns</td><td>104.373 ns</td><td>299.47 ns</td><td>2,000.0000 ns</td><td>1600 B</td>
+</tr></tbody></table>
+</body>
+</html>

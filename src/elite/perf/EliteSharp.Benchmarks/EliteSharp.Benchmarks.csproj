@@ -29,6 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\useful\libs\Useful.SDL\Useful.SDL.csproj" />
+    <ProjectReference Include="..\..\..\useful\test\Useful.Fakes\Useful.Fakes.csproj" />
     <ProjectReference Include="..\..\libs\EliteSharp\EliteSharp.csproj" />
   </ItemGroup>
 

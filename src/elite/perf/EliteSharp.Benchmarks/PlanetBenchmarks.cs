@@ -6,6 +6,7 @@ using BenchmarkDotNet.Attributes;
 using EliteSharp.Graphics;
 using EliteSharp.Planets;
 using Useful.Controls;
+using Useful.Fakes.Controls;
 using Useful.Graphics;
 
 namespace EliteSharp.Benchmarks;
@@ -23,7 +24,8 @@ public class PlanetBenchmarks : IDisposable
 
     public PlanetBenchmarks()
     {
-        SoftwareKeyboard keyboard = new();
+        FakeInput input = new();
+        SoftwareKeyboard keyboard = new(input);
         Dictionary<Views.Screen, Views.IView> views = [];
         GameState gameState = new(keyboard, views);
         _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });

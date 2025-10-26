@@ -44,6 +44,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\elite\apps\EliteSharp.SDL\EliteSharp.SDL.csproj" />
+    <ProjectReference Include="..\Useful.Controls.Tests\Useful.Controls.Tests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
