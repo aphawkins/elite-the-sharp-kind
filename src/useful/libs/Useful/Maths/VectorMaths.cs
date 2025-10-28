@@ -1,15 +1,10 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
-// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
-// Elite (C) I.Bell & D.Braben 1984.
+// 'Useful Libraries' - Andy Hawkins 2025.
 
 using System.Numerics;
 
-namespace EliteSharp;
+namespace Useful.Maths;
 
-/// <summary>
-/// The original Elite code did all the vector calculations using 8-bit integers.
-/// </summary>
-internal static class VectorMaths
+public static class VectorMaths
 {
     private static readonly Vector3[] s_startMatrix =
     [
@@ -18,10 +13,12 @@ internal static class VectorMaths
         new(0, 0, -1),
     ];
 
-    internal static Vector3[] GetInitialMatrix() => s_startMatrix.Cloner();
+    public static Vector3[] GetInitialMatrix() => s_startMatrix.Cloner();
 
-    internal static Vector3 MultiplyVector(Vector3 vec, Vector3[] mat)
+    public static Vector3 MultiplyVector(Vector3 vec, Vector3[] mat)
     {
+        Guard.ArgumentNull(mat);
+
         Matrix4x4 matrix = new(
             mat[0].X,
             mat[1].X,
@@ -43,8 +40,10 @@ internal static class VectorMaths
         return Vector3.Transform(vec, matrix);
     }
 
-    internal static Vector3[] RotateVector(Vector3[] vec, float alpha, float beta)
+    public static Vector3[] RotateVector(Vector3[] vec, float alpha, float beta)
     {
+        Guard.ArgumentNull(vec);
+
         for (int i = 0; i < vec.Length; i++)
         {
             RotateVector(ref vec[i], alpha, beta);
@@ -53,8 +52,10 @@ internal static class VectorMaths
         return vec;
     }
 
-    internal static void TidyMatrix(Vector3[] mat)
+    public static void TidyMatrix(Vector3[] mat)
     {
+        Guard.ArgumentNull(mat);
+
         mat[2] = UnitVector(mat[2]);
 
         if (mat[2].X is > -1 and < 1)
@@ -84,13 +85,13 @@ internal static class VectorMaths
     /// <summary>
     /// Convert a vector into a vector of unit (1) length.
     /// </summary>
-    internal static Vector3 UnitVector(Vector3 vec) => Vector3.Divide(vec, vec.Length());
+    public static Vector3 UnitVector(Vector3 vec) => Vector3.Divide(vec, vec.Length());
 
     /// <summary>
     /// Calculate the dot product of two vectors sharing a common point.
     /// </summary>
     /// <returns>The cosine of the angle between the two vectors.</returns>
-    internal static float VectorDotProduct(Vector3 first, Vector3 second) => Vector3.Dot(first, second);
+    public static float VectorDotProduct(Vector3 first, Vector3 second) => Vector3.Dot(first, second);
 
     private static void RotateVector(ref Vector3 vec, float alpha, float beta)
     {

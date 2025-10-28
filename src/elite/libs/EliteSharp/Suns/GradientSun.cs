@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using Useful.Graphics;
+using Useful.Maths;
 
 namespace EliteSharp.Suns;
 

@@ -8,6 +8,7 @@ using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
 using Useful.Controls;
+using Useful.Maths;
 
 namespace EliteSharp.Views;
 

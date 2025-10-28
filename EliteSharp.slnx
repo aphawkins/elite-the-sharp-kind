@@ -46,5 +46,6 @@
     <Project Path="src/useful/test/Useful.Fakes/Useful.Fakes.csproj" />
     <Project Path="src/useful/test/Useful.Graphics.Tests/Useful.Graphics.Tests.csproj" />
     <Project Path="src/useful/test/Useful.SDL.Tests/Useful.SDL.Tests.csproj" />
+    <Project Path="src/useful/test/Useful.Tests/Useful.Tests.csproj" />
   </Folder>
 </Solution>

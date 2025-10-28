@@ -9,6 +9,7 @@ using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using EliteSharp.Trader;
 using Useful.Audio;
+using Useful.Maths;
 
 namespace EliteSharp.Views;
 

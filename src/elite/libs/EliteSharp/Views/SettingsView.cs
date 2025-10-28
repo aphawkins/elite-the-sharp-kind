@@ -8,6 +8,7 @@ using EliteSharp.Graphics;
 using EliteSharp.Planets;
 using EliteSharp.Suns;
 using Useful.Controls;
+using Useful.Maths;
 
 namespace EliteSharp.Views;
 

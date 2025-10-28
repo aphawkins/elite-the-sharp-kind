@@ -14,6 +14,7 @@ using EliteSharp.Trader;
 using EliteSharp.Types;
 using EliteSharp.Views;
 using Useful.Audio;
+using Useful.Maths;
 
 namespace EliteSharp;
 

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
+using Useful.Maths;
 
 namespace EliteSharp;
 

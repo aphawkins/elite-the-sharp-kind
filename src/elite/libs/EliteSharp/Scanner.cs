@@ -7,6 +7,7 @@ using EliteSharp.Conflict;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using Useful.Graphics;
+using Useful.Maths;
 
 namespace EliteSharp;
 

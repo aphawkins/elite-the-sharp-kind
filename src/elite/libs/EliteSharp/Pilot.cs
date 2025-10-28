@@ -7,6 +7,7 @@ using EliteSharp.Audio;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
 using Useful.Audio;
+using Useful.Maths;
 
 namespace EliteSharp;
 
