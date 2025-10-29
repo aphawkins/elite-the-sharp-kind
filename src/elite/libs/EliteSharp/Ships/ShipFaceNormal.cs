@@ -11,10 +11,10 @@ internal sealed class ShipFaceNormal
     internal ShipFaceNormal(int distance, Vector3 direction)
     {
         Distance = distance;
-        Direction = direction;
+        Direction = new(direction, 0);
     }
 
-    internal Vector3 Direction { get; set; }
+    internal Vector4 Direction { get; set; }
 
     internal int Distance { get; set; }
 }

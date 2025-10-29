@@ -56,7 +56,7 @@ internal sealed class GameOverView : IView
         _combat.Reset();
         _universe.ClearUniverse();
         CobraMk3 cobraMk3 = new(_draw);
-        if (!_universe.AddNewShip(cobraMk3, new(0, 0, -400), VectorMaths.GetInitialMatrix(), 0, 0))
+        if (!_universe.AddNewShip(cobraMk3, new(0, 0, -400, 0), VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
         {
             Debug.WriteLine("Failed to create CobraMk3");
         }
@@ -67,7 +67,12 @@ internal sealed class GameOverView : IView
         for (int i = 0; i < 5; i++)
         {
             IShip cargo = RNG.TrueOrFalse() ? new CargoCannister(_draw) : new Alloy(_draw);
-            if (!_universe.AddNewShip(cargo, new(RNG.Random(-32, 32), RNG.Random(-32, 32), -400), VectorMaths.GetInitialMatrix(), 0, 0))
+            if (!_universe.AddNewShip(
+                cargo,
+                new(RNG.Random(-32, 32), RNG.Random(-32, 32), -400, 0),
+                VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(),
+                0,
+                0))
             {
                 Debug.WriteLine("Failed to create Cargo");
             }

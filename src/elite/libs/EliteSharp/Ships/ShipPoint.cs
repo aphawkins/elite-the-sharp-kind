@@ -10,7 +10,7 @@ internal sealed class ShipPoint
 {
     internal ShipPoint(Vector3 point, int distance, int face1, int face2, int face3, int face4)
     {
-        Point = point;
+        Point = new(point, 0);
         Distance = distance;
         Face1 = face1;
         Face2 = face2;
@@ -28,5 +28,5 @@ internal sealed class ShipPoint
 
     internal int Face4 { get; set; }
 
-    internal Vector3 Point { get; set; }
+    internal Vector4 Point { get; set; }
 }

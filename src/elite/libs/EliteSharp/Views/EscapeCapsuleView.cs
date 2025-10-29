@@ -68,10 +68,10 @@ internal sealed class EscapeCapsuleView : IView
         _ship.Speed = 1;
         _ship.Roll = 0;
         _ship.Climb = 0;
-        Vector3[] rotmat = VectorMaths.GetInitialMatrix();
+        Vector4[] rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
         rotmat[2].Z = 1;
         _newship = new CobraMk3(_draw);
-        if (!_universe.AddNewShip(_newship, new(0, 0, 200), rotmat, -127, -127))
+        if (!_universe.AddNewShip(_newship, new(0, 0, 200, 0), rotmat, -127, -127))
         {
             Debug.Fail("Failed to create CobraMk3");
         }
@@ -92,7 +92,7 @@ internal sealed class EscapeCapsuleView : IView
             }
 
             _stars.FrontStarfield();
-            _newship.Location = new(0, 0, _newship.Location.Z + 2);
+            _newship.Location = new(0, 0, _newship.Location.Z + 2, 0);
             _i++;
         }
         else if (!_universe.IsStationPresent)
@@ -105,7 +105,7 @@ internal sealed class EscapeCapsuleView : IView
                 {
                     if (universeObj.Type != 0)
                     {
-                        universeObj.Location = new(universeObj.Location.X, universeObj.Location.Y, universeObj.Location.Z - 1500);
+                        universeObj.Location = new(universeObj.Location.X, universeObj.Location.Y, universeObj.Location.Z - 1500, 0);
                     }
                 }
             }

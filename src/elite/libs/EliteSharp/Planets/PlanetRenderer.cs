@@ -19,7 +19,7 @@ internal class PlanetRenderer
 
     internal PlanetRenderer(IEliteDraw draw) => _draw = draw;
 
-    internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector3 location)
+    internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector4 location)
     {
         Vector2 position = new(location.X, -location.Y);
         position *= 256 / location.Z;
@@ -43,7 +43,7 @@ internal class PlanetRenderer
     /// <summary>
     /// Draw a solid planet. Based on Doros circle drawing alogorithm.
     /// </summary>
-    internal void Draw(Vector2 centre, float radius, Vector3[] vec)
+    internal void Draw(Vector2 centre, float radius, Vector4[] vec)
     {
         float vx = vec[1].X * 65536;
         float vy = vec[1].Y * 65536;

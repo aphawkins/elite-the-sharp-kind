@@ -14,53 +14,54 @@ public class VectorMathsTests
     public void GetInitialMatrixReturnsExpectedValuesAndIsCloned()
     {
         // Act
-        Vector3[] m1 = VectorMaths.GetInitialMatrix();
-        Vector3[] m2 = VectorMaths.GetInitialMatrix();
+        Vector4[] m1 = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
+        Vector4[] m2 = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
 
         // Assert - values
-        AssertVectorAlmostEqual(new Vector3(1, 0, 0), m1[0]);
-        AssertVectorAlmostEqual(new Vector3(0, 1, 0), m1[1]);
-        AssertVectorAlmostEqual(new Vector3(0, 0, -1), m1[2]);
+        AssertVectorAlmostEqual(new Vector4(1, 0, 0, 0), m1[0]);
+        AssertVectorAlmostEqual(new Vector4(0, 1, 0, 0), m1[1]);
+        AssertVectorAlmostEqual(new Vector4(0, 0, -1, 0), m1[2]);
+        AssertVectorAlmostEqual(new Vector4(0, 0, 0, 0), m1[3]);
 
         // Assert - clones (different array instances)
         Assert.False(ReferenceEquals(m1, m2));
 
         // and different elements instances (structs so reference equality not applicable), ensure modifying one doesn't affect the other
-        m1[0] = new Vector3(9, 9, 9);
-        AssertVectorAlmostEqual(new Vector3(1, 0, 0), m2[0]);
+        m1[0] = new Vector4(9, 9, 9, 0);
+        AssertVectorAlmostEqual(new Vector4(1, 0, 0, 0), m2[0]);
     }
 
     [Fact]
     public void MultiplyVectorAppliesMatrixCorrectly()
     {
         // Arrange
-        Vector3[] mat = VectorMaths.GetInitialMatrix(); // third row negates Z
-        Vector3 v = new(1, 2, 3);
+        Vector4[] mat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(); // third row negates Z
+        Vector4 v = new(1, 2, 3, 0);
 
         // Act
-        Vector3 result = VectorMaths.MultiplyVector(v, mat);
+        Vector4 result = VectorMaths.MultiplyVector(v, mat.ToMatrix4x4());
 
         // Assert -> expected (1,2,-3)
-        AssertVectorAlmostEqual(new Vector3(1, 2, -3), result);
+        AssertVectorAlmostEqual(new Vector4(1, 2, -3, 0), result);
     }
 
     [Fact]
     public void UnitVectorReturnsNormalizedVector()
     {
-        Vector3 v = new(2f, 0f, 0f);
-        Vector3 unit = VectorMaths.UnitVector(v);
-        AssertVectorAlmostEqual(new Vector3(1f, 0f, 0f), unit);
+        Vector4 v = new(2, 0, 0, 0);
+        Vector4 unit = VectorMaths.UnitVector(v);
+        AssertVectorAlmostEqual(new Vector4(1, 0, 0, 0), unit);
     }
 
     [Fact]
     public void VectorDotProductComputesCosineLikeDot()
     {
-        Vector3 a = new(1f, 0f, 0f);
-        Vector3 b = new(0f, 1f, 0f);
+        Vector4 a = new(1, 0, 0, 0);
+        Vector4 b = new(0, 1, 0, 0);
         float dot = VectorMaths.VectorDotProduct(a, b);
         Assert.InRange(dot, -Tolerance, Tolerance); // near zero
 
-        Vector3 c = new(2f, 0f, 0f);
+        Vector4 c = new(2, 0, 0, 0);
         dot = VectorMaths.VectorDotProduct(a, c);
         Assert.InRange(dot, 2f - Tolerance, 2f + Tolerance);
     }
@@ -68,16 +69,16 @@ public class VectorMathsTests
     [Fact]
     public void RotateVectorWithZeroAnglesIsIdentity()
     {
-        Vector3[] matrix =
+        Vector4[] matrix =
         [
-            new Vector3(1f, 2f, 3f),
-            new Vector3(-1f, 4f, 0.5f),
-            new Vector3(0.1f, -0.3f, 2.0f)
+            new Vector4(1, 2, 3, 0),
+            new Vector4(-1, 4, 0.5f, 0),
+            new Vector4(0.1f, -0.3f, 2.0f, 0)
         ];
 
-        Vector3[] copy = [matrix[0], matrix[1], matrix[2]];
+        Vector4[] copy = [matrix[0], matrix[1], matrix[2]];
 
-        Vector3[] result = VectorMaths.RotateVector(copy, 0f, 0f);
+        Vector4[] result = VectorMaths.RotateVector(copy, 0f, 0f);
 
         AssertVectorAlmostEqual(matrix[0], result[0]);
         AssertVectorAlmostEqual(matrix[1], result[1]);
@@ -87,15 +88,15 @@ public class VectorMathsTests
     [Fact]
     public void RotateVectorChangesValuesForNonZeroAngles()
     {
-        Vector3[] matrix =
+        Vector4[] matrix =
         [
-            new Vector3(1f, 0f, 0f),
-            new Vector3(0f, 1f, 0f),
-            new Vector3(0f, 0f, 1f)
+            new Vector4(1, 0, 0, 0),
+            new Vector4(0, 1, 0, 0),
+            new Vector4(0, 0, 1, 0)
         ];
 
-        Vector3[] input = [matrix[0], matrix[1], matrix[2]];
-        Vector3[] result = VectorMaths.RotateVector(input, 0.1f, 0.2f);
+        Vector4[] input = [matrix[0], matrix[1], matrix[2]];
+        Vector4[] result = VectorMaths.RotateVector(input, 0.1f, 0.2f);
 
         // Should not be identical to input for non-zero angles
         bool anyDifferent =
@@ -116,11 +117,11 @@ public class VectorMathsTests
     public void TidyMatrixProducesOrthogonalUnitVectors()
     {
         // Construct a deliberately messy matrix
-        Vector3[] mat =
+        Vector4[] mat =
         [
-            new Vector3(0.2f, 0.9f, 0.1f),
-            new Vector3(0.9f, -0.1f, 0.3f),
-            new Vector3(0.3f, 0.4f, 0.7f),
+            new Vector4(0.2f, 0.9f, 0.1f, 0),
+            new Vector4(0.9f, -0.1f, 0.3f, 0),
+            new Vector4(0.3f, 0.4f, 0.7f, 0),
         ];
 
         // Act
@@ -135,15 +136,15 @@ public class VectorMathsTests
         Assert.InRange(len2, 1f - Tolerance, 1f + Tolerance);
 
         // Assert: orthogonality (dot products near zero)
-        float d01 = Vector3.Dot(mat[0], mat[1]);
-        float d12 = Vector3.Dot(mat[1], mat[2]);
-        float d20 = Vector3.Dot(mat[2], mat[0]);
+        float d01 = Vector4.Dot(mat[0], mat[1]);
+        float d12 = Vector4.Dot(mat[1], mat[2]);
+        float d20 = Vector4.Dot(mat[2], mat[0]);
         Assert.InRange(d01, -Tolerance, Tolerance);
         Assert.InRange(d12, -Tolerance, Tolerance);
         Assert.InRange(d20, -Tolerance, Tolerance);
     }
 
-    private static void AssertVectorAlmostEqual(Vector3 expected, Vector3 actual, float tol = Tolerance)
+    private static void AssertVectorAlmostEqual(Vector4 expected, Vector4 actual, float tol = Tolerance)
     {
         Assert.InRange(actual.X, expected.X - tol, expected.X + tol);
         Assert.InRange(actual.Y, expected.Y - tol, expected.Y + tol);

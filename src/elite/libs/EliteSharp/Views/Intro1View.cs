@@ -80,12 +80,12 @@ internal sealed class Intro1View : IView
         _combat.Reset();
         _universe.ClearUniverse();
 
-        Vector3[] initMatrix = VectorMaths.GetInitialMatrix();
+        Vector4[] initMatrix = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
 
         // Ship faces away
         initMatrix[2].Z = 1;
         IShip cobraMk3 = new CobraMk3(_draw);
-        if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500), initMatrix, -127, 127))
+        if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500, 0), initMatrix, -127, 127))
         {
             Debug.WriteLine("Failed to create CobraMk3");
         }
@@ -97,12 +97,12 @@ internal sealed class Intro1View : IView
     {
         _ship.Roll = 1;
         _universe.FirstShip!.Location =
-            new(_universe.FirstShip!.Location.X, _universe.FirstShip!.Location.Y, _universe.FirstShip!.Location.Z - 100);
+            new(_universe.FirstShip!.Location.X, _universe.FirstShip!.Location.Y, _universe.FirstShip!.Location.Z - 100, 0);
 
         if (_universe.FirstShip!.Location.Z < 384)
         {
             _universe.FirstShip!.Location =
-                new(_universe.FirstShip!.Location.X, _universe.FirstShip!.Location.Y, 384);
+                new(_universe.FirstShip!.Location.X, _universe.FirstShip!.Location.Y, 384, 0);
         }
     }
 }

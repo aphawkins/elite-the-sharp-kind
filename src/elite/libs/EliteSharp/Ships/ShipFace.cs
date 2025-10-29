@@ -12,13 +12,13 @@ internal sealed class ShipFace
     internal ShipFace(in FastColor color, Vector3 normal, int[] points)
     {
         Color = color;
-        Normal = normal;
+        Normal = new(normal, 0);
         Points = points;
     }
 
     internal FastColor Color { get; set; }
 
-    internal Vector3 Normal { get; set; }
+    internal Vector4 Normal { get; set; }
 
     internal int[] Points { get; set; }
 }

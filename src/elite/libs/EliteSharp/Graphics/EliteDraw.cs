@@ -15,7 +15,7 @@ internal sealed class EliteDraw : IEliteDraw
 {
     private const int MAXPOLYS = 100;
     private readonly GameState _gameState;
-    private readonly Vector3[] _pointList = new Vector3[100];
+    private readonly Vector4[] _pointList = new Vector4[100];
     private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
     private int _startPoly;
     private int _totalPolys;
@@ -248,7 +248,7 @@ internal sealed class EliteDraw : IEliteDraw
 
     private void DrawExplosion(IShip ship)
     {
-        Vector3[] trans_mat = new Vector3[3];
+        Vector4[] trans_mat = new Vector4[4];
         bool[] visible = new bool[32];
 
         if (ship.ExpDelta > 251)
@@ -264,19 +264,19 @@ internal sealed class EliteDraw : IEliteDraw
             return;
         }
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < ship.Rotmat.Length; i++)
         {
             trans_mat[i] = ship.Rotmat[i];
         }
 
-        Vector3 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat);
+        Vector4 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat.ToMatrix4x4());
         camera_vec = VectorMaths.UnitVector(camera_vec);
 
         ShipFaceNormal[] ship_norm = ship.FaceNormals;
 
         for (int i = 0; i < ship.FaceNormals.Length; i++)
         {
-            Vector3 vec = VectorMaths.UnitVector(ship_norm[i].Direction);
+            Vector4 vec = VectorMaths.UnitVector(ship_norm[i].Direction);
             float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
             visible[i] = cos_angle < -0.13;
         }
@@ -293,8 +293,8 @@ internal sealed class EliteDraw : IEliteDraw
                 visible[ship.Points[i].Face3]
                 || visible[ship.Points[i].Face4])
             {
-                Vector3 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat);
-                Vector3 r = vec + ship.Location;
+                Vector4 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat.ToMatrix4x4());
+                Vector4 r = vec + ship.Location;
                 Vector2 position = new(r.X, -r.Y);
                 position *= 256 / r.Z;
                 position += Centre / 2;

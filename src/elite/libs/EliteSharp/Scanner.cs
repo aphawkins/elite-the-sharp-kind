@@ -251,7 +251,7 @@ internal sealed class Scanner
             return;
         }
 
-        Vector3 dest = VectorMaths.UnitVector(obj!.Location);
+        Vector4 dest = VectorMaths.UnitVector(obj!.Location);
 
         if (float.IsNaN(dest.X))
         {

@@ -6,41 +6,28 @@ namespace Useful.Maths;
 
 public static class VectorMaths
 {
-    private static readonly Vector3[] s_startMatrix =
-    [
-        new(1, 0, 0),
-        new(0, 1, 0),
-        new(0, 0, -1),
-    ];
+    // Left-handed basis matrix.
+    public static Matrix4x4 GetLeftHandedBasisMatrix => new(
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        -1,
+        0,
+        0,
+        0,
+        0,
+        0);
 
-    public static Vector3[] GetInitialMatrix() => s_startMatrix.Cloner();
+    public static Vector4 MultiplyVector(Vector4 vec, Matrix4x4 mat) => Vector4.Transform(vec, mat);
 
-    public static Vector3 MultiplyVector(Vector3 vec, Vector3[] mat)
-    {
-        Guard.ArgumentNull(mat);
-
-        Matrix4x4 matrix = new(
-            mat[0].X,
-            mat[1].X,
-            mat[2].X,
-            0,
-            mat[0].Y,
-            mat[1].Y,
-            mat[2].Y,
-            0,
-            mat[0].Z,
-            mat[1].Z,
-            mat[2].Z,
-            0,
-            0,
-            0,
-            0,
-            0);
-
-        return Vector3.Transform(vec, matrix);
-    }
-
-    public static Vector3[] RotateVector(Vector3[] vec, float alpha, float beta)
+    public static Vector4[] RotateVector(Vector4[] vec, float alpha, float beta)
     {
         Guard.ArgumentNull(vec);
 
@@ -52,7 +39,7 @@ public static class VectorMaths
         return vec;
     }
 
-    public static void TidyMatrix(Vector3[] mat)
+    public static void TidyMatrix(Vector4[] mat)
     {
         Guard.ArgumentNull(mat);
 
@@ -85,15 +72,15 @@ public static class VectorMaths
     /// <summary>
     /// Convert a vector into a vector of unit (1) length.
     /// </summary>
-    public static Vector3 UnitVector(Vector3 vec) => Vector3.Divide(vec, vec.Length());
+    public static Vector4 UnitVector(Vector4 vec) => Vector4.Divide(vec, vec.Length());
 
     /// <summary>
     /// Calculate the dot product of two vectors sharing a common point.
     /// </summary>
     /// <returns>The cosine of the angle between the two vectors.</returns>
-    public static float VectorDotProduct(Vector3 first, Vector3 second) => Vector3.Dot(first, second);
+    public static float VectorDotProduct(Vector4 first, Vector4 second) => Vector4.Dot(first, second);
 
-    private static void RotateVector(ref Vector3 vec, float alpha, float beta)
+    private static void RotateVector(ref Vector4 vec, float alpha, float beta)
     {
         float x = vec.X;
         float y = vec.Y;

@@ -229,12 +229,12 @@ internal sealed class Combat
             return;
         }
 
-        Vector3[] rotmat = VectorMaths.GetInitialMatrix();
+        Vector4[] rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
         rotmat[2].Z = 1;
         rotmat[0].X = -1;
 
         Missile missile = new(_draw);
-        if (!_universe.AddNewShip(missile, new(0, -28, 14), rotmat, 0, 0))
+        if (!_universe.AddNewShip(missile, new(0, -28, 14, 0), rotmat, 0, 0))
         {
             _gameState.InfoMessage("Missile Jammed");
             return;
@@ -316,11 +316,11 @@ internal sealed class Combat
 
         if (obj.Flags.HasFlag(ShipProperties.Station))
         {
-            Vector3 position = obj.Location;
+            Vector4 position = obj.Location;
             position.Y = (int)position.Y & 0xFFFF;
             position.Y = (int)position.Y | 0x60000;
             IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
-            _universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix(), 0, 0);
+            _universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0);
         }
 
         _universe.RemoveShip(obj);
@@ -385,7 +385,7 @@ internal sealed class Combat
 
     internal void Tactics(IShip ship, int un)
     {
-        Vector3 nvec;
+        Vector4 nvec;
         const float cnt2 = 0.223f;
         float direction;
         int attacking;
@@ -678,7 +678,7 @@ internal sealed class Combat
         _audio.PlayEffect((int)SoundEffect.Boop);
     }
 
-    private static bool IsInTarget(IShip ship, Vector3 position)
+    private static bool IsInTarget(IShip ship, Vector4 position)
         => position.Z >= 0 && (position.X * position.X) + (position.Y * position.Y) <= ship.Size;
 
     private static void MakeAngry(IShip ship)
@@ -702,7 +702,7 @@ internal sealed class Combat
         }
     }
 
-    private static void TrackObject(IShip ship, float direction, Vector3 nvec)
+    private static void TrackObject(IShip ship, float direction, Vector4 nvec)
     {
         const int rat = 3;
         const float rat2 = 0.111f;
@@ -781,7 +781,7 @@ internal sealed class Combat
         }
 
         // Pack hunters...
-        Vector3 position = new()
+        Vector4 position = new()
         {
             Z = 12000,
             X = 1000 + RNG.Random(8192),
@@ -803,7 +803,7 @@ internal sealed class Combat
         for (int i = 0; i <= rnd; i++)
         {
             IShip packHunter = new ShipFactory(_draw).CreatePackHunter();
-            if (_universe.AddNewShip(packHunter, position, VectorMaths.GetInitialMatrix(), 0, 0))
+            if (_universe.AddNewShip(packHunter, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
             {
                 packHunter.Flags = ShipProperties.Angry;
                 if (RNG.Random(256) > 245)
@@ -945,7 +945,7 @@ internal sealed class Combat
     private bool LaunchEnemy(IShip sourceShip, IShip newShip, ShipProperties flags, int bravery)
     {
         Debug.Assert(sourceShip.Rotmat != null, "Rotation matrix should not be null.");
-        Vector3[] rotmat = sourceShip.Rotmat.Cloner();
+        Vector4[] rotmat = sourceShip.Rotmat.Cloner();
 
         if (!_universe.AddNewShip(newShip, sourceShip.Location, rotmat, sourceShip.RotX, sourceShip.RotZ))
         {
@@ -1047,8 +1047,8 @@ internal sealed class Combat
 
     private void MissileTactics(IShip missile)
     {
-        Vector3 vec;
-        Vector3 nvec;
+        Vector4 vec;
+        Vector4 nvec;
         float direction;
         const float cnt2 = 0.223f;
 

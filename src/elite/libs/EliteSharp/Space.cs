@@ -133,7 +133,7 @@ internal sealed class Space
         {
             if (obj.Type != 0)
             {
-                obj.Location = new(obj.Location.X, obj.Location.Y, obj.Location.Z - jump);
+                obj.Location = new(obj.Location.X, obj.Location.Y, obj.Location.Z - jump, 0);
             }
         }
 
@@ -156,16 +156,16 @@ internal sealed class Space
             _gameState.Config.PlanetStyle,
             _draw,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-        if (!_universe.AddNewShip(planet, new(0, 0, 65536), VectorMaths.GetInitialMatrix(), 0, 0))
+        if (!_universe.AddNewShip(planet, new(0, 0, 65536, 0), VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
         {
             Debug.WriteLine("Failed to create Planet");
         }
 
-        Vector3[] rotmat = VectorMaths.GetInitialMatrix();
+        Vector4[] rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
         rotmat[2].X = -rotmat[2].X;
         rotmat[2].Y = -rotmat[2].Y;
         rotmat[2].Z = -rotmat[2].Z;
-        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256), rotmat);
+        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256, 0), rotmat);
 
         _gameState.IsDocked = false;
     }
@@ -225,9 +225,9 @@ internal sealed class Space
             return;
         }
 
-        Vector3 vec = Vector3.Abs(_universe.Planet.Location);
+        Vector4 vec = Vector4.Abs(_universe.Planet.Location);
 
-        if (vec == Vector3.Zero ||
+        if (vec == Vector4.Zero ||
             vec.X > 65535 ||
             vec.Y > 65535 ||
             vec.Z > 65535)
@@ -283,9 +283,9 @@ internal sealed class Space
             return;
         }
 
-        Vector3 vec = Vector3.Abs(_universe.StationOrSun.Location);
+        Vector4 vec = Vector4.Abs(_universe.StationOrSun.Location);
 
-        if (vec == Vector3.Zero ||
+        if (vec == Vector4.Zero ||
             vec.X > 65535 ||
             vec.Y > 65535 ||
             vec.Z > 65535)
@@ -469,7 +469,7 @@ internal sealed class Space
     {
         if (_gameState.CurrentScreen is Screen.RearView or Screen.GameOver)
         {
-            flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z);
+            flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z, 0);
 
             flip.Rotmat[0].X = -flip.Rotmat[0].X;
             flip.Rotmat[0].Z = -flip.Rotmat[0].Z;
@@ -485,7 +485,7 @@ internal sealed class Space
         if (_gameState.CurrentScreen == Screen.LeftView)
         {
             float tmp = flip.Location.X;
-            flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp);
+            flip.Location = new(flip.Location.Z, flip.Location.Y, -tmp, 0);
 
             if (flip.Type < 0)
             {
@@ -509,7 +509,7 @@ internal sealed class Space
         if (_gameState.CurrentScreen == Screen.RightView)
         {
             float tmp = flip.Location.X;
-            flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp);
+            flip.Location = new(-flip.Location.Z, flip.Location.Y, tmp, 0);
 
             if (flip.Type < 0)
             {
@@ -590,7 +590,7 @@ internal sealed class Space
         _stars.CreateNewStars();
         _combat.Reset();
         _universe.ClearUniverse();
-        Vector3 position = new()
+        Vector4 position = new()
         {
             Z = ((_gameState.DockedPlanet.B & 7) + 7) / 2f,
         };
@@ -611,7 +611,7 @@ internal sealed class Space
             _gameState.Config.PlanetStyle,
             _draw,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-        if (!_universe.AddNewShip(planet, position, VectorMaths.GetInitialMatrix(), 0, 0))
+        if (!_universe.AddNewShip(planet, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
         {
             Debug.WriteLine("Failed to create Planet");
         }
@@ -620,7 +620,7 @@ internal sealed class Space
         position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
         IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
-        if (!_universe.AddNewShip(sun, position, VectorMaths.GetInitialMatrix(), 0, 0))
+        if (!_universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
         {
             Debug.WriteLine("Failed to create Sun");
         }
@@ -688,7 +688,7 @@ internal sealed class Space
             return false;
         }
 
-        Vector3 vec = VectorMaths.UnitVector(ship.Location);
+        Vector4 vec = VectorMaths.UnitVector(ship.Location);
 
         if (vec.Z < 0.927)
         {
@@ -706,13 +706,13 @@ internal sealed class Space
 
     private void MakeStationAppear()
     {
-        Vector3 location = _universe.Planet!.Location;
-        Vector3 vec = new(RNG.Random(-16384, 16384), RNG.Random(-16384, 16384), RNG.Random(32768));
+        Vector4 location = _universe.Planet!.Location;
+        Vector4 vec = new(RNG.Random(-16384, 16384), RNG.Random(-16384, 16384), RNG.Random(32768), 0);
         vec = VectorMaths.UnitVector(vec);
-        Vector3 position = location - (vec * 65792);
+        Vector4 position = location - (vec * 65792);
 
         ////  VectorMaths.set_init_matrix (rotmat);
-        Vector3[] rotmat = new Vector3[3];
+        Vector4[] rotmat = new Vector4[4];
 
         rotmat[0].X = 1;
         rotmat[0].Y = 0;
@@ -739,7 +739,7 @@ internal sealed class Space
         float alpha = _ship.Roll / 256;
         float beta = _ship.Climb / 256;
 
-        Vector3 position = obj.Location.Cloner();
+        Vector4 position = obj.Location.Cloner();
         if (obj is IShip shipEx &&
             !obj.Flags.HasFlag(ShipProperties.Dead) &&
             obj.Type != ShipType.Sun

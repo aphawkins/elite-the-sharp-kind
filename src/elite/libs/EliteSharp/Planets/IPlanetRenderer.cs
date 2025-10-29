@@ -8,5 +8,5 @@ namespace EliteSharp.Planets;
 
 internal interface IPlanetRenderer
 {
-    public void Draw(Vector2 centre, float radius, Vector3[] vec);
+    public void Draw(Vector2 centre, float radius, Vector4[] vec);
 }

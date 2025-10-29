@@ -42,7 +42,7 @@ internal class ShipBase : IShip
 
     public ShipLine[] Lines { get; set; } = [];
 
-    public Vector3 Location { get; set; }
+    public Vector4 Location { get; set; }
 
     public int LootMax { get; set; }
 
@@ -56,7 +56,7 @@ internal class ShipBase : IShip
 
     public ShipPoint[] Points { get; set; } = [];
 
-    public Vector3[] Rotmat { get; set; } = new Vector3[3];
+    public Vector4[] Rotmat { get; set; } = new Vector4[4];
 
     public float RotX { get; set; }
 
@@ -92,16 +92,16 @@ internal class ShipBase : IShip
     /// </summary>
     public virtual void Draw()
     {
-        Vector3[] pointList = new Vector3[100];
-        Vector3[] trans_mat = new Vector3[3];
+        Vector4[] pointList = new Vector4[100];
+        Vector4[] trans_mat = new Vector4[4];
         int lasv;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < Rotmat.Length; i++)
         {
             trans_mat[i] = Rotmat[i];
         }
 
-        Vector3 camera_vec = VectorMaths.MultiplyVector(Location, trans_mat);
+        Vector4 camera_vec = VectorMaths.MultiplyVector(Location, trans_mat.ToMatrix4x4());
         _ = VectorMaths.UnitVector(camera_vec);
         ShipFace[] face_data = Faces;
 
@@ -122,7 +122,7 @@ internal class ShipBase : IShip
 
         for (int i = 0; i < Points.Length; i++)
         {
-            Vector3 vec = VectorMaths.MultiplyVector(Points[i].Point, trans_mat);
+            Vector4 vec = VectorMaths.MultiplyVector(Points[i].Point, trans_mat.ToMatrix4x4());
             vec += Location;
 
             if (vec.Z <= 0)

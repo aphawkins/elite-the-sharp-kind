@@ -33,7 +33,7 @@ internal sealed class Universe
 
     internal IObject? StationOrSun { get; private set; }
 
-    internal bool AddNewShip(IObject newObj, Vector3 location, Vector3[] rotmat, float rotx, float rotz)
+    internal bool AddNewShip(IObject newObj, Vector4 location, Vector4[] rotmat, float rotx, float rotz)
     {
         Debug.Assert(rotmat != null, "Rotation matrix should not be null.");
 
@@ -72,7 +72,7 @@ internal sealed class Universe
 
     internal bool AddNewShip(IShip ship)
     {
-        Vector3 position = new()
+        Vector4 position = new()
         {
             X = 1000 + RNG.Random(8192),
             Y = 1000 + RNG.Random(8192),
@@ -89,10 +89,10 @@ internal sealed class Universe
             position.Y = -position.Y;
         }
 
-        return AddNewShip(ship, position, VectorMaths.GetInitialMatrix(), 0, 0);
+        return AddNewShip(ship, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0);
     }
 
-    internal void AddNewStation(int planetTechLevel, Vector3 position, Vector3[] rotmat)
+    internal void AddNewStation(int planetTechLevel, Vector4 position, Vector4[] rotmat)
     {
         IShip station = planetTechLevel >= 10 ? new DodecStation(_draw) : new Coriolis(_draw);
         AddNewShip(station, position, rotmat, 0, -127);

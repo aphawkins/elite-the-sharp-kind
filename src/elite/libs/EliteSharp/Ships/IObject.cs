@@ -10,9 +10,9 @@ internal interface IObject
 {
     public ShipProperties Flags { get; set; }
 
-    public Vector3 Location { get; set; }
+    public Vector4 Location { get; set; }
 
-    public Vector3[] Rotmat { get; set; }
+    public Vector4[] Rotmat { get; set; }
 
     public float RotX { get; set; }
 

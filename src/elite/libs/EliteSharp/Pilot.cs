@@ -35,8 +35,8 @@ internal sealed class Pilot
     {
         ShipBase ship = new(_draw)
         {
-            Rotmat = VectorMaths.GetInitialMatrix(),
-            Location = Vector3.Zero,
+            Rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(),
+            Location = Vector4.Zero,
             Acceleration = 0,
 
             ////Type = (ShipType)(-96),
@@ -135,7 +135,7 @@ internal sealed class Pilot
             return;
         }
 
-        Vector3 diff = ship.Location - _universe.StationOrSun!.Location;
+        Vector4 diff = ship.Location - _universe.StationOrSun!.Location;
 
         float dist = MathF.Sqrt((diff.X * diff.X) + (diff.Y * diff.Y) + (diff.Z * diff.Z));
 
@@ -145,7 +145,7 @@ internal sealed class Pilot
             return;
         }
 
-        Vector3 vec = VectorMaths.UnitVector(diff);
+        Vector4 vec = VectorMaths.UnitVector(diff);
         float dir = VectorMaths.VectorDotProduct(_universe.StationOrSun.Rotmat[2], vec);
 
         if (dir < 0.9722)
@@ -188,9 +188,9 @@ internal sealed class Pilot
     /// <summary>
     /// Fly to a given point in space.
     /// </summary>
-    private static void FlyToVector(IShip ship, Vector3 vec)
+    private static void FlyToVector(IShip ship, Vector4 vec)
     {
-        Vector3 nvec;
+        Vector4 nvec;
         float direction;
         float dir;
         int rat;
@@ -258,8 +258,8 @@ internal sealed class Pilot
     /// </summary>
     private void FlyToDockingBay(IShip ship)
     {
-        Vector3 diff = ship.Location - _universe.StationOrSun!.Location;
-        Vector3 vec = VectorMaths.UnitVector(diff);
+        Vector4 diff = ship.Location - _universe.StationOrSun!.Location;
+        Vector4 vec = VectorMaths.UnitVector(diff);
         ship.RotX = 0;
 
         if (ship.Type == ShipType.None)
@@ -316,7 +316,7 @@ internal sealed class Pilot
             return;
         }
 
-        Vector3 vec = _universe.Planet.Location - ship.Location;
+        Vector4 vec = _universe.Planet.Location - ship.Location;
         FlyToVector(ship, vec);
     }
 
@@ -325,7 +325,7 @@ internal sealed class Pilot
     /// </summary>
     private void FlyToStation(IShip ship)
     {
-        Vector3 vec = _universe.StationOrSun!.Location - ship.Location;
+        Vector4 vec = _universe.StationOrSun!.Location - ship.Location;
         FlyToVector(ship, vec);
     }
 
@@ -334,7 +334,7 @@ internal sealed class Pilot
     /// </summary>
     private void FlyToStationFront(IShip ship)
     {
-        Vector3 vec = _universe.StationOrSun!.Location - ship.Location;
+        Vector4 vec = _universe.StationOrSun!.Location - ship.Location;
 
         vec.X += _universe.StationOrSun.Rotmat[2].X * 768;
         vec.Y += _universe.StationOrSun.Rotmat[2].Y * 768;

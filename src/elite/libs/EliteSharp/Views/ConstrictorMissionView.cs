@@ -115,7 +115,7 @@ internal sealed class ConstrictorMissionView : IView
             _combat.Reset();
             _universe.ClearUniverse();
             Constrictor constrictor = new(_draw);
-            if (!_universe.AddNewShip(constrictor, new(200, 90, 600), VectorMaths.GetInitialMatrix(), -127, -127))
+            if (!_universe.AddNewShip(constrictor, new(200, 90, 600, 0), VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), -127, -127))
             {
                 Debug.Fail("Failed to create Constrictor");
             }

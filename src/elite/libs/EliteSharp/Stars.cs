@@ -14,7 +14,7 @@ internal sealed class Stars
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly PlayerShip _ship;
-    private readonly Vector3[] _stars = new Vector3[20];
+    private readonly Vector4[] _stars = new Vector4[20];
 
     internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship)
     {
@@ -246,7 +246,7 @@ internal sealed class Stars
         SideStarfield(_ship.Roll, _ship.Climb, delta);
     }
 
-    private Vector3 CreateNewStar() => new()
+    private Vector4 CreateNewStar() => new()
     {
         X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2) | 8,
         Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2) | 4,

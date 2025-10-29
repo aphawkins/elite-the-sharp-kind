@@ -30,9 +30,9 @@ internal sealed class SolidPlanet : IObject
 
     public ShipProperties Flags { get; set; }
 
-    public Vector3 Location { get; set; } = new(0, 0, 123456);
+    public Vector4 Location { get; set; } = new(0, 0, 123456, 0);
 
-    public Vector3[] Rotmat { get; set; } = new Vector3[3];
+    public Vector4[] Rotmat { get; set; } = new Vector4[4];
 
     public float RotX { get; set; }
 

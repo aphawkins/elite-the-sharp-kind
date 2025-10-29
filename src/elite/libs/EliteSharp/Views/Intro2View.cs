@@ -30,7 +30,7 @@ internal sealed class Intro2View : IView
     private readonly Stars _stars;
     private readonly Universe _universe;
     private int _direction;
-    private Vector3[] _rotmat = new Vector3[3];
+    private Vector4[] _rotmat = new Vector4[4];
     private int _shipNo;
     private int _showTime;
 
@@ -86,7 +86,7 @@ internal sealed class Intro2View : IView
         _ship.Climb = 0;
         _combat.Reset();
         _stars.CreateNewStars();
-        _rotmat = VectorMaths.GetInitialMatrix();
+        _rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
         _audio.PlayMusic((int)MusicType.BlueDanube, true);
 
         AddNewShip();
@@ -104,12 +104,12 @@ internal sealed class Intro2View : IView
         if (_universe.FirstShip != null)
         {
             _universe.FirstShip.Location =
-                new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _universe.FirstShip.Location.Z + _direction);
+                new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _universe.FirstShip.Location.Z + _direction, 0);
 
             if (_universe.FirstShip.Location.Z < _parade[_shipNo].MinDistance)
             {
                 _universe.FirstShip.Location =
-                    new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _parade[_shipNo].MinDistance);
+                    new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _parade[_shipNo].MinDistance, 0);
             }
 
             if (_universe.FirstShip.Location.Z > 4500)
@@ -132,7 +132,7 @@ internal sealed class Intro2View : IView
         _showTime = 0;
         _direction = -100;
         _universe.ClearUniverse();
-        if (!_universe.AddNewShip(_parade[_shipNo], new(0, 0, 4500), _rotmat, -127, -127))
+        if (!_universe.AddNewShip(_parade[_shipNo], new(0, 0, 4500, 0), _rotmat, -127, -127))
         {
             Debug.WriteLine("Failed to create first Parade ship");
         }

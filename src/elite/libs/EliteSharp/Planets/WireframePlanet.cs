@@ -25,9 +25,9 @@ internal sealed class WireframePlanet : IObject
         _planetRenderer = other._planetRenderer;
     }
 
-    public Vector3 Location { get; set; } = new(0, 0, 123456);
+    public Vector4 Location { get; set; } = new(0, 0, 123456, 0);
 
-    public Vector3[] Rotmat { get; set; } = new Vector3[3];
+    public Vector4[] Rotmat { get; set; } = new Vector4[4];
 
     public ShipProperties Flags { get; set; }
 
