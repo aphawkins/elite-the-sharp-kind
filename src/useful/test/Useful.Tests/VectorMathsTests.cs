@@ -39,7 +39,7 @@ public class VectorMathsTests
         Vector4 v = new(1, 2, 3, 0);
 
         // Act
-        Vector4 result = VectorMaths.MultiplyVector(v, mat.ToMatrix4x4());
+        Vector4 result = Vector4.Transform(v, mat.ToMatrix4x4());
 
         // Assert -> expected (1,2,-3)
         AssertVectorAlmostEqual(new Vector4(1, 2, -3, 0), result);

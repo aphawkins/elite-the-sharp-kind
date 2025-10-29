@@ -269,7 +269,7 @@ internal sealed class EliteDraw : IEliteDraw
             trans_mat[i] = ship.Rotmat[i];
         }
 
-        Vector4 camera_vec = VectorMaths.MultiplyVector(ship.Location, trans_mat.ToMatrix4x4());
+        Vector4 camera_vec = Vector4.Transform(ship.Location, trans_mat.ToMatrix4x4());
         camera_vec = VectorMaths.UnitVector(camera_vec);
 
         ShipFaceNormal[] ship_norm = ship.FaceNormals;
@@ -293,7 +293,7 @@ internal sealed class EliteDraw : IEliteDraw
                 visible[ship.Points[i].Face3]
                 || visible[ship.Points[i].Face4])
             {
-                Vector4 vec = VectorMaths.MultiplyVector(ship.Points[i].Point, trans_mat.ToMatrix4x4());
+                Vector4 vec = Vector4.Transform(ship.Points[i].Point, trans_mat.ToMatrix4x4());
                 Vector4 r = vec + ship.Location;
                 Vector2 position = new(r.X, -r.Y);
                 position *= 256 / r.Z;

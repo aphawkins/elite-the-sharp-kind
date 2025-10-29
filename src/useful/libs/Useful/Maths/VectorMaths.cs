@@ -25,8 +25,6 @@ public static class VectorMaths
         0,
         0);
 
-    public static Vector4 MultiplyVector(Vector4 vec, Matrix4x4 mat) => Vector4.Transform(vec, mat);
-
     public static Vector4[] RotateVector(Vector4[] vec, float alpha, float beta)
     {
         Guard.ArgumentNull(vec);

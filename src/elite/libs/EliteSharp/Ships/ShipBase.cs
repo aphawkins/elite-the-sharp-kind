@@ -101,7 +101,7 @@ internal class ShipBase : IShip
             trans_mat[i] = Rotmat[i];
         }
 
-        Vector4 camera_vec = VectorMaths.MultiplyVector(Location, trans_mat.ToMatrix4x4());
+        Vector4 camera_vec = Vector4.Transform(Location, trans_mat.ToMatrix4x4());
         _ = VectorMaths.UnitVector(camera_vec);
         ShipFace[] face_data = Faces;
 
@@ -122,7 +122,7 @@ internal class ShipBase : IShip
 
         for (int i = 0; i < Points.Length; i++)
         {
-            Vector4 vec = VectorMaths.MultiplyVector(Points[i].Point, trans_mat.ToMatrix4x4());
+            Vector4 vec = Vector4.Transform(Points[i].Point, trans_mat.ToMatrix4x4());
             vec += Location;
 
             if (vec.Z <= 0)
