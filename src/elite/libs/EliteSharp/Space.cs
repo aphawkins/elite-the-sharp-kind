@@ -780,7 +780,7 @@ internal sealed class Space
             beta = 0.0f;
         }
 
-        obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
+        obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat.ToMatrix4x4(), alpha, beta).ToVector4Array();
 
         if (obj.Flags.HasFlag(ShipProperties.Dead))
         {

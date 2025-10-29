@@ -73,12 +73,13 @@ public class VectorMathsTests
         [
             new Vector4(1, 2, 3, 0),
             new Vector4(-1, 4, 0.5f, 0),
-            new Vector4(0.1f, -0.3f, 2.0f, 0)
+            new Vector4(0.1f, -0.3f, 2.0f, 0),
+            new Vector4(0, 0, 0, 0)
         ];
 
-        Vector4[] copy = [matrix[0], matrix[1], matrix[2]];
+        Vector4[] copy = [matrix[0], matrix[1], matrix[2], matrix[3]];
 
-        Vector4[] result = VectorMaths.RotateVector(copy, 0f, 0f);
+        Vector4[] result = VectorMaths.RotateVector(copy.ToMatrix4x4(), 0, 0).ToVector4Array();
 
         AssertVectorAlmostEqual(matrix[0], result[0]);
         AssertVectorAlmostEqual(matrix[1], result[1]);
@@ -92,11 +93,12 @@ public class VectorMathsTests
         [
             new Vector4(1, 0, 0, 0),
             new Vector4(0, 1, 0, 0),
-            new Vector4(0, 0, 1, 0)
+            new Vector4(0, 0, 1, 0),
+            new Vector4(0, 0, 0, 0)
         ];
 
-        Vector4[] input = [matrix[0], matrix[1], matrix[2]];
-        Vector4[] result = VectorMaths.RotateVector(input, 0.1f, 0.2f);
+        Vector4[] input = [matrix[0], matrix[1], matrix[2], matrix[3]];
+        Vector4[] result = VectorMaths.RotateVector(input.ToMatrix4x4(), 0.1f, 0.2f).ToVector4Array();
 
         // Should not be identical to input for non-zero angles
         bool anyDifferent =
