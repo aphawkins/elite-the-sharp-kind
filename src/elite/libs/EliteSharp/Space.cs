@@ -156,7 +156,7 @@ internal sealed class Space
             _gameState.Config.PlanetStyle,
             _draw,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-        if (!_universe.AddNewShip(planet, new(0, 0, 65536, 0), VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
+        if (!_universe.AddNewShip(planet, new(0, 0, 65536, 0), VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             Debug.WriteLine("Failed to create Planet");
         }
@@ -611,7 +611,7 @@ internal sealed class Space
             _gameState.Config.PlanetStyle,
             _draw,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
-        if (!_universe.AddNewShip(planet, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
+        if (!_universe.AddNewShip(planet, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             Debug.WriteLine("Failed to create Planet");
         }
@@ -620,7 +620,7 @@ internal sealed class Space
         position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
         IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
-        if (!_universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
+        if (!_universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             Debug.WriteLine("Failed to create Sun");
         }

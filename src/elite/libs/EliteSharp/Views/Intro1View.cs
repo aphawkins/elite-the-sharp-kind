@@ -85,7 +85,7 @@ internal sealed class Intro1View : IView
         // Ship faces away
         initMatrix[2].Z = 1;
         IShip cobraMk3 = new CobraMk3(_draw);
-        if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500, 0), initMatrix, -127, 127))
+        if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500, 0), initMatrix.ToMatrix4x4(), -127, 127))
         {
             Debug.WriteLine("Failed to create CobraMk3");
         }

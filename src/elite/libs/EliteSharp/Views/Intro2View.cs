@@ -132,7 +132,7 @@ internal sealed class Intro2View : IView
         _showTime = 0;
         _direction = -100;
         _universe.ClearUniverse();
-        if (!_universe.AddNewShip(_parade[_shipNo], new(0, 0, 4500, 0), _rotmat, -127, -127))
+        if (!_universe.AddNewShip(_parade[_shipNo], new(0, 0, 4500, 0), _rotmat.ToMatrix4x4(), -127, -127))
         {
             Debug.WriteLine("Failed to create first Parade ship");
         }

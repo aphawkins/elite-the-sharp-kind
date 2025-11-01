@@ -71,7 +71,7 @@ internal sealed class EscapeCapsuleView : IView
         Vector4[] rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
         rotmat[2].Z = 1;
         _newship = new CobraMk3(_draw);
-        if (!_universe.AddNewShip(_newship, new(0, 0, 200, 0), rotmat, -127, -127))
+        if (!_universe.AddNewShip(_newship, new(0, 0, 200, 0), rotmat.ToMatrix4x4(), -127, -127))
         {
             Debug.Fail("Failed to create CobraMk3");
         }

@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics;
 using System.Numerics;
 using EliteSharp.Graphics;
 using EliteSharp.Ships;
@@ -33,17 +32,15 @@ internal sealed class Universe
 
     internal IObject? StationOrSun { get; private set; }
 
-    internal bool AddNewShip(IObject newObj, Vector4 location, Vector4[] rotmat, float rotx, float rotz)
+    internal bool AddNewShip(IObject newObj, Vector4 location, Matrix4x4 rotmat, float rotx, float rotz)
     {
-        Debug.Assert(rotmat != null, "Rotation matrix should not be null.");
-
         if (_objects.Count >= MaxUniverseObjects)
         {
             return false;
         }
 
         newObj.Location = location;
-        newObj.Rotmat = rotmat;
+        newObj.Rotmat = rotmat.ToVector4Array();
         if (newObj is IShip newShip)
         {
             newShip.RotX = rotx;
@@ -89,13 +86,13 @@ internal sealed class Universe
             position.Y = -position.Y;
         }
 
-        return AddNewShip(ship, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0);
+        return AddNewShip(ship, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0);
     }
 
     internal void AddNewStation(int planetTechLevel, Vector4 position, Vector4[] rotmat)
     {
         IShip station = planetTechLevel >= 10 ? new DodecStation(_draw) : new Coriolis(_draw);
-        AddNewShip(station, position, rotmat, 0, -127);
+        AddNewShip(station, position, rotmat.ToMatrix4x4(), 0, -127);
     }
 
     internal void ClearUniverse()

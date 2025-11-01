@@ -234,7 +234,7 @@ internal sealed class Combat
         rotmat[0].X = -1;
 
         Missile missile = new(_draw);
-        if (!_universe.AddNewShip(missile, new(0, -28, 14, 0), rotmat, 0, 0))
+        if (!_universe.AddNewShip(missile, new(0, -28, 14, 0), rotmat.ToMatrix4x4(), 0, 0))
         {
             _gameState.InfoMessage("Missile Jammed");
             return;
@@ -320,7 +320,7 @@ internal sealed class Combat
             position.Y = (int)position.Y & 0xFFFF;
             position.Y = (int)position.Y | 0x60000;
             IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
-            _universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0);
+            _universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0);
         }
 
         _universe.RemoveShip(obj);
@@ -803,7 +803,7 @@ internal sealed class Combat
         for (int i = 0; i <= rnd; i++)
         {
             IShip packHunter = new ShipFactory(_draw).CreatePackHunter();
-            if (_universe.AddNewShip(packHunter, position, VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(), 0, 0))
+            if (_universe.AddNewShip(packHunter, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
             {
                 packHunter.Flags = ShipProperties.Angry;
                 if (RNG.Random(256) > 245)
@@ -947,7 +947,7 @@ internal sealed class Combat
         Debug.Assert(sourceShip.Rotmat != null, "Rotation matrix should not be null.");
         Vector4[] rotmat = sourceShip.Rotmat.Cloner();
 
-        if (!_universe.AddNewShip(newShip, sourceShip.Location, rotmat, sourceShip.RotX, sourceShip.RotZ))
+        if (!_universe.AddNewShip(newShip, sourceShip.Location, rotmat.ToMatrix4x4(), sourceShip.RotX, sourceShip.RotZ))
         {
             return false;
         }
