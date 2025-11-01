@@ -161,11 +161,8 @@ internal sealed class Space
             Debug.WriteLine("Failed to create Planet");
         }
 
-        Vector4[] rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
-        rotmat[2].X = -rotmat[2].X;
-        rotmat[2].Y = -rotmat[2].Y;
-        rotmat[2].Z = -rotmat[2].Z;
-        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256, 0), rotmat);
+        Matrix4x4 rotmat = VectorMaths.GetRightHandedBasisMatrix;
+        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256, 0), rotmat.ToVector4Array());
 
         _gameState.IsDocked = false;
     }

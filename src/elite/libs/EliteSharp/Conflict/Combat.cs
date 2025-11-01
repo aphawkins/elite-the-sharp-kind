@@ -229,12 +229,11 @@ internal sealed class Combat
             return;
         }
 
-        Vector4[] rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
-        rotmat[2].Z = 1;
-        rotmat[0].X = -1;
+        Matrix4x4 rotmat = VectorMaths.GetRightHandedBasisMatrix;
+        rotmat.M11 = -1;
 
         Missile missile = new(_draw);
-        if (!_universe.AddNewShip(missile, new(0, -28, 14, 0), rotmat.ToMatrix4x4(), 0, 0))
+        if (!_universe.AddNewShip(missile, new(0, -28, 14, 0), rotmat, 0, 0))
         {
             _gameState.InfoMessage("Missile Jammed");
             return;

@@ -25,6 +25,25 @@ public static class VectorMaths
         0,
         0);
 
+    // Right-handed basis matrix.
+    public static Matrix4x4 GetRightHandedBasisMatrix => new(
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0);
+
     /// <summary>
     /// Rotate a 4x4 matrix by two angles.
     /// The rotation is applied to the matrix' basis vectors: result = r * matrix,
