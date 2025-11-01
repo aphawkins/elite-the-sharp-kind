@@ -709,23 +709,23 @@ internal sealed class Space
         Vector4 position = location - (vec * 65792);
 
         ////  VectorMaths.set_init_matrix (rotmat);
-        Vector4[] rotmat = new Vector4[4];
+        Matrix4x4 rotmat = default;
 
-        rotmat[0].X = 1;
-        rotmat[0].Y = 0;
-        rotmat[0].Z = 0;
+        rotmat.M11 = 1;
+        rotmat.M21 = 0;
+        rotmat.M31 = 0;
 
-        rotmat[1].X = vec.X;
-        rotmat[1].Y = vec.Z;
-        rotmat[1].Z = -vec.Y;
+        rotmat.M12 = vec.X;
+        rotmat.M22 = vec.Z;
+        rotmat.M32 = -vec.Y;
 
-        rotmat[2].X = vec.X;
-        rotmat[2].Y = vec.Y;
-        rotmat[2].Z = vec.Z;
+        rotmat.M13 = vec.X;
+        rotmat.M23 = vec.Y;
+        rotmat.M33 = vec.Z;
 
-        rotmat = VectorMaths.OrthonormalizeBasis(rotmat.ToMatrix4x4()).ToVector4Array();
+        rotmat = VectorMaths.OrthonormalizeBasis(rotmat);
 
-        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, rotmat);
+        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, rotmat.ToVector4Array());
     }
 
     /// <summary>
