@@ -726,7 +726,7 @@ internal sealed class Space
         rotmat[2].Y = vec.Y;
         rotmat[2].Z = vec.Z;
 
-        VectorMaths.TidyMatrix(rotmat);
+        rotmat = VectorMaths.OrthonormalizeBasis(rotmat.ToMatrix4x4()).ToVector4Array();
 
         _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, rotmat);
     }
@@ -817,6 +817,6 @@ internal sealed class Space
         }
 
         // Orthonormalize the rotation matrix...
-        VectorMaths.TidyMatrix(obj.Rotmat);
+        obj.Rotmat = VectorMaths.OrthonormalizeBasis(obj.Rotmat.ToMatrix4x4()).ToVector4Array();
     }
 }

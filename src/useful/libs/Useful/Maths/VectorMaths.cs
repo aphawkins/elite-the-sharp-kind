@@ -44,43 +44,85 @@ public static class VectorMaths
         return Matrix4x4.Multiply(r, matrix);
     }
 
-    public static void TidyMatrix(Vector4[] mat)
+    /// <summary>
+    /// Tidy a 4x4 basis matrix: orthonormalise basis columns using Gram-Schmidt with safe fallbacks.
+    /// Preserves translation/bottom-row components.
+    /// </summary>
+    public static Matrix4x4 OrthonormalizeBasis(Matrix4x4 mat)
     {
-        Guard.ArgumentNull(mat);
+        // Extract basis columns consistent with existing MultiplyVector / ToVector3Array mapping:
+        // column0 = (M11, M21, M31), column1 = (M12, M22, M32), column2 = (M13, M23, M33)
+        Vector3 c1 = new(mat.M12, mat.M22, mat.M32);
+        Vector3 c2 = new(mat.M13, mat.M23, mat.M33);
 
-        mat[2] = UnitVector(mat[2]);
+        // Gram-Schmidt style orthonormalisation with fallbacks for degenerate inputs.
 
-        if (mat[2].X is > -1 and < 1)
+        // Normalize Z basis (c2)
+        float len2 = c2.Length();
+        Vector3 u2 = len2 > float.Epsilon ? c2 / len2 : Vector3.UnitZ;
+
+        // Make c1 orthogonal to u2: u1 = c1 - proj_u2(c1)
+        Vector3 proj = Vector3.Dot(c1, u2) * u2;
+        Vector3 u1 = c1 - proj;
+        float len1 = u1.Length();
+        if (len1 <= float.Epsilon)
         {
-            if (mat[2].Y is > -1 and < 1)
-            {
-                mat[1].Z = -((mat[2].X * mat[1].X) + (mat[2].Y * mat[1].Y)) / mat[2].Z;
-            }
-            else
-            {
-                mat[1].Y = -((mat[2].X * mat[1].X) + (mat[2].Z * mat[1].Z)) / mat[2].Y;
-            }
+            // Choose an arbitrary vector not parallel to u2 to construct a valid orthonormal basis.
+            Vector3 arbitrary = MathF.Abs(u2.X) < 0.9f ? Vector3.UnitX : Vector3.UnitY;
+            u1 = Vector3.Normalize(Vector3.Cross(arbitrary, u2));
         }
         else
         {
-            mat[1].X = -((mat[2].Y * mat[1].Y) + (mat[2].Z * mat[1].Z)) / mat[2].X;
+            u1 /= len1;
         }
 
-        mat[1] = UnitVector(mat[1]);
+        // Compute u0 as cross(u1, u2) to preserve the original triad ordering.
+        Vector3 u0 = Vector3.Cross(u1, u2);
+        float len0 = u0.Length();
+        if (len0 <= float.Epsilon)
+        {
+            // Fallback: pick any perpendicular vector
+            u0 = Vector3.Normalize(Vector3.Cross(u2, u1));
+        }
+        else
+        {
+            u0 /= len0;
+        }
 
-        // xyzzy... nothing happens.
-        mat[0].X = (mat[1].Y * mat[2].Z) - (mat[1].Z * mat[2].Y);
-        mat[0].Y = (mat[1].Z * mat[2].X) - (mat[1].X * mat[2].Z);
-        mat[0].Z = (mat[1].X * mat[2].Y) - (mat[1].Y * mat[2].X);
+        // Rebuild matrix preserving the original translation and bottom row (M14..M44)
+        return new Matrix4x4(
+            u0.X,
+            u1.X,
+            u2.X,
+            mat.M14,
+            u0.Y,
+            u1.Y,
+            u2.Y,
+            mat.M24,
+            u0.Z,
+            u1.Z,
+            u2.Z,
+            mat.M34,
+            mat.M41,
+            mat.M42,
+            mat.M43,
+            mat.M44);
     }
 
     /// <summary>
-    /// Convert a vector into a vector of unit (1) length.
+    /// Convert a vector into a vector of unit (1) length (normalize XYZ and preserve W).
     /// </summary>
     public static Vector4 UnitVector(Vector4 vec)
     {
-        Vector3 unit = Vector3.Divide(vec.AsVector3(), vec.AsVector3().Length());
-        return new(unit, vec.W);
+        Vector3 v3 = new(vec.X, vec.Y, vec.Z);
+        float len = v3.Length();
+        if (len <= float.Epsilon)
+        {
+            return new Vector4(0f, 0f, 0f, vec.W);
+        }
+
+        Vector3 unit = v3 / len;
+        return new Vector4(unit, vec.W);
     }
 
     /// <summary>

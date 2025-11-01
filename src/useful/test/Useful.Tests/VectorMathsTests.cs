@@ -124,10 +124,11 @@ public class VectorMathsTests
             new Vector4(0.2f, 0.9f, 0.1f, 0),
             new Vector4(0.9f, -0.1f, 0.3f, 0),
             new Vector4(0.3f, 0.4f, 0.7f, 0),
+            new Vector4(0, 0, 0, 0),
         ];
 
         // Act
-        VectorMaths.TidyMatrix(mat);
+        mat = VectorMaths.OrthonormalizeBasis(mat.ToMatrix4x4()).ToVector4Array();
 
         // Assert: each vector should be unit length
         float len0 = mat[0].Length();
