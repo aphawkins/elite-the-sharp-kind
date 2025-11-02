@@ -8,29 +8,29 @@ Intel Core i5-14600K 3.50GHz, 1 CPU, 20 logical and 14 physical cores
 
 
 ```
-| Method                   | Mean            | Error         | StdDev        | Median          |
-|------------------------- |----------------:|--------------:|--------------:|----------------:|
-| Clear                    |  14,172.5500 ns |   266.1770 ns |   235.9590 ns |  14,174.5338 ns |
-| DrawCircle               |     997.5177 ns |     1.5640 ns |     1.4629 ns |     997.7718 ns |
-| DrawCircleFilled         | 132,470.1709 ns | 1,269.6863 ns | 1,187.6653 ns | 132,213.2324 ns |
-| DrawImage                |     196.6532 ns |     0.4958 ns |     0.4395 ns |     196.6532 ns |
-| DrawImageCentre          |     181.8684 ns |     0.3856 ns |     0.3607 ns |     181.8056 ns |
-| DrawLine                 |   2,097.6433 ns |    41.8217 ns |    87.2974 ns |   2,094.7521 ns |
-| DrawPixel                |       0.3686 ns |     0.0020 ns |     0.0018 ns |       0.3687 ns |
-| DrawPolygon              |     210.9829 ns |     1.4638 ns |     1.2976 ns |     210.8211 ns |
-| DrawPolygonFilled        |      50.3071 ns |     0.2749 ns |     0.2295 ns |      50.2528 ns |
-| DrawRectangle            |       9.7795 ns |     0.0363 ns |     0.0322 ns |       9.7814 ns |
-| DrawRectangleCentre      |      14.3827 ns |     0.0370 ns |     0.0346 ns |      14.3894 ns |
-| DrawRectangleFilled      |      30.6470 ns |     0.0479 ns |     0.0448 ns |      30.6389 ns |
-| DrawTextCentreWhitespace |       0.9086 ns |     0.0098 ns |     0.0082 ns |       0.9082 ns |
-| DrawTextLeftWhitespace   |       0.0000 ns |     0.0000 ns |     0.0000 ns |       0.0000 ns |
-| DrawTextRightWhitespace  |       0.0035 ns |     0.0046 ns |     0.0043 ns |       0.0011 ns |
-| DrawTriangle             |      56.8534 ns |     0.5400 ns |     0.5051 ns |      56.7804 ns |
-| DrawTriangleFilled       |      49.4823 ns |     0.2430 ns |     0.2154 ns |      49.4663 ns |
-| Initialize               |      33.9803 ns |     0.4536 ns |     0.4243 ns |      34.0195 ns |
-| IsInitialized            |       0.0064 ns |     0.0028 ns |     0.0025 ns |       0.0064 ns |
-| Scale                    |       0.0032 ns |     0.0035 ns |     0.0033 ns |       0.0014 ns |
-| ScreenHeight             |       0.0017 ns |     0.0022 ns |     0.0019 ns |       0.0011 ns |
-| ScreenUpdate             |       0.0001 ns |     0.0003 ns |     0.0003 ns |       0.0000 ns |
-| ScreenWidth              |       0.0036 ns |     0.0026 ns |     0.0024 ns |       0.0032 ns |
-| SetClipRegion            |       0.0039 ns |     0.0035 ns |     0.0033 ns |       0.0037 ns |
+| Method                   | Mean           | Error       | StdDev      | Median         |
+|------------------------- |---------------:|------------:|------------:|---------------:|
+| Clear                    | 16,155.5444 ns | 321.1457 ns | 570.8361 ns | 16,273.7106 ns |
+| DrawCircle               |    990.5093 ns |   1.6226 ns |   1.5178 ns |    990.4737 ns |
+| DrawCircleFilled         | 32,103.2625 ns | 174.8102 ns | 163.5176 ns | 32,053.2532 ns |
+| DrawImage                |    197.8967 ns |   1.8652 ns |   1.7447 ns |    198.1472 ns |
+| DrawImageCentre          |    182.1974 ns |   0.9721 ns |   0.9093 ns |    182.2170 ns |
+| DrawLine                 |    400.7281 ns |   1.7382 ns |   1.5409 ns |    400.3074 ns |
+| DrawPixel                |      0.3810 ns |   0.0023 ns |   0.0020 ns |      0.3812 ns |
+| DrawPolygon              |     45.7267 ns |   0.0591 ns |   0.0524 ns |     45.7083 ns |
+| DrawPolygonFilled        |     51.3833 ns |   0.2796 ns |   0.2478 ns |     51.3314 ns |
+| DrawRectangle            |      9.7440 ns |   0.0230 ns |   0.0216 ns |      9.7438 ns |
+| DrawRectangleCentre      |     14.2877 ns |   0.0240 ns |   0.0187 ns |     14.2890 ns |
+| DrawRectangleFilled      |     30.4512 ns |   0.0577 ns |   0.0540 ns |     30.4279 ns |
+| DrawTextCentreWhitespace |      0.9419 ns |   0.0465 ns |   0.0497 ns |      0.9239 ns |
+| DrawTextLeftWhitespace   |      0.0073 ns |   0.0069 ns |   0.0065 ns |      0.0055 ns |
+| DrawTextRightWhitespace  |      0.0000 ns |   0.0000 ns |   0.0000 ns |      0.0000 ns |
+| DrawTriangle             |      7.4046 ns |   0.0181 ns |   0.0160 ns |      7.4028 ns |
+| DrawTriangleFilled       |     50.7456 ns |   0.9701 ns |   0.8599 ns |     50.8703 ns |
+| Initialize               |     34.8874 ns |   0.7119 ns |   0.6659 ns |     34.7256 ns |
+| IsInitialized            |      0.0000 ns |   0.0000 ns |   0.0000 ns |      0.0000 ns |
+| Scale                    |      0.0016 ns |   0.0015 ns |   0.0014 ns |      0.0016 ns |
+| ScreenHeight             |      0.0075 ns |   0.0063 ns |   0.0059 ns |      0.0065 ns |
+| ScreenUpdate             |      0.0017 ns |   0.0023 ns |   0.0022 ns |      0.0006 ns |
+| ScreenWidth              |      0.0009 ns |   0.0012 ns |   0.0011 ns |      0.0005 ns |
+| SetClipRegion            |      0.0000 ns |   0.0000 ns |   0.0000 ns |      0.0000 ns |

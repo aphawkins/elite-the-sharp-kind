@@ -245,19 +245,25 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor color)
     {
-        // Sort the points so that a <= b <= c
+        // Sort the points so that a.Y <= b.Y <= c.Y
         (a, b, c) = SortPointsByY(a, b, c);
 
-        // Compute the x coordinates of the triangle edges
+        // Clamp Y range to screen bounds
+        int ay = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        ////int by = Math.Max((int)MathF.Ceiling(b.Y), 0);
+        int cy = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        // Interpolate edges
         int[] ab = Interpolate(a.Y, a.X, b.Y, b.X);
         int[] bc = Interpolate(b.Y, b.X, c.Y, c.X);
         int[] ac = Interpolate(a.Y, a.X, c.Y, c.X);
 
-        // Concatenate the short sides
-        ab = ab.Length > 0 ? ab[..^1] : ab;  // all items in the array except the last
-        int[] abc = [.. ab, .. bc];
+        // Combine ab and bc (excluding duplicate at join)
+        int[] abc = new int[ab.Length + bc.Length - 1];
+        Array.Copy(ab, 0, abc, 0, ab.Length - 1);
+        Array.Copy(bc, 0, abc, ab.Length - 1, bc.Length);
 
-        // Determine which is left and which is right
+        // Determine left and right edges
         int m = abc.Length / 2;
         int[] leftX = abc;
         int[] rightX = ac;
@@ -267,18 +273,21 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (leftX, rightX) = (rightX, leftX);
         }
 
-        // Draw the horizontal segments
-        int ay = (int)MathF.Floor(a.Y);
-        int cy = (int)Math.Floor(c.Y);
-
+        // Draw scanlines
         for (int y = ay; y <= cy; y++)
         {
-            if (leftX.Length > y - ay && rightX.Length > y - ay)
+            int i = y - (int)MathF.Floor(a.Y);
+            if (i < 0 || i >= leftX.Length || i >= rightX.Length)
             {
-                for (int x = leftX[y - ay]; x <= rightX[y - ay]; x++)
-                {
-                    DrawPixel(x, y, color);
-                }
+                continue;
+            }
+
+            int start = Math.Max(leftX[i], 0);
+            int end = Math.Min(rightX[i], (int)ScreenWidth - 1);
+
+            for (int x = start; x <= end; x++)
+            {
+                DrawPixel(x, y, color);
             }
         }
     }
@@ -366,57 +375,45 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private void DrawLineInt(int startX, int startY, int endX, int endY, in FastColor color)
+    private void DrawLineInt(int x0, int y0, int x1, int y1, in FastColor color)
     {
-        if (Math.Abs(endX - startX) > Math.Abs(endY - startY))
+        int screenWidth = (int)ScreenWidth;   // Replace with actual screen width
+        int screenHeight = (int)ScreenHeight; // Replace with actual screen height
+
+        int dx = Math.Abs(x1 - x0);
+        int dy = Math.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
         {
-            // Line is horizontal-ish
-            // Make sure startX < endX
-            if (startX > endX)
+            if (x0 >= 0 && x0 < screenWidth && y0 >= 0 && y0 < screenHeight)
             {
-                (endX, startX) = (startX, endX);
-                (endY, startY) = (startY, endY);
+                DrawPixel(x0, y0, color);
             }
 
-            int[] ys = Interpolate(startX, startY, endX, endY);
-            for (int x = startX; x <= endX; x++)
+            if (x0 == x1 && y0 == y1)
             {
-                if ((x - startX) < ys.Length)
-                {
-                    DrawPixel(x, ys[x - startX], color);
-                }
-            }
-        }
-        else
-        {
-            // Line is vertical-ish
-            // Make sure startY < endY
-            if (startY > endY)
-            {
-                (endX, startX) = (startX, endX);
-                (endY, startY) = (startY, endY);
+                break;
             }
 
-            int[] xs = Interpolate(startY, startX, endY, endX);
-            for (int y = startY; y <= endY; y++)
+            int e2 = 2 * err;
+            if (e2 > -dy)
             {
-                if ((y - startY) < xs.Length)
-                {
-                    DrawPixel(xs[y - startY], y, color);
-                }
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
             }
         }
     }
 
-    private void DrawPixel(int x, int y, in FastColor color)
-    {
-        if (x < 0 || y < 0 || x >= ScreenWidth || y >= ScreenHeight)
-        {
-            return;
-        }
-
-        _screen.SetPixel(x, y, color);
-    }
+    private void DrawPixel(int x, int y, in FastColor color) => _screen.SetPixel(x, y, color);
 
     private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in FastColor color)
     {
