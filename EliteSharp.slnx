@@ -14,19 +14,16 @@
   <Folder Name="/src/" />
   <Folder Name="/src/elite/" />
   <Folder Name="/src/elite/apps/">
-    <Project Path="src/elite/apps/EliteSharp.SDL/EliteSharp.SDL.csproj">
-      <BuildDependency Project="src/elite/libs/EliteSharp/EliteSharp.csproj" />
-      <BuildDependency Project="src/useful/libs/Useful.SDL/Useful.SDL.csproj" />
-    </Project>
+    <Project Path="src/elite/apps/EliteSharp/EliteSharp.csproj" />
   </Folder>
   <Folder Name="/src/elite/libs/">
-    <Project Path="src/elite/libs/EliteSharp/EliteSharp.csproj" />
+    <Project Path="src/elite/libs/EliteSharpLib/EliteSharpLib.csproj" />
   </Folder>
   <Folder Name="/src/elite/perf/">
-    <Project Path="src/elite/perf/EliteSharp.Benchmarks/EliteSharp.Benchmarks.csproj" />
+    <Project Path="src/elite/perf/EliteSharpLib.Benchmarks/EliteSharpLib.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/elite/test/">
-    <Project Path="src/elite/test/EliteSharp.Tests/EliteSharp.Tests.csproj" />
+    <Project Path="src/elite/test/EliteSharpLib.Tests/EliteSharpLib.Tests.csproj" />
   </Folder>
   <Folder Name="/src/useful/" />
   <Folder Name="/src/useful/libs/">

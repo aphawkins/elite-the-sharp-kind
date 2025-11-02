@@ -1,4 +1,4 @@
-name: Build and Package EliteSharp.SDL
+name: Build and Package EliteSharp
 
 on:
   push:
@@ -31,8 +31,8 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity normal /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
-      - name: Publish EliteSharp.SDL Windows
-        run: dotnet publish ./src/elite/apps/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileWindows /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
+      - name: Publish EliteSharp Windows
+        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Delete superfluous files
         run: find ./publish/win-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
@@ -43,8 +43,8 @@ jobs:
           name: EliteSharp-Windows-${{ steps.vars.outputs.version }}
           path: ./publish/win-x64/*
 
-      - name: Publish EliteSharp.SDL Linux
-        run: dotnet publish ./src/elite/apps/EliteSharp.SDL/EliteSharp.SDL.csproj /p:PublishProfile=PublishProfileLinux /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
+      - name: Publish EliteSharp Linux
+        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileLinux /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
       - name: Delete superfluous files
         run: find ./publish/linux-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
