@@ -1,5 +1,7 @@
 # Elite - The Sharp Kind
 
+![Elite - The Sharp Kind - Screenshot](images/screenshot.png)
+
 A C# port of the classic BBC home computer game 'Elite'.  It is meant to look, feel and play the same as the original 8bit and 16bit versions of the game.  
 
 Currently the objectice of this port is authenticity, object oriented code and cross platform compatibility using dotnet.  
