@@ -50,17 +50,16 @@ public static class VectorMaths
     /// where R is the rotation composed of a rotation about Z by <paramref name="alpha"/>
     /// followed by a rotation about X by <paramref name="beta"/>.
     /// </summary>
-    public static Matrix4x4 RotateVector(Matrix4x4 matrix, float alpha, float beta)
+    public static Vector4[] RotateVector(Vector4[] vec, float alpha, float beta)
     {
-        // Rotation about Z (XY plane), then about X (YZ plane).
-        Matrix4x4 rotZ = Matrix4x4.CreateRotationZ(alpha);
-        Matrix4x4 rotX = Matrix4x4.CreateRotationX(beta);
+        Guard.ArgumentNull(vec);
 
-        // Compose: apply rotZ then rotX => r = rotX * rotZ
-        Matrix4x4 r = Matrix4x4.Multiply(rotX, rotZ);
+        for (int i = 0; i < vec.Length; i++)
+        {
+            RotateVector(ref vec[i], alpha, beta);
+        }
 
-        // Apply rotation to the matrix basis vectors: r * matrix
-        return Matrix4x4.Multiply(r, matrix);
+        return vec;
     }
 
     /// <summary>
@@ -131,22 +130,27 @@ public static class VectorMaths
     /// <summary>
     /// Convert a vector into a vector of unit (1) length (normalize XYZ and preserve W).
     /// </summary>
-    public static Vector4 UnitVector(Vector4 vec)
-    {
-        Vector3 v3 = new(vec.X, vec.Y, vec.Z);
-        float len = v3.Length();
-        if (len <= float.Epsilon)
-        {
-            return new Vector4(0f, 0f, 0f, vec.W);
-        }
-
-        Vector3 unit = v3 / len;
-        return new Vector4(unit, vec.W);
-    }
+    public static Vector4 UnitVector(Vector4 vec) => Vector4.Divide(vec, vec.Length());
 
     /// <summary>
     /// Calculate the dot product of two vectors sharing a common point.
     /// </summary>
     /// <returns>The cosine of the angle between the two vectors.</returns>
     public static float VectorDotProduct(Vector4 first, Vector4 second) => Vector4.Dot(first, second);
+
+    private static void RotateVector(ref Vector4 vec, float alpha, float beta)
+    {
+        float x = vec.X;
+        float y = vec.Y;
+        float z = vec.Z;
+
+        y -= alpha * x;
+        x += alpha * y;
+        y -= beta * z;
+        z += beta * y;
+
+        vec.X = x;
+        vec.Y = y;
+        vec.Z = z;
+    }
 }

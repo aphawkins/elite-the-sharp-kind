@@ -79,7 +79,7 @@ public class VectorMathsTests
 
         Vector4[] copy = [matrix[0], matrix[1], matrix[2], matrix[3]];
 
-        Vector4[] result = VectorMaths.RotateVector(copy.ToMatrix4x4(), 0, 0).ToVector4Array();
+        Vector4[] result = VectorMaths.RotateVector(copy, 0, 0);
 
         AssertVectorAlmostEqual(matrix[0], result[0]);
         AssertVectorAlmostEqual(matrix[1], result[1]);
@@ -98,7 +98,7 @@ public class VectorMathsTests
         ];
 
         Vector4[] input = [matrix[0], matrix[1], matrix[2], matrix[3]];
-        Vector4[] result = VectorMaths.RotateVector(input.ToMatrix4x4(), 0.1f, 0.2f).ToVector4Array();
+        Vector4[] result = VectorMaths.RotateVector(input, 0.1f, 0.2f);
 
         // Should not be identical to input for non-zero angles
         bool anyDifferent =
