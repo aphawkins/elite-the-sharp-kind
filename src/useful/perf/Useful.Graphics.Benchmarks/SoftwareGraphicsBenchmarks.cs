@@ -12,13 +12,12 @@ public class SoftwareGraphicsBenchmarks : IDisposable
     private const int ScreenWidthPixels = 512;
 
     private readonly FastBitmap _fontBitmap;
-    private readonly SoftwareGraphics _graphics;
+    private SoftwareGraphics _graphics;
     private bool _isDisposed;
 
     public SoftwareGraphicsBenchmarks()
     {
-        _graphics = new(ScreenWidthPixels, ScreenHeightPixels, (_) => { });
-        _graphics.Initialize(new FakeAssetLocator(), [BaseColors.White]);
+        _graphics = SoftwareGraphics.Create(ScreenWidthPixels, ScreenHeightPixels, (_) => { }, new FakeAssetLocator());
         _graphics.Images = new() { { 123, new FastBitmap(16, 16) } };
 
         _fontBitmap = new(8, 8);
@@ -36,10 +35,10 @@ public class SoftwareGraphicsBenchmarks : IDisposable
     }
 
     [Benchmark]
-    public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, BaseColors.White);
+    public void DrawCircle() => _graphics.DrawCircle(new(255, 255), 100, BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, BaseColors.White);
+    public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, BaseColors.White.Argb);
 
     [Benchmark]
     public void DrawImage() => _graphics.DrawImage(123, new(1, 1));
@@ -49,44 +48,44 @@ public class SoftwareGraphicsBenchmarks : IDisposable
             => _graphics.DrawImageCentre(123, 10f);
 
     [Benchmark]
-    public void DrawLine() => _graphics.DrawLine(new(0, 0), new(512, 512), BaseColors.White);
+    public void DrawLine() => _graphics.DrawLine(new(0, 0), new(512, 512), BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawPixel() => _graphics.DrawPixel(new(255, 255), BaseColors.White);
+    public void DrawPixel() => _graphics.DrawPixel(new(255, 255), BaseColors.White.Argb);
 
     [Benchmark]
     public void DrawPolygon()
     {
         Vector2[] points = [new(0, 0), new(10, 0), new(10, 10), new(0, 10)];
-        _graphics.DrawPolygon(points, BaseColors.White);
+        _graphics.DrawPolygon(points, BaseColors.White.Argb);
     }
 
     [Benchmark]
     public void DrawPolygonFilled()
     {
         Vector2[] tri = [new(1, 1), new(3, 1), new(2, 3)];
-        _graphics.DrawPolygonFilled(tri, BaseColors.White);
+        _graphics.DrawPolygonFilled(tri, BaseColors.White.Argb);
     }
 
     // Rectangle functions
     [Benchmark]
-    public void DrawRectangle() => _graphics.DrawRectangle(new(1, 1), 10, 6, BaseColors.White);
+    public void DrawRectangle() => _graphics.DrawRectangle(new(1, 1), 10, 6, BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawRectangleCentre() => _graphics.DrawRectangleCentre(10f, 10, 6, BaseColors.White);
+    public void DrawRectangleCentre() => _graphics.DrawRectangleCentre(10f, 10, 6, BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawRectangleFilled() => _graphics.DrawRectangleFilled(new(1, 1), 10, 6, BaseColors.White);
+    public void DrawRectangleFilled() => _graphics.DrawRectangleFilled(new(1, 1), 10, 6, BaseColors.White.Argb);
 
     // Text functions - use whitespace where appropriate to exercise early-return paths quickly
     [Benchmark]
-    public void DrawTextCentreWhitespace() => _graphics.DrawTextCentre(0f, "   ", 0, BaseColors.White);
+    public void DrawTextCentreWhitespace() => _graphics.DrawTextCentre(0f, "   ", 0, BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawTextLeftWhitespace() => _graphics.DrawTextLeft(new(0, 0), " ", 0, BaseColors.White);
+    public void DrawTextLeftWhitespace() => _graphics.DrawTextLeft(new(0, 0), " ", 0, BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawTextRightWhitespace() => _graphics.DrawTextRight(new(0, 0), string.Empty, 0, BaseColors.White);
+    public void DrawTextRightWhitespace() => _graphics.DrawTextRight(new(0, 0), string.Empty, 0, BaseColors.White.Argb);
 
     // Triangle functions
     [Benchmark]
@@ -95,7 +94,7 @@ public class SoftwareGraphicsBenchmarks : IDisposable
         Vector2 a = new(1, 1);
         Vector2 b = new(3, 1);
         Vector2 c = new(2, 3);
-        _graphics.DrawTriangle(a, b, c, BaseColors.White);
+        _graphics.DrawTriangle(a, b, c, BaseColors.White.Argb);
     }
 
     [Benchmark]
@@ -104,14 +103,11 @@ public class SoftwareGraphicsBenchmarks : IDisposable
         Vector2 a = new(1, 1);
         Vector2 b = new(3, 1);
         Vector2 c = new(2, 3);
-        _graphics.DrawTriangleFilled(a, b, c, BaseColors.White);
+        _graphics.DrawTriangleFilled(a, b, c, BaseColors.White.Argb);
     }
 
     [Benchmark]
-    public void Initialize() => _graphics.Initialize(new FakeAssetLocator(), [BaseColors.White]);
-
-    [Benchmark]
-    public bool IsInitialized() => _graphics.IsInitialized;
+    public void Create() => _graphics = SoftwareGraphics.Create(ScreenWidthPixels, ScreenHeightPixels, (_) => { }, new FakeAssetLocator());
 
     [Benchmark]
     public float Scale() => _graphics.Scale;

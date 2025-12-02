@@ -50,6 +50,8 @@ internal sealed class ConstrictorMissionView : IView
     private readonly PlayerShip _ship;
     private readonly Trade _trade;
     private readonly Universe _universe;
+    private readonly IShipFactory _shipFactory;
+    private readonly uint _colorGold;
 
     internal ConstrictorMissionView(
         GameState gameState,
@@ -58,7 +60,8 @@ internal sealed class ConstrictorMissionView : IView
         PlayerShip ship,
         Trade trade,
         Combat combat,
-        Universe universe)
+        Universe universe,
+        IShipFactory shipFactory)
     {
         _gameState = gameState;
         _draw = draw;
@@ -67,6 +70,9 @@ internal sealed class ConstrictorMissionView : IView
         _trade = trade;
         _combat = combat;
         _universe = universe;
+        _shipFactory = shipFactory;
+
+        _colorGold = draw.Palette["Gold"];
     }
 
     public void Draw()
@@ -81,17 +87,17 @@ internal sealed class ConstrictorMissionView : IView
                 470,
                 _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
 
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, _colorGold);
         }
         else if (_gameState.Cmdr.Mission == 3)
         {
             _draw.DrawViewHeader("INCOMING MESSAGE");
 
-            _draw.Graphics.DrawTextCentre(100, "Congratulations Commander!", (int)FontType.Large, EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(100, "Congratulations Commander!", (int)FontType.Large, _colorGold);
 
             _draw.DrawTextPretty(new(116 + _draw.Offset, 132), 400, _mission1_debrief);
 
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, EliteColors.Gold);
+            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", (int)FontType.Large, _colorGold);
         }
     }
 
@@ -114,7 +120,7 @@ internal sealed class ConstrictorMissionView : IView
 
             _combat.Reset();
             _universe.ClearUniverse();
-            Constrictor constrictor = new(_draw);
+            IShip constrictor = _shipFactory.CreateShip("Constrictor");
             if (!_universe.AddNewShip(constrictor, new(200, 90, 600, 0), VectorMaths.GetLeftHandedBasisMatrix, -127, -127))
             {
                 Debug.Fail("Failed to create Constrictor");

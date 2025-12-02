@@ -25,6 +25,7 @@ internal sealed class Combat
     private readonly Trade _trade;
     private readonly Universe _universe;
     private readonly IEliteDraw _draw;
+    private readonly IShipFactory _shipFactory;
     private bool _isEcmOurs;
     private int _laserCounter;
     private int _laserStrength;
@@ -37,7 +38,8 @@ internal sealed class Combat
         Trade trade,
         Pilot pilot,
         Universe universe,
-        IEliteDraw draw)
+        IEliteDraw draw,
+        IShipFactory shipFactory)
     {
         _gameState = gameState;
         _audio = audio;
@@ -46,6 +48,7 @@ internal sealed class Combat
         _pilot = pilot;
         _universe = universe;
         _draw = draw;
+        _shipFactory = shipFactory;
     }
 
     internal bool InBattle { get; set; }
@@ -141,13 +144,14 @@ internal sealed class Combat
 
     internal void CreateThargoid()
     {
-        Thargoid thargoid = new(_draw);
+        IShip thargoid = _shipFactory.CreateShip("Thargoid");
         if (_universe.AddNewShip(thargoid))
         {
             thargoid.Flags = ShipProperties.Angry | ShipProperties.HasECM;
             thargoid.Bravery = 113;
 
-            if (RNG.Random(256) > 64 && !LaunchEnemy(thargoid, new Tharglet(_draw), ShipProperties.Angry | ShipProperties.HasECM, 96))
+            if (RNG.Random(256) > 64
+                && !LaunchEnemy(thargoid, _shipFactory.CreateShip("Tharglet"), ShipProperties.Angry | ShipProperties.HasECM, 96))
             {
                 Debug.Fail("Failed to create Tharglet");
             }
@@ -232,7 +236,7 @@ internal sealed class Combat
         Matrix4x4 rotmat = VectorMaths.GetRightHandedBasisMatrix;
         rotmat.M11 = -1;
 
-        Missile missile = new(_draw);
+        IShip missile = _shipFactory.CreateShip("Missile");
         if (!_universe.AddNewShip(missile, new(0, -28, 14, 0), rotmat, 0, 0))
         {
             _gameState.InfoMessage("Missile Jammed");
@@ -420,7 +424,7 @@ internal sealed class Combat
                     return;
                 }
 
-                if (!LaunchEnemy(ship, new Viper(_draw), ShipProperties.Angry | ShipProperties.HasECM, 113))
+                if (!LaunchEnemy(ship, _shipFactory.CreateShip("Viper"), ShipProperties.Angry | ShipProperties.HasECM, 113))
                 {
                     Debug.Fail("Failed to create Police");
                 }
@@ -436,7 +440,7 @@ internal sealed class Combat
         {
             if (RNG.Random(256) > 200)
             {
-                IShip pirate = new ShipFactory(_draw).CreatePirate();
+                IShip pirate = _shipFactory.CreatePirate();
                 if (!LaunchEnemy(ship, pirate, ShipProperties.Angry | ShipProperties.HasECM, 113))
                 {
                     Debug.Fail("Failed to create Hermit Pirate");
@@ -491,7 +495,7 @@ internal sealed class Combat
 
         if (ship.Type == ShipType.Anaconda && RNG.Random(256) > 200)
         {
-            IShip anacondaHunter = RNG.Random(256) > 100 ? new Worm(_draw) : new Sidewinder(_draw);
+            IShip anacondaHunter = RNG.Random(256) > 100 ? _shipFactory.CreateShip("Worm") : _shipFactory.CreateShip("Sidewinder");
             if (!LaunchEnemy(ship, anacondaHunter, ShipProperties.Angry | ShipProperties.HasECM, 113))
             {
                 Debug.Fail("Failed to create Anaconda Hunter");
@@ -515,7 +519,7 @@ internal sealed class Combat
             {
                 ship.Flags &= ~ShipProperties.Angry;
                 ship.Flags |= ShipProperties.Inactive;
-                if (!LaunchEnemy(ship, new EscapeCapsule(_draw), 0, 126))
+                if (!LaunchEnemy(ship, _shipFactory.CreateShip("EscapeCapsule"), 0, 126))
                 {
                     Debug.Fail("Failed to create Escape Capsule");
                 }
@@ -528,14 +532,14 @@ internal sealed class Combat
                 ship.Missiles--;
                 if (ship.Type == ShipType.Thargoid)
                 {
-                    if (!LaunchEnemy(ship, new Tharglet(_draw), ShipProperties.Angry, ship.Bravery))
+                    if (!LaunchEnemy(ship, _shipFactory.CreateShip("Tharglet"), ShipProperties.Angry, ship.Bravery))
                     {
                         Debug.Fail("Failed to create Tharglet");
                     }
                 }
                 else
                 {
-                    if (!LaunchEnemy(ship, new Missile(_draw), ShipProperties.Angry, 126))
+                    if (!LaunchEnemy(ship, _shipFactory.CreateShip("Missile"), ShipProperties.Angry, 126))
                     {
                         Debug.Fail("Failed to create Missile");
                     }
@@ -749,7 +753,7 @@ internal sealed class Combat
             return;
         }
 
-        IShip asteroid = new ShipFactory(_draw).CreateAsteroid();
+        IShip asteroid = _shipFactory.CreateAsteroid();
         if (_universe.AddNewShip(asteroid))
         {
             //// space.universe[newship].velocity = (random.rand255() & 31) | 16;
@@ -801,7 +805,7 @@ internal sealed class Combat
 
         for (int i = 0; i <= rnd; i++)
         {
-            IShip packHunter = new ShipFactory(_draw).CreatePackHunter();
+            IShip packHunter = _shipFactory.CreatePackHunter();
             if (_universe.AddNewShip(packHunter, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
             {
                 packHunter.Flags = ShipProperties.Angry;
@@ -833,7 +837,7 @@ internal sealed class Combat
             return;
         }
 
-        Viper police = new(_draw);
+        IShip police = _shipFactory.CreateShip("Viper");
 
         if (_universe.AddNewShip(police))
         {
@@ -876,7 +880,7 @@ internal sealed class Combat
             return;
         }
 
-        Cougar cougar = new(_draw);
+        IShip cougar = _shipFactory.CreateShip("Cougar");
         if (_universe.AddNewShip(cougar))
         {
             cougar.Flags = ShipProperties.HasECM; //// | FLG_CLOAKED;
@@ -896,8 +900,8 @@ internal sealed class Combat
             _gameState.DockedPlanet.D == 144
             && _gameState.DockedPlanet.B == 33 &&
             _universe.ShipCount(ShipType.Constrictor) == 0
-            ? new Constrictor(_draw)
-            : new ShipFactory(_draw).CreateLoneWolf();
+            ? _shipFactory.CreateShip("Constrictor")
+            : _shipFactory.CreateLoneWolf();
 
         if (_universe.AddNewShip(loneWolf))
         {
@@ -918,7 +922,7 @@ internal sealed class Combat
 
     private void CreateTrader()
     {
-        IShip trader = new ShipFactory(_draw).CreateTrader();
+        IShip trader = _shipFactory.CreateTrader();
 
         if (_universe.AddNewShip(trader))
         {
@@ -997,15 +1001,15 @@ internal sealed class Combat
             IShip loot;
             if (lootType == ShipType.Rock)
             {
-                loot = new RockSplinter(_draw);
+                loot = _shipFactory.CreateShip("RockSplinter");
             }
             else if (lootType == ShipType.Alloy)
             {
-                loot = new Alloy(_draw);
+                loot = _shipFactory.CreateShip("Alloy");
             }
             else if (lootType == ShipType.Cargo)
             {
-                loot = new CargoCannister(_draw);
+                loot = _shipFactory.CreateShip("CargoCannister");
             }
             else
             {
@@ -1037,7 +1041,7 @@ internal sealed class Combat
         }
 
         Debug.Assert(station.Flags.HasFlag(ShipProperties.Station), "Shuttle must be launched from a station");
-        IShip shuttle = RNG.TrueOrFalse() ? new Shuttle(_draw) : new Transporter(_draw);
+        IShip shuttle = RNG.TrueOrFalse() ? _shipFactory.CreateShip("Shuttle") : _shipFactory.CreateShip("Transporter");
         if (!LaunchEnemy((IShip)station, shuttle, ShipProperties.HasECM | ShipProperties.FlyToPlanet, 113))
         {
             Debug.Fail("Failed to create Shuttle");

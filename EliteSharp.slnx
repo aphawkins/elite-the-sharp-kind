@@ -26,6 +26,7 @@
     <Project Path="src/elite/perf/EliteSharpLib.Benchmarks/EliteSharpLib.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/elite/test/">
+    <Project Path="src/elite/test/EliteSharpLib.Fakes/EliteSharpLib.Fakes.csproj" />
     <Project Path="src/elite/test/EliteSharpLib.Tests/EliteSharpLib.Tests.csproj" />
   </Folder>
   <Folder Name="/src/useful/" />
@@ -44,6 +45,7 @@
   <Folder Name="/src/useful/test/">
     <Project Path="src/useful/test/Useful.Controls.Tests/Useful.Controls.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
     <Project Path="src/useful/test/Useful.Fakes/Useful.Fakes.csproj" />
+    <Project Path="src/useful/test/Useful.Graphics.Fakes/Useful.Graphics.Fakes.csproj" />
     <Project Path="src/useful/test/Useful.Graphics.Tests/Useful.Graphics.Tests.csproj" />
     <Project Path="src/useful/test/Useful.SDL.Tests/Useful.SDL.Tests.csproj" />
     <Project Path="src/useful/test/Useful.Tests/Useful.Tests.csproj" />

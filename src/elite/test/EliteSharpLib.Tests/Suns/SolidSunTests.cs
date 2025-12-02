@@ -3,47 +3,49 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
+using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;
 using Moq;
+using Useful.Fakes.Assets;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Tests.Suns;
 
 public class SolidSunTests
 {
-    private readonly Mock<IEliteDraw> _drawMoq;
-
-    public SolidSunTests() => _drawMoq = MockSetup.MockDraw();
-
     [Fact]
     public void DrawSolidSun()
     {
         // Arrange
-        SolidSun sun = new(_drawMoq.Object, EliteColors.Cyan);
+        Mock<IGraphics> mockGraphics = new();
+        FakeEliteDraw fakeEliteDraw = new()
+        {
+            Graphics = mockGraphics.Object,
+        };
+        SolidSun sun = new(fakeEliteDraw);
 
         // Act
         sun.Draw();
 
         // Assert
-        _drawMoq.Verify(x => x.Graphics.DrawLine(
+        mockGraphics.Verify(x => x.DrawLine(
             It.IsAny<Vector2>(),
             It.IsAny<Vector2>(),
-            It.Is<FastColor>(x => x == EliteColors.Cyan)));
+            It.Is<uint>(x => x == FakeColor.TestColor)));
     }
 
     [Fact]
     public void CloneSolidSun()
     {
         // Arrange
-        SolidSun sun = new(_drawMoq.Object, EliteColors.Cyan);
+        FakeEliteDraw fakeEliteDraw = new();
+        SolidSun sun = new(fakeEliteDraw);
 
         // Act
         IObject obj = sun.Clone();
 
         // Assert
         Assert.IsType<SolidSun>(obj);
-        Assert.Equal(sun.Color, ((SolidSun)obj).Color);
     }
 }

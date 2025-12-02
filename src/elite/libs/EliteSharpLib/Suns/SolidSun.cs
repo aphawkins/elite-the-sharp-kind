@@ -5,24 +5,24 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Graphics;
 
 namespace EliteSharpLib.Suns;
 
 internal sealed class SolidSun : IObject
 {
     private readonly IEliteDraw _draw;
+    private readonly uint _color;
 
-    internal SolidSun(IEliteDraw draw, in FastColor color)
+    internal SolidSun(IEliteDraw draw)
     {
         _draw = draw;
-        Color = color;
+        _color = _draw.Palette["White"];
     }
 
     private SolidSun(SolidSun other)
     {
         _draw = other._draw;
-        Color = other.Color;
+        _color = other._color;
     }
 
     public ShipProperties Flags { get; set; }
@@ -36,8 +36,6 @@ internal sealed class SolidSun : IObject
     public float RotZ { get; set; }
 
     public ShipType Type { get; set; } = ShipType.Sun;
-
-    internal FastColor Color { get; }
 
     public IObject Clone()
     {
@@ -125,6 +123,6 @@ internal sealed class SolidSun : IObject
             ex = _draw.Right;
         }
 
-        _draw.Graphics.DrawLine(s, new(ex, s.Y), Color);
+        _draw.Graphics.DrawLine(s, new(ex, s.Y), _color);
     }
 }

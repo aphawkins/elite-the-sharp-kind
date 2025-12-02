@@ -21,6 +21,8 @@ internal sealed class PilotView : IView
     private readonly Space _space;
     private readonly IEliteDraw _draw;
     private readonly Combat _combat;
+    private readonly uint _colorWhite;
+
     private int _drawLaserFrames;
 
     internal PilotView(
@@ -42,6 +44,8 @@ internal sealed class PilotView : IView
         _space = space;
         _draw = draw;
         _combat = combat;
+
+        _colorWhite = draw.Palette["White"];
     }
 
     public void Draw()
@@ -53,11 +57,11 @@ internal sealed class PilotView : IView
 
         if (_space.HyperGalactic)
         {
-            _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", (int)FontType.Small, _colorWhite);
         }
         else if (_space.HyperCountdown > 0)
         {
-            _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", (int)FontType.Small, _colorWhite);
         }
     }
 
@@ -231,5 +235,5 @@ internal sealed class PilotView : IView
     internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
     internal void DrawViewName(string name)
-        => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, (int)FontType.Small, EliteColors.White);
+        => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, (int)FontType.Small, _colorWhite);
 }

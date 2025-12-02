@@ -4,10 +4,18 @@ using System.Text.Json;
 
 namespace Useful.Assets;
 
-public class AssetLocator : IAssetLocator
+//// TODO: Unit test this class
+
+public sealed class AssetLocator : IAssetLocator
 {
     private const string AssetManifestFilename = "AssetManifest.json";
     private AssetManifest _assetNames = new();
+
+    private AssetLocator()
+    {
+    }
+
+    public string PalettePath => Path.Combine(GetAssetPath(), "Palette", _assetNames.Palette);
 
     public IDictionary<int, string> FontBitmapPaths
         => _assetNames.FontsBitmap.Select((value, index) => new { value, index })
@@ -21,8 +29,6 @@ public class AssetLocator : IAssetLocator
         => _assetNames.Images.Select((value, index) => new { value, index })
             .ToDictionary(x => x.index, x => Path.Combine(GetAssetPath(), "Images", _assetNames.Images[x.value.Key]));
 
-    public bool IsInitialized { get; private set; }
-
     public IDictionary<int, string> MusicPaths
         => _assetNames.Music.Select((value, index) => new { value, index })
             .ToDictionary(x => x.index, x => Path.Combine(GetAssetPath(), "Music", _assetNames.Music[x.value.Key]));
@@ -31,8 +37,13 @@ public class AssetLocator : IAssetLocator
         => _assetNames.Sfx.Select((value, index) => new { value, index })
             .ToDictionary(x => x.index, x => Path.Combine(GetAssetPath(), "SFX", _assetNames.Sfx[x.value.Key]));
 
-    public void Initialize()
+    public IDictionary<string, string> ModelPaths
+        => _assetNames.Models.ToDictionary(x => x.Key, x => Path.Combine(GetAssetPath(), "Models", _assetNames.Models[x.Key]));
+
+    public static AssetLocator Create()
     {
+        AssetLocator locator = new();
+
         string path = Path.Combine(Path.GetDirectoryName(AppContext.BaseDirectory) ?? string.Empty, "Assets", AssetManifestFilename);
         FileStream stream;
 
@@ -45,14 +56,14 @@ public class AssetLocator : IAssetLocator
             throw new UsefulException($"Failed to read asset manifest file: {path}", ex);
         }
 
-        _assetNames = JsonSerializer.Deserialize<AssetManifest>(stream)
+        locator._assetNames = JsonSerializer.Deserialize<AssetManifest>(stream)
             ?? throw new UsefulException($"Failed to read asset manifest file: {path}");
 
         stream.Dispose();
 
-        IsInitialized = true;
+        return locator;
     }
 
-    protected virtual string GetAssetPath()
+    private static string GetAssetPath()
         => Path.Combine(Path.GetDirectoryName(AppContext.BaseDirectory) ?? string.Empty, "Assets");
 }

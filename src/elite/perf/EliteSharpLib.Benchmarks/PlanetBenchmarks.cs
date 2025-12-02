@@ -6,6 +6,7 @@ using BenchmarkDotNet.Attributes;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Planets;
 using Useful.Controls;
+using Useful.Fakes.Assets;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
 
@@ -25,13 +26,14 @@ public class PlanetBenchmarks : IDisposable
     public PlanetBenchmarks()
     {
         FakeInput input = new();
+        FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(input);
         Dictionary<Views.Screen, Views.IView> views = [];
         GameState gameState = new(keyboard, views);
-        _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });
-        EliteDraw draw = new(gameState, _graphics);
+        _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
+        EliteDraw draw = new(gameState, _graphics, assetLocator);
         _wireframePlanet = new(draw);
-        _solidPlanet = new(draw, EliteColors.White);
+        _solidPlanet = new(draw);
         _fractalPlanet = new(draw, 12345);
         _stripedPlanet = new(draw);
     }

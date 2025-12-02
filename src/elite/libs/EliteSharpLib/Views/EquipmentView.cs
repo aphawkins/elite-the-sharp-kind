@@ -9,7 +9,6 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
 using Useful.Controls;
-using Useful.Graphics;
 
 namespace EliteSharpLib.Views;
 
@@ -60,6 +59,10 @@ internal sealed class EquipmentView : IView
     private readonly Scanner _scanner;
     private readonly PlayerShip _ship;
     private readonly Trade _trade;
+    private readonly uint _colorLightGrey;
+    private readonly uint _colorLightRed;
+    private readonly uint _colorWhite;
+
     private int _highlightedItem;
 
     internal EquipmentView(GameState gameState, IEliteDraw draw, IKeyboard keyboard, PlayerShip ship, Trade trade, Scanner scanner)
@@ -70,6 +73,10 @@ internal sealed class EquipmentView : IView
         _ship = ship;
         _trade = trade;
         _scanner = scanner;
+
+        _colorWhite = draw.Palette["White"];
+        _colorLightGrey = draw.Palette["LightGrey"];
+        _colorLightRed = draw.Palette["LightRed"];
     }
 
     public void Draw()
@@ -87,10 +94,10 @@ internal sealed class EquipmentView : IView
 
             if (i == _highlightedItem)
             {
-                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, EliteColors.LightRed);
+                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Offset, y + 1), 508, 15, _colorLightRed);
             }
 
-            FastColor color = _equipmentStock[i].CanBuy ? EliteColors.White : EliteColors.LightGrey;
+            uint color = _equipmentStock[i].CanBuy ? _colorWhite : _colorLightGrey;
             int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
             _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], (int)FontType.Small, color);
 
@@ -103,7 +110,7 @@ internal sealed class EquipmentView : IView
         }
 
         _draw.Graphics
-            .DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", (int)FontType.Small, EliteColors.White);
+            .DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", (int)FontType.Small, _colorWhite);
     }
 
     public void HandleInput()

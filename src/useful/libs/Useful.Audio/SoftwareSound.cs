@@ -15,7 +15,7 @@ public sealed class SoftwareSound : ISound, IDisposable
     private Dictionary<int, SoundSampleProvider> _music = [];
     private Dictionary<int, SoundSampleProvider> _sfx = [];
 
-    public SoftwareSound()
+    private SoftwareSound()
     {
         _outputDevice = new();
         _mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(44100, 2))
@@ -26,28 +26,27 @@ public sealed class SoftwareSound : ISound, IDisposable
         _outputDevice.Init(_mixer);
     }
 
-    public bool IsInitialized { get; set; }
+    public static SoftwareSound Create(IAssetLocator assetLocator)
+    {
+        Guard.ArgumentNull(assetLocator);
+
+        return new()
+        {
+            _music = assetLocator.MusicPaths.ToDictionary(
+                x => x.Key,
+                x => SoundSampleProvider.Create(x.Value)),
+
+            _sfx = assetLocator.SfxPaths.ToDictionary(
+                x => x.Key,
+                x => SoundSampleProvider.Create(x.Value)),
+        };
+    }
 
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
-    }
-
-    public void Initialize(IAssetLocator assetLocator)
-    {
-        Guard.ArgumentNull(assetLocator);
-
-        _music = assetLocator.MusicPaths.ToDictionary(
-            x => x.Key,
-            x => SoundSampleProvider.Create(x.Value));
-
-        _sfx = assetLocator.SfxPaths.ToDictionary(
-            x => x.Key,
-            x => SoundSampleProvider.Create(x.Value));
-
-        IsInitialized = true;
     }
 
     public void Play(int musicType, bool repeat)

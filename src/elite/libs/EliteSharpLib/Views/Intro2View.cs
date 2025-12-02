@@ -26,9 +26,11 @@ internal sealed class Intro2View : IView
     private readonly IKeyboard _keyboard;
     private readonly PlayerShip _ship;
     private readonly List<IShip> _parade;
-
     private readonly Stars _stars;
     private readonly Universe _universe;
+    private readonly uint _colorGold;
+    private readonly uint _colorWhite;
+
     private int _direction;
     private Vector4[] _rotmat = new Vector4[4];
     private int _shipNo;
@@ -42,7 +44,8 @@ internal sealed class Intro2View : IView
         PlayerShip ship,
         Combat combat,
         Universe universe,
-        IEliteDraw draw)
+        IEliteDraw draw,
+        IShipFactory shipFactory)
     {
         _gameState = gameStat;
         _audio = audio;
@@ -52,18 +55,21 @@ internal sealed class Intro2View : IView
         _combat = combat;
         _universe = universe;
         _draw = draw;
-        _parade = new ShipFactory(_draw).CreateParade();
+        _parade = shipFactory.CreateParade();
+
+        _colorGold = draw.Palette["Gold"];
+        _colorWhite = draw.Palette["White"];
     }
 
     public void Draw()
     {
         _draw.Graphics.DrawImageCentre((int)ImageType.EliteText, _draw.Top + 10);
 
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", (int)FontType.Large, EliteColors.Gold);
+        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", (int)FontType.Large, _colorGold);
         if (_universe.FirstShip != null)
         {
             _draw.Graphics
-                .DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, (int)FontType.Small, EliteColors.White);
+                .DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, (int)FontType.Small, _colorWhite);
         }
     }
 

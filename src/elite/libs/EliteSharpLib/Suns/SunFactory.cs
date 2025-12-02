@@ -11,7 +11,7 @@ internal static class SunFactory
 {
     internal static IObject Create(SunType type, IEliteDraw draw) => type switch
     {
-        SunType.Solid => new SolidSun(draw, EliteColors.White),
+        SunType.Solid => new SolidSun(draw),
         SunType.Gradient => new GradientSun(draw),
         _ => throw new EliteException(),
     };

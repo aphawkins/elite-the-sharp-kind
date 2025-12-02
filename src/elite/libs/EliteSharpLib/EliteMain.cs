@@ -23,6 +23,7 @@ using Useful.Graphics;
 
 // For unit testing
 [assembly: InternalsVisibleTo("EliteSharpLib.Tests")]
+[assembly: InternalsVisibleTo("EliteSharpLib.Fakes")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 
 // For benchmarking
@@ -35,6 +36,7 @@ namespace EliteSharpLib;
 
 public sealed class EliteMain
 {
+    private readonly uint _colorText;
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;
 
@@ -59,15 +61,11 @@ public sealed class EliteMain
     {
         Guard.ArgumentNull(abstraction);
 
-        AssetLocator assetLocator = new();
-        assetLocator.Initialize();
+        AssetLocator assetLocator = AssetLocator.Create();
 
         _graphics = abstraction.Graphics;
         ISound sound = abstraction.Sound;
         _keyboard = abstraction.Keyboard;
-
-        _graphics.Initialize(assetLocator, EliteColors.AllColors);
-        sound.Initialize(assetLocator);
 
         // TODO: improve this
         Dictionary<int, SfxSample> sfx = new()
@@ -97,17 +95,19 @@ public sealed class EliteMain
         _ship = new();
         Trade trade = new(_gameState, _ship);
         PlanetController planet = new(_gameState);
-        _draw = new EliteDraw(_gameState, _graphics);
-        _universe = new(_draw);
+        _draw = new(_gameState, _graphics, assetLocator);
+        _colorText = _draw.Palette["White"];
+        IShipFactory shipFactory = ShipFactory.Create(assetLocator, _draw);
+        _universe = new(shipFactory);
         _stars = new(_gameState, _draw, _ship);
         _pilot = new(_draw, _audio, _universe, _ship);
-        _combat = new(_gameState, _audio, _ship, trade, _pilot, _universe, _draw);
+        _combat = new(_gameState, _audio, _ship, trade, _pilot, _universe, _draw, shipFactory);
         _save = new(_gameState, _ship, trade, planet);
         _space = new(_gameState, _audio, _pilot, _combat, trade, _ship, planet, _stars, _universe, _draw);
         _scanner = new(_gameState, _draw, _universe, _ship, _combat);
 
-        _views.Add(Screen.IntroOne, new Intro1View(_gameState, _audio, _keyboard, _ship, _combat, _universe, _draw));
-        _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _audio, _keyboard, _stars, _ship, _combat, _universe, _draw));
+        _views.Add(Screen.IntroOne, new Intro1View(_gameState, _audio, _keyboard, _ship, _combat, _universe, _draw, shipFactory));
+        _views.Add(Screen.IntroTwo, new Intro2View(_gameState, _audio, _keyboard, _stars, _ship, _combat, _universe, _draw, shipFactory));
         _views.Add(Screen.GalacticChart, new GalacticChartView(_gameState, _draw, _keyboard, planet, _ship));
         _views.Add(Screen.ShortRangeChart, new ShortRangeChartView(_gameState, _draw, _keyboard, planet, _ship));
         _views.Add(Screen.PlanetData, new PlanetDataView(_gameState, _draw, planet));
@@ -127,10 +127,14 @@ public sealed class EliteMain
         _views.Add(Screen.SaveCommander, new SaveCommanderView(_gameState, _draw, _keyboard, _save));
         _views.Add(Screen.Quit, new QuitView(_gameState, _draw, _keyboard));
         _views.Add(Screen.Settings, new SettingsView(_gameState, _draw, _keyboard, configFile));
-        _views.Add(Screen.MissionOne, new ConstrictorMissionView(_gameState, _draw, _keyboard, _ship, trade, _combat, _universe));
+        _views.Add(
+            Screen.MissionOne,
+            new ConstrictorMissionView(_gameState, _draw, _keyboard, _ship, trade, _combat, _universe, shipFactory));
         _views.Add(Screen.MissionTwo, new ThargoidMissionView(_gameState, _draw, _keyboard, _ship));
-        _views.Add(Screen.EscapeCapsule, new EscapeCapsuleView(_gameState, _audio, _stars, _ship, trade, _universe, _pilot, _draw));
-        _views.Add(Screen.GameOver, new GameOverView(_gameState, _audio, _stars, _ship, _combat, _universe, _draw));
+        _views.Add(
+            Screen.EscapeCapsule,
+            new EscapeCapsuleView(_gameState, _audio, _stars, _ship, trade, _universe, _pilot, _draw, shipFactory));
+        _views.Add(Screen.GameOver, new GameOverView(_gameState, _audio, _stars, _ship, _combat, _universe, _draw, shipFactory));
 
         _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
     }
@@ -162,12 +166,12 @@ public sealed class EliteMain
             new(_draw.Right - 65, _draw.Top + 3),
             $"FPS: {_lockObj.FramesDrawn.Count}",
             (int)FontType.Small,
-            EliteColors.White);
+            _colorText);
         _graphics.DrawTextLeft(
             new(_draw.Right - 65, _draw.Top + 18),
             $"DROP: {_lockObj.Dropped}",
             (int)FontType.Small,
-            EliteColors.White);
+            _colorText);
 
         if (_lockObj.FramesDrawn.Count > 0)
         {
@@ -277,7 +281,7 @@ public sealed class EliteMain
 
             if (_gameState.MessageCount > 0)
             {
-                _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, (int)FontType.Small, EliteColors.White);
+                _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, (int)FontType.Small, _colorText);
             }
 
             if (_space.IsHyperspaceReady)

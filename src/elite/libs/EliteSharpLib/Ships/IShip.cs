@@ -3,11 +3,14 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Trader;
+using Useful.Assets.Models;
 
 namespace EliteSharpLib.Ships;
 
 internal interface IShip : IObject
 {
+    public ThreeDModel Model { get; set; }
+
     public int Acceleration { get; set; }
 
     public float Bounty { get; set; }
@@ -20,15 +23,9 @@ internal interface IShip : IObject
 
     public int ExpDelta { get; set; }
 
-    public ShipFaceNormal[] FaceNormals { get; set; }
-
-    public ShipFace[] Faces { get; set; }
-
     public int LaserFront { get; set; }
 
     public int LaserStrength { get; set; }
-
-    public ShipLine[] Lines { get; set; }
 
     public int LootMax { get; set; }
 
@@ -39,8 +36,6 @@ internal interface IShip : IObject
     public int MissilesMax { get; set; }
 
     public string Name { get; set; }
-
-    public ShipPoint[] Points { get; set; }
 
     public StockType ScoopedType { get; set; }
 

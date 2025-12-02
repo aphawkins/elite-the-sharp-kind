@@ -21,15 +21,12 @@ internal static class Extensions
 
         to.Bounty = from.Bounty;
         to.EnergyMax = from.EnergyMax;
-        to.FaceNormals = from.FaceNormals;
-        to.Faces = from.Faces;
         to.LaserFront = from.LaserFront;
         to.LaserStrength = from.LaserStrength;
-        to.Lines = from.Lines;
         to.LootMax = from.LootMax;
         to.MissilesMax = from.MissilesMax;
+        to.Model = from.Model;
         to.Name = from.Name;
-        to.Points = from.Points;
         to.ScoopedType = from.ScoopedType;
         to.Size = from.Size;
         to.VanishPoint = from.VanishPoint;

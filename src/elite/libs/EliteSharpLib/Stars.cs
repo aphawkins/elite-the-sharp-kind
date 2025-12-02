@@ -15,12 +15,14 @@ internal sealed class Stars
     private readonly GameState _gameState;
     private readonly PlayerShip _ship;
     private readonly Vector4[] _stars = new Vector4[20];
+    private readonly uint _colorWhite;
 
     internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship)
     {
         _gameState = gameState;
         _ship = ship;
         _draw = draw;
+        _colorWhite = draw.Palette["White"];
     }
 
     internal bool WarpStars { get; set; }
@@ -75,17 +77,17 @@ internal sealed class Stars
                 (star.Y >= _draw.Top)
                 && (star.Y <= _draw.Bottom))
             {
-                _draw.Graphics.DrawPixel(star, EliteColors.White);
+                _draw.Graphics.DrawPixel(star, _colorWhite);
 
                 if (zz < 192)
                 {
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EliteColors.White);
+                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), _colorWhite);
                 }
 
                 if (zz < 144)
                 {
-                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EliteColors.White);
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EliteColors.White);
+                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), _colorWhite);
+                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), _colorWhite);
                 }
             }
 
@@ -112,7 +114,7 @@ internal sealed class Stars
                 _draw.Graphics.DrawLine(
                     star,
                     new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
-                    EliteColors.White);
+                    _colorWhite);
             }
 
             star.X = xx;
@@ -165,17 +167,17 @@ internal sealed class Stars
                 (star.Y >= _draw.Top)
                 && (star.Y <= _draw.Bottom))
             {
-                _draw.Graphics.DrawPixel(star, EliteColors.White);
+                _draw.Graphics.DrawPixel(star, _colorWhite);
 
                 if (zz < 192)
                 {
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EliteColors.White);
+                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), _colorWhite);
                 }
 
                 if (zz < 144)
                 {
-                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EliteColors.White);
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EliteColors.White);
+                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), _colorWhite);
+                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), _colorWhite);
                 }
             }
 
@@ -213,7 +215,7 @@ internal sealed class Stars
                     _draw.Graphics.DrawLine(
                         star,
                         new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
-                        EliteColors.White);
+                        _colorWhite);
                 }
             }
 
@@ -273,17 +275,17 @@ internal sealed class Stars
                 (star.Y >= _draw.Top)
                 && (star.Y <= _draw.Bottom))
             {
-                _draw.Graphics.DrawPixel(star, EliteColors.White);
+                _draw.Graphics.DrawPixel(star, _colorWhite);
 
                 if (zz < 192)
                 {
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), EliteColors.White);
+                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), _colorWhite);
                 }
 
                 if (zz < 144)
                 {
-                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), EliteColors.White);
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), EliteColors.White);
+                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), _colorWhite);
+                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), _colorWhite);
                 }
             }
 
@@ -310,7 +312,7 @@ internal sealed class Stars
                 _draw.Graphics.DrawLine(
                     star,
                     new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
-                    EliteColors.White);
+                    _colorWhite);
             }
 
             if (MathF.Abs(_stars[i].X) >= _draw.Centre.X / 2)

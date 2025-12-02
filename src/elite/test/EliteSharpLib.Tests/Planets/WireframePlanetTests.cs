@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
+using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
 using Moq;
@@ -13,31 +13,33 @@ namespace EliteSharpLib.Tests.Planets;
 
 public class WireframePlanetTests
 {
-    private readonly Mock<IEliteDraw> _drawMoq;
-
-    public WireframePlanetTests() => _drawMoq = MockSetup.MockDraw();
-
     [Fact]
     public void DrawWireframePlanet()
     {
         // Arrange
-        WireframePlanet planet = new(_drawMoq.Object);
+        Mock<IGraphics> mockGraphics = new();
+        FakeEliteDraw fakeEliteDraw = new()
+        {
+            Graphics = mockGraphics.Object,
+        };
+        WireframePlanet planet = new(fakeEliteDraw);
 
         // Act
         planet.Draw();
 
         // Assert
-        _drawMoq.Verify(x => x.Graphics.DrawCircle(
+        mockGraphics.Verify(x => x.DrawCircle(
             It.IsAny<Vector2>(),
             It.IsAny<float>(),
-            It.IsAny<FastColor>()));
+            It.IsAny<uint>()));
     }
 
     [Fact]
     public void CloneWireframePlanet()
     {
         // Arrange
-        WireframePlanet planet = new(_drawMoq.Object);
+        FakeEliteDraw fakeEliteDraw = new();
+        WireframePlanet planet = new(fakeEliteDraw);
 
         // Act
         IObject obj = planet.Clone();

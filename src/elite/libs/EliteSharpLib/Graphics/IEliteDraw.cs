@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Ships;
+using Useful.Assets.Palettes;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Graphics;
@@ -17,6 +18,8 @@ internal interface IEliteDraw
     public IGraphics Graphics { get; }
 
     public float Left { get; }
+
+    public IPaletteCollection Palette { get; }
 
     public float Offset { get; }
 
@@ -36,7 +39,7 @@ internal interface IEliteDraw
 
     public void DrawObject(IObject obj);
 
-    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float averageZ);
+    public void DrawPolygonFilled(Vector2[] points, uint faceColor, float averageZ);
 
     public void DrawTextPretty(Vector2 position, float width, string text);
 

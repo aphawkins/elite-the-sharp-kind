@@ -13,18 +13,14 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     private readonly Dictionary<string, FastBitmap> _textCache = [];
     private bool _isDisposed;
 
-    public SoftwareGraphics(float screenWidth, float screenHeight, Action<FastBitmap> screenUpdate)
+    private SoftwareGraphics(float screenWidth, float screenHeight, Action<FastBitmap> screenUpdate)
     {
-        Guard.ArgumentNull(screenUpdate);
-
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
         _screen = new((int)screenWidth, (int)screenHeight);
         _screenUpdate = screenUpdate;
         Clear();
     }
-
-    public bool IsInitialized { get; set; }
 
     public float Scale { get; } = 2;
 
@@ -36,6 +32,27 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     internal Dictionary<int, FastBitmap> Images { get; set; } = [];
 
+    public static SoftwareGraphics Create(
+        float screenWidth,
+        float screenHeight,
+        Action<FastBitmap> screenUpdate,
+        IAssetLocator assetLocator)
+    {
+        Guard.ArgumentNull(screenUpdate);
+        Guard.ArgumentNull(assetLocator);
+
+        return new(screenWidth, screenHeight, screenUpdate)
+        {
+            Images = assetLocator.ImagePaths.ToDictionary(
+                x => x.Key,
+                x => BitmapFile.Read(x.Value)),
+
+            Fonts = assetLocator.FontBitmapPaths.ToDictionary(
+                x => x.Key,
+                x => new BitmapFont(BitmapFile.Read(x.Value))),
+        };
+    }
+
     public void Clear() => _screen.Clear();
 
     public void Dispose()
@@ -45,7 +62,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public void DrawCircle(Vector2 centre, float radius, FastColor color)
+    public void DrawCircle(Vector2 centre, float radius, uint color)
     {
         float diameter = radius * 2;
         float x = MathF.Floor(radius);
@@ -81,7 +98,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    public void DrawCircleFilled(Vector2 centre, float radius, FastColor color)
+    public void DrawCircleFilled(Vector2 centre, float radius, uint color)
     {
         float diameter = MathF.Floor(radius) * 2;
         float x = MathF.Floor(radius);
@@ -136,7 +153,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(imageType, new(x, y));
     }
 
-    public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
+    public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color)
         => DrawLineInt(
             (int)MathF.Floor(lineStart.X),
             (int)MathF.Floor(lineStart.Y),
@@ -144,8 +161,9 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(lineEnd.Y),
             color);
 
-    public void DrawPixel(Vector2 position, FastColor color)
+    public void DrawPixel(Vector2 position, uint color)
     {
+        // TODO: Optimize bounds checking
         if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)
         {
             return;
@@ -154,7 +172,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         _screen.SetPixel((int)position.X, (int)position.Y, color);
     }
 
-    public void DrawPolygon(Vector2[] points, FastColor lineColor)
+    public void DrawPolygon(Vector2[] points, uint lineColor)
     {
         if (points == null)
         {
@@ -169,7 +187,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawLine(points[0], points[^1], lineColor);
     }
 
-    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor)
+    public void DrawPolygonFilled(Vector2[] points, uint faceColor)
     {
         if (points == null)
         {
@@ -183,7 +201,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    public void DrawRectangle(Vector2 position, float width, float height, FastColor color)
+    public void DrawRectangle(Vector2 position, float width, float height, uint color)
         => DrawRectangleInt(
             (int)MathF.Floor(position.X),
             (int)MathF.Floor(position.Y),
@@ -191,10 +209,10 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(height),
             color);
 
-    public void DrawRectangleCentre(float y, float width, float height, FastColor color)
+    public void DrawRectangleCentre(float y, float width, float height, uint color)
         => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, color);
 
-    public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color)
+    public void DrawRectangleFilled(Vector2 position, float width, float height, uint color)
         => DrawRectangleFilledInt(
             (int)MathF.Floor(position.X),
             (int)MathF.Floor(position.Y),
@@ -202,7 +220,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(height),
             color);
 
-    public void DrawTextCentre(float y, string text, int fontType, FastColor color)
+    public void DrawTextCentre(float y, string text, int fontType, uint color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -214,7 +232,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmapText, new(x, y));
     }
 
-    public void DrawTextLeft(Vector2 position, string text, int fontType, FastColor color)
+    public void DrawTextLeft(Vector2 position, string text, int fontType, uint color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -225,7 +243,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmapText, position);
     }
 
-    public void DrawTextRight(Vector2 position, string text, int fontType, FastColor color)
+    public void DrawTextRight(Vector2 position, string text, int fontType, uint color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -236,14 +254,14 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmapText, position - new Vector2(bitmapText.Width, 0));
     }
 
-    public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor color)
+    public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, uint color)
     {
         DrawLine(a, b, color);
         DrawLine(b, c, color);
         DrawLine(c, a, color);
     }
 
-    public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor color)
+    public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, uint color)
     {
         // Sort the points so that a.Y <= b.Y <= c.Y
         (a, b, c) = SortPointsByY(a, b, c);
@@ -290,22 +308,6 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                 DrawPixel(x, y, color);
             }
         }
-    }
-
-    public void Initialize(IAssetLocator assetLocator, IEnumerable<FastColor> colors)
-    {
-        Guard.ArgumentNull(assetLocator);
-        Guard.ArgumentNull(colors);
-
-        Images = assetLocator.ImagePaths.ToDictionary(
-            x => x.Key,
-            x => BitmapFile.Read(x.Value));
-
-        Fonts = assetLocator.FontBitmapPaths.ToDictionary(
-            x => x.Key,
-            x => new BitmapFont(BitmapFile.Read(x.Value)));
-
-        IsInitialized = true;
     }
 
     public void ScreenUpdate() => _screenUpdate(_screen);
@@ -364,8 +366,8 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         {
             for (int x = 0; x < bitmap.Width; x++)
             {
-                FastColor color = bitmap.GetPixel(x, y);
-                if (color.A != 0)
+                uint color = bitmap.GetPixel(x, y);
+                if ((color & 0xFF000000) != 0)
                 {
                     // TODO: should mix the transparent colors correctly here
                     // but the only transparency being used is transparent or opaque
@@ -375,7 +377,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private void DrawLineInt(int x0, int y0, int x1, int y1, in FastColor color)
+    private void DrawLineInt(int x0, int y0, int x1, int y1, in uint color)
     {
         int screenWidth = (int)ScreenWidth;   // Replace with actual screen width
         int screenHeight = (int)ScreenHeight; // Replace with actual screen height
@@ -413,9 +415,9 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private void DrawPixel(int x, int y, in FastColor color) => _screen.SetPixel(x, y, color);
+    private void DrawPixel(int x, int y, uint color) => _screen.SetPixel(x, y, color);
 
-    private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in FastColor color)
+    private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in uint color)
     {
         startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth);
         startY = Math.Min(Math.Max(startY, 0), (int)ScreenWidth);
@@ -432,7 +434,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private void DrawRectangleInt(int startX, int startY, int width, int height, in FastColor color)
+    private void DrawRectangleInt(int startX, int startY, int width, int height, in uint color)
     {
         startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth);
         startY = Math.Min(Math.Max(startY, 0), (int)ScreenWidth);
@@ -453,7 +455,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private FastBitmap GenerateTextBitmap(string text, int fontType, FastColor color)
+    private FastBitmap GenerateTextBitmap(string text, int fontType, uint color)
     {
         string key = $"{fontType}_{color}_{text}";
 
@@ -475,16 +477,16 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             int charY = 0;
             int maxCharWidth = 0;
 
-            FastColor GetPixel()
+            uint GetPixel()
             {
-                FastColor pixelColor = font.Image.GetPixel(
+                uint pixelColor = font.Image.GetPixel(
                     charX + (BitmapFont.CharSize * charColumn) + 1,
                     charY + (BitmapFont.CharSize * charRow) + 1);
 
-                return pixelColor == BaseColors.Cyan ? color : pixelColor;
+                return pixelColor == BaseColors.Cyan.Argb ? color : pixelColor;
             }
 
-            FastColor pixelColor = GetPixel();
+            uint pixelColor = GetPixel();
 
             do
             {
@@ -496,7 +498,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                     charX++;
                     pixelColor = GetPixel();
                 }
-                while (pixelColor != BaseColors.Magenta);
+                while (pixelColor != BaseColors.Magenta.Argb);
 
                 maxCharWidth = Math.Max(maxCharWidth, charX);
                 charX = 0;
@@ -504,7 +506,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
                 pixelColor = GetPixel();
             }
-            while (pixelColor != BaseColors.Magenta);
+            while (pixelColor != BaseColors.Magenta.Argb);
 
             totalWidth += maxCharWidth;
         }

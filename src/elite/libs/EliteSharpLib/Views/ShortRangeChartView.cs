@@ -19,6 +19,11 @@ internal sealed class ShortRangeChartView : IView
     private readonly List<(Vector2 Position, string Name)> _planetNames = [];
     private readonly List<(Vector2 Position, float Size)> _planetSizes = [];
     private readonly PlayerShip _ship;
+    private readonly uint _colorGold;
+    private readonly uint _colorGreen;
+    private readonly uint _colorLighterRed;
+    private readonly uint _colorWhite;
+
     private int _crossTimer;
     private string _findName = string.Empty;
     private bool _isFind;
@@ -30,6 +35,11 @@ internal sealed class ShortRangeChartView : IView
         _keyboard = keyboard;
         _planet = planet;
         _ship = ship;
+
+        _colorGold = _draw.Palette["Gold"];
+        _colorGreen = _draw.Palette["Green"];
+        _colorLighterRed = _draw.Palette["LighterRed"];
+        _colorWhite = _draw.Palette["White"];
     }
 
     public void Draw()
@@ -41,40 +51,40 @@ internal sealed class ShortRangeChartView : IView
         Vector2 centre = _draw.Centre;
         float radius = _ship.Fuel * 10 * _draw.Graphics.Scale;
         float cross_size = 16 * _draw.Graphics.Scale;
-        _draw.Graphics.DrawCircle(centre, radius, EliteColors.Green);
-        _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), EliteColors.White);
-        _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), EliteColors.White);
+        _draw.Graphics.DrawCircle(centre, radius, _colorGreen);
+        _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), _colorWhite);
+        _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), _colorWhite);
 
         // Planets
         foreach ((Vector2 position, string name) in _planetNames)
         {
-            _draw.Graphics.DrawTextLeft(position, name, (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, name, (int)FontType.Small, _colorWhite);
         }
 
         foreach ((Vector2 position, float size) in _planetSizes)
         {
-            _draw.Graphics.DrawCircleFilled(position, size, EliteColors.Gold);
+            _draw.Graphics.DrawCircleFilled(position, size, _colorGold);
         }
 
         // Cross
         centre = new(_gameState.Cross.X, _gameState.Cross.Y);
-        _draw.Graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), EliteColors.LighterRed);
-        _draw.Graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), EliteColors.LighterRed);
+        _draw.Graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), _colorLighterRed);
+        _draw.Graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), _colorLighterRed);
 
         // Text
         if (_isFind)
         {
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", (int)FontType.Small, EliteColors.Green);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", (int)FontType.Small, _colorGreen);
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, EliteColors.White);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, _colorWhite);
         }
         else if (string.IsNullOrEmpty(_gameState.PlanetName))
         {
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", (int)FontType.Small, EliteColors.Green);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", (int)FontType.Small, _colorGreen);
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, EliteColors.White);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, _colorWhite);
         }
         else
         {
@@ -82,14 +92,14 @@ internal sealed class ShortRangeChartView : IView
                 new(16 + _draw.Offset, _draw.ScannerTop - 55),
                 _gameState.PlanetName,
                 (int)FontType.Small,
-                EliteColors.Green);
+                _colorGreen);
             if (_gameState.DistanceToPlanet > 0)
             {
                 _draw.Graphics.DrawTextLeft(
                     new(16 + _draw.Offset, _draw.ScannerTop - 40),
                     $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ",
                     (int)FontType.Small,
-                    EliteColors.White);
+                    _colorWhite);
             }
         }
     }

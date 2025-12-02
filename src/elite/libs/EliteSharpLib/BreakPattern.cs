@@ -10,9 +10,14 @@ internal sealed class BreakPattern
 {
     private const int MaxRings = 20;
     private readonly IEliteDraw _draw;
+    private readonly uint _color;
     private int _breakPatternCount;
 
-    internal BreakPattern(IEliteDraw draw) => _draw = draw;
+    internal BreakPattern(IEliteDraw draw)
+    {
+        _draw = draw;
+        _color = _draw.Palette["White"];
+    }
 
     internal bool IsComplete { get; private set; }
 
@@ -22,7 +27,7 @@ internal sealed class BreakPattern
         // Just draw a very simple one for the moment.
         for (int i = 0; i < _breakPatternCount; i++)
         {
-            _draw.Graphics.DrawCircle(_draw.Centre, 30 + (i * _draw.Centre.X / MaxRings), EliteColors.White);
+            _draw.Graphics.DrawCircle(_draw.Centre, 30 + (i * _draw.Centre.X / MaxRings), _color);
         }
     }
 

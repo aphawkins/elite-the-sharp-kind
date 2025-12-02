@@ -21,6 +21,9 @@ internal sealed class GameOverView : IView
     private readonly Stars _stars;
     private readonly Universe _universe;
     private readonly IEliteDraw _draw;
+    private readonly IShipFactory _shipFactory;
+    private readonly uint _colorGold;
+
     private int _i;
 
     internal GameOverView(
@@ -30,7 +33,8 @@ internal sealed class GameOverView : IView
         PlayerShip ship,
         Combat combat,
         Universe universe,
-        IEliteDraw draw)
+        IEliteDraw draw,
+        IShipFactory shipFactory)
     {
         _gameState = gameState;
         _audio = audio;
@@ -39,9 +43,12 @@ internal sealed class GameOverView : IView
         _combat = combat;
         _universe = universe;
         _draw = draw;
+        _shipFactory = shipFactory;
+
+        _colorGold = draw.Palette["Gold"];
     }
 
-    public void Draw() => _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", (int)FontType.Large, EliteColors.Gold);
+    public void Draw() => _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", (int)FontType.Large, _colorGold);
 
     public void HandleInput()
     {
@@ -55,7 +62,7 @@ internal sealed class GameOverView : IView
         _ship.Climb = 0;
         _combat.Reset();
         _universe.ClearUniverse();
-        CobraMk3 cobraMk3 = new(_draw);
+        IShip cobraMk3 = _shipFactory.CreateShip("CobraMk3");
         if (!_universe.AddNewShip(cobraMk3, new(0, 0, -400, 0), VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             Debug.WriteLine("Failed to create CobraMk3");
@@ -66,7 +73,7 @@ internal sealed class GameOverView : IView
         // Cargo
         for (int i = 0; i < 5; i++)
         {
-            IShip cargo = RNG.TrueOrFalse() ? new CargoCannister(_draw) : new Alloy(_draw);
+            IShip cargo = RNG.TrueOrFalse() ? _shipFactory.CreateShip("CargoCannister") : _shipFactory.CreateShip("Alloy");
             if (!_universe.AddNewShip(
                 cargo,
                 new(RNG.Random(-32, 32), RNG.Random(-32, 32), -400, 0),

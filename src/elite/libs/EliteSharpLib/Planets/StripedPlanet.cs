@@ -5,7 +5,6 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Graphics;
 
 namespace EliteSharpLib.Planets;
 
@@ -13,72 +12,84 @@ internal sealed class StripedPlanet : IObject
 {
     private readonly PlanetRenderer _planetRenderer;
 
-    /// <summary>
-    /// Color map used to generate a striped style planet.
-    /// </summary>
-    private readonly FastColor[] _stripeColors =
-    [
-        EliteColors.Purple,
-        EliteColors.Purple,
-        EliteColors.DarkBlue,
-        EliteColors.DarkBlue,
-        EliteColors.DarkBlue,
-        EliteColors.DarkBlue,
-        EliteColors.Blue,
-        EliteColors.Blue,
-        EliteColors.Blue,
-        EliteColors.Blue,
-        EliteColors.LightBlue,
-        EliteColors.LightBlue,
-        EliteColors.LighterGrey,
-        EliteColors.Orange,
-        EliteColors.Orange,
-        EliteColors.Orange,
-        EliteColors.Orange,
-        EliteColors.LightOrange,
-        EliteColors.Orange,
-        EliteColors.Orange,
-        EliteColors.DarkOrange,
-        EliteColors.DarkOrange,
-        EliteColors.DarkOrange,
-        EliteColors.DarkOrange,
-        EliteColors.Orange,
-        EliteColors.LightOrange,
-        EliteColors.DarkOrange,
-        EliteColors.DarkOrange,
-        EliteColors.DarkOrange,
-        EliteColors.DarkOrange,
-        EliteColors.DarkOrange,
-        EliteColors.DarkOrange,
-        EliteColors.Orange,
-        EliteColors.Orange,
-        EliteColors.LightOrange,
-        EliteColors.Orange,
-        EliteColors.Orange,
-        EliteColors.Orange,
-        EliteColors.Orange,
-        EliteColors.LighterGrey,
-        EliteColors.LightBlue,
-        EliteColors.LightBlue,
-        EliteColors.Blue,
-        EliteColors.Blue,
-        EliteColors.Blue,
-        EliteColors.Blue,
-        EliteColors.DarkBlue,
-        EliteColors.DarkBlue,
-        EliteColors.DarkBlue,
-        EliteColors.DarkBlue,
-        EliteColors.Purple,
-        EliteColors.Purple,
-    ];
+    // Color map used to generate a striped style planet.
+    private readonly uint[] _stripeColors;
 
     internal StripedPlanet(IEliteDraw draw)
     {
         _planetRenderer = new(draw);
+        uint colorPurple = draw.Palette["Purple"];
+        uint colorDarkBlue = draw.Palette["DarkBlue"];
+        uint colorBlue = draw.Palette["Blue"];
+        uint colorLightBlue = draw.Palette["LightBlue"];
+        uint colorLighterGrey = draw.Palette["LighterGrey"];
+        uint colorOrange = draw.Palette["Orange"];
+        uint colorLightOrange = draw.Palette["LightOrange"];
+        uint colorDarkOrange = draw.Palette["DarkOrange"];
+        _stripeColors =
+        [
+            colorPurple,
+            colorPurple,
+            colorDarkBlue,
+            colorDarkBlue,
+            colorDarkBlue,
+            colorDarkBlue,
+            colorBlue,
+            colorBlue,
+            colorBlue,
+            colorBlue,
+            colorLightBlue,
+            colorLightBlue,
+            colorLighterGrey,
+            colorOrange,
+            colorOrange,
+            colorOrange,
+            colorOrange,
+            colorLightOrange,
+            colorOrange,
+            colorOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorOrange,
+            colorLightOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorOrange,
+            colorOrange,
+            colorLightOrange,
+            colorOrange,
+            colorOrange,
+            colorOrange,
+            colorOrange,
+            colorLighterGrey,
+            colorLightBlue,
+            colorLightBlue,
+            colorBlue,
+            colorBlue,
+            colorBlue,
+            colorBlue,
+            colorDarkBlue,
+            colorDarkBlue,
+            colorDarkBlue,
+            colorDarkBlue,
+            colorPurple,
+            colorPurple,
+        ];
+
         GenerateLandscape();
     }
 
-    private StripedPlanet(StripedPlanet other) => _planetRenderer = other._planetRenderer;
+    private StripedPlanet(StripedPlanet other)
+    {
+        _planetRenderer = other._planetRenderer;
+        _stripeColors = other._stripeColors;
+    }
 
     public ShipProperties Flags { get; set; }
 
@@ -115,7 +126,7 @@ internal sealed class StripedPlanet : IObject
     {
         for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
         {
-            FastColor color = _stripeColors[y * (_stripeColors.Length - 1) / PlanetRenderer.LandYMax];
+            uint color = _stripeColors[y * (_stripeColors.Length - 1) / PlanetRenderer.LandYMax];
             for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
             {
                 _planetRenderer._landscape[x, y] = color;

@@ -14,6 +14,9 @@ internal sealed class LoadCommanderView : IView
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
     private readonly SaveFile _save;
+    private readonly uint _colorWhite;
+    private readonly uint _colorGold;
+
     private bool _isLoaded = true;
     private string _name = string.Empty;
 
@@ -23,20 +26,23 @@ internal sealed class LoadCommanderView : IView
         _draw = draw;
         _keyboard = keyboard;
         _save = save;
+
+        _colorGold = draw.Palette["Gold"];
+        _colorWhite = draw.Palette["White"];
     }
 
     public void Draw()
     {
         _draw.DrawViewHeader("LOAD COMMANDER");
 
-        _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", (int)FontType.Small, EliteColors.White);
-        _draw.Graphics.DrawRectangleCentre(100, 312, 50, EliteColors.White);
-        _draw.Graphics.DrawTextCentre(112, _name, (int)FontType.Large, EliteColors.White);
+        _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", (int)FontType.Small, _colorWhite);
+        _draw.Graphics.DrawRectangleCentre(100, 312, 50, _colorWhite);
+        _draw.Graphics.DrawTextCentre(112, _name, (int)FontType.Large, _colorWhite);
 
         if (!_isLoaded)
         {
-            _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", (int)FontType.Large, EliteColors.Gold);
-            _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", (int)FontType.Large, _colorGold);
+            _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", (int)FontType.Small, _colorWhite);
         }
     }
 

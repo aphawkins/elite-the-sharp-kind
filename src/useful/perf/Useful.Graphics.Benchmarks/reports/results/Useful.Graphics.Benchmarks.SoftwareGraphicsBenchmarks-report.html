@@ -2,7 +2,7 @@
 <html lang='en'>
 <head>
 <meta charset='utf-8' />
-<title>Useful.Graphics.Benchmarks.SoftwareGraphicsBenchmarks-20251102-214945</title>
+<title>Useful.Graphics.Benchmarks.SoftwareGraphicsBenchmarks-20251129-221747</title>
 
 <style type="text/css">
 	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
@@ -13,41 +13,40 @@
 </head>
 <body>
 <pre><code>
-BenchmarkDotNet v0.15.4, Windows 11 (10.0.26200.6899)
+BenchmarkDotNet v0.15.4, Windows 11 (10.0.26200.7171)
 Intel Core i5-14600K 3.50GHz, 1 CPU, 20 logical and 14 physical cores
-.NET SDK 10.0.100-rc.2.25502.107
-  [Host]     : .NET 10.0.0 (10.0.0-rc.2.25502.107, 10.0.25.50307), X64 RyuJIT x86-64-v3 [AttachedDebugger]
-  DefaultJob : .NET 10.0.0 (10.0.0-rc.2.25502.107, 10.0.25.50307), X64 RyuJIT x86-64-v3
+.NET SDK 10.0.100
+  [Host]     : .NET 10.0.0 (10.0.0, 10.0.25.52411), X64 RyuJIT x86-64-v3 [AttachedDebugger]
+  DefaultJob : .NET 10.0.0 (10.0.0, 10.0.25.52411), X64 RyuJIT x86-64-v3
 </code></pre>
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>Method            </th><th>Mean    </th><th>Error</th><th>StdDev</th><th>Median  </th>
+<thead><tr><th>Method            </th><th>Mean    </th><th>Error  </th><th>StdDev</th><th>Median  </th>
 </tr>
-</thead><tbody><tr><td>Clear</td><td>16,155.5444 ns</td><td>321.1457 ns</td><td>570.8361 ns</td><td>16,273.7106 ns</td>
-</tr><tr><td>DrawCircle</td><td>990.5093 ns</td><td>1.6226 ns</td><td>1.5178 ns</td><td>990.4737 ns</td>
-</tr><tr><td>DrawCircleFilled</td><td>32,103.2625 ns</td><td>174.8102 ns</td><td>163.5176 ns</td><td>32,053.2532 ns</td>
-</tr><tr><td>DrawImage</td><td>197.8967 ns</td><td>1.8652 ns</td><td>1.7447 ns</td><td>198.1472 ns</td>
-</tr><tr><td>DrawImageCentre</td><td>182.1974 ns</td><td>0.9721 ns</td><td>0.9093 ns</td><td>182.2170 ns</td>
-</tr><tr><td>DrawLine</td><td>400.7281 ns</td><td>1.7382 ns</td><td>1.5409 ns</td><td>400.3074 ns</td>
-</tr><tr><td>DrawPixel</td><td>0.3810 ns</td><td>0.0023 ns</td><td>0.0020 ns</td><td>0.3812 ns</td>
-</tr><tr><td>DrawPolygon</td><td>45.7267 ns</td><td>0.0591 ns</td><td>0.0524 ns</td><td>45.7083 ns</td>
-</tr><tr><td>DrawPolygonFilled</td><td>51.3833 ns</td><td>0.2796 ns</td><td>0.2478 ns</td><td>51.3314 ns</td>
-</tr><tr><td>DrawRectangle</td><td>9.7440 ns</td><td>0.0230 ns</td><td>0.0216 ns</td><td>9.7438 ns</td>
-</tr><tr><td>DrawRectangleCentre</td><td>14.2877 ns</td><td>0.0240 ns</td><td>0.0187 ns</td><td>14.2890 ns</td>
-</tr><tr><td>DrawRectangleFilled</td><td>30.4512 ns</td><td>0.0577 ns</td><td>0.0540 ns</td><td>30.4279 ns</td>
-</tr><tr><td>DrawTextCentreWhitespace</td><td>0.9419 ns</td><td>0.0465 ns</td><td>0.0497 ns</td><td>0.9239 ns</td>
-</tr><tr><td>DrawTextLeftWhitespace</td><td>0.0073 ns</td><td>0.0069 ns</td><td>0.0065 ns</td><td>0.0055 ns</td>
-</tr><tr><td>DrawTextRightWhitespace</td><td>0.0000 ns</td><td>0.0000 ns</td><td>0.0000 ns</td><td>0.0000 ns</td>
-</tr><tr><td>DrawTriangle</td><td>7.4046 ns</td><td>0.0181 ns</td><td>0.0160 ns</td><td>7.4028 ns</td>
-</tr><tr><td>DrawTriangleFilled</td><td>50.7456 ns</td><td>0.9701 ns</td><td>0.8599 ns</td><td>50.8703 ns</td>
-</tr><tr><td>Initialize</td><td>34.8874 ns</td><td>0.7119 ns</td><td>0.6659 ns</td><td>34.7256 ns</td>
-</tr><tr><td>IsInitialized</td><td>0.0000 ns</td><td>0.0000 ns</td><td>0.0000 ns</td><td>0.0000 ns</td>
-</tr><tr><td>Scale</td><td>0.0016 ns</td><td>0.0015 ns</td><td>0.0014 ns</td><td>0.0016 ns</td>
-</tr><tr><td>ScreenHeight</td><td>0.0075 ns</td><td>0.0063 ns</td><td>0.0059 ns</td><td>0.0065 ns</td>
-</tr><tr><td>ScreenUpdate</td><td>0.0017 ns</td><td>0.0023 ns</td><td>0.0022 ns</td><td>0.0006 ns</td>
-</tr><tr><td>ScreenWidth</td><td>0.0009 ns</td><td>0.0012 ns</td><td>0.0011 ns</td><td>0.0005 ns</td>
-</tr><tr><td>SetClipRegion</td><td>0.0000 ns</td><td>0.0000 ns</td><td>0.0000 ns</td><td>0.0000 ns</td>
+</thead><tbody><tr><td>Clear</td><td>15,597.5695 ns</td><td>307.2480 ns</td><td>459.8743 ns</td><td>15,501.2619 ns</td>
+</tr><tr><td>DrawCircle</td><td>1,016.9959 ns</td><td>3.0189 ns</td><td>2.8239 ns</td><td>1,016.8596 ns</td>
+</tr><tr><td>DrawCircleFilled</td><td>32,495.3593 ns</td><td>104.9782 ns</td><td>98.1967 ns</td><td>32,504.9805 ns</td>
+</tr><tr><td>DrawImage</td><td>114.4347 ns</td><td>0.2438 ns</td><td>0.2280 ns</td><td>114.4164 ns</td>
+</tr><tr><td>DrawImageCentre</td><td>113.2688 ns</td><td>0.3616 ns</td><td>0.3382 ns</td><td>113.2474 ns</td>
+</tr><tr><td>DrawLine</td><td>509.2106 ns</td><td>2.1833 ns</td><td>1.8232 ns</td><td>509.5561 ns</td>
+</tr><tr><td>DrawPixel</td><td>0.3820 ns</td><td>0.0045 ns</td><td>0.0042 ns</td><td>0.3814 ns</td>
+</tr><tr><td>DrawPolygon</td><td>46.6815 ns</td><td>0.1032 ns</td><td>0.0966 ns</td><td>46.6867 ns</td>
+</tr><tr><td>DrawPolygonFilled</td><td>47.9369 ns</td><td>0.2766 ns</td><td>0.2587 ns</td><td>47.9574 ns</td>
+</tr><tr><td>DrawRectangle</td><td>9.7927 ns</td><td>0.0305 ns</td><td>0.0285 ns</td><td>9.7881 ns</td>
+</tr><tr><td>DrawRectangleCentre</td><td>14.4054 ns</td><td>0.0379 ns</td><td>0.0316 ns</td><td>14.4037 ns</td>
+</tr><tr><td>DrawRectangleFilled</td><td>26.8073 ns</td><td>0.2253 ns</td><td>0.1997 ns</td><td>26.8569 ns</td>
+</tr><tr><td>DrawTextCentreWhitespace</td><td>0.9616 ns</td><td>0.0118 ns</td><td>0.0110 ns</td><td>0.9615 ns</td>
+</tr><tr><td>DrawTextLeftWhitespace</td><td>0.0005 ns</td><td>0.0010 ns</td><td>0.0010 ns</td><td>0.0000 ns</td>
+</tr><tr><td>DrawTextRightWhitespace</td><td>0.0005 ns</td><td>0.0010 ns</td><td>0.0010 ns</td><td>0.0000 ns</td>
+</tr><tr><td>DrawTriangle</td><td>7.1304 ns</td><td>0.0139 ns</td><td>0.0130 ns</td><td>7.1281 ns</td>
+</tr><tr><td>DrawTriangleFilled</td><td>47.3249 ns</td><td>0.1979 ns</td><td>0.1851 ns</td><td>47.3422 ns</td>
+</tr><tr><td>Create</td><td>72,571.3876 ns</td><td>1,113.4182 ns</td><td>987.0162 ns</td><td>72,826.7639 ns</td>
+</tr><tr><td>Scale</td><td>0.0015 ns</td><td>0.0024 ns</td><td>0.0023 ns</td><td>0.0004 ns</td>
+</tr><tr><td>ScreenHeight</td><td>0.0000 ns</td><td>0.0000 ns</td><td>0.0000 ns</td><td>0.0000 ns</td>
+</tr><tr><td>ScreenUpdate</td><td>0.1909 ns</td><td>0.0030 ns</td><td>0.0028 ns</td><td>0.1905 ns</td>
+</tr><tr><td>ScreenWidth</td><td>0.0008 ns</td><td>0.0016 ns</td><td>0.0013 ns</td><td>0.0002 ns</td>
+</tr><tr><td>SetClipRegion</td><td>0.0036 ns</td><td>0.0043 ns</td><td>0.0040 ns</td><td>0.0028 ns</td>
 </tr></tbody></table>
 </body>
 </html>

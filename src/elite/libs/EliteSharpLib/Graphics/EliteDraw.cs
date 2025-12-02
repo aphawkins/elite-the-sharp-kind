@@ -6,6 +6,9 @@
 using System.Numerics;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
+using Useful.Assets;
+using Useful.Assets.Models;
+using Useful.Assets.Palettes;
 using Useful.Graphics;
 using Useful.Maths;
 
@@ -14,16 +17,23 @@ namespace EliteSharpLib.Graphics;
 internal sealed class EliteDraw : IEliteDraw
 {
     private const int MAXPOLYS = 100;
+    private readonly uint _colorGold;
+    private readonly uint _colorWhite;
+    private readonly uint _colorYellow;
     private readonly GameState _gameState;
     private readonly Vector4[] _pointList = new Vector4[100];
     private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
     private int _startPoly;
     private int _totalPolys;
 
-    internal EliteDraw(GameState gameState, IGraphics graphics)
+    internal EliteDraw(GameState gameState, IGraphics graphics, IAssetLocator assetLocator)
     {
         _gameState = gameState;
         Graphics = graphics;
+        Palette = PaletteReader.Read(assetLocator.PalettePath);
+        _colorGold = Palette["Gold"];
+        _colorWhite = Palette["White"];
+        _colorYellow = Palette["Yellow"];
     }
 
     public float Bottom
@@ -38,6 +48,8 @@ internal sealed class EliteDraw : IEliteDraw
     public float Left => BorderWidth;
 
     public float Offset => ScannerLeft;
+
+    public IPaletteCollection Palette { get; }
 
     public float Right => Graphics.ScreenWidth - BorderWidth;
 
@@ -63,14 +75,14 @@ internal sealed class EliteDraw : IEliteDraw
     {
         for (int i = 0; i < BorderWidth; i++)
         {
-            Graphics.DrawRectangle(new(i, i), Graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), EliteColors.White);
+            Graphics.DrawRectangle(new(i, i), Graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), _colorWhite);
         }
     }
 
     public void DrawHyperspaceCountdown(int countdown)
-        => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", (int)FontType.Small, EliteColors.White);
+        => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", (int)FontType.Small, _colorWhite);
 
-    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float averageZ)
+    public void DrawPolygonFilled(Vector2[] points, uint faceColor, float averageZ)
     {
         int i;
 
@@ -138,7 +150,7 @@ internal sealed class EliteDraw : IEliteDraw
             }
 
             i++;
-            Graphics.DrawTextLeft(position, text[previous..i], (int)FontType.Small, EliteColors.White);
+            Graphics.DrawTextLeft(position, text[previous..i], (int)FontType.Small, _colorWhite);
             previous = i;
             position.Y += 8 * Graphics.Scale;
         }
@@ -146,12 +158,12 @@ internal sealed class EliteDraw : IEliteDraw
 
     public void DrawViewHeader(string title)
     {
-        Graphics.DrawTextCentre(Top + 6, title, (int)FontType.Large, EliteColors.Gold);
-        Graphics.DrawLine(new(Left, 36), new(Right, 36), EliteColors.White);
+        Graphics.DrawTextCentre(Top + 6, title, (int)FontType.Large, _colorGold);
+        Graphics.DrawLine(new(Left, 36), new(Right, 36), _colorWhite);
 
         // Vertical lines
-        Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), EliteColors.Yellow);
-        Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), EliteColors.Yellow);
+        Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), _colorYellow);
+        Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), _colorYellow);
     }
 
     public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);
@@ -221,7 +233,7 @@ internal sealed class EliteDraw : IEliteDraw
 
         for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
         {
-            FastColor color = _gameState.Config.ShipWireframe ? EliteColors.White : _polyChain[i].FaceColor;
+            uint color = _gameState.Config.ShipWireframe ? _colorWhite : _polyChain[i].FaceColor;
 
             if (_polyChain[i].PointList.Length == 2)
             {
@@ -249,7 +261,6 @@ internal sealed class EliteDraw : IEliteDraw
     private void DrawExplosion(IShip ship)
     {
         Vector4[] trans_mat = new Vector4[4];
-        bool[] visible = new bool[32];
 
         if (ship.ExpDelta > 251)
         {
@@ -272,13 +283,11 @@ internal sealed class EliteDraw : IEliteDraw
         Vector4 camera_vec = Vector4.Transform(ship.Location, trans_mat.ToMatrix4x4());
         camera_vec = VectorMaths.UnitVector(camera_vec);
 
-        ShipFaceNormal[] ship_norm = ship.FaceNormals;
-
-        for (int i = 0; i < ship.FaceNormals.Length; i++)
+        foreach (FaceNormal faceNormal in ship.Model.FaceNormals)
         {
-            Vector4 vec = VectorMaths.UnitVector(ship_norm[i].Direction);
+            Vector4 vec = VectorMaths.UnitVector(faceNormal.Direction);
             float cos_angle = VectorMaths.VectorDotProduct(vec, camera_vec);
-            visible[i] = cos_angle < -0.13;
+            faceNormal.Visible = cos_angle < -0.13;
         }
 
         (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
@@ -286,14 +295,11 @@ internal sealed class EliteDraw : IEliteDraw
         (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
         int np = 0;
 
-        for (int i = 0; i < ship.Points.Length; i++)
+        for (int i = 0; i < ship.Model.Points.Count; i++)
         {
-            if (visible[ship.Points[i].Face1]
-                || visible[ship.Points[i].Face2] ||
-                visible[ship.Points[i].Face3]
-                || visible[ship.Points[i].Face4])
+            if (ship.Model.Points[i].FaceNormals.Any(x => x.Visible))
             {
-                Vector4 vec = Vector4.Transform(ship.Points[i].Point, trans_mat.ToMatrix4x4());
+                Vector4 vec = Vector4.Transform(ship.Model.Points[i].Coords, trans_mat.ToMatrix4x4());
                 Vector4 r = vec + ship.Location;
                 Vector2 position = new(r.X, -r.Y);
                 position *= 256 / r.Z;
@@ -336,7 +342,7 @@ internal sealed class EliteDraw : IEliteDraw
                 {
                     for (int psx = 0; psx < sizex; psx++)
                     {
-                        Graphics.DrawPixel(new(position.X + psx, position.Y + psy), EliteColors.White);
+                        Graphics.DrawPixel(new(position.X + psx, position.Y + psy), _colorWhite);
                     }
                 }
             }

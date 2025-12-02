@@ -4,6 +4,7 @@
 
 namespace EliteSharpLib.Ships;
 
+// TODO: Get these from the assets
 internal enum ShipType
 {
     Sun = -2, // Sun

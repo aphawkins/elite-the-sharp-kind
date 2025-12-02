@@ -18,6 +18,10 @@ internal sealed class GalacticChartView : IView
     private readonly PlanetController _planet;
     private readonly List<Vector2> _planetPixels = [];
     private readonly PlayerShip _ship;
+    private readonly uint _colorGreen;
+    private readonly uint _colorLighterRed;
+    private readonly uint _colorWhite;
+
     private int _crossTimer;
     private string _findName = string.Empty;
     private bool _isFind;
@@ -29,6 +33,10 @@ internal sealed class GalacticChartView : IView
         _keyboard = keyboard;
         _planet = planet;
         _ship = ship;
+
+        _colorGreen = draw.Palette["Green"];
+        _colorLighterRed = draw.Palette["LighterRed"];
+        _colorWhite = draw.Palette["White"];
     }
 
     public void Draw()
@@ -36,7 +44,7 @@ internal sealed class GalacticChartView : IView
         // Header
         _draw.DrawViewHeader($"GALACTIC CHART {_gameState.Cmdr.GalaxyNumber + 1}");
 
-        _draw.Graphics.DrawLine(new(0 + _draw.Offset, 36 + 258), new(_draw.ScannerRight, 36 + 258), EliteColors.White);
+        _draw.Graphics.DrawLine(new(0 + _draw.Offset, 36 + 258), new(_draw.ScannerRight, 36 + 258), _colorWhite);
 
         // Fuel radius
         Vector2 centre = new(
@@ -44,36 +52,36 @@ internal sealed class GalacticChartView : IView
             (_gameState.DockedPlanet.B / (2 / _draw.Graphics.Scale)) + (18 * _draw.Graphics.Scale) + 1);
         float radius = _ship.Fuel * 2.5f * _draw.Graphics.Scale;
         float cross_size = 7 * _draw.Graphics.Scale;
-        _draw.Graphics.DrawCircle(centre, radius, EliteColors.Green);
-        _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), EliteColors.White);
-        _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), EliteColors.White);
+        _draw.Graphics.DrawCircle(centre, radius, _colorGreen);
+        _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), _colorWhite);
+        _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), _colorWhite);
 
         // Planets
         foreach (Vector2 pixel in _planetPixels)
         {
-            _draw.Graphics.DrawPixel(pixel, EliteColors.White);
+            _draw.Graphics.DrawPixel(pixel, _colorWhite);
         }
 
         // Cross
         centre = new(_gameState.Cross.X + _draw.Offset, _gameState.Cross.Y);
 
-        _draw.Graphics.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), EliteColors.LighterRed);
-        _draw.Graphics.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), EliteColors.LighterRed);
+        _draw.Graphics.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), _colorLighterRed);
+        _draw.Graphics.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), _colorLighterRed);
 
         // Text
         if (_isFind)
         {
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", (int)FontType.Small, EliteColors.Green);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", (int)FontType.Small, _colorGreen);
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, EliteColors.White);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, _colorWhite);
         }
         else if (string.IsNullOrEmpty(_gameState.PlanetName))
         {
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", (int)FontType.Small, EliteColors.Green);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", (int)FontType.Small, _colorGreen);
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, EliteColors.White);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, _colorWhite);
         }
         else
         {
@@ -81,14 +89,14 @@ internal sealed class GalacticChartView : IView
                 new(16 + _draw.Offset, _draw.ScannerTop - 55),
                 _gameState.PlanetName,
                 (int)FontType.Small,
-                EliteColors.Green);
+                _colorGreen);
             if (_gameState.DistanceToPlanet > 0)
             {
                 _draw.Graphics.DrawTextLeft(
                     new(16 + _draw.Offset, _draw.ScannerTop - 40),
                     $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ",
                     (int)FontType.Small,
-                    EliteColors.White);
+                    _colorWhite);
             }
         }
     }

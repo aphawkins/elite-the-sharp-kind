@@ -1,4 +1,5 @@
 {
+  "Palette": "palette.json",
   "Images": {
     "Scanner": "scanner.bmp",
     "GreenDot": "greendot.bmp",
@@ -38,5 +39,39 @@
   "FontsTrueType": {
     "Small": "OpenSans-Regular.ttf",
     "Large": "OpenSans-Regular.ttf"
+  },
+  "Models": {
+    "Adder": "adder.json",
+    "Alloy": "alloy.json",
+    "Anaconda": "anaconda.json",
+    "AspMk2": "aspmk2.json",
+    "Asteroid": "asteroid.json",
+    "Boa": "boa.json",
+    "Boulder": "boulder.json",
+    "CargoCannister": "cargocannister.json",
+    "CobraMk1": "cobramk1.json",
+    "CobraMk3": "cobramk3.json",
+    "Constrictor": "constrictor.json",
+    "Coriolis": "coriolis.json",
+    "Cougar": "cougar.json",
+    "DodecStation": "dodecstation.json",
+    "EscapeCapsule": "escapecapsule.json",
+    "FerDeLance": "ferdelance.json",
+    "Gecko": "gecko.json",
+    "Krait": "krait.json",
+    "Mamba": "mamba.json",
+    "Missile": "missile.json",
+    "Moray": "moray.json",
+    "Python": "python.json",
+    "RockHermit": "rockhermit.json",
+    "RockSplinter": "rocksplinter.json",
+    "Shuttle": "shuttle.json",
+    "Sidewinder": "sidewinder.json",
+    "Tharglet": "tharglet.json",
+    "Thargoid": "thargoid.json",
+    "Transporter": "transporter.json",
+    "Viper": "viper.json",
+    "Worm": "worm.json"
   }
+
 }

@@ -1,6 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
 using Useful.Abstraction;
+using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
@@ -13,12 +14,12 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
     private readonly SDLWindow _window;
     private bool _isDisposed;
 
-    public SDLAbstraction(int screenWidth, int screenHeight, string title)
+    public SDLAbstraction(int screenWidth, int screenHeight, string title, IAssetLocator assetLocator)
     {
         _window = new(screenWidth, screenHeight, title);
         _renderer = new(_window);
 
-        Graphics = new SDLGraphics(_renderer, screenWidth, screenHeight);
+        Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator);
         Sound = new SDLSound();
         SDLInput input = new();
         Keyboard = new SoftwareKeyboard(input);

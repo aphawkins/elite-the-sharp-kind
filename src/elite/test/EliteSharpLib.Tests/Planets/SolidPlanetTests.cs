@@ -3,48 +3,49 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
+using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
 using Moq;
+using Useful.Fakes.Assets;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Tests.Planets;
 
 public class SolidPlanetTests
 {
-    private readonly Mock<IEliteDraw> _drawMoq;
-
-    public SolidPlanetTests() => _drawMoq = MockSetup.MockDraw();
-
     [Fact]
     public void DrawSolidPlanet()
     {
         // Arrange
-        SolidPlanet planet = new(_drawMoq.Object, EliteColors.Cyan);
+        Mock<IGraphics> mockGraphics = new();
+        FakeEliteDraw fakeEliteDraw = new()
+        {
+            Graphics = mockGraphics.Object,
+        };
+        SolidPlanet planet = new(fakeEliteDraw);
 
         // Act
         planet.Draw();
 
         // Assert
-        _drawMoq.Verify(x => x.Graphics.DrawCircleFilled(
+        mockGraphics.Verify(x => x.DrawCircleFilled(
             It.IsAny<Vector2>(),
             It.IsAny<float>(),
-            It.Is<FastColor>(x => x == EliteColors.Cyan)));
+            It.Is<uint>(x => x == FakeColor.TestColor)));
     }
 
     [Fact]
     public void CloneSolidPlanet()
     {
         // Arrange
-        SolidPlanet planet = new(_drawMoq.Object, EliteColors.Cyan);
+        FakeEliteDraw fakeEliteDraw = new();
+        SolidPlanet planet = new(fakeEliteDraw);
 
         // Act
         IObject obj = planet.Clone();
-        obj.Draw();
 
         // Assert
         Assert.IsType<SolidPlanet>(obj);
-        Assert.Equal(planet.Color, ((SolidPlanet)obj).Color);
     }
 }

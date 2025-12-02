@@ -6,6 +6,7 @@ using BenchmarkDotNet.Attributes;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Suns;
 using Useful.Controls;
+using Useful.Fakes.Assets;
 using Useful.Graphics;
 using Useful.SDL;
 
@@ -22,13 +23,14 @@ public class SunBenchmarks : IDisposable
 
     public SunBenchmarks()
     {
+        FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(new SDLInput());
         Dictionary<Views.Screen, Views.IView> views = [];
         GameState gameState = new(keyboard, views);
-        _graphics = new SoftwareGraphics(ScreenWidth, ScreenHeight, (_) => { });
-        EliteDraw draw = new(gameState, _graphics);
+        _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
+        EliteDraw draw = new(gameState, _graphics, assetLocator);
         _gradientSun = new(draw);
-        _solidSun = new(draw, EliteColors.White);
+        _solidSun = new(draw);
     }
 
     public void Dispose()

@@ -1,6 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
 using Useful.Abstraction;
+using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
@@ -19,11 +20,13 @@ public sealed class SoftwareAbstraction : IAbstraction, IDisposable
         _window = new(screenWidth, screenHeight, title);
         _renderer = new(_window);
 
-        Graphics = new SoftwareGraphics(
+        AssetLocator assetLocator = AssetLocator.Create();
+        Graphics = SoftwareGraphics.Create(
             screenWidth,
             screenHeight,
-            SoftwareScreenUpdate);
-        Sound = new SoftwareSound();
+            SoftwareScreenUpdate,
+            assetLocator);
+        Sound = SoftwareSound.Create(assetLocator);
         Keyboard = new SoftwareKeyboard(new SDLInput());
     }
 

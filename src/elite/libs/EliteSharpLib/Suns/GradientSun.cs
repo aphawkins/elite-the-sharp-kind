@@ -5,7 +5,6 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Graphics;
 using Useful.Maths;
 
 namespace EliteSharpLib.Suns;
@@ -13,8 +12,21 @@ namespace EliteSharpLib.Suns;
 internal sealed class GradientSun : IObject
 {
     private readonly IEliteDraw _draw;
+    private readonly uint _colorWhite;
+    private readonly uint _colorLightYellow;
+    private readonly uint _colorLightOrange;
+    private readonly uint _colorOrange;
+    private readonly uint _colorDarkOrange;
 
-    internal GradientSun(IEliteDraw draw) => _draw = draw;
+    internal GradientSun(IEliteDraw draw)
+    {
+        _draw = draw;
+        _colorWhite = draw.Palette["White"];
+        _colorLightYellow = draw.Palette["LightYellow"];
+        _colorLightOrange = draw.Palette["LightOrange"];
+        _colorOrange = draw.Palette["Orange"];
+        _colorDarkOrange = draw.Palette["DarkOrange"];
+    }
 
     private GradientSun(GradientSun other) => _draw = other._draw;
 
@@ -132,13 +144,13 @@ internal sealed class GradientSun : IObject
         {
             float distance = (dx * dx) + dy;
 
-            FastColor color = distance < inner
-                ? EliteColors.White
+            uint color = distance < inner
+                ? _colorWhite
                 : distance < inner2
-                    ? EliteColors.LightYellow
+                    ? _colorLightYellow
                     : distance < outer
-                        ? EliteColors.LightOrange
-                        : ((int)s.X ^ (int)y).IsOdd() ? EliteColors.Orange : EliteColors.DarkOrange;
+                        ? _colorLightOrange
+                        : ((int)s.X ^ (int)y).IsOdd() ? _colorOrange : _colorDarkOrange;
 
             _draw.Graphics.DrawPixel(s, color);
         }

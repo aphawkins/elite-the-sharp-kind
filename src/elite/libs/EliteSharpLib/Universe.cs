@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using Useful.Maths;
 
@@ -12,13 +11,13 @@ namespace EliteSharpLib;
 internal sealed class Universe
 {
     private const int MaxUniverseObjects = 20;
-    private readonly IEliteDraw _draw;
+    private readonly IShipFactory _shipFactory;
     private readonly List<IObject> _objects = [];
     private readonly Dictionary<ShipType, int> _shipCount = [];
 
-    internal Universe(IEliteDraw draw)
+    internal Universe(IShipFactory shipFactory)
     {
-        _draw = draw;
+        _shipFactory = shipFactory;
         ClearUniverse();
     }
 
@@ -91,7 +90,7 @@ internal sealed class Universe
 
     internal void AddNewStation(int planetTechLevel, Vector4 position, Vector4[] rotmat)
     {
-        IShip station = planetTechLevel >= 10 ? new DodecStation(_draw) : new Coriolis(_draw);
+        IShip station = planetTechLevel >= 10 ? _shipFactory.CreateShip("DodecStation") : _shipFactory.CreateShip("Coriolis");
         AddNewShip(station, position, rotmat.ToMatrix4x4(), 0, -127);
     }
 

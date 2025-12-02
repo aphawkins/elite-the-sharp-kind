@@ -6,7 +6,6 @@ using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Graphics;
 using Useful.Maths;
 
 namespace EliteSharpLib;
@@ -21,6 +20,14 @@ internal sealed class Scanner
     private readonly GameState _gameState;
     private readonly PlayerShip _ship;
     private readonly Universe _universe;
+    private readonly uint _colorDarkYellow;
+    private readonly uint _colorGold;
+    private readonly uint _colorGreen;
+    private readonly uint _colorLightRed;
+    private readonly uint _colorLilac;
+    private readonly uint _colorPurple;
+    private readonly uint _colorWhite;
+    private readonly uint _colorYellow;
     private Vector2 _scannerCentre;
 
     internal Scanner(GameState gameState, IEliteDraw draw, Universe universe, PlayerShip ship, Combat combat)
@@ -31,6 +38,15 @@ internal sealed class Scanner
         _ship = ship;
         _combat = combat;
         _scannerCentre = new(_draw.Centre.X - 3, _draw.ScannerTop + 63);
+
+        _colorDarkYellow = draw.Palette["DarkYellow"];
+        _colorGold = draw.Palette["Gold"];
+        _colorGreen = draw.Palette["Green"];
+        _colorLightRed = draw.Palette["LightRed"];
+        _colorLilac = draw.Palette["Lilac"];
+        _colorPurple = draw.Palette["Purple"];
+        _colorWhite = draw.Palette["White"];
+        _colorYellow = draw.Palette["Yellow"];
     }
 
     internal void DrawScanner() => _draw.Graphics.DrawImage((int)ImageType.Scanner, new(_draw.ScannerLeft, _draw.ScannerTop));
@@ -92,16 +108,16 @@ internal sealed class Scanner
         float x = _draw.ScannerLeft + position.X;
         float y = _draw.ScannerTop + position.Y;
 
-        _draw.Graphics.DrawLine(new(x, y), new(x + len, y), EliteColors.Gold);
+        _draw.Graphics.DrawLine(new(x, y), new(x + len, y), _colorGold);
         int i = 1;
-        _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EliteColors.Gold);
+        _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), _colorGold);
 
         for (i = 2; i < 7; i++)
         {
-            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EliteColors.DarkYellow);
+            _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), _colorDarkYellow);
         }
 
-        _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), EliteColors.LightRed);
+        _draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), _colorLightRed);
     }
 
     /// <summary>
@@ -144,7 +160,7 @@ internal sealed class Scanner
 
         for (int i = 0; i < 4; i++)
         {
-            _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), EliteColors.Gold);
+            _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), _colorGold);
         }
     }
 
@@ -157,7 +173,7 @@ internal sealed class Scanner
 
         for (int i = 0; i < 4; i++)
         {
-            _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), EliteColors.Gold);
+            _draw.Graphics.DrawLine(new(position + i, y), new(position + i, y + 7), _colorGold);
         }
     }
 
@@ -227,7 +243,7 @@ internal sealed class Scanner
         float x = _draw.ScannerLeft + 417;
         float y = _draw.ScannerTop + 9;
         float length = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
-        FastColor color = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? EliteColors.LightRed : EliteColors.Gold;
+        uint color = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? _colorLightRed : _colorGold;
 
         for (int i = 0; i < 6; i++)
         {
@@ -251,7 +267,7 @@ internal sealed class Scanner
             return;
         }
 
-        Vector4 dest = VectorMaths.UnitVector(obj!.Location);
+        Vector4 dest = VectorMaths.UnitVector(obj.Location);
 
         if (float.IsNaN(dest.X))
         {
@@ -300,13 +316,13 @@ internal sealed class Scanner
             y1 += _scannerCentre.Y;
             y2 += _scannerCentre.Y;
 
-            FastColor color = obj.Flags.HasFlag(ShipProperties.Station)
-                ? EliteColors.Green
+            uint color = obj.Flags.HasFlag(ShipProperties.Station)
+                ? _colorGreen
                 : obj.Type == ShipType.Missile
-                    ? EliteColors.Lilac
+                    ? _colorLilac
                     : obj.Flags.HasFlag(ShipProperties.Police)
-                        ? EliteColors.Purple
-                        : obj.Flags.HasFlag(ShipProperties.Hostile) ? EliteColors.Yellow : EliteColors.White;
+                        ? _colorPurple
+                        : obj.Flags.HasFlag(ShipProperties.Hostile) ? _colorYellow : _colorWhite;
 
             // ship
             _draw.Graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, color);

@@ -3,13 +3,12 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Useful.Graphics;
 
 namespace EliteSharpLib;
 
 internal struct PolygonData
 {
-    internal FastColor FaceColor { get; set; }
+    internal uint FaceColor { get; set; }
 
     internal int Next { get; set; }
 

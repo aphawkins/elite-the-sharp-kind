@@ -18,6 +18,8 @@ internal sealed class SettingsView : IView
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
+    private readonly uint _colorWhite;
+    private readonly uint _colorLightRed;
 
     private readonly (string Name, string[] Values)[] _settingList =
     [
@@ -37,6 +39,9 @@ internal sealed class SettingsView : IView
         _draw = draw;
         _keyboard = keyboard;
         _configFile = configFile;
+
+        _colorWhite = draw.Palette["White"];
+        _colorLightRed = draw.Palette["LightRed"];
     }
 
     public void Draw()
@@ -53,10 +58,10 @@ internal sealed class SettingsView : IView
                 if (i == _highlightedItem)
                 {
                     position.X = _draw.Centre.X - 200;
-                    _draw.Graphics.DrawRectangleFilled(position, 400, 15, EliteColors.LightRed);
+                    _draw.Graphics.DrawRectangleFilled(position, 400, 15, _colorLightRed);
                 }
 
-                _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, (int)FontType.Small, EliteColors.White);
+                _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, (int)FontType.Small, _colorWhite);
                 return;
             }
 
@@ -75,12 +80,12 @@ internal sealed class SettingsView : IView
 
             if (i == _highlightedItem)
             {
-                _draw.Graphics.DrawRectangleFilled(position, 100, 15, EliteColors.LightRed);
+                _draw.Graphics.DrawRectangleFilled(position, 100, 15, _colorLightRed);
             }
 
-            _draw.Graphics.DrawTextLeft(position, _settingList[i].Name, (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, _settingList[i].Name, (int)FontType.Small, _colorWhite);
             position.X += 120;
-            _draw.Graphics.DrawTextLeft(position, _settingList[i].Values[v], (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, _settingList[i].Values[v], (int)FontType.Small, _colorWhite);
         }
     }
 

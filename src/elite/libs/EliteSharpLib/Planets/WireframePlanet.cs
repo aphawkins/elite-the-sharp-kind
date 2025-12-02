@@ -12,17 +12,20 @@ internal sealed class WireframePlanet : IObject
 {
     private readonly IEliteDraw _draw;
     private readonly PlanetRenderer _planetRenderer;
+    private readonly uint _color;
 
     internal WireframePlanet(IEliteDraw draw)
     {
         _draw = draw;
         _planetRenderer = new(draw);
+        _color = draw.Palette["White"];
     }
 
     private WireframePlanet(WireframePlanet other)
     {
         _draw = other._draw;
         _planetRenderer = other._planetRenderer;
+        _color = other._color;
     }
 
     public Vector4 Location { get; set; } = new(0, 0, 123456, 0);
@@ -49,7 +52,7 @@ internal sealed class WireframePlanet : IObject
         (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
         if (v != null)
         {
-            _draw.Graphics.DrawCircle(v.Value.Position, v.Value.Radius, EliteColors.White);
+            _draw.Graphics.DrawCircle(v.Value.Position, v.Value.Radius, _color);
         }
     }
 }

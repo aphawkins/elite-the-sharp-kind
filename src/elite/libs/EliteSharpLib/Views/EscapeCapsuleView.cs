@@ -16,15 +16,17 @@ namespace EliteSharpLib.Views;
 internal sealed class EscapeCapsuleView : IView
 {
     private readonly AudioController _audio;
+    private readonly uint _color;
+    private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly Pilot _pilot;
     private readonly PlayerShip _ship;
+    private readonly IShipFactory _shipFactory;
     private readonly Stars _stars;
     private readonly Trade _trade;
     private readonly Universe _universe;
-    private readonly IEliteDraw _draw;
     private int _i;
-    private IShip _newship;
+    private IShip _newShip;
 
     internal EscapeCapsuleView(
         GameState gameState,
@@ -34,7 +36,8 @@ internal sealed class EscapeCapsuleView : IView
         Trade trade,
         Universe universe,
         Pilot pilot,
-        IEliteDraw draw)
+        IEliteDraw draw,
+        IShipFactory shipFactory)
     {
         _gameState = gameState;
         _audio = audio;
@@ -44,7 +47,9 @@ internal sealed class EscapeCapsuleView : IView
         _universe = universe;
         _pilot = pilot;
         _draw = draw;
-        _newship = new ShipBase(draw);
+        _shipFactory = shipFactory;
+        _newShip = new ShipBase(draw);
+        _color = _draw.Palette["White"];
     }
 
     public void Draw()
@@ -55,7 +60,7 @@ internal sealed class EscapeCapsuleView : IView
                 _draw.ScannerTop - 40,
                 "Escape capsule launched - Ship auto-destuct initiated.",
                 (int)FontType.Small,
-                EliteColors.White);
+                _color);
         }
     }
 
@@ -69,13 +74,13 @@ internal sealed class EscapeCapsuleView : IView
         _ship.Roll = 0;
         _ship.Climb = 0;
         Matrix4x4 rotmat = VectorMaths.GetRightHandedBasisMatrix;
-        _newship = new CobraMk3(_draw);
-        if (!_universe.AddNewShip(_newship, new(0, 0, 200, 0), rotmat, -127, -127))
+        _newShip = _shipFactory.CreateShip("CobraMk3");
+        if (!_universe.AddNewShip(_newShip, new(0, 0, 200, 0), rotmat, -127, -127))
         {
             Debug.Fail("Failed to create CobraMk3");
         }
 
-        _newship.Velocity = 7;
+        _newShip.Velocity = 7;
         _audio.PlayEffect((int)SoundEffect.Launch);
         _i = 0;
     }
@@ -86,12 +91,12 @@ internal sealed class EscapeCapsuleView : IView
         {
             if (_i == 40)
             {
-                _newship.Flags |= ShipProperties.Dead;
+                _newShip.Flags |= ShipProperties.Dead;
                 _audio.PlayEffect((int)SoundEffect.Explode);
             }
 
             _stars.FrontStarfield();
-            _newship.Location = new(0, 0, _newship.Location.Z + 2, 0);
+            _newShip.Location = new(0, 0, _newShip.Location.Z + 2, 0);
             _i++;
         }
         else if (!_universe.IsStationPresent)

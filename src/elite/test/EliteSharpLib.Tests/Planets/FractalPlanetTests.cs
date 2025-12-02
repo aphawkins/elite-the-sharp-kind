@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
+using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
 using Moq;
@@ -13,32 +13,33 @@ namespace EliteSharpLib.Tests.Planets;
 
 public sealed class FractalPlanetTests
 {
-    private readonly Mock<IEliteDraw> _drawMoq;
-
-    public FractalPlanetTests() => _drawMoq = MockSetup.MockDraw();
-
     [Fact]
     public void DrawFractalPlanet()
     {
         // Arrange
-        FractalPlanet planet = new(_drawMoq.Object, 12345);
+        Mock<IGraphics> mockGraphics = new();
+        FakeEliteDraw fakeEliteDraw = new()
+        {
+            Graphics = mockGraphics.Object,
+        };
+        FractalPlanet planet = new(fakeEliteDraw, 12345);
 
         // Act
         planet.Draw();
 
         // Assert
-        _drawMoq.Verify(x => x.Graphics.DrawPixel(It.IsAny<Vector2>(), It.IsAny<FastColor>()));
+        mockGraphics.Verify(x => x.DrawPixel(It.IsAny<Vector2>(), It.IsAny<uint>()));
     }
 
     [Fact]
     public void CloneFractalPlanet()
     {
         // Arrange
-        FractalPlanet planet = new(_drawMoq.Object, 12345);
+        FakeEliteDraw fakeEliteDraw = new();
+        FractalPlanet planet = new(fakeEliteDraw, 12345);
 
         // Act
         IObject obj = planet.Clone();
-        obj.Draw();
 
         // Assert
         Assert.IsType<FractalPlanet>(obj);

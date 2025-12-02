@@ -11,11 +11,17 @@ internal sealed class LaserDraw
 {
     private readonly GameState _gameState;
     private readonly IEliteDraw _draw;
+    private readonly uint _colorLighterRed;
+    private readonly uint _colorLightGrey;
+    private readonly uint _colorWhite;
 
     internal LaserDraw(GameState gameState, IEliteDraw draw)
     {
         _gameState = gameState;
         _draw = draw;
+        _colorLighterRed = _draw.Palette["LighterRed"];
+        _colorLightGrey = _draw.Palette["LightGrey"];
+        _colorWhite = _draw.Palette["White"];
     }
 
     internal void DrawLaserLines()
@@ -35,18 +41,18 @@ internal sealed class LaserDraw
         if (_gameState.Config.ShipWireframe)
         {
             // Left laser
-            _draw.Graphics.DrawTriangle(leftA, target, leftB, EliteColors.LighterRed);
+            _draw.Graphics.DrawTriangle(leftA, target, leftB, _colorLighterRed);
 
             // Right laser
-            _draw.Graphics.DrawTriangle(rightA, target, rightB, EliteColors.LighterRed);
+            _draw.Graphics.DrawTriangle(rightA, target, rightB, _colorLighterRed);
         }
         else
         {
             // Left laser
-            _draw.Graphics.DrawTriangleFilled(leftA, target, leftB, EliteColors.LighterRed);
+            _draw.Graphics.DrawTriangleFilled(leftA, target, leftB, _colorLighterRed);
 
             // Right laser
-            _draw.Graphics.DrawTriangleFilled(rightA, target, rightB, EliteColors.LighterRed);
+            _draw.Graphics.DrawTriangleFilled(rightA, target, rightB, _colorLighterRed);
         }
     }
 
@@ -61,30 +67,30 @@ internal sealed class LaserDraw
         float x1 = _draw.Centre.X / 2 * _draw.Graphics.Scale;
         float y1 = ((_draw.Centre.Y / 2) - 8) * _draw.Graphics.Scale;
         float y2 = ((_draw.Centre.Y / 2) - 16) * _draw.Graphics.Scale;
-        _draw.Graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), EliteColors.LightGrey);
-        _draw.Graphics.DrawLine(new(x1, y1), new(x1, y2), EliteColors.White);
-        _draw.Graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), EliteColors.LightGrey);
+        _draw.Graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), _colorLightGrey);
+        _draw.Graphics.DrawLine(new(x1, y1), new(x1, y2), _colorWhite);
+        _draw.Graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), _colorLightGrey);
 
         // Bottom line
         y1 = ((_draw.Centre.Y / 2) + 8) * _draw.Graphics.Scale;
         y2 = ((_draw.Centre.Y / 2) + 16) * _draw.Graphics.Scale;
-        _draw.Graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), EliteColors.LightGrey);
-        _draw.Graphics.DrawLine(new(x1, y1), new(x1, y2), EliteColors.White);
-        _draw.Graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), EliteColors.LightGrey);
+        _draw.Graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), _colorLightGrey);
+        _draw.Graphics.DrawLine(new(x1, y1), new(x1, y2), _colorWhite);
+        _draw.Graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), _colorLightGrey);
 
         // Left line
         x1 = ((_draw.Centre.X / 2) - 8) * _draw.Graphics.Scale;
         y1 = _draw.Centre.Y / 2 * _draw.Graphics.Scale;
         float x2 = ((_draw.Centre.X / 2) - 16) * _draw.Graphics.Scale;
-        _draw.Graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), EliteColors.LightGrey);
-        _draw.Graphics.DrawLine(new(x1, y1), new(x2, y1), EliteColors.White);
-        _draw.Graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), EliteColors.LightGrey);
+        _draw.Graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), _colorLightGrey);
+        _draw.Graphics.DrawLine(new(x1, y1), new(x2, y1), _colorWhite);
+        _draw.Graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), _colorLightGrey);
 
         // Right line
         x1 = ((_draw.Centre.X / 2) + 8) * _draw.Graphics.Scale;
         x2 = ((_draw.Centre.X / 2) + 16) * _draw.Graphics.Scale;
-        _draw.Graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), EliteColors.LightGrey);
-        _draw.Graphics.DrawLine(new(x1, y1), new(x2, y1), EliteColors.White);
-        _draw.Graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), EliteColors.LightGrey);
+        _draw.Graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), _colorLightGrey);
+        _draw.Graphics.DrawLine(new(x1, y1), new(x2, y1), _colorWhite);
+        _draw.Graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), _colorLightGrey);
     }
 }

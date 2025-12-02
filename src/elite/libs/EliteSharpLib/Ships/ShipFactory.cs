@@ -2,92 +2,130 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Reflection;
 using EliteSharpLib.Graphics;
+using Useful;
+using Useful.Assets;
+using Useful.Assets.Models;
 
 namespace EliteSharpLib.Ships;
 
-internal class ShipFactory
+internal class ShipFactory : IShipFactory
 {
-    private readonly IEliteDraw _draw;
+    private Dictionary<string, IShip> _ships = [];
 
-    internal ShipFactory(IEliteDraw draw) => _draw = draw;
+    public static ShipFactory Create(IAssetLocator assetLocator, IEliteDraw draw)
+    {
+        Guard.ArgumentNull(assetLocator);
 
-    internal IShip CreateAsteroid() => RNG.Random(256) > 253 ? new RockHermit(_draw) : new Asteroid(_draw);
+        return new()
+        {
+            _ships = assetLocator.ModelPaths.ToDictionary(
+                x => x.Key,
+                x => CreateShipFromName(x.Key, x.Value, draw)),
+        };
+    }
 
-    internal IShip CreateLoneWolf()
+    public IShip CreateShip(string shipName)
+    => _ships.TryGetValue(shipName, out IShip? ship)
+        ? (IShip)ship.Clone()
+        : throw new EliteException($"Ship model '{shipName}' not found.");
+
+    public IShip CreateAsteroid() => RNG.Random(256) > 253 ? CreateShip("RockHermit") : CreateShip("Asteroid");
+
+    public IShip CreateLoneWolf()
     {
         int rnd = RNG.Random(256);
         return ((rnd & 3) + (rnd > 127 ? 1 : 0)) switch
         {
-            0 => new CobraMk3Lone(_draw),
-            1 => new AspMk2(_draw),
-            2 => new PythonLone(_draw),
-            3 => new FerDeLance(_draw),
-            4 => new Moray(_draw),
+            0 => CreateShip("CobraMk3Lone"),
+            1 => CreateShip("AspMk2"),
+            2 => CreateShip("PythonLone"),
+            3 => CreateShip("FerDeLance"),
+            4 => CreateShip("Moray"),
             _ => throw new EliteException(),
         };
     }
 
-    internal IShip CreatePackHunter() => RNG.Random(7) switch
+    public IShip CreatePackHunter() => RNG.Random(7) switch
     {
-        0 => new Sidewinder(_draw),
-        1 => new Mamba(_draw),
-        2 => new Krait(_draw),
-        3 => new Adder(_draw),
-        4 => new Gecko(_draw),
-        5 => new CobraMk1(_draw),
-        6 => new Worm(_draw),
+        0 => CreateShip("Sidewinder"),
+        1 => CreateShip("Mamba"),
+        2 => CreateShip("Krait"),
+        3 => CreateShip("Adder"),
+        4 => CreateShip("Gecko"),
+        5 => CreateShip("CobraMk1"),
+        6 => CreateShip("Worm"),
         _ => throw new EliteException(),
     };
 
-    internal IShip CreatePirate() => RNG.Random(4) switch
+    public IShip CreatePirate() => RNG.Random(4) switch
     {
-        0 => new Sidewinder(_draw),
-        1 => new Mamba(_draw),
-        2 => new Krait(_draw),
-        3 => new Adder(_draw),
+        0 => CreateShip("Sidewinder"),
+        1 => CreateShip("Mamba"),
+        2 => CreateShip("Krait"),
+        3 => CreateShip("Adder"),
         _ => throw new EliteException(),
     };
 
-    internal IShip CreateTrader() => RNG.Random(4) switch
+    public IShip CreateTrader() => RNG.Random(4) switch
     {
-        0 => new CobraMk3(_draw),
-        1 => new Python(_draw),
-        2 => new Boa(_draw),
-        3 => new Anaconda(_draw),
+        0 => CreateShip("CobraMk3"),
+        1 => CreateShip("Python"),
+        2 => CreateShip("Boa"),
+        3 => CreateShip("Anaconda"),
         _ => throw new EliteException(),
     };
 
-    internal List<IShip> CreateParade() => new()
+    public List<IShip> CreateParade() => new()
     {
-        { new Missile(_draw) },
-        { new Coriolis(_draw) },
-        { new EscapeCapsule(_draw) },
-        { new Alloy(_draw) },
-        { new CargoCannister(_draw) },
-        { new Boulder(_draw) },
-        { new Asteroid(_draw) },
-        { new RockSplinter(_draw) },
-        { new Shuttle(_draw) },
-        { new Transporter(_draw) },
-        { new CobraMk3(_draw) },
-        { new Python(_draw) },
-        { new Boa(_draw) },
-        { new Anaconda(_draw) },
-        { new RockHermit(_draw) },
-        { new Viper(_draw) },
-        { new Sidewinder(_draw) },
-        { new Mamba(_draw) },
-        { new Krait(_draw) },
-        { new Adder(_draw) },
-        { new Gecko(_draw) },
-        { new CobraMk1(_draw) },
-        { new Worm(_draw) },
-        { new AspMk2(_draw) },
-        { new FerDeLance(_draw) },
-        { new Moray(_draw) },
-        { new Thargoid(_draw) },
-        { new Tharglet(_draw) },
-        { new DodecStation(_draw) },
+        { CreateShip("Missile") },
+        { CreateShip("Coriolis") },
+        { CreateShip("EscapeCapsule") },
+        { CreateShip("Alloy") },
+        { CreateShip("CargoCannister") },
+        { CreateShip("Boulder") },
+        { CreateShip("Asteroid") },
+        { CreateShip("RockSplinter") },
+        { CreateShip("Shuttle") },
+        { CreateShip("Transporter") },
+        { CreateShip("CobraMk3") },
+        { CreateShip("Python") },
+        { CreateShip("Boa") },
+        { CreateShip("Anaconda") },
+        { CreateShip("RockHermit") },
+        { CreateShip("Viper") },
+        { CreateShip("Sidewinder") },
+        { CreateShip("Mamba") },
+        { CreateShip("Krait") },
+        { CreateShip("Adder") },
+        { CreateShip("Gecko") },
+        { CreateShip("CobraMk1") },
+        { CreateShip("Worm") },
+        { CreateShip("AspMk2") },
+        { CreateShip("FerDeLance") },
+        { CreateShip("Moray") },
+        { CreateShip("Thargoid") },
+        { CreateShip("Tharglet") },
+        { CreateShip("DodecStation") },
     };
+
+    // TODO: create ships purely from metadata
+    private static IShip CreateShipFromName(string name, string modelPath, IEliteDraw draw)
+    {
+        Type? type = (Type.GetType(name) ??
+            Assembly.GetCallingAssembly().GetType("EliteSharpLib.Ships." + name))
+            ?? throw new EliteException($"Type '{name}' could not be found.");
+
+#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
+        object? instance = Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.NonPublic, null, [draw], null);
+#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
+        if (instance is IShip ship)
+        {
+            ship.Model = ModelReader.Read(modelPath, draw.Palette);
+            return ship;
+        }
+
+        throw new EliteException($"Type '{name}' is not an IShip.");
+    }
 }

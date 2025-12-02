@@ -12,19 +12,22 @@ internal sealed class QuitView : IView
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
+    private readonly uint _colorGold;
 
     internal QuitView(GameState gameState, IEliteDraw draw, IKeyboard keyboard)
     {
         _gameState = gameState;
         _draw = draw;
         _keyboard = keyboard;
+
+        _colorGold = draw.Palette["Gold"];
     }
 
     public void Draw()
     {
         _draw.DrawViewHeader("GAME OPTIONS");
 
-        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "QUIT GAME (Y/N)?", (int)FontType.Large, EliteColors.Gold);
+        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "QUIT GAME (Y/N)?", (int)FontType.Large, _colorGold);
     }
 
     public void HandleInput()

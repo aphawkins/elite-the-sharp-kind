@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Graphics;
+using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;
 using Moq;
@@ -13,30 +13,32 @@ namespace EliteSharpLib.Tests.Suns;
 
 public class GradientSunTests
 {
-    private readonly Mock<IEliteDraw> _drawMoq;
-
-    public GradientSunTests() => _drawMoq = MockSetup.MockDraw();
-
     [Fact]
     public void DrawGradientSun()
     {
         // Arrange
-        GradientSun sun = new(_drawMoq.Object);
+        Mock<IGraphics> mockGraphics = new();
+        FakeEliteDraw fakeEliteDraw = new()
+        {
+            Graphics = mockGraphics.Object,
+        };
+        GradientSun sun = new(fakeEliteDraw);
 
         // Act
         sun.Draw();
 
         // Assert
-        _drawMoq.Verify(x => x.Graphics.DrawPixel(
+        mockGraphics.Verify(x => x.DrawPixel(
             It.IsAny<Vector2>(),
-            It.IsAny<FastColor>()));
+            It.IsAny<uint>()));
     }
 
     [Fact]
     public void CloneGradientSun()
     {
         // Arrange
-        GradientSun sun = new(_drawMoq.Object);
+        FakeEliteDraw fakeEliteDraw = new();
+        GradientSun sun = new(fakeEliteDraw);
 
         // Act
         IObject obj = sun.Clone();

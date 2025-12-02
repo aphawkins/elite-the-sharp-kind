@@ -13,7 +13,7 @@ internal static class PlanetFactory
     {
         PlanetType.Fractal => new FractalPlanet(draw, seed),
         PlanetType.Wireframe => new WireframePlanet(draw),
-        PlanetType.Solid => new SolidPlanet(draw, EliteColors.Green),
+        PlanetType.Solid => new SolidPlanet(draw),
         PlanetType.Striped => new StripedPlanet(draw),
         _ => throw new EliteException(),
     };

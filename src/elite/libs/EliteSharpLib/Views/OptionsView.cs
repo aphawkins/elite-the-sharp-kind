@@ -5,7 +5,6 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using Useful.Controls;
-using Useful.Graphics;
 
 namespace EliteSharpLib.Views;
 
@@ -16,6 +15,9 @@ internal sealed class OptionsView : IView
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
+    private readonly uint _colorWhite;
+    private readonly uint _colorLightRed;
+    private readonly uint _colorLightGrey;
 
     private readonly (string Label, bool DockedOnly)[] _optionList =
     [
@@ -32,6 +34,10 @@ internal sealed class OptionsView : IView
         _gameState = gameState;
         _draw = draw;
         _keyboard = keyboard;
+
+        _colorWhite = draw.Palette["White"];
+        _colorLightRed = draw.Palette["LightRed"];
+        _colorLightGrey = draw.Palette["LightGrey"];
     }
 
     public void Draw()
@@ -46,10 +52,10 @@ internal sealed class OptionsView : IView
 
             if (i == _highlightedItem)
             {
-                _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, EliteColors.LightRed);
+                _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, _colorLightRed);
             }
 
-            FastColor col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? EliteColors.LightGrey : EliteColors.White;
+            uint col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? _colorLightGrey : _colorWhite;
 
             _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, (int)FontType.Small, col);
         }
@@ -58,22 +64,22 @@ internal sealed class OptionsView : IView
             _draw.ScannerTop - 80,
             $"Version: {typeof(OptionsView).Assembly.GetName().Version}",
             (int)FontType.Small,
-            EliteColors.White);
+            _colorWhite);
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 60,
             "The Sharp Kind - Andy Hawkins 2023",
             (int)FontType.Small,
-            EliteColors.White);
+            _colorWhite);
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 40,
             "The New Kind - Christian Pinder 1999-2001",
             (int)FontType.Small,
-            EliteColors.White);
+            _colorWhite);
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 20,
             "Original Code - Ian Bell & David Braben",
             (int)FontType.Small,
-            EliteColors.White);
+            _colorWhite);
     }
 
     public void HandleInput()

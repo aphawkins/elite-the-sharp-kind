@@ -18,9 +18,9 @@ public class BitmapFileTests
         Assert.Equal(width, bitmap.Width);
         Assert.Equal(height, bitmap.Height);
         Assert.Equal(32, bitmap.BitsPerPixel);
-        Assert.Equal(BaseColors.Red, bitmap.GetPixel(0, 0));
-        Assert.Equal(BaseColors.TransparentBlack, bitmap.GetPixel(0, 1));
-        Assert.Equal(BaseColors.TransparentBlack, bitmap.GetPixel(1, 0));
-        Assert.Equal(BaseColors.TransparentBlack, bitmap.GetPixel(1, 1));
+        Assert.Equal(BaseColors.Red.Argb, bitmap.GetPixel(0, 0));
+        Assert.Equal(BaseColors.TransparentBlack.Argb, bitmap.GetPixel(0, 1));
+        Assert.Equal(BaseColors.TransparentBlack.Argb, bitmap.GetPixel(1, 0));
+        Assert.Equal(BaseColors.TransparentBlack.Argb, bitmap.GetPixel(1, 1));
     }
 }

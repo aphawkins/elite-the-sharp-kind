@@ -27,6 +27,8 @@ internal sealed class CommanderStatusView : IView
     private readonly int _equipmentWidth = 200;
     private readonly GameState _gameState;
     private readonly PlanetController _planet;
+    private readonly uint _colorGreen;
+    private readonly uint _colorWhite;
 
     private readonly (int Score, string Title)[] _ratings =
     [
@@ -60,6 +62,9 @@ internal sealed class CommanderStatusView : IView
         _trade = trade;
         _planet = planet;
         _universe = universe;
+
+        _colorGreen = draw.Palette["Green"];
+        _colorWhite = draw.Palette["White"];
     }
 
     public void Draw()
@@ -108,7 +113,7 @@ internal sealed class CommanderStatusView : IView
 
         _draw.DrawViewHeader($"COMMANDER {_gameState.Cmdr.Name}");
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 58), "Present System:", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 58), "Present System:", (int)FontType.Small, _colorGreen);
 
         if (!_gameState.InWitchspace)
         {
@@ -116,66 +121,66 @@ internal sealed class CommanderStatusView : IView
                 new(200 + _draw.Offset, 58),
                 _planet.NamePlanet(_gameState.DockedPlanet).CapitaliseFirstLetter(),
                 (int)FontType.Small,
-                EliteColors.White);
+                _colorWhite);
         }
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Hyperspace System:", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Hyperspace System:", (int)FontType.Small, _colorGreen);
         _draw.Graphics.DrawTextLeft(
             new(200 + _draw.Offset, 74),
             _planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter(),
             (int)FontType.Small,
-            EliteColors.White);
+            _colorWhite);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 90), "Condition:", (int)FontType.Small, EliteColors.Green);
-        _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 90), _conditionText[condition], (int)FontType.Small, EliteColors.White);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 90), "Condition:", (int)FontType.Small, _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 90), _conditionText[condition], (int)FontType.Small, _colorWhite);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Fuel:", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Fuel:", (int)FontType.Small, _colorGreen);
         _draw.Graphics
-            .DrawTextLeft(new(200 + _draw.Offset, 106), $"{_ship.Fuel:N1} Light Years", (int)FontType.Small, EliteColors.White);
+            .DrawTextLeft(new(200 + _draw.Offset, 106), $"{_ship.Fuel:N1} Light Years", (int)FontType.Small, _colorWhite);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 122), "Cash:", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 122), "Cash:", (int)FontType.Small, _colorGreen);
         _draw.Graphics
-            .DrawTextLeft(new(200 + _draw.Offset, 122), $"{_trade.Credits:N1} Credits", (int)FontType.Small, EliteColors.White);
+            .DrawTextLeft(new(200 + _draw.Offset, 122), $"{_trade.Credits:N1} Credits", (int)FontType.Small, _colorWhite);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Legal Status:", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Legal Status:", (int)FontType.Small, _colorGreen);
         _draw.Graphics.DrawTextLeft(
             new(200 + _draw.Offset, 138),
             _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender",
             (int)FontType.Small,
-            EliteColors.White);
+            _colorWhite);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 154), "Rating:", (int)FontType.Small, EliteColors.Green);
-        _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 154), rating, (int)FontType.Small, EliteColors.White);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 154), "Rating:", (int)FontType.Small, _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 154), rating, (int)FontType.Small, _colorWhite);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 186), "EQUIPMENT:", (int)FontType.Small, EliteColors.Green);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 186), "EQUIPMENT:", (int)FontType.Small, _colorGreen);
 
         if (_ship.CargoCapacity > 20)
         {
-            _draw.Graphics.DrawTextLeft(position, "Large Cargo Bay", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, "Large Cargo Bay", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.HasEscapeCapsule)
         {
-            _draw.Graphics.DrawTextLeft(position, "Escape Capsule", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, "Escape Capsule", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.HasFuelScoop)
         {
-            _draw.Graphics.DrawTextLeft(position, "Fuel Scoops", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, "Fuel Scoops", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.HasECM)
         {
-            _draw.Graphics.DrawTextLeft(position, "E.C.M. System", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, "E.C.M. System", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.HasEnergyBomb)
         {
-            _draw.Graphics.DrawTextLeft(position, "Energy Bomb", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, "Energy Bomb", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
@@ -185,43 +190,43 @@ internal sealed class CommanderStatusView : IView
                 position,
                 _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit",
                 (int)FontType.Small,
-                EliteColors.White);
+                _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.HasDockingComputer)
         {
-            _draw.Graphics.DrawTextLeft(position, "Docking Computers", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, "Docking Computers", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.HasGalacticHyperdrive)
         {
-            _draw.Graphics.DrawTextLeft(position, "Galactic Hyperspace", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, "Galactic Hyperspace", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.LaserFront.Type != LaserType.None)
         {
-            _draw.Graphics.DrawTextLeft(position, $"Front {_ship.LaserFront.Name} Laser", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, $"Front {_ship.LaserFront.Name} Laser", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.LaserRear.Type != LaserType.None)
         {
-            _draw.Graphics.DrawTextLeft(position, $"Rear {_ship.LaserRear.Name} Laser", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, $"Rear {_ship.LaserRear.Name} Laser", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.LaserLeft.Type != LaserType.None)
         {
-            _draw.Graphics.DrawTextLeft(position, $"Left {_ship.LaserLeft.Name} Laser", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, $"Left {_ship.LaserLeft.Name} Laser", (int)FontType.Small, _colorWhite);
             IncrementPosition();
         }
 
         if (_ship.LaserRight.Type != LaserType.None)
         {
-            _draw.Graphics.DrawTextLeft(position, $"Right {_ship.LaserRight.Name} Laser", (int)FontType.Small, EliteColors.White);
+            _draw.Graphics.DrawTextLeft(position, $"Right {_ship.LaserRight.Name} Laser", (int)FontType.Small, _colorWhite);
         }
     }
 

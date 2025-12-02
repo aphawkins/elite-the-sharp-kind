@@ -5,7 +5,6 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Graphics;
 
 namespace EliteSharpLib.Planets;
 
@@ -13,18 +12,19 @@ internal sealed class SolidPlanet : IObject
 {
     private readonly IEliteDraw _draw;
     private readonly PlanetRenderer _planetRenderer;
+    private readonly uint _color;
 
-    internal SolidPlanet(IEliteDraw draw, in FastColor color)
+    internal SolidPlanet(IEliteDraw draw)
     {
         _draw = draw;
-        Color = color;
+        _color = draw.Palette["Green"];
         _planetRenderer = new(draw);
     }
 
     private SolidPlanet(SolidPlanet other)
     {
         _draw = other._draw;
-        Color = other.Color;
+        _color = other._color;
         _planetRenderer = other._planetRenderer;
     }
 
@@ -40,8 +40,6 @@ internal sealed class SolidPlanet : IObject
 
     public ShipType Type { get; set; } = ShipType.Planet;
 
-    internal FastColor Color { get; }
-
     public IObject Clone()
     {
         SolidPlanet planet = new(this);
@@ -54,7 +52,7 @@ internal sealed class SolidPlanet : IObject
         (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
         if (v != null)
         {
-            _draw.Graphics.DrawCircleFilled(v.Value.Position, v.Value.Radius, Color);
+            _draw.Graphics.DrawCircleFilled(v.Value.Position, v.Value.Radius, _color);
         }
     }
 }

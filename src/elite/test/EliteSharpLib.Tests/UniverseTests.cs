@@ -2,9 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Graphics;
+using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
-using Moq;
 
 namespace EliteSharpLib.Tests;
 
@@ -14,9 +13,9 @@ public class UniverseTests
     public void UniverseAddShip()
     {
         // Arrange
-        Mock<IEliteDraw> drawMoq = new();
-        Universe universe = new(drawMoq.Object);
-        IShip ship = new CobraMk3(drawMoq.Object);
+        FakeShipFactory fakeShipFactory = new();
+        Universe universe = new(fakeShipFactory);
+        IShip ship = fakeShipFactory.CreateShip("CobraMk3");
 
         // Act
         universe.AddNewShip(ship);
@@ -37,12 +36,12 @@ public class UniverseTests
     public void UniverseRemoveShip()
     {
         // Arrange
-        Mock<IEliteDraw> drawMoq = new();
-        Universe universe = new(drawMoq.Object);
-        IObject ship = new CobraMk3(drawMoq.Object);
+        FakeShipFactory fakeShipFactory = new();
+        Universe universe = new(fakeShipFactory);
+        IShip ship = fakeShipFactory.CreateShip("CobraMk3");
 
         // Act
-        universe.AddNewShip((IShip)ship);
+        universe.AddNewShip(ship);
         universe.RemoveShip(ship);
 
         // Assert

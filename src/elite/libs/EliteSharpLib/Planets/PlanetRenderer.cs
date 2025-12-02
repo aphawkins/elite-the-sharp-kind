@@ -4,7 +4,6 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
-using Useful.Graphics;
 
 namespace EliteSharpLib.Planets;
 
@@ -13,7 +12,7 @@ internal class PlanetRenderer
     internal const int LandXMax = 128;
     internal const int LandYMax = 128;
 #pragma warning disable SA1401 // Fields should be private
-    internal readonly FastColor[,] _landscape = new FastColor[LandXMax + 1, LandYMax + 1];
+    internal readonly uint[,] _landscape = new uint[LandXMax + 1, LandYMax + 1];
 #pragma warning restore SA1401 // Fields should be private
     private readonly IEliteDraw _draw;
 

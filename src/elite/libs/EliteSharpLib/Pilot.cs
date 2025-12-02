@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful.Assets.Models;
 using Useful.Audio;
 using Useful.Maths;
 
@@ -38,7 +39,7 @@ internal sealed class Pilot
             Rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(),
             Location = Vector4.Zero,
             Acceleration = 0,
-
+            Model = ModelReader.None,
             ////Type = (ShipType)(-96),
             Velocity = _ship.Speed,
             Bravery = 0,

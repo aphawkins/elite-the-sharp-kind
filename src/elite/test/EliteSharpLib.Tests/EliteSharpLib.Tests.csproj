@@ -44,7 +44,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\useful\libs\Useful.Graphics\Useful.Graphics.csproj" />
+    <ProjectReference Include="..\..\..\useful\test\Useful.Fakes\Useful.Fakes.csproj" />
     <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
+    <ProjectReference Include="..\EliteSharpLib.Fakes\EliteSharpLib.Fakes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

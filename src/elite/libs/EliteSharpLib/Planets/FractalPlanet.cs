@@ -6,21 +6,28 @@ using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Graphics;
 
 namespace EliteSharpLib.Planets;
 
 internal sealed class FractalPlanet : IObject
 {
     private readonly IEliteDraw _draw;
-
     private readonly PlanetRenderer _planetRenderer;
+    private readonly uint _colorBlue;
+    private readonly uint _colorGreen;
+    private readonly uint _colorLightBlue;
+    private readonly uint _colorLightGreen;
 
     internal FractalPlanet(IEliteDraw draw, int seed)
     {
         _draw = draw;
         Seed = seed;
         _planetRenderer = new(draw);
+        _colorBlue = draw.Palette["Blue"];
+        _colorGreen = draw.Palette["Green"];
+        _colorLightBlue = draw.Palette["LightBlue"];
+        _colorLightGreen = draw.Palette["LightGreen"];
+
         GenerateLandscape(seed);
     }
 
@@ -64,11 +71,11 @@ internal sealed class FractalPlanet : IObject
     /// <summary>
     /// Calculate the midpoint between two given points.
     /// </summary>
-    private FastColor CalcMidpointColor(int sx, int sy, int ex, int ey)
-        => new(Math.Clamp(
-            ((_planetRenderer._landscape[sx, sy].Argb + _planetRenderer._landscape[ex, ey].Argb) / 2) + (uint)RNG.GaussianRandom(-7, 8),
+    private uint CalcMidpointColor(int sx, int sy, int ex, int ey)
+        => Math.Clamp(
+            ((_planetRenderer._landscape[sx, sy] + _planetRenderer._landscape[ex, ey]) / 2) + (uint)RNG.GaussianRandom(-7, 8),
             0,
-            255));
+            255);
 
     /// <summary>
     /// Generate a fractal landscape. Uses midpoint displacement method.
@@ -84,7 +91,7 @@ internal sealed class FractalPlanet : IObject
         {
             for (int x = 0; x <= PlanetRenderer.LandXMax; x += d)
             {
-                _planetRenderer._landscape[x, y] = new((uint)random.Next(255));
+                _planetRenderer._landscape[x, y] = (uint)random.Next(255);
             }
         }
 
@@ -102,10 +109,10 @@ internal sealed class FractalPlanet : IObject
             {
                 float dist = (x * x) + (y * y);
                 bool dark = dist > 10000;
-                FastColor color = _planetRenderer._landscape[x, y];
-                _planetRenderer._landscape[x, y] = color.Argb > 166
-                    ? (dark ? EliteColors.Green : EliteColors.LightGreen)
-                    : (dark ? EliteColors.Blue : EliteColors.LightBlue);
+                uint color = _planetRenderer._landscape[x, y];
+                _planetRenderer._landscape[x, y] = color > 166
+                    ? (dark ? _colorGreen : _colorLightGreen)
+                    : (dark ? _colorBlue : _colorLightBlue);
             }
         }
     }
