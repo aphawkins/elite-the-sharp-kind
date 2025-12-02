@@ -12,6 +12,7 @@
     <File Path=".gitattributes" />
     <File Path=".github/workflows/build-and-package.yml" />
     <File Path=".gitignore" />
+    <File Path="coverage.runsettings" />
     <File Path="Directory.Build.props" />
   </Folder>
   <Folder Name="/src/" />

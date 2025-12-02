@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- Configurations for test execution -->
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0">
+        <Configuration>
+          <!-- Include assemblies -->
+          <CodeCoverage>
+            <ModulePaths>
+              <Include>
+                <ModulePath>.*Useful.*</ModulePath>
+                <ModulePath>.*EliteSharp.*</ModulePath>
+                <ModulePath>.*EliteSharpLib.*</ModulePath>
+              </Include>
+            </ModulePaths>
+
+            <!-- Exclude system and test assemblies -->
+            <Exclude>
+              <ModulePath>.*Test.*</ModulePath>
+              <ModulePath>.*Moq.*</ModulePath>
+              <ModulePath>.*System.*</ModulePath>
+              <ModulePath>.*Microsoft.*</ModulePath>
+            </Exclude>
+          </CodeCoverage>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

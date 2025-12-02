@@ -28,8 +28,15 @@ jobs:
       - name: Build solution
         run: dotnet build --configuration Release /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
 
-      - name: Run tests
-        run: dotnet test --configuration Release --no-build --verbosity normal /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
+      - name: Run tests with coverage
+        run: dotnet-coverage collect -f cobertura -o coverage.cobertura.xml -- \
+          dotnet test --configuration Release --settings coverage.runsettings --no-build --verbosity normal /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.cobertura.xml
 
       - name: Publish EliteSharp Windows
         run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
