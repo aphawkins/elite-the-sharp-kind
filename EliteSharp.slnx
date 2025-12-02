@@ -12,8 +12,12 @@
     <File Path=".gitattributes" />
     <File Path=".github/workflows/build-and-package.yml" />
     <File Path=".gitignore" />
+    <File Path="CODE_OF_CONDUCT.md" />
+    <File Path="CONTRIBUTING.md" />
     <File Path="coverage.runsettings" />
     <File Path="Directory.Build.props" />
+    <File Path="LICENSE" />
+    <File Path="SECURITY.md" />
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/elite/" />

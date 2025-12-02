@@ -19,6 +19,12 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+
+      - name: Add dotnet tools to PATH
+        run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Set version variables
         id: vars
         run: |
