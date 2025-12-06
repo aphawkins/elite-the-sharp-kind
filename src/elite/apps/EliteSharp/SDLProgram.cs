@@ -18,13 +18,14 @@ internal static class SDLProgram
 {
     private const string Title = "Elite - The Sharp Kind";
 
-#if QHD
-    private const int ScreenWidth = 960;
-    private const int ScreenHeight = 540;
-#else
+    // Get these from config
+    ////#if QHD
+    ////    private const int ScreenWidth = 960;
+    ////    private const int ScreenHeight = 540;
+    ////#else
     private const int ScreenWidth = 512;
     private const int ScreenHeight = 512;
-#endif
+    ////#endif
 
     public static void Main()
     {
@@ -42,11 +43,10 @@ internal static class SDLProgram
 
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(SDLProgram));
 
-#if SOFTWARERENDERER
+        // TODO: Use DI to provide the abstraction
         using SoftwareAbstraction abstraction = new(ScreenWidth, ScreenHeight, Title);
-#else
-        using SDLAbstraction abstraction = new(ScreenWidth, ScreenHeight, Title);
-#endif
+        ////IAssetLocator assetLocator = AssetLocator.Create();
+        ////using SDLAbstraction abstraction = new(ScreenWidth, ScreenHeight, Title, assetLocator);
 
         EliteMain elite = new(abstraction);
 

@@ -16,5 +16,7 @@ public interface IAssetLocator
 
     public IDictionary<int, string> MusicPaths { get; }
 
+    public IDictionary<int, string> SoundFontPaths { get; }
+
     public IDictionary<int, string> SfxPaths { get; }
 }

@@ -17,6 +17,8 @@ public class AssetManifest
 
     public Dictionary<string, string> Music { get; set; } = [];
 
+    public Dictionary<string, string> SoundFonts { get; set; } = [];
+
     public Dictionary<string, string> FontsBitmap { get; set; } = [];
 
     public Dictionary<string, string> FontsTrueType { get; set; } = [];

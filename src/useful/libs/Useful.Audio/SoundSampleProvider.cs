@@ -4,6 +4,7 @@ using System.Diagnostics;
 using MeltySynth;
 using NAudio.Vorbis;
 using NAudio.Wave;
+using Useful.Assets;
 
 namespace Useful.Audio;
 
@@ -16,11 +17,16 @@ public class SoundSampleProvider : ISampleProvider
 
     public required WaveFormat WaveFormat { get; init; }
 
-    public static SoundSampleProvider Create(string fileName)
+    public static SoundSampleProvider Create(IAssetLocator assetLocator, string fileName)
     {
+        Guard.ArgumentNull(assetLocator);
+
+        Debug.Assert(assetLocator.SoundFontPaths.Count > 0, "SoundFonts are missing.");
+        string soundFontPath = assetLocator.SoundFontPaths[0];
+
         using WaveStream audioReader = Path.GetExtension(fileName) switch
         {
-            ".mid" => GetMidiStream(fileName),
+            ".mid" => GetMidiStream(fileName, soundFontPath),
             ".ogg" => new VorbisWaveReader(fileName),
             _ => new AudioFileReader(fileName),
         };
@@ -63,13 +69,11 @@ public class SoundSampleProvider : ISampleProvider
         return [.. audioData];
     }
 
-    private static WaveFileReader GetMidiStream(string filename)
+    private static WaveFileReader GetMidiStream(string filename, string soundFontPath)
     {
         // TODO: Use asset locator to get the filepath
         const int sampleRate = 44100;
-        Synthesizer synthesizer = new(
-            "./Assets/Music/TimGM6mb.sf2",
-            sampleRate);
+        Synthesizer synthesizer = new(soundFontPath, sampleRate);
         MidiFile midiFile = new(filename);
         MidiFileSequencer sequencer = new(synthesizer);
         sequencer.Play(midiFile, false);

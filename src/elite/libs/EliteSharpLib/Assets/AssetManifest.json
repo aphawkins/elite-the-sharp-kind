@@ -32,6 +32,9 @@
     "EliteTheme": "theme.mid",
     "BlueDanube": "danube.mid"
   },
+  "SoundFonts": {
+    "Default": "TimGM6mb.sf2"
+  },
   "FontsBitmap": {
     "Small": "font1.bmp",
     "Large": "font2.bmp"

@@ -13,7 +13,10 @@
             "args": [],
             "cwd": "${workspaceFolder}/src/elite/apps/EliteSharp",
             "console": "internalConsole",
-            "stopAtEntry": false
+            "stopAtEntry": false,
+            "sourceFileMap": {
+                "/_": "${workspaceFolder}"
+            }
         },
         {
             "name": ".NET Core Attach",

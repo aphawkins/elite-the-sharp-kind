@@ -189,7 +189,7 @@
     <None Update="Assets\Music\theme.ogg">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Music\TimGM6mb.sf2">
+    <None Update="Assets\SoundFonts\TimGM6mb.sf2">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Palette\palette.json">

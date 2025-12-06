@@ -35,6 +35,9 @@ public sealed class AssetLocator : IAssetLocator
     public IDictionary<int, string> SfxPaths => _assetManifest.Sfx.Select((kvp, index) => new { kvp, index })
         .ToDictionary(x => x.index, x => Path.Combine(_baseDirectory, "SFX", x.kvp.Value));
 
+    public IDictionary<int, string> SoundFontPaths => _assetManifest.SoundFonts.Select((kvp, index) => new { kvp, index })
+        .ToDictionary(x => x.index, x => Path.Combine(_baseDirectory, "SoundFonts", x.kvp.Value));
+
     public IDictionary<string, string> ModelPaths
         => _assetManifest.Models.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "Models", x.Value));
 

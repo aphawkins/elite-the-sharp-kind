@@ -34,11 +34,11 @@ public sealed class SoftwareSound : ISound, IDisposable
         {
             _music = assetLocator.MusicPaths.ToDictionary(
                 x => x.Key,
-                x => SoundSampleProvider.Create(x.Value)),
+                x => SoundSampleProvider.Create(assetLocator, x.Value)),
 
             _sfx = assetLocator.SfxPaths.ToDictionary(
                 x => x.Key,
-                x => SoundSampleProvider.Create(x.Value)),
+                x => SoundSampleProvider.Create(assetLocator, x.Value)),
         };
     }
 

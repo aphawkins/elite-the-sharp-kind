@@ -20,4 +20,6 @@ public sealed class FakeAssetLocator : IAssetLocator
     public IDictionary<int, string> SfxPaths { get; } = new Dictionary<int, string>();
 
     public IDictionary<string, string> ModelPaths { get; } = new Dictionary<string, string>();
+
+    public IDictionary<int, string> SoundFontPaths { get; } = new Dictionary<int, string>();
 }

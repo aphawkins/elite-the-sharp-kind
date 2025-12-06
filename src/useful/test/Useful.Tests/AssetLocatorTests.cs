@@ -24,6 +24,7 @@ public class AssetLocatorTests
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Music"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "SFX"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Models"));
+        Directory.CreateDirectory(Path.Combine(assetsRoot, "SoundFonts"));
 
         string manifestPath = Path.Combine(assetsRoot, "AssetManifest.json");
 
@@ -54,6 +55,10 @@ public class AssetLocatorTests
             Models = new Dictionary<string, string>
             {
                 { "Ship", "ship.model" },
+            },
+            SoundFonts = new Dictionary<string, string>
+            {
+                { "Fontella", "fontella.sf2" },
             },
         };
 
@@ -101,6 +106,11 @@ public class AssetLocatorTests
             IDictionary<string, string> modelPaths = locator.ModelPaths;
             Assert.Single(modelPaths);
             Assert.Equal(Path.Combine(assetsRoot, "Models", "ship.model"), modelPaths["Ship"]);
+
+            // Assert - SoundFonts
+            IDictionary<int, string> soundFontPaths = locator.SoundFontPaths;
+            Assert.Single(soundFontPaths);
+            Assert.Equal(Path.Combine(assetsRoot, "SoundFonts", "fontella.sf2"), soundFontPaths[0]);
         }
         finally
         {
@@ -267,6 +277,7 @@ public class AssetLocatorTests
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Music"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "SFX"));
         Directory.CreateDirectory(Path.Combine(assetsRoot, "Models"));
+        Directory.CreateDirectory(Path.Combine(assetsRoot, "SoundFonts"));
 
         string manifestPath = Path.Combine(assetsRoot, "AssetManifest.json");
 
@@ -297,6 +308,10 @@ public class AssetLocatorTests
             {
                 { "Ship", "ship.model" },
             },
+            SoundFonts = new Dictionary<string, string>
+            {
+                { "Fontella", "fontella.sf2" },
+            },
         };
 
         string manifestJson = JsonSerializer.Serialize(manifestObject);
@@ -315,6 +330,7 @@ public class AssetLocatorTests
             Assert.Single(locator.MusicPaths);
             Assert.Single(locator.SfxPaths);
             Assert.Single(locator.ModelPaths);
+            Assert.Single(locator.SoundFontPaths);
         }
         finally
         {
