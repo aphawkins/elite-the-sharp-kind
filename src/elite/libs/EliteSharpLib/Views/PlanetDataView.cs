@@ -192,14 +192,14 @@ internal sealed class PlanetDataView : IView
             RNG.Seed.D ^= RNG.Seed.B;
         }
 
-        string planet_description = string.Empty;
+        StringBuilder planet_description = new();
 
         ExpandDescription("<14> is <22>.", ref planet_description);
 
-        return planet_description;
+        return planet_description.ToString();
     }
 
-    private void ExpandDescription(string source, ref string planetDescription)
+    private void ExpandDescription(string source, ref StringBuilder planetDescription)
     {
         StringBuilder temp = new();
         int k = 0;
@@ -262,13 +262,12 @@ internal sealed class PlanetDataView : IView
                 {
                     case 'H':
                         temp = new(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter());
-                        planetDescription += temp;
+                        planetDescription.Append(temp);
                         break;
 
                     case 'I':
                         temp = new(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter());
-                        planetDescription += temp;
-                        planetDescription += "ian";
+                        planetDescription.Append(temp).Append("ian");
                         break;
 
                     case 'R':
@@ -278,14 +277,14 @@ internal sealed class PlanetDataView : IView
                             int x = RNG.GenerateRandomNumber() & 62;
                             if (i == 0)
                             {
-                                planetDescription += _planet.Digrams[x];
+                                planetDescription.Append(_planet.Digrams[x]);
                             }
                             else
                             {
-                                planetDescription += char.ToLowerInvariant(_planet.Digrams[x]);
+                                planetDescription.Append(char.ToLowerInvariant(_planet.Digrams[x]));
                             }
 
-                            planetDescription += char.ToLowerInvariant(_planet.Digrams[x + 1]);
+                            planetDescription.Append(char.ToLowerInvariant(_planet.Digrams[x + 1]));
                         }
 
                         break;
@@ -294,7 +293,7 @@ internal sealed class PlanetDataView : IView
                 continue;
             }
 
-            planetDescription += source[j + k];
+            planetDescription.Append(source[j + k]);
         }
     }
 }
