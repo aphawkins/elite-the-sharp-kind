@@ -13,7 +13,8 @@ public class UniverseTests
     public void UniverseAddShip()
     {
         // Arrange
-        FakeShipFactory fakeShipFactory = new();
+        FakeEliteDraw draw = new();
+        FakeShipFactory fakeShipFactory = new(draw);
         Universe universe = new(fakeShipFactory);
         IShip ship = fakeShipFactory.CreateShip("CobraMk3");
 
@@ -36,7 +37,8 @@ public class UniverseTests
     public void UniverseRemoveShip()
     {
         // Arrange
-        FakeShipFactory fakeShipFactory = new();
+        FakeEliteDraw draw = new();
+        FakeShipFactory fakeShipFactory = new(draw);
         Universe universe = new(fakeShipFactory);
         IShip ship = fakeShipFactory.CreateShip("CobraMk3");
 

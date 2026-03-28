@@ -117,6 +117,7 @@ internal class ShipFactory : IShipFactory
             Assembly.GetCallingAssembly().GetType("EliteSharpLib.Ships." + name))
             ?? throw new EliteException($"Type '{name}' could not be found.");
 
+        // TODO: fix this hack to avoid making ship constructors public
 #pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
         object? instance = Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.NonPublic, null, [draw], null);
 #pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields

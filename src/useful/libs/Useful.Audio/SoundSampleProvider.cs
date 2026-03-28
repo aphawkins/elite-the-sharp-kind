@@ -56,7 +56,8 @@ public class SoundSampleProvider : ISampleProvider
         Debug.Assert(audioReader.WaveFormat.SampleRate == 44100, "Audio should have correct sample rate.");
         Debug.Assert(audioReader.WaveFormat.BitsPerSample == 32, "Audio should have correct bits per sample.");
 
-        List<float> audioData = new((int)(audioReader.Length / 4));
+        List<float> audioData = [];
+        audioData.Add((int)(audioReader.Length / 4));
         float[] readBuffer = new float[audioReader.WaveFormat.SampleRate * audioReader.WaveFormat.Channels];
         int samplesRead;
         ISampleProvider sampleProvider = audioReader.ToSampleProvider();
