@@ -107,17 +107,17 @@ internal class ShipBase : IShip
             trans_mat[i] = Rotmat[i];
         }
 
-        // Build transform matrix from trans_mat array
-        Matrix4x4 transform = trans_mat.ToMatrix4x4();
-
         // Camera vector (unit) - keep previous call to UnitVector
-        Vector4 camera_vec = Vector4.Transform(Location, transform);
+        Vector4 camera_vec = Vector4.Transform(Location, trans_mat.ToMatrix4x4());
         _ = VectorMaths.UnitVector(camera_vec);
 
         // The following three swaps mirror original behavior
         (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
         (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
         (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
+
+        // Build transform matrix from the swapped trans_mat array
+        Matrix4x4 transform = trans_mat.ToMatrix4x4();
 
         // Transform model points
         TransformModelPoints(transform, pointList);

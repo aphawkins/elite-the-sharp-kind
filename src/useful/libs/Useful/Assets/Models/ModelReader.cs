@@ -58,7 +58,7 @@ public static class ModelReader
                 //// Debug.Assert(point[i] >= 0 && point[i] < faceNormals.Count, "Face normal index is within range");
                 if (point[i] >= 0 && point[i] < faceNormals.Count)
                 {
-                    faceNormals.Add(faceNormals[point[i]]);
+                    pointFaceNormals.Add(faceNormals[point[i]]);
                 }
             }
 

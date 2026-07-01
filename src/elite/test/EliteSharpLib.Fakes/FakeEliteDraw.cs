@@ -36,6 +36,8 @@ internal class FakeEliteDraw : IEliteDraw
 
     public float Top => 0;
 
+    public List<(Vector2[] Points, uint FaceColor, float AverageZ)> DrawnPolygons { get; } = [];
+
     public void DrawBorder()
     {
     }
@@ -49,8 +51,7 @@ internal class FakeEliteDraw : IEliteDraw
     }
 
     public void DrawPolygonFilled(Vector2[] points, uint faceColor, float averageZ)
-    {
-    }
+        => DrawnPolygons.Add((points, faceColor, averageZ));
 
     public void DrawTextPretty(Vector2 position, float width, string text)
     {

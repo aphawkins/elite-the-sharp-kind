@@ -46,6 +46,29 @@ public class VectorMathsTests
     }
 
     [Fact]
+    public void ToMatrix4x4MapsEachVectorComponentToItsOwnColumn()
+    {
+        // Arrange: every component distinct, so any mixed-up mapping is caught.
+        Vector4[] vecs =
+        [
+            new(1, 2, 3, 4),
+            new(5, 6, 7, 8),
+            new(9, 10, 11, 12),
+            new(13, 14, 15, 16),
+        ];
+
+        // Act
+        Matrix4x4 result = vecs.ToMatrix4x4();
+
+        // Assert: column i of the matrix must equal vecs[i], including the fourth vector -
+        // regression test for a bug where M24 read from vecs[2].Y instead of vecs[3].Y.
+        AssertVectorAlmostEqual(vecs[0], new(result.M11, result.M21, result.M31, result.M41));
+        AssertVectorAlmostEqual(vecs[1], new(result.M12, result.M22, result.M32, result.M42));
+        AssertVectorAlmostEqual(vecs[2], new(result.M13, result.M23, result.M33, result.M43));
+        AssertVectorAlmostEqual(vecs[3], new(result.M14, result.M24, result.M34, result.M44));
+    }
+
+    [Fact]
     public void UnitVectorReturnsNormalizedVector()
     {
         Vector4 v = new(2, 0, 0, 0);

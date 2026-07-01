@@ -48,7 +48,7 @@ public static class Extensions
             v0.Y,
             v1.Y,
             v2.Y,
-            v2.Y,
+            v3.Y,
             v0.Z,
             v1.Z,
             v2.Z,
