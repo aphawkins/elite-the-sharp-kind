@@ -45,21 +45,20 @@ public static class VectorMaths
         0);
 
     /// <summary>
-    /// Rotate a 4x4 matrix by two angles.
-    /// The rotation is applied to the matrix' basis vectors: result = r * matrix,
-    /// where R is the rotation composed of a rotation about Z by <paramref name="alpha"/>
-    /// followed by a rotation about X by <paramref name="beta"/>.
+    /// Rotate a 4x4 matrix's basis vectors (columns) by two small angles.
+    /// Each column is independently rotated by the same small-angle approximation:
+    /// a rotation about Z by <paramref name="alpha"/> followed by a rotation about X by <paramref name="beta"/>.
     /// </summary>
-    public static Vector4[] RotateVector(Vector4[] vec, float alpha, float beta)
+    public static Matrix4x4 RotateVector(Matrix4x4 matrix, float alpha, float beta)
     {
-        Guard.ArgumentNull(vec);
+        Vector4[] vec = matrix.ToVector4Array();
 
         for (int i = 0; i < vec.Length; i++)
         {
             RotateVector(ref vec[i], alpha, beta);
         }
 
-        return vec;
+        return vec.ToMatrix4x4();
     }
 
     /// <summary>

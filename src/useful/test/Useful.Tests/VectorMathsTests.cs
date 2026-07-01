@@ -100,13 +100,12 @@ public class VectorMathsTests
             new Vector4(0, 0, 0, 0)
         ];
 
-        Vector4[] copy = [matrix[0], matrix[1], matrix[2], matrix[3]];
+        Matrix4x4 result = VectorMaths.RotateVector(matrix.ToMatrix4x4(), 0, 0);
+        Vector4[] resultVecs = result.ToVector4Array();
 
-        Vector4[] result = VectorMaths.RotateVector(copy, 0, 0);
-
-        AssertVectorAlmostEqual(matrix[0], result[0]);
-        AssertVectorAlmostEqual(matrix[1], result[1]);
-        AssertVectorAlmostEqual(matrix[2], result[2]);
+        AssertVectorAlmostEqual(matrix[0], resultVecs[0]);
+        AssertVectorAlmostEqual(matrix[1], resultVecs[1]);
+        AssertVectorAlmostEqual(matrix[2], resultVecs[2]);
     }
 
     [Fact]
@@ -120,20 +119,20 @@ public class VectorMathsTests
             new Vector4(0, 0, 0, 0)
         ];
 
-        Vector4[] input = [matrix[0], matrix[1], matrix[2], matrix[3]];
-        Vector4[] result = VectorMaths.RotateVector(input, 0.1f, 0.2f);
+        Matrix4x4 result = VectorMaths.RotateVector(matrix.ToMatrix4x4(), 0.1f, 0.2f);
+        Vector4[] resultVecs = result.ToVector4Array();
 
         // Should not be identical to input for non-zero angles
         bool anyDifferent =
-            Math.Abs(result[0].X - matrix[0].X) > Tolerance ||
-                Math.Abs(result[0].Y - matrix[0].Y) > Tolerance ||
-                Math.Abs(result[0].Z - matrix[0].Z) > Tolerance ||
-                Math.Abs(result[1].X - matrix[1].X) > Tolerance ||
-                Math.Abs(result[1].Y - matrix[1].Y) > Tolerance ||
-                Math.Abs(result[1].Z - matrix[1].Z) > Tolerance ||
-                Math.Abs(result[2].X - matrix[2].X) > Tolerance ||
-                Math.Abs(result[2].Y - matrix[2].Y) > Tolerance ||
-                Math.Abs(result[2].Z - matrix[2].Z) > Tolerance;
+            Math.Abs(resultVecs[0].X - matrix[0].X) > Tolerance ||
+                Math.Abs(resultVecs[0].Y - matrix[0].Y) > Tolerance ||
+                Math.Abs(resultVecs[0].Z - matrix[0].Z) > Tolerance ||
+                Math.Abs(resultVecs[1].X - matrix[1].X) > Tolerance ||
+                Math.Abs(resultVecs[1].Y - matrix[1].Y) > Tolerance ||
+                Math.Abs(resultVecs[1].Z - matrix[1].Z) > Tolerance ||
+                Math.Abs(resultVecs[2].X - matrix[2].X) > Tolerance ||
+                Math.Abs(resultVecs[2].Y - matrix[2].Y) > Tolerance ||
+                Math.Abs(resultVecs[2].Z - matrix[2].Z) > Tolerance;
 
         Assert.True(anyDifferent, "RotateVector should modify the vectors when angles are non-zero.");
     }
