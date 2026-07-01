@@ -61,7 +61,7 @@ internal class ShipBase : IShip
 
     public string Name { get; set; } = string.Empty;
 
-    public Vector4[] Rotmat { get; set; } = new Vector4[4];
+    public Matrix4x4 Rotmat { get; set; }
 
     public float RotX { get; set; }
 
@@ -100,27 +100,12 @@ internal class ShipBase : IShip
     public virtual void Draw()
     {
         Vector4[] pointList = new Vector4[100];
-        Vector4[] trans_mat = new Vector4[4];
-
-        for (int i = 0; i < Rotmat.Length; i++)
-        {
-            trans_mat[i] = Rotmat[i];
-        }
 
         // Camera vector (unit) - keep previous call to UnitVector
-        Vector4 camera_vec = Vector4.Transform(Location, trans_mat.ToMatrix4x4());
-        _ = VectorMaths.UnitVector(camera_vec);
-
-        // The following three swaps mirror original behavior
-        (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
-        (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
-        (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
-
-        // Build transform matrix from the swapped trans_mat array
-        Matrix4x4 transform = trans_mat.ToMatrix4x4();
+        _ = VectorMaths.UnitVector(Vector4.Transform(Location, Rotmat));
 
         // Transform model points
-        TransformModelPoints(transform, pointList);
+        TransformModelPoints(Rotmat, pointList);
 
         // Draw faces
         DrawModelFaces(pointList);

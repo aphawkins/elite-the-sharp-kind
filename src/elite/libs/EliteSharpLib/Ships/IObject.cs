@@ -12,7 +12,7 @@ internal interface IObject
 
     public Vector4 Location { get; set; }
 
-    public Vector4[] Rotmat { get; set; }
+    public Matrix4x4 Rotmat { get; set; }
 
     public float RotX { get; set; }
 

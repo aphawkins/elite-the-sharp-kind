@@ -36,7 +36,7 @@ internal sealed class Pilot
     {
         ShipBase ship = new(_draw)
         {
-            Rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(),
+            Rotmat = VectorMaths.GetLeftHandedBasisMatrix,
             Location = Vector4.Zero,
             Acceleration = 0,
             Model = ModelReader.None,
@@ -47,8 +47,10 @@ internal sealed class Pilot
             RotX = 0,
         };
 
-        ship.Rotmat[0].X = -1;
-        ship.Rotmat[2].Z = 1;
+        Matrix4x4 rotmat = ship.Rotmat;
+        rotmat.M11 = -1;
+        rotmat.M33 = 1;
+        ship.Rotmat = rotmat;
 
         AutoPilotShip(ship);
 
@@ -147,7 +149,7 @@ internal sealed class Pilot
         }
 
         Vector4 vec = VectorMaths.UnitVector(diff);
-        float dir = VectorMaths.VectorDotProduct(_universe.StationOrSun.Rotmat[2], vec);
+        float dir = VectorMaths.VectorDotProduct(_universe.StationOrSun.Rotmat.GetRow(2), vec);
 
         if (dir < 0.9722)
         {
@@ -155,7 +157,7 @@ internal sealed class Pilot
             return;
         }
 
-        dir = VectorMaths.VectorDotProduct(ship.Rotmat[2], vec);
+        dir = VectorMaths.VectorDotProduct(ship.Rotmat.GetRow(2), vec);
 
         if (dir < -0.9444)
         {
@@ -203,14 +205,14 @@ internal sealed class Pilot
         cnt2 = 0.8055f;
 
         nvec = VectorMaths.UnitVector(vec);
-        direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[2]);
+        direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(2));
 
         if (direction < -0.6666)
         {
             rat2 = 0;
         }
 
-        dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[1]);
+        dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(1));
 
         if (direction < -0.861)
         {
@@ -228,7 +230,7 @@ internal sealed class Pilot
 
         if (MathF.Abs(ship.RotZ) < 16)
         {
-            dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[0]);
+            dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(0));
             ship.RotZ = 0;
 
             if ((MathF.Abs(dir) * 2) >= rat2)
@@ -294,7 +296,7 @@ internal sealed class Pilot
 
         ship.RotZ = 0;
 
-        float dir = VectorMaths.VectorDotProduct(ship.Rotmat[0], _universe.StationOrSun.Rotmat[1]);
+        float dir = VectorMaths.VectorDotProduct(ship.Rotmat.GetRow(0), _universe.StationOrSun.Rotmat.GetRow(1));
 
         if (MathF.Abs(dir) >= 0.9166f)
         {
@@ -336,10 +338,11 @@ internal sealed class Pilot
     private void FlyToStationFront(IShip ship)
     {
         Vector4 vec = _universe.StationOrSun!.Location - ship.Location;
+        Vector4 stationNose = _universe.StationOrSun.Rotmat.GetRow(2);
 
-        vec.X += _universe.StationOrSun.Rotmat[2].X * 768;
-        vec.Y += _universe.StationOrSun.Rotmat[2].Y * 768;
-        vec.Z += _universe.StationOrSun.Rotmat[2].Z * 768;
+        vec.X += stationNose.X * 768;
+        vec.Y += stationNose.Y * 768;
+        vec.Z += stationNose.Z * 768;
 
         FlyToVector(ship, vec);
     }

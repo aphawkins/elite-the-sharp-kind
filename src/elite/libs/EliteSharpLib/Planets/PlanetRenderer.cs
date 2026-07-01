@@ -42,10 +42,10 @@ internal class PlanetRenderer
     /// <summary>
     /// Draw a solid planet. Based on Doros circle drawing alogorithm.
     /// </summary>
-    internal void Draw(Vector2 centre, float radius, Vector4[] vec)
+    internal void Draw(Vector2 centre, float radius, Matrix4x4 rotmat)
     {
-        float vx = vec[1].X * 65536;
-        float vy = vec[1].Y * 65536;
+        float vx = rotmat.M21 * 65536;
+        float vy = rotmat.M22 * 65536;
         float x = MathF.Floor(radius);
         float s = -x;
         float y = 0;

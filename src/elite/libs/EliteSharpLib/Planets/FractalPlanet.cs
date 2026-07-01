@@ -42,7 +42,7 @@ internal sealed class FractalPlanet : IObject
 
     public Vector4 Location { get; set; } = new(0, 0, 123456, 0);
 
-    public Vector4[] Rotmat { get; set; } = new Vector4[4];
+    public Matrix4x4 Rotmat { get; set; }
 
     public float RotX { get; set; }
 

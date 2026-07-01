@@ -39,7 +39,7 @@ internal sealed class Universe
         }
 
         newObj.Location = location;
-        newObj.Rotmat = rotmat.ToVector4Array();
+        newObj.Rotmat = rotmat;
         if (newObj is IShip newShip)
         {
             newShip.RotX = rotx;
@@ -88,10 +88,10 @@ internal sealed class Universe
         return AddNewShip(ship, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0);
     }
 
-    internal void AddNewStation(int planetTechLevel, Vector4 position, Vector4[] rotmat)
+    internal void AddNewStation(int planetTechLevel, Vector4 position, Matrix4x4 rotmat)
     {
         IShip station = planetTechLevel >= 10 ? _shipFactory.CreateShip("DodecStation") : _shipFactory.CreateShip("Coriolis");
-        AddNewShip(station, position, rotmat.ToMatrix4x4(), 0, -127);
+        AddNewShip(station, position, rotmat, 0, -127);
     }
 
     internal void ClearUniverse()

@@ -260,8 +260,6 @@ internal sealed class EliteDraw : IEliteDraw
 
     private void DrawExplosion(IShip ship)
     {
-        Vector4[] trans_mat = new Vector4[4];
-
         if (ship.ExpDelta > 251)
         {
             ship.Flags |= ShipProperties.Remove;
@@ -275,12 +273,14 @@ internal sealed class EliteDraw : IEliteDraw
             return;
         }
 
-        for (int i = 0; i < ship.Rotmat.Length; i++)
-        {
-            trans_mat[i] = ship.Rotmat[i];
-        }
+        // The camera-vector / face-normal visibility check needs the rotation matrix's basis
+        // vectors transposed relative to the direct point-transform below (see ShipBase.Draw).
+        Matrix4x4 cameraMat = ship.Rotmat;
+        (cameraMat.M12, cameraMat.M21) = (cameraMat.M21, cameraMat.M12);
+        (cameraMat.M13, cameraMat.M31) = (cameraMat.M31, cameraMat.M13);
+        (cameraMat.M23, cameraMat.M32) = (cameraMat.M32, cameraMat.M23);
 
-        Vector4 camera_vec = Vector4.Transform(ship.Location, trans_mat.ToMatrix4x4());
+        Vector4 camera_vec = Vector4.Transform(ship.Location, cameraMat);
         camera_vec = VectorMaths.UnitVector(camera_vec);
 
         foreach (FaceNormal faceNormal in ship.Model.FaceNormals)
@@ -290,16 +290,13 @@ internal sealed class EliteDraw : IEliteDraw
             faceNormal.Visible = cos_angle < -0.13;
         }
 
-        (trans_mat[1].X, trans_mat[0].Y) = (trans_mat[0].Y, trans_mat[1].X);
-        (trans_mat[2].X, trans_mat[0].Z) = (trans_mat[0].Z, trans_mat[2].X);
-        (trans_mat[2].Y, trans_mat[1].Z) = (trans_mat[1].Z, trans_mat[2].Y);
         int np = 0;
 
         for (int i = 0; i < ship.Model.Points.Count; i++)
         {
             if (ship.Model.Points[i].FaceNormals.Any(x => x.Visible))
             {
-                Vector4 vec = Vector4.Transform(ship.Model.Points[i].Coords, trans_mat.ToMatrix4x4());
+                Vector4 vec = Vector4.Transform(ship.Model.Points[i].Coords, ship.Rotmat);
                 Vector4 r = vec + ship.Location;
                 Vector2 position = new(r.X, -r.Y);
                 position *= 256 / r.Z;

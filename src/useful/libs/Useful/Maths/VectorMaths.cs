@@ -45,32 +45,34 @@ public static class VectorMaths
         0);
 
     /// <summary>
-    /// Rotate a 4x4 matrix's basis vectors (columns) by two small angles.
-    /// Each column is independently rotated by the same small-angle approximation:
+    /// Rotate a 4x4 matrix's basis vectors by two small angles.
+    /// Each basis vector is independently rotated by the same small-angle approximation:
     /// a rotation about Z by <paramref name="alpha"/> followed by a rotation about X by <paramref name="beta"/>.
     /// </summary>
     public static Matrix4x4 RotateVector(Matrix4x4 matrix, float alpha, float beta)
     {
-        Vector4[] vec = matrix.ToVector4Array();
-
-        for (int i = 0; i < vec.Length; i++)
+        for (int i = 0; i < 4; i++)
         {
-            RotateVector(ref vec[i], alpha, beta);
+            Vector4 row = matrix.GetRow(i);
+            RotateVector(ref row, alpha, beta);
+            matrix = matrix.WithRow(i, row);
         }
 
-        return vec.ToMatrix4x4();
+        return matrix;
     }
 
     /// <summary>
-    /// Tidy a 4x4 basis matrix: orthonormalise basis columns using Gram-Schmidt with safe fallbacks.
-    /// Preserves translation/bottom-row components.
+    /// Tidy a 4x4 basis matrix: orthonormalise basis vectors 0-2 using Gram-Schmidt with safe
+    /// fallbacks. Preserves each vector's original W component and leaves vector 3 unchanged.
     /// </summary>
     public static Matrix4x4 OrthonormalizeBasis(Matrix4x4 mat)
     {
-        // Extract basis columns consistent with existing MultiplyVector / ToVector3Array mapping:
-        // column0 = (M11, M21, M31), column1 = (M12, M22, M32), column2 = (M13, M23, M33)
-        Vector3 c1 = new(mat.M12, mat.M22, mat.M32);
-        Vector3 c2 = new(mat.M13, mat.M23, mat.M33);
+        Vector4 side = mat.GetRow(0);
+        Vector4 roof = mat.GetRow(1);
+        Vector4 nose = mat.GetRow(2);
+
+        Vector3 c1 = new(roof.X, roof.Y, roof.Z);
+        Vector3 c2 = new(nose.X, nose.Y, nose.Z);
 
         // Gram-Schmidt style orthonormalisation with fallbacks for degenerate inputs.
 
@@ -106,24 +108,10 @@ public static class VectorMaths
             u0 /= len0;
         }
 
-        // Rebuild matrix preserving the original translation and bottom row (M14..M44)
-        return new Matrix4x4(
-            u0.X,
-            u1.X,
-            u2.X,
-            mat.M14,
-            u0.Y,
-            u1.Y,
-            u2.Y,
-            mat.M24,
-            u0.Z,
-            u1.Z,
-            u2.Z,
-            mat.M34,
-            mat.M41,
-            mat.M42,
-            mat.M43,
-            mat.M44);
+        return mat
+            .WithRow(0, new Vector4(u0, side.W))
+            .WithRow(1, new Vector4(u1, roof.W))
+            .WithRow(2, new Vector4(u2, nose.W));
     }
 
     /// <summary>

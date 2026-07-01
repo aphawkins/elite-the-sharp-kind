@@ -552,7 +552,7 @@ internal sealed class Combat
         }
 
         nvec = VectorMaths.UnitVector(ship.Location);
-        direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[2]);
+        direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(2));
 
         if (ship.Location.Length() < 8192 &&
             direction <= -0.833 &&
@@ -709,7 +709,7 @@ internal sealed class Combat
     {
         const int rat = 3;
         const float rat2 = 0.111f;
-        float dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[1]);
+        float dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(1));
 
         if (direction < -0.861)
         {
@@ -727,7 +727,7 @@ internal sealed class Combat
 
         if (MathF.Abs(ship.RotZ) < 16)
         {
-            dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat[0]);
+            dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(0));
 
             ship.RotZ = 0;
 
@@ -926,7 +926,10 @@ internal sealed class Combat
 
         if (_universe.AddNewShip(trader))
         {
-            trader.Rotmat[2].Z = -1.0f;
+            Matrix4x4 rotmat = trader.Rotmat;
+            rotmat.M33 = -1.0f;
+            trader.Rotmat = rotmat;
+
             trader.RotZ = RNG.Random(8);
             trader.Velocity = RNG.Random(32) | 16;
             trader.Bravery = RNG.Random(128);
@@ -947,10 +950,7 @@ internal sealed class Combat
 
     private bool LaunchEnemy(IShip sourceShip, IShip newShip, ShipProperties flags, int bravery)
     {
-        Debug.Assert(sourceShip.Rotmat != null, "Rotation matrix should not be null.");
-        Vector4[] rotmat = sourceShip.Rotmat.Cloner();
-
-        if (!_universe.AddNewShip(newShip, sourceShip.Location, rotmat.ToMatrix4x4(), sourceShip.RotX, sourceShip.RotZ))
+        if (!_universe.AddNewShip(newShip, sourceShip.Location, sourceShip.Rotmat, sourceShip.RotX, sourceShip.RotZ))
         {
             return false;
         }
@@ -958,7 +958,7 @@ internal sealed class Combat
         if (sourceShip.Flags.HasFlag(ShipProperties.Station))
         {
             newShip.Velocity = 32;
-            newShip.Location += newShip.Rotmat[2] * 2;
+            newShip.Location += newShip.Rotmat.GetRow(2) * 2;
         }
 
         newShip.Flags |= flags;
@@ -1103,7 +1103,7 @@ internal sealed class Combat
         }
 
         nvec = VectorMaths.UnitVector(vec);
-        direction = VectorMaths.VectorDotProduct(nvec, missile.Rotmat[2]);
+        direction = VectorMaths.VectorDotProduct(nvec, missile.Rotmat.GetRow(2));
         nvec.X = -nvec.X;
         nvec.Y = -nvec.Y;
         nvec.Z = -nvec.Z;

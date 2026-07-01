@@ -32,7 +32,7 @@ internal sealed class Intro2View : IView
     private readonly uint _colorWhite;
 
     private int _direction;
-    private Vector4[] _rotmat = new Vector4[4];
+    private Matrix4x4 _rotmat;
     private int _shipNo;
     private int _showTime;
 
@@ -92,7 +92,7 @@ internal sealed class Intro2View : IView
         _ship.Climb = 0;
         _combat.Reset();
         _stars.CreateNewStars();
-        _rotmat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
+        _rotmat = VectorMaths.GetLeftHandedBasisMatrix;
         _audio.PlayMusic((int)MusicType.BlueDanube, true);
 
         AddNewShip();
@@ -138,7 +138,7 @@ internal sealed class Intro2View : IView
         _showTime = 0;
         _direction = -100;
         _universe.ClearUniverse();
-        if (!_universe.AddNewShip(_parade[_shipNo], new(0, 0, 4500, 0), _rotmat.ToMatrix4x4(), -127, -127))
+        if (!_universe.AddNewShip(_parade[_shipNo], new(0, 0, 4500, 0), _rotmat, -127, -127))
         {
             Debug.WriteLine("Failed to create first Parade ship");
         }

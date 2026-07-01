@@ -162,7 +162,7 @@ internal sealed class Space
         }
 
         Matrix4x4 rotmat = VectorMaths.GetRightHandedBasisMatrix;
-        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256, 0), rotmat.ToVector4Array());
+        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, new(0, 0, -256, 0), rotmat);
 
         _gameState.IsDocked = false;
     }
@@ -445,10 +445,10 @@ internal sealed class Space
 
     private static int RotateByteLeft(int x) => ((x << 1) | (x >> 7)) & 255;
 
-    private static void RotateXFirst(ref float a, ref float b, float direction)
+    private static (Vector4 A, Vector4 B) RotateXFirst(Vector4 a, Vector4 b, float direction)
     {
-        float fx = a;
-        float ux = b;
+        Vector4 fx = a;
+        Vector4 ux = b;
 
         if (direction < 0)
         {
@@ -460,6 +460,8 @@ internal sealed class Space
             a = fx - (fx / 512) - (ux / 19);
             b = ux - (ux / 512) + (fx / 19);
         }
+
+        return (a, b);
     }
 
     private void SwitchToView(IObject flip)
@@ -468,14 +470,18 @@ internal sealed class Space
         {
             flip.Location = new(-flip.Location.X, flip.Location.Y, -flip.Location.Z, 0);
 
-            flip.Rotmat[0].X = -flip.Rotmat[0].X;
-            flip.Rotmat[0].Z = -flip.Rotmat[0].Z;
+            Matrix4x4 rotmat = flip.Rotmat;
 
-            flip.Rotmat[1].X = -flip.Rotmat[1].X;
-            flip.Rotmat[1].Z = -flip.Rotmat[1].Z;
+            rotmat.M11 = -rotmat.M11;
+            rotmat.M13 = -rotmat.M13;
 
-            flip.Rotmat[2].X = -flip.Rotmat[2].X;
-            flip.Rotmat[2].Z = -flip.Rotmat[2].Z;
+            rotmat.M21 = -rotmat.M21;
+            rotmat.M23 = -rotmat.M23;
+
+            rotmat.M31 = -rotmat.M31;
+            rotmat.M33 = -rotmat.M33;
+
+            flip.Rotmat = rotmat;
             return;
         }
 
@@ -489,17 +495,21 @@ internal sealed class Space
                 return;
             }
 
-            tmp = flip.Rotmat[0].X;
-            flip.Rotmat[0].X = flip.Rotmat[0].Z;
-            flip.Rotmat[0].Z = -tmp;
+            Matrix4x4 rotmat = flip.Rotmat;
 
-            tmp = flip.Rotmat[1].X;
-            flip.Rotmat[1].X = flip.Rotmat[1].Z;
-            flip.Rotmat[1].Z = -tmp;
+            tmp = rotmat.M11;
+            rotmat.M11 = rotmat.M13;
+            rotmat.M13 = -tmp;
 
-            tmp = flip.Rotmat[2].X;
-            flip.Rotmat[2].X = flip.Rotmat[2].Z;
-            flip.Rotmat[2].Z = -tmp;
+            tmp = rotmat.M21;
+            rotmat.M21 = rotmat.M23;
+            rotmat.M23 = -tmp;
+
+            tmp = rotmat.M31;
+            rotmat.M31 = rotmat.M33;
+            rotmat.M33 = -tmp;
+
+            flip.Rotmat = rotmat;
             return;
         }
 
@@ -513,17 +523,21 @@ internal sealed class Space
                 return;
             }
 
-            tmp = flip.Rotmat[0].X;
-            flip.Rotmat[0].X = -flip.Rotmat[0].Z;
-            flip.Rotmat[0].Z = tmp;
+            Matrix4x4 rotmat = flip.Rotmat;
 
-            tmp = flip.Rotmat[1].X;
-            flip.Rotmat[1].X = -flip.Rotmat[1].Z;
-            flip.Rotmat[1].Z = tmp;
+            tmp = rotmat.M11;
+            rotmat.M11 = -rotmat.M13;
+            rotmat.M13 = tmp;
 
-            tmp = flip.Rotmat[2].X;
-            flip.Rotmat[2].X = -flip.Rotmat[2].Z;
-            flip.Rotmat[2].Z = tmp;
+            tmp = rotmat.M21;
+            rotmat.M21 = -rotmat.M23;
+            rotmat.M23 = tmp;
+
+            tmp = rotmat.M31;
+            rotmat.M31 = -rotmat.M33;
+            rotmat.M33 = tmp;
+
+            flip.Rotmat = rotmat;
         }
     }
 
@@ -678,7 +692,7 @@ internal sealed class Space
             return true;
         }
 
-        float fz = ship.Rotmat[2].Z;
+        float fz = ship.Rotmat.M33;
 
         if (fz > -0.90)
         {
@@ -692,7 +706,7 @@ internal sealed class Space
             return false;
         }
 
-        float ux = ship.Rotmat[1].X;
+        float ux = ship.Rotmat.M21;
         if (ux < 0)
         {
             ux = -ux;
@@ -709,23 +723,27 @@ internal sealed class Space
         Vector4 position = location - (vec * 65792);
 
         ////  VectorMaths.set_init_matrix (rotmat);
-        Matrix4x4 rotmat = default;
+        Matrix4x4 rotmat = new(
+            1,
+            0,
+            0,
+            0,
+            vec.X,
+            vec.Z,
+            -vec.Y,
+            0,
+            vec.X,
+            vec.Y,
+            vec.Z,
+            0,
+            0,
+            0,
+            0,
+            0);
 
-        rotmat.M11 = 1;
-        rotmat.M21 = 0;
-        rotmat.M31 = 0;
+        Matrix4x4 orthonormalized = VectorMaths.OrthonormalizeBasis(rotmat);
 
-        rotmat.M12 = vec.X;
-        rotmat.M22 = vec.Z;
-        rotmat.M32 = -vec.Y;
-
-        rotmat.M13 = vec.X;
-        rotmat.M23 = vec.Y;
-        rotmat.M33 = vec.Z;
-
-        rotmat = VectorMaths.OrthonormalizeBasis(rotmat);
-
-        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, rotmat.ToVector4Array());
+        _universe.AddNewStation(_gameState.CurrentPlanetData.TechLevel, position, orthonormalized);
     }
 
     /// <summary>
@@ -744,7 +762,7 @@ internal sealed class Space
         {
             if ((int)shipEx.Velocity != 0)
             {
-                position += shipEx.Rotmat[2] * shipEx.Velocity * 1.5f;
+                position += shipEx.Rotmat.GetRow(2) * shipEx.Velocity * 1.5f;
             }
 
             if (shipEx.Acceleration != 0)
@@ -777,7 +795,7 @@ internal sealed class Space
             beta = 0.0f;
         }
 
-        obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat.ToMatrix4x4(), alpha, beta).ToVector4Array();
+        obj.Rotmat = VectorMaths.RotateVector(obj.Rotmat, alpha, beta);
 
         if (obj.Flags.HasFlag(ShipProperties.Dead))
         {
@@ -790,9 +808,8 @@ internal sealed class Space
         // If necessary rotate the object around the X axis...
         if ((int)rotx != 0)
         {
-            RotateXFirst(ref obj.Rotmat[2].X, ref obj.Rotmat[1].X, rotx);
-            RotateXFirst(ref obj.Rotmat[2].Y, ref obj.Rotmat[1].Y, rotx);
-            RotateXFirst(ref obj.Rotmat[2].Z, ref obj.Rotmat[1].Z, rotx);
+            (Vector4 nose, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(2), obj.Rotmat.GetRow(1), rotx);
+            obj.Rotmat = obj.Rotmat.WithRow(2, nose).WithRow(1, roof);
 
             if (rotx is not 127 and not -127)
             {
@@ -803,9 +820,8 @@ internal sealed class Space
         // If necessary rotate the object around the Z axis...
         if ((int)rotz != 0)
         {
-            RotateXFirst(ref obj.Rotmat[0].X, ref obj.Rotmat[1].X, rotz);
-            RotateXFirst(ref obj.Rotmat[0].Y, ref obj.Rotmat[1].Y, rotz);
-            RotateXFirst(ref obj.Rotmat[0].Z, ref obj.Rotmat[1].Z, rotz);
+            (Vector4 side, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(0), obj.Rotmat.GetRow(1), rotz);
+            obj.Rotmat = obj.Rotmat.WithRow(0, side).WithRow(1, roof);
 
             if (rotz is not 127 and not -127)
             {
@@ -814,6 +830,6 @@ internal sealed class Space
         }
 
         // Orthonormalize the rotation matrix...
-        obj.Rotmat = VectorMaths.OrthonormalizeBasis(obj.Rotmat.ToMatrix4x4()).ToVector4Array();
+        obj.Rotmat = VectorMaths.OrthonormalizeBasis(obj.Rotmat);
     }
 }

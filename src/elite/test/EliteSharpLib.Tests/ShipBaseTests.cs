@@ -5,7 +5,6 @@
 using System.Numerics;
 using EliteSharpLib.Fakes;
 using Useful.Assets.Models;
-using Useful.Maths;
 
 namespace EliteSharpLib.Tests;
 
@@ -14,17 +13,27 @@ public class ShipBaseTests
     private const float Tolerance = 0.01f;
 
     [Fact]
-    public void DrawTransformsPointsUsingRotationMatrixAfterAxisSwap()
+    public void DrawTransformsModelPointsUsingRotmatBasisVectors()
     {
-        // Arrange: a non-orthonormal Rotmat with distinct off-diagonal values, so that the
-        // pre-swap and post-swap matrices project points to different screen positions.
-        Vector4[] rotmat =
-        [
-            new(1.0f, 0.2f, 0.3f, 0),
-            new(0.4f, 1.0f, 0.5f, 0),
-            new(0.6f, 0.7f, 1.0f, 0),
-            new(0, 0, 0, 0),
-        ];
+        // Arrange: a non-orthonormal Rotmat with distinct values, so every basis vector's
+        // contribution to the result is independently observable.
+        Matrix4x4 rotmat = new(
+            1.0f,
+            0.2f,
+            0.3f,
+            0,
+            0.4f,
+            1.0f,
+            0.5f,
+            0,
+            0.6f,
+            0.7f,
+            1.0f,
+            0,
+            0,
+            0,
+            0,
+            0);
 
         Vector4 location = new(100, 200, 5000, 0);
         Vector4 pointA = new(10, 20, 30, 0);
@@ -54,40 +63,22 @@ public class ShipBaseTests
         // Act
         ship.Draw();
 
-        // Assert
-        Vector2 expectedA = ProjectWithSwappedMatrix(pointA, rotmat, location, draw);
-        Vector2 expectedB = ProjectWithSwappedMatrix(pointB, rotmat, location, draw);
-        Vector2 wrongA = ProjectWithUnswappedMatrix(pointA, rotmat, location, draw);
+        // Assert: Rotmat[0..2] are the object's basis vectors, so a model-local point should be
+        // transformed into world space as p.X*Rotmat[0] + p.Y*Rotmat[1] + p.Z*Rotmat[2] + Location,
+        // regardless of how Rotmat happens to be stored internally as a Matrix4x4.
+        Vector2 expectedA = ProjectUsingRotmatBasis(pointA, rotmat, location, draw);
+        Vector2 expectedB = ProjectUsingRotmatBasis(pointB, rotmat, location, draw);
 
         (Vector2[] points, uint _, float _) = Assert.Single(draw.DrawnPolygons);
         Assert.Equal(2, points.Length);
 
         AssertVector2AlmostEqual(expectedA, points[0]);
         AssertVector2AlmostEqual(expectedB, points[1]);
-
-        // Regression check: Draw() must not use the pre-swap matrix (the bug fixed in ShipBase.cs).
-        Assert.False(
-            Math.Abs(points[0].X - wrongA.X) < Tolerance && Math.Abs(points[0].Y - wrongA.Y) < Tolerance,
-            "Draw() should use the axis-swapped rotation matrix, not the pre-swap one.");
     }
 
-    private static Vector2 ProjectWithSwappedMatrix(Vector4 point, Vector4[] rotmat, Vector4 location, FakeEliteDraw draw)
+    private static Vector2 ProjectUsingRotmatBasis(Vector4 point, Matrix4x4 rotmat, Vector4 location, FakeEliteDraw draw)
     {
-        Vector4[] transMat = [.. rotmat];
-
-        (transMat[1].X, transMat[0].Y) = (transMat[0].Y, transMat[1].X);
-        (transMat[2].X, transMat[0].Z) = (transMat[0].Z, transMat[2].X);
-        (transMat[2].Y, transMat[1].Z) = (transMat[1].Z, transMat[2].Y);
-
-        return Project(point, transMat, location, draw);
-    }
-
-    private static Vector2 ProjectWithUnswappedMatrix(Vector4 point, Vector4[] rotmat, Vector4 location, FakeEliteDraw draw)
-        => Project(point, rotmat, location, draw);
-
-    private static Vector2 Project(Vector4 point, Vector4[] transMat, Vector4 location, FakeEliteDraw draw)
-    {
-        Vector4 vec = Vector4.Transform(point, transMat.ToMatrix4x4());
+        Vector4 vec = (rotmat.GetRow(0) * point.X) + (rotmat.GetRow(1) * point.Y) + (rotmat.GetRow(2) * point.Z);
         vec += location;
 
         if (vec.Z <= 0)

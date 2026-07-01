@@ -47,7 +47,7 @@ internal static class Extensions
     internal static void CopyTo(this IObject from, IObject to)
     {
         to.Flags = from.Flags;
-        to.Rotmat = from.Rotmat.Cloner();
+        to.Rotmat = from.Rotmat;
         to.RotX = from.RotX;
         to.RotZ = from.RotZ;
         to.Type = from.Type;

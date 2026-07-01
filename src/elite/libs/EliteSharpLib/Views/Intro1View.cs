@@ -88,12 +88,12 @@ internal sealed class Intro1View : IView
         _combat.Reset();
         _universe.ClearUniverse();
 
-        Vector4[] initMatrix = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
+        Matrix4x4 initMatrix = VectorMaths.GetLeftHandedBasisMatrix;
 
         // Ship faces away
-        initMatrix[2].Z = 1;
+        initMatrix.M33 = 1;
         IShip cobraMk3 = _shipFactory.CreateShip("CobraMk3");
-        if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500, 0), initMatrix.ToMatrix4x4(), -127, 127))
+        if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500, 0), initMatrix, -127, 127))
         {
             Debug.WriteLine("Failed to create CobraMk3");
         }

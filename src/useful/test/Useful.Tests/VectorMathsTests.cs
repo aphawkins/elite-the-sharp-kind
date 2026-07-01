@@ -11,61 +11,99 @@ public class VectorMathsTests
     private const float Tolerance = 1e-5f;
 
     [Fact]
-    public void GetInitialMatrixReturnsExpectedValuesAndIsCloned()
+    public void GetLeftHandedBasisMatrixReturnsExpectedValues()
     {
         // Act
-        Vector4[] m1 = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
-        Vector4[] m2 = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array();
+        Matrix4x4 m = VectorMaths.GetLeftHandedBasisMatrix;
 
-        // Assert - values
-        AssertVectorAlmostEqual(new Vector4(1, 0, 0, 0), m1[0]);
-        AssertVectorAlmostEqual(new Vector4(0, 1, 0, 0), m1[1]);
-        AssertVectorAlmostEqual(new Vector4(0, 0, -1, 0), m1[2]);
-        AssertVectorAlmostEqual(new Vector4(0, 0, 0, 0), m1[3]);
-
-        // Assert - clones (different array instances)
-        Assert.False(ReferenceEquals(m1, m2));
-
-        // and different elements instances (structs so reference equality not applicable), ensure modifying one doesn't affect the other
-        m1[0] = new Vector4(9, 9, 9, 0);
-        AssertVectorAlmostEqual(new Vector4(1, 0, 0, 0), m2[0]);
+        // Assert
+        AssertVectorAlmostEqual(new Vector4(1, 0, 0, 0), m.GetRow(0));
+        AssertVectorAlmostEqual(new Vector4(0, 1, 0, 0), m.GetRow(1));
+        AssertVectorAlmostEqual(new Vector4(0, 0, -1, 0), m.GetRow(2));
+        AssertVectorAlmostEqual(new Vector4(0, 0, 0, 0), m.GetRow(3));
     }
 
     [Fact]
     public void MultiplyVectorAppliesMatrixCorrectly()
     {
         // Arrange
-        Vector4[] mat = VectorMaths.GetLeftHandedBasisMatrix.ToVector4Array(); // third row negates Z
         Vector4 v = new(1, 2, 3, 0);
 
-        // Act
-        Vector4 result = Vector4.Transform(v, mat.ToMatrix4x4());
+        // Act -> third row negates Z
+        Vector4 result = Vector4.Transform(v, VectorMaths.GetLeftHandedBasisMatrix);
 
         // Assert -> expected (1,2,-3)
         AssertVectorAlmostEqual(new Vector4(1, 2, -3, 0), result);
     }
 
     [Fact]
-    public void ToMatrix4x4MapsEachVectorComponentToItsOwnColumn()
+    public void GetRowReturnsCorrectRow()
     {
         // Arrange: every component distinct, so any mixed-up mapping is caught.
-        Vector4[] vecs =
-        [
-            new(1, 2, 3, 4),
-            new(5, 6, 7, 8),
-            new(9, 10, 11, 12),
-            new(13, 14, 15, 16),
-        ];
+        Matrix4x4 m = new(
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16);
+
+        // Act & Assert
+        AssertVectorAlmostEqual(new Vector4(1, 2, 3, 4), m.GetRow(0));
+        AssertVectorAlmostEqual(new Vector4(5, 6, 7, 8), m.GetRow(1));
+        AssertVectorAlmostEqual(new Vector4(9, 10, 11, 12), m.GetRow(2));
+        AssertVectorAlmostEqual(new Vector4(13, 14, 15, 16), m.GetRow(3));
+    }
+
+    [Fact]
+    public void GetRowThrowsForInvalidRow()
+    {
+        // Arrange
+        Matrix4x4 m = Matrix4x4.Identity;
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => m.GetRow(4));
+    }
+
+    [Fact]
+    public void WithRowReplacesOnlyTheGivenRow()
+    {
+        // Arrange
+        Matrix4x4 m = Matrix4x4.Identity;
 
         // Act
-        Matrix4x4 result = vecs.ToMatrix4x4();
+        Matrix4x4 result = m.WithRow(2, new Vector4(9, 10, 11, 12));
 
-        // Assert: column i of the matrix must equal vecs[i], including the fourth vector -
-        // regression test for a bug where M24 read from vecs[2].Y instead of vecs[3].Y.
-        AssertVectorAlmostEqual(vecs[0], new(result.M11, result.M21, result.M31, result.M41));
-        AssertVectorAlmostEqual(vecs[1], new(result.M12, result.M22, result.M32, result.M42));
-        AssertVectorAlmostEqual(vecs[2], new(result.M13, result.M23, result.M33, result.M43));
-        AssertVectorAlmostEqual(vecs[3], new(result.M14, result.M24, result.M34, result.M44));
+        // Assert: the requested row changed...
+        AssertVectorAlmostEqual(new Vector4(9, 10, 11, 12), result.GetRow(2));
+
+        // ...the others didn't...
+        AssertVectorAlmostEqual(new Vector4(1, 0, 0, 0), result.GetRow(0));
+        AssertVectorAlmostEqual(new Vector4(0, 1, 0, 0), result.GetRow(1));
+        AssertVectorAlmostEqual(new Vector4(0, 0, 0, 1), result.GetRow(3));
+
+        // ...and the original matrix (a value type) is untouched.
+        AssertVectorAlmostEqual(new Vector4(0, 0, 1, 0), m.GetRow(2));
+    }
+
+    [Fact]
+    public void WithRowThrowsForInvalidRow()
+    {
+        // Arrange
+        Matrix4x4 m = Matrix4x4.Identity;
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => m.WithRow(4, Vector4.Zero));
     }
 
     [Fact]
@@ -92,47 +130,72 @@ public class VectorMathsTests
     [Fact]
     public void RotateVectorWithZeroAnglesIsIdentity()
     {
-        Vector4[] matrix =
-        [
-            new Vector4(1, 2, 3, 0),
-            new Vector4(-1, 4, 0.5f, 0),
-            new Vector4(0.1f, -0.3f, 2.0f, 0),
-            new Vector4(0, 0, 0, 0)
-        ];
+        Matrix4x4 matrix = new(
+            1,
+            2,
+            3,
+            0,
+            -1,
+            4,
+            0.5f,
+            0,
+            0.1f,
+            -0.3f,
+            2.0f,
+            0,
+            0,
+            0,
+            0,
+            0);
 
-        Matrix4x4 result = VectorMaths.RotateVector(matrix.ToMatrix4x4(), 0, 0);
-        Vector4[] resultVecs = result.ToVector4Array();
+        Matrix4x4 result = VectorMaths.RotateVector(matrix, 0, 0);
 
-        AssertVectorAlmostEqual(matrix[0], resultVecs[0]);
-        AssertVectorAlmostEqual(matrix[1], resultVecs[1]);
-        AssertVectorAlmostEqual(matrix[2], resultVecs[2]);
+        AssertVectorAlmostEqual(matrix.GetRow(0), result.GetRow(0));
+        AssertVectorAlmostEqual(matrix.GetRow(1), result.GetRow(1));
+        AssertVectorAlmostEqual(matrix.GetRow(2), result.GetRow(2));
     }
 
     [Fact]
     public void RotateVectorChangesValuesForNonZeroAngles()
     {
-        Vector4[] matrix =
-        [
-            new Vector4(1, 0, 0, 0),
-            new Vector4(0, 1, 0, 0),
-            new Vector4(0, 0, 1, 0),
-            new Vector4(0, 0, 0, 0)
-        ];
+        Matrix4x4 matrix = new(
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0);
 
-        Matrix4x4 result = VectorMaths.RotateVector(matrix.ToMatrix4x4(), 0.1f, 0.2f);
-        Vector4[] resultVecs = result.ToVector4Array();
+        Matrix4x4 result = VectorMaths.RotateVector(matrix, 0.1f, 0.2f);
 
         // Should not be identical to input for non-zero angles
+        Vector4 row0 = matrix.GetRow(0);
+        Vector4 row1 = matrix.GetRow(1);
+        Vector4 row2 = matrix.GetRow(2);
+        Vector4 resultRow0 = result.GetRow(0);
+        Vector4 resultRow1 = result.GetRow(1);
+        Vector4 resultRow2 = result.GetRow(2);
+
         bool anyDifferent =
-            Math.Abs(resultVecs[0].X - matrix[0].X) > Tolerance ||
-                Math.Abs(resultVecs[0].Y - matrix[0].Y) > Tolerance ||
-                Math.Abs(resultVecs[0].Z - matrix[0].Z) > Tolerance ||
-                Math.Abs(resultVecs[1].X - matrix[1].X) > Tolerance ||
-                Math.Abs(resultVecs[1].Y - matrix[1].Y) > Tolerance ||
-                Math.Abs(resultVecs[1].Z - matrix[1].Z) > Tolerance ||
-                Math.Abs(resultVecs[2].X - matrix[2].X) > Tolerance ||
-                Math.Abs(resultVecs[2].Y - matrix[2].Y) > Tolerance ||
-                Math.Abs(resultVecs[2].Z - matrix[2].Z) > Tolerance;
+            Math.Abs(resultRow0.X - row0.X) > Tolerance ||
+                Math.Abs(resultRow0.Y - row0.Y) > Tolerance ||
+                Math.Abs(resultRow0.Z - row0.Z) > Tolerance ||
+                Math.Abs(resultRow1.X - row1.X) > Tolerance ||
+                Math.Abs(resultRow1.Y - row1.Y) > Tolerance ||
+                Math.Abs(resultRow1.Z - row1.Z) > Tolerance ||
+                Math.Abs(resultRow2.X - row2.X) > Tolerance ||
+                Math.Abs(resultRow2.Y - row2.Y) > Tolerance ||
+                Math.Abs(resultRow2.Z - row2.Z) > Tolerance;
 
         Assert.True(anyDifferent, "RotateVector should modify the vectors when angles are non-zero.");
     }
@@ -141,29 +204,39 @@ public class VectorMathsTests
     public void TidyMatrixProducesOrthogonalUnitVectors()
     {
         // Construct a deliberately messy matrix
-        Vector4[] mat =
-        [
-            new Vector4(0.2f, 0.9f, 0.1f, 0),
-            new Vector4(0.9f, -0.1f, 0.3f, 0),
-            new Vector4(0.3f, 0.4f, 0.7f, 0),
-            new Vector4(0, 0, 0, 0),
-        ];
+        Matrix4x4 mat = new(
+            0.2f,
+            0.9f,
+            0.1f,
+            0,
+            0.9f,
+            -0.1f,
+            0.3f,
+            0,
+            0.3f,
+            0.4f,
+            0.7f,
+            0,
+            0,
+            0,
+            0,
+            0);
 
         // Act
-        mat = VectorMaths.OrthonormalizeBasis(mat.ToMatrix4x4()).ToVector4Array();
+        Matrix4x4 result = VectorMaths.OrthonormalizeBasis(mat);
+        Vector4 row0 = result.GetRow(0);
+        Vector4 row1 = result.GetRow(1);
+        Vector4 row2 = result.GetRow(2);
 
         // Assert: each vector should be unit length
-        float len0 = mat[0].Length();
-        float len1 = mat[1].Length();
-        float len2 = mat[2].Length();
-        Assert.InRange(len0, 1f - Tolerance, 1f + Tolerance);
-        Assert.InRange(len1, 1f - Tolerance, 1f + Tolerance);
-        Assert.InRange(len2, 1f - Tolerance, 1f + Tolerance);
+        Assert.InRange(row0.Length(), 1f - Tolerance, 1f + Tolerance);
+        Assert.InRange(row1.Length(), 1f - Tolerance, 1f + Tolerance);
+        Assert.InRange(row2.Length(), 1f - Tolerance, 1f + Tolerance);
 
         // Assert: orthogonality (dot products near zero)
-        float d01 = Vector4.Dot(mat[0], mat[1]);
-        float d12 = Vector4.Dot(mat[1], mat[2]);
-        float d20 = Vector4.Dot(mat[2], mat[0]);
+        float d01 = Vector4.Dot(row0, row1);
+        float d12 = Vector4.Dot(row1, row2);
+        float d20 = Vector4.Dot(row2, row0);
         Assert.InRange(d01, -Tolerance, Tolerance);
         Assert.InRange(d12, -Tolerance, Tolerance);
         Assert.InRange(d20, -Tolerance, Tolerance);

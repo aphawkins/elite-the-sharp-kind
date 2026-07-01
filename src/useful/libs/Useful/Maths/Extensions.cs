@@ -12,60 +12,61 @@ public static class Extensions
 
     public static Vector4 Cloner(this Vector4 vec) => new(vec.X, vec.Y, vec.Z, vec.W);
 
-    public static Vector4[] Cloner(this Vector4[] vecs)
+    /// <summary>
+    /// Read row <paramref name="row"/> (0-3) of the matrix as a <see cref="Vector4"/>.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="row"/> is not 0-3.</exception>
+    public static Vector4 GetRow(this Matrix4x4 m, int row) => row switch
     {
-        Guard.ArgumentNull(vecs);
+        0 => new Vector4(m.M11, m.M12, m.M13, m.M14),
+        1 => new Vector4(m.M21, m.M22, m.M23, m.M24),
+        2 => new Vector4(m.M31, m.M32, m.M33, m.M34),
+        3 => new Vector4(m.M41, m.M42, m.M43, m.M44),
+        _ => throw new ArgumentOutOfRangeException(nameof(row)),
+    };
 
-        Vector4[] newVecs = new Vector4[vecs.Length];
-        for (int i = 0; i < vecs.Length; i++)
+    /// <summary>
+    /// Return a copy of the matrix with row <paramref name="row"/> (0-3) replaced by <paramref name="value"/>.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="row"/> is not 0-3.</exception>
+    public static Matrix4x4 WithRow(this Matrix4x4 m, int row, Vector4 value)
+    {
+        switch (row)
         {
-            newVecs[i] = vecs[i].Cloner();
+            case 0:
+                m.M11 = value.X;
+                m.M12 = value.Y;
+                m.M13 = value.Z;
+                m.M14 = value.W;
+                break;
+
+            case 1:
+                m.M21 = value.X;
+                m.M22 = value.Y;
+                m.M23 = value.Z;
+                m.M24 = value.W;
+                break;
+
+            case 2:
+                m.M31 = value.X;
+                m.M32 = value.Y;
+                m.M33 = value.Z;
+                m.M34 = value.W;
+                break;
+
+            case 3:
+                m.M41 = value.X;
+                m.M42 = value.Y;
+                m.M43 = value.Z;
+                m.M44 = value.W;
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(row));
         }
 
-        return newVecs;
+        return m;
     }
-
-    public static Matrix4x4 ToMatrix4x4(this Vector4[] vecs)
-    {
-        Guard.ArgumentNull(vecs);
-
-        if (vecs.Length < 4)
-        {
-            throw new ArgumentException("Vector array must contain at least four vectors.", nameof(vecs));
-        }
-
-        Vector4 v0 = vecs[0];
-        Vector4 v1 = vecs[1];
-        Vector4 v2 = vecs[2];
-        Vector4 v3 = vecs[3];
-
-        // Keep the same layout used elsewhere in the codebase (matches MultiplyVector construction).
-        return new Matrix4x4(
-            v0.X,
-            v1.X,
-            v2.X,
-            v3.X,
-            v0.Y,
-            v1.Y,
-            v2.Y,
-            v3.Y,
-            v0.Z,
-            v1.Z,
-            v2.Z,
-            v3.Z,
-            v0.W,
-            v1.W,
-            v2.W,
-            v3.W);
-    }
-
-    public static Vector4[] ToVector4Array(this Matrix4x4 matrix)
-        => [
-            new Vector4(matrix.M11, matrix.M21, matrix.M31, matrix.M41),
-            new Vector4(matrix.M12, matrix.M22, matrix.M32, matrix.M42),
-            new Vector4(matrix.M13, matrix.M23, matrix.M33, matrix.M43),
-            new Vector4(matrix.M14, matrix.M24, matrix.M34, matrix.M44),
-        ];
 
     internal static Vector2 ToVector2(this Vector4 vector) => new(vector.X, vector.Y);
 }

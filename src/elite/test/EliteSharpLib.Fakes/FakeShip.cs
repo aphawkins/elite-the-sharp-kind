@@ -6,7 +6,6 @@ using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using Useful.Assets.Models;
-using Useful.Maths;
 
 namespace EliteSharpLib.Fakes;
 
@@ -17,6 +16,6 @@ internal sealed class FakeShip : ShipBase
     {
         Model = ModelReader.None;
         Name = "FakeShip";
-        Rotmat = Matrix4x4.Identity.ToVector4Array();
+        Rotmat = Matrix4x4.Identity;
     }
 }
