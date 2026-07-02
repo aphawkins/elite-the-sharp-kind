@@ -7,7 +7,9 @@ namespace Useful.Fakes.Assets;
 // Minimal IAssetLocator implementation for initialize benchmark.
 public sealed class FakeAssetLocator : IAssetLocator
 {
-    public string PalettePath { get; } = string.Empty;
+    // Points at the real palette shipped alongside the consuming project's output, since EliteDraw
+    // reads it unconditionally in its constructor and has no fake substitute for palette colors.
+    public string PalettePath { get; } = Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "palette.json");
 
     public IDictionary<string, string> FontBitmapPaths { get; } = new Dictionary<string, string>();
 
