@@ -20,23 +20,23 @@ public sealed class AssetLocator : IAssetLocator
 
     public string PalettePath => Path.Combine(_baseDirectory, "Palette", _assetManifest.Palette);
 
-    public IDictionary<int, string> FontBitmapPaths => _assetManifest.FontsBitmap.Select((kvp, index) => new { kvp, index })
-        .ToDictionary(x => x.index, x => Path.Combine(_baseDirectory, "FontsBitmap", x.kvp.Value));
+    public IDictionary<string, string> FontBitmapPaths
+        => _assetManifest.FontsBitmap.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "FontsBitmap", x.Value));
 
-    public IDictionary<int, string> FontTrueTypePaths => _assetManifest.FontsTrueType.Select((kvp, index) => new { kvp, index })
-        .ToDictionary(x => x.index, x => Path.Combine(_baseDirectory, "FontsTrueType", x.kvp.Value));
+    public IDictionary<string, string> FontTrueTypePaths
+        => _assetManifest.FontsTrueType.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "FontsTrueType", x.Value));
 
-    public IDictionary<int, string> ImagePaths => _assetManifest.Images.Select((kvp, index) => new { kvp, index })
-        .ToDictionary(x => x.index, x => Path.Combine(_baseDirectory, "Images", x.kvp.Value));
+    public IDictionary<string, string> ImagePaths
+        => _assetManifest.Images.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "Images", x.Value));
 
-    public IDictionary<int, string> MusicPaths => _assetManifest.Music.Select((kvp, index) => new { kvp, index })
-        .ToDictionary(x => x.index, x => Path.Combine(_baseDirectory, "Music", x.kvp.Value));
+    public IDictionary<string, string> MusicPaths
+        => _assetManifest.Music.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "Music", x.Value));
 
-    public IDictionary<int, string> SfxPaths => _assetManifest.Sfx.Select((kvp, index) => new { kvp, index })
-        .ToDictionary(x => x.index, x => Path.Combine(_baseDirectory, "SFX", x.kvp.Value));
+    public IDictionary<string, string> SfxPaths
+        => _assetManifest.Sfx.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "SFX", x.Value));
 
-    public IDictionary<int, string> SoundFontPaths => _assetManifest.SoundFonts.Select((kvp, index) => new { kvp, index })
-        .ToDictionary(x => x.index, x => Path.Combine(_baseDirectory, "SoundFonts", x.kvp.Value));
+    public IDictionary<string, string> SoundFontPaths
+        => _assetManifest.SoundFonts.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "SoundFonts", x.Value));
 
     public IDictionary<string, string> ModelPaths
         => _assetManifest.Models.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "Models", x.Value));

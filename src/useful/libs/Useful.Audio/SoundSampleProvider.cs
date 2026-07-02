@@ -22,7 +22,7 @@ public class SoundSampleProvider : ISampleProvider
         Guard.ArgumentNull(assetLocator);
 
         Debug.Assert(assetLocator.SoundFontPaths.Count > 0, "SoundFonts are missing.");
-        string soundFontPath = assetLocator.SoundFontPaths[0];
+        string soundFontPath = assetLocator.SoundFontPaths.Values.First();
 
         using WaveStream audioReader = Path.GetExtension(fileName) switch
         {

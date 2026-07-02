@@ -77,30 +77,30 @@ public class AssetLocatorTests
             Assert.Equal(expectedPalette, locator.PalettePath);
 
             // Assert - FontsBitmap
-            IDictionary<int, string> fontBitmapPaths = locator.FontBitmapPaths;
+            IDictionary<string, string> fontBitmapPaths = locator.FontBitmapPaths;
             Assert.Equal(2, fontBitmapPaths.Count);
             Assert.Contains(Path.Combine(assetsRoot, "FontsBitmap", "arial.png"), fontBitmapPaths.Values);
             Assert.Contains(Path.Combine(assetsRoot, "FontsBitmap", "vera.png"), fontBitmapPaths.Values);
 
             // Assert - FontsTrueType
-            IDictionary<int, string> fontTrueTypePaths = locator.FontTrueTypePaths;
+            IDictionary<string, string> fontTrueTypePaths = locator.FontTrueTypePaths;
             Assert.Single(fontTrueTypePaths);
-            Assert.Equal(Path.Combine(assetsRoot, "FontsTrueType", "roboto.ttf"), fontTrueTypePaths[0]);
+            Assert.Equal(Path.Combine(assetsRoot, "FontsTrueType", "roboto.ttf"), fontTrueTypePaths["Roboto"]);
 
             // Assert - Images
-            IDictionary<int, string> imagePaths = locator.ImagePaths;
+            IDictionary<string, string> imagePaths = locator.ImagePaths;
             Assert.Single(imagePaths);
-            Assert.Equal(Path.Combine(assetsRoot, "Images", "logo.png"), imagePaths[0]);
+            Assert.Equal(Path.Combine(assetsRoot, "Images", "logo.png"), imagePaths["Logo"]);
 
             // Assert - Music
-            IDictionary<int, string> musicPaths = locator.MusicPaths;
+            IDictionary<string, string> musicPaths = locator.MusicPaths;
             Assert.Single(musicPaths);
-            Assert.Equal(Path.Combine(assetsRoot, "Music", "theme.mp3"), musicPaths[0]);
+            Assert.Equal(Path.Combine(assetsRoot, "Music", "theme.mp3"), musicPaths["Theme"]);
 
             // Assert - Sfx
-            IDictionary<int, string> sfxPaths = locator.SfxPaths;
+            IDictionary<string, string> sfxPaths = locator.SfxPaths;
             Assert.Single(sfxPaths);
-            Assert.Equal(Path.Combine(assetsRoot, "SFX", "click.wav"), sfxPaths[0]);
+            Assert.Equal(Path.Combine(assetsRoot, "SFX", "click.wav"), sfxPaths["Click"]);
 
             // Assert - Models
             IDictionary<string, string> modelPaths = locator.ModelPaths;
@@ -108,9 +108,9 @@ public class AssetLocatorTests
             Assert.Equal(Path.Combine(assetsRoot, "Models", "ship.model"), modelPaths["Ship"]);
 
             // Assert - SoundFonts
-            IDictionary<int, string> soundFontPaths = locator.SoundFontPaths;
+            IDictionary<string, string> soundFontPaths = locator.SoundFontPaths;
             Assert.Single(soundFontPaths);
-            Assert.Equal(Path.Combine(assetsRoot, "SoundFonts", "fontella.sf2"), soundFontPaths[0]);
+            Assert.Equal(Path.Combine(assetsRoot, "SoundFonts", "fontella.sf2"), soundFontPaths["Fontella"]);
         }
         finally
         {

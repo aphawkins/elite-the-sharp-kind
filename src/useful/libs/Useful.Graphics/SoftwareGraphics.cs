@@ -28,9 +28,9 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     public float ScreenWidth { get; }
 
-    internal Dictionary<int, BitmapFont> Fonts { get; set; } = [];
+    internal Dictionary<string, BitmapFont> Fonts { get; set; } = [];
 
-    internal Dictionary<int, FastBitmap> Images { get; set; } = [];
+    internal Dictionary<string, FastBitmap> Images { get; set; } = [];
 
     public static SoftwareGraphics Create(
         float screenWidth,
@@ -139,7 +139,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    public void DrawImage(int imageType, Vector2 position)
+    public void DrawImage(string imageType, Vector2 position)
     {
         Debug.Assert(Images.ContainsKey(imageType), "Image has not been loaded");
 
@@ -147,7 +147,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmap, position);
     }
 
-    public void DrawImageCentre(int imageType, float y)
+    public void DrawImageCentre(string imageType, float y)
     {
         float x = (ScreenWidth - Images[imageType].Width) / 2;
         DrawImage(imageType, new(x, y));
@@ -220,7 +220,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(height),
             color);
 
-    public void DrawTextCentre(float y, string text, int fontType, uint color)
+    public void DrawTextCentre(float y, string text, string fontType, uint color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -232,7 +232,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmapText, new(x, y));
     }
 
-    public void DrawTextLeft(Vector2 position, string text, int fontType, uint color)
+    public void DrawTextLeft(Vector2 position, string text, string fontType, uint color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -243,7 +243,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmapText, position);
     }
 
-    public void DrawTextRight(Vector2 position, string text, int fontType, uint color)
+    public void DrawTextRight(Vector2 position, string text, string fontType, uint color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -455,7 +455,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private FastBitmap GenerateTextBitmap(string text, int fontType, uint color)
+    private FastBitmap GenerateTextBitmap(string text, string fontType, uint color)
     {
         string key = $"{fontType}_{color}_{text}";
 

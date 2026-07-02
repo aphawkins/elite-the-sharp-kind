@@ -18,9 +18,9 @@ public interface IGraphics
 
     public void DrawCircleFilled(Vector2 centre, float radius, uint color);
 
-    public void DrawImage(int imageType, Vector2 position);
+    public void DrawImage(string imageType, Vector2 position);
 
-    public void DrawImageCentre(int imageType, float y);
+    public void DrawImageCentre(string imageType, float y);
 
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color);
 
@@ -36,11 +36,11 @@ public interface IGraphics
 
     public void DrawRectangleFilled(Vector2 position, float width, float height, uint color);
 
-    public void DrawTextCentre(float y, string text, int fontType, uint color);
+    public void DrawTextCentre(float y, string text, string fontType, uint color);
 
-    public void DrawTextLeft(Vector2 position, string text, int fontType, uint color);
+    public void DrawTextLeft(Vector2 position, string text, string fontType, uint color);
 
-    public void DrawTextRight(Vector2 position, string text, int fontType, uint color);
+    public void DrawTextRight(Vector2 position, string text, string fontType, uint color);
 
     public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, uint color);
 

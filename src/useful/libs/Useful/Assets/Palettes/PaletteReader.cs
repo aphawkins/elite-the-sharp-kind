@@ -11,6 +11,6 @@ public static class PaletteReader
         string lines = File.ReadAllText(filePath);
         Dictionary<string, string> colors = JsonSerializer.Deserialize<Dictionary<string, string>>(lines) ?? [];
         return new Palette(
-            colors.ToDictionary(x => x.Key, x => Convert.ToUInt32(x.Value.Replace("#", "0x", StringComparison.OrdinalIgnoreCase), 16)));
+            colors.ToDictionary(x => x.Key, x => Convert.ToUInt32(x.Value, 16)));
     }
 }

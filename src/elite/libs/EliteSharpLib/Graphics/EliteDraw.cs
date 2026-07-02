@@ -80,7 +80,7 @@ internal sealed class EliteDraw : IEliteDraw
     }
 
     public void DrawHyperspaceCountdown(int countdown)
-        => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", (int)FontType.Small, _colorWhite);
+        => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", nameof(FontType.Small), _colorWhite);
 
     public void DrawPolygonFilled(Vector2[] points, uint faceColor, float averageZ)
     {
@@ -150,7 +150,7 @@ internal sealed class EliteDraw : IEliteDraw
             }
 
             i++;
-            Graphics.DrawTextLeft(position, text[previous..i], (int)FontType.Small, _colorWhite);
+            Graphics.DrawTextLeft(position, text[previous..i], nameof(FontType.Small), _colorWhite);
             previous = i;
             position.Y += 8 * Graphics.Scale;
         }
@@ -158,7 +158,7 @@ internal sealed class EliteDraw : IEliteDraw
 
     public void DrawViewHeader(string title)
     {
-        Graphics.DrawTextCentre(Top + 6, title, (int)FontType.Large, _colorGold);
+        Graphics.DrawTextCentre(Top + 6, title, nameof(FontType.Large), _colorGold);
         Graphics.DrawLine(new(Left, 36), new(Right, 36), _colorWhite);
 
         // Vertical lines

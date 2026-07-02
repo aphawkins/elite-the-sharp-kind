@@ -72,30 +72,30 @@ internal sealed class GalacticChartView : IView
         if (_isFind)
         {
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", (int)FontType.Small, _colorGreen);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", nameof(FontType.Small), _colorGreen);
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, _colorWhite);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, nameof(FontType.Small), _colorWhite);
         }
         else if (string.IsNullOrEmpty(_gameState.PlanetName))
         {
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", (int)FontType.Small, _colorGreen);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", nameof(FontType.Small), _colorGreen);
             _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, (int)FontType.Small, _colorWhite);
+                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, nameof(FontType.Small), _colorWhite);
         }
         else
         {
             _draw.Graphics.DrawTextLeft(
                 new(16 + _draw.Offset, _draw.ScannerTop - 55),
                 _gameState.PlanetName,
-                (int)FontType.Small,
+                nameof(FontType.Small),
                 _colorGreen);
             if (_gameState.DistanceToPlanet > 0)
             {
                 _draw.Graphics.DrawTextLeft(
                     new(16 + _draw.Offset, _draw.ScannerTop - 40),
                     $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ",
-                    (int)FontType.Small,
+                    nameof(FontType.Small),
                     _colorWhite);
             }
         }

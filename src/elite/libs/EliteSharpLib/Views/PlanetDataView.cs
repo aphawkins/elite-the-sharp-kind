@@ -105,51 +105,51 @@ internal sealed class PlanetDataView : IView
 
         if (_distanceToPlanet > 0)
         {
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 42), "Distance:", (int)FontType.Small, _colorGreen);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 42), "Distance:", nameof(FontType.Small), _colorGreen);
             _draw.Graphics.DrawTextLeft(
                 new(175 + _draw.Offset, 42),
                 $"{_distanceToPlanet:N1} Light Years",
-                (int)FontType.Small,
+                nameof(FontType.Small),
                 _colorWhite);
         }
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Economy:", (int)FontType.Small, _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 74), "Economy:", nameof(FontType.Small), _colorGreen);
         _draw.Graphics
-            .DrawTextLeft(new(175 + _draw.Offset, 74), _economyType[_hyperPlanetData.Economy], (int)FontType.Small, _colorWhite);
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Government:", (int)FontType.Small, _colorGreen);
+            .DrawTextLeft(new(175 + _draw.Offset, 74), _economyType[_hyperPlanetData.Economy], nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 106), "Government:", nameof(FontType.Small), _colorGreen);
         _draw.Graphics.DrawTextLeft(
             new(175 + _draw.Offset, 106),
             _governmentType[_hyperPlanetData.Government],
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorWhite);
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", (int)FontType.Small, _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 138), "Tech Level:", nameof(FontType.Small), _colorGreen);
         _draw.Graphics
-            .DrawTextLeft(new(175 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", (int)FontType.Small, _colorWhite);
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", (int)FontType.Small, _colorGreen);
+            .DrawTextLeft(new(175 + _draw.Offset, 138), $"{_hyperPlanetData.TechLevel + 1}", nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 170), "Population:", nameof(FontType.Small), _colorGreen);
         _draw.Graphics.DrawTextLeft(
             new(175 + _draw.Offset, 170),
             $"{_hyperPlanetData.Population:N1} Billion {_planet.DescribeInhabitants(_gameState.HyperspacePlanet)}",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorWhite);
         _draw.Graphics.DrawTextLeft(
             new(16 + _draw.Offset, 202),
             "Gross Productivity:",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorGreen);
         _draw.Graphics.DrawTextLeft(
             new(175 + _draw.Offset, 202),
             $"{_hyperPlanetData.Productivity} Million Credits",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorWhite);
         _draw.Graphics.DrawTextLeft(
             new(16 + _draw.Offset, 234),
             "Average Radius:",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorGreen);
         _draw.Graphics.DrawTextLeft(
             new(175 + _draw.Offset, 234),
             $"{_hyperPlanetData.Radius} km",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorWhite);
         _draw.DrawTextPretty(new(16 + _draw.Offset, 266), 400, DescribePlanet(_gameState.HyperspacePlanet));
     }

@@ -57,28 +57,28 @@ internal sealed class OptionsView : IView
 
             uint col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? _colorLightGrey : _colorWhite;
 
-            _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, (int)FontType.Small, col);
+            _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, nameof(FontType.Small), col);
         }
 
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 80,
             $"Version: {typeof(OptionsView).Assembly.GetName().Version}",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorWhite);
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 60,
             "The Sharp Kind - Andy Hawkins 2023",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorWhite);
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 40,
             "The New Kind - Christian Pinder 1999-2001",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorWhite);
         _draw.Graphics.DrawTextCentre(
             _draw.ScannerTop - 20,
             "Original Code - Ian Bell & David Braben",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorWhite);
     }
 

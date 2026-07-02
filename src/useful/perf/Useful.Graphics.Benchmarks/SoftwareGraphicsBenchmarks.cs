@@ -18,10 +18,10 @@ public class SoftwareGraphicsBenchmarks : IDisposable
     public SoftwareGraphicsBenchmarks()
     {
         _graphics = SoftwareGraphics.Create(ScreenWidthPixels, ScreenHeightPixels, (_) => { }, new FakeAssetLocator());
-        _graphics.Images = new() { { 123, new FastBitmap(16, 16) } };
+        _graphics.Images = new() { { "TestImage", new FastBitmap(16, 16) } };
 
         _fontBitmap = new(8, 8);
-        _graphics.Fonts = new() { { 0, new BitmapFont(_fontBitmap) } };
+        _graphics.Fonts = new() { { "TestFont", new BitmapFont(_fontBitmap) } };
     }
 
     [Benchmark]
@@ -41,11 +41,11 @@ public class SoftwareGraphicsBenchmarks : IDisposable
     public void DrawCircleFilled() => _graphics.DrawCircleFilled(new(255, 255), 100, BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawImage() => _graphics.DrawImage(123, new(1, 1));
+    public void DrawImage() => _graphics.DrawImage("TestImage", new(1, 1));
 
     [Benchmark]
     public void DrawImageCentre()
-            => _graphics.DrawImageCentre(123, 10f);
+            => _graphics.DrawImageCentre("TestImage", 10f);
 
     [Benchmark]
     public void DrawLine() => _graphics.DrawLine(new(0, 0), new(512, 512), BaseColors.White.Argb);
@@ -79,13 +79,13 @@ public class SoftwareGraphicsBenchmarks : IDisposable
 
     // Text functions - use whitespace where appropriate to exercise early-return paths quickly
     [Benchmark]
-    public void DrawTextCentreWhitespace() => _graphics.DrawTextCentre(0f, "   ", 0, BaseColors.White.Argb);
+    public void DrawTextCentreWhitespace() => _graphics.DrawTextCentre(0f, "   ", "TestFont", BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawTextLeftWhitespace() => _graphics.DrawTextLeft(new(0, 0), " ", 0, BaseColors.White.Argb);
+    public void DrawTextLeftWhitespace() => _graphics.DrawTextLeft(new(0, 0), " ", "TestFont", BaseColors.White.Argb);
 
     [Benchmark]
-    public void DrawTextRightWhitespace() => _graphics.DrawTextRight(new(0, 0), string.Empty, 0, BaseColors.White.Argb);
+    public void DrawTextRightWhitespace() => _graphics.DrawTextRight(new(0, 0), string.Empty, "TestFont", BaseColors.White.Argb);
 
     // Triangle functions
     [Benchmark]

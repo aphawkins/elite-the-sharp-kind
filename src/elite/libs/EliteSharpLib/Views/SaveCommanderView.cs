@@ -35,21 +35,21 @@ internal sealed class SaveCommanderView : IView
     {
         _draw.DrawViewHeader("SAVE COMMANDER");
 
-        _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", (int)FontType.Small, _colorWhite);
+        _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
         _draw.Graphics.DrawRectangle(new(100 + _draw.Offset, 100), 312, 50, _colorWhite);
-        _draw.Graphics.DrawTextCentre(112, _name, (int)FontType.Large, _colorWhite);
+        _draw.Graphics.DrawTextCentre(112, _name, nameof(FontType.Large), _colorWhite);
 
         if (_isSuccess.HasValue)
         {
             if (_isSuccess.Value)
             {
-                _draw.Graphics.DrawTextCentre(175, "Commander Saved.", (int)FontType.Large, _colorGold);
-                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", (int)FontType.Small, _colorWhite);
+                _draw.Graphics.DrawTextCentre(175, "Commander Saved.", nameof(FontType.Large), _colorGold);
+                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
             }
             else
             {
-                _draw.Graphics.DrawTextCentre(175, "Error Saving Commander!", (int)FontType.Large, _colorGold);
-                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", (int)FontType.Small, _colorWhite);
+                _draw.Graphics.DrawTextCentre(175, "Error Saving Commander!", nameof(FontType.Large), _colorGold);
+                _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
             }
         }
     }

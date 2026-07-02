@@ -369,7 +369,7 @@ internal sealed class Space
                 (obj.Type != ShipType.Cougar) &&
                 !obj.Flags.HasFlag(ShipProperties.Station))
             {
-                _audio.PlayEffect((int)SoundEffect.Explode);
+                _audio.PlayEffect(nameof(SoundEffect.Explode));
                 obj.Flags |= ShipProperties.Dead;
             }
 
@@ -562,7 +562,7 @@ internal sealed class Space
 
         _ship.Speed = 1;
         _ship.DamageShip(5, obj.Location.Z > 0);
-        _audio.PlayEffect((int)SoundEffect.Crash);
+        _audio.PlayEffect(nameof(SoundEffect.Crash));
     }
 
     private void CompleteHyperspace()

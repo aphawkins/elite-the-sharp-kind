@@ -152,7 +152,7 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(width, height, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawImage(123, new(imageX, imageY));
+        graphics.DrawImage("TestImage", new(imageX, imageY));
         graphics.ScreenUpdate();
 
         // Assert
@@ -168,7 +168,7 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(imageWidth, imageHeight, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawImage(123, new(1, 1));
+        graphics.DrawImage("TestImage", new(1, 1));
         graphics.ScreenUpdate();
 
         // Assert
@@ -185,7 +185,7 @@ public class SoftwareGraphicsTests
         graphics.DrawPixel(new(1, 1), BaseColors.White.Argb);
 
         // Act
-        graphics.DrawImage(123, new(0, 0));
+        graphics.DrawImage("TestImage", new(0, 0));
         graphics.ScreenUpdate();
 
         // Assert
@@ -311,7 +311,7 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(4, 4, DoAssert, moqAssetLocator.Object);
 
         // Act: centre X should be (4 - 2) / 2 = 1
-        graphics.DrawImageCentre(123, 1);
+        graphics.DrawImageCentre("TestImage", 1);
         graphics.ScreenUpdate();
 
         // Assert
@@ -438,9 +438,9 @@ public class SoftwareGraphicsTests
         graphics.DrawPixel(new(2, 2), BaseColors.White.Argb);
 
         // Act - whitespace should do nothing
-        graphics.DrawTextLeft(new(0, 0), "   ", 0, BaseColors.White.Argb);
-        graphics.DrawTextCentre(0, " ", 0, BaseColors.White.Argb);
-        graphics.DrawTextRight(new(0, 0), Environment.NewLine, 0, BaseColors.White.Argb);
+        graphics.DrawTextLeft(new(0, 0), "   ", "TestFont", BaseColors.White.Argb);
+        graphics.DrawTextCentre(0, " ", "TestFont", BaseColors.White.Argb);
+        graphics.DrawTextRight(new(0, 0), Environment.NewLine, "TestFont", BaseColors.White.Argb);
         graphics.ScreenUpdate();
 
         // Assert preserved
@@ -523,16 +523,16 @@ public class SoftwareGraphicsTests
         if (string.IsNullOrEmpty(filename))
         {
             moqAssetLocator.Setup(x => x.ImagePaths)
-                .Returns(new Dictionary<int, string>());
+                .Returns(new Dictionary<string, string>());
         }
         else
         {
             moqAssetLocator.Setup(x => x.ImagePaths)
-                .Returns(new Dictionary<int, string>() { { 123, GraphicsFilename(filename) } });
+                .Returns(new Dictionary<string, string>() { { "TestImage", GraphicsFilename(filename) } });
         }
 
         moqAssetLocator.Setup(x => x.FontBitmapPaths)
-            .Returns(new Dictionary<int, string>());
+            .Returns(new Dictionary<string, string>());
 
         return moqAssetLocator;
     }

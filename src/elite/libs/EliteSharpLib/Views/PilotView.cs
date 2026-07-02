@@ -57,11 +57,11 @@ internal sealed class PilotView : IView
 
         if (_space.HyperGalactic)
         {
-            _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", (int)FontType.Small, _colorWhite);
+            _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", nameof(FontType.Small), _colorWhite);
         }
         else if (_space.HyperCountdown > 0)
         {
-            _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", (int)FontType.Small, _colorWhite);
+            _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", nameof(FontType.Small), _colorWhite);
         }
     }
 
@@ -235,5 +235,5 @@ internal sealed class PilotView : IView
     internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
 
     internal void DrawViewName(string name)
-        => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, (int)FontType.Small, _colorWhite);
+        => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, nameof(FontType.Small), _colorWhite);
 }

@@ -48,7 +48,7 @@ internal sealed class GameOverView : IView
         _colorGold = draw.Palette["Gold"];
     }
 
-    public void Draw() => _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", (int)FontType.Large, _colorGold);
+    public void Draw() => _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", nameof(FontType.Large), _colorGold);
 
     public void HandleInput()
     {
@@ -89,7 +89,7 @@ internal sealed class GameOverView : IView
             cargo.Velocity = RNG.Random(16);
         }
 
-        _audio.PlayEffect((int)SoundEffect.Gameover);
+        _audio.PlayEffect(nameof(SoundEffect.Gameover));
     }
 
     public void UpdateUniverse()

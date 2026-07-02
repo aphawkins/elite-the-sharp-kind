@@ -99,18 +99,18 @@ internal sealed class EquipmentView : IView
 
             uint color = _equipmentStock[i].CanBuy ? _colorWhite : _colorLightGrey;
             int x = _equipmentStock[i].Name[0] == '>' ? 50 : 16;
-            _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], (int)FontType.Small, color);
+            _draw.Graphics.DrawTextLeft(new(x + _draw.Offset, y), _equipmentStock[i].Name[1..], nameof(FontType.Small), color);
 
             if ((int)_equipmentStock[i].Price != 0)
             {
-                _draw.Graphics.DrawTextRight(new(450 + _draw.Offset, y), $"{_equipmentStock[i].Price:N1}", (int)FontType.Small, color);
+                _draw.Graphics.DrawTextRight(new(450 + _draw.Offset, y), $"{_equipmentStock[i].Price:N1}", nameof(FontType.Small), color);
             }
 
             y += 15;
         }
 
         _draw.Graphics
-            .DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", (int)FontType.Small, _colorWhite);
+            .DrawTextLeft(new(16 + _draw.Offset, 340), $"Cash: {_trade.Credits:N1} Credits", nameof(FontType.Small), _colorWhite);
     }
 
     public void HandleInput()

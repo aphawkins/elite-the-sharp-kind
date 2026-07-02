@@ -27,7 +27,7 @@ internal sealed class QuitView : IView
     {
         _draw.DrawViewHeader("GAME OPTIONS");
 
-        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "QUIT GAME (Y/N)?", (int)FontType.Large, _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "QUIT GAME (Y/N)?", nameof(FontType.Large), _colorGold);
     }
 
     public void HandleInput()

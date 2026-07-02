@@ -61,7 +61,7 @@ internal sealed class SettingsView : IView
                     _draw.Graphics.DrawRectangleFilled(position, 400, 15, _colorLightRed);
                 }
 
-                _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, (int)FontType.Small, _colorWhite);
+                _draw.Graphics.DrawTextCentre(position.Y, _settingList[i].Name, nameof(FontType.Small), _colorWhite);
                 return;
             }
 
@@ -83,9 +83,9 @@ internal sealed class SettingsView : IView
                 _draw.Graphics.DrawRectangleFilled(position, 100, 15, _colorLightRed);
             }
 
-            _draw.Graphics.DrawTextLeft(position, _settingList[i].Name, (int)FontType.Small, _colorWhite);
+            _draw.Graphics.DrawTextLeft(position, _settingList[i].Name, nameof(FontType.Small), _colorWhite);
             position.X += 120;
-            _draw.Graphics.DrawTextLeft(position, _settingList[i].Values[v], (int)FontType.Small, _colorWhite);
+            _draw.Graphics.DrawTextLeft(position, _settingList[i].Values[v], nameof(FontType.Small), _colorWhite);
         }
     }
 

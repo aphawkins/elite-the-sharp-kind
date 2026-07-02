@@ -24,11 +24,11 @@ public sealed class FakeGraphics : IGraphics
     {
     }
 
-    public void DrawImage(int imageType, Vector2 position)
+    public void DrawImage(string imageType, Vector2 position)
     {
     }
 
-    public void DrawImageCentre(int imageType, float y)
+    public void DrawImageCentre(string imageType, float y)
     {
     }
 
@@ -60,15 +60,15 @@ public sealed class FakeGraphics : IGraphics
     {
     }
 
-    public void DrawTextCentre(float y, string text, int fontType, uint color)
+    public void DrawTextCentre(float y, string text, string fontType, uint color)
     {
     }
 
-    public void DrawTextLeft(Vector2 position, string text, int fontType, uint color)
+    public void DrawTextLeft(Vector2 position, string text, string fontType, uint color)
     {
     }
 
-    public void DrawTextRight(Vector2 position, string text, int fontType, uint color)
+    public void DrawTextRight(Vector2 position, string text, string fontType, uint color)
     {
     }
 

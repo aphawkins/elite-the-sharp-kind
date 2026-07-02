@@ -68,22 +68,22 @@ public sealed class EliteMain
         _keyboard = abstraction.Keyboard;
 
         // TODO: improve this
-        Dictionary<int, SfxSample> sfx = new()
+        Dictionary<string, SfxSample> sfx = new()
         {
-            { (int)SoundEffect.Launch, new(32) },
-            { (int)SoundEffect.Crash, new(7) },
-            { (int)SoundEffect.Dock, new(36) },
-            { (int)SoundEffect.Gameover, new(24) },
-            { (int)SoundEffect.Pulse, new(4) },
-            { (int)SoundEffect.HitEnemy, new(4) },
-            { (int)SoundEffect.Explode, new(23) },
-            { (int)SoundEffect.Ecm, new(23) },
-            { (int)SoundEffect.Missile, new(25) },
-            { (int)SoundEffect.Hyperspace, new(37) },
-            { (int)SoundEffect.IncomingFire1, new(4) },
-            { (int)SoundEffect.IncomingFire2, new(5) },
-            { (int)SoundEffect.Beep, new(2) },
-            { (int)SoundEffect.Boop, new(7) },
+            { nameof(SoundEffect.Launch), new(32) },
+            { nameof(SoundEffect.Crash), new(7) },
+            { nameof(SoundEffect.Dock), new(36) },
+            { nameof(SoundEffect.Gameover), new(24) },
+            { nameof(SoundEffect.Pulse), new(4) },
+            { nameof(SoundEffect.HitEnemy), new(4) },
+            { nameof(SoundEffect.Explode), new(23) },
+            { nameof(SoundEffect.Ecm), new(23) },
+            { nameof(SoundEffect.Missile), new(25) },
+            { nameof(SoundEffect.Hyperspace), new(37) },
+            { nameof(SoundEffect.IncomingFire1), new(4) },
+            { nameof(SoundEffect.IncomingFire2), new(5) },
+            { nameof(SoundEffect.Beep), new(2) },
+            { nameof(SoundEffect.Boop), new(7) },
         };
         _audio = new(sound, sfx);
         ConfigFile configFile = new();
@@ -165,12 +165,12 @@ public sealed class EliteMain
         _graphics.DrawTextLeft(
             new(_draw.Right - 65, _draw.Top + 3),
             $"FPS: {_lockObj.FramesDrawn.Count}",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorText);
         _graphics.DrawTextLeft(
             new(_draw.Right - 65, _draw.Top + 18),
             $"DROP: {_lockObj.Dropped}",
-            (int)FontType.Small,
+            nameof(FontType.Small),
             _colorText);
 
         if (_lockObj.FramesDrawn.Count > 0)
@@ -281,7 +281,7 @@ public sealed class EliteMain
 
             if (_gameState.MessageCount > 0)
             {
-                _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, (int)FontType.Small, _colorText);
+                _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, nameof(FontType.Small), _colorText);
             }
 
             if (_space.IsHyperspaceReady)
@@ -309,7 +309,7 @@ public sealed class EliteMain
                 if (_ship.IsEnergyLow())
                 {
                     _gameState.InfoMessage("ENERGY LOW");
-                    _audio.PlayEffect((int)SoundEffect.Beep);
+                    _audio.PlayEffect(nameof(SoundEffect.Beep));
                 }
 
                 _space.UpdateAltitude();

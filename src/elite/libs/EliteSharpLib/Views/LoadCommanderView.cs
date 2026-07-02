@@ -35,14 +35,14 @@ internal sealed class LoadCommanderView : IView
     {
         _draw.DrawViewHeader("LOAD COMMANDER");
 
-        _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", (int)FontType.Small, _colorWhite);
+        _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
         _draw.Graphics.DrawRectangleCentre(100, 312, 50, _colorWhite);
-        _draw.Graphics.DrawTextCentre(112, _name, (int)FontType.Large, _colorWhite);
+        _draw.Graphics.DrawTextCentre(112, _name, nameof(FontType.Large), _colorWhite);
 
         if (!_isLoaded)
         {
-            _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", (int)FontType.Large, _colorGold);
-            _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", (int)FontType.Small, _colorWhite);
+            _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", nameof(FontType.Large), _colorGold);
+            _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
         }
     }
 

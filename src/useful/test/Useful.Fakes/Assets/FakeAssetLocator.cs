@@ -9,17 +9,17 @@ public sealed class FakeAssetLocator : IAssetLocator
 {
     public string PalettePath { get; } = string.Empty;
 
-    public IDictionary<int, string> FontBitmapPaths { get; } = new Dictionary<int, string>();
+    public IDictionary<string, string> FontBitmapPaths { get; } = new Dictionary<string, string>();
 
-    public IDictionary<int, string> FontTrueTypePaths { get; } = new Dictionary<int, string>();
+    public IDictionary<string, string> FontTrueTypePaths { get; } = new Dictionary<string, string>();
 
-    public IDictionary<int, string> ImagePaths { get; } = new Dictionary<int, string>();
+    public IDictionary<string, string> ImagePaths { get; } = new Dictionary<string, string>();
 
-    public IDictionary<int, string> MusicPaths { get; } = new Dictionary<int, string>();
+    public IDictionary<string, string> MusicPaths { get; } = new Dictionary<string, string>();
 
-    public IDictionary<int, string> SfxPaths { get; } = new Dictionary<int, string>();
+    public IDictionary<string, string> SfxPaths { get; } = new Dictionary<string, string>();
 
     public IDictionary<string, string> ModelPaths { get; set; } = new Dictionary<string, string>();
 
-    public IDictionary<int, string> SoundFontPaths { get; } = new Dictionary<int, string>();
+    public IDictionary<string, string> SoundFontPaths { get; } = new Dictionary<string, string>();
 }

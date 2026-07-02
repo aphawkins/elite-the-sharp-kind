@@ -6,17 +6,17 @@ public interface IAssetLocator
 {
     public string PalettePath { get; }
 
-    public IDictionary<int, string> FontBitmapPaths { get; }
+    public IDictionary<string, string> FontBitmapPaths { get; }
 
-    public IDictionary<int, string> FontTrueTypePaths { get; }
+    public IDictionary<string, string> FontTrueTypePaths { get; }
 
-    public IDictionary<int, string> ImagePaths { get; }
+    public IDictionary<string, string> ImagePaths { get; }
 
     public IDictionary<string, string> ModelPaths { get; }
 
-    public IDictionary<int, string> MusicPaths { get; }
+    public IDictionary<string, string> MusicPaths { get; }
 
-    public IDictionary<int, string> SoundFontPaths { get; }
+    public IDictionary<string, string> SoundFontPaths { get; }
 
-    public IDictionary<int, string> SfxPaths { get; }
+    public IDictionary<string, string> SfxPaths { get; }
 }

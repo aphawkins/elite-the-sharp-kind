@@ -12,8 +12,8 @@ public sealed class SoftwareSound : ISound, IDisposable
     private readonly MixingSampleProvider _mixer;
     private readonly WaveOutEvent _outputDevice;
     private bool _isDisposed;
-    private Dictionary<int, SoundSampleProvider> _music = [];
-    private Dictionary<int, SoundSampleProvider> _sfx = [];
+    private Dictionary<string, SoundSampleProvider> _music = [];
+    private Dictionary<string, SoundSampleProvider> _sfx = [];
 
     private SoftwareSound()
     {
@@ -49,7 +49,7 @@ public sealed class SoftwareSound : ISound, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public void Play(int musicType, bool repeat)
+    public void Play(string musicType, bool repeat)
     {
         Debug.Assert(_music.ContainsKey(musicType), "Music has not been loaded");
 
@@ -59,7 +59,7 @@ public sealed class SoftwareSound : ISound, IDisposable
         _outputDevice.Play();
     }
 
-    public void Play(int sfxType)
+    public void Play(string sfxType)
     {
         Debug.Assert(_sfx.ContainsKey(sfxType), "Sound effect has not been loaded");
 

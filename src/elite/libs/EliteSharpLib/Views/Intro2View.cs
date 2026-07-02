@@ -63,13 +63,13 @@ internal sealed class Intro2View : IView
 
     public void Draw()
     {
-        _draw.Graphics.DrawImageCentre((int)ImageType.EliteText, _draw.Top + 10);
+        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Top + 10);
 
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", (int)FontType.Large, _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, "Press Fire or Space, Commander.", nameof(FontType.Large), _colorGold);
         if (_universe.FirstShip != null)
         {
             _draw.Graphics
-                .DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, (int)FontType.Small, _colorWhite);
+                .DrawTextCentre(_draw.ScannerTop - 60, ((IShip)_universe.FirstShip).Name, nameof(FontType.Small), _colorWhite);
         }
     }
 
@@ -93,7 +93,7 @@ internal sealed class Intro2View : IView
         _combat.Reset();
         _stars.CreateNewStars();
         _rotmat = VectorMaths.GetLeftHandedBasisMatrix;
-        _audio.PlayMusic((int)MusicType.BlueDanube, true);
+        _audio.PlayMusic(nameof(MusicType.BlueDanube), true);
 
         AddNewShip();
     }
