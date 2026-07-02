@@ -32,8 +32,6 @@ insert_final_newline = true
 
 # Set default analyzer level
 dotnet_analyzer_diagnostic.severity = warning
-dotnet_diagnostic.severity = warning
-dotnet_diagnostic.*.severity = warning
 
 # dotnet_code_quality.api_surface = all
 
@@ -2687,18 +2685,22 @@ charset = utf-8
 # Xml build files
 [*.builds]
 indent_size = 2
+charset = utf-8
 
 # Xml files
 [*.{xml,stylecop,resx,ruleset}]
 indent_size = 2
+charset = utf-8
 
 # Xml config files
 [*.{props,targets,config,nuspec}]
 indent_size = 2
+charset = utf-8
 
 # YAML config files
 [*.{yml,yaml}]
 indent_size = 2
+charset = utf-8
 
 # Shell scripts
 [*.sh]
@@ -2709,3 +2711,4 @@ end_of_line = crlf
 # JSON config files
 [*.{json}]
 indent_size = 2
+charset = utf-8
