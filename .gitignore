@@ -75,6 +75,8 @@ StyleCopReport.xml
 *.ilk
 *.meta
 *.obj
+# ...except the ship models, which are genuine Wavefront OBJ assets, not C/C++ object files.
+!src/elite/libs/EliteSharpLib/Assets/Models/*.obj
 *.iobj
 *.pch
 *.pdb

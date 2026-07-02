@@ -1,0 +1,121 @@
+# coriolis
+# Converted from coriolis.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 160 0 160
+v 0 160 160
+v -160 0 160
+v 0 -160 160
+v 160 -160 0
+v 160 160 0
+v -160 160 0
+v -160 -160 0
+v 160 0 -160
+v 0 160 -160
+v -160 0 -160
+v 0 -160 -160
+v 10 -30 160
+v 10 30 160
+v -10 30 160
+v -10 -30 160
+
+vn 0 0 160
+vn 107 -107 107
+vn 107 107 107
+vn -107 107 107
+vn -107 -107 107
+vn 0 -160 0
+vn 160 0 0
+vn -160 0 0
+vn 0 160 0
+vn -107 -107 -107
+vn 107 -107 -107
+vn 107 107 -107
+vn -107 107 -107
+vn 0 0 -160
+
+usemtl DarkerGrey
+f 5 1 4
+usemtl DarkerGrey
+f 1 6 2
+usemtl DarkerGrey
+f 2 7 3
+usemtl DarkerGrey
+f 3 8 4
+usemtl DarkGrey
+f 5 4 8 12
+usemtl DarkGrey
+f 9 6 1 5
+usemtl DarkGrey
+f 11 8 3 7
+usemtl DarkGrey
+f 2 6 10 7
+usemtl DarkerGrey
+f 12 8 11
+usemtl DarkerGrey
+f 12 9 5
+usemtl DarkerGrey
+f 10 6 9
+usemtl DarkerGrey
+f 11 7 10
+usemtl LightGrey
+f 12 11 10 9
+usemtl LightGrey
+f 1 2 3 4
+usemtl Black
+f 16 13 14 15
+
+# pn 1 2
+# pn 1 1
+# pn 1 7
+# pn 1 3
+# pn 2 3
+# pn 2 1
+# pn 2 9
+# pn 2 4
+# pn 3 4
+# pn 3 1
+# pn 3 8
+# pn 3 5
+# pn 4 2
+# pn 4 1
+# pn 4 6
+# pn 4 5
+# pn 5 6
+# pn 5 2
+# pn 5 11
+# pn 5 7
+# pn 6 7
+# pn 6 3
+# pn 6 12
+# pn 6 9
+# pn 7 8
+# pn 7 4
+# pn 7 13
+# pn 7 9
+# pn 8 6
+# pn 8 5
+# pn 8 10
+# pn 8 8
+# pn 9 11
+# pn 9 7
+# pn 9 14
+# pn 9 12
+# pn 10 12
+# pn 10 9
+# pn 10 14
+# pn 10 13
+# pn 11 10
+# pn 11 8
+# pn 11 14
+# pn 11 13
+# pn 12 10
+# pn 12 6
+# pn 12 14
+# pn 12 11
+# pn 13 1
+# pn 14 1
+# pn 15 1
+# pn 16 1

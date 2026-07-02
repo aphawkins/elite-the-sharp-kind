@@ -1,0 +1,95 @@
+# constrictor
+# Converted from constrictor.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 20 -7 80
+v -20 -7 80
+v -54 -7 40
+v -54 -7 -40
+v -20 13 -40
+v 20 13 -40
+v 54 -7 -40
+v 54 -7 40
+v 20 13 5
+v -20 13 5
+v 20 -7 62
+v -20 -7 62
+v 25 -7 -25
+v -25 -7 -25
+v 15 -7 -15
+v -15 -7 -15
+v 0 -7 0
+
+vn 0 55 15
+vn -24 75 20
+vn 24 75 20
+vn 44 75 0
+vn -44 75 0
+vn -44 75 0
+vn 0 53 0
+vn 44 75 0
+vn 0 0 -160
+vn 0 -27 0
+
+usemtl Grey
+f 2 1 9 10
+usemtl LightGrey
+f 2 10 3
+usemtl LightGrey
+f 1 8 9
+usemtl Gold
+f 8 7 9
+usemtl Gold
+f 10 4 3
+usemtl DarkYellow
+f 10 5 4
+usemtl LightGrey
+f 9 6 5 10
+usemtl DarkYellow
+f 9 7 6
+usemtl DarkGrey
+f 7 4 5 6
+usemtl DarkerGrey
+f 4 7 8 1 2 3
+usemtl LightRed
+f 13 11 15
+usemtl LightRed
+f 16 12 14
+
+# pn 1 1
+# pn 1 3
+# pn 1 10
+# pn 2 1
+# pn 2 2
+# pn 2 10
+# pn 3 2
+# pn 3 5
+# pn 3 10
+# pn 4 5
+# pn 4 6
+# pn 4 9
+# pn 4 10
+# pn 5 6
+# pn 5 7
+# pn 5 9
+# pn 6 7
+# pn 6 8
+# pn 6 9
+# pn 7 4
+# pn 7 8
+# pn 7 9
+# pn 7 10
+# pn 8 3
+# pn 8 4
+# pn 8 10
+# pn 11 10
+# pn 12 10
+# pn 13 10
+# pn 14 10
+# pn 15 10
+# pn 16 10
+# pn 17 10
+# pn 17 1
+# pn 17 2

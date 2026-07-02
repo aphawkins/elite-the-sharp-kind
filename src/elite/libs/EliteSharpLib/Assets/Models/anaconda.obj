@@ -1,0 +1,96 @@
+# anaconda
+# Converted from anaconda.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 0 7 -58
+v -43 -13 -37
+v -26 -47 -3
+v 26 -47 -3
+v 43 -13 -37
+v 0 48 -49
+v -69 15 -15
+v -43 -39 40
+v 43 -39 40
+v 69 15 -15
+v -43 53 -23
+v -69 -1 32
+v 0 0 254
+v 69 -1 32
+v 43 53 -23
+
+vn 0 -51 -49
+vn -51 18 -87
+vn -77 -57 -19
+vn 0 -90 16
+vn 77 -57 -19
+vn 51 18 -87
+vn 0 111 -20
+vn -97 72 24
+vn -108 -68 34
+vn 108 -68 34
+vn 97 72 24
+vn 0 94 18
+
+usemtl Green
+f 4 3 2 1 5
+usemtl LightGreen
+f 7 11 6 1 2
+usemtl LighterGreen
+f 8 12 7 2 3
+usemtl DarkGrey
+f 9 13 8 3 4
+usemtl LightGreen
+f 10 14 9 4 5
+usemtl LighterGreen
+f 10 5 1 6 15
+usemtl Green
+f 11 15 6
+usemtl DarkGrey
+f 11 7 12 13
+usemtl LightGrey
+f 8 13 12
+usemtl LightGrey
+f 9 14 13
+usemtl DarkGrey
+f 10 15 13 14
+usemtl LightGrey
+f 11 13 15
+
+# pn 1 1
+# pn 1 2
+# pn 1 6
+# pn 2 1
+# pn 2 2
+# pn 2 3
+# pn 3 1
+# pn 3 3
+# pn 3 4
+# pn 4 1
+# pn 4 4
+# pn 4 5
+# pn 5 1
+# pn 5 5
+# pn 5 6
+# pn 6 2
+# pn 6 6
+# pn 6 7
+# pn 7 2
+# pn 7 3
+# pn 7 8
+# pn 8 3
+# pn 8 4
+# pn 8 9
+# pn 9 4
+# pn 9 5
+# pn 9 10
+# pn 10 5
+# pn 10 6
+# pn 10 11
+# pn 12 3
+# pn 12 8
+# pn 12 9
+# pn 14 5
+# pn 14 10
+# pn 14 11

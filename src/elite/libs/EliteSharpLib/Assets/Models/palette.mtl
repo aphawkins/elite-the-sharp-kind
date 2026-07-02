@@ -1,0 +1,85 @@
+# Elite: The Sharp Kind - shared ship material palette
+# Generated from ../Palette/palette.json. The material name is the
+# authoritative color key resolved at runtime via the active game
+# palette; Kd below is only an approximation for external tools.
+
+newmtl Black
+Kd 0.000000 0.000000 0.000000
+
+newmtl Blue
+Kd 0.000000 0.000000 0.501961
+
+newmtl Cyan
+Kd 0.000000 1.000000 1.000000
+
+newmtl DarkBlue
+Kd 0.062745 0.062745 0.564706
+
+newmtl DarkerGrey
+Kd 0.376471 0.376471 0.376471
+
+newmtl DarkGrey
+Kd 0.439216 0.439216 0.439216
+
+newmtl DarkOrange
+Kd 0.878431 0.376471 0.125490
+
+newmtl DarkYellow
+Kd 0.815686 0.564706 0.062745
+
+newmtl Gold
+Kd 0.941176 0.690196 0.188235
+
+newmtl Green
+Kd 0.000000 0.501961 0.000000
+
+newmtl Grey
+Kd 0.447059 0.447059 0.447059
+
+newmtl LightBlue
+Kd 0.062745 0.313725 0.564706
+
+newmtl LighterGreen
+Kd 0.376471 0.878431 0.125490
+
+newmtl LighterGrey
+Kd 0.878431 0.878431 0.878431
+
+newmtl LighterRed
+Kd 0.752941 0.000000 0.000000
+
+newmtl LightGreen
+Kd 0.501961 0.752941 0.000000
+
+newmtl LightGrey
+Kd 0.501961 0.501961 0.501961
+
+newmtl LightOrange
+Kd 0.941176 0.690196 0.439216
+
+newmtl LightRed
+Kd 0.564706 0.062745 0.062745
+
+newmtl LightYellow
+Kd 0.941176 0.941176 0.690196
+
+newmtl Lilac
+Kd 0.878431 0.627451 0.878431
+
+newmtl Orange
+Kd 0.941176 0.439216 0.188235
+
+newmtl Purple
+Kd 0.250980 0.250980 0.501961
+
+newmtl Red
+Kd 0.501961 0.000000 0.000000
+
+newmtl RedOrange
+Kd 0.941176 0.188235 0.188235
+
+newmtl White
+Kd 1.000000 1.000000 1.000000
+
+newmtl Yellow
+Kd 1.000000 1.000000 0.000000

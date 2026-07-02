@@ -1,0 +1,72 @@
+# rockhermit
+# Converted from rockhermit.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 0 80 0
+v -80 -10 0
+v 0 -80 0
+v 70 -40 0
+v 60 50 0
+v 50 0 60
+v -40 0 70
+v 0 30 -75
+v 0 -50 -60
+
+vn 9 66 81
+vn 9 -66 81
+vn -72 64 31
+vn -64 -73 47
+vn 45 -79 65
+vn 135 15 35
+vn 38 76 70
+vn -66 59 -39
+vn -67 -15 -80
+vn 66 -14 -75
+vn -70 -80 -40
+vn 58 -102 -51
+vn 81 9 -67
+vn 47 94 -63
+
+usemtl Lilac
+f 6 1 7
+usemtl LightGrey
+f 3 6 7
+usemtl DarkGrey
+f 7 1 2
+usemtl Lilac
+f 3 7 2
+usemtl DarkGrey
+f 4 6 3
+usemtl LightGrey
+f 5 6 4
+usemtl DarkGrey
+f 1 6 5
+usemtl Lilac
+f 2 1 8
+usemtl LightGrey
+f 2 8 9
+usemtl DarkGrey
+f 4 9 8
+usemtl DarkGrey
+f 2 9 3
+usemtl Lilac
+f 4 3 9
+usemtl Lilac
+f 5 4 8
+usemtl LightGrey
+f 5 8 1
+
+# pn 5 7
+# pn 5 6
+# pn 5 14
+# pn 5 13
+# pn 7 2
+# pn 7 1
+# pn 7 4
+# pn 7 3
+# pn 9 10
+# pn 9 9
+# pn 9 12
+# pn 9 11

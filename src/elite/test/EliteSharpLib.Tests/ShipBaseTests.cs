@@ -39,12 +39,12 @@ public class ShipBaseTests
         Vector4 pointA = new(10, 20, 30, 0);
         Vector4 pointB = new(5, -15, 25, 0);
 
-        Point modelPointA = new() { Coords = pointA, Distance = 0, FaceNormals = [] };
-        Point modelPointB = new() { Coords = pointB, Distance = 0, FaceNormals = [] };
+        Point modelPointA = new() { Coords = pointA, FaceNormals = [] };
+        Point modelPointB = new() { Coords = pointB, FaceNormals = [] };
 
         // A 2-point "face" always passes the visibility/winding check in DrawModelFaces
         // (point0 and point2 resolve to the same point), keeping this test independent of it.
-        Face face = new() { Color = 0, Normal = Vector4.Zero, Points = [modelPointA, modelPointB] };
+        Face face = new() { Color = 0, Points = [modelPointA, modelPointB] };
 
         FakeEliteDraw draw = new();
         FakeShip ship = new(draw)

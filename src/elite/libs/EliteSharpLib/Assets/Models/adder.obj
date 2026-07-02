@@ -1,0 +1,128 @@
+# adder
+# Converted from adder.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v -18 0 40
+v 18 0 40
+v 30 0 -24
+v 30 0 -40
+v 18 -7 -40
+v -18 -7 -40
+v -30 0 -40
+v -30 0 -24
+v -18 7 -40
+v 18 7 -40
+v -18 7 13
+v 18 7 13
+v -18 -7 13
+v 18 -7 13
+v -11 3 29
+v 11 3 29
+v 11 4 24
+v -11 4 24
+
+vn 0 39 10
+vn 0 -39 10
+vn 69 50 13
+vn 69 -50 13
+vn 30 52 0
+vn 30 -52 0
+vn 0 0 -160
+vn 0 0 -160
+vn 0 0 -160
+vn -30 52 0
+vn -30 -52 0
+vn -69 50 13
+vn -69 -50 13
+vn 0 28 0
+vn 0 -28 0
+
+usemtl LightGrey
+f 1 2 12 11
+usemtl LightGrey
+f 2 1 13 14
+usemtl RedOrange
+f 3 12 2
+usemtl LighterRed
+f 2 14 3
+usemtl LightRed
+f 10 12 3 4
+usemtl Red
+f 4 3 14 5
+usemtl LightRed
+f 11 9 7 8
+usemtl Red
+f 8 7 6 13
+usemtl RedOrange
+f 11 8 1
+usemtl LighterRed
+f 1 8 13
+usemtl DarkerGrey
+f 4 5 6 7 9 10
+usemtl DarkGrey
+f 11 12 10 9
+usemtl DarkGrey
+f 6 5 14 13
+usemtl LightBlue
+f 18 15 16 17
+
+# pn 1 1
+# pn 1 2
+# pn 1 12
+# pn 1 13
+# pn 2 1
+# pn 2 2
+# pn 2 3
+# pn 2 4
+# pn 3 3
+# pn 3 4
+# pn 3 5
+# pn 3 6
+# pn 4 5
+# pn 4 6
+# pn 4 7
+# pn 5 6
+# pn 5 7
+# pn 5 8
+# pn 5 15
+# pn 6 8
+# pn 6 9
+# pn 6 11
+# pn 6 15
+# pn 7 9
+# pn 7 10
+# pn 7 11
+# pn 8 10
+# pn 8 11
+# pn 8 12
+# pn 8 13
+# pn 9 8
+# pn 9 9
+# pn 9 10
+# pn 9 14
+# pn 10 5
+# pn 10 7
+# pn 10 8
+# pn 10 14
+# pn 11 1
+# pn 11 10
+# pn 11 12
+# pn 11 14
+# pn 12 1
+# pn 12 3
+# pn 12 5
+# pn 12 14
+# pn 13 2
+# pn 13 11
+# pn 13 13
+# pn 13 15
+# pn 14 2
+# pn 14 4
+# pn 14 6
+# pn 14 15
+# pn 15 1
+# pn 16 1
+# pn 17 1
+# pn 18 1

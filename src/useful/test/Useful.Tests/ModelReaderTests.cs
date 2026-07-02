@@ -12,27 +12,25 @@ public class ModelReaderTests
     public void ReadPopulatesPerPointFaceNormalsWithoutInflatingModelFaceNormals()
     {
         // Arrange
-        string tempFile = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.json");
-        const string json = /*lang=json,strict*/ """
-        {
-          "FaceNormals": [
-            [ 1, 0, 0, 1 ],
-            [ 2, 0, 1, 0 ]
-          ],
-          "Faces": [
-            [ "White", 0, 0, 1, 0, 1, 2 ]
-          ],
-          "Lines": [
-            [ 1, 0, 1, 0, 1 ]
-          ],
-          "Points": [
-            [ 1, 2, 3, 10, 0, 1 ],
-            [ 4, 5, 6, 20, 0 ],
-            [ 7, 8, 9, 30 ]
-          ]
-        }
+        string tempFile = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.obj");
+        const string obj = """
+        v 1 2 3
+        v 4 5 6
+        v 7 8 9
+
+        vn 0 0 1
+        vn 0 1 0
+
+        usemtl White
+        f 1 2 3
+
+        l 1 2
+
+        # pn 1 1
+        # pn 1 2
+        # pn 2 1
         """;
-        File.WriteAllText(tempFile, json);
+        File.WriteAllText(tempFile, obj);
         TestPalette palette = new() { ["White"] = 0 };
 
         try

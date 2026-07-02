@@ -84,97 +84,100 @@
     <None Update="Assets\Images\scanner.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\adder.json">
+    <None Update="Assets\Models\adder.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\alloy.json">
+    <None Update="Assets\Models\palette.mtl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\anaconda.json">
+    <None Update="Assets\Models\alloy.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\aspmk2.json">
+    <None Update="Assets\Models\anaconda.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\asteroid.json">
+    <None Update="Assets\Models\aspmk2.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\boa.json">
+    <None Update="Assets\Models\asteroid.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\boulder.json">
+    <None Update="Assets\Models\boa.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\cargocannister.json">
+    <None Update="Assets\Models\boulder.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\cobramk1.json">
+    <None Update="Assets\Models\cargocannister.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\cobramk3.json">
+    <None Update="Assets\Models\cobramk1.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\constrictor.json">
+    <None Update="Assets\Models\cobramk3.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\coriolis.json">
+    <None Update="Assets\Models\constrictor.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\cougar.json">
+    <None Update="Assets\Models\coriolis.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\dodecstation.json">
+    <None Update="Assets\Models\cougar.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\escapecapsule.json">
+    <None Update="Assets\Models\dodecstation.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\ferdelance.json">
+    <None Update="Assets\Models\escapecapsule.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\gecko.json">
+    <None Update="Assets\Models\ferdelance.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\krait.json">
+    <None Update="Assets\Models\gecko.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\mamba.json">
+    <None Update="Assets\Models\krait.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\missile.json">
+    <None Update="Assets\Models\mamba.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\moray.json">
+    <None Update="Assets\Models\missile.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\python.json">
+    <None Update="Assets\Models\moray.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\rockhermit.json">
+    <None Update="Assets\Models\python.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\rocksplinter.json">
+    <None Update="Assets\Models\rockhermit.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\shuttle.json">
+    <None Update="Assets\Models\rocksplinter.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\sidewinder.json">
+    <None Update="Assets\Models\shuttle.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\tharglet.json">
+    <None Update="Assets\Models\sidewinder.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\thargoid.json">
+    <None Update="Assets\Models\tharglet.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\transporter.json">
+    <None Update="Assets\Models\thargoid.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\viper.json">
+    <None Update="Assets\Models\transporter.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Models\worm.json">
+    <None Update="Assets\Models\viper.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Models\worm.obj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Music\danube.mid">

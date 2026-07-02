@@ -1,0 +1,103 @@
+# boa
+# Converted from boa.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 0 0 93
+v 0 40 -87
+v 38 -25 -99
+v -38 -25 -99
+v -38 40 -59
+v 38 40 -59
+v 62 0 -67
+v 24 -65 -79
+v -24 -65 -79
+v -62 0 -67
+v 0 7 -107
+v 13 -9 -107
+v -13 -9 -107
+
+vn 43 37 -60
+vn 0 -45 -89
+vn -43 37 -60
+vn 0 40 0
+vn 62 -32 -20
+vn -62 -32 -20
+vn 0 23 6
+vn -23 -15 9
+vn 23 -15 9
+vn -26 13 10
+vn 0 -31 12
+vn 26 13 10
+vn 0 0 -107
+
+usemtl Purple
+f 12 11 2 6 7 3
+usemtl Blue
+f 13 12 3 8 9 4
+usemtl DarkBlue
+f 4 10 5 2 11 13
+usemtl Purple
+f 6 2 5
+usemtl Blue
+f 8 3 7
+usemtl DarkBlue
+f 4 9 10
+usemtl LightGrey
+f 6 5 1
+usemtl LightGrey
+f 10 9 1
+usemtl LightGrey
+f 8 7 1
+usemtl DarkGrey
+f 1 5 10
+usemtl DarkGrey
+f 1 9 8
+usemtl DarkGrey
+f 1 7 6
+usemtl LightRed
+f 13 11 12
+
+# pn 2 1
+# pn 2 3
+# pn 2 4
+# pn 3 1
+# pn 3 2
+# pn 3 5
+# pn 4 2
+# pn 4 3
+# pn 4 6
+# pn 5 3
+# pn 5 4
+# pn 5 7
+# pn 5 10
+# pn 6 1
+# pn 6 4
+# pn 6 7
+# pn 6 12
+# pn 7 1
+# pn 7 5
+# pn 7 9
+# pn 7 12
+# pn 8 2
+# pn 8 5
+# pn 8 9
+# pn 8 11
+# pn 9 2
+# pn 9 6
+# pn 9 8
+# pn 9 11
+# pn 10 3
+# pn 10 6
+# pn 10 8
+# pn 10 10
+# pn 11 1
+# pn 11 3
+# pn 11 11
+# pn 12 1
+# pn 12 2
+# pn 12 11
+# pn 13 2
+# pn 13 3
+# pn 13 13

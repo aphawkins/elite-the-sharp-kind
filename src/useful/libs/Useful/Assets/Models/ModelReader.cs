@@ -1,14 +1,19 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Globalization;
 using System.Numerics;
-using System.Text.Json;
-using Useful.Assets.Models.Serialization;
 using Useful.Assets.Palettes;
 
 namespace Useful.Assets.Models;
 
+/// <summary>
+/// Reads ship geometry stored as Wavefront OBJ. Vertices ('v'), face-normal-pool entries
+/// ('vn'), materials ('usemtl'), faces ('f', position indices only) and edges ('l') use
+/// standard OBJ syntax. A ship's points can be linked to face-normal-pool entries that no
+/// face itself references (used only by the explosion debris effect); since plain OBJ has
+/// no syntax for that link, it is carried as '# pn &lt;point&gt; &lt;normal&gt;' comment lines
+/// (1-based indices), which any standard OBJ tool will simply ignore.
+/// </summary>
 public static class ModelReader
 {
     public static ThreeDModel None => new()
@@ -24,99 +29,88 @@ public static class ModelReader
         Guard.ArgumentNull(modelName);
         Guard.ArgumentNull(palette);
 
-        string modelJson = File.ReadAllText(modelName);
-        GeometryData? geometry = JsonSerializer.Deserialize<GeometryData>(modelJson);
-        if (geometry is null)
-        {
-            return None;
-        }
+        string[] modelLines = File.ReadAllLines(modelName);
 
-        Debug.Assert(geometry.FaceNormals is not null, "geometry.FaceNormals is not null");
-        //// Debug.Assert(geometry.FaceNormals.Count == 4, "geometry.FaceNormals count must be 4");
-        //// Debug.Assert(geometry.Faces is not null, "geometry.Faces is not null");
-        //// Debug.Assert(geometry.Faces.Count == 8, "geometry.Faces count must be 8");
-        Debug.Assert(geometry.Lines is not null, "geometry.Lines is not null");
-        Debug.Assert(geometry.Points is not null, "geometry.Points is not null");
-        ////Debug.Assert(geometry.Points.Count == 4, "geometry.FaceNormals count must be 4");
-
-        IList<FaceNormal> faceNormals = [.. geometry.FaceNormals
-            .Select(fn => new FaceNormal()
-            {
-                Distance = fn[0],
-                Direction = new(fn[1], fn[2], fn[3], 0),
-                Visible = false,
-            })];
-
-        IList<Point> points = [];
-        foreach (List<int> point in geometry.Points)
-        {
-            Vector4 coords = new(point[0], point[1], point[2], 0);
-            int distance = point[3];
-            Collection<FaceNormal> pointFaceNormals = [];
-            for (int i = 4; i < point.Count; i++)
-            {
-                //// Debug.Assert(point[i] >= 0 && point[i] < faceNormals.Count, "Face normal index is within range");
-                if (point[i] >= 0 && point[i] < faceNormals.Count)
-                {
-                    pointFaceNormals.Add(faceNormals[point[i]]);
-                }
-            }
-
-            points.Add(new()
-            {
-                Coords = coords,
-                Distance = distance,
-                FaceNormals = pointFaceNormals,
-            });
-        }
-
-        IList<Face> faces = [];
-        foreach (JsonElement face in geometry.Faces)
-        {
-            uint color = palette[face[0].GetString() ?? string.Empty];
-            Vector4 normal = new(face[1].GetInt32(), face[2].GetInt32(), face[3].GetInt32(), 0);
-
-            List<Point> facePoints = [];
-            for (int i = 4; i < face.GetArrayLength(); i++)
-            {
-                facePoints.Add(points[face[i].GetInt32()]);
-            }
-
-            faces.Add(new Face()
-            {
-                Color = color,
-                Normal = normal,
-                Points = facePoints,
-            });
-        }
-
+        List<Point> points = [];
+        List<FaceNormal> faceNormals = [];
+        List<Face> faces = [];
         List<Line> lines = [];
-        foreach (List<int> line in geometry.Lines)
+        List<(int PointIndex, int NormalIndex)> pointNormalLinks = [];
+        string currentMaterial = string.Empty;
+
+        foreach (string modelLine in modelLines)
         {
-            Collection<FaceNormal> lineFaceNormals = [];
-            for (int i = 1; i <= 2; i++)
+            string[] tokens = modelLine.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length == 0)
             {
-                if (line[i] >= 0 && line[i] < faceNormals.Count)
-                {
-                    lineFaceNormals.Add(faceNormals[line[i]]);
-                }
+                continue;
             }
 
-            lines.Add(new Line()
+            switch (tokens[0])
             {
-                Distance = line[0],
-                FaceNormals = lineFaceNormals,
-                StartPoint = points[line[3]],
-                EndPoint = points[line[4]],
-            });
+                case "v":
+                    points.Add(new()
+                    {
+                        Coords = ParseVector(tokens),
+                        FaceNormals = [],
+                    });
+                    break;
+
+                case "vn":
+                    faceNormals.Add(new()
+                    {
+                        Direction = ParseVector(tokens),
+                        Visible = false,
+                    });
+                    break;
+
+                case "usemtl":
+                    currentMaterial = tokens[1];
+                    break;
+
+                case "f":
+                    faces.Add(new()
+                    {
+                        Color = palette[currentMaterial],
+                        Points = [.. tokens.Skip(1).Select(t => points[int.Parse(t, CultureInfo.InvariantCulture) - 1])],
+                    });
+                    break;
+
+                case "l":
+                    lines.Add(new()
+                    {
+                        StartPoint = points[int.Parse(tokens[1], CultureInfo.InvariantCulture) - 1],
+                        EndPoint = points[int.Parse(tokens[2], CultureInfo.InvariantCulture) - 1],
+                    });
+                    break;
+
+                case "#" when tokens.Length == 4 && tokens[1] == "pn":
+                    pointNormalLinks.Add((
+                        int.Parse(tokens[2], CultureInfo.InvariantCulture) - 1,
+                        int.Parse(tokens[3], CultureInfo.InvariantCulture) - 1));
+                    break;
+            }
         }
 
-        return new()
+        foreach ((int pointIndex, int normalIndex) in pointNormalLinks)
         {
-            FaceNormals = faceNormals,
-            Faces = faces,
-            Lines = lines,
-            Points = points,
-        };
+            points[pointIndex].FaceNormals.Add(faceNormals[normalIndex]);
+        }
+
+        return points.Count == 0 && faces.Count == 0
+            ? None
+            : new()
+            {
+                FaceNormals = faceNormals,
+                Faces = faces,
+                Lines = lines,
+                Points = points,
+            };
     }
+
+    private static Vector4 ParseVector(string[] tokens) => new(
+        float.Parse(tokens[1], CultureInfo.InvariantCulture),
+        float.Parse(tokens[2], CultureInfo.InvariantCulture),
+        float.Parse(tokens[3], CultureInfo.InvariantCulture),
+        0);
 }

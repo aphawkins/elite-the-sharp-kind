@@ -1,0 +1,123 @@
+# thargoid
+# Converted from thargoid.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 32 -48 48
+v 32 -68 0
+v 32 -48 -48
+v 32 0 -68
+v 32 48 -48
+v 32 68 0
+v 32 48 48
+v 32 0 68
+v -24 -116 116
+v -24 -164 0
+v -24 -116 -116
+v -24 0 -164
+v -24 116 -116
+v -24 164 0
+v -24 116 116
+v -24 0 164
+v -24 64 80
+v -24 64 -80
+v -24 -64 -80
+v -24 -64 80
+
+vn 103 -60 25
+vn 103 -60 -25
+vn 103 -25 -60
+vn 103 25 -60
+vn 64 0 0
+vn 103 60 -25
+vn 103 60 25
+vn 103 25 60
+vn 103 -25 60
+vn -48 0 0
+
+usemtl LightRed
+f 2 1 9 10
+usemtl DarkGrey
+f 3 2 10 11
+usemtl LightRed
+f 4 3 11 12
+usemtl DarkGrey
+f 5 4 12 13
+usemtl DarkerGrey
+f 1 2 3 8
+usemtl DarkerGrey
+f 3 4 7 8
+usemtl DarkerGrey
+f 4 5 6 7
+usemtl LightRed
+f 6 5 13 14
+usemtl DarkGrey
+f 7 6 14 15
+usemtl LightRed
+f 8 7 15 16
+usemtl DarkGrey
+f 1 8 16 9
+usemtl DarkerGrey
+f 10 9 16 11
+usemtl DarkerGrey
+f 12 11 16 15
+usemtl DarkerGrey
+f 13 12 15 14
+usemtl White
+f 17 18
+usemtl White
+f 19 20
+
+# pn 1 5
+# pn 1 1
+# pn 1 9
+# pn 2 2
+# pn 2 1
+# pn 2 5
+# pn 3 3
+# pn 3 2
+# pn 3 5
+# pn 4 4
+# pn 4 3
+# pn 4 5
+# pn 5 5
+# pn 5 4
+# pn 5 6
+# pn 6 6
+# pn 6 5
+# pn 6 7
+# pn 7 7
+# pn 7 5
+# pn 7 8
+# pn 8 8
+# pn 8 5
+# pn 8 9
+# pn 9 9
+# pn 9 1
+# pn 9 10
+# pn 10 2
+# pn 10 1
+# pn 10 10
+# pn 11 3
+# pn 11 2
+# pn 11 10
+# pn 12 4
+# pn 12 3
+# pn 12 10
+# pn 13 6
+# pn 13 4
+# pn 13 10
+# pn 14 7
+# pn 14 6
+# pn 14 10
+# pn 15 8
+# pn 15 7
+# pn 15 10
+# pn 16 9
+# pn 16 8
+# pn 16 10
+# pn 17 10
+# pn 18 10
+# pn 19 10
+# pn 20 10
