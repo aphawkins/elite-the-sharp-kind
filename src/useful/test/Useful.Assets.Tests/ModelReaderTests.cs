@@ -4,7 +4,7 @@ using Useful.Assets.Models;
 using Useful.Assets.Palettes;
 using Xunit;
 
-namespace Useful.Tests;
+namespace Useful.Assets.Tests;
 
 public class ModelReaderTests
 {

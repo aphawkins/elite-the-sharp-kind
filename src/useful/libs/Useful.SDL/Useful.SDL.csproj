@@ -25,6 +25,7 @@
 	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Useful.Abstraction\Useful.Abstraction.csproj" />
+    <ProjectReference Include="..\Useful.Assets\Useful.Assets.csproj" />
     <ProjectReference Include="..\Useful.Audio\Useful.Audio.csproj" />
     <ProjectReference Include="..\Useful.Controls\Useful.Controls.csproj" />
     <ProjectReference Include="..\Useful.Graphics\Useful.Graphics.csproj" />

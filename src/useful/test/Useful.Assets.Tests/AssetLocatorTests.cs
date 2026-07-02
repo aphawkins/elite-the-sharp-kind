@@ -2,10 +2,9 @@
 
 using System.Text;
 using System.Text.Json;
-using Useful.Assets;
 using Xunit;
 
-namespace Useful.Tests;
+namespace Useful.Assets.Tests;
 
 public class AssetLocatorTests
 {

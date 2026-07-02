@@ -1,4 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <ItemGroup>
     <PackageReference Include="Roslynator.Analyzers" Version="4.15.0">
       <PrivateAssets>all</PrivateAssets>
@@ -21,9 +22,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\Useful.Assets\Useful.Assets.csproj" />
-    <ProjectReference Include="..\..\libs\Useful.Controls\Useful.Controls.csproj" />
-    <ProjectReference Include="..\..\libs\Useful\Useful.csproj" />
+    <ProjectReference Include="..\Useful\Useful.csproj" />
   </ItemGroup>
+
 </Project>

@@ -37,6 +37,7 @@
   <Folder Name="/src/useful/" />
   <Folder Name="/src/useful/libs/">
     <Project Path="src/useful/libs/Useful.Abstraction/Useful.Abstraction.csproj" />
+    <Project Path="src/useful/libs/Useful.Assets/Useful.Assets.csproj" />
     <Project Path="src/useful/libs/Useful.Audio/Useful.Audio.csproj" Id="f905b754-5b15-4e1e-95a5-0ae5c0543175" />
     <Project Path="src/useful/libs/Useful.Controls/Useful.Controls.csproj" Id="06eb8143-9b04-4f33-ba8e-d1ec9357c9ea" />
     <Project Path="src/useful/libs/Useful.Graphics/Useful.Graphics.csproj" />
@@ -48,6 +49,7 @@
     <Project Path="src/useful/perf/Useful.Graphics.Benchmarks/Useful.Graphics.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/useful/test/">
+    <Project Path="src/useful/test/Useful.Assets.Tests/Useful.Assets.Tests.csproj" />
     <Project Path="src/useful/test/Useful.Controls.Tests/Useful.Controls.Tests.csproj" Id="71806841-6acf-4385-9ca4-a722f492b109" />
     <Project Path="src/useful/test/Useful.Fakes/Useful.Fakes.csproj" />
     <Project Path="src/useful/test/Useful.Graphics.Fakes/Useful.Graphics.Fakes.csproj" />
