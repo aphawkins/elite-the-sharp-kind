@@ -41,7 +41,7 @@ Concretely, convert:
 | `Track.cpp/h` | Track geometry/segment data and collision |
 | `Car.cpp/h`, `Car Behaviour.cpp/h` | Car physics/handling |
 | `Backdrop.cpp/h` | Sky/scenery — can be deferred/stubbed if it blocks nothing else |
-| `wavefunctions.cpp/h` | Small math utility — check first whether `System.Numerics` or existing `Useful` code already covers it |
+| `wavefunctions.cpp/h` | ~~Small math utility~~ Nothing to port: despite the name it is DirectSound WAV plumbing (Win32 resource loading, RIFF chunk parsing, `IDirectSoundBuffer8` writes), fully superseded by `Useful.Audio` |
 | `StuntCarRacer.cpp/h` | Main loop / game state — becomes `StuntCarRacerMain`, structured like `EliteMain` and hosted by the `StuntCarRacer` SDL app |
 
 Deferred (do not convert this pass): `Opponent Behaviour.cpp/h`,
@@ -124,8 +124,9 @@ binary format the C# code must parse identically forever.
 
 1. ✅ Project skeleton (`src/scr/*`), wired into the solution, builds clean,
    empty SDL window opens with a placeholder scene. *(done)*
-2. Port `wavefunctions.cpp/h`, checking each function against
-   `System.Numerics`/existing `Useful` helpers first.
+2. ✅ Assess `wavefunctions.cpp/h` — outcome: skip. It is DirectSound WAV
+   loading (resource loading + RIFF parsing), not math; `Useful.Audio`
+   already covers this role and sound is deferred anyway. *(done — no code)*
 3. Port `Track.cpp/h` data model (geometry only, no rendering yet) with unit
    tests in `StuntCarRacerLib.Tests`.
 4. Port `Car.cpp/h` + `Car Behaviour.cpp/h` physics, testable independent of
