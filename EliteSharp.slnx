@@ -34,6 +34,17 @@
     <Project Path="src/elite/test/EliteSharpLib.Fakes/EliteSharpLib.Fakes.csproj" />
     <Project Path="src/elite/test/EliteSharpLib.Tests/EliteSharpLib.Tests.csproj" />
   </Folder>
+  <Folder Name="/src/scr/" />
+  <Folder Name="/src/scr/apps/">
+    <Project Path="src/scr/apps/StuntCarRacer/StuntCarRacer.csproj" />
+  </Folder>
+  <Folder Name="/src/scr/libs/">
+    <Project Path="src/scr/libs/StuntCarRacerLib/StuntCarRacerLib.csproj" />
+  </Folder>
+  <Folder Name="/src/scr/test/">
+    <Project Path="src/scr/test/StuntCarRacerLib.Fakes/StuntCarRacerLib.Fakes.csproj" />
+    <Project Path="src/scr/test/StuntCarRacerLib.Tests/StuntCarRacerLib.Tests.csproj" />
+  </Folder>
   <Folder Name="/src/useful/" />
   <Folder Name="/src/useful/libs/">
     <Project Path="src/useful/libs/Useful.Abstraction/Useful.Abstraction.csproj" />
