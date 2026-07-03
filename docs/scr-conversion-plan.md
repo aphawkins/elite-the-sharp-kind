@@ -127,8 +127,12 @@ binary format the C# code must parse identically forever.
 2. ✅ Assess `wavefunctions.cpp/h` — outcome: skip. It is DirectSound WAV
    loading (resource loading + RIFF parsing), not math; `Useful.Audio`
    already covers this role and sound is deferred anyway. *(done — no code)*
-3. Port `Track.cpp/h` data model (geometry only, no rendering yet) with unit
-   tests in `StuntCarRacerLib.Tests`.
+3. ✅ Port `Track.cpp/h` data model (geometry only, no rendering yet) with unit
+   tests in `StuntCarRacerLib.Tests`. *(done — `StuntCarRacerLib/Tracks/`;
+   the Amiga template tables in `AmigaTrackData.cs` are script-generated from
+   the original `Track.cpp`. Deferred from Track.cpp to later steps:
+   `MoveDrawBridge`/`ResetDrawBridge` (needs game state + opponent, step 4+)
+   and all vertex-buffer/`DrawTrack` rendering code (step 5/6).)*
 4. Port `Car.cpp/h` + `Car Behaviour.cpp/h` physics, testable independent of
    rendering.
 5. Port `3D Engine.cpp/h`'s projection math into `StuntCarRacerLib`, and — in
