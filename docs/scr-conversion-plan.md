@@ -188,7 +188,17 @@ with the full world rendered.
    opponent distance bottom left, speed/damage bottom right, flashing
    RACE WON/LOST for six seconds, then GAME OVER with M to race again —
    the original's M returned to the track menu, which doesn't exist yet.)*
-4. Sound via `Useful.Audio` (engine, effects; `Sounds/` assets).
+4. ✅ Sound via `Useful.Audio`. *(The original 8-bit mono 11025Hz Amiga
+   samples were converted offline to 44.1kHz stereo float WAVs in
+   `Assets/SFX`. `Useful.Audio` gained `ISound.PlayLoop/StopLoop` with a
+   variable-pitch looping resampler (`PitchedLoopSampleProvider`) for the
+   engine, which plays TickOver/EnginePitch2-8 at `AMIGA_PAL_HZ / period`
+   exactly as `FramesWheelsEngine`; `SoundSampleProvider` now only requires
+   a soundfont for MIDI assets. Effect triggers (grounded, creak, smash,
+   off-road dust, edge sparks/wreck, hit-car) fire from the physics and are
+   throttled in the game loop so the mixer doesn't stack repeats. Not done:
+   per-effect volume (the original scales grounded/creak volume by damage)
+   and the SDL_mixer backend's pitched loop.)*
 5. Draw bridge animation (`MoveDrawBridge`), gamepad support, track
    selection menu, road-line textures.
 

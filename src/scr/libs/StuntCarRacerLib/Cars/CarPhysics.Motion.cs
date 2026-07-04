@@ -144,8 +144,7 @@ public sealed partial class CarPhysics
 
         CarToCarCollision?.Invoke();
 
-        // Grounded sound: the original plays a sound here using _damageValue
-        // for the volume, gated by _groundedDelay/_groundedCount.
+        // Grounded sound (the original also sets the volume from _damageValue).
         if (_groundedDelay > 0)
         {
             --_groundedDelay;
@@ -153,6 +152,7 @@ public sealed partial class CarPhysics
 
         if (_groundedCount != 0 && _groundedDelay == 0)
         {
+            GroundedSoundTriggered = true;
             _groundedDelay = 5;
         }
     }

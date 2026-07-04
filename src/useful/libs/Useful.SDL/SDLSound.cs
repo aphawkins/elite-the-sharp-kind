@@ -72,6 +72,15 @@ public sealed class SDLSound : ISound, IDisposable
 
     public void StopMusic() => SDLGuard.Execute(Mix_HaltMusic);
 
+    // Pitched loops are not supported by the SDL_mixer backend yet.
+    public void PlayLoop(string sfxType, double pitch)
+    {
+    }
+
+    public void StopLoop()
+    {
+    }
+
     private void Dispose(bool disposing)
     {
         if (!_disposedValue)

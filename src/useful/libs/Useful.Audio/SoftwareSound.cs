@@ -14,6 +14,8 @@ public sealed class SoftwareSound : ISound, IDisposable
     private bool _isDisposed;
     private Dictionary<string, SoundSampleProvider> _music = [];
     private Dictionary<string, SoundSampleProvider> _sfx = [];
+    private PitchedLoopSampleProvider? _loop;
+    private string? _loopName;
 
     private SoftwareSound()
     {
@@ -72,6 +74,34 @@ public sealed class SoftwareSound : ISound, IDisposable
     {
         _mixer.RemoveAllMixerInputs();
         _outputDevice.Stop();
+        _loop = null;
+        _loopName = null;
+    }
+
+    public void PlayLoop(string sfxType, double pitch)
+    {
+        Debug.Assert(_sfx.ContainsKey(sfxType), "Sound effect has not been loaded");
+
+        if (_loopName != sfxType)
+        {
+            StopLoop();
+            _loop = new(_sfx[sfxType].SampleData);
+            _loopName = sfxType;
+            _mixer.AddMixerInput(_loop);
+        }
+
+        _loop!.Pitch = pitch;
+        _outputDevice.Play();
+    }
+
+    public void StopLoop()
+    {
+        if (_loop != null)
+        {
+            _mixer.RemoveMixerInput(_loop);
+            _loop = null;
+            _loopName = null;
+        }
     }
 
     private void AddMixerInput(SoundSampleProvider input, bool repeat = false)

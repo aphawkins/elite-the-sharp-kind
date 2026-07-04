@@ -19,4 +19,12 @@ public sealed class FakeSound : ISound
     public void StopMusic()
     {
     }
+
+    public void PlayLoop(string sfxType, double pitch)
+    {
+    }
+
+    public void StopLoop()
+    {
+    }
 }

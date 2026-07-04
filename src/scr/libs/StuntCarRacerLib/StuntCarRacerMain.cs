@@ -9,6 +9,7 @@ using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
 using Useful;
 using Useful.Abstraction;
+using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
 
@@ -23,6 +24,7 @@ public sealed class StuntCarRacerMain
 
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;
+    private readonly ISound _sound;
     private readonly long _oneSecondInTicks = TimeSpan.FromSeconds(1).Ticks;
     private readonly long _timerResolution = TimeSpan.FromSeconds(1).Ticks / Stopwatch.Frequency;
 
@@ -34,6 +36,8 @@ public sealed class StuntCarRacerMain
     private readonly BackdropRenderer _backdrop;
     private readonly OpponentRenderer _opponentRenderer;
     private readonly List<WorldPolygon> _worldPolygons = [];
+
+    private readonly int[] _soundThrottles = new int[5];
 
     private bool _exitGame;
     private bool _sceneryKeyDown;
@@ -54,6 +58,7 @@ public sealed class StuntCarRacerMain
 
         _graphics = abstraction.Graphics;
         _keyboard = abstraction.Keyboard;
+        _sound = abstraction.Sound;
 
         _track = Track.Load(trackId);
         _car = new(_track);
@@ -133,6 +138,8 @@ public sealed class StuntCarRacerMain
         {
             _sceneryKeyDown = false;
         }
+
+        UpdateSounds();
     }
 
     internal void DrawFrame()
@@ -146,6 +153,76 @@ public sealed class StuntCarRacerMain
 
         DrawHud();
         _graphics.ScreenUpdate();
+    }
+
+    // Play the effect triggers from the physics (throttled so repeated
+    // triggers don't stack in the mixer) and drive the engine loop pitch.
+    private void UpdateSounds()
+    {
+        for (int i = 0; i < _soundThrottles.Length; i++)
+        {
+            if (_soundThrottles[i] > 0)
+            {
+                _soundThrottles[i]--;
+            }
+        }
+
+        PlayThrottled(0, 9, _car.GroundedSoundTriggered, "Grounded");
+        PlayThrottled(1, 15, _car.CreakSoundTriggered, "Creak");
+        PlayThrottled(2, 26, _car.SmashSoundTriggered, "Smash");
+        PlayThrottled(3, 24, _car.OffRoadSoundTriggered || _car.WreckSoundTriggered, _car.OffRoadSoundTriggered ? "OffRoad" : "Wreck");
+        PlayThrottled(4, 22, _opponent.HitCarSoundTriggered, "HitCar");
+
+        UpdateEngineSound();
+    }
+
+    private void PlayThrottled(int slot, int frames, bool triggered, string sfxType)
+    {
+        if (triggered && _soundThrottles[slot] == 0)
+        {
+            _sound.Play(sfxType);
+            _soundThrottles[slot] = frames;
+        }
+    }
+
+    // Engine sound sample and pitch, from the original FramesWheelsEngine.
+    // The samples were recorded at 11025Hz; the original played them at
+    // AMIGA_PAL_HZ / period.
+    private void UpdateEngineSound()
+    {
+        const int amigaPalHz = 3546895;
+        const int sampleRate = 11025;
+
+        int r = _car.EngineRevs + 378;
+        int period = 4800000 / r;
+        int index = 6;
+
+        if (period >= 0x3fff)
+        {
+            period = 0x3ffe;
+        }
+
+        period |= _car.EngineFluctuation;
+        if (period < 124)
+        {
+            period = 124; // lowest possible period
+        }
+
+        // calculate the sound index that will give period < 256
+        while (period >= 256)
+        {
+            period >>= 1;
+            --index;
+
+            if (index < 0)
+            {
+                index = 0;
+            }
+        }
+
+        double frequency = (double)amigaPalHz / period;
+        string sample = index == 0 ? "TickOver" : $"EnginePitch{index + 1}";
+        _sound.PlayLoop(sample, frequency / sampleRate);
     }
 
     private void StartRace()

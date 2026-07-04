@@ -114,6 +114,7 @@ public sealed partial class OpponentPhysics
     private int _suggestedRoadXPosition;
     private int _collisionCountdown; // original B1bbc3
     private int _collidedFlag; // original B1bbeb
+    private int _carsCollidedDelay;
     private bool _carsCollided;
     private int _carToCarXAcceleration;
     private int _carToCarYAcceleration;
@@ -181,6 +182,9 @@ public sealed partial class OpponentPhysics
 
     public Coord3D ShadowFrontRight => Shadow(_shadowFrontRight);
 
+    // Set for one frame when the car-to-car collision sound should play.
+    internal bool HitCarSoundTriggered { get; private set; }
+
     // Start a new race: reset and place the opponent at the start piece.
     public void StartRace()
     {
@@ -232,6 +236,8 @@ public sealed partial class OpponentPhysics
 
     public void Update(bool paused)
     {
+        HitCarSoundTriggered = false;
+
         _player.CalculateRoadPosition();
 
         if (!paused)

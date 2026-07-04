@@ -345,6 +345,11 @@ public sealed partial class OpponentPhysics
     // player's collision detection).
     private void TransferCollisionToPlayer()
     {
+        if (_carsCollidedDelay > 0)
+        {
+            --_carsCollidedDelay;
+        }
+
         if (!_carsCollided)
         {
             return;
@@ -371,6 +376,11 @@ public sealed partial class OpponentPhysics
         _carToCarYAcceleration = 0;
         _carToCarZAcceleration = 0;
 
-        // the original plays the hit-car sound effect here
+        // hit-car sound, rate limited as the original
+        if (_carsCollidedDelay == 0)
+        {
+            HitCarSoundTriggered = true;
+            _carsCollidedDelay = 5;
+        }
     }
 }

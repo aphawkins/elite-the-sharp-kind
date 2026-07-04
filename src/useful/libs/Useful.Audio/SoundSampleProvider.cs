@@ -17,16 +17,16 @@ public class SoundSampleProvider : ISampleProvider
 
     public required WaveFormat WaveFormat { get; init; }
 
+    // Sample data for loop playback, skipping the leading length entry.
+    internal ReadOnlyMemory<float> SampleData => _audioData.AsMemory(1);
+
     public static SoundSampleProvider Create(IAssetLocator assetLocator, string fileName)
     {
         Guard.ArgumentNull(assetLocator);
 
-        Debug.Assert(assetLocator.SoundFontPaths.Count > 0, "SoundFonts are missing.");
-        string soundFontPath = assetLocator.SoundFontPaths.Values.First();
-
         using WaveStream audioReader = Path.GetExtension(fileName) switch
         {
-            ".mid" => GetMidiStream(fileName, soundFontPath),
+            ".mid" => GetMidiStream(fileName, GetSoundFontPath(assetLocator)),
             ".ogg" => new VorbisWaveReader(fileName),
             _ => new AudioFileReader(fileName),
         };
@@ -68,6 +68,12 @@ public class SoundSampleProvider : ISampleProvider
         }
 
         return [.. audioData];
+    }
+
+    private static string GetSoundFontPath(IAssetLocator assetLocator)
+    {
+        Debug.Assert(assetLocator.SoundFontPaths.Count > 0, "SoundFonts are missing.");
+        return assetLocator.SoundFontPaths.Values.First();
     }
 
     private static WaveFileReader GetMidiStream(string filename, string soundFontPath)

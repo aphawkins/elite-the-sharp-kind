@@ -2,5 +2,22 @@
   "FontsBitmap": {
     "Small": "font1.bmp",
     "Large": "font2.bmp"
+  },
+  "Sfx": {
+    "Chime": "Chime.wav",
+    "Creak": "Creak.wav",
+    "EnginePitch2": "EnginePitch2.wav",
+    "EnginePitch3": "EnginePitch3.wav",
+    "EnginePitch4": "EnginePitch4.wav",
+    "EnginePitch5": "EnginePitch5.wav",
+    "EnginePitch6": "EnginePitch6.wav",
+    "EnginePitch7": "EnginePitch7.wav",
+    "EnginePitch8": "EnginePitch8.wav",
+    "Grounded": "Grounded.wav",
+    "HitCar": "HitCar.wav",
+    "OffRoad": "OffRoad.wav",
+    "Smash": "Smash.wav",
+    "TickOver": "TickOver.wav",
+    "Wreck": "Wreck.wav"
   }
 }

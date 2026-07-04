@@ -322,6 +322,17 @@ public sealed partial class CarPhysics
 
     internal bool OpponentBehindPlayer { get; set; }
 
+    // Sound triggers, set for one frame when the effect should play.
+    internal bool GroundedSoundTriggered { get; private set; }
+
+    internal bool CreakSoundTriggered { get; private set; }
+
+    internal bool SmashSoundTriggered { get; private set; }
+
+    internal bool OffRoadSoundTriggered { get; private set; }
+
+    internal bool WreckSoundTriggered { get; private set; }
+
     // Reset all car behaviour variables to their initial state (original ResetPlayer).
     public void Reset()
     {
@@ -445,6 +456,10 @@ public sealed partial class CarPhysics
     // One physics frame (original CarBehaviour).
     public void Update(CarInput input)
     {
+        GroundedSoundTriggered = false;
+        OffRoadSoundTriggered = false;
+        WreckSoundTriggered = false;
+
         // Put the car back on the track after it has been off for too long.
         if (_offTrackCount > OffTrackLimit)
         {
@@ -462,6 +477,8 @@ public sealed partial class CarPhysics
         {
             DropStartDone = true;
         }
+
+        UpdateEffectSounds();
     }
 
     // Calculate player position values required for opponent behaviour
@@ -495,6 +512,9 @@ public sealed partial class CarPhysics
 
     public void UpdateDamage()
     {
+        CreakSoundTriggered = false;
+        SmashSoundTriggered = false;
+
         if (Damaged)
         {
             int d = (FrontLeftDamage + FrontRightDamage) / 2;
@@ -504,6 +524,11 @@ public sealed partial class CarPhysics
         if (_smashedCountdown > 0)
         {
             --_smashedCountdown;
+            if (Damaged)
+            {
+                CreakSoundTriggered = true;
+            }
+
             return;
         }
 
@@ -515,11 +540,12 @@ public sealed partial class CarPhysics
         if (_damageValue >= 0x1400)
         {
             _smashedCountdown = 69;
-
-            // The original plays the smash sound effect here.
+            SmashSoundTriggered = true;
+            return;
         }
 
-        // The original plays the creak sound effect here, with volume from _damageValue.
+        // the original also sets the creak volume from _damageValue
+        CreakSoundTriggered = true;
     }
 
     // Adds car-to-car collision accelerations from the opponent.
@@ -578,6 +604,29 @@ public sealed partial class CarPhysics
         ex = x - (v * vx / denominator);
         ez = z - (v * vz / denominator);
         return v * RoadWidth / denominator;
+    }
+
+    // Sound triggers for the off-road dust clouds and edge sparks, from the
+    // original DrawOtherGraphics/DrawDustClouds/DrawSparks (which only played
+    // the sound effects in the remake).
+    private void UpdateEffectSounds()
+    {
+        if (!_onChains && _offMapStatus != 0 && TouchingRoad)
+        {
+            OffRoadSoundTriggered = true;
+        }
+
+        if ((WhichSideByte != 0 || Wrecked) && _offMapStatus == 0)
+        {
+            int p = Math.Abs(PlayerZSpeed) >> 8;
+            if (p >= 1 && TouchingRoad)
+            {
+                WreckSoundTriggered = true;
+            }
+        }
+
+        // the original cleared this in update.wheel.positions
+        WhichSideByte = 0;
     }
 
     private void CarControl(CarInput input)
