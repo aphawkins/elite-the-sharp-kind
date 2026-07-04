@@ -17,6 +17,13 @@ public sealed class TrackRenderer
 {
     private const int MaxPolygonPoints = 5; // quad plus one clip point
 
+    // Draw order within a segment's depth (the original face order).
+    private const int SideOrder = 0;
+
+    private const int RoadOrder = 1;
+
+    private const int ExtraOrder = 2;
+
     private readonly Track _track;
 
     private readonly IGraphics _graphics;
@@ -37,7 +44,9 @@ public sealed class TrackRenderer
     public void Draw(SceneCamera camera) => Draw(camera, null);
 
     // Draws the track plus optional extra world polygons (e.g. the opponent),
-    // all depth-sorted together.
+    // all depth-sorted together. A segment's three faces share one depth and
+    // draw in the original's face order (sides first, then road) so the road
+    // surface is never painted over by its own side walls.
     public void Draw(SceneCamera camera, IEnumerable<WorldPolygon>? extraPolygons)
     {
         _scene.SetView(camera, _graphics.ScreenWidth, _graphics.ScreenHeight);
@@ -47,7 +56,7 @@ public sealed class TrackRenderer
         {
             foreach (WorldPolygon polygon in extraPolygons)
             {
-                AddPolygon(polygon.Points, polygon.Colour);
+                AddPolygon(polygon.Points, polygon.Colour, null, ExtraOrder);
             }
         }
 
@@ -77,7 +86,17 @@ public sealed class TrackRenderer
                 world[1] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 1);
                 world[2] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 5);
                 world[3] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 4);
-                AddPolygon(world, ScrPalette.Colour(roadColour));
+
+                // one depth for the whole segment, from the road corners
+                long depth = 0;
+                for (int i = 0; i < 4; i++)
+                {
+                    depth += _scene.TransformPoint(world[i].X, world[i].Y, world[i].Z).Z;
+                }
+
+                depth /= 4;
+
+                AddPolygon(world, ScrPalette.Colour(roadColour), depth, RoadOrder);
 
                 // left side (bottom left, top left, next top left, next bottom left)
                 uint sideColour = ScrPalette.Colour(piece.SidesColour);
@@ -85,19 +104,24 @@ public sealed class TrackRenderer
                 world[1] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset);
                 world[2] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 4);
                 world[3] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 6);
-                AddPolygon(world, sideColour);
+                AddPolygon(world, sideColour, depth, SideOrder);
 
                 // right side (top right, bottom right, next bottom right, next top right)
                 world[0] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 1);
                 world[1] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 3);
                 world[2] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 7);
                 world[3] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 5);
-                AddPolygon(world, sideColour);
+                AddPolygon(world, sideColour, depth, SideOrder);
             }
         }
 
-        // painter's algorithm: draw the furthest polygons first
-        _polygons.Sort(static (a, b) => b.Depth.CompareTo(a.Depth));
+        // painter's algorithm: draw the furthest polygons first, and for
+        // equal depths the sides before the road
+        _polygons.Sort(static (a, b) =>
+        {
+            int byDepth = b.Depth.CompareTo(a.Depth);
+            return byDepth != 0 ? byDepth : a.Order.CompareTo(b.Order);
+        });
 
         foreach (DepthPolygon polygon in _polygons)
         {
@@ -113,18 +137,20 @@ public sealed class TrackRenderer
         return new(coord.X + pieceX, (coord.Y / 4) + pieceY, coord.Z + pieceZ);
     }
 
-    private void AddPolygon(in ReadOnlySpan<Coord3D> world, uint colour)
+    // Adds a polygon with the given depth key (or its own average camera z
+    // when null) and a draw order for resolving equal depths.
+    private void AddPolygon(in ReadOnlySpan<Coord3D> world, uint colour, long? depth, int order)
     {
         Span<Coord3D> cameraSpace = stackalloc Coord3D[MaxPolygonPoints - 1];
         cameraSpace = cameraSpace[..world.Length];
-        long depth = 0;
+        long averageDepth = 0;
         for (int i = 0; i < world.Length; i++)
         {
             cameraSpace[i] = _scene.TransformPoint(world[i].X, world[i].Y, world[i].Z);
-            depth += cameraSpace[i].Z;
+            averageDepth += cameraSpace[i].Z;
         }
 
-        depth /= world.Length;
+        averageDepth /= world.Length;
 
         Span<Coord3D> clipped = stackalloc Coord3D[MaxPolygonPoints];
         int count = Scene3D.ClipPolygonToNearPlane(cameraSpace, clipped);
@@ -139,8 +165,8 @@ public sealed class TrackRenderer
             points[i] = _scene.ProjectPoint(clipped[i]);
         }
 
-        _polygons.Add(new(points, colour, depth));
+        _polygons.Add(new(points, colour, depth ?? averageDepth, order));
     }
 
-    private sealed record DepthPolygon(Vector2[] Points, uint Colour, long Depth);
+    private sealed record DepthPolygon(Vector2[] Points, uint Colour, long Depth, int Order);
 }
