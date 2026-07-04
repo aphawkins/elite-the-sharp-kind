@@ -158,7 +158,16 @@ binary format the C# code must parse identically forever.
    bars. Visually verified via offscreen software-rasterizer frame dumps
    (`VisualDumpTests`) and a live window screenshot. Still to polish:
    fonts/dashboard, sound, backdrop/horizon, lap/race UI.)*
-7. Only then revisit `Backdrop.cpp` and any remaining polish for this scope.
+7. ✅ Revisit `Backdrop.cpp`. *(done — `BackdropRenderer` ports the horizon
+   sky/ground fill and all five scenery skyline types (the scenery shape
+   tables in `BackdropData.cs` are script-generated from `Backdrop.cpp`);
+   N cycles the scenery type in-game. The original's rectangle/line-clipping
+   case analysis is replaced by large clipped polygon fills.)*
+
+This completes the first-pass scope: one track playable against the clock
+with the full world rendered. Still open for later passes: fonts/dashboard
+UI, sound via `Useful.Audio`, the opponent car and AI, draw bridge
+animation, gamepad support, track selection menu, and road-line textures.
 
 ## Validation
 

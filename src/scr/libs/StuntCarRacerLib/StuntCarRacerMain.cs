@@ -30,8 +30,10 @@ public sealed class StuntCarRacerMain
     private readonly CarPhysics _car;
     private readonly SceneCamera _camera = new();
     private readonly TrackRenderer _renderer;
+    private readonly BackdropRenderer _backdrop;
 
     private bool _exitGame;
+    private bool _sceneryKeyDown;
 
     public StuntCarRacerMain(IAbstraction abstraction)
         : this(abstraction, TrackId.LittleRamp)
@@ -48,6 +50,7 @@ public sealed class StuntCarRacerMain
         _track = Track.Load(trackId);
         _car = new(_track);
         _renderer = new(_track, _graphics);
+        _backdrop = new(_graphics);
 
         StartRace();
     }
@@ -81,11 +84,26 @@ public sealed class StuntCarRacerMain
         _car.Update(ReadInput());
         _car.UpdateLapData();
         _camera.FollowCar(_car);
+
+        // N cycles the scenery type, as the original menu option
+        if (_keyboard.IsPressed(ConsoleKey.N))
+        {
+            if (!_sceneryKeyDown)
+            {
+                _backdrop.NextSceneryType();
+                _sceneryKeyDown = true;
+            }
+        }
+        else
+        {
+            _sceneryKeyDown = false;
+        }
     }
 
     internal void DrawFrame()
     {
         _graphics.Clear();
+        _backdrop.Draw(_camera);
         _renderer.Draw(_camera);
         DrawHud();
         _graphics.ScreenUpdate();

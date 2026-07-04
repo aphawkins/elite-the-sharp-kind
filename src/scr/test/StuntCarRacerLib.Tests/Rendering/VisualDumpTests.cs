@@ -28,12 +28,14 @@ public class VisualDumpTests
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 400, b => lastFrame = b, new FakeAssetLocator());
         TrackRenderer renderer = new(track, graphics);
+        BackdropRenderer backdrop = new(graphics);
         SceneCamera camera = new();
 
         void RenderAndSave(string name)
         {
             camera.FollowCar(car);
             graphics.Clear();
+            backdrop.Draw(camera);
             renderer.Draw(camera);
             graphics.ScreenUpdate();
             Assert.NotNull(lastFrame);
