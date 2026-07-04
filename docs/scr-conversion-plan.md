@@ -176,7 +176,12 @@ with the full world rendered.
    counting and win calculation. Data tables script-generated into
    `OpponentData.cs`. Drawn as a flat-shaded box plus road shadow
    (`Rendering/OpponentRenderer`) until the `Car.cpp` mesh is ported.
-2. Car mesh from `Car.cpp` (player outside view + proper opponent shape).
+2. ✅ Car mesh from `Car.cpp` (`Rendering/CarMesh` ports the active
+   `CreateCarInVB` shape: four wheel quads plus the wedge body with the
+   original track-palette face colours, oriented on the opponent's wheel
+   frame). The player's outside view is still to do (needs a chase camera);
+   the old round-wheeled software car in `Car.cpp` is `#ifdef NOT_USED` in
+   the original and was not ported.
 3. Fonts/dashboard UI, lap/race/damage display.
 4. Sound via `Useful.Audio` (engine, effects; `Sounds/` assets).
 5. Draw bridge animation (`MoveDrawBridge`), gamepad support, track
