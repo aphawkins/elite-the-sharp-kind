@@ -142,7 +142,7 @@ public sealed partial class CarPhysics
 
         _carToRoadCollisionZAcceleration = _carCollisionZAcceleration;
 
-        // Car-to-car collision is deferred until the opponent is ported.
+        CarToCarCollision?.Invoke();
 
         // Grounded sound: the original plays a sound here using _damageValue
         // for the volume, gated by _groundedDelay/_groundedCount.
@@ -607,7 +607,16 @@ public sealed partial class CarPhysics
 
             factor = 5; // set minimum reduction factor
 
-            // Slipstream check deferred until the opponent is ported.
+            // Slipstream: if player and opponent are in line left to right
+            // and the opponent is in front, there is less drag on the player.
+            if (PlayerCloseToOpponent && !OpponentBehindPlayer)
+            {
+                amount -= 20 * 128;
+                if (amount < 0)
+                {
+                    amount = 0;
+                }
+            }
         }
 
         // reduce acceleration values using current speed values

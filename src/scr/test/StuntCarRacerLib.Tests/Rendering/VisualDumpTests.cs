@@ -24,19 +24,31 @@ public class VisualDumpTests
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics car = new(track);
         car.StartRace();
+        OpponentPhysics opponent = new(track, car, new Random(3));
+        opponent.StartRace();
 
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 400, b => lastFrame = b, new FakeAssetLocator());
         TrackRenderer renderer = new(track, graphics);
         BackdropRenderer backdrop = new(graphics);
+        OpponentRenderer opponentRenderer = new(opponent);
         SceneCamera camera = new();
+        List<WorldPolygon> worldPolygons = [];
+
+        void Step(CarInput input)
+        {
+            car.Update(input);
+            opponent.Update();
+        }
 
         void RenderAndSave(string name)
         {
             camera.FollowCar(car);
             graphics.Clear();
             backdrop.Draw(camera);
-            renderer.Draw(camera);
+            worldPolygons.Clear();
+            opponentRenderer.AppendWorldPolygons(worldPolygons);
+            renderer.Draw(camera, worldPolygons);
             graphics.ScreenUpdate();
             Assert.NotNull(lastFrame);
             SaveBmp(lastFrame, Path.Combine(outDir, name));
@@ -45,18 +57,26 @@ public class VisualDumpTests
         // frame at race start (car in the air above the start piece)
         RenderAndSave("frame_start.bmp");
 
-        // after dropping onto the road
-        for (int i = 0; i < 60; i++)
+        // after dropping onto the road (the opponent should be just ahead)
+        for (int i = 0; i < 12; i++)
         {
-            car.Update(CarInput.None);
+            Step(CarInput.None);
         }
 
         RenderAndSave("frame_landed.bmp");
 
+        // a moment later the opponent has pulled ahead into view
+        for (int i = 0; i < 10; i++)
+        {
+            Step(CarInput.None);
+        }
+
+        RenderAndSave("frame_opponent.bmp");
+
         // after accelerating down the straight
         for (int i = 0; i < 60; i++)
         {
-            car.Update(CarInput.AccelBoost);
+            Step(CarInput.AccelBoost);
         }
 
         RenderAndSave("frame_driving.bmp");
@@ -64,7 +84,7 @@ public class VisualDumpTests
         // approaching / on the ramp
         for (int i = 0; i < 60; i++)
         {
-            car.Update(CarInput.AccelBoost);
+            Step(CarInput.AccelBoost);
         }
 
         RenderAndSave("frame_ramp.bmp");

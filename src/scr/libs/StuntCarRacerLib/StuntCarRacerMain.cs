@@ -28,9 +28,12 @@ public sealed class StuntCarRacerMain
 
     private readonly Track _track;
     private readonly CarPhysics _car;
+    private readonly OpponentPhysics _opponent;
     private readonly SceneCamera _camera = new();
     private readonly TrackRenderer _renderer;
     private readonly BackdropRenderer _backdrop;
+    private readonly OpponentRenderer _opponentRenderer;
+    private readonly List<WorldPolygon> _worldPolygons = [];
 
     private bool _exitGame;
     private bool _sceneryKeyDown;
@@ -49,8 +52,10 @@ public sealed class StuntCarRacerMain
 
         _track = Track.Load(trackId);
         _car = new(_track);
+        _opponent = new(_track, _car);
         _renderer = new(_track, _graphics);
         _backdrop = new(_graphics);
+        _opponentRenderer = new(_opponent);
 
         StartRace();
     }
@@ -82,7 +87,9 @@ public sealed class StuntCarRacerMain
     internal void UpdateFrame()
     {
         _car.Update(ReadInput());
+        _opponent.Update();
         _car.UpdateLapData();
+        _opponent.UpdateLapData();
         _camera.FollowCar(_car);
 
         // N cycles the scenery type, as the original menu option
@@ -104,7 +111,11 @@ public sealed class StuntCarRacerMain
     {
         _graphics.Clear();
         _backdrop.Draw(_camera);
-        _renderer.Draw(_camera);
+
+        _worldPolygons.Clear();
+        _opponentRenderer.AppendWorldPolygons(_worldPolygons);
+        _renderer.Draw(_camera, _worldPolygons);
+
         DrawHud();
         _graphics.ScreenUpdate();
     }
@@ -113,6 +124,7 @@ public sealed class StuntCarRacerMain
     {
         _car.StartRace();
         _car.BoostReserve = _track.StandardBoost;
+        _opponent.StartRace();
     }
 
     // Original keyboard controls: S = left, D = right,

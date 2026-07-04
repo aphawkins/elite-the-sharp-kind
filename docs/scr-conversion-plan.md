@@ -165,9 +165,22 @@ binary format the C# code must parse identically forever.
    case analysis is replaced by large clipped polygon fills.)*
 
 This completes the first-pass scope: one track playable against the clock
-with the full world rendered. Still open for later passes: fonts/dashboard
-UI, sound via `Useful.Audio`, the opponent car and AI, draw bridge
-animation, gamepad support, track selection menu, and road-line textures.
+with the full world rendered.
+
+## Second pass
+
+1. ✅ Opponent car (`Opponent Behaviour.cpp` → `Cars/OpponentPhysics`):
+   AI movement at scripted per-piece speeds, wheel-height spring dynamics,
+   randomized steering, player interaction (obstruct/push/move-aside),
+   car-to-car collision wired into `CarPhysics` (including slipstream), lap
+   counting and win calculation. Data tables script-generated into
+   `OpponentData.cs`. Drawn as a flat-shaded box plus road shadow
+   (`Rendering/OpponentRenderer`) until the `Car.cpp` mesh is ported.
+2. Car mesh from `Car.cpp` (player outside view + proper opponent shape).
+3. Fonts/dashboard UI, lap/race/damage display.
+4. Sound via `Useful.Audio` (engine, effects; `Sounds/` assets).
+5. Draw bridge animation (`MoveDrawBridge`), gamepad support, track
+   selection menu, road-line textures.
 
 ## Validation
 

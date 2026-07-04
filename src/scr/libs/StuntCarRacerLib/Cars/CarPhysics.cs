@@ -312,6 +312,16 @@ public sealed partial class CarPhysics
     // 0 for standard league, 1 for super league.
     internal int RoadCushionValue { get; set; }
 
+    // Set by the opponent's collision detection; invoked during the player's
+    // collision detection to transfer car-to-car accelerations (the original
+    // CarToCarCollision call).
+    internal Action? CarToCarCollision { get; set; }
+
+    // Slipstream/proximity flags maintained by the opponent each frame.
+    internal bool PlayerCloseToOpponent { get; set; }
+
+    internal bool OpponentBehindPlayer { get; set; }
+
     // Reset all car behaviour variables to their initial state (original ResetPlayer).
     public void Reset()
     {
@@ -510,6 +520,23 @@ public sealed partial class CarPhysics
         }
 
         // The original plays the creak sound effect here, with volume from _damageValue.
+    }
+
+    // Adds car-to-car collision accelerations from the opponent.
+    internal void AddCollisionAcceleration(int x, int y, int z)
+    {
+        _carCollisionXAcceleration += x;
+        _carCollisionYAcceleration += y;
+        _carCollisionZAcceleration += z;
+    }
+
+    // Adds car-to-car collision damage to all three damage areas.
+    internal void AddCollisionDamage(int amount)
+    {
+        RearDamage = Math.Min(255, RearDamage + amount);
+        FrontRightDamage = Math.Min(255, FrontRightDamage + amount);
+        FrontLeftDamage = Math.Min(255, FrontLeftDamage + amount);
+        Damaged = true;
     }
 
     private static void CalculateInclinationSinCos(int inclination, out int sin, out int cos)

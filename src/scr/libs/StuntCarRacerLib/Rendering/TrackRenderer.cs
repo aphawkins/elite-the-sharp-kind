@@ -34,10 +34,22 @@ public sealed class TrackRenderer
         _graphics = graphics;
     }
 
-    public void Draw(SceneCamera camera)
+    public void Draw(SceneCamera camera) => Draw(camera, null);
+
+    // Draws the track plus optional extra world polygons (e.g. the opponent),
+    // all depth-sorted together.
+    public void Draw(SceneCamera camera, IEnumerable<WorldPolygon>? extraPolygons)
     {
         _scene.SetView(camera, _graphics.ScreenWidth, _graphics.ScreenHeight);
         _polygons.Clear();
+
+        if (extraPolygons != null)
+        {
+            foreach (WorldPolygon polygon in extraPolygons)
+            {
+                AddPolygon(polygon.Points, polygon.Colour);
+            }
+        }
 
         Span<Coord3D> world = stackalloc Coord3D[4];
         for (int pieceIndex = 0; pieceIndex < _track.NumPieces; pieceIndex++)
@@ -103,13 +115,16 @@ public sealed class TrackRenderer
 
     private void AddPolygon(in ReadOnlySpan<Coord3D> world, uint colour)
     {
-        Span<Coord3D> cameraSpace = stackalloc Coord3D[4];
+        Span<Coord3D> cameraSpace = stackalloc Coord3D[MaxPolygonPoints - 1];
+        cameraSpace = cameraSpace[..world.Length];
         long depth = 0;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < world.Length; i++)
         {
             cameraSpace[i] = _scene.TransformPoint(world[i].X, world[i].Y, world[i].Z);
             depth += cameraSpace[i].Z;
         }
+
+        depth /= world.Length;
 
         Span<Coord3D> clipped = stackalloc Coord3D[MaxPolygonPoints];
         int count = Scene3D.ClipPolygonToNearPlane(cameraSpace, clipped);
