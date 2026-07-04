@@ -267,41 +267,25 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         (a, b, c) = SortPointsByY(a, b, c);
 
         // Clamp Y range to screen bounds
-        int ay = Math.Max((int)MathF.Ceiling(a.Y), 0);
-        ////int by = Math.Max((int)MathF.Ceiling(b.Y), 0);
-        int cy = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
 
-        // Interpolate edges
-        int[] ab = Interpolate(a.Y, a.X, b.Y, b.X);
-        int[] bc = Interpolate(b.Y, b.X, c.Y, c.X);
-        int[] ac = Interpolate(a.Y, a.X, c.Y, c.X);
-
-        // Combine ab and bc (excluding duplicate at join)
-        int[] abc = new int[ab.Length + bc.Length - 1];
-        Array.Copy(ab, 0, abc, 0, ab.Length - 1);
-        Array.Copy(bc, 0, abc, ab.Length - 1, bc.Length);
-
-        // Determine left and right edges
-        int m = abc.Length / 2;
-        int[] leftX = abc;
-        int[] rightX = ac;
-
-        if (ac.Length > m && abc.Length > m && ac[m] < abc[m])
+        // Evaluate the two edges crossing each scanline directly; the
+        // interpolation parameter is clamped to the edge's endpoints, so
+        // steep or near-horizontal edges can never overshoot.
+        for (int y = firstY; y <= lastY; y++)
         {
-            (leftX, rightX) = (rightX, leftX);
-        }
+            // the long edge a-c, and either a-b (above b) or b-c (below)
+            float x0 = EdgeX(a, c, y);
+            float x1 = y < b.Y ? EdgeX(a, b, y) : EdgeX(b, c, y);
 
-        // Draw scanlines
-        for (int y = ay; y <= cy; y++)
-        {
-            int i = y - (int)MathF.Floor(a.Y);
-            if (i < 0 || i >= leftX.Length || i >= rightX.Length)
+            if (x0 > x1)
             {
-                continue;
+                (x0, x1) = (x1, x0);
             }
 
-            int start = Math.Max(leftX[i], 0);
-            int end = Math.Min(rightX[i], (int)ScreenWidth - 1);
+            int start = Math.Max((int)MathF.Floor(x0), 0);
+            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
 
             for (int x = start; x <= end; x++)
             {
@@ -316,25 +300,18 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     {
     }
 
-    private static int[] Interpolate(float i0, float d0, float i1, float d1)
+    // The x position of the edge p0-p1 at scanline y, clamped to the
+    // edge's endpoints (p0.Y must not be greater than p1.Y).
+    private static float EdgeX(Vector2 p0, Vector2 p1, float y)
     {
-        if ((int)MathF.Floor(i0) == (int)MathF.Floor(i1))
+        float dy = p1.Y - p0.Y;
+        if (dy <= 0)
         {
-            return [(int)MathF.Floor(d0)];
+            return p0.X; // horizontal (or degenerate) edge
         }
 
-        List<int> values = [];
-
-        float a = (d1 - d0) / (i1 - i0);
-        float d = d0;
-        for (int i = (int)MathF.Floor(i0); i <= (int)MathF.Floor(i1); i++)
-        {
-            values.Add((int)MathF.Floor(d));
-
-            d += a;
-        }
-
-        return [.. values];
+        float t = Math.Clamp((y - p0.Y) / dy, 0f, 1f);
+        return p0.X + ((p1.X - p0.X) * t);
     }
 
     private static (Vector2 A, Vector2 B, Vector2 C) SortPointsByY(Vector2 a, Vector2 b, Vector2 c)
