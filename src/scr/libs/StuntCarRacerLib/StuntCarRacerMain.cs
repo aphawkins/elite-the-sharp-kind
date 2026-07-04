@@ -31,6 +31,7 @@ public sealed class StuntCarRacerMain
     private readonly Track _track;
     private readonly CarPhysics _car;
     private readonly OpponentPhysics _opponent;
+    private readonly DrawBridge _drawBridge;
     private readonly SceneCamera _camera = new();
     private readonly TrackRenderer _renderer;
     private readonly BackdropRenderer _backdrop;
@@ -63,6 +64,7 @@ public sealed class StuntCarRacerMain
         _track = Track.Load(trackId);
         _car = new(_track);
         _opponent = new(_track, _car);
+        _drawBridge = new(_track);
         _renderer = new(_track, _graphics);
         _backdrop = new(_graphics);
         _opponentRenderer = new(_opponent);
@@ -100,6 +102,7 @@ public sealed class StuntCarRacerMain
 
         _car.Update(ReadInput());
         _opponent.Update();
+        _drawBridge.Move(_car.CurrentPiece, _opponent.CurrentPiece, _opponent);
         _car.UpdateLapData();
         _opponent.UpdateLapData();
         _car.UpdateDamage();
@@ -230,6 +233,7 @@ public sealed class StuntCarRacerMain
         _car.StartRace();
         _car.BoostReserve = _track.StandardBoost;
         _opponent.StartRace();
+        _drawBridge.Reset(_opponent);
 
         _raceFrame = 0;
         _raceFinished = false;

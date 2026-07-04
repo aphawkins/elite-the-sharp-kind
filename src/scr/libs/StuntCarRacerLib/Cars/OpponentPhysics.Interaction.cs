@@ -10,6 +10,9 @@ namespace StuntCarRacerLib.Cars;
 // and car-to-car collision (from Opponent Behaviour.cpp).
 public sealed partial class OpponentPhysics
 {
+    // Adjust a per-piece required speed value (used by the draw bridge animation).
+    internal void SetSpeedValue(int piece, byte value) => _speedValues[piece] = value;
+
     private void CalculateDistancesBetweenPlayers()
     {
         if (_distancesAroundRoad == null)

@@ -139,7 +139,9 @@ public sealed partial class OpponentPhysics
         _track = track;
         _player = player;
         _random = random;
-        _speedValues = OpponentData.SpeedValues[(int)track.Id];
+
+        // a mutable copy: the draw bridge animation adjusts these values
+        _speedValues = [.. OpponentData.SpeedValues[(int)track.Id]];
 
         // wire the car-to-car collision transfer into the player physics
         _player.CarToCarCollision = TransferCollisionToPlayer;

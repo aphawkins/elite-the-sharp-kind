@@ -199,8 +199,13 @@ with the full world rendered.
    throttled in the game loop so the mixer doesn't stack repeats. Not done:
    per-effect volume (the original scales grounded/creak volume by damage)
    and the SDL_mixer backend's pitched loop.)*
-5. Draw bridge animation (`MoveDrawBridge`), gamepad support, track
-   selection menu, road-line textures.
+5. ✅ Draw bridge animation (`Tracks/DrawBridge` ports
+   `MoveDrawBridge`/`ResetDrawBridge`: the bridge pieces rise and fall on a
+   triangle wave while no car is on them, and the opponent's approach and
+   climb speeds are retuned to the current height; `TrackPiece` retains the
+   per-piece y shifts and the opponent's speed table is now a mutable copy).
+6. Still to do: gamepad support, track selection menu, road-line textures,
+   player outside view, per-effect sound volume.
 
 ## Validation
 

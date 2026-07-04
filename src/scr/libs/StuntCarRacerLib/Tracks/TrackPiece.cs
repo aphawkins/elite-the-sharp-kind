@@ -55,4 +55,9 @@ public sealed class TrackPiece
     // Unrotated coordinates: four per segment boundary
     // (top left, top right, bottom left, bottom right).
     public IList<Coord3D> Coords { get; }
+
+    // Overall y shifts from the track data, retained for the draw bridge animation.
+    internal int LeftYShift { get; set; }
+
+    internal int RightYShift { get; set; }
 }

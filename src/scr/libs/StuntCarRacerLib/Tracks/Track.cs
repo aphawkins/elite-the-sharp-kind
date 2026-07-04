@@ -288,6 +288,8 @@ public sealed class Track
                 FirstSegment = firstSegment,
                 InitialColour = (rightYId[piece] & 0x80) >> 7,
                 AngleAndTemplate = c,
+                LeftYShift = leftYShift[piece],
+                RightYShift = rightYShift[piece],
             };
             firstSegment += numSegments;
 
