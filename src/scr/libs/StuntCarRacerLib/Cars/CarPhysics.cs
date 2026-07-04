@@ -69,12 +69,6 @@ public sealed partial class CarPhysics
     // Engine fluctuation is cosmetic (engine sound pitch); seeded for determinism.
     private readonly Random _random = new(0);
 
-    // Player position and angles.
-    private int _playerY;
-    private int _playerXAngle;
-    private int _playerYAngle;
-    private int _playerZAngle;
-
     // Speeds.
     private int _playerWorldXSpeed;
     private int _playerWorldYSpeed;
@@ -224,17 +218,17 @@ public sealed partial class CarPhysics
     // Render-space outputs (as output by the original CarBehaviour).
     public int X => PlayerX;
 
-    public int Y => -(_playerY * LocalYFactor);
+    public int Y => -(PlayerY * LocalYFactor);
 
     public int Z => PlayerZ;
 
     // X and Z angles are reversed because the drawing code rotates around
     // x and z in the opposite direction to the physics.
-    public int XAngle => -_playerXAngle & (Track.MaxAngle - 1);
+    public int XAngle => -PlayerXAngle & (Track.MaxAngle - 1);
 
-    public int YAngle => _playerYAngle & (Track.MaxAngle - 1);
+    public int YAngle => PlayerYAngle & (Track.MaxAngle - 1);
 
-    public int ZAngle => -_playerZAngle & (Track.MaxAngle - 1);
+    public int ZAngle => -PlayerZAngle & (Track.MaxAngle - 1);
 
     public bool TouchingRoad { get; private set; }
 
@@ -283,10 +277,21 @@ public sealed partial class CarPhysics
         }
     }
 
-    // Player position in PC StuntCarRacer format (X/Z equal the render outputs).
+    // Player position in PC StuntCarRacer format where X and Z equal the render
+    // outputs. PlayerY is in Amiga format, positive upwards.
     internal int PlayerX { get; private set; }
 
+    internal int PlayerY { get; private set; }
+
     internal int PlayerZ { get; private set; }
+
+    // Raw physics angles (unsigned, 65536 = 360 degrees); the public
+    // XAngle/ZAngle properties are the reversed rendering outputs.
+    internal int PlayerXAngle { get; private set; }
+
+    internal int PlayerYAngle { get; private set; }
+
+    internal int PlayerZAngle { get; private set; }
 
     internal int PlayerZSpeed { get; private set; }
 
@@ -311,11 +316,11 @@ public sealed partial class CarPhysics
     public void Reset()
     {
         PlayerX = 0;
-        _playerY = 0;
+        PlayerY = 0;
         PlayerZ = 0;
-        _playerXAngle = 0;
-        _playerYAngle = 0;
-        _playerZAngle = 0;
+        PlayerXAngle = 0;
+        PlayerYAngle = 0;
+        PlayerZAngle = 0;
 
         _playerWorldXSpeed = 0;
         _playerWorldYSpeed = 0;
@@ -640,7 +645,7 @@ public sealed partial class CarPhysics
     private void CarMovement()
     {
         // calculate required sin/cos values using player x, y and z angles
-        _trig.CalculateYXZ(_playerXAngle, _playerYAngle, _playerZAngle);
+        _trig.CalculateYXZ(PlayerXAngle, PlayerYAngle, PlayerZAngle);
 
         CalculateWheelXZOffsets();
         CalculateRoadWheelHeights();
@@ -676,7 +681,7 @@ public sealed partial class CarPhysics
             _smallerLimitRequired = false;
         }
 
-        if (_offMapStatus != 0 && TouchingRoad && _playerY < 0x1000000)
+        if (_offMapStatus != 0 && TouchingRoad && PlayerY < 0x1000000)
         {
             _offTrackCount++;
             _smallerLimitRequired = true;

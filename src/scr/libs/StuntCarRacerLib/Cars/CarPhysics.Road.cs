@@ -104,7 +104,7 @@ public sealed partial class CarPhysics
         _wheelOffRoad = false;
 
         // get angle in Amiga StuntCarRacer format (i.e. correct sign)
-        int angle = _playerXAngle < AmigaTrig.Degrees180 ? _playerXAngle : _playerXAngle - AmigaTrig.Degrees360;
+        int angle = PlayerXAngle < AmigaTrig.Degrees180 ? PlayerXAngle : PlayerXAngle - AmigaTrig.Degrees360;
 
         // use the height as-is when moving quickly or pitched steeply, otherwise
         // average the new height with the previous value - possibly for when
@@ -782,32 +782,32 @@ public sealed partial class CarPhysics
         // set car y position above the road height at that point
         CalculateWorldRoadHeight(WheelPosition.FrontLeft, PlayerX, PlayerZ, out int height);
         height = (height / Track.PcFactor) >> (Track.LogPrecision - 3);
-        _playerY = (height + 0xc00) * 256;
+        PlayerY = (height + 0xc00) * 256;
 
         // clear car x/z angle
-        _playerXAngle = 0;
-        _playerZAngle = 0;
+        PlayerXAngle = 0;
+        PlayerZAngle = 0;
 
         // set car y angle
-        _playerYAngle = trackPiece.RoughPieceAngle;
+        PlayerYAngle = trackPiece.RoughPieceAngle;
 
         if (trackPiece.OppositeDirection)
         {
-            _playerYAngle += Track.MaxAngle / 2; // plus 180 degrees
+            PlayerYAngle += Track.MaxAngle / 2; // plus 180 degrees
         }
 
         // diagonal straights are always 45 degrees on
         if (trackPiece.Type == 0x40)
         {
-            _playerYAngle += Track.MaxAngle / 8;
+            PlayerYAngle += Track.MaxAngle / 8;
         }
 
-        _playerYAngle &= Track.MaxAngle - 1;
+        PlayerYAngle &= Track.MaxAngle - 1;
 
         // player to side of road: shift player by (x = 160, z = 0) rotated
         // about the y axis
-        int sinY = AmigaTrig.Sin(_playerYAngle);
-        int cosY = AmigaTrig.Cos(_playerYAngle);
+        int sinY = AmigaTrig.Sin(PlayerYAngle);
+        int cosY = AmigaTrig.Cos(PlayerYAngle);
         PlayerX += 160 * cosY;
         PlayerZ -= 160 * sinY;
 

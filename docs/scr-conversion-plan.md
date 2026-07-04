@@ -141,8 +141,15 @@ binary format the C# code must parse identically forever.
    `LimitViewpointY` (camera, step 6), XBOX controller input, action
    replay/Amiga recording debug code. `Car.cpp` itself is D3D9 car mesh
    rendering and belongs to step 5/6.)*
-5. Port `3D Engine.cpp/h`'s projection math into `StuntCarRacerLib`, and — in
-   parallel — extend `Useful.Graphics` with textured polygon fill support.
+5. ✅ Port `3D Engine.cpp/h`'s projection math into `StuntCarRacerLib`.
+   *(done — `StuntCarRacerLib/Rendering/`: `ScrPalette`, `SceneCamera`
+   (cockpit view), `Scene3D` (view transform + near-plane clip + FOCUS
+   projection, from the software pipeline the D3D remake had disabled) and
+   `TrackRenderer` (flat-shaded road/side quads with painter's sorting).
+   Deviation from plan: no `Useful.Graphics` extension was needed —
+   `DrawPolygonFilled` covers flat-shaded rendering, which matches the Amiga
+   original's look. Textured road lines and the chase-view camera are
+   deferred; view handedness/signs need visual verification in step 6.)*
 6. Wire projection + track + car into a render loop in the app, get one
    track's geometry drawing and the car driving on it, keyboard-controlled.
 7. Only then revisit `Backdrop.cpp` and any remaining polish for this scope.

@@ -13,19 +13,19 @@ public sealed partial class CarPhysics
     // Calculate the height (y value) of each car wheel.
     private void CalculateActualWheelHeights()
     {
-        int sinX = AmigaTrig.Sin(_playerXAngle);
-        int sinZ = AmigaTrig.Sin(_playerZAngle);
+        int sinX = AmigaTrig.Sin(PlayerXAngle);
+        int sinZ = AmigaTrig.Sin(PlayerZAngle);
 
-        _rearActualHeight = _playerY;
+        _rearActualHeight = PlayerY;
         _rearActualHeight -= sinX << (4 + 15 - Track.LogPrecision);
         _rearActualHeight >>= 8;
 
-        _frontRightActualHeight = _playerY;
+        _frontRightActualHeight = PlayerY;
         _frontRightActualHeight += sinX << (4 + 15 - Track.LogPrecision);
         _frontRightActualHeight -= sinZ << (3 + 15 - Track.LogPrecision);
         _frontRightActualHeight >>= 8;
 
-        _frontLeftActualHeight = _playerY;
+        _frontLeftActualHeight = PlayerY;
         _frontLeftActualHeight += sinX << (4 + 15 - Track.LogPrecision);
         _frontLeftActualHeight += sinZ << (3 + 15 - Track.LogPrecision);
         _frontLeftActualHeight >>= 8;
@@ -116,7 +116,7 @@ public sealed partial class CarPhysics
         if (!TouchingRoad && !_onChains)
         {
             // get angle in Amiga StuntCarRacer format (i.e. correct sign)
-            int angle = _playerXAngle < AmigaTrig.Degrees180 ? _playerXAngle : _playerXAngle - AmigaTrig.Degrees360;
+            int angle = PlayerXAngle < AmigaTrig.Degrees180 ? PlayerXAngle : PlayerXAngle - AmigaTrig.Degrees360;
 
             if ((angle < 0 && (_track.Id == TrackId.RollerCoaster || _track.Id == TrackId.SkiJump)) || angle >= 0)
             {
@@ -347,7 +347,7 @@ public sealed partial class CarPhysics
 
         // difference between the section and player's y angle:
         // increasingly negative turning right, increasingly positive turning left
-        _yAngleDifference = sectionYAngle - _playerYAngle;
+        _yAngleDifference = sectionYAngle - PlayerYAngle;
 
         // make the difference range from -180 to 180 degrees
         if (_yAngleDifference > AmigaTrig.Degrees180)
@@ -501,11 +501,11 @@ public sealed partial class CarPhysics
                 // (e.g. sideways with respect to road)
                 if (_differenceAngle >= 0)
                 {
-                    _playerYAngle += adjust;
+                    PlayerYAngle += adjust;
                 }
                 else
                 {
-                    _playerYAngle -= adjust;
+                    PlayerYAngle -= adjust;
                 }
 
                 return;
@@ -530,11 +530,11 @@ public sealed partial class CarPhysics
 
         if (_differenceAngle >= 0)
         {
-            _playerYAngle += adjust;
+            PlayerYAngle += adjust;
         }
         else
         {
-            _playerYAngle -= adjust;
+            PlayerYAngle -= adjust;
         }
     }
 
@@ -644,9 +644,9 @@ public sealed partial class CarPhysics
 
     private void CalculateFinalRotationSpeed()
     {
-        int sinX = AmigaTrig.Sin(_playerXAngle);
-        int sinZ = AmigaTrig.Sin(_playerZAngle);
-        int cosZ = AmigaTrig.Cos(_playerZAngle);
+        int sinX = AmigaTrig.Sin(PlayerXAngle);
+        int sinZ = AmigaTrig.Sin(PlayerZAngle);
+        int cosZ = AmigaTrig.Cos(PlayerZAngle);
 
         _playerFinalXRotationSpeed = (_playerXRotationSpeed * cosZ) >> Track.LogPrecision;
         _playerFinalXRotationSpeed += (_playerYRotationSpeed * -sinZ) >> Track.LogPrecision;
@@ -671,23 +671,23 @@ public sealed partial class CarPhysics
     {
         // set player's new position
         PlayerX += _playerWorldXSpeed * Reduction * Track.PcFactor;
-        _playerY += (_playerWorldYSpeed * Reduction) >> 1;
+        PlayerY += (_playerWorldYSpeed * Reduction) >> 1;
         PlayerZ += _playerWorldZSpeed * Reduction * Track.PcFactor;
 
-        if (_playerY >= 0x10000000)
+        if (PlayerY >= 0x10000000)
         {
-            _playerY = 0x10000000;
+            PlayerY = 0x10000000;
         }
 
         // set player's new angles
-        _playerXAngle += (_playerFinalXRotationSpeed * Reduction) >> 8;
-        _playerYAngle += (_playerFinalYRotationSpeed * Reduction) >> 8;
-        _playerZAngle += (_playerFinalZRotationSpeed * Reduction) >> 8;
+        PlayerXAngle += (_playerFinalXRotationSpeed * Reduction) >> 8;
+        PlayerYAngle += (_playerFinalYRotationSpeed * Reduction) >> 8;
+        PlayerZAngle += (_playerFinalZRotationSpeed * Reduction) >> 8;
 
         // limit to valid range as no longer stored as words
-        _playerXAngle &= Track.MaxAngle - 1;
-        _playerYAngle &= Track.MaxAngle - 1;
-        _playerZAngle &= Track.MaxAngle - 1;
+        PlayerXAngle &= Track.MaxAngle - 1;
+        PlayerYAngle &= Track.MaxAngle - 1;
+        PlayerZAngle &= Track.MaxAngle - 1;
 
         // check player's X angle
         int limit;
@@ -702,14 +702,14 @@ public sealed partial class CarPhysics
         }
 
         // get angle in Amiga StuntCarRacer format (i.e. correct sign)
-        int angle = _playerXAngle < AmigaTrig.Degrees180 ? _playerXAngle : _playerXAngle - AmigaTrig.Degrees360;
+        int angle = PlayerXAngle < AmigaTrig.Degrees180 ? PlayerXAngle : PlayerXAngle - AmigaTrig.Degrees360;
 
         if (Math.Abs(angle) > limit)
         {
             angle = angle >= 0 ? limit : -limit;
 
             // get player's x angle in PC StuntCarRacer format (i.e. correct sign)
-            _playerXAngle = angle > 0 ? angle : angle + AmigaTrig.Degrees360;
+            PlayerXAngle = angle > 0 ? angle : angle + AmigaTrig.Degrees360;
 
             if ((_playerXRotationSpeed >= 0 && angle < 0) || (_playerXRotationSpeed < 0 && angle >= 0))
             {
@@ -718,13 +718,13 @@ public sealed partial class CarPhysics
         }
 
         // check player's Z angle
-        angle = _playerZAngle < AmigaTrig.Degrees180 ? _playerZAngle : _playerZAngle - AmigaTrig.Degrees360;
+        angle = PlayerZAngle < AmigaTrig.Degrees180 ? PlayerZAngle : PlayerZAngle - AmigaTrig.Degrees360;
 
         if (Math.Abs(angle) > limit)
         {
             angle = angle >= 0 ? limit : -limit;
 
-            _playerZAngle = angle > 0 ? angle : angle + AmigaTrig.Degrees360;
+            PlayerZAngle = angle > 0 ? angle : angle + AmigaTrig.Degrees360;
 
             if ((_playerZRotationSpeed >= 0 && angle < 0) || (_playerZRotationSpeed < 0 && angle >= 0))
             {
