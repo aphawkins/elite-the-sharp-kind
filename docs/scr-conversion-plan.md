@@ -182,7 +182,12 @@ with the full world rendered.
    frame). The player's outside view is still to do (needs a chase camera);
    the old round-wheeled software car in `Car.cpp` is `#ifdef NOT_USED` in
    the original and was not ported.
-3. Fonts/dashboard UI, lap/race/damage display.
+3. ✅ Fonts/dashboard UI. *(Bitmap fonts (shared `BitmapFont` loader; the
+   font bitmaps reused from Elite's assets) and the original in-game text
+   layout: opponent name for four seconds at race start, lap/boost and
+   opponent distance bottom left, speed/damage bottom right, flashing
+   RACE WON/LOST for six seconds, then GAME OVER with M to race again —
+   the original's M returned to the track menu, which doesn't exist yet.)*
 4. Sound via `Useful.Audio` (engine, effects; `Sounds/` assets).
 5. Draw bridge animation (`MoveDrawBridge`), gamepad support, track
    selection menu, road-line textures.

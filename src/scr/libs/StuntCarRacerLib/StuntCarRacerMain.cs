@@ -37,6 +37,11 @@ public sealed class StuntCarRacerMain
 
     private bool _exitGame;
     private bool _sceneryKeyDown;
+    private int _raceFrame;
+    private bool _raceFinished;
+    private bool _raceWon;
+    private bool _gameOver;
+    private int _raceFinishedFrame;
 
     public StuntCarRacerMain(IAbstraction abstraction)
         : this(abstraction, TrackId.LittleRamp)
@@ -86,11 +91,34 @@ public sealed class StuntCarRacerMain
 
     internal void UpdateFrame()
     {
+        _raceFrame++;
+
         _car.Update(ReadInput());
         _opponent.Update();
         _car.UpdateLapData();
         _opponent.UpdateLapData();
+        _car.UpdateDamage();
         _camera.FollowCar(_car);
+
+        // the race finishes when either car completes the final lap
+        if (!_raceFinished && (_car.RaceFinished || _opponent.LapNumber >= 4))
+        {
+            _raceFinished = true;
+            _raceWon = _opponent.CalculateIfWinning() < 0;
+            _raceFinishedFrame = _raceFrame;
+        }
+
+        // show the race result for six seconds, then it is game over
+        if (_raceFinished && !_gameOver && _raceFrame - _raceFinishedFrame > 6 * Fps)
+        {
+            _gameOver = true;
+        }
+
+        // M restarts the race (the original returns to the track menu)
+        if (_gameOver && _keyboard.IsPressed(ConsoleKey.M))
+        {
+            StartRace();
+        }
 
         // N cycles the scenery type, as the original menu option
         if (_keyboard.IsPressed(ConsoleKey.N))
@@ -125,6 +153,12 @@ public sealed class StuntCarRacerMain
         _car.StartRace();
         _car.BoostReserve = _track.StandardBoost;
         _opponent.StartRace();
+
+        _raceFrame = 0;
+        _raceFinished = false;
+        _raceWon = false;
+        _gameOver = false;
+        _raceFinishedFrame = 0;
     }
 
     // Original keyboard controls: S = left, D = right,
@@ -162,18 +196,46 @@ public sealed class StuntCarRacerMain
         return input;
     }
 
-    // Simple speed/boost bars until fonts and the original dashboard are in.
+    // In-game text display, following the original GAME_IN_PROGRESS layout:
+    // opponent name at race start, lap/boost/distance bottom left,
+    // speed/damage bottom right, and the race result when finished.
     private void DrawHud()
     {
-        float width = _graphics.ScreenWidth;
+        const string smallFont = "Small";
+        const string largeFont = "Large";
+        uint white = ScrPalette.Colour(Track.ScrBaseColour + 15);
+        uint yellow = ScrPalette.Colour(Track.ScrBaseColour + 3);
         float height = _graphics.ScreenHeight;
+        float width = _graphics.ScreenWidth;
 
-        // speed bar along the bottom (display speed range is roughly 0-170)
-        float speedWidth = _car.DisplaySpeed * (width - 20) / 170;
-        _graphics.DrawRectangleFilled(new(10, height - 20), speedWidth, 8, ScrPalette.Colour(Track.ScrBaseColour + 3));
+        // output the opponent's name for four seconds at race start
+        if (_raceFrame < 4 * Fps)
+        {
+            _graphics.DrawTextCentre(height - 300, $"Opponent: {_opponent.Name}", smallFont, white);
+        }
 
-        // boost reserve bar above it
-        float boostWidth = _car.BoostReserve * (width - 20) / Math.Max(1, _track.StandardBoost);
-        _graphics.DrawRectangleFilled(new(10, height - 34), boostWidth, 8, ScrPalette.Colour(Track.ScrBaseColour + 10));
+        string lapText = _car.LapNumber > 0 ? _car.LapNumber.ToString(System.Globalization.CultureInfo.InvariantCulture) : " ";
+        _graphics.DrawTextLeft(new(2, height - 34), $"Lap: {lapText}   Boost: {_car.BoostReserve}", smallFont, yellow);
+        _graphics.DrawTextLeft(new(2, height - 18), $"Opponent Distance: {_opponent.DistanceToPlayer()}", smallFont, yellow);
+
+        _graphics.DrawTextLeft(new(width - 200, height - 34), $"Speed: {_car.DisplaySpeed}", smallFont, yellow);
+        _graphics.DrawTextLeft(new(width - 200, height - 18), $"Damage: {_car.NewDamage}", smallFont, yellow);
+
+        if (!_raceFinished)
+        {
+            return;
+        }
+
+        if (_gameOver)
+        {
+            _graphics.DrawTextCentre(height - 300, "GAME OVER: Press M to race again", largeFont, white);
+        }
+        else
+        {
+            // the result text flashes white/black, changing every half second
+            int flash = (_raceFrame - _raceFinishedFrame) % Fps;
+            uint colour = flash < Fps / 2 ? white : ScrPalette.Colour(Track.ScrBaseColour);
+            _graphics.DrawTextCentre(height - 300, _raceWon ? "RACE WON" : "RACE LOST", largeFont, colour);
+        }
     }
 }
