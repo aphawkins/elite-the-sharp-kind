@@ -4,6 +4,9 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using StuntCarRacerLib.Cars;
+using StuntCarRacerLib.Rendering;
+using StuntCarRacerLib.Tracks;
 using Useful;
 using Useful.Abstraction;
 using Useful.Controls;
@@ -22,14 +25,31 @@ public sealed class StuntCarRacerMain
     private readonly IKeyboard _keyboard;
     private readonly long _oneSecondInTicks = TimeSpan.FromSeconds(1).Ticks;
     private readonly long _timerResolution = TimeSpan.FromSeconds(1).Ticks / Stopwatch.Frequency;
+
+    private readonly Track _track;
+    private readonly CarPhysics _car;
+    private readonly SceneCamera _camera = new();
+    private readonly TrackRenderer _renderer;
+
     private bool _exitGame;
 
     public StuntCarRacerMain(IAbstraction abstraction)
+        : this(abstraction, TrackId.LittleRamp)
+    {
+    }
+
+    public StuntCarRacerMain(IAbstraction abstraction, TrackId trackId)
     {
         Guard.ArgumentNull(abstraction);
 
         _graphics = abstraction.Graphics;
         _keyboard = abstraction.Keyboard;
+
+        _track = Track.Load(trackId);
+        _car = new(_track);
+        _renderer = new(_track, _graphics);
+
+        StartRace();
     }
 
     public void Run()
@@ -49,23 +69,81 @@ public sealed class StuntCarRacerMain
                     _exitGame = true;
                 }
 
+                UpdateFrame();
                 DrawFrame();
             }
         }
         while (!_exitGame && !_keyboard.Close);
     }
 
-    private void DrawFrame()
+    internal void UpdateFrame()
+    {
+        _car.Update(ReadInput());
+        _car.UpdateLapData();
+        _camera.FollowCar(_car);
+    }
+
+    internal void DrawFrame()
     {
         _graphics.Clear();
-
-        // Placeholder scene until the track renderer is ported.
-        float centreX = _graphics.ScreenWidth / 2;
-        float centreY = _graphics.ScreenHeight / 2;
-        _graphics.DrawRectangle(new(centreX - 100, centreY - 50), 200, 100, 0xFFFFFFFF);
-        _graphics.DrawLine(new(centreX - 100, centreY - 50), new(centreX + 100, centreY + 50), 0xFF00FF00);
-        _graphics.DrawLine(new(centreX - 100, centreY + 50), new(centreX + 100, centreY - 50), 0xFF00FF00);
-
+        _renderer.Draw(_camera);
+        DrawHud();
         _graphics.ScreenUpdate();
+    }
+
+    private void StartRace()
+    {
+        _car.StartRace();
+        _car.BoostReserve = _track.StandardBoost;
+    }
+
+    // Original keyboard controls: S = left, D = right,
+    // RETURN = accelerate + boost, SPACE = brake/reverse + boost,
+    // HASH = brake/reverse (mapped to B here).
+    private CarInput ReadInput()
+    {
+        CarInput input = CarInput.None;
+
+        if (_keyboard.IsPressed(ConsoleKey.S))
+        {
+            input |= CarInput.Left;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.D))
+        {
+            input |= CarInput.Right;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.Enter))
+        {
+            input |= CarInput.AccelBoost;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.Spacebar))
+        {
+            input |= CarInput.BrakeBoost;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.B))
+        {
+            input |= CarInput.Hash;
+        }
+
+        return input;
+    }
+
+    // Simple speed/boost bars until fonts and the original dashboard are in.
+    private void DrawHud()
+    {
+        float width = _graphics.ScreenWidth;
+        float height = _graphics.ScreenHeight;
+
+        // speed bar along the bottom (display speed range is roughly 0-170)
+        float speedWidth = _car.DisplaySpeed * (width - 20) / 170;
+        _graphics.DrawRectangleFilled(new(10, height - 20), speedWidth, 8, ScrPalette.Colour(Track.ScrBaseColour + 3));
+
+        // boost reserve bar above it
+        float boostWidth = _car.BoostReserve * (width - 20) / Math.Max(1, _track.StandardBoost);
+        _graphics.DrawRectangleFilled(new(10, height - 34), boostWidth, 8, ScrPalette.Colour(Track.ScrBaseColour + 10));
     }
 }

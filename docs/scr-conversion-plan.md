@@ -150,8 +150,14 @@ binary format the C# code must parse identically forever.
    `DrawPolygonFilled` covers flat-shaded rendering, which matches the Amiga
    original's look. Textured road lines and the chase-view camera are
    deferred; view handedness/signs need visual verification in step 6.)*
-6. Wire projection + track + car into a render loop in the app, get one
+6. ✅ Wire projection + track + car into a render loop in the app, get one
    track's geometry drawing and the car driving on it, keyboard-controlled.
+   *(done — `StuntCarRacerMain` runs the game loop at 30fps: keyboard input
+   (S/D steer, Return accelerate+boost, Space brake+boost, B brake), car
+   physics, cockpit camera, track renderer and placeholder speed/boost HUD
+   bars. Visually verified via offscreen software-rasterizer frame dumps
+   (`VisualDumpTests`) and a live window screenshot. Still to polish:
+   fonts/dashboard, sound, backdrop/horizon, lap/race UI.)*
 7. Only then revisit `Backdrop.cpp` and any remaining polish for this scope.
 
 ## Validation
