@@ -8,11 +8,22 @@ Race the clock and an AI opponent over four laps of elevated track.  The car tak
 
 ## Status
 
-In development.  The game currently starts straight into a race on Little Ramp against a randomly chosen opponent.  All eight original tracks load and are playable via code; the track selection menu, gamepad support and the outside camera view are still to come.
+In development.  The game starts at the track selection menu with all eight original tracks; gamepad support and the outside camera view are still to come.
 
 ## Controls
 
-The keys follow the original PC remake (RETURN to accelerate, steering on S/D):
+The keys follow the original PC remake (RETURN to accelerate, steering on S/D).
+
+At the track menu and preview:
+
+| Key | Function |
+| --- | -------- |
+| 1-8 | Choose a track |
+| S | Select the track / start the race |
+| M | Back to the track menu (from the preview) |
+| Esc | Quit |
+
+During the race:
 
 | Key | Function |
 | --- | -------- |
@@ -22,7 +33,7 @@ The keys follow the original PC remake (RETURN to accelerate, steering on S/D):
 | Space | Brake / reverse (+ boost) |
 | B | Brake / reverse (no boost) |
 | N | Change the scenery type |
-| M | Race again (after GAME OVER) |
+| M | Back to the track menu (after GAME OVER) |
 | Esc | Quit |
 
 Notes:

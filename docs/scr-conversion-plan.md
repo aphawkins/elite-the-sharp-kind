@@ -186,8 +186,8 @@ with the full world rendered.
    font bitmaps reused from Elite's assets) and the original in-game text
    layout: opponent name for four seconds at race start, lap/boost and
    opponent distance bottom left, speed/damage bottom right, flashing
-   RACE WON/LOST for six seconds, then GAME OVER with M to race again —
-   the original's M returned to the track menu, which doesn't exist yet.)*
+   RACE WON/LOST for six seconds, then GAME OVER with M returning to the
+   track menu.)*
 4. ✅ Sound via `Useful.Audio`. *(The original 8-bit mono 11025Hz Amiga
    samples were converted offline to 44.1kHz stereo float WAVs in
    `Assets/SFX`. `Useful.Audio` gained `ISound.PlayLoop/StopLoop` with a
@@ -204,8 +204,16 @@ with the full world rendered.
    triangle wave while no car is on them, and the opponent's approach and
    climb speeds are retuned to the current height; `TrackPiece` retains the
    per-piece y shifts and the opponent's speed table is now a mutable copy).
-6. Still to do: gamepad support, track selection menu, road-line textures,
-   player outside view, per-effect sound volume.
+6. ✅ Track selection menu (`StuntCarRacerMain` is now a `GameMode` state
+   machine: TrackMenu → TrackPreview → GameInProgress → GameOver. The menu
+   orbits the selected track (`CalcTrackMenuViewpoint`) with keys 1-8 to
+   choose a track; S shows the preview where the opponent drives a lap
+   (`CalcTrackPreviewViewpoint`, higher camera for Draw Bridge); S again
+   starts the race and M steps back. `SceneCamera.LookAt` ports
+   `LockViewpointToTarget`/`LockAngle`. GAME OVER's M now returns to the
+   track menu as the original did.)
+7. Still to do: gamepad support, road-line textures, player outside view,
+   per-effect sound volume.
 
 ## Validation
 
