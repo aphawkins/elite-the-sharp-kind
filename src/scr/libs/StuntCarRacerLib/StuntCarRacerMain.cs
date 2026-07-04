@@ -3,12 +3,14 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Useful;
 using Useful.Abstraction;
 using Useful.Controls;
 using Useful.Graphics;
 
 [assembly: CLSCompliant(false)]
+[assembly: InternalsVisibleTo("StuntCarRacerLib.Tests")]
 
 namespace StuntCarRacerLib;
 

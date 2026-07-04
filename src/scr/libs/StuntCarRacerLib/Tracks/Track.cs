@@ -29,6 +29,9 @@ public sealed class Track
 
     internal const int CubeSizeLog2 = 26;
 
+    // Size of a single track cube (0x800 * PcFactor of 2 * PRECISION).
+    internal const int CubeSize = 1 << CubeSizeLog2;
+
     internal const int BottomY = 0;
 
     private const int TrackDataSize = 804;

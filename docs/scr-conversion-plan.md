@@ -133,8 +133,14 @@ binary format the C# code must parse identically forever.
    the original `Track.cpp`. Deferred from Track.cpp to later steps:
    `MoveDrawBridge`/`ResetDrawBridge` (needs game state + opponent, step 4+)
    and all vertex-buffer/`DrawTrack` rendering code (step 5/6).)*
-4. Port `Car.cpp/h` + `Car Behaviour.cpp/h` physics, testable independent of
-   rendering.
+4. ✅ Port `Car Behaviour.cpp/h` physics, testable independent of rendering.
+   *(done — `StuntCarRacerLib/Cars/`: `CarPhysics` (partial classes) plus the
+   fixed-point trig from `3D Engine.cpp` (`AmigaTrig`/`TrigCoefficients`).
+   Deferred: sound effect triggers (grounded/creak/smash/sparks/engine
+   buffers), car-to-car collision and slipstream (need opponent),
+   `LimitViewpointY` (camera, step 6), XBOX controller input, action
+   replay/Amiga recording debug code. `Car.cpp` itself is D3D9 car mesh
+   rendering and belongs to step 5/6.)*
 5. Port `3D Engine.cpp/h`'s projection math into `StuntCarRacerLib`, and — in
    parallel — extend `Useful.Graphics` with textured polygon fill support.
 6. Wire projection + track + car into a render loop in the app, get one
