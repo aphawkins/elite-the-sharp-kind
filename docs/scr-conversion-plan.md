@@ -12,6 +12,36 @@ conversion in this repo: hardware access hidden behind interfaces, a software
 renderer as the primary rendering path, and maximum reuse of the `Useful.*`
 libraries rather than SCR-specific duplicates.
 
+## Status
+
+**First pass — done.** One track playable against the clock, no opponent,
+software-rendered, keyboard-only. See "Conversion order" below.
+
+**Second pass — done.** Opponent car + AI, car mesh, dashboard/fonts, sound,
+draw bridge animation, track selection menu. See "Second pass" below.
+
+**Third pass — in progress.** Bug fixes (items 1-3) are done. Shared engine
+extraction (item 4) is partway through:
+
+| Sub-item | Status |
+|---|---|
+| Fixed-timestep game loop (`Useful.Timing.GameLoop`, `IGame`/`GameHost`) | ✅ done |
+| Game-mode/screen state machine (`IGameScreen`/`ScreenManager<TId,TScreen>`) | ✅ done |
+| Sound effect throttling (shared `AudioController`/`SfxSample`) | ✅ done |
+| `Scene3D` projection/clip vs Elite's own projection code | ⬜ pending |
+| Text/HUD helpers shared between the two games | ⬜ pending |
+| Move Elite's frame composition out of `Update` (per-object draw lists) | ⬜ pending |
+
+**Not started:**
+
+- Road-line textures (needs textured polygon support in `Useful.Graphics`)
+- Gamepad support via `Useful.Controls`
+- Per-effect sound volume (original scales grounded/creak volume by damage)
+- Player outside view (chase camera + player car mesh)
+- Doc upkeep
+
+See "Third pass" below for full detail and rationale on completed items.
+
 ## Non-goals for this pass
 
 - No DirectX9/DXUT code is ported. `Common/DXUT*.cpp/h` is device/window/GUI
@@ -212,8 +242,8 @@ with the full world rendered.
    starts the race and M steps back. `SceneCamera.LookAt` ports
    `LockViewpointToTarget`/`LockAngle`. GAME OVER's M now returns to the
    track menu as the original did.)
-7. Still to do: gamepad support, road-line textures, player outside view,
-   per-effect sound volume.
+7. ⬜ Pending (see Status above): gamepad support, road-line textures,
+   player outside view, per-effect sound volume.
 
 ## Third pass: bugs and engine work
 
@@ -279,39 +309,44 @@ remainder are well-scoped follow-ups for a smaller one.
 4. Shared engine extraction between Elite and SCR, after the loop rework
    lands (the loop is the biggest shared piece): game-mode state machine
    scaffolding, sound throttling, `Scene3D` projection/clip vs Elite's,
-   text/HUD helpers. *(started — `Useful.Abstraction` gained `IGame`
-   (fixed-rate `Update`, rate-independent `Draw`) and `GameHost`, which
-   polls the keyboard and runs an `IGame` on the shared `GameLoop`; both
-   games implement it. Elite is split update/draw: `Update` runs the logic
-   and composes the frame into the framebuffer at a fixed 13.5Hz
-   (`EliteMain.GameTickRate`, the TNK speed) — composition stays in the
-   update because TNK draws the universe as it moves it — and `Draw`
-   presents it at up to `Config.Fps`, now purely a render cap (default 60),
-   so raising the framerate no longer speeds the game up. State-machine
-   scaffolding: `Useful.Abstraction` gained `IGameScreen`
-   (Reset/Update/Draw) and `ScreenManager<TId, TScreen>` — a screen
-   registry whose `Set` clears pending key presses and resets the incoming
-   screen, extracted from Elite's `GameState.SetView`. Elite's `IView` now
-   extends `IGameScreen` (`UpdateUniverse` renamed to `Update`) and
-   `GameState` delegates `CurrentScreen`/`CurrentView`/`SetView` to the
-   manager; SCR's `GameMode` switch is restructured into `Screens/` classes
-   (TrackMenu/TrackPreview/Race/GameOver) with the mode-entry work moved
-   into `Reset` (preview car reset, race start, engine-loop stop), and SCR
-   mode changes now also clear pending key presses, as Elite always did.
-   Sound throttling: SCR's cooldown-slot array turned out to duplicate the
-   `AudioController`/`SfxSample` mechanism Elite already used, so SCR now
-   plays its effect triggers through `AudioController`; `UpdateSound` ticks
-   distinct samples (not names) so OffRoad/Wreck can share one cooldown as
-   they shared a buffer in the original, and `Useful.Fakes` gained the
-   counting `FakeSound` (replacing SCR's local fake) with new
-   `Useful.Audio.Tests` covering the cooldown behaviour.
-   Still to extract/do: `Scene3D` vs Elite's projection,
-   text/HUD helpers, and moving Elite's frame composition out of its update
-   (per-object draw lists in `Space.UpdateUniverse`/`EliteDraw`) so
-   rendering above the tick rate draws anything new.)*
-5. Road-line textures (needs textured polygon support in
+   text/HUD helpers. *(in progress — see the table in Status above for the
+   current checklist. Detail on each completed sub-item:*
+
+   - ✅ *Fixed-timestep loop hosting: `Useful.Abstraction` gained `IGame`
+     (fixed-rate `Update`, rate-independent `Draw`) and `GameHost`, which
+     polls the keyboard and runs an `IGame` on the shared `GameLoop`; both
+     games implement it. Elite is split update/draw: `Update` runs the
+     logic and composes the frame into the framebuffer at a fixed 13.5Hz
+     (`EliteMain.GameTickRate`, the TNK speed) — composition stays in the
+     update because TNK draws the universe as it moves it — and `Draw`
+     presents it at up to `Config.Fps`, now purely a render cap (default
+     60), so raising the framerate no longer speeds the game up.*
+   - ✅ *Game-mode/screen state machine: `Useful.Abstraction` gained
+     `IGameScreen` (Reset/Update/Draw) and `ScreenManager<TId, TScreen>` —
+     a screen registry whose `Set` clears pending key presses and resets
+     the incoming screen, extracted from Elite's `GameState.SetView`.
+     Elite's `IView` now extends `IGameScreen` (`UpdateUniverse` renamed to
+     `Update`) and `GameState` delegates
+     `CurrentScreen`/`CurrentView`/`SetView` to the manager; SCR's
+     `GameMode` switch is restructured into `Screens/` classes
+     (TrackMenu/TrackPreview/Race/GameOver) with the mode-entry work moved
+     into `Reset` (preview car reset, race start, engine-loop stop), and
+     SCR mode changes now also clear pending key presses, as Elite always
+     did.*
+   - ✅ *Sound throttling: SCR's cooldown-slot array turned out to
+     duplicate the `AudioController`/`SfxSample` mechanism Elite already
+     used, so SCR now plays its effect triggers through `AudioController`;
+     `UpdateSound` ticks distinct samples (not names) so OffRoad/Wreck can
+     share one cooldown as they shared a buffer in the original, and
+     `Useful.Fakes` gained the counting `FakeSound` (replacing SCR's local
+     fake) with new `Useful.Audio.Tests` covering the cooldown behaviour.*
+   - ⬜ *Still pending: `Scene3D` vs Elite's projection, text/HUD helpers,
+     and moving Elite's frame composition out of its update (per-object
+     draw lists in `Space.UpdateUniverse`/`EliteDraw`) so rendering above
+     the tick rate draws anything new.)*
+5. ⬜ Road-line textures (needs textured polygon support in
    `Useful.Graphics`).
-6. Easier follow-ups (any order, after item 1): gamepad support via
+6. ⬜ Easier follow-ups (any order, after item 1): gamepad support via
    `Useful.Controls`, per-effect sound volume (original scales grounded/
    creak by damage), player outside view (chase camera + player car mesh),
    doc upkeep.
