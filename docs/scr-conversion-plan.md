@@ -12,351 +12,136 @@ conversion in this repo: hardware access hidden behind interfaces, a software
 renderer as the primary rendering path, and maximum reuse of the `Useful.*`
 libraries rather than SCR-specific duplicates.
 
-## Status
+## Maintaining this plan
 
-**First pass — done.** One track playable against the clock, no opponent,
-software-rendered, keyboard-only. See "Conversion order" below.
+This file is used as the prompt to resume the conversion in new sessions.
+Keep it accurate and lean:
 
-**Second pass — done.** Opponent car + AI, car mesh, dashboard/fonts, sound,
-draw bridge animation, track selection menu. See "Second pass" below.
+- Update it as part of every work item, in the same commit/step as the code
+  change: move the item from "Remaining work" (or the architecture section)
+  into "Done" with a short summary, or add a new item if new work is
+  identified while working.
+- Keep "Done" entries short — a line or two naming what landed and where,
+  not a narrative of how it was fixed or debugged. Git history has the
+  detail if it's ever needed again.
+- Keep "Remaining work" items flat and self-contained — one concern per
+  item, not nested sub-bullets — so any single item can be picked up without
+  reading the whole file first.
+- Prune detail that's no longer needed to make forward progress (e.g. once
+  a bug is fixed and has a regression test, the debugging narrative can go).
 
-**Third pass — in progress.** Bug fixes (items 1-3) are done. Shared engine
-extraction (item 4) is partway through:
+## Architecture principles
 
-| Sub-item | Status |
-|---|---|
-| Fixed-timestep game loop (`Useful.Timing.GameLoop`, `IGame`/`GameHost`) | ✅ done |
-| Game-mode/screen state machine (`IGameScreen`/`ScreenManager<TId,TScreen>`) | ✅ done |
-| Sound effect throttling (shared `AudioController`/`SfxSample`) | ✅ done |
-| `Scene3D` projection/clip vs Elite's own projection code | ⬜ pending |
-| Text/HUD helpers shared between the two games | ⬜ pending |
-| Move Elite's frame composition out of `Update` (per-object draw lists) | ⬜ pending |
+- Mirror `src/elite/*`'s structure: `src/scr/apps/StuntCarRacer`,
+  `src/scr/libs/StuntCarRacerLib`, `src/scr/test/StuntCarRacerLib.{Tests,Fakes}`,
+  wired into `EliteSharp.slnx`, same project-reference/analyzer conventions
+  as `EliteSharpLib` (`Directory.Build.props` applies).
+- Hardware access stays behind interfaces (`Useful.Abstraction.IAbstraction`,
+  `IGraphics`, `IKeyboard`, `ISound`); the software rasterizer
+  (`Useful.Graphics.SoftwareGraphics`) is the primary rendering path.
+- Before writing SCR-specific code, check whether the equivalent already
+  exists in `src/useful/*` and extend that library instead of duplicating
+  it: math → `System.Numerics`, rendering → `IGraphics`/`SoftwareGraphics`,
+  assets → `Useful.Assets.AssetLocator`, input → `Useful.Controls.IKeyboard`,
+  audio → `Useful.Audio`, game loop/state → `Useful.Abstraction`/
+  `Useful.Timing`. A genuine SCR-only need (e.g. track-segment collision) is
+  fine to keep local — the bar is "does this belong in a shared library,"
+  not "force everything to be shared."
+- Behavioural fidelity ("feels like the original"), not bit-exact numerical
+  replication, is the bar — there is no requirement to match the original's
+  frame-by-frame physics output.
+- Treat the original's binary asset formats (tracks/bitmaps/sounds) as
+  read-once inputs to a one-time conversion step, not a live format the C#
+  code must parse identically forever.
 
-**Not started:**
+## Done
 
-- Road-line textures (needs textured polygon support in `Useful.Graphics`)
-- Gamepad support via `Useful.Controls`
-- Per-effect sound volume (original scales grounded/creak volume by damage)
-- Player outside view (chase camera + player car mesh)
-- Doc upkeep
+- Project skeleton (`src/scr/*`) wired into the solution, builds clean.
+- Track geometry/data model (`Tracks/Track.cs`, `AmigaTrackData.cs`) with
+  unit tests, including the draw bridge animation (`Tracks/DrawBridge`).
+- Car physics (`Cars/CarPhysics.*`, fixed-point trig in `Cars/AmigaTrig`),
+  including sound-effect triggers and car-to-car collision/slipstream.
+- Opponent AI (`Cars/OpponentPhysics`): scripted speeds, wheel-spring
+  dynamics, steering, obstruct/push/move-aside interaction, lap counting
+  and win calculation.
+- 3D projection/camera pipeline (`Rendering/Scene3D`, `SceneCamera`,
+  `ScrPalette`) rendering flat-shaded track/side polygons via
+  `Useful.Graphics.DrawPolygonFilled` (matches the Amiga original's look;
+  no textured-fill extension was needed for this).
+- Backdrop/horizon/scenery rendering (`Rendering/BackdropRenderer`), five
+  scenery types, N cycles them in-game.
+- Car mesh (`Rendering/CarMesh`) — wheels + wedge body, used to draw the
+  opponent.
+- Bitmap-font dashboard/HUD text: opponent name, lap/boost/distance,
+  speed/damage, flashing race result, game over.
+- Sound via `Useful.Audio`: variable-pitch engine loop
+  (`PitchedLoopSampleProvider`), effect triggers, samples converted to WAV
+  assets under `Assets/SFX`.
+- Game-mode/screen flow (`Screens/` classes: TrackMenu, TrackPreview, Race,
+  GameOver) with camera orbit/preview logic and track selection (keys 1-8).
+- Full game loop wired up in `StuntCarRacerMain`: one track drivable and
+  rendered end-to-end, keyboard-controlled.
+- Fixed-timestep game loop shared between Elite and SCR
+  (`Useful.Timing.GameLoop`, `Useful.Abstraction.IGame`/`GameHost`) — fixed
+  a bug where SCR's car physics ran ~2.4x too fast.
+- Floating-track bug fixed (backdrop/track projection mismatch;
+  `BackdropRendererTests` regression coverage) and spurious-triangle
+  rendering bug fixed (near-plane clip before fan-triangulation in
+  `TrackRenderer.AddPolygon`; regression coverage across all eight tracks).
+- Shared game-mode/screen state machine extracted to `Useful.Abstraction`
+  (`IGameScreen`, `ScreenManager<TId, TScreen>`); both Elite's `IView`s and
+  SCR's `Screens/` classes use it.
+- Shared sound-effect throttling extracted: SCR now plays effects through
+  the same `AudioController`/`SfxSample` cooldown mechanism Elite uses,
+  rather than a duplicate SCR-local throttle.
 
-See "Third pass" below for full detail and rationale on completed items.
+## Architecture / refactoring work identified
 
-## Non-goals for this pass
+Work noticed while converting SCR that isn't a new SCR feature, but improves
+the shared engine or removes duplication between the two games.
 
-- No DirectX9/DXUT code is ported. `Common/DXUT*.cpp/h` is device/window/GUI
-  plumbing for the original Win32+D3D9 host and has a direct replacement
-  already in this repo (`Useful.SDL`). Skip it entirely — if a piece of DXUT
-  turns out to contain actual game logic (not device/window management),
-  flag it rather than silently porting the DXUT abstraction around it.
-- No XBOX controller support yet (`XBOXController.cpp/h`) — keyboard input
-  only for the first pass, added later via `Useful.Controls`.
-- No sound, no menus/UI chrome, no AI opponents, no multi-track support.
-- No attempt at bit-exact physics replication — behavioural fidelity
-  ("feels like the original"), not numerical fidelity, is the bar.
+- **`Scene3D` vs Elite's projection/clip code**: SCR (`Rendering/Scene3D`)
+  and Elite each have their own 3D transform + near-plane-clip pipeline.
+  Compare them and extract shared math into `Useful.Graphics`/`Useful` if
+  it genuinely generalizes — don't force an abstraction over two pipelines
+  that turn out to differ for good reason.
+- **Shared text/HUD helpers**: both games draw similar HUD panels (name/
+  stat text, flashing messages) with separate ad-hoc code
+  (`StuntCarRacerMain.DrawHud`, Elite's `EliteDraw`/views). Look for a small
+  shared helper in `Useful.Graphics` instead of each game reimplementing
+  layout and flash timing.
+- **Move Elite's frame composition out of `Update`**: Elite's `Update` runs
+  at a fixed 13.5Hz and composes the whole frame into the framebuffer as it
+  moves objects (`Space.UpdateUniverse`/`EliteDraw`), matching the original
+  TNK design; `Draw` just presents it at up to `Config.Fps`. This means
+  raising `Config.Fps` currently doesn't draw anything new above 13.5Hz.
+  Moving to per-object draw lists so `Draw` can render fresh interpolated
+  frames above the tick rate is a bigger refactor — confirm it's still
+  worth doing (it's Elite-only, not required for the SCR conversion itself)
+  before picking it up.
 
-## Scope of this first pass
+## Remaining work
 
-Get one track playable: a single car, driven by the local player, racing
-against the clock (no opponent car) on one hard-coded track, rendered via a
-software rasterizer through SDL2, with keyboard-only input. This proves the
-architecture and the shared-rendering approach before scaling to full
-feature parity (all tracks, sound, AI opponents, menus, gamepad).
-
-Concretely, convert:
-
-| SCR source | Role |
-|---|---|
-| `3D Engine.cpp/h` | 3D transform/projection pipeline — game-specific projection lives in `StuntCarRacerLib`; shared fill primitives go into `Useful.Graphics` |
-| `Track.cpp/h` | Track geometry/segment data and collision |
-| `Car.cpp/h`, `Car Behaviour.cpp/h` | Car physics/handling |
-| `Backdrop.cpp/h` | Sky/scenery — can be deferred/stubbed if it blocks nothing else |
-| `wavefunctions.cpp/h` | ~~Small math utility~~ Nothing to port: despite the name it is DirectSound WAV plumbing (Win32 resource loading, RIFF chunk parsing, `IDirectSoundBuffer8` writes), fully superseded by `Useful.Audio` |
-| `StuntCarRacer.cpp/h` | Main loop / game state — becomes `StuntCarRacerMain`, structured like `EliteMain` and hosted by the `StuntCarRacer` SDL app |
-
-Deferred (do not convert this pass): `Opponent Behaviour.cpp/h`,
-`XBOXController.cpp/h`, all of `Sounds/`, all `Common/DXUT*`.
-
-## Repository layout
-
-Mirror the existing `src/elite/*` split, as a new top-level game under
-`src/scr/`. (Note: the live Elite app project is `src/elite/apps/EliteSharp` —
-the `EliteSharp.SDL`/`EliteSharp.WinForms`/`EliteSharp.Renderer` folders on
-disk are stale and not in the solution.)
-
-```
-src/scr/
-  apps/
-    StuntCarRacer/            (mirrors src/elite/apps/EliteSharp)
-  libs/
-    StuntCarRacerLib/         (mirrors src/elite/libs/EliteSharpLib)
-  test/
-    StuntCarRacerLib.Tests/   (mirrors src/elite/test/EliteSharpLib.Tests)
-    StuntCarRacerLib.Fakes/   (mirrors src/elite/test/EliteSharpLib.Fakes)
-```
-
-`StuntCarRacerLib` references `Useful`, `Useful.Abstraction`, `Useful.Assets`,
-`Useful.Audio`, `Useful.Controls`, `Useful.Graphics` the same way
-`EliteSharpLib` does — same project reference style, same analyzer settings
-(`Directory.Build.props` applies), wired into `EliteSharp.slnx` under
-`/src/scr/`.
-
-Do not create a parallel copy of any `Useful.*` library. If SCR needs
-something a `Useful.*` library doesn't have yet, extend that library (see
-below) rather than adding a SCR-local equivalent.
-
-## Shared-library strategy (highest priority)
-
-**Before writing any SCR-specific code, check whether the equivalent already
-exists in `src/useful/*`, and extend the shared library instead of
-duplicating it.** Specifically:
-
-- **Math**: Elite already uses `System.Numerics.Vector2/Vector3/Matrix4x4`
-  natively. SCR's C++ vector/matrix math should be re-expressed in terms of
-  `System.Numerics` types, not a bespoke SCR math class. Check
-  `wavefunctions.cpp` against this before porting it verbatim.
-- **Rendering — this is the one substantial gap.** `Useful.Graphics.IGraphics`
-  already has 2D-projected primitives including `DrawPolygonFilled` and
-  `DrawTriangleFilled`, implemented in software by `SoftwareGraphics.cs`.
-  This is flat-colour fill only, operating on already-projected 2D points —
-  no texture, depth, or perspective-correct sampling. SCR needs
-  textured/shaded polygon fill for road segments and cars. Extend
-  `IGraphics`/`SoftwareGraphics` rather than building a separate SCR
-  renderer. The 3D→2D projection step itself (from `3D Engine.cpp`) is
-  game-specific and belongs in `StuntCarRacerLib`, calling into the extended
-  `IGraphics`, the same way Elite's `EliteDraw.cs` projects ship vertices and
-  then calls `IGraphics.DrawPolygonFilled`.
-- **Assets**: use `Useful.Assets.AssetLocator`/`AssetManifest.json`
-  (string-keyed) for SCR's tracks/bitmaps, mirroring
-  `EliteSharpLib/Assets/`.
-- **Input**: use `Useful.Controls.IKeyboard` as-is for the keyboard-only
-  first pass; don't write an SCR-specific input layer.
-- **Window/app loop**: the `StuntCarRacer` app is modelled directly on
-  `EliteSharp`'s `SDLProgram.cs` using `Useful.SDL.SoftwareAbstraction`.
-- **Audio/Controls (deferred)**: when sound and gamepad support are added in
-  a later pass, they should likewise extend `Useful.Audio`/`Useful.Controls`
-  rather than adding SCR-specific equivalents.
-
-If a genuine SCR-only need doesn't generalize to Elite (e.g. track-segment
-collision), it's fine to keep in `StuntCarRacerLib` — the bar is "does this
-belong in a shared library," not "force everything to be shared."
-
-## Assets
-
-Convert `Bitmap/`, `Tracks/`, `Sounds/` (sounds deferred, but note the format
-for later) into `StuntCarRacerLib/Assets/` mirroring `EliteSharpLib/Assets/`.
-Track and bitmap data will likely need format conversion (binary C++ struct
-dumps → a plain C# data format or a small loader) — treat the original file
-formats as read-once inputs to a one-time conversion step, not as a live
-binary format the C# code must parse identically forever.
-
-## Conversion order (each step a separate reviewable commit)
-
-1. ✅ Project skeleton (`src/scr/*`), wired into the solution, builds clean,
-   empty SDL window opens with a placeholder scene. *(done)*
-2. ✅ Assess `wavefunctions.cpp/h` — outcome: skip. It is DirectSound WAV
-   loading (resource loading + RIFF parsing), not math; `Useful.Audio`
-   already covers this role and sound is deferred anyway. *(done — no code)*
-3. ✅ Port `Track.cpp/h` data model (geometry only, no rendering yet) with unit
-   tests in `StuntCarRacerLib.Tests`. *(done — `StuntCarRacerLib/Tracks/`;
-   the Amiga template tables in `AmigaTrackData.cs` are script-generated from
-   the original `Track.cpp`. Deferred from Track.cpp to later steps:
-   `MoveDrawBridge`/`ResetDrawBridge` (needs game state + opponent, step 4+)
-   and all vertex-buffer/`DrawTrack` rendering code (step 5/6).)*
-4. ✅ Port `Car Behaviour.cpp/h` physics, testable independent of rendering.
-   *(done — `StuntCarRacerLib/Cars/`: `CarPhysics` (partial classes) plus the
-   fixed-point trig from `3D Engine.cpp` (`AmigaTrig`/`TrigCoefficients`).
-   Deferred: sound effect triggers (grounded/creak/smash/sparks/engine
-   buffers), car-to-car collision and slipstream (need opponent),
-   `LimitViewpointY` (camera, step 6), XBOX controller input, action
-   replay/Amiga recording debug code. `Car.cpp` itself is D3D9 car mesh
-   rendering and belongs to step 5/6.)*
-5. ✅ Port `3D Engine.cpp/h`'s projection math into `StuntCarRacerLib`.
-   *(done — `StuntCarRacerLib/Rendering/`: `ScrPalette`, `SceneCamera`
-   (cockpit view), `Scene3D` (view transform + near-plane clip + FOCUS
-   projection, from the software pipeline the D3D remake had disabled) and
-   `TrackRenderer` (flat-shaded road/side quads with painter's sorting).
-   Deviation from plan: no `Useful.Graphics` extension was needed —
-   `DrawPolygonFilled` covers flat-shaded rendering, which matches the Amiga
-   original's look. Textured road lines and the chase-view camera are
-   deferred; view handedness/signs need visual verification in step 6.)*
-6. ✅ Wire projection + track + car into a render loop in the app, get one
-   track's geometry drawing and the car driving on it, keyboard-controlled.
-   *(done — `StuntCarRacerMain` runs the game loop at 30fps: keyboard input
-   (S/D steer, Return accelerate+boost, Space brake+boost, B brake), car
-   physics, cockpit camera, track renderer and placeholder speed/boost HUD
-   bars. Visually verified via offscreen software-rasterizer frame dumps
-   (`VisualDumpTests`) and a live window screenshot. Still to polish:
-   fonts/dashboard, sound, backdrop/horizon, lap/race UI.)*
-7. ✅ Revisit `Backdrop.cpp`. *(done — `BackdropRenderer` ports the horizon
-   sky/ground fill and all five scenery skyline types (the scenery shape
-   tables in `BackdropData.cs` are script-generated from `Backdrop.cpp`);
-   N cycles the scenery type in-game. The original's rectangle/line-clipping
-   case analysis is replaced by large clipped polygon fills.)*
-
-This completes the first-pass scope: one track playable against the clock
-with the full world rendered.
-
-## Second pass
-
-1. ✅ Opponent car (`Opponent Behaviour.cpp` → `Cars/OpponentPhysics`):
-   AI movement at scripted per-piece speeds, wheel-height spring dynamics,
-   randomized steering, player interaction (obstruct/push/move-aside),
-   car-to-car collision wired into `CarPhysics` (including slipstream), lap
-   counting and win calculation. Data tables script-generated into
-   `OpponentData.cs`. Drawn as a flat-shaded box plus road shadow
-   (`Rendering/OpponentRenderer`) until the `Car.cpp` mesh is ported.
-2. ✅ Car mesh from `Car.cpp` (`Rendering/CarMesh` ports the active
-   `CreateCarInVB` shape: four wheel quads plus the wedge body with the
-   original track-palette face colours, oriented on the opponent's wheel
-   frame). The player's outside view is still to do (needs a chase camera);
-   the old round-wheeled software car in `Car.cpp` is `#ifdef NOT_USED` in
-   the original and was not ported.
-3. ✅ Fonts/dashboard UI. *(Bitmap fonts (shared `BitmapFont` loader; the
-   font bitmaps reused from Elite's assets) and the original in-game text
-   layout: opponent name for four seconds at race start, lap/boost and
-   opponent distance bottom left, speed/damage bottom right, flashing
-   RACE WON/LOST for six seconds, then GAME OVER with M returning to the
-   track menu.)*
-4. ✅ Sound via `Useful.Audio`. *(The original 8-bit mono 11025Hz Amiga
-   samples were converted offline to 44.1kHz stereo float WAVs in
-   `Assets/SFX`. `Useful.Audio` gained `ISound.PlayLoop/StopLoop` with a
-   variable-pitch looping resampler (`PitchedLoopSampleProvider`) for the
-   engine, which plays TickOver/EnginePitch2-8 at `AMIGA_PAL_HZ / period`
-   exactly as `FramesWheelsEngine`; `SoundSampleProvider` now only requires
-   a soundfont for MIDI assets. Effect triggers (grounded, creak, smash,
-   off-road dust, edge sparks/wreck, hit-car) fire from the physics and are
-   throttled in the game loop so the mixer doesn't stack repeats. Not done:
-   per-effect volume (the original scales grounded/creak volume by damage)
-   and the SDL_mixer backend's pitched loop.)*
-5. ✅ Draw bridge animation (`Tracks/DrawBridge` ports
-   `MoveDrawBridge`/`ResetDrawBridge`: the bridge pieces rise and fall on a
-   triangle wave while no car is on them, and the opponent's approach and
-   climb speeds are retuned to the current height; `TrackPiece` retains the
-   per-piece y shifts and the opponent's speed table is now a mutable copy).
-6. ✅ Track selection menu (`StuntCarRacerMain` is now a `GameMode` state
-   machine: TrackMenu → TrackPreview → GameInProgress → GameOver. The menu
-   orbits the selected track (`CalcTrackMenuViewpoint`) with keys 1-8 to
-   choose a track; S shows the preview where the opponent drives a lap
-   (`CalcTrackPreviewViewpoint`, higher camera for Draw Bridge); S again
-   starts the race and M steps back. `SceneCamera.LookAt` ports
-   `LockViewpointToTarget`/`LockAngle`. GAME OVER's M now returns to the
-   track menu as the original did.)
-7. ⬜ Pending (see Status above): gamepad support, road-line textures,
-   player outside view, per-effect sound volume.
-
-## Third pass: bugs and engine work
-
-Ordered hardest-first; items 1-4 need the most capable model, the
-remainder are well-scoped follow-ups for a smaller one.
-
-1. ✅ Game-loop rework (fixes "car too fast/too sensitive"): the original
-   remake ticks `OnFrameMove` at 50Hz but only steps the car physics every
-   `frameGap` frames (`DEFAULT_FRAME_GAP` = 4, Amiga MIN.FRAMES = 6), i.e.
-   physics at 12.5Hz — the port was stepping it at 30Hz, ~2.4x too fast.
-   Replace the fragile modulo busy-loop in both SCR and Elite with a shared
-   accumulator-based fixed-timestep loop in `Useful` (logic at a fixed
-   rate, render rate independent — capped or unlimited); SCR ticks input/
-   engine-sound at 50Hz and physics every 4th tick (configurable frame
-   gap). *(done — `Useful.Timing.GameLoop`: fixed-rate update with an
-   accumulator, render capped or unlimited or absent, stall backlog
-   dropped, injectable clock for tests. SCR ticks at 50Hz — input poll,
-   race/HUD timing and the engine sound (`CarPhysics.ApplyEngineRevs` now
-   ramps the revs per tick, as the original `FramesWheelsEngine`) — with
-   physics every `FrameGap` (4) ticks; effect-sound throttles re-based to
-   physics frames. The track menu runs unthrottled at 50Hz and GAME OVER
-   now freezes the action and stops the engine loop, both as the original.
-   Elite runs the same loop at `Config.Fps` (its frame is the fixed-rate
-   update; no separate render). Both apps verified live: windows open,
-   loops pace correctly instead of spinning a core.)*
-2. ✅ Floating track bug: the track sometimes doesn't sit on the backdrop
-   ground. Suspect the backdrop horizon/ground fill (camera-angle driven)
-   vs track world y (`BottomY`, y >> 2 display scale) disagreeing; compare
-   frame dumps against the original's ground polygon math. *(fixed — two
-   mismatches between `BackdropRenderer` and the track projection
-   (`Scene3D`). Main bug: the backdrop kept the original's y-down maths but
-   was fed the camera's y-up physics angles, so the ground line pitched and
-   rolled in the opposite direction to the track (x/z rotations negate
-   under the y flip; y rotations don't) — worst from the pitched-down
-   preview camera, where the track floated over a band of sky. Second: the
-   horizon/scenery projected with a height-based focus (512/480) vs the
-   track's width-based focus (512/640), which only agree at 4:3 — the app
-   window is 16:10. Regression test
-   (`BackdropRendererTests`) pins the ground line to within 3px of where
-   `Scene3D` projects the ground plane at the horizon-fill distance
-   (2 × 0x10000) across pitches; `VisualDumpTests` now also dumps the
-   pitched preview viewpoint.)*
-3. ✅ Spurious triangles on/beside the track: suspect self-intersecting
-   (bowtie) quads after projection being fan-triangulated in
-   `DrawPolygonFilled`, or degenerate points from `ClipPolygonToNearPlane`
-   when a quad straddles the near plane. Capture a repro and add
-   regression tests as with the triangle-fill spike fix. *(fixed — both
-   suspicions were right, in combination: `TrackRenderer.AddPolygon`
-   clipped the whole quad outline against the near plane, and for a
-   twisted quad straddling it the clipped 4/5-gon projects
-   self-intersecting or concave, which `DrawPolygonFilled`'s triangle fan
-   then misfills — magnified hugely because near-plane points project far
-   off-screen (worst repro: a ~13,000px start-line-white triangle across
-   the bottom of the screen on Little Ramp). `AddPolygon` now fans the
-   polygon into triangles first and clips each separately, as the original
-   D3D remake rendered triangles, emitting the clipped results as
-   triangles too (integer-rounded clip points can nudge a thin clipped
-   quad into a hairline bowtie). Regression test: driving all eight tracks,
-   `TrackRenderer` never emits a polygon whose outline a fan cannot fill
-   exactly. Data-twisted quads (e.g. Little Ramp piece 24) always were
-   crossed even unclipped — those fan into the same two triangles the
-   original drew, so they were never the bug.)*
-4. Shared engine extraction between Elite and SCR, after the loop rework
-   lands (the loop is the biggest shared piece): game-mode state machine
-   scaffolding, sound throttling, `Scene3D` projection/clip vs Elite's,
-   text/HUD helpers. *(in progress — see the table in Status above for the
-   current checklist. Detail on each completed sub-item:*
-
-   - ✅ *Fixed-timestep loop hosting: `Useful.Abstraction` gained `IGame`
-     (fixed-rate `Update`, rate-independent `Draw`) and `GameHost`, which
-     polls the keyboard and runs an `IGame` on the shared `GameLoop`; both
-     games implement it. Elite is split update/draw: `Update` runs the
-     logic and composes the frame into the framebuffer at a fixed 13.5Hz
-     (`EliteMain.GameTickRate`, the TNK speed) — composition stays in the
-     update because TNK draws the universe as it moves it — and `Draw`
-     presents it at up to `Config.Fps`, now purely a render cap (default
-     60), so raising the framerate no longer speeds the game up.*
-   - ✅ *Game-mode/screen state machine: `Useful.Abstraction` gained
-     `IGameScreen` (Reset/Update/Draw) and `ScreenManager<TId, TScreen>` —
-     a screen registry whose `Set` clears pending key presses and resets
-     the incoming screen, extracted from Elite's `GameState.SetView`.
-     Elite's `IView` now extends `IGameScreen` (`UpdateUniverse` renamed to
-     `Update`) and `GameState` delegates
-     `CurrentScreen`/`CurrentView`/`SetView` to the manager; SCR's
-     `GameMode` switch is restructured into `Screens/` classes
-     (TrackMenu/TrackPreview/Race/GameOver) with the mode-entry work moved
-     into `Reset` (preview car reset, race start, engine-loop stop), and
-     SCR mode changes now also clear pending key presses, as Elite always
-     did.*
-   - ✅ *Sound throttling: SCR's cooldown-slot array turned out to
-     duplicate the `AudioController`/`SfxSample` mechanism Elite already
-     used, so SCR now plays its effect triggers through `AudioController`;
-     `UpdateSound` ticks distinct samples (not names) so OffRoad/Wreck can
-     share one cooldown as they shared a buffer in the original, and
-     `Useful.Fakes` gained the counting `FakeSound` (replacing SCR's local
-     fake) with new `Useful.Audio.Tests` covering the cooldown behaviour.*
-   - ⬜ *Still pending: `Scene3D` vs Elite's projection, text/HUD helpers,
-     and moving Elite's frame composition out of its update (per-object
-     draw lists in `Space.UpdateUniverse`/`EliteDraw`) so rendering above
-     the tick rate draws anything new.)*
-5. ⬜ Road-line textures (needs textured polygon support in
-   `Useful.Graphics`).
-6. ⬜ Easier follow-ups (any order, after item 1): gamepad support via
-   `Useful.Controls`, per-effect sound volume (original scales grounded/
-   creak by damage), player outside view (chase camera + player car mesh),
-   doc upkeep.
+- **Road-line textures**: needs textured polygon fill in
+  `Useful.Graphics`/`IGraphics` (`SoftwareGraphics` currently only does
+  flat-colour fill). Port the road-line texture data from `Track.cpp`.
+- **Gamepad support**: port `XBOXController.cpp/h` via `Useful.Controls`;
+  not started, keyboard-only so far.
+- **Per-effect sound volume**: the original scales grounded/creak effect
+  volume by damage level. `AudioController`/`SfxSample` currently has no
+  per-play volume parameter.
+- **Player outside/chase view**: needs a chase camera plus drawing the
+  player's own car mesh (`Rendering/CarMesh` is currently only used to draw
+  the opponent).
 
 ## Validation
 
 - Unit tests for physics/track/math logic in `StuntCarRacerLib.Tests`,
   following existing conventions in `EliteSharpLib.Tests`/`Useful.*.Tests`.
-- Manual comparison against the original SCR build for "does it feel right"
-  on the single chosen track — steering response, jump/landing behaviour,
-  track segment transitions.
-- No requirement to match original frame-by-frame physics output; this is a
-  behavioural port, not a bit-exact one.
+- Before considering any work item done: build the full solution, run the
+  complete test suite, and smoke-test the affected app(s) live (the window
+  must open and run without crashing) if the change touches shared code or
+  either app's game loop.
+- Manual comparison against the original SCR build for "does it feel
+  right" — steering response, jump/landing behaviour, track segment
+  transitions. No requirement to match the original frame-by-frame.
