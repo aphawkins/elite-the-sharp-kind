@@ -3,6 +3,7 @@
     <File Path="docs/config.md" />
     <File Path="docs/issues.md" />
     <File Path="docs/readme.md" />
+    <File Path="docs/scr-conversion-plan.md" />
     <File Path="docs/scr-readme.md" />
   </Folder>
   <Folder Name="/docs/images/">

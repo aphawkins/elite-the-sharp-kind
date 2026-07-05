@@ -239,10 +239,23 @@ remainder are well-scoped follow-ups for a smaller one.
    Elite runs the same loop at `Config.Fps` (its frame is the fixed-rate
    update; no separate render). Both apps verified live: windows open,
    loops pace correctly instead of spinning a core.)*
-2. Floating track bug: the track sometimes doesn't sit on the backdrop
+2. ✅ Floating track bug: the track sometimes doesn't sit on the backdrop
    ground. Suspect the backdrop horizon/ground fill (camera-angle driven)
    vs track world y (`BottomY`, y >> 2 display scale) disagreeing; compare
-   frame dumps against the original's ground polygon math.
+   frame dumps against the original's ground polygon math. *(fixed — two
+   mismatches between `BackdropRenderer` and the track projection
+   (`Scene3D`). Main bug: the backdrop kept the original's y-down maths but
+   was fed the camera's y-up physics angles, so the ground line pitched and
+   rolled in the opposite direction to the track (x/z rotations negate
+   under the y flip; y rotations don't) — worst from the pitched-down
+   preview camera, where the track floated over a band of sky. Second: the
+   horizon/scenery projected with a height-based focus (512/480) vs the
+   track's width-based focus (512/640), which only agree at 4:3 — the app
+   window is 16:10. Regression test
+   (`BackdropRendererTests`) pins the ground line to within 3px of where
+   `Scene3D` projects the ground plane at the horizon-fill distance
+   (2 × 0x10000) across pitches; `VisualDumpTests` now also dumps the
+   pitched preview viewpoint.)*
 3. Spurious triangles on/beside the track: suspect self-intersecting
    (bowtie) quads after projection being fan-triangulated in
    `DrawPolygonFilled`, or degenerate points from `ClipPolygonToNearPlane`

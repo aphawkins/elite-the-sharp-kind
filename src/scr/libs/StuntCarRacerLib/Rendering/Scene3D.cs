@@ -19,7 +19,7 @@ public sealed class Scene3D
     internal const int ZClipBoundary = 128;
 
     // Original FOCUS was 512 for a screen width of 640.
-    private const float FocusFactor = 512f / 640f;
+    internal const float FocusFactor = 512f / 640f;
 
     private readonly TrigCoefficients _trig = new();
 

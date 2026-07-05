@@ -41,9 +41,13 @@ public class VisualDumpTests
             opponent.Update();
         }
 
-        void RenderAndSave(string name)
+        void RenderAndSave(string name, bool followCar = true)
         {
-            camera.FollowCar(car);
+            if (followCar)
+            {
+                camera.FollowCar(car);
+            }
+
             graphics.Clear();
             backdrop.Draw(camera);
             worldPolygons.Clear();
@@ -88,6 +92,19 @@ public class VisualDumpTests
         }
 
         RenderAndSave("frame_ramp.bmp");
+
+        // the track-preview viewpoint: high up, pitched down at the car -
+        // the camera angle that exposed the floating-track bug (the ground
+        // fill must stay attached to the track when the camera pitches)
+        const long centre = (long)Track.TrackCubes * Track.CubeSize / 2;
+        camera.LookAt(
+            centre + ((car.X - centre) / 2),
+            car.Y - ((long)Track.CubeSize / 2),
+            centre + ((car.Z - centre) / 2),
+            car.X,
+            car.Y,
+            car.Z);
+        RenderAndSave("frame_preview.bmp", followCar: false);
     }
 
     private static void SaveBmp(FastBitmap bitmap, string path)

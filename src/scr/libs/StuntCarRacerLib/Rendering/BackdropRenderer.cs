@@ -59,13 +59,26 @@ public sealed class BackdropRenderer
     {
         Guard.ArgumentNull(camera);
 
-        // the original works with the render-space viewpoint y, which is the
-        // negated camera height (in track units)
-        int viewpointY = -camera.Y;
-
-        DrawHorizon(viewpointY, camera.XAngle, camera.ZAngle);
-        DrawScenery(viewpointY, camera.XAngle, camera.YAngle, camera.ZAngle);
+        DrawHorizon(RenderY(camera), RenderXAngle(camera), RenderZAngle(camera));
+        DrawScenery(RenderY(camera), RenderXAngle(camera), camera.YAngle, RenderZAngle(camera));
     }
+
+    // The sky/ground fill without the scenery skyline on top (the scenery
+    // covers the ground line everywhere, so tests use this to check it).
+    internal void DrawHorizonOnly(SceneCamera camera)
+    {
+        Guard.ArgumentNull(camera);
+        DrawHorizon(RenderY(camera), RenderXAngle(camera), RenderZAngle(camera));
+    }
+
+    // The original backdrop maths works in the render space of the original
+    // software pipeline: y positive downwards, which negates the camera's
+    // height and its x/z rotation directions (y rotations are unaffected).
+    private static int RenderY(SceneCamera camera) => -camera.Y;
+
+    private static int RenderXAngle(SceneCamera camera) => -camera.XAngle & (Track.MaxAngle - 1);
+
+    private static int RenderZAngle(SceneCamera camera) => -camera.ZAngle & (Track.MaxAngle - 1);
 
     private void DrawHorizon(int viewpointY, int angleX, int angleZ)
     {
@@ -86,6 +99,13 @@ public sealed class BackdropRenderer
         int sinZ = AmigaTrig.Sin(angleZ);
         int cosZ = AmigaTrig.Cos(angleZ);
 
+        // project with the same focus as the track projection (Scene3D). The
+        // original divided by height * 512/480, which only equals the track's
+        // focus at 4:3 - at other aspect ratios the ground line pitched and
+        // rolled by a different amount to the track, so the track appeared to
+        // float above the ground (or sink into it) whenever the camera tilted.
+        float focus = width * Scene3D.FocusFactor;
+
         Span<Vector2> screen = stackalloc Vector2[2];
         for (int i = 0; i < 2; i++)
         {
@@ -101,8 +121,8 @@ public sealed class BackdropRenderer
             long transX = ((long)x * cosZ) - ((long)y * sinZ);
             transY = ((long)x * sinZ) + ((long)y * cosZ);
 
-            // perspective projection (as the original: divisor scales with height)
-            float z = transZ / (height * 512f / 480f);
+            // perspective projection
+            float z = transZ / focus;
             if (Math.Abs(z) < 1)
             {
                 z = 1; // prevent division by zero
@@ -142,6 +162,9 @@ public sealed class BackdropRenderer
     {
         float width = _graphics.ScreenWidth;
         float height = _graphics.ScreenHeight;
+
+        // same focus as the track and ground projections (see DrawHorizon)
+        float focus = width * Scene3D.FocusFactor;
 
         int[] sceneryNumbers = s_sceneryTypes[_currentSceneryType];
 
@@ -199,7 +222,7 @@ public sealed class BackdropRenderer
                 }
 
                 // perspective projection
-                float projZ = transZ / (height * 512f / 480f);
+                float projZ = transZ / focus;
                 if (Math.Abs(projZ) < 1)
                 {
                     projZ = 1; // prevent division by zero
