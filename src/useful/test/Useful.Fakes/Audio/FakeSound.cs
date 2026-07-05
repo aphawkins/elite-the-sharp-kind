@@ -1,26 +1,27 @@
-// 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.
-// 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
-// Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
+// 'Useful Libraries' - Andy Hawkins 2025.
 
 using Useful.Audio;
 
-namespace StuntCarRacerLib.Fakes;
+namespace Useful.Fakes.Audio;
 
+// Minimal in-test fake implementation of ISound that counts what was played.
 public sealed class FakeSound : ISound
 {
+    private readonly Dictionary<string, int> _playCounts = [];
+
     public int PlayLoopCount { get; private set; }
 
     public int StopLoopCount { get; private set; }
 
     public string? LastLoopSample { get; private set; }
 
+    public int PlayCount(string sfxType) => _playCounts.GetValueOrDefault(sfxType);
+
     public void Play(string musicType, bool repeat)
     {
     }
 
-    public void Play(string sfxType)
-    {
-    }
+    public void Play(string sfxType) => _playCounts[sfxType] = PlayCount(sfxType) + 1;
 
     public void StopMusic()
     {

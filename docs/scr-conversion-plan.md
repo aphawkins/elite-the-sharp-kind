@@ -298,7 +298,14 @@ remainder are well-scoped follow-ups for a smaller one.
    (TrackMenu/TrackPreview/Race/GameOver) with the mode-entry work moved
    into `Reset` (preview car reset, race start, engine-loop stop), and SCR
    mode changes now also clear pending key presses, as Elite always did.
-   Still to extract/do: sound throttling, `Scene3D` vs Elite's projection,
+   Sound throttling: SCR's cooldown-slot array turned out to duplicate the
+   `AudioController`/`SfxSample` mechanism Elite already used, so SCR now
+   plays its effect triggers through `AudioController`; `UpdateSound` ticks
+   distinct samples (not names) so OffRoad/Wreck can share one cooldown as
+   they shared a buffer in the original, and `Useful.Fakes` gained the
+   counting `FakeSound` (replacing SCR's local fake) with new
+   `Useful.Audio.Tests` covering the cooldown behaviour.
+   Still to extract/do: `Scene3D` vs Elite's projection,
    text/HUD helpers, and moving Elite's frame composition out of its update
    (per-object draw lists in `Space.UpdateUniverse`/`EliteDraw`) so
    rendering above the tick rate draws anything new.)*

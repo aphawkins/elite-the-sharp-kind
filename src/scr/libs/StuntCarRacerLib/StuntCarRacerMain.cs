@@ -35,7 +35,7 @@ public sealed class StuntCarRacerMain : IGame
     private readonly IAbstraction _abstraction;
     private readonly BackdropRenderer _backdrop;
     private readonly List<WorldPolygon> _worldPolygons = [];
-    private readonly int[] _soundThrottles = new int[5];
+    private readonly AudioController _audio;
 
     private TrackRenderer _renderer;
     private OpponentRenderer _opponentRenderer;
@@ -57,6 +57,23 @@ public sealed class StuntCarRacerMain : IGame
         Keyboard = abstraction.Keyboard;
         Sound = abstraction.Sound;
         _backdrop = new(Graphics);
+
+        // Effect cooldowns in physics frames (12.5Hz), sized to the sample
+        // lengths so a repeated trigger doesn't stack in the mixer. OffRoad
+        // and Wreck share a cooldown as they shared a buffer in the
+        // original.
+        SfxSample offRoadOrWreck = new(10);
+        _audio = new(
+            Sound,
+            new Dictionary<string, SfxSample>
+            {
+                { "Grounded", new(4) },
+                { "Creak", new(6) },
+                { "Smash", new(11) },
+                { "OffRoad", offRoadOrWreck },
+                { "Wreck", offRoadOrWreck },
+                { "HitCar", new(9) },
+            });
 
         LoadTrack(trackId);
 
@@ -194,24 +211,40 @@ public sealed class StuntCarRacerMain : IGame
         _renderer.Draw(Camera, _worldPolygons);
     }
 
-    // Play the effect triggers from the physics (throttled so repeated
-    // triggers don't stack in the mixer). Throttle counts are physics
-    // frames (12.5Hz).
+    // Play the effect triggers from the physics, throttled by the shared
+    // AudioController cooldowns. Runs once per physics frame.
     internal void UpdateSounds()
     {
-        for (int i = 0; i < _soundThrottles.Length; i++)
+        _audio.UpdateSound();
+
+        if (Car.GroundedSoundTriggered)
         {
-            if (_soundThrottles[i] > 0)
-            {
-                _soundThrottles[i]--;
-            }
+            _audio.PlayEffect("Grounded");
         }
 
-        PlayThrottled(0, 4, Car.GroundedSoundTriggered, "Grounded");
-        PlayThrottled(1, 6, Car.CreakSoundTriggered, "Creak");
-        PlayThrottled(2, 11, Car.SmashSoundTriggered, "Smash");
-        PlayThrottled(3, 10, Car.OffRoadSoundTriggered || Car.WreckSoundTriggered, Car.OffRoadSoundTriggered ? "OffRoad" : "Wreck");
-        PlayThrottled(4, 9, Opponent.HitCarSoundTriggered, "HitCar");
+        if (Car.CreakSoundTriggered)
+        {
+            _audio.PlayEffect("Creak");
+        }
+
+        if (Car.SmashSoundTriggered)
+        {
+            _audio.PlayEffect("Smash");
+        }
+
+        if (Car.OffRoadSoundTriggered)
+        {
+            _audio.PlayEffect("OffRoad");
+        }
+        else if (Car.WreckSoundTriggered)
+        {
+            _audio.PlayEffect("Wreck");
+        }
+
+        if (Opponent.HitCarSoundTriggered)
+        {
+            _audio.PlayEffect("HitCar");
+        }
     }
 
     // Engine sound sample and pitch, from the original FramesWheelsEngine.
@@ -292,15 +325,6 @@ public sealed class StuntCarRacerMain : IGame
             int flash = (RaceTick - RaceFinishedTick) % TickRate;
             uint colour = flash < TickRate / 2 ? white : ScrPalette.Colour(Track.ScrBaseColour);
             Graphics.DrawTextCentre(height - 300, RaceWon ? "RACE WON" : "RACE LOST", LargeFont, colour);
-        }
-    }
-
-    private void PlayThrottled(int slot, int frames, bool triggered, string sfxType)
-    {
-        if (triggered && _soundThrottles[slot] == 0)
-        {
-            Sound.Play(sfxType);
-            _soundThrottles[slot] = frames;
         }
     }
 }

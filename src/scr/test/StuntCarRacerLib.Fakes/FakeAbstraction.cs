@@ -5,6 +5,7 @@
 using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Controls;
+using Useful.Fakes.Audio;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
 using Useful.Graphics.Fakes;

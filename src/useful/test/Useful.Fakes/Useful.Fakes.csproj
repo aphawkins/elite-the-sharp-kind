@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\libs\Useful.Assets\Useful.Assets.csproj" />
+    <ProjectReference Include="..\..\libs\Useful.Audio\Useful.Audio.csproj" />
     <ProjectReference Include="..\..\libs\Useful.Controls\Useful.Controls.csproj" />
     <ProjectReference Include="..\..\libs\Useful\Useful.csproj" />
   </ItemGroup>
