@@ -256,11 +256,26 @@ remainder are well-scoped follow-ups for a smaller one.
    `Scene3D` projects the ground plane at the horizon-fill distance
    (2 × 0x10000) across pitches; `VisualDumpTests` now also dumps the
    pitched preview viewpoint.)*
-3. Spurious triangles on/beside the track: suspect self-intersecting
+3. ✅ Spurious triangles on/beside the track: suspect self-intersecting
    (bowtie) quads after projection being fan-triangulated in
    `DrawPolygonFilled`, or degenerate points from `ClipPolygonToNearPlane`
    when a quad straddles the near plane. Capture a repro and add
-   regression tests as with the triangle-fill spike fix.
+   regression tests as with the triangle-fill spike fix. *(fixed — both
+   suspicions were right, in combination: `TrackRenderer.AddPolygon`
+   clipped the whole quad outline against the near plane, and for a
+   twisted quad straddling it the clipped 4/5-gon projects
+   self-intersecting or concave, which `DrawPolygonFilled`'s triangle fan
+   then misfills — magnified hugely because near-plane points project far
+   off-screen (worst repro: a ~13,000px start-line-white triangle across
+   the bottom of the screen on Little Ramp). `AddPolygon` now fans the
+   polygon into triangles first and clips each separately, as the original
+   D3D remake rendered triangles, emitting the clipped results as
+   triangles too (integer-rounded clip points can nudge a thin clipped
+   quad into a hairline bowtie). Regression test: driving all eight tracks,
+   `TrackRenderer` never emits a polygon whose outline a fan cannot fill
+   exactly. Data-twisted quads (e.g. Little Ramp piece 24) always were
+   crossed even unclipped — those fan into the same two triangles the
+   original drew, so they were never the bug.)*
 4. Shared engine extraction between Elite and SCR, after the loop rework
    lands (the loop is the biggest shared piece): game-mode state machine
    scaffolding, sound throttling, `Scene3D` projection/clip vs Elite's,

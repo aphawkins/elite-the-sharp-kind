@@ -138,7 +138,12 @@ public sealed class TrackRenderer
     }
 
     // Adds a polygon with the given depth key (or its own average camera z
-    // when null) and a draw order for resolving equal depths.
+    // when null) and a draw order for resolving equal depths. The polygon is
+    // clipped and drawn one triangle at a time, as the original D3D remake
+    // rendered triangles: clipping the whole outline of a twisted quad that
+    // straddles the near plane can produce a self-intersecting polygon,
+    // which the triangle-fan fill would misfill with large spurious
+    // triangles (a clipped triangle is always convex).
     private void AddPolygon(in ReadOnlySpan<Coord3D> world, uint colour, long? depth, int order)
     {
         Span<Coord3D> cameraSpace = stackalloc Coord3D[MaxPolygonPoints - 1];
@@ -151,21 +156,38 @@ public sealed class TrackRenderer
         }
 
         averageDepth /= world.Length;
+        long polygonDepth = depth ?? averageDepth;
 
-        Span<Coord3D> clipped = stackalloc Coord3D[MaxPolygonPoints];
-        int count = Scene3D.ClipPolygonToNearPlane(cameraSpace, clipped);
-        if (count < 3)
+        Span<Coord3D> triangle = stackalloc Coord3D[3];
+        Span<Coord3D> clipped = stackalloc Coord3D[4];
+        for (int i = 1; i < cameraSpace.Length - 1; i++)
         {
-            return; // fully behind the near plane
-        }
+            triangle[0] = cameraSpace[0];
+            triangle[1] = cameraSpace[i];
+            triangle[2] = cameraSpace[i + 1];
 
-        Vector2[] points = new Vector2[count];
-        for (int i = 0; i < count; i++)
-        {
-            points[i] = _scene.ProjectPoint(clipped[i]);
-        }
+            int count = Scene3D.ClipPolygonToNearPlane(triangle, clipped);
+            if (count < 3)
+            {
+                continue; // fully behind the near plane
+            }
 
-        _polygons.Add(new(points, colour, depth ?? averageDepth, order));
+            // emit the clipped result as triangles as well: the integer
+            // rounding of the clip points can nudge a long thin clipped
+            // quad into a slightly self-intersecting outline
+            for (int j = 1; j < count - 1; j++)
+            {
+                _polygons.Add(new(
+                    [
+                        _scene.ProjectPoint(clipped[0]),
+                        _scene.ProjectPoint(clipped[j]),
+                        _scene.ProjectPoint(clipped[j + 1]),
+                    ],
+                    colour,
+                    polygonDepth,
+                    order));
+            }
+        }
     }
 
     private sealed record DepthPolygon(Vector2[] Points, uint Colour, long Depth, int Order);
