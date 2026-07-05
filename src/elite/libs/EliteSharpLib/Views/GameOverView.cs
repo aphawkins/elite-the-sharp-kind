@@ -92,7 +92,7 @@ internal sealed class GameOverView : IView
         _audio.PlayEffect(nameof(SoundEffect.Gameover));
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         if (_i >= 100)
         {

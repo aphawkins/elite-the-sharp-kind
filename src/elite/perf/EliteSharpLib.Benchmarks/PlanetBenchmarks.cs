@@ -28,8 +28,8 @@ public class PlanetBenchmarks : IDisposable
         FakeInput input = new();
         FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(input);
-        Dictionary<Views.Screen, Views.IView> views = [];
-        GameState gameState = new(keyboard, views);
+        Useful.Abstraction.ScreenManager<Views.Screen, Views.IView> views = new(keyboard);
+        GameState gameState = new(views);
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         EliteDraw draw = new(gameState, _graphics, assetLocator);
         _wireframePlanet = new(draw);

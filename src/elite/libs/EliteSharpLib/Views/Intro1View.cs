@@ -101,7 +101,7 @@ internal sealed class Intro1View : IView
         _audio.PlayMusic(nameof(MusicType.EliteTheme), true);
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         _ship.Roll = 1;
         _universe.FirstShip!.Location =

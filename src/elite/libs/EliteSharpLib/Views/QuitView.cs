@@ -54,7 +54,7 @@ internal sealed class QuitView : IView
     {
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 }

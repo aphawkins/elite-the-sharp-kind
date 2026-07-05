@@ -41,9 +41,9 @@ internal sealed class PilotFrontView : IView
 
     public void Reset() => _pilotView.Reset();
 
-    public void UpdateUniverse()
+    public void Update()
     {
-        _pilotView.UpdateUniverse();
+        _pilotView.Update();
         _stars.FrontStarfield();
     }
 }

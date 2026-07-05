@@ -144,7 +144,7 @@ internal sealed class ConstrictorMissionView : IView
         }
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 }

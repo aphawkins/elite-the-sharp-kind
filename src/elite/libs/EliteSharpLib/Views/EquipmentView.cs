@@ -140,7 +140,7 @@ internal sealed class EquipmentView : IView
         ListPrices();
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 

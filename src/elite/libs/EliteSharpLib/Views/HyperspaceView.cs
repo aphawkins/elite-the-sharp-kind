@@ -33,7 +33,7 @@ internal sealed class HyperspaceView : IView
         _audio.PlayEffect(nameof(SoundEffect.Hyperspace));
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         _breakPattern.Update();
 

@@ -90,7 +90,7 @@ internal sealed class SaveCommanderView : IView
         _name = _gameState.Cmdr.Name;
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 }

@@ -287,12 +287,21 @@ remainder are well-scoped follow-ups for a smaller one.
    (`EliteMain.GameTickRate`, the TNK speed) — composition stays in the
    update because TNK draws the universe as it moves it — and `Draw`
    presents it at up to `Config.Fps`, now purely a render cap (default 60),
-   so raising the framerate no longer speeds the game up. Still to
-   extract/do: state-machine scaffolding, sound throttling, `Scene3D` vs
-   Elite's projection, text/HUD helpers, and moving Elite's frame
-   composition out of its update (per-object draw lists in
-   `Space.UpdateUniverse`/`EliteDraw`) so rendering above the tick rate
-   draws anything new.)*
+   so raising the framerate no longer speeds the game up. State-machine
+   scaffolding: `Useful.Abstraction` gained `IGameScreen`
+   (Reset/Update/Draw) and `ScreenManager<TId, TScreen>` — a screen
+   registry whose `Set` clears pending key presses and resets the incoming
+   screen, extracted from Elite's `GameState.SetView`. Elite's `IView` now
+   extends `IGameScreen` (`UpdateUniverse` renamed to `Update`) and
+   `GameState` delegates `CurrentScreen`/`CurrentView`/`SetView` to the
+   manager; SCR's `GameMode` switch is restructured into `Screens/` classes
+   (TrackMenu/TrackPreview/Race/GameOver) with the mode-entry work moved
+   into `Reset` (preview car reset, race start, engine-loop stop), and SCR
+   mode changes now also clear pending key presses, as Elite always did.
+   Still to extract/do: sound throttling, `Scene3D` vs Elite's projection,
+   text/HUD helpers, and moving Elite's frame composition out of its update
+   (per-object draw lists in `Space.UpdateUniverse`/`EliteDraw`) so
+   rendering above the tick rate draws anything new.)*
 5. Road-line textures (needs textured polygon support in
    `Useful.Graphics`).
 6. Easier follow-ups (any order, after item 1): gamepad support via

@@ -25,8 +25,8 @@ public class SunBenchmarks : IDisposable
     {
         FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(new SDLInput());
-        Dictionary<Views.Screen, Views.IView> views = [];
-        GameState gameState = new(keyboard, views);
+        Useful.Abstraction.ScreenManager<Views.Screen, Views.IView> views = new(keyboard);
+        GameState gameState = new(views);
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         EliteDraw draw = new(gameState, _graphics, assetLocator);
         _gradientSun = new(draw);

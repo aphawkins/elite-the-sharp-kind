@@ -238,7 +238,7 @@ internal sealed class CommanderStatusView : IView
     {
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 }

@@ -42,7 +42,7 @@ internal sealed class DockingView : IView
         _audio.PlayEffect(nameof(SoundEffect.Dock));
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         _breakPattern.Update();
 

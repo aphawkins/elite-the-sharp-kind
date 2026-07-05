@@ -60,7 +60,7 @@ internal sealed class InventoryView : IView
     {
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 }

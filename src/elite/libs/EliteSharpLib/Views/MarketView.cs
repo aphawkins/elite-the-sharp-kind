@@ -116,7 +116,7 @@ internal sealed class MarketView : IView
 
     public void Reset() => _highlightedStock = 0;
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 }

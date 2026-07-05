@@ -98,7 +98,7 @@ internal sealed class Intro2View : IView
         AddNewShip();
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         _showTime++;
 

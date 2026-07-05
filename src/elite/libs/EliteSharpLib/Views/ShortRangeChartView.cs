@@ -265,7 +265,7 @@ internal sealed class ShortRangeChartView : IView
         CalculateDistanceToPlanet();
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         if (_crossTimer > 0)
         {

@@ -42,7 +42,7 @@ internal sealed class LaunchView : IView
         _audio.PlayEffect(nameof(SoundEffect.Launch));
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         _breakPattern.Update();
 

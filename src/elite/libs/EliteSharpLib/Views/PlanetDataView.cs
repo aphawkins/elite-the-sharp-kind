@@ -162,7 +162,7 @@ internal sealed class PlanetDataView : IView
     {
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         _distanceToPlanet = PlanetController.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
         _hyperPlanetData = PlanetController.GeneratePlanetData(_gameState.HyperspacePlanet);

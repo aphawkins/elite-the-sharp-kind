@@ -102,7 +102,7 @@ internal sealed class OptionsView : IView
 
     public void Reset() => _highlightedItem = 0;
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 

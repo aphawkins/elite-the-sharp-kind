@@ -85,7 +85,7 @@ internal sealed class EscapeCapsuleView : IView
         _i = 0;
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         if (_i < 90)
         {

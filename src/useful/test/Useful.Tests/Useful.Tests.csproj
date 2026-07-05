@@ -62,7 +62,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\libs\Useful.Abstraction\Useful.Abstraction.csproj" />
     <ProjectReference Include="..\..\libs\Useful\Useful.csproj" />
+    <ProjectReference Include="..\Useful.Fakes\Useful.Fakes.csproj" />
   </ItemGroup>
 
 </Project>

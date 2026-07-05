@@ -110,7 +110,7 @@ internal sealed class ThargoidMissionView : IView
         }
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 }

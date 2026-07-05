@@ -208,7 +208,7 @@ internal sealed class GalacticChartView : IView
         CalculateDistanceToPlanet();
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
         if (_crossTimer > 0)
         {

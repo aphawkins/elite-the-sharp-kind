@@ -6,20 +6,15 @@ using System.Numerics;
 using EliteSharpLib.Config;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
-using Useful.Controls;
+using Useful.Abstraction;
 
 namespace EliteSharpLib;
 
 internal sealed class GameState
 {
-    private readonly IKeyboard _keyboard;
-    private readonly IDictionary<Screen, IView> _views;
+    private readonly ScreenManager<Screen, IView> _views;
 
-    internal GameState(IKeyboard keyboard, IDictionary<Screen, IView> views)
-    {
-        _views = views;
-        _keyboard = keyboard;
-    }
+    internal GameState(ScreenManager<Screen, IView> views) => _views = views;
 
     internal int CarryFlag { get; set; }
 
@@ -31,9 +26,9 @@ internal sealed class GameState
 
     internal PlanetData CurrentPlanetData { get; set; } = new();
 
-    internal Screen CurrentScreen { get; set; } = Screen.None;
+    internal Screen CurrentScreen => _views.CurrentId;
 
-    internal IView? CurrentView { get; set; }
+    internal IView? CurrentView => _views.Current;
 
     internal bool DetonateBomb { get; set; }
 
@@ -101,11 +96,5 @@ internal sealed class GameState
         MCount = 0;
     }
 
-    internal void SetView(Screen screen)
-    {
-        CurrentScreen = screen;
-        CurrentView = _views[screen];
-        _keyboard.ClearPressed();
-        CurrentView.Reset();
-    }
+    internal void SetView(Screen screen) => _views.Set(screen);
 }

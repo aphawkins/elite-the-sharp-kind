@@ -83,7 +83,7 @@ internal sealed class LoadCommanderView : IView
         _isLoaded = true;
     }
 
-    public void UpdateUniverse()
+    public void Update()
     {
     }
 }
