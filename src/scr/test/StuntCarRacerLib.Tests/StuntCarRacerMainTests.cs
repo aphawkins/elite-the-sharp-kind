@@ -39,7 +39,7 @@ public class StuntCarRacerMainTests
         List<int> movedTicks = [];
         for (int tick = 0; tick < 12; tick++)
         {
-            game.Tick();
+            game.Update();
             if (game.FrameMoved)
             {
                 movedTicks.Add(tick);
@@ -65,7 +65,7 @@ public class StuntCarRacerMainTests
         // Act
         for (int tick = 0; tick < 20; tick++)
         {
-            game.Tick();
+            game.Update();
         }
 
         // Assert: the engine loop is pitched at the full tick rate
@@ -82,12 +82,12 @@ public class StuntCarRacerMainTests
         FakeSound sound = (FakeSound)abstraction.Sound;
 
         // Act: a few menu ticks, then select the track to run the preview
-        game.Tick();
-        game.Tick();
+        game.Update();
+        game.Update();
         PressKey(game, keyboard, ConsoleKey.S);
         for (int tick = 0; tick < 10; tick++)
         {
-            game.Tick();
+            game.Update();
         }
 
         // Assert
@@ -107,7 +107,7 @@ public class StuntCarRacerMainTests
         keyboard.KeyDown(ConsoleKey.S, ConsoleModifiers.None);
         for (int tick = 0; tick < 4; tick++)
         {
-            game.Tick();
+            game.Update();
         }
 
         keyboard.KeyUp(ConsoleKey.S, ConsoleModifiers.None);
@@ -116,7 +116,7 @@ public class StuntCarRacerMainTests
     private static void PressKey(StuntCarRacerMain game, FakeKeyboard keyboard, ConsoleKey key)
     {
         keyboard.KeyDown(key, ConsoleModifiers.None);
-        game.Tick();
+        game.Update();
         keyboard.KeyUp(key, ConsoleModifiers.None);
     }
 }

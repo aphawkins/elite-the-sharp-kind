@@ -18,7 +18,6 @@ using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
-using Useful.Timing;
 
 [assembly: CLSCompliant(false)]
 
@@ -35,9 +34,14 @@ using Useful.Timing;
 
 namespace EliteSharpLib;
 
-public sealed class EliteMain
+public sealed class EliteMain : IGame
 {
+    // The rate the game logic ticks at, approximately the speed of Elite
+    // The New Kind. The render rate (Config.Fps) is independent.
+    private const float GameTickRate = 13.5f;
+
     private readonly uint _colorText;
+    private readonly IAbstraction _abstraction;
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;
 
@@ -45,16 +49,13 @@ public sealed class EliteMain
     private readonly Combat _combat;
     private readonly EliteDraw _draw;
     private readonly GameState _gameState;
-    private readonly FrameCounter _lockObj = new();
-    private readonly long _oneSecondinTicks = TimeSpan.FromSeconds(1).Ticks;
-    private readonly long _timerResolution = TimeSpan.FromSeconds(1).Ticks / Stopwatch.Frequency;
+    private readonly List<long> _framesDrawn = [];
     private readonly Pilot _pilot;
     private readonly SaveFile _save;
     private readonly Scanner _scanner;
     private readonly PlayerShip _ship;
     private readonly Space _space;
     private readonly Stars _stars;
-    private readonly TimeSpan _timeout;
     private readonly Universe _universe;
     private readonly Dictionary<Screen, IView> _views = [];
 
@@ -64,6 +65,7 @@ public sealed class EliteMain
 
         AssetLocator assetLocator = AssetLocator.Create();
 
+        _abstraction = abstraction;
         _graphics = abstraction.Graphics;
         ISound sound = abstraction.Sound;
         _keyboard = abstraction.Keyboard;
@@ -136,108 +138,31 @@ public sealed class EliteMain
             Screen.EscapeCapsule,
             new EscapeCapsuleView(_gameState, _audio, _stars, _ship, trade, _universe, _pilot, _draw, shipFactory));
         _views.Add(Screen.GameOver, new GameOverView(_gameState, _audio, _stars, _ship, _combat, _universe, _draw, shipFactory));
-
-        _timeout = TimeSpan.FromMilliseconds(1000 / (_gameState.Config.Fps * 2));
     }
+
+    public bool IsRunning => !_gameState.ExitGame;
 
     public void Run()
     {
-        // Elite's game logic runs inside its draw, so the whole frame is the
-        // fixed-rate update and there is no separate render.
-        GameLoop loop = new(
-            _gameState.Config.Fps,
-            () =>
-            {
-                _keyboard.Poll();
-                DrawFrame(Stopwatch.GetTimestamp() * _timerResolution);
-            },
-            () => !_gameState.ExitGame && !_keyboard.Close);
-        loop.Run();
+        GameHost.Run(_abstraction, this, GameTickRate, _gameState.Config.Fps);
 
         Environment.Exit(0);
     }
 
-#if DEBUG
-
-    private void DrawFps()
-    {
-        _graphics.DrawTextLeft(
-            new(_draw.Right - 65, _draw.Top + 3),
-            $"FPS: {_lockObj.FramesDrawn.Count}",
-            nameof(FontType.Small),
-            _colorText);
-        _graphics.DrawTextLeft(
-            new(_draw.Right - 65, _draw.Top + 18),
-            $"DROP: {_lockObj.Dropped}",
-            nameof(FontType.Small),
-            _colorText);
-
-        if (_lockObj.FramesDrawn.Count > 0)
-        {
-            int i;
-            for (i = 0; i < _lockObj.FramesDrawn.Count; i++)
-            {
-                if (_lockObj.FramesDrawn[i] > (Stopwatch.GetTimestamp() * _timerResolution) - _oneSecondinTicks)
-                {
-                    break;
-                }
-            }
-
-            _lockObj.FramesDrawn.RemoveRange(0, i);
-        }
-    }
-
-#endif
-
-    private void DrawFrame(long ticks)
-    {
-        bool lockTaken = false;
-
-        try
-        {
-            Monitor.TryEnter(_lockObj, _timeout, ref lockTaken);
-            if (lockTaken)
-            {
-                // The critical section.
-                DrawFrameElite();
-                _lockObj.Drawn++;
-                _lockObj.FramesDrawn.Add(ticks);
-            }
-            else
-            {
-                // The lock was not acquired.
-                _lockObj.Dropped++;
-            }
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine("Exception" + ex.Message);
-            throw;
-        }
-        finally
-        {
-            // Ensure that the lock is released.
-            if (lockTaken)
-            {
-                Monitor.Exit(_lockObj);
-            }
-        }
-    }
-
-    private void DrawFrameElite()
+    // One fixed-rate game tick. Elite's update draws the universe as it
+    // moves it (as The New Kind did), so this composes the whole frame into
+    // the framebuffer and Draw only presents it.
+    public void Update()
     {
         InitialiseGame();
-        _draw.SetFullScreenClipRegion();
-        _graphics.Clear();
         _audio.UpdateSound();
-        _draw.DrawBorder();
-        _draw.SetViewClipRegion();
         _ship.IsRolling = false;
         _ship.IsClimbing = false;
         HandleViewKeys();
 
         if (_gameState.IsGamePaused)
         {
+            // leave the framebuffer untouched so the pause screen persists
             if (_keyboard.IsPressed(ConsoleKey.R))
             {
                 _gameState.IsGamePaused = false;
@@ -245,6 +170,11 @@ public sealed class EliteMain
 
             return;
         }
+
+        _draw.SetFullScreenClipRegion();
+        _graphics.Clear();
+        _draw.DrawBorder();
+        _draw.SetViewClipRegion();
 
         if (_ship.Energy < 0)
         {
@@ -334,7 +264,6 @@ public sealed class EliteMain
         {
             _scanner.UpdateConsole();
             _gameState.CurrentView!.HandleInput();
-            _graphics.ScreenUpdate();
         }
         catch (Exception ex)
         {
@@ -342,6 +271,35 @@ public sealed class EliteMain
         }
 #pragma warning restore CA1031
     }
+
+    // Present the frame composed by the last update. Runs at the render
+    // rate (up to Config.Fps), independently of the game tick rate.
+    public void Draw()
+    {
+        // keep only the presents from the last second, for the FPS display
+        int stale = 0;
+        long oneSecondAgo = Stopwatch.GetTimestamp() - Stopwatch.Frequency;
+        while (stale < _framesDrawn.Count && _framesDrawn[stale] <= oneSecondAgo)
+        {
+            stale++;
+        }
+
+        _framesDrawn.RemoveRange(0, stale);
+        _framesDrawn.Add(Stopwatch.GetTimestamp());
+
+        _graphics.ScreenUpdate();
+    }
+
+#if DEBUG
+
+    private void DrawFps()
+        => _graphics.DrawTextLeft(
+            new(_draw.Right - 65, _draw.Top + 3),
+            $"FPS: {_framesDrawn.Count}",
+            nameof(FontType.Small),
+            _colorText);
+
+#endif
 
     private void HandleViewKeys()
     {

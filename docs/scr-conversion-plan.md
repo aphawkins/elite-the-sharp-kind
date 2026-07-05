@@ -251,7 +251,20 @@ remainder are well-scoped follow-ups for a smaller one.
 4. Shared engine extraction between Elite and SCR, after the loop rework
    lands (the loop is the biggest shared piece): game-mode state machine
    scaffolding, sound throttling, `Scene3D` projection/clip vs Elite's,
-   text/HUD helpers.
+   text/HUD helpers. *(started — `Useful.Abstraction` gained `IGame`
+   (fixed-rate `Update`, rate-independent `Draw`) and `GameHost`, which
+   polls the keyboard and runs an `IGame` on the shared `GameLoop`; both
+   games implement it. Elite is split update/draw: `Update` runs the logic
+   and composes the frame into the framebuffer at a fixed 13.5Hz
+   (`EliteMain.GameTickRate`, the TNK speed) — composition stays in the
+   update because TNK draws the universe as it moves it — and `Draw`
+   presents it at up to `Config.Fps`, now purely a render cap (default 60),
+   so raising the framerate no longer speeds the game up. Still to
+   extract/do: state-machine scaffolding, sound throttling, `Scene3D` vs
+   Elite's projection, text/HUD helpers, and moving Elite's frame
+   composition out of its update (per-object draw lists in
+   `Space.UpdateUniverse`/`EliteDraw`) so rendering above the tick rate
+   draws anything new.)*
 5. Road-line textures (needs textured polygon support in
    `Useful.Graphics`).
 6. Easier follow-ups (any order, after item 1): gamepad support via

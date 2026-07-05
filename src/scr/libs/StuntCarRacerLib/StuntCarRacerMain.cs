@@ -12,14 +12,13 @@ using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
-using Useful.Timing;
 
 [assembly: CLSCompliant(false)]
 [assembly: InternalsVisibleTo("StuntCarRacerLib.Tests")]
 
 namespace StuntCarRacerLib;
 
-public sealed class StuntCarRacerMain
+public sealed class StuntCarRacerMain : IGame
 {
     // The original remake ticks OnFrameMove at 50Hz: input and the engine
     // sound run at the full tick rate, while the car physics only steps
@@ -31,6 +30,7 @@ public sealed class StuntCarRacerMain
     private const string SmallFont = "Small";
     private const string LargeFont = "Large";
 
+    private readonly IAbstraction _abstraction;
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;
     private readonly ISound _sound;
@@ -49,7 +49,6 @@ public sealed class StuntCarRacerMain
 
     private GameMode _mode = GameMode.TrackMenu;
     private int _menuOrbitAngle;
-    private bool _exitGame;
     private bool _sceneryKeyDown;
     private int _frameCount;
     private int _raceTick;
@@ -66,6 +65,7 @@ public sealed class StuntCarRacerMain
     {
         Guard.ArgumentNull(abstraction);
 
+        _abstraction = abstraction;
         _graphics = abstraction.Graphics;
         _keyboard = abstraction.Keyboard;
         _sound = abstraction.Sound;
@@ -82,6 +82,8 @@ public sealed class StuntCarRacerMain
         GameOver = 3,
     }
 
+    public bool IsRunning { get; private set; } = true;
+
     // How often the physics steps, per plan pass 3 step 1: made settable so
     // the frame gap can be tuned as the original's -/+ keys did.
     internal int FrameGap { get; set; } = DefaultFrameGap;
@@ -89,21 +91,16 @@ public sealed class StuntCarRacerMain
     // Whether the last tick stepped the physics (the original bFrameMoved).
     internal bool FrameMoved { get; private set; }
 
-    public void Run()
-    {
-        GameLoop loop = new(TickRate, Tick, DrawFrame, () => !_exitGame && !_keyboard.Close, TickRate);
-        loop.Run();
-    }
+    public void Run() => GameHost.Run(_abstraction, this, TickRate, TickRate);
 
     // One 50Hz tick (the original OnFrameMove).
-    internal void Tick()
+    public void Update()
     {
         FrameMoved = false;
-        _keyboard.Poll();
 
         if (_keyboard.IsPressed(ConsoleKey.Escape))
         {
-            _exitGame = true;
+            IsRunning = false;
             return;
         }
 
@@ -159,7 +156,7 @@ public sealed class StuntCarRacerMain
         }
     }
 
-    internal void DrawFrame()
+    public void Draw()
     {
         _graphics.Clear();
         _backdrop.Draw(_camera);
