@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerLib.Fakes;
+using Useful.Fakes.Controls;
 using Xunit;
 
 namespace StuntCarRacerLib.Tests;
@@ -25,4 +26,97 @@ public class StuntCarRacerMainTests
     [Fact]
     public void ConstructWithNullAbstractionThrows()
         => Assert.Throws<ArgumentNullException>(() => new StuntCarRacerMain(null!));
+
+    [Fact]
+    public void PhysicsStepsEveryFrameGapTicksDuringRace()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction);
+        StartRace(game, abstraction);
+
+        // Act
+        List<int> movedTicks = [];
+        for (int tick = 0; tick < 12; tick++)
+        {
+            game.Tick();
+            if (game.FrameMoved)
+            {
+                movedTicks.Add(tick);
+            }
+        }
+
+        // Assert: the physics ran on three of the twelve ticks, four apart
+        Assert.Equal(3, movedTicks.Count);
+        Assert.Equal(4, movedTicks[1] - movedTicks[0]);
+        Assert.Equal(4, movedTicks[2] - movedTicks[1]);
+    }
+
+    [Fact]
+    public void EngineSoundPitchesEveryTickDuringRace()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction);
+        FakeSound sound = (FakeSound)abstraction.Sound;
+        StartRace(game, abstraction);
+        int playsAtRaceStart = sound.PlayLoopCount;
+
+        // Act
+        for (int tick = 0; tick < 20; tick++)
+        {
+            game.Tick();
+        }
+
+        // Assert: the engine loop is pitched at the full tick rate
+        Assert.Equal(20, sound.PlayLoopCount - playsAtRaceStart);
+    }
+
+    [Fact]
+    public void TrackMenuAndPreviewPlayNoEngineSound()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+        StuntCarRacerMain game = new(abstraction);
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+        FakeSound sound = (FakeSound)abstraction.Sound;
+
+        // Act: a few menu ticks, then select the track to run the preview
+        game.Tick();
+        game.Tick();
+        PressKey(game, keyboard, ConsoleKey.S);
+        for (int tick = 0; tick < 10; tick++)
+        {
+            game.Tick();
+        }
+
+        // Assert
+        Assert.Equal(0, sound.PlayLoopCount);
+    }
+
+    // Drives the game from the track menu into the race: S selects the
+    // track, then S again (read on a preview physics tick) starts the race.
+    private static void StartRace(StuntCarRacerMain game, FakeAbstraction abstraction)
+    {
+        FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
+
+        // menu -> preview
+        PressKey(game, keyboard, ConsoleKey.S);
+
+        // preview -> race; hold S until a physics tick reads it
+        keyboard.KeyDown(ConsoleKey.S, ConsoleModifiers.None);
+        for (int tick = 0; tick < 4; tick++)
+        {
+            game.Tick();
+        }
+
+        keyboard.KeyUp(ConsoleKey.S, ConsoleModifiers.None);
+    }
+
+    private static void PressKey(StuntCarRacerMain game, FakeKeyboard keyboard, ConsoleKey key)
+    {
+        keyboard.KeyDown(key, ConsoleModifiers.None);
+        game.Tick();
+        keyboard.KeyUp(key, ConsoleModifiers.None);
+    }
 }

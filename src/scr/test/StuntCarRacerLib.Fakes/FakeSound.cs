@@ -8,6 +8,12 @@ namespace StuntCarRacerLib.Fakes;
 
 public sealed class FakeSound : ISound
 {
+    public int PlayLoopCount { get; private set; }
+
+    public int StopLoopCount { get; private set; }
+
+    public string? LastLoopSample { get; private set; }
+
     public void Play(string musicType, bool repeat)
     {
     }
@@ -22,9 +28,9 @@ public sealed class FakeSound : ISound
 
     public void PlayLoop(string sfxType, double pitch)
     {
+        PlayLoopCount++;
+        LastLoopSample = sfxType;
     }
 
-    public void StopLoop()
-    {
-    }
+    public void StopLoop() => StopLoopCount++;
 }

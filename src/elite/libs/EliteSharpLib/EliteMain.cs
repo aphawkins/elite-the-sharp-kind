@@ -18,6 +18,7 @@ using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
+using Useful.Timing;
 
 [assembly: CLSCompliant(false)]
 
@@ -141,19 +142,17 @@ public sealed class EliteMain
 
     public void Run()
     {
-        long startTicks = Stopwatch.GetTimestamp() * _timerResolution;
-        long intervalTicks = (long)(_oneSecondinTicks / _gameState.Config.Fps); // *1000 = ms; *10000 = ticks
-
-        do
-        {
-            long nowTicks = Stopwatch.GetTimestamp() * _timerResolution;
-            if (((nowTicks - startTicks) % intervalTicks) == 0)
+        // Elite's game logic runs inside its draw, so the whole frame is the
+        // fixed-rate update and there is no separate render.
+        GameLoop loop = new(
+            _gameState.Config.Fps,
+            () =>
             {
                 _keyboard.Poll();
-                DrawFrame(nowTicks);
-            }
-        }
-        while (!_gameState.ExitGame && !_keyboard.Close);
+                DrawFrame(Stopwatch.GetTimestamp() * _timerResolution);
+            },
+            () => !_gameState.ExitGame && !_keyboard.Close);
+        loop.Run();
 
         Environment.Exit(0);
     }

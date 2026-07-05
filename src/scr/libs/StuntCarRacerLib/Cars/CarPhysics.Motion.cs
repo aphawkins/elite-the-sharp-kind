@@ -802,14 +802,5 @@ public sealed partial class CarPhysics
         }
 
         EngineFluctuation = _random.Next() & 0xf;
-
-        // apply the revs change (done by FramesWheelsEngine in the original)
-        int revs = EngineRevs + _engineRevsChange;
-        if (revs < 0)
-        {
-            revs = 0;
-        }
-
-        EngineRevs = revs;
     }
 }

@@ -215,6 +215,50 @@ with the full world rendered.
 7. Still to do: gamepad support, road-line textures, player outside view,
    per-effect sound volume.
 
+## Third pass: bugs and engine work
+
+Ordered hardest-first; items 1-4 need the most capable model, the
+remainder are well-scoped follow-ups for a smaller one.
+
+1. ✅ Game-loop rework (fixes "car too fast/too sensitive"): the original
+   remake ticks `OnFrameMove` at 50Hz but only steps the car physics every
+   `frameGap` frames (`DEFAULT_FRAME_GAP` = 4, Amiga MIN.FRAMES = 6), i.e.
+   physics at 12.5Hz — the port was stepping it at 30Hz, ~2.4x too fast.
+   Replace the fragile modulo busy-loop in both SCR and Elite with a shared
+   accumulator-based fixed-timestep loop in `Useful` (logic at a fixed
+   rate, render rate independent — capped or unlimited); SCR ticks input/
+   engine-sound at 50Hz and physics every 4th tick (configurable frame
+   gap). *(done — `Useful.Timing.GameLoop`: fixed-rate update with an
+   accumulator, render capped or unlimited or absent, stall backlog
+   dropped, injectable clock for tests. SCR ticks at 50Hz — input poll,
+   race/HUD timing and the engine sound (`CarPhysics.ApplyEngineRevs` now
+   ramps the revs per tick, as the original `FramesWheelsEngine`) — with
+   physics every `FrameGap` (4) ticks; effect-sound throttles re-based to
+   physics frames. The track menu runs unthrottled at 50Hz and GAME OVER
+   now freezes the action and stops the engine loop, both as the original.
+   Elite runs the same loop at `Config.Fps` (its frame is the fixed-rate
+   update; no separate render). Both apps verified live: windows open,
+   loops pace correctly instead of spinning a core.)*
+2. Floating track bug: the track sometimes doesn't sit on the backdrop
+   ground. Suspect the backdrop horizon/ground fill (camera-angle driven)
+   vs track world y (`BottomY`, y >> 2 display scale) disagreeing; compare
+   frame dumps against the original's ground polygon math.
+3. Spurious triangles on/beside the track: suspect self-intersecting
+   (bowtie) quads after projection being fan-triangulated in
+   `DrawPolygonFilled`, or degenerate points from `ClipPolygonToNearPlane`
+   when a quad straddles the near plane. Capture a repro and add
+   regression tests as with the triangle-fill spike fix.
+4. Shared engine extraction between Elite and SCR, after the loop rework
+   lands (the loop is the biggest shared piece): game-mode state machine
+   scaffolding, sound throttling, `Scene3D` projection/clip vs Elite's,
+   text/HUD helpers.
+5. Road-line textures (needs textured polygon support in
+   `Useful.Graphics`).
+6. Easier follow-ups (any order, after item 1): gamepad support via
+   `Useful.Controls`, per-effect sound volume (original scales grounded/
+   creak by damage), player outside view (chase camera + player car mesh),
+   doc upkeep.
+
 ## Validation
 
 - Unit tests for physics/track/math logic in `StuntCarRacerLib.Tests`,

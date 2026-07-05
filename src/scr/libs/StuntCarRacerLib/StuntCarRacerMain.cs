@@ -2,7 +2,6 @@
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
-using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using StuntCarRacerLib.Cars;
@@ -13,6 +12,7 @@ using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
+using Useful.Timing;
 
 [assembly: CLSCompliant(false)]
 [assembly: InternalsVisibleTo("StuntCarRacerLib.Tests")]
@@ -21,7 +21,12 @@ namespace StuntCarRacerLib;
 
 public sealed class StuntCarRacerMain
 {
-    private const int Fps = 30;
+    // The original remake ticks OnFrameMove at 50Hz: input and the engine
+    // sound run at the full tick rate, while the car physics only steps
+    // every FrameGap ticks (DEFAULT_FRAME_GAP = 4, i.e. 12.5Hz; the Amiga
+    // original used MIN.FRAMES = 6).
+    private const int TickRate = 50;
+    private const int DefaultFrameGap = 4;
 
     private const string SmallFont = "Small";
     private const string LargeFont = "Large";
@@ -29,8 +34,6 @@ public sealed class StuntCarRacerMain
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;
     private readonly ISound _sound;
-    private readonly long _oneSecondInTicks = TimeSpan.FromSeconds(1).Ticks;
-    private readonly long _timerResolution = TimeSpan.FromSeconds(1).Ticks / Stopwatch.Frequency;
 
     private readonly SceneCamera _camera = new();
     private readonly BackdropRenderer _backdrop;
@@ -48,10 +51,11 @@ public sealed class StuntCarRacerMain
     private int _menuOrbitAngle;
     private bool _exitGame;
     private bool _sceneryKeyDown;
-    private int _raceFrame;
+    private int _frameCount;
+    private int _raceTick;
     private bool _raceFinished;
     private bool _raceWon;
-    private int _raceFinishedFrame;
+    private int _raceFinishedTick;
 
     public StuntCarRacerMain(IAbstraction abstraction)
         : this(abstraction, TrackId.LittleRamp)
@@ -78,46 +82,29 @@ public sealed class StuntCarRacerMain
         GameOver = 3,
     }
 
+    // How often the physics steps, per plan pass 3 step 1: made settable so
+    // the frame gap can be tuned as the original's -/+ keys did.
+    internal int FrameGap { get; set; } = DefaultFrameGap;
+
+    // Whether the last tick stepped the physics (the original bFrameMoved).
+    internal bool FrameMoved { get; private set; }
+
     public void Run()
     {
-        long startTicks = Stopwatch.GetTimestamp() * _timerResolution;
-        long intervalTicks = _oneSecondInTicks / Fps;
-
-        do
-        {
-            long nowTicks = Stopwatch.GetTimestamp() * _timerResolution;
-            if (((nowTicks - startTicks) % intervalTicks) == 0)
-            {
-                _keyboard.Poll();
-
-                if (_keyboard.IsPressed(ConsoleKey.Escape))
-                {
-                    _exitGame = true;
-                }
-
-                UpdateFrame();
-                DrawFrame();
-            }
-        }
-        while (!_exitGame && !_keyboard.Close);
+        GameLoop loop = new(TickRate, Tick, DrawFrame, () => !_exitGame && !_keyboard.Close, TickRate);
+        loop.Run();
     }
 
-    internal void UpdateFrame()
+    // One 50Hz tick (the original OnFrameMove).
+    internal void Tick()
     {
-        switch (_mode)
+        FrameMoved = false;
+        _keyboard.Poll();
+
+        if (_keyboard.IsPressed(ConsoleKey.Escape))
         {
-            case GameMode.TrackMenu:
-                UpdateTrackMenu();
-                break;
-
-            case GameMode.TrackPreview:
-                UpdateTrackPreview();
-                break;
-
-            case GameMode.GameInProgress:
-            case GameMode.GameOver:
-                UpdateGame();
-                break;
+            _exitGame = true;
+            return;
         }
 
         // N cycles the scenery type, as the original menu option
@@ -132,6 +119,43 @@ public sealed class StuntCarRacerMain
         else
         {
             _sceneryKeyDown = false;
+        }
+
+        switch (_mode)
+        {
+            case GameMode.TrackMenu:
+                // the track menu is not throttled by the frame gap
+                UpdateTrackMenu();
+                break;
+
+            case GameMode.TrackPreview:
+                if (PhysicsDue())
+                {
+                    FrameMoved = true;
+                    UpdateTrackPreview();
+                }
+
+                break;
+
+            case GameMode.GameInProgress:
+                UpdateRaceTick();
+                if (_mode == GameMode.GameInProgress && PhysicsDue())
+                {
+                    FrameMoved = true;
+                    UpdateGame();
+                }
+
+                break;
+
+            case GameMode.GameOver:
+                // the original freezes the action once the game is over;
+                // M returns to the track menu
+                if (_keyboard.IsPressed(ConsoleKey.M))
+                {
+                    _mode = GameMode.TrackMenu;
+                }
+
+                break;
         }
     }
 
@@ -166,6 +190,41 @@ public sealed class StuntCarRacerMain
         }
 
         _graphics.ScreenUpdate();
+    }
+
+    // The original's frameCount countdown: the physics only steps every
+    // FrameGap ticks.
+    private bool PhysicsDue()
+    {
+        if (_frameCount > 0)
+        {
+            _frameCount--;
+        }
+
+        if (_frameCount == 0)
+        {
+            _frameCount = FrameGap;
+            return true;
+        }
+
+        return false;
+    }
+
+    // The full-rate part of the game mode (the original FramesWheelsEngine
+    // call plus the race-finished timing, which the original drove from the
+    // wall clock).
+    private void UpdateRaceTick()
+    {
+        _raceTick++;
+        _car.ApplyEngineRevs();
+        UpdateEngineSound();
+
+        // show the race result for six seconds, then it is game over
+        if (_raceFinished && _raceTick - _raceFinishedTick > 6 * TickRate)
+        {
+            _mode = GameMode.GameOver;
+            _sound.StopLoop();
+        }
     }
 
     // The camera circles the currently selected track (original CalcTrackMenuViewpoint).
@@ -230,10 +289,9 @@ public sealed class StuntCarRacerMain
         }
     }
 
+    // One physics frame of the race (every FrameGap ticks).
     private void UpdateGame()
     {
-        _raceFrame++;
-
         _car.Update(ReadInput());
         _opponent.Update();
         _drawBridge.Move(_car.CurrentPiece, _opponent.CurrentPiece, _opponent);
@@ -247,28 +305,15 @@ public sealed class StuntCarRacerMain
         {
             _raceFinished = true;
             _raceWon = _opponent.CalculateIfWinning() < 0;
-            _raceFinishedFrame = _raceFrame;
-        }
-
-        // show the race result for six seconds, then it is game over
-        if (_raceFinished && _mode == GameMode.GameInProgress && _raceFrame - _raceFinishedFrame > 6 * Fps)
-        {
-            _mode = GameMode.GameOver;
-        }
-
-        // M returns to the track menu, as the original
-        if (_mode == GameMode.GameOver && _keyboard.IsPressed(ConsoleKey.M))
-        {
-            _sound.StopLoop();
-            _mode = GameMode.TrackMenu;
-            return;
+            _raceFinishedTick = _raceTick;
         }
 
         UpdateSounds();
     }
 
     // Play the effect triggers from the physics (throttled so repeated
-    // triggers don't stack in the mixer) and drive the engine loop pitch.
+    // triggers don't stack in the mixer). Throttle counts are physics
+    // frames (12.5Hz).
     private void UpdateSounds()
     {
         for (int i = 0; i < _soundThrottles.Length; i++)
@@ -279,13 +324,11 @@ public sealed class StuntCarRacerMain
             }
         }
 
-        PlayThrottled(0, 9, _car.GroundedSoundTriggered, "Grounded");
-        PlayThrottled(1, 15, _car.CreakSoundTriggered, "Creak");
-        PlayThrottled(2, 26, _car.SmashSoundTriggered, "Smash");
-        PlayThrottled(3, 24, _car.OffRoadSoundTriggered || _car.WreckSoundTriggered, _car.OffRoadSoundTriggered ? "OffRoad" : "Wreck");
-        PlayThrottled(4, 22, _opponent.HitCarSoundTriggered, "HitCar");
-
-        UpdateEngineSound();
+        PlayThrottled(0, 4, _car.GroundedSoundTriggered, "Grounded");
+        PlayThrottled(1, 6, _car.CreakSoundTriggered, "Creak");
+        PlayThrottled(2, 11, _car.SmashSoundTriggered, "Smash");
+        PlayThrottled(3, 10, _car.OffRoadSoundTriggered || _car.WreckSoundTriggered, _car.OffRoadSoundTriggered ? "OffRoad" : "Wreck");
+        PlayThrottled(4, 9, _opponent.HitCarSoundTriggered, "HitCar");
     }
 
     private void PlayThrottled(int slot, int frames, bool triggered, string sfxType)
@@ -361,10 +404,10 @@ public sealed class StuntCarRacerMain
         _opponent.StartRace();
         _drawBridge.Reset(_opponent);
 
-        _raceFrame = 0;
+        _raceTick = 0;
         _raceFinished = false;
         _raceWon = false;
-        _raceFinishedFrame = 0;
+        _raceFinishedTick = 0;
     }
 
     // Original keyboard controls: S = left, D = right,
@@ -483,7 +526,7 @@ public sealed class StuntCarRacerMain
         float width = _graphics.ScreenWidth;
 
         // output the opponent's name for four seconds at race start
-        if (_raceFrame < 4 * Fps)
+        if (_raceTick < 4 * TickRate)
         {
             _graphics.DrawTextCentre(height - 300, $"Opponent: {_opponent.Name}", SmallFont, white);
         }
@@ -507,8 +550,8 @@ public sealed class StuntCarRacerMain
         else
         {
             // the result text flashes white/black, changing every half second
-            int flash = (_raceFrame - _raceFinishedFrame) % Fps;
-            uint colour = flash < Fps / 2 ? white : ScrPalette.Colour(Track.ScrBaseColour);
+            int flash = (_raceTick - _raceFinishedTick) % TickRate;
+            uint colour = flash < TickRate / 2 ? white : ScrPalette.Colour(Track.ScrBaseColour);
             _graphics.DrawTextCentre(height - 300, _raceWon ? "RACE WON" : "RACE LOST", LargeFont, colour);
         }
     }

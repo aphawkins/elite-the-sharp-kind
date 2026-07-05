@@ -481,6 +481,20 @@ public sealed partial class CarPhysics
         UpdateEffectSounds();
     }
 
+    // Apply the revs change calculated by the last physics frame. The
+    // original did this in FramesWheelsEngine at the full 50Hz frame rate,
+    // not the physics rate, so the revs ramp between physics frames.
+    public void ApplyEngineRevs()
+    {
+        int revs = EngineRevs + _engineRevsChange;
+        if (revs < 0)
+        {
+            revs = 0;
+        }
+
+        EngineRevs = revs;
+    }
+
     // Calculate player position values required for opponent behaviour
     // (original CalculatePlayersRoadPosition).
     public void CalculateRoadPosition()
