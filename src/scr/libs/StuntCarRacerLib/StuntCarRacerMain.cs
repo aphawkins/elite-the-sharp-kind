@@ -2,7 +2,6 @@
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using StuntCarRacerLib.Cars;
 using StuntCarRacerLib.Rendering;
@@ -34,6 +33,7 @@ public sealed class StuntCarRacerMain : IGame
 
     private readonly IAbstraction _abstraction;
     private readonly BackdropRenderer _backdrop;
+    private readonly HudRenderer _hud;
     private readonly List<WorldPolygon> _worldPolygons = [];
     private readonly AudioController _audio;
 
@@ -57,6 +57,7 @@ public sealed class StuntCarRacerMain : IGame
         Keyboard = abstraction.Keyboard;
         Sound = abstraction.Sound;
         _backdrop = new(Graphics);
+        _hud = new(Graphics);
 
         // Effect cooldowns in physics frames (12.5Hz), sized to the sample
         // lengths so a repeated trigger doesn't stack in the mixer. OffRoad
@@ -288,28 +289,21 @@ public sealed class StuntCarRacerMain : IGame
         Sound.PlayLoop(sample, frequency / sampleRate);
     }
 
-    // In-game text display, following the original GAME_IN_PROGRESS layout:
-    // opponent name at race start, lap/boost/distance bottom left,
-    // speed/damage bottom right, and the race result when finished.
+    // The in-game display: the Amiga dashboard (chassis beam with damage
+    // crack, speed bar, lap/boost/distance read-outs) plus the remake's
+    // text overlays (opponent name at race start, race result).
     internal void DrawHud(bool gameOver)
     {
         uint white = ScrPalette.Colour(Track.ScrBaseColour + 15);
-        uint yellow = ScrPalette.Colour(Track.ScrBaseColour + 3);
         float height = Graphics.ScreenHeight;
-        float width = Graphics.ScreenWidth;
+
+        _hud.Draw(Car.LapNumber, Car.BoostReserve, Car.NewDamage, Car.PlayerZSpeed, Opponent.DistanceToPlayer());
 
         // output the opponent's name for four seconds at race start
         if (RaceTick < 4 * TickRate)
         {
             Graphics.DrawTextCentre(height - 300, $"Opponent: {Opponent.Name}", SmallFont, white);
         }
-
-        string lapText = Car.LapNumber > 0 ? Car.LapNumber.ToString(CultureInfo.InvariantCulture) : " ";
-        Graphics.DrawTextLeft(new(2, height - 34), $"Lap: {lapText}   Boost: {Car.BoostReserve}", SmallFont, yellow);
-        Graphics.DrawTextLeft(new(2, height - 18), $"Opponent Distance: {Opponent.DistanceToPlayer()}", SmallFont, yellow);
-
-        Graphics.DrawTextLeft(new(width - 200, height - 34), $"Speed: {Car.DisplaySpeed}", SmallFont, yellow);
-        Graphics.DrawTextLeft(new(width - 200, height - 18), $"Damage: {Car.NewDamage}", SmallFont, yellow);
 
         if (!RaceFinished)
         {

@@ -74,6 +74,11 @@ Keep it accurate and lean:
   opponent.
 - Bitmap-font dashboard/HUD text: opponent name, lap/boost/distance,
   speed/damage, flashing race result, game over.
+- Graphical in-game HUD ported from the Amiga source (`Rendering/
+  HudRenderer`): chassis beam with the random-walk damage crack
+  (damage.line), speed bar (display.speed.bar), and lap/boost/opponent-
+  distance read-outs at the original layout positions. The original's
+  beam/panel bitmap artwork is approximated with flat shapes.
 - Sound via `Useful.Audio`: variable-pitch engine loop
   (`PitchedLoopSampleProvider`), effect triggers, samples converted to WAV
   assets under `Assets/SFX`.
@@ -139,6 +144,15 @@ the shared engine or removes duplication between the two games.
   draws across the near road surface (see `VisualDumpTests` frame_landed).
   Pre-dates road-line textures — likely a painter's-sort or side-wall
   geometry edge case in `TrackRenderer`.
+- **Boost is BCD in the original**: the Amiga stores boost.reserve as BCD
+  (`abcd`, printed digit-by-digit) but `Track.StandardBoost` loads the raw
+  byte and `CarPhysics.BoostReserve` counts it in binary, so e.g. a track
+  byte of $30 gives 48 boost units instead of 30. Convert from BCD on load.
+- **Lap times**: the original shows current/best lap times on the dashboard
+  (print.lap.time/show.lap.time); not ported, no lap timing exists yet.
+- **Full damage should wreck the car**: the original's damage.line wrecks
+  the car (car.is.wrecked) when the crack reaches the end of the beam
+  (240); the HUD caps the crack but nothing wrecks the car.
 
 ## Validation
 

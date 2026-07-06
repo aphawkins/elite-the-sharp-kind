@@ -5,7 +5,7 @@
 using StuntCarRacerLib.Cars;
 using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
-using Useful.Fakes.Assets;
+using Useful.Assets;
 using Useful.Graphics;
 using Xunit;
 
@@ -28,7 +28,7 @@ public class VisualDumpTests
         opponent.StartRace();
 
         FastBitmap? lastFrame = null;
-        using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 400, b => lastFrame = b, new FakeAssetLocator());
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 400, b => lastFrame = b, AssetLocator.Create());
         TrackRenderer renderer = new(track, graphics);
         BackdropRenderer backdrop = new(graphics);
         OpponentRenderer opponentRenderer = new(opponent);
@@ -92,6 +92,20 @@ public class VisualDumpTests
         }
 
         RenderAndSave("frame_ramp.bmp");
+
+        // the driving frame with the in-game dashboard over it: chassis
+        // beam with a part-grown damage crack, speed bar and read-outs
+        HudRenderer hud = new(graphics, new Random(5));
+        camera.FollowCar(car);
+        graphics.Clear();
+        backdrop.Draw(camera);
+        worldPolygons.Clear();
+        opponentRenderer.AppendWorldPolygons(worldPolygons);
+        renderer.Draw(camera, worldPolygons, car.CurrentPiece, car.CurrentSegment);
+        hud.Draw(2, 15, 120, car.PlayerZSpeed, -340);
+        graphics.ScreenUpdate();
+        Assert.NotNull(lastFrame);
+        SaveBmp(lastFrame, Path.Combine(outDir, "frame_hud.bmp"));
 
         // the track-preview viewpoint: high up, pitched down at the car -
         // the camera angle that exposed the floating-track bug (the ground
