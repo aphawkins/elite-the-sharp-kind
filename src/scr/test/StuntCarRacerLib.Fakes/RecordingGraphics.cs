@@ -12,6 +12,8 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
 {
     public IList<(Vector2[] Points, uint Colour)> FilledPolygons { get; } = [];
 
+    public IList<(Vector2[] Points, Vector2[] TextureCoords, FastBitmap Texture)> TexturedPolygons { get; } = [];
+
     public int ClearCount { get; private set; }
 
     public int ScreenUpdateCount { get; private set; }
@@ -54,6 +56,9 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
 
     public void DrawPolygonFilled(Vector2[] points, uint faceColor)
         => FilledPolygons.Add((points, faceColor));
+
+    public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
+        => TexturedPolygons.Add((points, textureCoords, texture));
 
     public void DrawRectangle(Vector2 position, float width, float height, uint color)
     {

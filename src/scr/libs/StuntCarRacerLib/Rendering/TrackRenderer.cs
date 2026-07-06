@@ -11,11 +11,15 @@ namespace StuntCarRacerLib.Rendering;
 
 // Draws the track as flat-shaded polygons: one road surface and two side
 // surfaces per segment (as the original CreateUpdatePieceInVBMode1), using
-// a painter's sort instead of the Direct3D z-buffer. Road line textures
-// are not drawn yet.
+// a painter's sort instead of the Direct3D z-buffer. Road segments near the
+// player are textured with the road-line strips.
 public sealed class TrackRenderer
 {
     private const int MaxPolygonPoints = 5; // quad plus one clip point
+
+    // Road segments this far around the player draw with road lines (the
+    // original TEXTURED_SEGMENTS_AROUND_PLAYER).
+    private const int TexturedSegmentsAroundPlayer = 11;
 
     // Draw order within a segment's depth (the original face order).
     private const int SideOrder = 0;
@@ -23,6 +27,11 @@ public sealed class TrackRenderer
     private const int RoadOrder = 1;
 
     private const int ExtraOrder = 2;
+
+    // The road quad's texture coordinates: u = 0 on the left edge, 1 on the
+    // right, matching the original StorePieceTriangle (tv was always 0).
+    private static readonly Vector2[] s_roadTextureCoords =
+        [new(0, 0), new(1, 0), new(1, 0), new(0, 0)];
 
     private readonly Track _track;
 
@@ -32,6 +41,8 @@ public sealed class TrackRenderer
 
     private readonly List<DepthPolygon> _polygons = [];
 
+    private readonly int[] _segmentTextures;
+
     public TrackRenderer(Track track, IGraphics graphics)
     {
         Guard.ArgumentNull(track);
@@ -39,18 +50,28 @@ public sealed class TrackRenderer
 
         _track = track;
         _graphics = graphics;
+        _segmentTextures = RoadTextures.SegmentTextures(track);
     }
 
     public void Draw(SceneCamera camera) => Draw(camera, null);
 
+    public void Draw(SceneCamera camera, IEnumerable<WorldPolygon>? extraPolygons)
+        => Draw(camera, extraPolygons, -1, 0);
+
     // Draws the track plus optional extra world polygons (e.g. the opponent),
     // all depth-sorted together. A segment's three faces share one depth and
     // draw in the original's face order (sides first, then road) so the road
-    // surface is never painted over by its own side walls.
-    public void Draw(SceneCamera camera, IEnumerable<WorldPolygon>? extraPolygons)
+    // surface is never painted over by its own side walls. Road segments
+    // near the player's position draw their road lines (playerPiece -1
+    // disables the road lines entirely).
+    public void Draw(SceneCamera camera, IEnumerable<WorldPolygon>? extraPolygons, int playerPiece, int playerSegment)
     {
         _scene.SetView(camera, _graphics.ScreenWidth, _graphics.ScreenHeight);
         _polygons.Clear();
+
+        int playerGlobalSegment = playerPiece < 0
+            ? -1
+            : _track.Pieces[playerPiece].FirstSegment + playerSegment;
 
         if (extraPolygons != null)
         {
@@ -96,7 +117,21 @@ public sealed class TrackRenderer
 
                 depth /= 4;
 
-                AddPolygon(world, ScrPalette.Colour(roadColour), depth, RoadOrder);
+                int globalSegment = piece.FirstSegment + segment;
+                if (IsRoadLined(globalSegment, playerGlobalSegment))
+                {
+                    AddPolygon(
+                        world,
+                        ScrPalette.Colour(roadColour),
+                        depth,
+                        RoadOrder,
+                        RoadTextures.Textures[_segmentTextures[globalSegment]],
+                        s_roadTextureCoords);
+                }
+                else
+                {
+                    AddPolygon(world, ScrPalette.Colour(roadColour), depth, RoadOrder);
+                }
 
                 // left side (bottom left, top left, next top left, next bottom left)
                 uint sideColour = ScrPalette.Colour(piece.SidesColour);
@@ -125,7 +160,14 @@ public sealed class TrackRenderer
 
         foreach (DepthPolygon polygon in _polygons)
         {
-            _graphics.DrawPolygonFilled(polygon.Points, polygon.Colour);
+            if (polygon.Texture != null)
+            {
+                _graphics.DrawPolygonTextured(polygon.Points, polygon.TextureCoords!, polygon.Texture);
+            }
+            else
+            {
+                _graphics.DrawPolygonFilled(polygon.Points, polygon.Colour);
+            }
         }
     }
 
@@ -137,14 +179,38 @@ public sealed class TrackRenderer
         return new(coord.X + pieceX, (coord.Y / 4) + pieceY, coord.Z + pieceZ);
     }
 
-    // Adds a polygon with the given depth key (or its own average camera z
-    // when null) and a draw order for resolving equal depths. The polygon is
-    // clipped and drawn one triangle at a time, as the original D3D remake
-    // rendered triangles: clipping the whole outline of a twisted quad that
-    // straddles the near plane can produce a self-intersecting polygon,
-    // which the triangle-fan fill would misfill with large spurious
-    // triangles (a clipped triangle is always convex).
+    // Whether a road segment is close enough to the player (with wraparound)
+    // to draw its road lines.
+    private bool IsRoadLined(int globalSegment, int playerGlobalSegment)
+    {
+        if (playerGlobalSegment < 0)
+        {
+            return false;
+        }
+
+        int distance = Math.Abs(globalSegment - playerGlobalSegment);
+        distance = Math.Min(distance, _track.NumSegments - distance);
+        return distance <= TexturedSegmentsAroundPlayer;
+    }
+
     private void AddPolygon(in ReadOnlySpan<Coord3D> world, uint colour, long? depth, int order)
+        => AddPolygon(world, colour, depth, order, null, default);
+
+    // Adds a polygon with the given depth key (or its own average camera z
+    // when null) and a draw order for resolving equal depths, optionally
+    // textured (textureCoords pairs with world). The polygon is clipped and
+    // drawn one triangle at a time, as the original D3D remake rendered
+    // triangles: clipping the whole outline of a twisted quad that straddles
+    // the near plane can produce a self-intersecting polygon, which the
+    // triangle-fan fill would misfill with large spurious triangles (a
+    // clipped triangle is always convex).
+    private void AddPolygon(
+        in ReadOnlySpan<Coord3D> world,
+        uint colour,
+        long? depth,
+        int order,
+        FastBitmap? texture,
+        in ReadOnlySpan<Vector2> textureCoords)
     {
         Span<Coord3D> cameraSpace = stackalloc Coord3D[MaxPolygonPoints - 1];
         cameraSpace = cameraSpace[..world.Length];
@@ -159,14 +225,28 @@ public sealed class TrackRenderer
         long polygonDepth = depth ?? averageDepth;
 
         Span<Coord3D> triangle = stackalloc Coord3D[3];
+        Span<Vector2> triangleUv = stackalloc Vector2[3];
         Span<Coord3D> clipped = stackalloc Coord3D[4];
+        Span<Vector2> clippedUv = stackalloc Vector2[4];
         for (int i = 1; i < cameraSpace.Length - 1; i++)
         {
             triangle[0] = cameraSpace[0];
             triangle[1] = cameraSpace[i];
             triangle[2] = cameraSpace[i + 1];
 
-            int count = Scene3D.ClipPolygonToNearPlane(triangle, clipped);
+            int count;
+            if (texture == null)
+            {
+                count = Scene3D.ClipPolygonToNearPlane(triangle, clipped);
+            }
+            else
+            {
+                triangleUv[0] = textureCoords[0];
+                triangleUv[1] = textureCoords[i];
+                triangleUv[2] = textureCoords[i + 1];
+                count = Scene3D.ClipPolygonToNearPlane(triangle, triangleUv, clipped, clippedUv);
+            }
+
             if (count < 3)
             {
                 continue; // fully behind the near plane
@@ -185,10 +265,18 @@ public sealed class TrackRenderer
                     ],
                     colour,
                     polygonDepth,
-                    order));
+                    order,
+                    texture,
+                    texture == null ? null : [clippedUv[0], clippedUv[j], clippedUv[j + 1]]));
             }
         }
     }
 
-    private sealed record DepthPolygon(Vector2[] Points, uint Colour, long Depth, int Order);
+    private sealed record DepthPolygon(
+        Vector2[] Points,
+        uint Colour,
+        long Depth,
+        int Order,
+        FastBitmap? Texture,
+        Vector2[]? TextureCoords);
 }

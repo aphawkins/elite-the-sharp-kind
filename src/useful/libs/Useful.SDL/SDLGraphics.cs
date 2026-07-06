@@ -170,6 +170,30 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         }
     }
 
+    public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
+    {
+        if (points == null || textureCoords == null || texture == null || textureCoords.Length < points.Length)
+        {
+            return;
+        }
+
+        // The SDL renderer cannot sample a FastBitmap directly, so
+        // approximate with a flat fill of the texture colour at the
+        // polygon's average texture coordinate. The software rasterizer is
+        // the primary rendering path for textured polygons.
+        Vector2 averageUv = Vector2.Zero;
+        for (int i = 0; i < points.Length; i++)
+        {
+            averageUv += textureCoords[i];
+        }
+
+        averageUv /= points.Length;
+
+        int x = Math.Clamp((int)(averageUv.X * texture.Width), 0, texture.Width - 1);
+        int y = Math.Clamp((int)(averageUv.Y * texture.Height), 0, texture.Height - 1);
+        DrawPolygonFilled(points, texture.GetPixel(x, y));
+    }
+
     public void DrawRectangle(Vector2 position, float width, float height, uint color)
     {
         if (_isDisposed)

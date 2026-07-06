@@ -48,6 +48,10 @@ public sealed class FakeGraphics : IGraphics
     {
     }
 
+    public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
+    {
+    }
+
     public void DrawRectangle(Vector2 position, float width, float height, uint color)
     {
     }

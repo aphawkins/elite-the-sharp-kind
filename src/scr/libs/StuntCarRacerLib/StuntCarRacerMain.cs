@@ -196,7 +196,8 @@ public sealed class StuntCarRacerMain : IGame
     }
 
     // The world common to every screen: backdrop, track and (outside the
-    // track menu) the opponent car.
+    // track menu) the opponent car. Road lines draw around the player's
+    // position, as the original did in every mode.
     internal void DrawWorld(bool showOpponent)
     {
         Graphics.Clear();
@@ -208,7 +209,7 @@ public sealed class StuntCarRacerMain : IGame
             _opponentRenderer.AppendWorldPolygons(_worldPolygons);
         }
 
-        _renderer.Draw(Camera, _worldPolygons);
+        _renderer.Draw(Camera, _worldPolygons, Car.CurrentPiece, Car.CurrentSegment);
     }
 
     // Play the effect triggers from the physics, throttled by the shared

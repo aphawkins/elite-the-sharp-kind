@@ -35,23 +35,40 @@ public sealed class Scene3D
     // (up to one more point than the input).
     public static int ClipPolygonToNearPlane(in ReadOnlySpan<Coord3D> input, in Span<Coord3D> output)
     {
+        Span<Vector2> textureCoords = stackalloc Vector2[input.Length];
+        Span<Vector2> clippedTextureCoords = stackalloc Vector2[input.Length + 1];
+        return ClipPolygonToNearPlane(input, textureCoords, output, clippedTextureCoords);
+    }
+
+    // As above, interpolating a texture coordinate per point through the
+    // clip (textureCoords pairs with input, outputTextureCoords with output).
+    public static int ClipPolygonToNearPlane(
+        in ReadOnlySpan<Coord3D> input,
+        in ReadOnlySpan<Vector2> textureCoords,
+        in Span<Coord3D> output,
+        in Span<Vector2> outputTextureCoords)
+    {
         int count = 0;
 
         for (int i = 0; i < input.Length; i++)
         {
+            int nextIndex = (i + 1) % input.Length;
             Coord3D current = input[i];
-            Coord3D next = input[(i + 1) % input.Length];
+            Coord3D next = input[nextIndex];
 
             bool currentInside = current.Z >= ZClipBoundary;
             bool nextInside = next.Z >= ZClipBoundary;
 
             if (currentInside)
             {
+                outputTextureCoords[count] = textureCoords[i];
                 output[count++] = current;
             }
 
             if (currentInside != nextInside)
             {
+                float t = (float)(ZClipBoundary - current.Z) / ((long)next.Z - current.Z);
+                outputTextureCoords[count] = Vector2.Lerp(textureCoords[i], textureCoords[nextIndex], t);
                 output[count++] = ClipEdge(current, next);
             }
         }

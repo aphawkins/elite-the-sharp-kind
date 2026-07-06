@@ -201,6 +201,27 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
+    public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
+    {
+        if (points == null || textureCoords == null || texture == null || textureCoords.Length < points.Length)
+        {
+            return;
+        }
+
+        // Create triangles of which each share the first vertex
+        for (int i = 1; i < points.Length - 1; i++)
+        {
+            DrawTriangleTextured(
+                points[0],
+                points[i],
+                points[i + 1],
+                textureCoords[0],
+                textureCoords[i],
+                textureCoords[i + 1],
+                texture);
+        }
+    }
+
     public void DrawRectangle(Vector2 position, float width, float height, uint color)
         => DrawRectangleInt(
             (int)MathF.Floor(position.X),
@@ -300,18 +321,103 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     {
     }
 
+    // Textured variant of DrawTriangleFilled: texture coordinates are
+    // interpolated affinely in screen space (no perspective correction,
+    // which is fine for the small triangles a scene decomposes into) and
+    // sampled with edge clamping.
+    internal void DrawTriangleTextured(
+        Vector2 a,
+        Vector2 b,
+        Vector2 c,
+        Vector2 ta,
+        Vector2 tb,
+        Vector2 tc,
+        FastBitmap texture)
+    {
+        // Sort the points so that a.Y <= b.Y <= c.Y, keeping each texture
+        // coordinate paired with its point
+        if (b.Y < a.Y)
+        {
+            (a, b, ta, tb) = (b, a, tb, ta);
+        }
+
+        if (c.Y < a.Y)
+        {
+            (a, c, ta, tc) = (c, a, tc, ta);
+        }
+
+        if (c.Y < b.Y)
+        {
+            (b, c, tb, tc) = (c, b, tc, tb);
+        }
+
+        // Clamp Y range to screen bounds
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        // As DrawTriangleFilled: evaluate the two edges crossing each
+        // scanline directly, with the interpolation parameter clamped to the
+        // edge's endpoints, carrying the texture coordinates along
+        for (int y = firstY; y <= lastY; y++)
+        {
+            // the long edge a-c, and either a-b (above b) or b-c (below)
+            float t0 = EdgeT(a, c, y);
+            float x0 = a.X + ((c.X - a.X) * t0);
+            Vector2 uv0 = Vector2.Lerp(ta, tc, t0);
+
+            float x1;
+            Vector2 uv1;
+            if (y < b.Y)
+            {
+                float t1 = EdgeT(a, b, y);
+                x1 = a.X + ((b.X - a.X) * t1);
+                uv1 = Vector2.Lerp(ta, tb, t1);
+            }
+            else
+            {
+                float t1 = EdgeT(b, c, y);
+                x1 = b.X + ((c.X - b.X) * t1);
+                uv1 = Vector2.Lerp(tb, tc, t1);
+            }
+
+            if (x0 > x1)
+            {
+                (x0, x1) = (x1, x0);
+                (uv0, uv1) = (uv1, uv0);
+            }
+
+            int start = Math.Max((int)MathF.Floor(x0), 0);
+            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+            float span = x1 - x0;
+
+            for (int x = start; x <= end; x++)
+            {
+                float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+                DrawPixel(x, y, SampleTexture(texture, Vector2.Lerp(uv0, uv1, t)));
+            }
+        }
+    }
+
     // The x position of the edge p0-p1 at scanline y, clamped to the
     // edge's endpoints (p0.Y must not be greater than p1.Y).
     private static float EdgeX(Vector2 p0, Vector2 p1, float y)
+        => p0.X + ((p1.X - p0.X) * EdgeT(p0, p1, y));
+
+    // The interpolation parameter of the edge p0-p1 at scanline y, clamped
+    // to the edge's endpoints (p0.Y must not be greater than p1.Y). A
+    // horizontal or degenerate edge yields 0.
+    private static float EdgeT(Vector2 p0, Vector2 p1, float y)
     {
         float dy = p1.Y - p0.Y;
-        if (dy <= 0)
-        {
-            return p0.X; // horizontal (or degenerate) edge
-        }
+        return dy <= 0 ? 0f : Math.Clamp((y - p0.Y) / dy, 0f, 1f);
+    }
 
-        float t = Math.Clamp((y - p0.Y) / dy, 0f, 1f);
-        return p0.X + ((p1.X - p0.X) * t);
+    // Sample the texture at a [0,1] coordinate, clamping at the edges.
+    private static uint SampleTexture(FastBitmap texture, Vector2 uv)
+    {
+        int x = Math.Clamp((int)(uv.X * texture.Width), 0, texture.Width - 1);
+        int y = Math.Clamp((int)(uv.Y * texture.Height), 0, texture.Height - 1);
+        return texture.GetPixel(x, y);
     }
 
     private static (Vector2 A, Vector2 B, Vector2 C) SortPointsByY(Vector2 a, Vector2 b, Vector2 c)

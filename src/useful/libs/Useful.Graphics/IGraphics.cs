@@ -30,6 +30,12 @@ public interface IGraphics
 
     public void DrawPolygonFilled(Vector2[] points, uint faceColor);
 
+    /// <summary>
+    /// Fill a polygon by sampling a texture. Texture coordinates pair with
+    /// points and map [0,1] across the texture's width and height.
+    /// </summary>
+    public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture);
+
     public void DrawRectangle(Vector2 position, float width, float height, uint color);
 
     public void DrawRectangleCentre(float y, float width, float height, uint color);

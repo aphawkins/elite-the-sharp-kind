@@ -94,6 +94,11 @@ Keep it accurate and lean:
 - Shared sound-effect throttling extracted: SCR now plays effects through
   the same `AudioController`/`SfxSample` cooldown mechanism Elite uses,
   rather than a duplicate SCR-local throttle.
+- Road-line textures: `IGraphics.DrawPolygonTextured` with an affine
+  textured triangle fill in `SoftwareGraphics`; the six road strips are
+  regenerated from the palette (`Rendering/RoadTextures`, replacing the
+  original's `Road*.bmp`) and `TrackRenderer` textures the road ±11
+  segments around the player as the original did.
 
 ## Architecture / refactoring work identified
 
@@ -122,9 +127,6 @@ the shared engine or removes duplication between the two games.
 
 ## Remaining work
 
-- **Road-line textures**: needs textured polygon fill in
-  `Useful.Graphics`/`IGraphics` (`SoftwareGraphics` currently only does
-  flat-colour fill). Port the road-line texture data from `Track.cpp`.
 - **Gamepad support**: port `XBOXController.cpp/h` via `Useful.Controls`;
   not started, keyboard-only so far.
 - **Per-effect sound volume**: the original scales grounded/creak effect
@@ -133,6 +135,10 @@ the shared engine or removes duplication between the two games.
 - **Player outside/chase view**: needs a chase camera plus drawing the
   player's own car mesh (`Rendering/CarMesh` is currently only used to draw
   the opponent).
+- **Near-road sliver artifact**: a thin dark-red diagonal sliver sometimes
+  draws across the near road surface (see `VisualDumpTests` frame_landed).
+  Pre-dates road-line textures — likely a painter's-sort or side-wall
+  geometry edge case in `TrackRenderer`.
 
 ## Validation
 

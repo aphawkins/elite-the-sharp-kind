@@ -52,7 +52,7 @@ public class VisualDumpTests
             backdrop.Draw(camera);
             worldPolygons.Clear();
             opponentRenderer.AppendWorldPolygons(worldPolygons);
-            renderer.Draw(camera, worldPolygons);
+            renderer.Draw(camera, worldPolygons, car.CurrentPiece, car.CurrentSegment);
             graphics.ScreenUpdate();
             Assert.NotNull(lastFrame);
             SaveBmp(lastFrame, Path.Combine(outDir, name));

@@ -82,6 +82,47 @@ public class TrackRendererTests
         Assert.True(graphics.FilledPolygons.Count > 0);
     }
 
+    [Fact]
+    public void RoadLinesDrawOnlyWhenPlayerPositionIsGiven()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        SceneCamera camera = new();
+        camera.FollowCar(car);
+
+        // without a player position no road is textured
+        RecordingGraphics untextured = new(640, 400);
+        new TrackRenderer(track, untextured).Draw(camera);
+        Assert.Empty(untextured.TexturedPolygons);
+
+        // with the player's position the nearby road draws textured
+        RecordingGraphics textured = new(640, 400);
+        new TrackRenderer(track, textured).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
+        Assert.NotEmpty(textured.TexturedPolygons);
+        Assert.All(textured.TexturedPolygons, p => Assert.Contains(p.Texture, RoadTextures.Textures));
+        Assert.All(textured.TexturedPolygons, p => Assert.Equal(p.Points.Length, p.TextureCoords.Length));
+    }
+
+    [Fact]
+    public void RoadLinesOnlyCoverTheSegmentsAroundThePlayer()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        SceneCamera camera = new();
+        camera.FollowCar(car);
+
+        RecordingGraphics graphics = new(640, 400);
+        new TrackRenderer(track, graphics).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
+
+        // 11 segments each side of the player plus the player's own, two
+        // road triangles each (clipping can split a triangle once more)
+        Assert.InRange(graphics.TexturedPolygons.Count, 1, 23 * 4);
+    }
+
     // DrawPolygonFilled fills polygons as a triangle fan, which only fills
     // the intended shape when the outline is simple and the fan triangles
     // all wind the same way. Twisted quads straddling the near plane used to
@@ -111,13 +152,21 @@ public class TrackRendererTests
             car.Update(CarInput.AccelBoost);
             camera.FollowCar(car);
             graphics.FilledPolygons.Clear();
-            renderer.Draw(camera);
+            graphics.TexturedPolygons.Clear();
+            renderer.Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
 
             foreach ((Vector2[] points, _) in graphics.FilledPolygons)
             {
                 Assert.False(
                     IsMisfillable(points, out string why),
                     $"Frame {frame}: polygon is {why}: {string.Join(" ", points)}.");
+            }
+
+            foreach ((Vector2[] points, _, _) in graphics.TexturedPolygons)
+            {
+                Assert.False(
+                    IsMisfillable(points, out string why),
+                    $"Frame {frame}: textured polygon is {why}: {string.Join(" ", points)}.");
             }
         }
     }
