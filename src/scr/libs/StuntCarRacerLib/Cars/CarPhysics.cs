@@ -275,18 +275,23 @@ public sealed partial class CarPhysics
 
     public bool Wrecked => _wreckWheelHeightReduction != 0;
 
-    // Speed value for display, using player z speed (original CalculateDisplaySpeed).
+    // Speed value for display, using player z speed (original
+    // CalculateDisplaySpeed). ptitSeb's remake raised the dead zone from
+    // "< 0" to "< 0x1100" (the first few values aren't shown) and rescaled
+    // the result by 200/128 to fill the new cockpit gauge's range (full at
+    // 240, matching Rendering/HudRenderer's speed bar).
     public int DisplaySpeed
     {
         get
         {
             int speed = PlayerZSpeed;
-            if (speed < 0)
+            if (speed < 0x1100)
             {
                 speed = 0;
             }
 
-            return (speed * 183) >> 15;
+            speed = (speed * 183) >> 15;
+            return (speed * 200) >> 7;
         }
     }
 

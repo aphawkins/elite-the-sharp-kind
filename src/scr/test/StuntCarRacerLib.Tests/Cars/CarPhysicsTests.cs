@@ -67,6 +67,50 @@ public class CarPhysicsTests
         Assert.True(car.DisplaySpeed > 0);
     }
 
+    // Regression test for the ptitSeb remake's CalculateDisplaySpeed change:
+    // the dead zone was raised from "PlayerZSpeed < 0" to "< 0x1100" (the
+    // first few speed values aren't shown), and the result rescaled by
+    // 200/128 so the cockpit's speed bar (full at 240 display units) can
+    // actually reach full width during normal driving.
+    [Fact]
+    public void DisplaySpeedStaysZeroBelowTheDeadZoneThenRescales()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        bool sawDeadZone = false;
+        bool sawRescaledOutput = false;
+        for (int frame = 0; frame < 200; frame++)
+        {
+            car.Update(CarInput.AccelBoost);
+
+            if (car.PlayerZSpeed < 0x1100)
+            {
+                Assert.Equal(0, car.DisplaySpeed);
+                sawDeadZone = true;
+            }
+            else
+            {
+                // the rescaled formula produces roughly 1.5625x the old
+                // (183/32768) value, capable of exceeding it
+                int oldFormula = (car.PlayerZSpeed * 183) >> 15;
+                if (car.DisplaySpeed > oldFormula)
+                {
+                    sawRescaledOutput = true;
+                }
+            }
+        }
+
+        Assert.True(sawDeadZone, "expected some frames below the 0x1100 dead zone");
+        Assert.True(sawRescaledOutput, "expected the rescaled formula to exceed the old one at some point");
+    }
+
     [Fact]
     public void CarDrivesAlongTrackThroughPieces()
     {

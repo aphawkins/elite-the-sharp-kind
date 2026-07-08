@@ -126,6 +126,11 @@ Keep it accurate and lean:
   regenerated from the palette (`Rendering/RoadTextures`, replacing the
   original's `Road*.bmp`) and `TrackRenderer` textures the road ±11
   segments around the player as the original did.
+- `CarPhysics.DisplaySpeed` updated to ptitSeb's revised
+  `CalculateDisplaySpeed`: dead zone raised from `< 0` to `< 0x1100`, and
+  the result rescaled by `200/128` to fill the cockpit gauge's range
+  (full at 240) — the previous formula (carried over unchanged from
+  fluffyfreak) under-filled the new speed bar during normal driving.
 
 ## Architecture / refactoring work identified
 
@@ -177,7 +182,11 @@ the shared engine or removes duplication between the two games.
   (240); the HUD caps the crack but nothing wrecks the car.
 - **Super League**: ptitSeb added a `bSuperLeague` toggle (the 'L' key on
   the track menu) that swaps in alternate track colours/road-line textures
-  (`SCR_BASE_COLOUR+16/17/18`), alternate opponent speed tables
+  (`SCR_BASE_COLOUR+16/17/18`), alternate player-car and opponent-car body
+  colours (`SCR_BASE_COLOUR+19/20/21` in `Car.cpp`'s `DrawCar`), alternate
+  engine power/boost constants (`engine_power`/`boost_unit_value`/
+  `opp_engine_power`: 240/16/236 standard vs 320/12/314 super, in
+  `Car_Behaviour.cpp`), alternate opponent speed tables
   (`opp_track_speed_values[TrackID+32]`), and the atlas's "2"-suffixed
   cockpit/road sprite variants. Not started — would need a menu toggle,
   `RoadTextures`/`ScrPalette` alternates, and wiring `CarPhysics
@@ -189,6 +198,37 @@ the shared engine or removes duplication between the two games.
   the app targets a fixed 640x400 window, and `HudRenderer`/
   `TrackMenuScreen` assume that fixed size when computing their scale
   factors.
+- **Control scheme was rewritten in ptitSeb, not carried over**: fluffyfreak
+  combined accelerate+boost on one key (RETURN) and brake+boost on another
+  (SPACE), with a separate brake-only key (HASH). ptitSeb replaced this
+  with independent keys — Up=accelerate, Down=brake, Space=boost (applies
+  with either accel or brake held) — matching its README. `CarInput`,
+  `CarPhysics.Update` (the accelerate/brake/boost derivation around line
+  690) and `RaceScreen.ReadInput` still implement the old combined scheme
+  verbatim (comments included). Needs: new `CarInput` flags (separate
+  Accelerate/Brake/Boost bits), a `CarPhysics` update to derive them
+  independently (`Car_Behaviour.cpp`'s `CarControl`), and a `RaceScreen`
+  key remap to arrows + space.
+- **Opponent speed-value algorithm was rewritten in ptitSeb**: fluffyfreak
+  precomputed a random per-track speed table once (`opponents_speed_values`,
+  seeded from `opp_track_speed_values`). ptitSeb replaced it with
+  `Opponent_Speed_Value()` in `Opponent_Behaviour.cpp`, computed per-piece
+  from `Piece_Angle_And_Template`/`sections_car_can_be_put_on` with a
+  memoized accumulator — a direct port of the authentic Amiga assembly
+  (inlined as a comment in that function), not a random approximation.
+  `OpponentPhysics`/`OpponentData.SpeedValues`/`TrackSpeedValues` still use
+  the old random-table approach.
+- **F9/F10 frame-gap tuning keys**: present in both C++ versions
+  (increment/decrement the physics frame gap live); `StuntCarRacerMain
+  .FrameGap` exists for exactly this but isn't wired to any key.
+- **Road-line textures could source the shared atlas instead of a
+  procedural strip**: ptitSeb consolidated the six road textures into
+  `atlas.png` (`eRoadYellowDark` etc., already converted to `atlas.bmp` for
+  the cockpit HUD) rather than separate `Road*.bmp` files. `Rendering
+  /RoadTextures` still generates its strips procedurally from the palette;
+  sampling the real atlas art instead would be a closer visual match, but
+  the current procedural strips already look correct — cosmetic refinement,
+  not a bug.
 
 ## Validation
 
