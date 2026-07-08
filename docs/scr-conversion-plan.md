@@ -139,6 +139,24 @@ Keep it accurate and lean:
   `RaceScreen.ReadInput` maps Left/Right/Up/Down arrows + Space to steer/
   accelerate/brake/boost. `AccelBoost`/`BrakeBoost` remain as flag-
   combination conveniences for tests that want to "floor it".
+- Fixed two pre-existing, unrelated-to-SCR keyboard bugs surfaced by the
+  control scheme rewrite ("controls get stuck when multiple keys are held"):
+  (1) `SDLHelper.KeyConverter` mapped `SDLK_RIGHT` (the physical Right Arrow
+  key) to `ConsoleKey.OemPeriod` and only reached `ConsoleKey.RightArrow`
+  via `SDLK_RIGHTBRACKET`, so the Right Arrow key never worked at all for
+  anything checking `RightArrow` alone (Elite's views masked it by checking
+  `OemPeriod || RightArrow`); fixed to map from the correct
+  `SDLK_COMMA`/`SDLK_PERIOD` source keycodes. (2) `SoftwareKeyboard
+  .IsPressed` has one-shot "consume on read" semantics (by design, for
+  menu-style actions), which is wrong for continuous per-tick polling —
+  a held key's state got cleared after being read once, relying on a
+  fresh SDL key-repeat event to set it again, and Windows/SDL typically
+  only re-fires key-repeat for the most-recently-pressed key when several
+  are held, so an earlier held key would go unresponsive. Added
+  `IKeyboard.IsHeld` (continuous physical state, no consuming side
+  effect) alongside the existing one-shot `IsPressed`, and switched
+  `RaceScreen.ReadInput`'s continuous driving controls to use it (menu
+  screens keep using `IsPressed`, unaffected).
 
 ## Architecture / refactoring work identified
 

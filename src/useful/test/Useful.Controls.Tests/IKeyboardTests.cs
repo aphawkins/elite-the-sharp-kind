@@ -38,6 +38,20 @@ public class IKeyboardTests
     }
 
     [Fact]
+    public void IsHeldReflectsContinuousKeyStateAcrossRepeatedPolls()
+    {
+        FakeKeyboard kb = new();
+
+        kb.KeyDown(ConsoleKey.UpArrow, ConsoleModifiers.None);
+
+        Assert.True(kb.IsHeld(ConsoleKey.UpArrow));
+        Assert.True(kb.IsHeld(ConsoleKey.UpArrow)); // unlike IsPressed, repeated reads don't clear it
+
+        kb.KeyUp(ConsoleKey.UpArrow, ConsoleModifiers.None);
+        Assert.False(kb.IsHeld(ConsoleKey.UpArrow));
+    }
+
+    [Fact]
     public void ClearPressedRemovesAllPressed()
     {
         FakeKeyboard kb = new();

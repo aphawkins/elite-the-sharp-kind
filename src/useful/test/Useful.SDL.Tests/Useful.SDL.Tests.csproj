@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+    <PackageReference Include="ppy.SDL2-CS" Version="1.0.693-alpha" />
     <PackageReference Include="Roslynator.Analyzers" Version="4.15.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -52,6 +53,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Useful.Controls.Tests\Useful.Controls.Tests.csproj" />
+    <ProjectReference Include="..\..\libs\Useful.SDL\Useful.SDL.csproj" />
   </ItemGroup>
 
   <ItemGroup>

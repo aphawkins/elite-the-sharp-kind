@@ -68,6 +68,52 @@ public class SDLKeyboardTests
         Assert.False(kb.IsPressed(ConsoleModifiers.Control));
     }
 
+    // Regression test: driving/movement-style controls poll every tick and
+    // need the key's continuous physical state, not IsPressed's one-shot
+    // consumption (which would make a held key look "let go" the very next
+    // tick unless a fresh SDL key-repeat event happened to arrive first).
+    [Fact]
+    public void IsHeldStaysTrueAcrossRepeatedPollsWhileKeyRemainsDown()
+    {
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
+
+        kb.KeyDown(ConsoleKey.UpArrow, ConsoleModifiers.None);
+
+        Assert.True(kb.IsHeld(ConsoleKey.UpArrow));
+        Assert.True(kb.IsHeld(ConsoleKey.UpArrow));
+        Assert.True(kb.IsHeld(ConsoleKey.UpArrow));
+
+        kb.KeyUp(ConsoleKey.UpArrow, ConsoleModifiers.None);
+
+        Assert.False(kb.IsHeld(ConsoleKey.UpArrow));
+    }
+
+    // Regression test: holding a second key must not affect an
+    // already-held key's IsHeld state (this is the actual "multiple keys
+    // held" bug — IsPressed's consumption combined with the OS only
+    // re-sending key-repeat events for the most recently pressed key made
+    // an earlier held key go silently unresponsive once a second key was
+    // pressed).
+    [Fact]
+    public void IsHeldTracksMultipleKeysIndependently()
+    {
+        FakeInput fakeInput = new();
+        SoftwareKeyboard kb = new(fakeInput);
+
+        kb.KeyDown(ConsoleKey.UpArrow, ConsoleModifiers.None);
+        Assert.True(kb.IsHeld(ConsoleKey.UpArrow));
+
+        // pressing (and polling) a second key must not clear the first
+        kb.KeyDown(ConsoleKey.LeftArrow, ConsoleModifiers.None);
+        Assert.True(kb.IsHeld(ConsoleKey.LeftArrow));
+        Assert.True(kb.IsHeld(ConsoleKey.UpArrow));
+
+        kb.KeyUp(ConsoleKey.LeftArrow, ConsoleModifiers.None);
+        Assert.False(kb.IsHeld(ConsoleKey.LeftArrow));
+        Assert.True(kb.IsHeld(ConsoleKey.UpArrow));
+    }
+
     [Fact]
     public void KeyUpRemovesPressed()
     {

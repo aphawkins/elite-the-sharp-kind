@@ -69,6 +69,9 @@ public class SoftwareKeyboard : IKeyboard
         return false;
     }
 
+    public bool IsHeld(ConsoleKey key)
+        => key != ConsoleKey.None && _pressedKeys.TryGetValue(key, out bool value) && value;
+
     public void KeyDown(ConsoleKey key, ConsoleModifiers modifiers)
     {
         _lastKeyPressed = key;

@@ -18,6 +18,8 @@ public sealed class FakeKeyboard : IKeyboard
 
     public bool IsPressed(ConsoleModifiers modifiers) => _pressed.Any(p => p.Modifiers == modifiers);
 
+    public bool IsHeld(ConsoleKey key) => _pressed.Any(p => p.Key == key);
+
     public void KeyDown(ConsoleKey key, ConsoleModifiers modifiers)
     {
         _pressed.Add((key, modifiers));

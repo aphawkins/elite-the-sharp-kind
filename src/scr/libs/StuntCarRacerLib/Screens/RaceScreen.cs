@@ -78,32 +78,40 @@ internal sealed class RaceScreen : IGameScreen
 
     // ptitSeb's stuntcarremake keyboard controls: Left/Right arrows =
     // steer, Up = accelerate, Down = brake, Space = boost (applies with
-    // either accelerate or brake held).
+    // either accelerate or brake held). Uses IsHeld rather than IsPressed:
+    // these are continuous controls polled every physics tick, not
+    // one-shot menu actions, so they must reflect whether the key is
+    // physically down rather than being consumed after the first read
+    // (IsPressed's one-shot consumption meant driving felt "stuck" as
+    // soon as a second key was held, since a held key's state was cleared
+    // on the previous tick and nothing but a fresh SDL key-repeat event —
+    // which the OS doesn't reliably send per-key once several keys are
+    // down at once — would set it again).
     private CarInput ReadInput()
     {
         CarInput input = CarInput.None;
 
-        if (_game.Keyboard.IsPressed(ConsoleKey.LeftArrow))
+        if (_game.Keyboard.IsHeld(ConsoleKey.LeftArrow))
         {
             input |= CarInput.Left;
         }
 
-        if (_game.Keyboard.IsPressed(ConsoleKey.RightArrow))
+        if (_game.Keyboard.IsHeld(ConsoleKey.RightArrow))
         {
             input |= CarInput.Right;
         }
 
-        if (_game.Keyboard.IsPressed(ConsoleKey.UpArrow))
+        if (_game.Keyboard.IsHeld(ConsoleKey.UpArrow))
         {
             input |= CarInput.Accelerate;
         }
 
-        if (_game.Keyboard.IsPressed(ConsoleKey.DownArrow))
+        if (_game.Keyboard.IsHeld(ConsoleKey.DownArrow))
         {
             input |= CarInput.Brake;
         }
 
-        if (_game.Keyboard.IsPressed(ConsoleKey.Spacebar))
+        if (_game.Keyboard.IsHeld(ConsoleKey.Spacebar))
         {
             input |= CarInput.Boost;
         }

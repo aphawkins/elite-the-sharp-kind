@@ -20,10 +20,10 @@ internal static class SDLHelper
         SDL_Keycode.SDLK_RETURN => (ConsoleKey.Enter, ConsoleModifiers.None),
         SDL_Keycode.SDLK_ESCAPE => (ConsoleKey.Escape, ConsoleModifiers.None),
         SDL_Keycode.SDLK_SPACE => (ConsoleKey.Spacebar, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_LEFTBRACKET => (ConsoleKey.OemComma, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_COMMA => (ConsoleKey.OemComma, ConsoleModifiers.None),
         SDL_Keycode.SDLK_LEFT => (ConsoleKey.LeftArrow, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_RIGHT => (ConsoleKey.OemPeriod, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_RIGHTBRACKET => (ConsoleKey.RightArrow, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_PERIOD => (ConsoleKey.OemPeriod, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_RIGHT => (ConsoleKey.RightArrow, ConsoleModifiers.None),
         SDL_Keycode.SDLK_UP => (ConsoleKey.UpArrow, ConsoleModifiers.None),
 
         SDL_Keycode.SDLK_a => (ConsoleKey.A, ConsoleModifiers.None),
