@@ -65,9 +65,16 @@ internal sealed class PilotView : IView
         }
     }
 
+    // Continuous flight controls (pitch/roll/speed/fire) are polled every
+    // frame and need IsHeld's non-consuming "is the key currently down"
+    // state, not IsPressed's one-shot consumption - otherwise a held key
+    // would go unresponsive as soon as a second key was also held (SDL/
+    // Windows key-repeat only re-fires for the most recently pressed key).
+    // One-shot commands below (docking, hyperspace, missiles, pause, etc.)
+    // correctly keep using IsPressed.
     public void HandleInput()
     {
-        if (_keyboard.IsPressed(ConsoleKey.A))
+        if (_keyboard.IsHeld(ConsoleKey.A))
         {
             _gameState.DrawLasers = _combat.FireLaser();
         }
@@ -128,7 +135,7 @@ internal sealed class PilotView : IView
             _gameState.IsGamePaused = true;
         }
 
-        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
+        if (_keyboard.IsHeld(ConsoleKey.S) || _keyboard.IsHeld(ConsoleKey.UpArrow))
         {
             if (_ship.Climb > 0)
             {
@@ -143,7 +150,7 @@ internal sealed class PilotView : IView
             _ship.IsClimbing = true;
         }
 
-        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
+        if (_keyboard.IsHeld(ConsoleKey.X) || _keyboard.IsHeld(ConsoleKey.DownArrow))
         {
             if (_ship.Climb < 0)
             {
@@ -158,7 +165,7 @@ internal sealed class PilotView : IView
             _ship.IsClimbing = true;
         }
 
-        if (_keyboard.IsPressed(ConsoleKey.OemComma) || _keyboard.IsPressed(ConsoleKey.LeftArrow))
+        if (_keyboard.IsHeld(ConsoleKey.OemComma) || _keyboard.IsHeld(ConsoleKey.LeftArrow))
         {
             if (_ship.Roll < 0)
             {
@@ -172,7 +179,7 @@ internal sealed class PilotView : IView
             }
         }
 
-        if (_keyboard.IsPressed(ConsoleKey.OemPeriod) || _keyboard.IsPressed(ConsoleKey.RightArrow))
+        if (_keyboard.IsHeld(ConsoleKey.OemPeriod) || _keyboard.IsHeld(ConsoleKey.RightArrow))
         {
             if (_ship.Roll > 0)
             {
@@ -198,13 +205,13 @@ internal sealed class PilotView : IView
             _combat.UnarmMissile();
         }
 
-        if (_keyboard.IsPressed(ConsoleKey.Spacebar) &&
+        if (_keyboard.IsHeld(ConsoleKey.Spacebar) &&
             !_gameState.IsDocked)
         {
             _ship.IncreaseSpeed();
         }
 
-        if (_keyboard.IsPressed(ConsoleKey.Oem2) &&
+        if (_keyboard.IsHeld(ConsoleKey.Oem2) &&
             !_gameState.IsDocked)
         {
             _ship.DecreaseSpeed();
