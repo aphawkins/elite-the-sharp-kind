@@ -61,46 +61,31 @@ Keep it accurate and lean:
 ## Done
 
 - Project skeleton (`src/scr/*`) wired into the solution, builds clean.
-- Track geometry/data model (`Tracks/Track.cs`, `AmigaTrackData.cs`) with
-  unit tests, including the draw bridge animation (`Tracks/DrawBridge`).
-- Car physics (`Cars/CarPhysics.*`, fixed-point trig in `Cars/AmigaTrig`),
-  including sound-effect triggers and car-to-car collision/slipstream.
+- Track geometry/data model (`Tracks/Track.cs`, `AmigaTrackData.cs`), incl.
+  the draw bridge animation (`Tracks/DrawBridge`).
+- Car physics (`Cars/CarPhysics.*`, fixed-point trig in `Cars/AmigaTrig`):
+  sound triggers, car-to-car collision/slipstream, wheel rotation/bounce
+  and smash-hole tracking for the cockpit HUD.
 - Opponent AI (`Cars/OpponentPhysics`): scripted speeds, wheel-spring
   dynamics, steering, obstruct/push/move-aside interaction, lap counting
   and win calculation.
 - 3D projection/camera pipeline (`Rendering/Scene3D`, `SceneCamera`,
-  `ScrPalette`) rendering flat-shaded track/side polygons via
-  `Useful.Graphics.DrawPolygonFilled` (matches the Amiga original's look;
-  no textured-fill extension was needed for this).
+  `ScrPalette`), flat-shaded and textured polygons via
+  `Useful.Graphics.DrawPolygonFilled`/`DrawPolygonTextured`.
 - Backdrop/horizon/scenery rendering (`Rendering/BackdropRenderer`), five
   scenery types, N cycles them in-game.
 - Car mesh (`Rendering/CarMesh`) — wheels + wedge body, used to draw the
   opponent.
-- Bitmap-font text overlays: opponent name at race start, flashing race
-  result, game over.
-- Graphical cockpit HUD ported from ptitSeb's `DrawCockpit`/atlas
-  (`Rendering/HudRenderer`, `Rendering/CockpitState`): front wheel sprites
-  that bounce with suspension and spin with road speed (`CarPhysics`
-  gained `LeftWheelFrame`/`RightWheelFrame`/`LeftWheelBounce`/
-  `RightWheelBounce`, ported from `SetWheelRotationSpeed`), an engine with
-  a boost flame animation, the damage crack image revealed progressively
-  by damage plus smash holes (`CarPhysics.SmashHoles`, from `UpdateDamage`/
-  `nholes`), the speed bar, and lap/boost/opponent-distance read-outs.
-  Sprites come from a single converted `atlas.bmp` (`Assets/Images`,
-  registered in `AssetManifest.json`) via the new
-  `IGraphics.DrawImagePart` (scaled sub-rectangle blit with horizontal
-  mirroring, implemented in `SoftwareGraphics`/`SDLGraphics` and both
-  fakes). Super League ("2"-suffixed) atlas variants are not used yet.
-- Track menu background (`Screens/TrackMenuScreen`): draws ptitSeb's
-  `Bitmap/menu.png` (converted to `Assets/Images/menu.bmp`) as a
-  full-screen overlay after the 3D world; its centre panel is transparent
-  so the orbiting track view still shows through, with the track list
-  positioned inside it. This is a cosmetic addition beyond strict
-  porting — the actual ptitSeb game never loads `menu.png` (confirmed: no
-  `LoadTexture`/`CreateTextureFromResource` call for it in `StuntCarRacer.cpp`);
-  its own track menu is still plain DXUT text, same as before the source
-  switch, so this is the only intentional visual divergence from ptitSeb's
-  actual behaviour.
+- HUD: bitmap-font text overlays (opponent name, race result, game over)
+  plus a graphical cockpit dashboard ported from ptitSeb's `DrawCockpit`
+  (`Rendering/HudRenderer`, `CockpitState`) — wheel sprites, engine/boost
+  flame, damage crack/holes, speed bar, lap/boost/distance read-outs, all
+  sprited from one converted `atlas.bmp` via the new
+  `IGraphics.DrawImagePart`. Super League atlas variants not used yet.
+- Track menu background (`Screens/TrackMenuScreen`) draws ptitSeb's
+  `menu.png` as a transparent-centre overlay over the 3D world — a
+  cosmetic addition beyond strict porting, since ptitSeb's own menu is
+  still plain text.
 - Sound via `Useful.Audio`: variable-pitch engine loop
   (`PitchedLoopSampleProvider`), effect triggers, samples converted to WAV
   assets under `Assets/SFX`.
@@ -109,54 +94,30 @@ Keep it accurate and lean:
 - Full game loop wired up in `StuntCarRacerMain`: one track drivable and
   rendered end-to-end, keyboard-controlled.
 - Fixed-timestep game loop shared between Elite and SCR
-  (`Useful.Timing.GameLoop`, `Useful.Abstraction.IGame`/`GameHost`) — fixed
-  a bug where SCR's car physics ran ~2.4x too fast.
-- Floating-track bug fixed (backdrop/track projection mismatch;
-  `BackdropRendererTests` regression coverage) and spurious-triangle
-  rendering bug fixed (near-plane clip before fan-triangulation in
-  `TrackRenderer.AddPolygon`; regression coverage across all eight tracks).
-- Shared game-mode/screen state machine extracted to `Useful.Abstraction`
-  (`IGameScreen`, `ScreenManager<TId, TScreen>`); both Elite's `IView`s and
-  SCR's `Screens/` classes use it.
-- Shared sound-effect throttling extracted: SCR now plays effects through
-  the same `AudioController`/`SfxSample` cooldown mechanism Elite uses,
-  rather than a duplicate SCR-local throttle.
-- Road-line textures: `IGraphics.DrawPolygonTextured` with an affine
-  textured triangle fill in `SoftwareGraphics`; the six road strips are
-  regenerated from the palette (`Rendering/RoadTextures`, replacing the
-  original's `Road*.bmp`) and `TrackRenderer` textures the road ±11
-  segments around the player as the original did.
-- `CarPhysics.DisplaySpeed` updated to ptitSeb's revised
-  `CalculateDisplaySpeed`: dead zone raised from `< 0` to `< 0x1100`, and
-  the result rescaled by `200/128` to fill the cockpit gauge's range
-  (full at 240) — the previous formula (carried over unchanged from
-  fluffyfreak) under-filled the new speed bar during normal driving.
-- Control scheme rewritten to match ptitSeb: `CarInput` now has
-  independent `Accelerate`/`Brake`/`Boost` flags (replacing the old
-  combined `Hash`/`BrakeBoost`/`AccelBoost`-as-primary-meaning scheme),
-  `CarPhysics.CarControl` derives them independently with no cross-setting
-  (matching `Car_Behaviour.cpp`'s simplified `CarControl`), and
-  `RaceScreen.ReadInput` maps Left/Right/Up/Down arrows + Space to steer/
-  accelerate/brake/boost. `AccelBoost`/`BrakeBoost` remain as flag-
-  combination conveniences for tests that want to "floor it".
-- Fixed two pre-existing, unrelated-to-SCR keyboard bugs surfaced by the
-  control scheme rewrite ("controls get stuck when multiple keys are held"):
-  (1) `SDLHelper.KeyConverter` mapped `SDLK_RIGHT` (the physical Right Arrow
-  key) to `ConsoleKey.OemPeriod` and only reached `ConsoleKey.RightArrow`
-  via `SDLK_RIGHTBRACKET`, so the Right Arrow key never worked at all for
-  anything checking `RightArrow` alone (Elite's views masked it by checking
-  `OemPeriod || RightArrow`); fixed to map from the correct
-  `SDLK_COMMA`/`SDLK_PERIOD` source keycodes. (2) `SoftwareKeyboard
-  .IsPressed` has one-shot "consume on read" semantics (by design, for
-  menu-style actions), which is wrong for continuous per-tick polling —
-  a held key's state got cleared after being read once, relying on a
-  fresh SDL key-repeat event to set it again, and Windows/SDL typically
-  only re-fires key-repeat for the most-recently-pressed key when several
-  are held, so an earlier held key would go unresponsive. Added
-  `IKeyboard.IsHeld` (continuous physical state, no consuming side
-  effect) alongside the existing one-shot `IsPressed`, and switched
-  `RaceScreen.ReadInput`'s continuous driving controls to use it (menu
-  screens keep using `IsPressed`, unaffected).
+  (`Useful.Timing.GameLoop`, `Useful.Abstraction.IGame`/`GameHost`).
+- Floating-track and spurious-triangle rendering bugs fixed in
+  `TrackRenderer`/`BackdropRenderer`, with regression coverage.
+- Shared game-mode/screen state machine (`Useful.Abstraction.IGameScreen`,
+  `ScreenManager<TId, TScreen>`) used by both Elite's `IView`s and SCR's
+  `Screens/` classes.
+- Shared sound-effect throttling (`AudioController`/`SfxSample`) used by
+  both games instead of a SCR-local throttle.
+- Road-line textures regenerated from the palette (`Rendering/
+  RoadTextures`) and textured onto the road ±11 segments around the
+  player.
+- `CarPhysics.DisplaySpeed` matches ptitSeb's revised formula (dead zone
+  raised to `< 0x1100`, rescaled by `200/128` to fill the cockpit gauge).
+- Control scheme rewritten to match ptitSeb: independent
+  `Accelerate`/`Brake`/`Boost` `CarInput` flags (replacing the old
+  combined-key scheme), mapped to arrow keys + Space in
+  `RaceScreen.ReadInput`.
+- Fixed two pre-existing keyboard bugs surfaced by the control scheme
+  rewrite (shared by Elite and SCR): `SDLHelper` mapped the physical Right
+  Arrow key to the wrong `ConsoleKey`, and `SoftwareKeyboard.IsPressed`'s
+  one-shot semantics broke continuous controls once a second key was held.
+  Added non-consuming `IKeyboard.IsHeld` for continuous polling
+  (`RaceScreen`, Elite's `PilotView`); one-shot menu keys still use
+  `IsPressed`.
 
 ## Architecture / refactoring work identified
 
