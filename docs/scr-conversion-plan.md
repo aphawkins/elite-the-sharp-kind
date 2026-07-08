@@ -146,8 +146,41 @@ the shared engine or removes duplication between the two games.
 
 ## Remaining work
 
-- **Gamepad support**: port `XBOXController.cpp/h` via `Useful.Controls`;
-  not started, keyboard-only so far.
+- **Convert physics from integer fixed-point to float**: `Cars/CarPhysics.*`,
+  `Cars/OpponentPhysics*`, `Cars/AmigaTrig`, `Cars/TrigCoefficients` and the
+  fixed-point scale in `Tracks/Track.LogPrecision` (14, i.e. a 16384 scale)
+  currently use 68000-style scaled-integer arithmetic ported line-by-line
+  from the original assembly; `float`/`Vector3` only appear at the
+  rendering/camera boundary (`Rendering/Scene3D`, `SceneCamera`). Convert
+  the physics core to `float` throughout. Watch for: angle wrapping is
+  currently `& (MaxAngle - 1)` bitmasking and will need an equivalent float
+  wrap; check for any place the code relies on integer truncation/overflow
+  rather than just using it as a scaled representation; the
+  `StuntCarRacerLib.Tests` suite (140+ tests) will need its exact-integer
+  assertions reworked as tolerance-based float comparisons.
+- **Gamepad/joystick support**: port `XBOXController.cpp/h` via
+  `Useful.Controls` for XInput-style controllers, and add support for a USB
+  Competition Pro Extra (a classic digital joystick — 8-way stick + one or
+  two fire buttons, no analog axes). The Competition Pro is a generic HID
+  joystick, not an XInput device, so it needs SDL's joystick API
+  (`SDL_Joystick`/`SDL_GameController` — check which the `ppy.SDL2-CS`
+  package exposes) rather than the XInput path `XBOXController.cpp` uses;
+  the shared abstraction should cover both device classes rather than
+  assuming every gamepad is XInput. Not started, keyboard-only so far.
+- **Cross-platform audit**: audited `src/scr/*` and `src/useful/*` for
+  Windows-only code (`OperatingSystem.IsWindows`, `System.Drawing`, Win32
+  P/Invoke, hardcoded `\` paths, Windows-pinned TFMs) — currently clean;
+  `Directory.Build.props` targets plain `net10.0`, and
+  `StuntCarRacer.csproj`'s `WinExe` output type is cross-platform-safe
+  (behaves as `Exe` elsewhere). Re-check as new code lands. Separately,
+  don't port the C++ source's Windows-only infrastructure — it belongs to
+  the DXUT/DirectSound stack this port bypasses entirely in favour of
+  SDL2 + `Useful.Audio`, and none of it is an actual gameplay feature:
+  DXUT's registry keyboard-mapping prefs and clipboard support
+  (`Common/DXUTgui.cpp`), `ShellExecute`/`OutputDebugStringW` calls, the
+  legacy DirectSound audio path (`StuntCarRacer.cpp:56-162`), and the
+  Windows-only `MessageBox` error dialogs. (XInput gamepad support and
+  dynamic window resizing are already tracked as their own items above.)
 - **Per-effect sound volume**: the original scales grounded/creak effect
   volume by damage level. `AudioController`/`SfxSample` currently has no
   per-play volume parameter.
