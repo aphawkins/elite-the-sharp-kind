@@ -40,6 +40,17 @@ public sealed partial class CarPhysics
     // Track/league dependant in the original (could be added to track data).
     private const int DamagedLimit = 10;
 
+    // Front wheel rotation animation (cockpit display only), from the
+    // original SetOneWheelRotationSpeed/WHEEL_ANGLE_MASK.
+    private const int WheelSpeedLowThreshold = 0x800;
+    private const int WheelSpeedHighOffset = 0x3000;
+    private const int WheelSpeedMax = 0xffff;
+    private const int WheelSpeedMaxClamped = 0xff00;
+    private const int WheelAngleMask = 0xfffff;
+
+    // The damage level at which the original's cockpit crack becomes a hole.
+    private const int SmashDamageThreshold = 0x1400;
+
     // Used to convert a sin value (0-255) into a cosine value; 128 entries
     // indexed by sin/2. See the original Cosine_Conversion_Table.
     private static readonly int[] s_cosineConversion =
@@ -140,6 +151,8 @@ public sealed partial class CarPhysics
     private int _rearHeightDifference;
     private int _frontDifferenceBelowRoad;
     private int _overallDifferenceBelowRoad;
+    private int _frontLeftWheelSpeed;
+    private int _frontRightWheelSpeed;
 
     // Accelerations.
     private int _playerXAcceleration;
@@ -277,6 +290,22 @@ public sealed partial class CarPhysics
         }
     }
 
+    // Number of cockpit crack "holes" (the original nholes), one per smash
+    // since the crack reached the smash threshold.
+    internal int SmashHoles { get; private set; }
+
+    // Front wheel animation frame (0-5), for the cockpit display.
+    internal int LeftWheelFrame => (LeftWheelAngle >> 16) % 6;
+
+    internal int RightWheelFrame => (RightWheelAngle >> 16) % 6;
+
+    // Suspension compression, in cockpit display pixels (the original
+    // old_leftwheel/old_rightwheel): how far the wheel sprite rises into
+    // the wheel well.
+    internal int LeftWheelBounce => _frontLeftAmountBelowRoad >> 6;
+
+    internal int RightWheelBounce => _frontRightAmountBelowRoad >> 6;
+
     // Player position in PC StuntCarRacer format where X and Z equal the render
     // outputs. PlayerY is in Amiga format, positive upwards.
     internal int PlayerX { get; private set; }
@@ -332,6 +361,11 @@ public sealed partial class CarPhysics
     internal bool OffRoadSoundTriggered { get; private set; }
 
     internal bool WreckSoundTriggered { get; private set; }
+
+    // Front wheel rotation angles (cockpit display only).
+    private int LeftWheelAngle { get; set; }
+
+    private int RightWheelAngle { get; set; }
 
     // Reset all car behaviour variables to their initial state (original ResetPlayer).
     public void Reset()
@@ -411,6 +445,11 @@ public sealed partial class CarPhysics
         RearDamage = 0;
         NewDamage = 0;
         _smashedCountdown = 0;
+        SmashHoles = 0;
+        _frontLeftWheelSpeed = 0;
+        _frontRightWheelSpeed = 0;
+        LeftWheelAngle = 0;
+        RightWheelAngle = 0;
 
         _carCollisionXAcceleration = 0;
         _carCollisionYAcceleration = 0;
@@ -551,10 +590,11 @@ public sealed partial class CarPhysics
             return;
         }
 
-        if (_damageValue >= 0x1400)
+        if (_damageValue >= SmashDamageThreshold)
         {
             _smashedCountdown = 69;
             SmashSoundTriggered = true;
+            SmashHoles++;
             return;
         }
 
@@ -743,6 +783,7 @@ public sealed partial class CarPhysics
 
         CalculateXZSpeeds();
 
+        SetWheelRotationSpeed();
         CalculateGravityAcceleration();
         CarCollisionDetection();
 

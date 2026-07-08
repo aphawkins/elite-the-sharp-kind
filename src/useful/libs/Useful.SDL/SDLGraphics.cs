@@ -116,6 +116,37 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         DrawImage(imageType, new(x, y));
     }
 
+    public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize)
+    {
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        nint texture = SDLGuard.Execute(() => SDL_CreateTextureFromSurface(_renderer, _images[imageType]));
+
+        SDL_Rect source = new()
+        {
+            x = (int)sourcePosition.X,
+            y = (int)sourcePosition.Y,
+            w = (int)MathF.Abs(sourceSize.X),
+            h = (int)sourceSize.Y,
+        };
+
+        SDL_FRect dest = new()
+        {
+            x = position.X,
+            y = position.Y,
+            w = size.X,
+            h = size.Y,
+        };
+
+        SDL_RendererFlip flip = sourceSize.X < 0 ? SDL_RendererFlip.SDL_FLIP_HORIZONTAL : SDL_RendererFlip.SDL_FLIP_NONE;
+        SDLGuard.Execute(() => SDL_RenderCopyExF(_renderer, texture, ref source, ref dest, 0, nint.Zero, flip));
+
+        SDL_DestroyTexture(texture);
+    }
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color)
     {
         if (_isDisposed)

@@ -22,6 +22,13 @@ public interface IGraphics
 
     public void DrawImageCentre(string imageType, float y);
 
+    /// <summary>
+    /// Draw a sub-rectangle of a loaded image scaled to the destination
+    /// size (sprite-sheet support). A negative sourceSize.X draws the part
+    /// mirrored horizontally. Fully transparent pixels are skipped.
+    /// </summary>
+    public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize);
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color);
 
     public void DrawPixel(Vector2 position, uint color);

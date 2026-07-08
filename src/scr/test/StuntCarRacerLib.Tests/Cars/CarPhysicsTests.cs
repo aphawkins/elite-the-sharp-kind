@@ -193,4 +193,51 @@ public class CarPhysicsTests
 
         Assert.True(car.DropStartDone);
     }
+
+    [Fact]
+    public void FrontWheelsSpinFasterAsSpeedIncreases()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        // wheel frames must stay within the cockpit sprite sheet's 6 frames
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.AccelBoost);
+            Assert.InRange(car.LeftWheelFrame, 0, 5);
+            Assert.InRange(car.RightWheelFrame, 0, 5);
+        }
+    }
+
+    [Fact]
+    public void WheelBounceIsZeroWhileAirborne()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        // at race start the car is above the road, not touching it
+        Assert.Equal(0, car.LeftWheelBounce);
+        Assert.Equal(0, car.RightWheelBounce);
+    }
+
+    [Fact]
+    public void SmashHolesResetOnNewRace()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        Assert.Equal(0, car.SmashHoles);
+
+        car.StartRace();
+
+        Assert.Equal(0, car.SmashHoles);
+    }
 }

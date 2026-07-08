@@ -289,15 +289,26 @@ public sealed class StuntCarRacerMain : IGame
         Sound.PlayLoop(sample, frequency / sampleRate);
     }
 
-    // The in-game display: the Amiga dashboard (chassis beam with damage
-    // crack, speed bar, lap/boost/distance read-outs) plus the remake's
-    // text overlays (opponent name at race start, race result).
+    // The in-game display: the cockpit overlay (wheels, engine, damage
+    // crack/holes, speed bar, lap/boost/distance read-outs) plus the
+    // remake's text overlays (opponent name at race start, race result).
     internal void DrawHud(bool gameOver)
     {
         uint white = ScrPalette.Colour(Track.ScrBaseColour + 15);
         float height = Graphics.ScreenHeight;
 
-        _hud.Draw(Car.LapNumber, Car.BoostReserve, Car.NewDamage, Car.PlayerZSpeed, Opponent.DistanceToPlayer());
+        _hud.Draw(new(
+            Car.LeftWheelFrame,
+            Car.RightWheelFrame,
+            Car.LeftWheelBounce,
+            Car.RightWheelBounce,
+            Car.BoostActivated != 0,
+            Car.NewDamage,
+            Car.SmashHoles,
+            Car.DisplaySpeed,
+            Car.LapNumber,
+            Car.BoostReserve,
+            Opponent.DistanceToPlayer()));
 
         // output the opponent's name for four seconds at race start
         if (RaceTick < 4 * TickRate)

@@ -12,9 +12,14 @@ using Useful.Graphics.Fakes;
 
 namespace StuntCarRacerLib.Fakes;
 
-public sealed class FakeAbstraction : IAbstraction
+public sealed class FakeAbstraction(IGraphics graphics) : IAbstraction
 {
-    public IGraphics Graphics { get; } = new FakeGraphics();
+    public FakeAbstraction()
+        : this(new FakeGraphics())
+    {
+    }
+
+    public IGraphics Graphics { get; } = graphics;
 
     public ISound Sound { get; } = new FakeSound();
 

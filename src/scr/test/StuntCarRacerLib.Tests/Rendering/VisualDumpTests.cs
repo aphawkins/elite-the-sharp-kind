@@ -93,16 +93,27 @@ public class VisualDumpTests
 
         RenderAndSave("frame_ramp.bmp");
 
-        // the driving frame with the in-game dashboard over it: chassis
-        // beam with a part-grown damage crack, speed bar and read-outs
-        HudRenderer hud = new(graphics, new Random(5));
+        // the driving frame with the in-game cockpit overlay: wheels,
+        // engine, a part-grown damage crack, speed bar and read-outs
+        HudRenderer hud = new(graphics);
         camera.FollowCar(car);
         graphics.Clear();
         backdrop.Draw(camera);
         worldPolygons.Clear();
         opponentRenderer.AppendWorldPolygons(worldPolygons);
         renderer.Draw(camera, worldPolygons, car.CurrentPiece, car.CurrentSegment);
-        hud.Draw(2, 15, 120, car.PlayerZSpeed, -340);
+        hud.Draw(new CockpitState(
+            car.LeftWheelFrame,
+            car.RightWheelFrame,
+            car.LeftWheelBounce,
+            car.RightWheelBounce,
+            car.BoostActivated != 0,
+            120,
+            0,
+            car.DisplaySpeed,
+            2,
+            15,
+            -340));
         graphics.ScreenUpdate();
         Assert.NotNull(lastFrame);
         SaveBmp(lastFrame, Path.Combine(outDir, "frame_hud.bmp"));
@@ -119,6 +130,21 @@ public class VisualDumpTests
             car.Y,
             car.Z);
         RenderAndSave("frame_preview.bmp", followCar: false);
+
+        // the track menu's authentic menu.png overlay (transparent centre
+        // panel over the orbiting world view)
+        graphics.Clear();
+        backdrop.Draw(camera);
+        renderer.Draw(camera);
+        graphics.DrawImagePart(
+            "Menu",
+            new(0, 0),
+            new(graphics.ScreenWidth, graphics.ScreenHeight),
+            new(0, 0),
+            new(320, 200));
+        graphics.ScreenUpdate();
+        Assert.NotNull(lastFrame);
+        SaveBmp(lastFrame, Path.Combine(outDir, "frame_menu.bmp"));
     }
 
     private static void SaveBmp(FastBitmap bitmap, string path)

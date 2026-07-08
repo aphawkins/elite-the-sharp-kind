@@ -31,6 +31,37 @@ public sealed partial class CarPhysics
         _frontLeftActualHeight >>= 8;
     }
 
+    // Front wheel rotation animation for the cockpit display (the original
+    // SetWheelRotationSpeed): faster when touching the road, decaying
+    // otherwise. The right wheel angle is accumulated from the left wheel's
+    // already-updated angle, matching the original's literal source.
+    private void SetWheelRotationSpeed()
+    {
+        _frontLeftWheelSpeed = CalculateWheelRotationSpeed(_frontLeftAmountBelowRoad, _frontLeftWheelSpeed);
+        _frontRightWheelSpeed = CalculateWheelRotationSpeed(_frontRightAmountBelowRoad, _frontRightWheelSpeed);
+
+        LeftWheelAngle = (LeftWheelAngle + _frontLeftWheelSpeed) & WheelAngleMask;
+        RightWheelAngle = (LeftWheelAngle + _frontRightWheelSpeed) & WheelAngleMask;
+    }
+
+    private int CalculateWheelRotationSpeed(int wheelAmountBelowRoad, int wheelRotationSpeed)
+    {
+        if (wheelAmountBelowRoad == 0)
+        {
+            // not touching the road: decay by a quarter
+            return wheelRotationSpeed - (wheelRotationSpeed / 4);
+        }
+
+        int speed = Math.Abs(PlayerZSpeed);
+        if (speed < WheelSpeedLowThreshold)
+        {
+            return speed * 8;
+        }
+
+        int result = (speed * 2) + WheelSpeedHighOffset;
+        return result > WheelSpeedMax ? WheelSpeedMaxClamped : result;
+    }
+
     // Calculate player's actual X/Z speeds by rotating world speed values.
     private void CalculateXZSpeeds()
     {

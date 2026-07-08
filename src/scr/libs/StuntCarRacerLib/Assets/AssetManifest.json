@@ -1,4 +1,8 @@
 {
+  "Images": {
+    "Atlas": "atlas.bmp",
+    "Menu": "menu.bmp"
+  },
   "FontsBitmap": {
     "Small": "font1.bmp",
     "Large": "font2.bmp"

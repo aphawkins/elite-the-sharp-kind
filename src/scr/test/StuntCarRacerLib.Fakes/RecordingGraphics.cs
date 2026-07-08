@@ -14,6 +14,12 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
 
     public IList<(Vector2[] Points, Vector2[] TextureCoords, FastBitmap Texture)> TexturedPolygons { get; } = [];
 
+    public IList<(string ImageType, Vector2 Position, Vector2 Size, Vector2 SourcePosition, Vector2 SourceSize)> ImageParts { get; } = [];
+
+    public IList<(Vector2 Position, float Width, float Height, uint Colour)> FilledRectangles { get; } = [];
+
+    public IList<(Vector2 Position, string Text, string FontType, uint Colour)> LeftTexts { get; } = [];
+
     public int ClearCount { get; private set; }
 
     public int ScreenUpdateCount { get; private set; }
@@ -42,6 +48,9 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     {
     }
 
+    public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize)
+        => ImageParts.Add((imageType, position, size, sourcePosition, sourceSize));
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color)
     {
     }
@@ -69,16 +78,14 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     }
 
     public void DrawRectangleFilled(Vector2 position, float width, float height, uint color)
-    {
-    }
+        => FilledRectangles.Add((position, width, height, color));
 
     public void DrawTextCentre(float y, string text, string fontType, uint color)
     {
     }
 
     public void DrawTextLeft(Vector2 position, string text, string fontType, uint color)
-    {
-    }
+        => LeftTexts.Add((position, text, fontType, color));
 
     public void DrawTextRight(Vector2 position, string text, string fontType, uint color)
     {

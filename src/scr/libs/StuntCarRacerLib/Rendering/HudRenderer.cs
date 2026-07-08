@@ -8,209 +8,197 @@ using Useful.Graphics;
 
 namespace StuntCarRacerLib.Rendering;
 
-// The in-game dashboard from the original Amiga game (StuntCarRacer.s):
-// the chassis beam along the top of the screen carrying the damage crack
-// (damage.line), the speed bar (display.speed.bar) and the lap ("L"),
-// boost ("B") and opponent-distance read-outs on the bottom panel
-// (print.lap.boost.text and friends). The original beam and panel artwork
-// was bitmap data on the Amiga disk, so the panels here are flat shapes,
-// but the layout and behaviour follow the assembler source. Layout is in
-// the original's 320x200 coordinates, scaled to the screen.
-[System.Diagnostics.CodeAnalysis.SuppressMessage(
-    "Security",
-    "CA5394:Do not use insecure randomness",
-    Justification = "Gameplay randomness only (the damage crack's random walk).")]
+// The in-game cockpit overlay, ported from the ptitSeb/stuntcarremake
+// DrawCockpit: the wheel-well/dashboard frame, front wheel sprites that
+// bounce with the suspension and spin with road speed, the engine (with a
+// boost flame animation), the damage crack image revealed progressively by
+// damage, smash holes, the speed bar, and the lap/boost/opponent-distance
+// read-outs. All sprites come from the single Atlas image (converted
+// one-time from the original's Bitmap/atlas.png); layout is in the
+// original's 640x480 standard-resolution coordinate space, scaled to the
+// screen. The Super League ("2"-suffixed) atlas variants are not used yet.
 internal sealed class HudRenderer
 {
-    // The crack length at which the original wrecked the car ($f0).
-    internal const int MaxCrackLength = 240;
+    private const string Atlas = "Atlas";
 
-    private const float AmigaWidth = 320f;
-    private const float AmigaHeight = 200f;
+    private const float BaseWidth = 640f;
+    private const float BaseHeight = 480f;
+
+    private const int WheelWidth = 24;
+    private const int WheelHeight = 56;
+    private const int HoleWidth = 12;
+    private const int HoleHeight = 8;
+    private const int CrackingWidth = 238;
+    private const int CrackingHeight = 8;
+
+    // Cockpit layout, in the 640x480 virtual canvas (original DrawCockpit,
+    // non-widescreen).
+    private const float WheelLeftOffset = 31f;
+    private const float WheelBottomGap = 20f;
+    private const float EngineDestX = 84f;
+    private const float EngineDestWidth = 235f * 2f;
+    private const float EngineDestY = 123f * 2.4f;
+    private const float EngineDestHeight = 35f * 2.4f;
+    private const float TopDestX = 41f * 2f;
+    private const float TopDestWidth = 238f * 2f;
+    private const float TopDestHeight = 16f * 2.4f;
+    private const float SideDestHeight = 153f * 2.4f;
+    private const float DamageDestHeight = 8f * 2.4f;
+    private const float HoleDestX = 47f * 2f;
+    private const float HoleDestSpacing = 24f * 2f;
+    private const float SpeedBarDestX = 196f;
+    private const float SpeedBarDestY = BaseHeight - 61f;
+    private const float SpeedBarDestWidth = 242f;
+    private const float SpeedBarDestHeight = 3f;
+    private const int SpeedBarMax = 240;
+    private const float RightWheelDestX = BaseWidth - (WheelLeftOffset * 2f) - (WheelWidth * 2f);
+    private const float FrameRightDestX = TopDestX + TopDestWidth;
+    private const float BottomDestHeight = BaseHeight - SideDestHeight;
+
+    // Amiga StuntCarRacer 1024x1024 atlas coordinates (InitAtlasCoord,
+    // Windows/DirectX branch: top-down, matching our BMP loader).
+    private static readonly int[] s_wheelSourceX = [160, 128, 96, 64, 32, 0];
+    private static readonly AtlasRect s_hole = new(0, 64, HoleWidth, HoleHeight);
+    private static readonly AtlasRect s_cracking = new(0, 128, CrackingWidth, CrackingHeight);
+    private static readonly AtlasRect s_cockpitTop = new(41, 160, 238, 16);
+    private static readonly AtlasRect s_cockpitLeft = new(0, 160, 41, 153);
+    private static readonly AtlasRect s_cockpitRight = new(279, 160, 41, 153);
+    private static readonly AtlasRect s_cockpitBottom = new(0, 313, 320, 47);
+    private static readonly AtlasRect s_engine = new(42, 592, 235, 35);
+    private static readonly AtlasRect s_engineFlames0 = new(42, 784, 235, 35);
+    private static readonly AtlasRect s_engineFlames1 = new(42, 976, 235, 35);
+    private static readonly AtlasRect s_engineFlames2 = new(362, 123, 235, 35);
+
+    // The engine flame cycles through these frames every other tick while
+    // boost is applied (the original's engineframes[8] table).
+    private static readonly int[] s_engineFlameFrames = [0, 0, 0, 1, 2, 2, 2, 1];
 
     private readonly IGraphics _graphics;
-    private readonly Random _random;
 
-    // One entry per crack pixel: the row the random walk reached and
-    // whether it moved down (which picks the other highlight colour).
-    private readonly List<(int Row, bool MovedDown)> _crack = new(MaxCrackLength);
-
-    private int _crackRow = 4;
+    private int _engineFlameTick;
 
     internal HudRenderer(IGraphics graphics)
-        : this(graphics, new Random())
-    {
-    }
-
-    internal HudRenderer(IGraphics graphics, Random random)
     {
         Guard.ArgumentNull(graphics);
-        Guard.ArgumentNull(random);
-
         _graphics = graphics;
-        _random = random;
     }
 
-    internal IReadOnlyList<(int Row, bool MovedDown)> Crack => _crack;
-
-    // The speed bar position from the original display.speed.bar: 183/256
-    // of the speed above $1100, in 128ths. The original subtracted 128
-    // rather than clamping, wrapping the bar around at very high speed.
-    internal static int SpeedBarLength(int playerZSpeed)
+    internal void Draw(in CockpitState state)
     {
-        int length = playerZSpeed - 0x1100;
-        if (length < 0)
-        {
-            length = 0;
-        }
+        float scaleX = _graphics.ScreenWidth / BaseWidth;
+        float scaleY = _graphics.ScreenHeight / BaseHeight;
 
-        length = (int)(((long)length * 0xB700) >> 16) >> 7;
-        if (length >= 128)
-        {
-            length -= 128;
-        }
+        DrawWheel(scaleX, scaleY, WheelLeftOffset * 2f, mirrored: false, state.LeftWheelFrame, state.LeftWheelBounce);
+        DrawWheel(scaleX, scaleY, RightWheelDestX, mirrored: true, state.RightWheelFrame, state.RightWheelBounce);
 
-        return Math.Clamp(length, 0, 128);
+        DrawEngine(scaleX, scaleY, state.BoostActivated);
+        DrawFrame(scaleX, scaleY);
+        DrawDamage(scaleX, scaleY, state.NewDamage, state.SmashHoles);
+        DrawSpeedBar(scaleX, scaleY, state.DisplaySpeed);
+        DrawReadouts(scaleX, scaleY, state.LapNumber, state.BoostReserve, state.OpponentDistance);
     }
 
-    internal void Draw(int lapNumber, int boostReserve, int newDamage, int playerZSpeed, int opponentDistance)
+    private void DrawWheel(float scaleX, float scaleY, float destX, bool mirrored, int frame, int bounce)
     {
-        UpdateCrack(newDamage);
+        float destY1 = BaseHeight - (WheelHeight * 2.4f) - (WheelBottomGap * 2.4f) - bounce;
+        float destY2 = BaseHeight - (WheelBottomGap * 2.4f) - bounce;
+        AtlasRect source = new(s_wheelSourceX[frame], 0, WheelWidth, WheelHeight);
 
-        float sx = _graphics.ScreenWidth / AmigaWidth;
-        float sy = _graphics.ScreenHeight / AmigaHeight;
-
-        DrawBeam(sx, sy);
-        DrawPanel(sy);
-        DrawSpeedBar(sx, sy, playerZSpeed);
-        DrawReadouts(sx, sy, lapNumber, boostReserve, opponentDistance);
+        DrawSprite(scaleX, scaleY, destX, destY1, WheelWidth * 2f, destY2 - destY1, source, mirrored);
     }
 
-    // Advance the crack to match the damage (the original damage.line
-    // redrew incrementally into a persistent framebuffer; here the crack
-    // path is remembered and redrawn each frame). Damage dropping below
-    // the crack means a new race, so the crack starts over.
-    private void UpdateCrack(int newDamage)
+    private void DrawEngine(float scaleX, float scaleY, bool boostActivated)
     {
-        if (newDamage < _crack.Count)
+        AtlasRect source = s_engine;
+        if (boostActivated)
         {
-            _crack.Clear();
-            _crackRow = 4;
-        }
-
-        while (_crack.Count < Math.Min(newDamage, MaxCrackLength))
-        {
-            AdvanceCrack();
-        }
-    }
-
-    // One pixel of crack (the original dl2-dl7): a random walk that only
-    // wanders on every other pixel, biased to stay within the beam.
-    private void AdvanceCrack()
-    {
-        int drawn = _crack.Count + 1;
-        int row = _crackRow;
-
-        if ((drawn & 1) == 0 && RandomBit())
-        {
-            if (RandomBit())
+            _engineFlameTick = (_engineFlameTick + 1) % 16;
+            int flame = s_engineFlameFrames[_engineFlameTick >> 1];
+            source = flame switch
             {
-                if (row < 5)
-                {
-                    row++;
-                }
-                else if (!RandomBit())
-                {
-                    row = StepUp(row);
-                }
-
-                // else subq then addq: stays put
-            }
-            else
-            {
-                row = StepUp(row);
-            }
+                0 => s_engineFlames0,
+                1 => s_engineFlames1,
+                _ => s_engineFlames2,
+            };
         }
 
-        bool movedDown = row > _crackRow;
-        _crackRow = row;
-        _crack.Add((row, movedDown));
+        DrawSprite(scaleX, scaleY, EngineDestX, EngineDestY, EngineDestWidth, EngineDestHeight, source);
     }
 
-    // The original dl4/dl5: move up a row, unless already near the top of
-    // the beam where the walk hesitates.
-    private int StepUp(int row) => row >= 3 ? row - 1 : (RandomBit() ? row : row + 1);
-
-    private bool RandomBit() => _random.Next(2) != 0;
-
-    // The chassis beam across the top of the screen with the damage crack:
-    // two black pixels per column with a highlight pixel above, at
-    // x = 40 + damage (the original plotted at rows row, row-1 and row-2).
-    private void DrawBeam(float sx, float sy)
+    // The cockpit frame: top bar, both side pillars and the bottom
+    // dashboard, drawn around the (transparent) view of the world.
+    private void DrawFrame(float scaleX, float scaleY)
     {
-        uint beam = ScrPalette.Colour(Tracks.Track.ScrBaseColour + 14);
-        uint shadow = ScrPalette.Colour(Tracks.Track.ScrBaseColour + 13);
-        uint black = ScrPalette.Colour(Tracks.Track.ScrBaseColour);
+        DrawSprite(scaleX, scaleY, TopDestX, 0, TopDestWidth, TopDestHeight, s_cockpitTop);
+        DrawSprite(scaleX, scaleY, 0, 0, TopDestX, SideDestHeight, s_cockpitLeft);
+        DrawSprite(scaleX, scaleY, FrameRightDestX, 0, BaseWidth - FrameRightDestX, SideDestHeight, s_cockpitRight);
+        DrawSprite(scaleX, scaleY, 0, SideDestHeight, BaseWidth, BottomDestHeight, s_cockpitBottom);
+    }
 
-        _graphics.DrawRectangleFilled(new(0, 0), _graphics.ScreenWidth, 8 * sy, beam);
-        _graphics.DrawRectangleFilled(new(0, 8 * sy), _graphics.ScreenWidth, sy, shadow);
-
-        for (int i = 0; i < _crack.Count; i++)
+    // The damage crack image is revealed progressively (not stretched): the
+    // sampled source width grows with damage at a constant 2x scale, so it
+    // looks like more of the crack appearing rather than the art warping.
+    // Smash holes appear side by side once damage passes the smash threshold.
+    private void DrawDamage(float scaleX, float scaleY, int newDamage, int smashHoles)
+    {
+        int dam = Math.Clamp(newDamage, 0, CrackingWidth);
+        if (dam > 0)
         {
-            (int row, bool movedDown) = _crack[i];
-            float x = (41 + i) * sx;
-            uint highlight = ScrPalette.Colour(Tracks.Track.ScrBaseColour + (movedDown ? 12 : 11));
-
-            _graphics.DrawRectangleFilled(new(x, (row - 2) * sy), sx, sy, highlight);
-            _graphics.DrawRectangleFilled(new(x, (row - 1) * sy), sx, 2 * sy, black);
+            AtlasRect crack = s_cracking with { Width = dam };
+            DrawSprite(scaleX, scaleY, TopDestX, 0, dam * 2f, DamageDestHeight, crack);
         }
-    }
 
-    // The dashboard panel across the bottom of the screen (the read-outs
-    // and speed bar sat on the cockpit artwork from y=170 down).
-    private void DrawPanel(float sy)
-    {
-        uint panel = ScrPalette.Colour(Tracks.Track.ScrBaseColour + 8);
-        uint edge = ScrPalette.Colour(Tracks.Track.ScrBaseColour + 14);
-
-        _graphics.DrawRectangleFilled(new(0, 170 * sy), _graphics.ScreenWidth, 30 * sy, panel);
-        _graphics.DrawRectangleFilled(new(0, 170 * sy), _graphics.ScreenWidth, sy, edge);
-    }
-
-    // The speed bar at (96,174), up to 128 pixels long and two rows tall.
-    private void DrawSpeedBar(float sx, float sy, int playerZSpeed)
-    {
-        uint black = ScrPalette.Colour(Tracks.Track.ScrBaseColour);
-        uint white = ScrPalette.Colour(Tracks.Track.ScrBaseColour + 15);
-
-        _graphics.DrawRectangleFilled(new(96 * sx, 174 * sy), 128 * sx, 2 * sy, black);
-
-        int length = SpeedBarLength(playerZSpeed);
-        if (length > 0)
+        for (int i = 0; i < smashHoles; i++)
         {
-            _graphics.DrawRectangleFilled(new(96 * sx, 174 * sy), length * sx, 2 * sy, white);
+            float holeDestX = HoleDestX + (HoleDestSpacing * i);
+            DrawSprite(scaleX, scaleY, holeDestX, 0, HoleWidth * 2f, DamageDestHeight, s_hole);
         }
     }
 
-    // "L <lap>" and "B <boost>" on character row 22 and the signed
-    // opponent distance on row 23, as the original print.lap.boost.text,
-    // boost.print and display.opponent.distance laid them out.
-    private void DrawReadouts(float sx, float sy, int lapNumber, int boostReserve, int opponentDistance)
+    // The dashboard speed bar: yellow up to 240 display-speed units, then
+    // orange for the wrapped remainder above that (the original's
+    // COCKPIT_SPEEDBAR_MAX wrap, not a clamp).
+    private void DrawSpeedBar(float scaleX, float scaleY, int displaySpeed)
+    {
+        int length = displaySpeed > SpeedBarMax ? displaySpeed - SpeedBarMax : displaySpeed;
+        float width = Math.Clamp(length / (float)SpeedBarMax, 0f, 1f) * SpeedBarDestWidth;
+        if (width <= 0)
+        {
+            return;
+        }
+
+        uint colour = displaySpeed > SpeedBarMax ? 0xFFFFCC00 : 0xFFFFFF00;
+        System.Numerics.Vector2 position = new(SpeedBarDestX * scaleX, SpeedBarDestY * scaleY);
+        _graphics.DrawRectangleFilled(position, width * scaleX, SpeedBarDestHeight * scaleY, colour);
+    }
+
+    // "L <lap>" / "B <boost>" and the signed opponent distance, printed in
+    // black onto the dashboard's read-out panels (print.lap.boost.text
+    // and friends, at the original's screen positions).
+    private void DrawReadouts(float scaleX, float scaleY, int lapNumber, int boostReserve, int opponentDistance)
     {
         const string font = StuntCarRacerMain.SmallFont;
-        uint white = ScrPalette.Colour(Tracks.Track.ScrBaseColour + 15);
+        const uint black = 0xFF000000;
 
         string lap = lapNumber > 0 ? lapNumber.ToString(CultureInfo.InvariantCulture) : " ";
-        _graphics.DrawTextLeft(new(42 * sx, 178 * sy), "L", font, white);
-        _graphics.DrawTextLeft(new(50 * sx, 178 * sy), lap, font, white);
+        _graphics.DrawTextLeft(new(88 * scaleX, (BaseHeight - 48f) * scaleY), $"L{lap}", font, black);
 
         string boost = Math.Clamp(boostReserve, 0, 99).ToString("D2", CultureInfo.InvariantCulture);
-        _graphics.DrawTextLeft(new(66 * sx, 178 * sy), "B", font, white);
-        _graphics.DrawTextLeft(new(76 * sx, 178 * sy), boost, font, white);
+        _graphics.DrawTextLeft(new(150 * scaleX, (BaseHeight - 48f) * scaleY), $"B{boost}", font, black);
 
-        // the original printed a space or '-' then four digits
-        string sign = opponentDistance < 0 ? "-" : " ";
+        string sign = opponentDistance < 0 ? "-" : "+";
         string distance = Math.Clamp(Math.Abs(opponentDistance), 0, 9999).ToString("D4", CultureInfo.InvariantCulture);
-        _graphics.DrawTextLeft(new(49 * sx, 188 * sy), sign + distance, font, white);
+        _graphics.DrawTextLeft(new(84 * scaleX, (BaseHeight - 25f) * scaleY), sign + distance, font, black);
     }
+
+    private void DrawSprite(
+        float scaleX, float scaleY, float destX, float destY, float destWidth, float destHeight, in AtlasRect source, bool mirrored = false)
+        => _graphics.DrawImagePart(
+            Atlas,
+            new(destX * scaleX, destY * scaleY),
+            new(destWidth * scaleX, destHeight * scaleY),
+            new(source.X, source.Y),
+            new(mirrored ? -source.Width : source.Width, source.Height));
+
+    private readonly record struct AtlasRect(int X, int Y, int Width, int Height);
 }

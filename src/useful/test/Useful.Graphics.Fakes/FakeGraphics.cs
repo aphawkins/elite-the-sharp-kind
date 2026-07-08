@@ -32,6 +32,10 @@ public sealed class FakeGraphics : IGraphics
     {
     }
 
+    public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize)
+    {
+    }
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color)
     {
     }

@@ -1,6 +1,10 @@
 # Stunt Car Racer → EliteSharp-style C# conversion plan
 
-Source: `C:\code\github\fluffyfreak\stuntcarracer` (C++, DirectX9/DXUT + SDL2)
+Source: `C:\code\github\ptitSeb\stuntcarremake` (C++, DirectX9/DXUT + SDL2;
+a maintained fork of the original `fluffyfreak/stuntcarracer` remake, with
+a graphical cockpit HUD, gamepad/Linux/web ports and other fixes). Earlier
+work in this conversion was ported from `fluffyfreak/stuntcarracer` before
+the switch; where the two diverge, ptitSeb's is now the source of truth.
 Target: `C:\code\github\aphawkins\elite-the-sharp-kind` (this repo), as a new sibling
 game alongside Elite, sharing the `src/useful/*` libraries.
 
@@ -72,13 +76,31 @@ Keep it accurate and lean:
   scenery types, N cycles them in-game.
 - Car mesh (`Rendering/CarMesh`) — wheels + wedge body, used to draw the
   opponent.
-- Bitmap-font dashboard/HUD text: opponent name, lap/boost/distance,
-  speed/damage, flashing race result, game over.
-- Graphical in-game HUD ported from the Amiga source (`Rendering/
-  HudRenderer`): chassis beam with the random-walk damage crack
-  (damage.line), speed bar (display.speed.bar), and lap/boost/opponent-
-  distance read-outs at the original layout positions. The original's
-  beam/panel bitmap artwork is approximated with flat shapes.
+- Bitmap-font text overlays: opponent name at race start, flashing race
+  result, game over.
+- Graphical cockpit HUD ported from ptitSeb's `DrawCockpit`/atlas
+  (`Rendering/HudRenderer`, `Rendering/CockpitState`): front wheel sprites
+  that bounce with suspension and spin with road speed (`CarPhysics`
+  gained `LeftWheelFrame`/`RightWheelFrame`/`LeftWheelBounce`/
+  `RightWheelBounce`, ported from `SetWheelRotationSpeed`), an engine with
+  a boost flame animation, the damage crack image revealed progressively
+  by damage plus smash holes (`CarPhysics.SmashHoles`, from `UpdateDamage`/
+  `nholes`), the speed bar, and lap/boost/opponent-distance read-outs.
+  Sprites come from a single converted `atlas.bmp` (`Assets/Images`,
+  registered in `AssetManifest.json`) via the new
+  `IGraphics.DrawImagePart` (scaled sub-rectangle blit with horizontal
+  mirroring, implemented in `SoftwareGraphics`/`SDLGraphics` and both
+  fakes). Super League ("2"-suffixed) atlas variants are not used yet.
+- Track menu background (`Screens/TrackMenuScreen`): draws ptitSeb's
+  `Bitmap/menu.png` (converted to `Assets/Images/menu.bmp`) as a
+  full-screen overlay after the 3D world; its centre panel is transparent
+  so the orbiting track view still shows through, with the track list
+  positioned inside it. This is a cosmetic addition beyond strict
+  porting — the actual ptitSeb game never loads `menu.png` (confirmed: no
+  `LoadTexture`/`CreateTextureFromResource` call for it in `StuntCarRacer.cpp`);
+  its own track menu is still plain DXUT text, same as before the source
+  switch, so this is the only intentional visual divergence from ptitSeb's
+  actual behaviour.
 - Sound via `Useful.Audio`: variable-pitch engine loop
   (`PitchedLoopSampleProvider`), effect triggers, samples converted to WAV
   assets under `Assets/SFX`.
@@ -153,6 +175,20 @@ the shared engine or removes duplication between the two games.
 - **Full damage should wreck the car**: the original's damage.line wrecks
   the car (car.is.wrecked) when the crack reaches the end of the beam
   (240); the HUD caps the crack but nothing wrecks the car.
+- **Super League**: ptitSeb added a `bSuperLeague` toggle (the 'L' key on
+  the track menu) that swaps in alternate track colours/road-line textures
+  (`SCR_BASE_COLOUR+16/17/18`), alternate opponent speed tables
+  (`opp_track_speed_values[TrackID+32]`), and the atlas's "2"-suffixed
+  cockpit/road sprite variants. Not started — would need a menu toggle,
+  `RoadTextures`/`ScrPalette` alternates, and wiring `CarPhysics
+  .RoadCushionValue`/`OpponentPhysics` speed tables to the mode (the
+  `RoadCushionValue` property already exists for this but nothing sets it).
+- **Widescreen/dynamic window resizing**: ptitSeb's Windows build supports
+  resizable windows with dynamic cockpit/font scaling
+  (`GetScreenDimensions`, `COCKPIT_WIDESCREEN_OFFSET`); out of scope while
+  the app targets a fixed 640x400 window, and `HudRenderer`/
+  `TrackMenuScreen` assume that fixed size when computing their scale
+  factors.
 
 ## Validation
 

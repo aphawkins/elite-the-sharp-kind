@@ -153,6 +153,54 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(imageType, new(x, y));
     }
 
+    public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize)
+    {
+        Debug.Assert(Images.ContainsKey(imageType), "Image has not been loaded");
+
+        FastBitmap bitmap = Images[imageType];
+        bool mirrorX = sourceSize.X < 0;
+        float sourceWidth = Math.Abs(sourceSize.X);
+        float sourceHeight = sourceSize.Y;
+        int destWidth = (int)MathF.Round(size.X);
+        int destHeight = (int)MathF.Round(size.Y);
+        if (destWidth <= 0 || destHeight <= 0 || sourceWidth <= 0 || sourceHeight <= 0)
+        {
+            return;
+        }
+
+        for (int dy = 0; dy < destHeight; dy++)
+        {
+            int y = (int)(position.Y + dy);
+            if (y < 0 || y >= (int)ScreenHeight)
+            {
+                continue;
+            }
+
+            // nearest-neighbour sample from the centre of each destination pixel
+            int sy = (int)(sourcePosition.Y + ((dy + 0.5f) * sourceHeight / destHeight));
+            sy = Math.Clamp(sy, 0, bitmap.Height - 1);
+
+            for (int dx = 0; dx < destWidth; dx++)
+            {
+                int x = (int)(position.X + dx);
+                if (x < 0 || x >= (int)ScreenWidth)
+                {
+                    continue;
+                }
+
+                float fx = (dx + 0.5f) * sourceWidth / destWidth;
+                int sx = (int)(sourcePosition.X + (mirrorX ? sourceWidth - fx : fx));
+                sx = Math.Clamp(sx, 0, bitmap.Width - 1);
+
+                uint color = bitmap.GetPixel(sx, sy);
+                if ((color & 0xFF000000) != 0)
+                {
+                    DrawPixel(x, y, color);
+                }
+            }
+        }
+    }
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color)
         => DrawLineInt(
             (int)MathF.Floor(lineStart.X),

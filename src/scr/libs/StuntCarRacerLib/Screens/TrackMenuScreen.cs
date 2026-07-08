@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Globalization;
+using System.Numerics;
 using StuntCarRacerLib.Cars;
 using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
@@ -12,8 +13,25 @@ namespace StuntCarRacerLib.Screens;
 
 // The track list and orbiting camera (original HandleTrackMenu /
 // CalcTrackMenuViewpoint). Not throttled by the frame gap.
+//
+// The original's HandleTrackMenu is plain text over the 3D world (the
+// Bitmap/menu.png background art in stuntcarremake is never actually
+// loaded by that game's code). This drawn overlay is a cosmetic addition
+// beyond strict porting: menu.png's centre panel is transparent, so the
+// orbiting track view still shows through, with the track list positioned
+// inside the panel.
 internal sealed class TrackMenuScreen : IGameScreen
 {
+    private const string MenuImage = "Menu";
+
+    // menu.png is 320x200; its centre panel (inset from the measured
+    // transparent bounds to clear the wooden frame/logo) in that space.
+    private const float CanvasWidth = 320f;
+    private const float PanelLeft = 38f;
+    private const float PanelTop = 70f;
+    private const float PanelBottom = 190f;
+    private const float RowHeight = 11f;
+
     private readonly StuntCarRacerMain _game;
     private int _orbitAngle;
 
@@ -56,11 +74,20 @@ internal sealed class TrackMenuScreen : IGameScreen
         // the original only shows the opponent outside the track menu
         _game.DrawWorld(showOpponent: false);
 
+        // menu.png's frame draws over the world; its centre panel is
+        // transparent so the orbiting track view still shows through
+        _game.Graphics.DrawImagePart(
+            MenuImage,
+            Vector2.Zero,
+            new(_game.Graphics.ScreenWidth, _game.Graphics.ScreenHeight),
+            Vector2.Zero,
+            new(CanvasWidth, 200f));
+
+        float scale = _game.Graphics.ScreenWidth / CanvasWidth;
         uint yellow = ScrPalette.Colour(Track.ScrBaseColour + 3);
         uint white = ScrPalette.Colour(Track.ScrBaseColour + 15);
-        float height = _game.Graphics.ScreenHeight;
 
-        _game.Graphics.DrawTextLeft(new(2, 40), "Choose track :-", StuntCarRacerMain.SmallFont, yellow);
+        _game.Graphics.DrawTextLeft(new(PanelLeft * scale, PanelTop * scale), "Choose track :-", StuntCarRacerMain.SmallFont, yellow);
 
         for (int i = 0; i < 8; i++)
         {
@@ -77,20 +104,21 @@ internal sealed class TrackMenuScreen : IGameScreen
             };
 
             uint colour = _game.Track.Id == (TrackId)i ? white : yellow;
+            float y = PanelTop + RowHeight + (i * RowHeight);
             _game.Graphics.DrawTextLeft(
-                new(2, 60 + (i * 16)),
+                new(PanelLeft * scale, y * scale),
                 string.Create(CultureInfo.InvariantCulture, $"'{i + 1}' -  {name}"),
                 StuntCarRacerMain.SmallFont,
                 colour);
         }
 
         _game.Graphics.DrawTextLeft(
-            new(2, height - 34),
+            new(PanelLeft * scale, (PanelBottom - 18) * scale),
             $"Current track - {_game.Track.Name}.",
             StuntCarRacerMain.SmallFont,
             yellow);
         _game.Graphics.DrawTextLeft(
-            new(2, height - 18),
+            new(PanelLeft * scale, (PanelBottom - 6) * scale),
             "Press 'S' to select, Escape to quit",
             StuntCarRacerMain.SmallFont,
             yellow);
