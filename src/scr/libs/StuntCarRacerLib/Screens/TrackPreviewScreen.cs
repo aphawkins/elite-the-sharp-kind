@@ -81,12 +81,12 @@ internal sealed class TrackPreviewScreen : IGameScreen
             yellow);
         _game.Graphics.DrawTextLeft(
             new(2, height - 66),
-            "  S = Steer left, D = Steer right, Enter = Accelerate, Space = Brake",
+            "  Left/Right arrows = Steer, Up = Accelerate, Down = Brake",
             StuntCarRacerMain.SmallFont,
             yellow);
         _game.Graphics.DrawTextLeft(
             new(2, height - 50),
-            "  B = Brake, N = Change scenery",
+            "  Space = Boost, N = Change scenery",
             StuntCarRacerMain.SmallFont,
             yellow);
         _game.Graphics.DrawTextLeft(

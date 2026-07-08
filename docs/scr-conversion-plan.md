@@ -131,6 +131,14 @@ Keep it accurate and lean:
   the result rescaled by `200/128` to fill the cockpit gauge's range
   (full at 240) — the previous formula (carried over unchanged from
   fluffyfreak) under-filled the new speed bar during normal driving.
+- Control scheme rewritten to match ptitSeb: `CarInput` now has
+  independent `Accelerate`/`Brake`/`Boost` flags (replacing the old
+  combined `Hash`/`BrakeBoost`/`AccelBoost`-as-primary-meaning scheme),
+  `CarPhysics.CarControl` derives them independently with no cross-setting
+  (matching `Car_Behaviour.cpp`'s simplified `CarControl`), and
+  `RaceScreen.ReadInput` maps Left/Right/Up/Down arrows + Space to steer/
+  accelerate/brake/boost. `AccelBoost`/`BrakeBoost` remain as flag-
+  combination conveniences for tests that want to "floor it".
 
 ## Architecture / refactoring work identified
 
@@ -198,17 +206,6 @@ the shared engine or removes duplication between the two games.
   the app targets a fixed 640x400 window, and `HudRenderer`/
   `TrackMenuScreen` assume that fixed size when computing their scale
   factors.
-- **Control scheme was rewritten in ptitSeb, not carried over**: fluffyfreak
-  combined accelerate+boost on one key (RETURN) and brake+boost on another
-  (SPACE), with a separate brake-only key (HASH). ptitSeb replaced this
-  with independent keys — Up=accelerate, Down=brake, Space=boost (applies
-  with either accel or brake held) — matching its README. `CarInput`,
-  `CarPhysics.Update` (the accelerate/brake/boost derivation around line
-  690) and `RaceScreen.ReadInput` still implement the old combined scheme
-  verbatim (comments included). Needs: new `CarInput` flags (separate
-  Accelerate/Brake/Boost bits), a `CarPhysics` update to derive them
-  independently (`Car_Behaviour.cpp`'s `CarControl`), and a `RaceScreen`
-  key remap to arrows + space.
 - **Opponent speed-value algorithm was rewritten in ptitSeb**: fluffyfreak
   precomputed a random per-track speed table once (`opponents_speed_values`,
   seeded from `opp_track_speed_values`). ptitSeb replaced it with

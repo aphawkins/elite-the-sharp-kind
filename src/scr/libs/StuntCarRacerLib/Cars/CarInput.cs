@@ -4,10 +4,11 @@
 
 namespace StuntCarRacerLib.Cars;
 
-// Player control flags, following the original KEY_P1_* definitions.
-// Keyboard controls in the original: S = left, D = right,
-// RETURN = accelerate + boost, SPACE = brake/reverse + boost,
-// HASH = brake/reverse.
+// Player control flags, following ptitSeb's stuntcarremake KEY_P1_*
+// definitions (which replaced the original fluffyfreak remake's combined
+// accelerate+boost/brake+boost keys with independent ones). Keyboard
+// controls: Left/Right arrows = steer, Up = accelerate, Down = brake,
+// Space = boost (applies with either accelerate or brake held).
 [Flags]
 public enum CarInput
 {
@@ -17,12 +18,14 @@ public enum CarInput
 
     Right = 2,
 
-    // Brake/reverse (original HASH key).
-    Hash = 4,
+    Accelerate = 4,
 
-    // Brake/reverse plus boost (original SPACE key).
-    BrakeBoost = 8,
+    Brake = 8,
 
-    // Accelerate plus boost (original RETURN key).
-    AccelBoost = 16,
+    Boost = 16,
+
+    // Convenience combinations for driving tests ("floor it").
+    AccelBoost = Accelerate | Boost,
+
+    BrakeBoost = Brake | Boost,
 }

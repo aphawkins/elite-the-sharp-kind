@@ -76,36 +76,36 @@ internal sealed class RaceScreen : IGameScreen
         _game.DrawHud(gameOver: false);
     }
 
-    // Original keyboard controls: S = left, D = right,
-    // RETURN = accelerate + boost, SPACE = brake/reverse + boost,
-    // HASH = brake/reverse (mapped to B here).
+    // ptitSeb's stuntcarremake keyboard controls: Left/Right arrows =
+    // steer, Up = accelerate, Down = brake, Space = boost (applies with
+    // either accelerate or brake held).
     private CarInput ReadInput()
     {
         CarInput input = CarInput.None;
 
-        if (_game.Keyboard.IsPressed(ConsoleKey.S))
+        if (_game.Keyboard.IsPressed(ConsoleKey.LeftArrow))
         {
             input |= CarInput.Left;
         }
 
-        if (_game.Keyboard.IsPressed(ConsoleKey.D))
+        if (_game.Keyboard.IsPressed(ConsoleKey.RightArrow))
         {
             input |= CarInput.Right;
         }
 
-        if (_game.Keyboard.IsPressed(ConsoleKey.Enter))
+        if (_game.Keyboard.IsPressed(ConsoleKey.UpArrow))
         {
-            input |= CarInput.AccelBoost;
+            input |= CarInput.Accelerate;
+        }
+
+        if (_game.Keyboard.IsPressed(ConsoleKey.DownArrow))
+        {
+            input |= CarInput.Brake;
         }
 
         if (_game.Keyboard.IsPressed(ConsoleKey.Spacebar))
         {
-            input |= CarInput.BrakeBoost;
-        }
-
-        if (_game.Keyboard.IsPressed(ConsoleKey.B))
-        {
-            input |= CarInput.Hash;
+            input |= CarInput.Boost;
         }
 
         return input;

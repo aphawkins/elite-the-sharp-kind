@@ -158,6 +158,56 @@ public class CarPhysicsTests
         Assert.True(car.BoostReserve < track.StandardBoost);
     }
 
+    // Regression test for the ptitSeb remake's control-scheme rewrite:
+    // accelerate/brake/boost are independent keys (fluffyfreak combined
+    // accelerate+boost and brake+boost into single keys). Boost alone,
+    // with neither accelerate nor brake held, must not move the car or
+    // consume the reserve.
+    [Fact]
+    public void BoostAloneWithoutAccelerateOrBrakeDoesNothing()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+        car.BoostReserve = track.StandardBoost;
+
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        int speedBeforeBoost = car.DisplaySpeed;
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.Boost);
+        }
+
+        Assert.Equal(track.StandardBoost, car.BoostReserve);
+        Assert.Equal(speedBeforeBoost, car.DisplaySpeed);
+    }
+
+    [Fact]
+    public void AccelerateAloneMovesTheCarWithoutConsumingBoost()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+        car.BoostReserve = track.StandardBoost;
+
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.Accelerate);
+        }
+
+        Assert.True(car.DisplaySpeed > 0);
+        Assert.Equal(track.StandardBoost, car.BoostReserve);
+    }
+
     [Fact]
     public void SteeringChangesHeading()
     {

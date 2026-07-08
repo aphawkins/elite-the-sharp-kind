@@ -692,26 +692,10 @@ public sealed partial class CarPhysics
     {
         bool left = input.HasFlag(CarInput.Left);
         bool right = input.HasFlag(CarInput.Right);
-        bool boost = input.HasFlag(CarInput.AccelBoost);
+        bool boost = input.HasFlag(CarInput.Boost);
 
-        _accelerate = input.HasFlag(CarInput.Hash);
-        _brake = input.HasFlag(CarInput.BrakeBoost);
-
-        if (input.HasFlag(CarInput.AccelBoost))
-        {
-            _accelerate = true; // boost also selects accelerate
-        }
-
-        if (input.HasFlag(CarInput.BrakeBoost))
-        {
-            boost = true; // brake also selects boost
-        }
-
-        if (input.HasFlag(CarInput.Hash))
-        {
-            _brake = true; // hash key is changed to be brake
-            _accelerate = false;
-        }
+        _accelerate = input.HasFlag(CarInput.Accelerate);
+        _brake = input.HasFlag(CarInput.Brake);
 
         _leftRightValue = 0;
         if (TouchingRoad && !_onChains)
