@@ -42,7 +42,13 @@ public sealed class SDLSound : ISound, IDisposable
         SDLGuard.Execute(() => Mix_AllocateChannels(16));
         SDLGuard.Execute(() => Mix_ReserveChannels(1));
 
-        _ = Mix_QuerySpec(out int frequency, out ushort format, out int channels);
+        // Mix_QuerySpec uses the inverted (0 = error) convention. The
+        // compiler can't see that the lambda runs synchronously, so these
+        // need an initial value to satisfy definite-assignment analysis.
+        int frequency = 0;
+        ushort format = 0;
+        int channels = 0;
+        SDLGuard.Execute(() => Mix_QuerySpec(out frequency, out format, out channels), zeroIndicatesError: true);
         Debug.Assert(frequency == 44100, "Loop pitch-shifting assumes 44100Hz chunk data.");
         Debug.Assert(format == AUDIO_F32SYS, "Loop pitch-shifting assumes float32 chunk data.");
         Debug.Assert(channels == 2, "Loop pitch-shifting assumes stereo chunk data.");
@@ -109,8 +115,13 @@ public sealed class SDLSound : ISound, IDisposable
             _loopName = sfxType;
             _loopEffect = LoopEffect;
 
-            _ = Mix_PlayChannel(LoopChannel, _sfx[sfxType], -1);
-            _ = Mix_RegisterEffect(LoopChannel, _loopEffect, null, nint.Zero);
+            // Channel 0 is reserved and used only here, so unlike the -1
+            // (any free channel) case in Play(string), a failure here is a
+            // real bug rather than expected contention — worth surfacing loudly.
+            SDLGuard.Execute(() => Mix_PlayChannel(LoopChannel, _sfx[sfxType], -1));
+
+            // Mix_RegisterEffect uses the inverted (0 = error) convention.
+            SDLGuard.Execute(() => Mix_RegisterEffect(LoopChannel, _loopEffect, null, nint.Zero), zeroIndicatesError: true);
         }
 
         _loopPitch = pitch;
@@ -123,8 +134,13 @@ public sealed class SDLSound : ISound, IDisposable
             return;
         }
 
-        _ = Mix_UnregisterEffect(LoopChannel, _loopEffect);
-        _ = Mix_HaltChannel(LoopChannel);
+        // Same inverted error convention as Mix_RegisterEffect above.
+        SDLGuard.Execute(() => Mix_UnregisterEffect(LoopChannel, _loopEffect), zeroIndicatesError: true);
+
+        // Mix_HaltChannel has no failure case at all (it always returns 0),
+        // so wrapping it can never throw; kept for consistency with the rest
+        // of this class routing every Mix_ call through SDLGuard.
+        SDLGuard.Execute(() => Mix_HaltChannel(LoopChannel));
         _loopName = null;
         _loopEffect = null;
     }

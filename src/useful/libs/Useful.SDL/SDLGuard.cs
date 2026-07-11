@@ -24,11 +24,23 @@ public static class SDLGuard
     }
 
     public static int Execute(Func<int> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
+        => Execute(sdlMethod, zeroIndicatesError: false, callerArgument);
+
+    // Most SDL/SDL_mixer int-returning functions signal failure with a
+    // negative result. A handful (e.g. Mix_RegisterEffect, Mix_UnregisterEffect,
+    // Mix_QuerySpec) instead use the inverted convention of zero-means-error,
+    // nonzero-means-success; use this overload with zeroIndicatesError: true
+    // for those.
+    public static int Execute(
+        Func<int> sdlMethod,
+        bool zeroIndicatesError,
+        [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
     {
         Debug.Assert(sdlMethod != null, "sdlMethod should not be null");
 
         int result = sdlMethod();
-        if (result < 0)
+        bool isError = zeroIndicatesError ? result == 0 : result < 0;
+        if (isError)
         {
             SDLHelper.Throw(
                 callerArgument?.StartsWith("() => ", StringComparison.OrdinalIgnoreCase) == true
