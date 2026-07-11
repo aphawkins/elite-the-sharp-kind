@@ -1,4 +1,4 @@
-# TODO — The Sharp Kind
+# Backlog and Roadmap — The Sharp Kind
 
 The single consolidated backlog for the repository, prioritised with MoSCoW
 (per [architecture.md](architecture.md)). It merges the 2026-07-11
@@ -22,29 +22,27 @@ How to use this file:
 
 Maintainer decisions, not code tasks — each blocks or reshapes items below.
 
-- [ ] **v1 release scope**: Elite only (recommended — it's feature-complete;
-      don't block on SCR), or Elite + SCR as a preview?
-- [ ] **First tag**: `v1.0.0` (Elite is done, recommended) or `v0.1.0`
-      (signal early access)?
-- [ ] **Claimed platforms for release**: win-x64/linux-x64 only (current CI
-      publish targets), or also linux-arm64 (Raspberry Pi is a stated tested
-      platform) / macOS (untested)?
-- [ ] **Coverage visibility**: keep "collected but not gated", add a badge,
-      or drop the collection step? A number with no target isn't actionable.
-- [ ] **NuGet packaging of `Useful.*`**: defer until an external consumer
-      exists (recommended), or package now? If packaging, the libraries also
-      need a deliberate public API surface (today everything is `internal` +
-      `InternalsVisibleTo`).
-- [ ] **Elite Intro2 parade**: it shows 29 of ~33 ship models
-      ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)
-      omits Cougar, Constrictor and the Lone variants). All ships, or keep
-      mission ships out? (from issues.md, "maybe it should")
 - [ ] **Elite per-object draw lists**: Elite composes the frame inside
       `Update` at 13.5Hz (authentic to The New Kind), so raising `Fps`
       draws nothing new above the tick rate and tactics stay interleaved
       with rendering (`Space.UpdateUniverse`). Moving to draw lists so
-      `Draw` can render interpolated frames is a big, Elite-only refactor —
-      decide whether it's worth doing before anyone picks it up.
+      `Draw` can render interpolated frames is a big, Elite-only refactor
+      that trades away period-accurate feel for smoother rendering; needs a
+      research spike/prototype before committing either way — not resolved.
+
+### Resolved (2026-07-11)
+
+- **v1 release scope**: Elite + SCR, with SCR labelled preview given its
+  open defects list (see Release engineering below).
+- **First tag**: `v1.0.0`.
+- **Claimed platforms**: win-x64, linux-x64, linux-arm64. macOS stays
+  unclaimed (untested).
+- **Coverage visibility**: add a badge (see Could below).
+- **NuGet packaging of `Useful.*`**: defer until an external consumer
+  exists.
+- **Elite Intro2 parade**: keep mission ships (Cougar, Constrictor, Lone
+  variants) out of the parade — status quo confirmed intentional, not a bug
+  (see Won't below).
 
 ## Must
 
@@ -154,8 +152,8 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
 
 ### Release engineering (from the retired release plan)
 
-- [ ] [Release] Switch versioning from CI's date+run-number stamp to tag-driven semantic versioning (e.g. [MinVer](https://github.com/adamralph/minver)) so tagging a commit *is* the release-versioning step; do this before the first tag.
-- [ ] [Release] Add a tag-triggered CI job that publishes the win-x64/linux-x64 self-contained builds and creates a GitHub Release with the zips attached (`softprops/action-gh-release` or `gh release create --generate-notes`); ship as zip/tar.gz, not an installer.
+- [ ] [Release] Switch versioning from CI's date+run-number stamp to tag-driven semantic versioning (e.g. [MinVer](https://github.com/adamralph/minver)) so tagging a commit *is* the release-versioning step; do this before the first `v1.0.0` tag.
+- [ ] [Release] Add a tag-triggered CI job that publishes win-x64/linux-x64/linux-arm64 self-contained builds for both Elite and StuntCarRacer (add a publish profile + CI publish step for `StuntCarRacer.csproj` mirroring Elite's) and creates a GitHub Release with the zips attached (`softprops/action-gh-release` or `gh release create --generate-notes`); ship as zip/tar.gz, not an installer. Label the SCR artifacts as preview in the release notes given its open defects list below.
 
 ### Stunt Car Racer conversion — correctness (from the retired conversion plan)
 
@@ -170,6 +168,7 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
 
 - [ ] [Useful] Replace the custom `Guard.ArgumentNull` (50 call sites) with the framework's `ArgumentNullException.ThrowIfNull` and delete [Guard.cs](../src/useful/libs/Useful/Guard.cs)/`ValidatedNotNullAttribute` — the architecture doc's own "prefer dotnet framework intrinsics" rule.
 - [ ] [Repo] Adopt central package management: add `Directory.Packages.props` (14 projects currently pin versions independently and are already drifting) and move the copy-pasted analyzer `PackageReference` block from every csproj into `Directory.Build.props`/`.targets`.
+- [ ] [Repo] Add a test coverage badge to README.md sourced from the CI-collected coverage numbers (decision: visibility only, no gate/target).
 - [ ] [Useful.Abstraction] `ScreenManager` starts with `CurrentId = default!` and a nullable `Current`, forcing `Screens.Current!.Update()` at every call site ([ScreenManager.cs:29-31](../src/useful/libs/Useful.Abstraction/ScreenManager.cs)); require the initial screen at construction (or an explicit `Start(id)`) so `Current` is never null after setup.
 - [ ] [Useful.Graphics] `FastBitmap` pins every bitmap with a raw `GCHandle` + finalizer ([FastBitmap.cs:19-35](../src/useful/libs/Useful.Graphics/FastBitmap.cs)); only the screen bitmap ever crosses into SDL — pin only on demand (or wrap the handle in a `SafeHandle`-style type) so short-lived text/texture bitmaps don't fragment the GC heap.
 - [ ] [Apps] Fix the rename leftover: `EliteSharp`'s `LogMessages`/`SDLProgram` sit in namespace `EliteSharp.SDL` though the project is `EliteSharp`; and remove the committed benchmark reports under `src/*/perf/**/reports/` (generated artifacts, per the architecture doc's hygiene rule).
@@ -202,13 +201,9 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
 - [ ] [LARGE] [StuntCarRacerLib] Convert physics from integer fixed-point to float: `Cars/CarPhysics.*`, `Cars/OpponentPhysics*`, `Cars/AmigaTrig`, `Cars/TrigCoefficients` and `Track.LogPrecision`'s 16384 scale use 68000-style scaled-integer arithmetic ported line-by-line; convert the physics core to `float` throughout. Watch for: angle wrapping is `& (MaxAngle - 1)` bitmasking and needs an equivalent float wrap; check for reliance on integer truncation/overflow; the 140+ exact-integer test assertions need reworking as tolerance-based comparisons.
 - [ ] [LARGE] [Useful.SDL] Resizable window / widescreen: `SDLWindow` creates a fixed non-resizable window ([SDLWindow.cs:23-29](../src/useful/libs/Useful.SDL/SDLWindow.cs)); ptitSeb's build supports resizing with dynamic cockpit/font scaling (`GetScreenDimensions`, `COCKPIT_WIDESCREEN_OFFSET`), and SCR's `HudRenderer`/`TrackMenuScreen` assume fixed 640x400 when computing scale factors (Elite similarly assumes 512x512, e.g. the hardcoded 511 in `ShipBase.DrawLasers`). Merges issues.md "make window resizable" with the conversion plan's widescreen item.
 
-### Release engineering — fast-follows
-
-- [ ] [Release] Add a `linux-arm64` publish target (Raspberry Pi 4 is a stated tested platform but not a CI publish target), and decide macOS per the platforms decision above.
-- [ ] [Release] Add a publish profile + CI publish step for `StuntCarRacer.csproj` mirroring Elite's, once SCR is in scope for a release.
-
 ## Won't
 
 - [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work — authentic to the original ("broken as designed"); documented, not fixed.
+- [ ] [EliteSharpLib] Elite Intro2 parade shows 29 of ~33 ship models ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) — Cougar, Constrictor and the Lone variants are mission-specific ships, deliberately excluded from the parade; confirmed intentional, not a bug.
 - [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`, insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game is fixed at 13.5fps by design and none of this is a bottleneck at that rate; revisit only if the "performance as secondary objective" goal is picked up.
 - [ ] [StuntCarRacerLib] The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — see the porting notes in [scr-readme.md](scr-readme.md).
