@@ -1,6 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Useful.Assets;
 using Useful.Audio;
 using static SDL2.SDL;
@@ -10,7 +11,18 @@ namespace Useful.SDL;
 
 public sealed class SDLSound : ISound, IDisposable
 {
+    // Reserved so Mix_PlayChannel(-1, ...) (one-shot sfx) never picks this
+    // channel; it is driven exclusively by the pitched loop below.
+    private const int LoopChannel = 0;
+
+    private readonly Dictionary<string, float[]> _loopSamples = [];
     private bool _disposedValue;
+    private Mix_EffectFunc_t? _loopEffect;
+    private float[] _loopSampleData = [];
+    private float[] _loopScratch = [];
+    private string? _loopName;
+    private double _loopPitch = 1.0;
+    private double _loopPosition;
     private Dictionary<string, nint> _music = [];
     private Dictionary<string, nint> _sfx = [];
 
@@ -28,6 +40,12 @@ public sealed class SDLSound : ISound, IDisposable
         SDLGuard.Execute(
             () => Mix_OpenAudio(audioSpecDesired.freq, audioSpecDesired.format, audioSpecDesired.channels, audioSpecDesired.samples));
         SDLGuard.Execute(() => Mix_AllocateChannels(16));
+        SDLGuard.Execute(() => Mix_ReserveChannels(1));
+
+        _ = Mix_QuerySpec(out int frequency, out ushort format, out int channels);
+        Debug.Assert(frequency == 44100, "Loop pitch-shifting assumes 44100Hz chunk data.");
+        Debug.Assert(format == AUDIO_F32SYS, "Loop pitch-shifting assumes float32 chunk data.");
+        Debug.Assert(channels == 2, "Loop pitch-shifting assumes stereo chunk data.");
     }
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -74,13 +92,41 @@ public sealed class SDLSound : ISound, IDisposable
 
     public void StopMusic() => SDLGuard.Execute(Mix_HaltMusic);
 
-    // Pitched loops are not supported by the SDL_mixer backend yet.
+    // SDL_mixer has no built-in pitch control, so the loop is played on a
+    // reserved channel whose output is entirely replaced, each callback, by
+    // our own linearly-interpolated resample of the source chunk (mirroring
+    // Useful.Audio.PitchedLoopSampleProvider). Mix_PlayChannel on that
+    // channel is only there to keep the mixer invoking the effect callback;
+    // its own (unmodified) output is never heard.
     public void PlayLoop(string sfxType, double pitch)
     {
+        if (_loopName != sfxType)
+        {
+            StopLoop();
+
+            _loopSampleData = GetLoopSamples(sfxType);
+            _loopPosition = 0;
+            _loopName = sfxType;
+            _loopEffect = LoopEffect;
+
+            _ = Mix_PlayChannel(LoopChannel, _sfx[sfxType], -1);
+            _ = Mix_RegisterEffect(LoopChannel, _loopEffect, null, nint.Zero);
+        }
+
+        _loopPitch = pitch;
     }
 
     public void StopLoop()
     {
+        if (_loopName is null)
+        {
+            return;
+        }
+
+        _ = Mix_UnregisterEffect(LoopChannel, _loopEffect);
+        _ = Mix_HaltChannel(LoopChannel);
+        _loopName = null;
+        _loopEffect = null;
     }
 
     private void Dispose(bool disposing)
@@ -93,6 +139,8 @@ public sealed class SDLSound : ISound, IDisposable
             {
                 // dispose managed state (managed objects)
             }
+
+            StopLoop();
 
             // free unmanaged resources (unmanaged objects) and override finalizer
             // set large fields to null
@@ -113,5 +161,60 @@ public sealed class SDLSound : ISound, IDisposable
 
             Mix_CloseAudio();
         }
+    }
+
+    private float[] GetLoopSamples(string sfxType)
+    {
+        if (!_loopSamples.TryGetValue(sfxType, out float[]? samples))
+        {
+            MIX_Chunk chunk = Marshal.PtrToStructure<MIX_Chunk>(_sfx[sfxType]);
+            int sampleCount = (int)(chunk.alen / sizeof(float));
+            samples = new float[sampleCount];
+            Marshal.Copy(chunk.abuf, samples, 0, sampleCount);
+            _loopSamples[sfxType] = samples;
+        }
+
+        return samples;
+    }
+
+    // Called by SDL_mixer once per audio buffer fill for the loop channel;
+    // overwrites its entire output with a resample of _loopSampleData at
+    // _loopPitch (1.0 = recorded rate), looping back to the start.
+    private void LoopEffect(int channel, nint stream, int len, nint userData)
+    {
+        int floatCount = len / sizeof(float);
+        if (_loopScratch.Length < floatCount)
+        {
+            _loopScratch = new float[floatCount];
+        }
+
+        int frames = _loopSampleData.Length / 2;
+        if (frames < 2)
+        {
+            Array.Clear(_loopScratch, 0, floatCount);
+            Marshal.Copy(_loopScratch, 0, stream, floatCount);
+            return;
+        }
+
+        double pitch = _loopPitch;
+        for (int i = 0; i < floatCount; i += 2)
+        {
+            int frame0 = (int)_loopPosition;
+            int frame1 = frame0 + 1 >= frames ? 0 : frame0 + 1;
+            float fraction = (float)(_loopPosition - frame0);
+
+            _loopScratch[i] = _loopSampleData[frame0 * 2]
+                + ((_loopSampleData[frame1 * 2] - _loopSampleData[frame0 * 2]) * fraction);
+            _loopScratch[i + 1] = _loopSampleData[(frame0 * 2) + 1]
+                + ((_loopSampleData[(frame1 * 2) + 1] - _loopSampleData[(frame0 * 2) + 1]) * fraction);
+
+            _loopPosition += pitch;
+            while (_loopPosition >= frames)
+            {
+                _loopPosition -= frames;
+            }
+        }
+
+        Marshal.Copy(_loopScratch, 0, stream, floatCount);
     }
 }
