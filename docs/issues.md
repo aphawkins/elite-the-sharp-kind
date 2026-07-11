@@ -1,9 +1,0 @@
-- Inject options
-- Intro2 parade doesn't show all ships, maybe it should
-- Add unit tests
-- Wireframe planet at the moment we just draw a circle. Need to add in the two arcs and crater that the original Elite had
-- Bits of hidden surfaces on ships sometimes show through (parts drawn as lines?)  
-- Buying more than 255g of Gold/Platinum doesn't work.  It didn't in the original Elite either.  Broken as designed.
-- Make window resizable
-- Use System.Numerics for all matrix and vector maths
-- Separate tactics from rendering?

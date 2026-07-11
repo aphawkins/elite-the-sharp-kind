@@ -1,98 +1,184 @@
-# Review Findings — 2026-07-11
+# TODO — The Sharp Kind
 
-One-time architectural and code-quality review of the whole solution, judged
-against `docs/architecture.md` (DRY, YAGNI, KISS, SOLID, correctness,
-security, maintainability, cross-platform, MoSCoW). Read-only pass; no code
-was changed. Line numbers are as of commit `ea1769b`.
+The single consolidated backlog for the repository, prioritised with MoSCoW
+(per [architecture.md](architecture.md)). It merges the 2026-07-11
+architecture/code-quality review, the business-application practices review,
+and the retired `issues.md`, `release-plan.md` and `scr-conversion-plan.md`.
 
-## Summary
+How to use this file:
 
-- **Must: 8** — correctness/crash bugs and a broken architectural requirement
-- **Should: 15** — real defects and gaps that won't crash a typical session
-- **Could: 17** — cleanups, dead code, doc drift, perf niceties
-- **Won't: 5** — by-design behaviour or work already tracked elsewhere
+- Each item is one concern, small enough for a single focused session, and
+  self-contained (paths, line numbers, problem, fix direction). Items too
+  big for one session are tagged **[LARGE]** — split them in a follow-up
+  conversation before starting, not here.
+- Definition of done (from the retired SCR plan, now repo-wide): build the
+  full solution, run the complete test suite, and smoke-test the affected
+  app(s) live if the change touches shared code or either game loop.
+- When an item completes, delete it here and record it in
+  [CHANGELOG.md](../CHANGELOG.md).
+- Line numbers date from the review; verify before editing.
 
-The 3 most impactful items:
+## Decisions needed
 
-1. Both games are hard-wired to a Windows-only audio backend (NAudio
-   `WaveOutEvent` via `SoftwareAbstraction`), so the stated cross-platform
-   support (Ubuntu, Raspberry Pi) is currently broken at startup — the
-   cross-platform `SDLSound` exists but nothing uses it.
-2. The shared SDL input layer force-quits the game on Escape, which both
-   embeds game policy in a `Useful` library and breaks Elite's documented
-   ESC = "launch escape capsule" control.
-3. Elite's contraband calculation counts Slaves twice and Narcotics never,
-   silently changing legal-status gameplay — and it's exactly the kind of
-   pure logic that has no test today.
+Maintainer decisions, not code tasks — each blocks or reshapes items below.
 
-### Cross-check of docs/issues.md
-
-| issues.md item | Status | Where folded |
-| --- | --- | --- |
-| Inject options | CONFIRMED still present (`EliteMain.cs:47` "TODO: Use DI", `AudioController` hardcoded flags) | Could |
-| Intro2 parade doesn't show all ships | CONFIRMED (parade list has 29 of ~33 models) but "maybe it should" — needs a decision | Won't |
-| Add unit tests | CONFIRMED, partially addressed (273 tests exist but Elite's core logic is untested) | Should |
-| Wireframe planet is just a circle | CONFIRMED (`WireframePlanet.Draw` draws one circle) | Could |
-| Hidden surfaces show through on ships | CONFIRMED plausible root cause found (painter sort uses max-Z, 2D-winding cull only) | Should |
-| >255g Gold/Platinum broken | By design per issues.md itself | Won't |
-| Make window resizable | CONFIRMED still fixed (`SDLWindow` uses only `SDL_WINDOW_SHOWN`) | Could |
-| Use System.Numerics for all maths | STALE for Elite (already done); SCR fixed-point is deliberate and tracked in `scr-conversion-plan.md` | Won't |
-| Separate tactics from rendering | CONFIRMED still mixed (`Space.UpdateUniverse`); already tracked in `scr-conversion-plan.md` | Won't |
+- [ ] **v1 release scope**: Elite only (recommended — it's feature-complete;
+      don't block on SCR), or Elite + SCR as a preview?
+- [ ] **First tag**: `v1.0.0` (Elite is done, recommended) or `v0.1.0`
+      (signal early access)?
+- [ ] **Claimed platforms for release**: win-x64/linux-x64 only (current CI
+      publish targets), or also linux-arm64 (Raspberry Pi is a stated tested
+      platform) / macOS (untested)?
+- [ ] **Coverage visibility**: keep "collected but not gated", add a badge,
+      or drop the collection step? A number with no target isn't actionable.
+- [ ] **NuGet packaging of `Useful.*`**: defer until an external consumer
+      exists (recommended), or package now? If packaging, the libraries also
+      need a deliberate public API surface (today everything is `internal` +
+      `InternalsVisibleTo`).
+- [ ] **Elite Intro2 parade**: it shows 29 of ~33 ship models
+      ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)
+      omits Cougar, Constrictor and the Lone variants). All ships, or keep
+      mission ships out? (from issues.md, "maybe it should")
+- [ ] **Elite per-object draw lists**: Elite composes the frame inside
+      `Update` at 13.5Hz (authentic to The New Kind), so raising `Fps`
+      draws nothing new above the tick rate and tactics stay interleaved
+      with rendering (`Space.UpdateUniverse`). Moving to draw lists so
+      `Draw` can render interpolated frames is a big, Elite-only refactor —
+      decide whether it's worth doing before anyone picks it up.
 
 ## Must
 
-All 8 items below are fixed (2026-07-11). Build and full test suite (272
-tests across all projects) pass after every change; see the note under each
-item for what was verified and what, if anything, was deliberately left out
-of scope.
-
-- [x] [Useful.Audio] Both apps use `SoftwareAbstraction`, whose audio is NAudio's `WaveOutEvent` ([SoftwareSound.cs:22](../src/useful/libs/Useful.Audio/SoftwareSound.cs), constructed in [SoftwareAbstraction.cs:29](../src/useful/libs/Useful.SDL/SoftwareAbstraction.cs)) — `WaveOutEvent` is Windows-only (winmm), so Elite and SCR fail at startup on Linux/ARM64, violating the architecture doc's cross-platform requirement; make `SoftwareAbstraction` use the existing cross-platform `SDLSound` (or a cross-platform NAudio output), keeping `ISound` as the seam.
-  - Fixed: `SoftwareAbstraction` now constructs `SDLSound` instead of `SoftwareSound`. **New follow-up discovered while fixing this**: `SDLSound.PlayLoop`/`StopLoop` are no-op stubs (SDL_mixer doesn't do pitch-shifting out of the box), but SCR's engine sound depends on pitched looping (`StuntCarRacerMain.cs:289`). Per user decision, shipped the swap anyway to fix the startup crash; SCR's engine loop sound is now silent on all platforms (including Windows, where it used to work) until pitch-shifted looping is implemented in `SDLSound`. Folded into Should below.
-  - **Second follow-up, found by running the game**: `SDLSound` only allocated 2 mixer channels (`Mix_AllocateChannels(2)`), but SCR can trigger up to 5 distinct simultaneous effects (Grounded/Creak/Smash/OffRoad/Wreck/HitCar); when they overlapped, `Mix_PlayChannel` returned "No free channels available" and the code treated that as fatal, crashing the whole game. Fixed by raising the channel count to 16 and by no longer throwing on `Mix_PlayChannel` failure — a dropped one-shot sound effect should never crash the game.
-- [x] [Useful.SDL] `SDLInput.Poll` hardcodes `keyboard.Close = true` on `SDLK_ESCAPE` ([SDLInput.cs:29-33](../src/useful/libs/Useful.SDL/SDLInput.cs)), which `GameHost` treats as "stop the game loop" — this puts game-specific quit policy in a shared library and breaks Elite's ESC = launch escape capsule ([PilotView.cs:228](../src/elite/libs/EliteSharpLib/Views/PilotView.cs)); remove the hardcoded Escape handling and let each game decide (SCR already handles Escape itself in `StuntCarRacerMain.Update`).
-  - Fixed: removed the hardcoded Escape branch; `SDL_QUIT` (window close) still sets `Close`. Confirmed both Elite (`ExitGame`/`QuitView`) and SCR (`IsRunning`) already manage their own quit state independently of `Keyboard.Close`.
-- [x] [EliteSharpLib] `Trade.IsCarryingContraband` computes `(Slaves + Slaves) * 2 + Firearms` ([Trade.cs:116-118](../src/elite/libs/EliteSharpLib/Trader/Trade.cs)) — Slaves is doubled and Narcotics is omitted (original TNK formula is `(slaves + narcotics) * 2 + firearms`), so carrying narcotics never affects legal status; replace the second `Slaves` term with `Narcotics` and add a unit test.
-  - Fixed, plus 2 new unit tests in `TradeTests.cs`.
-- [x] [EliteSharpLib] `ConfigFile.ReadConfig` catches all exceptions and then `throw;`s ([ConfigFile.cs:35-40](../src/elite/libs/EliteSharpLib/Config/ConfigFile.cs)), so the `return new()` fallback is unreachable — a missing or malformed `sharpkind.cfg` (deleted, or app run from a different CWD) crashes Elite at startup instead of falling back to defaults; drop the rethrow (and the `Debug.Fail`) and return default `ConfigSettings`.
-  - Fixed (now catches `IOException`/`UnauthorizedAccessException`/`JsonException` and falls back to defaults, satisfying CA1031). No test added — `ConfigFile` hardcodes its filename with no path injection seam, so a clean test would require a testability refactor beyond this fix's scope.
-- [x] [Useful.SDL] `SDLSound.Dispose` frees handles with the wrong APIs and double-frees ([SDLSound.cs:97-115](../src/useful/libs/Useful.SDL/SDLSound.cs)): `_music` entries are freed with `SDL_FreeWAV` and then again with `Mix_FreeMusic`, and `_sfx` chunks (loaded via `Mix_LoadWAV`) are freed with `Mix_FreeMusic` — should be one `Mix_FreeMusic` pass for `_music` and `Mix_FreeChunk` for `_sfx`.
-  - Fixed.
-- [x] [Useful.Graphics] `DrawRectangleInt`/`DrawRectangleFilledInt` clamp Y coordinates against `ScreenWidth` instead of `ScreenHeight`, and clamp end coordinates to `ScreenWidth` inclusive rather than `ScreenWidth - 1` ([SoftwareGraphics.cs:551-587](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — on a non-square screen (SCR is 640x400) an off-screen rectangle indexes `FastBitmap` out of bounds (crash) or silently wraps to the wrong row; clamp X against `ScreenWidth - 1` and Y against `ScreenHeight - 1`.
-  - Fixed, plus 2 new regression tests on a non-square (10x4) screen that reproduce the old out-of-range crash.
-- [x] [Useful.Graphics] `FastBitmap.Resize` tests `y > Height` / `x > Width` instead of `>=` ([FastBitmap.cs:58-87](../src/useful/libs/Useful.Graphics/FastBitmap.cs)) — growing a bitmap by exactly one row/column reads `GetPixel(x, Height)` past the pixel array (IndexOutOfRangeException, or a silent wrong-pixel read for X); change both comparisons to `>=` and add a resize-larger test.
-  - Fixed, plus a new `FastBitmapTests.cs` with resize-by-one-row and resize-by-one-column tests.
-- [x] [EliteSharpLib] `Space.JumpWarp` dereferences `_universe.Planet!` and `_universe.StationOrSun!` ([Space.cs:118](../src/elite/libs/EliteSharpLib/Space.cs)) — in witchspace there is no planet or sun, so pressing J after destroying all Thargoids throws NullReferenceException; return "Mass Locked" (or no-op) when either is null.
-  - Fixed (null-safe guard added ahead of the existing "Mass Locked" check). No test added — `Space` has no test fakes for its large dependency graph (`Combat`, `Pilot`, `AudioController`, etc.); building that harness is out of scope here and is already covered by the untested-`Space` item below.
+- [ ] [Useful.Audio] Delete the now-dead NAudio stack: since
+      `SoftwareAbstraction` switched to `SDLSound`, `SoftwareSound`,
+      `SoundSampleProvider` and `PitchedLoopSampleProvider` have zero
+      production references, so the `NAudio`/`NAudio.Vorbis`/`MeltySynth`
+      packages in [Useful.Audio.csproj](../src/useful/libs/Useful.Audio/Useful.Audio.csproj)
+      (and the duplicate refs in
+      [EliteSharpLib.csproj](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj))
+      ship dead code and three unused dependencies; delete the classes,
+      the never-called `AudioController.GenerateWaveFromMidi`/`WriteStereoWav`
+      helpers ([AudioController.cs:80-140](../src/useful/libs/Useful.Audio/AudioController.cs))
+      and the package references. This also retires the open
+      `SoundSampleProvider` click and `SoftwareSound.StopMusic` findings,
+      which only exist in that dead code. (If NAudio is instead kept as a
+      documented alternative backend, that's a Decision — say so and fix
+      those two findings.)
 
 ## Should
 
-- [x] [Useful.SDL] `SDLSound.PlayLoop`/`StopLoop` are no-op stubs ([SDLSound.cs:76-82](../src/useful/libs/Useful.SDL/SDLSound.cs)) now that `SoftwareAbstraction` uses `SDLSound` on all platforms (see Must above) — SCR's continuous pitched engine sound (`StuntCarRacerMain.cs:289`, `Sound.PlayLoop(sample, frequency / sampleRate)`) is silent everywhere, a regression from when NAudio backed Windows; implement real pitch-shifted looping in `SDLSound` (e.g. resample the chunk before feeding it to a dedicated `Mix_` channel, since SDL_mixer has no built-in pitch control) and verify against `StuntCarRacerMainTests.cs`'s `PlayLoopCount` assertions.
-  - Fixed (2026-07-11): channel 0 is now reserved via `Mix_ReserveChannels(1)` so one-shot sfx (`Mix_PlayChannel(-1, ...)`) never contend for it. `PlayLoop` extracts the chunk's raw PCM once (`MIX_Chunk.abuf`/`alen`, valid because `Mix_LoadWAV` converts chunks to the format `Mix_OpenAudio` negotiated, asserted via `Mix_QuerySpec` at construction) and plays that chunk looped on channel 0 purely to keep the mixer pumping; a `Mix_RegisterEffect` callback on that channel then completely overwrites its output each buffer with a linear-interpolation resample at the current pitch, mirroring `Useful.Audio.PitchedLoopSampleProvider`'s algorithm. `StopLoop` unregisters the effect and halts the channel; `Dispose` calls `StopLoop` before tearing down the mixer.
-  - Not covered by an automated test: no `Useful.SDL` class that needs a live SDL audio device (`SDLGraphics`, `SDLWindow`, `SDLSound`, etc.) has unit tests in this codebase, since `Mix_OpenAudio`/`Mix_RegisterEffect` need a real backend to construct. Verified instead by building, running the full test suite (279 tests, all passing, no regressions), and launching `StuntCarRacer` to confirm the new `Mix_ReserveChannels`/`Mix_QuerySpec` calls don't break startup. Actually hearing the pitched engine sound in-game still needs a manual play-test.
+### Architecture (business-application practices — see architecture.md)
+
+- [ ] [Apps] [LARGE] Introduce a real composition root: add
+      `Microsoft.Extensions.DependencyInjection` to both apps, register
+      `IAbstraction`/`IGraphics`/`ISound`/`IKeyboard`, `AssetLocator`,
+      `ConfigSettings` and the game as container-owned singletons in
+      `Program.Main`, and move all object creation out of `EliteMain`'s
+      ~90-line constructor ([EliteMain.cs:61-141](../src/elite/libs/EliteSharpLib/EliteMain.cs),
+      `// TODO: Use DI` at [SDLProgram.cs:46](../src/elite/apps/EliteSharp/SDLProgram.cs))
+      so domain classes receive collaborators instead of building them.
+      Subsumes issues.md "Inject options" (including `AudioController`'s
+      hardcoded `_musicOn`/`_effectsOn`,
+      [AudioController.cs:27-33](../src/useful/libs/Useful.Audio/AudioController.cs)).
+- [ ] [Useful] [LARGE] Add library logging: reference
+      `Microsoft.Extensions.Logging.Abstractions` from the `Useful.*` and
+      game libraries, accept `ILogger<T>` by constructor, define
+      per-library `[LoggerMessage]` partials (the pattern the apps'
+      `LogMessages.cs` already uses), and convert the operational
+      `Debug.Fail`/`Debug.WriteLine` calls (21/14 across the libraries,
+      heaviest in [Combat.cs](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs))
+      to thrown exceptions or logged Warnings/Errors per the architecture
+      doc's logging policy — today they all vanish in Release builds.
+- [ ] [Apps] Make logs land somewhere: both apps configure Serilog with
+      only the Debug sink at Verbose
+      ([SDLProgram.cs:32-39](../src/elite/apps/EliteSharp/SDLProgram.cs), same in SCR)
+      — invisible without a debugger; switch to console + rolling file
+      (`retainedFileCountLimit` set), minimum level Information, overridable
+      via environment variable.
+- [ ] [EliteSharpLib] Read settings via `Microsoft.Extensions.Configuration`
+      (JSON provider bound onto `ConfigSettings`, validation at startup)
+      and put writing behind a small `IConfigWriter` interface so
+      [SettingsView.cs:36](../src/elite/libs/EliteSharpLib/Views/SettingsView.cs)
+      depends on a seam rather than the concrete `ConfigFile`.
+- [ ] [EliteSharpLib] Move user data out of the CWD: resolve `sharpkind.cfg`
+      ([ConfigFile.cs:13](../src/elite/libs/EliteSharpLib/Config/ConfigFile.cs))
+      and `.cmdr` saves ([SaveFile.cs:17](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs))
+      against `Environment.SpecialFolder.ApplicationData` with an injected
+      base path (fixes "launched from a shortcut" breakage and makes both
+      classes testable — the ConfigFile fix couldn't be tested for exactly
+      this reason).
+- [ ] [StuntCarRacerLib] Give SCR screens their real dependencies: every
+      screen currently receives the whole `StuntCarRacerMain`
+      (`new RaceScreen(this)`, [StuntCarRacerMain.cs:82-85](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs))
+      and reaches through it service-locator style; pass what each screen
+      actually uses (`CarPhysics`, `IKeyboard`, `SceneCamera`, ...) so
+      dependencies are visible in signatures and screens are unit-testable.
+- [ ] [Useful.Controls] Split `IKeyboard` (interface segregation): it mixes
+      the producer API (`KeyDown`/`KeyUp`, called by `SDLInput`) with the
+      consumer API (`IsPressed`/`IsHeld`/`LastPressed`, called by games)
+      ([IKeyboard.cs](../src/useful/libs/Useful.Controls/IKeyboard.cs)); split into a
+      sink interface and a state interface so game code can't inject key
+      events.
+- [ ] [Useful] Remove two-phase construction: `SDLSound` must have
+      `Initialize(assetLocator)` called after construction (temporal
+      coupling — a forgotten call is a runtime `KeyNotFoundException`), and
+      `SoftwareGraphics.Create`/`ShipFactory.Create` mutate internal
+      settable properties post-construction; fold initialisation into
+      constructors/factory parameters so no instance is observable
+      half-built.
+- [ ] [EliteSharpLib] Replace the static crypto RNG: `RNG.Random` delegates
+      every call to `RandomNumberGenerator.GetInt32`
+      ([RNG.cs:98](../src/elite/libs/EliteSharpLib/RNG.cs)) — orders of magnitude
+      slower than needed in hot per-tick paths — and `RNG`/`RNG.Seed` is
+      static mutable state that makes Elite's logic untestable; make it an
+      injected, seedable random service (the pattern `CarPhysics._random`
+      already uses in SCR).
+
+### Defects and gaps
+
 - [ ] [Useful.Graphics] `DrawTextCentre`/`DrawTextLeft`/`DrawTextRight` wrap the bitmap from `GenerateTextBitmap` in `using` ([SoftwareGraphics.cs:292-324](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)), but that bitmap is stored in `_textCache` and returned again on the next call — cached bitmaps are disposed (GC pin freed) while still cached, working today only because text drawing never touches `BitmapHandle`; remove the `using`s and dispose cached bitmaps only when the cache is cleared/disposed.
 - [ ] [Useful.Graphics] `_textCache` grows without bound ([SoftwareGraphics.cs:13, 589-648](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — every distinct (font, colour, text) string caches a ~KB-to-tens-of-KB bitmap forever, and Elite renders ever-changing strings ("1234.5 Credits" per bounty, countdowns), so long sessions leak memory steadily; add an eviction policy (e.g. cap entry count) or key frequently-changing text out of the cache.
-- [ ] [Useful.Graphics] `SoftwareGraphics.SetClipRegion` is an empty no-op ([SoftwareGraphics.cs:368-370](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) while Elite actively relies on clip regions (`EliteDraw.SetViewClipRegion`) — in the primary (software) renderer, view drawing can overwrite the border/scanner area; implement rectangular clipping in the software rasterizer (all draw calls already funnel through `DrawPixel`/`SetPixel`) or remove it from `IGraphics` and clip in game code.
+- [ ] [Useful.Graphics] `SoftwareGraphics.SetClipRegion` is an empty no-op ([SoftwareGraphics.cs:368-370](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) while Elite actively relies on clip regions (`EliteDraw.SetViewClipRegion`) — in the primary (software) renderer, view drawing can overwrite the border/scanner area; implement rectangular clipping in the software rasterizer (all draw calls already funnel through `DrawPixel`/`SetPixel`) or remove it from `IGraphics` and clip in game code (an interface member the primary implementation can't honour violates the architecture doc's interface rules).
 - [ ] [Useful.SDL] `ToSDLColor` decodes the colour as RGBA (`r = color >> 24`) ([SDLGraphics.cs:417-423](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) while every colour in the codebase is ARGB (`FastColor`, palettes) and `SetRenderDrawColor` in the same file decodes ARGB — text and filled triangles in the SDL backend get alpha interpreted as red; make `ToSDLColor` decode ARGB like `FastColor`.
-- [ ] [EliteSharpLib] `EliteMain.Update` wraps `UpdateConsole`/`HandleInput` in `catch (Exception) { Debug.WriteLine(...) }` ([EliteMain.cs:262-272](../src/elite/libs/EliteSharpLib/EliteMain.cs)) — in Release builds every input/console error is silently swallowed each tick; remove the catch-all (or catch the specific expected exception type and surface it via the logger).
+- [ ] [EliteSharpLib] `EliteMain.Update` wraps `UpdateConsole`/`HandleInput` in `catch (Exception) { Debug.WriteLine(...) }` ([EliteMain.cs:262-272](../src/elite/libs/EliteSharpLib/EliteMain.cs)) — in Release builds every input/console error is silently swallowed each tick; remove the catch-all (or catch the specific expected exception type and surface it via the logger), per the architecture doc's "never catch-all on the frame path".
 - [ ] [EliteSharpLib] `EliteMain.Run` calls `Environment.Exit(0)` ([EliteMain.cs:149](../src/elite/libs/EliteSharpLib/EliteMain.cs)), which terminates before `SDLProgram.Main`'s `using SoftwareAbstraction` disposes (skipping `SDL_Quit`, audio teardown); return normally and let `Main` exit (the `Environment.Exit(-1); throw;` in [SDLProgram.cs:61-62](../src/elite/apps/EliteSharp/SDLProgram.cs) has the same problem plus an unreachable `throw`).
-- [ ] [EliteSharpLib] `RNG.Random` delegates every call to `RandomNumberGenerator.GetInt32` (cryptographic RNG) ([RNG.cs:98](../src/elite/libs/EliteSharpLib/RNG.cs)) and is called dozens-to-hundreds of times per tick (stars, tactics, explosions at 16 calls x points) — orders of magnitude slower than needed with zero gameplay benefit; switch to `Random.Shared` (or a seeded `Random` for reproducibility, as SCR's `CarPhysics` already does).
 - [ ] [EliteSharpLib] `ShipBase.GetPointIndex` linearly scans `Model.Points` with `foreach` + `IndexOf` (an O(n²) double scan) and is called 3 + N times per face, per ship, per tick ([ShipBase.cs:183-194](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)) — the hottest CPU path in Elite's renderer; store point indices on `Face` at model-load time (in `ModelReader`) instead of object references that must be searched back to indices.
-- [ ] [EliteSharpLib] `DrawModelFaces` sorts faces by a variable named `zavg` that actually holds the **maximum** Z of the face ([ShipBase.cs:152-161](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)), feeding the painter's-algorithm parameter `averageZ` — a likely root cause of issues.md's "bits of hidden surfaces show through"; compute the mean Z (as the original did) and re-test the visual artefact.
+- [ ] [EliteSharpLib] `DrawModelFaces` sorts faces by a variable named `zavg` that actually holds the **maximum** Z of the face ([ShipBase.cs:152-161](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)), feeding the painter's-algorithm parameter `averageZ` — a likely root cause of the long-standing "bits of hidden surfaces show through" issue; compute the mean Z (as the original did) and re-test the visual artefact.
 - [ ] [EliteSharpLib] `SaveFile.LoadCommander` catches, resets to Jameson, then `throw;`s ([SaveFile.cs:70-75](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)), contradicting its bool-return contract, and `SaveStateToGameState` indexes `GalaxySeed[0..5]`, `CurrentCargo[i]`, `Lasers[0..3]` and `Enum.Parse`s strings without validation ([SaveFile.cs:167-208](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) — a truncated or hand-edited `.cmdr` file throws instead of showing the view's "Error Loading Commander!" path; validate the deserialized `SaveState` and return false on any failure.
-- [ ] [EliteSharpLib] `SaveFile.SaveCommander` builds the path as `save.CommanderName + ".cmdr"` from raw user input ([SaveFile.cs:80-92](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) — invalid filename characters throw and path separators escape the working directory; sanitize the name (e.g. `Path.GetInvalidFileNameChars`) before using it as a filename (input is currently A–Z only via the view, but the seam should defend itself).
-- [ ] [Useful.Audio] `SoundSampleProvider` stores a length value as the first element of `_audioData` ([SoundSampleProvider.cs:60](../src/useful/libs/Useful.Audio/SoundSampleProvider.cs)) but `Read` streams the array from position 0 ([SoundSampleProvider.cs:42-49](../src/useful/libs/Useful.Audio/SoundSampleProvider.cs)) — every playback starts with one garbage sample (an integer reinterpreted as a float amplitude, i.e. an audible click); keep the sample data clean and track length in a separate field (`SampleData` already has to skip it with `AsMemory(1)`).
-- [ ] [Useful.Audio] `SoftwareSound.StopMusic` calls `_mixer.RemoveAllMixerInputs()` ([SoftwareSound.cs:73-79](../src/useful/libs/Useful.Audio/SoftwareSound.cs)) — stopping music also cuts off any playing sound effects and the engine loop; remove only the music provider(s) from the mixer.
+- [ ] [EliteSharpLib] `SaveFile.SaveCommander` builds the path as `save.CommanderName + ".cmdr"` from raw user input ([SaveFile.cs:80-92](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) — invalid filename characters throw and path separators escape the save directory; sanitize the name (e.g. `Path.GetInvalidFileNameChars`) before using it as a filename (pairs with the user-data-location item above).
 - [ ] [EliteSharpLib] `EliteDraw.DrawTextPretty` decrements `i` looking for a space/comma/period with no lower bound ([EliteDraw.cs:136-157](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)) — a word longer than the line width underflows the index and throws; bound the scan at `previous` and hard-break long words.
-- [ ] [Tests] Elite's core game logic has no tests — `EliteSharpLib.Tests` covers only planets/suns/ships/universe (18 tests), leaving `Trade` (the contraband bug above), `Combat`, `Space`, `SaveFile` round-trip, `ConfigFile`, `PlanetController` and `RNG.GenerateRandomNumber` untested (issues.md "Add unit tests": CONFIRMED, partially addressed); start with pure-logic classes: `Trade`, `PlanetController`, `SaveFile` save/load round-trip with a temp directory.
+
+### Tests
+
+- [ ] [Tests] Elite's core game logic is largely untested — `EliteSharpLib.Tests` covers planets/suns/ships/universe plus the new `TradeTests`, leaving `Combat`, `Space`, `SaveFile` round-trip, `ConfigFile`, `PlanetController` and `RNG.GenerateRandomNumber` untested (the contraband bug lived here for years); start with the pure-logic classes: `PlanetController`, `SaveFile` save/load round-trip against an injected temp directory.
+- [ ] [Tests] Add an `EliteMain` construction/smoke test using fakes, mirroring SCR's `StuntCarRacerMainTests` — Elite currently has no test that even constructs its composition; `EliteSharpLib.Fakes` (`FakeEliteDraw`, `FakeShipFactory`) plus `Useful.Fakes` already provide most of the doubles.
+
+### Release engineering (from the retired release plan)
+
+- [ ] [Release] Switch versioning from CI's date+run-number stamp to tag-driven semantic versioning (e.g. [MinVer](https://github.com/adamralph/minver)) so tagging a commit *is* the release-versioning step; do this before the first tag.
+- [ ] [Release] Add a tag-triggered CI job that publishes the win-x64/linux-x64 self-contained builds and creates a GitHub Release with the zips attached (`softprops/action-gh-release` or `gh release create --generate-notes`); ship as zip/tar.gz, not an installer.
+
+### Stunt Car Racer conversion — correctness (from the retired conversion plan)
+
+- [ ] [StuntCarRacerLib] Boost is BCD in the original: the Amiga stores `boost.reserve` as BCD but [Track.cs:115](../src/scr/libs/StuntCarRacerLib/Tracks/Track.cs) loads the raw byte and `CarPhysics.BoostReserve` counts it in binary, so a track byte of `$30` gives 48 boost units instead of 30; convert from BCD on load.
+- [ ] [StuntCarRacerLib] Full damage should wreck the car: the original's `damage.line` wrecks the car (`car.is.wrecked`) when the crack reaches the end of the beam (240); the HUD caps the crack but nothing wrecks the car.
+- [ ] [StuntCarRacerLib] Near-road sliver artifact: a thin dark-red diagonal sliver sometimes draws across the near road surface (see `VisualDumpTests` frame_landed) — pre-dates road-line textures; likely a painter's-sort or side-wall geometry edge case in `TrackRenderer`.
+- [ ] [StuntCarRacerLib] Opponent speed values still use the old fluffyfreak random-table approach (`OpponentData.SpeedValues`/`TrackSpeedValues`); ptitSeb replaced it with `Opponent_Speed_Value()` computed per-piece from `Piece_Angle_And_Template`/`sections_car_can_be_put_on` with a memoized accumulator — a direct port of the authentic Amiga assembly (inlined as a comment in that function in `Opponent_Behaviour.cpp`); port that algorithm.
 
 ## Could
 
-- [ ] [Useful.Audio] Delete dead code: `AudioController.GenerateWaveFromMidi`/`WriteStereoWav` are never called and hardcode `Assets/Music/...` paths ([AudioController.cs:80-140](../src/useful/libs/Useful.Audio/AudioController.cs)), and the `#if DEBUG` block sets identical values in both branches ([AudioController.cs:27-33](../src/useful/libs/Useful.Audio/AudioController.cs)).
+### Cleanups and small refactors
+
+- [ ] [Useful] Replace the custom `Guard.ArgumentNull` (50 call sites) with the framework's `ArgumentNullException.ThrowIfNull` and delete [Guard.cs](../src/useful/libs/Useful/Guard.cs)/`ValidatedNotNullAttribute` — the architecture doc's own "prefer dotnet framework intrinsics" rule.
+- [ ] [Repo] Adopt central package management: add `Directory.Packages.props` (14 projects currently pin versions independently and are already drifting) and move the copy-pasted analyzer `PackageReference` block from every csproj into `Directory.Build.props`/`.targets`.
+- [ ] [Useful.Abstraction] `ScreenManager` starts with `CurrentId = default!` and a nullable `Current`, forcing `Screens.Current!.Update()` at every call site ([ScreenManager.cs:29-31](../src/useful/libs/Useful.Abstraction/ScreenManager.cs)); require the initial screen at construction (or an explicit `Start(id)`) so `Current` is never null after setup.
+- [ ] [Useful.Graphics] `FastBitmap` pins every bitmap with a raw `GCHandle` + finalizer ([FastBitmap.cs:19-35](../src/useful/libs/Useful.Graphics/FastBitmap.cs)); only the screen bitmap ever crosses into SDL — pin only on demand (or wrap the handle in a `SafeHandle`-style type) so short-lived text/texture bitmaps don't fragment the GC heap.
+- [ ] [Apps] Fix the rename leftover: `EliteSharp`'s `LogMessages`/`SDLProgram` sit in namespace `EliteSharp.SDL` though the project is `EliteSharp`; and remove the committed benchmark reports under `src/*/perf/**/reports/` (generated artifacts, per the architecture doc's hygiene rule).
+- [ ] [EliteSharpLib] Give the bare `throw new EliteException()` calls in the factory `switch` defaults ([ShipFactory.cs:46,59,68,77](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) a message with the offending value — an empty exception is undiagnosable in a log.
+- [ ] [Useful.SDL] Document and harden the `SDLSound` loop-pitch threading contract: the `Mix_RegisterEffect` callback runs on the audio thread while the game thread writes the pitch; verify the field is read/written with `Volatile` (or is inherently safe) and state the contract in a comment.
 - [ ] [Useful.Graphics] Remove the `Debug.WriteLine($"{x},{y}")` left in the `DrawCircleFilled` scanline loop ([SoftwareGraphics.cs:112](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — debug-build log spam for every filled circle (planets, suns) every frame.
-- [ ] [Useful] Remove `Vector4.Cloner()` ([Maths/Extensions.cs:13](../src/useful/libs/Useful/Maths/Extensions.cs)) — `Vector4` is a struct, so plain assignment already copies; its four call sites (`Space.cs`, `Extensions.cs` in EliteSharpLib) can just assign.
-- [ ] [EliteSharpLib] Clean `EliteSharpLib.csproj`: the `NAudio`/`NAudio.Vorbis`/`MeltySynth` package references are unused by any source in the project, fourteen `sfx\*.wav` items point at a folder that doesn't exist, and the `<Compile Remove="Controls\**" />` block excludes a folder that no longer exists ([EliteSharpLib.csproj:4-12, 286-327](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj)); the ~280-line hand-maintained asset item list could also become two glob items.
+- [ ] [Useful] Remove `Vector4.Cloner()` ([Maths/Extensions.cs:13](../src/useful/libs/Useful/Maths/Extensions.cs)) — `Vector4` is a struct, so plain assignment already copies; its four call sites can just assign.
+- [ ] [EliteSharpLib] Clean `EliteSharpLib.csproj`: fourteen `sfx\*.wav` items point at a folder that doesn't exist and the `<Compile Remove="Controls\**" />` block excludes a folder that no longer exists ([EliteSharpLib.csproj](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj)); the ~280-line hand-maintained asset item list could also become two glob items. (The unused NAudio refs are covered by the Must item.)
 - [ ] [Repo] Delete stale build-output-only directories left behind by project renames: `src/elite/apps/EliteSharp.SDL/`, `src/elite/libs/EliteSharp/`, `src/elite/test/EliteSharp.Tests/`, `src/elite/perf/EliteSharp.Benchmarks/` contain only `bin`/`obj` and are referenced by no project or solution entry.
-- [ ] [Docs] Fix doc drift in [docs/config.md](config.md) (documents `SpeedCap`, but `ConfigSettings` has `Fps`; `IsViewFullFrame`/`Fps` undocumented) and [docs/readme.md](readme.md) (references `newkind.cfg`/`newkind.exe` at line 92, the removed `EliteSharp.SDL`/`EliteSharp.WinForms` projects at lines 98-99, and "dotnet runtime 8" vs the actual net10.0 target — the last is already noted in the release plan).
 - [ ] [EliteSharpLib] `Stars` repeats the same star plot/respawn block three times (`FrontStarfield`, `RearStarfield`, `SideStarfield`, [Stars.cs:61-133, 151-243, 258-333](../src/elite/libs/EliteSharpLib/Stars.cs)); extract the shared plot helper to cut ~80 duplicated lines.
 - [ ] [StuntCarRacerLib] `TrackRenderer.Draw` transforms each road segment's four corners once to compute the shared depth ([TrackRenderer.cs:113-118](../src/scr/libs/StuntCarRacerLib/Rendering/TrackRenderer.cs)) and then `AddPolygon` transforms the same points again ([TrackRenderer.cs:218-222](../src/scr/libs/StuntCarRacerLib/Rendering/TrackRenderer.cs)); pass the camera-space points (or the depth) through to avoid transforming every road quad twice.
 - [ ] [Useful.Graphics] The hardcoded `Scale { get; } = 2` on `IGraphics` and the centring math that divides by it (`DrawRectangleCentre` = `(ScreenWidth - width) / Scale`, [SoftwareGraphics.cs:25, 281-282](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) only centres correctly because Scale happens to equal 2, and `SDLGraphics` divides positions by `(2 / Scale)` which is a no-op ([SDLGraphics.cs:239](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) — Elite-specific scaling leaking into the shared library; make centring `(ScreenWidth - width) / 2` and move scale policy to the game.
@@ -101,14 +187,28 @@ of scope.
 - [ ] [EliteSharpLib] `ShipBase.Draw` allocates a `new Vector4[100]` per ship per tick and keeps a discarded `_ = VectorMaths.UnitVector(...)` call ([ShipBase.cs:100-115](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)); reuse a pooled/instance buffer sized to the model and delete the dead call (same pattern for `EliteDraw._pointList`'s magic `100` vs the `MAXPOLYS` constant, [EliteDraw.cs:19-25](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)).
 - [ ] [EliteSharpLib] `Universe.RemoveShip` only removes from `_objects`, silently leaving `Planet`/`StationOrSun` set if passed one of those ([Universe.cs:127-135](../src/elite/libs/EliteSharpLib/Universe.cs)) — station removal currently works only because a sun immediately overwrites `StationOrSun` in `Combat.RemoveShip`; clear the matching reference explicitly.
 - [ ] [Useful.SDL] `SDLGraphics.LoadFont` hardcodes the game-specific font names "Small"/"Large" and their point sizes into the shared library ([SDLGraphics.cs:395-408](../src/useful/libs/Useful.SDL/SDLGraphics.cs)); carry the size in the asset manifest instead.
-- [ ] [EliteSharpLib] issues.md "Inject options": CONFIRMED — `EliteMain` news up `ConfigFile`/`AssetLocator` itself (TODO at [SDLProgram.cs:46](../src/elite/apps/EliteSharp/SDLProgram.cs)) and `AudioController._musicOn`/`_effectsOn` are hardcoded `true` ([AudioController.cs:27-33](../src/useful/libs/Useful.Audio/AudioController.cs)); inject `ConfigSettings` and the sound on/off options through constructors.
-- [ ] [EliteSharpLib] issues.md "Wireframe planet": CONFIRMED — `WireframePlanet.Draw` draws only a circle ([WireframePlanet.cs:50-57](../src/elite/libs/EliteSharpLib/Planets/WireframePlanet.cs)); add the original's two arcs and crater.
-- [ ] [LARGE] [Useful.Graphics] Unify the two 3D pipelines: Elite (`ShipBase.TransformModelPoints` + `EliteDraw` painter chain) and SCR (`Scene3D` + `TrackRenderer` depth sort) each implement transform → near-clip → project → painter's-sort; per the architecture doc's "as much code as possible in Useful", compare and extract genuinely shared stages (projection, near-plane clip, depth-sorted polygon list) into `Useful.Graphics` — already flagged in `scr-conversion-plan.md`; don't force it if the pipelines differ for good reason.
+- [ ] [EliteSharpLib] Wireframe planet is just a circle ([WireframePlanet.cs:50-57](../src/elite/libs/EliteSharpLib/Planets/WireframePlanet.cs)); add the two arcs and crater the original Elite drew (from issues.md).
+- [ ] [LARGE] [Useful.Graphics] Unify the two 3D pipelines: Elite (`ShipBase.TransformModelPoints` + `EliteDraw` painter chain) and SCR (`Scene3D` + `TrackRenderer` depth sort) each implement transform → near-clip → project → painter's-sort; per the architecture doc's "as much code as possible in Useful", compare and extract genuinely shared stages into `Useful.Graphics` — don't force an abstraction over two pipelines that turn out to differ for good reason. (A shared text/HUD-panel helper for the two games' ad-hoc HUD code is a smaller sibling of this item.)
+
+### Stunt Car Racer conversion — features (from the retired conversion plan)
+
+- [ ] [StuntCarRacerLib] Lap times: the original shows current/best lap times on the dashboard (`print.lap.time`/`show.lap.time`); not ported, no lap timing exists yet.
+- [ ] [StuntCarRacerLib] Per-effect sound volume: the original scales grounded/creak effect volume by damage level; `AudioController`/`SfxSample` (and `ISound.Play`) currently have no per-play volume parameter.
+- [ ] [StuntCarRacerLib] F9/F10 frame-gap tuning keys: both C++ versions adjust the physics frame gap live; `StuntCarRacerMain.FrameGap` exists for exactly this but isn't wired to any key.
+- [ ] [StuntCarRacerLib] Player outside/chase view: needs a chase camera plus drawing the player's own car mesh (`Rendering/CarMesh` is currently only used for the opponent).
+- [ ] [StuntCarRacerLib] Road-line textures could sample the shared `atlas.bmp` (ptitSeb's `eRoadYellowDark` etc.) instead of the procedural strips in `Rendering/RoadTextures` — closer visual match, but the current strips already look correct; cosmetic.
+- [ ] [LARGE] [StuntCarRacerLib] Gamepad/joystick support: port `XBOXController.cpp/h` via `Useful.Controls` for XInput-style controllers plus a generic-HID digital joystick (USB Competition Pro Extra — 8-way stick + fire buttons, no analog axes), which needs SDL's joystick API (`SDL_Joystick`/`SDL_GameController`, check what `ppy.SDL2-CS` exposes) rather than XInput; the shared abstraction should cover both device classes.
+- [ ] [LARGE] [StuntCarRacerLib] Super League: ptitSeb's `bSuperLeague` toggle ('L' on the track menu) swaps alternate track/road-line colours (`SCR_BASE_COLOUR+16/17/18`), car body colours (+19/20/21), engine/boost constants (240/16/236 standard vs 320/12/314 super), opponent speed tables (`opp_track_speed_values[TrackID+32]`) and the atlas's "2"-suffixed sprite variants; needs a menu toggle, `RoadTextures`/`ScrPalette` alternates, and wiring `CarPhysics.RoadCushionValue` (which already exists but nothing sets) and the `OpponentPhysics` tables to the mode.
+- [ ] [LARGE] [StuntCarRacerLib] Convert physics from integer fixed-point to float: `Cars/CarPhysics.*`, `Cars/OpponentPhysics*`, `Cars/AmigaTrig`, `Cars/TrigCoefficients` and `Track.LogPrecision`'s 16384 scale use 68000-style scaled-integer arithmetic ported line-by-line; convert the physics core to `float` throughout. Watch for: angle wrapping is `& (MaxAngle - 1)` bitmasking and needs an equivalent float wrap; check for reliance on integer truncation/overflow; the 140+ exact-integer test assertions need reworking as tolerance-based comparisons.
+- [ ] [LARGE] [Useful.SDL] Resizable window / widescreen: `SDLWindow` creates a fixed non-resizable window ([SDLWindow.cs:23-29](../src/useful/libs/Useful.SDL/SDLWindow.cs)); ptitSeb's build supports resizing with dynamic cockpit/font scaling (`GetScreenDimensions`, `COCKPIT_WIDESCREEN_OFFSET`), and SCR's `HudRenderer`/`TrackMenuScreen` assume fixed 640x400 when computing scale factors (Elite similarly assumes 512x512, e.g. the hardcoded 511 in `ShipBase.DrawLasers`). Merges issues.md "make window resizable" with the conversion plan's widescreen item.
+
+### Release engineering — fast-follows
+
+- [ ] [Release] Add a `linux-arm64` publish target (Raspberry Pi 4 is a stated tested platform but not a CI publish target), and decide macOS per the platforms decision above.
+- [ ] [Release] Add a publish profile + CI publish step for `StuntCarRacer.csproj` mirroring Elite's, once SCR is in scope for a release.
 
 ## Won't
 
-- [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work — issues.md explicitly marks this "broken as designed" (authentic to the original); document, don't fix.
-- [ ] [EliteSharpLib] Intro2 ship parade shows 29 of ~33 ship models ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs) omits Cougar, Constrictor and the Lone variants) — issues.md itself says "maybe it should"; mission ships arguably belong out of the parade. Needs a maintainer decision, not code.
-- [ ] [StuntCarRacerLib] SCR physics uses 68000-style scaled-integer arithmetic rather than `System.Numerics` — deliberate line-by-line port fidelity, with the float conversion already a tracked item in `scr-conversion-plan.md`; the corresponding issues.md entry is STALE for Elite (already on `System.Numerics`).
-- [ ] [EliteSharpLib] Elite composes the frame inside `Update` (tactics and rendering interleaved in `Space.UpdateUniverse`) — authentic to The New Kind, and the refactor is already tracked (with a "confirm it's still worth doing" caveat) in `scr-conversion-plan.md`; issues.md "Separate tactics from rendering?" is CONFIRMED but deferred there.
-- [ ] [Useful.Graphics] Software rasterizer speed (per-pixel `SetPixel`, insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game is fixed at 13.5fps by design and none of this is a bottleneck at that rate; revisit only if the "performance as secondary objective" goal from `docs/readme.md` is picked up.
+- [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work — authentic to the original ("broken as designed"); documented, not fixed.
+- [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`, insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game is fixed at 13.5fps by design and none of this is a bottleneck at that rate; revisit only if the "performance as secondary objective" goal is picked up.
+- [ ] [StuntCarRacerLib] The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — see the porting notes in [scr-readme.md](scr-readme.md).

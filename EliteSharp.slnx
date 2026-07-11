@@ -1,27 +1,25 @@
 <Solution>
   <Folder Name="/docs/">
     <File Path="docs/architecture.md" />
-    <File Path="docs/config.md" />
-    <File Path="docs/issues.md" />
-    <File Path="docs/readme.md" />
-    <File Path="docs/release-plan.md" />
+    <File Path="docs/elite-readme.md" />
     <File Path="docs/review-findings.md" />
-    <File Path="docs/scr-conversion-plan.md" />
     <File Path="docs/scr-readme.md" />
   </Folder>
   <Folder Name="/docs/images/">
-    <File Path="docs/images/screenshot.png" />
+    <File Path="docs/images/elite-screenshot.png" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitattributes" />
     <File Path=".github/workflows/build-and-package.yml" />
     <File Path=".gitignore" />
+    <File Path="CHANGELOG.md" />
     <File Path="CODE_OF_CONDUCT.md" />
     <File Path="CONTRIBUTING.md" />
     <File Path="coverage.runsettings" />
     <File Path="Directory.Build.props" />
     <File Path="LICENSE" />
+    <File Path="README.md" />
     <File Path="SECURITY.md" />
   </Folder>
   <Folder Name="/src/" />
