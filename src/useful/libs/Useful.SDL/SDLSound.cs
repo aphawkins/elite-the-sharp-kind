@@ -27,7 +27,7 @@ public sealed class SDLSound : ISound, IDisposable
 
         SDLGuard.Execute(
             () => Mix_OpenAudio(audioSpecDesired.freq, audioSpecDesired.format, audioSpecDesired.channels, audioSpecDesired.samples));
-        SDLGuard.Execute(() => Mix_AllocateChannels(2));
+        SDLGuard.Execute(() => Mix_AllocateChannels(16));
     }
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -61,7 +61,9 @@ public sealed class SDLSound : ISound, IDisposable
             x => SDLGuard.Execute(() => Mix_LoadWAV(x.Value)));
     }
 
-    public void Play(string sfxType) => SDLGuard.Execute(() => Mix_PlayChannel(-1, _sfx[sfxType], 0));
+    // Mix_PlayChannel returns -1 both on a real error and when every channel
+    // is busy; either way, dropping this one-shot effect beats crashing the game.
+    public void Play(string sfxType) => Mix_PlayChannel(-1, _sfx[sfxType], 0);
 
     public void Play(string musicType, bool repeat)
     {
