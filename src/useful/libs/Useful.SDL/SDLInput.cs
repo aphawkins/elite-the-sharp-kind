@@ -26,12 +26,6 @@ public sealed class SDLInput : IInput
                 case SDL_EventType.SDL_KEYDOWN:
                     (ConsoleKey key, ConsoleModifiers modifiers) = SDLHelper.KeyConverter(sdlEvent.key.keysym.sym);
                     _keyboard.KeyDown(key, modifiers);
-                    if (sdlEvent.key.keysym.sym == SDL_Keycode.SDLK_ESCAPE)
-                    {
-                        _keyboard.Close = true;
-                        break;
-                    }
-
                     break;
 
                 case SDL_EventType.SDL_KEYUP:

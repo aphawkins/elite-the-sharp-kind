@@ -32,11 +32,9 @@ internal sealed class ConfigFile
                 return config;
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
         {
             Debug.WriteLine("Failed to read config.\n" + ex);
-            Debug.Fail(ex.Message);
-            throw;
         }
 
         return new();

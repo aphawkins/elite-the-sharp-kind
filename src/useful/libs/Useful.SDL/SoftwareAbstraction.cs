@@ -26,7 +26,11 @@ public sealed class SoftwareAbstraction : IAbstraction, IDisposable
             screenHeight,
             SoftwareScreenUpdate,
             assetLocator);
-        Sound = SoftwareSound.Create(assetLocator);
+
+        SDLSound sound = new();
+        sound.Initialize(assetLocator);
+        Sound = sound;
+
         Keyboard = new SoftwareKeyboard(new SDLInput());
     }
 

@@ -99,19 +99,14 @@ public sealed class SDLSound : ISound, IDisposable
                 // Ignore
             }
 
-            foreach (KeyValuePair<string, nint> v in _music)
-            {
-                SDL_FreeWAV(v.Value);
-            }
-
-            foreach (KeyValuePair<string, nint> v in _sfx)
-            {
-                Mix_FreeMusic(v.Value);
-            }
-
             foreach (KeyValuePair<string, nint> music in _music)
             {
                 Mix_FreeMusic(music.Value);
+            }
+
+            foreach (KeyValuePair<string, nint> sfx in _sfx)
+            {
+                Mix_FreeChunk(sfx.Value);
             }
 
             Mix_CloseAudio();

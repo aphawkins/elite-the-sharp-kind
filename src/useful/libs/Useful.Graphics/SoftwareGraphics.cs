@@ -550,10 +550,10 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in uint color)
     {
-        startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth);
-        startY = Math.Min(Math.Max(startY, 0), (int)ScreenWidth);
-        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth);
-        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenWidth);
+        startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth - 1);
+        startY = Math.Min(Math.Max(startY, 0), (int)ScreenHeight - 1);
+        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth - 1);
+        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenHeight - 1);
 
         // Draw horizontal lined
         for (int x = startX; x <= endX; x++)
@@ -567,10 +567,10 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     private void DrawRectangleInt(int startX, int startY, int width, int height, in uint color)
     {
-        startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth);
-        startY = Math.Min(Math.Max(startY, 0), (int)ScreenWidth);
-        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth);
-        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenWidth);
+        startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth - 1);
+        startY = Math.Min(Math.Max(startY, 0), (int)ScreenHeight - 1);
+        int endX = Math.Min(Math.Max(startX + width - 1, 0), (int)ScreenWidth - 1);
+        int endY = Math.Min(Math.Max(startY + height - 1, 0), (int)ScreenHeight - 1);
 
         // Draw horizontal lines
         for (int x = startX; x <= endX; x++)

@@ -113,7 +113,7 @@ internal sealed class Trade
         StockMarket[StockType.AlienItems].CurrentQuantity = 0;
     }
 
-    internal int IsCarryingContraband() => ((StockMarket[StockType.Slaves].CurrentCargo + StockMarket[StockType.Slaves].CurrentCargo)
+    internal int IsCarryingContraband() => ((StockMarket[StockType.Slaves].CurrentCargo + StockMarket[StockType.Narcotics].CurrentCargo)
         * 2)
         + StockMarket[StockType.Firearms].CurrentCargo;
 

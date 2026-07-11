@@ -115,7 +115,10 @@ internal sealed class Space
             }
         }
 
-        if ((_universe.Planet!.Location.Length() < 75001) || (_universe.StationOrSun!.Location.Length() < 75001))
+        if (_universe.Planet is null
+            || _universe.StationOrSun is null
+            || (_universe.Planet.Location.Length() < 75001)
+            || (_universe.StationOrSun.Location.Length() < 75001))
         {
             _gameState.InfoMessage("Mass Locked");
             return;

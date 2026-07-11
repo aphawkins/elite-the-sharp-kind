@@ -60,7 +60,7 @@ public class FastBitmap : IDisposable
         FastBitmap temp = new(newWidth, newHeight);
         for (int y = 0; y < newHeight; y++)
         {
-            if (y > Height)
+            if (y >= Height)
             {
                 for (int x = 0; x < newWidth; x++)
                 {
@@ -71,7 +71,7 @@ public class FastBitmap : IDisposable
             {
                 for (int x = 0; x < newWidth; x++)
                 {
-                    if (x > Width)
+                    if (x >= Width)
                     {
                         temp.SetPixel(x, y, BaseColors.TransparentBlack);
                     }

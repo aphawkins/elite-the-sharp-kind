@@ -428,6 +428,45 @@ public class SoftwareGraphicsTests
     }
 
     [Fact]
+    public void DrawRectangleFilledClampsToScreenHeightOnNonSquareScreen()
+    {
+        // Arrange - a screen wider than it is tall would previously clamp Y
+        // against ScreenWidth, indexing past the bitmap and throwing.
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(10, 4, DoAssert, moqAssetLocator.Object);
+
+        // Act
+        graphics.DrawRectangleFilled(new(2, 1), 20, 20, BaseColors.White.Argb);
+        graphics.ScreenUpdate();
+
+        // Assert - clamped to the last valid row/column, not out of bounds
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(9, 0));
+            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(9, 3));
+        }
+    }
+
+    [Fact]
+    public void DrawRectangleClampsToScreenHeightOnNonSquareScreen()
+    {
+        // Arrange - same as above but for the outline path.
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(10, 4, DoAssert, moqAssetLocator.Object);
+
+        // Act
+        graphics.DrawRectangle(new(2, 1), 20, 20, BaseColors.White.Argb);
+        graphics.ScreenUpdate();
+
+        // Assert - clamped to the last valid row/column, not out of bounds
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(9, 0));
+            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(9, 3));
+        }
+    }
+
+    [Fact]
     public void DrawTextWhitespaceNoChange()
     {
         // Arrange
