@@ -46,21 +46,7 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
 
 ## Must
 
-- [ ] [Useful.Audio] Delete the now-dead NAudio stack: since
-      `SoftwareAbstraction` switched to `SDLSound`, `SoftwareSound`,
-      `SoundSampleProvider` and `PitchedLoopSampleProvider` have zero
-      production references, so the `NAudio`/`NAudio.Vorbis`/`MeltySynth`
-      packages in [Useful.Audio.csproj](../src/useful/libs/Useful.Audio/Useful.Audio.csproj)
-      (and the duplicate refs in
-      [EliteSharpLib.csproj](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj))
-      ship dead code and three unused dependencies; delete the classes,
-      the never-called `AudioController.GenerateWaveFromMidi`/`WriteStereoWav`
-      helpers ([AudioController.cs:80-140](../src/useful/libs/Useful.Audio/AudioController.cs))
-      and the package references. This also retires the open
-      `SoundSampleProvider` click and `SoftwareSound.StopMusic` findings,
-      which only exist in that dead code. (If NAudio is instead kept as a
-      documented alternative backend, that's a Decision — say so and fix
-      those two findings.)
+(none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
 
 ## Should
 

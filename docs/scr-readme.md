@@ -4,7 +4,7 @@ A C# port of the classic Geoff Crammond racing game 'Stunt Car Racer'.  It is co
 
 The port shares the `Useful` libraries with 'Elite - The Sharp Kind': hardware access is hidden behind interfaces, with a software renderer drawing through SDL2.  The physics uses the original Amiga fixed-point algorithms and track data.
 
-Part of [The Sharp Kind](../README.md), alongside [Elite - The Sharp Kind](elite-readme.md).  Remaining conversion work is tracked in the [TODO list](review-findings.md).
+Part of [The Sharp Kind](../README.md), alongside [Elite - The Sharp Kind](elite-readme.md).  Remaining conversion work is tracked in the [backlog](backlog-roadmap.md).
 
 Race the clock and an AI opponent over four laps of elevated track.  The car takes damage from heavy landings and collisions, boost is limited, and falling off the track costs time - after too long off the track the car is dropped back on.
 

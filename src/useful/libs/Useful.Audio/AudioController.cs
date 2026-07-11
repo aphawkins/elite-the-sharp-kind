@@ -1,8 +1,5 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-using System.Diagnostics;
-using MeltySynth;
-
 namespace Useful.Audio;
 
 public sealed class AudioController
@@ -75,67 +72,5 @@ public sealed class AudioController
         {
             sample.ReduceTimeRemaining();
         }
-    }
-
-    internal static void GenerateWaveFromMidi(string midiFilename, string waveFilename)
-    {
-        const int sampleRate = 44100;
-        Synthesizer synthesizer = new(Path.Combine("Assets", "Music", "TimGM6mb.sf2"), sampleRate);
-        MidiFile midiFile = new(Path.Combine("Assets", "Music", midiFilename));
-        MidiFileSequencer sequencer = new(synthesizer);
-        sequencer.Play(midiFile, false);
-
-        // The output buffer.
-        float[] left = new float[(int)(sampleRate * midiFile.Length.TotalSeconds)];
-        float[] right = new float[(int)(sampleRate * midiFile.Length.TotalSeconds)];
-
-        Debug.Assert(left.Length == right.Length, "Left and right buffers must be the same length.");
-
-        sequencer.Render(left, right);
-
-        WriteStereoWav(Path.Combine("Assets", "Music", waveFilename), left, right, 44100);
-    }
-
-    internal static void WriteStereoWav(string filePath, float[] left, float[] right, int sampleRate)
-    {
-        int numSamples = Math.Min(left.Length, right.Length);
-        const int bytesPerSample = 2; // 16-bit PCM
-        const int numChannels = 2;
-        int byteRate = sampleRate * numChannels * bytesPerSample;
-        int dataSize = numSamples * numChannels * bytesPerSample;
-
-        using FileStream fs = new(filePath, FileMode.Create, FileAccess.Write);
-        using BinaryWriter bw = new(fs);
-
-        // RIFF header
-        bw.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));
-        bw.Write(36 + dataSize);
-        bw.Write(System.Text.Encoding.ASCII.GetBytes("WAVE"));
-
-        // fmt subchunk
-        bw.Write(System.Text.Encoding.ASCII.GetBytes("fmt "));
-        bw.Write(16); // Subchunk1Size for PCM
-        bw.Write((short)1); // AudioFormat PCM
-        bw.Write((short)numChannels);
-        bw.Write(sampleRate);
-        bw.Write(byteRate);
-        bw.Write((short)(numChannels * bytesPerSample)); // BlockAlign
-        bw.Write((short)(bytesPerSample * 8)); // BitsPerSample
-
-        // data subchunk
-        bw.Write(System.Text.Encoding.ASCII.GetBytes("data"));
-        bw.Write(dataSize);
-
-        // Write samples
-        for (int i = 0; i < numSamples; i++)
-        {
-            short l = (short)Math.Clamp(left[i] * 32767f, -32768, 32767);
-            short r = (short)Math.Clamp(right[i] * 32767f, -32768, 32767);
-            bw.Write(l);
-            bw.Write(r);
-        }
-
-        bw.Close();
-        fs.Close();
     }
 }

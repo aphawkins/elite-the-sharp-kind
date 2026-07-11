@@ -100,10 +100,10 @@ public sealed class SDLSound : ISound, IDisposable
 
     // SDL_mixer has no built-in pitch control, so the loop is played on a
     // reserved channel whose output is entirely replaced, each callback, by
-    // our own linearly-interpolated resample of the source chunk (mirroring
-    // Useful.Audio.PitchedLoopSampleProvider). Mix_PlayChannel on that
-    // channel is only there to keep the mixer invoking the effect callback;
-    // its own (unmodified) output is never heard.
+    // our own linearly-interpolated resample of the source chunk.
+    // Mix_PlayChannel on that channel is only there to keep the mixer
+    // invoking the effect callback; its own (unmodified) output is never
+    // heard.
     public void PlayLoop(string sfxType, double pitch)
     {
         if (_loopName != sfxType)

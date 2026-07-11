@@ -3,9 +3,18 @@
 All notable changes to this project are documented in this file. The format
 is based on [Keep a Changelog](https://keepachangelog.com/); the project does
 not yet cut versioned releases, so everything sits under Unreleased.
-Completed items from the [TODO list](docs/review-findings.md) move here.
+Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
+
+### Removed
+
+- Dead NAudio-backed audio stack: `SoftwareSound`, `SoundSampleProvider`
+  and `PitchedLoopSampleProvider` had zero production references since
+  `SoftwareAbstraction` switched to `SDLSound`, and `AudioController`'s
+  `GenerateWaveFromMidi`/`WriteStereoWav` helpers were never called; deleted
+  along with the `NAudio`/`NAudio.Vorbis`/`MeltySynth` package references in
+  `Useful.Audio.csproj` and `EliteSharpLib.csproj`.
 
 ### Fixed (2026-07-11 architecture review — all Must items, plus one Should)
 
@@ -52,7 +61,7 @@ Completed items from the [TODO list](docs/review-findings.md) move here.
 ## Stunt Car Racer conversion — progress to date
 
 Summarised from the retired `scr-conversion-plan.md` "Done" list. Remaining
-conversion work now lives in the [TODO list](docs/review-findings.md).
+conversion work now lives in the [backlog](docs/backlog-roadmap.md).
 
 - Project skeleton (`src/scr/*`) wired into the solution; builds clean.
 - Track geometry/data model from the original Amiga track data, including

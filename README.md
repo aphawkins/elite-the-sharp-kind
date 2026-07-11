@@ -32,7 +32,7 @@ Tested platforms: Windows (x64), Ubuntu (x64), Raspberry Pi 4 (ARM64). On Linux 
 ## Documentation
 
 - [Architecture principles](docs/architecture.md)
-- [TODO / review findings](docs/review-findings.md) — the single consolidated backlog
+- [Backlog and roadmap](docs/backlog-roadmap.md) — the single consolidated backlog
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
