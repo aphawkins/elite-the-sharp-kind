@@ -6,6 +6,7 @@ using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
+using Serilog.Events;
 using StuntCarRacerLib;
 using Useful.SDL;
 
@@ -22,13 +23,24 @@ internal static class SDLProgram
 
     public static void Main()
     {
+        LogEventLevel minimumLevel =
+            Enum.TryParse(Environment.GetEnvironmentVariable("SCR_LOG_LEVEL"), ignoreCase: true, out LogEventLevel envLevel)
+            ? envLevel
+            : LogEventLevel.Information;
+
         Logger seriLogger = new LoggerConfiguration()
             .Enrich
             .FromLogContext()
             .MinimumLevel
-            .Verbose()
+            .Is(minimumLevel)
             .WriteTo
-            .Debug(formatProvider: CultureInfo.InvariantCulture)
+            .Console(formatProvider: CultureInfo.InvariantCulture)
+            .WriteTo
+            .File(
+                Path.Combine("logs", "scr-.log"),
+                formatProvider: CultureInfo.InvariantCulture,
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 7)
             .CreateLogger();
 
         using LoggerFactory loggerFactory = new();

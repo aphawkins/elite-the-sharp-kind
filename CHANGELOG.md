@@ -7,6 +7,14 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (logging, 2026-07-12)
+
+- Both apps' logs were invisible without a debugger (Serilog's only sink was
+  `Debug`, minimum level Verbose). Switched to a console sink plus a rolling
+  daily file (`logs/elite-.log` / `logs/scr-.log`, 7 days retained), minimum
+  level Information, overridable via the `ELITE_LOG_LEVEL` /
+  `SCR_LOG_LEVEL` environment variables.
+
 ### Fixed (SCR track rendering, 2026-07-12)
 
 - Track visibility artifacts (white triangles on corners, triangular bites

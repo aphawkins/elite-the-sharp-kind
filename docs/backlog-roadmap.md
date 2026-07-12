@@ -72,12 +72,6 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
       heaviest in [Combat.cs](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs))
       to thrown exceptions or logged Warnings/Errors per the architecture
       doc's logging policy — today they all vanish in Release builds.
-- [ ] [Apps] Make logs land somewhere: both apps configure Serilog with
-      only the Debug sink at Verbose
-      ([SDLProgram.cs:32-39](../src/elite/apps/EliteSharp/SDLProgram.cs), same in SCR)
-      — invisible without a debugger; switch to console + rolling file
-      (`retainedFileCountLimit` set), minimum level Information, overridable
-      via environment variable.
 - [ ] [EliteSharpLib] Read settings via `Microsoft.Extensions.Configuration`
       (JSON provider bound onto `ConfigSettings`, validation at startup)
       and put writing behind a small `IConfigWriter` interface so
