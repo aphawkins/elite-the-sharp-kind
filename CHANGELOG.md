@@ -7,6 +7,17 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (config, 2026-07-12)
+
+- `ConfigFile.ReadConfig` now reads `elitesharp.cfg` (renamed from
+  `sharpkind.cfg`) through
+  `Microsoft.Extensions.Configuration`'s JSON provider (bound onto
+  `ConfigSettings`) instead of `System.Text.Json.Deserialize`, with startup
+  validation (`Fps > 0` and each enum value in range) falling back to
+  defaults on failure. Writing now goes behind a new `IConfigWriter`
+  interface, which `SettingsView` depends on instead of the concrete
+  `ConfigFile`.
+
 ### Fixed (logging, 2026-07-12)
 
 - Both apps' logs were invisible without a debugger (Serilog's only sink was

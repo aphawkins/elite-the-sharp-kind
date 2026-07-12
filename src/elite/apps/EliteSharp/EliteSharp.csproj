@@ -48,7 +48,7 @@
 			<CopyToPublishDirectory>true</CopyToPublishDirectory>
 			<ExcludeFromSingleFile>false</ExcludeFromSingleFile>
 		</None>
-    <None Update="sharpkind.cfg">
+    <None Update="elitesharp.cfg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

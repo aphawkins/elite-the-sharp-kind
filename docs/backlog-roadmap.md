@@ -72,12 +72,7 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
       heaviest in [Combat.cs](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs))
       to thrown exceptions or logged Warnings/Errors per the architecture
       doc's logging policy — today they all vanish in Release builds.
-- [ ] [EliteSharpLib] Read settings via `Microsoft.Extensions.Configuration`
-      (JSON provider bound onto `ConfigSettings`, validation at startup)
-      and put writing behind a small `IConfigWriter` interface so
-      [SettingsView.cs:36](../src/elite/libs/EliteSharpLib/Views/SettingsView.cs)
-      depends on a seam rather than the concrete `ConfigFile`.
-- [ ] [EliteSharpLib] Move user data out of the CWD: resolve `sharpkind.cfg`
+- [ ] [EliteSharpLib] Move user data out of the CWD: resolve `elitesharp.cfg`
       ([ConfigFile.cs:13](../src/elite/libs/EliteSharpLib/Config/ConfigFile.cs))
       and `.cmdr` saves ([SaveFile.cs:17](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs))
       against `Environment.SpecialFolder.ApplicationData` with an injected

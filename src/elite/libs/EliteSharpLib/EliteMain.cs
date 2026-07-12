@@ -92,7 +92,7 @@ public sealed class EliteMain : IGame
         ScreenManager<Screen, IView> views = new(_keyboard);
         _gameState = new(views)
         {
-            Config = configFile.ReadConfig(),
+            Config = ConfigFile.ReadConfig(),
         };
 
         _ship = new();

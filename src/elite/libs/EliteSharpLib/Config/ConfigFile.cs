@@ -5,46 +5,25 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Configuration;
 
 namespace EliteSharpLib.Config;
 
-internal sealed class ConfigFile
+internal sealed class ConfigFile : IConfigWriter
 {
-    private const string ConfigFileName = "sharpkind.cfg";
+    private const string ConfigFileName = "elitesharp.cfg";
 
-    private readonly JsonSerializerOptions _options = new()
+    private readonly JsonSerializerOptions _writeOptions = new()
     {
         WriteIndented = true,
         Converters = { new JsonStringEnumConverter() },
     };
 
     /// <summary>
-    /// Read the config file.
-    /// </summary>
-    internal ConfigSettings ReadConfig()
-    {
-        try
-        {
-            using FileStream stream = File.OpenRead(ConfigFileName);
-            ConfigSettings? config = JsonSerializer.Deserialize<ConfigSettings>(stream, _options);
-            if (config != null)
-            {
-                return config;
-            }
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
-        {
-            Debug.WriteLine("Failed to read config.\n" + ex);
-        }
-
-        return new();
-    }
-
-    /// <summary>
     /// Write the config file.
     /// </summary>
     /// <param name="config">The config to save.</param>
-    internal void WriteConfig(ConfigSettings config)
+    public void WriteConfig(ConfigSettings config)
     {
         try
         {
@@ -55,7 +34,7 @@ internal sealed class ConfigFile
 
             using FileStream stream = File.OpenWrite(ConfigFileName);
 
-            JsonSerializer.Serialize(stream, config, _options);
+            JsonSerializer.Serialize(stream, config, _writeOptions);
         }
         catch (Exception ex)
         {
@@ -64,4 +43,38 @@ internal sealed class ConfigFile
             throw;
         }
     }
+
+    /// <summary>
+    /// Read the config file.
+    /// </summary>
+    internal static ConfigSettings ReadConfig()
+    {
+        try
+        {
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .AddJsonFile(ConfigFileName, optional: true, reloadOnChange: false)
+                .Build();
+
+            ConfigSettings config = new();
+            configuration.Bind(config);
+
+            if (IsValid(config))
+            {
+                return config;
+            }
+
+            Debug.WriteLine("Config file failed validation; using defaults.");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or FormatException)
+        {
+            Debug.WriteLine("Failed to read config.\n" + ex);
+        }
+
+        return new();
+    }
+
+    private static bool IsValid(ConfigSettings config) => config.Fps > 0 &&
+        Enum.IsDefined(config.PlanetDescriptions) &&
+        Enum.IsDefined(config.PlanetStyle) &&
+        Enum.IsDefined(config.SunStyle);
 }
