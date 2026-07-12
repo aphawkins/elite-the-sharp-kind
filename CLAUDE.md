@@ -1,1 +1,1 @@
-Use instructions in AGENTS.md
+Use instructions in `AGENTS.md`
