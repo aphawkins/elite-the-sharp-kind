@@ -7,6 +7,24 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (SCR track rendering, 2026-07-12)
+
+- Track visibility artifacts (white triangles on corners, triangular bites
+  in the track edges up close, spurious triangles on the side walls, torn
+  bottom edge): the painter's sort (one averaged depth per segment) was
+  replaced with a software z-buffer in `SoftwareGraphics`
+  (`ClearDepth`/`DrawPolygonFilledDepth`/`DrawPolygonTexturedDepth`, 1/z
+  depth test, perspective-correct textured fill), matching the original
+  remake's Direct3D z-buffered `DrawTrack`; `Scene3D` now clips in float at
+  the remake's 0.5-unit near plane instead of the Amiga fixed-point
+  engine's integer `Z_CLIP_BOUNDARY = 128`. Also closes the backlog's
+  "near-road sliver artifact" defect (no longer reproduces in
+  `VisualDumpTests` frames) and obsoletes its `TrackRenderer`
+  double-transform cleanup item (that code path was removed).
+- View dipping under the track surface on bumpy landings: ported the
+  remake's `LimitViewpointY` (road "tearing" prevention) into `CarPhysics`
+  and wired it into `SceneCamera.FollowCar`, with unit tests.
+
 ### Removed
 
 - Dead NAudio-backed audio stack: `SoftwareSound`, `SoundSampleProvider`
