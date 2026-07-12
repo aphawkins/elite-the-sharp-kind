@@ -29,13 +29,16 @@ public sealed class SceneCamera
 
     public int ZAngle { get; private set; }
 
-    // Position the camera in the driver's seat (original inside view).
+    // Position the camera in the driver's seat (original inside view). The
+    // y value is limited so the view never dips below or too close to the
+    // road surface (the original ran LimitViewpointY between the car
+    // physics and CalcGameViewpoint every frame).
     public void FollowCar(CarPhysics car)
     {
         Useful.Guard.ArgumentNull(car);
 
         X = car.PlayerX >> Track.LogPrecision;
-        Y = (car.PlayerY >> (Track.LogPrecision - 2)) + HeightAboveRoad;
+        Y = (car.LimitViewpointY() >> (Track.LogPrecision - 2)) + HeightAboveRoad;
         Z = car.PlayerZ >> Track.LogPrecision;
 
         XAngle = car.PlayerXAngle;

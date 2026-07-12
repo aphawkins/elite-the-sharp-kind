@@ -10,6 +10,60 @@ namespace StuntCarRacerLib.Cars;
 // (from Car Behaviour.cpp).
 public sealed partial class CarPhysics
 {
+    // The y value for positioning the game viewpoint (the original
+    // LimitViewpointY): PlayerY, limited so the viewpoint cannot go below
+    // or too close to the road - i.e. prevents seeing under the track when
+    // the car bottoms out. When a front wheel would show more than the
+    // threshold below the road surface, the y is recalculated to hold that
+    // wheel at the threshold (the CalculateActualWheelHeights sums in
+    // reverse, with the road height in place of the wheel height). Only
+    // the rendered viewpoint uses the result; the physics state is not
+    // repositioned (though as in the original, the wheel/road heights are
+    // recalculated in place).
+    public int LimitViewpointY()
+    {
+        int savedPlayerZSpeed = PlayerZSpeed;
+
+        _trig.CalculateYXZ(PlayerXAngle, PlayerYAngle, PlayerZAngle);
+
+        // prevent CalculateRoadWheelHeight from averaging current and
+        // previous heights
+        PlayerZSpeed = 0xA00;
+
+        CalculateWheelXZOffsets();
+        CalculateRoadWheelHeights();
+        CalculateActualWheelHeights();
+
+        PlayerZSpeed = savedPlayerZSpeed;
+
+        int sinX = AmigaTrig.Sin(PlayerXAngle);
+        int sinZ = AmigaTrig.Sin(PlayerZAngle);
+
+        int rightY = 0;
+        if (_frontRightRoadHeight - _frontRightActualHeight > YAdjustmentThreshold)
+        {
+            rightY = (_frontRightRoadHeight - YAdjustmentThreshold) << 8;
+            rightY += sinZ << (3 + 15 - Track.LogPrecision);
+            rightY -= sinX << (4 + 15 - Track.LogPrecision);
+        }
+
+        int leftY = 0;
+        if (_frontLeftRoadHeight - _frontLeftActualHeight > YAdjustmentThreshold)
+        {
+            leftY = (_frontLeftRoadHeight - YAdjustmentThreshold) << 8;
+            leftY -= sinZ << (3 + 15 - Track.LogPrecision);
+            leftY -= sinX << (4 + 15 - Track.LogPrecision);
+        }
+
+        if (rightY != 0)
+        {
+            // use the average when both wheels need adjusting
+            return leftY != 0 ? (rightY + leftY) / 2 : rightY;
+        }
+
+        return leftY != 0 ? leftY : PlayerY;
+    }
+
     // Calculate the height (y value) of each car wheel.
     private void CalculateActualWheelHeights()
     {

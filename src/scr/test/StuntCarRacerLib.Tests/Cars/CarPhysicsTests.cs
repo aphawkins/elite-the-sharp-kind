@@ -334,4 +334,60 @@ public class CarPhysicsTests
 
         Assert.Equal(0, car.SmashHoles);
     }
+
+    [Fact]
+    public void LimitViewpointYLeavesRestingCarUnchanged()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        // land on the road and settle
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        Assert.True(car.TouchingRoad);
+
+        // at rest the wheels sit within the adjustment threshold, so the
+        // viewpoint is not moved
+        Assert.Equal(car.PlayerY, car.LimitViewpointY());
+    }
+
+    [Fact]
+    public void LimitViewpointYHoldsViewpointUpOverBumps()
+    {
+        Track track = Track.Load(TrackId.HumpBack);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        // drive over the humps, steering back towards the middle of the
+        // road; landing compression must engage the viewpoint limit on at
+        // least one frame, and only ever raise the viewpoint
+        bool engaged = false;
+        for (int frame = 0; frame < 400; frame++)
+        {
+            CarInput input = CarInput.Accelerate;
+            if (car.RoadXPosition < 0xA0)
+            {
+                input |= CarInput.Right;
+            }
+            else if (car.RoadXPosition > 0xE0)
+            {
+                input |= CarInput.Left;
+            }
+
+            car.Update(input);
+
+            int limited = car.LimitViewpointY();
+            if (limited != car.PlayerY)
+            {
+                engaged = true;
+                Assert.True(limited > car.PlayerY);
+            }
+        }
+
+        Assert.True(engaged);
+    }
 }

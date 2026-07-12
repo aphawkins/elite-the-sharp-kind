@@ -51,6 +51,10 @@ public sealed partial class CarPhysics
     // The damage level at which the original's cockpit crack becomes a hole.
     private const int SmashDamageThreshold = 0x1400;
 
+    // How far below the road a front wheel may show before LimitViewpointY
+    // holds the viewpoint up (the original Y_ADJUSTMENT_THRESHOLD).
+    private const int YAdjustmentThreshold = 0x480;
+
     // Used to convert a sin value (0-255) into a cosine value; 128 entries
     // indexed by sin/2. See the original Cosine_Conversion_Table.
     private static readonly int[] s_cosineConversion =
