@@ -61,7 +61,7 @@ public class Scene3DTests
     [Fact]
     public void PolygonBehindCameraIsFullyClipped()
     {
-        Coord3D[] polygon =
+        Vector3[] polygon =
         [
             new(-100, 0, -1000),
             new(100, 0, -1000),
@@ -69,7 +69,7 @@ public class Scene3DTests
             new(-100, 0, -500),
         ];
 
-        Span<Coord3D> output = stackalloc Coord3D[5];
+        Span<Vector3> output = stackalloc Vector3[5];
         int count = Scene3D.ClipPolygonToNearPlane(polygon, output);
 
         Assert.Equal(0, count);
@@ -78,7 +78,7 @@ public class Scene3DTests
     [Fact]
     public void PolygonInFrontIsUnchanged()
     {
-        Coord3D[] polygon =
+        Vector3[] polygon =
         [
             new(-100, 0, 1000),
             new(100, 0, 1000),
@@ -86,7 +86,7 @@ public class Scene3DTests
             new(-100, 0, 500),
         ];
 
-        Span<Coord3D> output = stackalloc Coord3D[5];
+        Span<Vector3> output = stackalloc Vector3[5];
         int count = Scene3D.ClipPolygonToNearPlane(polygon, output);
 
         Assert.Equal(4, count);
@@ -97,7 +97,7 @@ public class Scene3DTests
     [Fact]
     public void PolygonCrossingNearPlaneIsClippedToBoundary()
     {
-        Coord3D[] polygon =
+        Vector3[] polygon =
         [
             new(-100, 0, 1000),
             new(100, 0, 1000),
@@ -105,13 +105,13 @@ public class Scene3DTests
             new(-100, 0, -1000),
         ];
 
-        Span<Coord3D> output = stackalloc Coord3D[5];
+        Span<Vector3> output = stackalloc Vector3[5];
         int count = Scene3D.ClipPolygonToNearPlane(polygon, output);
 
         Assert.Equal(4, count);
         for (int i = 0; i < count; i++)
         {
-            Assert.True(output[i].Z >= Scene3D.ZClipBoundary);
+            Assert.True(output[i].Z >= Scene3D.NearPlane);
         }
     }
 

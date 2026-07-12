@@ -14,9 +14,13 @@ namespace StuntCarRacerLib.Rendering;
 // Direct3D remake had disabled). Works in 'track units' - see SceneCamera.
 public sealed class Scene3D
 {
-    // Original Z_CLIP_BOUNDARY - don't take this value any lower,
-    // otherwise calculations overflow.
-    internal const int ZClipBoundary = 128;
+    // The remake's projection near plane (D3DXMatrixPerspectiveFovLH zn).
+    // The original software engine clipped at Z_CLIP_BOUNDARY = 128 to
+    // avoid fixed-point overflow, which amputated the nearest 128 units of
+    // road - visible along the bottom of the screen whenever the car
+    // pitches. Clipping is done in floats here, so the boundary can sit as
+    // close as the remake's.
+    internal const float NearPlane = 0.5f;
 
     // Original FOCUS was 512 for a screen width of 640.
     internal const float FocusFactor = 512f / 640f;
@@ -30,10 +34,10 @@ public sealed class Scene3D
     private float _halfWidth;
     private float _halfHeight;
 
-    // Clip a camera-space polygon against the near plane z = ZClipBoundary.
+    // Clip a camera-space polygon against the near plane z = NearPlane.
     // Returns the number of resulting points written to the output span
     // (up to one more point than the input).
-    public static int ClipPolygonToNearPlane(in ReadOnlySpan<Coord3D> input, in Span<Coord3D> output)
+    public static int ClipPolygonToNearPlane(in ReadOnlySpan<Vector3> input, in Span<Vector3> output)
     {
         Span<Vector2> textureCoords = stackalloc Vector2[input.Length];
         Span<Vector2> clippedTextureCoords = stackalloc Vector2[input.Length + 1];
@@ -43,9 +47,9 @@ public sealed class Scene3D
     // As above, interpolating a texture coordinate per point through the
     // clip (textureCoords pairs with input, outputTextureCoords with output).
     public static int ClipPolygonToNearPlane(
-        in ReadOnlySpan<Coord3D> input,
+        in ReadOnlySpan<Vector3> input,
         in ReadOnlySpan<Vector2> textureCoords,
-        in Span<Coord3D> output,
+        in Span<Vector3> output,
         in Span<Vector2> outputTextureCoords)
     {
         int count = 0;
@@ -53,11 +57,11 @@ public sealed class Scene3D
         for (int i = 0; i < input.Length; i++)
         {
             int nextIndex = (i + 1) % input.Length;
-            Coord3D current = input[i];
-            Coord3D next = input[nextIndex];
+            Vector3 current = input[i];
+            Vector3 next = input[nextIndex];
 
-            bool currentInside = current.Z >= ZClipBoundary;
-            bool nextInside = next.Z >= ZClipBoundary;
+            bool currentInside = current.Z >= NearPlane;
+            bool nextInside = next.Z >= NearPlane;
 
             if (currentInside)
             {
@@ -67,9 +71,12 @@ public sealed class Scene3D
 
             if (currentInside != nextInside)
             {
-                float t = (float)(ZClipBoundary - current.Z) / ((long)next.Z - current.Z);
+                float t = (NearPlane - current.Z) / (next.Z - current.Z);
                 outputTextureCoords[count] = Vector2.Lerp(textureCoords[i], textureCoords[nextIndex], t);
-                output[count++] = ClipEdge(current, next);
+                output[count++] = new(
+                    current.X + ((next.X - current.X) * t),
+                    current.Y + ((next.Y - current.Y) * t),
+                    NearPlane);
             }
         }
 
@@ -107,29 +114,13 @@ public sealed class Scene3D
 
     // Perspective projection of a camera-space point (z must be positive).
     public Vector2 ProjectPoint(Coord3D cameraPoint)
+        => ProjectPoint(new Vector3(cameraPoint.X, cameraPoint.Y, cameraPoint.Z));
+
+    public Vector2 ProjectPoint(Vector3 cameraPoint)
     {
         float z = cameraPoint.Z;
         return new(
             _halfWidth + (_focus * cameraPoint.X / z),
             _halfHeight - (_focus * cameraPoint.Y / z));
-    }
-
-    // Intersect an edge with the near plane z = ZClipBoundary.
-    private static Coord3D ClipEdge(Coord3D start, Coord3D end)
-    {
-        long dz = (long)end.Z - start.Z;
-
-        // both points are on the same side when dz is zero, so this is only
-        // defensive (matching the original ZClip divide-by-zero guard)
-        if (dz == 0)
-        {
-            return start with { Z = ZClipBoundary };
-        }
-
-        long t = ZClipBoundary - start.Z;
-        int x = (int)(start.X + (((long)end.X - start.X) * t / dz));
-        int y = (int)(start.Y + (((long)end.Y - start.Y) * t / dz));
-
-        return new(x, y, ZClipBoundary);
     }
 }

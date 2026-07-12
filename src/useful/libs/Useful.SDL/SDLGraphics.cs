@@ -68,6 +68,12 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderClear(_renderer));
     }
 
+    public void ClearDepth()
+    {
+        // The SDL renderer has no depth buffer; the software rasterizer is
+        // the primary rendering path for depth-tested polygons.
+    }
+
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -201,6 +207,9 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         }
     }
 
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, uint faceColor)
+        => DrawPolygonFilled(points, faceColor); // no depth buffer - drawn unsorted
+
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
     {
         if (points == null || textureCoords == null || texture == null || textureCoords.Length < points.Length)
@@ -224,6 +233,9 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         int y = Math.Clamp((int)(averageUv.Y * texture.Height), 0, texture.Height - 1);
         DrawPolygonFilled(points, texture.GetPixel(x, y));
     }
+
+    public void DrawPolygonTexturedDepth(Vector2[] points, float[] depths, Vector2[] textureCoords, FastBitmap texture)
+        => DrawPolygonTextured(points, textureCoords, texture); // no depth buffer - drawn unsorted
 
     public void DrawRectangle(Vector2 position, float width, float height, uint color)
     {

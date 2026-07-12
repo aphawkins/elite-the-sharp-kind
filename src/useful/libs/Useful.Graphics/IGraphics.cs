@@ -14,6 +14,11 @@ public interface IGraphics
 
     public void Clear();
 
+    /// <summary>
+    /// Reset the depth buffer, before drawing a depth-tested scene.
+    /// </summary>
+    public void ClearDepth();
+
     public void DrawCircle(Vector2 centre, float radius, uint color);
 
     public void DrawCircleFilled(Vector2 centre, float radius, uint color);
@@ -38,10 +43,24 @@ public interface IGraphics
     public void DrawPolygonFilled(Vector2[] points, uint faceColor);
 
     /// <summary>
+    /// Fill a polygon with per-pixel depth testing. Depths pair with points
+    /// and hold each point's positive camera-space distance (larger is
+    /// further away); a pixel only draws when it is at least as near as
+    /// what is already drawn there since the last ClearDepth.
+    /// </summary>
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, uint faceColor);
+
+    /// <summary>
     /// Fill a polygon by sampling a texture. Texture coordinates pair with
     /// points and map [0,1] across the texture's width and height.
     /// </summary>
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture);
+
+    /// <summary>
+    /// As DrawPolygonTextured with per-pixel depth testing (depths as
+    /// DrawPolygonFilledDepth) and perspective-correct sampling.
+    /// </summary>
+    public void DrawPolygonTexturedDepth(Vector2[] points, float[] depths, Vector2[] textureCoords, FastBitmap texture);
 
     public void DrawRectangle(Vector2 position, float width, float height, uint color);
 

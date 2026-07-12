@@ -22,6 +22,8 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
 
     public int ClearCount { get; private set; }
 
+    public int ClearDepthCount { get; private set; }
+
     public int ScreenUpdateCount { get; private set; }
 
     public float Scale => 1;
@@ -31,6 +33,8 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     public float ScreenWidth { get; } = screenWidth;
 
     public void Clear() => ClearCount++;
+
+    public void ClearDepth() => ClearDepthCount++;
 
     public void DrawCircle(Vector2 centre, float radius, uint color)
     {
@@ -66,7 +70,13 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     public void DrawPolygonFilled(Vector2[] points, uint faceColor)
         => FilledPolygons.Add((points, faceColor));
 
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, uint faceColor)
+        => FilledPolygons.Add((points, faceColor));
+
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
+        => TexturedPolygons.Add((points, textureCoords, texture));
+
+    public void DrawPolygonTexturedDepth(Vector2[] points, float[] depths, Vector2[] textureCoords, FastBitmap texture)
         => TexturedPolygons.Add((points, textureCoords, texture));
 
     public void DrawRectangle(Vector2 position, float width, float height, uint color)

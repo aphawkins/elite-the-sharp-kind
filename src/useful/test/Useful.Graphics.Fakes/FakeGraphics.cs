@@ -16,6 +16,10 @@ public sealed class FakeGraphics : IGraphics
     {
     }
 
+    public void ClearDepth()
+    {
+    }
+
     public void DrawCircle(Vector2 centre, float radius, uint color)
     {
     }
@@ -52,7 +56,15 @@ public sealed class FakeGraphics : IGraphics
     {
     }
 
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, uint faceColor)
+    {
+    }
+
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
+    {
+    }
+
+    public void DrawPolygonTexturedDepth(Vector2[] points, float[] depths, Vector2[] textureCoords, FastBitmap texture)
     {
     }
 
