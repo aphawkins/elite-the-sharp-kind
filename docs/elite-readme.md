@@ -101,7 +101,7 @@ From the Options Screen (F11) you can enter the Game Settings Screen. From here 
 
 ## Configuration
 
-Game settings are held in the `elitesharp.cfg` file, stored in JSON format, which should be in the same directory as the executable.  If the file is missing or invalid the game falls back to defaults.  It can take the following values:
+Game settings are held in the `elitesharp.cfg` file, stored in JSON format, in the user's application data directory (`%AppData%\EliteSharp` on Windows, `~/.config/EliteSharp` on Linux/macOS). Commander saves (`.cmdr` files) live in the same directory. If the config file is missing or invalid the game falls back to defaults. `elitesharp.cfg` can take the following values:
 
 ``` json
 {

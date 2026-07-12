@@ -7,6 +7,18 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (user data location, 2026-07-12)
+
+- `ConfigFile` and `SaveFile` (`.cmdr` commander saves) now resolve their
+  files against an injected base directory instead of the current working
+  directory. `EliteMain` computes the default once
+  (`%AppData%\EliteSharp` on Windows, `~/.config/EliteSharp` on
+  Linux/macOS via `Environment.SpecialFolder.ApplicationData`) and passes
+  it to both, fixing the "launched from a shortcut" breakage where the CWD
+  wasn't the app's install directory, and making both classes testable
+  against a temp directory. The shipped default `elitesharp.cfg` next to
+  the executable is no longer read and was removed.
+
 ### Changed (config, 2026-07-12)
 
 - `ConfigFile.ReadConfig` now reads `elitesharp.cfg` (renamed from

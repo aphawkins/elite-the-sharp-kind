@@ -48,9 +48,6 @@
 			<CopyToPublishDirectory>true</CopyToPublishDirectory>
 			<ExcludeFromSingleFile>false</ExcludeFromSingleFile>
 		</None>
-    <None Update="elitesharp.cfg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

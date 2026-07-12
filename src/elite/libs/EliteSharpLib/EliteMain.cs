@@ -88,11 +88,12 @@ public sealed class EliteMain : IGame
             { nameof(SoundEffect.Boop), new(7) },
         };
         _audio = new(sound, sfx);
-        ConfigFile configFile = new();
+        string userDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EliteSharp");
+        ConfigFile configFile = new(userDataPath);
         ScreenManager<Screen, IView> views = new(_keyboard);
         _gameState = new(views)
         {
-            Config = ConfigFile.ReadConfig(),
+            Config = configFile.ReadConfig(),
         };
 
         _ship = new();
@@ -105,7 +106,7 @@ public sealed class EliteMain : IGame
         _stars = new(_gameState, _draw, _ship);
         _pilot = new(_draw, _audio, _universe, _ship);
         _combat = new(_gameState, _audio, _ship, trade, _pilot, _universe, _draw, shipFactory);
-        _save = new(_gameState, _ship, trade, planet);
+        _save = new(_gameState, _ship, trade, planet, userDataPath);
         _space = new(_gameState, _audio, _pilot, _combat, trade, _ship, planet, _stars, _universe, _draw);
         _scanner = new(_gameState, _draw, _universe, _ship, _combat);
 

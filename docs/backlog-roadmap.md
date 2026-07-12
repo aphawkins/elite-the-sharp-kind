@@ -72,13 +72,6 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
       heaviest in [Combat.cs](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs))
       to thrown exceptions or logged Warnings/Errors per the architecture
       doc's logging policy — today they all vanish in Release builds.
-- [ ] [EliteSharpLib] Move user data out of the CWD: resolve `elitesharp.cfg`
-      ([ConfigFile.cs:13](../src/elite/libs/EliteSharpLib/Config/ConfigFile.cs))
-      and `.cmdr` saves ([SaveFile.cs:17](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs))
-      against `Environment.SpecialFolder.ApplicationData` with an injected
-      base path (fixes "launched from a shortcut" breakage and makes both
-      classes testable — the ConfigFile fix couldn't be tested for exactly
-      this reason).
 - [ ] [StuntCarRacerLib] Give SCR screens their real dependencies: every
       screen currently receives the whole `StuntCarRacerMain`
       (`new RaceScreen(this)`, [StuntCarRacerMain.cs:82-85](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs))

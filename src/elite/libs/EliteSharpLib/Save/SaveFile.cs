@@ -23,18 +23,21 @@ internal sealed class SaveFile
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
     };
 
+    private readonly string _baseDirectory;
     private readonly PlanetController _planet;
     private readonly PlayerShip _ship;
     private readonly GameState _state;
     private readonly Trade _trade;
     private SaveState _lastSaved;
 
-    internal SaveFile(GameState state, PlayerShip ship, Trade trade, PlanetController planet)
+    internal SaveFile(GameState state, PlayerShip ship, Trade trade, PlanetController planet, string baseDirectory)
     {
         _state = state;
         _ship = ship;
         _trade = trade;
         _planet = planet;
+        _baseDirectory = baseDirectory;
+        Directory.CreateDirectory(_baseDirectory);
 
 #if DEBUG
         _lastSaved = CommanderFactory.Max();
@@ -53,12 +56,13 @@ internal sealed class SaveFile
     {
         try
         {
-            if (!File.Exists(name + FileExtension))
+            string path = PathFor(name);
+            if (!File.Exists(path))
             {
                 return false;
             }
 
-            using FileStream stream = File.OpenRead(name + FileExtension);
+            using FileStream stream = File.OpenRead(path);
             SaveState? save = JsonSerializer.Deserialize<SaveState>(stream, _options);
             if (save != null)
             {
@@ -83,7 +87,7 @@ internal sealed class SaveFile
         {
             SaveState save = GameStateToSaveState(newName);
 
-            string path = save.CommanderName + FileExtension;
+            string path = PathFor(save.CommanderName);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -108,6 +112,8 @@ internal sealed class SaveFile
             throw;
         }
     }
+
+    private string PathFor(string name) => Path.Combine(_baseDirectory, name + FileExtension);
 
     private SaveState GameStateToSaveState(string newName) => new()
     {
