@@ -52,26 +52,97 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
 
 ### Architecture (business-application practices — see architecture.md)
 
-- [ ] [Apps] [LARGE] Introduce a real composition root: add
-      `Microsoft.Extensions.DependencyInjection` to both apps, register
-      `IAbstraction`/`IGraphics`/`ISound`/`IKeyboard`, `AssetLocator`,
-      `ConfigSettings` and the game as container-owned singletons in
-      `Program.Main`, and move all object creation out of `EliteMain`'s
-      ~90-line constructor ([EliteMain.cs:61-141](../src/elite/libs/EliteSharpLib/EliteMain.cs),
-      `// TODO: Use DI` at [SDLProgram.cs:46](../src/elite/apps/EliteSharp/SDLProgram.cs))
-      so domain classes receive collaborators instead of building them.
-      Subsumes issues.md "Inject options" (including `AudioController`'s
-      hardcoded `_musicOn`/`_effectsOn`,
-      [AudioController.cs:27-33](../src/useful/libs/Useful.Audio/AudioController.cs)).
-- [ ] [Useful] [LARGE] Add library logging: reference
-      `Microsoft.Extensions.Logging.Abstractions` from the `Useful.*` and
-      game libraries, accept `ILogger<T>` by constructor, define
-      per-library `[LoggerMessage]` partials (the pattern the apps'
-      `LogMessages.cs` already uses), and convert the operational
-      `Debug.Fail`/`Debug.WriteLine` calls (21/14 across the libraries,
-      heaviest in [Combat.cs](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs))
-      to thrown exceptions or logged Warnings/Errors per the architecture
-      doc's logging policy — today they all vanish in Release builds.
+Composition root (split 2026-07-14 from the original [LARGE] item; do the
+first four in order — each builds on the previous; the fifth is
+independent):
+
+- [ ] [StuntCarRacer] Add a DI container to SCR's `Program.Main`
+      ([SDLProgram.cs:24-66](../src/scr/apps/StuntCarRacer/SDLProgram.cs)):
+      reference `Microsoft.Extensions.DependencyInjection` (no project in
+      the repo references it yet), build a `ServiceCollection` that
+      registers `SoftwareAbstraction` as `IAbstraction` (container-owned,
+      disposed via the provider), forwards `IGraphics`/`ISound`/`IKeyboard`
+      from `IAbstraction`, registers the existing Serilog
+      `ILoggerFactory`, and registers `StuntCarRacerMain` as `IGame`;
+      resolve `IGame` and run. SCR is the smaller app — this establishes
+      the pattern Elite then copies. `StuntCarRacerMain`'s own internals
+      stay as-is (its screens item below is separate).
+- [ ] [EliteSharp] Mirror the SCR composition root in Elite's
+      `Program.Main` (`// TODO: Use DI` at
+      [SDLProgram.cs:58](../src/elite/apps/EliteSharp/SDLProgram.cs)):
+      register `SoftwareAbstraction`/`IAbstraction` and its forwarded
+      interfaces, `AssetLocator` (currently created inside `EliteMain`,
+      [EliteMain.cs:65](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
+      the user-data path + `ConfigFile`/`ConfigSettings`
+      ([EliteMain.cs:91-97](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
+      and `EliteMain` as `IGame`. `EliteMain`'s constructor keeps building
+      the domain graph at this stage — it just receives
+      `AssetLocator`/`ConfigFile` instead of creating them.
+- [ ] [EliteSharpLib] Move Elite's domain services into the container:
+      register `GameState`, `PlayerShip`, `Trade`, `PlanetController`,
+      `EliteDraw`, `IShipFactory`, `Universe`, `Stars`, `Pilot`, `Combat`,
+      `SaveFile`, `Space`, `Scanner` and `AudioController` (including its
+      `SfxSample` cooldown table, the `// TODO: improve this` at
+      [EliteMain.cs:72-90](../src/elite/libs/EliteSharpLib/EliteMain.cs))
+      as singletons, and shrink `EliteMain`'s constructor to accepting the
+      collaborators it actually uses. Watch the two-phase creations
+      (`ShipFactory.Create`, `EliteDraw`'s palette read for `_colorText`)
+      — they interact with the separate "remove two-phase construction"
+      item below.
+- [ ] [EliteSharpLib] Move the ~24 view registrations out of `EliteMain`
+      ([EliteMain.cs:113-141](../src/elite/libs/EliteSharpLib/EliteMain.cs)):
+      register each `IView` in the container and populate
+      `ScreenManager<Screen, IView>` from a registrar (e.g. an
+      `AddEliteViews` extension building the `Screen`→view map) so
+      `EliteMain` no longer news up views. Depends on the domain-services
+      item above.
+- [ ] [Useful.Audio] Inject `AudioController` options: `_musicOn`/
+      `_effectsOn` are hardcoded `true` behind a `#if DEBUG` whose branches
+      are identical
+      ([AudioController.cs:24-30](../src/useful/libs/Useful.Audio/AudioController.cs));
+      accept an options type (bound from each game's config — Elite's
+      `ConfigSettings` already exists) so music/effects can be toggled.
+      From issues.md "Inject options". Independent of the ordering above.
+Library logging (split 2026-07-14 from the original [LARGE] item; a
+2026-07-14 survey found every operational `Debug.*` call lives in
+`EliteSharpLib` — the SCR libraries have none and `Useful.*` only the
+stray `DrawCircleFilled` WriteLine covered under Could — so scope is
+EliteSharpLib plus the wiring pattern; do the first item first, the rest
+in any order):
+
+- [ ] [EliteSharpLib] Logging infrastructure + exemplar: reference
+      `Microsoft.Extensions.Logging.Abstractions` from `EliteSharpLib`,
+      add a library-internal `LogMessages` `[LoggerMessage]` partial (the
+      pattern the apps' `LogMessages.cs` already uses), accept
+      `ILogger<T>` by constructor with `NullLogger<T>.Instance` available
+      for tests/fakes, and route the apps' existing Serilog
+      `ILoggerFactory` in via `EliteMain` (or the container once the
+      composition-root items above land — doing DI first makes this
+      wiring trivial). Prove the pattern end-to-end by converting
+      `ConfigFile`'s four `Debug.WriteLine`/`Debug.Fail` calls
+      ([ConfigFile.cs:51-81](../src/elite/libs/EliteSharpLib/Config/ConfigFile.cs))
+      to logged Warnings — today they vanish in Release builds.
+- [ ] [EliteSharpLib] Convert `Combat`'s 17 `Debug.Fail` calls
+      ([Combat.cs:156-1047](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs)),
+      the heaviest file: the "Failed to create <ship>" cases are
+      legitimate runtime conditions (universe full) → logged Warning,
+      while "Incorrect loot type" ([Combat.cs:1016](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs))
+      is a programming error → thrown exception, per the architecture
+      doc's logging policy. Needs `ILogger<Combat>` from the
+      infrastructure item.
+- [ ] [EliteSharpLib] Convert the remaining scattered calls: `Space`'s
+      three "Failed to create Planet/Sun" WriteLines
+      ([Space.cs:164,630,639](../src/elite/libs/EliteSharpLib/Space.cs)) and the six
+      across `ConstrictorMissionView`, `EscapeCapsuleView`,
+      `GameOverView`, `Intro1View`, `Intro2View` — same
+      Warning-vs-exception triage as the Combat item. Views need the
+      logger passed through their constructors (trivial after the
+      view-registration DI item above).
+- [ ] Note: `SaveFile`'s four `Debug.*` calls and `EliteMain.Update`'s
+      catch-all `Debug.WriteLine` are NOT separate work — they convert as
+      part of their existing defect items below (`LoadCommander`
+      validation, frame-path catch-all), which rewrite those exact lines;
+      those items should use the logger this infrastructure provides.
 - [ ] [StuntCarRacerLib] Give SCR screens their real dependencies: every
       screen currently receives the whole `StuntCarRacerMain`
       (`new RaceScreen(this)`, [StuntCarRacerMain.cs:82-85](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs))
@@ -155,7 +226,48 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
 - [ ] [EliteSharpLib] `Universe.RemoveShip` only removes from `_objects`, silently leaving `Planet`/`StationOrSun` set if passed one of those ([Universe.cs:127-135](../src/elite/libs/EliteSharpLib/Universe.cs)) — station removal currently works only because a sun immediately overwrites `StationOrSun` in `Combat.RemoveShip`; clear the matching reference explicitly.
 - [ ] [Useful.SDL] `SDLGraphics.LoadFont` hardcodes the game-specific font names "Small"/"Large" and their point sizes into the shared library ([SDLGraphics.cs:395-408](../src/useful/libs/Useful.SDL/SDLGraphics.cs)); carry the size in the asset manifest instead.
 - [ ] [EliteSharpLib] Wireframe planet is just a circle ([WireframePlanet.cs:50-57](../src/elite/libs/EliteSharpLib/Planets/WireframePlanet.cs)); add the two arcs and crater the original Elite drew (from issues.md).
-- [ ] [LARGE] [Useful.Graphics] Unify the two 3D pipelines: Elite (`ShipBase.TransformModelPoints` + `EliteDraw` painter chain) and SCR (`Scene3D` + `TrackRenderer`, now z-buffered via `DrawPolygonFilledDepth`) each implement transform → near-clip → project → visibility; per the architecture doc's "as much code as possible in Useful", compare and extract genuinely shared stages into `Useful.Graphics` — don't force an abstraction over two pipelines that turn out to differ for good reason. (A shared text/HUD-panel helper for the two games' ad-hoc HUD code is a smaller sibling of this item.)
+3D pipeline sharing (split 2026-07-14 from the "unify the two 3D
+pipelines" [LARGE] item; a code survey found the pipelines differ more
+than assumed — Elite: float `Matrix4x4` transform, `vec.Z = 1` clamp
+instead of a near clip, screen-winding cull, painter's chain; SCR:
+fixed-point Amiga-trig view transform, true near-plane polygon clip,
+z-buffer — so full unification is off the table; instead extract the
+stages that are genuinely shareable, each independently):
+
+- [ ] [Useful.Graphics] Move `Scene3D.ClipPolygonToNearPlane` into
+      `Useful.Graphics`: both overloads are pure static methods with no
+      SCR dependencies ([Scene3D.cs:40-84](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs));
+      then evaluate adopting it in Elite's `TransformModelPoints`, whose
+      `if (vec.Z <= 0) vec.Z = 1` clamp
+      ([ShipBase.cs:124-127](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
+      distorts any geometry crossing the camera plane instead of clipping
+      it. Adoption changes close-range visuals — verify against The New
+      Kind's behaviour before keeping it.
+- [ ] [EliteSharpLib] Spike: retire Elite's painter's chain in favour of
+      the shared z-buffer — `EliteDraw`'s `_polyChain` insertion sort +
+      back-to-front `RenderEnd`
+      ([EliteDraw.cs:85-134, 227-253](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
+      could become calls to the `DrawPolygonFilledDepth` path SCR already
+      uses, which would fix the "hidden surfaces show through" artefact
+      wholesale and obsolete the max-vs-mean `zavg` defect item below.
+      Prototype behind the existing wireframe/filled config switch and
+      compare frames; needs interpolated per-vertex Z (Elite currently
+      keeps one Z per face). If the spike fails, fall back to fixing the
+      `zavg` defect item.
+- [ ] [Useful.Graphics] Extract a shared perspective-projection helper
+      (centre + focus·x/z): Elite inlines it three times with magic
+      numbers (`* 256 / vec.Z + Centre/2, * Scale` in
+      `TransformModelPoints`, `DrawLasers`, and again in
+      `EliteDraw.DrawExplosion`) and SCR has `Scene3D.ProjectPoint`
+      ([Scene3D.cs:116-125](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs));
+      a small `focus`+`centre` projector type serves both. Do together
+      with (or after) the Scale-policy cleanup above so Elite's `* Scale`
+      doesn't leak into the shared type.
+- [ ] [Useful.Graphics] Shared text/HUD-panel helper for the two games'
+      ad-hoc HUD code (Elite's `EliteDraw` header/border/text helpers,
+      SCR's `HudRenderer`) — the smaller sibling of the original item;
+      survey both HUDs first and only lift what both actually use (e.g.
+      centred/left/right text layout in a panel rect).
 
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
@@ -168,10 +280,157 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
 - [ ] [StuntCarRacerLib] Opponent name announcement: the remake prints the opponent's name for the first four seconds of a race (`RenderText`, `opponentNames[opponentsID]`); `OpponentPhysics.Name` already exists but nothing displays it.
 - [ ] [StuntCarRacerLib] Player outside/chase view: needs a chase camera plus drawing the player's own car mesh (`Rendering/CarMesh` is currently only used for the opponent).
 - [ ] [StuntCarRacerLib] Road-line textures could sample the shared `atlas.bmp` (ptitSeb's `eRoadYellowDark` etc.) instead of the procedural strips in `Rendering/RoadTextures` — closer visual match, but the current strips already look correct; cosmetic.
-- [ ] [LARGE] [StuntCarRacerLib] Gamepad/joystick support: port `XBOXController.cpp/h` via `Useful.Controls` for XInput-style controllers plus a generic-HID digital joystick (USB Competition Pro Extra — 8-way stick + fire buttons, no analog axes), which needs SDL's joystick API (`SDL_Joystick`/`SDL_GameController`, check what `ppy.SDL2-CS` exposes) rather than XInput; the shared abstraction should cover both device classes.
-- [ ] [LARGE] [StuntCarRacerLib] Super League: ptitSeb's `bSuperLeague` toggle ('L' on the track menu) swaps alternate track/road-line colours (`SCR_BASE_COLOUR+16/17/18`), car body colours (+19/20/21), engine/boost constants (240/16/236 standard vs 320/12/314 super), opponent speed tables (`opp_track_speed_values[TrackID+32]`) and the atlas's "2"-suffixed sprite variants; needs a menu toggle, `RoadTextures`/`ScrPalette` alternates, and wiring `CarPhysics.RoadCushionValue` (which already exists but nothing sets) and the `OpponentPhysics` tables to the mode.
-- [ ] [LARGE] [StuntCarRacerLib] Convert physics from integer fixed-point to float: `Cars/CarPhysics.*`, `Cars/OpponentPhysics*`, `Cars/AmigaTrig`, `Cars/TrigCoefficients` and `Track.LogPrecision`'s 16384 scale use 68000-style scaled-integer arithmetic ported line-by-line; convert the physics core to `float` throughout. Watch for: angle wrapping is `& (MaxAngle - 1)` bitmasking and needs an equivalent float wrap; check for reliance on integer truncation/overflow; the 140+ exact-integer test assertions need reworking as tolerance-based comparisons.
-- [ ] [LARGE] [Useful.SDL] Resizable window / widescreen: `SDLWindow` creates a fixed non-resizable window ([SDLWindow.cs:23-29](../src/useful/libs/Useful.SDL/SDLWindow.cs)); ptitSeb's build supports resizing with dynamic cockpit/font scaling (`GetScreenDimensions`, `COCKPIT_WIDESCREEN_OFFSET`), and SCR's `HudRenderer`/`TrackMenuScreen` assume fixed 640x400 when computing scale factors (Elite similarly assumes 512x512, e.g. the hardcoded 511 in `ShipBase.DrawLasers`). Merges issues.md "make window resizable" with the conversion plan's widescreen item.
+Gamepad/joystick support (split 2026-07-14 from the [LARGE] item; do in
+order — each layer builds on the previous; reference implementation is
+`XBOXController.cpp/h` in the local ptitSeb checkout,
+`C:\code\github\ptitSeb\stuntcarremake`):
+
+- [ ] [Useful.Controls] Define the controller abstraction: an `IGamepad`
+      covering both target device classes — XInput-style pads (analog
+      axes + buttons) and generic-HID digital joysticks (USB Competition
+      Pro Extra: 8-way stick + fire buttons, no analog axes; digital
+      devices report axes as -1/0/+1) — with the same
+      pressed-vs-held semantics `IKeyboard` documents, a software
+      implementation mirroring `SoftwareKeyboard`, and a fake in
+      `Useful.Fakes`. Design the producer(sink)/consumer split up front —
+      the `IKeyboard` interface-segregation item above is the same
+      shape, so align (or do that item first).
+- [ ] [Useful.SDL] SDL plumbing: initialise the joystick +
+      game-controller subsystems, handle
+      `SDL_JOYDEVICEADDED`/`REMOVED` hotplug, and translate both
+      `SDL_CONTROLLER*` events (XInput-class devices) and raw
+      `SDL_JOY*` events (generic HID sticks that have no controller
+      mapping) in [SDLInput.cs](../src/useful/libs/Useful.SDL/SDLInput.cs)
+      into the `IGamepad` sink. `ppy.SDL2-CS` exposes the full SDL2 API
+      including `SDL_GameController`/`SDL_Joystick`, so no binding work
+      is expected — verify first.
+- [ ] [StuntCarRacerLib] Wire the gamepad into SCR: map controls per
+      ptitSeb's `XBOXController.cpp` (steer/accelerate/brake/boost in
+      `RaceScreen`, navigation on the menu/preview/game-over screens),
+      thresholding analog steer to the digital left/right the physics
+      expects (check how the remake did it), keyboard remaining fully
+      functional alongside. Smoke-test with real hardware (XInput pad
+      and the Competition Pro) as part of definition of done.
+Super League (split 2026-07-14 from the [LARGE] item; reference is
+ptitSeb's `bSuperLeague` — toggled at `StuntCarRacer.cpp:1222`, applied
+at `:1298-1308`; do the first item first, the two visual items then in
+either order):
+
+- [ ] [StuntCarRacerLib] League toggle + physics constants: add an
+      `IsSuperLeague` mode flag, toggle it with 'L' on `TrackMenuScreen`
+      (show the current league on the menu as the remake does), and
+      thread it to the physics: `CarPhysics._enginePower` 240→320 and
+      the boost unit 16→12 (the "standard vs super" comments at
+      [CarPhysics.cs:98](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.cs)
+      already mark the spots), boost reserve Standard→Super,
+      `RoadCushionValue` 0→1 (exists but nothing sets it — damage
+      threshold at [CarPhysics.Motion.cs:278](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.Motion.cs)),
+      `OpponentPhysics._enginePower` 236→314, and the opponent speed
+      tables' +32 super-league offsets. Coordinate with the
+      `Opponent_Speed_Value()` port item under Should — it replaces
+      those tables; whichever lands second adapts (the reference's
+      super-league table path is `opp_track_speed_values[TrackID+32]`,
+      `Opponent_Behaviour.cpp:366-367, 1299-1300`).
+- [ ] [StuntCarRacerLib] Super League track colours: odd/even road and
+      side colours swap to `SCR_BASE_COLOUR+17/16` and `+18/+15`
+      (standard: `+2/+10`, `+1/+15`; reference `Track.cpp:1360-1385`)
+      — add the alternates to `ScrPalette`/`RoadTextures` and select by
+      the mode flag in `TrackRenderer`. Note the reference's own
+      `Track.cpp:2490` TODO says some super-league values are
+      unverified; match ptitSeb, don't guess beyond it.
+- [ ] [StuntCarRacerLib] Super League car + cockpit visuals: opponent
+      car body colours swap to `SCR_BASE_COLOUR+19/20/21` (standard
+      `+9/+10/+12`, reference `Car.cpp:659-690`) in `CarMesh`, and the
+      cockpit/damage overlays use the atlas's "2"-suffixed sprites
+      (`eCockpitWL2`, `eCracking2`, `eHole2`, `Car.cpp:868-886`) —
+      check how `HudRenderer`/`CockpitState` draw these today; if the
+      port draws them procedurally rather than from `atlas.bmp` (see
+      the road-line-textures cosmetic item below), this reduces to
+      alternate colours.
+Float physics conversion (split 2026-07-14 from the [LARGE] item; ~4,100
+lines of 68000-style scaled-integer code — `CarPhysics` 2,522 lines over
+three partials, `OpponentPhysics` 1,362 over two. Do strictly in order:
+the golden-trace harness is the safety net for everything after it.
+Sequence AFTER the pending SCR correctness items (BCD boost,
+damage-wreck, `Opponent_Speed_Value`) and the Super League physics item —
+they edit the same files and their integer semantics should be captured
+by the traces):
+
+- [ ] [StuntCarRacerLib.Tests] Golden-trace characterization harness:
+      drive the existing integer physics with scripted `CarInput`
+      sequences on two or three tracks, record the car/opponent state per
+      physics tick (position, speeds, angles, damage, boost) to committed
+      baseline files, and add a test that replays and compares. This is
+      pure test code — no physics changes — and becomes the regression
+      net for the conversion steps; the exact-integer unit-test
+      assertions stay untouched until each class converts.
+- [ ] [StuntCarRacerLib] Convert angles and trig: replace
+      `AmigaTrig`'s 16384-scaled short table and `TrigCoefficients` with
+      float equivalents; decide the angle unit (keeping 0..65536 as a
+      float unit is the least-churn option) and replace the
+      `& (MaxAngle - 1)` bitmask wraps with a float wrap helper. Decide
+      the rendering boundary here too: `Scene3D.TransformPoint` consumes
+      `TrigCoefficients` and `Track.LogPrecision`
+      ([Scene3D.cs:102-113](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs))
+      — either convert its fixed-point view transform in the same step
+      or leave it a shim that scales from the float trig.
+- [ ] [StuntCarRacerLib] Convert `CarPhysics` (three partials:
+      [CarPhysics.cs](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.cs),
+      `.Motion`, `.Road`) to float: fields, locals, and the
+      `>> LogPrecision` rescales. Hunt the semantics traps — arithmetic
+      right-shift on negatives rounds toward -infinity while integer
+      division truncates toward zero, and any deliberate short/int
+      overflow wrap needs an explicit equivalent. Validate against the
+      golden traces with tolerances; rework `CarPhysicsTests`' exact
+      assertions as tolerance-based in the same session.
+- [ ] [StuntCarRacerLib] Convert `OpponentPhysics` (+ `.Interaction`,
+      `OpponentData`) the same way, including its `_random`-driven speed
+      logic (seedable, so traces stay reproducible); rework
+      `OpponentPhysicsTests`; then delete the now-unused integer trig
+      (`AmigaTrig`, and `TrigCoefficients` if `Scene3D` was converted)
+      and drop `Track.LogPrecision` from the physics path. Full
+      definition of done: race a complete lap against the opponent on
+      several tracks comparing feel against the integer build.
+Resizable window / widescreen (split 2026-07-14 from the [LARGE] item;
+the first item is a standalone quick win delivering issues.md's "make
+window resizable" for both games; the rest build on each other toward
+true widescreen. A 2026-07-14 survey found `HudRenderer` already scales
+from a 640x480 virtual canvas via `ScreenWidth/BaseWidth` ratios, so SCR
+is closer to resolution-independence than the original item assumed):
+
+- [ ] [Useful.SDL] Resizable window with letterboxed scaling: add
+      `SDL_WINDOW_RESIZABLE` in [SDLWindow.cs:23-29](../src/useful/libs/Useful.SDL/SDLWindow.cs)
+      and present the fixed-size software framebuffer via
+      `SDL_RenderSetLogicalSize` (aspect-preserving letterbox) so the
+      window can be any size while both games keep rendering at their
+      native 512x512 / 640x400 — zero game-code changes. Handle
+      `SDL_WINDOWEVENT_SIZE_CHANGED` in the event loop. Do together
+      with (or after) the streaming-texture item above — the present
+      path is the same code.
+- [ ] [Apps] Make the render resolution configurable: both apps
+      hardcode `ScreenWidth`/`ScreenHeight` consts (the "Get these from
+      config" comment at [SDLProgram.cs:22-29](../src/elite/apps/EliteSharp/SDLProgram.cs),
+      including the commented-out QHD block); move them into each
+      game's config (Elite's `ConfigSettings` exists; SCR needs the
+      equivalent) so a launch resolution/aspect can be chosen. This
+      exposes rather than fixes fixed-size assumptions — pair with the
+      audits below before shipping non-default values.
+- [ ] [StuntCarRacerLib] SCR widescreen: with resolution configurable,
+      make the 3D viewport render at the window aspect (SCR's
+      `Scene3D.SetView` already takes width/height) and apply ptitSeb's
+      cockpit widescreen treatment (`GetScreenDimensions`,
+      `COCKPIT_WIDESCREEN_OFFSET` — side panels pushed out, HUD
+      centred); audit `TrackMenuScreen` and the other 2D screens for
+      640x400 assumptions. `HudRenderer`'s virtual-canvas scaling
+      mostly survives as-is.
+- [ ] [EliteSharpLib] Elite at non-512x512 resolutions: audit and fix
+      the hardcoded coordinate-space assumptions — 511 in
+      `ShipBase.DrawLasers`, `ScannerWidth = 512` in `EliteDraw`, the
+      `Centre`/`Scale` maths — so Elite renders correctly at other
+      resolutions. Depends on the Scale-policy cleanup above; scope
+      question for the maintainer first: is widescreen Elite wanted at
+      all, or only integer-scaled 512x512 (which the letterbox item
+      already provides)? If the latter, close this as Won't.
 
 ## Won't
 
