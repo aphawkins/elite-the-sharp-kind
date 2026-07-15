@@ -103,6 +103,53 @@ independent):
       accept an options type (bound from each game's config — Elite's
       `ConfigSettings` already exists) so music/effects can be toggled.
       From issues.md "Inject options". Independent of the ordering above.
+Ship rendering strategy: painter's algorithm and z-buffer as separate
+DI'd strategies, wireframe and filled as separate renderers (follows the
+2026-07-14 z-buffer spike, commit b0d913e — the decal-seam problem it
+introduced is still unresolved, see CHANGELOG; do the first item first,
+the rest in any order, and depend on the composition-root items above
+for the DI container to register into):
+
+- [ ] [EliteSharpLib] Extract a ship-rendering strategy abstraction:
+      today `EliteDraw` hardcodes both the depth-sort algorithm (the
+      back-to-front `_polyChain` chain) and the render mode
+      (`_gameState.Config.ShipWireframe` branches) inline across
+      `DrawPolygonFilled`/`RenderStart`/`RenderEnd`
+      ([EliteDraw.cs:95-146,239-276](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)),
+      so comparing or reverting algorithms means editing `EliteDraw`
+      directly — which is how the z-buffer spike landed as an in-place
+      swap rather than a toggle. Define a small interface (e.g.
+      `IShipRenderer`: submit a face's points/colour/depth, then render
+      the frame) that the three items below implement, and inject the
+      selected pair via the DI container.
+- [ ] [EliteSharpLib] Painter's-algorithm renderer: extract today's
+      `_polyChain`/`_startPoly` insertion-sorted back-to-front chain,
+      unmodified, into its own `IShipRenderer` implementation — the
+      pre-spike behaviour, restorable without touching `ShipBase`'s
+      face-transform code.
+- [ ] [EliteSharpLib] Z-buffer renderer: extract today's
+      `DrawPolygonFilledDepth`-based per-pixel depth test into its own
+      implementation, carrying `ShipBase`'s face-root decal-inheritance
+      logic (`FindFaceRoots`/`FaceMeanZ`,
+      [ShipBase.cs](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
+      along with it. This path still has an open decal-seam defect from
+      the 2026-07-14 spike (some decals lose to their base face at
+      certain angles) — isolating it into its own class means further
+      iteration on the bug can't regress the painter path.
+- [ ] [EliteSharpLib] Separate wireframe and filled renderers:
+      `RenderEnd`'s `ShipWireframe` branch
+      ([EliteDraw.cs:248-263](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
+      currently reuses the same submitted chain for both outline and
+      fill output, even though outlines don't need per-pixel depth;
+      split into a `WireframeRenderer` (outline-only,
+      `Graphics.DrawPolygon`) and a `FilledRenderer` (solid faces via
+      whichever depth-sort strategy above is selected), and register the
+      chosen combination from `ConfigSettings.ShipWireframe` plus a new
+      render-mode setting so both algorithms can be toggled and compared
+      (e.g. via `SettingsView`) without code changes. Extend
+      `VisualDumpTests` (added 2026-07-14) to assert both depth-sort
+      strategies render identically for non-decal geometry.
+
 Library logging (split 2026-07-14 from the original [LARGE] item; a
 2026-07-14 survey found every operational `Debug.*` call lives in
 `EliteSharpLib` — the SCR libraries have none and `Useful.*` only the
