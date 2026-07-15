@@ -244,7 +244,6 @@ in any order):
 
 ### Stunt Car Racer conversion — correctness (from the retired conversion plan)
 
-- [ ] [StuntCarRacerLib] Boost is BCD in the original: the Amiga stores `boost.reserve` as BCD but [Track.cs:115](../src/scr/libs/StuntCarRacerLib/Tracks/Track.cs) loads the raw byte and `CarPhysics.BoostReserve` counts it in binary, so a track byte of `$30` gives 48 boost units instead of 30; convert from BCD on load.
 - [ ] [StuntCarRacerLib] Full damage should wreck the car: the original's `damage.line` wrecks the car (`car.is.wrecked`) when the crack reaches the end of the beam (240); the HUD caps the crack but nothing wrecks the car.
 - [ ] [StuntCarRacerLib] Opponent speed values still use the old fluffyfreak random-table approach (`OpponentData.SpeedValues`/`TrackSpeedValues`); ptitSeb replaced it with `Opponent_Speed_Value()` computed per-piece from `Piece_Angle_And_Template`/`sections_car_can_be_put_on` with a memoized accumulator — a direct port of the authentic Amiga assembly (inlined as a comment in that function in `Opponent_Behaviour.cpp`); port that algorithm.
 
@@ -388,8 +387,8 @@ Float physics conversion (split 2026-07-14 from the [LARGE] item; ~4,100
 lines of 68000-style scaled-integer code — `CarPhysics` 2,522 lines over
 three partials, `OpponentPhysics` 1,362 over two. Do strictly in order:
 the golden-trace harness is the safety net for everything after it.
-Sequence AFTER the pending SCR correctness items (BCD boost,
-damage-wreck, `Opponent_Speed_Value`) and the Super League physics item —
+Sequence AFTER the pending SCR correctness items (damage-wreck,
+`Opponent_Speed_Value`) and the Super League physics item —
 they edit the same files and their integer semantics should be captured
 by the traces):
 
