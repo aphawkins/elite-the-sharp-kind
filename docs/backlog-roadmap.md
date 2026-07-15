@@ -181,7 +181,6 @@ in any order):
 - [ ] [EliteSharpLib] `EliteMain.Update` wraps `UpdateConsole`/`HandleInput` in `catch (Exception) { Debug.WriteLine(...) }` ([EliteMain.cs:262-272](../src/elite/libs/EliteSharpLib/EliteMain.cs)) — in Release builds every input/console error is silently swallowed each tick; remove the catch-all (or catch the specific expected exception type and surface it via the logger), per the architecture doc's "never catch-all on the frame path".
 - [ ] [EliteSharpLib] `EliteMain.Run` calls `Environment.Exit(0)` ([EliteMain.cs:149](../src/elite/libs/EliteSharpLib/EliteMain.cs)), which terminates before `SDLProgram.Main`'s `using SoftwareAbstraction` disposes (skipping `SDL_Quit`, audio teardown); return normally and let `Main` exit (the `Environment.Exit(-1); throw;` in [SDLProgram.cs:61-62](../src/elite/apps/EliteSharp/SDLProgram.cs) has the same problem plus an unreachable `throw`).
 - [ ] [EliteSharpLib] `ShipBase.GetPointIndex` linearly scans `Model.Points` with `foreach` + `IndexOf` (an O(n²) double scan) and is called 3 + N times per face, per ship, per tick ([ShipBase.cs:183-194](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)) — the hottest CPU path in Elite's renderer; store point indices on `Face` at model-load time (in `ModelReader`) instead of object references that must be searched back to indices.
-- [ ] [EliteSharpLib] `DrawModelFaces` sorts faces by a variable named `zavg` that actually holds the **maximum** Z of the face ([ShipBase.cs:152-161](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)), feeding the painter's-algorithm parameter `averageZ` — a likely root cause of the long-standing "bits of hidden surfaces show through" issue; compute the mean Z (as the original did) and re-test the visual artefact.
 - [ ] [EliteSharpLib] `SaveFile.LoadCommander` catches, resets to Jameson, then `throw;`s ([SaveFile.cs:70-75](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)), contradicting its bool-return contract, and `SaveStateToGameState` indexes `GalaxySeed[0..5]`, `CurrentCargo[i]`, `Lasers[0..3]` and `Enum.Parse`s strings without validation ([SaveFile.cs:167-208](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) — a truncated or hand-edited `.cmdr` file throws instead of showing the view's "Error Loading Commander!" path; validate the deserialized `SaveState` and return false on any failure.
 - [ ] [EliteSharpLib] `SaveFile.SaveCommander` builds the path as `save.CommanderName + ".cmdr"` from raw user input ([SaveFile.cs:80-92](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) — invalid filename characters throw and path separators escape the save directory; sanitize the name (e.g. `Path.GetInvalidFileNameChars`) before using it as a filename (pairs with the user-data-location item above).
 - [ ] [EliteSharpLib] `EliteDraw.DrawTextPretty` decrements `i` looking for a space/comma/period with no lower bound ([EliteDraw.cs:136-157](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)) — a word longer than the line width underflows the index and throws; bound the scan at `previous` and hard-break long words.
@@ -229,10 +228,12 @@ in any order):
 3D pipeline sharing (split 2026-07-14 from the "unify the two 3D
 pipelines" [LARGE] item; a code survey found the pipelines differ more
 than assumed — Elite: float `Matrix4x4` transform, `vec.Z = 1` clamp
-instead of a near clip, screen-winding cull, painter's chain; SCR:
-fixed-point Amiga-trig view transform, true near-plane polygon clip,
-z-buffer — so full unification is off the table; instead extract the
-stages that are genuinely shareable, each independently):
+instead of a near clip, screen-winding cull; SCR: fixed-point
+Amiga-trig view transform, true near-plane polygon clip — so full
+unification is off the table; instead extract the stages that are
+genuinely shareable, each independently. Both games now fill via the
+shared z-buffer: the spike that moved Elite's filled ships off the
+painter's chain landed 2026-07-14, see CHANGELOG):
 
 - [ ] [Useful.Graphics] Move `Scene3D.ClipPolygonToNearPlane` into
       `Useful.Graphics`: both overloads are pure static methods with no
@@ -243,17 +244,6 @@ stages that are genuinely shareable, each independently):
       distorts any geometry crossing the camera plane instead of clipping
       it. Adoption changes close-range visuals — verify against The New
       Kind's behaviour before keeping it.
-- [ ] [EliteSharpLib] Spike: retire Elite's painter's chain in favour of
-      the shared z-buffer — `EliteDraw`'s `_polyChain` insertion sort +
-      back-to-front `RenderEnd`
-      ([EliteDraw.cs:85-134, 227-253](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
-      could become calls to the `DrawPolygonFilledDepth` path SCR already
-      uses, which would fix the "hidden surfaces show through" artefact
-      wholesale and obsolete the max-vs-mean `zavg` defect item below.
-      Prototype behind the existing wireframe/filled config switch and
-      compare frames; needs interpolated per-vertex Z (Elite currently
-      keeps one Z per face). If the spike fails, fall back to fixing the
-      `zavg` defect item.
 - [ ] [Useful.Graphics] Extract a shared perspective-projection helper
       (centre + focus·x/z): Elite inlines it three times with magic
       numbers (`* 256 / vec.Z + Centre/2, * Scale` in

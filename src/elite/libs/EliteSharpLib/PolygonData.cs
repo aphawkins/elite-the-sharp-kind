@@ -14,5 +14,9 @@ internal struct PolygonData
 
     internal Vector2[] PointList { get; set; }
 
+    // Depth per point, parallel to PointList, for the z-buffered fill.
+    // EliteDraw fills every entry with the face's flat Z key.
+    internal float[] Depths { get; set; }
+
     internal float Z { get; set; }
 }

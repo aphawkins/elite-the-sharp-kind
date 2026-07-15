@@ -82,7 +82,17 @@ internal sealed class EliteDraw : IEliteDraw
     public void DrawHyperspaceCountdown(int countdown)
         => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", nameof(FontType.Small), _colorWhite);
 
-    public void DrawPolygonFilled(Vector2[] points, uint faceColor, float averageZ)
+    // z is one whole-face depth: the chain's sort key, and the flat depth
+    // every pixel of the face tests with in RenderEnd. Flat rather than
+    // per-vertex interpolated depth is deliberate: decal faces (cockpit
+    // windows etc) sit exactly on the hull face beneath, and the
+    // rasterizer's per-triangle interpolation cannot reproduce identical
+    // depths for coplanar faces, which punches holes through the decals.
+    // With one key per face a decal submitted with its base face's key
+    // ties exactly, and the back-to-front chain order lets the
+    // later-submitted decal win the tie, as the painter's draw order
+    // always did.
+    public void DrawPolygonFilled(Vector2[] points, uint faceColor, float z)
     {
         int i;
 
@@ -95,15 +105,17 @@ internal sealed class EliteDraw : IEliteDraw
         _totalPolys++;
 
         _polyChain[x].FaceColor = faceColor;
-        _polyChain[x].Z = averageZ;
+        _polyChain[x].Z = z;
         _polyChain[x].Next = -1;
         _polyChain[x].PointList = new Vector2[points.Length];
+        _polyChain[x].Depths = new float[points.Length];
 
         for (i = 0; i < points.Length; i++)
         {
             ////Debug.Assert(points[i].X >= 0 && points[i].X <= Graphics.ScreenWidth, "X should be within the screen bounds");
             ////Debug.Assert(points[i].Y >= 0 && points[i].Y <= Graphics.ScreenHeight, "Y should be within the screen bounds");
             _polyChain[x].PointList[i] = points[i];
+            _polyChain[x].Depths[i] = z;
         }
 
         if (x == 0)
@@ -111,7 +123,7 @@ internal sealed class EliteDraw : IEliteDraw
             return;
         }
 
-        if (averageZ > _polyChain[_startPoly].Z)
+        if (z > _polyChain[_startPoly].Z)
         {
             _polyChain[x].Next = _startPoly;
             _startPoly = x;
@@ -122,7 +134,7 @@ internal sealed class EliteDraw : IEliteDraw
         {
             int nx = _polyChain[i].Next;
 
-            if (averageZ > _polyChain[nx].Z)
+            if (z > _polyChain[nx].Z)
             {
                 _polyChain[i].Next = x;
                 _polyChain[x].Next = nx;
@@ -247,7 +259,7 @@ internal sealed class EliteDraw : IEliteDraw
             }
             else
             {
-                Graphics.DrawPolygonFilled(_polyChain[i].PointList, color);
+                Graphics.DrawPolygonFilledDepth(_polyChain[i].PointList, _polyChain[i].Depths, color);
             }
         }
     }
@@ -256,6 +268,11 @@ internal sealed class EliteDraw : IEliteDraw
     {
         _startPoly = 0;
         _totalPolys = 0;
+
+        if (!_gameState.Config.ShipWireframe)
+        {
+            Graphics.ClearDepth();
+        }
     }
 
     private void DrawExplosion(IShip ship)

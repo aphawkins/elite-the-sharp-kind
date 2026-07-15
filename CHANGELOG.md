@@ -7,6 +7,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Elite ship rendering, 2026-07-14)
+
+- Elite's ships now render through the shared software z-buffer
+  (`DrawPolygonFilledDepth`, the path Stunt Car Racer already used)
+  instead of pure painter overdraw, fixing the long-standing "bits of
+  hidden surfaces show through" artefact — with the max-Z face sort
+  (checked against The New Kind's `threed.c`: `zavg` = MAX is
+  authentic, not a porting bug), far-side decals and detail lines beat
+  near hull faces that wrap toward the tail. Each face now rasterizes
+  with one flat per-pixel depth: the mean Z of its "root" face's
+  transformed points. `ShipBase` computes face roots once per instance
+  from the model geometry — decal faces (cockpit windows, engine
+  plates) and 2-point detail lines lie exactly (distance 0.000) in the
+  plane of an earlier larger face and inherit that face's key, so they
+  tie exactly and the chain's later-submission tie order draws them on
+  top, the convention the models were built for. Flat rather than
+  interpolated per-vertex depth is deliberate: measurement showed the
+  rasterizer's clamped edge interpolation deviates from a coplanar
+  face's plane by far more than any safe bias, punching seam-shaped
+  holes through decals (Transporter panel, Cobra engine plates).
+  Wireframe mode is unchanged apart from the sort key. This supersedes
+  the backlog defect about the `zavg` max-vs-mean sort. Verified with a
+  new `VisualDumpTests` that renders lone-ship, decal-heavy
+  (Transporter spin, rear Cobra) and overlap/interpenetration scenes
+  through the real rasterizer to BMPs for visual inspection.
+
 ### Changed (user data location, 2026-07-12)
 
 - `ConfigFile` and `SaveFile` (`.cmdr` commander saves) now resolve their
