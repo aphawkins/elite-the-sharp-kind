@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Audited (SCR ptitSeb parity, 2026-07-19)
+
+- Ran a full feature-by-feature comparison of the C# port against
+  `ptitSeb/stuntcarremake` (see the backlog's "Resolved (2026-07-19) —
+  ptitSeb parity audit" note for the findings). One backlog item was
+  found already complete and removed: **opponent name announcement** —
+  `StuntCarRacerMain.DrawHud` has shown "Opponent: <name>" for the
+  first four seconds of a race since the atlas HUD work (commit
+  2a476b4); the remaining gaps were re-verified and tightened into
+  discrete backlog items (wreck-at-full-damage plumbing references,
+  wheel-spin tick rate, sound frequency/volume/pan table, mid-race 'M'
+  side effects, and the unplugged racewin/racelost/wrecked/heads art
+  screens).
+
 ### Fixed (Elite ship rendering, 2026-07-14)
 
 - Elite's ships now render through the shared software z-buffer

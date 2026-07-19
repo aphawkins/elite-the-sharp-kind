@@ -30,6 +30,41 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
       that trades away period-accurate feel for smoother rendering; needs a
       research spike/prototype before committing either way — not resolved.
 
+### Resolved (2026-07-19) — ptitSeb parity audit
+
+A full feature-by-feature comparison of `C:\code\github\ptitSeb\stuntcarremake`
+(the definitive conversion source) against `StuntCarRacerLib` was run on
+2026-07-19, prompted by concerns that earlier analysis had missed
+functionality. Conclusions:
+
+- **Verified ported and faithful**: the four-mode screen flow, orbiting
+  menu camera + menu.png art with named tracks, preview camera (incl.
+  the Draw Bridge high viewpoint), race/game-over flow with the
+  six-second flashing RACE WON/LOST then GAME OVER text, opponent-name
+  announcement, the full atlas cockpit (wheels/bounce/spin frames,
+  engine + boost-flame animation, crack + smash holes, speed bar with
+  over-max colour, lap/boost/distance read-outs), backdrop horizon +
+  all five scenery types, track rendering with road lines around the
+  player, opponent shadow, drawbridge animation incl. its opponent
+  speed tables, opponent AI (random selection, names, attribute flags,
+  wheelies, steering randomisation, obstruction/push interaction,
+  car-to-car collision), lap/damage/boost/engine-revs models, the
+  pitch-shifted engine loop, and effect-sound triggers.
+- **Chains**: neither C++ reference implements them (`on_chains` is
+  hardcoded FALSE, "won't implement chains at first"); ptitSeb instead
+  drops the car above its current piece after 64 off-track frames. The
+  port's crane chain-recovery (commit 7039a11) deliberately goes beyond
+  ptitSeb toward the Amiga original — keep it.
+- **racewin/racelost/wrecked/heads/menu bitmaps**: present in ptitSeb's
+  `Bitmap/` but never loaded by its code (upstream commit 7ad79f7 "More
+  bitmaps, but not pluged in yet"). menu.png is already wired up in the
+  port; the rest are now discrete items under Could.
+- **Remaining genuine gaps** are all tracked as items below: Super
+  League, pause, 'R' turn-around, mid-race 'M', F9/F10, gamepad,
+  outside view, wreck-at-full-damage, `Opponent_Speed_Value`,
+  lap times, sound volume/pitch/pan fidelity, wheel-spin rate, art
+  screens, widescreen/resolution work.
+
 ### Resolved (2026-07-11)
 
 - **v1 release scope**: Elite + SCR, with SCR labelled preview given its
@@ -242,10 +277,31 @@ in any order):
 - [ ] [Release] Switch versioning from CI's date+run-number stamp to tag-driven semantic versioning (e.g. [MinVer](https://github.com/adamralph/minver)) so tagging a commit *is* the release-versioning step; do this before the first `v1.0.0` tag.
 - [ ] [Release] Add a tag-triggered CI job that publishes win-x64/linux-x64/linux-arm64 self-contained builds for both Elite and StuntCarRacer (add a publish profile + CI publish step for `StuntCarRacer.csproj` mirroring Elite's) and creates a GitHub Release with the zips attached (`softprops/action-gh-release` or `gh release create --generate-notes`); ship as zip/tar.gz, not an installer. Label the SCR artifacts as preview in the release notes given its open defects list below.
 
-### Stunt Car Racer conversion — correctness (from the retired conversion plan)
+### Stunt Car Racer conversion — correctness (from the retired conversion plan, revised by the 2026-07-19 ptitSeb parity audit)
 
-- [ ] [StuntCarRacerLib] Full damage should wreck the car: the original's `damage.line` wrecks the car (`car.is.wrecked`) when the crack reaches the end of the beam (240); the HUD caps the crack but nothing wrecks the car.
+- [ ] [StuntCarRacerLib] Full damage should wreck the car: the Amiga
+      original's `damage.line` wrecks the car when the crack reaches the
+      end of the beam (240); the HUD caps the crack but nothing wrecks the
+      car. ptitSeb never triggers a wreck either, but carries the Amiga's
+      dormant plumbing to copy: `wreck_wheel_height_reduction` (0x200 when
+      wrecked, subtracted from every wheel height so the car scrapes on
+      its belly, `Car_Behaviour.cpp:93-94, 188, 2224`), the `WRECKED`
+      branches that cut engine power (`:835, 880`) and world acceleration
+      (`:3020-3031`), and `DrawSparks`' scrape-sound gate (`:4045`). Port:
+      when `NewDamage` reaches 240 set the wheel-height reduction and let
+      those existing paths do the rest; the race flow stays as-is (the
+      opponent finishes, the race is lost). The wrecked-screen art item
+      under Could builds on this.
 - [ ] [StuntCarRacerLib] Opponent speed values still use the old fluffyfreak random-table approach (`OpponentData.SpeedValues`/`TrackSpeedValues`); ptitSeb replaced it with `Opponent_Speed_Value()` computed per-piece from `Piece_Angle_And_Template`/`sections_car_can_be_put_on` with a memoized accumulator — a direct port of the authentic Amiga assembly (inlined as a comment in that function in `Opponent_Behaviour.cpp`); port that algorithm.
+- [ ] [StuntCarRacerLib] Cockpit wheel sprites spin at a quarter speed:
+      the original advances `leftwheel_angle`/`rightwheel_angle` every
+      50Hz tick in `FramesWheelsEngine` (`Car_Behaviour.cpp:3804-3805`),
+      but the port advances them in the physics frame
+      ([CarPhysics.Motion.cs:97-98](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.Motion.cs))
+      which only runs every FrameGap-th tick (12.5Hz). Move the advance to
+      the per-tick path (`ApplyEngineRevs` is already the 50Hz hook,
+      called from `RaceScreen.Update`), keeping the faithful
+      right-wheel-reads-left-angle quirk both sources share.
 
 ## Could
 
@@ -308,14 +364,59 @@ painter's chain landed 2026-07-14, see CHANGELOG):
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
 - [ ] [StuntCarRacerLib] Lap times: the original shows current/best lap times on the dashboard (`print.lap.time`/`show.lap.time`); not ported, no lap timing exists yet.
-- [ ] [StuntCarRacerLib] Per-effect sound volume and pitch: the original scales grounded/creak effect volume by damage level, and pitches the off-road dust-cloud sound randomly (`DrawDustClouds`: `AMIGA_PAL_HZ / (450 + rand & 0x1c)`) and the edge-scrape spark sound by speed (`DrawSparks`); `AudioController`/`SfxSample` (and `ISound.Play`) currently have no per-play volume or pitch parameter (the engine-loop pitch is separate and already ported).
+- [ ] [StuntCarRacerLib] Per-effect sound volume, pitch and pan: the
+      original sets one-time per-sample frequencies, volumes and stereo
+      pans in `DSSetMode` (`StuntCarRacer.cpp:166-230`: HitCar
+      `AMIGA_PAL_HZ/238`, Grounded `/400`, Creak `/238`, Smash `/280`;
+      volumes through the `AmigaVolumeToDirectX` log curve,
+      `Car_Behaviour.cpp:3513`; engine and Smash panned left, the other
+      effects right, matching the Amiga's channel sides), then varies
+      some per play: creak volume scales with damage (`UpdateDamage`,
+      `Car_Behaviour.cpp:4120-4125`), the off-road dust-cloud sound is
+      pitched randomly (`DrawDustClouds`: `AMIGA_PAL_HZ / (450 + rand &
+      0x1c)`) and the edge-scrape spark sound by speed (`DrawSparks`,
+      which plays the Wreck sample for scraping); `AudioController`/
+      `SfxSample` (and `ISound.Play`) currently have no per-play volume,
+      pitch or pan parameter (the engine-loop pitch is separate and
+      already ported). Note dust clouds and sparks are sound-only in
+      ptitSeb too ("currently just plays the sound effect") — no
+      particle graphics are required for parity.
 - [ ] [StuntCarRacerLib] F9/F10 frame-gap tuning keys: both C++ versions adjust the physics frame gap live; `StuntCarRacerMain.FrameGap` exists for exactly this but isn't wired to any key.
 - [ ] [StuntCarRacerLib] Race pause: the remake pauses on 'P' and resumes on 'O' (`bPaused`, engine sound stopped while paused); not ported — no pause exists. The remake's debug freezes (F5 stats overlay, F6 player-only pause, F7 opponent-only pause) could ride along as dev aids.
 - [ ] [StuntCarRacerLib] 'R' turn-around key: the remake adds 180 degrees to the player's y angle and re-initialises (`INITIALISE_PLAYER`, ptitSeb `StuntCarRacer.cpp` ~1039) so a car facing the wrong way can recover; not ported.
-- [ ] [StuntCarRacerLib] Mid-race 'M' to track menu: the remake returns to the track menu from any mode on 'M' (also resetting the drawbridge); the port only handles 'M' on the game-over and track-preview screens — `RaceScreen` has no way back to the menu short of Escape-quitting.
-- [ ] [StuntCarRacerLib] Opponent name announcement: the remake prints the opponent's name for the first four seconds of a race (`RenderText`, `opponentNames[opponentsID]`); `OpponentPhysics.Name` already exists but nothing displays it.
+- [ ] [StuntCarRacerLib] Mid-race 'M' to track menu: the remake returns to the track menu from any mode on 'M' (`StuntCarRacer.cpp:1731-1741`: it also clears the opponent — `opponentsID = NO_OPPONENT` — and resets the drawbridge via `ResetDrawBridge`, and the menu mode stops the engine sound); the port only handles 'M' on the game-over and track-preview screens — `RaceScreen` has no way back to the menu short of Escape-quitting, and neither the preview's nor the game-over's 'M' resets the drawbridge today.
 - [ ] [StuntCarRacerLib] Player outside/chase view: needs a chase camera plus drawing the player's own car mesh (`Rendering/CarMesh` is currently only used for the opponent).
 - [ ] [StuntCarRacerLib] Road-line textures could sample the shared `atlas.bmp` (ptitSeb's `eRoadYellowDark` etc.) instead of the procedural strips in `Rendering/RoadTextures` — closer visual match, but the current strips already look correct; cosmetic.
+Unplugged remake art screens (added 2026-07-19 after the ptitSeb parity
+audit): ptitSeb ships `Bitmap/menu.png`, `racewin.png`, `racelost.png`,
+`wrecked.png` and `heads.png` but its code never loads any of them
+(upstream commit 7ad79f7, "More bitmaps, but not pluged in yet") — they
+are the original Amiga screens, included as an unrealised intention.
+The port already wired up menu.png (the track-menu frame art, commit
+2a476b4, 2026-07-08); these items wire up the rest the same way:
+one-time convert to `.bmp`, add to `Assets/Images` +
+`AssetManifest.json`, draw scaled from the 320x200 canvas as
+`TrackMenuScreen` does. Doing them means going beyond ptitSeb's code
+while staying inside its assets and the Amiga's behaviour:
+
+- [ ] [StuntCarRacerLib] Race-result screens: draw `racewin.png` /
+      `racelost.png` full-screen during the six-second result window and
+      the GAME_OVER hold, with the existing flashing RACE WON / RACE
+      LOST and "Press 'M'" text overlaid (timing at
+      [StuntCarRacerMain.DrawHud](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs)
+      and `StuntCarRacer.cpp:1403-1453`) — the Amiga showed these
+      screens at race end.
+- [ ] [StuntCarRacerLib] Wrecked screen: draw `wrecked.png` when the
+      race ends with the player's car wrecked, in place of the
+      race-lost art. Depends on the full-damage-wrecks-the-car item
+      under Should — until a wreck can happen there is nothing to show.
+- [ ] [StuntCarRacerLib] Opponent portraits: `heads.png` is a portrait
+      sheet of the eleven opponents; show the matching portrait
+      alongside the four-second "Opponent: <name>" announcement at race
+      start. Needs the per-portrait tile coordinates measured from the
+      sheet first (no atlas table exists upstream); assume the sheet
+      order matches `opponentNames` (`Opponent_Behaviour.cpp:138-151`)
+      and verify against the Amiga before committing.
 Gamepad/joystick support (split 2026-07-14 from the [LARGE] item; do in
 order — each layer builds on the previous; reference implementation is
 `XBOXController.cpp/h` in the local ptitSeb checkout,
@@ -474,3 +575,4 @@ is closer to resolution-independence than the original item assumed):
 - [ ] [EliteSharpLib] Elite Intro2 parade shows 29 of ~33 ship models ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) — Cougar, Constrictor and the Lone variants are mission-specific ships, deliberately excluded from the parade; confirmed intentional, not a bug.
 - [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`, insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game is fixed at 13.5fps by design and none of this is a bottleneck at that rate; revisit only if the "performance as secondary objective" goal is picked up.
 - [ ] [StuntCarRacerLib] The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — see the porting notes in [scr-readme.md](scr-readme.md).
+- [ ] [StuntCarRacerLib] ptitSeb's remaining debug/infrastructure toggles are deliberately not ported (2026-07-19 parity audit): F1 test key, F2 triangle-list/strip vertex-buffer toggle (meaningless in the software rasterizer), the 'Z' reposition test key, the disabled action-replay / Amiga-recording harness (`#ifdef NOT_USED` / `USE_AMIGA_RECORDING` even upstream), the French-keyboard digit remaps, and the SDL command-line video flags (superseded by the resizable-window/config-resolution items under Could). The F5 stats overlay and F6/F7 per-car freezes stay listed as optional ride-alongs on the race-pause item. `Chime.wav` is unused by both code bases (kept as an asset only).
