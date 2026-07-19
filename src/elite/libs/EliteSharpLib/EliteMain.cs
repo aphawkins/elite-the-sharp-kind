@@ -143,12 +143,7 @@ public sealed class EliteMain : IGame
 
     public bool IsRunning => !_gameState.ExitGame;
 
-    public void Run()
-    {
-        GameHost.Run(_abstraction, this, GameTickRate, _gameState.Config.Fps);
-
-        Environment.Exit(0);
-    }
+    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, _gameState.Config.Fps);
 
     // One fixed-rate game tick. Elite's update draws the universe as it
     // moves it (as The New Kind did), so this composes the whole frame into

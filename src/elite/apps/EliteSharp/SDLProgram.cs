@@ -70,7 +70,6 @@ internal static class SDLProgram
         catch (Exception ex)
         {
             LogMessages.CriticalAppTerminated(logger, ex);
-            Environment.Exit(-1);
             throw;
         }
     }
