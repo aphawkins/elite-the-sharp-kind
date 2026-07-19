@@ -69,10 +69,12 @@ public static class ModelReader
                     break;
 
                 case "f":
+                    int[] pointIndices = [.. tokens.Skip(1).Select(t => int.Parse(t, CultureInfo.InvariantCulture) - 1)];
                     faces.Add(new()
                     {
                         Color = palette[currentMaterial],
-                        Points = [.. tokens.Skip(1).Select(t => points[int.Parse(t, CultureInfo.InvariantCulture) - 1])],
+                        Points = [.. pointIndices.Select(index => points[index])],
+                        PointIndices = pointIndices,
                     });
                     break;
 

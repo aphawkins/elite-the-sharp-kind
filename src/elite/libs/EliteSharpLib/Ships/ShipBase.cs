@@ -140,11 +140,11 @@ internal class ShipBase : IShip
 
         for (int i = 0; i < Model.Faces.Count; i++)
         {
-            int point0 = GetPointIndex(Model.Faces[i].Points[0]);
-            int point1 = GetPointIndex(Model.Faces[i].Points[1]);
+            int point0 = Model.Faces[i].PointIndices[0];
+            int point1 = Model.Faces[i].PointIndices[1];
             int point2 = Model.Faces[i].Points.Count > 2
-                ? GetPointIndex(Model.Faces[i].Points[2])
-                : GetPointIndex(Model.Faces[i].Points[0]);
+                ? Model.Faces[i].PointIndices[2]
+                : Model.Faces[i].PointIndices[0];
 
             if (((pointList[point0].X - pointList[point1].X) * (pointList[point2].Y - pointList[point1].Y)) <=
                 ((pointList[point0].Y - pointList[point1].Y) * (pointList[point2].X - pointList[point1].X)))
@@ -154,7 +154,7 @@ internal class ShipBase : IShip
 
                 for (int j = 0; j < num_points; j++)
                 {
-                    int index = GetPointIndex(Model.Faces[i].Points[j]);
+                    int index = Model.Faces[i].PointIndices[j];
                     poly_list[j].X = pointList[index].X;
                     poly_list[j].Y = pointList[index].Y;
                 }
@@ -173,7 +173,7 @@ internal class ShipBase : IShip
         float z = 0;
         for (int j = 0; j < face.Points.Count; j++)
         {
-            z += pointList[GetPointIndex(face.Points[j])].Z;
+            z += pointList[face.PointIndices[j]].Z;
         }
 
         return z / face.Points.Count;
@@ -241,18 +241,5 @@ internal class ShipBase : IShip
 
             _draw.DrawPolygonFilled(laserPoints, color, pointList[lasv].Z);
         }
-    }
-
-    private int GetPointIndex(Point point)
-    {
-        foreach (Point p in Model.Points)
-        {
-            if (p == point)
-            {
-                return Model.Points.IndexOf(p);
-            }
-        }
-
-        throw new InvalidOperationException("Point not found in model points.");
     }
 }

@@ -10,4 +10,6 @@ public sealed record Face
     public uint Color { get; set; }
 
     public required IList<Point> Points { get; set; }
+
+    public required IList<int> PointIndices { get; set; }
 }

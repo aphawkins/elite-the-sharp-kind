@@ -44,7 +44,7 @@ public class ShipBaseTests
 
         // A 2-point "face" always passes the visibility/winding check in DrawModelFaces
         // (point0 and point2 resolve to the same point), keeping this test independent of it.
-        Face face = new() { Color = 0, Points = [modelPointA, modelPointB] };
+        Face face = new() { Color = 0, Points = [modelPointA, modelPointB], PointIndices = [0, 1] };
 
         FakeEliteDraw draw = new();
         FakeShip ship = new(draw)
