@@ -17,4 +17,7 @@ internal readonly record struct CockpitState(
     int DisplaySpeed,
     int LapNumber,
     int BoostReserve,
-    int OpponentDistance);
+    int OpponentDistance,
+    bool OnChains,
+    bool WaitingToReleaseChains,
+    int ChainSwingAngle);

@@ -31,6 +31,13 @@ public sealed partial class CarPhysics
     // Count after which player is put back on track.
     private const int OffTrackLimit = 64;
 
+    // Chain lift-onto-track timing/geometry (see AnimateChainLift).
+    private const int ChainLiftStart = 240;
+    private const int ChainSwingSettleFrames = 40;
+    private const int ChainSwingFullMagnitude = 44;
+    private const int ChainSwingRestMagnitude = 16;
+    private const int ChainRaiseHeight = 0x600000;
+
     private const int LocalYFactor = 4;
 
     private const int Reduction = 238; // (238/256)
@@ -128,8 +135,14 @@ public sealed partial class CarPhysics
     // 0x200 if wrecked.
     private int _wreckWheelHeightReduction;
 
-    // Chains not implemented (as in the original).
-    private bool _onChains;
+    // Lift-onto-track ("chains") state: after the car has been off the
+    // track too long, a crane swings it back over the road and dangles it
+    // until the player presses boost/fire, then normal gravity takes over
+    // (original car.on.chains.countdown / lift.car.onto.track).
+    private int _chainCountdown;
+    private int _chainSwingMagnitude;
+    private bool _chainSwingFromLeft;
+    private int _chainRaisedY;
 
     // Gravity, collision and damage.
     private int _gravityXAcceleration;
@@ -250,6 +263,14 @@ public sealed partial class CarPhysics
     public bool TouchingRoad { get; private set; }
 
     public bool DropStartDone { get; private set; } = true;
+
+    // True while a crane is lifting/swinging/dangling the car back over the
+    // track after it went off for too long.
+    public bool OnChains => _chainCountdown != 0;
+
+    // True while the car is dangling on chains waiting for the player to
+    // press boost/fire to be released (drives a HUD prompt).
+    public bool WaitingToReleaseChains { get; private set; }
 
     public int CurrentPiece { get; private set; }
 
@@ -427,7 +448,9 @@ public sealed partial class CarPhysics
         DropStartDone = true;
         TouchingRoad = false;
 
-        _onChains = false;
+        _chainCountdown = 0;
+        _chainSwingMagnitude = 0;
+        WaitingToReleaseChains = false;
 
         _playerDistanceOffRoad = 0;
         _offMapStatus = 0;
@@ -509,19 +532,20 @@ public sealed partial class CarPhysics
         WreckSoundTriggered = false;
 
         // Put the car back on the track after it has been off for too long.
-        if (_offTrackCount > OffTrackLimit)
+        if (_offTrackCount > OffTrackLimit && _chainCountdown == 0)
         {
-            Reset();
-            PositionCarAbovePiece(CurrentPiece);
-            DropStartDone = false;
-            _offTrackCount = 0;
+            BeginChainRecovery();
         }
 
         CarControl(input);
         CarMovement();
         UpdateEngineRevs();
 
-        if (TouchingRoad)
+        if (_chainCountdown > 0)
+        {
+            AnimateChainLift(input);
+        }
+        else if (TouchingRoad)
         {
             DropStartDone = true;
         }
@@ -674,7 +698,7 @@ public sealed partial class CarPhysics
     // the sound effects in the remake).
     private void UpdateEffectSounds()
     {
-        if (!_onChains && _offMapStatus != 0 && TouchingRoad)
+        if (!OnChains && _offMapStatus != 0 && TouchingRoad)
         {
             OffRoadSoundTriggered = true;
         }
@@ -702,7 +726,7 @@ public sealed partial class CarPhysics
         _brake = input.HasFlag(CarInput.Brake);
 
         _leftRightValue = 0;
-        if (TouchingRoad && !_onChains)
+        if (TouchingRoad && !OnChains)
         {
             if (left)
             {
@@ -717,7 +741,7 @@ public sealed partial class CarPhysics
 
         bool boostFlag = !boost; // active low
 
-        if (PlayerZSpeed < 120 * 256 && !_onChains && !Wrecked)
+        if (PlayerZSpeed < 120 * 256 && !OnChains && !Wrecked)
         {
             if (_accelerate)
             {

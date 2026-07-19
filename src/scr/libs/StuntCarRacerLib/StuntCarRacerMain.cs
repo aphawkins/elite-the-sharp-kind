@@ -308,7 +308,10 @@ public sealed class StuntCarRacerMain : IGame
             Car.DisplaySpeed,
             Car.LapNumber,
             Car.BoostReserve,
-            Opponent.DistanceToPlayer()));
+            Opponent.DistanceToPlayer(),
+            Car.OnChains,
+            Car.WaitingToReleaseChains,
+            Car.ZAngle));
 
         // output the opponent's name for four seconds at race start
         if (RaceTick < 4 * TickRate)

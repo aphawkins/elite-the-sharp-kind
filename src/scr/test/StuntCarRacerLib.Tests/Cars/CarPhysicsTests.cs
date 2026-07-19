@@ -46,6 +46,49 @@ public class CarPhysicsTests
     }
 
     [Fact]
+    public void CarGoesOnChainsAfterLeavingTrackThenReleasesOnBoost()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        for (int frame = 0; frame < 100 && !car.TouchingRoad; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        // Steer hard off the road and keep driving until recovery kicks in.
+        bool wentOnChains = false;
+        for (int frame = 0; frame < 500 && !wentOnChains; frame++)
+        {
+            car.Update(CarInput.AccelBoost | CarInput.Left);
+            wentOnChains = car.OnChains;
+        }
+
+        Assert.True(wentOnChains);
+
+        // Nothing releases the car until the swing settles and it starts
+        // waiting for the player to press boost/fire.
+        for (int frame = 0; frame < 100 && !car.WaitingToReleaseChains; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        Assert.True(car.WaitingToReleaseChains);
+        Assert.True(car.OnChains);
+
+        bool landed = false;
+        for (int frame = 0; frame < 200 && !landed; frame++)
+        {
+            car.Update(CarInput.Boost);
+            landed = car.TouchingRoad;
+        }
+
+        Assert.False(car.OnChains);
+        Assert.True(landed);
+    }
+
+    [Fact]
     public void AcceleratingIncreasesDisplaySpeed()
     {
         Track track = Track.Load(TrackId.LittleRamp);
@@ -376,6 +419,13 @@ public class CarPhysicsTests
             else if (car.RoadXPosition > 0xE0)
             {
                 input |= CarInput.Left;
+            }
+
+            // Press boost/fire to release from the recovery chains if the
+            // car has gone off track, as a player would.
+            if (car.OnChains)
+            {
+                input |= CarInput.Boost;
             }
 
             car.Update(input);

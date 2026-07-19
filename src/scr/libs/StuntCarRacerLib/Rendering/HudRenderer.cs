@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Globalization;
+using StuntCarRacerLib.Tracks;
 using Useful;
 using Useful.Graphics;
 
@@ -88,6 +89,11 @@ internal sealed class HudRenderer
         float scaleX = _graphics.ScreenWidth / BaseWidth;
         float scaleY = _graphics.ScreenHeight / BaseHeight;
 
+        if (state.OnChains)
+        {
+            DrawChains(scaleX, scaleY, state.ChainSwingAngle);
+        }
+
         DrawWheel(scaleX, scaleY, WheelLeftOffset * 2f, mirrored: false, state.LeftWheelFrame, state.LeftWheelBounce);
         DrawWheel(scaleX, scaleY, RightWheelDestX, mirrored: true, state.RightWheelFrame, state.RightWheelBounce);
 
@@ -96,6 +102,57 @@ internal sealed class HudRenderer
         DrawDamage(scaleX, scaleY, state.NewDamage, state.SmashHoles);
         DrawSpeedBar(scaleX, scaleY, state.DisplaySpeed);
         DrawReadouts(scaleX, scaleY, state.LapNumber, state.BoostReserve, state.OpponentDistance);
+
+        if (state.WaitingToReleaseChains)
+        {
+            _graphics.DrawTextCentre(BaseHeight * scaleY / 2f, "PRESS FIRE", StuntCarRacerMain.SmallFont, 0xFFFFFFFF);
+        }
+    }
+
+    // A crane lowers/raises the car by two chains through the view window
+    // while OnChains is set (the original's draw.chains); no sprite art for
+    // this survives in either reference port's atlas, so it is drawn
+    // procedurally: two vertical chains that sway together, following the
+    // car's chain swing angle.
+    private void DrawChains(float scaleX, float scaleY, int chainSwingAngle)
+    {
+        const float MaxSwayPixels = 26f;
+        const float LinkWidth = 8f;
+        const float LinkHeight = 14f;
+        const float LinkGap = 3f;
+
+        int signedAngle = chainSwingAngle >= Track.MaxAngle / 2 ? chainSwingAngle - Track.MaxAngle : chainSwingAngle;
+        float sway = Math.Clamp(signedAngle / (Track.MaxAngle / 8f), -1f, 1f) * MaxSwayPixels * scaleX;
+
+        float top = TopDestHeight * scaleY;
+        float bottom = (SideDestHeight - 30f) * scaleY;
+        float leftX = ((TopDestX + 56f) * scaleX) + sway;
+        float rightX = ((FrameRightDestX - 56f) * scaleX) + sway;
+
+        DrawChain(leftX, top, leftX, bottom, LinkWidth * scaleX, LinkHeight * scaleY, LinkGap * scaleY);
+        DrawChain(rightX, top, rightX, bottom, LinkWidth * scaleX, LinkHeight * scaleY, LinkGap * scaleY);
+    }
+
+    // Draws one chain as a series of alternating light/dark links from
+    // (x0, y0) down to (x1, y1), so it reads as a textured chain rather
+    // than a plain dashed line.
+    private void DrawChain(float x0, float y0, float x1, float y1, float linkWidth, float linkHeight, float linkGap)
+    {
+        const uint DarkLink = 0xFF4A4A4A;
+        const uint LightLink = 0xFF8C8C8C;
+
+        float dx = x1 - x0;
+        float dy = y1 - y0;
+        int linkCount = Math.Max(1, (int)(dy / (linkHeight + linkGap)));
+
+        for (int i = 0; i < linkCount; i++)
+        {
+            float t = i / (float)linkCount;
+            float x = x0 + (dx * t);
+            float y = y0 + (dy * t);
+            uint colour = (i % 2 == 0) ? DarkLink : LightLink;
+            _graphics.DrawRectangleFilled(new(x - (linkWidth / 2f), y), linkWidth, linkHeight, colour);
+        }
     }
 
     private void DrawWheel(float scaleX, float scaleY, float destX, bool mirrored, int frame, int bounce)

@@ -20,7 +20,7 @@ public class HudRendererTests
         RecordingGraphics graphics = new(640, 480);
         HudRenderer hud = new(graphics);
 
-        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0));
+        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0));
 
         // frame (top/left/right/bottom), two wheels and the engine
         Assert.True(graphics.ImageParts.Count >= 7);
@@ -33,7 +33,7 @@ public class HudRendererTests
         RecordingGraphics graphics = new(640, 480);
         HudRenderer hud = new(graphics);
 
-        hud.Draw(new CockpitState(2, 3, 0, 0, false, 0, 0, 0, 0, 0, 0));
+        hud.Draw(new CockpitState(2, 3, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0));
 
         // wheel sprites are 24x56 in atlas space; a negative source width marks mirroring
         List<(string ImageType, Vector2 Position, Vector2 Size, Vector2 SourcePosition, Vector2 SourceSize)> wheelParts =
@@ -47,10 +47,10 @@ public class HudRendererTests
     public void WheelBounceRaisesTheSpriteByTheBounceAmount()
     {
         RecordingGraphics graphics1 = new(640, 480);
-        new HudRenderer(graphics1).Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0));
+        new HudRenderer(graphics1).Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0));
 
         RecordingGraphics graphics2 = new(640, 480);
-        new HudRenderer(graphics2).Draw(new CockpitState(0, 0, 20, 0, false, 0, 0, 0, 0, 0, 0));
+        new HudRenderer(graphics2).Draw(new CockpitState(0, 0, 20, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0));
 
         float y1 = graphics1.ImageParts.First(p => IsClose(p.SourceSize.Y, 56) && p.SourceSize.X > 0).Position.Y;
         float y2 = graphics2.ImageParts.First(p => IsClose(p.SourceSize.Y, 56) && p.SourceSize.X > 0).Position.Y;
@@ -64,11 +64,11 @@ public class HudRendererTests
         RecordingGraphics graphics = new(640, 480);
         HudRenderer hud = new(graphics);
 
-        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0));
+        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0));
         Vector2 noBoostSource = graphics.ImageParts.First(p => IsClose(p.SourceSize.Y, 35)).SourcePosition;
 
         graphics.ImageParts.Clear();
-        hud.Draw(new CockpitState(0, 0, 0, 0, true, 0, 0, 0, 0, 0, 0));
+        hud.Draw(new CockpitState(0, 0, 0, 0, true, 0, 0, 0, 0, 0, 0, false, false, 0));
         Vector2 boostSource = graphics.ImageParts.First(p => IsClose(p.SourceSize.Y, 35)).SourcePosition;
 
         Assert.NotEqual(noBoostSource, boostSource);
@@ -80,7 +80,7 @@ public class HudRendererTests
         RecordingGraphics graphics = new(640, 480);
         HudRenderer hud = new(graphics);
 
-        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0));
+        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0));
 
         Assert.DoesNotContain(graphics.ImageParts, p => IsClose(p.SourceSize.Y, 8) && IsClose(p.SourcePosition.Y, 128));
     }
@@ -94,7 +94,7 @@ public class HudRendererTests
         RecordingGraphics graphics = new(640, 480);
         HudRenderer hud = new(graphics);
 
-        hud.Draw(new CockpitState(0, 0, 0, 0, false, newDamage, 0, 0, 0, 0, 0));
+        hud.Draw(new CockpitState(0, 0, 0, 0, false, newDamage, 0, 0, 0, 0, 0, false, false, 0));
 
         (_, _, Vector2 size, _, Vector2 sourceSize) =
             graphics.ImageParts.Single(p => IsClose(p.SourcePosition.X, 0) && IsClose(p.SourcePosition.Y, 128));
@@ -112,7 +112,7 @@ public class HudRendererTests
         RecordingGraphics graphics = new(640, 480);
         HudRenderer hud = new(graphics);
 
-        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 3, 0, 0, 0, 0));
+        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 3, 0, 0, 0, 0, false, false, 0));
 
         List<(string ImageType, Vector2 Position, Vector2 Size, Vector2 SourcePosition, Vector2 SourceSize)> holes =
             [.. graphics.ImageParts.Where(p => IsClose(p.SourceSize.Y, 8) && IsClose(p.SourcePosition.Y, 64))];
@@ -132,7 +132,7 @@ public class HudRendererTests
         RecordingGraphics graphics = new(640, 480);
         HudRenderer hud = new(graphics);
 
-        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, displaySpeed, 0, 0, 0));
+        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, displaySpeed, 0, 0, 0, false, false, 0));
 
         if (expectedUnits == 0)
         {
@@ -152,7 +152,7 @@ public class HudRendererTests
         RecordingGraphics graphics = new(640, 480);
         HudRenderer hud = new(graphics);
 
-        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 3, 15, -340));
+        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 3, 15, -340, false, false, 0));
 
         Assert.Contains(graphics.LeftTexts, t => t.Text == "L3");
         Assert.Contains(graphics.LeftTexts, t => t.Text == "B15");
@@ -168,9 +168,9 @@ public class HudRendererTests
         // wheel frame is always 0-5 in practice (CarPhysics masks the
         // rotation angle to a non-negative value); other fields can still
         // take on unusual values (negative damage/boost, huge distances).
-        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0));
-        hud.Draw(new CockpitState(5, 5, 200, 200, true, 238, 8, 0x7FFF, 4, 99, 9999));
-        hud.Draw(new CockpitState(0, 5, -50, -50, false, -10, 0, -100, -1, -5, -12345));
+        hud.Draw(new CockpitState(0, 0, 0, 0, false, 0, 0, 0, 0, 0, 0, false, false, 0));
+        hud.Draw(new CockpitState(5, 5, 200, 200, true, 238, 8, 0x7FFF, 4, 99, 9999, false, false, 0));
+        hud.Draw(new CockpitState(0, 5, -50, -50, false, -10, 0, -100, -1, -5, -12345, false, false, 0));
     }
 
     private static bool IsClose(float value, float target) => Math.Abs(value - target) < Epsilon;

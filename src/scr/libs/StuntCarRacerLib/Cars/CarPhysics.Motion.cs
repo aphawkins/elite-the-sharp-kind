@@ -198,7 +198,7 @@ public sealed partial class CarPhysics
 
         TouchingRoad = averageAmountBelowRoad != 0;
 
-        if (!TouchingRoad && !_onChains)
+        if (!TouchingRoad && !OnChains)
         {
             // get angle in Amiga StuntCarRacer format (i.e. correct sign)
             int angle = PlayerXAngle < AmigaTrig.Degrees180 ? PlayerXAngle : PlayerXAngle - AmigaTrig.Degrees360;
@@ -654,14 +654,14 @@ public sealed partial class CarPhysics
         int factor = 1; // set maximum reduction factor
         bool normalSituation = true;
 
-        if (TouchingRoad || _onChains)
+        if (TouchingRoad || OnChains)
         {
             amount = Math.Abs(_carToRoadCollisionZAcceleration >> 8);
 
-            if (amount >= 3 || _offMapStatus != 0 || Wrecked || _onChains)
+            if (amount >= 3 || _offMapStatus != 0 || Wrecked || OnChains)
             {
                 // collision z acceleration large, off map, wrecked or on chains
-                if (Wrecked || _onChains)
+                if (Wrecked || OnChains)
                 {
                     factor = 3; // set medium reduction factor
                 }
