@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (SCR opponent speed values, 2026-07-19)
+
+- The opponent's per-piece required speeds are now computed by a port of
+  ptitSeb's `Opponent_Speed_Value()` (itself derived from the Amiga's
+  `opponents.speed.values` creation assembly) instead of the old
+  fluffyfreak per-track random tables: a per-track random mask and base
+  from the full 64-byte `opp_track_speed_values` table (now carried
+  verbatim in `OpponentData.TrackSpeedValues`, super-league rows
+  included for the future Super League item), ten faster on sections
+  the car can be put on, memoized so the value only re-rolls when the
+  opponent changes piece. Two deliberate choices beyond the reference:
+  the can-be-put-on test uses bit 7 as the Amiga's `bpl` does (ptitSeb
+  tests `b < 0` on an unsigned value, which never fires), and the draw
+  bridge's `SetSpeedValue` writes still take precedence via a per-piece
+  override (the Amiga modified its precomputed table; ptitSeb's own
+  writes go unread since nothing reads the table any more — a
+  regression not copied). Covered by new `SpeedValue` unit tests
+  (deterministic standard-league values, RNG-stream stability while on
+  a piece, draw-bridge override precedence) and smoke-tested live.
+
 ### Audited (SCR ptitSeb parity, 2026-07-19)
 
 - Ran a full feature-by-feature comparison of the C# port against

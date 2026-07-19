@@ -66,7 +66,7 @@ public sealed partial class OpponentPhysics
     private readonly Track _track;
     private readonly CarPhysics _player;
     private readonly Random _random;
-    private readonly byte[] _speedValues;
+    private readonly int[] _speedValueOverrides;
     private readonly int[] _actualHeight = new int[NumWheels];
     private readonly int[] _ySpeed = new int[NumWheels];
     private readonly int[] _yAcceleration = new int[NumWheels];
@@ -96,6 +96,8 @@ public sealed partial class OpponentPhysics
     private int _maxSpeed;
     private int _zSpeed;
     private bool _requiredZSpeedReached;
+    private int _speedValuePiece = -1;
+    private int _speedValue;
     private int _byteCount;
 
     private int _distanceIntoSection;
@@ -140,8 +142,9 @@ public sealed partial class OpponentPhysics
         _player = player;
         _random = random;
 
-        // a mutable copy: the draw bridge animation adjusts these values
-        _speedValues = [.. OpponentData.SpeedValues[(int)track.Id]];
+        // per-piece required speed overrides (set by the draw bridge animation)
+        _speedValueOverrides = new int[track.NumPieces];
+        Array.Fill(_speedValueOverrides, -1);
 
         // wire the car-to-car collision transfer into the player physics
         _player.CarToCarCollision = TransferCollisionToPlayer;
@@ -841,7 +844,7 @@ public sealed partial class OpponentPhysics
             return;
         }
 
-        int speedValue = _speedValues[CurrentPiece];
+        int speedValue = SpeedValue(CurrentPiece);
         int speed = speedValue;
         if ((speed & 0x80) == 0 && speed > _maxSpeed)
         {

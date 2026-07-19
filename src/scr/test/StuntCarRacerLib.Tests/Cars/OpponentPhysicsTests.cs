@@ -126,6 +126,57 @@ public class OpponentPhysicsTests
     }
 
     [Fact]
+    public void SpeedValueIsTenFasterOnSectionsTheCarCanBePutOn()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics player = new(track);
+        OpponentPhysics opponent = new(track, player, new Random(1));
+
+        // The standard-league random mask is zero, so values are deterministic:
+        // the track base (0x48 for Little Ramp) on sections the car cannot be
+        // put on, and ten faster elsewhere. Piece 0 is a straight the car can
+        // be put on, while piece 27 uses curve template 1 which it cannot.
+        Assert.Equal(0x48 + 10, opponent.SpeedValue(0));
+        Assert.Equal(0x48, opponent.SpeedValue(27));
+    }
+
+    [Fact]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Security",
+        "CA5394:Do not use insecure randomness",
+        Justification = "Deterministic seeded RNG stream comparison.")]
+    public void SpeedValueDoesNotConsumeRandomnessWhileOnTheSamePiece()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics player = new(track);
+        Random random = new(5);
+        OpponentPhysics opponent = new(track, player, random);
+
+        // repeated queries for the same piece must not advance the RNG stream
+        _ = opponent.SpeedValue(0);
+        _ = opponent.SpeedValue(0);
+        _ = opponent.SpeedValue(0);
+
+        Random reference = new(5);
+        _ = reference.Next(); // the single roll from the first query
+        Assert.Equal(reference.Next(), random.Next());
+    }
+
+    [Fact]
+    public void SpeedValueHonoursDrawBridgeOverrides()
+    {
+        Track track = Track.Load(TrackId.DrawBridge);
+        CarPhysics player = new(track);
+        OpponentPhysics opponent = new(track, player, new Random(1));
+
+        int computed = opponent.SpeedValue(51);
+        opponent.SetSpeedValue(51, 0xd2);
+
+        Assert.Equal(0xd2, opponent.SpeedValue(51));
+        Assert.NotEqual(computed, opponent.SpeedValue(51));
+    }
+
+    [Fact]
     public void DistanceToPlayerIsPositiveWhenOpponentAhead()
     {
         Track track = Track.Load(TrackId.LittleRamp);

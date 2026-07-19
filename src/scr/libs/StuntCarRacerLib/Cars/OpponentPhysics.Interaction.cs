@@ -11,7 +11,39 @@ namespace StuntCarRacerLib.Cars;
 public sealed partial class OpponentPhysics
 {
     // Adjust a per-piece required speed value (used by the draw bridge animation).
-    internal void SetSpeedValue(int piece, byte value) => _speedValues[piece] = value;
+    internal void SetSpeedValue(int piece, byte value) => _speedValueOverrides[piece] = value;
+
+    // Required speed for a piece (original Opponent_Speed_Value): a random
+    // value masked and based per track, 10 faster on sections the car can be
+    // put on, re-rolled only when the piece changes. Draw bridge pieces are
+    // overridden by the bridge animation, as the Amiga's precomputed table was.
+    internal int SpeedValue(int piece)
+    {
+        if (_speedValueOverrides[piece] >= 0)
+        {
+            return _speedValueOverrides[piece];
+        }
+
+        if (piece != _speedValuePiece)
+        {
+            int trackIndex = (int)_track.Id;
+            int value = _random.Next() & OpponentData.TrackSpeedValues[trackIndex + 16];
+            value += OpponentData.TrackSpeedValues[trackIndex + 24];
+
+            // the reference's own can-be-put-on test never fires (a signedness
+            // slip) - the Amiga's bpl tests bit 7, as MoveToMiddleOnCurves does
+            int template = _track.Pieces[piece].AngleAndTemplate & 0xf;
+            if ((Track.SectionCarCanBePutOn(template) & 0x80) == 0 && value < 0x7f - 10)
+            {
+                value += 10;
+            }
+
+            _speedValuePiece = piece;
+            _speedValue = value;
+        }
+
+        return _speedValue;
+    }
 
     private void CalculateDistancesBetweenPlayers()
     {

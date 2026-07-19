@@ -61,9 +61,10 @@ functionality. Conclusions:
   port; the rest are now discrete items under Could.
 - **Remaining genuine gaps** are all tracked as items below: Super
   League, pause, 'R' turn-around, mid-race 'M', F9/F10, gamepad,
-  outside view, wreck-at-full-damage, `Opponent_Speed_Value`,
-  lap times, sound volume/pitch/pan fidelity, wheel-spin rate, art
-  screens, widescreen/resolution work.
+  outside view, wreck-at-full-damage, lap times, sound
+  volume/pitch/pan fidelity, wheel-spin rate, art screens,
+  widescreen/resolution work. (`Opponent_Speed_Value` was ported
+  2026-07-19, see CHANGELOG.)
 
 ### Resolved (2026-07-11)
 
@@ -292,7 +293,6 @@ in any order):
       those existing paths do the rest; the race flow stays as-is (the
       opponent finishes, the race is lost). The wrecked-screen art item
       under Could builds on this.
-- [ ] [StuntCarRacerLib] Opponent speed values still use the old fluffyfreak random-table approach (`OpponentData.SpeedValues`/`TrackSpeedValues`); ptitSeb replaced it with `Opponent_Speed_Value()` computed per-piece from `Piece_Angle_And_Template`/`sections_car_can_be_put_on` with a memoized accumulator — a direct port of the authentic Amiga assembly (inlined as a comment in that function in `Opponent_Behaviour.cpp`); port that algorithm.
 - [ ] [StuntCarRacerLib] Cockpit wheel sprites spin at a quarter speed:
       the original advances `leftwheel_angle`/`rightwheel_angle` every
       50Hz tick in `FramesWheelsEngine` (`Car_Behaviour.cpp:3804-3805`),
@@ -463,10 +463,13 @@ either order):
       `RoadCushionValue` 0→1 (exists but nothing sets it — damage
       threshold at [CarPhysics.Motion.cs:278](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.Motion.cs)),
       `OpponentPhysics._enginePower` 236→314, and the opponent speed
-      tables' +32 super-league offsets. Coordinate with the
-      `Opponent_Speed_Value()` port item under Should — it replaces
-      those tables; whichever lands second adapts (the reference's
-      super-league table path is `opp_track_speed_values[TrackID+32]`,
+      +32 super-league offsets: the `Opponent_Speed_Value()` port
+      landed 2026-07-19, so `OpponentData.TrackSpeedValues` already
+      carries the full 64-byte table with the super-league rows — the
+      max-speed lookup in `OpponentPhysics.StartRace` and the
+      mask/base lookups in `OpponentPhysics.SpeedValue` just need +32
+      added when super league is active (the reference's path is
+      `opp_track_speed_values[TrackID+32]`,
       `Opponent_Behaviour.cpp:366-367, 1299-1300`).
 - [ ] [StuntCarRacerLib] Super League track colours: odd/even road and
       side colours swap to `SCR_BASE_COLOUR+17/16` and `+18/+15`
