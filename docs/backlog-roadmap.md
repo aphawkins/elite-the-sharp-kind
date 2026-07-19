@@ -272,6 +272,49 @@ in any order):
 
 - [ ] [Tests] Elite's core game logic is largely untested — `EliteSharpLib.Tests` covers planets/suns/ships/universe plus the new `TradeTests`, leaving `Combat`, `Space`, `SaveFile` round-trip, `ConfigFile`, `PlanetController` and `RNG.GenerateRandomNumber` untested (the contraband bug lived here for years); start with the pure-logic classes: `PlanetController`, `SaveFile` save/load round-trip against an injected temp directory.
 - [ ] [Tests] Add an `EliteMain` construction/smoke test using fakes, mirroring SCR's `StuntCarRacerMainTests` — Elite currently has no test that even constructs its composition; `EliteSharpLib.Fakes` (`FakeEliteDraw`, `FakeShipFactory`) plus `Useful.Fakes` already provide most of the doubles.
+Headless smoke harness (added 2026-07-19: verifying the
+`Opponent_Speed_Value` port live meant driving the SDL window with
+OS-level focus stealing, key injection and full-screen screenshots —
+slow, flaky, and expensive for agent-driven sessions. The repo already
+has every piece for headless verification; these items assemble them
+so "confirm the change works in the running game" becomes one test run
+plus reading a native-resolution BMP or a text state dump, no window
+needed. Do the first item first; the golden-trace harness under the
+float-physics cluster shares its scripted-input machinery):
+
+- [ ] [StuntCarRacerLib.Tests] Reusable headless game harness:
+      `StuntCarRacerMainTests.StartRace` already drives menu→race
+      through `FakeAbstraction`/`FakeKeyboard`
+      ([StuntCarRacerMainTests.cs:100-115](../src/scr/test/StuntCarRacerLib.Tests/StuntCarRacerMainTests.cs)),
+      and `FakeAbstraction` accepts any `IGraphics`
+      ([FakeAbstraction.cs:15](../src/scr/test/StuntCarRacerLib.Fakes/FakeAbstraction.cs))
+      — combine them: a harness that runs the real `StuntCarRacerMain`
+      against a real `SoftwareGraphics`, executes a scripted key
+      timeline ("S at tick 2, hold accelerate from tick 10"), and can
+      dump the framebuffer to BMP at chosen ticks (lift
+      `VisualDumpTests`' private `SaveBmp` into a shared test helper —
+      unlike `VisualDumpTests`' hand-composed scene, this renders the
+      whole game incl. screens and HUD). Prefer text assertions over
+      pixels where possible: expose a minimal read-only state summary
+      (current screen, race started, player/opponent piece, distance)
+      so most checks never need an image at all.
+- [ ] [EliteSharpLib.Tests] The Elite equivalent, building on the
+      `EliteMain` construction/smoke-test item above: drive scripted
+      ticks through `EliteMain.Update`/`Draw` with a real
+      `SoftwareGraphics` and dump framebuffers the same way. Needs no
+      SDL; note `EliteMain.Run` is unusable headlessly until its
+      `Environment.Exit(0)` defect item (under Defects and gaps) is
+      done — call `Update` directly instead.
+- [ ] [Apps] Scripted input + frame dump in the real SDL apps, for the
+      rare check that must exercise the true SDL window/present path:
+      replay a key script (from a file or env var) into the `IKeyboard`
+      sink inside the app — no OS focus or synthetic input needed —
+      and add a debug key (e.g. F12) plus a script command that saves
+      the current software framebuffer as a BMP next to the logs, so
+      live verification reads a native 640x400/512x512 image instead
+      of a desktop screenshot. Gate behind an environment variable;
+      keyboard-sink injection gets cleaner after the `IKeyboard`
+      producer/consumer split item above.
 
 ### Release engineering (from the retired release plan)
 
