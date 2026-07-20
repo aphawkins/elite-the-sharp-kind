@@ -102,11 +102,24 @@ internal sealed class HudRenderer
         DrawDamage(scaleX, scaleY, state.NewDamage, state.SmashHoles);
         DrawSpeedBar(scaleX, scaleY, state.DisplaySpeed);
         DrawReadouts(scaleX, scaleY, state.LapNumber, state.BoostReserve, state.OpponentDistance);
+        DrawLapTimes(scaleX, scaleY, state.CurrentLapTicks, state.BestLapTicks);
 
         if (state.WaitingToReleaseChains)
         {
             _graphics.DrawTextCentre(BaseHeight * scaleY / 2f, "PRESS FIRE", StuntCarRacerMain.SmallFont, 0xFFFFFFFF);
         }
+    }
+
+    // Formats an elapsed 50Hz tick count as the original's M:SS.CC lap
+    // clock (real-time based - see CarPhysics.CurrentLapTicks).
+    private static string FormatLapTime(int ticks)
+    {
+        int totalSeconds = ticks / StuntCarRacerMain.TickRate;
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        int ticksIntoSecond = ticks % StuntCarRacerMain.TickRate;
+        int centiseconds = ticksIntoSecond * 100 / StuntCarRacerMain.TickRate;
+        return string.Create(CultureInfo.InvariantCulture, $"{minutes}:{seconds:D2}.{centiseconds:D2}");
     }
 
     // A crane lowers/raises the car by two chains through the view window
@@ -246,6 +259,23 @@ internal sealed class HudRenderer
         string sign = opponentDistance < 0 ? "-" : "+";
         string distance = Math.Clamp(Math.Abs(opponentDistance), 0, 9999).ToString("D4", CultureInfo.InvariantCulture);
         _graphics.DrawTextLeft(new(84 * scaleX, (BaseHeight - 25f) * scaleY), sign + distance, font, black);
+    }
+
+    // Current and best lap time, mirroring the lap number, boost and
+    // distance read-outs on the right of the dashboard. This placement is
+    // not verified against the original's exact layout; see the lap-times
+    // backlog item for the caveats around this port.
+    private void DrawLapTimes(float scaleX, float scaleY, int currentLapTicks, int? bestLapTicks)
+    {
+        const string font = StuntCarRacerMain.SmallFont;
+        const uint black = 0xFF000000;
+
+        _graphics.DrawTextRight(new(556 * scaleX, (BaseHeight - 48f) * scaleY), $"T{FormatLapTime(currentLapTicks)}", font, black);
+
+        if (bestLapTicks.HasValue)
+        {
+            _graphics.DrawTextRight(new(556 * scaleX, (BaseHeight - 25f) * scaleY), $"B{FormatLapTime(bestLapTicks.Value)}", font, black);
+        }
     }
 
     private void DrawSprite(

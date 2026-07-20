@@ -61,10 +61,11 @@ functionality. Conclusions:
   port; the rest are now discrete items under Could.
 - **Remaining genuine gaps** are all tracked as items below: Super
   League, pause, 'R' turn-around, mid-race 'M', F9/F10, gamepad,
-  outside view, lap times, sound volume/pitch/pan fidelity, art
-  screens, widescreen/resolution work. (`Opponent_Speed_Value` was
-  ported 2026-07-19, wreck-at-full-damage and the cockpit wheel-spin
-  rate fix both landed 2026-07-20, see CHANGELOG.)
+  outside view, sound volume/pitch/pan fidelity, art screens,
+  widescreen/resolution work. (`Opponent_Speed_Value` was ported
+  2026-07-19; wreck-at-full-damage, the cockpit wheel-spin rate fix,
+  and a (simplified) lap-time clock all landed 2026-07-20, see
+  CHANGELOG.)
 
 ### Resolved (2026-07-11)
 
@@ -380,7 +381,6 @@ painter's chain landed 2026-07-14, see CHANGELOG):
 
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
-- [ ] [StuntCarRacerLib] Lap times: the original shows current/best lap times on the dashboard (`print.lap.time`/`show.lap.time`); not ported, no lap timing exists yet.
 - [ ] [StuntCarRacerLib] Per-effect sound volume, pitch and pan: the
       original sets one-time per-sample frequencies, volumes and stereo
       pans in `DSSetMode` (`StuntCarRacer.cpp:166-230`: HitCar

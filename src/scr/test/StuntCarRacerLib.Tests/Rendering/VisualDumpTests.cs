@@ -116,7 +116,9 @@ public class VisualDumpTests
             -340,
             car.OnChains,
             car.WaitingToReleaseChains,
-            car.ZAngle));
+            car.ZAngle,
+            car.CurrentLapTicks,
+            car.BestLapTicks));
         graphics.ScreenUpdate();
         Assert.NotNull(lastFrame);
         SaveBmp(lastFrame, Path.Combine(outDir, "frame_hud.bmp"));

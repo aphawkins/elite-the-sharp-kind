@@ -286,6 +286,16 @@ public sealed partial class CarPhysics
 
     public int LapNumber { get; private set; }
 
+    // Elapsed 50Hz ticks (see ApplyEngineRevs) since the current lap
+    // started; the fastest completed lap so far, or null before the first
+    // lap finishes (original print.lap.time/show.best.lap.time, dashboard
+    // M:SS.CC read-outs - see the lap-times backlog item for the caveats
+    // around this simplified, real-time-based port of the original's BCD
+    // stopwatch).
+    public int CurrentLapTicks { get; private set; }
+
+    public int? BestLapTicks { get; private set; }
+
     public bool RaceFinished { get; private set; }
 
     public int FrontLeftDamage { get; private set; }
@@ -522,6 +532,8 @@ public sealed partial class CarPhysics
         RaceFinished = false;
         LapNumber = 0;
         _carOnFirstHalfOfLap = false;
+        CurrentLapTicks = 0;
+        BestLapTicks = null;
     }
 
     // One physics frame (original CarBehaviour).
@@ -567,6 +579,11 @@ public sealed partial class CarPhysics
         EngineRevs = revs;
 
         AdvanceWheelAngles();
+
+        if (!RaceFinished)
+        {
+            CurrentLapTicks++;
+        }
     }
 
     // Calculate player position values required for opponent behaviour
@@ -589,6 +606,15 @@ public sealed partial class CarPhysics
         {
             _carOnFirstHalfOfLap = true;
             LapNumber++;
+
+            // the car starts on the start line itself, so every lap
+            // (including the first) is a genuine full circuit worth timing.
+            if (BestLapTicks is null || CurrentLapTicks < BestLapTicks.Value)
+            {
+                BestLapTicks = CurrentLapTicks;
+            }
+
+            CurrentLapTicks = 0;
         }
 
         const int lapThatFinishesRace = 4;

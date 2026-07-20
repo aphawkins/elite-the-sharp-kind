@@ -20,6 +20,8 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
 
     public IList<(Vector2 Position, string Text, string FontType, uint Colour)> LeftTexts { get; } = [];
 
+    public IList<(Vector2 Position, string Text, string FontType, uint Colour)> RightTexts { get; } = [];
+
     public int ClearCount { get; private set; }
 
     public int ClearDepthCount { get; private set; }
@@ -98,8 +100,7 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
         => LeftTexts.Add((position, text, fontType, color));
 
     public void DrawTextRight(Vector2 position, string text, string fontType, uint color)
-    {
-    }
+        => RightTexts.Add((position, text, fontType, color));
 
     public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, uint color)
     {

@@ -515,4 +515,85 @@ public class CarPhysicsTests
 
         Assert.True(engaged);
     }
+
+    [Fact]
+    public void CurrentLapTicksOnlyAdvanceViaApplyEngineRevs()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        // the physics frame alone (car.Update) must not advance the lap
+        // clock - only the 50Hz engine-revs tick does.
+        car.Update(CarInput.None);
+        Assert.Equal(0, car.CurrentLapTicks);
+
+        car.ApplyEngineRevs();
+        Assert.Equal(1, car.CurrentLapTicks);
+    }
+
+    [Fact]
+    public void LapTimerResetsOnNewRace()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        for (int tick = 0; tick < 10; tick++)
+        {
+            car.ApplyEngineRevs();
+        }
+
+        Assert.Equal(10, car.CurrentLapTicks);
+        Assert.Null(car.BestLapTicks);
+
+        car.StartRace();
+
+        Assert.Equal(0, car.CurrentLapTicks);
+        Assert.Null(car.BestLapTicks);
+    }
+
+    [Fact]
+    public void CompletingALapRecordsTheBestLapTimeAndResetsTheCurrentLap()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        Assert.Equal(0, car.CurrentLapTicks);
+        Assert.Null(car.BestLapTicks);
+
+        // drive a full lap, steering back towards the middle of the road
+        // and releasing the recovery chains if the car strays off track,
+        // as a player would (mirrors LimitViewpointYHoldsViewpointUpOverBumps).
+        for (int frame = 0; frame < 8000 && car.LapNumber < 1; frame++)
+        {
+            CarInput input = CarInput.AccelBoost;
+            if (car.RoadXPosition < 0xA0)
+            {
+                input |= CarInput.Right;
+            }
+            else if (car.RoadXPosition > 0xE0)
+            {
+                input |= CarInput.Left;
+            }
+
+            if (car.OnChains)
+            {
+                input |= CarInput.Boost;
+            }
+
+            car.Update(input);
+            car.ApplyEngineRevs();
+            car.UpdateLapData();
+        }
+
+        Assert.Equal(1, car.LapNumber);
+        Assert.NotNull(car.BestLapTicks);
+        Assert.True(car.BestLapTicks > 0);
+
+        // the current lap has just restarted, so it is short relative to
+        // the lap that was just recorded as best
+        Assert.True(car.CurrentLapTicks < car.BestLapTicks);
+    }
 }

@@ -7,6 +7,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (SCR lap times, 2026-07-20)
+
+- The dashboard now shows a current-lap clock and best-lap time
+  (`T0:00.00`/`B0:00.00`, `M:SS.CC`), mirroring the Amiga original's
+  `print.lap.time`/`show.lap.time` read-outs. `CarPhysics` tracks
+  `CurrentLapTicks` (advanced once per 50Hz `ApplyEngineRevs` tick,
+  the same hook the wheel-spin-rate fix uses) and `BestLapTicks`
+  (updated and the current lap reset at each lap boundary in
+  `UpdateLapData`); `HudRenderer` formats ticks as `M:SS.CC` and draws
+  them beside the existing lap/boost/distance read-outs. Deliberate
+  deviation: this is a straightforward wall-clock timer, not a port of
+  the original's 3-byte BCD stopwatch, whose exact increment/wrap
+  semantics were not fully reverse-engineered from the raw disassembly
+  (ptitSeb never implements this feature, so there is no clean C++
+  reference to check against). The follow-up "BCD fidelity" backlog
+  item was closed won't-fix 2026-07-20: without a working emulator to
+  verify the exact wrap semantics against, chasing byte-for-byte
+  fidelity risks silently reproducing a misread of the disassembly,
+  and the current wall-clock-accurate timer is arguably the more
+  useful behaviour anyway. Dashboard placement is a
+  reasonable slot (confirmed to fit an existing empty panel via
+  `VisualDumpTests`), not verified against the original's exact
+  layout. Covered by new `CarPhysicsTests` (tick advance only via
+  `ApplyEngineRevs`, reset on new race, full-lap best-time recording)
+  and a `HudRendererTests` case for the current/best text.
+
 ### Fixed (SCR cockpit wheel-spin rate, 2026-07-20)
 
 - Cockpit front wheel sprites were spinning at a quarter of their
