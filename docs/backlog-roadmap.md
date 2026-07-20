@@ -93,27 +93,6 @@ Composition root (split 2026-07-14 from the original [LARGE] item; do the
 first four in order — each builds on the previous; the fifth is
 independent):
 
-- [ ] [EliteSharp] Mirror the SCR composition root in Elite's
-      `Program.Main` (`// TODO: Use DI` at
-      [SDLProgram.cs:58](../src/elite/apps/EliteSharp/SDLProgram.cs)):
-      register `SoftwareAbstraction`/`IAbstraction` and its forwarded
-      interfaces, `AssetLocator` (currently created inside `EliteMain`,
-      [EliteMain.cs:65](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
-      the user-data path + `ConfigFile`/`ConfigSettings`
-      ([EliteMain.cs:91-97](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
-      and `EliteMain` as itself (and as `IGame`). Note `ConfigFile`,
-      `IConfigWriter` and `ConfigSettings` are all `internal` to
-      `EliteSharpLib` with no `InternalsVisibleTo` for the `EliteSharp`
-      app project, so `Program.Main` can't reference them to register
-      directly — either make them `public` or add a small
-      `EliteSharpLib`-side registrar (e.g. `AddEliteConfig`) that
-      `Program.Main` calls instead of registering the types itself.
-      Resolve the concrete `EliteMain` and call `.Run()` (same as SCR,
-      `IGame` has no `Run` — `Run()` wraps `GameHost.Run(_abstraction,
-      this, GameTickRate, _gameState.Config.Fps)` using the `private`
-      `GameTickRate`). `EliteMain`'s constructor keeps building the
-      domain graph at this stage — it just receives
-      `AssetLocator`/`ConfigFile` instead of creating them.
 - [ ] [EliteSharpLib] Move Elite's domain services into the container:
       register `GameState`, `PlayerShip`, `Trade`, `PlanetController`,
       `EliteDraw`, `IShipFactory`, `Universe`, `Stars`, `Pilot`, `Combat`,

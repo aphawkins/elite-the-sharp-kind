@@ -7,6 +7,28 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Elite composition root, 2026-07-20)
+
+- Mirrors the SCR composition root: `EliteSharp.SDLProgram.Main` builds a
+  `ServiceCollection` instead of `new`-ing `SoftwareAbstraction` and
+  `EliteMain` directly, registering `IAbstraction` and its forwarded
+  `IGraphics`/`ISound`/`IKeyboard`, the Serilog `ILoggerFactory`, and
+  `AssetLocator`. `ConfigFile` (and `EliteMain` itself, whose constructor
+  now takes it) are `internal` to `EliteSharpLib` with no
+  `InternalsVisibleTo` for the `EliteSharp` app, so `Program.Main` can't
+  register or construct them directly; new `EliteServiceCollectionExtensions`
+  in `EliteSharpLib` adds `AddEliteConfig(userDataPath)` and `AddEliteMain()`
+  extension methods that do this from inside the assembly that can see
+  those types, and registers `EliteMain` as `IGame` too. `EliteMain`'s
+  constructor now takes `AssetLocator`/`ConfigFile` as parameters instead
+  of creating them (the user-data path moved out to `Program.Main`, with
+  `ConfigFile` gaining an internal `BaseDirectory` property so `EliteMain`
+  can still build `SaveFile`'s path from it), and is `internal` rather
+  than `public` since only the in-assembly registrar factory calls it
+  now. `EliteMain`'s constructor otherwise keeps building the rest of the
+  domain graph as before — that's the separate "move Elite's domain
+  services into the container" item.
+
 ### Added (SCR composition root, 2026-07-20)
 
 - `StuntCarRacer.SDLProgram.Main` now builds a `ServiceCollection`

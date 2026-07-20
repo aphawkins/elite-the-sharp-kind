@@ -58,11 +58,11 @@ public sealed class EliteMain : IGame
     private readonly Stars _stars;
     private readonly Universe _universe;
 
-    public EliteMain(IAbstraction abstraction)
+    internal EliteMain(IAbstraction abstraction, AssetLocator assetLocator, ConfigFile configFile)
     {
         Guard.ArgumentNull(abstraction);
-
-        AssetLocator assetLocator = AssetLocator.Create();
+        Guard.ArgumentNull(assetLocator);
+        Guard.ArgumentNull(configFile);
 
         _abstraction = abstraction;
         _graphics = abstraction.Graphics;
@@ -88,8 +88,7 @@ public sealed class EliteMain : IGame
             { nameof(SoundEffect.Boop), new(7) },
         };
         _audio = new(sound, sfx);
-        string userDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EliteSharp");
-        ConfigFile configFile = new(userDataPath);
+        string userDataPath = configFile.BaseDirectory;
         ScreenManager<Screen, IView> views = new(_keyboard);
         _gameState = new(views)
         {

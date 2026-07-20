@@ -13,8 +13,6 @@ internal sealed class ConfigFile : IConfigWriter
 {
     private const string ConfigFileName = "elitesharp.cfg";
 
-    private readonly string _baseDirectory;
-
     private readonly JsonSerializerOptions _writeOptions = new()
     {
         WriteIndented = true,
@@ -23,11 +21,13 @@ internal sealed class ConfigFile : IConfigWriter
 
     internal ConfigFile(string baseDirectory)
     {
-        _baseDirectory = baseDirectory;
-        Directory.CreateDirectory(_baseDirectory);
+        BaseDirectory = baseDirectory;
+        Directory.CreateDirectory(BaseDirectory);
     }
 
-    private string ConfigPath => Path.Combine(_baseDirectory, ConfigFileName);
+    internal string BaseDirectory { get; }
+
+    private string ConfigPath => Path.Combine(BaseDirectory, ConfigFileName);
 
     /// <summary>
     /// Write the config file.
@@ -62,7 +62,7 @@ internal sealed class ConfigFile : IConfigWriter
         try
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(_baseDirectory)
+                .SetBasePath(BaseDirectory)
                 .AddJsonFile(ConfigFileName, optional: true, reloadOnChange: false)
                 .Build();
 

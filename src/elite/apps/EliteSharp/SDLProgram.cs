@@ -5,10 +5,13 @@
 using System.Globalization;
 using EliteSharp.SDL;
 using EliteSharpLib;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using Useful.Abstraction;
+using Useful.Assets;
 using Useful.SDL;
 
 [assembly: CLSCompliant(false)]
@@ -53,14 +56,23 @@ internal static class SDLProgram
         using LoggerFactory loggerFactory = new();
         loggerFactory.AddSerilog(seriLogger);
 
+        string userDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EliteSharp");
+
+        ServiceCollection services = new();
+        services.AddSingleton<ILoggerFactory>(loggerFactory);
+        services.AddSingleton<IAbstraction>(_ => new SoftwareAbstraction(ScreenWidth, ScreenHeight, Title));
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
+        services.AddSingleton(_ => AssetLocator.Create());
+        services.AddEliteConfig(userDataPath);
+        services.AddEliteMain();
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(SDLProgram));
 
-        // TODO: Use DI to provide the abstraction
-        using SoftwareAbstraction abstraction = new(ScreenWidth, ScreenHeight, Title);
-        ////IAssetLocator assetLocator = AssetLocator.Create();
-        ////using SDLAbstraction abstraction = new(ScreenWidth, ScreenHeight, Title, assetLocator);
-
-        EliteMain elite = new(abstraction);
+        EliteMain elite = provider.GetRequiredService<EliteMain>();
 
         try
         {
