@@ -236,7 +236,7 @@ public sealed partial class CarPhysics
 
         CarToCarCollision?.Invoke();
 
-        // Grounded sound (the original also sets the volume from _damageValue).
+        // Grounded sound, volume scaled by damage (see CalculateDamageVolume).
         if (_groundedDelay > 0)
         {
             --_groundedDelay;
@@ -245,6 +245,7 @@ public sealed partial class CarPhysics
         if (_groundedCount != 0 && _groundedDelay == 0)
         {
             GroundedSoundTriggered = true;
+            GroundedVolume = CalculateDamageVolume();
             _groundedDelay = 5;
         }
     }

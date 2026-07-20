@@ -596,4 +596,167 @@ public class CarPhysicsTests
         // the lap that was just recorded as best
         Assert.True(car.CurrentLapTicks < car.BestLapTicks);
     }
+
+    [Fact]
+    public void CreakVolumeStaysWithinTheOriginalsAmigaRange()
+    {
+        // AddCollisionDamage only drives the cosmetic damage average
+        // (NewDamage); CreakVolume is driven by the separate impact-derived
+        // _damageValue, so this only asserts the volume stays in range
+        // once damage exists, not that a specific hit produces a specific
+        // volume - see CreakVolumeVariesAcrossHardLandings for that.
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        car.AddCollisionDamage(200);
+        car.UpdateDamage();
+
+        Assert.True(car.CreakSoundTriggered);
+        Assert.InRange(car.CreakVolume, 28f / 64f, 1f);
+    }
+
+    [Fact]
+    public void CreakVolumeStaysInRangeAcrossHardLandings()
+    {
+        Track track = Track.Load(TrackId.HumpBack);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        bool triggered = false;
+        for (int frame = 0; frame < 400; frame++)
+        {
+            CarInput input = CarInput.Accelerate;
+            if (car.RoadXPosition < 0xA0)
+            {
+                input |= CarInput.Right;
+            }
+            else if (car.RoadXPosition > 0xE0)
+            {
+                input |= CarInput.Left;
+            }
+
+            if (car.OnChains)
+            {
+                input |= CarInput.Boost;
+            }
+
+            car.Update(input);
+            car.UpdateDamage();
+
+            if (car.CreakSoundTriggered)
+            {
+                triggered = true;
+                Assert.InRange(car.CreakVolume, 28f / 64f, 1f);
+            }
+        }
+
+        Assert.True(triggered);
+    }
+
+    [Fact]
+    public void GroundedSoundTriggersWithVolumeInTheOriginalsAmigaRangeOnAHardLanding()
+    {
+        Track track = Track.Load(TrackId.HumpBack);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        bool triggered = false;
+        for (int frame = 0; frame < 400 && !triggered; frame++)
+        {
+            CarInput input = CarInput.Accelerate;
+            if (car.RoadXPosition < 0xA0)
+            {
+                input |= CarInput.Right;
+            }
+            else if (car.RoadXPosition > 0xE0)
+            {
+                input |= CarInput.Left;
+            }
+
+            if (car.OnChains)
+            {
+                input |= CarInput.Boost;
+            }
+
+            car.Update(input);
+            triggered = car.GroundedSoundTriggered;
+        }
+
+        Assert.True(triggered);
+        Assert.InRange(car.GroundedVolume, 28f / 64f, 1f);
+    }
+
+    [Fact]
+    public void OffRoadSoundTriggersWithPitchNearTheOriginalsRandomRange()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        for (int frame = 0; frame < 100 && !car.TouchingRoad; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        bool triggered = false;
+        for (int frame = 0; frame < 500 && !triggered; frame++)
+        {
+            car.Update(CarInput.AccelBoost | CarInput.Left);
+            triggered = car.OffRoadSoundTriggered;
+        }
+
+        Assert.True(triggered);
+
+        // AMIGA_PAL_HZ / (450 + rand&0x1c) relative to the 464 midpoint
+        // anchor - see CalculateOffRoadPitch.
+        Assert.InRange(car.OffRoadPitch, 464.0 / 478, 464.0 / 450);
+    }
+
+    [Fact]
+    public void WreckSoundTriggersWithPitchInTheOriginalsSpeedBasedRange()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        // stay centred on the road (as a player steering would) so
+        // _offMapStatus never blocks the wreck-scrape trigger below.
+        bool triggered = false;
+        for (int frame = 0; frame < 300 && !triggered; frame++)
+        {
+            CarInput input = CarInput.AccelBoost;
+            if (car.RoadXPosition < 0xA0)
+            {
+                input |= CarInput.Right;
+            }
+            else if (car.RoadXPosition > 0xE0)
+            {
+                input |= CarInput.Left;
+            }
+
+            if (car.OnChains)
+            {
+                input |= CarInput.Boost;
+            }
+
+            car.Update(input);
+
+            if (frame == 200)
+            {
+                Assert.True(car.DisplaySpeed > 0);
+                car.AddCollisionDamage(255);
+                car.UpdateDamage();
+                Assert.True(car.Wrecked);
+            }
+
+            triggered = car.WreckSoundTriggered;
+        }
+
+        Assert.True(triggered);
+
+        // AMIGA_PAL_HZ / p relative to the 360 divisor-range midpoint
+        // anchor - see CalculateWreckPitch.
+        Assert.InRange(car.WreckPitch, 360.0 / 422, 360.0 / 298);
+    }
 }

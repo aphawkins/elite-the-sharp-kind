@@ -62,18 +62,21 @@ public sealed class StuntCarRacerMain : IGame
         // Effect cooldowns in physics frames (12.5Hz), sized to the sample
         // lengths so a repeated trigger doesn't stack in the mixer. OffRoad
         // and Wreck share a cooldown as they shared a buffer in the
-        // original.
-        SfxSample offRoadOrWreck = new(10);
+        // original. Pan (and HitCar's fixed volume) mirror DSSetMode
+        // (`StuntCarRacer.cpp:166-230`): engine and Smash on the left,
+        // everything else on the right; Grounded/Creak/OffRoad/Wreck's
+        // volume/pitch are set per-play instead (see CarPhysics).
+        SfxSample offRoadOrWreck = new(10, pan: 1f);
         _audio = new(
             Sound,
             new Dictionary<string, SfxSample>
             {
-                { "Grounded", new(4) },
-                { "Creak", new(6) },
-                { "Smash", new(11) },
+                { "Grounded", new(4, pan: 1f) },
+                { "Creak", new(6, pan: 1f) },
+                { "Smash", new(11, pan: -1f) },
                 { "OffRoad", offRoadOrWreck },
                 { "Wreck", offRoadOrWreck },
-                { "HitCar", new(9) },
+                { "HitCar", new(9, volume: 56f / 64f, pan: 1f) },
             });
 
         LoadTrack(trackId);
@@ -221,12 +224,12 @@ public sealed class StuntCarRacerMain : IGame
 
         if (Car.GroundedSoundTriggered)
         {
-            _audio.PlayEffect("Grounded");
+            _audio.PlayEffect("Grounded", Car.GroundedVolume, pitch: 1.0);
         }
 
         if (Car.CreakSoundTriggered)
         {
-            _audio.PlayEffect("Creak");
+            _audio.PlayEffect("Creak", Car.CreakVolume, pitch: 1.0);
         }
 
         if (Car.SmashSoundTriggered)
@@ -236,11 +239,11 @@ public sealed class StuntCarRacerMain : IGame
 
         if (Car.OffRoadSoundTriggered)
         {
-            _audio.PlayEffect("OffRoad");
+            _audio.PlayEffect("OffRoad", volume: null, Car.OffRoadPitch);
         }
         else if (Car.WreckSoundTriggered)
         {
-            _audio.PlayEffect("Wreck");
+            _audio.PlayEffect("Wreck", volume: null, Car.WreckPitch);
         }
 
         if (Opponent.HitCarSoundTriggered)

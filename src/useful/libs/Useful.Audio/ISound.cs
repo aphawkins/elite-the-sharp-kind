@@ -6,7 +6,11 @@ public interface ISound
 {
     public void Play(string musicType, bool repeat);
 
-    public void Play(string sfxType);
+    /// <summary>
+    /// Play a one-shot sound effect. Volume is 0 (silent) - 1 (full), pan is
+    /// -1 (left) - 1 (right), and pitch is a multiplier (1.0 = recorded rate).
+    /// </summary>
+    public void Play(string sfxType, float volume, float pan, double pitch);
 
     public void StopMusic();
 

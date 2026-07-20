@@ -15,13 +15,25 @@ public sealed class FakeSound : ISound
 
     public string? LastLoopSample { get; private set; }
 
+    public float LastVolume { get; private set; }
+
+    public float LastPan { get; private set; }
+
+    public double LastPitch { get; private set; }
+
     public int PlayCount(string sfxType) => _playCounts.GetValueOrDefault(sfxType);
 
     public void Play(string musicType, bool repeat)
     {
     }
 
-    public void Play(string sfxType) => _playCounts[sfxType] = PlayCount(sfxType) + 1;
+    public void Play(string sfxType, float volume, float pan, double pitch)
+    {
+        _playCounts[sfxType] = PlayCount(sfxType) + 1;
+        LastVolume = volume;
+        LastPan = pan;
+        LastPitch = pitch;
+    }
 
     public void StopMusic()
     {

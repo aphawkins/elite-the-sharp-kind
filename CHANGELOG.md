@@ -7,6 +7,36 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (SCR per-effect sound volume/pitch/pan, 2026-07-20)
+
+- Sound effects now vary per play instead of always sounding identical,
+  matching the Amiga original's `DSSetMode`/`DrawDustClouds`/`DrawSparks`/
+  `UpdateDamage` behaviour: Creak and Grounded volume scale with impact
+  damage (`CarPhysics.CalculateDamageVolume`, shared by both, matching
+  the original's identical formula in both places), and the off-road/
+  edge-scrape sounds are pitched (randomly for off-road, by speed for
+  the edge scrape) instead of playing at a flat pitch. Each effect also
+  gets the original's fixed stereo pan (engine and Smash left,
+  everything else right) and HitCar's fixed quieter volume.
+  `Useful.Audio` grew the plumbing for this: `ISound.Play` and
+  `AudioController.PlayEffect` take volume/pan/pitch, `SfxSample` carries
+  a per-effect static volume/pan profile, and `SDLSound` implements
+  pitch-shifted one-shots with the same resample-on-a-reserved-channel
+  technique the engine loop already used (a new second reserved channel,
+  stopping after one pass instead of looping). Elite's 9 `PlayEffect`
+  call sites are unaffected (same simple no-args overload).
+  Deliberate deviations: skips the original's `AmigaVolumeToDirectX` dB
+  round-trip since SDL_mixer's volume is already linear (see
+  `CalculateDamageVolume`'s comment for the maths); the two pitched
+  effects have no "recorded rate" reference in the original either (both
+  always override the frequency), so pitch=1.0 is anchored at each
+  formula's own range midpoint (464 for off-road, 360 for the edge
+  scrape) rather than a verified original value. Covered by new
+  `AudioControllerTests` (volume/pan/pitch pass-through) and
+  `CarPhysicsTests` (damage-scaled volume in range, off-road/wreck pitch
+  in the derived ranges); actual audio output was not manually verified
+  by ear.
+
 ### Added (SCR lap times, 2026-07-20)
 
 - The dashboard now shows a current-lap clock and best-lap time

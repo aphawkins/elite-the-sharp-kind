@@ -61,10 +61,10 @@ functionality. Conclusions:
   port; the rest are now discrete items under Could.
 - **Remaining genuine gaps** are all tracked as items below: Super
   League, pause, 'R' turn-around, mid-race 'M', F9/F10, gamepad,
-  outside view, sound volume/pitch/pan fidelity, art screens,
-  widescreen/resolution work. (`Opponent_Speed_Value` was ported
-  2026-07-19; wreck-at-full-damage, the cockpit wheel-spin rate fix,
-  and a (simplified) lap-time clock all landed 2026-07-20, see
+  outside view, art screens, widescreen/resolution work.
+  (`Opponent_Speed_Value` was ported 2026-07-19; wreck-at-full-damage,
+  the cockpit wheel-spin rate fix, a (simplified) lap-time clock, and
+  per-effect sound volume/pitch/pan all landed 2026-07-20, see
   CHANGELOG.)
 
 ### Resolved (2026-07-11)
@@ -381,23 +381,6 @@ painter's chain landed 2026-07-14, see CHANGELOG):
 
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
-- [ ] [StuntCarRacerLib] Per-effect sound volume, pitch and pan: the
-      original sets one-time per-sample frequencies, volumes and stereo
-      pans in `DSSetMode` (`StuntCarRacer.cpp:166-230`: HitCar
-      `AMIGA_PAL_HZ/238`, Grounded `/400`, Creak `/238`, Smash `/280`;
-      volumes through the `AmigaVolumeToDirectX` log curve,
-      `Car_Behaviour.cpp:3513`; engine and Smash panned left, the other
-      effects right, matching the Amiga's channel sides), then varies
-      some per play: creak volume scales with damage (`UpdateDamage`,
-      `Car_Behaviour.cpp:4120-4125`), the off-road dust-cloud sound is
-      pitched randomly (`DrawDustClouds`: `AMIGA_PAL_HZ / (450 + rand &
-      0x1c)`) and the edge-scrape spark sound by speed (`DrawSparks`,
-      which plays the Wreck sample for scraping); `AudioController`/
-      `SfxSample` (and `ISound.Play`) currently have no per-play volume,
-      pitch or pan parameter (the engine-loop pitch is separate and
-      already ported). Note dust clouds and sparks are sound-only in
-      ptitSeb too ("currently just plays the sound effect") — no
-      particle graphics are required for parity.
 - [ ] [StuntCarRacerLib] F9/F10 frame-gap tuning keys: both C++ versions adjust the physics frame gap live; `StuntCarRacerMain.FrameGap` exists for exactly this but isn't wired to any key.
 - [ ] [StuntCarRacerLib] Race pause: the remake pauses on 'P' and resumes on 'O' (`bPaused`, engine sound stopped while paused); not ported — no pause exists. The remake's debug freezes (F5 stats overlay, F6 player-only pause, F7 opponent-only pause) could ride along as dev aids.
 - [ ] [StuntCarRacerLib] 'R' turn-around key: the remake adds 180 degrees to the player's y angle and re-initialises (`INITIALISE_PLAYER`, ptitSeb `StuntCarRacer.cpp` ~1039) so a car facing the wrong way can recover; not ported.

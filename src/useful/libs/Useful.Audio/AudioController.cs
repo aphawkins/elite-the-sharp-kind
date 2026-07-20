@@ -30,20 +30,29 @@ public sealed class AudioController
 #endif
     }
 
-    public void PlayEffect(string effectType)
+    public void PlayEffect(string effectType) => PlayEffect(effectType, volume: null, pitch: 1.0);
+
+    /// <summary>
+    /// Play an effect, using the sample's static volume/pan unless overridden.
+    /// </summary>
+    /// <param name="effectType">The effect's key in the sample dictionary passed to the constructor.</param>
+    /// <param name="volume">Per-play volume override (0 silent - 1 full), or null to use the sample's static volume.</param>
+    /// <param name="pitch">Per-play pitch multiplier (1.0 = recorded rate).</param>
+    public void PlayEffect(string effectType, float? volume, double pitch)
     {
         if (!_effectsOn)
         {
             return;
         }
 
-        if (_sfx[effectType].HasTimeRemaining)
+        SfxSample sample = _sfx[effectType];
+        if (sample.HasTimeRemaining)
         {
             return;
         }
 
-        _sfx[effectType].ResetTime();
-        _sound.Play(effectType);
+        sample.ResetTime();
+        _sound.Play(effectType, volume ?? sample.Volume, sample.Pan, pitch);
     }
 
     public void PlayMusic(string musicType, bool loop)

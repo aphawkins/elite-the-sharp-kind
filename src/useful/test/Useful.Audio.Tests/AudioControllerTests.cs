@@ -78,4 +78,36 @@ public class AudioControllerTests
         audio.PlayEffect("Wreck");
         Assert.Equal(1, sound.PlayCount("Wreck"));
     }
+
+    [Fact]
+    public void PlayEffectUsesTheSamplesStaticVolumeAndPanWhenNotOverridden()
+    {
+        // Arrange
+        FakeSound sound = new();
+        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Smash", new(2, volume: 0.5f, pan: -1f) } });
+
+        // Act
+        audio.PlayEffect("Smash");
+
+        // Assert
+        Assert.Equal(0.5f, sound.LastVolume);
+        Assert.Equal(-1f, sound.LastPan);
+        Assert.Equal(1.0, sound.LastPitch);
+    }
+
+    [Fact]
+    public void PlayEffectOverridesVolumeAndPitchPerPlayButKeepsTheSamplesPan()
+    {
+        // Arrange
+        FakeSound sound = new();
+        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Creak", new(2, volume: 1f, pan: 1f) } });
+
+        // Act
+        audio.PlayEffect("Creak", 0.25f, 2.0);
+
+        // Assert
+        Assert.Equal(0.25f, sound.LastVolume);
+        Assert.Equal(1f, sound.LastPan);
+        Assert.Equal(2.0, sound.LastPitch);
+    }
 }

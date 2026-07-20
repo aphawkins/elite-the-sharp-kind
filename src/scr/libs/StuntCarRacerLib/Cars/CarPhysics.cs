@@ -391,16 +391,27 @@ public sealed partial class CarPhysics
 
     internal bool OpponentBehindPlayer { get; set; }
 
-    // Sound triggers, set for one frame when the effect should play.
+    // Sound triggers, set for one frame when the effect should play. The
+    // *Volume/*Pitch values are only meaningful when the paired trigger is
+    // true (original DrawOtherGraphics/UpdateDamage's per-play variation -
+    // see the per-effect-sound backlog item).
     internal bool GroundedSoundTriggered { get; private set; }
 
+    internal float GroundedVolume { get; private set; }
+
     internal bool CreakSoundTriggered { get; private set; }
+
+    internal float CreakVolume { get; private set; }
 
     internal bool SmashSoundTriggered { get; private set; }
 
     internal bool OffRoadSoundTriggered { get; private set; }
 
+    internal double OffRoadPitch { get; private set; }
+
     internal bool WreckSoundTriggered { get; private set; }
+
+    internal double WreckPitch { get; private set; }
 
     // Front wheel rotation angles (cockpit display only).
     private int LeftWheelAngle { get; set; }
@@ -648,6 +659,7 @@ public sealed partial class CarPhysics
             if (Damaged)
             {
                 CreakSoundTriggered = true;
+                CreakVolume = CalculateDamageVolume();
             }
 
             return;
@@ -666,8 +678,8 @@ public sealed partial class CarPhysics
             return;
         }
 
-        // the original also sets the creak volume from _damageValue
         CreakSoundTriggered = true;
+        CreakVolume = CalculateDamageVolume();
     }
 
     // Adds car-to-car collision accelerations from the opponent.
@@ -728,6 +740,31 @@ public sealed partial class CarPhysics
         return v * RoadWidth / denominator;
     }
 
+    // The original pitches the Wreck sample (edge-scrape) by speed
+    // (AMIGA_PAL_HZ / p, DrawSparks); 360 is the divisor's ~298-422 range
+    // midpoint, chosen as the pitch=1.0 anchor for the same reason as
+    // CalculateOffRoadPitch.
+    private static double CalculateWreckPitch(int p)
+    {
+        const int ReferenceDivisor = 360;
+        int shifted = Math.Min(p, 50) >> 1;
+        int xored = (shifted ^ 0x31) & 0xff;
+        int divisor = (xored << 2) + 170;
+        return (double)ReferenceDivisor / divisor;
+    }
+
+    // Amiga volume 28-64 scaled by damage, from the original's shared
+    // Creak/Grounded volume formula (Car_Behaviour.cpp:2194-2199,
+    // 4119-4125). MAX_AMIGA_VOLUME is 64, and SDL_mixer's per-channel
+    // volume is already a linear multiplier, so unlike the original this
+    // skips the AmigaVolumeToDirectX dB round-trip - see the
+    // per-effect-sound backlog item.
+    private float CalculateDamageVolume()
+    {
+        int amigaVolume = Math.Clamp((_damageValue >> 8) * 4, 28, 64);
+        return amigaVolume / 64f;
+    }
+
     // Sound triggers for the off-road dust clouds and edge sparks, from the
     // original DrawOtherGraphics/DrawDustClouds/DrawSparks (which only played
     // the sound effects in the remake).
@@ -736,6 +773,7 @@ public sealed partial class CarPhysics
         if (!OnChains && _offMapStatus != 0 && TouchingRoad)
         {
             OffRoadSoundTriggered = true;
+            OffRoadPitch = CalculateOffRoadPitch();
         }
 
         if ((WhichSideByte != 0 || Wrecked) && _offMapStatus == 0)
@@ -744,11 +782,28 @@ public sealed partial class CarPhysics
             if (p >= 1 && TouchingRoad)
             {
                 WreckSoundTriggered = true;
+                WreckPitch = CalculateWreckPitch(p);
             }
         }
 
         // the original cleared this in update.wheel.positions
         WhichSideByte = 0;
+    }
+
+    // The original pitches the off-road sample randomly each play
+    // (AMIGA_PAL_HZ / (450 + rand&0x1c), DrawDustClouds). 464 is the
+    // divisor's range midpoint, chosen as the pitch=1.0 anchor since the
+    // original never sets this sample's frequency anywhere else - see the
+    // per-effect-sound backlog item.
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Security",
+        "CA5394:Do not use insecure randomness",
+        Justification = "Random fluctuation of the off-road effect's pitch only.")]
+    private double CalculateOffRoadPitch()
+    {
+        const int ReferenceDivisor = 464;
+        int divisor = 450 + (_random.Next() & 0x1c);
+        return (double)ReferenceDivisor / divisor;
     }
 
     private void CarControl(CarInput input)
