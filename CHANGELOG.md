@@ -7,6 +7,72 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Colour handling unified on FastColor, 2026-07-20)
+
+- Phase 3 of unifying colour handling across Elite and SCR: `uint` →
+  `FastColor` across the shared colour contract — `IGraphics` (and both
+  implementations, `SoftwareGraphics`/`SDLGraphics`), `IPolygonRenderer`
+  and its three strategies (`ZBufferRenderer`/`PainterRenderer`/
+  `WireframeRenderer`), `IPaletteCollection`/`Palette`/`PaletteReader`
+  (`Useful.Assets.Palettes`), `Face.Color` (`Useful.Assets.Models`), and
+  SCR's `WorldPolygon.Colour`/`CarPalette`. Only the declared surfaces
+  changed — internal call sites across Elite's ~110 `uint`-typed colour
+  locals/fields (Views, Planets, Suns, Ships) and SCR's `ScrPalette`/
+  `TrackRenderer` kept compiling unchanged via the implicit `uint`↔
+  `FastColor` conversions added earlier the same day (see below), keeping
+  the diff to 27 files. The exceptions needing edits were Moq test
+  matchers (`It.IsAny<uint>()` → `It.IsAny<FastColor>()`), since Moq
+  checks the literal parameter type rather than tolerating implicit
+  conversions.
+
+  Also resolves the open `[Useful.SDL] ToSDLColor decodes the colour as
+  RGBA` defect: `ToSDLColor` now decodes via `FastColor.R`/`G`/`B`/`A`
+  instead of hand-rolled bit-shifts, matching `SetRenderDrawColor` and
+  every other colour in the codebase (ARGB).
+
+### Changed (ScrPalette loaded from palette.json, 2026-07-20)
+
+- Phase 2 of the colour-handling unification: `ScrPalette`'s hardcoded
+  42-entry `uint[]` replaced with a JSON asset
+  (`StuntCarRacerLib/Assets/Palette/palette.json`) loaded through
+  `Useful.Assets.Palettes.PaletteReader`/`IPaletteCollection` — the same
+  mechanism `EliteDraw` already used for its named palette. `Colour(int)`
+  stays static with a lazily-loaded backing store and keeps addressing
+  colours positionally (`Track.ScrBaseColour + offset`, matching the
+  original's `SCR_BASE_COLOUR`-relative scheme) rather than converting to
+  an injected instance: `RoadTextures.Textures` resolves colours in a
+  static field initializer at type-load time, and ~20 call sites across 8
+  files address colours by numeric offset, so DI injection here would
+  have meant a much larger, riskier change for the same goal.
+
+### Changed (FastColor moved into the base Useful library, 2026-07-20)
+
+- Phase 1 of the colour-handling unification: `FastColor`/`BaseColors`
+  relocated from `Useful.Graphics` into the base `Useful` library, so
+  `Useful.Assets` (which sits below `Useful.Graphics` in the dependency
+  graph and owns `IPaletteCollection`/`Face.Color`) can reference it in a
+  later phase without a circular project reference. No call-site changes
+  needed elsewhere — `Useful.Graphics`/`Useful.SDL` already see it via
+  C#'s enclosing-namespace lookup. Added implicit `uint`↔`FastColor`
+  conversions so existing ARGB literals and `uint`-typed fields kept
+  compiling as call sites migrated to `FastColor` over the subsequent
+  phases above.
+
+### Changed (CarMesh converted to a car.obj asset, 2026-07-20)
+
+- SCR's `CarMesh` (the opponent's wedge-body/wheel-quad geometry,
+  previously hardcoded vertex/quad arrays) now loads from a Wavefront OBJ
+  asset (`StuntCarRacerLib/Assets/Models/car.obj`), mirroring how Elite
+  loads its ship models via `Useful.Assets.Models.ModelReader`. `CarMesh`
+  changed from a static class to an instance constructed once (and
+  injected into `OpponentRenderer`) instead of re-parsed on every track
+  load; a new `CarPalette` resolves car.obj's five materials to
+  track-palette colours since `Track.ScrBaseColour` is presently a fixed
+  offset. Also fixed `.gitignore`'s blanket `*.obj` rule, which was
+  silently excluding the new `car.obj` — only Elite's ship-model path was
+  carved out as a genuine-OBJ exception; added SCR's models path
+  alongside it.
+
 ### Changed (Polygon renderers moved to Useful.Graphics, 2026-07-20)
 
 - `IShipRenderer`, `ShipRenderMode`, `PolygonData`, `WireframeRenderer`,
