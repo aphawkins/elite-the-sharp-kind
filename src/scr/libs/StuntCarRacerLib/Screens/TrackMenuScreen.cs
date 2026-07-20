@@ -5,8 +5,8 @@
 using System.Globalization;
 using System.Numerics;
 using StuntCarRacerLib.Cars;
-using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Useful.Abstraction;
 
 namespace StuntCarRacerLib.Screens;
@@ -84,8 +84,8 @@ internal sealed class TrackMenuScreen : IGameScreen
             new(CanvasWidth, 200f));
 
         float scale = _game.Graphics.ScreenWidth / CanvasWidth;
-        uint yellow = ScrPalette.Colour(Track.ScrBaseColour + 3);
-        uint white = ScrPalette.Colour(Track.ScrBaseColour + 15);
+        FastColor yellow = _game.Palette.Colour(Track.ScrBaseColour + 3);
+        FastColor white = _game.Palette.Colour(Track.ScrBaseColour + 15);
 
         _game.Graphics.DrawTextLeft(new(PanelLeft * scale, PanelTop * scale), "Choose track :-", StuntCarRacerMain.SmallFont, yellow);
 
@@ -103,7 +103,7 @@ internal sealed class TrackMenuScreen : IGameScreen
                 _ => "Roller Coaster",
             };
 
-            uint colour = _game.Track.Id == (TrackId)i ? white : yellow;
+            FastColor colour = _game.Track.Id == (TrackId)i ? white : yellow;
             float y = PanelTop + RowHeight + (i * RowHeight);
             _game.Graphics.DrawTextLeft(
                 new(PanelLeft * scale, y * scale),

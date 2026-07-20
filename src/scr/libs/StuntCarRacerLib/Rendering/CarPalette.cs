@@ -20,12 +20,17 @@ internal static class CarPalette
     private const int SideOffset = 12;
     private const int TopOffset = 15;
 
-    internal static IPaletteCollection Colours() => new Palette(new Dictionary<string, FastColor>
+    internal static IPaletteCollection Colours(ScrPalette palette)
     {
-        ["Wheel"] = ScrPalette.Colour(Track.ScrBaseColour + WheelOffset),
-        ["Bottom"] = ScrPalette.Colour(Track.ScrBaseColour + BottomOffset),
-        ["End"] = ScrPalette.Colour(Track.ScrBaseColour + EndOffset),
-        ["Side"] = ScrPalette.Colour(Track.ScrBaseColour + SideOffset),
-        ["Top"] = ScrPalette.Colour(Track.ScrBaseColour + TopOffset),
-    });
+        Guard.ArgumentNull(palette);
+
+        return new Palette(new Dictionary<string, FastColor>
+        {
+            ["Wheel"] = palette.Colour(Track.ScrBaseColour + WheelOffset),
+            ["Bottom"] = palette.Colour(Track.ScrBaseColour + BottomOffset),
+            ["End"] = palette.Colour(Track.ScrBaseColour + EndOffset),
+            ["Side"] = palette.Colour(Track.ScrBaseColour + SideOffset),
+            ["Top"] = palette.Colour(Track.ScrBaseColour + TopOffset),
+        });
+    }
 }

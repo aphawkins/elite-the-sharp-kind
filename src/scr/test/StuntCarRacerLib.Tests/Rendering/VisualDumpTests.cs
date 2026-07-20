@@ -27,11 +27,12 @@ public class VisualDumpTests
         OpponentPhysics opponent = new(track, car, new Random(3));
         opponent.StartRace();
 
+        ScrPalette palette = new();
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 400, b => lastFrame = b, AssetLocator.Create());
-        TrackRenderer renderer = new(track, graphics);
-        BackdropRenderer backdrop = new(graphics);
-        OpponentRenderer opponentRenderer = new(opponent, new());
+        TrackRenderer renderer = new(track, graphics, palette, new(palette));
+        BackdropRenderer backdrop = new(graphics, palette);
+        OpponentRenderer opponentRenderer = new(opponent, new(palette), palette);
         SceneCamera camera = new();
         List<WorldPolygon> worldPolygons = [];
 

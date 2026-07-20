@@ -16,13 +16,16 @@ public sealed class OpponentRenderer
 
     private readonly OpponentPhysics _opponent;
     private readonly CarMesh _carMesh;
+    private readonly ScrPalette _palette;
 
-    public OpponentRenderer(OpponentPhysics opponent, CarMesh carMesh)
+    public OpponentRenderer(OpponentPhysics opponent, CarMesh carMesh, ScrPalette palette)
     {
         Guard.ArgumentNull(opponent);
         Guard.ArgumentNull(carMesh);
+        Guard.ArgumentNull(palette);
         _opponent = opponent;
         _carMesh = carMesh;
+        _palette = palette;
     }
 
     // Appends the opponent's polygons (world track units) for depth-sorted
@@ -41,7 +44,7 @@ public sealed class OpponentRenderer
         {
             polygons.Add(new(
                 [_opponent.ShadowRearLeft, _opponent.ShadowRearRight, _opponent.ShadowFrontRight, _opponent.ShadowFrontLeft],
-                ScrPalette.Colour(ShadowColour)));
+                _palette.Colour(ShadowColour)));
         }
 
         _carMesh.Append(

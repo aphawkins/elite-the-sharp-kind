@@ -34,7 +34,8 @@ public sealed class StuntCarRacerMain : IGame
     private readonly IAbstraction _abstraction;
     private readonly BackdropRenderer _backdrop;
     private readonly HudRenderer _hud;
-    private readonly CarMesh _carMesh = new();
+    private readonly CarMesh _carMesh;
+    private readonly RoadTextures _roadTextures;
     private readonly List<WorldPolygon> _worldPolygons = [];
     private readonly AudioController _audio;
 
@@ -57,8 +58,11 @@ public sealed class StuntCarRacerMain : IGame
         Graphics = abstraction.Graphics;
         Keyboard = abstraction.Keyboard;
         Sound = abstraction.Sound;
-        _backdrop = new(Graphics);
+        Palette = new();
+        _backdrop = new(Graphics, Palette);
         _hud = new(Graphics);
+        _carMesh = new(Palette);
+        _roadTextures = new(Palette);
 
         // Effect cooldowns in physics frames (12.5Hz), sized to the sample
         // lengths so a repeated trigger doesn't stack in the mixer. OffRoad
@@ -104,6 +108,8 @@ public sealed class StuntCarRacerMain : IGame
     internal IGraphics Graphics { get; }
 
     internal SceneCamera Camera { get; } = new();
+
+    internal ScrPalette Palette { get; }
 
     internal Track Track { get; private set; }
 
@@ -197,8 +203,8 @@ public sealed class StuntCarRacerMain : IGame
         Car = new(Track);
         Opponent = new(Track, Car);
         Bridge = new(Track);
-        _renderer = new(Track, Graphics);
-        _opponentRenderer = new(Opponent, _carMesh);
+        _renderer = new(Track, Graphics, Palette, _roadTextures);
+        _opponentRenderer = new(Opponent, _carMesh, Palette);
     }
 
     // The world common to every screen: backdrop, track and (outside the
@@ -299,7 +305,7 @@ public sealed class StuntCarRacerMain : IGame
     // remake's text overlays (opponent name at race start, race result).
     internal void DrawHud(bool gameOver)
     {
-        uint white = ScrPalette.Colour(Track.ScrBaseColour + 15);
+        FastColor white = Palette.Colour(Track.ScrBaseColour + 15);
         float height = Graphics.ScreenHeight;
 
         _hud.Draw(new(
@@ -339,7 +345,7 @@ public sealed class StuntCarRacerMain : IGame
         {
             // the result text flashes white/black, changing every half second
             int flash = (RaceTick - RaceFinishedTick) % TickRate;
-            uint colour = flash < TickRate / 2 ? white : ScrPalette.Colour(Track.ScrBaseColour);
+            FastColor colour = flash < TickRate / 2 ? white : Palette.Colour(Track.ScrBaseColour);
             Graphics.DrawTextCentre(height - 300, RaceWon ? "RACE WON" : "RACE LOST", LargeFont, colour);
         }
     }

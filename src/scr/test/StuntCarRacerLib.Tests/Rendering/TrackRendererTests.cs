@@ -31,8 +31,9 @@ public class TrackRendererTests
         SceneCamera camera = new();
         camera.FollowCar(car);
 
+        ScrPalette palette = new();
         RecordingGraphics graphics = new(640, 400);
-        TrackRenderer renderer = new(track, graphics);
+        TrackRenderer renderer = new(track, graphics, palette, new(palette));
         renderer.Draw(camera);
 
         // Track geometry ahead of the car must produce filled polygons.
@@ -52,11 +53,13 @@ public class TrackRendererTests
         SceneCamera camera = new();
         camera.FollowCar(car);
 
+        ScrPalette palette = new();
+        RoadTextures roadTextures = new(palette);
         RecordingGraphics graphics1 = new(640, 400);
-        new TrackRenderer(track, graphics1).Draw(camera);
+        new TrackRenderer(track, graphics1, palette, roadTextures).Draw(camera);
 
         RecordingGraphics graphics2 = new(640, 400);
-        new TrackRenderer(track, graphics2).Draw(camera);
+        new TrackRenderer(track, graphics2, palette, roadTextures).Draw(camera);
 
         Assert.Equal(graphics1.FilledPolygons.Count, graphics2.FilledPolygons.Count);
     }
@@ -69,8 +72,9 @@ public class TrackRendererTests
         car.StartRace();
 
         SceneCamera camera = new();
+        ScrPalette palette = new();
         RecordingGraphics graphics = new(640, 400);
-        TrackRenderer renderer = new(track, graphics);
+        TrackRenderer renderer = new(track, graphics, palette, new(palette));
 
         for (int frame = 0; frame < 200; frame++)
         {
@@ -92,16 +96,19 @@ public class TrackRendererTests
         SceneCamera camera = new();
         camera.FollowCar(car);
 
+        ScrPalette palette = new();
+        RoadTextures roadTextures = new(palette);
+
         // without a player position no road is textured
         RecordingGraphics untextured = new(640, 400);
-        new TrackRenderer(track, untextured).Draw(camera);
+        new TrackRenderer(track, untextured, palette, roadTextures).Draw(camera);
         Assert.Empty(untextured.TexturedPolygons);
 
         // with the player's position the nearby road draws textured
         RecordingGraphics textured = new(640, 400);
-        new TrackRenderer(track, textured).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
+        new TrackRenderer(track, textured, palette, roadTextures).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
         Assert.NotEmpty(textured.TexturedPolygons);
-        Assert.All(textured.TexturedPolygons, p => Assert.Contains(p.Texture, RoadTextures.Textures));
+        Assert.All(textured.TexturedPolygons, p => Assert.Contains(p.Texture, roadTextures.Textures));
         Assert.All(textured.TexturedPolygons, p => Assert.Equal(p.Points.Length, p.TextureCoords.Length));
     }
 
@@ -115,8 +122,9 @@ public class TrackRendererTests
         SceneCamera camera = new();
         camera.FollowCar(car);
 
+        ScrPalette palette = new();
         RecordingGraphics graphics = new(640, 400);
-        new TrackRenderer(track, graphics).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
+        new TrackRenderer(track, graphics, palette, new(palette)).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
 
         // 11 segments each side of the player plus the player's own, two
         // road triangles each (clipping can split a triangle once more)
@@ -144,8 +152,9 @@ public class TrackRendererTests
         car.StartRace();
 
         SceneCamera camera = new();
+        ScrPalette palette = new();
         RecordingGraphics graphics = new(640, 400);
-        TrackRenderer renderer = new(track, graphics);
+        TrackRenderer renderer = new(track, graphics, palette, new(palette));
 
         for (int frame = 0; frame < 150; frame++)
         {

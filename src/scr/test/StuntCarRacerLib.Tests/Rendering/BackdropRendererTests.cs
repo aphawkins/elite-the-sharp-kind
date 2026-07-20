@@ -5,6 +5,7 @@
 using System.Numerics;
 using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Useful.Fakes.Assets;
 using Useful.Graphics;
 using Xunit;
@@ -33,9 +34,10 @@ public class BackdropRendererTests
     [InlineData(1000, 20000)] // near-level, high up
     public void GroundLineMatchesTrackProjectionWhenPitchedDown(int cameraHeight, int targetDistance)
     {
+        ScrPalette palette = new();
         FastBitmap? frame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(Width, Height, b => frame = b, new FakeAssetLocator());
-        BackdropRenderer backdrop = new(graphics);
+        BackdropRenderer backdrop = new(graphics, palette);
         SceneCamera camera = new();
 
         // camera above the world centre looking down at a ground point ahead
@@ -60,7 +62,7 @@ public class BackdropRendererTests
         Vector2 projected = scene.ProjectPoint(
             scene.TransformPoint(camera.X, 0, camera.Z + GroundLineDistance));
 
-        float groundLine = FindSkyToGroundBoundary(frame);
+        float groundLine = FindSkyToGroundBoundary(frame, palette);
         Assert.True(
             Math.Abs(groundLine - projected.Y) <= 3,
             $"Ground line at y={groundLine} but the track projects the ground plane to y={projected.Y}.");
@@ -68,10 +70,10 @@ public class BackdropRendererTests
 
     // Finds the sky/ground fill boundary: the topmost ground pixel in a
     // column whose pixel above is sky (skipping columns covered by scenery).
-    private static float FindSkyToGroundBoundary(FastBitmap frame)
+    private static float FindSkyToGroundBoundary(FastBitmap frame, ScrPalette palette)
     {
-        uint sky = ScrPalette.Colour(Track.ScrBaseColour + 7);
-        uint ground = ScrPalette.Colour(Track.ScrBaseColour + 13);
+        FastColor sky = palette.Colour(Track.ScrBaseColour + 7);
+        FastColor ground = palette.Colour(Track.ScrBaseColour + 13);
 
         for (int x = 0; x < Width; x++)
         {

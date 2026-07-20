@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Useful.Graphics;
 
 namespace StuntCarRacerLib.Rendering;
@@ -12,7 +13,7 @@ namespace StuntCarRacerLib.Rendering;
 // each edge with the road colour between. The original bitmaps were 400x100
 // with every row identical and were only ever sampled at tv = 0, so a
 // one-pixel-high strip is equivalent.
-internal static class RoadTextures
+public sealed class RoadTextures
 {
     internal const int YellowDark = 0;
     internal const int YellowLight = 1;
@@ -27,15 +28,22 @@ internal static class RoadTextures
     private const int LeftLineWidth = 9;
     private const int RightLineWidth = 8;
 
-    internal static IReadOnlyList<FastBitmap> Textures { get; } =
-    [
-        Strip(ScrPalette.Colour(Track.ScrBaseColour + 3), ScrPalette.Colour(Track.ScrBaseColour + 1)),
-        Strip(ScrPalette.Colour(Track.ScrBaseColour + 3), ScrPalette.Colour(Track.ScrBaseColour + 2)),
-        Strip(ScrPalette.Colour(Track.ScrBaseColour + 10), ScrPalette.Colour(Track.ScrBaseColour + 1)),
-        Strip(ScrPalette.Colour(Track.ScrBaseColour + 10), ScrPalette.Colour(Track.ScrBaseColour + 2)),
-        Strip(ScrPalette.Colour(Track.ScrBaseColour), ScrPalette.Colour(Track.ScrBaseColour)),
-        Strip(ScrPalette.Colour(Track.ScrBaseColour + 15), ScrPalette.Colour(Track.ScrBaseColour + 15)),
-    ];
+    private readonly FastBitmap[] _textures;
+
+    internal RoadTextures(ScrPalette palette)
+    {
+        Guard.ArgumentNull(palette);
+
+        _textures = new FastBitmap[6];
+        _textures[0] = Strip(palette.Colour(Track.ScrBaseColour + 3), palette.Colour(Track.ScrBaseColour + 1));
+        _textures[1] = Strip(palette.Colour(Track.ScrBaseColour + 3), palette.Colour(Track.ScrBaseColour + 2));
+        _textures[2] = Strip(palette.Colour(Track.ScrBaseColour + 10), palette.Colour(Track.ScrBaseColour + 1));
+        _textures[3] = Strip(palette.Colour(Track.ScrBaseColour + 10), palette.Colour(Track.ScrBaseColour + 2));
+        _textures[4] = Strip(palette.Colour(Track.ScrBaseColour), palette.Colour(Track.ScrBaseColour));
+        _textures[5] = Strip(palette.Colour(Track.ScrBaseColour + 15), palette.Colour(Track.ScrBaseColour + 15));
+    }
+
+    internal IReadOnlyList<FastBitmap> Textures => _textures;
 
     // Which texture each of the track's segments uses (the original
     // SetSegmentTextures): the line colour alternates yellow/red segment by
@@ -72,7 +80,7 @@ internal static class RoadTextures
             _ => Black,
         };
 
-    private static FastBitmap Strip(uint lineColour, uint roadColour)
+    private static FastBitmap Strip(in FastColor lineColour, in FastColor roadColour)
     {
         FastBitmap strip = new(Width, 1);
         for (int x = 0; x < Width; x++)

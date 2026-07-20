@@ -22,5 +22,5 @@ public class ScrPaletteTests
     [InlineData(29, 0xffffff00)]
     [InlineData(41, 0xffffffff)]
     public void ColourReturnsTheOriginalArgbValue(int index, uint expected)
-        => Assert.Equal(expected, ScrPalette.Colour(index));
+        => Assert.Equal(expected, (uint)new ScrPalette().Colour(index));
 }

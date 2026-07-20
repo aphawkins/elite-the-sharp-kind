@@ -4,6 +4,7 @@
 
 using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Useful.Graphics;
 using Xunit;
 
@@ -14,26 +15,29 @@ public class RoadTexturesTests
     [Fact]
     public void StripsHaveLineColourAtEdgesAndRoadColourBetween()
     {
-        uint yellow = ScrPalette.Colour(Track.ScrBaseColour + 3);
-        uint red = ScrPalette.Colour(Track.ScrBaseColour + 10);
-        uint darker = ScrPalette.Colour(Track.ScrBaseColour + 1);
-        uint lighter = ScrPalette.Colour(Track.ScrBaseColour + 2);
+        ScrPalette palette = new();
+        RoadTextures roadTextures = new(palette);
 
-        AssertStrip(RoadTextures.Textures[RoadTextures.YellowDark], yellow, darker);
-        AssertStrip(RoadTextures.Textures[RoadTextures.YellowLight], yellow, lighter);
-        AssertStrip(RoadTextures.Textures[RoadTextures.RedDark], red, darker);
-        AssertStrip(RoadTextures.Textures[RoadTextures.RedLight], red, lighter);
+        FastColor yellow = palette.Colour(Track.ScrBaseColour + 3);
+        FastColor red = palette.Colour(Track.ScrBaseColour + 10);
+        FastColor darker = palette.Colour(Track.ScrBaseColour + 1);
+        FastColor lighter = palette.Colour(Track.ScrBaseColour + 2);
 
-        uint black = ScrPalette.Colour(Track.ScrBaseColour);
-        uint white = ScrPalette.Colour(Track.ScrBaseColour + 15);
-        AssertStrip(RoadTextures.Textures[RoadTextures.Black], black, black);
-        AssertStrip(RoadTextures.Textures[RoadTextures.White], white, white);
+        AssertStrip(roadTextures.Textures[RoadTextures.YellowDark], yellow, darker);
+        AssertStrip(roadTextures.Textures[RoadTextures.YellowLight], yellow, lighter);
+        AssertStrip(roadTextures.Textures[RoadTextures.RedDark], red, darker);
+        AssertStrip(roadTextures.Textures[RoadTextures.RedLight], red, lighter);
 
-        static void AssertStrip(FastBitmap strip, uint lineColour, uint roadColour)
+        FastColor black = palette.Colour(Track.ScrBaseColour);
+        FastColor white = palette.Colour(Track.ScrBaseColour + 15);
+        AssertStrip(roadTextures.Textures[RoadTextures.Black], black, black);
+        AssertStrip(roadTextures.Textures[RoadTextures.White], white, white);
+
+        static void AssertStrip(FastBitmap strip, in FastColor lineColour, in FastColor roadColour)
         {
-            Assert.Equal(lineColour, strip.GetPixel(0, 0));
-            Assert.Equal(roadColour, strip.GetPixel(strip.Width / 2, 0));
-            Assert.Equal(lineColour, strip.GetPixel(strip.Width - 1, 0));
+            Assert.Equal((uint)lineColour, strip.GetPixel(0, 0));
+            Assert.Equal((uint)roadColour, strip.GetPixel(strip.Width / 2, 0));
+            Assert.Equal((uint)lineColour, strip.GetPixel(strip.Width - 1, 0));
         }
     }
 

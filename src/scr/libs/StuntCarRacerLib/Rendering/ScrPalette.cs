@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Globalization;
+using Useful;
 using Useful.Assets.Palettes;
 
 namespace StuntCarRacerLib.Rendering;
@@ -12,10 +13,20 @@ namespace StuntCarRacerLib.Rendering;
 // matching the original's SCR_BASE_COLOUR-relative indexing. Indices 10-17
 // are car colours 1, 18-25 are car colours 2 and 26 onwards are the track
 // colours (Track.ScrBaseColour is 26).
-public static class ScrPalette
+public sealed class ScrPalette
 {
-    private static readonly Lazy<IPaletteCollection> s_palette = new(() =>
-        PaletteReader.Read(Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "palette.json")));
+    private readonly IPaletteCollection _palette;
 
-    public static uint Colour(int colourIndex) => s_palette.Value[colourIndex.ToString(CultureInfo.InvariantCulture)];
+    public ScrPalette()
+        : this(PaletteReader.Read(Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "palette.json")))
+    {
+    }
+
+    internal ScrPalette(IPaletteCollection palette)
+    {
+        Guard.ArgumentNull(palette);
+        _palette = palette;
+    }
+
+    public FastColor Colour(int colourIndex) => _palette[colourIndex.ToString(CultureInfo.InvariantCulture)];
 }

@@ -2,8 +2,8 @@
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
-using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Useful.Abstraction;
 
 namespace StuntCarRacerLib.Screens;
@@ -60,7 +60,7 @@ internal sealed class TrackPreviewScreen : IGameScreen
     {
         _game.DrawWorld(showOpponent: true);
 
-        uint yellow = ScrPalette.Colour(Track.ScrBaseColour + 3);
+        FastColor yellow = _game.Palette.Colour(Track.ScrBaseColour + 3);
         float height = _game.Graphics.ScreenHeight;
 
         _game.Graphics.DrawTextLeft(

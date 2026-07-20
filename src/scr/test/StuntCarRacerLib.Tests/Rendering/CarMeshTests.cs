@@ -4,6 +4,7 @@
 
 using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Xunit;
 
 namespace StuntCarRacerLib.Tests.Rendering;
@@ -21,7 +22,8 @@ public class CarMeshTests
     [Fact]
     public void AppendProducesTenQuadsWithTheOriginalColours()
     {
-        CarMesh carMesh = new();
+        ScrPalette palette = new();
+        CarMesh carMesh = new(palette);
         List<WorldPolygon> polygons = [];
 
         carMesh.Append(polygons, s_rearLeft, s_rearRight, s_frontLeft, s_frontRight);
@@ -29,11 +31,11 @@ public class CarMeshTests
         Assert.Equal(10, polygons.Count);
         Assert.All(polygons, p => Assert.Equal(4, p.Points.Length));
 
-        uint wheelColour = ScrPalette.Colour(Track.ScrBaseColour);
-        uint sideColour = ScrPalette.Colour(Track.ScrBaseColour + 12);
-        uint endColour = ScrPalette.Colour(Track.ScrBaseColour + 10);
-        uint topColour = ScrPalette.Colour(Track.ScrBaseColour + 15);
-        uint bottomColour = ScrPalette.Colour(Track.ScrBaseColour + 9);
+        FastColor wheelColour = palette.Colour(Track.ScrBaseColour);
+        FastColor sideColour = palette.Colour(Track.ScrBaseColour + 12);
+        FastColor endColour = palette.Colour(Track.ScrBaseColour + 10);
+        FastColor topColour = palette.Colour(Track.ScrBaseColour + 15);
+        FastColor bottomColour = palette.Colour(Track.ScrBaseColour + 9);
 
         Assert.Equal(4, polygons.Count(p => p.Colour == wheelColour));
         Assert.Equal(2, polygons.Count(p => p.Colour == sideColour));
@@ -48,7 +50,7 @@ public class CarMeshTests
     [Fact]
     public void MeshBottomSitsAtCornerLevelOnALevelFrame()
     {
-        CarMesh carMesh = new();
+        CarMesh carMesh = new(new ScrPalette());
         List<WorldPolygon> polygons = [];
 
         carMesh.Append(polygons, s_rearLeft, s_rearRight, s_frontLeft, s_frontRight);
@@ -61,7 +63,7 @@ public class CarMeshTests
     [Fact]
     public void AppendThrowsOnNullPolygons()
     {
-        CarMesh carMesh = new();
+        CarMesh carMesh = new(new ScrPalette());
 
         Assert.Throws<ArgumentNullException>(
             () => carMesh.Append(null!, s_rearLeft, s_rearRight, s_frontLeft, s_frontRight));

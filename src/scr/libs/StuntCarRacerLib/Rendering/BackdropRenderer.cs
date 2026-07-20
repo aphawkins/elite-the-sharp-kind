@@ -37,13 +37,16 @@ public sealed class BackdropRenderer
     ];
 
     private readonly IGraphics _graphics;
+    private readonly ScrPalette _palette;
 
     private int _currentSceneryType = MaxSceneryType;
 
-    public BackdropRenderer(IGraphics graphics)
+    public BackdropRenderer(IGraphics graphics, ScrPalette palette)
     {
         Guard.ArgumentNull(graphics);
+        Guard.ArgumentNull(palette);
         _graphics = graphics;
+        _palette = palette;
     }
 
     public void NextSceneryType()
@@ -135,7 +138,7 @@ public sealed class BackdropRenderer
 
         // fill the whole screen with sky, then draw the ground as one large
         // polygon on the ground side of the horizon line
-        _graphics.DrawRectangleFilled(new(0, 0), width, height, ScrPalette.Colour(SkyColour));
+        _graphics.DrawRectangleFilled(new(0, 0), width, height, _palette.Colour(SkyColour));
 
         Vector2 direction = screen[1] - screen[0];
         float length = direction.Length();
@@ -155,7 +158,7 @@ public sealed class BackdropRenderer
         Vector2 p2 = screen[1] + (direction * extent);
         _graphics.DrawPolygonFilled(
             [p1, p2, p2 + (groundSide * extent), p1 + (groundSide * extent)],
-            ScrPalette.Colour(GroundColour));
+            _palette.Colour(GroundColour));
     }
 
     private void DrawScenery(int viewpointY, int angleX, int angleY, int angleZ)
@@ -253,7 +256,7 @@ public sealed class BackdropRenderer
 
                 if (sides >= 3)
                 {
-                    _graphics.DrawPolygonFilled(points, ScrPalette.Colour(Track.ScrBaseColour + colour));
+                    _graphics.DrawPolygonFilled(points, _palette.Colour(Track.ScrBaseColour + colour));
                 }
             }
         }

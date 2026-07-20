@@ -32,17 +32,25 @@ public sealed class TrackRenderer
 
     private readonly IGraphics _graphics;
 
+    private readonly ScrPalette _palette;
+
     private readonly Scene3D _scene = new();
+
+    private readonly RoadTextures _roadTextures;
 
     private readonly int[] _segmentTextures;
 
-    public TrackRenderer(Track track, IGraphics graphics)
+    public TrackRenderer(Track track, IGraphics graphics, ScrPalette palette, RoadTextures roadTextures)
     {
         Guard.ArgumentNull(track);
         Guard.ArgumentNull(graphics);
+        Guard.ArgumentNull(palette);
+        Guard.ArgumentNull(roadTextures);
 
         _track = track;
         _graphics = graphics;
+        _palette = palette;
+        _roadTextures = roadTextures;
         _segmentTextures = RoadTextures.SegmentTextures(track);
     }
 
@@ -90,7 +98,7 @@ public sealed class TrackRenderer
 
                 // left side (top left, bottom left, next bottom left, next
                 // top left - the original triangles 0,2,6 and 0,6,4)
-                uint sideColour = ScrPalette.Colour(piece.SidesColour);
+                FastColor sideColour = _palette.Colour(piece.SidesColour);
                 world[0] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset);
                 world[1] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 2);
                 world[2] = PieceVertex(piece, pieceX, pieceY, pieceZ, offset + 6);
@@ -124,13 +132,13 @@ public sealed class TrackRenderer
                 {
                     DrawWorldPolygon(
                         world,
-                        ScrPalette.Colour(roadColour),
-                        RoadTextures.Textures[_segmentTextures[globalSegment]],
+                        _palette.Colour(roadColour),
+                        _roadTextures.Textures[_segmentTextures[globalSegment]],
                         s_roadTextureCoords);
                 }
                 else
                 {
-                    DrawWorldPolygon(world, ScrPalette.Colour(roadColour), null, default);
+                    DrawWorldPolygon(world, _palette.Colour(roadColour), null, default);
                 }
             }
         }

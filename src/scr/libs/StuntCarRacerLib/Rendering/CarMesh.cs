@@ -21,14 +21,14 @@ public sealed class CarMesh
     // can raise the mesh to sit exactly on the wheel-corner frame.
     private readonly float _bottomOffset;
 
-    public CarMesh()
-        : this(Path.Combine(AppContext.BaseDirectory, "Assets", "Models", "car.obj"))
+    public CarMesh(ScrPalette palette)
+        : this(Path.Combine(AppContext.BaseDirectory, "Assets", "Models", "car.obj"), palette)
     {
     }
 
-    internal CarMesh(string modelPath)
+    internal CarMesh(string modelPath, ScrPalette palette)
     {
-        _model = ModelReader.Read(modelPath, CarPalette.Colours());
+        _model = ModelReader.Read(modelPath, CarPalette.Colours(palette));
         _bottomOffset = -_model.Points.Min(p => p.Coords.Y);
     }
 
