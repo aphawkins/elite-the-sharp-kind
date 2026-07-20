@@ -81,10 +81,10 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public void DrawCircle(Vector2 centre, float radius, uint color)
+    public void DrawCircle(Vector2 centre, float radius, FastColor color)
         => SDLGuard.Execute(() => circleColor(_renderer, (short)centre.X, (short)centre.Y, (short)radius, color));
 
-    public void DrawCircleFilled(Vector2 centre, float radius, uint color)
+    public void DrawCircleFilled(Vector2 centre, float radius, FastColor color)
         => SDLGuard.Execute(() => filledCircleColor(_renderer, (short)centre.X, (short)centre.Y, (short)radius, color));
 
     public void DrawImage(string imageType, Vector2 position)
@@ -153,7 +153,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDL_DestroyTexture(texture);
     }
 
-    public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color)
+    public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
     {
         if (_isDisposed)
         {
@@ -165,7 +165,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderDrawLineF(_renderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y));
     }
 
-    public void DrawPixel(Vector2 position, uint color)
+    public void DrawPixel(Vector2 position, FastColor color)
     {
         if (_isDisposed)
         {
@@ -177,7 +177,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderDrawPointF(_renderer, position.X, position.Y));
     }
 
-    public void DrawPolygon(Vector2[] points, uint lineColor)
+    public void DrawPolygon(Vector2[] points, FastColor lineColor)
     {
         if (points == null)
         {
@@ -192,7 +192,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         DrawLine(points[0], points[^1], lineColor);
     }
 
-    public void DrawPolygonFilled(Vector2[] points, uint faceColor)
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor)
     {
         if (points == null)
         {
@@ -207,7 +207,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         }
     }
 
-    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, uint faceColor)
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
         => DrawPolygonFilled(points, faceColor); // no depth buffer - drawn unsorted
 
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
@@ -237,7 +237,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
     public void DrawPolygonTexturedDepth(Vector2[] points, float[] depths, Vector2[] textureCoords, FastBitmap texture)
         => DrawPolygonTextured(points, textureCoords, texture); // no depth buffer - drawn unsorted
 
-    public void DrawRectangle(Vector2 position, float width, float height, uint color)
+    public void DrawRectangle(Vector2 position, float width, float height, FastColor color)
     {
         if (_isDisposed)
         {
@@ -257,10 +257,10 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderDrawRectF(_renderer, ref rectangle));
     }
 
-    public void DrawRectangleCentre(float y, float width, float height, uint color)
+    public void DrawRectangleCentre(float y, float width, float height, FastColor color)
         => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, color);
 
-    public void DrawRectangleFilled(Vector2 position, float width, float height, uint color)
+    public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color)
     {
         if (_isDisposed)
         {
@@ -280,7 +280,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderFillRectF(_renderer, ref rectangle));
     }
 
-    public void DrawTextCentre(float y, string text, string fontType, uint color)
+    public void DrawTextCentre(float y, string text, string fontType, FastColor color)
     {
         if (_isDisposed || string.IsNullOrWhiteSpace(text))
         {
@@ -304,7 +304,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDL_DestroyTexture(texture);
     }
 
-    public void DrawTextLeft(Vector2 position, string text, string fontType, uint color)
+    public void DrawTextLeft(Vector2 position, string text, string fontType, FastColor color)
     {
         if (_isDisposed || string.IsNullOrWhiteSpace(text))
         {
@@ -328,7 +328,7 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDL_DestroyTexture(texture);
     }
 
-    public void DrawTextRight(Vector2 position, string text, string fontType, uint color)
+    public void DrawTextRight(Vector2 position, string text, string fontType, FastColor color)
     {
         if (_isDisposed || string.IsNullOrWhiteSpace(text))
         {
@@ -352,14 +352,14 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDL_DestroyTexture(texture);
     }
 
-    public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, uint color)
+    public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor color)
     {
         DrawLine(a, b, color);
         DrawLine(b, c, color);
         DrawLine(c, a, color);
     }
 
-    public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, uint color)
+    public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor color)
     {
         if (_isDisposed)
         {
@@ -426,12 +426,13 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         color = ToSDLColor(color),
     };
 
-    private static SDL_Color ToSDLColor(uint color) => new()
+    // ARGB, matching FastColor's decoding - not RGBA.
+    private static SDL_Color ToSDLColor(in FastColor color) => new()
     {
-        r = (byte)((color >> 24) & 0xFF),
-        g = (byte)((color >> 16) & 0xFF),
-        b = (byte)((color >> 8) & 0xFF),
-        a = (byte)(color & 0xFF),
+        r = color.R,
+        g = color.G,
+        b = color.B,
+        a = color.A,
     };
 
     private void Dispose(bool disposing)

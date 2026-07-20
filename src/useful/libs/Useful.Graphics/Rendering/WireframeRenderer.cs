@@ -12,7 +12,7 @@ namespace Useful.Graphics.Rendering;
 // depth-sort chain at all.
 public sealed class WireframeRenderer : IPolygonRenderer
 {
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorWhite;
     private readonly IGraphics _graphics;
 
     public WireframeRenderer(IGraphics graphics, IAssetLocator assetLocator)
@@ -23,7 +23,7 @@ public sealed class WireframeRenderer : IPolygonRenderer
         _colorWhite = PaletteReader.Read(assetLocator.PalettePath)["White"];
     }
 
-    public void Submit(Vector2[] points, uint color, float z)
+    public void Submit(Vector2[] points, FastColor color, float z)
     {
         Guard.ArgumentNull(points);
 

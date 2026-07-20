@@ -3,15 +3,16 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerLib.Tracks;
+using Useful;
 
 namespace StuntCarRacerLib.Rendering;
 
 // A flat-shaded polygon in world track units, drawn depth-sorted with the track.
-public sealed class WorldPolygon(Coord3D[] points, uint colour)
+public sealed class WorldPolygon(Coord3D[] points, FastColor colour)
 {
     private readonly Coord3D[] _points = points;
 
-    public uint Colour { get; } = colour;
+    public FastColor Colour { get; } = colour;
 
     internal ReadOnlySpan<Coord3D> Points => _points;
 }

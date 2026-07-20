@@ -11,7 +11,7 @@ public interface IPolygonRenderer
 {
     // Buffer one polygon for the current frame; z is its flat depth (see
     // the caller's projection code for why flat rather than per-vertex).
-    public void Submit(Vector2[] points, uint color, float z);
+    public void Submit(Vector2[] points, FastColor color, float z);
 
     public void StartFrame();
 

@@ -2,6 +2,6 @@
 
 namespace Useful.Assets.Palettes;
 
-public class Palette(IDictionary<string, uint> dictionary) : Dictionary<string, uint>(dictionary), IPaletteCollection
+public class Palette(IDictionary<string, FastColor> dictionary) : Dictionary<string, FastColor>(dictionary), IPaletteCollection
 {
 }

@@ -2,4 +2,4 @@
 
 namespace Useful.Assets.Palettes;
 
-public interface IPaletteCollection : IDictionary<string, uint>;
+public interface IPaletteCollection : IDictionary<string, FastColor>;

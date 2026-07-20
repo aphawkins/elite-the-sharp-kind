@@ -7,6 +7,7 @@ using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
 using Moq;
+using Useful;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Tests.Planets;
@@ -28,7 +29,7 @@ public sealed class StripedPlanetTests
         planet.Draw();
 
         // Assert
-        mockGraphics.Verify(x => x.DrawPixel(It.IsAny<Vector2>(), It.IsAny<uint>()));
+        mockGraphics.Verify(x => x.DrawPixel(It.IsAny<Vector2>(), It.IsAny<FastColor>()));
     }
 
     [Fact]

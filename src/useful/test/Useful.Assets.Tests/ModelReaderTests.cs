@@ -61,5 +61,5 @@ public class ModelReaderTests
         }
     }
 
-    private sealed class TestPalette : Dictionary<string, uint>, IPaletteCollection;
+    private sealed class TestPalette : Dictionary<string, FastColor>, IPaletteCollection;
 }

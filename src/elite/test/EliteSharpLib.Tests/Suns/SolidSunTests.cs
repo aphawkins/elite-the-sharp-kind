@@ -7,6 +7,7 @@ using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;
 using Moq;
+using Useful;
 using Useful.Fakes.Assets;
 using Useful.Graphics;
 
@@ -32,7 +33,7 @@ public class SolidSunTests
         mockGraphics.Verify(x => x.DrawLine(
             It.IsAny<Vector2>(),
             It.IsAny<Vector2>(),
-            It.Is<uint>(x => x == FakeColor.TestColor)));
+            It.Is<FastColor>(x => x == FakeColor.TestColor)));
     }
 
     [Fact]

@@ -6,6 +6,7 @@
 using System.Numerics;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
+using Useful;
 using Useful.Assets;
 using Useful.Assets.Models;
 using Useful.Assets.Palettes;
@@ -91,7 +92,7 @@ internal sealed class EliteDraw : IEliteDraw
     // ties exactly, and the back-to-front chain order lets the
     // later-submitted decal win the tie, as the painter's draw order
     // always did.
-    public void DrawPolygonFilled(Vector2[] points, uint faceColor, float z)
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z)
         => _shipRenderer.Submit(points, faceColor, z);
 
     public void DrawTextPretty(Vector2 position, float width, string text)

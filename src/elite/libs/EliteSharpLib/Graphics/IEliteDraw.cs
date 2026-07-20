@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Assets.Palettes;
 using Useful.Graphics;
 
@@ -39,7 +40,7 @@ internal interface IEliteDraw
 
     public void DrawObject(IObject obj);
 
-    public void DrawPolygonFilled(Vector2[] points, uint faceColor, float z);
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z);
 
     public void DrawTextPretty(Vector2 position, float width, string text);
 

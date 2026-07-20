@@ -7,6 +7,7 @@ using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
 using Moq;
+using Useful;
 using Useful.Fakes.Assets;
 using Useful.Graphics;
 
@@ -32,7 +33,7 @@ public class SolidPlanetTests
         mockGraphics.Verify(x => x.DrawCircleFilled(
             It.IsAny<Vector2>(),
             It.IsAny<float>(),
-            It.Is<uint>(x => x == FakeColor.TestColor)));
+            It.Is<FastColor>(x => x == FakeColor.TestColor)));
     }
 
     [Fact]

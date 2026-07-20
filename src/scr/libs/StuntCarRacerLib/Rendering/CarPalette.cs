@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Useful.Assets.Palettes;
 
 namespace StuntCarRacerLib.Rendering;
@@ -19,7 +20,7 @@ internal static class CarPalette
     private const int SideOffset = 12;
     private const int TopOffset = 15;
 
-    internal static IPaletteCollection Colours() => new Palette(new Dictionary<string, uint>
+    internal static IPaletteCollection Colours() => new Palette(new Dictionary<string, FastColor>
     {
         ["Wheel"] = ScrPalette.Colour(Track.ScrBaseColour + WheelOffset),
         ["Bottom"] = ScrPalette.Colour(Track.ScrBaseColour + BottomOffset),

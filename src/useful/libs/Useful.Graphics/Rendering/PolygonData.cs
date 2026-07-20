@@ -6,7 +6,7 @@ namespace Useful.Graphics.Rendering;
 
 internal struct PolygonData
 {
-    internal uint Color { get; set; }
+    internal FastColor Color { get; set; }
 
     internal int Next { get; set; }
 

@@ -72,7 +72,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public void DrawCircle(Vector2 centre, float radius, uint color)
+    public void DrawCircle(Vector2 centre, float radius, FastColor color)
     {
         float diameter = radius * 2;
         float x = MathF.Floor(radius);
@@ -108,7 +108,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    public void DrawCircleFilled(Vector2 centre, float radius, uint color)
+    public void DrawCircleFilled(Vector2 centre, float radius, FastColor color)
     {
         float diameter = MathF.Floor(radius) * 2;
         float x = MathF.Floor(radius);
@@ -211,7 +211,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    public void DrawLine(Vector2 lineStart, Vector2 lineEnd, uint color)
+    public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
         => DrawLineInt(
             (int)MathF.Floor(lineStart.X),
             (int)MathF.Floor(lineStart.Y),
@@ -219,7 +219,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(lineEnd.Y),
             color);
 
-    public void DrawPixel(Vector2 position, uint color)
+    public void DrawPixel(Vector2 position, FastColor color)
     {
         // TODO: Optimize bounds checking
         if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)
@@ -230,7 +230,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         _screen.SetPixel((int)position.X, (int)position.Y, color);
     }
 
-    public void DrawPolygon(Vector2[] points, uint lineColor)
+    public void DrawPolygon(Vector2[] points, FastColor lineColor)
     {
         if (points == null)
         {
@@ -245,7 +245,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawLine(points[0], points[^1], lineColor);
     }
 
-    public void DrawPolygonFilled(Vector2[] points, uint faceColor)
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor)
     {
         if (points == null)
         {
@@ -259,7 +259,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, uint faceColor)
+    public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
     {
         if (points == null || depths == null || depths.Length < points.Length)
         {
@@ -330,7 +330,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    public void DrawRectangle(Vector2 position, float width, float height, uint color)
+    public void DrawRectangle(Vector2 position, float width, float height, FastColor color)
         => DrawRectangleInt(
             (int)MathF.Floor(position.X),
             (int)MathF.Floor(position.Y),
@@ -338,10 +338,10 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(height),
             color);
 
-    public void DrawRectangleCentre(float y, float width, float height, uint color)
+    public void DrawRectangleCentre(float y, float width, float height, FastColor color)
         => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, color);
 
-    public void DrawRectangleFilled(Vector2 position, float width, float height, uint color)
+    public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color)
         => DrawRectangleFilledInt(
             (int)MathF.Floor(position.X),
             (int)MathF.Floor(position.Y),
@@ -349,7 +349,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             (int)MathF.Floor(height),
             color);
 
-    public void DrawTextCentre(float y, string text, string fontType, uint color)
+    public void DrawTextCentre(float y, string text, string fontType, FastColor color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -361,7 +361,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmapText, new(x, y));
     }
 
-    public void DrawTextLeft(Vector2 position, string text, string fontType, uint color)
+    public void DrawTextLeft(Vector2 position, string text, string fontType, FastColor color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -372,7 +372,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmapText, position);
     }
 
-    public void DrawTextRight(Vector2 position, string text, string fontType, uint color)
+    public void DrawTextRight(Vector2 position, string text, string fontType, FastColor color)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -383,14 +383,14 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         DrawImage(bitmapText, position - new Vector2(bitmapText.Width, 0));
     }
 
-    public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, uint color)
+    public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor color)
     {
         DrawLine(a, b, color);
         DrawLine(b, c, color);
         DrawLine(c, a, color);
     }
 
-    public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, uint color)
+    public void DrawTriangleFilled(Vector2 a, Vector2 b, Vector2 c, FastColor color)
     {
         // Sort the points so that a.Y <= b.Y <= c.Y
         (a, b, c) = SortPointsByY(a, b, c);

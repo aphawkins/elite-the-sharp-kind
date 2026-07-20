@@ -7,6 +7,7 @@ using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;
 using Moq;
+using Useful;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Tests.Suns;
@@ -30,7 +31,7 @@ public class GradientSunTests
         // Assert
         mockGraphics.Verify(x => x.DrawPixel(
             It.IsAny<Vector2>(),
-            It.IsAny<uint>()));
+            It.IsAny<FastColor>()));
     }
 
     [Fact]

@@ -18,7 +18,7 @@ public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
     private int _startPoly;
     private int _totalPolys;
 
-    public void Submit(Vector2[] points, uint color, float z)
+    public void Submit(Vector2[] points, FastColor color, float z)
     {
         Guard.ArgumentNull(points);
 

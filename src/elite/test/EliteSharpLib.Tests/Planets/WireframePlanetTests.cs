@@ -7,6 +7,7 @@ using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
 using Moq;
+using Useful;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Tests.Planets;
@@ -31,7 +32,7 @@ public class WireframePlanetTests
         mockGraphics.Verify(x => x.DrawCircle(
             It.IsAny<Vector2>(),
             It.IsAny<float>(),
-            It.IsAny<uint>()));
+            It.IsAny<FastColor>()));
     }
 
     [Fact]

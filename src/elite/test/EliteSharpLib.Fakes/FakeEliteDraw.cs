@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Assets.Palettes;
 using Useful.Fakes.Assets;
 using Useful.Graphics;
@@ -36,7 +37,7 @@ internal class FakeEliteDraw : IEliteDraw
 
     public float Top => 0;
 
-    public List<(Vector2[] Points, uint FaceColor, float Z)> DrawnPolygons { get; } = [];
+    public List<(Vector2[] Points, FastColor FaceColor, float Z)> DrawnPolygons { get; } = [];
 
     public void DrawBorder()
     {
@@ -50,7 +51,7 @@ internal class FakeEliteDraw : IEliteDraw
     {
     }
 
-    public void DrawPolygonFilled(Vector2[] points, uint faceColor, float z)
+    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z)
         => DrawnPolygons.Add((points, faceColor, z));
 
     public void DrawTextPretty(Vector2 position, float width, string text)
