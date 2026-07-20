@@ -1,6 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-namespace Useful.Graphics;
+namespace Useful;
 
 public static class BaseColors
 {

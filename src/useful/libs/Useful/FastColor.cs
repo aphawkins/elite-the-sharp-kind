@@ -1,6 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-namespace Useful.Graphics;
+namespace Useful;
 
 public readonly struct FastColor : IEquatable<FastColor>
 {
@@ -34,9 +34,19 @@ public readonly struct FastColor : IEquatable<FastColor>
 
     public byte R { get; }
 
+    // Eases the uint-to-FastColor migration: ARGB literals/fields keep
+    // working across the boundary while call sites move to FastColor.
+    public static implicit operator FastColor(uint argbColor) => FromUInt32(argbColor);
+
+    public static implicit operator uint(in FastColor color) => ToUInt32(color);
+
     public static bool operator !=(in FastColor left, in FastColor right) => !(left == right);
 
     public static bool operator ==(in FastColor left, in FastColor right) => left.Argb == right.Argb;
+
+    public static FastColor FromUInt32(uint argbColor) => new(argbColor);
+
+    public static uint ToUInt32(in FastColor color) => color.Argb;
 
     public override bool Equals(object? obj) => obj is FastColor other && Equals(other);
 
