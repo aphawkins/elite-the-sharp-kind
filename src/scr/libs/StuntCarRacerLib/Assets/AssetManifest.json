@@ -1,4 +1,5 @@
 {
+  "Palette": "palette.json",
   "Images": {
     "Atlas": "atlas.bmp",
     "Menu": "menu.bmp"
