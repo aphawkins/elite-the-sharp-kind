@@ -89,32 +89,6 @@ functionality. Conclusions:
 
 ### Architecture (business-application practices — see architecture.md)
 
-Ship rendering strategy: painter's algorithm and z-buffer as separate
-DI'd strategies, wireframe and filled as separate renderers (follows the
-2026-07-14 z-buffer spike, commit b0d913e — the decal-seam problem it
-introduced is still unresolved (see CHANGELOG; some decals still lose to
-their base face at certain angles) and stays in `ShipBase`'s
-`FindFaceRoots`/`FaceMeanZ` — that logic is shared by every
-`IShipRenderer` via `SubmitFace`'s `z` parameter, painter's included, so
-it didn't move when `ZBufferRenderer` (renamed from `ShipRenderer`,
-2026-07-20, see CHANGELOG) was isolated. `PainterRenderer` also landed
-2026-07-20 but isn't registered in the DI container yet — that's this
-last item's job):
-
-- [ ] [EliteSharpLib] Separate wireframe and filled renderers: today's
-      `ZBufferRenderer.EndFrame`'s `ShipWireframe` branch
-      ([ZBufferRenderer.cs:95-121](../src/elite/libs/EliteSharpLib/Graphics/ZBufferRenderer.cs))
-      currently reuses the same submitted chain for both outline and
-      fill output, even though outlines don't need per-pixel depth;
-      split into a `WireframeRenderer` (outline-only,
-      `Graphics.DrawPolygon`) and a `FilledRenderer` (solid faces via
-      whichever of `ZBufferRenderer`/`PainterRenderer` is selected), and
-      register the chosen combination from `ConfigSettings.ShipWireframe`
-      plus a new render-mode setting so both algorithms can be toggled
-      and compared (e.g. via `SettingsView`) without code changes. Extend
-      `VisualDumpTests` (added 2026-07-14) to assert both depth-sort
-      strategies render identically for non-decal geometry.
-
 - [ ] [StuntCarRacerLib] Give SCR its own persisted settings: unlike
       Elite (`ConfigFile`/`ConfigSettings`/`IConfigWriter`,
       [src/elite/libs/EliteSharpLib/Config](../src/elite/libs/EliteSharpLib/Config)),

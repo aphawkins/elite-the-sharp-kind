@@ -3,34 +3,26 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Useful.Assets;
-using Useful.Assets.Palettes;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Graphics;
 
 // The pre-2026-07-14-spike behaviour: the back-to-front _polyChain alone
 // decides occlusion via a plain (non-depth-tested) fill, unlike
-// ZBufferRenderer's per-pixel z-buffer test. Restores the original
-// painter's algorithm as a selectable IShipRenderer without touching
-// ShipBase's face-transform code (FaceMeanZ still feeds SubmitFace's z
-// the same way).
+// ZBufferRenderer's per-pixel z-buffer test — solid faces only, wireframe
+// is a separate WireframeRenderer selected instead of this at
+// DI-registration time. Restores the original painter's algorithm as a
+// selectable IShipRenderer without touching ShipBase's face-transform
+// code (FaceMeanZ still feeds SubmitFace's z the same way).
 internal sealed class PainterRenderer : IShipRenderer
 {
     private const int MAXPOLYS = 100;
-    private readonly uint _colorWhite;
-    private readonly GameState _gameState;
     private readonly IGraphics _graphics;
     private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
     private int _startPoly;
     private int _totalPolys;
 
-    internal PainterRenderer(GameState gameState, IGraphics graphics, IAssetLocator assetLocator)
-    {
-        _gameState = gameState;
-        _graphics = graphics;
-        _colorWhite = PaletteReader.Read(assetLocator.PalettePath)["White"];
-    }
+    internal PainterRenderer(IGraphics graphics) => _graphics = graphics;
 
     public void SubmitFace(Vector2[] points, uint faceColor, float z)
     {
@@ -96,22 +88,13 @@ internal sealed class PainterRenderer : IShipRenderer
 
         for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
         {
-            uint color = _gameState.Config.ShipWireframe ? _colorWhite : _polyChain[i].FaceColor;
-
             if (_polyChain[i].PointList.Length == 2)
             {
-                _graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], color);
+                _graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], _polyChain[i].FaceColor);
                 continue;
             }
 
-            if (_gameState.Config.ShipWireframe)
-            {
-                _graphics.DrawPolygon(_polyChain[i].PointList, color);
-            }
-            else
-            {
-                _graphics.DrawPolygonFilled(_polyChain[i].PointList, color);
-            }
+            _graphics.DrawPolygonFilled(_polyChain[i].PointList, _polyChain[i].FaceColor);
         }
     }
 }

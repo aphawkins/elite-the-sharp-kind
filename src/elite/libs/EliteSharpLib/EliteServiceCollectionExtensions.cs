@@ -42,10 +42,17 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(_ => new PlayerShip());
         services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
         services.AddSingleton(sp => new PlanetController(sp.GetRequiredService<GameState>()));
-        services.AddSingleton<IShipRenderer>(sp => new ZBufferRenderer(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IGraphics>(),
-            sp.GetRequiredService<IAssetLocator>()));
+        services.AddSingleton<IShipRenderer>(sp =>
+        {
+            ConfigSettings config = sp.GetRequiredService<GameState>().Config;
+            IGraphics graphics = sp.GetRequiredService<IGraphics>();
+
+            return config.ShipWireframe
+                ? new WireframeRenderer(graphics, sp.GetRequiredService<IAssetLocator>())
+                : config.ShipRenderMode == ShipRenderMode.Painter
+                    ? new PainterRenderer(graphics)
+                    : new ZBufferRenderer(graphics);
+        });
         services.AddSingleton<IEliteDraw>(sp => new EliteDraw(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IGraphics>(),

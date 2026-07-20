@@ -28,7 +28,7 @@ public class SunBenchmarks : IDisposable
         Useful.Abstraction.ScreenManager<Views.Screen, Views.IView> views = new(keyboard);
         GameState gameState = new(views);
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
-        ZBufferRenderer shipRenderer = new(gameState, _graphics, assetLocator);
+        ZBufferRenderer shipRenderer = new(_graphics);
         EliteDraw draw = new(gameState, _graphics, assetLocator, shipRenderer);
         _gradientSun = new(draw);
         _solidSun = new(draw);

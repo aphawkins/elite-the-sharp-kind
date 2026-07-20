@@ -28,7 +28,7 @@ public class VisualDumpTests
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
         GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
-        ZBufferRenderer shipRenderer = new(gameState, graphics, AssetLocator.Create());
+        ZBufferRenderer shipRenderer = new(graphics);
         EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer);
         ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw);
 
@@ -99,6 +99,54 @@ public class VisualDumpTests
         krait.Location = new(10, 5, 430, 0);
         krait.Rotmat = Matrix4x4.CreateRotationY(-1.1f) * Matrix4x4.CreateRotationX(0.6f);
         RenderAndSave("frame_interpenetrate.bmp", cobra, krait);
+    }
+
+    // Painter's and z-buffer only disagree on decal/base-face ties (the
+    // open decal-seam defect, see CHANGELOG); a decal-free model rendered
+    // alone, at an angle with no self-occlusion ambiguity, should render
+    // identically either way.
+    [Fact]
+    public void PainterAndZBufferRenderIdenticallyForNonDecalGeometry()
+    {
+        (uint[] Pixels, int Width, int Height) RenderAsteroid(Func<IGraphics, IShipRenderer> createRenderer)
+        {
+            FastBitmap? lastFrame = null;
+            using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
+            IShipRenderer shipRenderer = createRenderer(graphics);
+            GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
+            EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer);
+            ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw);
+
+            IShip asteroid = factory.CreateShip("Asteroid");
+            asteroid.Location = new(0, 0, 300, 0);
+            asteroid.Rotmat = Matrix4x4.CreateRotationY(0.9f) * Matrix4x4.CreateRotationX(0.4f);
+
+            graphics.Clear();
+            draw.RenderStart();
+            asteroid.Draw();
+            draw.RenderEnd();
+            graphics.ScreenUpdate();
+
+            Assert.NotNull(lastFrame);
+            int width = lastFrame.Width;
+            int height = lastFrame.Height;
+            uint[] pixels = new uint[width * height];
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    pixels[(y * width) + x] = lastFrame.GetPixel(x, y);
+                }
+            }
+
+            return (pixels, width, height);
+        }
+
+        (uint[] painterPixels, int width, int height) = RenderAsteroid(g => new PainterRenderer(g));
+        (uint[] depthBufferPixels, _, _) = RenderAsteroid(g => new ZBufferRenderer(g));
+
+        Assert.Equal(width * height, painterPixels.Length);
+        Assert.Equal(painterPixels, depthBufferPixels);
     }
 
     private static void SaveBmp(FastBitmap bitmap, string path)

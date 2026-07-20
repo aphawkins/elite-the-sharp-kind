@@ -7,6 +7,41 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Selectable ship render mode, 2026-07-20)
+
+- Last of the ship-rendering-strategy items: `ZBufferRenderer` and
+  `PainterRenderer` are now purely filled renderers — the `ShipWireframe`
+  branch (and the `GameState`/`IAssetLocator` dependencies it needed for
+  the white outline colour) is gone from both, so `ZBufferRenderer`'s
+  constructor is just `(IGraphics)` now and `PainterRenderer`'s
+  unchanged. A new `WireframeRenderer` (`Graphics/WireframeRenderer.cs`)
+  handles outline mode instead: since line order doesn't affect the
+  result, it draws each submitted face immediately in `SubmitFace`
+  rather than buffering a depth-sort chain at all. A new
+  `ConfigSettings.ShipRenderMode` (`ShipRenderMode.Painter`/`ZBuffer`,
+  defaulting `ZBuffer` — the current behaviour) selects between the two
+  filled strategies; `EliteServiceCollectionExtensions`'s `IShipRenderer`
+  registration now picks `WireframeRenderer`, `PainterRenderer`, or
+  `ZBufferRenderer` based on `ShipWireframe`/`ShipRenderMode` at
+  composition time, same as `Enum.IsDefined` validation as the other mode
+  enums in `ConfigFile.IsValid`.
+
+  Skipped the literal `FilledRenderer` wrapper the backlog item named:
+  `ZBufferRenderer`/`PainterRenderer`, once stripped of their wireframe
+  branch, already fully implement `IShipRenderer` as pure filled
+  renderers, so a forwarding decorator would have added a class with no
+  behaviour of its own. Also skipped a `SettingsView` toggle for the new
+  setting — `ShipWireframe` itself has no in-game UI today either, so the
+  config file remains the only way to switch (still satisfies "toggle
+  without code changes").
+
+  Added `VisualDumpTests.PainterAndZBufferRenderIdenticallyForNonDecalGeometry`,
+  rendering a decal-free `Asteroid` model through both filled strategies
+  and asserting pixel-for-pixel equality (passes exactly, no tolerance
+  needed) — confirms the split didn't change either algorithm's actual
+  behaviour. Also visually spot-checked `WireframeRenderer`'s output
+  (a clean white ship outline, as expected).
+
 ### Changed (Z-buffer ship renderer renamed, 2026-07-20)
 
 - Third of the ship-rendering-strategy items: `ShipRenderer` (the

@@ -3,37 +3,28 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using Useful.Assets;
-using Useful.Assets.Palettes;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Graphics;
 
 // The 2026-07-14 z-buffer spike's behaviour (per-pixel depth test via
-// Graphics.DrawPolygonFilledDepth), plus the still-unsplit ShipWireframe
-// branch (the wireframe/filled item is separate). The face-root
-// decal-inheritance z key (FindFaceRoots/FaceMeanZ) that makes the
-// per-pixel test tie correctly for decals stays in ShipBase — it's
-// submitted through IShipRenderer.SubmitFace's z parameter the same way
-// for every implementation, painter's included, so it isn't
-// z-buffer-specific despite fixing a z-buffer-only defect (the open
-// decal-seam issue, see CHANGELOG).
+// Graphics.DrawPolygonFilledDepth): solid faces only, wireframe is a
+// separate WireframeRenderer selected instead of this at DI-registration
+// time. The face-root decal-inheritance z key (FindFaceRoots/FaceMeanZ)
+// that makes the per-pixel test tie correctly for decals stays in
+// ShipBase — it's submitted through IShipRenderer.SubmitFace's z
+// parameter the same way for every implementation, painter's included,
+// so it isn't z-buffer-specific despite fixing a z-buffer-only defect
+// (the open decal-seam issue, see CHANGELOG).
 internal sealed class ZBufferRenderer : IShipRenderer
 {
     private const int MAXPOLYS = 100;
-    private readonly uint _colorWhite;
-    private readonly GameState _gameState;
     private readonly IGraphics _graphics;
     private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
     private int _startPoly;
     private int _totalPolys;
 
-    internal ZBufferRenderer(GameState gameState, IGraphics graphics, IAssetLocator assetLocator)
-    {
-        _gameState = gameState;
-        _graphics = graphics;
-        _colorWhite = PaletteReader.Read(assetLocator.PalettePath)["White"];
-    }
+    internal ZBufferRenderer(IGraphics graphics) => _graphics = graphics;
 
     public void SubmitFace(Vector2[] points, uint faceColor, float z)
     {
@@ -90,11 +81,7 @@ internal sealed class ZBufferRenderer : IShipRenderer
     {
         _startPoly = 0;
         _totalPolys = 0;
-
-        if (!_gameState.Config.ShipWireframe)
-        {
-            _graphics.ClearDepth();
-        }
+        _graphics.ClearDepth();
     }
 
     public void EndFrame()
@@ -106,22 +93,13 @@ internal sealed class ZBufferRenderer : IShipRenderer
 
         for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
         {
-            uint color = _gameState.Config.ShipWireframe ? _colorWhite : _polyChain[i].FaceColor;
-
             if (_polyChain[i].PointList.Length == 2)
             {
-                _graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], color);
+                _graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], _polyChain[i].FaceColor);
                 continue;
             }
 
-            if (_gameState.Config.ShipWireframe)
-            {
-                _graphics.DrawPolygon(_polyChain[i].PointList, color);
-            }
-            else
-            {
-                _graphics.DrawPolygonFilledDepth(_polyChain[i].PointList, _polyChain[i].Depths, color);
-            }
+            _graphics.DrawPolygonFilledDepth(_polyChain[i].PointList, _polyChain[i].Depths, _polyChain[i].FaceColor);
         }
     }
 }

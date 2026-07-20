@@ -87,5 +87,6 @@ internal sealed class ConfigFile : IConfigWriter
     private static bool IsValid(ConfigSettings config) => config.Fps > 0 &&
         Enum.IsDefined(config.PlanetDescriptions) &&
         Enum.IsDefined(config.PlanetStyle) &&
+        Enum.IsDefined(config.ShipRenderMode) &&
         Enum.IsDefined(config.SunStyle);
 }
