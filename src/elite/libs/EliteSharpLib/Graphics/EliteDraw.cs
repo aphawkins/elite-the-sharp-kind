@@ -16,20 +16,18 @@ namespace EliteSharpLib.Graphics;
 
 internal sealed class EliteDraw : IEliteDraw
 {
-    private const int MAXPOLYS = 100;
     private readonly uint _colorGold;
     private readonly uint _colorWhite;
     private readonly uint _colorYellow;
     private readonly GameState _gameState;
     private readonly Vector4[] _pointList = new Vector4[100];
-    private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
-    private int _startPoly;
-    private int _totalPolys;
+    private readonly IShipRenderer _shipRenderer;
 
-    internal EliteDraw(GameState gameState, IGraphics graphics, IAssetLocator assetLocator)
+    internal EliteDraw(GameState gameState, IGraphics graphics, IAssetLocator assetLocator, IShipRenderer shipRenderer)
     {
         _gameState = gameState;
         Graphics = graphics;
+        _shipRenderer = shipRenderer;
         Palette = PaletteReader.Read(assetLocator.PalettePath);
         _colorGold = Palette["Gold"];
         _colorWhite = Palette["White"];
@@ -93,57 +91,7 @@ internal sealed class EliteDraw : IEliteDraw
     // later-submitted decal win the tie, as the painter's draw order
     // always did.
     public void DrawPolygonFilled(Vector2[] points, uint faceColor, float z)
-    {
-        int i;
-
-        if (_totalPolys == MAXPOLYS)
-        {
-            return;
-        }
-
-        int x = _totalPolys;
-        _totalPolys++;
-
-        _polyChain[x].FaceColor = faceColor;
-        _polyChain[x].Z = z;
-        _polyChain[x].Next = -1;
-        _polyChain[x].PointList = new Vector2[points.Length];
-        _polyChain[x].Depths = new float[points.Length];
-
-        for (i = 0; i < points.Length; i++)
-        {
-            ////Debug.Assert(points[i].X >= 0 && points[i].X <= Graphics.ScreenWidth, "X should be within the screen bounds");
-            ////Debug.Assert(points[i].Y >= 0 && points[i].Y <= Graphics.ScreenHeight, "Y should be within the screen bounds");
-            _polyChain[x].PointList[i] = points[i];
-            _polyChain[x].Depths[i] = z;
-        }
-
-        if (x == 0)
-        {
-            return;
-        }
-
-        if (z > _polyChain[_startPoly].Z)
-        {
-            _polyChain[x].Next = _startPoly;
-            _startPoly = x;
-            return;
-        }
-
-        for (i = _startPoly; _polyChain[i].Next != -1; i = _polyChain[i].Next)
-        {
-            int nx = _polyChain[i].Next;
-
-            if (z > _polyChain[nx].Z)
-            {
-                _polyChain[i].Next = x;
-                _polyChain[x].Next = nx;
-                return;
-            }
-        }
-
-        _polyChain[i].Next = x;
-    }
+        => _shipRenderer.SubmitFace(points, faceColor, z);
 
     public void DrawTextPretty(Vector2 position, float width, string text)
     {
@@ -236,44 +184,9 @@ internal sealed class EliteDraw : IEliteDraw
         obj.Draw();
     }
 
-    public void RenderEnd()
-    {
-        if (_totalPolys == 0)
-        {
-            return;
-        }
+    public void RenderEnd() => _shipRenderer.EndFrame();
 
-        for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
-        {
-            uint color = _gameState.Config.ShipWireframe ? _colorWhite : _polyChain[i].FaceColor;
-
-            if (_polyChain[i].PointList.Length == 2)
-            {
-                Graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], color);
-                continue;
-            }
-
-            if (_gameState.Config.ShipWireframe)
-            {
-                Graphics.DrawPolygon(_polyChain[i].PointList, color);
-            }
-            else
-            {
-                Graphics.DrawPolygonFilledDepth(_polyChain[i].PointList, _polyChain[i].Depths, color);
-            }
-        }
-    }
-
-    public void RenderStart()
-    {
-        _startPoly = 0;
-        _totalPolys = 0;
-
-        if (!_gameState.Config.ShipWireframe)
-        {
-            Graphics.ClearDepth();
-        }
-    }
+    public void RenderStart() => _shipRenderer.StartFrame();
 
     private void DrawExplosion(IShip ship)
     {

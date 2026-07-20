@@ -7,6 +7,31 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Ship-rendering strategy abstraction, 2026-07-20)
+
+- First of the ship-rendering-strategy items (backlog): a new internal
+  `IShipRenderer` (`SubmitFace`/`StartFrame`/`EndFrame`,
+  `Graphics/IShipRenderer.cs`) isolates the depth-sort/fill algorithm
+  from `EliteDraw`, which previously hardcoded the back-to-front
+  `_polyChain` chain and the `ShipWireframe` render-mode branch directly
+  in `DrawPolygonFilled`/`RenderStart`/`RenderEnd` — the same fields the
+  2026-07-14 z-buffer spike edited in place rather than toggled. Today's
+  exact combined behaviour (chain, z-buffer fill, wireframe branch) moved
+  unmodified into a new `ShipRenderer : IShipRenderer`
+  (`Graphics/ShipRenderer.cs`); `PolygonData` moved into the same
+  `Graphics` namespace/folder since it's now `ShipRenderer`-only.
+  `EliteDraw`'s constructor takes an injected `IShipRenderer` and its
+  three methods just delegate to it now. Registered as a singleton in
+  `EliteServiceCollectionExtensions.AddEliteMain`, resolved before
+  `EliteDraw`. This is pure extraction, not a split — the actual
+  painter's/z-buffer/wireframe/filled separation is the three remaining
+  backlog items. `PlanetBenchmarks`, `SunBenchmarks` and
+  `VisualDumpTests` construct `EliteDraw` directly (not via DI) and
+  needed a `ShipRenderer` passed in too; visually spot-checked its
+  `frame_interpenetrate.bmp` dump (the two-hulls-intersecting per-pixel
+  depth test) and it renders correctly, though this wasn't a pixel diff
+  against a pre-change baseline.
+
 ### Added (Injectable AudioController options, 2026-07-20)
 
 - `AudioController`'s `_musicOn`/`_effectsOn` were hardcoded `true` behind

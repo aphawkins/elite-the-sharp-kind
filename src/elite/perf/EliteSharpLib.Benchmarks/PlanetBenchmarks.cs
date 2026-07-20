@@ -31,7 +31,8 @@ public class PlanetBenchmarks : IDisposable
         Useful.Abstraction.ScreenManager<Views.Screen, Views.IView> views = new(keyboard);
         GameState gameState = new(views);
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
-        EliteDraw draw = new(gameState, _graphics, assetLocator);
+        ShipRenderer shipRenderer = new(gameState, _graphics, assetLocator);
+        EliteDraw draw = new(gameState, _graphics, assetLocator, shipRenderer);
         _wireframePlanet = new(draw);
         _solidPlanet = new(draw);
         _fractalPlanet = new(draw, 12345);
