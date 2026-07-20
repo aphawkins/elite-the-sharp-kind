@@ -9,11 +9,16 @@ using Useful.Graphics;
 
 namespace EliteSharpLib.Graphics;
 
-// Today's combined depth-sort/fill behaviour (painter's-order chain plus
-// the 2026-07-14 z-buffer spike, and the ShipWireframe branch), moved out
-// of EliteDraw unmodified. Splitting this into separate painter/z-buffer/
-// wireframe/filled IShipRenderer implementations is the follow-up work.
-internal sealed class ShipRenderer : IShipRenderer
+// The 2026-07-14 z-buffer spike's behaviour (per-pixel depth test via
+// Graphics.DrawPolygonFilledDepth), plus the still-unsplit ShipWireframe
+// branch (the wireframe/filled item is separate). The face-root
+// decal-inheritance z key (FindFaceRoots/FaceMeanZ) that makes the
+// per-pixel test tie correctly for decals stays in ShipBase — it's
+// submitted through IShipRenderer.SubmitFace's z parameter the same way
+// for every implementation, painter's included, so it isn't
+// z-buffer-specific despite fixing a z-buffer-only defect (the open
+// decal-seam issue, see CHANGELOG).
+internal sealed class ZBufferRenderer : IShipRenderer
 {
     private const int MAXPOLYS = 100;
     private readonly uint _colorWhite;
@@ -23,7 +28,7 @@ internal sealed class ShipRenderer : IShipRenderer
     private int _startPoly;
     private int _totalPolys;
 
-    internal ShipRenderer(GameState gameState, IGraphics graphics, IAssetLocator assetLocator)
+    internal ZBufferRenderer(GameState gameState, IGraphics graphics, IAssetLocator assetLocator)
     {
         _gameState = gameState;
         _graphics = graphics;

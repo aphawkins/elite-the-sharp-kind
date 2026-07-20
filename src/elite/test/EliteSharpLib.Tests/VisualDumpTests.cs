@@ -28,7 +28,7 @@ public class VisualDumpTests
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
         GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
-        ShipRenderer shipRenderer = new(gameState, graphics, AssetLocator.Create());
+        ZBufferRenderer shipRenderer = new(gameState, graphics, AssetLocator.Create());
         EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer);
         ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw);
 

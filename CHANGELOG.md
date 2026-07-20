@@ -5,6 +5,30 @@ is based on [Keep a Changelog](https://keepachangelog.com/); the project does
 not yet cut versioned releases, so everything sits under Unreleased.
 Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
+## [Unreleased]
+
+### Changed (Z-buffer ship renderer renamed, 2026-07-20)
+
+- Third of the ship-rendering-strategy items: `ShipRenderer` (the
+  combined depth-sort/fill/wireframe behaviour extracted from `EliteDraw`
+  earlier today) renamed to `ZBufferRenderer`, matching the
+  `PainterRenderer` sibling added alongside it — no behaviour change,
+  same registration in `EliteServiceCollectionExtensions.AddEliteMain`
+  and the same direct construction in `PlanetBenchmarks`,
+  `SunBenchmarks` and `VisualDumpTests`. The backlog item also asked to
+  carry `ShipBase`'s face-root decal-inheritance logic
+  (`FindFaceRoots`/`FaceMeanZ`) into this class; that logic stayed in
+  `ShipBase` instead, deliberately deviating from the item's literal
+  text — it computes the `z` value every `IShipRenderer.SubmitFace` call
+  receives regardless of which strategy is active (`PainterRenderer`
+  depends on the exact same computation), so moving it into
+  `ZBufferRenderer` specifically would make `ShipBase` need to know which
+  renderer is currently selected to compute a face's depth key, which
+  defeats the point of the `IShipRenderer` abstraction landed earlier
+  today. The open decal-seam defect this logic has (some decals lose to
+  their base face at certain angles, from the 2026-07-14 z-buffer spike)
+  is unchanged and untouched by this rename.
+
 ### Added (Painter's-algorithm ship renderer, 2026-07-20)
 
 - Second of the ship-rendering-strategy items: a new

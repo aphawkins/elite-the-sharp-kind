@@ -11,9 +11,10 @@ namespace EliteSharpLib.Graphics;
 
 // The pre-2026-07-14-spike behaviour: the back-to-front _polyChain alone
 // decides occlusion via a plain (non-depth-tested) fill, unlike
-// ShipRenderer's per-pixel z-buffer test. Restores the original painter's
-// algorithm as a selectable IShipRenderer without touching ShipBase's
-// face-transform code (FaceMeanZ still feeds SubmitFace's z the same way).
+// ZBufferRenderer's per-pixel z-buffer test. Restores the original
+// painter's algorithm as a selectable IShipRenderer without touching
+// ShipBase's face-transform code (FaceMeanZ still feeds SubmitFace's z
+// the same way).
 internal sealed class PainterRenderer : IShipRenderer
 {
     private const int MAXPOLYS = 100;

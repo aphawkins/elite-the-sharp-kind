@@ -15,7 +15,8 @@ internal struct PolygonData
     internal Vector2[] PointList { get; set; }
 
     // Depth per point, parallel to PointList, for the z-buffered fill.
-    // ShipRenderer fills every entry with the face's flat Z key.
+    // ZBufferRenderer fills every entry with the face's flat Z key.
+    // PainterRenderer leaves this field unused.
     internal float[] Depths { get; set; }
 
     internal float Z { get; set; }
