@@ -93,17 +93,6 @@ Composition root (split 2026-07-14 from the original [LARGE] item; do the
 first four in order — each builds on the previous; the fifth is
 independent):
 
-- [ ] [StuntCarRacer] Add a DI container to SCR's `Program.Main`
-      ([SDLProgram.cs:24-66](../src/scr/apps/StuntCarRacer/SDLProgram.cs)):
-      reference `Microsoft.Extensions.DependencyInjection` (no project in
-      the repo references it yet), build a `ServiceCollection` that
-      registers `SoftwareAbstraction` as `IAbstraction` (container-owned,
-      disposed via the provider), forwards `IGraphics`/`ISound`/`IKeyboard`
-      from `IAbstraction`, registers the existing Serilog
-      `ILoggerFactory`, and registers `StuntCarRacerMain` as `IGame`;
-      resolve `IGame` and run. SCR is the smaller app — this establishes
-      the pattern Elite then copies. `StuntCarRacerMain`'s own internals
-      stay as-is (its screens item below is separate).
 - [ ] [EliteSharp] Mirror the SCR composition root in Elite's
       `Program.Main` (`// TODO: Use DI` at
       [SDLProgram.cs:58](../src/elite/apps/EliteSharp/SDLProgram.cs)):
@@ -112,8 +101,18 @@ independent):
       [EliteMain.cs:65](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
       the user-data path + `ConfigFile`/`ConfigSettings`
       ([EliteMain.cs:91-97](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
-      and `EliteMain` as `IGame`. `EliteMain`'s constructor keeps building
-      the domain graph at this stage — it just receives
+      and `EliteMain` as itself (and as `IGame`). Note `ConfigFile`,
+      `IConfigWriter` and `ConfigSettings` are all `internal` to
+      `EliteSharpLib` with no `InternalsVisibleTo` for the `EliteSharp`
+      app project, so `Program.Main` can't reference them to register
+      directly — either make them `public` or add a small
+      `EliteSharpLib`-side registrar (e.g. `AddEliteConfig`) that
+      `Program.Main` calls instead of registering the types itself.
+      Resolve the concrete `EliteMain` and call `.Run()` (same as SCR,
+      `IGame` has no `Run` — `Run()` wraps `GameHost.Run(_abstraction,
+      this, GameTickRate, _gameState.Config.Fps)` using the `private`
+      `GameTickRate`). `EliteMain`'s constructor keeps building the
+      domain graph at this stage — it just receives
       `AssetLocator`/`ConfigFile` instead of creating them.
 - [ ] [EliteSharpLib] Move Elite's domain services into the container:
       register `GameState`, `PlayerShip`, `Trade`, `PlanetController`,
@@ -126,7 +125,7 @@ independent):
       (`ShipFactory.Create`, `EliteDraw`'s palette read for `_colorText`)
       — they interact with the separate "remove two-phase construction"
       item below.
-- [ ] [EliteSharpLib] Move the ~24 view registrations out of `EliteMain`
+- [ ] [EliteSharpLib] Move the ~25 view registrations out of `EliteMain`
       ([EliteMain.cs:113-141](../src/elite/libs/EliteSharpLib/EliteMain.cs)):
       register each `IView` in the container and populate
       `ScreenManager<Screen, IView>` from a registrar (e.g. an
@@ -229,7 +228,7 @@ in any order):
       those items should use the logger this infrastructure provides.
 - [ ] [StuntCarRacerLib] Give SCR screens their real dependencies: every
       screen currently receives the whole `StuntCarRacerMain`
-      (`new RaceScreen(this)`, [StuntCarRacerMain.cs:82-85](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs))
+      (`new RaceScreen(this)`, [StuntCarRacerMain.cs:84-89](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs))
       and reaches through it service-locator style; pass what each screen
       actually uses (`CarPhysics`, `IKeyboard`, `SceneCamera`, ...) so
       dependencies are visible in signatures and screens are unit-testable.
@@ -242,10 +241,15 @@ in any order):
 - [ ] [Useful] Remove two-phase construction: `SDLSound` must have
       `Initialize(assetLocator)` called after construction (temporal
       coupling — a forgotten call is a runtime `KeyNotFoundException`), and
-      `SoftwareGraphics.Create`/`ShipFactory.Create` mutate internal
-      settable properties post-construction; fold initialisation into
+      `SoftwareGraphics.Create` populates its `Fonts`/`Images` via an
+      object initializer onto `internal`-settable properties
+      ([SoftwareGraphics.cs:35-37](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)),
+      leaving them mutable by any other code in the assembly after
+      construction rather than truly immutable; fold initialisation into
       constructors/factory parameters so no instance is observable
-      half-built.
+      half-built. (`ShipFactory.Create` sets a `private` field the same
+      way, but since nothing outside the class can reach it afterwards
+      this isn't the same risk — lower priority than the other two.)
 - [ ] [EliteSharpLib] Replace the static crypto RNG: `RNG.Random` delegates
       every call to `RandomNumberGenerator.GetInt32`
       ([RNG.cs:98](../src/elite/libs/EliteSharpLib/RNG.cs)) — orders of magnitude
@@ -258,14 +262,14 @@ in any order):
 
 ### Defects and gaps
 
-- [ ] [Useful.Graphics] `DrawTextCentre`/`DrawTextLeft`/`DrawTextRight` wrap the bitmap from `GenerateTextBitmap` in `using` ([SoftwareGraphics.cs:292-324](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)), but that bitmap is stored in `_textCache` and returned again on the next call — cached bitmaps are disposed (GC pin freed) while still cached, working today only because text drawing never touches `BitmapHandle`; remove the `using`s and dispose cached bitmaps only when the cache is cleared/disposed.
-- [ ] [Useful.Graphics] `_textCache` grows without bound ([SoftwareGraphics.cs:13, 589-648](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — every distinct (font, colour, text) string caches a ~KB-to-tens-of-KB bitmap forever, and Elite renders ever-changing strings ("1234.5 Credits" per bounty, countdowns), so long sessions leak memory steadily; add an eviction policy (e.g. cap entry count) or key frequently-changing text out of the cache.
-- [ ] [Useful.Graphics] `SoftwareGraphics.SetClipRegion` is an empty no-op ([SoftwareGraphics.cs:368-370](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) while Elite actively relies on clip regions (`EliteDraw.SetViewClipRegion`) — in the primary (software) renderer, view drawing can overwrite the border/scanner area; implement rectangular clipping in the software rasterizer (all draw calls already funnel through `DrawPixel`/`SetPixel`) or remove it from `IGraphics` and clip in game code (an interface member the primary implementation can't honour violates the architecture doc's interface rules).
-- [ ] [Useful.SDL] `ToSDLColor` decodes the colour as RGBA (`r = color >> 24`) ([SDLGraphics.cs:417-423](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) while every colour in the codebase is ARGB (`FastColor`, palettes) and `SetRenderDrawColor` in the same file decodes ARGB — text and filled triangles in the SDL backend get alpha interpreted as red; make `ToSDLColor` decode ARGB like `FastColor`.
-- [ ] [EliteSharpLib] `EliteMain.Update` wraps `UpdateConsole`/`HandleInput` in `catch (Exception) { Debug.WriteLine(...) }` ([EliteMain.cs:262-272](../src/elite/libs/EliteSharpLib/EliteMain.cs)) — in Release builds every input/console error is silently swallowed each tick; remove the catch-all (or catch the specific expected exception type and surface it via the logger), per the architecture doc's "never catch-all on the frame path".
+- [ ] [Useful.Graphics] `DrawTextCentre`/`DrawTextLeft`/`DrawTextRight` wrap the bitmap from `GenerateTextBitmap` in `using` ([SoftwareGraphics.cs:352-384](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)), but that bitmap is stored in `_textCache` and returned again on the next call — cached bitmaps are disposed (GC pin freed) while still cached, working today only because text drawing never touches `BitmapHandle`; remove the `using`s and dispose cached bitmaps only when the cache is cleared/disposed.
+- [ ] [Useful.Graphics] `_textCache` grows without bound ([SoftwareGraphics.cs:13, 852-909](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — every distinct (font, colour, text) string caches a ~KB-to-tens-of-KB bitmap forever, and Elite renders ever-changing strings ("1234.5 Credits" per bounty, countdowns), so long sessions leak memory steadily; add an eviction policy (e.g. cap entry count) or key frequently-changing text out of the cache.
+- [ ] [Useful.Graphics] `SoftwareGraphics.SetClipRegion` is an empty no-op ([SoftwareGraphics.cs:428-430](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) while Elite actively relies on clip regions (`EliteDraw.SetViewClipRegion`) — in the primary (software) renderer, view drawing can overwrite the border/scanner area; implement rectangular clipping in the software rasterizer (all draw calls already funnel through `DrawPixel`/`SetPixel`) or remove it from `IGraphics` and clip in game code (an interface member the primary implementation can't honour violates the architecture doc's interface rules).
+- [ ] [Useful.SDL] `ToSDLColor` decodes the colour as RGBA (`r = color >> 24`) ([SDLGraphics.cs:429-435](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) while every colour in the codebase is ARGB (`FastColor`, palettes) and `SetRenderDrawColor` in the same file decodes ARGB — text and filled triangles in the SDL backend get alpha interpreted as red; make `ToSDLColor` decode ARGB like `FastColor`.
+- [ ] [EliteSharpLib] `EliteMain.Update` wraps `UpdateConsole`/`HandleInput` in `catch (Exception) { Debug.WriteLine(...) }` ([EliteMain.cs:259-267](../src/elite/libs/EliteSharpLib/EliteMain.cs)) — in Release builds every input/console error is silently swallowed each tick; remove the catch-all (or catch the specific expected exception type and surface it via the logger), per the architecture doc's "never catch-all on the frame path".
 - [ ] [EliteSharpLib] `SaveFile.LoadCommander` catches, resets to Jameson, then `throw;`s ([SaveFile.cs:70-75](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)), contradicting its bool-return contract, and `SaveStateToGameState` indexes `GalaxySeed[0..5]`, `CurrentCargo[i]`, `Lasers[0..3]` and `Enum.Parse`s strings without validation ([SaveFile.cs:167-208](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) — a truncated or hand-edited `.cmdr` file throws instead of showing the view's "Error Loading Commander!" path; validate the deserialized `SaveState` and return false on any failure.
 - [ ] [EliteSharpLib] `SaveFile.SaveCommander` builds the path as `save.CommanderName + ".cmdr"` from raw user input ([SaveFile.cs:80-92](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) — invalid filename characters throw and path separators escape the save directory; sanitize the name (e.g. `Path.GetInvalidFileNameChars`) before using it as a filename (pairs with the user-data-location item above).
-- [ ] [EliteSharpLib] `EliteDraw.DrawTextPretty` decrements `i` looking for a space/comma/period with no lower bound ([EliteDraw.cs:136-157](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)) — a word longer than the line width underflows the index and throws; bound the scan at `previous` and hard-break long words.
+- [ ] [EliteSharpLib] `EliteDraw.DrawTextPretty` decrements `i` looking for a space/comma/period with no lower bound ([EliteDraw.cs:148-169](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)) — a word longer than the line width underflows the index and throws; bound the scan at `previous` and hard-break long words.
 
 ### Tests
 
@@ -301,9 +305,11 @@ float-physics cluster shares its scripted-input machinery):
       `EliteMain` construction/smoke-test item above: drive scripted
       ticks through `EliteMain.Update`/`Draw` with a real
       `SoftwareGraphics` and dump framebuffers the same way. Needs no
-      SDL; note `EliteMain.Run` is unusable headlessly until its
-      `Environment.Exit(0)` defect item (under Defects and gaps) is
-      done — call `Update` directly instead.
+      SDL; note `EliteMain.Run` is unusable headlessly as-is — it hands
+      off to `GameHost.Run`'s real-time, wall-clock-waiting loop
+      ([GameLoop.cs:59-98](../src/useful/libs/Useful/Timing/GameLoop.cs))
+      that only exits via `abstraction.Keyboard.Close` — call `Update`/
+      `Draw` directly per tick instead.
 - [ ] [Apps] Scripted input + frame dump in the real SDL apps, for the
       rare check that must exercise the true SDL window/present path:
       replay a key script (from a file or env var) into the `IKeyboard`
@@ -325,25 +331,25 @@ float-physics cluster shares its scripted-input machinery):
 
 ### Cleanups and small refactors
 
-- [ ] [Useful] Replace the custom `Guard.ArgumentNull` (50 call sites) with the framework's `ArgumentNullException.ThrowIfNull` and delete [Guard.cs](../src/useful/libs/Useful/Guard.cs)/`ValidatedNotNullAttribute` — the architecture doc's own "prefer dotnet framework intrinsics" rule.
-- [ ] [Repo] Adopt central package management: add `Directory.Packages.props` (14 projects currently pin versions independently and are already drifting) and move the copy-pasted analyzer `PackageReference` block from every csproj into `Directory.Build.props`/`.targets`.
+- [ ] [Useful] Replace the custom `Guard.ArgumentNull` (47 call sites) with the framework's `ArgumentNullException.ThrowIfNull` and delete [Guard.cs](../src/useful/libs/Useful/Guard.cs)/`ValidatedNotNullAttribute` — the architecture doc's own "prefer dotnet framework intrinsics" rule.
+- [ ] [Repo] Adopt central package management: add `Directory.Packages.props` (all 26 csproj files currently pin `PackageReference` versions independently and are already drifting) and move the copy-pasted analyzer `PackageReference` block from every csproj into `Directory.Build.props`/`.targets`.
 - [ ] [Repo] Add a test coverage badge to README.md sourced from the CI-collected coverage numbers (decision: visibility only, no gate/target).
 - [ ] [Useful.Abstraction] `ScreenManager` starts with `CurrentId = default!` and a nullable `Current`, forcing `Screens.Current!.Update()` at every call site ([ScreenManager.cs:29-31](../src/useful/libs/Useful.Abstraction/ScreenManager.cs)); require the initial screen at construction (or an explicit `Start(id)`) so `Current` is never null after setup.
 - [ ] [Useful.Graphics] `FastBitmap` pins every bitmap with a raw `GCHandle` + finalizer ([FastBitmap.cs:19-35](../src/useful/libs/Useful.Graphics/FastBitmap.cs)); only the screen bitmap ever crosses into SDL — pin only on demand (or wrap the handle in a `SafeHandle`-style type) so short-lived text/texture bitmaps don't fragment the GC heap.
-- [ ] [Apps] Fix the rename leftover: `EliteSharp`'s `LogMessages`/`SDLProgram` sit in namespace `EliteSharp.SDL` though the project is `EliteSharp`; and remove the committed benchmark reports under `src/*/perf/**/reports/` (generated artifacts, per the architecture doc's hygiene rule). How to record and monitor the historical benchmark numbers is a separate decision (e.g. a GitHub Action that runs the benchmarks and posts the results to a PR comment), what is best practice?
+- [ ] [Apps] Fix the rename leftover: `EliteSharp`'s [LogMessages.cs](../src/elite/apps/EliteSharp/LogMessages.cs) still sits in namespace `EliteSharp.SDL` though the project is `EliteSharp` (`SDLProgram.cs` was already fixed to plain `EliteSharp`); and remove the committed benchmark reports under `src/*/perf/**/reports/` (generated artifacts, per the architecture doc's hygiene rule). How to record and monitor the historical benchmark numbers is a separate decision (e.g. a GitHub Action that runs the benchmarks and posts the results to a PR comment), what is best practice?
 - [ ] [EliteSharpLib] Give the bare `throw new EliteException()` calls in the factory `switch` defaults ([ShipFactory.cs:46,59,68,77](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) a message with the offending value — an empty exception is undiagnosable in a log.
 - [ ] [Useful.SDL] Document and harden the `SDLSound` loop-pitch threading contract: the `Mix_RegisterEffect` callback runs on the audio thread while the game thread writes the pitch; verify the field is read/written with `Volatile` (or is inherently safe) and state the contract in a comment.
-- [ ] [Useful.Graphics] Remove the `Debug.WriteLine($"{x},{y}")` left in the `DrawCircleFilled` scanline loop ([SoftwareGraphics.cs:112](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — debug-build log spam for every filled circle (planets, suns) every frame.
+- [ ] [Useful.Graphics] Remove the `Debug.WriteLine($"{x},{y}")` left in the `DrawCircleFilled` scanline loop ([SoftwareGraphics.cs:122](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — debug-build log spam for every filled circle (planets, suns) every frame.
 - [ ] [Useful] Remove `Vector4.Cloner()` ([Maths/Extensions.cs:13](../src/useful/libs/Useful/Maths/Extensions.cs)) — `Vector4` is a struct, so plain assignment already copies; its four call sites can just assign.
 - [ ] [EliteSharpLib] Clean `EliteSharpLib.csproj`: fourteen `sfx\*.wav` items point at a folder that doesn't exist and the `<Compile Remove="Controls\**" />` block excludes a folder that no longer exists ([EliteSharpLib.csproj](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj)); the ~280-line hand-maintained asset item list could also become two glob items. (The unused NAudio refs are covered by the Must item.)
 - [ ] [Repo] Delete stale build-output-only directories left behind by project renames: `src/elite/apps/EliteSharp.SDL/`, `src/elite/libs/EliteSharp/`, `src/elite/test/EliteSharp.Tests/`, `src/elite/perf/EliteSharp.Benchmarks/` contain only `bin`/`obj` and are referenced by no project or solution entry.
 - [ ] [EliteSharpLib] `Stars` repeats the same star plot/respawn block three times (`FrontStarfield`, `RearStarfield`, `SideStarfield`, [Stars.cs:61-133, 151-243, 258-333](../src/elite/libs/EliteSharpLib/Stars.cs)); extract the shared plot helper to cut ~80 duplicated lines.
-- [ ] [Useful.Graphics] The hardcoded `Scale { get; } = 2` on `IGraphics` and the centring math that divides by it (`DrawRectangleCentre` = `(ScreenWidth - width) / Scale`, [SoftwareGraphics.cs:25, 281-282](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) only centres correctly because Scale happens to equal 2, and `SDLGraphics` divides positions by `(2 / Scale)` which is a no-op ([SDLGraphics.cs:239](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) — Elite-specific scaling leaking into the shared library; make centring `(ScreenWidth - width) / 2` and move scale policy to the game.
-- [ ] [Useful.SDL] `SDLGraphics.DrawImage`/`DrawImagePart` create and destroy an `SDL_Texture` from the surface on every call ([SDLGraphics.cs:84-148](../src/useful/libs/Useful.SDL/SDLGraphics.cs)), and `SoftwareAbstraction.SoftwareScreenUpdate` creates a surface + texture per presented frame ([SoftwareAbstraction.cs:65-106](../src/useful/libs/Useful.SDL/SoftwareAbstraction.cs)); cache textures per image, and use one streaming texture + `SDL_UpdateTexture` for the framebuffer blit.
+- [ ] [Useful.Graphics] The hardcoded `Scale { get; } = 2` on `IGraphics` and the centring math that divides by it (`DrawRectangleCentre` = `(ScreenWidth - width) / Scale`, [SoftwareGraphics.cs:29, 341-342](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) only centres correctly because Scale happens to equal 2, and `SDLGraphics` divides positions by `(2 / Scale)` in ten places, which is a no-op ([SDLGraphics.cs:251-252,274-275,298,321-322,345-346,398-399](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) — Elite-specific scaling leaking into the shared library; make centring `(ScreenWidth - width) / 2` and move scale policy to the game.
+- [ ] [Useful.SDL] `SDLGraphics.DrawImage`/`DrawImagePart` create and destroy an `SDL_Texture` from the surface on every call ([SDLGraphics.cs:90-111,125-154](../src/useful/libs/Useful.SDL/SDLGraphics.cs)), and `SoftwareAbstraction.SoftwareScreenUpdate` creates a surface + texture per presented frame ([SoftwareAbstraction.cs:69-110](../src/useful/libs/Useful.SDL/SoftwareAbstraction.cs)); cache textures per image, and use one streaming texture + `SDL_UpdateTexture` for the framebuffer blit.
 - [ ] [EliteSharpLib] `ShipFactory.CreateShipFromName` instantiates ship types via reflection from strings in `AssetManifest.json` ([ShipFactory.cs:114-131](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs), flagged by its own TODOs) — data-driven `Type.GetType` + non-public `Activator.CreateInstance` is fragile and a mild input-handling risk; replace with an explicit name→factory dictionary.
 - [ ] [EliteSharpLib] `ShipBase.Draw` allocates a `new Vector4[100]` per ship per tick and keeps a discarded `_ = VectorMaths.UnitVector(...)` call ([ShipBase.cs:100-115](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)); reuse a pooled/instance buffer sized to the model and delete the dead call (same pattern for `EliteDraw._pointList`'s magic `100` vs the `MAXPOLYS` constant, [EliteDraw.cs:19-25](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)).
 - [ ] [EliteSharpLib] `Universe.RemoveShip` only removes from `_objects`, silently leaving `Planet`/`StationOrSun` set if passed one of those ([Universe.cs:127-135](../src/elite/libs/EliteSharpLib/Universe.cs)) — station removal currently works only because a sun immediately overwrites `StationOrSun` in `Combat.RemoveShip`; clear the matching reference explicitly.
-- [ ] [Useful.SDL] `SDLGraphics.LoadFont` hardcodes the game-specific font names "Small"/"Large" and their point sizes into the shared library ([SDLGraphics.cs:395-408](../src/useful/libs/Useful.SDL/SDLGraphics.cs)); carry the size in the asset manifest instead.
+- [ ] [Useful.SDL] `SDLGraphics.LoadFont` hardcodes the game-specific font names "Small"/"Large" and their point sizes into the shared library ([SDLGraphics.cs:407-420](../src/useful/libs/Useful.SDL/SDLGraphics.cs)); carry the size in the asset manifest instead.
 - [ ] [EliteSharpLib] Wireframe planet is just a circle ([WireframePlanet.cs:50-57](../src/elite/libs/EliteSharpLib/Planets/WireframePlanet.cs)); add the two arcs and crater the original Elite drew (from issues.md).
 3D pipeline sharing (split 2026-07-14 from the "unify the two 3D
 pipelines" [LARGE] item; a code survey found the pipelines differ more
@@ -360,15 +366,18 @@ painter's chain landed 2026-07-14, see CHANGELOG):
       SCR dependencies ([Scene3D.cs:40-84](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs));
       then evaluate adopting it in Elite's `TransformModelPoints`, whose
       `if (vec.Z <= 0) vec.Z = 1` clamp
-      ([ShipBase.cs:124-127](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
+      ([ShipBase.cs:125-128](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
       distorts any geometry crossing the camera plane instead of clipping
       it. Adoption changes close-range visuals — verify against The New
       Kind's behaviour before keeping it.
 - [ ] [Useful.Graphics] Extract a shared perspective-projection helper
-      (centre + focus·x/z): Elite inlines it three times with magic
-      numbers (`* 256 / vec.Z + Centre/2, * Scale` in
-      `TransformModelPoints`, `DrawLasers`, and again in
-      `EliteDraw.DrawExplosion`) and SCR has `Scene3D.ProjectPoint`
+      (centre + focus·x/z): Elite inlines it twice with magic numbers
+      (`* 256 / vec.Z + Centre/2, * Scale` in `TransformModelPoints`
+      ([ShipBase.cs:130-131](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
+      and again, without the `* Scale`, in `EliteDraw.DrawExplosion`
+      ([EliteDraw.cs:319-320](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs));
+      `DrawLasers` only consumes an already-projected point, it doesn't
+      inline the projection itself) and SCR has `Scene3D.ProjectPoint`
       ([Scene3D.cs:116-125](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs));
       a small `focus`+`centre` projector type serves both. Do together
       with (or after) the Scale-policy cleanup above so Elite's `* Scale`
@@ -458,10 +467,10 @@ either order):
       (show the current league on the menu as the remake does), and
       thread it to the physics: `CarPhysics._enginePower` 240→320 and
       the boost unit 16→12 (the "standard vs super" comments at
-      [CarPhysics.cs:98](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.cs)
+      [CarPhysics.cs:105-106](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.cs)
       already mark the spots), boost reserve Standard→Super,
       `RoadCushionValue` 0→1 (exists but nothing sets it — damage
-      threshold at [CarPhysics.Motion.cs:278](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.Motion.cs)),
+      threshold at [CarPhysics.Motion.cs:286](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.Motion.cs)),
       `OpponentPhysics._enginePower` 236→314, and the opponent speed
       +32 super-league offsets: the `Opponent_Speed_Value()` port
       landed 2026-07-19, so `OpponentData.TrackSpeedValues` already
@@ -487,9 +496,10 @@ either order):
       port draws them procedurally rather than from `atlas.bmp` (see
       the road-line-textures cosmetic item below), this reduces to
       alternate colours.
-Float physics conversion (split 2026-07-14 from the [LARGE] item; ~4,100
-lines of 68000-style scaled-integer code — `CarPhysics` 2,522 lines over
-three partials, `OpponentPhysics` 1,362 over two. Do strictly in order:
+Float physics conversion (split 2026-07-14 from the [LARGE] item; ~4,130
+lines of 68000-style scaled-integer code — `CarPhysics` 2,733 lines over
+four partials (incl. `.Chains`), `OpponentPhysics` 1,397 over two. Do
+strictly in order:
 the golden-trace harness is the safety net for everything after it.
 Sequence AFTER the pending SCR correctness items (damage-wreck,
 `Opponent_Speed_Value`) and the Super League physics item —
@@ -514,12 +524,15 @@ by the traces):
       ([Scene3D.cs:102-113](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs))
       — either convert its fixed-point view transform in the same step
       or leave it a shim that scales from the float trig.
-- [ ] [StuntCarRacerLib] Convert `CarPhysics` (three partials:
+- [ ] [StuntCarRacerLib] Convert `CarPhysics` (four partials:
       [CarPhysics.cs](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.cs),
-      `.Motion`, `.Road`) to float: fields, locals, and the
-      `>> LogPrecision` rescales. Hunt the semantics traps — arithmetic
-      right-shift on negatives rounds toward -infinity while integer
-      division truncates toward zero, and any deliberate short/int
+      `.Motion`, `.Road`, and the crane/chain-recovery `.Chains` — the
+      last landed after the original three-partial estimate and also
+      uses scaled `int` state, so it's in scope too) to float: fields,
+      locals, and the `>> LogPrecision` rescales. Hunt the semantics
+      traps — arithmetic right-shift on negatives rounds toward
+      -infinity while integer division truncates toward zero, and any
+      deliberate short/int
       overflow wrap needs an explicit equivalent. Validate against the
       golden traces with tolerances; rework `CarPhysicsTests`' exact
       assertions as tolerance-based in the same session.

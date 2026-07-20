@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (SCR composition root, 2026-07-20)
+
+- `StuntCarRacer.SDLProgram.Main` now builds a `ServiceCollection`
+  (`Microsoft.Extensions.DependencyInjection`, newly referenced by the
+  `StuntCarRacer` project) instead of `new`-ing `SoftwareAbstraction` and
+  `StuntCarRacerMain` directly: `SoftwareAbstraction` is registered as
+  `IAbstraction` via a factory (container-owned and disposed with the
+  provider), `IGraphics`/`ISound`/`IKeyboard` are forwarded from it, the
+  existing Serilog-backed `ILoggerFactory` is registered as an instance,
+  and `StuntCarRacerMain` is registered as itself and as `IGame`. `Main`
+  resolves the concrete `StuntCarRacerMain` (not `IGame`, which has no
+  `Run`) and calls `.Run()`. This is the first of the composition-root
+  items — Elite's `Program.Main` mirrors the pattern next.
+
 ### Added (SCR per-effect sound volume/pitch/pan, 2026-07-20)
 
 - Sound effects now vary per play instead of always sounding identical,

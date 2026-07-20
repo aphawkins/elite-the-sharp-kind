@@ -3,11 +3,13 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Globalization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using StuntCarRacerLib;
+using Useful.Abstraction;
 using Useful.SDL;
 
 [assembly: CLSCompliant(false)]
@@ -46,11 +48,20 @@ internal static class SDLProgram
         using LoggerFactory loggerFactory = new();
         loggerFactory.AddSerilog(seriLogger);
 
+        ServiceCollection services = new();
+        services.AddSingleton<ILoggerFactory>(loggerFactory);
+        services.AddSingleton<IAbstraction>(_ => new SoftwareAbstraction(ScreenWidth, ScreenHeight, Title));
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
+        services.AddSingleton<StuntCarRacerMain>();
+        services.AddSingleton<IGame>(sp => sp.GetRequiredService<StuntCarRacerMain>());
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(SDLProgram));
 
-        using SoftwareAbstraction abstraction = new(ScreenWidth, ScreenHeight, Title);
-
-        StuntCarRacerMain game = new(abstraction);
+        StuntCarRacerMain game = provider.GetRequiredService<StuntCarRacerMain>();
 
         try
         {
