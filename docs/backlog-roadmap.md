@@ -89,24 +89,17 @@ functionality. Conclusions:
 
 ### Architecture (business-application practices — see architecture.md)
 
-Composition root (split 2026-07-14 from the original [LARGE] item; do the
-first four in order — each builds on the previous; the fifth is
-independent):
+Composition root (split 2026-07-14 from the original [LARGE] item; the
+four ordered items landed 2026-07-20, see CHANGELOG — this last one was
+always independent of that ordering):
 
-- [ ] [EliteSharpLib] Move the ~25 view registrations out of `EliteMain`
-      ([EliteMain.cs:113-141](../src/elite/libs/EliteSharpLib/EliteMain.cs)):
-      register each `IView` in the container and populate
-      `ScreenManager<Screen, IView>` from a registrar (e.g. an
-      `AddEliteViews` extension building the `Screen`→view map) so
-      `EliteMain` no longer news up views. Depends on the domain-services
-      item above.
 - [ ] [Useful.Audio] Inject `AudioController` options: `_musicOn`/
       `_effectsOn` are hardcoded `true` behind a `#if DEBUG` whose branches
       are identical
       ([AudioController.cs:24-30](../src/useful/libs/Useful.Audio/AudioController.cs));
       accept an options type (bound from each game's config — Elite's
       `ConfigSettings` already exists) so music/effects can be toggled.
-      From issues.md "Inject options". Independent of the ordering above.
+      From issues.md "Inject options".
 Ship rendering strategy: painter's algorithm and z-buffer as separate
 DI'd strategies, wireframe and filled as separate renderers (follows the
 2026-07-14 z-buffer spike, commit b0d913e — the decal-seam problem it

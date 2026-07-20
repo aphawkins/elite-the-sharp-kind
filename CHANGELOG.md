@@ -7,6 +7,24 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Elite view registrations in the container, 2026-07-20)
+
+- The last composition-root item: `EliteMain` no longer constructs its ~25
+  `IView` screens itself. Each view (`Intro1View` through `GameOverView`)
+  is now registered as a singleton in a new private
+  `EliteServiceCollectionExtensions.AddEliteViews`, resolved by factory
+  delegate for the same internal-accessibility reason as the domain
+  services. `AddEliteMain`'s `EliteMain` factory now populates the
+  `ScreenManager<Screen, IView>` singleton (`views.Add(Screen.X, ...)` for
+  all 25 screens) by resolving each view from the container before
+  constructing `EliteMain` — this has to happen there rather than inside
+  `AddEliteViews` itself, since IServiceCollection registration is lazy
+  and population needs actual built instances. `EliteMain`'s constructor
+  shrinks accordingly: `Trade`, `PlanetController`, `IShipFactory`,
+  `ConfigFile` and `ScreenManager<Screen, IView>` are all gone from its
+  parameter list (they were only ever used to build views), leaving just
+  the collaborators its `Update`/`Draw`/`Run` logic actually touches.
+
 ### Added (Elite domain services in the container, 2026-07-20)
 
 - `EliteMain`'s constructor no longer builds its own domain graph: `GameState`,
