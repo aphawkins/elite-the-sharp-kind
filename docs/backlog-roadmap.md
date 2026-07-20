@@ -61,10 +61,10 @@ functionality. Conclusions:
   port; the rest are now discrete items under Could.
 - **Remaining genuine gaps** are all tracked as items below: Super
   League, pause, 'R' turn-around, mid-race 'M', F9/F10, gamepad,
-  outside view, lap times, sound volume/pitch/pan fidelity,
-  wheel-spin rate, art screens, widescreen/resolution work.
-  (`Opponent_Speed_Value` was ported 2026-07-19 and
-  wreck-at-full-damage 2026-07-20, see CHANGELOG.)
+  outside view, lap times, sound volume/pitch/pan fidelity, art
+  screens, widescreen/resolution work. (`Opponent_Speed_Value` was
+  ported 2026-07-19, wreck-at-full-damage and the cockpit wheel-spin
+  rate fix both landed 2026-07-20, see CHANGELOG.)
 
 ### Resolved (2026-07-11)
 
@@ -319,17 +319,6 @@ float-physics cluster shares its scripted-input machinery):
 - [ ] [Release] Switch versioning from CI's date+run-number stamp to tag-driven semantic versioning (e.g. [MinVer](https://github.com/adamralph/minver)) so tagging a commit *is* the release-versioning step; do this before the first `v1.0.0` tag.
 - [ ] [Release] Add a tag-triggered CI job that publishes win-x64/linux-x64/linux-arm64 self-contained builds for both Elite and StuntCarRacer (add a publish profile + CI publish step for `StuntCarRacer.csproj` mirroring Elite's) and creates a GitHub Release with the zips attached (`softprops/action-gh-release` or `gh release create --generate-notes`); ship as zip/tar.gz, not an installer. Label the SCR artifacts as preview in the release notes given its open defects list below.
 
-### Stunt Car Racer conversion — correctness (from the retired conversion plan, revised by the 2026-07-19 ptitSeb parity audit)
-
-- [ ] [StuntCarRacerLib] Cockpit wheel sprites spin at a quarter speed:
-      the original advances `leftwheel_angle`/`rightwheel_angle` every
-      50Hz tick in `FramesWheelsEngine` (`Car_Behaviour.cpp:3804-3805`),
-      but the port advances them in the physics frame
-      ([CarPhysics.Motion.cs:97-98](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.Motion.cs))
-      which only runs every FrameGap-th tick (12.5Hz). Move the advance to
-      the per-tick path (`ApplyEngineRevs` is already the 50Hz hook,
-      called from `RaceScreen.Update`), keeping the faithful
-      right-wheel-reads-left-angle quirk both sources share.
 
 ## Could
 

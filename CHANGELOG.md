@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (SCR cockpit wheel-spin rate, 2026-07-20)
+
+- Cockpit front wheel sprites were spinning at a quarter of their
+  correct rate: the wheel-angle advance lived in `CarMovement`, which
+  only runs every `FrameGap`-th tick (12.5Hz), instead of the original
+  `FramesWheelsEngine`'s full 50Hz rate. Split `SetWheelRotationSpeed`
+  into a physics-rate speed calculation (unchanged) and a new
+  `AdvanceWheelAngles`, now called from `CarPhysics.ApplyEngineRevs` —
+  already the 50Hz hook, called every tick from `RaceScreen.Update` —
+  keeping the original's right-wheel-reads-left-angle quirk. Covered by
+  a new `CarPhysicsTests.WheelAnglesAdvanceOnEveryEngineRevsTickNotJustPhysicsFrames`
+  test that drives `ApplyEngineRevs` alone (no physics frames) and
+  checks the wheel frame moves.
+
 ### Changed (SCR full damage wrecks the car, 2026-07-20)
 
 - `CarPhysics.Wrecked` now goes true when `NewDamage` reaches 240,

@@ -85,15 +85,22 @@ public sealed partial class CarPhysics
         _frontLeftActualHeight >>= 8;
     }
 
-    // Front wheel rotation animation for the cockpit display (the original
-    // SetWheelRotationSpeed): faster when touching the road, decaying
-    // otherwise. The right wheel angle is accumulated from the left wheel's
-    // already-updated angle, matching the original's literal source.
+    // Front wheel rotation speed for the cockpit display (the original
+    // SetOneWheelRotationSpeed, called at the physics rate): faster when
+    // touching the road, decaying otherwise.
     private void SetWheelRotationSpeed()
     {
         _frontLeftWheelSpeed = CalculateWheelRotationSpeed(_frontLeftAmountBelowRoad, _frontLeftWheelSpeed);
         _frontRightWheelSpeed = CalculateWheelRotationSpeed(_frontRightAmountBelowRoad, _frontRightWheelSpeed);
+    }
 
+    // Advance the cockpit wheel angles by the last-computed rotation speed
+    // (the original FramesWheelsEngine, called every 50Hz tick rather than
+    // the physics rate so the wheels spin at full speed). The right wheel
+    // angle is accumulated from the left wheel's already-updated angle,
+    // matching the original's literal source.
+    private void AdvanceWheelAngles()
+    {
         LeftWheelAngle = (LeftWheelAngle + _frontLeftWheelSpeed) & WheelAngleMask;
         RightWheelAngle = (LeftWheelAngle + _frontRightWheelSpeed) & WheelAngleMask;
     }

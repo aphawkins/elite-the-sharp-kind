@@ -353,6 +353,34 @@ public class CarPhysicsTests
     }
 
     [Fact]
+    public void WheelAnglesAdvanceOnEveryEngineRevsTickNotJustPhysicsFrames()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        // land on the road and build up speed
+        for (int frame = 0; frame < 100; frame++)
+        {
+            car.Update(CarInput.AccelBoost);
+            car.ApplyEngineRevs();
+        }
+
+        int startFrame = car.LeftWheelFrame;
+
+        // no further physics frames (car.Update), only the 50Hz engine-revs
+        // tick that now drives the wheel angle advance
+        bool advanced = false;
+        for (int tick = 0; tick < 20 && !advanced; tick++)
+        {
+            car.ApplyEngineRevs();
+            advanced = car.LeftWheelFrame != startFrame;
+        }
+
+        Assert.True(advanced);
+    }
+
+    [Fact]
     public void WheelBounceIsZeroWhileAirborne()
     {
         Track track = Track.Load(TrackId.LittleRamp);

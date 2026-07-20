@@ -565,6 +565,8 @@ public sealed partial class CarPhysics
         }
 
         EngineRevs = revs;
+
+        AdvanceWheelAngles();
     }
 
     // Calculate player position values required for opponent behaviour
