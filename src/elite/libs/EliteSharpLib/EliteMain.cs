@@ -14,7 +14,6 @@ using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful;
 using Useful.Abstraction;
-using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
@@ -47,7 +46,7 @@ public sealed class EliteMain : IGame
 
     private readonly AudioController _audio;
     private readonly Combat _combat;
-    private readonly EliteDraw _draw;
+    private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly List<long> _framesDrawn = [];
     private readonly Pilot _pilot;
@@ -58,56 +57,58 @@ public sealed class EliteMain : IGame
     private readonly Stars _stars;
     private readonly Universe _universe;
 
-    internal EliteMain(IAbstraction abstraction, AssetLocator assetLocator, ConfigFile configFile)
+    internal EliteMain(
+        IAbstraction abstraction,
+        ConfigFile configFile,
+        GameState gameState,
+        PlayerShip ship,
+        Trade trade,
+        PlanetController planet,
+        IEliteDraw draw,
+        IShipFactory shipFactory,
+        Universe universe,
+        Stars stars,
+        Pilot pilot,
+        Combat combat,
+        SaveFile save,
+        Space space,
+        Scanner scanner,
+        AudioController audio,
+        ScreenManager<Screen, IView> views)
     {
         Guard.ArgumentNull(abstraction);
-        Guard.ArgumentNull(assetLocator);
         Guard.ArgumentNull(configFile);
+        Guard.ArgumentNull(gameState);
+        Guard.ArgumentNull(ship);
+        Guard.ArgumentNull(trade);
+        Guard.ArgumentNull(planet);
+        Guard.ArgumentNull(draw);
+        Guard.ArgumentNull(shipFactory);
+        Guard.ArgumentNull(universe);
+        Guard.ArgumentNull(stars);
+        Guard.ArgumentNull(pilot);
+        Guard.ArgumentNull(combat);
+        Guard.ArgumentNull(save);
+        Guard.ArgumentNull(space);
+        Guard.ArgumentNull(scanner);
+        Guard.ArgumentNull(audio);
+        Guard.ArgumentNull(views);
 
         _abstraction = abstraction;
         _graphics = abstraction.Graphics;
-        ISound sound = abstraction.Sound;
         _keyboard = abstraction.Keyboard;
-
-        // TODO: improve this
-        Dictionary<string, SfxSample> sfx = new()
-        {
-            { nameof(SoundEffect.Launch), new(32) },
-            { nameof(SoundEffect.Crash), new(7) },
-            { nameof(SoundEffect.Dock), new(36) },
-            { nameof(SoundEffect.Gameover), new(24) },
-            { nameof(SoundEffect.Pulse), new(4) },
-            { nameof(SoundEffect.HitEnemy), new(4) },
-            { nameof(SoundEffect.Explode), new(23) },
-            { nameof(SoundEffect.Ecm), new(23) },
-            { nameof(SoundEffect.Missile), new(25) },
-            { nameof(SoundEffect.Hyperspace), new(37) },
-            { nameof(SoundEffect.IncomingFire1), new(4) },
-            { nameof(SoundEffect.IncomingFire2), new(5) },
-            { nameof(SoundEffect.Beep), new(2) },
-            { nameof(SoundEffect.Boop), new(7) },
-        };
-        _audio = new(sound, sfx);
-        string userDataPath = configFile.BaseDirectory;
-        ScreenManager<Screen, IView> views = new(_keyboard);
-        _gameState = new(views)
-        {
-            Config = configFile.ReadConfig(),
-        };
-
-        _ship = new();
-        Trade trade = new(_gameState, _ship);
-        PlanetController planet = new(_gameState);
-        _draw = new(_gameState, _graphics, assetLocator);
+        _audio = audio;
+        _gameState = gameState;
+        _ship = ship;
+        _draw = draw;
         _colorText = _draw.Palette["White"];
-        IShipFactory shipFactory = ShipFactory.Create(assetLocator, _draw);
-        _universe = new(shipFactory);
-        _stars = new(_gameState, _draw, _ship);
-        _pilot = new(_draw, _audio, _universe, _ship);
-        _combat = new(_gameState, _audio, _ship, trade, _pilot, _universe, _draw, shipFactory);
-        _save = new(_gameState, _ship, trade, planet, userDataPath);
-        _space = new(_gameState, _audio, _pilot, _combat, trade, _ship, planet, _stars, _universe, _draw);
-        _scanner = new(_gameState, _draw, _universe, _ship, _combat);
+        _universe = universe;
+        _stars = stars;
+        _pilot = pilot;
+        _combat = combat;
+        _save = save;
+        _space = space;
+        _scanner = scanner;
 
         views.Add(Screen.IntroOne, new Intro1View(_gameState, _audio, _keyboard, _ship, _combat, _universe, _draw, shipFactory));
         views.Add(Screen.IntroTwo, new Intro2View(_gameState, _audio, _keyboard, _stars, _ship, _combat, _universe, _draw, shipFactory));

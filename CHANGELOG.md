@@ -7,6 +7,29 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Elite domain services in the container, 2026-07-20)
+
+- `EliteMain`'s constructor no longer builds its own domain graph: `GameState`,
+  `PlayerShip`, `Trade`, `PlanetController`, `EliteDraw` (as `IEliteDraw`),
+  `IShipFactory` (via `ShipFactory.Create`), `Universe`, `Stars`, `Pilot`,
+  `Combat`, `SaveFile`, `Space`, `Scanner`, `AudioController` and the
+  `ScreenManager<Screen, IView>` backing `GameState` are all now registered
+  as singletons in `EliteServiceCollectionExtensions.AddEliteMain` (which
+  also forwards `AssetLocator` as `IAssetLocator`), and `EliteMain`'s
+  constructor just receives them. Since every one of these types is
+  `internal` to `EliteSharpLib`, the container can't auto-wire them by
+  reflection (that only sees public constructors), so each is registered via
+  an explicit factory delegate rather than a bare `AddSingleton<T>()` — this
+  is deliberately verbose over hiding it behind a bigger, riskier
+  internal-to-public accessibility change. The `AudioController` `SfxSample`
+  cooldown table (`// TODO: improve this`) moved into a private
+  `BuildEliteSfx` helper alongside the other registrations, unchanged.
+  `EliteDraw`'s `_colorText = _draw.Palette["White"]` read and `SaveFile`'s
+  `ConfigFile.BaseDirectory` path both stay exactly where they were,
+  now sourced from the injected `IEliteDraw`/`ConfigFile`.
+  `EliteMain` still builds the ~25 views itself — that's the next backlog
+  item.
+
 ### Added (Elite composition root, 2026-07-20)
 
 - Mirrors the SCR composition root: `EliteSharp.SDLProgram.Main` builds a

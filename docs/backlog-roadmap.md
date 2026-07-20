@@ -93,17 +93,6 @@ Composition root (split 2026-07-14 from the original [LARGE] item; do the
 first four in order — each builds on the previous; the fifth is
 independent):
 
-- [ ] [EliteSharpLib] Move Elite's domain services into the container:
-      register `GameState`, `PlayerShip`, `Trade`, `PlanetController`,
-      `EliteDraw`, `IShipFactory`, `Universe`, `Stars`, `Pilot`, `Combat`,
-      `SaveFile`, `Space`, `Scanner` and `AudioController` (including its
-      `SfxSample` cooldown table, the `// TODO: improve this` at
-      [EliteMain.cs:72-90](../src/elite/libs/EliteSharpLib/EliteMain.cs))
-      as singletons, and shrink `EliteMain`'s constructor to accepting the
-      collaborators it actually uses. Watch the two-phase creations
-      (`ShipFactory.Create`, `EliteDraw`'s palette read for `_colorText`)
-      — they interact with the separate "remove two-phase construction"
-      item below.
 - [ ] [EliteSharpLib] Move the ~25 view registrations out of `EliteMain`
       ([EliteMain.cs:113-141](../src/elite/libs/EliteSharpLib/EliteMain.cs)):
       register each `IView` in the container and populate
