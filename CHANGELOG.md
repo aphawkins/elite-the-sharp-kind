@@ -5,7 +5,26 @@ is based on [Keep a Changelog](https://keepachangelog.com/); the project does
 not yet cut versioned releases, so everything sits under Unreleased.
 Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
-## [Unreleased]
+### Added (Painter's-algorithm ship renderer, 2026-07-20)
+
+- Second of the ship-rendering-strategy items: a new
+  `PainterRenderer : IShipRenderer` (`Graphics/PainterRenderer.cs`)
+  restores the pre-2026-07-14-spike behaviour — a plain
+  (non-depth-tested) `Graphics.DrawPolygonFilled` fill in back-to-front
+  `_polyChain` order, instead of `ShipRenderer`'s per-pixel z-buffer test
+  (`Graphics.DrawPolygonFilledDepth`) — as its own selectable
+  implementation, without touching `ShipBase`'s face-transform code.
+  Deliberately duplicates `ShipRenderer`'s chain-management code rather
+  than factoring out a shared base class now, since the z-buffer item
+  (still open) may reshape `ShipRenderer` further; `PainterRenderer` also
+  skips the per-vertex `Depths` array entirely since the painter's fill
+  never reads it. Not yet registered in the DI container — `ShipRenderer`
+  stays the sole active implementation until the wireframe/filled item
+  wires up config-driven selection between them. Verified with a
+  throwaway test rendering the same interpenetrating-hulls scene as
+  `VisualDumpTests`; both single-ship and intersecting-hull frames looked
+  correct on visual inspection (not a pixel diff against the z-buffer
+  path — that comparison is the wireframe/filled item's job).
 
 ### Added (Ship-rendering strategy abstraction, 2026-07-20)
 

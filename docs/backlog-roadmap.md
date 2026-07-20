@@ -93,18 +93,12 @@ Ship rendering strategy: painter's algorithm and z-buffer as separate
 DI'd strategies, wireframe and filled as separate renderers (follows the
 2026-07-14 z-buffer spike, commit b0d913e — the decal-seam problem it
 introduced is still unresolved, see CHANGELOG; the `IShipRenderer`
-abstraction landed 2026-07-20 — do the remaining three items in any
-order):
+abstraction landed 2026-07-20, and `PainterRenderer` (see CHANGELOG)
+restores the pre-spike back-to-front-chain-only behaviour as a standalone
+implementation — it isn't registered in the DI container yet, that's the
+remaining wireframe/filled item's job — do the remaining two items in
+any order):
 
-- [ ] [EliteSharpLib] Painter's-algorithm renderer: today's single
-      `ShipRenderer` (the `IShipRenderer` abstraction landed 2026-07-20,
-      see CHANGELOG — it's today's combined depth-sort/fill/wireframe
-      behaviour moved out of `EliteDraw` unmodified, not yet split)
-      bundles the back-to-front `_polyChain`/`_startPoly` chain
-      ([ShipRenderer.cs:33-82](../src/elite/libs/EliteSharpLib/Graphics/ShipRenderer.cs))
-      with the z-buffer fill below; extract the chain, unmodified, into
-      its own `IShipRenderer` implementation — the pre-spike behaviour,
-      restorable without touching `ShipBase`'s face-transform code.
 - [ ] [EliteSharpLib] Z-buffer renderer: extract today's
       `DrawPolygonFilledDepth`-based per-pixel depth test
       ([ShipRenderer.cs:95-121](../src/elite/libs/EliteSharpLib/Graphics/ShipRenderer.cs))
