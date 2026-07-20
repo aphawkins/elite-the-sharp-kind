@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (SCR full damage wrecks the car, 2026-07-20)
+
+- `CarPhysics.Wrecked` now goes true when `NewDamage` reaches 240,
+  matching the Amiga original's `damage.line`/`car.is.wrecked` (the HUD
+  crack previously just capped out with no effect). The C# port already
+  carried the rest of the Amiga's (and ptitSeb's dormant, never-triggered)
+  wreck plumbing — `_wreckWheelHeightReduction`, the wheel-height
+  subtraction, the `!Wrecked`-gated engine power/boost cuts, and the
+  scrape-sound gate — so the only change is setting that field once the
+  damage threshold is crossed; those existing paths do the rest. The race
+  flow is otherwise unchanged (the opponent still finishes and the race is
+  lost). Covered by new `CarPhysicsTests` (`FullDamageWrecksTheCar`,
+  `PartialDamageDoesNotWreckTheCar`, `WreckedResetsOnNewRace`).
+
 ### Changed (SCR opponent speed values, 2026-07-19)
 
 - The opponent's per-piece required speeds are now computed by a port of

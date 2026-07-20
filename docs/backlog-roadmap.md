@@ -61,10 +61,10 @@ functionality. Conclusions:
   port; the rest are now discrete items under Could.
 - **Remaining genuine gaps** are all tracked as items below: Super
   League, pause, 'R' turn-around, mid-race 'M', F9/F10, gamepad,
-  outside view, wreck-at-full-damage, lap times, sound
-  volume/pitch/pan fidelity, wheel-spin rate, art screens,
-  widescreen/resolution work. (`Opponent_Speed_Value` was ported
-  2026-07-19, see CHANGELOG.)
+  outside view, lap times, sound volume/pitch/pan fidelity,
+  wheel-spin rate, art screens, widescreen/resolution work.
+  (`Opponent_Speed_Value` was ported 2026-07-19 and
+  wreck-at-full-damage 2026-07-20, see CHANGELOG.)
 
 ### Resolved (2026-07-11)
 
@@ -321,19 +321,6 @@ float-physics cluster shares its scripted-input machinery):
 
 ### Stunt Car Racer conversion — correctness (from the retired conversion plan, revised by the 2026-07-19 ptitSeb parity audit)
 
-- [ ] [StuntCarRacerLib] Full damage should wreck the car: the Amiga
-      original's `damage.line` wrecks the car when the crack reaches the
-      end of the beam (240); the HUD caps the crack but nothing wrecks the
-      car. ptitSeb never triggers a wreck either, but carries the Amiga's
-      dormant plumbing to copy: `wreck_wheel_height_reduction` (0x200 when
-      wrecked, subtracted from every wheel height so the car scrapes on
-      its belly, `Car_Behaviour.cpp:93-94, 188, 2224`), the `WRECKED`
-      branches that cut engine power (`:835, 880`) and world acceleration
-      (`:3020-3031`), and `DrawSparks`' scrape-sound gate (`:4045`). Port:
-      when `NewDamage` reaches 240 set the wheel-height reduction and let
-      those existing paths do the rest; the race flow stays as-is (the
-      opponent finishes, the race is lost). The wrecked-screen art item
-      under Could builds on this.
 - [ ] [StuntCarRacerLib] Cockpit wheel sprites spin at a quarter speed:
       the original advances `leftwheel_angle`/`rightwheel_angle` every
       50Hz tick in `FramesWheelsEngine` (`Car_Behaviour.cpp:3804-3805`),
@@ -449,8 +436,8 @@ while staying inside its assets and the Amiga's behaviour:
       screens at race end.
 - [ ] [StuntCarRacerLib] Wrecked screen: draw `wrecked.png` when the
       race ends with the player's car wrecked, in place of the
-      race-lost art. Depends on the full-damage-wrecks-the-car item
-      under Should — until a wreck can happen there is nothing to show.
+      race-lost art. `CarPhysics.Wrecked` now goes true at full damage
+      (landed 2026-07-20, see CHANGELOG) so this can be wired up.
 - [ ] [StuntCarRacerLib] Opponent portraits: `heads.png` is a portrait
       sheet of the eleven opponents; show the matching portrait
       alongside the four-second "Opponent: <name>" announcement at race

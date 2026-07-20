@@ -605,6 +605,13 @@ public sealed partial class CarPhysics
         {
             int d = (FrontLeftDamage + FrontRightDamage) / 2;
             NewDamage = (d + RearDamage) / 2;
+
+            // original car.is.wrecked, reached when the HUD crack (damage.line)
+            // hits the end of its beam.
+            if (NewDamage >= 240)
+            {
+                _wreckWheelHeightReduction = 0x200;
+            }
         }
 
         if (_smashedCountdown > 0)

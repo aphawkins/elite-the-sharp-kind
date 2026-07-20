@@ -379,6 +379,53 @@ public class CarPhysicsTests
     }
 
     [Fact]
+    public void FullDamageWrecksTheCar()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        Assert.False(car.Wrecked);
+
+        car.AddCollisionDamage(255);
+        car.UpdateDamage();
+
+        Assert.Equal(255, car.NewDamage);
+        Assert.True(car.Wrecked);
+    }
+
+    [Fact]
+    public void PartialDamageDoesNotWreckTheCar()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        car.AddCollisionDamage(200);
+        car.UpdateDamage();
+
+        Assert.Equal(200, car.NewDamage);
+        Assert.False(car.Wrecked);
+    }
+
+    [Fact]
+    public void WreckedResetsOnNewRace()
+    {
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track);
+        car.StartRace();
+
+        car.AddCollisionDamage(255);
+        car.UpdateDamage();
+
+        Assert.True(car.Wrecked);
+
+        car.StartRace();
+
+        Assert.False(car.Wrecked);
+    }
+
+    [Fact]
     public void LimitViewpointYLeavesRestingCarUnchanged()
     {
         Track track = Track.Load(TrackId.LittleRamp);
