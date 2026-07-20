@@ -31,7 +31,7 @@ public class VisualDumpTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 400, b => lastFrame = b, AssetLocator.Create());
         TrackRenderer renderer = new(track, graphics);
         BackdropRenderer backdrop = new(graphics);
-        OpponentRenderer opponentRenderer = new(opponent);
+        OpponentRenderer opponentRenderer = new(opponent, new());
         SceneCamera camera = new();
         List<WorldPolygon> worldPolygons = [];
 

@@ -1,0 +1,60 @@
+# car
+# Converted from the hardcoded arrays in CarMesh.cs - Stunt Car Racer: The Sharp Kind
+# The visible car shape from the original Car.cpp (CreateCarInVB): four flat
+# wheel quads and a wedge-shaped body. Materials are resolved via CarPalette
+# (Track.ScrBaseColour + offset), not an mtllib.
+
+v -81 -40 -128
+v -81 0 -128
+v -40 0 -128
+v -40 -40 -128
+
+v 40 -40 -128
+v 40 0 -128
+v 81 0 -128
+v 81 -40 -128
+
+v -81 -40 128
+v -81 0 128
+v -40 0 128
+v -40 -40 128
+
+v 40 -40 128
+v 40 0 128
+v 81 0 128
+v 81 -40 128
+
+v -40 -20 -128
+v -30 40 -128
+v 30 40 -128
+v 40 -20 -128
+
+v -40 -20 128
+v -40 0 128
+v 40 0 128
+v 40 -20 128
+
+usemtl Wheel
+f 1 2 3 4
+usemtl Wheel
+f 5 6 7 8
+usemtl Wheel
+f 9 10 11 12
+usemtl Wheel
+f 13 14 15 16
+
+usemtl Side
+f 21 22 18 17
+usemtl Side
+f 20 19 23 24
+
+usemtl End
+f 17 18 19 20
+usemtl End
+f 24 23 22 21
+
+usemtl Top
+f 18 22 23 19
+
+usemtl Bottom
+f 20 24 21 17

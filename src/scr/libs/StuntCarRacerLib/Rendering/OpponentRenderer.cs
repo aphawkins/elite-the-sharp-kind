@@ -15,11 +15,14 @@ public sealed class OpponentRenderer
     private const int ShadowColour = Track.ScrBaseColour + 5;
 
     private readonly OpponentPhysics _opponent;
+    private readonly CarMesh _carMesh;
 
-    public OpponentRenderer(OpponentPhysics opponent)
+    public OpponentRenderer(OpponentPhysics opponent, CarMesh carMesh)
     {
         Guard.ArgumentNull(opponent);
+        Guard.ArgumentNull(carMesh);
         _opponent = opponent;
+        _carMesh = carMesh;
     }
 
     // Appends the opponent's polygons (world track units) for depth-sorted
@@ -41,7 +44,7 @@ public sealed class OpponentRenderer
                 ScrPalette.Colour(ShadowColour)));
         }
 
-        CarMesh.Append(
+        _carMesh.Append(
             polygons,
             _opponent.VisualRearLeft,
             _opponent.VisualRearRight,

@@ -34,6 +34,7 @@ public sealed class StuntCarRacerMain : IGame
     private readonly IAbstraction _abstraction;
     private readonly BackdropRenderer _backdrop;
     private readonly HudRenderer _hud;
+    private readonly CarMesh _carMesh = new();
     private readonly List<WorldPolygon> _worldPolygons = [];
     private readonly AudioController _audio;
 
@@ -197,7 +198,7 @@ public sealed class StuntCarRacerMain : IGame
         Opponent = new(Track, Car);
         Bridge = new(Track);
         _renderer = new(Track, Graphics);
-        _opponentRenderer = new(Opponent);
+        _opponentRenderer = new(Opponent, _carMesh);
     }
 
     // The world common to every screen: backdrop, track and (outside the

@@ -7,6 +7,9 @@
     "Small": "font1.bmp",
     "Large": "font2.bmp"
   },
+  "Models": {
+    "Car": "car.obj"
+  },
   "Sfx": {
     "Chime": "Chime.wav",
     "Creak": "Creak.wav",
