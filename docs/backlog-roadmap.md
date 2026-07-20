@@ -89,17 +89,6 @@ functionality. Conclusions:
 
 ### Architecture (business-application practices — see architecture.md)
 
-Composition root (split 2026-07-14 from the original [LARGE] item; the
-four ordered items landed 2026-07-20, see CHANGELOG — this last one was
-always independent of that ordering):
-
-- [ ] [Useful.Audio] Inject `AudioController` options: `_musicOn`/
-      `_effectsOn` are hardcoded `true` behind a `#if DEBUG` whose branches
-      are identical
-      ([AudioController.cs:24-30](../src/useful/libs/Useful.Audio/AudioController.cs));
-      accept an options type (bound from each game's config — Elite's
-      `ConfigSettings` already exists) so music/effects can be toggled.
-      From issues.md "Inject options".
 Ship rendering strategy: painter's algorithm and z-buffer as separate
 DI'd strategies, wireframe and filled as separate renderers (follows the
 2026-07-14 z-buffer spike, commit b0d913e — the decal-seam problem it
@@ -146,6 +135,22 @@ for the DI container to register into):
       (e.g. via `SettingsView`) without code changes. Extend
       `VisualDumpTests` (added 2026-07-14) to assert both depth-sort
       strategies render identically for non-decal geometry.
+
+- [ ] [StuntCarRacerLib] Give SCR its own persisted settings: unlike
+      Elite (`ConfigFile`/`ConfigSettings`/`IConfigWriter`,
+      [src/elite/libs/EliteSharpLib/Config](../src/elite/libs/EliteSharpLib/Config)),
+      SCR has no settings file at all, so `StuntCarRacerMain` passes a
+      hardcoded default `AudioOptions` to `AudioController`
+      ([StuntCarRacerMain.cs](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs))
+      instead of a user-configurable one (see the 2026-07-20 "injectable
+      `AudioController` options" CHANGELOG entry — Elite got
+      `MusicOn`/`EffectsOn` through its `ConfigSettings`, SCR didn't
+      because it had nowhere to put them). Mirror Elite's pattern (a
+      user-data-path-rooted JSON file, read at startup and written from a
+      settings screen) and wire `MusicOn`/`EffectsOn` through it the same
+      way; `FrameGap` (the F9/F10 tuning item above) and league selection
+      (Super League item below) are other candidates worth persisting
+      once the file exists.
 
 Library logging (split 2026-07-14 from the original [LARGE] item; a
 2026-07-14 survey found every operational `Debug.*` call lives in

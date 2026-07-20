@@ -21,11 +21,13 @@ public sealed class FakeSound : ISound
 
     public double LastPitch { get; private set; }
 
+    public int PlayMusicCount { get; private set; }
+
+    public int StopMusicCount { get; private set; }
+
     public int PlayCount(string sfxType) => _playCounts.GetValueOrDefault(sfxType);
 
-    public void Play(string musicType, bool repeat)
-    {
-    }
+    public void Play(string musicType, bool repeat) => PlayMusicCount++;
 
     public void Play(string sfxType, float volume, float pan, double pitch)
     {
@@ -35,9 +37,7 @@ public sealed class FakeSound : ISound
         LastPitch = pitch;
     }
 
-    public void StopMusic()
-    {
-    }
+    public void StopMusic() => StopMusicCount++;
 
     public void PlayLoop(string sfxType, double pitch)
     {

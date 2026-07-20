@@ -7,6 +7,24 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Injectable AudioController options, 2026-07-20)
+
+- `AudioController`'s `_musicOn`/`_effectsOn` were hardcoded `true` behind
+  a pointless `#if DEBUG`/`#else` with identical branches; the constructor
+  now takes a new `Useful.Audio.AudioOptions` (`MusicOn`/`EffectsOn`, both
+  defaulting `true`) instead. Elite's `ConfigSettings` gained matching
+  `MusicOn`/`EffectsOn` properties (default `true`, no behaviour change),
+  and `EliteServiceCollectionExtensions`'s `AudioController` registration
+  now builds the options from the already-resolved `GameState.Config`
+  rather than a second `ConfigFile.ReadConfig()` call. SCR
+  (`StuntCarRacerMain`) has no settings infrastructure at all yet, so it
+  passes a plain default `AudioOptions` at its construction site — same
+  always-on behaviour as before, just explicit instead of hardcoded
+  inside `AudioController`. Added `PlayEffectDoesNothingWhenEffectsAreOff`
+  and `PlayMusicAndStopMusicDoNothingWhenMusicIsOff` to
+  `AudioControllerTests`, which needed `FakeSound.Play(string, bool)`/
+  `StopMusic()` to actually count calls (previously no-ops).
+
 ### Added (Elite view registrations in the container, 2026-07-20)
 
 - The last composition-root item: `EliteMain` no longer constructs its ~25

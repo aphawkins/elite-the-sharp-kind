@@ -10,24 +10,20 @@ public sealed class AudioController
     private readonly SfxSample[] _samples;
     private readonly ISound _sound;
 
-    public AudioController(ISound sound, IDictionary<string, SfxSample> sfx)
+    public AudioController(ISound sound, IDictionary<string, SfxSample> sfx, AudioOptions options)
     {
         Guard.ArgumentNull(sfx);
+        Guard.ArgumentNull(options);
 
         _sound = sound;
         _sfx = sfx;
+        _musicOn = options.MusicOn;
+        _effectsOn = options.EffectsOn;
 
         // Two effect names may share one SfxSample to share its cooldown
         // (e.g. sounds that played on one buffer in the original hardware),
         // so the per-update tick runs over the distinct samples.
         _samples = [.. new HashSet<SfxSample>(sfx.Values)];
-#if DEBUG
-        _musicOn = true;
-        _effectsOn = true;
-#else
-        _musicOn = true;
-        _effectsOn = true;
-#endif
     }
 
     public void PlayEffect(string effectType) => PlayEffect(effectType, volume: null, pitch: 1.0);

@@ -11,7 +11,7 @@ public class AudioControllerTests
     {
         // Arrange
         FakeSound sound = new();
-        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Smash", new(2) } });
+        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Smash", new(2) } }, new());
 
         // Act
         audio.PlayEffect("Smash");
@@ -26,7 +26,7 @@ public class AudioControllerTests
     {
         // Arrange
         FakeSound sound = new();
-        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Smash", new(2) } });
+        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Smash", new(2) } }, new());
 
         // Act
         audio.PlayEffect("Smash");
@@ -47,7 +47,8 @@ public class AudioControllerTests
         SfxSample shared = new(2);
         AudioController audio = new(
             sound,
-            new Dictionary<string, SfxSample> { { "OffRoad", shared }, { "Wreck", shared } });
+            new Dictionary<string, SfxSample> { { "OffRoad", shared }, { "Wreck", shared } },
+            new());
 
         // Act
         audio.PlayEffect("OffRoad");
@@ -66,7 +67,8 @@ public class AudioControllerTests
         SfxSample shared = new(2);
         AudioController audio = new(
             sound,
-            new Dictionary<string, SfxSample> { { "OffRoad", shared }, { "Wreck", shared } });
+            new Dictionary<string, SfxSample> { { "OffRoad", shared }, { "Wreck", shared } },
+            new());
 
         // Act & Assert: one update must not tick the shared cooldown twice
         audio.PlayEffect("OffRoad");
@@ -84,7 +86,7 @@ public class AudioControllerTests
     {
         // Arrange
         FakeSound sound = new();
-        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Smash", new(2, volume: 0.5f, pan: -1f) } });
+        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Smash", new(2, volume: 0.5f, pan: -1f) } }, new());
 
         // Act
         audio.PlayEffect("Smash");
@@ -100,7 +102,7 @@ public class AudioControllerTests
     {
         // Arrange
         FakeSound sound = new();
-        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Creak", new(2, volume: 1f, pan: 1f) } });
+        AudioController audio = new(sound, new Dictionary<string, SfxSample> { { "Creak", new(2, volume: 1f, pan: 1f) } }, new());
 
         // Act
         audio.PlayEffect("Creak", 0.25f, 2.0);
@@ -109,5 +111,38 @@ public class AudioControllerTests
         Assert.Equal(0.25f, sound.LastVolume);
         Assert.Equal(1f, sound.LastPan);
         Assert.Equal(2.0, sound.LastPitch);
+    }
+
+    [Fact]
+    public void PlayEffectDoesNothingWhenEffectsAreOff()
+    {
+        // Arrange
+        FakeSound sound = new();
+        AudioController audio = new(
+            sound,
+            new Dictionary<string, SfxSample> { { "Smash", new(2) } },
+            new() { EffectsOn = false });
+
+        // Act
+        audio.PlayEffect("Smash");
+
+        // Assert
+        Assert.Equal(0, sound.PlayCount("Smash"));
+    }
+
+    [Fact]
+    public void PlayMusicAndStopMusicDoNothingWhenMusicIsOff()
+    {
+        // Arrange
+        FakeSound sound = new();
+        AudioController audio = new(sound, new Dictionary<string, SfxSample>(), new() { MusicOn = false });
+
+        // Act
+        audio.PlayMusic("Theme", loop: true);
+        audio.StopMusic();
+
+        // Assert
+        Assert.Equal(0, sound.PlayMusicCount);
+        Assert.Equal(0, sound.StopMusicCount);
     }
 }

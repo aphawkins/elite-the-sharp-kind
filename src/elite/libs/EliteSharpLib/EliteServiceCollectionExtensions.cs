@@ -54,7 +54,14 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<PlayerShip>()));
-        services.AddSingleton(sp => new AudioController(sp.GetRequiredService<ISound>(), BuildEliteSfx()));
+        services.AddSingleton(sp =>
+        {
+            ConfigSettings config = sp.GetRequiredService<GameState>().Config;
+            return new AudioController(
+                sp.GetRequiredService<ISound>(),
+                BuildEliteSfx(),
+                new() { MusicOn = config.MusicOn, EffectsOn = config.EffectsOn });
+        });
         services.AddSingleton(sp => new Pilot(
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<AudioController>(),

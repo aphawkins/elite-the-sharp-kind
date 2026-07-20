@@ -77,7 +77,8 @@ public sealed class StuntCarRacerMain : IGame
                 { "OffRoad", offRoadOrWreck },
                 { "Wreck", offRoadOrWreck },
                 { "HitCar", new(9, volume: 56f / 64f, pan: 1f) },
-            });
+            },
+            new());
 
         LoadTrack(trackId);
 
