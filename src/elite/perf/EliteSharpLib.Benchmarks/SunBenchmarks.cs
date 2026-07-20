@@ -8,6 +8,7 @@ using EliteSharpLib.Suns;
 using Useful.Controls;
 using Useful.Fakes.Assets;
 using Useful.Graphics;
+using Useful.Graphics.Rendering;
 using Useful.SDL;
 
 namespace EliteSharpLib.Benchmarks;

@@ -7,6 +7,44 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Polygon renderers moved to Useful.Graphics, 2026-07-20)
+
+- `IShipRenderer`, `ShipRenderMode`, `PolygonData`, `WireframeRenderer`,
+  `PainterRenderer` and `ZBufferRenderer` moved from
+  `EliteSharpLib.Graphics` to `Useful.Graphics.Rendering`
+  (`src/useful/libs/Useful.Graphics/Rendering/`) — after today's earlier
+  work stripped their last Elite dependencies (`GameState`, the
+  `ShipWireframe` check), none of the six referenced anything
+  Elite-specific anymore; they only depend on `IGraphics`,
+  `IAssetLocator` and `PaletteReader`, all already public in `Useful.*`.
+  Renamed the two type names that said "ship": `IShipRenderer` →
+  `IPolygonRenderer`, `ShipRenderMode` → `PolygonRenderMode`
+  (`SubmitFace`/`faceColor` → `Submit`/`color` too, and
+  `PolygonData.FaceColor` → `Color`); the three renderer classes
+  (`WireframeRenderer`/`PainterRenderer`/`ZBufferRenderer`) didn't
+  mention ships in their names already, so those stayed as-is. Elite's
+  `ConfigSettings.ShipRenderMode` *property* keeps its name — that's
+  Elite's own config key, just typed by the now-shared enum.
+  `IShipRenderer`/the three renderer classes were `internal`; became
+  `public` since Elite now consumes them from a different assembly
+  (`PolygonData` stayed `internal`, used only inside the two chain-based
+  renderers). Picked up two analyzer fixes moving to a fresh project
+  (`CA1062` null-checks on the newly-public constructor/`Submit`
+  parameters, `IDE0290` primary constructors) that hadn't fired while
+  the types were `internal` to `EliteSharpLib`.
+
+  Checked `StuntCarRacerLib` for anything that duplicates this
+  chain/depth-sort logic and could reuse it: no — `TrackRenderer`/
+  `OpponentRenderer` submit `WorldPolygon`s straight to
+  `Graphics.DrawPolygonFilledDepth` with no buffering step, so there's
+  nothing to swap over, though `ZBufferRenderer` is the closer relative
+  if SCR ever wants the explicit start/submit/end lifecycle. Also
+  checked the rest of this session's changes (`AudioOptions`,
+  `ConfigSettings`/`ConfigFile`) for the same "no longer game-specific"
+  smell — `AudioOptions` was already correctly in `Useful.Audio`;
+  `ConfigSettings`/`ConfigFile` hold genuinely Elite-only fields
+  (`PlanetStyle`, `SunStyle`, the `elitesharp.cfg` filename) and stay put.
+
 ### Added (Selectable ship render mode, 2026-07-20)
 
 - Last of the ship-rendering-strategy items: `ZBufferRenderer` and

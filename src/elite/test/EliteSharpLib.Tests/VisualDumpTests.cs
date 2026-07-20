@@ -10,6 +10,7 @@ using Useful.Abstraction;
 using Useful.Assets;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
+using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests;
 
@@ -108,11 +109,11 @@ public class VisualDumpTests
     [Fact]
     public void PainterAndZBufferRenderIdenticallyForNonDecalGeometry()
     {
-        (uint[] Pixels, int Width, int Height) RenderAsteroid(Func<IGraphics, IShipRenderer> createRenderer)
+        (uint[] Pixels, int Width, int Height) RenderAsteroid(Func<IGraphics, IPolygonRenderer> createRenderer)
         {
             FastBitmap? lastFrame = null;
             using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
-            IShipRenderer shipRenderer = createRenderer(graphics);
+            IPolygonRenderer shipRenderer = createRenderer(graphics);
             GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
             EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer);
             ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw);

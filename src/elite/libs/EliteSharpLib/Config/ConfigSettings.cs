@@ -2,9 +2,9 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Graphics;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
+using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Config;
 
@@ -26,7 +26,7 @@ internal sealed class ConfigSettings
 
     // Which depth-sort strategy backs filled ship rendering; only takes
     // effect when ShipWireframe is false.
-    public ShipRenderMode ShipRenderMode { get; set; } = ShipRenderMode.ZBuffer;
+    public PolygonRenderMode ShipRenderMode { get; set; } = PolygonRenderMode.ZBuffer;
 
     public bool ShipWireframe { get; set; }
 

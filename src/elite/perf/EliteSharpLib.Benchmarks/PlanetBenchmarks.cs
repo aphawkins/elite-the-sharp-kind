@@ -9,6 +9,7 @@ using Useful.Controls;
 using Useful.Fakes.Assets;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
+using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Benchmarks;
 

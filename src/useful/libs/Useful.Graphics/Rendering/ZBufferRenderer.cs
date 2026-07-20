@@ -1,33 +1,27 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
-// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
-// Elite (C) I.Bell & D.Braben 1984.
+// 'Useful Libraries' - Andy Hawkins 2025.
 
 using System.Numerics;
-using Useful.Graphics;
 
-namespace EliteSharpLib.Graphics;
+namespace Useful.Graphics.Rendering;
 
-// The 2026-07-14 z-buffer spike's behaviour (per-pixel depth test via
-// Graphics.DrawPolygonFilledDepth): solid faces only, wireframe is a
-// separate WireframeRenderer selected instead of this at DI-registration
-// time. The face-root decal-inheritance z key (FindFaceRoots/FaceMeanZ)
-// that makes the per-pixel test tie correctly for decals stays in
-// ShipBase — it's submitted through IShipRenderer.SubmitFace's z
-// parameter the same way for every implementation, painter's included,
-// so it isn't z-buffer-specific despite fixing a z-buffer-only defect
-// (the open decal-seam issue, see CHANGELOG).
-internal sealed class ZBufferRenderer : IShipRenderer
+// Per-pixel depth test via Graphics.DrawPolygonFilledDepth: solid
+// polygons only, wireframe is a separate WireframeRenderer selected
+// instead of this at DI-registration time. Correct tie-breaking for
+// coplanar polygons submitted with the same z (e.g. decals sitting on a
+// base surface) depends on the caller's projection code submitting a
+// stable z key and on submission order for exact ties.
+public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
 {
     private const int MAXPOLYS = 100;
-    private readonly IGraphics _graphics;
+    private readonly IGraphics _graphics = graphics;
     private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
     private int _startPoly;
     private int _totalPolys;
 
-    internal ZBufferRenderer(IGraphics graphics) => _graphics = graphics;
-
-    public void SubmitFace(Vector2[] points, uint faceColor, float z)
+    public void Submit(Vector2[] points, uint color, float z)
     {
+        Guard.ArgumentNull(points);
+
         int i;
 
         if (_totalPolys == MAXPOLYS)
@@ -38,7 +32,7 @@ internal sealed class ZBufferRenderer : IShipRenderer
         int x = _totalPolys;
         _totalPolys++;
 
-        _polyChain[x].FaceColor = faceColor;
+        _polyChain[x].Color = color;
         _polyChain[x].Z = z;
         _polyChain[x].Next = -1;
         _polyChain[x].PointList = new Vector2[points.Length];
@@ -95,11 +89,11 @@ internal sealed class ZBufferRenderer : IShipRenderer
         {
             if (_polyChain[i].PointList.Length == 2)
             {
-                _graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], _polyChain[i].FaceColor);
+                _graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], _polyChain[i].Color);
                 continue;
             }
 
-            _graphics.DrawPolygonFilledDepth(_polyChain[i].PointList, _polyChain[i].Depths, _polyChain[i].FaceColor);
+            _graphics.DrawPolygonFilledDepth(_polyChain[i].PointList, _polyChain[i].Depths, _polyChain[i].Color);
         }
     }
 }

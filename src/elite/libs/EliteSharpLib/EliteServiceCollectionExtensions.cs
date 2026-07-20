@@ -16,6 +16,7 @@ using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
+using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib;
 
@@ -42,14 +43,14 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(_ => new PlayerShip());
         services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
         services.AddSingleton(sp => new PlanetController(sp.GetRequiredService<GameState>()));
-        services.AddSingleton<IShipRenderer>(sp =>
+        services.AddSingleton<IPolygonRenderer>(sp =>
         {
             ConfigSettings config = sp.GetRequiredService<GameState>().Config;
             IGraphics graphics = sp.GetRequiredService<IGraphics>();
 
             return config.ShipWireframe
                 ? new WireframeRenderer(graphics, sp.GetRequiredService<IAssetLocator>())
-                : config.ShipRenderMode == ShipRenderMode.Painter
+                : config.ShipRenderMode == PolygonRenderMode.Painter
                     ? new PainterRenderer(graphics)
                     : new ZBufferRenderer(graphics);
         });
@@ -57,7 +58,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IGraphics>(),
             sp.GetRequiredService<IAssetLocator>(),
-            sp.GetRequiredService<IShipRenderer>()));
+            sp.GetRequiredService<IPolygonRenderer>()));
         services.AddSingleton<IShipFactory>(sp => ShipFactory.Create(
             sp.GetRequiredService<IAssetLocator>(),
             sp.GetRequiredService<IEliteDraw>()));

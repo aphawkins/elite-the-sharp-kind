@@ -1,31 +1,32 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
-// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
-// Elite (C) I.Bell & D.Braben 1984.
+// 'Useful Libraries' - Andy Hawkins 2025.
 
 using System.Numerics;
 using Useful.Assets;
 using Useful.Assets.Palettes;
-using Useful.Graphics;
 
-namespace EliteSharpLib.Graphics;
+namespace Useful.Graphics.Rendering;
 
-// Outline-only ship rendering: every submitted face (2-point detail line
-// or polygon) draws immediately as a white outline. Unlike the filled
+// Outline-only rendering: every submitted polygon (2-point detail line or
+// filled shape) draws immediately as a white outline. Unlike the filled
 // strategies, drawing order doesn't affect the result, so this needs no
 // depth-sort chain at all.
-internal sealed class WireframeRenderer : IShipRenderer
+public sealed class WireframeRenderer : IPolygonRenderer
 {
     private readonly uint _colorWhite;
     private readonly IGraphics _graphics;
 
-    internal WireframeRenderer(IGraphics graphics, IAssetLocator assetLocator)
+    public WireframeRenderer(IGraphics graphics, IAssetLocator assetLocator)
     {
+        Guard.ArgumentNull(assetLocator);
+
         _graphics = graphics;
         _colorWhite = PaletteReader.Read(assetLocator.PalettePath)["White"];
     }
 
-    public void SubmitFace(Vector2[] points, uint faceColor, float z)
+    public void Submit(Vector2[] points, uint color, float z)
     {
+        Guard.ArgumentNull(points);
+
         if (points.Length == 2)
         {
             _graphics.DrawLine(points[0], points[1], _colorWhite);

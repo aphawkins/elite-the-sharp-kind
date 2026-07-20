@@ -10,6 +10,7 @@ using Useful.Assets;
 using Useful.Assets.Models;
 using Useful.Assets.Palettes;
 using Useful.Graphics;
+using Useful.Graphics.Rendering;
 using Useful.Maths;
 
 namespace EliteSharpLib.Graphics;
@@ -21,9 +22,9 @@ internal sealed class EliteDraw : IEliteDraw
     private readonly uint _colorYellow;
     private readonly GameState _gameState;
     private readonly Vector4[] _pointList = new Vector4[100];
-    private readonly IShipRenderer _shipRenderer;
+    private readonly IPolygonRenderer _shipRenderer;
 
-    internal EliteDraw(GameState gameState, IGraphics graphics, IAssetLocator assetLocator, IShipRenderer shipRenderer)
+    internal EliteDraw(GameState gameState, IGraphics graphics, IAssetLocator assetLocator, IPolygonRenderer shipRenderer)
     {
         _gameState = gameState;
         Graphics = graphics;
@@ -91,7 +92,7 @@ internal sealed class EliteDraw : IEliteDraw
     // later-submitted decal win the tie, as the painter's draw order
     // always did.
     public void DrawPolygonFilled(Vector2[] points, uint faceColor, float z)
-        => _shipRenderer.SubmitFace(points, faceColor, z);
+        => _shipRenderer.Submit(points, faceColor, z);
 
     public void DrawTextPretty(Vector2 position, float width, string text)
     {
