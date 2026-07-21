@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EliteSharpLib.Equipment;
@@ -97,11 +96,12 @@ internal sealed class SaveFile
 
     internal bool SaveCommander(string newName)
     {
+        string path = PathFor(newName);
+
         try
         {
             SaveState save = GameStateToSaveState(newName);
 
-            string path = PathFor(save.CommanderName);
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -116,18 +116,22 @@ internal sealed class SaveFile
         }
         catch (IOException ex)
         {
-            Debug.WriteLine("Failed to save commander.\n" + ex);
+            LogMessages.FailedToSaveCommander(_logger, path, ex);
             return false;
         }
         catch (Exception ex)
         {
-            Debug.WriteLine("Failed to save commander.\n" + ex);
-            Debug.Fail(ex.Message);
+            LogMessages.FailedToSaveCommander(_logger, path, ex);
             throw;
         }
     }
 
-    private string PathFor(string name) => Path.Combine(_baseDirectory, name + FileExtension);
+    private string PathFor(string name)
+    {
+        char[] invalidChars = Path.GetInvalidFileNameChars();
+        string sanitized = string.Concat(name.Select(c => invalidChars.Contains(c) ? '_' : c));
+        return Path.Combine(_baseDirectory, sanitized + FileExtension);
+    }
 
     /// <summary>
     /// Validates the shapes and enum values <see cref="SaveStateToGameState"/> assumes without

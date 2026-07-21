@@ -7,6 +7,23 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Sanitize SaveFile.SaveCommander's filename and log its save failures, 2026-07-21)
+
+- `SaveFile.SaveCommander` ([SaveFile.cs](src/elite/libs/EliteSharpLib/Save/SaveFile.cs))
+  built the save path as `save.CommanderName + ".cmdr"` from raw user input —
+  invalid filename characters threw and path separators could escape the save
+  directory. `PathFor` (shared by both `LoadCommander` and `SaveCommander`) now
+  replaces any character in `Path.GetInvalidFileNameChars()` with `_` before
+  combining it into a path. Also converted `SaveCommander`'s two
+  `Debug.WriteLine`/`Debug.Fail` catch blocks to the `ILogger<SaveFile>`
+  `LoadCommander` started using in the previous entry, adding a
+  `FailedToSaveCommander` `LogMessages` entry following the same
+  `GameOverView`/`Combat` exemplar. Added `SaveFileTests.cs` coverage for a
+  commander name containing `../` path separators, asserting the save stays
+  inside the save directory as a single file. Built the full solution, ran the
+  complete test suite (all green, 40 in `EliteSharpLib.Tests` including the
+  new test).
+
 ### Fixed (SaveFile.LoadCommander no longer throws on a corrupt or hand-edited save, 2026-07-21)
 
 - `SaveFile.LoadCommander` ([SaveFile.cs](src/elite/libs/EliteSharpLib/Save/SaveFile.cs))

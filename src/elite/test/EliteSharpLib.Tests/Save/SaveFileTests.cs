@@ -72,6 +72,21 @@ public class SaveFileTests
         Assert.True(loaded);
     }
 
+    [Fact]
+    public void SaveCommanderWithPathSeparatorsInNameStaysInsideSaveDirectory()
+    {
+        // Arrange: a commander name containing path separators must not escape
+        // the save directory or be treated as a subdirectory.
+        SaveFile saveFile = CreateSaveFile(out string directory);
+
+        // Act
+        bool saved = saveFile.SaveCommander("../../Escaped");
+
+        // Assert
+        Assert.True(saved);
+        Assert.Single(Directory.GetFiles(directory));
+    }
+
     private static SaveFile CreateSaveFile(out string directory)
     {
         ScreenManager<Screen, IView> views = new(new FakeKeyboard());

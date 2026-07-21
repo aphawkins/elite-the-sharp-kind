@@ -16,4 +16,7 @@ internal static partial class LogMessages
 
     [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "Commander file '{Path}' failed validation.")]
     internal static partial void CommanderValidationFailed(ILogger logger, string path);
+
+    [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Failed to save commander file '{Path}'.")]
+    internal static partial void FailedToSaveCommander(ILogger logger, string path, Exception ex);
 }

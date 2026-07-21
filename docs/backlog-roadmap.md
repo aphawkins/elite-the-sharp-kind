@@ -89,7 +89,6 @@ functionality. Conclusions:
 
 ### Defects and gaps
 
-- [ ] [EliteSharpLib] `SaveFile.SaveCommander` builds the path as `save.CommanderName + ".cmdr"` from raw user input ([SaveFile.cs:98-104](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) — invalid filename characters throw and path separators escape the save directory; sanitize the name (e.g. `Path.GetInvalidFileNameChars`) before using it as a filename (pairs with the user-data-location item above). While touching this method, convert its two catch blocks' `Debug.WriteLine`/`Debug.Fail` calls ([SaveFile.cs:117-127](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)) to the logger `LoadCommander` now uses (`ILogger<SaveFile>`, see CHANGELOG 2026-07-21), per the GameOverView/Combat exemplars.
 - [ ] [EliteSharpLib] `EliteDraw.DrawTextPretty` decrements `i` looking for a space/comma/period with no lower bound ([EliteDraw.cs:148-169](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)) — a word longer than the line width underflows the index and throws; bound the scan at `previous` and hard-break long words.
 
 ### Tests
