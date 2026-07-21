@@ -2,12 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics;
 using System.Numerics;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Maths;
@@ -27,6 +28,7 @@ internal sealed class Intro1View : IView
     private readonly Universe _universe;
     private readonly IEliteDraw _draw;
     private readonly IShipFactory _shipFactory;
+    private readonly ILogger<Intro1View> _logger;
     private readonly uint _colorGold;
     private readonly uint _colorWhite;
 
@@ -38,7 +40,8 @@ internal sealed class Intro1View : IView
         Combat combat,
         Universe universe,
         IEliteDraw draw,
-        IShipFactory shipFactory)
+        IShipFactory shipFactory,
+        ILogger<Intro1View>? logger = null)
     {
         _gameState = gameState;
         _audio = audio;
@@ -48,6 +51,7 @@ internal sealed class Intro1View : IView
         _universe = universe;
         _draw = draw;
         _shipFactory = shipFactory;
+        _logger = logger ?? NullLogger<Intro1View>.Instance;
 
         _colorGold = draw.Palette["Gold"];
         _colorWhite = draw.Palette["White"];
@@ -95,7 +99,7 @@ internal sealed class Intro1View : IView
         IShip cobraMk3 = _shipFactory.CreateShip("CobraMk3");
         if (!_universe.AddNewShip(cobraMk3, new(0, 0, 4500, 0), initMatrix, -127, 127))
         {
-            Debug.WriteLine("Failed to create CobraMk3");
+            LogMessages.FailedToCreateShip(_logger, "CobraMk3");
         }
 
         _audio.PlayMusic(nameof(MusicType.EliteTheme), true);

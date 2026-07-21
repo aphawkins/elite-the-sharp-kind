@@ -115,7 +115,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlanetController>(),
             sp.GetRequiredService<Stars>(),
             sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<IEliteDraw>()));
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<Space>()));
         services.AddSingleton(sp => new Scanner(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
@@ -193,7 +194,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IShipFactory>()));
+            sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro1View>()));
         services.AddSingleton(sp => new Intro2View(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -203,7 +205,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IShipFactory>()));
+            sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro2View>()));
         services.AddSingleton(sp => new GalacticChartView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
@@ -329,7 +332,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<IShipFactory>()));
+            sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConstrictorMissionView>()));
         services.AddSingleton(sp => new ThargoidMissionView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
@@ -344,7 +348,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<Pilot>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IShipFactory>()));
+            sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<EscapeCapsuleView>()));
         services.AddSingleton(sp => new GameOverView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),

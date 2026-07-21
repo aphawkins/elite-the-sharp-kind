@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics;
 using System.Numerics;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Conflict;
@@ -13,6 +12,8 @@ using EliteSharpLib.Suns;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Audio;
 using Useful.Maths;
 
@@ -27,6 +28,7 @@ internal sealed class Space
     private readonly Combat _combat;
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
+    private readonly ILogger<Space> _logger;
     private readonly Pilot _pilot;
     private readonly PlanetController _planet;
     private readonly PlayerShip _ship;
@@ -46,7 +48,8 @@ internal sealed class Space
         PlanetController planet,
         Stars stars,
         Universe universe,
-        IEliteDraw draw)
+        IEliteDraw draw,
+        ILogger<Space>? logger = null)
     {
         _gameState = gameState;
         _audio = audio;
@@ -58,6 +61,7 @@ internal sealed class Space
         _stars = stars;
         _universe = universe;
         _draw = draw;
+        _logger = logger ?? NullLogger<Space>.Instance;
     }
 
     internal int HyperCountdown { get; private set; }
@@ -161,7 +165,7 @@ internal sealed class Space
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
         if (!_universe.AddNewShip(planet, new(0, 0, 65536, 0), VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
-            Debug.WriteLine("Failed to create Planet");
+            LogMessages.FailedToCreateShip(_logger, "Planet");
         }
 
         Matrix4x4 rotmat = VectorMaths.GetRightHandedBasisMatrix;
@@ -627,7 +631,7 @@ internal sealed class Space
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
         if (!_universe.AddNewShip(planet, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
-            Debug.WriteLine("Failed to create Planet");
+            LogMessages.FailedToCreateShip(_logger, "Planet");
         }
 
         position.Z = -(((_gameState.DockedPlanet.D & 7) | 1) << 16);
@@ -636,7 +640,7 @@ internal sealed class Space
         IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
         if (!_universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
-            Debug.WriteLine("Failed to create Sun");
+            LogMessages.FailedToCreateShip(_logger, "Sun");
         }
 
         _gameState.SetView(Screen.Hyperspace);

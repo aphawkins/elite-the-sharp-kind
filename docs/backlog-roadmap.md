@@ -96,16 +96,6 @@ stray `DrawCircleFilled` WriteLine covered under Could — so scope is
 EliteSharpLib plus the wiring pattern; do the first item first, the rest
 in any order):
 
-- [ ] [EliteSharpLib] Convert the remaining scattered calls: `Space`'s
-      three "Failed to create Planet/Sun" WriteLines
-      ([Space.cs:164,630,639](../src/elite/libs/EliteSharpLib/Space.cs)) and the four
-      across `ConstrictorMissionView`, `EscapeCapsuleView`,
-      `Intro1View`, `Intro2View` — same
-      Warning-vs-exception triage already applied to `GameOverView`
-      (2026-07-21 logging-infrastructure exemplar) and `Combat`
-      (2026-07-21, see CHANGELOG). Views need the logger passed through
-      their constructors (trivial after the view-registration DI item
-      above).
 - [ ] Note: `SaveFile`'s four `Debug.*` calls and `EliteMain.Update`'s
       catch-all `Debug.WriteLine` are NOT separate work — they convert as
       part of their existing defect items below (`LoadCommander`

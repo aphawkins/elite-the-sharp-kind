@@ -2,12 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics;
 using System.Numerics;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Maths;
@@ -28,6 +29,7 @@ internal sealed class Intro2View : IView
     private readonly List<IShip> _parade;
     private readonly Stars _stars;
     private readonly Universe _universe;
+    private readonly ILogger<Intro2View> _logger;
     private readonly uint _colorGold;
     private readonly uint _colorWhite;
 
@@ -45,7 +47,8 @@ internal sealed class Intro2View : IView
         Combat combat,
         Universe universe,
         IEliteDraw draw,
-        IShipFactory shipFactory)
+        IShipFactory shipFactory,
+        ILogger<Intro2View>? logger = null)
     {
         _gameState = gameStat;
         _audio = audio;
@@ -56,6 +59,7 @@ internal sealed class Intro2View : IView
         _universe = universe;
         _draw = draw;
         _parade = shipFactory.CreateParade();
+        _logger = logger ?? NullLogger<Intro2View>.Instance;
 
         _colorGold = draw.Palette["Gold"];
         _colorWhite = draw.Palette["White"];
@@ -140,7 +144,7 @@ internal sealed class Intro2View : IView
         _universe.ClearUniverse();
         if (!_universe.AddNewShip(_parade[_shipNo], new(0, 0, 4500, 0), _rotmat, -127, -127))
         {
-            Debug.WriteLine("Failed to create first Parade ship");
+            LogMessages.FailedToCreateShip(_logger, _parade[_shipNo].Name);
         }
     }
 }

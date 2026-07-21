@@ -2,12 +2,13 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics;
 using System.Numerics;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Audio;
 using Useful.Maths;
 
@@ -25,6 +26,7 @@ internal sealed class EscapeCapsuleView : IView
     private readonly Stars _stars;
     private readonly Trade _trade;
     private readonly Universe _universe;
+    private readonly ILogger<EscapeCapsuleView> _logger;
     private int _i;
     private IShip _newShip;
 
@@ -37,7 +39,8 @@ internal sealed class EscapeCapsuleView : IView
         Universe universe,
         Pilot pilot,
         IEliteDraw draw,
-        IShipFactory shipFactory)
+        IShipFactory shipFactory,
+        ILogger<EscapeCapsuleView>? logger = null)
     {
         _gameState = gameState;
         _audio = audio;
@@ -50,6 +53,7 @@ internal sealed class EscapeCapsuleView : IView
         _shipFactory = shipFactory;
         _newShip = new ShipBase(draw);
         _color = _draw.Palette["White"];
+        _logger = logger ?? NullLogger<EscapeCapsuleView>.Instance;
     }
 
     public void Draw()
@@ -77,7 +81,7 @@ internal sealed class EscapeCapsuleView : IView
         _newShip = _shipFactory.CreateShip("CobraMk3");
         if (!_universe.AddNewShip(_newShip, new(0, 0, 200, 0), rotmat, -127, -127))
         {
-            Debug.Fail("Failed to create CobraMk3");
+            LogMessages.FailedToCreateShip(_logger, "CobraMk3");
         }
 
         _newShip.Velocity = 7;

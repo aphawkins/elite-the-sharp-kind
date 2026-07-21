@@ -2,11 +2,12 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Controls;
 using Useful.Maths;
 
@@ -51,6 +52,7 @@ internal sealed class ConstrictorMissionView : IView
     private readonly Trade _trade;
     private readonly Universe _universe;
     private readonly IShipFactory _shipFactory;
+    private readonly ILogger<ConstrictorMissionView> _logger;
     private readonly uint _colorGold;
 
     internal ConstrictorMissionView(
@@ -61,7 +63,8 @@ internal sealed class ConstrictorMissionView : IView
         Trade trade,
         Combat combat,
         Universe universe,
-        IShipFactory shipFactory)
+        IShipFactory shipFactory,
+        ILogger<ConstrictorMissionView>? logger = null)
     {
         _gameState = gameState;
         _draw = draw;
@@ -71,6 +74,7 @@ internal sealed class ConstrictorMissionView : IView
         _combat = combat;
         _universe = universe;
         _shipFactory = shipFactory;
+        _logger = logger ?? NullLogger<ConstrictorMissionView>.Instance;
 
         _colorGold = draw.Palette["Gold"];
     }
@@ -123,7 +127,7 @@ internal sealed class ConstrictorMissionView : IView
             IShip constrictor = _shipFactory.CreateShip("Constrictor");
             if (!_universe.AddNewShip(constrictor, new(200, 90, 600, 0), VectorMaths.GetLeftHandedBasisMatrix, -127, -127))
             {
-                Debug.Fail("Failed to create Constrictor");
+                LogMessages.FailedToCreateShip(_logger, "Constrictor");
             }
 
             constrictor.Flags = ShipProperties.None;

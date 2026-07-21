@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Remaining EliteSharpLib Debug calls converted to logging, 2026-07-21)
+
+- The last scattered `Debug.Fail`/`Debug.WriteLine` calls outside
+  `Combat` are converted: `Space`'s three "Failed to create Planet/Sun"
+  `WriteLine`s ([Space.cs](src/elite/libs/EliteSharpLib/Space.cs)) and one
+  each in `ConstrictorMissionView`, `EscapeCapsuleView`, `Intro1View`,
+  `Intro2View` — all legitimate runtime conditions (universe full) — now
+  log a Warning via the existing `LogMessages.FailedToCreateShip`, same
+  as the `GameOverView`/`Combat` exemplars. `Intro2View`'s parade-ship
+  failure now logs the specific ship's name instead of a fixed
+  "first Parade ship" string. `Space` and the four views all take an
+  optional `ILogger<T>` (defaulting to `NullLogger<T>.Instance`) through
+  their constructors, and `EliteServiceCollectionExtensions` resolves
+  `ILoggerFactory` to pass each one through. This closes out the
+  EliteSharpLib logging backlog item — every operational `Debug.*` call
+  in the library is now converted. Built the full solution, ran the
+  complete test suite (all green), and smoke-tested the built Elite app
+  (starts, logs "Starting Elite - The Sharp Kind", and constructs its
+  full DI graph — including every changed class — without error).
+
 ### Added (Combat's Debug.Fail calls converted to logging/exceptions, 2026-07-21)
 
 - `Combat` was the heaviest concentration of `Debug.Fail` calls in
