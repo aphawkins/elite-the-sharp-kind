@@ -10,7 +10,7 @@ public sealed class FakeInput : IInput
     {
     }
 
-    public void Register(IKeyboard keyboard)
+    public void Register(IKeyboardSink keyboard)
     {
     }
 }

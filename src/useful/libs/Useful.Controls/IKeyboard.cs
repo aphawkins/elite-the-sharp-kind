@@ -4,7 +4,7 @@ namespace Useful.Controls;
 
 public interface IKeyboard
 {
-    public bool Close { get; set; }
+    public bool Close { get; }
 
     public void ClearPressed();
 
@@ -26,10 +26,6 @@ public interface IKeyboard
     /// long as it physically is, even alongside other held keys.
     /// </summary>
     public bool IsHeld(ConsoleKey key);
-
-    public void KeyDown(ConsoleKey key, ConsoleModifiers modifiers);
-
-    public void KeyUp(ConsoleKey key, ConsoleModifiers modifiers);
 
     public (ConsoleKey Key, ConsoleModifiers Modifiers) LastPressed();
 

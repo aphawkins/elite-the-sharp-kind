@@ -2,7 +2,7 @@
 
 namespace Useful.Controls;
 
-public class SoftwareKeyboard : IKeyboard
+public class SoftwareKeyboard : IKeyboard, IKeyboardSink
 {
     private readonly Dictionary<ConsoleKey, bool> _pressedKeys = [];
     private readonly IInput _input;

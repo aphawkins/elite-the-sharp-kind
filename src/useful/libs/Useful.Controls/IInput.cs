@@ -6,5 +6,5 @@ public interface IInput
 {
     public void Poll();
 
-    public void Register(IKeyboard keyboard);
+    public void Register(IKeyboardSink keyboard);
 }

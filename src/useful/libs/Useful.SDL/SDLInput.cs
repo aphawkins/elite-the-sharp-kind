@@ -7,9 +7,9 @@ namespace Useful.SDL;
 
 public sealed class SDLInput : IInput
 {
-    private IKeyboard? _keyboard;
+    private IKeyboardSink? _keyboard;
 
-    public void Register(IKeyboard keyboard) => _keyboard = keyboard;
+    public void Register(IKeyboardSink keyboard) => _keyboard = keyboard;
 
     public void Poll()
     {

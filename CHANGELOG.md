@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (IKeyboard split into producer/consumer interfaces, 2026-07-21)
+
+- `IKeyboard` ([IKeyboard.cs](src/useful/libs/Useful.Controls/IKeyboard.cs)) mixed
+  the producer API (`KeyDown`/`KeyUp`/settable `Close`, written by `SDLInput`
+  as raw key events arrive) with the consumer API (`IsPressed`/`IsHeld`/
+  `LastPressed`/`ClearPressed`/`Poll`/readable `Close`, polled by games) —
+  game code holding an `IKeyboard` had no way to be stopped from also
+  injecting key events. Split the producer side into a new
+  `IKeyboardSink` ([IKeyboardSink.cs](src/useful/libs/Useful.Controls/IKeyboardSink.cs));
+  `IKeyboard` keeps the consumer API with `Close` now read-only.
+  `SoftwareKeyboard` and `FakeKeyboard` implement both interfaces
+  unchanged; `IInput.Register` (and its `SDLInput`/`FakeInput`/benchmark
+  implementations) now take `IKeyboardSink` instead of `IKeyboard`.
+  `IAbstraction.Keyboard` stays `IKeyboard`, so no game/view code changed.
+  Built the full solution and ran the complete test suite (all green).
+
 ### Changed (SCR screens given their real dependencies, 2026-07-21)
 
 - Every SCR screen (`RaceScreen`, `TrackMenuScreen`, `TrackPreviewScreen`,

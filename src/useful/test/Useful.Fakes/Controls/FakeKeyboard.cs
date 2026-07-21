@@ -5,7 +5,7 @@ using Useful.Controls;
 namespace Useful.Fakes.Controls;
 
 // Minimal in-test fake implementation of IKeyboard to validate contract behavior.
-public sealed class FakeKeyboard : IKeyboard
+public sealed class FakeKeyboard : IKeyboard, IKeyboardSink
 {
     private readonly HashSet<(ConsoleKey Key, ConsoleModifiers Modifiers)> _pressed = [];
     private (ConsoleKey Key, ConsoleModifiers Modifiers)? _last;

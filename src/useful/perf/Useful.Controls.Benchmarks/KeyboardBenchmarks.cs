@@ -77,10 +77,10 @@ public class KeyboardBenchmarks
     // Register stores the keyboard instance; Poll will invoke keyboard methods to simulate input events.
     private sealed class TestInput : IInput
     {
-        private readonly Queue<Action<IKeyboard>> _events = new();
-        private IKeyboard? _registered;
+        private readonly Queue<Action<IKeyboardSink>> _events = new();
+        private IKeyboardSink? _registered;
 
-        public void Register(IKeyboard keyboard) => _registered = keyboard;
+        public void Register(IKeyboardSink keyboard) => _registered = keyboard;
 
         // Enqueue a deterministic batch of key down/up actions.
         public void EnqueueBatch(int count)
@@ -116,7 +116,7 @@ public class KeyboardBenchmarks
             int iterations = Math.Min(32, _events.Count);
             for (int i = 0; i < iterations && _events.Count > 0; i++)
             {
-                Action<IKeyboard> action = _events.Dequeue();
+                Action<IKeyboardSink> action = _events.Dequeue();
                 action(_registered);
             }
         }
