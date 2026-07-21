@@ -1,6 +1,8 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
+using System.Collections;
 using System.Numerics;
+using System.Reflection;
 using Moq;
 using Useful.Assets;
 
@@ -552,6 +554,37 @@ public class SoftwareGraphicsTests
         // Assert - no exception thrown (implicit)
     }
 
+    [Fact]
+    public void GenerateTextBitmapCachesAndEvictsLeastRecentlyUsed()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssetsWithFont();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 64, (_) => { }, moqAssetLocator.Object);
+        const int capacity = 256;
+
+        // Act - draw more distinct strings than the cache can hold, then
+        // redraw the very first one (the least-recently-used entry, so it
+        // should have been evicted by now).
+        for (int i = 0; i < capacity + 10; i++)
+        {
+            graphics.DrawTextLeft(new(0, 0), $"Text{i}", "TestFont", BaseColors.White.Argb);
+        }
+
+        graphics.DrawTextLeft(new(0, 0), "Text0", "TestFont", BaseColors.White.Argb);
+        graphics.ScreenUpdate();
+
+        // Assert - the cache never grew past its capacity
+        Assert.Equal(capacity, GetTextCacheCount(graphics));
+    }
+
+    private static int GetTextCacheCount(SoftwareGraphics graphics)
+    {
+        FieldInfo field = typeof(SoftwareGraphics).GetField("_textCache", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?? throw new InvalidOperationException("_textCache field not found");
+        object value = field.GetValue(graphics) ?? throw new InvalidOperationException("_textCache was null");
+        return ((ICollection)value).Count;
+    }
+
     private static string GraphicsFilename(string filename)
         => Path.Combine("golden", filename);
 
@@ -572,6 +605,16 @@ public class SoftwareGraphicsTests
 
         moqAssetLocator.Setup(x => x.FontBitmapPaths)
             .Returns(new Dictionary<string, string>());
+
+        return moqAssetLocator;
+    }
+
+    private static Mock<IAssetLocator> ArrangeAssetsWithFont()
+    {
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+
+        moqAssetLocator.Setup(x => x.FontBitmapPaths)
+            .Returns(new Dictionary<string, string>() { { "TestFont", GraphicsFilename("font1.bmp") } });
 
         return moqAssetLocator;
     }

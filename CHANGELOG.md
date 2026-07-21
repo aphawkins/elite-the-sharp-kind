@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Bound the text bitmap cache with LRU eviction, 2026-07-21)
+
+- `SoftwareGraphics._textCache`
+  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  cached one bitmap per distinct (font, colour, text) forever, and Elite
+  renders ever-changing strings (bounty amounts, countdowns), so long
+  sessions leaked memory steadily. The cache is now a bounded
+  (`TextCacheCapacity` = 256) LRU: a `LinkedList` tracks recency, hits move
+  their node to the front, and once full the least-recently-used bitmap is
+  disposed and evicted before a new one is added. Added
+  `GenerateTextBitmapCachesAndEvictsLeastRecentlyUsed` in
+  `SoftwareGraphicsTests`, exercising a real font asset. Built the full
+  solution and ran the complete test suite (all green).
+
 ### Fixed (Stop disposing cached text bitmaps on every draw, 2026-07-21)
 
 - `DrawTextCentre`/`DrawTextLeft`/`DrawTextRight`

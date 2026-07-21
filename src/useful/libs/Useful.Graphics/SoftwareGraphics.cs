@@ -8,9 +8,17 @@ namespace Useful.Graphics;
 
 public sealed class SoftwareGraphics : IGraphics, IDisposable
 {
+    // Bounded LRU cache of rendered text bitmaps, keyed by (font, colour,
+    // text). Elite draws ever-changing strings (bounties, countdowns) that
+    // would otherwise accumulate forever; capping the entry count and
+    // evicting the least-recently-used bitmap keeps memory bounded while
+    // keeping frequently redrawn text (HUD labels) warm.
+    private const int TextCacheCapacity = 256;
+
     private readonly FastBitmap _screen;
     private readonly Action<FastBitmap> _screenUpdate;
-    private readonly Dictionary<string, FastBitmap> _textCache = [];
+    private readonly Dictionary<string, LinkedListNode<(string Key, FastBitmap Bitmap)>> _textCache = [];
+    private readonly LinkedList<(string Key, FastBitmap Bitmap)> _textCacheOrder = new();
 
     // Inverse depth (1/z) per pixel, 0 = infinitely far; allocated on first
     // use so purely 2D rendering pays nothing.
@@ -736,12 +744,13 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                 // dispose managed state (managed objects)
                 _screen?.Dispose();
 
-                foreach (FastBitmap bitmap in _textCache.Values)
+                foreach ((string _, FastBitmap bitmap) in _textCacheOrder)
                 {
                     bitmap.Dispose();
                 }
 
                 _textCache.Clear();
+                _textCacheOrder.Clear();
             }
 
             // free unmanaged resources (unmanaged objects) and override finalizer
@@ -866,9 +875,11 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     {
         string key = $"{fontType}_{color}_{text}";
 
-        if (_textCache.TryGetValue(key, out FastBitmap? cacheBitmap))
+        if (_textCache.TryGetValue(key, out LinkedListNode<(string Key, FastBitmap Bitmap)>? cacheNode))
         {
-            return cacheBitmap;
+            _textCacheOrder.Remove(cacheNode);
+            _textCacheOrder.AddFirst(cacheNode);
+            return cacheNode.Value.Bitmap;
         }
 
         BitmapFont font = Fonts[fontType];
@@ -919,7 +930,17 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
 
         FastBitmap bitmap = temp.Resize(totalWidth, BitmapFont.CharSize);
-        _textCache.Add(key, bitmap);
+
+        if (_textCacheOrder.Count >= TextCacheCapacity)
+        {
+            LinkedListNode<(string Key, FastBitmap Bitmap)> lru = _textCacheOrder.Last!;
+            _textCacheOrder.RemoveLast();
+            _textCache.Remove(lru.Value.Key);
+            lru.Value.Bitmap.Dispose();
+        }
+
+        LinkedListNode<(string Key, FastBitmap Bitmap)> node = _textCacheOrder.AddFirst((key, bitmap));
+        _textCache.Add(key, node);
         return bitmap;
     }
 }
