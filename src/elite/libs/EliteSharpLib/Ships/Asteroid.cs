@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Asteroid : ShipBase
 {
-    internal Asteroid(IEliteDraw draw)
-        : base(draw)
+    internal Asteroid(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Asteroid;
         Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;

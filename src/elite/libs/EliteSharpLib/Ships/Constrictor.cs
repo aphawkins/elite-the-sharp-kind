@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Constrictor : ShipBase
 {
-    internal Constrictor(IEliteDraw draw)
-        : base(draw)
+    internal Constrictor(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Constrictor;
         Flags = ShipProperties.LoneWolf | ShipProperties.Angry;

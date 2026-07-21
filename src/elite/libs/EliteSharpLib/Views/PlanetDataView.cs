@@ -85,15 +85,17 @@ internal sealed class PlanetDataView : IView
     private readonly PlanetController _planet;
     private readonly uint _colorGreen;
     private readonly uint _colorWhite;
+    private readonly RNG _rng;
 
     private float _distanceToPlanet;
     private PlanetData _hyperPlanetData = new();
 
-    internal PlanetDataView(GameState gameState, IEliteDraw draw, PlanetController planet)
+    internal PlanetDataView(GameState gameState, IEliteDraw draw, PlanetController planet, RNG rng)
     {
         _gameState = gameState;
         _draw = draw;
         _planet = planet;
+        _rng = rng;
 
         _colorGreen = draw.Palette["Green"];
         _colorWhite = draw.Palette["White"];
@@ -179,17 +181,17 @@ internal sealed class PlanetDataView : IView
             }
         }
 
-        RNG.Seed.A = planet.C;
-        RNG.Seed.B = planet.D;
-        RNG.Seed.C = planet.E;
-        RNG.Seed.D = planet.F;
+        _rng.Seed.A = planet.C;
+        _rng.Seed.B = planet.D;
+        _rng.Seed.C = planet.E;
+        _rng.Seed.D = planet.F;
 
         if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
         {
-            RNG.Seed.A ^= planet.A;
-            RNG.Seed.B ^= planet.B;
-            RNG.Seed.C ^= RNG.Seed.A;
-            RNG.Seed.D ^= RNG.Seed.B;
+            _rng.Seed.A ^= planet.A;
+            _rng.Seed.B ^= planet.B;
+            _rng.Seed.C ^= _rng.Seed.A;
+            _rng.Seed.D ^= _rng.Seed.B;
         }
 
         StringBuilder planet_description = new();
@@ -224,11 +226,11 @@ internal sealed class PlanetDataView : IView
 
                 if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
                 {
-                    option = RNG.GenMSXRandomNumber();
+                    option = _rng.GenMSXRandomNumber();
                 }
                 else
                 {
-                    int rnd = RNG.GenerateRandomNumber();
+                    int rnd = _rng.GenerateRandomNumber();
                     option = 0;
                     if (rnd >= 0x33)
                     {
@@ -271,10 +273,10 @@ internal sealed class PlanetDataView : IView
                         break;
 
                     case 'R':
-                        int len = RNG.GenerateRandomNumber() & 3;
+                        int len = _rng.GenerateRandomNumber() & 3;
                         for (int i = 0; i <= len; i++)
                         {
-                            int x = RNG.GenerateRandomNumber() & 62;
+                            int x = _rng.GenerateRandomNumber() & 62;
                             if (i == 0)
                             {
                                 planetDescription.Append(_planet.Digrams[x]);

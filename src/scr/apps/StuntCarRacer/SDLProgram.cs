@@ -9,7 +9,9 @@ using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using StuntCarRacerLib;
+using Useful;
 using Useful.Abstraction;
+using Useful.Audio;
 using Useful.SDL;
 
 [assembly: CLSCompliant(false)]
@@ -57,7 +59,11 @@ internal static class SDLProgram
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
         services.AddScrConfig(userDataPath);
-        services.AddSingleton<StuntCarRacerMain>();
+        services.AddScrRandom();
+        services.AddSingleton(sp => new StuntCarRacerMain(
+            sp.GetRequiredService<IAbstraction>(),
+            sp.GetRequiredService<AudioOptions>(),
+            sp.GetRequiredService<IRandomSource>()));
         services.AddSingleton<IGame>(sp => sp.GetRequiredService<StuntCarRacerMain>());
 
         using ServiceProvider provider = services.BuildServiceProvider();

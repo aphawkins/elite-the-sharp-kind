@@ -25,6 +25,7 @@ internal sealed class GameOverView : IView
     private readonly IShipFactory _shipFactory;
     private readonly ILogger<GameOverView> _logger;
     private readonly uint _colorGold;
+    private readonly RNG _rng;
 
     private int _i;
 
@@ -37,6 +38,7 @@ internal sealed class GameOverView : IView
         Universe universe,
         IEliteDraw draw,
         IShipFactory shipFactory,
+        RNG rng,
         ILogger<GameOverView>? logger = null)
     {
         _gameState = gameState;
@@ -47,6 +49,7 @@ internal sealed class GameOverView : IView
         _universe = universe;
         _draw = draw;
         _shipFactory = shipFactory;
+        _rng = rng;
         _logger = logger ?? NullLogger<GameOverView>.Instance;
 
         _colorGold = draw.Palette["Gold"];
@@ -77,10 +80,10 @@ internal sealed class GameOverView : IView
         // Cargo
         for (int i = 0; i < 5; i++)
         {
-            IShip cargo = RNG.TrueOrFalse() ? _shipFactory.CreateShip("CargoCannister") : _shipFactory.CreateShip("Alloy");
+            IShip cargo = _rng.TrueOrFalse() ? _shipFactory.CreateShip("CargoCannister") : _shipFactory.CreateShip("Alloy");
             if (!_universe.AddNewShip(
                 cargo,
-                new(RNG.Random(-32, 32), RNG.Random(-32, 32), -400, 0),
+                new(_rng.Random(-32, 32), _rng.Random(-32, 32), -400, 0),
                 VectorMaths.GetLeftHandedBasisMatrix,
                 0,
                 0))
@@ -88,9 +91,9 @@ internal sealed class GameOverView : IView
                 LogMessages.FailedToCreateShip(_logger, "Cargo");
             }
 
-            cargo.RotZ = ((RNG.Random(256) * 2) & 255) - 128;
-            cargo.RotX = ((RNG.Random(256) * 2) & 255) - 128;
-            cargo.Velocity = RNG.Random(16);
+            cargo.RotZ = ((_rng.Random(256) * 2) & 255) - 128;
+            cargo.RotX = ((_rng.Random(256) * 2) & 255) - 128;
+            cargo.Velocity = _rng.Random(16);
         }
 
         _audio.PlayEffect(nameof(SoundEffect.Gameover));

@@ -35,6 +35,7 @@ internal sealed class Space
     private readonly Stars _stars;
     private readonly Trade _trade;
     private readonly Universe _universe;
+    private readonly RNG _rng;
     private GalaxySeed _destinationPlanet = new();
     private float _hyperDistance;
 
@@ -49,6 +50,7 @@ internal sealed class Space
         Stars stars,
         Universe universe,
         IEliteDraw draw,
+        RNG rng,
         ILogger<Space>? logger = null)
     {
         _gameState = gameState;
@@ -61,6 +63,7 @@ internal sealed class Space
         _stars = stars;
         _universe = universe;
         _draw = draw;
+        _rng = rng;
         _logger = logger ?? NullLogger<Space>.Instance;
     }
 
@@ -162,7 +165,8 @@ internal sealed class Space
         IObject planet = PlanetFactory.Create(
             _gameState.Config.PlanetStyle,
             _draw,
-            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
+            _rng);
         if (!_universe.AddNewShip(planet, new(0, 0, 65536, 0), VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             LogMessages.FailedToCreateShip(_logger, "Planet");
@@ -589,7 +593,7 @@ internal sealed class Space
             _ship.Fuel -= _hyperDistance;
             _gameState.Cmdr.LegalStatus /= 2;
 
-            if ((RNG.Random(256) > 253) || (_ship.Climb >= _ship.MaxClimb))
+            if ((_rng.Random(256) > 253) || (_ship.Climb >= _ship.MaxClimb))
             {
                 EnterWitchspace();
                 return;
@@ -598,7 +602,7 @@ internal sealed class Space
             _gameState.DockedPlanet = new(_destinationPlanet);
         }
 
-        _trade.MarketRandomiser = RNG.Random(256);
+        _trade.MarketRandomiser = _rng.Random(256);
         _gameState.CurrentPlanetData = PlanetController.GeneratePlanetData(_gameState.DockedPlanet);
         _trade.GenerateStockMarket();
 
@@ -628,7 +632,8 @@ internal sealed class Space
         IObject planet = PlanetFactory.Create(
             _gameState.Config.PlanetStyle,
             _draw,
-            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
+            _rng);
         if (!_universe.AddNewShip(planet, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             LogMessages.FailedToCreateShip(_logger, "Planet");
@@ -637,7 +642,7 @@ internal sealed class Space
         position.Z = -(((_gameState.DockedPlanet.D & 7) | 1) << 16);
         position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
-        IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
+        IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw, _rng);
         if (!_universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             LogMessages.FailedToCreateShip(_logger, "Sun");
@@ -678,7 +683,7 @@ internal sealed class Space
         _combat.Reset();
         _universe.ClearUniverse();
 
-        int nthg = RNG.Random(1, 5);
+        int nthg = _rng.Random(1, 5);
 
         for (int i = 0; i < nthg; i++)
         {
@@ -725,7 +730,7 @@ internal sealed class Space
     private void MakeStationAppear()
     {
         Vector4 location = _universe.Planet!.Location;
-        Vector4 vec = new(RNG.Random(-16384, 16384), RNG.Random(-16384, 16384), RNG.Random(32768), 0);
+        Vector4 vec = new(_rng.Random(-16384, 16384), _rng.Random(-16384, 16384), _rng.Random(32768), 0);
         vec = VectorMaths.UnitVector(vec);
         Vector4 position = location - (vec * 65792);
 

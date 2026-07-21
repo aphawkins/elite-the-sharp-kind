@@ -24,12 +24,14 @@ internal sealed class EliteDraw : IEliteDraw
     private readonly GameState _gameState;
     private readonly Vector4[] _pointList = new Vector4[100];
     private readonly IPolygonRenderer _shipRenderer;
+    private readonly RNG _rng;
 
-    internal EliteDraw(GameState gameState, IGraphics graphics, IAssetLocator assetLocator, IPolygonRenderer shipRenderer)
+    internal EliteDraw(GameState gameState, IGraphics graphics, IAssetLocator assetLocator, IPolygonRenderer shipRenderer, RNG rng)
     {
         _gameState = gameState;
         Graphics = graphics;
         _shipRenderer = shipRenderer;
+        _rng = rng;
         Palette = PaletteReader.Read(assetLocator.PalettePath);
         _colorGold = Palette["Gold"];
         _colorWhite = Palette["White"];
@@ -256,7 +258,7 @@ internal sealed class EliteDraw : IEliteDraw
 
             for (int i = 0; i < 16; i++)
             {
-                Vector2 position = new(RNG.Random(-128, 128), RNG.Random(-128, 128));
+                Vector2 position = new(_rng.Random(-128, 128), _rng.Random(-128, 128));
 
                 position.X = position.X * q / 256;
                 position.Y = position.Y * q / 256;
@@ -264,8 +266,8 @@ internal sealed class EliteDraw : IEliteDraw
                 position.X = position.X + position.X + sx;
                 position.Y = position.Y + position.Y + sy;
 
-                int sizex = RNG.Random(1, 3);
-                int sizey = RNG.Random(1, 3);
+                int sizex = _rng.Random(1, 3);
+                int sizey = _rng.Random(1, 3);
 
                 for (int psy = 0; psy < sizey; psy++)
                 {

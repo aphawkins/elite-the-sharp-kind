@@ -7,6 +7,63 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Share injectable randomness between Elite and SCR, 2026-07-21)
+
+- Elite's `RNG` and SCR's `CarPhysics`/`OpponentPhysics` each had their own
+  ad-hoc take on injectable randomness (see the entry below for Elite's), and
+  SCR's `CarPhysics` had none at all (`private readonly Random _random =
+  new(0);`, no constructor seam). The generic part is now a shared
+  `Useful.IRandomSource`/`Useful.RandomSource` (`NextInt`/`Random`/
+  `TrueOrFalse`/`GaussianRandom`, wrapping an injected `System.Random`), with
+  a `Useful.Fakes.FakeRandomSource` that returns fixed, test-set values so a
+  test can force an exact branch (e.g. "the 1-in-256 roll succeeds")
+  without hunting for a seed. `EliteSharpLib.RNG` keeps only what's
+  genuinely Elite-specific — `Seed`, `GenerateRandomNumber` (6502),
+  `GenMSXRandomNumber` (MSX) — composing a `RandomSource` for everything
+  else; its `RNG(Random random)` constructor (and every existing DI
+  registration/consumer/test) is unchanged, plus a new `RNG(IRandomSource
+  randomSource)` overload lets tests inject a `FakeRandomSource` directly.
+  `CarPhysics`/`OpponentPhysics` (and the `Race`/`StuntCarRacerMain` chain
+  that builds them) now take `IRandomSource` via constructor injection, with
+  a convenience overload defaulting to an unseeded `RandomSource` so the
+  ~30 existing `new(track)`-style test call sites didn't need to change.
+  `StuntCarRacerServiceCollectionExtensions.AddScrRandom` registers the
+  `Random`/`IRandomSource` singletons (mirroring
+  `EliteServiceCollectionExtensions`); `SDLProgram.cs` switched
+  `StuntCarRacerMain`'s registration to an explicit factory, since an
+  implicit-constructor-selecting `AddSingleton<StuntCarRacerMain>()` would
+  now tie between two equally-resolvable two-argument constructors.
+  Added `EliteSharpLib.Tests/RNGTests.cs`, `CombatTests.cs` (Combat had zero
+  tests before this), and `FakeRandomSource`-driven branch tests in
+  `ShipFactoryTests.cs`; added the same for `CarPhysicsTests.cs`
+  (`EngineFluctuation`/`OffRoadPitch`, previously either untested or only
+  range-asserted) and `OpponentPhysicsTests.cs` (opponent-selection roll).
+  Built the full solution, ran the complete test suite (all green, 35
+  EliteSharpLib.Tests + 184 StuntCarRacerLib.Tests), and smoke-tested both
+  `EliteSharp` and `StuntCarRacer` launching and running cleanly.
+
+### Changed (Replace the static crypto RNG with an injected, seedable service, 2026-07-21)
+
+- `RNG` ([RNG.cs](src/elite/libs/EliteSharpLib/RNG.cs)) was a static class
+  whose `Random(...)` delegated every call to
+  `RandomNumberGenerator.GetInt32` — cryptographically secure but far
+  slower than needed in Elite's hot per-tick paths — and whose `Seed`
+  state was static mutable, making the 6502/MSX planet-description
+  generators untestable and coupling every caller to global state. `RNG`
+  is now an instance class constructed from an injected `System.Random`,
+  registered as a singleton in `EliteServiceCollectionExtensions` (a
+  fresh `Random` in production, seedable in tests) alongside the
+  `Random` singleton itself, per the architecture doc's "randomness is
+  always an injected, seedable source, never a static mutable RNG"
+  rule. Every consumer (`Combat`, `Space`, `Stars`, `Universe`,
+  `Pilot`, `EliteDraw`, `LaserDraw`, `ShipFactory`/`ShipBase` and all
+  30 ship subclasses, `PlanetFactory`/`FractalPlanet`,
+  `SunFactory`/`GradientSun`/`SolidSun`, the four `Pilot*View`s,
+  `GameOverView`, `PlanetDataView`, `EscapeCapsuleView`) now takes
+  `RNG` by constructor injection instead of calling the static class.
+  Built the full solution, ran the complete test suite (all green),
+  and smoke-tested `EliteSharp` launching and running cleanly.
+
 ### Changed (Remove two-phase construction from SDLSound/SoftwareGraphics, 2026-07-21)
 
 - `SDLSound` required a separate `Initialize(assetLocator)` call after

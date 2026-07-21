@@ -30,8 +30,9 @@ public class VisualDumpTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
         GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
         ZBufferRenderer shipRenderer = new(graphics);
-        EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer);
-        ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw);
+        RNG rng = new(new Random(0));
+        EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer, rng);
+        ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
 
         void RenderAndSave(string name, params IShip[] ships)
         {
@@ -115,8 +116,9 @@ public class VisualDumpTests
             using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
             IPolygonRenderer shipRenderer = createRenderer(graphics);
             GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
-            EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer);
-            ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw);
+            RNG rng = new(new Random(0));
+            EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer, rng);
+            ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
 
             IShip asteroid = factory.CreateShip("Asteroid");
             asteroid.Location = new(0, 0, 300, 0);

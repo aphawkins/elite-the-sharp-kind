@@ -14,10 +14,12 @@ internal sealed class Universe
     private readonly IShipFactory _shipFactory;
     private readonly List<IObject> _objects = [];
     private readonly Dictionary<ShipType, int> _shipCount = [];
+    private readonly RNG _rng;
 
-    internal Universe(IShipFactory shipFactory)
+    internal Universe(IShipFactory shipFactory, RNG rng)
     {
         _shipFactory = shipFactory;
+        _rng = rng;
         ClearUniverse();
     }
 
@@ -70,17 +72,17 @@ internal sealed class Universe
     {
         Vector4 position = new()
         {
-            X = 1000 + RNG.Random(8192),
-            Y = 1000 + RNG.Random(8192),
+            X = 1000 + _rng.Random(8192),
+            Y = 1000 + _rng.Random(8192),
             Z = 12000,
         };
 
-        if (RNG.Random(256) > 127)
+        if (_rng.Random(256) > 127)
         {
             position.X = -position.X;
         }
 
-        if (RNG.Random(256) > 127)
+        if (_rng.Random(256) > 127)
         {
             position.Y = -position.Y;
         }

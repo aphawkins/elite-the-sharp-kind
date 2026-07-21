@@ -33,10 +33,11 @@ public class PlanetBenchmarks : IDisposable
         GameState gameState = new(views);
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
-        EliteDraw draw = new(gameState, _graphics, assetLocator, shipRenderer);
+        RNG rng = new(new Random(0));
+        EliteDraw draw = new(gameState, _graphics, assetLocator, shipRenderer, rng);
         _wireframePlanet = new(draw);
         _solidPlanet = new(draw);
-        _fractalPlanet = new(draw, 12345);
+        _fractalPlanet = new(draw, 12345, rng);
         _stripedPlanet = new(draw);
     }
 

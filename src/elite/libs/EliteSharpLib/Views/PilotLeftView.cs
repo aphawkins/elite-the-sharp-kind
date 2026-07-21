@@ -23,9 +23,10 @@ internal sealed class PilotLeftView : IView
         PlayerShip ship,
         Space space,
         IEliteDraw draw,
-        Combat combat)
+        Combat combat,
+        RNG rng)
     {
-        _pilotView = new(gameState, keyboard, pilot, ship, stars, space, draw, combat);
+        _pilotView = new(gameState, keyboard, pilot, ship, stars, space, draw, combat, rng);
         _stars = stars;
         _ship = ship;
     }

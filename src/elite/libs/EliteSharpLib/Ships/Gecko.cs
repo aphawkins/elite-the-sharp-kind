@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Gecko : ShipBase
 {
-    internal Gecko(IEliteDraw draw)
-        : base(draw)
+    internal Gecko(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Gecko;
         Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;

@@ -16,12 +16,14 @@ internal sealed class Stars
     private readonly PlayerShip _ship;
     private readonly Vector4[] _stars = new Vector4[20];
     private readonly uint _colorWhite;
+    private readonly RNG _rng;
 
-    internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship)
+    internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship, RNG rng)
     {
         _gameState = gameState;
         _ship = ship;
         _draw = draw;
+        _rng = rng;
         _colorWhite = draw.Palette["White"];
     }
 
@@ -224,17 +226,17 @@ internal sealed class Stars
 
             if ((zz >= 300) || (MathF.Abs(yy) >= 110))
             {
-                _stars[i].Z = RNG.Random(51, 179);
+                _stars[i].Z = _rng.Random(51, 179);
 
-                if (RNG.TrueOrFalse())
+                if (_rng.TrueOrFalse())
                 {
-                    _stars[i].X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
-                    _stars[i].Y = RNG.TrueOrFalse() ? -(int)_draw.Centre.Y / 2 : (int)_draw.Centre.Y / 2;
+                    _stars[i].X = _rng.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
+                    _stars[i].Y = _rng.TrueOrFalse() ? -(int)_draw.Centre.Y / 2 : (int)_draw.Centre.Y / 2;
                 }
                 else
                 {
-                    _stars[i].X = RNG.TrueOrFalse() ? -(int)_draw.Centre.X / 2 : (int)_draw.Centre.X / 2;
-                    _stars[i].Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
+                    _stars[i].X = _rng.TrueOrFalse() ? -(int)_draw.Centre.X / 2 : (int)_draw.Centre.X / 2;
+                    _stars[i].Y = _rng.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
                 }
             }
         }
@@ -250,9 +252,9 @@ internal sealed class Stars
 
     private Vector4 CreateNewStar() => new()
     {
-        X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2) | 8,
-        Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2) | 4,
-        Z = RNG.Random(256) | 144,
+        X = _rng.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2) | 8,
+        Y = _rng.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2) | 4,
+        Z = _rng.Random(256) | 144,
     };
 
     private void SideStarfield(float alpha, float beta, float delta)
@@ -318,14 +320,14 @@ internal sealed class Stars
             if (MathF.Abs(_stars[i].X) >= _draw.Centre.X / 2)
             {
                 _stars[i].X = (_gameState.CurrentScreen == Screen.LeftView) ? _draw.Centre.X / 2 : -_draw.Centre.X / 2;
-                _stars[i].Y = RNG.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
-                _stars[i].Z = RNG.Random(256) | 8;
+                _stars[i].Y = _rng.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
+                _stars[i].Z = _rng.Random(256) | 8;
             }
             else if (MathF.Abs(_stars[i].Y) >= 116)
             {
-                _stars[i].X = RNG.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
+                _stars[i].X = _rng.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
                 _stars[i].Y = (alpha > 0) ? -_draw.Centre.Y / 2 : _draw.Centre.Y / 2;
-                _stars[i].Z = RNG.Random(256) | 8;
+                _stars[i].Z = _rng.Random(256) | 8;
             }
         }
 

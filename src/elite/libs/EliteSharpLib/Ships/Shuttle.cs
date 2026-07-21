@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Shuttle : ShipBase
 {
-    internal Shuttle(IEliteDraw draw)
-        : base(draw)
+    internal Shuttle(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Shuttle;
         Flags = ShipProperties.SpaceJunk | ShipProperties.FlyToPlanet | ShipProperties.Slow;

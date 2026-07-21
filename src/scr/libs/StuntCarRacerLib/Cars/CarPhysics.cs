@@ -88,8 +88,8 @@ public sealed partial class CarPhysics
 
     private readonly TrigCoefficients _trig = new();
 
-    // Engine fluctuation is cosmetic (engine sound pitch); seeded for determinism.
-    private readonly Random _random = new(0);
+    // Engine fluctuation is cosmetic (engine sound pitch); injected so it can be seeded for determinism.
+    private readonly IRandomSource _randomSource;
 
     // Speeds.
     private int _playerWorldXSpeed;
@@ -230,9 +230,16 @@ public sealed partial class CarPhysics
     private bool _carOnFirstHalfOfLap;
 
     public CarPhysics(Track track)
+        : this(track, new RandomSource(new Random()))
+    {
+    }
+
+    public CarPhysics(Track track, IRandomSource randomSource)
     {
         Guard.ArgumentNull(track);
+        Guard.ArgumentNull(randomSource);
         _track = track;
+        _randomSource = randomSource;
     }
 
     private enum WheelPosition
@@ -795,14 +802,10 @@ public sealed partial class CarPhysics
     // divisor's range midpoint, chosen as the pitch=1.0 anchor since the
     // original never sets this sample's frequency anywhere else - see the
     // per-effect-sound backlog item.
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Security",
-        "CA5394:Do not use insecure randomness",
-        Justification = "Random fluctuation of the off-road effect's pitch only.")]
     private double CalculateOffRoadPitch()
     {
         const int ReferenceDivisor = 464;
-        int divisor = 450 + (_random.Next() & 0x1c);
+        int divisor = 450 + (_randomSource.NextInt() & 0x1c);
         return (double)ReferenceDivisor / divisor;
     }
 

@@ -40,6 +40,7 @@ internal sealed class EscapeCapsuleView : IView
         Pilot pilot,
         IEliteDraw draw,
         IShipFactory shipFactory,
+        RNG rng,
         ILogger<EscapeCapsuleView>? logger = null)
     {
         _gameState = gameState;
@@ -51,7 +52,7 @@ internal sealed class EscapeCapsuleView : IView
         _pilot = pilot;
         _draw = draw;
         _shipFactory = shipFactory;
-        _newShip = new ShipBase(draw);
+        _newShip = new ShipBase(draw, rng);
         _color = _draw.Palette["White"];
         _logger = logger ?? NullLogger<EscapeCapsuleView>.Instance;
     }

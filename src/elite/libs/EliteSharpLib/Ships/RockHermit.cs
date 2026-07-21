@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class RockHermit : ShipBase
 {
-    internal RockHermit(IEliteDraw draw)
-        : base(draw)
+    internal RockHermit(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Hermit;
         Flags = ShipProperties.SpaceJunk | ShipProperties.Slow;

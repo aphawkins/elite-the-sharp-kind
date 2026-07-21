@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Moray : ShipBase
 {
-    internal Moray(IEliteDraw draw)
-        : base(draw)
+    internal Moray(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Moray;
         Flags = ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry;

@@ -24,7 +24,7 @@ public class SolidSunTests
         {
             Graphics = mockGraphics.Object,
         };
-        SolidSun sun = new(fakeEliteDraw);
+        SolidSun sun = new(fakeEliteDraw, new(new Random(0)));
 
         // Act
         sun.Draw();
@@ -41,7 +41,7 @@ public class SolidSunTests
     {
         // Arrange
         FakeEliteDraw fakeEliteDraw = new();
-        SolidSun sun = new(fakeEliteDraw);
+        SolidSun sun = new(fakeEliteDraw, new(new Random(0)));
 
         // Act
         IObject obj = sun.Clone();

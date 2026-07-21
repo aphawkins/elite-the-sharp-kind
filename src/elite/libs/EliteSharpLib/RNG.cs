@@ -2,40 +2,47 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Security.Cryptography;
+using Useful;
 
 namespace EliteSharpLib;
 
-internal static class RNG
+/// <summary>
+/// Elite's random-number source: the shared <see cref="RandomSource"/>
+/// plus the period-accurate 6502/MSX generators, which carry their own
+/// <see cref="RandomSeed"/> state and don't generalise to other games.
+/// </summary>
+internal sealed class RNG : IRandomSource
 {
-    internal static RandomSeed Seed { get; set; } = new();
+    private readonly IRandomSource _randomSource;
 
-    /// <summary>
-    /// Guassian random number generator.
-    /// </summary>
-    /// <param name="min">The lower bound of the distribution (inclusive).</param>
-    /// <param name="max">The upper bound of the distribution (exclusive).</param>
-    /// <returns>A number between min and max with Gaussian distribution.</returns>
-    internal static int GaussianRandom(int min, int max)
+    internal RNG(Random random)
+        : this(new RandomSource(random))
     {
-        const int iterations = 12;
-        int r = 0;
-        for (int i = 0; i < iterations; i++)
-        {
-            r += Random(min, max);
-        }
-
-        r /= iterations;
-
-        return r;
     }
+
+    // Lets tests inject a FakeRandomSource to force an exact branch, without
+    // changing the RNG(Random) constructor the DI container and every game
+    // consumer already depend on.
+    internal RNG(IRandomSource randomSource) => _randomSource = randomSource;
+
+    internal RandomSeed Seed { get; set; } = new();
+
+    public int NextInt() => _randomSource.NextInt();
+
+    public int Random(int toExclusive) => _randomSource.Random(toExclusive);
+
+    public int Random(int fromInclusive, int toExclusive) => _randomSource.Random(fromInclusive, toExclusive);
+
+    public bool TrueOrFalse() => _randomSource.TrueOrFalse();
+
+    public int GaussianRandom(int min, int max) => _randomSource.GaussianRandom(min, max);
 
     /// <summary>
     /// Generate a random number between 0 and 255.
     /// This is the version used in the 6502 Elites.
     /// </summary>
     /// <returns>A random number between 0 and 255.</returns>
-    internal static int GenerateRandomNumber()
+    internal int GenerateRandomNumber()
     {
         int x = (Seed.A * 2) & 0xFF;
         int a = x + Seed.C;
@@ -60,7 +67,7 @@ internal static class RNG
     /// This is the version used in the MSX and 16bit Elites.
     /// </summary>
     /// <returns>A random number between 0 and 255.</returns>
-    internal static int GenMSXRandomNumber()
+    internal int GenMSXRandomNumber()
     {
         int a = Seed.A;
         int b = Seed.B;
@@ -81,21 +88,4 @@ internal static class RNG
 
         return Seed.C / 52;
     }
-
-    /// <summary>
-    /// Generates a random number from zero to the exclusive upper bound.
-    /// </summary>
-    /// <param name="toExclusive">The exclusive upper bound of the random range.</param>
-    /// <returns>A random number.</returns>
-    internal static int Random(int toExclusive) => Random(0, toExclusive);
-
-    /// <summary>
-    /// Generates a random number.
-    /// </summary>
-    /// <param name="fromInclusive">The exclusive lower bound of the random range.</param>
-    /// <param name="toExclusive">The exclusive upper bound of the random range.</param>
-    /// <returns>A random number.</returns>
-    internal static int Random(int fromInclusive, int toExclusive) => RandomNumberGenerator.GetInt32(fromInclusive, toExclusive);
-
-    internal static bool TrueOrFalse() => Random(0, 2) != 0;
 }

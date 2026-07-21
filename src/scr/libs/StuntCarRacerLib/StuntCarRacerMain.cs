@@ -33,24 +33,30 @@ public sealed class StuntCarRacerMain : IGame
     private bool _sceneryKeyDown;
 
     public StuntCarRacerMain(IAbstraction abstraction)
-        : this(abstraction, TrackId.LittleRamp, new())
+        : this(abstraction, TrackId.LittleRamp, new(), new RandomSource(new Random()))
     {
     }
 
     public StuntCarRacerMain(IAbstraction abstraction, TrackId trackId)
-        : this(abstraction, trackId, new())
+        : this(abstraction, trackId, new(), new RandomSource(new Random()))
     {
     }
 
     public StuntCarRacerMain(IAbstraction abstraction, AudioOptions audioOptions)
-        : this(abstraction, TrackId.LittleRamp, audioOptions)
+        : this(abstraction, TrackId.LittleRamp, audioOptions, new RandomSource(new Random()))
     {
     }
 
-    private StuntCarRacerMain(IAbstraction abstraction, TrackId trackId, AudioOptions audioOptions)
+    public StuntCarRacerMain(IAbstraction abstraction, AudioOptions audioOptions, IRandomSource randomSource)
+        : this(abstraction, TrackId.LittleRamp, audioOptions, randomSource)
+    {
+    }
+
+    private StuntCarRacerMain(IAbstraction abstraction, TrackId trackId, AudioOptions audioOptions, IRandomSource randomSource)
     {
         Guard.ArgumentNull(abstraction);
         Guard.ArgumentNull(audioOptions);
+        Guard.ArgumentNull(randomSource);
 
         _abstraction = abstraction;
         Graphics = abstraction.Graphics;
@@ -79,7 +85,7 @@ public sealed class StuntCarRacerMain : IGame
             },
             audioOptions);
 
-        Race = new(Graphics, Palette, Sound, audio, trackId);
+        Race = new(Graphics, Palette, Sound, audio, trackId, randomSource);
 
         Screens = new(Keyboard);
         Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(Race, Keyboard, Screens, Graphics, Palette));

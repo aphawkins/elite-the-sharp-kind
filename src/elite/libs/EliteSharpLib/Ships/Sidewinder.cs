@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Sidewinder : ShipBase
 {
-    internal Sidewinder(IEliteDraw draw)
-    : base(draw)
+    internal Sidewinder(IEliteDraw draw, RNG rng)
+    : base(draw, rng)
     {
         Type = ShipType.Sidewinder;
         Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;

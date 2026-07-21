@@ -5,6 +5,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StuntCarRacerLib.Config;
+using Useful;
 using Useful.Audio;
 using Useful.Config;
 
@@ -30,6 +31,16 @@ public static class StuntCarRacerServiceCollectionExtensions
             ScrConfigSettings config = sp.GetRequiredService<ConfigFile<ScrConfigSettings>>().ReadConfig();
             return new AudioOptions { MusicOn = config.MusicOn, EffectsOn = config.EffectsOn };
         });
+        return services;
+    }
+
+    // The single shared source of entropy for this app instance: an
+    // unseeded Random in production, replaceable with a seeded one in
+    // tests via RandomSource's constructor seam.
+    public static IServiceCollection AddScrRandom(this IServiceCollection services)
+    {
+        services.AddSingleton(_ => new Random());
+        services.AddSingleton<IRandomSource>(sp => new RandomSource(sp.GetRequiredService<Random>()));
         return services;
     }
 }

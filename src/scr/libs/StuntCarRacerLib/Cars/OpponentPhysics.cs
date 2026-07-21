@@ -11,10 +11,6 @@ namespace StuntCarRacerLib.Cars;
 // The opponent is not a full physics simulation: it rides the road surface
 // at scripted per-piece speeds, with randomized steering, wheel height
 // spring dynamics, and interaction with (and collision against) the player.
-[System.Diagnostics.CodeAnalysis.SuppressMessage(
-    "Security",
-    "CA5394:Do not use insecure randomness",
-    Justification = "Gameplay randomness only (opponent selection, wheelies, steering).")]
 public sealed partial class OpponentPhysics
 {
     internal const int NumOpponents = 11;
@@ -65,7 +61,7 @@ public sealed partial class OpponentPhysics
 
     private readonly Track _track;
     private readonly CarPhysics _player;
-    private readonly Random _random;
+    private readonly IRandomSource _randomSource;
     private readonly int[] _speedValueOverrides;
     private readonly int[] _actualHeight = new int[NumWheels];
     private readonly int[] _ySpeed = new int[NumWheels];
@@ -128,19 +124,19 @@ public sealed partial class OpponentPhysics
     private bool _carOnFirstHalfOfLap;
 
     public OpponentPhysics(Track track, CarPhysics player)
-        : this(track, player, new Random())
+        : this(track, player, new RandomSource(new Random()))
     {
     }
 
-    public OpponentPhysics(Track track, CarPhysics player, Random random)
+    public OpponentPhysics(Track track, CarPhysics player, IRandomSource randomSource)
     {
         Guard.ArgumentNull(track);
         Guard.ArgumentNull(player);
-        Guard.ArgumentNull(random);
+        Guard.ArgumentNull(randomSource);
 
         _track = track;
         _player = player;
-        _random = random;
+        _randomSource = randomSource;
 
         // per-piece required speed overrides (set by the draw bridge animation)
         _speedValueOverrides = new int[track.NumPieces];
@@ -193,7 +189,7 @@ public sealed partial class OpponentPhysics
     // Start a new race: reset and place the opponent at the start piece.
     public void StartRace()
     {
-        OpponentId = _random.Next() % NumOpponents;
+        OpponentId = _randomSource.NextInt() % NumOpponents;
 
         _oldRearLeftDifference = 0;
         _oldRearRightDifference = 0;
@@ -216,14 +212,14 @@ public sealed partial class OpponentPhysics
 
         // initialise opponent data: position a random amount above the road
         CalculateRoadWheelPositions();
-        int r = (_random.Next() & 0x7f) + 0x68;
+        int r = (_randomSource.NextInt() & 0x7f) + 0x68;
         _actualHeight[RearLeft] = _rearLeftRoadPos.Y + r;
         _actualHeight[RearRight] = _rearRightRoadPos.Y + r;
         _actualHeight[Front] = _frontRoadPosY + r;
 
         // set opponent max speed
         int trackIndex = (int)_track.Id;
-        int s = _random.Next() & OpponentData.TrackSpeedValues[trackIndex];
+        int s = _randomSource.NextInt() & OpponentData.TrackSpeedValues[trackIndex];
         s += OpponentData.TrackSpeedValues[trackIndex + 8];
         _maxSpeed = s;
 
@@ -649,7 +645,7 @@ public sealed partial class OpponentPhysics
         {
             // if the front of the car isn't moving much vertically
             int i = _ySpeed[Front] | _yAcceleration[Front];
-            if ((i & 0xfffc) == 0 && (_random.Next() & 0xf) == 0)
+            if ((i & 0xfffc) == 0 && (_randomSource.NextInt() & 0xf) == 0)
             {
                 _ySpeed[Front] = 160; // make the opponent do a wheelie
             }
@@ -814,7 +810,7 @@ public sealed partial class OpponentPhysics
             // just left a curved piece onto a straight
             _steeringTableShift = (_lastPieceType & 0x40) != 0 ? 16 : 8;
 
-            int value = _random.Next() & 0x1f;
+            int value = _randomSource.NextInt() & 0x1f;
             if (OpponentId >= value)
             {
                 _steeringShift[2] = 16; // random steering count

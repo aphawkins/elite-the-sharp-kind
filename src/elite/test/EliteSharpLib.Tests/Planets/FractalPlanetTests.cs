@@ -23,7 +23,7 @@ public sealed class FractalPlanetTests
         {
             Graphics = mockGraphics.Object,
         };
-        FractalPlanet planet = new(fakeEliteDraw, 12345);
+        FractalPlanet planet = new(fakeEliteDraw, 12345, new(new Random(0)));
 
         // Act
         planet.Draw();
@@ -37,7 +37,7 @@ public sealed class FractalPlanetTests
     {
         // Arrange
         FakeEliteDraw fakeEliteDraw = new();
-        FractalPlanet planet = new(fakeEliteDraw, 12345);
+        FractalPlanet planet = new(fakeEliteDraw, 12345, new(new Random(0)));
 
         // Act
         IObject obj = planet.Clone();

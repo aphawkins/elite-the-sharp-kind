@@ -14,11 +14,13 @@ internal sealed class LaserDraw
     private readonly uint _colorLighterRed;
     private readonly uint _colorLightGrey;
     private readonly uint _colorWhite;
+    private readonly RNG _rng;
 
-    internal LaserDraw(GameState gameState, IEliteDraw draw)
+    internal LaserDraw(GameState gameState, IEliteDraw draw, RNG rng)
     {
         _gameState = gameState;
         _draw = draw;
+        _rng = rng;
         _colorLighterRed = _draw.Palette["LighterRed"];
         _colorLightGrey = _draw.Palette["LightGrey"];
         _colorWhite = _draw.Palette["White"];
@@ -28,8 +30,8 @@ internal sealed class LaserDraw
     {
         Vector2 target = new()
         {
-            X = RNG.Random((int)_draw.Centre.X / 2, (int)(_draw.Centre.X / 2) + 2) * _draw.Graphics.Scale,
-            Y = RNG.Random((int)_draw.Centre.Y / 2, (int)(_draw.Centre.Y / 2) + 2) * _draw.Graphics.Scale,
+            X = _rng.Random((int)_draw.Centre.X / 2, (int)(_draw.Centre.X / 2) + 2) * _draw.Graphics.Scale,
+            Y = _rng.Random((int)_draw.Centre.Y / 2, (int)(_draw.Centre.Y / 2) + 2) * _draw.Graphics.Scale,
         };
 
         Vector2 leftA = new((32 + (_draw.ScannerLeft / 2)) * _draw.Graphics.Scale, _draw.Bottom);

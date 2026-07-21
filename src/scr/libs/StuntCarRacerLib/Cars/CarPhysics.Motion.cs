@@ -837,10 +837,6 @@ public sealed partial class CarPhysics
 
     // Engine revs calculation, used for the engine sound pitch (tested
     // against Amiga in the original).
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Security",
-        "CA5394:Do not use insecure randomness",
-        Justification = "Random fluctuation of the engine sound pitch only.")]
     private void UpdateEngineRevs()
     {
         int c;
@@ -894,6 +890,6 @@ public sealed partial class CarPhysics
             }
         }
 
-        EngineFluctuation = _random.Next() & 0xf;
+        EngineFluctuation = _randomSource.NextInt() & 0xf;
     }
 }

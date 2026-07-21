@@ -23,7 +23,7 @@ public class GradientSunTests
         {
             Graphics = mockGraphics.Object,
         };
-        GradientSun sun = new(fakeEliteDraw);
+        GradientSun sun = new(fakeEliteDraw, new(new Random(0)));
 
         // Act
         sun.Draw();
@@ -39,7 +39,7 @@ public class GradientSunTests
     {
         // Arrange
         FakeEliteDraw fakeEliteDraw = new();
-        GradientSun sun = new(fakeEliteDraw);
+        GradientSun sun = new(fakeEliteDraw, new(new Random(0)));
 
         // Act
         IObject obj = sun.Clone();

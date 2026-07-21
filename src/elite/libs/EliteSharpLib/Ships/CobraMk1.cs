@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class CobraMk1 : ShipBase
 {
-    internal CobraMk1(IEliteDraw draw)
-        : base(draw)
+    internal CobraMk1(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.CobraMk1;
         Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;

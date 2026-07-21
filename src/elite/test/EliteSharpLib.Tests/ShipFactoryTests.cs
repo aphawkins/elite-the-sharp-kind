@@ -5,21 +5,48 @@
 using System.Reflection;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
+using Useful.Fakes;
 using Useful.Fakes.Assets;
 
 namespace EliteSharpLib.Tests;
 
 public class ShipFactoryTests
 {
+    [Theory]
+    [InlineData(254, "RockHermit")]
+    [InlineData(0, "Asteroid")]
+    public void CreateAsteroidPicksShipByRoll(int roll, string expectedName)
+    {
+        // Arrange: the 1-in-256 RockHermit roll (RNG.Random(256) > 253) is
+        // forced deterministically instead of hunting for a seed that hits it.
+        FakeAssetLocator locator = new();
+        FakeEliteDraw draw = new();
+        RNG rng = new(new FakeRandomSource { RandomValue = roll });
+        ShipFactory factory = ShipFactory.Create(locator, draw, rng);
+
+        Dictionary<string, IShip> dict = new()
+        {
+            { "RockHermit", new FakeShip(draw, rng) { Name = "RockHermit" } },
+            { "Asteroid", new FakeShip(draw, rng) { Name = "Asteroid" } },
+        };
+        SetShipsField(factory, dict);
+
+        // Act
+        IShip created = factory.CreateAsteroid();
+
+        // Assert
+        Assert.Equal(expectedName, created.Name);
+    }
+
     [Fact]
     public void CreateShipReturnsCloneAndPrototypeIsUnchanged()
     {
         // Arrange
         FakeAssetLocator locator = new();
         FakeEliteDraw draw = new();
-        ShipFactory factory = ShipFactory.Create(locator, draw);
+        ShipFactory factory = ShipFactory.Create(locator, draw, new(new Random(0)));
 
-        FakeShip prototype = new(draw)
+        FakeShip prototype = new(draw, new(new Random(0)))
         {
             Name = "Prototype",
             Energy = 42,
@@ -53,7 +80,7 @@ public class ShipFactoryTests
         // Arrange
         FakeAssetLocator locator = new();
         FakeEliteDraw draw = new();
-        ShipFactory factory = ShipFactory.Create(locator, draw);
+        ShipFactory factory = ShipFactory.Create(locator, draw, new(new Random(0)));
 
         // Act & Assert
         Assert.Throws<EliteException>(() => factory.CreateShip("DoesNotExist"));
@@ -72,7 +99,7 @@ public class ShipFactoryTests
         };
 
         FakeEliteDraw draw = new();
-        ShipFactory factory = ShipFactory.Create(locator, draw);
+        ShipFactory factory = ShipFactory.Create(locator, draw, new(new Random(0)));
 
         string[] names =
         [
@@ -110,7 +137,7 @@ public class ShipFactoryTests
         Dictionary<string, IShip> dict = [];
         foreach (string name in names)
         {
-            dict[name] = new FakeShip(draw)
+            dict[name] = new FakeShip(draw, new(new Random(0)))
             {
                 Name = name,
                 Energy = 100,

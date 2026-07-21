@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class AspMk2 : ShipBase
 {
-    internal AspMk2(IEliteDraw draw)
-        : base(draw)
+    internal AspMk2(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.AspMk2;
         Flags = ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry;

@@ -44,6 +44,12 @@ public static class EliteServiceCollectionExtensions
     {
         services.AddSingleton<IAssetLocator>(sp => sp.GetRequiredService<AssetLocator>());
 
+        // The single shared source of entropy for this app instance: an
+        // unseeded Random in production, replaceable with a seeded one in
+        // tests via RNG's constructor seam.
+        services.AddSingleton(_ => new Random());
+        services.AddSingleton(sp => new RNG(sp.GetRequiredService<Random>()));
+
         services.AddSingleton(sp => new ScreenManager<Screen, IView>(sp.GetRequiredService<IKeyboard>()));
         services.AddSingleton(sp => new GameState(sp.GetRequiredService<ScreenManager<Screen, IView>>())
         {
@@ -67,15 +73,18 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IGraphics>(),
             sp.GetRequiredService<IAssetLocator>(),
-            sp.GetRequiredService<IPolygonRenderer>()));
+            sp.GetRequiredService<IPolygonRenderer>(),
+            sp.GetRequiredService<RNG>()));
         services.AddSingleton<IShipFactory>(sp => ShipFactory.Create(
             sp.GetRequiredService<IAssetLocator>(),
-            sp.GetRequiredService<IEliteDraw>()));
-        services.AddSingleton(sp => new Universe(sp.GetRequiredService<IShipFactory>()));
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<RNG>()));
+        services.AddSingleton(sp => new Universe(sp.GetRequiredService<IShipFactory>(), sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp => new Stars(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<PlayerShip>()));
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp =>
         {
             ConfigSettings config = sp.GetRequiredService<GameState>().Config;
@@ -88,7 +97,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<AudioController>(),
             sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<PlayerShip>()));
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp => new Combat(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -98,6 +108,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Combat>()));
         services.AddSingleton(sp => new SaveFile(
             sp.GetRequiredService<GameState>(),
@@ -116,6 +127,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Stars>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Space>()));
         services.AddSingleton(sp => new Scanner(
             sp.GetRequiredService<GameState>(),
@@ -222,7 +234,8 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(sp => new PlanetDataView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<PlanetController>()));
+            sp.GetRequiredService<PlanetController>(),
+            sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp => new MarketView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
@@ -244,7 +257,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Space>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Combat>()));
+            sp.GetRequiredService<Combat>(),
+            sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp => new PilotRearView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -253,7 +267,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Space>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Combat>()));
+            sp.GetRequiredService<Combat>(),
+            sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp => new PilotLeftView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -262,7 +277,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Space>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Combat>()));
+            sp.GetRequiredService<Combat>(),
+            sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp => new PilotRightView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -271,7 +287,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Space>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Combat>()));
+            sp.GetRequiredService<Combat>(),
+            sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp => new DockingView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -349,6 +366,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Pilot>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<EscapeCapsuleView>()));
         services.AddSingleton(sp => new GameOverView(
             sp.GetRequiredService<GameState>(),
@@ -359,6 +377,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<GameOverView>()));
     }
 

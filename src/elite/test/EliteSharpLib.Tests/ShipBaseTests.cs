@@ -47,7 +47,7 @@ public class ShipBaseTests
         Face face = new() { Color = 0, Points = [modelPointA, modelPointB], PointIndices = [0, 1] };
 
         FakeEliteDraw draw = new();
-        FakeShip ship = new(draw)
+        FakeShip ship = new(draw, new(new Random(0)))
         {
             Rotmat = rotmat,
             Location = location,

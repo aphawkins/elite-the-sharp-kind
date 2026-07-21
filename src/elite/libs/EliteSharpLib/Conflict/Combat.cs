@@ -28,6 +28,7 @@ internal sealed class Combat
     private readonly Universe _universe;
     private readonly IEliteDraw _draw;
     private readonly IShipFactory _shipFactory;
+    private readonly RNG _rng;
     private readonly ILogger<Combat> _logger;
     private bool _isEcmOurs;
     private int _laserCounter;
@@ -43,6 +44,7 @@ internal sealed class Combat
         Universe universe,
         IEliteDraw draw,
         IShipFactory shipFactory,
+        RNG rng,
         ILogger<Combat>? logger = null)
     {
         _gameState = gameState;
@@ -53,6 +55,7 @@ internal sealed class Combat
         _universe = universe;
         _draw = draw;
         _shipFactory = shipFactory;
+        _rng = rng;
         _logger = logger ?? NullLogger<Combat>.Instance;
     }
 
@@ -155,7 +158,7 @@ internal sealed class Combat
             thargoid.Flags = ShipProperties.Angry | ShipProperties.HasECM;
             thargoid.Bravery = 113;
 
-            if (RNG.Random(256) > 64
+            if (_rng.Random(256) > 64
                 && !LaunchEnemy(thargoid, _shipFactory.CreateShip("Tharglet"), ShipProperties.Angry | ShipProperties.HasECM, 96))
             {
                 LogMessages.FailedToCreateShip(_logger, "Tharglet");
@@ -271,7 +274,7 @@ internal sealed class Combat
             return;
         }
 
-        if (RNG.Random(256) == 136)
+        if (_rng.Random(256) == 136)
         {
             if (((int)_universe.Planet!.Location.Z & 0x3e) != 0)
             {
@@ -285,7 +288,7 @@ internal sealed class Combat
             return;
         }
 
-        if (RNG.Random(8) == 0)
+        if (_rng.Random(8) == 0)
         {
             CreateTrader();
             return;
@@ -305,7 +308,7 @@ internal sealed class Combat
             return;
         }
 
-        if (_gameState.Cmdr.Mission == 5 && RNG.Random(256) >= 200)
+        if (_gameState.Cmdr.Mission == 5 && _rng.Random(256) >= 200)
         {
             CreateThargoid();
         }
@@ -327,7 +330,7 @@ internal sealed class Combat
             Vector4 position = obj.Location;
             position.Y = (int)position.Y & 0xFFFF;
             position.Y = (int)position.Y | 0x60000;
-            IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw);
+            IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw, _rng);
             _universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0);
         }
 
@@ -371,7 +374,7 @@ internal sealed class Combat
 
         if (type == ShipType.Cargo)
         {
-            StockType trade = (StockType)RNG.Random(1, 9);
+            StockType trade = (StockType)_rng.Random(1, 9);
             _trade.AddCargo(trade);
             _gameState.InfoMessage(_trade.StockMarket[trade].Name);
             RemoveShip(obj);
@@ -419,7 +422,7 @@ internal sealed class Combat
         {
             if (flags.HasFlag(ShipProperties.Angry))
             {
-                if (RNG.Random(256) < 240)
+                if (_rng.Random(256) < 240)
                 {
                     return;
                 }
@@ -443,7 +446,7 @@ internal sealed class Combat
 
         if (ship.Type == ShipType.Hermit)
         {
-            if (RNG.Random(256) > 200)
+            if (_rng.Random(256) > 200)
             {
                 IShip pirate = _shipFactory.CreatePirate();
                 if (!LaunchEnemy(ship, pirate, ShipProperties.Angry | ShipProperties.HasECM, 113))
@@ -470,7 +473,7 @@ internal sealed class Combat
         }
 
         if (flags.HasFlag(ShipProperties.Slow) &&
-            RNG.Random(256) > 50)
+            _rng.Random(256) > 50)
         {
             return;
         }
@@ -498,9 +501,9 @@ internal sealed class Combat
             ship.Bravery = 0;
         }
 
-        if (ship.Type == ShipType.Anaconda && RNG.Random(256) > 200)
+        if (ship.Type == ShipType.Anaconda && _rng.Random(256) > 200)
         {
-            IShip anacondaHunter = RNG.Random(256) > 100 ? _shipFactory.CreateShip("Worm") : _shipFactory.CreateShip("Sidewinder");
+            IShip anacondaHunter = _rng.Random(256) > 100 ? _shipFactory.CreateShip("Worm") : _shipFactory.CreateShip("Sidewinder");
             if (!LaunchEnemy(ship, anacondaHunter, ShipProperties.Angry | ShipProperties.HasECM, 113))
             {
                 LogMessages.FailedToCreateShip(_logger, "Anaconda Hunter");
@@ -509,9 +512,9 @@ internal sealed class Combat
             return;
         }
 
-        if (RNG.Random(256) >= 250)
+        if (_rng.Random(256) >= 250)
         {
-            ship.RotZ = RNG.Random(256) | 0x68;
+            ship.RotZ = _rng.Random(256) | 0x68;
             if (ship.RotZ > 127)
             {
                 ship.RotZ = -((int)ship.RotZ & 127);
@@ -520,7 +523,7 @@ internal sealed class Combat
 
         if (ship.Energy < ship.EnergyMax / 2)
         {
-            if (ship.Energy < ship.EnergyMax / 8 && RNG.Random(256) > 230 && ship.Type != ShipType.Thargoid)
+            if (ship.Energy < ship.EnergyMax / 8 && _rng.Random(256) > 230 && ship.Type != ShipType.Thargoid)
             {
                 ship.Flags &= ~ShipProperties.Angry;
                 ship.Flags |= ShipProperties.Inactive;
@@ -532,7 +535,7 @@ internal sealed class Combat
                 return;
             }
 
-            if (ship.Missiles != 0 && _ship.EcmActive == 0 && ship.Missiles >= RNG.Random(32))
+            if (ship.Missiles != 0 && _ship.EcmActive == 0 && ship.Missiles >= _rng.Random(32))
             {
                 ship.Missiles--;
                 if (ship.Type == ShipType.Thargoid)
@@ -594,7 +597,7 @@ internal sealed class Combat
             ////      if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
             if (MathF.Abs(ship.Location.Z) < 768f)
             {
-                ship.RotX = RNG.Random(136);
+                ship.RotX = _rng.Random(136);
                 if (ship.RotX > 127)
                 {
                     ship.RotX = -((int)ship.RotX & 127);
@@ -614,7 +617,7 @@ internal sealed class Combat
         if ((MathF.Abs(ship.Location.Z) >= 768 ||
             MathF.Abs(ship.Location.X) >= 512 ||
             MathF.Abs(ship.Location.Y) >= 512) &&
-            ship.Bravery > RNG.Random(128))
+            ship.Bravery > _rng.Random(128))
         {
             attacking = 1;
             nvec.X = -nvec.X;
@@ -637,7 +640,7 @@ internal sealed class Combat
             {
                 ship.Acceleration = 3;
             }
-            else if (RNG.Random(256) >= 200)
+            else if (_rng.Random(256) >= 200)
             {
                 ship.Acceleration = -1;
             }
@@ -661,7 +664,7 @@ internal sealed class Combat
         {
             ship.Acceleration = 3;
         }
-        else if (RNG.Random(256) >= 200)
+        else if (_rng.Random(256) >= 200)
         {
             ship.Acceleration = -1;
         }
@@ -753,7 +756,7 @@ internal sealed class Combat
     /// </summary>
     private void CheckForAsteroids()
     {
-        if (RNG.Random(256) >= 35 || _universe.ShipCount(ShipType.Asteroid) >= 3)
+        if (_rng.Random(256) >= 35 || _universe.ShipCount(ShipType.Asteroid) >= 3)
         {
             return;
         }
@@ -763,7 +766,7 @@ internal sealed class Combat
         {
             //// space.universe[newship].velocity = (random.rand255() & 31) | 16;
             asteroid.Velocity = 8;
-            asteroid.RotZ = RNG.TrueOrFalse() ? -127 : 127;
+            asteroid.RotZ = _rng.TrueOrFalse() ? -127 : 127;
             asteroid.RotX = 16;
         }
         else
@@ -775,14 +778,14 @@ internal sealed class Combat
     private void CheckForOthers()
     {
         int gov = _gameState.CurrentPlanetData.Government;
-        int rnd = RNG.Random(256);
+        int rnd = _rng.Random(256);
 
         if (gov != 0 && (rnd >= 90 || (rnd & 7) < gov))
         {
             return;
         }
 
-        if (RNG.Random(256) < 100)
+        if (_rng.Random(256) < 100)
         {
             CreateLoneWolf();
             return;
@@ -792,21 +795,21 @@ internal sealed class Combat
         Vector4 position = new()
         {
             Z = 12000,
-            X = 1000 + RNG.Random(8192),
-            Y = 1000 + RNG.Random(8192),
+            X = 1000 + _rng.Random(8192),
+            Y = 1000 + _rng.Random(8192),
         };
 
-        if (RNG.TrueOrFalse())
+        if (_rng.TrueOrFalse())
         {
             position.X = -position.X;
         }
 
-        if (RNG.TrueOrFalse())
+        if (_rng.TrueOrFalse())
         {
             position.Y = -position.Y;
         }
 
-        rnd = RNG.Random(4);
+        rnd = _rng.Random(4);
 
         for (int i = 0; i <= rnd; i++)
         {
@@ -814,12 +817,12 @@ internal sealed class Combat
             if (_universe.AddNewShip(packHunter, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
             {
                 packHunter.Flags = ShipProperties.Angry;
-                if (RNG.Random(256) > 245)
+                if (_rng.Random(256) > 245)
                 {
                     packHunter.Flags |= ShipProperties.HasECM;
                 }
 
-                packHunter.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
+                packHunter.Bravery = ((_rng.Random(256) * 2) | 64) & 127;
                 InBattle = true;
             }
             else
@@ -837,7 +840,7 @@ internal sealed class Combat
             offense |= _gameState.Cmdr.LegalStatus;
         }
 
-        if (RNG.Random(256) >= offense)
+        if (_rng.Random(256) >= offense)
         {
             return;
         }
@@ -847,12 +850,12 @@ internal sealed class Combat
         if (_universe.AddNewShip(police))
         {
             police.Flags = ShipProperties.Angry;
-            if (RNG.Random(256) > 245)
+            if (_rng.Random(256) > 245)
             {
                 police.Flags |= ShipProperties.HasECM;
             }
 
-            police.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
+            police.Bravery = ((_rng.Random(256) * 2) | 64) & 127;
         }
         else
         {
@@ -911,12 +914,12 @@ internal sealed class Combat
         if (_universe.AddNewShip(loneWolf))
         {
             loneWolf.Flags = ShipProperties.Angry;
-            if (RNG.Random(256) > 200 || loneWolf.Type == ShipType.Constrictor)
+            if (_rng.Random(256) > 200 || loneWolf.Type == ShipType.Constrictor)
             {
                 loneWolf.Flags |= ShipProperties.HasECM;
             }
 
-            loneWolf.Bravery = ((RNG.Random(256) * 2) | 64) & 127;
+            loneWolf.Bravery = ((_rng.Random(256) * 2) | 64) & 127;
             InBattle = true;
         }
         else
@@ -935,11 +938,11 @@ internal sealed class Combat
             rotmat.M33 = -1.0f;
             trader.Rotmat = rotmat;
 
-            trader.RotZ = RNG.Random(8);
-            trader.Velocity = RNG.Random(32) | 16;
-            trader.Bravery = RNG.Random(128);
+            trader.RotZ = _rng.Random(8);
+            trader.Velocity = _rng.Random(32) | 16;
+            trader.Bravery = _rng.Random(128);
 
-            if (RNG.TrueOrFalse())
+            if (_rng.TrueOrFalse())
             {
                 trader.Flags |= ShipProperties.HasECM;
             }
@@ -973,9 +976,9 @@ internal sealed class Combat
 
         if (newShip.Type is ShipType.Cargo or ShipType.Alloy or ShipType.Rock)
         {
-            newShip.RotZ = ((RNG.Random(256) * 2) & 255) - 128;
-            newShip.RotX = ((RNG.Random(256) * 2) & 255) - 128;
-            newShip.Velocity = RNG.Random(16);
+            newShip.RotZ = ((_rng.Random(256) * 2) & 255) - 128;
+            newShip.RotX = ((_rng.Random(256) * 2) & 255) - 128;
+            newShip.Velocity = _rng.Random(16);
         }
 
         return true;
@@ -987,11 +990,11 @@ internal sealed class Combat
 
         if (lootType == ShipType.Rock)
         {
-            count = RNG.Random(4);
+            count = _rng.Random(4);
         }
         else
         {
-            count = RNG.Random(256);
+            count = _rng.Random(256);
             if (count >= 128)
             {
                 return;
@@ -1022,7 +1025,7 @@ internal sealed class Combat
     {
         if (_universe.ShipCount(ShipType.Transporter) != 0 ||
             _universe.ShipCount(ShipType.Shuttle) != 0 ||
-            RNG.Random(256) < 253
+            _rng.Random(256) < 253
             || _pilot.IsAutoPilotOn)
         {
             return;
@@ -1035,7 +1038,7 @@ internal sealed class Combat
         }
 
         Debug.Assert(station.Flags.HasFlag(ShipProperties.Station), "Shuttle must be launched from a station");
-        IShip shuttle = RNG.TrueOrFalse() ? _shipFactory.CreateShip("Shuttle") : _shipFactory.CreateShip("Transporter");
+        IShip shuttle = _rng.TrueOrFalse() ? _shipFactory.CreateShip("Shuttle") : _shipFactory.CreateShip("Transporter");
         if (!LaunchEnemy((IShip)station, shuttle, ShipProperties.HasECM | ShipProperties.FlyToPlanet, 113))
         {
             LogMessages.FailedToCreateShip(_logger, "Shuttle");
@@ -1089,7 +1092,7 @@ internal sealed class Combat
                 return;
             }
 
-            if (RNG.Random(256) < 16 && missile.Target.Flags.HasFlag(ShipProperties.HasECM))
+            if (_rng.Random(256) < 16 && missile.Target.Flags.HasFlag(ShipProperties.HasECM))
             {
                 ActivateECM(false);
                 return;
@@ -1121,7 +1124,7 @@ internal sealed class Combat
         {
             missile.Acceleration = 3;
         }
-        else if (RNG.Random(256) >= 200)
+        else if (_rng.Random(256) >= 200)
         {
             missile.Acceleration = -2;
         }

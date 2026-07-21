@@ -87,25 +87,6 @@ functionality. Conclusions:
 
 ## Should
 
-### Architecture (business-application practices — see architecture.md)
-
-Library logging (split 2026-07-14 from the original [LARGE] item; a
-2026-07-14 survey found every operational `Debug.*` call lives in
-`EliteSharpLib` — the SCR libraries have none and `Useful.*` only the
-stray `DrawCircleFilled` WriteLine covered under Could — so scope is
-EliteSharpLib plus the wiring pattern; do the first item first, the rest
-in any order):
-
-- [ ] [EliteSharpLib] Replace the static crypto RNG: `RNG.Random` delegates
-      every call to `RandomNumberGenerator.GetInt32`
-      ([RNG.cs:98](../src/elite/libs/EliteSharpLib/RNG.cs)) — orders of magnitude
-      slower than needed in hot per-tick paths — and `RNG`/`RNG.Seed` is
-      static mutable state that makes Elite's logic untestable; make it an
-      injected, seedable random service (the pattern `CarPhysics._random`
-      already uses in SCR). Make Random a singleton in the DI container so
-      the two games share a single source of entropy, it can be unit tested
-      and seeded for reproducible test runs, and the per-tick RNG calls are fast.
-
 ### Defects and gaps
 
 - [ ] [Useful.Graphics] `DrawTextCentre`/`DrawTextLeft`/`DrawTextRight` wrap the bitmap from `GenerateTextBitmap` in `using` ([SoftwareGraphics.cs:352-384](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)), but that bitmap is stored in `_textCache` and returned again on the next call — cached bitmaps are disposed (GC pin freed) while still cached, working today only because text drawing never touches `BitmapHandle`; remove the `using`s and dispose cached bitmaps only when the cache is cleared/disposed.

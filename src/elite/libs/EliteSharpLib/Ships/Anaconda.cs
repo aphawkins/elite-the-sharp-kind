@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Anaconda : ShipBase
 {
-    internal Anaconda(IEliteDraw draw)
-        : base(draw)
+    internal Anaconda(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Anaconda;
         Flags = ShipProperties.Trader | ShipProperties.Slow;

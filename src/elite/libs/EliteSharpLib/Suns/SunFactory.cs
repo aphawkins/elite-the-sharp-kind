@@ -9,10 +9,10 @@ namespace EliteSharpLib.Suns;
 
 internal static class SunFactory
 {
-    internal static IObject Create(SunType type, IEliteDraw draw) => type switch
+    internal static IObject Create(SunType type, IEliteDraw draw, RNG rng) => type switch
     {
-        SunType.Solid => new SolidSun(draw),
-        SunType.Gradient => new GradientSun(draw),
+        SunType.Solid => new SolidSun(draw, rng),
+        SunType.Gradient => new GradientSun(draw, rng),
         _ => throw new EliteException(),
     };
 }

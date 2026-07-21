@@ -4,6 +4,7 @@
 
 using StuntCarRacerLib.Cars;
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Xunit;
 
 namespace StuntCarRacerLib.Tests.Tracks;
@@ -15,7 +16,7 @@ public class DrawBridgeTests
     {
         Track track = Track.Load(TrackId.DrawBridge);
         CarPhysics player = new(track);
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
         DrawBridge bridge = new(track);
         bridge.Reset(opponent);
 
@@ -38,7 +39,7 @@ public class DrawBridgeTests
     {
         Track track = Track.Load(TrackId.DrawBridge);
         CarPhysics player = new(track);
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
         DrawBridge bridge = new(track);
         bridge.Reset(opponent);
 
@@ -57,7 +58,7 @@ public class DrawBridgeTests
     {
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics player = new(track);
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
         DrawBridge bridge = new(track);
         bridge.Reset(opponent);
 
@@ -75,7 +76,7 @@ public class DrawBridgeTests
     {
         Track track = Track.Load(TrackId.DrawBridge);
         CarPhysics player = new(track);
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
         DrawBridge bridge = new(track);
         bridge.Reset(opponent);
 

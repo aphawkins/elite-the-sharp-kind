@@ -27,7 +27,7 @@ public sealed partial class OpponentPhysics
         if (piece != _speedValuePiece)
         {
             int trackIndex = (int)_track.Id;
-            int value = _random.Next() & OpponentData.TrackSpeedValues[trackIndex + 16];
+            int value = _randomSource.NextInt() & OpponentData.TrackSpeedValues[trackIndex + 16];
             value += OpponentData.TrackSpeedValues[trackIndex + 24];
 
             // the reference's own can-be-put-on test never fires (a signedness

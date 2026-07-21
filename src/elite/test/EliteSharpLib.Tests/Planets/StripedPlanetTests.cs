@@ -23,7 +23,7 @@ public sealed class StripedPlanetTests
         {
             Graphics = mockGraphics.Object,
         };
-        FractalPlanet planet = new(fakeEliteDraw, 12345);
+        FractalPlanet planet = new(fakeEliteDraw, 12345, new(new Random(0)));
 
         // Act
         planet.Draw();

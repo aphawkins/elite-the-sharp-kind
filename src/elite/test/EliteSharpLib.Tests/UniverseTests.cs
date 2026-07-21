@@ -14,8 +14,8 @@ public class UniverseTests
     {
         // Arrange
         FakeEliteDraw draw = new();
-        FakeShipFactory fakeShipFactory = new(draw);
-        Universe universe = new(fakeShipFactory);
+        FakeShipFactory fakeShipFactory = new(draw, new(new Random(0)));
+        Universe universe = new(fakeShipFactory, new(new Random(0)));
         IShip ship = fakeShipFactory.CreateShip("CobraMk3");
 
         // Act
@@ -38,8 +38,8 @@ public class UniverseTests
     {
         // Arrange
         FakeEliteDraw draw = new();
-        FakeShipFactory fakeShipFactory = new(draw);
-        Universe universe = new(fakeShipFactory);
+        FakeShipFactory fakeShipFactory = new(draw, new(new Random(0)));
+        Universe universe = new(fakeShipFactory, new(new Random(0)));
         IShip ship = fakeShipFactory.CreateShip("CobraMk3");
 
         // Act

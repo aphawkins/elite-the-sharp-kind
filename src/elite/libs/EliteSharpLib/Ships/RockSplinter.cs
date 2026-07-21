@@ -9,8 +9,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class RockSplinter : ShipBase
 {
-    internal RockSplinter(IEliteDraw draw)
-        : base(draw)
+    internal RockSplinter(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Rock;
         Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;

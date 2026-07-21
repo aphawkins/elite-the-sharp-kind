@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Boa : ShipBase
 {
-    internal Boa(IEliteDraw draw)
-        : base(draw)
+    internal Boa(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Boa;
         Flags = ShipProperties.Trader;

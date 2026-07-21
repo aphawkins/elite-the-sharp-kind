@@ -4,12 +4,57 @@
 
 using StuntCarRacerLib.Cars;
 using StuntCarRacerLib.Tracks;
+using Useful.Fakes;
 using Xunit;
 
 namespace StuntCarRacerLib.Tests.Cars;
 
 public class CarPhysicsTests
 {
+    [Fact]
+    public void EngineFluctuationIsDeterministicWithInjectedRandomness()
+    {
+        // Arrange: force the NextInt() & 0xf roll instead of leaving it to chance.
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track, new FakeRandomSource { NextIntValue = 0x2f });
+
+        car.StartRace();
+
+        // Act
+        car.Update(CarInput.None);
+
+        // Assert
+        Assert.Equal(0x2f & 0xf, car.EngineFluctuation);
+    }
+
+    [Fact]
+    public void OffRoadPitchIsDeterministicWithInjectedRandomness()
+    {
+        // Arrange: force the divisor's NextInt() & 0x1c roll to its maximum,
+        // instead of the existing range-based test's real-randomness run.
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics car = new(track, new FakeRandomSource { NextIntValue = 0x1c });
+        car.StartRace();
+
+        for (int frame = 0; frame < 100 && !car.TouchingRoad; frame++)
+        {
+            car.Update(CarInput.None);
+        }
+
+        bool triggered = false;
+        for (int frame = 0; frame < 500 && !triggered; frame++)
+        {
+            car.Update(CarInput.AccelBoost | CarInput.Left);
+            triggered = car.OffRoadSoundTriggered;
+        }
+
+        Assert.True(triggered);
+
+        // AMIGA_PAL_HZ / (450 + (0x1c & 0x1c)) relative to the 464 midpoint
+        // anchor - see CalculateOffRoadPitch.
+        Assert.Equal(464.0 / 478, car.OffRoadPitch);
+    }
+
     [Fact]
     public void StartRacePositionsCarAboveStartPiece()
     {

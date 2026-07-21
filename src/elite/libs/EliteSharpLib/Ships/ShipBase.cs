@@ -15,11 +15,13 @@ internal class ShipBase : IShip
     private readonly IEliteDraw _draw;
     private readonly uint _colorCyan;
     private readonly uint _colorWhite;
+    private readonly RNG _rng;
     private int[]? _faceRoot;
 
-    internal ShipBase(IEliteDraw draw)
+    internal ShipBase(IEliteDraw draw, RNG rng)
     {
         _draw = draw;
+        _rng = rng;
         Model = ModelReader.None;
 
         _colorCyan = draw.Palette["Cyan"];
@@ -29,6 +31,7 @@ internal class ShipBase : IShip
     private ShipBase(ShipBase other)
     {
         _draw = other._draw;
+        _rng = other._rng;
         Model = other.Model;
     }
 
@@ -236,7 +239,7 @@ internal class ShipBase : IShip
             Vector2[] laserPoints =
             [
                 new(pointList[lasv].X, pointList[lasv].Y),
-                new(Location.X > 0 ? 0 : 511, RNG.Random(256) * 2),
+                new(Location.X > 0 ? 0 : 511, _rng.Random(256) * 2),
             ];
 
             _draw.DrawPolygonFilled(laserPoints, color, pointList[lasv].Z);

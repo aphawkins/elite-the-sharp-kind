@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Adder : ShipBase
 {
-    internal Adder(IEliteDraw draw)
-        : base(draw)
+    internal Adder(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Adder;
         Flags = ShipProperties.PackHunter | ShipProperties.Bold | ShipProperties.Angry;

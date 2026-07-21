@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Cougar : ShipBase
 {
-    internal Cougar(IEliteDraw draw)
-        : base(draw)
+    internal Cougar(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Cougar;
         Flags = ShipProperties.LoneWolf | ShipProperties.Police | ShipProperties.Cloaked;

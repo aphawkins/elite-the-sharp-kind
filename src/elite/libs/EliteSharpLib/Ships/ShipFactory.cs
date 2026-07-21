@@ -13,18 +13,23 @@ namespace EliteSharpLib.Ships;
 internal sealed class ShipFactory : IShipFactory
 {
     private readonly Dictionary<string, IShip> _ships;
+    private readonly RNG _rng;
 
-    private ShipFactory(Dictionary<string, IShip> ships) => _ships = ships;
+    private ShipFactory(Dictionary<string, IShip> ships, RNG rng)
+    {
+        _ships = ships;
+        _rng = rng;
+    }
 
-    public static ShipFactory Create(IAssetLocator assetLocator, IEliteDraw draw)
+    public static ShipFactory Create(IAssetLocator assetLocator, IEliteDraw draw, RNG rng)
     {
         Guard.ArgumentNull(assetLocator);
 
         Dictionary<string, IShip> ships = assetLocator.ModelPaths.ToDictionary(
             x => x.Key,
-            x => CreateShipFromName(x.Key, x.Value, draw));
+            x => CreateShipFromName(x.Key, x.Value, draw, rng));
 
-        return new(ships);
+        return new(ships, rng);
     }
 
     public IShip CreateShip(string shipName)
@@ -32,11 +37,11 @@ internal sealed class ShipFactory : IShipFactory
         ? (IShip)ship.Clone()
         : throw new EliteException($"Ship model '{shipName}' not found.");
 
-    public IShip CreateAsteroid() => RNG.Random(256) > 253 ? CreateShip("RockHermit") : CreateShip("Asteroid");
+    public IShip CreateAsteroid() => _rng.Random(256) > 253 ? CreateShip("RockHermit") : CreateShip("Asteroid");
 
     public IShip CreateLoneWolf()
     {
-        int rnd = RNG.Random(256);
+        int rnd = _rng.Random(256);
         return ((rnd & 3) + (rnd > 127 ? 1 : 0)) switch
         {
             0 => CreateShip("CobraMk3Lone"),
@@ -48,7 +53,7 @@ internal sealed class ShipFactory : IShipFactory
         };
     }
 
-    public IShip CreatePackHunter() => RNG.Random(7) switch
+    public IShip CreatePackHunter() => _rng.Random(7) switch
     {
         0 => CreateShip("Sidewinder"),
         1 => CreateShip("Mamba"),
@@ -60,7 +65,7 @@ internal sealed class ShipFactory : IShipFactory
         _ => throw new EliteException(),
     };
 
-    public IShip CreatePirate() => RNG.Random(4) switch
+    public IShip CreatePirate() => _rng.Random(4) switch
     {
         0 => CreateShip("Sidewinder"),
         1 => CreateShip("Mamba"),
@@ -69,7 +74,7 @@ internal sealed class ShipFactory : IShipFactory
         _ => throw new EliteException(),
     };
 
-    public IShip CreateTrader() => RNG.Random(4) switch
+    public IShip CreateTrader() => _rng.Random(4) switch
     {
         0 => CreateShip("CobraMk3"),
         1 => CreateShip("Python"),
@@ -112,7 +117,7 @@ internal sealed class ShipFactory : IShipFactory
     };
 
     // TODO: create ships purely from metadata
-    private static IShip CreateShipFromName(string name, string modelPath, IEliteDraw draw)
+    private static IShip CreateShipFromName(string name, string modelPath, IEliteDraw draw, RNG rng)
     {
         Type? type = (Type.GetType(name) ??
             Assembly.GetCallingAssembly().GetType("EliteSharpLib.Ships." + name))
@@ -120,7 +125,7 @@ internal sealed class ShipFactory : IShipFactory
 
         // TODO: fix this hack to avoid making ship constructors public
 #pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
-        object? instance = Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.NonPublic, null, [draw], null);
+        object? instance = Activator.CreateInstance(type, BindingFlags.Instance | BindingFlags.NonPublic, null, [draw, rng], null);
 #pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
         if (instance is IShip ship)
         {

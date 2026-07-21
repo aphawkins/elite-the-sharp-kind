@@ -4,19 +4,39 @@
 
 using StuntCarRacerLib.Cars;
 using StuntCarRacerLib.Tracks;
+using Useful;
+using Useful.Fakes;
 using Xunit;
 
 namespace StuntCarRacerLib.Tests.Cars;
 
 public class OpponentPhysicsTests
 {
+    [Theory]
+    [InlineData(3, 3)]
+    [InlineData(14, 3)] // 14 % NumOpponents (11) wraps back to 3
+    public void StartRacePicksOpponentIdDeterministically(int roll, int expectedOpponentId)
+    {
+        // Arrange: the OpponentId = NextInt() % NumOpponents roll is forced
+        // instead of hunting for a seed that lands on a given opponent.
+        Track track = Track.Load(TrackId.LittleRamp);
+        CarPhysics player = new(track);
+        OpponentPhysics opponent = new(track, player, new FakeRandomSource { NextIntValue = roll });
+
+        // Act
+        opponent.StartRace();
+
+        // Assert
+        Assert.Equal(expectedOpponentId, opponent.OpponentId);
+    }
+
     [Fact]
     public void StartRaceInitialisesOpponent()
     {
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics player = new(track);
         player.StartRace();
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
 
         opponent.StartRace();
 
@@ -32,7 +52,7 @@ public class OpponentPhysicsTests
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics player = new(track);
         player.StartRace();
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
         opponent.StartRace();
 
         // Let the player drop (the opponent waits for drop start), then run.
@@ -55,7 +75,7 @@ public class OpponentPhysicsTests
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics player = new(track);
         player.StartRace();
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
         opponent.StartRace();
 
         for (int frame = 0; frame < 8000 && opponent.LapNumber < 1; frame++)
@@ -82,7 +102,7 @@ public class OpponentPhysicsTests
         Track track = Track.Load(id);
         CarPhysics player = new(track);
         player.StartRace();
-        OpponentPhysics opponent = new(track, player, new Random(2));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(2)));
         opponent.StartRace();
 
         int startPiece = opponent.CurrentPiece;
@@ -102,12 +122,12 @@ public class OpponentPhysicsTests
 
         CarPhysics player1 = new(track);
         player1.StartRace();
-        OpponentPhysics opponent1 = new(track, player1, new Random(7));
+        OpponentPhysics opponent1 = new(track, player1, new RandomSource(new Random(7)));
         opponent1.StartRace();
 
         CarPhysics player2 = new(track);
         player2.StartRace();
-        OpponentPhysics opponent2 = new(track, player2, new Random(7));
+        OpponentPhysics opponent2 = new(track, player2, new RandomSource(new Random(7)));
         opponent2.StartRace();
 
         for (int frame = 0; frame < 500; frame++)
@@ -130,7 +150,7 @@ public class OpponentPhysicsTests
     {
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics player = new(track);
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
 
         // The standard-league random mask is zero, so values are deterministic:
         // the track base (0x48 for Little Ramp) on sections the car cannot be
@@ -150,7 +170,7 @@ public class OpponentPhysicsTests
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics player = new(track);
         Random random = new(5);
-        OpponentPhysics opponent = new(track, player, random);
+        OpponentPhysics opponent = new(track, player, new RandomSource(random));
 
         // repeated queries for the same piece must not advance the RNG stream
         _ = opponent.SpeedValue(0);
@@ -167,7 +187,7 @@ public class OpponentPhysicsTests
     {
         Track track = Track.Load(TrackId.DrawBridge);
         CarPhysics player = new(track);
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
 
         int computed = opponent.SpeedValue(51);
         opponent.SetSpeedValue(51, 0xd2);
@@ -182,7 +202,7 @@ public class OpponentPhysicsTests
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics player = new(track);
         player.StartRace();
-        OpponentPhysics opponent = new(track, player, new Random(1));
+        OpponentPhysics opponent = new(track, player, new RandomSource(new Random(1)));
         opponent.StartRace();
 
         // Leave the player stationary while the opponent drives away; while

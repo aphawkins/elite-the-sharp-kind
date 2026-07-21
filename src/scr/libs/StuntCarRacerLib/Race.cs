@@ -28,13 +28,14 @@ internal sealed class Race
     private readonly HudRenderer _hud;
     private readonly CarMesh _carMesh;
     private readonly RoadTextures _roadTextures;
+    private readonly IRandomSource _randomSource;
     private readonly List<WorldPolygon> _worldPolygons = [];
 
     private TrackRenderer _renderer;
     private OpponentRenderer _opponentRenderer;
     private int _frameCount;
 
-    internal Race(IGraphics graphics, ScrPalette palette, ISound sound, AudioController audio, TrackId trackId)
+    internal Race(IGraphics graphics, ScrPalette palette, ISound sound, AudioController audio, TrackId trackId, IRandomSource randomSource)
     {
         _graphics = graphics;
         _palette = palette;
@@ -44,6 +45,7 @@ internal sealed class Race
         _hud = new(graphics);
         _carMesh = new(palette);
         _roadTextures = new(palette);
+        _randomSource = randomSource;
 
         LoadTrack(trackId);
     }
@@ -105,8 +107,8 @@ internal sealed class Race
     internal void LoadTrack(TrackId trackId)
     {
         Track = Track.Load(trackId);
-        Car = new(Track);
-        Opponent = new(Track, Car);
+        Car = new(Track, _randomSource);
+        Opponent = new(Track, Car, _randomSource);
         Bridge = new(Track);
         _renderer = new(Track, _graphics, _palette, _roadTextures);
         _opponentRenderer = new(Opponent, _carMesh, _palette);

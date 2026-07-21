@@ -9,8 +9,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Alloy : ShipBase
 {
-    internal Alloy(IEliteDraw draw)
-        : base(draw)
+    internal Alloy(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Alloy;
         Flags = ShipProperties.SpaceJunk | ShipProperties.Inactive;

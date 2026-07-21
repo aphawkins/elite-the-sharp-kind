@@ -17,11 +17,13 @@ internal sealed class FractalPlanet : IObject
     private readonly uint _colorGreen;
     private readonly uint _colorLightBlue;
     private readonly uint _colorLightGreen;
+    private readonly RNG _rng;
 
-    internal FractalPlanet(IEliteDraw draw, int seed)
+    internal FractalPlanet(IEliteDraw draw, int seed, RNG rng)
     {
         _draw = draw;
         Seed = seed;
+        _rng = rng;
         _planetRenderer = new(draw);
         _colorBlue = draw.Palette["Blue"];
         _colorGreen = draw.Palette["Green"];
@@ -35,6 +37,7 @@ internal sealed class FractalPlanet : IObject
     {
         _draw = other._draw;
         Seed = other.Seed;
+        _rng = other._rng;
         _planetRenderer = other._planetRenderer;
     }
 
@@ -73,7 +76,7 @@ internal sealed class FractalPlanet : IObject
     /// </summary>
     private uint CalcMidpointColor(int sx, int sy, int ex, int ey)
         => Math.Clamp(
-            ((_planetRenderer._landscape[sx, sy] + _planetRenderer._landscape[ex, ey]) / 2) + (uint)RNG.GaussianRandom(-7, 8),
+            ((_planetRenderer._landscape[sx, sy] + _planetRenderer._landscape[ex, ey]) / 2) + (uint)_rng.GaussianRandom(-7, 8),
             0,
             255);
 

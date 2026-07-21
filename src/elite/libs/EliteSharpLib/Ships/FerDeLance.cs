@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class FerDeLance : ShipBase
 {
-    internal FerDeLance(IEliteDraw draw)
-        : base(draw)
+    internal FerDeLance(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.FerDeLance;
         Flags = ShipProperties.LoneWolf | ShipProperties.Police;

@@ -17,10 +17,12 @@ internal sealed class GradientSun : IObject
     private readonly uint _colorLightOrange;
     private readonly uint _colorOrange;
     private readonly uint _colorDarkOrange;
+    private readonly RNG _rng;
 
-    internal GradientSun(IEliteDraw draw)
+    internal GradientSun(IEliteDraw draw, RNG rng)
     {
         _draw = draw;
+        _rng = rng;
         _colorWhite = draw.Palette["White"];
         _colorLightYellow = draw.Palette["LightYellow"];
         _colorLightOrange = draw.Palette["LightOrange"];
@@ -28,7 +30,11 @@ internal sealed class GradientSun : IObject
         _colorDarkOrange = draw.Palette["DarkOrange"];
     }
 
-    private GradientSun(GradientSun other) => _draw = other._draw;
+    private GradientSun(GradientSun other)
+    {
+        _draw = other._draw;
+        _rng = other._rng;
+    }
 
     public ShipProperties Flags { get; set; }
 
@@ -110,8 +116,8 @@ internal sealed class GradientSun : IObject
         s.X = centre.X - x;
         float ex = centre.X + x;
 
-        s.X -= radius * RNG.Random(2, 10) / 256f;
-        ex += radius * RNG.Random(2, 10) / 256f;
+        s.X -= radius * _rng.Random(2, 10) / 256f;
+        ex += radius * _rng.Random(2, 10) / 256f;
 
         if (ex < _draw.Left || s.X > _draw.Right)
         {
@@ -128,13 +134,13 @@ internal sealed class GradientSun : IObject
             ex = _draw.Right;
         }
 
-        float inner = radius * (200 + RNG.Random(8)) / 256;
+        float inner = radius * (200 + _rng.Random(8)) / 256;
         inner *= inner;
 
-        float inner2 = radius * (220 + RNG.Random(8)) / 256;
+        float inner2 = radius * (220 + _rng.Random(8)) / 256;
         inner2 *= inner2;
 
-        float outer = radius * (239 + RNG.Random(8)) / 256;
+        float outer = radius * (239 + _rng.Random(8)) / 256;
         outer *= outer;
 
         float dy = y * y;

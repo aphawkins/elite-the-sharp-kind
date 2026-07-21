@@ -33,11 +33,12 @@ internal sealed class PilotView : IView
         Stars stars,
         Space space,
         IEliteDraw draw,
-        Combat combat)
+        Combat combat,
+        RNG rng)
     {
         _gameState = gameState;
         _keyboard = keyboard;
-        _laser = new LaserDraw(_gameState, draw);
+        _laser = new LaserDraw(_gameState, draw, rng);
         _pilot = pilot;
         _ship = ship;
         _stars = stars;

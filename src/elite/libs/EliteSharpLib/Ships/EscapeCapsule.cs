@@ -9,8 +9,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class EscapeCapsule : ShipBase
 {
-    internal EscapeCapsule(IEliteDraw draw)
-        : base(draw)
+    internal EscapeCapsule(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.EscapeCapsule;
         Flags = ShipProperties.SpaceJunk | ShipProperties.Slow | ShipProperties.FlyToPlanet;

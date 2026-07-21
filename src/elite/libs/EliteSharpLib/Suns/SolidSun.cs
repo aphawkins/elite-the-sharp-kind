@@ -12,10 +12,12 @@ internal sealed class SolidSun : IObject
 {
     private readonly IEliteDraw _draw;
     private readonly uint _color;
+    private readonly RNG _rng;
 
-    internal SolidSun(IEliteDraw draw)
+    internal SolidSun(IEliteDraw draw, RNG rng)
     {
         _draw = draw;
+        _rng = rng;
         _color = _draw.Palette["White"];
     }
 
@@ -23,6 +25,7 @@ internal sealed class SolidSun : IObject
     {
         _draw = other._draw;
         _color = other._color;
+        _rng = other._rng;
     }
 
     public ShipProperties Flags { get; set; }
@@ -105,8 +108,8 @@ internal sealed class SolidSun : IObject
         s.X = centre.X - x;
         float ex = centre.X + x;
 
-        s.X -= radius * RNG.Random(2, 10) / 256f;
-        ex += radius * RNG.Random(2, 10) / 256f;
+        s.X -= radius * _rng.Random(2, 10) / 256f;
+        ex += radius * _rng.Random(2, 10) / 256f;
 
         if (ex < _draw.Left || s.X > _draw.Right)
         {

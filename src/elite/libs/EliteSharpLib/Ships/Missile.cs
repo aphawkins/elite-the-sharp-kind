@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Missile : ShipBase
 {
-    internal Missile(IEliteDraw draw)
-        : base(draw)
+    internal Missile(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Missile;
         Flags = ShipProperties.Missile;

@@ -5,6 +5,7 @@
 using StuntCarRacerLib.Cars;
 using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Tracks;
+using Useful;
 using Useful.Assets;
 using Useful.Graphics;
 using Xunit;
@@ -24,7 +25,7 @@ public class VisualDumpTests
         Track track = Track.Load(TrackId.LittleRamp);
         CarPhysics car = new(track);
         car.StartRace();
-        OpponentPhysics opponent = new(track, car, new Random(3));
+        OpponentPhysics opponent = new(track, car, new RandomSource(new Random(3)));
         opponent.StartRace();
 
         ScrPalette palette = new();

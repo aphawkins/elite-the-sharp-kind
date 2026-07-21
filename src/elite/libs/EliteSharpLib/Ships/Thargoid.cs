@@ -8,8 +8,8 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class Thargoid : ShipBase
 {
-    internal Thargoid(IEliteDraw draw)
-        : base(draw)
+    internal Thargoid(IEliteDraw draw, RNG rng)
+        : base(draw, rng)
     {
         Type = ShipType.Thargoid;
         Flags = ShipProperties.LoneWolf | ShipProperties.Bold | ShipProperties.Angry;
