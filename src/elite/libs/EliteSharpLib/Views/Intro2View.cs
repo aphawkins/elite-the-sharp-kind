@@ -85,6 +85,28 @@ internal sealed class Intro2View : IView
             _universe.ClearUniverse();
             _audio.StopMusic();
             _gameState.SetView(Screen.CommanderStatus);
+            return;
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.LeftArrow))
+        {
+            _shipNo--;
+            if (_shipNo < 0)
+            {
+                _shipNo = _parade.Count - 1;
+            }
+
+            AddNewShip();
+        }
+        else if (_keyboard.IsPressed(ConsoleKey.RightArrow))
+        {
+            _shipNo++;
+            if (_shipNo >= _parade.Count)
+            {
+                _shipNo = 0;
+            }
+
+            AddNewShip();
         }
     }
 

@@ -29,6 +29,7 @@ CI also publishes self-contained single-file builds (win-x64 and linux-x64) that
 
 Press Y or N on the intro screen
 Press Space on the ship parade screen
+Use Left/Right cursor keys to scroll through ships on the ship parade screen
 
 | Key | Function |
 | --- | -------- |
