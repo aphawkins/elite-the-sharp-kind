@@ -7,6 +7,18 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (EliteDraw.DrawTextPretty no longer underflows on a word longer than the line width, 2026-07-21)
+
+- `DrawTextPretty` ([EliteDraw.cs](src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)) scanned
+  backward from the line-width breakpoint for a space/comma/period with no
+  lower bound; a word longer than the available width (no break character
+  anywhere in range) walked the index past 0 and threw
+  `IndexOutOfRangeException`. The backward scan now stops at `previous`, and
+  when no break character is found in range the word is hard-broken at the
+  line-width boundary instead. Added `EliteDrawTests.cs` covering a 200-character
+  unbreakable word. Built the full solution, ran the complete test suite (all
+  green, 41 in `EliteSharpLib.Tests` including the new test).
+
 ### Fixed (Sanitize SaveFile.SaveCommander's filename and log its save failures, 2026-07-21)
 
 - `SaveFile.SaveCommander` ([SaveFile.cs](src/elite/libs/EliteSharpLib/Save/SaveFile.cs))

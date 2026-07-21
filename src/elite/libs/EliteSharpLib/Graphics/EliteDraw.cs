@@ -107,13 +107,16 @@ internal sealed class EliteDraw : IEliteDraw
         {
             i += (int)maxlen;
             i = Math.Clamp(i, 0, text.Length - 1);
+            int breakPoint = i;
 
-            while (text[i] is not ' ' and not ',' and not '.')
+            while (i > previous && text[i] is not ' ' and not ',' and not '.')
             {
                 i--;
             }
 
-            i++;
+            // No space/comma/period found within the line width: hard-break the word.
+            i = i > previous ? i + 1 : breakPoint + 1;
+
             Graphics.DrawTextLeft(position, text[previous..i], nameof(FontType.Small), _colorWhite);
             previous = i;
             position.Y += 8 * Graphics.Scale;

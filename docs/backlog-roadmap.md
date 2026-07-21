@@ -89,7 +89,7 @@ functionality. Conclusions:
 
 ### Defects and gaps
 
-- [ ] [EliteSharpLib] `EliteDraw.DrawTextPretty` decrements `i` looking for a space/comma/period with no lower bound ([EliteDraw.cs:148-169](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)) — a word longer than the line width underflows the index and throws; bound the scan at `previous` and hard-break long words.
+(none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
 
 ### Tests
 
