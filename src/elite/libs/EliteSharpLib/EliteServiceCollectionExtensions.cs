@@ -115,7 +115,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<PlanetController>(),
-            sp.GetRequiredService<ConfigFile<ConfigSettings>>().BaseDirectory));
+            sp.GetRequiredService<ConfigFile<ConfigSettings>>().BaseDirectory,
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<SaveFile>()));
         services.AddSingleton(sp => new Space(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),

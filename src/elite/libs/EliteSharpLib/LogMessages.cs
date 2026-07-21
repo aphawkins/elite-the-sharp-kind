@@ -10,4 +10,10 @@ internal static partial class LogMessages
 {
     [LoggerMessage(EventId = 0, Level = LogLevel.Warning, Message = "Failed to create {ShipType}: universe is full.")]
     internal static partial void FailedToCreateShip(ILogger logger, string shipType);
+
+    [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "Failed to read commander file '{Path}'.")]
+    internal static partial void FailedToLoadCommander(ILogger logger, string path, Exception ex);
+
+    [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "Commander file '{Path}' failed validation.")]
+    internal static partial void CommanderValidationFailed(ILogger logger, string path);
 }

@@ -7,6 +7,40 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (SaveFile.LoadCommander no longer throws on a corrupt or hand-edited save, 2026-07-21)
+
+- `SaveFile.LoadCommander` ([SaveFile.cs](src/elite/libs/EliteSharpLib/Save/SaveFile.cs))
+  caught its own failures, reset `_lastSaved` to Jameson, then `throw;`ed —
+  contradicting its `bool`-return contract and `LoadCommanderView`'s
+  "Error Loading Commander!" path, which never ran. Worse,
+  `SaveStateToGameState` indexes `GalaxySeed[0..5]`, `CurrentCargo[i]`,
+  `StationStock[i]` and `Lasers[0..3]` and `Enum.Parse`s `EnergyUnit`/
+  `LaserType` with no validation, so a truncated or hand-edited `.cmdr`
+  file threw `IndexOutOfRangeException`/`FormatException` there instead.
+  Added `IsValidSave`, checking the array lengths `SaveStateToGameState`
+  assumes and that both enum strings parse, following `ConfigFile<T>.ReadConfig`'s
+  read-validate-fallback shape ([ConfigFile.cs](src/useful/libs/Useful/Config/ConfigFile.cs));
+  `LoadCommander` now validates before calling `SaveStateToGameState`,
+  returns `false` on any read/parse/validation failure, and resets to
+  Jameson without rethrowing. `SaveFile` takes an optional
+  `ILogger<SaveFile>` (defaulting to `NullLogger<SaveFile>.Instance`,
+  the `GameOverView`/`Combat` exemplar), and the removed `Debug.WriteLine`
+  is now a Warning via two new `LogMessages` entries
+  (`FailedToLoadCommander`, `CommanderValidationFailed`).
+  `EliteServiceCollectionExtensions.AddEliteMain` passes
+  `ILoggerFactory.CreateLogger<SaveFile>()` through.
+  `SaveCommander`'s two `Debug.WriteLine`/`Debug.Fail` catch blocks are
+  unchanged — tracked as a separate backlog item since they're a save,
+  not a load, and the fix there is a different shape (sanitizing the
+  filename). Added `SaveFileTests.cs`
+  ([SaveFileTests.cs](src/elite/test/EliteSharpLib.Tests/Save/SaveFileTests.cs))
+  covering a missing save file, corrupt JSON, a truncated `galaxySeed`
+  array, and a save/load round trip. Built the full solution, ran the
+  complete test suite (all green, 39 in `EliteSharpLib.Tests` including
+  the 4 new ones), and smoke-tested the built Elite app — it starts and
+  constructs its full DI graph (including the changed `SaveFile`
+  constructor) without error.
+
 ### Fixed (Stop swallowing input/console errors in EliteMain.Update, 2026-07-21)
 
 - `EliteMain.Update` wrapped `_scanner.UpdateConsole()` and

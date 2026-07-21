@@ -9,6 +9,8 @@ using EliteSharpLib.Equipment;
 using EliteSharpLib.Lasers;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EliteSharpLib.Save;
 
@@ -24,19 +26,27 @@ internal sealed class SaveFile
     };
 
     private readonly string _baseDirectory;
+    private readonly ILogger<SaveFile> _logger;
     private readonly PlanetController _planet;
     private readonly PlayerShip _ship;
     private readonly GameState _state;
     private readonly Trade _trade;
     private SaveState _lastSaved;
 
-    internal SaveFile(GameState state, PlayerShip ship, Trade trade, PlanetController planet, string baseDirectory)
+    internal SaveFile(
+        GameState state,
+        PlayerShip ship,
+        Trade trade,
+        PlanetController planet,
+        string baseDirectory,
+        ILogger<SaveFile>? logger = null)
     {
         _state = state;
         _ship = ship;
         _trade = trade;
         _planet = planet;
         _baseDirectory = baseDirectory;
+        _logger = logger ?? NullLogger<SaveFile>.Instance;
         Directory.CreateDirectory(_baseDirectory);
 
 #if DEBUG
@@ -54,30 +64,34 @@ internal sealed class SaveFile
 
     internal bool LoadCommander(string name)
     {
+        string path = PathFor(name);
+        if (!File.Exists(path))
+        {
+            return false;
+        }
+
         try
         {
-            string path = PathFor(name);
-            if (!File.Exists(path))
-            {
-                return false;
-            }
-
             using FileStream stream = File.OpenRead(path);
             SaveState? save = JsonSerializer.Deserialize<SaveState>(stream, _options);
             if (save != null)
             {
-                _lastSaved = save;
-                SaveStateToGameState();
-                return true;
+                if (IsValidSave(save))
+                {
+                    _lastSaved = save;
+                    SaveStateToGameState();
+                    return true;
+                }
+
+                LogMessages.CommanderValidationFailed(_logger, path);
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
         {
-            Debug.WriteLine("Failed to load commander.\n" + ex);
-            _lastSaved = CommanderFactory.Jameson();
-            throw;
+            LogMessages.FailedToLoadCommander(_logger, path, ex);
         }
 
+        _lastSaved = CommanderFactory.Jameson();
         return false;
     }
 
@@ -114,6 +128,18 @@ internal sealed class SaveFile
     }
 
     private string PathFor(string name) => Path.Combine(_baseDirectory, name + FileExtension);
+
+    /// <summary>
+    /// Validates the shapes and enum values <see cref="SaveStateToGameState"/> assumes without
+    /// checking, so a truncated or hand-edited save can be rejected before it throws there.
+    /// </summary>
+    private bool IsValidSave(SaveState save) => save.GalaxySeed.Count == 6
+        && save.Lasers.Count == 4
+        && save.CurrentCargo.Count == _trade.StockMarket.Count
+        && save.StationStock.Count == _trade.StockMarket.Count
+        && save.ShipLocation.Count == 2
+        && Enum.TryParse<EnergyUnit>(save.EnergyUnit, out _)
+        && save.Lasers.All(laser => Enum.TryParse<LaserType>(laser, out _));
 
     private SaveState GameStateToSaveState(string newName) => new()
     {
