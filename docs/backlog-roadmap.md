@@ -101,12 +101,6 @@ in any order):
       part of their existing defect items below (`LoadCommander`
       validation, frame-path catch-all), which rewrite those exact lines;
       those items should use the logger this infrastructure provides.
-- [ ] [StuntCarRacerLib] Give SCR screens their real dependencies: every
-      screen currently receives the whole `StuntCarRacerMain`
-      (`new RaceScreen(this)`, [StuntCarRacerMain.cs:84-89](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs))
-      and reaches through it service-locator style; pass what each screen
-      actually uses (`CarPhysics`, `IKeyboard`, `SceneCamera`, ...) so
-      dependencies are visible in signatures and screens are unit-testable.
 - [ ] [Useful.Controls] Split `IKeyboard` (interface segregation): it mixes
       the producer API (`KeyDown`/`KeyUp`, called by `SDLInput`) with the
       consumer API (`IsPressed`/`IsHeld`/`LastPressed`, called by games)

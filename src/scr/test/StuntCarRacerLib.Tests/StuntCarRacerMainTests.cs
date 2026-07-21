@@ -59,7 +59,7 @@ public class StuntCarRacerMainTests
         for (int tick = 0; tick < 12; tick++)
         {
             game.Update();
-            if (game.FrameMoved)
+            if (game.Race.FrameMoved)
             {
                 movedTicks.Add(tick);
             }

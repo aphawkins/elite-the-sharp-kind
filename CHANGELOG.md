@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (SCR screens given their real dependencies, 2026-07-21)
+
+- Every SCR screen (`RaceScreen`, `TrackMenuScreen`, `TrackPreviewScreen`,
+  `GameOverScreen`) took the whole `StuntCarRacerMain` and reached through
+  it service-locator style. Extracted a new `Race`
+  ([Race.cs](src/scr/libs/StuntCarRacerLib/Race.cs)) that owns the
+  track/car/opponent/bridge state, its renderers, and the
+  `LoadTrack`/`PhysicsDue`/`DrawWorld`/`DrawHud`/`UpdateSounds`/
+  `UpdateEngineSound` behaviour that operates on them; `StuntCarRacerMain`
+  now keeps only the run loop, screen wiring and audio setup. Each screen's
+  constructor now takes `Race` plus the specific stable dependencies it
+  actually uses (`IKeyboard`, `ScreenManager<GameMode, IGameScreen>`,
+  `IGraphics`, `ScrPalette`, `ISound`) instead of the whole game object, so
+  dependencies are visible in the constructor signature. Built the full
+  solution, ran the complete test suite (all green, including
+  `StuntCarRacerLib.Tests`' 180 tests), and smoke-tested the built SCR app
+  (starts and constructs its full DI graph, including `Race` and all four
+  screens, without error).
+
 ### Added (Remaining EliteSharpLib Debug calls converted to logging, 2026-07-21)
 
 - The last scattered `Debug.Fail`/`Debug.WriteLine` calls outside

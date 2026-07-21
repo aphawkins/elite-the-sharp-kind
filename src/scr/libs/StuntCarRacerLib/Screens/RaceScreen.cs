@@ -4,6 +4,7 @@
 
 using StuntCarRacerLib.Cars;
 using Useful.Abstraction;
+using Useful.Controls;
 
 namespace StuntCarRacerLib.Screens;
 
@@ -11,21 +12,28 @@ namespace StuntCarRacerLib.Screens;
 // timing at the full tick rate, car physics every FrameGap ticks.
 internal sealed class RaceScreen : IGameScreen
 {
-    private readonly StuntCarRacerMain _game;
+    private readonly Race _race;
+    private readonly IKeyboard _keyboard;
+    private readonly ScreenManager<GameMode, IGameScreen> _screens;
 
-    internal RaceScreen(StuntCarRacerMain game) => _game = game;
+    internal RaceScreen(Race race, IKeyboard keyboard, ScreenManager<GameMode, IGameScreen> screens)
+    {
+        _race = race;
+        _keyboard = keyboard;
+        _screens = screens;
+    }
 
     public void Reset()
     {
-        _game.Car.StartRace();
-        _game.Car.BoostReserve = _game.Track.StandardBoost;
-        _game.Opponent.StartRace();
-        _game.Bridge.Reset(_game.Opponent);
+        _race.Car.StartRace();
+        _race.Car.BoostReserve = _race.Track.StandardBoost;
+        _race.Opponent.StartRace();
+        _race.Bridge.Reset(_race.Opponent);
 
-        _game.RaceTick = 0;
-        _game.RaceFinished = false;
-        _game.RaceWon = false;
-        _game.RaceFinishedTick = 0;
+        _race.RaceTick = 0;
+        _race.RaceFinished = false;
+        _race.RaceWon = false;
+        _race.RaceFinishedTick = 0;
     }
 
     public void Update()
@@ -33,47 +41,47 @@ internal sealed class RaceScreen : IGameScreen
         // The full-rate part of the race (the original FramesWheelsEngine
         // call plus the race-finished timing, which the original drove from
         // the wall clock).
-        _game.RaceTick++;
-        _game.Car.ApplyEngineRevs();
-        _game.UpdateEngineSound();
+        _race.RaceTick++;
+        _race.Car.ApplyEngineRevs();
+        _race.UpdateEngineSound();
 
         // show the race result for six seconds, then it is game over
-        if (_game.RaceFinished && _game.RaceTick - _game.RaceFinishedTick > 6 * StuntCarRacerMain.TickRate)
+        if (_race.RaceFinished && _race.RaceTick - _race.RaceFinishedTick > 6 * StuntCarRacerMain.TickRate)
         {
-            _game.Screens.Set(GameMode.GameOver);
+            _screens.Set(GameMode.GameOver);
             return;
         }
 
-        if (!_game.PhysicsDue())
+        if (!_race.PhysicsDue())
         {
             return;
         }
 
         // One physics frame of the race (every FrameGap ticks).
-        _game.FrameMoved = true;
-        _game.Car.Update(ReadInput());
-        _game.Opponent.Update();
-        _game.Bridge.Move(_game.Car.CurrentPiece, _game.Opponent.CurrentPiece, _game.Opponent);
-        _game.Car.UpdateLapData();
-        _game.Opponent.UpdateLapData();
-        _game.Car.UpdateDamage();
-        _game.Camera.FollowCar(_game.Car);
+        _race.FrameMoved = true;
+        _race.Car.Update(ReadInput());
+        _race.Opponent.Update();
+        _race.Bridge.Move(_race.Car.CurrentPiece, _race.Opponent.CurrentPiece, _race.Opponent);
+        _race.Car.UpdateLapData();
+        _race.Opponent.UpdateLapData();
+        _race.Car.UpdateDamage();
+        _race.Camera.FollowCar(_race.Car);
 
         // the race finishes when either car completes the final lap
-        if (!_game.RaceFinished && (_game.Car.RaceFinished || _game.Opponent.LapNumber >= 4))
+        if (!_race.RaceFinished && (_race.Car.RaceFinished || _race.Opponent.LapNumber >= 4))
         {
-            _game.RaceFinished = true;
-            _game.RaceWon = _game.Opponent.CalculateIfWinning() < 0;
-            _game.RaceFinishedTick = _game.RaceTick;
+            _race.RaceFinished = true;
+            _race.RaceWon = _race.Opponent.CalculateIfWinning() < 0;
+            _race.RaceFinishedTick = _race.RaceTick;
         }
 
-        _game.UpdateSounds();
+        _race.UpdateSounds();
     }
 
     public void Draw()
     {
-        _game.DrawWorld(showOpponent: true);
-        _game.DrawHud(gameOver: false);
+        _race.DrawWorld(showOpponent: true);
+        _race.DrawHud(gameOver: false);
     }
 
     // ptitSeb's stuntcarremake keyboard controls: Left/Right arrows =
@@ -91,27 +99,27 @@ internal sealed class RaceScreen : IGameScreen
     {
         CarInput input = CarInput.None;
 
-        if (_game.Keyboard.IsHeld(ConsoleKey.LeftArrow))
+        if (_keyboard.IsHeld(ConsoleKey.LeftArrow))
         {
             input |= CarInput.Left;
         }
 
-        if (_game.Keyboard.IsHeld(ConsoleKey.RightArrow))
+        if (_keyboard.IsHeld(ConsoleKey.RightArrow))
         {
             input |= CarInput.Right;
         }
 
-        if (_game.Keyboard.IsHeld(ConsoleKey.UpArrow))
+        if (_keyboard.IsHeld(ConsoleKey.UpArrow))
         {
             input |= CarInput.Accelerate;
         }
 
-        if (_game.Keyboard.IsHeld(ConsoleKey.DownArrow))
+        if (_keyboard.IsHeld(ConsoleKey.DownArrow))
         {
             input |= CarInput.Brake;
         }
 
-        if (_game.Keyboard.IsHeld(ConsoleKey.Spacebar))
+        if (_keyboard.IsHeld(ConsoleKey.Spacebar))
         {
             input |= CarInput.Boost;
         }

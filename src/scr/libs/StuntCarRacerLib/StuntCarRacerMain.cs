@@ -3,7 +3,6 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using System.Runtime.CompilerServices;
-using StuntCarRacerLib.Cars;
 using StuntCarRacerLib.Rendering;
 using StuntCarRacerLib.Screens;
 using StuntCarRacerLib.Tracks;
@@ -29,21 +28,9 @@ public sealed class StuntCarRacerMain : IGame
     internal const string SmallFont = "Small";
     internal const string LargeFont = "Large";
 
-    private const int DefaultFrameGap = 4;
-
     private readonly IAbstraction _abstraction;
-    private readonly BackdropRenderer _backdrop;
-    private readonly HudRenderer _hud;
-    private readonly CarMesh _carMesh;
-    private readonly RoadTextures _roadTextures;
-    private readonly List<WorldPolygon> _worldPolygons = [];
-    private readonly AudioController _audio;
-
-    private TrackRenderer _renderer;
-    private OpponentRenderer _opponentRenderer;
 
     private bool _sceneryKeyDown;
-    private int _frameCount;
 
     public StuntCarRacerMain(IAbstraction abstraction)
         : this(abstraction, TrackId.LittleRamp, new())
@@ -70,10 +57,6 @@ public sealed class StuntCarRacerMain : IGame
         Keyboard = abstraction.Keyboard;
         Sound = abstraction.Sound;
         Palette = new();
-        _backdrop = new(Graphics, Palette);
-        _hud = new(Graphics);
-        _carMesh = new(Palette);
-        _roadTextures = new(Palette);
 
         // Effect cooldowns in physics frames (12.5Hz), sized to the sample
         // lengths so a repeated trigger doesn't stack in the mixer. OffRoad
@@ -83,7 +66,7 @@ public sealed class StuntCarRacerMain : IGame
         // everything else on the right; Grounded/Creak/OffRoad/Wreck's
         // volume/pitch are set per-play instead (see CarPhysics).
         SfxSample offRoadOrWreck = new(10, pan: 1f);
-        _audio = new(
+        AudioController audio = new(
             Sound,
             new Dictionary<string, SfxSample>
             {
@@ -96,13 +79,13 @@ public sealed class StuntCarRacerMain : IGame
             },
             audioOptions);
 
-        LoadTrack(trackId);
+        Race = new(Graphics, Palette, Sound, audio, trackId);
 
         Screens = new(Keyboard);
-        Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(this));
-        Screens.Add(GameMode.TrackPreview, new TrackPreviewScreen(this));
-        Screens.Add(GameMode.GameInProgress, new RaceScreen(this));
-        Screens.Add(GameMode.GameOver, new GameOverScreen(this));
+        Screens.Add(GameMode.TrackMenu, new TrackMenuScreen(Race, Keyboard, Screens, Graphics, Palette));
+        Screens.Add(GameMode.TrackPreview, new TrackPreviewScreen(Race, Keyboard, Screens, Graphics, Palette));
+        Screens.Add(GameMode.GameInProgress, new RaceScreen(Race, Keyboard, Screens));
+        Screens.Add(GameMode.GameOver, new GameOverScreen(Race, Keyboard, Sound, Screens));
         Screens.Set(GameMode.TrackMenu);
     }
 
@@ -118,41 +101,16 @@ public sealed class StuntCarRacerMain : IGame
 
     internal IGraphics Graphics { get; }
 
-    internal SceneCamera Camera { get; } = new();
-
     internal ScrPalette Palette { get; }
 
-    internal Track Track { get; private set; }
-
-    internal CarPhysics Car { get; private set; }
-
-    internal OpponentPhysics Opponent { get; private set; }
-
-    internal DrawBridge Bridge { get; private set; }
-
-    // How often the physics steps, per plan pass 3 step 1: made settable so
-    // the frame gap can be tuned as the original's -/+ keys did.
-    internal int FrameGap { get; set; } = DefaultFrameGap;
-
-    // Whether the last tick stepped the physics (the original bFrameMoved).
-    internal bool FrameMoved { get; set; }
-
-    // Race timing shared by the race and game-over screens: the tick count
-    // since the race started, and when and how it finished.
-    internal int RaceTick { get; set; }
-
-    internal bool RaceFinished { get; set; }
-
-    internal bool RaceWon { get; set; }
-
-    internal int RaceFinishedTick { get; set; }
+    internal Race Race { get; }
 
     public void Run() => GameHost.Run(_abstraction, this, TickRate, TickRate);
 
     // One 50Hz tick (the original OnFrameMove).
     public void Update()
     {
-        FrameMoved = false;
+        Race.FrameMoved = false;
 
         if (Keyboard.IsPressed(ConsoleKey.Escape))
         {
@@ -165,7 +123,7 @@ public sealed class StuntCarRacerMain : IGame
         {
             if (!_sceneryKeyDown)
             {
-                _backdrop.NextSceneryType();
+                Race.NextScenery();
                 _sceneryKeyDown = true;
             }
         }
@@ -181,183 +139,5 @@ public sealed class StuntCarRacerMain : IGame
     {
         Screens.Current!.Draw();
         Graphics.ScreenUpdate();
-    }
-
-    // The original's frameCount countdown: the physics only steps every
-    // FrameGap ticks.
-    internal bool PhysicsDue()
-    {
-        if (_frameCount > 0)
-        {
-            _frameCount--;
-        }
-
-        if (_frameCount == 0)
-        {
-            _frameCount = FrameGap;
-            return true;
-        }
-
-        return false;
-    }
-
-    [System.Diagnostics.CodeAnalysis.MemberNotNull(
-        nameof(Track),
-        nameof(Car),
-        nameof(Opponent),
-        nameof(Bridge),
-        nameof(_renderer),
-        nameof(_opponentRenderer))]
-    internal void LoadTrack(TrackId trackId)
-    {
-        Track = Track.Load(trackId);
-        Car = new(Track);
-        Opponent = new(Track, Car);
-        Bridge = new(Track);
-        _renderer = new(Track, Graphics, Palette, _roadTextures);
-        _opponentRenderer = new(Opponent, _carMesh, Palette);
-    }
-
-    // The world common to every screen: backdrop, track and (outside the
-    // track menu) the opponent car. Road lines draw around the player's
-    // position, as the original did in every mode.
-    internal void DrawWorld(bool showOpponent)
-    {
-        Graphics.Clear();
-        _backdrop.Draw(Camera);
-
-        _worldPolygons.Clear();
-        if (showOpponent)
-        {
-            _opponentRenderer.AppendWorldPolygons(_worldPolygons);
-        }
-
-        _renderer.Draw(Camera, _worldPolygons, Car.CurrentPiece, Car.CurrentSegment);
-    }
-
-    // Play the effect triggers from the physics, throttled by the shared
-    // AudioController cooldowns. Runs once per physics frame.
-    internal void UpdateSounds()
-    {
-        _audio.UpdateSound();
-
-        if (Car.GroundedSoundTriggered)
-        {
-            _audio.PlayEffect("Grounded", Car.GroundedVolume, pitch: 1.0);
-        }
-
-        if (Car.CreakSoundTriggered)
-        {
-            _audio.PlayEffect("Creak", Car.CreakVolume, pitch: 1.0);
-        }
-
-        if (Car.SmashSoundTriggered)
-        {
-            _audio.PlayEffect("Smash");
-        }
-
-        if (Car.OffRoadSoundTriggered)
-        {
-            _audio.PlayEffect("OffRoad", volume: null, Car.OffRoadPitch);
-        }
-        else if (Car.WreckSoundTriggered)
-        {
-            _audio.PlayEffect("Wreck", volume: null, Car.WreckPitch);
-        }
-
-        if (Opponent.HitCarSoundTriggered)
-        {
-            _audio.PlayEffect("HitCar");
-        }
-    }
-
-    // Engine sound sample and pitch, from the original FramesWheelsEngine.
-    // The samples were recorded at 11025Hz; the original played them at
-    // AMIGA_PAL_HZ / period.
-    internal void UpdateEngineSound()
-    {
-        const int amigaPalHz = 3546895;
-        const int sampleRate = 11025;
-
-        int r = Car.EngineRevs + 378;
-        int period = 4800000 / r;
-        int index = 6;
-
-        if (period >= 0x3fff)
-        {
-            period = 0x3ffe;
-        }
-
-        period |= Car.EngineFluctuation;
-        if (period < 124)
-        {
-            period = 124; // lowest possible period
-        }
-
-        // calculate the sound index that will give period < 256
-        while (period >= 256)
-        {
-            period >>= 1;
-            --index;
-
-            if (index < 0)
-            {
-                index = 0;
-            }
-        }
-
-        double frequency = (double)amigaPalHz / period;
-        string sample = index == 0 ? "TickOver" : $"EnginePitch{index + 1}";
-        Sound.PlayLoop(sample, frequency / sampleRate);
-    }
-
-    // The in-game display: the cockpit overlay (wheels, engine, damage
-    // crack/holes, speed bar, lap/boost/distance read-outs) plus the
-    // remake's text overlays (opponent name at race start, race result).
-    internal void DrawHud(bool gameOver)
-    {
-        FastColor white = Palette.Colour(Track.ScrBaseColour + 15);
-        float height = Graphics.ScreenHeight;
-
-        _hud.Draw(new(
-            Car.LeftWheelFrame,
-            Car.RightWheelFrame,
-            Car.LeftWheelBounce,
-            Car.RightWheelBounce,
-            Car.BoostActivated != 0,
-            Car.NewDamage,
-            Car.SmashHoles,
-            Car.DisplaySpeed,
-            Car.LapNumber,
-            Car.BoostReserve,
-            Opponent.DistanceToPlayer(),
-            Car.OnChains,
-            Car.WaitingToReleaseChains,
-            Car.ZAngle,
-            Car.CurrentLapTicks,
-            Car.BestLapTicks));
-
-        // output the opponent's name for four seconds at race start
-        if (RaceTick < 4 * TickRate)
-        {
-            Graphics.DrawTextCentre(height - 300, $"Opponent: {Opponent.Name}", SmallFont, white);
-        }
-
-        if (!RaceFinished)
-        {
-            return;
-        }
-
-        if (gameOver)
-        {
-            Graphics.DrawTextCentre(height - 300, "GAME OVER: Press 'M' for track menu", LargeFont, white);
-        }
-        else
-        {
-            // the result text flashes white/black, changing every half second
-            int flash = (RaceTick - RaceFinishedTick) % TickRate;
-            FastColor colour = flash < TickRate / 2 ? white : Palette.Colour(Track.ScrBaseColour);
-            Graphics.DrawTextCentre(height - 300, RaceWon ? "RACE WON" : "RACE LOST", LargeFont, colour);
-        }
     }
 }

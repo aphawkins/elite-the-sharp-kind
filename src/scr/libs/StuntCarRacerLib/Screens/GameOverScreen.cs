@@ -3,6 +3,8 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using Useful.Abstraction;
+using Useful.Audio;
+using Useful.Controls;
 
 namespace StuntCarRacerLib.Screens;
 
@@ -10,23 +12,32 @@ namespace StuntCarRacerLib.Screens;
 // over; M returns to the track menu.
 internal sealed class GameOverScreen : IGameScreen
 {
-    private readonly StuntCarRacerMain _game;
+    private readonly Race _race;
+    private readonly IKeyboard _keyboard;
+    private readonly ISound _sound;
+    private readonly ScreenManager<GameMode, IGameScreen> _screens;
 
-    internal GameOverScreen(StuntCarRacerMain game) => _game = game;
+    internal GameOverScreen(Race race, IKeyboard keyboard, ISound sound, ScreenManager<GameMode, IGameScreen> screens)
+    {
+        _race = race;
+        _keyboard = keyboard;
+        _sound = sound;
+        _screens = screens;
+    }
 
-    public void Reset() => _game.Sound.StopLoop();
+    public void Reset() => _sound.StopLoop();
 
     public void Update()
     {
-        if (_game.Keyboard.IsPressed(ConsoleKey.M))
+        if (_keyboard.IsPressed(ConsoleKey.M))
         {
-            _game.Screens.Set(GameMode.TrackMenu);
+            _screens.Set(GameMode.TrackMenu);
         }
     }
 
     public void Draw()
     {
-        _game.DrawWorld(showOpponent: true);
-        _game.DrawHud(gameOver: true);
+        _race.DrawWorld(showOpponent: true);
+        _race.DrawHud(gameOver: true);
     }
 }
