@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (AssetLocator.Create no longer exclusively locks AssetManifest.json, 2026-07-21)
+
+- `AssetLocator.Create()` ([AssetLocator.cs](src/useful/libs/Useful.Assets/AssetLocator.cs))
+  opened `AssetManifest.json` via `File.Open(path, FileMode.Open)`, which
+  defaults to `FileAccess.ReadWrite`/`FileShare.None` — an exclusive lock for
+  a read-only operation. Two concurrent callers (e.g. two test classes each
+  constructing their own `AssetLocator`/`SoftwareGraphics` in parallel xUnit
+  collections) could race and throw `IOException` on the file, wrapped as
+  `UsefulException`. Found while adding `EliteDrawTests.cs` alongside the
+  existing `VisualDumpTests.cs`, both of which call `AssetLocator.Create()`.
+  Now opens with `FileAccess.Read, FileShare.Read`. Verified with an ad hoc
+  8-way concurrent `AssetLocator.Create()` probe run 5 times alongside
+  `VisualDumpTests` (no failures pre-fix reproduced it, post-fix all green);
+  probe was throwaway and not committed. Built the full solution, ran the
+  complete test suite (all green).
+
 ### Fixed (EliteDraw.DrawTextPretty no longer underflows on a word longer than the line width, 2026-07-21)
 
 - `DrawTextPretty` ([EliteDraw.cs](src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)) scanned

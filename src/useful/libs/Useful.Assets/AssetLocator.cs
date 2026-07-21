@@ -48,7 +48,7 @@ public sealed class AssetLocator : IAssetLocator
 
         try
         {
-            using FileStream stream = File.Open(path, FileMode.Open);
+            using FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             return Create(stream, baseDir);
         }
         catch (Exception ex)
