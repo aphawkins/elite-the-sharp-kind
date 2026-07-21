@@ -7,6 +7,36 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (EliteSharpLib logging infrastructure + exemplar, 2026-07-21)
+
+- `EliteSharpLib` had no way to log at all — every operational failure in
+  the library went to `Debug.WriteLine`/`Debug.Fail`, which vanish in
+  Release builds. Added a library-internal `LogMessages`
+  `[LoggerMessage]` partial (`EliteSharpLib/LogMessages.cs`), following
+  the same pattern as `Useful.Config.LogMessages` and the apps'
+  `LogMessages.cs`. `Microsoft.Extensions.Logging.Abstractions` was
+  already referenced by `EliteSharpLib.csproj`, and `ILoggerFactory` was
+  already registered in the DI container (`SDLProgram`/
+  `EliteServiceCollectionExtensions`), so only the per-consumer wiring
+  was new.
+
+  Proved the pattern end-to-end on `GameOverView` as the exemplar (a
+  small, low-risk view with two `Debug.WriteLine("Failed to create
+  ...")` calls): it now takes an optional `ILogger<GameOverView>`
+  constructor parameter, defaulting to `NullLogger<GameOverView>.Instance`
+  for tests/fakes, and logs both "failed to create ship" cases as a
+  Warning (legitimate runtime condition — universe full — not a
+  programming error) via `LogMessages.FailedToCreateShip`.
+  `EliteServiceCollectionExtensions.AddEliteMain` now resolves
+  `ILoggerFactory` and passes `CreateLogger<GameOverView>()` through.
+
+  The remaining Debug.WriteLine/Debug.Fail call sites across `Combat`,
+  `Space`, and the other four views convert in follow-up backlog items
+  using this same infrastructure. Built the full solution, ran the
+  complete test suite (all green), and smoke-tested the built Elite app
+  (starts and constructs its full DI graph, including `GameOverView`,
+  without error).
+
 ### Added (ConfigFile logs failures through the app's logger, 2026-07-21)
 
 - `ConfigFile<T>`'s read/write failures went to `Debug.WriteLine` only,

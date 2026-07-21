@@ -96,20 +96,6 @@ stray `DrawCircleFilled` WriteLine covered under Could — so scope is
 EliteSharpLib plus the wiring pattern; do the first item first, the rest
 in any order):
 
-- [ ] [EliteSharpLib] Logging infrastructure + exemplar: reference
-      `Microsoft.Extensions.Logging.Abstractions` from `EliteSharpLib`,
-      add a library-internal `LogMessages` `[LoggerMessage]` partial (the
-      pattern the apps' `LogMessages.cs` already uses), accept
-      `ILogger<T>` by constructor with `NullLogger<T>.Instance` available
-      for tests/fakes, and route the apps' existing Serilog
-      `ILoggerFactory` in via `EliteMain` (or the container once the
-      composition-root items above land — doing DI first makes this
-      wiring trivial). Prove the pattern end-to-end on a small, low-risk
-      exemplar with a handful of `Debug.WriteLine`/`Debug.Fail` calls, to
-      be picked when this item is worked (the previous exemplar,
-      `ConfigFile`, moved to the shared, EliteSharpLib-independent
-      `Useful.Config.ConfigFile<T>` on 2026-07-21 and no longer fits) —
-      today they vanish in Release builds.
 - [ ] [EliteSharpLib] Convert `Combat`'s 17 `Debug.Fail` calls
       ([Combat.cs:156-1047](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs)),
       the heaviest file: the "Failed to create <ship>" cases are
@@ -120,12 +106,14 @@ in any order):
       infrastructure item.
 - [ ] [EliteSharpLib] Convert the remaining scattered calls: `Space`'s
       three "Failed to create Planet/Sun" WriteLines
-      ([Space.cs:164,630,639](../src/elite/libs/EliteSharpLib/Space.cs)) and the six
+      ([Space.cs:164,630,639](../src/elite/libs/EliteSharpLib/Space.cs)) and the four
       across `ConstrictorMissionView`, `EscapeCapsuleView`,
-      `GameOverView`, `Intro1View`, `Intro2View` — same
-      Warning-vs-exception triage as the Combat item. Views need the
-      logger passed through their constructors (trivial after the
-      view-registration DI item above).
+      `Intro1View`, `Intro2View` — same
+      Warning-vs-exception triage as the Combat item (`GameOverView`
+      already converted 2026-07-21 as the logging-infrastructure
+      exemplar, see CHANGELOG). Views need the logger passed through
+      their constructors (trivial after the view-registration DI item
+      above).
 - [ ] Note: `SaveFile`'s four `Debug.*` calls and `EliteMain.Update`'s
       catch-all `Debug.WriteLine` are NOT separate work — they convert as
       part of their existing defect items below (`LoadCommander`

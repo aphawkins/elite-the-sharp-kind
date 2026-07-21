@@ -2,11 +2,12 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics;
 using EliteSharpLib.Audio;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Audio;
 using Useful.Maths;
 
@@ -22,6 +23,7 @@ internal sealed class GameOverView : IView
     private readonly Universe _universe;
     private readonly IEliteDraw _draw;
     private readonly IShipFactory _shipFactory;
+    private readonly ILogger<GameOverView> _logger;
     private readonly uint _colorGold;
 
     private int _i;
@@ -34,7 +36,8 @@ internal sealed class GameOverView : IView
         Combat combat,
         Universe universe,
         IEliteDraw draw,
-        IShipFactory shipFactory)
+        IShipFactory shipFactory,
+        ILogger<GameOverView>? logger = null)
     {
         _gameState = gameState;
         _audio = audio;
@@ -44,6 +47,7 @@ internal sealed class GameOverView : IView
         _universe = universe;
         _draw = draw;
         _shipFactory = shipFactory;
+        _logger = logger ?? NullLogger<GameOverView>.Instance;
 
         _colorGold = draw.Palette["Gold"];
     }
@@ -65,7 +69,7 @@ internal sealed class GameOverView : IView
         IShip cobraMk3 = _shipFactory.CreateShip("CobraMk3");
         if (!_universe.AddNewShip(cobraMk3, new(0, 0, -400, 0), VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
-            Debug.WriteLine("Failed to create CobraMk3");
+            LogMessages.FailedToCreateShip(_logger, "CobraMk3");
         }
 
         cobraMk3.Flags |= ShipProperties.Dead;
@@ -81,7 +85,7 @@ internal sealed class GameOverView : IView
                 0,
                 0))
             {
-                Debug.WriteLine("Failed to create Cargo");
+                LogMessages.FailedToCreateShip(_logger, "Cargo");
             }
 
             cargo.RotZ = ((RNG.Random(256) * 2) & 255) - 128;

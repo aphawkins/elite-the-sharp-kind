@@ -352,7 +352,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IShipFactory>()));
+            sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<GameOverView>()));
     }
 
     // TODO: improve this (moved from EliteMain, see backlog)
