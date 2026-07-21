@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Combat's Debug.Fail calls converted to logging/exceptions, 2026-07-21)
+
+- `Combat` was the heaviest concentration of `Debug.Fail` calls in
+  `EliteSharpLib` (17, [Combat.cs](src/elite/libs/EliteSharpLib/Conflict/Combat.cs)),
+  none of which survive a Release build. `Combat` now takes an optional
+  `ILogger<Combat>` (defaulting to `NullLogger<Combat>.Instance`,
+  following the `GameOverView` exemplar), and the 16 "Failed to create
+  &lt;ship&gt;" cases — all legitimate runtime conditions (universe full)
+  — log a Warning via the existing `LogMessages.FailedToCreateShip`.
+  "Incorrect loot type" was a programming-error case (an unreachable
+  `ShipType` branch), so it now throws `EliteException` instead —
+  `LaunchLoot`'s if/else-if chain became a switch expression to keep the
+  analyzer happy with the added throw arm.
+  `EliteServiceCollectionExtensions.AddEliteMain` now resolves
+  `ILoggerFactory` and passes `CreateLogger<Combat>()` through. Built the
+  full solution, ran the complete test suite (all green), and
+  smoke-tested the built Elite app (starts and constructs its full DI
+  graph, including `Combat`, without error).
+
 ### Added (EliteSharpLib logging infrastructure + exemplar, 2026-07-21)
 
 - `EliteSharpLib` had no way to log at all — every operational failure in

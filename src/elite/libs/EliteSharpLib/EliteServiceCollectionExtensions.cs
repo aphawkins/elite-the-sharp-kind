@@ -97,7 +97,8 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Pilot>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IShipFactory>()));
+            sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<Combat>()));
         services.AddSingleton(sp => new SaveFile(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<PlayerShip>(),

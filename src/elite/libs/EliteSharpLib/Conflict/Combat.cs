@@ -11,6 +11,8 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Audio;
 using Useful.Maths;
 
@@ -26,6 +28,7 @@ internal sealed class Combat
     private readonly Universe _universe;
     private readonly IEliteDraw _draw;
     private readonly IShipFactory _shipFactory;
+    private readonly ILogger<Combat> _logger;
     private bool _isEcmOurs;
     private int _laserCounter;
     private int _laserStrength;
@@ -39,7 +42,8 @@ internal sealed class Combat
         Pilot pilot,
         Universe universe,
         IEliteDraw draw,
-        IShipFactory shipFactory)
+        IShipFactory shipFactory,
+        ILogger<Combat>? logger = null)
     {
         _gameState = gameState;
         _audio = audio;
@@ -49,6 +53,7 @@ internal sealed class Combat
         _universe = universe;
         _draw = draw;
         _shipFactory = shipFactory;
+        _logger = logger ?? NullLogger<Combat>.Instance;
     }
 
     internal bool InBattle { get; set; }
@@ -153,12 +158,12 @@ internal sealed class Combat
             if (RNG.Random(256) > 64
                 && !LaunchEnemy(thargoid, _shipFactory.CreateShip("Tharglet"), ShipProperties.Angry | ShipProperties.HasECM, 96))
             {
-                Debug.Fail("Failed to create Tharglet");
+                LogMessages.FailedToCreateShip(_logger, "Tharglet");
             }
         }
         else
         {
-            Debug.Fail("Failed to create Thargoid");
+            LogMessages.FailedToCreateShip(_logger, "Thargoid");
         }
     }
 
@@ -426,7 +431,7 @@ internal sealed class Combat
 
                 if (!LaunchEnemy(ship, _shipFactory.CreateShip("Viper"), ShipProperties.Angry | ShipProperties.HasECM, 113))
                 {
-                    Debug.Fail("Failed to create Police");
+                    LogMessages.FailedToCreateShip(_logger, "Police");
                 }
 
                 return;
@@ -443,7 +448,7 @@ internal sealed class Combat
                 IShip pirate = _shipFactory.CreatePirate();
                 if (!LaunchEnemy(ship, pirate, ShipProperties.Angry | ShipProperties.HasECM, 113))
                 {
-                    Debug.Fail("Failed to create Hermit Pirate");
+                    LogMessages.FailedToCreateShip(_logger, "Hermit Pirate");
                 }
 
                 ship.Flags |= ShipProperties.Inactive;
@@ -498,7 +503,7 @@ internal sealed class Combat
             IShip anacondaHunter = RNG.Random(256) > 100 ? _shipFactory.CreateShip("Worm") : _shipFactory.CreateShip("Sidewinder");
             if (!LaunchEnemy(ship, anacondaHunter, ShipProperties.Angry | ShipProperties.HasECM, 113))
             {
-                Debug.Fail("Failed to create Anaconda Hunter");
+                LogMessages.FailedToCreateShip(_logger, "Anaconda Hunter");
             }
 
             return;
@@ -521,7 +526,7 @@ internal sealed class Combat
                 ship.Flags |= ShipProperties.Inactive;
                 if (!LaunchEnemy(ship, _shipFactory.CreateShip("EscapeCapsule"), 0, 126))
                 {
-                    Debug.Fail("Failed to create Escape Capsule");
+                    LogMessages.FailedToCreateShip(_logger, "Escape Capsule");
                 }
 
                 return;
@@ -534,14 +539,14 @@ internal sealed class Combat
                 {
                     if (!LaunchEnemy(ship, _shipFactory.CreateShip("Tharglet"), ShipProperties.Angry, ship.Bravery))
                     {
-                        Debug.Fail("Failed to create Tharglet");
+                        LogMessages.FailedToCreateShip(_logger, "Tharglet");
                     }
                 }
                 else
                 {
                     if (!LaunchEnemy(ship, _shipFactory.CreateShip("Missile"), ShipProperties.Angry, 126))
                     {
-                        Debug.Fail("Failed to create Missile");
+                        LogMessages.FailedToCreateShip(_logger, "Missile");
                     }
 
                     _gameState.InfoMessage("INCOMING MISSILE");
@@ -763,7 +768,7 @@ internal sealed class Combat
         }
         else
         {
-            Debug.Fail("Failed to create Asteroid");
+            LogMessages.FailedToCreateShip(_logger, "Asteroid");
         }
     }
 
@@ -819,7 +824,7 @@ internal sealed class Combat
             }
             else
             {
-                Debug.Fail("Failed to create Pack Hunter");
+                LogMessages.FailedToCreateShip(_logger, "Pack Hunter");
             }
         }
     }
@@ -851,7 +856,7 @@ internal sealed class Combat
         }
         else
         {
-            Debug.Fail("Failed to create Police");
+            LogMessages.FailedToCreateShip(_logger, "Police");
         }
     }
 
@@ -889,7 +894,7 @@ internal sealed class Combat
         }
         else
         {
-            Debug.Fail("Failed to create Cougar");
+            LogMessages.FailedToCreateShip(_logger, "Cougar");
         }
     }
 
@@ -916,7 +921,7 @@ internal sealed class Combat
         }
         else
         {
-            Debug.Fail("Failed to create Lone Hunter");
+            LogMessages.FailedToCreateShip(_logger, "Lone Hunter");
         }
     }
 
@@ -944,7 +949,7 @@ internal sealed class Combat
         }
         else
         {
-            Debug.Fail("Failed to create Trader");
+            LogMessages.FailedToCreateShip(_logger, "Trader");
         }
     }
 
@@ -998,28 +1003,17 @@ internal sealed class Combat
 
         for (int i = 0; i < count; i++)
         {
-            IShip loot;
-            if (lootType == ShipType.Rock)
+            IShip loot = lootType switch
             {
-                loot = _shipFactory.CreateShip("RockSplinter");
-            }
-            else if (lootType == ShipType.Alloy)
-            {
-                loot = _shipFactory.CreateShip("Alloy");
-            }
-            else if (lootType == ShipType.Cargo)
-            {
-                loot = _shipFactory.CreateShip("CargoCannister");
-            }
-            else
-            {
-                Debug.Fail("Incorrect loot type");
-                return;
-            }
+                ShipType.Rock => _shipFactory.CreateShip("RockSplinter"),
+                ShipType.Alloy => _shipFactory.CreateShip("Alloy"),
+                ShipType.Cargo => _shipFactory.CreateShip("CargoCannister"),
+                _ => throw new EliteException($"Incorrect loot type: {lootType}"),
+            };
 
             if (!LaunchEnemy(ship, loot, 0, 0))
             {
-                Debug.Fail("Failed to create Loot");
+                LogMessages.FailedToCreateShip(_logger, "Loot");
             }
         }
     }
@@ -1044,7 +1038,7 @@ internal sealed class Combat
         IShip shuttle = RNG.TrueOrFalse() ? _shipFactory.CreateShip("Shuttle") : _shipFactory.CreateShip("Transporter");
         if (!LaunchEnemy((IShip)station, shuttle, ShipProperties.HasECM | ShipProperties.FlyToPlanet, 113))
         {
-            Debug.Fail("Failed to create Shuttle");
+            LogMessages.FailedToCreateShip(_logger, "Shuttle");
         }
     }
 
