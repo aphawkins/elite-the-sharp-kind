@@ -154,6 +154,16 @@ float-physics cluster shares its scripted-input machinery):
 ### Cleanups and small refactors
 
 - [ ] [Useful] Replace the custom `Guard.ArgumentNull` (47 call sites) with the framework's `ArgumentNullException.ThrowIfNull` and delete [Guard.cs](../src/useful/libs/Useful/Guard.cs)/`ValidatedNotNullAttribute` — the architecture doc's own "prefer dotnet framework intrinsics" rule.
+- [ ] [Repo] Remove all analyzer suppressions (`#pragma warning disable` and `[SuppressMessage]`) by fixing the underlying code instead, so the analyzer ruleset stays fully enforced with no opt-outs. Current sites (verify line numbers before editing, this list dates from 2026-07-21):
+      [RandomSource.cs:12](../src/useful/libs/Useful/RandomSource.cs) (CA5394, class-level),
+      [ThreeDModel.cs:7](../src/useful/libs/Useful.Assets/Models/ThreeDModel.cs), [Point.cs:9](../src/useful/libs/Useful.Assets/Models/Point.cs), [Face.cs:7](../src/useful/libs/Useful.Assets/Models/Face.cs), [AssetManifest.cs:9](../src/useful/libs/Useful.Assets/AssetManifest.cs) (all CA2227, writable collection properties for serialisation),
+      [OpponentPhysicsTests.cs:164](../src/scr/test/StuntCarRacerLib.Tests/Cars/OpponentPhysicsTests.cs),
+      [Extensions.cs:12-16](../src/elite/libs/EliteSharpLib/Extensions.cs) (CA1308, `CapitaliseFirstLetter`'s `ToUpperInvariant`/`ToLowerInvariant` use),
+      [SaveState.cs:10](../src/elite/libs/EliteSharpLib/Save/SaveState.cs) (CA2227),
+      [FractalPlanet.cs:87](../src/elite/libs/EliteSharpLib/Planets/FractalPlanet.cs) (CA5394, unseeded-`Random`-instance warning on a seeded landscape generator),
+      [PlanetRenderer.cs:14-16](../src/elite/libs/EliteSharpLib/Planets/PlanetRenderer.cs) (SA1401, internal mutable field `_landscape`),
+      [ShipFactory.cs:127-129](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs) (S3011, reflection into a non-public constructor — resolved for free by the `ShipFactory.CreateShipFromName` dictionary-replacement item below).
+      Most carry a `Justification` that argues the warning is a false positive for this codebase (seedable game RNG vs. `CA5394`'s cryptography assumption, DTOs needing settable collections for `System.Text.Json` vs. `CA2227`'s immutability assumption) — evaluate case by case whether the fix is a code change (e.g. wrap `List<T>` in a type that satisfies the analyzer) or whether the rule should instead be disabled/configured repo-wide in `.editorconfig` for that specific diagnostic ID, which is a different, more honest opt-out than a scattered local suppression.
 - [ ] [Repo] Adopt central package management: add `Directory.Packages.props` (all 26 csproj files currently pin `PackageReference` versions independently and are already drifting) and move the copy-pasted analyzer `PackageReference` block from every csproj into `Directory.Build.props`/`.targets`.
 - [ ] [Repo] Add a test coverage badge to README.md sourced from the CI-collected coverage numbers (decision: visibility only, no gate/target).
 - [ ] [Useful.Abstraction] `ScreenManager` starts with `CurrentId = default!` and a nullable `Current`, forcing `Screens.Current!.Update()` at every call site ([ScreenManager.cs:29-31](../src/useful/libs/Useful.Abstraction/ScreenManager.cs)); require the initial screen at construction (or an explicit `Start(id)`) so `Current` is never null after setup.
