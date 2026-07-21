@@ -362,7 +362,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             return;
         }
 
-        using FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
+        FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
         int x = (int)((ScreenWidth / 2) - (bitmapText.Width / 2));
         DrawImage(bitmapText, new(x, y));
     }
@@ -374,7 +374,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             return;
         }
 
-        using FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
+        FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
         DrawImage(bitmapText, position);
     }
 
@@ -385,7 +385,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             return;
         }
 
-        using FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
+        FastBitmap bitmapText = GenerateTextBitmap(text, fontType, color);
         DrawImage(bitmapText, position - new Vector2(bitmapText.Width, 0));
     }
 
@@ -735,6 +735,13 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             {
                 // dispose managed state (managed objects)
                 _screen?.Dispose();
+
+                foreach (FastBitmap bitmap in _textCache.Values)
+                {
+                    bitmap.Dispose();
+                }
+
+                _textCache.Clear();
             }
 
             // free unmanaged resources (unmanaged objects) and override finalizer

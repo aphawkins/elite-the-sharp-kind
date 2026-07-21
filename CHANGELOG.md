@@ -7,6 +7,19 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Stop disposing cached text bitmaps on every draw, 2026-07-21)
+
+- `DrawTextCentre`/`DrawTextLeft`/`DrawTextRight`
+  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  wrapped the bitmap returned by `GenerateTextBitmap` in `using`, but that
+  same bitmap is stored in `_textCache` and handed back again on the next
+  call with the same (font, colour, text) — so every cached bitmap was
+  disposed (its `GCHandle` freed) right after its first use, working today
+  only because text drawing never reads `FastBitmap.BitmapHandle`. Removed
+  the `using`s; cached bitmaps are now disposed only when
+  `SoftwareGraphics.Dispose()` runs, alongside the screen bitmap. Built the
+  full solution and ran the complete test suite (all green).
+
 ### Changed (Share injectable randomness between Elite and SCR, 2026-07-21)
 
 - Elite's `RNG` and SCR's `CarPhysics`/`OpponentPhysics` each had their own
