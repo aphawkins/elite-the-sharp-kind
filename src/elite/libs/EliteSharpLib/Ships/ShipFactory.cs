@@ -10,20 +10,21 @@ using Useful.Assets.Models;
 
 namespace EliteSharpLib.Ships;
 
-internal class ShipFactory : IShipFactory
+internal sealed class ShipFactory : IShipFactory
 {
-    private Dictionary<string, IShip> _ships = [];
+    private readonly Dictionary<string, IShip> _ships;
+
+    private ShipFactory(Dictionary<string, IShip> ships) => _ships = ships;
 
     public static ShipFactory Create(IAssetLocator assetLocator, IEliteDraw draw)
     {
         Guard.ArgumentNull(assetLocator);
 
-        return new()
-        {
-            _ships = assetLocator.ModelPaths.ToDictionary(
-                x => x.Key,
-                x => CreateShipFromName(x.Key, x.Value, draw)),
-        };
+        Dictionary<string, IShip> ships = assetLocator.ModelPaths.ToDictionary(
+            x => x.Key,
+            x => CreateShipFromName(x.Key, x.Value, draw));
+
+        return new(ships);
     }
 
     public IShip CreateShip(string shipName)

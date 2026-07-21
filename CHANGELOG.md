@@ -7,6 +7,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Remove two-phase construction from SDLSound/SoftwareGraphics, 2026-07-21)
+
+- `SDLSound` required a separate `Initialize(assetLocator)` call after
+  construction to load music/sfx — `SDLAbstraction`
+  ([SDLAbstraction.cs](src/useful/libs/Useful.SDL/SDLAbstraction.cs)) had
+  silently skipped that call, so any code path through it would have thrown
+  `KeyNotFoundException` the first time it tried to play a sound.
+  `SDLSound`'s constructor now takes `IAssetLocator` directly and loads
+  music/sfx itself ([SDLSound.cs](src/useful/libs/Useful.SDL/SDLSound.cs));
+  both `SDLAbstraction` and `SoftwareAbstraction`
+  ([SoftwareAbstraction.cs](src/useful/libs/Useful.SDL/SoftwareAbstraction.cs))
+  updated to pass the asset locator in. `SoftwareGraphics.Fonts`/`Images`
+  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  were `internal`-settable properties populated after construction via an
+  object initializer in `Create`, leaving them mutable by any other code in
+  the assembly afterwards (the benchmark project did exactly that); they are
+  now get-only, assigned once in the constructor, with `Create` computing
+  the dictionaries before calling it. `ShipFactory.Create`
+  ([ShipFactory.cs](src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) set
+  its `_ships` field the same way via an object initializer on a
+  parameterless-constructed instance — private, so not the same
+  half-built-instance risk, but the same pattern; it now takes the built
+  dictionary through a private constructor instead. Built the full
+  solution, ran the complete test suite (all green), and smoke-tested both
+  `EliteSharp` and `StuntCarRacer` launching cleanly.
+
 ### Changed (IKeyboard split into producer/consumer interfaces, 2026-07-21)
 
 - `IKeyboard` ([IKeyboard.cs](src/useful/libs/Useful.Controls/IKeyboard.cs)) mixed

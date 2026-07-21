@@ -96,18 +96,6 @@ stray `DrawCircleFilled` WriteLine covered under Could — so scope is
 EliteSharpLib plus the wiring pattern; do the first item first, the rest
 in any order):
 
-- [ ] [Useful] Remove two-phase construction: `SDLSound` must have
-      `Initialize(assetLocator)` called after construction (temporal
-      coupling — a forgotten call is a runtime `KeyNotFoundException`), and
-      `SoftwareGraphics.Create` populates its `Fonts`/`Images` via an
-      object initializer onto `internal`-settable properties
-      ([SoftwareGraphics.cs:35-37](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)),
-      leaving them mutable by any other code in the assembly after
-      construction rather than truly immutable; fold initialisation into
-      constructors/factory parameters so no instance is observable
-      half-built. (`ShipFactory.Create` sets a `private` field the same
-      way, but since nothing outside the class can reach it afterwards
-      this isn't the same risk — lower priority than the other two.)
 - [ ] [EliteSharpLib] Replace the static crypto RNG: `RNG.Random` delegates
       every call to `RandomNumberGenerator.GetInt32`
       ([RNG.cs:98](../src/elite/libs/EliteSharpLib/RNG.cs)) — orders of magnitude

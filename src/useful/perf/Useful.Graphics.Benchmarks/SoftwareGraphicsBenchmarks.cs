@@ -17,11 +17,13 @@ public class SoftwareGraphicsBenchmarks : IDisposable
 
     public SoftwareGraphicsBenchmarks()
     {
-        _graphics = SoftwareGraphics.Create(ScreenWidthPixels, ScreenHeightPixels, (_) => { }, new FakeAssetLocator());
-        _graphics.Images = new() { { "TestImage", new FastBitmap(16, 16) } };
-
         _fontBitmap = new(8, 8);
-        _graphics.Fonts = new() { { "TestFont", new BitmapFont(_fontBitmap) } };
+        _graphics = new(
+            ScreenWidthPixels,
+            ScreenHeightPixels,
+            (_) => { },
+            new() { { "TestImage", new FastBitmap(16, 16) } },
+            new() { { "TestFont", new BitmapFont(_fontBitmap) } });
     }
 
     [Benchmark]

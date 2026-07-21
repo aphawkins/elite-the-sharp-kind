@@ -20,7 +20,7 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
         _renderer = new(_window);
 
         Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator);
-        Sound = new SDLSound();
+        Sound = new SDLSound(assetLocator);
         SDLInput input = new();
         Keyboard = new SoftwareKeyboard(input);
     }

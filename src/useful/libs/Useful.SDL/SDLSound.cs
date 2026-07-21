@@ -22,6 +22,8 @@ public sealed class SDLSound : ISound, IDisposable
     private const int OneShotPitchChannel = 1;
 
     private readonly Dictionary<string, float[]> _loopSamples = [];
+    private readonly Dictionary<string, nint> _music;
+    private readonly Dictionary<string, nint> _sfx;
     private bool _disposedValue;
     private Mix_EffectFunc_t? _loopEffect;
     private float[] _loopSampleData = [];
@@ -35,11 +37,11 @@ public sealed class SDLSound : ISound, IDisposable
     private double _oneShotPitch = 1.0;
     private double _oneShotPosition;
     private bool _oneShotDone = true;
-    private Dictionary<string, nint> _music = [];
-    private Dictionary<string, nint> _sfx = [];
 
-    public SDLSound()
+    public SDLSound(IAssetLocator assetLocator)
     {
+        Guard.ArgumentNull(assetLocator);
+
         SDLGuard.Execute(() => SDL_Init(SDL_INIT_AUDIO));
         SDLGuard.Execute(() => Mix_Init(MIX_InitFlags.MIX_INIT_OGG));
 
@@ -64,6 +66,18 @@ public sealed class SDLSound : ISound, IDisposable
         Debug.Assert(frequency == 44100, "Loop pitch-shifting assumes 44100Hz chunk data.");
         Debug.Assert(format == AUDIO_F32SYS, "Loop pitch-shifting assumes float32 chunk data.");
         Debug.Assert(channels == 2, "Loop pitch-shifting assumes stereo chunk data.");
+
+        _music = assetLocator.MusicPaths.ToDictionary(
+            x => x.Key,
+            x =>
+            {
+                Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Music is missing");
+                return SDLGuard.Execute(() => Mix_LoadMUS(x.Value));
+            });
+
+        _sfx = assetLocator.SfxPaths.ToDictionary(
+            x => x.Key,
+            x => SDLGuard.Execute(() => Mix_LoadWAV(x.Value)));
     }
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -78,23 +92,6 @@ public sealed class SDLSound : ISound, IDisposable
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
-    }
-
-    public void Initialize(IAssetLocator assetLocator)
-    {
-        Guard.ArgumentNull(assetLocator);
-
-        _music = assetLocator.MusicPaths.ToDictionary(
-            x => x.Key,
-            x =>
-            {
-                Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Music is missing");
-                return SDLGuard.Execute(() => Mix_LoadMUS(x.Value));
-            });
-
-        _sfx = assetLocator.SfxPaths.ToDictionary(
-            x => x.Key,
-            x => SDLGuard.Execute(() => Mix_LoadWAV(x.Value)));
     }
 
     public void Play(string sfxType, float volume, float pan, double pitch)

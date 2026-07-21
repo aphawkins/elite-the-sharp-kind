@@ -17,12 +17,19 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     private float[]? _depth;
     private bool _isDisposed;
 
-    private SoftwareGraphics(float screenWidth, float screenHeight, Action<FastBitmap> screenUpdate)
+    internal SoftwareGraphics(
+        float screenWidth,
+        float screenHeight,
+        Action<FastBitmap> screenUpdate,
+        Dictionary<string, FastBitmap> images,
+        Dictionary<string, BitmapFont> fonts)
     {
         ScreenWidth = screenWidth;
         ScreenHeight = screenHeight;
         _screen = new((int)screenWidth, (int)screenHeight);
         _screenUpdate = screenUpdate;
+        Images = images;
+        Fonts = fonts;
         Clear();
     }
 
@@ -32,9 +39,9 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     public float ScreenWidth { get; }
 
-    internal Dictionary<string, BitmapFont> Fonts { get; set; } = [];
+    internal Dictionary<string, BitmapFont> Fonts { get; }
 
-    internal Dictionary<string, FastBitmap> Images { get; set; } = [];
+    internal Dictionary<string, FastBitmap> Images { get; }
 
     public static SoftwareGraphics Create(
         float screenWidth,
@@ -45,16 +52,15 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         Guard.ArgumentNull(screenUpdate);
         Guard.ArgumentNull(assetLocator);
 
-        return new(screenWidth, screenHeight, screenUpdate)
-        {
-            Images = assetLocator.ImagePaths.ToDictionary(
-                x => x.Key,
-                x => BitmapFile.Read(x.Value)),
+        Dictionary<string, FastBitmap> images = assetLocator.ImagePaths.ToDictionary(
+            x => x.Key,
+            x => BitmapFile.Read(x.Value));
 
-            Fonts = assetLocator.FontBitmapPaths.ToDictionary(
-                x => x.Key,
-                x => new BitmapFont(BitmapFile.Read(x.Value))),
-        };
+        Dictionary<string, BitmapFont> fonts = assetLocator.FontBitmapPaths.ToDictionary(
+            x => x.Key,
+            x => new BitmapFont(BitmapFile.Read(x.Value)));
+
+        return new(screenWidth, screenHeight, screenUpdate, images, fonts);
     }
 
     public void Clear() => _screen.Clear();
