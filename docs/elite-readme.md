@@ -101,12 +101,15 @@ From the Options Screen (F11) you can enter the Game Settings Screen. From here 
 
 ## Configuration
 
-Game settings are held in the `elitesharp.cfg` file, stored in JSON format, in the user's application data directory (`%AppData%\EliteSharp` on Windows, `~/.config/EliteSharp` on Linux/macOS). Commander saves (`.cmdr` files) live in the same directory. If the config file is missing or invalid the game falls back to defaults. `elitesharp.cfg` can take the following values:
+Game settings are held in the `elitesharp.cfg` file, stored in JSON format, in the user's application data directory (`%AppData%\TheSharpKind` on Windows, `~/.config/TheSharpKind` on Linux/macOS) — shared with [Stunt Car Racer - The Sharp Kind](scr-readme.md). Commander saves (`.cmdr` files) and logs (`logs\elite-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. `elitesharp.cfg` can take the following values:
 
 ``` json
 {
     "Fps": 60,                             // Maximum render frame rate. The game speed is independent, fixed at 13.5 updates per second.
+    "MusicOn": true,                       // Play music.
+    "EffectsOn": true,                     // Play sound effects.
     "ShipWireframe": false,                // Use wireframe ship graphics.  false (Solid) or true (Wireframe)
+    "ShipRenderMode": "ZBuffer",           // Depth-sort strategy for filled ship rendering (ignored when ShipWireframe is true).  Painter or ZBuffer
     "PlanetStyle": "Fractal",              // The render style of the planets.  Wireframe or Solid or Striped or Fractal
     "SunStyle": "Gradient",                // The render style of the sun.  Solid or Gradient
     "PlanetDescriptions": "TreeGrubs",     // Description style used for the planets.  TreeGrubs (BBC) or HoopyCasinos (MSX)

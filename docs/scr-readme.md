@@ -53,6 +53,17 @@ Notes:
 
 The cockpit is drawn as a set of sprites over the track view: front wheels that bounce with the suspension and spin with road speed, an engine that flares when boosting, a damage crack across the top beam that grows with accumulated damage (and leaves a hole once it fully cracks), a speed gauge, and the lap number, boost reserve and opponent distance shown in the dashboard's read-out panels.
 
+## Configuration
+
+Game settings are held in the `stuntcarracersharp.cfg` file, stored in JSON format, in the user's application data directory (`%AppData%\TheSharpKind` on Windows, `~/.config/TheSharpKind` on Linux/macOS) — shared with [Elite - The Sharp Kind](elite-readme.md). Logs (`logs\scr-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. There is no in-game settings screen yet, so `stuntcarracersharp.cfg` must be edited by hand; it can take the following values:
+
+``` json
+{
+    "MusicOn": true,                       // Play music.
+    "EffectsOn": true                      // Play sound effects.
+}
+```
+
 ## Porting notes
 
 - Source of the conversion: `github.com/ptitSeb/stuntcarremake` (C++, DirectX9/DXUT + SDL2), a maintained fork of `fluffyfreak/stuntcarracer`.  Earlier work was ported from fluffyfreak before the switch; where the two diverge, ptitSeb's is the source of truth.

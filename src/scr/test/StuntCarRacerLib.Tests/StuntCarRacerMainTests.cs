@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerLib.Fakes;
+using Useful.Audio;
 using Useful.Fakes.Audio;
 using Useful.Fakes.Controls;
 using Xunit;
@@ -27,6 +28,23 @@ public class StuntCarRacerMainTests
     [Fact]
     public void ConstructWithNullAbstractionThrows()
         => Assert.Throws<ArgumentNullException>(() => new StuntCarRacerMain(null!));
+
+    [Fact]
+    public void ConstructWithAudioOptionsSucceeds()
+    {
+        // Arrange
+        FakeAbstraction abstraction = new();
+
+        // Act
+        StuntCarRacerMain game = new(abstraction, new AudioOptions { MusicOn = false, EffectsOn = false });
+
+        // Assert
+        Assert.NotNull(game);
+    }
+
+    [Fact]
+    public void ConstructWithNullAudioOptionsThrows()
+        => Assert.Throws<ArgumentNullException>(() => new StuntCarRacerMain(new FakeAbstraction(), null!));
 
     [Fact]
     public void PhysicsStepsEveryFrameGapTicksDuringRace()

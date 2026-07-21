@@ -7,6 +7,173 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (ConfigFile logs failures through the app's logger, 2026-07-21)
+
+- `ConfigFile<T>`'s read/write failures went to `Debug.WriteLine` only,
+  so nothing appeared in the Serilog file/console sinks the apps
+  actually use — a purposefully-broken config (e.g. an invalid enum
+  string) produced no trace in the log file at all, only in an attached
+  debugger's Output window. `ConfigFile<T>` now takes an optional
+  `ILogger<ConfigFile<T>>` (constructor overload, defaulting to
+  `NullLogger<ConfigFile<T>>.Instance` — same pattern the backlog's
+  library-logging item describes for `ILogger<T>` adoption) and a new
+  library-internal `LogMessages` `[LoggerMessage]` partial
+  (`Useful/Config/LogMessages.cs`) logs:
+  - a Warning "Failed to read config file '{path}'; using defaults." —
+    always visible at the apps' default Information level, no exception
+    attached (so no stack-trace noise by default);
+  - a separate Debug-level message carrying the actual exception, so the
+    full stack trace only appears once `ELITE_LOG_LEVEL`/`SCR_LOG_LEVEL`
+    is raised to `Debug`;
+  - a Warning when the config fails validation (no exception, nothing
+    was thrown);
+  - an Error (with exception) on `WriteConfig` failure, alongside the
+    existing `Debug.Fail` dev-time assertion (left as-is — orthogonal to
+    logging).
+
+  `AddEliteConfig`/`AddScrConfig` now resolve `ILoggerFactory` from the
+  container (already registered by both `SDLProgram`s) and pass a
+  `CreateLogger<ConfigFile<T>>()` logger through; `Useful`,
+  `EliteSharpLib` and `StuntCarRacerLib` each gained a
+  `Microsoft.Extensions.Logging.Abstractions` package reference for
+  this. `IsValidConfig` stayed `internal` (was already made so for the
+  earlier DRY-unification tests) so `EliteServiceCollectionExtensions`
+  can pass it as the validation predicate unchanged.
+
+  Reproduced the exact reported scenario (`{"PlanetStyle": "QWERTY"}`)
+  against the built app: at the default level the log file now shows
+  `[WRN] Failed to read config file '...'; using defaults.` with no
+  stack trace; with `ELITE_LOG_LEVEL=Debug` the full exception chain
+  (down to `ConfigurationBinder.Bind`) appears too. Added
+  `Useful.Tests` coverage (`RecordingLogger<T>` fake — Moq's generic
+  `ILogger.Log<TState>` verification is awkward, a fake is simpler)
+  asserting the Warning+Debug split on read failure and the
+  no-exception Warning on validation failure.
+
+### Changed (Logs moved under the shared TheSharpKind user-data folder, 2026-07-21)
+
+- Both apps' Serilog file sink used a `logs` path relative to the
+  process's current working directory, so where log files actually
+  landed depended on how the app was launched (repo root via `dotnet
+  run`, or next to the exe when run directly) — inconsistent with the
+  config files, which are already rooted at a fixed
+  `%AppData%\TheSharpKind`. `SDLProgram.Main` in both apps now computes
+  `userDataPath` first and points the file sink at
+  `Path.Combine(userDataPath, "logs", "elite-.log")` /
+  `"scr-.log"`, so logs always land at
+  `%AppData%\TheSharpKind\logs\` (`~/.config/TheSharpKind/logs/` on
+  Linux/macOS) regardless of launch method. Serilog's file sink creates
+  the `logs` subdirectory itself, same as it always has.
+
+  Smoke-tested both built apps: confirmed `elite-<date>.log`/
+  `scr-<date>.log` now appear under the shared user-data folder. Docs
+  (`elite-readme.md`, `scr-readme.md`) updated to mention log location
+  alongside the existing config-file description.
+
+### Changed (Config file handling unified into a generic Useful type, 2026-07-21)
+
+- Elite's `ConfigFile`/`IConfigWriter` and SCR's `ScrConfigFile` were
+  near-identical (JSON read/write via `Microsoft.Extensions.Configuration`,
+  same defaults-on-failure behaviour, same catch clauses) except for their
+  settings type and filename — a DRY violation now that both games have
+  one. Replaced both with a single generic `Useful.Config.ConfigFile<T>`
+  (`where T : new()`), implementing a new generic `IConfigWriter<T>`, with
+  the filename passed to the constructor and an optional
+  `Func<T, bool> isValid` predicate for game-specific validation (Elite's
+  `Fps > 0`/enum-range checks; SCR has none). `EliteSharpLib`'s
+  `ConfigSettings` and `StuntCarRacerLib`'s `ScrConfigSettings` stay put
+  (they're genuinely game-specific), now bound as `ConfigFile<ConfigSettings>`
+  / `ConfigFile<ScrConfigSettings>` respectively — `AddEliteConfig`/
+  `AddScrConfig` and `SettingsView` (now `IConfigWriter<ConfigSettings>`)
+  updated accordingly. `Microsoft.Extensions.Configuration`/`.Binder`/
+  `.Json` package references moved from `EliteSharpLib.csproj`/
+  `StuntCarRacerLib.csproj` to `Useful.csproj`, the only project that now
+  uses them directly.
+
+  Adding those packages to `Useful` exposed a latent naming collision:
+  `Useful.Maths.Extensions` triggered CA1724 (type name conflicts with
+  the newly-referenced `Microsoft.Extensions` namespace) under this
+  repo's warnings-as-errors build. Renamed it to `MathsExtensions` (pure
+  rename — it's an extension-method container, so no call site needed
+  updating) to unblock the build; unrelated to the config unification
+  itself but a direct consequence of it.
+
+  Added generic coverage in `Useful.Tests/Config/ConfigFileTests.cs`
+  (defaults-when-missing, round-trip, mistyped-value fallback, failing
+  validation) covering the shared logic once; `EliteSharpLib.Tests`/
+  `StuntCarRacerLib.Tests` keep their own `ConfigFileTests` but only for
+  wiring specific to their real settings type/filename (Elite's also
+  exercises the actual `IsValidConfig` predicate, now `internal` for
+  testability). Full solution build and test suite pass; smoke-tested
+  both built apps to confirm the DI wiring still resolves and runs.
+
+### Fixed (Config parse failures crashed the game at startup, 2026-07-21)
+
+- `ConfigFile.ReadConfig`/`ScrConfigFile.ReadConfig` only caught
+  `IOException`/`UnauthorizedAccessException`/`FormatException` around
+  `IConfiguration.Bind`, but `Microsoft.Extensions.Configuration.Binder`
+  wraps type-conversion failures (e.g. a hand-edited `elitesharp.cfg`
+  with a non-boolean string for `ShipWireframe`) in
+  `InvalidOperationException`, not `FormatException` — so a corrupt or
+  hand-edited config file crashed the whole game with an unhandled
+  exception instead of falling back to defaults as intended. Both catch
+  clauses now also match `InvalidOperationException`. Also tightened
+  both `SDLProgram.Main`s: `GetRequiredService<EliteMain>()`/
+  `<StuntCarRacerMain>()` (which triggers `ReadConfig` as part of DI
+  composition) previously ran *before* the surrounding try/catch, so any
+  composition-time exception bypassed the apps' own
+  `LogMessages.CriticalAppTerminated` logging and crashed silently
+  instead; moved the call inside the try block for both apps.
+
+  Reproduced the exact reported crash (`elitesharp.cfg` containing
+  `{"ShipWireframe": "hello!"}`) against the built app before and after
+  the fix; added `ConfigFileTests`/`ScrConfigFileTests` regression cases
+  covering the mistyped-value scenario, plus default-when-missing and
+  write/read round-trip coverage that didn't exist for either config
+  file before.
+
+### Changed (Shared TheSharpKind user-data folder, 2026-07-21)
+
+- Both apps' `userDataPath` (`SDLProgram.cs`) moved from their own
+  per-game folder (`%AppData%\EliteSharp`, `%AppData%\StuntCarRacer`) to
+  a shared `%AppData%\TheSharpKind`, since they're both part of the same
+  project. Elite's config filename (`elitesharp.cfg`) and commander
+  saves (`.cmdr`) already avoided any collision by name, so it needed no
+  change; SCR's config filename gained a `sharp` suffix
+  (`stuntcarracer.cfg` → `stuntcarracersharp.cfg`) to stay unambiguous
+  now it sits next to Elite's files in the same folder. Docs
+  (`elite-readme.md`, `scr-readme.md`) updated to match and cross-link
+  each other's Configuration section, now that the folder is shared.
+
+### Added (SCR persisted settings, 2026-07-21)
+
+- Gave SCR its own settings file, mirroring Elite's `ConfigFile`/
+  `ConfigSettings` pattern: a new internal `ScrConfigSettings`/
+  `ScrConfigFile` (`StuntCarRacerLib/Config`) reads/writes
+  `MusicOn`/`EffectsOn` to a JSON file (`stuntcarracersharp.cfg`) rooted
+  at a user-data path, and a public
+  `StuntCarRacerServiceCollectionExtensions.AddScrConfig(userDataPath)`
+  (mirroring `AddEliteConfig`) registers it in DI and exposes the result
+  as `Useful.Audio.AudioOptions` — the type `StuntCarRacerMain` already
+  took at its `AudioController` construction site. `StuntCarRacerMain`
+  gained a new public constructor overload accepting `AudioOptions` (the
+  existing no-option constructors now default to `new()`, unchanged
+  behaviour); `SDLProgram` wires `AddScrConfig` in ahead of the
+  `StuntCarRacerMain` registration, same as Elite's `SDLProgram`.
+
+  Skipped a settings-screen UI to write the file, following the same
+  precedent as Elite's `ShipRenderMode` setting (2026-07-20): SCR has no
+  settings screen at all today, so the config file remains the only way
+  to change these values (still satisfies "toggle without code
+  changes"). `FrameGap` and league selection stay out of scope, per the
+  backlog item, as future candidates once a settings screen exists.
+
+  Smoke-tested the built app: it starts, creates the shared user-data
+  directory, and reads a hand-written config file
+  (`MusicOn`/`EffectsOn` both `false`) without error. Added
+  `ScrConfigFileTests` (default-when-missing, write/read round-trip) and
+  two `StuntCarRacerMainTests` cases for the new constructor overload.
+
 ### Changed (Colour handling unified on FastColor, 2026-07-20)
 
 - Phase 3 of unifying colour handling across Elite and SCR: `uint` →

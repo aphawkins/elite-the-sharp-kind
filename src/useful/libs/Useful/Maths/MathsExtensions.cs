@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace Useful.Maths;
 
-public static class Extensions
+public static class MathsExtensions
 {
     public static bool IsOdd(this int value) => value % 2 != 0;
 

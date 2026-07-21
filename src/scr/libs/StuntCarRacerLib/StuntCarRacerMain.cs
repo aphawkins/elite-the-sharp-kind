@@ -46,13 +46,24 @@ public sealed class StuntCarRacerMain : IGame
     private int _frameCount;
 
     public StuntCarRacerMain(IAbstraction abstraction)
-        : this(abstraction, TrackId.LittleRamp)
+        : this(abstraction, TrackId.LittleRamp, new())
     {
     }
 
     public StuntCarRacerMain(IAbstraction abstraction, TrackId trackId)
+        : this(abstraction, trackId, new())
+    {
+    }
+
+    public StuntCarRacerMain(IAbstraction abstraction, AudioOptions audioOptions)
+        : this(abstraction, TrackId.LittleRamp, audioOptions)
+    {
+    }
+
+    private StuntCarRacerMain(IAbstraction abstraction, TrackId trackId, AudioOptions audioOptions)
     {
         Guard.ArgumentNull(abstraction);
+        Guard.ArgumentNull(audioOptions);
 
         _abstraction = abstraction;
         Graphics = abstraction.Graphics;
@@ -83,7 +94,7 @@ public sealed class StuntCarRacerMain : IGame
                 { "Wreck", offRoadOrWreck },
                 { "HitCar", new(9, volume: 56f / 64f, pan: 1f) },
             },
-            new());
+            audioOptions);
 
         LoadTrack(trackId);
 

@@ -25,6 +25,8 @@ internal static class SDLProgram
 
     public static void Main()
     {
+        string userDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TheSharpKind");
+
         LogEventLevel minimumLevel =
             Enum.TryParse(Environment.GetEnvironmentVariable("SCR_LOG_LEVEL"), ignoreCase: true, out LogEventLevel envLevel)
             ? envLevel
@@ -39,7 +41,7 @@ internal static class SDLProgram
             .Console(formatProvider: CultureInfo.InvariantCulture)
             .WriteTo
             .File(
-                Path.Combine("logs", "scr-.log"),
+                Path.Combine(userDataPath, "logs", "scr-.log"),
                 formatProvider: CultureInfo.InvariantCulture,
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 7)
@@ -54,6 +56,7 @@ internal static class SDLProgram
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
+        services.AddScrConfig(userDataPath);
         services.AddSingleton<StuntCarRacerMain>();
         services.AddSingleton<IGame>(sp => sp.GetRequiredService<StuntCarRacerMain>());
 
@@ -61,10 +64,9 @@ internal static class SDLProgram
 
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(SDLProgram));
 
-        StuntCarRacerMain game = provider.GetRequiredService<StuntCarRacerMain>();
-
         try
         {
+            StuntCarRacerMain game = provider.GetRequiredService<StuntCarRacerMain>();
             LogMessages.StartingTitle(logger, Title);
             game.Run();
         }

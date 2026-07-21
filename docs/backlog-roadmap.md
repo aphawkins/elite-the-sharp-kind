@@ -89,22 +89,6 @@ functionality. Conclusions:
 
 ### Architecture (business-application practices — see architecture.md)
 
-- [ ] [StuntCarRacerLib] Give SCR its own persisted settings: unlike
-      Elite (`ConfigFile`/`ConfigSettings`/`IConfigWriter`,
-      [src/elite/libs/EliteSharpLib/Config](../src/elite/libs/EliteSharpLib/Config)),
-      SCR has no settings file at all, so `StuntCarRacerMain` passes a
-      hardcoded default `AudioOptions` to `AudioController`
-      ([StuntCarRacerMain.cs](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs))
-      instead of a user-configurable one (see the 2026-07-20 "injectable
-      `AudioController` options" CHANGELOG entry — Elite got
-      `MusicOn`/`EffectsOn` through its `ConfigSettings`, SCR didn't
-      because it had nowhere to put them). Mirror Elite's pattern (a
-      user-data-path-rooted JSON file, read at startup and written from a
-      settings screen) and wire `MusicOn`/`EffectsOn` through it the same
-      way; `FrameGap` (the F9/F10 tuning item above) and league selection
-      (Super League item below) are other candidates worth persisting
-      once the file exists.
-
 Library logging (split 2026-07-14 from the original [LARGE] item; a
 2026-07-14 survey found every operational `Debug.*` call lives in
 `EliteSharpLib` — the SCR libraries have none and `Useful.*` only the
@@ -120,10 +104,12 @@ in any order):
       for tests/fakes, and route the apps' existing Serilog
       `ILoggerFactory` in via `EliteMain` (or the container once the
       composition-root items above land — doing DI first makes this
-      wiring trivial). Prove the pattern end-to-end by converting
-      `ConfigFile`'s four `Debug.WriteLine`/`Debug.Fail` calls
-      ([ConfigFile.cs:51-81](../src/elite/libs/EliteSharpLib/Config/ConfigFile.cs))
-      to logged Warnings — today they vanish in Release builds.
+      wiring trivial). Prove the pattern end-to-end on a small, low-risk
+      exemplar with a handful of `Debug.WriteLine`/`Debug.Fail` calls, to
+      be picked when this item is worked (the previous exemplar,
+      `ConfigFile`, moved to the shared, EliteSharpLib-independent
+      `Useful.Config.ConfigFile<T>` on 2026-07-21 and no longer fits) —
+      today they vanish in Release builds.
 - [ ] [EliteSharpLib] Convert `Combat`'s 17 `Debug.Fail` calls
       ([Combat.cs:156-1047](../src/elite/libs/EliteSharpLib/Conflict/Combat.cs)),
       the heaviest file: the "Failed to create <ship>" cases are

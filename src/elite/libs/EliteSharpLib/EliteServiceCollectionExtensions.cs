@@ -11,9 +11,11 @@ using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Useful.Abstraction;
 using Useful.Assets;
 using Useful.Audio;
+using Useful.Config;
 using Useful.Controls;
 using Useful.Graphics;
 using Useful.Graphics.Rendering;
@@ -22,10 +24,17 @@ namespace EliteSharpLib;
 
 public static class EliteServiceCollectionExtensions
 {
-    // ConfigFile is internal, so Program.Main can't reference or construct it
-    // directly; this registers it from inside the assembly that can.
+    private const string ConfigFileName = "elitesharp.cfg";
+
+    // ConfigSettings is internal, so Program.Main can't reference or
+    // construct a ConfigFile<ConfigSettings> directly; this registers it
+    // from inside the assembly that can.
     public static IServiceCollection AddEliteConfig(this IServiceCollection services, string userDataPath)
-        => services.AddSingleton(_ => new ConfigFile(userDataPath));
+        => services.AddSingleton(sp => new ConfigFile<ConfigSettings>(
+            userDataPath,
+            ConfigFileName,
+            IsValidConfig,
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<ConfigSettings>>()));
 
     // The whole domain graph below is internal to EliteSharpLib (same
     // reason as ConfigFile above), so it can only be registered from in
@@ -38,7 +47,7 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(sp => new ScreenManager<Screen, IView>(sp.GetRequiredService<IKeyboard>()));
         services.AddSingleton(sp => new GameState(sp.GetRequiredService<ScreenManager<Screen, IView>>())
         {
-            Config = sp.GetRequiredService<ConfigFile>().ReadConfig(),
+            Config = sp.GetRequiredService<ConfigFile<ConfigSettings>>().ReadConfig(),
         });
         services.AddSingleton(_ => new PlayerShip());
         services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
@@ -94,7 +103,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<PlanetController>(),
-            sp.GetRequiredService<ConfigFile>().BaseDirectory));
+            sp.GetRequiredService<ConfigFile<ConfigSettings>>().BaseDirectory));
         services.AddSingleton(sp => new Space(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -164,6 +173,12 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton<IGame>(sp => sp.GetRequiredService<EliteMain>());
         return services;
     }
+
+    internal static bool IsValidConfig(ConfigSettings config) => config.Fps > 0 &&
+        Enum.IsDefined(config.PlanetDescriptions) &&
+        Enum.IsDefined(config.PlanetStyle) &&
+        Enum.IsDefined(config.ShipRenderMode) &&
+        Enum.IsDefined(config.SunStyle);
 
     // The ~25 views EliteMain used to construct itself, now registered so
     // AddEliteMain's screen-map factory above can resolve them.
@@ -304,7 +319,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<ConfigFile>()));
+            sp.GetRequiredService<ConfigFile<ConfigSettings>>()));
         services.AddSingleton(sp => new ConstrictorMissionView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
