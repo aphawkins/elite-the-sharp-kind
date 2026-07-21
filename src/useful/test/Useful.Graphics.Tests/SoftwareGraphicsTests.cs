@@ -541,6 +541,67 @@ public class SoftwareGraphicsTests
     }
 
     [Fact]
+    public void SetClipRegionRestrictsPixelWritesToRegion()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+
+        // Act - clip to the region [1,1]-[3,3), then draw both inside and outside it
+        graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
+        graphics.DrawPixel(new(0, 0), BaseColors.White.Argb);
+        graphics.DrawPixel(new(2, 2), BaseColors.White.Argb);
+        graphics.ScreenUpdate();
+
+        // Assert
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
+        }
+    }
+
+    [Fact]
+    public void SetClipRegionBackToFullScreenRestoresUnclippedDrawing()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+
+        // Act - narrow the clip, then restore it to the whole screen before drawing
+        graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
+        graphics.SetClipRegion(new Vector2(0, 0), 5, 5);
+        graphics.DrawPixel(new(0, 0), BaseColors.White.Argb);
+        graphics.ScreenUpdate();
+
+        // Assert - the earlier narrow clip no longer applies
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(0, 0));
+    }
+
+    [Fact]
+    public void SetClipRegionRestrictsRectangleFilledToRegion()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+
+        // Act - clip to the region [1,1]-[3,3), then fill a rectangle spanning the whole screen
+        graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
+        graphics.DrawRectangleFilled(new(0, 0), 5, 5, BaseColors.White.Argb);
+        graphics.ScreenUpdate();
+
+        // Assert - only the clip region got painted
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(3, 3));
+            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(4, 4));
+        }
+    }
+
+    [Fact]
     public void DisposeCanBeCalledMultipleTimes()
     {
         // Arrange

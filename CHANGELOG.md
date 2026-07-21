@@ -7,6 +7,70 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Let SoftwareGraphicsBenchmarks take CLI filter/job arguments, 2026-07-21)
+
+- `Useful.Graphics.Benchmarks`'s `Program.Main`
+  ([Program.cs](src/useful/perf/Useful.Graphics.Benchmarks/Program.cs)) called
+  `BenchmarkRunner.Run<T>()` directly, so `dotnet run -c Release` always ran
+  all 23 benchmarks under the full `DefaultConfig` job (~10 minutes) with no
+  way to narrow it down — the friction that made the clip-region regression
+  above expensive to chase down. Switched to
+  `BenchmarkSwitcher.FromAssembly(...).Run(args, config)`, which accepts
+  `--filter`/`--job`/etc.; verified that plain `dotnet run -c Release` (no
+  arguments) still runs every benchmark under the same `DefaultConfig` job
+  as before — `BenchmarkSwitcher` prompts interactively when given no
+  arguments even with a single benchmark class in the assembly, so `Main`
+  now substitutes `--filter *` in that case to keep today's default
+  behaviour. Local iteration on a change can now run in seconds instead of
+  minutes, e.g. `dotnet run -c Release -- --filter *DrawPixel* --job dry`.
+  Also switched the job's toolchain to `InProcessNoEmitToolchain`: the
+  default out-of-process toolchain generates and builds a throwaway project
+  per run, and BenchmarkDotNet resolves it by scanning the whole repo tree
+  for a matching project *name* — which throws `NotSupportedException` the
+  moment more than one copy exists on disk, as happens when a Claude Code
+  isolated-worktree agent's checkout sits nested under
+  `.claude/worktrees/*` inside the same repo. Running in-process sidesteps
+  the lookup entirely (and removes the per-run build step, on top of the
+  `--filter`/`--job` speedup above), at the cost of slightly less isolation
+  between iterations than a separate process gives — an acceptable trade
+  for a suite whose numbers are read as relative comparisons rather than
+  absolute ones. `Useful.Controls.Benchmarks` and `EliteSharpLib.Benchmarks`
+  have the same hardcoded-`Main` pattern and would benefit from the same
+  change; not done here since neither was needed for this investigation.
+
+### Fixed (Implement SoftwareGraphics.SetClipRegion, 2026-07-21)
+
+- `SoftwareGraphics.SetClipRegion`
+  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  was an empty no-op, while Elite actively relies on clip regions
+  (`EliteDraw.SetViewClipRegion`) to keep view drawing inside the border and
+  off the scanner area — in the software renderer this protection silently
+  did nothing. Added a clip rectangle (defaulting to the full screen) that
+  both `DrawPixel` overloads test against, and routed
+  `DrawRectangleFilledInt`/`DrawRectangleInt` (which wrote straight to the
+  backing bitmap) through the clipped `DrawPixel` too, so every pixel-writing
+  path is now covered. A same-toolchain A/B benchmark of the first pass
+  showed this cost real per-pixel throughput — the private `DrawPixel(int,
+  int, uint)` had previously been a bare `_screen.SetPixel` passthrough with
+  no checks at all, so `DrawLine`/`DrawCircleFilled`/`DrawRectangle*` (all of
+  which funnel through it per pixel) roughly doubled. Added a
+  `_clipIsFullScreen` flag, true whenever the clip covers the whole screen
+  (the default, and where most frames spend most of their time — e.g. Elite
+  only narrows the clip for the 3D view); both `DrawPixel` overloads check it
+  first and skip straight to the cheap unclipped path when it's set, only
+  paying the four-field clip comparison while a narrower clip is actually
+  active. Re-running the same A/B afterwards showed the regression cut from
+  ~100% down to ~10-25% (a few nanoseconds) on the affected benchmarks — the
+  remaining cost being the one unavoidable guard branch. Added
+  `SetClipRegionRestrictsPixelWritesToRegion`,
+  `SetClipRegionRestrictsRectangleFilledToRegion` and
+  `SetClipRegionBackToFullScreenRestoresUnclippedDrawing` in
+  `SoftwareGraphicsTests`. Verified live against the real `EliteDraw` render
+  path (mirroring `EliteMain.Update`'s clip/border/clip-to-view sequence): a
+  full-screen rectangle drawn under the view clip stayed off both the border
+  and the scanner area. Built the full solution and ran the complete test
+  suite (all green).
+
 ### Fixed (Bound the text bitmap cache with LRU eviction, 2026-07-21)
 
 - `SoftwareGraphics._textCache`

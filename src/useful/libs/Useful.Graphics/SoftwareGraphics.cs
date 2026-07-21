@@ -25,6 +25,23 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     private float[]? _depth;
     private bool _isDisposed;
 
+    // Clip rectangle every pixel write is tested against; defaults to the
+    // whole screen so callers that never call SetClipRegion see no change
+    // in behaviour. Always kept clamped to the screen bounds so the clip
+    // fields alone are sufficient to keep pixel writes in-bounds.
+    private float _clipLeft;
+    private float _clipTop;
+    private float _clipRight;
+    private float _clipBottom;
+
+    // True whenever the clip rectangle covers the whole screen (the default,
+    // and what most frames spend most of their time in - e.g. Elite only
+    // narrows the clip for the 3D view). Lets DrawPixel skip the clip
+    // comparisons entirely in the common case instead of reading four fields
+    // per pixel, which measurably regressed hot per-pixel paths
+    // (DrawLine/DrawCircleFilled) when the clip fields were unconditional.
+    private bool _clipIsFullScreen = true;
+
     internal SoftwareGraphics(
         float screenWidth,
         float screenHeight,
@@ -38,6 +55,8 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         _screenUpdate = screenUpdate;
         Images = images;
         Fonts = fonts;
+        _clipRight = screenWidth;
+        _clipBottom = screenHeight;
         Clear();
     }
 
@@ -235,8 +254,14 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     public void DrawPixel(Vector2 position, FastColor color)
     {
-        // TODO: Optimize bounds checking
-        if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)
+        if (_clipIsFullScreen)
+        {
+            if (position.X < 0 || position.Y < 0 || position.X >= ScreenWidth || position.Y >= ScreenHeight)
+            {
+                return;
+            }
+        }
+        else if (position.X < _clipLeft || position.Y < _clipTop || position.X >= _clipRight || position.Y >= _clipBottom)
         {
             return;
         }
@@ -441,6 +466,11 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     public void SetClipRegion(Vector2 position, float width, float height)
     {
+        _clipLeft = Math.Clamp(position.X, 0, ScreenWidth);
+        _clipTop = Math.Clamp(position.Y, 0, ScreenHeight);
+        _clipRight = Math.Clamp(position.X + width, 0, ScreenWidth);
+        _clipBottom = Math.Clamp(position.Y + height, 0, ScreenHeight);
+        _clipIsFullScreen = _clipLeft <= 0 && _clipTop <= 0 && _clipRight >= ScreenWidth && _clipBottom >= ScreenHeight;
     }
 
     // Textured variant of DrawTriangleFilled: texture coordinates are
@@ -814,7 +844,15 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private void DrawPixel(int x, int y, uint color) => _screen.SetPixel(x, y, color);
+    private void DrawPixel(int x, int y, uint color)
+    {
+        if (!_clipIsFullScreen && (x < _clipLeft || y < _clipTop || x >= _clipRight || y >= _clipBottom))
+        {
+            return;
+        }
+
+        _screen.SetPixel(x, y, color);
+    }
 
     // Test-and-set a pixel's inverse depth: the draw passes when at least
     // as near as what is already there, so later draws win ties (as the
@@ -845,7 +883,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         {
             for (int y = startY; y <= endY; y++)
             {
-                _screen.SetPixel(x, y, color);
+                DrawPixel(x, y, color);
             }
         }
     }
@@ -860,14 +898,14 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         // Draw horizontal lines
         for (int x = startX; x <= endX; x++)
         {
-            _screen.SetPixel(x, startY, color);
-            _screen.SetPixel(x, endY, color);
+            DrawPixel(x, startY, color);
+            DrawPixel(x, endY, color);
         }
 
         for (int y = startY + 1; y <= endY - 1; y++)
         {
-            _screen.SetPixel(startX, y, color);
-            _screen.SetPixel(endX, y, color);
+            DrawPixel(startX, y, color);
+            DrawPixel(endX, y, color);
         }
     }
 
