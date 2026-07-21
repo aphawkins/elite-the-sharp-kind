@@ -7,6 +7,21 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Stop swallowing input/console errors in EliteMain.Update, 2026-07-21)
+
+- `EliteMain.Update` wrapped `_scanner.UpdateConsole()` and
+  `_gameState.CurrentView!.HandleInput()` in a `catch (Exception) { Debug.WriteLine(...) }`
+  ([EliteMain.cs](src/elite/libs/EliteSharpLib/EliteMain.cs)), so in Release
+  builds (where `Debug.WriteLine` compiles away) every error from either call
+  was silently swallowed each tick, violating the architecture doc's "never
+  catch-all on the frame path" rule. Removed the catch-all: `SDLProgram.Main`
+  ([SDLProgram.cs](src/elite/apps/EliteSharp/SDLProgram.cs)) already wraps
+  `elite.Run()` in a try/catch that logs Critical via Serilog and rethrows,
+  and the whole game loop runs synchronously on that same thread
+  (`GameLoop.Run` → `GameHost.Run` → `EliteMain.Run`, no background thread),
+  so any exception now surfaces there with a full stack trace instead of
+  vanishing.
+
 ### Changed (Let SoftwareGraphicsBenchmarks take CLI filter/job arguments, 2026-07-21)
 
 - `Useful.Graphics.Benchmarks`'s `Program.Main`

@@ -213,17 +213,8 @@ public sealed class EliteMain : IGame
 
         _draw.SetFullScreenClipRegion();
 
-#pragma warning disable CA1031
-        try
-        {
-            _scanner.UpdateConsole();
-            _gameState.CurrentView!.HandleInput();
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex.ToString());
-        }
-#pragma warning restore CA1031
+        _scanner.UpdateConsole();
+        _gameState.CurrentView!.HandleInput();
     }
 
     // Present the frame composed by the last update. Runs at the render
