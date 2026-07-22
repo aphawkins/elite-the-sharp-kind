@@ -3,7 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerLib.Screens;
-using Useful.Fakes.Harness;
+using Useful.Controls;
 using Xunit;
 
 namespace StuntCarRacerLib.Tests;

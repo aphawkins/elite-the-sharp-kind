@@ -386,6 +386,23 @@ public sealed class SDLGraphics : IGraphics, IDisposable
         SDL_RenderPresent(_renderer);
     }
 
+    public void SaveScreen(string path)
+    {
+        Guard.ArgumentNull(path);
+
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        int width = (int)ScreenWidth;
+        int height = (int)ScreenHeight;
+        SDL_Rect rect = new() { x = 0, y = 0, w = width, h = height };
+        using FastBitmap bitmap = new(width, height);
+        SDLGuard.Execute(() => SDL_RenderReadPixels(_renderer, ref rect, SDL_PIXELFORMAT_ARGB8888, bitmap.BitmapHandle, width * 4));
+        BitmapWriter.Write(bitmap, path);
+    }
+
     public void SetClipRegion(Vector2 position, float width, float height)
     {
         if (_isDisposed)

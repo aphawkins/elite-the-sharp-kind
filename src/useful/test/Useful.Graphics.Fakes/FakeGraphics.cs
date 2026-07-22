@@ -104,6 +104,10 @@ public sealed class FakeGraphics(float screenWidth = 0, float screenHeight = 0) 
     {
     }
 
+    public void SaveScreen(string path)
+    {
+    }
+
     public void SetClipRegion(Vector2 position, float width, float height)
     {
     }

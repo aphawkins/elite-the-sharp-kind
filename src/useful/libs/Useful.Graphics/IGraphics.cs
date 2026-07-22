@@ -83,5 +83,13 @@ public interface IGraphics
     /// </summary>
     public void ScreenUpdate();
 
+    /// <summary>
+    /// Write the current back buffer to a BMP file, independently of
+    /// <see cref="ScreenUpdate"/> - for debug/test frame dumps (e.g. a
+    /// live SDL app's F12 key) that need the exact native-resolution
+    /// framebuffer rather than a desktop screenshot.
+    /// </summary>
+    public void SaveScreen(string path);
+
     public void SetClipRegion(Vector2 position, float width, float height);
 }

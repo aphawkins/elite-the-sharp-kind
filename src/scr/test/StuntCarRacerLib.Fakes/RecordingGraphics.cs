@@ -29,6 +29,8 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
 
     public int ScreenUpdateCount { get; private set; }
 
+    public IList<string> SavedScreenPaths { get; } = [];
+
     public float Scale => 1;
 
     public float ScreenHeight { get; } = screenHeight;
@@ -112,6 +114,8 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     }
 
     public void ScreenUpdate() => ScreenUpdateCount++;
+
+    public void SaveScreen(string path) => SavedScreenPaths.Add(path);
 
     public void SetClipRegion(Vector2 position, float width, float height)
     {

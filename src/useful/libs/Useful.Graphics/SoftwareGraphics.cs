@@ -464,6 +464,13 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     public void ScreenUpdate() => _screenUpdate(_screen);
 
+    public void SaveScreen(string path)
+    {
+        Guard.ArgumentNull(path);
+
+        BitmapWriter.Write(_screen, path);
+    }
+
     public void SetClipRegion(Vector2 position, float width, float height)
     {
         _clipLeft = Math.Clamp(position.X, 0, ScreenWidth);

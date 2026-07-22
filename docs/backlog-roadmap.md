@@ -91,30 +91,6 @@ functionality. Conclusions:
 
 (none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
 
-### Tests
-
-Headless smoke harness (added 2026-07-19: verifying the
-`Opponent_Speed_Value` port live meant driving the SDL window with
-OS-level focus stealing, key injection and full-screen screenshots —
-slow, flaky, and expensive for agent-driven sessions. The repo already
-has every piece for headless verification; these items assemble them
-so "confirm the change works in the running game" becomes one test run
-plus reading a native-resolution BMP or a text state dump, no window
-needed. The SCR harness (`HeadlessGameHarness`, landed 2026-07-22, see
-CHANGELOG) is the scripted-input machinery the golden-trace harness
-under the float-physics cluster shares):
-
-- [ ] [Apps] Scripted input + frame dump in the real SDL apps, for the
-      rare check that must exercise the true SDL window/present path:
-      replay a key script (from a file or env var) into the `IKeyboard`
-      sink inside the app — no OS focus or synthetic input needed —
-      and add a debug key (e.g. F12) plus a script command that saves
-      the current software framebuffer as a BMP next to the logs, so
-      live verification reads a native 640x400/512x512 image instead
-      of a desktop screenshot. Gate behind an environment variable;
-      keyboard-sink injection gets cleaner after the `IKeyboard`
-      producer/consumer split item above.
-
 ### Release engineering (from the retired release plan)
 
 - [ ] [Release] Switch versioning from CI's date+run-number stamp to tag-driven semantic versioning (e.g. [MinVer](https://github.com/adamralph/minver)) so tagging a commit *is* the release-versioning step; do this before the first `v1.0.0` tag.

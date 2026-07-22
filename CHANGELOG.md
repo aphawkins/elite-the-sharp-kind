@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Scripted input + frame dump in the real SDL apps, 2026-07-22)
+
+- The headless harnesses cover the common case, but the rare check that
+  must exercise the true SDL window/present path still meant OS-level
+  focus stealing and key injection to verify live. `GameHost.Run`
+  (shared by both games) now supports two environment-variable-gated
+  debug facilities, so default behaviour with neither var set is
+  unchanged: `GAME_KEY_SCRIPT` (a file path, or the script text itself)
+  is parsed by the new `Useful.Controls.KeyScriptParser` and replayed
+  into the real keyboard sink tick-by-tick by the new
+  `KeyScriptPlayer`, and `GAME_FRAME_DUMP_DIR` enables both an F12
+  debug key and the script's `SaveFrame` command, both of which dump
+  the current native-resolution framebuffer there as a BMP via a new
+  `IGraphics.SaveScreen(path)` (implemented on `SoftwareGraphics` by
+  writing its back buffer directly, and on `SDLGraphics` via
+  `SDL_RenderReadPixels`, plus no-ops/recording on the two `IGraphics`
+  test fakes). `KeyScriptEvent`/`KeyScriptAction` moved from
+  `Useful.Fakes.Harness` (test-only) to `Useful.Controls` (production)
+  so both the headless harnesses and this real-app player share one
+  definition instead of two; `KeyScriptAction` gained a `SaveFrame`
+  member. Added `KeyScriptParserTests`, `KeyScriptPlayerTests`, and a
+  `SoftwareGraphics.SaveScreen` round-trip test. Verified live: ran
+  both apps with a scripted key file and `GAME_FRAME_DUMP_DIR` set, no
+  OS focus/injection involved, and confirmed the dumped BMPs
+  (640x400/512x512) show the correct rendered frame (SCR's track menu,
+  Elite's intro/parade screen) with clean logs. Built the full solution
+  and ran the complete test suite (all green).
+
 ### Added (Elite headless game harness + shared harness base, 2026-07-22)
 
 - Added the Elite equivalent of SCR's `HeadlessGameHarness`, building on

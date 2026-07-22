@@ -616,6 +616,30 @@ public class SoftwareGraphicsTests
     }
 
     [Fact]
+    public void SaveScreenWritesTheCurrentBackBufferIndependentlyOfScreenUpdate()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, _ => { }, moqAssetLocator.Object);
+        graphics.DrawPixel(new(2, 2), BaseColors.White.Argb);
+
+        string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.bmp");
+        try
+        {
+            // Act
+            graphics.SaveScreen(path);
+
+            // Assert - readable back without ScreenUpdate ever being called
+            FastBitmap read = BitmapReader.Read(path);
+            Assert.Equal(BaseColors.White.Argb, read.GetPixel(2, 2));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void GenerateTextBitmapCachesAndEvictsLeastRecentlyUsed()
     {
         // Arrange

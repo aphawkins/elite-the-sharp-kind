@@ -1,6 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
 using Useful.Assets;
+using Useful.Controls;
 using Useful.Fakes.Controls;
 using Useful.Graphics;
 
@@ -55,6 +56,12 @@ public abstract class HeadlessGameHarnessBase<TState> : IDisposable
 
                 case KeyScriptAction.Release:
                     Keyboard.KeyUp(scriptEvent.Key, scriptEvent.Modifiers);
+                    break;
+
+                case KeyScriptAction.SaveFrame:
+                    // No-op here: headless callers save frames explicitly, via this
+                    // class's own SaveFrame method. This action only matters to
+                    // KeyScriptPlayer, the real-app counterpart driven by GameHost.
                     break;
             }
         }
