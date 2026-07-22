@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build elite",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -14,7 +14,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish",
+            "label": "publish elite",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -26,7 +26,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "watch",
+            "label": "watch elite",
             "command": "dotnet",
             "type": "process",
             "args": [
@@ -34,6 +34,42 @@
                 "run",
                 "--project",
                 "${workspaceFolder}/src/elite/apps/EliteSharp/EliteSharp.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build scr",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish scr",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch scr",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

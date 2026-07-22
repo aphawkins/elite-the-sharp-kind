@@ -5,13 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Elite",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build",
+            "preLaunchTask": "build elite",
             "program": "${workspaceFolder}/src/elite/apps/EliteSharp/bin/Debug/net10.0/EliteSharp.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/elite/apps/EliteSharp",
+            "console": "internalConsole",
+            "stopAtEntry": false,
+            "sourceFileMap": {
+                "/_": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Stunt Car Racer",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build scr",
+            "program": "${workspaceFolder}/src/scr/apps/StuntCarRacerSharp/bin/Debug/net10.0/StuntCarRacerSharp.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/scr/apps/StuntCarRacerSharp",
             "console": "internalConsole",
             "stopAtEntry": false,
             "sourceFileMap": {
