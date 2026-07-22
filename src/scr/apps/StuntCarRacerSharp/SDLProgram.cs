@@ -44,7 +44,9 @@ internal static class SDLProgram
             .MinimumLevel
             .Is(minimumLevel)
             .WriteTo
-            .Console(formatProvider: CultureInfo.InvariantCulture)
+            .Console(
+                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}",
+                formatProvider: CultureInfo.InvariantCulture)
             .WriteTo
             .File(
                 Path.Combine(userDataPath, "logs", "scr-.log"),
