@@ -93,7 +93,6 @@ functionality. Conclusions:
 
 ### Release engineering (from the retired release plan)
 
-- [ ] [Release] Switch versioning from CI's date+run-number stamp to tag-driven semantic versioning (e.g. [MinVer](https://github.com/adamralph/minver)) so tagging a commit *is* the release-versioning step; do this before the first `v1.0.0` tag.
 - [ ] [Release] Add a tag-triggered CI job that publishes win-x64/linux-x64/linux-arm64 self-contained builds for both Elite and StuntCarRacer (add a publish profile + CI publish step for `StuntCarRacer.csproj` mirroring Elite's) and creates a GitHub Release with the zips attached (`softprops/action-gh-release` or `gh release create --generate-notes`); ship as zip/tar.gz, not an installer. Label the SCR artifacts as preview in the release notes given its open defects list below.
 
 

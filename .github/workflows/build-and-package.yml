@@ -13,31 +13,34 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # MinVer needs full history (and tags) to compute the version.
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
-      - name: Install dotnet-coverage
-        run: dotnet tool install --global dotnet-coverage
+      - name: Install dotnet-coverage and minver-cli
+        run: |
+          dotnet tool install --global dotnet-coverage
+          dotnet tool install --global minver-cli
 
       - name: Add dotnet tools to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
-      - name: Set version variables
+      - name: Compute version
         id: vars
-        run: |
-          version=0.$(date +%y%j).${GITHUB_RUN_NUMBER}.0
-          echo "version=$version" >> $GITHUB_OUTPUT
+        run: echo "version=$(minver)" >> $GITHUB_OUTPUT
 
       - name: Build solution
-        run: dotnet build --configuration Release /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
+        run: dotnet build --configuration Release
 
       - name: Run tests with coverage
         run: |
           dotnet-coverage collect -f cobertura -o coverage.cobertura.xml -- \
-          dotnet test --configuration Release --settings coverage.runsettings --no-build --verbosity normal /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
+          dotnet test --configuration Release --settings coverage.runsettings --no-build --verbosity normal
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
@@ -46,7 +49,7 @@ jobs:
           path: coverage.cobertura.xml
 
       - name: Publish EliteSharp Windows
-        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
+        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows
 
       - name: Delete superfluous files
         run: find ./publish/win-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
@@ -58,7 +61,7 @@ jobs:
           path: ./publish/win-x64/*
 
       - name: Publish EliteSharp Linux
-        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileLinux /p:FileVersion=${{ steps.vars.outputs.version }} /p:Version=${{ steps.vars.outputs.version }}
+        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileLinux
 
       - name: Delete superfluous files
         run: find ./publish/linux-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete

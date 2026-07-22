@@ -7,6 +7,24 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Tag-driven semantic versioning via MinVer, 2026-07-22)
+
+- CI stamped `Version`/`FileVersion` from `0.<yy><day-of-year>.<run-number>.0`,
+  so version numbers reset meaning every build and carried no relation to
+  releases. Added `MinVer` (via [Directory.Build.props](Directory.Build.props),
+  `MinVerTagPrefix` `v`, matching the already-decided `v1.0.0` first-tag
+  scheme) so every project's version is now derived from the nearest `v*`
+  git tag plus commit height — tagging a commit *is* the release-versioning
+  step, with untagged builds getting a `0.0.0-alpha.0.<height>+<sha>`
+  pre-release version. Updated
+  [build-and-package.yml](.github/workflows/build-and-package.yml) to fetch
+  full history (MinVer needs the tags), removed the manual
+  `/p:Version=.../p:FileVersion=...` stamping from every build/test/publish
+  step, and now reads the computed version for artifact naming via the
+  `minver-cli` global tool instead. Built the full solution and ran the
+  complete test suite (all green); verified the built `EliteSharp.dll`'s
+  `ProductVersion` reads `0.0.0-alpha.0.<height>+<sha>` as expected pre-tag.
+
 ### Added (Scripted input + frame dump in the real SDL apps, 2026-07-22)
 
 - The headless harnesses cover the common case, but the rare check that
