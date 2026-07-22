@@ -17,7 +17,7 @@ Requires the [.NET SDK](https://dotnet.microsoft.com/download) (see `Directory.B
 dotnet run --project src/elite/apps/EliteSharp
 
 # Stunt Car Racer
-dotnet run --project src/scr/apps/StuntCarRacer
+dotnet run --project src/scr/apps/StuntCarRacerSharp
 ```
 
 Tested platforms: Windows (x64), Ubuntu (x64), Raspberry Pi 4 (ARM64). On Linux the SDL2 libraries need to be installed first — see the [Elite readme](docs/elite-readme.md#sdl---development-setup).

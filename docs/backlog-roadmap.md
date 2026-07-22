@@ -33,7 +33,7 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
 ### Resolved (2026-07-19) — ptitSeb parity audit
 
 A full feature-by-feature comparison of `C:\code\github\ptitSeb\stuntcarremake`
-(the definitive conversion source) against `StuntCarRacerLib` was run on
+(the definitive conversion source) against `StuntCarRacerSharpLib` was run on
 2026-07-19, prompted by concerns that earlier analysis had missed
 functionality. Conclusions:
 
@@ -93,7 +93,7 @@ functionality. Conclusions:
 
 ### Release engineering (from the retired release plan)
 
-- [ ] [Release] Add a tag-triggered CI job that publishes win-x64/linux-x64/linux-arm64 self-contained builds for both Elite and StuntCarRacer (add a publish profile + CI publish step for `StuntCarRacer.csproj` mirroring Elite's) and creates a GitHub Release with the zips attached (`softprops/action-gh-release` or `gh release create --generate-notes`); ship as zip/tar.gz, not an installer. Label the SCR artifacts as preview in the release notes given its open defects list below.
+(none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
 
 
 ## Could
@@ -104,7 +104,7 @@ functionality. Conclusions:
 - [ ] [Repo] Remove all analyzer suppressions (`#pragma warning disable` and `[SuppressMessage]`) by fixing the underlying code instead, so the analyzer ruleset stays fully enforced with no opt-outs. Current sites (verify line numbers before editing, this list dates from 2026-07-21):
       [RandomSource.cs:12](../src/useful/libs/Useful/RandomSource.cs) (CA5394, class-level),
       [ThreeDModel.cs:7](../src/useful/libs/Useful.Assets/Models/ThreeDModel.cs), [Point.cs:9](../src/useful/libs/Useful.Assets/Models/Point.cs), [Face.cs:7](../src/useful/libs/Useful.Assets/Models/Face.cs), [AssetManifest.cs:9](../src/useful/libs/Useful.Assets/AssetManifest.cs) (all CA2227, writable collection properties for serialisation),
-      [OpponentPhysicsTests.cs:164](../src/scr/test/StuntCarRacerLib.Tests/Cars/OpponentPhysicsTests.cs),
+      [OpponentPhysicsTests.cs:164](../src/scr/test/StuntCarRacerSharpLib.Tests/Cars/OpponentPhysicsTests.cs),
       [Extensions.cs:12-16](../src/elite/libs/EliteSharpLib/Extensions.cs) (CA1308, `CapitaliseFirstLetter`'s `ToUpperInvariant`/`ToLowerInvariant` use),
       [SaveState.cs:10](../src/elite/libs/EliteSharpLib/Save/SaveState.cs) (CA2227),
       [FractalPlanet.cs:87](../src/elite/libs/EliteSharpLib/Planets/FractalPlanet.cs) (CA5394, unseeded-`Random`-instance warning on a seeded landscape generator),
@@ -142,7 +142,7 @@ painter's chain landed 2026-07-14, see CHANGELOG):
 
 - [ ] [Useful.Graphics] Move `Scene3D.ClipPolygonToNearPlane` into
       `Useful.Graphics`: both overloads are pure static methods with no
-      SCR dependencies ([Scene3D.cs:40-84](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs));
+      SCR dependencies ([Scene3D.cs:40-84](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs));
       then evaluate adopting it in Elite's `TransformModelPoints`, whose
       `if (vec.Z <= 0) vec.Z = 1` clamp
       ([ShipBase.cs:125-128](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
@@ -157,7 +157,7 @@ painter's chain landed 2026-07-14, see CHANGELOG):
       ([EliteDraw.cs:319-320](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs));
       `DrawLasers` only consumes an already-projected point, it doesn't
       inline the projection itself) and SCR has `Scene3D.ProjectPoint`
-      ([Scene3D.cs:116-125](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs));
+      ([Scene3D.cs:116-125](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs));
       a small `focus`+`centre` projector type serves both. Do together
       with (or after) the Scale-policy cleanup above so Elite's `* Scale`
       doesn't leak into the shared type.
@@ -169,12 +169,12 @@ painter's chain landed 2026-07-14, see CHANGELOG):
 
 ### Stunt Car Racer conversion — features (from the retired conversion plan)
 
-- [ ] [StuntCarRacerLib] F9/F10 frame-gap tuning keys: both C++ versions adjust the physics frame gap live; `StuntCarRacerMain.FrameGap` exists for exactly this but isn't wired to any key.
-- [ ] [StuntCarRacerLib] Race pause: the remake pauses on 'P' and resumes on 'O' (`bPaused`, engine sound stopped while paused); not ported — no pause exists. The remake's debug freezes (F5 stats overlay, F6 player-only pause, F7 opponent-only pause) could ride along as dev aids.
-- [ ] [StuntCarRacerLib] 'R' turn-around key: the remake adds 180 degrees to the player's y angle and re-initialises (`INITIALISE_PLAYER`, ptitSeb `StuntCarRacer.cpp` ~1039) so a car facing the wrong way can recover; not ported.
-- [ ] [StuntCarRacerLib] Mid-race 'M' to track menu: the remake returns to the track menu from any mode on 'M' (`StuntCarRacer.cpp:1731-1741`: it also clears the opponent — `opponentsID = NO_OPPONENT` — and resets the drawbridge via `ResetDrawBridge`, and the menu mode stops the engine sound); the port only handles 'M' on the game-over and track-preview screens — `RaceScreen` has no way back to the menu short of Escape-quitting, and neither the preview's nor the game-over's 'M' resets the drawbridge today.
-- [ ] [StuntCarRacerLib] Player outside/chase view: needs a chase camera plus drawing the player's own car mesh (`Rendering/CarMesh` is currently only used for the opponent).
-- [ ] [StuntCarRacerLib] Road-line textures could sample the shared `atlas.bmp` (ptitSeb's `eRoadYellowDark` etc.) instead of the procedural strips in `Rendering/RoadTextures` — closer visual match, but the current strips already look correct; cosmetic.
+- [ ] [StuntCarRacerSharpLib] F9/F10 frame-gap tuning keys: both C++ versions adjust the physics frame gap live; `StuntCarRacerMain.FrameGap` exists for exactly this but isn't wired to any key.
+- [ ] [StuntCarRacerSharpLib] Race pause: the remake pauses on 'P' and resumes on 'O' (`bPaused`, engine sound stopped while paused); not ported — no pause exists. The remake's debug freezes (F5 stats overlay, F6 player-only pause, F7 opponent-only pause) could ride along as dev aids.
+- [ ] [StuntCarRacerSharpLib] 'R' turn-around key: the remake adds 180 degrees to the player's y angle and re-initialises (`INITIALISE_PLAYER`, ptitSeb `StuntCarRacer.cpp` ~1039) so a car facing the wrong way can recover; not ported.
+- [ ] [StuntCarRacerSharpLib] Mid-race 'M' to track menu: the remake returns to the track menu from any mode on 'M' (`StuntCarRacer.cpp:1731-1741`: it also clears the opponent — `opponentsID = NO_OPPONENT` — and resets the drawbridge via `ResetDrawBridge`, and the menu mode stops the engine sound); the port only handles 'M' on the game-over and track-preview screens — `RaceScreen` has no way back to the menu short of Escape-quitting, and neither the preview's nor the game-over's 'M' resets the drawbridge today.
+- [ ] [StuntCarRacerSharpLib] Player outside/chase view: needs a chase camera plus drawing the player's own car mesh (`Rendering/CarMesh` is currently only used for the opponent).
+- [ ] [StuntCarRacerSharpLib] Road-line textures could sample the shared `atlas.bmp` (ptitSeb's `eRoadYellowDark` etc.) instead of the procedural strips in `Rendering/RoadTextures` — closer visual match, but the current strips already look correct; cosmetic.
 Unplugged remake art screens (added 2026-07-19 after the ptitSeb parity
 audit): ptitSeb ships `Bitmap/menu.png`, `racewin.png`, `racelost.png`,
 `wrecked.png` and `heads.png` but its code never loads any of them
@@ -187,18 +187,18 @@ one-time convert to `.bmp`, add to `Assets/Images` +
 `TrackMenuScreen` does. Doing them means going beyond ptitSeb's code
 while staying inside its assets and the Amiga's behaviour:
 
-- [ ] [StuntCarRacerLib] Race-result screens: draw `racewin.png` /
+- [ ] [StuntCarRacerSharpLib] Race-result screens: draw `racewin.png` /
       `racelost.png` full-screen during the six-second result window and
       the GAME_OVER hold, with the existing flashing RACE WON / RACE
       LOST and "Press 'M'" text overlaid (timing at
-      [StuntCarRacerMain.DrawHud](../src/scr/libs/StuntCarRacerLib/StuntCarRacerMain.cs)
+      [StuntCarRacerMain.DrawHud](../src/scr/libs/StuntCarRacerSharpLib/StuntCarRacerMain.cs)
       and `StuntCarRacer.cpp:1403-1453`) — the Amiga showed these
       screens at race end.
-- [ ] [StuntCarRacerLib] Wrecked screen: draw `wrecked.png` when the
+- [ ] [StuntCarRacerSharpLib] Wrecked screen: draw `wrecked.png` when the
       race ends with the player's car wrecked, in place of the
       race-lost art. `CarPhysics.Wrecked` now goes true at full damage
       (landed 2026-07-20, see CHANGELOG) so this can be wired up.
-- [ ] [StuntCarRacerLib] Opponent portraits: `heads.png` is a portrait
+- [ ] [StuntCarRacerSharpLib] Opponent portraits: `heads.png` is a portrait
       sheet of the eleven opponents; show the matching portrait
       alongside the four-second "Opponent: <name>" announcement at race
       start. Needs the per-portrait tile coordinates measured from the
@@ -229,7 +229,7 @@ order — each layer builds on the previous; reference implementation is
       into the `IGamepad` sink. `ppy.SDL2-CS` exposes the full SDL2 API
       including `SDL_GameController`/`SDL_Joystick`, so no binding work
       is expected — verify first.
-- [ ] [StuntCarRacerLib] Wire the gamepad into SCR: map controls per
+- [ ] [StuntCarRacerSharpLib] Wire the gamepad into SCR: map controls per
       ptitSeb's `XBOXController.cpp` (steer/accelerate/brake/boost in
       `RaceScreen`, navigation on the menu/preview/game-over screens),
       thresholding analog steer to the digital left/right the physics
@@ -241,15 +241,15 @@ ptitSeb's `bSuperLeague` — toggled at `StuntCarRacer.cpp:1222`, applied
 at `:1298-1308`; do the first item first, the two visual items then in
 either order):
 
-- [ ] [StuntCarRacerLib] League toggle + physics constants: add an
+- [ ] [StuntCarRacerSharpLib] League toggle + physics constants: add an
       `IsSuperLeague` mode flag, toggle it with 'L' on `TrackMenuScreen`
       (show the current league on the menu as the remake does), and
       thread it to the physics: `CarPhysics._enginePower` 240→320 and
       the boost unit 16→12 (the "standard vs super" comments at
-      [CarPhysics.cs:105-106](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.cs)
+      [CarPhysics.cs:105-106](../src/scr/libs/StuntCarRacerSharpLib/Cars/CarPhysics.cs)
       already mark the spots), boost reserve Standard→Super,
       `RoadCushionValue` 0→1 (exists but nothing sets it — damage
-      threshold at [CarPhysics.Motion.cs:286](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.Motion.cs)),
+      threshold at [CarPhysics.Motion.cs:286](../src/scr/libs/StuntCarRacerSharpLib/Cars/CarPhysics.Motion.cs)),
       `OpponentPhysics._enginePower` 236→314, and the opponent speed
       +32 super-league offsets: the `Opponent_Speed_Value()` port
       landed 2026-07-19, so `OpponentData.TrackSpeedValues` already
@@ -259,14 +259,14 @@ either order):
       added when super league is active (the reference's path is
       `opp_track_speed_values[TrackID+32]`,
       `Opponent_Behaviour.cpp:366-367, 1299-1300`).
-- [ ] [StuntCarRacerLib] Super League track colours: odd/even road and
+- [ ] [StuntCarRacerSharpLib] Super League track colours: odd/even road and
       side colours swap to `SCR_BASE_COLOUR+17/16` and `+18/+15`
       (standard: `+2/+10`, `+1/+15`; reference `Track.cpp:1360-1385`)
       — add the alternates to `ScrPalette`/`RoadTextures` and select by
       the mode flag in `TrackRenderer`. Note the reference's own
       `Track.cpp:2490` TODO says some super-league values are
       unverified; match ptitSeb, don't guess beyond it.
-- [ ] [StuntCarRacerLib] Super League car + cockpit visuals: opponent
+- [ ] [StuntCarRacerSharpLib] Super League car + cockpit visuals: opponent
       car body colours swap to `SCR_BASE_COLOUR+19/20/21` (standard
       `+9/+10/+12`, reference `Car.cpp:659-690`) in `CarMesh`, and the
       cockpit/damage overlays use the atlas's "2"-suffixed sprites
@@ -285,7 +285,7 @@ Sequence AFTER the pending SCR correctness items (damage-wreck,
 they edit the same files and their integer semantics should be captured
 by the traces):
 
-- [ ] [StuntCarRacerLib.Tests] Golden-trace characterization harness:
+- [ ] [StuntCarRacerSharpLib.Tests] Golden-trace characterization harness:
       drive the existing integer physics with scripted `CarInput`
       sequences on two or three tracks, record the car/opponent state per
       physics tick (position, speeds, angles, damage, boost) to committed
@@ -293,18 +293,18 @@ by the traces):
       pure test code — no physics changes — and becomes the regression
       net for the conversion steps; the exact-integer unit-test
       assertions stay untouched until each class converts.
-- [ ] [StuntCarRacerLib] Convert angles and trig: replace
+- [ ] [StuntCarRacerSharpLib] Convert angles and trig: replace
       `AmigaTrig`'s 16384-scaled short table and `TrigCoefficients` with
       float equivalents; decide the angle unit (keeping 0..65536 as a
       float unit is the least-churn option) and replace the
       `& (MaxAngle - 1)` bitmask wraps with a float wrap helper. Decide
       the rendering boundary here too: `Scene3D.TransformPoint` consumes
       `TrigCoefficients` and `Track.LogPrecision`
-      ([Scene3D.cs:102-113](../src/scr/libs/StuntCarRacerLib/Rendering/Scene3D.cs))
+      ([Scene3D.cs:102-113](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs))
       — either convert its fixed-point view transform in the same step
       or leave it a shim that scales from the float trig.
-- [ ] [StuntCarRacerLib] Convert `CarPhysics` (four partials:
-      [CarPhysics.cs](../src/scr/libs/StuntCarRacerLib/Cars/CarPhysics.cs),
+- [ ] [StuntCarRacerSharpLib] Convert `CarPhysics` (four partials:
+      [CarPhysics.cs](../src/scr/libs/StuntCarRacerSharpLib/Cars/CarPhysics.cs),
       `.Motion`, `.Road`, and the crane/chain-recovery `.Chains` — the
       last landed after the original three-partial estimate and also
       uses scaled `int` state, so it's in scope too) to float: fields,
@@ -315,7 +315,7 @@ by the traces):
       overflow wrap needs an explicit equivalent. Validate against the
       golden traces with tolerances; rework `CarPhysicsTests`' exact
       assertions as tolerance-based in the same session.
-- [ ] [StuntCarRacerLib] Convert `OpponentPhysics` (+ `.Interaction`,
+- [ ] [StuntCarRacerSharpLib] Convert `OpponentPhysics` (+ `.Interaction`,
       `OpponentData`) the same way, including its `_random`-driven speed
       logic (seedable, so traces stay reproducible); rework
       `OpponentPhysicsTests`; then delete the now-unused integer trig
@@ -347,7 +347,7 @@ is closer to resolution-independence than the original item assumed):
       equivalent) so a launch resolution/aspect can be chosen. This
       exposes rather than fixes fixed-size assumptions — pair with the
       audits below before shipping non-default values.
-- [ ] [StuntCarRacerLib] SCR widescreen: with resolution configurable,
+- [ ] [StuntCarRacerSharpLib] SCR widescreen: with resolution configurable,
       make the 3D viewport render at the window aspect (SCR's
       `Scene3D.SetView` already takes width/height) and apply ptitSeb's
       cockpit widescreen treatment (`GetScreenDimensions`,
@@ -369,5 +369,5 @@ is closer to resolution-independence than the original item assumed):
 - [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work — authentic to the original ("broken as designed"); documented, not fixed.
 - [ ] [EliteSharpLib] Elite Intro2 parade shows 29 of ~33 ship models ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) — Cougar, Constrictor and the Lone variants are mission-specific ships, deliberately excluded from the parade; confirmed intentional, not a bug.
 - [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`, insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game is fixed at 13.5fps by design and none of this is a bottleneck at that rate; revisit only if the "performance as secondary objective" goal is picked up.
-- [ ] [StuntCarRacerLib] The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — see the porting notes in [scr-readme.md](scr-readme.md).
-- [ ] [StuntCarRacerLib] ptitSeb's remaining debug/infrastructure toggles are deliberately not ported (2026-07-19 parity audit): F1 test key, F2 triangle-list/strip vertex-buffer toggle (meaningless in the software rasterizer), the 'Z' reposition test key, the disabled action-replay / Amiga-recording harness (`#ifdef NOT_USED` / `USE_AMIGA_RECORDING` even upstream), the French-keyboard digit remaps, and the SDL command-line video flags (superseded by the resizable-window/config-resolution items under Could). The F5 stats overlay and F6/F7 per-car freezes stay listed as optional ride-alongs on the race-pause item. `Chime.wav` is unused by both code bases (kept as an asset only).
+- [ ] [StuntCarRacerSharpLib] The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — see the porting notes in [scr-readme.md](scr-readme.md).
+- [ ] [StuntCarRacerSharpLib] ptitSeb's remaining debug/infrastructure toggles are deliberately not ported (2026-07-19 parity audit): F1 test key, F2 triangle-list/strip vertex-buffer toggle (meaningless in the software rasterizer), the 'Z' reposition test key, the disabled action-replay / Amiga-recording harness (`#ifdef NOT_USED` / `USE_AMIGA_RECORDING` even upstream), the French-keyboard digit remaps, and the SDL command-line video flags (superseded by the resizable-window/config-resolution items under Could). The F5 stats overlay and F6/F7 per-car freezes stay listed as optional ride-alongs on the race-pause item. `Chime.wav` is unused by both code bases (kept as an asset only).

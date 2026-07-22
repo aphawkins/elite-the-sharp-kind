@@ -77,7 +77,7 @@ StyleCopReport.xml
 *.obj
 # ...except the ship/car models, which are genuine Wavefront OBJ assets, not C/C++ object files.
 !src/elite/libs/EliteSharpLib/Assets/Models/*.obj
-!src/scr/libs/StuntCarRacerLib/Assets/Models/*.obj
+!src/scr/libs/StuntCarRacerSharpLib/Assets/Models/*.obj
 *.iobj
 *.pch
 *.pdb

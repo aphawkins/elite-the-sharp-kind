@@ -7,6 +7,59 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Renamed StuntCarRacer to StuntCarRacerSharp; SCR added to CI, 2026-07-22)
+
+- `build-and-package.yml` only built/published EliteSharp, so master/PR
+  builds never caught SCR publish regressions. Added matching
+  `StuntCarRacerSharp` Windows/Linux publish + artifact-upload steps and
+  renamed the workflow from "Build and Package EliteSharp" to "Build and
+  Package" since it now covers both games.
+- SCR's app/library/test project names (`StuntCarRacer`,
+  `StuntCarRacerLib`, `StuntCarRacerLib.Tests`, `StuntCarRacerLib.Fakes`)
+  didn't end in "Sharp" the way Elite's do (`EliteSharp`,
+  `EliteSharpLib`, ...), an inconsistency across the two games in this
+  shared repo. Renamed throughout: project/folder/csproj names to
+  `StuntCarRacerSharp`/`StuntCarRacerSharpLib`/`StuntCarRacerSharpLib.Tests`/
+  `StuntCarRacerSharpLib.Fakes`, their C# `namespace`s and `using`s, the
+  `.slnx` entries, `.gitignore`'s asset-tracking rule, `README.md`'s
+  `dotnet run` path, and every reference across `docs/backlog-roadmap.md`
+  and this file. Left the internal class names as-is (`StuntCarRacerMain`,
+  `StuntCarRacerServiceCollectionExtensions`, ...), matching how Elite
+  keeps `EliteMain`/`EliteServiceCollectionExtensions` unprefixed inside
+  `EliteSharpLib` — only the project/assembly identifier gains the
+  suffix. Also left ptitSeb's reference-source mentions
+  (`StuntCarRacer.cpp`) untouched since that's an external C++ file, not
+  our code. Built the full solution, ran the complete test suite (all
+  green: 84 EliteSharpLib.Tests + 188 StuntCarRacerSharpLib.Tests), and
+  smoke-tested both `EliteSharp` and `StuntCarRacerSharp` via the
+  `GAME_KEY_SCRIPT`/`GAME_FRAME_DUMP_DIR` harness, confirming both still
+  launch and render their opening screens correctly under the renamed
+  assemblies.
+
+### Added (Tag-triggered release CI, 2026-07-22)
+
+- No CI path published Release artifacts or cut a GitHub Release; tagging
+  `v1.0.0` would have done nothing. Added
+  [release.yml](.github/workflows/release.yml), triggered on `v*` tags,
+  which self-contained-publishes both EliteSharp and StuntCarRacerSharp for
+  win-x64/linux-x64/linux-arm64, zips each app/RID combination, and creates
+  a GitHub Release via `softprops/action-gh-release` with
+  `generate_release_notes: true` and a body noting the StuntCarRacerSharp builds
+  are preview given its open defects list. StuntCarRacerSharp had no publish
+  profiles at all, so added `PublishProfileWindows`/`PublishProfileLinux`/
+  `PublishProfileLinuxArm64` under
+  [StuntCarRacerSharp/Properties/PublishProfiles](src/scr/apps/StuntCarRacerSharp/Properties/PublishProfiles)
+  mirroring Elite's, plus the missing `PublishProfileLinuxArm64` for Elite.
+  Both apps' existing profiles published into the same repo-root
+  `publish/<rid>/` folder, which would have let StuntCarRacerSharp's publish
+  overwrite EliteSharp's (or vice versa) once both ran in one job — renamed
+  every `PublishDir` to `publish/<AppName>/<rid>/` and updated
+  [build-and-package.yml](.github/workflows/build-and-package.yml)'s
+  artifact-upload paths to match. Built the full solution, ran the
+  complete test suite (all green), and locally ran all six
+  app/RID `dotnet publish` combinations to confirm each lands in its own
+  directory with no errors.
+
 ### Changed (Tag-driven semantic versioning via MinVer, 2026-07-22)
 
 - CI stamped `Version`/`FileVersion` from `0.<yy><day-of-year>.<run-number>.0`,
@@ -122,8 +175,8 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   window with OS-level focus stealing and key injection — slow and flaky
   for agent-driven sessions, and `VisualDumpTests` only exercises
   hand-composed scenes, not the whole game (screens, HUD, menu flow).
-  Added `HeadlessGameHarness` to `StuntCarRacerLib.Tests`
-  ([HeadlessGameHarness.cs](src/scr/test/StuntCarRacerLib.Tests/HeadlessGameHarness.cs)):
+  Added `HeadlessGameHarness` to `StuntCarRacerSharpLib.Tests`
+  ([HeadlessGameHarness.cs](src/scr/test/StuntCarRacerSharpLib.Tests/HeadlessGameHarness.cs)):
   runs the real `StuntCarRacerMain` against a real `SoftwareGraphics` (no
   SDL window), generalising `StuntCarRacerMainTests.StartRace`'s manual
   key-press sequence into a scripted `KeyScriptEvent` timeline (tap/hold/
@@ -420,8 +473,8 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   (`EngineFluctuation`/`OffRoadPitch`, previously either untested or only
   range-asserted) and `OpponentPhysicsTests.cs` (opponent-selection roll).
   Built the full solution, ran the complete test suite (all green, 35
-  EliteSharpLib.Tests + 184 StuntCarRacerLib.Tests), and smoke-tested both
-  `EliteSharp` and `StuntCarRacer` launching and running cleanly.
+  EliteSharpLib.Tests + 184 StuntCarRacerSharpLib.Tests), and smoke-tested both
+  `EliteSharp` and `StuntCarRacerSharp` launching and running cleanly.
 
 ### Changed (Replace the static crypto RNG with an injected, seedable service, 2026-07-21)
 
@@ -469,7 +522,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   half-built-instance risk, but the same pattern; it now takes the built
   dictionary through a private constructor instead. Built the full
   solution, ran the complete test suite (all green), and smoke-tested both
-  `EliteSharp` and `StuntCarRacer` launching cleanly.
+  `EliteSharp` and `StuntCarRacerSharp` launching cleanly.
 
 ### Changed (IKeyboard split into producer/consumer interfaces, 2026-07-21)
 
@@ -492,7 +545,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 - Every SCR screen (`RaceScreen`, `TrackMenuScreen`, `TrackPreviewScreen`,
   `GameOverScreen`) took the whole `StuntCarRacerMain` and reached through
   it service-locator style. Extracted a new `Race`
-  ([Race.cs](src/scr/libs/StuntCarRacerLib/Race.cs)) that owns the
+  ([Race.cs](src/scr/libs/StuntCarRacerSharpLib/Race.cs)) that owns the
   track/car/opponent/bridge state, its renderers, and the
   `LoadTrack`/`PhysicsDue`/`DrawWorld`/`DrawHud`/`UpdateSounds`/
   `UpdateEngineSound` behaviour that operates on them; `StuntCarRacerMain`
@@ -502,7 +555,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   `IGraphics`, `ScrPalette`, `ISound`) instead of the whole game object, so
   dependencies are visible in the constructor signature. Built the full
   solution, ran the complete test suite (all green, including
-  `StuntCarRacerLib.Tests`' 180 tests), and smoke-tested the built SCR app
+  `StuntCarRacerSharpLib.Tests`' 180 tests), and smoke-tested the built SCR app
   (starts and constructs its full DI graph, including `Race` and all four
   screens, without error).
 
@@ -602,7 +655,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   `AddEliteConfig`/`AddScrConfig` now resolve `ILoggerFactory` from the
   container (already registered by both `SDLProgram`s) and pass a
   `CreateLogger<ConfigFile<T>>()` logger through; `Useful`,
-  `EliteSharpLib` and `StuntCarRacerLib` each gained a
+  `EliteSharpLib` and `StuntCarRacerSharpLib` each gained a
   `Microsoft.Extensions.Logging.Abstractions` package reference for
   this. `IsValidConfig` stayed `internal` (was already made so for the
   earlier DRY-unification tests) so `EliteServiceCollectionExtensions`
@@ -649,13 +702,13 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   the filename passed to the constructor and an optional
   `Func<T, bool> isValid` predicate for game-specific validation (Elite's
   `Fps > 0`/enum-range checks; SCR has none). `EliteSharpLib`'s
-  `ConfigSettings` and `StuntCarRacerLib`'s `ScrConfigSettings` stay put
+  `ConfigSettings` and `StuntCarRacerSharpLib`'s `ScrConfigSettings` stay put
   (they're genuinely game-specific), now bound as `ConfigFile<ConfigSettings>`
   / `ConfigFile<ScrConfigSettings>` respectively — `AddEliteConfig`/
   `AddScrConfig` and `SettingsView` (now `IConfigWriter<ConfigSettings>`)
   updated accordingly. `Microsoft.Extensions.Configuration`/`.Binder`/
   `.Json` package references moved from `EliteSharpLib.csproj`/
-  `StuntCarRacerLib.csproj` to `Useful.csproj`, the only project that now
+  `StuntCarRacerSharpLib.csproj` to `Useful.csproj`, the only project that now
   uses them directly.
 
   Adding those packages to `Useful` exposed a latent naming collision:
@@ -669,7 +722,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   Added generic coverage in `Useful.Tests/Config/ConfigFileTests.cs`
   (defaults-when-missing, round-trip, mistyped-value fallback, failing
   validation) covering the shared logic once; `EliteSharpLib.Tests`/
-  `StuntCarRacerLib.Tests` keep their own `ConfigFileTests` but only for
+  `StuntCarRacerSharpLib.Tests` keep their own `ConfigFileTests` but only for
   wiring specific to their real settings type/filename (Elite's also
   exercises the actual `IsValidConfig` predicate, now `internal` for
   testability). Full solution build and test suite pass; smoke-tested
@@ -703,7 +756,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 ### Changed (Shared TheSharpKind user-data folder, 2026-07-21)
 
 - Both apps' `userDataPath` (`SDLProgram.cs`) moved from their own
-  per-game folder (`%AppData%\EliteSharp`, `%AppData%\StuntCarRacer`) to
+  per-game folder (`%AppData%\EliteSharp`, `%AppData%\StuntCarRacerSharp`) to
   a shared `%AppData%\TheSharpKind`, since they're both part of the same
   project. Elite's config filename (`elitesharp.cfg`) and commander
   saves (`.cmdr`) already avoided any collision by name, so it needed no
@@ -717,7 +770,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 - Gave SCR its own settings file, mirroring Elite's `ConfigFile`/
   `ConfigSettings` pattern: a new internal `ScrConfigSettings`/
-  `ScrConfigFile` (`StuntCarRacerLib/Config`) reads/writes
+  `ScrConfigFile` (`StuntCarRacerSharpLib/Config`) reads/writes
   `MusicOn`/`EffectsOn` to a JSON file (`stuntcarracersharp.cfg`) rooted
   at a user-data path, and a public
   `StuntCarRacerServiceCollectionExtensions.AddScrConfig(userDataPath)`
@@ -769,7 +822,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 - Phase 2 of the colour-handling unification: `ScrPalette`'s hardcoded
   42-entry `uint[]` replaced with a JSON asset
-  (`StuntCarRacerLib/Assets/Palette/palette.json`) loaded through
+  (`StuntCarRacerSharpLib/Assets/Palette/palette.json`) loaded through
   `Useful.Assets.Palettes.PaletteReader`/`IPaletteCollection` — the same
   mechanism `EliteDraw` already used for its named palette. `Colour(int)`
   stays static with a lazily-loaded backing store and keeps addressing
@@ -797,7 +850,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 - SCR's `CarMesh` (the opponent's wedge-body/wheel-quad geometry,
   previously hardcoded vertex/quad arrays) now loads from a Wavefront OBJ
-  asset (`StuntCarRacerLib/Assets/Models/car.obj`), mirroring how Elite
+  asset (`StuntCarRacerSharpLib/Assets/Models/car.obj`), mirroring how Elite
   loads its ship models via `Useful.Assets.Models.ModelReader`. `CarMesh`
   changed from a static class to an instance constructed once (and
   injected into `OpponentRenderer`) instead of re-parsed on every track
@@ -834,7 +887,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   parameters, `IDE0290` primary constructors) that hadn't fired while
   the types were `internal` to `EliteSharpLib`.
 
-  Checked `StuntCarRacerLib` for anything that duplicates this
+  Checked `StuntCarRacerSharpLib` for anything that duplicates this
   chain/depth-sort logic and could reuse it: no — `TrackRenderer`/
   `OpponentRenderer` submit `WorldPolygon`s straight to
   `Graphics.DrawPolygonFilledDepth` with no buffering step, so there's
@@ -1032,9 +1085,9 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ### Added (SCR composition root, 2026-07-20)
 
-- `StuntCarRacer.SDLProgram.Main` now builds a `ServiceCollection`
+- `StuntCarRacerSharp.SDLProgram.Main` now builds a `ServiceCollection`
   (`Microsoft.Extensions.DependencyInjection`, newly referenced by the
-  `StuntCarRacer` project) instead of `new`-ing `SoftwareAbstraction` and
+  `StuntCarRacerSharp` project) instead of `new`-ing `SoftwareAbstraction` and
   `StuntCarRacerMain` directly: `SoftwareAbstraction` is registered as
   `IAbstraction` via a factory (container-owned and disposed with the
   provider), `IGraphics`/`ISound`/`IKeyboard` are forwarded from it, the

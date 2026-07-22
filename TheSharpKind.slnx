@@ -41,14 +41,14 @@
   </Folder>
   <Folder Name="/src/scr/" />
   <Folder Name="/src/scr/apps/">
-    <Project Path="src/scr/apps/StuntCarRacer/StuntCarRacer.csproj" />
+    <Project Path="src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj" />
   </Folder>
   <Folder Name="/src/scr/libs/">
-    <Project Path="src/scr/libs/StuntCarRacerLib/StuntCarRacerLib.csproj" />
+    <Project Path="src/scr/libs/StuntCarRacerSharpLib/StuntCarRacerSharpLib.csproj" />
   </Folder>
   <Folder Name="/src/scr/test/">
-    <Project Path="src/scr/test/StuntCarRacerLib.Fakes/StuntCarRacerLib.Fakes.csproj" />
-    <Project Path="src/scr/test/StuntCarRacerLib.Tests/StuntCarRacerLib.Tests.csproj" />
+    <Project Path="src/scr/test/StuntCarRacerSharpLib.Fakes/StuntCarRacerSharpLib.Fakes.csproj" />
+    <Project Path="src/scr/test/StuntCarRacerSharpLib.Tests/StuntCarRacerSharpLib.Tests.csproj" />
   </Folder>
   <Folder Name="/src/useful/" />
   <Folder Name="/src/useful/libs/">

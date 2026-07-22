@@ -9,7 +9,7 @@ namespace Useful.Fakes.Harness;
 
 // Drives a game's Update()/Draw() directly against a real SoftwareGraphics
 // with no SDL window, applying a scripted KeyScriptEvent timeline to a
-// FakeKeyboard each tick - shared machinery behind both StuntCarRacerLib and
+// FakeKeyboard each tick - shared machinery behind both StuntCarRacerSharpLib and
 // EliteSharpLib's headless game harnesses. Only building each game's own
 // object graph and its state snapshot differ between them; those stay in
 // each game's own derived harness.

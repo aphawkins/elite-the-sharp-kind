@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # MinVer needs full history (and tags) to compute the version.
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish EliteSharp win-x64
+        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows
+
+      - name: Publish EliteSharp linux-x64
+        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileLinux
+
+      - name: Publish EliteSharp linux-arm64
+        run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileLinuxArm64
+
+      - name: Publish StuntCarRacerSharp win-x64
+        run: dotnet publish ./src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj /p:PublishProfile=PublishProfileWindows
+
+      - name: Publish StuntCarRacerSharp linux-x64
+        run: dotnet publish ./src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj /p:PublishProfile=PublishProfileLinux
+
+      - name: Publish StuntCarRacerSharp linux-arm64
+        run: dotnet publish ./src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj /p:PublishProfile=PublishProfileLinuxArm64
+
+      - name: Delete superfluous files
+        run: find ./publish \( -name "*.xml" -o -name "*.ico" \) -type f -delete
+
+      - name: Zip published artifacts
+        run: |
+          set -e
+          mkdir -p dist
+          for app_dir in ./publish/*/; do
+            app=$(basename "$app_dir")
+            for rid_dir in "$app_dir"*/; do
+              rid=$(basename "$rid_dir")
+              (cd "$rid_dir" && zip -r "$GITHUB_WORKSPACE/dist/${app}-${rid}-${{ github.ref_name }}.zip" .)
+            done
+          done
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: dist/*.zip
+          body: |
+            StuntCarRacerSharp builds are a **preview** release — see the open defects list in [docs/backlog-roadmap.md](https://github.com/${{ github.repository }}/blob/master/docs/backlog-roadmap.md).

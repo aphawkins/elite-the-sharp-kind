@@ -1,4 +1,4 @@
-name: Build and Package EliteSharp
+name: Build and Package
 
 on:
   push:
@@ -52,22 +52,46 @@ jobs:
         run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows
 
       - name: Delete superfluous files
-        run: find ./publish/win-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
+        run: find ./publish/EliteSharp/win-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: EliteSharp-Windows-${{ steps.vars.outputs.version }}
-          path: ./publish/win-x64/*
+          path: ./publish/EliteSharp/win-x64/*
 
       - name: Publish EliteSharp Linux
         run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileLinux
 
       - name: Delete superfluous files
-        run: find ./publish/linux-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
+        run: find ./publish/EliteSharp/linux-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: EliteSharp-Linux-${{ steps.vars.outputs.version }}
-          path: ./publish/linux-x64/*
+          path: ./publish/EliteSharp/linux-x64/*
+
+      - name: Publish StuntCarRacerSharp Windows
+        run: dotnet publish ./src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj /p:PublishProfile=PublishProfileWindows
+
+      - name: Delete superfluous files
+        run: find ./publish/StuntCarRacerSharp/win-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StuntCarRacerSharp-Windows-${{ steps.vars.outputs.version }}
+          path: ./publish/StuntCarRacerSharp/win-x64/*
+
+      - name: Publish StuntCarRacerSharp Linux
+        run: dotnet publish ./src/scr/apps/StuntCarRacerSharp/StuntCarRacerSharp.csproj /p:PublishProfile=PublishProfileLinux
+
+      - name: Delete superfluous files
+        run: find ./publish/StuntCarRacerSharp/linux-x64 \( -name "*.xml" -o -name "*.ico" \) -type f -delete
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StuntCarRacerSharp-Linux-${{ steps.vars.outputs.version }}
+          path: ./publish/StuntCarRacerSharp/linux-x64/*
