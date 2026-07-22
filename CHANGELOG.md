@@ -7,6 +7,27 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (PlanetControllerTests covering the pure-logic galaxy/planet generation code, 2026-07-22)
+
+- `PlanetController` ([PlanetController.cs](src/elite/libs/EliteSharpLib/PlanetController.cs))
+  had no test coverage — part of the "Elite's core game logic is largely
+  untested" backlog item, which also named `SaveFile` round-trip coverage as
+  a starting point; that round trip already exists in `SaveFileTests`
+  (`SaveCommanderThenLoadCommanderRoundTrips`), as does coverage for `Combat`,
+  `ConfigFile` and `RNG.GenerateRandomNumber` (`CombatTests`,
+  `ConfigFileTests`, `RNGTests`), so only `PlanetController` was still
+  missing. Added `PlanetControllerTests.cs` covering
+  `CalculateDistanceToPlanet` (zero for the same planet, symmetric),
+  `GeneratePlanetData` (deterministic from seed), `WaggleGalaxy`
+  (deterministic, fields stay byte-ranged over many iterations),
+  `NamePlanet` (deterministic, doesn't mutate its input seed),
+  `FindPlanetNumber` (matches a galaxy waggled that many times, -1 when not
+  found), `FindPlanetByName` (finds/fails by name) and `DescribeInhabitants`
+  (Human Colonials below seed byte E 128, alien description above). `Space`
+  remains untested and stays on the backlog. Built the full solution, ran
+  the complete test suite (all green, 54 in `EliteSharpLib.Tests` including
+  the 14 new tests).
+
 ### Fixed (AssetLocator.Create no longer exclusively locks AssetManifest.json, 2026-07-21)
 
 - `AssetLocator.Create()` ([AssetLocator.cs](src/useful/libs/Useful.Assets/AssetLocator.cs))
