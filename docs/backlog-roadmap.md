@@ -100,25 +100,10 @@ slow, flaky, and expensive for agent-driven sessions. The repo already
 has every piece for headless verification; these items assemble them
 so "confirm the change works in the running game" becomes one test run
 plus reading a native-resolution BMP or a text state dump, no window
-needed. Do the first item first; the golden-trace harness under the
-float-physics cluster shares its scripted-input machinery):
+needed. The SCR harness (`HeadlessGameHarness`, landed 2026-07-22, see
+CHANGELOG) is the scripted-input machinery the golden-trace harness
+under the float-physics cluster shares):
 
-- [ ] [StuntCarRacerLib.Tests] Reusable headless game harness:
-      `StuntCarRacerMainTests.StartRace` already drives menu→race
-      through `FakeAbstraction`/`FakeKeyboard`
-      ([StuntCarRacerMainTests.cs:100-115](../src/scr/test/StuntCarRacerLib.Tests/StuntCarRacerMainTests.cs)),
-      and `FakeAbstraction` accepts any `IGraphics`
-      ([FakeAbstraction.cs:15](../src/scr/test/StuntCarRacerLib.Fakes/FakeAbstraction.cs))
-      — combine them: a harness that runs the real `StuntCarRacerMain`
-      against a real `SoftwareGraphics`, executes a scripted key
-      timeline ("S at tick 2, hold accelerate from tick 10"), and can
-      dump the framebuffer to BMP at chosen ticks (lift
-      `VisualDumpTests`' private `SaveBmp` into a shared test helper —
-      unlike `VisualDumpTests`' hand-composed scene, this renders the
-      whole game incl. screens and HUD). Prefer text assertions over
-      pixels where possible: expose a minimal read-only state summary
-      (current screen, race started, player/opponent piece, distance)
-      so most checks never need an image at all.
 - [ ] [EliteSharpLib.Tests] The Elite equivalent, building on the
       `EliteMain` construction/smoke-test item above: drive scripted
       ticks through `EliteMain.Update`/`Draw` with a real

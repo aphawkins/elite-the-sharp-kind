@@ -7,6 +7,56 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (BitmapWriter + BitmapReader rename in Useful.Graphics, 2026-07-22)
+
+- `BitmapFile.Read` was the only half of a load/save pair, and the
+  BMP-dumping code duplicated itself across both games' `VisualDumpTests`.
+  Renamed `BitmapFile` to `BitmapReader`
+  ([BitmapReader.cs](src/useful/libs/Useful.Graphics/BitmapReader.cs),
+  updating its `SoftwareGraphics.Create` call sites and test file to
+  match) and added `BitmapWriter.Write`
+  ([BitmapWriter.cs](src/useful/libs/Useful.Graphics/BitmapWriter.cs)): a
+  standard 32bpp `BITMAPV5HEADER` BGRA bottom-up BMP, padded to
+  `BitmapReader`'s fixed pixel-data offset so a written file reads back
+  correctly, and valid enough to open in an ordinary image viewer too.
+  Both games' `VisualDumpTests` and SCR's new `HeadlessGameHarness` (see
+  below) now call the shared `BitmapWriter.Write` instead of a
+  hand-rolled 24bpp `SaveBmp` each maintained separately. Added
+  `BitmapWriterTests.cs` (signature/length check, a round trip through
+  `BitmapReader` with distinct per-corner colours incl. alpha, and a
+  non-square bitmap) alongside the renamed `BitmapReaderTests.cs`. Also
+  tidied `BitmapReader.Read` while it was open: it allocated a fresh
+  byte array per field, including a `new byte[4]` for *every pixel* in
+  the double loop; switched to `BinaryPrimitives.ReadInt32/16LittleEndian`
+  reading spans of the original buffer directly (zero allocation, and it
+  now applies the correct endian handling to width/height/bit-depth too,
+  not just pixel colour as before). Replaced the `Debug.Assert` on the
+  "BM" signature — compiled out in Release, so a non-BMP file would
+  silently misparse instead of failing — with a thrown `UsefulException`,
+  matching the existing bit-depth check. Built the full solution and ran
+  the complete test suite (all green).
+
+### Added (Reusable headless SCR game harness, 2026-07-22)
+
+- Verifying a change against the running game meant driving the real SDL
+  window with OS-level focus stealing and key injection — slow and flaky
+  for agent-driven sessions, and `VisualDumpTests` only exercises
+  hand-composed scenes, not the whole game (screens, HUD, menu flow).
+  Added `HeadlessGameHarness` to `StuntCarRacerLib.Tests`
+  ([HeadlessGameHarness.cs](src/scr/test/StuntCarRacerLib.Tests/HeadlessGameHarness.cs)):
+  runs the real `StuntCarRacerMain` against a real `SoftwareGraphics` (no
+  SDL window), generalising `StuntCarRacerMainTests.StartRace`'s manual
+  key-press sequence into a scripted `KeyScriptEvent` timeline (tap/hold/
+  release at a given tick), and exposes a `GameStateSummary` (current
+  screen, race started, player/opponent track piece, distance to
+  opponent) so most checks never need a rendered frame — `SaveFrame` is
+  there for the rare case that does (calling the shared `BitmapWriter`
+  above). Added `HeadlessGameHarnessTests.cs` covering the initial menu
+  state, driving menu→race via a scripted timeline, and a frame dump
+  smoke test. Built the full solution and ran the complete test suite
+  (all green); no production code changed, so no live smoke test was
+  needed.
+
 ### Added (EliteMain construction/smoke test using fakes, 2026-07-22)
 
 - Elite had no test that even constructed its composition, unlike SCR's

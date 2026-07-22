@@ -46,7 +46,7 @@ public class VisualDumpTests
             draw.RenderEnd();
             graphics.ScreenUpdate();
             Assert.NotNull(lastFrame);
-            SaveBmp(lastFrame, Path.Combine(outDir, name));
+            BitmapWriter.Write(lastFrame, Path.Combine(outDir, name));
         }
 
         // a lone ship at several orientations (self-occlusion of its own
@@ -150,45 +150,5 @@ public class VisualDumpTests
 
         Assert.Equal(width * height, painterPixels.Length);
         Assert.Equal(painterPixels, depthBufferPixels);
-    }
-
-    private static void SaveBmp(FastBitmap bitmap, string path)
-    {
-        int w = bitmap.Width;
-        int h = bitmap.Height;
-        int rowSize = ((w * 3) + 3) & ~3;
-        int dataSize = rowSize * h;
-
-        using BinaryWriter writer = new(File.Create(path));
-        writer.Write((byte)'B');
-        writer.Write((byte)'M');
-        writer.Write(54 + dataSize);
-        writer.Write(0);
-        writer.Write(54);
-        writer.Write(40);
-        writer.Write(w);
-        writer.Write(h);
-        writer.Write((short)1);
-        writer.Write((short)24);
-        writer.Write(0);
-        writer.Write(dataSize);
-        writer.Write(2835);
-        writer.Write(2835);
-        writer.Write(0);
-        writer.Write(0);
-
-        byte[] row = new byte[rowSize];
-        for (int y = h - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < w; x++)
-            {
-                uint argb = bitmap.GetPixel(x, y);
-                row[x * 3] = (byte)(argb & 0xff);
-                row[(x * 3) + 1] = (byte)((argb >> 8) & 0xff);
-                row[(x * 3) + 2] = (byte)((argb >> 16) & 0xff);
-            }
-
-            writer.Write(row);
-        }
     }
 }

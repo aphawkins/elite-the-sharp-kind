@@ -57,7 +57,7 @@ public class VisualDumpTests
             renderer.Draw(camera, worldPolygons, car.CurrentPiece, car.CurrentSegment);
             graphics.ScreenUpdate();
             Assert.NotNull(lastFrame);
-            SaveBmp(lastFrame, Path.Combine(outDir, name));
+            BitmapWriter.Write(lastFrame, Path.Combine(outDir, name));
         }
 
         // frame at race start (car in the air above the start piece)
@@ -123,7 +123,7 @@ public class VisualDumpTests
             car.BestLapTicks));
         graphics.ScreenUpdate();
         Assert.NotNull(lastFrame);
-        SaveBmp(lastFrame, Path.Combine(outDir, "frame_hud.bmp"));
+        BitmapWriter.Write(lastFrame, Path.Combine(outDir, "frame_hud.bmp"));
 
         // the track-preview viewpoint: high up, pitched down at the car -
         // the camera angle that exposed the floating-track bug (the ground
@@ -151,46 +151,6 @@ public class VisualDumpTests
             new(320, 200));
         graphics.ScreenUpdate();
         Assert.NotNull(lastFrame);
-        SaveBmp(lastFrame, Path.Combine(outDir, "frame_menu.bmp"));
-    }
-
-    private static void SaveBmp(FastBitmap bitmap, string path)
-    {
-        int w = bitmap.Width;
-        int h = bitmap.Height;
-        int rowSize = ((w * 3) + 3) & ~3;
-        int dataSize = rowSize * h;
-
-        using BinaryWriter writer = new(File.Create(path));
-        writer.Write((byte)'B');
-        writer.Write((byte)'M');
-        writer.Write(54 + dataSize);
-        writer.Write(0);
-        writer.Write(54);
-        writer.Write(40);
-        writer.Write(w);
-        writer.Write(h);
-        writer.Write((short)1);
-        writer.Write((short)24);
-        writer.Write(0);
-        writer.Write(dataSize);
-        writer.Write(2835);
-        writer.Write(2835);
-        writer.Write(0);
-        writer.Write(0);
-
-        byte[] row = new byte[rowSize];
-        for (int y = h - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < w; x++)
-            {
-                uint argb = bitmap.GetPixel(x, y);
-                row[x * 3] = (byte)(argb & 0xff);
-                row[(x * 3) + 1] = (byte)((argb >> 8) & 0xff);
-                row[(x * 3) + 2] = (byte)((argb >> 16) & 0xff);
-            }
-
-            writer.Write(row);
-        }
+        BitmapWriter.Write(lastFrame, Path.Combine(outDir, "frame_menu.bmp"));
     }
 }

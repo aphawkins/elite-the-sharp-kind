@@ -81,11 +81,11 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
         Dictionary<string, FastBitmap> images = assetLocator.ImagePaths.ToDictionary(
             x => x.Key,
-            x => BitmapFile.Read(x.Value));
+            x => BitmapReader.Read(x.Value));
 
         Dictionary<string, BitmapFont> fonts = assetLocator.FontBitmapPaths.ToDictionary(
             x => x.Key,
-            x => new BitmapFont(BitmapFile.Read(x.Value)));
+            x => new BitmapFont(BitmapReader.Read(x.Value)));
 
         return new(screenWidth, screenHeight, screenUpdate, images, fonts);
     }

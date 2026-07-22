@@ -2,7 +2,7 @@
 
 namespace Useful.Graphics.Tests;
 
-public class BitmapFileTests
+public class BitmapReaderTests
 {
     [Theory]
     [InlineData("2x2redtopleft.bmp", 2, 2)]
@@ -12,7 +12,7 @@ public class BitmapFileTests
         string path = Path.Combine("golden", filename);
 
         // Act
-        FastBitmap bitmap = BitmapFile.Read(path);
+        FastBitmap bitmap = BitmapReader.Read(path);
 
         // Assert
         Assert.Equal(width, bitmap.Width);
