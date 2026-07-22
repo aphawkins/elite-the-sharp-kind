@@ -14,6 +14,16 @@ Race the clock and an AI opponent over four laps of elevated track.  The car tak
 
 Playable, preview.  The game starts at the track selection menu with all eight original tracks, framed with the remake's title artwork.  Gamepad/joystick support and the outside camera view are still to come.
 
+## Getting Started
+
+To build and run from source, install the .NET SDK and run:
+
+``` bash
+dotnet run --project src/scr/apps/StuntCarRacerSharp
+```
+
+It can also be run and debugged directly from an IDE: open [TheSharpKind.slnx](../TheSharpKind.slnx) in Visual Studio and set `StuntCarRacerSharp` as the startup project, or open the repo root in VS Code and use the "Stunt Car Racer" launch configuration (`.vscode/launch.json`).
+
 ## Controls
 
 The keys follow the current remake's scheme: arrow keys to steer/accelerate/brake, Space to boost.

@@ -23,6 +23,8 @@ To build and run from source, install the .NET SDK and run:
 dotnet run --project src/elite/apps/EliteSharp
 ```
 
+It can also be run and debugged directly from an IDE: open [TheSharpKind.slnx](../TheSharpKind.slnx) in Visual Studio and set `EliteSharp` as the startup project, or open the repo root in VS Code and use the "Elite" launch configuration (`.vscode/launch.json`).
+
 CI also publishes self-contained single-file builds (win-x64 and linux-x64) that do not require the .NET runtime to be installed.
 
 ## Controls
