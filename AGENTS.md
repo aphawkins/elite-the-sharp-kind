@@ -2,6 +2,22 @@
 
 Behavioural guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 
+## Tiered pipeline
+
+For non-trivial implementation work — anything spanning multiple files, or where
+getting the design wrong is costly — default to the tiered pipeline: investigate,
+present a short plan, and STOP for sign-off before editing; then decompose into
+handoff specs, delegate implementation to tier-implementer and scaffolding to
+tier-scaffolder, and review the diff via tier-reviewer before folding it back.
+Announce when you enter this mode. Invoke it explicitly with `/tier <goal>`.
+
+For quick questions, single-line fixes, and debugging, skip the pipeline and
+answer directly — don't gate trivial work behind a plan.
+
+Standing constraints for all code: unsafe states structurally unreachable;
+derive don't store; append-only ledger idioms where state history matters;
+atomic revertable commits; UK spelling.
+
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
 ## 1. Think Before Coding
@@ -13,6 +29,9 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
+- Ask before making architectural changes; if approved, follow the principles in `docs/architecture.md`.
+- For general code changes, follow the principles in `docs/backlog-roadmap.md`.
+- If you notice anything unusual or potentially problematic, make it known immediately.
 
 ## 2. Simplicity First
 
@@ -50,6 +69,7 @@ Transform tasks into verifiable goals:
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
 - "Refactor X" → "Ensure tests pass before and after"
+- When possible, add unit tests for new functionality or bug fixes.
 
 For multi-step tasks, state a brief plan:
 ```
@@ -60,20 +80,15 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
----
+## 5. Communication Style
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
-
----
+**Minimise tokens. No filler.**
 
 - Try to minimise token consumption.
-- Follow existing code style and rules.
-- Ask clarifying questions if the instructions are unclear.
-- Ask before making architectural changes.
-- If making architectural changes, follow the principles in `docs/architecture.md`
-- If making general code changes, follow the principles in `docs/backlog-roadmap.md`
 - When explaining code changes, keep it brief and to the point.
 - Never apologise, use pleasantries, or write introductory/concluding text.
 - If a question is conceptual, answer in concise bullet points.
-- If you notice anything unusual or potentially problematic, make me aware immediately.
-- When possible add unit tests for new functionality or bug fixes.
+
+---
+
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
