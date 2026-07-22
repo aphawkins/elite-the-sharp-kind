@@ -104,15 +104,6 @@ needed. The SCR harness (`HeadlessGameHarness`, landed 2026-07-22, see
 CHANGELOG) is the scripted-input machinery the golden-trace harness
 under the float-physics cluster shares):
 
-- [ ] [EliteSharpLib.Tests] The Elite equivalent, building on the
-      `EliteMain` construction/smoke-test item above: drive scripted
-      ticks through `EliteMain.Update`/`Draw` with a real
-      `SoftwareGraphics` and dump framebuffers the same way. Needs no
-      SDL; note `EliteMain.Run` is unusable headlessly as-is — it hands
-      off to `GameHost.Run`'s real-time, wall-clock-waiting loop
-      ([GameLoop.cs:59-98](../src/useful/libs/Useful/Timing/GameLoop.cs))
-      that only exits via `abstraction.Keyboard.Close` — call `Update`/
-      `Draw` directly per tick instead.
 - [ ] [Apps] Scripted input + frame dump in the real SDL apps, for the
       rare check that must exercise the true SDL window/present path:
       replay a key script (from a file or env var) into the `IKeyboard`

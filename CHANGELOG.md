@@ -7,6 +7,40 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Elite headless game harness + shared harness base, 2026-07-22)
+
+- Added the Elite equivalent of SCR's `HeadlessGameHarness`, building on
+  `EliteMainTests`' DI-composed construction/smoke test: drives the same DI
+  graph `SDLProgram.Main` does (`AddEliteConfig` + `AddEliteMain`) with
+  `FakeAbstraction` wrapping a real `SoftwareGraphics` (no SDL window) and
+  calls `EliteMain.Update`/`Draw` directly per tick — `EliteMain.Run` is
+  unusable headlessly as-is, since it hands off to `GameHost.Run`'s
+  real-time, wall-clock-waiting loop. Added an internal `EliteMain.State`
+  property exposing `GameState` (which stays internal) for the harness to
+  read, mirroring `StuntCarRacerMain.Screens`/`Race`.
+- Writing it alongside SCR's existing harness surfaced straight
+  copy-pasted code (`KeyScriptEvent`, `KeyScriptAction`, and the
+  tap/hold/release scripting loop in `Step`/`Run`/`SaveFrame`) that would
+  only have grown more duplicated as more games got one. Extracted the
+  shared parts into `Useful.Fakes`
+  ([Harness/HeadlessGameHarnessBase.cs](src/useful/test/Useful.Fakes/Harness/HeadlessGameHarnessBase.cs),
+  `KeyScriptEvent.cs`, `KeyScriptAction.cs`, new `Useful.Fakes.Harness`
+  namespace; added a `Useful.Graphics` project reference to `Useful.Fakes`
+  for `SoftwareGraphics`/`BitmapWriter`): a public generic
+  `HeadlessGameHarnessBase<TState>` owns the `SoftwareGraphics`, the
+  scripted-input `Step`/`Run` loop, and `SaveFrame`, via two abstract hooks
+  (`UpdateGame`/`DrawGame`) and an abstract `State` property. Both games'
+  `HeadlessGameHarness` classes now just build their own object graph
+  (Elite's DI container vs SCR's direct constructor) and supply their own
+  `GameStateSummary` shape — genuinely different per game, so those stay
+  local — while `KeyScriptEvent`/`KeyScriptAction` and the harness
+  machinery are defined exactly once. Verified with a throwaway test that
+  the Elite harness still renders a real frame (cockpit/HUD/scanner) before
+  deleting it. Built the full solution and ran the complete test suite
+  (all green, same pass counts as before the refactor); no production
+  behaviour changed beyond the new `EliteMain.State` accessor, so no live
+  smoke test was needed.
+
 ### Added (BitmapWriter + BitmapReader rename in Useful.Graphics, 2026-07-22)
 
 - `BitmapFile.Read` was the only half of a load/save pair, and the

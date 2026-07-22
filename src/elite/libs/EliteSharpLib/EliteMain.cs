@@ -45,7 +45,6 @@ public sealed class EliteMain : IGame
     private readonly AudioController _audio;
     private readonly Combat _combat;
     private readonly IEliteDraw _draw;
-    private readonly GameState _gameState;
     private readonly List<long> _framesDrawn = [];
     private readonly Pilot _pilot;
     private readonly SaveFile _save;
@@ -86,7 +85,7 @@ public sealed class EliteMain : IGame
         _graphics = abstraction.Graphics;
         _keyboard = abstraction.Keyboard;
         _audio = audio;
-        _gameState = gameState;
+        State = gameState;
         _ship = ship;
         _draw = draw;
         _colorText = _draw.Palette["White"];
@@ -99,9 +98,14 @@ public sealed class EliteMain : IGame
         _scanner = scanner;
     }
 
-    public bool IsRunning => !_gameState.ExitGame;
+    public bool IsRunning => !State.ExitGame;
 
-    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, _gameState.Config.Fps);
+    // Exposed (GameState itself stays internal) for headless test harnesses
+    // that need to observe screen/docked/game-over state without a rendered
+    // frame.
+    internal GameState State { get; }
+
+    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, State.Config.Fps);
 
     // One fixed-rate game tick. Elite's update draws the universe as it
     // moves it (as The New Kind did), so this composes the whole frame into
@@ -114,12 +118,12 @@ public sealed class EliteMain : IGame
         _ship.IsClimbing = false;
         HandleViewKeys();
 
-        if (_gameState.IsGamePaused)
+        if (State.IsGamePaused)
         {
             // leave the framebuffer untouched so the pause screen persists
             if (_keyboard.IsPressed(ConsoleKey.R))
             {
-                _gameState.IsGamePaused = false;
+                State.IsGamePaused = false;
             }
 
             return;
@@ -132,12 +136,12 @@ public sealed class EliteMain : IGame
 
         if (_ship.Energy < 0)
         {
-            _gameState.GameOver();
+            State.GameOver();
         }
 
-        if (_gameState.MessageCount > 0)
+        if (State.MessageCount > 0)
         {
-            _gameState.MessageCount--;
+            State.MessageCount--;
         }
 
         _ship.LevelOut();
@@ -145,65 +149,65 @@ public sealed class EliteMain : IGame
         if (_pilot.IsAutoPilotOn)
         {
             _pilot.AutoDock();
-            if ((_gameState.MCount & 127) == 0)
+            if ((State.MCount & 127) == 0)
             {
-                _gameState.InfoMessage("Docking Computers On");
+                State.InfoMessage("Docking Computers On");
             }
         }
 
-        _gameState.CurrentView!.Update();
+        State.CurrentView!.Update();
         _space.UpdateUniverse();
-        _gameState.CurrentView.Draw();
+        State.CurrentView.Draw();
 #if DEBUG
         DrawFps();
 #endif
 
-        if (!_gameState.IsDocked && !_gameState.IsGameOver)
+        if (!State.IsDocked && !State.IsGameOver)
         {
             _combat.CoolLaser();
 
-            if (_gameState.MessageCount > 0)
+            if (State.MessageCount > 0)
             {
-                _graphics.DrawTextCentre(_draw.ScannerTop - 40, _gameState.MessageString, nameof(FontType.Small), _colorText);
+                _graphics.DrawTextCentre(_draw.ScannerTop - 40, State.MessageString, nameof(FontType.Small), _colorText);
             }
 
             if (_space.IsHyperspaceReady)
             {
                 _draw.DrawHyperspaceCountdown(_space.HyperCountdown);
-                if ((_gameState.MCount & 3) == 0)
+                if ((State.MCount & 3) == 0)
                 {
                     _space.CountdownHyperspace();
                 }
             }
 
-            _gameState.MCount--;
-            if (_gameState.MCount < 0)
+            State.MCount--;
+            if (State.MCount < 0)
             {
-                _gameState.MCount = 255;
+                State.MCount = 255;
             }
 
-            if ((_gameState.MCount & 7) == 0)
+            if ((State.MCount & 7) == 0)
             {
                 _ship.RegenerateShields();
             }
 
-            if ((_gameState.MCount & 31) == 10)
+            if ((State.MCount & 31) == 10)
             {
                 if (_ship.IsEnergyLow())
                 {
-                    _gameState.InfoMessage("ENERGY LOW");
+                    State.InfoMessage("ENERGY LOW");
                     _audio.PlayEffect(nameof(SoundEffect.Beep));
                 }
 
                 _space.UpdateAltitude();
             }
 
-            if ((_gameState.MCount & 31) == 20)
+            if ((State.MCount & 31) == 20)
             {
                 _space.UpdateCabinTemp();
             }
 
-            if ((_gameState.MCount == 0) && (!_gameState.InWitchspace))
+            if ((State.MCount == 0) && (!State.InWitchspace))
             {
                 _combat.RandomEncounter();
             }
@@ -214,7 +218,7 @@ public sealed class EliteMain : IGame
         _draw.SetFullScreenClipRegion();
 
         _scanner.UpdateConsole();
-        _gameState.CurrentView!.HandleInput();
+        State.CurrentView!.HandleInput();
     }
 
     // Present the frame composed by the last update. Runs at the render
@@ -249,75 +253,75 @@ public sealed class EliteMain : IGame
     private void HandleViewKeys()
     {
         if (_keyboard.IsPressed(ConsoleKey.F1) &&
-            _gameState.CurrentScreen is not Screen.IntroOne and not Screen.IntroTwo)
+            State.CurrentScreen is not Screen.IntroOne and not Screen.IntroTwo)
         {
-            if (_gameState.IsDocked)
+            if (State.IsDocked)
             {
-                _gameState.SetView(Screen.Undocking);
+                State.SetView(Screen.Undocking);
             }
             else
             {
-                _gameState.SetView(Screen.FrontView);
+                State.SetView(Screen.FrontView);
             }
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F2) &&
-            !_gameState.IsDocked)
+            !State.IsDocked)
         {
-            _gameState.SetView(Screen.RearView);
+            State.SetView(Screen.RearView);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F3) &&
-            !_gameState.IsDocked)
+            !State.IsDocked)
         {
-            _gameState.SetView(Screen.LeftView);
+            State.SetView(Screen.LeftView);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F4))
         {
-            if (_gameState.IsDocked)
+            if (State.IsDocked)
             {
-                _gameState.SetView(Screen.EquipShip);
+                State.SetView(Screen.EquipShip);
             }
             else
             {
-                _gameState.SetView(Screen.RightView);
+                State.SetView(Screen.RightView);
             }
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F5))
         {
-            _gameState.SetView(Screen.GalacticChart);
+            State.SetView(Screen.GalacticChart);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F6))
         {
-            _gameState.SetView(Screen.ShortRangeChart);
+            State.SetView(Screen.ShortRangeChart);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F7))
         {
-            _gameState.SetView(Screen.PlanetData);
+            State.SetView(Screen.PlanetData);
         }
 
-        if (_keyboard.IsPressed(ConsoleKey.F8) && (!_gameState.InWitchspace))
+        if (_keyboard.IsPressed(ConsoleKey.F8) && (!State.InWitchspace))
         {
-            _gameState.SetView(Screen.MarketPrices);
+            State.SetView(Screen.MarketPrices);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F9))
         {
-            _gameState.SetView(Screen.CommanderStatus);
+            State.SetView(Screen.CommanderStatus);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F10))
         {
-            _gameState.SetView(Screen.Inventory);
+            State.SetView(Screen.Inventory);
         }
 
         if (_keyboard.IsPressed(ConsoleKey.F11))
         {
-            _gameState.SetView(Screen.Options);
+            State.SetView(Screen.Options);
         }
     }
 
@@ -326,12 +330,12 @@ public sealed class EliteMain : IGame
     /// </summary>
     private void InitialiseGame()
     {
-        if (_gameState.IsInitialised)
+        if (State.IsInitialised)
         {
             return;
         }
 
-        _gameState.Reset();
+        State.Reset();
         _pilot.Reset();
         _ship.Reset();
         _combat.Reset();
@@ -339,12 +343,12 @@ public sealed class EliteMain : IGame
 
         _ship.Speed = 1;
         _space.IsHyperspaceReady = false;
-        _gameState.IsGamePaused = false;
+        State.IsGamePaused = false;
 
         _stars.CreateNewStars();
         _universe.ClearUniverse();
         _space.DockPlayer();
 
-        _gameState.SetView(Screen.IntroOne);
+        State.SetView(Screen.IntroOne);
     }
 }
