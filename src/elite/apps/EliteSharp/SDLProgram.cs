@@ -35,6 +35,14 @@ internal static class SDLProgram
     {
         string userDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TheSharpKind");
 
+        if (!Path.IsPathRooted(userDataPath))
+        {
+            Console.Error.WriteLine("Could not determine the user data directory (resolved to a relative path).");
+            Console.Error.WriteLine("This usually means the HOME environment variable is not set. Set HOME and try again.");
+            Environment.Exit(1);
+            return;
+        }
+
         LogEventLevel minimumLevel =
             Enum.TryParse(Environment.GetEnvironmentVariable("ELITE_LOG_LEVEL"), ignoreCase: true, out LogEventLevel envLevel)
             ? envLevel
