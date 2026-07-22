@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using Useful;
 using Useful.Abstraction;
 using Useful.Assets;
 using Useful.SDL;
@@ -33,12 +34,8 @@ internal static class SDLProgram
 
     public static void Main()
     {
-        string userDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TheSharpKind");
-
-        if (!Path.IsPathRooted(userDataPath))
+        if (!AppStartup.TryResolveUserDataPath(out string userDataPath))
         {
-            Console.Error.WriteLine("Could not determine the user data directory (resolved to a relative path).");
-            Console.Error.WriteLine("This usually means the HOME environment variable is not set. Set HOME and try again.");
             Environment.Exit(1);
             return;
         }
@@ -89,6 +86,8 @@ internal static class SDLProgram
         catch (Exception ex)
         {
             LogMessages.CriticalAppTerminated(logger, ex);
+            AppStartup.WriteFailureHint(ex, userDataPath);
+            Environment.Exit(-1);
             throw;
         }
     }
