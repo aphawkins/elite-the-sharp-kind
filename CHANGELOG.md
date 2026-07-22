@@ -7,6 +7,30 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (SpaceTests covering Space's flight/hyperspace/docking logic, 2026-07-22)
+
+- `Space` ([Space.cs](src/elite/libs/EliteSharpLib/Space.cs)) was the last
+  class named by the "Elite's core game logic is largely untested" backlog
+  item — notably `LaunchPlayer`'s `LegalStatus |= _trade.IsCarryingContraband()`
+  line, where "the contraband bug lived here for years." Added
+  `SpaceTests.cs` (26 tests) covering `LaunchPlayer` (contraband carried over
+  into `LegalStatus`, clean without contraband, flight state + undocking),
+  `DockPlayer` (docks, resets ship speed and weapons), `JumpWarp` (mass-locked
+  by a non-exempt object present, mass-locked with no planet, clamps the jump
+  to 1024 and moves every object), `StartHyperspace`/`StartGalacticHyperspace`
+  (fuel/equipment/already-ready guards), `CountdownHyperspace` (decrements,
+  and completes a galactic jump at zero), `EngageDockingComputer` (docking
+  view only with a station present) and `UpdateAltitude`/`UpdateCabinTemp`
+  (safe defaults in witchspace/without a planet or sun, the near-body
+  distance formula, the fuel-scoop temperature band, and the too-close/too-hot
+  game-over paths). Added `FakeView` to `EliteSharpLib.Fakes` (a no-op `IView`)
+  so tests can register the `Docking`/`GameOver`/`Hyperspace` screens that
+  `GameState.SetView` requires. `UpdateUniverse` (the per-frame object
+  update/render loop) is not covered here — it's exercised indirectly by the
+  existing visual-dump/smoke tests rather than unit-level assertions. Built
+  the full solution, ran the complete test suite (all green, 80 in
+  `EliteSharpLib.Tests` including the 26 new tests).
+
 ### Added (PlanetControllerTests covering the pure-logic galaxy/planet generation code, 2026-07-22)
 
 - `PlanetController` ([PlanetController.cs](src/elite/libs/EliteSharpLib/PlanetController.cs))

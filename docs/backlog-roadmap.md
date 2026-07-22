@@ -93,7 +93,6 @@ functionality. Conclusions:
 
 ### Tests
 
-- [ ] [Tests] Elite's core game logic is largely untested — `EliteSharpLib.Tests` now covers planets/suns/ships/universe, `TradeTests`, `CombatTests`, `ConfigFileTests`, `RNGTests`, `SaveFileTests` (incl. a save/load round trip against an injected temp directory) and the new `PlanetControllerTests`, leaving `Space` untested (the contraband bug lived here for years).
 - [ ] [Tests] Add an `EliteMain` construction/smoke test using fakes, mirroring SCR's `StuntCarRacerMainTests` — Elite currently has no test that even constructs its composition; `EliteSharpLib.Fakes` (`FakeEliteDraw`, `FakeShipFactory`) plus `Useful.Fakes` already provide most of the doubles.
 Headless smoke harness (added 2026-07-19: verifying the
 `Opponent_Speed_Value` port live meant driving the SDL window with
