@@ -4,13 +4,13 @@ using System.Numerics;
 
 namespace Useful.Graphics.Fakes;
 
-public sealed class FakeGraphics : IGraphics
+public sealed class FakeGraphics(float screenWidth = 0, float screenHeight = 0) : IGraphics
 {
     public float Scale => 2;
 
-    public float ScreenHeight { get; }
+    public float ScreenHeight { get; } = screenHeight;
 
-    public float ScreenWidth { get; }
+    public float ScreenWidth { get; } = screenWidth;
 
     public void Clear()
     {

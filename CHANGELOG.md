@@ -7,6 +7,27 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (EliteMain construction/smoke test using fakes, 2026-07-22)
+
+- Elite had no test that even constructed its composition, unlike SCR's
+  `StuntCarRacerMainTests`. Added `EliteMainTests.cs`
+  ([EliteMainTests.cs](src/elite/test/EliteSharpLib.Tests/EliteMainTests.cs)):
+  builds the same DI graph `SDLProgram.Main` does
+  (`AddEliteConfig`+`AddEliteMain`) with a new `FakeAbstraction` swapped in
+  for `IAbstraction` (no SDL window/sound device/keyboard needed) and the
+  real `AssetLocator`/shipped assets otherwise, then resolves `EliteMain`
+  and runs one `Update()` tick, asserting it doesn't throw and
+  `IsRunning` stays true. Added `FakeAbstraction` to `EliteSharpLib.Fakes`
+  (mirroring SCR's), and gave the shared `FakeGraphics`
+  ([FakeGraphics.cs](src/useful/test/Useful.Graphics.Fakes/FakeGraphics.cs))
+  an optional width/height constructor (default 0, unchanged for existing
+  callers) — `Stars.CreateNewStar` derives its random ranges from
+  `EliteDraw.Centre`, which comes from `IGraphics.ScreenWidth/Height`, and a
+  0x0 fake screen produced a negative range that threw; `FakeAbstraction`
+  now sizes it 512x512 to match Elite's real resolution. Built the full
+  solution, ran the complete test suite (all green, 396 tests across the
+  solution including the new test), and smoke-tested the live app.
+
 ### Added (SpaceTests covering Space's flight/hyperspace/docking logic, 2026-07-22)
 
 - `Space` ([Space.cs](src/elite/libs/EliteSharpLib/Space.cs)) was the last

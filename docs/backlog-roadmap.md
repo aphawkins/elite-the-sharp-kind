@@ -93,7 +93,6 @@ functionality. Conclusions:
 
 ### Tests
 
-- [ ] [Tests] Add an `EliteMain` construction/smoke test using fakes, mirroring SCR's `StuntCarRacerMainTests` — Elite currently has no test that even constructs its composition; `EliteSharpLib.Fakes` (`FakeEliteDraw`, `FakeShipFactory`) plus `Useful.Fakes` already provide most of the doubles.
 Headless smoke harness (added 2026-07-19: verifying the
 `Opponent_Speed_Value` port live meant driving the SDL window with
 OS-level focus stealing, key injection and full-screen screenshots —
