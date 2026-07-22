@@ -124,7 +124,7 @@ public sealed partial class OpponentPhysics
     private bool _carOnFirstHalfOfLap;
 
     public OpponentPhysics(Track track, CarPhysics player)
-        : this(track, player, new RandomSource(new Random()))
+        : this(track, player, new RandomSource(Random.Shared))
     {
     }
 

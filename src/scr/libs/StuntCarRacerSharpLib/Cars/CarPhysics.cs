@@ -230,7 +230,7 @@ public sealed partial class CarPhysics
     private bool _carOnFirstHalfOfLap;
 
     public CarPhysics(Track track)
-        : this(track, new RandomSource(new Random()))
+        : this(track, new RandomSource(Random.Shared))
     {
     }
 

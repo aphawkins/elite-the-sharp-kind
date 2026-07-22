@@ -33,17 +33,17 @@ public sealed class StuntCarRacerMain : IGame
     private bool _sceneryKeyDown;
 
     public StuntCarRacerMain(IAbstraction abstraction)
-        : this(abstraction, TrackId.LittleRamp, new(), new RandomSource(new Random()))
+        : this(abstraction, TrackId.LittleRamp, new(), new RandomSource(Random.Shared))
     {
     }
 
     public StuntCarRacerMain(IAbstraction abstraction, TrackId trackId)
-        : this(abstraction, trackId, new(), new RandomSource(new Random()))
+        : this(abstraction, trackId, new(), new RandomSource(Random.Shared))
     {
     }
 
     public StuntCarRacerMain(IAbstraction abstraction, AudioOptions audioOptions)
-        : this(abstraction, TrackId.LittleRamp, audioOptions, new RandomSource(new Random()))
+        : this(abstraction, TrackId.LittleRamp, audioOptions, new RandomSource(Random.Shared))
     {
     }
 

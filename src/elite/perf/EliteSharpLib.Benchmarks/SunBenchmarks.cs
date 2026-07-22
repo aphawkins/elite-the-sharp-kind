@@ -30,7 +30,7 @@ public class SunBenchmarks : IDisposable
         GameState gameState = new(views);
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
-        RNG rng = new(new Random(0));
+        RNG rng = new(Random.Shared);
         EliteDraw draw = new(gameState, _graphics, assetLocator, shipRenderer, rng);
         _gradientSun = new(draw, rng);
         _solidSun = new(draw, rng);

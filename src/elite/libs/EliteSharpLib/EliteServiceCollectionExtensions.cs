@@ -47,7 +47,7 @@ public static class EliteServiceCollectionExtensions
         // The single shared source of entropy for this app instance: an
         // unseeded Random in production, replaceable with a seeded one in
         // tests via RNG's constructor seam.
-        services.AddSingleton(_ => new Random());
+        services.AddSingleton(_ => Random.Shared);
         services.AddSingleton(sp => new RNG(sp.GetRequiredService<Random>()));
 
         services.AddSingleton(sp => new ScreenManager<Screen, IView>(sp.GetRequiredService<IKeyboard>()));

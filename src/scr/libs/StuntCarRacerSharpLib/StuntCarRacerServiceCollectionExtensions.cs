@@ -39,7 +39,7 @@ public static class StuntCarRacerServiceCollectionExtensions
     // tests via RandomSource's constructor seam.
     public static IServiceCollection AddScrRandom(this IServiceCollection services)
     {
-        services.AddSingleton(_ => new Random());
+        services.AddSingleton(_ => Random.Shared);
         services.AddSingleton<IRandomSource>(sp => new RandomSource(sp.GetRequiredService<Random>()));
         return services;
     }
