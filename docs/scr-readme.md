@@ -1,5 +1,7 @@
 # Stunt Car Racer - The Sharp Kind
 
+![Stunt Car Racer - The Sharp Kind - Screenshot](images/scr-screenshot.png)
+
 A C# port of the classic Geoff Crammond racing game 'Stunt Car Racer'.  It is converted from the C++/DirectX9 Windows remake of the Amiga version, and is meant to feel and play the same as the original.
 
 The port shares the `Useful` libraries with 'Elite - The Sharp Kind': hardware access is hidden behind interfaces, with a software renderer drawing through SDL2.  The physics uses the original Amiga fixed-point algorithms and track data.
@@ -10,7 +12,7 @@ Race the clock and an AI opponent over four laps of elevated track.  The car tak
 
 ## Status
 
-In development.  The game starts at the track selection menu with all eight original tracks, framed with the remake's title artwork.  Gamepad/joystick support and the outside camera view are still to come.
+Playable, preview.  The game starts at the track selection menu with all eight original tracks, framed with the remake's title artwork.  Gamepad/joystick support and the outside camera view are still to come.
 
 ## Controls
 

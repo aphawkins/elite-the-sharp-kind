@@ -2,11 +2,19 @@
 
 Classic 8/16-bit computer games re-engineered in C# / .NET, sharing a common set of `Useful.*` game-engine libraries. The games are meant to look, feel and play like the originals while running cross-platform on modern hardware.
 
-| Game | Status | Details |
-| --- | --- | --- |
-| ![Elite](docs/images/elite-screenshot.png) | | |
-| **Elite - The Sharp Kind** | Playable, feature-complete | [Elite readme](docs/elite-readme.md) |
-| **Stunt Car Racer - The Sharp Kind** | In development | [Stunt Car Racer readme](docs/scr-readme.md) |
+## Games
+
+### [Elite - The Sharp Kind](docs/elite-readme.md)
+
+![Elite - The Sharp Kind - Screenshot](docs/images/elite-screenshot.png)
+
+Status: Playable, feature-complete.
+
+### [Stunt Car Racer - The Sharp Kind](docs/scr-readme.md)
+
+![Stunt Car Racer - The Sharp Kind - Screenshot](docs/images/scr-screenshot.png)
+
+Status: Playable, preview.
 
 ## Getting started
 
