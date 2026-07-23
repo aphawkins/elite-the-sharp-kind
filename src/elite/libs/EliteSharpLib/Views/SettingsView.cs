@@ -15,7 +15,7 @@ namespace EliteSharpLib.Views;
 
 internal sealed class SettingsView : IView
 {
-    private readonly IConfigWriter<ConfigSettings> _configWriter;
+    private readonly IConfigWriter<EliteConfigSettings> _configWriter;
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
@@ -34,7 +34,7 @@ internal sealed class SettingsView : IView
 
     private int _highlightedItem;
 
-    internal SettingsView(GameState gameState, IEliteDraw draw, IKeyboard keyboard, IConfigWriter<ConfigSettings> configWriter)
+    internal SettingsView(GameState gameState, IEliteDraw draw, IKeyboard keyboard, IConfigWriter<EliteConfigSettings> configWriter)
     {
         _gameState = gameState;
         _draw = draw;

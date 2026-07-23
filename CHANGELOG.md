@@ -7,6 +7,27 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Extract a shared BaseConfigSettings to deduplicate the two games' config types, 2026-07-23)
+
+- `ConfigSettings` (Elite) and `ScrConfigSettings` (SCR) had drifted into
+  duplicating the same three properties — `EffectsOn`, `GraphicsBackend`,
+  `MusicOn` — with identical defaults and comments. Added
+  `BaseConfigSettings`
+  ([BaseConfigSettings.cs](src/useful/libs/Useful.Abstraction/Config/BaseConfigSettings.cs))
+  to `Useful.Abstraction.Config` — the only assembly already referenced by
+  both game libraries that can also see the `GraphicsBackend` enum — and had
+  both settings types inherit from it instead. `ScrConfigSettings` had
+  nothing game-specific left, so it collapsed to
+  `internal sealed class ScrConfigSettings : BaseConfigSettings;`
+  ([ScrConfigSettings.cs](src/scr/libs/StuntCarRacerSharpLib/Config/ScrConfigSettings.cs)).
+  Also renamed Elite's settings type from `ConfigSettings` to
+  `EliteConfigSettings`
+  ([EliteConfigSettings.cs](src/elite/libs/EliteSharpLib/Config/EliteConfigSettings.cs))
+  to match the SCR naming and avoid confusion with the generic
+  `Useful.Config.ConfigFile<T>` machinery it's used with. `ConfigFile<T>`
+  itself needed no changes — it was already generic. Verified both games'
+  libs, both test projects, and the config round-trip tests still pass.
+
 ### Fixed (SCR crash on Hardware GraphicsBackend: missing FontsTrueType manifest entry, 2026-07-23)
 
 - Selecting `GraphicsBackend: Hardware` for StuntCarRacerSharp crashed at
@@ -49,7 +70,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   [GraphicsBackend.cs](src/useful/libs/Useful.Abstraction/GraphicsBackend.cs):
   `Software` or `Hardware`) and a matching `GraphicsBackend` property (default
   `Software`) on both games' settings —
-  [ConfigSettings.cs](src/elite/libs/EliteSharpLib/Config/ConfigSettings.cs) and
+  [EliteConfigSettings.cs](src/elite/libs/EliteSharpLib/Config/EliteConfigSettings.cs) and
   [ScrConfigSettings.cs](src/scr/libs/StuntCarRacerSharpLib/Config/ScrConfigSettings.cs).
   Since those settings types are internal (so `Program.Main` can't reference them
   directly — the same reason `AddEliteConfig`/`AddScrConfig` exist) and

@@ -26,29 +26,29 @@ public static class EliteServiceCollectionExtensions
 {
     private const string ConfigFileName = "elitesharp.cfg";
 
-    // ConfigSettings is internal, so Program.Main can't reference or
-    // construct a ConfigFile<ConfigSettings> directly; this registers it
+    // EliteConfigSettings is internal, so Program.Main can't reference or
+    // construct a ConfigFile<EliteConfigSettings> directly; this registers it
     // from inside the assembly that can.
     public static IServiceCollection AddEliteConfig(this IServiceCollection services, string userDataPath)
-        => services.AddSingleton(sp => new ConfigFile<ConfigSettings>(
+        => services.AddSingleton(sp => new ConfigFile<EliteConfigSettings>(
             userDataPath,
             ConfigFileName,
             IsValidConfig,
-            sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<ConfigSettings>>()));
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<EliteConfigSettings>>()));
 
     // Exposes only the (public) GraphicsBackend choice from the (internal)
-    // ConfigSettings, so Program.Main - which picks between SoftwareAbstraction
+    // EliteConfigSettings, so Program.Main - which picks between SoftwareAbstraction
     // and SDLAbstraction and therefore needs to reference Useful.SDL, a
     // dependency EliteSharpLib itself deliberately does not have - can read it
-    // before the DI container (and its own ConfigFile<ConfigSettings> registration
+    // before the DI container (and its own ConfigFile<EliteConfigSettings> registration
     // via AddEliteConfig) exists.
     public static GraphicsBackend ReadGraphicsBackend(string userDataPath, ILoggerFactory loggerFactory)
     {
-        ConfigFile<ConfigSettings> configFile = new(
+        ConfigFile<EliteConfigSettings> configFile = new(
             userDataPath,
             ConfigFileName,
             IsValidConfig,
-            loggerFactory.CreateLogger<ConfigFile<ConfigSettings>>());
+            loggerFactory.CreateLogger<ConfigFile<EliteConfigSettings>>());
 
         return configFile.ReadConfig().GraphicsBackend;
     }
@@ -70,14 +70,14 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(sp => new ScreenManager<Screen, IView>(sp.GetRequiredService<IKeyboard>()));
         services.AddSingleton(sp => new GameState(sp.GetRequiredService<ScreenManager<Screen, IView>>())
         {
-            Config = sp.GetRequiredService<ConfigFile<ConfigSettings>>().ReadConfig(),
+            Config = sp.GetRequiredService<ConfigFile<EliteConfigSettings>>().ReadConfig(),
         });
         services.AddSingleton(_ => new PlayerShip());
         services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
         services.AddSingleton(sp => new PlanetController(sp.GetRequiredService<GameState>()));
         services.AddSingleton<IPolygonRenderer>(sp =>
         {
-            ConfigSettings config = sp.GetRequiredService<GameState>().Config;
+            EliteConfigSettings config = sp.GetRequiredService<GameState>().Config;
             IGraphics graphics = sp.GetRequiredService<IGraphics>();
 
             return config.ShipWireframe
@@ -104,7 +104,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp =>
         {
-            ConfigSettings config = sp.GetRequiredService<GameState>().Config;
+            EliteConfigSettings config = sp.GetRequiredService<GameState>().Config;
             return new AudioController(
                 sp.GetRequiredService<ISound>(),
                 BuildEliteSfx(),
@@ -132,7 +132,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<PlanetController>(),
-            sp.GetRequiredService<ConfigFile<ConfigSettings>>().BaseDirectory,
+            sp.GetRequiredService<ConfigFile<EliteConfigSettings>>().BaseDirectory,
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<SaveFile>()));
         services.AddSingleton(sp => new Space(
             sp.GetRequiredService<GameState>(),
@@ -206,7 +206,7 @@ public static class EliteServiceCollectionExtensions
         return services;
     }
 
-    internal static bool IsValidConfig(ConfigSettings config) => config.Fps > 0 &&
+    internal static bool IsValidConfig(EliteConfigSettings config) => config.Fps > 0 &&
         Enum.IsDefined(config.GraphicsBackend) &&
         Enum.IsDefined(config.PlanetDescriptions) &&
         Enum.IsDefined(config.PlanetStyle) &&
@@ -359,7 +359,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<ConfigFile<ConfigSettings>>()));
+            sp.GetRequiredService<ConfigFile<EliteConfigSettings>>()));
         services.AddSingleton(sp => new ConstrictorMissionView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),

@@ -15,10 +15,10 @@ public class ConfigFileTests
     public void ReadConfigWithoutAFileReturnsDefaults()
     {
         // Arrange
-        ConfigFile<ConfigSettings> configFile = new(CreateTempDirectory(), ConfigFileName);
+        ConfigFile<EliteConfigSettings> configFile = new(CreateTempDirectory(), ConfigFileName);
 
         // Act
-        ConfigSettings config = configFile.ReadConfig();
+        EliteConfigSettings config = configFile.ReadConfig();
 
         // Assert
         Assert.Equal(60f, config.Fps);
@@ -30,12 +30,12 @@ public class ConfigFileTests
     public void WriteConfigThenReadConfigRoundTrips()
     {
         // Arrange
-        ConfigFile<ConfigSettings> configFile = new(CreateTempDirectory(), ConfigFileName);
-        ConfigSettings written = new() { MusicOn = false, EffectsOn = false, InstantDock = true };
+        ConfigFile<EliteConfigSettings> configFile = new(CreateTempDirectory(), ConfigFileName);
+        EliteConfigSettings written = new() { MusicOn = false, EffectsOn = false, InstantDock = true };
 
         // Act
         configFile.WriteConfig(written);
-        ConfigSettings read = configFile.ReadConfig();
+        EliteConfigSettings read = configFile.ReadConfig();
 
         // Assert
         Assert.False(read.MusicOn);
@@ -52,10 +52,10 @@ public class ConfigFileTests
         string directory = CreateTempDirectory();
         Directory.CreateDirectory(directory);
         File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"ShipWireframe\": \"hello!\"}");
-        ConfigFile<ConfigSettings> configFile = new(directory, ConfigFileName);
+        ConfigFile<EliteConfigSettings> configFile = new(directory, ConfigFileName);
 
         // Act
-        ConfigSettings config = configFile.ReadConfig();
+        EliteConfigSettings config = configFile.ReadConfig();
 
         // Assert
         Assert.False(config.ShipWireframe);
@@ -69,10 +69,10 @@ public class ConfigFileTests
         string directory = CreateTempDirectory();
         Directory.CreateDirectory(directory);
         File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"Fps\": 0}");
-        ConfigFile<ConfigSettings> configFile = new(directory, ConfigFileName, EliteServiceCollectionExtensions.IsValidConfig);
+        ConfigFile<EliteConfigSettings> configFile = new(directory, ConfigFileName, EliteServiceCollectionExtensions.IsValidConfig);
 
         // Act
-        ConfigSettings config = configFile.ReadConfig();
+        EliteConfigSettings config = configFile.ReadConfig();
 
         // Assert
         Assert.Equal(60f, config.Fps);

@@ -4,26 +4,18 @@
 
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
-using Useful.Abstraction;
+using Useful.Abstraction.Config;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Config;
 
-internal sealed class ConfigSettings
+internal sealed class EliteConfigSettings : BaseConfigSettings
 {
-    public bool EffectsOn { get; set; } = true;
-
     // Maximum render frame rate. The game speed is independent, fixed by
     // EliteMain.GameTickRate.
     public float Fps { get; set; } = 60f;
 
-    // Which IAbstraction backend renders/plays the game: Software (default)
-    // or Hardware (SDL-accelerated).
-    public GraphicsBackend GraphicsBackend { get; set; } = GraphicsBackend.Software;
-
     public bool InstantDock { get; set; }
-
-    public bool MusicOn { get; set; } = true;
 
     public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
