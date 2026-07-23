@@ -38,9 +38,12 @@ public sealed unsafe class SDLSound : ISound, IDisposable
     private const int Channels = 2;
 
     // Safety cap on how long a single .mid track is allowed to decode to
-    // memory (including release tails); real assets are short tracks, this
-    // only guards against a pathological source never going silent.
-    private const int MaxDecodeSeconds = 30;
+    // memory (including release tails). This applies to music tracks too
+    // (predecoded once at startup, so a generous cap costs nothing), and
+    // only guards against a pathological source never going silent - it
+    // must stay well above any real track's length, or looping music gets
+    // audibly truncated and restarts mid-track instead of at the real end.
+    private const int MaxDecodeSeconds = 300;
 
     private readonly Dictionary<string, nint> _music;
     private readonly Dictionary<string, nint> _sfx;
