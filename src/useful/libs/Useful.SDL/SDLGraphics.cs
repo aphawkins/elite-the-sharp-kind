@@ -53,6 +53,21 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     private bool _depthLayerDirty;
     private bool _depthPassOpen;
 
+    // All drawing targets this persistent off-screen texture rather than
+    // the window's swap-chain backbuffer directly. The game only composes
+    // a new frame once per game tick but presents at the display's own
+    // rate, which is usually higher and not a whole multiple of the tick
+    // rate; a multi-buffered accelerated swap chain cycles through 2+
+    // buffers on each present; presenting without redrawing means most of
+    // those buffers still hold whatever was drawn into them ticks ago,
+    // which reads as flicker (and, mid-window-drag, a frozen "ghost" of
+    // one stale buffer). ScreenUpdate() blits this texture onto the
+    // backbuffer fresh on every present instead, so every buffer gets
+    // current content regardless of how many times it's presented between
+    // ticks - the same trick SoftwareAbstraction already gets for free by
+    // re-uploading its CPU bitmap every present.
+    private nint _frameTarget;
+
     private SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight)
     {
         Guard.ArgumentNull(renderer);
@@ -98,6 +113,18 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         graphics._imageTextures = graphics._images.ToDictionary(
             x => x.Key,
             x => SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(graphics.NativeRenderer, (SDL_Surface*)x.Value)));
+
+        graphics._frameTarget = SDLGuard.Execute(() => (nint)SDL_CreateTexture(
+            graphics.NativeRenderer,
+            SDL_PixelFormat.SDL_PIXELFORMAT_ARGB8888,
+            SDL_TextureAccess.SDL_TEXTUREACCESS_TARGET,
+            (int)screenWidth,
+            (int)screenHeight));
+
+        // All drawing targets _frameTarget from here on (see its field
+        // comment); ScreenUpdate() briefly switches back to the window to
+        // blit it, then restores this.
+        SDLGuard.Execute(() => SDL_SetRenderTarget(graphics.NativeRenderer, (SDL_Texture*)graphics._frameTarget));
 
         return graphics;
     }
@@ -536,7 +563,17 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
         FlushDepthLayer();
 
+        // Blit the persistent frame texture onto whichever swap-chain
+        // buffer is current, every time, rather than presenting whatever
+        // was left in it - see _frameTarget's field comment.
+        SDLGuard.Execute(() => SDL_SetRenderTarget(NativeRenderer, null));
+        SDLGuard.Execute(() =>
+        {
+            SDL_FRect dest = new() { x = 0, y = 0, w = ScreenWidth, h = ScreenHeight };
+            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)_frameTarget, null, &dest);
+        });
         SDLGuard.Execute(() => SDL_RenderPresent(NativeRenderer));
+        SDLGuard.Execute(() => SDL_SetRenderTarget(NativeRenderer, (SDL_Texture*)_frameTarget));
     }
 
     public void SaveScreen(string path)
@@ -1025,6 +1062,11 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             foreach (KeyValuePair<(string, string, uint), TextTextureEntry> entry in _textTextures)
             {
                 SDL_DestroyTexture((SDL_Texture*)entry.Value.Texture);
+            }
+
+            if (_frameTarget != nint.Zero)
+            {
+                SDL_DestroyTexture((SDL_Texture*)_frameTarget);
             }
         }
     }

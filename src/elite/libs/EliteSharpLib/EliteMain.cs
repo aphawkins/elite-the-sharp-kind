@@ -108,10 +108,14 @@ public sealed class EliteMain : IGame
     // frame.
     internal GameState State { get; }
 
-    // Render at the same rate as the game tick (Config.Fps is currently
-    // unused - see GameTickRate) so every composed frame is presented
-    // exactly once, matching StuntCarRacerMain's approach.
-    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, GameTickRate);
+    // The game composes a new frame only once per tick but presents at
+    // Config.Fps, which is usually higher and rarely a whole multiple of
+    // GameTickRate. That used to mean judder (an uneven number of presents
+    // per tick) and, on Hardware/SDL, flicker (a multi-buffered swap chain
+    // going stale between redraws) - both fixed at the rendering layer
+    // (SDLGraphics now redraws its persistent frame texture on every
+    // present), so this can render at the configured rate directly.
+    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, State.Config.Fps);
 
     // One fixed-rate game tick. Elite's update draws the universe as it
     // moves it (as The New Kind did), so this composes the whole frame into
