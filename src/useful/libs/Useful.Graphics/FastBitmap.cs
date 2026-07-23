@@ -42,6 +42,8 @@ public class FastBitmap : IDisposable
 
     public void Clear() => Array.Fill(_pixels, BaseColors.Black.Argb);
 
+    public void Clear(in FastColor color) => Array.Fill(_pixels, color.Argb);
+
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

@@ -23,6 +23,22 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     private Dictionary<string, nint> _imageTextures = [];
     private bool _isDisposed;
 
+    // CPU-rasterised, per-pixel depth-tested layer for DrawPolygonFilledDepth
+    // / DrawPolygonTexturedDepth: SDL's accelerated 2D renderer has no depth
+    // buffer of its own, so without this, depth-tested polygons (a whole
+    // track, a rotating ship) draw in submission order and pop/flicker
+    // wherever that order doesn't match actual camera distance. Allocated on
+    // first ClearDepth() call; composited onto the renderer as one texture
+    // blit the next time anything else is drawn (FlushDepthLayer), so it
+    // lands after whatever was drawn before it (e.g. a backdrop) and before
+    // whatever is drawn after (e.g. the HUD), and inherits whatever clip
+    // region is active at that point - the same clip that was active while
+    // the depth-tested content was rasterised, since nothing else runs in
+    // between.
+    private FastBitmap? _depthLayer;
+    private float[]? _depthBuffer;
+    private bool _depthLayerDirty;
+
     private SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight)
     {
         Guard.ArgumentNull(renderer);
@@ -79,6 +95,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
         EvictStaleTextTextures();
 
         SetRenderDrawColor(BaseColors.Black.Argb);
@@ -88,8 +105,17 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
     public void ClearDepth()
     {
-        // The SDL renderer has no depth buffer; the software rasterizer is
-        // the primary rendering path for depth-tested polygons.
+        if (_isDisposed)
+        {
+            return;
+        }
+
+        _depthLayer ??= new FastBitmap((int)ScreenWidth, (int)ScreenHeight);
+        _depthBuffer ??= new float[(int)ScreenWidth * (int)ScreenHeight];
+
+        _depthLayer.Clear(BaseColors.TransparentBlack);
+        Array.Clear(_depthBuffer);
+        _depthLayerDirty = false;
     }
 
     public void Dispose()
@@ -145,6 +171,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
+
         SDL_Surface* imageSurface = (SDL_Surface*)_images[imageType];
         nint texturePtr = _imageTextures[imageType];
 
@@ -181,6 +209,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
+
         nint texturePtr = _imageTextures[imageType];
 
         SDL_FlipMode flip = sourceSize.X < 0 ? SDL_FlipMode.SDL_FLIP_HORIZONTAL : SDL_FlipMode.SDL_FLIP_NONE;
@@ -214,6 +244,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
         SetRenderDrawColor(color);
 
         SDLGuard.Execute(() => SDL_RenderLine(NativeRenderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y));
@@ -226,6 +257,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
         SetRenderDrawColor(color);
 
         SDLGuard.Execute(() => SDL_RenderPoint(NativeRenderer, position.X, position.Y));
@@ -262,7 +294,19 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     }
 
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
-        => DrawPolygonFilled(points, faceColor); // no depth buffer - drawn unsorted
+    {
+        if (_isDisposed || points == null || depths == null || depths.Length < points.Length || _depthLayer == null)
+        {
+            return;
+        }
+
+        for (int i = 1; i < points.Length - 1; i++)
+        {
+            DrawTriangleFilledDepthToLayer(points[0], points[i], points[i + 1], depths[0], depths[i], depths[i + 1], faceColor);
+        }
+
+        _depthLayerDirty = true;
+    }
 
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
     {
@@ -289,7 +333,36 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     }
 
     public void DrawPolygonTexturedDepth(Vector2[] points, float[] depths, Vector2[] textureCoords, FastBitmap texture)
-        => DrawPolygonTextured(points, textureCoords, texture); // no depth buffer - drawn unsorted
+    {
+        if (_isDisposed ||
+            points == null ||
+            depths == null ||
+            textureCoords == null ||
+            texture == null ||
+            depths.Length < points.Length ||
+            textureCoords.Length < points.Length ||
+            _depthLayer == null)
+        {
+            return;
+        }
+
+        for (int i = 1; i < points.Length - 1; i++)
+        {
+            DrawTriangleTexturedDepthToLayer(
+                points[0],
+                points[i],
+                points[i + 1],
+                depths[0],
+                depths[i],
+                depths[i + 1],
+                textureCoords[0],
+                textureCoords[i],
+                textureCoords[i + 1],
+                texture);
+        }
+
+        _depthLayerDirty = true;
+    }
 
     public void DrawRectangle(Vector2 position, float width, float height, FastColor color)
     {
@@ -298,6 +371,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
         SetRenderDrawColor(color);
 
         float x = position.X / (2 / Scale);
@@ -327,6 +401,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
         SetRenderDrawColor(color);
 
         float x = position.X / (2 / Scale);
@@ -353,6 +428,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
         TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
         float destX = (ScreenWidth / 2) - (entry.Width / 2);
         float destY = y / (2 / Scale);
@@ -371,6 +447,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
         TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
         float destX = position.X / (2 / Scale);
         float destY = position.Y / (2 / Scale);
@@ -389,6 +466,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
         TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
         float destX = (position.X - entry.Width) / (2 / Scale);
         float destY = position.Y / (2 / Scale);
@@ -414,6 +492,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
+
         SDLGuard.Execute(() =>
         {
             SDL_Vertex* vertices = stackalloc SDL_Vertex[3];
@@ -432,6 +512,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
+        FlushDepthLayer();
+
         SDLGuard.Execute(() => SDL_RenderPresent(NativeRenderer));
     }
 
@@ -443,6 +525,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         {
             return;
         }
+
+        FlushDepthLayer();
 
         int width = (int)ScreenWidth;
         int height = (int)ScreenHeight;
@@ -529,6 +613,26 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         a = color.A / 255f,
     };
 
+    // The interpolation parameter of the edge p0-p1 at scanline y, clamped
+    // to the edge's endpoints (p0.Y must not be greater than p1.Y). A
+    // horizontal or degenerate edge yields 0. Mirrors SoftwareGraphics's
+    // EdgeT: the depth layer is a second, independent CPU rasterizer, since
+    // this one only ever runs for the small slice of draws SDL's
+    // accelerated renderer cannot depth-test itself.
+    private static float EdgeT(Vector2 p0, Vector2 p1, float y)
+    {
+        float dy = p1.Y - p0.Y;
+        return dy <= 0 ? 0f : Math.Clamp((y - p0.Y) / dy, 0f, 1f);
+    }
+
+    // Sample the texture at a [0,1] coordinate, clamping at the edges.
+    private static uint SampleDepthLayerTexture(FastBitmap texture, Vector2 uv)
+    {
+        int x = Math.Clamp((int)(uv.X * texture.Width), 0, texture.Width - 1);
+        int y = Math.Clamp((int)(uv.Y * texture.Height), 0, texture.Height - 1);
+        return texture.GetPixel(x, y);
+    }
+
     // Rendering a glyph texture is a CPU render plus a synchronous GPU
     // upload, so cache by (font, text, colour) instead of doing it on every
     // draw call. Entries not reused since the last frame's Clear() are
@@ -583,6 +687,230 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         }
     }
 
+    // Composites the accumulated depth layer onto the renderer as one
+    // texture blit and clears the pending flag, so the next call is a
+    // no-op. Called at the top of every other draw method (and
+    // ScreenUpdate/SaveScreen): the first non-depth call after a run of
+    // DrawPolygonFilledDepth/DrawPolygonTexturedDepth calls is exactly the
+    // point the composited depth content needs to land on the renderer, in
+    // between whatever was drawn before it and whatever draws after.
+    private void FlushDepthLayer()
+    {
+        if (!_depthLayerDirty || _depthLayer == null)
+        {
+            return;
+        }
+
+        _depthLayerDirty = false;
+
+        nint surfacePtr = SDLGuard.Execute(() => (nint)SDL_CreateSurfaceFrom(
+            _depthLayer.Width,
+            _depthLayer.Height,
+            SDL_PixelFormat.SDL_PIXELFORMAT_ARGB8888,
+            _depthLayer.BitmapHandle,
+            _depthLayer.Width * 4));
+
+        nint texturePtr = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, (SDL_Surface*)surfacePtr));
+        SDL_DestroySurface((SDL_Surface*)surfacePtr);
+
+        SDLGuard.Execute(() =>
+        {
+            SDL_FRect dest = new() { x = 0, y = 0, w = ScreenWidth, h = ScreenHeight };
+            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
+        });
+
+        SDL_DestroyTexture((SDL_Texture*)texturePtr);
+    }
+
+    // Depth-tested triangle fill into the CPU depth layer: inverse depth
+    // (1/z) is interpolated linearly in screen space (perspective-correct
+    // for depth) and each pixel only draws when it passes the depth test.
+    // Mirrors SoftwareGraphics.DrawTriangleFilledDepth.
+    private void DrawTriangleFilledDepthToLayer(Vector2 a, Vector2 b, Vector2 c, float za, float zb, float zc, in FastColor color)
+    {
+        if (za <= 0 || zb <= 0 || zc <= 0)
+        {
+            return;
+        }
+
+        if (b.Y < a.Y)
+        {
+            (a, b, za, zb) = (b, a, zb, za);
+        }
+
+        if (c.Y < a.Y)
+        {
+            (a, c, za, zc) = (c, a, zc, za);
+        }
+
+        if (c.Y < b.Y)
+        {
+            (b, c, zb, zc) = (c, b, zc, zb);
+        }
+
+        float ia = 1f / za;
+        float ib = 1f / zb;
+        float ic = 1f / zc;
+
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        for (int y = firstY; y <= lastY; y++)
+        {
+            float t0 = EdgeT(a, c, y);
+            float x0 = a.X + ((c.X - a.X) * t0);
+            float i0 = ia + ((ic - ia) * t0);
+
+            float x1;
+            float i1;
+            if (y < b.Y)
+            {
+                float t1 = EdgeT(a, b, y);
+                x1 = a.X + ((b.X - a.X) * t1);
+                i1 = ia + ((ib - ia) * t1);
+            }
+            else
+            {
+                float t1 = EdgeT(b, c, y);
+                x1 = b.X + ((c.X - b.X) * t1);
+                i1 = ib + ((ic - ib) * t1);
+            }
+
+            if (x0 > x1)
+            {
+                (x0, x1) = (x1, x0);
+                (i0, i1) = (i1, i0);
+            }
+
+            int start = Math.Max((int)MathF.Floor(x0), 0);
+            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+            float span = x1 - x0;
+
+            for (int x = start; x <= end; x++)
+            {
+                float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+                if (DepthTestLayer(x, y, i0 + ((i1 - i0) * t)))
+                {
+                    _depthLayer!.SetPixel(x, y, color);
+                }
+            }
+        }
+    }
+
+    // Depth-tested, perspective-correct textured triangle fill into the CPU
+    // depth layer. Mirrors SoftwareGraphics.DrawTriangleTexturedDepth.
+    private void DrawTriangleTexturedDepthToLayer(
+        Vector2 a,
+        Vector2 b,
+        Vector2 c,
+        float za,
+        float zb,
+        float zc,
+        Vector2 ta,
+        Vector2 tb,
+        Vector2 tc,
+        FastBitmap texture)
+    {
+        if (za <= 0 || zb <= 0 || zc <= 0)
+        {
+            return;
+        }
+
+        if (b.Y < a.Y)
+        {
+            (a, b, za, zb, ta, tb) = (b, a, zb, za, tb, ta);
+        }
+
+        if (c.Y < a.Y)
+        {
+            (a, c, za, zc, ta, tc) = (c, a, zc, za, tc, ta);
+        }
+
+        if (c.Y < b.Y)
+        {
+            (b, c, zb, zc, tb, tc) = (c, b, zc, zb, tc, tb);
+        }
+
+        float ia = 1f / za;
+        float ib = 1f / zb;
+        float ic = 1f / zc;
+        Vector2 ua = ta * ia;
+        Vector2 ub = tb * ib;
+        Vector2 uc = tc * ic;
+
+        int firstY = Math.Max((int)MathF.Ceiling(a.Y), 0);
+        int lastY = Math.Min((int)MathF.Floor(c.Y), (int)ScreenHeight - 1);
+
+        for (int y = firstY; y <= lastY; y++)
+        {
+            float t0 = EdgeT(a, c, y);
+            float x0 = a.X + ((c.X - a.X) * t0);
+            float i0 = ia + ((ic - ia) * t0);
+            Vector2 uv0 = Vector2.Lerp(ua, uc, t0);
+
+            float x1;
+            float i1;
+            Vector2 uv1;
+            if (y < b.Y)
+            {
+                float t1 = EdgeT(a, b, y);
+                x1 = a.X + ((b.X - a.X) * t1);
+                i1 = ia + ((ib - ia) * t1);
+                uv1 = Vector2.Lerp(ua, ub, t1);
+            }
+            else
+            {
+                float t1 = EdgeT(b, c, y);
+                x1 = b.X + ((c.X - b.X) * t1);
+                i1 = ib + ((ic - ib) * t1);
+                uv1 = Vector2.Lerp(ub, uc, t1);
+            }
+
+            if (x0 > x1)
+            {
+                (x0, x1) = (x1, x0);
+                (i0, i1) = (i1, i0);
+                (uv0, uv1) = (uv1, uv0);
+            }
+
+            int start = Math.Max((int)MathF.Floor(x0), 0);
+            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+            float span = x1 - x0;
+
+            for (int x = start; x <= end; x++)
+            {
+                float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+                float inverseDepth = i0 + ((i1 - i0) * t);
+                if (DepthTestLayer(x, y, inverseDepth))
+                {
+                    Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
+                    _depthLayer!.SetPixel(x, y, SampleDepthLayerTexture(texture, uv));
+                }
+            }
+        }
+    }
+
+    // Test-and-set a depth-layer pixel's inverse depth: the draw passes when
+    // at least as near as what is already there, so later draws win ties
+    // (matching SoftwareGraphics.DepthTest and the original Direct3D
+    // LESSEQUAL depth test).
+    private bool DepthTestLayer(int x, int y, float inverseDepth)
+    {
+        if (x < 0 || y < 0 || x >= (int)ScreenWidth || y >= (int)ScreenHeight)
+        {
+            return false;
+        }
+
+        int index = (y * (int)ScreenWidth) + x;
+        if (inverseDepth < _depthBuffer![index])
+        {
+            return false;
+        }
+
+        _depthBuffer[index] = inverseDepth;
+        return true;
+    }
+
     private void Dispose(bool disposing)
     {
         if (!_isDisposed)
@@ -592,6 +920,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             if (disposing)
             {
                 // dispose managed state (managed objects)
+                _depthLayer?.Dispose();
             }
 
             // free unmanaged resources (unmanaged objects) and override finalizer
