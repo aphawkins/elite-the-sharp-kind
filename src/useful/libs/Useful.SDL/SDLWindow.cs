@@ -1,32 +1,39 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-using static SDL2.SDL;
-using static SDL2.SDL_ttf;
+using SDL;
+using static SDL.SDL3;
+using static SDL.SDL3_ttf;
 
 namespace Useful.SDL;
 
-public sealed class SDLWindow : IDisposable
+#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS's raw pointer API
+public sealed unsafe class SDLWindow : IDisposable
+#pragma warning restore S6640
 {
     private readonly nint _window;
     private bool _isDisposed;
 
     public SDLWindow(int screenWidth, int screenHeight, string title)
     {
-        // When running C# applications under the Visual Studio debugger, native code that
-        // names threads with the 0x406D1388 exception will silently exit. To prevent this
-        // exception from being thrown by SDL, add this line before your SDL_Init call:
-        SDL_SetHint(SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING, "1");
+        // Note: SDL3 handles the Visual Studio debugger's 0x406D1388 thread-naming
+        // exception internally, so the SDL_HINT_WINDOWS_DISABLE_THREAD_NAMING hint
+        // that the previous SDL 2.x binding needed for this has been removed and
+        // is no longer set here.
+        SDLGuard.Execute(() => SDL_Init(SDL_InitFlags.SDL_INIT_VIDEO));
+        SDLGuard.Execute(() => TTF_Init());
 
-        SDLGuard.Execute(() => SDL_Init(SDL_INIT_VIDEO));
-        SDLGuard.Execute(TTF_Init);
-
-        _window = SDLGuard.Execute(() => SDL_CreateWindow(
+        _window = SDLGuard.Execute(() => (nint)SDL_CreateWindow(
             title,
-            SDL_WINDOWPOS_CENTERED,
-            SDL_WINDOWPOS_CENTERED,
             screenWidth,
             screenHeight,
-            SDL_WindowFlags.SDL_WINDOW_SHOWN));
+            default));
+
+        // SDL3's SDL_CreateWindow no longer takes a position, so centre the
+        // window explicitly once it has been created.
+        SDLGuard.Execute(() => SDL_SetWindowPosition(
+            (SDL_Window*)_window,
+            (int)SDL_WINDOWPOS_CENTERED,
+            (int)SDL_WINDOWPOS_CENTERED));
     }
 
     public static implicit operator nint(SDLWindow window)
@@ -58,7 +65,7 @@ public sealed class SDLWindow : IDisposable
 
             // free unmanaged resources (unmanaged objects) and override finalizer
             // set large fields to null
-            SDL_DestroyWindow(_window);
+            SDL_DestroyWindow((SDL_Window*)_window);
             SDL_Quit();
         }
     }

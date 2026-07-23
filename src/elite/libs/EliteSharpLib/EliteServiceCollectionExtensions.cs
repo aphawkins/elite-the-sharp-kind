@@ -36,6 +36,23 @@ public static class EliteServiceCollectionExtensions
             IsValidConfig,
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<ConfigSettings>>()));
 
+    // Exposes only the (public) GraphicsBackend choice from the (internal)
+    // ConfigSettings, so Program.Main - which picks between SoftwareAbstraction
+    // and SDLAbstraction and therefore needs to reference Useful.SDL, a
+    // dependency EliteSharpLib itself deliberately does not have - can read it
+    // before the DI container (and its own ConfigFile<ConfigSettings> registration
+    // via AddEliteConfig) exists.
+    public static GraphicsBackend ReadGraphicsBackend(string userDataPath, ILoggerFactory loggerFactory)
+    {
+        ConfigFile<ConfigSettings> configFile = new(
+            userDataPath,
+            ConfigFileName,
+            IsValidConfig,
+            loggerFactory.CreateLogger<ConfigFile<ConfigSettings>>());
+
+        return configFile.ReadConfig().GraphicsBackend;
+    }
+
     // The whole domain graph below is internal to EliteSharpLib (same
     // reason as ConfigFile above), so it can only be registered from in
     // here; EliteMain's constructor now just receives it instead of
@@ -190,6 +207,7 @@ public static class EliteServiceCollectionExtensions
     }
 
     internal static bool IsValidConfig(ConfigSettings config) => config.Fps > 0 &&
+        Enum.IsDefined(config.GraphicsBackend) &&
         Enum.IsDefined(config.PlanetDescriptions) &&
         Enum.IsDefined(config.PlanetStyle) &&
         Enum.IsDefined(config.ShipRenderMode) &&

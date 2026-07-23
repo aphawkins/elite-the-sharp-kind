@@ -30,7 +30,15 @@ dotnet run --project src/scr/apps/StuntCarRacerSharp
 
 Both games can also be run and debugged directly from an IDE: open [TheSharpKind.slnx](TheSharpKind.slnx) in Visual Studio and set `EliteSharp` or `StuntCarRacerSharp` as the startup project, or open the repo root in VS Code and use the "Elite" / "Stunt Car Racer" launch configurations (`.vscode/launch.json`).
 
-Tested platforms: Windows (x64), Ubuntu (x64), Raspberry Pi 4 (ARM64). On Linux the SDL2 libraries need to be installed first — see the [Elite readme](docs/elite-readme.md#sdl---development-setup).
+Tested platforms: Windows (x64), Ubuntu (x64), Raspberry Pi 4 (ARM64).
+
+## SDL - Development Setup
+
+Both games can be developed using either Visual Studio 2026 or VSCode.
+For all platforms, ensure that the dotnet SDK is installed.
+Start the `EliteSharp` or `StuntCarRacerSharp` project, which support most platforms, to get straight into the game.
+
+The SDL3, SDL3_ttf and SDL3_mixer native libraries ship inside their respective NuGet packages (win-x64, linux-x64 and linux-arm64), so no manual install step is required on any platform — `dotnet run` or `dotnet build` is enough.
 
 ## Repository layout
 

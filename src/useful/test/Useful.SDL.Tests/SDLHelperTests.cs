@@ -1,6 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-using static SDL2.SDL;
+using SDL;
 
 namespace Useful.SDL.Tests;
 

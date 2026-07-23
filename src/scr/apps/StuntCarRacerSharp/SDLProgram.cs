@@ -11,6 +11,7 @@ using Serilog.Events;
 using StuntCarRacerSharpLib;
 using Useful;
 using Useful.Abstraction;
+using Useful.Assets;
 using Useful.Audio;
 using Useful.SDL;
 
@@ -58,9 +59,13 @@ internal static class SDLProgram
         using LoggerFactory loggerFactory = new();
         loggerFactory.AddSerilog(seriLogger);
 
+        GraphicsBackend graphicsBackend = StuntCarRacerServiceCollectionExtensions.ReadGraphicsBackend(userDataPath, loggerFactory);
+
         ServiceCollection services = new();
         services.AddSingleton<ILoggerFactory>(loggerFactory);
-        services.AddSingleton<IAbstraction>(_ => new SoftwareAbstraction(ScreenWidth, ScreenHeight, Title));
+        services.AddSingleton<IAbstraction>(_ => graphicsBackend == GraphicsBackend.Hardware
+            ? new SDLAbstraction(ScreenWidth, ScreenHeight, Title, AssetLocator.Create())
+            : new SoftwareAbstraction(ScreenWidth, ScreenHeight, Title));
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);

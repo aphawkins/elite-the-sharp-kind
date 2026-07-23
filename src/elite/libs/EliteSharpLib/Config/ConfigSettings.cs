@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
+using Useful.Abstraction;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Config;
@@ -15,6 +16,10 @@ internal sealed class ConfigSettings
     // Maximum render frame rate. The game speed is independent, fixed by
     // EliteMain.GameTickRate.
     public float Fps { get; set; } = 60f;
+
+    // Which IAbstraction backend renders/plays the game: Software (default)
+    // or Hardware (SDL-accelerated).
+    public GraphicsBackend GraphicsBackend { get; set; } = GraphicsBackend.Software;
 
     public bool InstantDock { get; set; }
 

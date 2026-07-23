@@ -43,9 +43,11 @@ public static class AppStartup
     {
         if (ex is DllNotFoundException)
         {
+            // The SDL3 native libraries ship inside the ppy.SDL3*-CS NuGet packages, so there's
+            // no separate runtime package to install - a DllNotFoundException here more likely
+            // means an unsupported platform/architecture.
             Console.Error.WriteLine("A required native library could not be loaded.");
-            Console.Error.WriteLine("On Linux this usually means the SDL2 runtime packages aren't installed:");
-            Console.Error.WriteLine("  sudo apt-get install libsdl2-2.0-0 libsdl2-ttf-2.0-0 libsdl2-mixer-2.0-0");
+            Console.Error.WriteLine("This usually means the current platform/architecture isn't supported.");
         }
         else
         {

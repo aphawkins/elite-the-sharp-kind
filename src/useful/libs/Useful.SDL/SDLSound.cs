@@ -1,83 +1,83 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+using MeltySynth;
+using SDL;
 using Useful.Assets;
 using Useful.Audio;
-using static SDL2.SDL;
-using static SDL2.SDL_mixer;
+using static SDL.SDL3;
+using static SDL.SDL3_mixer;
 
 namespace Useful.SDL;
 
-public sealed class SDLSound : ISound, IDisposable
+// Hardware-accelerated counterpart to SoftwareSound: decode, mixing, pitch
+// and pan are all done by SDL3_mixer's own MIX_Track API rather than in
+// managed code. Unlike its SDL2_mixer predecessor, SDL3_mixer exposes
+// per-track pitch (MIX_SetTrackFrequencyRatio) and panning
+// (MIX_SetTrackStereo) natively, so there's no need for the old
+// resample-via-effect-callback trick - every one-shot voice in the pool
+// below can carry its own pitch, matching SoftwareSound's capabilities.
+//
+// .mid music is the one asset SDL3_mixer's bundled decoder can't open on its
+// own: its Timidity-derived backend expects a GUS patch set on disk (via
+// timidity.cfg), which this project doesn't ship. So .mid tracks are instead
+// predecoded with the same MeltySynth + bundled SoundFont2 path SoftwareSound
+// uses, and handed to the mixer as raw PCM (MIX_LoadRawAudio); everything
+// else (SFX, tracks, pitch, gain) still goes through SDL3_mixer natively.
+#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS's raw pointer API
+public sealed unsafe class SDLSound : ISound, IDisposable
+#pragma warning restore S6640
 {
-    // Reserved so Mix_PlayChannel(-1, ...) (one-shot sfx) never picks this
-    // channel; it is driven exclusively by the pitched loop below.
-    private const int LoopChannel = 0;
+    // Matches SoftwareSound's fixed pool of 16 concurrent one-shot voices; a
+    // one-shot is dropped (not queued or errored) when every track in the
+    // pool is still playing.
+    private const int OneShotVoiceCount = 16;
 
-    // Reserved for one-shot effects that need a pitch other than 1.0
-    // (SDL_mixer has no built-in pitch control for one-shots either), using
-    // the same resample-on-a-reserved-channel technique as the loop above,
-    // but stopping after a single pass instead of wrapping.
-    private const int OneShotPitchChannel = 1;
+    // Format MIX_LoadRawAudio is told the predecoded .mid PCM is in; matches
+    // the mixer device's own format so no further conversion is needed.
+    private const int SampleRate = 44100;
+    private const int Channels = 2;
 
-    private readonly Dictionary<string, float[]> _loopSamples = [];
+    // Safety cap on how long a single .mid track is allowed to decode to
+    // memory (including release tails); real assets are short tracks, this
+    // only guards against a pathological source never going silent.
+    private const int MaxDecodeSeconds = 30;
+
     private readonly Dictionary<string, nint> _music;
     private readonly Dictionary<string, nint> _sfx;
-    private bool _disposedValue;
-    private Mix_EffectFunc_t? _loopEffect;
-    private float[] _loopSampleData = [];
-    private float[] _loopScratch = [];
+    private readonly nint[] _oneShotTracks;
+    private readonly nint _loopTrack;
+    private readonly nint _musicTrack;
+    private readonly nint _mixer;
     private string? _loopName;
-    private double _loopPitch = 1.0;
-    private double _loopPosition;
-    private Mix_EffectFunc_t? _oneShotEffect;
-    private float[] _oneShotSampleData = [];
-    private float[] _oneShotScratch = [];
-    private double _oneShotPitch = 1.0;
-    private double _oneShotPosition;
-    private bool _oneShotDone = true;
+    private bool _isDisposed;
 
     public SDLSound(IAssetLocator assetLocator)
     {
         Guard.ArgumentNull(assetLocator);
 
-        SDLGuard.Execute(() => SDL_Init(SDL_INIT_AUDIO));
-        SDLGuard.Execute(() => Mix_Init(MIX_InitFlags.MIX_INIT_OGG));
+        SDLGuard.Execute(() => SDL_Init(SDL_InitFlags.SDL_INIT_AUDIO));
+        SDLGuard.Execute(() => MIX_Init());
 
-        SDL_AudioSpec audioSpecDesired = default;
-        audioSpecDesired.channels = 2;
-        audioSpecDesired.format = AUDIO_F32SYS;
-        audioSpecDesired.freq = 44100;
-        audioSpecDesired.samples = 1024;
+        _mixer = SDLGuard.Execute(() => (nint)MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, null));
 
-        SDLGuard.Execute(
-            () => Mix_OpenAudio(audioSpecDesired.freq, audioSpecDesired.format, audioSpecDesired.channels, audioSpecDesired.samples));
-        SDLGuard.Execute(() => Mix_AllocateChannels(16));
-        SDLGuard.Execute(() => Mix_ReserveChannels(2));
-
-        // Mix_QuerySpec uses the inverted (0 = error) convention. The
-        // compiler can't see that the lambda runs synchronously, so these
-        // need an initial value to satisfy definite-assignment analysis.
-        int frequency = 0;
-        ushort format = 0;
-        int channels = 0;
-        SDLGuard.Execute(() => Mix_QuerySpec(out frequency, out format, out channels), zeroIndicatesError: true);
-        Debug.Assert(frequency == 44100, "Loop pitch-shifting assumes 44100Hz chunk data.");
-        Debug.Assert(format == AUDIO_F32SYS, "Loop pitch-shifting assumes float32 chunk data.");
-        Debug.Assert(channels == 2, "Loop pitch-shifting assumes stereo chunk data.");
+        string? soundFontPath = assetLocator.SoundFontPaths.Count > 0 ? assetLocator.SoundFontPaths.Values.First() : null;
 
         _music = assetLocator.MusicPaths.ToDictionary(
             x => x.Key,
-            x =>
-            {
-                Debug.Assert(!string.IsNullOrWhiteSpace(x.Value), "Music is missing");
-                return SDLGuard.Execute(() => Mix_LoadMUS(x.Value));
-            });
+            x => LoadMusicAudio(x.Value, soundFontPath));
 
         _sfx = assetLocator.SfxPaths.ToDictionary(
             x => x.Key,
-            x => SDLGuard.Execute(() => Mix_LoadWAV(x.Value)));
+            x => SDLGuard.Execute(() => (nint)MIX_LoadAudio((MIX_Mixer*)_mixer, x.Value, predecode: true)));
+
+        _musicTrack = SDLGuard.Execute(() => (nint)MIX_CreateTrack((MIX_Mixer*)_mixer));
+        _loopTrack = SDLGuard.Execute(() => (nint)MIX_CreateTrack((MIX_Mixer*)_mixer));
+
+        _oneShotTracks = new nint[OneShotVoiceCount];
+        for (int i = 0; i < OneShotVoiceCount; i++)
+        {
+            _oneShotTracks[i] = SDLGuard.Execute(() => (nint)MIX_CreateTrack((MIX_Mixer*)_mixer));
+        }
     }
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -94,68 +94,51 @@ public sealed class SDLSound : ISound, IDisposable
         GC.SuppressFinalize(this);
     }
 
+    public void Play(string musicType, bool repeat)
+    {
+        MIX_Track* track = (MIX_Track*)_musicTrack;
+        SDLGuard.Execute(() => MIX_SetTrackAudio(track, (MIX_Audio*)_music[musicType]));
+        SDLGuard.Execute(() => MIX_PlayTrack(track, 0));
+        SDLGuard.Execute(() => MIX_SetTrackLoops(track, repeat ? -1 : 0));
+    }
+
     public void Play(string sfxType, float volume, float pan, double pitch)
     {
-        if (Math.Abs(pitch - 1.0) < 0.0001)
+        nint voicePtr = Array.Find(_oneShotTracks, t => !MIX_TrackPlaying((MIX_Track*)t));
+        if (voicePtr == nint.Zero)
         {
-            // Mix_PlayChannel returns -1 both on a real error and when every
-            // channel is busy; either way, dropping this one-shot effect
-            // beats crashing the game.
-            int channel = Mix_PlayChannel(-1, _sfx[sfxType], 0);
-            if (channel < 0)
-            {
-                return;
-            }
-
-            // Mix_Volume has no failure case (it always returns the previous
-            // volume); wrapped for consistency with the rest of this class
-            // routing every Mix_ call through SDLGuard.
-            SDLGuard.Execute(() => Mix_Volume(channel, ToMixVolume(volume)));
-
-            // Mix_SetPanning uses the inverted (0 = error) convention.
-            SDLGuard.Execute(() => Mix_SetPanning(channel, ToLeftPan(pan), ToRightPan(pan)), zeroIndicatesError: true);
+            // Pool exhausted: drop the effect, matching SoftwareSound's
+            // any-free-voice behaviour.
             return;
         }
 
-        PlayOneShotPitched(sfxType, volume, pan, pitch);
+        MIX_Track* track = (MIX_Track*)voicePtr;
+        SDLGuard.Execute(() => MIX_SetTrackAudio(track, (MIX_Audio*)_sfx[sfxType]));
+        SDLGuard.Execute(() => MIX_SetTrackGain(track, volume));
+        SDLGuard.Execute(() => MIX_SetTrackFrequencyRatio(track, (float)pitch));
+        SDLGuard.Execute(() =>
+        {
+            MIX_StereoGains gains = new() { left = ToLeftGain(pan), right = ToRightGain(pan) };
+            return MIX_SetTrackStereo(track, &gains);
+        });
+        SDLGuard.Execute(() => MIX_PlayTrack(track, 0));
     }
 
-    public void Play(string musicType, bool repeat)
-    {
-        StopMusic();
+    public void StopMusic() => SDLGuard.Execute(() => MIX_StopTrack((MIX_Track*)_musicTrack, 0));
 
-        SDLGuard.Execute(() => Mix_PlayMusic(_music[musicType], repeat ? -1 : 1));
-    }
-
-    public void StopMusic() => SDLGuard.Execute(Mix_HaltMusic);
-
-    // SDL_mixer has no built-in pitch control, so the loop is played on a
-    // reserved channel whose output is entirely replaced, each callback, by
-    // our own linearly-interpolated resample of the source chunk.
-    // Mix_PlayChannel on that channel is only there to keep the mixer
-    // invoking the effect callback; its own (unmodified) output is never
-    // heard.
     public void PlayLoop(string sfxType, double pitch)
     {
+        MIX_Track* track = (MIX_Track*)_loopTrack;
+
         if (_loopName != sfxType)
         {
-            StopLoop();
-
-            _loopSampleData = GetLoopSamples(sfxType);
-            _loopPosition = 0;
+            SDLGuard.Execute(() => MIX_SetTrackAudio(track, (MIX_Audio*)_sfx[sfxType]));
+            SDLGuard.Execute(() => MIX_PlayTrack(track, 0));
+            SDLGuard.Execute(() => MIX_SetTrackLoops(track, -1));
             _loopName = sfxType;
-            _loopEffect = LoopEffect;
-
-            // Channel 0 is reserved and used only here, so unlike the -1
-            // (any free channel) case in Play(string), a failure here is a
-            // real bug rather than expected contention — worth surfacing loudly.
-            SDLGuard.Execute(() => Mix_PlayChannel(LoopChannel, _sfx[sfxType], -1));
-
-            // Mix_RegisterEffect uses the inverted (0 = error) convention.
-            SDLGuard.Execute(() => Mix_RegisterEffect(LoopChannel, _loopEffect, null, nint.Zero), zeroIndicatesError: true);
         }
 
-        _loopPitch = pitch;
+        SDLGuard.Execute(() => MIX_SetTrackFrequencyRatio(track, (float)pitch));
     }
 
     public void StopLoop()
@@ -165,201 +148,100 @@ public sealed class SDLSound : ISound, IDisposable
             return;
         }
 
-        // Same inverted error convention as Mix_RegisterEffect above.
-        SDLGuard.Execute(() => Mix_UnregisterEffect(LoopChannel, _loopEffect), zeroIndicatesError: true);
-
-        // Mix_HaltChannel has no failure case at all (it always returns 0),
-        // so wrapping it can never throw; kept for consistency with the rest
-        // of this class routing every Mix_ call through SDLGuard.
-        SDLGuard.Execute(() => Mix_HaltChannel(LoopChannel));
+        SDLGuard.Execute(() => MIX_StopTrack((MIX_Track*)_loopTrack, 0));
         _loopName = null;
-        _loopEffect = null;
     }
 
-    private static int ToMixVolume(float volume) => Math.Clamp((int)MathF.Round(volume * MIX_MAX_VOLUME), 0, MIX_MAX_VOLUME);
+    private static float ToLeftGain(float pan) => Math.Clamp((1f - pan) / 2f, 0f, 1f);
 
-    private static byte ToLeftPan(float pan) => (byte)Math.Clamp(MathF.Round((1f - pan) * 127.5f), 0, 255);
+    private static float ToRightGain(float pan) => Math.Clamp((1f + pan) / 2f, 0f, 1f);
 
-    private static byte ToRightPan(float pan) => (byte)Math.Clamp(MathF.Round((1f + pan) * 127.5f), 0, 255);
+    private static bool IsMidi(string path) => string.Equals(Path.GetExtension(path), ".mid", StringComparison.OrdinalIgnoreCase);
 
-    // Same resample technique as PlayLoop, but OneShotEffect stops after a
-    // single pass through the sample instead of wrapping, so the reserved
-    // channel can be left running indefinitely (silent between plays)
-    // rather than started/stopped per play.
-    private void PlayOneShotPitched(string sfxType, float volume, float pan, double pitch)
+    private static float[] DecodeMidiFully(string path, string soundFontPath)
     {
-        _oneShotSampleData = GetLoopSamples(sfxType);
-        _oneShotPosition = 0;
-        _oneShotPitch = pitch;
-        _oneShotDone = false;
+        SoundFont soundFont = new(soundFontPath);
+        Synthesizer synthesizer = new(soundFont, SampleRate);
+        MidiFile midiFile = new(path);
+        MidiFileSequencer sequencer = new(synthesizer);
+        sequencer.Play(midiFile, loop: false);
 
-        if (_oneShotEffect is null)
+        const int maxSamples = SampleRate * Channels * MaxDecodeSeconds;
+        List<float> samples = [];
+        float[] chunk = new float[SampleRate * Channels / 10];
+
+        // Keep rendering past the last message until every voice has
+        // finished its release tail, not just until the last MIDI event.
+        while ((!sequencer.EndOfSequence || synthesizer.ActiveVoiceCount > 0) && samples.Count < maxSamples)
         {
-            _oneShotEffect = OneShotEffect;
-
-            // Channel 1 is reserved and used only here, playing a
-            // placeholder chunk on an infinite loop purely to keep the
-            // mixer invoking the effect callback; its own (unmodified)
-            // output is never heard - see PlayLoop above.
-            SDLGuard.Execute(() => Mix_PlayChannel(OneShotPitchChannel, _sfx[sfxType], -1));
-
-            // Mix_RegisterEffect uses the inverted (0 = error) convention.
-            SDLGuard.Execute(() => Mix_RegisterEffect(OneShotPitchChannel, _oneShotEffect, null, nint.Zero), zeroIndicatesError: true);
+            sequencer.RenderInterleaved(chunk);
+            samples.AddRange(chunk);
         }
 
-        // Mix_Volume has no failure case (it always returns the previous
-        // volume); wrapped for consistency with the rest of this class
-        // routing every Mix_ call through SDLGuard.
-        SDLGuard.Execute(() => Mix_Volume(OneShotPitchChannel, ToMixVolume(volume)));
+        return [.. samples];
+    }
 
-        // Mix_SetPanning uses the inverted (0 = error) convention.
-        SDLGuard.Execute(() => Mix_SetPanning(OneShotPitchChannel, ToLeftPan(pan), ToRightPan(pan)), zeroIndicatesError: true);
+    private nint LoadMusicAudio(string path, string? soundFontPath)
+    {
+        if (!IsMidi(path))
+        {
+            return SDLGuard.Execute(() => (nint)MIX_LoadAudio((MIX_Mixer*)_mixer, path, predecode: false));
+        }
+
+        if (soundFontPath is null)
+        {
+            throw new UsefulException("No SoundFont is configured in the asset manifest; cannot decode a .mid asset.");
+        }
+
+        float[] samples = DecodeMidiFully(path, soundFontPath);
+
+        return SDLGuard.Execute(() =>
+        {
+            SDL_AudioSpec spec = default;
+            spec.format = SDL_AUDIO_F32;
+            spec.channels = Channels;
+            spec.freq = SampleRate;
+
+            fixed (float* ptr = samples)
+            {
+                return (nint)MIX_LoadRawAudio((MIX_Mixer*)_mixer, (nint)ptr, (nuint)(samples.Length * sizeof(float)), &spec);
+            }
+        });
     }
 
     private void Dispose(bool disposing)
     {
-        if (!_disposedValue)
+        if (!_isDisposed)
         {
-            _disposedValue = true;
+            _isDisposed = true;
 
             if (disposing)
             {
                 // dispose managed state (managed objects)
             }
 
-            StopLoop();
-
-            if (_oneShotEffect is not null)
-            {
-                SDLGuard.Execute(() => Mix_UnregisterEffect(OneShotPitchChannel, _oneShotEffect), zeroIndicatesError: true);
-                SDLGuard.Execute(() => Mix_HaltChannel(OneShotPitchChannel));
-                _oneShotEffect = null;
-            }
-
             // free unmanaged resources (unmanaged objects) and override finalizer
             // set large fields to null
-            if (Mix_HaltMusic() < 0)
+            foreach (nint track in _oneShotTracks)
             {
-                // Ignore
+                MIX_DestroyTrack((MIX_Track*)track);
             }
 
-            foreach (KeyValuePair<string, nint> music in _music)
+            MIX_DestroyTrack((MIX_Track*)_loopTrack);
+            MIX_DestroyTrack((MIX_Track*)_musicTrack);
+
+            foreach (nint music in _music.Values)
             {
-                Mix_FreeMusic(music.Value);
+                MIX_DestroyAudio((MIX_Audio*)music);
             }
 
-            foreach (KeyValuePair<string, nint> sfx in _sfx)
+            foreach (nint sfx in _sfx.Values)
             {
-                Mix_FreeChunk(sfx.Value);
+                MIX_DestroyAudio((MIX_Audio*)sfx);
             }
 
-            Mix_CloseAudio();
+            MIX_DestroyMixer((MIX_Mixer*)_mixer);
+            MIX_Quit();
         }
-    }
-
-    private float[] GetLoopSamples(string sfxType)
-    {
-        if (!_loopSamples.TryGetValue(sfxType, out float[]? samples))
-        {
-            MIX_Chunk chunk = Marshal.PtrToStructure<MIX_Chunk>(_sfx[sfxType]);
-            int sampleCount = (int)(chunk.alen / sizeof(float));
-            samples = new float[sampleCount];
-            Marshal.Copy(chunk.abuf, samples, 0, sampleCount);
-            _loopSamples[sfxType] = samples;
-        }
-
-        return samples;
-    }
-
-    // Called by SDL_mixer once per audio buffer fill for the loop channel;
-    // overwrites its entire output with a resample of _loopSampleData at
-    // _loopPitch (1.0 = recorded rate), looping back to the start.
-    private void LoopEffect(int channel, nint stream, int len, nint userData)
-    {
-        int floatCount = len / sizeof(float);
-        if (_loopScratch.Length < floatCount)
-        {
-            _loopScratch = new float[floatCount];
-        }
-
-        int frames = _loopSampleData.Length / 2;
-        if (frames < 2)
-        {
-            Array.Clear(_loopScratch, 0, floatCount);
-            Marshal.Copy(_loopScratch, 0, stream, floatCount);
-            return;
-        }
-
-        double pitch = _loopPitch;
-        for (int i = 0; i < floatCount; i += 2)
-        {
-            int frame0 = (int)_loopPosition;
-            int frame1 = frame0 + 1 >= frames ? 0 : frame0 + 1;
-            float fraction = (float)(_loopPosition - frame0);
-
-            _loopScratch[i] = _loopSampleData[frame0 * 2]
-                + ((_loopSampleData[frame1 * 2] - _loopSampleData[frame0 * 2]) * fraction);
-            _loopScratch[i + 1] = _loopSampleData[(frame0 * 2) + 1]
-                + ((_loopSampleData[(frame1 * 2) + 1] - _loopSampleData[(frame0 * 2) + 1]) * fraction);
-
-            _loopPosition += pitch;
-            while (_loopPosition >= frames)
-            {
-                _loopPosition -= frames;
-            }
-        }
-
-        Marshal.Copy(_loopScratch, 0, stream, floatCount);
-    }
-
-    // Called by SDL_mixer once per audio buffer fill for the one-shot pitch
-    // channel; overwrites its entire output with a resample of
-    // _oneShotSampleData at _oneShotPitch, stopping (and emitting silence)
-    // once it has played through the sample once, unlike LoopEffect which
-    // wraps back to the start.
-    private void OneShotEffect(int channel, nint stream, int len, nint userData)
-    {
-        int floatCount = len / sizeof(float);
-        if (_oneShotScratch.Length < floatCount)
-        {
-            _oneShotScratch = new float[floatCount];
-        }
-
-        int frames = _oneShotSampleData.Length / 2;
-        if (_oneShotDone || frames < 2)
-        {
-            Array.Clear(_oneShotScratch, 0, floatCount);
-            Marshal.Copy(_oneShotScratch, 0, stream, floatCount);
-            return;
-        }
-
-        double pitch = _oneShotPitch;
-        int i = 0;
-        for (; i < floatCount; i += 2)
-        {
-            int frame0 = (int)_oneShotPosition;
-            if (frame0 >= frames - 1)
-            {
-                _oneShotDone = true;
-                break;
-            }
-
-            int frame1 = frame0 + 1;
-            float fraction = (float)(_oneShotPosition - frame0);
-
-            _oneShotScratch[i] = _oneShotSampleData[frame0 * 2]
-                + ((_oneShotSampleData[frame1 * 2] - _oneShotSampleData[frame0 * 2]) * fraction);
-            _oneShotScratch[i + 1] = _oneShotSampleData[(frame0 * 2) + 1]
-                + ((_oneShotSampleData[(frame1 * 2) + 1] - _oneShotSampleData[(frame0 * 2) + 1]) * fraction);
-
-            _oneShotPosition += pitch;
-        }
-
-        if (i < floatCount)
-        {
-            Array.Clear(_oneShotScratch, i, floatCount - i);
-        }
-
-        Marshal.Copy(_oneShotScratch, 0, stream, floatCount);
     }
 }

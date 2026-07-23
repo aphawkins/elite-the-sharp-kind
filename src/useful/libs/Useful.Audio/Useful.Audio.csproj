@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
+		<PackageReference Include="MeltySynth" Version="2.4.1" />
+		<PackageReference Include="NVorbis" Version="0.10.5" />
 		<PackageReference Include="Roslynator.Analyzers" Version="4.15.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -1,13 +1,14 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-using static SDL2.SDL;
+using SDL;
+using static SDL.SDL3;
 
 namespace Useful.SDL;
 
 internal static class SDLHelper
 {
     internal static void Throw(string? methodName)
-        => throw new SDLException($"SDL2 Error. Method '{methodName}' failed. Error: " + SDL_GetError());
+        => throw new SDLException($"SDL3 Error. Method '{methodName}' failed. Error: " + SDL_GetError());
 
     internal static (ConsoleKey Key, ConsoleModifiers Modifiers) KeyConverter(SDL_Keycode sdlKey) => sdlKey switch
     {
@@ -26,32 +27,32 @@ internal static class SDLHelper
         SDL_Keycode.SDLK_RIGHT => (ConsoleKey.RightArrow, ConsoleModifiers.None),
         SDL_Keycode.SDLK_UP => (ConsoleKey.UpArrow, ConsoleModifiers.None),
 
-        SDL_Keycode.SDLK_a => (ConsoleKey.A, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_b => (ConsoleKey.B, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_c => (ConsoleKey.C, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_d => (ConsoleKey.D, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_e => (ConsoleKey.E, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_f => (ConsoleKey.F, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_g => (ConsoleKey.G, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_h => (ConsoleKey.H, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_i => (ConsoleKey.I, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_j => (ConsoleKey.J, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_k => (ConsoleKey.K, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_l => (ConsoleKey.L, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_m => (ConsoleKey.M, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_n => (ConsoleKey.N, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_o => (ConsoleKey.O, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_p => (ConsoleKey.P, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_q => (ConsoleKey.Q, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_r => (ConsoleKey.R, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_s => (ConsoleKey.S, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_t => (ConsoleKey.T, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_u => (ConsoleKey.U, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_v => (ConsoleKey.V, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_w => (ConsoleKey.W, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_x => (ConsoleKey.X, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_y => (ConsoleKey.Y, ConsoleModifiers.None),
-        SDL_Keycode.SDLK_z => (ConsoleKey.Z, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_A => (ConsoleKey.A, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_B => (ConsoleKey.B, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_C => (ConsoleKey.C, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_D => (ConsoleKey.D, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_E => (ConsoleKey.E, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_F => (ConsoleKey.F, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_G => (ConsoleKey.G, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_H => (ConsoleKey.H, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_I => (ConsoleKey.I, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_J => (ConsoleKey.J, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_K => (ConsoleKey.K, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_L => (ConsoleKey.L, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_M => (ConsoleKey.M, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_N => (ConsoleKey.N, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_O => (ConsoleKey.O, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_P => (ConsoleKey.P, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_Q => (ConsoleKey.Q, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_R => (ConsoleKey.R, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_S => (ConsoleKey.S, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_T => (ConsoleKey.T, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_U => (ConsoleKey.U, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_V => (ConsoleKey.V, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_W => (ConsoleKey.W, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_X => (ConsoleKey.X, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_Y => (ConsoleKey.Y, ConsoleModifiers.None),
+        SDL_Keycode.SDLK_Z => (ConsoleKey.Z, ConsoleModifiers.None),
 
         SDL_Keycode.SDLK_0 => (ConsoleKey.D0, ConsoleModifiers.None),
         SDL_Keycode.SDLK_1 => (ConsoleKey.D1, ConsoleModifiers.None),

@@ -50,4 +50,24 @@ public static class SDLGuard
 
         return result;
     }
+
+    // SDL3 and SDL3_mixer functions have moved to a single unambiguous
+    // convention for bool-returning calls: true = success, false = failure
+    // (unlike the two legacy int conventions handled above), so this
+    // overload needs no zeroIndicatesError equivalent.
+    public static bool Execute(Func<bool> sdlMethod, [CallerArgumentExpression(nameof(sdlMethod))] string? callerArgument = null)
+    {
+        Debug.Assert(sdlMethod != null, "sdlMethod should not be null");
+
+        bool result = sdlMethod();
+        if (!result)
+        {
+            SDLHelper.Throw(
+                callerArgument?.StartsWith("() => ", StringComparison.OrdinalIgnoreCase) == true
+                    ? callerArgument[6..]
+                    : callerArgument);
+        }
+
+        return result;
+    }
 }

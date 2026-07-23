@@ -1,18 +1,22 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
+using SDL;
 using Useful.Abstraction;
 using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
-using static SDL2.SDL;
+using static SDL.SDL3;
 
 namespace Useful.SDL;
 
-public sealed class SoftwareAbstraction : IAbstraction, IDisposable
+#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS's raw pointer API
+public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
+#pragma warning restore S6640
 {
     private readonly SDLRenderer _renderer;
     private readonly SDLWindow _window;
+    private readonly SoftwareSoundOutput _soundOutput;
     private bool _isDisposed;
 
     public SoftwareAbstraction(int screenWidth, int screenHeight, string title)
@@ -27,7 +31,9 @@ public sealed class SoftwareAbstraction : IAbstraction, IDisposable
             SoftwareScreenUpdate,
             assetLocator);
 
-        Sound = new SDLSound(assetLocator);
+        SoftwareSound sound = new(assetLocator);
+        _soundOutput = new SoftwareSoundOutput(sound);
+        Sound = sound;
 
         Keyboard = new SoftwareKeyboard(new SDLInput());
     }
@@ -37,6 +43,8 @@ public sealed class SoftwareAbstraction : IAbstraction, IDisposable
     public ISound Sound { get; }
 
     public IKeyboard Keyboard { get; }
+
+    private SDL_Renderer* NativeRenderer => (SDL_Renderer*)(nint)_renderer;
 
     public void Dispose()
     {
@@ -53,6 +61,7 @@ public sealed class SoftwareAbstraction : IAbstraction, IDisposable
             {
                 // dispose managed state (managed objects)
                 (Graphics as IDisposable)?.Dispose();
+                _soundOutput?.Dispose();
                 (Sound as IDisposable)?.Dispose();
                 _renderer?.Dispose();
                 _window?.Dispose();
@@ -66,44 +75,35 @@ public sealed class SoftwareAbstraction : IAbstraction, IDisposable
 
     private void SoftwareScreenUpdate(FastBitmap bitmap)
     {
-        IntPtr surface = SDLGuard.Execute(() => BitConverter.IsLittleEndian
-            ? SDL_CreateRGBSurfaceFrom(
-                bitmap.BitmapHandle,
-                bitmap.Width,
-                bitmap.Height,
-                bitmap.BitsPerPixel,
-                bitmap.Width * 4,
-                0x00FF0000,
-                0x0000FF00,
-                0x000000FF,
-                0xFF000000)
-            : SDL_CreateRGBSurfaceFrom(
-                bitmap.BitmapHandle,
-                bitmap.Width,
-                bitmap.Height,
-                bitmap.BitsPerPixel,
-                bitmap.Width * 4,
-                0x0000FF00,
-                0x00FF0000,
-                0xFF000000,
-                0x000000FF));
+        // SDL3's named-format surface creation supersedes the previous SDL 2.x
+        // mask-based SDL_CreateRGBSurfaceFrom, so a single call now covers both endiannesses.
+        nint surfacePtr = SDLGuard.Execute(() => (nint)SDL_CreateSurfaceFrom(
+            bitmap.Width,
+            bitmap.Height,
+            SDL_PixelFormat.SDL_PIXELFORMAT_ARGB8888,
+            bitmap.BitmapHandle,
+            bitmap.Width * 4));
 
-        IntPtr texture = SDLGuard.Execute(() => SDL_CreateTextureFromSurface(_renderer, surface));
+        nint texturePtr = SDLGuard.Execute(
+            () => (nint)SDL_CreateTextureFromSurface(NativeRenderer, (SDL_Surface*)surfacePtr));
 
-        SDL_FreeSurface(surface);
+        SDL_DestroySurface((SDL_Surface*)surfacePtr);
 
-        SDL_Rect dest = new()
+        SDLGuard.Execute(() =>
         {
-            x = 0,
-            y = 0,
-            w = bitmap.Width,
-            h = bitmap.Height,
-        };
+            SDL_FRect dest = new()
+            {
+                x = 0,
+                y = 0,
+                w = bitmap.Width,
+                h = bitmap.Height,
+            };
 
-        SDLGuard.Execute(() => SDL_RenderCopy(_renderer, texture, nint.Zero, ref dest));
+            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
+        });
 
-        SDL_DestroyTexture(texture);
+        SDL_DestroyTexture((SDL_Texture*)texturePtr);
 
-        SDL_RenderPresent(_renderer);
+        SDLGuard.Execute(() => SDL_RenderPresent(NativeRenderer));
     }
 }

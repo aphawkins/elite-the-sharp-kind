@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StuntCarRacerSharpLib.Config;
 using Useful;
+using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Config;
 
@@ -32,6 +33,22 @@ public static class StuntCarRacerServiceCollectionExtensions
             return new AudioOptions { MusicOn = config.MusicOn, EffectsOn = config.EffectsOn };
         });
         return services;
+    }
+
+    // Exposes only the (public) GraphicsBackend choice from the (internal)
+    // ScrConfigSettings, so Program.Main - which picks between
+    // SoftwareAbstraction and SDLAbstraction and therefore needs to reference
+    // Useful.SDL, a dependency StuntCarRacerSharpLib itself deliberately does
+    // not have - can read it before the DI container exists.
+    public static GraphicsBackend ReadGraphicsBackend(string userDataPath, ILoggerFactory loggerFactory)
+    {
+        ConfigFile<ScrConfigSettings> configFile = new(
+            userDataPath,
+            ConfigFileName,
+            null,
+            loggerFactory.CreateLogger<ConfigFile<ScrConfigSettings>>());
+
+        return configFile.ReadConfig().GraphicsBackend;
     }
 
     // The single shared source of entropy for this app instance: an

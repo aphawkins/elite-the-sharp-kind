@@ -109,6 +109,7 @@ Game settings are held in the `elitesharp.cfg` file, stored in JSON format, in t
 ``` json
 {
     "Fps": 60,                             // Maximum render frame rate. The game speed is independent, fixed at 13.5 updates per second.
+    "GraphicsBackend": "Software",         // Rendering/audio backend.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated rendering and mixing)
     "MusicOn": true,                       // Play music.
     "EffectsOn": true,                     // Play sound effects.
     "ShipWireframe": false,                // Use wireframe ship graphics.  false (Solid) or true (Wireframe)
@@ -118,25 +119,6 @@ Game settings are held in the `elitesharp.cfg` file, stored in JSON format, in t
     "PlanetDescriptions": "TreeGrubs",     // Description style used for the planets.  TreeGrubs (BBC) or HoopyCasinos (MSX)
     "InstantDock": false                   // When the docking computer is engaged, instantly dock (true) or let the auto pilot fly in (false)
 }
-```
-
-## SDL - Development Setup
-
-Elite can be developed using either Visual Studio 2022 or VSCode.
-For all platforms, ensure that the dotnet SDK is installed.
-Start the EliteSharp project, which supports most platforms, to get straight into the trading and combat!
-
-### Windows (x64)
-Nuget packages are in the projects that copy the necessary libraries.
-These are: SDL2.dll, SDL2_ttf.dll, SDL2_mixer.dll
-
-### Ubuntu (x64 & ARM64)
-The following packages will need to be installed to get the necessary SDL libraries:
-``` bash
-sudo apt-get install libsdl2-dev
-sudo apt-get install libsdl2-gfx-dev
-sudo apt-get install libsdl2-mixer-dev
-sudo apt-get install libsdl2-ttf-dev
 ```
 
 ## Credits

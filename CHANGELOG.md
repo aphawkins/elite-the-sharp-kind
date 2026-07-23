@@ -7,6 +7,57 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (GraphicsBackend config switch between Software and SDL3_mixer-backed Hardware audio, 2026-07-23)
+
+- The in-progress SDL2→SDL3 migration had staged `SDLAbstraction.cs`/`SDLSound.cs`
+  ([SDLAbstraction.cs](src/useful/libs/Useful.SDL/SDLAbstraction.cs),
+  [SDLSound.cs](src/useful/libs/Useful.SDL/SDLSound.cs)) for deletion: `SDLSound`
+  was built entirely on the old `SDL2.SDL_mixer` API, which no longer compiles
+  now that `Useful.SDL` has moved to `ppy.SDL3-CS`/`ppy.SDL3_mixer-CS`, and
+  `SDLAbstraction` only failed to compile because of that. Both games were left
+  hardcoded to `SoftwareAbstraction`, with no way to opt into hardware-accelerated
+  rendering at all. Restored `SDLAbstraction` unchanged and rewrote `SDLSound`
+  against SDL3_mixer's new `MIX_Track` API — an improvement over the old one, not
+  just a port: SDL3_mixer exposes per-track pitch (`MIX_SetTrackFrequencyRatio`)
+  and panning (`MIX_SetTrackStereo`) natively, so the old resample-via-effect-callback
+  trick (and its single dedicated "pitched one-shot" channel) is gone; all 16
+  voices in the one-shot pool can now carry their own pitch, matching
+  `SoftwareSound`'s capabilities instead of a subset of them.
+
+  Added a `GraphicsBackend` enum (`Useful.Abstraction`,
+  [GraphicsBackend.cs](src/useful/libs/Useful.Abstraction/GraphicsBackend.cs):
+  `Software` or `Hardware`) and a matching `GraphicsBackend` property (default
+  `Software`) on both games' settings —
+  [ConfigSettings.cs](src/elite/libs/EliteSharpLib/Config/ConfigSettings.cs) and
+  [ScrConfigSettings.cs](src/scr/libs/StuntCarRacerSharpLib/Config/ScrConfigSettings.cs).
+  Since those settings types are internal (so `Program.Main` can't reference them
+  directly — the same reason `AddEliteConfig`/`AddScrConfig` exist) and
+  `Useful.SDL` is deliberately not a dependency of either game-logic library,
+  each library instead exposes a `ReadGraphicsBackend(userDataPath, loggerFactory)`
+  helper
+  ([EliteServiceCollectionExtensions.cs](src/elite/libs/EliteSharpLib/EliteServiceCollectionExtensions.cs),
+  [StuntCarRacerServiceCollectionExtensions.cs](src/scr/libs/StuntCarRacerSharpLib/StuntCarRacerServiceCollectionExtensions.cs))
+  that reads just the public enum. Both `SDLProgram.cs`s
+  ([Elite](src/elite/apps/EliteSharp/SDLProgram.cs),
+  [SCR](src/scr/apps/StuntCarRacerSharp/SDLProgram.cs)) now read that setting
+  before building the DI container and construct `SDLAbstraction` or
+  `SoftwareAbstraction` accordingly, instead of hardcoding `SoftwareAbstraction`.
+
+  Live-testing the `Hardware` backend against a real `elitesharp.cfg` surfaced a
+  second issue: SDL3_mixer's bundled MIDI decoder is Timidity-derived and expects
+  a GUS patch set on disk via `timidity.cfg`, which this project doesn't ship, so
+  loading `theme.mid`/`danube.mid` failed with "Audio data is in
+  unknown/unsupported/corrupt format" and crashed the app at DI-composition time.
+  `SDLSound` now predecodes `.mid` music with the same MeltySynth + bundled
+  `TimGM6mb.sf2` SoundFont path `SoftwareSound` already uses successfully, and
+  hands the result to the mixer as raw PCM via `MIX_LoadRawAudio`; `.ogg` SFX
+  still load through SDL3_mixer's native decoder unchanged. Docs
+  (`elite-readme.md`, `scr-readme.md`) Configuration sections updated with the
+  new setting. Built the full solution (`Useful.SDL` and both apps/libs/test
+  projects) and ran `EliteSharp` against the real `%AppData%\TheSharpKind\elitesharp.cfg`
+  (`GraphicsBackend: Hardware`) that had previously crashed it, confirming it now
+  starts cleanly.
+
 ### Changed (Renamed StuntCarRacer to StuntCarRacerSharp; SCR added to CI, 2026-07-22)
 
 - `build-and-package.yml` only built/published EliteSharp, so master/PR

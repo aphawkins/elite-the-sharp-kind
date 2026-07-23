@@ -71,6 +71,7 @@ Game settings are held in the `stuntcarracersharp.cfg` file, stored in JSON form
 
 ``` json
 {
+    "GraphicsBackend": "Software",         // Rendering/audio backend.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated rendering and mixing)
     "MusicOn": true,                       // Play music.
     "EffectsOn": true                      // Play sound effects.
 }
