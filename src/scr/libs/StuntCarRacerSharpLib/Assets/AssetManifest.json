@@ -8,6 +8,10 @@
     "Small": "font1.bmp",
     "Large": "font2.bmp"
   },
+  "FontsTrueType": {
+    "Small": "OpenSans-Regular.ttf",
+    "Large": "OpenSans-Regular.ttf"
+  },
   "Models": {
     "Car": "car.obj"
   },

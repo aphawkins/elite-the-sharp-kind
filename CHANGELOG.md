@@ -7,6 +7,27 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (SCR crash on Hardware GraphicsBackend: missing FontsTrueType manifest entry, 2026-07-23)
+
+- Selecting `GraphicsBackend: Hardware` for StuntCarRacerSharp crashed at
+  startup with `KeyNotFoundException: The given key 'Small' was not present
+  in the dictionary` from `SDLGraphics.DrawTextLeft`
+  ([SDLGraphics.cs:375](src/useful/libs/Useful.SDL/SDLGraphics.cs)), reached
+  via `TrackMenuScreen.Draw()`. `SDLGraphics` loads its `_fonts` dictionary
+  from `IAssetLocator.FontTrueTypePaths`, which is populated from the
+  manifest's `FontsTrueType` section — but SCR's
+  [AssetManifest.json](src/scr/libs/StuntCarRacerSharpLib/Assets/AssetManifest.json)
+  only ever had a `FontsBitmap` section (used by the `Software` backend), so
+  under `Hardware` the font dictionary came back empty. Elite's manifest
+  already had both sections. Added a `FontsTrueType` section to SCR's
+  manifest (`Small`/`Large` both mapping to `OpenSans-Regular.ttf`, matching
+  Elite's mapping), copied that font file into
+  `src/scr/libs/StuntCarRacerSharpLib/Assets/FontsTrueType/`, and added the
+  matching `CopyToOutputDirectory` entry in
+  [StuntCarRacerSharpLib.csproj](src/scr/libs/StuntCarRacerSharpLib/StuntCarRacerSharpLib.csproj).
+  Verified with a full solution build and confirmed the TTF now lands in the
+  app's `bin/Assets/FontsTrueType` output.
+
 ### Added (GraphicsBackend config switch between Software and SDL3_mixer-backed Hardware audio, 2026-07-23)
 
 - The in-progress SDL2→SDL3 migration had staged `SDLAbstraction.cs`/`SDLSound.cs`
