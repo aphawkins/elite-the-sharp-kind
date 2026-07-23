@@ -35,9 +35,23 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     // region is active at that point - the same clip that was active while
     // the depth-tested content was rasterised, since nothing else runs in
     // between.
+    //
+    // ZBufferRenderer interleaves depth-tested faces with plain 2-point
+    // line submissions in the same z-sorted chain (undecorated hull edges
+    // draw as lines, not faces) and calls DrawLine directly for those - if
+    // DrawLine drew straight to the renderer, a line landing between two
+    // faces would need the layer flushed around it, and *every* later face
+    // in the same pass would need re-flushing too, repainting that line's
+    // pixels with content submitted after it regardless of who's actually
+    // nearer. Routing DrawLine into this same CPU layer while a pass is
+    // open keeps every draw in one pass in the one buffer, submission order
+    // intact, with a single flush at the end - exactly how SoftwareGraphics
+    // gets this right, by writing every draw straight into one shared
+    // buffer with no batching to reorder.
     private FastBitmap? _depthLayer;
     private float[]? _depthBuffer;
     private bool _depthLayerDirty;
+    private bool _depthPassOpen;
 
     private SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight)
     {
@@ -116,6 +130,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         _depthLayer.Clear(BaseColors.TransparentBlack);
         Array.Clear(_depthBuffer);
         _depthLayerDirty = false;
+        _depthPassOpen = true;
     }
 
     public void Dispose()
@@ -241,6 +256,13 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     {
         if (_isDisposed)
         {
+            return;
+        }
+
+        if (_depthPassOpen && _depthLayer != null)
+        {
+            DrawLineToDepthLayer(lineStart, lineEnd, color);
+            _depthLayerDirty = true;
             return;
         }
 
@@ -702,6 +724,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         }
 
         _depthLayerDirty = false;
+        _depthPassOpen = false;
 
         nint surfacePtr = SDLGuard.Execute(() => (nint)SDL_CreateSurfaceFrom(
             _depthLayer.Width,
@@ -720,6 +743,62 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         });
 
         SDL_DestroyTexture((SDL_Texture*)texturePtr);
+
+        // Closing the pass (above) means DrawLine stops routing here once
+        // this flush runs, so in the normal case there is nothing left to
+        // draw into this layer until the next ClearDepth(). Clearing it
+        // anyway is cheap insurance: if something unexpected flushes twice
+        // within one pass, the second flush won't repaint the first flush's
+        // (already on-screen) pixels over whatever was drawn in between.
+        _depthLayer.Clear(BaseColors.TransparentBlack);
+    }
+
+    // Bresenham line into the CPU depth layer, matching SoftwareGraphics's
+    // DrawLineInt. Writes pixels directly with no depth test: ZBufferRenderer's
+    // 2-point line submissions were never depth-tested even in
+    // SoftwareGraphics (a plain "draw this over whatever came before" edge),
+    // so this preserves that behaviour rather than adding a test that never
+    // existed for lines.
+    private void DrawLineToDepthLayer(Vector2 lineStart, Vector2 lineEnd, in FastColor color)
+    {
+        int x0 = (int)MathF.Floor(lineStart.X);
+        int y0 = (int)MathF.Floor(lineStart.Y);
+        int x1 = (int)MathF.Floor(lineEnd.X);
+        int y1 = (int)MathF.Floor(lineEnd.Y);
+
+        int dx = Math.Abs(x1 - x0);
+        int dy = Math.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        int width = (int)ScreenWidth;
+        int height = (int)ScreenHeight;
+
+        while (true)
+        {
+            if (x0 >= 0 && x0 < width && y0 >= 0 && y0 < height)
+            {
+                _depthLayer!.SetPixel(x0, y0, color);
+            }
+
+            if (x0 == x1 && y0 == y1)
+            {
+                break;
+            }
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
     }
 
     // Depth-tested triangle fill into the CPU depth layer: inverse depth
