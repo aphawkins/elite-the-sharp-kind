@@ -17,8 +17,10 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     private const int CircleSegments = 32;
 
     private readonly SDLRenderer _renderer;
+    private readonly Dictionary<(string FontType, string Text, uint Color), TextTextureEntry> _textTextures = [];
     private Dictionary<string, nint> _fonts = [];
     private Dictionary<string, nint> _images = [];
+    private Dictionary<string, nint> _imageTextures = [];
     private bool _isDisposed;
 
     private SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight)
@@ -49,7 +51,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     {
         Guard.ArgumentNull(assetLocator);
 
-        return new(renderer, screenWidth, screenHeight)
+        SDLGraphics graphics = new(renderer, screenWidth, screenHeight)
         {
             _images = assetLocator.ImagePaths.ToDictionary(
                 x => x.Key,
@@ -59,6 +61,15 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
                 x => x.Key,
                 x => LoadFont(x.Key, x.Value)),
         };
+
+        // Textures are created once here rather than per-draw: creating one
+        // is a synchronous GPU upload, and images are static assets that
+        // never change after load.
+        graphics._imageTextures = graphics._images.ToDictionary(
+            x => x.Key,
+            x => SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(graphics.NativeRenderer, (SDL_Surface*)x.Value)));
+
+        return graphics;
     }
 
     public void Clear()
@@ -67,6 +78,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         {
             return;
         }
+
+        EvictStaleTextTextures();
 
         SetRenderDrawColor(BaseColors.Black.Argb);
 
@@ -133,7 +146,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         }
 
         SDL_Surface* imageSurface = (SDL_Surface*)_images[imageType];
-        nint texturePtr = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, imageSurface));
+        nint texturePtr = _imageTextures[imageType];
 
         SDLGuard.Execute(() =>
         {
@@ -147,8 +160,6 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
             return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
         });
-
-        SDL_DestroyTexture((SDL_Texture*)texturePtr);
     }
 
     public void DrawImageCentre(string imageType, float y)
@@ -170,7 +181,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
-        nint texturePtr = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, (SDL_Surface*)_images[imageType]));
+        nint texturePtr = _imageTextures[imageType];
 
         SDL_FlipMode flip = sourceSize.X < 0 ? SDL_FlipMode.SDL_FLIP_HORIZONTAL : SDL_FlipMode.SDL_FLIP_NONE;
 
@@ -194,8 +205,6 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
             return SDL_RenderTextureRotated(NativeRenderer, (SDL_Texture*)texturePtr, &source, &dest, 0, null, flip);
         });
-
-        SDL_DestroyTexture((SDL_Texture*)texturePtr);
     }
 
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
@@ -344,24 +353,15 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
-        SDL_Color colour = ToSDLColor(color);
-        nint surfacePtr = SDLGuard.Execute(() => (nint)TTF_RenderText_Solid((TTF_Font*)_fonts[fontType], text, 0, colour));
-
-        SDL_Surface* surface = (SDL_Surface*)surfacePtr;
-        float destW = surface->w;
-        float destH = surface->h;
-        float destX = (ScreenWidth / 2) - (destW / 2);
+        TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
+        float destX = (ScreenWidth / 2) - (entry.Width / 2);
         float destY = y / (2 / Scale);
 
-        nint texturePtr = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, surface));
         SDLGuard.Execute(() =>
         {
-            SDL_FRect dest = new() { x = destX, y = destY, w = destW, h = destH };
-            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
+            SDL_FRect dest = new() { x = destX, y = destY, w = entry.Width, h = entry.Height };
+            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)entry.Texture, null, &dest);
         });
-
-        SDL_DestroySurface(surface);
-        SDL_DestroyTexture((SDL_Texture*)texturePtr);
     }
 
     public void DrawTextLeft(Vector2 position, string text, string fontType, FastColor color)
@@ -371,24 +371,15 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
-        SDL_Color colour = ToSDLColor(color);
-        nint surfacePtr = SDLGuard.Execute(() => (nint)TTF_RenderText_Solid((TTF_Font*)_fonts[fontType], text, 0, colour));
-
-        SDL_Surface* surface = (SDL_Surface*)surfacePtr;
-        float destW = surface->w;
-        float destH = surface->h;
+        TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
         float destX = position.X / (2 / Scale);
         float destY = position.Y / (2 / Scale);
 
-        nint texturePtr = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, surface));
         SDLGuard.Execute(() =>
         {
-            SDL_FRect dest = new() { x = destX, y = destY, w = destW, h = destH };
-            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
+            SDL_FRect dest = new() { x = destX, y = destY, w = entry.Width, h = entry.Height };
+            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)entry.Texture, null, &dest);
         });
-
-        SDL_DestroySurface(surface);
-        SDL_DestroyTexture((SDL_Texture*)texturePtr);
     }
 
     public void DrawTextRight(Vector2 position, string text, string fontType, FastColor color)
@@ -398,24 +389,15 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
-        SDL_Color colour = ToSDLColor(color);
-        nint surfacePtr = SDLGuard.Execute(() => (nint)TTF_RenderText_Solid((TTF_Font*)_fonts[fontType], text, 0, colour));
-
-        SDL_Surface* surface = (SDL_Surface*)surfacePtr;
-        float destW = surface->w;
-        float destH = surface->h;
-        float destX = (position.X - destW) / (2 / Scale);
+        TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
+        float destX = (position.X - entry.Width) / (2 / Scale);
         float destY = position.Y / (2 / Scale);
 
-        nint texturePtr = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, surface));
         SDLGuard.Execute(() =>
         {
-            SDL_FRect dest = new() { x = destX, y = destY, w = destW, h = destH };
-            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
+            SDL_FRect dest = new() { x = destX, y = destY, w = entry.Width, h = entry.Height };
+            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)entry.Texture, null, &dest);
         });
-
-        SDL_DestroySurface(surface);
-        SDL_DestroyTexture((SDL_Texture*)texturePtr);
     }
 
     public void DrawTriangle(Vector2 a, Vector2 b, Vector2 c, FastColor color)
@@ -547,6 +529,60 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         a = color.A / 255f,
     };
 
+    // Rendering a glyph texture is a CPU render plus a synchronous GPU
+    // upload, so cache by (font, text, colour) instead of doing it on every
+    // draw call. Entries not reused since the last frame's Clear() are
+    // evicted there, keeping the cache bounded to what's currently on screen.
+    private TextTextureEntry GetOrCreateTextTexture(string fontType, string text, in FastColor color)
+    {
+        (string FontType, string Text, uint Color) key = (fontType, text, color.Argb);
+
+        if (_textTextures.TryGetValue(key, out TextTextureEntry? cached))
+        {
+            cached.UsedThisFrame = true;
+            return cached;
+        }
+
+        SDL_Color colour = ToSDLColor(color);
+        nint surfacePtr = SDLGuard.Execute(() => (nint)TTF_RenderText_Solid((TTF_Font*)_fonts[fontType], text, 0, colour));
+        SDL_Surface* surface = (SDL_Surface*)surfacePtr;
+
+        TextTextureEntry entry = new()
+        {
+            Texture = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, surface)),
+            Width = surface->w,
+            Height = surface->h,
+            UsedThisFrame = true,
+        };
+
+        SDL_DestroySurface(surface);
+
+        _textTextures[key] = entry;
+        return entry;
+    }
+
+    private void EvictStaleTextTextures()
+    {
+        List<(string, string, uint)> stale = [];
+
+        foreach (KeyValuePair<(string, string, uint), TextTextureEntry> pair in _textTextures)
+        {
+            if (!pair.Value.UsedThisFrame)
+            {
+                SDL_DestroyTexture((SDL_Texture*)pair.Value.Texture);
+                stale.Add(pair.Key);
+                continue;
+            }
+
+            pair.Value.UsedThisFrame = false;
+        }
+
+        foreach ((string, string, uint) key in stale)
+        {
+            _textTextures.Remove(key);
+        }
+    }
+
     private void Dispose(bool disposing)
     {
         if (!_isDisposed)
@@ -572,6 +608,16 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             {
                 SDL_DestroySurface((SDL_Surface*)image.Value);
             }
+
+            foreach (KeyValuePair<string, nint> texture in _imageTextures)
+            {
+                SDL_DestroyTexture((SDL_Texture*)texture.Value);
+            }
+
+            foreach (KeyValuePair<(string, string, uint), TextTextureEntry> entry in _textTextures)
+            {
+                SDL_DestroyTexture((SDL_Texture*)entry.Value.Texture);
+            }
         }
     }
 
@@ -579,5 +625,16 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     {
         FastColor fastColor = new(color);
         SDLGuard.Execute(() => SDL_SetRenderDrawColor(NativeRenderer, fastColor.R, fastColor.G, fastColor.B, fastColor.A));
+    }
+
+    private sealed class TextTextureEntry
+    {
+        public required nint Texture { get; init; }
+
+        public required float Width { get; init; }
+
+        public required float Height { get; init; }
+
+        public bool UsedThisFrame { get; set; }
     }
 }

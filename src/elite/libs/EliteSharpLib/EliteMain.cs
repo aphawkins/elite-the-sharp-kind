@@ -34,7 +34,10 @@ namespace EliteSharpLib;
 public sealed class EliteMain : IGame
 {
     // The rate the game logic ticks at, approximately the speed of Elite
-    // The New Kind. The render rate (Config.Fps) is independent.
+    // The New Kind. Render runs at the same rate (see Run()): decoupling it
+    // from the tick rate meant most presents just redisplayed an unchanged
+    // frame, and since 60/13.5 isn't a whole number the repeat count varied
+    // frame to frame, producing judder.
     private const float GameTickRate = 13.5f;
 
     private readonly uint _colorText;
@@ -105,7 +108,10 @@ public sealed class EliteMain : IGame
     // frame.
     internal GameState State { get; }
 
-    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, State.Config.Fps);
+    // Render at the same rate as the game tick (Config.Fps is currently
+    // unused - see GameTickRate) so every composed frame is presented
+    // exactly once, matching StuntCarRacerMain's approach.
+    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, GameTickRate);
 
     // One fixed-rate game tick. Elite's update draws the universe as it
     // moves it (as The New Kind did), so this composes the whole frame into
@@ -221,8 +227,8 @@ public sealed class EliteMain : IGame
         State.CurrentView!.HandleInput();
     }
 
-    // Present the frame composed by the last update. Runs at the render
-    // rate (up to Config.Fps), independently of the game tick rate.
+    // Present the frame composed by the last update. Runs at GameTickRate,
+    // once per tick.
     public void Draw()
     {
         // keep only the presents from the last second, for the FPS display
