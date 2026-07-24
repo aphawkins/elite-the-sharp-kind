@@ -7,6 +7,19 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Removed (Close stale SDLSound loop-pitch threading item, 2026-07-24)
+
+- The backlog's "document and harden the `SDLSound` loop-pitch threading
+  contract" item described the old SDL2_mixer `Mix_RegisterEffect`
+  resampler, where a managed callback running on the audio thread read a
+  pitch field the game thread wrote. The 2026-07-23 SDL2→SDL3 migration
+  (see below) replaced that whole mechanism: `SDLSound.PlayLoop`
+  ([SDLSound.cs](src/useful/libs/Useful.SDL/SDLSound.cs)) now calls
+  `MIX_SetTrackFrequencyRatio` directly, a native SDL3_mixer API with no
+  managed callback and no field shared across threads — confirmed no
+  `Mix_RegisterEffect` usage remains anywhere in `src/`. Nothing left to
+  document or harden, so the item is closed rather than actioned.
+
 ### Changed (Message the bare ShipFactory exceptions, 2026-07-24)
 
 - The `throw new EliteException()` calls in `ShipFactory`'s `CreateLoneWolf`,
