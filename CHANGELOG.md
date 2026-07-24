@@ -43,6 +43,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   `FractalPlanetTests.GenerateLandscapeIsDeterministicPerSeed`, which
   failed under the old shared-RNG behaviour and passes now.
 
+### Changed (Remove analyzer suppressions in favour of real fixes or scoped disables, 2026-07-24)
+
+- Worked through the backlog's suppression list: CA2227 collection
+  properties ([ThreeDModel.cs](src/useful/libs/Useful.Assets/Models/ThreeDModel.cs),
+  `Point.cs`, `Face.cs`, `AssetManifest.cs`,
+  [SaveState.cs](src/elite/libs/EliteSharpLib/Save/SaveState.cs)) became
+  init-only, since `System.Text.Json` supports that natively. CA1308
+  ([Extensions.cs](src/elite/libs/EliteSharpLib/Extensions.cs)) and
+  RCS1231 were resolved with equivalent code the rules don't flag.
+  SA1401's exposed field
+  ([PlanetRenderer.cs](src/elite/libs/EliteSharpLib/Planets/PlanetRenderer.cs))
+  became a property. CA5394
+  ([RandomSource.cs](src/useful/libs/Useful/RandomSource.cs),
+  `FractalPlanet.cs`) and S6640 (assembly-scoped in `Useful.SDL`, unsafe
+  interop only) are verified false positives for this codebase, so
+  they're now disabled via `.editorconfig` instead of scattered local
+  suppressions — a more honest opt-out. CA1034
+  (`SoftwareSoundTests.cs`) is confirmed unfixable (xUnit1000 requires a
+  public test class, which then forces its constructor parameter type
+  public too via CS0051) and stays as a justified local suppression.
+  Documented the resulting triage policy in
+  [architecture.md](docs/architecture.md). One suppression remains,
+  `ShipFactory.cs` (S3011, reflection into a non-public constructor) —
+  left for the `ShipFactory.CreateShipFromName` dictionary-replacement
+  item, which resolves it as a side effect.
+
 ### Changed (Replace custom Guard.ArgumentNull with ArgumentNullException.ThrowIfNull, 2026-07-24)
 
 - `Guard.ArgumentNull` ([Guard.cs](src/useful/libs/Useful/Guard.cs)) was a
