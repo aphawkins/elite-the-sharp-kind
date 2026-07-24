@@ -7,6 +7,14 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Remove debug log spam from DrawCircleFilled, 2026-07-24)
+
+- `SoftwareGraphics.DrawCircleFilled`
+  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  left a `Debug.WriteLine($"{x},{y}")` in its scanline loop, logging every
+  scanline of every filled circle (planets, suns) every debug-build frame;
+  removed.
+
 ### Removed (Close stale SDLSound loop-pitch threading item, 2026-07-24)
 
 - The backlog's "document and harden the `SDLSound` loop-pitch threading

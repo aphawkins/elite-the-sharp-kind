@@ -152,8 +152,6 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
         while (x >= y)
         {
-            Debug.WriteLine($"{x},{y}");
-
             // Top of top half
             DrawLine(new(centre.X - y, centre.Y - x), new(centre.X + y, centre.Y - x), color);
 

@@ -111,7 +111,6 @@ functionality. Conclusions:
 
 ### Cleanups and small refactors
 
-- [ ] [Useful.Graphics] Remove the `Debug.WriteLine($"{x},{y}")` left in the `DrawCircleFilled` scanline loop ([SoftwareGraphics.cs:122](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — debug-build log spam for every filled circle (planets, suns) every frame.
 - [ ] [Useful] Remove `Vector4.Cloner()` ([Maths/Extensions.cs:13](../src/useful/libs/Useful/Maths/Extensions.cs)) — `Vector4` is a struct, so plain assignment already copies; its four call sites can just assign.
 - [ ] [EliteSharpLib] Clean `EliteSharpLib.csproj`: fourteen `sfx\*.wav` items point at a folder that doesn't exist and the `<Compile Remove="Controls\**" />` block excludes a folder that no longer exists ([EliteSharpLib.csproj](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj)); the ~280-line hand-maintained asset item list could also become two glob items. (The unused NAudio refs are covered by the Must item.)
 - [ ] [Repo] Delete stale build-output-only directories left behind by project renames: `src/elite/apps/EliteSharp.SDL/`, `src/elite/libs/EliteSharp/`, `src/elite/test/EliteSharp.Tests/`, `src/elite/perf/EliteSharp.Benchmarks/` contain only `bin`/`obj` and are referenced by no project or solution entry.
