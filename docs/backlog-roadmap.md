@@ -111,7 +111,6 @@ functionality. Conclusions:
 
 ### Cleanups and small refactors
 
-- [ ] [Useful] Remove `Vector4.Cloner()` ([Maths/Extensions.cs:13](../src/useful/libs/Useful/Maths/Extensions.cs)) — `Vector4` is a struct, so plain assignment already copies; its four call sites can just assign.
 - [ ] [EliteSharpLib] Clean `EliteSharpLib.csproj`: fourteen `sfx\*.wav` items point at a folder that doesn't exist and the `<Compile Remove="Controls\**" />` block excludes a folder that no longer exists ([EliteSharpLib.csproj](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj)); the ~280-line hand-maintained asset item list could also become two glob items. (The unused NAudio refs are covered by the Must item.)
 - [ ] [Repo] Delete stale build-output-only directories left behind by project renames: `src/elite/apps/EliteSharp.SDL/`, `src/elite/libs/EliteSharp/`, `src/elite/test/EliteSharp.Tests/`, `src/elite/perf/EliteSharp.Benchmarks/` contain only `bin`/`obj` and are referenced by no project or solution entry.
 - [ ] [EliteSharpLib] `Stars` repeats the same star plot/respawn block three times (`FrontStarfield`, `RearStarfield`, `SideStarfield`, [Stars.cs:61-133, 151-243, 258-333](../src/elite/libs/EliteSharpLib/Stars.cs)); extract the shared plot helper to cut ~80 duplicated lines.

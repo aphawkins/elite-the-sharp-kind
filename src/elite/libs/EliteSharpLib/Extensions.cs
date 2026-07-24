@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Ships;
-using Useful.Maths;
 
 namespace EliteSharpLib;
 
@@ -40,7 +39,7 @@ internal static class Extensions
         to.ExpDelta = from.ExpDelta;
         to.Flags = from.Flags;
         to.Type = from.Type;
-        to.Location = from.Location.Cloner();
+        to.Location = from.Location;
         to.Energy = from.Energy;
         to.Velocity = from.Velocity;
         to.Acceleration = from.Acceleration;
@@ -57,6 +56,6 @@ internal static class Extensions
         to.RotX = from.RotX;
         to.RotZ = from.RotZ;
         to.Type = from.Type;
-        to.Location = from.Location.Cloner();
+        to.Location = from.Location;
     }
 }

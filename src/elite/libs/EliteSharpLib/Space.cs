@@ -764,7 +764,7 @@ internal sealed class Space
         float alpha = _ship.Roll / 256;
         float beta = _ship.Climb / 256;
 
-        Vector4 position = obj.Location.Cloner();
+        Vector4 position = obj.Location;
         if (obj is IShip shipEx &&
             !obj.Flags.HasFlag(ShipProperties.Dead) &&
             obj.Type != ShipType.Sun
@@ -798,7 +798,7 @@ internal sealed class Space
 
         position.Z -= _ship.Speed;
 
-        obj.Location = position.Cloner();
+        obj.Location = position;
 
         if (obj.Type == ShipType.Planet)
         {

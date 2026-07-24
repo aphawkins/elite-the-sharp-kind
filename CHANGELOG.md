@@ -7,6 +7,17 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Remove Vector4.Cloner(), 2026-07-24)
+
+- `Vector4.Cloner()`
+  ([MathsExtensions.cs](src/useful/libs/Useful/Maths/MathsExtensions.cs))
+  new'd up a copy of a `Vector4`, but `Vector4` is a struct, so plain
+  assignment already copies; replaced its four call sites in
+  [Extensions.cs](src/elite/libs/EliteSharpLib/Extensions.cs) and
+  [Space.cs](src/elite/libs/EliteSharpLib/Space.cs) with direct
+  assignment and deleted the method. Dropped the now-unused
+  `using Useful.Maths;` from `Extensions.cs`.
+
 ### Fixed (Remove debug log spam from DrawCircleFilled, 2026-07-24)
 
 - `SoftwareGraphics.DrawCircleFilled`

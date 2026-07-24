@@ -10,8 +10,6 @@ public static class MathsExtensions
 
     public static bool IsOdd(this float value) => ((int)value).IsOdd();
 
-    public static Vector4 Cloner(this Vector4 vec) => new(vec.X, vec.Y, vec.Z, vec.W);
-
     /// <summary>
     /// Read row <paramref name="row"/> (0-3) of the matrix as a <see cref="Vector4"/>.
     /// </summary>
