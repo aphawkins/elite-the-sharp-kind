@@ -7,6 +7,14 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Removed (Delete stale build-output-only directories, 2026-07-24)
+
+- Deleted `src/elite/apps/EliteSharp.SDL/`, `src/elite/libs/EliteSharp/`,
+  `src/elite/test/EliteSharp.Tests/`, and
+  `src/elite/perf/EliteSharp.Benchmarks/` — leftovers from earlier project
+  renames, each containing only `bin`/`obj` output, already gitignored
+  (never tracked), and referenced by no project or solution entry.
+
 ### Changed (Clean stale EliteSharpLib.csproj items, 2026-07-24)
 
 - `EliteSharpLib.csproj` carried a `<Compile Remove="Controls\**" />` /
