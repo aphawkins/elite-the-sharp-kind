@@ -7,6 +7,23 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Adopt central package management, 2026-07-24)
+
+- All 26 `.csproj` files pinned `PackageReference` versions independently.
+  Added `Directory.Packages.props` at the repo root with
+  `ManagePackageVersionsCentrally` and one `PackageVersion` per package
+  (29 total), and dropped the `Version` attribute from every
+  `PackageReference` in the tree. The five analyzer packages
+  (`Roslynator.Analyzers`, `Roslynator.CodeAnalysis.Analyzers`,
+  `Roslynator.Formatting.Analyzers`, `SonarAnalyzer.CSharp`,
+  `StyleCop.Analyzers`) were copy-pasted with identical
+  `PrivateAssets`/`IncludeAssets` settings into every project, so those
+  moved into [Directory.Build.props](Directory.Build.props) instead,
+  alongside the existing `MinVer` reference (now also version-less).
+  No package versions changed. Verified with a full solution build, the
+  full test suite, and a smoke launch of both `EliteSharp` and
+  `StuntCarRacerSharp`.
+
 ### Fixed (FractalPlanet landscape generation wasn't deterministic per system, 2026-07-24)
 
 - `FractalPlanet.GenerateLandscape`
