@@ -30,6 +30,28 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
       that trades away period-accurate feel for smoother rendering; needs a
       research spike/prototype before committing either way — not resolved.
 
+- [ ] **UI/graphics scale spike** (from issue #13, "Fix graphics scale
+      setting"): the existing scale setting is untested and buggy. Before
+      fixing it, spike how the whole UI should scale (2x, 3x, ...) rather
+      than patching the current behaviour — this overlaps the `Scale`
+      cleanup already below (`SoftwareGraphics`/`SDLGraphics` centring
+      math) and the render-resolution-configurable work under Could; the
+      spike should decide whether scale is a discrete multiplier applied
+      at the framebuffer/present layer (cheap, works with the letterboxed
+      resizable-window item) or something game code needs to be aware of
+      per-element. Not resolved.
+- [ ] **Data-driven game content spike** (from issue #12, "Lone ships
+      should not be separate ships"): lone ships are currently implemented
+      as distinct ship subclasses/config entries instead of a property on
+      a regular ship. This is one symptom of a bigger question — should
+      `EquipmentType`, `StockType`, ship definitions, and similar
+      currently-hardcoded/`AssetManifest.json`-driven game data move to a
+      proper data-driven model instead of being baked into types and
+      reflection-based construction (see `ShipFactory.CreateShipFromName`
+      below, itself flagged fragile)? Spike the shape of a config-driven
+      model before committing — this is a [LARGE] architectural change,
+      not a point fix. Not resolved.
+
 ### Resolved (2026-07-24) — benchmark history tracking
 
 Decided: use [benchmark-action/github-action-benchmark](https://github.com/benchmark-action/github-action-benchmark)
@@ -102,6 +124,68 @@ functionality. Conclusions:
 
 ## Should
 
+### Bugs
+
+- [ ] [EliteSharpLib] Enemy lasers don't always reach the full extent of
+      the view (issue #8): `ShipBase.DrawLasers`
+      ([ShipBase.cs:239-243](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
+      draws the laser from the ship's laser-mount point to
+      `(Location.X > 0 ? 0 : 511, _rng.Random(256) * 2)` — a screen-edge X
+      picked by which side the shooting ship is on, paired with a Y that's
+      random within 0-511 regardless of the actual firing angle, rather
+      than projecting the shot along its real direction to where it
+      crosses the view boundary. The hardcoded `511`/`256` also don't
+      derive from `ScannerWidth`/height, so this is doubly wrong at
+      non-512 resolutions. Investigate a proper direction-to-boundary
+      projection. The reporter also flagged planets overlapping the field
+      of view as possibly the same class of bug: `WireframePlanet`/
+      `FractalPlanet`/`PlanetRenderer` have no reference to
+      `ScannerLeft`/`Right`/`Top`/`Bottom` at all (grepped, no hits) — i.e.
+      planets aren't clipped to the viewport/scanner boundary either.
+      Confirm whether it's the same missing-clip root cause or a separate
+      issue before fixing.
+
+### Code-quality gates (from issue #5, "Measure/improve code complexity")
+
+`CA1502` (excessive complexity), `CA1506` (excessive class coupling), and
+Sonar's `S1541`/`S3776` (method/cognitive complexity) and `S107` (too many
+parameters) are all currently `severity = none` in
+[.editorconfig](../.editorconfig:656-663,2599,2615,2640). The repo also
+sets `TreatWarningsAsErrors=True` repo-wide
+([Directory.Build.props:12](../Directory.Build.props)), so flipping any of
+these straight to `warning` will fail the build the moment one violation
+exists — these can't be turned on in the same PR as any fix, they need an
+audit-then-ratchet approach, mirrored on how coverage is already tracked
+(reportgenerator badge committed to
+[docs/images/coverage-badge.svg](../docs/images/coverage-badge.svg) by
+[build-and-package.yml](../.github/workflows/build-and-package.yml), plus
+the benchmark-history decision above) rather than a hard gate — this
+codebase ports 6502/Amiga fixed-point algorithms whose reference methods
+are inherently long, so some violations may be legitimate/accepted rather
+than fixed.
+
+- [ ] Audit violation counts per rule (`dotnet build` with each rule
+      temporarily set to `warning` and `TreatWarningsAsErrors` off, one
+      rule at a time) to size the work before deciding fix-now vs
+      track-over-time per rule.
+- [ ] `CA1502`/`S1541`/`S3776` (complexity) and `CA1506` (coupling) and
+      `S107` (parameter count): the direct ask from issue #5. Likely the
+      noisiest given the point above — probably wants tracking (a
+      generated report/badge, ratcheted down over time) rather than an
+      immediate hard `warning`.
+- [ ] Also evaluate the other rules the maintainer named while turning
+      these on: `S2234` (arguments passed out of parameter order) and
+      `S2583` (unreachable conditional code) are correctness-flavoured and
+      likely low-count — good candidates to enable outright rather than
+      just track (`S2583` would have caught the dead `////#if QHD` block
+      cleaned up in issue #7's item below). `S1451` (missing copyright/
+      license headers) is mechanical and cheap to fix in one pass if
+      wanted. `S109` (magic numbers) is the one to be most wary of: the
+      existing "3D pipeline sharing" items above already call out
+      hardcoded magic numbers (`* 256 / vec.Z`, etc.) as endemic to this
+      codebase, so this rule alone could dwarf the others — audit its
+      count before deciding it's worth enabling at all.
+
 ### Release engineering (from the retired release plan)
 
 (none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
@@ -118,6 +202,27 @@ functionality. Conclusions:
 - [ ] [EliteSharpLib] `Universe.RemoveShip` only removes from `_objects`, silently leaving `Planet`/`StationOrSun` set if passed one of those ([Universe.cs:127-135](../src/elite/libs/EliteSharpLib/Universe.cs)) — station removal currently works only because a sun immediately overwrites `StationOrSun` in `Combat.RemoveShip`; clear the matching reference explicitly.
 - [ ] [Useful.SDL] `SDLGraphics.LoadFont` hardcodes the game-specific font names "Small"/"Large" and their point sizes into the shared library ([SDLGraphics.cs:407-420](../src/useful/libs/Useful.SDL/SDLGraphics.cs)); carry the size in the asset manifest instead.
 - [ ] [EliteSharpLib] Wireframe planet is just a circle ([WireframePlanet.cs:50-57](../src/elite/libs/EliteSharpLib/Planets/WireframePlanet.cs)); add the two arcs and crater the original Elite drew (from issues.md).
+- [ ] [EliteSharpLib] Low priority: implement laser crosshairs and styles
+      (issue #15) — each laser type (pulse/beam/military/mining) should
+      draw a distinct crosshair with its own colour and firing animation
+      instead of the current single style. Reference art for the intended
+      styles is at
+      [laser-crosshairs.png](../src/elite/libs/EliteSharpLib/Assets/Images/laser-crosshairs.png)
+      (added to the repo so this doesn't get forgotten).
+- [ ] [EliteSharpLib] Remove conditional compilation (issue #7): three
+      `#if` sites remain — `EliteMain.DrawFps`'s `#if DEBUG` gate
+      ([EliteMain.cs:170-172,251-260](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
+      `SaveFile`'s `#if DEBUG` default commander (`CommanderFactory.Max()`
+      vs `.Jameson()`,
+      [SaveFile.cs:51-55](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)),
+      and a fully commented-out `////#if QHD` resolution block in
+      `SDLProgram`
+      ([SDLProgram.cs:26-32](../src/elite/apps/EliteSharp/SDLProgram.cs))
+      that's dead weight now the render-resolution-configurable item below
+      exists. Replace the two live `#if DEBUG`s with a runtime
+      env-var/config check (there's already an `ELITE_LOG_LEVEL`
+      env-var precedent in `SDLProgram.cs`) and delete the dead QHD
+      comment block outright.
 3D pipeline sharing (split 2026-07-14 from the "unify the two 3D
 pipelines" [LARGE] item; a code survey found the pipelines differ more
 than assumed — Elite: float `Matrix4x4` transform, `vec.Z = 1` clamp
@@ -290,7 +395,14 @@ by the traces):
       `TrigCoefficients` and `Track.LogPrecision`
       ([Scene3D.cs:102-113](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs))
       — either convert its fixed-point view transform in the same step
-      or leave it a shim that scales from the float trig.
+      or leave it a shim that scales from the float trig. Issue #3
+      ("System.Numerics for all matrix and vector maths") applies to SCR
+      too: SCR's rendering layer (`Scene3D`, `TrackRenderer`,
+      `BackdropRenderer`, `CarMesh`, `HudRenderer`) already uses
+      `System.Numerics`/`Matrix4x4` like Elite does — `TrigCoefficients`
+      and the fixed-point view transform here are the one remaining
+      non-`System.Numerics` piece, and this item is where that gets
+      resolved; no separate item needed.
 - [ ] [StuntCarRacerSharpLib] Convert `CarPhysics` (four partials:
       [CarPhysics.cs](../src/scr/libs/StuntCarRacerSharpLib/Cars/CarPhysics.cs),
       `.Motion`, `.Road`, and the crane/chain-recovery `.Chains` — the
@@ -351,6 +463,33 @@ is closer to resolution-independence than the original item assumed):
       question for the maintainer first: is widescreen Elite wanted at
       all, or only integer-scaled 512x512 (which the letterbox item
       already provides)? If the latter, close this as Won't.
+- [ ] [EliteSharpLib] Number of stars proportional to screen size (issue
+      #4): only matters once a resolution other than the current fixed
+      512x512 is actually reachable, so sequence this after the two items
+      above land (render-resolution-configurable, then non-512x512
+      audit); scale star count by screen area at that point.
+- [ ] [Repo] **Low-priority spike**: WASM build for Playwright-driven
+      visual testing. Today `run-elite`/`run-scr`
+      ([sdl-drive/drive.ps1](../.claude/skills/sdl-drive/drive.ps1))
+      drive the native SDL window via Win32 `PostMessage`/
+      `CopyFromScreen`, since Playwright can't see a raw SDL window
+      (no DOM, no meaningful UI Automation tree — same reason
+      WinAppDriver wouldn't help either). `Useful.Graphics`/
+      `Useful.Audio`'s Software backends and both game libs are
+      already pure managed C# with no SDL dependency, so a
+      browser-hosted build (new `Useful.Wasm` + per-game `*.Wasm` app
+      targeting `browser-wasm`) could turn the app into an actual web
+      page and let Playwright drive it for real: `page.goto()`,
+      `page.keyboard.press()`, `page.screenshot()`, headless, no real
+      desktop session needed. Needs: a DOM keyboard adapter into the
+      existing `IKeyboardSink` seam (`SoftwareKeyboard` already
+      consumes exactly this abstraction), a per-tick canvas blit of
+      the software framebuffer (`putImageData`), and asset loading
+      swapped from disk paths to HTTP fetch or embedded resources.
+      Only exercises the `Software` graphics backend, not
+      `Hardware`/SDL — would complement rather than replace the
+      native driver. Spike/prototype only; not a commitment to
+      shipping a browser build.
 
 ## Won't
 
