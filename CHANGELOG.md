@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Test coverage badge on README, 2026-07-24)
+
+- The CI coverage step turned out to be silently broken: `Directory.Build.props`
+  sets `DebugType=none`/`DebugSymbols=false` for Release builds, so the
+  `dotnet-coverage collect` + `coverage.runsettings` pipeline had no PDBs to
+  map hits to source lines and had been uploading an empty/all-zero
+  `coverage.cobertura.xml` artifact (its module-include filter also never
+  covered `StuntCarRacerSharpLib`). Replaced it in
+  [build-and-package.yml](.github/workflows/build-and-package.yml) with
+  `dotnet test --collect:"XPlat Code Coverage"` (coverlet, already referenced
+  by every test project) run with `-p:DebugType=portable -p:DebugSymbols=true`
+  for that build+test pass only, merged across all test projects and rendered
+  to an SVG with ReportGenerator (`-assemblyfilters` drops `*.Tests`/`*.Fakes`/
+  `*.Benchmarks` so the number reflects shipped code, both games included).
+  The CI job now commits the refreshed badge to
+  [docs/images/coverage-badge.svg](docs/images/coverage-badge.svg) on pushes
+  to `master` (`[skip ci]`, needs `permissions: contents: write`), and
+  README.md displays it. Removed the now-unused `coverage.runsettings`.
+  Real numbers as of this change: 70.8% line coverage.
+
 ### Changed (Adopt central package management, 2026-07-24)
 
 - All 26 `.csproj` files pinned `PackageReference` versions independently.

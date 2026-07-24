@@ -9,6 +9,8 @@ on:
 jobs:
   build-test-package:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout repository
@@ -22,10 +24,10 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Install dotnet-coverage and minver-cli
+      - name: Install minver-cli and ReportGenerator
         run: |
-          dotnet tool install --global dotnet-coverage
           dotnet tool install --global minver-cli
+          dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Add dotnet tools to PATH
         run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
@@ -38,15 +40,35 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: Run tests with coverage
+        # Release builds strip PDBs (Directory.Build.props), so force portable
+        # PDBs back on for this build+test pass only - coverlet needs them to
+        # map hits to source lines.
         run: |
-          dotnet-coverage collect -f cobertura -o coverage.cobertura.xml -- \
-          dotnet test --configuration Release --settings coverage.runsettings --no-build --verbosity normal
+          dotnet test --configuration Release -p:DebugType=portable -p:DebugSymbols=true \
+          --collect:"XPlat Code Coverage" --results-directory ./TestResults --verbosity normal
+
+      - name: Generate coverage report and badge
+        run: |
+          reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:coveragereport \
+          -reporttypes:"Cobertura;Badges" "-assemblyfilters:-*.Tests;-*.Fakes;-*.Benchmarks"
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: coverage.cobertura.xml
+          path: coveragereport/Cobertura.xml
+
+      - name: Commit coverage badge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          cp coveragereport/badge_linecoverage.svg docs/images/coverage-badge.svg
+          if ! git diff --quiet -- docs/images/coverage-badge.svg; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/images/coverage-badge.svg
+            git commit -m "Update coverage badge [skip ci]"
+            git push
+          fi
 
       - name: Publish EliteSharp Windows
         run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows

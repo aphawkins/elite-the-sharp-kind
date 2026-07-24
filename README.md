@@ -1,5 +1,7 @@
 # The Sharp Kind
 
+![Line coverage](docs/images/coverage-badge.svg)
+
 Classic 8/16-bit computer games re-engineered in C# / .NET, sharing a common set of `Useful.*` game-engine libraries. The games are meant to look, feel and play like the originals while running cross-platform on modern hardware.
 
 ## Games
