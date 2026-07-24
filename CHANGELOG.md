@@ -7,6 +7,19 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Extract shared star-plot helper in Stars, 2026-07-24)
+
+- `Stars.FrontStarfield`/`RearStarfield`/`SideStarfield`
+  ([Stars.cs](src/elite/libs/EliteSharpLib/Stars.cs)) each repeated the
+  same ~30-line block that plots a star at its current screen location
+  (bounds-check, draw the 1-4 pixels sized by depth) before moving it;
+  extracted into a private `PlotStar(int i)` helper returning the
+  computed screen position, cutting ~60 duplicated lines. Behaviour is
+  unchanged — same computation, same draw calls, same order. Verified
+  with a full solution build, the full test suite, and by launching
+  `EliteSharp` (ran cleanly through several seconds of frames, which
+  exercise all three starfield draw paths, before being stopped).
+
 ### Removed (Delete stale build-output-only directories, 2026-07-24)
 
 - Deleted `src/elite/apps/EliteSharp.SDL/`, `src/elite/libs/EliteSharp/`,

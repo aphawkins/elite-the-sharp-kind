@@ -62,36 +62,7 @@ internal sealed class Stars
 
         for (int i = 0; i < _stars.Length; i++)
         {
-            // Plot the stars in their current locations...
-            Vector2 star = new()
-            {
-                Y = _stars[i].Y,
-                X = _stars[i].X,
-            };
-
-            float zz = _stars[i].Z;
-            star += _draw.Centre / 2;
-            star *= _draw.Graphics.Scale;
-
-            if ((!WarpStars) &&
-                (star.X >= _draw.Left)
-                && (star.X <= _draw.Right) &&
-                (star.Y >= _draw.Top)
-                && (star.Y <= _draw.Bottom))
-            {
-                _draw.Graphics.DrawPixel(star, _colorWhite);
-
-                if (zz < 192)
-                {
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), _colorWhite);
-                }
-
-                if (zz < 144)
-                {
-                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), _colorWhite);
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), _colorWhite);
-                }
-            }
+            Vector2 star = PlotStar(i);
 
             // Move the stars to their new locations...
             float q = delta / _stars[i].Z;
@@ -99,7 +70,7 @@ internal sealed class Stars
             _stars[i].Z -= delta;
             float yy = _stars[i].Y + (_stars[i].Y * q);
             float xx = _stars[i].X + (_stars[i].X * q);
-            zz = _stars[i].Z;
+            float zz = _stars[i].Z;
 
             yy += xx * alpha;
             xx -= yy * alpha;
@@ -152,36 +123,7 @@ internal sealed class Stars
 
         for (int i = 0; i < _stars.Length; i++)
         {
-            // Plot the stars in their current locations...
-            Vector2 star = new()
-            {
-                Y = _stars[i].Y,
-                X = _stars[i].X,
-            };
-            float zz = _stars[i].Z;
-
-            star += _draw.Centre / 2;
-            star *= _draw.Graphics.Scale;
-
-            if ((!WarpStars) &&
-                (star.X >= _draw.Left)
-                && (star.X <= _draw.Right) &&
-                (star.Y >= _draw.Top)
-                && (star.Y <= _draw.Bottom))
-            {
-                _draw.Graphics.DrawPixel(star, _colorWhite);
-
-                if (zz < 192)
-                {
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), _colorWhite);
-                }
-
-                if (zz < 144)
-                {
-                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), _colorWhite);
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), _colorWhite);
-                }
-            }
+            Vector2 star = PlotStar(i);
 
             // Move the stars to their new locations...
             float q = delta / _stars[i].Z;
@@ -189,7 +131,7 @@ internal sealed class Stars
             _stars[i].Z += delta;
             float yy = _stars[i].Y - (_stars[i].Y * q);
             float xx = _stars[i].X - (_stars[i].X * q);
-            zz = _stars[i].Z;
+            float zz = _stars[i].Z;
 
             yy += xx * alpha;
             xx -= yy * alpha;
@@ -257,43 +199,53 @@ internal sealed class Stars
         Z = _rng.Random(256) | 144,
     };
 
+    // Draws star i in its current screen location (a bright pixel that grows
+    // as it approaches the camera), then returns that screen position so the
+    // caller can draw a motion streak from it once the star has moved.
+    private Vector2 PlotStar(int i)
+    {
+        Vector2 star = new()
+        {
+            Y = _stars[i].Y,
+            X = _stars[i].X,
+        };
+        float zz = _stars[i].Z;
+
+        star += _draw.Centre / 2;
+        star *= _draw.Graphics.Scale;
+
+        if ((!WarpStars) &&
+            (star.X >= _draw.Left)
+            && (star.X <= _draw.Right) &&
+            (star.Y >= _draw.Top)
+            && (star.Y <= _draw.Bottom))
+        {
+            _draw.Graphics.DrawPixel(star, _colorWhite);
+
+            if (zz < 192)
+            {
+                _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), _colorWhite);
+            }
+
+            if (zz < 144)
+            {
+                _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), _colorWhite);
+                _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), _colorWhite);
+            }
+        }
+
+        return star;
+    }
+
     private void SideStarfield(float alpha, float beta, float delta)
     {
         for (int i = 0; i < _stars.Length; i++)
         {
-            Vector2 star = new()
-            {
-                Y = _stars[i].Y,
-                X = _stars[i].X,
-            };
-            float zz = _stars[i].Z;
-
-            star += _draw.Centre / 2;
-            star *= _draw.Graphics.Scale;
-
-            if ((!WarpStars) &&
-                (star.X >= _draw.Left)
-                && (star.X <= _draw.Right) &&
-                (star.Y >= _draw.Top)
-                && (star.Y <= _draw.Bottom))
-            {
-                _draw.Graphics.DrawPixel(star, _colorWhite);
-
-                if (zz < 192)
-                {
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y), _colorWhite);
-                }
-
-                if (zz < 144)
-                {
-                    _draw.Graphics.DrawPixel(new(star.X, star.Y + 1), _colorWhite);
-                    _draw.Graphics.DrawPixel(new(star.X + 1, star.Y + 1), _colorWhite);
-                }
-            }
+            Vector2 star = PlotStar(i);
 
             float yy = _stars[i].Y;
             float xx = _stars[i].X;
-            zz = _stars[i].Z;
+            float zz = _stars[i].Z;
 
             float delt8 = delta / (zz / 32);
             xx += delt8;
