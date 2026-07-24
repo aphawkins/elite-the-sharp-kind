@@ -16,9 +16,7 @@ namespace Useful.SDL;
 // own callback (invoked on SDL's own audio thread) says it wants more data.
 // Deliberately built on SDL3's core SDL_OpenAudioDeviceStream rather than
 // SDL3_mixer, which is unused by this (the live) path.
-#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS's raw pointer API
 public sealed unsafe class SoftwareSoundOutput : IDisposable
-#pragma warning restore S6640
 {
     private readonly SoftwareSound _sound;
     private readonly nint _stream;

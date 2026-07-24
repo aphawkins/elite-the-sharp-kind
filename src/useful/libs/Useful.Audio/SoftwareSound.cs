@@ -16,15 +16,6 @@ namespace Useful.Audio;
 // expected to call Render from an audio callback.
 public sealed class SoftwareSound : ISound, IDisposable
 {
-    // Fixed contract shape shared with the downstream SDL output shim;
-    // kept as literal consts (Sonar would rather these were static
-    // properties, but the value is genuinely a compile-time constant and
-    // callers may reasonably expect it to behave like one).
-#pragma warning disable S2339
-    public const int SampleRate = 44100;
-    public const int Channels = 2;
-#pragma warning restore S2339
-
     // Matches SDLSound's fixed pool of 16 concurrent one-shot voices; a
     // one-shot is dropped (not queued or errored) when every voice in the
     // pool is still playing.
@@ -77,6 +68,11 @@ public sealed class SoftwareSound : ISound, IDisposable
     {
         public void Render(Span<float> buffer);
     }
+
+    // Fixed contract shape shared with the downstream SDL output shim.
+    public static int SampleRate { get; } = 44100;
+
+    public static int Channels { get; } = 2;
 
     public void Dispose()
     {
@@ -160,10 +156,7 @@ public sealed class SoftwareSound : ISound, IDisposable
     // Fills buffer with the next chunk of mixed audio (interleaved stereo
     // float32). Safe to call concurrently with the ISound control methods
     // above; both sides serialise on the same gate.
-    // Kept as a plain (not 'in') Span<float> parameter: this is the fixed
-    // contract shape the downstream SDL output shim is written against.
-#pragma warning disable RCS1231
-    public void Render(Span<float> buffer)
+    public void Render(in Span<float> buffer)
     {
         lock (_gate)
         {
@@ -182,7 +175,6 @@ public sealed class SoftwareSound : ISound, IDisposable
             }
         }
     }
-#pragma warning restore RCS1231
 
     private static float ToTrackGain(float volume) => Math.Clamp(volume, 0f, 1f);
 
@@ -352,7 +344,7 @@ public sealed class SoftwareSound : ISound, IDisposable
         MidiFileSequencer sequencer = new(synthesizer);
         sequencer.Play(midiFile, loop: false);
 
-        const int maxSamples = SampleRate * Channels * MaxDecodeSeconds;
+        int maxSamples = SampleRate * Channels * MaxDecodeSeconds;
         List<float> samples = [];
         float[] chunk = new float[SampleRate * Channels / 10];
 

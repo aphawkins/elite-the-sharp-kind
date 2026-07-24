@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
@@ -76,7 +75,7 @@ internal sealed class FractalPlanet : IObject
     /// </summary>
     private uint CalcMidpointColor(int sx, int sy, int ex, int ey)
         => Math.Clamp(
-            ((_planetRenderer._landscape[sx, sy] + _planetRenderer._landscape[ex, ey]) / 2) + (uint)_rng.GaussianRandom(-7, 8),
+            ((_planetRenderer.Landscape[sx, sy] + _planetRenderer.Landscape[ex, ey]) / 2) + (uint)_rng.GaussianRandom(-7, 8),
             0,
             255);
 
@@ -84,7 +83,6 @@ internal sealed class FractalPlanet : IObject
     /// Generate a fractal landscape. Uses midpoint displacement method.
     /// </summary>
     /// <param name="seed">Initial seed for the generation.</param>
-    [SuppressMessage("Security", "CA5394:Do not use insecure randomness", Justification = "Randomness here requires seed.")]
     private void GenerateLandscape(int seed)
     {
         const int d = PlanetRenderer.LandXMax / 8;
@@ -94,7 +92,7 @@ internal sealed class FractalPlanet : IObject
         {
             for (int x = 0; x <= PlanetRenderer.LandXMax; x += d)
             {
-                _planetRenderer._landscape[x, y] = (uint)random.Next(255);
+                _planetRenderer.Landscape[x, y] = (uint)random.Next(255);
             }
         }
 
@@ -112,8 +110,8 @@ internal sealed class FractalPlanet : IObject
             {
                 float dist = (x * x) + (y * y);
                 bool dark = dist > 10000;
-                uint color = _planetRenderer._landscape[x, y];
-                _planetRenderer._landscape[x, y] = color > 166
+                uint color = _planetRenderer.Landscape[x, y];
+                _planetRenderer.Landscape[x, y] = color > 166
                     ? (dark ? _colorGreen : _colorLightGreen)
                     : (dark ? _colorBlue : _colorLightBlue);
             }
@@ -131,11 +129,11 @@ internal sealed class FractalPlanet : IObject
         int bx = tx + w;
         int by = ty + w;
 
-        _planetRenderer._landscape[mx, ty] = CalcMidpointColor(tx, ty, bx, ty);
-        _planetRenderer._landscape[mx, by] = CalcMidpointColor(tx, by, bx, by);
-        _planetRenderer._landscape[tx, my] = CalcMidpointColor(tx, ty, tx, by);
-        _planetRenderer._landscape[bx, my] = CalcMidpointColor(bx, ty, bx, by);
-        _planetRenderer._landscape[mx, my] = CalcMidpointColor(tx, my, bx, my);
+        _planetRenderer.Landscape[mx, ty] = CalcMidpointColor(tx, ty, bx, ty);
+        _planetRenderer.Landscape[mx, by] = CalcMidpointColor(tx, by, bx, by);
+        _planetRenderer.Landscape[tx, my] = CalcMidpointColor(tx, ty, tx, by);
+        _planetRenderer.Landscape[bx, my] = CalcMidpointColor(bx, ty, bx, by);
+        _planetRenderer.Landscape[mx, my] = CalcMidpointColor(tx, my, bx, my);
 
         if (d == 1)
         {

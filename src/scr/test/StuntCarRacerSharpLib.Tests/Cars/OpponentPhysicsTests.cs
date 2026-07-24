@@ -161,10 +161,6 @@ public class OpponentPhysicsTests
     }
 
     [Fact]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Security",
-        "CA5394:Do not use insecure randomness",
-        Justification = "Deterministic seeded RNG stream comparison.")]
     public void SpeedValueDoesNotConsumeRandomnessWhileOnTheSamePiece()
     {
         Track track = Track.Load(TrackId.LittleRamp);

@@ -5,9 +5,7 @@ using static SDL.SDL3;
 
 namespace Useful.SDL;
 
-#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS's raw pointer API
 public sealed unsafe class SDLRenderer(SDLWindow window) : IDisposable
-#pragma warning restore S6640
 {
     private readonly nint _renderer = SDLGuard.Execute(() => (nint)SDL_CreateRenderer((SDL_Window*)(nint)window, (byte*)null));
     private bool _isDisposed;

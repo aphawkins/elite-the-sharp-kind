@@ -9,11 +9,17 @@ namespace EliteSharpLib;
 
 internal static class Extensions
 {
-#pragma warning disable CA1308 // Normalize strings to uppercase
-
-    internal static string CapitaliseFirstLetter(this string text) => char.ToUpperInvariant(text[0]) + text[1..].ToLowerInvariant();
-
-#pragma warning restore CA1308 // Normalize strings to uppercase
+    internal static string CapitaliseFirstLetter(this string text) => string.Create(
+        text.Length,
+        text,
+        static (span, source) =>
+        {
+            span[0] = char.ToUpperInvariant(source[0]);
+            for (int i = 1; i < source.Length; i++)
+            {
+                span[i] = char.ToLowerInvariant(source[i]);
+            }
+        });
 
     internal static void CopyTo(this IShip from, IShip to)
     {

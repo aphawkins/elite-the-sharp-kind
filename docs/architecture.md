@@ -64,4 +64,5 @@ The engine is architected like a business application; these are the house rules
 
 * NuGet package versions are managed centrally (`Directory.Packages.props`); shared `PackageReference` blocks (analyzers) live in `Directory.Build.props`/`.targets`, not copy-pasted per project.
 * Generated artifacts (benchmark reports, build output) are not committed.
+* Avoid `#pragma warning disable` and `[SuppressMessage]`: fix the underlying code first. If a diagnostic is a genuine, verified false positive for this codebase (not just this call site), configure its severity in `.editorconfig` instead — repo-wide, or project-scoped via a nested `.editorconfig` when the false positive is specific to one assembly (e.g. `unsafe` interop code) — rather than scattering local suppressions. Reach for a local suppression only when neither a code fix nor an `.editorconfig` change is possible, and justify it with a comment.
 

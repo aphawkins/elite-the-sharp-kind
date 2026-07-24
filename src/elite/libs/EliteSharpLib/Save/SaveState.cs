@@ -2,11 +2,8 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace EliteSharpLib.Save;
 
-[SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Need to be writable for serialisation.")]
 public sealed class SaveState
 {
     public SaveState()
@@ -48,7 +45,7 @@ public sealed class SaveState
 
     public float Credits { get; set; }
 
-    public IList<int> CurrentCargo { get; set; } = [];
+    public IList<int> CurrentCargo { get; init; } = [];
 
     public string EnergyUnit { get; set; } = string.Empty;
 
@@ -56,7 +53,7 @@ public sealed class SaveState
 
     public int GalaxyNumber { get; set; }
 
-    public IList<int> GalaxySeed { get; set; } = [];
+    public IList<int> GalaxySeed { get; init; } = [];
 
     public bool HasDockingComputer { get; set; }
 
@@ -70,7 +67,7 @@ public sealed class SaveState
 
     public bool HasGalacticHyperdrive { get; set; }
 
-    public IList<string> Lasers { get; set; } = [];
+    public IList<string> Lasers { get; init; } = [];
 
     public int LegalStatus { get; set; }
 
@@ -84,7 +81,7 @@ public sealed class SaveState
 
     public int Score { get; set; }
 
-    public IList<int> ShipLocation { get; set; } = [];
+    public IList<int> ShipLocation { get; init; } = [];
 
-    public IList<int> StationStock { get; set; } = [];
+    public IList<int> StationStock { get; init; } = [];
 }

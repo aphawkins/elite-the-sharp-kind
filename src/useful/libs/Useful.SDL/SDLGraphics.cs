@@ -10,9 +10,7 @@ using static SDL.SDL3_ttf;
 
 namespace Useful.SDL;
 
-#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS/ppy.SDL3_ttf-CS's raw pointer API
 public sealed unsafe class SDLGraphics : IGraphics, IDisposable
-#pragma warning restore S6640
 {
     private const int CircleSegments = 32;
 

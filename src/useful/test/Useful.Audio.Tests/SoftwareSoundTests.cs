@@ -16,7 +16,10 @@ namespace Useful.Audio.Tests;
 // AudioAssetFixture is nested (rather than CA1034's preferred top-level,
 // non-public type) because it is xunit's own IClassFixture<T> pattern: T
 // must be constructible by the test framework and is conventionally kept
-// alongside the test class that uses it.
+// alongside the test class that uses it. Both must stay public: xunit's
+// own analyzer (xUnit1000) requires public test classes, and a public
+// primary-constructor parameter type must itself be public (CS0051) -
+// there is no accessibility this can be narrowed to.
 #pragma warning disable CA1034
 public sealed class SoftwareSoundTests(SoftwareSoundTests.AudioAssetFixture fixture)
     : IClassFixture<SoftwareSoundTests.AudioAssetFixture>
@@ -395,7 +398,7 @@ public sealed class SoftwareSoundTests(SoftwareSoundTests.AudioAssetFixture fixt
 
             short[] padded = new short[pcm.Length + 46];
             pcm.CopyTo(padded.AsSpan());
-            byte[] sdtaList = BuildListChunk("sdta", BuildChunk("smpl", MemoryMarshal.AsBytes<short>(padded).ToArray()));
+            byte[] sdtaList = BuildListChunk("sdta", BuildChunk("smpl", MemoryMarshal.AsBytes(padded).ToArray()));
 
             byte[] pdtaContent =
             [
@@ -573,8 +576,8 @@ public sealed class SoftwareSoundTests(SoftwareSoundTests.AudioAssetFixture fixt
         // 'data', no extra chunks.
         private static byte[] BuildTestWavFloat32(double frequencyHz, double durationSeconds, float amplitude)
         {
-            const int sampleRate = SoftwareSound.SampleRate;
-            const int channels = SoftwareSound.Channels;
+            int sampleRate = SoftwareSound.SampleRate;
+            int channels = SoftwareSound.Channels;
             int frameCount = (int)(durationSeconds * sampleRate);
             int dataLength = frameCount * channels * sizeof(float);
 
@@ -615,8 +618,8 @@ public sealed class SoftwareSoundTests(SoftwareSoundTests.AudioAssetFixture fixt
         // (OggVorbisEncoder.Example/Encoder.cs).
         private static byte[] BuildTestOgg(double frequencyHz, double durationSeconds, float amplitude)
         {
-            const int sampleRate = SoftwareSound.SampleRate;
-            const int channels = SoftwareSound.Channels;
+            int sampleRate = SoftwareSound.SampleRate;
+            int channels = SoftwareSound.Channels;
             int sampleCount = (int)(durationSeconds * sampleRate);
 
             float[][] samples = new float[channels][];

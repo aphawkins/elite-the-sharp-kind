@@ -6,9 +6,7 @@ using static SDL.SDL3_ttf;
 
 namespace Useful.SDL;
 
-#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS's raw pointer API
 public sealed unsafe class SDLWindow : IDisposable
-#pragma warning restore S6640
 {
     private readonly nint _window;
     private bool _isDisposed;

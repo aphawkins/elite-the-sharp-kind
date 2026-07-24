@@ -11,12 +11,11 @@ internal class PlanetRenderer
 {
     internal const int LandXMax = 128;
     internal const int LandYMax = 128;
-#pragma warning disable SA1401 // Fields should be private
-    internal readonly uint[,] _landscape = new uint[LandXMax + 1, LandYMax + 1];
-#pragma warning restore SA1401 // Fields should be private
     private readonly IEliteDraw _draw;
 
     internal PlanetRenderer(IEliteDraw draw) => _draw = draw;
+
+    internal uint[,] Landscape { get; } = new uint[LandXMax + 1, LandYMax + 1];
 
     internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector4 location)
     {
@@ -106,7 +105,7 @@ internal class PlanetRenderer
             {
                 int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
                 int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);
-                _draw.Graphics.DrawPixel(s, _landscape[lx, ly]);
+                _draw.Graphics.DrawPixel(s, Landscape[lx, ly]);
             }
 
             rx += vx;

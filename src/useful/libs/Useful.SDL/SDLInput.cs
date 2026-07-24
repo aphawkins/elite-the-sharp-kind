@@ -38,9 +38,7 @@ public sealed class SDLInput : IInput
         }
     }
 
-#pragma warning disable S6640 // Avoid using this unsafe code block - required to fix the SDL_Event pointer for SDL_PollEvent
     private static unsafe bool PollEvent(out SDL_Event sdlEvent)
-#pragma warning restore S6640
     {
         // SDL3's bool result signals whether an event was returned, not
         // failure - the end of the queue is instead detected via the

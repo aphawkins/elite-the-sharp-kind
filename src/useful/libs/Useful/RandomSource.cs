@@ -1,7 +1,5 @@
 // 'Useful Libraries' - Andy Hawkins 2025.
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Useful;
 
 /// <summary>
@@ -9,10 +7,6 @@ namespace Useful;
 /// <see cref="System.Random"/>, so it is fast (unlike a cryptographic RNG)
 /// and seedable (unlike static state).
 /// </summary>
-[SuppressMessage(
-    "Security",
-    "CA5394:Do not use insecure randomness",
-    Justification = "Game logic, not security; needs seedable, fast randomness.")]
 public sealed class RandomSource(Random random) : IRandomSource
 {
     private readonly Random _random = random;

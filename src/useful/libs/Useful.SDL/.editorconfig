@@ -1,0 +1,10 @@
+# editorconfig.org
+
+# inherits higher configs
+
+[*.cs]
+
+# S6640: Avoid using this unsafe code block
+# Disabled for this project only: every unsafe block here is required by
+# ppy.SDL3-CS/ppy.SDL3_ttf-CS's raw pointer interop API.
+dotnet_diagnostic.S6640.severity = none

@@ -129,7 +129,7 @@ internal sealed class StripedPlanet : IObject
             uint color = _stripeColors[y * (_stripeColors.Length - 1) / PlanetRenderer.LandYMax];
             for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
             {
-                _planetRenderer._landscape[x, y] = color;
+                _planetRenderer.Landscape[x, y] = color;
             }
         }
     }

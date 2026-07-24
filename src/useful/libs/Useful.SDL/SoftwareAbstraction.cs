@@ -10,9 +10,7 @@ using static SDL.SDL3;
 
 namespace Useful.SDL;
 
-#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS's raw pointer API
 public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
-#pragma warning restore S6640
 {
     private readonly SDLRenderer _renderer;
     private readonly SDLWindow _window;

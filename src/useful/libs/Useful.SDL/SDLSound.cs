@@ -23,9 +23,7 @@ namespace Useful.SDL;
 // predecoded with the same MeltySynth + bundled SoundFont2 path SoftwareSound
 // uses, and handed to the mixer as raw PCM (MIX_LoadRawAudio); everything
 // else (SFX, tracks, pitch, gain) still goes through SDL3_mixer natively.
-#pragma warning disable S6640 // Avoid using this unsafe code block - required by ppy.SDL3-CS's raw pointer API
 public sealed unsafe class SDLSound : ISound, IDisposable
-#pragma warning restore S6640
 {
     // Matches SoftwareSound's fixed pool of 16 concurrent one-shot voices; a
     // one-shot is dropped (not queued or errored) when every track in the

@@ -1341,7 +1341,9 @@ dotnet_diagnostic.CA5392.severity = warning
 dotnet_diagnostic.CA5393.severity = warning
 
 # CA5394: Do not use insecure randomness
-dotnet_diagnostic.CA5394.severity = warning
+# Disabled repo-wide: this is a game, not a security boundary; every use of
+# System.Random here is seedable game/test randomness, never cryptographic.
+dotnet_diagnostic.CA5394.severity = none
 
 # CA5395: Miss HttpVerb attribute for action methods
 dotnet_diagnostic.CA5395.severity = warning
