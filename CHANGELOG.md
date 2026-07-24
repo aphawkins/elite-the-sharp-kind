@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Clean stale EliteSharpLib.csproj items, 2026-07-24)
+
+- `EliteSharpLib.csproj` carried a `<Compile Remove="Controls\**" />` /
+  `<EmbeddedResource Remove="Controls\**" />` / `<None Remove="Controls\**" />`
+  block and fourteen `None Update="sfx\*.wav"` items pointing at a
+  `Controls/` and a `sfx/` folder that no longer exist under
+  `src/elite/libs/EliteSharpLib/`; removed both (confirmed neither path
+  exists). Left the ~280-line hand-maintained `Assets\*` item list as-is —
+  converting it to glob items is a separate, purely stylistic change with
+  its own risk of altering per-extension `CopyToOutputDirectory` overrides
+  (e.g. `.wav`/`.ogg` pairs under `Assets\SFX`/`Assets\Music` set
+  `Never`/`PreserveNewest` differently), not needed to fix the stale
+  references.
+
 ### Changed (Remove Vector4.Cloner(), 2026-07-24)
 
 - `Vector4.Cloner()`
