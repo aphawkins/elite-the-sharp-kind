@@ -7,6 +7,23 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Config file never written to %AppData% until a setting was changed, 2026-07-24)
+
+- `ConfigFile<T>.ReadConfig()`
+  ([ConfigFile.cs](src/useful/libs/Useful/Config/ConfigFile.cs)) only ever
+  read from disk, falling back to `new T()` in memory when no file existed;
+  it never wrote that file back out. Both games only call `WriteConfig`
+  from their Settings/Options screen, so on a fresh install
+  `%AppData%\TheSharpKind` stayed empty until the user opened Settings —
+  nothing else confirmed the config path was writable or let a player find
+  the file to hand-edit. `ReadConfig` now checks whether the file existed
+  before reading, and if not, writes the resolved defaults immediately so a
+  config file always appears at startup for both Elite
+  (`elitesharp.cfg`) and SCR (`stuntcarracersharp.cfg`). Corrupt/invalid
+  existing files are untouched, since the write only happens when the file
+  was missing beforehand. Verified via the existing `ConfigFileTests` in
+  both `Useful.Tests` and `EliteSharpLib.Tests`.
+
 ### Changed (Extract a shared BaseConfigSettings to deduplicate the two games' config types, 2026-07-23)
 
 - `ConfigSettings` (Elite) and `ScrConfigSettings` (SCR) had drifted into

@@ -81,10 +81,14 @@ public sealed class ConfigFile<T> : IConfigWriter<T>
     }
 
     /// <summary>
-    /// Read the config file.
+    /// Read the config file. If no config file exists yet (e.g. first run), the resulting
+    /// defaults are written out immediately so a config file always appears under the
+    /// user-data directory rather than only after the user first changes a setting.
     /// </summary>
     public T ReadConfig()
     {
+        bool fileExisted = File.Exists(ConfigPath);
+
         try
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
@@ -97,6 +101,11 @@ public sealed class ConfigFile<T> : IConfigWriter<T>
 
             if (_isValid(config))
             {
+                if (!fileExisted)
+                {
+                    WriteConfig(config);
+                }
+
                 return config;
             }
 
