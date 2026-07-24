@@ -41,46 +41,59 @@ internal sealed class ShipFactory : IShipFactory
     public IShip CreateLoneWolf()
     {
         int rnd = _rng.Random(256);
-        return ((rnd & 3) + (rnd > 127 ? 1 : 0)) switch
+        int index = (rnd & 3) + (rnd > 127 ? 1 : 0);
+        return index switch
         {
             0 => CreateShip("CobraMk3Lone"),
             1 => CreateShip("AspMk2"),
             2 => CreateShip("PythonLone"),
             3 => CreateShip("FerDeLance"),
             4 => CreateShip("Moray"),
-            _ => throw new EliteException(),
+            _ => throw new EliteException($"Unexpected lone wolf index '{index}' (rnd '{rnd}')."),
         };
     }
 
-    public IShip CreatePackHunter() => _rng.Random(7) switch
+    public IShip CreatePackHunter()
     {
-        0 => CreateShip("Sidewinder"),
-        1 => CreateShip("Mamba"),
-        2 => CreateShip("Krait"),
-        3 => CreateShip("Adder"),
-        4 => CreateShip("Gecko"),
-        5 => CreateShip("CobraMk1"),
-        6 => CreateShip("Worm"),
-        _ => throw new EliteException(),
-    };
+        int rnd = _rng.Random(7);
+        return rnd switch
+        {
+            0 => CreateShip("Sidewinder"),
+            1 => CreateShip("Mamba"),
+            2 => CreateShip("Krait"),
+            3 => CreateShip("Adder"),
+            4 => CreateShip("Gecko"),
+            5 => CreateShip("CobraMk1"),
+            6 => CreateShip("Worm"),
+            _ => throw new EliteException($"Unexpected pack hunter roll '{rnd}'."),
+        };
+    }
 
-    public IShip CreatePirate() => _rng.Random(4) switch
+    public IShip CreatePirate()
     {
-        0 => CreateShip("Sidewinder"),
-        1 => CreateShip("Mamba"),
-        2 => CreateShip("Krait"),
-        3 => CreateShip("Adder"),
-        _ => throw new EliteException(),
-    };
+        int rnd = _rng.Random(4);
+        return rnd switch
+        {
+            0 => CreateShip("Sidewinder"),
+            1 => CreateShip("Mamba"),
+            2 => CreateShip("Krait"),
+            3 => CreateShip("Adder"),
+            _ => throw new EliteException($"Unexpected pirate roll '{rnd}'."),
+        };
+    }
 
-    public IShip CreateTrader() => _rng.Random(4) switch
+    public IShip CreateTrader()
     {
-        0 => CreateShip("CobraMk3"),
-        1 => CreateShip("Python"),
-        2 => CreateShip("Boa"),
-        3 => CreateShip("Anaconda"),
-        _ => throw new EliteException(),
-    };
+        int rnd = _rng.Random(4);
+        return rnd switch
+        {
+            0 => CreateShip("CobraMk3"),
+            1 => CreateShip("Python"),
+            2 => CreateShip("Boa"),
+            3 => CreateShip("Anaconda"),
+            _ => throw new EliteException($"Unexpected trader roll '{rnd}'."),
+        };
+    }
 
     public List<IShip> CreateParade() => new()
     {

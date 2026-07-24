@@ -7,6 +7,15 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Message the bare ShipFactory exceptions, 2026-07-24)
+
+- The `throw new EliteException()` calls in `ShipFactory`'s `CreateLoneWolf`,
+  `CreatePackHunter`, `CreatePirate`, and `CreateTrader` switch-expression
+  defaults ([ShipFactory.cs](src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs))
+  carried no message, so a hit would be undiagnosable in a log; each now
+  reports the offending roll (and, for the lone-wolf case, the computed
+  index alongside the underlying `rnd`).
+
 ### Added (Track benchmark history in CI, 2026-07-24)
 
 - Resolved the "how to record and monitor historical benchmark numbers"
