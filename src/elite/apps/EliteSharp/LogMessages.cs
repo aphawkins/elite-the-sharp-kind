@@ -4,7 +4,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace EliteSharp.SDL;
+namespace EliteSharp;
 
 internal static partial class LogMessages
 {

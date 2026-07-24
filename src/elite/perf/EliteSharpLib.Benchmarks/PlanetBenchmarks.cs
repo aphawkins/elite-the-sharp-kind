@@ -13,6 +13,7 @@ using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Benchmarks;
 
+[JsonExporterAttribute.FullCompressed]
 public class PlanetBenchmarks : IDisposable
 {
     private const int ScreenWidth = 512;

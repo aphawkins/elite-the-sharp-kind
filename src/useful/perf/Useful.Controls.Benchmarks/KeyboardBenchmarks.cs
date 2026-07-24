@@ -5,6 +5,7 @@ using BenchmarkDotNet.Attributes;
 namespace Useful.Controls.Benchmarks;
 
 [MemoryDiagnoser]
+[JsonExporterAttribute.FullCompressed]
 public class KeyboardBenchmarks
 {
     private const int EventBatchSize = 8;

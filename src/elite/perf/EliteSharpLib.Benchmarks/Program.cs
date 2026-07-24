@@ -18,7 +18,7 @@ internal static class Program
                 .Create(DefaultConfig.Instance)
                 .WithArtifactsPath("../../../reports"));
 
-        BenchmarkRunner.Run<PlanetBenchmarks>(
+        BenchmarkRunner.Run<SunBenchmarks>(
             ManualConfig
                 .Create(DefaultConfig.Instance)
                 .WithArtifactsPath("../../../reports"));

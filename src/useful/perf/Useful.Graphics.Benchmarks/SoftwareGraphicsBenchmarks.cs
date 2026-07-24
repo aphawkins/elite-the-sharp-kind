@@ -6,6 +6,7 @@ using Useful.Fakes.Assets;
 
 namespace Useful.Graphics.Benchmarks;
 
+[JsonExporterAttribute.FullCompressed]
 public class SoftwareGraphicsBenchmarks : IDisposable
 {
     private const int ScreenHeightPixels = 512;

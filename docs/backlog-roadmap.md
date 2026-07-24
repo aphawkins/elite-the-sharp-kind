@@ -30,6 +30,21 @@ Maintainer decisions, not code tasks — each blocks or reshapes items below.
       that trades away period-accurate feel for smoother rendering; needs a
       research spike/prototype before committing either way — not resolved.
 
+### Resolved (2026-07-24) — benchmark history tracking
+
+Decided: use [benchmark-action/github-action-benchmark](https://github.com/benchmark-action/github-action-benchmark)
+against BenchmarkDotNet's `[JsonExporterAttribute.FullCompressed]` output,
+storing history on a `gh-pages` branch (one chart per benchmark class, kept
+apart by the action's `name` input), triggered manually via
+`workflow_dispatch` only — not on every push/PR, since shared GitHub-hosted
+runners are too noisy for benchmark numbers to gate CI, and this repo has no
+regression-alerting need yet. Implemented in
+[.github/workflows/benchmarks.yml](../.github/workflows/benchmarks.yml).
+One-time manual follow-up outside of code: after the workflow's first run
+creates the `gh-pages` branch, enable it under repo Settings → Pages →
+Source, to get a browsable dashboard (the history is recorded either way;
+this only makes it visible).
+
 ### Resolved (2026-07-19) — ptitSeb parity audit
 
 A full feature-by-feature comparison of `C:\code\github\ptitSeb\stuntcarremake`
@@ -96,7 +111,6 @@ functionality. Conclusions:
 
 ### Cleanups and small refactors
 
-- [ ] [Apps] Fix the rename leftover: `EliteSharp`'s [LogMessages.cs](../src/elite/apps/EliteSharp/LogMessages.cs) still sits in namespace `EliteSharp.SDL` though the project is `EliteSharp` (`SDLProgram.cs` was already fixed to plain `EliteSharp`); and remove the committed benchmark reports under `src/*/perf/**/reports/` (generated artifacts, per the architecture doc's hygiene rule). How to record and monitor the historical benchmark numbers is a separate decision (e.g. a GitHub Action that runs the benchmarks and posts the results to a PR comment), what is best practice?
 - [ ] [EliteSharpLib] Give the bare `throw new EliteException()` calls in the factory `switch` defaults ([ShipFactory.cs:46,59,68,77](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) a message with the offending value — an empty exception is undiagnosable in a log.
 - [ ] [Useful.SDL] Document and harden the `SDLSound` loop-pitch threading contract: the `Mix_RegisterEffect` callback runs on the audio thread while the game thread writes the pitch; verify the field is read/written with `Volatile` (or is inherently safe) and state the contract in a comment.
 - [ ] [Useful.Graphics] Remove the `Debug.WriteLine($"{x},{y}")` left in the `DrawCircleFilled` scanline loop ([SoftwareGraphics.cs:122](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) — debug-build log spam for every filled circle (planets, suns) every frame.

@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Globalization;
-using EliteSharp.SDL;
 using EliteSharpLib;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

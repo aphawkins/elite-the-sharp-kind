@@ -1,0 +1,81 @@
+name: Benchmarks
+
+# Manual, on-demand only: shared GitHub-hosted runners are noisy for
+# absolute benchmark timings, and these numbers are read as trends, not
+# gates, so this does not run on every push/PR. Trigger it after a
+# perf-focused change to record a new data point.
+on:
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    permissions:
+      # deployments permission to deploy the GitHub Pages benchmark charts
+      deployments: write
+      # contents permission to push benchmark history to the gh-pages branch
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Run EliteSharpLib benchmarks
+        working-directory: src/elite/perf/EliteSharpLib.Benchmarks
+        run: dotnet run --configuration Release
+
+      - name: Run Useful.Controls benchmarks
+        working-directory: src/useful/perf/Useful.Controls.Benchmarks
+        run: dotnet run --configuration Release
+
+      - name: Run Useful.Graphics benchmarks
+        working-directory: src/useful/perf/Useful.Graphics.Benchmarks
+        run: dotnet run --configuration Release
+
+      # Each benchmark class gets its own JSON report and its own chart on
+      # the gh-pages dashboard (github-action-benchmark keys history by the
+      # `name` input) - add a step here when a new *Benchmarks class is added.
+      - name: Record Elite Planet benchmark history
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: 'benchmarkdotnet'
+          name: 'Elite: Planet rendering'
+          output-file-path: src/elite/perf/EliteSharpLib.Benchmarks/reports/results/EliteSharpLib.Benchmarks.PlanetBenchmarks-report-full-compressed.json
+          gh-pages-branch: gh-pages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+
+      - name: Record Elite Sun benchmark history
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: 'benchmarkdotnet'
+          name: 'Elite: Sun rendering'
+          output-file-path: src/elite/perf/EliteSharpLib.Benchmarks/reports/results/EliteSharpLib.Benchmarks.SunBenchmarks-report-full-compressed.json
+          gh-pages-branch: gh-pages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+
+      - name: Record Useful.Controls Keyboard benchmark history
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: 'benchmarkdotnet'
+          name: 'Useful.Controls: Keyboard'
+          output-file-path: src/useful/perf/Useful.Controls.Benchmarks/reports/results/Useful.Controls.Benchmarks.KeyboardBenchmarks-report-full-compressed.json
+          gh-pages-branch: gh-pages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+
+      - name: Record Useful.Graphics SoftwareGraphics benchmark history
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: 'benchmarkdotnet'
+          name: 'Useful.Graphics: SoftwareGraphics'
+          output-file-path: src/useful/perf/Useful.Graphics.Benchmarks/reports/results/Useful.Graphics.Benchmarks.SoftwareGraphicsBenchmarks-report-full-compressed.json
+          gh-pages-branch: gh-pages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true

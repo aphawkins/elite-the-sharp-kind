@@ -7,6 +7,44 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Track benchmark history in CI, 2026-07-24)
+
+- Resolved the "how to record and monitor historical benchmark numbers"
+  decision from the previous cleanup: added
+  [.github/workflows/benchmarks.yml](.github/workflows/benchmarks.yml), a
+  `workflow_dispatch`-only job (manual trigger — shared runners are too
+  noisy to gate every push/PR on) that runs all three `*.Benchmarks`
+  projects and records each benchmark class's results to the `gh-pages`
+  branch via `benchmark-action/github-action-benchmark`, giving each class
+  its own trend chart. Added `[JsonExporterAttribute.FullCompressed]` to
+  `PlanetBenchmarks`, `SunBenchmarks`, `KeyboardBenchmarks`, and
+  `SoftwareGraphicsBenchmarks` so BenchmarkDotNet emits the JSON report the
+  action reads. Also fixed `EliteSharpLib.Benchmarks/Program.cs`, which ran
+  `PlanetBenchmarks` twice instead of running `SunBenchmarks` too — found
+  while wiring this up; `SunBenchmarks` had never actually executed.
+  One-time manual step still needed once this merges: enable GitHub Pages
+  (Settings → Pages → Source → `gh-pages` branch) after the workflow's
+  first run creates the branch, to get a browsable dashboard. Built the
+  full solution (all green); did not execute the new workflow itself,
+  since it depends on the `gh-pages` branch/Pages state.
+
+### Changed (Fix EliteSharp namespace rename leftover and stop committing benchmark reports, 2026-07-24)
+
+- `LogMessages.cs` was still in namespace `EliteSharp.SDL` from before the
+  `EliteSharp.SDL` project was renamed to `EliteSharp` (`SDLProgram.cs` had
+  already been fixed); moved it to `EliteSharp` and dropped the now-unused
+  `using EliteSharp.SDL;` from `SDLProgram.cs`.
+- Removed the committed BenchmarkDotNet report files under
+  `src/elite/perf/EliteSharpLib.Benchmarks/reports/`,
+  `src/useful/perf/Useful.Controls.Benchmarks/reports/`, and
+  `src/useful/perf/Useful.Graphics.Benchmarks/reports/` — generated
+  artifacts per the architecture doc's solution-hygiene rule — and added
+  `src/*/perf/*/reports/` to `.gitignore` so they don't get recommitted.
+  How to record and monitor historical benchmark numbers over time (e.g. a
+  CI job that posts results to a PR comment) remains an open decision, not
+  addressed here. Built the full solution and ran the complete test suite
+  (all green).
+
 ### Changed (Pin FastBitmap pixel arrays lazily, 2026-07-24)
 
 - `FastBitmap` pinned its pixel array with a `GCHandle` in the constructor

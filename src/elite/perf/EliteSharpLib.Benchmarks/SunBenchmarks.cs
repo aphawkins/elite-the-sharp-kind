@@ -13,6 +13,7 @@ using Useful.SDL;
 
 namespace EliteSharpLib.Benchmarks;
 
+[JsonExporterAttribute.FullCompressed]
 public class SunBenchmarks : IDisposable
 {
     private const int ScreenWidth = 512;
