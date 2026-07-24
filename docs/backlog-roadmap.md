@@ -87,28 +87,6 @@ functionality. Conclusions:
 
 ## Should
 
-### Defects and gaps
-
-- [ ] [EliteSharpLib] `FractalPlanet` landscape generation isn't
-      deterministic per system, unlike the reference: `fesh0r/newkind`'s
-      `generate_fractal_landscape(rnd_seed)` (`threed.c`) saves the global
-      RNG seed, reseeds to the per-system seed, generates the *entire*
-      landscape — the corner grid and the `grand()` midpoint-displacement
-      jitter — through that one reseeded stream, then restores the
-      original seed, so revisiting a system always renders a
-      byte-identical planet. The port
-      ([FractalPlanet.cs:86-119](../src/elite/libs/EliteSharpLib/Planets/FractalPlanet.cs))
-      only seeds a local `Random(seed)` for the corner grid
-      (`GenerateLandscape`); `CalcMidpointColor`'s jitter
-      ([FractalPlanet.cs:76-80](../src/elite/libs/EliteSharpLib/Planets/FractalPlanet.cs))
-      draws from the shared game-wide `RNG _rng` instead, so the fine
-      detail differs between visits to the same system. Fix: generate the
-      whole landscape from the one local `Random(seed)` (already mirrors
-      `grand()`'s "sum 12 draws" shape via `GaussianRandom`); `RNG`/`_rng`
-      then becomes unused in `FractalPlanet` — drop the parameter from its
-      constructor and from `PlanetFactory.Create`, and update the two call
-      sites in `Space.cs` (~165-169, ~632-637) plus `FractalPlanetTests.cs`.
-
 ### Release engineering (from the retired release plan)
 
 (none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)

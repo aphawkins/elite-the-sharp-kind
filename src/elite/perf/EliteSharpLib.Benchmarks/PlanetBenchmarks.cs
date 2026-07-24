@@ -37,7 +37,7 @@ public class PlanetBenchmarks : IDisposable
         EliteDraw draw = new(gameState, _graphics, assetLocator, shipRenderer, rng);
         _wireframePlanet = new(draw);
         _solidPlanet = new(draw);
-        _fractalPlanet = new(draw, 12345, rng);
+        _fractalPlanet = new(draw, 12345);
         _stripedPlanet = new(draw);
     }
 

@@ -9,9 +9,9 @@ namespace EliteSharpLib.Planets;
 
 internal static class PlanetFactory
 {
-    internal static IObject Create(PlanetType type, IEliteDraw draw, int seed, RNG rng) => type switch
+    internal static IObject Create(PlanetType type, IEliteDraw draw, int seed) => type switch
     {
-        PlanetType.Fractal => new FractalPlanet(draw, seed, rng),
+        PlanetType.Fractal => new FractalPlanet(draw, seed),
         PlanetType.Wireframe => new WireframePlanet(draw),
         PlanetType.Solid => new SolidPlanet(draw),
         PlanetType.Striped => new StripedPlanet(draw),

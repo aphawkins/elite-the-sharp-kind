@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib.Planets;
 
@@ -16,27 +17,32 @@ internal sealed class FractalPlanet : IObject
     private readonly uint _colorGreen;
     private readonly uint _colorLightBlue;
     private readonly uint _colorLightGreen;
-    private readonly RNG _rng;
+    private readonly IRandomSource _landscapeRandom;
 
-    internal FractalPlanet(IEliteDraw draw, int seed, RNG rng)
+    internal FractalPlanet(IEliteDraw draw, int seed)
     {
         _draw = draw;
         Seed = seed;
-        _rng = rng;
+
+        // Reference: fesh0r/newkind's generate_fractal_landscape(rnd_seed) reseeds a
+        // single stream for the whole landscape (corner grid + jitter), so the same
+        // system always renders a byte-identical planet.
+        Random random = new(seed);
+        _landscapeRandom = new RandomSource(random);
         _planetRenderer = new(draw);
         _colorBlue = draw.Palette["Blue"];
         _colorGreen = draw.Palette["Green"];
         _colorLightBlue = draw.Palette["LightBlue"];
         _colorLightGreen = draw.Palette["LightGreen"];
 
-        GenerateLandscape(seed);
+        GenerateLandscape();
     }
 
     private FractalPlanet(FractalPlanet other)
     {
         _draw = other._draw;
         Seed = other.Seed;
-        _rng = other._rng;
+        _landscapeRandom = other._landscapeRandom;
         _planetRenderer = other._planetRenderer;
     }
 
@@ -53,6 +59,8 @@ internal sealed class FractalPlanet : IObject
     public ShipType Type { get; set; } = ShipType.Planet;
 
     internal int Seed { get; }
+
+    internal uint[,] Landscape => _planetRenderer.Landscape;
 
     public IObject Clone()
     {
@@ -75,24 +83,22 @@ internal sealed class FractalPlanet : IObject
     /// </summary>
     private uint CalcMidpointColor(int sx, int sy, int ex, int ey)
         => Math.Clamp(
-            ((_planetRenderer.Landscape[sx, sy] + _planetRenderer.Landscape[ex, ey]) / 2) + (uint)_rng.GaussianRandom(-7, 8),
+            ((_planetRenderer.Landscape[sx, sy] + _planetRenderer.Landscape[ex, ey]) / 2) + (uint)_landscapeRandom.GaussianRandom(-7, 8),
             0,
             255);
 
     /// <summary>
     /// Generate a fractal landscape. Uses midpoint displacement method.
     /// </summary>
-    /// <param name="seed">Initial seed for the generation.</param>
-    private void GenerateLandscape(int seed)
+    private void GenerateLandscape()
     {
         const int d = PlanetRenderer.LandXMax / 8;
-        Random random = new(seed);
 
         for (int y = 0; y <= PlanetRenderer.LandYMax; y += d)
         {
             for (int x = 0; x <= PlanetRenderer.LandXMax; x += d)
             {
-                _planetRenderer.Landscape[x, y] = (uint)random.Next(255);
+                _planetRenderer.Landscape[x, y] = (uint)_landscapeRandom.Random(255);
             }
         }
 

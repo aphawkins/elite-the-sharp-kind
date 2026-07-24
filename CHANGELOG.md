@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (FractalPlanet landscape generation wasn't deterministic per system, 2026-07-24)
+
+- `FractalPlanet.GenerateLandscape`
+  ([FractalPlanet.cs](src/elite/libs/EliteSharpLib/Planets/FractalPlanet.cs))
+  seeded a local `Random(seed)` for the corner grid but drew
+  `CalcMidpointColor`'s midpoint-displacement jitter from the shared
+  game-wide `RNG`, so a planet's fine detail differed between visits to
+  the same system depending on how much other game activity had advanced
+  the shared RNG in between — unlike the reference
+  `generate_fractal_landscape(rnd_seed)` (`fesh0r/newkind`'s `threed.c`),
+  which reseeds one stream for the whole landscape so revisiting a system
+  always renders a byte-identical planet. Both the corner grid and the
+  jitter now draw from the one seeded `RandomSource` local to each
+  `FractalPlanet`, which also made the `RNG` dependency unused — dropped
+  it from `FractalPlanet`'s constructor, `PlanetFactory.Create`, and the
+  two call sites in `Space.cs`. Added
+  `FractalPlanetTests.GenerateLandscapeIsDeterministicPerSeed`, which
+  failed under the old shared-RNG behaviour and passes now.
+
 ### Changed (Replace custom Guard.ArgumentNull with ArgumentNullException.ThrowIfNull, 2026-07-24)
 
 - `Guard.ArgumentNull` ([Guard.cs](src/useful/libs/Useful/Guard.cs)) was a
