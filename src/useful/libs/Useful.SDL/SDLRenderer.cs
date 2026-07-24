@@ -21,7 +21,7 @@ public sealed unsafe class SDLRenderer(SDLWindow window) : IDisposable
 
     public static implicit operator nint(SDLRenderer renderer)
     {
-        Guard.ArgumentNull(renderer);
+        ArgumentNullException.ThrowIfNull(renderer);
 
         return renderer._renderer;
     }

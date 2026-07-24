@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics.CodeAnalysis;
-using Useful;
 
 namespace EliteSharpLib.Save;
 
@@ -16,7 +15,7 @@ public sealed class SaveState
 
     public SaveState(SaveState other)
     {
-        Guard.ArgumentNull(other);
+        ArgumentNullException.ThrowIfNull(other);
 
         CommanderName = other.CommanderName;
         Mission = other.Mission;

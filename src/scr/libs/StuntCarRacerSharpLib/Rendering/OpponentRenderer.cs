@@ -4,7 +4,6 @@
 
 using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Tracks;
-using Useful;
 
 namespace StuntCarRacerSharpLib.Rendering;
 
@@ -20,9 +19,9 @@ public sealed class OpponentRenderer
 
     public OpponentRenderer(OpponentPhysics opponent, CarMesh carMesh, ScrPalette palette)
     {
-        Guard.ArgumentNull(opponent);
-        Guard.ArgumentNull(carMesh);
-        Guard.ArgumentNull(palette);
+        ArgumentNullException.ThrowIfNull(opponent);
+        ArgumentNullException.ThrowIfNull(carMesh);
+        ArgumentNullException.ThrowIfNull(palette);
         _opponent = opponent;
         _carMesh = carMesh;
         _palette = palette;
@@ -32,7 +31,7 @@ public sealed class OpponentRenderer
     // drawing with the track.
     public void AppendWorldPolygons(ICollection<WorldPolygon> polygons)
     {
-        Guard.ArgumentNull(polygons);
+        ArgumentNullException.ThrowIfNull(polygons);
 
         if (_opponent.OpponentId < 0)
         {

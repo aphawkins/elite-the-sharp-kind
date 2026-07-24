@@ -236,8 +236,8 @@ public sealed partial class CarPhysics
 
     public CarPhysics(Track track, IRandomSource randomSource)
     {
-        Guard.ArgumentNull(track);
-        Guard.ArgumentNull(randomSource);
+        ArgumentNullException.ThrowIfNull(track);
+        ArgumentNullException.ThrowIfNull(randomSource);
         _track = track;
         _randomSource = randomSource;
     }

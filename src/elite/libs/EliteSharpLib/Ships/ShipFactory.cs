@@ -4,7 +4,6 @@
 
 using System.Reflection;
 using EliteSharpLib.Graphics;
-using Useful;
 using Useful.Assets;
 using Useful.Assets.Models;
 
@@ -23,7 +22,7 @@ internal sealed class ShipFactory : IShipFactory
 
     public static ShipFactory Create(IAssetLocator assetLocator, IEliteDraw draw, RNG rng)
     {
-        Guard.ArgumentNull(assetLocator);
+        ArgumentNullException.ThrowIfNull(assetLocator);
 
         Dictionary<string, IShip> ships = assetLocator.ModelPaths.ToDictionary(
             x => x.Key,

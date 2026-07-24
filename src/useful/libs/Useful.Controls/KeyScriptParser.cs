@@ -14,7 +14,7 @@ public static class KeyScriptParser
 {
     public static IReadOnlyList<KeyScriptEvent> Parse(string script)
     {
-        Guard.ArgumentNull(script);
+        ArgumentNullException.ThrowIfNull(script);
 
         List<KeyScriptEvent> events = [];
         foreach (string rawLine in script.Split('\n'))

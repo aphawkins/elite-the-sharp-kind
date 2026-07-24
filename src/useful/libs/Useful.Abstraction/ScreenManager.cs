@@ -21,7 +21,7 @@ public sealed class ScreenManager<TId, TScreen>
 
     public ScreenManager(IKeyboard keyboard)
     {
-        Guard.ArgumentNull(keyboard);
+        ArgumentNullException.ThrowIfNull(keyboard);
 
         _keyboard = keyboard;
     }
@@ -32,7 +32,7 @@ public sealed class ScreenManager<TId, TScreen>
 
     public void Add(TId id, TScreen screen)
     {
-        Guard.ArgumentNull(screen);
+        ArgumentNullException.ThrowIfNull(screen);
 
         _screens.Add(id, screen);
     }

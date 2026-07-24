@@ -5,7 +5,6 @@
 using System.Numerics;
 using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Tracks;
-using Useful;
 using Useful.Graphics;
 
 namespace StuntCarRacerSharpLib.Rendering;
@@ -43,8 +42,8 @@ public sealed class BackdropRenderer
 
     public BackdropRenderer(IGraphics graphics, ScrPalette palette)
     {
-        Guard.ArgumentNull(graphics);
-        Guard.ArgumentNull(palette);
+        ArgumentNullException.ThrowIfNull(graphics);
+        ArgumentNullException.ThrowIfNull(palette);
         _graphics = graphics;
         _palette = palette;
     }
@@ -60,7 +59,7 @@ public sealed class BackdropRenderer
 
     public void Draw(SceneCamera camera)
     {
-        Guard.ArgumentNull(camera);
+        ArgumentNullException.ThrowIfNull(camera);
 
         DrawHorizon(RenderY(camera), RenderXAngle(camera), RenderZAngle(camera));
         DrawScenery(RenderY(camera), RenderXAngle(camera), camera.YAngle, RenderZAngle(camera));
@@ -70,7 +69,7 @@ public sealed class BackdropRenderer
     // covers the ground line everywhere, so tests use this to check it).
     internal void DrawHorizonOnly(SceneCamera camera)
     {
-        Guard.ArgumentNull(camera);
+        ArgumentNullException.ThrowIfNull(camera);
         DrawHorizon(RenderY(camera), RenderXAngle(camera), RenderZAngle(camera));
     }
 

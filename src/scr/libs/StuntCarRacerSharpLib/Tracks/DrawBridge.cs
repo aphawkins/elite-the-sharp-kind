@@ -3,7 +3,6 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerSharpLib.Cars;
-using Useful;
 
 namespace StuntCarRacerSharpLib.Tracks;
 
@@ -38,7 +37,7 @@ public sealed class DrawBridge
 
     public DrawBridge(Track track)
     {
-        Guard.ArgumentNull(track);
+        ArgumentNullException.ThrowIfNull(track);
         _track = track;
     }
 
@@ -53,7 +52,7 @@ public sealed class DrawBridge
 
     public void Move(int playerPiece, int opponentPiece, OpponentPhysics opponent)
     {
-        Guard.ArgumentNull(opponent);
+        ArgumentNullException.ThrowIfNull(opponent);
 
         if (_track.Id != TrackId.DrawBridge)
         {

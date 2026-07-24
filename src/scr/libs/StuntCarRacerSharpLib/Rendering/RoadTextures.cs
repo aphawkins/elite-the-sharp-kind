@@ -32,7 +32,7 @@ public sealed class RoadTextures
 
     internal RoadTextures(ScrPalette palette)
     {
-        Guard.ArgumentNull(palette);
+        ArgumentNullException.ThrowIfNull(palette);
 
         _textures = new FastBitmap[6];
         _textures[0] = Strip(palette.Colour(Track.ScrBaseColour + 3), palette.Colour(Track.ScrBaseColour + 1));

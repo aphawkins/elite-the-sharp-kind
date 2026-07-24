@@ -21,8 +21,8 @@ public sealed class KeyScriptPlayer
 
     public KeyScriptPlayer(IKeyboardSink sink, IReadOnlyList<KeyScriptEvent> script)
     {
-        Guard.ArgumentNull(sink);
-        Guard.ArgumentNull(script);
+        ArgumentNullException.ThrowIfNull(sink);
+        ArgumentNullException.ThrowIfNull(script);
 
         _sink = sink;
         _script = script;

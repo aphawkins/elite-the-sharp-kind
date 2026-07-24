@@ -26,8 +26,8 @@ public static class ModelReader
 
     public static ThreeDModel Read(string modelName, IPaletteCollection palette)
     {
-        Guard.ArgumentNull(modelName);
-        Guard.ArgumentNull(palette);
+        ArgumentNullException.ThrowIfNull(modelName);
+        ArgumentNullException.ThrowIfNull(palette);
 
         string[] modelLines = File.ReadAllLines(modelName);
 

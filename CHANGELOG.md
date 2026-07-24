@@ -7,6 +7,17 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Replace custom Guard.ArgumentNull with ArgumentNullException.ThrowIfNull, 2026-07-24)
+
+- `Guard.ArgumentNull` ([Guard.cs](src/useful/libs/Useful/Guard.cs)) was a
+  hand-rolled null-check helper predating .NET's
+  `ArgumentNullException.ThrowIfNull`, which does the same job as a framework
+  intrinsic (per the architecture doc's "prefer dotnet framework intrinsics"
+  rule). Replaced all call sites across `Useful.*`, `EliteSharpLib`, and
+  `StuntCarRacerSharpLib` with `ArgumentNullException.ThrowIfNull`, then
+  deleted `Guard.cs`, `ValidatedNotNullAttribute.cs`, and `GuardTests.cs`.
+  Dropped the now-unused `using Useful;` this left behind in nine files.
+
 ### Fixed (Config file never written to %AppData% until a setting was changed, 2026-07-24)
 
 - `ConfigFile<T>.ReadConfig()`

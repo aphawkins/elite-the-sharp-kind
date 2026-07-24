@@ -14,7 +14,7 @@ public static class BitmapWriter
 
     public static void Write(FastBitmap bitmap, string path)
     {
-        Guard.ArgumentNull(bitmap);
+        ArgumentNullException.ThrowIfNull(bitmap);
 
         int width = bitmap.Width;
         int height = bitmap.Height;

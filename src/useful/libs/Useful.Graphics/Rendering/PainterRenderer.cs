@@ -18,7 +18,7 @@ public sealed class PainterRenderer(IGraphics graphics) : IPolygonRenderer
 
     public void Submit(Vector2[] points, FastColor color, float z)
     {
-        Guard.ArgumentNull(points);
+        ArgumentNullException.ThrowIfNull(points);
 
         int i;
 

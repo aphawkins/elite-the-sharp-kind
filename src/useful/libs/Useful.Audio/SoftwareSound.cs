@@ -53,7 +53,7 @@ public sealed class SoftwareSound : ISound, IDisposable
 
     public SoftwareSound(IAssetLocator assetLocator)
     {
-        Guard.ArgumentNull(assetLocator);
+        ArgumentNullException.ThrowIfNull(assetLocator);
 
         _musicPaths = assetLocator.MusicPaths;
         _soundFontPaths = assetLocator.SoundFontPaths;

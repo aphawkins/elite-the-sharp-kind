@@ -130,9 +130,9 @@ public sealed partial class OpponentPhysics
 
     public OpponentPhysics(Track track, CarPhysics player, IRandomSource randomSource)
     {
-        Guard.ArgumentNull(track);
-        Guard.ArgumentNull(player);
-        Guard.ArgumentNull(randomSource);
+        ArgumentNullException.ThrowIfNull(track);
+        ArgumentNullException.ThrowIfNull(player);
+        ArgumentNullException.ThrowIfNull(randomSource);
 
         _track = track;
         _player = player;

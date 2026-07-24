@@ -12,8 +12,8 @@ public sealed class AudioController
 
     public AudioController(ISound sound, IDictionary<string, SfxSample> sfx, AudioOptions options)
     {
-        Guard.ArgumentNull(sfx);
-        Guard.ArgumentNull(options);
+        ArgumentNullException.ThrowIfNull(sfx);
+        ArgumentNullException.ThrowIfNull(options);
 
         _sound = sound;
         _sfx = sfx;

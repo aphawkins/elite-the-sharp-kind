@@ -33,7 +33,7 @@ public abstract class HeadlessGameHarnessBase<TState> : IDisposable
     // single-tick taps afterwards.
     public TState Step(IReadOnlyList<KeyScriptEvent> script)
     {
-        Guard.ArgumentNull(script);
+        ArgumentNullException.ThrowIfNull(script);
 
         List<(ConsoleKey Key, ConsoleModifiers Modifiers)>? taps = null;
         foreach (KeyScriptEvent scriptEvent in script)

@@ -35,7 +35,7 @@ public sealed class SceneCamera
     // physics and CalcGameViewpoint every frame).
     public void FollowCar(CarPhysics car)
     {
-        Useful.Guard.ArgumentNull(car);
+        ArgumentNullException.ThrowIfNull(car);
 
         X = car.PlayerX >> Track.LogPrecision;
         Y = (car.LimitViewpointY() >> (Track.LogPrecision - 2)) + HeightAboveRoad;

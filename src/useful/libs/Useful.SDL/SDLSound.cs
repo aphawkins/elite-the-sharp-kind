@@ -56,7 +56,7 @@ public sealed unsafe class SDLSound : ISound, IDisposable
 
     public SDLSound(IAssetLocator assetLocator)
     {
-        Guard.ArgumentNull(assetLocator);
+        ArgumentNullException.ThrowIfNull(assetLocator);
 
         SDLGuard.Execute(() => SDL_Init(SDL_InitFlags.SDL_INIT_AUDIO));
         SDLGuard.Execute(() => MIX_Init());

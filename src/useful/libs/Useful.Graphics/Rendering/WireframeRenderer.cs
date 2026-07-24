@@ -17,7 +17,7 @@ public sealed class WireframeRenderer : IPolygonRenderer
 
     public WireframeRenderer(IGraphics graphics, IAssetLocator assetLocator)
     {
-        Guard.ArgumentNull(assetLocator);
+        ArgumentNullException.ThrowIfNull(assetLocator);
 
         _graphics = graphics;
         _colorWhite = PaletteReader.Read(assetLocator.PalettePath)["White"];
@@ -25,7 +25,7 @@ public sealed class WireframeRenderer : IPolygonRenderer
 
     public void Submit(Vector2[] points, FastColor color, float z)
     {
-        Guard.ArgumentNull(points);
+        ArgumentNullException.ThrowIfNull(points);
 
         if (points.Length == 2)
         {

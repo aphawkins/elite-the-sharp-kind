@@ -40,8 +40,8 @@ public sealed class ConfigFile<T> : IConfigWriter<T>
 
     public ConfigFile(string baseDirectory, string configFileName, Func<T, bool>? isValid, ILogger<ConfigFile<T>>? logger)
     {
-        Guard.ArgumentNull(baseDirectory);
-        Guard.ArgumentNull(configFileName);
+        ArgumentNullException.ThrowIfNull(baseDirectory);
+        ArgumentNullException.ThrowIfNull(configFileName);
 
         BaseDirectory = baseDirectory;
         _configFileName = configFileName;

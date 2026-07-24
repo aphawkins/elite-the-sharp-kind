@@ -38,7 +38,7 @@ public sealed unsafe class SDLWindow : IDisposable
 
     public static implicit operator nint(SDLWindow window)
     {
-        Guard.ArgumentNull(window);
+        ArgumentNullException.ThrowIfNull(window);
 
         return window._window;
     }

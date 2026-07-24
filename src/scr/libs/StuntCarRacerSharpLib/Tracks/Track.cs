@@ -2,8 +2,6 @@
 // 'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
-using Useful;
-
 namespace StuntCarRacerSharpLib.Tracks;
 
 // Loads the original Amiga track data (804 byte .bin files) and converts it
@@ -152,7 +150,7 @@ public sealed class Track
 
     public static Track Load(TrackId id, Stream stream)
     {
-        Guard.ArgumentNull(stream);
+        ArgumentNullException.ThrowIfNull(stream);
 
         byte[] buffer = new byte[TrackDataSize];
         stream.ReadExactly(buffer);

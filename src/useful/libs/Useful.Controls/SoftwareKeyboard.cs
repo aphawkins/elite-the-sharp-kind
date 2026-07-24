@@ -12,7 +12,7 @@ public class SoftwareKeyboard : IKeyboard, IKeyboardSink
 
     public SoftwareKeyboard(IInput input)
     {
-        Guard.ArgumentNull(input);
+        ArgumentNullException.ThrowIfNull(input);
 
         input.Register(this);
         _input = input;

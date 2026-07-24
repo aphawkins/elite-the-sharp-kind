@@ -76,8 +76,8 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         Action<FastBitmap> screenUpdate,
         IAssetLocator assetLocator)
     {
-        Guard.ArgumentNull(screenUpdate);
-        Guard.ArgumentNull(assetLocator);
+        ArgumentNullException.ThrowIfNull(screenUpdate);
+        ArgumentNullException.ThrowIfNull(assetLocator);
 
         Dictionary<string, FastBitmap> images = assetLocator.ImagePaths.ToDictionary(
             x => x.Key,
@@ -466,7 +466,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     public void SaveScreen(string path)
     {
-        Guard.ArgumentNull(path);
+        ArgumentNullException.ThrowIfNull(path);
 
         BitmapWriter.Write(_screen, path);
     }

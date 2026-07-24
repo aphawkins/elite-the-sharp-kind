@@ -70,7 +70,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
     private SDLGraphics(SDLRenderer renderer, float screenWidth, float screenHeight)
     {
-        Guard.ArgumentNull(renderer);
+        ArgumentNullException.ThrowIfNull(renderer);
 
         _renderer = renderer;
         ScreenWidth = screenWidth;
@@ -94,7 +94,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
     public static SDLGraphics Create(SDLRenderer renderer, float screenWidth, float screenHeight, IAssetLocator assetLocator)
     {
-        Guard.ArgumentNull(assetLocator);
+        ArgumentNullException.ThrowIfNull(assetLocator);
 
         SDLGraphics graphics = new(renderer, screenWidth, screenHeight)
         {
@@ -578,7 +578,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
     public void SaveScreen(string path)
     {
-        Guard.ArgumentNull(path);
+        ArgumentNullException.ThrowIfNull(path);
 
         if (_isDisposed)
         {

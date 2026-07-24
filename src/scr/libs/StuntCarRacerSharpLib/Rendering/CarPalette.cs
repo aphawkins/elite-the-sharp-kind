@@ -22,7 +22,7 @@ internal static class CarPalette
 
     internal static IPaletteCollection Colours(ScrPalette palette)
     {
-        Guard.ArgumentNull(palette);
+        ArgumentNullException.ThrowIfNull(palette);
 
         return new Palette(new Dictionary<string, FastColor>
         {

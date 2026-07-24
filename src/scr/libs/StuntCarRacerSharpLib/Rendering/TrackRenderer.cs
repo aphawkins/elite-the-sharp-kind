@@ -42,10 +42,10 @@ public sealed class TrackRenderer
 
     public TrackRenderer(Track track, IGraphics graphics, ScrPalette palette, RoadTextures roadTextures)
     {
-        Guard.ArgumentNull(track);
-        Guard.ArgumentNull(graphics);
-        Guard.ArgumentNull(palette);
-        Guard.ArgumentNull(roadTextures);
+        ArgumentNullException.ThrowIfNull(track);
+        ArgumentNullException.ThrowIfNull(graphics);
+        ArgumentNullException.ThrowIfNull(palette);
+        ArgumentNullException.ThrowIfNull(roadTextures);
 
         _track = track;
         _graphics = graphics;

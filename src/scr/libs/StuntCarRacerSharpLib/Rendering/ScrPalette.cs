@@ -24,7 +24,7 @@ public sealed class ScrPalette
 
     internal ScrPalette(IPaletteCollection palette)
     {
-        Guard.ArgumentNull(palette);
+        ArgumentNullException.ThrowIfNull(palette);
         _palette = palette;
     }
 

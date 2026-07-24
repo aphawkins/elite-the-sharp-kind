@@ -28,7 +28,7 @@ public sealed unsafe class SoftwareSoundOutput : IDisposable
 
     public SoftwareSoundOutput(SoftwareSound sound)
     {
-        Guard.ArgumentNull(sound);
+        ArgumentNullException.ThrowIfNull(sound);
 
         _sound = sound;
 

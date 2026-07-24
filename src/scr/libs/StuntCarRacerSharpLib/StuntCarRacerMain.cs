@@ -54,9 +54,9 @@ public sealed class StuntCarRacerMain : IGame
 
     private StuntCarRacerMain(IAbstraction abstraction, TrackId trackId, AudioOptions audioOptions, IRandomSource randomSource)
     {
-        Guard.ArgumentNull(abstraction);
-        Guard.ArgumentNull(audioOptions);
-        Guard.ArgumentNull(randomSource);
+        ArgumentNullException.ThrowIfNull(abstraction);
+        ArgumentNullException.ThrowIfNull(audioOptions);
+        ArgumentNullException.ThrowIfNull(randomSource);
 
         _abstraction = abstraction;
         Graphics = abstraction.Graphics;

@@ -12,7 +12,7 @@ public sealed class AssetLocator : IAssetLocator
 
     internal AssetLocator(AssetManifest assetManifest, string baseDirectory)
     {
-        Guard.ArgumentNull(assetManifest);
+        ArgumentNullException.ThrowIfNull(assetManifest);
 
         _assetManifest = assetManifest;
         _baseDirectory = Path.Combine(baseDirectory, "Assets");
@@ -59,7 +59,7 @@ public sealed class AssetLocator : IAssetLocator
 
     public static AssetLocator Create(Stream manifestStream, string baseDirectory)
     {
-        Guard.ArgumentNull(manifestStream);
+        ArgumentNullException.ThrowIfNull(manifestStream);
 
         try
         {

@@ -4,7 +4,6 @@
 
 using System.Numerics;
 using StuntCarRacerSharpLib.Tracks;
-using Useful;
 using Useful.Assets.Models;
 
 namespace StuntCarRacerSharpLib.Rendering;
@@ -41,7 +40,7 @@ public sealed class CarMesh
         Coord3D frontLeft,
         Coord3D frontRight)
     {
-        Guard.ArgumentNull(polygons);
+        ArgumentNullException.ThrowIfNull(polygons);
 
         // orientation frame from the wheel corners
         (double rightX, double rightY, double rightZ) = Normalize(

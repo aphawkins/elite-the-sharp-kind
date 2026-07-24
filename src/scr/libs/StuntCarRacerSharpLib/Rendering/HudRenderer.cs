@@ -4,7 +4,6 @@
 
 using System.Globalization;
 using StuntCarRacerSharpLib.Tracks;
-using Useful;
 using Useful.Graphics;
 
 namespace StuntCarRacerSharpLib.Rendering;
@@ -80,7 +79,7 @@ internal sealed class HudRenderer
 
     internal HudRenderer(IGraphics graphics)
     {
-        Guard.ArgumentNull(graphics);
+        ArgumentNullException.ThrowIfNull(graphics);
         _graphics = graphics;
     }
 

@@ -100,7 +100,6 @@ functionality. Conclusions:
 
 ### Cleanups and small refactors
 
-- [ ] [Useful] Replace the custom `Guard.ArgumentNull` (47 call sites) with the framework's `ArgumentNullException.ThrowIfNull` and delete [Guard.cs](../src/useful/libs/Useful/Guard.cs)/`ValidatedNotNullAttribute` — the architecture doc's own "prefer dotnet framework intrinsics" rule.
 - [ ] [Repo] Remove all analyzer suppressions (`#pragma warning disable` and `[SuppressMessage]`) by fixing the underlying code instead, so the analyzer ruleset stays fully enforced with no opt-outs. Current sites (verify line numbers before editing, this list dates from 2026-07-21):
       [RandomSource.cs:12](../src/useful/libs/Useful/RandomSource.cs) (CA5394, class-level),
       [ThreeDModel.cs:7](../src/useful/libs/Useful.Assets/Models/ThreeDModel.cs), [Point.cs:9](../src/useful/libs/Useful.Assets/Models/Point.cs), [Face.cs:7](../src/useful/libs/Useful.Assets/Models/Face.cs), [AssetManifest.cs:9](../src/useful/libs/Useful.Assets/AssetManifest.cs) (all CA2227, writable collection properties for serialisation),

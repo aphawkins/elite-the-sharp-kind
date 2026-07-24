@@ -29,7 +29,7 @@ public sealed class GameLoop
 
     public GameLoop(double updatesPerSecond, Action update, Action render, Func<bool> isRunning, double maxFramesPerSecond)
         : this(updatesPerSecond, update, render, isRunning, maxFramesPerSecond, TimeProvider.System, Thread.Sleep)
-        => Guard.ArgumentNull(render);
+        => ArgumentNullException.ThrowIfNull(render);
 
     internal GameLoop(
         double updatesPerSecond,
@@ -40,10 +40,10 @@ public sealed class GameLoop
         TimeProvider time,
         Action<TimeSpan> wait)
     {
-        Guard.ArgumentNull(update);
-        Guard.ArgumentNull(isRunning);
-        Guard.ArgumentNull(time);
-        Guard.ArgumentNull(wait);
+        ArgumentNullException.ThrowIfNull(update);
+        ArgumentNullException.ThrowIfNull(isRunning);
+        ArgumentNullException.ThrowIfNull(time);
+        ArgumentNullException.ThrowIfNull(wait);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(updatesPerSecond);
         ArgumentOutOfRangeException.ThrowIfNegative(maxFramesPerSecond);
 

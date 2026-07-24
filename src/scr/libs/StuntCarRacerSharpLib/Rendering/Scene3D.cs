@@ -5,7 +5,6 @@
 using System.Numerics;
 using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Tracks;
-using Useful;
 
 namespace StuntCarRacerSharpLib.Rendering;
 
@@ -85,7 +84,7 @@ public sealed class Scene3D
 
     public void SetView(SceneCamera camera, float screenWidth, float screenHeight)
     {
-        Guard.ArgumentNull(camera);
+        ArgumentNullException.ThrowIfNull(camera);
 
         _cameraX = camera.X;
         _cameraY = camera.Y;

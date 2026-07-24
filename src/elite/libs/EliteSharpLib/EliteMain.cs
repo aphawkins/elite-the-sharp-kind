@@ -10,7 +10,6 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
-using Useful;
 using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Controls;
@@ -71,18 +70,18 @@ public sealed class EliteMain : IGame
         Scanner scanner,
         AudioController audio)
     {
-        Guard.ArgumentNull(abstraction);
-        Guard.ArgumentNull(gameState);
-        Guard.ArgumentNull(ship);
-        Guard.ArgumentNull(draw);
-        Guard.ArgumentNull(universe);
-        Guard.ArgumentNull(stars);
-        Guard.ArgumentNull(pilot);
-        Guard.ArgumentNull(combat);
-        Guard.ArgumentNull(save);
-        Guard.ArgumentNull(space);
-        Guard.ArgumentNull(scanner);
-        Guard.ArgumentNull(audio);
+        ArgumentNullException.ThrowIfNull(abstraction);
+        ArgumentNullException.ThrowIfNull(gameState);
+        ArgumentNullException.ThrowIfNull(ship);
+        ArgumentNullException.ThrowIfNull(draw);
+        ArgumentNullException.ThrowIfNull(universe);
+        ArgumentNullException.ThrowIfNull(stars);
+        ArgumentNullException.ThrowIfNull(pilot);
+        ArgumentNullException.ThrowIfNull(combat);
+        ArgumentNullException.ThrowIfNull(save);
+        ArgumentNullException.ThrowIfNull(space);
+        ArgumentNullException.ThrowIfNull(scanner);
+        ArgumentNullException.ThrowIfNull(audio);
 
         _abstraction = abstraction;
         _graphics = abstraction.Graphics;

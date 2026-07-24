@@ -33,8 +33,8 @@ public static class GameHost
 
     public static void Run(IAbstraction abstraction, IGame game, double updatesPerSecond, double maxFramesPerSecond)
     {
-        Guard.ArgumentNull(abstraction);
-        Guard.ArgumentNull(game);
+        ArgumentNullException.ThrowIfNull(abstraction);
+        ArgumentNullException.ThrowIfNull(game);
 
         KeyScriptPlayer? scriptPlayer = CreateScriptPlayer(abstraction.Keyboard);
         string? frameDumpDirectory = Environment.GetEnvironmentVariable(FrameDumpDirEnvVar);
