@@ -7,6 +7,18 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (ScreenManager.Current no longer nullable, 2026-07-24)
+
+- `ScreenManager<TId, TScreen>.Current` was `TScreen?`, forcing every
+  post-setup call site (`EliteMain.Update`, `StuntCarRacerMain.Update`/`Draw`,
+  `GameState.CurrentView`) to use the null-forgiving operator. `Current` is
+  now `TScreen` and throws `InvalidOperationException` if read before `Set`
+  has been called at least once — both games already call `Set` during
+  construction/init, before their update loops run, so this only changes an
+  unreachable silent-null path into a diagnosable exception.
+  `ScreenManager.CurrentId` is unchanged (`default!` on an unset enum ID is
+  harmless — it's only ever compared, never dereferenced).
+
 ### Added (Test coverage badge on README, 2026-07-24)
 
 - The CI coverage step turned out to be silently broken: `Directory.Build.props`

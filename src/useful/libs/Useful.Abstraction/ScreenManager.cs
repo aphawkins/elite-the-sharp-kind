@@ -18,6 +18,7 @@ public sealed class ScreenManager<TId, TScreen>
 {
     private readonly Dictionary<TId, TScreen> _screens = [];
     private readonly IKeyboard _keyboard;
+    private TScreen? _current;
 
     public ScreenManager(IKeyboard keyboard)
     {
@@ -28,7 +29,15 @@ public sealed class ScreenManager<TId, TScreen>
 
     public TId CurrentId { get; private set; } = default!;
 
-    public TScreen? Current { get; private set; }
+    /// <summary>
+    /// Gets the current screen. Throws until <see cref="Set"/> has been
+    /// called at least once, so callers past setup never need a
+    /// null-forgiving access.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"><see cref="Set"/> has not
+    /// been called yet.</exception>
+    public TScreen Current => _current
+        ?? throw new InvalidOperationException($"No screen is current; call {nameof(Set)} first.");
 
     public void Add(TId id, TScreen screen)
     {
@@ -40,8 +49,8 @@ public sealed class ScreenManager<TId, TScreen>
     public void Set(TId id)
     {
         CurrentId = id;
-        Current = _screens[id];
+        _current = _screens[id];
         _keyboard.ClearPressed();
-        Current.Reset();
+        _current.Reset();
     }
 }

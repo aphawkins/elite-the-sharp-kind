@@ -28,7 +28,7 @@ internal sealed class GameState
 
     internal Screen CurrentScreen => _views.CurrentId;
 
-    internal IView? CurrentView => _views.Current;
+    internal IView CurrentView => _views.Current;
 
     internal bool DetonateBomb { get; set; }
 

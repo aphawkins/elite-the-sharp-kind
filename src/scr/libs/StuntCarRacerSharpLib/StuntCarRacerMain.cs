@@ -138,12 +138,12 @@ public sealed class StuntCarRacerMain : IGame
             _sceneryKeyDown = false;
         }
 
-        Screens.Current!.Update();
+        Screens.Current.Update();
     }
 
     public void Draw()
     {
-        Screens.Current!.Draw();
+        Screens.Current.Draw();
         Graphics.ScreenUpdate();
     }
 }

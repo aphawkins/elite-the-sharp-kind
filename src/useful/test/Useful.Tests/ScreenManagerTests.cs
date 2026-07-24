@@ -30,14 +30,14 @@ public class ScreenManagerTests
     }
 
     [Fact]
-    public void NoScreenIsCurrentBeforeTheFirstSet()
+    public void CurrentThrowsBeforeTheFirstSet()
     {
         // Arrange & Act
         ScreenManager<TestScreenId, FakeScreen> manager = new(new FakeKeyboard());
 
         // Assert
         Assert.Equal(TestScreenId.None, manager.CurrentId);
-        Assert.Null(manager.Current);
+        Assert.Throws<InvalidOperationException>(() => manager.Current);
     }
 
     [Fact]

@@ -164,7 +164,7 @@ public sealed class EliteMain : IGame
             }
         }
 
-        State.CurrentView!.Update();
+        State.CurrentView.Update();
         _space.UpdateUniverse();
         State.CurrentView.Draw();
 #if DEBUG
