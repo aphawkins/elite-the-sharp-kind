@@ -96,7 +96,6 @@ functionality. Conclusions:
 
 ### Cleanups and small refactors
 
-- [ ] [Useful.Graphics] `FastBitmap` pins every bitmap with a raw `GCHandle` + finalizer ([FastBitmap.cs:19-35](../src/useful/libs/Useful.Graphics/FastBitmap.cs)); only the screen bitmap ever crosses into SDL — pin only on demand (or wrap the handle in a `SafeHandle`-style type) so short-lived text/texture bitmaps don't fragment the GC heap.
 - [ ] [Apps] Fix the rename leftover: `EliteSharp`'s [LogMessages.cs](../src/elite/apps/EliteSharp/LogMessages.cs) still sits in namespace `EliteSharp.SDL` though the project is `EliteSharp` (`SDLProgram.cs` was already fixed to plain `EliteSharp`); and remove the committed benchmark reports under `src/*/perf/**/reports/` (generated artifacts, per the architecture doc's hygiene rule). How to record and monitor the historical benchmark numbers is a separate decision (e.g. a GitHub Action that runs the benchmarks and posts the results to a PR comment), what is best practice?
 - [ ] [EliteSharpLib] Give the bare `throw new EliteException()` calls in the factory `switch` defaults ([ShipFactory.cs:46,59,68,77](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) a message with the offending value — an empty exception is undiagnosable in a log.
 - [ ] [Useful.SDL] Document and harden the `SDLSound` loop-pitch threading contract: the `Mix_RegisterEffect` callback runs on the audio thread while the game thread writes the pitch; verify the field is read/written with `Volatile` (or is inherently safe) and state the contract in a comment.

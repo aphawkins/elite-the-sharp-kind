@@ -7,6 +7,20 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Pin FastBitmap pixel arrays lazily, 2026-07-24)
+
+- `FastBitmap` pinned its pixel array with a `GCHandle` in the constructor
+  unconditionally, even though `BitmapHandle` (the only reader of the pin) is
+  never touched by short-lived bitmaps such as the LRU text-glyph cache
+  ([SoftwareGraphics.cs](src/useful/libs/Useful.Graphics/SoftwareGraphics.cs))
+  or the intermediates `FastBitmap.Resize` creates — only the screen
+  framebuffer and SDL's depth-layer bitmap ever cross into native code.
+  `BitmapHandle` now allocates the pinned `GCHandle` on first access instead
+  of in the constructor, and `Dispose` only frees it if it was ever pinned,
+  so bitmaps that never leave managed code no longer permanently pin (and
+  fragment the GC heap with) their backing array. Built the full solution
+  and ran the complete test suite (all green).
+
 ### Changed (ScreenManager.Current no longer nullable, 2026-07-24)
 
 - `ScreenManager<TId, TScreen>.Current` was `TScreen?`, forcing every

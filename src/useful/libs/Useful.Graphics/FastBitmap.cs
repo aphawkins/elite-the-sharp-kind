@@ -9,6 +9,7 @@ public class FastBitmap : IDisposable
 {
     private readonly uint[] _pixels = []; // Must stay uint for memalloc
     private GCHandle _bitmapHandle;
+    private bool _isPinned;
     private bool _isDisposed;
 
     public FastBitmap(int width, int height)
@@ -22,7 +23,6 @@ public class FastBitmap : IDisposable
         Height = height;
         Debug.Assert(width * height == pixels.Length, "Array must be correct length");
         _pixels = pixels;
-        _bitmapHandle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
     }
 
     // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
@@ -32,7 +32,23 @@ public class FastBitmap : IDisposable
         Dispose(disposing: false);
     }
 
-    public nint BitmapHandle => _bitmapHandle.AddrOfPinnedObject();
+    // Pinned lazily: most bitmaps (cached text glyphs, intermediates) never
+    // cross into native code, so pinning only the handful that actually
+    // call this avoids fragmenting the GC heap with permanently pinned
+    // short-lived arrays.
+    public nint BitmapHandle
+    {
+        get
+        {
+            if (!_isPinned)
+            {
+                _bitmapHandle = GCHandle.Alloc(_pixels, GCHandleType.Pinned);
+                _isPinned = true;
+            }
+
+            return _bitmapHandle.AddrOfPinnedObject();
+        }
+    }
 
     public int Height { get; }
 
@@ -100,7 +116,10 @@ public class FastBitmap : IDisposable
             // free unmanaged resources (unmanaged objects) and override finalizer
             // set large fields to null
             _isDisposed = true;
-            _bitmapHandle.Free();
+            if (_isPinned)
+            {
+                _bitmapHandle.Free();
+            }
         }
     }
 }
