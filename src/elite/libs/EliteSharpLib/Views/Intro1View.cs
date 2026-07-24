@@ -109,12 +109,12 @@ internal sealed class Intro1View : IView
     {
         _ship.Roll = 1;
         _universe.FirstShip!.Location =
-            new(_universe.FirstShip!.Location.X, _universe.FirstShip!.Location.Y, _universe.FirstShip!.Location.Z - 100, 0);
+            new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, _universe.FirstShip.Location.Z - 100, 0);
 
-        if (_universe.FirstShip!.Location.Z < 384)
+        if (_universe.FirstShip.Location.Z < 384)
         {
-            _universe.FirstShip!.Location =
-                new(_universe.FirstShip!.Location.X, _universe.FirstShip!.Location.Y, 384, 0);
+            _universe.FirstShip.Location =
+                new(_universe.FirstShip.Location.X, _universe.FirstShip.Location.Y, 384, 0);
         }
     }
 }

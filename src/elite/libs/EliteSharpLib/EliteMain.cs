@@ -227,7 +227,7 @@ public sealed class EliteMain : IGame
         _draw.SetFullScreenClipRegion();
 
         _scanner.UpdateConsole();
-        State.CurrentView!.HandleInput();
+        State.CurrentView.HandleInput();
     }
 
     // Present the frame composed by the last update. Runs at GameTickRate,

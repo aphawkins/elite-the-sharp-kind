@@ -155,7 +155,7 @@ public class ShipFactoryTests
         // Mutate each created ship and assert the prototype remains unchanged
         for (int i = 0; i < parade.Count; i++)
         {
-            IShip clonedShip = (IShip)parade[i]!.Clone();
+            IShip clonedShip = (IShip)parade[i].Clone();
             clonedShip.Energy = -1;
             Assert.Equal(100, dict[parade[i].Name].Energy);
             Assert.Equal(-1, clonedShip.Energy);
