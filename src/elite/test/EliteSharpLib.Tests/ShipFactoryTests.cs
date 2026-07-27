@@ -5,6 +5,7 @@
 using System.Reflection;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
+using Useful.Assets;
 using Useful.Fakes;
 using Useful.Fakes.Assets;
 
@@ -84,6 +85,45 @@ public class ShipFactoryTests
 
         // Act & Assert
         Assert.Throws<EliteException>(() => factory.CreateShip("DoesNotExist"));
+    }
+
+    [Theory]
+    [InlineData(0, "CobraMk3Lone")]
+    [InlineData(1, "AspMk2")]
+    [InlineData(2, "PythonLone")]
+    [InlineData(3, "FerDeLance")]
+    [InlineData(131, "Moray")]
+    public void CreateLoneWolfPicksShipByRoll(int roll, string expectedType)
+    {
+        // Arrange: the real manifest, so every lone wolf the roll can pick
+        // has to have a model entry.
+        FakeEliteDraw draw = new();
+        RNG rng = new(new FakeRandomSource { RandomValue = roll });
+        ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
+
+        // Act
+        IShip created = factory.CreateLoneWolf();
+
+        // Assert
+        Assert.Equal(expectedType, created.Type.ToString());
+    }
+
+    [Fact]
+    public void CreateUnknownModelNameThrowsEliteException()
+    {
+        // Arrange
+        FakeAssetLocator locator = new()
+        {
+            ModelPaths = new Dictionary<string, string>()
+            {
+                { "NotAShip", "Assets/Models/adder.obj" },
+            },
+        };
+
+        FakeEliteDraw draw = new();
+
+        // Act & Assert
+        Assert.Throws<EliteException>(() => ShipFactory.Create(locator, draw, new(new Random(0))));
     }
 
     [Fact]

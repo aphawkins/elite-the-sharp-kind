@@ -7,6 +7,39 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (lone-wolf ship models missing from the manifest, 2026-07-27)
+
+- `CobraMk3Lone` and `PythonLone` have no `Models` entry in
+  `AssetManifest.json` — they are subclasses of `CobraMk3`/`Python`
+  that only change flags, bounty and loot, and share the parent's mesh,
+  so there is no model file of their own to list. `ShipFactory` built
+  its prototypes straight from the manifest, so neither existed and
+  `CreateLoneWolf` threw an unhandled `EliteException` on 2 of its 5
+  rolls — `Combat.CreateLoneWolf` has no catch, so a lone-wolf
+  encounter could take the game down.
+- `ShipFactory.Create` now iterates its own ship table rather than the
+  manifest, resolving each ship's model through an `s_modelNames`
+  variant→parent map, and skipping ships the manifest supplies no model
+  for. Manifest keys that name no known ship still throw.
+- Added `ShipFactoryTests.CreateLoneWolfPicksShipByRoll`, which builds
+  the factory from the real `AssetLocator` so a missing manifest entry
+  for any lone wolf fails the build.
+
+### Changed (ShipFactory: explicit factory table instead of reflection, 2026-07-27)
+
+- `ShipFactory.CreateShipFromName` resolved ship classes from the
+  `AssetManifest.json` model names via `Type.GetType` plus a non-public
+  `Activator.CreateInstance` (with an `S3011` suppression and two
+  TODOs). It now looks the name up in a static
+  `Dictionary<string, Func<IEliteDraw, RNG, IShip>>` of explicit
+  constructor lambdas covering all 33 ship types, so a bad manifest
+  entry is a plain lookup miss rather than arbitrary type activation,
+  and the ship constructors stay `internal`.
+- Added `ShipFactoryTests.CreateUnknownModelNameThrowsEliteException`
+  for the miss path. Full solution builds, full test suite green
+  (437 tests), Elite smoke-tested live: intro ship parade and front
+  view render as before.
+
 ### Changed (streaming texture for the depth-layer composite, 2026-07-27)
 
 - `SDLGraphics.FlushDepthLayer` created an `SDL_Surface` and an
