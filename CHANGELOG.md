@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (`S1451` license headers enforced, 2026-07-27)
+
+- Enabled `S1451` (missing copyright/license header). Sonar rule
+  parameters cannot be set from `.editorconfig` — only from a
+  `SonarLint.xml` supplied as an `AdditionalFiles` item — so
+  [SonarLint.xml](SonarLint.xml) is new at the repo root and wired into
+  every project from [Directory.Build.props](Directory.Build.props). It
+  matches the header by shape rather than by three literal strings
+  (`// '[^']+' - Andy Hawkins \d{4}(-\d{4})?\.`), so it stays valid as
+  years advance and covers all three header variants.
+- Copyright years brought up to date in the `file_header_template`
+  values and across all files: Elite `2023` → `2023-2026`, Useful
+  `2025` → `2023-2026`. SCR keeps `2026`, and gained the
+  `src/scr/.editorconfig` `file_header_template` it never had — until
+  now `IDE0073` was not checking SCR's headers at all.
+- Upstream attribution lines (C.J. Pinder / Bell & Braben for Elite,
+  the remake and Crammond/MicroStyle/MicroProse lines for SCR) are
+  unchanged; the multi-line templates still carry them.
+
 ### Added (Analyser audit; `S2234`/`S2583` enabled, 2026-07-27)
 
 - Completed the code-quality-gate audit from issue #5: built the whole

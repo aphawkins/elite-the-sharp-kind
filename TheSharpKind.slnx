@@ -24,6 +24,7 @@
     <File Path="LICENSE" />
     <File Path="README.md" />
     <File Path="SECURITY.md" />
+    <File Path="SonarLint.xml" />
   </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/elite/" />

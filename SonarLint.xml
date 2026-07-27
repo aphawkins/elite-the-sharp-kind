@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AnalysisInput>
+  <Rules>
+    <Rule>
+      <Key>S1451</Key>
+      <Parameters>
+        <Parameter>
+          <Key>headerFormat</Key>
+          <Value>// '[^']+' - Andy Hawkins \d{4}(-\d{4})?\.</Value>
+        </Parameter>
+        <Parameter>
+          <Key>isRegularExpression</Key>
+          <Value>true</Value>
+        </Parameter>
+      </Parameters>
+    </Rule>
+  </Rules>
+</AnalysisInput>

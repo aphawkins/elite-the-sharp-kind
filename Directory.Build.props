@@ -33,6 +33,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Sonar rule parameters (e.g. S1451's header format) can only be set
+         from a SonarLint.xml additional file, not from .editorconfig. -->
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MinVer">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

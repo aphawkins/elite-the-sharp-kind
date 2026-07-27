@@ -52,12 +52,12 @@ than fixed.
 Audit done 2026-07-27 (whole solution, each rule at `warning` with
 `TreatWarningsAsErrors=false`, counts deduplicated by file/line since
 multi-targeting reports each site twice). `CA1502`, `CA1506`, `S2234`
-and `S2583` are now enabled at `warning`; remaining counts:
+`S2583` and `S1451` are now enabled at `warning`; remaining counts:
 
 | Rule | Violations | Notes |
 | --- | --- | --- |
 | `S109` magic numbers | 4087 (4085 prod) | Dwarfs everything else; not worth enabling |
-| `S1451` license headers | 333 (249 prod, 84 test) | One file each; mechanical |
+| `S1451` license headers | 333 → 0 | Fixed and enabled |
 | `S1541` method complexity | 61 (all prod) | |
 | `S3776` cognitive complexity | 41 (40 prod) | |
 | `S107` parameter count | 20 (19 prod) | |
@@ -74,10 +74,6 @@ the 122 `S1541`+`S3776`+`S107` prod sites), then
       legitimate (ported 6502/Amiga reference methods), so this wants
       tracking — a generated report/badge ratcheted down over time —
       rather than an immediate hard `warning`.
-- [ ] `S1451` (missing copyright/license headers, 333 files):
-      mechanical, one header line per file; decide whether the churn is
-      wanted, and if so do it in a single pass with a script and enable
-      the rule in the same commit.
 - [ ] `S109` (magic numbers, 4087 sites): audited and *not* recommended
       for enabling — the "3D pipeline sharing" items below already call
       out hardcoded magic numbers (`* 256 / vec.Z`, etc.) as endemic to
