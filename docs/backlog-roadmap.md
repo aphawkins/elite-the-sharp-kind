@@ -30,56 +30,6 @@ that mentions a decision.
 
 ## Should
 
-### Code-quality gates (from issue #5, "Measure/improve code complexity")
-
-`CA1502` (excessive complexity), `CA1506` (excessive class coupling), and
-Sonar's `S1541`/`S3776` (method/cognitive complexity) and `S107` (too many
-parameters) are all currently `severity = none` in
-[.editorconfig](../.editorconfig:656-663,2599,2615,2640). The repo also
-sets `TreatWarningsAsErrors=True` repo-wide
-([Directory.Build.props:12](../Directory.Build.props)), so flipping any of
-these straight to `warning` will fail the build the moment one violation
-exists — these can't be turned on in the same PR as any fix, they need an
-audit-then-ratchet approach, mirrored on how coverage is already tracked
-(reportgenerator badge committed to
-[docs/images/coverage-badge.svg](../docs/images/coverage-badge.svg) by
-[build-and-package.yml](../.github/workflows/build-and-package.yml), plus
-the benchmark-history decision above) rather than a hard gate — this
-codebase ports 6502/Amiga fixed-point algorithms whose reference methods
-are inherently long, so some violations may be legitimate/accepted rather
-than fixed.
-
-Audit done 2026-07-27 (whole solution, each rule at `warning` with
-`TreatWarningsAsErrors=false`, counts deduplicated by file/line since
-multi-targeting reports each site twice). `CA1502`, `CA1506`, `S2234`
-`S2583` and `S1451` are now enabled at `warning`; remaining counts:
-
-| Rule | Violations | Notes |
-| --- | --- | --- |
-| `S109` magic numbers | 4087 (4085 prod) | Dwarfs everything else; not worth enabling |
-| `S1451` license headers | 333 → 0 | Fixed and enabled |
-| `S1541` method complexity | 61 (all prod) | |
-| `S3776` cognitive complexity | 41 (40 prod) | |
-| `S107` parameter count | 20 (19 prod) | |
-| `S2234` argument order | 4 → 0 | Fixed and enabled |
-| `S2583` unreachable code | 0 | Enabled |
-
-Complexity/coupling violations concentrate in `EliteSharpLib` (70 of
-the 122 `S1541`+`S3776`+`S107` prod sites), then
-`StuntCarRacerSharpLib` (33), with 17 across the `Useful.*` libs.
-
-- [ ] `S1541`/`S3776` (complexity, 102 sites) and `S107` (parameter
-      count, 20 sites): the remainder of issue #5 now that `CA1502` and
-      `CA1506` are enabled. Too many to fix in one session and some are
-      legitimate (ported 6502/Amiga reference methods), so this wants
-      tracking — a generated report/badge ratcheted down over time —
-      rather than an immediate hard `warning`.
-- [ ] `S109` (magic numbers, 4087 sites): audited and *not* recommended
-      for enabling — the "3D pipeline sharing" items below already call
-      out hardcoded magic numbers (`* 256 / vec.Z`, etc.) as endemic to
-      this codebase. Close this as Won't unless the maintainer wants it
-      scoped to specific projects.
-
 ### Release engineering (from the retired release plan)
 
 (none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
@@ -412,6 +362,16 @@ either.**):
 
 ## Won't
 
+- [ ] [Repo] Remaining code-complexity rules from issue #5 (closed
+      2026-07-27, see [CHANGELOG.md](../CHANGELOG.md)): `S1541`/`S3776`
+      (method/cognitive complexity, 102 sites) and `S107` (parameter
+      count, 20 sites) stay `severity = none` — the survivors are mostly
+      ported 6502/Amiga reference methods that are inherently long, and
+      `CA1502`/`CA1506` already cover the same ground as an enforced
+      gate. `S109` (magic numbers, 4087 sites) likewise stays off:
+      hardcoded constants (`* 256 / vec.Z`, etc.) are endemic to the
+      ported algorithms. Revisit only if a specific project is scoped for
+      it.
 - [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work — authentic to the original ("broken as designed"); documented, not fixed.
 - [ ] [EliteSharpLib] Elite Intro2 parade shows 29 of ~33 ship models ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) — Cougar, Constrictor and the Lone variants are mission-specific ships, deliberately excluded from the parade; confirmed intentional, not a bug.
 - [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`, insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game is fixed at 13.5fps by design and none of this is a bottleneck at that rate; revisit only if the "performance as secondary objective" goal is picked up.

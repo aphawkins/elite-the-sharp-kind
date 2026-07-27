@@ -7,6 +7,30 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Closed (issue #5, "Measure/improve code complexity", 2026-07-27)
+
+- The whole solution was audited with each candidate rule raised to
+  `warning` under `TreatWarningsAsErrors=false`, counts deduplicated by
+  file/line (multi-targeting reports each site twice):
+
+  | Rule | Violations | Outcome |
+  | --- | --- | --- |
+  | `CA1502` cyclomatic complexity | — | Enabled at `warning` |
+  | `CA1506` class coupling | — | Enabled at `warning` |
+  | `S1451` license headers | 333 → 0 | Fixed and enabled |
+  | `S2234` argument order | 4 → 0 | Fixed and enabled |
+  | `S2583` unreachable code | 0 | Enabled |
+  | `S1541` method complexity | 61 (all prod) | Left `none` |
+  | `S3776` cognitive complexity | 41 (40 prod) | Split methods, then enabled |
+  | `S107` parameter count | 20 (19 prod) | Left `none` |
+  | `S109` magic numbers | 4087 (4085 prod) | Left `none` |
+
+- The rules left at `severity = none` are recorded under Won't in the
+  [backlog](docs/backlog-roadmap.md): their remaining sites are
+  concentrated in ported 6502/Amiga reference methods whose length and
+  hardcoded constants are inherent to the source algorithms, and
+  `CA1502`/`CA1506` already enforce a complexity ceiling.
+
 ### Added (`CA5394` enabled, 2026-07-27)
 
 - Enabled `CA5394` (do not use insecure randomness), scoped off in the
