@@ -186,22 +186,9 @@ public class TrackRendererTests
     {
         int n = p.Length;
 
-        // any two non-adjacent edges crossing = self-intersecting outline
-        for (int i = 0; i < n; i++)
+        if (IsSelfIntersecting(p, out why))
         {
-            for (int j = i + 2; j < n; j++)
-            {
-                if (i == 0 && j == n - 1)
-                {
-                    continue; // adjacent around the loop
-                }
-
-                if (SegmentsCross(p[i], p[(i + 1) % n], p[j], p[(j + 1) % n]))
-                {
-                    why = $"self-intersecting ({n} points, edges {i} and {j})";
-                    return true;
-                }
-            }
+            return true;
         }
 
         // fan triangles with opposite windings double-paint or escape
@@ -230,8 +217,34 @@ public class TrackRendererTests
         return false;
     }
 
-    private static float Cross(Vector2 a, Vector2 b, Vector2 c)
-        => ((b.X - a.X) * (c.Y - a.Y)) - ((b.Y - a.Y) * (c.X - a.X));
+    // Any two non-adjacent edges crossing = self-intersecting outline.
+    private static bool IsSelfIntersecting(in ReadOnlySpan<Vector2> p, out string why)
+    {
+        int n = p.Length;
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 2; j < n; j++)
+            {
+                if (i == 0 && j == n - 1)
+                {
+                    continue; // adjacent around the loop
+                }
+
+                if (SegmentsCross(p[i], p[(i + 1) % n], p[j], p[(j + 1) % n]))
+                {
+                    why = $"self-intersecting ({n} points, edges {i} and {j})";
+                    return true;
+                }
+            }
+        }
+
+        why = string.Empty;
+        return false;
+    }
+
+    private static float Cross(Vector2 origin, Vector2 first, Vector2 second)
+        => ((first.X - origin.X) * (second.Y - origin.Y)) - ((first.Y - origin.Y) * (second.X - origin.X));
 
     private static bool SegmentsCross(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
     {

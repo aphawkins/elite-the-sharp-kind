@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -53,9 +53,9 @@ internal sealed class SolidSun : IObject
 
         centre *= 256 / Location.Z;
         centre += _draw.Centre / 2;
-        centre *= _draw.Graphics.Scale;
+        centre *= _draw.Scale;
 
-        float radius = 6291456 / Location.Length() * _draw.Graphics.Scale;
+        float radius = 6291456 / Location.Length() * _draw.Scale;
 
         if (centre.X + radius < _draw.Left ||
             centre.X - radius > _draw.Right ||

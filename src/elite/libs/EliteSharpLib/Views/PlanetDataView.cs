@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -203,99 +203,124 @@ internal sealed class PlanetDataView : IView
 
     private void ExpandDescription(string source, ref StringBuilder planetDescription)
     {
-        StringBuilder temp = new();
         int k = 0;
         for (int j = 0; (j + k) < source.Length; j++)
         {
-            temp.Clear();
-
             if (source[j + k] == '<')
             {
-                k++;
-                temp.Clear();
-
-                while (source[j + k] != '>')
-                {
-                    temp.Append(source[j + k]);
-                    k++;
-                }
-
-                int num = Convert.ToInt32(temp.ToString(), CultureInfo.InvariantCulture);
-                Debug.Assert(num < _descriptionList.Length, "Number should be within the description range.");
-                int option;
-
-                if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
-                {
-                    option = _rng.GenMSXRandomNumber();
-                }
-                else
-                {
-                    int rnd = _rng.GenerateRandomNumber();
-                    option = 0;
-                    if (rnd >= 0x33)
-                    {
-                        option++;
-                    }
-
-                    if (rnd >= 0x66)
-                    {
-                        option++;
-                    }
-
-                    if (rnd >= 0x99)
-                    {
-                        option++;
-                    }
-
-                    if (rnd >= 0xCC)
-                    {
-                        option++;
-                    }
-                }
-
-                ExpandDescription(_descriptionList[num][option], ref planetDescription);
+                ExpandToken(source, j, ref k, ref planetDescription);
                 continue;
             }
 
             if (source[j + k] == '%')
             {
                 k++;
-                switch (source[j + k])
-                {
-                    case 'H':
-                        temp = new(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter());
-                        planetDescription.Append(temp);
-                        break;
-
-                    case 'I':
-                        temp = new(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter());
-                        planetDescription.Append(temp).Append("ian");
-                        break;
-
-                    case 'R':
-                        int len = _rng.GenerateRandomNumber() & 3;
-                        for (int i = 0; i <= len; i++)
-                        {
-                            int x = _rng.GenerateRandomNumber() & 62;
-                            if (i == 0)
-                            {
-                                planetDescription.Append(_planet.Digrams[x]);
-                            }
-                            else
-                            {
-                                planetDescription.Append(char.ToLowerInvariant(_planet.Digrams[x]));
-                            }
-
-                            planetDescription.Append(char.ToLowerInvariant(_planet.Digrams[x + 1]));
-                        }
-
-                        break;
-                }
-
+                ExpandEscape(source[j + k], planetDescription);
                 continue;
             }
 
             planetDescription.Append(source[j + k]);
+        }
+    }
+
+    /// <summary>
+    /// Expand a "&lt;n&gt;" token by picking one of description list n's phrases
+    /// and expanding that in turn. Advances k past the token.
+    /// </summary>
+    private void ExpandToken(string source, int j, ref int k, ref StringBuilder planetDescription)
+    {
+        StringBuilder temp = new();
+        k++;
+
+        while (source[j + k] != '>')
+        {
+            temp.Append(source[j + k]);
+            k++;
+        }
+
+        int num = Convert.ToInt32(temp.ToString(), CultureInfo.InvariantCulture);
+        Debug.Assert(num < _descriptionList.Length, "Number should be within the description range.");
+
+        ExpandDescription(_descriptionList[num][SelectDescriptionOption()], ref planetDescription);
+    }
+
+    /// <summary>
+    /// Choose which of a description list's five phrases to use.
+    /// </summary>
+    private int SelectDescriptionOption()
+    {
+        if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+        {
+            return _rng.GenMSXRandomNumber();
+        }
+
+        int rnd = _rng.GenerateRandomNumber();
+        int option = 0;
+        if (rnd >= 0x33)
+        {
+            option++;
+        }
+
+        if (rnd >= 0x66)
+        {
+            option++;
+        }
+
+        if (rnd >= 0x99)
+        {
+            option++;
+        }
+
+        if (rnd >= 0xCC)
+        {
+            option++;
+        }
+
+        return option;
+    }
+
+    /// <summary>
+    /// Expand a "%x" escape: the planet's name, its adjective, or a random name.
+    /// </summary>
+    private void ExpandEscape(char code, StringBuilder planetDescription)
+    {
+        switch (code)
+        {
+            case 'H':
+                planetDescription.Append(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter());
+                break;
+
+            case 'I':
+                planetDescription
+                    .Append(_planet.NamePlanet(_gameState.HyperspacePlanet).CapitaliseFirstLetter())
+                    .Append("ian");
+                break;
+
+            case 'R':
+                AppendRandomName(planetDescription);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Append a made-up name built from one to four digram pairs.
+    /// </summary>
+    private void AppendRandomName(StringBuilder planetDescription)
+    {
+        int len = _rng.GenerateRandomNumber() & 3;
+        for (int i = 0; i <= len; i++)
+        {
+            int x = _rng.GenerateRandomNumber() & 62;
+            if (i == 0)
+            {
+                planetDescription.Append(_planet.Digrams[x]);
+            }
+            else
+            {
+                planetDescription.Append(char.ToLowerInvariant(_planet.Digrams[x]));
+            }
+
+            planetDescription.Append(char.ToLowerInvariant(_planet.Digrams[x + 1]));
         }
     }
 }

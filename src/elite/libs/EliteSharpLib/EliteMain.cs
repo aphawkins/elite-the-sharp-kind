@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -173,55 +173,7 @@ public sealed class EliteMain : IGame
 
         if (!State.IsDocked && !State.IsGameOver)
         {
-            _combat.CoolLaser();
-
-            if (State.MessageCount > 0)
-            {
-                _graphics.DrawTextCentre(_draw.ScannerTop - 40, State.MessageString, nameof(FontType.Small), _colorText);
-            }
-
-            if (_space.IsHyperspaceReady)
-            {
-                _draw.DrawHyperspaceCountdown(_space.HyperCountdown);
-                if ((State.MCount & 3) == 0)
-                {
-                    _space.CountdownHyperspace();
-                }
-            }
-
-            State.MCount--;
-            if (State.MCount < 0)
-            {
-                State.MCount = 255;
-            }
-
-            if ((State.MCount & 7) == 0)
-            {
-                _ship.RegenerateShields();
-            }
-
-            if ((State.MCount & 31) == 10)
-            {
-                if (_ship.IsEnergyLow())
-                {
-                    State.InfoMessage("ENERGY LOW");
-                    _audio.PlayEffect(nameof(SoundEffect.Beep));
-                }
-
-                _space.UpdateAltitude();
-            }
-
-            if ((State.MCount & 31) == 20)
-            {
-                _space.UpdateCabinTemp();
-            }
-
-            if ((State.MCount == 0) && (!State.InWitchspace))
-            {
-                _combat.RandomEncounter();
-            }
-
-            _combat.TimeECM();
+            UpdateInFlight();
         }
 
         _draw.SetFullScreenClipRegion();
@@ -259,7 +211,70 @@ public sealed class EliteMain : IGame
 
 #endif
 
+    // The part of a tick that only applies while flying: laser cooling,
+    // messages, the hyperspace countdown and the MCount-driven housekeeping.
+    private void UpdateInFlight()
+    {
+        _combat.CoolLaser();
+
+        if (State.MessageCount > 0)
+        {
+            _graphics.DrawTextCentre(_draw.ScannerTop - 40, State.MessageString, nameof(FontType.Small), _colorText);
+        }
+
+        if (_space.IsHyperspaceReady)
+        {
+            _draw.DrawHyperspaceCountdown(_space.HyperCountdown);
+            if ((State.MCount & 3) == 0)
+            {
+                _space.CountdownHyperspace();
+            }
+        }
+
+        State.MCount--;
+        if (State.MCount < 0)
+        {
+            State.MCount = 255;
+        }
+
+        if ((State.MCount & 7) == 0)
+        {
+            _ship.RegenerateShields();
+        }
+
+        if ((State.MCount & 31) == 10)
+        {
+            if (_ship.IsEnergyLow())
+            {
+                State.InfoMessage("ENERGY LOW");
+                _audio.PlayEffect(nameof(SoundEffect.Beep));
+            }
+
+            _space.UpdateAltitude();
+        }
+
+        if ((State.MCount & 31) == 20)
+        {
+            _space.UpdateCabinTemp();
+        }
+
+        if ((State.MCount == 0) && (!State.InWitchspace))
+        {
+            _combat.RandomEncounter();
+        }
+
+        _combat.TimeECM();
+    }
+
     private void HandleViewKeys()
+    {
+        HandleFlightViewKeys();
+        HandleChartViewKeys();
+        HandleStatusViewKeys();
+    }
+
+    // F1 - F4: the cockpit views, which double as the docked screens
+    private void HandleFlightViewKeys()
     {
         if (_keyboard.IsPressed(ConsoleKey.F1) &&
             State.CurrentScreen is not Screen.IntroOne and not Screen.IntroTwo)
@@ -297,7 +312,11 @@ public sealed class EliteMain : IGame
                 State.SetView(Screen.RightView);
             }
         }
+    }
 
+    // F5 - F8: the charts and market
+    private void HandleChartViewKeys()
+    {
         if (_keyboard.IsPressed(ConsoleKey.F5))
         {
             State.SetView(Screen.GalacticChart);
@@ -317,7 +336,11 @@ public sealed class EliteMain : IGame
         {
             State.SetView(Screen.MarketPrices);
         }
+    }
 
+    // F9 - F11: commander status, inventory and options
+    private void HandleStatusViewKeys()
+    {
         if (_keyboard.IsPressed(ConsoleKey.F9))
         {
             State.SetView(Screen.CommanderStatus);

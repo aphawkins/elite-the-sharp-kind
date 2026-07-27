@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -28,6 +28,8 @@ internal class FakeEliteDraw : IEliteDraw
     public float Offset { get; }
 
     public float Right => 511;
+
+    public float Scale => 2;
 
     public float ScannerLeft { get; }
 

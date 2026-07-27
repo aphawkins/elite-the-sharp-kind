@@ -241,6 +241,103 @@ public sealed class Track
         _ => (coord.X, coord.Z), // 0 degrees
     };
 
+    // Store piece x,z using the (rotated) template.
+    private static void StorePieceXZ(
+        TrackPiece trackPiece,
+        (int X, int Z)[] pieceXZ,
+        int roughAngle,
+        int numCoords,
+        bool reverseOrder)
+    {
+        int j = reverseOrder ? (numCoords * 2) - 1 : 0;
+        int step = reverseOrder ? -1 : 1;
+
+        for (int i = 0; i < numCoords; i++)
+        {
+            (int x, int z) = GetRotatedPieceXZ(pieceXZ[j], roughAngle);
+            x *= PcFactor;
+            z *= PcFactor;
+
+            // Top left and bottom left.
+            trackPiece.Coords[i * 4] = new(x, 0, z);
+            trackPiece.Coords[(i * 4) + 2] = new(x, 0, z);
+            j += step;
+
+            (x, z) = GetRotatedPieceXZ(pieceXZ[j], roughAngle);
+            x *= PcFactor;
+            z *= PcFactor;
+
+            // Top right and bottom right.
+            trackPiece.Coords[(i * 4) + 1] = new(x, 0, z);
+            trackPiece.Coords[(i * 4) + 3] = new(x, 0, z);
+            j += step;
+        }
+    }
+
+    // Store piece y using IDs and overall shifts.
+    private static void StorePieceY(
+        TrackPiece trackPiece,
+        int[] leftY,
+        int[] rightY,
+        int leftYShift,
+        int rightYShift,
+        int numCoords)
+    {
+        for (int i = 0; i < numCoords; i++)
+        {
+            Coord3D topLeft = trackPiece.Coords[i * 4];
+            Coord3D topRight = trackPiece.Coords[(i * 4) + 1];
+            trackPiece.Coords[i * 4] = topLeft with { Y = (leftY[i] + leftYShift) * PcFactor };
+            trackPiece.Coords[(i * 4) + 1] = topRight with { Y = (rightY[i] + rightYShift) * PcFactor };
+            trackPiece.Coords[(i * 4) + 2] = trackPiece.Coords[(i * 4) + 2] with { Y = BottomY };
+            trackPiece.Coords[(i * 4) + 3] = trackPiece.Coords[(i * 4) + 3] with { Y = BottomY };
+        }
+    }
+
+    // Set road surface colours; segments with a large y step are black.
+    private static void SetRoadColours(TrackPiece trackPiece, int numSegments, byte roadColour)
+    {
+        for (int i = 0; i < numSegments; i++)
+        {
+            int y1 = trackPiece.Coords[i * 4].Y - trackPiece.Coords[(i + 1) * 4].Y;
+            int y2 = trackPiece.Coords[(i * 4) + 1].Y - trackPiece.Coords[((i + 1) * 4) + 1].Y;
+
+            // Get maximum of the two (but keep sign).
+            int y = Math.Abs(y1) > Math.Abs(y2) ? y1 : y2;
+
+            trackPiece.RoadColours[i] = Math.Abs(y) >= 640 * PcFactor ? (byte)ScrBaseColour : roadColour;
+        }
+    }
+
+    // Ensure pieces join up perfectly by copying start coordinates of each
+    // piece to the end coordinates of the previous piece, adjusting for the
+    // difference in cube positions.
+    private static void JoinPieces(TrackPiece[] pieces, int numPieces)
+    {
+        for (int piece = 0; piece < numPieces; piece++)
+        {
+            int lastPiece = piece > 0 ? piece - 1 : numPieces - 1;
+
+            int cubeX = pieces[piece].CubeX << (CubeSizeLog2 - LogPrecision);
+            int cubeY = pieces[piece].CubeY << (CubeSizeLog2 - LogPrecision);
+            int cubeZ = pieces[piece].CubeZ << (CubeSizeLog2 - LogPrecision);
+
+            int lastCubeX = pieces[lastPiece].CubeX << (CubeSizeLog2 - LogPrecision);
+            int lastCubeY = pieces[lastPiece].CubeY << (CubeSizeLog2 - LogPrecision);
+            int lastCubeZ = pieces[lastPiece].CubeZ << (CubeSizeLog2 - LogPrecision);
+
+            int j2 = pieces[lastPiece].NumSegments * 4;
+            for (int i = 0; i < 4; i++, j2++)
+            {
+                Coord3D coord = pieces[piece].Coords[i];
+                pieces[lastPiece].Coords[j2] = new(
+                    coord.X + cubeX - lastCubeX,
+                    coord.Y + cubeY - lastCubeY,
+                    coord.Z + cubeZ - lastCubeZ);
+            }
+        }
+    }
+
     private TrackPiece[] ConvertAmigaTrack(
         int numPieces,
         byte[] piecePositions,
@@ -306,87 +403,24 @@ public sealed class Track
                 trackPiece.SidesColour = ScrBaseColour + 15;
             }
 
-            // Store piece x,z using the (rotated) template.
-            (int X, int Z)[] pieceXZ = converted.XZ[templateNum]!;
             int numCoords = numSegments + 1;
-            int j = reverseOrder ? (numCoords * 2) - 1 : 0;
-            int step = reverseOrder ? -1 : 1;
 
-            for (int i = 0; i < numCoords; i++)
-            {
-                (int x, int z) = GetRotatedPieceXZ(pieceXZ[j], roughAngle);
-                x *= PcFactor;
-                z *= PcFactor;
+            StorePieceXZ(trackPiece, converted.XZ[templateNum]!, roughAngle, numCoords, reverseOrder);
 
-                // Top left and bottom left.
-                trackPiece.Coords[i * 4] = new(x, 0, z);
-                trackPiece.Coords[(i * 4) + 2] = new(x, 0, z);
-                j += step;
+            StorePieceY(
+                trackPiece,
+                converted.Y[leftYId[piece] & 0x7f],
+                converted.Y[rightYId[piece] & 0x7f],
+                leftYShift[piece],
+                rightYShift[piece],
+                numCoords);
 
-                (x, z) = GetRotatedPieceXZ(pieceXZ[j], roughAngle);
-                x *= PcFactor;
-                z *= PcFactor;
-
-                // Top right and bottom right.
-                trackPiece.Coords[(i * 4) + 1] = new(x, 0, z);
-                trackPiece.Coords[(i * 4) + 3] = new(x, 0, z);
-                j += step;
-            }
-
-            // Store piece y using IDs and overall shifts.
-            int[] leftY = converted.Y[leftYId[piece] & 0x7f];
-            int[] rightY = converted.Y[rightYId[piece] & 0x7f];
-
-            for (int i = 0; i < numCoords; i++)
-            {
-                Coord3D topLeft = trackPiece.Coords[i * 4];
-                Coord3D topRight = trackPiece.Coords[(i * 4) + 1];
-                trackPiece.Coords[i * 4] = topLeft with { Y = (leftY[i] + leftYShift[piece]) * PcFactor };
-                trackPiece.Coords[(i * 4) + 1] = topRight with { Y = (rightY[i] + rightYShift[piece]) * PcFactor };
-                trackPiece.Coords[(i * 4) + 2] = trackPiece.Coords[(i * 4) + 2] with { Y = BottomY };
-                trackPiece.Coords[(i * 4) + 3] = trackPiece.Coords[(i * 4) + 3] with { Y = BottomY };
-            }
-
-            // Set road surface colours; segments with a large y step are black.
-            for (int i = 0; i < numSegments; i++)
-            {
-                int y1 = trackPiece.Coords[i * 4].Y - trackPiece.Coords[(i + 1) * 4].Y;
-                int y2 = trackPiece.Coords[(i * 4) + 1].Y - trackPiece.Coords[((i + 1) * 4) + 1].Y;
-
-                // Get maximum of the two (but keep sign).
-                int y = Math.Abs(y1) > Math.Abs(y2) ? y1 : y2;
-
-                trackPiece.RoadColours[i] = Math.Abs(y) >= 640 * PcFactor ? (byte)ScrBaseColour : roadColour;
-            }
+            SetRoadColours(trackPiece, numSegments, roadColour);
 
             pieces[piece] = trackPiece;
         }
 
-        // Ensure pieces join up perfectly by copying start coordinates of each
-        // piece to the end coordinates of the previous piece, adjusting for the
-        // difference in cube positions.
-        for (int piece = 0; piece < numPieces; piece++)
-        {
-            int lastPiece = piece > 0 ? piece - 1 : numPieces - 1;
-
-            int cubeX = pieces[piece].CubeX << (CubeSizeLog2 - LogPrecision);
-            int cubeY = pieces[piece].CubeY << (CubeSizeLog2 - LogPrecision);
-            int cubeZ = pieces[piece].CubeZ << (CubeSizeLog2 - LogPrecision);
-
-            int lastCubeX = pieces[lastPiece].CubeX << (CubeSizeLog2 - LogPrecision);
-            int lastCubeY = pieces[lastPiece].CubeY << (CubeSizeLog2 - LogPrecision);
-            int lastCubeZ = pieces[lastPiece].CubeZ << (CubeSizeLog2 - LogPrecision);
-
-            int j2 = pieces[lastPiece].NumSegments * 4;
-            for (int i = 0; i < 4; i++, j2++)
-            {
-                Coord3D coord = pieces[piece].Coords[i];
-                pieces[lastPiece].Coords[j2] = new(
-                    coord.X + cubeX - lastCubeX,
-                    coord.Y + cubeY - lastCubeY,
-                    coord.Z + cubeZ - lastCubeZ);
-            }
-        }
+        JoinPieces(pieces, numPieces);
 
         return pieces;
     }

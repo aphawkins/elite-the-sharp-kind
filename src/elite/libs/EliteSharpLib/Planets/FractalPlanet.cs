@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -110,19 +110,30 @@ internal sealed class FractalPlanet : IObject
             }
         }
 
+        ColorLandscape();
+    }
+
+    /// <summary>
+    /// Turn the generated heightmap into land and sea, shaded by distance from
+    /// the light source at the top left.
+    /// </summary>
+    private void ColorLandscape()
+    {
         for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
         {
             for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
             {
                 float dist = (x * x) + (y * y);
                 bool dark = dist > 10000;
-                uint color = _planetRenderer.Landscape[x, y];
-                _planetRenderer.Landscape[x, y] = color > 166
-                    ? (dark ? _colorGreen : _colorLightGreen)
-                    : (dark ? _colorBlue : _colorLightBlue);
+                _planetRenderer.Landscape[x, y] = LandscapeColor(_planetRenderer.Landscape[x, y], dark);
             }
         }
     }
+
+    private uint LandscapeColor(uint height, bool dark)
+        => height > 166
+            ? (dark ? _colorGreen : _colorLightGreen)
+            : (dark ? _colorBlue : _colorLightBlue);
 
     /// <summary>
     /// Calculate a square on the midpoint map.

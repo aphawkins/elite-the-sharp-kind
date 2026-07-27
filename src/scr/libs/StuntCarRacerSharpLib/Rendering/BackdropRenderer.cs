@@ -163,7 +163,6 @@ public sealed class BackdropRenderer
     private void DrawScenery(int viewpointY, int angleX, int angleY, int angleZ)
     {
         float width = _graphics.ScreenWidth;
-        float height = _graphics.ScreenHeight;
 
         // same focus as the track and ground projections (see DrawHorizon)
         float focus = width * Scene3D.FocusFactor;
@@ -189,74 +188,98 @@ public sealed class BackdropRenderer
             int cosY = AmigaTrig.Cos(sceneryAngle);
 
             // rotate scenery about y/x/z axis and perform perspective projection
-            bool visible = true;
-            for (int i = 0; i < coords.Length; i++)
-            {
-                int x = coords[i].X * SceneryScaleFactor;
-                int y = -(coords[i].Y * SceneryScaleFactor);
-                int z = coords[i].Z;
-
-                y -= viewpointY / 2;
-
-                // prevent sky showing through between scenery and ground
-                y += 2 * SceneryScaleFactor;
-
-                // rotate about y axis
-                long transX = ((long)x * cosY) + ((long)z * sinY);
-                long transZ = ((long)z * cosY) - ((long)x * sinY);
-
-                // rotate about x axis
-                z = (int)(transZ >> Track.LogPrecision);
-                long transY = ((long)y * cosX) - ((long)z * sinX);
-                transZ = ((long)y * sinX) + ((long)z * cosX);
-
-                // rotate about z axis
-                x = (int)(transX >> Track.LogPrecision);
-                y = (int)(transY >> Track.LogPrecision);
-                transX = ((long)x * cosZ) - ((long)y * sinZ);
-                transY = ((long)x * sinZ) + ((long)y * cosZ);
-
-                // skip this scenery object if any z is behind the viewpoint
-                if (transZ <= 0)
-                {
-                    visible = false;
-                    break;
-                }
-
-                // perspective projection
-                float projZ = transZ / focus;
-                if (Math.Abs(projZ) < 1)
-                {
-                    projZ = 1; // prevent division by zero
-                }
-
-                screen[i] = new(
-                    (transX / projZ) + (width / 2),
-                    (transY / projZ) + (height / 2));
-            }
-
-            if (!visible)
+            if (!ProjectScenery(coords, screen, viewpointY, focus, sinX, cosX, sinY, cosY, sinZ, cosZ))
             {
                 continue;
             }
 
-            // draw the scenery object's polygons (colour, sides, offsets...)
-            int p = 0;
-            while (p < polygons.Length)
+            DrawSceneryPolygons(polygons, screen);
+        }
+    }
+
+    // Rotate one scenery object's points about the y/x/z axes and project them
+    // into screen space. Returns false if any point is behind the viewpoint, in
+    // which case the object is not drawn at all.
+    private bool ProjectScenery(
+        Coord3D[] coords,
+        in Span<Vector2> screen,
+        int viewpointY,
+        float focus,
+        int sinX,
+        int cosX,
+        int sinY,
+        int cosY,
+        int sinZ,
+        int cosZ)
+    {
+        float width = _graphics.ScreenWidth;
+        float height = _graphics.ScreenHeight;
+
+        for (int i = 0; i < coords.Length; i++)
+        {
+            int x = coords[i].X * SceneryScaleFactor;
+            int y = -(coords[i].Y * SceneryScaleFactor);
+            int z = coords[i].Z;
+
+            y -= viewpointY / 2;
+
+            // prevent sky showing through between scenery and ground
+            y += 2 * SceneryScaleFactor;
+
+            // rotate about y axis
+            long transX = ((long)x * cosY) + ((long)z * sinY);
+            long transZ = ((long)z * cosY) - ((long)x * sinY);
+
+            // rotate about x axis
+            z = (int)(transZ >> Track.LogPrecision);
+            long transY = ((long)y * cosX) - ((long)z * sinX);
+            transZ = ((long)y * sinX) + ((long)z * cosX);
+
+            // rotate about z axis
+            x = (int)(transX >> Track.LogPrecision);
+            y = (int)(transY >> Track.LogPrecision);
+            transX = ((long)x * cosZ) - ((long)y * sinZ);
+            transY = ((long)x * sinZ) + ((long)y * cosZ);
+
+            // skip this scenery object if any z is behind the viewpoint
+            if (transZ <= 0)
             {
-                int colour = polygons[p++];
-                int sides = polygons[p++];
+                return false;
+            }
 
-                Vector2[] points = new Vector2[sides];
-                for (int j = 0; j < sides; j++)
-                {
-                    points[j] = screen[polygons[p++]];
-                }
+            // perspective projection
+            float projZ = transZ / focus;
+            if (Math.Abs(projZ) < 1)
+            {
+                projZ = 1; // prevent division by zero
+            }
 
-                if (sides >= 3)
-                {
-                    _graphics.DrawPolygonFilled(points, _palette.Colour(Track.ScrBaseColour + colour));
-                }
+            screen[i] = new(
+                (transX / projZ) + (width / 2),
+                (transY / projZ) + (height / 2));
+        }
+
+        return true;
+    }
+
+    // Draw the scenery object's polygons (colour, sides, offsets...).
+    private void DrawSceneryPolygons(int[] polygons, in ReadOnlySpan<Vector2> screen)
+    {
+        int p = 0;
+        while (p < polygons.Length)
+        {
+            int colour = polygons[p++];
+            int sides = polygons[p++];
+
+            Vector2[] points = new Vector2[sides];
+            for (int j = 0; j < sides; j++)
+            {
+                points[j] = screen[polygons[p++]];
+            }
+
+            if (sides >= 3)
+            {
+                _graphics.DrawPolygonFilled(points, _palette.Colour(Track.ScrBaseColour + colour));
             }
         }
     }

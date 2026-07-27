@@ -1,0 +1,8 @@
+# editorconfig.org
+
+# inherits higher configs
+
+[*.cs]
+
+# License header
+file_header_template = 'Stunt Car Racer - The Sharp Kind' - Andy Hawkins 2026.\n'Stunt Car Racer Remake' - sourceforge.net/projects/stuntcarremake.\nStunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.

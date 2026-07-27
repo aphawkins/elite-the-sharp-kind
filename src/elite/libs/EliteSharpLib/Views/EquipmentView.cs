@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -209,6 +209,63 @@ internal sealed class EquipmentView : IView
                 _ship.HasGalacticHyperdrive = true;
                 break;
 
+            default:
+                BuyLaser(_equipmentStock[_highlightedItem].Type);
+                break;
+        }
+
+        _trade.Credits -= _equipmentStock[_highlightedItem].Price;
+        ListPrices();
+    }
+
+    internal void SelectNext()
+    {
+        if (_highlightedItem == _equipmentStock.Length - 1)
+        {
+            return;
+        }
+
+        for (int i = _highlightedItem + 1; i < _equipmentStock.Length; i++)
+        {
+            if (_equipmentStock[i].Show)
+            {
+                _highlightedItem = i;
+                break;
+            }
+        }
+    }
+
+    internal void SelectPrevious()
+    {
+        if (_highlightedItem == 0)
+        {
+            return;
+        }
+
+        for (int i = _highlightedItem - 1; i >= 0; i--)
+        {
+            if (_equipmentStock[i].Show)
+            {
+                _highlightedItem = i;
+                break;
+            }
+        }
+    }
+
+    private static float LaserRefund(LaserType laserType) => laserType switch
+    {
+        LaserType.Pulse => 400,
+        LaserType.Beam => 1000,
+        LaserType.Military => 6000,
+        LaserType.Mining => 800,
+        LaserType.None => 0,
+        _ => 0,
+    };
+
+    private void BuyLaser(EquipmentType equipmentType)
+    {
+        switch (equipmentType)
+        {
             case EquipmentType.PulseFront:
                 _trade.Credits += LaserRefund(_ship.LaserFront.Type);
                 _ship.LaserFront = new PulseLaser();
@@ -289,54 +346,7 @@ internal sealed class EquipmentView : IView
                 _ship.LaserRight = new MilitaryLaser();
                 break;
         }
-
-        _trade.Credits -= _equipmentStock[_highlightedItem].Price;
-        ListPrices();
     }
-
-    internal void SelectNext()
-    {
-        if (_highlightedItem == _equipmentStock.Length - 1)
-        {
-            return;
-        }
-
-        for (int i = _highlightedItem + 1; i < _equipmentStock.Length; i++)
-        {
-            if (_equipmentStock[i].Show)
-            {
-                _highlightedItem = i;
-                break;
-            }
-        }
-    }
-
-    internal void SelectPrevious()
-    {
-        if (_highlightedItem == 0)
-        {
-            return;
-        }
-
-        for (int i = _highlightedItem - 1; i >= 0; i--)
-        {
-            if (_equipmentStock[i].Show)
-            {
-                _highlightedItem = i;
-                break;
-            }
-        }
-    }
-
-    private static float LaserRefund(LaserType laserType) => laserType switch
-    {
-        LaserType.Pulse => 400,
-        LaserType.Beam => 1000,
-        LaserType.Military => 6000,
-        LaserType.Mining => 800,
-        LaserType.None => 0,
-        _ => 0,
-    };
 
     private void CollapseList()
     {

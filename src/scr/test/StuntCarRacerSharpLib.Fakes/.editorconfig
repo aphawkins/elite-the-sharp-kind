@@ -1,0 +1,12 @@
+# editorconfig.org
+
+# inherits higher configs
+
+[*.cs]
+
+# CA1515: Consider making public types internal
+# Disabled for this project only: it is a shared fakes library consumed by
+# StuntCarRacerSharpLib.Tests, so its types must stay public. CA1515 only
+# fires here because Microsoft.NET.Test.Sdk generates an entry point, which
+# makes the assembly look like an application to the analyser.
+dotnet_diagnostic.CA1515.severity = none

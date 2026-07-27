@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -12,6 +12,13 @@ namespace EliteSharpLib.Ships;
 
 internal class ShipBase : IShip
 {
+    // Large enough that Location's contribution to the projected point is
+    // negligible, so the result approximates the on-screen vanishing point of
+    // the local direction (Model.Points[lasv].Coords) rather than a specific
+    // 3D position along it.
+    private const float FarAimDistance = 1_000_000f;
+    private const int LaserAimSpread = 24;
+
     private readonly IEliteDraw _draw;
     private readonly uint _colorCyan;
     private readonly uint _colorWhite;
@@ -122,19 +129,24 @@ internal class ShipBase : IShip
     {
         for (int i = 0; i < Model.Points.Count; i++)
         {
-            Vector4 vec = Vector4.Transform(Model.Points[i].Coords, transform);
-            vec += Location;
-
-            if (vec.Z <= 0)
-            {
-                vec.Z = 1;
-            }
-
-            vec.X = ((vec.X * 256 / vec.Z) + (_draw.Centre.X / 2)) * _draw.Graphics.Scale;
-            vec.Y = ((-vec.Y * 256 / vec.Z) + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale;
-
-            pointList[i] = vec;
+            pointList[i] = ProjectPoint(Model.Points[i].Coords, transform);
         }
+    }
+
+    private Vector4 ProjectPoint(Vector4 localCoords, Matrix4x4 transform)
+    {
+        Vector4 vec = Vector4.Transform(localCoords, transform);
+        vec += Location;
+
+        if (vec.Z <= 0)
+        {
+            vec.Z = 1;
+        }
+
+        vec.X = ((vec.X * 256 / vec.Z) + (_draw.Centre.X / 2)) * _draw.Scale;
+        vec.Y = ((-vec.Y * 256 / vec.Z) + (_draw.Centre.Y / 2)) * _draw.Scale;
+
+        return vec;
     }
 
     private void DrawModelFaces(Vector4[] pointList)
@@ -231,18 +243,59 @@ internal class ShipBase : IShip
 
     private void DrawLasers(Vector4[] pointList)
     {
-        if (Flags.HasFlag(ShipProperties.Firing))
+        if (!Flags.HasFlag(ShipProperties.Firing))
         {
-            int lasv = LaserFront;
-            uint color = (Type == ShipType.Viper) ? _colorCyan : _colorWhite;
-
-            Vector2[] laserPoints =
-            [
-                new(pointList[lasv].X, pointList[lasv].Y),
-                new(Location.X > 0 ? 0 : 511, _rng.Random(256) * 2),
-            ];
-
-            _draw.DrawPolygonFilled(laserPoints, color, pointList[lasv].Z);
+            return;
         }
+
+        int lasv = LaserFront;
+        uint color = (Type == ShipType.Viper) ? _colorCyan : _colorWhite;
+
+        Vector2 mount = new(pointList[lasv].X, pointList[lasv].Y);
+
+        // Aim along the ship's real firing direction - the vector from its local
+        // origin through the laser mount (the nose) - projected a long way out so
+        // it approximates where that direction vanishes on screen, plus a small
+        // random spread so repeated shots aren't visually identical. The previous
+        // code picked a screen-edge X by which side the ship was on and a Y
+        // uniformly random over the whole view, ignoring the ship's firing angle.
+        Vector4 aimPoint = ProjectPoint(Model.Points[lasv].Coords * FarAimDistance, Rotmat);
+        float aimX = aimPoint.X + _rng.Random(-LaserAimSpread, LaserAimSpread);
+        float aimY = aimPoint.Y + _rng.Random(-LaserAimSpread, LaserAimSpread);
+        Vector2 direction = new Vector2(aimX, aimY) - mount;
+
+        Vector2 endPoint = ProjectToViewBoundary(mount, direction);
+
+        _draw.DrawPolygonFilled([mount, endPoint], color, pointList[lasv].Z);
+    }
+
+    // Finds where a ray from origin along direction leaves the view rectangle,
+    // so the laser is clipped to the actual viewport rather than a hardcoded
+    // screen size.
+    private Vector2 ProjectToViewBoundary(Vector2 origin, Vector2 direction)
+    {
+        float exitDistance = float.PositiveInfinity;
+
+        if (direction.X > 0)
+        {
+            exitDistance = MathF.Min(exitDistance, (_draw.Right - origin.X) / direction.X);
+        }
+        else if (direction.X < 0)
+        {
+            exitDistance = MathF.Min(exitDistance, (_draw.Left - origin.X) / direction.X);
+        }
+
+        if (direction.Y > 0)
+        {
+            exitDistance = MathF.Min(exitDistance, (_draw.Bottom - origin.Y) / direction.Y);
+        }
+        else if (direction.Y < 0)
+        {
+            exitDistance = MathF.Min(exitDistance, (_draw.Top - origin.Y) / direction.Y);
+        }
+
+        return !float.IsFinite(exitDistance) || exitDistance <= 0
+            ? origin
+            : origin + (direction * exitDistance);
     }
 }

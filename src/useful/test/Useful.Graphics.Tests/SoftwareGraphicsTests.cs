@@ -1,4 +1,4 @@
-// 'Useful Libraries' - Andy Hawkins 2025.
+// 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using System.Collections;
 using System.Numerics;
@@ -302,7 +302,6 @@ public class SoftwareGraphicsTests
         // Assert initial state
         Assert.Equal(3f, graphics.ScreenWidth);
         Assert.Equal(4f, graphics.ScreenHeight);
-        Assert.Equal(2f, graphics.Scale);
     }
 
     [Fact]

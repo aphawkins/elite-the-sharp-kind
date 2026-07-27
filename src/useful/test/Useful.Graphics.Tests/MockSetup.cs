@@ -1,4 +1,4 @@
-// 'Useful Libraries' - Andy Hawkins 2025.
+// 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using Moq;
 
@@ -8,10 +8,5 @@ namespace Useful.Graphics.Tests;
 
 internal static class MockSetup
 {
-    internal static Mock<IGraphics> MockGraphics()
-    {
-        Mock<IGraphics> graphicsMoq = new();
-        graphicsMoq.Setup(x => x.Scale).Returns(2);
-        return graphicsMoq;
-    }
+    internal static Mock<IGraphics> MockGraphics() => new();
 }

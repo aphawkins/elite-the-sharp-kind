@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -49,8 +49,8 @@ internal sealed class ShortRangeChartView : IView
 
         // Fuel radius
         Vector2 centre = _draw.Centre;
-        float radius = _ship.Fuel * 10 * _draw.Graphics.Scale;
-        float cross_size = 16 * _draw.Graphics.Scale;
+        float radius = _ship.Fuel * 10 * _draw.Scale;
+        float cross_size = 16 * _draw.Scale;
         _draw.Graphics.DrawCircle(centre, radius, _colorGreen);
         _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), _colorWhite);
         _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), _colorWhite);
@@ -108,32 +108,7 @@ internal sealed class ShortRangeChartView : IView
     {
         if (_isFind)
         {
-            if (_keyboard.IsPressed(ConsoleKey.Backspace) &&
-                !string.IsNullOrEmpty(_findName))
-            {
-                _findName = _findName[..^1];
-            }
-
-            if (_keyboard.IsPressed(ConsoleKey.Enter))
-            {
-                _isFind = false;
-                if (_planet.FindPlanetByName(_findName))
-                {
-                    CrossFromHyperspacePlanet();
-                    CalculateDistanceToPlanet();
-                }
-                else
-                {
-                    _gameState.PlanetName = string.Empty;
-                }
-            }
-
-            (ConsoleKey key, ConsoleModifiers _) = _keyboard.LastPressed();
-            if (key is >= ConsoleKey.A and <= ConsoleKey.Z)
-            {
-                _findName += (char)key;
-            }
-
+            HandleFindInput();
             return;
         }
 
@@ -209,14 +184,14 @@ internal sealed class ShortRangeChartView : IView
             float px = glx.D - _gameState.DockedPlanet.D;
 
             // Convert to screen co-ords
-            px = (px * 4 * _draw.Graphics.Scale) + _draw.Centre.X;
+            px = (px * 4 * _draw.Scale) + _draw.Centre.X;
 
             float py = glx.B - _gameState.DockedPlanet.B;
 
             // Convert to screen co-ords
-            py = (py * 2 * _draw.Graphics.Scale) + _draw.Centre.Y;
+            py = (py * 2 * _draw.Scale) + _draw.Centre.Y;
 
-            int row = (int)(py / (8 * _draw.Graphics.Scale));
+            int row = (int)(py / (8 * _draw.Scale));
 
             if (row_used[row] == 1)
             {
@@ -242,7 +217,7 @@ internal sealed class ShortRangeChartView : IView
             {
                 row_used[row] = 1;
                 _planetNames.Add((
-                    new(px + (4 * _draw.Graphics.Scale), ((row * 8) - 5) * _draw.Graphics.Scale),
+                    new(px + (4 * _draw.Scale), ((row * 8) - 5) * _draw.Scale),
                     _planet.NamePlanet(glx)
                         .CapitaliseFirstLetter()));
             }
@@ -251,7 +226,7 @@ internal sealed class ShortRangeChartView : IView
             // a planet.  The carry_flag is left over from the name generation.
             // Yes this was how it was done... don't ask :-(
             float blob_size = (glx.F & 1) + 2 + _gameState.CarryFlag;
-            blob_size *= _draw.Graphics.Scale;
+            blob_size *= _draw.Scale;
             _planetSizes.Add((new(px, py), blob_size));
 
             _planet.WaggleGalaxy(glx);
@@ -277,12 +252,42 @@ internal sealed class ShortRangeChartView : IView
         }
     }
 
+    // Typing a planet name into the find prompt.
+    private void HandleFindInput()
+    {
+        if (_keyboard.IsPressed(ConsoleKey.Backspace) &&
+            !string.IsNullOrEmpty(_findName))
+        {
+            _findName = _findName[..^1];
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.Enter))
+        {
+            _isFind = false;
+            if (_planet.FindPlanetByName(_findName))
+            {
+                CrossFromHyperspacePlanet();
+                CalculateDistanceToPlanet();
+            }
+            else
+            {
+                _gameState.PlanetName = string.Empty;
+            }
+        }
+
+        (ConsoleKey key, ConsoleModifiers _) = _keyboard.LastPressed();
+        if (key is >= ConsoleKey.A and <= ConsoleKey.Z)
+        {
+            _findName += (char)key;
+        }
+    }
+
     private void CalculateDistanceToPlanet()
     {
         Vector2 location = new()
         {
-            X = ((_gameState.Cross.X - _draw.Centre.X) / (4 * _draw.Graphics.Scale)) + _gameState.DockedPlanet.D,
-            Y = ((_gameState.Cross.Y - _draw.Centre.Y) / (2 * _draw.Graphics.Scale)) + _gameState.DockedPlanet.B,
+            X = ((_gameState.Cross.X - _draw.Centre.X) / (4 * _draw.Scale)) + _gameState.DockedPlanet.D,
+            Y = ((_gameState.Cross.Y - _draw.Centre.Y) / (2 * _draw.Scale)) + _gameState.DockedPlanet.B,
         };
 
         _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
@@ -292,8 +297,8 @@ internal sealed class ShortRangeChartView : IView
     }
 
     private void CrossFromHyperspacePlanet() => _gameState.Cross = new(
-        ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _draw.Graphics.Scale) + _draw.Centre.X,
-        ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _draw.Graphics.Scale) + _draw.Centre.Y);
+        ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _draw.Scale) + _draw.Centre.X,
+        ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _draw.Scale) + _draw.Centre.Y);
 
     /// <summary>
     /// Move the planet chart cross hairs to specified position.

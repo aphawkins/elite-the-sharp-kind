@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -25,6 +25,13 @@ internal interface IEliteDraw
     public float Offset { get; }
 
     public float Right { get; }
+
+    /// <summary>
+    /// Gets Elite's coordinate scale: the game's drawing maths is written in the
+    /// original's 256x256-ish space and multiplied up to the render
+    /// resolution. Game policy, not a graphics-backend concern.
+    /// </summary>
+    public float Scale { get; }
 
     public float ScannerLeft { get; }
 

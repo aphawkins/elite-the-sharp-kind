@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -22,13 +22,13 @@ internal class PlanetRenderer
         Vector2 position = new(location.X, -location.Y);
         position *= 256 / location.Z;
         position += _draw.Centre / 2;
-        position *= _draw.Graphics.Scale;
+        position *= _draw.Scale;
 
         float radius = 6291456 / location.Length();
 
         // Planets are BIG!
         ////  radius = 6291456 / ship_vec.z;
-        radius *= _draw.Graphics.Scale;
+        radius *= _draw.Scale;
 
         return (position.X + radius < _draw.Left) ||
             (position.X - radius > _draw.Right) ||
@@ -76,23 +76,26 @@ internal class PlanetRenderer
     /// <summary>
     /// Draw a line of the planet with appropriate rotation.
     /// </summary>
-    private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
+    private void RenderPlanetLine(Vector2 centre, float offsetX, float offsetY, float radius, float vx, float vy)
     {
         Vector2 s = new()
         {
-            Y = y + centre.Y,
+            Y = offsetY + centre.Y,
         };
 
-        if (s.Y < _draw.Top || s.Y > _draw.Bottom)
+        // Bottom/Right are the border line's own row/column (see EliteDraw.Height/
+        // Width), so the far edge must be excluded here the same way Top/Left's
+        // near edge already is, or the fill paints over the border.
+        if (s.Y < _draw.Top || s.Y >= _draw.Bottom)
         {
             return;
         }
 
-        s.X = centre.X - x;
-        float ex = centre.X + x;
+        s.X = centre.X - offsetX;
+        float ex = centre.X + offsetX;
 
-        float rx = (-x * vx) - (y * vy);
-        float ry = (-x * vy) + (y * vx);
+        float rx = (-offsetX * vx) - (offsetY * vy);
+        float ry = (-offsetX * vy) + (offsetY * vx);
         rx += radius * 65536;
         ry += radius * 65536;
 
@@ -101,7 +104,7 @@ internal class PlanetRenderer
 
         for (; s.X <= ex; s.X++)
         {
-            if (s.X >= _draw.Left && s.X <= _draw.Right)
+            if (s.X >= _draw.Left && s.X < _draw.Right)
             {
                 int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
                 int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);

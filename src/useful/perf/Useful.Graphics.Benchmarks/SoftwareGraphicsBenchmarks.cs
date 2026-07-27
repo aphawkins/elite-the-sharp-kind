@@ -1,4 +1,4 @@
-// 'Useful Libraries' - Andy Hawkins 2025.
+// 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
 using BenchmarkDotNet.Attributes;
@@ -111,9 +111,6 @@ public class SoftwareGraphicsBenchmarks : IDisposable
 
     [Benchmark]
     public void Create() => _graphics = SoftwareGraphics.Create(ScreenWidthPixels, ScreenHeightPixels, (_) => { }, new FakeAssetLocator());
-
-    [Benchmark]
-    public float Scale() => _graphics.Scale;
 
     [Benchmark]
     public float ScreenHeight() => _graphics.ScreenHeight;

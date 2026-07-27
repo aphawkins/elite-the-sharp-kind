@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -86,7 +86,7 @@ internal sealed class Stars
             {
                 _draw.Graphics.DrawLine(
                     star,
-                    new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
+                    new((xx + (_draw.Centre.X / 2)) * _draw.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Scale),
                     _colorWhite);
             }
 
@@ -142,25 +142,7 @@ internal sealed class Stars
 
             if (WarpStars)
             {
-                float ey = yy;
-                float ex = xx;
-                ex = (ex + (_draw.Centre.X / 2)) * _draw.Graphics.Scale;
-                ey = (ey + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale;
-
-                if ((star.X >= _draw.Left)
-                    && (star.X <= _draw.Right) &&
-                    (star.Y >= _draw.Top)
-                    && (star.Y <= _draw.Bottom) &&
-                    (ex >= _draw.Left)
-                    && (ex <= _draw.Right) &&
-                    (ey >= _draw.Top)
-                    && (ey <= _draw.Bottom))
-                {
-                    _draw.Graphics.DrawLine(
-                        star,
-                        new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
-                        _colorWhite);
-                }
+                DrawStarStreak(star, xx, yy);
             }
 
             _stars[i].Y = yy;
@@ -168,18 +150,7 @@ internal sealed class Stars
 
             if ((zz >= 300) || (MathF.Abs(yy) >= 110))
             {
-                _stars[i].Z = _rng.Random(51, 179);
-
-                if (_rng.TrueOrFalse())
-                {
-                    _stars[i].X = _rng.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
-                    _stars[i].Y = _rng.TrueOrFalse() ? -(int)_draw.Centre.Y / 2 : (int)_draw.Centre.Y / 2;
-                }
-                else
-                {
-                    _stars[i].X = _rng.TrueOrFalse() ? -(int)_draw.Centre.X / 2 : (int)_draw.Centre.X / 2;
-                    _stars[i].Y = _rng.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
-                }
+                RecycleStarAtEdge(i);
             }
         }
 
@@ -190,6 +161,44 @@ internal sealed class Stars
     {
         float delta = WarpStars ? 50 : _ship.Speed;
         SideStarfield(_ship.Roll, _ship.Climb, delta);
+    }
+
+    // Draw the motion streak from a star's old screen position to where it has
+    // just moved to, when both ends are inside the view.
+    private void DrawStarStreak(Vector2 star, float xx, float yy)
+    {
+        float ex = (xx + (_draw.Centre.X / 2)) * _draw.Scale;
+        float ey = (yy + (_draw.Centre.Y / 2)) * _draw.Scale;
+
+        if ((star.X >= _draw.Left)
+            && (star.X <= _draw.Right) &&
+            (star.Y >= _draw.Top)
+            && (star.Y <= _draw.Bottom) &&
+            (ex >= _draw.Left)
+            && (ex <= _draw.Right) &&
+            (ey >= _draw.Top)
+            && (ey <= _draw.Bottom))
+        {
+            _draw.Graphics.DrawLine(star, new(ex, ey), _colorWhite);
+        }
+    }
+
+    // A star that has passed the camera or run off the top or bottom comes
+    // back in at a random point on one of the view's edges.
+    private void RecycleStarAtEdge(int i)
+    {
+        _stars[i].Z = _rng.Random(51, 179);
+
+        if (_rng.TrueOrFalse())
+        {
+            _stars[i].X = _rng.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
+            _stars[i].Y = _rng.TrueOrFalse() ? -(int)_draw.Centre.Y / 2 : (int)_draw.Centre.Y / 2;
+        }
+        else
+        {
+            _stars[i].X = _rng.TrueOrFalse() ? -(int)_draw.Centre.X / 2 : (int)_draw.Centre.X / 2;
+            _stars[i].Y = _rng.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
+        }
     }
 
     private Vector4 CreateNewStar() => new()
@@ -212,7 +221,7 @@ internal sealed class Stars
         float zz = _stars[i].Z;
 
         star += _draw.Centre / 2;
-        star *= _draw.Graphics.Scale;
+        star *= _draw.Scale;
 
         if ((!WarpStars) &&
             (star.X >= _draw.Left)
@@ -265,7 +274,7 @@ internal sealed class Stars
             {
                 _draw.Graphics.DrawLine(
                     star,
-                    new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
+                    new((xx + (_draw.Centre.X / 2)) * _draw.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Scale),
                     _colorWhite);
             }
 

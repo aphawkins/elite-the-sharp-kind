@@ -654,13 +654,13 @@ dotnet_diagnostic.CA1422.severity = warning
 dotnet_diagnostic.CA1501.severity = warning
 
 # CA1502: Avoid excessive complexity
-dotnet_diagnostic.CA1502.severity = none
+dotnet_diagnostic.CA1502.severity = warning
 
 # CA1505: Avoid unmaintainable code
 dotnet_diagnostic.CA1505.severity = warning
 
 # CA1506: Avoid excessive class coupling
-dotnet_diagnostic.CA1506.severity = none
+dotnet_diagnostic.CA1506.severity = warning
 
 # CA1507: Use nameof to express symbol names
 dotnet_diagnostic.CA1507.severity = warning
@@ -684,7 +684,7 @@ dotnet_diagnostic.CA1512.severity = warning
 dotnet_diagnostic.CA1513.severity = warning
 
 # CA1515: Consider making public types internal
-dotnet_diagnostic.CA1515.severity = none
+dotnet_diagnostic.CA1515.severity = warning
 
 # CA1700: Do not name enum values 'Reserved'
 dotnet_diagnostic.CA1700.severity = warning
@@ -1341,9 +1341,7 @@ dotnet_diagnostic.CA5392.severity = warning
 dotnet_diagnostic.CA5393.severity = warning
 
 # CA5394: Do not use insecure randomness
-# Disabled repo-wide: this is a game, not a security boundary; every use of
-# System.Random here is seedable game/test randomness, never cryptographic.
-dotnet_diagnostic.CA5394.severity = none
+dotnet_diagnostic.CA5394.severity = warning
 
 # CA5395: Miss HttpVerb attribute for action methods
 dotnet_diagnostic.CA5395.severity = warning
@@ -2509,7 +2507,7 @@ dotnet_diagnostic.RCS0041.severity = none # Add 'param' element to documentation
 dotnet_diagnostic.RCS0042.severity = warning
 dotnet_diagnostic.RCS0043.severity = none # Format accessor's braces on a single line when expression is on single line
 dotnet_diagnostic.RCS0044.severity = none # Use carriage return + linefeed as new line
-dotnet_diagnostic.RCS0045.severity = none # Use linefeed as new line
+dotnet_diagnostic.RCS0045.severity = warning # Use linefeed as new line
 dotnet_diagnostic.RCS0046.severity = warning
 dotnet_diagnostic.RCS0047.severity = warning
 dotnet_diagnostic.RCS0048.severity = none # Put initializer on a single line
@@ -2548,7 +2546,7 @@ dotnet_diagnostic.RCS1052.severity = warning
 dotnet_diagnostic.RCS1056.severity = warning
 dotnet_diagnostic.RCS1060.severity = warning
 dotnet_diagnostic.RCS1064.severity = warning
-dotnet_diagnostic.RCS1065.severity = none # Avoid usage of while statement to create an infinite loop
+dotnet_diagnostic.RCS1065.severity = none # [deprecated] Avoid usage of while statement to create an infinite loop
 dotnet_diagnostic.RCS1066.severity = warning
 dotnet_diagnostic.RCS1069.severity = warning # Remove unnecessary case label
 dotnet_diagnostic.RCS1070.severity = warning # Remove redundant default switch section
@@ -2573,7 +2571,7 @@ dotnet_diagnostic.RCS1174.severity = warning
 dotnet_diagnostic.RCS1176.severity = none # Use 'var' instead of explicit type (when the type is not obvious).
 dotnet_diagnostic.RCS1177.severity = none # Use 'var' instead of explicit type (in foreach).
 dotnet_diagnostic.RCS1181.severity = none # Convert comment to documentation comment
-dotnet_diagnostic.RCS1198.severity = none # Avoid unnecessary boxing of value type.
+dotnet_diagnostic.RCS1198.severity = warning # Avoid unnecessary boxing of value type.
 dotnet_diagnostic.RCS1207.severity = warning
 dotnet_diagnostic.RCS1223.severity = none # Mark publicly visible type with DebuggerDisplay attribute
 dotnet_diagnostic.RCS1231.severity = warning # Make parameter ref read-only
@@ -2605,25 +2603,25 @@ dotnet_diagnostic.S131.severity = none # "switch/Select" statements should conta
 dotnet_diagnostic.S134.severity = none # Control flow statements "if", "switch", "for", "foreach", "while", "do" and "try" should not be nested too deeply
 dotnet_diagnostic.S1067.severity = none # Expressions should not be too complex
 dotnet_diagnostic.S1135.severity = none # Track uses of "TODO" tags
-dotnet_diagnostic.S1147.severity = none # Exit methods should not be called
-dotnet_diagnostic.S1186.severity = none # Methods should not be empty
+dotnet_diagnostic.S1147.severity = warning # Exit methods should not be called
+dotnet_diagnostic.S1186.severity = warning # Methods should not be empty
 dotnet_diagnostic.S1226.severity = warning
 dotnet_diagnostic.S1244.severity = warning
 dotnet_diagnostic.S1309.severity = none # Track uses of in-source issue suppressions
 dotnet_diagnostic.S1313.severity = warning
-dotnet_diagnostic.S1451.severity = none # Track lack of copyright and license headers
+dotnet_diagnostic.S1451.severity = warning # Track lack of copyright and license headers
 dotnet_diagnostic.S1541.severity = none # Methods and properties should not be too complex
 dotnet_diagnostic.S1821.severity = warning
 dotnet_diagnostic.S1994.severity = warning
 dotnet_diagnostic.S2197.severity = warning
-dotnet_diagnostic.S2234.severity = none # Arguments should be passed in the same order as the method parameters
+dotnet_diagnostic.S2234.severity = warning # Arguments should be passed in the same order as the method parameters
 dotnet_diagnostic.S2228.severity = warning
 dotnet_diagnostic.S2302.severity = warning
 dotnet_diagnostic.S2330.severity = warning
 dotnet_diagnostic.S2339.severity = warning
 dotnet_diagnostic.S2360.severity = warning
 dotnet_diagnostic.S2387.severity = warning
-dotnet_diagnostic.S2583.severity = none # Conditionally executed code should be reachable
+dotnet_diagnostic.S2583.severity = warning # Conditionally executed code should be reachable
 dotnet_diagnostic.S2674.severity = warning
 dotnet_diagnostic.S2699.severity = none # Loops should be simplified with "LINQ" expressions
 dotnet_diagnostic.S2701.severity = warning
@@ -2637,7 +2635,7 @@ dotnet_diagnostic.S3353.severity = warning
 dotnet_diagnostic.S3358.severity = none # Ternary operators should not be nested
 dotnet_diagnostic.S3441.severity = warning
 dotnet_diagnostic.S3604.severity = none # Member initializer values should not be redundant
-dotnet_diagnostic.S3776.severity = none # Cognitive Complexity of methods should not be too high
+dotnet_diagnostic.S3776.severity = warning # Cognitive Complexity of methods should not be too high
 dotnet_diagnostic.S3874.severity = warning
 dotnet_diagnostic.S3884.severity = warning
 dotnet_diagnostic.S3937.severity = warning
@@ -2661,7 +2659,7 @@ dotnet_diagnostic.NU1701.severity = none # This package may not be fully compati
 #########
 
 # xUnit Analyzer
-dotnet_diagnostic.xUnit1004.severity = none
+dotnet_diagnostic.xUnit1004.severity = warning # Test methods should not be skipped
 
 ###################################################################################################
 

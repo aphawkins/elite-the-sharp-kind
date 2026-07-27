@@ -7,6 +7,233 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (streaming texture for the depth-layer composite, 2026-07-27)
+
+- `SDLGraphics.FlushDepthLayer` created an `SDL_Surface` and an
+  `SDL_Texture` from the CPU depth layer and destroyed both on every
+  flush — a GPU allocation and a synchronous upload for every frame
+  drawing depth-tested geometry, which is every frame in SCR and every
+  ZBuffer frame in Elite. It now uses one persistent
+  `SDL_TEXTUREACCESS_STREAMING` texture, created alongside the layer in
+  `ClearDepth` and re-uploaded with `SDL_UpdateTexture`.
+- The new texture sets `SDL_BLENDMODE_BLEND` explicitly:
+  `SDL_CreateTextureFromSurface` inferred alpha blending from the
+  surface's pixel format, but `SDL_CreateTexture` does not, and the
+  depth layer is transparent everywhere nothing was rasterised — left
+  at the default it would have painted an opaque rectangle over
+  everything drawn before the flush.
+- Sibling of the framebuffer-blit change below; same fix, same file
+  pair. Full test suite green, both apps smoke-tested live on the
+  Hardware backend (Elite's depth-tested intro ship; SCR's track
+  preview, where the sky and scenery drawn before the depth pass stay
+  visible around the track — the check that blending survived).
+
+### Changed (streaming texture for the software framebuffer blit, 2026-07-27)
+
+- `SoftwareAbstraction.SoftwareScreenUpdate` created an `SDL_Surface`
+  and an `SDL_Texture` from the CPU framebuffer on every presented
+  frame, then destroyed both — a GPU allocation and a synchronous
+  upload per frame. It now creates one
+  `SDL_TEXTUREACCESS_STREAMING` texture in the constructor and
+  re-uploads the pixels with `SDL_UpdateTexture`; the texture is
+  destroyed in `Dispose` before the renderer.
+- The sibling half of the backlog item (`SDLGraphics.DrawImage`/
+  `DrawImagePart` creating a texture per call) was already fixed —
+  `_imageTextures` is built once in `SDLGraphics.Create`.
+- No behaviour change: full test suite green, both apps smoke-tested
+  live on the Software backend (Elite's intro, ship parade and front
+  view; SCR's track menu and track preview).
+
+### Changed (`Scale` moved out of `IGraphics`, 2026-07-27)
+
+- `IGraphics.Scale` (hardcoded `2` in both backends) was Elite's
+  coordinate scale leaking into the shared graphics library — no other
+  consumer read it. It is now `IEliteDraw.Scale`, and Elite's ~50 call
+  sites go through `_draw.Scale` instead of `_draw.Graphics.Scale`.
+- `DrawRectangleCentre` centred with `(ScreenWidth - width) / Scale` in
+  both `SoftwareGraphics` and `SDLGraphics`, which was correct only
+  because `Scale` happened to equal `2`; it now divides by `2`
+  explicitly.
+- `SDLGraphics` divided positions by `(2 / Scale)` in ten places — an
+  exact no-op at `Scale == 2` — removed.
+- `Scale` dropped from `FakeGraphics`, SCR's `RecordingGraphics` (which
+  returned `1` and was never read), the `SoftwareGraphics` benchmark and
+  the two test assertions covering it. `FakeEliteDraw` gained it.
+- No behaviour change: full test suite green, both apps smoke-tested
+  live (Elite's intro, charts and front view; SCR's track menu, preview
+  and race HUD).
+
+### Closed (issue #5, "Measure/improve code complexity", 2026-07-27)
+
+- The whole solution was audited with each candidate rule raised to
+  `warning` under `TreatWarningsAsErrors=false`, counts deduplicated by
+  file/line (multi-targeting reports each site twice):
+
+  | Rule | Violations | Outcome |
+  | --- | --- | --- |
+  | `CA1502` cyclomatic complexity | — | Enabled at `warning` |
+  | `CA1506` class coupling | — | Enabled at `warning` |
+  | `S1451` license headers | 333 → 0 | Fixed and enabled |
+  | `S2234` argument order | 4 → 0 | Fixed and enabled |
+  | `S2583` unreachable code | 0 | Enabled |
+  | `S1541` method complexity | 61 (all prod) | Left `none` |
+  | `S3776` cognitive complexity | 41 (40 prod) | Split methods, then enabled |
+  | `S107` parameter count | 20 (19 prod) | Left `none` |
+  | `S109` magic numbers | 4087 (4085 prod) | Left `none` |
+
+- The rules left at `severity = none` are recorded under Won't in the
+  [backlog](docs/backlog-roadmap.md): their remaining sites are
+  concentrated in ported 6502/Amiga reference methods whose length and
+  hardcoded constants are inherent to the source algorithms, and
+  `CA1502`/`CA1506` already enforce a complexity ceiling.
+
+### Added (`CA5394` enabled, 2026-07-27)
+
+- Enabled `CA5394` (do not use insecure randomness), scoped off in the
+  two assemblies that must reach `System.Random` directly rather than
+  repo-wide:
+  - `Useful` (its own `.editorconfig`) — `RandomSource` is the single
+    wrapper every game and test goes through, deliberately the fast,
+    seedable kind of randomness rather than a cryptographic one.
+  - `StuntCarRacerSharpLib.Tests` (its own `.editorconfig`) —
+    `OpponentPhysicsTests` drives a seeded `Random` directly to assert
+    the opponent's speed logic consumes the RNG stream exactly once per
+    piece; comparing the raw stream *is* the assertion, so it cannot go
+    through `IRandomSource`.
+- The rule's stale "Disabled repo-wide" comment in the root
+  [.editorconfig](.editorconfig) was corrected to match.
+
+### Added (`CA1515` enabled, 2026-07-27)
+
+- Enabled `CA1515` (consider making public types internal). Seven types
+  could not be narrowed, each scoped off where it lives rather than
+  repo-wide:
+  - The BenchmarkDotNet classes in `src/elite/perf` and
+    `src/useful/perf` (a new `.editorconfig` per `perf` folder) —
+    BenchmarkDotNet compiles a generated runner into a separate assembly
+    that references them, so they must stay public.
+  - `RecordingGraphics` and `FakeAbstraction` in
+    `StuntCarRacerSharpLib.Fakes` (its own `.editorconfig`) — a shared
+    fakes library consumed by `StuntCarRacerSharpLib.Tests`. `CA1515`
+    fires there only because `Microsoft.NET.Test.Sdk` generates an entry
+    point, which makes the assembly look like an application; the Elite
+    and Useful fakes projects do not reference it and stayed silent.
+  - `SoftwareSoundTests.AudioAssetFixture`, folded into the `CA1034`
+    `#pragma` already covering it — xUnit1000 requires a public test
+    class and CS0051 then forces the fixture public too.
+
+### Added (`S1451` license headers enforced, 2026-07-27)
+
+- Enabled `S1451` (missing copyright/license header). Sonar rule
+  parameters cannot be set from `.editorconfig` — only from a
+  `SonarLint.xml` supplied as an `AdditionalFiles` item — so
+  [SonarLint.xml](SonarLint.xml) is new at the repo root and wired into
+  every project from [Directory.Build.props](Directory.Build.props). It
+  matches the header by shape rather than by three literal strings
+  (`// '[^']+' - Andy Hawkins \d{4}(-\d{4})?\.`), so it stays valid as
+  years advance and covers all three header variants.
+- Copyright years brought up to date in the `file_header_template`
+  values and across all files: Elite `2023` → `2023-2026`, Useful
+  `2025` → `2023-2026`. SCR keeps `2026`, and gained the
+  `src/scr/.editorconfig` `file_header_template` it never had — until
+  now `IDE0073` was not checking SCR's headers at all.
+- Upstream attribution lines (C.J. Pinder / Bell & Braben for Elite,
+  the remake and Crammond/MicroStyle/MicroProse lines for SCR) are
+  unchanged; the multi-line templates still carry them.
+
+### Added (Analyser audit; `S2234`/`S2583` enabled, 2026-07-27)
+
+- Completed the code-quality-gate audit from issue #5: built the whole
+  solution with `S107`, `S109`, `S1451`, `S1541`, `S2234`, `S2583` and
+  `S3776` each at `warning` and `TreatWarningsAsErrors=false`, and
+  recorded deduplicated per-rule counts in
+  [backlog-roadmap.md](docs/backlog-roadmap.md) (multi-targeting reports
+  every site twice, so raw warning totals are double the real figure).
+  Headline: `S109` 4087, `S1451` 333, `S1541` 61, `S3776` 41, `S107` 20,
+  `S2234` 4, `S2583` 0.
+- Enabled the two correctness-flavoured rules outright, joining `CA1502`
+  and `CA1506`: `S2583` (unreachable conditional code) was already clean,
+  and `S2234`'s four sites were all false positives from deliberate
+  coordinate swaps, cleared by renaming the parameters rather than
+  suppressing — `PlanetRenderer.RenderPlanetLine`'s `x`/`y` become
+  `offsetX`/`offsetY` (its four callers mirror the octants of Doros'
+  circle algorithm on purpose), and `TrackRendererTests.Cross`'s
+  `a`/`b`/`c` become `origin`/`first`/`second`. No behaviour change; the
+  visual-dump tests cover the planet renderer.
+- The remaining rules stay `none` with follow-up backlog items:
+  complexity/parameter-count wants a tracked, ratcheted report rather
+  than a hard gate, `S1451` is a mechanical 333-file decision, and
+  `S109` is recommended against enabling at all.
+
+### Fixed (Planets painting over the view border, 2026-07-27)
+
+- The previous entry below claimed `WireframePlanet`/`FractalPlanet`/
+  `PlanetRenderer` had "no reference to the view bounds at all" — that
+  was wrong; `GetPlanetPosition`'s bounding-box cull and
+  `RenderPlanetLine`'s per-pixel clip against `IEliteDraw.Left`/`Right`/
+  `Top`/`Bottom` have existed since 2025-03-19 (`git blame`), well before
+  issue #8. Live-testing found no bleed into the scanner console, but the
+  user pointed at the actual bug: the planet's fill paints directly over
+  the 1px-wide border line itself. Root cause: `EliteDraw.DrawBorder`
+  ([EliteDraw.cs](src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
+  draws its rectangle via `Graphics.DrawRectangle`, whose last-inclusive-
+  pixel convention (`start + size - 1`) puts the border's own row/column
+  one pixel inside of what `Right`/`Bottom` claim, while `Left`/`Top`
+  (position-based, no such convention) already line up correctly with
+  the border's near edge. Pixel-sampled a screenshot to confirm: the
+  border's right column and bottom row both sit at `Right - 1`/
+  `Bottom - 1`, one pixel short of where every consumer assumed. Fixed
+  both places that derive a content boundary from `Right`/`Bottom`:
+  `PlanetRenderer.RenderPlanetLine`'s manual clip (`s.Y >= Bottom`/
+  `s.X < Right`, mirroring the already-correct `Top`/`Left` exclusions)
+  covers `FractalPlanet`/`StripedPlanet`, and `EliteDraw.Width`/`Height`
+  (feeding `SetViewClipRegion`'s graphics-level clip, `-1` each) covers
+  `WireframePlanet`/`SolidPlanet`, which draw via `DrawCircle`/
+  `DrawCircleFilled` with no manual bounds check of their own — and this
+  same clip region is shared by ships and lasers, so it closes the same
+  1px gap there too. `Right`/`Bottom`/`Bottom`-as-height stayed
+  unchanged, since `DrawBorder` still needs them to draw the border in
+  its current (correct) visual position; only the content-boundary
+  consumers were tightened. Verified by pixel-sampling a live screenshot
+  before and after: the border row was the planet's fill colour
+  (`16,80,144`) before the fix and pure white (`255,255,255`, matching
+  an unobstructed reference column) after. Full solution build and full
+  test suite (436 tests) pass. Removed the backlog item this was split
+  from, since its stated cause didn't hold up.
+
+### Fixed (Enemy laser fire follows the ship's real firing direction, 2026-07-27)
+
+- `ShipBase.DrawLasers` ([ShipBase.cs](src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
+  drew each NPC's laser bolt from its mount point to `(Location.X > 0 ? 0
+  : 511, _rng.Random(256) * 2)` — a screen-edge X picked by which side the
+  ship was on, paired with a Y uniformly random over the whole view,
+  ignoring the ship's actual firing angle, and hardcoded to a 512-tall
+  view regardless of `ScannerWidth`/height. Replaced with a real
+  direction-to-boundary projection: extend the ship's local vector from
+  its origin through the laser mount out to a very large distance
+  (`FarAimDistance`), project it through the same perspective transform as
+  every other model point (factored into a new shared `ProjectPoint`
+  helper) to get the on-screen vanishing point of the ship's real firing
+  direction, add a small random spread (`LaserAimSpread`) so repeated
+  shots still vary, then clip the ray to wherever it actually leaves the
+  view rectangle (`IEliteDraw.Left`/`Right`/`Top`/`Bottom`, derived from
+  screen size) via a new `ProjectToViewBoundary` helper. Investigated the
+  reporter's second concern (planets not clipped to the scanner/viewport
+  boundary either) — confirmed `WireframePlanet`/`FractalPlanet`/
+  `PlanetRenderer` still have no reference to the view bounds, but that's
+  a separate, unfixed concern (different draw path, not covered by this
+  change) and remains open. Added
+  `ShipBaseTests.DrawLasersProjectsAlongFiringDirectionAndClipsToViewBoundary`,
+  which replicates the projection/clip math independently and asserts the
+  drawn endpoint lands where the real trajectory exits the view rather
+  than at a fixed screen edge. Verified with a full solution build, the
+  full test suite (436 passing), and by launching `EliteSharp` through
+  several undocked flight/combat sessions (firing the player's own laser,
+  which shares the same `DrawPolygonFilled` draw path) with no crashes or
+  rendering regressions; was unable to reproduce a live NPC-fired shot in
+  the time available (ship encounters are probabilistic) to visually
+  confirm this specific path beyond the unit test.
+
 ### Changed (Extract shared star-plot helper in Stars, 2026-07-24)
 
 - `Stars.FrontStarfield`/`RearStarfield`/`SideStarfield`

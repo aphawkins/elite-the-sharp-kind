@@ -31,8 +31,6 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
 
     public IList<string> SavedScreenPaths { get; } = [];
 
-    public float Scale => 1;
-
     public float ScreenHeight { get; } = screenHeight;
 
     public float ScreenWidth { get; } = screenWidth;

@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -47,57 +47,31 @@ internal sealed class Mission
 
         int pnum = _planet.FindPlanetNumber(gameState.Cmdr.Galaxy, planet);
 
-        if (gameState.Cmdr.GalaxyNumber == 0)
+        return gameState.Cmdr.GalaxyNumber switch
         {
-            switch (pnum)
-            {
-                case 150:
-                    return _mission1_pdesc[0];
-
-                case 36:
-                    return _mission1_pdesc[1];
-
-                case 28:
-                    return _mission1_pdesc[2];
-            }
-        }
-
-        if (gameState.Cmdr.GalaxyNumber == 1)
-        {
-            switch (pnum)
-            {
-                case 32:
-                case 68:
-                case 164:
-                case 220:
-                case 106:
-                case 16:
-                case 162:
-                case 3:
-                case 107:
-                case 26:
-                case 192:
-                case 184:
-                case 5:
-                    return _mission1_pdesc[3];
-
-                case 253:
-                    return _mission1_pdesc[4];
-
-                case 79:
-                    return _mission1_pdesc[5];
-
-                case 53:
-                    return _mission1_pdesc[6];
-
-                case 118:
-                    return _mission1_pdesc[7];
-
-                case 193:
-                    return _mission1_pdesc[8];
-            }
-        }
-
-        return gameState.Cmdr.GalaxyNumber == 2 && pnum == 101 ? _mission1_pdesc[9] : null;
+            0 => Galaxy0Description(pnum),
+            1 => Galaxy1Description(pnum),
+            2 => pnum == 101 ? _mission1_pdesc[9] : null,
+            _ => null,
+        };
     }
+
+    private string? Galaxy0Description(int pnum) => pnum switch
+    {
+        150 => _mission1_pdesc[0],
+        36 => _mission1_pdesc[1],
+        28 => _mission1_pdesc[2],
+        _ => null,
+    };
+
+    private string? Galaxy1Description(int pnum) => pnum switch
+    {
+        32 or 68 or 164 or 220 or 106 or 16 or 162 or 3 or 107 or 26 or 192 or 184 or 5 => _mission1_pdesc[3],
+        253 => _mission1_pdesc[4],
+        79 => _mission1_pdesc[5],
+        53 => _mission1_pdesc[6],
+        118 => _mission1_pdesc[7],
+        193 => _mission1_pdesc[8],
+        _ => null,
+    };
 }

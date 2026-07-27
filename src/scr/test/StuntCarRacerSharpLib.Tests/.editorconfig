@@ -1,0 +1,12 @@
+# editorconfig.org
+
+# inherits higher configs
+
+[*.cs]
+
+# CA5394: Do not use insecure randomness
+# Disabled for this project only: OpponentPhysicsTests drives a seeded
+# System.Random directly to assert that the opponent's speed logic
+# consumes the RNG stream exactly once per piece. That test cannot go
+# through IRandomSource - comparing the raw stream is the assertion.
+dotnet_diagnostic.CA5394.severity = none

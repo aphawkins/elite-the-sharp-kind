@@ -1,4 +1,4 @@
-// 'Useful Libraries' - Andy Hawkins 2025.
+// 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
 
@@ -6,8 +6,6 @@ namespace Useful.Graphics.Fakes;
 
 public sealed class FakeGraphics(float screenWidth = 0, float screenHeight = 0) : IGraphics
 {
-    public float Scale => 2;
-
     public float ScreenHeight { get; } = screenHeight;
 
     public float ScreenWidth { get; } = screenWidth;

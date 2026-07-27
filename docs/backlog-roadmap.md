@@ -30,68 +30,6 @@ that mentions a decision.
 
 ## Should
 
-### Bugs
-
-- [ ] [EliteSharpLib] Enemy lasers don't always reach the full extent of
-      the view (issue #8): `ShipBase.DrawLasers`
-      ([ShipBase.cs:239-243](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
-      draws the laser from the ship's laser-mount point to
-      `(Location.X > 0 ? 0 : 511, _rng.Random(256) * 2)` — a screen-edge X
-      picked by which side the shooting ship is on, paired with a Y that's
-      random within 0-511 regardless of the actual firing angle, rather
-      than projecting the shot along its real direction to where it
-      crosses the view boundary. The hardcoded `511`/`256` also don't
-      derive from `ScannerWidth`/height, so this is doubly wrong at
-      non-512 resolutions. Investigate a proper direction-to-boundary
-      projection. The reporter also flagged planets overlapping the field
-      of view as possibly the same class of bug: `WireframePlanet`/
-      `FractalPlanet`/`PlanetRenderer` have no reference to
-      `ScannerLeft`/`Right`/`Top`/`Bottom` at all (grepped, no hits) — i.e.
-      planets aren't clipped to the viewport/scanner boundary either.
-      Confirm whether it's the same missing-clip root cause or a separate
-      issue before fixing.
-
-### Code-quality gates (from issue #5, "Measure/improve code complexity")
-
-`CA1502` (excessive complexity), `CA1506` (excessive class coupling), and
-Sonar's `S1541`/`S3776` (method/cognitive complexity) and `S107` (too many
-parameters) are all currently `severity = none` in
-[.editorconfig](../.editorconfig:656-663,2599,2615,2640). The repo also
-sets `TreatWarningsAsErrors=True` repo-wide
-([Directory.Build.props:12](../Directory.Build.props)), so flipping any of
-these straight to `warning` will fail the build the moment one violation
-exists — these can't be turned on in the same PR as any fix, they need an
-audit-then-ratchet approach, mirrored on how coverage is already tracked
-(reportgenerator badge committed to
-[docs/images/coverage-badge.svg](../docs/images/coverage-badge.svg) by
-[build-and-package.yml](../.github/workflows/build-and-package.yml), plus
-the benchmark-history decision above) rather than a hard gate — this
-codebase ports 6502/Amiga fixed-point algorithms whose reference methods
-are inherently long, so some violations may be legitimate/accepted rather
-than fixed.
-
-- [ ] Audit violation counts per rule (`dotnet build` with each rule
-      temporarily set to `warning` and `TreatWarningsAsErrors` off, one
-      rule at a time) to size the work before deciding fix-now vs
-      track-over-time per rule.
-- [ ] `CA1502`/`S1541`/`S3776` (complexity) and `CA1506` (coupling) and
-      `S107` (parameter count): the direct ask from issue #5. Likely the
-      noisiest given the point above — probably wants tracking (a
-      generated report/badge, ratcheted down over time) rather than an
-      immediate hard `warning`.
-- [ ] Also evaluate the other rules the maintainer named while turning
-      these on: `S2234` (arguments passed out of parameter order) and
-      `S2583` (unreachable conditional code) are correctness-flavoured and
-      likely low-count — good candidates to enable outright rather than
-      just track (`S2583` would have caught the dead `////#if QHD` block
-      cleaned up in issue #7's item below). `S1451` (missing copyright/
-      license headers) is mechanical and cheap to fix in one pass if
-      wanted. `S109` (magic numbers) is the one to be most wary of: the
-      existing "3D pipeline sharing" items above already call out
-      hardcoded magic numbers (`* 256 / vec.Z`, etc.) as endemic to this
-      codebase, so this rule alone could dwarf the others — audit its
-      count before deciding it's worth enabling at all.
-
 ### Release engineering (from the retired release plan)
 
 (none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
@@ -120,8 +58,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [Useful.Graphics] The hardcoded `Scale { get; } = 2` on `IGraphics` and the centring math that divides by it (`DrawRectangleCentre` = `(ScreenWidth - width) / Scale`, [SoftwareGraphics.cs:29, 341-342](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) only centres correctly because Scale happens to equal 2, and `SDLGraphics` divides positions by `(2 / Scale)` in ten places, which is a no-op ([SDLGraphics.cs:251-252,274-275,298,321-322,345-346,398-399](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) — Elite-specific scaling leaking into the shared library; make centring `(ScreenWidth - width) / 2` and move scale policy to the game.
-- [ ] [Useful.SDL] `SDLGraphics.DrawImage`/`DrawImagePart` create and destroy an `SDL_Texture` from the surface on every call ([SDLGraphics.cs:90-111,125-154](../src/useful/libs/Useful.SDL/SDLGraphics.cs)), and `SoftwareAbstraction.SoftwareScreenUpdate` creates a surface + texture per presented frame ([SoftwareAbstraction.cs:69-110](../src/useful/libs/Useful.SDL/SoftwareAbstraction.cs)); cache textures per image, and use one streaming texture + `SDL_UpdateTexture` for the framebuffer blit.
 - [ ] [EliteSharpLib] `ShipFactory.CreateShipFromName` instantiates ship types via reflection from strings in `AssetManifest.json` ([ShipFactory.cs:114-131](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs), flagged by its own TODOs) — data-driven `Type.GetType` + non-public `Activator.CreateInstance` is fragile and a mild input-handling risk; replace with an explicit name→factory dictionary.
 - [ ] [EliteSharpLib] `ShipBase.Draw` allocates a `new Vector4[100]` per ship per tick and keeps a discarded `_ = VectorMaths.UnitVector(...)` call ([ShipBase.cs:100-115](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)); reuse a pooled/instance buffer sized to the model and delete the dead call (same pattern for `EliteDraw._pointList`'s magic `100` vs the `MAXPOLYS` constant, [EliteDraw.cs:19-25](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)).
 - [ ] [EliteSharpLib] `Universe.RemoveShip` only removes from `_objects`, silently leaving `Planet`/`StationOrSun` set if passed one of those ([Universe.cs:127-135](../src/elite/libs/EliteSharpLib/Universe.cs)) — station removal currently works only because a sun immediately overwrites `StationOrSun` in `Combat.RemoveShip`; clear the matching reference explicitly.
@@ -176,9 +112,10 @@ painter's chain landed 2026-07-14, see CHANGELOG):
       `DrawLasers` only consumes an already-projected point, it doesn't
       inline the projection itself) and SCR has `Scene3D.ProjectPoint`
       ([Scene3D.cs:116-125](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs));
-      a small `focus`+`centre` projector type serves both. Do together
-      with (or after) the Scale-policy cleanup above so Elite's `* Scale`
-      doesn't leak into the shared type.
+      a small `focus`+`centre` projector type serves both. Elite's
+      `Scale` now lives on `EliteDraw` rather than `IGraphics` (see
+      CHANGELOG), so keep the `* Scale` on the Elite side of the
+      boundary rather than in the shared type.
 - [ ] [Useful.Graphics] Shared text/HUD-panel helper for the two games'
       ad-hoc HUD code (Elite's `EliteDraw` header/border/text helpers,
       SCR's `HudRenderer`) — the smaller sibling of the original item;
@@ -388,8 +325,8 @@ either.**):
 - [ ] [EliteSharpLib] Elite at non-512x512 resolutions: audit and fix
       the hardcoded coordinate-space assumptions — 511 in
       `ShipBase.DrawLasers`, `ScannerWidth = 512` in `EliteDraw`, the
-      `Centre`/`Scale` maths — so Elite renders correctly at other
-      resolutions. Depends on the Scale-policy cleanup above. **[LARGE]**
+      `Centre`/`Scale` maths (`Scale` is now `EliteDraw.Scale`) — so
+      Elite renders correctly at other resolutions. **[LARGE]**
       — the maintainer decided (see [decisions.md](decisions.md)) Elite
       should support the full 8-bit/16-bit/modern resolution-tier scheme,
       not just integer-scaled 512x512; re-scope this item against that
@@ -424,6 +361,16 @@ either.**):
 
 ## Won't
 
+- [ ] [Repo] Remaining code-complexity rules from issue #5 (closed
+      2026-07-27, see [CHANGELOG.md](../CHANGELOG.md)): `S1541`/`S3776`
+      (method/cognitive complexity, 102 sites) and `S107` (parameter
+      count, 20 sites) stay `severity = none` — the survivors are mostly
+      ported 6502/Amiga reference methods that are inherently long, and
+      `CA1502`/`CA1506` already cover the same ground as an enforced
+      gate. `S109` (magic numbers, 4087 sites) likewise stays off:
+      hardcoded constants (`* 256 / vec.Z`, etc.) are endemic to the
+      ported algorithms. Revisit only if a specific project is scoped for
+      it.
 - [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work — authentic to the original ("broken as designed"); documented, not fixed.
 - [ ] [EliteSharpLib] Elite Intro2 parade shows 29 of ~33 ship models ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) — Cougar, Constrictor and the Lone variants are mission-specific ships, deliberately excluded from the parade; confirmed intentional, not a bug.
 - [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`, insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game is fixed at 13.5fps by design and none of this is a bottleneck at that rate; revisit only if the "performance as secondary objective" goal is picked up.

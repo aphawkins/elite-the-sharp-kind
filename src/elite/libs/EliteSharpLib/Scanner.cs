@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -316,13 +316,7 @@ internal sealed class Scanner
             y1 += _scannerCentre.Y;
             y2 += _scannerCentre.Y;
 
-            uint color = obj.Flags.HasFlag(ShipProperties.Station)
-                ? _colorGreen
-                : obj.Type == ShipType.Missile
-                    ? _colorLilac
-                    : obj.Flags.HasFlag(ShipProperties.Police)
-                        ? _colorPurple
-                        : obj.Flags.HasFlag(ShipProperties.Hostile) ? _colorYellow : _colorWhite;
+            uint color = LollipopColor(obj);
 
             // ship
             _draw.Graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, color);
@@ -331,4 +325,16 @@ internal sealed class Scanner
             _draw.Graphics.DrawRectangleFilled(new(x, y2 < y1 ? y2 : y1), 2, MathF.Abs(y2 - y1), color);
         }
     }
+
+    /// <summary>
+    /// The lollipop colour for an object on the scanner.
+    /// </summary>
+    private uint LollipopColor(IObject obj)
+        => obj.Flags.HasFlag(ShipProperties.Station)
+            ? _colorGreen
+            : obj.Type == ShipType.Missile
+                ? _colorLilac
+                : obj.Flags.HasFlag(ShipProperties.Police)
+                    ? _colorPurple
+                    : obj.Flags.HasFlag(ShipProperties.Hostile) ? _colorYellow : _colorWhite;
 }

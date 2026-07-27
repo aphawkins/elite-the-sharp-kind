@@ -1,4 +1,4 @@
-// 'Useful Libraries' - Andy Hawkins 2025.
+// 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using System.Numerics;
 
@@ -6,8 +6,6 @@ namespace Useful.Graphics;
 
 public interface IGraphics
 {
-    public float Scale { get; }
-
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }

@@ -1,4 +1,4 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
@@ -55,6 +55,8 @@ internal sealed class EliteDraw : IEliteDraw
 
     public float Right => Graphics.ScreenWidth - BorderWidth;
 
+    public float Scale { get; } = 2;
+
     public float ScannerLeft => Centre.X - (ScannerWidth / 2);
 
     public float ScannerRight => ScannerLeft + ScannerWidth - 1;
@@ -63,9 +65,13 @@ internal sealed class EliteDraw : IEliteDraw
 
     public float Top => BorderWidth;
 
-    internal float Height => Bottom - BorderWidth;
+    // DrawBorder's rectangle draws its far edge at position+size-1 (last
+    // inclusive pixel), one short of Right/Bottom, so the view clip must
+    // stop one pixel earlier still or content lands on top of the border
+    // line itself instead of stopping short of it.
+    internal float Height => Bottom - BorderWidth - 1;
 
-    internal float Width => Graphics.ScreenWidth - (2 * BorderWidth);
+    internal float Width => Graphics.ScreenWidth - (2 * BorderWidth) - 1;
 
     private static float BorderWidth => 1;
 
@@ -119,7 +125,7 @@ internal sealed class EliteDraw : IEliteDraw
 
             Graphics.DrawTextLeft(position, text[previous..i], nameof(FontType.Small), _colorWhite);
             previous = i;
-            position.Y += 8 * Graphics.Scale;
+            position.Y += 8 * Scale;
         }
     }
 
@@ -227,6 +233,24 @@ internal sealed class EliteDraw : IEliteDraw
             faceNormal.Visible = cos_angle < -0.13;
         }
 
+        int np = ProjectExplosionPoints(ship);
+
+        float z = ship.Location.Z;
+        float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
+        float pr = ship.ExpDelta * 256 / q;
+
+        ////  if (pr > 0x1C00)
+        ////      q = 254;
+        ////  else
+        q = pr / 32;
+
+        DrawExplosionParticles(np, q);
+    }
+
+    // Project the ship's visible points into _pointList, returning how many
+    // of them were written.
+    private int ProjectExplosionPoints(IShip ship)
+    {
         int np = 0;
 
         for (int i = 0; i < ship.Model.Points.Count; i++)
@@ -238,22 +262,20 @@ internal sealed class EliteDraw : IEliteDraw
                 Vector2 position = new(r.X, -r.Y);
                 position *= 256 / r.Z;
                 position += Centre / 2;
-                position *= Graphics.Scale;
+                position *= Scale;
                 _pointList[np].X = position.X;
                 _pointList[np].Y = position.Y;
                 np++;
             }
         }
 
-        float z = ship.Location.Z;
-        float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
-        float pr = ship.ExpDelta * 256 / q;
+        return np;
+    }
 
-        ////  if (pr > 0x1C00)
-        ////      q = 254;
-        ////  else
-        q = pr / 32;
-
+    // Scatter a cloud of debris blocks around each of the np projected points,
+    // spread wider as the explosion grows (q).
+    private void DrawExplosionParticles(int np, float q)
+    {
         for (int cnt = 0; cnt < np; cnt++)
         {
             float sx = _pointList[cnt].X;
@@ -272,13 +294,18 @@ internal sealed class EliteDraw : IEliteDraw
                 int sizex = _rng.Random(1, 3);
                 int sizey = _rng.Random(1, 3);
 
-                for (int psy = 0; psy < sizey; psy++)
-                {
-                    for (int psx = 0; psx < sizex; psx++)
-                    {
-                        Graphics.DrawPixel(new(position.X + psx, position.Y + psy), _colorWhite);
-                    }
-                }
+                DrawExplosionBlock(position, sizex, sizey);
+            }
+        }
+    }
+
+    private void DrawExplosionBlock(Vector2 position, int sizex, int sizey)
+    {
+        for (int psy = 0; psy < sizey; psy++)
+        {
+            for (int psx = 0; psx < sizex; psx++)
+            {
+                Graphics.DrawPixel(new(position.X + psx, position.Y + psy), _colorWhite);
             }
         }
     }

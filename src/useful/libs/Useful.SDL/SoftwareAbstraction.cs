@@ -1,4 +1,4 @@
-// 'Useful Libraries' - Andy Hawkins 2025.
+// 'Useful Libraries' - Andy Hawkins 2023-2026.
 
 using SDL;
 using Useful.Abstraction;
@@ -15,12 +15,27 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
     private readonly SDLRenderer _renderer;
     private readonly SDLWindow _window;
     private readonly SoftwareSoundOutput _soundOutput;
+
+    // One streaming texture reused for every presented frame: the software
+    // renderer hands over the same CPU framebuffer each tick, so creating a
+    // surface and a texture per present was a synchronous GPU allocation and
+    // upload on every frame. SDL_UpdateTexture re-uploads the pixels into
+    // this one instead.
+    private readonly nint _frameTexture;
+
     private bool _isDisposed;
 
     public SoftwareAbstraction(int screenWidth, int screenHeight, string title)
     {
         _window = new(screenWidth, screenHeight, title);
         _renderer = new(_window);
+
+        _frameTexture = SDLGuard.Execute(() => (nint)SDL_CreateTexture(
+            NativeRenderer,
+            SDL_PixelFormat.SDL_PIXELFORMAT_ARGB8888,
+            SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING,
+            screenWidth,
+            screenHeight));
 
         AssetLocator assetLocator = AssetLocator.Create();
         Graphics = SoftwareGraphics.Create(
@@ -61,6 +76,12 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
                 (Graphics as IDisposable)?.Dispose();
                 _soundOutput?.Dispose();
                 (Sound as IDisposable)?.Dispose();
+
+                if (_frameTexture != nint.Zero)
+                {
+                    SDL_DestroyTexture((SDL_Texture*)_frameTexture);
+                }
+
                 _renderer?.Dispose();
                 _window?.Dispose();
             }
@@ -73,19 +94,11 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
 
     private void SoftwareScreenUpdate(FastBitmap bitmap)
     {
-        // SDL3's named-format surface creation supersedes the previous SDL 2.x
-        // mask-based SDL_CreateRGBSurfaceFrom, so a single call now covers both endiannesses.
-        nint surfacePtr = SDLGuard.Execute(() => (nint)SDL_CreateSurfaceFrom(
-            bitmap.Width,
-            bitmap.Height,
-            SDL_PixelFormat.SDL_PIXELFORMAT_ARGB8888,
+        SDLGuard.Execute(() => SDL_UpdateTexture(
+            (SDL_Texture*)_frameTexture,
+            null,
             bitmap.BitmapHandle,
             bitmap.Width * 4));
-
-        nint texturePtr = SDLGuard.Execute(
-            () => (nint)SDL_CreateTextureFromSurface(NativeRenderer, (SDL_Surface*)surfacePtr));
-
-        SDL_DestroySurface((SDL_Surface*)surfacePtr);
 
         SDLGuard.Execute(() =>
         {
@@ -97,10 +110,8 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
                 h = bitmap.Height,
             };
 
-            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
+            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)_frameTexture, null, &dest);
         });
-
-        SDL_DestroyTexture((SDL_Texture*)texturePtr);
 
         SDLGuard.Execute(() => SDL_RenderPresent(NativeRenderer));
     }

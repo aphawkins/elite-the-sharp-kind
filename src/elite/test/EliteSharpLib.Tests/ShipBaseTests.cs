@@ -1,10 +1,12 @@
-// 'Elite - The Sharp Kind' - Andy Hawkins 2023.
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Ships;
 using Useful.Assets.Models;
+using Useful.Fakes;
 
 namespace EliteSharpLib.Tests;
 
@@ -76,6 +78,73 @@ public class ShipBaseTests
         AssertVector2AlmostEqual(expectedB, points[1]);
     }
 
+    [Fact]
+    public void DrawLasersProjectsAlongFiringDirectionAndClipsToViewBoundary()
+    {
+        // Arrange: a laser mount offset up-and-left of the ship's nose, on a ship
+        // sitting to the right of centre, so the bolt's real trajectory exits
+        // through the top of the view rather than the fixed screen-edge X /
+        // fully-random Y the previous (buggy) implementation always produced.
+        Vector4 location = new(500, 0, 1000, 0);
+        Vector4 mountCoords = new(10, 20, 50, 0);
+        Point mountPoint = new() { Coords = mountCoords, FaceNormals = [] };
+
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new FakeRandomSource { RandomValue = 0 }))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = location,
+            LaserFront = 0,
+            Flags = ShipProperties.Firing,
+            Model = new()
+            {
+                FaceNormals = [],
+                Faces = [],
+                Lines = [],
+                Points = [mountPoint],
+            },
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert: replicate the production projection to get the expected mount
+        // and (far-distance) aim points, then the point where that ray leaves the
+        // view rectangle (FakeEliteDraw: Left=0, Right=511, Top=0, Bottom=511).
+        Vector2 expectedMount = Project(mountCoords, location, draw);
+        Vector2 expectedAim = Project(mountCoords * 1_000_000f, location, draw);
+        Vector2 direction = expectedAim - expectedMount;
+
+        float exitViaLeft = (draw.Left - expectedMount.X) / direction.X;
+        float exitViaTop = (draw.Top - expectedMount.Y) / direction.Y;
+        float exitDistance = MathF.Min(exitViaLeft, exitViaTop);
+        Vector2 expectedEnd = expectedMount + (direction * exitDistance);
+
+        (Vector2[] points, uint _, float _) = Assert.Single(draw.DrawnPolygons);
+        Assert.Equal(2, points.Length);
+        AssertVector2AlmostEqual(expectedMount, points[0]);
+        AssertVector2AlmostEqual(expectedEnd, points[1]);
+
+        // The old code always picked X = 0 or 511 (whichever screen edge is
+        // opposite the ship) regardless of geometry; here the ray actually exits
+        // through the top edge, so X lands well away from either edge.
+        Assert.True(MathF.Abs(expectedEnd.X) > 1f);
+        Assert.True(MathF.Abs(expectedEnd.X - 511) > 1f);
+    }
+
+    private static Vector2 Project(Vector4 localCoords, Vector4 location, FakeEliteDraw draw)
+    {
+        Vector4 vec = localCoords + location;
+        if (vec.Z <= 0)
+        {
+            vec.Z = 1;
+        }
+
+        float x = ((vec.X * 256 / vec.Z) + (draw.Centre.X / 2)) * draw.Scale;
+        float y = ((-vec.Y * 256 / vec.Z) + (draw.Centre.Y / 2)) * draw.Scale;
+        return new(x, y);
+    }
+
     private static Vector2 ProjectUsingRotmatBasis(Vector4 point, Matrix4x4 rotmat, Vector4 location, FakeEliteDraw draw)
     {
         Vector4 vec = (rotmat.GetRow(0) * point.X) + (rotmat.GetRow(1) * point.Y) + (rotmat.GetRow(2) * point.Z);
@@ -86,8 +155,8 @@ public class ShipBaseTests
             vec.Z = 1;
         }
 
-        float x = ((vec.X * 256 / vec.Z) + (draw.Centre.X / 2)) * draw.Graphics.Scale;
-        float y = ((-vec.Y * 256 / vec.Z) + (draw.Centre.Y / 2)) * draw.Graphics.Scale;
+        float x = ((vec.X * 256 / vec.Z) + (draw.Centre.X / 2)) * draw.Scale;
+        float y = ((-vec.Y * 256 / vec.Z) + (draw.Centre.Y / 2)) * draw.Scale;
         return new(x, y);
     }
 
