@@ -7,6 +7,30 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Analyser audit; `S2234`/`S2583` enabled, 2026-07-27)
+
+- Completed the code-quality-gate audit from issue #5: built the whole
+  solution with `S107`, `S109`, `S1451`, `S1541`, `S2234`, `S2583` and
+  `S3776` each at `warning` and `TreatWarningsAsErrors=false`, and
+  recorded deduplicated per-rule counts in
+  [backlog-roadmap.md](docs/backlog-roadmap.md) (multi-targeting reports
+  every site twice, so raw warning totals are double the real figure).
+  Headline: `S109` 4087, `S1451` 333, `S1541` 61, `S3776` 41, `S107` 20,
+  `S2234` 4, `S2583` 0.
+- Enabled the two correctness-flavoured rules outright, joining `CA1502`
+  and `CA1506`: `S2583` (unreachable conditional code) was already clean,
+  and `S2234`'s four sites were all false positives from deliberate
+  coordinate swaps, cleared by renaming the parameters rather than
+  suppressing — `PlanetRenderer.RenderPlanetLine`'s `x`/`y` become
+  `offsetX`/`offsetY` (its four callers mirror the octants of Doros'
+  circle algorithm on purpose), and `TrackRendererTests.Cross`'s
+  `a`/`b`/`c` become `origin`/`first`/`second`. No behaviour change; the
+  visual-dump tests cover the planet renderer.
+- The remaining rules stay `none` with follow-up backlog items:
+  complexity/parameter-count wants a tracked, ratcheted report rather
+  than a hard gate, `S1451` is a mechanical 333-file decision, and
+  `S109` is recommended against enabling at all.
+
 ### Fixed (Planets painting over the view border, 2026-07-27)
 
 - The previous entry below claimed `WireframePlanet`/`FractalPlanet`/

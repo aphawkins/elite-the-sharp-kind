@@ -49,27 +49,40 @@ codebase ports 6502/Amiga fixed-point algorithms whose reference methods
 are inherently long, so some violations may be legitimate/accepted rather
 than fixed.
 
-- [ ] Audit violation counts per rule (`dotnet build` with each rule
-      temporarily set to `warning` and `TreatWarningsAsErrors` off, one
-      rule at a time) to size the work before deciding fix-now vs
-      track-over-time per rule.
-- [ ] `CA1502`/`S1541`/`S3776` (complexity) and `CA1506` (coupling) and
-      `S107` (parameter count): the direct ask from issue #5. Likely the
-      noisiest given the point above — probably wants tracking (a
-      generated report/badge, ratcheted down over time) rather than an
-      immediate hard `warning`.
-- [ ] Also evaluate the other rules the maintainer named while turning
-      these on: `S2234` (arguments passed out of parameter order) and
-      `S2583` (unreachable conditional code) are correctness-flavoured and
-      likely low-count — good candidates to enable outright rather than
-      just track (`S2583` would have caught the dead `////#if QHD` block
-      cleaned up in issue #7's item below). `S1451` (missing copyright/
-      license headers) is mechanical and cheap to fix in one pass if
-      wanted. `S109` (magic numbers) is the one to be most wary of: the
-      existing "3D pipeline sharing" items above already call out
-      hardcoded magic numbers (`* 256 / vec.Z`, etc.) as endemic to this
-      codebase, so this rule alone could dwarf the others — audit its
-      count before deciding it's worth enabling at all.
+Audit done 2026-07-27 (whole solution, each rule at `warning` with
+`TreatWarningsAsErrors=false`, counts deduplicated by file/line since
+multi-targeting reports each site twice). `CA1502`, `CA1506`, `S2234`
+and `S2583` are now enabled at `warning`; remaining counts:
+
+| Rule | Violations | Notes |
+| --- | --- | --- |
+| `S109` magic numbers | 4087 (4085 prod) | Dwarfs everything else; not worth enabling |
+| `S1451` license headers | 333 (249 prod, 84 test) | One file each; mechanical |
+| `S1541` method complexity | 61 (all prod) | |
+| `S3776` cognitive complexity | 41 (40 prod) | |
+| `S107` parameter count | 20 (19 prod) | |
+| `S2234` argument order | 4 → 0 | Fixed and enabled |
+| `S2583` unreachable code | 0 | Enabled |
+
+Complexity/coupling violations concentrate in `EliteSharpLib` (70 of
+the 122 `S1541`+`S3776`+`S107` prod sites), then
+`StuntCarRacerSharpLib` (33), with 17 across the `Useful.*` libs.
+
+- [ ] `S1541`/`S3776` (complexity, 102 sites) and `S107` (parameter
+      count, 20 sites): the remainder of issue #5 now that `CA1502` and
+      `CA1506` are enabled. Too many to fix in one session and some are
+      legitimate (ported 6502/Amiga reference methods), so this wants
+      tracking — a generated report/badge ratcheted down over time —
+      rather than an immediate hard `warning`.
+- [ ] `S1451` (missing copyright/license headers, 333 files):
+      mechanical, one header line per file; decide whether the churn is
+      wanted, and if so do it in a single pass with a script and enable
+      the rule in the same commit.
+- [ ] `S109` (magic numbers, 4087 sites): audited and *not* recommended
+      for enabling — the "3D pipeline sharing" items below already call
+      out hardcoded magic numbers (`* 256 / vec.Z`, etc.) as endemic to
+      this codebase. Close this as Won't unless the maintainer wants it
+      scoped to specific projects.
 
 ### Release engineering (from the retired release plan)
 

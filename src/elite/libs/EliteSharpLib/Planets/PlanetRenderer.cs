@@ -76,11 +76,11 @@ internal class PlanetRenderer
     /// <summary>
     /// Draw a line of the planet with appropriate rotation.
     /// </summary>
-    private void RenderPlanetLine(Vector2 centre, float x, float y, float radius, float vx, float vy)
+    private void RenderPlanetLine(Vector2 centre, float offsetX, float offsetY, float radius, float vx, float vy)
     {
         Vector2 s = new()
         {
-            Y = y + centre.Y,
+            Y = offsetY + centre.Y,
         };
 
         // Bottom/Right are the border line's own row/column (see EliteDraw.Height/
@@ -91,11 +91,11 @@ internal class PlanetRenderer
             return;
         }
 
-        s.X = centre.X - x;
-        float ex = centre.X + x;
+        s.X = centre.X - offsetX;
+        float ex = centre.X + offsetX;
 
-        float rx = (-x * vx) - (y * vy);
-        float ry = (-x * vy) + (y * vx);
+        float rx = (-offsetX * vx) - (offsetY * vy);
+        float ry = (-offsetX * vy) + (offsetY * vx);
         rx += radius * 65536;
         ry += radius * 65536;
 

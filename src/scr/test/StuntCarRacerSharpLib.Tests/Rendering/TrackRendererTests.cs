@@ -230,8 +230,8 @@ public class TrackRendererTests
         return false;
     }
 
-    private static float Cross(Vector2 a, Vector2 b, Vector2 c)
-        => ((b.X - a.X) * (c.Y - a.Y)) - ((b.Y - a.Y) * (c.X - a.X));
+    private static float Cross(Vector2 origin, Vector2 first, Vector2 second)
+        => ((first.X - origin.X) * (second.Y - origin.Y)) - ((first.Y - origin.Y) * (second.X - origin.X));
 
     private static bool SegmentsCross(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
     {
