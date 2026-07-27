@@ -371,26 +371,13 @@ internal sealed class Space
                 continue;
             }
 
-            if (_gameState.DetonateBomb &&
-                (!obj.Flags.HasFlag(ShipProperties.Dead)) &&
-                (obj.Type != ShipType.Planet) &&
-                (obj.Type != ShipType.Sun) &&
-                (obj.Type != ShipType.Constrictor) &&
-                (obj.Type != ShipType.Cougar) &&
-                !obj.Flags.HasFlag(ShipProperties.Station))
+            if (IsDestroyedByBomb(obj))
             {
                 _audio.PlayEffect(nameof(SoundEffect.Explode));
                 obj.Flags |= ShipProperties.Dead;
             }
 
-            if ((_gameState.CurrentScreen is
-                not Screen.IntroOne and
-                not Screen.IntroTwo and
-                not Screen.GameOver and
-                not Screen.EscapeCapsule) &&
-                (obj.Type is not ShipType.Planet and not ShipType.Sun) &&
-                !obj.Flags.HasFlag(ShipProperties.Dead) &&
-                !obj.Flags.HasFlag(ShipProperties.Inactive))
+            if (NeedsTactics(obj))
             {
                 _combat.Tactics((IShip)obj, i);
             }
@@ -473,6 +460,25 @@ internal sealed class Space
 
         return (a, b);
     }
+
+    private bool IsDestroyedByBomb(IObject obj)
+        => _gameState.DetonateBomb &&
+            (!obj.Flags.HasFlag(ShipProperties.Dead)) &&
+            (obj.Type != ShipType.Planet) &&
+            (obj.Type != ShipType.Sun) &&
+            (obj.Type != ShipType.Constrictor) &&
+            (obj.Type != ShipType.Cougar) &&
+            !obj.Flags.HasFlag(ShipProperties.Station);
+
+    private bool NeedsTactics(IObject obj)
+        => (_gameState.CurrentScreen is
+                not Screen.IntroOne and
+                not Screen.IntroTwo and
+                not Screen.GameOver and
+                not Screen.EscapeCapsule) &&
+            (obj.Type is not ShipType.Planet and not ShipType.Sun) &&
+            !obj.Flags.HasFlag(ShipProperties.Dead) &&
+            !obj.Flags.HasFlag(ShipProperties.Inactive);
 
     private void SwitchToView(IObject flip)
     {

@@ -396,16 +396,9 @@ internal sealed class Combat
 
     internal void Tactics(IShip ship, int un)
     {
-        Vector4 nvec;
-        const float cnt2 = 0.223f;
-        float direction;
-        int attacking;
-
-        ShipProperties flags = ship.Flags;
-
         if (ship.Type == ShipType.Missile)
         {
-            if (flags.HasFlag(ShipProperties.Angry))
+            if (ship.Flags.HasFlag(ShipProperties.Angry))
             {
                 MissileTactics(ship);
             }
@@ -420,43 +413,13 @@ internal sealed class Combat
 
         if (ship.Flags.HasFlag(ShipProperties.Station))
         {
-            if (flags.HasFlag(ShipProperties.Angry))
-            {
-                if (_rng.Random(256) < 240)
-                {
-                    return;
-                }
-
-                if (_universe.PoliceCount >= 4)
-                {
-                    return;
-                }
-
-                if (!LaunchEnemy(ship, _shipFactory.CreateShip("Viper"), ShipProperties.Angry | ShipProperties.HasECM, 113))
-                {
-                    LogMessages.FailedToCreateShip(_logger, "Police");
-                }
-
-                return;
-            }
-
-            LaunchShuttle();
+            StationTactics(ship);
             return;
         }
 
         if (ship.Type == ShipType.Hermit)
         {
-            if (_rng.Random(256) > 200)
-            {
-                IShip pirate = _shipFactory.CreatePirate();
-                if (!LaunchEnemy(ship, pirate, ShipProperties.Angry | ShipProperties.HasECM, 113))
-                {
-                    LogMessages.FailedToCreateShip(_logger, "Hermit Pirate");
-                }
-
-                ship.Flags |= ShipProperties.Inactive;
-            }
-
+            HermitTactics(ship);
             return;
         }
 
@@ -471,6 +434,8 @@ internal sealed class Combat
             ship.Velocity /= 2;
             return;
         }
+
+        ShipProperties flags = ship.Flags;
 
         if (flags.HasFlag(ShipProperties.Slow) &&
             _rng.Random(256) > 50)
@@ -496,178 +461,7 @@ internal sealed class Combat
         }
 
         // If we get to here then the ship is angry so start attacking...
-        if (_universe.IsStationPresent && !flags.HasFlag(ShipProperties.Bold))
-        {
-            ship.Bravery = 0;
-        }
-
-        if (ship.Type == ShipType.Anaconda && _rng.Random(256) > 200)
-        {
-            IShip anacondaHunter = _rng.Random(256) > 100 ? _shipFactory.CreateShip("Worm") : _shipFactory.CreateShip("Sidewinder");
-            if (!LaunchEnemy(ship, anacondaHunter, ShipProperties.Angry | ShipProperties.HasECM, 113))
-            {
-                LogMessages.FailedToCreateShip(_logger, "Anaconda Hunter");
-            }
-
-            return;
-        }
-
-        if (_rng.Random(256) >= 250)
-        {
-            ship.RotZ = _rng.Random(256) | 0x68;
-            if (ship.RotZ > 127)
-            {
-                ship.RotZ = -((int)ship.RotZ & 127);
-            }
-        }
-
-        if (ship.Energy < ship.EnergyMax / 2)
-        {
-            if (ship.Energy < ship.EnergyMax / 8 && _rng.Random(256) > 230 && ship.Type != ShipType.Thargoid)
-            {
-                ship.Flags &= ~ShipProperties.Angry;
-                ship.Flags |= ShipProperties.Inactive;
-                if (!LaunchEnemy(ship, _shipFactory.CreateShip("EscapeCapsule"), 0, 126))
-                {
-                    LogMessages.FailedToCreateShip(_logger, "Escape Capsule");
-                }
-
-                return;
-            }
-
-            if (ship.Missiles != 0 && _ship.EcmActive == 0 && ship.Missiles >= _rng.Random(32))
-            {
-                ship.Missiles--;
-                if (ship.Type == ShipType.Thargoid)
-                {
-                    if (!LaunchEnemy(ship, _shipFactory.CreateShip("Tharglet"), ShipProperties.Angry, ship.Bravery))
-                    {
-                        LogMessages.FailedToCreateShip(_logger, "Tharglet");
-                    }
-                }
-                else
-                {
-                    if (!LaunchEnemy(ship, _shipFactory.CreateShip("Missile"), ShipProperties.Angry, 126))
-                    {
-                        LogMessages.FailedToCreateShip(_logger, "Missile");
-                    }
-
-                    _gameState.InfoMessage("INCOMING MISSILE");
-                }
-
-                return;
-            }
-        }
-
-        nvec = VectorMaths.UnitVector(ship.Location);
-        direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(2));
-
-        if (ship.Location.Length() < 8192 &&
-            direction <= -0.833 &&
-            ship.LaserStrength != 0)
-        {
-            if (direction <= -0.917)
-            {
-                ship.Flags |= ShipProperties.Firing | ShipProperties.Hostile;
-            }
-
-            if (direction <= -0.972)
-            {
-                _ship.DamageShip(ship.LaserStrength, ship.Location.Z >= 0.0);
-                ship.Acceleration--;
-                if ((ship.Location.Z >= 0.0 && (int)_ship.ShieldFront == 0) ||
-                    (ship.Location.Z < 0.0 && (int)_ship.ShieldRear == 0))
-                {
-                    _audio.PlayEffect(nameof(SoundEffect.IncomingFire2));
-                }
-                else
-                {
-                    _audio.PlayEffect(nameof(SoundEffect.IncomingFire1));
-                }
-            }
-            else
-            {
-                nvec.X = -nvec.X;
-                nvec.Y = -nvec.Y;
-                nvec.Z = -nvec.Z;
-                direction = -direction;
-                TrackObject(ship, direction, nvec);
-            }
-
-            ////      if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
-            if (MathF.Abs(ship.Location.Z) < 768f)
-            {
-                ship.RotX = _rng.Random(136);
-                if (ship.RotX > 127)
-                {
-                    ship.RotX = -((int)ship.RotX & 127);
-                }
-
-                ship.Acceleration = 3;
-                return;
-            }
-
-            ship.Acceleration = ship.Location.Length() < 8192 ? -1 : 3;
-
-            return;
-        }
-
-        attacking = 0;
-
-        if ((MathF.Abs(ship.Location.Z) >= 768 ||
-            MathF.Abs(ship.Location.X) >= 512 ||
-            MathF.Abs(ship.Location.Y) >= 512) &&
-            ship.Bravery > _rng.Random(128))
-        {
-            attacking = 1;
-            nvec.X = -nvec.X;
-            nvec.Y = -nvec.Y;
-            nvec.Z = -nvec.Z;
-            direction = -direction;
-        }
-
-        TrackObject(ship, direction, nvec);
-
-        if (attacking == 1 && ship.Location.Length() < 2048)
-        {
-            if (direction >= cnt2)
-            {
-                ship.Acceleration = -1;
-                return;
-            }
-
-            if (ship.Velocity < 6)
-            {
-                ship.Acceleration = 3;
-            }
-            else if (_rng.Random(256) >= 200)
-            {
-                ship.Acceleration = -1;
-            }
-
-            return;
-        }
-
-        if (direction <= -0.167)
-        {
-            ship.Acceleration = -1;
-            return;
-        }
-
-        if (direction >= cnt2)
-        {
-            ship.Acceleration = 3;
-            return;
-        }
-
-        if (ship.Velocity < 6)
-        {
-            ship.Acceleration = 3;
-        }
-        else if (_rng.Random(256) >= 200)
-        {
-            ship.Acceleration = -1;
-        }
+        AttackTactics(ship, flags);
     }
 
     internal void TimeECM()
@@ -748,6 +542,243 @@ internal sealed class Combat
                     ship.RotZ = -ship.RotZ;
                 }
             }
+        }
+    }
+
+    private void StationTactics(IShip ship)
+    {
+        if (!ship.Flags.HasFlag(ShipProperties.Angry))
+        {
+            LaunchShuttle();
+            return;
+        }
+
+        if (_rng.Random(256) < 240)
+        {
+            return;
+        }
+
+        if (_universe.PoliceCount >= 4)
+        {
+            return;
+        }
+
+        if (!LaunchEnemy(ship, _shipFactory.CreateShip("Viper"), ShipProperties.Angry | ShipProperties.HasECM, 113))
+        {
+            LogMessages.FailedToCreateShip(_logger, "Police");
+        }
+    }
+
+    private void HermitTactics(IShip ship)
+    {
+        if (_rng.Random(256) <= 200)
+        {
+            return;
+        }
+
+        IShip pirate = _shipFactory.CreatePirate();
+        if (!LaunchEnemy(ship, pirate, ShipProperties.Angry | ShipProperties.HasECM, 113))
+        {
+            LogMessages.FailedToCreateShip(_logger, "Hermit Pirate");
+        }
+
+        ship.Flags |= ShipProperties.Inactive;
+    }
+
+    private void AttackTactics(IShip ship, ShipProperties flags)
+    {
+        if (_universe.IsStationPresent && !flags.HasFlag(ShipProperties.Bold))
+        {
+            ship.Bravery = 0;
+        }
+
+        if (ship.Type == ShipType.Anaconda && _rng.Random(256) > 200)
+        {
+            IShip anacondaHunter = _rng.Random(256) > 100 ? _shipFactory.CreateShip("Worm") : _shipFactory.CreateShip("Sidewinder");
+            if (!LaunchEnemy(ship, anacondaHunter, ShipProperties.Angry | ShipProperties.HasECM, 113))
+            {
+                LogMessages.FailedToCreateShip(_logger, "Anaconda Hunter");
+            }
+
+            return;
+        }
+
+        if (_rng.Random(256) >= 250)
+        {
+            ship.RotZ = _rng.Random(256) | 0x68;
+            if (ship.RotZ > 127)
+            {
+                ship.RotZ = -((int)ship.RotZ & 127);
+            }
+        }
+
+        if (ship.Energy < ship.EnergyMax / 2 && LowEnergyTactics(ship))
+        {
+            return;
+        }
+
+        Vector4 nvec = VectorMaths.UnitVector(ship.Location);
+        float direction = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(2));
+
+        if (ship.Location.Length() < 8192 &&
+            direction <= -0.833 &&
+            ship.LaserStrength != 0)
+        {
+            FiringTactics(ship, direction, nvec);
+            return;
+        }
+
+        ManoeuvreTactics(ship, direction, nvec);
+    }
+
+    /// <summary>
+    /// Low energy responses - escape capsule or missile launch.
+    /// </summary>
+    /// <returns><c>true</c> if the ship has acted and no further tactics apply.</returns>
+    private bool LowEnergyTactics(IShip ship)
+    {
+        if (ship.Energy < ship.EnergyMax / 8 && _rng.Random(256) > 230 && ship.Type != ShipType.Thargoid)
+        {
+            ship.Flags &= ~ShipProperties.Angry;
+            ship.Flags |= ShipProperties.Inactive;
+            if (!LaunchEnemy(ship, _shipFactory.CreateShip("EscapeCapsule"), 0, 126))
+            {
+                LogMessages.FailedToCreateShip(_logger, "Escape Capsule");
+            }
+
+            return true;
+        }
+
+        if (ship.Missiles != 0 && _ship.EcmActive == 0 && ship.Missiles >= _rng.Random(32))
+        {
+            ship.Missiles--;
+            if (ship.Type == ShipType.Thargoid)
+            {
+                if (!LaunchEnemy(ship, _shipFactory.CreateShip("Tharglet"), ShipProperties.Angry, ship.Bravery))
+                {
+                    LogMessages.FailedToCreateShip(_logger, "Tharglet");
+                }
+            }
+            else
+            {
+                if (!LaunchEnemy(ship, _shipFactory.CreateShip("Missile"), ShipProperties.Angry, 126))
+                {
+                    LogMessages.FailedToCreateShip(_logger, "Missile");
+                }
+
+                _gameState.InfoMessage("INCOMING MISSILE");
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private void FiringTactics(IShip ship, float direction, Vector4 nvec)
+    {
+        if (direction <= -0.917)
+        {
+            ship.Flags |= ShipProperties.Firing | ShipProperties.Hostile;
+        }
+
+        if (direction <= -0.972)
+        {
+            _ship.DamageShip(ship.LaserStrength, ship.Location.Z >= 0.0);
+            ship.Acceleration--;
+            if ((ship.Location.Z >= 0.0 && (int)_ship.ShieldFront == 0) ||
+                (ship.Location.Z < 0.0 && (int)_ship.ShieldRear == 0))
+            {
+                _audio.PlayEffect(nameof(SoundEffect.IncomingFire2));
+            }
+            else
+            {
+                _audio.PlayEffect(nameof(SoundEffect.IncomingFire1));
+            }
+        }
+        else
+        {
+            nvec.X = -nvec.X;
+            nvec.Y = -nvec.Y;
+            nvec.Z = -nvec.Z;
+            direction = -direction;
+            TrackObject(ship, direction, nvec);
+        }
+
+        ////      if ((fabs(ship.location.z) < 768) && (ship.bravery <= ((random.rand255() & 127) | 64)))
+        if (MathF.Abs(ship.Location.Z) < 768f)
+        {
+            ship.RotX = _rng.Random(136);
+            if (ship.RotX > 127)
+            {
+                ship.RotX = -((int)ship.RotX & 127);
+            }
+
+            ship.Acceleration = 3;
+            return;
+        }
+
+        ship.Acceleration = ship.Location.Length() < 8192 ? -1 : 3;
+    }
+
+    private void ManoeuvreTactics(IShip ship, float direction, Vector4 nvec)
+    {
+        const float cnt2 = 0.223f;
+        int attacking = 0;
+
+        if ((MathF.Abs(ship.Location.Z) >= 768 ||
+            MathF.Abs(ship.Location.X) >= 512 ||
+            MathF.Abs(ship.Location.Y) >= 512) &&
+            ship.Bravery > _rng.Random(128))
+        {
+            attacking = 1;
+            nvec.X = -nvec.X;
+            nvec.Y = -nvec.Y;
+            nvec.Z = -nvec.Z;
+            direction = -direction;
+        }
+
+        TrackObject(ship, direction, nvec);
+
+        if (attacking == 1 && ship.Location.Length() < 2048)
+        {
+            if (direction >= cnt2)
+            {
+                ship.Acceleration = -1;
+                return;
+            }
+
+            if (ship.Velocity < 6)
+            {
+                ship.Acceleration = 3;
+            }
+            else if (_rng.Random(256) >= 200)
+            {
+                ship.Acceleration = -1;
+            }
+
+            return;
+        }
+
+        if (direction <= -0.167)
+        {
+            ship.Acceleration = -1;
+            return;
+        }
+
+        if (direction >= cnt2)
+        {
+            ship.Acceleration = 3;
+            return;
+        }
+
+        if (ship.Velocity < 6)
+        {
+            ship.Acceleration = 3;
+        }
+        else if (_rng.Random(256) >= 200)
+        {
+            ship.Acceleration = -1;
         }
     }
 

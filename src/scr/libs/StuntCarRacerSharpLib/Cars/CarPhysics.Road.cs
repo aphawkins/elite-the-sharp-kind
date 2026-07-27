@@ -192,89 +192,8 @@ public sealed partial class CarPhysics
         int rx = 0;
         int rz = 0;
 
-        // 'before surface' loop
-        int numPieceChanges = 0;
-        bool moving = true;
-        while (moving)
-        {
-            CalcXZRelativeToPiece(x, z, _surfacePiece, out rx, out rz);
-
-            // calculate top dot product => before surface
-            int xs = _sx1 - _sx4;
-            int zs = _sz1 - _sz4;
-            int xp = rx - _sx4;
-            int zp = rz - _sz4;
-            moving = xs * zp < xp * zs;
-
-            if (moving)
-            {
-                // DIRECTION DEPENDANT - WHOLE SECTION
-                if (_surfaceSegment < _track.Pieces[_surfacePiece].NumSegments - 1)
-                {
-                    _surfaceSegment++;
-                }
-                else
-                {
-                    _surfacePiece++;
-                    if (_surfacePiece >= _track.NumPieces)
-                    {
-                        _surfacePiece = 0;
-                    }
-
-                    _surfaceSegment = 0;
-                    numPieceChanges++;
-                }
-
-                GetSurfaceCoords(_surfacePiece, _surfaceSegment);
-            }
-
-            if (numPieceChanges >= _track.NumPieces)
-            {
-                break; // prevent an infinite loop
-            }
-        }
-
-        // 'after surface' loop
-        numPieceChanges = 0;
-        moving = true;
-        while (moving)
-        {
-            CalcXZRelativeToPiece(x, z, _surfacePiece, out rx, out rz);
-
-            // calculate bottom dot product => after surface
-            int xs = _sx3 - _sx2;
-            int zs = _sz3 - _sz2;
-            int xp = rx - _sx2;
-            int zp = rz - _sz2;
-            moving = xs * zp < xp * zs;
-
-            if (moving)
-            {
-                // DIRECTION DEPENDANT - WHOLE SECTION
-                if (_surfaceSegment > 0)
-                {
-                    _surfaceSegment--;
-                }
-                else
-                {
-                    _surfacePiece--;
-                    if (_surfacePiece < 0)
-                    {
-                        _surfacePiece = _track.NumPieces - 1;
-                    }
-
-                    _surfaceSegment = _track.Pieces[_surfacePiece].NumSegments - 1;
-                    numPieceChanges++;
-                }
-
-                GetSurfaceCoords(_surfacePiece, _surfaceSegment);
-            }
-
-            if (numPieceChanges >= _track.NumPieces)
-            {
-                break; // prevent an infinite loop
-            }
-        }
+        AdvanceToSurface(x, z, ref rx, ref rz);
+        RetreatToSurface(x, z, ref rx, ref rz);
 
         // now know that point is between start and end edge of surface;
         // find out if point is off left or right of surface
@@ -383,6 +302,100 @@ public sealed partial class CarPhysics
         int y = (syb << LogSurfaceSize) + (sz * (sya - syb));
 
         heightOut = y << (Track.LogPrecision - LogSurfaceSize);
+    }
+
+    /// <summary>
+    /// Steps forwards through segments while the point lies before the current surface.
+    /// </summary>
+    private void AdvanceToSurface(int x, int z, ref int rx, ref int rz)
+    {
+        int numPieceChanges = 0;
+        bool moving = true;
+        while (moving)
+        {
+            CalcXZRelativeToPiece(x, z, _surfacePiece, out rx, out rz);
+
+            // calculate top dot product => before surface
+            int xs = _sx1 - _sx4;
+            int zs = _sz1 - _sz4;
+            int xp = rx - _sx4;
+            int zp = rz - _sz4;
+            moving = xs * zp < xp * zs;
+
+            if (moving)
+            {
+                // DIRECTION DEPENDANT - WHOLE SECTION
+                if (_surfaceSegment < _track.Pieces[_surfacePiece].NumSegments - 1)
+                {
+                    _surfaceSegment++;
+                }
+                else
+                {
+                    _surfacePiece++;
+                    if (_surfacePiece >= _track.NumPieces)
+                    {
+                        _surfacePiece = 0;
+                    }
+
+                    _surfaceSegment = 0;
+                    numPieceChanges++;
+                }
+
+                GetSurfaceCoords(_surfacePiece, _surfaceSegment);
+            }
+
+            if (numPieceChanges >= _track.NumPieces)
+            {
+                break; // prevent an infinite loop
+            }
+        }
+    }
+
+    /// <summary>
+    /// Steps backwards through segments while the point lies after the current surface.
+    /// </summary>
+    private void RetreatToSurface(int x, int z, ref int rx, ref int rz)
+    {
+        int numPieceChanges = 0;
+        bool moving = true;
+        while (moving)
+        {
+            CalcXZRelativeToPiece(x, z, _surfacePiece, out rx, out rz);
+
+            // calculate bottom dot product => after surface
+            int xs = _sx3 - _sx2;
+            int zs = _sz3 - _sz2;
+            int xp = rx - _sx2;
+            int zp = rz - _sz2;
+            moving = xs * zp < xp * zs;
+
+            if (moving)
+            {
+                // DIRECTION DEPENDANT - WHOLE SECTION
+                if (_surfaceSegment > 0)
+                {
+                    _surfaceSegment--;
+                }
+                else
+                {
+                    _surfacePiece--;
+                    if (_surfacePiece < 0)
+                    {
+                        _surfacePiece = _track.NumPieces - 1;
+                    }
+
+                    _surfaceSegment = _track.Pieces[_surfacePiece].NumSegments - 1;
+                    numPieceChanges++;
+                }
+
+                GetSurfaceCoords(_surfacePiece, _surfaceSegment);
+            }
+
+            if (numPieceChanges >= _track.NumPieces)
+            {
+                break; // prevent an infinite loop
+            }
+        }
     }
 
     private void GetSurfaceCoords(int piece, int segment)

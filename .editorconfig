@@ -654,7 +654,7 @@ dotnet_diagnostic.CA1422.severity = warning
 dotnet_diagnostic.CA1501.severity = warning
 
 # CA1502: Avoid excessive complexity
-dotnet_diagnostic.CA1502.severity = none
+dotnet_diagnostic.CA1502.severity = warning
 
 # CA1505: Avoid unmaintainable code
 dotnet_diagnostic.CA1505.severity = warning
