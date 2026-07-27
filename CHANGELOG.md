@@ -7,6 +7,39 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Enemy laser fire follows the ship's real firing direction, 2026-07-27)
+
+- `ShipBase.DrawLasers` ([ShipBase.cs](src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
+  drew each NPC's laser bolt from its mount point to `(Location.X > 0 ? 0
+  : 511, _rng.Random(256) * 2)` — a screen-edge X picked by which side the
+  ship was on, paired with a Y uniformly random over the whole view,
+  ignoring the ship's actual firing angle, and hardcoded to a 512-tall
+  view regardless of `ScannerWidth`/height. Replaced with a real
+  direction-to-boundary projection: extend the ship's local vector from
+  its origin through the laser mount out to a very large distance
+  (`FarAimDistance`), project it through the same perspective transform as
+  every other model point (factored into a new shared `ProjectPoint`
+  helper) to get the on-screen vanishing point of the ship's real firing
+  direction, add a small random spread (`LaserAimSpread`) so repeated
+  shots still vary, then clip the ray to wherever it actually leaves the
+  view rectangle (`IEliteDraw.Left`/`Right`/`Top`/`Bottom`, derived from
+  screen size) via a new `ProjectToViewBoundary` helper. Investigated the
+  reporter's second concern (planets not clipped to the scanner/viewport
+  boundary either) — confirmed `WireframePlanet`/`FractalPlanet`/
+  `PlanetRenderer` still have no reference to the view bounds, but that's
+  a separate, unfixed concern (different draw path, not covered by this
+  change) and remains open. Added
+  `ShipBaseTests.DrawLasersProjectsAlongFiringDirectionAndClipsToViewBoundary`,
+  which replicates the projection/clip math independently and asserts the
+  drawn endpoint lands where the real trajectory exits the view rather
+  than at a fixed screen edge. Verified with a full solution build, the
+  full test suite (436 passing), and by launching `EliteSharp` through
+  several undocked flight/combat sessions (firing the player's own laser,
+  which shares the same `DrawPolygonFilled` draw path) with no crashes or
+  rendering regressions; was unable to reproduce a live NPC-fired shot in
+  the time available (ship encounters are probabilistic) to visually
+  confirm this specific path beyond the unit test.
+
 ### Changed (Extract shared star-plot helper in Stars, 2026-07-24)
 
 - `Stars.FrontStarfield`/`RearStarfield`/`SideStarfield`

@@ -32,24 +32,14 @@ that mentions a decision.
 
 ### Bugs
 
-- [ ] [EliteSharpLib] Enemy lasers don't always reach the full extent of
-      the view (issue #8): `ShipBase.DrawLasers`
-      ([ShipBase.cs:239-243](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
-      draws the laser from the ship's laser-mount point to
-      `(Location.X > 0 ? 0 : 511, _rng.Random(256) * 2)` — a screen-edge X
-      picked by which side the shooting ship is on, paired with a Y that's
-      random within 0-511 regardless of the actual firing angle, rather
-      than projecting the shot along its real direction to where it
-      crosses the view boundary. The hardcoded `511`/`256` also don't
-      derive from `ScannerWidth`/height, so this is doubly wrong at
-      non-512 resolutions. Investigate a proper direction-to-boundary
-      projection. The reporter also flagged planets overlapping the field
-      of view as possibly the same class of bug: `WireframePlanet`/
-      `FractalPlanet`/`PlanetRenderer` have no reference to
-      `ScannerLeft`/`Right`/`Top`/`Bottom` at all (grepped, no hits) — i.e.
-      planets aren't clipped to the viewport/scanner boundary either.
-      Confirm whether it's the same missing-clip root cause or a separate
-      issue before fixing.
+- [ ] [EliteSharpLib] Planets overlapping the field of view (split
+      2026-07-27 from issue #8 once the enemy-laser half of that report
+      turned out to be a separate root cause — see CHANGELOG):
+      `WireframePlanet`/`FractalPlanet`/`PlanetRenderer` have no reference
+      to `ScannerLeft`/`Right`/`Top`/`Bottom` (or `IEliteDraw.Left`/
+      `Right`/`Top`/`Bottom`) at all — i.e. planets aren't clipped to the
+      viewport/scanner boundary. Different draw path from ships, so the
+      laser fix doesn't cover it; scope and fix separately.
 
 ### Code-quality gates (from issue #5, "Measure/improve code complexity")
 
