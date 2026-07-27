@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (`CA5394` enabled, 2026-07-27)
+
+- Enabled `CA5394` (do not use insecure randomness), scoped off in the
+  two assemblies that must reach `System.Random` directly rather than
+  repo-wide:
+  - `Useful` (its own `.editorconfig`) — `RandomSource` is the single
+    wrapper every game and test goes through, deliberately the fast,
+    seedable kind of randomness rather than a cryptographic one.
+  - `StuntCarRacerSharpLib.Tests` (its own `.editorconfig`) —
+    `OpponentPhysicsTests` drives a seeded `Random` directly to assert
+    the opponent's speed logic consumes the RNG stream exactly once per
+    piece; comparing the raw stream *is* the assertion, so it cannot go
+    through `IRandomSource`.
+- The rule's stale "Disabled repo-wide" comment in the root
+  [.editorconfig](.editorconfig) was corrected to match.
+
 ### Added (`CA1515` enabled, 2026-07-27)
 
 - Enabled `CA1515` (consider making public types internal). Seven types
