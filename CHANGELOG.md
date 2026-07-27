@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (streaming texture for the software framebuffer blit, 2026-07-27)
+
+- `SoftwareAbstraction.SoftwareScreenUpdate` created an `SDL_Surface`
+  and an `SDL_Texture` from the CPU framebuffer on every presented
+  frame, then destroyed both — a GPU allocation and a synchronous
+  upload per frame. It now creates one
+  `SDL_TEXTUREACCESS_STREAMING` texture in the constructor and
+  re-uploads the pixels with `SDL_UpdateTexture`; the texture is
+  destroyed in `Dispose` before the renderer.
+- The sibling half of the backlog item (`SDLGraphics.DrawImage`/
+  `DrawImagePart` creating a texture per call) was already fixed —
+  `_imageTextures` is built once in `SDLGraphics.Create`.
+- No behaviour change: full test suite green, both apps smoke-tested
+  live on the Software backend (Elite's intro, ship parade and front
+  view; SCR's track menu and track preview).
+
 ### Changed (`Scale` moved out of `IGraphics`, 2026-07-27)
 
 - `IGraphics.Scale` (hardcoded `2` in both backends) was Elite's
