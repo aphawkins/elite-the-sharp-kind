@@ -39,46 +39,11 @@ internal static class SDLProgram
             return;
         }
 
-        LogEventLevel minimumLevel =
-            Enum.TryParse(Environment.GetEnvironmentVariable("ELITE_LOG_LEVEL"), ignoreCase: true, out LogEventLevel envLevel)
-            ? envLevel
-            : LogEventLevel.Information;
-
-        Logger seriLogger = new LoggerConfiguration()
-            .Enrich
-            .FromLogContext()
-            .MinimumLevel
-            .Is(minimumLevel)
-            .WriteTo
-            .Console(
-                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}",
-                formatProvider: CultureInfo.InvariantCulture)
-            .WriteTo
-            .File(
-                Path.Combine(userDataPath, "logs", "elite-.log"),
-                formatProvider: CultureInfo.InvariantCulture,
-                rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 7)
-            .CreateLogger();
-
+        using Logger seriLogger = CreateSeriLogger(userDataPath);
         using LoggerFactory loggerFactory = new();
         loggerFactory.AddSerilog(seriLogger);
 
-        GraphicsBackend graphicsBackend = EliteServiceCollectionExtensions.ReadGraphicsBackend(userDataPath, loggerFactory);
-
-        ServiceCollection services = new();
-        services.AddSingleton<ILoggerFactory>(loggerFactory);
-        services.AddSingleton<IAbstraction>(_ => graphicsBackend == GraphicsBackend.Hardware
-            ? new SDLAbstraction(ScreenWidth, ScreenHeight, Title, AssetLocator.Create())
-            : new SoftwareAbstraction(ScreenWidth, ScreenHeight, Title));
-        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
-        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
-        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
-        services.AddSingleton(_ => AssetLocator.Create());
-        services.AddEliteConfig(userDataPath);
-        services.AddEliteMain();
-
-        using ServiceProvider provider = services.BuildServiceProvider();
+        using ServiceProvider provider = BuildServices(userDataPath, loggerFactory).BuildServiceProvider();
 
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(SDLProgram));
 
@@ -95,5 +60,49 @@ internal static class SDLProgram
             Environment.Exit(-1);
             throw;
         }
+    }
+
+    private static Logger CreateSeriLogger(string userDataPath)
+    {
+        LogEventLevel minimumLevel =
+            Enum.TryParse(Environment.GetEnvironmentVariable("ELITE_LOG_LEVEL"), ignoreCase: true, out LogEventLevel envLevel)
+            ? envLevel
+            : LogEventLevel.Information;
+
+        return new LoggerConfiguration()
+            .Enrich
+            .FromLogContext()
+            .MinimumLevel
+            .Is(minimumLevel)
+            .WriteTo
+            .Console(
+                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}",
+                formatProvider: CultureInfo.InvariantCulture)
+            .WriteTo
+            .File(
+                Path.Combine(userDataPath, "logs", "elite-.log"),
+                formatProvider: CultureInfo.InvariantCulture,
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 7)
+            .CreateLogger();
+    }
+
+    private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory)
+    {
+        GraphicsBackend graphicsBackend = EliteServiceCollectionExtensions.ReadGraphicsBackend(userDataPath, loggerFactory);
+
+        ServiceCollection services = new();
+        services.AddSingleton(loggerFactory);
+        services.AddSingleton<IAbstraction>(_ => graphicsBackend == GraphicsBackend.Hardware
+            ? new SDLAbstraction(ScreenWidth, ScreenHeight, Title, AssetLocator.Create())
+            : new SoftwareAbstraction(ScreenWidth, ScreenHeight, Title));
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
+        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
+        services.AddSingleton(_ => AssetLocator.Create());
+        services.AddEliteConfig(userDataPath);
+        services.AddEliteMain();
+
+        return services;
     }
 }
