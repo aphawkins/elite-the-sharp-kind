@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (`CA1515` enabled, 2026-07-27)
+
+- Enabled `CA1515` (consider making public types internal). Seven types
+  could not be narrowed, each scoped off where it lives rather than
+  repo-wide:
+  - The BenchmarkDotNet classes in `src/elite/perf` and
+    `src/useful/perf` (a new `.editorconfig` per `perf` folder) —
+    BenchmarkDotNet compiles a generated runner into a separate assembly
+    that references them, so they must stay public.
+  - `RecordingGraphics` and `FakeAbstraction` in
+    `StuntCarRacerSharpLib.Fakes` (its own `.editorconfig`) — a shared
+    fakes library consumed by `StuntCarRacerSharpLib.Tests`. `CA1515`
+    fires there only because `Microsoft.NET.Test.Sdk` generates an entry
+    point, which makes the assembly look like an application; the Elite
+    and Useful fakes projects do not reference it and stayed silent.
+  - `SoftwareSoundTests.AudioAssetFixture`, folded into the `CA1034`
+    `#pragma` already covering it — xUnit1000 requires a public test
+    class and CS0051 then forces the fixture public too.
+
 ### Added (`S1451` license headers enforced, 2026-07-27)
 
 - Enabled `S1451` (missing copyright/license header). Sonar rule

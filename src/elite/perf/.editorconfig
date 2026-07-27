@@ -1,0 +1,11 @@
+# editorconfig.org
+
+# inherits higher configs
+
+[*.cs]
+
+# CA1515: Consider making public types internal
+# Disabled for the benchmark projects only: BenchmarkDotNet compiles a
+# generated runner into a separate assembly that references the benchmark
+# classes, so they have to stay public.
+dotnet_diagnostic.CA1515.severity = none

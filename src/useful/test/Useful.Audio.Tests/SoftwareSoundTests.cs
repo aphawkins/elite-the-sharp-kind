@@ -20,7 +20,7 @@ namespace Useful.Audio.Tests;
 // own analyzer (xUnit1000) requires public test classes, and a public
 // primary-constructor parameter type must itself be public (CS0051) -
 // there is no accessibility this can be narrowed to.
-#pragma warning disable CA1034
+#pragma warning disable CA1034, CA1515
 public sealed class SoftwareSoundTests(SoftwareSoundTests.AudioAssetFixture fixture)
     : IClassFixture<SoftwareSoundTests.AudioAssetFixture>
 {

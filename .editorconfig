@@ -684,7 +684,7 @@ dotnet_diagnostic.CA1512.severity = warning
 dotnet_diagnostic.CA1513.severity = warning
 
 # CA1515: Consider making public types internal
-dotnet_diagnostic.CA1515.severity = none
+dotnet_diagnostic.CA1515.severity = warning
 
 # CA1700: Do not name enum values 'Reserved'
 dotnet_diagnostic.CA1700.severity = warning
