@@ -1,5 +1,7 @@
-# Set default behavior to automatically normalize line endings.
-* text=auto
+# Normalize line endings to LF in the repo and in the working tree, on every
+# platform. Without the explicit eol=lf, a text=auto file checks out using
+# core.eol, which defaults to native (CRLF on Windows).
+* text=auto eol=lf
 
 *.doc  diff=astextplain
 *.DOC	diff=astextplain
