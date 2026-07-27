@@ -30,15 +30,15 @@ internal sealed class LaserDraw
     {
         Vector2 target = new()
         {
-            X = _rng.Random((int)_draw.Centre.X / 2, (int)(_draw.Centre.X / 2) + 2) * _draw.Graphics.Scale,
-            Y = _rng.Random((int)_draw.Centre.Y / 2, (int)(_draw.Centre.Y / 2) + 2) * _draw.Graphics.Scale,
+            X = _rng.Random((int)_draw.Centre.X / 2, (int)(_draw.Centre.X / 2) + 2) * _draw.Scale,
+            Y = _rng.Random((int)_draw.Centre.Y / 2, (int)(_draw.Centre.Y / 2) + 2) * _draw.Scale,
         };
 
-        Vector2 leftA = new((32 + (_draw.ScannerLeft / 2)) * _draw.Graphics.Scale, _draw.Bottom);
-        Vector2 leftB = new((48 + (_draw.ScannerLeft / 2)) * _draw.Graphics.Scale, _draw.Bottom);
+        Vector2 leftA = new((32 + (_draw.ScannerLeft / 2)) * _draw.Scale, _draw.Bottom);
+        Vector2 leftB = new((48 + (_draw.ScannerLeft / 2)) * _draw.Scale, _draw.Bottom);
 
-        Vector2 rightA = new(((_draw.ScannerRight / 2) - 32) * _draw.Graphics.Scale, _draw.Bottom);
-        Vector2 rightB = new(((_draw.ScannerRight / 2) - 48) * _draw.Graphics.Scale, _draw.Bottom);
+        Vector2 rightA = new(((_draw.ScannerRight / 2) - 32) * _draw.Scale, _draw.Bottom);
+        Vector2 rightB = new(((_draw.ScannerRight / 2) - 48) * _draw.Scale, _draw.Bottom);
 
         if (_gameState.Config.ShipWireframe)
         {
@@ -66,31 +66,31 @@ internal sealed class LaserDraw
         }
 
         // Top line
-        float x1 = _draw.Centre.X / 2 * _draw.Graphics.Scale;
-        float y1 = ((_draw.Centre.Y / 2) - 8) * _draw.Graphics.Scale;
-        float y2 = ((_draw.Centre.Y / 2) - 16) * _draw.Graphics.Scale;
+        float x1 = _draw.Centre.X / 2 * _draw.Scale;
+        float y1 = ((_draw.Centre.Y / 2) - 8) * _draw.Scale;
+        float y2 = ((_draw.Centre.Y / 2) - 16) * _draw.Scale;
         _draw.Graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), _colorLightGrey);
         _draw.Graphics.DrawLine(new(x1, y1), new(x1, y2), _colorWhite);
         _draw.Graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), _colorLightGrey);
 
         // Bottom line
-        y1 = ((_draw.Centre.Y / 2) + 8) * _draw.Graphics.Scale;
-        y2 = ((_draw.Centre.Y / 2) + 16) * _draw.Graphics.Scale;
+        y1 = ((_draw.Centre.Y / 2) + 8) * _draw.Scale;
+        y2 = ((_draw.Centre.Y / 2) + 16) * _draw.Scale;
         _draw.Graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), _colorLightGrey);
         _draw.Graphics.DrawLine(new(x1, y1), new(x1, y2), _colorWhite);
         _draw.Graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), _colorLightGrey);
 
         // Left line
-        x1 = ((_draw.Centre.X / 2) - 8) * _draw.Graphics.Scale;
-        y1 = _draw.Centre.Y / 2 * _draw.Graphics.Scale;
-        float x2 = ((_draw.Centre.X / 2) - 16) * _draw.Graphics.Scale;
+        x1 = ((_draw.Centre.X / 2) - 8) * _draw.Scale;
+        y1 = _draw.Centre.Y / 2 * _draw.Scale;
+        float x2 = ((_draw.Centre.X / 2) - 16) * _draw.Scale;
         _draw.Graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), _colorLightGrey);
         _draw.Graphics.DrawLine(new(x1, y1), new(x2, y1), _colorWhite);
         _draw.Graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), _colorLightGrey);
 
         // Right line
-        x1 = ((_draw.Centre.X / 2) + 8) * _draw.Graphics.Scale;
-        x2 = ((_draw.Centre.X / 2) + 16) * _draw.Graphics.Scale;
+        x1 = ((_draw.Centre.X / 2) + 8) * _draw.Scale;
+        x2 = ((_draw.Centre.X / 2) + 16) * _draw.Scale;
         _draw.Graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), _colorLightGrey);
         _draw.Graphics.DrawLine(new(x1, y1), new(x2, y1), _colorWhite);
         _draw.Graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), _colorLightGrey);

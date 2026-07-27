@@ -140,8 +140,8 @@ public class ShipBaseTests
             vec.Z = 1;
         }
 
-        float x = ((vec.X * 256 / vec.Z) + (draw.Centre.X / 2)) * draw.Graphics.Scale;
-        float y = ((-vec.Y * 256 / vec.Z) + (draw.Centre.Y / 2)) * draw.Graphics.Scale;
+        float x = ((vec.X * 256 / vec.Z) + (draw.Centre.X / 2)) * draw.Scale;
+        float y = ((-vec.Y * 256 / vec.Z) + (draw.Centre.Y / 2)) * draw.Scale;
         return new(x, y);
     }
 
@@ -155,8 +155,8 @@ public class ShipBaseTests
             vec.Z = 1;
         }
 
-        float x = ((vec.X * 256 / vec.Z) + (draw.Centre.X / 2)) * draw.Graphics.Scale;
-        float y = ((-vec.Y * 256 / vec.Z) + (draw.Centre.Y / 2)) * draw.Graphics.Scale;
+        float x = ((vec.X * 256 / vec.Z) + (draw.Centre.X / 2)) * draw.Scale;
+        float y = ((-vec.Y * 256 / vec.Z) + (draw.Centre.Y / 2)) * draw.Scale;
         return new(x, y);
     }
 

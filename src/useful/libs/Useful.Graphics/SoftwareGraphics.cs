@@ -60,8 +60,6 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         Clear();
     }
 
-    public float Scale { get; } = 2;
-
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }
@@ -359,7 +357,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             color);
 
     public void DrawRectangleCentre(float y, float width, float height, FastColor color)
-        => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, color);
+        => DrawRectangle(new((ScreenWidth - width) / 2, y), width, height, color);
 
     public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color)
         => DrawRectangleFilledInt(

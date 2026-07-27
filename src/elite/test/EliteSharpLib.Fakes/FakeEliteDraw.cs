@@ -29,6 +29,8 @@ internal class FakeEliteDraw : IEliteDraw
 
     public float Right => 511;
 
+    public float Scale => 2;
+
     public float ScannerLeft { get; }
 
     public float ScannerRight { get; }

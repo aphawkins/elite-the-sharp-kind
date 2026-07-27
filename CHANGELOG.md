@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (`Scale` moved out of `IGraphics`, 2026-07-27)
+
+- `IGraphics.Scale` (hardcoded `2` in both backends) was Elite's
+  coordinate scale leaking into the shared graphics library — no other
+  consumer read it. It is now `IEliteDraw.Scale`, and Elite's ~50 call
+  sites go through `_draw.Scale` instead of `_draw.Graphics.Scale`.
+- `DrawRectangleCentre` centred with `(ScreenWidth - width) / Scale` in
+  both `SoftwareGraphics` and `SDLGraphics`, which was correct only
+  because `Scale` happened to equal `2`; it now divides by `2`
+  explicitly.
+- `SDLGraphics` divided positions by `(2 / Scale)` in ten places — an
+  exact no-op at `Scale == 2` — removed.
+- `Scale` dropped from `FakeGraphics`, SCR's `RecordingGraphics` (which
+  returned `1` and was never read), the `SoftwareGraphics` benchmark and
+  the two test assertions covering it. `FakeEliteDraw` gained it.
+- No behaviour change: full test suite green, both apps smoke-tested
+  live (Elite's intro, charts and front view; SCR's track menu, preview
+  and race HUD).
+
 ### Closed (issue #5, "Measure/improve code complexity", 2026-07-27)
 
 - The whole solution was audited with each candidate rule raised to

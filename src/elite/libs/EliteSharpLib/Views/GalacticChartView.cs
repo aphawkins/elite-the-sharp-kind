@@ -48,10 +48,10 @@ internal sealed class GalacticChartView : IView
 
         // Fuel radius
         Vector2 centre = new(
-            (_gameState.DockedPlanet.D * _draw.Graphics.Scale) + _draw.Offset,
-            (_gameState.DockedPlanet.B / (2 / _draw.Graphics.Scale)) + (18 * _draw.Graphics.Scale) + 1);
-        float radius = _ship.Fuel * 2.5f * _draw.Graphics.Scale;
-        float cross_size = 7 * _draw.Graphics.Scale;
+            (_gameState.DockedPlanet.D * _draw.Scale) + _draw.Offset,
+            (_gameState.DockedPlanet.B / (2 / _draw.Scale)) + (18 * _draw.Scale) + 1);
+        float radius = _ship.Fuel * 2.5f * _draw.Scale;
+        float cross_size = 7 * _draw.Scale;
         _draw.Graphics.DrawCircle(centre, radius, _colorGreen);
         _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), _colorWhite);
         _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), _colorWhite);
@@ -112,8 +112,8 @@ internal sealed class GalacticChartView : IView
         if (_keyboard.IsPressed(ConsoleKey.O))
         {
             _gameState.Cross = new(
-                _gameState.DockedPlanet.D * _draw.Graphics.Scale,
-                (_gameState.DockedPlanet.B / (2 / _draw.Graphics.Scale)) + (18 * _draw.Graphics.Scale) + 1);
+                _gameState.DockedPlanet.D * _draw.Scale,
+                (_gameState.DockedPlanet.B / (2 / _draw.Scale)) + (18 * _draw.Scale) + 1);
             CalculateDistanceToPlanet();
         }
 
@@ -161,8 +161,8 @@ internal sealed class GalacticChartView : IView
         {
             Vector2 pixel = new()
             {
-                X = (glx.D * _draw.Graphics.Scale) + _draw.Offset,
-                Y = (glx.B / (2 / _draw.Graphics.Scale)) + (18 * _draw.Graphics.Scale) + 1,
+                X = (glx.D * _draw.Scale) + _draw.Offset,
+                Y = (glx.B / (2 / _draw.Scale)) + (18 * _draw.Scale) + 1,
             };
 
             _planetPixels.Add(pixel);
@@ -229,8 +229,8 @@ internal sealed class GalacticChartView : IView
     {
         Vector2 location = new()
         {
-            X = _gameState.Cross.X / _draw.Graphics.Scale,
-            Y = (_gameState.Cross.Y - ((18 * _draw.Graphics.Scale) + 1)) * (2 / _draw.Graphics.Scale),
+            X = _gameState.Cross.X / _draw.Scale,
+            Y = (_gameState.Cross.Y - ((18 * _draw.Scale) + 1)) * (2 / _draw.Scale),
         };
 
         _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
@@ -240,8 +240,8 @@ internal sealed class GalacticChartView : IView
     }
 
     private void CrossFromHyperspacePlanet() => _gameState.Cross = new(
-        _gameState.HyperspacePlanet.D * _draw.Graphics.Scale,
-        (_gameState.HyperspacePlanet.B / (2 / _draw.Graphics.Scale)) + (18 * _draw.Graphics.Scale) + 1);
+        _gameState.HyperspacePlanet.D * _draw.Scale,
+        (_gameState.HyperspacePlanet.B / (2 / _draw.Scale)) + (18 * _draw.Scale) + 1);
 
     /// <summary>
     /// Move the planet chart cross hairs to specified position.

@@ -113,9 +113,6 @@ public class SoftwareGraphicsBenchmarks : IDisposable
     public void Create() => _graphics = SoftwareGraphics.Create(ScreenWidthPixels, ScreenHeightPixels, (_) => { }, new FakeAssetLocator());
 
     [Benchmark]
-    public float Scale() => _graphics.Scale;
-
-    [Benchmark]
     public float ScreenHeight() => _graphics.ScreenHeight;
 
     // Screen update and clip region

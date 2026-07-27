@@ -143,8 +143,8 @@ internal class ShipBase : IShip
             vec.Z = 1;
         }
 
-        vec.X = ((vec.X * 256 / vec.Z) + (_draw.Centre.X / 2)) * _draw.Graphics.Scale;
-        vec.Y = ((-vec.Y * 256 / vec.Z) + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale;
+        vec.X = ((vec.X * 256 / vec.Z) + (_draw.Centre.X / 2)) * _draw.Scale;
+        vec.Y = ((-vec.Y * 256 / vec.Z) + (_draw.Centre.Y / 2)) * _draw.Scale;
 
         return vec;
     }

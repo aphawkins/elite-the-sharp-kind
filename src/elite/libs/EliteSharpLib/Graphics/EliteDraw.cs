@@ -55,6 +55,8 @@ internal sealed class EliteDraw : IEliteDraw
 
     public float Right => Graphics.ScreenWidth - BorderWidth;
 
+    public float Scale { get; } = 2;
+
     public float ScannerLeft => Centre.X - (ScannerWidth / 2);
 
     public float ScannerRight => ScannerLeft + ScannerWidth - 1;
@@ -123,7 +125,7 @@ internal sealed class EliteDraw : IEliteDraw
 
             Graphics.DrawTextLeft(position, text[previous..i], nameof(FontType.Small), _colorWhite);
             previous = i;
-            position.Y += 8 * Graphics.Scale;
+            position.Y += 8 * Scale;
         }
     }
 
@@ -260,7 +262,7 @@ internal sealed class EliteDraw : IEliteDraw
                 Vector2 position = new(r.X, -r.Y);
                 position *= 256 / r.Z;
                 position += Centre / 2;
-                position *= Graphics.Scale;
+                position *= Scale;
                 _pointList[np].X = position.X;
                 _pointList[np].Y = position.Y;
                 np++;

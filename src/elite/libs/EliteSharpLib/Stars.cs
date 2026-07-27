@@ -86,7 +86,7 @@ internal sealed class Stars
             {
                 _draw.Graphics.DrawLine(
                     star,
-                    new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
+                    new((xx + (_draw.Centre.X / 2)) * _draw.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Scale),
                     _colorWhite);
             }
 
@@ -167,8 +167,8 @@ internal sealed class Stars
     // just moved to, when both ends are inside the view.
     private void DrawStarStreak(Vector2 star, float xx, float yy)
     {
-        float ex = (xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale;
-        float ey = (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale;
+        float ex = (xx + (_draw.Centre.X / 2)) * _draw.Scale;
+        float ey = (yy + (_draw.Centre.Y / 2)) * _draw.Scale;
 
         if ((star.X >= _draw.Left)
             && (star.X <= _draw.Right) &&
@@ -221,7 +221,7 @@ internal sealed class Stars
         float zz = _stars[i].Z;
 
         star += _draw.Centre / 2;
-        star *= _draw.Graphics.Scale;
+        star *= _draw.Scale;
 
         if ((!WarpStars) &&
             (star.X >= _draw.Left)
@@ -274,7 +274,7 @@ internal sealed class Stars
             {
                 _draw.Graphics.DrawLine(
                     star,
-                    new((xx + (_draw.Centre.X / 2)) * _draw.Graphics.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Graphics.Scale),
+                    new((xx + (_draw.Centre.X / 2)) * _draw.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Scale),
                     _colorWhite);
             }
 

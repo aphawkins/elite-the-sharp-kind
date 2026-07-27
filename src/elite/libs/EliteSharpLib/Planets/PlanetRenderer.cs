@@ -22,13 +22,13 @@ internal class PlanetRenderer
         Vector2 position = new(location.X, -location.Y);
         position *= 256 / location.Z;
         position += _draw.Centre / 2;
-        position *= _draw.Graphics.Scale;
+        position *= _draw.Scale;
 
         float radius = 6291456 / location.Length();
 
         // Planets are BIG!
         ////  radius = 6291456 / ship_vec.z;
-        radius *= _draw.Graphics.Scale;
+        radius *= _draw.Scale;
 
         return (position.X + radius < _draw.Left) ||
             (position.X - radius > _draw.Right) ||

@@ -26,6 +26,13 @@ internal interface IEliteDraw
 
     public float Right { get; }
 
+    /// <summary>
+    /// Gets Elite's coordinate scale: the game's drawing maths is written in the
+    /// original's 256x256-ish space and multiplied up to the render
+    /// resolution. Game policy, not a graphics-backend concern.
+    /// </summary>
+    public float Scale { get; }
+
     public float ScannerLeft { get; }
 
     public float ScannerRight { get; }

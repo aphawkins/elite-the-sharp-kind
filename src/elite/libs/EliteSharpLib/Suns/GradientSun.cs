@@ -61,9 +61,9 @@ internal sealed class GradientSun : IObject
 
         centre *= 256 / Location.Z;
         centre += _draw.Centre / 2;
-        centre *= _draw.Graphics.Scale;
+        centre *= _draw.Scale;
 
-        float radius = 6291456 / Location.Length() * _draw.Graphics.Scale;
+        float radius = 6291456 / Location.Length() * _draw.Scale;
 
         if (centre.X + radius < _draw.Left ||
             centre.X - radius > _draw.Right ||

@@ -58,7 +58,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [Useful.Graphics] The hardcoded `Scale { get; } = 2` on `IGraphics` and the centring math that divides by it (`DrawRectangleCentre` = `(ScreenWidth - width) / Scale`, [SoftwareGraphics.cs:29, 341-342](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)) only centres correctly because Scale happens to equal 2, and `SDLGraphics` divides positions by `(2 / Scale)` in ten places, which is a no-op ([SDLGraphics.cs:251-252,274-275,298,321-322,345-346,398-399](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) — Elite-specific scaling leaking into the shared library; make centring `(ScreenWidth - width) / 2` and move scale policy to the game.
 - [ ] [Useful.SDL] `SDLGraphics.DrawImage`/`DrawImagePart` create and destroy an `SDL_Texture` from the surface on every call ([SDLGraphics.cs:90-111,125-154](../src/useful/libs/Useful.SDL/SDLGraphics.cs)), and `SoftwareAbstraction.SoftwareScreenUpdate` creates a surface + texture per presented frame ([SoftwareAbstraction.cs:69-110](../src/useful/libs/Useful.SDL/SoftwareAbstraction.cs)); cache textures per image, and use one streaming texture + `SDL_UpdateTexture` for the framebuffer blit.
 - [ ] [EliteSharpLib] `ShipFactory.CreateShipFromName` instantiates ship types via reflection from strings in `AssetManifest.json` ([ShipFactory.cs:114-131](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs), flagged by its own TODOs) — data-driven `Type.GetType` + non-public `Activator.CreateInstance` is fragile and a mild input-handling risk; replace with an explicit name→factory dictionary.
 - [ ] [EliteSharpLib] `ShipBase.Draw` allocates a `new Vector4[100]` per ship per tick and keeps a discarded `_ = VectorMaths.UnitVector(...)` call ([ShipBase.cs:100-115](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)); reuse a pooled/instance buffer sized to the model and delete the dead call (same pattern for `EliteDraw._pointList`'s magic `100` vs the `MAXPOLYS` constant, [EliteDraw.cs:19-25](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)).
@@ -114,9 +113,10 @@ painter's chain landed 2026-07-14, see CHANGELOG):
       `DrawLasers` only consumes an already-projected point, it doesn't
       inline the projection itself) and SCR has `Scene3D.ProjectPoint`
       ([Scene3D.cs:116-125](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs));
-      a small `focus`+`centre` projector type serves both. Do together
-      with (or after) the Scale-policy cleanup above so Elite's `* Scale`
-      doesn't leak into the shared type.
+      a small `focus`+`centre` projector type serves both. Elite's
+      `Scale` now lives on `EliteDraw` rather than `IGraphics` (see
+      CHANGELOG), so keep the `* Scale` on the Elite side of the
+      boundary rather than in the shared type.
 - [ ] [Useful.Graphics] Shared text/HUD-panel helper for the two games'
       ad-hoc HUD code (Elite's `EliteDraw` header/border/text helpers,
       SCR's `HudRenderer`) — the smaller sibling of the original item;
@@ -326,8 +326,8 @@ either.**):
 - [ ] [EliteSharpLib] Elite at non-512x512 resolutions: audit and fix
       the hardcoded coordinate-space assumptions — 511 in
       `ShipBase.DrawLasers`, `ScannerWidth = 512` in `EliteDraw`, the
-      `Centre`/`Scale` maths — so Elite renders correctly at other
-      resolutions. Depends on the Scale-policy cleanup above. **[LARGE]**
+      `Centre`/`Scale` maths (`Scale` is now `EliteDraw.Scale`) — so
+      Elite renders correctly at other resolutions. **[LARGE]**
       — the maintainer decided (see [decisions.md](decisions.md)) Elite
       should support the full 8-bit/16-bit/modern resolution-tier scheme,
       not just integer-scaled 512x512; re-scope this item against that

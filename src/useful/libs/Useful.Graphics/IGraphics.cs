@@ -6,8 +6,6 @@ namespace Useful.Graphics;
 
 public interface IGraphics
 {
-    public float Scale { get; }
-
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }

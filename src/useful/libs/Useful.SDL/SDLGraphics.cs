@@ -82,8 +82,6 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         Dispose(disposing: false);
     }
 
-    public float Scale { get; } = 2;
-
     public float ScreenHeight { get; }
 
     public float ScreenWidth { get; }
@@ -421,8 +419,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         FlushDepthLayer();
         SetRenderDrawColor(color);
 
-        float x = position.X / (2 / Scale);
-        float y = position.Y / (2 / Scale);
+        float x = position.X;
+        float y = position.Y;
 
         SDLGuard.Execute(() =>
         {
@@ -439,7 +437,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     }
 
     public void DrawRectangleCentre(float y, float width, float height, FastColor color)
-        => DrawRectangle(new((ScreenWidth - width) / Scale, y), width, height, color);
+        => DrawRectangle(new((ScreenWidth - width) / 2, y), width, height, color);
 
     public void DrawRectangleFilled(Vector2 position, float width, float height, FastColor color)
     {
@@ -451,8 +449,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         FlushDepthLayer();
         SetRenderDrawColor(color);
 
-        float x = position.X / (2 / Scale);
-        float y = position.Y / (2 / Scale);
+        float x = position.X;
+        float y = position.Y;
 
         SDLGuard.Execute(() =>
         {
@@ -478,7 +476,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         FlushDepthLayer();
         TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
         float destX = (ScreenWidth / 2) - (entry.Width / 2);
-        float destY = y / (2 / Scale);
+        float destY = y;
 
         SDLGuard.Execute(() =>
         {
@@ -496,8 +494,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
         FlushDepthLayer();
         TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
-        float destX = position.X / (2 / Scale);
-        float destY = position.Y / (2 / Scale);
+        float destX = position.X;
+        float destY = position.Y;
 
         SDLGuard.Execute(() =>
         {
@@ -515,8 +513,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
         FlushDepthLayer();
         TextTextureEntry entry = GetOrCreateTextTexture(fontType, text, color);
-        float destX = (position.X - entry.Width) / (2 / Scale);
-        float destY = position.Y / (2 / Scale);
+        float destX = position.X - entry.Width;
+        float destY = position.Y;
 
         SDLGuard.Execute(() =>
         {
@@ -618,8 +616,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
-        int x = (int)(position.X / (2 / Scale));
-        int y = (int)(position.Y / (2 / Scale));
+        int x = (int)position.X;
+        int y = (int)position.Y;
         int w = (int)width;
         int h = (int)height;
 
