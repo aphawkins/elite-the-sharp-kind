@@ -11,16 +11,11 @@ namespace EliteSharpLib.Benchmarks;
 
 internal static class Program
 {
-    public static void Main()
-    {
-        BenchmarkRunner.Run<PlanetBenchmarks>(
+    public static void Main(string[] args) => BenchmarkSwitcher
+        .FromAssembly(typeof(Program).Assembly)
+        .Run(
+            args.Length == 0 ? ["--filter", "*"] : args,
             ManualConfig
                 .Create(DefaultConfig.Instance)
                 .WithArtifactsPath("../../../reports"));
-
-        BenchmarkRunner.Run<SunBenchmarks>(
-            ManualConfig
-                .Create(DefaultConfig.Instance)
-                .WithArtifactsPath("../../../reports"));
-    }
 }

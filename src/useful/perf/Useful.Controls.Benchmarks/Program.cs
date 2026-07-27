@@ -9,8 +9,10 @@ namespace Useful.Controls.Benchmarks;
 
 internal static class Program
 {
-    public static void Main() => BenchmarkRunner
-        .Run<KeyboardBenchmarks>(
+    public static void Main(string[] args) => BenchmarkSwitcher
+        .FromAssembly(typeof(Program).Assembly)
+        .Run(
+            args.Length == 0 ? ["--filter", "*"] : args,
             ManualConfig
                 .Create(DefaultConfig.Instance)
                 .WithArtifactsPath("../../../reports"));
