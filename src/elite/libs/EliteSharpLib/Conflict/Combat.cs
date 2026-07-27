@@ -85,55 +85,27 @@ internal sealed class Combat
 
     internal void CheckTarget(IShip obj, IObject flip)
     {
-        if (IsInTarget(obj, flip.Location))
+        if (!IsInTarget(obj, flip.Location))
         {
-            if (MissileTarget == null && IsMissileArmed && obj.Type >= 0)
-            {
-                MissileTarget = obj;
-                _gameState.InfoMessage("Target Locked");
-                _audio.PlayEffect(nameof(SoundEffect.Beep));
-            }
-
-            if (_laserStrength > 0)
-            {
-                _audio.PlayEffect(nameof(SoundEffect.HitEnemy));
-
-                if (!obj.Flags.HasFlag(ShipProperties.Station))
-                {
-                    if (obj.Type is ShipType.Constrictor or ShipType.Cougar)
-                    {
-                        if (_laserType == LaserType.Military)
-                        {
-                            obj.Energy -= _laserStrength / 4;
-                        }
-                    }
-                    else
-                    {
-                        obj.Energy -= _laserStrength;
-                    }
-                }
-
-                if (obj.Energy <= 0)
-                {
-                    ExplodeObject(obj);
-
-                    if (obj.Type == ShipType.Asteroid)
-                    {
-                        if (_laserType is LaserType.Mining or LaserType.Pulse)
-                        {
-                            LaunchLoot(obj, ShipType.Rock);
-                        }
-                    }
-                    else
-                    {
-                        LaunchLoot(obj, ShipType.Alloy);
-                        LaunchLoot(obj, ShipType.Cargo);
-                    }
-                }
-
-                MakeAngry(obj);
-            }
+            return;
         }
+
+        TryLockMissile(obj);
+
+        if (_laserStrength <= 0)
+        {
+            return;
+        }
+
+        _audio.PlayEffect(nameof(SoundEffect.HitEnemy));
+        ApplyLaserDamage(obj);
+
+        if (obj.Energy <= 0)
+        {
+            DestroyTarget(obj);
+        }
+
+        MakeAngry(obj);
     }
 
     internal void CoolLaser()
@@ -435,33 +407,7 @@ internal sealed class Combat
             return;
         }
 
-        ShipProperties flags = ship.Flags;
-
-        if (flags.HasFlag(ShipProperties.Slow) &&
-            _rng.Random(256) > 50)
-        {
-            return;
-        }
-
-        if (flags.HasFlag(ShipProperties.Police) &&
-            _gameState.Cmdr.LegalStatus >= 64)
-        {
-            flags |= ShipProperties.Angry;
-            ship.Flags = flags;
-        }
-
-        if (!flags.HasFlag(ShipProperties.Angry))
-        {
-            if (flags.HasFlag(ShipProperties.FlyToPlanet) || flags.HasFlag(ShipProperties.FlyToStation))
-            {
-                _pilot.AutoPilotShip(ship);
-            }
-
-            return;
-        }
-
-        // If we get to here then the ship is angry so start attacking...
-        AttackTactics(ship, flags);
+        ShipTactics(ship);
     }
 
     internal void TimeECM()
@@ -542,6 +488,88 @@ internal sealed class Combat
                     ship.RotZ = -ship.RotZ;
                 }
             }
+        }
+    }
+
+    // Decide what an ordinary (non-station, non-hermit, non-missile) ship does
+    // this tick, based on its current flags.
+    private void ShipTactics(IShip ship)
+    {
+        ShipProperties flags = ship.Flags;
+
+        if (flags.HasFlag(ShipProperties.Slow) &&
+            _rng.Random(256) > 50)
+        {
+            return;
+        }
+
+        if (flags.HasFlag(ShipProperties.Police) &&
+            _gameState.Cmdr.LegalStatus >= 64)
+        {
+            flags |= ShipProperties.Angry;
+            ship.Flags = flags;
+        }
+
+        if (!flags.HasFlag(ShipProperties.Angry))
+        {
+            if (flags.HasFlag(ShipProperties.FlyToPlanet) || flags.HasFlag(ShipProperties.FlyToStation))
+            {
+                _pilot.AutoPilotShip(ship);
+            }
+
+            return;
+        }
+
+        // If we get to here then the ship is angry so start attacking...
+        AttackTactics(ship, flags);
+    }
+
+    private void TryLockMissile(IShip obj)
+    {
+        if (MissileTarget == null && IsMissileArmed && obj.Type >= 0)
+        {
+            MissileTarget = obj;
+            _gameState.InfoMessage("Target Locked");
+            _audio.PlayEffect(nameof(SoundEffect.Beep));
+        }
+    }
+
+    private void ApplyLaserDamage(IShip obj)
+    {
+        if (obj.Flags.HasFlag(ShipProperties.Station))
+        {
+            return;
+        }
+
+        if (obj.Type is ShipType.Constrictor or ShipType.Cougar)
+        {
+            // only a military laser can hurt these two
+            if (_laserType == LaserType.Military)
+            {
+                obj.Energy -= _laserStrength / 4;
+            }
+        }
+        else
+        {
+            obj.Energy -= _laserStrength;
+        }
+    }
+
+    private void DestroyTarget(IShip obj)
+    {
+        ExplodeObject(obj);
+
+        if (obj.Type == ShipType.Asteroid)
+        {
+            if (_laserType is LaserType.Mining or LaserType.Pulse)
+            {
+                LaunchLoot(obj, ShipType.Rock);
+            }
+        }
+        else
+        {
+            LaunchLoot(obj, ShipType.Alloy);
+            LaunchLoot(obj, ShipType.Cargo);
         }
     }
 
@@ -1078,11 +1106,6 @@ internal sealed class Combat
 
     private void MissileTactics(IShip missile)
     {
-        Vector4 vec;
-        Vector4 nvec;
-        float direction;
-        const float cnt2 = 0.223f;
-
         if (_ship.EcmActive != 0)
         {
             _audio.PlayEffect(nameof(SoundEffect.Explode));
@@ -1091,6 +1114,27 @@ internal sealed class Combat
             return;
         }
 
+        if (!TryGetMissileHeading(missile, out Vector4 vec))
+        {
+            return;
+        }
+
+        Vector4 nvec = VectorMaths.UnitVector(vec);
+        float direction = VectorMaths.VectorDotProduct(nvec, missile.Rotmat.GetRow(2));
+        nvec.X = -nvec.X;
+        nvec.Y = -nvec.Y;
+        nvec.Z = -nvec.Z;
+        direction = -direction;
+
+        TrackObject(missile, direction, nvec);
+        SetMissileAcceleration(missile, direction);
+    }
+
+    // Work out the vector from the missile to whatever it is chasing. Returns
+    // false when the missile has already resolved itself this tick, either by
+    // detonating or by being jammed by its target's ECM.
+    private bool TryGetMissileHeading(IShip missile, out Vector4 vec)
+    {
         if (missile.Target == null)
         {
             if (missile.Location.Length() < 256)
@@ -1098,46 +1142,44 @@ internal sealed class Combat
                 missile.Flags |= ShipProperties.Dead;
                 _audio.PlayEffect(nameof(SoundEffect.Explode));
                 _ship.DamageShip(250, missile.Location.Z >= 0.0);
-                return;
+                vec = default;
+                return false;
             }
 
             vec = missile.Location;
+            return true;
         }
-        else
+
+        vec = missile.Location - missile.Target.Location;
+
+        if (vec.Length() < 256)
         {
-            vec = missile.Location - missile.Target.Location;
+            missile.Flags |= ShipProperties.Dead;
 
-            if (vec.Length() < 256)
+            if (!missile.Target.Flags.HasFlag(ShipProperties.Station))
             {
-                missile.Flags |= ShipProperties.Dead;
-
-                if (!missile.Target.Flags.HasFlag(ShipProperties.Station))
-                {
-                    ExplodeObject(missile.Target);
-                }
-                else
-                {
-                    _audio.PlayEffect(nameof(SoundEffect.Explode));
-                }
-
-                return;
+                ExplodeObject(missile.Target);
+            }
+            else
+            {
+                _audio.PlayEffect(nameof(SoundEffect.Explode));
             }
 
-            if (_rng.Random(256) < 16 && missile.Target.Flags.HasFlag(ShipProperties.HasECM))
-            {
-                ActivateECM(false);
-                return;
-            }
+            return false;
         }
 
-        nvec = VectorMaths.UnitVector(vec);
-        direction = VectorMaths.VectorDotProduct(nvec, missile.Rotmat.GetRow(2));
-        nvec.X = -nvec.X;
-        nvec.Y = -nvec.Y;
-        nvec.Z = -nvec.Z;
-        direction = -direction;
+        if (_rng.Random(256) < 16 && missile.Target.Flags.HasFlag(ShipProperties.HasECM))
+        {
+            ActivateECM(false);
+            return false;
+        }
 
-        TrackObject(missile, direction, nvec);
+        return true;
+    }
+
+    private void SetMissileAcceleration(IShip missile, float direction)
+    {
+        const float cnt2 = 0.223f;
 
         if (direction <= -0.167)
         {

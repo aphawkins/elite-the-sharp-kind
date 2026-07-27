@@ -10,6 +10,73 @@ namespace StuntCarRacerSharpLib.Cars;
 public sealed partial class CarPhysics
 {
     // Use the track map to get the piece number that a world x/z point is within.
+    // Surface position on a straight or diagonal straight.
+    private static void CalcStraightSurfacePosition(
+        int x,
+        int z,
+        int ox,
+        int oz,
+        int ux,
+        int uz,
+        int vx,
+        int vz,
+        out int sx,
+        out int sz,
+        out int roadX,
+        bool wantRoadX)
+    {
+        roadX = 0;
+
+        // z vector
+        ux -= ox;
+        uz -= oz;
+
+        // x vector
+        vx -= ox;
+        vz -= oz;
+
+        // left edge - calculate surface x position
+        int v = ((x - ox) * uz) + ((oz - z) * ux);
+        int denominator = (uz * vx) - (ux * vz);
+        if (denominator == 0)
+        {
+            sx = 0;
+        }
+        else
+        {
+            sx = v * SurfaceSize / denominator;
+            if (wantRoadX)
+            {
+                roadX = v * RoadWidth / denominator;
+            }
+        }
+
+        if (sx >= SurfaceSize)
+        {
+            sx = SurfaceSize - 1;
+        }
+
+        if (sx < 0)
+        {
+            sx = 0;
+        }
+
+        // top edge - calculate surface z position
+        int u = ((x - ox) * vz) + ((oz - z) * vx);
+        denominator = (ux * vz) - (uz * vx);
+        sz = denominator == 0 ? 0 : u * SurfaceSize / denominator;
+
+        if (sz >= SurfaceSize)
+        {
+            sz = SurfaceSize - 1;
+        }
+
+        if (sz < 0)
+        {
+            sz = 0;
+        }
+    }
+
     private bool GetPieceUsingMap(int x, int z, ref int piece)
     {
         int mapX = x >> Track.CubeSizeLog2;
@@ -199,36 +266,7 @@ public sealed partial class CarPhysics
         // find out if point is off left or right of surface
         if (wheel != WheelPosition.Centre)
         {
-            // calculate left dot product => off left
-            int xs = _sx2 - _sx1;
-            int zs = _sz2 - _sz1;
-            int xp = rx - _sx1;
-            int zp = rz - _sz1;
-            _offLeft = xs * zp < xp * zs;
-
-            // calculate right dot product => off right
-            xs = _sx4 - _sx3;
-            zs = _sz4 - _sz3;
-            xp = rx - _sx3;
-            zp = rz - _sz3;
-            _offRight = xs * zp < xp * zs;
-
-            _wheelOffRoad = false;
-            _distanceOffRoad = 0;
-            if (_offLeft || _offRight)
-            {
-                _wheelOffRoad = true;
-
-                // the local point (rx/rz) is modified to be at the relevant
-                // edge, so that road height at the edge is calculated;
-                // note: the resulting distance value is negative
-                _distanceOffRoad = _offLeft
-                    ? CalcDistanceOffRoad(rx, rz, _sx2, _sz2, _sx1, _sz1, _sx3, _sz3, out int ex, out int ez)
-                    : CalcDistanceOffRoad(rx, rz, _sx3, _sz3, _sx4, _sz4, _sx2, _sz2, out ex, out ez);
-
-                rx = ex;
-                rz = ez;
-            }
+            CalculateWheelOffRoad(ref rx, ref rz);
         }
 
         // calculate height of surface at x,z position using linear interpolation
@@ -302,6 +340,42 @@ public sealed partial class CarPhysics
         int y = (syb << LogSurfaceSize) + (sz * (sya - syb));
 
         heightOut = y << (Track.LogPrecision - LogSurfaceSize);
+    }
+
+    /// <summary>
+    /// Work out whether the point lies off the left or right edge of the
+    /// surface. If it does, rx/rz are moved onto that edge so the road height
+    /// is taken at the edge, and the (negative) distance off is recorded.
+    /// </summary>
+    private void CalculateWheelOffRoad(ref int rx, ref int rz)
+    {
+        // calculate left dot product => off left
+        int xs = _sx2 - _sx1;
+        int zs = _sz2 - _sz1;
+        int xp = rx - _sx1;
+        int zp = rz - _sz1;
+        _offLeft = xs * zp < xp * zs;
+
+        // calculate right dot product => off right
+        xs = _sx4 - _sx3;
+        zs = _sz4 - _sz3;
+        xp = rx - _sx3;
+        zp = rz - _sz3;
+        _offRight = xs * zp < xp * zs;
+
+        _wheelOffRoad = false;
+        _distanceOffRoad = 0;
+        if (_offLeft || _offRight)
+        {
+            _wheelOffRoad = true;
+
+            _distanceOffRoad = _offLeft
+                ? CalcDistanceOffRoad(rx, rz, _sx2, _sz2, _sx1, _sz1, _sx3, _sz3, out int ex, out int ez)
+                : CalcDistanceOffRoad(rx, rz, _sx3, _sz3, _sx4, _sz4, _sx2, _sz2, out ex, out ez);
+
+            rx = ex;
+            rz = ez;
+        }
     }
 
     /// <summary>
@@ -436,106 +510,71 @@ public sealed partial class CarPhysics
         bool wantRoadX,
         ref int segmentOut)
     {
-        roadX = 0;
-
         if ((_track.Pieces[piece].Type & 0x80) != 0)
         {
-            // curve - treat as a true circular arc (removes the 'jitter' problem)
-            CalcCurveMeasurements(piece, x, z, out int pieceYAngle, out int radius, out double distanceFromCentre);
-
-            // adjust for normal direction of travel
-            if (_track.Pieces[piece].OppositeDirection)
-            {
-                pieceYAngle = (Track.MaxAngle / 8) - pieceYAngle;
-            }
-
-            // limit piece y angle to valid range
-            if (pieceYAngle < 0)
-            {
-                pieceYAngle = 0;
-            }
-
-            if (pieceYAngle >= Track.MaxAngle / 8)
-            {
-                pieceYAngle = (Track.MaxAngle / 8) - 1;
-            }
-
-            // calculate surface x position
-            double d = distanceFromCentre < radius ? radius - distanceFromCentre : distanceFromCentre - radius;
-
-            int surfaceX = (int)(d * SurfaceSize / (RoadWidth * Track.PcFactor));
-            if (wantRoadX)
-            {
-                roadX = (int)(d / Track.PcFactor);
-            }
-
-            if (surfaceX >= SurfaceSize)
-            {
-                surfaceX = SurfaceSize - 1;
-            }
-
-            sx = surfaceX;
-
-            // calculate surface z position and output calculated segment
-            int numSegments = _track.Pieces[piece].NumSegments;
-            int pieceZ = (pieceYAngle << LogSurfaceSize) * numSegments / (Track.MaxAngle / 8);
-
-            sz = pieceZ & (SurfaceSize - 1);
-            segmentOut = pieceZ >> LogSurfaceSize;
+            CalcCurveSurfacePosition(piece, x, z, out sx, out sz, out roadX, wantRoadX, ref segmentOut);
         }
         else
         {
-            // straight or diagonal straight
-
-            // z vector
-            ux -= ox;
-            uz -= oz;
-
-            // x vector
-            vx -= ox;
-            vz -= oz;
-
-            // left edge - calculate surface x position
-            int v = ((x - ox) * uz) + ((oz - z) * ux);
-            int denominator = (uz * vx) - (ux * vz);
-            if (denominator == 0)
-            {
-                sx = 0;
-            }
-            else
-            {
-                sx = v * SurfaceSize / denominator;
-                if (wantRoadX)
-                {
-                    roadX = v * RoadWidth / denominator;
-                }
-            }
-
-            if (sx >= SurfaceSize)
-            {
-                sx = SurfaceSize - 1;
-            }
-
-            if (sx < 0)
-            {
-                sx = 0;
-            }
-
-            // top edge - calculate surface z position
-            int u = ((x - ox) * vz) + ((oz - z) * vx);
-            denominator = (ux * vz) - (uz * vx);
-            sz = denominator == 0 ? 0 : u * SurfaceSize / denominator;
-
-            if (sz >= SurfaceSize)
-            {
-                sz = SurfaceSize - 1;
-            }
-
-            if (sz < 0)
-            {
-                sz = 0;
-            }
+            CalcStraightSurfacePosition(x, z, ox, oz, ux, uz, vx, vz, out sx, out sz, out roadX, wantRoadX);
         }
+    }
+
+    // Surface position on a curve, treated as a true circular arc (removes the
+    // 'jitter' problem).
+    private void CalcCurveSurfacePosition(
+        int piece,
+        int x,
+        int z,
+        out int sx,
+        out int sz,
+        out int roadX,
+        bool wantRoadX,
+        ref int segmentOut)
+    {
+        roadX = 0;
+
+        CalcCurveMeasurements(piece, x, z, out int pieceYAngle, out int radius, out double distanceFromCentre);
+
+        // adjust for normal direction of travel
+        if (_track.Pieces[piece].OppositeDirection)
+        {
+            pieceYAngle = (Track.MaxAngle / 8) - pieceYAngle;
+        }
+
+        // limit piece y angle to valid range
+        if (pieceYAngle < 0)
+        {
+            pieceYAngle = 0;
+        }
+
+        if (pieceYAngle >= Track.MaxAngle / 8)
+        {
+            pieceYAngle = (Track.MaxAngle / 8) - 1;
+        }
+
+        // calculate surface x position
+        double d = distanceFromCentre < radius ? radius - distanceFromCentre : distanceFromCentre - radius;
+
+        int surfaceX = (int)(d * SurfaceSize / (RoadWidth * Track.PcFactor));
+        if (wantRoadX)
+        {
+            roadX = (int)(d / Track.PcFactor);
+        }
+
+        if (surfaceX >= SurfaceSize)
+        {
+            surfaceX = SurfaceSize - 1;
+        }
+
+        sx = surfaceX;
+
+        // calculate surface z position and output calculated segment
+        int numSegments = _track.Pieces[piece].NumSegments;
+        int pieceZ = (pieceYAngle << LogSurfaceSize) * numSegments / (Track.MaxAngle / 8);
+
+        sz = pieceZ & (SurfaceSize - 1);
+        segmentOut = pieceZ >> LogSurfaceSize;
     }
 
     private void IdentifyPiece(int x, int z, ref int pieceInOut)
@@ -547,7 +586,15 @@ public sealed partial class CarPhysics
 
         GetPieceCoords(piece);
 
-        // 'before piece' loop
+        AdvanceToPiece(x, z, ref piece);
+        RetreatToPiece(x, z, ref piece);
+
+        pieceInOut = piece;
+    }
+
+    // 'before piece' loop: steps forwards while the point lies before the piece.
+    private void AdvanceToPiece(int x, int z, ref int piece)
+    {
         int numPieceChanges = 0;
         bool moving = true;
         while (moving)
@@ -579,10 +626,13 @@ public sealed partial class CarPhysics
                 break; // prevent an infinite loop
             }
         }
+    }
 
-        // 'after piece' loop
-        numPieceChanges = 0;
-        moving = true;
+    // 'after piece' loop: steps backwards while the point lies after the piece.
+    private void RetreatToPiece(int x, int z, ref int piece)
+    {
+        int numPieceChanges = 0;
+        bool moving = true;
         while (moving)
         {
             CalcXZRelativeToPiece(x, z, piece, out int rx, out int rz);
@@ -612,8 +662,6 @@ public sealed partial class CarPhysics
                 break; // prevent an infinite loop
             }
         }
-
-        pieceInOut = piece;
     }
 
     private void GetPieceCoords(int piece)

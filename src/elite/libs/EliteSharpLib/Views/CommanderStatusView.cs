@@ -69,18 +69,25 @@ internal sealed class CommanderStatusView : IView
 
     public void Draw()
     {
-        Vector2 position = new(50 + _draw.Offset, _equipmentStartY);
+        DrawStatus(CurrentRating(), CurrentCondition());
+        DrawEquipment();
+    }
 
-        void IncrementPosition()
-        {
-            position.Y += _spacingY;
-            if (position.Y > _equipmentMaxY)
-            {
-                position.Y = _equipmentStartY;
-                position.X += _equipmentWidth;
-            }
-        }
+    public void HandleInput()
+    {
+    }
 
+    public void Reset()
+    {
+    }
+
+    public void Update()
+    {
+    }
+
+    // The commander's combat rating, the highest one their score has reached.
+    private string CurrentRating()
+    {
         string rating = string.Empty;
         foreach ((int score, string title) in _ratings)
         {
@@ -90,27 +97,38 @@ internal sealed class CommanderStatusView : IView
             }
         }
 
-        int condition = 0;
+        return rating;
+    }
 
-        if (!_gameState.IsDocked)
+    // Docked / Green / Yellow / Red, as an index into _conditionText.
+    private int CurrentCondition()
+    {
+        if (_gameState.IsDocked)
         {
-            condition = 1;
+            return 0;
+        }
 
-            foreach (IObject obj in _universe.GetAllObjects())
-            {
-                if (obj.Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
-                {
-                    condition = 2;
-                    break;
-                }
-            }
+        int condition = 1;
 
-            if (condition == 2 && _ship.Energy < 128)
+        foreach (IObject obj in _universe.GetAllObjects())
+        {
+            if (obj.Type is ShipType.Missile or (> ShipType.Rock and < ShipType.Dodec))
             {
-                condition = 3;
+                condition = 2;
+                break;
             }
         }
 
+        if (condition == 2 && _ship.Energy < 128)
+        {
+            condition = 3;
+        }
+
+        return condition;
+    }
+
+    private void DrawStatus(string rating, int condition)
+    {
         _draw.DrawViewHeader($"COMMANDER {_gameState.Cmdr.Name}");
 
         _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 58), "Present System:", nameof(FontType.Small), _colorGreen);
@@ -153,92 +171,87 @@ internal sealed class CommanderStatusView : IView
         _draw.Graphics.DrawTextLeft(new(200 + _draw.Offset, 154), rating, nameof(FontType.Small), _colorWhite);
 
         _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 186), "EQUIPMENT:", nameof(FontType.Small), _colorGreen);
+    }
 
+    // The equipment list, filling the left column before wrapping to the right.
+    private void DrawEquipment()
+    {
+        Vector2 position = new(50 + _draw.Offset, _equipmentStartY);
+
+        foreach (string item in EquipmentFitted())
+        {
+            _draw.Graphics.DrawTextLeft(position, item, nameof(FontType.Small), _colorWhite);
+
+            position.Y += _spacingY;
+            if (position.Y > _equipmentMaxY)
+            {
+                position.Y = _equipmentStartY;
+                position.X += _equipmentWidth;
+            }
+        }
+    }
+
+    // Every piece of equipment the ship is carrying, in display order.
+    private IEnumerable<string> EquipmentFitted()
+    {
         if (_ship.CargoCapacity > 20)
         {
-            _draw.Graphics.DrawTextLeft(position, "Large Cargo Bay", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return "Large Cargo Bay";
         }
 
         if (_ship.HasEscapeCapsule)
         {
-            _draw.Graphics.DrawTextLeft(position, "Escape Capsule", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return "Escape Capsule";
         }
 
         if (_ship.HasFuelScoop)
         {
-            _draw.Graphics.DrawTextLeft(position, "Fuel Scoops", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return "Fuel Scoops";
         }
 
         if (_ship.HasECM)
         {
-            _draw.Graphics.DrawTextLeft(position, "E.C.M. System", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return "E.C.M. System";
         }
 
         if (_ship.HasEnergyBomb)
         {
-            _draw.Graphics.DrawTextLeft(position, "Energy Bomb", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return "Energy Bomb";
         }
 
         if (_ship.EnergyUnit != EnergyUnit.None)
         {
-            _draw.Graphics.DrawTextLeft(
-                position,
-                _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit",
-                nameof(FontType.Small),
-                _colorWhite);
-            IncrementPosition();
+            yield return _ship.EnergyUnit == EnergyUnit.Extra ? "Extra Energy Unit" : "Naval Energy Unit";
         }
 
         if (_ship.HasDockingComputer)
         {
-            _draw.Graphics.DrawTextLeft(position, "Docking Computers", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return "Docking Computers";
         }
 
         if (_ship.HasGalacticHyperdrive)
         {
-            _draw.Graphics.DrawTextLeft(position, "Galactic Hyperspace", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return "Galactic Hyperspace";
         }
 
         if (_ship.LaserFront.Type != LaserType.None)
         {
-            _draw.Graphics.DrawTextLeft(position, $"Front {_ship.LaserFront.Name} Laser", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return $"Front {_ship.LaserFront.Name} Laser";
         }
 
         if (_ship.LaserRear.Type != LaserType.None)
         {
-            _draw.Graphics.DrawTextLeft(position, $"Rear {_ship.LaserRear.Name} Laser", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return $"Rear {_ship.LaserRear.Name} Laser";
         }
 
         if (_ship.LaserLeft.Type != LaserType.None)
         {
-            _draw.Graphics.DrawTextLeft(position, $"Left {_ship.LaserLeft.Name} Laser", nameof(FontType.Small), _colorWhite);
-            IncrementPosition();
+            yield return $"Left {_ship.LaserLeft.Name} Laser";
         }
 
         if (_ship.LaserRight.Type != LaserType.None)
         {
-            _draw.Graphics.DrawTextLeft(position, $"Right {_ship.LaserRight.Name} Laser", nameof(FontType.Small), _colorWhite);
+            yield return $"Right {_ship.LaserRight.Name} Laser";
         }
-    }
-
-    public void HandleInput()
-    {
-    }
-
-    public void Reset()
-    {
-    }
-
-    public void Update()
-    {
     }
 }

@@ -231,6 +231,24 @@ internal sealed class EliteDraw : IEliteDraw
             faceNormal.Visible = cos_angle < -0.13;
         }
 
+        int np = ProjectExplosionPoints(ship);
+
+        float z = ship.Location.Z;
+        float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
+        float pr = ship.ExpDelta * 256 / q;
+
+        ////  if (pr > 0x1C00)
+        ////      q = 254;
+        ////  else
+        q = pr / 32;
+
+        DrawExplosionParticles(np, q);
+    }
+
+    // Project the ship's visible points into _pointList, returning how many
+    // of them were written.
+    private int ProjectExplosionPoints(IShip ship)
+    {
         int np = 0;
 
         for (int i = 0; i < ship.Model.Points.Count; i++)
@@ -249,15 +267,13 @@ internal sealed class EliteDraw : IEliteDraw
             }
         }
 
-        float z = ship.Location.Z;
-        float q = z >= 0x2000 ? 254 : (int)(z / 32) | 1;
-        float pr = ship.ExpDelta * 256 / q;
+        return np;
+    }
 
-        ////  if (pr > 0x1C00)
-        ////      q = 254;
-        ////  else
-        q = pr / 32;
-
+    // Scatter a cloud of debris blocks around each of the np projected points,
+    // spread wider as the explosion grows (q).
+    private void DrawExplosionParticles(int np, float q)
+    {
         for (int cnt = 0; cnt < np; cnt++)
         {
             float sx = _pointList[cnt].X;
@@ -276,13 +292,18 @@ internal sealed class EliteDraw : IEliteDraw
                 int sizex = _rng.Random(1, 3);
                 int sizey = _rng.Random(1, 3);
 
-                for (int psy = 0; psy < sizey; psy++)
-                {
-                    for (int psx = 0; psx < sizex; psx++)
-                    {
-                        Graphics.DrawPixel(new(position.X + psx, position.Y + psy), _colorWhite);
-                    }
-                }
+                DrawExplosionBlock(position, sizex, sizey);
+            }
+        }
+    }
+
+    private void DrawExplosionBlock(Vector2 position, int sizex, int sizey)
+    {
+        for (int psy = 0; psy < sizey; psy++)
+        {
+            for (int psx = 0; psx < sizex; psx++)
+            {
+                Graphics.DrawPixel(new(position.X + psx, position.Y + psy), _colorWhite);
             }
         }
     }

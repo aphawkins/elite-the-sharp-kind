@@ -105,32 +105,7 @@ internal sealed class GalacticChartView : IView
     {
         if (_isFind)
         {
-            if (_keyboard.IsPressed(ConsoleKey.Backspace) &&
-                !string.IsNullOrEmpty(_findName))
-            {
-                _findName = _findName[..^1];
-            }
-
-            if (_keyboard.IsPressed(ConsoleKey.Enter))
-            {
-                _isFind = false;
-                if (_planet.FindPlanetByName(_findName))
-                {
-                    CrossFromHyperspacePlanet();
-                    CalculateDistanceToPlanet();
-                }
-                else
-                {
-                    _gameState.PlanetName = string.Empty;
-                }
-            }
-
-            (ConsoleKey key, ConsoleModifiers _) = _keyboard.LastPressed();
-            if (key is >= ConsoleKey.A and <= ConsoleKey.Z)
-            {
-                _findName += (char)key;
-            }
-
+            HandleFindInput();
             return;
         }
 
@@ -217,6 +192,36 @@ internal sealed class GalacticChartView : IView
             {
                 CalculateDistanceToPlanet();
             }
+        }
+    }
+
+    // Typing a planet name into the find prompt.
+    private void HandleFindInput()
+    {
+        if (_keyboard.IsPressed(ConsoleKey.Backspace) &&
+            !string.IsNullOrEmpty(_findName))
+        {
+            _findName = _findName[..^1];
+        }
+
+        if (_keyboard.IsPressed(ConsoleKey.Enter))
+        {
+            _isFind = false;
+            if (_planet.FindPlanetByName(_findName))
+            {
+                CrossFromHyperspacePlanet();
+                CalculateDistanceToPlanet();
+            }
+            else
+            {
+                _gameState.PlanetName = string.Empty;
+            }
+        }
+
+        (ConsoleKey key, ConsoleModifiers _) = _keyboard.LastPressed();
+        if (key is >= ConsoleKey.A and <= ConsoleKey.Z)
+        {
+            _findName += (char)key;
         }
     }
 

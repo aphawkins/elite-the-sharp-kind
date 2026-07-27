@@ -56,77 +56,9 @@ internal sealed class Pilot
 
         AutoPilotShip(ship);
 
-        _ship.Speed = ship.Velocity > 22 ? 22 : ship.Velocity;
-
-        if (ship.Acceleration > 0)
-        {
-            _ship.Speed++;
-            if (_ship.Speed > 22)
-            {
-                _ship.Speed = 22;
-            }
-        }
-
-        if (ship.Acceleration < 0)
-        {
-            _ship.Speed--;
-            if (_ship.Speed < 1)
-            {
-                _ship.Speed = 1;
-            }
-        }
-
-        if ((int)ship.RotX == 0)
-        {
-            _ship.Climb = 0;
-        }
-
-        if (ship.RotX < 0)
-        {
-            _ship.IncreaseClimb();
-
-            if (ship.RotX < -1)
-            {
-                _ship.IncreaseClimb();
-            }
-        }
-
-        if (ship.RotX > 0)
-        {
-            _ship.DecreaseClimb();
-
-            if (ship.RotX > 1)
-            {
-                _ship.DecreaseClimb();
-            }
-        }
-
-        if ((int)ship.RotZ == 127)
-        {
-            _ship.Roll = -14;
-        }
-        else if ((int)ship.RotZ == 0)
-        {
-            _ship.Roll = 0;
-        }
-        else if (ship.RotZ > 0)
-        {
-            _ship.IncreaseRoll();
-
-            if (ship.RotZ > 1)
-            {
-                _ship.IncreaseRoll();
-            }
-        }
-        else if (ship.RotZ < 0)
-        {
-            _ship.DecreaseRoll();
-
-            if (ship.RotZ < -1)
-            {
-                _ship.DecreaseRoll();
-            }
-        }
+        ApplyAutoDockSpeed(ship);
+        ApplyAutoDockClimb(ship);
+        ApplyAutoDockRoll(ship);
     }
 
     /// <summary>
@@ -223,28 +155,7 @@ internal sealed class Pilot
             return;
         }
 
-        ship.RotX = 0;
-
-        if ((MathF.Abs(dir) * 2) >= rat2)
-        {
-            ship.RotX = (dir < 0) ? rat : -rat;
-        }
-
-        if (MathF.Abs(ship.RotZ) < 16)
-        {
-            dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(0));
-            ship.RotZ = 0;
-
-            if ((MathF.Abs(dir) * 2) >= rat2)
-            {
-                ship.RotZ = (dir < 0) ? rat : -rat;
-
-                if (ship.RotX < 0)
-                {
-                    ship.RotZ = -ship.RotZ;
-                }
-            }
-        }
+        SetFlyToRotation(ship, nvec, dir, rat, rat2);
 
         if (direction <= -0.167)
         {
@@ -259,6 +170,157 @@ internal sealed class Pilot
     }
 
     /// <summary>
+    /// Roll and pitch the player's ship into line with the docking bay. Returns
+    /// false while it is still lining up, having set the ship's rotation and
+    /// slowed it to a crawl.
+    /// </summary>
+    private static bool IsLinedUpWithDockingBay(IShip ship, Vector4 vec)
+    {
+        ship.RotZ = 1;
+        if (((vec.X >= 0) && (vec.Y >= 0)) ||
+            ((vec.X < 0) && (vec.Y < 0)))
+        {
+            ship.RotZ = -ship.RotZ;
+        }
+
+        if (MathF.Abs(vec.X) >= 0.0625f)
+        {
+            ship.Acceleration = 0;
+            ship.Velocity = 1;
+            return false;
+        }
+
+        if (MathF.Abs(vec.Y) > 0.002436f)
+        {
+            ship.RotX = (vec.Y < 0) ? -1 : 1;
+        }
+
+        if (MathF.Abs(vec.Y) >= 0.0625f)
+        {
+            ship.Acceleration = 0;
+            ship.Velocity = 1;
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Point the ship at the target vector, pitching and then rolling towards it.
+    /// </summary>
+    private static void SetFlyToRotation(IShip ship, Vector4 nvec, float dir, int rat, float rat2)
+    {
+        ship.RotX = 0;
+
+        if ((MathF.Abs(dir) * 2) >= rat2)
+        {
+            ship.RotX = (dir < 0) ? rat : -rat;
+        }
+
+        if (MathF.Abs(ship.RotZ) >= 16)
+        {
+            return;
+        }
+
+        dir = VectorMaths.VectorDotProduct(nvec, ship.Rotmat.GetRow(0));
+        ship.RotZ = 0;
+
+        if ((MathF.Abs(dir) * 2) >= rat2)
+        {
+            ship.RotZ = (dir < 0) ? rat : -rat;
+
+            if (ship.RotX < 0)
+            {
+                ship.RotZ = -ship.RotZ;
+            }
+        }
+    }
+
+    // Translate the phantom ship's acceleration into the player's speed.
+    private void ApplyAutoDockSpeed(ShipBase ship)
+    {
+        _ship.Speed = ship.Velocity > 22 ? 22 : ship.Velocity;
+
+        if (ship.Acceleration > 0)
+        {
+            _ship.Speed++;
+            if (_ship.Speed > 22)
+            {
+                _ship.Speed = 22;
+            }
+        }
+
+        if (ship.Acceleration < 0)
+        {
+            _ship.Speed--;
+            if (_ship.Speed < 1)
+            {
+                _ship.Speed = 1;
+            }
+        }
+    }
+
+    // Translate the phantom ship's pitch into the player's climb.
+    private void ApplyAutoDockClimb(ShipBase ship)
+    {
+        if ((int)ship.RotX == 0)
+        {
+            _ship.Climb = 0;
+        }
+
+        if (ship.RotX < 0)
+        {
+            _ship.IncreaseClimb();
+
+            if (ship.RotX < -1)
+            {
+                _ship.IncreaseClimb();
+            }
+        }
+
+        if (ship.RotX > 0)
+        {
+            _ship.DecreaseClimb();
+
+            if (ship.RotX > 1)
+            {
+                _ship.DecreaseClimb();
+            }
+        }
+    }
+
+    // Translate the phantom ship's roll into the player's roll.
+    private void ApplyAutoDockRoll(ShipBase ship)
+    {
+        if ((int)ship.RotZ == 127)
+        {
+            _ship.Roll = -14;
+        }
+        else if ((int)ship.RotZ == 0)
+        {
+            _ship.Roll = 0;
+        }
+        else if (ship.RotZ > 0)
+        {
+            _ship.IncreaseRoll();
+
+            if (ship.RotZ > 1)
+            {
+                _ship.IncreaseRoll();
+            }
+        }
+        else if (ship.RotZ < 0)
+        {
+            _ship.DecreaseRoll();
+
+            if (ship.RotZ < -1)
+            {
+                _ship.DecreaseRoll();
+            }
+        }
+    }
+
+    /// <summary>
     /// Final stage of docking. Fly into the docking bay.
     /// </summary>
     private void FlyToDockingBay(IShip ship)
@@ -267,33 +329,10 @@ internal sealed class Pilot
         Vector4 vec = VectorMaths.UnitVector(diff);
         ship.RotX = 0;
 
-        if (ship.Type == ShipType.None)
+        if (ship.Type == ShipType.None && !IsLinedUpWithDockingBay(ship, vec))
         {
-            ship.RotZ = 1;
-            if (((vec.X >= 0) && (vec.Y >= 0)) ||
-                ((vec.X < 0) && (vec.Y < 0)))
-            {
-                ship.RotZ = -ship.RotZ;
-            }
-
-            if (MathF.Abs(vec.X) >= 0.0625f)
-            {
-                ship.Acceleration = 0;
-                ship.Velocity = 1;
-                return;
-            }
-
-            if (MathF.Abs(vec.Y) > 0.002436f)
-            {
-                ship.RotX = (vec.Y < 0) ? -1 : 1;
-            }
-
-            if (MathF.Abs(vec.Y) >= 0.0625f)
-            {
-                ship.Acceleration = 0;
-                ship.Velocity = 1;
-                return;
-            }
+            // still edging into line with the slot, so hold station this tick
+            return;
         }
 
         ship.RotZ = 0;

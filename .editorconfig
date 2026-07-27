@@ -2507,7 +2507,7 @@ dotnet_diagnostic.RCS0041.severity = none # Add 'param' element to documentation
 dotnet_diagnostic.RCS0042.severity = warning
 dotnet_diagnostic.RCS0043.severity = none # Format accessor's braces on a single line when expression is on single line
 dotnet_diagnostic.RCS0044.severity = none # Use carriage return + linefeed as new line
-dotnet_diagnostic.RCS0045.severity = none # Use linefeed as new line
+dotnet_diagnostic.RCS0045.severity = warning # Use linefeed as new line
 dotnet_diagnostic.RCS0046.severity = warning
 dotnet_diagnostic.RCS0047.severity = warning
 dotnet_diagnostic.RCS0048.severity = none # Put initializer on a single line
@@ -2546,7 +2546,7 @@ dotnet_diagnostic.RCS1052.severity = warning
 dotnet_diagnostic.RCS1056.severity = warning
 dotnet_diagnostic.RCS1060.severity = warning
 dotnet_diagnostic.RCS1064.severity = warning
-dotnet_diagnostic.RCS1065.severity = none # Avoid usage of while statement to create an infinite loop
+dotnet_diagnostic.RCS1065.severity = none # [deprecated] Avoid usage of while statement to create an infinite loop
 dotnet_diagnostic.RCS1066.severity = warning
 dotnet_diagnostic.RCS1069.severity = warning # Remove unnecessary case label
 dotnet_diagnostic.RCS1070.severity = warning # Remove redundant default switch section
@@ -2635,7 +2635,7 @@ dotnet_diagnostic.S3353.severity = warning
 dotnet_diagnostic.S3358.severity = none # Ternary operators should not be nested
 dotnet_diagnostic.S3441.severity = warning
 dotnet_diagnostic.S3604.severity = none # Member initializer values should not be redundant
-dotnet_diagnostic.S3776.severity = none # Cognitive Complexity of methods should not be too high
+dotnet_diagnostic.S3776.severity = warning # Cognitive Complexity of methods should not be too high
 dotnet_diagnostic.S3874.severity = warning
 dotnet_diagnostic.S3884.severity = warning
 dotnet_diagnostic.S3937.severity = warning
@@ -2659,7 +2659,7 @@ dotnet_diagnostic.NU1701.severity = none # This package may not be fully compati
 #########
 
 # xUnit Analyzer
-dotnet_diagnostic.xUnit1004.severity = none
+dotnet_diagnostic.xUnit1004.severity = warning # Test methods should not be skipped
 
 ###################################################################################################
 

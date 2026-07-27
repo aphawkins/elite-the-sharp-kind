@@ -66,15 +66,7 @@ internal sealed class SettingsView : IView
                 return;
             }
 
-            int v = i switch
-            {
-                0 => _gameState.Config.ShipWireframe ? 1 : 0,
-                1 => (int)_gameState.Config.PlanetStyle,
-                2 => (int)_gameState.Config.SunStyle,
-                3 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-                4 => _gameState.Config.InstantDock ? 1 : 0,
-                _ => 0,
-            };
+            int v = SettingValue(i);
 
             position.X = ((i & 1) * 250) + 32 + _draw.Offset;
             position.Y = (i / 2 * 30) + (_draw.Centre.Y / 2);
@@ -123,6 +115,17 @@ internal sealed class SettingsView : IView
     public void Update()
     {
     }
+
+    // Which of setting i's values is currently selected.
+    private int SettingValue(int i) => i switch
+    {
+        0 => _gameState.Config.ShipWireframe ? 1 : 0,
+        1 => (int)_gameState.Config.PlanetStyle,
+        2 => (int)_gameState.Config.SunStyle,
+        3 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+        4 => _gameState.Config.InstantDock ? 1 : 0,
+        _ => 0,
+    };
 
     private void SelectDown()
     {

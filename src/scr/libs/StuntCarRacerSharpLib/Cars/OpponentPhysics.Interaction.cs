@@ -109,68 +109,81 @@ public sealed partial class OpponentPhysics
         }
         else
         {
-            // player and opponent are within 0x100 of each other
-            int distance = _smallestDistanceBetweenPlayers;
-            if (distance < 64 && (_player.OpponentBehindPlayer || _xDifference < 50))
-            {
-                // opponent less than 64 behind player, or player less than 64
-                // behind and less than 50 to the left or right of opponent
-                _player.PlayerCloseToOpponent = true;
-            }
-
-            if (distance < 16 && _xDifference < 50 && PlayerNearRoad())
-            {
-                CarToCarCollisionDetection();
-                collided = true;
-            }
-            else
-            {
-                _collisionCountdown = 0; // clear collision values
-                _collidedFlag = 0;
-
-                if ((_smallestDistanceBetweenPlayers & 0xff) >= 24)
-                {
-                    ResolveObstruction(ref farAway);
-                }
-                else
-                {
-                    collided = true;
-                }
-            }
+            HandleNearbyPlayer(ref farAway, ref collided);
         }
 
         if (collided)
         {
-            bool moveToSide = true;
-            if ((s_attributes[OpponentId] & DrivesNearEdge) != 0 &&
-                !_player.OpponentBehindPlayer &&
-                (_smallestDistanceBetweenPlayers & 0xff) >= 14)
-            {
-                farAway = true;
-                moveToSide = false;
-            }
-
-            if (moveToSide)
-            {
-                MoveToOneSide();
-                farAway = false;
-            }
+            HandleCollided(ref farAway);
         }
 
         if (farAway)
         {
-            int side = (s_attributes[OpponentId] & DrivesNearEdge) != 0 ? 110 : 64;
-
-            if ((OpponentId & 1) != 0)
-            {
-                side = 255 - side; // to other side of road
-            }
-
-            _suggestedRoadXPosition = side;
-            MoveToMiddleOnCurves();
+            DriveAtOwnSideOfRoad();
         }
 
         ApplySteering();
+    }
+
+    // The player and opponent are within 0x100 of each other.
+    private void HandleNearbyPlayer(ref bool farAway, ref bool collided)
+    {
+        int distance = _smallestDistanceBetweenPlayers;
+        if (distance < 64 && (_player.OpponentBehindPlayer || _xDifference < 50))
+        {
+            // opponent less than 64 behind player, or player less than 64
+            // behind and less than 50 to the left or right of opponent
+            _player.PlayerCloseToOpponent = true;
+        }
+
+        if (distance < 16 && _xDifference < 50 && PlayerNearRoad())
+        {
+            CarToCarCollisionDetection();
+            collided = true;
+            return;
+        }
+
+        _collisionCountdown = 0; // clear collision values
+        _collidedFlag = 0;
+
+        if ((_smallestDistanceBetweenPlayers & 0xff) >= 24)
+        {
+            ResolveObstruction(ref farAway);
+        }
+        else
+        {
+            collided = true;
+        }
+    }
+
+    // An opponent that drives near the edge holds its line rather than moving
+    // aside for the player.
+    private void HandleCollided(ref bool farAway)
+    {
+        if ((s_attributes[OpponentId] & DrivesNearEdge) != 0 &&
+            !_player.OpponentBehindPlayer &&
+            (_smallestDistanceBetweenPlayers & 0xff) >= 14)
+        {
+            farAway = true;
+            return;
+        }
+
+        MoveToOneSide();
+        farAway = false;
+    }
+
+    // Nothing nearby, so head for this opponent's usual side of the road.
+    private void DriveAtOwnSideOfRoad()
+    {
+        int side = (s_attributes[OpponentId] & DrivesNearEdge) != 0 ? 110 : 64;
+
+        if ((OpponentId & 1) != 0)
+        {
+            side = 255 - side; // to other side of road
+        }
+
+        _suggestedRoadXPosition = side;
+        MoveToMiddleOnCurves();
     }
 
     private bool PlayerNearRoad()
@@ -316,31 +329,9 @@ public sealed partial class OpponentPhysics
             return;
         }
 
-        if (!TouchingRoad || !_player.TouchingRoad)
+        if ((!TouchingRoad || !_player.TouchingRoad) && !CalculateAirborneCollisionY())
         {
-            int playersSmallerY = _player.PlayerY >> 11;
-            int d = playersSmallerY - _actualHeight[RearLeft];
-            int signed = d;
-            d += 40;
-            d = Math.Abs(d);
-
-            if (d >= 192)
-            {
-                _collisionCountdown = 3;
-                return;
-            }
-
-            if (_collisionCountdown != 0)
-            {
-                --_collisionCountdown;
-                int accel = 256 - d;
-                if (signed < 0)
-                {
-                    accel = -accel;
-                }
-
-                _carToCarYAcceleration = accel << 4;
-            }
+            return;
         }
 
         if (_xDifference < 45 && (_smallestDistanceBetweenPlayers & 0xff) <= 8)
@@ -373,6 +364,38 @@ public sealed partial class OpponentPhysics
         damage >>= 8;
 
         _player.AddCollisionDamage(damage);
+    }
+
+    // One of the cars is airborne: work out the vertical part of the collision
+    // from the height difference. Returns false when the cars are too far apart
+    // vertically to have collided at all.
+    private bool CalculateAirborneCollisionY()
+    {
+        int playersSmallerY = _player.PlayerY >> 11;
+        int d = playersSmallerY - _actualHeight[RearLeft];
+        int signed = d;
+        d += 40;
+        d = Math.Abs(d);
+
+        if (d >= 192)
+        {
+            _collisionCountdown = 3;
+            return false;
+        }
+
+        if (_collisionCountdown != 0)
+        {
+            --_collisionCountdown;
+            int accel = 256 - d;
+            if (signed < 0)
+            {
+                accel = -accel;
+            }
+
+            _carToCarYAcceleration = accel << 4;
+        }
+
+        return true;
     }
 
     // Transfers the accumulated car-to-car accelerations into the player's

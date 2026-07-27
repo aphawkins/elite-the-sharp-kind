@@ -64,6 +64,29 @@ public sealed partial class CarPhysics
         return leftY != 0 ? leftY : PlayerY;
     }
 
+    // Clamp a body angle to +/- limit, stopping the rotation if it is still
+    // being pushed past that limit. Angles arrive and leave in PC
+    // StuntCarRacerSharp format (i.e. 0 to 360 degrees).
+    private static int ClampBodyAngle(int bodyAngle, int limit, ref int rotationSpeed)
+    {
+        // get angle in Amiga StuntCarRacerSharp format (i.e. correct sign)
+        int angle = bodyAngle < AmigaTrig.Degrees180 ? bodyAngle : bodyAngle - AmigaTrig.Degrees360;
+
+        if (Math.Abs(angle) <= limit)
+        {
+            return bodyAngle;
+        }
+
+        angle = angle >= 0 ? limit : -limit;
+
+        if ((rotationSpeed >= 0 && angle < 0) || (rotationSpeed < 0 && angle >= 0))
+        {
+            rotationSpeed = 0; // values have different signs
+        }
+
+        return angle > 0 ? angle : angle + AmigaTrig.Degrees360;
+    }
+
     // Calculate the height (y value) of each car wheel.
     private void CalculateActualWheelHeights()
     {
@@ -205,32 +228,7 @@ public sealed partial class CarPhysics
 
         TouchingRoad = averageAmountBelowRoad != 0;
 
-        if (!TouchingRoad && !OnChains)
-        {
-            // get angle in Amiga StuntCarRacerSharp format (i.e. correct sign)
-            int angle = PlayerXAngle < AmigaTrig.Degrees180 ? PlayerXAngle : PlayerXAngle - AmigaTrig.Degrees360;
-
-            if ((angle < 0 && (_track.Id == TrackId.RollerCoaster || _track.Id == TrackId.SkiJump)) || angle >= 0)
-            {
-                difference = -128;
-
-                if (angle < 0 && _track.Id == TrackId.SkiJump)
-                {
-                    difference = -8;
-                }
-
-                if (angle >= 0x1000)
-                {
-                    difference = -256;
-                }
-
-                difference -= _overallDifferenceBelowRoad;
-                if (difference < 0 && _playerXRotationSpeed >= -256)
-                {
-                    _overallDifferenceBelowRoad = difference;
-                }
-            }
-        }
+        ApplyAirborneAttitude();
 
         _carToRoadCollisionZAcceleration = _carCollisionZAcceleration;
 
@@ -247,6 +245,42 @@ public sealed partial class CarPhysics
             GroundedSoundTriggered = true;
             GroundedVolume = CalculateDamageVolume();
             _groundedDelay = 5;
+        }
+    }
+
+    // While airborne, nose the car back down towards the road. The ski jump and
+    // roller coaster are the only tracks where this also applies nose-down.
+    private void ApplyAirborneAttitude()
+    {
+        if (TouchingRoad || OnChains)
+        {
+            return;
+        }
+
+        // get angle in Amiga StuntCarRacerSharp format (i.e. correct sign)
+        int angle = PlayerXAngle < AmigaTrig.Degrees180 ? PlayerXAngle : PlayerXAngle - AmigaTrig.Degrees360;
+
+        if (angle < 0 && _track.Id is not TrackId.RollerCoaster and not TrackId.SkiJump)
+        {
+            return;
+        }
+
+        int difference = -128;
+
+        if (angle < 0 && _track.Id == TrackId.SkiJump)
+        {
+            difference = -8;
+        }
+
+        if (angle >= 0x1000)
+        {
+            difference = -256;
+        }
+
+        difference -= _overallDifferenceBelowRoad;
+        if (difference < 0 && _playerXRotationSpeed >= -256)
+        {
+            _overallDifferenceBelowRoad = difference;
         }
     }
 
@@ -286,35 +320,7 @@ public sealed partial class CarPhysics
             int damage = amountBelowRoadInOut - (RoadCushionValue * 256);
             if (damage >= 0x700)
             {
-                if (damage > _damageValue)
-                {
-                    _damageValue = damage;
-                }
-
-                damage -= 0x600;
-
-                // The original also checks fourteen_frames_elapsed here, but it
-                // is never set (always 0), so the check is dropped.
-                _damagedCount++;
-                if (_damagedCount < DamagedLimit)
-                {
-                    damage /= 256;
-                    damage &= 0xff;
-                    damage += damage / 2;
-                    damage += damageInOut;
-                    if (damage > 0xff)
-                    {
-                        damage = 0xff;
-                    }
-
-                    damageInOut = damage;
-                    Damaged = true;
-                }
-
-                if (amountBelowRoadInOut >= 0x1200)
-                {
-                    amountBelowRoadInOut = 0x11ff;
-                }
+                ApplyWheelDamage(damage, ref amountBelowRoadInOut, ref damageInOut);
             }
             else
             {
@@ -328,6 +334,41 @@ public sealed partial class CarPhysics
         }
 
         oldDifference = newDifference;
+    }
+
+    // A wheel has hit the road hard enough to hurt: record the worst impact of
+    // the frame and add to that wheel's damage.
+    private void ApplyWheelDamage(int damage, ref int amountBelowRoadInOut, ref int damageInOut)
+    {
+        if (damage > _damageValue)
+        {
+            _damageValue = damage;
+        }
+
+        damage -= 0x600;
+
+        // The original also checks fourteen_frames_elapsed here, but it
+        // is never set (always 0), so the check is dropped.
+        _damagedCount++;
+        if (_damagedCount < DamagedLimit)
+        {
+            damage /= 256;
+            damage &= 0xff;
+            damage += damage / 2;
+            damage += damageInOut;
+            if (damage > 0xff)
+            {
+                damage = 0xff;
+            }
+
+            damageInOut = damage;
+            Damaged = true;
+        }
+
+        if (amountBelowRoadInOut >= 0x1200)
+        {
+            amountBelowRoadInOut = 0x11ff;
+        }
     }
 
     private void CalculateCarCollisionAcceleration(int averageAmountBelowRoad)
@@ -420,14 +461,37 @@ public sealed partial class CarPhysics
     // Allow the car to steer (affects player y angle and y rotation acceleration).
     private void CalculateSteering()
     {
-        bool backwards = false;
-
         // find the piece that the car is currently on
         IdentifyPiece(PlayerX, PlayerZ, ref _steeringPiece);
         CurrentPiece = _steeringPiece;
         TrackPiece piece = _track.Pieces[_steeringPiece];
 
         int sectionSteeringAmount = piece.SteeringAmount;
+
+        bool leftHandBend = CalculateYAngleDifference(piece);
+
+        _differenceAngle = _yAngleDifference;
+        _posDifferenceAngle = Math.Abs(_yAngleDifference);
+
+        // save a scaled positive difference angle ranging from 0 to 0x7fff
+        int scaledPosDifferenceAngle = _posDifferenceAngle < 0x800 ? _posDifferenceAngle << 4 : 0x7fff;
+
+        if (_leftRightValue != 0)
+        {
+            SteerCar(piece, sectionSteeringAmount, leftHandBend, scaledPosDifferenceAngle);
+        }
+        else
+        {
+            CoastCar(piece, sectionSteeringAmount, leftHandBend);
+        }
+    }
+
+    // Work out how far the car's y angle differs from the road's, normalised to
+    // -90 to 90 degrees so the track can be driven in either direction, and
+    // biased on a curve. Returns whether the car is on a left hand bend.
+    private bool CalculateYAngleDifference(TrackPiece piece)
+    {
+        bool backwards = false;
 
         // calculate car x/z position relative to the piece
         CalcXZRelativeToPiece(PlayerX, PlayerZ, _steeringPiece, out int rx, out int rz);
@@ -485,75 +549,71 @@ public sealed partial class CarPhysics
             }
         }
 
-        _differenceAngle = _yAngleDifference;
-        _posDifferenceAngle = Math.Abs(_yAngleDifference);
+        return leftHandBend;
+    }
 
-        // save a scaled positive difference angle ranging from 0 to 0x7fff
-        int scaledPosDifferenceAngle = _posDifferenceAngle < 0x800 ? _posDifferenceAngle << 4 : 0x7fff;
+    // The player is steering.
+    private void SteerCar(TrackPiece piece, int sectionSteeringAmount, bool leftHandBend, int scaledPosDifferenceAngle)
+    {
+        // work out if the positive difference angle is going to increase,
+        // i.e. whether the car is trying to keep in line with the track
+        bool increasing = (_differenceAngle < 0) ^ (_leftRightValue < 0);
 
-        if (_leftRightValue != 0)
+        int steeringAmount;
+        if (piece.Type is 0x80 or 0xc0)
         {
-            // player is steering
-
-            // work out if the positive difference angle is going to increase,
-            // i.e. whether the car is trying to keep in line with the track
-            bool increasing = (_differenceAngle < 0) ^ (_leftRightValue < 0);
-
-            int steeringAmount;
-            if (piece.Type is 0x80 or 0xc0)
+            // curve
+            if ((_leftRightValue >= 0) ^ leftHandBend)
             {
-                // curve
-                if ((_leftRightValue >= 0) ^ leftHandBend)
-                {
-                    // steering into the bend
-                    steeringAmount = sectionSteeringAmount + 45;
-                }
-                else
-                {
-                    // steering away from bend
-                    steeringAmount = sectionSteeringAmount - 35;
-
-                    // left/right value below just used as +'ve/-'ve flag
-                    _leftRightValue = leftHandBend ? -1 : 1;
-
-                    // ensure steering assistance is not done
-                    increasing = true;
-                }
+                // steering into the bend
+                steeringAmount = sectionSteeringAmount + 45;
             }
             else
             {
-                // straight
-                steeringAmount = sectionSteeringAmount;
-            }
+                // steering away from bend
+                steeringAmount = sectionSteeringAmount - 35;
 
-            if (!increasing)
-            {
-                // add current difference (between player and road) onto steering
-                // amount to assist steering when keeping in line with track
-                steeringAmount += scaledPosDifferenceAngle >> 8;
-            }
+                // left/right value below just used as +'ve/-'ve flag
+                _leftRightValue = leftHandBend ? -1 : 1;
 
-            CalculateSteeringAcceleration(steeringAmount);
+                // ensure steering assistance is not done
+                increasing = true;
+            }
         }
         else
         {
-            // player is not steering
-            _yAngleDifference = 0; // zero steering acceleration
+            // straight
+            steeringAmount = sectionSteeringAmount;
+        }
 
-            if (piece.Type is 0x00 or 0x40)
-            {
-                // straight
-                AlignCarWithRoad();
-                AdjustSteeringAcceleration();
-            }
-            else
-            {
-                // curve: left/right value below just used as +'ve/-'ve flag
-                _leftRightValue = leftHandBend ? -1 : 1;
+        if (!increasing)
+        {
+            // add current difference (between player and road) onto steering
+            // amount to assist steering when keeping in line with track
+            steeringAmount += scaledPosDifferenceAngle >> 8;
+        }
 
-                // give effect of centrifugal force?
-                CalculateSteeringAcceleration(sectionSteeringAmount);
-            }
+        CalculateSteeringAcceleration(steeringAmount);
+    }
+
+    // The player is not steering.
+    private void CoastCar(TrackPiece piece, int sectionSteeringAmount, bool leftHandBend)
+    {
+        _yAngleDifference = 0; // zero steering acceleration
+
+        if (piece.Type is 0x00 or 0x40)
+        {
+            // straight
+            AlignCarWithRoad();
+            AdjustSteeringAcceleration();
+        }
+        else
+        {
+            // curve: left/right value below just used as +'ve/-'ve flag
+            _leftRightValue = leftHandBend ? -1 : 1;
+
+            // give effect of centrifugal force?
+            CalculateSteeringAcceleration(sectionSteeringAmount);
         }
     }
 
@@ -682,34 +742,8 @@ public sealed partial class CarPhysics
         // normal case - car not on chains, little Z collision with road
         if (normalSituation)
         {
-            // reduce accelerations depending upon car speed:
-            // get greatest of player's x, y and z speeds
-            amount = Math.Abs(_playerXSpeed);
-
-            int speedY = Math.Abs(_playerYSpeed);
-            if (speedY > amount)
-            {
-                amount = speedY;
-            }
-
-            int speedZ = Math.Abs(PlayerZSpeed);
-            if (speedZ > amount)
-            {
-                amount = speedZ;
-            }
-
+            amount = CalculateDragAmount();
             factor = 5; // set minimum reduction factor
-
-            // Slipstream: if player and opponent are in line left to right
-            // and the opponent is in front, there is less drag on the player.
-            if (PlayerCloseToOpponent && !OpponentBehindPlayer)
-            {
-                amount -= 20 * 128;
-                if (amount < 0)
-                {
-                    amount = 0;
-                }
-            }
         }
 
         // reduce acceleration values using current speed values
@@ -719,6 +753,40 @@ public sealed partial class CarPhysics
         _totalWorldXAcceleration -= reductionX >> factor;
         _totalWorldYAcceleration -= reductionY >> factor;
         _totalWorldZAcceleration -= reductionZ >> factor;
+    }
+
+    // Drag in the normal case, taken from the greatest of the car's three
+    // speeds and eased off when slipstreaming the opponent.
+    private int CalculateDragAmount()
+    {
+        // reduce accelerations depending upon car speed:
+        // get greatest of player's x, y and z speeds
+        int amount = Math.Abs(_playerXSpeed);
+
+        int speedY = Math.Abs(_playerYSpeed);
+        if (speedY > amount)
+        {
+            amount = speedY;
+        }
+
+        int speedZ = Math.Abs(PlayerZSpeed);
+        if (speedZ > amount)
+        {
+            amount = speedZ;
+        }
+
+        // Slipstream: if player and opponent are in line left to right
+        // and the opponent is in front, there is less drag on the player.
+        if (PlayerCloseToOpponent && !OpponentBehindPlayer)
+        {
+            amount -= 20 * 128;
+            if (amount < 0)
+            {
+                amount = 0;
+            }
+        }
+
+        return amount;
     }
 
     // Damp the car X and Z angles to keep the car level with the road.
@@ -803,36 +871,10 @@ public sealed partial class CarPhysics
             limit = 45 * 256;
         }
 
-        // get angle in Amiga StuntCarRacerSharp format (i.e. correct sign)
-        int angle = PlayerXAngle < AmigaTrig.Degrees180 ? PlayerXAngle : PlayerXAngle - AmigaTrig.Degrees360;
-
-        if (Math.Abs(angle) > limit)
-        {
-            angle = angle >= 0 ? limit : -limit;
-
-            // get player's x angle in PC StuntCarRacerSharp format (i.e. correct sign)
-            PlayerXAngle = angle > 0 ? angle : angle + AmigaTrig.Degrees360;
-
-            if ((_playerXRotationSpeed >= 0 && angle < 0) || (_playerXRotationSpeed < 0 && angle >= 0))
-            {
-                _playerXRotationSpeed = 0; // values have different signs
-            }
-        }
+        PlayerXAngle = ClampBodyAngle(PlayerXAngle, limit, ref _playerXRotationSpeed);
 
         // check player's Z angle
-        angle = PlayerZAngle < AmigaTrig.Degrees180 ? PlayerZAngle : PlayerZAngle - AmigaTrig.Degrees360;
-
-        if (Math.Abs(angle) > limit)
-        {
-            angle = angle >= 0 ? limit : -limit;
-
-            PlayerZAngle = angle > 0 ? angle : angle + AmigaTrig.Degrees360;
-
-            if ((_playerZRotationSpeed >= 0 && angle < 0) || (_playerZRotationSpeed < 0 && angle >= 0))
-            {
-                _playerZRotationSpeed = 0; // values have different signs
-            }
-        }
+        PlayerZAngle = ClampBodyAngle(PlayerZAngle, limit, ref _playerZRotationSpeed);
     }
 
     // Engine revs calculation, used for the engine sound pitch (tested

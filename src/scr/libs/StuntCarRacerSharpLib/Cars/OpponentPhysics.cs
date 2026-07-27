@@ -926,27 +926,7 @@ public sealed partial class OpponentPhysics
         int a = _engineZAcceleration - accelerationAdjust;
         if (TouchingRoad)
         {
-            int d = (_rearLeftRoadPos.Y + _rearRightRoadPos.Y) >> 1;
-            d -= _frontRoadPosY;
-
-            // d is negative when pitched backwards, positive when forwards
-            int pitch = Math.Abs(d);
-            if (pitch >= 512)
-            {
-                pitch = 510;
-            }
-
-            pitch >>= 1;
-            int adjust = pitch + (pitch >> 2); // (5 * pitch) / 8
-
-            if (d < 0)
-            {
-                adjust = -adjust;
-            }
-
-            // acceleration is reduced when pitched backwards, increased when
-            // pitched forwards (i.e. the effect of gravity)
-            a += adjust;
+            a += CalculatePitchAcceleration();
         }
 
         _zSpeed += (a * Reduction) >> 8;
@@ -954,6 +934,26 @@ public sealed partial class OpponentPhysics
         {
             _zSpeed = 0;
         }
+    }
+
+    // Acceleration is reduced when pitched backwards, increased when pitched
+    // forwards (i.e. the effect of gravity).
+    private int CalculatePitchAcceleration()
+    {
+        int d = (_rearLeftRoadPos.Y + _rearRightRoadPos.Y) >> 1;
+        d -= _frontRoadPosY;
+
+        // d is negative when pitched backwards, positive when forwards
+        int pitch = Math.Abs(d);
+        if (pitch >= 512)
+        {
+            pitch = 510;
+        }
+
+        pitch >>= 1;
+        int adjust = pitch + (pitch >> 2); // (5 * pitch) / 8
+
+        return d < 0 ? -adjust : adjust;
     }
 
     private readonly record struct SurfaceCorners(

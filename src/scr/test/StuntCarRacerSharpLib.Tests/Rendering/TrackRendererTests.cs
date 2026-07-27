@@ -186,22 +186,9 @@ public class TrackRendererTests
     {
         int n = p.Length;
 
-        // any two non-adjacent edges crossing = self-intersecting outline
-        for (int i = 0; i < n; i++)
+        if (IsSelfIntersecting(p, out why))
         {
-            for (int j = i + 2; j < n; j++)
-            {
-                if (i == 0 && j == n - 1)
-                {
-                    continue; // adjacent around the loop
-                }
-
-                if (SegmentsCross(p[i], p[(i + 1) % n], p[j], p[(j + 1) % n]))
-                {
-                    why = $"self-intersecting ({n} points, edges {i} and {j})";
-                    return true;
-                }
-            }
+            return true;
         }
 
         // fan triangles with opposite windings double-paint or escape
@@ -223,6 +210,32 @@ public class TrackRendererTests
             {
                 why = $"concave for a fan ({n} points, winding flips at {i})";
                 return true;
+            }
+        }
+
+        why = string.Empty;
+        return false;
+    }
+
+    // Any two non-adjacent edges crossing = self-intersecting outline.
+    private static bool IsSelfIntersecting(in ReadOnlySpan<Vector2> p, out string why)
+    {
+        int n = p.Length;
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 2; j < n; j++)
+            {
+                if (i == 0 && j == n - 1)
+                {
+                    continue; // adjacent around the loop
+                }
+
+                if (SegmentsCross(p[i], p[(i + 1) % n], p[j], p[(j + 1) % n]))
+                {
+                    why = $"self-intersecting ({n} points, edges {i} and {j})";
+                    return true;
+                }
             }
         }
 

@@ -346,94 +346,7 @@ internal sealed class Space
         foreach (IObject obj in _universe.GetAllObjects())
         {
             i++;
-
-            if (obj.Type == ShipType.None)
-            {
-                continue;
-            }
-
-            if (obj.Flags.HasFlag(ShipProperties.Remove))
-            {
-                if (obj.Type == ShipType.Viper)
-                {
-                    _gameState.Cmdr.LegalStatus |= 64;
-                }
-
-                float bounty = ((IShip)obj).Bounty;
-
-                if (((int)bounty != 0) && (!_gameState.InWitchspace))
-                {
-                    _trade.Credits += bounty;
-                    _gameState.InfoMessage($"{_trade.Credits:N1} Credits");
-                }
-
-                _combat.RemoveShip(obj);
-                continue;
-            }
-
-            if (IsDestroyedByBomb(obj))
-            {
-                _audio.PlayEffect(nameof(SoundEffect.Explode));
-                obj.Flags |= ShipProperties.Dead;
-            }
-
-            if (NeedsTactics(obj))
-            {
-                _combat.Tactics((IShip)obj, i);
-            }
-
-            MoveUniverseObject(obj);
-            IObject flip = obj.Clone();
-            SwitchToView(flip);
-
-            if (obj.Type == ShipType.Planet)
-            {
-                if (!_universe.IsStationPresent && (obj.Location.Length() < 65792 /* was 49152 */))
-                {
-                    MakeStationAppear();
-                }
-
-                _draw.DrawObject(flip);
-                continue;
-            }
-
-            if (obj.Type == ShipType.Sun)
-            {
-                _draw.DrawObject(flip);
-                continue;
-            }
-
-            if (obj.Location.Length() < 170)
-            {
-                if (obj.Flags.HasFlag(ShipProperties.Station))
-                {
-                    CheckDocking(obj);
-                }
-                else
-                {
-                    _combat.ScoopItem((IShip)obj);
-                }
-
-                continue;
-            }
-
-            if (obj.Location.Length() > 57344)
-            {
-                _combat.RemoveShip(obj);
-                continue;
-            }
-
-            _draw.DrawObject(flip);
-            obj.Flags = flip.Flags;
-            ((IShip)obj).ExpDelta = ((IShip)flip).ExpDelta;
-            obj.Flags &= ~ShipProperties.Firing;
-
-            if (obj.Flags.HasFlag(ShipProperties.Dead))
-            {
-                continue;
-            }
-
-            _combat.CheckTarget((IShip)obj, flip);
+            UpdateUniverseObject(obj, i);
         }
 
         _draw.RenderEnd();
@@ -459,6 +372,176 @@ internal sealed class Space
         }
 
         return (a, b);
+    }
+
+    /// <summary>
+    /// Move a ship along its nose vector and apply any pending acceleration.
+    /// </summary>
+    private static Vector4 ApplyShipVelocity(IShip ship, Vector4 position)
+    {
+        if ((int)ship.Velocity != 0)
+        {
+            position += ship.Rotmat.GetRow(2) * ship.Velocity * 1.5f;
+        }
+
+        if (ship.Acceleration != 0)
+        {
+            ship.Velocity += ship.Acceleration;
+            ship.Acceleration = 0;
+            if (ship.Velocity > ship.VelocityMax)
+            {
+                ship.Velocity = ship.VelocityMax;
+            }
+
+            if (ship.Velocity <= 0)
+            {
+                ship.Velocity = 1;
+            }
+        }
+
+        return position;
+    }
+
+    /// <summary>
+    /// Apply an object's own pitch and roll, damping each back towards zero
+    /// unless it is pegged at the maximum rate.
+    /// </summary>
+    private static void SpinUniverseObject(IObject obj)
+    {
+        float rotx = obj.RotX;
+        float rotz = obj.RotZ;
+
+        // If necessary rotate the object around the X axis...
+        if ((int)rotx != 0)
+        {
+            (Vector4 nose, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(2), obj.Rotmat.GetRow(1), rotx);
+            obj.Rotmat = obj.Rotmat.WithRow(2, nose).WithRow(1, roof);
+
+            if (rotx is not 127 and not -127)
+            {
+                obj.RotX -= (rotx < 0) ? -1 : 1;
+            }
+        }
+
+        // If necessary rotate the object around the Z axis...
+        if ((int)rotz != 0)
+        {
+            (Vector4 side, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(0), obj.Rotmat.GetRow(1), rotz);
+            obj.Rotmat = obj.Rotmat.WithRow(0, side).WithRow(1, roof);
+
+            if (rotz is not 127 and not -127)
+            {
+                obj.RotZ -= (rotz < 0) ? -1 : 1;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Update and render a single object in the universe.
+    /// </summary>
+    private void UpdateUniverseObject(IObject obj, int i)
+    {
+        if (obj.Type == ShipType.None)
+        {
+            return;
+        }
+
+        if (obj.Flags.HasFlag(ShipProperties.Remove))
+        {
+            RemoveUniverseObject(obj);
+            return;
+        }
+
+        if (IsDestroyedByBomb(obj))
+        {
+            _audio.PlayEffect(nameof(SoundEffect.Explode));
+            obj.Flags |= ShipProperties.Dead;
+        }
+
+        if (NeedsTactics(obj))
+        {
+            _combat.Tactics((IShip)obj, i);
+        }
+
+        MoveUniverseObject(obj);
+        IObject flip = obj.Clone();
+        SwitchToView(flip);
+
+        if (obj.Type is ShipType.Planet or ShipType.Sun)
+        {
+            DrawStellarObject(obj, flip);
+            return;
+        }
+
+        if (obj.Location.Length() < 170)
+        {
+            DockOrScoop(obj);
+            return;
+        }
+
+        if (obj.Location.Length() > 57344)
+        {
+            _combat.RemoveShip(obj);
+            return;
+        }
+
+        _draw.DrawObject(flip);
+        obj.Flags = flip.Flags;
+        ((IShip)obj).ExpDelta = ((IShip)flip).ExpDelta;
+        obj.Flags &= ~ShipProperties.Firing;
+
+        if (obj.Flags.HasFlag(ShipProperties.Dead))
+        {
+            return;
+        }
+
+        _combat.CheckTarget((IShip)obj, flip);
+    }
+
+    /// <summary>
+    /// Take a ship that has flagged itself for removal out of the universe,
+    /// paying out any bounty it was carrying.
+    /// </summary>
+    private void RemoveUniverseObject(IObject obj)
+    {
+        if (obj.Type == ShipType.Viper)
+        {
+            _gameState.Cmdr.LegalStatus |= 64;
+        }
+
+        float bounty = ((IShip)obj).Bounty;
+
+        if (((int)bounty != 0) && (!_gameState.InWitchspace))
+        {
+            _trade.Credits += bounty;
+            _gameState.InfoMessage($"{_trade.Credits:N1} Credits");
+        }
+
+        _combat.RemoveShip(obj);
+    }
+
+    private void DrawStellarObject(IObject obj, IObject flip)
+    {
+        if (obj.Type == ShipType.Planet &&
+            !_universe.IsStationPresent &&
+            (obj.Location.Length() < 65792 /* was 49152 */))
+        {
+            MakeStationAppear();
+        }
+
+        _draw.DrawObject(flip);
+    }
+
+    private void DockOrScoop(IObject obj)
+    {
+        if (obj.Flags.HasFlag(ShipProperties.Station))
+        {
+            CheckDocking(obj);
+        }
+        else
+        {
+            _combat.ScoopItem((IShip)obj);
+        }
     }
 
     private bool IsDestroyedByBomb(IObject obj)
@@ -776,25 +859,7 @@ internal sealed class Space
             obj.Type != ShipType.Sun
             && obj.Type != ShipType.Planet)
         {
-            if ((int)shipEx.Velocity != 0)
-            {
-                position += shipEx.Rotmat.GetRow(2) * shipEx.Velocity * 1.5f;
-            }
-
-            if (shipEx.Acceleration != 0)
-            {
-                shipEx.Velocity += shipEx.Acceleration;
-                shipEx.Acceleration = 0;
-                if (shipEx.Velocity > shipEx.VelocityMax)
-                {
-                    shipEx.Velocity = shipEx.VelocityMax;
-                }
-
-                if (shipEx.Velocity <= 0)
-                {
-                    shipEx.Velocity = 1;
-                }
-            }
+            position = ApplyShipVelocity(shipEx, position);
         }
 
         float k2 = position.Y - (alpha * position.X);
@@ -818,32 +883,7 @@ internal sealed class Space
             return;
         }
 
-        float rotx = obj.RotX;
-        float rotz = obj.RotZ;
-
-        // If necessary rotate the object around the X axis...
-        if ((int)rotx != 0)
-        {
-            (Vector4 nose, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(2), obj.Rotmat.GetRow(1), rotx);
-            obj.Rotmat = obj.Rotmat.WithRow(2, nose).WithRow(1, roof);
-
-            if (rotx is not 127 and not -127)
-            {
-                obj.RotX -= (rotx < 0) ? -1 : 1;
-            }
-        }
-
-        // If necessary rotate the object around the Z axis...
-        if ((int)rotz != 0)
-        {
-            (Vector4 side, Vector4 roof) = RotateXFirst(obj.Rotmat.GetRow(0), obj.Rotmat.GetRow(1), rotz);
-            obj.Rotmat = obj.Rotmat.WithRow(0, side).WithRow(1, roof);
-
-            if (rotz is not 127 and not -127)
-            {
-                obj.RotZ -= (rotz < 0) ? -1 : 1;
-            }
-        }
+        SpinUniverseObject(obj);
 
         // Orthonormalize the rotation matrix...
         obj.Rotmat = VectorMaths.OrthonormalizeBasis(obj.Rotmat);

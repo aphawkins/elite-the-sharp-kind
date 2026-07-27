@@ -221,24 +221,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             int sy = (int)(sourcePosition.Y + ((dy + 0.5f) * sourceHeight / destHeight));
             sy = Math.Clamp(sy, 0, bitmap.Height - 1);
 
-            for (int dx = 0; dx < destWidth; dx++)
-            {
-                int x = (int)(position.X + dx);
-                if (x < 0 || x >= (int)ScreenWidth)
-                {
-                    continue;
-                }
-
-                float fx = (dx + 0.5f) * sourceWidth / destWidth;
-                int sx = (int)(sourcePosition.X + (mirrorX ? sourceWidth - fx : fx));
-                sx = Math.Clamp(sx, 0, bitmap.Width - 1);
-
-                uint color = bitmap.GetPixel(sx, sy);
-                if ((color & 0xFF000000) != 0)
-                {
-                    DrawPixel(x, y, color);
-                }
-            }
+            DrawImagePartRow(bitmap, position.X, y, destWidth, sourcePosition.X, sourceWidth, mirrorX, sy);
         }
     }
 
@@ -627,18 +610,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                 (i0, i1) = (i1, i0);
             }
 
-            int start = Math.Max((int)MathF.Floor(x0), 0);
-            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
-            float span = x1 - x0;
-
-            for (int x = start; x <= end; x++)
-            {
-                float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
-                if (DepthTest(x, y, i0 + ((i1 - i0) * t)))
-                {
-                    DrawPixel(x, y, color);
-                }
-            }
+            DrawSpanFilledDepth(y, x0, x1, i0, i1, color);
         }
     }
 
@@ -724,20 +696,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                 (uv0, uv1) = (uv1, uv0);
             }
 
-            int start = Math.Max((int)MathF.Floor(x0), 0);
-            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
-            float span = x1 - x0;
-
-            for (int x = start; x <= end; x++)
-            {
-                float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
-                float inverseDepth = i0 + ((i1 - i0) * t);
-                if (DepthTest(x, y, inverseDepth))
-                {
-                    Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
-                    DrawPixel(x, y, SampleTexture(texture, uv));
-                }
-            }
+            DrawSpanTexturedDepth(y, x0, x1, i0, i1, uv0, uv1, texture);
         }
     }
 
@@ -807,6 +766,84 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                     // but the only transparency being used is transparent or opaque
                     DrawPixel((int)(position.X + x), (int)(position.Y + y), color);
                 }
+            }
+        }
+    }
+
+    // Draw one destination row of a scaled image part, sampling row sy of the
+    // source bitmap with nearest-neighbour filtering.
+    private void DrawImagePartRow(
+        FastBitmap bitmap,
+        float destX,
+        int y,
+        int destWidth,
+        float sourceX,
+        float sourceWidth,
+        bool mirrorX,
+        int sy)
+    {
+        for (int dx = 0; dx < destWidth; dx++)
+        {
+            int x = (int)(destX + dx);
+            if (x < 0 || x >= (int)ScreenWidth)
+            {
+                continue;
+            }
+
+            float fx = (dx + 0.5f) * sourceWidth / destWidth;
+            int sx = (int)(sourceX + (mirrorX ? sourceWidth - fx : fx));
+            sx = Math.Clamp(sx, 0, bitmap.Width - 1);
+
+            uint color = bitmap.GetPixel(sx, sy);
+            if ((color & 0xFF000000) != 0)
+            {
+                DrawPixel(x, y, color);
+            }
+        }
+    }
+
+    // Draw one depth-tested scanline of a flat-shaded triangle, interpolating
+    // inverse depth from i0 at x0 to i1 at x1.
+    private void DrawSpanFilledDepth(int y, float x0, float x1, float i0, float i1, uint color)
+    {
+        int start = Math.Max((int)MathF.Floor(x0), 0);
+        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        float span = x1 - x0;
+
+        for (int x = start; x <= end; x++)
+        {
+            float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+            if (DepthTest(x, y, i0 + ((i1 - i0) * t)))
+            {
+                DrawPixel(x, y, color);
+            }
+        }
+    }
+
+    // Draw one depth-tested scanline of a textured triangle. The texture
+    // coordinates arrive already divided by depth and are recovered per pixel.
+    private void DrawSpanTexturedDepth(
+        int y,
+        float x0,
+        float x1,
+        float i0,
+        float i1,
+        Vector2 uv0,
+        Vector2 uv1,
+        FastBitmap texture)
+    {
+        int start = Math.Max((int)MathF.Floor(x0), 0);
+        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        float span = x1 - x0;
+
+        for (int x = start; x <= end; x++)
+        {
+            float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+            float inverseDepth = i0 + ((i1 - i0) * t);
+            if (DepthTest(x, y, inverseDepth))
+            {
+                Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
+                DrawPixel(x, y, SampleTexture(texture, uv));
             }
         }
     }

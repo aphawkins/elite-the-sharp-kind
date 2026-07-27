@@ -896,17 +896,24 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
                 (i0, i1) = (i1, i0);
             }
 
-            int start = Math.Max((int)MathF.Floor(x0), 0);
-            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
-            float span = x1 - x0;
+            DrawSpanFilledDepthToLayer(y, x0, x1, i0, i1, color);
+        }
+    }
 
-            for (int x = start; x <= end; x++)
+    // Draw one depth-tested scanline of a flat-shaded triangle into the depth
+    // layer, interpolating inverse depth from i0 at x0 to i1 at x1.
+    private void DrawSpanFilledDepthToLayer(int y, float x0, float x1, float i0, float i1, in FastColor color)
+    {
+        int start = Math.Max((int)MathF.Floor(x0), 0);
+        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        float span = x1 - x0;
+
+        for (int x = start; x <= end; x++)
+        {
+            float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+            if (DepthTestLayer(x, y, i0 + ((i1 - i0) * t)))
             {
-                float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
-                if (DepthTestLayer(x, y, i0 + ((i1 - i0) * t)))
-                {
-                    _depthLayer!.SetPixel(x, y, color);
-                }
+                _depthLayer!.SetPixel(x, y, color);
             }
         }
     }
@@ -987,19 +994,35 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
                 (uv0, uv1) = (uv1, uv0);
             }
 
-            int start = Math.Max((int)MathF.Floor(x0), 0);
-            int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
-            float span = x1 - x0;
+            DrawSpanTexturedDepthToLayer(y, x0, x1, i0, i1, uv0, uv1, texture);
+        }
+    }
 
-            for (int x = start; x <= end; x++)
+    // Draw one depth-tested scanline of a textured triangle into the depth
+    // layer. The texture coordinates arrive already divided by depth and are
+    // recovered per pixel.
+    private void DrawSpanTexturedDepthToLayer(
+        int y,
+        float x0,
+        float x1,
+        float i0,
+        float i1,
+        Vector2 uv0,
+        Vector2 uv1,
+        FastBitmap texture)
+    {
+        int start = Math.Max((int)MathF.Floor(x0), 0);
+        int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
+        float span = x1 - x0;
+
+        for (int x = start; x <= end; x++)
+        {
+            float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
+            float inverseDepth = i0 + ((i1 - i0) * t);
+            if (DepthTestLayer(x, y, inverseDepth))
             {
-                float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
-                float inverseDepth = i0 + ((i1 - i0) * t);
-                if (DepthTestLayer(x, y, inverseDepth))
-                {
-                    Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
-                    _depthLayer!.SetPixel(x, y, SampleDepthLayerTexture(texture, uv));
-                }
+                Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
+                _depthLayer!.SetPixel(x, y, SampleDepthLayerTexture(texture, uv));
             }
         }
     }

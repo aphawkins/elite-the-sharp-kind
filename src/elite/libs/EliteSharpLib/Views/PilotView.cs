@@ -127,6 +127,25 @@ internal sealed class PilotView : IView
             _ship.IsClimbing = true;
         }
 
+        HandleRollControls();
+
+        if (_keyboard.IsHeld(ConsoleKey.Spacebar) &&
+            !_gameState.IsDocked)
+        {
+            _ship.IncreaseSpeed();
+        }
+
+        if (_keyboard.IsHeld(ConsoleKey.Oem2) &&
+            !_gameState.IsDocked)
+        {
+            _ship.DecreaseSpeed();
+        }
+    }
+
+    // Roll left and right. A roll in the opposite direction to the current one
+    // levels the ship out instead.
+    private void HandleRollControls()
+    {
         if (_keyboard.IsHeld(ConsoleKey.OemComma) || _keyboard.IsHeld(ConsoleKey.LeftArrow))
         {
             if (_ship.Roll < 0)
@@ -154,18 +173,6 @@ internal sealed class PilotView : IView
                 _ship.IsRolling = true;
             }
         }
-
-        if (_keyboard.IsHeld(ConsoleKey.Spacebar) &&
-            !_gameState.IsDocked)
-        {
-            _ship.IncreaseSpeed();
-        }
-
-        if (_keyboard.IsHeld(ConsoleKey.Oem2) &&
-            !_gameState.IsDocked)
-        {
-            _ship.DecreaseSpeed();
-        }
     }
 
     private void HandleNavigationCommands()
@@ -174,14 +181,7 @@ internal sealed class PilotView : IView
             !_gameState.IsDocked
             && _ship.HasDockingComputer)
         {
-            if (_gameState.Config.InstantDock)
-            {
-                _space.EngageDockingComputer();
-            }
-            else if (!_gameState.InWitchspace && !_space.IsHyperspaceReady)
-            {
-                _pilot.EngageAutoPilot();
-            }
+            EngageDockingComputer();
         }
 
         if (_keyboard.IsPressed(ConsoleKey.D))
@@ -219,6 +219,19 @@ internal sealed class PilotView : IView
             && (!_gameState.InWitchspace))
         {
             _gameState.SetView(Screen.EscapeCapsule);
+        }
+    }
+
+    // Dock instantly if configured to, otherwise fly the ship in on autopilot.
+    private void EngageDockingComputer()
+    {
+        if (_gameState.Config.InstantDock)
+        {
+            _space.EngageDockingComputer();
+        }
+        else if (!_gameState.InWitchspace && !_space.IsHyperspaceReady)
+        {
+            _pilot.EngageAutoPilot();
         }
     }
 

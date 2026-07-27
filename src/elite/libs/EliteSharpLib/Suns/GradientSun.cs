@@ -150,15 +150,18 @@ internal sealed class GradientSun : IObject
         {
             float distance = (dx * dx) + dy;
 
-            uint color = distance < inner
-                ? _colorWhite
-                : distance < inner2
-                    ? _colorLightYellow
-                    : distance < outer
-                        ? _colorLightOrange
-                        : ((int)s.X ^ (int)y).IsOdd() ? _colorOrange : _colorDarkOrange;
-
-            _draw.Graphics.DrawPixel(s, color);
+            _draw.Graphics.DrawPixel(s, SunColor(distance, inner, inner2, outer, (int)s.X ^ (int)y));
         }
     }
+
+    // The sun's banding: white at the core, then yellow and orange rings, with
+    // the outermost band dithered between two oranges.
+    private uint SunColor(float distance, float inner, float inner2, float outer, int dither)
+        => distance < inner
+            ? _colorWhite
+            : distance < inner2
+                ? _colorLightYellow
+                : distance < outer
+                    ? _colorLightOrange
+                    : dither.IsOdd() ? _colorOrange : _colorDarkOrange;
 }
