@@ -1,7 +1,8 @@
 <Solution>
   <Folder Name="/docs/">
-    <File Path="docs/architecture.md" />
+    <File Path="docs/architecture-principles.md" />
     <File Path="docs/backlog-roadmap.md" />
+    <File Path="docs/decisions.md" />
     <File Path="docs/elite-readme.md" />
     <File Path="docs/scr-readme.md" />
   </Folder>

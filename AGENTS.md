@@ -29,7 +29,7 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
-- Ask before making architectural changes; if approved, follow the principles in `docs/architecture.md`.
+- Ask before making architectural changes; if approved, follow the principles in `docs/architecture-principles.md`.
 - For general code changes, follow the principles in `docs/backlog-roadmap.md`.
 - If you notice anything unusual or potentially problematic, make it known immediately.
 

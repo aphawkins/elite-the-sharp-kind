@@ -1,7 +1,7 @@
 # Backlog and Roadmap — The Sharp Kind
 
 The single consolidated backlog for the repository, prioritised with MoSCoW
-(per [architecture.md](architecture.md)). It merges the 2026-07-11
+(per [architecture-principles.md](architecture-principles.md)). It merges the 2026-07-11
 architecture/code-quality review, the business-application practices review,
 and the retired `issues.md`, `release-plan.md` and `scr-conversion-plan.md`.
 
@@ -18,105 +18,11 @@ How to use this file:
   [CHANGELOG.md](../CHANGELOG.md).
 - Line numbers date from the review; verify before editing.
 
-## Decisions needed
+## Decisions
 
-Maintainer decisions, not code tasks — each blocks or reshapes items below.
-
-- [ ] **Elite per-object draw lists**: Elite composes the frame inside
-      `Update` at 13.5Hz (authentic to The New Kind), so raising `Fps`
-      draws nothing new above the tick rate and tactics stay interleaved
-      with rendering (`Space.UpdateUniverse`). Moving to draw lists so
-      `Draw` can render interpolated frames is a big, Elite-only refactor
-      that trades away period-accurate feel for smoother rendering; needs a
-      research spike/prototype before committing either way — not resolved.
-
-- [ ] **UI/graphics scale spike** (from issue #13, "Fix graphics scale
-      setting"): the existing scale setting is untested and buggy. Before
-      fixing it, spike how the whole UI should scale (2x, 3x, ...) rather
-      than patching the current behaviour — this overlaps the `Scale`
-      cleanup already below (`SoftwareGraphics`/`SDLGraphics` centring
-      math) and the render-resolution-configurable work under Could; the
-      spike should decide whether scale is a discrete multiplier applied
-      at the framebuffer/present layer (cheap, works with the letterboxed
-      resizable-window item) or something game code needs to be aware of
-      per-element. Not resolved.
-- [ ] **Data-driven game content spike** (from issue #12, "Lone ships
-      should not be separate ships"): lone ships are currently implemented
-      as distinct ship subclasses/config entries instead of a property on
-      a regular ship. This is one symptom of a bigger question — should
-      `EquipmentType`, `StockType`, ship definitions, and similar
-      currently-hardcoded/`AssetManifest.json`-driven game data move to a
-      proper data-driven model instead of being baked into types and
-      reflection-based construction (see `ShipFactory.CreateShipFromName`
-      below, itself flagged fragile)? Spike the shape of a config-driven
-      model before committing — this is a [LARGE] architectural change,
-      not a point fix. Not resolved.
-
-### Resolved (2026-07-24) — benchmark history tracking
-
-Decided: use [benchmark-action/github-action-benchmark](https://github.com/benchmark-action/github-action-benchmark)
-against BenchmarkDotNet's `[JsonExporterAttribute.FullCompressed]` output,
-storing history on a `gh-pages` branch (one chart per benchmark class, kept
-apart by the action's `name` input), triggered manually via
-`workflow_dispatch` only — not on every push/PR, since shared GitHub-hosted
-runners are too noisy for benchmark numbers to gate CI, and this repo has no
-regression-alerting need yet. Implemented in
-[.github/workflows/benchmarks.yml](../.github/workflows/benchmarks.yml).
-One-time manual follow-up outside of code: after the workflow's first run
-creates the `gh-pages` branch, enable it under repo Settings → Pages →
-Source, to get a browsable dashboard (the history is recorded either way;
-this only makes it visible).
-
-### Resolved (2026-07-19) — ptitSeb parity audit
-
-A full feature-by-feature comparison of `C:\code\github\ptitSeb\stuntcarremake`
-(the definitive conversion source) against `StuntCarRacerSharpLib` was run on
-2026-07-19, prompted by concerns that earlier analysis had missed
-functionality. Conclusions:
-
-- **Verified ported and faithful**: the four-mode screen flow, orbiting
-  menu camera + menu.png art with named tracks, preview camera (incl.
-  the Draw Bridge high viewpoint), race/game-over flow with the
-  six-second flashing RACE WON/LOST then GAME OVER text, opponent-name
-  announcement, the full atlas cockpit (wheels/bounce/spin frames,
-  engine + boost-flame animation, crack + smash holes, speed bar with
-  over-max colour, lap/boost/distance read-outs), backdrop horizon +
-  all five scenery types, track rendering with road lines around the
-  player, opponent shadow, drawbridge animation incl. its opponent
-  speed tables, opponent AI (random selection, names, attribute flags,
-  wheelies, steering randomisation, obstruction/push interaction,
-  car-to-car collision), lap/damage/boost/engine-revs models, the
-  pitch-shifted engine loop, and effect-sound triggers.
-- **Chains**: neither C++ reference implements them (`on_chains` is
-  hardcoded FALSE, "won't implement chains at first"); ptitSeb instead
-  drops the car above its current piece after 64 off-track frames. The
-  port's crane chain-recovery (commit 7039a11) deliberately goes beyond
-  ptitSeb toward the Amiga original — keep it.
-- **racewin/racelost/wrecked/heads/menu bitmaps**: present in ptitSeb's
-  `Bitmap/` but never loaded by its code (upstream commit 7ad79f7 "More
-  bitmaps, but not pluged in yet"). menu.png is already wired up in the
-  port; the rest are now discrete items under Could.
-- **Remaining genuine gaps** are all tracked as items below: Super
-  League, pause, 'R' turn-around, mid-race 'M', F9/F10, gamepad,
-  outside view, art screens, widescreen/resolution work.
-  (`Opponent_Speed_Value` was ported 2026-07-19; wreck-at-full-damage,
-  the cockpit wheel-spin rate fix, a (simplified) lap-time clock, and
-  per-effect sound volume/pitch/pan all landed 2026-07-20, see
-  CHANGELOG.)
-
-### Resolved (2026-07-11)
-
-- **v1 release scope**: Elite + SCR, with SCR labelled preview given its
-  open defects list (see Release engineering below).
-- **First tag**: `v1.0.0`.
-- **Claimed platforms**: win-x64, linux-x64, linux-arm64. macOS stays
-  unclaimed (untested).
-- **Coverage visibility**: add a badge (see Could below).
-- **NuGet packaging of `Useful.*`**: defer until an external consumer
-  exists.
-- **Elite Intro2 parade**: keep mission ships (Cougar, Constrictor, Lone
-  variants) out of the parade — status quo confirmed intentional, not a bug
-  (see Won't below).
+Maintainer decisions live in [decisions.md](decisions.md), not here — each
+one blocks or reshapes items below; check there before starting an item
+that mentions a decision.
 
 ## Must
 
@@ -192,6 +98,25 @@ than fixed.
 
 
 ## Could
+
+### From decisions (2026-07-27)
+
+Committed by the maintainer decisions in [decisions.md](decisions.md);
+not yet scoped into concrete steps.
+
+- [ ] **[LARGE]** [EliteSharpLib] Decouple Elite's frame composition from
+      the fixed 13.5Hz tick: compose frames at the configured `Fps`
+      setting instead of only at 13.5Hz (not via interpolation). Requires
+      auditing everything currently timed against the 13.5Hz tick
+      (tactics/AI pacing in `Space.UpdateUniverse`, animations, etc.) and
+      reworking it to stay correct at other `Fps` values. Scope the audit
+      before starting.
+- [ ] **[LARGE]** [EliteSharpLib] Data-driven game content model: replace
+      hardcoded/reflection-based game data — `EquipmentType`, `StockType`,
+      ship definitions, and `ShipFactory.CreateShipFromName`'s
+      reflection-based construction (see the smaller interim cleanup
+      below) — with a proper config-driven model. Design/scope the config
+      shape before starting.
 
 ### Cleanups and small refactors
 
@@ -428,7 +353,12 @@ the first item is a standalone quick win delivering issues.md's "make
 window resizable" for both games; the rest build on each other toward
 true widescreen. A 2026-07-14 survey found `HudRenderer` already scales
 from a 640x480 virtual canvas via `ScreenWidth/BaseWidth` ratios, so SCR
-is closer to resolution-independence than the original item assumed):
+is closer to resolution-independence than the original item assumed.
+**The 2026-07-27 multi-resolution tier decision in
+[decisions.md](decisions.md) expands the two widescreen items below —
+re-scope them against the 8-bit/16-bit/modern tier scheme and the
+per-game `AssetManager`/config changes it requires before starting
+either.**):
 
 - [ ] [Useful.SDL] Resizable window with letterboxed scaling: add
       `SDL_WINDOW_RESIZABLE` in [SDLWindow.cs:23-29](../src/useful/libs/Useful.SDL/SDLWindow.cs)
@@ -459,10 +389,11 @@ is closer to resolution-independence than the original item assumed):
       the hardcoded coordinate-space assumptions — 511 in
       `ShipBase.DrawLasers`, `ScannerWidth = 512` in `EliteDraw`, the
       `Centre`/`Scale` maths — so Elite renders correctly at other
-      resolutions. Depends on the Scale-policy cleanup above; scope
-      question for the maintainer first: is widescreen Elite wanted at
-      all, or only integer-scaled 512x512 (which the letterbox item
-      already provides)? If the latter, close this as Won't.
+      resolutions. Depends on the Scale-policy cleanup above. **[LARGE]**
+      — the maintainer decided (see [decisions.md](decisions.md)) Elite
+      should support the full 8-bit/16-bit/modern resolution-tier scheme,
+      not just integer-scaled 512x512; re-scope this item against that
+      decision before starting.
 - [ ] [EliteSharpLib] Number of stars proportional to screen size (issue
       #4): only matters once a resolution other than the current fixed
       512x512 is actually reachable, so sequence this after the two items

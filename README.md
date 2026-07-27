@@ -51,7 +51,7 @@ The SDL3, SDL3_ttf and SDL3_mixer native libraries ship inside their respective 
 
 ## Documentation
 
-- [Architecture principles](docs/architecture.md)
+- [Architecture principles](docs/architecture-principles.md)
 - [Backlog and roadmap](docs/backlog-roadmap.md) — the single consolidated backlog
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)

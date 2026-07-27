@@ -224,7 +224,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   public test class, which then forces its constructor parameter type
   public too via CS0051) and stays as a justified local suppression.
   Documented the resulting triage policy in
-  [architecture.md](docs/architecture.md). One suppression remains,
+  [architecture-principles.md](docs/architecture-principles.md). One suppression remains,
   `ShipFactory.cs` (S3011, reflection into a non-public constructor) —
   left for the `ShipFactory.CreateShipFromName` dictionary-replacement
   item, which resolves it as a side effect.
@@ -1680,7 +1680,7 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   `docs/review-findings.md`; folded `config.md` into the Elite readme;
   renamed `docs/readme.md` → `docs/elite-readme.md` and
   `docs/images/screenshot.png` → `elite-screenshot.png`.
-- Business-application practices section in `docs/architecture.md`
+- Business-application practices section in `docs/architecture-principles.md`
   (composition root/DI, logging, configuration, error handling, lifetimes,
   testability seams).
 
