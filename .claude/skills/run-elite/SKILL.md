@@ -66,5 +66,22 @@ See `.claude/skills/sdl-drive/drive.ps1`'s header comment and
 `run-scr/SKILL.md`'s Gotchas for the shared ones (the `pwsh`-vs-`&`
 invocation trap, why `PostMessage` is used instead of
 `SendKeys`/`SendInput`, and the key-hold-duration timing issue) — they
-apply here unchanged since both skills drive the same script. Nothing
-Elite-specific beyond the screen flow above.
+apply here unchanged since both skills drive the same script.
+
+Elite-specific: when `"GraphicsBackend"` in
+`%APPDATA%\TheSharpKind\elitesharp.cfg` is `"Hardware"` (the
+maintainer's normal value is `"Software"`), give the app a longer
+settle before the first key and hold each key longer — `"wait:5000"`
+after `launch`, and `key:N:400` instead of `key:N`.
+
+Input itself is backend-independent: `SDLAbstraction` and
+`SoftwareAbstraction` build the same `SoftwareKeyboard(new SDLInput())`
+over the same `SDLWindow`, and a Hardware run was verified key-driveable
+end-to-end (Intro1 → FrontView, 4/4 runs). The risk is purely timing.
+`SDLInput.Poll` drains the whole SDL queue per update, so if one loop
+iteration ever outlasts the key hold, that update sees `KeyDown` and
+`KeyUp` together and `SoftwareKeyboard.KeyUp` clears `_lastKeyPressed`
+before `Update` reads it — the press is silently swallowed and the
+screen just never advances. At 13.5 updates/sec that needs a stall of
+more than ~150ms, which a cold Hardware first launch (pipeline
+creation, JIT, disk) can produce even though the steady state is 60fps.
