@@ -83,7 +83,10 @@ internal class PlanetRenderer
             Y = y + centre.Y,
         };
 
-        if (s.Y < _draw.Top || s.Y > _draw.Bottom)
+        // Bottom/Right are the border line's own row/column (see EliteDraw.Height/
+        // Width), so the far edge must be excluded here the same way Top/Left's
+        // near edge already is, or the fill paints over the border.
+        if (s.Y < _draw.Top || s.Y >= _draw.Bottom)
         {
             return;
         }
@@ -101,7 +104,7 @@ internal class PlanetRenderer
 
         for (; s.X <= ex; s.X++)
         {
-            if (s.X >= _draw.Left && s.X <= _draw.Right)
+            if (s.X >= _draw.Left && s.X < _draw.Right)
             {
                 int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
                 int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);

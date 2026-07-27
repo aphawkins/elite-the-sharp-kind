@@ -7,6 +7,42 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Planets painting over the view border, 2026-07-27)
+
+- The previous entry below claimed `WireframePlanet`/`FractalPlanet`/
+  `PlanetRenderer` had "no reference to the view bounds at all" — that
+  was wrong; `GetPlanetPosition`'s bounding-box cull and
+  `RenderPlanetLine`'s per-pixel clip against `IEliteDraw.Left`/`Right`/
+  `Top`/`Bottom` have existed since 2025-03-19 (`git blame`), well before
+  issue #8. Live-testing found no bleed into the scanner console, but the
+  user pointed at the actual bug: the planet's fill paints directly over
+  the 1px-wide border line itself. Root cause: `EliteDraw.DrawBorder`
+  ([EliteDraw.cs](src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
+  draws its rectangle via `Graphics.DrawRectangle`, whose last-inclusive-
+  pixel convention (`start + size - 1`) puts the border's own row/column
+  one pixel inside of what `Right`/`Bottom` claim, while `Left`/`Top`
+  (position-based, no such convention) already line up correctly with
+  the border's near edge. Pixel-sampled a screenshot to confirm: the
+  border's right column and bottom row both sit at `Right - 1`/
+  `Bottom - 1`, one pixel short of where every consumer assumed. Fixed
+  both places that derive a content boundary from `Right`/`Bottom`:
+  `PlanetRenderer.RenderPlanetLine`'s manual clip (`s.Y >= Bottom`/
+  `s.X < Right`, mirroring the already-correct `Top`/`Left` exclusions)
+  covers `FractalPlanet`/`StripedPlanet`, and `EliteDraw.Width`/`Height`
+  (feeding `SetViewClipRegion`'s graphics-level clip, `-1` each) covers
+  `WireframePlanet`/`SolidPlanet`, which draw via `DrawCircle`/
+  `DrawCircleFilled` with no manual bounds check of their own — and this
+  same clip region is shared by ships and lasers, so it closes the same
+  1px gap there too. `Right`/`Bottom`/`Bottom`-as-height stayed
+  unchanged, since `DrawBorder` still needs them to draw the border in
+  its current (correct) visual position; only the content-boundary
+  consumers were tightened. Verified by pixel-sampling a live screenshot
+  before and after: the border row was the planet's fill colour
+  (`16,80,144`) before the fix and pure white (`255,255,255`, matching
+  an unobstructed reference column) after. Full solution build and full
+  test suite (436 tests) pass. Removed the backlog item this was split
+  from, since its stated cause didn't hold up.
+
 ### Fixed (Enemy laser fire follows the ship's real firing direction, 2026-07-27)
 
 - `ShipBase.DrawLasers` ([ShipBase.cs](src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))

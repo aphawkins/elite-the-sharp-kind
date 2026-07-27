@@ -30,17 +30,6 @@ that mentions a decision.
 
 ## Should
 
-### Bugs
-
-- [ ] [EliteSharpLib] Planets overlapping the field of view (split
-      2026-07-27 from issue #8 once the enemy-laser half of that report
-      turned out to be a separate root cause — see CHANGELOG):
-      `WireframePlanet`/`FractalPlanet`/`PlanetRenderer` have no reference
-      to `ScannerLeft`/`Right`/`Top`/`Bottom` (or `IEliteDraw.Left`/
-      `Right`/`Top`/`Bottom`) at all — i.e. planets aren't clipped to the
-      viewport/scanner boundary. Different draw path from ships, so the
-      laser fix doesn't cover it; scope and fix separately.
-
 ### Code-quality gates (from issue #5, "Measure/improve code complexity")
 
 `CA1502` (excessive complexity), `CA1506` (excessive class coupling), and

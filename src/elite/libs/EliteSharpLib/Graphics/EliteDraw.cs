@@ -63,9 +63,13 @@ internal sealed class EliteDraw : IEliteDraw
 
     public float Top => BorderWidth;
 
-    internal float Height => Bottom - BorderWidth;
+    // DrawBorder's rectangle draws its far edge at position+size-1 (last
+    // inclusive pixel), one short of Right/Bottom, so the view clip must
+    // stop one pixel earlier still or content lands on top of the border
+    // line itself instead of stopping short of it.
+    internal float Height => Bottom - BorderWidth - 1;
 
-    internal float Width => Graphics.ScreenWidth - (2 * BorderWidth);
+    internal float Width => Graphics.ScreenWidth - (2 * BorderWidth) - 1;
 
     private static float BorderWidth => 1;
 
