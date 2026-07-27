@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout repository
@@ -58,17 +59,28 @@ jobs:
           name: coverage-report
           path: coveragereport/Cobertura.xml
 
-      - name: Commit coverage badge
+      - name: Update coverage badge file
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        run: |
-          cp coveragereport/badge_linecoverage.svg docs/images/coverage-badge.svg
-          if ! git diff --quiet -- docs/images/coverage-badge.svg; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add docs/images/coverage-badge.svg
-            git commit -m "Update coverage badge [skip ci]"
-            git push
-          fi
+        run: cp coveragereport/badge_linecoverage.svg docs/images/coverage-badge.svg
+
+      - name: Create coverage badge PR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        id: badge-pr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "Update coverage badge [skip ci]"
+          title: "Update coverage badge"
+          body: Automated coverage badge update.
+          branch: chore/coverage-badge
+          delete-branch: true
+          add-paths: docs/images/coverage-badge.svg
+
+      - name: Enable auto-merge for badge PR
+        if: steps.badge-pr.outputs.pull-request-number
+        continue-on-error: true
+        run: gh pr merge --auto --squash "${{ steps.badge-pr.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish EliteSharp Windows
         run: dotnet publish ./src/elite/apps/EliteSharp/EliteSharp.csproj /p:PublishProfile=PublishProfileWindows
