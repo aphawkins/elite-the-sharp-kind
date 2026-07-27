@@ -7,6 +7,27 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (streaming texture for the depth-layer composite, 2026-07-27)
+
+- `SDLGraphics.FlushDepthLayer` created an `SDL_Surface` and an
+  `SDL_Texture` from the CPU depth layer and destroyed both on every
+  flush — a GPU allocation and a synchronous upload for every frame
+  drawing depth-tested geometry, which is every frame in SCR and every
+  ZBuffer frame in Elite. It now uses one persistent
+  `SDL_TEXTUREACCESS_STREAMING` texture, created alongside the layer in
+  `ClearDepth` and re-uploaded with `SDL_UpdateTexture`.
+- The new texture sets `SDL_BLENDMODE_BLEND` explicitly:
+  `SDL_CreateTextureFromSurface` inferred alpha blending from the
+  surface's pixel format, but `SDL_CreateTexture` does not, and the
+  depth layer is transparent everywhere nothing was rasterised — left
+  at the default it would have painted an opaque rectangle over
+  everything drawn before the flush.
+- Sibling of the framebuffer-blit change below; same fix, same file
+  pair. Full test suite green, both apps smoke-tested live on the
+  Hardware backend (Elite's depth-tested intro ship; SCR's track
+  preview, where the sky and scenery drawn before the depth pass stay
+  visible around the track — the check that blending survived).
+
 ### Changed (streaming texture for the software framebuffer blit, 2026-07-27)
 
 - `SoftwareAbstraction.SoftwareScreenUpdate` created an `SDL_Surface`

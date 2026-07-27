@@ -47,6 +47,18 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     // gets this right, by writing every draw straight into one shared
     // buffer with no batching to reorder.
     private FastBitmap? _depthLayer;
+
+    // The GPU-side counterpart of _depthLayer, created alongside it and
+    // reused for every flush: compositing used to build a surface and a
+    // texture from the layer and destroy both again on each flush, i.e. a
+    // GPU allocation and a synchronous upload for every frame that draws
+    // any depth-tested geometry. Streaming + SDL_UpdateTexture re-uploads
+    // into this one instead. Its blend mode is set explicitly because,
+    // unlike SDL_CreateTextureFromSurface, SDL_CreateTexture does not infer
+    // it from the pixels' alpha channel - and the layer is transparent
+    // everywhere nothing was rasterised.
+    private nint _depthTexture;
+
     private float[]? _depthBuffer;
     private bool _depthLayerDirty;
     private bool _depthPassOpen;
@@ -149,6 +161,18 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
         _depthLayer ??= new FastBitmap((int)ScreenWidth, (int)ScreenHeight);
         _depthBuffer ??= new float[(int)ScreenWidth * (int)ScreenHeight];
+
+        if (_depthTexture == nint.Zero)
+        {
+            _depthTexture = SDLGuard.Execute(() => (nint)SDL_CreateTexture(
+                NativeRenderer,
+                SDL_PixelFormat.SDL_PIXELFORMAT_ARGB8888,
+                SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING,
+                _depthLayer.Width,
+                _depthLayer.Height));
+
+            SDLGuard.Execute(() => SDL_SetTextureBlendMode((SDL_Texture*)_depthTexture, SDL_BlendMode.SDL_BLENDMODE_BLEND));
+        }
 
         _depthLayer.Clear(BaseColors.TransparentBlack);
         Array.Clear(_depthBuffer);
@@ -751,7 +775,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     // between whatever was drawn before it and whatever draws after.
     private void FlushDepthLayer()
     {
-        if (!_depthLayerDirty || _depthLayer == null)
+        if (!_depthLayerDirty || _depthLayer == null || _depthTexture == nint.Zero)
         {
             return;
         }
@@ -759,23 +783,17 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         _depthLayerDirty = false;
         _depthPassOpen = false;
 
-        nint surfacePtr = SDLGuard.Execute(() => (nint)SDL_CreateSurfaceFrom(
-            _depthLayer.Width,
-            _depthLayer.Height,
-            SDL_PixelFormat.SDL_PIXELFORMAT_ARGB8888,
+        SDLGuard.Execute(() => SDL_UpdateTexture(
+            (SDL_Texture*)_depthTexture,
+            null,
             _depthLayer.BitmapHandle,
             _depthLayer.Width * 4));
-
-        nint texturePtr = SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(NativeRenderer, (SDL_Surface*)surfacePtr));
-        SDL_DestroySurface((SDL_Surface*)surfacePtr);
 
         SDLGuard.Execute(() =>
         {
             SDL_FRect dest = new() { x = 0, y = 0, w = ScreenWidth, h = ScreenHeight };
-            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
+            return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)_depthTexture, null, &dest);
         });
-
-        SDL_DestroyTexture((SDL_Texture*)texturePtr);
 
         // Closing the pass (above) means DrawLine stops routing here once
         // this flush runs, so in the normal case there is nothing left to
@@ -1081,6 +1099,11 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             foreach (KeyValuePair<(string, string, uint), TextTextureEntry> entry in _textTextures)
             {
                 SDL_DestroyTexture((SDL_Texture*)entry.Value.Texture);
+            }
+
+            if (_depthTexture != nint.Zero)
+            {
+                SDL_DestroyTexture((SDL_Texture*)_depthTexture);
             }
 
             if (_frameTarget != nint.Zero)

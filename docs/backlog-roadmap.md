@@ -58,13 +58,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [Useful.SDL] `SDLGraphics.FlushDepthLayer` creates and destroys an
-      `SDL_Surface` + `SDL_Texture` from the CPU depth layer on every
-      flush (i.e. every frame that draws depth-tested geometry,
-      [SDLGraphics.cs:752-787](../src/useful/libs/Useful.SDL/SDLGraphics.cs)) —
-      the same per-frame churn the framebuffer blit just shed; give it a
-      persistent streaming texture and `SDL_UpdateTexture` the same way
-      `SoftwareAbstraction` now does (see CHANGELOG).
 - [ ] [EliteSharpLib] `ShipFactory.CreateShipFromName` instantiates ship types via reflection from strings in `AssetManifest.json` ([ShipFactory.cs:114-131](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs), flagged by its own TODOs) — data-driven `Type.GetType` + non-public `Activator.CreateInstance` is fragile and a mild input-handling risk; replace with an explicit name→factory dictionary.
 - [ ] [EliteSharpLib] `ShipBase.Draw` allocates a `new Vector4[100]` per ship per tick and keeps a discarded `_ = VectorMaths.UnitVector(...)` call ([ShipBase.cs:100-115](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)); reuse a pooled/instance buffer sized to the model and delete the dead call (same pattern for `EliteDraw._pointList`'s magic `100` vs the `MAXPOLYS` constant, [EliteDraw.cs:19-25](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs)).
 - [ ] [EliteSharpLib] `Universe.RemoveShip` only removes from `_objects`, silently leaving `Planet`/`StationOrSun` set if passed one of those ([Universe.cs:127-135](../src/elite/libs/EliteSharpLib/Universe.cs)) — station removal currently works only because a sun immediately overwrites `StationOrSun` in `Combat.RemoveShip`; clear the matching reference explicitly.
