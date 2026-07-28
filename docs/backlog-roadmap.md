@@ -39,12 +39,6 @@ alternatives and the measured colour-count baseline, is in
 independently verifiable, and steps 1-5 do not depend on the 8-bit art
 existing.
 
-- [ ] [Apps] Replace the ~120 individual `<None Update>` asset entries in
-      [EliteSharpLib.csproj](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj)
-      and the SCR equivalent with an `Assets\**\*` glob, keeping the
-      `CopyToOutputDirectory="Never"` treatment of the uncompressed
-      `Assets\SFX\*.wav` and `Assets\Music\*.ogg` sources. Verify the
-      asset output directory is byte-identical before and after.
 - [ ] [Useful.Graphics] Broaden image decoding: add an `ImageReader.Read`
       that dispatches on magic bytes, rework
       [BitmapReader.cs](../src/useful/libs/Useful.Graphics/BitmapReader.cs)

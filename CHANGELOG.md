@@ -7,6 +7,24 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Glob the asset lists in both game projects, 2026-07-28)
+
+- `EliteSharpLib.csproj` listed all 118 of its assets as individual
+  `<None Update>` entries, and `StuntCarRacerSharpLib.csproj` another 32.
+  Both are now a single `Assets\**\*` glob, so adding the per-tier asset
+  folders from [asset-structure.md](docs/asset-structure.md) needs no
+  project-file churn.
+- Elite keeps a second, narrower `Assets\SFX\*.wav;Assets\Music\*.ogg`
+  entry marking the uncompressed sources `Never` — they stay in source
+  control but out of the build output, as before. SCR copies its whole
+  asset tree, so it needs no exclusion (its `.wav` files are the ones it
+  actually plays).
+- One behaviour change: `Assets\SFX\pulse.wav` was the only Elite `.wav`
+  marked `PreserveNewest` while its 15 siblings were `Never`. Nothing
+  reads it — the manifest maps `Pulse` to `pulse.ogg` — so the glob
+  normalises it to `Never` and the file is no longer copied. Asset output
+  is otherwise byte-identical for both games.
+
 ### Changed (Instant, auto-saved game settings, 2026-07-28)
 
 - Every setting in `SettingsView` now takes effect on the next frame and
