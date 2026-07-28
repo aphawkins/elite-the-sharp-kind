@@ -39,15 +39,6 @@ alternatives and the measured colour-count baseline, is in
 independently verifiable, and steps 1-5 do not depend on the 8-bit art
 existing.
 
-- [ ] [Useful.Assets] Add `SystemTier` (`EightBit`, `SixteenBit`) and
-      tier resolution to
-      [AssetLocator.cs](../src/useful/libs/Useful.Assets/AssetLocator.cs)
-      — `<Category>/<Tier>/<file>` falling back to `<Category>/<file>`,
-      tier chosen once at construction so `IAssetLocator`'s members are
-      unchanged — plus `Tiers` and `TierOverrides` in `AssetManifest`.
-      Move both games' existing images, bitmap fonts and palette into
-      `SixteenBit/` subfolders and default to `SixteenBit`. No behaviour
-      change.
 - [ ] [Useful.Assets] Eager `AssetSet` load replacing the two
       backend-specific image loads
       ([SoftwareGraphics.cs:80](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)
@@ -98,6 +89,19 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
+- [ ] [StuntCarRacerSharpLib] `ScrPalette`'s parameterless constructor
+      calls `AssetLocator.Create()` itself
+      ([ScrPalette.cs:21](../src/scr/libs/StuntCarRacerSharpLib/Rendering/ScrPalette.cs)),
+      which the composition-root rule in
+      [architecture-principles.md](architecture-principles.md) forbids —
+      it re-reads and re-parses the manifest on every construction, and
+      it means the palette can't follow a tier chosen anywhere else.
+      Found while moving assets into tier folders (2026-07-28), where it
+      showed up as a hardcoded `Assets/Palette/palette.json` path that
+      the move broke. Fixing it properly needs an `IAssetLocator` to
+      reach `StuntCarRacerMain`, which only receives `IAbstraction`
+      today — so either widen `IAbstraction` or pass the locator
+      alongside it, then inject the palette path.
 - [ ] [EliteSharpLib] Remove conditional compilation (issue #7): three
       `#if` sites remain — `EliteMain.DrawFps`'s `#if DEBUG` gate
       ([EliteMain.cs:170-172,251-260](../src/elite/libs/EliteSharpLib/EliteMain.cs)),

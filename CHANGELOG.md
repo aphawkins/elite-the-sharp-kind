@@ -7,6 +7,30 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Per-tier asset resolution, 2026-07-28)
+
+- `SystemTier` (`EightBit`, `SixteenBit`) and tier resolution in
+  `AssetLocator`: the tier-varying categories resolve to
+  `<Category>/<Tier>/<file>` and fall back to `<Category>/<file>`, which
+  is what keeps the tier-neutral categories — audio, models, TrueType
+  fonts, tracks — from needing a copy per tier. The tier is fixed at
+  construction, so `IAssetLocator`'s members and every consumer of them
+  are unchanged.
+- `AssetManifest` gains `Tiers`, so asking for a tier a game ships no
+  assets for fails at construction rather than silently falling back at
+  first draw, and `TierOverrides` for the cases where a tier's set uses a
+  different filename for the same logical name.
+- Both games' images, bitmap fonts and palette moved into `SixteenBit/`
+  subfolders, and both manifests declare that tier. No behaviour change:
+  the full suite passes and both games render identically.
+- `ScrPalette` and `FakeAssetLocator` each built the palette path by
+  hand, bypassing `AssetLocator` entirely — the move broke both.
+  `ScrPalette` now goes through `AssetLocator` so tier resolution stays
+  in one place; `FakeAssetLocator` still builds a plain string, since its
+  consumers include tests with no asset manifest to read. `ScrPalette`
+  constructing its own locator remains a composition-root violation and
+  is now recorded in the backlog.
+
 ### Added (BMP and PNG image decoding, 2026-07-28)
 
 - `ImageReader.Read` is the new single entry point for loading image

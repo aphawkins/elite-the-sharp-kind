@@ -4,6 +4,7 @@
 
 using System.Globalization;
 using Useful;
+using Useful.Assets;
 using Useful.Assets.Palettes;
 
 namespace StuntCarRacerSharpLib.Rendering;
@@ -18,7 +19,7 @@ public sealed class ScrPalette
     private readonly IPaletteCollection _palette;
 
     public ScrPalette()
-        : this(PaletteReader.Read(Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "palette.json")))
+        : this(PaletteReader.Read(AssetLocator.Create().PalettePath))
     {
     }
 

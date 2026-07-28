@@ -9,7 +9,10 @@ public sealed class FakeAssetLocator : IAssetLocator
 {
     // Points at the real palette shipped alongside the consuming project's output, since EliteDraw
     // reads it unconditionally in its constructor and has no fake substitute for palette colors.
-    public string PalettePath { get; } = Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", "palette.json");
+    // Built by hand rather than through AssetLocator: consumers that never touch the palette (the
+    // audio tests) have no asset manifest to read, so this must stay a plain string.
+    public string PalettePath { get; } =
+        Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", nameof(SystemTier.SixteenBit), "palette.json");
 
     public IDictionary<string, string> FontBitmapPaths { get; } = new Dictionary<string, string>();
 
