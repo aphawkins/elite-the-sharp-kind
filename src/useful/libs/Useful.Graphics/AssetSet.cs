@@ -32,6 +32,8 @@ public sealed class AssetSet
     {
         ArgumentNullException.ThrowIfNull(assetLocator);
 
+        RequireEveryFile(assetLocator);
+
         Dictionary<string, FastBitmap> images = assetLocator.ImagePaths.ToDictionary(
             x => x.Key,
             x => ImageReader.Read(x.Value));
@@ -47,6 +49,26 @@ public sealed class AssetSet
             images,
             fontBitmaps.ToDictionary(x => x.Key, x => new BitmapFont(x.Value)),
             budget);
+    }
+
+    // Reports every missing file at once. Decoding them one at a time
+    // surfaces only the first, which turns filling in a new tier's asset
+    // set into a game of whack-a-mole.
+    private static void RequireEveryFile(IAssetLocator assetLocator)
+    {
+        string[] missing =
+        [
+            .. assetLocator.ImagePaths.Concat(assetLocator.FontBitmapPaths)
+                .Where(x => !File.Exists(x.Value))
+                .Select(x => $"{x.Key} ({Path.GetFileName(x.Value)})")
+                .Order(),
+        ];
+
+        if (missing.Length > 0)
+        {
+            throw new UsefulException(
+                $"The {assetLocator.Tier} asset set is missing {missing.Length} file(s): {string.Join(", ", missing)}.");
+        }
     }
 
     private static AssetColourBudget Measure(

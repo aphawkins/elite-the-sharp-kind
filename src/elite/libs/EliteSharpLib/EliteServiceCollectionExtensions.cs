@@ -53,6 +53,20 @@ public static class EliteServiceCollectionExtensions
         return configFile.ReadConfig().GraphicsBackend;
     }
 
+    // Same reason as ReadGraphicsBackend above: Program.Main needs the tier
+    // before the container exists, because it picks the render resolution
+    // and the asset set from it.
+    public static SystemTier ReadSystemTier(string userDataPath, ILoggerFactory loggerFactory)
+    {
+        ConfigFile<EliteConfigSettings> configFile = new(
+            userDataPath,
+            ConfigFileName,
+            IsValidConfig,
+            loggerFactory.CreateLogger<ConfigFile<EliteConfigSettings>>());
+
+        return configFile.ReadConfig().Tier;
+    }
+
     // The whole domain graph below is internal to EliteSharpLib (same
     // reason as ConfigFile above), so it can only be registered from in
     // here; EliteMain's constructor now just receives it instead of

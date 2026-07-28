@@ -32,6 +32,16 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
     }
 
     public SoftwareAbstraction(int screenWidth, int screenHeight, string title, ILogger? logger)
+        : this(screenWidth, screenHeight, title, AssetLocator.Create(), logger)
+    {
+    }
+
+    public SoftwareAbstraction(
+        int screenWidth,
+        int screenHeight,
+        string title,
+        IAssetLocator assetLocator,
+        ILogger? logger)
     {
         _window = new(screenWidth, screenHeight, title);
         _renderer = new(_window);
@@ -43,7 +53,6 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
             screenWidth,
             screenHeight));
 
-        AssetLocator assetLocator = AssetLocator.Create();
         Graphics = SoftwareGraphics.Create(
             screenWidth,
             screenHeight,

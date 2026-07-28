@@ -36,6 +36,7 @@ internal sealed class EliteDraw : IEliteDraw
         Graphics = graphics;
         _shipRenderer = shipRenderer;
         _rng = rng;
+        Scale = assetLocator.Tier == SystemTier.EightBit ? 1 : 2;
         Palette = PaletteReader.Read(assetLocator.PalettePath);
         _colorGold = Palette["Gold"];
         _colorWhite = Palette["White"];
@@ -59,7 +60,11 @@ internal sealed class EliteDraw : IEliteDraw
 
     public float Right => Graphics.ScreenWidth - BorderWidth;
 
-    public float Scale { get; } = 2;
+    // Elite's drawing maths works in the original's 256-unit coordinate
+    // space, and this maps that onto the tier's screen. Kept whole, per the
+    // pixel-doubling rule in docs/decisions.md: a fractional value would put
+    // HUD text and ship vertices on half-pixels.
+    public float Scale { get; }
 
     public float ScannerLeft => Centre.X - (ScannerWidth / 2);
 
@@ -79,9 +84,12 @@ internal sealed class EliteDraw : IEliteDraw
 
     private static float BorderWidth => 1;
 
-    private static float ScannerHeight => 129;
+    // Taken from the scanner bitmap itself rather than hardcoded, so each
+    // tier's scanner art defines its own HUD height and width (the 8-bit
+    // scanner is 320x56 against the 16-bit 512x129).
+    private float ScannerHeight => Graphics.ImageSize(nameof(ImageType.Scanner)).Y;
 
-    private static float ScannerWidth => 512;
+    private float ScannerWidth => Graphics.ImageSize(nameof(ImageType.Scanner)).X;
 
     public void DrawBorder()
     {

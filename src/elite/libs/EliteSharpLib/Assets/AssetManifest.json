@@ -1,5 +1,5 @@
 {
-  "Tiers": [ "SixteenBit" ],
+  "Tiers": [ "EightBit", "SixteenBit" ],
   "Palette": "palette.json",
   "Images": {
     "Scanner": "scanner.bmp",

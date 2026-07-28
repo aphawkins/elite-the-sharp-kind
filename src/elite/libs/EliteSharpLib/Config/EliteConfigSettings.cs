@@ -5,6 +5,7 @@
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
 using Useful.Abstraction.Config;
+using Useful.Assets;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Config;
@@ -31,6 +32,10 @@ internal sealed class EliteConfigSettings : BaseConfigSettings
     public bool ShipWireframe { get; set; }
 
     public SunType SunStyle { get; set; } = SunType.Gradient;
+
+    // Which machine's look the game reproduces: picks the asset set and,
+    // with it, the render resolution and scale. See docs/asset-structure.md.
+    public SystemTier Tier { get; set; } = SystemTier.SixteenBit;
 
     public bool IsViewFullFrame { get; }
 }

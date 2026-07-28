@@ -23,15 +23,6 @@ internal static class SDLProgram
     private const string Title = "Elite - The Sharp Kind";
     private const string AssetLogCategory = "Assets";
 
-    // Get these from config
-    ////#if QHD
-    ////    private const int ScreenWidth = 960;
-    ////    private const int ScreenHeight = 540;
-    ////#else
-    private const int ScreenWidth = 512;
-    private const int ScreenHeight = 512;
-    ////#endif
-
     public static void Main()
     {
         if (!AppStartup.TryResolveUserDataPath(out string userDataPath))
@@ -88,28 +79,41 @@ internal static class SDLProgram
             .CreateLogger();
     }
 
+    // Render resolution is a function of the configured tier rather than a
+    // separate setting, so the asset set and the resolution can never
+    // disagree. Both are the tier's "standard" (non-widescreen) size from
+    // docs/decisions.md; 512x512 is what Elite has always rendered at.
+    private static (int Width, int Height) ResolutionFor(SystemTier tier) => tier switch
+    {
+        SystemTier.EightBit => (320, 256),
+        _ => (512, 512),
+    };
+
     private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory)
     {
         GraphicsBackend graphicsBackend = EliteServiceCollectionExtensions.ReadGraphicsBackend(userDataPath, loggerFactory);
+        SystemTier tier = EliteServiceCollectionExtensions.ReadSystemTier(userDataPath, loggerFactory);
+        (int width, int height) = ResolutionFor(tier);
 
         ServiceCollection services = new();
         services.AddSingleton(loggerFactory);
         services.AddSingleton<IAbstraction>(sp => graphicsBackend == GraphicsBackend.Hardware
             ? new SDLAbstraction(
-                ScreenWidth,
-                ScreenHeight,
+                width,
+                height,
                 Title,
-                AssetLocator.Create(),
+                sp.GetRequiredService<IAssetLocator>(),
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory))
             : new SoftwareAbstraction(
-                ScreenWidth,
-                ScreenHeight,
+                width,
+                height,
                 Title,
+                sp.GetRequiredService<IAssetLocator>(),
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory)));
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
-        services.AddSingleton(_ => AssetLocator.Create());
+        services.AddSingleton(_ => AssetLocator.Create(tier));
         services.AddEliteConfig(userDataPath);
         services.AddEliteMain();
 
