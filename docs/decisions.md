@@ -7,6 +7,42 @@ When a decision reshapes or unblocks backlog items, those items are
 updated in backlog-roadmap.md to reference the decision here rather than
 restating it.
 
+## Resolved (2026-07-28) — asset structure for the tier system
+
+Follows on from the multi-resolution tier decision of 2026-07-27 below,
+settling how assets are laid out and constrained per tier. Full design in
+[asset-structure.md](asset-structure.md); implementation steps are in
+[backlog-roadmap.md](backlog-roadmap.md)'s Should section.
+
+- **Modern tier deferred**: it is predominantly vector-based and needs no
+  bitmap set, so only the 8-bit and 16-bit tiers are modelled for now.
+- **Layout**: shared category folders with a tier subfolder on the
+  categories that actually vary (`Images`, `FontsBitmap`, `Palette`);
+  audio, models, TrueType fonts and tracks stay tier-neutral and are not
+  duplicated. Resolution is `<Category>/<Tier>/<file>` falling back to
+  `<Category>/<file>`, in `AssetLocator` only.
+- **Bitmap formats not restricted**: `BitmapReader`'s 32bpp-only,
+  fixed-header assumption is replaced by a real BMP decoder (1/4/8/24/
+  32bpp, real data offset, row padding, top-down), plus PNG support
+  hand-rolled on `ZLibStream` — no third-party dependency, stays pure
+  managed for the Software backend and headless tests.
+- **Colour budgets**: 16 distinct opaque colours for the 8-bit tier,
+  4096 for the 16-bit tier; modern is unrestricted 32bpp. Counted as
+  distinct values only (no quantisation to a 12-bit or 9-bit space), and
+  capped over the union of one game's whole asset set for the active
+  tier — per game, not per image. Transparent pixels are excluded; alpha
+  must be 0 or 255.
+- **Enforced eagerly**: assets are never loaded on demand. A single
+  eager `AssetSet` load in `Useful.Assets` replaces the separate loads in
+  `SoftwareGraphics` and `SDLGraphics` (the SDL path currently decodes
+  via SDL and would bypass validation entirely) and fails startup on an
+  over-budget set.
+- **Existing 16-bit assets are over budget**: measured unions are Elite
+  2481 (passes) and SCR 5095 (fails), caused by anti-aliasing in
+  `font2.bmp` (2431 alone) and `atlas.bmp` (2676). Decided to posterise
+  those two assets rather than soften the cap; the validator ships
+  warn-only and flips to hard-fail once both games comply.
+
 ## Resolved (2026-07-27)
 
 - **Elite frame rate vs the 13.5Hz tick**: Elite currently composes each

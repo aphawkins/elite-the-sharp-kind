@@ -30,6 +30,61 @@ that mentions a decision.
 
 ## Should
 
+### Asset structure for the 8-bit/16-bit tiers
+
+Implements the 2026-07-28 asset-structure decision in
+[decisions.md](decisions.md); the full design, including the rejected
+alternatives and the measured colour-count baseline, is in
+[asset-structure.md](asset-structure.md). Steps are ordered — each is
+independently verifiable, and steps 1-5 do not depend on the 8-bit art
+existing.
+
+- [ ] [Apps] Replace the ~120 individual `<None Update>` asset entries in
+      [EliteSharpLib.csproj](../src/elite/libs/EliteSharpLib/EliteSharpLib.csproj)
+      and the SCR equivalent with an `Assets\**\*` glob, keeping the
+      `CopyToOutputDirectory="Never"` treatment of the uncompressed
+      `Assets\SFX\*.wav` and `Assets\Music\*.ogg` sources. Verify the
+      asset output directory is byte-identical before and after.
+- [ ] [Useful.Graphics] Broaden image decoding: add an `ImageReader.Read`
+      that dispatches on magic bytes, rework
+      [BitmapReader.cs](../src/useful/libs/Useful.Graphics/BitmapReader.cs)
+      into a real BMP decoder (it currently rejects anything but 32bpp at
+      line 34 and hardcodes the pixel data offset to 150 — handle the
+      header's real offset, 1/4/8/24/32bpp, 4-byte row padding and
+      top-down negative heights), and add a non-interlaced PNG decoder
+      hand-rolled on `System.IO.Compression.ZLibStream`. `BitmapWriter`
+      stays BMP-only.
+- [ ] [Useful.Assets] Add `SystemTier` (`EightBit`, `SixteenBit`) and
+      tier resolution to
+      [AssetLocator.cs](../src/useful/libs/Useful.Assets/AssetLocator.cs)
+      — `<Category>/<Tier>/<file>` falling back to `<Category>/<file>`,
+      tier chosen once at construction so `IAssetLocator`'s members are
+      unchanged — plus `Tiers` and `TierOverrides` in `AssetManifest`.
+      Move both games' existing images, bitmap fonts and palette into
+      `SixteenBit/` subfolders and default to `SixteenBit`. No behaviour
+      change.
+- [ ] [Useful.Assets] Eager `AssetSet` load replacing the two
+      backend-specific image loads
+      ([SoftwareGraphics.cs:80](../src/useful/libs/Useful.Graphics/SoftwareGraphics.cs)
+      decodes via `BitmapReader`,
+      [SDLGraphics.cs:109](../src/useful/libs/Useful.SDL/SDLGraphics.cs)
+      decodes via SDL and so bypasses the managed reader entirely), so
+      both backends share one decoded set and one validation point.
+      Validate the union of distinct opaque ARGB values across the active
+      tier's assets against the tier cap (16 / 4096), excluding alpha-0
+      pixels and enforcing alpha to 0 or 255. Ship warn-only, with a
+      per-asset breakdown logged at Information.
+- [ ] [Assets] Posterise `font2.bmp` (2431 distinct colours on its own)
+      and SCR's `atlas.bmp` (2676) within the 4096 cap — SCR's set
+      currently totals 5095 and fails; Elite's 2481 passes — then flip
+      the colour validator from warn-only to hard-fail. Visual
+      smoke-test both games for acceptable font and cockpit quality.
+- [ ] [Assets] Add the 8-bit bitmap set under `EightBit/` for both games
+      and declare the tier in each manifest; verify it loads and passes
+      the 16-colour cap. Selecting the tier from configuration is where
+      this meets the resolution-tier rendering items in the Could
+      section below.
+
 ### Release engineering (from the retired release plan)
 
 (none open — see [CHANGELOG.md](../CHANGELOG.md) for completed items)
