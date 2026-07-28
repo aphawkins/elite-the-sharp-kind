@@ -39,15 +39,6 @@ alternatives and the measured colour-count baseline, is in
 independently verifiable, and steps 1-5 do not depend on the 8-bit art
 existing.
 
-- [ ] [Useful.Graphics] Broaden image decoding: add an `ImageReader.Read`
-      that dispatches on magic bytes, rework
-      [BitmapReader.cs](../src/useful/libs/Useful.Graphics/BitmapReader.cs)
-      into a real BMP decoder (it currently rejects anything but 32bpp at
-      line 34 and hardcodes the pixel data offset to 150 — handle the
-      header's real offset, 1/4/8/24/32bpp, 4-byte row padding and
-      top-down negative heights), and add a non-interlaced PNG decoder
-      hand-rolled on `System.IO.Compression.ZLibStream`. `BitmapWriter`
-      stays BMP-only.
 - [ ] [Useful.Assets] Add `SystemTier` (`EightBit`, `SixteenBit`) and
       tier resolution to
       [AssetLocator.cs](../src/useful/libs/Useful.Assets/AssetLocator.cs)

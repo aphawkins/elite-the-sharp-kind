@@ -7,6 +7,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (BMP and PNG image decoding, 2026-07-28)
+
+- `ImageReader.Read` is the new single entry point for loading image
+  assets, picking the decoder from the file's magic bytes rather than its
+  extension. `SoftwareGraphics` now loads images and bitmap fonts through
+  it.
+- `BitmapReader` was a reader of one specific 32bpp export — it rejected
+  every other bit depth and assumed pixel data began at a fixed offset of
+  150 bytes. It is now a real BMP decoder: 1/4/8bpp palettised, 24bpp BGR
+  and 32bpp BGRA, the header's declared data offset, rows padded to a
+  4-byte boundary, and top-down images with a negative height. Compressed
+  and BITMAPCOREHEADER files are rejected with a specific message rather
+  than decoded wrongly. 32bpp is still read as BGRA rather than honouring
+  BI_BITFIELDS masks, which is what every committed asset and
+  `BitmapWriter` use.
+- `PngReader` decodes non-interlaced PNGs of every colour type and bit
+  depth, on `System.IO.Compression.ZLibStream` rather than a third-party
+  imaging library, so the Software backend and the headless tests keep
+  working. 16-bit samples truncate to their high byte; `tRNS`
+  transparency is honoured for palettised, greyscale and truecolour
+  images; interlaced files are rejected outright. Chunk CRCs are not
+  verified.
+- Both decoders are covered by tests building files in memory — bit
+  depths, row padding, row order, palette transparency, all five PNG
+  scanline filters, and the rejection paths.
+
 ### Changed (Glob the asset lists in both game projects, 2026-07-28)
 
 - `EliteSharpLib.csproj` listed all 118 of its assets as individual

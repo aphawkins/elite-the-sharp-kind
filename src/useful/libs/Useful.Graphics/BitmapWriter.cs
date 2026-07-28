@@ -4,13 +4,16 @@ namespace Useful.Graphics;
 
 // Writes the 32bpp BGRA bottom-up BMP format BitmapReader reads back: a
 // standard BITMAPV5HEADER (masks + "Win " colour space) so the file also
-// opens in ordinary image viewers, padded to BitmapReader's fixed
-// HeaderLength + ExtraHeaderLength pixel-data offset.
+// opens in ordinary image viewers.
 public static class BitmapWriter
 {
     private const int FileHeaderSize = 14;
     private const int DibHeaderSize = 124;
     private const uint WindowsColorSpace = 0x5773_6E20; // "Win " (LCS_WINDOWS_COLOR_SPACE)
+
+    // Pixel data sits at the same offset the existing committed assets use,
+    // so files written here stay byte-comparable with them.
+    private const int PixelDataOffset = 150;
 
     public static void Write(FastBitmap bitmap, string path)
     {
@@ -19,7 +22,7 @@ public static class BitmapWriter
         int width = bitmap.Width;
         int height = bitmap.Height;
         int dataSize = width * height * 4;
-        const int pixelOffset = BitmapReader.HeaderLength + BitmapReader.ExtraHeaderLength;
+        const int pixelOffset = PixelDataOffset;
 
         using BinaryWriter writer = new(File.Create(path));
 
