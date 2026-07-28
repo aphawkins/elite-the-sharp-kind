@@ -118,17 +118,10 @@ public static class EliteServiceCollectionExtensions
 
     private static void AddEliteRendering(this IServiceCollection services)
     {
-        services.AddSingleton<IPolygonRenderer>(sp =>
-        {
-            EliteConfigSettings config = sp.GetRequiredService<GameState>().Config;
-            IGraphics graphics = sp.GetRequiredService<IGraphics>();
-
-            return config.ShipWireframe
-                ? new WireframeRenderer(graphics, sp.GetRequiredService<IAssetLocator>())
-                : config.ShipRenderMode == PolygonRenderMode.Painter
-                    ? new PainterRenderer(graphics)
-                    : new ZBufferRenderer(graphics);
-        });
+        services.AddSingleton<IPolygonRenderer>(sp => new ConfigPolygonRenderer(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<IGraphics>(),
+            sp.GetRequiredService<IAssetLocator>()));
         services.AddSingleton<IEliteDraw>(sp => new EliteDraw(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IGraphics>(),
@@ -411,6 +404,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<Space>(),
             sp.GetRequiredService<ConfigFile<EliteConfigSettings>>()));
         services.AddSingleton(sp => new ConstrictorMissionView(
             sp.GetRequiredService<GameState>(),

@@ -178,6 +178,46 @@ internal sealed class Space
         _gameState.IsDocked = false;
     }
 
+    // Rebuild the current planet in place so a Planet Style change shows on the
+    // next frame rather than only at the next launch or hyperspace jump.
+    internal void RefreshPlanetStyle()
+    {
+        if (_universe.Planet is not IObject oldPlanet)
+        {
+            return;
+        }
+
+        IObject planet = PlanetFactory.Create(
+            _gameState.Config.PlanetStyle,
+            _draw,
+            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
+            _gameState.CurrentPlanetData.TechLevel);
+
+        _universe.RemoveShip(oldPlanet);
+        if (!_universe.AddNewShip(planet, oldPlanet.Location, oldPlanet.Rotmat, 0, 0))
+        {
+            LogMessages.FailedToCreateShip(_logger, "Planet");
+        }
+    }
+
+    // As RefreshPlanetStyle, for the sun. Does nothing when the slot holds a
+    // station rather than a sun.
+    internal void RefreshSunStyle()
+    {
+        if (_universe.StationOrSun is not { Type: ShipType.Sun } oldSun)
+        {
+            return;
+        }
+
+        IObject sun = SunFactory.Create(_gameState.Config.SunStyle, _draw, _rng);
+
+        _universe.RemoveShip(oldSun);
+        if (!_universe.AddNewShip(sun, oldSun.Location, oldSun.Rotmat, 0, 0))
+        {
+            LogMessages.FailedToCreateShip(_logger, "Sun");
+        }
+    }
+
     internal void StartGalacticHyperspace()
     {
         if (IsHyperspaceReady)

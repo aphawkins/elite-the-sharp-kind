@@ -5,7 +5,9 @@
 using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Suns;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -394,6 +396,65 @@ public class SpaceTests
 
         Assert.Equal(255, ship.CabinTemperature);
         Assert.True(gameState.IsGameOver);
+    }
+
+    [Fact]
+    public void RefreshPlanetStyleRebuildsThePlanetInPlace()
+    {
+        Space space = CreateSpace(
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
+        FakeShip oldPlanet = new(draw, rng) { Type = ShipType.Planet };
+        universe.AddNewShip(oldPlanet, new(0, 0, 65536, 0), Matrix4x4.Identity, 0, 0);
+        gameState.Config.PlanetStyle = PlanetType.Wireframe;
+
+        space.RefreshPlanetStyle();
+
+        Assert.IsType<WireframePlanet>(universe.Planet);
+        Assert.Equal(oldPlanet.Location, universe.Planet.Location);
+        Assert.Equal(oldPlanet.Rotmat, universe.Planet.Rotmat);
+
+        // The replacement is a swap, not an addition.
+        Assert.Single(universe.GetAllObjects());
+    }
+
+    [Fact]
+    public void RefreshPlanetStyleDoesNothingWithoutAPlanet()
+    {
+        Space space = CreateSpace(
+            out _, out Universe universe, out _, out _, out _, out _, out _, out _);
+
+        space.RefreshPlanetStyle();
+
+        Assert.Null(universe.Planet);
+    }
+
+    [Fact]
+    public void RefreshSunStyleRebuildsTheSunInPlace()
+    {
+        Space space = CreateSpace(
+            out GameState gameState, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
+        FakeShip oldSun = new(draw, rng) { Type = ShipType.Sun };
+        universe.AddNewShip(oldSun, new(0, 0, 64000, 0), Matrix4x4.Identity, 0, 0);
+        gameState.Config.SunStyle = SunType.Solid;
+
+        space.RefreshSunStyle();
+
+        Assert.IsType<SolidSun>(universe.StationOrSun);
+        Assert.Equal(oldSun.Location, universe.StationOrSun.Location);
+        Assert.Single(universe.GetAllObjects());
+    }
+
+    [Fact]
+    public void RefreshSunStyleLeavesAStationAlone()
+    {
+        Space space = CreateSpace(
+            out _, out Universe universe, out _, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
+        IShip station = new FakeShip(draw, rng) { Type = ShipType.Coriolis, Flags = ShipProperties.Station };
+        universe.AddNewShip(station, Vector4.Zero, Matrix4x4.Identity, 0, 0);
+
+        space.RefreshSunStyle();
+
+        Assert.Same(station, universe.StationOrSun);
     }
 
     private static void AddFarPlanetAndStation(Universe universe, FakeEliteDraw draw, RNG rng)

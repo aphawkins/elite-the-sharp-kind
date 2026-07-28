@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Instant, auto-saved game settings, 2026-07-28)
+
+- Every setting in `SettingsView` now takes effect on the next frame and
+  is written to the config file as it's changed, so the "Save Settings"
+  row is gone — the last row is now "Back", which just returns to the
+  options screen.
+- Ship Style previously needed a restart: `IPolygonRenderer` was chosen
+  once at DI-registration time. The new `ConfigPolygonRenderer` holds
+  the wireframe/painter/z-buffer strategies and picks one per frame from
+  the live config.
+- Planet Style and Sun Style previously only applied to objects created
+  after the change. `Space.RefreshPlanetStyle`/`RefreshSunStyle` rebuild
+  the current planet/sun in place, preserving position and orientation.
+- `SpaceTests` covers the two refresh methods; new `SettingsViewTests`
+  covers the auto-save and the Back row.
+
 ### Added (Laser style setting, 2026-07-28)
 
 - The firing laser beams were drawn outlined or filled according to the

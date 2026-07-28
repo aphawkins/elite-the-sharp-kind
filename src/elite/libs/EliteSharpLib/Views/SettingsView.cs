@@ -19,6 +19,7 @@ internal sealed class SettingsView : IView
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
+    private readonly Space _space;
     private readonly uint _colorWhite;
     private readonly uint _colorLightRed;
 
@@ -30,16 +31,22 @@ internal sealed class SettingsView : IView
         new("Sun Style:", ["Solid", "Gradient", string.Empty]),
         new("Planet Desc.:", ["BBC", "MSX", string.Empty, string.Empty, string.Empty]),
         new("Instant Dock:", ["Off", "On", string.Empty, string.Empty, string.Empty]),
-        new("Save Settings", [string.Empty, string.Empty, string.Empty, string.Empty, string.Empty]),
+        new("Back", [string.Empty, string.Empty, string.Empty, string.Empty, string.Empty]),
     ];
 
     private int _highlightedItem;
 
-    internal SettingsView(GameState gameState, IEliteDraw draw, IKeyboard keyboard, IConfigWriter<EliteConfigSettings> configWriter)
+    internal SettingsView(
+        GameState gameState,
+        IEliteDraw draw,
+        IKeyboard keyboard,
+        Space space,
+        IConfigWriter<EliteConfigSettings> configWriter)
     {
         _gameState = gameState;
         _draw = draw;
         _keyboard = keyboard;
+        _space = space;
         _configWriter = configWriter;
 
         _colorWhite = draw.Palette["White"];
@@ -175,7 +182,6 @@ internal sealed class SettingsView : IView
     {
         if (_highlightedItem == _settingList.Length - 1)
         {
-            _configWriter.WriteConfig(_gameState.Config);
             _gameState.SetView(Screen.Options);
             return;
         }
@@ -193,10 +199,12 @@ internal sealed class SettingsView : IView
             case 2:
                 _gameState.Config.PlanetStyle = (PlanetType)((int)(_gameState.Config.PlanetStyle + 1)
                     % Enum.GetValues<PlanetType>().Length);
+                _space.RefreshPlanetStyle();
                 break;
 
             case 3:
                 _gameState.Config.SunStyle = (SunType)((int)(_gameState.Config.SunStyle + 1) % Enum.GetValues<SunType>().Length);
+                _space.RefreshSunStyle();
                 break;
 
             case 4:
@@ -207,5 +215,8 @@ internal sealed class SettingsView : IView
                 _gameState.Config.InstantDock = !_gameState.Config.InstantDock;
                 break;
         }
+
+        // Every change is live and saved as it's made, so there's no save step.
+        _configWriter.WriteConfig(_gameState.Config);
     }
 }

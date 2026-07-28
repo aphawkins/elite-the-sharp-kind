@@ -6,7 +6,7 @@ namespace Useful.Graphics.Rendering;
 
 // Per-pixel depth test via Graphics.DrawPolygonFilledDepth: solid
 // polygons only, wireframe is a separate WireframeRenderer selected
-// instead of this at DI-registration time. Correct tie-breaking for
+// instead of this by the caller. Correct tie-breaking for
 // coplanar polygons submitted with the same z (e.g. decals sitting on a
 // base surface) depends on the caller's projection code submitting a
 // stable z key and on submission order for exact ties.
