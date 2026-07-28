@@ -89,6 +89,12 @@ function ConvertTo-VirtualKeyCode([string]$KeyName) {
         '^Down$'              { return 0x28 }
         '^Left$'              { return 0x25 }
         '^Right$'             { return 0x27 }
+        # Elite uses these for roll/speed and for menu left/right; the
+        # arrow keys are extended-key codes that PostMessage doesn't
+        # deliver to SDL, so these are the reliable alternatives.
+        '^Comma$'             { return 0xBC }
+        '^Period$'            { return 0xBE }
+        '^Slash$'             { return 0xBF }
         default { throw "Unknown key name '$KeyName' - add it to ConvertTo-VirtualKeyCode in drive.ps1" }
     }
 }

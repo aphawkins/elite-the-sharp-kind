@@ -17,6 +17,9 @@ internal sealed class EliteConfigSettings : BaseConfigSettings
 
     public bool InstantDock { get; set; }
 
+    // Whether the firing laser beams are outlined or filled.
+    public bool LaserWireframe { get; set; }
+
     public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
     public PlanetType PlanetStyle { get; set; } = PlanetType.Fractal;

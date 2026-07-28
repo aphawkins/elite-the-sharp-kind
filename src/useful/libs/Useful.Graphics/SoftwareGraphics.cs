@@ -223,6 +223,14 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
+    public Vector2 ImageSize(string imageType)
+    {
+        Debug.Assert(Images.ContainsKey(imageType), "Image has not been loaded");
+
+        FastBitmap bitmap = Images[imageType];
+        return new(bitmap.Width, bitmap.Height);
+    }
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
         => DrawLineInt(
             (int)MathF.Floor(lineStart.X),

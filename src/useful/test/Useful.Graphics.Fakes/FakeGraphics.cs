@@ -38,6 +38,8 @@ public sealed class FakeGraphics(float screenWidth = 0, float screenHeight = 0) 
     {
     }
 
+    public Vector2 ImageSize(string imageType) => Vector2.Zero;
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
     {
     }

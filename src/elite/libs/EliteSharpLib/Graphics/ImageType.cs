@@ -16,6 +16,10 @@ public enum ImageType
     MissileYellow = 7,
     MissileRed = 8,
     Blake = 9,
+    LaserPulse = 10,
+    LaserBeam = 11,
+    LaserMilitary = 12,
+    LaserMining = 13,
 
     ////Dice,
 }

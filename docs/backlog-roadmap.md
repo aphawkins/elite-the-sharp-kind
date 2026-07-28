@@ -58,13 +58,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [EliteSharpLib] Low priority: implement laser crosshairs and styles
-      (issue #15) — each laser type (pulse/beam/military/mining) should
-      draw a distinct crosshair with its own colour and firing animation
-      instead of the current single style. Reference art for the intended
-      styles is at
-      [laser-crosshairs.png](../src/elite/libs/EliteSharpLib/Assets/Images/laser-crosshairs.png)
-      (added to the repo so this doesn't get forgotten).
 - [ ] [EliteSharpLib] Remove conditional compilation (issue #7): three
       `#if` sites remain — `EliteMain.DrawFps`'s `#if DEBUG` gate
       ([EliteMain.cs:170-172,251-260](../src/elite/libs/EliteSharpLib/EliteMain.cs)),

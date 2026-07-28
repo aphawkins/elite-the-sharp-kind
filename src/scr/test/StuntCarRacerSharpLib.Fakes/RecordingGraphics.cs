@@ -58,6 +58,8 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize)
         => ImageParts.Add((imageType, position, size, sourcePosition, sourceSize));
 
+    public Vector2 ImageSize(string imageType) => Vector2.Zero;
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
     {
     }

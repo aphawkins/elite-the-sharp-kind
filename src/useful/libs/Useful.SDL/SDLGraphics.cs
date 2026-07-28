@@ -264,6 +264,12 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         DrawImage(imageType, new(x, y));
     }
 
+    public Vector2 ImageSize(string imageType)
+    {
+        SDL_Surface* imageSurface = (SDL_Surface*)_images[imageType];
+        return new(imageSurface->w, imageSurface->h);
+    }
+
     public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize)
     {
         if (_isDisposed)

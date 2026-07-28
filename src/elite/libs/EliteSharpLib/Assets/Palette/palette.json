@@ -1,6 +1,7 @@
 {
   "Black": "FF000000",
   "Blue": "FF000080",
+  "BrightPurple": "FFB855F6",
   "Cyan": "FF00FFFF",
   "DarkBlue": "FF101090",
   "DarkerGrey": "FF606060",
@@ -21,6 +22,7 @@
   "LightYellow": "FFF0F0B0",
   "Lilac": "FFE0A0E0",
   "Orange": "FFF07030",
+  "PaleYellow": "FFFFFF5C",
   "Purple": "FF404080",
   "Red": "FF800000",
   "RedOrange": "FFF03030",

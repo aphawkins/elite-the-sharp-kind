@@ -32,6 +32,12 @@ public interface IGraphics
     /// </summary>
     public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize);
 
+    /// <summary>
+    /// The width and height of a loaded image, for callers that need to
+    /// position it relative to its own extent (e.g. centred on a point).
+    /// </summary>
+    public Vector2 ImageSize(string imageType);
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color);
 
     public void DrawPixel(Vector2 position, FastColor color);

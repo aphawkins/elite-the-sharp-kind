@@ -35,7 +35,7 @@ internal sealed class PilotRearView : IView
     {
         _pilotView.Draw();
         _pilotView.DrawViewName("Rear View");
-        _pilotView.DrawLaserSights(_ship.LaserFront.Type);
+        _pilotView.DrawLaserSights(_ship.LaserRear.Type);
     }
 
     public void HandleInput() => _pilotView.HandleInput();

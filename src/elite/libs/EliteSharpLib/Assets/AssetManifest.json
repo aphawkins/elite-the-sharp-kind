@@ -10,7 +10,11 @@
     "MissileGreen": "missgrn.bmp",
     "MissileYellow": "missyell.bmp",
     "MissileRed": "missred.bmp",
-    "Blake": "blake.bmp"
+    "Blake": "blake.bmp",
+    "LaserPulse": "laser-pulse.bmp",
+    "LaserBeam": "laser-beam.bmp",
+    "LaserMilitary": "laser-military.bmp",
+    "LaserMining": "laser-mining.bmp"
   },
   "Sfx": {
     "Launch": "launch.ogg",

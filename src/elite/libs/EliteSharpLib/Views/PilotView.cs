@@ -51,11 +51,6 @@ internal sealed class PilotView : IView
 
     public void Draw()
     {
-        if (_drawLaserFrames > 0)
-        {
-            _laser.DrawLaserLines();
-        }
-
         if (_space.HyperGalactic)
         {
             _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", nameof(FontType.Small), _colorWhite);
@@ -85,7 +80,17 @@ internal sealed class PilotView : IView
     public void Update()
         => _drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(_drawLaserFrames - 1, 0, _drawLaserFrames);
 
-    internal void DrawLaserSights(LaserType laserType) => _laser.DrawLaserSights(laserType);
+    // The firing beams share the crosshair's colour, so they are drawn here
+    // rather than in Draw(), which doesn't know which laser is mounted.
+    internal void DrawLaserSights(LaserType laserType)
+    {
+        if (_drawLaserFrames > 0)
+        {
+            _laser.DrawLaserLines(laserType);
+        }
+
+        _laser.DrawLaserSights(laserType);
+    }
 
     internal void DrawViewName(string name)
         => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, nameof(FontType.Small), _colorWhite);

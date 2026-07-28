@@ -11,9 +11,9 @@ internal sealed class LaserDraw
 {
     private readonly GameState _gameState;
     private readonly IEliteDraw _draw;
-    private readonly uint _colorLighterRed;
-    private readonly uint _colorLightGrey;
-    private readonly uint _colorWhite;
+    private readonly uint _colorPaleYellow;
+    private readonly uint _colorRedOrange;
+    private readonly uint _colorBrightPurple;
     private readonly RNG _rng;
 
     internal LaserDraw(GameState gameState, IEliteDraw draw, RNG rng)
@@ -21,13 +21,18 @@ internal sealed class LaserDraw
         _gameState = gameState;
         _draw = draw;
         _rng = rng;
-        _colorLighterRed = _draw.Palette["LighterRed"];
-        _colorLightGrey = _draw.Palette["LightGrey"];
-        _colorWhite = _draw.Palette["White"];
+
+        // The beam colour per laser type; beam and mining match their
+        // crosshair sprite's shade, pulse and military fire red.
+        _colorPaleYellow = _draw.Palette["PaleYellow"];
+        _colorRedOrange = _draw.Palette["RedOrange"];
+        _colorBrightPurple = _draw.Palette["BrightPurple"];
     }
 
-    internal void DrawLaserLines()
+    internal void DrawLaserLines(LaserType laserType)
     {
+        uint color = BeamColor(laserType);
+
         Vector2 target = new()
         {
             X = _rng.Random((int)_draw.Centre.X / 2, (int)(_draw.Centre.X / 2) + 2) * _draw.Scale,
@@ -40,24 +45,25 @@ internal sealed class LaserDraw
         Vector2 rightA = new(((_draw.ScannerRight / 2) - 32) * _draw.Scale, _draw.Bottom);
         Vector2 rightB = new(((_draw.ScannerRight / 2) - 48) * _draw.Scale, _draw.Bottom);
 
-        if (_gameState.Config.ShipWireframe)
+        if (_gameState.Config.LaserWireframe)
         {
             // Left laser
-            _draw.Graphics.DrawTriangle(leftA, target, leftB, _colorLighterRed);
+            _draw.Graphics.DrawTriangle(leftA, target, leftB, color);
 
             // Right laser
-            _draw.Graphics.DrawTriangle(rightA, target, rightB, _colorLighterRed);
+            _draw.Graphics.DrawTriangle(rightA, target, rightB, color);
         }
         else
         {
             // Left laser
-            _draw.Graphics.DrawTriangleFilled(leftA, target, leftB, _colorLighterRed);
+            _draw.Graphics.DrawTriangleFilled(leftA, target, leftB, color);
 
             // Right laser
-            _draw.Graphics.DrawTriangleFilled(rightA, target, rightB, _colorLighterRed);
+            _draw.Graphics.DrawTriangleFilled(rightA, target, rightB, color);
         }
     }
 
+    // Each laser type has its own crosshair sprite, centred on the view.
     internal void DrawLaserSights(LaserType laserType)
     {
         if (laserType == LaserType.None)
@@ -65,34 +71,24 @@ internal sealed class LaserDraw
             return;
         }
 
-        // Top line
-        float x1 = _draw.Centre.X / 2 * _draw.Scale;
-        float y1 = ((_draw.Centre.Y / 2) - 8) * _draw.Scale;
-        float y2 = ((_draw.Centre.Y / 2) - 16) * _draw.Scale;
-        _draw.Graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), _colorLightGrey);
-        _draw.Graphics.DrawLine(new(x1, y1), new(x1, y2), _colorWhite);
-        _draw.Graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), _colorLightGrey);
-
-        // Bottom line
-        y1 = ((_draw.Centre.Y / 2) + 8) * _draw.Scale;
-        y2 = ((_draw.Centre.Y / 2) + 16) * _draw.Scale;
-        _draw.Graphics.DrawLine(new(x1 - 1, y1), new(x1 - 1, y2), _colorLightGrey);
-        _draw.Graphics.DrawLine(new(x1, y1), new(x1, y2), _colorWhite);
-        _draw.Graphics.DrawLine(new(x1 + 1, y1), new(x1 + 1, y2), _colorLightGrey);
-
-        // Left line
-        x1 = ((_draw.Centre.X / 2) - 8) * _draw.Scale;
-        y1 = _draw.Centre.Y / 2 * _draw.Scale;
-        float x2 = ((_draw.Centre.X / 2) - 16) * _draw.Scale;
-        _draw.Graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), _colorLightGrey);
-        _draw.Graphics.DrawLine(new(x1, y1), new(x2, y1), _colorWhite);
-        _draw.Graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), _colorLightGrey);
-
-        // Right line
-        x1 = ((_draw.Centre.X / 2) + 8) * _draw.Scale;
-        x2 = ((_draw.Centre.X / 2) + 16) * _draw.Scale;
-        _draw.Graphics.DrawLine(new(x1, y1 - 1), new(x2, y1 - 1), _colorLightGrey);
-        _draw.Graphics.DrawLine(new(x1, y1), new(x2, y1), _colorWhite);
-        _draw.Graphics.DrawLine(new(x1, y1 + 1), new(x2, y1 + 1), _colorLightGrey);
+        string image = CrosshairImage(laserType);
+        Vector2 centre = _draw.Centre / 2 * _draw.Scale;
+        _draw.Graphics.DrawImage(image, centre - (_draw.Graphics.ImageSize(image) / 2));
     }
+
+    private static string CrosshairImage(LaserType laserType) => laserType switch
+    {
+        LaserType.Pulse => nameof(ImageType.LaserPulse),
+        LaserType.Beam => nameof(ImageType.LaserBeam),
+        LaserType.Military => nameof(ImageType.LaserMilitary),
+        LaserType.Mining => nameof(ImageType.LaserMining),
+        _ => throw new ArgumentOutOfRangeException(nameof(laserType)),
+    };
+
+    private uint BeamColor(LaserType laserType) => laserType switch
+    {
+        LaserType.Beam => _colorPaleYellow,
+        LaserType.Mining => _colorBrightPurple,
+        _ => _colorRedOrange,
+    };
 }

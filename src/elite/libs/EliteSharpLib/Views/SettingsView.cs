@@ -25,6 +25,7 @@ internal sealed class SettingsView : IView
     private readonly (string Name, string[] Values)[] _settingList =
     [
         new("Ship Style:", ["Solid", "Wireframe", string.Empty, string.Empty, string.Empty]),
+        new("Laser Style:", ["Solid", "Wireframe", string.Empty, string.Empty, string.Empty]),
         new("Planet Style:", ["Wireframe", "Solid", "Striped", "Fractal", string.Empty]),
         new("Sun Style:", ["Solid", "Gradient", string.Empty]),
         new("Planet Desc.:", ["BBC", "MSX", string.Empty, string.Empty, string.Empty]),
@@ -120,10 +121,11 @@ internal sealed class SettingsView : IView
     private int SettingValue(int i) => i switch
     {
         0 => _gameState.Config.ShipWireframe ? 1 : 0,
-        1 => (int)_gameState.Config.PlanetStyle,
-        2 => (int)_gameState.Config.SunStyle,
-        3 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-        4 => _gameState.Config.InstantDock ? 1 : 0,
+        1 => _gameState.Config.LaserWireframe ? 1 : 0,
+        2 => (int)_gameState.Config.PlanetStyle,
+        3 => (int)_gameState.Config.SunStyle,
+        4 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+        5 => _gameState.Config.InstantDock ? 1 : 0,
         _ => 0,
     };
 
@@ -185,19 +187,23 @@ internal sealed class SettingsView : IView
                 break;
 
             case 1:
+                _gameState.Config.LaserWireframe = !_gameState.Config.LaserWireframe;
+                break;
+
+            case 2:
                 _gameState.Config.PlanetStyle = (PlanetType)((int)(_gameState.Config.PlanetStyle + 1)
                     % Enum.GetValues<PlanetType>().Length);
                 break;
 
-            case 2:
+            case 3:
                 _gameState.Config.SunStyle = (SunType)((int)(_gameState.Config.SunStyle + 1) % Enum.GetValues<SunType>().Length);
                 break;
 
-            case 3:
+            case 4:
                 _gameState.Config.PlanetDescriptions = (PlanetDescriptions)((int)(_gameState.Config.PlanetDescriptions + 1) % 2);
                 break;
 
-            case 4:
+            case 5:
                 _gameState.Config.InstantDock = !_gameState.Config.InstantDock;
                 break;
         }

@@ -7,6 +7,44 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Laser style setting, 2026-07-28)
+
+- The firing laser beams were drawn outlined or filled according to the
+  ship-style setting. `EliteConfigSettings.LaserWireframe` now controls
+  them independently, exposed as "Laser Style: Solid/Wireframe" in
+  `SettingsView` alongside the ship style and persisted with the rest of
+  the config.
+- `LaserDrawTests` covers the two styles; `sdl-drive`'s key table gained
+  the comma/period/slash keys, since the arrow keys are extended-key
+  codes that `PostMessage` doesn't deliver to SDL and the settings
+  screen's left/right needed a working alternative.
+
+### Added (Per-laser crosshairs and beam colours, 2026-07-28)
+
+- Every laser type drew the same white cross (issue #15). Each type now
+  has its own crosshair sprite — `laser-pulse.bmp`, `laser-beam.bmp`,
+  `laser-military.bmp`, `laser-mining.bmp` in `Assets/Images`, replacing
+  the `laser-crosshairs.png` reference art — drawn centred on the view
+  by `LaserDraw.DrawLaserSights`, and the firing beams are coloured per
+  type instead of always red-orange: pale yellow for beam and bright
+  purple for mining, matching their crosshair sprites, with pulse and
+  military staying red-orange.
+- `IGraphics.ImageSize` returns a loaded image's width and height, so a
+  caller can centre an image on a point rather than only across the
+  screen as `DrawImageCentre` does.
+- `PilotView` now draws the firing beams alongside the crosshair rather
+  than in `Draw()`, which doesn't know which laser is mounted.
+
+### Fixed (Pilot views showed the front laser's crosshair, 2026-07-28)
+
+- `PilotRearView`, `PilotLeftView` and `PilotRightView` all passed
+  `_ship.LaserFront.Type` to `DrawLaserSights`, so every view drew the
+  front laser's sights; `Combat.FireLaser` already picked the right
+  laser per view, so only the visuals were wrong. Each view now passes
+  its own laser, which the per-type crosshairs make visible.
+- Added `LaserDrawTests` covering the crosshair drawn for each laser
+  type and none drawn without a laser.
+
 ### Added (Wireframe planet equator, meridian and crater, 2026-07-28)
 
 - `WireframePlanet` drew a bare circle. It now also draws the surface

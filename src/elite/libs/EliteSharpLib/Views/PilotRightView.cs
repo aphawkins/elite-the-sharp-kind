@@ -35,7 +35,7 @@ internal sealed class PilotRightView : IView
     {
         _pilotView.Draw();
         _pilotView.DrawViewName("Right View");
-        _pilotView.DrawLaserSights(_ship.LaserFront.Type);
+        _pilotView.DrawLaserSights(_ship.LaserRight.Type);
     }
 
     public void HandleInput() => _pilotView.HandleInput();
