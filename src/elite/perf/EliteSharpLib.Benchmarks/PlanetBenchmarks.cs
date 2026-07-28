@@ -36,7 +36,7 @@ public class PlanetBenchmarks : IDisposable
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);
         EliteDraw draw = new(gameState, _graphics, assetLocator, shipRenderer, rng);
-        _wireframePlanet = new(draw);
+        _wireframePlanet = new(draw, false);
         _solidPlanet = new(draw);
         _fractalPlanet = new(draw, 12345);
         _stripedPlanet = new(draw);

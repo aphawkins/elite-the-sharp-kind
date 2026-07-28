@@ -7,6 +7,27 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Wireframe planet equator, meridian and crater, 2026-07-28)
+
+- `WireframePlanet` drew a bare circle. It now also draws the surface
+  detail the original does (`PL9`, `PLS2`/`PLS22` in the BBC Micro
+  source): either an equator and a meridian — two half ellipses sharing
+  the planet's nose vector, drawn against its roof and side vectors,
+  each starting at the `PLS4` angle `arctan(-nosev_z / other_z)` — or a
+  crater, a full ellipse of half the planet's radius offset 222/256 of
+  the radius along the roof vector and hidden when that vector points
+  away. As in the original (`SOS1`), the choice comes from bit 1 of the
+  system's tech level, so `PlanetFactory.Create` now takes the tech
+  level. No detail is drawn below a radius of 6.
+- `WireframePlanet` defaults its pitch and roll to 127 as the original
+  sets them, so it turns without damping and the surface detail sweeps
+  round. Only this style spins: `SolidPlanet`, `StripedPlanet` and
+  `FractalPlanet` map their surface from `Rotmat`'s rows through
+  `PlanetRenderer`, which assumes `(M21, M22)` stays unit-length, so a
+  turning matrix makes their landscape swim and pulse.
+- Added `WireframePlanetTests` cases for the equator-and-meridian, the
+  crater, and the crater hidden on the planet's far side.
+
 ### Changed (TrueType font sizes moved into the asset manifest, 2026-07-28)
 
 - `SDLGraphics.LoadFont` switched on the game-specific font names

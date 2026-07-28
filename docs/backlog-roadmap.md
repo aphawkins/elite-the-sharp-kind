@@ -58,7 +58,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [EliteSharpLib] Wireframe planet is just a circle ([WireframePlanet.cs:50-57](../src/elite/libs/EliteSharpLib/Planets/WireframePlanet.cs)); add the two arcs and crater the original Elite drew (from issues.md).
 - [ ] [EliteSharpLib] Low priority: implement laser crosshairs and styles
       (issue #15) — each laser type (pulse/beam/military/mining) should
       draw a distinct crosshair with its own colour and firing animation

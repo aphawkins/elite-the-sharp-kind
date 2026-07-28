@@ -9,10 +9,13 @@ namespace EliteSharpLib.Planets;
 
 internal static class PlanetFactory
 {
-    internal static IObject Create(PlanetType type, IEliteDraw draw, int seed) => type switch
+    internal static IObject Create(PlanetType type, IEliteDraw draw, int seed, int techLevel) => type switch
     {
         PlanetType.Fractal => new FractalPlanet(draw, seed),
-        PlanetType.Wireframe => new WireframePlanet(draw),
+
+        // The original picks a crater or an equator-and-meridian from bit 1 of
+        // the system's tech level (SOS1).
+        PlanetType.Wireframe => new WireframePlanet(draw, (techLevel & 2) != 0),
         PlanetType.Solid => new SolidPlanet(draw),
         PlanetType.Striped => new StripedPlanet(draw),
         _ => throw new EliteException(),

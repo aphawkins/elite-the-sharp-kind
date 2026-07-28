@@ -165,7 +165,8 @@ internal sealed class Space
         IObject planet = PlanetFactory.Create(
             _gameState.Config.PlanetStyle,
             _draw,
-            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
+            _gameState.CurrentPlanetData.TechLevel);
         if (!_universe.AddNewShip(planet, new(0, 0, 65536, 0), VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             LogMessages.FailedToCreateShip(_logger, "Planet");
@@ -720,7 +721,8 @@ internal sealed class Space
         IObject planet = PlanetFactory.Create(
             _gameState.Config.PlanetStyle,
             _draw,
-            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B);
+            (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
+            _gameState.CurrentPlanetData.TechLevel);
         if (!_universe.AddNewShip(planet, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             LogMessages.FailedToCreateShip(_logger, "Planet");
