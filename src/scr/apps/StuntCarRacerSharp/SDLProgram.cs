@@ -22,6 +22,7 @@ namespace StuntCarRacerSharp;
 internal static class SDLProgram
 {
     private const string Title = "Stunt Car Racer - The Sharp Kind";
+    private const string AssetLogCategory = "Assets";
 
     private const int ScreenWidth = 640;
     private const int ScreenHeight = 400;
@@ -88,9 +89,18 @@ internal static class SDLProgram
 
         ServiceCollection services = new();
         services.AddSingleton(loggerFactory);
-        services.AddSingleton<IAbstraction>(_ => graphicsBackend == GraphicsBackend.Hardware
-            ? new SDLAbstraction(ScreenWidth, ScreenHeight, Title, AssetLocator.Create())
-            : new SoftwareAbstraction(ScreenWidth, ScreenHeight, Title));
+        services.AddSingleton<IAbstraction>(sp => graphicsBackend == GraphicsBackend.Hardware
+            ? new SDLAbstraction(
+                ScreenWidth,
+                ScreenHeight,
+                Title,
+                AssetLocator.Create(),
+                sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory))
+            : new SoftwareAbstraction(
+                ScreenWidth,
+                ScreenHeight,
+                Title,
+                sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory)));
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);

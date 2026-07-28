@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using Microsoft.Extensions.Logging;
 using SDL;
 using Useful.Assets;
 using Useful.Graphics;
@@ -17,7 +18,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     private readonly SDLRenderer _renderer;
     private readonly Dictionary<(string FontType, string Text, uint Color), TextTextureEntry> _textTextures = [];
     private Dictionary<string, nint> _fonts = [];
-    private Dictionary<string, nint> _images = [];
+    private Dictionary<string, FastBitmap> _images = [];
     private Dictionary<string, nint> _imageTextures = [];
     private bool _isDisposed;
 
@@ -101,14 +102,25 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     private SDL_Renderer* NativeRenderer => (SDL_Renderer*)(nint)_renderer;
 
     public static SDLGraphics Create(SDLRenderer renderer, float screenWidth, float screenHeight, IAssetLocator assetLocator)
+        => Create(renderer, screenWidth, screenHeight, assetLocator, null);
+
+    public static SDLGraphics Create(
+        SDLRenderer renderer,
+        float screenWidth,
+        float screenHeight,
+        IAssetLocator assetLocator,
+        ILogger? logger)
     {
         ArgumentNullException.ThrowIfNull(assetLocator);
 
+        // Images come from the shared managed decoder rather than SDL_LoadBMP,
+        // so this backend sees the same pixels as the software one and the
+        // tier's colour budget is checked whichever backend is running.
+        AssetSet assets = AssetSet.Load(assetLocator, logger);
+
         SDLGraphics graphics = new(renderer, screenWidth, screenHeight)
         {
-            _images = assetLocator.ImagePaths.ToDictionary(
-                x => x.Key,
-                x => SDLGuard.Execute(() => (nint)SDL_LoadBMP(x.Value))),
+            _images = assets.Images,
 
             _fonts = assetLocator.FontTrueTypes.ToDictionary(
                 x => x.Key,
@@ -120,7 +132,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         // never change after load.
         graphics._imageTextures = graphics._images.ToDictionary(
             x => x.Key,
-            x => SDLGuard.Execute(() => (nint)SDL_CreateTextureFromSurface(graphics.NativeRenderer, (SDL_Surface*)x.Value)));
+            x => CreateImageTexture(graphics.NativeRenderer, x.Value));
 
         graphics._frameTarget = SDLGuard.Execute(() => (nint)SDL_CreateTexture(
             graphics.NativeRenderer,
@@ -235,7 +247,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
         FlushDepthLayer();
 
-        SDL_Surface* imageSurface = (SDL_Surface*)_images[imageType];
+        FastBitmap image = _images[imageType];
         nint texturePtr = _imageTextures[imageType];
 
         SDLGuard.Execute(() =>
@@ -244,8 +256,8 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             {
                 x = position.X,
                 y = position.Y,
-                w = imageSurface->w,
-                h = imageSurface->h,
+                w = image.Width,
+                h = image.Height,
             };
 
             return SDL_RenderTexture(NativeRenderer, (SDL_Texture*)texturePtr, null, &dest);
@@ -259,15 +271,14 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             return;
         }
 
-        SDL_Surface* imageSurface = (SDL_Surface*)_images[imageType];
-        float x = (ScreenWidth - imageSurface->w) / 2;
+        float x = (ScreenWidth - _images[imageType].Width) / 2;
         DrawImage(imageType, new(x, y));
     }
 
     public Vector2 ImageSize(string imageType)
     {
-        SDL_Surface* imageSurface = (SDL_Surface*)_images[imageType];
-        return new(imageSurface->w, imageSurface->h);
+        FastBitmap image = _images[imageType];
+        return new(image.Width, image.Height);
     }
 
     public void DrawImagePart(string imageType, Vector2 position, Vector2 size, Vector2 sourcePosition, Vector2 sourceSize)
@@ -656,6 +667,25 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             SDL_Rect rectangle = new() { x = x, y = y, w = w, h = h };
             return SDL_SetRenderClipRect(NativeRenderer, &rectangle);
         });
+    }
+
+    // Uploads a decoded bitmap as a static texture. The blend mode has to be
+    // set explicitly: unlike SDL_CreateTextureFromSurface, SDL_CreateTexture
+    // does not infer it from the pixels' alpha channel, and the HUD sprites
+    // are transparent everywhere they aren't drawn.
+    private static nint CreateImageTexture(SDL_Renderer* renderer, FastBitmap image)
+    {
+        nint texture = SDLGuard.Execute(() => (nint)SDL_CreateTexture(
+            renderer,
+            SDL_PixelFormat.SDL_PIXELFORMAT_ARGB8888,
+            SDL_TextureAccess.SDL_TEXTUREACCESS_STATIC,
+            image.Width,
+            image.Height));
+
+        SDLGuard.Execute(() => SDL_UpdateTexture((SDL_Texture*)texture, null, image.BitmapHandle, image.Width * 4));
+        SDLGuard.Execute(() => SDL_SetTextureBlendMode((SDL_Texture*)texture, SDL_BlendMode.SDL_BLENDMODE_BLEND));
+
+        return texture;
     }
 
     private static nint LoadFont(TrueTypeFontAsset font)
@@ -1088,9 +1118,9 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             }
 
             // Images
-            foreach (KeyValuePair<string, nint> image in _images)
+            foreach (KeyValuePair<string, FastBitmap> image in _images)
             {
-                SDL_DestroySurface((SDL_Surface*)image.Value);
+                image.Value.Dispose();
             }
 
             foreach (KeyValuePair<string, nint> texture in _imageTextures)

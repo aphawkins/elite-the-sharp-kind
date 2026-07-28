@@ -1,5 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
+using Microsoft.Extensions.Logging;
 using SDL;
 using Useful.Abstraction;
 using Useful.Assets;
@@ -26,6 +27,11 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
     private bool _isDisposed;
 
     public SoftwareAbstraction(int screenWidth, int screenHeight, string title)
+        : this(screenWidth, screenHeight, title, null)
+    {
+    }
+
+    public SoftwareAbstraction(int screenWidth, int screenHeight, string title, ILogger? logger)
     {
         _window = new(screenWidth, screenHeight, title);
         _renderer = new(_window);
@@ -42,7 +48,8 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
             screenWidth,
             screenHeight,
             SoftwareScreenUpdate,
-            assetLocator);
+            assetLocator,
+            logger);
 
         SoftwareSound sound = new(assetLocator);
         _soundOutput = new SoftwareSoundOutput(sound);

@@ -1,5 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
+using Microsoft.Extensions.Logging;
 using Useful.Abstraction;
 using Useful.Assets;
 using Useful.Audio;
@@ -15,11 +16,16 @@ public sealed class SDLAbstraction : IAbstraction, IDisposable
     private bool _isDisposed;
 
     public SDLAbstraction(int screenWidth, int screenHeight, string title, IAssetLocator assetLocator)
+        : this(screenWidth, screenHeight, title, assetLocator, null)
+    {
+    }
+
+    public SDLAbstraction(int screenWidth, int screenHeight, string title, IAssetLocator assetLocator, ILogger? logger)
     {
         _window = new(screenWidth, screenHeight, title);
         _renderer = new(_window);
 
-        Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator);
+        Graphics = SDLGraphics.Create(_renderer, screenWidth, screenHeight, assetLocator, logger);
         Sound = new SDLSound(assetLocator);
         SDLInput input = new();
         Keyboard = new SoftwareKeyboard(input);

@@ -157,10 +157,21 @@ Images are already loaded eagerly, but in two separate places —
 decodes via SDL. The SDL path therefore bypasses the managed reader
 entirely, and would bypass any validation added to it.
 
-Both are replaced by a single eager `AssetSet` load in `Useful.Assets`
-that decodes every image and bitmap font for the active tier, validates
-them, and hands both graphics backends the same `FastBitmap`
-instances. One code path, one place the tier rule is enforced.
+Both are replaced by a single eager `AssetSet` load that decodes every
+image and bitmap font for the active tier, validates them, and hands
+both graphics backends the same `FastBitmap` instances. One code path,
+one place the tier rule is enforced.
+
+`AssetSet` lives in `Useful.Graphics`, not `Useful.Assets` as first
+sketched: it holds `FastBitmap`s, and `Useful.Graphics` already depends
+on `Useful.Assets`, so putting it the other way round would invert that
+reference. `IAssetLocator` gained a `Tier` property, since the validator
+has to know which cap applies.
+
+The bitmap fonts are decoded even for the SDL backend, which draws text
+with TrueType fonts and never uses them: they are part of the tier's
+set, so they count against its budget, and validation has to give the
+same answer whichever backend is running.
 
 Validation accumulates the set of distinct opaque ARGB values across the
 whole tier's assets and fails startup if the count exceeds the tier's

@@ -7,6 +7,35 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Eager asset loading with colour-budget validation, 2026-07-28)
+
+- `AssetSet` decodes every image and bitmap font for the active tier once
+  up front and hands both graphics backends the same `FastBitmap`
+  instances. `SoftwareGraphics` decoded via `BitmapReader` while
+  `SDLGraphics` decoded via `SDL_LoadBMP`, so the two backends could
+  disagree about a file and the SDL one bypassed the managed decoder
+  entirely — including any validation attached to it. `SDLGraphics` now
+  uploads textures from the decoded bitmaps, setting the blend mode
+  explicitly since `SDL_CreateTexture` (unlike
+  `SDL_CreateTextureFromSurface`) does not infer it from the alpha
+  channel.
+- `AssetColourBudget` counts distinct opaque colours across the union of
+  a game's whole tier set and checks it against the tier cap (16 for
+  8-bit, 4096 for 16-bit). Fully transparent pixels are excluded; pixels
+  whose alpha is neither 0 nor 255 are reported separately, since the
+  renderer treats transparency as all-or-nothing. Bitmap fonts count too,
+  even for the SDL backend that never draws with them — they are part of
+  the tier's set.
+- Warn-only for now, logged through each app's existing Serilog sinks
+  with a per-asset breakdown at Information, until the over-budget assets
+  are posterised. Running SCR confirms it end to end: 5095 colours
+  against the 4096 cap, `Atlas` 2676 and `Large` 2431, plus 2765
+  partial-alpha pixels. Elite's 2481 passes silently.
+- `IAssetLocator` gains `Tier` so the validator knows which cap applies.
+  `AssetSet` lives in `Useful.Graphics` rather than `Useful.Assets` — it
+  holds `FastBitmap`s, and putting it in `Useful.Assets` would invert
+  that project reference.
+
 ### Added (Per-tier asset resolution, 2026-07-28)
 
 - `SystemTier` (`EightBit`, `SixteenBit`) and tier resolution in

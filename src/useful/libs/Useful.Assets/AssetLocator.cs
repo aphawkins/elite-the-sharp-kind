@@ -19,7 +19,6 @@ public sealed class AssetLocator : IAssetLocator
     private readonly AssetManifest _assetManifest = new();
     private readonly AssetTierOverride _overrides;
     private readonly string _baseDirectory;
-    private readonly SystemTier _tier;
 
     internal AssetLocator(AssetManifest assetManifest, string baseDirectory, SystemTier tier)
     {
@@ -33,11 +32,13 @@ public sealed class AssetLocator : IAssetLocator
 
         _assetManifest = assetManifest;
         _baseDirectory = Path.Combine(baseDirectory, "Assets");
-        _tier = tier;
+        Tier = tier;
         _overrides = assetManifest.TierOverrides.TryGetValue(tier, out AssetTierOverride? tierOverride)
             ? tierOverride
             : new AssetTierOverride();
     }
+
+    public SystemTier Tier { get; }
 
     public string PalettePath => TierPath(
         PaletteCategory,
@@ -115,7 +116,7 @@ public sealed class AssetLocator : IAssetLocator
 
     private string TierPath(string category, string file)
     {
-        string tiered = Path.Combine(_baseDirectory, category, _tier.ToString(), file);
+        string tiered = Path.Combine(_baseDirectory, category, Tier.ToString(), file);
         return File.Exists(tiered) ? tiered : Path.Combine(_baseDirectory, category, file);
     }
 }

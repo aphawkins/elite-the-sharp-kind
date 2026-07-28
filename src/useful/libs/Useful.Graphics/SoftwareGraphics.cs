@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using Microsoft.Extensions.Logging;
 using Useful.Assets;
 
 namespace Useful.Graphics;
@@ -73,19 +74,21 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         float screenHeight,
         Action<FastBitmap> screenUpdate,
         IAssetLocator assetLocator)
+        => Create(screenWidth, screenHeight, screenUpdate, assetLocator, null);
+
+    public static SoftwareGraphics Create(
+        float screenWidth,
+        float screenHeight,
+        Action<FastBitmap> screenUpdate,
+        IAssetLocator assetLocator,
+        ILogger? logger)
     {
         ArgumentNullException.ThrowIfNull(screenUpdate);
         ArgumentNullException.ThrowIfNull(assetLocator);
 
-        Dictionary<string, FastBitmap> images = assetLocator.ImagePaths.ToDictionary(
-            x => x.Key,
-            x => ImageReader.Read(x.Value));
+        AssetSet assets = AssetSet.Load(assetLocator, logger);
 
-        Dictionary<string, BitmapFont> fonts = assetLocator.FontBitmapPaths.ToDictionary(
-            x => x.Key,
-            x => new BitmapFont(ImageReader.Read(x.Value)));
-
-        return new(screenWidth, screenHeight, screenUpdate, images, fonts);
+        return new(screenWidth, screenHeight, screenUpdate, assets.Images, assets.BitmapFonts);
     }
 
     public void Clear() => _screen.Clear();
