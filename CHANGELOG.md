@@ -7,6 +7,16 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (Universe.RemoveShip left Planet/StationOrSun dangling, 2026-07-28)
+
+- `Universe.RemoveShip` only removed from `_objects`, so passing the
+  planet or the station/sun left `Planet`/`StationOrSun` pointing at a
+  removed object. Removal now mirrors `AddNewShip`'s routing and clears
+  the matching reference. Station removal previously worked only by
+  accident, because `Combat.RemoveShip` adds a sun that overwrites
+  `StationOrSun` first; that path is unchanged.
+- Added `UniverseTests` cases covering planet and station removal.
+
 ### Changed (ShipBase draw buffer reuse, 2026-07-28)
 
 - `ShipBase.Draw` allocated a `new Vector4[100]` for every ship on every

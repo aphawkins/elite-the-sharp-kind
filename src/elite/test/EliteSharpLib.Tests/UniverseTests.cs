@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
 
@@ -53,5 +54,49 @@ public class UniverseTests
         Assert.False(universe.IsStationPresent);
         Assert.Equal(0, universe.PoliceCount);
         Assert.Equal(0, universe.ShipCount(ShipType.CobraMk3));
+    }
+
+    [Fact]
+    public void UniverseRemovePlanetClearsPlanet()
+    {
+        // Arrange
+        FakeEliteDraw draw = new();
+        RNG rng = new(new Random(0));
+        FakeShipFactory fakeShipFactory = new(draw, rng);
+        Universe universe = new(fakeShipFactory, rng);
+        IShip planet = new FakeShip(draw, rng) { Type = ShipType.Planet };
+
+        // Act
+        universe.AddNewShip(planet, new(0, 0, 30000, 0), Matrix4x4.Identity, 0, 0);
+        universe.RemoveShip(planet);
+
+        // Assert
+        Assert.Null(universe.Planet);
+        Assert.False(universe.GetAllObjects().Any());
+    }
+
+    [Fact]
+    public void UniverseRemoveStationClearsStationOrSun()
+    {
+        // Arrange
+        FakeEliteDraw draw = new();
+        RNG rng = new(new Random(0));
+        FakeShipFactory fakeShipFactory = new(draw, rng);
+        Universe universe = new(fakeShipFactory, rng);
+
+        IShip station = new FakeShip(draw, rng)
+        {
+            Type = ShipType.Coriolis,
+            Flags = ShipProperties.Station,
+        };
+
+        // Act
+        universe.AddNewShip(station, new(0, 0, 30000, 0), Matrix4x4.Identity, 0, -127);
+        universe.RemoveShip(station);
+
+        // Assert
+        Assert.Null(universe.StationOrSun);
+        Assert.False(universe.IsStationPresent);
+        Assert.False(universe.GetAllObjects().Any());
     }
 }

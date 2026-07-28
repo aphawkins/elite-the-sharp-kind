@@ -133,7 +133,18 @@ internal sealed class Universe
             _shipCount[ship.Type]--;
         }
 
-        _objects.Remove(ship);
+        if (ReferenceEquals(StationOrSun, ship))
+        {
+            StationOrSun = null;
+        }
+        else if (ReferenceEquals(Planet, ship))
+        {
+            Planet = null;
+        }
+        else
+        {
+            _objects.Remove(ship);
+        }
     }
 
     internal int ShipCount(ShipType shipType) => _shipCount[shipType];
