@@ -7,6 +7,37 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Elite runs at the 8-bit tier, 2026-07-28)
+
+- `Tier` is a config setting (on `BaseConfigSettings`, so both games
+  inherit it), read before the container exists the way `GraphicsBackend`
+  already was. Elite's render resolution is derived from it rather than
+  being its own setting — 320x256 for 8-bit, 512x512 for 16-bit — so the
+  asset set and the resolution cannot disagree. Retires the "Get these
+  from config" comment and the dead QHD block.
+- `EliteDraw` no longer hardcodes the 16-bit HUD: the scanner's width and
+  height come from the scanner bitmap, so each tier's art sets its own
+  HUD size (8-bit 320x56 against 16-bit 512x129).
+- Bitmap fonts support two sheet shapes. The 16-bit sheets are
+  proportional — glyphs run 4 to 17 pixels wide, terminated by magenta
+  markers — and the 8-bit BBC Micro sheet is monospaced 8x8 in a
+  12-column grid, as the hardware it imitates was. `BitmapFont` carries
+  its sheet's geometry instead of a static cell size, and the manifest
+  carries it per font.
+- A tier's manifest differences live in `AssetManifest.<Tier>.json`
+  beside the base manifest, overlaid entry by entry, rather than a
+  `TierOverrides` block inside it.
+- `Palette/EightBit/palette.json` maps the 29 colour names game code uses
+  onto sixteen colours, and the palette now counts against the tier's
+  colour cap — colours the game draws with have to be colours the tier
+  can show, whether they arrive as pixels or as a name.
+- `SoftwareGraphics.DrawImage` clipped nothing: `DrawPixel` only tests
+  bounds while a clip region is set, so an image landing partly
+  off-screen wrote outside the framebuffer and threw. Bounds are now
+  clamped once per image rather than per pixel. 16-bit never hit this
+  because nothing there drew off-screen.
+- Elite boots, renders and plays at 320x256 with the 8-bit asset set.
+
 ### Added (First 8-bit Elite bitmaps, 2026-07-28)
 
 - `Assets/Images/EightBit/` gains `scanner.bmp` and the four laser

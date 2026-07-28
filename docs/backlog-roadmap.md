@@ -39,20 +39,8 @@ alternatives and the measured colour-count baseline, is in
 independently verifiable, and steps 1-5 do not depend on the 8-bit art
 existing.
 
-- [ ] [Assets] Finish Elite's 8-bit image set, then declare the tier.
-      `Assets/Images/EightBit/` holds `scanner.bmp` (4bpp indexed, a
-      10-colour palette) and the four laser bitmaps (32bpp, one colour
-      each) — 11 distinct colours against the 16-colour cap, so there is
-      room for 5 more. Still missing, so `"EightBit"` is deliberately
-      **not** in the manifest's `Tiers` yet (declaring it would make the
-      tier unloadable, since `AssetLocator`'s fallback now points at the
-      empty flat `Images/` folder): `blake.bmp`, `ecm.bmp`,
-      `elitetext.bmp`, `greendot.bmp`, `missgrn.bmp`, `missred.bmp`,
-      `missyell.bmp`, `reddot.bmp`, `safe.bmp`, plus a bitmap font pair
-      under `FontsBitmap/EightBit/` and a palette under
-      `Palette/EightBit/`. Any of those that genuinely have no 8-bit
-      equivalent should get a `TierOverrides` entry instead of a file.
-      SCR has no 8-bit set at all yet.
+- [ ] [Assets] SCR has no 8-bit asset set at all; its manifest declares
+      only `SixteenBit`.
 - [ ] [Useful.Assets] Decide whether the asset validator should also
       check bitmap dimensions against the tier's resolution. Today the
       colour cap is the only tier constraint, so nothing catches art
@@ -61,6 +49,60 @@ existing.
       16-bit 512x129 — not a halving, so a naive "must be 2x" rule would
       reject art the maintainer intends. Needs a decision on what the
       rule is before it can be written.
+
+### Tier presentation architecture
+
+Implements the 2026-07-28 tier-presentation decision in
+[decisions.md](decisions.md). The first two items correct a mistaken
+reading of `Scale` and are worth doing before the view work builds on it.
+
+- [ ] [EliteSharpLib] Split the 3D projection's zoom from the view
+      centre. `ShipBase.ProjectPoint` computes
+      `((x * 256 / z) + (Centre.X / 2)) * Scale`, which recovers the true
+      centre only when `Scale` is exactly 2 — at 8-bit (`Scale` 1) the
+      scene is centred a quarter of the way across the screen instead of
+      the middle, which is why 8-bit ships and planets sit up and to the
+      left. `EliteDraw.ProjectExplosionPoints` repeats the same
+      construction. Replace both with `Centre + (x * Focus / z)`, where
+      `Focus` is a float derived from the tier's screen width times a
+      per-tier factor. At 16-bit that is 512 x 1.0, which reduces to
+      today's maths exactly, so the 16-bit render must come out
+      pixel-identical — a strong check on the change. This also frees the
+      name `Scale` for window magnification; the only other use, an
+      `8 * Scale` text offset in `EliteDraw`, belongs to the per-tier
+      views.
+- [ ] [Apps/Useful.SDL] `WindowScale` config setting, integer only and
+      independent of `Tier`: render at the tier's native resolution and
+      magnify only at presentation, so 320x256 at scale 2 fills a 640x512
+      window showing the same pixels doubled. The framebuffer stays
+      native — both backends already render into a fixed-size texture
+      (`SDLGraphics._frameTarget`, `SoftwareAbstraction._frameTexture`)
+      and blit it to the window on every present — so this is a larger
+      window plus nearest-neighbour sampling on that blit, with no game
+      code changes. Do together with the resizable-window/letterbox item
+      in the Could section: same presentation path.
+- [ ] **[LARGE]** [EliteSharpLib] MVC split for the 28 view classes:
+      each screen's controller takes input and navigation, its model
+      holds the game data and formatting, and the view is left drawing
+      only. This is what stops per-tier views duplicating behaviour along
+      with layout, so it comes before the per-tier split. Scope it before
+      starting — views currently handle their own keys (`Intro1View` on
+      Y/N), and `EliteMain.HandleViewKeys` owns the rest.
+- [ ] [EliteSharpLib] Resolve views per tier through DI. Every screen
+      gets its own view per tier, in `Views/<Tier>/` with a tier-suffixed
+      class name (`Views/EightBit/CommanderStatusView8Bit.cs`);
+      `PopulateScreens` maps `Screen` to `IView`, so the configured tier
+      selects which implementation is registered. Do
+      `CommanderStatusView` first as the pattern and check the 16-bit
+      output is pixel-identical before converting the other 27.
+- [ ] [EliteSharpLib] Author the 8-bit view layouts at 320x256. The
+      ~128 literal coordinates across `Views/` (plus ~36 elsewhere in the
+      lib) are 512-space values — e.g. `CommanderStatusView` draws labels
+      at x=16 and values at x=200 on 16px rows — and overflow a 320-wide
+      screen, which is why the status screen clips today. The 16-bit
+      values move unchanged into the 16-bit views; the 8-bit ones are
+      authored fresh against an 8x8 font and a 56px-tall scanner rather
+      than derived, since the two tiers' HUD art is not proportional.
 
 ### Release engineering (from the retired release plan)
 
@@ -90,6 +132,10 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
+- [ ] [Repo] `sdl-drive/drive.ps1`'s `ConvertTo-VirtualKeyCode` has no
+      entry for `Return`, so a `key:Return` step throws "Unknown key
+      name". Hit while driving SCR's menus (2026-07-28); add Return and
+      any other obvious missing keys.
 - [ ] [StuntCarRacerSharpLib] `ScrPalette`'s parameterless constructor
       calls `AssetLocator.Create()` itself
       ([ScrPalette.cs:21](../src/scr/libs/StuntCarRacerSharpLib/Rendering/ScrPalette.cs)),

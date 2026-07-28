@@ -7,6 +7,50 @@ When a decision reshapes or unblocks backlog items, those items are
 updated in backlog-roadmap.md to reference the decision here rather than
 restating it.
 
+## Resolved (2026-07-28) — tier presentation architecture
+
+- **`Scale` magnifies the window, it does not scale the drawing.** A tier
+  renders at its own native resolution and `Scale` only decides how large
+  that framebuffer is presented: the 8-bit tier at 320x256 with a scale of
+  2 fills a 640x512 window showing the same 320x256 pixels doubled. The
+  graphics themselves do not change. This restates the pixel-doubling rule
+  from the 2026-07-27 multi-resolution decision below, which had been
+  misread as a coordinate multiplier — see the backlog item retiring
+  `EliteDraw.Scale`'s current meaning.
+- **Views are per tier, not shared and scaled.** A single scale factor
+  cannot serve a Modern tier whose resolution is arbitrary and need not be
+  a multiple of anything, so each tier gets its own view implementations,
+  fine-tuned to its resolution, resolved through DI (the existing
+  `PopulateScreens` map already keys `Screen` to `IView`, so the tier
+  simply selects which implementation is registered).
+- **Shared behaviour lives in an MVC split.** Duplicating whole views per
+  tier would duplicate the data and formatting rules with them, so the
+  per-screen model (game data, formatting) and controller (input,
+  navigation) are shared and only the view — pure presentation, drawing
+  only — varies per tier. **[LARGE]** — see the backlog items below.
+- **Every screen gets a per-tier view**, not just the ones that look like
+  they need it. They live in `Views/<Tier>/` with a tier-suffixed class
+  name (`Views/EightBit/CommanderStatusView8Bit.cs`) to avoid clashes.
+- **`WindowScale` is a config setting of its own**, integer only, and
+  independent of `Tier`. The framebuffer stays at the tier's native size:
+  both backends already render into a fixed-size texture and blit it to
+  the window on every present, so magnifying means creating a larger
+  window and sampling that blit nearest-neighbour. No game code changes.
+- **3D projection needs its own float scale, separate from both.** The
+  projection currently folds the view centre and the zoom into one
+  integer `Scale`
+  (`((x * 256 / z) + (Centre.X / 2)) * Scale`), which only lands the
+  scene in the middle of the screen when `Scale` is exactly 2 — at 8-bit
+  it centres the view a quarter of the way across. Decided: separate the
+  two, so projection becomes `Centre + (x * Focus / z)` with `Centre` the
+  real centre of the 3D viewport and `Focus` a float. `Focus` is derived
+  from the tier's screen width times a per-tier factor, which keeps the
+  field of view constant across tiers, reproduces 16-bit exactly
+  (512 x 1.0), and works at any Modern resolution without needing to be a
+  multiple of anything.
+- **Elite first, then SCR.** SCR inherits the `Tier` setting from
+  `BaseConfigSettings` but nothing reads it yet; that is fine for now.
+
 ## Resolved (2026-07-28) — asset structure for the tier system
 
 Follows on from the multi-resolution tier decision of 2026-07-27 below,
