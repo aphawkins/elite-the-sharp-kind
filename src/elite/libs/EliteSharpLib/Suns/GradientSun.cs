@@ -34,6 +34,11 @@ internal sealed class GradientSun : IObject
     {
         _draw = other._draw;
         _rng = other._rng;
+        _colorWhite = other._colorWhite;
+        _colorLightYellow = other._colorLightYellow;
+        _colorLightOrange = other._colorLightOrange;
+        _colorOrange = other._colorOrange;
+        _colorDarkOrange = other._colorDarkOrange;
     }
 
     public ShipProperties Flags { get; set; }
