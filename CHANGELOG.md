@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (First 8-bit Elite bitmaps, 2026-07-28)
+
+- `Assets/Images/EightBit/` gains `scanner.bmp` and the four laser
+  bitmaps. `scanner.bmp` is a 4bpp indexed BMP with a 10-entry palette
+  and a 94-byte data offset — a file the old `BitmapReader` would have
+  rejected outright on both counts, and the first real asset to exercise
+  the broadened decoder.
+- The set is 11 distinct opaque colours against the 8-bit cap of 16: the
+  lasers reuse the scanner's palette apart from the mining laser's
+  purple.
+- The tier is **not** declared in the manifest yet. Nine images, a bitmap
+  font pair and a palette are still missing, and `AssetLocator`'s
+  fallback now points at the empty flat `Images/` folder, so declaring
+  `"EightBit"` would produce a tier that cannot load. See the backlog for
+  what remains.
+
 ### Changed (Posterised the over-budget 16-bit assets, 2026-07-28)
 
 - `font2.bmp` (both games' copies, byte-identical) and SCR's `atlas.bmp`

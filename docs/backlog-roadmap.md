@@ -39,11 +39,28 @@ alternatives and the measured colour-count baseline, is in
 independently verifiable, and steps 1-5 do not depend on the 8-bit art
 existing.
 
-- [ ] [Assets] Add the 8-bit bitmap set under `EightBit/` for both games
-      and declare the tier in each manifest; verify it loads and passes
-      the 16-colour cap. Selecting the tier from configuration is where
-      this meets the resolution-tier rendering items in the Could
-      section below.
+- [ ] [Assets] Finish Elite's 8-bit image set, then declare the tier.
+      `Assets/Images/EightBit/` holds `scanner.bmp` (4bpp indexed, a
+      10-colour palette) and the four laser bitmaps (32bpp, one colour
+      each) — 11 distinct colours against the 16-colour cap, so there is
+      room for 5 more. Still missing, so `"EightBit"` is deliberately
+      **not** in the manifest's `Tiers` yet (declaring it would make the
+      tier unloadable, since `AssetLocator`'s fallback now points at the
+      empty flat `Images/` folder): `blake.bmp`, `ecm.bmp`,
+      `elitetext.bmp`, `greendot.bmp`, `missgrn.bmp`, `missred.bmp`,
+      `missyell.bmp`, `reddot.bmp`, `safe.bmp`, plus a bitmap font pair
+      under `FontsBitmap/EightBit/` and a palette under
+      `Palette/EightBit/`. Any of those that genuinely have no 8-bit
+      equivalent should get a `TierOverrides` entry instead of a file.
+      SCR has no 8-bit set at all yet.
+- [ ] [Useful.Assets] Decide whether the asset validator should also
+      check bitmap dimensions against the tier's resolution. Today the
+      colour cap is the only tier constraint, so nothing catches art
+      authored at the wrong size. Elite's 8-bit lasers are exactly half
+      their 16-bit counterparts, but `scanner.bmp` is 260x56 against the
+      16-bit 512x129 — not a halving, so a naive "must be 2x" rule would
+      reject art the maintainer intends. Needs a decision on what the
+      rule is before it can be written.
 
 ### Release engineering (from the retired release plan)
 
