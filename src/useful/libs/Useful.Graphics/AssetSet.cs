@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 using Useful.Assets;
+using Useful.Assets.Palettes;
 
 namespace Useful.Graphics;
 
@@ -42,7 +43,7 @@ public sealed class AssetSet
             x => x.Key,
             x => ImageReader.Read(x.Value.Path));
 
-        AssetColourBudget budget = Measure(assetLocator.Tier, images, fontBitmaps);
+        AssetColourBudget budget = Measure(assetLocator.Tier, images, fontBitmaps, PaletteColours(assetLocator));
         Validate(budget, logger);
 
         return new(
@@ -72,13 +73,24 @@ public sealed class AssetSet
         }
     }
 
+    // The named palette counts against the tier's budget like any other
+    // asset: colours the game draws with are colours the tier has to be able
+    // to show, whether they arrive as pixels or as a name.
+    private static HashSet<uint> PaletteColours(IAssetLocator assetLocator)
+        => string.IsNullOrEmpty(assetLocator.PalettePath) ? []
+            : !File.Exists(assetLocator.PalettePath)
+            ? throw new UsefulException(
+                $"The {assetLocator.Tier} asset set is missing its palette: {assetLocator.PalettePath}")
+            : [.. PaletteReader.Read(assetLocator.PalettePath).Values.Select(x => x.Argb)];
+
     private static AssetColourBudget Measure(
         SystemTier tier,
         Dictionary<string, FastBitmap> images,
-        Dictionary<string, FastBitmap> fontBitmaps)
+        Dictionary<string, FastBitmap> fontBitmaps,
+        HashSet<uint> paletteColours)
     {
-        HashSet<uint> distinct = [];
-        Dictionary<string, int> perAsset = [];
+        HashSet<uint> distinct = [.. paletteColours];
+        Dictionary<string, int> perAsset = new() { ["Palette"] = paletteColours.Count };
         int partialAlpha = 0;
 
         foreach (KeyValuePair<string, FastBitmap> asset in images.Concat(fontBitmaps))

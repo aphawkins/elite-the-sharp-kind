@@ -824,9 +824,18 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     private void DrawImage(FastBitmap bitmap, Vector2 position)
     {
-        for (int y = 0; y < bitmap.Height; y++)
+        // Clipped once here rather than per pixel: DrawPixel only tests
+        // bounds while a clip region is set, so an image landing even partly
+        // off-screen would otherwise write outside the framebuffer. Narrowing
+        // the loops keeps the per-pixel path free of the extra comparisons.
+        int left = Math.Max(0, -(int)position.X);
+        int top = Math.Max(0, -(int)position.Y);
+        int right = Math.Min(bitmap.Width, (int)ScreenWidth - (int)position.X);
+        int bottom = Math.Min(bitmap.Height, (int)ScreenHeight - (int)position.Y);
+
+        for (int y = top; y < bottom; y++)
         {
-            for (int x = 0; x < bitmap.Width; x++)
+            for (int x = left; x < right; x++)
             {
                 uint color = bitmap.GetPixel(x, y);
                 if ((color & 0xFF000000) != 0)
