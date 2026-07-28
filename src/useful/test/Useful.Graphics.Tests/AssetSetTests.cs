@@ -54,16 +54,15 @@ public class AssetSetTests
     }
 
     [Fact]
-    public void FlagsPixelsWhoseAlphaIsNeitherFullyOpaqueNorFullyTransparent()
+    public void ThrowsOnPixelsWhoseAlphaIsNeitherFullyOpaqueNorFullyTransparent()
     {
-        // Arrange
+        // Arrange: the renderer has no middle ground for alpha, so a
+        // half-transparent pixel is an authoring mistake, not a style.
         using TempImageFile image = TempImageFile.From(Bmp(0x80FF0000, 0xFF00FF00));
+        IAssetLocator locator = Locator(SystemTier.SixteenBit, ("Image", image));
 
-        // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, ("Image", image)));
-
-        // Assert
-        Assert.Equal(1, assets.Budget.PartialAlphaCount);
+        // Act / Assert
+        Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
     }
 
     [Theory]
@@ -73,19 +72,15 @@ public class AssetSetTests
         => Assert.Equal(expectedCap, AssetColourBudget.MaxColours(tier));
 
     [Fact]
-    public void ReportsAnEightBitSetOfSeventeenColoursAsOverBudget()
+    public void ThrowsWhenAnEightBitSetExceedsSixteenColours()
     {
         // Arrange: 17 distinct colours against the 8-bit cap of 16.
         uint[] colours = [.. Enumerable.Range(0, 17).Select(i => 0xFF000000u | (uint)i)];
         using TempImageFile image = TempImageFile.From(Bmp(colours));
+        IAssetLocator locator = Locator(SystemTier.EightBit, ("Image", image));
 
-        // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, ("Image", image)));
-
-        // Assert
-        Assert.Equal(17, assets.Budget.ColourCount);
-        Assert.Equal(16, assets.Budget.Cap);
-        Assert.False(assets.Budget.IsWithinBudget);
+        // Act / Assert
+        Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
     }
 
     [Fact]
@@ -103,19 +98,20 @@ public class AssetSetTests
     }
 
     [Fact]
-    public void LoadsAnOverBudgetSetAnywayForNow()
+    public void AllowsTheSameSetUnderTheRoomierSixteenBitCap()
     {
-        // Arrange: the validator is warn-only until the committed 16-bit
-        // assets are posterised, so an over-budget set must still load.
+        // Arrange: the 17 colours that break the 8-bit cap are fine here, so
+        // the failure above is the cap doing its job rather than the loader
+        // rejecting the file.
         uint[] colours = [.. Enumerable.Range(0, 17).Select(i => 0xFF000000u | (uint)i)];
         using TempImageFile image = TempImageFile.From(Bmp(colours));
 
         // Act
-        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, ("Image", image)));
+        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, ("Image", image)));
 
         // Assert
         Assert.Single(assets.Images);
-        Assert.Equal(17, assets.Images["Image"].Width);
+        Assert.Equal(17, assets.Budget.ColourCount);
     }
 
     private static byte[] Bmp(params uint[] colours)

@@ -39,15 +39,6 @@ alternatives and the measured colour-count baseline, is in
 independently verifiable, and steps 1-5 do not depend on the 8-bit art
 existing.
 
-- [ ] [Assets] Posterise `font2.bmp` (2431 distinct colours on its own)
-      and SCR's `atlas.bmp` (2676) within the 4096 cap — SCR's set
-      totals 5095 and warns today; Elite's 2481 passes — then flip
-      `AssetSet`'s colour validator from warn-only to hard-fail. The
-      same pass should clear the 2765 partial-alpha pixels the validator
-      also reports in SCR's set (the renderer treats transparency as
-      all-or-nothing, so they are an authoring mistake, currently a
-      warning only). Visual smoke-test both games for acceptable font
-      and cockpit quality.
 - [ ] [Assets] Add the 8-bit bitmap set under `EightBit/` for both games
       and declare the tier in each manifest; verify it loads and passes
       the 16-colour cap. Selecting the tier from configuration is where

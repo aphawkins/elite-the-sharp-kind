@@ -7,6 +7,25 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Posterised the over-budget 16-bit assets, 2026-07-28)
+
+- `font2.bmp` (both games' copies, byte-identical) and SCR's `atlas.bmp`
+  are quantised to the 12-bit RGB space real 16-bit hardware used —
+  each channel keeps its high nibble and replicates it, so 0xFF stays
+  0xFF and 0x00 stays 0x00. `atlas.bmp`'s alpha is snapped to 0 or 255
+  at a threshold of 128, clearing all 2765 of its partial-alpha pixels.
+  Both were anti-aliased modern-quality art sitting in the 16-bit slot;
+  no other asset needed touching.
+- Elite's set drops from 2481 distinct opaque colours to 145, SCR's from
+  5095 to 349, both against the 4096 cap. Neither game looks different:
+  the quantisation is invisible at these palette sizes, confirmed by
+  smoke-testing the Elite intro, status screen and front view, and SCR's
+  menu, track preview and in-race cockpit.
+- With both games compliant, `AssetSet`'s validation is no longer
+  warn-only: an over-cap set, or any pixel whose alpha is neither 0 nor
+  255, now fails at startup with the per-asset breakdown logged first so
+  the message names the files to look at.
+
 ### Added (Eager asset loading with colour-budget validation, 2026-07-28)
 
 - `AssetSet` decodes every image and bitmap font for the active tier once

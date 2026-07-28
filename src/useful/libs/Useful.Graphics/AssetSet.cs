@@ -41,7 +41,7 @@ public sealed class AssetSet
             x => ImageReader.Read(x.Value));
 
         AssetColourBudget budget = Measure(assetLocator.Tier, images, fontBitmaps);
-        Report(budget, logger);
+        Validate(budget, logger);
 
         return new(
             images,
@@ -90,29 +90,32 @@ public sealed class AssetSet
         return new(tier, distinct.Count, partialAlpha, perAsset);
     }
 
-    // Warn-only for now: the committed 16-bit sets are over budget until
-    // font2.bmp and atlas.bmp are posterised, at which point this becomes a
-    // hard failure. See docs/asset-structure.md.
-    private static void Report(AssetColourBudget budget, ILogger? logger)
+    // A set that breaks its tier's budget fails the game at startup rather
+    // than rendering something the tier could never have displayed. The
+    // per-asset breakdown is logged first, so the message names which files
+    // to look at. See docs/asset-structure.md.
+    private static void Validate(AssetColourBudget budget, ILogger? logger)
     {
-        if (logger is null)
+        if (budget.IsWithinBudget && budget.PartialAlphaCount == 0)
         {
             return;
         }
 
-        if (!budget.IsWithinBudget)
+        if (logger is not null)
         {
-            LogMessages.AssetColourBudgetExceeded(logger, budget.Tier, budget.ColourCount, budget.Cap);
-
             foreach (KeyValuePair<string, int> asset in budget.PerAsset.OrderByDescending(x => x.Value))
             {
                 LogMessages.AssetColourCount(logger, asset.Key, asset.Value);
             }
         }
 
-        if (budget.PartialAlphaCount > 0)
+        if (!budget.IsWithinBudget)
         {
-            LogMessages.AssetPartialAlpha(logger, budget.PartialAlphaCount);
+            string counted = $"{budget.ColourCount} distinct opaque colours against a cap of {budget.Cap}";
+            throw new UsefulException($"Asset colour cap exceeded for the {budget.Tier} tier: {counted}.");
         }
+
+        string partial = $"{budget.PartialAlphaCount} asset pixels have partial alpha";
+        throw new UsefulException($"{partial}; the renderer needs alpha to be either 0 or 255.");
     }
 }

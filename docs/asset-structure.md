@@ -126,27 +126,44 @@ Fully transparent pixels are excluded from the count. Alpha is enforced
 to be either 0 or 255 on both tiers, matching the renderer, which
 already treats transparency as binary.
 
-### Measured baseline (2026-07-28)
+### Baseline, and how the assets were brought inside it (2026-07-28)
 
-Counted over every committed `.bmp`, treating alpha 0 as transparent:
+Counted over every committed `.bmp`, treating alpha 0 as transparent,
+the sets started out at:
 
-| Game | Union of distinct opaque colours | vs 4096 |
+| Game | Distinct opaque colours | vs 4096 |
 | --- | --- | --- |
-| Elite | 2481 | passes |
-| Stunt Car Racer | 5095 | **fails** |
+| Elite | 2481 | passed |
+| Stunt Car Racer | 5095 | **failed** |
 
-The cause is anti-aliasing in two files: `font2.bmp` alone contributes
-2431 colours (Elite's entire set is only 2481, so that one font *is*
-Elite's budget), and SCR adds `atlas.bmp`'s 2676 on top with almost no
-overlap.
+The cause was anti-aliasing in two files: `font2.bmp` alone contributed
+2431 colours (Elite's entire set was only 2481, so that one font *was*
+Elite's budget), and SCR added `atlas.bmp`'s 2676 on top with almost no
+overlap. `atlas.bmp` also held all 2765 of the partial-alpha pixels.
 
 A bitmap font with 2431 distinct colours is not a 16-bit-era asset by
-any reading — these are effectively modern-tier assets occupying the
-16-bit slot, and the cap is doing its job by catching them. The
-resolution is to posterise `font2.bmp` and `atlas.bmp` down, not to
-soften the rule. Because that is asset work rather than code, the
-validator ships warn-only and is flipped to hard-fail once both games
-comply.
+any reading — those were effectively modern-tier assets occupying the
+16-bit slot, so the fix was to posterise them, not to soften the rule.
+Both files were quantised to the **12-bit RGB space real 16-bit hardware
+used** (keep each channel's high nibble and replicate it, so 0xFF stays
+0xFF and 0x00 stays 0x00), and `atlas.bmp`'s alpha snapped to 0 or 255
+at a threshold of 128. That choice follows from the tier's own premise
+rather than from picking a number that merely fits, and it caps what any
+one 16-bit asset can contribute at 4096 by construction.
+
+| Game | After quantising | Partial alpha |
+| --- | --- | --- |
+| Elite | 145 | 0 |
+| Stunt Car Racer | 349 | 0 |
+
+Only `font2.bmp` and `atlas.bmp` were touched; every other asset was
+already well inside the budget and unchanged by quantisation. Because
+the rest of the set is not quantised, the union staying under 4096 is
+not structurally guaranteed — but at 145 and 349 the headroom is large.
+
+Note this quantisation applies to *authoring* the 16-bit assets. The
+validator itself still only counts distinct values, exactly as decided;
+it does not require colours to sit in the 12-bit space.
 
 ## Eager loading and validation
 
@@ -175,9 +192,9 @@ same answer whichever backend is running.
 
 Validation accumulates the set of distinct opaque ARGB values across the
 whole tier's assets and fails startup if the count exceeds the tier's
-cap, reporting the game, tier, actual count and cap. A per-asset
-breakdown is logged at Information so an over-budget set can be
-attributed to the files responsible.
+cap, or if any pixel's alpha is neither 0 nor 255. A per-asset breakdown
+is logged at Information first, so the failure names the files to look
+at.
 
 ## Build
 
