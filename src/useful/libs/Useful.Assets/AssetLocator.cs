@@ -23,8 +23,10 @@ public sealed class AssetLocator : IAssetLocator
     public IDictionary<string, string> FontBitmapPaths
         => _assetManifest.FontsBitmap.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "FontsBitmap", x.Value));
 
-    public IDictionary<string, string> FontTrueTypePaths
-        => _assetManifest.FontsTrueType.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "FontsTrueType", x.Value));
+    public IDictionary<string, TrueTypeFontAsset> FontTrueTypes
+        => _assetManifest.FontsTrueType.ToDictionary(
+            x => x.Key,
+            x => new TrueTypeFontAsset(Path.Combine(_baseDirectory, "FontsTrueType", x.Value.File), x.Value.PointSize));
 
     public IDictionary<string, string> ImagePaths
         => _assetManifest.Images.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "Images", x.Value));

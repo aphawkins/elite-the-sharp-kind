@@ -8,7 +8,7 @@ public interface IAssetLocator
 
     public IDictionary<string, string> FontBitmapPaths { get; }
 
-    public IDictionary<string, string> FontTrueTypePaths { get; }
+    public IDictionary<string, TrueTypeFontAsset> FontTrueTypes { get; }
 
     public IDictionary<string, string> ImagePaths { get; }
 

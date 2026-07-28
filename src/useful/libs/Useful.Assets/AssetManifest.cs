@@ -18,7 +18,7 @@ public class AssetManifest
 
     public Dictionary<string, string> FontsBitmap { get; init; } = [];
 
-    public Dictionary<string, string> FontsTrueType { get; init; } = [];
+    public Dictionary<string, TrueTypeFontEntry> FontsTrueType { get; init; } = [];
 
     public Dictionary<string, string> Models { get; init; } = [];
 }

@@ -35,9 +35,9 @@ public class AssetLocatorTests
                 { "Arial", "arial.png" },
                 { "Vera", "vera.png" },
             },
-            FontsTrueType = new Dictionary<string, string>
+            FontsTrueType = new Dictionary<string, object>
             {
-                { "Roboto", "roboto.ttf" },
+                { "Roboto", new { File = "roboto.ttf", PointSize = 14 } },
             },
             Images = new Dictionary<string, string>
             {
@@ -82,9 +82,10 @@ public class AssetLocatorTests
             Assert.Contains(Path.Combine(assetsRoot, "FontsBitmap", "vera.png"), fontBitmapPaths.Values);
 
             // Assert - FontsTrueType
-            IDictionary<string, string> fontTrueTypePaths = locator.FontTrueTypePaths;
-            Assert.Single(fontTrueTypePaths);
-            Assert.Equal(Path.Combine(assetsRoot, "FontsTrueType", "roboto.ttf"), fontTrueTypePaths["Roboto"]);
+            IDictionary<string, TrueTypeFontAsset> fontTrueTypes = locator.FontTrueTypes;
+            Assert.Single(fontTrueTypes);
+            Assert.Equal(Path.Combine(assetsRoot, "FontsTrueType", "roboto.ttf"), fontTrueTypes["Roboto"].Path);
+            Assert.Equal(14, fontTrueTypes["Roboto"].PointSize);
 
             // Assert - Images
             IDictionary<string, string> imagePaths = locator.ImagePaths;
@@ -287,9 +288,9 @@ public class AssetLocatorTests
             {
                 { "Arial", "arial.png" },
             },
-            FontsTrueType = new Dictionary<string, string>
+            FontsTrueType = new Dictionary<string, object>
             {
-                { "Roboto", "roboto.ttf" },
+                { "Roboto", new { File = "roboto.ttf", PointSize = 14 } },
             },
             Images = new Dictionary<string, string>
             {
@@ -324,7 +325,7 @@ public class AssetLocatorTests
             // Assert - simple sanity checks
             Assert.Equal(Path.Combine(assetsRoot, "Palette", "palette.png"), locator.PalettePath);
             Assert.Single(locator.FontBitmapPaths);
-            Assert.Single(locator.FontTrueTypePaths);
+            Assert.Single(locator.FontTrueTypes);
             Assert.Single(locator.ImagePaths);
             Assert.Single(locator.MusicPaths);
             Assert.Single(locator.SfxPaths);

@@ -7,6 +7,18 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (TrueType font sizes moved into the asset manifest, 2026-07-28)
+
+- `SDLGraphics.LoadFont` switched on the game-specific font names
+  "Small"/"Large" to pick point sizes 12/18, baking game data into the
+  shared library and throwing for any other font name. The point size
+  now travels with the asset: `FontsTrueType` manifest entries are
+  objects (`{ "File": ..., "PointSize": ... }`), `IAssetLocator`
+  exposes `FontTrueTypes` as `TrueTypeFontAsset` (path + point size)
+  in place of `FontTrueTypePaths`, and `LoadFont` just opens the file
+  at the given size. Both games' manifests keep their existing 12/18
+  sizes, so rendering is unchanged.
+
 ### Fixed (Universe.RemoveShip left Planet/StationOrSun dangling, 2026-07-28)
 
 - `Universe.RemoveShip` only removed from `_objects`, so passing the

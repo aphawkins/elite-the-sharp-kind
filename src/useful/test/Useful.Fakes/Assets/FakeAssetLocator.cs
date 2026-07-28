@@ -13,7 +13,7 @@ public sealed class FakeAssetLocator : IAssetLocator
 
     public IDictionary<string, string> FontBitmapPaths { get; } = new Dictionary<string, string>();
 
-    public IDictionary<string, string> FontTrueTypePaths { get; } = new Dictionary<string, string>();
+    public IDictionary<string, TrueTypeFontAsset> FontTrueTypes { get; } = new Dictionary<string, TrueTypeFontAsset>();
 
     public IDictionary<string, string> ImagePaths { get; } = new Dictionary<string, string>();
 

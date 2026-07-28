@@ -40,8 +40,8 @@
     "Large": "font2.bmp"
   },
   "FontsTrueType": {
-    "Small": "OpenSans-Regular.ttf",
-    "Large": "OpenSans-Regular.ttf"
+    "Small": { "File": "OpenSans-Regular.ttf", "PointSize": 12 },
+    "Large": { "File": "OpenSans-Regular.ttf", "PointSize": 18 }
   },
   "Models": {
     "Adder": "adder.obj",

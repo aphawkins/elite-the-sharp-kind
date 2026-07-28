@@ -110,9 +110,9 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
                 x => x.Key,
                 x => SDLGuard.Execute(() => (nint)SDL_LoadBMP(x.Value))),
 
-            _fonts = assetLocator.FontTrueTypePaths.ToDictionary(
+            _fonts = assetLocator.FontTrueTypes.ToDictionary(
                 x => x.Key,
-                x => LoadFont(x.Key, x.Value)),
+                x => LoadFont(x.Value)),
         };
 
         // Textures are created once here rather than per-draw: creating one
@@ -652,19 +652,15 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         });
     }
 
-    private static nint LoadFont(string fontType, string fontPath)
+    private static nint LoadFont(TrueTypeFontAsset font)
     {
-        Debug.Assert(File.Exists(fontPath), $"Font file '{fontPath}' does not exist.");
+        Debug.Assert(File.Exists(font.Path), $"Font file '{font.Path}' does not exist.");
         Debug.Assert(
-            string.Equals(Path.GetExtension(fontPath), ".ttf", StringComparison.OrdinalIgnoreCase),
-            $"Font file '{fontPath}' must be a TTF file.");
+            string.Equals(Path.GetExtension(font.Path), ".ttf", StringComparison.OrdinalIgnoreCase),
+            $"Font file '{font.Path}' must be a TTF file.");
+        Debug.Assert(font.PointSize > 0, $"Font '{font.Path}' must have a positive point size.");
 
-        return fontType switch
-        {
-            "Small" => SDLGuard.Execute(() => (nint)TTF_OpenFont(fontPath, 12)),
-            "Large" => SDLGuard.Execute(() => (nint)TTF_OpenFont(fontPath, 18)),
-            _ => throw new ArgumentOutOfRangeException(nameof(fontType), fontType, null),
-        };
+        return SDLGuard.Execute(() => (nint)TTF_OpenFont(font.Path, font.PointSize));
     }
 
     private static SDL_Vertex ConvertVertex(Vector2 point, uint color) => new()
