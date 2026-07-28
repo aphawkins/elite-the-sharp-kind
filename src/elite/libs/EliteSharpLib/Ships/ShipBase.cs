@@ -25,6 +25,10 @@ internal class ShipBase : IShip
     private readonly RNG _rng;
     private int[]? _faceRoot;
 
+    // Reused across frames so drawing a ship doesn't allocate; grown to the
+    // model's point count on first use.
+    private Vector4[] _pointList = [];
+
     internal ShipBase(IEliteDraw draw, RNG rng)
     {
         _draw = draw;
@@ -110,10 +114,12 @@ internal class ShipBase : IShip
     /// </summary>
     public virtual void Draw()
     {
-        Vector4[] pointList = new Vector4[100];
+        if (_pointList.Length < Model.Points.Count)
+        {
+            _pointList = new Vector4[Model.Points.Count];
+        }
 
-        // Camera vector (unit) - keep previous call to UnitVector
-        _ = VectorMaths.UnitVector(Vector4.Transform(Location, Rotmat));
+        Vector4[] pointList = _pointList;
 
         // Transform model points
         TransformModelPoints(Rotmat, pointList);

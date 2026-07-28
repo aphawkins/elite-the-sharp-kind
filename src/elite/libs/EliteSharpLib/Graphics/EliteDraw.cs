@@ -18,11 +18,15 @@ namespace EliteSharpLib.Graphics;
 
 internal sealed class EliteDraw : IEliteDraw
 {
+    // Upper bound on the points in any ship model, so the explosion
+    // projection buffer never has to grow.
+    private const int MaxModelPoints = 100;
+
     private readonly uint _colorGold;
     private readonly uint _colorWhite;
     private readonly uint _colorYellow;
     private readonly GameState _gameState;
-    private readonly Vector4[] _pointList = new Vector4[100];
+    private readonly Vector4[] _pointList = new Vector4[MaxModelPoints];
     private readonly IPolygonRenderer _shipRenderer;
     private readonly RNG _rng;
 

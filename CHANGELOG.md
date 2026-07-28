@@ -7,6 +7,17 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (ShipBase draw buffer reuse, 2026-07-28)
+
+- `ShipBase.Draw` allocated a `new Vector4[100]` for every ship on every
+  tick; the transformed-point buffer is now a per-instance field grown
+  once to the model's point count.
+- Deleted the discarded `_ = VectorMaths.UnitVector(...)` call in
+  `ShipBase.Draw` — `UnitVector` is pure, so the call had no effect.
+- `EliteDraw._pointList`'s magic `100` is now a named `MaxModelPoints`
+  constant (it bounds model points, unrelated to the renderers'
+  `MAXPOLYS`).
+
 ### Fixed (lone-wolf ship models missing from the manifest, 2026-07-27)
 
 - `CobraMk3Lone` and `PythonLone` have no `Models` entry in
