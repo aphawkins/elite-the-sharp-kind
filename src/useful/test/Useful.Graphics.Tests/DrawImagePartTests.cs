@@ -91,7 +91,7 @@ public class DrawImagePartTests
 
         Mock<IAssetLocator> assets = new();
         assets.Setup(a => a.ImagePaths).Returns(images);
-        assets.Setup(a => a.FontBitmapPaths).Returns(new Dictionary<string, string>());
+        assets.Setup(a => a.FontBitmaps).Returns(new Dictionary<string, BitmapFontAsset>());
 
         return SoftwareGraphics.Create(100, 100, screenUpdate, assets.Object);
     }

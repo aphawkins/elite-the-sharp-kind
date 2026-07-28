@@ -73,7 +73,7 @@ public class AssetLocatorTierTests : IDisposable
         AssetLocator locator = Locate(SystemTier.SixteenBit);
 
         // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "FontsBitmap", "SixteenBit", "font1.bmp"), locator.FontBitmapPaths["Small"]);
+        Assert.Equal(Path.Combine(_assetsRoot, "FontsBitmap", "SixteenBit", "font1.bmp"), locator.FontBitmaps["Small"].Path);
         Assert.Equal(Path.Combine(_assetsRoot, "Palette", "SixteenBit", "palette.json"), locator.PalettePath);
     }
 
@@ -176,7 +176,10 @@ public class AssetLocatorTierTests : IDisposable
         Tiers = tiers.Select(x => x.ToString()).ToArray(),
         TierOverrides = tierOverrides,
         Palette = "palette.json",
-        FontsBitmap = new Dictionary<string, string> { { "Small", "font1.bmp" } },
+        FontsBitmap = new Dictionary<string, object>
+        {
+            { "Small", new { File = "font1.bmp", CellWidth = 8, CellHeight = 8, Columns = 16 } },
+        },
         Images = new Dictionary<string, string> { { "Logo", "logo.bmp" } },
         Models = new Dictionary<string, string> { { "Ship", "ship.obj" } },
     };

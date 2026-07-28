@@ -711,6 +711,66 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     // The x position of the edge p0-p1 at scanline y, clamped to the
     // edge's endpoints (p0.Y must not be greater than p1.Y).
+    // Ink takes the requested text colour, the sheet's background becomes
+    // transparent, and anything else is copied through - which is what lets a
+    // proportional glyph carry more than one colour.
+    private static uint Recolour(BitmapFont font, int x, int y, uint color)
+    {
+        uint pixelColor = font.Image.GetPixel(x, y);
+
+        return pixelColor == font.Ink ? color
+            : pixelColor == font.Background ? BaseColors.TransparentBlack.Argb
+            : pixelColor;
+    }
+
+    // Monospaced: every glyph fills its cell, so there is nothing to measure
+    // and no marker to look for.
+    private static int AppendGridGlyph(BitmapFont font, FastBitmap temp, int left, char letter, uint color)
+    {
+        (int originX, int originY) = font.CellOrigin(letter);
+
+        for (int y = 0; y < font.CellHeight; y++)
+        {
+            for (int x = 0; x < font.CellWidth; x++)
+            {
+                temp.SetPixel(left + x, y, Recolour(font, originX + x, originY + y, color));
+            }
+        }
+
+        return font.CellWidth;
+    }
+
+    // Variable width: a magenta marker ends each row of the glyph, and a
+    // magenta pixel where the next row would start ends the glyph.
+    private static int AppendProportionalGlyph(BitmapFont font, FastBitmap temp, int left, char letter, uint color)
+    {
+        (int originX, int originY) = font.CellOrigin(letter);
+        int charX = 0;
+        int charY = 0;
+        int maxCharWidth = 0;
+        uint pixelColor = Recolour(font, originX, originY, color);
+
+        do
+        {
+            do
+            {
+                temp.SetPixel(left + charX, charY, pixelColor);
+                charX++;
+                pixelColor = Recolour(font, originX + charX, originY + charY, color);
+            }
+            while (pixelColor != BaseColors.Magenta.Argb);
+
+            maxCharWidth = Math.Max(maxCharWidth, charX);
+            charX = 0;
+            charY++;
+
+            pixelColor = Recolour(font, originX, originY + charY, color);
+        }
+        while (pixelColor != BaseColors.Magenta.Argb);
+
+        return maxCharWidth;
+    }
+
     private static float EdgeX(Vector2 p0, Vector2 p1, float y)
         => p0.X + ((p1.X - p0.X) * EdgeT(p0, p1, y));
 
@@ -973,52 +1033,17 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
         BitmapFont font = Fonts[fontType];
 
-        using FastBitmap temp = new(text.Length * BitmapFont.CharSize, BitmapFont.CharSize);
+        using FastBitmap temp = new(text.Length * font.CellWidth, font.CellHeight);
         int totalWidth = 0;
 
         foreach (char letter in text)
         {
-            int charRow = (letter >> 4) - 2;
-            int charColumn = letter & 0xF;
-            int charX = 0;
-            int charY = 0;
-            int maxCharWidth = 0;
-
-            uint GetPixel()
-            {
-                uint pixelColor = font.Image.GetPixel(
-                    charX + (BitmapFont.CharSize * charColumn) + 1,
-                    charY + (BitmapFont.CharSize * charRow) + 1);
-
-                return pixelColor == BaseColors.Cyan.Argb ? color : pixelColor;
-            }
-
-            uint pixelColor = GetPixel();
-
-            do
-            {
-                maxCharWidth = 0;
-
-                do
-                {
-                    temp.SetPixel(totalWidth + charX, charY, pixelColor);
-                    charX++;
-                    pixelColor = GetPixel();
-                }
-                while (pixelColor != BaseColors.Magenta.Argb);
-
-                maxCharWidth = Math.Max(maxCharWidth, charX);
-                charX = 0;
-                charY++;
-
-                pixelColor = GetPixel();
-            }
-            while (pixelColor != BaseColors.Magenta.Argb);
-
-            totalWidth += maxCharWidth;
+            totalWidth += font.IsProportional
+                ? AppendProportionalGlyph(font, temp, totalWidth, letter, color)
+                : AppendGridGlyph(font, temp, totalWidth, letter, color);
         }
 
-        FastBitmap bitmap = temp.Resize(totalWidth, BitmapFont.CharSize);
+        FastBitmap bitmap = temp.Resize(totalWidth, font.CellHeight);
 
         if (_textCacheOrder.Count >= TextCacheCapacity)
         {

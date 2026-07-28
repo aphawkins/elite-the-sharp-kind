@@ -107,6 +107,6 @@ public class TriangleFillTests
     private static void SetupEmptyAssets(Mock<IAssetLocator> assets)
     {
         assets.Setup(a => a.ImagePaths).Returns(new Dictionary<string, string>());
-        assets.Setup(a => a.FontBitmapPaths).Returns(new Dictionary<string, string>());
+        assets.Setup(a => a.FontBitmaps).Returns(new Dictionary<string, BitmapFontAsset>());
     }
 }

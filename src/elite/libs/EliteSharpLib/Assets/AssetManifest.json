@@ -1,5 +1,13 @@
 {
   "Tiers": [ "EightBit", "SixteenBit" ],
+  "TierOverrides": {
+    "EightBit": {
+      "FontsBitmap": {
+        "Small": { "File": "bbc-micro.bmp", "CellWidth": 10, "CellHeight": 10, "Columns": 12 },
+        "Large": { "File": "bbc-micro.bmp", "CellWidth": 10, "CellHeight": 10, "Columns": 12 }
+      }
+    }
+  },
   "Palette": "palette.json",
   "Images": {
     "Scanner": "scanner.bmp",
@@ -41,8 +49,8 @@
     "Default": "TimGM6mb.sf2"
   },
   "FontsBitmap": {
-    "Small": "font1.bmp",
-    "Large": "font2.bmp"
+    "Small": { "File": "font1.bmp", "CellWidth": 32, "CellHeight": 32, "Columns": 16, "Padding": 1, "IsProportional": true },
+    "Large": { "File": "font2.bmp", "CellWidth": 32, "CellHeight": 32, "Columns": 16, "Padding": 1, "IsProportional": true }
   },
   "FontsTrueType": {
     "Small": { "File": "OpenSans-Regular.ttf", "PointSize": 12 },

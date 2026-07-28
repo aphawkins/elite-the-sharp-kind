@@ -687,8 +687,8 @@ public class SoftwareGraphicsTests
                 .Returns(new Dictionary<string, string>() { { "TestImage", GraphicsFilename(filename) } });
         }
 
-        moqAssetLocator.Setup(x => x.FontBitmapPaths)
-            .Returns(new Dictionary<string, string>());
+        moqAssetLocator.Setup(x => x.FontBitmaps)
+            .Returns(new Dictionary<string, BitmapFontAsset>());
 
         return moqAssetLocator;
     }
@@ -697,9 +697,23 @@ public class SoftwareGraphicsTests
     {
         Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
 
-        moqAssetLocator.Setup(x => x.FontBitmapPaths)
-            .Returns(new Dictionary<string, string>() { { "TestFont", GraphicsFilename("font1.bmp") } });
+        moqAssetLocator.Setup(x => x.FontBitmaps).Returns(
+            new Dictionary<string, BitmapFontAsset> { { "TestFont", SixteenBitFont(GraphicsFilename("font1.bmp")) } });
 
         return moqAssetLocator;
     }
+
+    // The committed 16-bit sheets: 32x32 cells, 16 columns, a 1px grid line,
+    // and magenta-delimited variable widths.
+    private static BitmapFontAsset SixteenBitFont(string path) => new(
+        path,
+        new BitmapFontEntry
+        {
+            File = path,
+            CellWidth = 32,
+            CellHeight = 32,
+            Columns = 16,
+            Padding = 1,
+            IsProportional = true,
+        });
 }

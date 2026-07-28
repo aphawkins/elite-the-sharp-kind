@@ -14,5 +14,8 @@ public class AssetTierOverride
 
     public Dictionary<string, string> Images { get; init; } = [];
 
-    public Dictionary<string, string> FontsBitmap { get; init; } = [];
+    // Whole entries rather than just filenames: a tier's font sheet can
+    // differ in cell size, column count and whether it is proportional, not
+    // only in which file it lives in.
+    public Dictionary<string, BitmapFontEntry> FontsBitmap { get; init; } = [];
 }

@@ -2,6 +2,7 @@
 
 using System.Numerics;
 using BenchmarkDotNet.Attributes;
+using Useful.Assets;
 using Useful.Fakes.Assets;
 
 namespace Useful.Graphics.Benchmarks;
@@ -24,7 +25,15 @@ public class SoftwareGraphicsBenchmarks : IDisposable
             ScreenHeightPixels,
             (_) => { },
             new() { { "TestImage", new FastBitmap(16, 16) } },
-            new() { { "TestFont", new BitmapFont(_fontBitmap) } });
+            new()
+            {
+                {
+                    "TestFont",
+                    new BitmapFont(
+                        _fontBitmap,
+                        new BitmapFontAsset("test", new BitmapFontEntry { CellWidth = 8, CellHeight = 8, Columns = 1 }))
+                },
+            });
     }
 
     [Benchmark]

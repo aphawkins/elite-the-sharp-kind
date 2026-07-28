@@ -44,10 +44,8 @@ public sealed class AssetLocator : IAssetLocator
         PaletteCategory,
         string.IsNullOrEmpty(_overrides.Palette) ? _assetManifest.Palette : _overrides.Palette);
 
-    public IDictionary<string, string> FontBitmapPaths
-        => _assetManifest.FontsBitmap.ToDictionary(
-            x => x.Key,
-            x => TierPath(FontsBitmapCategory, Override(_overrides.FontsBitmap, x.Key, x.Value)));
+    public IDictionary<string, BitmapFontAsset> FontBitmaps
+        => _assetManifest.FontsBitmap.ToDictionary(x => x.Key, x => FontFor(x.Key, x.Value));
 
     public IDictionary<string, TrueTypeFontAsset> FontTrueTypes
         => _assetManifest.FontsTrueType.ToDictionary(
@@ -113,6 +111,17 @@ public sealed class AssetLocator : IAssetLocator
 
     private static string Override(Dictionary<string, string> overrides, string logicalName, string manifestFile)
         => overrides.TryGetValue(logicalName, out string? file) ? file : manifestFile;
+
+    // A tier's font sheet can replace the manifest entry outright, since its
+    // geometry is part of the art rather than a property of the logical name.
+    private BitmapFontAsset FontFor(string logicalName, BitmapFontEntry manifestEntry)
+    {
+        BitmapFontEntry entry = _overrides.FontsBitmap.TryGetValue(logicalName, out BitmapFontEntry? tierEntry)
+            ? tierEntry
+            : manifestEntry;
+
+        return new(TierPath(FontsBitmapCategory, entry.File), entry);
+    }
 
     private string TierPath(string category, string file)
     {

@@ -16,7 +16,7 @@ public sealed class FakeAssetLocator : IAssetLocator
     public string PalettePath { get; } =
         Path.Combine(AppContext.BaseDirectory, "Assets", "Palette", nameof(SystemTier.SixteenBit), "palette.json");
 
-    public IDictionary<string, string> FontBitmapPaths { get; } = new Dictionary<string, string>();
+    public IDictionary<string, BitmapFontAsset> FontBitmaps { get; } = new Dictionary<string, BitmapFontAsset>();
 
     public IDictionary<string, TrueTypeFontAsset> FontTrueTypes { get; } = new Dictionary<string, TrueTypeFontAsset>();
 

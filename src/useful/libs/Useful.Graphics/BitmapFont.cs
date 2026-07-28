@@ -1,22 +1,71 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
-using System.Diagnostics;
+using Useful.Assets;
 
 namespace Useful.Graphics;
 
-public class BitmapFont
+// A font sheet plus the layout needed to find a glyph in it. Two shapes are
+// supported, and they differ in ways that matter typographically rather than
+// incidentally:
+//
+// - Proportional sheets (the 16-bit fonts) pack variable-width glyphs into a
+//   fixed cell and terminate each one with a magenta marker pixel, so the
+//   width has to be measured per glyph. Ink is cyan and is recoloured to
+//   whatever colour the caller asked for; anything else is copied through,
+//   which is what lets a glyph carry more than one colour.
+// - Grid sheets (the 8-bit BBC Micro font) are monospaced, exactly as the
+//   hardware they imitate was: every glyph fills its cell, there are no
+//   markers, and the sheet is two colours - ink and background.
+public sealed class BitmapFont
 {
-    public BitmapFont(FastBitmap fontImage)
+    public BitmapFont(FastBitmap image, BitmapFontAsset asset)
     {
-        ArgumentNullException.ThrowIfNull(fontImage);
+        ArgumentNullException.ThrowIfNull(image);
+        ArgumentNullException.ThrowIfNull(asset);
 
-        Debug.Assert(fontImage.Width == 513, "Font bitmap is not the correct width.");
-        Debug.Assert(fontImage.Height == 193, "Font bitmap is not the correct height.");
+        int required = (asset.Columns * asset.CellWidth) + asset.Padding;
+        if (image.Width < required)
+        {
+            throw new UsefulException(
+                $"Font sheet is {image.Width}px wide, too narrow for {asset.Columns} columns of {asset.CellWidth}px.");
+        }
 
-        Image = fontImage;
+        Image = image;
+        CellWidth = asset.CellWidth;
+        CellHeight = asset.CellHeight;
+        Columns = asset.Columns;
+        Padding = asset.Padding;
+        IsProportional = asset.IsProportional;
     }
 
-    public static int CharSize => 32;
-
     public FastBitmap Image { get; }
+
+    public int CellWidth { get; }
+
+    public int CellHeight { get; }
+
+    public int Columns { get; }
+
+    public int Padding { get; }
+
+    public bool IsProportional { get; }
+
+    // Cyan on a proportional sheet, white on a two-colour grid sheet: the
+    // pixels that take on the requested text colour.
+    public uint Ink => IsProportional ? BaseColors.Cyan.Argb : BaseColors.White.Argb;
+
+    // Grid sheets are opaque, so their background colour is the transparency
+    // key; proportional sheets already carry an alpha channel.
+    public uint Background => IsProportional ? BaseColors.TransparentBlack.Argb : BaseColors.Black.Argb;
+
+    // Glyphs run from space (ASCII 32) left to right, top to bottom. This is
+    // the same mapping the proportional sheets always used - (c >> 4) - 2 and
+    // c & 0xF are just this arithmetic with Columns fixed at 16.
+    public (int X, int Y) CellOrigin(char letter)
+    {
+        int index = letter - ' ';
+        int column = index % Columns;
+        int row = index / Columns;
+        return ((column * CellWidth) + Padding, (row * CellHeight) + Padding);
+    }
 }

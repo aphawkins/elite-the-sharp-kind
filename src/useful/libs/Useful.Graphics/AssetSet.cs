@@ -38,16 +38,16 @@ public sealed class AssetSet
             x => x.Key,
             x => ImageReader.Read(x.Value));
 
-        Dictionary<string, FastBitmap> fontBitmaps = assetLocator.FontBitmapPaths.ToDictionary(
+        Dictionary<string, FastBitmap> fontBitmaps = assetLocator.FontBitmaps.ToDictionary(
             x => x.Key,
-            x => ImageReader.Read(x.Value));
+            x => ImageReader.Read(x.Value.Path));
 
         AssetColourBudget budget = Measure(assetLocator.Tier, images, fontBitmaps);
         Validate(budget, logger);
 
         return new(
             images,
-            fontBitmaps.ToDictionary(x => x.Key, x => new BitmapFont(x.Value)),
+            fontBitmaps.ToDictionary(x => x.Key, x => new BitmapFont(x.Value, assetLocator.FontBitmaps[x.Key])),
             budget);
     }
 
@@ -58,7 +58,8 @@ public sealed class AssetSet
     {
         string[] missing =
         [
-            .. assetLocator.ImagePaths.Concat(assetLocator.FontBitmapPaths)
+            .. assetLocator.ImagePaths
+                .Concat(assetLocator.FontBitmaps.ToDictionary(x => x.Key, x => x.Value.Path))
                 .Where(x => !File.Exists(x.Value))
                 .Select(x => $"{x.Key} ({Path.GetFileName(x.Value)})")
                 .Order(),

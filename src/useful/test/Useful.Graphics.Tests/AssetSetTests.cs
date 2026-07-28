@@ -160,7 +160,11 @@ public class AssetSetTests
         Mock<IAssetLocator> locator = new();
         locator.SetupGet(x => x.Tier).Returns(tier);
         locator.SetupGet(x => x.ImagePaths).Returns(images.ToDictionary(x => x.Name, x => x.File.Path));
-        locator.SetupGet(x => x.FontBitmapPaths).Returns(fonts.ToDictionary(x => x.Name, x => x.File.Path));
+        locator.SetupGet(x => x.FontBitmaps).Returns(fonts.ToDictionary(
+            x => x.Name,
+            x => new BitmapFontAsset(
+                x.File.Path,
+                new BitmapFontEntry { File = x.File.Path, CellWidth = 32, CellHeight = 32, Columns = 16 })));
         return locator.Object;
     }
 }

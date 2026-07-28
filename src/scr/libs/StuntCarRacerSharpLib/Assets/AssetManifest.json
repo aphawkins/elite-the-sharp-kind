@@ -6,8 +6,8 @@
     "Menu": "menu.bmp"
   },
   "FontsBitmap": {
-    "Small": "font1.bmp",
-    "Large": "font2.bmp"
+    "Small": { "File": "font1.bmp", "CellWidth": 32, "CellHeight": 32, "Columns": 16, "Padding": 1, "IsProportional": true },
+    "Large": { "File": "font2.bmp", "CellWidth": 32, "CellHeight": 32, "Columns": 16, "Padding": 1, "IsProportional": true }
   },
   "FontsTrueType": {
     "Small": { "File": "OpenSans-Regular.ttf", "PointSize": 12 },

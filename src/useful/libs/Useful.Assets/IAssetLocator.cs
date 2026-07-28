@@ -11,7 +11,7 @@ public interface IAssetLocator
 
     public string PalettePath { get; }
 
-    public IDictionary<string, string> FontBitmapPaths { get; }
+    public IDictionary<string, BitmapFontAsset> FontBitmaps { get; }
 
     public IDictionary<string, TrueTypeFontAsset> FontTrueTypes { get; }
 

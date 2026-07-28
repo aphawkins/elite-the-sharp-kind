@@ -30,10 +30,10 @@ public class AssetLocatorTests
         object manifestObject = new
         {
             Palette = "palette.png",
-            FontsBitmap = new Dictionary<string, string>
+            FontsBitmap = new Dictionary<string, object>
             {
-                { "Arial", "arial.png" },
-                { "Vera", "vera.png" },
+                { "Arial", new { File = "arial.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
+                { "Vera", new { File = "vera.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
             },
             FontsTrueType = new Dictionary<string, object>
             {
@@ -76,10 +76,10 @@ public class AssetLocatorTests
             Assert.Equal(expectedPalette, locator.PalettePath);
 
             // Assert - FontsBitmap
-            IDictionary<string, string> fontBitmapPaths = locator.FontBitmapPaths;
-            Assert.Equal(2, fontBitmapPaths.Count);
-            Assert.Contains(Path.Combine(assetsRoot, "FontsBitmap", "arial.png"), fontBitmapPaths.Values);
-            Assert.Contains(Path.Combine(assetsRoot, "FontsBitmap", "vera.png"), fontBitmapPaths.Values);
+            IDictionary<string, BitmapFontAsset> fontBitmaps = locator.FontBitmaps;
+            Assert.Equal(2, fontBitmaps.Count);
+            Assert.Equal(Path.Combine(assetsRoot, "FontsBitmap", "arial.png"), fontBitmaps["Arial"].Path);
+            Assert.Equal(Path.Combine(assetsRoot, "FontsBitmap", "vera.png"), fontBitmaps["Vera"].Path);
 
             // Assert - FontsTrueType
             IDictionary<string, TrueTypeFontAsset> fontTrueTypes = locator.FontTrueTypes;
@@ -284,9 +284,9 @@ public class AssetLocatorTests
         object manifestObject = new
         {
             Palette = "palette.png",
-            FontsBitmap = new Dictionary<string, string>
+            FontsBitmap = new Dictionary<string, object>
             {
-                { "Arial", "arial.png" },
+                { "Arial", new { File = "arial.png", CellWidth = 8, CellHeight = 8, Columns = 16 } },
             },
             FontsTrueType = new Dictionary<string, object>
             {
@@ -324,7 +324,7 @@ public class AssetLocatorTests
 
             // Assert - simple sanity checks
             Assert.Equal(Path.Combine(assetsRoot, "Palette", "palette.png"), locator.PalettePath);
-            Assert.Single(locator.FontBitmapPaths);
+            Assert.Single(locator.FontBitmaps);
             Assert.Single(locator.FontTrueTypes);
             Assert.Single(locator.ImagePaths);
             Assert.Single(locator.MusicPaths);
