@@ -17,7 +17,6 @@ public sealed class AssetLocator : IAssetLocator
     private const string FontsBitmapCategory = "FontsBitmap";
     private const string PaletteCategory = "Palette";
     private readonly AssetManifest _assetManifest = new();
-    private readonly AssetTierOverride _overrides;
     private readonly string _baseDirectory;
 
     internal AssetLocator(AssetManifest assetManifest, string baseDirectory, SystemTier tier)
@@ -33,19 +32,16 @@ public sealed class AssetLocator : IAssetLocator
         _assetManifest = assetManifest;
         _baseDirectory = Path.Combine(baseDirectory, "Assets");
         Tier = tier;
-        _overrides = assetManifest.TierOverrides.TryGetValue(tier, out AssetTierOverride? tierOverride)
-            ? tierOverride
-            : new AssetTierOverride();
     }
 
     public SystemTier Tier { get; }
 
-    public string PalettePath => TierPath(
-        PaletteCategory,
-        string.IsNullOrEmpty(_overrides.Palette) ? _assetManifest.Palette : _overrides.Palette);
+    public string PalettePath => TierPath(PaletteCategory, _assetManifest.Palette);
 
     public IDictionary<string, BitmapFontAsset> FontBitmaps
-        => _assetManifest.FontsBitmap.ToDictionary(x => x.Key, x => FontFor(x.Key, x.Value));
+        => _assetManifest.FontsBitmap.ToDictionary(
+            x => x.Key,
+            x => new BitmapFontAsset(TierPath(FontsBitmapCategory, x.Value.File), x.Value));
 
     public IDictionary<string, TrueTypeFontAsset> FontTrueTypes
         => _assetManifest.FontsTrueType.ToDictionary(
@@ -53,9 +49,7 @@ public sealed class AssetLocator : IAssetLocator
             x => new TrueTypeFontAsset(Path.Combine(_baseDirectory, "FontsTrueType", x.Value.File), x.Value.PointSize));
 
     public IDictionary<string, string> ImagePaths
-        => _assetManifest.Images.ToDictionary(
-            x => x.Key,
-            x => TierPath(ImagesCategory, Override(_overrides.Images, x.Key, x.Value)));
+        => _assetManifest.Images.ToDictionary(x => x.Key, x => TierPath(ImagesCategory, x.Value));
 
     public IDictionary<string, string> MusicPaths
         => _assetManifest.Music.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "Music", x.Value));
@@ -74,12 +68,67 @@ public sealed class AssetLocator : IAssetLocator
     public static AssetLocator Create(SystemTier tier)
     {
         string baseDir = Path.GetDirectoryName(AppContext.BaseDirectory) ?? string.Empty;
-        string path = Path.Combine(baseDir, "Assets", AssetManifestFilename);
+        string assetsDir = Path.Combine(baseDir, "Assets");
+        string path = Path.Combine(assetsDir, AssetManifestFilename);
+        AssetManifest manifest = ReadManifest(path);
 
+        // A tier only needs a manifest of its own where it differs from the
+        // base one - a different filename, or a font sheet with different
+        // geometry. Tiers whose assets merely live in a different folder need
+        // no file at all.
+        string overlayPath = Path.Combine(assetsDir, $"AssetManifest.{tier}.json");
+        if (File.Exists(overlayPath))
+        {
+            Overlay(manifest, ReadManifest(overlayPath));
+        }
+
+        return new(manifest, baseDir, tier);
+    }
+
+    public static AssetLocator Create(Stream manifestStream, string baseDirectory)
+        => Create(manifestStream, baseDirectory, SystemTier.SixteenBit);
+
+    public static AssetLocator Create(Stream manifestStream, string baseDirectory, SystemTier tier)
+        => Create(manifestStream, null, baseDirectory, tier);
+
+    public static AssetLocator Create(
+        Stream manifestStream,
+        Stream? tierManifestStream,
+        string baseDirectory,
+        SystemTier tier)
+    {
+        ArgumentNullException.ThrowIfNull(manifestStream);
+
+        AssetManifest manifest = Deserialize(manifestStream);
+
+        if (tierManifestStream is not null)
+        {
+            Overlay(manifest, Deserialize(tierManifestStream));
+        }
+
+        return new(manifest, baseDirectory, tier);
+    }
+
+    private static AssetManifest Deserialize(Stream manifestStream)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<AssetManifest>(manifestStream)
+                ?? throw new UsefulException("Failed to read asset manifest from provided stream.");
+        }
+        catch (JsonException ex)
+        {
+            throw new UsefulException("Failed to read asset manifest from provided stream.", ex);
+        }
+    }
+
+    private static AssetManifest ReadManifest(string path)
+    {
         try
         {
             using FileStream stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            return Create(stream, baseDir, tier);
+            return JsonSerializer.Deserialize<AssetManifest>(stream)
+                ?? throw new UsefulException($"Asset manifest file is empty: {path}");
         }
         catch (Exception ex) when (ex is not UsefulException)
         {
@@ -87,40 +136,30 @@ public sealed class AssetLocator : IAssetLocator
         }
     }
 
-    public static AssetLocator Create(Stream manifestStream, string baseDirectory)
-        => Create(manifestStream, baseDirectory, SystemTier.SixteenBit);
-
-    public static AssetLocator Create(Stream manifestStream, string baseDirectory, SystemTier tier)
+    // Entry-by-entry: a tier's manifest states only what it changes, so
+    // anything it leaves out keeps the base manifest's value.
+    private static void Overlay(AssetManifest manifest, AssetManifest tierManifest)
     {
-        ArgumentNullException.ThrowIfNull(manifestStream);
-
-        AssetManifest manifest;
-
-        try
+        if (!string.IsNullOrEmpty(tierManifest.Palette))
         {
-            manifest = JsonSerializer.Deserialize<AssetManifest>(manifestStream)
-                ?? throw new UsefulException("Failed to read asset manifest from provided stream.");
-        }
-        catch (JsonException ex)
-        {
-            throw new UsefulException("Failed to read asset manifest from provided stream.", ex);
+            manifest.Palette = tierManifest.Palette;
         }
 
-        return new(manifest, baseDirectory, tier);
+        Overlay(manifest.Images, tierManifest.Images);
+        Overlay(manifest.Sfx, tierManifest.Sfx);
+        Overlay(manifest.Music, tierManifest.Music);
+        Overlay(manifest.SoundFonts, tierManifest.SoundFonts);
+        Overlay(manifest.Models, tierManifest.Models);
+        Overlay(manifest.FontsBitmap, tierManifest.FontsBitmap);
+        Overlay(manifest.FontsTrueType, tierManifest.FontsTrueType);
     }
 
-    private static string Override(Dictionary<string, string> overrides, string logicalName, string manifestFile)
-        => overrides.TryGetValue(logicalName, out string? file) ? file : manifestFile;
-
-    // A tier's font sheet can replace the manifest entry outright, since its
-    // geometry is part of the art rather than a property of the logical name.
-    private BitmapFontAsset FontFor(string logicalName, BitmapFontEntry manifestEntry)
+    private static void Overlay<T>(Dictionary<string, T> entries, Dictionary<string, T> tierEntries)
     {
-        BitmapFontEntry entry = _overrides.FontsBitmap.TryGetValue(logicalName, out BitmapFontEntry? tierEntry)
-            ? tierEntry
-            : manifestEntry;
-
-        return new(TierPath(FontsBitmapCategory, entry.File), entry);
+        foreach (KeyValuePair<string, T> entry in tierEntries)
+        {
+            entries[entry.Key] = entry.Value;
+        }
     }
 
     private string TierPath(string category, string file)

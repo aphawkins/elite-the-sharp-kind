@@ -1,5 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
+using Useful.Assets;
+
 namespace Useful.Abstraction.Config;
 
 /// <summary>
@@ -15,4 +17,8 @@ public abstract class BaseConfigSettings
     public GraphicsBackend GraphicsBackend { get; set; } = GraphicsBackend.Software;
 
     public bool MusicOn { get; set; } = true;
+
+    // Which machine's look the game reproduces: picks the asset set and,
+    // with it, the render resolution and scale. See docs/asset-structure.md.
+    public SystemTier Tier { get; set; } = SystemTier.SixteenBit;
 }

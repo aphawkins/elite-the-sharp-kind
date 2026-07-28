@@ -1,13 +1,5 @@
 {
   "Tiers": [ "EightBit", "SixteenBit" ],
-  "TierOverrides": {
-    "EightBit": {
-      "FontsBitmap": {
-        "Small": { "File": "bbc-micro.bmp", "CellWidth": 10, "CellHeight": 10, "Columns": 12 },
-        "Large": { "File": "bbc-micro.bmp", "CellWidth": 10, "CellHeight": 10, "Columns": 12 }
-      }
-    }
-  },
   "Palette": "palette.json",
   "Images": {
     "Scanner": "scanner.bmp",

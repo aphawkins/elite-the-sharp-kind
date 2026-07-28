@@ -93,22 +93,41 @@ public class AssetLocatorTierTests : IDisposable
     }
 
     [Fact]
-    public void AppliesATierOverrideToTheFilename()
+    public void ATierManifestReplacesTheEntriesItNames()
     {
         // Arrange: the 8-bit set uses a different file for the same logical name.
         GivenAsset("Images", "EightBit", "logo-small.bmp");
-        object manifest = Manifest(
-            [SystemTier.EightBit],
-            new Dictionary<string, object>
-            {
-                { "EightBit", new { Images = new Dictionary<string, string> { { "Logo", "logo-small.bmp" } } } },
-            });
+        object tierManifest = new { Images = new Dictionary<string, string> { { "Logo", "logo-small.bmp" } } };
 
         // Act
-        string path = Locate(SystemTier.EightBit, manifest).ImagePaths["Logo"];
+        string path = LocateWithTierManifest(SystemTier.EightBit, Manifest([SystemTier.EightBit]), tierManifest).ImagePaths["Logo"];
 
         // Assert
         Assert.Equal(Path.Combine(_assetsRoot, "Images", "EightBit", "logo-small.bmp"), path);
+    }
+
+    [Fact]
+    public void ATierManifestLeavesEntriesItDoesNotNameAlone()
+    {
+        // Arrange: a tier manifest that only replaces the font must not
+        // disturb the images, models or palette the base manifest declares.
+        GivenAsset("Images", "EightBit", "logo.bmp");
+        object tierManifest = new
+        {
+            FontsBitmap = new Dictionary<string, object>
+            {
+                { "Small", new { File = "bbc.bmp", CellWidth = 10, CellHeight = 10, Columns = 12 } },
+            },
+        };
+
+        // Act
+        AssetLocator locator = LocateWithTierManifest(SystemTier.EightBit, Manifest([SystemTier.EightBit]), tierManifest);
+
+        // Assert
+        Assert.Equal(Path.Combine(_assetsRoot, "Images", "EightBit", "logo.bmp"), locator.ImagePaths["Logo"]);
+        Assert.Equal(Path.Combine(_assetsRoot, "Models", "ship.obj"), locator.ModelPaths["Ship"]);
+        Assert.Equal(10, locator.FontBitmaps["Small"].CellWidth);
+        Assert.Equal(12, locator.FontBitmaps["Small"].Columns);
     }
 
     [Fact]
@@ -116,7 +135,7 @@ public class AssetLocatorTierTests : IDisposable
     {
         // Arrange: asking for a tier with no assets fails at construction
         // rather than silently resolving to the shared fallback at first draw.
-        object manifest = Manifest([SystemTier.SixteenBit], []);
+        object manifest = Manifest([SystemTier.SixteenBit]);
 
         // Act / Assert
         Assert.Throws<UsefulException>(() => Locate(SystemTier.EightBit, manifest));
@@ -127,7 +146,7 @@ public class AssetLocatorTierTests : IDisposable
     {
         // Arrange
         GivenAsset("Images", "SixteenBit", "logo.bmp");
-        using MemoryStream stream = ToStream(Manifest([], []));
+        using MemoryStream stream = ToStream(Manifest([]));
 
         // Act
         AssetLocator locator = AssetLocator.Create(stream, _tempRoot);
@@ -171,10 +190,9 @@ public class AssetLocatorTierTests : IDisposable
     private static MemoryStream ToStream(object manifest)
         => new(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(manifest)));
 
-    private static object Manifest(SystemTier[] tiers, Dictionary<string, object> tierOverrides) => new
+    private static object Manifest(SystemTier[] tiers) => new
     {
         Tiers = tiers.Select(x => x.ToString()).ToArray(),
-        TierOverrides = tierOverrides,
         Palette = "palette.json",
         FontsBitmap = new Dictionary<string, object>
         {
@@ -194,11 +212,18 @@ public class AssetLocatorTierTests : IDisposable
     }
 
     private AssetLocator Locate(SystemTier tier, params SystemTier[] shipped)
-        => Locate(tier, Manifest(shipped, []));
+        => Locate(tier, Manifest(shipped));
 
     private AssetLocator Locate(SystemTier tier, object manifest)
     {
         using MemoryStream stream = ToStream(manifest);
         return AssetLocator.Create(stream, _tempRoot, tier);
+    }
+
+    private AssetLocator LocateWithTierManifest(SystemTier tier, object manifest, object tierManifest)
+    {
+        using MemoryStream stream = ToStream(manifest);
+        using MemoryStream tierStream = ToStream(tierManifest);
+        return AssetLocator.Create(stream, tierStream, _tempRoot, tier);
     }
 }

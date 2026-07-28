@@ -12,8 +12,6 @@ public class AssetManifest
     // that isn't listed fails at startup rather than at first draw.
     public Collection<SystemTier> Tiers { get; init; } = [];
 
-    public Dictionary<SystemTier, AssetTierOverride> TierOverrides { get; init; } = [];
-
     public string Palette { get; set; } = string.Empty;
 
     public Dictionary<string, string> Images { get; init; } = [];
