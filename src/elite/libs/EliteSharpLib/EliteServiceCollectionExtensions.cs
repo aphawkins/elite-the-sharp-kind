@@ -187,13 +187,13 @@ public static class EliteServiceCollectionExtensions
     private static void PopulateScreens(IServiceProvider sp)
     {
         ScreenManager<Screen, IScreenController> views = sp.GetRequiredService<ScreenManager<Screen, IScreenController>>();
-        views.Add(Screen.IntroOne, sp.GetRequiredService<Intro1View>());
+        views.Add(Screen.IntroOne, sp.GetRequiredService<Intro1Controller>());
         views.Add(Screen.IntroTwo, sp.GetRequiredService<Intro2View>());
         views.Add(Screen.GalacticChart, sp.GetRequiredService<GalacticChartController>());
         views.Add(Screen.ShortRangeChart, sp.GetRequiredService<ShortRangeChartView>());
         views.Add(Screen.PlanetData, sp.GetRequiredService<PlanetDataView>());
         views.Add(Screen.MarketPrices, sp.GetRequiredService<MarketView>());
-        views.Add(Screen.CommanderStatus, sp.GetRequiredService<CommanderStatusView>());
+        views.Add(Screen.CommanderStatus, sp.GetRequiredService<CommanderStatusController>());
         views.Add(Screen.FrontView, sp.GetRequiredService<PilotFrontView>());
         views.Add(Screen.RearView, sp.GetRequiredService<PilotRearView>());
         views.Add(Screen.LeftView, sp.GetRequiredService<PilotLeftView>());
@@ -201,16 +201,16 @@ public static class EliteServiceCollectionExtensions
         views.Add(Screen.Docking, sp.GetRequiredService<DockingView>());
         views.Add(Screen.Undocking, sp.GetRequiredService<LaunchView>());
         views.Add(Screen.Hyperspace, sp.GetRequiredService<HyperspaceView>());
-        views.Add(Screen.Inventory, sp.GetRequiredService<InventoryView>());
+        views.Add(Screen.Inventory, sp.GetRequiredService<InventoryController>());
         views.Add(Screen.EquipShip, sp.GetRequiredService<EquipmentView>());
         views.Add(Screen.Options, sp.GetRequiredService<OptionsView>());
         views.Add(Screen.LoadCommander, sp.GetRequiredService<LoadCommanderView>());
         views.Add(Screen.SaveCommander, sp.GetRequiredService<SaveCommanderView>());
-        views.Add(Screen.Quit, sp.GetRequiredService<QuitView>());
+        views.Add(Screen.Quit, sp.GetRequiredService<QuitController>());
         views.Add(Screen.Settings, sp.GetRequiredService<SettingsView>());
         views.Add(Screen.EngineSettings, sp.GetRequiredService<EngineSettingsView>());
         views.Add(Screen.MissionOne, sp.GetRequiredService<ConstrictorMissionView>());
-        views.Add(Screen.MissionTwo, sp.GetRequiredService<ThargoidMissionView>());
+        views.Add(Screen.MissionTwo, sp.GetRequiredService<ThargoidMissionController>());
         views.Add(Screen.EscapeCapsule, sp.GetRequiredService<EscapeCapsuleView>());
         views.Add(Screen.GameOver, sp.GetRequiredService<GameOverView>());
     }
@@ -220,22 +220,12 @@ public static class EliteServiceCollectionExtensions
     private static void AddEliteViews(this IServiceCollection services)
     {
         services.AddEliteFlightViews();
-        services.AddGalacticChart();
+        services.AddSplitScreens();
         services.AddEliteConsoleViews();
     }
 
     private static void AddEliteFlightViews(this IServiceCollection services)
     {
-        services.AddSingleton(sp => new Intro1View(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<AudioController>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Combat>(),
-            sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IShipFactory>(),
-            sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro1View>()));
         services.AddSingleton(sp => new Intro2View(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -330,10 +320,11 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<GameOverView>()));
     }
 
-    // The galactic chart is split controller/view; the tier selects which
-    // IView<GalacticChartModel> is registered here. Kept separate from
-    // AddEliteConsoleViews so neither method's class coupling runs away.
-    private static void AddGalacticChart(this IServiceCollection services)
+    // Screens already split controller/view: the tier selects which IView
+    // implementation is registered, and the controller is what goes into the
+    // screen map. Kept separate from AddEliteConsoleViews so neither
+    // method's class coupling runs away; screens move here as they convert.
+    private static void AddSplitScreens(this IServiceCollection services)
     {
         services.AddSingleton<IView<GalacticChartModel>>(sp => new GalacticChartView(
             sp.GetRequiredService<IEliteDraw>()));
@@ -343,6 +334,51 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlanetController>(),
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<IView<GalacticChartModel>>()));
+
+        services.AddSingleton<IView<QuitModel>>(sp => new QuitView(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new QuitController(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<IView<QuitModel>>()));
+
+        services.AddSingleton<IView<Intro1Model>>(sp => new Intro1View(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new Intro1Controller(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<AudioController>(),
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<Combat>(),
+            sp.GetRequiredService<Universe>(),
+            sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<IView<Intro1Model>>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro1Controller>()));
+
+        services.AddSingleton<IView<CommanderStatusModel>>(sp => new CommanderStatusView(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new CommanderStatusController(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<Trade>(),
+            sp.GetRequiredService<PlanetController>(),
+            sp.GetRequiredService<Universe>(),
+            sp.GetRequiredService<IView<CommanderStatusModel>>()));
+
+        services.AddSingleton<IView<InventoryModel>>(sp => new InventoryView(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new InventoryController(
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<Trade>(),
+            sp.GetRequiredService<IView<InventoryModel>>()));
+
+        services.AddSingleton<IView<ThargoidMissionModel>>(sp => new ThargoidMissionView(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new ThargoidMissionController(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<IView<ThargoidMissionModel>>()));
     }
 
     private static void AddEliteConsoleViews(this IServiceCollection services)
@@ -364,17 +400,6 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<PlanetController>()));
-        services.AddSingleton(sp => new CommanderStatusView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Trade>(),
-            sp.GetRequiredService<PlanetController>(),
-            sp.GetRequiredService<Universe>()));
-        services.AddSingleton(sp => new InventoryView(
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Trade>()));
         services.AddSingleton(sp => new EquipmentView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
@@ -396,10 +421,6 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<SaveFile>()));
-        services.AddSingleton(sp => new QuitView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IKeyboard>()));
         services.AddSingleton(sp => new SettingsView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
@@ -423,11 +444,6 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IShipFactory>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConstrictorMissionView>()));
-        services.AddSingleton(sp => new ThargoidMissionView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<PlayerShip>()));
     }
 
     // TODO: improve this (moved from EliteMain, see backlog)

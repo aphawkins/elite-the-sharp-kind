@@ -3,64 +3,53 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
-using EliteSharpLib.Trader;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class InventoryView : IScreenController
+/// <summary>
+/// The 16-bit inventory screen: the 512-space layout, and nothing else.
+/// </summary>
+internal sealed class InventoryView : IView<InventoryModel>
 {
+    private const int LabelX = 16;
+    private const int ValueX = 70;
+    private const int QuantityX = 180;
+    private const int CargoStartY = 98;
+    private const int SpacingY = 16;
+
     private readonly IEliteDraw _draw;
-    private readonly PlayerShip _ship;
-    private readonly Trade _trade;
     private readonly uint _colorGreen;
     private readonly uint _colorWhite;
 
-    internal InventoryView(IEliteDraw draw, PlayerShip ship, Trade trade)
+    internal InventoryView(IEliteDraw draw)
     {
         _draw = draw;
-        _ship = ship;
-        _trade = trade;
 
         _colorGreen = draw.Palette["Green"];
         _colorWhite = draw.Palette["White"];
     }
 
-    public void Draw()
+    public void Draw(InventoryModel model)
     {
-        _draw.DrawViewHeader("INVENTORY");
+        ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 50), "Fuel:", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 50), $"{_ship.Fuel:N1} Light Years", nameof(FontType.Small), _colorWhite);
+        _draw.DrawViewHeader(model.Title);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, 66), "Cash:", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(70 + _draw.Offset, 66), $"{_trade.Credits:N1} Credits", nameof(FontType.Small), _colorWhite);
+        DrawRow(50, "Fuel:", model.Fuel);
+        DrawRow(66, "Cash:", model.Cash);
 
-        int y = 98;
-        foreach (KeyValuePair<StockType, StockItem> stock in _trade.StockMarket)
+        float y = CargoStartY;
+        foreach ((string name, string quantity) in model.Cargo)
         {
-            if (stock.Value.CurrentCargo > 0)
-            {
-                _draw.Graphics.DrawTextLeft(new(16 + _draw.Offset, y), stock.Value.Name, nameof(FontType.Small), _colorWhite);
-                _draw.Graphics.DrawTextLeft(
-                    new(180 + _draw.Offset, y),
-                    $"{stock.Value.CurrentCargo}{stock.Value.Units}",
-                    nameof(FontType.Small),
-                    _colorWhite);
-                y += 16;
-            }
+            _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), name, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(QuantityX + _draw.Offset, y), quantity, nameof(FontType.Small), _colorWhite);
+            y += SpacingY;
         }
     }
 
-    public void HandleInput()
+    private void DrawRow(float y, string label, string value)
     {
-    }
-
-    public void Reset()
-    {
-    }
-
-    public void Update()
-    {
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Offset, y), value, nameof(FontType.Small), _colorWhite);
     }
 }

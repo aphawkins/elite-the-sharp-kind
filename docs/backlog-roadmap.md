@@ -118,9 +118,24 @@ chart. Two findings from it that reshape what follows:
   Verify layout equivalence by algebra plus renderer-free controller
   tests, and use screenshots only to confirm nothing gross broke.
 
-- [ ] [EliteSharpLib] Convert the remaining 21 behaviour-bearing views
-      to the pattern — the 17 with input left after item 1:
-      `ShortRangeChartView` (38 lines of input),
+`ShortRangeChartView` is deliberately excluded (decided 2026-07-29,
+option C of three): its `Reset` entangles layout with content selection
+in a way no clean split survives — the text-row packing is computed from
+screen coordinates, `row <= 3` skips a planet's blob and not just its
+name, and `blob_size` depends on `GameState.CarryFlag`, a side effect of
+the `NamePlanet` call that only happens when a name wins a free row (a
+faithful port of the original's quirk, as the comment there says). Its
+cursor is entangled too: the clamps are relative to `Centre`, so the
+galactic chart's galaxy-space trick does not transfer. Revisit when the
+8-bit short-range chart is actually authored and there are real layout
+requirements to design against, rather than guessed ones; the preferred
+shape then is passing the tier's layout metrics (centre, scale, row
+height) into the controller, which keeps the `CarryFlag` quirk in one
+place, rather than moving row packing and name generation into each
+tier's view.
+
+- [ ] [EliteSharpLib] Convert the remaining behaviour-bearing views
+      to the pattern:
       `Intro2View` (28), `LoadCommanderView` (25), `SaveCommanderView`
       (24), `SettingsListView` (22), `MarketView` (18), `QuitView` (17),
       `Intro1View` (16, the Y/N handling), `OptionsView` and

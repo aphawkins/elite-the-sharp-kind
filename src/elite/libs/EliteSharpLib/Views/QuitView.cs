@@ -3,58 +3,30 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class QuitView : IScreenController
+/// <summary>
+/// The 16-bit quit confirmation: the 512-space layout, and nothing else.
+/// </summary>
+internal sealed class QuitView : IView<QuitModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly GameState _gameState;
-    private readonly IKeyboard _keyboard;
     private readonly uint _colorGold;
 
-    internal QuitView(GameState gameState, IEliteDraw draw, IKeyboard keyboard)
+    internal QuitView(IEliteDraw draw)
     {
-        _gameState = gameState;
         _draw = draw;
-        _keyboard = keyboard;
 
         _colorGold = draw.Palette["Gold"];
     }
 
-    public void Draw()
+    public void Draw(QuitModel model)
     {
-        _draw.DrawViewHeader("GAME OPTIONS");
+        ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "QUIT GAME (Y/N)?", nameof(FontType.Large), _colorGold);
-    }
+        _draw.DrawViewHeader(model.Header);
 
-    public void HandleInput()
-    {
-        if (_keyboard.IsPressed(ConsoleKey.Y))
-        {
-            _gameState.DoExitGame();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.N))
-        {
-            if (_gameState.IsDocked)
-            {
-                _gameState.SetView(Screen.CommanderStatus);
-            }
-            else
-            {
-                _gameState.SetView(Screen.FrontView);
-            }
-        }
-    }
-
-    public void Reset()
-    {
-    }
-
-    public void Update()
-    {
+        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, model.Prompt, nameof(FontType.Large), _colorGold);
     }
 }
