@@ -7,6 +7,31 @@ When a decision reshapes or unblocks backlog items, those items are
 updated in backlog-roadmap.md to reference the decision here rather than
 restating it.
 
+## Resolved (2026-07-29) — `Focus` follows screen height
+
+Revises one bullet of the 2026-07-28 tier presentation decision below,
+which derived `Focus` from the screen *width*. Everything else in that
+decision stands.
+
+- **`Focus` is derived from the tier's screen height**, so the vertical
+  field of view stays the same at every resolution and a wider screen
+  shows more to the left and right rather than magnifying everything.
+- The width-derived version holds the *horizontal* field of view
+  constant instead, which is the wrong invariant once the width and
+  height differ: with `Focus = width`, the vertical field of view is
+  `2·atan(height / 2·width)`, so it narrows as the screen widens. That
+  is why the trial widening of the 16-bit tier to 640x512 (2026-07-29,
+  see the backlog) made the planet fill the front view — a 25% longer
+  focal length and less visible above and below.
+- It also fixes a live inconsistency rather than only a future one. The
+  8-bit tier is 320x256, so today its `Focus` is 320 while its `Scale`
+  is exactly half the 16-bit tier's — the 3D view is not the half-size
+  rendering the rest of the tier is, and its vertical field of view is
+  already narrower than 16-bit's. Height-derived `Focus` makes it 256,
+  exactly half, consistent with `Scale`.
+- No effect at 512x512, where width and height are equal — which is
+  also why the 16-bit tier reproduces unchanged.
+
 ## Resolved (2026-07-28) — tier presentation architecture
 
 - **`Scale` magnifies the window, it does not scale the drawing.** A tier
@@ -44,10 +69,12 @@ restating it.
   it centres the view a quarter of the way across. Decided: separate the
   two, so projection becomes `Centre + (x * Focus / z)` with `Centre` the
   real centre of the 3D viewport and `Focus` a float. `Focus` is derived
-  from the tier's screen width times a per-tier factor, which keeps the
-  field of view constant across tiers, reproduces 16-bit exactly
-  (512 x 1.0), and works at any Modern resolution without needing to be a
-  multiple of anything.
+  from the tier's screen size times a per-tier factor, which reproduces
+  16-bit exactly (512 x 1.0) and works at any Modern resolution without
+  needing to be a multiple of anything. **Superseded 2026-07-29 on which
+  dimension it follows**: this said width, holding the horizontal field
+  of view constant; it is height, holding the vertical one constant —
+  see the decision at the top of this file.
 - **Elite first, then SCR.** SCR inherits the `Tier` setting from
   the shared `EngineConfigSettings` but nothing reads it yet; that is
   fine for now.

@@ -22,7 +22,7 @@ internal sealed class EliteDraw : IEliteDraw
     // projection buffer never has to grow.
     private const int MaxModelPoints = 100;
 
-    // Focal length as a multiple of the tier's screen width. 1.0 reproduces
+    // Focal length as a multiple of the tier's screen height. 1.0 reproduces
     // the 16-bit render exactly (512 x 1.0 = the old 256 x Scale 2).
     private const float FocusFactor = 1.0f;
 
@@ -51,11 +51,14 @@ internal sealed class EliteDraw : IEliteDraw
 
     public Vector2 Centre => new(Graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
 
-    // The original's projection is x * 256 / z against a 256-wide view, i.e.
-    // a focal length of one screen width. Deriving it from the tier's width
-    // keeps the field of view identical at every tier; it is deliberately not
-    // tied to Scale, which is window/coordinate magnification, not zoom.
-    public float Focus => Graphics.ScreenWidth * FocusFactor;
+    // The original's projection is x * 256 / z against a 256-square view, i.e.
+    // a focal length of one screen height. Deriving it from the tier's height
+    // holds the vertical field of view constant, so a wider screen shows more
+    // to the left and right rather than magnifying everything (decided
+    // 2026-07-29; deriving it from the width instead narrows the vertical view
+    // as the screen widens). It is deliberately not tied to Scale, which is
+    // window/coordinate magnification, not zoom.
+    public float Focus => Graphics.ScreenHeight * FocusFactor;
 
     public IGraphics Graphics { get; }
 
