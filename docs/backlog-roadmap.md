@@ -517,14 +517,17 @@ either.**):
       space, so what remains is the resizable flag, switching that call's
       mode from `INTEGER_SCALE` to `LETTERBOX` when the window is free to
       be any size, and deciding how the two settings interact.
-- [ ] [Apps] Make the render resolution configurable: both apps
-      hardcode `ScreenWidth`/`ScreenHeight` consts (the "Get these from
-      config" comment at [SDLProgram.cs:22-29](../src/elite/apps/EliteSharp/SDLProgram.cs),
-      including the commented-out QHD block); move them into each
-      game's config (the shared `EngineConfigSettings` is the natural
-      home, next to `Tier`) so a launch resolution/aspect can be chosen. This
-      exposes rather than fixes fixed-size assumptions — pair with the
-      audits below before shipping non-default values.
+- [ ] [Apps] Decide whether the render resolution needs to be
+      configurable at all. Elite no longer hardcodes it: it derives
+      from the tier in `SDLProgram.ResolutionFor`, which is the shape
+      the tier decision wanted (the asset set and the resolution can
+      never disagree). What is left is the question this item was
+      really asking — whether a launch resolution/aspect should also be
+      settable *independently* of the tier, in
+      `EngineConfigSettings` next to `Tier`. If yes, note it exposes
+      rather than fixes fixed-size assumptions, so it must follow the
+      non-512x512 audit below. SCR still hardcodes its own consts
+      either way.
 - [ ] [StuntCarRacerSharpLib] SCR widescreen: with resolution configurable,
       make the 3D viewport render at the window aspect (SCR's
       `Scene3D.SetView` already takes width/height) and apply ptitSeb's
@@ -534,19 +537,66 @@ either.**):
       640x400 assumptions. `HudRenderer`'s virtual-canvas scaling
       mostly survives as-is.
 - [ ] [EliteSharpLib] Elite at non-512x512 resolutions: audit and fix
-      the hardcoded coordinate-space assumptions — 511 in
-      `ShipBase.DrawLasers`, `ScannerWidth = 512` in `EliteDraw`, the
-      `Centre`/`Scale` maths (`Scale` is now `EliteDraw.Scale`) — so
-      Elite renders correctly at other resolutions. **[LARGE]**
-      — the maintainer decided (see [decisions.md](decisions.md)) Elite
-      should support the full 8-bit/16-bit/modern resolution-tier scheme,
-      not just integer-scaled 512x512; re-scope this item against that
-      decision before starting.
+      the hardcoded coordinate-space assumptions so Elite renders
+      correctly at other resolutions. **[LARGE]** — the maintainer
+      decided (see [decisions.md](decisions.md)) Elite should support
+      the full 8-bit/16-bit/modern resolution-tier scheme, not just
+      integer-scaled 512x512; re-scope this item against that decision
+      before starting.
+
+      **The maintainer intends to widen the 16-bit tier to 640x512**
+      (`SDLProgram.ResolutionFor`'s `_ => (512, 512)` becomes
+      `(640, 512)` — a one-line change). It was tried on 2026-07-29 and
+      reverted, because it works but exposes the four problems below.
+      This item is what has to land first; do not make the one-line
+      change until they are resolved. Height is unchanged, so
+      everything here is width-only.
+
+      What the trial run established, so nobody has to repeat it:
+      nothing crashes, the full suite still passes, and every screen
+      that positions via `_draw.Offset` or `_draw.Centre` re-centres
+      correctly with no edit (`GalacticChart`, `CommanderStatus` and
+      `Inventory` were verified live). The problems are:
+      - **The HUD stops spanning the window.** `scanner.bmp` is 512
+        wide and `ScannerLeft = Centre.X - (ScannerWidth / 2)` centres
+        it, leaving black gutters at x<64 and x>575 along the bottom.
+        Needs either a wider 16-bit scanner asset or an explicit
+        decision to accept a letterboxed HUD.
+      - **The 3D field of view changes.** `Focus => ScreenWidth *
+        FocusFactor` ([EliteDraw.cs:27,58](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
+        makes the focal length 640 rather than 512, so everything
+        renders 25% larger and — since the height did not change — the
+        vertical field of view narrows. That is gameplay-visible, not
+        cosmetic: less is visible above and below. Decide whether
+        `Focus` should follow width, height, or a fixed reference, and
+        settle it before any 8-bit layout is authored against it.
+      - **Screens using bare absolute coordinates drift out of
+        alignment** with those that are `Offset`-relative, which stay
+        centred. `ThargoidMissionView` (`new(116, 132)`, the Blake
+        portrait at `new(352, 46)`), `ConstrictorMissionView`,
+        `PlanetDataView`, `MarketView` and the commander save/load
+        screens are the known cases. This is a latent bug at any width
+        except 512, independent of the tier scheme, and it is a fourth
+        bucket for the per-tier view survey above.
+      - **The stale comment** in
+        [SDLProgram.cs](../src/elite/apps/EliteSharp/SDLProgram.cs)
+        ("512x512 is what Elite has always rendered at") needs updating
+        with the change.
+
+      Two specifics this item used to cite are now out of date: `511`
+      in `ShipBase.DrawLasers` is already fixed — `ProjectToViewBoundary`
+      clips to the real viewport — and the `512` literals still in the
+      lib (`Combat.cs:758-759`, `Scanner.cs:305`, `Space.cs:408-414`)
+      are world-space and physics constants, not screen coordinates, so
+      they are not in scope. `ScannerWidth` is already derived from the
+      image rather than hardcoded; the gutter problem above is the
+      asset's width, not the code's.
 - [ ] [EliteSharpLib] Number of stars proportional to screen size (issue
-      #4): only matters once a resolution other than the current fixed
-      512x512 is actually reachable, so sequence this after the two items
-      above land (render-resolution-configurable, then non-512x512
-      audit); scale star count by screen area at that point.
+      #4): now reachable — the 8-bit tier already renders at 320x256,
+      a quarter the area of 512x512, with the same star count, and the
+      planned 640x512 widening changes it again. Scale star count by
+      screen area; sequence after the non-512x512 audit above so the
+      coordinate space it scales against is settled.
 - [ ] [Repo] **Low-priority spike**: WASM build for Playwright-driven
       visual testing. Today `run-elite`/`run-scr`
       ([sdl-drive/drive.ps1](../.claude/skills/sdl-drive/drive.ps1))
