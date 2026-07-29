@@ -189,8 +189,35 @@ as they convert. Copy any of those six as the pattern —
       abstract `SettingsView`/`EngineSettingsView` pair — and decide
       whether a shared do-nothing controller is worth having at all
       versus each screen carrying its own trivial one.
-- [ ] [EliteSharpLib] Resolve views per tier through DI. Every screen
-      gets its own view per tier, in `Views/<Tier>/` with a tier-suffixed
+- [ ] [EliteSharpLib] Survey which screens actually need a per-tier
+      view, before committing to 28 of them. The two items below assume
+      every screen gets one 8-bit view authored fresh, but a 2026-07-29
+      spot check suggests the screens fall into three buckets, and only
+      the first needs that:
+      - **Absolute layout** — 512-space coordinates that overflow a
+        320-wide screen, so the 8-bit version is authored fresh.
+        `CommanderStatusView` (labels x=16, values x=200, 16px rows),
+        `InventoryView`, `MarketView` and `PlanetDataView` are here.
+      - **Derived layout with pixel spacing** — position comes from
+        `Centre`/`ScannerTop` and `DrawTextCentre`, so the layout is
+        already resolution-independent and only the spacing constants
+        are tier-specific (row pitch, `SettingsListView`'s `+40`
+        footer offset, `Intro1View`'s 20px credit spacing).
+        `OptionsView` and `SettingsListView` are here. These may not
+        need a second class at all — passing the tier's spacing into
+        one implementation would do, the same shape recommended for
+        `ShortRangeChartView` above.
+      - **No layout to vary** — `LaunchView`/`DockingView` just draw a
+        break pattern.
+      Count each screen into a bucket and decide per bucket, rather
+      than assuming 28 x 2. Note a grep for coordinate literals
+      undercounts once a view has been converted (the constants get
+      names — `CommanderStatusView` reads as zero literals but is
+      absolutely positioned), so read the `Draw` methods rather than
+      trusting a count.
+- [ ] [EliteSharpLib] Resolve views per tier through DI, for the
+      screens the survey says need one. Each gets its own view per
+      tier, in `Views/<Tier>/` with a tier-suffixed
       class name (`Views/EightBit/CommanderStatusView8Bit.cs`);
       `AddSplitScreens` registers the `IView<TModel>` each screen's
       controller draws through (see the item above), so the configured
@@ -199,14 +226,28 @@ as they convert. Copy any of those six as the pattern —
       `CommanderStatusView` first as the pattern. Note the 16-bit
       output cannot be checked pixel-identical by screenshot (see the
       finding recorded above); compare the layout constants instead.
-- [ ] [EliteSharpLib] Author the 8-bit view layouts at 320x256. The
-      ~128 literal coordinates across `Views/` (plus ~36 elsewhere in the
+- [ ] [EliteSharpLib] Author the 8-bit view layouts at 320x256, for the
+      absolute-layout screens the survey identifies. The ~128 literal
+      coordinates across `Views/` (plus ~36 elsewhere in the
       lib) are 512-space values — e.g. `CommanderStatusView` draws labels
       at x=16 and values at x=200 on 16px rows — and overflow a 320-wide
       screen, which is why the status screen clips today. The 16-bit
       values move unchanged into the 16-bit views; the 8-bit ones are
       authored fresh against an 8x8 font and a 56px-tall scanner rather
       than derived, since the two tiers' HUD art is not proportional.
+      This is authoring work ending in a visual judgement per screen,
+      not verification: there is no automated oracle (screenshot
+      diffing cannot decide it — see the finding above) and no
+      reference but the original 8-bit Elite and the maintainer's
+      intent. Two things make it cheaper than it sounds: the
+      controller/view split means a review only has to judge layout,
+      never behaviour, which is shared and unit-tested; and
+      `run-elite` can drive every screen in one scripted pass, so
+      regenerating a full set of captures per tier after each change
+      is cheap even though judging them is not. Note the 8-bit tier is
+      already the maintainer's configured default and already renders
+      these 512-space layouts at `Scale = 1`, so this fixes visible
+      breakage rather than risking working screens.
 
 ### Release engineering (from the retired release plan)
 
