@@ -8,7 +8,7 @@ using EliteSharpLib.Trader;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class InventoryView : IView
+internal sealed class InventoryView : IScreenController
 {
     private readonly IEliteDraw _draw;
     private readonly PlayerShip _ship;

@@ -95,8 +95,8 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(_ => Random.Shared);
         services.AddSingleton(sp => new RNG(sp.GetRequiredService<Random>()));
 
-        services.AddSingleton(sp => new ScreenManager<Screen, IView>(sp.GetRequiredService<IKeyboard>()));
-        services.AddSingleton(sp => new GameState(sp.GetRequiredService<ScreenManager<Screen, IView>>())
+        services.AddSingleton(sp => new ScreenManager<Screen, IScreenController>(sp.GetRequiredService<IKeyboard>()));
+        services.AddSingleton(sp => new GameState(sp.GetRequiredService<ScreenManager<Screen, IScreenController>>())
         {
             Config = sp.GetRequiredService<ConfigFile<EliteConfig>>().ReadConfig(),
         });
@@ -186,10 +186,10 @@ public static class EliteServiceCollectionExtensions
 
     private static void PopulateScreens(IServiceProvider sp)
     {
-        ScreenManager<Screen, IView> views = sp.GetRequiredService<ScreenManager<Screen, IView>>();
+        ScreenManager<Screen, IScreenController> views = sp.GetRequiredService<ScreenManager<Screen, IScreenController>>();
         views.Add(Screen.IntroOne, sp.GetRequiredService<Intro1View>());
         views.Add(Screen.IntroTwo, sp.GetRequiredService<Intro2View>());
-        views.Add(Screen.GalacticChart, sp.GetRequiredService<GalacticChartView>());
+        views.Add(Screen.GalacticChart, sp.GetRequiredService<GalacticChartController>());
         views.Add(Screen.ShortRangeChart, sp.GetRequiredService<ShortRangeChartView>());
         views.Add(Screen.PlanetData, sp.GetRequiredService<PlanetDataView>());
         views.Add(Screen.MarketPrices, sp.GetRequiredService<MarketView>());
@@ -220,6 +220,7 @@ public static class EliteServiceCollectionExtensions
     private static void AddEliteViews(this IServiceCollection services)
     {
         services.AddEliteFlightViews();
+        services.AddGalacticChart();
         services.AddEliteConsoleViews();
     }
 
@@ -329,14 +330,23 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<GameOverView>()));
     }
 
-    private static void AddEliteConsoleViews(this IServiceCollection services)
+    // The galactic chart is split controller/view; the tier selects which
+    // IView<GalacticChartModel> is registered here. Kept separate from
+    // AddEliteConsoleViews so neither method's class coupling runs away.
+    private static void AddGalacticChart(this IServiceCollection services)
     {
-        services.AddSingleton(sp => new GalacticChartView(
+        services.AddSingleton<IView<GalacticChartModel>>(sp => new GalacticChartView(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new GalacticChartController(
             sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<PlanetController>(),
-            sp.GetRequiredService<PlayerShip>()));
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<IView<GalacticChartModel>>()));
+    }
+
+    private static void AddEliteConsoleViews(this IServiceCollection services)
+    {
         services.AddSingleton(sp => new ShortRangeChartView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),

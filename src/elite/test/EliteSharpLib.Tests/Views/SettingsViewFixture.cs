@@ -28,7 +28,7 @@ internal static class SettingsViewFixture
         out AudioController audio)
     {
         keyboard = new FakeKeyboard();
-        ScreenManager<Screen, IView> views = new(keyboard);
+        ScreenManager<Screen, IScreenController> views = new(keyboard);
         views.Add(Screen.Docking, new FakeView());
         views.Add(Screen.GameOver, new FakeView());
         views.Add(Screen.Hyperspace, new FakeView());

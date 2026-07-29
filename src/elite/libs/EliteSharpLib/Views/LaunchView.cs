@@ -9,7 +9,7 @@ using Useful.Audio;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class LaunchView : IView
+internal sealed class LaunchView : IScreenController
 {
     private readonly AudioController _audio;
     private readonly BreakPattern _breakPattern;

@@ -8,7 +8,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class OptionsView : IView
+internal sealed class OptionsView : IScreenController
 {
     private const int OptionBarHeight = 15;
     private const int OptionBarWidth = 400;

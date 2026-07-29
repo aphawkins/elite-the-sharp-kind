@@ -7,6 +7,37 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Controller/view seam, galactic chart, 2026-07-29)
+
+- First step of the tier presentation architecture: a screen's
+  behaviour and its layout are now separable, so a per-tier view can
+  vary the layout without duplicating the behaviour.
+- `IView` (`Reset`/`Update`/`Draw`/`HandleInput`) is renamed
+  `IScreenController`, and `IView<TModel>` is the new drawing-only
+  contract. Because the old interface was already exactly the
+  controller shape, the 27 unconverted screens satisfy
+  `IScreenController` unchanged and needed no transitional wrappers.
+- `GalacticChartView` is split into `GalacticChartController` +
+  `GalacticChartModel` + a drawing-only `GalacticChartView`. The
+  controller works entirely in galaxy space - the raw (D, B) of a
+  `GalaxySeed`, 0-255 per axis - and the view applies `Scale`/`Offset`,
+  so nothing tier-specific remains on the behaviour side.
+- `GameState.Cross` is gone. Chart cursor state was only ever read by
+  the two chart screens, and storing it in screen pixels forced the
+  round-trip through `Scale` that kept the behaviour tier-coupled. Each
+  chart now owns its own cursor; the galactic chart's is in galaxy
+  space, and `ShortRangeChartView` keeps a screen-space copy until it
+  is converted.
+- Cursor bounds move with it: the old 512-space clamps (x 1-510,
+  y 37-293) become galaxy-space constants that reproduce them exactly
+  at the 16-bit tier. At the 8-bit tier they are a deliberate change -
+  the old screen-space clamps mapped to roughly twice the galaxy's
+  extent there, letting the cursor leave the galaxy, and the step size
+  was likewise doubled. Both now match the 16-bit tier.
+- `GalacticChartControllerTests` covers the cursor stepping and
+  clamping, the find-by-name prompt and the caption/detail formatting -
+  none of it needing a renderer, which is the point of the model.
+
 ### Added (Config-driven logging, 2026-07-29)
 
 - `engine.logging` gains `minimumLevel` and `retainedFileCount`,

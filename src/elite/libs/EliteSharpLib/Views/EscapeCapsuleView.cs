@@ -14,7 +14,7 @@ using Useful.Maths;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class EscapeCapsuleView : IView
+internal sealed class EscapeCapsuleView : IScreenController
 {
     private readonly AudioController _audio;
     private readonly uint _color;

@@ -28,7 +28,7 @@ public class VisualDumpTests
 
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
-        GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));
         EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer, rng);
@@ -115,7 +115,7 @@ public class VisualDumpTests
             FastBitmap? lastFrame = null;
             using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
             IPolygonRenderer shipRenderer = createRenderer(graphics);
-            GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
+            GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
             RNG rng = new(new Random(0));
             EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer, rng);
             ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);

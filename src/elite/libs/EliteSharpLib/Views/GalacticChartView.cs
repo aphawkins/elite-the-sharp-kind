@@ -4,251 +4,72 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
-using EliteSharpLib.Types;
-using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class GalacticChartView : IView
+/// <summary>
+/// The 16-bit galactic chart: the 512-space layout, and nothing else.
+/// </summary>
+internal sealed class GalacticChartView : IView<GalacticChartModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly GameState _gameState;
-    private readonly IKeyboard _keyboard;
-    private readonly PlanetController _planet;
-    private readonly List<Vector2> _planetPixels = [];
-    private readonly PlayerShip _ship;
     private readonly uint _colorGreen;
     private readonly uint _colorLighterRed;
     private readonly uint _colorWhite;
 
-    private int _crossTimer;
-    private string _findName = string.Empty;
-    private bool _isFind;
-
-    internal GalacticChartView(GameState gameState, IEliteDraw draw, IKeyboard keyboard, PlanetController planet, PlayerShip ship)
+    internal GalacticChartView(IEliteDraw draw)
     {
-        _gameState = gameState;
         _draw = draw;
-        _keyboard = keyboard;
-        _planet = planet;
-        _ship = ship;
 
         _colorGreen = draw.Palette["Green"];
         _colorLighterRed = draw.Palette["LighterRed"];
         _colorWhite = draw.Palette["White"];
     }
 
-    public void Draw()
+    public void Draw(GalacticChartModel model)
     {
+        ArgumentNullException.ThrowIfNull(model);
+
         // Header
-        _draw.DrawViewHeader($"GALACTIC CHART {_gameState.Cmdr.GalaxyNumber + 1}");
+        _draw.DrawViewHeader(model.Title);
 
         _draw.Graphics.DrawLine(new(0 + _draw.Offset, 36 + 258), new(_draw.ScannerRight, 36 + 258), _colorWhite);
 
         // Fuel radius
-        Vector2 centre = new(
-            (_gameState.DockedPlanet.D * _draw.Scale) + _draw.Offset,
-            (_gameState.DockedPlanet.B / (2 / _draw.Scale)) + (18 * _draw.Scale) + 1);
-        float radius = _ship.Fuel * 2.5f * _draw.Scale;
+        Vector2 centre = ToScreen(model.DockedPlanet);
+        float radius = model.FuelLightYears * 2.5f * _draw.Scale;
         float cross_size = 7 * _draw.Scale;
         _draw.Graphics.DrawCircle(centre, radius, _colorGreen);
         _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), _colorWhite);
         _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), _colorWhite);
 
         // Planets
-        foreach (Vector2 pixel in _planetPixels)
+        foreach (GalacticChartStar star in model.Stars)
         {
+            Vector2 pixel = ToScreen(star.Position);
             _draw.Graphics.DrawPixel(pixel, _colorWhite);
+
+            if (star.IsWide)
+            {
+                _draw.Graphics.DrawPixel(new(pixel.X + 1, pixel.Y), _colorWhite);
+            }
         }
 
         // Cross
-        centre = new(_gameState.Cross.X + _draw.Offset, _gameState.Cross.Y);
+        centre = ToScreen(model.Cross);
 
         _draw.Graphics.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), _colorLighterRed);
         _draw.Graphics.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), _colorLighterRed);
 
         // Text
-        if (_isFind)
-        {
-            _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Planet Name?", nameof(FontType.Small), _colorGreen);
-            _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, nameof(FontType.Small), _colorWhite);
-        }
-        else if (string.IsNullOrEmpty(_gameState.PlanetName))
-        {
-            _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), "Unknown Planet", nameof(FontType.Small), _colorGreen);
-            _draw.Graphics
-                .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), _findName, nameof(FontType.Small), _colorWhite);
-        }
-        else
-        {
-            _draw.Graphics.DrawTextLeft(
-                new(16 + _draw.Offset, _draw.ScannerTop - 55),
-                _gameState.PlanetName,
-                nameof(FontType.Small),
-                _colorGreen);
-            if (_gameState.DistanceToPlanet > 0)
-            {
-                _draw.Graphics.DrawTextLeft(
-                    new(16 + _draw.Offset, _draw.ScannerTop - 40),
-                    $"Distance: {_gameState.DistanceToPlanet:N1} Light Years ",
-                    nameof(FontType.Small),
-                    _colorWhite);
-            }
-        }
+        _draw.Graphics
+            .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), model.Caption, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics
+            .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), model.Detail, nameof(FontType.Small), _colorWhite);
     }
 
-    public void HandleInput()
-    {
-        if (_isFind)
-        {
-            HandleFindInput();
-            return;
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.O))
-        {
-            _gameState.Cross = new(
-                _gameState.DockedPlanet.D * _draw.Scale,
-                (_gameState.DockedPlanet.B / (2 / _draw.Scale)) + (18 * _draw.Scale) + 1);
-            CalculateDistanceToPlanet();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.D))
-        {
-            CalculateDistanceToPlanet();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
-        {
-            MoveCross(0, -1);
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
-        {
-            MoveCross(0, 1);
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.OemComma) || _keyboard.IsPressed(ConsoleKey.LeftArrow))
-        {
-            MoveCross(-1, 0);
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.OemPeriod) || _keyboard.IsPressed(ConsoleKey.RightArrow))
-        {
-            MoveCross(1, 0);
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.F))
-        {
-            _isFind = true;
-            _findName = string.Empty;
-            _keyboard.ClearPressed();  // Clear the F so that it doesn't appear in the find word
-        }
-    }
-
-    public void Reset()
-    {
-        _isFind = false;
-        _findName = string.Empty;
-        GalaxySeed glx = new(_gameState.Cmdr.Galaxy);
-        _planetPixels.Clear();
-
-        for (int i = 0; i < 256; i++)
-        {
-            Vector2 pixel = new()
-            {
-                X = (glx.D * _draw.Scale) + _draw.Offset,
-                Y = (glx.B / (2 / _draw.Scale)) + (18 * _draw.Scale) + 1,
-            };
-
-            _planetPixels.Add(pixel);
-
-            if ((glx.E | 0x50) < 0x90)
-            {
-                _planetPixels.Add(new(pixel.X + 1, pixel.Y));
-            }
-
-            _planet.WaggleGalaxy(glx);
-            _planet.WaggleGalaxy(glx);
-            _planet.WaggleGalaxy(glx);
-            _planet.WaggleGalaxy(glx);
-        }
-
-        _crossTimer = 0;
-        CrossFromHyperspacePlanet();
-        CalculateDistanceToPlanet();
-    }
-
-    public void Update()
-    {
-        if (_crossTimer > 0)
-        {
-            _crossTimer--;
-            if (_crossTimer == 0)
-            {
-                CalculateDistanceToPlanet();
-            }
-        }
-    }
-
-    // Typing a planet name into the find prompt.
-    private void HandleFindInput()
-    {
-        if (_keyboard.IsPressed(ConsoleKey.Backspace) &&
-            !string.IsNullOrEmpty(_findName))
-        {
-            _findName = _findName[..^1];
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.Enter))
-        {
-            _isFind = false;
-            if (_planet.FindPlanetByName(_findName))
-            {
-                CrossFromHyperspacePlanet();
-                CalculateDistanceToPlanet();
-            }
-            else
-            {
-                _gameState.PlanetName = string.Empty;
-            }
-        }
-
-        (ConsoleKey key, ConsoleModifiers _) = _keyboard.LastPressed();
-        if (key is >= ConsoleKey.A and <= ConsoleKey.Z)
-        {
-            _findName += (char)key;
-        }
-    }
-
-    private void CalculateDistanceToPlanet()
-    {
-        Vector2 location = new()
-        {
-            X = _gameState.Cross.X / _draw.Scale,
-            Y = (_gameState.Cross.Y - ((18 * _draw.Scale) + 1)) * (2 / _draw.Scale),
-        };
-
-        _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
-        _gameState.PlanetName = _planet.NamePlanet(_gameState.HyperspacePlanet);
-        _gameState.DistanceToPlanet = PlanetController.CalculateDistanceToPlanet(_gameState.DockedPlanet, _gameState.HyperspacePlanet);
-        CrossFromHyperspacePlanet();
-    }
-
-    private void CrossFromHyperspacePlanet() => _gameState.Cross = new(
-        _gameState.HyperspacePlanet.D * _draw.Scale,
-        (_gameState.HyperspacePlanet.B / (2 / _draw.Scale)) + (18 * _draw.Scale) + 1);
-
-    /// <summary>
-    /// Move the planet chart cross hairs to specified position.
-    /// </summary>
-    private void MoveCross(int dx, int dy)
-    {
-        _crossTimer = 5;
-        _gameState.Cross = new(Math.Clamp(_gameState.Cross.X + (dx * 2), 1, 510), Math.Clamp(_gameState.Cross.Y + (dy * 2), 37, 293));
-    }
+    // Galaxy space (D, B) to this tier's screen coordinates.
+    private Vector2 ToScreen(Vector2 galaxy) => new(
+        (galaxy.X * _draw.Scale) + _draw.Offset,
+        (galaxy.Y * _draw.Scale / 2) + (18 * _draw.Scale) + 1);
 }

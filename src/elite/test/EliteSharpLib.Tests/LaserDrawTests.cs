@@ -67,7 +67,7 @@ public class LaserDrawTests
     {
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
-        GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
         gameState.Config.Engine.Graphics.GraphicStyle = laserWireframe ? GraphicStyle.Wireframe : GraphicStyle.Solid;
         RNG rng = new(new Random(0));
         EliteDraw eliteDraw = new(gameState, graphics, AssetLocator.Create(), new ZBufferRenderer(graphics), rng);

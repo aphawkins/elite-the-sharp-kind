@@ -24,7 +24,7 @@ internal abstract class SettingsListView(
     IConfigWriter<EliteConfig> configWriter,
     string header,
     (string Name, string[] Values)[] settings,
-    string footer = "") : IView
+    string footer = "") : IScreenController
 {
     // The Back row is the same on every screen, so it's appended here rather
     // than repeated in each list.

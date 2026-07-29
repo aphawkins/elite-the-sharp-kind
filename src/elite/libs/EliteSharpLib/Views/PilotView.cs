@@ -10,7 +10,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class PilotView : IView
+internal sealed class PilotView : IScreenController
 {
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;

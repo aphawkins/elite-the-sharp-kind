@@ -12,7 +12,7 @@ using EliteSharpLib.Types;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class PlanetDataView : IView
+internal sealed class PlanetDataView : IScreenController
 {
     private readonly string[][] _descriptionList =
     [

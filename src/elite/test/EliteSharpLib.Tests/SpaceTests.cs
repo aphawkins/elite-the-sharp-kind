@@ -507,7 +507,7 @@ public class SpaceTests
         out RNG rng,
         out FakeRandomSource randomSource)
     {
-        ScreenManager<Screen, IView> views = new(new FakeKeyboard());
+        ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         views.Add(Screen.Docking, new FakeView());
         views.Add(Screen.GameOver, new FakeView());
         views.Add(Screen.Hyperspace, new FakeView());

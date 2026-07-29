@@ -44,7 +44,7 @@ public class TradeTests
 
     private static Trade CreateTrade()
     {
-        ScreenManager<Screen, IView> views = new(new FakeKeyboard());
+        ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         GameState gameState = new(views);
         PlayerShip ship = new();
         return new Trade(gameState, ship);

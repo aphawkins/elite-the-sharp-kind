@@ -18,7 +18,7 @@ namespace EliteSharpLib.Views;
 /// <summary>
 /// Parade of the various ships.
 /// </summary>
-internal sealed class Intro2View : IView
+internal sealed class Intro2View : IScreenController
 {
     private readonly AudioController _audio;
     private readonly Combat _combat;

@@ -7,7 +7,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class QuitView : IView
+internal sealed class QuitView : IScreenController
 {
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;

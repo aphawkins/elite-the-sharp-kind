@@ -89,7 +89,7 @@ public class SaveFileTests
 
     private static SaveFile CreateSaveFile(out string directory)
     {
-        ScreenManager<Screen, IView> views = new(new FakeKeyboard());
+        ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         GameState gameState = new(views);
         PlayerShip ship = new();
         Trade trade = new(gameState, ship);

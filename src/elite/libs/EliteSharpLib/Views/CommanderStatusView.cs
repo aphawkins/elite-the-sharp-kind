@@ -11,7 +11,7 @@ using EliteSharpLib.Trader;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class CommanderStatusView : IView
+internal sealed class CommanderStatusView : IScreenController
 {
     private readonly string[] _conditionText =
     [

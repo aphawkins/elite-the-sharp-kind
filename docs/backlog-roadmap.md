@@ -63,17 +63,103 @@ existing.
 Implements the 2026-07-28 tier-presentation decision in
 [decisions.md](decisions.md).
 
-- [ ] **[LARGE]** [EliteSharpLib] MVC split for the 28 view classes:
-      each screen's controller takes input and navigation, its model
-      holds the game data and formatting, and the view is left drawing
-      only. This is what stops per-tier views duplicating behaviour along
-      with layout, so it comes before the per-tier split. Scope it before
-      starting — views currently handle their own keys (`Intro1View` on
-      Y/N), and `EliteMain.HandleViewKeys` owns the rest.
+Controller/view split for the 28 view classes (split 2026-07-29 from the
+[LARGE] "MVC split"
+item; a code survey sized it smaller than assumed — 3,996 lines across
+`Views/`, of which 18 have a non-empty `HandleInput`, 14 carry mutable
+state (24 fields — cursor/selection in the charts and menus, animation
+counters in `EscapeCapsuleView`/`GameOverView`/`Intro2View`, cached
+planet data in `PlanetDataView`), and only six have neither.
+A full 28x3 class triple is disproportionate to
+that; what the per-tier item actually needs is that *behaviour* has one
+home per screen while *layout* varies per tier, so the target shape is:
+`IView` narrows to drawing alone, and a per-screen controller owns
+`Reset`/`Update`/`HandleInput` plus the formatting the view currently
+computes, which it hands to the view as a per-screen view-model record.
+`ScreenManager<Screen, IView>` then holds controllers rather than views,
+which is what reduces the following per-tier DI item to swapping one
+registration per screen. Do strictly in order — item 1 fixes the shape
+everything else follows.
+
+Two interfaces, because only the behaviour-bearing screens have data to
+pass: `IView<TModel> { void Draw(TModel model); }` for those, and the
+existing parameterless `IView { void Draw(); }` for the six pure-drawing
+ones. The record is what makes the tier contract a signature rather than
+a convention — `CommanderStatusView` and `CommanderStatusView8Bit` take
+the same `CommanderStatusModel` and can then differ only in coordinates
+and font, and the formatting becomes testable without a renderer.
+
+This is not MVC, MVP or MVVM and shouldn't be described as any of them
+(2026-07-29: MVVM was considered and rejected — its value is binding and
+change notification, and Elite is immediate-mode with a full redraw per
+tick and polled input, so there is nothing to bind). The three
+properties to preserve are: behaviour has one home per screen, both
+tiers provably render the same data, and views are stateless. Keep the
+`Controller` suffix regardless — it matches `PlanetController` /
+`AudioController` house style.
+
+Note `EliteMain.HandleViewKeys` (F1-F11,
+[EliteMain.cs:269-358](../src/elite/libs/EliteSharpLib/EliteMain.cs)) is
+global navigation, not per-screen input, and stays where it is; only the
+keys views handle themselves move:
+
+Item 1 landed 2026-07-29 (see CHANGELOG) — the seam and the galactic
+chart. Two findings from it that reshape what follows:
+
+- No transitional wrappers were needed. The old `IView` was already
+  exactly the controller shape, so renaming it to `IScreenController`
+  left the 27 unconverted screens satisfying it unchanged. Expect the
+  same for every later screen: converting one is additive, never a
+  flag day.
+- Screenshot diffing cannot prove "pixel-identical" on this app. Two
+  runs of the *same* build differ by ~2,000 pixels (window occlusion
+  and the animated dashboard), an order of magnitude above the
+  ~240-pixel baseline-vs-change difference that was actually observed.
+  Verify layout equivalence by algebra plus renderer-free controller
+  tests, and use screenshots only to confirm nothing gross broke.
+
+- [ ] [EliteSharpLib] Convert the remaining 21 behaviour-bearing views
+      to the pattern — the 17 with input left after item 1:
+      `ShortRangeChartView` (38 lines of input),
+      `Intro2View` (28), `LoadCommanderView` (25), `SaveCommanderView`
+      (24), `SettingsListView` (22), `MarketView` (18), `QuitView` (17),
+      `Intro1View` (16, the Y/N handling), `OptionsView` and
+      `EquipmentView` (14 each), `ConstrictorMissionView` (8),
+      `ThargoidMissionView` (6), `PilotView` (5) and the four
+      `Pilot*View` subclasses (4 each). In the same pass, move each
+      view's formatting onto its controller and expose it as a
+      `<Screen>Model` record the view receives — that is the data the
+      8-bit view must reuse rather than re-derive. `CommanderStatusView`
+      is the archetype even though its `HandleInput` is empty: its
+      `_ratings` table, `CurrentRating`, `CurrentCondition` and
+      `EquipmentFitted` become
+      `CommanderStatusModel(string Rating, string Condition, string
+      Fuel, string Cash, string LegalStatus, IReadOnlyList<string>
+      Equipment)`, leaving the view with only the x=16/x=200 label
+      columns that the 8-bit layout item then re-authors — so convert
+      it here rather than leaving it to item 3. Three more screens
+      belong in this pass despite having no input of their own:
+      `PlanetDataView` (326 lines, the largest formatting body in the
+      lib — the RNG-driven procedural planet description with its
+      `_descriptionList`/`_economyType`/`_governmentType` tables,
+      `DescribePlanet`, `ExpandDescription`/`ExpandToken`/
+      `ExpandEscape` and the cached `_hyperPlanetData`), and
+      `EscapeCapsuleView`/`GameOverView`, whose `_i` animation
+      counters are controller state. Add controller unit
+      tests for the extracted formatting as it lands (no renderer fake
+      needed once it returns a record) — e.g. condition goes Red at
+      energy < 128 while hostiles are present.
+- [ ] [EliteSharpLib] Retire the pass-through controllers for the six
+      screens with neither input nor state (`DockingView`,
+      `HyperspaceView`, `InventoryView`, `LaunchView` and the abstract
+      `SettingsView`/`EngineSettingsView` pair) — a single shared
+      `DrawOnlyController` wrapping the parameterless `IView` covers
+      all of them; confirm none has grown behaviour by then.
 - [ ] [EliteSharpLib] Resolve views per tier through DI. Every screen
       gets its own view per tier, in `Views/<Tier>/` with a tier-suffixed
       class name (`Views/EightBit/CommanderStatusView8Bit.cs`);
-      `PopulateScreens` maps `Screen` to `IView`, so the configured tier
+      `PopulateScreens` registers the `IView` each screen's controller
+      draws through (see the MVC item above), so the configured tier
       selects which implementation is registered. Do
       `CommanderStatusView` first as the pattern and check the 16-bit
       output is pixel-identical before converting the other 27.

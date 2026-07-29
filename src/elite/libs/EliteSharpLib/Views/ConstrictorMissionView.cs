@@ -13,7 +13,7 @@ using Useful.Maths;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class ConstrictorMissionView : IView
+internal sealed class ConstrictorMissionView : IScreenController
 {
     private readonly Combat _combat;
     private readonly IEliteDraw _draw;

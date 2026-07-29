@@ -9,7 +9,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class PilotRearView : IView
+internal sealed class PilotRearView : IScreenController
 {
     private readonly PilotView _pilotView;
     private readonly PlayerShip _ship;

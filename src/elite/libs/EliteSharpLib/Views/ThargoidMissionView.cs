@@ -9,7 +9,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class ThargoidMissionView : IView
+internal sealed class ThargoidMissionView : IScreenController
 {
     private const string Mission2BriefA =
         "Attention Commander, I am Captain Fortesque of Her Majesty's Space Navy. " +

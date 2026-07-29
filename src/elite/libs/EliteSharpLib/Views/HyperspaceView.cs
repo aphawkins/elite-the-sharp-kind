@@ -8,7 +8,7 @@ using Useful.Audio;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class HyperspaceView : IView
+internal sealed class HyperspaceView : IScreenController
 {
     private readonly AudioController _audio;
     private readonly BreakPattern _breakPattern;

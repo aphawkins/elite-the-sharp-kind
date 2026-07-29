@@ -46,7 +46,7 @@ public class CombatTests
 
     private static Combat CreateCombat(out Universe universe, int randomValue)
     {
-        ScreenManager<Screen, IView> views = new(new FakeKeyboard());
+        ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         GameState gameState = new(views);
         PlayerShip ship = new();
         Trade trade = new(gameState, ship);

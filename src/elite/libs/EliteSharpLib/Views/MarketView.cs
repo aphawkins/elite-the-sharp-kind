@@ -8,7 +8,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class MarketView : IView
+internal sealed class MarketView : IScreenController
 {
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;

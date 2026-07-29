@@ -10,7 +10,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class ShortRangeChartView : IView
+internal sealed class ShortRangeChartView : IScreenController
 {
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
@@ -24,6 +24,7 @@ internal sealed class ShortRangeChartView : IView
     private readonly uint _colorLighterRed;
     private readonly uint _colorWhite;
 
+    private Vector2 _cross;
     private int _crossTimer;
     private string _findName = string.Empty;
     private bool _isFind;
@@ -67,7 +68,7 @@ internal sealed class ShortRangeChartView : IView
         }
 
         // Cross
-        centre = new(_gameState.Cross.X, _gameState.Cross.Y);
+        centre = new(_cross.X, _cross.Y);
         _draw.Graphics.DrawLine(new(centre.X - 16, centre.Y), new(centre.X + 16, centre.Y), _colorLighterRed);
         _draw.Graphics.DrawLine(new(centre.X, centre.Y - 16), new(centre.X, centre.Y + 16), _colorLighterRed);
 
@@ -114,7 +115,7 @@ internal sealed class ShortRangeChartView : IView
 
         if (_keyboard.IsPressed(ConsoleKey.O))
         {
-            _gameState.Cross = _draw.Centre;
+            _cross = _draw.Centre;
             CalculateDistanceToPlanet();
         }
 
@@ -286,8 +287,8 @@ internal sealed class ShortRangeChartView : IView
     {
         Vector2 location = new()
         {
-            X = ((_gameState.Cross.X - _draw.Centre.X) / (4 * _draw.Scale)) + _gameState.DockedPlanet.D,
-            Y = ((_gameState.Cross.Y - _draw.Centre.Y) / (2 * _draw.Scale)) + _gameState.DockedPlanet.B,
+            X = ((_cross.X - _draw.Centre.X) / (4 * _draw.Scale)) + _gameState.DockedPlanet.D,
+            Y = ((_cross.Y - _draw.Centre.Y) / (2 * _draw.Scale)) + _gameState.DockedPlanet.B,
         };
 
         _gameState.HyperspacePlanet = _planet.FindPlanet(_gameState.Cmdr.Galaxy, location);
@@ -296,7 +297,7 @@ internal sealed class ShortRangeChartView : IView
         CrossFromHyperspacePlanet();
     }
 
-    private void CrossFromHyperspacePlanet() => _gameState.Cross = new(
+    private void CrossFromHyperspacePlanet() => _cross = new(
         ((_gameState.HyperspacePlanet.D - _gameState.DockedPlanet.D) * 4 * _draw.Scale) + _draw.Centre.X,
         ((_gameState.HyperspacePlanet.B - _gameState.DockedPlanet.B) * 2 * _draw.Scale) + _draw.Centre.Y);
 
@@ -306,6 +307,6 @@ internal sealed class ShortRangeChartView : IView
     private void MoveCross(int dx, int dy)
     {
         _crossTimer = 5;
-        _gameState.Cross = new(Math.Clamp(_gameState.Cross.X + (dx * 4), 1, 510), Math.Clamp(_gameState.Cross.Y + (dy * 4), 37, 339));
+        _cross = new(Math.Clamp(_cross.X + (dx * 4), 1, 510), Math.Clamp(_cross.Y + (dy * 4), 37, 339));
     }
 }

@@ -12,7 +12,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class EquipmentView : IView
+internal sealed class EquipmentView : IScreenController
 {
     private readonly IEliteDraw _draw;
 

@@ -6,7 +6,7 @@ using EliteSharpLib.Views;
 
 namespace EliteSharpLib.Fakes;
 
-internal sealed class FakeView : IView
+internal sealed class FakeView : IScreenController
 {
     public void Draw()
     {

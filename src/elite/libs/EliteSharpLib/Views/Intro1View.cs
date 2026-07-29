@@ -18,7 +18,7 @@ namespace EliteSharpLib.Views;
 /// <summary>
 /// Rolling Cobra MkIII.
 /// </summary>
-internal sealed class Intro1View : IView
+internal sealed class Intro1View : IScreenController
 {
     private readonly AudioController _audio;
     private readonly Combat _combat;

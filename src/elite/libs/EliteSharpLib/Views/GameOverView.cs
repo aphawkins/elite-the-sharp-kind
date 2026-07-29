@@ -13,7 +13,7 @@ using Useful.Maths;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class GameOverView : IView
+internal sealed class GameOverView : IScreenController
 {
     private readonly AudioController _audio;
     private readonly Combat _combat;

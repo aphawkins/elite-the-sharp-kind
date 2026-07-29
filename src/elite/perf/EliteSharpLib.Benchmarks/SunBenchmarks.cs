@@ -27,7 +27,7 @@ public class SunBenchmarks : IDisposable
     {
         FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(new SDLInput());
-        Useful.Abstraction.ScreenManager<Views.Screen, Views.IView> views = new(keyboard);
+        Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
         GameState gameState = new(views);
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);

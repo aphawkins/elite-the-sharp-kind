@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Numerics;
 using EliteSharpLib.Config;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
@@ -12,9 +11,9 @@ namespace EliteSharpLib;
 
 internal sealed class GameState
 {
-    private readonly ScreenManager<Screen, IView> _views;
+    private readonly ScreenManager<Screen, IScreenController> _views;
 
-    internal GameState(ScreenManager<Screen, IView> views) => _views = views;
+    internal GameState(ScreenManager<Screen, IScreenController> views) => _views = views;
 
     internal int CarryFlag { get; set; }
 
@@ -22,13 +21,11 @@ internal sealed class GameState
 
     internal EliteConfig Config { get; set; } = new();
 
-    internal Vector2 Cross { get; set; } = new(0, 0);
-
     internal PlanetData CurrentPlanetData { get; set; } = new();
 
     internal Screen CurrentScreen => _views.CurrentId;
 
-    internal IView CurrentView => _views.Current;
+    internal IScreenController CurrentView => _views.Current;
 
     internal bool DetonateBomb { get; set; }
 
@@ -89,7 +86,6 @@ internal sealed class GameState
         IsGameOver = false;
         InWitchspace = false;
         IsDocked = true;
-        Cross = new(-1, -1);
         DetonateBomb = false;
         DrawLasers = false;
         ExitGame = false;

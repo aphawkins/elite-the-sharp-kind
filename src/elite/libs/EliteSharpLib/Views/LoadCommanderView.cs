@@ -8,7 +8,7 @@ using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class LoadCommanderView : IView
+internal sealed class LoadCommanderView : IScreenController
 {
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;

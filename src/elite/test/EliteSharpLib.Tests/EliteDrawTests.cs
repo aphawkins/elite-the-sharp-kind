@@ -18,7 +18,7 @@ public class EliteDrawTests
     public void DrawTextPrettyHardBreaksWordLongerThanLineWidth()
     {
         FakeGraphics graphics = new();
-        GameState gameState = new(new ScreenManager<Screen, IView>(new FakeKeyboard()));
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));
         EliteDraw draw = new(gameState, graphics, new FakeAssetLocator(), shipRenderer, rng);

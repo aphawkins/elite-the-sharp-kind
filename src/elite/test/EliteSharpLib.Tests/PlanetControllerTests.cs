@@ -200,7 +200,7 @@ public class PlanetControllerTests
 
     private static GameState CreateGameState()
     {
-        ScreenManager<Screen, IView> views = new(new FakeKeyboard());
+        ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
         return new(views);
     }
 }

@@ -30,7 +30,7 @@ public class PlanetBenchmarks : IDisposable
         FakeInput input = new();
         FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(input);
-        Useful.Abstraction.ScreenManager<Views.Screen, Views.IView> views = new(keyboard);
+        Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
         GameState gameState = new(views);
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
