@@ -562,14 +562,12 @@ either.**):
         it, leaving black gutters at x<64 and x>575 along the bottom.
         Needs either a wider 16-bit scanner asset or an explicit
         decision to accept a letterboxed HUD.
-      - **The 3D field of view changes.** `Focus => ScreenWidth *
-        FocusFactor` ([EliteDraw.cs:27,58](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs))
-        makes the focal length 640 rather than 512, so everything
-        renders 25% larger and — since the height did not change — the
-        vertical field of view narrows. That is gameplay-visible, not
-        cosmetic: less is visible above and below. Decide whether
-        `Focus` should follow width, height, or a fixed reference, and
-        settle it before any 8-bit layout is authored against it.
+      - ~~**The 3D field of view changes.**~~ Resolved on master
+        2026-07-29: `Focus` now follows `ScreenHeight`, so the vertical
+        field of view is constant and widening shows more to the left
+        and right instead of magnifying everything. See the decision in
+        [decisions.md](decisions.md), which supersedes the width-derived
+        `Focus` of the 2026-07-28 tier decision.
       - **Screens using bare absolute coordinates drift out of
         alignment** with those that are `Offset`-relative, which stay
         centred. `ThargoidMissionView` (`new(116, 132)`, the Blake
