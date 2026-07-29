@@ -32,4 +32,5 @@ internal enum Screen
     MissionTwo = 23,
     Undocking = 24,
     Hyperspace = 25,
+    EngineSettings = 26,
 }

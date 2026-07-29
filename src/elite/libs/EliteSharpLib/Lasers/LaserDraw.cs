@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Lasers;
 
@@ -45,7 +46,7 @@ internal sealed class LaserDraw
         Vector2 rightA = new(_draw.ScannerRight - (32 * _draw.Scale), _draw.Bottom);
         Vector2 rightB = new(_draw.ScannerRight - (48 * _draw.Scale), _draw.Bottom);
 
-        if (_gameState.Config.Game.LaserWireframe)
+        if (_gameState.Config.Engine.Graphics.GraphicStyle == GraphicStyle.Wireframe)
         {
             // Left laser
             _draw.Graphics.DrawTriangle(leftA, target, leftB, color);

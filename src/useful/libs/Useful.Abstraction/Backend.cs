@@ -5,7 +5,7 @@ namespace Useful.Abstraction;
 // Which concrete IAbstraction to construct. Software rasterises every frame
 // into an off-screen bitmap and blits it through SDL once per frame, while
 // Hardware issues SDL render calls directly.
-public enum GraphicsBackend
+public enum Backend
 {
     Software = 0,
     Hardware = 1,

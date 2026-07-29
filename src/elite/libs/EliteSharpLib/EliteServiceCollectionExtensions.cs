@@ -34,27 +34,27 @@ public static class EliteServiceCollectionExtensions
         => services.AddSingleton(sp => new ConfigFile<EliteConfig>(
             userDataPath,
             ConfigFileName,
-            IsValidConfig,
+            RepairConfig,
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<EliteConfig>>()));
 
-    // Exposes only the (public) GraphicsBackend choice from the (internal)
+    // Exposes only the (public) Backend choice from the (internal)
     // EliteConfig, so Program.Main - which picks between SoftwareAbstraction
     // and SDLAbstraction and therefore needs to reference Useful.SDL, a
     // dependency EliteSharpLib itself deliberately does not have - can read it
     // before the DI container (and its own ConfigFile<EliteConfig> registration
     // via AddEliteConfig) exists.
-    public static GraphicsBackend ReadGraphicsBackend(string userDataPath, ILoggerFactory loggerFactory)
+    public static Backend ReadBackend(string userDataPath, ILoggerFactory loggerFactory)
     {
         ConfigFile<EliteConfig> configFile = new(
             userDataPath,
             ConfigFileName,
-            IsValidConfig,
+            RepairConfig,
             loggerFactory.CreateLogger<ConfigFile<EliteConfig>>());
 
-        return configFile.ReadConfig().Engine.GraphicsBackend;
+        return configFile.ReadConfig().Engine.Backend;
     }
 
-    // Same reason as ReadGraphicsBackend above: Program.Main needs the tier
+    // Same reason as ReadBackend above: Program.Main needs the tier
     // before the container exists, because it picks the render resolution
     // and the asset set from it.
     public static SystemTier ReadSystemTier(string userDataPath, ILoggerFactory loggerFactory)
@@ -62,7 +62,7 @@ public static class EliteServiceCollectionExtensions
         ConfigFile<EliteConfig> configFile = new(
             userDataPath,
             ConfigFileName,
-            IsValidConfig,
+            RepairConfig,
             loggerFactory.CreateLogger<ConfigFile<EliteConfig>>());
 
         return configFile.ReadConfig().Engine.Tier;
@@ -104,12 +104,9 @@ public static class EliteServiceCollectionExtensions
         return services;
     }
 
-    internal static bool IsValidConfig(EliteConfig config) => config.Engine.Fps > 0 &&
-        Enum.IsDefined(config.Engine.GraphicsBackend) &&
-        Enum.IsDefined(config.Game.PlanetDescriptions) &&
-        Enum.IsDefined(config.Game.PlanetStyle) &&
-        Enum.IsDefined(config.Game.ShipRenderMode) &&
-        Enum.IsDefined(config.Game.SunStyle);
+    // Both the engine and the game halves repair themselves; this is the
+    // hook ConfigFile calls to do it.
+    internal static bool RepairConfig(EliteConfig config) => config.Repair();
 
     private static void AddEliteCore(this IServiceCollection services)
     {
@@ -159,11 +156,11 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp =>
         {
-            EngineConfigSettings config = sp.GetRequiredService<GameState>().Config.Engine;
+            SoundConfigSettings config = sp.GetRequiredService<GameState>().Config.Engine.Sound;
             return new AudioController(
                 sp.GetRequiredService<ISound>(),
                 BuildEliteSfx(),
-                new() { MusicOn = config.MusicOn, EffectsOn = config.EffectsOn });
+                new() { MusicOn = config.Music, EffectsOn = config.Effects });
         });
         services.AddSingleton(sp => new Pilot(
             sp.GetRequiredService<IEliteDraw>(),
@@ -234,6 +231,7 @@ public static class EliteServiceCollectionExtensions
         views.Add(Screen.SaveCommander, sp.GetRequiredService<SaveCommanderView>());
         views.Add(Screen.Quit, sp.GetRequiredService<QuitView>());
         views.Add(Screen.Settings, sp.GetRequiredService<SettingsView>());
+        views.Add(Screen.EngineSettings, sp.GetRequiredService<EngineSettingsView>());
         views.Add(Screen.MissionOne, sp.GetRequiredService<ConstrictorMissionView>());
         views.Add(Screen.MissionTwo, sp.GetRequiredService<ThargoidMissionView>());
         views.Add(Screen.EscapeCapsule, sp.GetRequiredService<EscapeCapsuleView>());
@@ -420,6 +418,13 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<Space>(),
+            sp.GetRequiredService<ConfigFile<EliteConfig>>()));
+        services.AddSingleton(sp => new EngineSettingsView(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<Space>(),
+            sp.GetRequiredService<AudioController>(),
             sp.GetRequiredService<ConfigFile<EliteConfig>>()));
         services.AddSingleton(sp => new ConstrictorMissionView(
             sp.GetRequiredService<GameState>(),

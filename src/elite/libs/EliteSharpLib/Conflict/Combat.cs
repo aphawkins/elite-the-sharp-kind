@@ -302,7 +302,7 @@ internal sealed class Combat
             Vector4 position = obj.Location;
             position.Y = (int)position.Y & 0xFFFF;
             position.Y = (int)position.Y | 0x60000;
-            IObject sun = SunFactory.Create(_gameState.Config.Game.SunStyle, _draw, _rng);
+            IObject sun = SunFactory.Create(_gameState.Config.Engine.Graphics.GraphicStyle, _gameState.Config.Game.SunStyle, _draw, _rng);
             _universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0);
         }
 

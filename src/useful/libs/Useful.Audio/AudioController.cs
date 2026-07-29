@@ -4,8 +4,6 @@ namespace Useful.Audio;
 
 public sealed class AudioController
 {
-    private readonly bool _effectsOn;
-    private readonly bool _musicOn;
     private readonly IDictionary<string, SfxSample> _sfx;
     private readonly SfxSample[] _samples;
     private readonly ISound _sound;
@@ -17,14 +15,20 @@ public sealed class AudioController
 
         _sound = sound;
         _sfx = sfx;
-        _musicOn = options.MusicOn;
-        _effectsOn = options.EffectsOn;
+        MusicOn = options.MusicOn;
+        EffectsOn = options.EffectsOn;
 
         // Two effect names may share one SfxSample to share its cooldown
         // (e.g. sounds that played on one buffer in the original hardware),
         // so the per-update tick runs over the distinct samples.
         _samples = [.. new HashSet<SfxSample>(sfx.Values)];
     }
+
+    // Settable so a settings screen can turn sound on and off mid-game; the
+    // starting values come from the config file via AudioOptions.
+    public bool EffectsOn { get; set; }
+
+    public bool MusicOn { get; set; }
 
     public void PlayEffect(string effectType) => PlayEffect(effectType, volume: null, pitch: 1.0);
 
@@ -36,7 +40,7 @@ public sealed class AudioController
     /// <param name="pitch">Per-play pitch multiplier (1.0 = recorded rate).</param>
     public void PlayEffect(string effectType, float? volume, double pitch)
     {
-        if (!_effectsOn)
+        if (!EffectsOn)
         {
             return;
         }
@@ -53,7 +57,7 @@ public sealed class AudioController
 
     public void PlayMusic(string musicType, bool loop)
     {
-        if (!_musicOn)
+        if (!MusicOn)
         {
             return;
         }
@@ -61,15 +65,9 @@ public sealed class AudioController
         _sound.Play(musicType, loop);
     }
 
-    public void StopMusic()
-    {
-        if (!_musicOn)
-        {
-            return;
-        }
-
-        _sound.StopMusic();
-    }
+    // Unconditional: this is also how the settings screen silences music that
+    // is already playing at the moment music is switched off.
+    public void StopMusic() => _sound.StopMusic();
 
     public void UpdateSound()
     {

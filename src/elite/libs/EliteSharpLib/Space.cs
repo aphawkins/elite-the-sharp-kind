@@ -163,6 +163,7 @@ internal sealed class Space
         _stars.CreateNewStars();
 
         IObject planet = PlanetFactory.Create(
+            _gameState.Config.Engine.Graphics.GraphicStyle,
             _gameState.Config.Game.PlanetStyle,
             _draw,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
@@ -188,6 +189,7 @@ internal sealed class Space
         }
 
         IObject planet = PlanetFactory.Create(
+            _gameState.Config.Engine.Graphics.GraphicStyle,
             _gameState.Config.Game.PlanetStyle,
             _draw,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
@@ -209,7 +211,7 @@ internal sealed class Space
             return;
         }
 
-        IObject sun = SunFactory.Create(_gameState.Config.Game.SunStyle, _draw, _rng);
+        IObject sun = SunFactory.Create(_gameState.Config.Engine.Graphics.GraphicStyle, _gameState.Config.Game.SunStyle, _draw, _rng);
 
         _universe.RemoveShip(oldSun);
         if (!_universe.AddNewShip(sun, oldSun.Location, oldSun.Rotmat, 0, 0))
@@ -759,6 +761,7 @@ internal sealed class Space
         }
 
         IObject planet = PlanetFactory.Create(
+            _gameState.Config.Engine.Graphics.GraphicStyle,
             _gameState.Config.Game.PlanetStyle,
             _draw,
             (_gameState.DockedPlanet.A * 251) + _gameState.DockedPlanet.B,
@@ -771,7 +774,7 @@ internal sealed class Space
         position.Z = -(((_gameState.DockedPlanet.D & 7) | 1) << 16);
         position.X = ((_gameState.DockedPlanet.F & 3) << 16) | ((_gameState.DockedPlanet.F & 3) << 8);
 
-        IObject sun = SunFactory.Create(_gameState.Config.Game.SunStyle, _draw, _rng);
+        IObject sun = SunFactory.Create(_gameState.Config.Engine.Graphics.GraphicStyle, _gameState.Config.Game.SunStyle, _draw, _rng);
         if (!_universe.AddNewShip(sun, position, VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
         {
             LogMessages.FailedToCreateShip(_logger, "Sun");

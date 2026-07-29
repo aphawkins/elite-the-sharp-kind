@@ -67,17 +67,29 @@ The cockpit is drawn as a set of sprites over the track view: front wheels that 
 
 ## Configuration
 
-Game settings are held in the `stuntcarracer.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Elite - The Sharp Kind](elite-readme.md). Logs (`logs\scr-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. There is no in-game settings screen yet, so `stuntcarracer.sharp` must be edited by hand; it can take the following values:
+Game settings are held in the `stuntcarracer.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Elite - The Sharp Kind](elite-readme.md). Logs (`logs\scr-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. There is no in-game settings screen yet, so `stuntcarracer.sharp` must be edited by hand.
+
+Everything it currently reads is in the shared `engine` element, documented in the [main readme](../README.md#configuration): the backend, the tier, the frame rate and the sound switches. Of those, `graphicStyle` and `depthSort` are written out but not acted on yet — Stunt Car Racer draws its track through its own pipeline.
+
+The game's own `game` element has nothing in it yet, so the file looks like this:
 
 ``` json
 {
-    // Settings shared by every game in the collection; the game's own
-    // "game" element has nothing in it yet.
+    "version": 1,
     "engine": {
-        "graphicsBackend": "Software",         // Rendering/audio backend.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated rendering and mixing)
-        "musicOn": true,                       // Play music.
-        "effectsOn": true                      // Play sound effects.
-    }
+        "backend": "Software",
+        "tier": "SixteenBit",
+        "graphics": {
+            "fps": 60,
+            "graphicStyle": "Solid",
+            "depthSort": "ZBuffer"
+        },
+        "sound": {
+            "music": true,
+            "effects": true
+        }
+    },
+    "game": {}
 }
 ```
 

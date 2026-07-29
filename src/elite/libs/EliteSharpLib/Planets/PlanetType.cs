@@ -4,10 +4,11 @@
 
 namespace EliteSharpLib.Planets;
 
+// The filled planet styles. Wireframe isn't one of them: it comes from the
+// engine's GraphicStyle, which drops every planet to outlines at once.
 internal enum PlanetType
 {
-    Wireframe = 0,
-    Solid = 1,
-    Striped = 2,
-    Fractal = 3,
+    Solid = 0,
+    Striped = 1,
+    Fractal = 2,
 }

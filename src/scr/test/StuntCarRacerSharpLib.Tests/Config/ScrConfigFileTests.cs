@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerSharpLib.Config;
+using Useful.Abstraction;
 using Useful.Config;
 using Xunit;
 
@@ -22,8 +23,8 @@ public class ScrConfigFileTests
         ScrConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.True(config.Engine.MusicOn);
-        Assert.True(config.Engine.EffectsOn);
+        Assert.True(config.Engine.Sound.Music);
+        Assert.True(config.Engine.Sound.Effects);
     }
 
     [Fact]
@@ -31,15 +32,15 @@ public class ScrConfigFileTests
     {
         // Arrange
         ConfigFile<ScrConfig> configFile = new(CreateTempDirectory(), ConfigFileName);
-        ScrConfig written = new() { Engine = new() { MusicOn = false, EffectsOn = false } };
+        ScrConfig written = new() { Engine = new() { Sound = new() { Music = false, Effects = false } } };
 
         // Act
         configFile.WriteConfig(written);
         ScrConfig read = configFile.ReadConfig();
 
         // Assert
-        Assert.False(read.Engine.MusicOn);
-        Assert.False(read.Engine.EffectsOn);
+        Assert.False(read.Engine.Sound.Music);
+        Assert.False(read.Engine.Sound.Effects);
     }
 
     [Fact]
@@ -50,14 +51,38 @@ public class ScrConfigFileTests
         // wraps this as InvalidOperationException, not FormatException.
         string directory = CreateTempDirectory();
         Directory.CreateDirectory(directory);
-        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"engine\": {\"musicOn\": \"hello!\"}}");
+        File.WriteAllText(
+            Path.Combine(directory, ConfigFileName),
+            /*lang=json,strict*/ "{\"engine\": {\"sound\": {\"music\": \"hello!\"}}}");
         ConfigFile<ScrConfig> configFile = new(directory, ConfigFileName);
 
         // Act
         ScrConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.True(config.Engine.MusicOn);
+        Assert.True(config.Engine.Sound.Music);
+    }
+
+    // Stunt Car Racer used to pass no validation at all, so a bad engine
+    // setting sat in the file until it broke something at startup.
+    [Fact]
+    public void ReadConfigRepairsAnOutOfRangeBackend()
+    {
+        // Arrange
+        string directory = CreateTempDirectory();
+        Directory.CreateDirectory(directory);
+        File.WriteAllText(
+            Path.Combine(directory, ConfigFileName),
+            /*lang=json,strict*/ "{\"engine\": {\"backend\": 7, \"sound\": {\"music\": false}}}");
+        ConfigFile<ScrConfig> configFile = new(directory, ConfigFileName, StuntCarRacerServiceCollectionExtensions.RepairConfig);
+
+        // Act
+        ScrConfig config = configFile.ReadConfig();
+
+        // Assert: the backend is back at its default, the sound setting either
+        // side of it survives.
+        Assert.Equal(Backend.Software, config.Engine.Backend);
+        Assert.False(config.Engine.Sound.Music);
     }
 
     private static string CreateTempDirectory()

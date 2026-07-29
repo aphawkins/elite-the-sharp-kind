@@ -99,33 +99,32 @@ Use Left/Right cursor keys to scroll through ships on the ship parade screen
 | Arrow keys | Navigate options |
 | Enter | Change option |
 
-### Game Settings Screen
-From the Options Screen (F11) you can enter the Game Settings Screen. From here you can change a number of settings that control how the game looks and plays.  Use the cursor keys to select an option and the Enter/Return key to change it. The options can be saved as default for future games by pressing Enter while on the Save Settings option (NB this is not necessary if you want to change the settings just for the current game).
+### Settings Screens
+There are two, matching the two halves of the config file. Both are reached from the Options Screen (F11). Use the cursor keys to select a setting and Enter/Return to change it; every change takes effect immediately and is saved as it is made, so there is no save step.
+
+- **Game Settings** — how Elite itself looks and plays: planet style, sun style, planet descriptions and instant docking.
+- **Engine Settings** — the settings shared by every game in the collection: graphic style (wireframe or solid), depth sort, music, sound effects, backend and tier.
+
+The last two are marked `*` on the screen: the backend picks the rendering and audio implementation and the tier picks the asset set and render resolution, and both are read before the game is built, so a change to either is saved now and picked up the next time the game starts.
 
 ## Configuration
 
-Game settings are held in the `elite.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Stunt Car Racer - The Sharp Kind](scr-readme.md). Commander saves (`.cmdr` files) and logs (`logs\elite-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. `elite.sharp` can take the following values:
+Game settings are held in the `elite.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Stunt Car Racer - The Sharp Kind](scr-readme.md). Commander saves (`.cmdr` files) and logs (`logs\elite-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults.
+
+The file's `engine` element holds the settings shared by every game — the backend, the tier, the frame rate and the graphic style among them — and is documented in the [main readme](../README.md#configuration). Elite's own settings sit alongside it under `game`, and can take the following values:
 
 ``` json
 {
-    // Settings shared by every game in the collection.
-    "engine": {
-        "fps": 60,                             // Maximum render frame rate. The game speed is independent, fixed at 13.5 updates per second.
-        "graphicsBackend": "Software",         // Rendering/audio backend.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated rendering and mixing)
-        "musicOn": true,                       // Play music.
-        "effectsOn": true                      // Play sound effects.
-    },
-    // Elite's own settings.
     "game": {
-        "shipWireframe": false,                // Use wireframe ship graphics.  false (Solid) or true (Wireframe)
-        "shipRenderMode": "ZBuffer",           // Depth-sort strategy for filled ship rendering (ignored when shipWireframe is true).  Painter or ZBuffer
-        "planetStyle": "Fractal",              // The render style of the planets.  Wireframe or Solid or Striped or Fractal
-        "sunStyle": "Gradient",                // The render style of the sun.  Solid or Gradient
+        "planetStyle": "Fractal",              // The render style of the filled planets (ignored when the engine's graphicStyle is Wireframe).  Solid or Striped or Fractal
+        "sunStyle": "Gradient",                // The render style of the filled sun (ignored when the engine's graphicStyle is Wireframe).  Solid or Gradient
         "planetDescriptions": "TreeGrubs",     // Description style used for the planets.  TreeGrubs (BBC) or HoopyCasinos (MSX)
         "instantDock": false                   // When the docking computer is engaged, instantly dock (true) or let the auto pilot fly in (false)
     }
 }
 ```
+
+The Game Settings screen changes all of these live, and the engine's graphic style with them; every change is saved as it is made.
 
 ## Credits
 

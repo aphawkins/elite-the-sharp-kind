@@ -4,7 +4,6 @@
 
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
-using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Config;
 
@@ -13,18 +12,12 @@ internal sealed class EliteConfigSettings
 {
     public bool InstantDock { get; set; }
 
-    // Whether the firing laser beams are outlined or filled.
-    public bool LaserWireframe { get; set; }
-
     public PlanetDescriptions PlanetDescriptions { get; set; } = PlanetDescriptions.TreeGrubs;
 
+    // The filled planet's surface style; ignored when the engine's
+    // GraphicStyle is Wireframe, which draws every planet as one.
     public PlanetType PlanetStyle { get; set; } = PlanetType.Fractal;
 
-    // Which depth-sort strategy backs filled ship rendering; only takes
-    // effect when ShipWireframe is false.
-    public PolygonRenderMode ShipRenderMode { get; set; } = PolygonRenderMode.ZBuffer;
-
-    public bool ShipWireframe { get; set; }
-
+    // As PlanetStyle, for the sun.
     public SunType SunStyle { get; set; } = SunType.Gradient;
 }

@@ -3,17 +3,12 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Config;
-using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
-using EliteSharpLib.Ships;
-using EliteSharpLib.Trader;
+using EliteSharpLib.Planets;
 using EliteSharpLib.Views;
-using Useful.Abstraction;
-using Useful.Audio;
 using Useful.Config;
-using Useful.Fakes;
-using Useful.Fakes.Audio;
 using Useful.Fakes.Controls;
+using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests.Views;
 
@@ -29,12 +24,24 @@ public class SettingsViewTests
         SettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out ConfigFile<EliteConfig> configFile);
         keyboard.KeyDown(ConsoleKey.Enter, default);
 
-        // Act: item 0 is Ship Style.
+        // Act: item 0 is Planet Style, which starts at Fractal and wraps.
         view.HandleInput();
 
         // Assert
-        Assert.True(gameState.Config.Game.ShipWireframe);
-        Assert.True(configFile.ReadConfig().Game.ShipWireframe);
+        Assert.Equal(PlanetType.Solid, gameState.Config.Game.PlanetStyle);
+        Assert.Equal(PlanetType.Solid, configFile.ReadConfig().Game.PlanetStyle);
+    }
+
+    // The engine's settings belong to the other screen.
+    [Fact]
+    public void ChangingAGameSettingLeavesTheEngineSettingsAlone()
+    {
+        SettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out _);
+        keyboard.KeyDown(ConsoleKey.Enter, default);
+
+        view.HandleInput();
+
+        Assert.Equal(GraphicStyle.Solid, gameState.Config.Engine.Graphics.GraphicStyle);
     }
 
     [Fact]
@@ -55,7 +62,7 @@ public class SettingsViewTests
         view.HandleInput();
 
         Assert.Equal(Screen.Options, gameState.CurrentScreen);
-        Assert.False(gameState.Config.Game.ShipWireframe);
+        Assert.Equal(PlanetType.Fractal, gameState.Config.Game.PlanetStyle);
     }
 
     private static SettingsView CreateView(
@@ -63,39 +70,8 @@ public class SettingsViewTests
         out FakeKeyboard keyboard,
         out ConfigFile<EliteConfig> configFile)
     {
-        keyboard = new FakeKeyboard();
-        ScreenManager<Screen, IView> views = new(keyboard);
-        views.Add(Screen.Docking, new FakeView());
-        views.Add(Screen.GameOver, new FakeView());
-        views.Add(Screen.Hyperspace, new FakeView());
-        views.Add(Screen.Options, new FakeView());
-        gameState = new(views);
-
-        FakeEliteDraw draw = new();
-        RNG rng = new(new FakeRandomSource());
-        PlayerShip ship = new();
-        Trade trade = new(gameState, ship);
-        FakeShipFactory shipFactory = new(draw, rng);
-        Universe universe = new(shipFactory, rng);
-        AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
-        Pilot pilot = new(draw, audio, universe, ship, rng);
-        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng);
-        Space space = new(
-            gameState,
-            audio,
-            pilot,
-            combat,
-            trade,
-            ship,
-            new PlanetController(gameState),
-            new Stars(gameState, draw, ship, rng),
-            universe,
-            draw,
-            rng);
-
-        configFile = new(
-            Path.Combine(Path.GetTempPath(), "EliteSettingsViewTests_" + Guid.NewGuid().ToString("N")),
-            ConfigFileName);
+        Space space = SettingsViewFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out _);
+        configFile = SettingsViewFixture.CreateConfigFile(ConfigFileName);
 
         return new SettingsView(gameState, draw, keyboard, space, configFile);
     }

@@ -91,13 +91,13 @@ internal static class SDLProgram
 
     private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory)
     {
-        GraphicsBackend graphicsBackend = EliteServiceCollectionExtensions.ReadGraphicsBackend(userDataPath, loggerFactory);
+        Backend backend = EliteServiceCollectionExtensions.ReadBackend(userDataPath, loggerFactory);
         SystemTier tier = EliteServiceCollectionExtensions.ReadSystemTier(userDataPath, loggerFactory);
         (int width, int height) = ResolutionFor(tier);
 
         ServiceCollection services = new();
         services.AddSingleton(loggerFactory);
-        services.AddSingleton<IAbstraction>(sp => graphicsBackend == GraphicsBackend.Hardware
+        services.AddSingleton<IAbstraction>(sp => backend == Backend.Hardware
             ? new SDLAbstraction(
                 width,
                 height,

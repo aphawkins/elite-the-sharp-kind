@@ -131,7 +131,7 @@ public class AudioControllerTests
     }
 
     [Fact]
-    public void PlayMusicAndStopMusicDoNothingWhenMusicIsOff()
+    public void PlayMusicDoesNothingWhenMusicIsOff()
     {
         // Arrange
         FakeSound sound = new();
@@ -139,10 +139,41 @@ public class AudioControllerTests
 
         // Act
         audio.PlayMusic("Theme", loop: true);
-        audio.StopMusic();
 
         // Assert
         Assert.Equal(0, sound.PlayMusicCount);
-        Assert.Equal(0, sound.StopMusicCount);
+    }
+
+    // StopMusic is unconditional: turning music off in the settings screen
+    // sets MusicOn false and then calls it to silence what is already playing,
+    // so it cannot depend on MusicOn still being true.
+    [Fact]
+    public void StopMusicStopsEvenWhenMusicIsOff()
+    {
+        // Arrange
+        FakeSound sound = new();
+        AudioController audio = new(sound, new Dictionary<string, SfxSample>(), new() { MusicOn = false });
+
+        // Act
+        audio.StopMusic();
+
+        // Assert
+        Assert.Equal(1, sound.StopMusicCount);
+    }
+
+    [Fact]
+    public void TurningMusicOffAtRuntimeStopsFurtherPlayback()
+    {
+        // Arrange
+        FakeSound sound = new();
+        AudioController audio = new(sound, new Dictionary<string, SfxSample>(), new() { MusicOn = true });
+
+        // Act
+        audio.PlayMusic("Theme", loop: true);
+        audio.MusicOn = false;
+        audio.PlayMusic("Theme", loop: true);
+
+        // Assert
+        Assert.Equal(1, sound.PlayMusicCount);
     }
 }

@@ -3,6 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Config;
+using EliteSharpLib.Suns;
+using Useful.Abstraction.Config;
+using Useful.Assets;
 using Useful.Config;
 
 namespace EliteSharpLib.Tests.Config;
@@ -21,9 +24,9 @@ public class ConfigFileTests
         EliteConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.Equal(60f, config.Engine.Fps);
-        Assert.True(config.Engine.MusicOn);
-        Assert.True(config.Engine.EffectsOn);
+        Assert.Equal(60f, config.Engine.Graphics.Fps);
+        Assert.True(config.Engine.Sound.Music);
+        Assert.True(config.Engine.Sound.Effects);
     }
 
     [Fact]
@@ -33,7 +36,7 @@ public class ConfigFileTests
         ConfigFile<EliteConfig> configFile = new(CreateTempDirectory(), ConfigFileName);
         EliteConfig written = new()
         {
-            Engine = new() { MusicOn = false, EffectsOn = false },
+            Engine = new() { Sound = new() { Music = false, Effects = false } },
             Game = new() { InstantDock = true },
         };
 
@@ -42,8 +45,8 @@ public class ConfigFileTests
         EliteConfig read = configFile.ReadConfig();
 
         // Assert
-        Assert.False(read.Engine.MusicOn);
-        Assert.False(read.Engine.EffectsOn);
+        Assert.False(read.Engine.Sound.Music);
+        Assert.False(read.Engine.Sound.Effects);
         Assert.True(read.Game.InstantDock);
     }
 
@@ -55,31 +58,79 @@ public class ConfigFileTests
         // wraps this as InvalidOperationException, not FormatException.
         string directory = CreateTempDirectory();
         Directory.CreateDirectory(directory);
-        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"game\": {\"shipWireframe\": \"hello!\"}}");
+        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"game\": {\"instantDock\": \"hello!\"}}");
         ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName);
 
         // Act
         EliteConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.False(config.Game.ShipWireframe);
+        Assert.False(config.Game.InstantDock);
     }
 
     [Fact]
-    public void ReadConfigWithInvalidFpsFallsBackToDefaults()
+    public void ReadConfigWithInvalidFpsRepairsOnlyTheFps()
     {
-        // Arrange: exercises AddEliteConfig's actual validation predicate
-        // (Fps > 0), not just the generic ConfigFile<T> plumbing.
-        string directory = CreateTempDirectory();
-        Directory.CreateDirectory(directory);
-        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"engine\": {\"fps\": 0}}");
-        ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName, EliteServiceCollectionExtensions.IsValidConfig);
-
-        // Act
-        EliteConfig config = configFile.ReadConfig();
+        // Arrange: exercises AddEliteConfig's actual repair, not just the
+        // generic ConfigFile<T> plumbing. The unreadable fps must not cost
+        // the user the settings either side of it.
+        EliteConfig config = ReadWritten(
+            /*lang=json,strict*/ "{\"engine\": {\"graphics\": {\"fps\": 0}}, \"game\": {\"instantDock\": true}}");
 
         // Assert
-        Assert.Equal(60f, config.Engine.Fps);
+        Assert.Equal(60f, config.Engine.Graphics.Fps);
+        Assert.True(config.Game.InstantDock);
+    }
+
+    [Fact]
+    public void ReadConfigWithAnOutOfRangeEnumRepairsThatSettingAlone()
+    {
+        EliteConfig config = ReadWritten(
+            /*lang=json,strict*/ "{\"engine\": {\"tier\": 7}, \"game\": {\"sunStyle\": \"Solid\"}}");
+
+        Assert.Equal(SystemTier.SixteenBit, config.Engine.Tier);
+        Assert.Equal(SunType.Solid, config.Game.SunStyle);
+    }
+
+    // The limit of repairing in place: a value the binder cannot even parse
+    // (a misspelt enum name, a string where a number belongs) fails the whole
+    // bind, so there is nothing to repair and the defaults stand. The file
+    // itself is kept as .bad, which is the only reason that is survivable.
+    [Fact]
+    public void ReadConfigWithAnUnparseableValueFallsBackToDefaultsAndKeepsTheFile()
+    {
+        string directory = CreateTempDirectory();
+        Directory.CreateDirectory(directory);
+        File.WriteAllText(
+            Path.Combine(directory, ConfigFileName),
+            /*lang=json,strict*/ "{\"engine\": {\"tier\": \"ThirtyTwoBit\"}, \"game\": {\"instantDock\": true}}");
+        ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName, EliteServiceCollectionExtensions.RepairConfig);
+
+        EliteConfig config = configFile.ReadConfig();
+
+        Assert.Equal(SystemTier.SixteenBit, config.Engine.Tier);
+        Assert.False(config.Game.InstantDock);
+        Assert.True(File.Exists(Path.Combine(directory, ConfigFileName + ".bad")));
+    }
+
+    [Fact]
+    public void ReadConfigStampsTheCurrentSchemaVersion()
+    {
+        // A file from before versioning has no version at all, and one from a
+        // later build claims a version this one cannot honour; both are
+        // brought back to what this build writes.
+        Assert.Equal(ConfigSchema.CurrentVersion, ReadWritten(/*lang=json,strict*/ "{\"game\": {}}").Version);
+        Assert.Equal(ConfigSchema.CurrentVersion, ReadWritten(/*lang=json,strict*/ "{\"version\": 99}").Version);
+    }
+
+    private static EliteConfig ReadWritten(string json)
+    {
+        string directory = CreateTempDirectory();
+        Directory.CreateDirectory(directory);
+        File.WriteAllText(Path.Combine(directory, ConfigFileName), json);
+        ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName, EliteServiceCollectionExtensions.RepairConfig);
+
+        return configFile.ReadConfig();
     }
 
     private static string CreateTempDirectory()

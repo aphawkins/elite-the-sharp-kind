@@ -68,7 +68,7 @@ invocation trap, why `PostMessage` is used instead of
 `SendKeys`/`SendInput`, and the key-hold-duration timing issue) — they
 apply here unchanged since both skills drive the same script.
 
-Elite-specific: when `engine.graphicsBackend` in
+Elite-specific: when `engine.backend` in
 `%APPDATA%\The Sharp Kind\elite.sharp` is `"Hardware"` (the
 maintainer's normal value is `"Software"`), give the app a longer
 settle before the first key and hold each key longer — `"wait:5000"`

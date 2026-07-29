@@ -24,6 +24,7 @@ internal sealed class OptionsView : IView
         new("Save Commander", true),
         new("Load Commander", true),
         new("Game Settings", false),
+        new("Engine Settings", false),
         new("Quit", false),
     ];
 
@@ -125,6 +126,10 @@ internal sealed class OptionsView : IView
                     break;
 
                 case 3:
+                    _gameState.SetView(Screen.EngineSettings);
+                    break;
+
+                case 4:
                     _gameState.SetView(Screen.Quit);
                     break;
             }

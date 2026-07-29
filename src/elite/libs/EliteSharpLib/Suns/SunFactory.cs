@@ -4,15 +4,20 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Suns;
 
 internal static class SunFactory
 {
-    internal static IObject Create(SunType type, IEliteDraw draw, RNG rng) => type switch
-    {
-        SunType.Solid => new SolidSun(draw, rng),
-        SunType.Gradient => new GradientSun(draw, rng),
-        _ => throw new EliteException(),
-    };
+    // As PlanetFactory: a wireframe world overrides the sun style.
+    internal static IObject Create(GraphicStyle style, SunType type, IEliteDraw draw, RNG rng)
+        => style == GraphicStyle.Wireframe
+            ? new WireframeSun(draw)
+            : type switch
+            {
+                SunType.Solid => new SolidSun(draw, rng),
+                SunType.Gradient => new GradientSun(draw, rng),
+                _ => throw new EliteException(),
+            };
 }

@@ -25,30 +25,30 @@ public static class StuntCarRacerServiceCollectionExtensions
         services.AddSingleton(sp => new ConfigFile<ScrConfig>(
             userDataPath,
             ConfigFileName,
-            null,
+            RepairConfig,
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<ScrConfig>>()));
         services.AddSingleton(sp =>
         {
             ScrConfig config = sp.GetRequiredService<ConfigFile<ScrConfig>>().ReadConfig();
-            return new AudioOptions { MusicOn = config.Engine.MusicOn, EffectsOn = config.Engine.EffectsOn };
+            return new AudioOptions { MusicOn = config.Engine.Sound.Music, EffectsOn = config.Engine.Sound.Effects };
         });
         return services;
     }
 
-    // Exposes only the (public) GraphicsBackend choice from the (internal)
+    // Exposes only the (public) Backend choice from the (internal)
     // ScrConfig, so Program.Main - which picks between
     // SoftwareAbstraction and SDLAbstraction and therefore needs to reference
     // Useful.SDL, a dependency StuntCarRacerSharpLib itself deliberately does
     // not have - can read it before the DI container exists.
-    public static GraphicsBackend ReadGraphicsBackend(string userDataPath, ILoggerFactory loggerFactory)
+    public static Backend ReadBackend(string userDataPath, ILoggerFactory loggerFactory)
     {
         ConfigFile<ScrConfig> configFile = new(
             userDataPath,
             ConfigFileName,
-            null,
+            RepairConfig,
             loggerFactory.CreateLogger<ConfigFile<ScrConfig>>());
 
-        return configFile.ReadConfig().Engine.GraphicsBackend;
+        return configFile.ReadConfig().Engine.Backend;
     }
 
     // The single shared source of entropy for this app instance: an
@@ -60,4 +60,9 @@ public static class StuntCarRacerServiceCollectionExtensions
         services.AddSingleton<IRandomSource>(sp => new RandomSource(sp.GetRequiredService<Random>()));
         return services;
     }
+
+    // Stunt Car Racer has no settings of its own yet, so this is the shared
+    // engine repair - which it previously skipped altogether, leaving a bad
+    // backend or tier in the file to be discovered at startup.
+    internal static bool RepairConfig(ScrConfig config) => config.Repair();
 }

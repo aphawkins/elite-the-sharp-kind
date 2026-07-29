@@ -7,6 +7,92 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Config hardened before release, 2026-07-29)
+
+- The file carries a `version` now. Nothing migrates yet - the point is
+  that a later rename or restructure *can*, rather than being
+  indistinguishable from a corrupt file. A file with no version reads
+  as the current one, which is what every file written before this was.
+- One value that cannot be honoured no longer costs the user the other
+  twenty. `ConfigFile<T>`'s all-or-nothing `isValid` predicate is
+  replaced by a `repair` hook that puts individual unusable values back
+  to their defaults in place and reports whether it had to, and the
+  settings either side of it survive. The limit is a value the JSON
+  binder cannot parse at all (a misspelt enum name, a string where a
+  number belongs) - that fails the whole bind, so the defaults still
+  stand.
+- A config file that is about to be rewritten as something other than
+  what it held is first copied to `<name>.bad`, so a hand-edit that
+  didn't parse is recoverable instead of being silently overwritten by
+  the next settings change.
+- Engine validation is shared. `EngineConfigSettings.Repair` checks the
+  backend, tier, frame rate, graphic style and depth sort once for both
+  games - Stunt Car Racer previously passed no validator at all, so a
+  bad value there sat in the file until it broke something at startup.
+- `polygonRenderMode` is renamed `depthSort` (as is the enum behind it,
+  which never covered wireframe and so was never a "polygon render
+  mode"), and `sound.musicOn` / `sound.effectsOn` become `sound.music`
+  / `sound.effects` - inside a `sound` group the suffix said nothing.
+
+### Added (A separate Engine Settings screen, 2026-07-29)
+
+- The settings screen splits in two, along the same line as the config
+  file. Game Settings keeps Elite's own (planet style, sun style,
+  planet descriptions, instant dock); the new Engine Settings screen
+  takes the shared ones (graphic style, depth sort, music, effects).
+  Both are reached from the Options screen; the F-keys are left as the
+  original had them.
+- The backend and the tier are on it too, marked `*` against a
+  "Applies when the game is restarted" footer: both are read before the
+  container is built, so the screen saves the choice and the next
+  launch acts on it rather than pretending it took effect.
+- Music and effects had no way to change at runtime -
+  `AudioController` held them in readonly fields - so they are settable
+  properties now, and switching music off stops what is already
+  playing. `StopMusic` no longer no-ops when music is already off,
+  which is what made that possible.
+- Both screens are one `SettingsListView` base: the two-column layout,
+  the Back row, the navigation and the save-on-change behaviour were
+  going to be duplicated otherwise.
+
+### Changed (Engine settings grouped into graphics and sound, 2026-07-29)
+
+- The `engine` element now groups what it holds: `engine.graphics`
+  (`fps`, `graphicStyle`, `polygonRenderMode`) and `engine.sound`
+  (`musicOn`, `effectsOn`), backed by new `GraphicsConfigSettings` and
+  `SoundConfigSettings` types.
+- `graphicsBackend` and `tier` stay at the top of `engine`, because
+  neither is graphics-only: the backend picks the mixer as well as the
+  rasteriser, and the tier picks an asset set that includes the music
+  and effects. `graphicsBackend` is renamed to `backend` to stop the
+  name claiming otherwise - the `GraphicsBackend` enum becomes
+  `Backend`, and both games' `ReadGraphicsBackend` becomes
+  `ReadBackend`.
+- The shared `engine` block is documented in the main
+  [readme](README.md#configuration); each game's readme now documents
+  only its own `game` block and links there for the rest.
+
+### Changed (One graphic style for the whole world, 2026-07-29)
+
+- `shipWireframe` and `laserWireframe` are replaced by a single engine
+  setting, `graphicStyle` (`Wireframe` or `Solid`). The picture can no
+  longer end up half outlines and half filled faces, and it is one
+  choice rather than one per object type. `shipRenderMode` moves to the
+  engine as `polygonRenderMode`, since it is a property of the
+  rasteriser rather than of Elite.
+- The per-object styles are now what they always meant: `planetStyle`
+  is `Solid | Striped | Fractal` and `sunStyle` is `Solid | Gradient`,
+  and both only apply when `graphicStyle` is `Solid`. `PlanetType` loses
+  its `Wireframe` member - a wireframe world picks `WireframePlanet` for
+  every planet, whatever the style says.
+- New `WireframeSun`, since there wasn't one: a plain white filled disc,
+  the same size as the filled suns but with none of the flare they
+  scatter round the edge. Filled rather than outlined, because an
+  outlined circle reads as a planet.
+- The Settings screen follows: "Ship Style" and "Laser Style" collapse
+  into one "Graphic Style" row, and changing it rebuilds both the planet
+  and the sun so the switch shows on the next frame.
+
 ### Changed (Config tidy-up: new location, name and shape, 2026-07-29)
 
 - The shared user-data folder is now `The Sharp Kind` rather than

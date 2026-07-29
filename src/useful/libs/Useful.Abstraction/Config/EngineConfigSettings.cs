@@ -5,24 +5,50 @@ using Useful.Assets;
 namespace Useful.Abstraction.Config;
 
 /// <summary>
-/// Settings shared by every game, stored under the config file's <c>engine</c> element.
-/// Game-specific settings live alongside it under <c>game</c>; see
+/// Settings shared by every game, stored under the config file's <c>engine</c>
+/// element. Graphics and sound have a group each; what's left at the top sits
+/// across both. Game-specific settings live alongside under <c>game</c>; see
 /// <see cref="ConfigSettings{TGameSettings}"/>.
 /// </summary>
 public sealed class EngineConfigSettings
 {
-    public bool EffectsOn { get; set; } = true;
+    // Which IAbstraction runs the game: Software (default) or Hardware
+    // (SDL-accelerated). It picks the mixer as well as the rasteriser, which
+    // is why it sits here rather than under Graphics.
+    public Backend Backend { get; set; } = Backend.Software;
 
-    // Maximum render frame rate. The game speed is independent of it.
-    public float Fps { get; set; } = 60f;
+    public GraphicsConfigSettings Graphics { get; set; } = new();
 
-    // Which IAbstraction backend renders/plays the game: Software (default)
-    // or Hardware (SDL-accelerated).
-    public GraphicsBackend GraphicsBackend { get; set; } = GraphicsBackend.Software;
-
-    public bool MusicOn { get; set; } = true;
+    public SoundConfigSettings Sound { get; set; } = new();
 
     // Which machine's look the game reproduces: picks the asset set and,
-    // with it, the render resolution and scale. See docs/asset-structure.md.
+    // with it, the render resolution and scale. The asset set covers music
+    // and effects as well as the artwork, so this isn't graphics-only
+    // either. See docs/asset-structure.md.
     public SystemTier Tier { get; set; } = SystemTier.SixteenBit;
+
+    /// <summary>
+    /// Replaces any engine value that cannot be honoured with its default, in
+    /// place. Every game validates the same way through this, rather than each
+    /// one repeating (or, as Stunt Car Racer used to, skipping) the checks.
+    /// </summary>
+    /// <returns><see langword="true"/> if anything had to be replaced.</returns>
+    public bool Repair()
+    {
+        bool repaired = false;
+
+        if (!Enum.IsDefined(Backend))
+        {
+            Backend = Backend.Software;
+            repaired = true;
+        }
+
+        if (!Enum.IsDefined(Tier))
+        {
+            Tier = SystemTier.SixteenBit;
+            repaired = true;
+        }
+
+        return Graphics.Repair() || repaired;
+    }
 }

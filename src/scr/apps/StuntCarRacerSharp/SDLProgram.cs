@@ -85,11 +85,11 @@ internal static class SDLProgram
 
     private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory)
     {
-        GraphicsBackend graphicsBackend = StuntCarRacerServiceCollectionExtensions.ReadGraphicsBackend(userDataPath, loggerFactory);
+        Backend backend = StuntCarRacerServiceCollectionExtensions.ReadBackend(userDataPath, loggerFactory);
 
         ServiceCollection services = new();
         services.AddSingleton(loggerFactory);
-        services.AddSingleton<IAbstraction>(sp => graphicsBackend == GraphicsBackend.Hardware
+        services.AddSingleton<IAbstraction>(sp => backend == Backend.Hardware
             ? new SDLAbstraction(
                 ScreenWidth,
                 ScreenHeight,
