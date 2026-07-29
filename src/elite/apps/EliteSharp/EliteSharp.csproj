@@ -12,13 +12,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="ppy.SDL3-CS" />
     <PackageReference Include="ppy.SDL3_ttf-CS" />
-    <PackageReference Include="Serilog" />
-    <PackageReference Include="Serilog.Extensions.Logging" />
-    <PackageReference Include="Serilog.Sinks.Console" />
-    <PackageReference Include="Serilog.Sinks.File" />
   </ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\useful\libs\Useful.App\Useful.App.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.SDL\Useful.SDL.csproj" />
 	  <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
 	</ItemGroup>

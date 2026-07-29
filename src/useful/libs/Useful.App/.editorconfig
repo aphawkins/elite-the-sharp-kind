@@ -1,0 +1,14 @@
+# editorconfig.org
+
+# inherits higher configs
+
+[*.cs]
+
+# CA1031: Do not catch general exception types
+# Disabled for this project only: GameApp.Run is the top-level handler of a
+# game executable, the one place a catch-all is the correct shape - anything
+# that reaches it is already unrecoverable, and the alternative is a raw
+# stack dump instead of a logged Critical and an actionable message. The rule
+# targets library code swallowing exceptions, which is still enforced
+# everywhere else; this assembly is app-layer composition, not a library.
+dotnet_diagnostic.CA1031.severity = none

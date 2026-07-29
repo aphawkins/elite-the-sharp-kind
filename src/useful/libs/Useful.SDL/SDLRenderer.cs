@@ -33,6 +33,22 @@ public sealed unsafe class SDLRenderer(SDLWindow window) : IDisposable
 
     public nint ToIntPtr() => _renderer;
 
+    /// <summary>
+    /// Fixes the coordinate space every draw call is expressed in, so a
+    /// window larger than <paramref name="screenWidth"/> x
+    /// <paramref name="screenHeight"/> shows the same pixels magnified by a
+    /// whole number rather than more of the scene. Nothing above this needs
+    /// to know the window size. Logical presentation applies only when
+    /// drawing to the window, so anything rendered into a texture target
+    /// stays at its native size.
+    /// </summary>
+    public void SetLogicalSize(int screenWidth, int screenHeight)
+        => SDLGuard.Execute(() => SDL_SetRenderLogicalPresentation(
+            (SDL_Renderer*)_renderer,
+            screenWidth,
+            screenHeight,
+            SDL_RendererLogicalPresentation.SDL_LOGICAL_PRESENTATION_INTEGER_SCALE));
+
     private void Dispose(bool disposing)
     {
         if (!_isDisposed)

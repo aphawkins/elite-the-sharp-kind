@@ -2,17 +2,12 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Globalization;
 using EliteSharpLib;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using Useful;
-using Useful.Abstraction;
+using Useful.Abstraction.Config;
+using Useful.App;
 using Useful.Assets;
-using Useful.SDL;
 
 [assembly: CLSCompliant(false)]
 
@@ -21,63 +16,13 @@ namespace EliteSharp;
 internal static class SDLProgram
 {
     private const string Title = "Elite - The Sharp Kind";
-    private const string AssetLogCategory = "Assets";
 
-    public static void Main()
-    {
-        if (!AppStartup.TryResolveUserDataPath(out string userDataPath))
-        {
-            Environment.Exit(1);
-            return;
-        }
-
-        using Logger seriLogger = CreateSeriLogger(userDataPath);
-        using LoggerFactory loggerFactory = new();
-        loggerFactory.AddSerilog(seriLogger);
-
-        using ServiceProvider provider = BuildServices(userDataPath, loggerFactory).BuildServiceProvider();
-
-        Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(SDLProgram));
-
-        try
-        {
-            EliteMain elite = provider.GetRequiredService<EliteMain>();
-            LogMessages.StartingTitle(logger, Title);
-            elite.Run();
-        }
-        catch (Exception ex)
-        {
-            LogMessages.CriticalAppTerminated(logger, ex);
-            AppStartup.WriteFailureHint(ex, userDataPath);
-            Environment.Exit(-1);
-            throw;
-        }
-    }
-
-    private static Logger CreateSeriLogger(string userDataPath)
-    {
-        LogEventLevel minimumLevel =
-            Enum.TryParse(Environment.GetEnvironmentVariable("ELITE_LOG_LEVEL"), ignoreCase: true, out LogEventLevel envLevel)
-            ? envLevel
-            : LogEventLevel.Information;
-
-        return new LoggerConfiguration()
-            .Enrich
-            .FromLogContext()
-            .MinimumLevel
-            .Is(minimumLevel)
-            .WriteTo
-            .Console(
-                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}",
-                formatProvider: CultureInfo.InvariantCulture)
-            .WriteTo
-            .File(
-                Path.Combine(userDataPath, "logs", "elite-.log"),
-                formatProvider: CultureInfo.InvariantCulture,
-                rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 7)
-            .CreateLogger();
-    }
+    public static int Main()
+        => GameApp.Run(
+            Title,
+            logFileName: "elite-.log",
+            logLevelEnvironmentVariable: "ELITE_LOG_LEVEL",
+            BuildServices);
 
     // Render resolution is a function of the configured tier rather than a
     // separate setting, so the asset set and the resolution can never
@@ -91,29 +36,11 @@ internal static class SDLProgram
 
     private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory)
     {
-        Backend backend = EliteServiceCollectionExtensions.ReadBackend(userDataPath, loggerFactory);
-        SystemTier tier = EliteServiceCollectionExtensions.ReadSystemTier(userDataPath, loggerFactory);
-        (int width, int height) = ResolutionFor(tier);
+        EngineConfigSettings engine = EliteServiceCollectionExtensions.ReadEngineSettings(userDataPath, loggerFactory);
+        (int width, int height) = ResolutionFor(engine.Tier);
 
         ServiceCollection services = new();
-        services.AddSingleton(loggerFactory);
-        services.AddSingleton<IAbstraction>(sp => backend == Backend.Hardware
-            ? new SDLAbstraction(
-                width,
-                height,
-                Title,
-                sp.GetRequiredService<IAssetLocator>(),
-                sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory))
-            : new SoftwareAbstraction(
-                width,
-                height,
-                Title,
-                sp.GetRequiredService<IAssetLocator>(),
-                sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory)));
-        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
-        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
-        services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
-        services.AddSingleton(_ => AssetLocator.Create(tier));
+        services.AddGameEngine(engine, width, height, Title, loggerFactory);
         services.AddEliteConfig(userDataPath);
         services.AddEliteMain();
 

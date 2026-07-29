@@ -42,9 +42,23 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
         string title,
         IAssetLocator assetLocator,
         ILogger? logger)
+        : this(screenWidth, screenHeight, 1, title, assetLocator, logger)
     {
-        _window = new(screenWidth, screenHeight, title);
+    }
+
+    public SoftwareAbstraction(
+        int screenWidth,
+        int screenHeight,
+        int windowScale,
+        string title,
+        IAssetLocator assetLocator,
+        ILogger? logger)
+    {
+        // The framebuffer stays at the native resolution whatever the scale
+        // is; only the window and the blit that presents it grow.
+        _window = new(screenWidth * windowScale, screenHeight * windowScale, title);
         _renderer = new(_window);
+        _renderer.SetLogicalSize(screenWidth, screenHeight);
 
         _frameTexture = SDLGuard.Execute(() => (nint)SDL_CreateTexture(
             NativeRenderer,
@@ -52,6 +66,13 @@ public sealed unsafe class SoftwareAbstraction : IAbstraction, IDisposable
             SDL_TextureAccess.SDL_TEXTUREACCESS_STREAMING,
             screenWidth,
             screenHeight));
+
+        // Magnifying must duplicate pixels rather than blend them: SDL's
+        // default is linear, which would show a filtered image instead of
+        // the tier's own.
+        SDLGuard.Execute(() => SDL_SetTextureScaleMode(
+            (SDL_Texture*)_frameTexture,
+            SDL_ScaleMode.SDL_SCALEMODE_NEAREST));
 
         Graphics = SoftwareGraphics.Create(
             screenWidth,

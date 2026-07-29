@@ -23,14 +23,14 @@ The engine is architected like a business application; these are the house rules
 
 ### Composition and dependency injection
 
-* Each executable has exactly one composition root: `Program.Main`, using `Microsoft.Extensions.DependencyInjection` (a plain `ServiceCollection`; the full Generic Host is not needed).
+* Each executable has exactly one composition root: `Program.Main`, using `Microsoft.Extensions.DependencyInjection` (a plain `ServiceCollection`; the full Generic Host is not needed). What is identical between the executables — resolving the user-data path, standing up logging, running the game, reporting a failure — lives in `Useful.App`'s `GameApp.Run`; each `Main` supplies only its own title, log file and service registrations.
 * Everything below the composition root receives its collaborators by constructor injection. Domain classes never `new` up their own dependencies (no `AssetLocator.Create()` or `new ConfigFile()` inside game classes) and never reach through a god object for them — a class's constructor signature is the honest list of what it uses.
 * The container owns lifetimes and disposal: `IAbstraction`, graphics/sound/keyboard, configuration and asset services are singletons disposed by the provider in reverse order. Never call `Environment.Exit` to end the game; return from the loop and let `Main` unwind.
 * No two-phase construction: an instance must never be observable half-built. Fold `Initialize(...)` methods and post-construction property mutation into constructors or static factories.
 
 ### Logging
 
-* Libraries depend only on `Microsoft.Extensions.Logging.Abstractions` and accept `ILogger<T>` by constructor. The logging provider (Serilog) and sink configuration are app-level policy, configured only in `Program.Main`.
+* Libraries depend only on `Microsoft.Extensions.Logging.Abstractions` and accept `ILogger<T>` by constructor. The logging provider (Serilog) and sink configuration are app-level policy: they live in the app layer — `Program.Main` or the shared `Useful.App` host it delegates to — and no game or engine library references Serilog.
 * Log messages use source-generated `[LoggerMessage]` partials (allocation-free, compile-checked) — the existing app `LogMessages.cs` pattern, replicated per library.
 * Log at the edges, not per frame: startup and asset loading (Information), config/save read-write outcomes (Information/Warning), recoverable oddities (Warning), failures and top-level handlers (Error/Critical). The frame path stays logging-free.
 * App sinks: console plus a rolling file (with a retained-file limit), minimum level Information, raisable via environment variable. A Debug-only sink is not acceptable as the sole sink — a crash on a player's machine must leave a trace.

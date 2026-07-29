@@ -7,6 +7,75 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Window scale, 2026-07-29)
+
+- `engine.windowScale` magnifies the window without changing what is
+  drawn: an integer, defaulting to 1, that both games multiply their
+  render resolution by when creating the window. At scale 2 Elite's
+  512x512 fills a 1024x1024 window with each pixel doubled, not with
+  more of the scene. It is deliberately independent of `tier` — the
+  tier chooses which machine's art and resolution the game reproduces,
+  the scale only how large that appears on a modern display.
+- The framebuffer stays native at any scale. Both backends already
+  composed each frame into a fixed-size texture and blitted it to the
+  window on every present, so the magnification is
+  `SDL_SetRenderLogicalPresentation` in integer-scale mode on the
+  renderer plus nearest-neighbour sampling on the two presented
+  textures. Every drawing coordinate above that is logical-space and
+  unchanged, so no game code knows the window size — and because
+  logical presentation applies only when drawing to the window,
+  `SDLGraphics`' render target and `SaveScreen` still work at the
+  native resolution.
+- Out-of-range scales are repaired like every other engine setting:
+  zero, negative, or past 4 (larger than any display the game could be
+  shown on) goes back to 1 rather than failing at startup.
+
+### Added (Useful.App: one shared composition root, 2026-07-29)
+
+- The two `SDLProgram.cs` files were about half duplicate: `Main` and
+  `CreateSeriLogger` were identical between the games apart from four
+  strings. They move to `GameApp.Run` in a new `Useful.App` assembly,
+  which each `Main` now calls with its title, log file name, log-level
+  environment variable and its own `BuildServices`. Everything left in
+  the two files is genuinely game-specific.
+- `Useful.App` is the app layer as an assembly rather than as a pair of
+  entry points: it is the only place Serilog is referenced now (the two
+  app projects drop their four Serilog package references and their
+  duplicate `LogMessages`), and no game or engine library references it.
+  `docs/architecture-principles.md` is updated to say so.
+- `BuildServices` collapses too: the shared preamble - logger factory,
+  the backend the config selects, the graphics/sound/keyboard it
+  exposes, and the tier's asset locator - becomes
+  `AddGameEngine(engine, width, height, title, loggerFactory)` in
+  `Useful.App`. Each game's `BuildServices` is now its resolution, that
+  one call, and its own three or four registrations. Stunt Car Racer
+  gains `AddScrMain()` so its game registrations live in its own library
+  as Elite's already did, rather than being spelled out in the app.
+- Games gain `IGameApp` alongside `IGame` - `Run` for the composition
+  root, `Update`/`Draw` for `GameHost`, kept as separate interfaces
+  because they are separate roles.
+- `Main` returns an exit code instead of the host calling
+  `Environment.Exit`, so the container disposes its singletons on the
+  way out of a failed start rather than the process vanishing mid-stack.
+  This is what the principles already asked for; it only became
+  enforceable once the code moved somewhere the analyser checks it.
+
+### Changed (Engine settings read once, shared, 2026-07-29)
+
+- Each game had its own `ReadBackend`, `ReadSystemTier` and
+  `ReadWindowScale` for the composition root to call before the DI
+  container exists, six methods with the same body between them - and
+  each one opened, bound, repaired and possibly rewrote the whole config
+  file for a single value. They collapse to one `ReadEngineSettings` per
+  game returning the whole `EngineConfigSettings`, over a shared
+  `EngineConfigReader.Read<TConfig>` in `Useful.Abstraction`. Startup now
+  reads the file once instead of three times, and a new engine setting no
+  longer means a new method in both games.
+- `ConfigSettings<TGameSettings>` gains a non-generic `ConfigSettings`
+  base holding the version, the engine settings and `Repair`. It is what
+  lets the shared reader name a config type without knowing the game's
+  own settings type; games still derive from the generic one.
+
 ### Changed (Stunt Car Racer selects its asset tier, 2026-07-29)
 
 - Stunt Car Racer reads `engine.tier` from its config and builds its

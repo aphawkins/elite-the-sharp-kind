@@ -30,7 +30,7 @@ public class EliteMainTests
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
             services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
-            services.AddSingleton(_ => AssetLocator.Create());
+            services.AddSingleton<IAssetLocator>(_ => AssetLocator.Create());
             services.AddEliteConfig(configDirectory);
             services.AddEliteMain();
 

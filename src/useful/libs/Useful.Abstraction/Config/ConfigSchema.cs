@@ -10,7 +10,7 @@ public static class ConfigSchema
     /// <summary>
     /// Gets the schema version this build writes. Bump it whenever the shape of the
     /// file changes in a way a migration would need to recognise, and handle the
-    /// older versions in <see cref="ConfigSettings{TGameSettings}.Repair"/>.
+    /// older versions in <see cref="ConfigSettings.Repair"/>.
     /// </summary>
     public static int CurrentVersion => 1;
 }

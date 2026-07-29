@@ -61,19 +61,8 @@ existing.
 ### Tier presentation architecture
 
 Implements the 2026-07-28 tier-presentation decision in
-[decisions.md](decisions.md). The first item corrects a mistaken
-reading of `Scale` and is worth doing before the view work builds on it.
+[decisions.md](decisions.md).
 
-- [ ] [Apps/Useful.SDL] `WindowScale` config setting, integer only and
-      independent of `Tier`: render at the tier's native resolution and
-      magnify only at presentation, so 320x256 at scale 2 fills a 640x512
-      window showing the same pixels doubled. The framebuffer stays
-      native — both backends already render into a fixed-size texture
-      (`SDLGraphics._frameTarget`, `SoftwareAbstraction._frameTexture`)
-      and blit it to the window on every present — so this is a larger
-      window plus nearest-neighbour sampling on that blit, with no game
-      code changes. Do together with the resizable-window/letterbox item
-      in the Could section: same presentation path.
 - [ ] **[LARGE]** [EliteSharpLib] MVC split for the 28 view classes:
       each screen's controller takes input and navigation, its model
       holds the game data and formatting, and the view is left drawing
@@ -125,6 +114,24 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
+- [ ] [Useful.App] Make the logging settings config-driven: the minimum
+      level and the retained-file count are hardcoded in
+      `GameApp.CreateSeriLogger`, with only the
+      `ELITE_LOG_LEVEL`/`SCR_LOG_LEVEL` environment variables to override
+      the level. Add a `Logging` group to `EngineConfigSettings` and read
+      it through the existing `ConfigFile<T>`, so it follows the
+      defaults-in-POCO/override-in-file rule the rest of the config
+      already does. Note the ordering problem: the logger is created
+      before the config is read, and `ConfigFile` wants a logger — build
+      the logger with a Serilog `LoggingLevelSwitch` at the default
+      level and set the switch once the config is in. Keep the
+      environment variable as the escape hatch for when the config
+      itself is what's broken. **Do not** use
+      `Serilog.Settings.Configuration` for this: it resolves sinks by
+      assembly name via `DependencyContext`, which is unreliable under
+      the `PublishSingleFile` profiles this repo ships (sinks can
+      silently fail to attach), and it would put a second config file
+      beside the exe rather than under `ApplicationData`.
 - [ ] [Repo] `sdl-drive/drive.ps1`'s `ConvertTo-VirtualKeyCode` has no
       entry for `Return`, so a `key:Return` step throws "Unknown key
       name". Hit while driving SCR's menus (2026-07-28); add Return and
@@ -357,13 +364,14 @@ either.**):
 
 - [ ] [Useful.SDL] Resizable window with letterboxed scaling: add
       `SDL_WINDOW_RESIZABLE` in [SDLWindow.cs:23-29](../src/useful/libs/Useful.SDL/SDLWindow.cs)
-      and present the fixed-size software framebuffer via
-      `SDL_RenderSetLogicalSize` (aspect-preserving letterbox) so the
+      and handle `SDL_EVENT_WINDOW_RESIZED` in the event loop, so the
       window can be any size while both games keep rendering at their
-      native 512x512 / 640x400 — zero game-code changes. Handle
-      `SDL_WINDOWEVENT_SIZE_CHANGED` in the event loop. Do together
-      with (or after) the streaming-texture item above — the present
-      path is the same code.
+      native 512x512 / 640x400 — zero game-code changes. Most of this
+      landed with `WindowScale` (2026-07-29, see CHANGELOG):
+      `SDLRenderer.SetLogicalSize` already fixes the logical coordinate
+      space, so what remains is the resizable flag, switching that call's
+      mode from `INTEGER_SCALE` to `LETTERBOX` when the window is free to
+      be any size, and deciding how the two settings interact.
 - [ ] [Apps] Make the render resolution configurable: both apps
       hardcode `ScreenWidth`/`ScreenHeight` consts (the "Get these from
       config" comment at [SDLProgram.cs:22-29](../src/elite/apps/EliteSharp/SDLProgram.cs),

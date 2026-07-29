@@ -37,36 +37,14 @@ public static class EliteServiceCollectionExtensions
             RepairConfig,
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<EliteConfig>>()));
 
-    // Exposes only the (public) Backend choice from the (internal)
-    // EliteConfig, so Program.Main - which picks between SoftwareAbstraction
-    // and SDLAbstraction and therefore needs to reference Useful.SDL, a
-    // dependency EliteSharpLib itself deliberately does not have - can read it
-    // before the DI container (and its own ConfigFile<EliteConfig> registration
-    // via AddEliteConfig) exists.
-    public static Backend ReadBackend(string userDataPath, ILoggerFactory loggerFactory)
-    {
-        ConfigFile<EliteConfig> configFile = new(
-            userDataPath,
-            ConfigFileName,
-            RepairConfig,
-            loggerFactory.CreateLogger<ConfigFile<EliteConfig>>());
-
-        return configFile.ReadConfig().Engine.Backend;
-    }
-
-    // Same reason as ReadBackend above: Program.Main needs the tier
-    // before the container exists, because it picks the render resolution
-    // and the asset set from it.
-    public static SystemTier ReadSystemTier(string userDataPath, ILoggerFactory loggerFactory)
-    {
-        ConfigFile<EliteConfig> configFile = new(
-            userDataPath,
-            ConfigFileName,
-            RepairConfig,
-            loggerFactory.CreateLogger<ConfigFile<EliteConfig>>());
-
-        return configFile.ReadConfig().Engine.Tier;
-    }
+    // Exposes the (public) engine settings from the (internal) EliteConfig, so
+    // Program.Main - which picks between SoftwareAbstraction and SDLAbstraction
+    // and therefore needs to reference Useful.SDL, a dependency EliteSharpLib
+    // itself deliberately does not have - can read the backend, the tier and
+    // the window scale before the DI container (and its own
+    // ConfigFile<EliteConfig> registration via AddEliteConfig) exists.
+    public static EngineConfigSettings ReadEngineSettings(string userDataPath, ILoggerFactory loggerFactory)
+        => EngineConfigReader.Read<EliteConfig>(userDataPath, ConfigFileName, RepairConfig, loggerFactory);
 
     // The whole domain graph below is internal to EliteSharpLib (same
     // reason as ConfigFile above), so it can only be registered from in
@@ -101,6 +79,7 @@ public static class EliteServiceCollectionExtensions
                 sp.GetRequiredService<AudioController>());
         });
         services.AddSingleton<IGame>(sp => sp.GetRequiredService<EliteMain>());
+        services.AddSingleton<IGameApp>(sp => sp.GetRequiredService<EliteMain>());
         return services;
     }
 
@@ -110,8 +89,6 @@ public static class EliteServiceCollectionExtensions
 
     private static void AddEliteCore(this IServiceCollection services)
     {
-        services.AddSingleton<IAssetLocator>(sp => sp.GetRequiredService<AssetLocator>());
-
         // The single shared source of entropy for this app instance: an
         // unseeded Random in production, replaceable with a seeded one in
         // tests via RNG's constructor seam.

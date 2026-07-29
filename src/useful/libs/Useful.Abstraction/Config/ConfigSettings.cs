@@ -3,14 +3,14 @@
 namespace Useful.Abstraction.Config;
 
 /// <summary>
-/// The root of a game's config file: the schema version, shared engine settings
-/// under <c>engine</c>, and the game's own settings under <c>game</c>. Each game
-/// derives a concrete type from this so it can be referenced without repeating
-/// the type argument.
+/// The part of a game's config file that is the same for every game: the schema
+/// version and the shared engine settings under <c>engine</c>. It is separate
+/// from <see cref="ConfigSettings{TGameSettings}"/> so code that only wants the
+/// engine half - the composition root sizing a window before it knows what game
+/// it is starting, say - can name a type without knowing the game's own
+/// settings type. Games derive from the generic type below, not this one.
 /// </summary>
-/// <typeparam name="TGameSettings">The game-specific settings type.</typeparam>
-public abstract class ConfigSettings<TGameSettings>
-    where TGameSettings : new()
+public abstract class ConfigSettings
 {
     /// <summary>
     /// Gets or sets the schema version of the file. It exists so a later rename or restructure
@@ -20,8 +20,6 @@ public abstract class ConfigSettings<TGameSettings>
     public int Version { get; set; } = ConfigSchema.CurrentVersion;
 
     public EngineConfigSettings Engine { get; set; } = new();
-
-    public TGameSettings Game { get; set; } = new();
 
     /// <summary>
     /// Replaces any value that cannot be honoured with its default, in place,

@@ -141,6 +141,13 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
             (int)screenWidth,
             (int)screenHeight));
 
+        // Magnifying must duplicate pixels rather than blend them: SDL's
+        // default is linear, which would show a filtered image instead of
+        // the tier's own whenever the window is larger than the frame.
+        SDLGuard.Execute(() => SDL_SetTextureScaleMode(
+            (SDL_Texture*)graphics._frameTarget,
+            SDL_ScaleMode.SDL_SCALEMODE_NEAREST));
+
         // All drawing targets _frameTarget from here on (see its field
         // comment); ScreenUpdate() briefly switches back to the window to
         // blit it, then restores this.

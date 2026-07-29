@@ -30,7 +30,7 @@ using Useful.Graphics;
 
 namespace EliteSharpLib;
 
-public sealed class EliteMain : IGame
+public sealed class EliteMain : IGame, IGameApp
 {
     // The rate the game logic ticks at, approximately the speed of Elite
     // The New Kind. Render runs at the same rate (see Run()): decoupling it

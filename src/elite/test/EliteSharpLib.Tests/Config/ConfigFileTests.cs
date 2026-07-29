@@ -25,6 +25,7 @@ public class ConfigFileTests
 
         // Assert
         Assert.Equal(60f, config.Engine.Graphics.Fps);
+        Assert.Equal(1, config.Engine.WindowScale);
         Assert.True(config.Engine.Sound.Music);
         Assert.True(config.Engine.Sound.Effects);
     }
@@ -111,6 +112,31 @@ public class ConfigFileTests
         Assert.Equal(SystemTier.SixteenBit, config.Engine.Tier);
         Assert.False(config.Game.InstantDock);
         Assert.True(File.Exists(Path.Combine(directory, ConfigFileName + ".bad")));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-2)]
+    [InlineData(5)]
+    public void ReadConfigWithAnUnusableWindowScaleRepairsThatSettingAlone(int scale)
+    {
+        EliteConfig config = ReadWritten(
+            $"{{\"engine\": {{\"windowScale\": {scale}, \"tier\": \"EightBit\"}}}}");
+
+        Assert.Equal(1, config.Engine.WindowScale);
+        Assert.Equal(SystemTier.EightBit, config.Engine.Tier);
+    }
+
+    [Fact]
+    public void ReadConfigKeepsAWindowScaleItCanHonour()
+    {
+        // The scale is independent of the tier: a magnified 8-bit window is
+        // the point of the setting, not a contradiction to repair away.
+        EliteConfig config = ReadWritten(
+            /*lang=json,strict*/ "{\"engine\": {\"windowScale\": 3, \"tier\": \"EightBit\"}}");
+
+        Assert.Equal(3, config.Engine.WindowScale);
+        Assert.Equal(SystemTier.EightBit, config.Engine.Tier);
     }
 
     [Fact]

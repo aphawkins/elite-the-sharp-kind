@@ -18,7 +18,7 @@ using Useful.Graphics;
 
 namespace StuntCarRacerSharpLib;
 
-public sealed class StuntCarRacerMain : IGame
+public sealed class StuntCarRacerMain : IGame, IGameApp
 {
     // The original remake ticks OnFrameMove at 50Hz: input and the engine
     // sound run at the full tick rate, while the car physics only steps

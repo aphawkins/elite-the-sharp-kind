@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using StuntCarRacerSharpLib.Config;
 using Useful;
 using Useful.Abstraction;
+using Useful.Abstraction.Config;
 using Useful.Assets;
 using Useful.Audio;
 using Useful.Config;
@@ -36,35 +37,13 @@ public static class StuntCarRacerServiceCollectionExtensions
         return services;
     }
 
-    // Exposes only the (public) Backend choice from the (internal)
-    // ScrConfig, so Program.Main - which picks between
-    // SoftwareAbstraction and SDLAbstraction and therefore needs to reference
-    // Useful.SDL, a dependency StuntCarRacerSharpLib itself deliberately does
-    // not have - can read it before the DI container exists.
-    public static Backend ReadBackend(string userDataPath, ILoggerFactory loggerFactory)
-    {
-        ConfigFile<ScrConfig> configFile = new(
-            userDataPath,
-            ConfigFileName,
-            RepairConfig,
-            loggerFactory.CreateLogger<ConfigFile<ScrConfig>>());
-
-        return configFile.ReadConfig().Engine.Backend;
-    }
-
-    // Same reason as ReadBackend above: Program.Main needs the tier before the
-    // container exists, because the asset locator it builds - and hands to the
-    // abstraction - is fixed to a tier at construction.
-    public static SystemTier ReadSystemTier(string userDataPath, ILoggerFactory loggerFactory)
-    {
-        ConfigFile<ScrConfig> configFile = new(
-            userDataPath,
-            ConfigFileName,
-            RepairConfig,
-            loggerFactory.CreateLogger<ConfigFile<ScrConfig>>());
-
-        return configFile.ReadConfig().Engine.Tier;
-    }
+    // Exposes the (public) engine settings from the (internal) ScrConfig, so
+    // Program.Main - which picks between SoftwareAbstraction and SDLAbstraction
+    // and therefore needs to reference Useful.SDL, a dependency
+    // StuntCarRacerSharpLib itself deliberately does not have - can read the
+    // backend, the tier and the window scale before the DI container exists.
+    public static EngineConfigSettings ReadEngineSettings(string userDataPath, ILoggerFactory loggerFactory)
+        => EngineConfigReader.Read<ScrConfig>(userDataPath, ConfigFileName, RepairConfig, loggerFactory);
 
     // The single shared source of entropy for this app instance: an
     // unseeded Random in production, replaceable with a seeded one in
@@ -73,6 +52,20 @@ public static class StuntCarRacerServiceCollectionExtensions
     {
         services.AddSingleton(_ => Random.Shared);
         services.AddSingleton<IRandomSource>(sp => new RandomSource(sp.GetRequiredService<Random>()));
+        return services;
+    }
+
+    // Registers the game itself, as AddEliteMain does for Elite: the
+    // composition root asks for the game, not for the pieces it is built from.
+    public static IServiceCollection AddScrMain(this IServiceCollection services)
+    {
+        services.AddSingleton(sp => new StuntCarRacerMain(
+            sp.GetRequiredService<IAbstraction>(),
+            sp.GetRequiredService<IAssetLocator>(),
+            sp.GetRequiredService<AudioOptions>(),
+            sp.GetRequiredService<IRandomSource>()));
+        services.AddSingleton<IGame>(sp => sp.GetRequiredService<StuntCarRacerMain>());
+        services.AddSingleton<IGameApp>(sp => sp.GetRequiredService<StuntCarRacerMain>());
         return services;
     }
 
