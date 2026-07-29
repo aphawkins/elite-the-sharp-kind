@@ -35,15 +35,15 @@ internal sealed class LaserDraw
 
         Vector2 target = new()
         {
-            X = _rng.Random((int)_draw.Centre.X / 2, (int)(_draw.Centre.X / 2) + 2) * _draw.Scale,
-            Y = _rng.Random((int)_draw.Centre.Y / 2, (int)(_draw.Centre.Y / 2) + 2) * _draw.Scale,
+            X = _draw.Centre.X + (_rng.Random(0, 2) * _draw.Scale),
+            Y = _draw.Centre.Y + (_rng.Random(0, 2) * _draw.Scale),
         };
 
-        Vector2 leftA = new((32 + (_draw.ScannerLeft / 2)) * _draw.Scale, _draw.Bottom);
-        Vector2 leftB = new((48 + (_draw.ScannerLeft / 2)) * _draw.Scale, _draw.Bottom);
+        Vector2 leftA = new(_draw.ScannerLeft + (32 * _draw.Scale), _draw.Bottom);
+        Vector2 leftB = new(_draw.ScannerLeft + (48 * _draw.Scale), _draw.Bottom);
 
-        Vector2 rightA = new(((_draw.ScannerRight / 2) - 32) * _draw.Scale, _draw.Bottom);
-        Vector2 rightB = new(((_draw.ScannerRight / 2) - 48) * _draw.Scale, _draw.Bottom);
+        Vector2 rightA = new(_draw.ScannerRight - (32 * _draw.Scale), _draw.Bottom);
+        Vector2 rightB = new(_draw.ScannerRight - (48 * _draw.Scale), _draw.Bottom);
 
         if (_gameState.Config.LaserWireframe)
         {
@@ -72,8 +72,7 @@ internal sealed class LaserDraw
         }
 
         string image = CrosshairImage(laserType);
-        Vector2 centre = _draw.Centre / 2 * _draw.Scale;
-        _draw.Graphics.DrawImage(image, centre - (_draw.Graphics.ImageSize(image) / 2));
+        _draw.Graphics.DrawImage(image, _draw.Centre - (_draw.Graphics.ImageSize(image) / 2));
     }
 
     private static string CrosshairImage(LaserType laserType) => laserType switch

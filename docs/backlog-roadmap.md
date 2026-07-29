@@ -53,24 +53,9 @@ existing.
 ### Tier presentation architecture
 
 Implements the 2026-07-28 tier-presentation decision in
-[decisions.md](decisions.md). The first two items correct a mistaken
-reading of `Scale` and are worth doing before the view work builds on it.
+[decisions.md](decisions.md). The first item corrects a mistaken
+reading of `Scale` and is worth doing before the view work builds on it.
 
-- [ ] [EliteSharpLib] Split the 3D projection's zoom from the view
-      centre. `ShipBase.ProjectPoint` computes
-      `((x * 256 / z) + (Centre.X / 2)) * Scale`, which recovers the true
-      centre only when `Scale` is exactly 2 — at 8-bit (`Scale` 1) the
-      scene is centred a quarter of the way across the screen instead of
-      the middle, which is why 8-bit ships and planets sit up and to the
-      left. `EliteDraw.ProjectExplosionPoints` repeats the same
-      construction. Replace both with `Centre + (x * Focus / z)`, where
-      `Focus` is a float derived from the tier's screen width times a
-      per-tier factor. At 16-bit that is 512 x 1.0, which reduces to
-      today's maths exactly, so the 16-bit render must come out
-      pixel-identical — a strong check on the change. This also frees the
-      name `Scale` for window magnification; the only other use, an
-      `8 * Scale` text offset in `EliteDraw`, belongs to the per-tier
-      views.
 - [ ] [Apps/Useful.SDL] `WindowScale` config setting, integer only and
       independent of `Tier`: render at the tier's native resolution and
       magnify only at presentation, so 320x256 at scale 2 fills a 640x512
@@ -183,18 +168,17 @@ painter's chain landed 2026-07-14, see CHANGELOG):
       it. Adoption changes close-range visuals — verify against The New
       Kind's behaviour before keeping it.
 - [ ] [Useful.Graphics] Extract a shared perspective-projection helper
-      (centre + focus·x/z): Elite inlines it twice with magic numbers
-      (`* 256 / vec.Z + Centre/2, * Scale` in `TransformModelPoints`
-      ([ShipBase.cs:130-131](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
-      and again, without the `* Scale`, in `EliteDraw.DrawExplosion`
-      ([EliteDraw.cs:319-320](../src/elite/libs/EliteSharpLib/Graphics/EliteDraw.cs));
-      `DrawLasers` only consumes an already-projected point, it doesn't
-      inline the projection itself) and SCR has `Scene3D.ProjectPoint`
+      (centre + focus·x/z): Elite now writes exactly that form, but
+      inlines it at five sites — `ShipBase.ProjectPoint`,
+      `EliteDraw.ProjectExplosionPoints`,
+      `PlanetRenderer.GetPlanetPosition`, `SolidSun.Draw` and
+      `GradientSun.Draw` (see CHANGELOG, 2026-07-29) — against SCR's
+      `Scene3D.ProjectPoint`
       ([Scene3D.cs:116-125](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs));
-      a small `focus`+`centre` projector type serves both. Elite's
-      `Scale` now lives on `EliteDraw` rather than `IGraphics` (see
-      CHANGELOG), so keep the `* Scale` on the Elite side of the
-      boundary rather than in the shared type.
+      a small `focus`+`centre` projector type serves both. Note the
+      radius conversions in the planet/sun sites (`* Focus / 256`) are
+      Elite-specific and stay on the Elite side of the boundary, as does
+      `Scale`, which is now coordinate/window magnification only.
 - [ ] [Useful.Graphics] Shared text/HUD-panel helper for the two games'
       ad-hoc HUD code (Elite's `EliteDraw` header/border/text helpers,
       SCR's `HudRenderer`) — the smaller sibling of the original item;

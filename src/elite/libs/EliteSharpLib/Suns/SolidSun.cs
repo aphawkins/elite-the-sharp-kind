@@ -51,11 +51,10 @@ internal sealed class SolidSun : IObject
     {
         Vector2 centre = new(Location.X, -Location.Y);
 
-        centre *= 256 / Location.Z;
-        centre += _draw.Centre / 2;
-        centre *= _draw.Scale;
+        centre *= _draw.Focus / Location.Z;
+        centre += _draw.Centre;
 
-        float radius = 6291456 / Location.Length() * _draw.Scale;
+        float radius = 6291456 / Location.Length() * (_draw.Focus / 256);
 
         if (centre.X + radius < _draw.Left ||
             centre.X - radius > _draw.Right ||

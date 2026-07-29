@@ -29,6 +29,17 @@ internal sealed class Stars
 
     internal bool WarpStars { get; set; }
 
+    // Star coordinates are held in the original's 256-wide space, centred on
+    // the view, so they map to the screen by the same factor as the projected
+    // planet and sun radii. The star-space half-extents below are the screen's
+    // own half-extents divided back through it, which keeps the starfield
+    // filling exactly the view at any tier.
+    private float StarScale => _draw.Focus / 256;
+
+    private float StarHalfWidth => _draw.Centre.X / StarScale;
+
+    private float StarHalfHeight => _draw.Centre.Y / StarScale;
+
     internal void CreateNewStars()
     {
         for (int i = 0; i < _stars.Length; i++)
@@ -84,19 +95,16 @@ internal sealed class Stars
 
             if (WarpStars)
             {
-                _draw.Graphics.DrawLine(
-                    star,
-                    new((xx + (_draw.Centre.X / 2)) * _draw.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Scale),
-                    _colorWhite);
+                _draw.Graphics.DrawLine(star, ToScreen(xx, yy), _colorWhite);
             }
 
             star.X = xx;
             star.Y = yy;
 
-            if ((star.X > _draw.Centre.X / 2)
-                || (star.X < -_draw.Centre.X / 2) ||
-                (star.Y > (_draw.Bottom - _draw.Centre.Y) / 2)
-                || (star.Y < -_draw.Centre.Y / 2) ||
+            if ((star.X > StarHalfWidth)
+                || (star.X < -StarHalfWidth) ||
+                (star.Y > (_draw.Bottom - _draw.Centre.Y) / StarScale)
+                || (star.Y < -StarHalfHeight) ||
                 (zz < 16))
             {
                 _stars[i] = CreateNewStar();
@@ -163,12 +171,17 @@ internal sealed class Stars
         SideStarfield(_ship.Roll, _ship.Climb, delta);
     }
 
+    // Star space (centred on the view) to screen pixels.
+    private Vector2 ToScreen(float xx, float yy)
+        => _draw.Centre + (new Vector2(xx, yy) * StarScale);
+
     // Draw the motion streak from a star's old screen position to where it has
     // just moved to, when both ends are inside the view.
     private void DrawStarStreak(Vector2 star, float xx, float yy)
     {
-        float ex = (xx + (_draw.Centre.X / 2)) * _draw.Scale;
-        float ey = (yy + (_draw.Centre.Y / 2)) * _draw.Scale;
+        Vector2 end = ToScreen(xx, yy);
+        float ex = end.X;
+        float ey = end.Y;
 
         if ((star.X >= _draw.Left)
             && (star.X <= _draw.Right) &&
@@ -191,20 +204,20 @@ internal sealed class Stars
 
         if (_rng.TrueOrFalse())
         {
-            _stars[i].X = _rng.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
-            _stars[i].Y = _rng.TrueOrFalse() ? -(int)_draw.Centre.Y / 2 : (int)_draw.Centre.Y / 2;
+            _stars[i].X = _rng.Random(-(int)StarHalfWidth, (int)StarHalfWidth);
+            _stars[i].Y = _rng.TrueOrFalse() ? -(int)StarHalfHeight : (int)StarHalfHeight;
         }
         else
         {
-            _stars[i].X = _rng.TrueOrFalse() ? -(int)_draw.Centre.X / 2 : (int)_draw.Centre.X / 2;
-            _stars[i].Y = _rng.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
+            _stars[i].X = _rng.TrueOrFalse() ? -(int)StarHalfWidth : (int)StarHalfWidth;
+            _stars[i].Y = _rng.Random(-(int)StarHalfHeight, (int)StarHalfHeight);
         }
     }
 
     private Vector4 CreateNewStar() => new()
     {
-        X = _rng.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2) | 8,
-        Y = _rng.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2) | 4,
+        X = _rng.Random(-(int)StarHalfWidth, (int)StarHalfWidth) | 8,
+        Y = _rng.Random(-(int)StarHalfHeight, (int)StarHalfHeight) | 4,
         Z = _rng.Random(256) | 144,
     };
 
@@ -220,8 +233,7 @@ internal sealed class Stars
         };
         float zz = _stars[i].Z;
 
-        star += _draw.Centre / 2;
-        star *= _draw.Scale;
+        star = ToScreen(star.X, star.Y);
 
         if ((!WarpStars) &&
             (star.X >= _draw.Left)
@@ -272,22 +284,19 @@ internal sealed class Stars
 
             if (WarpStars)
             {
-                _draw.Graphics.DrawLine(
-                    star,
-                    new((xx + (_draw.Centre.X / 2)) * _draw.Scale, (yy + (_draw.Centre.Y / 2)) * _draw.Scale),
-                    _colorWhite);
+                _draw.Graphics.DrawLine(star, ToScreen(xx, yy), _colorWhite);
             }
 
-            if (MathF.Abs(_stars[i].X) >= _draw.Centre.X / 2)
+            if (MathF.Abs(_stars[i].X) >= StarHalfWidth)
             {
-                _stars[i].X = (_gameState.CurrentScreen == Screen.LeftView) ? _draw.Centre.X / 2 : -_draw.Centre.X / 2;
-                _stars[i].Y = _rng.Random(-(int)_draw.Centre.Y / 2, (int)_draw.Centre.Y / 2);
+                _stars[i].X = (_gameState.CurrentScreen == Screen.LeftView) ? StarHalfWidth : -StarHalfWidth;
+                _stars[i].Y = _rng.Random(-(int)StarHalfHeight, (int)StarHalfHeight);
                 _stars[i].Z = _rng.Random(256) | 8;
             }
             else if (MathF.Abs(_stars[i].Y) >= 116)
             {
-                _stars[i].X = _rng.Random(-(int)_draw.Centre.X / 2, (int)_draw.Centre.X / 2);
-                _stars[i].Y = (alpha > 0) ? -_draw.Centre.Y / 2 : _draw.Centre.Y / 2;
+                _stars[i].X = _rng.Random(-(int)StarHalfWidth, (int)StarHalfWidth);
+                _stars[i].Y = (alpha > 0) ? -StarHalfHeight : StarHalfHeight;
                 _stars[i].Z = _rng.Random(256) | 8;
             }
         }

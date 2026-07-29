@@ -19,6 +19,8 @@ internal class FakeEliteDraw : IEliteDraw
 
     public Vector2 Centre => new(255, 255);
 
+    public float Focus => 512;
+
     public IGraphics Graphics { get; set; } = new FakeGraphics();
 
     public float Left => 0;

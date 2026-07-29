@@ -7,6 +7,40 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (3D projection zoom split from the view centre, 2026-07-29)
+
+- Elite's world-to-screen projection was written as
+  `((x * 256 / z) + (Centre.X / 2)) * Scale`, which only recovers the
+  true view centre when `Scale` is exactly 2. At the 8-bit tier
+  (`Scale` 1) everything 3D was centred a quarter of the way across the
+  screen instead of the middle — the reason 8-bit ships, planets and
+  suns sat up and to the left. It is now `Centre + (x * Focus / z)`,
+  where `IEliteDraw.Focus` is the projection's focal length in pixels,
+  derived from the tier's screen width (× 1.0). At 16-bit that is
+  512 × 1.0, which reduces to the old maths exactly, so the 16-bit
+  render is unchanged — verified by screenshot before and after.
+- The five sites that inlined the old form are converted:
+  `ShipBase.ProjectPoint`, `EliteDraw.ProjectExplosionPoints`,
+  `PlanetRenderer.GetPlanetPosition`, `SolidSun.Draw` and
+  `GradientSun.Draw`. The planet/sun radii and
+  `WireframePlanet`'s detail threshold are in the same 256-wide space,
+  so they follow `Focus / 256` rather than `Scale` — which keeps the
+  field of view identical at every tier instead of tying it to a
+  whole-number magnification.
+- `Stars` had it too, which confined the whole 8-bit starfield to the
+  top-left quadrant of the viewport. Star coordinates are held in the
+  same 256-wide space, so they map to the screen through `Focus / 256`
+  as well, and the star-space bounds that recycle a star off the edge
+  are now the screen's half-extents divided back through that factor —
+  so the starfield fills exactly the view at any tier. The four inlined
+  copies of the mapping collapse into one `ToScreen` helper.
+- `LaserDraw` carried the same mistaken construction for the crosshair
+  centre, the beam target and the two laser mount points; all four now
+  come off `Centre` / `ScannerLeft` / `ScannerRight` directly, so the
+  8-bit crosshair is centred and the beams converge on it.
+- `Scale` is left meaning coordinate/window magnification only, freeing
+  it for the `WindowScale` work.
+
 ### Added (Elite runs at the 8-bit tier, 2026-07-28)
 
 - `Tier` is a config setting (on `BaseConfigSettings`, so both games

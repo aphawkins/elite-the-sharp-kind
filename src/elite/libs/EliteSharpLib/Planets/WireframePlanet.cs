@@ -75,7 +75,9 @@ internal sealed class WireframePlanet : IObject
         (Vector2 centre, float radius) = v.Value;
         _draw.Graphics.DrawCircle(centre, radius, _color);
 
-        if (radius < MinDetailRadius * _draw.Scale)
+        // The threshold is in the same 256-wide space as the radius it is
+        // compared against, so it follows the projection's focal length.
+        if (radius < MinDetailRadius * (_draw.Focus / 256))
         {
             return;
         }

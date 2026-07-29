@@ -16,6 +16,14 @@ internal interface IEliteDraw
 
     public Vector2 Centre { get; }
 
+    /// <summary>
+    /// Gets the perspective projection's focal length in pixels: a point at
+    /// model-space x projects to <c>Centre.X + (x * Focus / z)</c>. Derived
+    /// from the tier's screen width so the field of view is the same at every
+    /// tier, and independent of <see cref="Scale"/>.
+    /// </summary>
+    public float Focus { get; }
+
     public IGraphics Graphics { get; }
 
     public float Left { get; }

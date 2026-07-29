@@ -22,6 +22,10 @@ internal sealed class EliteDraw : IEliteDraw
     // projection buffer never has to grow.
     private const int MaxModelPoints = 100;
 
+    // Focal length as a multiple of the tier's screen width. 1.0 reproduces
+    // the 16-bit render exactly (512 x 1.0 = the old 256 x Scale 2).
+    private const float FocusFactor = 1.0f;
+
     private readonly uint _colorGold;
     private readonly uint _colorWhite;
     private readonly uint _colorYellow;
@@ -47,6 +51,12 @@ internal sealed class EliteDraw : IEliteDraw
         => _gameState.Config.IsViewFullFrame ? Graphics.ScreenHeight - BorderWidth : Graphics.ScreenHeight - ScannerHeight;
 
     public Vector2 Centre => new(Graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
+
+    // The original's projection is x * 256 / z against a 256-wide view, i.e.
+    // a focal length of one screen width. Deriving it from the tier's width
+    // keeps the field of view identical at every tier; it is deliberately not
+    // tied to Scale, which is window/coordinate magnification, not zoom.
+    public float Focus => Graphics.ScreenWidth * FocusFactor;
 
     public IGraphics Graphics { get; }
 
@@ -272,9 +282,8 @@ internal sealed class EliteDraw : IEliteDraw
                 Vector4 vec = Vector4.Transform(ship.Model.Points[i].Coords, ship.Rotmat);
                 Vector4 r = vec + ship.Location;
                 Vector2 position = new(r.X, -r.Y);
-                position *= 256 / r.Z;
-                position += Centre / 2;
-                position *= Scale;
+                position *= Focus / r.Z;
+                position += Centre;
                 _pointList[np].X = position.X;
                 _pointList[np].Y = position.Y;
                 np++;

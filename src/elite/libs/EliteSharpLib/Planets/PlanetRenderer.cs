@@ -20,15 +20,16 @@ internal class PlanetRenderer
     internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector4 location)
     {
         Vector2 position = new(location.X, -location.Y);
-        position *= 256 / location.Z;
-        position += _draw.Centre / 2;
-        position *= _draw.Scale;
+        position *= _draw.Focus / location.Z;
+        position += _draw.Centre;
 
         float radius = 6291456 / location.Length();
 
         // Planets are BIG!
         ////  radius = 6291456 / ship_vec.z;
-        radius *= _draw.Scale;
+        // The radius is in the original's 256-wide space, so it follows the
+        // projection's focal length rather than Scale.
+        radius *= _draw.Focus / 256;
 
         return (position.X + radius < _draw.Left) ||
             (position.X - radius > _draw.Right) ||
