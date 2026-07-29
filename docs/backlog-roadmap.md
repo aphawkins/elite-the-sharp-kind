@@ -81,11 +81,18 @@ which is what reduces the following per-tier DI item to swapping one
 registration per screen. Do strictly in order — item 1 fixes the shape
 everything else follows.
 
-Two interfaces, because only the behaviour-bearing screens have data to
-pass: `IView<TModel> { void Draw(TModel model); }` for those, and the
-existing parameterless `IView { void Draw(); }` for the six pure-drawing
-ones. The record is what makes the tier contract a signature rather than
-a convention — `CommanderStatusView` and `CommanderStatusView8Bit` take
+One interface: `IView<TModel> { void Draw(TModel model); }`, and every
+screen uses it. A parameterless `IView` was tried on 2026-07-29 for
+screens with input but no data, and removed the same day — two screens
+needed it at once, and a single `IView` registration can only serve one,
+with the last silently winning. The fix was the better design anyway: a
+screen's fixed strings (the quit prompt, the title-screen credits) are
+content, not layout, so they belong in a model like everything else.
+**Do not reintroduce a parameterless view interface**; give the screen a
+model even when the model is only its wording.
+
+The record is what makes the tier contract a signature rather than a
+convention — `CommanderStatusView` and `CommanderStatusView8Bit` take
 the same `CommanderStatusModel` and can then differ only in coordinates
 and font, and the formatting becomes testable without a renderer.
 
@@ -134,50 +141,64 @@ height) into the controller, which keeps the `CarryFlag` quirk in one
 place, rather than moving row packing and name generation into each
 tier's view.
 
-- [ ] [EliteSharpLib] Convert the remaining behaviour-bearing views
-      to the pattern:
-      `Intro2View` (28), `LoadCommanderView` (25), `SaveCommanderView`
-      (24), `SettingsListView` (22), `MarketView` (18), `QuitView` (17),
-      `Intro1View` (16, the Y/N handling), `OptionsView` and
-      `EquipmentView` (14 each), `ConstrictorMissionView` (8),
-      `ThargoidMissionView` (6), `PilotView` (5) and the four
-      `Pilot*View` subclasses (4 each). In the same pass, move each
-      view's formatting onto its controller and expose it as a
-      `<Screen>Model` record the view receives — that is the data the
-      8-bit view must reuse rather than re-derive. `CommanderStatusView`
-      is the archetype even though its `HandleInput` is empty: its
-      `_ratings` table, `CurrentRating`, `CurrentCondition` and
-      `EquipmentFitted` become
-      `CommanderStatusModel(string Rating, string Condition, string
-      Fuel, string Cash, string LegalStatus, IReadOnlyList<string>
-      Equipment)`, leaving the view with only the x=16/x=200 label
-      columns that the 8-bit layout item then re-authors — so convert
-      it here rather than leaving it to item 3. Three more screens
-      belong in this pass despite having no input of their own:
-      `PlanetDataView` (326 lines, the largest formatting body in the
-      lib — the RNG-driven procedural planet description with its
-      `_descriptionList`/`_economyType`/`_governmentType` tables,
-      `DescribePlanet`, `ExpandDescription`/`ExpandToken`/
-      `ExpandEscape` and the cached `_hyperPlanetData`), and
-      `EscapeCapsuleView`/`GameOverView`, whose `_i` animation
-      counters are controller state. Add controller unit
-      tests for the extracted formatting as it lands (no renderer fake
-      needed once it returns a record) — e.g. condition goes Red at
-      energy < 128 while hostiles are present.
-- [ ] [EliteSharpLib] Retire the pass-through controllers for the six
-      screens with neither input nor state (`DockingView`,
-      `HyperspaceView`, `InventoryView`, `LaunchView` and the abstract
-      `SettingsView`/`EngineSettingsView` pair) — a single shared
-      `DrawOnlyController` wrapping the parameterless `IView` covers
-      all of them; confirm none has grown behaviour by then.
+**Converted so far (2026-07-29, branch `mvc-controller-view-seam`, two
+commits, not yet merged or pushed): `GalacticChart`, `Quit`,
+`ThargoidMission`, `Intro1`, `CommanderStatus`, `Inventory`.** Each is a
+`<Screen>Controller` + `<Screen>Model` + drawing-only `<Screen>View`,
+with DI registrations collected in
+`EliteServiceCollectionExtensions.AddSplitScreens`, which the rest join
+as they convert. Copy any of those six as the pattern —
+`CommanderStatus` is the fullest example of formatting extraction,
+`GalacticChart` of a screen with cursor state.
+
+- [ ] [EliteSharpLib] Convert the remaining 12 screens to the pattern,
+      moving each view's formatting onto its controller behind a
+      `<Screen>Model` record — that is the data the 8-bit view must
+      reuse rather than re-derive. Add controller unit tests for the
+      extracted formatting as it lands (no renderer fake needed once it
+      returns a record); `GalacticChartControllerTests` and
+      `CommanderStatusControllerTests` are the templates. Grouped by
+      expected difficulty, since the groups share a shape:
+      - Mechanical: `GameOverView` and `EscapeCapsuleView` (the `_i`
+        animation counters become controller state),
+        `ConstrictorMissionView`.
+      - Selection cursors, all the same shape as each other:
+        `OptionsView`, `SettingsListView`, `MarketView`,
+        `EquipmentView` (each has a `_highlightedItem`-style field).
+      - Text entry, sharing the name-typing pattern:
+        `LoadCommanderView`, `SaveCommanderView`.
+      - Expect design questions in these three, so do them last and
+        singly: `Intro2View` (its `Update` drives universe state for
+        the ship parade), the `PilotView` family (a base plus four
+        subclasses — the inheritance may not map onto controller/view
+        cleanly, and the four differ only by which direction they
+        look), and `PlanetDataView` (326 lines; its RNG-driven
+        description generator — `_descriptionList`/`_economyType`/
+        `_governmentType`, `DescribePlanet`, `ExpandDescription`/
+        `ExpandToken`/`ExpandEscape`, cached `_hyperPlanetData` — may
+        have the same layout/content entanglement that took
+        `ShortRangeChartView` out of scope, so check before starting).
+- [ ] [EliteSharpLib] Re-scope or drop the "retire the pass-through
+      controllers" step. It assumed a parameterless `IView` and a
+      shared `DrawOnlyController` for screens with neither input nor
+      formatting, and both assumptions are now gone: there is no
+      parameterless view interface, and `InventoryView` (one of the six
+      it named) turned out to have formatting and was converted
+      normally. Check what is actually left after the item above —
+      likely only `DockingView`, `HyperspaceView`, `LaunchView` and the
+      abstract `SettingsView`/`EngineSettingsView` pair — and decide
+      whether a shared do-nothing controller is worth having at all
+      versus each screen carrying its own trivial one.
 - [ ] [EliteSharpLib] Resolve views per tier through DI. Every screen
       gets its own view per tier, in `Views/<Tier>/` with a tier-suffixed
       class name (`Views/EightBit/CommanderStatusView8Bit.cs`);
-      `PopulateScreens` registers the `IView` each screen's controller
-      draws through (see the MVC item above), so the configured tier
-      selects which implementation is registered. Do
-      `CommanderStatusView` first as the pattern and check the 16-bit
-      output is pixel-identical before converting the other 27.
+      `AddSplitScreens` registers the `IView<TModel>` each screen's
+      controller draws through (see the item above), so the configured
+      tier selects which implementation is registered — for the six
+      already-converted screens this is a one-line change each. Do
+      `CommanderStatusView` first as the pattern. Note the 16-bit
+      output cannot be checked pixel-identical by screenshot (see the
+      finding recorded above); compare the layout constants instead.
 - [ ] [EliteSharpLib] Author the 8-bit view layouts at 320x256. The
       ~128 literal coordinates across `Views/` (plus ~36 elsewhere in the
       lib) are 512-space values — e.g. `CommanderStatusView` draws labels

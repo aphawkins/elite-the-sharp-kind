@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Controller/view split, five more screens, 2026-07-29)
+
+- `Quit`, `ThargoidMission`, `Intro1`, `CommanderStatus` and
+  `Inventory` each become a controller, a model record and a
+  drawing-only view, joining the galactic chart below. Six of the
+  eighteen behaviour-bearing screens are now split.
+- `CommanderStatus` is the archetype: its ratings table, condition,
+  legal-status banding and equipment list move to the controller,
+  leaving the view with the x=16/x=200 label columns that the 8-bit
+  layout will re-author. `Inventory` and `CommanderStatus` have no
+  input of their own but plenty of formatting, which is why they were
+  converted here rather than left as drawing-only screens — otherwise
+  each tier's view would re-derive the same strings.
+- Every screen draws through `IView<TModel>`. A parameterless `IView`
+  was added for screens with input but no data and removed the same
+  day: two screens needed it at once and a single registration can only
+  serve one, so the second would have silently displaced the first. A
+  screen's fixed wording is content rather than layout, so it belongs
+  in a model like everything else.
+- `ShortRangeChart` is deliberately not converted. Its `Reset`
+  entangles text-row packing with which planets are drawn at all, and
+  blob size depends on `CarryFlag`, a side effect of the name
+  generation that only runs when a name wins a free row. See the
+  backlog for the decision and the shape to revisit it with.
+- `CommanderStatusControllerTests` covers the rating bands, condition,
+  legal-status bands, the witchspace blank and the equipment list -
+  all without a renderer.
+
 ### Changed (Controller/view seam, galactic chart, 2026-07-29)
 
 - First step of the tier presentation architecture: a screen's
