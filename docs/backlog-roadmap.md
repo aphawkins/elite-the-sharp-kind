@@ -114,24 +114,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [Useful.App] Make the logging settings config-driven: the minimum
-      level and the retained-file count are hardcoded in
-      `GameApp.CreateSeriLogger`, with only the
-      `ELITE_LOG_LEVEL`/`SCR_LOG_LEVEL` environment variables to override
-      the level. Add a `Logging` group to `EngineConfigSettings` and read
-      it through the existing `ConfigFile<T>`, so it follows the
-      defaults-in-POCO/override-in-file rule the rest of the config
-      already does. Note the ordering problem: the logger is created
-      before the config is read, and `ConfigFile` wants a logger — build
-      the logger with a Serilog `LoggingLevelSwitch` at the default
-      level and set the switch once the config is in. Keep the
-      environment variable as the escape hatch for when the config
-      itself is what's broken. **Do not** use
-      `Serilog.Settings.Configuration` for this: it resolves sinks by
-      assembly name via `DependencyContext`, which is unreliable under
-      the `PublishSingleFile` profiles this repo ships (sinks can
-      silently fail to attach), and it would put a second config file
-      beside the exe rather than under `ApplicationData`.
 - [ ] [Repo] `sdl-drive/drive.ps1`'s `ConvertTo-VirtualKeyCode` has no
       entry for `Return`, so a `key:Return` step throws "Unknown key
       name". Hit while driving SCR's menus (2026-07-28); add Return and

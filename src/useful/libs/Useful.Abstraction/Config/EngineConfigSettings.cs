@@ -27,6 +27,8 @@ public sealed class EngineConfigSettings
 
     public SoundConfigSettings Sound { get; set; } = new();
 
+    public LoggingConfigSettings Logging { get; set; } = new();
+
     // Which machine's look the game reproduces: picks the asset set and,
     // with it, the render resolution and scale. The asset set covers music
     // and effects as well as the artwork, so this isn't graphics-only
@@ -68,6 +70,11 @@ public sealed class EngineConfigSettings
             repaired = true;
         }
 
-        return Graphics.Repair() || repaired;
+        // Captured rather than chained with || so a short-circuit on one
+        // group's result can't skip repairing another.
+        bool graphicsRepaired = Graphics.Repair();
+        bool loggingRepaired = Logging.Repair();
+
+        return graphicsRepaired || loggingRepaired || repaired;
     }
 }

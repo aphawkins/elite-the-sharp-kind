@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (Config-driven logging, 2026-07-29)
+
+- `engine.logging` gains `minimumLevel` and `retainedFileCount`,
+  replacing the two values previously hardcoded in
+  `GameApp.CreateSeriLogger`. The `ELITE_LOG_LEVEL`/`SCR_LOG_LEVEL`
+  environment variables still override the level - the escape hatch
+  for when the config file itself is what needs debugging.
+- Solves the ordering problem note left on this item: reading the
+  config needs a logger, but the real logger needs the config's
+  retained-file-count to be built correctly. `GameApp.Run` now reads
+  the engine settings through a throwaway console-only bootstrap
+  logger (whose level is already fully known from the environment
+  variable alone) before building the one real logger the rest of the
+  app uses, rather than building the real logger first and only
+  patching its level afterwards.
+- `GameApp.Run` takes a `readEngineSettings` delegate alongside
+  `buildServices`, and `buildServices` now receives the already-read
+  `EngineConfigSettings` instead of reading them again itself - both
+  games' `SDLProgram.BuildServices` shrink accordingly.
+
 ### Added (Window scale, 2026-07-29)
 
 - `engine.windowScale` magnifies the window without changing what is

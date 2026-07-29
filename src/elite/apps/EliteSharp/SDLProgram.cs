@@ -22,6 +22,7 @@ internal static class SDLProgram
             Title,
             logFileName: "elite-.log",
             logLevelEnvironmentVariable: "ELITE_LOG_LEVEL",
+            EliteServiceCollectionExtensions.ReadEngineSettings,
             BuildServices);
 
     // Render resolution is a function of the configured tier rather than a
@@ -34,9 +35,8 @@ internal static class SDLProgram
         _ => (512, 512),
     };
 
-    private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory)
+    private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory, EngineConfigSettings engine)
     {
-        EngineConfigSettings engine = EliteServiceCollectionExtensions.ReadEngineSettings(userDataPath, loggerFactory);
         (int width, int height) = ResolutionFor(engine.Tier);
 
         ServiceCollection services = new();

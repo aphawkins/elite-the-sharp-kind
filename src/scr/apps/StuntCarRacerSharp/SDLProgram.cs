@@ -24,13 +24,11 @@ internal static class SDLProgram
             Title,
             logFileName: "scr-.log",
             logLevelEnvironmentVariable: "SCR_LOG_LEVEL",
+            StuntCarRacerServiceCollectionExtensions.ReadEngineSettings,
             BuildServices);
 
-    private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory)
+    private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory, EngineConfigSettings engine)
     {
-        EngineConfigSettings engine =
-            StuntCarRacerServiceCollectionExtensions.ReadEngineSettings(userDataPath, loggerFactory);
-
         ServiceCollection services = new();
         services.AddGameEngine(engine, ScreenWidth, ScreenHeight, Title, loggerFactory);
         services.AddScrConfig(userDataPath);

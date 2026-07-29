@@ -5,7 +5,9 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using Serilog.Extensions.Logging;
 using Useful.Abstraction;
+using Useful.Abstraction.Config;
 
 namespace Useful.App;
 
@@ -37,19 +39,30 @@ public static class GameApp
     /// </param>
     /// <param name="logLevelEnvironmentVariable">
     /// Names the environment variable that raises or lowers the minimum log
-    /// level, so a player can produce a detailed log without a new build.
+    /// level, overriding both the default and whatever the config file says -
+    /// the escape hatch for when the config file itself is what needs
+    /// debugging.
+    /// </param>
+    /// <param name="readEngineSettings">
+    /// Reads the game's config file and returns its engine half, given the
+    /// user-data path and a logger for the read itself. Called before the
+    /// real logger exists (it has no file-retention setting to honour yet),
+    /// so it gets a console-only bootstrap logger.
     /// </param>
     /// <param name="buildServices">
-    /// The game's own composition, given the user-data path and the logger
-    /// factory. It must register an <see cref="IGameApp"/>.
+    /// The game's own composition, given the user-data path, the real
+    /// logger factory and the already-read engine settings. It must register
+    /// an <see cref="IGameApp"/>.
     /// </param>
     /// <returns>The process exit code.</returns>
     public static int Run(
         string title,
         string logFileName,
         string logLevelEnvironmentVariable,
-        Func<string, ILoggerFactory, ServiceCollection> buildServices)
+        Func<string, ILoggerFactory, EngineConfigSettings> readEngineSettings,
+        Func<string, ILoggerFactory, EngineConfigSettings, ServiceCollection> buildServices)
     {
+        ArgumentNullException.ThrowIfNull(readEngineSettings);
         ArgumentNullException.ThrowIfNull(buildServices);
 
         if (!AppStartup.TryResolveUserDataPath(out string userDataPath))
@@ -59,11 +72,16 @@ public static class GameApp
             return 1;
         }
 
-        using Logger seriLogger = CreateSeriLogger(userDataPath, logFileName, logLevelEnvironmentVariable);
+        LogEventLevel? environmentLevel = ReadEnvironmentLevel(logLevelEnvironmentVariable);
+        EngineConfigSettings engine = ReadEngineSettings(userDataPath, environmentLevel, readEngineSettings);
+
+        LogEventLevel minimumLevel = environmentLevel ?? LevelConvert.ToSerilogLevel(engine.Logging.MinimumLevel);
+
+        using Logger seriLogger = CreateSeriLogger(userDataPath, logFileName, minimumLevel, engine.Logging.RetainedFileCount);
         using LoggerFactory loggerFactory = new();
         loggerFactory.AddSerilog(seriLogger);
 
-        using ServiceProvider provider = buildServices(userDataPath, loggerFactory).BuildServiceProvider();
+        using ServiceProvider provider = buildServices(userDataPath, loggerFactory, engine).BuildServiceProvider();
 
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(GameApp));
 
@@ -87,17 +105,50 @@ public static class GameApp
         return 0;
     }
 
-    private static Logger CreateSeriLogger(string userDataPath, string logFileName, string logLevelEnvironmentVariable)
-    {
-        LogEventLevel minimumLevel =
-            Enum.TryParse(
-                Environment.GetEnvironmentVariable(logLevelEnvironmentVariable),
-                ignoreCase: true,
-                out LogEventLevel envLevel)
+    // Null means the environment variable was unset or unparseable; the
+    // caller falls back to the config value (and ultimately its default)
+    // rather than a level of its own.
+    private static LogEventLevel? ReadEnvironmentLevel(string logLevelEnvironmentVariable)
+        => Enum.TryParse(
+            Environment.GetEnvironmentVariable(logLevelEnvironmentVariable),
+            ignoreCase: true,
+            out LogEventLevel envLevel)
             ? envLevel
-            : LogEventLevel.Information;
+            : null;
 
-        return new LoggerConfiguration()
+    // The engine's Logging settings live in the config file the game itself
+    // reads, but reading it needs a logger - one that cannot yet know the
+    // config's own retained-file-count, since that is exactly what it is
+    // about to read. A console-only bootstrap logger breaks the cycle: it
+    // never touches the log file, so it needs no retention setting, and its
+    // level is already fully known (the environment variable, or the
+    // default) without the config.
+    private static EngineConfigSettings ReadEngineSettings(
+        string userDataPath,
+        LogEventLevel? environmentLevel,
+        Func<string, ILoggerFactory, EngineConfigSettings> readEngineSettings)
+    {
+        using Logger bootstrapLogger = CreateBootstrapLogger(environmentLevel ?? LogEventLevel.Information);
+        using LoggerFactory bootstrapLoggerFactory = new();
+        bootstrapLoggerFactory.AddSerilog(bootstrapLogger);
+
+        return readEngineSettings(userDataPath, bootstrapLoggerFactory);
+    }
+
+    private static Logger CreateBootstrapLogger(LogEventLevel minimumLevel)
+        => new LoggerConfiguration()
+            .Enrich
+            .FromLogContext()
+            .MinimumLevel
+            .Is(minimumLevel)
+            .WriteTo
+            .Console(
+                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}",
+                formatProvider: System.Globalization.CultureInfo.InvariantCulture)
+            .CreateLogger();
+
+    private static Logger CreateSeriLogger(string userDataPath, string logFileName, LogEventLevel minimumLevel, int retainedFileCount)
+        => new LoggerConfiguration()
             .Enrich
             .FromLogContext()
             .MinimumLevel
@@ -111,7 +162,6 @@ public static class GameApp
                 Path.Combine(userDataPath, "logs", logFileName),
                 formatProvider: System.Globalization.CultureInfo.InvariantCulture,
                 rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 7)
+                retainedFileCountLimit: retainedFileCount)
             .CreateLogger();
-    }
 }
