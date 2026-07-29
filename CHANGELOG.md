@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Config tidy-up: new location, name and shape, 2026-07-29)
+
+- The shared user-data folder is now `The Sharp Kind` rather than
+  `TheSharpKind` (`%AppData%\The Sharp Kind` on Windows,
+  `~/.config/The Sharp Kind` elsewhere), and the config files are
+  `elite.sharp` and `stuntcarracer.sharp` instead of `elitesharp.cfg`
+  and `stuntcarracersharp.cfg`. Nothing migrates the old files, so an
+  existing install starts from defaults; saves and logs move with the
+  folder.
+- The config file is now two elements deep: the shared settings live
+  under `engine` and each game's own under `game`, so the two can't
+  collide as more games arrive. `BaseConfigSettings` is no longer a base
+  class - it is `EngineConfigSettings`, a plain type held by the new
+  `ConfigSettings<TGameSettings>` root, from which `EliteConfig` and
+  `ScrConfig` derive. `GameState.Config` is that root, so the game's own
+  settings are reached through `Config.Game.X` and the shared ones
+  through `Config.Engine.X`.
+- `Fps` moves from `EliteConfigSettings` to the engine settings,
+  alongside `GraphicsBackend` and `Tier` - it's a render-loop setting,
+  not an Elite one.
+- `IsViewFullFrame` is gone. It was get-only with no setter and nothing
+  ever assigned it, so it read `false` forever - which made
+  `EliteDraw.Bottom`'s `ScreenHeight - BorderWidth` branch dead code,
+  while the property itself still turned up in the written file.
+- Property names are written in camelCase (`"fps"`, `"instantDock"`),
+  matching normal JSON style. Reads are case-insensitive, so a
+  hand-edited file in either casing still binds.
+
 ### Fixed (3D projection zoom split from the view centre, 2026-07-29)
 
 - Elite's world-to-screen projection was written as

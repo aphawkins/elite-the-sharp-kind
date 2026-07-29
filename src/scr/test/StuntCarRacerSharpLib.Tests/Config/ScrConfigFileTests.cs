@@ -10,36 +10,36 @@ namespace StuntCarRacerSharpLib.Tests.Config;
 
 public class ScrConfigFileTests
 {
-    private const string ConfigFileName = "stuntcarracersharp.cfg";
+    private const string ConfigFileName = "stuntcarracer.sharp";
 
     [Fact]
     public void ReadConfigWithoutAFileReturnsDefaults()
     {
         // Arrange
-        ConfigFile<ScrConfigSettings> configFile = new(CreateTempDirectory(), ConfigFileName);
+        ConfigFile<ScrConfig> configFile = new(CreateTempDirectory(), ConfigFileName);
 
         // Act
-        ScrConfigSettings config = configFile.ReadConfig();
+        ScrConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.True(config.MusicOn);
-        Assert.True(config.EffectsOn);
+        Assert.True(config.Engine.MusicOn);
+        Assert.True(config.Engine.EffectsOn);
     }
 
     [Fact]
     public void WriteConfigThenReadConfigRoundTrips()
     {
         // Arrange
-        ConfigFile<ScrConfigSettings> configFile = new(CreateTempDirectory(), ConfigFileName);
-        ScrConfigSettings written = new() { MusicOn = false, EffectsOn = false };
+        ConfigFile<ScrConfig> configFile = new(CreateTempDirectory(), ConfigFileName);
+        ScrConfig written = new() { Engine = new() { MusicOn = false, EffectsOn = false } };
 
         // Act
         configFile.WriteConfig(written);
-        ScrConfigSettings read = configFile.ReadConfig();
+        ScrConfig read = configFile.ReadConfig();
 
         // Assert
-        Assert.False(read.MusicOn);
-        Assert.False(read.EffectsOn);
+        Assert.False(read.Engine.MusicOn);
+        Assert.False(read.Engine.EffectsOn);
     }
 
     [Fact]
@@ -50,14 +50,14 @@ public class ScrConfigFileTests
         // wraps this as InvalidOperationException, not FormatException.
         string directory = CreateTempDirectory();
         Directory.CreateDirectory(directory);
-        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"MusicOn\": \"hello!\"}");
-        ConfigFile<ScrConfigSettings> configFile = new(directory, ConfigFileName);
+        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"engine\": {\"musicOn\": \"hello!\"}}");
+        ConfigFile<ScrConfig> configFile = new(directory, ConfigFileName);
 
         // Act
-        ScrConfigSettings config = configFile.ReadConfig();
+        ScrConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.True(config.MusicOn);
+        Assert.True(config.Engine.MusicOn);
     }
 
     private static string CreateTempDirectory()

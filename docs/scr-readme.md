@@ -67,13 +67,17 @@ The cockpit is drawn as a set of sprites over the track view: front wheels that 
 
 ## Configuration
 
-Game settings are held in the `stuntcarracersharp.cfg` file, stored in JSON format, in the user's application data directory (`%AppData%\TheSharpKind` on Windows, `~/.config/TheSharpKind` on Linux/macOS) — shared with [Elite - The Sharp Kind](elite-readme.md). Logs (`logs\scr-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. There is no in-game settings screen yet, so `stuntcarracersharp.cfg` must be edited by hand; it can take the following values:
+Game settings are held in the `stuntcarracer.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Elite - The Sharp Kind](elite-readme.md). Logs (`logs\scr-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. There is no in-game settings screen yet, so `stuntcarracer.sharp` must be edited by hand; it can take the following values:
 
 ``` json
 {
-    "GraphicsBackend": "Software",         // Rendering/audio backend.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated rendering and mixing)
-    "MusicOn": true,                       // Play music.
-    "EffectsOn": true                      // Play sound effects.
+    // Settings shared by every game in the collection; the game's own
+    // "game" element has nothing in it yet.
+    "engine": {
+        "graphicsBackend": "Software",         // Rendering/audio backend.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated rendering and mixing)
+        "musicOn": true,                       // Play music.
+        "effectsOn": true                      // Play sound effects.
+    }
 }
 ```
 

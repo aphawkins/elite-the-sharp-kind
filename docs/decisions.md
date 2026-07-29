@@ -49,7 +49,8 @@ restating it.
   (512 x 1.0), and works at any Modern resolution without needing to be a
   multiple of anything.
 - **Elite first, then SCR.** SCR inherits the `Tier` setting from
-  `BaseConfigSettings` but nothing reads it yet; that is fine for now.
+  the shared `EngineConfigSettings` but nothing reads it yet; that is
+  fine for now.
 
 ## Resolved (2026-07-28) — asset structure for the tier system
 

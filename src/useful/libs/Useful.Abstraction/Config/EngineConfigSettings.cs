@@ -5,12 +5,16 @@ using Useful.Assets;
 namespace Useful.Abstraction.Config;
 
 /// <summary>
-/// Settings shared by every game's config file. Game-specific config types derive from
-/// this and add their own properties.
+/// Settings shared by every game, stored under the config file's <c>engine</c> element.
+/// Game-specific settings live alongside it under <c>game</c>; see
+/// <see cref="ConfigSettings{TGameSettings}"/>.
 /// </summary>
-public abstract class BaseConfigSettings
+public sealed class EngineConfigSettings
 {
     public bool EffectsOn { get; set; } = true;
+
+    // Maximum render frame rate. The game speed is independent of it.
+    public float Fps { get; set; } = 60f;
 
     // Which IAbstraction backend renders/plays the game: Software (default)
     // or Hardware (SDL-accelerated).

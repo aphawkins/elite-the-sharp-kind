@@ -14,41 +14,41 @@ namespace StuntCarRacerSharpLib;
 
 public static class StuntCarRacerServiceCollectionExtensions
 {
-    private const string ConfigFileName = "stuntcarracersharp.cfg";
+    private const string ConfigFileName = "stuntcarracer.sharp";
 
-    // ScrConfigSettings is internal, so Program.Main can't reference or
-    // construct a ConfigFile<ScrConfigSettings> directly; this registers it
+    // ScrConfig is internal, so Program.Main can't reference or
+    // construct a ConfigFile<ScrConfig> directly; this registers it
     // from inside the assembly that can, exposing only the already-public
     // AudioOptions that StuntCarRacerMain's constructor accepts.
     public static IServiceCollection AddScrConfig(this IServiceCollection services, string userDataPath)
     {
-        services.AddSingleton(sp => new ConfigFile<ScrConfigSettings>(
+        services.AddSingleton(sp => new ConfigFile<ScrConfig>(
             userDataPath,
             ConfigFileName,
             null,
-            sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<ScrConfigSettings>>()));
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConfigFile<ScrConfig>>()));
         services.AddSingleton(sp =>
         {
-            ScrConfigSettings config = sp.GetRequiredService<ConfigFile<ScrConfigSettings>>().ReadConfig();
-            return new AudioOptions { MusicOn = config.MusicOn, EffectsOn = config.EffectsOn };
+            ScrConfig config = sp.GetRequiredService<ConfigFile<ScrConfig>>().ReadConfig();
+            return new AudioOptions { MusicOn = config.Engine.MusicOn, EffectsOn = config.Engine.EffectsOn };
         });
         return services;
     }
 
     // Exposes only the (public) GraphicsBackend choice from the (internal)
-    // ScrConfigSettings, so Program.Main - which picks between
+    // ScrConfig, so Program.Main - which picks between
     // SoftwareAbstraction and SDLAbstraction and therefore needs to reference
     // Useful.SDL, a dependency StuntCarRacerSharpLib itself deliberately does
     // not have - can read it before the DI container exists.
     public static GraphicsBackend ReadGraphicsBackend(string userDataPath, ILoggerFactory loggerFactory)
     {
-        ConfigFile<ScrConfigSettings> configFile = new(
+        ConfigFile<ScrConfig> configFile = new(
             userDataPath,
             ConfigFileName,
             null,
-            loggerFactory.CreateLogger<ConfigFile<ScrConfigSettings>>());
+            loggerFactory.CreateLogger<ConfigFile<ScrConfig>>());
 
-        return configFile.ReadConfig().GraphicsBackend;
+        return configFile.ReadConfig().Engine.GraphicsBackend;
     }
 
     // The single shared source of entropy for this app instance: an

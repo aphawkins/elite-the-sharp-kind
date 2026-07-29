@@ -8,11 +8,11 @@ namespace Useful;
 /// </summary>
 public static class AppStartup
 {
-    private const string AppDataDirName = "TheSharpKind";
+    private const string AppDataDirName = "The Sharp Kind";
 
     /// <summary>
-    /// Resolves the shared per-user data directory (e.g. <c>%AppData%\TheSharpKind</c> on Windows,
-    /// <c>~/.config/TheSharpKind</c> on Linux). Returns <see langword="false"/>, prints a diagnostic
+    /// Resolves the shared per-user data directory (e.g. <c>%AppData%\The Sharp Kind</c> on Windows,
+    /// <c>~/.config/The Sharp Kind</c> on Linux). Returns <see langword="false"/>, prints a diagnostic
     /// to stderr, and appends a fallback startup log if it cannot be resolved to an absolute path -
     /// most commonly because the HOME environment variable is unset on Linux.
     /// </summary>

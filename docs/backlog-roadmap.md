@@ -373,8 +373,8 @@ either.**):
       hardcode `ScreenWidth`/`ScreenHeight` consts (the "Get these from
       config" comment at [SDLProgram.cs:22-29](../src/elite/apps/EliteSharp/SDLProgram.cs),
       including the commented-out QHD block); move them into each
-      game's config (Elite's `ConfigSettings` exists; SCR needs the
-      equivalent) so a launch resolution/aspect can be chosen. This
+      game's config (the shared `EngineConfigSettings` is the natural
+      home, next to `Tier`) so a launch resolution/aspect can be chosen. This
       exposes rather than fixes fixed-size assumptions — pair with the
       audits below before shipping non-default values.
 - [ ] [StuntCarRacerSharpLib] SCR widescreen: with resolution configurable,

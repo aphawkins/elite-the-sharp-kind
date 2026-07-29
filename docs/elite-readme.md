@@ -104,20 +104,26 @@ From the Options Screen (F11) you can enter the Game Settings Screen. From here 
 
 ## Configuration
 
-Game settings are held in the `elitesharp.cfg` file, stored in JSON format, in the user's application data directory (`%AppData%\TheSharpKind` on Windows, `~/.config/TheSharpKind` on Linux/macOS) — shared with [Stunt Car Racer - The Sharp Kind](scr-readme.md). Commander saves (`.cmdr` files) and logs (`logs\elite-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. `elitesharp.cfg` can take the following values:
+Game settings are held in the `elite.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Stunt Car Racer - The Sharp Kind](scr-readme.md). Commander saves (`.cmdr` files) and logs (`logs\elite-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. `elite.sharp` can take the following values:
 
 ``` json
 {
-    "Fps": 60,                             // Maximum render frame rate. The game speed is independent, fixed at 13.5 updates per second.
-    "GraphicsBackend": "Software",         // Rendering/audio backend.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated rendering and mixing)
-    "MusicOn": true,                       // Play music.
-    "EffectsOn": true,                     // Play sound effects.
-    "ShipWireframe": false,                // Use wireframe ship graphics.  false (Solid) or true (Wireframe)
-    "ShipRenderMode": "ZBuffer",           // Depth-sort strategy for filled ship rendering (ignored when ShipWireframe is true).  Painter or ZBuffer
-    "PlanetStyle": "Fractal",              // The render style of the planets.  Wireframe or Solid or Striped or Fractal
-    "SunStyle": "Gradient",                // The render style of the sun.  Solid or Gradient
-    "PlanetDescriptions": "TreeGrubs",     // Description style used for the planets.  TreeGrubs (BBC) or HoopyCasinos (MSX)
-    "InstantDock": false                   // When the docking computer is engaged, instantly dock (true) or let the auto pilot fly in (false)
+    // Settings shared by every game in the collection.
+    "engine": {
+        "fps": 60,                             // Maximum render frame rate. The game speed is independent, fixed at 13.5 updates per second.
+        "graphicsBackend": "Software",         // Rendering/audio backend.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated rendering and mixing)
+        "musicOn": true,                       // Play music.
+        "effectsOn": true                      // Play sound effects.
+    },
+    // Elite's own settings.
+    "game": {
+        "shipWireframe": false,                // Use wireframe ship graphics.  false (Solid) or true (Wireframe)
+        "shipRenderMode": "ZBuffer",           // Depth-sort strategy for filled ship rendering (ignored when shipWireframe is true).  Painter or ZBuffer
+        "planetStyle": "Fractal",              // The render style of the planets.  Wireframe or Solid or Striped or Fractal
+        "sunStyle": "Gradient",                // The render style of the sun.  Solid or Gradient
+        "planetDescriptions": "TreeGrubs",     // Description style used for the planets.  TreeGrubs (BBC) or HoopyCasinos (MSX)
+        "instantDock": false                   // When the docking computer is engaged, instantly dock (true) or let the auto pilot fly in (false)
+    }
 }
 ```
 

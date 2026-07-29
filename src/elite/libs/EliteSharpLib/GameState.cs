@@ -20,7 +20,7 @@ internal sealed class GameState
 
     internal Commander Cmdr { get; set; } = new();
 
-    internal EliteConfigSettings Config { get; set; } = new();
+    internal EliteConfig Config { get; set; } = new();
 
     internal Vector2 Cross { get; set; } = new(0, 0);
 

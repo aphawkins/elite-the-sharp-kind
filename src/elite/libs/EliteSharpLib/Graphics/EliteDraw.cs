@@ -47,8 +47,7 @@ internal sealed class EliteDraw : IEliteDraw
         _colorYellow = Palette["Yellow"];
     }
 
-    public float Bottom
-        => _gameState.Config.IsViewFullFrame ? Graphics.ScreenHeight - BorderWidth : Graphics.ScreenHeight - ScannerHeight;
+    public float Bottom => Graphics.ScreenHeight - ScannerHeight;
 
     public Vector2 Centre => new(Graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
 

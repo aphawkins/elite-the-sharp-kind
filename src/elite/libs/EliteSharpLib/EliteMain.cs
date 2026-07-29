@@ -114,7 +114,7 @@ public sealed class EliteMain : IGame
     // going stale between redraws) - both fixed at the rendering layer
     // (SDLGraphics now redraws its persistent frame texture on every
     // present), so this can render at the configured rate directly.
-    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, State.Config.Fps);
+    public void Run() => GameHost.Run(_abstraction, this, GameTickRate, State.Config.Engine.Fps);
 
     // One fixed-rate game tick. Elite's update draws the universe as it
     // moves it (as The New Kind did), so this composes the whole frame into

@@ -31,9 +31,9 @@ internal sealed class ConfigPolygonRenderer : IPolygonRenderer
         _current = Selected;
     }
 
-    private IPolygonRenderer Selected => _gameState.Config.ShipWireframe
+    private IPolygonRenderer Selected => _gameState.Config.Game.ShipWireframe
         ? _wireframe
-        : _gameState.Config.ShipRenderMode == PolygonRenderMode.Painter
+        : _gameState.Config.Game.ShipRenderMode == PolygonRenderMode.Painter
             ? _painter
             : _zBuffer;
 

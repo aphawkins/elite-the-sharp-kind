@@ -186,7 +186,7 @@ internal sealed class PlanetDataView : IView
         _rng.Seed.C = planet.E;
         _rng.Seed.D = planet.F;
 
-        if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+        if (_gameState.Config.Game.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
         {
             _rng.Seed.A ^= planet.A;
             _rng.Seed.B ^= planet.B;
@@ -249,7 +249,7 @@ internal sealed class PlanetDataView : IView
     /// </summary>
     private int SelectDescriptionOption()
     {
-        if (_gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
+        if (_gameState.Config.Game.PlanetDescriptions == PlanetDescriptions.HoopyCasinos)
         {
             return _rng.GenMSXRandomNumber();
         }

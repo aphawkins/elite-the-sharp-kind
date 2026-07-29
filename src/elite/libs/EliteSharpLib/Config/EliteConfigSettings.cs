@@ -4,17 +4,13 @@
 
 using EliteSharpLib.Planets;
 using EliteSharpLib.Suns;
-using Useful.Abstraction.Config;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Config;
 
-internal sealed class EliteConfigSettings : BaseConfigSettings
+// Elite's own settings, stored under the config file's "game" element.
+internal sealed class EliteConfigSettings
 {
-    // Maximum render frame rate. The game speed is independent, fixed by
-    // EliteMain.GameTickRate.
-    public float Fps { get; set; } = 60f;
-
     public bool InstantDock { get; set; }
 
     // Whether the firing laser beams are outlined or filled.
@@ -31,6 +27,4 @@ internal sealed class EliteConfigSettings : BaseConfigSettings
     public bool ShipWireframe { get; set; }
 
     public SunType SunStyle { get; set; } = SunType.Gradient;
-
-    public bool IsViewFullFrame { get; }
 }

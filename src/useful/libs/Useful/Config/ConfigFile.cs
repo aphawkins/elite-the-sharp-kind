@@ -25,6 +25,7 @@ public sealed class ConfigFile<T> : IConfigWriter<T>
     private readonly JsonSerializerOptions _writeOptions = new()
     {
         WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         Converters = { new JsonStringEnumConverter() },
     };
 

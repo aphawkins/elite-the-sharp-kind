@@ -19,22 +19,22 @@ namespace EliteSharpLib.Tests.Views;
 
 public class SettingsViewTests
 {
-    private const string ConfigFileName = "elitesharp.cfg";
+    private const string ConfigFileName = "elite.sharp";
 
     [Fact]
     public void ChangingASettingSavesItImmediately()
     {
         // Arrange: the view has no save step, so the very first toggle must
         // already be on disk.
-        SettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out ConfigFile<EliteConfigSettings> configFile);
+        SettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out ConfigFile<EliteConfig> configFile);
         keyboard.KeyDown(ConsoleKey.Enter, default);
 
         // Act: item 0 is Ship Style.
         view.HandleInput();
 
         // Assert
-        Assert.True(gameState.Config.ShipWireframe);
-        Assert.True(configFile.ReadConfig().ShipWireframe);
+        Assert.True(gameState.Config.Game.ShipWireframe);
+        Assert.True(configFile.ReadConfig().Game.ShipWireframe);
     }
 
     [Fact]
@@ -55,13 +55,13 @@ public class SettingsViewTests
         view.HandleInput();
 
         Assert.Equal(Screen.Options, gameState.CurrentScreen);
-        Assert.False(gameState.Config.ShipWireframe);
+        Assert.False(gameState.Config.Game.ShipWireframe);
     }
 
     private static SettingsView CreateView(
         out GameState gameState,
         out FakeKeyboard keyboard,
-        out ConfigFile<EliteConfigSettings> configFile)
+        out ConfigFile<EliteConfig> configFile)
     {
         keyboard = new FakeKeyboard();
         ScreenManager<Screen, IView> views = new(keyboard);

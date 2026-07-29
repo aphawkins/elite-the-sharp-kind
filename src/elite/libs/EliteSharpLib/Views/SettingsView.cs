@@ -15,7 +15,7 @@ namespace EliteSharpLib.Views;
 
 internal sealed class SettingsView : IView
 {
-    private readonly IConfigWriter<EliteConfigSettings> _configWriter;
+    private readonly IConfigWriter<EliteConfig> _configWriter;
     private readonly IEliteDraw _draw;
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
@@ -41,7 +41,7 @@ internal sealed class SettingsView : IView
         IEliteDraw draw,
         IKeyboard keyboard,
         Space space,
-        IConfigWriter<EliteConfigSettings> configWriter)
+        IConfigWriter<EliteConfig> configWriter)
     {
         _gameState = gameState;
         _draw = draw;
@@ -127,12 +127,12 @@ internal sealed class SettingsView : IView
     // Which of setting i's values is currently selected.
     private int SettingValue(int i) => i switch
     {
-        0 => _gameState.Config.ShipWireframe ? 1 : 0,
-        1 => _gameState.Config.LaserWireframe ? 1 : 0,
-        2 => (int)_gameState.Config.PlanetStyle,
-        3 => (int)_gameState.Config.SunStyle,
-        4 => _gameState.Config.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
-        5 => _gameState.Config.InstantDock ? 1 : 0,
+        0 => _gameState.Config.Game.ShipWireframe ? 1 : 0,
+        1 => _gameState.Config.Game.LaserWireframe ? 1 : 0,
+        2 => (int)_gameState.Config.Game.PlanetStyle,
+        3 => (int)_gameState.Config.Game.SunStyle,
+        4 => _gameState.Config.Game.PlanetDescriptions == PlanetDescriptions.HoopyCasinos ? 1 : 0,
+        5 => _gameState.Config.Game.InstantDock ? 1 : 0,
         _ => 0,
     };
 
@@ -189,30 +189,30 @@ internal sealed class SettingsView : IView
         switch (_highlightedItem)
         {
             case 0:
-                _gameState.Config.ShipWireframe = !_gameState.Config.ShipWireframe;
+                _gameState.Config.Game.ShipWireframe = !_gameState.Config.Game.ShipWireframe;
                 break;
 
             case 1:
-                _gameState.Config.LaserWireframe = !_gameState.Config.LaserWireframe;
+                _gameState.Config.Game.LaserWireframe = !_gameState.Config.Game.LaserWireframe;
                 break;
 
             case 2:
-                _gameState.Config.PlanetStyle = (PlanetType)((int)(_gameState.Config.PlanetStyle + 1)
+                _gameState.Config.Game.PlanetStyle = (PlanetType)((int)(_gameState.Config.Game.PlanetStyle + 1)
                     % Enum.GetValues<PlanetType>().Length);
                 _space.RefreshPlanetStyle();
                 break;
 
             case 3:
-                _gameState.Config.SunStyle = (SunType)((int)(_gameState.Config.SunStyle + 1) % Enum.GetValues<SunType>().Length);
+                _gameState.Config.Game.SunStyle = (SunType)((int)(_gameState.Config.Game.SunStyle + 1) % Enum.GetValues<SunType>().Length);
                 _space.RefreshSunStyle();
                 break;
 
             case 4:
-                _gameState.Config.PlanetDescriptions = (PlanetDescriptions)((int)(_gameState.Config.PlanetDescriptions + 1) % 2);
+                _gameState.Config.Game.PlanetDescriptions = (PlanetDescriptions)((int)(_gameState.Config.Game.PlanetDescriptions + 1) % 2);
                 break;
 
             case 5:
-                _gameState.Config.InstantDock = !_gameState.Config.InstantDock;
+                _gameState.Config.Game.InstantDock = !_gameState.Config.Game.InstantDock;
                 break;
         }
 

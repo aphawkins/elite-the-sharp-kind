@@ -9,38 +9,42 @@ namespace EliteSharpLib.Tests.Config;
 
 public class ConfigFileTests
 {
-    private const string ConfigFileName = "elitesharp.cfg";
+    private const string ConfigFileName = "elite.sharp";
 
     [Fact]
     public void ReadConfigWithoutAFileReturnsDefaults()
     {
         // Arrange
-        ConfigFile<EliteConfigSettings> configFile = new(CreateTempDirectory(), ConfigFileName);
+        ConfigFile<EliteConfig> configFile = new(CreateTempDirectory(), ConfigFileName);
 
         // Act
-        EliteConfigSettings config = configFile.ReadConfig();
+        EliteConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.Equal(60f, config.Fps);
-        Assert.True(config.MusicOn);
-        Assert.True(config.EffectsOn);
+        Assert.Equal(60f, config.Engine.Fps);
+        Assert.True(config.Engine.MusicOn);
+        Assert.True(config.Engine.EffectsOn);
     }
 
     [Fact]
     public void WriteConfigThenReadConfigRoundTrips()
     {
         // Arrange
-        ConfigFile<EliteConfigSettings> configFile = new(CreateTempDirectory(), ConfigFileName);
-        EliteConfigSettings written = new() { MusicOn = false, EffectsOn = false, InstantDock = true };
+        ConfigFile<EliteConfig> configFile = new(CreateTempDirectory(), ConfigFileName);
+        EliteConfig written = new()
+        {
+            Engine = new() { MusicOn = false, EffectsOn = false },
+            Game = new() { InstantDock = true },
+        };
 
         // Act
         configFile.WriteConfig(written);
-        EliteConfigSettings read = configFile.ReadConfig();
+        EliteConfig read = configFile.ReadConfig();
 
         // Assert
-        Assert.False(read.MusicOn);
-        Assert.False(read.EffectsOn);
-        Assert.True(read.InstantDock);
+        Assert.False(read.Engine.MusicOn);
+        Assert.False(read.Engine.EffectsOn);
+        Assert.True(read.Game.InstantDock);
     }
 
     [Fact]
@@ -51,14 +55,14 @@ public class ConfigFileTests
         // wraps this as InvalidOperationException, not FormatException.
         string directory = CreateTempDirectory();
         Directory.CreateDirectory(directory);
-        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"ShipWireframe\": \"hello!\"}");
-        ConfigFile<EliteConfigSettings> configFile = new(directory, ConfigFileName);
+        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"game\": {\"shipWireframe\": \"hello!\"}}");
+        ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName);
 
         // Act
-        EliteConfigSettings config = configFile.ReadConfig();
+        EliteConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.False(config.ShipWireframe);
+        Assert.False(config.Game.ShipWireframe);
     }
 
     [Fact]
@@ -68,14 +72,14 @@ public class ConfigFileTests
         // (Fps > 0), not just the generic ConfigFile<T> plumbing.
         string directory = CreateTempDirectory();
         Directory.CreateDirectory(directory);
-        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"Fps\": 0}");
-        ConfigFile<EliteConfigSettings> configFile = new(directory, ConfigFileName, EliteServiceCollectionExtensions.IsValidConfig);
+        File.WriteAllText(Path.Combine(directory, ConfigFileName), /*lang=json,strict*/ "{\"engine\": {\"fps\": 0}}");
+        ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName, EliteServiceCollectionExtensions.IsValidConfig);
 
         // Act
-        EliteConfigSettings config = configFile.ReadConfig();
+        EliteConfig config = configFile.ReadConfig();
 
         // Assert
-        Assert.Equal(60f, config.Fps);
+        Assert.Equal(60f, config.Engine.Fps);
     }
 
     private static string CreateTempDirectory()

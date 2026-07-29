@@ -45,7 +45,7 @@ internal sealed class LaserDraw
         Vector2 rightA = new(_draw.ScannerRight - (32 * _draw.Scale), _draw.Bottom);
         Vector2 rightB = new(_draw.ScannerRight - (48 * _draw.Scale), _draw.Bottom);
 
-        if (_gameState.Config.LaserWireframe)
+        if (_gameState.Config.Game.LaserWireframe)
         {
             // Left laser
             _draw.Graphics.DrawTriangle(leftA, target, leftB, color);

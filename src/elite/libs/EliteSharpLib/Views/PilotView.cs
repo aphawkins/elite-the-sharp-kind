@@ -230,7 +230,7 @@ internal sealed class PilotView : IView
     // Dock instantly if configured to, otherwise fly the ship in on autopilot.
     private void EngageDockingComputer()
     {
-        if (_gameState.Config.InstantDock)
+        if (_gameState.Config.Game.InstantDock)
         {
             _space.EngageDockingComputer();
         }
