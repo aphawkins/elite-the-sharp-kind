@@ -39,8 +39,16 @@ alternatives and the measured colour-count baseline, is in
 independently verifiable, and steps 1-5 do not depend on the 8-bit art
 existing.
 
-- [ ] [Assets] SCR has no 8-bit asset set at all; its manifest declares
-      only `SixteenBit`.
+- [ ] [Assets] Author SCR's 8-bit asset set: a 16-colour
+      `palette.json`, `atlas.bmp` and `menu.bmp` under
+      `Images/EightBit/`, and an 8-bit bitmap font (Elite's 8-bit tier
+      uses a single 8x8 `bbc-micro.bmp` for both sizes, declared in an
+      `AssetManifest.EightBit.json`). Hand-authored art, as Elite's was
+      — mechanically downscaling the 16-bit files gives filtered 16-bit
+      imagery, not 8-bit-era art. The tier plumbing is done (2026-07-29,
+      see CHANGELOG): the manifest declares only `SixteenBit`, so
+      selecting `EightBit` fails at startup until the files exist, and
+      adding them plus `"EightBit"` to `Tiers` is all that is left.
 - [ ] [Useful.Assets] Decide whether the asset validator should also
       check bitmap dimensions against the tier's resolution. Today the
       colour cap is the only tier constraint, so nothing catches art
@@ -121,19 +129,6 @@ not yet scoped into concrete steps.
       entry for `Return`, so a `key:Return` step throws "Unknown key
       name". Hit while driving SCR's menus (2026-07-28); add Return and
       any other obvious missing keys.
-- [ ] [StuntCarRacerSharpLib] `ScrPalette`'s parameterless constructor
-      calls `AssetLocator.Create()` itself
-      ([ScrPalette.cs:21](../src/scr/libs/StuntCarRacerSharpLib/Rendering/ScrPalette.cs)),
-      which the composition-root rule in
-      [architecture-principles.md](architecture-principles.md) forbids —
-      it re-reads and re-parses the manifest on every construction, and
-      it means the palette can't follow a tier chosen anywhere else.
-      Found while moving assets into tier folders (2026-07-28), where it
-      showed up as a hardcoded `Assets/Palette/palette.json` path that
-      the move broke. Fixing it properly needs an `IAssetLocator` to
-      reach `StuntCarRacerMain`, which only receives `IAbstraction`
-      today — so either widen `IAbstraction` or pass the locator
-      alongside it, then inject the palette path.
 - [ ] [EliteSharpLib] Remove conditional compilation (issue #7): three
       `#if` sites remain — `EliteMain.DrawFps`'s `#if DEBUG` gate
       ([EliteMain.cs:170-172,251-260](../src/elite/libs/EliteSharpLib/EliteMain.cs)),

@@ -5,6 +5,7 @@
 using StuntCarRacerSharpLib.Rendering;
 using StuntCarRacerSharpLib.Tracks;
 using Useful;
+using Useful.Assets;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests.Rendering;
@@ -22,7 +23,7 @@ public class CarMeshTests
     [Fact]
     public void AppendProducesTenQuadsWithTheOriginalColours()
     {
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         CarMesh carMesh = new(palette);
         List<WorldPolygon> polygons = [];
 
@@ -50,7 +51,7 @@ public class CarMeshTests
     [Fact]
     public void MeshBottomSitsAtCornerLevelOnALevelFrame()
     {
-        CarMesh carMesh = new(new ScrPalette());
+        CarMesh carMesh = new(new ScrPalette(AssetLocator.Create()));
         List<WorldPolygon> polygons = [];
 
         carMesh.Append(polygons, s_rearLeft, s_rearRight, s_frontLeft, s_frontRight);
@@ -63,7 +64,7 @@ public class CarMeshTests
     [Fact]
     public void AppendThrowsOnNullPolygons()
     {
-        CarMesh carMesh = new(new ScrPalette());
+        CarMesh carMesh = new(new ScrPalette(AssetLocator.Create()));
 
         Assert.Throws<ArgumentNullException>(
             () => carMesh.Append(null!, s_rearLeft, s_rearRight, s_frontLeft, s_frontRight));

@@ -5,6 +5,7 @@
 using StuntCarRacerSharpLib.Rendering;
 using StuntCarRacerSharpLib.Tracks;
 using Useful;
+using Useful.Assets;
 using Useful.Graphics;
 using Xunit;
 
@@ -15,7 +16,7 @@ public class RoadTexturesTests
     [Fact]
     public void StripsHaveLineColourAtEdgesAndRoadColourBetween()
     {
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         RoadTextures roadTextures = new(palette);
 
         FastColor yellow = palette.Colour(Track.ScrBaseColour + 3);

@@ -28,7 +28,7 @@ public class VisualDumpTests
         OpponentPhysics opponent = new(track, car, new RandomSource(new Random(3)));
         opponent.StartRace();
 
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(640, 400, b => lastFrame = b, AssetLocator.Create());
         TrackRenderer renderer = new(track, graphics, palette, new(palette));

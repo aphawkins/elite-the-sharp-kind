@@ -22,7 +22,7 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
     {
         FakeAbstraction abstraction = new(Graphics);
         Keyboard = (FakeKeyboard)abstraction.Keyboard;
-        Game = new(abstraction);
+        Game = new(abstraction, AssetLocator.Create());
     }
 
     public StuntCarRacerMain Game { get; }

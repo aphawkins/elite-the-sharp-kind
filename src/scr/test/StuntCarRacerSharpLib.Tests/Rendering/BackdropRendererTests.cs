@@ -6,6 +6,7 @@ using System.Numerics;
 using StuntCarRacerSharpLib.Rendering;
 using StuntCarRacerSharpLib.Tracks;
 using Useful;
+using Useful.Assets;
 using Useful.Fakes.Assets;
 using Useful.Graphics;
 using Xunit;
@@ -34,7 +35,7 @@ public class BackdropRendererTests
     [InlineData(1000, 20000)] // near-level, high up
     public void GroundLineMatchesTrackProjectionWhenPitchedDown(int cameraHeight, int targetDistance)
     {
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         FastBitmap? frame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(Width, Height, b => frame = b, new FakeAssetLocator());
         BackdropRenderer backdrop = new(graphics, palette);

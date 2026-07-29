@@ -7,6 +7,7 @@ using StuntCarRacerSharpLib.Cars;
 using StuntCarRacerSharpLib.Fakes;
 using StuntCarRacerSharpLib.Rendering;
 using StuntCarRacerSharpLib.Tracks;
+using Useful.Assets;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests.Rendering;
@@ -31,7 +32,7 @@ public class TrackRendererTests
         SceneCamera camera = new();
         camera.FollowCar(car);
 
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         RecordingGraphics graphics = new(640, 400);
         TrackRenderer renderer = new(track, graphics, palette, new(palette));
         renderer.Draw(camera);
@@ -53,7 +54,7 @@ public class TrackRendererTests
         SceneCamera camera = new();
         camera.FollowCar(car);
 
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         RoadTextures roadTextures = new(palette);
         RecordingGraphics graphics1 = new(640, 400);
         new TrackRenderer(track, graphics1, palette, roadTextures).Draw(camera);
@@ -72,7 +73,7 @@ public class TrackRendererTests
         car.StartRace();
 
         SceneCamera camera = new();
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         RecordingGraphics graphics = new(640, 400);
         TrackRenderer renderer = new(track, graphics, palette, new(palette));
 
@@ -96,7 +97,7 @@ public class TrackRendererTests
         SceneCamera camera = new();
         camera.FollowCar(car);
 
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         RoadTextures roadTextures = new(palette);
 
         // without a player position no road is textured
@@ -122,7 +123,7 @@ public class TrackRendererTests
         SceneCamera camera = new();
         camera.FollowCar(car);
 
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         RecordingGraphics graphics = new(640, 400);
         new TrackRenderer(track, graphics, palette, new(palette)).Draw(camera, null, car.CurrentPiece, car.CurrentSegment);
 
@@ -152,7 +153,7 @@ public class TrackRendererTests
         car.StartRace();
 
         SceneCamera camera = new();
-        ScrPalette palette = new();
+        ScrPalette palette = new(AssetLocator.Create());
         RecordingGraphics graphics = new(640, 400);
         TrackRenderer renderer = new(track, graphics, palette, new(palette));
 

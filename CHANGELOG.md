@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Stunt Car Racer selects its asset tier, 2026-07-29)
+
+- Stunt Car Racer reads `engine.tier` from its config and builds its
+  `AssetLocator` from it, as Elite already did. The tier was shared
+  config the game simply ignored: every asset came from the default
+  16-bit set whatever the file said.
+- `ScrPalette` no longer creates an `AssetLocator` of its own. It takes
+  an `IAssetLocator`, which the composition root supplies, so the
+  palette follows the configured tier and the manifest is read once per
+  run rather than once per construction. `StuntCarRacerMain` receives
+  the locator alongside the abstraction to hand it on.
+- The software backend now gets the same locator as the SDL one. It was
+  falling through to the overload that makes its own, so under the
+  default backend the tier would not have reached the assets even once
+  it was read.
+- Stunt Car Racer still ships only the 16-bit set, so selecting the
+  8-bit tier fails at startup on the manifest's `Tiers` list rather
+  than loading 16-bit art under an 8-bit label. The 8-bit assets
+  themselves remain outstanding in the backlog.
+
 ### Changed (Config hardened before release, 2026-07-29)
 
 - The file carries a `version` now. Nothing migrates yet - the point is

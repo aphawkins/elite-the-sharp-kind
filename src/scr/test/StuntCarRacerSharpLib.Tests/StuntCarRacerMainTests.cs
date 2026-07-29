@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerSharpLib.Fakes;
+using Useful.Assets;
 using Useful.Audio;
 using Useful.Fakes.Audio;
 using Useful.Fakes.Controls;
@@ -19,7 +20,7 @@ public class StuntCarRacerMainTests
         FakeAbstraction abstraction = new();
 
         // Act
-        StuntCarRacerMain game = new(abstraction);
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
 
         // Assert
         Assert.NotNull(game);
@@ -27,7 +28,7 @@ public class StuntCarRacerMainTests
 
     [Fact]
     public void ConstructWithNullAbstractionThrows()
-        => Assert.Throws<ArgumentNullException>(() => new StuntCarRacerMain(null!));
+        => Assert.Throws<ArgumentNullException>(() => new StuntCarRacerMain(null!, AssetLocator.Create()));
 
     [Fact]
     public void ConstructWithAudioOptionsSucceeds()
@@ -36,7 +37,7 @@ public class StuntCarRacerMainTests
         FakeAbstraction abstraction = new();
 
         // Act
-        StuntCarRacerMain game = new(abstraction, new AudioOptions { MusicOn = false, EffectsOn = false });
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create(), new AudioOptions { MusicOn = false, EffectsOn = false });
 
         // Assert
         Assert.NotNull(game);
@@ -44,14 +45,14 @@ public class StuntCarRacerMainTests
 
     [Fact]
     public void ConstructWithNullAudioOptionsThrows()
-        => Assert.Throws<ArgumentNullException>(() => new StuntCarRacerMain(new FakeAbstraction(), null!));
+        => Assert.Throws<ArgumentNullException>(() => new StuntCarRacerMain(new FakeAbstraction(), AssetLocator.Create(), null!));
 
     [Fact]
     public void PhysicsStepsEveryFrameGapTicksDuringRace()
     {
         // Arrange
         FakeAbstraction abstraction = new();
-        StuntCarRacerMain game = new(abstraction);
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
         StartRace(game, abstraction);
 
         // Act
@@ -76,7 +77,7 @@ public class StuntCarRacerMainTests
     {
         // Arrange
         FakeAbstraction abstraction = new();
-        StuntCarRacerMain game = new(abstraction);
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
         FakeSound sound = (FakeSound)abstraction.Sound;
         StartRace(game, abstraction);
         int playsAtRaceStart = sound.PlayLoopCount;
@@ -96,7 +97,7 @@ public class StuntCarRacerMainTests
     {
         // Arrange
         FakeAbstraction abstraction = new();
-        StuntCarRacerMain game = new(abstraction);
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
         FakeKeyboard keyboard = (FakeKeyboard)abstraction.Keyboard;
         FakeSound sound = (FakeSound)abstraction.Sound;
 

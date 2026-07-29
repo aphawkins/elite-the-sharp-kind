@@ -18,8 +18,12 @@ public sealed class ScrPalette
 {
     private readonly IPaletteCollection _palette;
 
-    public ScrPalette()
-        : this(PaletteReader.Read(AssetLocator.Create().PalettePath))
+    // The palette is a tier-specific asset, so it comes from the locator the
+    // composition root built for the configured tier - the class no longer
+    // creates one of its own (and with it, re-reads the manifest) per
+    // construction.
+    public ScrPalette(IAssetLocator assetLocator)
+        : this(PaletteReader.Read((assetLocator ?? throw new ArgumentNullException(nameof(assetLocator))).PalettePath))
     {
     }
 

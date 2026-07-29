@@ -86,6 +86,7 @@ internal static class SDLProgram
     private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory)
     {
         Backend backend = StuntCarRacerServiceCollectionExtensions.ReadBackend(userDataPath, loggerFactory);
+        SystemTier tier = StuntCarRacerServiceCollectionExtensions.ReadSystemTier(userDataPath, loggerFactory);
 
         ServiceCollection services = new();
         services.AddSingleton(loggerFactory);
@@ -94,20 +95,23 @@ internal static class SDLProgram
                 ScreenWidth,
                 ScreenHeight,
                 Title,
-                AssetLocator.Create(),
+                sp.GetRequiredService<IAssetLocator>(),
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory))
             : new SoftwareAbstraction(
                 ScreenWidth,
                 ScreenHeight,
                 Title,
+                sp.GetRequiredService<IAssetLocator>(),
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(AssetLogCategory)));
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Graphics);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Sound);
         services.AddSingleton(sp => sp.GetRequiredService<IAbstraction>().Keyboard);
+        services.AddSingleton<IAssetLocator>(_ => AssetLocator.Create(tier));
         services.AddScrConfig(userDataPath);
         services.AddScrRandom();
         services.AddSingleton(sp => new StuntCarRacerMain(
             sp.GetRequiredService<IAbstraction>(),
+            sp.GetRequiredService<IAssetLocator>(),
             sp.GetRequiredService<AudioOptions>(),
             sp.GetRequiredService<IRandomSource>()));
         services.AddSingleton<IGame>(sp => sp.GetRequiredService<StuntCarRacerMain>());

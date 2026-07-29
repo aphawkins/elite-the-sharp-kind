@@ -8,6 +8,7 @@ using StuntCarRacerSharpLib.Screens;
 using StuntCarRacerSharpLib.Tracks;
 using Useful;
 using Useful.Abstraction;
+using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 using Useful.Graphics;
@@ -32,29 +33,42 @@ public sealed class StuntCarRacerMain : IGame
 
     private bool _sceneryKeyDown;
 
-    public StuntCarRacerMain(IAbstraction abstraction)
-        : this(abstraction, TrackId.LittleRamp, new(), new RandomSource(Random.Shared))
+    public StuntCarRacerMain(IAbstraction abstraction, IAssetLocator assetLocator)
+        : this(abstraction, assetLocator, TrackId.LittleRamp, new(), new RandomSource(Random.Shared))
     {
     }
 
-    public StuntCarRacerMain(IAbstraction abstraction, TrackId trackId)
-        : this(abstraction, trackId, new(), new RandomSource(Random.Shared))
+    public StuntCarRacerMain(IAbstraction abstraction, IAssetLocator assetLocator, TrackId trackId)
+        : this(abstraction, assetLocator, trackId, new(), new RandomSource(Random.Shared))
     {
     }
 
-    public StuntCarRacerMain(IAbstraction abstraction, AudioOptions audioOptions)
-        : this(abstraction, TrackId.LittleRamp, audioOptions, new RandomSource(Random.Shared))
+    public StuntCarRacerMain(IAbstraction abstraction, IAssetLocator assetLocator, AudioOptions audioOptions)
+        : this(abstraction, assetLocator, TrackId.LittleRamp, audioOptions, new RandomSource(Random.Shared))
     {
     }
 
-    public StuntCarRacerMain(IAbstraction abstraction, AudioOptions audioOptions, IRandomSource randomSource)
-        : this(abstraction, TrackId.LittleRamp, audioOptions, randomSource)
+    public StuntCarRacerMain(
+        IAbstraction abstraction,
+        IAssetLocator assetLocator,
+        AudioOptions audioOptions,
+        IRandomSource randomSource)
+        : this(abstraction, assetLocator, TrackId.LittleRamp, audioOptions, randomSource)
     {
     }
 
-    private StuntCarRacerMain(IAbstraction abstraction, TrackId trackId, AudioOptions audioOptions, IRandomSource randomSource)
+    // The locator arrives alongside the abstraction rather than inside it: it
+    // carries the configured system tier, and the assets the game loads - the
+    // palette today - have to come from that tier's set.
+    private StuntCarRacerMain(
+        IAbstraction abstraction,
+        IAssetLocator assetLocator,
+        TrackId trackId,
+        AudioOptions audioOptions,
+        IRandomSource randomSource)
     {
         ArgumentNullException.ThrowIfNull(abstraction);
+        ArgumentNullException.ThrowIfNull(assetLocator);
         ArgumentNullException.ThrowIfNull(audioOptions);
         ArgumentNullException.ThrowIfNull(randomSource);
 
@@ -62,7 +76,7 @@ public sealed class StuntCarRacerMain : IGame
         Graphics = abstraction.Graphics;
         Keyboard = abstraction.Keyboard;
         Sound = abstraction.Sound;
-        Palette = new();
+        Palette = new(assetLocator);
 
         // Effect cooldowns in physics frames (12.5Hz), sized to the sample
         // lengths so a repeated trigger doesn't stack in the mixer. OffRoad

@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerSharpLib.Fakes;
+using Useful.Assets;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests.Screens;
@@ -14,7 +15,7 @@ public class TrackMenuScreenTests
     {
         RecordingGraphics graphics = new(640, 400);
         FakeAbstraction abstraction = new(graphics);
-        StuntCarRacerMain game = new(abstraction);
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
 
         game.Draw();
 
@@ -28,7 +29,7 @@ public class TrackMenuScreenTests
     {
         RecordingGraphics graphics = new(640, 400);
         FakeAbstraction abstraction = new(graphics);
-        StuntCarRacerMain game = new(abstraction);
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
 
         game.Draw();
 
@@ -43,7 +44,7 @@ public class TrackMenuScreenTests
     {
         RecordingGraphics graphics = new(640, 400);
         FakeAbstraction abstraction = new(graphics);
-        StuntCarRacerMain game = new(abstraction);
+        StuntCarRacerMain game = new(abstraction, AssetLocator.Create());
 
         game.Draw();
 

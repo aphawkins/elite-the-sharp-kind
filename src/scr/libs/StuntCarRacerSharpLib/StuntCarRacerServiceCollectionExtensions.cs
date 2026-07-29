@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using StuntCarRacerSharpLib.Config;
 using Useful;
 using Useful.Abstraction;
+using Useful.Assets;
 using Useful.Audio;
 using Useful.Config;
 
@@ -49,6 +50,20 @@ public static class StuntCarRacerServiceCollectionExtensions
             loggerFactory.CreateLogger<ConfigFile<ScrConfig>>());
 
         return configFile.ReadConfig().Engine.Backend;
+    }
+
+    // Same reason as ReadBackend above: Program.Main needs the tier before the
+    // container exists, because the asset locator it builds - and hands to the
+    // abstraction - is fixed to a tier at construction.
+    public static SystemTier ReadSystemTier(string userDataPath, ILoggerFactory loggerFactory)
+    {
+        ConfigFile<ScrConfig> configFile = new(
+            userDataPath,
+            ConfigFileName,
+            RepairConfig,
+            loggerFactory.CreateLogger<ConfigFile<ScrConfig>>());
+
+        return configFile.ReadConfig().Engine.Tier;
     }
 
     // The single shared source of entropy for this app instance: an

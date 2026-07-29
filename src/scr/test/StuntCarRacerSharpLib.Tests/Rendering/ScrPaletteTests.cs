@@ -3,6 +3,7 @@
 // Stunt Car Racer (C) Geoff Crammond / MicroStyle / MicroProse 1989.
 
 using StuntCarRacerSharpLib.Rendering;
+using Useful.Assets;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests.Rendering;
@@ -22,5 +23,5 @@ public class ScrPaletteTests
     [InlineData(29, 0xffffff00)]
     [InlineData(41, 0xffffffff)]
     public void ColourReturnsTheOriginalArgbValue(int index, uint expected)
-        => Assert.Equal(expected, (uint)new ScrPalette().Colour(index));
+        => Assert.Equal(expected, (uint)new ScrPalette(AssetLocator.Create()).Colour(index));
 }
