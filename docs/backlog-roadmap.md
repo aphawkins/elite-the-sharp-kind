@@ -141,17 +141,34 @@ height) into the controller, which keeps the `CarryFlag` quirk in one
 place, rather than moving row packing and name generation into each
 tier's view.
 
-**Converted so far (2026-07-29, branch `mvc-controller-view-seam`, two
+**Converted so far (2026-07-30, branch `mvc-controller-view-seam`, three
 commits, not yet merged or pushed): `GalacticChart`, `Quit`,
-`ThargoidMission`, `Intro1`, `CommanderStatus`, `Inventory`.** Each is a
+`ThargoidMission`, `Intro1`, `CommanderStatus`, `Inventory`,
+`GameOver`, `EscapeCapsule`, `ConstrictorMission` — nine of the
+eighteen.** Each is a
 `<Screen>Controller` + `<Screen>Model` + drawing-only `<Screen>View`,
 with DI registrations collected in
 `EliteServiceCollectionExtensions.AddSplitScreens`, which the rest join
-as they convert. Copy any of those six as the pattern —
+as they convert. Copy any of those nine as the pattern —
 `CommanderStatus` is the fullest example of formatting extraction,
 `GalacticChart` of a screen with cursor state.
 
-- [ ] [EliteSharpLib] Convert the remaining 12 screens to the pattern,
+Note the DI registrations now split across `AddSplitConsoleScreens` and
+`AddSplitSequenceScreens`: the ninth screen tripped CA1506 at 49
+coupled types against a limit of 41. Expect to add a third method
+somewhere around screen fifteen rather than growing either.
+
+Two findings from the mechanical group that apply to the rest:
+
+- Publish the *consequence* of an animation counter, not the counter.
+  `EscapeCapsuleModel` carries `IsAlertVisible`, not the tick, so
+  neither tier's view can drift on the timing and the boundary is
+  testable by ticking the controller.
+- A screen whose only content is a fixed string still gets a model
+  (`GameOverModel`), built once as a static property. That costs a
+  ten-line record and keeps the tier contract a signature.
+
+- [ ] [EliteSharpLib] Convert the remaining 9 screens to the pattern,
       moving each view's formatting onto its controller behind a
       `<Screen>Model` record — that is the data the 8-bit view must
       reuse rather than re-derive. Add controller unit tests for the
@@ -159,9 +176,6 @@ as they convert. Copy any of those six as the pattern —
       returns a record); `GalacticChartControllerTests` and
       `CommanderStatusControllerTests` are the templates. Grouped by
       expected difficulty, since the groups share a shape:
-      - Mechanical: `GameOverView` and `EscapeCapsuleView` (the `_i`
-        animation counters become controller state),
-        `ConstrictorMissionView`.
       - Selection cursors, all the same shape as each other:
         `OptionsView`, `SettingsListView`, `MarketView`,
         `EquipmentView` (each has a `_highlightedItem`-style field).
@@ -281,6 +295,24 @@ not yet scoped into concrete steps.
       entry for `Return`, so a `key:Return` step throws "Unknown key
       name". Hit while driving SCR's menus (2026-07-28); add Return and
       any other obvious missing keys.
+- [ ] [EliteSharpLib] `Intro1Controller`'s doc comment says "the screen's
+      text is fixed, so the view takes no model"
+      ([Intro1Controller.cs:17-21](../src/elite/libs/EliteSharpLib/Views/Intro1Controller.cs)),
+      left over from the parameterless `IView` tried and dropped
+      2026-07-29 (see CHANGELOG). `Intro1View` has taken `Intro1Model`
+      since that day; fix the comment.
+- [ ] [Useful.Audio] `AudioController.PlayEffect`'s `_sfx[effectType]`
+      is an unguarded dictionary indexer
+      ([AudioController.cs:48](../src/useful/libs/Useful.Audio/AudioController.cs)):
+      an effect name missing from the sample dictionary throws
+      `KeyNotFoundException` rather than failing clearly or no-opping.
+      Hit writing `EscapeCapsuleControllerTests` (2026-07-30), which had
+      to populate `Launch` and `Explode` even though the test has
+      nothing to do with sound, since `EffectsOn` defaults true and the
+      lookup runs regardless of what the test wants to exercise.
+      Consider `TryGetValue` plus a logged no-op, matching
+      `LogMessages.FailedToCreateShip`'s pattern elsewhere in this file
+      for a missing lookup.
 - [ ] [EliteSharpLib] Remove conditional compilation (issue #7): three
       `#if` sites remain — `EliteMain.DrawFps`'s `#if DEBUG` gate
       ([EliteMain.cs:170-172,251-260](../src/elite/libs/EliteSharpLib/EliteMain.cs)),

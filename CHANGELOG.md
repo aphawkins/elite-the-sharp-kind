@@ -7,6 +7,28 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Controller/view split, the mechanical three, 2026-07-30)
+
+- `GameOver`, `EscapeCapsule` and `ConstrictorMission` each become a
+  controller, a model record and a drawing-only view. Nine of the
+  eighteen behaviour-bearing screens are now split — half way.
+- The animation counters the backlog named are now controller state,
+  and renamed `_i` to `_tick` on the way: a controller that no longer
+  draws has no loop for `_i` to belong to. `EscapeCapsule` publishes
+  `IsAlertVisible` rather than the count, so neither tier's view owns a
+  timer and both stop showing the alert on the same tick.
+- `ConstrictorMission` mirrors `ThargoidMission` exactly, down to
+  keying the view's layout off the model's stage. Which of the two
+  second paragraphs the galaxy selects is now the controller's
+  decision, so it is testable without a renderer.
+- `AddSplitScreens` split into `AddSplitConsoleScreens` and
+  `AddSplitSequenceScreens`. Adding the three tripped CA1506 at 49
+  coupled types, which is what the method's own comment had predicted;
+  the halves leave headroom for the nine screens still to convert.
+- `ConstrictorMissionControllerTests` covers the stage selection, both
+  galaxy variants and the debrief bounty; `EscapeCapsuleControllerTests`
+  pins the alert lapsing on tick 90 rather than 89.
+
 ### Changed (Controller/view split, five more screens, 2026-07-29)
 
 - `Quit`, `ThargoidMission`, `Intro1`, `CommanderStatus` and

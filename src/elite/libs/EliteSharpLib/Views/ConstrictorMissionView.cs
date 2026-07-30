@@ -2,153 +2,50 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
-using EliteSharpLib.Trader;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Controls;
-using Useful.Maths;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class ConstrictorMissionView : IScreenController
+/// <summary>
+/// The 16-bit Constrictor mission messages: the 512-space layout, and nothing
+/// else. The brief and the debrief were laid out differently in the original,
+/// so the layout keys off the model's stage. The Constrictor posing behind
+/// the brief is drawn by the universe, not here.
+/// </summary>
+internal sealed class ConstrictorMissionView : IView<ConstrictorMissionModel>
 {
-    private readonly Combat _combat;
     private readonly IEliteDraw _draw;
-    private readonly GameState _gameState;
-    private readonly IKeyboard _keyboard;
-
-    private readonly string _mission1_brief_a =
-        "Greetings Commander, I am Captain Curruthers of " +
-            "Her Majesty's Space Navy and I beg a moment of your " +
-            "valuable time.  We would like you to do a little job " +
-            "for us.  The ship you see here is a new model, the " +
-            "Constrictor, equiped with a top secret new shield " +
-            "generator.  Unfortunately it's been stolen.";
-
-    private readonly string _mission1_brief_b =
-        "It went missing from our ship yard on Xeer five months ago " +
-            "and was last seen at Reesdice. Your mission should you decide " +
-            "to accept it, is to seek and destroy this ship. You are " +
-            "cautioned that only Military Lasers will get through the new " +
-            "shields and that the Constrictor is fitted with an E.C.M. " +
-            "System. Good Luck, Commander. ---MESSAGE ENDS.";
-
-    private readonly string _mission1_brief_c =
-        "It went missing from our ship yard on Xeer five months ago " +
-            "and is believed to have jumped to this galaxy. " +
-            "Your mission should you decide to accept it, is to seek and " +
-            "destroy this ship. You are cautioned that only Military Lasers " +
-            "will get through the new shields and that the Constrictor is " +
-            "fitted with an E.C.M. System. Good Luck, Commander. ---MESSAGE ENDS.";
-
-    private readonly string _mission1_debrief =
-        "There will always be a place for you in Her Majesty's Space Navy. " +
-            "And maybe sooner than you think... ---MESSAGE ENDS.";
-
-    private readonly PlayerShip _ship;
-    private readonly Trade _trade;
-    private readonly Universe _universe;
-    private readonly IShipFactory _shipFactory;
-    private readonly ILogger<ConstrictorMissionView> _logger;
     private readonly uint _colorGold;
 
-    internal ConstrictorMissionView(
-        GameState gameState,
-        IEliteDraw draw,
-        IKeyboard keyboard,
-        PlayerShip ship,
-        Trade trade,
-        Combat combat,
-        Universe universe,
-        IShipFactory shipFactory,
-        ILogger<ConstrictorMissionView>? logger = null)
+    internal ConstrictorMissionView(IEliteDraw draw)
     {
-        _gameState = gameState;
         _draw = draw;
-        _keyboard = keyboard;
-        _ship = ship;
-        _trade = trade;
-        _combat = combat;
-        _universe = universe;
-        _shipFactory = shipFactory;
-        _logger = logger ?? NullLogger<ConstrictorMissionView>.Instance;
 
         _colorGold = draw.Palette["Gold"];
     }
 
-    public void Draw()
+    public void Draw(ConstrictorMissionModel model)
     {
-        if (_gameState.Cmdr.Mission == 1)
+        ArgumentNullException.ThrowIfNull(model);
+
+        switch (model.Stage)
         {
-            _draw.DrawViewHeader("INCOMING MESSAGE");
+            case 1:
+                _draw.DrawViewHeader("INCOMING MESSAGE");
+                _draw.DrawTextPretty(new(16 + _draw.Offset, 50), 300, model.Paragraphs[0]);
+                _draw.DrawTextPretty(new(16 + _draw.Offset, 200), 470, model.Paragraphs[1]);
+                DrawFooter();
+                break;
 
-            _draw.DrawTextPretty(new(16 + _draw.Offset, 50), 300, _mission1_brief_a);
-            _draw.DrawTextPretty(
-                new(16 + _draw.Offset, 200),
-                470,
-                _gameState.Cmdr.GalaxyNumber == 0 ? _mission1_brief_b : _mission1_brief_c);
-
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), _colorGold);
-        }
-        else if (_gameState.Cmdr.Mission == 3)
-        {
-            _draw.DrawViewHeader("INCOMING MESSAGE");
-
-            _draw.Graphics.DrawTextCentre(100, "Congratulations Commander!", nameof(FontType.Large), _colorGold);
-
-            _draw.DrawTextPretty(new(116 + _draw.Offset, 132), 400, _mission1_debrief);
-
-            _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), _colorGold);
+            case 3:
+                _draw.DrawViewHeader("INCOMING MESSAGE");
+                _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
+                _draw.DrawTextPretty(new(116 + _draw.Offset, 132), 400, model.Paragraphs[0]);
+                DrawFooter();
+                break;
         }
     }
 
-    public void HandleInput()
-    {
-        if (_keyboard.IsPressed(ConsoleKey.Spacebar))
-        {
-            _combat.Reset();
-            _universe.ClearUniverse();
-            _gameState.SetView(Screen.MissionTwo);
-        }
-    }
-
-    public void Reset()
-    {
-        if (_gameState.Cmdr.Mission == 0 && _gameState.Cmdr.Score >= 256 && _gameState.Cmdr.GalaxyNumber < 2)
-        {
-            // Show brief
-            _gameState.Cmdr.Mission = 1;
-
-            _combat.Reset();
-            _universe.ClearUniverse();
-            IShip constrictor = _shipFactory.CreateShip("Constrictor");
-            if (!_universe.AddNewShip(constrictor, new(200, 90, 600, 0), VectorMaths.GetLeftHandedBasisMatrix, -127, -127))
-            {
-                LogMessages.FailedToCreateShip(_logger, "Constrictor");
-            }
-
-            constrictor.Flags = ShipProperties.None;
-            _ship.Roll = 0;
-            _ship.Climb = 0;
-            _ship.Speed = 0;
-        }
-        else if (_gameState.Cmdr.Mission == 2)
-        {
-            // Show debrief
-            _gameState.Cmdr.Mission = 3;
-            _gameState.Cmdr.Score += 256;
-            _trade.Credits += 5000;
-        }
-        else
-        {
-            _gameState.SetView(Screen.MissionTwo);
-        }
-    }
-
-    public void Update()
-    {
-    }
+    private void DrawFooter()
+        => _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), _colorGold);
 }

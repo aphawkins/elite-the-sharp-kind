@@ -2,111 +2,30 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Audio;
-using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Useful.Audio;
-using Useful.Maths;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class GameOverView : IScreenController
+/// <summary>
+/// The 16-bit game over screen: the 512-space layout, and nothing else. The
+/// wreckage tumbling behind it is drawn by the universe, not here.
+/// </summary>
+internal sealed class GameOverView : IView<GameOverModel>
 {
-    private readonly AudioController _audio;
-    private readonly Combat _combat;
-    private readonly GameState _gameState;
-    private readonly PlayerShip _ship;
-    private readonly Stars _stars;
-    private readonly Universe _universe;
     private readonly IEliteDraw _draw;
-    private readonly IShipFactory _shipFactory;
-    private readonly ILogger<GameOverView> _logger;
     private readonly uint _colorGold;
-    private readonly RNG _rng;
 
-    private int _i;
-
-    internal GameOverView(
-        GameState gameState,
-        AudioController audio,
-        Stars stars,
-        PlayerShip ship,
-        Combat combat,
-        Universe universe,
-        IEliteDraw draw,
-        IShipFactory shipFactory,
-        RNG rng,
-        ILogger<GameOverView>? logger = null)
+    internal GameOverView(IEliteDraw draw)
     {
-        _gameState = gameState;
-        _audio = audio;
-        _stars = stars;
-        _ship = ship;
-        _combat = combat;
-        _universe = universe;
         _draw = draw;
-        _shipFactory = shipFactory;
-        _rng = rng;
-        _logger = logger ?? NullLogger<GameOverView>.Instance;
 
         _colorGold = draw.Palette["Gold"];
     }
 
-    public void Draw() => _draw.Graphics.DrawTextCentre(_draw.Centre.Y, "GAME OVER", nameof(FontType.Large), _colorGold);
-
-    public void HandleInput()
+    public void Draw(GameOverModel model)
     {
-    }
+        ArgumentNullException.ThrowIfNull(model);
 
-    public void Reset()
-    {
-        _i = 0;
-        _ship.Speed = 6;
-        _ship.Roll = 0;
-        _ship.Climb = 0;
-        _combat.Reset();
-        _universe.ClearUniverse();
-        IShip cobraMk3 = _shipFactory.CreateShip("CobraMk3");
-        if (!_universe.AddNewShip(cobraMk3, new(0, 0, -400, 0), VectorMaths.GetLeftHandedBasisMatrix, 0, 0))
-        {
-            LogMessages.FailedToCreateShip(_logger, "CobraMk3");
-        }
-
-        cobraMk3.Flags |= ShipProperties.Dead;
-
-        // Cargo
-        for (int i = 0; i < 5; i++)
-        {
-            IShip cargo = _rng.TrueOrFalse() ? _shipFactory.CreateShip("CargoCannister") : _shipFactory.CreateShip("Alloy");
-            if (!_universe.AddNewShip(
-                cargo,
-                new(_rng.Random(-32, 32), _rng.Random(-32, 32), -400, 0),
-                VectorMaths.GetLeftHandedBasisMatrix,
-                0,
-                0))
-            {
-                LogMessages.FailedToCreateShip(_logger, "Cargo");
-            }
-
-            cargo.RotZ = ((_rng.Random(256) * 2) & 255) - 128;
-            cargo.RotX = ((_rng.Random(256) * 2) & 255) - 128;
-            cargo.Velocity = _rng.Random(16);
-        }
-
-        _audio.PlayEffect(nameof(SoundEffect.Gameover));
-    }
-
-    public void Update()
-    {
-        if (_i >= 100)
-        {
-            _gameState.IsInitialised = false;
-        }
-
-        _stars.RearStarfield();
-        _i++;
+        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, model.Message, nameof(FontType.Large), _colorGold);
     }
 }
