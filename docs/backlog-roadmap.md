@@ -141,32 +141,66 @@ height) into the controller, which keeps the `CarryFlag` quirk in one
 place, rather than moving row packing and name generation into each
 tier's view.
 
-**Converted so far (2026-07-30, branch `mvc-controller-view-seam`, four
+**Converted so far (2026-07-30, branch `mvc-controller-view-seam`, five
 commits, not yet merged or pushed): `GalacticChart`, `Quit`,
 `ThargoidMission`, `Intro1`, `CommanderStatus`, `Inventory`,
 `GameOver`, `EscapeCapsule`, `ConstrictorMission`, `Options`, `Market`,
-`Equipment`, `Settings`, `EngineSettings` — fourteen screens, five items
-left on the list below (the mechanical and selection-cursor groups are
-both now fully done).** Each is a
+`Equipment`, `Settings`, `EngineSettings`, `LoadCommander`,
+`SaveCommander` — sixteen screens, three items left on the list below
+(the mechanical, selection-cursor and text-entry groups are all now
+fully done).** Each is a
 `<Screen>Controller` + `<Screen>Model` + drawing-only `<Screen>View`,
 with DI registrations collected in
 `EliteServiceCollectionExtensions.AddSplitScreens`, which the rest join
-as they convert. Copy any of those fourteen as the pattern —
+as they convert. Copy any of those sixteen as the pattern —
 `CommanderStatus` is the fullest example of formatting extraction,
 `GalacticChart` of a screen with cursor state, `Market`/`Equipment` of a
-cursor over a dynamic list.
+cursor over a dynamic list, `LoadCommander`/`SaveCommander` of two
+screens sharing a shape but not a class.
 
 Note the DI registrations moved to their own class,
 `EliteSplitScreensServiceCollectionExtensions`, split further across
-`AddSplitConsoleScreens`/`AddSplitSequenceScreens`/`AddSplitMenuScreens`:
-first the per-method CA1506 limit (41), then — once the split screens'
-combined registrations grew large enough on their own — the *class*-level
-CA1506 limit (96), which a single extra static class resolves since the
-metric is computed per class. Expect to need a fourth method, or a
-second class, somewhere around screen seventeen.
+`AddSplitConsoleScreens`/`AddSplitSequenceScreens`/`AddSplitMenuScreens`/
+`AddSplitTextEntryScreens`: first the per-method CA1506 limit (41), then
+— once the split screens' combined registrations grew large enough on
+their own — the *class*-level CA1506 limit (96), which a single extra
+static class resolves since the metric is computed per class. Expect to
+need a fifth method, or a second class, somewhere around screen
+eighteen.
 
-Findings from the selection-cursor group, on top of the two from the
-mechanical group already noted below:
+Findings from the text-entry group, on top of the ones from the
+mechanical and selection-cursor groups already noted below:
+
+- `LoadCommanderController`/`SaveCommanderController` look identical at
+  a glance (same typing, same box, same error/success layout) but were
+  *not* unified into one shared view, unlike `SettingsListView` above.
+  The reason: `SettingsListView`'s sharing came for free from code that
+  was already one class before conversion; Load and Save were always
+  two independent classes whose drawing only looks similar, and
+  `SaveCommanderView`'s box is drawn with `DrawRectangle` at an explicit
+  offset position where `LoadCommanderView`'s uses `DrawRectangleCentre`
+  - forcing one shared view would have meant verifying those two calls
+    are pixel-identical rather than preserving each screen's own
+    call, which is the riskier way to save a small duplication.
+- The recurring "Press SPACE to continue." / "Press space to continue."
+  footer is content per the backlog's own rule ("give the screen a
+  model even when the model is only its wording"), but is hardcoded in
+  the view here, matching the *existing* precedent in
+  `ThargoidMissionView`/`ConstrictorMissionView`'s `DrawFooter()` rather
+  than the stricter rule - the boilerplate phrase repeats verbatim
+  across screens already converted, so treating it as layout chrome
+  keeps this conversion consistent with its closest siblings. The
+  screen-specific headline (`"Error Loading Commander!"`,
+  `"Commander Saved."`, `"Error Saving Commander!"`) still goes through
+  the model.
+- Typed input can only ever be upper-case - `HandleInput` only appends
+  `(char)key` for `ConsoleKey.A`-`Z`, which are the upper-case ASCII
+  codepoints, and there is no lower-case equivalent in `ConsoleKey`.
+  `LoadCommanderControllerTests`/`SaveCommanderControllerTests` type
+  through the same keyboard fake the real input goes through (not by
+  setting the name field directly), which is what surfaced this - the
+  first attempt used mixed-case test names and silently typed nothing
+  for the lower-case letters.
 
 - `MarketController`'s cursor had an off-by-one bug in the original,
   fixed during conversion (2026-07-30): its cursor is a `Math.Clamp`ed
@@ -191,15 +225,13 @@ mechanical group already noted below:
   which is therefore fully-formatted content, matching
   `CommanderStatusModel.Cash`'s precedent.
 
-- [ ] [EliteSharpLib] Convert the remaining 5 screens to the pattern,
+- [ ] [EliteSharpLib] Convert the remaining 3 screens to the pattern,
       moving each view's formatting onto its controller behind a
       `<Screen>Model` record — that is the data the 8-bit view must
       reuse rather than re-derive. Add controller unit tests for the
       extracted formatting as it lands (no renderer fake needed once it
       returns a record); `GalacticChartControllerTests` and
       `CommanderStatusControllerTests` are the templates.
-      - Text entry, sharing the name-typing pattern:
-        `LoadCommanderView`, `SaveCommanderView`.
       - Expect design questions in these three, so do them last and
         singly: `Intro2View` (its `Update` drives universe state for
         the ship parade), the `PilotView` family (a base plus four

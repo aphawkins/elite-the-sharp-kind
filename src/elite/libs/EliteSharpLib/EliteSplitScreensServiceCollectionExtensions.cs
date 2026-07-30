@@ -5,6 +5,7 @@
 using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -29,6 +30,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
         services.AddSplitConsoleScreens();
         services.AddSplitSequenceScreens();
         services.AddSplitMenuScreens();
+        services.AddSplitTextEntryScreens();
     }
 
     // The screens the commander drives: charts, status, and the menus.
@@ -183,5 +185,25 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<AudioController>(),
             sp.GetRequiredService<ConfigFile<EliteConfig>>(),
             sp.GetRequiredService<IView<SettingsListModel>>()));
+    }
+
+    // The name-typing screens: load and save commander.
+    private static void AddSplitTextEntryScreens(this IServiceCollection services)
+    {
+        services.AddSingleton<IView<LoadCommanderModel>>(sp => new LoadCommanderView(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new LoadCommanderController(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<SaveFile>(),
+            sp.GetRequiredService<IView<LoadCommanderModel>>()));
+
+        services.AddSingleton<IView<SaveCommanderModel>>(sp => new SaveCommanderView(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new SaveCommanderController(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<SaveFile>(),
+            sp.GetRequiredService<IView<SaveCommanderModel>>()));
     }
 }

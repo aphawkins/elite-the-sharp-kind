@@ -204,8 +204,8 @@ public static class EliteServiceCollectionExtensions
         views.Add(Screen.Inventory, sp.GetRequiredService<InventoryController>());
         views.Add(Screen.EquipShip, sp.GetRequiredService<EquipmentController>());
         views.Add(Screen.Options, sp.GetRequiredService<OptionsController>());
-        views.Add(Screen.LoadCommander, sp.GetRequiredService<LoadCommanderView>());
-        views.Add(Screen.SaveCommander, sp.GetRequiredService<SaveCommanderView>());
+        views.Add(Screen.LoadCommander, sp.GetRequiredService<LoadCommanderController>());
+        views.Add(Screen.SaveCommander, sp.GetRequiredService<SaveCommanderController>());
         views.Add(Screen.Quit, sp.GetRequiredService<QuitController>());
         views.Add(Screen.Settings, sp.GetRequiredService<SettingsController>());
         views.Add(Screen.EngineSettings, sp.GetRequiredService<EngineSettingsController>());
@@ -310,16 +310,6 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<PlanetController>(),
             sp.GetRequiredService<RNG>()));
-        services.AddSingleton(sp => new LoadCommanderView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<SaveFile>()));
-        services.AddSingleton(sp => new SaveCommanderView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<SaveFile>()));
     }
 
     // TODO: improve this (moved from EliteMain, see backlog)

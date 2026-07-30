@@ -3,87 +3,40 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Save;
-using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class LoadCommanderView : IScreenController
+/// <summary>
+/// The 16-bit load-commander screen: the 512-space layout, and nothing else.
+/// </summary>
+internal sealed class LoadCommanderView : IView<LoadCommanderModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly GameState _gameState;
-    private readonly IKeyboard _keyboard;
-    private readonly SaveFile _save;
     private readonly uint _colorWhite;
     private readonly uint _colorGold;
 
-    private bool _isLoaded = true;
-    private string _name = string.Empty;
-
-    internal LoadCommanderView(GameState gameState, IEliteDraw draw, IKeyboard keyboard, SaveFile save)
+    internal LoadCommanderView(IEliteDraw draw)
     {
-        _gameState = gameState;
         _draw = draw;
-        _keyboard = keyboard;
-        _save = save;
 
         _colorGold = draw.Palette["Gold"];
         _colorWhite = draw.Palette["White"];
     }
 
-    public void Draw()
+    public void Draw(LoadCommanderModel model)
     {
+        ArgumentNullException.ThrowIfNull(model);
+
         _draw.DrawViewHeader("LOAD COMMANDER");
 
         _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
         _draw.Graphics.DrawRectangleCentre(100, 312, 50, _colorWhite);
-        _draw.Graphics.DrawTextCentre(112, _name, nameof(FontType.Large), _colorWhite);
+        _draw.Graphics.DrawTextCentre(112, model.Name, nameof(FontType.Large), _colorWhite);
 
-        if (!_isLoaded)
+        if (model.ErrorMessage.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(175, "Error Loading Commander!", nameof(FontType.Large), _colorGold);
+            _draw.Graphics.DrawTextCentre(175, model.ErrorMessage, nameof(FontType.Large), _colorGold);
             _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
         }
-    }
-
-    public void HandleInput()
-    {
-        if (_keyboard.IsPressed(ConsoleKey.Backspace) &&
-            !string.IsNullOrEmpty(_name))
-        {
-            _name = _name[..^1];
-        }
-
-        (ConsoleKey key, ConsoleModifiers _) = _keyboard.LastPressed();
-        if (key is >= ConsoleKey.A and <= ConsoleKey.Z)
-        {
-            _name += (char)key;
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.Enter))
-        {
-            _isLoaded = _save.LoadCommander(_name);
-            if (_isLoaded)
-            {
-                _save.GetLastSave();
-                _gameState.SetView(Screen.CommanderStatus);
-            }
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.Spacebar))
-        {
-            _gameState.SetView(Screen.CommanderStatus);
-        }
-    }
-
-    public void Reset()
-    {
-        _keyboard.ClearPressed();
-        _name = _gameState.Cmdr.Name;
-        _isLoaded = true;
-    }
-
-    public void Update()
-    {
     }
 }

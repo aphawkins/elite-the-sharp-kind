@@ -7,6 +7,31 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Controller/view split, the text-entry group, 2026-07-30)
+
+- `LoadCommander` and `SaveCommander` each become a controller, a model
+  record and a drawing-only view. Sixteen screens are now split, with
+  three items left on the backlog's list.
+- Kept as two independent view classes rather than one shared view like
+  `SettingsListView`: `SettingsListView`'s sharing came from code that
+  was already one class before conversion, but Load and Save were
+  always separate, and `SaveCommanderView` draws its name box with
+  `DrawRectangle` at an explicit position where `LoadCommanderView`
+  uses `DrawRectangleCentre` - each view keeps its own original call
+  rather than assuming the two are pixel-identical.
+- The "Press SPACE to continue." footer is hardcoded in both views
+  rather than carried in the model, matching the existing precedent in
+  `ThargoidMissionView`/`ConstrictorMissionView` for this exact
+  recurring phrase. The screen-specific headline text ("Error Loading
+  Commander!", "Commander Saved.", "Error Saving Commander!") is
+  content and does go through the model.
+- New controller tests type through the same `IKeyboard` fake the real
+  input goes through, which caught that typed input can only ever be
+  upper-case (`HandleInput` only recognises `ConsoleKey.A`-`Z`, and
+  there is no lower-case equivalent) - the first draft of the tests
+  used mixed-case names and silently failed to type the lower-case
+  letters.
+
 ### Changed (Controller/view split, the selection-cursor group, 2026-07-30)
 
 - `Options`, `Market`, `Equipment`, `Settings` and `EngineSettings` each
