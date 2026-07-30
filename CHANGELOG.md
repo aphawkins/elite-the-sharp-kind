@@ -7,6 +7,55 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (8-bit views for every absolute-layout screen, 2026-07-30)
+
+- `InventoryView8Bit`, `MarketView8Bit`, `EquipmentView8Bit`,
+  `PlanetDataView8Bit`, `ConstrictorMissionView8Bit`,
+  `ThargoidMissionView8Bit`, `LoadCommanderView8Bit` and
+  `SaveCommanderView8Bit` (`Views/EightBit/`), each wired through the
+  same `IsEightBit(sp) ? ... : ...` DI pattern `CommanderStatusView8Bit`
+  established. These are first-draft layouts (build, render, no
+  obvious overflow, checked once per screen) rather than
+  worst-case-verified ones - the maintainer is taking the spacing
+  judgement over from here.
+- `PilotView`'s one absolute coordinate needed no second class: its
+  hardcoded `y=358` was always just the 16-bit `ScannerTop - 25`
+  (383-25=358), so it now reads `_draw.ScannerTop - 25` and serves both
+  tiers unchanged.
+- `MarketView8Bit` drops the 16-bit view's separate "Unit" column
+  (folded into the quantity text, e.g. `"20t"`) since five columns
+  does not fit 320px/8px-per-character.
+- `AddSplitConsoleScreens` split again, into `AddSplitStatusScreens`
+  (`CommanderStatus`/`Inventory`/`PlanetData`), after the second and
+  third 8-bit view tripped CA1506's per-method limit a second time.
+
+### Added (First 8-bit view authored: CommanderStatus, 2026-07-30)
+
+- `CommanderStatusView8Bit` (`Views/EightBit/`), a fresh 320x256 layout
+  for the commander status screen rather than a scaled-down version of
+  the 16-bit one, since the two tiers' fonts aren't proportional (8-bit
+  is a fixed 8x8 grid; 16-bit is proportional at up to 32px). The
+  `IView<CommanderStatusModel>` DI registration now branches on
+  `IAssetLocator.Tier` via a new `IsEightBit(IServiceProvider)` helper,
+  which exists specifically to keep `IAssetLocator`/`SystemTier` off
+  every such registration's own CA1506 class-coupling count - inlining
+  the check tripped `AddSplitConsoleScreens`'s limit on the first
+  screen.
+- The 8-bit layout uses one equipment column where 16-bit uses two:
+  at 320px/8px-per-character the widest realistic string ("Front
+  Military Laser", from a maxed-out laser loadout) already needs more
+  than half the screen's width, and the column wrap point is
+  positional rather than content-aware, so two columns wide enough for
+  that string cannot fit side-by-side. Row pitch is tightened to 8px
+  (no gap, matching the font exactly) so all four laser mounts plus
+  every other upgrade - checked as the worst case, not just whatever a
+  starting commander happens to show - fits above the scanner with
+  only the single most extreme case landing a few pixels tight.
+- Corrected a stale backlog claim in passing: "the 8-bit tier is
+  already the maintainer's configured default" was checked against the
+  actual `elite.sharp` config and found false (it's `SixteenBit`);
+  verifying an 8-bit layout requires temporarily editing that file.
+
 ### Changed (Tier presentation follow-on decisions, 2026-07-30)
 
 Documentation only - no code changes. Resolves the two items left after

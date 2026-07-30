@@ -319,38 +319,94 @@ whole screen.
 `ShortRangeChartView` is not counted in any bucket - it stays a single
 combined controller/view per its own decision above, revisited only
 when the 8-bit short-range chart is actually authored.
-- [ ] [EliteSharpLib] Resolve views per tier through DI, for the
-      screens the survey says need one. Each gets its own view per
-      tier, in `Views/<Tier>/` with a tier-suffixed
-      class name (`Views/EightBit/CommanderStatusView8Bit.cs`);
-      `AddSplitScreens` registers the `IView<TModel>` each screen's
-      controller draws through (see the item above), so for every
-      already-converted screen this is a one-line change each. Do
-      `CommanderStatusView` first as the pattern. Note the 16-bit
-      output cannot be checked pixel-identical by screenshot (see the
-      finding recorded above); compare the layout constants instead.
-- [ ] [EliteSharpLib] Author the 8-bit view layouts at 320x256, for the
-      absolute-layout screens the survey identifies. The ~128 literal
-      coordinates across `Views/` (plus ~36 elsewhere in the
-      lib) are 512-space values — e.g. `CommanderStatusView` draws labels
-      at x=16 and values at x=200 on 16px rows — and overflow a 320-wide
-      screen, which is why the status screen clips today. The 16-bit
-      values move unchanged into the 16-bit views; the 8-bit ones are
-      authored fresh against an 8x8 font and a 56px-tall scanner rather
-      than derived, since the two tiers' HUD art is not proportional.
-      This is authoring work ending in a visual judgement per screen,
-      not verification: there is no automated oracle (screenshot
-      diffing cannot decide it — see the finding above) and no
-      reference but the original 8-bit Elite and the maintainer's
-      intent. Two things make it cheaper than it sounds: the
-      controller/view split means a review only has to judge layout,
-      never behaviour, which is shared and unit-tested; and
-      `run-elite` can drive every screen in one scripted pass, so
-      regenerating a full set of captures per tier after each change
-      is cheap even though judging them is not. Note the 8-bit tier is
-      already the maintainer's configured default and already renders
-      these 512-space layouts at `Scale = 1`, so this fixes visible
-      breakage rather than risking working screens.
+**Started (2026-07-30): `CommanderStatus` done, as the pattern for both
+items below.** `CommanderStatusView8Bit` lives in
+`Views/EightBit/CommanderStatusView8Bit.cs` (namespace
+`EliteSharpLib.Views.EightBit`); the 16-bit `CommanderStatusView` stays
+where it was, unrenamed — only the new tier gets a subfolder and a
+suffix, which is the smaller diff and matches "for every
+already-converted screen this is a one-line change" in the DI item
+below. The `IView<CommanderStatusModel>` registration in
+`AddSplitConsoleScreens` now branches on tier:
+
+```csharp
+services.AddSingleton<IView<CommanderStatusModel>>(sp => IsEightBit(sp)
+    ? new CommanderStatusView8Bit(sp.GetRequiredService<IEliteDraw>())
+    : new CommanderStatusView(sp.GetRequiredService<IEliteDraw>()));
+```
+
+`IsEightBit(IServiceProvider)` is a private static helper next to
+`AddSplitScreens`, checking `IAssetLocator.Tier`. It exists solely to
+keep `IAssetLocator`/`SystemTier` off every registration's own CA1506
+class-coupling count — inlining the check tripped
+`AddSplitConsoleScreens`'s limit (41) on the very first screen.
+
+Also corrected in passing: this item previously said "the 8-bit tier is
+already the maintainer's configured default" - checked the maintainer's
+actual `elite.sharp` on 2026-07-30 and it is `SixteenBit`. Verifying the
+8-bit layout requires temporarily editing that file's `tier` value
+(back it up first; restore it after screenshotting).
+
+Two findings from `CommanderStatus`, likely general to the rest:
+
+- The 8-bit font is fixed 8x8 and not proportional (`AssetManifest.EightBit.json`
+  maps both `Small` and `Large` to the same `bbc-micro.bmp` cells) — at
+  320px wide that is 40 characters, full stop. The widest realistic
+  content (`"Front Military Laser"`, 21 chars, from a maxed-out laser
+  loadout) already needs more than half a row, which is why the 8-bit
+  view uses one equipment column where the 16-bit one uses two: two
+  columns wide enough for that string (168px each) cannot fit
+  side-by-side in 320px, and the wrap point is positional, not
+  content-aware, so either column could receive the longest string.
+- Labels are shorter than the 16-bit view's own ("System:" vs "Present
+  System:"), and this needed no model or 16-bit-view change: the label
+  text is chrome the *view* supplies, not model content, so each tier's
+  view is free to pick its own wording.
+- Vertical space is tight enough that it was verified against the
+  worst case, not just what actually renders for a starting commander:
+  a fully-equipped ship (all four laser mounts plus every other
+  upgrade) is 12 equipment lines, and the first spacing draft only fit
+  8 of them before the last line would sit under the scanner art.
+  Tightening the row pitch from 9px to 8px (matching the font exactly,
+  no inter-line gap) fits 11 comfortably; the 12th is still a few
+  pixels tight. Screenshotting whatever commander happens to be running
+  is not enough - the layout has to be checked against the shape of
+  its own content, not just one instance of it.
+**Both items done (2026-07-30): all nine absolute-layout screens have an
+8-bit view, wired through per-tier DI.** `InventoryView8Bit`,
+`MarketView8Bit`, `EquipmentView8Bit`, `PlanetDataView8Bit`,
+`ConstrictorMissionView8Bit`, `ThargoidMissionView8Bit`,
+`LoadCommanderView8Bit` and `SaveCommanderView8Bit` all followed
+`CommanderStatusView8Bit`'s pattern — a fresh 320x256 layout in
+`Views/EightBit/`, one `IsEightBit(sp) ? ... : ...` line per DI
+registration. `PilotView`'s one absolute line needed no second class at
+all: its hardcoded `y=358` was always just `16-bit ScannerTop - 25`
+(383-25=358) and never actually needed to be a literal, so it now
+reads `_draw.ScannerTop - 25` and serves both tiers unchanged — the
+cleanest possible outcome the survey flagged as a possibility.
+
+These are first-draft layouts, not polished ones — the maintainer asked
+to take the spacing/authoring judgement over personally rather than
+have it iterated on further here, so verification for this pass was
+"does it build, does it render, does it avoid the obvious overflow"
+(each screen screenshotted once under the 8-bit tier), not the
+worst-case-content check `CommanderStatus` got. `AddSplitConsoleScreens`
+split again (into `AddSplitStatusScreens`, holding
+`CommanderStatus`/`Inventory`/`PlanetData`) after the second and third
+8-bit view tripped CA1506 a second time — worth expecting every few
+screens as more tiers/views are added, not just once.
+
+Two decisions worth knowing before touching the remaining screens:
+
+- `MarketView8Bit` drops the 16-bit view's separate "Unit" column,
+  folding it into the quantity text instead (`"20t"` rather than `"20"`
+  + a separate `"t"` column): five columns does not fit 320px/8px-per-
+  character, matching the same column-width math `CommanderStatus`
+  worked out for its equipment list.
+- `ThargoidMissionView8Bit` keeps the Blake portrait image (stage 5) at
+  a placeholder position rather than dropping it — an 8-bit `blake.bmp`
+  already exists in the asset set, so leaving it out would have been a
+  content regression instead of a layout question.
 
 ### Release engineering (from the retired release plan)
 

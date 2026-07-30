@@ -9,8 +9,10 @@ using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
+using EliteSharpLib.Views.EightBit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Useful.Assets;
 using Useful.Audio;
 using Useful.Config;
 using Useful.Controls;
@@ -28,11 +30,18 @@ internal static class EliteSplitScreensServiceCollectionExtensions
     internal static void AddSplitScreens(this IServiceCollection services)
     {
         services.AddSplitConsoleScreens();
+        services.AddSplitStatusScreens();
         services.AddSplitSequenceScreens();
         services.AddSplitMenuScreens();
         services.AddSplitTextEntryScreens();
         services.AddSplitFlightScreens();
     }
+
+    // Kept separate so a per-tier IView registration only has to reference
+    // this bool, not IAssetLocator/SystemTier themselves - each one otherwise
+    // adds two types to its method's CA1506 class-coupling count for a check
+    // that's the same everywhere.
+    private static bool IsEightBit(IServiceProvider sp) => sp.GetRequiredService<IAssetLocator>().Tier == SystemTier.EightBit;
 
     // The screens the commander drives: charts, status, and the menus.
     private static void AddSplitConsoleScreens(this IServiceCollection services)
@@ -65,9 +74,16 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<IShipFactory>(),
             sp.GetRequiredService<IView<Intro1Model>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro1Controller>()));
+    }
 
-        services.AddSingleton<IView<CommanderStatusModel>>(sp => new CommanderStatusView(
-            sp.GetRequiredService<IEliteDraw>()));
+    // The screens that just report status: commander status, inventory and
+    // planet data. Split from AddSplitConsoleScreens once their 8-bit views
+    // pushed it over CA1506's per-method limit.
+    private static void AddSplitStatusScreens(this IServiceCollection services)
+    {
+        services.AddSingleton<IView<CommanderStatusModel>>(sp => IsEightBit(sp)
+            ? new CommanderStatusView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new CommanderStatusView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new CommanderStatusController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<PlayerShip>(),
@@ -76,15 +92,17 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IView<CommanderStatusModel>>()));
 
-        services.AddSingleton<IView<InventoryModel>>(sp => new InventoryView(
-            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton<IView<InventoryModel>>(sp => IsEightBit(sp)
+            ? new InventoryView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new InventoryView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new InventoryController(
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<IView<InventoryModel>>()));
 
-        services.AddSingleton<IView<PlanetDataModel>>(sp => new PlanetDataView(
-            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton<IView<PlanetDataModel>>(sp => IsEightBit(sp)
+            ? new PlanetDataView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new PlanetDataView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new PlanetDataController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<PlanetController>(),
@@ -96,16 +114,18 @@ internal static class EliteSplitScreensServiceCollectionExtensions
     // animated sequences that run to a tick count.
     private static void AddSplitSequenceScreens(this IServiceCollection services)
     {
-        services.AddSingleton<IView<ThargoidMissionModel>>(sp => new ThargoidMissionView(
-            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton<IView<ThargoidMissionModel>>(sp => IsEightBit(sp)
+            ? new ThargoidMissionView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new ThargoidMissionView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new ThargoidMissionController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<IView<ThargoidMissionModel>>()));
 
-        services.AddSingleton<IView<ConstrictorMissionModel>>(sp => new ConstrictorMissionView(
-            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton<IView<ConstrictorMissionModel>>(sp => IsEightBit(sp)
+            ? new ConstrictorMissionView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new ConstrictorMissionView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new ConstrictorMissionController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -160,8 +180,9 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<IView<OptionsModel>>()));
 
-        services.AddSingleton<IView<MarketModel>>(sp => new MarketView(
-            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton<IView<MarketModel>>(sp => IsEightBit(sp)
+            ? new MarketView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new MarketView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new MarketController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -169,8 +190,9 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<PlanetController>(),
             sp.GetRequiredService<IView<MarketModel>>()));
 
-        services.AddSingleton<IView<EquipmentModel>>(sp => new EquipmentView(
-            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton<IView<EquipmentModel>>(sp => IsEightBit(sp)
+            ? new EquipmentView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new EquipmentView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new EquipmentController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
@@ -199,16 +221,18 @@ internal static class EliteSplitScreensServiceCollectionExtensions
     // The name-typing screens: load and save commander.
     private static void AddSplitTextEntryScreens(this IServiceCollection services)
     {
-        services.AddSingleton<IView<LoadCommanderModel>>(sp => new LoadCommanderView(
-            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton<IView<LoadCommanderModel>>(sp => IsEightBit(sp)
+            ? new LoadCommanderView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new LoadCommanderView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new LoadCommanderController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<SaveFile>(),
             sp.GetRequiredService<IView<LoadCommanderModel>>()));
 
-        services.AddSingleton<IView<SaveCommanderModel>>(sp => new SaveCommanderView(
-            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton<IView<SaveCommanderModel>>(sp => IsEightBit(sp)
+            ? new SaveCommanderView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new SaveCommanderView(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new SaveCommanderController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
