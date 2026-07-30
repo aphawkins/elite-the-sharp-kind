@@ -32,39 +32,39 @@ vn -32 0 0
 vn 0 32 0
 vn 0 0 -176
 
-usemtl LighterRed
+usemtl FireBrick
 f 6 10 16
-usemtl LighterRed
+usemtl FireBrick
 f 16 10 6
-usemtl LighterRed
+usemtl FireBrick
 f 9 13 14
-usemtl LighterRed
+usemtl FireBrick
 f 14 13 9
-usemtl LighterRed
+usemtl FireBrick
 f 8 12 15
-usemtl LighterRed
+usemtl FireBrick
 f 15 12 8
-usemtl LighterRed
+usemtl FireBrick
 f 7 11 17
-usemtl LighterRed
+usemtl FireBrick
 f 17 11 7
-usemtl LightRed
+usemtl DarkRed
 f 1 4 5
-usemtl LighterRed
+usemtl FireBrick
 f 1 5 2
-usemtl LightRed
+usemtl DarkRed
 f 1 2 3
-usemtl LighterRed
+usemtl FireBrick
 f 1 3 4
-usemtl DarkerGrey
+usemtl DimGray
 f 7 6 3 2
-usemtl LightGrey
+usemtl Gray
 f 6 9 4 3
-usemtl DarkerGrey
+usemtl DimGray
 f 9 8 5 4
-usemtl LightGrey
+usemtl Gray
 f 8 7 2 5
-usemtl DarkGrey
+usemtl SlateGray
 f 6 7 8 9
 
 # pn 1 2

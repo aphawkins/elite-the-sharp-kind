@@ -14,7 +14,7 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGreen;
-    private readonly uint _colorLighterRed;
+    private readonly uint _colorFireBrick;
     private readonly uint _colorWhite;
 
     internal GalacticChartView16Bit(IEliteDraw draw)
@@ -23,7 +23,7 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
         _draw = draw;
 
         _colorGreen = draw.Palette["Green"];
-        _colorLighterRed = draw.Palette["LighterRed"];
+        _colorFireBrick = draw.Palette["FireBrick"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -59,8 +59,8 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
         // Cross
         centre = ToScreen(model.Cross);
 
-        _draw.Graphics.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), _colorLighterRed);
-        _draw.Graphics.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), _colorLighterRed);
+        _draw.Graphics.DrawLine(new(centre.X - 8, centre.Y), new(centre.X + 8, centre.Y), _colorFireBrick);
+        _draw.Graphics.DrawLine(new(centre.X, centre.Y - 8), new(centre.X, centre.Y + 8), _colorFireBrick);
 
         // Text
         _draw.Graphics

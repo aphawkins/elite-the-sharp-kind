@@ -14,68 +14,68 @@ internal sealed class StripedPlanet16Bit : StripedPlanetBase
     {
         ArgumentNullException.ThrowIfNull(draw);
 
-        uint colorPurple = draw.Palette["Purple"];
+        uint colorDarkSlateBlue = draw.Palette["DarkSlateBlue"];
         uint colorDarkBlue = draw.Palette["DarkBlue"];
-        uint colorBlue = draw.Palette["Blue"];
-        uint colorLightBlue = draw.Palette["LightBlue"];
-        uint colorLighterGrey = draw.Palette["LighterGrey"];
-        uint colorOrange = draw.Palette["Orange"];
-        uint colorLightOrange = draw.Palette["LightOrange"];
-        uint colorDarkOrange = draw.Palette["DarkOrange"];
+        uint colorNavy = draw.Palette["Navy"];
+        uint colorTeal = draw.Palette["Teal"];
+        uint colorGainsboro = draw.Palette["Gainsboro"];
+        uint colorTomato = draw.Palette["Tomato"];
+        uint colorSandyBrown = draw.Palette["SandyBrown"];
+        uint colorChocolate = draw.Palette["Chocolate"];
         StripeColors =
         [
-            colorPurple,
-            colorPurple,
+            colorDarkSlateBlue,
+            colorDarkSlateBlue,
             colorDarkBlue,
             colorDarkBlue,
             colorDarkBlue,
             colorDarkBlue,
-            colorBlue,
-            colorBlue,
-            colorBlue,
-            colorBlue,
-            colorLightBlue,
-            colorLightBlue,
-            colorLighterGrey,
-            colorOrange,
-            colorOrange,
-            colorOrange,
-            colorOrange,
-            colorLightOrange,
-            colorOrange,
-            colorOrange,
-            colorDarkOrange,
-            colorDarkOrange,
-            colorDarkOrange,
-            colorDarkOrange,
-            colorOrange,
-            colorLightOrange,
-            colorDarkOrange,
-            colorDarkOrange,
-            colorDarkOrange,
-            colorDarkOrange,
-            colorDarkOrange,
-            colorDarkOrange,
-            colorOrange,
-            colorOrange,
-            colorLightOrange,
-            colorOrange,
-            colorOrange,
-            colorOrange,
-            colorOrange,
-            colorLighterGrey,
-            colorLightBlue,
-            colorLightBlue,
-            colorBlue,
-            colorBlue,
-            colorBlue,
-            colorBlue,
+            colorNavy,
+            colorNavy,
+            colorNavy,
+            colorNavy,
+            colorTeal,
+            colorTeal,
+            colorGainsboro,
+            colorTomato,
+            colorTomato,
+            colorTomato,
+            colorTomato,
+            colorSandyBrown,
+            colorTomato,
+            colorTomato,
+            colorChocolate,
+            colorChocolate,
+            colorChocolate,
+            colorChocolate,
+            colorTomato,
+            colorSandyBrown,
+            colorChocolate,
+            colorChocolate,
+            colorChocolate,
+            colorChocolate,
+            colorChocolate,
+            colorChocolate,
+            colorTomato,
+            colorTomato,
+            colorSandyBrown,
+            colorTomato,
+            colorTomato,
+            colorTomato,
+            colorTomato,
+            colorGainsboro,
+            colorTeal,
+            colorTeal,
+            colorNavy,
+            colorNavy,
+            colorNavy,
+            colorNavy,
             colorDarkBlue,
             colorDarkBlue,
             colorDarkBlue,
             colorDarkBlue,
-            colorPurple,
-            colorPurple,
+            colorDarkSlateBlue,
+            colorDarkSlateBlue,
         ];
 
         GenerateLandscape();

@@ -16,9 +16,9 @@ internal sealed class ShortRangeChartView16Bit : ShortRangeChartViewBase
     private const int DistanceY = 40;
     private const int CrossSize = 16;
 
-    private readonly uint _colorGold;
+    private readonly uint _colorGoldenrod;
     private readonly uint _colorGreen;
-    private readonly uint _colorLighterRed;
+    private readonly uint _colorFireBrick;
     private readonly uint _colorWhite;
 
     internal ShortRangeChartView16Bit(
@@ -30,9 +30,9 @@ internal sealed class ShortRangeChartView16Bit : ShortRangeChartViewBase
         PlayerShip ship)
         : base(gameState, draw, baseView, keyboard, planet, ship)
     {
-        _colorGold = draw.Palette["Gold"];
+        _colorGoldenrod = draw.Palette["Goldenrod"];
         _colorGreen = draw.Palette["Green"];
-        _colorLighterRed = draw.Palette["LighterRed"];
+        _colorFireBrick = draw.Palette["FireBrick"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -60,12 +60,12 @@ internal sealed class ShortRangeChartView16Bit : ShortRangeChartViewBase
 
         foreach ((Vector2 position, float size) in PlanetSizes)
         {
-            BaseView.Graphics.DrawCircleFilled(position, size, _colorGold);
+            BaseView.Graphics.DrawCircleFilled(position, size, _colorGoldenrod);
         }
 
         // Cross
-        BaseView.Graphics.DrawLine(new(Cross.X - CrossSize, Cross.Y), new(Cross.X + CrossSize, Cross.Y), _colorLighterRed);
-        BaseView.Graphics.DrawLine(new(Cross.X, Cross.Y - CrossSize), new(Cross.X, Cross.Y + CrossSize), _colorLighterRed);
+        BaseView.Graphics.DrawLine(new(Cross.X - CrossSize, Cross.Y), new(Cross.X + CrossSize, Cross.Y), _colorFireBrick);
+        BaseView.Graphics.DrawLine(new(Cross.X, Cross.Y - CrossSize), new(Cross.X, Cross.Y + CrossSize), _colorFireBrick);
 
         DrawStatusText();
     }

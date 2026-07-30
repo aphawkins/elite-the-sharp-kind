@@ -14,7 +14,7 @@ internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
     private readonly uint _colorGreen;
-    private readonly uint _colorLightRed;
+    private readonly uint _colorDarkRed;
 
     internal MarketView16Bit(IEliteDraw draw)
         : base(draw)
@@ -23,7 +23,7 @@ internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
 
         _colorWhite = draw.Palette["White"];
         _colorGreen = draw.Palette["Green"];
-        _colorLightRed = draw.Palette["LightRed"];
+        _colorDarkRed = draw.Palette["DarkRed"];
     }
 
     public void Draw(MarketModel model)
@@ -45,7 +45,7 @@ internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
 
             if (row.IsHighlighted)
             {
-                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.Offset, y), 508, 15, _colorLightRed);
+                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.Offset, y), 508, 15, _colorDarkRed);
             }
 
             _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.Offset, y), row.Name, nameof(FontType.Small), _colorWhite);

@@ -37,31 +37,31 @@ vn 80 46 50
 vn -80 46 50
 vn 0 0 -90
 
-usemtl Grey
+usemtl LightSlateGray
 f 9 10 8 1 5
-usemtl DarkGrey
+usemtl SlateGray
 f 4 5 1 2 3
-usemtl LightGrey
+usemtl Gray
 f 2 1 8 7 6
-usemtl DarkerGrey
+usemtl DimGray
 f 9 5 4
-usemtl DarkerGrey
+usemtl DimGray
 f 7 8 10
-usemtl Blue
+usemtl Navy
 f 12 11 13
-usemtl LightBlue
+usemtl Teal
 f 10 9 11 12
-usemtl Purple
+usemtl DarkSlateBlue
 f 7 12 13 6
-usemtl Purple
+usemtl DarkSlateBlue
 f 3 13 11 4
 usemtl DarkBlue
 f 4 11 9
 usemtl DarkBlue
 f 10 12 7
-usemtl LightRed
+usemtl DarkRed
 f 3 2 6 13
-usemtl LighterRed
+usemtl FireBrick
 f 15 16 14 17
 usemtl White
 f 19 18

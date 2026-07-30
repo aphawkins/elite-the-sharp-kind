@@ -7,6 +7,21 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (The 16-bit palette becomes web colours, 2026-07-30)
+
+- `Palette/SixteenBit/palette.json` keeps its 29 entries but drops the ramp
+  names: each is now the nearest CSS colour name at its exact web value —
+  `Gold` to `Goldenrod`, `Red` to `Maroon`, `Orange` to `Tomato`, `Lilac`
+  to `Plum`, `RedOrange` to `Crimson`, and so on. The matching rule and the
+  tie-breaks are in [decisions.md](docs/decisions.md).
+- The 16-bit `palette.mtl` and the ~380 `usemtl` lines across the 31
+  `SixteenBit/*.obj` models moved with it, as did every `Palette["..."]`
+  lookup on the 16-bit path (18 views, the scanner, laser, sun and striped
+  planet).
+- `FractalPlanet` is shared between the tiers and looked up three names
+  16-bit no longer has, so it now picks its sea and land shades by role and
+  tier rather than by a name it assumed both palettes defined.
+
 ### Changed (The 8-bit palette becomes sixteen web colours, 2026-07-30)
 
 - `Palette/EightBit/palette.json` is now sixteen CSS colour names at their

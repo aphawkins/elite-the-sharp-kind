@@ -8,22 +8,22 @@ namespace EliteSharpLib.Lasers;
 
 internal sealed class LaserDraw16Bit : LaserDrawBase
 {
-    private readonly uint _colorBrightPurple;
-    private readonly uint _colorPaleYellow;
-    private readonly uint _colorRedOrange;
+    private readonly uint _colorMediumOrchid;
+    private readonly uint _colorKhaki;
+    private readonly uint _colorCrimson;
 
     internal LaserDraw16Bit(GameState gameState, IEliteDraw draw, RNG rng)
         : base(gameState, draw, rng)
     {
-        _colorPaleYellow = draw.Palette["PaleYellow"];
-        _colorRedOrange = draw.Palette["RedOrange"];
-        _colorBrightPurple = draw.Palette["BrightPurple"];
+        _colorKhaki = draw.Palette["Khaki"];
+        _colorCrimson = draw.Palette["Crimson"];
+        _colorMediumOrchid = draw.Palette["MediumOrchid"];
     }
 
     protected override uint BeamColor(LaserType laserType) => laserType switch
     {
-        LaserType.Beam => _colorPaleYellow,
-        LaserType.Mining => _colorBrightPurple,
-        _ => _colorRedOrange,
+        LaserType.Beam => _colorKhaki,
+        LaserType.Mining => _colorMediumOrchid,
+        _ => _colorCrimson,
     };
 }

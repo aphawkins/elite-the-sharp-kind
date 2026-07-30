@@ -19,7 +19,7 @@ internal class BaseView16Bit : IBaseView
     // the word-wrap estimates against rather than a measured one.
     private const int CharacterWidth = 8;
 
-    private readonly uint _colorGold;
+    private readonly uint _colorGoldenrod;
     private readonly uint _colorWhite;
     private readonly uint _colorYellow;
     private readonly float _rowHeight;
@@ -31,7 +31,7 @@ internal class BaseView16Bit : IBaseView
         Graphics = draw.Graphics;
         Layout = draw.Layout;
         _rowHeight = 8 * draw.Layout.Scale;
-        _colorGold = draw.Palette["Gold"];
+        _colorGoldenrod = draw.Palette["Goldenrod"];
         _colorWhite = draw.Palette["White"];
         _colorYellow = draw.Palette["Yellow"];
     }
@@ -61,7 +61,7 @@ internal class BaseView16Bit : IBaseView
 
     public void DrawViewHeader(string title)
     {
-        Graphics.DrawTextCentre(Layout.Top + 6, title, nameof(FontType.Large), _colorGold);
+        Graphics.DrawTextCentre(Layout.Top + 6, title, nameof(FontType.Large), _colorGoldenrod);
         Graphics.DrawLine(new(Layout.Left, 36), new(Layout.Right, 36), _colorWhite);
 
         // Vertical lines

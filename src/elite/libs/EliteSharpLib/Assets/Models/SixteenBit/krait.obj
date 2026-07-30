@@ -31,15 +31,15 @@ vn -38 0 -77
 
 usemtl DarkBlue
 f 1 4 2
-usemtl Blue
+usemtl Navy
 f 3 4 1
 usemtl DarkBlue
 f 1 5 3
-usemtl Blue
+usemtl Navy
 f 2 5 1
-usemtl DarkerGrey
+usemtl DimGray
 f 4 3 2
-usemtl LightGrey
+usemtl Gray
 f 5 2 3
 usemtl White
 f 4 6
@@ -49,9 +49,9 @@ usemtl White
 f 5 7
 usemtl White
 f 7 5
-usemtl LighterRed
+usemtl FireBrick
 f 13 12 14
-usemtl LighterRed
+usemtl FireBrick
 f 17 15 16
 usemtl White
 f 8 11 9

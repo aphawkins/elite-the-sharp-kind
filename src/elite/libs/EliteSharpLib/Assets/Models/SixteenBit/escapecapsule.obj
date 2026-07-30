@@ -14,13 +14,13 @@ vn 39 103 30
 vn 39 -103 30
 vn -112 0 0
 
-usemtl LighterRed
+usemtl FireBrick
 f 4 2 3
-usemtl LightRed
+usemtl DarkRed
 f 1 4 3
-usemtl Red
+usemtl Maroon
 f 1 2 4
-usemtl RedOrange
+usemtl Crimson
 f 1 3 2
 
 # pn 1 2

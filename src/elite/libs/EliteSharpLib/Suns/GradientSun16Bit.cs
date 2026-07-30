@@ -10,10 +10,10 @@ namespace EliteSharpLib.Suns;
 
 internal sealed class GradientSun16Bit : GradientSunBase
 {
-    private readonly uint _colorDarkOrange;
-    private readonly uint _colorLightOrange;
-    private readonly uint _colorLightYellow;
-    private readonly uint _colorOrange;
+    private readonly uint _colorChocolate;
+    private readonly uint _colorSandyBrown;
+    private readonly uint _colorPaleGoldenrod;
+    private readonly uint _colorTomato;
     private readonly uint _colorWhite;
 
     internal GradientSun16Bit(IEliteDraw draw, RNG rng)
@@ -22,20 +22,20 @@ internal sealed class GradientSun16Bit : GradientSunBase
         ArgumentNullException.ThrowIfNull(draw);
 
         _colorWhite = draw.Palette["White"];
-        _colorLightYellow = draw.Palette["LightYellow"];
-        _colorLightOrange = draw.Palette["LightOrange"];
-        _colorOrange = draw.Palette["Orange"];
-        _colorDarkOrange = draw.Palette["DarkOrange"];
+        _colorPaleGoldenrod = draw.Palette["PaleGoldenrod"];
+        _colorSandyBrown = draw.Palette["SandyBrown"];
+        _colorTomato = draw.Palette["Tomato"];
+        _colorChocolate = draw.Palette["Chocolate"];
     }
 
     private GradientSun16Bit(GradientSun16Bit other)
         : base(other)
     {
         _colorWhite = other._colorWhite;
-        _colorLightYellow = other._colorLightYellow;
-        _colorLightOrange = other._colorLightOrange;
-        _colorOrange = other._colorOrange;
-        _colorDarkOrange = other._colorDarkOrange;
+        _colorPaleGoldenrod = other._colorPaleGoldenrod;
+        _colorSandyBrown = other._colorSandyBrown;
+        _colorTomato = other._colorTomato;
+        _colorChocolate = other._colorChocolate;
     }
 
     public override IObject Clone()
@@ -51,8 +51,8 @@ internal sealed class GradientSun16Bit : GradientSunBase
         => distance < inner
             ? _colorWhite
             : distance < inner2
-                ? _colorLightYellow
+                ? _colorPaleGoldenrod
                 : distance < outer
-                    ? _colorLightOrange
-                    : dither.IsOdd() ? _colorOrange : _colorDarkOrange;
+                    ? _colorSandyBrown
+                    : dither.IsOdd() ? _colorTomato : _colorChocolate;
 }

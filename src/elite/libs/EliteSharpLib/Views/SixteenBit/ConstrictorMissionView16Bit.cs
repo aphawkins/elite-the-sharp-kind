@@ -15,14 +15,14 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IView<ConstrictorMissionModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorGoldenrod;
 
     internal ConstrictorMissionView16Bit(IEliteDraw draw)
         : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorGoldenrod = draw.Palette["Goldenrod"];
     }
 
     public void Draw(ConstrictorMissionModel model)
@@ -40,7 +40,7 @@ internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IView<Constri
 
             case 3:
                 DrawViewHeader("INCOMING MESSAGE");
-                _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
+                _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGoldenrod);
                 DrawTextPretty(new(116 + _draw.Layout.Offset, 132), 400, model.Paragraphs[0]);
                 DrawFooter();
                 break;
@@ -48,5 +48,5 @@ internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IView<Constri
     }
 
     private void DrawFooter()
-        => _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), _colorGold);
+        => _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), _colorGoldenrod);
 }

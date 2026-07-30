@@ -14,14 +14,14 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMissionModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorGoldenrod;
 
     internal ThargoidMissionView16Bit(IEliteDraw draw)
         : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorGoldenrod = draw.Palette["Goldenrod"];
     }
 
     public void Draw(ThargoidMissionModel model)
@@ -46,7 +46,7 @@ internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMi
 
             case 6:
                 DrawViewHeader("INCOMING MESSAGE");
-                _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
+                _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGoldenrod);
                 DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);
                 DrawFooter();
                 break;
@@ -54,5 +54,5 @@ internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMi
     }
 
     private void DrawFooter()
-        => _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), _colorGold);
+        => _draw.Graphics.DrawTextCentre(330, "Press space to continue.", nameof(FontType.Large), _colorGoldenrod);
 }

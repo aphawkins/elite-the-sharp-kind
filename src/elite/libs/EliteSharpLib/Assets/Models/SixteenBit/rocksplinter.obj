@@ -14,13 +14,13 @@ vn 22 32 -8
 vn 0 2 0
 vn 17 23 95
 
-usemtl LightGrey
+usemtl Gray
 f 4 3 2
-usemtl DarkGrey
+usemtl SlateGray
 f 1 3 4
-usemtl DarkerGrey
+usemtl DimGray
 f 4 2 1
-usemtl Grey
+usemtl LightSlateGray
 f 1 2 3
 
 # pn 1 2

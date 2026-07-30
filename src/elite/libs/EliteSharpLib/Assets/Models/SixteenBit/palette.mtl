@@ -6,86 +6,86 @@
 newmtl Black
 Kd 0.000000 0.000000 0.000000
 
-newmtl Blue
-Kd 0.000000 0.000000 0.501961
+newmtl Chocolate
+Kd 0.823529 0.411765 0.117647
 
-newmtl BrightPurple
-Kd 0.721569 0.333333 0.964706
+newmtl Crimson
+Kd 0.862745 0.078431 0.235294
 
 newmtl Cyan
 Kd 0.000000 1.000000 1.000000
 
 newmtl DarkBlue
-Kd 0.062745 0.062745 0.564706
+Kd 0.000000 0.000000 0.545098
 
-newmtl DarkerGrey
-Kd 0.376471 0.376471 0.376471
+newmtl DarkGoldenrod
+Kd 0.721569 0.525490 0.043137
 
-newmtl DarkGrey
-Kd 0.439216 0.439216 0.439216
+newmtl DarkRed
+Kd 0.545098 0.000000 0.000000
 
-newmtl DarkOrange
-Kd 0.878431 0.376471 0.125490
+newmtl DarkSlateBlue
+Kd 0.282353 0.239216 0.545098
 
-newmtl DarkYellow
-Kd 0.815686 0.564706 0.062745
+newmtl DimGray
+Kd 0.411765 0.411765 0.411765
 
-newmtl Gold
-Kd 0.941176 0.690196 0.188235
+newmtl FireBrick
+Kd 0.698039 0.133333 0.133333
+
+newmtl Gainsboro
+Kd 0.862745 0.862745 0.862745
+
+newmtl Goldenrod
+Kd 0.854902 0.647059 0.125490
+
+newmtl Gray
+Kd 0.501961 0.501961 0.501961
 
 newmtl Green
 Kd 0.000000 0.501961 0.000000
 
-newmtl Grey
-Kd 0.447059 0.447059 0.447059
+newmtl Khaki
+Kd 0.941176 0.901961 0.549020
 
-newmtl LightBlue
-Kd 0.062745 0.313725 0.564706
+newmtl LightSlateGray
+Kd 0.466667 0.533333 0.600000
 
-newmtl LighterGreen
-Kd 0.376471 0.878431 0.125490
+newmtl LimeGreen
+Kd 0.196078 0.803922 0.196078
 
-newmtl LighterGrey
-Kd 0.878431 0.878431 0.878431
-
-newmtl LighterRed
-Kd 0.752941 0.000000 0.000000
-
-newmtl LightGreen
-Kd 0.501961 0.752941 0.000000
-
-newmtl LightGrey
-Kd 0.501961 0.501961 0.501961
-
-newmtl LightOrange
-Kd 0.941176 0.690196 0.439216
-
-newmtl LightRed
-Kd 0.564706 0.062745 0.062745
-
-newmtl LightYellow
-Kd 0.941176 0.941176 0.690196
-
-newmtl Lilac
-Kd 0.878431 0.627451 0.878431
-
-newmtl Orange
-Kd 0.941176 0.439216 0.188235
-
-newmtl PaleYellow
-Kd 1.000000 1.000000 0.360784
-
-newmtl Purple
-Kd 0.250980 0.250980 0.501961
-
-newmtl Red
+newmtl Maroon
 Kd 0.501961 0.000000 0.000000
 
-newmtl RedOrange
-Kd 0.941176 0.188235 0.188235
+newmtl MediumOrchid
+Kd 0.729412 0.333333 0.827451
+
+newmtl Navy
+Kd 0.000000 0.000000 0.501961
+
+newmtl PaleGoldenrod
+Kd 0.933333 0.909804 0.666667
+
+newmtl Plum
+Kd 0.866667 0.627451 0.866667
+
+newmtl SandyBrown
+Kd 0.956863 0.643137 0.376471
+
+newmtl SlateGray
+Kd 0.439216 0.501961 0.564706
+
+newmtl Teal
+Kd 0.000000 0.501961 0.501961
+
+newmtl Tomato
+Kd 1.000000 0.388235 0.278431
 
 newmtl White
 Kd 1.000000 1.000000 1.000000
 
 newmtl Yellow
 Kd 1.000000 1.000000 0.000000
+
+newmtl YellowGreen
+Kd 0.603922 0.803922 0.196078

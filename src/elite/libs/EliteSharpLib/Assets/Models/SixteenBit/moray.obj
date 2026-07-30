@@ -29,25 +29,25 @@ vn -72 -99 50
 vn 0 -83 30
 vn 72 -99 50
 
-usemtl Purple
+usemtl DarkSlateBlue
 f 1 3 2
 usemtl DarkBlue
 f 2 3 4
 usemtl DarkBlue
 f 5 3 1
-usemtl LightGrey
+usemtl Gray
 f 4 3 7
-usemtl DarkerGrey
+usemtl DimGray
 f 7 3 6
-usemtl LightGrey
+usemtl Gray
 f 6 3 5
-usemtl LightBlue
+usemtl Teal
 f 7 2 4
-usemtl Blue
+usemtl Navy
 f 7 6 1 2
-usemtl LightBlue
+usemtl Teal
 f 5 1 6
-usemtl LightRed
+usemtl DarkRed
 f 9 10 8
 usemtl White
 f 12 11

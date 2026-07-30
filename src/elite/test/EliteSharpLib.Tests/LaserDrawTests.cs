@@ -44,7 +44,7 @@ public class LaserDrawTests
     [Fact]
     public void DrawLaserLinesOutlinesTheBeamsWhenLaserWireframeIsSet()
     {
-        const uint miningColor = 0xFFB855F6;
+        const uint miningColor = 0xFFBA55D3;
 
         int filled = CountPixels(DrawLines(LaserType.Mining, laserWireframe: false), miningColor);
         int wireframe = CountPixels(DrawLines(LaserType.Mining, laserWireframe: true), miningColor);

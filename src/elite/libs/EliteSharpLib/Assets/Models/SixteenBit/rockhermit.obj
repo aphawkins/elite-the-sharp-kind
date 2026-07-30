@@ -29,33 +29,33 @@ vn 58 -102 -51
 vn 81 9 -67
 vn 47 94 -63
 
-usemtl Lilac
+usemtl Plum
 f 6 1 7
-usemtl LightGrey
+usemtl Gray
 f 3 6 7
-usemtl DarkGrey
+usemtl SlateGray
 f 7 1 2
-usemtl Lilac
+usemtl Plum
 f 3 7 2
-usemtl DarkGrey
+usemtl SlateGray
 f 4 6 3
-usemtl LightGrey
+usemtl Gray
 f 5 6 4
-usemtl DarkGrey
+usemtl SlateGray
 f 1 6 5
-usemtl Lilac
+usemtl Plum
 f 2 1 8
-usemtl LightGrey
+usemtl Gray
 f 2 8 9
-usemtl DarkGrey
+usemtl SlateGray
 f 4 9 8
-usemtl DarkGrey
+usemtl SlateGray
 f 2 9 3
-usemtl Lilac
+usemtl Plum
 f 4 3 9
-usemtl Lilac
+usemtl Plum
 f 5 4 8
-usemtl LightGrey
+usemtl Gray
 f 5 8 1
 
 # pn 5 7

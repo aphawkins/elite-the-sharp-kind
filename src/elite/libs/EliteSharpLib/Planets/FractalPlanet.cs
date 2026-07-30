@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using Useful;
+using Useful.Assets;
 
 namespace EliteSharpLib.Planets;
 
@@ -13,10 +14,10 @@ internal sealed class FractalPlanet : IObject
 {
     private readonly IEliteDraw _draw;
     private readonly PlanetRenderer _planetRenderer;
-    private readonly uint _colorBlue;
-    private readonly uint _colorGreen;
-    private readonly uint _colorLightBlue;
-    private readonly uint _colorLightGreen;
+    private readonly uint _colorDarkSea;
+    private readonly uint _colorDarkLand;
+    private readonly uint _colorSea;
+    private readonly uint _colorLand;
     private readonly IRandomSource _landscapeRandom;
 
     internal FractalPlanet(IEliteDraw draw, int seed)
@@ -30,10 +31,14 @@ internal sealed class FractalPlanet : IObject
         Random random = new(seed);
         _landscapeRandom = new RandomSource(random);
         _planetRenderer = new(draw);
-        _colorBlue = draw.Palette["Blue"];
-        _colorGreen = draw.Palette["Green"];
-        _colorLightBlue = draw.Palette["LightBlue"];
-        _colorLightGreen = draw.Palette["LightGreen"];
+
+        // Each tier names its own colours, so the sea and land shades are
+        // looked up by role rather than by a name shared across palettes.
+        bool eightBit = draw.Tier == SystemTier.EightBit;
+        _colorDarkSea = draw.Palette[eightBit ? "Blue" : "Navy"];
+        _colorDarkLand = draw.Palette["Green"];
+        _colorSea = draw.Palette[eightBit ? "LightBlue" : "Teal"];
+        _colorLand = draw.Palette[eightBit ? "LightGreen" : "YellowGreen"];
 
         GenerateLandscape();
     }
@@ -132,8 +137,8 @@ internal sealed class FractalPlanet : IObject
 
     private uint LandscapeColor(uint height, bool dark)
         => height > 166
-            ? (dark ? _colorGreen : _colorLightGreen)
-            : (dark ? _colorBlue : _colorLightBlue);
+            ? (dark ? _colorDarkLand : _colorLand)
+            : (dark ? _colorDarkSea : _colorSea);
 
     /// <summary>
     /// Calculate a square on the midpoint map.

@@ -17,8 +17,8 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
 
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
-    private readonly uint _colorLightRed;
-    private readonly uint _colorLightGrey;
+    private readonly uint _colorDarkRed;
+    private readonly uint _colorGray;
 
     internal OptionsView16Bit(IEliteDraw draw)
         : base(draw)
@@ -26,8 +26,8 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
         _draw = draw;
 
         _colorWhite = draw.Palette["White"];
-        _colorLightRed = draw.Palette["LightRed"];
-        _colorLightGrey = draw.Palette["LightGrey"];
+        _colorDarkRed = draw.Palette["DarkRed"];
+        _colorGray = draw.Palette["Gray"];
     }
 
     public void Draw(OptionsModel model)
@@ -44,10 +44,10 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
 
             if (i == model.HighlightedIndex)
             {
-                _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, _colorLightRed);
+                _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, _colorDarkRed);
             }
 
-            uint col = model.Options[i].IsEnabled ? _colorWhite : _colorLightGrey;
+            uint col = model.Options[i].IsEnabled ? _colorWhite : _colorGray;
 
             _draw.Graphics.DrawTextCentre(position.Y, model.Options[i].Label, nameof(FontType.Small), col);
         }

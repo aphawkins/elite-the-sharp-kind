@@ -12,14 +12,14 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class QuitView16Bit : BaseView16Bit, IView<QuitModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorGoldenrod;
 
     internal QuitView16Bit(IEliteDraw draw)
         : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorGoldenrod = draw.Palette["Goldenrod"];
     }
 
     public void Draw(QuitModel model)
@@ -28,6 +28,6 @@ internal sealed class QuitView16Bit : BaseView16Bit, IView<QuitModel>
 
         DrawViewHeader(model.Header);
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.Centre.Y, model.Prompt, nameof(FontType.Large), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.Centre.Y, model.Prompt, nameof(FontType.Large), _colorGoldenrod);
     }
 }
