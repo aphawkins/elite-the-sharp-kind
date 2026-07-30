@@ -7,6 +7,92 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (The 8-bit palette becomes sixteen web colours, 2026-07-30)
+
+- `Palette/EightBit/palette.json` is now sixteen CSS colour names at their
+  exact web values, replacing the 29 inherited ramp names. The rationale,
+  including why `DimGray` displaced `Magenta` and why these keep the CSS
+  `Gray` spelling against the repo's UK standard, is in
+  [decisions.md](docs/decisions.md).
+- The 14 8-bit bitmaps were repainted onto those sixteen colours
+  (maintainer). Transparency is carried by a 32bpp alpha channel at
+  `00000000` — indexed and 24bpp BMP cannot express it, since
+  `BitmapReader` forces those opaque, so the sprites that need a
+  transparent background are 32bpp and the rest stay indexed.
+- Every `Palette["..."]` lookup on the 8-bit path moved with it: `Gold` to
+  `Yellow`, `LightRed` to `Red`, `LighterRed` to `Orange`, `LightGrey` to
+  `LightGray`, across 13 views.
+
+### Added (Models are tier-scoped, 2026-07-30)
+
+- `Assets/Models/` splits into `EightBit/` and `SixteenBit/`. Geometry is
+  resolution-independent, but colour is not: `ModelReader` resolves each
+  `usemtl` through the active palette, and 13 of the 21 material names the
+  ships use stopped existing at 8-bit.
+- The 8-bit copies' ~380 `usemtl` lines were rewritten onto the web names.
+  The grey ramp maps onto five neutral steps by luminance — `LighterGrey`
+  to `White` (255), `LightGrey` to `LightGray` (211), `Grey` to `DarkGray`
+  (169), `DarkGrey` to `Gray` (128), `DarkerGrey` to `DimGray` (105) —
+  deliberately stopping short of `Black`, which would render 48 faces as
+  holes against space.
+- `AssetLocator.ModelPaths` uses `TierPath` like the other tier-varying
+  categories; `Models` is no longer tier-neutral.
+- Each tier's folder gains a `palette.mtl` generated from its own
+  `palette.json`. The game ignores it, but the `.obj` files declare
+  `mtllib palette.mtl` and would otherwise open with missing materials in
+  external tools.
+
+### Added (8-bit bitmaps must only use palette colours, 2026-07-30)
+
+- Loading an asset set now checks that every opaque colour in its bitmaps
+  is one the palette names, and fails startup naming the offending files
+  and colours. Previously nothing tied art and palette together, and only
+  the combined colour count would notice, and only once it crossed the cap.
+- The rule applies to `EightBit` and not `SixteenBit`, following the
+  hardware each tier stands in for: 8-bit machines were indexed-colour, so
+  an unnamed bitmap colour is one the machine could not have shown, while
+  16-bit is direct-colour and its palette only names colours the geometry
+  draws with. `AssetColourBudget.PaletteNamesEveryColour` carries the
+  distinction, beside `MaxColours`.
+- It is a subset test, not equality, and transparent pixels are excluded —
+  as they are from the colour cap.
+
+### Changed (Nothing that draws is shared between tiers, 2026-07-30)
+
+- `ViewLayout` holds the tier's screen metrics, derived from a screen size,
+  the scanner art's size and the coordinate scale rather than stored, so no
+  two can disagree. `IEliteDraw` exposes it and no longer carries its own
+  `Top`/`Left`/`Centre`/`Scale`/`Scanner*` — those had become a second
+  spelling of the same values.
+- `IBaseView` with `BaseView8Bit`/`BaseView16Bit` holds the chrome every
+  screen shares: `DrawViewHeader`, `DrawTextPretty`, `DrawBorder` and
+  `DrawHyperspaceCountdown`. The last two came off `EliteDraw`, which no
+  longer draws any chrome; `EliteMain` calls them through the base view.
+- `Scanner`, `LaserDraw`, `GradientSun` and `StripedPlanet` each split into
+  a base holding the logic and per-tier subclasses holding the colours and
+  positions. `Scanner` is the substantial one: ~20 offsets hardcoded to the
+  512x129 scanner became named members, so each tier's art sets its own HUD
+  layout.
+- `ShortRangeChartView` splits into `ShortRangeChartViewBase` plus per-tier
+  views. Its cross-hair clamps, previously the literals 510 and 339, are a
+  per-tier `CrossBounds`.
+- `IEliteDraw.Tier` lets `PlanetFactory` and `SunFactory` pick a renderer;
+  the rest resolve per-tier through DI. `IsEightBit` is one shared helper
+  rather than three copies.
+
+### Fixed (16-bit HUD after the 640x512 widening, 2026-07-30)
+
+- The 16-bit scanner art is 640x129. Comparing it against the 512-wide
+  version shows it was re-laid-out rather than stretched: the left dial
+  panel did not move (its edge is at x=97-100 in both), the radar's centre
+  line moved half the increase (253 to 317), and everything from the
+  compass rightwards moved the full 128 — the right panel's edge 411 to
+  539, and the compass ring's centre 386.5 to 514.5.
+- `Scanner16Bit`'s right-hand cluster is +128 accordingly, which puts the
+  energy banks back inside their numbered boxes and the speed, roll and
+  climb indicators back in the SP/RL/DC panel instead of over the radar.
+  `ScannerCentre` needed no change: it derives from `ViewLayout.Centre`.
+
 ### Added (A view per tier for every screen, 2026-07-30)
 
 - Every screen now has both an 8-bit and a 16-bit view, in a folder and

@@ -12,10 +12,10 @@ and needs no bitmap set, so it is not modelled until it has content.
 
 ## Layout
 
-Only some asset categories vary by tier. Audio, models, TrueType fonts
-and tracks are resolution-independent and are not duplicated. Images,
-bitmap fonts and the palette are tier-specific, so those categories —
-and only those — gain a tier subfolder:
+Only some asset categories vary by tier. Audio, TrueType fonts and
+tracks are resolution-independent and are not duplicated. Images,
+bitmap fonts, the palette and the models are tier-specific, so those
+categories — and only those — gain a tier subfolder:
 
 ```
 Assets/
@@ -29,8 +29,25 @@ Assets/
   Palette/
     EightBit/     palette.json
     SixteenBit/   palette.json
-  Models/  SFX/  Music/  SoundFonts/  FontsTrueType/   <- tier-neutral
+  Models/
+    EightBit/     adder.obj, ..., palette.mtl
+    SixteenBit/   adder.obj, ..., palette.mtl
+  SFX/  Music/  SoundFonts/  FontsTrueType/   <- tier-neutral
 ```
+
+Models joined the tier-varying categories on 2026-07-30. Geometry is
+resolution-independent, so they were tier-neutral at first — but a
+model's colours are not geometry: `ModelReader` resolves each
+`usemtl <name>` straight through the active palette, and once the 8-bit
+palette stopped being a subset of the 16-bit one (see below), 13 of the
+21 material names the ships use no longer existed at 8-bit. A shared set
+cannot name colours that only one tier has.
+
+Each tier's folder carries its own `palette.mtl`, regenerated from that
+tier's `palette.json`. The game never reads it — `ModelReader` resolves
+`usemtl` through the palette directly — but the `.obj` files declare
+`mtllib palette.mtl`, so without one per tier the models open with
+missing materials in external tools.
 
 The rejected alternative was tier-first (`Assets/EightBit/Images/...`,
 the whole tree duplicated per tier). It makes adding or removing a tier a
@@ -74,7 +91,8 @@ resolution lives there and nowhere else. The rule is:
 2. falling back to `<Category>/<file>`
 
 The fallback is what keeps tier-neutral categories from needing a copy
-per tier.
+per tier, and it is why adding a tier folder to a category needs no code
+change beyond pointing that category at `TierPath`.
 
 The tier is chosen once, at construction (`AssetLocator.Create(tier)`),
 not per call. `IAssetLocator`'s members are unchanged, so no consumer of
@@ -125,6 +143,38 @@ their own budget.
 Fully transparent pixels are excluded from the count. Alpha is enforced
 to be either 0 or 255 on both tiers, matching the renderer, which
 already treats transparency as binary.
+
+## The palette as the whole colour set (2026-07-30)
+
+On some tiers the cap is not the only palette constraint: a bitmap may
+only use colours the palette names.
+
+| Tier | Palette names every colour |
+| --- | --- |
+| EightBit | yes |
+| SixteenBit | no |
+
+The split follows the hardware each tier stands in for. 8-bit machines
+were **indexed-colour** — a pixel *was* a palette entry, and one palette
+served the whole display — so a bitmap colour the palette does not name
+is a colour the machine could not have shown. 16-bit hardware is
+direct-colour, where `palette.json` is only a set of names the geometry
+draws with (`usemtl` in the models, `Palette["Gold"]` in the views) and
+bitmaps are independent of it.
+
+This is a **subset** test, not equality: the palette may name colours no
+bitmap uses, which it must, since most named colours only ever reach the
+screen as filled geometry rather than as pixels in a file. The check
+excludes fully transparent pixels, for the same reason the cap does —
+they carry no colour.
+
+Applying it to 16-bit would fail immediately and for no good reason:
+Elite's 16-bit set holds 145 distinct colours against a 29-entry
+palette, so 138 of them are "unnamed" by construction.
+
+`AssetColourBudget.OutsidePalette` records the offending colours per
+asset on **every** tier so they can be logged, but only
+`PaletteNamesEveryColour` tiers fail startup over them.
 
 ### Baseline, and how the assets were brought inside it (2026-07-28)
 

@@ -7,6 +7,40 @@ When a decision reshapes or unblocks backlog items, those items are
 updated in backlog-roadmap.md to reference the decision here rather than
 restating it.
 
+## Resolved (2026-07-30) — the 8-bit palette is sixteen web colour names
+
+The 8-bit palette was a set of 29 relative ramp names (`LighterGrey`,
+`DarkerGrey`, `Gold`, `Lilac`, `RedOrange`…) mapped onto whatever values
+the art happened to use, inherited from the 16-bit palette when the tier
+was stood up. It is now **sixteen entries, each a CSS/HTML colour name at
+its exact web value**:
+
+```
+White FFFFFF · LightGray D3D3D3 · DarkGray A9A9A9 · Gray 808080 · DimGray 696969 · Black 000000
+Red FF0000 · Orange FFA500 · Yellow FFFF00 · Brown A52A2A
+Green 008000 · LightGreen 90EE90 · Blue 0000FF · LightBlue ADD8E6 · Cyan 00FFFF · Purple 800080
+```
+
+- **Names are absolute, not relative.** A ramp name only means anything
+  next to its neighbours, so it cannot survive a change of palette: the
+  ramp had five greys because the 16-bit art wanted five, and the 8-bit
+  tier has no obligation to supply them. A web name states a colour.
+- **Sixteen entries is the tier's cap**, so the palette *is* the
+  machine's colour set rather than an alias table over it. Every 8-bit
+  bitmap colour is one of these sixteen, enforced at startup.
+- **The two tiers no longer share a name set**, which is what forced the
+  models to become tier-varying (see asset-structure.md). That cost —
+  duplicating 31 `.obj` files per tier — was accepted as the price of
+  the palette meaning what it says.
+- **`DimGray` was added late, replacing `Magenta`.** Five neutral steps
+  above black let `DarkerGrey`'s 48 model faces map to a dark grey rather
+  than to pure black, which against black space reads as holes in the
+  hull. `Magenta` was earning nothing once the mining laser moved to
+  `Purple`.
+- UK spelling is the repo standard, but these are **proper nouns from the
+  CSS specification** and keep its spelling — `Gray`, not `Grey`. The
+  16-bit palette keeps its ramp names and its `Grey` spelling unchanged.
+
 ## Resolved (2026-07-29) — `Focus` follows screen height
 
 Revises one bullet of the 2026-07-28 tier presentation decision below,

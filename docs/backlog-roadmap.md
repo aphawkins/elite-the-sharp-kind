@@ -78,23 +78,40 @@ controllers, models and per-tier views". What is left open:
       `EightBit` and stays that way while this is the tier being worked on
       (maintainer, 2026-07-30), so verifying a layout is just a run - no
       config edit, and nothing to restore afterwards.
+- [ ] [EliteSharpLib] Author `Scanner8Bit`'s HUD layout against the real
+      320x56 scanner art. Its ~20 positions are the 16-bit offsets halved,
+      which is close enough to render but visibly wrong: the dial bars
+      overrun their slots and the compass and indicator cluster are
+      crowded. Same character of work as the view-layout item above, and
+      every number is a named member in one file. `ScannerBase` holds no
+      coordinates, so nothing else has to move.
+- [ ] [EliteSharpLib] `ScannerBase.ScannerExtent` is `(28, 50)` on both
+      tiers, so scanner contacts only ever use ±50px around the centre.
+      The 16-bit radar area grew from 311px wide to 439px with the 640x512
+      widening, so contacts now fill less of the dial than they did.
+      Pre-existing rather than a regression — it was ±50 at 512 too — but
+      decide whether the extent should be derived from the scanner art's
+      plot area rather than fixed. Affects how far away ships appear, so
+      it is a feel decision, not a layout fix.
 - [ ] [EliteSharpLib] `OptionsView8Bit` word-wraps the credits itself
       because the longest ("The New Kind - Christian Pinder 1999-2001", 41
       characters) is one character wider than the 8-bit screen's 40-character
-      row, and `IEliteDraw.DrawTextPretty` is unusable for it (it breaks text
+      row, and `IBaseView.DrawTextPretty` is unusable for it (it breaks text
       that already fits, and draws left-aligned where these lines are
       centred). Either fix `DrawTextPretty`'s off-by-one break so views can
       share one wrapper, or shorten the credit wording in
       `OptionsController`; the local `Wrap` helper is a stopgap either way.
-- [ ] [EliteSharpLib] `ShortRangeChartView` is the one screen still combining
-      controller and view. Its `Reset` entangles layout with content
-      selection in a way no clean split survives: the text-row packing is
-      computed from screen coordinates, `row <= 3` skips a planet's blob and
-      not just its name, and `blob_size` depends on `GameState.CarryFlag` — a
-      side effect of the `NamePlanet` call that only happens when a name wins
-      a free row (a faithful port of the original's quirk). Its cursor clamps
-      are relative to `Centre`, so the galactic chart's galaxy-space trick
-      does not transfer. Revisit when the 8-bit short-range chart art is
+      Note each tier now has its own copy of the wrapper, on
+      `BaseView8Bit`/`BaseView16Bit`, so a fix has to land in both.
+- [ ] [EliteSharpLib] `ShortRangeChartViewBase` is the one screen still
+      combining controller and view. Drawing is now per-tier
+      (`ShortRangeChartView8Bit`/`16Bit`), but `Reset` still entangles
+      layout with content selection in a way no clean split survives: the
+      text-row packing is computed from screen coordinates, `row <= 3` skips
+      a planet's blob and not just its name, and `blob_size` depends on
+      `GameState.CarryFlag` — a side effect of the `NamePlanet` call that
+      only happens when a name wins a free row (a faithful port of the
+      original's quirk). Revisit when the 8-bit short-range chart art is
       actually authored and there are real layout requirements to design
       against; the preferred shape then is passing the tier's layout metrics
       (centre, scale, row height) into the controller, keeping the
@@ -408,51 +425,38 @@ either.**):
       integer-scaled 512x512; re-scope this item against that decision
       before starting.
 
-      **The maintainer intends to widen the 16-bit tier to 640x512**
-      (`SDLProgram.ResolutionFor`'s `_ => (512, 512)` becomes
-      `(640, 512)` — a one-line change). It was tried on 2026-07-29 and
-      reverted, because it works but exposes the four problems below.
-      This item is what has to land first; do not make the one-line
-      change until they are resolved. Height is unchanged, so
-      everything here is width-only.
-
-      What the trial run established, so nobody has to repeat it:
-      nothing crashes, the full suite still passes, and every screen
-      that positions via `_draw.Offset` or `_draw.Centre` re-centres
-      correctly with no edit (`GalacticChart`, `CommanderStatus` and
-      `Inventory` were verified live). The problems are:
-      - **The HUD stops spanning the window.** `scanner.bmp` is 512
-        wide and `ScannerLeft = Centre.X - (ScannerWidth / 2)` centres
-        it, leaving black gutters at x<64 and x>575 along the bottom.
-        Needs either a wider 16-bit scanner asset or an explicit
-        decision to accept a letterboxed HUD.
+      **The 16-bit tier is now 640x512** (landed 2026-07-30). Height is
+      unchanged, so everything here is width-only. Three of the four
+      problems the 2026-07-29 trial exposed are resolved:
+      - ~~**The HUD stops spanning the window.**~~ Resolved: the 16-bit
+        `scanner.bmp` is 640 wide. `Scanner16Bit`'s right-hand cluster
+        moved +128 to match — see the CHANGELOG for how that offset was
+        measured off the art rather than guessed.
       - ~~**The 3D field of view changes.**~~ Resolved on master
         2026-07-29: `Focus` now follows `ScreenHeight`, so the vertical
         field of view is constant and widening shows more to the left
         and right instead of magnifying everything. See the decision in
         [decisions.md](decisions.md), which supersedes the width-derived
         `Focus` of the 2026-07-28 tier decision.
+      - ~~**The stale comment** in `SDLProgram.cs`~~ — updated with the
+        change.
       - **Screens using bare absolute coordinates drift out of
         alignment** with those that are `Offset`-relative, which stay
-        centred. `ThargoidMissionView16Bit` (`new(116, 132)`, the Blake
-        portrait at `new(352, 46)`), `ConstrictorMissionView16Bit`,
+        centred. **This is what is left of this item.**
+        `ThargoidMissionView16Bit` (`new(116, 132)`, the Blake portrait
+        at `new(352, 46)`), `ConstrictorMissionView16Bit`,
         `PlanetDataView16Bit`, `MarketView16Bit` and the commander
         save/load screens are the known cases — and their 8-bit
-        counterparts have the same shape at 320. This is a latent bug at
-        any width except the tier's own, independent of the tier scheme.
-      - **The stale comment** in
-        [SDLProgram.cs](../src/elite/apps/EliteSharp/SDLProgram.cs)
-        ("512x512 is what Elite has always rendered at") needs updating
-        with the change.
+        counterparts have the same shape at 320. None have been checked
+        live at 640 yet. This is a latent bug at any width except the
+        tier's own, independent of the tier scheme.
 
       Two specifics this item used to cite are now out of date: `511`
       in `ShipBase.DrawLasers` is already fixed — `ProjectToViewBoundary`
       clips to the real viewport — and the `512` literals still in the
-      lib (`Combat.cs:758-759`, `Scanner.cs:305`, `Space.cs:408-414`)
+      lib (`Combat.cs:758-759`, `ScannerBase`, `Space.cs:408-414`)
       are world-space and physics constants, not screen coordinates, so
-      they are not in scope. `ScannerWidth` is already derived from the
-      image rather than hardcoded; the gutter problem above is the
-      asset's width, not the code's.
+      they are not in scope.
 - [ ] [EliteSharpLib] Number of stars proportional to screen size (issue
       #4): now reachable — the 8-bit tier already renders at 320x256,
       a quarter the area of 512x512, with the same star count, and the
