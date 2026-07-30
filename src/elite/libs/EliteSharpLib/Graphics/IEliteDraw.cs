@@ -37,28 +37,6 @@ internal interface IEliteDraw
 
     public IPaletteCollection Palette { get; }
 
-    // Superseded by Layout; kept only until the classes that still read them
-    // are split per tier, then removed.
-    public float Bottom { get; }
-
-    public Vector2 Centre { get; }
-
-    public float Left { get; }
-
-    public float Offset { get; }
-
-    public float Right { get; }
-
-    public float Scale { get; }
-
-    public float ScannerLeft { get; }
-
-    public float ScannerRight { get; }
-
-    public float ScannerTop { get; }
-
-    public float Top { get; }
-
     public void DrawObject(IObject obj);
 
     public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z);

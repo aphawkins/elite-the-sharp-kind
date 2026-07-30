@@ -27,26 +27,6 @@ internal class FakeEliteDraw : IEliteDraw
 
     public IPaletteCollection Palette => new FakePalette();
 
-    public float Bottom => Layout.Bottom;
-
-    public Vector2 Centre => Layout.Centre;
-
-    public float Left => Layout.Left;
-
-    public float Offset => Layout.Offset;
-
-    public float Right => Layout.Right;
-
-    public float Scale => Layout.Scale;
-
-    public float ScannerLeft => Layout.ScannerLeft;
-
-    public float ScannerRight => Layout.ScannerRight;
-
-    public float ScannerTop => Layout.ScannerTop;
-
-    public float Top => Layout.Top;
-
     public List<(Vector2[] Points, FastColor FaceColor, float Z)> DrawnPolygons { get; } = [];
 
     public void DrawObject(IObject obj)

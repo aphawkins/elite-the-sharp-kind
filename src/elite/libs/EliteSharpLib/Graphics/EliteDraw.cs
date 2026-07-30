@@ -65,26 +65,6 @@ internal sealed class EliteDraw : IEliteDraw
 
     public IPaletteCollection Palette { get; }
 
-    public float Bottom => Layout.Bottom;
-
-    public Vector2 Centre => Layout.Centre;
-
-    public float Left => Layout.Left;
-
-    public float Offset => Layout.Offset;
-
-    public float Right => Layout.Right;
-
-    public float Scale => Layout.Scale;
-
-    public float ScannerLeft => Layout.ScannerLeft;
-
-    public float ScannerRight => Layout.ScannerRight;
-
-    public float ScannerTop => Layout.ScannerTop;
-
-    public float Top => Layout.Top;
-
     // z is one whole-face depth: the chain's sort key, and the flat depth
     // every pixel of the face tests with in RenderEnd. Flat rather than
     // per-vertex interpolated depth is deliberate: decal faces (cockpit
