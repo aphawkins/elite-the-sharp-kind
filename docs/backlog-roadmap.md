@@ -74,9 +74,10 @@ controllers, models and per-tier views". What is left open:
       is the one screen that got that treatment and is the reference for
       what "done" looks like. The maintainer took this judgement over
       personally, so this is spacing/authoring work, not a refactor.
-      Verifying an 8-bit layout means running with `engine.tier` set to
-      `EightBit` in `%APPDATA%\The Sharp Kind\elite.sharp` (back the file up
-      and restore it afterwards if it is on `SixteenBit`).
+      `engine.tier` in `%APPDATA%\The Sharp Kind\elite.sharp` is set to
+      `EightBit` and stays that way while this is the tier being worked on
+      (maintainer, 2026-07-30), so verifying a layout is just a run - no
+      config edit, and nothing to restore afterwards.
 - [ ] [EliteSharpLib] `OptionsView8Bit` word-wraps the credits itself
       because the longest ("The New Kind - Christian Pinder 1999-2001", 41
       characters) is one character wider than the 8-bit screen's 40-character
