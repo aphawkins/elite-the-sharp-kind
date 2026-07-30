@@ -7,6 +7,34 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (FastColor's implicit conversions removed, 2026-07-30)
+
+- Phase 4, closing out the colour-handling unification: the implicit
+  `uint`↔`FastColor` conversions added in phase 1 are gone, so the
+  boundary is now explicit wherever one still exists. Rather than cast at
+  each call site — which would have put the conversion noise inside the
+  render inner loops the earlier phases had deliberately kept clean — the
+  type flows end to end instead: `FastBitmap.GetPixel` returns `FastColor`
+  (the backing store stays `uint[]` for memalloc) and the redundant
+  `SetPixel(.., in uint)` overload goes; `BitmapFont.Ink`/`Background`,
+  `SoftwareGraphics`' private helpers and the ~110 Elite and SCR colour
+  fields phase 3 had left on `uint` all become `FastColor`. Alpha tests
+  read `color.A != 0` rather than masking with `0xFF000000`.
+- Two places keep `uint` deliberately: `AssetSet`'s colour-budget
+  bookkeeping does set arithmetic and sorts with `Order()`, which
+  `FastColor` does not support, and `SDLGraphics` keys its text-texture
+  cache on the raw ARGB.
+- `PlanetRenderer.Landscape` was doing double duty — the fractal
+  midpoint-displacement pass filled it with heights, `ColorLandscape`
+  overwrote it in place with colours, and the renderer drew it as pixels.
+  That cannot survive typing, since heights are averaged arithmetically
+  and colours are not, so `FractalPlanet` now owns a private `uint[,]`
+  height map and `Landscape` is the `FastColor` buffer it always was at
+  draw time. Behaviour is unchanged; the per-seed determinism test still
+  passes.
+- The two `FastColorTests` covering the deleted operators now exercise
+  `FromUInt32`/`ToUInt32` instead, so the round trip stays covered.
+
 ### Changed (The 16-bit palette becomes web colours, 2026-07-30)
 
 - `Palette/SixteenBit/palette.json` keeps its 29 entries but drops the ramp
