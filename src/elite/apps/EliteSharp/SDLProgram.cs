@@ -28,11 +28,13 @@ internal static class SDLProgram
     // Render resolution is a function of the configured tier rather than a
     // separate setting, so the asset set and the resolution can never
     // disagree. Both are the tier's "standard" (non-widescreen) size from
-    // docs/decisions.md; 512x512 is what Elite has always rendered at.
+    // docs/decisions.md. The 16-bit tier widened from 512x512 to 640x512 on
+    // 2026-07-30, alongside a 640-wide scanner; the height is unchanged, so
+    // the vertical field of view is too (Focus follows ScreenHeight).
     private static (int Width, int Height) ResolutionFor(SystemTier tier) => tier switch
     {
         SystemTier.EightBit => (320, 256),
-        _ => (512, 512),
+        _ => (640, 512),
     };
 
     private static ServiceCollection BuildServices(string userDataPath, ILoggerFactory loggerFactory, EngineConfigSettings engine)

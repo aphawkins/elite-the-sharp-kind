@@ -10,9 +10,16 @@ using EliteSharpLib.Ships;
 namespace EliteSharpLib;
 
 /// <summary>
-/// The 16-bit HUD, laid out against the 512x129 scanner bitmap. These are the
-/// offsets the screen has always used.
+/// The 16-bit HUD, laid out against the 640x129 scanner bitmap.
 /// </summary>
+/// <remarks>
+/// When the tier widened from 512 to 640 the art was re-laid-out rather than
+/// stretched: the left dial panel stayed put (its edge is at x=97-100 in both),
+/// the radar's centre line moved half the increase (253 to 317), and everything
+/// from the compass rightwards moved the full 128 - the right panel's edge
+/// 411 to 539, and the compass ring's centre 386.5 to 514.5. So the left
+/// cluster's offsets below are unchanged and the right cluster's are +128.
+/// </remarks>
 internal sealed class Scanner16Bit : ScannerBase
 {
     internal Scanner16Bit(GameState gameState, IEliteDraw draw, Universe universe, PlayerShip ship, Combat combat)
@@ -49,17 +56,17 @@ internal sealed class Scanner16Bit : ScannerBase
 
     protected override Vector2 AltitudePosition => new(31, 92);
 
-    protected override Vector2 EnergyPosition => new(416, 61);
+    protected override Vector2 EnergyPosition => new(544, 61);
 
     protected override float EnergyBankSpacing => 18;
 
-    protected override Vector2 SpeedPosition => new(417, 9);
+    protected override Vector2 SpeedPosition => new(545, 9);
 
-    protected override Vector2 RollPosition => new(416, 9 + 14);
+    protected override Vector2 RollPosition => new(544, 9 + 14);
 
-    protected override Vector2 ClimbPosition => new(416, 9 + 14 + 16);
+    protected override Vector2 ClimbPosition => new(544, 9 + 14 + 16);
 
-    protected override Vector2 CompassPosition => new(382, 22);
+    protected override Vector2 CompassPosition => new(510, 22);
 
     protected override float CompassRadius => 16;
 
@@ -67,7 +74,7 @@ internal sealed class Scanner16Bit : ScannerBase
 
     protected override float MissileSpacing => 16;
 
-    protected override Vector2 StationIndicatorPosition => new(387, 105);
+    protected override Vector2 StationIndicatorPosition => new(515, 105);
 
     protected override Vector2 EcmIndicatorPosition => new(115, 105);
 
