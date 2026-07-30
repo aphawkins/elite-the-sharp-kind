@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib.Planets;
 
@@ -20,11 +21,11 @@ internal sealed class StripedPlanet8Bit : StripedPlanetBase
     {
         ArgumentNullException.ThrowIfNull(draw);
 
-        uint colorBlue = draw.Palette["Blue"];
-        uint colorLightBlue = draw.Palette["LightBlue"];
-        uint colorLightGray = draw.Palette["LightGray"];
-        uint colorOrange = draw.Palette["Orange"];
-        uint colorBrown = draw.Palette["Brown"];
+        FastColor colorBlue = draw.Palette["Blue"];
+        FastColor colorLightBlue = draw.Palette["LightBlue"];
+        FastColor colorLightGray = draw.Palette["LightGray"];
+        FastColor colorOrange = draw.Palette["Orange"];
+        FastColor colorBrown = draw.Palette["Brown"];
         StripeColors =
         [
             colorBlue,
@@ -57,7 +58,7 @@ internal sealed class StripedPlanet8Bit : StripedPlanetBase
         : base(other)
         => StripeColors = other.StripeColors;
 
-    protected override uint[] StripeColors { get; }
+    protected override FastColor[] StripeColors { get; }
 
     public override IObject Clone()
     {

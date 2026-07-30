@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Assets.Models;
 using Useful.Fakes;
 
@@ -46,7 +47,7 @@ public class ShipBaseTests
 
         // A 2-point "face" always passes the visibility/winding check in DrawModelFaces
         // (point0 and point2 resolve to the same point), keeping this test independent of it.
-        Face face = new() { Color = 0, Points = [modelPointA, modelPointB], PointIndices = [0, 1] };
+        Face face = new() { Color = default, Points = [modelPointA, modelPointB], PointIndices = [0, 1] };
 
         FakeEliteDraw draw = new();
         FakeShip ship = new(draw, new(new Random(0)))
@@ -71,7 +72,7 @@ public class ShipBaseTests
         Vector2 expectedA = ProjectUsingRotmatBasis(pointA, rotmat, location, draw);
         Vector2 expectedB = ProjectUsingRotmatBasis(pointB, rotmat, location, draw);
 
-        (Vector2[] points, uint _, float _) = Assert.Single(draw.DrawnPolygons);
+        (Vector2[] points, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
         Assert.Equal(2, points.Length);
 
         AssertVector2AlmostEqual(expectedA, points[0]);
@@ -120,7 +121,7 @@ public class ShipBaseTests
         float exitDistance = MathF.Min(exitViaLeft, exitViaTop);
         Vector2 expectedEnd = expectedMount + (direction * exitDistance);
 
-        (Vector2[] points, uint _, float _) = Assert.Single(draw.DrawnPolygons);
+        (Vector2[] points, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
         Assert.Equal(2, points.Length);
         AssertVector2AlmostEqual(expectedMount, points[0]);
         AssertVector2AlmostEqual(expectedEnd, points[1]);

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -18,7 +19,7 @@ internal sealed class EscapeCapsuleView8Bit : BaseView8Bit, IView<EscapeCapsuleM
     private const float AlertOffset = 20;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorWhite;
 
     internal EscapeCapsuleView8Bit(IEliteDraw draw)
         : base(draw)

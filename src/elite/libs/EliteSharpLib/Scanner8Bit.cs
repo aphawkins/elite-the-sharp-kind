@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib;
 
@@ -72,21 +73,21 @@ internal sealed class Scanner8Bit : ScannerBase
 
     protected override Vector2 EcmIndicatorPosition => new(72, 46);
 
-    protected override uint DialTopColor { get; }
+    protected override FastColor DialTopColor { get; }
 
-    protected override uint DialBodyColor { get; }
+    protected override FastColor DialBodyColor { get; }
 
-    protected override uint DialBottomColor { get; }
+    protected override FastColor DialBottomColor { get; }
 
-    protected override uint SpeedWarningColor { get; }
+    protected override FastColor SpeedWarningColor { get; }
 
-    protected override uint StationColor { get; }
+    protected override FastColor StationColor { get; }
 
-    protected override uint MissileColor { get; }
+    protected override FastColor MissileColor { get; }
 
-    protected override uint PoliceColor { get; }
+    protected override FastColor PoliceColor { get; }
 
-    protected override uint HostileColor { get; }
+    protected override FastColor HostileColor { get; }
 
-    protected override uint DefaultColor { get; }
+    protected override FastColor DefaultColor { get; }
 }

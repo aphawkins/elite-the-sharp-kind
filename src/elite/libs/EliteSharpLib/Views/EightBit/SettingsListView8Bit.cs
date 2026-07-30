@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -35,8 +36,8 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
     private const int FooterGapY = 16;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorRed;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorRed;
 
     internal SettingsListView8Bit(IEliteDraw draw)
         : base(draw)

@@ -22,7 +22,7 @@ public class TriangleFillTests
         Vector2 b = new(42, 50.01f);
         Vector2 c = new(41, 60f);
 
-        graphics.DrawTriangleFilled(a, b, c, BaseColors.White.Argb);
+        graphics.DrawTriangleFilled(a, b, c, BaseColors.White);
         graphics.ScreenUpdate();
 
         static void DoAssert(FastBitmap bmp)
@@ -34,7 +34,7 @@ public class TriangleFillTests
                 {
                     if (x is < 39 or > 43)
                     {
-                        Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(x, y));
+                        Assert.Equal(BaseColors.Black, bmp.GetPixel(x, y));
                     }
                 }
             }
@@ -62,7 +62,7 @@ public class TriangleFillTests
         {
             FastBitmap? frame = null;
             using SoftwareGraphics graphics = SoftwareGraphics.Create(100, 100, f => frame = f, assets.Object);
-            graphics.DrawTriangleFilled(a, b, c, BaseColors.White.Argb);
+            graphics.DrawTriangleFilled(a, b, c, BaseColors.White);
             graphics.ScreenUpdate();
 
             Assert.NotNull(frame);
@@ -77,7 +77,7 @@ public class TriangleFillTests
                 {
                     if (x < minX || x > maxX || y < minY || y > maxY)
                     {
-                        Assert.Equal(BaseColors.Black.Argb, frame.GetPixel(x, y));
+                        Assert.Equal(BaseColors.Black, frame.GetPixel(x, y));
                     }
                 }
             }
@@ -91,7 +91,7 @@ public class TriangleFillTests
         SetupEmptyAssets(assets);
         using SoftwareGraphics graphics = SoftwareGraphics.Create(100, 100, DoAssert, assets.Object);
 
-        graphics.DrawTriangleFilled(new(10, 10), new(90, 10), new(50, 90), BaseColors.White.Argb);
+        graphics.DrawTriangleFilled(new(10, 10), new(90, 10), new(50, 90), BaseColors.White);
         graphics.ScreenUpdate();
 
         static void DoAssert(FastBitmap bmp)
@@ -99,7 +99,7 @@ public class TriangleFillTests
             // a horizontal band through the middle must be continuous
             for (int x = 30; x <= 70; x++)
             {
-                Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(x, 40));
+                Assert.Equal(BaseColors.White, bmp.GetPixel(x, 40));
             }
         }
     }

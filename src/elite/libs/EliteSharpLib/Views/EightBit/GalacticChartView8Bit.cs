@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -25,9 +26,9 @@ internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartM
     private const float DetailOffsetY = 16;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGreen;
-    private readonly uint _colorOrange;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorOrange;
+    private readonly FastColor _colorWhite;
 
     internal GalacticChartView8Bit(IEliteDraw draw)
         : base(draw)

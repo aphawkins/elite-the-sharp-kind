@@ -10,6 +10,7 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
+using Useful;
 using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Controls;
@@ -39,7 +40,7 @@ public sealed class EliteMain : IGame, IGameApp
     // frame to frame, producing judder.
     private const float GameTickRate = 13.5f;
 
-    private readonly uint _colorText;
+    private readonly FastColor _colorText;
     private readonly IAbstraction _abstraction;
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;

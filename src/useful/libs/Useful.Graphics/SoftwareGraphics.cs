@@ -557,7 +557,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         float za,
         float zb,
         float zc,
-        uint color)
+        in FastColor color)
     {
         if (za <= 0 || zb <= 0 || zc <= 0)
         {
@@ -714,18 +714,18 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     // Ink takes the requested text colour, the sheet's background becomes
     // transparent, and anything else is copied through - which is what lets a
     // proportional glyph carry more than one colour.
-    private static uint Recolour(BitmapFont font, int x, int y, uint color)
+    private static FastColor Recolour(BitmapFont font, int x, int y, in FastColor color)
     {
-        uint pixelColor = font.Image.GetPixel(x, y);
+        FastColor pixelColor = font.Image.GetPixel(x, y);
 
         return pixelColor == font.Ink ? color
-            : pixelColor == font.Background ? BaseColors.TransparentBlack.Argb
+            : pixelColor == font.Background ? BaseColors.TransparentBlack
             : pixelColor;
     }
 
     // Monospaced: every glyph fills its cell, so there is nothing to measure
     // and no marker to look for.
-    private static int AppendGridGlyph(BitmapFont font, FastBitmap temp, int left, char letter, uint color)
+    private static int AppendGridGlyph(BitmapFont font, FastBitmap temp, int left, char letter, in FastColor color)
     {
         (int originX, int originY) = font.CellOrigin(letter);
 
@@ -742,13 +742,13 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     // Variable width: a magenta marker ends each row of the glyph, and a
     // magenta pixel where the next row would start ends the glyph.
-    private static int AppendProportionalGlyph(BitmapFont font, FastBitmap temp, int left, char letter, uint color)
+    private static int AppendProportionalGlyph(BitmapFont font, FastBitmap temp, int left, char letter, in FastColor color)
     {
         (int originX, int originY) = font.CellOrigin(letter);
         int charX = 0;
         int charY = 0;
         int maxCharWidth = 0;
-        uint pixelColor = Recolour(font, originX, originY, color);
+        FastColor pixelColor = Recolour(font, originX, originY, color);
 
         do
         {
@@ -758,7 +758,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                 charX++;
                 pixelColor = Recolour(font, originX + charX, originY + charY, color);
             }
-            while (pixelColor != BaseColors.Magenta.Argb);
+            while (pixelColor != BaseColors.Magenta);
 
             maxCharWidth = Math.Max(maxCharWidth, charX);
             charX = 0;
@@ -766,7 +766,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
             pixelColor = Recolour(font, originX, originY + charY, color);
         }
-        while (pixelColor != BaseColors.Magenta.Argb);
+        while (pixelColor != BaseColors.Magenta);
 
         return maxCharWidth;
     }
@@ -784,7 +784,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
     }
 
     // Sample the texture at a [0,1] coordinate, clamping at the edges.
-    private static uint SampleTexture(FastBitmap texture, Vector2 uv)
+    private static FastColor SampleTexture(FastBitmap texture, Vector2 uv)
     {
         int x = Math.Clamp((int)(uv.X * texture.Width), 0, texture.Width - 1);
         int y = Math.Clamp((int)(uv.Y * texture.Height), 0, texture.Height - 1);
@@ -837,8 +837,8 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         {
             for (int x = left; x < right; x++)
             {
-                uint color = bitmap.GetPixel(x, y);
-                if ((color & 0xFF000000) != 0)
+                FastColor color = bitmap.GetPixel(x, y);
+                if (color.A != 0)
                 {
                     // TODO: should mix the transparent colors correctly here
                     // but the only transparency being used is transparent or opaque
@@ -872,8 +872,8 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
             int sx = (int)(sourceX + (mirrorX ? sourceWidth - fx : fx));
             sx = Math.Clamp(sx, 0, bitmap.Width - 1);
 
-            uint color = bitmap.GetPixel(sx, sy);
-            if ((color & 0xFF000000) != 0)
+            FastColor color = bitmap.GetPixel(sx, sy);
+            if (color.A != 0)
             {
                 DrawPixel(x, y, color);
             }
@@ -882,7 +882,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
 
     // Draw one depth-tested scanline of a flat-shaded triangle, interpolating
     // inverse depth from i0 at x0 to i1 at x1.
-    private void DrawSpanFilledDepth(int y, float x0, float x1, float i0, float i1, uint color)
+    private void DrawSpanFilledDepth(int y, float x0, float x1, float i0, float i1, in FastColor color)
     {
         int start = Math.Max((int)MathF.Floor(x0), 0);
         int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
@@ -926,7 +926,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private void DrawLineInt(int x0, int y0, int x1, int y1, in uint color)
+    private void DrawLineInt(int x0, int y0, int x1, int y1, in FastColor color)
     {
         int screenWidth = (int)ScreenWidth;   // Replace with actual screen width
         int screenHeight = (int)ScreenHeight; // Replace with actual screen height
@@ -964,7 +964,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private void DrawPixel(int x, int y, uint color)
+    private void DrawPixel(int x, int y, in FastColor color)
     {
         if (!_clipIsFullScreen && (x < _clipLeft || y < _clipTop || x >= _clipRight || y >= _clipBottom))
         {
@@ -991,7 +991,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         return true;
     }
 
-    private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in uint color)
+    private void DrawRectangleFilledInt(int startX, int startY, int width, int height, in FastColor color)
     {
         startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth - 1);
         startY = Math.Min(Math.Max(startY, 0), (int)ScreenHeight - 1);
@@ -1008,7 +1008,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private void DrawRectangleInt(int startX, int startY, int width, int height, in uint color)
+    private void DrawRectangleInt(int startX, int startY, int width, int height, in FastColor color)
     {
         startX = Math.Min(Math.Max(startX, 0), (int)ScreenWidth - 1);
         startY = Math.Min(Math.Max(startY, 0), (int)ScreenHeight - 1);
@@ -1029,7 +1029,7 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         }
     }
 
-    private FastBitmap GenerateTextBitmap(string text, string fontType, uint color)
+    private FastBitmap GenerateTextBitmap(string text, string fontType, in FastColor color)
     {
         string key = $"{fontType}_{color}_{text}";
 

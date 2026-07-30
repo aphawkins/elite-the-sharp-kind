@@ -5,6 +5,7 @@
 using System.Numerics;
 using StuntCarRacerSharpLib.Fakes;
 using StuntCarRacerSharpLib.Rendering;
+using Useful;
 using Xunit;
 
 namespace StuntCarRacerSharpLib.Tests.Rendering;
@@ -140,10 +141,10 @@ public class HudRendererTests
             return;
         }
 
-        (_, float width, _, uint colour) = Assert.Single(graphics.FilledRectangles);
+        (_, float width, _, FastColor colour) = Assert.Single(graphics.FilledRectangles);
         float expectedWidth = expectedUnits / 240f * 242f;
         Assert.Equal(expectedWidth, width, Epsilon);
-        Assert.Equal(displaySpeed > 240 ? 0xFFFFCC00 : 0xFFFFFF00, colour);
+        Assert.Equal(FastColor.FromUInt32(displaySpeed > 240 ? 0xFFFFCC00 : 0xFFFFFF00), colour);
     }
 
     [Fact]

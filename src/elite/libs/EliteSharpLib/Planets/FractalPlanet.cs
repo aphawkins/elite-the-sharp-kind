@@ -14,11 +14,16 @@ internal sealed class FractalPlanet : IObject
 {
     private readonly IEliteDraw _draw;
     private readonly PlanetRenderer _planetRenderer;
-    private readonly uint _colorDarkSea;
-    private readonly uint _colorDarkLand;
-    private readonly uint _colorSea;
-    private readonly uint _colorLand;
+    private readonly FastColor _colorDarkSea;
+    private readonly FastColor _colorDarkLand;
+    private readonly FastColor _colorSea;
+    private readonly FastColor _colorLand;
     private readonly IRandomSource _landscapeRandom;
+
+    // The midpoint-displacement pass works in heights, not colours; ColorLandscape
+    // then maps each height onto the renderer's landscape.
+    private readonly uint[,] _heights =
+        new uint[PlanetRenderer.LandXMax + 1, PlanetRenderer.LandYMax + 1];
 
     internal FractalPlanet(IEliteDraw draw, int seed)
     {
@@ -65,7 +70,7 @@ internal sealed class FractalPlanet : IObject
 
     internal int Seed { get; }
 
-    internal uint[,] Landscape => _planetRenderer.Landscape;
+    internal FastColor[,] Landscape => _planetRenderer.Landscape;
 
     public IObject Clone()
     {
@@ -88,7 +93,7 @@ internal sealed class FractalPlanet : IObject
     /// </summary>
     private uint CalcMidpointColor(int sx, int sy, int ex, int ey)
         => Math.Clamp(
-            ((_planetRenderer.Landscape[sx, sy] + _planetRenderer.Landscape[ex, ey]) / 2) + (uint)_landscapeRandom.GaussianRandom(-7, 8),
+            ((_heights[sx, sy] + _heights[ex, ey]) / 2) + (uint)_landscapeRandom.GaussianRandom(-7, 8),
             0,
             255);
 
@@ -103,7 +108,7 @@ internal sealed class FractalPlanet : IObject
         {
             for (int x = 0; x <= PlanetRenderer.LandXMax; x += d)
             {
-                _planetRenderer.Landscape[x, y] = (uint)_landscapeRandom.Random(255);
+                _heights[x, y] = (uint)_landscapeRandom.Random(255);
             }
         }
 
@@ -130,12 +135,12 @@ internal sealed class FractalPlanet : IObject
             {
                 float dist = (x * x) + (y * y);
                 bool dark = dist > 10000;
-                _planetRenderer.Landscape[x, y] = LandscapeColor(_planetRenderer.Landscape[x, y], dark);
+                _planetRenderer.Landscape[x, y] = LandscapeColor(_heights[x, y], dark);
             }
         }
     }
 
-    private uint LandscapeColor(uint height, bool dark)
+    private FastColor LandscapeColor(uint height, bool dark)
         => height > 166
             ? (dark ? _colorDarkLand : _colorLand)
             : (dark ? _colorDarkSea : _colorSea);
@@ -151,11 +156,11 @@ internal sealed class FractalPlanet : IObject
         int bx = tx + w;
         int by = ty + w;
 
-        _planetRenderer.Landscape[mx, ty] = CalcMidpointColor(tx, ty, bx, ty);
-        _planetRenderer.Landscape[mx, by] = CalcMidpointColor(tx, by, bx, by);
-        _planetRenderer.Landscape[tx, my] = CalcMidpointColor(tx, ty, tx, by);
-        _planetRenderer.Landscape[bx, my] = CalcMidpointColor(bx, ty, bx, by);
-        _planetRenderer.Landscape[mx, my] = CalcMidpointColor(tx, my, bx, my);
+        _heights[mx, ty] = CalcMidpointColor(tx, ty, bx, ty);
+        _heights[mx, by] = CalcMidpointColor(tx, by, bx, by);
+        _heights[tx, my] = CalcMidpointColor(tx, ty, tx, by);
+        _heights[bx, my] = CalcMidpointColor(bx, ty, bx, by);
+        _heights[mx, my] = CalcMidpointColor(tx, my, bx, my);
 
         if (d == 1)
         {

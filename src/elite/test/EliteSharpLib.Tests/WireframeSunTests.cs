@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Suns;
 using EliteSharpLib.Views;
+using Useful;
 using Useful.Abstraction;
 using Useful.Assets;
 using Useful.Fakes.Controls;
@@ -28,7 +29,7 @@ public class WireframeSunTests
     [Fact]
     public void DrawFillsADiscOfTheExpectedSize()
     {
-        (FastBitmap frame, Vector2 centre, uint white) = DrawSun();
+        (FastBitmap frame, Vector2 centre, FastColor white) = DrawSun();
 
         // A filled disc, not an outline: the centre and a point most of the
         // way out to the edge are both lit.
@@ -52,9 +53,9 @@ public class WireframeSunTests
     [Fact]
     public void DrawUsesWhiteOnly()
     {
-        (FastBitmap frame, _, uint white) = DrawSun();
+        (FastBitmap frame, _, FastColor white) = DrawSun();
 
-        HashSet<uint> colors = [];
+        HashSet<FastColor> colors = [];
         for (int y = 0; y < frame.Height; y++)
         {
             for (int x = 0; x < frame.Width; x++)
@@ -67,7 +68,7 @@ public class WireframeSunTests
         Assert.Contains(white, colors);
     }
 
-    private static (FastBitmap Frame, Vector2 Centre, uint White) DrawSun()
+    private static (FastBitmap Frame, Vector2 Centre, FastColor White) DrawSun()
     {
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(ScreenSize, ScreenSize, b => lastFrame = b, AssetLocator.Create());
@@ -84,7 +85,7 @@ public class WireframeSunTests
         return (lastFrame, draw.Layout.Centre, draw.Palette["White"]);
     }
 
-    private static int CountPixels(FastBitmap bitmap, uint color)
+    private static int CountPixels(FastBitmap bitmap, in FastColor color)
     {
         int count = 0;
         for (int y = 0; y < bitmap.Height; y++)

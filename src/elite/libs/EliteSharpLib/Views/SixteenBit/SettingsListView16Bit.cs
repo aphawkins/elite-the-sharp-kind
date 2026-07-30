@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -14,8 +15,8 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorDarkRed;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorDarkRed;
 
     internal SettingsListView16Bit(IEliteDraw draw)
         : base(draw)

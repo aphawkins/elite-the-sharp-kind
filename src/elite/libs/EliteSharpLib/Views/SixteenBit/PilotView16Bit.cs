@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Lasers;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -19,7 +20,7 @@ internal sealed class PilotView16Bit : BaseView16Bit, IView<PilotModel>
 {
     private readonly IEliteDraw _draw;
     private readonly LaserDrawBase _laser;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorWhite;
 
     internal PilotView16Bit(IEliteDraw draw, GameState gameState, RNG rng)
         : base(draw)

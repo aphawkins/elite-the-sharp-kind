@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -12,9 +13,9 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorGreen;
-    private readonly uint _colorDarkRed;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorDarkRed;
 
     internal MarketView16Bit(IEliteDraw draw)
         : base(draw)

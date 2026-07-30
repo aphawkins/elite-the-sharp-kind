@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Planets;
 
@@ -15,7 +16,7 @@ internal class PlanetRenderer
 
     internal PlanetRenderer(IEliteDraw draw) => _draw = draw;
 
-    internal uint[,] Landscape { get; } = new uint[LandXMax + 1, LandYMax + 1];
+    internal FastColor[,] Landscape { get; } = new FastColor[LandXMax + 1, LandYMax + 1];
 
     internal (Vector2 Position, float Radius)? GetPlanetPosition(Vector4 location)
     {

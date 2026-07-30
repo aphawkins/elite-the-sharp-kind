@@ -132,7 +132,7 @@ public sealed class AssetSet
         {
             for (int x = 0; x < asset.Width; x++)
             {
-                uint argb = asset.GetPixel(x, y);
+                uint argb = asset.GetPixel(x, y).Argb;
                 uint alpha = argb >> 24;
 
                 if (alpha == 0)

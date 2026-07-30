@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -22,8 +23,8 @@ internal sealed class CommanderStatusView16Bit : BaseView16Bit, IView<CommanderS
     private const int SpacingY = 16;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGreen;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorWhite;
 
     internal CommanderStatusView16Bit(IEliteDraw draw)
         : base(draw)

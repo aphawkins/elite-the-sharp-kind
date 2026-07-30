@@ -52,11 +52,11 @@ public sealed class BitmapFont
 
     // Cyan on a proportional sheet, white on a two-colour grid sheet: the
     // pixels that take on the requested text colour.
-    public uint Ink => IsProportional ? BaseColors.Cyan.Argb : BaseColors.White.Argb;
+    public FastColor Ink => IsProportional ? BaseColors.Cyan : BaseColors.White;
 
     // Grid sheets are opaque, so their background colour is the transparency
     // key; proportional sheets already carry an alpha channel.
-    public uint Background => IsProportional ? BaseColors.TransparentBlack.Argb : BaseColors.Black.Argb;
+    public FastColor Background => IsProportional ? BaseColors.TransparentBlack : BaseColors.Black;
 
     // Glyphs run from space (ASCII 32) left to right, top to bottom. This is
     // the same mapping the proportional sheets always used - (c >> 4) - 2 and

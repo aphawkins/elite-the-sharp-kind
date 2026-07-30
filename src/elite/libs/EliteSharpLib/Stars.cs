@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
+using Useful;
 
 namespace EliteSharpLib;
 
@@ -15,7 +16,7 @@ internal sealed class Stars
     private readonly GameState _gameState;
     private readonly PlayerShip _ship;
     private readonly Vector4[] _stars = new Vector4[20];
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorWhite;
     private readonly RNG _rng;
 
     internal Stars(GameState gameState, IEliteDraw draw, PlayerShip ship, RNG rng)

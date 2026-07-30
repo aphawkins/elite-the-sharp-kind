@@ -36,9 +36,9 @@ public class RoadTexturesTests
 
         static void AssertStrip(FastBitmap strip, in FastColor lineColour, in FastColor roadColour)
         {
-            Assert.Equal((uint)lineColour, strip.GetPixel(0, 0));
-            Assert.Equal((uint)roadColour, strip.GetPixel(strip.Width / 2, 0));
-            Assert.Equal((uint)lineColour, strip.GetPixel(strip.Width - 1, 0));
+            Assert.Equal(lineColour, strip.GetPixel(0, 0));
+            Assert.Equal(roadColour, strip.GetPixel(strip.Width / 2, 0));
+            Assert.Equal(lineColour, strip.GetPixel(strip.Width - 1, 0));
         }
     }
 

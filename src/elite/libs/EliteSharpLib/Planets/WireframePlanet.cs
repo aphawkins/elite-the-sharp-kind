@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib.Planets;
 
@@ -22,7 +23,7 @@ internal sealed class WireframePlanet : IObject
 
     private readonly IEliteDraw _draw;
     private readonly PlanetRenderer _planetRenderer;
-    private readonly uint _color;
+    private readonly FastColor _color;
     private readonly bool _hasCrater;
 
     internal WireframePlanet(IEliteDraw draw, bool hasCrater)

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -12,7 +13,7 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class QuitView16Bit : BaseView16Bit, IView<QuitModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGoldenrod;
+    private readonly FastColor _colorGoldenrod;
 
     internal QuitView16Bit(IEliteDraw draw)
         : base(draw)

@@ -17,8 +17,8 @@ public class PngReaderTests
         // Assert
         Assert.Equal(2, bitmap.Width);
         Assert.Equal(1, bitmap.Height);
-        Assert.Equal(0xFFFF0000, bitmap.GetPixel(0, 0));
-        Assert.Equal(0x800000FF, bitmap.GetPixel(1, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFFFF0000), bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0x800000FF), bitmap.GetPixel(1, 0));
     }
 
     [Fact]
@@ -32,7 +32,7 @@ public class PngReaderTests
         FastBitmap bitmap = PngReader.Read(file.Path);
 
         // Assert
-        Assert.Equal(0xFF102030, bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFF102030), bitmap.GetPixel(0, 0));
     }
 
     [Fact]
@@ -48,8 +48,8 @@ public class PngReaderTests
         FastBitmap bitmap = PngReader.Read(file.Path);
 
         // Assert
-        Assert.Equal(0x00FF0000u, bitmap.GetPixel(0, 0));
-        Assert.Equal(0xFF00FF00, bitmap.GetPixel(1, 0));
+        Assert.Equal(FastColor.FromUInt32(0x00FF0000u), bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFF00FF00), bitmap.GetPixel(1, 0));
     }
 
     [Fact]
@@ -63,8 +63,8 @@ public class PngReaderTests
         FastBitmap bitmap = PngReader.Read(file.Path);
 
         // Assert
-        Assert.Equal(0xFFFFFFFF, bitmap.GetPixel(0, 0));
-        Assert.Equal(0xFF000000, bitmap.GetPixel(1, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFFFFFFFF), bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFF000000), bitmap.GetPixel(1, 0));
     }
 
     [Fact]
@@ -78,8 +78,8 @@ public class PngReaderTests
         FastBitmap bitmap = PngReader.Read(file.Path);
 
         // Assert
-        Assert.Equal(0x00808080u, bitmap.GetPixel(0, 0));
-        Assert.Equal(0xFF000000, bitmap.GetPixel(1, 0));
+        Assert.Equal(FastColor.FromUInt32(0x00808080u), bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFF000000), bitmap.GetPixel(1, 0));
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class PngReaderTests
         FastBitmap bitmap = PngReader.Read(file.Path);
 
         // Assert
-        Assert.Equal(0x80404040, bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0x80404040), bitmap.GetPixel(0, 0));
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class PngReaderTests
         FastBitmap bitmap = PngReader.Read(file.Path);
 
         // Assert
-        Assert.Equal(0xFF102030, bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFF102030), bitmap.GetPixel(0, 0));
     }
 
     [Fact]
@@ -130,8 +130,8 @@ public class PngReaderTests
         // Assert
         for (int y = 0; y < 5; y++)
         {
-            Assert.Equal(0xFF0A141Eu, bitmap.GetPixel(0, y));
-            Assert.Equal(0xFF28323Cu, bitmap.GetPixel(1, y));
+            Assert.Equal(FastColor.FromUInt32(0xFF0A141Eu), bitmap.GetPixel(0, y));
+            Assert.Equal(FastColor.FromUInt32(0xFF28323Cu), bitmap.GetPixel(1, y));
         }
     }
 

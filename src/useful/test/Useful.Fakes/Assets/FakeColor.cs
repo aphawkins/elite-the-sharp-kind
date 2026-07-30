@@ -4,5 +4,5 @@ namespace Useful.Fakes.Assets;
 
 public static class FakeColor
 {
-    public static uint TestColor => 0x12345678;
+    public static FastColor TestColor => FastColor.FromUInt32(0x12345678);
 }

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -16,8 +17,8 @@ internal sealed class Intro1View16Bit : BaseView16Bit, IView<Intro1Model>
     private const float CreditSpacing = 20;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGoldenrod;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorWhite;
 
     internal Intro1View16Bit(IEliteDraw draw)
         : base(draw)

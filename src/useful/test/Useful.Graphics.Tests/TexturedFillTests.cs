@@ -15,8 +15,8 @@ public class TexturedFillTests
         SetupEmptyAssets(assets);
         using SoftwareGraphics graphics = SoftwareGraphics.Create(100, 100, DoAssert, assets.Object);
         using FastBitmap texture = new(2, 1);
-        texture.SetPixel(0, 0, BaseColors.Red.Argb);
-        texture.SetPixel(1, 0, BaseColors.Green.Argb);
+        texture.SetPixel(0, 0, BaseColors.Red);
+        texture.SetPixel(1, 0, BaseColors.Green);
 
         // an axis-aligned square with u = 0 on the left and 1 on the right
         Vector2[] points = [new(20, 20), new(80, 20), new(80, 80), new(20, 80)];
@@ -32,12 +32,12 @@ public class TexturedFillTests
             {
                 for (int x = 25; x <= 45; x += 5)
                 {
-                    Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(x, y));
+                    Assert.Equal(BaseColors.Red, bmp.GetPixel(x, y));
                 }
 
                 for (int x = 55; x <= 75; x += 5)
                 {
-                    Assert.Equal(BaseColors.Green.Argb, bmp.GetPixel(x, y));
+                    Assert.Equal(BaseColors.Green, bmp.GetPixel(x, y));
                 }
             }
         }
@@ -65,7 +65,7 @@ public class TexturedFillTests
         {
             for (int x = 0; x < 4; x++)
             {
-                texture.SetPixel(x, y, BaseColors.White.Argb);
+                texture.SetPixel(x, y, BaseColors.White);
             }
         }
 
@@ -88,7 +88,7 @@ public class TexturedFillTests
                 {
                     if (x < minX || x > maxX || y < minY || y > maxY)
                     {
-                        Assert.Equal(BaseColors.Black.Argb, frame.GetPixel(x, y));
+                        Assert.Equal(BaseColors.Black, frame.GetPixel(x, y));
                     }
                 }
             }
@@ -102,8 +102,8 @@ public class TexturedFillTests
         SetupEmptyAssets(assets);
         using SoftwareGraphics graphics = SoftwareGraphics.Create(100, 100, DoAssert, assets.Object);
         using FastBitmap texture = new(2, 1);
-        texture.SetPixel(0, 0, BaseColors.Red.Argb);
-        texture.SetPixel(1, 0, BaseColors.Green.Argb);
+        texture.SetPixel(0, 0, BaseColors.Red);
+        texture.SetPixel(1, 0, BaseColors.Green);
 
         Vector2[] points = [new(20, 20), new(80, 20), new(80, 80), new(20, 80)];
         Vector2[] textureCoords = [new(-2, -1), new(3, -1), new(3, 2), new(-2, 2)];
@@ -114,8 +114,8 @@ public class TexturedFillTests
         static void DoAssert(FastBitmap bmp)
         {
             // coordinates clamp to the edge texels
-            Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(25, 50));
-            Assert.Equal(BaseColors.Green.Argb, bmp.GetPixel(75, 50));
+            Assert.Equal(BaseColors.Red, bmp.GetPixel(25, 50));
+            Assert.Equal(BaseColors.Green, bmp.GetPixel(75, 50));
         }
     }
 

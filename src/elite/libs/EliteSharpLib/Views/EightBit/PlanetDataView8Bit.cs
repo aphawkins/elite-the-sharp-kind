@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -22,8 +23,8 @@ internal sealed class PlanetDataView8Bit : BaseView8Bit, IView<PlanetDataModel>
     private const int DescriptionY = 96;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGreen;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorWhite;
 
     internal PlanetDataView8Bit(IEliteDraw draw)
         : base(draw)

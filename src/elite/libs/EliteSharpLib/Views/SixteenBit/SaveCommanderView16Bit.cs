@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -12,8 +13,8 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class SaveCommanderView16Bit : BaseView16Bit, IView<SaveCommanderModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorGoldenrod;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorGoldenrod;
 
     internal SaveCommanderView16Bit(IEliteDraw draw)
         : base(draw)

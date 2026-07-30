@@ -34,12 +34,6 @@ public readonly struct FastColor : IEquatable<FastColor>
 
     public byte R { get; }
 
-    // Eases the uint-to-FastColor migration: ARGB literals/fields keep
-    // working across the boundary while call sites move to FastColor.
-    public static implicit operator FastColor(uint argbColor) => FromUInt32(argbColor);
-
-    public static implicit operator uint(in FastColor color) => ToUInt32(color);
-
     public static bool operator !=(in FastColor left, in FastColor right) => !(left == right);
 
     public static bool operator ==(in FastColor left, in FastColor right) => left.Argb == right.Argb;

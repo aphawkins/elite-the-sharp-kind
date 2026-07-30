@@ -15,9 +15,9 @@ public class GridBitmapFontTests
     {
         // Arrange: a 1-column sheet of 2x2 cells. Cell 0 is space (all
         // background); cell 1 is '!' with ink down its left column.
-        uint black = BaseColors.Black.Argb;
-        uint white = BaseColors.White.Argb;
-        uint[] cells =
+        FastColor black = BaseColors.Black;
+        FastColor white = BaseColors.White;
+        FastColor[] cells =
         [
             black, black,
             black, black,
@@ -26,7 +26,7 @@ public class GridBitmapFontTests
         ];
         using TempImageFile sheet = TempImageFile.From(Sheet(cells));
 
-        uint[] frame = [];
+        FastColor[] frame = [];
         using SoftwareGraphics graphics = SoftwareGraphics.Create(
             4,
             4,
@@ -34,13 +34,13 @@ public class GridBitmapFontTests
             Locator(sheet.Path));
 
         // Act
-        graphics.DrawTextLeft(new(0, 0), "!", "TestFont", BaseColors.Red.Argb);
+        graphics.DrawTextLeft(new(0, 0), "!", "TestFont", BaseColors.Red);
         graphics.ScreenUpdate();
 
         // Assert - ink took the requested colour, background stayed clear.
-        Assert.Equal(BaseColors.Red.Argb, frame[0]);
-        Assert.Equal(BaseColors.Red.Argb, frame[4]);
-        Assert.Equal(BaseColors.Black.Argb, frame[1]);
+        Assert.Equal(BaseColors.Red, frame[0]);
+        Assert.Equal(BaseColors.Red, frame[4]);
+        Assert.Equal(BaseColors.Black, frame[1]);
     }
 
     [Fact]
@@ -48,8 +48,8 @@ public class GridBitmapFontTests
     {
         // Arrange: both glyphs are fully inked, so a monospaced advance puts
         // the second one exactly one cell to the right.
-        uint white = BaseColors.White.Argb;
-        uint[] cells =
+        FastColor white = BaseColors.White;
+        FastColor[] cells =
         [
             white, white,
             white, white,
@@ -58,7 +58,7 @@ public class GridBitmapFontTests
         ];
         using TempImageFile sheet = TempImageFile.From(Sheet(cells));
 
-        uint[] frame = [];
+        FastColor[] frame = [];
         using SoftwareGraphics graphics = SoftwareGraphics.Create(
             4,
             4,
@@ -66,19 +66,19 @@ public class GridBitmapFontTests
             Locator(sheet.Path));
 
         // Act - space then '!', both inked, so all four columns are covered.
-        graphics.DrawTextLeft(new(0, 0), " !", "TestFont", BaseColors.Red.Argb);
+        graphics.DrawTextLeft(new(0, 0), " !", "TestFont", BaseColors.Red);
         graphics.ScreenUpdate();
 
         // Assert
-        Assert.Equal(BaseColors.Red.Argb, frame[0]);
-        Assert.Equal(BaseColors.Red.Argb, frame[1]);
-        Assert.Equal(BaseColors.Red.Argb, frame[2]);
-        Assert.Equal(BaseColors.Red.Argb, frame[3]);
+        Assert.Equal(BaseColors.Red, frame[0]);
+        Assert.Equal(BaseColors.Red, frame[1]);
+        Assert.Equal(BaseColors.Red, frame[2]);
+        Assert.Equal(BaseColors.Red, frame[3]);
     }
 
-    private static uint[] Capture(FastBitmap bitmap)
+    private static FastColor[] Capture(FastBitmap bitmap)
     {
-        uint[] pixels = new uint[bitmap.Width * bitmap.Height];
+        FastColor[] pixels = new FastColor[bitmap.Width * bitmap.Height];
 
         for (int y = 0; y < bitmap.Height; y++)
         {
@@ -93,7 +93,7 @@ public class GridBitmapFontTests
 
     // Takes rows top-down, the way the sheet reads on screen, and flips them
     // into the bottom-up order a BMP stores.
-    private static byte[] Sheet(uint[] pixels)
+    private static byte[] Sheet(FastColor[] pixels)
     {
         const int width = 2;
         int height = pixels.Length / width;
@@ -103,12 +103,12 @@ public class GridBitmapFontTests
         {
             for (int x = 0; x < width; x++)
             {
-                uint colour = pixels[x + ((height - 1 - y) * width)];
+                FastColor colour = pixels[x + ((height - 1 - y) * width)];
                 int i = x + (y * width);
-                data[i * 4] = (byte)(colour & 0xFF);
-                data[(i * 4) + 1] = (byte)((colour >> 8) & 0xFF);
-                data[(i * 4) + 2] = (byte)((colour >> 16) & 0xFF);
-                data[(i * 4) + 3] = (byte)(colour >> 24);
+                data[i * 4] = colour.B;
+                data[(i * 4) + 1] = colour.G;
+                data[(i * 4) + 2] = colour.R;
+                data[(i * 4) + 3] = colour.A;
             }
         }
 

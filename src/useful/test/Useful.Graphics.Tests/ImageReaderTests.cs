@@ -15,7 +15,7 @@ public class ImageReaderTests
         FastBitmap bitmap = ImageReader.Read(file.Path);
 
         // Assert
-        Assert.Equal(0xFFFF0000, bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFFFF0000), bitmap.GetPixel(0, 0));
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class ImageReaderTests
         FastBitmap bitmap = ImageReader.Read(file.Path);
 
         // Assert
-        Assert.Equal(0xFFFF0000, bitmap.GetPixel(0, 0));
+        Assert.Equal(FastColor.FromUInt32(0xFFFF0000), bitmap.GetPixel(0, 0));
     }
 
     [Fact]

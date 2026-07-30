@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Controls;
 
 namespace EliteSharpLib.Views.EightBit;
@@ -20,10 +21,10 @@ internal sealed class ShortRangeChartView8Bit : ShortRangeChartViewBase
     private const int DistanceY = 20;
     private const int CrossSize = 8;
 
-    private readonly uint _colorGreen;
-    private readonly uint _colorRed;
-    private readonly uint _colorWhite;
-    private readonly uint _colorYellow;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorRed;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorYellow;
 
     internal ShortRangeChartView8Bit(
         GameState gameState,

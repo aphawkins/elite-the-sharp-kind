@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Views.EightBit;
@@ -21,8 +22,8 @@ internal class BaseView8Bit : IBaseView
     private const int CharacterWidth = 8;
     private const int RowHeight = 8;
 
-    private readonly uint _colorWhite;
-    private readonly uint _colorYellow;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorYellow;
 
     internal BaseView8Bit(IEliteDraw draw)
     {

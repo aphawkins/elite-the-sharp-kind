@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib.Suns;
 
@@ -95,7 +96,7 @@ internal abstract class GradientSunBase : IObject
     /// against the three squared band radii. <paramref name="dither"/> is the
     /// parity used to mix the outermost band.
     /// </summary>
-    protected abstract uint SunColor(float distance, float inner, float inner2, float outer, int dither);
+    protected abstract FastColor SunColor(float distance, float inner, float inner2, float outer, int dither);
 
     private void RenderSunLine(Vector2 centre, float x, float y, float radius)
     {

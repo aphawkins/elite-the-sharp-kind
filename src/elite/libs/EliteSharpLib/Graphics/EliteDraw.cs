@@ -26,7 +26,7 @@ internal sealed class EliteDraw : IEliteDraw
     // the 16-bit render exactly (512 x 1.0 = the old 256 x Scale 2).
     private const float FocusFactor = 1.0f;
 
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorWhite;
     private readonly GameState _gameState;
     private readonly Vector4[] _pointList = new Vector4[MaxModelPoints];
     private readonly IPolygonRenderer _shipRenderer;

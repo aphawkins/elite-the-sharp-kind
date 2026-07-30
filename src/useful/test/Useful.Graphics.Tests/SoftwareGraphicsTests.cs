@@ -18,12 +18,12 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawPixel(new(2, 2), BaseColors.White.Argb);
+        graphics.DrawPixel(new(2, 2), BaseColors.White);
         graphics.Clear();
         graphics.ScreenUpdate();
 
         // Assert
-        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(2, 2));
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Black, bmp.GetPixel(2, 2));
     }
 
     [Fact]
@@ -34,17 +34,17 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawCircleFilled(new(2, 2), 2, BaseColors.White.Argb);
+        graphics.DrawCircleFilled(new(2, 2), 2, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(0, 2));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(4, 2));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 4));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(0, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(4, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 4));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
         }
     }
 
@@ -60,7 +60,7 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawCircleFilled(new(x, y), radius, BaseColors.White.Argb);
+        graphics.DrawCircleFilled(new(x, y), radius, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
@@ -70,7 +70,7 @@ public class SoftwareGraphicsTests
             {
                 for (int screenX = 0; screenX < 5; screenX++)
                 {
-                    Assert.Equal(centreColor, bmp.GetPixel(screenX, screenY));
+                    Assert.Equal(FastColor.FromUInt32(centreColor), bmp.GetPixel(screenX, screenY));
                 }
             }
         }
@@ -84,16 +84,16 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawCircle(new(2, 2), 2, BaseColors.White.Argb);
+        graphics.DrawCircle(new(2, 2), 2, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(0, 2));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(4, 2));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 4));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(0, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(4, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 4));
         }
     }
 
@@ -109,7 +109,7 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawCircle(new(x, y), radius, BaseColors.White.Argb);
+        graphics.DrawCircle(new(x, y), radius, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
@@ -119,7 +119,7 @@ public class SoftwareGraphicsTests
             {
                 for (int screenX = 0; screenX < 5; screenX++)
                 {
-                    Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(screenX, screenY));
+                    Assert.Equal(BaseColors.Black, bmp.GetPixel(screenX, screenY));
                 }
             }
         }
@@ -133,14 +133,14 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawCircle(new(0, 0), 4, BaseColors.White.Argb);
+        graphics.DrawCircle(new(0, 0), 4, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(0, 4));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(4, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(0, 4));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(4, 0));
         }
     }
 
@@ -158,7 +158,7 @@ public class SoftwareGraphicsTests
         graphics.ScreenUpdate();
 
         // Assert
-        void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(imageX, imageY));
+        void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Red, bmp.GetPixel(imageX, imageY));
     }
 
     [Theory]
@@ -174,7 +174,7 @@ public class SoftwareGraphicsTests
         graphics.ScreenUpdate();
 
         // Assert
-        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(1, 1));
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Red, bmp.GetPixel(1, 1));
     }
 
     [Theory]
@@ -184,7 +184,7 @@ public class SoftwareGraphicsTests
         // Arrange
         Mock<IAssetLocator> moqAssetLocator = ArrangeAssets(filename);
         using SoftwareGraphics graphics = SoftwareGraphics.Create(2, 2, DoAssert, moqAssetLocator.Object);
-        graphics.DrawPixel(new(1, 1), BaseColors.White.Argb);
+        graphics.DrawPixel(new(1, 1), BaseColors.White);
 
         // Act
         graphics.DrawImage("TestImage", new(0, 0));
@@ -193,10 +193,10 @@ public class SoftwareGraphicsTests
         // Assert
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(0, 0));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 1));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(1, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.Red, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 1));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(1, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
         }
     }
 
@@ -212,14 +212,14 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawLine(new(startX, startY), new(endX, endY), BaseColors.White.Argb);
+        graphics.DrawLine(new(startX, startY), new(endX, endY), BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
         void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel((int)startX, (int)startY));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel((int)endX, (int)endY));
+            Assert.Equal(BaseColors.White, bmp.GetPixel((int)startX, (int)startY));
+            Assert.Equal(BaseColors.White, bmp.GetPixel((int)endX, (int)endY));
         }
     }
 
@@ -235,11 +235,11 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawLine(new(startX, startY), new(endX, endY), BaseColors.White.Argb);
+        graphics.DrawLine(new(startX, startY), new(endX, endY), BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
-        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
     }
 
     [Theory]
@@ -253,11 +253,11 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawPixel(new(x, y), BaseColors.White.Argb);
+        graphics.DrawPixel(new(x, y), BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
-        void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White.Argb, bmp.GetPixel((int)x, (int)y));
+        void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White, bmp.GetPixel((int)x, (int)y));
     }
 
     [Theory]
@@ -270,7 +270,7 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, (_) => { }, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawPixel(new(x, y), BaseColors.White.Argb);
+        graphics.DrawPixel(new(x, y), BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
@@ -316,7 +316,7 @@ public class SoftwareGraphicsTests
         graphics.ScreenUpdate();
 
         // Assert
-        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(1, 1));
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.Red, bmp.GetPixel(1, 1));
     }
 
     [Fact]
@@ -329,16 +329,16 @@ public class SoftwareGraphicsTests
         Vector2[] square = [new(0, 0), new(4, 0), new(4, 4), new(0, 4)];
 
         // Act
-        graphics.DrawPolygon(square, BaseColors.White.Argb);
+        graphics.DrawPolygon(square, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert: corners drawn
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(0, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(4, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(4, 4));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(0, 4));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(4, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(4, 4));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(0, 4));
         }
     }
 
@@ -352,11 +352,11 @@ public class SoftwareGraphicsTests
         Vector2[] tri = [new(1, 1), new(3, 1), new(2, 3)];
 
         // Act
-        graphics.DrawPolygonFilled(tri, BaseColors.White.Argb);
+        graphics.DrawPolygonFilled(tri, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert: interior pixel set
-        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
     }
 
     [Fact]
@@ -367,29 +367,29 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(6, 6, DoAssert, moqAssetLocator.Object);
 
         // Act - outline
-        graphics.DrawRectangle(new(1, 1), 3, 3, BaseColors.White.Argb);
+        graphics.DrawRectangle(new(1, 1), 3, 3, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert outline
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(1, 0));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(3, 0));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(3, 1));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(4, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 2));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(2, 2));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(3, 2));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 3));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 3));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 3));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(3, 3));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(4, 3));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(1, 4));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(3, 4));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(1, 0));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(3, 0));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(3, 1));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(4, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 2));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(3, 2));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 3));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 3));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 3));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(3, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(4, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(1, 4));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(3, 4));
         }
     }
 
@@ -402,29 +402,29 @@ public class SoftwareGraphicsTests
 
         // Act - filled
         using SoftwareGraphics graphics2 = SoftwareGraphics.Create(6, 6, DoAssert, moqAssetLocator.Object);
-        graphics2.DrawRectangleFilled(new(1, 1), 3, 3, BaseColors.White.Argb);
+        graphics2.DrawRectangleFilled(new(1, 1), 3, 3, BaseColors.White);
         graphics2.ScreenUpdate();
 
         // Assert - interior should be white
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(1, 0));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(3, 0));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(3, 1));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(4, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 2));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(3, 2));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 3));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 3));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 3));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(3, 3));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(4, 3));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(1, 4));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(3, 4));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(1, 0));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(3, 0));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(3, 1));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(4, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(3, 2));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 3));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 3));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 3));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(3, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(4, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(1, 4));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(3, 4));
         }
     }
 
@@ -437,14 +437,14 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(10, 4, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawRectangleFilled(new(2, 1), 20, 20, BaseColors.White.Argb);
+        graphics.DrawRectangleFilled(new(2, 1), 20, 20, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert - clamped to the last valid row/column, not out of bounds
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(9, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(9, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(9, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(9, 3));
         }
     }
 
@@ -456,14 +456,14 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(10, 4, DoAssert, moqAssetLocator.Object);
 
         // Act
-        graphics.DrawRectangle(new(2, 1), 20, 20, BaseColors.White.Argb);
+        graphics.DrawRectangle(new(2, 1), 20, 20, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert - clamped to the last valid row/column, not out of bounds
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(9, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(9, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(9, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(9, 3));
         }
     }
 
@@ -475,16 +475,16 @@ public class SoftwareGraphicsTests
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
 
         // Preserve a pixel
-        graphics.DrawPixel(new(2, 2), BaseColors.White.Argb);
+        graphics.DrawPixel(new(2, 2), BaseColors.White);
 
         // Act - whitespace should do nothing
-        graphics.DrawTextLeft(new(0, 0), "   ", "TestFont", BaseColors.White.Argb);
-        graphics.DrawTextCentre(0, " ", "TestFont", BaseColors.White.Argb);
-        graphics.DrawTextRight(new(0, 0), Environment.NewLine, "TestFont", BaseColors.White.Argb);
+        graphics.DrawTextLeft(new(0, 0), "   ", "TestFont", BaseColors.White);
+        graphics.DrawTextCentre(0, " ", "TestFont", BaseColors.White);
+        graphics.DrawTextRight(new(0, 0), Environment.NewLine, "TestFont", BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert preserved
-        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
     }
 
     [Fact]
@@ -499,14 +499,14 @@ public class SoftwareGraphicsTests
         Vector2 c = new(2, 3);
 
         // Act - outline
-        graphics.DrawTriangle(a, b, c, BaseColors.White.Argb);
+        graphics.DrawTriangle(a, b, c, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert some outline points exist
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(3, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(3, 1));
         }
     }
 
@@ -522,10 +522,10 @@ public class SoftwareGraphicsTests
         Vector2 c = new(2, 3);
 
         // Act - filled
-        graphics.DrawTriangleFilled(a, b, c, BaseColors.White.Argb);
+        graphics.DrawTriangleFilled(a, b, c, BaseColors.White);
         graphics.ScreenUpdate();
 
-        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
     }
 
     [Fact]
@@ -548,15 +548,15 @@ public class SoftwareGraphicsTests
 
         // Act - clip to the region [1,1]-[3,3), then draw both inside and outside it
         graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
-        graphics.DrawPixel(new(0, 0), BaseColors.White.Argb);
-        graphics.DrawPixel(new(2, 2), BaseColors.White.Argb);
+        graphics.DrawPixel(new(0, 0), BaseColors.White);
+        graphics.DrawPixel(new(2, 2), BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
         }
     }
 
@@ -570,11 +570,11 @@ public class SoftwareGraphicsTests
         // Act - narrow the clip, then restore it to the whole screen before drawing
         graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
         graphics.SetClipRegion(new Vector2(0, 0), 5, 5);
-        graphics.DrawPixel(new(0, 0), BaseColors.White.Argb);
+        graphics.DrawPixel(new(0, 0), BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert - the earlier narrow clip no longer applies
-        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(0, 0));
+        static void DoAssert(FastBitmap bmp) => Assert.Equal(BaseColors.White, bmp.GetPixel(0, 0));
     }
 
     [Fact]
@@ -586,17 +586,17 @@ public class SoftwareGraphicsTests
 
         // Act - clip to the region [1,1]-[3,3), then fill a rectangle spanning the whole screen
         graphics.SetClipRegion(new Vector2(1, 1), 2, 2);
-        graphics.DrawRectangleFilled(new(0, 0), 5, 5, BaseColors.White.Argb);
+        graphics.DrawRectangleFilled(new(0, 0), 5, 5, BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert - only the clip region got painted
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(0, 0));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(1, 1));
-            Assert.Equal(BaseColors.White.Argb, bmp.GetPixel(2, 2));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(3, 3));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(4, 4));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(0, 0));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(1, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(3, 3));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(4, 4));
         }
     }
 
@@ -620,7 +620,7 @@ public class SoftwareGraphicsTests
         // Arrange
         Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
         using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, _ => { }, moqAssetLocator.Object);
-        graphics.DrawPixel(new(2, 2), BaseColors.White.Argb);
+        graphics.DrawPixel(new(2, 2), BaseColors.White);
 
         string path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.bmp");
         try
@@ -630,7 +630,7 @@ public class SoftwareGraphicsTests
 
             // Assert - readable back without ScreenUpdate ever being called
             FastBitmap read = BitmapReader.Read(path);
-            Assert.Equal(BaseColors.White.Argb, read.GetPixel(2, 2));
+            Assert.Equal(BaseColors.White, read.GetPixel(2, 2));
         }
         finally
         {
@@ -651,10 +651,10 @@ public class SoftwareGraphicsTests
         // should have been evicted by now).
         for (int i = 0; i < capacity + 10; i++)
         {
-            graphics.DrawTextLeft(new(0, 0), $"Text{i}", "TestFont", BaseColors.White.Argb);
+            graphics.DrawTextLeft(new(0, 0), $"Text{i}", "TestFont", BaseColors.White);
         }
 
-        graphics.DrawTextLeft(new(0, 0), "Text0", "TestFont", BaseColors.White.Argb);
+        graphics.DrawTextLeft(new(0, 0), "Text0", "TestFont", BaseColors.White);
         graphics.ScreenUpdate();
 
         // Assert - the cache never grew past its capacity

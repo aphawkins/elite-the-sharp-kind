@@ -6,6 +6,7 @@ using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Maths;
 
 namespace EliteSharpLib;
@@ -89,23 +90,23 @@ internal abstract class ScannerBase(
     /// Gets the dial's top rule colour, which the roll, climb and speed
     /// indicators also use.
     /// </summary>
-    protected abstract uint DialTopColor { get; }
+    protected abstract FastColor DialTopColor { get; }
 
-    protected abstract uint DialBodyColor { get; }
+    protected abstract FastColor DialBodyColor { get; }
 
-    protected abstract uint DialBottomColor { get; }
+    protected abstract FastColor DialBottomColor { get; }
 
-    protected abstract uint SpeedWarningColor { get; }
+    protected abstract FastColor SpeedWarningColor { get; }
 
-    protected abstract uint StationColor { get; }
+    protected abstract FastColor StationColor { get; }
 
-    protected abstract uint MissileColor { get; }
+    protected abstract FastColor MissileColor { get; }
 
-    protected abstract uint PoliceColor { get; }
+    protected abstract FastColor PoliceColor { get; }
 
-    protected abstract uint HostileColor { get; }
+    protected abstract FastColor HostileColor { get; }
 
-    protected abstract uint DefaultColor { get; }
+    protected abstract FastColor DefaultColor { get; }
 
     internal void DrawScanner()
         => Draw.Graphics.DrawImage(nameof(ImageType.Scanner), new(Draw.Layout.ScannerLeft, Draw.Layout.ScannerTop));
@@ -306,7 +307,7 @@ internal abstract class ScannerBase(
     {
         Vector2 origin = ScannerRelative(SpeedPosition);
         float length = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
-        uint color = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? SpeedWarningColor : DialTopColor;
+        FastColor color = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? SpeedWarningColor : DialTopColor;
 
         for (int i = 0; i < 6; i++)
         {
@@ -385,7 +386,7 @@ internal abstract class ScannerBase(
             y1 += centre.Y;
             y2 += centre.Y;
 
-            uint color = LollipopColor(obj);
+            FastColor color = LollipopColor(obj);
 
             // ship
             Draw.Graphics.DrawRectangleFilled(new(x - 3, y2), 5, 3, color);
@@ -398,7 +399,7 @@ internal abstract class ScannerBase(
     /// <summary>
     /// The lollipop colour for an object on the scanner.
     /// </summary>
-    private uint LollipopColor(IObject obj)
+    private FastColor LollipopColor(IObject obj)
         => obj.Flags.HasFlag(ShipProperties.Station)
             ? StationColor
             : obj.Type == ShipType.Missile

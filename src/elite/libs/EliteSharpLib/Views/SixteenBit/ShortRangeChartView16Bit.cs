@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Controls;
 
 namespace EliteSharpLib.Views.SixteenBit;
@@ -16,10 +17,10 @@ internal sealed class ShortRangeChartView16Bit : ShortRangeChartViewBase
     private const int DistanceY = 40;
     private const int CrossSize = 16;
 
-    private readonly uint _colorGoldenrod;
-    private readonly uint _colorGreen;
-    private readonly uint _colorFireBrick;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorFireBrick;
+    private readonly FastColor _colorWhite;
 
     internal ShortRangeChartView16Bit(
         GameState gameState,

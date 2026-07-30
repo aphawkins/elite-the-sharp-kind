@@ -31,7 +31,7 @@ public class ModelReaderTests
         # pn 2 1
         """;
         File.WriteAllText(tempFile, obj);
-        TestPalette palette = new() { ["White"] = 0 };
+        TestPalette palette = new() { ["White"] = FastColor.FromUInt32(0) };
 
         try
         {

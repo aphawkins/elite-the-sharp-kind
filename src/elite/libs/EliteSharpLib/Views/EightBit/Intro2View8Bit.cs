@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -16,8 +17,8 @@ internal sealed class Intro2View8Bit : BaseView8Bit, IView<Intro2Model>
     private const float ShipNameOffset = 30;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorYellow;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorYellow;
+    private readonly FastColor _colorWhite;
 
     internal Intro2View8Bit(IEliteDraw draw)
         : base(draw)

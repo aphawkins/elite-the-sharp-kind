@@ -173,7 +173,7 @@ public sealed class TrackRenderer
     // self-intersecting polygon, whereas a clipped triangle is always convex.
     private void DrawWorldPolygon(
         in ReadOnlySpan<Coord3D> world,
-        uint colour,
+        in FastColor colour,
         FastBitmap? texture,
         in ReadOnlySpan<Vector2> textureCoords)
     {

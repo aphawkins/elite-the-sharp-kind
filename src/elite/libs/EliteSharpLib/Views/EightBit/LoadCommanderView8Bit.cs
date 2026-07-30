@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -19,8 +20,8 @@ internal sealed class LoadCommanderView8Bit : BaseView8Bit, IView<LoadCommanderM
     private const int BoxY = 64;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorYellow;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorYellow;
 
     internal LoadCommanderView8Bit(IEliteDraw draw)
         : base(draw)

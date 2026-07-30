@@ -5,13 +5,14 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib.Suns;
 
 internal sealed class SolidSun : IObject
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _color;
+    private readonly FastColor _color;
     private readonly RNG _rng;
 
     internal SolidSun(IEliteDraw draw, RNG rng)

@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -16,9 +17,9 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
     private const int OptionBarWidth = 400;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorDarkRed;
-    private readonly uint _colorGray;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorDarkRed;
+    private readonly FastColor _colorGray;
 
     internal OptionsView16Bit(IEliteDraw draw)
         : base(draw)
@@ -47,7 +48,7 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
                 _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, _colorDarkRed);
             }
 
-            uint col = model.Options[i].IsEnabled ? _colorWhite : _colorGray;
+            FastColor col = model.Options[i].IsEnabled ? _colorWhite : _colorGray;
 
             _draw.Graphics.DrawTextCentre(position.Y, model.Options[i].Label, nameof(FontType.Small), col);
         }

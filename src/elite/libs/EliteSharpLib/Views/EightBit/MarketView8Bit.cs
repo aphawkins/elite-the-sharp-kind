@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -26,9 +27,9 @@ internal sealed class MarketView8Bit : BaseView8Bit, IView<MarketModel>
     private const int CashY = 186;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorGreen;
-    private readonly uint _colorRed;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorRed;
 
     internal MarketView8Bit(IEliteDraw draw)
         : base(draw)

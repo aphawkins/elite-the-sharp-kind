@@ -4,6 +4,7 @@
 
 using System.Globalization;
 using StuntCarRacerSharpLib.Tracks;
+using Useful;
 using Useful.Graphics;
 
 namespace StuntCarRacerSharpLib.Rendering;
@@ -105,7 +106,7 @@ internal sealed class HudRenderer
 
         if (state.WaitingToReleaseChains)
         {
-            _graphics.DrawTextCentre(BaseHeight * scaleY / 2f, "PRESS FIRE", StuntCarRacerMain.SmallFont, 0xFFFFFFFF);
+            _graphics.DrawTextCentre(BaseHeight * scaleY / 2f, "PRESS FIRE", StuntCarRacerMain.SmallFont, FastColor.FromUInt32(0xFFFFFFFF));
         }
     }
 
@@ -150,8 +151,8 @@ internal sealed class HudRenderer
     // than a plain dashed line.
     private void DrawChain(float x0, float y0, float x1, float y1, float linkWidth, float linkHeight, float linkGap)
     {
-        const uint DarkLink = 0xFF4A4A4A;
-        const uint LightLink = 0xFF8C8C8C;
+        FastColor darkLink = FastColor.FromUInt32(0xFF4A4A4A);
+        FastColor lightLink = FastColor.FromUInt32(0xFF8C8C8C);
 
         float dx = x1 - x0;
         float dy = y1 - y0;
@@ -162,7 +163,7 @@ internal sealed class HudRenderer
             float t = i / (float)linkCount;
             float x = x0 + (dx * t);
             float y = y0 + (dy * t);
-            uint colour = (i % 2 == 0) ? DarkLink : LightLink;
+            FastColor colour = (i % 2 == 0) ? darkLink : lightLink;
             _graphics.DrawRectangleFilled(new(x - (linkWidth / 2f), y), linkWidth, linkHeight, colour);
         }
     }
@@ -236,7 +237,7 @@ internal sealed class HudRenderer
             return;
         }
 
-        uint colour = displaySpeed > SpeedBarMax ? 0xFFFFCC00 : 0xFFFFFF00;
+        FastColor colour = FastColor.FromUInt32(displaySpeed > SpeedBarMax ? 0xFFFFCC00 : 0xFFFFFF00);
         System.Numerics.Vector2 position = new(SpeedBarDestX * scaleX, SpeedBarDestY * scaleY);
         _graphics.DrawRectangleFilled(position, width * scaleX, SpeedBarDestHeight * scaleY, colour);
     }
@@ -247,7 +248,7 @@ internal sealed class HudRenderer
     private void DrawReadouts(float scaleX, float scaleY, int lapNumber, int boostReserve, int opponentDistance)
     {
         const string font = StuntCarRacerMain.SmallFont;
-        const uint black = 0xFF000000;
+        FastColor black = FastColor.FromUInt32(0xFF000000);
 
         string lap = lapNumber > 0 ? lapNumber.ToString(CultureInfo.InvariantCulture) : " ";
         _graphics.DrawTextLeft(new(88 * scaleX, (BaseHeight - 48f) * scaleY), $"L{lap}", font, black);
@@ -267,7 +268,7 @@ internal sealed class HudRenderer
     private void DrawLapTimes(float scaleX, float scaleY, int currentLapTicks, int? bestLapTicks)
     {
         const string font = StuntCarRacerMain.SmallFont;
-        const uint black = 0xFF000000;
+        FastColor black = FastColor.FromUInt32(0xFF000000);
 
         _graphics.DrawTextRight(new(556 * scaleX, (BaseHeight - 48f) * scaleY), $"T{FormatLapTime(currentLapTicks)}", font, black);
 

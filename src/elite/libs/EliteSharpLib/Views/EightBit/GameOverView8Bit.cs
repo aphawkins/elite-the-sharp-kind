@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -14,7 +15,7 @@ namespace EliteSharpLib.Views.EightBit;
 internal sealed class GameOverView8Bit : BaseView8Bit, IView<GameOverModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorYellow;
+    private readonly FastColor _colorYellow;
 
     internal GameOverView8Bit(IEliteDraw draw)
         : base(draw)

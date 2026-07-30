@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -18,8 +19,8 @@ internal sealed class InventoryView16Bit : BaseView16Bit, IView<InventoryModel>
     private const int SpacingY = 16;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGreen;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorWhite;
 
     internal InventoryView16Bit(IEliteDraw draw)
         : base(draw)

@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib.Planets;
 
@@ -12,7 +13,7 @@ internal sealed class SolidPlanet : IObject
 {
     private readonly IEliteDraw _draw;
     private readonly PlanetRenderer _planetRenderer;
-    private readonly uint _color;
+    private readonly FastColor _color;
 
     internal SolidPlanet(IEliteDraw draw)
     {

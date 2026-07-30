@@ -5,6 +5,7 @@
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Lasers;
 using EliteSharpLib.Views;
+using Useful;
 using Useful.Abstraction;
 using Useful.Assets;
 using Useful.Fakes.Controls;
@@ -18,25 +19,25 @@ public class LaserDrawTests
     // The crosshair sprites are two-colour: transparent plus the laser's
     // own colour, so counting that colour proves the right one was drawn.
     [Fact]
-    public void DrawLaserSightsDrawsThePulseCrosshair() => AssertCrosshairColor(LaserType.Pulse, 0xFFFFFF5C);
+    public void DrawLaserSightsDrawsThePulseCrosshair() => AssertCrosshairColor(LaserType.Pulse, FastColor.FromUInt32(0xFFFFFF5C));
 
     [Fact]
-    public void DrawLaserSightsDrawsTheBeamCrosshair() => AssertCrosshairColor(LaserType.Beam, 0xFFFFFF5C);
+    public void DrawLaserSightsDrawsTheBeamCrosshair() => AssertCrosshairColor(LaserType.Beam, FastColor.FromUInt32(0xFFFFFF5C));
 
     [Fact]
-    public void DrawLaserSightsDrawsTheMilitaryCrosshair() => AssertCrosshairColor(LaserType.Military, 0xFFC3FF99);
+    public void DrawLaserSightsDrawsTheMilitaryCrosshair() => AssertCrosshairColor(LaserType.Military, FastColor.FromUInt32(0xFFC3FF99));
 
     [Fact]
-    public void DrawLaserSightsDrawsTheMiningCrosshair() => AssertCrosshairColor(LaserType.Mining, 0xFFB855F6);
+    public void DrawLaserSightsDrawsTheMiningCrosshair() => AssertCrosshairColor(LaserType.Mining, FastColor.FromUInt32(0xFFB855F6));
 
     [Fact]
     public void DrawLaserSightsDrawsNothingWithoutALaser()
     {
         FastBitmap frame = DrawSights(LaserType.None);
 
-        Assert.Equal(0, CountPixels(frame, 0xFFFFFF5C));
-        Assert.Equal(0, CountPixels(frame, 0xFFC3FF99));
-        Assert.Equal(0, CountPixels(frame, 0xFFB855F6));
+        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFFFFF5C)));
+        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFC3FF99)));
+        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFB855F6)));
     }
 
     // Outlined beams are the same two triangles as filled ones, so the
@@ -44,7 +45,7 @@ public class LaserDrawTests
     [Fact]
     public void DrawLaserLinesOutlinesTheBeamsWhenLaserWireframeIsSet()
     {
-        const uint miningColor = 0xFFBA55D3;
+        FastColor miningColor = FastColor.FromUInt32(0xFFBA55D3);
 
         int filled = CountPixels(DrawLines(LaserType.Mining, laserWireframe: false), miningColor);
         int wireframe = CountPixels(DrawLines(LaserType.Mining, laserWireframe: true), miningColor);
@@ -54,7 +55,7 @@ public class LaserDrawTests
         Assert.True(wireframe < filled);
     }
 
-    private static void AssertCrosshairColor(LaserType laserType, uint expectedColor)
+    private static void AssertCrosshairColor(LaserType laserType, in FastColor expectedColor)
         => Assert.True(CountPixels(DrawSights(laserType), expectedColor) > 0);
 
     private static FastBitmap DrawSights(LaserType laserType)
@@ -81,7 +82,7 @@ public class LaserDrawTests
         return lastFrame;
     }
 
-    private static int CountPixels(FastBitmap bitmap, uint color)
+    private static int CountPixels(FastBitmap bitmap, in FastColor color)
     {
         int count = 0;
         for (int y = 0; y < bitmap.Height; y++)

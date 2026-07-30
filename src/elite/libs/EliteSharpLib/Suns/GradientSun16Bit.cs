@@ -4,17 +4,18 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Maths;
 
 namespace EliteSharpLib.Suns;
 
 internal sealed class GradientSun16Bit : GradientSunBase
 {
-    private readonly uint _colorChocolate;
-    private readonly uint _colorSandyBrown;
-    private readonly uint _colorPaleGoldenrod;
-    private readonly uint _colorTomato;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorChocolate;
+    private readonly FastColor _colorSandyBrown;
+    private readonly FastColor _colorPaleGoldenrod;
+    private readonly FastColor _colorTomato;
+    private readonly FastColor _colorWhite;
 
     internal GradientSun16Bit(IEliteDraw draw, RNG rng)
         : base(draw, rng)
@@ -47,7 +48,7 @@ internal sealed class GradientSun16Bit : GradientSunBase
 
     // The sun's banding: white at the core, then yellow and orange rings, with
     // the outermost band dithered between two oranges.
-    protected override uint SunColor(float distance, float inner, float inner2, float outer, int dither)
+    protected override FastColor SunColor(float distance, float inner, float inner2, float outer, int dither)
         => distance < inner
             ? _colorWhite
             : distance < inner2

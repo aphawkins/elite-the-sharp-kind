@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 using Useful.Maths;
 
 namespace EliteSharpLib.Suns;
@@ -15,10 +16,10 @@ namespace EliteSharpLib.Suns;
 /// </summary>
 internal sealed class GradientSun8Bit : GradientSunBase
 {
-    private readonly uint _colorBrown;
-    private readonly uint _colorOrange;
-    private readonly uint _colorWhite;
-    private readonly uint _colorYellow;
+    private readonly FastColor _colorBrown;
+    private readonly FastColor _colorOrange;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorYellow;
 
     internal GradientSun8Bit(IEliteDraw draw, RNG rng)
         : base(draw, rng)
@@ -47,7 +48,7 @@ internal sealed class GradientSun8Bit : GradientSunBase
         return sun;
     }
 
-    protected override uint SunColor(float distance, float inner, float inner2, float outer, int dither)
+    protected override FastColor SunColor(float distance, float inner, float inner2, float outer, int dither)
         => distance < inner
             ? _colorWhite
             : distance < inner2

@@ -23,5 +23,5 @@ public class ScrPaletteTests
     [InlineData(29, 0xffffff00)]
     [InlineData(41, 0xffffffff)]
     public void ColourReturnsTheOriginalArgbValue(int index, uint expected)
-        => Assert.Equal(expected, (uint)new ScrPalette(AssetLocator.Create()).Colour(index));
+        => Assert.Equal(expected, new ScrPalette(AssetLocator.Create()).Colour(index).Argb);
 }

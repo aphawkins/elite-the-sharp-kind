@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -12,9 +13,9 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGray;
-    private readonly uint _colorDarkRed;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorGray;
+    private readonly FastColor _colorDarkRed;
+    private readonly FastColor _colorWhite;
 
     internal EquipmentView16Bit(IEliteDraw draw)
         : base(draw)
@@ -41,7 +42,7 @@ internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
                 _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.Offset, y + 1), 508, 15, _colorDarkRed);
             }
 
-            uint color = row.IsAffordable ? _colorWhite : _colorGray;
+            FastColor color = row.IsAffordable ? _colorWhite : _colorGray;
             int x = row.IsIndented ? 50 : 16;
             _draw.Graphics.DrawTextLeft(new(x + _draw.Layout.Offset, y), row.Name, nameof(FontType.Small), color);
 

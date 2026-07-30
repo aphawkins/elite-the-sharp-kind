@@ -166,7 +166,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         FlushDepthLayer();
         EvictStaleTextTextures();
 
-        SetRenderDrawColor(BaseColors.Black.Argb);
+        SetRenderDrawColor(BaseColors.Black);
 
         SDLGuard.Execute(() => SDL_RenderClear(NativeRenderer));
     }
@@ -706,7 +706,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         return SDLGuard.Execute(() => (nint)TTF_OpenFont(font.Path, font.PointSize));
     }
 
-    private static SDL_Vertex ConvertVertex(Vector2 point, uint color) => new()
+    private static SDL_Vertex ConvertVertex(Vector2 point, in FastColor color) => new()
     {
         position = new() { x = point.X, y = point.Y },
         tex_coord = new() { x = 0.0f, y = 0.0f },
@@ -744,7 +744,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     }
 
     // Sample the texture at a [0,1] coordinate, clamping at the edges.
-    private static uint SampleDepthLayerTexture(FastBitmap texture, Vector2 uv)
+    private static FastColor SampleDepthLayerTexture(FastBitmap texture, Vector2 uv)
     {
         int x = Math.Clamp((int)(uv.X * texture.Width), 0, texture.Width - 1);
         int y = Math.Clamp((int)(uv.Y * texture.Height), 0, texture.Height - 1);
@@ -1152,10 +1152,11 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         }
     }
 
-    private void SetRenderDrawColor(uint color)
+    private void SetRenderDrawColor(in FastColor color)
     {
-        FastColor fastColor = new(color);
-        SDLGuard.Execute(() => SDL_SetRenderDrawColor(NativeRenderer, fastColor.R, fastColor.G, fastColor.B, fastColor.A));
+        // Copied out of the 'in' parameter: a lambda cannot capture a by-reference one.
+        FastColor drawColor = color;
+        SDLGuard.Execute(() => SDL_SetRenderDrawColor(NativeRenderer, drawColor.R, drawColor.G, drawColor.B, drawColor.A));
     }
 
     private sealed class TextTextureEntry

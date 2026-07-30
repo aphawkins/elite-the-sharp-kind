@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
 
@@ -13,9 +14,9 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChartModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGreen;
-    private readonly uint _colorFireBrick;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorGreen;
+    private readonly FastColor _colorFireBrick;
+    private readonly FastColor _colorWhite;
 
     internal GalacticChartView16Bit(IEliteDraw draw)
         : base(draw)

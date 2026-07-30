@@ -3,14 +3,15 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Lasers;
 
 internal sealed class LaserDraw8Bit : LaserDrawBase
 {
-    private readonly uint _colorPurple;
-    private readonly uint _colorRed;
-    private readonly uint _colorYellow;
+    private readonly FastColor _colorPurple;
+    private readonly FastColor _colorRed;
+    private readonly FastColor _colorYellow;
 
     internal LaserDraw8Bit(GameState gameState, IEliteDraw draw, RNG rng)
         : base(gameState, draw, rng)
@@ -24,7 +25,7 @@ internal sealed class LaserDraw8Bit : LaserDrawBase
 
     // Beam and mining match their crosshair sprite's shade - laser-mining.bmp
     // is painted Purple - and pulse and military share the default.
-    protected override uint BeamColor(LaserType laserType) => laserType switch
+    protected override FastColor BeamColor(LaserType laserType) => laserType switch
     {
         LaserType.Beam => _colorYellow,
         LaserType.Mining => _colorPurple,

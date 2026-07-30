@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib.Planets;
 
@@ -40,7 +41,7 @@ internal abstract class StripedPlanetBase : IObject
     /// <summary>
     /// Gets the colour map the bands are taken from, pole to pole.
     /// </summary>
-    protected abstract uint[] StripeColors { get; }
+    protected abstract FastColor[] StripeColors { get; }
 
     public abstract IObject Clone();
 
@@ -58,11 +59,11 @@ internal abstract class StripedPlanetBase : IObject
     /// </summary>
     protected void GenerateLandscape()
     {
-        uint[] stripes = StripeColors;
+        FastColor[] stripes = StripeColors;
 
         for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
         {
-            uint color = stripes[y * (stripes.Length - 1) / PlanetRenderer.LandYMax];
+            FastColor color = stripes[y * (stripes.Length - 1) / PlanetRenderer.LandYMax];
             for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
             {
                 _planetRenderer.Landscape[x, y] = color;

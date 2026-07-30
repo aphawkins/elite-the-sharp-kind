@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Trader;
+using Useful;
 using Useful.Assets.Models;
 using Useful.Maths;
 
@@ -20,8 +21,8 @@ internal class ShipBase : IShip
     private const int LaserAimSpread = 24;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorCyan;
-    private readonly uint _colorWhite;
+    private readonly FastColor _colorCyan;
+    private readonly FastColor _colorWhite;
     private readonly RNG _rng;
     private int[]? _faceRoot;
 
@@ -255,7 +256,7 @@ internal class ShipBase : IShip
         }
 
         int lasv = LaserFront;
-        uint color = (Type == ShipType.Viper) ? _colorCyan : _colorWhite;
+        FastColor color = (Type == ShipType.Viper) ? _colorCyan : _colorWhite;
 
         Vector2 mount = new(pointList[lasv].X, pointList[lasv].Y);
 

@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -31,9 +32,9 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
     private const int MaxCharsPerLine = 38;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorRed;
-    private readonly uint _colorLightGray;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorRed;
+    private readonly FastColor _colorLightGray;
 
     internal OptionsView8Bit(IEliteDraw draw)
         : base(draw)
@@ -60,7 +61,7 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
                 _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, _colorRed);
             }
 
-            uint col = model.Options[i].IsEnabled ? _colorWhite : _colorLightGray;
+            FastColor col = model.Options[i].IsEnabled ? _colorWhite : _colorLightGray;
 
             _draw.Graphics.DrawTextCentre(position.Y, model.Options[i].Label, nameof(FontType.Small), col);
         }

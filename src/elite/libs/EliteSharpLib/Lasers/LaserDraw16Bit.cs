@@ -3,14 +3,15 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib.Lasers;
 
 internal sealed class LaserDraw16Bit : LaserDrawBase
 {
-    private readonly uint _colorMediumOrchid;
-    private readonly uint _colorKhaki;
-    private readonly uint _colorCrimson;
+    private readonly FastColor _colorMediumOrchid;
+    private readonly FastColor _colorKhaki;
+    private readonly FastColor _colorCrimson;
 
     internal LaserDraw16Bit(GameState gameState, IEliteDraw draw, RNG rng)
         : base(gameState, draw, rng)
@@ -20,7 +21,7 @@ internal sealed class LaserDraw16Bit : LaserDrawBase
         _colorMediumOrchid = draw.Palette["MediumOrchid"];
     }
 
-    protected override uint BeamColor(LaserType laserType) => laserType switch
+    protected override FastColor BeamColor(LaserType laserType) => laserType switch
     {
         LaserType.Beam => _colorKhaki,
         LaserType.Mining => _colorMediumOrchid,

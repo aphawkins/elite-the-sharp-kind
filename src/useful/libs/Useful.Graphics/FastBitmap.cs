@@ -67,11 +67,9 @@ public class FastBitmap : IDisposable
         GC.SuppressFinalize(this);
     }
 
-    public uint GetPixel(int x, int y) => _pixels[x + (y * Width)];
+    public FastColor GetPixel(int x, int y) => FastColor.FromUInt32(_pixels[x + (y * Width)]);
 
     public void SetPixel(int x, int y, in FastColor color) => _pixels[x + (y * Width)] = color.Argb;
-
-    public void SetPixel(int x, int y, in uint argb) => _pixels[x + (y * Width)] = argb;
 
     public FastBitmap Resize(int newWidth, int newHeight)
     {

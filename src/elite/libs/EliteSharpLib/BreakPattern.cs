@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using Useful;
 
 namespace EliteSharpLib;
 
@@ -10,7 +11,7 @@ internal sealed class BreakPattern
 {
     private const int MaxRings = 20;
     private readonly IEliteDraw _draw;
-    private readonly uint _color;
+    private readonly FastColor _color;
     private int _breakPatternCount;
 
     internal BreakPattern(IEliteDraw draw)

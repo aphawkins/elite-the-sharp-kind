@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful;
 
 namespace EliteSharpLib.Suns;
 
@@ -14,7 +15,7 @@ namespace EliteSharpLib.Suns;
 internal sealed class WireframeSun : IObject
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _color;
+    private readonly FastColor _color;
 
     internal WireframeSun(IEliteDraw draw)
     {

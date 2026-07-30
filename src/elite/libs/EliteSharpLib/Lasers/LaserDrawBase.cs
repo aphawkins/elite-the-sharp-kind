@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Lasers;
@@ -19,7 +20,7 @@ internal abstract class LaserDrawBase(GameState gameState, IEliteDraw draw, RNG 
 
     internal void DrawLaserLines(LaserType laserType)
     {
-        uint color = BeamColor(laserType);
+        FastColor color = BeamColor(laserType);
         float scale = Draw.Layout.Scale;
 
         Vector2 target = new()
@@ -68,7 +69,7 @@ internal abstract class LaserDrawBase(GameState gameState, IEliteDraw draw, RNG 
     /// The beam colour for a laser type. Beam and mining match their crosshair
     /// sprite's shade; pulse and military share the default.
     /// </summary>
-    protected abstract uint BeamColor(LaserType laserType);
+    protected abstract FastColor BeamColor(LaserType laserType);
 
     private static string CrosshairImage(LaserType laserType) => laserType switch
     {

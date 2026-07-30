@@ -138,7 +138,7 @@ public class VisualDumpTests
             {
                 for (int x = 0; x < width; x++)
                 {
-                    pixels[(y * width) + x] = lastFrame.GetPixel(x, y);
+                    pixels[(y * width) + x] = lastFrame.GetPixel(x, y).Argb;
                 }
             }
 

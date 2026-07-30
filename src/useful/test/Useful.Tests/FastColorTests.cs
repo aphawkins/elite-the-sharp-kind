@@ -20,9 +20,9 @@ public sealed class FastColorTests
     }
 
     [Fact]
-    public void ImplicitConversionFromUintRoundTrips()
+    public void FromUInt32RoundTrips()
     {
-        FastColor color = 0xFF102030;
+        FastColor color = FastColor.FromUInt32(0xFF102030);
 
         Assert.Equal((byte)0xFF, color.A);
         Assert.Equal((byte)0x10, color.R);
@@ -31,10 +31,11 @@ public sealed class FastColorTests
     }
 
     [Fact]
-    public void ImplicitConversionToUintRoundTrips()
+    public void ToUInt32RoundTrips()
     {
         FastColor color = new(0xFF102030);
 
-        Assert.Equal(0xFF102030u, (uint)color);
+        Assert.Equal(0xFF102030u, FastColor.ToUInt32(color));
+        Assert.Equal(0xFF102030u, color.Argb);
     }
 }

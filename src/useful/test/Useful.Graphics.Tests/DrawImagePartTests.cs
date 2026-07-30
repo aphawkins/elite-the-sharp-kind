@@ -25,13 +25,13 @@ public class DrawImagePartTests
             {
                 for (int x = 20; x < 30; x++)
                 {
-                    Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(x, y));
+                    Assert.Equal(BaseColors.Red, bmp.GetPixel(x, y));
                 }
             }
 
             // outside the destination stays untouched
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(31, 20));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(20, 31));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(31, 20));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(20, 31));
         }
     }
 
@@ -46,12 +46,12 @@ public class DrawImagePartTests
 
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(12, 12));
+            Assert.Equal(BaseColors.Red, bmp.GetPixel(12, 12));
 
             // the transparent quadrants leave the background alone
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(28, 12));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(12, 28));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(28, 28));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(28, 12));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(12, 28));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(28, 28));
         }
     }
 
@@ -66,8 +66,8 @@ public class DrawImagePartTests
 
         static void DoAssert(FastBitmap bmp)
         {
-            Assert.Equal(BaseColors.Red.Argb, bmp.GetPixel(28, 12));
-            Assert.Equal(BaseColors.Black.Argb, bmp.GetPixel(12, 12));
+            Assert.Equal(BaseColors.Red, bmp.GetPixel(28, 12));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(12, 12));
         }
     }
 

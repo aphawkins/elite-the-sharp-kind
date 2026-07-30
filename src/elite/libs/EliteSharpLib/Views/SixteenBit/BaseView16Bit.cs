@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using Useful;
 using Useful.Graphics;
 
 namespace EliteSharpLib.Views.SixteenBit;
@@ -19,9 +20,9 @@ internal class BaseView16Bit : IBaseView
     // the word-wrap estimates against rather than a measured one.
     private const int CharacterWidth = 8;
 
-    private readonly uint _colorGoldenrod;
-    private readonly uint _colorWhite;
-    private readonly uint _colorYellow;
+    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorWhite;
+    private readonly FastColor _colorYellow;
     private readonly float _rowHeight;
 
     internal BaseView16Bit(IEliteDraw draw)
