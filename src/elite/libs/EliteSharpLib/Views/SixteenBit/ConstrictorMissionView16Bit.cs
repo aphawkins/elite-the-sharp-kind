@@ -4,7 +4,7 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit Constrictor mission messages: the 512-space layout, and nothing
@@ -12,12 +12,12 @@ namespace EliteSharpLib.Views;
 /// so the layout keys off the model's stage. The Constrictor posing behind
 /// the brief is drawn by the universe, not here.
 /// </summary>
-internal sealed class ConstrictorMissionView : IView<ConstrictorMissionModel>
+internal sealed class ConstrictorMissionView16Bit : IView<ConstrictorMissionModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
 
-    internal ConstrictorMissionView(IEliteDraw draw)
+    internal ConstrictorMissionView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

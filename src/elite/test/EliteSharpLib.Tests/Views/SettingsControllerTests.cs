@@ -6,6 +6,7 @@ using EliteSharpLib.Config;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Views;
+using EliteSharpLib.Views.SixteenBit;
 using Useful.Config;
 using Useful.Fakes.Controls;
 using Useful.Graphics.Rendering;
@@ -74,6 +75,6 @@ public class SettingsControllerTests
         Space space = SettingsControllerFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out _);
         configFile = SettingsControllerFixture.CreateConfigFile(ConfigFileName);
 
-        return new SettingsController(gameState, keyboard, space, configFile, new SettingsListView(draw));
+        return new SettingsController(gameState, keyboard, space, configFile, new SettingsListView16Bit(draw));
     }
 }

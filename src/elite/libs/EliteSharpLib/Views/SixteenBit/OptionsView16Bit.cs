@@ -5,12 +5,12 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit options menu: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class OptionsView : IView<OptionsModel>
+internal sealed class OptionsView16Bit : IView<OptionsModel>
 {
     private const int OptionBarHeight = 15;
     private const int OptionBarWidth = 400;
@@ -20,7 +20,7 @@ internal sealed class OptionsView : IView<OptionsModel>
     private readonly uint _colorLightRed;
     private readonly uint _colorLightGrey;
 
-    internal OptionsView(IEliteDraw draw)
+    internal OptionsView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

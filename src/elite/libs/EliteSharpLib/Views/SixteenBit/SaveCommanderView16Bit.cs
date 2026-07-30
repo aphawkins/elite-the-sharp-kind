@@ -4,18 +4,18 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
-/// The 16-bit load-commander screen: the 512-space layout, and nothing else.
+/// The 16-bit save-commander screen: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class LoadCommanderView : IView<LoadCommanderModel>
+internal sealed class SaveCommanderView16Bit : IView<SaveCommanderModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
     private readonly uint _colorGold;
 
-    internal LoadCommanderView(IEliteDraw draw)
+    internal SaveCommanderView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 
@@ -23,19 +23,19 @@ internal sealed class LoadCommanderView : IView<LoadCommanderModel>
         _colorWhite = draw.Palette["White"];
     }
 
-    public void Draw(LoadCommanderModel model)
+    public void Draw(SaveCommanderModel model)
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader("LOAD COMMANDER");
+        _draw.DrawViewHeader("SAVE COMMANDER");
 
         _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
-        _draw.Graphics.DrawRectangleCentre(100, 312, 50, _colorWhite);
+        _draw.Graphics.DrawRectangle(new(100 + _draw.Offset, 100), 312, 50, _colorWhite);
         _draw.Graphics.DrawTextCentre(112, model.Name, nameof(FontType.Large), _colorWhite);
 
-        if (model.ErrorMessage.Length > 0)
+        if (model.StatusMessage.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(175, model.ErrorMessage, nameof(FontType.Large), _colorGold);
+            _draw.Graphics.DrawTextCentre(175, model.StatusMessage, nameof(FontType.Large), _colorGold);
             _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
         }
     }

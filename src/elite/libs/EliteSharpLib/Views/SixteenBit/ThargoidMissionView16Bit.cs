@@ -4,19 +4,19 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit Thargoid mission messages: the 512-space layout, and nothing
 /// else. Each stage was laid out differently in the original, so the layout
 /// keys off the model's stage.
 /// </summary>
-internal sealed class ThargoidMissionView : IView<ThargoidMissionModel>
+internal sealed class ThargoidMissionView16Bit : IView<ThargoidMissionModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
 
-    internal ThargoidMissionView(IEliteDraw draw)
+    internal ThargoidMissionView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

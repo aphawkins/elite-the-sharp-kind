@@ -1,0 +1,92 @@
+// 'Elite - The Sharp Kind' - Andy Hawkins 2023-2026.
+// 'Elite - The New Kind' - C.J.Pinder 1999-2001.
+// Elite (C) I.Bell & D.Braben 1984.
+
+using System.Numerics;
+using EliteSharpLib.Graphics;
+
+namespace EliteSharpLib.Views.EightBit;
+
+/// <summary>
+/// The 8-bit galactic chart: authored for the 320x256 canvas and its fixed
+/// 8x8 font. The plot itself needs no tier-specific maths - galaxy space is
+/// 256x256 and <see cref="IEliteDraw.Scale"/> maps it onto the tier - so only
+/// the divider line, the cross-hair size and the two caption rows differ from
+/// the 16-bit view.
+/// </summary>
+internal sealed class GalacticChartView8Bit : IView<GalacticChartModel>
+{
+    // The plot's last row is galaxy y=255, which ToScreen puts at
+    // (255 / 2) + 18 = 145 at Scale 1; the divider sits just under it.
+    private const float DividerY = 149;
+    private const float CrossSize = 5;
+    private const float CaptionX = 8;
+    private const float CaptionOffsetY = 28;
+    private const float DetailOffsetY = 16;
+
+    private readonly IEliteDraw _draw;
+    private readonly uint _colorGreen;
+    private readonly uint _colorLighterRed;
+    private readonly uint _colorWhite;
+
+    internal GalacticChartView8Bit(IEliteDraw draw)
+    {
+        _draw = draw;
+
+        _colorGreen = draw.Palette["Green"];
+        _colorLighterRed = draw.Palette["LighterRed"];
+        _colorWhite = draw.Palette["White"];
+    }
+
+    public void Draw(GalacticChartModel model)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+
+        _draw.DrawViewHeader(model.Title);
+
+        _draw.Graphics.DrawLine(new(_draw.Offset, DividerY), new(_draw.ScannerRight, DividerY), _colorWhite);
+
+        // Fuel radius
+        Vector2 centre = ToScreen(model.DockedPlanet);
+        float radius = model.FuelLightYears * 2.5f * _draw.Scale;
+        float fuelCrossSize = 7 * _draw.Scale;
+        _draw.Graphics.DrawCircle(centre, radius, _colorGreen);
+        _draw.Graphics.DrawLine(new(centre.X, centre.Y - fuelCrossSize), new(centre.X, centre.Y + fuelCrossSize), _colorWhite);
+        _draw.Graphics.DrawLine(new(centre.X - fuelCrossSize, centre.Y), new(centre.X + fuelCrossSize, centre.Y), _colorWhite);
+
+        // Planets
+        foreach (GalacticChartStar star in model.Stars)
+        {
+            Vector2 pixel = ToScreen(star.Position);
+            _draw.Graphics.DrawPixel(pixel, _colorWhite);
+
+            if (star.IsWide)
+            {
+                _draw.Graphics.DrawPixel(new(pixel.X + 1, pixel.Y), _colorWhite);
+            }
+        }
+
+        // Cross
+        centre = ToScreen(model.Cross);
+
+        _draw.Graphics.DrawLine(new(centre.X - CrossSize, centre.Y), new(centre.X + CrossSize, centre.Y), _colorLighterRed);
+        _draw.Graphics.DrawLine(new(centre.X, centre.Y - CrossSize), new(centre.X, centre.Y + CrossSize), _colorLighterRed);
+
+        // Text
+        _draw.Graphics.DrawTextLeft(
+            new(CaptionX + _draw.Offset, _draw.ScannerTop - CaptionOffsetY),
+            model.Caption,
+            nameof(FontType.Small),
+            _colorGreen);
+        _draw.Graphics.DrawTextLeft(
+            new(CaptionX + _draw.Offset, _draw.ScannerTop - DetailOffsetY),
+            model.Detail,
+            nameof(FontType.Small),
+            _colorWhite);
+    }
+
+    // Galaxy space (D, B) to this tier's screen coordinates.
+    private Vector2 ToScreen(Vector2 galaxy) => new(
+        (galaxy.X * _draw.Scale) + _draw.Offset,
+        (galaxy.Y * _draw.Scale / 2) + (18 * _draw.Scale) + 1);
+}

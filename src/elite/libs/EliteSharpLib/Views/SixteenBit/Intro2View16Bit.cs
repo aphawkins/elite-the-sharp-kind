@@ -4,19 +4,19 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit ship parade screen: the 512-space layout, and nothing else.
 /// The ship itself is drawn by the universe, not here.
 /// </summary>
-internal sealed class Intro2View : IView<Intro2Model>
+internal sealed class Intro2View16Bit : IView<Intro2Model>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
     private readonly uint _colorWhite;
 
-    internal Intro2View(IEliteDraw draw)
+    internal Intro2View16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

@@ -16,8 +16,8 @@ namespace EliteSharpLib.Views;
 
 /// <summary>
 /// The title screen's behaviour: the rolling Cobra MkIII it puts in the
-/// universe, and the Y/N choice of loading a commander. The screen's text is
-/// fixed, so the view takes no model.
+/// universe, and the Y/N choice of loading a commander. Its text never
+/// changes, so the model is built once and shared.
 /// </summary>
 internal sealed class Intro1Controller : IScreenController
 {

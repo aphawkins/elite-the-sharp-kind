@@ -5,19 +5,19 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit galactic chart: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class GalacticChartView : IView<GalacticChartModel>
+internal sealed class GalacticChartView16Bit : IView<GalacticChartModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGreen;
     private readonly uint _colorLighterRed;
     private readonly uint _colorWhite;
 
-    internal GalacticChartView(IEliteDraw draw)
+    internal GalacticChartView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

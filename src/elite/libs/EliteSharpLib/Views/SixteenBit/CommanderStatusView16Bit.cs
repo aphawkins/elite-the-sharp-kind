@@ -5,13 +5,13 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit commander status screen: the 512-space layout, and nothing
 /// else. Labels sit at x=16 with their values at x=200, on 16px rows.
 /// </summary>
-internal sealed class CommanderStatusView : IView<CommanderStatusModel>
+internal sealed class CommanderStatusView16Bit : IView<CommanderStatusModel>
 {
     private const int LabelX = 16;
     private const int ValueX = 200;
@@ -25,7 +25,7 @@ internal sealed class CommanderStatusView : IView<CommanderStatusModel>
     private readonly uint _colorGreen;
     private readonly uint _colorWhite;
 
-    internal CommanderStatusView(IEliteDraw draw)
+    internal CommanderStatusView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

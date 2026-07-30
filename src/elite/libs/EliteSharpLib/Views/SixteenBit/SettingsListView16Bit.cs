@@ -5,19 +5,19 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit settings list: the 512-space layout, and nothing else. Shared
 /// by the game and engine settings screens, since neither varies the layout.
 /// </summary>
-internal sealed class SettingsListView : IView<SettingsListModel>
+internal sealed class SettingsListView16Bit : IView<SettingsListModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
     private readonly uint _colorLightRed;
 
-    internal SettingsListView(IEliteDraw draw)
+    internal SettingsListView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

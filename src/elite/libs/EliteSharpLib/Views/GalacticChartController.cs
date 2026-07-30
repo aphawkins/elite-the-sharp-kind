@@ -12,7 +12,7 @@ namespace EliteSharpLib.Views;
 /// <summary>
 /// The galactic chart's behaviour: the cross-hair, the find-by-name prompt
 /// and the distance readout. Works entirely in galaxy space so the same
-/// controller serves any tier's <see cref="GalacticChartView"/>.
+/// controller serves either tier's chart view.
 /// </summary>
 internal sealed class GalacticChartController : IScreenController
 {

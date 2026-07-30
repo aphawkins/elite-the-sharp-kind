@@ -4,12 +4,12 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit inventory screen: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class InventoryView : IView<InventoryModel>
+internal sealed class InventoryView16Bit : IView<InventoryModel>
 {
     private const int LabelX = 16;
     private const int ValueX = 70;
@@ -21,7 +21,7 @@ internal sealed class InventoryView : IView<InventoryModel>
     private readonly uint _colorGreen;
     private readonly uint _colorWhite;
 
-    internal InventoryView(IEliteDraw draw)
+    internal InventoryView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

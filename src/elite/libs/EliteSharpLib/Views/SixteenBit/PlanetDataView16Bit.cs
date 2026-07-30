@@ -4,18 +4,18 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit planet data screen: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class PlanetDataView : IView<PlanetDataModel>
+internal sealed class PlanetDataView16Bit : IView<PlanetDataModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGreen;
     private readonly uint _colorWhite;
 
-    internal PlanetDataView(IEliteDraw draw)
+    internal PlanetDataView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

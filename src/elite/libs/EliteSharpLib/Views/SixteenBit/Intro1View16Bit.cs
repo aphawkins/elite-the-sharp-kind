@@ -4,13 +4,13 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit title screen: the 512-space layout, and nothing else. The
 /// rolling Cobra behind it is drawn by the universe, not here.
 /// </summary>
-internal sealed class Intro1View : IView<Intro1Model>
+internal sealed class Intro1View16Bit : IView<Intro1Model>
 {
     // The credits stack upwards from the prompt, one line every 20px.
     private const float CreditSpacing = 20;
@@ -19,7 +19,7 @@ internal sealed class Intro1View : IView<Intro1Model>
     private readonly uint _colorGold;
     private readonly uint _colorWhite;
 
-    internal Intro1View(IEliteDraw draw)
+    internal Intro1View16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

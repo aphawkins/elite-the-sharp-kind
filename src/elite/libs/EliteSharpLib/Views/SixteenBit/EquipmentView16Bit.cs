@@ -4,19 +4,19 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit equip-ship screen: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class EquipmentView : IView<EquipmentModel>
+internal sealed class EquipmentView16Bit : IView<EquipmentModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorLightGrey;
     private readonly uint _colorLightRed;
     private readonly uint _colorWhite;
 
-    internal EquipmentView(IEliteDraw draw)
+    internal EquipmentView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

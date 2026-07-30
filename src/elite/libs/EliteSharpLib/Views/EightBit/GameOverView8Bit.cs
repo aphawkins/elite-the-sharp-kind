@@ -4,18 +4,19 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.EightBit;
 
 /// <summary>
-/// The 16-bit game over screen: the 512-space layout, and nothing else. The
-/// wreckage tumbling behind it is drawn by the universe, not here.
+/// The 8-bit game over screen: authored for the 320x256 canvas and its fixed
+/// 8x8 font. The wreckage tumbling behind it is drawn by the universe, not
+/// here.
 /// </summary>
-internal sealed class GameOverView : IView<GameOverModel>
+internal sealed class GameOverView8Bit : IView<GameOverModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
 
-    internal GameOverView(IEliteDraw draw)
+    internal GameOverView8Bit(IEliteDraw draw)
     {
         _draw = draw;
 
@@ -26,6 +27,6 @@ internal sealed class GameOverView : IView<GameOverModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, model.Message, nameof(FontType.Large), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, model.Message, nameof(FontType.Small), _colorGold);
     }
 }

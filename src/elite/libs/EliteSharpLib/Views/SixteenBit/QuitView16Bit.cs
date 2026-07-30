@@ -4,17 +4,17 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit quit confirmation: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class QuitView : IView<QuitModel>
+internal sealed class QuitView16Bit : IView<QuitModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
 
-    internal QuitView(IEliteDraw draw)
+    internal QuitView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

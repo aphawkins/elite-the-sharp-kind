@@ -60,353 +60,45 @@ existing.
 
 ### Tier presentation architecture
 
-Implements the 2026-07-28 tier-presentation decision in
-[decisions.md](decisions.md).
+The controller/view split and the per-tier view split are both **done** (see
+[CHANGELOG.md](../CHANGELOG.md) for what landed when); the rules that came
+out of them live in
+[architecture-principles.md](architecture-principles.md)'s "Screens:
+controllers, models and per-tier views". What is left open:
 
-Controller/view split for the 28 view classes (split 2026-07-29 from the
-[LARGE] "MVC split"
-item; a code survey sized it smaller than assumed — 3,996 lines across
-`Views/`, of which 18 have a non-empty `HandleInput`, 14 carry mutable
-state (24 fields — cursor/selection in the charts and menus, animation
-counters in `EscapeCapsuleView`/`GameOverView`/`Intro2View`, cached
-planet data in `PlanetDataView`), and only six have neither.
-A full 28x3 class triple is disproportionate to
-that; what the per-tier item actually needs is that *behaviour* has one
-home per screen while *layout* varies per tier, so the target shape is:
-`IView` narrows to drawing alone, and a per-screen controller owns
-`Reset`/`Update`/`HandleInput` plus the formatting the view currently
-computes, which it hands to the view as a per-screen view-model record.
-`ScreenManager<Screen, IView>` then holds controllers rather than views,
-which is what reduces the following per-tier DI item to swapping one
-registration per screen. Do strictly in order — item 1 fixes the shape
-everything else follows.
-
-One interface: `IView<TModel> { void Draw(TModel model); }`, and every
-screen uses it. A parameterless `IView` was tried on 2026-07-29 for
-screens with input but no data, and removed the same day — two screens
-needed it at once, and a single `IView` registration can only serve one,
-with the last silently winning. The fix was the better design anyway: a
-screen's fixed strings (the quit prompt, the title-screen credits) are
-content, not layout, so they belong in a model like everything else.
-**Do not reintroduce a parameterless view interface**; give the screen a
-model even when the model is only its wording.
-
-The record is what makes the tier contract a signature rather than a
-convention — `CommanderStatusView` and `CommanderStatusView8Bit` take
-the same `CommanderStatusModel` and can then differ only in coordinates
-and font, and the formatting becomes testable without a renderer.
-
-This is not MVC, MVP or MVVM and shouldn't be described as any of them
-(2026-07-29: MVVM was considered and rejected — its value is binding and
-change notification, and Elite is immediate-mode with a full redraw per
-tick and polled input, so there is nothing to bind). The three
-properties to preserve are: behaviour has one home per screen, both
-tiers provably render the same data, and views are stateless. Keep the
-`Controller` suffix regardless — it matches `PlanetController` /
-`AudioController` house style.
-
-Note `EliteMain.HandleViewKeys` (F1-F11,
-[EliteMain.cs:269-358](../src/elite/libs/EliteSharpLib/EliteMain.cs)) is
-global navigation, not per-screen input, and stays where it is; only the
-keys views handle themselves move:
-
-Item 1 landed 2026-07-29 (see CHANGELOG) — the seam and the galactic
-chart. Two findings from it that reshape what follows:
-
-- No transitional wrappers were needed. The old `IView` was already
-  exactly the controller shape, so renaming it to `IScreenController`
-  left the 27 unconverted screens satisfying it unchanged. Expect the
-  same for every later screen: converting one is additive, never a
-  flag day.
-- Screenshot diffing cannot prove "pixel-identical" on this app. Two
-  runs of the *same* build differ by ~2,000 pixels (window occlusion
-  and the animated dashboard), an order of magnitude above the
-  ~240-pixel baseline-vs-change difference that was actually observed.
-  Verify layout equivalence by algebra plus renderer-free controller
-  tests, and use screenshots only to confirm nothing gross broke.
-
-`ShortRangeChartView` is deliberately excluded (decided 2026-07-29,
-option C of three): its `Reset` entangles layout with content selection
-in a way no clean split survives — the text-row packing is computed from
-screen coordinates, `row <= 3` skips a planet's blob and not just its
-name, and `blob_size` depends on `GameState.CarryFlag`, a side effect of
-the `NamePlanet` call that only happens when a name wins a free row (a
-faithful port of the original's quirk, as the comment there says). Its
-cursor is entangled too: the clamps are relative to `Centre`, so the
-galactic chart's galaxy-space trick does not transfer. Revisit when the
-8-bit short-range chart is actually authored and there are real layout
-requirements to design against, rather than guessed ones; the preferred
-shape then is passing the tier's layout metrics (centre, scale, row
-height) into the controller, which keeps the `CarryFlag` quirk in one
-place, rather than moving row packing and name generation into each
-tier's view.
-
-**All screens converted (2026-07-30, branch `mvc-controller-view-seam`,
-six commits, not yet merged or pushed): `GalacticChart`, `Quit`,
-`ThargoidMission`, `Intro1`, `CommanderStatus`, `Inventory`,
-`GameOver`, `EscapeCapsule`, `ConstrictorMission`, `Options`, `Market`,
-`Equipment`, `Settings`, `EngineSettings`, `LoadCommander`,
-`SaveCommander`, `Intro2`, the four cockpit windows (one shared
-`PilotController`), `PlanetData` — every screen bar `ShortRangeChart`,
-which stays deliberately out of scope (see its own entry above).** Each
-is a
-`<Screen>Controller` + `<Screen>Model` + drawing-only `<Screen>View`,
-with DI registrations collected in
-`EliteServiceCollectionExtensions.AddSplitScreens`, which any future
-screen (e.g. `ShortRangeChart`, if it's ever revisited) would join.
-Copy any of the converted screens as the pattern —
-`CommanderStatus` is the fullest example of formatting extraction,
-`GalacticChart` of a screen with cursor state, `Market`/`Equipment` of a
-cursor over a dynamic list, `LoadCommander`/`SaveCommander` of two
-screens sharing a shape but not a class, `PilotController` of one
-controller serving several screens through a parameter rather than
-subclassing.
-
-Note the DI registrations moved to their own class,
-`EliteSplitScreensServiceCollectionExtensions`, split further across
-`AddSplitConsoleScreens`/`AddSplitSequenceScreens`/`AddSplitMenuScreens`/
-`AddSplitTextEntryScreens`/`AddSplitFlightScreens`: first the per-method
-CA1506 limit (41), then — once the split screens' combined
-registrations grew large enough on their own — the *class*-level
-CA1506 limit (96), which a single extra static class resolves since the
-metric is computed per class.
-
-Findings from the design-questions group (the backlog's own name for
-these three, since each needed a real decision rather than a mechanical
-port), on top of the ones from the mechanical, selection-cursor and
-text-entry groups already noted below:
-
-- The backlog described `PilotView` as "a base plus four subclasses",
-  but it was composition, not inheritance: `PilotFrontView`,
-  `PilotRearView`, `PilotLeftView` and `PilotRightView` were four
-  near-identical classes, each holding its own instance of the same
-  `PilotView` and differing only in a view-name string, which laser
-  mount to draw and which starfield direction to scroll. Collapsed into
-  one `PilotController` parameterised by a new `PilotDirection` enum
-  (`Front`/`Rear`/`Left`/`Right`), sharing one `IView<PilotModel>`
-  registration across all four screens — the largest structural change
-  of this conversion, deleting four files rather than splitting one.
-  `PopulateScreens` constructs the four `PilotController` instances
-  directly (`CreatePilotController`) rather than resolving them by
-  type, since a single `AddSingleton<PilotController>()` registration
-  can only ever serve one screen.
-- `Intro2` and `PlanetData` turned out to have none of the entanglement
-  the backlog worried about (echoing the earlier survey's own finding
-  that assumed problems don't always materialise on inspection):
-  `Intro2View.Draw()` never touched the parade ship itself (drawn by
-  the universe, exactly like `Intro1`'s rolling Cobra), and
-  `PlanetDataView`'s fixed y-coordinates never depended on which
-  content was selected, unlike `ShortRangeChartView`'s row-packing.
-  Both converted the same mechanical way as everything before them.
-- `LaserDraw` (the crosshair/beam renderer `PilotView` used to
-  construct inline) takes `RNG` for purely cosmetic beam jitter, not
-  game state — the discriminator used to decide it belongs on the view
-  side, not the controller, despite `RNG` usually being controller-side
-  elsewhere in this codebase (e.g. `GameOverController`'s cargo scatter).
-
-Findings from the text-entry group, on top of the ones from the
-mechanical and selection-cursor groups already noted below:
-
-- `LoadCommanderController`/`SaveCommanderController` look identical at
-  a glance (same typing, same box, same error/success layout) but were
-  *not* unified into one shared view, unlike `SettingsListView` above.
-  The reason: `SettingsListView`'s sharing came for free from code that
-  was already one class before conversion; Load and Save were always
-  two independent classes whose drawing only looks similar, and
-  `SaveCommanderView`'s box is drawn with `DrawRectangle` at an explicit
-  offset position where `LoadCommanderView`'s uses `DrawRectangleCentre`
-  - forcing one shared view would have meant verifying those two calls
-    are pixel-identical rather than preserving each screen's own
-    call, which is the riskier way to save a small duplication.
-- The recurring "Press SPACE to continue." / "Press space to continue."
-  footer is content per the backlog's own rule ("give the screen a
-  model even when the model is only its wording"), but is hardcoded in
-  the view here, matching the *existing* precedent in
-  `ThargoidMissionView`/`ConstrictorMissionView`'s `DrawFooter()` rather
-  than the stricter rule - the boilerplate phrase repeats verbatim
-  across screens already converted, so treating it as layout chrome
-  keeps this conversion consistent with its closest siblings. The
-  screen-specific headline (`"Error Loading Commander!"`,
-  `"Commander Saved."`, `"Error Saving Commander!"`) still goes through
-  the model.
-- Typed input can only ever be upper-case - `HandleInput` only appends
-  `(char)key` for `ConsoleKey.A`-`Z`, which are the upper-case ASCII
-  codepoints, and there is no lower-case equivalent in `ConsoleKey`.
-  `LoadCommanderControllerTests`/`SaveCommanderControllerTests` type
-  through the same keyboard fake the real input goes through (not by
-  setting the name field directly), which is what surfaced this - the
-  first attempt used mixed-case test names and silently typed nothing
-  for the lower-case letters.
-
-- `MarketController`'s cursor had an off-by-one bug in the original,
-  fixed during conversion (2026-07-30): its cursor is a `Math.Clamp`ed
-  `int` cast to `StockType`, but `StockType` starts at 1 (`Food`), not
-  0, so clamping to `[0, Count-1]` left the cursor on `StockType.None`
-  at reset (matching no row, so nothing was highlighted) and capped it
-  one row short of the last (`AlienItems`, key `Count`). The clamp
-  bounds are now `[1, Count]` and `Reset` starts on `StockType.Food`;
-  `MarketControllerTests` covers both ends of the range.
-- `SettingsListController`/`SettingsListView` are shared by both
-  `SettingsController` and `EngineSettingsController` — one
-  `IView<SettingsListModel>` registration serves both controllers, since
-  neither varies the layout, only the rows. This is the first split
-  screen where a *view* is shared across controllers rather than a
-  controller pairing 1:1 with a view.
-- Padding/alignment format specifiers (`{qty,2}`, `{cash,10:N1}`) stayed
-  in the view even though the underlying number is content — the
-  discriminator used was "does this involve column alignment", not "is
-  it a number". `MarketRow.ForSaleQuantity`/`InHoldQuantity`/`MarketModel.Cash`
-  are raw `int`/`float`; contrast `EquipmentModel.Cash`, which the
-  original drew as one indivisible string with no alignment trick, and
-  which is therefore fully-formatted content, matching
-  `CommanderStatusModel.Cash`'s precedent.
-
-**Retiring the pass-through controllers, decided (2026-07-30):** dropped
-outright, not re-scoped. `DockingView`/`HyperspaceView`/`LaunchView` are
-the only three left of the six the step originally named, and all
-three `Draw()` straight to a shared `BreakPattern` instance that takes
-no model and is already resolution-independent (`_draw.Centre`-relative
-rings). There is nothing to extract into a controller/model/view triple
-— no formatting, and the drawing already needs no per-tier version — so
-forcing the split would add three model types and three view classes
-purely for consistency, with no behaviour moved and no future tier
-variance to serve. They stay as plain `IScreenController`
-implementations.
-
-**Per-tier view survey, done (2026-07-30):** every converted screen's
-`Draw` method read and bucketed, resolving the item below. Two screens
-turned up mixed - `PilotView` and `SettingsListView` - noted under
-whichever bucket their absolute-coordinate lines put them in, since one
-literal 512-space line is enough to force a fresh 8-bit view for the
-whole screen.
-
-- **Absolute layout (needs a fresh 8-bit view)** — 512-space
-  coordinates that overflow a 320-wide screen or the 256-tall canvas the
-  8-bit layout item below targets:
-  `CommanderStatusView` (labels x=16, values x=200, equipment x=50,
-  16px rows), `InventoryView` (x=16/70/180), `MarketView`
-  (x=16/166/246/314/420), `EquipmentView` (x=16/50/450),
-  `PlanetDataView` (x=16/175, y=42-266), `ConstrictorMissionView` and
-  `ThargoidMissionView` (x=16/116/352, y=46-330, all `+Offset` but
-  sized for a 512-wide screen), `LoadCommanderView`/`SaveCommanderView`
-  (y=75/100/112/175/200, absolute despite `DrawTextCentre`/
-  `DrawRectangleCentre` centring the X axis), and `PilotView` (one
-  absolute line, `DrawTextCentre(358, hyperspaceStatus, ...)` — the
-  view name line above it is `Top`-relative and would not by itself
-  need a second class).
-- **Derived layout with pixel spacing (a tier-specific constant, or no
-  second class at all)** — position comes from `Centre`/`ScannerTop`/
-  `Scale` and `DrawTextCentre`/`DrawTextLeft`, so the layout is already
-  resolution-independent:
-  `OptionsView` (`ScannerTop`-relative rows, but its `OptionBarWidth`
-  constant (400) itself overflows 320 and needs a smaller tier value),
-  `SettingsListView` (`Centre.Y`-relative rows, `+40` footer offset,
-  but its column pitch (250/32) is 512-sized like `OptionBarWidth`),
-  `Intro1View` (`ScannerTop`-relative, 20px `CreditSpacing`),
-  `Intro2View` and `EscapeCapsuleView` (`Top`/`ScannerTop`-relative,
-  no spacing constant to tier at all). `GalacticChartView` is the
-  strongest case for **no second class**: its `ToScreen` conversion is
-  entirely `Scale`/`Offset`-driven, so one implementation likely serves
-  both tiers unchanged. `QuitView` and `GameOverView` (a single
-  `Centre.Y`-relative line) need neither a second class nor a spacing
-  constant.
-- **No layout to vary** — `DockingView`/`HyperspaceView`/`LaunchView`
-  share `BreakPattern`, already `Centre`-relative (see the retired-step
-  decision above); `PilotView`'s `LaserDraw` crosshair/beam rendering
-  is the same shape (`Centre`/`Scale`/`ScannerLeft`/`ScannerRight`
-  -relative, no literal coordinates).
-
-`ShortRangeChartView` is not counted in any bucket - it stays a single
-combined controller/view per its own decision above, revisited only
-when the 8-bit short-range chart is actually authored.
-**Started (2026-07-30): `CommanderStatus` done, as the pattern for both
-items below.** `CommanderStatusView8Bit` lives in
-`Views/EightBit/CommanderStatusView8Bit.cs` (namespace
-`EliteSharpLib.Views.EightBit`); the 16-bit `CommanderStatusView` stays
-where it was, unrenamed — only the new tier gets a subfolder and a
-suffix, which is the smaller diff and matches "for every
-already-converted screen this is a one-line change" in the DI item
-below. The `IView<CommanderStatusModel>` registration in
-`AddSplitConsoleScreens` now branches on tier:
-
-```csharp
-services.AddSingleton<IView<CommanderStatusModel>>(sp => IsEightBit(sp)
-    ? new CommanderStatusView8Bit(sp.GetRequiredService<IEliteDraw>())
-    : new CommanderStatusView(sp.GetRequiredService<IEliteDraw>()));
-```
-
-`IsEightBit(IServiceProvider)` is a private static helper next to
-`AddSplitScreens`, checking `IAssetLocator.Tier`. It exists solely to
-keep `IAssetLocator`/`SystemTier` off every registration's own CA1506
-class-coupling count — inlining the check tripped
-`AddSplitConsoleScreens`'s limit (41) on the very first screen.
-
-Also corrected in passing: this item previously said "the 8-bit tier is
-already the maintainer's configured default" - checked the maintainer's
-actual `elite.sharp` on 2026-07-30 and it is `SixteenBit`. Verifying the
-8-bit layout requires temporarily editing that file's `tier` value
-(back it up first; restore it after screenshotting).
-
-Two findings from `CommanderStatus`, likely general to the rest:
-
-- The 8-bit font is fixed 8x8 and not proportional (`AssetManifest.EightBit.json`
-  maps both `Small` and `Large` to the same `bbc-micro.bmp` cells) — at
-  320px wide that is 40 characters, full stop. The widest realistic
-  content (`"Front Military Laser"`, 21 chars, from a maxed-out laser
-  loadout) already needs more than half a row, which is why the 8-bit
-  view uses one equipment column where the 16-bit one uses two: two
-  columns wide enough for that string (168px each) cannot fit
-  side-by-side in 320px, and the wrap point is positional, not
-  content-aware, so either column could receive the longest string.
-- Labels are shorter than the 16-bit view's own ("System:" vs "Present
-  System:"), and this needed no model or 16-bit-view change: the label
-  text is chrome the *view* supplies, not model content, so each tier's
-  view is free to pick its own wording.
-- Vertical space is tight enough that it was verified against the
-  worst case, not just what actually renders for a starting commander:
-  a fully-equipped ship (all four laser mounts plus every other
-  upgrade) is 12 equipment lines, and the first spacing draft only fit
-  8 of them before the last line would sit under the scanner art.
-  Tightening the row pitch from 9px to 8px (matching the font exactly,
-  no inter-line gap) fits 11 comfortably; the 12th is still a few
-  pixels tight. Screenshotting whatever commander happens to be running
-  is not enough - the layout has to be checked against the shape of
-  its own content, not just one instance of it.
-**Both items done (2026-07-30): all nine absolute-layout screens have an
-8-bit view, wired through per-tier DI.** `InventoryView8Bit`,
-`MarketView8Bit`, `EquipmentView8Bit`, `PlanetDataView8Bit`,
-`ConstrictorMissionView8Bit`, `ThargoidMissionView8Bit`,
-`LoadCommanderView8Bit` and `SaveCommanderView8Bit` all followed
-`CommanderStatusView8Bit`'s pattern — a fresh 320x256 layout in
-`Views/EightBit/`, one `IsEightBit(sp) ? ... : ...` line per DI
-registration. `PilotView`'s one absolute line needed no second class at
-all: its hardcoded `y=358` was always just `16-bit ScannerTop - 25`
-(383-25=358) and never actually needed to be a literal, so it now
-reads `_draw.ScannerTop - 25` and serves both tiers unchanged — the
-cleanest possible outcome the survey flagged as a possibility.
-
-These are first-draft layouts, not polished ones — the maintainer asked
-to take the spacing/authoring judgement over personally rather than
-have it iterated on further here, so verification for this pass was
-"does it build, does it render, does it avoid the obvious overflow"
-(each screen screenshotted once under the 8-bit tier), not the
-worst-case-content check `CommanderStatus` got. `AddSplitConsoleScreens`
-split again (into `AddSplitStatusScreens`, holding
-`CommanderStatus`/`Inventory`/`PlanetData`) after the second and third
-8-bit view tripped CA1506 a second time — worth expecting every few
-screens as more tiers/views are added, not just once.
-
-Two decisions worth knowing before touching the remaining screens:
-
-- `MarketView8Bit` drops the 16-bit view's separate "Unit" column,
-  folding it into the quantity text instead (`"20t"` rather than `"20"`
-  + a separate `"t"` column): five columns does not fit 320px/8px-per-
-  character, matching the same column-width math `CommanderStatus`
-  worked out for its equipment list.
-- `ThargoidMissionView8Bit` keeps the Blake portrait image (stage 5) at
-  a placeholder position rather than dropping it — an 8-bit `blake.bmp`
-  already exists in the asset set, so leaving it out would have been a
-  content regression instead of a layout question.
+- [ ] [EliteSharpLib] Polish the 8-bit view layouts in
+      `Views/EightBit/`. Every screen has one and renders without
+      overflowing, but they are first drafts: verification was "does it
+      build, does it render, does it avoid the obvious overflow", not the
+      worst-case-content check the rules ask for. `CommanderStatusView8Bit`
+      is the one screen that got that treatment and is the reference for
+      what "done" looks like. The maintainer took this judgement over
+      personally, so this is spacing/authoring work, not a refactor.
+      Verifying an 8-bit layout means running with `engine.tier` set to
+      `EightBit` in `%APPDATA%\The Sharp Kind\elite.sharp` (back the file up
+      and restore it afterwards if it is on `SixteenBit`).
+- [ ] [EliteSharpLib] `OptionsView8Bit` word-wraps the credits itself
+      because the longest ("The New Kind - Christian Pinder 1999-2001", 41
+      characters) is one character wider than the 8-bit screen's 40-character
+      row, and `IEliteDraw.DrawTextPretty` is unusable for it (it breaks text
+      that already fits, and draws left-aligned where these lines are
+      centred). Either fix `DrawTextPretty`'s off-by-one break so views can
+      share one wrapper, or shorten the credit wording in
+      `OptionsController`; the local `Wrap` helper is a stopgap either way.
+- [ ] [EliteSharpLib] `ShortRangeChartView` is the one screen still combining
+      controller and view. Its `Reset` entangles layout with content
+      selection in a way no clean split survives: the text-row packing is
+      computed from screen coordinates, `row <= 3` skips a planet's blob and
+      not just its name, and `blob_size` depends on `GameState.CarryFlag` — a
+      side effect of the `NamePlanet` call that only happens when a name wins
+      a free row (a faithful port of the original's quirk). Its cursor clamps
+      are relative to `Centre`, so the galactic chart's galaxy-space trick
+      does not transfer. Revisit when the 8-bit short-range chart art is
+      actually authored and there are real layout requirements to design
+      against; the preferred shape then is passing the tier's layout metrics
+      (centre, scale, row height) into the controller, keeping the
+      `CarryFlag` quirk in one place, rather than moving row packing and name
+      generation into each tier's view.
 
 ### Release engineering (from the retired release plan)
 
@@ -440,12 +132,6 @@ not yet scoped into concrete steps.
       entry for `Return`, so a `key:Return` step throws "Unknown key
       name". Hit while driving SCR's menus (2026-07-28); add Return and
       any other obvious missing keys.
-- [ ] [EliteSharpLib] `Intro1Controller`'s doc comment says "the screen's
-      text is fixed, so the view takes no model"
-      ([Intro1Controller.cs:17-21](../src/elite/libs/EliteSharpLib/Views/Intro1Controller.cs)),
-      left over from the parameterless `IView` tried and dropped
-      2026-07-29 (see CHANGELOG). `Intro1View` has taken `Intro1Model`
-      since that day; fix the comment.
 - [ ] [Useful.Audio] `AudioController.PlayEffect`'s `_sfx[effectType]`
       is an unguarded dictionary indexer
       ([AudioController.cs:48](../src/useful/libs/Useful.Audio/AudioController.cs)):
@@ -747,12 +433,12 @@ either.**):
         `Focus` of the 2026-07-28 tier decision.
       - **Screens using bare absolute coordinates drift out of
         alignment** with those that are `Offset`-relative, which stay
-        centred. `ThargoidMissionView` (`new(116, 132)`, the Blake
-        portrait at `new(352, 46)`), `ConstrictorMissionView`,
-        `PlanetDataView`, `MarketView` and the commander save/load
-        screens are the known cases. This is a latent bug at any width
-        except 512, independent of the tier scheme, and it is a fourth
-        bucket for the per-tier view survey above.
+        centred. `ThargoidMissionView16Bit` (`new(116, 132)`, the Blake
+        portrait at `new(352, 46)`), `ConstrictorMissionView16Bit`,
+        `PlanetDataView16Bit`, `MarketView16Bit` and the commander
+        save/load screens are the known cases — and their 8-bit
+        counterparts have the same shape at 320. This is a latent bug at
+        any width except the tier's own, independent of the tier scheme.
       - **The stale comment** in
         [SDLProgram.cs](../src/elite/apps/EliteSharp/SDLProgram.cs)
         ("512x512 is what Elite has always rendered at") needs updating

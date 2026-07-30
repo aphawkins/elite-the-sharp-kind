@@ -60,6 +60,21 @@ The engine is architected like a business application; these are the house rules
 * An interface member that a primary implementation cannot honour (silent no-op) is a design error: implement it or remove it.
 * Prefer framework intrinsics over home-grown equivalents (`ArgumentNullException.ThrowIfNull` over a custom `Guard`), per the third-party-libraries principle above.
 
+### Screens: controllers, models and per-tier views
+
+The rules the 2026-07-29/30 controller/view split settled on. They apply to
+every Elite screen and to any new one.
+
+* Each screen is a `<Screen>Controller` (behaviour: `Reset`/`Update`/`HandleInput`, and all formatting), a `<Screen>Model` record (everything the screen draws, including its fixed wording), and one drawing-only view per tier. `ScreenManager` holds controllers, never views.
+* One view interface: `IView<TModel> { void Draw(TModel model); }`. **Do not reintroduce a parameterless `IView`** — it was tried and removed on 2026-07-29: two screens needed it at once and a single registration can only serve one, with the last silently winning. Give a screen a model even when the model is only its wording.
+* The three properties to preserve: behaviour has one home per screen, both tiers provably render the same data, and views are stateless. This is not MVC, MVP or MVVM and shouldn't be described as any of them (MVVM was considered and rejected: its value is binding and change notification, and Elite is immediate-mode with a full redraw per tick and polled input). The `Controller` suffix matches `PlanetController`/`AudioController` house style.
+* Views live in `Views/EightBit/<Screen>View8Bit.cs` and `Views/SixteenBit/<Screen>View16Bit.cs`, one per tier, and the `IView<TModel>` registration picks between them on `IAssetLocator.Tier`. The tier contract is a signature, not a convention: both views take the same model, so they can differ only in coordinates and font, and the formatting stays testable without a renderer.
+* Label text is chrome the view supplies, not model content, so each tier picks its own wording ("System:" at 8-bit against "Present System:" at 16-bit). Column-alignment format specifiers (`{qty,2}`) also stay in the view; a number the original drew as one indivisible string is content and belongs in the model.
+* The 8-bit tier is a 320x256 canvas with a fixed 8x8 font — 40 characters per row, full stop — so its layouts are authored fresh rather than scaled down from the 16-bit one. Check a layout against the *shape* of its content (the fully-equipped ship, the longest credit line), not against whatever one screenshot happens to show.
+* Screenshot diffing cannot prove "pixel-identical" on this app: two runs of the same build differ by ~2,000 pixels (window occlusion and the animated dashboard). Verify layout equivalence by algebra plus renderer-free controller tests, and use screenshots only to confirm nothing gross broke.
+* Screens with nothing to extract stay plain `IScreenController` implementations rather than being split for consistency — `DockingView`/`HyperspaceView`/`LaunchView` all draw a shared, resolution-independent `BreakPattern` and have no formatting and no tier variance.
+* The per-tier DI registrations live in `EliteSplitScreensServiceCollectionExtensions` and `EliteSplitAnimatedScreensServiceCollectionExtensions`, subdivided into `AddSplit*Screens` methods. Expect CA1506's class-coupling limit to force another method — or another static class, since the metric is per class — every few screens as views are added; that is the intended way to absorb it, not a suppression.
+
 ### Solution hygiene
 
 * NuGet package versions are managed centrally (`Directory.Packages.props`); shared `PackageReference` blocks (analyzers) live in `Directory.Build.props`/`.targets`, not copy-pasted per project.

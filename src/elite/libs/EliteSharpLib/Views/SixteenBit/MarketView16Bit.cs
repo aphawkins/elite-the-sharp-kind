@@ -4,19 +4,19 @@
 
 using EliteSharpLib.Graphics;
 
-namespace EliteSharpLib.Views;
+namespace EliteSharpLib.Views.SixteenBit;
 
 /// <summary>
 /// The 16-bit market screen: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class MarketView : IView<MarketModel>
+internal sealed class MarketView16Bit : IView<MarketModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
     private readonly uint _colorGreen;
     private readonly uint _colorLightRed;
 
-    internal MarketView(IEliteDraw draw)
+    internal MarketView16Bit(IEliteDraw draw)
     {
         _draw = draw;
 

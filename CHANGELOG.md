@@ -7,6 +7,48 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (A view per tier for every screen, 2026-07-30)
+
+- Every screen now has both an 8-bit and a 16-bit view, in a folder and
+  under a name that says which tier it is: the 18 existing views moved to
+  `Views/SixteenBit/<Screen>View16Bit.cs` (namespace
+  `EliteSharpLib.Views.SixteenBit`), matching the `Views/EightBit/`
+  convention that the first 8-bit views established.
+- Nine new 8-bit views complete the set: `GalacticChartView8Bit`,
+  `QuitView8Bit`, `Intro1View8Bit`, `Intro2View8Bit`,
+  `EscapeCapsuleView8Bit`, `GameOverView8Bit`, `OptionsView8Bit`,
+  `SettingsListView8Bit` and `PilotView8Bit`. The earlier survey had
+  called several of these "no second class needed" because their layout
+  is already `Centre`/`ScannerTop`-relative; a view per tier per screen
+  is now the rule regardless, so each tier's spacing constants can be
+  authored independently instead of one set serving both.
+- All 18 `IView<TModel>` registrations branch on
+  `IAssetLocator.Tier` via the existing `IsEightBit(sp)` helper.
+- `SettingsListView8Bit` keeps the two-column grid rather than dropping
+  to one, even though a name and its value do not fit side by side at
+  40 characters: the shared `SettingsListController`'s cursor moves in
+  steps of two, so a single visual column would make Up/Down look like
+  it skipped a row. Each cell stacks its value under its name instead.
+- `OptionsView8Bit` word-wraps the credits itself. `IEliteDraw.DrawTextPretty`
+  was tried first and is unusable here - it breaks text that already fits
+  (its `i += maxlen` then clamp-to-`Length - 1` always finds a break point)
+  and draws left-aligned where these lines are centred. Backlogged.
+- The DI registrations split again, into a second static class
+  (`EliteSplitAnimatedScreensServiceCollectionExtensions`, holding the
+  sequence and flight screens): nine more view types took
+  `EliteSplitScreensServiceCollectionExtensions` to 102 coupled types
+  against CA1506's class limit of 96. Splitting a method could not fix
+  it this time, since that metric is per class.
+- The durable rules from this and the preceding controller/view work now
+  live in [architecture-principles.md](docs/architecture-principles.md)
+  under "Screens: controllers, models and per-tier views", and the
+  backlog's tier-presentation section is down to the three items still
+  open. Verified by build, the full test suite, and screenshotting the
+  new 8-bit views live (title screen, ship parade, galactic chart,
+  options, game settings, engine settings, quit, front view);
+  `GameOverView8Bit` and `EscapeCapsuleView8Bit` are single centred
+  lines and were not driven to on screen.
+
 ### Added (8-bit views for every absolute-layout screen, 2026-07-30)
 
 - `InventoryView8Bit`, `MarketView8Bit`, `EquipmentView8Bit`,
