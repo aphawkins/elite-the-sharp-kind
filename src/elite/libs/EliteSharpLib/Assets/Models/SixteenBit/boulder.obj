@@ -1,0 +1,66 @@
+# boulder
+# Converted from boulder.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v -18 37 -11
+v 30 7 12
+v 28 -7 -12
+v 2 0 -39
+v -28 34 -30
+v 5 -10 13
+v 20 17 -30
+
+vn -15 -3 8
+vn -7 12 30
+vn 32 -47 24
+vn -3 -39 -7
+vn -5 -4 -1
+vn 49 84 8
+vn 112 21 -21
+vn 76 -35 -82
+vn 22 56 -137
+vn 40 110 -38
+
+usemtl DarkerGrey
+f 1 5 6
+usemtl LightGrey
+f 1 6 2
+usemtl DarkGrey
+f 2 6 3
+usemtl DarkerGrey
+f 3 6 4
+usemtl LightGrey
+f 4 6 5
+usemtl DarkGrey
+f 2 7 1
+usemtl DarkerGrey
+f 3 7 2
+usemtl LightGrey
+f 4 7 3
+usemtl DarkGrey
+f 5 7 4
+usemtl LightGrey
+f 7 5 1
+
+# pn 1 1
+# pn 1 2
+# pn 1 6
+# pn 1 10
+# pn 2 2
+# pn 2 3
+# pn 2 6
+# pn 2 7
+# pn 3 3
+# pn 3 4
+# pn 3 7
+# pn 3 8
+# pn 4 4
+# pn 4 5
+# pn 4 8
+# pn 4 9
+# pn 5 1
+# pn 5 5
+# pn 5 9
+# pn 5 10

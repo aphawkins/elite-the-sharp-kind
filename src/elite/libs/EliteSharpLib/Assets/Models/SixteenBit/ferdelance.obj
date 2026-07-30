@@ -1,0 +1,109 @@
+# ferdelance
+# Converted from ferdelance.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 0 -14 108
+v -40 -14 -4
+v -12 -14 -52
+v 12 -14 -52
+v 40 -14 -4
+v -40 14 -4
+v -12 2 -52
+v 12 2 -52
+v 40 14 -4
+v 0 18 -20
+v -3 -11 97
+v -26 8 18
+v -16 14 -4
+v 3 -11 97
+v 26 8 18
+v 16 14 -4
+v 0 -14 -20
+v -14 -14 44
+v 14 -14 44
+
+vn 0 24 6
+vn -68 0 24
+vn -63 0 -37
+vn 0 0 -104
+vn 63 0 -37
+vn 68 0 24
+vn -12 46 -19
+vn 0 45 -22
+vn 12 46 -19
+vn 0 -28 0
+
+usemtl LightGrey
+f 6 1 9 10
+usemtl DarkGrey
+f 1 6 2
+usemtl Blue
+f 3 2 6 7
+usemtl LighterRed
+f 4 3 7 8
+usemtl Blue
+f 5 4 8 9
+usemtl DarkGrey
+f 5 9 1
+usemtl DarkBlue
+f 6 10 7
+usemtl Blue
+f 7 10 8
+usemtl DarkBlue
+f 8 10 9
+usemtl DarkerGrey
+f 5 1 2 3 4
+usemtl LightRed
+f 17 19 18
+usemtl LightRed
+f 12 11 13
+usemtl LightRed
+f 16 14 15
+
+# pn 1 1
+# pn 1 2
+# pn 1 6
+# pn 1 10
+# pn 2 2
+# pn 2 3
+# pn 2 10
+# pn 3 3
+# pn 3 4
+# pn 3 10
+# pn 4 4
+# pn 4 5
+# pn 4 10
+# pn 5 5
+# pn 5 6
+# pn 5 10
+# pn 6 1
+# pn 6 2
+# pn 6 3
+# pn 6 7
+# pn 7 3
+# pn 7 4
+# pn 7 7
+# pn 7 8
+# pn 8 4
+# pn 8 5
+# pn 8 8
+# pn 8 9
+# pn 9 1
+# pn 9 5
+# pn 9 6
+# pn 9 9
+# pn 10 1
+# pn 10 7
+# pn 10 8
+# pn 10 9
+# pn 11 1
+# pn 12 1
+# pn 13 1
+# pn 14 1
+# pn 15 1
+# pn 16 1
+# pn 17 10
+# pn 18 10
+# pn 19 10

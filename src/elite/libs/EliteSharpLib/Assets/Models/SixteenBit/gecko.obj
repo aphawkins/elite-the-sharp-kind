@@ -1,0 +1,86 @@
+# gecko
+# Converted from gecko.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v -10 -4 47
+v 10 -4 47
+v -16 8 -23
+v 16 8 -23
+v -66 0 -3
+v 66 0 -3
+v -20 -14 -23
+v 20 -14 -23
+v -8 -6 33
+v 8 -6 33
+v -8 -13 -16
+v 8 -13 -16
+
+vn 0 31 5
+vn 4 45 8
+vn 25 -108 19
+vn 0 -84 12
+vn -25 -108 19
+vn -4 45 8
+vn -88 16 -214
+vn 0 0 -187
+vn 88 16 -214
+
+usemtl DarkGrey
+f 4 3 1 2
+usemtl LightGrey
+f 4 2 6
+usemtl DarkerGrey
+f 6 2 8
+usemtl LightGrey
+f 2 1 7 8
+usemtl DarkerGrey
+f 5 7 1
+usemtl LightGrey
+f 1 3 5
+usemtl LightRed
+f 5 3 7
+usemtl LighterRed
+f 3 4 8 7
+usemtl LightRed
+f 6 8 4
+usemtl White
+f 9 11
+usemtl White
+f 12 10
+
+# pn 1 1
+# pn 1 4
+# pn 1 5
+# pn 1 6
+# pn 2 1
+# pn 2 2
+# pn 2 3
+# pn 2 4
+# pn 3 1
+# pn 3 6
+# pn 3 7
+# pn 3 8
+# pn 4 1
+# pn 4 2
+# pn 4 8
+# pn 4 9
+# pn 5 5
+# pn 5 6
+# pn 5 7
+# pn 6 2
+# pn 6 3
+# pn 6 9
+# pn 7 4
+# pn 7 5
+# pn 7 7
+# pn 7 8
+# pn 8 3
+# pn 8 4
+# pn 8 8
+# pn 8 9
+# pn 9 4
+# pn 10 4
+# pn 11 4
+# pn 12 4

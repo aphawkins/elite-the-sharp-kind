@@ -1,0 +1,85 @@
+# moray
+# Converted from moray.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 15 0 65
+v -15 0 65
+v 0 18 -40
+v -60 0 0
+v 60 0 0
+v 30 -27 -10
+v -30 -27 -10
+v -9 -4 -25
+v 9 -4 -25
+v 0 -18 -16
+v 13 3 49
+v 6 0 65
+v -13 3 49
+v -6 0 65
+
+vn 0 43 7
+vn -10 49 7
+vn 10 49 7
+vn -59 -28 -101
+vn 0 -52 -78
+vn 59 -28 -101
+vn -72 -99 50
+vn 0 -83 30
+vn 72 -99 50
+
+usemtl Purple
+f 1 3 2
+usemtl DarkBlue
+f 2 3 4
+usemtl DarkBlue
+f 5 3 1
+usemtl LightGrey
+f 4 3 7
+usemtl DarkerGrey
+f 7 3 6
+usemtl LightGrey
+f 6 3 5
+usemtl LightBlue
+f 7 2 4
+usemtl Blue
+f 7 6 1 2
+usemtl LightBlue
+f 5 1 6
+usemtl LightRed
+f 9 10 8
+usemtl White
+f 12 11
+usemtl White
+f 13 14
+
+# pn 1 1
+# pn 1 3
+# pn 1 8
+# pn 1 9
+# pn 2 1
+# pn 2 2
+# pn 2 7
+# pn 2 8
+# pn 4 2
+# pn 4 4
+# pn 4 7
+# pn 5 3
+# pn 5 6
+# pn 5 9
+# pn 6 5
+# pn 6 6
+# pn 6 8
+# pn 6 9
+# pn 7 4
+# pn 7 5
+# pn 7 7
+# pn 7 8
+# pn 8 5
+# pn 9 5
+# pn 10 5
+# pn 11 1
+# pn 12 1
+# pn 13 1
+# pn 14 1

@@ -1,0 +1,70 @@
+# tharglet
+# Converted from tharglet.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v -9 0 40
+v -9 -38 12
+v -9 -24 -32
+v -9 24 -32
+v -9 38 12
+v 9 0 -8
+v 9 -10 -15
+v 9 -6 -26
+v 9 6 -26
+v 9 10 -15
+
+vn -36 0 0
+vn 20 -5 7
+vn 46 -42 -14
+vn 36 0 -104
+vn 46 42 -14
+vn 20 5 7
+vn 36 0 0
+
+usemtl LightRed
+f 4 3 2 1 5
+usemtl LightGrey
+f 7 6 1 2
+usemtl DarkGrey
+f 8 7 2 3
+usemtl Grey
+f 9 8 3 4
+usemtl DarkGrey
+f 10 9 4 5
+usemtl DarkerGrey
+f 5 1 6 10
+usemtl LightRed
+f 10 6 7 8 9
+
+# pn 1 1
+# pn 1 2
+# pn 1 6
+# pn 2 1
+# pn 2 2
+# pn 2 3
+# pn 3 1
+# pn 3 3
+# pn 3 4
+# pn 4 1
+# pn 4 4
+# pn 4 5
+# pn 5 1
+# pn 5 5
+# pn 5 6
+# pn 6 2
+# pn 6 6
+# pn 6 7
+# pn 7 2
+# pn 7 3
+# pn 7 7
+# pn 8 3
+# pn 8 4
+# pn 8 7
+# pn 9 4
+# pn 9 5
+# pn 9 7
+# pn 10 5
+# pn 10 6
+# pn 10 7

@@ -1,0 +1,190 @@
+# transporter
+# Converted from transporter.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 0 10 -26
+v -25 4 -26
+v -28 -3 -26
+v -25 -8 -26
+v 26 -8 -26
+v 29 -3 -26
+v 26 4 -26
+v 0 6 12
+v -30 -1 12
+v -33 -8 12
+v 33 -8 12
+v 30 -1 12
+v -11 -2 30
+v -13 -8 30
+v 14 -8 30
+v 11 -2 30
+v -5 6 2
+v -18 3 2
+v -5 7 -7
+v -18 4 -7
+v -11 6 -14
+v -11 5 -7
+v 5 7 -14
+v 18 4 -14
+v 11 5 -7
+v 5 6 -3
+v 18 3 -3
+v 11 4 8
+v 11 5 -3
+v -16 -8 -13
+v -16 -8 16
+v 17 -8 -13
+v 17 -8 16
+v -13 -3 -26
+v 13 -3 -26
+v 9 3 -26
+v -8 3 -26
+
+vn 0 0 -103
+vn -111 48 -7
+vn -105 -63 -21
+vn 0 -34 0
+vn 105 -63 -21
+vn 111 48 -7
+vn 8 32 3
+vn -8 32 3
+vn -8 34 11
+vn -75 32 79
+vn 75 32 79
+vn 8 34 11
+vn 0 38 17
+vn 0 0 121
+
+usemtl DarkerGrey
+f 6 5 4 3 2 1 7
+usemtl LightBlue
+f 10 9 2 3
+usemtl Blue
+f 4 10 3
+usemtl Purple
+f 15 14 10 4 5 11
+usemtl Blue
+f 6 11 5
+usemtl LightBlue
+f 12 11 6 7
+usemtl LightGrey
+f 7 1 8 12
+usemtl DarkGrey
+f 9 8 1 2
+usemtl LightBlue
+f 14 13 9 10
+usemtl LightBlue
+f 16 15 11 12
+usemtl LightGrey
+f 9 13 8
+usemtl DarkGrey
+f 8 16 12
+usemtl Grey
+f 8 13 16
+usemtl LighterGrey
+f 16 13 14 15
+usemtl LightRed
+f 36 35 34 37
+usemtl White
+f 31 30
+usemtl White
+f 32 33
+usemtl White
+f 18 17
+usemtl White
+f 19 20
+usemtl White
+f 19 21
+usemtl White
+f 21 22
+usemtl White
+f 21 20
+usemtl White
+f 24 23
+usemtl White
+f 26 27
+usemtl White
+f 25 23
+usemtl White
+f 25 24
+usemtl White
+f 29 28
+usemtl White
+f 26 28
+usemtl White
+f 28 27
+
+# pn 1 1
+# pn 1 7
+# pn 1 8
+# pn 2 1
+# pn 2 2
+# pn 2 8
+# pn 3 1
+# pn 3 2
+# pn 3 3
+# pn 4 1
+# pn 4 3
+# pn 4 4
+# pn 5 1
+# pn 5 4
+# pn 5 5
+# pn 6 1
+# pn 6 5
+# pn 6 6
+# pn 7 1
+# pn 7 6
+# pn 7 7
+# pn 9 2
+# pn 9 8
+# pn 9 9
+# pn 9 10
+# pn 10 2
+# pn 10 3
+# pn 10 4
+# pn 10 10
+# pn 11 4
+# pn 11 5
+# pn 11 6
+# pn 11 11
+# pn 12 6
+# pn 12 7
+# pn 12 11
+# pn 12 12
+# pn 13 9
+# pn 13 10
+# pn 13 13
+# pn 13 14
+# pn 14 4
+# pn 14 10
+# pn 14 14
+# pn 15 4
+# pn 15 11
+# pn 15 14
+# pn 16 11
+# pn 16 12
+# pn 16 13
+# pn 16 14
+# pn 17 8
+# pn 18 8
+# pn 19 8
+# pn 20 8
+# pn 21 8
+# pn 22 8
+# pn 23 7
+# pn 24 7
+# pn 25 7
+# pn 26 7
+# pn 27 7
+# pn 28 7
+# pn 29 7
+# pn 30 4
+# pn 31 4
+# pn 32 4
+# pn 33 4
+# pn 34 1
+# pn 35 1
+# pn 36 1
+# pn 37 1

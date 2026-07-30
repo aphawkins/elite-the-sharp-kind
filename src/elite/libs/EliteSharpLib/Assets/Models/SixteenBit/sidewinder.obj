@@ -1,0 +1,68 @@
+# sidewinder
+# Converted from sidewinder.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v -32 0 36
+v 32 0 36
+v 64 0 -28
+v -64 0 -28
+v 0 16 -28
+v 0 -16 -28
+v -12 6 -28
+v 12 6 -28
+v 12 -6 -28
+v -12 -6 -28
+
+vn 0 32 8
+vn -12 47 6
+vn 12 47 6
+vn 0 0 -112
+vn -12 -47 6
+vn 0 -32 8
+vn 12 -47 6
+
+usemtl DarkYellow
+f 5 1 2
+usemtl Gold
+f 5 4 1
+usemtl Gold
+f 3 5 2
+usemtl LightGrey
+f 3 6 4 5
+usemtl DarkYellow
+f 6 1 4
+usemtl Gold
+f 2 1 6
+usemtl DarkYellow
+f 3 2 6
+usemtl LighterRed
+f 9 10 7 8
+
+# pn 1 2
+# pn 1 1
+# pn 1 6
+# pn 1 5
+# pn 2 3
+# pn 2 1
+# pn 2 7
+# pn 2 6
+# pn 3 4
+# pn 3 3
+# pn 3 7
+# pn 4 4
+# pn 4 2
+# pn 4 5
+# pn 5 2
+# pn 5 1
+# pn 5 4
+# pn 5 3
+# pn 6 5
+# pn 6 4
+# pn 6 7
+# pn 6 6
+# pn 7 4
+# pn 8 4
+# pn 9 4
+# pn 10 4

@@ -1,0 +1,97 @@
+# mamba
+# Converted from mamba.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 0 0 64
+v -64 -8 -32
+v -32 8 -32
+v 32 8 -32
+v 64 -8 -32
+v -4 4 16
+v 4 4 16
+v 8 3 28
+v -8 3 28
+v -20 -4 16
+v 20 -4 16
+v -24 -7 -20
+v -16 -7 -20
+v 16 -7 -20
+v 24 -7 -20
+v -8 4 -32
+v 8 4 -32
+v 8 -4 -32
+v -8 -4 -32
+v -32 4 -32
+v 32 4 -32
+v 36 -4 -32
+v -36 -4 -32
+v -38 0 -32
+v 38 0 -32
+
+vn 0 -24 2
+vn 0 24 2
+vn -32 64 16
+vn 32 64 16
+vn 0 0 -127
+
+usemtl Green
+f 2 5 1
+usemtl LighterGreen
+f 3 1 4
+usemtl LightGreen
+f 2 1 3
+usemtl LightGreen
+f 4 1 5
+usemtl LightGrey
+f 2 3 4 5
+usemtl LightBlue
+f 12 13 10
+usemtl LighterRed
+f 18 19 16 17
+usemtl Blue
+f 8 7 6 9
+usemtl LightBlue
+f 14 15 11
+usemtl LighterRed
+f 21 25 22
+usemtl LighterRed
+f 23 24 20
+
+# pn 1 2
+# pn 1 1
+# pn 1 4
+# pn 1 3
+# pn 2 3
+# pn 2 1
+# pn 2 5
+# pn 3 3
+# pn 3 2
+# pn 3 5
+# pn 4 4
+# pn 4 2
+# pn 4 5
+# pn 5 4
+# pn 5 1
+# pn 5 5
+# pn 6 2
+# pn 7 2
+# pn 8 2
+# pn 9 2
+# pn 10 1
+# pn 11 1
+# pn 12 1
+# pn 13 1
+# pn 14 1
+# pn 15 1
+# pn 16 5
+# pn 17 5
+# pn 18 5
+# pn 19 5
+# pn 20 5
+# pn 21 5
+# pn 22 5
+# pn 23 5
+# pn 24 5
+# pn 25 5

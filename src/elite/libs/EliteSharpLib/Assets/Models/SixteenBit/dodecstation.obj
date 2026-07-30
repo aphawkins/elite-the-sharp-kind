@@ -1,0 +1,135 @@
+# dodecstation
+# Converted from dodecstation.json - Elite: The Sharp Kind
+# 'pn' comments link a vertex to a face-normal-pool ('vn') entry that
+# no face uses directly; only the explosion debris effect reads these.
+mtllib palette.mtl
+
+v 0 150 196
+v 143 46 196
+v 88 -121 196
+v -88 -121 196
+v -143 46 196
+v 0 243 46
+v 231 75 46
+v 143 -196 46
+v -143 -196 46
+v -231 75 46
+v 143 196 -46
+v 231 -75 -46
+v 0 -243 -46
+v -231 -75 -46
+v -143 196 -46
+v 88 121 -196
+v 143 -46 -196
+v 0 -150 -196
+v -143 -46 -196
+v -88 121 -196
+v -16 32 196
+v -16 -32 196
+v 16 32 196
+v 16 -32 196
+
+vn 0 0 196
+vn 103 142 88
+vn 169 -55 89
+vn 0 -176 88
+vn -169 -55 89
+vn -103 142 88
+vn 0 176 -88
+vn 169 55 -89
+vn 103 -142 -88
+vn -103 -142 -88
+vn -169 55 -89
+vn 0 0 -196
+
+usemtl Grey
+f 4 3 2 1 5
+usemtl LightGrey
+f 7 11 6 1 2
+usemtl DarkGrey
+f 8 12 7 2 3
+usemtl DarkerGrey
+f 9 13 8 3 4
+usemtl LightGrey
+f 10 14 9 4 5
+usemtl DarkerGrey
+f 6 15 10 5 1
+usemtl LightGrey
+f 16 20 15 6 11
+usemtl DarkGrey
+f 17 16 11 7 12
+usemtl LightGrey
+f 18 17 12 8 13
+usemtl DarkerGrey
+f 19 18 13 9 14
+usemtl DarkGrey
+f 20 19 14 10 15
+usemtl Grey
+f 20 16 17 18 19
+usemtl Black
+f 23 21 22 24
+
+# pn 1 1
+# pn 1 2
+# pn 1 6
+# pn 2 1
+# pn 2 2
+# pn 2 3
+# pn 3 1
+# pn 3 3
+# pn 3 4
+# pn 4 1
+# pn 4 4
+# pn 4 5
+# pn 5 1
+# pn 5 5
+# pn 5 6
+# pn 6 2
+# pn 6 6
+# pn 6 7
+# pn 7 2
+# pn 7 3
+# pn 7 8
+# pn 8 3
+# pn 8 4
+# pn 8 9
+# pn 9 4
+# pn 9 5
+# pn 9 10
+# pn 10 5
+# pn 10 6
+# pn 10 11
+# pn 11 2
+# pn 11 7
+# pn 11 8
+# pn 12 3
+# pn 12 8
+# pn 12 9
+# pn 13 4
+# pn 13 9
+# pn 13 10
+# pn 14 5
+# pn 14 10
+# pn 14 11
+# pn 15 6
+# pn 15 7
+# pn 15 11
+# pn 16 7
+# pn 16 8
+# pn 16 12
+# pn 17 8
+# pn 17 9
+# pn 17 12
+# pn 18 9
+# pn 18 10
+# pn 18 12
+# pn 19 10
+# pn 19 11
+# pn 19 12
+# pn 20 7
+# pn 20 11
+# pn 20 12
+# pn 21 1
+# pn 22 1
+# pn 23 1
+# pn 24 1
