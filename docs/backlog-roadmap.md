@@ -141,32 +141,68 @@ height) into the controller, which keeps the `CarryFlag` quirk in one
 place, rather than moving row packing and name generation into each
 tier's view.
 
-**Converted so far (2026-07-30, branch `mvc-controller-view-seam`, five
-commits, not yet merged or pushed): `GalacticChart`, `Quit`,
+**All screens converted (2026-07-30, branch `mvc-controller-view-seam`,
+six commits, not yet merged or pushed): `GalacticChart`, `Quit`,
 `ThargoidMission`, `Intro1`, `CommanderStatus`, `Inventory`,
 `GameOver`, `EscapeCapsule`, `ConstrictorMission`, `Options`, `Market`,
 `Equipment`, `Settings`, `EngineSettings`, `LoadCommander`,
-`SaveCommander` — sixteen screens, three items left on the list below
-(the mechanical, selection-cursor and text-entry groups are all now
-fully done).** Each is a
+`SaveCommander`, `Intro2`, the four cockpit windows (one shared
+`PilotController`), `PlanetData` — every screen bar `ShortRangeChart`,
+which stays deliberately out of scope (see its own entry above).** Each
+is a
 `<Screen>Controller` + `<Screen>Model` + drawing-only `<Screen>View`,
 with DI registrations collected in
-`EliteServiceCollectionExtensions.AddSplitScreens`, which the rest join
-as they convert. Copy any of those sixteen as the pattern —
+`EliteServiceCollectionExtensions.AddSplitScreens`, which any future
+screen (e.g. `ShortRangeChart`, if it's ever revisited) would join.
+Copy any of the converted screens as the pattern —
 `CommanderStatus` is the fullest example of formatting extraction,
 `GalacticChart` of a screen with cursor state, `Market`/`Equipment` of a
 cursor over a dynamic list, `LoadCommander`/`SaveCommander` of two
-screens sharing a shape but not a class.
+screens sharing a shape but not a class, `PilotController` of one
+controller serving several screens through a parameter rather than
+subclassing.
 
 Note the DI registrations moved to their own class,
 `EliteSplitScreensServiceCollectionExtensions`, split further across
 `AddSplitConsoleScreens`/`AddSplitSequenceScreens`/`AddSplitMenuScreens`/
-`AddSplitTextEntryScreens`: first the per-method CA1506 limit (41), then
-— once the split screens' combined registrations grew large enough on
-their own — the *class*-level CA1506 limit (96), which a single extra
-static class resolves since the metric is computed per class. Expect to
-need a fifth method, or a second class, somewhere around screen
-eighteen.
+`AddSplitTextEntryScreens`/`AddSplitFlightScreens`: first the per-method
+CA1506 limit (41), then — once the split screens' combined
+registrations grew large enough on their own — the *class*-level
+CA1506 limit (96), which a single extra static class resolves since the
+metric is computed per class.
+
+Findings from the design-questions group (the backlog's own name for
+these three, since each needed a real decision rather than a mechanical
+port), on top of the ones from the mechanical, selection-cursor and
+text-entry groups already noted below:
+
+- The backlog described `PilotView` as "a base plus four subclasses",
+  but it was composition, not inheritance: `PilotFrontView`,
+  `PilotRearView`, `PilotLeftView` and `PilotRightView` were four
+  near-identical classes, each holding its own instance of the same
+  `PilotView` and differing only in a view-name string, which laser
+  mount to draw and which starfield direction to scroll. Collapsed into
+  one `PilotController` parameterised by a new `PilotDirection` enum
+  (`Front`/`Rear`/`Left`/`Right`), sharing one `IView<PilotModel>`
+  registration across all four screens — the largest structural change
+  of this conversion, deleting four files rather than splitting one.
+  `PopulateScreens` constructs the four `PilotController` instances
+  directly (`CreatePilotController`) rather than resolving them by
+  type, since a single `AddSingleton<PilotController>()` registration
+  can only ever serve one screen.
+- `Intro2` and `PlanetData` turned out to have none of the entanglement
+  the backlog worried about (echoing the earlier survey's own finding
+  that assumed problems don't always materialise on inspection):
+  `Intro2View.Draw()` never touched the parade ship itself (drawn by
+  the universe, exactly like `Intro1`'s rolling Cobra), and
+  `PlanetDataView`'s fixed y-coordinates never depended on which
+  content was selected, unlike `ShortRangeChartView`'s row-packing.
+  Both converted the same mechanical way as everything before them.
+- `LaserDraw` (the crosshair/beam renderer `PilotView` used to
+  construct inline) takes `RNG` for purely cosmetic beam jitter, not
+  game state — the discriminator used to decide it belongs on the view
+  side, not the controller, despite `RNG` usually being controller-side
+  elsewhere in this codebase (e.g. `GameOverController`'s cargo scatter).
 
 Findings from the text-entry group, on top of the ones from the
 mechanical and selection-cursor groups already noted below:
@@ -225,24 +261,6 @@ mechanical and selection-cursor groups already noted below:
   which is therefore fully-formatted content, matching
   `CommanderStatusModel.Cash`'s precedent.
 
-- [ ] [EliteSharpLib] Convert the remaining 3 screens to the pattern,
-      moving each view's formatting onto its controller behind a
-      `<Screen>Model` record — that is the data the 8-bit view must
-      reuse rather than re-derive. Add controller unit tests for the
-      extracted formatting as it lands (no renderer fake needed once it
-      returns a record); `GalacticChartControllerTests` and
-      `CommanderStatusControllerTests` are the templates.
-      - Expect design questions in these three, so do them last and
-        singly: `Intro2View` (its `Update` drives universe state for
-        the ship parade), the `PilotView` family (a base plus four
-        subclasses — the inheritance may not map onto controller/view
-        cleanly, and the four differ only by which direction they
-        look), and `PlanetDataView` (326 lines; its RNG-driven
-        description generator — `_descriptionList`/`_economyType`/
-        `_governmentType`, `DescribePlanet`, `ExpandDescription`/
-        `ExpandToken`/`ExpandEscape`, cached `_hyperPlanetData` — may
-        have the same layout/content entanglement that took
-        `ShortRangeChartView` out of scope, so check before starting).
 - [ ] [EliteSharpLib] Re-scope or drop the "retire the pass-through
       controllers" step. It assumed a parameterless `IView` and a
       shared `DrawOnlyController` for screens with neither input nor

@@ -188,16 +188,16 @@ public static class EliteServiceCollectionExtensions
     {
         ScreenManager<Screen, IScreenController> views = sp.GetRequiredService<ScreenManager<Screen, IScreenController>>();
         views.Add(Screen.IntroOne, sp.GetRequiredService<Intro1Controller>());
-        views.Add(Screen.IntroTwo, sp.GetRequiredService<Intro2View>());
+        views.Add(Screen.IntroTwo, sp.GetRequiredService<Intro2Controller>());
         views.Add(Screen.GalacticChart, sp.GetRequiredService<GalacticChartController>());
         views.Add(Screen.ShortRangeChart, sp.GetRequiredService<ShortRangeChartView>());
-        views.Add(Screen.PlanetData, sp.GetRequiredService<PlanetDataView>());
+        views.Add(Screen.PlanetData, sp.GetRequiredService<PlanetDataController>());
         views.Add(Screen.MarketPrices, sp.GetRequiredService<MarketController>());
         views.Add(Screen.CommanderStatus, sp.GetRequiredService<CommanderStatusController>());
-        views.Add(Screen.FrontView, sp.GetRequiredService<PilotFrontView>());
-        views.Add(Screen.RearView, sp.GetRequiredService<PilotRearView>());
-        views.Add(Screen.LeftView, sp.GetRequiredService<PilotLeftView>());
-        views.Add(Screen.RightView, sp.GetRequiredService<PilotRightView>());
+        views.Add(Screen.FrontView, CreatePilotController(sp, PilotDirection.Front));
+        views.Add(Screen.RearView, CreatePilotController(sp, PilotDirection.Rear));
+        views.Add(Screen.LeftView, CreatePilotController(sp, PilotDirection.Left));
+        views.Add(Screen.RightView, CreatePilotController(sp, PilotDirection.Right));
         views.Add(Screen.Docking, sp.GetRequiredService<DockingView>());
         views.Add(Screen.Undocking, sp.GetRequiredService<LaunchView>());
         views.Add(Screen.Hyperspace, sp.GetRequiredService<HyperspaceView>());
@@ -215,6 +215,20 @@ public static class EliteServiceCollectionExtensions
         views.Add(Screen.GameOver, sp.GetRequiredService<GameOverController>());
     }
 
+    // The four cockpit windows share one PilotController, differing only in
+    // which direction they face, so PopulateScreens constructs each directly
+    // rather than resolving four otherwise-identical registrations by type.
+    private static PilotController CreatePilotController(IServiceProvider sp, PilotDirection direction) => new(
+        sp.GetRequiredService<GameState>(),
+        sp.GetRequiredService<IKeyboard>(),
+        sp.GetRequiredService<Pilot>(),
+        sp.GetRequiredService<PlayerShip>(),
+        sp.GetRequiredService<Stars>(),
+        sp.GetRequiredService<Space>(),
+        sp.GetRequiredService<Combat>(),
+        direction,
+        sp.GetRequiredService<IView<PilotModel>>());
+
     // The ~25 views EliteMain used to construct itself, now registered so
     // AddEliteMain's screen-map factory above can resolve them.
     private static void AddEliteViews(this IServiceCollection services)
@@ -226,57 +240,6 @@ public static class EliteServiceCollectionExtensions
 
     private static void AddEliteFlightViews(this IServiceCollection services)
     {
-        services.AddSingleton(sp => new Intro2View(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<AudioController>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<Stars>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Combat>(),
-            sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IShipFactory>(),
-            sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro2View>()));
-        services.AddSingleton(sp => new PilotFrontView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<Stars>(),
-            sp.GetRequiredService<Pilot>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Space>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Combat>(),
-            sp.GetRequiredService<RNG>()));
-        services.AddSingleton(sp => new PilotRearView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<Stars>(),
-            sp.GetRequiredService<Pilot>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Space>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Combat>(),
-            sp.GetRequiredService<RNG>()));
-        services.AddSingleton(sp => new PilotLeftView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<Stars>(),
-            sp.GetRequiredService<Pilot>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Space>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Combat>(),
-            sp.GetRequiredService<RNG>()));
-        services.AddSingleton(sp => new PilotRightView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<Stars>(),
-            sp.GetRequiredService<Pilot>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Space>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Combat>(),
-            sp.GetRequiredService<RNG>()));
         services.AddSingleton(sp => new DockingView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
@@ -298,19 +261,12 @@ public static class EliteServiceCollectionExtensions
     }
 
     private static void AddEliteConsoleViews(this IServiceCollection services)
-    {
-        services.AddSingleton(sp => new ShortRangeChartView(
+        => services.AddSingleton(sp => new ShortRangeChartView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<PlanetController>(),
             sp.GetRequiredService<PlayerShip>()));
-        services.AddSingleton(sp => new PlanetDataView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<PlanetController>(),
-            sp.GetRequiredService<RNG>()));
-    }
 
     // TODO: improve this (moved from EliteMain, see backlog)
     private static Dictionary<string, SfxSample> BuildEliteSfx() => new()

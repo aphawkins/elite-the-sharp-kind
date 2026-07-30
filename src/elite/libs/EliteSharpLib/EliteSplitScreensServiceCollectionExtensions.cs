@@ -31,6 +31,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
         services.AddSplitSequenceScreens();
         services.AddSplitMenuScreens();
         services.AddSplitTextEntryScreens();
+        services.AddSplitFlightScreens();
     }
 
     // The screens the commander drives: charts, status, and the menus.
@@ -81,6 +82,14 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<IView<InventoryModel>>()));
+
+        services.AddSingleton<IView<PlanetDataModel>>(sp => new PlanetDataView(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new PlanetDataController(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<PlanetController>(),
+            sp.GetRequiredService<RNG>(),
+            sp.GetRequiredService<IView<PlanetDataModel>>()));
     }
 
     // The screens that play out on their own: mission messages, and the
@@ -205,5 +214,33 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<SaveFile>(),
             sp.GetRequiredService<IView<SaveCommanderModel>>()));
+    }
+
+    // The ship parade and the four cockpit windows: screens whose Update
+    // drives the universe directly rather than a screen-local timer. The
+    // four cockpit windows share one IView<PilotModel> registration, since
+    // none varies the layout - PopulateScreens builds the four
+    // PilotControllers directly (see CreatePilotController) rather than
+    // resolving them here, since they aren't otherwise-distinct types.
+    private static void AddSplitFlightScreens(this IServiceCollection services)
+    {
+        services.AddSingleton<IView<Intro2Model>>(sp => new Intro2View(
+            sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new Intro2Controller(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<AudioController>(),
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<Stars>(),
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<Combat>(),
+            sp.GetRequiredService<Universe>(),
+            sp.GetRequiredService<IShipFactory>(),
+            sp.GetRequiredService<IView<Intro2Model>>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro2Controller>()));
+
+        services.AddSingleton<IView<PilotModel>>(sp => new PilotView(
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<RNG>()));
     }
 }

@@ -7,6 +7,40 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Controller/view split complete, the design-questions group, 2026-07-30)
+
+- `Intro2`, the four cockpit windows and `PlanetData` each become a
+  controller, a model record and a drawing-only view. Every
+  behaviour-bearing screen is now split except `ShortRangeChart`, which
+  stays deliberately out of scope.
+- The `PilotView` family was never inheritance despite how the backlog
+  described it - `PilotFrontView`/`PilotRearView`/`PilotLeftView`/
+  `PilotRightView` were four near-identical classes composing their own
+  instance of the same `PilotView`, differing only in a view-name
+  string, which laser mount to draw and which starfield direction to
+  scroll. Collapsed into one `PilotController` parameterised by a new
+  `PilotDirection` enum, sharing one `IView<PilotModel>` registration
+  across all four screens - the largest structural change so far,
+  deleting four files rather than splitting one. `PopulateScreens`
+  constructs the four `PilotController` instances directly
+  (`CreatePilotController`), since a single `AddSingleton<PilotController>()`
+  registration can only ever serve one screen.
+- `Intro2` and `PlanetData` had none of the layout/content entanglement
+  the backlog worried about: `Intro2View.Draw()` never touched the
+  parade ship itself (drawn by the universe, like `Intro1`'s rolling
+  Cobra), and `PlanetDataView`'s fixed y-coordinates never depended on
+  which content was selected, unlike `ShortRangeChartView`'s row
+  packing. Both converted the same mechanical way as every screen
+  before them.
+- `LaserDraw` (the crosshair/beam renderer, now constructed by
+  `PilotView` instead of the old shared `PilotView` behaviour class)
+  takes `RNG` for cosmetic beam jitter only, so it stayed on the view
+  side rather than the controller, unlike this codebase's usual pattern
+  of keeping `RNG` on the controller (e.g. `GameOverController`'s cargo
+  scatter).
+- New controller tests: `Intro2ControllerTests`, `PilotControllerTests`,
+  `PlanetDataControllerTests`.
+
 ### Changed (Controller/view split, the text-entry group, 2026-07-30)
 
 - `LoadCommander` and `SaveCommander` each become a controller, a model

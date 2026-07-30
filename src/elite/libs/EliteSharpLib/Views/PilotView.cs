@@ -2,285 +2,46 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Lasers;
-using EliteSharpLib.Ships;
-using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class PilotView : IScreenController
+/// <summary>
+/// The 16-bit cockpit window: the 512-space layout, and nothing else. Shared
+/// by all four directions, since none varies the layout, only the model's
+/// content. The starfield and the ship ahead are drawn by the universe.
+/// </summary>
+internal sealed class PilotView : IView<PilotModel>
 {
-    private readonly GameState _gameState;
-    private readonly IKeyboard _keyboard;
-    private readonly LaserDraw _laser;
-    private readonly Pilot _pilot;
-    private readonly PlayerShip _ship;
-    private readonly Stars _stars;
-    private readonly Space _space;
     private readonly IEliteDraw _draw;
-    private readonly Combat _combat;
+    private readonly LaserDraw _laser;
     private readonly uint _colorWhite;
 
-    private int _drawLaserFrames;
-
-    internal PilotView(
-        GameState gameState,
-        IKeyboard keyboard,
-        Pilot pilot,
-        PlayerShip ship,
-        Stars stars,
-        Space space,
-        IEliteDraw draw,
-        Combat combat,
-        RNG rng)
+    internal PilotView(IEliteDraw draw, GameState gameState, RNG rng)
     {
-        _gameState = gameState;
-        _keyboard = keyboard;
-        _laser = new LaserDraw(_gameState, draw, rng);
-        _pilot = pilot;
-        _ship = ship;
-        _stars = stars;
-        _space = space;
         _draw = draw;
-        _combat = combat;
+        _laser = new LaserDraw(gameState, draw, rng);
 
         _colorWhite = draw.Palette["White"];
     }
 
-    public void Draw()
+    public void Draw(PilotModel model)
     {
-        if (_space.HyperGalactic)
+        ArgumentNullException.ThrowIfNull(model);
+
+        if (model.HyperspaceStatus.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(358, "Galactic Hyperspace", nameof(FontType.Small), _colorWhite);
-        }
-        else if (_space.HyperCountdown > 0)
-        {
-            _draw.Graphics.DrawTextCentre(358, $"Hyperspace - {_space.HyperName}", nameof(FontType.Small), _colorWhite);
-        }
-    }
-
-    // Continuous flight controls (pitch/roll/speed/fire) are polled every
-    // frame and need IsHeld's non-consuming "is the key currently down"
-    // state, not IsPressed's one-shot consumption - otherwise a held key
-    // would go unresponsive as soon as a second key was also held (SDL/
-    // Windows key-repeat only re-fires for the most recently pressed key).
-    // One-shot commands below (docking, hyperspace, missiles, pause, etc.)
-    // correctly keep using IsPressed.
-    public void HandleInput()
-    {
-        HandleFlightControls();
-        HandleNavigationCommands();
-        HandleWeaponCommands();
-    }
-
-    public void Reset() => _stars.FlipStars();
-
-    public void Update()
-        => _drawLaserFrames = _gameState.DrawLasers ? 2 : Math.Clamp(_drawLaserFrames - 1, 0, _drawLaserFrames);
-
-    // The firing beams share the crosshair's colour, so they are drawn here
-    // rather than in Draw(), which doesn't know which laser is mounted.
-    internal void DrawLaserSights(LaserType laserType)
-    {
-        if (_drawLaserFrames > 0)
-        {
-            _laser.DrawLaserLines(laserType);
+            _draw.Graphics.DrawTextCentre(358, model.HyperspaceStatus, nameof(FontType.Small), _colorWhite);
         }
 
-        _laser.DrawLaserSights(laserType);
-    }
+        _draw.Graphics.DrawTextCentre(_draw.Top + 10, model.ViewName, nameof(FontType.Small), _colorWhite);
 
-    internal void DrawViewName(string name)
-        => _draw.Graphics.DrawTextCentre(_draw.Top + 10, name, nameof(FontType.Small), _colorWhite);
-
-    private void HandleFlightControls()
-    {
-        if (_keyboard.IsHeld(ConsoleKey.A))
+        if (model.IsFiring)
         {
-            _gameState.DrawLasers = _combat.FireLaser();
+            _laser.DrawLaserLines(model.LaserType);
         }
 
-        if (_keyboard.IsHeld(ConsoleKey.S) || _keyboard.IsHeld(ConsoleKey.UpArrow))
-        {
-            if (_ship.Climb > 0)
-            {
-                _ship.Climb = 0;
-            }
-            else
-            {
-                _ship.DecreaseClimb();
-                _ship.DecreaseClimb();
-            }
-
-            _ship.IsClimbing = true;
-        }
-
-        if (_keyboard.IsHeld(ConsoleKey.X) || _keyboard.IsHeld(ConsoleKey.DownArrow))
-        {
-            if (_ship.Climb < 0)
-            {
-                _ship.Climb = 0;
-            }
-            else
-            {
-                _ship.IncreaseClimb();
-                _ship.IncreaseClimb();
-            }
-
-            _ship.IsClimbing = true;
-        }
-
-        HandleRollControls();
-
-        if (_keyboard.IsHeld(ConsoleKey.Spacebar) &&
-            !_gameState.IsDocked)
-        {
-            _ship.IncreaseSpeed();
-        }
-
-        if (_keyboard.IsHeld(ConsoleKey.Oem2) &&
-            !_gameState.IsDocked)
-        {
-            _ship.DecreaseSpeed();
-        }
-    }
-
-    // Roll left and right. A roll in the opposite direction to the current one
-    // levels the ship out instead.
-    private void HandleRollControls()
-    {
-        if (_keyboard.IsHeld(ConsoleKey.OemComma) || _keyboard.IsHeld(ConsoleKey.LeftArrow))
-        {
-            if (_ship.Roll < 0)
-            {
-                _ship.Roll = 0;
-            }
-            else
-            {
-                _ship.IncreaseRoll();
-                _ship.IncreaseRoll();
-                _ship.IsRolling = true;
-            }
-        }
-
-        if (_keyboard.IsHeld(ConsoleKey.OemPeriod) || _keyboard.IsHeld(ConsoleKey.RightArrow))
-        {
-            if (_ship.Roll > 0)
-            {
-                _ship.Roll = 0;
-            }
-            else
-            {
-                _ship.DecreaseRoll();
-                _ship.DecreaseRoll();
-                _ship.IsRolling = true;
-            }
-        }
-    }
-
-    private void HandleNavigationCommands()
-    {
-        if (_keyboard.IsPressed(ConsoleKey.C) &&
-            !_gameState.IsDocked
-            && _ship.HasDockingComputer)
-        {
-            EngageDockingComputer();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.D))
-        {
-            _pilot.DisengageAutoPilot();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.H) && (!_gameState.IsDocked))
-        {
-            if (_keyboard.IsPressed(ConsoleModifiers.Control))
-            {
-                _space.StartGalacticHyperspace();
-            }
-            else
-            {
-                _space.StartHyperspace();
-            }
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.J) &&
-            (!_gameState.IsDocked)
-            && (!_gameState.InWitchspace))
-        {
-            _space.JumpWarp();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.P))
-        {
-            _gameState.IsGamePaused = true;
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.Escape) &&
-            (!_gameState.IsDocked)
-            && _ship.HasEscapeCapsule
-            && (!_gameState.InWitchspace))
-        {
-            _gameState.SetView(Screen.EscapeCapsule);
-        }
-    }
-
-    // Dock instantly if configured to, otherwise fly the ship in on autopilot.
-    private void EngageDockingComputer()
-    {
-        if (_gameState.Config.Game.InstantDock)
-        {
-            _space.EngageDockingComputer();
-        }
-        else if (!_gameState.InWitchspace && !_space.IsHyperspaceReady)
-        {
-            _pilot.EngageAutoPilot();
-        }
-    }
-
-    private void HandleWeaponCommands()
-    {
-        if (_keyboard.IsPressed(ConsoleKey.E) &&
-            !_gameState.IsDocked
-            && _ship.HasECM)
-        {
-            _combat.ActivateECM(true);
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.M) &&
-            !_gameState.IsDocked)
-        {
-            _combat.FireMissile();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.T) &&
-            !_gameState.IsDocked)
-        {
-            _combat.ArmMissile();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.U) &&
-            !_gameState.IsDocked)
-        {
-            _combat.UnarmMissile();
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.Tab) &&
-            (!_gameState.IsDocked)
-            && _ship.HasEnergyBomb)
-        {
-            _gameState.DetonateBomb = true;
-            _ship.HasEnergyBomb = false;
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.Escape) &&
-            (!_gameState.IsDocked)
-            && _ship.HasEscapeCapsule
-            && (!_gameState.InWitchspace))
-        {
-            _gameState.SetView(Screen.EscapeCapsule);
-        }
+        _laser.DrawLaserSights(model.LaserType);
     }
 }
