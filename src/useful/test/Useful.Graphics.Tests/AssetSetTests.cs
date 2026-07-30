@@ -1,5 +1,8 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
 using Moq;
 using Useful.Assets;
 
@@ -114,6 +117,101 @@ public class AssetSetTests
         Assert.Equal(17, assets.Budget.ColourCount);
     }
 
+    [Theory]
+    [InlineData(SystemTier.EightBit, true)]
+    [InlineData(SystemTier.SixteenBit, false)]
+    public void TreatsThePaletteAsTheWholeColourSetOnlyOnIndexedColourTiers(SystemTier tier, bool expected)
+        => Assert.Equal(expected, AssetColourBudget.PaletteNamesEveryColour(tier));
+
+    [Fact]
+    public void ThrowsWhenAnEightBitBitmapUsesAColourThePaletteDoesNotName()
+    {
+        // Arrange: 8-bit hardware was indexed-colour, so a pixel that is not a
+        // palette entry is a colour the machine could not have shown - well
+        // inside the 16-colour cap, so only the palette rule can catch it.
+        using TempImageFile palette = Palette(("Red", 0xFFFF0000));
+        using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFF00FF00));
+        IAssetLocator locator = Locator(SystemTier.EightBit, palette, ("Image", image));
+
+        // Act
+        UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
+
+        // Assert: the message has to name the file and the colour, or the fix
+        // is a hunt through every bitmap in the tier.
+        Assert.Contains("Image", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("FF00FF00", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AllowsAnEightBitSetWhoseColoursThePaletteAllNames()
+    {
+        // Arrange: every pixel is a palette entry, and the palette names one
+        // colour no bitmap uses - the rule is a subset test, not equality.
+        using TempImageFile palette = Palette(("Red", 0xFFFF0000), ("Green", 0xFF00FF00), ("Blue", 0xFF0000FF));
+        using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFF00FF00));
+
+        // Act
+        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, palette, ("Image", image)));
+
+        // Assert
+        Assert.True(assets.Budget.IsWithinPalette);
+        Assert.Empty(assets.Budget.OutsidePalette);
+    }
+
+    [Fact]
+    public void IgnoresTransparentPixelsWhenCheckingAgainstThePalette()
+    {
+        // Arrange: a transparent pixel carries no colour, so the palette has
+        // no reason to name whatever ARGB it happens to hold.
+        using TempImageFile palette = Palette(("Red", 0xFFFF0000));
+        using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0x00123456));
+
+        // Act
+        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, palette, ("Image", image)));
+
+        // Assert
+        Assert.True(assets.Budget.IsWithinPalette);
+    }
+
+    [Fact]
+    public void ReportsButAllowsColoursOutsideTheSixteenBitPalette()
+    {
+        // Arrange: 16-bit hardware is direct-colour, so its palette is only a
+        // set of names the geometry draws with - bitmaps are free of it. The
+        // same set that fails on 8-bit has to load here, and the breakdown is
+        // still recorded so it can be logged.
+        using TempImageFile palette = Palette(("Red", 0xFFFF0000));
+        using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFF00FF00));
+
+        // Act
+        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, palette, ("Image", image)));
+
+        // Assert
+        Assert.True(assets.Budget.IsWithinPalette);
+        Assert.Equal([0xFF00FF00], assets.Budget.OutsidePalette["Image"]);
+    }
+
+    [Fact]
+    public void ChecksBitmapFontsAgainstThePaletteToo()
+    {
+        // Arrange: the font is part of the tier's set, so its colours have to
+        // be palette colours like any other asset's.
+        using TempImageFile palette = Palette(("Red", 0xFFFF0000));
+        using TempImageFile image = TempImageFile.From(Bmp(0xFFFF0000, 0xFFFF0000));
+        using TempImageFile font = TempImageFile.From(FontBmp(0xFFFF0000, 0xFF00FF00));
+        IAssetLocator locator = Locator(SystemTier.EightBit, palette, [("Image", image)], [("Small", font)]);
+
+        // Act
+        UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
+
+        // Assert
+        Assert.Contains("Small", exception.Message, StringComparison.Ordinal);
+    }
+
+    private static TempImageFile Palette(params (string Name, uint Argb)[] colours)
+        => TempImageFile.From(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(
+            colours.ToDictionary(x => x.Name, x => x.Argb.ToString("X8", CultureInfo.InvariantCulture)))));
+
     private static byte[] Bmp(params uint[] colours)
     {
         byte[] pixels = new byte[colours.Length * 4];
@@ -150,15 +248,29 @@ public class AssetSetTests
     }
 
     private static IAssetLocator Locator(SystemTier tier, params (string Name, TempImageFile File)[] images)
-        => Locator(tier, images, []);
+        => Locator(tier, null, images, []);
+
+    private static IAssetLocator Locator(
+        SystemTier tier,
+        TempImageFile palette,
+        params (string Name, TempImageFile File)[] images)
+        => Locator(tier, palette, images, []);
 
     private static IAssetLocator Locator(
         SystemTier tier,
         (string Name, TempImageFile File)[] images,
         (string Name, TempImageFile File)[] fonts)
+        => Locator(tier, null, images, fonts);
+
+    private static IAssetLocator Locator(
+        SystemTier tier,
+        TempImageFile? palette,
+        (string Name, TempImageFile File)[] images,
+        (string Name, TempImageFile File)[] fonts)
     {
         Mock<IAssetLocator> locator = new();
         locator.SetupGet(x => x.Tier).Returns(tier);
+        locator.SetupGet(x => x.PalettePath).Returns(palette?.Path ?? string.Empty);
         locator.SetupGet(x => x.ImagePaths).Returns(images.ToDictionary(x => x.Name, x => x.File.Path));
         locator.SetupGet(x => x.FontBitmaps).Returns(fonts.ToDictionary(
             x => x.Name,

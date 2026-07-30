@@ -1,5 +1,6 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 using Useful.Assets;
 using Useful.Assets.Palettes;
@@ -91,38 +92,64 @@ public sealed class AssetSet
     {
         HashSet<uint> distinct = [.. paletteColours];
         Dictionary<string, int> perAsset = new() { ["Palette"] = paletteColours.Count };
+        Dictionary<string, uint[]> outsidePalette = [];
         int partialAlpha = 0;
 
         foreach (KeyValuePair<string, FastBitmap> asset in images.Concat(fontBitmaps))
         {
-            HashSet<uint> assetColours = [];
-
-            for (int y = 0; y < asset.Value.Height; y++)
-            {
-                for (int x = 0; x < asset.Value.Width; x++)
-                {
-                    uint argb = asset.Value.GetPixel(x, y);
-                    uint alpha = argb >> 24;
-
-                    if (alpha == 0)
-                    {
-                        continue;
-                    }
-
-                    if (alpha != 0xFF)
-                    {
-                        partialAlpha++;
-                    }
-
-                    assetColours.Add(argb);
-                }
-            }
+            (HashSet<uint> assetColours, int assetPartialAlpha) = Scan(asset.Value);
 
             perAsset[asset.Key] = assetColours.Count;
             distinct.UnionWith(assetColours);
+            partialAlpha += assetPartialAlpha;
+
+            // A set with no palette at all has nothing to be a subset of, so
+            // there is nothing to report rather than everything.
+            if (paletteColours.Count == 0)
+            {
+                continue;
+            }
+
+            uint[] unnamed = [.. assetColours.Where(x => !paletteColours.Contains(x)).Order()];
+
+            if (unnamed.Length > 0)
+            {
+                outsidePalette[asset.Key] = unnamed;
+            }
         }
 
-        return new(tier, distinct.Count, partialAlpha, perAsset);
+        return new(tier, distinct.Count, partialAlpha, perAsset, outsidePalette);
+    }
+
+    // One asset's distinct opaque colours, and how many of its pixels have an
+    // alpha the renderer cannot express.
+    private static (HashSet<uint> Colours, int PartialAlpha) Scan(FastBitmap asset)
+    {
+        HashSet<uint> colours = [];
+        int partialAlpha = 0;
+
+        for (int y = 0; y < asset.Height; y++)
+        {
+            for (int x = 0; x < asset.Width; x++)
+            {
+                uint argb = asset.GetPixel(x, y);
+                uint alpha = argb >> 24;
+
+                if (alpha == 0)
+                {
+                    continue;
+                }
+
+                if (alpha != 0xFF)
+                {
+                    partialAlpha++;
+                }
+
+                colours.Add(argb);
+            }
+        }
+
+        return (colours, partialAlpha);
     }
 
     // A set that breaks its tier's budget fails the game at startup rather
@@ -131,7 +158,7 @@ public sealed class AssetSet
     // to look at. See docs/asset-structure.md.
     private static void Validate(AssetColourBudget budget, ILogger? logger)
     {
-        if (budget.IsWithinBudget && budget.PartialAlphaCount == 0)
+        if (budget.IsWithinBudget && budget.IsWithinPalette && budget.PartialAlphaCount == 0)
         {
             return;
         }
@@ -148,6 +175,20 @@ public sealed class AssetSet
         {
             string counted = $"{budget.ColourCount} distinct opaque colours against a cap of {budget.Cap}";
             throw new UsefulException($"Asset colour cap exceeded for the {budget.Tier} tier: {counted}.");
+        }
+
+        if (!budget.IsWithinPalette)
+        {
+            string offenders = string.Join(
+                "; ",
+                budget.OutsidePalette
+                    .OrderBy(x => x.Key, StringComparer.Ordinal)
+                    .Select(x => $"{x.Key} ({string.Join(", ", x.Value.Select(c => c.ToString("X8", CultureInfo.InvariantCulture)))})"));
+
+            string rule = $"The {budget.Tier} palette is the tier's whole colour set, so every asset colour has to be one it names";
+
+            throw new UsefulException(
+                $"{rule}, but {budget.OutsidePalette.Count} asset(s) use colours it does not: {offenders}.");
         }
 
         string partial = $"{budget.PartialAlphaCount} asset pixels have partial alpha";
