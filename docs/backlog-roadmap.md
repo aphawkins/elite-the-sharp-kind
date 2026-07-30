@@ -141,44 +141,63 @@ height) into the controller, which keeps the `CarryFlag` quirk in one
 place, rather than moving row packing and name generation into each
 tier's view.
 
-**Converted so far (2026-07-30, branch `mvc-controller-view-seam`, three
+**Converted so far (2026-07-30, branch `mvc-controller-view-seam`, four
 commits, not yet merged or pushed): `GalacticChart`, `Quit`,
 `ThargoidMission`, `Intro1`, `CommanderStatus`, `Inventory`,
-`GameOver`, `EscapeCapsule`, `ConstrictorMission` — nine of the
-eighteen.** Each is a
+`GameOver`, `EscapeCapsule`, `ConstrictorMission`, `Options`, `Market`,
+`Equipment`, `Settings`, `EngineSettings` — fourteen screens, five items
+left on the list below (the mechanical and selection-cursor groups are
+both now fully done).** Each is a
 `<Screen>Controller` + `<Screen>Model` + drawing-only `<Screen>View`,
 with DI registrations collected in
 `EliteServiceCollectionExtensions.AddSplitScreens`, which the rest join
-as they convert. Copy any of those nine as the pattern —
+as they convert. Copy any of those fourteen as the pattern —
 `CommanderStatus` is the fullest example of formatting extraction,
-`GalacticChart` of a screen with cursor state.
+`GalacticChart` of a screen with cursor state, `Market`/`Equipment` of a
+cursor over a dynamic list.
 
-Note the DI registrations now split across `AddSplitConsoleScreens` and
-`AddSplitSequenceScreens`: the ninth screen tripped CA1506 at 49
-coupled types against a limit of 41. Expect to add a third method
-somewhere around screen fifteen rather than growing either.
+Note the DI registrations moved to their own class,
+`EliteSplitScreensServiceCollectionExtensions`, split further across
+`AddSplitConsoleScreens`/`AddSplitSequenceScreens`/`AddSplitMenuScreens`:
+first the per-method CA1506 limit (41), then — once the split screens'
+combined registrations grew large enough on their own — the *class*-level
+CA1506 limit (96), which a single extra static class resolves since the
+metric is computed per class. Expect to need a fourth method, or a
+second class, somewhere around screen seventeen.
 
-Two findings from the mechanical group that apply to the rest:
+Findings from the selection-cursor group, on top of the two from the
+mechanical group already noted below:
 
-- Publish the *consequence* of an animation counter, not the counter.
-  `EscapeCapsuleModel` carries `IsAlertVisible`, not the tick, so
-  neither tier's view can drift on the timing and the boundary is
-  testable by ticking the controller.
-- A screen whose only content is a fixed string still gets a model
-  (`GameOverModel`), built once as a static property. That costs a
-  ten-line record and keeps the tier contract a signature.
+- `MarketController`'s cursor had an off-by-one bug in the original,
+  fixed during conversion (2026-07-30): its cursor is a `Math.Clamp`ed
+  `int` cast to `StockType`, but `StockType` starts at 1 (`Food`), not
+  0, so clamping to `[0, Count-1]` left the cursor on `StockType.None`
+  at reset (matching no row, so nothing was highlighted) and capped it
+  one row short of the last (`AlienItems`, key `Count`). The clamp
+  bounds are now `[1, Count]` and `Reset` starts on `StockType.Food`;
+  `MarketControllerTests` covers both ends of the range.
+- `SettingsListController`/`SettingsListView` are shared by both
+  `SettingsController` and `EngineSettingsController` — one
+  `IView<SettingsListModel>` registration serves both controllers, since
+  neither varies the layout, only the rows. This is the first split
+  screen where a *view* is shared across controllers rather than a
+  controller pairing 1:1 with a view.
+- Padding/alignment format specifiers (`{qty,2}`, `{cash,10:N1}`) stayed
+  in the view even though the underlying number is content — the
+  discriminator used was "does this involve column alignment", not "is
+  it a number". `MarketRow.ForSaleQuantity`/`InHoldQuantity`/`MarketModel.Cash`
+  are raw `int`/`float`; contrast `EquipmentModel.Cash`, which the
+  original drew as one indivisible string with no alignment trick, and
+  which is therefore fully-formatted content, matching
+  `CommanderStatusModel.Cash`'s precedent.
 
-- [ ] [EliteSharpLib] Convert the remaining 9 screens to the pattern,
+- [ ] [EliteSharpLib] Convert the remaining 5 screens to the pattern,
       moving each view's formatting onto its controller behind a
       `<Screen>Model` record — that is the data the 8-bit view must
       reuse rather than re-derive. Add controller unit tests for the
       extracted formatting as it lands (no renderer fake needed once it
       returns a record); `GalacticChartControllerTests` and
-      `CommanderStatusControllerTests` are the templates. Grouped by
-      expected difficulty, since the groups share a shape:
-      - Selection cursors, all the same shape as each other:
-        `OptionsView`, `SettingsListView`, `MarketView`,
-        `EquipmentView` (each has a `_highlightedItem`-style field).
+      `CommanderStatusControllerTests` are the templates.
       - Text entry, sharing the name-typing pattern:
         `LoadCommanderView`, `SaveCommanderView`.
       - Expect design questions in these three, so do them last and
@@ -196,13 +215,15 @@ Two findings from the mechanical group that apply to the rest:
       controllers" step. It assumed a parameterless `IView` and a
       shared `DrawOnlyController` for screens with neither input nor
       formatting, and both assumptions are now gone: there is no
-      parameterless view interface, and `InventoryView` (one of the six
-      it named) turned out to have formatting and was converted
+      parameterless view interface, and two of the six screens it
+      named — `InventoryView` and the `SettingsListView`/
+      `SettingsView`/`EngineSettingsView` pair — turned out to have
+      real behaviour (formatting for the first, cursor navigation and
+      config writes for the second and third) and were converted
       normally. Check what is actually left after the item above —
-      likely only `DockingView`, `HyperspaceView`, `LaunchView` and the
-      abstract `SettingsView`/`EngineSettingsView` pair — and decide
-      whether a shared do-nothing controller is worth having at all
-      versus each screen carrying its own trivial one.
+      likely only `DockingView`, `HyperspaceView` and `LaunchView` —
+      and decide whether a shared do-nothing controller is worth having
+      at all versus each screen carrying its own trivial one.
 - [ ] [EliteSharpLib] Survey which screens actually need a per-tier
       view, before committing to 28 of them. The two items below assume
       every screen gets one 8-bit view authored fresh, but a 2026-07-29

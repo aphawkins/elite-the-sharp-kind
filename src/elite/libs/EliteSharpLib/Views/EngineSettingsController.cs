@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Config;
-using EliteSharpLib.Graphics;
 using Useful.Audio;
 using Useful.Config;
 using Useful.Controls;
@@ -12,21 +11,20 @@ namespace EliteSharpLib.Views;
 
 // The "engine" half of the config file: the settings shared by every game in
 // the collection, as opposed to Elite's own on the Game Settings screen.
-internal sealed class EngineSettingsView : SettingsListView
+internal sealed class EngineSettingsController : SettingsListController
 {
     private readonly AudioController _audio;
     private readonly Space _space;
 
-    internal EngineSettingsView(
+    internal EngineSettingsController(
         GameState gameState,
-        IEliteDraw draw,
         IKeyboard keyboard,
         Space space,
         AudioController audio,
-        IConfigWriter<EliteConfig> configWriter)
+        IConfigWriter<EliteConfig> configWriter,
+        IView<SettingsListModel> view)
         : base(
             gameState,
-            draw,
             keyboard,
             configWriter,
             "ENGINE SETTINGS",
@@ -43,6 +41,7 @@ internal sealed class EngineSettingsView : SettingsListView
                 new("Backend *:", ["Software", "Hardware"]),
                 new("Tier *:", ["8-Bit", "16-Bit"]),
             ],
+            view,
             "* Applies when the game is restarted")
     {
         _space = space;

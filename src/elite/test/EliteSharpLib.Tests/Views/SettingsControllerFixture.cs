@@ -19,7 +19,7 @@ namespace EliteSharpLib.Tests.Views;
 
 // Shared setup for the two settings screens: both need a real Space (they
 // rebuild the planet and sun in place) over a fake draw surface.
-internal static class SettingsViewFixture
+internal static class SettingsControllerFixture
 {
     internal static Space CreateSpace(
         out GameState gameState,

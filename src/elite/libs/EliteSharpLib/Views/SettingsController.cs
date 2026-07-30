@@ -3,7 +3,6 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Config;
-using EliteSharpLib.Graphics;
 using EliteSharpLib.Planets;
 using Useful.Config;
 using Useful.Controls;
@@ -11,20 +10,19 @@ using Useful.Controls;
 namespace EliteSharpLib.Views;
 
 // The "game" half of the config file: how Elite itself looks and plays. The
-// shared engine settings have their own screen - see EngineSettingsView.
-internal sealed class SettingsView : SettingsListView
+// shared engine settings have their own screen - see EngineSettingsController.
+internal sealed class SettingsController : SettingsListController
 {
     private readonly Space _space;
 
-    internal SettingsView(
+    internal SettingsController(
         GameState gameState,
-        IEliteDraw draw,
         IKeyboard keyboard,
         Space space,
-        IConfigWriter<EliteConfig> configWriter)
+        IConfigWriter<EliteConfig> configWriter,
+        IView<SettingsListModel> view)
         : base(
             gameState,
-            draw,
             keyboard,
             configWriter,
             "GAME SETTINGS",
@@ -33,7 +31,8 @@ internal sealed class SettingsView : SettingsListView
                 new("Sun Style:", ["Solid", "Gradient"]),
                 new("Planet Desc.:", ["BBC", "MSX"]),
                 new("Instant Dock:", ["Off", "On"]),
-            ])
+            ],
+            view)
         => _space = space;
 
     protected override int SettingValue(int index) => index switch

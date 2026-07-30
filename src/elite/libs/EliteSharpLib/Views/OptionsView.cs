@@ -4,135 +4,60 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
-using Useful.Controls;
 
 namespace EliteSharpLib.Views;
 
-internal sealed class OptionsView : IScreenController
+/// <summary>
+/// The 16-bit options menu: the 512-space layout, and nothing else.
+/// </summary>
+internal sealed class OptionsView : IView<OptionsModel>
 {
     private const int OptionBarHeight = 15;
     private const int OptionBarWidth = 400;
+
     private readonly IEliteDraw _draw;
-    private readonly GameState _gameState;
-    private readonly IKeyboard _keyboard;
     private readonly uint _colorWhite;
     private readonly uint _colorLightRed;
     private readonly uint _colorLightGrey;
 
-    private readonly (string Label, bool DockedOnly)[] _optionList =
-    [
-        new("Save Commander", true),
-        new("Load Commander", true),
-        new("Game Settings", false),
-        new("Engine Settings", false),
-        new("Quit", false),
-    ];
-
-    private int _highlightedItem;
-
-    internal OptionsView(GameState gameState, IEliteDraw draw, IKeyboard keyboard)
+    internal OptionsView(IEliteDraw draw)
     {
-        _gameState = gameState;
         _draw = draw;
-        _keyboard = keyboard;
 
         _colorWhite = draw.Palette["White"];
         _colorLightRed = draw.Palette["LightRed"];
         _colorLightGrey = draw.Palette["LightGrey"];
     }
 
-    public void Draw()
+    public void Draw(OptionsModel model)
     {
+        ArgumentNullException.ThrowIfNull(model);
+
         _draw.DrawViewHeader("GAME OPTIONS");
 
-        for (int i = 0; i < _optionList.Length; i++)
+        for (int i = 0; i < model.Options.Count; i++)
         {
             Vector2 position = new(
                 _draw.Centre.X - (OptionBarWidth / 2),
-                ((_draw.ScannerTop - (30 * _optionList.Length)) / 2) + (i * 30));
+                ((_draw.ScannerTop - (30 * model.Options.Count)) / 2) + (i * 30));
 
-            if (i == _highlightedItem)
+            if (i == model.HighlightedIndex)
             {
                 _draw.Graphics.DrawRectangleFilled(position, OptionBarWidth, OptionBarHeight, _colorLightRed);
             }
 
-            uint col = ((!_gameState.IsDocked) && _optionList[i].DockedOnly) ? _colorLightGrey : _colorWhite;
+            uint col = model.Options[i].IsEnabled ? _colorWhite : _colorLightGrey;
 
-            _draw.Graphics.DrawTextCentre(position.Y, _optionList[i].Label, nameof(FontType.Small), col);
+            _draw.Graphics.DrawTextCentre(position.Y, model.Options[i].Label, nameof(FontType.Small), col);
         }
 
-        _draw.Graphics.DrawTextCentre(
-            _draw.ScannerTop - 80,
-            $"Version: {typeof(OptionsView).Assembly.GetName().Version}",
-            nameof(FontType.Small),
-            _colorWhite);
-        _draw.Graphics.DrawTextCentre(
-            _draw.ScannerTop - 60,
-            "The Sharp Kind - Andy Hawkins 2023",
-            nameof(FontType.Small),
-            _colorWhite);
-        _draw.Graphics.DrawTextCentre(
-            _draw.ScannerTop - 40,
-            "The New Kind - Christian Pinder 1999-2001",
-            nameof(FontType.Small),
-            _colorWhite);
-        _draw.Graphics.DrawTextCentre(
-            _draw.ScannerTop - 20,
-            "Original Code - Ian Bell & David Braben",
-            nameof(FontType.Small),
-            _colorWhite);
-    }
+        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 80, model.Version, nameof(FontType.Small), _colorWhite);
 
-    public void HandleInput()
-    {
-        if (_keyboard.IsPressed(ConsoleKey.S) || _keyboard.IsPressed(ConsoleKey.UpArrow))
+        float y = _draw.ScannerTop - 60;
+        foreach (string credit in model.Credits)
         {
-            _highlightedItem = Math.Clamp(_highlightedItem - 1, 0, _optionList.Length - 1);
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.X) || _keyboard.IsPressed(ConsoleKey.DownArrow))
-        {
-            _highlightedItem = Math.Clamp(_highlightedItem + 1, 0, _optionList.Length - 1);
-        }
-
-        if (_keyboard.IsPressed(ConsoleKey.Enter))
-        {
-            ExecuteOption();
-        }
-    }
-
-    public void Reset() => _highlightedItem = 0;
-
-    public void Update()
-    {
-    }
-
-    private void ExecuteOption()
-    {
-        if (_gameState.IsDocked || !_optionList[_highlightedItem].DockedOnly)
-        {
-            switch (_highlightedItem)
-            {
-                case 0:
-                    _gameState.SetView(Screen.SaveCommander);
-                    break;
-
-                case 1:
-                    _gameState.SetView(Screen.LoadCommander);
-                    break;
-
-                case 2:
-                    _gameState.SetView(Screen.Settings);
-                    break;
-
-                case 3:
-                    _gameState.SetView(Screen.EngineSettings);
-                    break;
-
-                case 4:
-                    _gameState.SetView(Screen.Quit);
-                    break;
-            }
+            _draw.Graphics.DrawTextCentre(y, credit, nameof(FontType.Small), _colorWhite);
+            y += 20;
         }
     }
 }

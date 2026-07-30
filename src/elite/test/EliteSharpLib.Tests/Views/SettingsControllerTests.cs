@@ -12,20 +12,21 @@ using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests.Views;
 
-public class SettingsViewTests
+public class SettingsControllerTests
 {
     private const string ConfigFileName = "elite.sharp";
 
     [Fact]
     public void ChangingASettingSavesItImmediately()
     {
-        // Arrange: the view has no save step, so the very first toggle must
+        // Arrange: the screen has no save step, so the very first toggle must
         // already be on disk.
-        SettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out ConfigFile<EliteConfig> configFile);
+        SettingsController controller = CreateController(
+            out GameState gameState, out FakeKeyboard keyboard, out ConfigFile<EliteConfig> configFile);
         keyboard.KeyDown(ConsoleKey.Enter, default);
 
         // Act: item 0 is Planet Style, which starts at Fractal and wraps.
-        view.HandleInput();
+        controller.HandleInput();
 
         // Assert
         Assert.Equal(PlanetType.Solid, gameState.Config.Game.PlanetStyle);
@@ -36,10 +37,10 @@ public class SettingsViewTests
     [Fact]
     public void ChangingAGameSettingLeavesTheEngineSettingsAlone()
     {
-        SettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out _);
+        SettingsController controller = CreateController(out GameState gameState, out FakeKeyboard keyboard, out _);
         keyboard.KeyDown(ConsoleKey.Enter, default);
 
-        view.HandleInput();
+        controller.HandleInput();
 
         Assert.Equal(GraphicStyle.Solid, gameState.Config.Engine.Graphics.GraphicStyle);
     }
@@ -47,32 +48,32 @@ public class SettingsViewTests
     [Fact]
     public void BackReturnsToOptionsWithoutChangingSettings()
     {
-        SettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out _);
-        view.Reset();
+        SettingsController controller = CreateController(out GameState gameState, out FakeKeyboard keyboard, out _);
+        controller.Reset();
 
         // Navigate to the last row - the Back row.
         keyboard.KeyDown(ConsoleKey.DownArrow, default);
         for (int i = 0; i < 4; i++)
         {
-            view.HandleInput();
+            controller.HandleInput();
         }
 
         keyboard.KeyUp(ConsoleKey.DownArrow, default);
         keyboard.KeyDown(ConsoleKey.Enter, default);
-        view.HandleInput();
+        controller.HandleInput();
 
         Assert.Equal(Screen.Options, gameState.CurrentScreen);
         Assert.Equal(PlanetType.Fractal, gameState.Config.Game.PlanetStyle);
     }
 
-    private static SettingsView CreateView(
+    private static SettingsController CreateController(
         out GameState gameState,
         out FakeKeyboard keyboard,
         out ConfigFile<EliteConfig> configFile)
     {
-        Space space = SettingsViewFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out _);
-        configFile = SettingsViewFixture.CreateConfigFile(ConfigFileName);
+        Space space = SettingsControllerFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out _);
+        configFile = SettingsControllerFixture.CreateConfigFile(ConfigFileName);
 
-        return new SettingsView(gameState, draw, keyboard, space, configFile);
+        return new SettingsController(gameState, keyboard, space, configFile, new SettingsListView(draw));
     }
 }

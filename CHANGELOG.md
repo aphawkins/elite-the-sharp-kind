@@ -7,6 +7,45 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Controller/view split, the selection-cursor group, 2026-07-30)
+
+- `Options`, `Market`, `Equipment`, `Settings` and `EngineSettings` each
+  become a controller, a model record and a drawing-only view.
+  Fourteen screens are now split, with five items left on the backlog's
+  list.
+- `SettingsListController`/`SettingsListView` replace the old abstract
+  `SettingsListView`: the abstract base keeps the shared cursor and
+  navigation, and one `SettingsListView` (now drawing-only) is shared by
+  both `SettingsController` and `EngineSettingsController` via a single
+  `IView<SettingsListModel>` registration - the first split screen where
+  a view is shared across controllers rather than paired 1:1. The two
+  concrete files are renamed to match (`SettingsController.cs`,
+  `EngineSettingsController.cs`); their existing behaviour tests moved
+  with them (`SettingsControllerTests`, `EngineSettingsControllerTests`,
+  `SettingsControllerFixture`), otherwise unchanged.
+- `MarketController`'s cursor bug is fixed: `StockType` starts at 1
+  (`Food`), but the cursor was a plain `int` clamped to `[0, Count-1]`,
+  so reset left nothing highlighted (position 0 is `StockType.None`)
+  and the last row (`AlienItems`) could never be reached. The clamp is
+  now `[1, Count]` and `Reset` starts on `StockType.Food`;
+  `MarketControllerTests` covers the first and last row.
+- Padding/alignment format specifiers stayed in the views even where the
+  underlying number is content, e.g. `MarketRow.ForSaleQuantity` and
+  `MarketModel.Cash` are raw numbers because the original right-aligned
+  them to a fixed column width - a layout concern. `EquipmentModel.Cash`
+  by contrast is a fully-formatted string, matching
+  `CommanderStatusModel.Cash`'s precedent, because the original drew it
+  as one indivisible line with no alignment trick.
+- DI registrations for split screens moved to their own class,
+  `EliteSplitScreensServiceCollectionExtensions`, and gained a third
+  method, `AddSplitMenuScreens`: adding the five screens first tripped
+  the per-method CA1506 limit again, and then - once corrected - tripped
+  the *class*-level CA1506 limit on `EliteServiceCollectionExtensions`
+  itself (96 coupled types), which the new class resolves since the
+  metric is computed per class.
+- New controller tests: `OptionsControllerTests`,
+  `MarketControllerTests`, `EquipmentControllerTests`.
+
 ### Changed (Controller/view split, the mechanical three, 2026-07-30)
 
 - `GameOver`, `EscapeCapsule` and `ConstrictorMission` each become a

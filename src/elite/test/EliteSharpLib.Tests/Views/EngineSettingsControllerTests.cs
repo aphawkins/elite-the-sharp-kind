@@ -13,7 +13,7 @@ using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests.Views;
 
-public class EngineSettingsViewTests
+public class EngineSettingsControllerTests
 {
     private const string ConfigFileName = "elite.sharp";
 
@@ -21,12 +21,12 @@ public class EngineSettingsViewTests
     public void ChangingASettingSavesItImmediately()
     {
         // Arrange: as the game settings screen, there's no save step.
-        EngineSettingsView view = CreateView(
+        EngineSettingsController controller = CreateController(
             out GameState gameState, out FakeKeyboard keyboard, out _, out ConfigFile<EliteConfig> configFile);
         keyboard.KeyDown(ConsoleKey.Enter, default);
 
         // Act: item 0 is Graphic Style.
-        view.HandleInput();
+        controller.HandleInput();
 
         // Assert
         Assert.Equal(GraphicStyle.Wireframe, gameState.Config.Engine.Graphics.GraphicStyle);
@@ -38,16 +38,16 @@ public class EngineSettingsViewTests
     [Fact]
     public void TurningMusicOffAppliesToTheRunningAudioController()
     {
-        EngineSettingsView view = CreateView(
+        EngineSettingsController controller = CreateController(
             out GameState gameState, out FakeKeyboard keyboard, out AudioController audio, out _);
-        view.Reset();
+        controller.Reset();
 
         // Down once to row 2, then toggle.
         keyboard.KeyDown(ConsoleKey.DownArrow, default);
-        view.HandleInput();
+        controller.HandleInput();
         keyboard.KeyUp(ConsoleKey.DownArrow, default);
         keyboard.KeyDown(ConsoleKey.Enter, default);
-        view.HandleInput();
+        controller.HandleInput();
 
         Assert.False(gameState.Config.Engine.Sound.Music);
         Assert.False(audio.MusicOn);
@@ -57,10 +57,10 @@ public class EngineSettingsViewTests
     [Fact]
     public void ChangingAnEngineSettingLeavesTheGameSettingsAlone()
     {
-        EngineSettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out _, out _);
+        EngineSettingsController controller = CreateController(out GameState gameState, out FakeKeyboard keyboard, out _, out _);
         keyboard.KeyDown(ConsoleKey.Enter, default);
 
-        view.HandleInput();
+        controller.HandleInput();
 
         Assert.Equal(PlanetType.Fractal, gameState.Config.Game.PlanetStyle);
     }
@@ -68,33 +68,33 @@ public class EngineSettingsViewTests
     [Fact]
     public void BackReturnsToOptionsWithoutChangingSettings()
     {
-        EngineSettingsView view = CreateView(out GameState gameState, out FakeKeyboard keyboard, out _, out _);
-        view.Reset();
+        EngineSettingsController controller = CreateController(out GameState gameState, out FakeKeyboard keyboard, out _, out _);
+        controller.Reset();
 
         // Navigate to the last row - the Back row.
         keyboard.KeyDown(ConsoleKey.DownArrow, default);
         for (int i = 0; i < 4; i++)
         {
-            view.HandleInput();
+            controller.HandleInput();
         }
 
         keyboard.KeyUp(ConsoleKey.DownArrow, default);
         keyboard.KeyDown(ConsoleKey.Enter, default);
-        view.HandleInput();
+        controller.HandleInput();
 
         Assert.Equal(Screen.Options, gameState.CurrentScreen);
         Assert.Equal(GraphicStyle.Solid, gameState.Config.Engine.Graphics.GraphicStyle);
     }
 
-    private static EngineSettingsView CreateView(
+    private static EngineSettingsController CreateController(
         out GameState gameState,
         out FakeKeyboard keyboard,
         out AudioController audio,
         out ConfigFile<EliteConfig> configFile)
     {
-        Space space = SettingsViewFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out audio);
-        configFile = SettingsViewFixture.CreateConfigFile(ConfigFileName);
+        Space space = SettingsControllerFixture.CreateSpace(out gameState, out keyboard, out FakeEliteDraw draw, out audio);
+        configFile = SettingsControllerFixture.CreateConfigFile(ConfigFileName);
 
-        return new EngineSettingsView(gameState, draw, keyboard, space, audio, configFile);
+        return new EngineSettingsController(gameState, keyboard, space, audio, configFile, new SettingsListView(draw));
     }
 }
