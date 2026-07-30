@@ -7,6 +7,28 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Tier presentation follow-on decisions, 2026-07-30)
+
+Documentation only - no code changes. Resolves the two items left after
+the controller/view split, both of which were decisions blocking the
+next implementation work rather than code to write.
+
+- Dropped the "retire the pass-through controllers" step outright.
+  `DockingView`/`HyperspaceView`/`LaunchView` are the only three left
+  of the six it named, and all three draw through a shared
+  `BreakPattern` that takes no model and is already resolution-
+  independent - there is nothing to extract into a controller/model/
+  view triple, so they stay plain `IScreenController` implementations.
+- Surveyed every converted screen's `Draw` method and bucketed each
+  one: absolute-layout screens that need a fresh 8-bit view (ten of
+  them, including `PilotView` for one hardcoded line even though its
+  view-name text is otherwise resolution-independent), derived-layout
+  screens where a tier-specific spacing constant (or nothing at all)
+  will do, and `GalacticChartView` as the strongest candidate for
+  needing no second class at all, since its `ToScreen` conversion is
+  entirely `Scale`/`Offset`-driven already. Full breakdown in the
+  backlog.
+
 ### Changed (Controller/view split complete, the design-questions group, 2026-07-30)
 
 - `Intro2`, the four cockpit windows and `PlanetData` each become a

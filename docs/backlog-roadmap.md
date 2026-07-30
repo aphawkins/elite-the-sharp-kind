@@ -261,53 +261,71 @@ mechanical and selection-cursor groups already noted below:
   which is therefore fully-formatted content, matching
   `CommanderStatusModel.Cash`'s precedent.
 
-- [ ] [EliteSharpLib] Re-scope or drop the "retire the pass-through
-      controllers" step. It assumed a parameterless `IView` and a
-      shared `DrawOnlyController` for screens with neither input nor
-      formatting, and both assumptions are now gone: there is no
-      parameterless view interface, and two of the six screens it
-      named — `InventoryView` and the `SettingsListView`/
-      `SettingsView`/`EngineSettingsView` pair — turned out to have
-      real behaviour (formatting for the first, cursor navigation and
-      config writes for the second and third) and were converted
-      normally. Check what is actually left after the item above —
-      likely only `DockingView`, `HyperspaceView` and `LaunchView` —
-      and decide whether a shared do-nothing controller is worth having
-      at all versus each screen carrying its own trivial one.
-- [ ] [EliteSharpLib] Survey which screens actually need a per-tier
-      view, before committing to 28 of them. The two items below assume
-      every screen gets one 8-bit view authored fresh, but a 2026-07-29
-      spot check suggests the screens fall into three buckets, and only
-      the first needs that:
-      - **Absolute layout** — 512-space coordinates that overflow a
-        320-wide screen, so the 8-bit version is authored fresh.
-        `CommanderStatusView` (labels x=16, values x=200, 16px rows),
-        `InventoryView`, `MarketView` and `PlanetDataView` are here.
-      - **Derived layout with pixel spacing** — position comes from
-        `Centre`/`ScannerTop` and `DrawTextCentre`, so the layout is
-        already resolution-independent and only the spacing constants
-        are tier-specific (row pitch, `SettingsListView`'s `+40`
-        footer offset, `Intro1View`'s 20px credit spacing).
-        `OptionsView` and `SettingsListView` are here. These may not
-        need a second class at all — passing the tier's spacing into
-        one implementation would do, the same shape recommended for
-        `ShortRangeChartView` above.
-      - **No layout to vary** — `LaunchView`/`DockingView` just draw a
-        break pattern.
-      Count each screen into a bucket and decide per bucket, rather
-      than assuming 28 x 2. Note a grep for coordinate literals
-      undercounts once a view has been converted (the constants get
-      names — `CommanderStatusView` reads as zero literals but is
-      absolutely positioned), so read the `Draw` methods rather than
-      trusting a count.
+**Retiring the pass-through controllers, decided (2026-07-30):** dropped
+outright, not re-scoped. `DockingView`/`HyperspaceView`/`LaunchView` are
+the only three left of the six the step originally named, and all
+three `Draw()` straight to a shared `BreakPattern` instance that takes
+no model and is already resolution-independent (`_draw.Centre`-relative
+rings). There is nothing to extract into a controller/model/view triple
+— no formatting, and the drawing already needs no per-tier version — so
+forcing the split would add three model types and three view classes
+purely for consistency, with no behaviour moved and no future tier
+variance to serve. They stay as plain `IScreenController`
+implementations.
+
+**Per-tier view survey, done (2026-07-30):** every converted screen's
+`Draw` method read and bucketed, resolving the item below. Two screens
+turned up mixed - `PilotView` and `SettingsListView` - noted under
+whichever bucket their absolute-coordinate lines put them in, since one
+literal 512-space line is enough to force a fresh 8-bit view for the
+whole screen.
+
+- **Absolute layout (needs a fresh 8-bit view)** — 512-space
+  coordinates that overflow a 320-wide screen or the 256-tall canvas the
+  8-bit layout item below targets:
+  `CommanderStatusView` (labels x=16, values x=200, equipment x=50,
+  16px rows), `InventoryView` (x=16/70/180), `MarketView`
+  (x=16/166/246/314/420), `EquipmentView` (x=16/50/450),
+  `PlanetDataView` (x=16/175, y=42-266), `ConstrictorMissionView` and
+  `ThargoidMissionView` (x=16/116/352, y=46-330, all `+Offset` but
+  sized for a 512-wide screen), `LoadCommanderView`/`SaveCommanderView`
+  (y=75/100/112/175/200, absolute despite `DrawTextCentre`/
+  `DrawRectangleCentre` centring the X axis), and `PilotView` (one
+  absolute line, `DrawTextCentre(358, hyperspaceStatus, ...)` — the
+  view name line above it is `Top`-relative and would not by itself
+  need a second class).
+- **Derived layout with pixel spacing (a tier-specific constant, or no
+  second class at all)** — position comes from `Centre`/`ScannerTop`/
+  `Scale` and `DrawTextCentre`/`DrawTextLeft`, so the layout is already
+  resolution-independent:
+  `OptionsView` (`ScannerTop`-relative rows, but its `OptionBarWidth`
+  constant (400) itself overflows 320 and needs a smaller tier value),
+  `SettingsListView` (`Centre.Y`-relative rows, `+40` footer offset,
+  but its column pitch (250/32) is 512-sized like `OptionBarWidth`),
+  `Intro1View` (`ScannerTop`-relative, 20px `CreditSpacing`),
+  `Intro2View` and `EscapeCapsuleView` (`Top`/`ScannerTop`-relative,
+  no spacing constant to tier at all). `GalacticChartView` is the
+  strongest case for **no second class**: its `ToScreen` conversion is
+  entirely `Scale`/`Offset`-driven, so one implementation likely serves
+  both tiers unchanged. `QuitView` and `GameOverView` (a single
+  `Centre.Y`-relative line) need neither a second class nor a spacing
+  constant.
+- **No layout to vary** — `DockingView`/`HyperspaceView`/`LaunchView`
+  share `BreakPattern`, already `Centre`-relative (see the retired-step
+  decision above); `PilotView`'s `LaserDraw` crosshair/beam rendering
+  is the same shape (`Centre`/`Scale`/`ScannerLeft`/`ScannerRight`
+  -relative, no literal coordinates).
+
+`ShortRangeChartView` is not counted in any bucket - it stays a single
+combined controller/view per its own decision above, revisited only
+when the 8-bit short-range chart is actually authored.
 - [ ] [EliteSharpLib] Resolve views per tier through DI, for the
       screens the survey says need one. Each gets its own view per
       tier, in `Views/<Tier>/` with a tier-suffixed
       class name (`Views/EightBit/CommanderStatusView8Bit.cs`);
       `AddSplitScreens` registers the `IView<TModel>` each screen's
-      controller draws through (see the item above), so the configured
-      tier selects which implementation is registered — for the six
-      already-converted screens this is a one-line change each. Do
+      controller draws through (see the item above), so for every
+      already-converted screen this is a one-line change each. Do
       `CommanderStatusView` first as the pattern. Note the 16-bit
       output cannot be checked pixel-identical by screenshot (see the
       finding recorded above); compare the layout constants instead.
