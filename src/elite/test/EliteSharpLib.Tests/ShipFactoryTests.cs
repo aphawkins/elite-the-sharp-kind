@@ -134,7 +134,7 @@ public class ShipFactoryTests
         {
             ModelPaths = new Dictionary<string, string>()
             {
-                { "Adder", "Assets/Models/adder.obj" },
+                { "Adder", "Assets/Models/SixteenBit/adder.obj" },
             },
         };
 

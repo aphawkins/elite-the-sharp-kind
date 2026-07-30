@@ -63,7 +63,7 @@ public class LaserDrawTests
     private static FastBitmap DrawLines(LaserType laserType, bool laserWireframe)
         => Render(laserWireframe, laser => laser.DrawLaserLines(laserType));
 
-    private static FastBitmap Render(bool laserWireframe, Action<LaserDraw> draw)
+    private static FastBitmap Render(bool laserWireframe, Action<LaserDraw16Bit> draw)
     {
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
@@ -71,7 +71,7 @@ public class LaserDrawTests
         gameState.Config.Engine.Graphics.GraphicStyle = laserWireframe ? GraphicStyle.Wireframe : GraphicStyle.Solid;
         RNG rng = new(new Random(0));
         EliteDraw eliteDraw = new(gameState, graphics, AssetLocator.Create(), new ZBufferRenderer(graphics), rng);
-        LaserDraw laser = new(gameState, eliteDraw, rng);
+        LaserDraw16Bit laser = new(gameState, eliteDraw, rng);
 
         graphics.Clear();
         draw(laser);

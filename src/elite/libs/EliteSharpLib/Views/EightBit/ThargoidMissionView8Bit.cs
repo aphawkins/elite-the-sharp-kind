@@ -12,20 +12,21 @@ namespace EliteSharpLib.Views.EightBit;
 /// 8-bit view layouts" item. Exact spacing is expected to be refined
 /// visually.
 /// </summary>
-internal sealed class ThargoidMissionView8Bit : IView<ThargoidMissionModel>
+internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMissionModel>
 {
     private const int TextX = 8;
     private const int TextWidth = 304;
     private const int FooterY = 180;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorYellow;
 
     internal ThargoidMissionView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorYellow = draw.Palette["Yellow"];
     }
 
     public void Draw(ThargoidMissionModel model)
@@ -35,28 +36,28 @@ internal sealed class ThargoidMissionView8Bit : IView<ThargoidMissionModel>
         switch (model.Stage)
         {
             case 4:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(new(TextX + _draw.Offset, 64), TextWidth, model.Paragraphs[0]);
+                DrawViewHeader("INCOMING MESSAGE");
+                DrawTextPretty(new(TextX + _draw.Layout.Offset, 64), TextWidth, model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
             case 5:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(new(TextX + _draw.Offset, 32), TextWidth, model.Paragraphs[0]);
-                _draw.DrawTextPretty(new(TextX + _draw.Offset, 96), TextWidth, model.Paragraphs[1]);
-                _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(232 + _draw.Offset, 32));
+                DrawViewHeader("INCOMING MESSAGE");
+                DrawTextPretty(new(TextX + _draw.Layout.Offset, 32), TextWidth, model.Paragraphs[0]);
+                DrawTextPretty(new(TextX + _draw.Layout.Offset, 96), TextWidth, model.Paragraphs[1]);
+                _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(232 + _draw.Layout.Offset, 32));
                 DrawFooter();
                 break;
 
             case 6:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.Graphics.DrawTextCentre(48, model.Headline, nameof(FontType.Large), _colorGold);
-                _draw.DrawTextPretty(new(TextX + _draw.Offset, 64), TextWidth, model.Paragraphs[0]);
+                DrawViewHeader("INCOMING MESSAGE");
+                _draw.Graphics.DrawTextCentre(48, model.Headline, nameof(FontType.Large), _colorYellow);
+                DrawTextPretty(new(TextX + _draw.Layout.Offset, 64), TextWidth, model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }
     }
 
     private void DrawFooter()
-        => _draw.Graphics.DrawTextCentre(FooterY, "Press space to continue.", nameof(FontType.Small), _colorGold);
+        => _draw.Graphics.DrawTextCentre(FooterY, "Press space to continue.", nameof(FontType.Small), _colorYellow);
 }

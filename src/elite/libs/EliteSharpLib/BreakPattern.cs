@@ -27,7 +27,7 @@ internal sealed class BreakPattern
         // Just draw a very simple one for the moment.
         for (int i = 0; i < _breakPatternCount; i++)
         {
-            _draw.Graphics.DrawCircle(_draw.Centre, 30 + (i * _draw.Centre.X / MaxRings), _color);
+            _draw.Graphics.DrawCircle(_draw.Layout.Centre, 30 + (i * _draw.Layout.Centre.X / MaxRings), _color);
         }
     }
 

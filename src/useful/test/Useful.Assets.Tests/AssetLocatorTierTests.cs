@@ -78,10 +78,11 @@ public class AssetLocatorTierTests : IDisposable
     }
 
     [Fact]
-    public void LeavesTierNeutralCategoriesOutsideTheTierFolder()
+    public void ResolvesModelsByTier()
     {
-        // Arrange: models, audio and TrueType fonts are resolution-independent
-        // and must not gain a tier segment even when a tier folder exists.
+        // Arrange: a model's 'usemtl' names are resolved through the tier's
+        // palette, and the two palettes name different colours, so the models
+        // are tier-varying like the images are.
         GivenAsset("Models", "SixteenBit", "ship.obj");
         AssetLocator locator = Locate(SystemTier.SixteenBit);
 
@@ -89,7 +90,22 @@ public class AssetLocatorTierTests : IDisposable
         string path = locator.ModelPaths["Ship"];
 
         // Assert
-        Assert.Equal(Path.Combine(_assetsRoot, "Models", "ship.obj"), path);
+        Assert.Equal(Path.Combine(_assetsRoot, "Models", "SixteenBit", "ship.obj"), path);
+    }
+
+    [Fact]
+    public void LeavesTierNeutralCategoriesOutsideTheTierFolder()
+    {
+        // Arrange: audio and TrueType fonts are resolution-independent and must
+        // not gain a tier segment even when a tier folder exists.
+        GivenAsset("SFX", "SixteenBit", "beep.wav");
+        AssetLocator locator = Locate(SystemTier.SixteenBit);
+
+        // Act
+        string path = locator.SfxPaths["Beep"];
+
+        // Assert
+        Assert.Equal(Path.Combine(_assetsRoot, "SFX", "beep.wav"), path);
     }
 
     [Fact]
@@ -200,6 +216,7 @@ public class AssetLocatorTierTests : IDisposable
         },
         Images = new Dictionary<string, string> { { "Logo", "logo.bmp" } },
         Models = new Dictionary<string, string> { { "Ship", "ship.obj" } },
+        Sfx = new Dictionary<string, string> { { "Beep", "beep.wav" } },
     };
 
     private void GivenAsset(string category, string? tier, string filename)

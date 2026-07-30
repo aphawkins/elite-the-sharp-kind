@@ -10,7 +10,7 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// The 16-bit escape capsule alert: the 512-space layout, and nothing else.
 /// The doomed Cobra ahead of it is drawn by the universe, not here.
 /// </summary>
-internal sealed class EscapeCapsuleView16Bit : IView<EscapeCapsuleModel>
+internal sealed class EscapeCapsuleView16Bit : BaseView16Bit, IView<EscapeCapsuleModel>
 {
     // The alert sits above the scanner, clear of the dashboard.
     private const float AlertOffset = 40;
@@ -19,6 +19,7 @@ internal sealed class EscapeCapsuleView16Bit : IView<EscapeCapsuleModel>
     private readonly uint _colorWhite;
 
     internal EscapeCapsuleView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -32,7 +33,7 @@ internal sealed class EscapeCapsuleView16Bit : IView<EscapeCapsuleModel>
         if (model.IsAlertVisible)
         {
             _draw.Graphics.DrawTextCentre(
-                _draw.ScannerTop - AlertOffset,
+                _draw.Layout.ScannerTop - AlertOffset,
                 model.Alert,
                 nameof(FontType.Small),
                 _colorWhite);

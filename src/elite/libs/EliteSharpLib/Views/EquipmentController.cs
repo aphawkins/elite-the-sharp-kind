@@ -58,7 +58,7 @@ internal sealed class EquipmentController : IScreenController
 
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
-    private readonly Scanner _scanner;
+    private readonly ScannerBase _scanner;
     private readonly PlayerShip _ship;
     private readonly Trade _trade;
     private readonly IView<EquipmentModel> _view;
@@ -70,7 +70,7 @@ internal sealed class EquipmentController : IScreenController
         IKeyboard keyboard,
         PlayerShip ship,
         Trade trade,
-        Scanner scanner,
+        ScannerBase scanner,
         IView<EquipmentModel> view)
     {
         _gameState = gameState;

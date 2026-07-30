@@ -11,13 +11,14 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// The 16-bit settings list: the 512-space layout, and nothing else. Shared
 /// by the game and engine settings screens, since neither varies the layout.
 /// </summary>
-internal sealed class SettingsListView16Bit : IView<SettingsListModel>
+internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
     private readonly uint _colorLightRed;
 
     internal SettingsListView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -29,7 +30,7 @@ internal sealed class SettingsListView16Bit : IView<SettingsListModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Header);
+        DrawViewHeader(model.Header);
 
         for (int i = 0; i < model.Rows.Count; i++)
         {
@@ -37,10 +38,10 @@ internal sealed class SettingsListView16Bit : IView<SettingsListModel>
 
             if (i == model.Rows.Count - 1)
             {
-                position.Y = ((model.Rows.Count + 1) / 2 * 30) + (_draw.Centre.Y / 2) + 32;
+                position.Y = ((model.Rows.Count + 1) / 2 * 30) + (_draw.Layout.Centre.Y / 2) + 32;
                 if (i == model.HighlightedIndex)
                 {
-                    position.X = _draw.Centre.X - 200;
+                    position.X = _draw.Layout.Centre.X - 200;
                     _draw.Graphics.DrawRectangleFilled(position, 400, 15, _colorLightRed);
                 }
 
@@ -54,8 +55,8 @@ internal sealed class SettingsListView16Bit : IView<SettingsListModel>
                 return;
             }
 
-            position.X = ((i & 1) * 250) + 32 + _draw.Offset;
-            position.Y = (i / 2 * 30) + (_draw.Centre.Y / 2);
+            position.X = ((i & 1) * 250) + 32 + _draw.Layout.Offset;
+            position.Y = (i / 2 * 30) + (_draw.Layout.Centre.Y / 2);
 
             if (i == model.HighlightedIndex)
             {

@@ -15,7 +15,7 @@ namespace EliteSharpLib.Views.EightBit;
 /// widest value ("Front Military Laser", 21 chars) already needs most of a
 /// row to itself, which is why equipment is one column here instead of two.
 /// </summary>
-internal sealed class CommanderStatusView8Bit : IView<CommanderStatusModel>
+internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderStatusModel>
 {
     private const int LabelX = 8;
     private const int ValueX = 104;
@@ -31,6 +31,7 @@ internal sealed class CommanderStatusView8Bit : IView<CommanderStatusModel>
     private readonly uint _colorWhite;
 
     internal CommanderStatusView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -42,7 +43,7 @@ internal sealed class CommanderStatusView8Bit : IView<CommanderStatusModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Title);
+        DrawViewHeader(model.Title);
 
         DrawRow(FirstRowY, "System:", model.PresentSystem);
         DrawRow(FirstRowY + RowSpacingY, "Hyperspace:", model.HyperspaceSystem);
@@ -52,18 +53,18 @@ internal sealed class CommanderStatusView8Bit : IView<CommanderStatusModel>
         DrawRow(FirstRowY + (5 * RowSpacingY), "Legal:", model.LegalStatus);
         DrawRow(FirstRowY + (6 * RowSpacingY), "Rating:", model.Rating);
 
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, EquipmentHeaderY), "EQUIPMENT:", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, EquipmentHeaderY), "EQUIPMENT:", nameof(FontType.Small), _colorGreen);
 
         DrawEquipment(model.Equipment);
     }
 
     private void DrawRow(float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
 
         if (!string.IsNullOrEmpty(value))
         {
-            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Offset, y), value, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
         }
     }
 
@@ -76,7 +77,7 @@ internal sealed class CommanderStatusView8Bit : IView<CommanderStatusModel>
 
         foreach (string item in equipment)
         {
-            _draw.Graphics.DrawTextLeft(new(EquipmentX + _draw.Offset, y), item, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(EquipmentX + _draw.Layout.Offset, y), item, nameof(FontType.Small), _colorWhite);
             y += EquipmentSpacingY;
         }
     }

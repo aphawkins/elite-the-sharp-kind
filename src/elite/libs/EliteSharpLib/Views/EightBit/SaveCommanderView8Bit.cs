@@ -12,7 +12,7 @@ namespace EliteSharpLib.Views.EightBit;
 /// 8-bit view layouts" item. Exact spacing is expected to be refined
 /// visually.
 /// </summary>
-internal sealed class SaveCommanderView8Bit : IView<SaveCommanderModel>
+internal sealed class SaveCommanderView8Bit : BaseView8Bit, IView<SaveCommanderModel>
 {
     private const int BoxWidth = 280;
     private const int BoxHeight = 24;
@@ -20,13 +20,14 @@ internal sealed class SaveCommanderView8Bit : IView<SaveCommanderModel>
 
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
-    private readonly uint _colorGold;
+    private readonly uint _colorYellow;
 
     internal SaveCommanderView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorYellow = draw.Palette["Yellow"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -34,15 +35,15 @@ internal sealed class SaveCommanderView8Bit : IView<SaveCommanderModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader("SAVE COMMANDER");
+        DrawViewHeader("SAVE COMMANDER");
 
         _draw.Graphics.DrawTextCentre(48, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
-        _draw.Graphics.DrawRectangle(new(_draw.Centre.X - (BoxWidth / 2), BoxY), BoxWidth, BoxHeight, _colorWhite);
+        _draw.Graphics.DrawRectangle(new(_draw.Layout.Centre.X - (BoxWidth / 2), BoxY), BoxWidth, BoxHeight, _colorWhite);
         _draw.Graphics.DrawTextCentre(BoxY + 8, model.Name, nameof(FontType.Small), _colorWhite);
 
         if (model.StatusMessage.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(112, model.StatusMessage, nameof(FontType.Small), _colorGold);
+            _draw.Graphics.DrawTextCentre(112, model.StatusMessage, nameof(FontType.Small), _colorYellow);
             _draw.Graphics.DrawTextCentre(128, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
         }
     }

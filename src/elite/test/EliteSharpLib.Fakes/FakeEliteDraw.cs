@@ -5,7 +5,9 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Views;
 using Useful;
+using Useful.Assets;
 using Useful.Assets.Palettes;
 using Useful.Fakes.Assets;
 using Useful.Graphics;
@@ -15,41 +17,37 @@ namespace EliteSharpLib.Fakes;
 
 internal class FakeEliteDraw : IEliteDraw
 {
-    public float Bottom => 511;
+    public ViewLayout Layout { get; set; } = new(512, 512, new(512, 129), 2);
 
-    public Vector2 Centre => new(255, 255);
+    public SystemTier Tier { get; set; } = SystemTier.SixteenBit;
 
     public float Focus => 512;
 
     public IGraphics Graphics { get; set; } = new FakeGraphics();
 
-    public float Left => 0;
-
     public IPaletteCollection Palette => new FakePalette();
 
-    public float Offset { get; }
+    public float Bottom => Layout.Bottom;
 
-    public float Right => 511;
+    public Vector2 Centre => Layout.Centre;
 
-    public float Scale => 2;
+    public float Left => Layout.Left;
 
-    public float ScannerLeft { get; }
+    public float Offset => Layout.Offset;
 
-    public float ScannerRight { get; }
+    public float Right => Layout.Right;
 
-    public float ScannerTop { get; }
+    public float Scale => Layout.Scale;
 
-    public float Top => 0;
+    public float ScannerLeft => Layout.ScannerLeft;
+
+    public float ScannerRight => Layout.ScannerRight;
+
+    public float ScannerTop => Layout.ScannerTop;
+
+    public float Top => Layout.Top;
 
     public List<(Vector2[] Points, FastColor FaceColor, float Z)> DrawnPolygons { get; } = [];
-
-    public void DrawBorder()
-    {
-    }
-
-    public void DrawHyperspaceCountdown(int countdown)
-    {
-    }
 
     public void DrawObject(IObject obj)
     {
@@ -57,14 +55,6 @@ internal class FakeEliteDraw : IEliteDraw
 
     public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z)
         => DrawnPolygons.Add((points, faceColor, z));
-
-    public void DrawTextPretty(Vector2 position, float width, string text)
-    {
-    }
-
-    public void DrawViewHeader(string title)
-    {
-    }
 
     public void RenderEnd()
     {

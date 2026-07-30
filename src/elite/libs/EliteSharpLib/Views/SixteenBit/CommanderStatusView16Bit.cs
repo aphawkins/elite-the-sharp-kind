@@ -11,7 +11,7 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// The 16-bit commander status screen: the 512-space layout, and nothing
 /// else. Labels sit at x=16 with their values at x=200, on 16px rows.
 /// </summary>
-internal sealed class CommanderStatusView16Bit : IView<CommanderStatusModel>
+internal sealed class CommanderStatusView16Bit : BaseView16Bit, IView<CommanderStatusModel>
 {
     private const int LabelX = 16;
     private const int ValueX = 200;
@@ -26,6 +26,7 @@ internal sealed class CommanderStatusView16Bit : IView<CommanderStatusModel>
     private readonly uint _colorWhite;
 
     internal CommanderStatusView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -37,7 +38,7 @@ internal sealed class CommanderStatusView16Bit : IView<CommanderStatusModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Title);
+        DrawViewHeader(model.Title);
 
         DrawRow(58, "Present System:", model.PresentSystem);
         DrawRow(74, "Hyperspace System:", model.HyperspaceSystem);
@@ -47,25 +48,25 @@ internal sealed class CommanderStatusView16Bit : IView<CommanderStatusModel>
         DrawRow(138, "Legal Status:", model.LegalStatus);
         DrawRow(154, "Rating:", model.Rating);
 
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, 186), "EQUIPMENT:", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, 186), "EQUIPMENT:", nameof(FontType.Small), _colorGreen);
 
         DrawEquipment(model.Equipment);
     }
 
     private void DrawRow(float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
 
         if (!string.IsNullOrEmpty(value))
         {
-            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Offset, y), value, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
         }
     }
 
     // The equipment list, filling the left column before wrapping to the right.
     private void DrawEquipment(IReadOnlyList<string> equipment)
     {
-        Vector2 position = new(EquipmentX + _draw.Offset, EquipmentStartY);
+        Vector2 position = new(EquipmentX + _draw.Layout.Offset, EquipmentStartY);
 
         foreach (string item in equipment)
         {

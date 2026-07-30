@@ -15,16 +15,17 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// from PilotView8Bit is the two offsets. The starfield and the ship ahead are
 /// drawn by the universe.
 /// </summary>
-internal sealed class PilotView16Bit : IView<PilotModel>
+internal sealed class PilotView16Bit : BaseView16Bit, IView<PilotModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly LaserDraw _laser;
+    private readonly LaserDrawBase _laser;
     private readonly uint _colorWhite;
 
     internal PilotView16Bit(IEliteDraw draw, GameState gameState, RNG rng)
+        : base(draw)
     {
         _draw = draw;
-        _laser = new LaserDraw(gameState, draw, rng);
+        _laser = new LaserDraw16Bit(gameState, draw, rng);
 
         _colorWhite = draw.Palette["White"];
     }
@@ -35,10 +36,10 @@ internal sealed class PilotView16Bit : IView<PilotModel>
 
         if (model.HyperspaceStatus.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 25, model.HyperspaceStatus, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 25, model.HyperspaceStatus, nameof(FontType.Small), _colorWhite);
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.Top + 10, model.ViewName, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.Top + 10, model.ViewName, nameof(FontType.Small), _colorWhite);
 
         if (model.IsFiring)
         {

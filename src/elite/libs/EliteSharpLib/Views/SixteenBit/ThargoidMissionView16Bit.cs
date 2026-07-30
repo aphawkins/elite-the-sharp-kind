@@ -11,12 +11,13 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// else. Each stage was laid out differently in the original, so the layout
 /// keys off the model's stage.
 /// </summary>
-internal sealed class ThargoidMissionView16Bit : IView<ThargoidMissionModel>
+internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMissionModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
 
     internal ThargoidMissionView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -30,23 +31,23 @@ internal sealed class ThargoidMissionView16Bit : IView<ThargoidMissionModel>
         switch (model.Stage)
         {
             case 4:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);
+                DrawViewHeader("INCOMING MESSAGE");
+                DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
             case 5:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(new(16, 50), 300, model.Paragraphs[0]);
-                _draw.DrawTextPretty(new(16, 200), 470, model.Paragraphs[1]);
+                DrawViewHeader("INCOMING MESSAGE");
+                DrawTextPretty(new(16, 50), 300, model.Paragraphs[0]);
+                DrawTextPretty(new(16, 200), 470, model.Paragraphs[1]);
                 _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(352, 46));
                 DrawFooter();
                 break;
 
             case 6:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
+                DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
-                _draw.DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);
+                DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }

@@ -1,0 +1,52 @@
+# Elite: The Sharp Kind - shared ship material palette
+# Generated from ../../Palette/EightBit/palette.json. The material name is
+# the authoritative color key resolved at runtime via the active game
+# palette; Kd below is only an approximation for external tools.
+
+newmtl Black
+Kd 0.000000 0.000000 0.000000
+
+newmtl Blue
+Kd 0.000000 0.000000 1.000000
+
+newmtl Brown
+Kd 0.647059 0.164706 0.164706
+
+newmtl Cyan
+Kd 0.000000 1.000000 1.000000
+
+newmtl DarkGray
+Kd 0.662745 0.662745 0.662745
+
+newmtl DimGray
+Kd 0.411765 0.411765 0.411765
+
+newmtl Gray
+Kd 0.501961 0.501961 0.501961
+
+newmtl Green
+Kd 0.000000 0.501961 0.000000
+
+newmtl LightBlue
+Kd 0.678431 0.847059 0.901961
+
+newmtl LightGray
+Kd 0.827451 0.827451 0.827451
+
+newmtl LightGreen
+Kd 0.564706 0.933333 0.564706
+
+newmtl Orange
+Kd 1.000000 0.647059 0.000000
+
+newmtl Purple
+Kd 0.501961 0.000000 0.501961
+
+newmtl Red
+Kd 1.000000 0.000000 0.000000
+
+newmtl White
+Kd 1.000000 1.000000 1.000000
+
+newmtl Yellow
+Kd 1.000000 1.000000 0.000000

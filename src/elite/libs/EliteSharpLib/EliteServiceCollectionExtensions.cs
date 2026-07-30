@@ -10,6 +10,8 @@ using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
+using EliteSharpLib.Views.EightBit;
+using EliteSharpLib.Views.SixteenBit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Useful.Abstraction;
@@ -69,13 +71,14 @@ public static class EliteServiceCollectionExtensions
                 sp.GetRequiredService<GameState>(),
                 sp.GetRequiredService<PlayerShip>(),
                 sp.GetRequiredService<IEliteDraw>(),
+                sp.GetRequiredService<IBaseView>(),
                 sp.GetRequiredService<Universe>(),
                 sp.GetRequiredService<Stars>(),
                 sp.GetRequiredService<Pilot>(),
                 sp.GetRequiredService<Combat>(),
                 sp.GetRequiredService<SaveFile>(),
                 sp.GetRequiredService<Space>(),
-                sp.GetRequiredService<Scanner>(),
+                sp.GetRequiredService<ScannerBase>(),
                 sp.GetRequiredService<AudioController>());
         });
         services.AddSingleton<IGame>(sp => sp.GetRequiredService<EliteMain>());
@@ -86,6 +89,10 @@ public static class EliteServiceCollectionExtensions
     // Both the engine and the game halves repair themselves; this is the
     // hook ConfigFile calls to do it.
     internal static bool RepairConfig(EliteConfig config) => config.Repair();
+
+    // The tier switch every per-tier registration branches on, in one place.
+    internal static bool IsEightBit(IServiceProvider sp)
+        => sp.GetRequiredService<IAssetLocator>().Tier == SystemTier.EightBit;
 
     private static void AddEliteCore(this IServiceCollection services)
     {
@@ -176,12 +183,19 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<RNG>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Space>()));
-        services.AddSingleton(sp => new Scanner(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Combat>()));
+        services.AddSingleton<ScannerBase>(sp => IsEightBit(sp)
+            ? new Scanner8Bit(
+                sp.GetRequiredService<GameState>(),
+                sp.GetRequiredService<IEliteDraw>(),
+                sp.GetRequiredService<Universe>(),
+                sp.GetRequiredService<PlayerShip>(),
+                sp.GetRequiredService<Combat>())
+            : new Scanner16Bit(
+                sp.GetRequiredService<GameState>(),
+                sp.GetRequiredService<IEliteDraw>(),
+                sp.GetRequiredService<Universe>(),
+                sp.GetRequiredService<PlayerShip>(),
+                sp.GetRequiredService<Combat>()));
     }
 
     private static void PopulateScreens(IServiceProvider sp)
@@ -190,7 +204,7 @@ public static class EliteServiceCollectionExtensions
         views.Add(Screen.IntroOne, sp.GetRequiredService<Intro1Controller>());
         views.Add(Screen.IntroTwo, sp.GetRequiredService<Intro2Controller>());
         views.Add(Screen.GalacticChart, sp.GetRequiredService<GalacticChartController>());
-        views.Add(Screen.ShortRangeChart, sp.GetRequiredService<ShortRangeChartView>());
+        views.Add(Screen.ShortRangeChart, sp.GetRequiredService<ShortRangeChartViewBase>());
         views.Add(Screen.PlanetData, sp.GetRequiredService<PlanetDataController>());
         views.Add(Screen.MarketPrices, sp.GetRequiredService<MarketController>());
         views.Add(Screen.CommanderStatus, sp.GetRequiredService<CommanderStatusController>());
@@ -233,6 +247,7 @@ public static class EliteServiceCollectionExtensions
     // AddEliteMain's screen-map factory above can resolve them.
     private static void AddEliteViews(this IServiceCollection services)
     {
+        services.AddBaseView();
         services.AddEliteFlightViews();
         services.AddSplitScreens();
         services.AddEliteConsoleViews();
@@ -260,13 +275,29 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>()));
     }
 
+    // The tier's shared chrome, which EliteMain draws the border and countdown
+    // through and the tier-split screens take for their headers.
+    private static void AddBaseView(this IServiceCollection services)
+        => services.AddSingleton<IBaseView>(sp => IsEightBit(sp)
+            ? new BaseView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new BaseView16Bit(sp.GetRequiredService<IEliteDraw>()));
+
     private static void AddEliteConsoleViews(this IServiceCollection services)
-        => services.AddSingleton(sp => new ShortRangeChartView(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IEliteDraw>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<PlanetController>(),
-            sp.GetRequiredService<PlayerShip>()));
+        => services.AddSingleton<ShortRangeChartViewBase>(sp => IsEightBit(sp)
+            ? new ShortRangeChartView8Bit(
+                sp.GetRequiredService<GameState>(),
+                sp.GetRequiredService<IEliteDraw>(),
+                sp.GetRequiredService<IBaseView>(),
+                sp.GetRequiredService<IKeyboard>(),
+                sp.GetRequiredService<PlanetController>(),
+                sp.GetRequiredService<PlayerShip>())
+            : new ShortRangeChartView16Bit(
+                sp.GetRequiredService<GameState>(),
+                sp.GetRequiredService<IEliteDraw>(),
+                sp.GetRequiredService<IBaseView>(),
+                sp.GetRequiredService<IKeyboard>(),
+                sp.GetRequiredService<PlanetController>(),
+                sp.GetRequiredService<PlayerShip>()));
 
     // TODO: improve this (moved from EliteMain, see backlog)
     private static Dictionary<string, SfxSample> BuildEliteSfx() => new()

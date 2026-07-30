@@ -52,16 +52,16 @@ internal sealed class WireframeSun : IObject
         Vector2 centre = new(Location.X, -Location.Y);
 
         centre *= _draw.Focus / Location.Z;
-        centre += _draw.Centre;
+        centre += _draw.Layout.Centre;
 
         // The same size as the filled suns: a radius in the original's
         // 256-wide space, scaled to the tier's screen.
         float radius = 6291456 / Location.Length() * (_draw.Focus / 256);
 
-        if (centre.X + radius < _draw.Left ||
-            centre.X - radius > _draw.Right ||
-            centre.Y + radius < _draw.Top ||
-            centre.Y - radius > _draw.Bottom)
+        if (centre.X + radius < _draw.Layout.Left ||
+            centre.X - radius > _draw.Layout.Right ||
+            centre.Y + radius < _draw.Layout.Top ||
+            centre.Y - radius > _draw.Layout.Bottom)
         {
             return;
         }

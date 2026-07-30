@@ -10,12 +10,13 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// The 16-bit game over screen: the 512-space layout, and nothing else. The
 /// wreckage tumbling behind it is drawn by the universe, not here.
 /// </summary>
-internal sealed class GameOverView16Bit : IView<GameOverModel>
+internal sealed class GameOverView16Bit : BaseView16Bit, IView<GameOverModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
 
     internal GameOverView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -26,6 +27,6 @@ internal sealed class GameOverView16Bit : IView<GameOverModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, model.Message, nameof(FontType.Large), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.Centre.Y, model.Message, nameof(FontType.Large), _colorGold);
     }
 }

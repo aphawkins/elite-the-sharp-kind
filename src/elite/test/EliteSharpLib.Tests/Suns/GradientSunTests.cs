@@ -23,7 +23,7 @@ public class GradientSunTests
         {
             Graphics = mockGraphics.Object,
         };
-        GradientSun sun = new(fakeEliteDraw, new(new Random(0)));
+        GradientSun16Bit sun = new(fakeEliteDraw, new(new Random(0)));
 
         // Act
         sun.Draw();
@@ -39,12 +39,12 @@ public class GradientSunTests
     {
         // Arrange
         FakeEliteDraw fakeEliteDraw = new();
-        GradientSun sun = new(fakeEliteDraw, new(new Random(0)));
+        GradientSun16Bit sun = new(fakeEliteDraw, new(new Random(0)));
 
         // Act
         IObject obj = sun.Clone();
 
         // Assert
-        Assert.IsType<GradientSun>(obj);
+        Assert.IsType<GradientSun16Bit>(obj);
     }
 }

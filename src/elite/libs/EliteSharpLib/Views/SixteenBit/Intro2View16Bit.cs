@@ -10,13 +10,14 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// The 16-bit ship parade screen: the 512-space layout, and nothing else.
 /// The ship itself is drawn by the universe, not here.
 /// </summary>
-internal sealed class Intro2View16Bit : IView<Intro2Model>
+internal sealed class Intro2View16Bit : BaseView16Bit, IView<Intro2Model>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
     private readonly uint _colorWhite;
 
     internal Intro2View16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -28,13 +29,13 @@ internal sealed class Intro2View16Bit : IView<Intro2Model>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Top + 10);
+        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.Top + 10);
 
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, model.Prompt, nameof(FontType.Large), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 30, model.Prompt, nameof(FontType.Large), _colorGold);
 
         if (model.ShipName.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 60, model.ShipName, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 60, model.ShipName, nameof(FontType.Small), _colorWhite);
         }
     }
 }

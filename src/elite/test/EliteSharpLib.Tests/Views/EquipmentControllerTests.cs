@@ -95,7 +95,7 @@ public class EquipmentControllerTests
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Pilot pilot = new(draw, audio, universe, ship, rng);
         Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng);
-        Scanner scanner = new(gameState, draw, universe, ship, combat);
+        Scanner16Bit scanner = new(gameState, draw, universe, ship, combat);
 
         return new EquipmentController(gameState, keyboard, ship, trade, scanner, new FakeEquipmentView());
     }

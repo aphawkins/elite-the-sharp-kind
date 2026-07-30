@@ -4,7 +4,9 @@
 
 using System.Numerics;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Views;
 using Useful;
+using Useful.Assets;
 using Useful.Assets.Palettes;
 using Useful.Graphics;
 
@@ -12,33 +14,41 @@ namespace EliteSharpLib.Graphics;
 
 internal interface IEliteDraw
 {
-    public float Bottom { get; }
+    /// <summary>
+    /// Gets the tier's screen metrics for laying out against.
+    /// </summary>
+    public ViewLayout Layout { get; }
 
-    public Vector2 Centre { get; }
+    /// <summary>
+    /// Gets the machine class being reproduced, which the object factories
+    /// pick their per-tier renderers by.
+    /// </summary>
+    public SystemTier Tier { get; }
 
     /// <summary>
     /// Gets the perspective projection's focal length in pixels: a point at
-    /// model-space x projects to <c>Centre.X + (x * Focus / z)</c>. Derived
-    /// from the tier's screen width so the field of view is the same at every
-    /// tier, and independent of <see cref="Scale"/>.
+    /// model-space x projects to <c>Layout.Centre.X + (x * Focus / z)</c>.
+    /// Derived from the tier's screen height so the field of view is the same
+    /// at every tier, and independent of <see cref="ViewLayout.Scale"/>.
     /// </summary>
     public float Focus { get; }
 
     public IGraphics Graphics { get; }
 
-    public float Left { get; }
-
     public IPaletteCollection Palette { get; }
+
+    // Superseded by Layout; kept only until the classes that still read them
+    // are split per tier, then removed.
+    public float Bottom { get; }
+
+    public Vector2 Centre { get; }
+
+    public float Left { get; }
 
     public float Offset { get; }
 
     public float Right { get; }
 
-    /// <summary>
-    /// Gets Elite's coordinate scale: the game's drawing maths is written in the
-    /// original's 256x256-ish space and multiplied up to the render
-    /// resolution. Game policy, not a graphics-backend concern.
-    /// </summary>
     public float Scale { get; }
 
     public float ScannerLeft { get; }
@@ -49,17 +59,9 @@ internal interface IEliteDraw
 
     public float Top { get; }
 
-    public void DrawBorder();
-
-    public void DrawHyperspaceCountdown(int countdown);
-
     public void DrawObject(IObject obj);
 
     public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z);
-
-    public void DrawTextPretty(Vector2 position, float width, string text);
-
-    public void DrawViewHeader(string title);
 
     public void RenderEnd();
 

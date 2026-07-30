@@ -12,24 +12,25 @@ namespace EliteSharpLib.Views.EightBit;
 /// map to the same 8x8 cells at this tier, and Small is what the rest of the
 /// 8-bit screens use.
 /// </summary>
-internal sealed class QuitView8Bit : IView<QuitModel>
+internal sealed class QuitView8Bit : BaseView8Bit, IView<QuitModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorYellow;
 
     internal QuitView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorYellow = draw.Palette["Yellow"];
     }
 
     public void Draw(QuitModel model)
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Header);
+        DrawViewHeader(model.Header);
 
-        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, model.Prompt, nameof(FontType.Small), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.Centre.Y, model.Prompt, nameof(FontType.Small), _colorYellow);
     }
 }

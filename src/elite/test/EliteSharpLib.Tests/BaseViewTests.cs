@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Views;
+using EliteSharpLib.Views.SixteenBit;
 using Useful.Abstraction;
 using Useful.Fakes.Assets;
 using Useful.Fakes.Controls;
@@ -12,23 +13,28 @@ using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Tests;
 
-public class EliteDrawTests
+public class BaseViewTests
 {
     [Fact]
     public void DrawTextPrettyHardBreaksWordLongerThanLineWidth()
     {
-        FakeGraphics graphics = new();
-        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
-        ZBufferRenderer shipRenderer = new(graphics);
-        RNG rng = new(new Random(0));
-        EliteDraw draw = new(gameState, graphics, new FakeAssetLocator(), shipRenderer, rng);
+        BaseView16Bit baseView = new(Draw());
 
         // No spaces/commas/periods anywhere, so the line-width scan must
         // never find a break point and previously underflowed past index 0.
         string unbreakableText = new('a', 200);
 
-        Exception? exception = Record.Exception(() => draw.DrawTextPretty(new(0, 0), 64, unbreakableText));
+        Exception? exception = Record.Exception(() => baseView.DrawTextPretty(new(0, 0), 64, unbreakableText));
 
         Assert.Null(exception);
+    }
+
+    private static EliteDraw Draw()
+    {
+        FakeGraphics graphics = new();
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
+        ZBufferRenderer shipRenderer = new(graphics);
+        RNG rng = new(new Random(0));
+        return new EliteDraw(gameState, graphics, new FakeAssetLocator(), shipRenderer, rng);
     }
 }

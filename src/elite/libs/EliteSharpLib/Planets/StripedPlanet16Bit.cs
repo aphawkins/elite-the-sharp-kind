@@ -2,22 +2,18 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 
 namespace EliteSharpLib.Planets;
 
-internal sealed class StripedPlanet : IObject
+internal sealed class StripedPlanet16Bit : StripedPlanetBase
 {
-    private readonly PlanetRenderer _planetRenderer;
-
-    // Color map used to generate a striped style planet.
-    private readonly uint[] _stripeColors;
-
-    internal StripedPlanet(IEliteDraw draw)
+    internal StripedPlanet16Bit(IEliteDraw draw)
+        : base(draw)
     {
-        _planetRenderer = new(draw);
+        ArgumentNullException.ThrowIfNull(draw);
+
         uint colorPurple = draw.Palette["Purple"];
         uint colorDarkBlue = draw.Palette["DarkBlue"];
         uint colorBlue = draw.Palette["Blue"];
@@ -26,7 +22,7 @@ internal sealed class StripedPlanet : IObject
         uint colorOrange = draw.Palette["Orange"];
         uint colorLightOrange = draw.Palette["LightOrange"];
         uint colorDarkOrange = draw.Palette["DarkOrange"];
-        _stripeColors =
+        StripeColors =
         [
             colorPurple,
             colorPurple,
@@ -85,52 +81,16 @@ internal sealed class StripedPlanet : IObject
         GenerateLandscape();
     }
 
-    private StripedPlanet(StripedPlanet other)
+    private StripedPlanet16Bit(StripedPlanet16Bit other)
+        : base(other)
+        => StripeColors = other.StripeColors;
+
+    protected override uint[] StripeColors { get; }
+
+    public override IObject Clone()
     {
-        _planetRenderer = other._planetRenderer;
-        _stripeColors = other._stripeColors;
-    }
-
-    public ShipProperties Flags { get; set; }
-
-    public Vector4 Location { get; set; } = new(0, 0, 123456, 0);
-
-    public Matrix4x4 Rotmat { get; set; }
-
-    public ShipType Type { get; set; } = ShipType.Planet;
-
-    public float RotX { get; set; }
-
-    public float RotZ { get; set; }
-
-    public IObject Clone()
-    {
-        StripedPlanet planet = new(this);
+        StripedPlanet16Bit planet = new(this);
         this.CopyTo(planet);
         return planet;
-    }
-
-    public void Draw()
-    {
-        (Vector2 Position, float Radius)? v = _planetRenderer.GetPlanetPosition(Location);
-        if (v != null)
-        {
-            _planetRenderer.Draw(v.Value.Position, v.Value.Radius, Rotmat);
-        }
-    }
-
-    /// <summary>
-    /// Generate a landscape map.
-    /// </summary>
-    private void GenerateLandscape()
-    {
-        for (int y = 0; y <= PlanetRenderer.LandYMax; y++)
-        {
-            uint color = _stripeColors[y * (_stripeColors.Length - 1) / PlanetRenderer.LandYMax];
-            for (int x = 0; x <= PlanetRenderer.LandXMax; x++)
-            {
-                _planetRenderer.Landscape[x, y] = color;
-            }
-        }
     }
 }

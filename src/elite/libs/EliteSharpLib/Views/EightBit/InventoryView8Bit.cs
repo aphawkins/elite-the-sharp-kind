@@ -11,7 +11,7 @@ namespace EliteSharpLib.Views.EightBit;
 /// from the 16-bit one - see docs/backlog-roadmap.md's "Author the 8-bit
 /// view layouts" item. Exact spacing is expected to be refined visually.
 /// </summary>
-internal sealed class InventoryView8Bit : IView<InventoryModel>
+internal sealed class InventoryView8Bit : BaseView8Bit, IView<InventoryModel>
 {
     private const int LabelX = 8;
     private const int ValueX = 48;
@@ -25,6 +25,7 @@ internal sealed class InventoryView8Bit : IView<InventoryModel>
     private readonly uint _colorWhite;
 
     internal InventoryView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -36,7 +37,7 @@ internal sealed class InventoryView8Bit : IView<InventoryModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Title);
+        DrawViewHeader(model.Title);
 
         DrawRow(FirstRowY, "Fuel:", model.Fuel);
         DrawRow(FirstRowY + RowSpacingY, "Cash:", model.Cash);
@@ -44,15 +45,15 @@ internal sealed class InventoryView8Bit : IView<InventoryModel>
         float y = CargoStartY;
         foreach ((string name, string quantity) in model.Cargo)
         {
-            _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), name, nameof(FontType.Small), _colorWhite);
-            _draw.Graphics.DrawTextLeft(new(QuantityX + _draw.Offset, y), quantity, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), name, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(QuantityX + _draw.Layout.Offset, y), quantity, nameof(FontType.Small), _colorWhite);
             y += RowSpacingY;
         }
     }
 
     private void DrawRow(float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), label, nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Offset, y), value, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
     }
 }

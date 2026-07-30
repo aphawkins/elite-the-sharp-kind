@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful.Assets;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Planets;
@@ -20,7 +21,10 @@ internal static class PlanetFactory
             {
                 PlanetType.Fractal => new FractalPlanet(draw, seed),
                 PlanetType.Solid => new SolidPlanet(draw),
-                PlanetType.Striped => new StripedPlanet(draw),
+                PlanetType.Striped => StripedPlanet(draw),
                 _ => throw new EliteException(),
             };
+
+    private static IObject StripedPlanet(IEliteDraw draw)
+        => draw.Tier == SystemTier.EightBit ? new StripedPlanet8Bit(draw) : new StripedPlanet16Bit(draw);
 }

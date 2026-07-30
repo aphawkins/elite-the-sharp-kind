@@ -149,8 +149,8 @@ internal class ShipBase : IShip
             vec.Z = 1;
         }
 
-        vec.X = _draw.Centre.X + (vec.X * _draw.Focus / vec.Z);
-        vec.Y = _draw.Centre.Y - (vec.Y * _draw.Focus / vec.Z);
+        vec.X = _draw.Layout.Centre.X + (vec.X * _draw.Focus / vec.Z);
+        vec.Y = _draw.Layout.Centre.Y - (vec.Y * _draw.Focus / vec.Z);
 
         return vec;
     }
@@ -284,20 +284,20 @@ internal class ShipBase : IShip
 
         if (direction.X > 0)
         {
-            exitDistance = MathF.Min(exitDistance, (_draw.Right - origin.X) / direction.X);
+            exitDistance = MathF.Min(exitDistance, (_draw.Layout.Right - origin.X) / direction.X);
         }
         else if (direction.X < 0)
         {
-            exitDistance = MathF.Min(exitDistance, (_draw.Left - origin.X) / direction.X);
+            exitDistance = MathF.Min(exitDistance, (_draw.Layout.Left - origin.X) / direction.X);
         }
 
         if (direction.Y > 0)
         {
-            exitDistance = MathF.Min(exitDistance, (_draw.Bottom - origin.Y) / direction.Y);
+            exitDistance = MathF.Min(exitDistance, (_draw.Layout.Bottom - origin.Y) / direction.Y);
         }
         else if (direction.Y < 0)
         {
-            exitDistance = MathF.Min(exitDistance, (_draw.Top - origin.Y) / direction.Y);
+            exitDistance = MathF.Min(exitDistance, (_draw.Layout.Top - origin.Y) / direction.Y);
         }
 
         return !float.IsFinite(exitDistance) || exitDistance <= 0

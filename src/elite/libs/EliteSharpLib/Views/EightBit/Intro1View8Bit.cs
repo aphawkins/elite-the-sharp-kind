@@ -12,7 +12,7 @@ namespace EliteSharpLib.Views.EightBit;
 /// longest credit line ("Original Game (C) I.Bell &amp; D.Braben", 35
 /// characters) fits the 40-character row width with room to spare.
 /// </summary>
-internal sealed class Intro1View8Bit : IView<Intro1Model>
+internal sealed class Intro1View8Bit : BaseView8Bit, IView<Intro1Model>
 {
     // The credits stack upwards from the prompt, one line every 10px: the
     // 8x8 font plus a two-pixel gap.
@@ -21,14 +21,15 @@ internal sealed class Intro1View8Bit : IView<Intro1Model>
     private const float PromptOffset = 16;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorYellow;
     private readonly uint _colorWhite;
 
     internal Intro1View8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorYellow = draw.Palette["Yellow"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -36,15 +37,15 @@ internal sealed class Intro1View8Bit : IView<Intro1Model>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Top + 4);
+        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.Top + 4);
 
-        float y = _draw.ScannerTop - CreditsOffset;
+        float y = _draw.Layout.ScannerTop - CreditsOffset;
         foreach (string credit in model.Credits)
         {
             _draw.Graphics.DrawTextCentre(y, credit, nameof(FontType.Small), _colorWhite);
             y += CreditSpacing;
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - PromptOffset, model.Prompt, nameof(FontType.Small), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - PromptOffset, model.Prompt, nameof(FontType.Small), _colorYellow);
     }
 }

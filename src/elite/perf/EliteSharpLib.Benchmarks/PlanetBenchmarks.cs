@@ -22,7 +22,7 @@ public class PlanetBenchmarks : IDisposable
     private readonly SolidPlanet _solidPlanet;
     private readonly WireframePlanet _wireframePlanet;
     private readonly FractalPlanet _fractalPlanet;
-    private readonly StripedPlanet _stripedPlanet;
+    private readonly StripedPlanet16Bit _stripedPlanet;
     private bool _disposedValue;
 
     public PlanetBenchmarks()

@@ -12,20 +12,21 @@ namespace EliteSharpLib.Views.EightBit;
 /// 8-bit view layouts" item. Exact spacing is expected to be refined
 /// visually.
 /// </summary>
-internal sealed class ConstrictorMissionView8Bit : IView<ConstrictorMissionModel>
+internal sealed class ConstrictorMissionView8Bit : BaseView8Bit, IView<ConstrictorMissionModel>
 {
     private const int TextX = 8;
     private const int TextWidth = 304;
     private const int FooterY = 180;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorYellow;
 
     internal ConstrictorMissionView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorYellow = draw.Palette["Yellow"];
     }
 
     public void Draw(ConstrictorMissionModel model)
@@ -35,21 +36,21 @@ internal sealed class ConstrictorMissionView8Bit : IView<ConstrictorMissionModel
         switch (model.Stage)
         {
             case 1:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(new(TextX + _draw.Offset, 32), TextWidth, model.Paragraphs[0]);
-                _draw.DrawTextPretty(new(TextX + _draw.Offset, 96), TextWidth, model.Paragraphs[1]);
+                DrawViewHeader("INCOMING MESSAGE");
+                DrawTextPretty(new(TextX + _draw.Layout.Offset, 32), TextWidth, model.Paragraphs[0]);
+                DrawTextPretty(new(TextX + _draw.Layout.Offset, 96), TextWidth, model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
             case 3:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.Graphics.DrawTextCentre(48, model.Headline, nameof(FontType.Large), _colorGold);
-                _draw.DrawTextPretty(new(TextX + _draw.Offset, 64), TextWidth, model.Paragraphs[0]);
+                DrawViewHeader("INCOMING MESSAGE");
+                _draw.Graphics.DrawTextCentre(48, model.Headline, nameof(FontType.Large), _colorYellow);
+                DrawTextPretty(new(TextX + _draw.Layout.Offset, 64), TextWidth, model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }
     }
 
     private void DrawFooter()
-        => _draw.Graphics.DrawTextCentre(FooterY, "Press space to continue.", nameof(FontType.Small), _colorGold);
+        => _draw.Graphics.DrawTextCentre(FooterY, "Press space to continue.", nameof(FontType.Small), _colorYellow);
 }

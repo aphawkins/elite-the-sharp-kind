@@ -9,7 +9,7 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// <summary>
 /// The 16-bit inventory screen: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class InventoryView16Bit : IView<InventoryModel>
+internal sealed class InventoryView16Bit : BaseView16Bit, IView<InventoryModel>
 {
     private const int LabelX = 16;
     private const int ValueX = 70;
@@ -22,6 +22,7 @@ internal sealed class InventoryView16Bit : IView<InventoryModel>
     private readonly uint _colorWhite;
 
     internal InventoryView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -33,7 +34,7 @@ internal sealed class InventoryView16Bit : IView<InventoryModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Title);
+        DrawViewHeader(model.Title);
 
         DrawRow(50, "Fuel:", model.Fuel);
         DrawRow(66, "Cash:", model.Cash);
@@ -41,15 +42,15 @@ internal sealed class InventoryView16Bit : IView<InventoryModel>
         float y = CargoStartY;
         foreach ((string name, string quantity) in model.Cargo)
         {
-            _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), name, nameof(FontType.Small), _colorWhite);
-            _draw.Graphics.DrawTextLeft(new(QuantityX + _draw.Offset, y), quantity, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), name, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(QuantityX + _draw.Layout.Offset, y), quantity, nameof(FontType.Small), _colorWhite);
             y += SpacingY;
         }
     }
 
     private void DrawRow(float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), label, nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Offset, y), value, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
     }
 }

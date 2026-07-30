@@ -7,14 +7,17 @@ namespace Useful.Assets;
 // The one place asset paths are built, so tier resolution lives here and
 // nowhere else: tier-varying categories resolve to <Category>/<Tier>/<file>
 // and fall back to <Category>/<file>, which is what keeps the tier-neutral
-// categories - audio, models, TrueType fonts, tracks - from needing a copy
-// per tier. The tier is fixed at construction, so IAssetLocator's consumers
-// never have to know one exists.
+// categories - audio, TrueType fonts, tracks - from needing a copy per tier.
+// Models are tier-varying: their 'usemtl' names are resolved through the
+// tier's palette, and the two palettes name different colours. The tier is
+// fixed at construction, so IAssetLocator's consumers never have to know one
+// exists.
 public sealed class AssetLocator : IAssetLocator
 {
     private const string AssetManifestFilename = "AssetManifest.json";
     private const string ImagesCategory = "Images";
     private const string FontsBitmapCategory = "FontsBitmap";
+    private const string ModelsCategory = "Models";
     private const string PaletteCategory = "Palette";
     private readonly AssetManifest _assetManifest = new();
     private readonly string _baseDirectory;
@@ -61,7 +64,7 @@ public sealed class AssetLocator : IAssetLocator
         => _assetManifest.SoundFonts.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "SoundFonts", x.Value));
 
     public IDictionary<string, string> ModelPaths
-        => _assetManifest.Models.ToDictionary(x => x.Key, x => Path.Combine(_baseDirectory, "Models", x.Value));
+        => _assetManifest.Models.ToDictionary(x => x.Key, x => TierPath(ModelsCategory, x.Value));
 
     public static AssetLocator Create() => Create(SystemTier.SixteenBit);
 

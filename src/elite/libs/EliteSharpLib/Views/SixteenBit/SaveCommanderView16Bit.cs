@@ -9,13 +9,14 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// <summary>
 /// The 16-bit save-commander screen: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class SaveCommanderView16Bit : IView<SaveCommanderModel>
+internal sealed class SaveCommanderView16Bit : BaseView16Bit, IView<SaveCommanderModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
     private readonly uint _colorGold;
 
     internal SaveCommanderView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -27,10 +28,10 @@ internal sealed class SaveCommanderView16Bit : IView<SaveCommanderModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader("SAVE COMMANDER");
+        DrawViewHeader("SAVE COMMANDER");
 
         _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
-        _draw.Graphics.DrawRectangle(new(100 + _draw.Offset, 100), 312, 50, _colorWhite);
+        _draw.Graphics.DrawRectangle(new(100 + _draw.Layout.Offset, 100), 312, 50, _colorWhite);
         _draw.Graphics.DrawTextCentre(112, model.Name, nameof(FontType.Large), _colorWhite);
 
         if (model.StatusMessage.Length > 0)

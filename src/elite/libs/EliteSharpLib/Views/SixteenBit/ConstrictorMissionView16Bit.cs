@@ -12,12 +12,13 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// so the layout keys off the model's stage. The Constrictor posing behind
 /// the brief is drawn by the universe, not here.
 /// </summary>
-internal sealed class ConstrictorMissionView16Bit : IView<ConstrictorMissionModel>
+internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IView<ConstrictorMissionModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGold;
 
     internal ConstrictorMissionView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -31,16 +32,16 @@ internal sealed class ConstrictorMissionView16Bit : IView<ConstrictorMissionMode
         switch (model.Stage)
         {
             case 1:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
-                _draw.DrawTextPretty(new(16 + _draw.Offset, 50), 300, model.Paragraphs[0]);
-                _draw.DrawTextPretty(new(16 + _draw.Offset, 200), 470, model.Paragraphs[1]);
+                DrawViewHeader("INCOMING MESSAGE");
+                DrawTextPretty(new(16 + _draw.Layout.Offset, 50), 300, model.Paragraphs[0]);
+                DrawTextPretty(new(16 + _draw.Layout.Offset, 200), 470, model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
             case 3:
-                _draw.DrawViewHeader("INCOMING MESSAGE");
+                DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
-                _draw.DrawTextPretty(new(116 + _draw.Offset, 132), 400, model.Paragraphs[0]);
+                DrawTextPretty(new(116 + _draw.Layout.Offset, 132), 400, model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }

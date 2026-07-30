@@ -37,12 +37,12 @@ public sealed class StripedPlanetTests
     {
         // Arrange
         FakeEliteDraw fakeEliteDraw = new();
-        StripedPlanet planet = new(fakeEliteDraw);
+        StripedPlanet16Bit planet = new(fakeEliteDraw);
 
         // Act
         IObject obj = planet.Clone();
 
         // Assert
-        Assert.IsType<StripedPlanet>(obj);
+        Assert.IsType<StripedPlanet16Bit>(obj);
     }
 }

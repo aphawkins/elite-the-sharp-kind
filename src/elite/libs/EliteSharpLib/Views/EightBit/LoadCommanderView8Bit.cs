@@ -12,7 +12,7 @@ namespace EliteSharpLib.Views.EightBit;
 /// 8-bit view layouts" item. Exact spacing is expected to be refined
 /// visually.
 /// </summary>
-internal sealed class LoadCommanderView8Bit : IView<LoadCommanderModel>
+internal sealed class LoadCommanderView8Bit : BaseView8Bit, IView<LoadCommanderModel>
 {
     private const int BoxWidth = 280;
     private const int BoxHeight = 24;
@@ -20,13 +20,14 @@ internal sealed class LoadCommanderView8Bit : IView<LoadCommanderModel>
 
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
-    private readonly uint _colorGold;
+    private readonly uint _colorYellow;
 
     internal LoadCommanderView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorYellow = draw.Palette["Yellow"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -34,7 +35,7 @@ internal sealed class LoadCommanderView8Bit : IView<LoadCommanderModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader("LOAD COMMANDER");
+        DrawViewHeader("LOAD COMMANDER");
 
         _draw.Graphics.DrawTextCentre(48, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
         _draw.Graphics.DrawRectangleCentre(BoxY, BoxWidth, BoxHeight, _colorWhite);
@@ -42,7 +43,7 @@ internal sealed class LoadCommanderView8Bit : IView<LoadCommanderModel>
 
         if (model.ErrorMessage.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(112, model.ErrorMessage, nameof(FontType.Small), _colorGold);
+            _draw.Graphics.DrawTextCentre(112, model.ErrorMessage, nameof(FontType.Small), _colorYellow);
             _draw.Graphics.DrawTextCentre(128, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
         }
     }

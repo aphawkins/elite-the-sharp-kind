@@ -11,22 +11,23 @@ namespace EliteSharpLib.Views.EightBit;
 /// 8x8 font. The wreckage tumbling behind it is drawn by the universe, not
 /// here.
 /// </summary>
-internal sealed class GameOverView8Bit : IView<GameOverModel>
+internal sealed class GameOverView8Bit : BaseView8Bit, IView<GameOverModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorYellow;
 
     internal GameOverView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorYellow = draw.Palette["Yellow"];
     }
 
     public void Draw(GameOverModel model)
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawTextCentre(_draw.Centre.Y, model.Message, nameof(FontType.Small), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.Centre.Y, model.Message, nameof(FontType.Small), _colorYellow);
     }
 }

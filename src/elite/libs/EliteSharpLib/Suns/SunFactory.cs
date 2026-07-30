@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
+using Useful.Assets;
 using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Suns;
@@ -17,7 +18,10 @@ internal static class SunFactory
             : type switch
             {
                 SunType.Solid => new SolidSun(draw, rng),
-                SunType.Gradient => new GradientSun(draw, rng),
+                SunType.Gradient => GradientSun(draw, rng),
                 _ => throw new EliteException(),
             };
+
+    private static IObject GradientSun(IEliteDraw draw, RNG rng)
+        => draw.Tier == SystemTier.EightBit ? new GradientSun8Bit(draw, rng) : new GradientSun16Bit(draw, rng);
 }

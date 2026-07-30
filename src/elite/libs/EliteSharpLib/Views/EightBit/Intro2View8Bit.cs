@@ -10,20 +10,21 @@ namespace EliteSharpLib.Views.EightBit;
 /// The 8-bit ship parade screen: authored for the 320x256 canvas and its
 /// fixed 8x8 font. The ship itself is drawn by the universe, not here.
 /// </summary>
-internal sealed class Intro2View8Bit : IView<Intro2Model>
+internal sealed class Intro2View8Bit : BaseView8Bit, IView<Intro2Model>
 {
     private const float PromptOffset = 16;
     private const float ShipNameOffset = 30;
 
     private readonly IEliteDraw _draw;
-    private readonly uint _colorGold;
+    private readonly uint _colorYellow;
     private readonly uint _colorWhite;
 
     internal Intro2View8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
-        _colorGold = draw.Palette["Gold"];
+        _colorYellow = draw.Palette["Yellow"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -31,14 +32,14 @@ internal sealed class Intro2View8Bit : IView<Intro2Model>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Top + 4);
+        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.Top + 4);
 
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - PromptOffset, model.Prompt, nameof(FontType.Small), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - PromptOffset, model.Prompt, nameof(FontType.Small), _colorYellow);
 
         if (model.ShipName.Length > 0)
         {
             _draw.Graphics.DrawTextCentre(
-                _draw.ScannerTop - ShipNameOffset,
+                _draw.Layout.ScannerTop - ShipNameOffset,
                 model.ShipName,
                 nameof(FontType.Small),
                 _colorWhite);

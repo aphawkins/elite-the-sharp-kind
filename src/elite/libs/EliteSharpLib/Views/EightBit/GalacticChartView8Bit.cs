@@ -10,11 +10,11 @@ namespace EliteSharpLib.Views.EightBit;
 /// <summary>
 /// The 8-bit galactic chart: authored for the 320x256 canvas and its fixed
 /// 8x8 font. The plot itself needs no tier-specific maths - galaxy space is
-/// 256x256 and <see cref="IEliteDraw.Scale"/> maps it onto the tier - so only
+/// 256x256 and <see cref="ViewLayout.Scale"/> maps it onto the tier - so only
 /// the divider line, the cross-hair size and the two caption rows differ from
 /// the 16-bit view.
 /// </summary>
-internal sealed class GalacticChartView8Bit : IView<GalacticChartModel>
+internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartModel>
 {
     // The plot's last row is galaxy y=255, which ToScreen puts at
     // (255 / 2) + 18 = 145 at Scale 1; the divider sits just under it.
@@ -26,15 +26,16 @@ internal sealed class GalacticChartView8Bit : IView<GalacticChartModel>
 
     private readonly IEliteDraw _draw;
     private readonly uint _colorGreen;
-    private readonly uint _colorLighterRed;
+    private readonly uint _colorOrange;
     private readonly uint _colorWhite;
 
     internal GalacticChartView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
         _colorGreen = draw.Palette["Green"];
-        _colorLighterRed = draw.Palette["LighterRed"];
+        _colorOrange = draw.Palette["Orange"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -42,14 +43,14 @@ internal sealed class GalacticChartView8Bit : IView<GalacticChartModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Title);
+        DrawViewHeader(model.Title);
 
-        _draw.Graphics.DrawLine(new(_draw.Offset, DividerY), new(_draw.ScannerRight, DividerY), _colorWhite);
+        _draw.Graphics.DrawLine(new(_draw.Layout.Offset, DividerY), new(_draw.Layout.ScannerRight, DividerY), _colorWhite);
 
         // Fuel radius
         Vector2 centre = ToScreen(model.DockedPlanet);
-        float radius = model.FuelLightYears * 2.5f * _draw.Scale;
-        float fuelCrossSize = 7 * _draw.Scale;
+        float radius = model.FuelLightYears * 2.5f * _draw.Layout.Scale;
+        float fuelCrossSize = 7 * _draw.Layout.Scale;
         _draw.Graphics.DrawCircle(centre, radius, _colorGreen);
         _draw.Graphics.DrawLine(new(centre.X, centre.Y - fuelCrossSize), new(centre.X, centre.Y + fuelCrossSize), _colorWhite);
         _draw.Graphics.DrawLine(new(centre.X - fuelCrossSize, centre.Y), new(centre.X + fuelCrossSize, centre.Y), _colorWhite);
@@ -69,17 +70,17 @@ internal sealed class GalacticChartView8Bit : IView<GalacticChartModel>
         // Cross
         centre = ToScreen(model.Cross);
 
-        _draw.Graphics.DrawLine(new(centre.X - CrossSize, centre.Y), new(centre.X + CrossSize, centre.Y), _colorLighterRed);
-        _draw.Graphics.DrawLine(new(centre.X, centre.Y - CrossSize), new(centre.X, centre.Y + CrossSize), _colorLighterRed);
+        _draw.Graphics.DrawLine(new(centre.X - CrossSize, centre.Y), new(centre.X + CrossSize, centre.Y), _colorOrange);
+        _draw.Graphics.DrawLine(new(centre.X, centre.Y - CrossSize), new(centre.X, centre.Y + CrossSize), _colorOrange);
 
         // Text
         _draw.Graphics.DrawTextLeft(
-            new(CaptionX + _draw.Offset, _draw.ScannerTop - CaptionOffsetY),
+            new(CaptionX + _draw.Layout.Offset, _draw.Layout.ScannerTop - CaptionOffsetY),
             model.Caption,
             nameof(FontType.Small),
             _colorGreen);
         _draw.Graphics.DrawTextLeft(
-            new(CaptionX + _draw.Offset, _draw.ScannerTop - DetailOffsetY),
+            new(CaptionX + _draw.Layout.Offset, _draw.Layout.ScannerTop - DetailOffsetY),
             model.Detail,
             nameof(FontType.Small),
             _colorWhite);
@@ -87,6 +88,6 @@ internal sealed class GalacticChartView8Bit : IView<GalacticChartModel>
 
     // Galaxy space (D, B) to this tier's screen coordinates.
     private Vector2 ToScreen(Vector2 galaxy) => new(
-        (galaxy.X * _draw.Scale) + _draw.Offset,
-        (galaxy.Y * _draw.Scale / 2) + (18 * _draw.Scale) + 1);
+        (galaxy.X * _draw.Layout.Scale) + _draw.Layout.Offset,
+        (galaxy.Y * _draw.Layout.Scale / 2) + (18 * _draw.Layout.Scale) + 1);
 }

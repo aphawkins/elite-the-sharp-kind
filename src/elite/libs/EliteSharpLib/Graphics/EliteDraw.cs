@@ -26,9 +26,7 @@ internal sealed class EliteDraw : IEliteDraw
     // the 16-bit render exactly (512 x 1.0 = the old 256 x Scale 2).
     private const float FocusFactor = 1.0f;
 
-    private readonly uint _colorGold;
     private readonly uint _colorWhite;
-    private readonly uint _colorYellow;
     private readonly GameState _gameState;
     private readonly Vector4[] _pointList = new Vector4[MaxModelPoints];
     private readonly IPolygonRenderer _shipRenderer;
@@ -40,16 +38,19 @@ internal sealed class EliteDraw : IEliteDraw
         Graphics = graphics;
         _shipRenderer = shipRenderer;
         _rng = rng;
-        Scale = assetLocator.Tier == SystemTier.EightBit ? 1 : 2;
+        Layout = new(
+            graphics.ScreenWidth,
+            graphics.ScreenHeight,
+            graphics.ImageSize(nameof(ImageType.Scanner)),
+            assetLocator.Tier == SystemTier.EightBit ? 1 : 2);
+        Tier = assetLocator.Tier;
         Palette = PaletteReader.Read(assetLocator.PalettePath);
-        _colorGold = Palette["Gold"];
         _colorWhite = Palette["White"];
-        _colorYellow = Palette["Yellow"];
     }
 
-    public float Bottom => Graphics.ScreenHeight - ScannerHeight;
+    public ViewLayout Layout { get; }
 
-    public Vector2 Centre => new(Graphics.ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
+    public SystemTier Tier { get; }
 
     // The original's projection is x * 256 / z against a 256-square view, i.e.
     // a focal length of one screen height. Deriving it from the tier's height
@@ -62,57 +63,27 @@ internal sealed class EliteDraw : IEliteDraw
 
     public IGraphics Graphics { get; }
 
-    public bool IsWidescreen { get; }
-
-    public float Left => BorderWidth;
-
-    public float Offset => ScannerLeft;
-
     public IPaletteCollection Palette { get; }
 
-    public float Right => Graphics.ScreenWidth - BorderWidth;
+    public float Bottom => Layout.Bottom;
 
-    // Elite's drawing maths works in the original's 256-unit coordinate
-    // space, and this maps that onto the tier's screen. Kept whole, per the
-    // pixel-doubling rule in docs/decisions.md: a fractional value would put
-    // HUD text and ship vertices on half-pixels.
-    public float Scale { get; }
+    public Vector2 Centre => Layout.Centre;
 
-    public float ScannerLeft => Centre.X - (ScannerWidth / 2);
+    public float Left => Layout.Left;
 
-    public float ScannerRight => ScannerLeft + ScannerWidth - 1;
+    public float Offset => Layout.Offset;
 
-    public float ScannerTop => Graphics.ScreenHeight - ScannerHeight;
+    public float Right => Layout.Right;
 
-    public float Top => BorderWidth;
+    public float Scale => Layout.Scale;
 
-    // DrawBorder's rectangle draws its far edge at position+size-1 (last
-    // inclusive pixel), one short of Right/Bottom, so the view clip must
-    // stop one pixel earlier still or content lands on top of the border
-    // line itself instead of stopping short of it.
-    internal float Height => Bottom - BorderWidth - 1;
+    public float ScannerLeft => Layout.ScannerLeft;
 
-    internal float Width => Graphics.ScreenWidth - (2 * BorderWidth) - 1;
+    public float ScannerRight => Layout.ScannerRight;
 
-    private static float BorderWidth => 1;
+    public float ScannerTop => Layout.ScannerTop;
 
-    // Taken from the scanner bitmap itself rather than hardcoded, so each
-    // tier's scanner art defines its own HUD height and width (the 8-bit
-    // scanner is 320x56 against the 16-bit 512x129).
-    private float ScannerHeight => Graphics.ImageSize(nameof(ImageType.Scanner)).Y;
-
-    private float ScannerWidth => Graphics.ImageSize(nameof(ImageType.Scanner)).X;
-
-    public void DrawBorder()
-    {
-        for (int i = 0; i < BorderWidth; i++)
-        {
-            Graphics.DrawRectangle(new(i, i), Graphics.ScreenWidth - 1 - (2 * i), Bottom - (2 * i), _colorWhite);
-        }
-    }
-
-    public void DrawHyperspaceCountdown(int countdown)
-        => Graphics.DrawTextRight(new(Left + 21, Top + 4), $"{countdown}", nameof(FontType.Small), _colorWhite);
+    public float Top => Layout.Top;
 
     // z is one whole-face depth: the chain's sort key, and the flat depth
     // every pixel of the face tests with in RenderEnd. Flat rather than
@@ -127,45 +98,9 @@ internal sealed class EliteDraw : IEliteDraw
     public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z)
         => _shipRenderer.Submit(points, faceColor, z);
 
-    public void DrawTextPretty(Vector2 position, float width, string text)
-    {
-        int i = 0;
-        float maxlen = width / 8;
-        int previous = i;
-
-        while (i < text.Length)
-        {
-            i += (int)maxlen;
-            i = Math.Clamp(i, 0, text.Length - 1);
-            int breakPoint = i;
-
-            while (i > previous && text[i] is not ' ' and not ',' and not '.')
-            {
-                i--;
-            }
-
-            // No space/comma/period found within the line width: hard-break the word.
-            i = i > previous ? i + 1 : breakPoint + 1;
-
-            Graphics.DrawTextLeft(position, text[previous..i], nameof(FontType.Small), _colorWhite);
-            previous = i;
-            position.Y += 8 * Scale;
-        }
-    }
-
-    public void DrawViewHeader(string title)
-    {
-        Graphics.DrawTextCentre(Top + 6, title, nameof(FontType.Large), _colorGold);
-        Graphics.DrawLine(new(Left, 36), new(Right, 36), _colorWhite);
-
-        // Vertical lines
-        Graphics.DrawLine(new(ScannerLeft, Top + 37), new(ScannerLeft, ScannerTop), _colorYellow);
-        Graphics.DrawLine(new(ScannerRight, Top + 37), new(ScannerRight, ScannerTop), _colorYellow);
-    }
-
     public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);
 
-    public void SetViewClipRegion() => Graphics.SetClipRegion(new(Left, Top), Width, Height);
+    public void SetViewClipRegion() => Graphics.SetClipRegion(new(Layout.Left, Layout.Top), Layout.Width, Layout.Height);
 
     /// <summary>
     /// Draws an object in the universe. (Ship, Planet, Sun etc).
@@ -285,7 +220,7 @@ internal sealed class EliteDraw : IEliteDraw
                 Vector4 r = vec + ship.Location;
                 Vector2 position = new(r.X, -r.Y);
                 position *= Focus / r.Z;
-                position += Centre;
+                position += Layout.Centre;
                 _pointList[np].X = position.X;
                 _pointList[np].Y = position.Y;
                 np++;

@@ -11,7 +11,6 @@ using EliteSharpLib.Views.EightBit;
 using EliteSharpLib.Views.SixteenBit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Useful.Assets;
 using Useful.Audio;
 using Useful.Controls;
 
@@ -34,13 +33,11 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
     // EliteSplitScreensServiceCollectionExtensions: a per-tier IView
     // registration only has to reference this bool, not IAssetLocator and
     // SystemTier themselves.
-    private static bool IsEightBit(IServiceProvider sp) => sp.GetRequiredService<IAssetLocator>().Tier == SystemTier.EightBit;
-
     // The screens that play out on their own: mission messages, and the
     // animated sequences that run to a tick count.
     private static void AddSplitSequenceScreens(this IServiceCollection services)
     {
-        services.AddSingleton<IView<ThargoidMissionModel>>(sp => IsEightBit(sp)
+        services.AddSingleton<IView<ThargoidMissionModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new ThargoidMissionView8Bit(sp.GetRequiredService<IEliteDraw>())
             : new ThargoidMissionView16Bit(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new ThargoidMissionController(
@@ -49,7 +46,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<IView<ThargoidMissionModel>>()));
 
-        services.AddSingleton<IView<ConstrictorMissionModel>>(sp => IsEightBit(sp)
+        services.AddSingleton<IView<ConstrictorMissionModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new ConstrictorMissionView8Bit(sp.GetRequiredService<IEliteDraw>())
             : new ConstrictorMissionView16Bit(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new ConstrictorMissionController(
@@ -63,7 +60,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IView<ConstrictorMissionModel>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConstrictorMissionController>()));
 
-        services.AddSingleton<IView<EscapeCapsuleModel>>(sp => IsEightBit(sp)
+        services.AddSingleton<IView<EscapeCapsuleModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new EscapeCapsuleView8Bit(sp.GetRequiredService<IEliteDraw>())
             : new EscapeCapsuleView16Bit(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new EscapeCapsuleController(
@@ -80,7 +77,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IView<EscapeCapsuleModel>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<EscapeCapsuleController>()));
 
-        services.AddSingleton<IView<GameOverModel>>(sp => IsEightBit(sp)
+        services.AddSingleton<IView<GameOverModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new GameOverView8Bit(sp.GetRequiredService<IEliteDraw>())
             : new GameOverView16Bit(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new GameOverController(
@@ -104,7 +101,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
     // resolving them here, since they aren't otherwise-distinct types.
     private static void AddSplitFlightScreens(this IServiceCollection services)
     {
-        services.AddSingleton<IView<Intro2Model>>(sp => IsEightBit(sp)
+        services.AddSingleton<IView<Intro2Model>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new Intro2View8Bit(sp.GetRequiredService<IEliteDraw>())
             : new Intro2View16Bit(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new Intro2Controller(
@@ -119,7 +116,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<IView<Intro2Model>>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro2Controller>()));
 
-        services.AddSingleton<IView<PilotModel>>(sp => IsEightBit(sp)
+        services.AddSingleton<IView<PilotModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new PilotView8Bit(
                 sp.GetRequiredService<IEliteDraw>(),
                 sp.GetRequiredService<GameState>(),

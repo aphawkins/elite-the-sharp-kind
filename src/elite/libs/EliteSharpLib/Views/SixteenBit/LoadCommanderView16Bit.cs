@@ -9,13 +9,14 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// <summary>
 /// The 16-bit load-commander screen: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class LoadCommanderView16Bit : IView<LoadCommanderModel>
+internal sealed class LoadCommanderView16Bit : BaseView16Bit, IView<LoadCommanderModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
     private readonly uint _colorGold;
 
     internal LoadCommanderView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -27,7 +28,7 @@ internal sealed class LoadCommanderView16Bit : IView<LoadCommanderModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader("LOAD COMMANDER");
+        DrawViewHeader("LOAD COMMANDER");
 
         _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
         _draw.Graphics.DrawRectangleCentre(100, 312, 50, _colorWhite);

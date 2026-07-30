@@ -13,7 +13,7 @@ namespace EliteSharpLib.Views.EightBit;
 /// (label text is view chrome, not model content) so the value column can
 /// start well before 320px; exact spacing is expected to be refined visually.
 /// </summary>
-internal sealed class PlanetDataView8Bit : IView<PlanetDataModel>
+internal sealed class PlanetDataView8Bit : BaseView8Bit, IView<PlanetDataModel>
 {
     private const int LabelX = 8;
     private const int ValueX = 88;
@@ -26,6 +26,7 @@ internal sealed class PlanetDataView8Bit : IView<PlanetDataModel>
     private readonly uint _colorWhite;
 
     internal PlanetDataView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -37,7 +38,7 @@ internal sealed class PlanetDataView8Bit : IView<PlanetDataModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Header);
+        DrawViewHeader(model.Header);
 
         float y = FirstRowY;
 
@@ -53,13 +54,13 @@ internal sealed class PlanetDataView8Bit : IView<PlanetDataModel>
         DrawRow(ref y, "Product:", model.Productivity);
         DrawRow(ref y, "Radius:", model.Radius);
 
-        _draw.DrawTextPretty(new(LabelX + _draw.Offset, DescriptionY), 304, model.Description);
+        DrawTextPretty(new(LabelX + _draw.Layout.Offset, DescriptionY), 304, model.Description);
     }
 
     private void DrawRow(ref float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Offset, y), label, nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Offset, y), value, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
         y += RowSpacingY;
     }
 }

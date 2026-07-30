@@ -10,7 +10,7 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// <summary>
 /// The 16-bit galactic chart: the 512-space layout, and nothing else.
 /// </summary>
-internal sealed class GalacticChartView16Bit : IView<GalacticChartModel>
+internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChartModel>
 {
     private readonly IEliteDraw _draw;
     private readonly uint _colorGreen;
@@ -18,6 +18,7 @@ internal sealed class GalacticChartView16Bit : IView<GalacticChartModel>
     private readonly uint _colorWhite;
 
     internal GalacticChartView16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -31,14 +32,14 @@ internal sealed class GalacticChartView16Bit : IView<GalacticChartModel>
         ArgumentNullException.ThrowIfNull(model);
 
         // Header
-        _draw.DrawViewHeader(model.Title);
+        DrawViewHeader(model.Title);
 
-        _draw.Graphics.DrawLine(new(0 + _draw.Offset, 36 + 258), new(_draw.ScannerRight, 36 + 258), _colorWhite);
+        _draw.Graphics.DrawLine(new(0 + _draw.Layout.Offset, 36 + 258), new(_draw.Layout.ScannerRight, 36 + 258), _colorWhite);
 
         // Fuel radius
         Vector2 centre = ToScreen(model.DockedPlanet);
-        float radius = model.FuelLightYears * 2.5f * _draw.Scale;
-        float cross_size = 7 * _draw.Scale;
+        float radius = model.FuelLightYears * 2.5f * _draw.Layout.Scale;
+        float cross_size = 7 * _draw.Layout.Scale;
         _draw.Graphics.DrawCircle(centre, radius, _colorGreen);
         _draw.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), _colorWhite);
         _draw.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), _colorWhite);
@@ -63,13 +64,13 @@ internal sealed class GalacticChartView16Bit : IView<GalacticChartModel>
 
         // Text
         _draw.Graphics
-            .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 55), model.Caption, nameof(FontType.Small), _colorGreen);
+            .DrawTextLeft(new(16 + _draw.Layout.Offset, _draw.Layout.ScannerTop - 55), model.Caption, nameof(FontType.Small), _colorGreen);
         _draw.Graphics
-            .DrawTextLeft(new(16 + _draw.Offset, _draw.ScannerTop - 40), model.Detail, nameof(FontType.Small), _colorWhite);
+            .DrawTextLeft(new(16 + _draw.Layout.Offset, _draw.Layout.ScannerTop - 40), model.Detail, nameof(FontType.Small), _colorWhite);
     }
 
     // Galaxy space (D, B) to this tier's screen coordinates.
     private Vector2 ToScreen(Vector2 galaxy) => new(
-        (galaxy.X * _draw.Scale) + _draw.Offset,
-        (galaxy.Y * _draw.Scale / 2) + (18 * _draw.Scale) + 1);
+        (galaxy.X * _draw.Layout.Scale) + _draw.Layout.Offset,
+        (galaxy.Y * _draw.Layout.Scale / 2) + (18 * _draw.Layout.Scale) + 1);
 }

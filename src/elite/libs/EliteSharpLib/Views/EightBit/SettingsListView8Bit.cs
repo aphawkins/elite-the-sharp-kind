@@ -21,7 +21,7 @@ namespace EliteSharpLib.Views.EightBit;
 /// the navigation honest.
 /// </para>
 /// </summary>
-internal sealed class SettingsListView8Bit : IView<SettingsListModel>
+internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListModel>
 {
     private const int FirstRowY = 48;
     private const int CellSpacingY = 20;
@@ -36,33 +36,34 @@ internal sealed class SettingsListView8Bit : IView<SettingsListModel>
 
     private readonly IEliteDraw _draw;
     private readonly uint _colorWhite;
-    private readonly uint _colorLightRed;
+    private readonly uint _colorRed;
 
     internal SettingsListView8Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
         _colorWhite = draw.Palette["White"];
-        _colorLightRed = draw.Palette["LightRed"];
+        _colorRed = draw.Palette["Red"];
     }
 
     public void Draw(SettingsListModel model)
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.DrawViewHeader(model.Header);
+        DrawViewHeader(model.Header);
 
         int lastIndex = model.Rows.Count - 1;
 
         for (int i = 0; i < lastIndex; i++)
         {
             Vector2 position = new(
-                MarginX + ((i & 1) * ColumnPitch) + _draw.Offset,
+                MarginX + ((i & 1) * ColumnPitch) + _draw.Layout.Offset,
                 FirstRowY + (i / 2 * CellSpacingY));
 
             if (i == model.HighlightedIndex)
             {
-                _draw.Graphics.DrawRectangleFilled(position, CellWidth, CellHeight, _colorLightRed);
+                _draw.Graphics.DrawRectangleFilled(position, CellWidth, CellHeight, _colorRed);
             }
 
             _draw.Graphics.DrawTextLeft(position, model.Rows[i].Name, nameof(FontType.Small), _colorWhite);
@@ -85,10 +86,10 @@ internal sealed class SettingsListView8Bit : IView<SettingsListModel>
         if (lastIndex == model.HighlightedIndex)
         {
             _draw.Graphics.DrawRectangleFilled(
-                new(_draw.Centre.X - (CellWidth / 2), y),
+                new(_draw.Layout.Centre.X - (CellWidth / 2), y),
                 CellWidth,
                 CellHeight - ValueOffsetY,
-                _colorLightRed);
+                _colorRed);
         }
 
         _draw.Graphics.DrawTextCentre(y, model.Rows[lastIndex].Name, nameof(FontType.Small), _colorWhite);

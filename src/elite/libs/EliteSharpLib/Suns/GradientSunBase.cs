@@ -5,40 +5,30 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
-using Useful.Maths;
 
 namespace EliteSharpLib.Suns;
 
-internal sealed class GradientSun : IObject
+/// <summary>
+/// A banded sun. The banding maths is shared; which colours the bands are is
+/// each tier's own, so <see cref="SunColor"/> is left to the subclass.
+/// </summary>
+internal abstract class GradientSunBase : IObject
 {
     private readonly IEliteDraw _draw;
-    private readonly uint _colorWhite;
-    private readonly uint _colorLightYellow;
-    private readonly uint _colorLightOrange;
-    private readonly uint _colorOrange;
-    private readonly uint _colorDarkOrange;
     private readonly RNG _rng;
 
-    internal GradientSun(IEliteDraw draw, RNG rng)
+    protected GradientSunBase(IEliteDraw draw, RNG rng)
     {
         _draw = draw;
         _rng = rng;
-        _colorWhite = draw.Palette["White"];
-        _colorLightYellow = draw.Palette["LightYellow"];
-        _colorLightOrange = draw.Palette["LightOrange"];
-        _colorOrange = draw.Palette["Orange"];
-        _colorDarkOrange = draw.Palette["DarkOrange"];
     }
 
-    private GradientSun(GradientSun other)
+    protected GradientSunBase(GradientSunBase other)
     {
+        ArgumentNullException.ThrowIfNull(other);
+
         _draw = other._draw;
         _rng = other._rng;
-        _colorWhite = other._colorWhite;
-        _colorLightYellow = other._colorLightYellow;
-        _colorLightOrange = other._colorLightOrange;
-        _colorOrange = other._colorOrange;
-        _colorDarkOrange = other._colorDarkOrange;
     }
 
     public ShipProperties Flags { get; set; }
@@ -53,26 +43,21 @@ internal sealed class GradientSun : IObject
 
     public ShipType Type { get; set; } = ShipType.Sun;
 
-    public IObject Clone()
-    {
-        GradientSun sun = new(this);
-        this.CopyTo(sun);
-        return sun;
-    }
+    public abstract IObject Clone();
 
     public void Draw()
     {
         Vector2 centre = new(Location.X, -Location.Y);
 
         centre *= _draw.Focus / Location.Z;
-        centre += _draw.Centre;
+        centre += _draw.Layout.Centre;
 
         float radius = 6291456 / Location.Length() * (_draw.Focus / 256);
 
-        if (centre.X + radius < _draw.Left ||
-            centre.X - radius > _draw.Right ||
-            centre.Y + radius < _draw.Top ||
-            centre.Y - radius > _draw.Bottom)
+        if (centre.X + radius < _draw.Layout.Left ||
+            centre.X - radius > _draw.Layout.Right ||
+            centre.Y + radius < _draw.Layout.Top ||
+            centre.Y - radius > _draw.Layout.Bottom)
         {
             return;
         }
@@ -105,6 +90,13 @@ internal sealed class GradientSun : IObject
         }
     }
 
+    /// <summary>
+    /// The colour for a pixel at the given squared distance from the centre,
+    /// against the three squared band radii. <paramref name="dither"/> is the
+    /// parity used to mix the outermost band.
+    /// </summary>
+    protected abstract uint SunColor(float distance, float inner, float inner2, float outer, int dither);
+
     private void RenderSunLine(Vector2 centre, float x, float y, float radius)
     {
         Vector2 s = new()
@@ -112,7 +104,7 @@ internal sealed class GradientSun : IObject
             Y = centre.Y + y,
         };
 
-        if (s.Y < _draw.Top || s.Y > _draw.Bottom)
+        if (s.Y < _draw.Layout.Top || s.Y > _draw.Layout.Bottom)
         {
             return;
         }
@@ -123,19 +115,19 @@ internal sealed class GradientSun : IObject
         s.X -= radius * _rng.Random(2, 10) / 256f;
         ex += radius * _rng.Random(2, 10) / 256f;
 
-        if (ex < _draw.Left || s.X > _draw.Right)
+        if (ex < _draw.Layout.Left || s.X > _draw.Layout.Right)
         {
             return;
         }
 
-        if (s.X < _draw.Left)
+        if (s.X < _draw.Layout.Left)
         {
-            s.X = _draw.Left;
+            s.X = _draw.Layout.Left;
         }
 
-        if (ex > _draw.Right)
+        if (ex > _draw.Layout.Right)
         {
-            ex = _draw.Right;
+            ex = _draw.Layout.Right;
         }
 
         float inner = radius * (200 + _rng.Random(8)) / 256;
@@ -157,15 +149,4 @@ internal sealed class GradientSun : IObject
             _draw.Graphics.DrawPixel(s, SunColor(distance, inner, inner2, outer, (int)s.X ^ (int)y));
         }
     }
-
-    // The sun's banding: white at the core, then yellow and orange rings, with
-    // the outermost band dithered between two oranges.
-    private uint SunColor(float distance, float inner, float inner2, float outer, int dither)
-        => distance < inner
-            ? _colorWhite
-            : distance < inner2
-                ? _colorLightYellow
-                : distance < outer
-                    ? _colorLightOrange
-                    : dither.IsOdd() ? _colorOrange : _colorDarkOrange;
 }

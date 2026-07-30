@@ -46,11 +46,12 @@ public sealed class EliteMain : IGame, IGameApp
 
     private readonly AudioController _audio;
     private readonly Combat _combat;
+    private readonly IBaseView _baseView;
     private readonly IEliteDraw _draw;
     private readonly List<long> _framesDrawn = [];
     private readonly Pilot _pilot;
     private readonly SaveFile _save;
-    private readonly Scanner _scanner;
+    private readonly ScannerBase _scanner;
     private readonly PlayerShip _ship;
     private readonly Space _space;
     private readonly Stars _stars;
@@ -61,13 +62,14 @@ public sealed class EliteMain : IGame, IGameApp
         GameState gameState,
         PlayerShip ship,
         IEliteDraw draw,
+        IBaseView baseView,
         Universe universe,
         Stars stars,
         Pilot pilot,
         Combat combat,
         SaveFile save,
         Space space,
-        Scanner scanner,
+        ScannerBase scanner,
         AudioController audio)
     {
         ArgumentNullException.ThrowIfNull(abstraction);
@@ -90,6 +92,7 @@ public sealed class EliteMain : IGame, IGameApp
         State = gameState;
         _ship = ship;
         _draw = draw;
+        _baseView = baseView;
         _colorText = _draw.Palette["White"];
         _universe = universe;
         _stars = stars;
@@ -140,7 +143,7 @@ public sealed class EliteMain : IGame, IGameApp
 
         _draw.SetFullScreenClipRegion();
         _graphics.Clear();
-        _draw.DrawBorder();
+        _baseView.DrawBorder();
         _draw.SetViewClipRegion();
 
         if (_ship.Energy < 0)
@@ -204,7 +207,7 @@ public sealed class EliteMain : IGame, IGameApp
 
     private void DrawFps()
         => _graphics.DrawTextLeft(
-            new(_draw.Right - 65, _draw.Top + 3),
+            new(_draw.Layout.Right - 65, _draw.Layout.Top + 3),
             $"FPS: {_framesDrawn.Count}",
             nameof(FontType.Small),
             _colorText);
@@ -219,12 +222,12 @@ public sealed class EliteMain : IGame, IGameApp
 
         if (State.MessageCount > 0)
         {
-            _graphics.DrawTextCentre(_draw.ScannerTop - 40, State.MessageString, nameof(FontType.Small), _colorText);
+            _graphics.DrawTextCentre(_draw.Layout.ScannerTop - 40, State.MessageString, nameof(FontType.Small), _colorText);
         }
 
         if (_space.IsHyperspaceReady)
         {
-            _draw.DrawHyperspaceCountdown(_space.HyperCountdown);
+            _baseView.DrawHyperspaceCountdown(_space.HyperCountdown);
             if ((State.MCount & 3) == 0)
             {
                 _space.CountdownHyperspace();

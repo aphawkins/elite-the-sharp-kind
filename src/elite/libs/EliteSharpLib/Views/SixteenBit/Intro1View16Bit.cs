@@ -10,7 +10,7 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// The 16-bit title screen: the 512-space layout, and nothing else. The
 /// rolling Cobra behind it is drawn by the universe, not here.
 /// </summary>
-internal sealed class Intro1View16Bit : IView<Intro1Model>
+internal sealed class Intro1View16Bit : BaseView16Bit, IView<Intro1Model>
 {
     // The credits stack upwards from the prompt, one line every 20px.
     private const float CreditSpacing = 20;
@@ -20,6 +20,7 @@ internal sealed class Intro1View16Bit : IView<Intro1Model>
     private readonly uint _colorWhite;
 
     internal Intro1View16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _draw = draw;
 
@@ -31,15 +32,15 @@ internal sealed class Intro1View16Bit : IView<Intro1Model>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Top + 10);
+        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.Top + 10);
 
-        float y = _draw.ScannerTop - 90;
+        float y = _draw.Layout.ScannerTop - 90;
         foreach (string credit in model.Credits)
         {
             _draw.Graphics.DrawTextCentre(y, credit, nameof(FontType.Small), _colorWhite);
             y += CreditSpacing;
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.ScannerTop - 30, model.Prompt, nameof(FontType.Large), _colorGold);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 30, model.Prompt, nameof(FontType.Large), _colorGold);
     }
 }

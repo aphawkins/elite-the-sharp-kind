@@ -20,7 +20,7 @@ public class SunBenchmarks : IDisposable
     private const int ScreenHeight = 512;
     private readonly SoftwareGraphics _graphics;
     private readonly SolidSun _solidSun;
-    private readonly GradientSun _gradientSun;
+    private readonly GradientSun16Bit _gradientSun;
     private bool _disposedValue;
 
     public SunBenchmarks()
