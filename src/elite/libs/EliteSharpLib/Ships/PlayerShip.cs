@@ -20,6 +20,12 @@ internal sealed class PlayerShip
     internal const float AltitudeMin = 0;
 
     /// <summary>
+    /// The cabin temperature the ship sits at away from a sun - the original's
+    /// 30 out of 255.
+    /// </summary>
+    internal const float AmbientTemperature = 30 * TemperatureStep;
+
+    /// <summary>
     /// One unit of the original's 0-255 altitude scale, expressed as a fraction
     /// of <see cref="AltitudeMax"/>. Space measures the planet's distance in
     /// those units, so it scales the result by this.
@@ -36,6 +42,19 @@ internal sealed class PlayerShip
     internal const float EnergyMin = 0;
 
     /// <summary>
+    /// One unit of the original's 0-255 energy counter, expressed as a fraction
+    /// of the banks' capacity. Keeps the regeneration and drain rates unchanged
+    /// now that <see cref="Energy"/> is a fraction rather than a raw count.
+    /// </summary>
+    internal const float EnergyStep = 1f / 256f;
+
+    /// <summary>
+    /// The cabin temperature at which the fuel scoop starts collecting - the
+    /// original's 224 out of 255.
+    /// </summary>
+    internal const float ScoopTemperature = 224 * TemperatureStep;
+
+    /// <summary>
     /// The bounds of <see cref="ShieldFront"/> and <see cref="ShieldRear"/>:
     /// <see cref="ShieldMin"/> is a collapsed shield, <see cref="ShieldMax"/>
     /// a fully charged one.
@@ -46,11 +65,19 @@ internal sealed class PlayerShip
     internal const float ShieldMin = 0;
 
     /// <summary>
-    /// One unit of the original's 0-255 energy counter, expressed as a fraction
-    /// of the banks' capacity. Keeps the regeneration and drain rates unchanged
-    /// now that <see cref="Energy"/> is a fraction rather than a raw count.
+    /// The bounds of <see cref="CabinTemperature"/>. Reaching
+    /// <see cref="TemperatureMax"/> is a burn-up.
     /// </summary>
-    private const float EnergyStep = 1f / 256f;
+    internal const float TemperatureMax = 1;
+
+    /// <inheritdoc cref="TemperatureMax"/>
+    internal const float TemperatureMin = 0;
+
+    /// <summary>
+    /// One unit of the original's 0-255 cabin temperature, expressed as a
+    /// fraction of <see cref="TemperatureMax"/>.
+    /// </summary>
+    internal const float TemperatureStep = 1f / 256f;
 
     /// <summary>
     /// The level below which <see cref="IsEnergyLow"/> warns the commander -
@@ -74,6 +101,10 @@ internal sealed class PlayerShip
     /// </summary>
     internal float Altitude { get; set; }
 
+    /// <summary>
+    /// Gets or sets the cabin temperature, between
+    /// <see cref="TemperatureMin"/> and <see cref="TemperatureMax"/>.
+    /// </summary>
     internal float CabinTemperature { get; set; }
 
     internal int CargoCapacity { get; set; }
@@ -248,7 +279,7 @@ internal sealed class PlayerShip
     internal void Reset()
     {
         Altitude = AltitudeMax;
-        CabinTemperature = 30;
+        CabinTemperature = AmbientTemperature;
         Roll = 0;
         Climb = 0;
         Speed = 0;

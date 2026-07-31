@@ -11,6 +11,31 @@ namespace EliteSharpLib;
 
 internal sealed class GameState
 {
+    /// <summary>
+    /// The bounds of <see cref="LaserTemp"/>.
+    /// </summary>
+    internal const float LaserTempMax = 1;
+
+    /// <inheritdoc cref="LaserTempMax"/>
+    internal const float LaserTempMin = 0;
+
+    /// <summary>
+    /// One unit of the original's 0-255 laser temperature, expressed as a
+    /// fraction of <see cref="LaserTempMax"/>.
+    /// </summary>
+    internal const float LaserTempStep = 1f / 256f;
+
+    /// <summary>
+    /// The heat a single shot adds - the original's 8 out of 255.
+    /// </summary>
+    internal const float LaserTempPerShot = 8 * LaserTempStep;
+
+    /// <summary>
+    /// The temperature at or above which the laser is too hot to fire - the
+    /// original's 242 out of 255.
+    /// </summary>
+    internal const float LaserTempOverheated = 242 * LaserTempStep;
+
     private readonly ScreenManager<Screen, IScreenController> _views;
 
     internal GameState(ScreenManager<Screen, IScreenController> views) => _views = views;
@@ -49,6 +74,10 @@ internal sealed class GameState
 
     internal bool IsInitialised { get; set; }
 
+    /// <summary>
+    /// Gets or sets the laser temperature, between <see cref="LaserTempMin"/>
+    /// and <see cref="LaserTempMax"/>.
+    /// </summary>
     internal float LaserTemp { get; set; }
 
     internal int MCount { get; set; }

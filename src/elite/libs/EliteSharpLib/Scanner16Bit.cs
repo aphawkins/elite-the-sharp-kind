@@ -47,6 +47,10 @@ internal sealed class Scanner16Bit : ScannerBase
 
     protected override float DialBarWidth => 64;
 
+    protected override float IndicatorTravel => 28;
+
+    protected override int IndicatorWidth => 4;
+
     protected override Vector2 ShieldFrontPosition => new(31, 7);
 
     protected override Vector2 ShieldRearPosition => new(31, 23);

@@ -114,9 +114,9 @@ internal sealed class Combat
         _laserType = LaserType.None;
         _gameState.DrawLasers = false;
 
-        if (_gameState.LaserTemp > 0)
+        if (_gameState.LaserTemp > GameState.LaserTempMin)
         {
-            _gameState.LaserTemp--;
+            _gameState.LaserTemp = Math.Max(_gameState.LaserTemp - GameState.LaserTempStep, GameState.LaserTempMin);
         }
 
         _laserCounter = Math.Clamp(_laserCounter - 2, 0, _laserCounter);
@@ -165,7 +165,7 @@ internal sealed class Combat
         if (_gameState.IsDocked ||
             _gameState.DrawLasers ||
             _laserCounter != 0 ||
-            _gameState.LaserTemp >= 242)
+            _gameState.LaserTemp >= GameState.LaserTempOverheated)
         {
             return false;
         }
@@ -197,10 +197,10 @@ internal sealed class Combat
         _laserStrength &= 127;
 
         _audio.PlayEffect(nameof(SoundEffect.Pulse));
-        _gameState.LaserTemp += 8;
-        if (_ship.Energy > 1)
+        _gameState.LaserTemp += GameState.LaserTempPerShot;
+        if (_ship.Energy > PlayerShip.EnergyStep)
         {
-            _ship.Energy--;
+            _ship.DecreaseEnergy(-1);
         }
 
         return true;
@@ -313,7 +313,7 @@ internal sealed class Combat
 
     internal void ResetWeapons()
     {
-        _gameState.LaserTemp = 0;
+        _gameState.LaserTemp = GameState.LaserTempMin;
         _laserCounter = 0;
         _laserStrength = 0;
         _laserType = LaserType.None;

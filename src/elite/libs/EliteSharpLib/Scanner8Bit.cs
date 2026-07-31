@@ -41,6 +41,10 @@ internal sealed class Scanner8Bit : ScannerBase
 
     protected override float DialBarWidth => 32;
 
+    protected override float IndicatorTravel => 14;
+
+    protected override int IndicatorWidth => 2;
+
     protected override Vector2 ShieldFrontPosition => new(18, 3);
 
     protected override Vector2 ShieldRearPosition => new(18, 11);
@@ -59,9 +63,11 @@ internal sealed class Scanner8Bit : ScannerBase
 
     protected override Vector2 SpeedPosition => new(270, 2);
 
-    protected override Vector2 RollPosition => new(253, 9);
+    // Left-aligned with the speed and energy dials: the indicators centre on
+    // half a dial's width in, which used to be baked in as a fixed 32.
+    protected override Vector2 RollPosition => new(270, 9);
 
-    protected override Vector2 ClimbPosition => new(253, 18);
+    protected override Vector2 ClimbPosition => new(270, 18);
 
     protected override Vector2 CompassPosition => new(250, 12);
 

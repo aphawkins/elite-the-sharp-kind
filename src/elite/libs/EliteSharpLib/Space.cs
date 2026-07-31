@@ -316,7 +316,7 @@ internal sealed class Space
 
     internal void UpdateCabinTemp()
     {
-        _ship.CabinTemperature = 30;
+        _ship.CabinTemperature = PlayerShip.AmbientTemperature;
 
         if (_gameState.InWitchspace)
         {
@@ -346,25 +346,27 @@ internal sealed class Space
         vec /= 256;
         vec *= vec;
 
-        float dist = (vec.X + vec.Y + vec.Z) / 256;
+        // The original truncated the distance to whole units before flipping
+        // it, so the quantisation is kept here.
+        float dist = (int)((vec.X + vec.Y + vec.Z) / 256) * PlayerShip.TemperatureStep;
 
-        if (dist > 255)
+        if (dist >= PlayerShip.TemperatureMax)
         {
             return;
         }
 
-        dist = (int)dist ^ 255;
+        // Close to the sun reads hot, so the temperature is the inverse of the
+        // distance, sitting on top of the ambient reading.
+        _ship.CabinTemperature = PlayerShip.TemperatureMax - dist + PlayerShip.AmbientTemperature;
 
-        _ship.CabinTemperature = dist + 30;
-
-        if (_ship.CabinTemperature > 255)
+        if (_ship.CabinTemperature > PlayerShip.TemperatureMax)
         {
-            _ship.CabinTemperature = 255;
+            _ship.CabinTemperature = PlayerShip.TemperatureMax;
             _gameState.GameOver();
             return;
         }
 
-        if ((_ship.CabinTemperature < 224) || (!_ship.HasFuelScoop))
+        if ((_ship.CabinTemperature < PlayerShip.ScoopTemperature) || (!_ship.HasFuelScoop))
         {
             return;
         }

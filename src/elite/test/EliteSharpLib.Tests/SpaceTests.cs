@@ -72,7 +72,7 @@ public class SpaceTests
         Space space = CreateSpace(
             out GameState gameState, out _, out PlayerShip ship, out _, out _, out _, out _, out _);
         gameState.IsDocked = false;
-        gameState.LaserTemp = 5;
+        gameState.LaserTemp = 5 * GameState.LaserTempStep;
         ship.Speed = 12;
         ship.EcmActive = 3;
 
@@ -80,7 +80,7 @@ public class SpaceTests
 
         Assert.True(gameState.IsDocked);
         Assert.Equal(0, ship.Speed);
-        Assert.Equal(0, gameState.LaserTemp);
+        Assert.Equal(GameState.LaserTempMin, gameState.LaserTemp);
         Assert.Equal(0, ship.EcmActive);
     }
 
@@ -319,7 +319,7 @@ public class SpaceTests
 
         space.UpdateCabinTemp();
 
-        Assert.Equal(30, ship.CabinTemperature);
+        Assert.Equal(PlayerShip.AmbientTemperature, ship.CabinTemperature);
     }
 
     [Fact]
@@ -332,13 +332,13 @@ public class SpaceTests
 
         space.UpdateCabinTemp();
 
-        Assert.Equal(30, ship.CabinTemperature);
+        Assert.Equal(PlayerShip.AmbientTemperature, ship.CabinTemperature);
     }
 
     [Fact]
     public void UpdateCabinTempComputesTemperatureNearSun()
     {
-        // Z=64000 -> dist = (64000/256)^2 / 256 = 244.14, (int)244 ^ 255 = 11.
+        // Z=64000 -> dist = (64000/256)^2 / 256 = 244.14, inverted to 256-244 = 12.
         Space space = CreateSpace(
             out _, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
         IShip sun = new FakeShip(draw, rng) { Type = ShipType.Sun };
@@ -346,14 +346,14 @@ public class SpaceTests
 
         space.UpdateCabinTemp();
 
-        Assert.Equal(41, ship.CabinTemperature);
+        Assert.Equal((12 * PlayerShip.TemperatureStep) + PlayerShip.AmbientTemperature, ship.CabinTemperature);
     }
 
     [Fact]
     public void UpdateCabinTempActivatesFuelScoopWhenHotAndEquipped()
     {
-        // Z=28672 -> dist = (112)^2 / 256 = 49 exactly, (int)49 ^ 255 = 206,
-        // landing the cabin temperature in the fuel-scoop band (>=224, <255).
+        // Z=28672 -> dist = (112)^2 / 256 = 49 exactly, inverted to 256-49 = 207,
+        // landing the cabin temperature in the fuel-scoop band (>=224, <256).
         Space space = CreateSpace(
             out GameState gameState, out Universe universe, out PlayerShip ship, out _, out _, out FakeEliteDraw draw, out RNG rng, out _);
         IShip sun = new FakeShip(draw, rng) { Type = ShipType.Sun };
@@ -364,7 +364,7 @@ public class SpaceTests
 
         space.UpdateCabinTemp();
 
-        Assert.Equal(236, ship.CabinTemperature);
+        Assert.Equal((207 * PlayerShip.TemperatureStep) + PlayerShip.AmbientTemperature, ship.CabinTemperature);
         Assert.Equal(5, ship.Fuel);
         Assert.Equal("Fuel Scoop On", gameState.MessageString);
     }
@@ -381,7 +381,7 @@ public class SpaceTests
 
         space.UpdateCabinTemp();
 
-        Assert.Equal(236, ship.CabinTemperature);
+        Assert.Equal((207 * PlayerShip.TemperatureStep) + PlayerShip.AmbientTemperature, ship.CabinTemperature);
         Assert.Equal(0, ship.Fuel);
     }
 
@@ -395,7 +395,7 @@ public class SpaceTests
 
         space.UpdateCabinTemp();
 
-        Assert.Equal(255, ship.CabinTemperature);
+        Assert.Equal(PlayerShip.TemperatureMax, ship.CabinTemperature);
         Assert.True(gameState.IsGameOver);
     }
 

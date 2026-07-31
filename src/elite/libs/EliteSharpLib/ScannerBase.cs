@@ -55,6 +55,17 @@ internal abstract class ScannerBase(
     /// </summary>
     protected abstract float DialBarWidth { get; }
 
+    /// <summary>
+    /// Gets how far in pixels the roll and climb indicators travel either side
+    /// of their dial's centre.
+    /// </summary>
+    protected abstract float IndicatorTravel { get; }
+
+    /// <summary>
+    /// Gets the thickness in pixels of the roll and climb indicators.
+    /// </summary>
+    protected abstract int IndicatorWidth { get; }
+
     protected abstract Vector2 ShieldFrontPosition { get; }
 
     protected abstract Vector2 ShieldRearPosition { get; }
@@ -166,9 +177,9 @@ internal abstract class ScannerBase(
 
     private void DisplayCabinTemp()
     {
-        if (_ship.CabinTemperature > 3)
+        if (_ship.CabinTemperature > PlayerShip.TemperatureMin)
         {
-            DisplayDialBar(_ship.CabinTemperature / 4, CabinTempPosition);
+            DisplayDialBar(_ship.CabinTemperature * DialBarWidth, CabinTempPosition);
         }
     }
 
@@ -218,38 +229,48 @@ internal abstract class ScannerBase(
     private void DisplayFlightClimb()
     {
         Vector2 origin = ScannerRelative(ClimbPosition);
-        float position = origin.X + (_ship.Climb * 28 / _ship.MaxClimb) + 32;
-
-        for (int i = 0; i < 4; i++)
-        {
-            Draw.Graphics.DrawLine(new(position + i, origin.Y), new(position + i, origin.Y + 7), DialTopColor);
-        }
+        DisplayIndicator(_ship.Climb / _ship.MaxClimb, origin);
     }
 
     private void DisplayFlightRoll()
     {
         Vector2 origin = ScannerRelative(RollPosition);
-        float position = origin.X - (_ship.Roll * 28 / _ship.MaxRoll) + 32;
 
-        for (int i = 0; i < 4; i++)
+        // Roll reads the other way round: a roll to starboard slides left.
+        DisplayIndicator(-_ship.Roll / _ship.MaxRoll, origin);
+    }
+
+    /// <summary>
+    /// Draw the roll or climb indicator: a short vertical block sliding either
+    /// side of its dial's centre.
+    /// </summary>
+    /// <param name="offset">How far from centre, between -1 and 1.</param>
+    /// <param name="origin">The dial's left-hand end, in screen coordinates.</param>
+    private void DisplayIndicator(float offset, Vector2 origin)
+    {
+        float x = origin.X + (DialBarWidth / 2) + (offset * IndicatorTravel);
+
+        for (int i = 0; i < IndicatorWidth; i++)
         {
-            Draw.Graphics.DrawLine(new(position + i, origin.Y), new(position + i, origin.Y + 7), DialTopColor);
+            Draw.Graphics.DrawLine(new(x + i, origin.Y), new(x + i, origin.Y + DialBarHeight - 1), DialTopColor);
         }
     }
 
     private void DisplayFuel()
     {
+        // Fuel is a real quantity in light years rather than a 0-to-1 reading,
+        // so the dial takes its fraction of a full tank.
         if (_ship.Fuel > 0)
         {
-            DisplayDialBar(_ship.Fuel * 64 / _ship.MaxFuel, FuelPosition);
+            DisplayDialBar(_ship.Fuel / _ship.MaxFuel * DialBarWidth, FuelPosition);
         }
     }
 
     private void DisplayLaserTemp()
     {
-        if (_gameState.LaserTemp > 0)
+        if (_gameState.LaserTemp > GameState.LaserTempMin)
         {
-            DisplayDialBar(_gameState.LaserTemp / 4, LaserTempPosition);
+            DisplayDialBar(_gameState.LaserTemp * DialBarWidth, LaserTempPosition);
         }
     }
 
@@ -301,12 +322,12 @@ internal abstract class ScannerBase(
     private void DisplaySpeed()
     {
         Vector2 origin = ScannerRelative(SpeedPosition);
-        float length = (_ship.Speed * 64 / _ship.MaxSpeed) - 1;
+        float length = _ship.Speed / _ship.MaxSpeed * DialBarWidth;
         FastColor color = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? SpeedWarningColor : DialTopColor;
 
         for (int i = 0; i < 6; i++)
         {
-            Draw.Graphics.DrawLine(new(origin.X, origin.Y + i), new(origin.X + length, origin.Y + i), color);
+            Draw.Graphics.DrawLine(new(origin.X, origin.Y + i), new(origin.X + length - 1, origin.Y + i), color);
         }
     }
 
