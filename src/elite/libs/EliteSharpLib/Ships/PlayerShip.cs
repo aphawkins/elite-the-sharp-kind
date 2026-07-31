@@ -10,8 +10,68 @@ namespace EliteSharpLib.Ships;
 
 internal sealed class PlayerShip
 {
+    /// <summary>
+    /// The bounds of <see cref="Altitude"/>: <see cref="AltitudeMin"/> is a
+    /// crash, <see cref="AltitudeMax"/> is as high as the dial reads.
+    /// </summary>
+    internal const float AltitudeMax = 1;
+
+    /// <inheritdoc cref="AltitudeMax"/>
+    internal const float AltitudeMin = 0;
+
+    /// <summary>
+    /// One unit of the original's 0-255 altitude scale, expressed as a fraction
+    /// of <see cref="AltitudeMax"/>. Space measures the planet's distance in
+    /// those units, so it scales the result by this.
+    /// </summary>
+    internal const float AltitudeStep = 1f / 256f;
+
+    /// <summary>
+    /// The bounds of <see cref="Energy"/>: <see cref="EnergyMin"/> is empty
+    /// banks, <see cref="EnergyMax"/> is full ones.
+    /// </summary>
+    internal const float EnergyMax = 1;
+
+    /// <inheritdoc cref="EnergyMax"/>
+    internal const float EnergyMin = 0;
+
+    /// <summary>
+    /// The bounds of <see cref="ShieldFront"/> and <see cref="ShieldRear"/>:
+    /// <see cref="ShieldMin"/> is a collapsed shield, <see cref="ShieldMax"/>
+    /// a fully charged one.
+    /// </summary>
+    internal const float ShieldMax = 1;
+
+    /// <inheritdoc cref="ShieldMax"/>
+    internal const float ShieldMin = 0;
+
+    /// <summary>
+    /// One unit of the original's 0-255 energy counter, expressed as a fraction
+    /// of the banks' capacity. Keeps the regeneration and drain rates unchanged
+    /// now that <see cref="Energy"/> is a fraction rather than a raw count.
+    /// </summary>
+    private const float EnergyStep = 1f / 256f;
+
+    /// <summary>
+    /// The level below which <see cref="IsEnergyLow"/> warns the commander -
+    /// the original's 50 out of 255.
+    /// </summary>
+    private const float LowEnergy = 50 * EnergyStep;
+
+    /// <summary>
+    /// One unit of the original's 0-255 shield strength, expressed as a
+    /// fraction of a shield's capacity. Keeps the regeneration rate and the
+    /// damage laser strengths are quoted in unchanged now that
+    /// <see cref="ShieldFront"/> and <see cref="ShieldRear"/> are fractions.
+    /// </summary>
+    private const float ShieldStep = 1f / 256f;
+
     internal PlayerShip() => Reset();
 
+    /// <summary>
+    /// Gets or sets the height above the planet, between
+    /// <see cref="AltitudeMin"/> and <see cref="AltitudeMax"/>.
+    /// </summary>
     internal float Altitude { get; set; }
 
     internal float CabinTemperature { get; set; }
@@ -22,6 +82,11 @@ internal sealed class PlayerShip
 
     internal int EcmActive { get; set; }
 
+    /// <summary>
+    /// Gets or sets the energy banks, between <see cref="EnergyMin"/> and
+    /// <see cref="EnergyMax"/>. It goes briefly below the minimum when a hit
+    /// empties the banks, which is what ends the game.
+    /// </summary>
     internal float Energy { get; set; }
 
     internal EnergyUnit EnergyUnit { get; set; }
@@ -65,8 +130,16 @@ internal sealed class PlayerShip
 
     internal float Roll { get; set; }
 
+    /// <summary>
+    /// Gets or sets the forward shield, between <see cref="ShieldMin"/> and
+    /// <see cref="ShieldMax"/>.
+    /// </summary>
     internal float ShieldFront { get; set; }
 
+    /// <summary>
+    /// Gets or sets the aft shield, between <see cref="ShieldMin"/> and
+    /// <see cref="ShieldMax"/>.
+    /// </summary>
     internal float ShieldRear { get; set; }
 
     internal float Speed { get; set; }
@@ -74,7 +147,7 @@ internal sealed class PlayerShip
     /// <summary>
     /// Deplete the shields.  Drain the energy banks if the shields fail.
     /// </summary>
-    /// <param name="damage">Amount of damage.</param>
+    /// <param name="damage">Amount of damage, in the original's 0-255 units.</param>
     /// <param name="front">True if front, false if rear.</param>
     internal void DamageShip(float damage, bool front)
     {
@@ -82,11 +155,13 @@ internal sealed class PlayerShip
 
         float shield = front ? ShieldFront : ShieldRear;
 
-        shield -= damage;
-        if (shield < 0)
+        shield -= damage * ShieldStep;
+        if (shield < ShieldMin)
         {
-            DecreaseEnergy(shield);
-            shield = 0;
+            // Shields and banks are on the same scale, so whatever the shield
+            // couldn't absorb carries straight over as a fraction.
+            Energy += shield;
+            shield = ShieldMin;
         }
 
         if (front)
@@ -101,7 +176,11 @@ internal sealed class PlayerShip
 
     internal void DecreaseClimb() => Climb = Math.Clamp(Climb - 1, -MaxClimb, MaxClimb);
 
-    internal void DecreaseEnergy(float amount) => Energy += amount;
+    /// <summary>
+    /// Drain the energy banks. The amount is in the original's 0-255 units, so
+    /// it is scaled down to the fraction <see cref="Energy"/> holds.
+    /// </summary>
+    internal void DecreaseEnergy(float amount) => Energy += amount * EnergyStep;
 
     internal void DecreaseRoll() => Roll = Math.Clamp(Roll - 1, -MaxRoll, MaxRoll);
 
@@ -113,7 +192,7 @@ internal sealed class PlayerShip
 
     internal void IncreaseSpeed() => Speed = Math.Clamp(Speed + 1, 0, MaxSpeed);
 
-    internal bool IsEnergyLow() => Energy < 50;
+    internal bool IsEnergyLow() => Energy < LowEnergy;
 
     internal void LevelOut()
     {
@@ -147,33 +226,34 @@ internal sealed class PlayerShip
     /// </summary>
     internal void RegenerateShields()
     {
-        if (Energy > 127)
+        // The banks only feed the shields while they are over half full.
+        if (Energy > EnergyMax / 2)
         {
-            if (ShieldFront < 255)
+            if (ShieldFront < ShieldMax)
             {
-                ShieldFront++;
-                Energy = Math.Clamp(Energy - 1, 0, 255);
+                ShieldFront = Math.Min(ShieldFront + ShieldStep, ShieldMax);
+                Energy = Math.Clamp(Energy - EnergyStep, EnergyMin, EnergyMax);
             }
 
-            if (ShieldRear < 255)
+            if (ShieldRear < ShieldMax)
             {
-                ShieldRear++;
-                Energy = Math.Clamp(Energy - 1, 0, 255);
+                ShieldRear = Math.Min(ShieldRear + ShieldStep, ShieldMax);
+                Energy = Math.Clamp(Energy - EnergyStep, EnergyMin, EnergyMax);
             }
         }
 
-        Energy = Math.Clamp(Energy + 1 + (int)EnergyUnit, 0, 255);
+        Energy = Math.Clamp(Energy + ((1 + (int)EnergyUnit) * EnergyStep), EnergyMin, EnergyMax);
     }
 
     internal void Reset()
     {
-        Altitude = 255;
+        Altitude = AltitudeMax;
         CabinTemperature = 30;
         Roll = 0;
         Climb = 0;
         Speed = 0;
-        Energy = 255;
-        ShieldFront = 255;
-        ShieldRear = 255;
+        Energy = EnergyMax;
+        ShieldFront = ShieldMax;
+        ShieldRear = ShieldMax;
     }
 }

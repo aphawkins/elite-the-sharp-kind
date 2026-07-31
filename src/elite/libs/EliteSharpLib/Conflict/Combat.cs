@@ -714,8 +714,8 @@ internal sealed class Combat
         {
             _ship.DamageShip(ship.LaserStrength, ship.Location.Z >= 0.0);
             ship.Acceleration--;
-            if ((ship.Location.Z >= 0.0 && (int)_ship.ShieldFront == 0) ||
-                (ship.Location.Z < 0.0 && (int)_ship.ShieldRear == 0))
+            if ((ship.Location.Z >= 0.0 && _ship.ShieldFront <= PlayerShip.ShieldMin) ||
+                (ship.Location.Z < 0.0 && _ship.ShieldRear <= PlayerShip.ShieldMin))
             {
                 _audio.PlayEffect(nameof(SoundEffect.IncomingFire2));
             }

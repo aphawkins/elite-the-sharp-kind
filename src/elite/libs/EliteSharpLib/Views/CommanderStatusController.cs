@@ -127,7 +127,7 @@ internal sealed class CommanderStatusController : IScreenController
             }
         }
 
-        if (condition == 2 && _ship.Energy < 128)
+        if (condition == 2 && _ship.Energy < PlayerShip.EnergyMax / 2)
         {
             condition = 3;
         }

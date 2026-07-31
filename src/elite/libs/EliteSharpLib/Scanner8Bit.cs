@@ -39,37 +39,39 @@ internal sealed class Scanner8Bit : ScannerBase
 
     protected override int DialBarHeight => 4;
 
-    protected override Vector2 ShieldFrontPosition => new(20, 4);
+    protected override float DialBarWidth => 32;
 
-    protected override Vector2 ShieldRearPosition => new(20, 12);
+    protected override Vector2 ShieldFrontPosition => new(18, 3);
 
-    protected override Vector2 FuelPosition => new(20, 22);
+    protected override Vector2 ShieldRearPosition => new(18, 11);
 
-    protected override Vector2 CabinTempPosition => new(20, 30);
+    protected override Vector2 FuelPosition => new(18, 18);
 
-    protected override Vector2 LaserTempPosition => new(20, 38);
+    protected override Vector2 CabinTempPosition => new(18, 26);
 
-    protected override Vector2 AltitudePosition => new(20, 46);
+    protected override Vector2 LaserTempPosition => new(18, 33);
 
-    protected override Vector2 EnergyPosition => new(260, 30);
+    protected override Vector2 AltitudePosition => new(18, 42);
+
+    protected override Vector2 EnergyPosition => new(270, 27);
 
     protected override float EnergyBankSpacing => 8;
 
-    protected override Vector2 SpeedPosition => new(260, 4);
+    protected override Vector2 SpeedPosition => new(270, 2);
 
-    protected override Vector2 RollPosition => new(260, 12);
+    protected override Vector2 RollPosition => new(253, 9);
 
-    protected override Vector2 ClimbPosition => new(260, 20);
+    protected override Vector2 ClimbPosition => new(253, 18);
 
-    protected override Vector2 CompassPosition => new(239, 11);
+    protected override Vector2 CompassPosition => new(250, 12);
 
     protected override float CompassRadius => 8;
 
-    protected override Vector2 MissilePosition => new(22, 48);
+    protected override Vector2 MissilePosition => new(18, 49);
 
     protected override float MissileSpacing => 8;
 
-    protected override Vector2 StationIndicatorPosition => new(242, 46);
+    protected override Vector2 StationIndicatorPosition => new(255, 35);
 
     protected override Vector2 EcmIndicatorPosition => new(72, 46);
 

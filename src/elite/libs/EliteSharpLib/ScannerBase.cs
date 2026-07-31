@@ -49,6 +49,12 @@ internal abstract class ScannerBase(
     /// </summary>
     protected abstract int DialBarHeight { get; }
 
+    /// <summary>
+    /// Gets the length in pixels of a full dial bar, which is what a dial's
+    /// 0-to-1 reading is scaled by.
+    /// </summary>
+    protected abstract float DialBarWidth { get; }
+
     protected abstract Vector2 ShieldFrontPosition { get; }
 
     protected abstract Vector2 ShieldRearPosition { get; }
@@ -152,9 +158,9 @@ internal abstract class ScannerBase(
 
     private void DisplayAltitude()
     {
-        if (_ship.Altitude > 3)
+        if (_ship.Altitude > PlayerShip.AltitudeMin)
         {
-            DisplayDialBar(_ship.Altitude / 4, AltitudePosition);
+            DisplayDialBar(_ship.Altitude * DialBarWidth, AltitudePosition);
         }
     }
 
@@ -176,47 +182,36 @@ internal abstract class ScannerBase(
         float y = origin.Y;
         int last = DialBarHeight - 1;
 
-        Draw.Graphics.DrawLine(new(x, y), new(x + len, y), DialTopColor);
+        Draw.Graphics.DrawLine(new(x, y), new(x + len - 1, y), DialTopColor);
         int i = 1;
-        Draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), DialTopColor);
+        Draw.Graphics.DrawLine(new(x, y + i), new(x + len - 1, y + i), DialTopColor);
 
         for (i = 2; i < last; i++)
         {
-            Draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), DialBodyColor);
+            Draw.Graphics.DrawLine(new(x, y + i), new(x + len - 1, y + i), DialBodyColor);
         }
 
-        Draw.Graphics.DrawLine(new(x, y + i), new(x + len, y + i), DialBottomColor);
+        Draw.Graphics.DrawLine(new(x, y + i), new(x + len - 1, y + i), DialBottomColor);
     }
 
     /// <summary>
-    /// Display the energy banks.
+    /// Display the energy banks. The ship's energy is a single fraction of
+    /// maximum, split across four banks that fill from the bottom one up.
     /// </summary>
     private void DisplayEnergy()
     {
-        float e1 = _ship.Energy > 64 ? 64 : _ship.Energy;
-        float e2 = _ship.Energy > 128 ? 64 : _ship.Energy - 64;
-        float e3 = _ship.Energy > 192 ? 64 : _ship.Energy - 128;
-        float e4 = _ship.Energy - 192;
+        const int bankCount = 4;
         Vector2 bank = EnergyPosition;
 
-        if (e4 > 0)
+        for (int i = 0; i < bankCount; i++)
         {
-            DisplayDialBar(e4, bank);
-        }
+            // Bank 0 is the topmost, so it holds the last quarter to fill.
+            float fill = Math.Clamp((_ship.Energy * bankCount) - (bankCount - 1 - i), 0, 1);
 
-        if (e3 > 0)
-        {
-            DisplayDialBar(e3, bank with { Y = bank.Y + EnergyBankSpacing });
-        }
-
-        if (e2 > 0)
-        {
-            DisplayDialBar(e2, bank with { Y = bank.Y + (2 * EnergyBankSpacing) });
-        }
-
-        if (e1 > 0)
-        {
-            DisplayDialBar(e1, bank with { Y = bank.Y + (3 * EnergyBankSpacing) });
+            if (fill > 0)
+            {
+                DisplayDialBar(fill * DialBarWidth, bank with { Y = bank.Y + (i * EnergyBankSpacing) });
+            }
         }
     }
 
@@ -289,14 +284,14 @@ internal abstract class ScannerBase(
     /// </summary>
     private void DisplayShields()
     {
-        if (_ship.ShieldFront > 3)
+        if (_ship.ShieldFront > PlayerShip.ShieldMin)
         {
-            DisplayDialBar(_ship.ShieldFront / 4, ShieldFrontPosition);
+            DisplayDialBar(_ship.ShieldFront * DialBarWidth, ShieldFrontPosition);
         }
 
-        if (_ship.ShieldRear > 3)
+        if (_ship.ShieldRear > PlayerShip.ShieldMin)
         {
-            DisplayDialBar(_ship.ShieldRear / 4, ShieldRearPosition);
+            DisplayDialBar(_ship.ShieldRear * DialBarWidth, ShieldRearPosition);
         }
     }
 

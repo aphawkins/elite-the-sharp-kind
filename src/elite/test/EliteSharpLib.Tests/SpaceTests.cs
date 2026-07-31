@@ -269,7 +269,7 @@ public class SpaceTests
 
         space.UpdateAltitude();
 
-        Assert.Equal(255, ship.Altitude);
+        Assert.Equal(PlayerShip.AltitudeMax, ship.Altitude);
     }
 
     [Fact]
@@ -280,7 +280,7 @@ public class SpaceTests
 
         space.UpdateAltitude();
 
-        Assert.Equal(255, ship.Altitude);
+        Assert.Equal(PlayerShip.AltitudeMax, ship.Altitude);
     }
 
     [Fact]
@@ -293,8 +293,8 @@ public class SpaceTests
 
         space.UpdateAltitude();
 
-        float expected = MathF.Sqrt((30000f / 256 * (30000f / 256)) - 9472);
-        Assert.True(MathF.Abs(expected - ship.Altitude) < 0.01f, $"Expected altitude near {expected}, got {ship.Altitude}.");
+        float expected = MathF.Sqrt((30000f / 256 * (30000f / 256)) - 9472) * PlayerShip.AltitudeStep;
+        Assert.True(MathF.Abs(expected - ship.Altitude) < 0.0001f, $"Expected altitude near {expected}, got {ship.Altitude}.");
     }
 
     [Fact]
@@ -307,7 +307,7 @@ public class SpaceTests
 
         space.UpdateAltitude();
 
-        Assert.Equal(0, ship.Altitude);
+        Assert.Equal(PlayerShip.AltitudeMin, ship.Altitude);
         Assert.True(gameState.IsGameOver);
     }
 

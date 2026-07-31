@@ -263,7 +263,7 @@ internal sealed class Space
 
     internal void UpdateAltitude()
     {
-        _ship.Altitude = 255;
+        _ship.Altitude = PlayerShip.AltitudeMax;
 
         if (_gameState.InWitchspace)
         {
@@ -298,7 +298,7 @@ internal sealed class Space
         dist -= 9472;
         if (dist < 1)
         {
-            _ship.Altitude = 0;
+            _ship.Altitude = PlayerShip.AltitudeMin;
             _gameState.GameOver();
             return;
         }
@@ -306,12 +306,12 @@ internal sealed class Space
         dist = MathF.Sqrt(dist);
         if (dist < 1)
         {
-            _ship.Altitude = 0;
+            _ship.Altitude = PlayerShip.AltitudeMin;
             _gameState.GameOver();
             return;
         }
 
-        _ship.Altitude = dist;
+        _ship.Altitude = Math.Clamp(dist * PlayerShip.AltitudeStep, PlayerShip.AltitudeMin, PlayerShip.AltitudeMax);
     }
 
     internal void UpdateCabinTemp()

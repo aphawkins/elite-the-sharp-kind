@@ -147,7 +147,7 @@ public sealed class EliteMain : IGame, IGameApp
         _baseView.DrawBorder();
         _draw.SetViewClipRegion();
 
-        if (_ship.Energy < 0)
+        if (_ship.Energy < PlayerShip.EnergyMin)
         {
             State.GameOver();
         }
