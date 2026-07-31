@@ -1,9 +1,18 @@
 # Backlog and Roadmap — The Sharp Kind
 
-The single consolidated backlog for the repository, prioritised with MoSCoW
-(per [architecture-principles.md](architecture-principles.md)). It merges the 2026-07-11
-architecture/code-quality review, the business-application practices review,
-and the retired `issues.md`, `release-plan.md` and `scr-conversion-plan.md`.
+Features, refactors, cleanups and spikes — work that **adds or reshapes**,
+not work that fixes. Prioritised with MoSCoW (per
+[architecture-principles.md](architecture-principles.md)).
+
+Defects live in [backlog-issues.md](backlog-issues.md), and take priority
+over everything here: both games work, so the repo fixes what is broken
+before it builds what is missing. Nothing in this file should start while
+that file has open Musts.
+
+This file merges the 2026-07-11 architecture/code-quality review, the
+business-application practices review, and the retired `issues.md`,
+`release-plan.md` and `scr-conversion-plan.md`. It was split from the
+defect list on 2026-07-31.
 
 How to use this file:
 
@@ -71,17 +80,103 @@ not yet scoped into concrete steps.
       below) — with a proper config-driven model. Design/scope the config
       shape before starting.
 
+### 3D pipeline — modern-pipeline gaps
+
+From the 2026-07-31 gap analysis of both games against a modern
+rasterisation pipeline. The *defects* it found are in
+[backlog-issues.md](backlog-issues.md); what follows is the genuinely
+absent machinery. Most of it is absent **by design** — 1984 Elite and 1989
+Stunt Car Racer had none of it — so each item below is a deliberate
+departure from the source material, not a correction. Nothing here should
+start before the issues file is clear, and the maintainer should decide
+per item whether authenticity or modernity wins.
+
+- [ ] [Useful.Graphics] **[LARGE]** Homogeneous clip-space pipeline: neither
+      game builds view/projection matrices or carries a `w`. Elite does
+      `Vector4.Transform(...) + Location` then divides by `Z` directly
+      ([ShipBase.ProjectPoint](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs));
+      SCR uses a hand-rolled fixed-point 3x3 and `focus * x / z`
+      ([Scene3D.cs](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs)).
+      With no clip space there is no NDC and no viewport transform as a
+      distinct stage, so frustum clipping, guard-banding and a depth range
+      all have to be special-cased instead of falling out for free. This is
+      the structural root of several items here and of the side-plane
+      clipping item in the issues file. It also overlaps heavily with the
+      "convert angles and trig" step of the SCR float-physics conversion
+      below — sequence after that, and re-scope against the shared-projector
+      cleanup below, which is the small first slice of the same idea.
+- [ ] [Useful.Graphics] Flat (Lambert) per-face lighting: there is no
+      lighting of any kind today — a grep across both game libs and
+      `Useful.Graphics` finds no light vector, no ambient/diffuse/specular
+      term, no shading normals. Every polygon is a constant `FastColor` from
+      the model asset. Elite computes face normals in `ShipBase.FindFaceRoots`
+      but only to detect coplanar decals. The cheapest meaningful step is a
+      single directional light dotted against the existing per-face normal,
+      modulating the face colour — no new geometry data needed. Gate it on a
+      config setting alongside `GraphicStyle`/`DepthSort` so the flat-shaded
+      original look stays selectable, and check it against both palettes:
+      the 8-bit tier's colour budget (see
+      [asset-structure.md](asset-structure.md)) has no room for shaded ramps,
+      so this may be a 16-bit-and-above feature only.
+- [ ] [Useful.Graphics] Gouraud shading: strictly follow-on from flat
+      lighting, and much larger — needs per-vertex normals, which the `.obj`
+      assets don't carry and which would have to be derived by averaging
+      adjacent face normals at load. Only worth scoping once flat lighting
+      has answered the palette question above.
+- [ ] [Useful.Graphics] Far-plane and bounding-volume culling: no far plane
+      exists (distance handling is `Universe`'s object removal and Elite's
+      `VanishPoint`), and there is no per-object bounding-sphere-versus-
+      frustum test — every object in the universe list is transformed face
+      by face every frame whether or not any part of it can be on screen. A
+      sphere test using the existing `IShip.Size` in front of the per-face
+      loop is the cheap version.
+- [ ] [Useful.Graphics] Texture filtering and mipmaps: `SampleTexture` is
+      nearest-neighbour with edge clamping. Bilinear filtering plus a mip
+      chain would stop SCR's distant road aliasing (recorded as a
+      deliberate non-fix under Won't in
+      [backlog-issues.md](backlog-issues.md), since the Amiga had neither).
+      Elite is untextured entirely and gains nothing here.
+- [ ] [Useful.Graphics] Level of detail: the `ShipBase.Draw` docstring has
+      flagged "not showing detail at distance" as unimplemented since the
+      port began. The New Kind's models carry the data to do it. Cheap
+      version: skip 2-point detail lines and decal faces past a distance
+      threshold, which also relieves the polygon-cap pressure recorded in
+      the issues file.
+- [ ] [Useful.Graphics] Alpha blending: no transparency of any kind — the
+      `DrawImage` path still carries a TODO admitting "should mix the
+      transparent colors correctly here but the only transparency being
+      used is transparent or opaque". A real alpha path would let the
+      Elite explosion cloud and SCR's shadow quad stop being solid fills.
+- [ ] [Useful.Graphics] Sub-pixel rasterisation precision: triangle edges
+      snap to integer scanlines (`MathF.Ceiling`/`Floor` in
+      `DrawTriangleFilled` and its variants), so geometry jitters as it
+      moves rather than sliding smoothly. Fixing it means carrying
+      fractional edge coverage through all four triangle routines — worth
+      it only alongside anti-aliasing, which is separately absent.
+- [ ] [Useful.Graphics] Per-frame allocation in the polygon renderers:
+      `Submit` does `new Vector2[points.Length]` (plus `new float[...]` in
+      the z-buffer path) for every polygon every frame, and
+      `ShipBase.BuildFacePolygon` returns a fresh `Vector2[]` — which
+      undoes the care `ShipBase` takes elsewhere to pool `_pointList`/
+      `_cameraList` and stackalloc its clip buffers. A persistent
+      vertex/index buffer is the modern shape. Bounded by the
+      rasteriser-throughput Won't below: nothing here is a measured
+      bottleneck at either game's frame rate, so do it for the tidiness or
+      not at all. Sequence after the z-buffer defect fix, which changes
+      `Submit`'s signature.
+
 ### Cleanups and small refactors
 
 3D pipeline sharing (split 2026-07-14 from the "unify the two 3D
 pipelines" [LARGE] item; a code survey found the pipelines differ more
 than assumed — Elite: float `Matrix4x4` transform, `vec.Z = 1` clamp
-instead of a near clip, screen-winding cull; SCR: fixed-point
-Amiga-trig view transform, true near-plane polygon clip — so full
-unification is off the table; instead extract the stages that are
-genuinely shareable, each independently. Both games now fill via the
-shared z-buffer: the spike that moved Elite's filled ships off the
-painter's chain landed 2026-07-14, see CHANGELOG):
+retained for the winding test and laser aim, screen-winding cull; SCR:
+fixed-point Amiga-trig view transform — so full unification is off the
+table; instead extract the stages that are genuinely shareable, each
+independently. Both games now clip against a shared near plane
+(`NearPlaneClip`) and fill via the shared z-buffer: the spike that moved
+Elite's filled ships off the painter's chain landed 2026-07-14, and real
+face clipping followed, see CHANGELOG):
 
 - [ ] [Useful.Graphics] Extract a shared perspective-projection helper
       (centre + focus·x/z): Elite now writes exactly that form, but
@@ -94,7 +189,9 @@ painter's chain landed 2026-07-14, see CHANGELOG):
       a small `focus`+`centre` projector type serves both. Note the
       radius conversions in the planet/sun sites (`* Focus / 256`) are
       Elite-specific and stay on the Elite side of the boundary, as does
-      `Scale`, which is now coordinate/window magnification only.
+      `Scale`, which is now coordinate/window magnification only. This is
+      the smallest useful slice of the clip-space item above — do it first
+      and let it inform that one.
 - [ ] [Useful.Graphics] Shared text/HUD-panel helper for the two games'
       ad-hoc HUD code (Elite's `EliteDraw` header/border/text helpers,
       SCR's `HudRenderer`) — the smaller sibling of the original item;
@@ -106,7 +203,7 @@ painter's chain landed 2026-07-14, see CHANGELOG):
 - [ ] [StuntCarRacerSharpLib] F9/F10 frame-gap tuning keys: both C++ versions adjust the physics frame gap live; `StuntCarRacerMain.FrameGap` exists for exactly this but isn't wired to any key.
 - [ ] [StuntCarRacerSharpLib] Race pause: the remake pauses on 'P' and resumes on 'O' (`bPaused`, engine sound stopped while paused); not ported — no pause exists. The remake's debug freezes (F5 stats overlay, F6 player-only pause, F7 opponent-only pause) could ride along as dev aids.
 - [ ] [StuntCarRacerSharpLib] 'R' turn-around key: the remake adds 180 degrees to the player's y angle and re-initialises (`INITIALISE_PLAYER`, ptitSeb `StuntCarRacer.cpp` ~1039) so a car facing the wrong way can recover; not ported.
-- [ ] [StuntCarRacerSharpLib] Mid-race 'M' to track menu: the remake returns to the track menu from any mode on 'M' (`StuntCarRacer.cpp:1731-1741`: it also clears the opponent — `opponentsID = NO_OPPONENT` — and resets the drawbridge via `ResetDrawBridge`, and the menu mode stops the engine sound); the port only handles 'M' on the game-over and track-preview screens — `RaceScreen` has no way back to the menu short of Escape-quitting, and neither the preview's nor the game-over's 'M' resets the drawbridge today.
+- [ ] [StuntCarRacerSharpLib] Mid-race 'M' to track menu: the remake returns to the track menu from any mode on 'M' (`StuntCarRacer.cpp:1731-1741`: it also clears the opponent — `opponentsID = NO_OPPONENT` — and resets the drawbridge via `ResetDrawBridge`, and the menu mode stops the engine sound); the port only handles 'M' on the game-over and track-preview screens — `RaceScreen` has no way back to the menu short of Escape-quitting. (The drawbridge half of the reference's behaviour is already covered: `RaceScreen` calls `Bridge.Reset` on entry and `Race.LoadTrack` constructs a fresh `DrawBridge` per track, verified 2026-07-31 — so only the opponent clear and the engine-sound stop need porting alongside the new key.)
 - [ ] [StuntCarRacerSharpLib] Player outside/chase view: needs a chase camera plus drawing the player's own car mesh (`Rendering/CarMesh` is currently only used for the opponent).
 - [ ] [StuntCarRacerSharpLib] Road-line textures could sample the shared `atlas.bmp` (ptitSeb's `eRoadYellowDark` etc.) instead of the procedural strips in `Rendering/RoadTextures` — closer visual match, but the current strips already look correct; cosmetic.
 Unplugged remake art screens (added 2026-07-19 after the ptitSeb parity
@@ -243,7 +340,8 @@ by the traces):
       `System.Numerics`/`Matrix4x4` like Elite does — `TrigCoefficients`
       and the fixed-point view transform here are the one remaining
       non-`System.Numerics` piece, and this item is where that gets
-      resolved; no separate item needed.
+      resolved; no separate item needed. This is also the prerequisite
+      for the clip-space pipeline item above.
 - [ ] [StuntCarRacerSharpLib] Convert `CarPhysics` (four partials:
       [CarPhysics.cs](../src/scr/libs/StuntCarRacerSharpLib/Cars/CarPhysics.cs),
       `.Motion`, `.Road`, and the crane/chain-recovery `.Chains` — the
@@ -328,19 +426,11 @@ either.**):
         `Focus` of the 2026-07-28 tier decision.
       - ~~**The stale comment** in `SDLProgram.cs`~~ — updated with the
         change.
-      - **Screens using bare absolute coordinates drift out of
-        alignment** with those laid out from the viewport, which stay
-        centred. **This is what is left of this item.** (`Offset` is
-        gone — it duplicated `ScannerLeft`, and both were removed when
-        `ViewLayout` became viewport-only; screens now lay out from
-        `ViewportLeft`, which is the screen origin.)
-        `ThargoidMissionView16Bit` (`new(116, 132)`, the Blake portrait
-        at `new(352, 46)`), `ConstrictorMissionView16Bit`,
-        `PlanetDataView16Bit`, `MarketView16Bit` and the commander
-        save/load screens are the known cases — and their 8-bit
-        counterparts have the same shape at 320. None have been checked
-        live at 640 yet. This is a latent bug at any width except the
-        tier's own, independent of the tier scheme.
+      - **The fourth — screens using bare absolute coordinates drifting
+        out of alignment — is a defect independent of the tier scheme
+        and now lives in
+        [backlog-issues.md](backlog-issues.md)**, where it can be fixed
+        without waiting on this audit.
 
       Two specifics this item used to cite are now out of date: `511`
       in `ShipBase.DrawLasers` is already fixed — `ProjectToViewBoundary`
@@ -348,12 +438,6 @@ either.**):
       lib (`Combat.cs:758-759`, `ScannerBase`, `Space.cs:408-414`)
       are world-space and physics constants, not screen coordinates, so
       they are not in scope.
-- [ ] [EliteSharpLib] Number of stars proportional to screen size (issue
-      #4): now reachable — the 8-bit tier already renders at 320x256,
-      a quarter the area of 512x512, with the same star count, and the
-      planned 640x512 widening changes it again. Scale star count by
-      screen area; sequence after the non-512x512 audit above so the
-      coordinate space it scales against is settled.
 - [ ] [Repo] **Low-priority spike**: WASM build for Playwright-driven
       visual testing. Today `run-elite`/`run-scr`
       ([sdl-drive/drive.ps1](../.claude/skills/sdl-drive/drive.ps1))
@@ -379,6 +463,16 @@ either.**):
 
 ## Won't
 
+- [ ] [Useful.Graphics] Programmable shading stages, stencil buffer, fog /
+      depth cueing, anti-aliasing, post-processing and instancing
+      (2026-07-31 modern-pipeline gap analysis) — all absent, all
+      deliberately so. These are the parts of a modern pipeline that
+      would make either game stop looking like its 1984/1989 original
+      rather than merely look better, and none of them has a use case in
+      a flat-shaded vector space sim or a flat-shaded polygon racer. The
+      buildable subset (lighting, LOD, alpha, filtering, far-plane
+      culling) is listed under Could above; this line records the rest as
+      considered and declined, not overlooked.
 - [ ] [Assets] SCR's 8-bit asset set — not for now (2026-07-31). The
       2026-07-28 asset-structure decision in [decisions.md](decisions.md)
       covers both games and Elite has both tiers, but SCR ships
@@ -404,8 +498,12 @@ either.**):
       hardcoded constants (`* 256 / vec.Z`, etc.) are endemic to the
       ported algorithms. Revisit only if a specific project is scoped for
       it.
-- [ ] [EliteSharpLib] Buying more than 255g of Gold/Platinum doesn't work — authentic to the original ("broken as designed"); documented, not fixed.
-- [ ] [EliteSharpLib] Elite Intro2 parade shows 29 of ~33 ship models ([ShipFactory.cs:80-111](../src/elite/libs/EliteSharpLib/Ships/ShipFactory.cs)) — Cougar, Constrictor and the Lone variants are mission-specific ships, deliberately excluded from the parade; confirmed intentional, not a bug.
-- [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`, insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game is fixed at 13.5fps by design and none of this is a bottleneck at that rate; revisit only if the "performance as secondary objective" goal is picked up.
+- [ ] [Useful.Graphics] Software rasterizer throughput (per-pixel `SetPixel`,
+      insertion-sorted painter chain of ≤100 polys, no spans/SIMD) — the game
+      is fixed at 13.5fps by design and none of this is a bottleneck at that
+      rate; revisit only if the "performance as secondary objective" goal is
+      picked up. Note two items elsewhere are bounded by this one: the
+      side-plane clipping entry in [backlog-issues.md](backlog-issues.md) and
+      the per-frame-allocation entry above.
 - [ ] [StuntCarRacerSharpLib] The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — see the porting notes in [scr-readme.md](scr-readme.md).
 - [ ] [StuntCarRacerSharpLib] ptitSeb's remaining debug/infrastructure toggles are deliberately not ported (2026-07-19 parity audit): F1 test key, F2 triangle-list/strip vertex-buffer toggle (meaningless in the software rasterizer), the 'Z' reposition test key, the disabled action-replay / Amiga-recording harness (`#ifdef NOT_USED` / `USE_AMIGA_RECORDING` even upstream), the French-keyboard digit remaps, and the SDL command-line video flags (superseded by the resizable-window/config-resolution items under Could). The F5 stats overlay and F6/F7 per-car freezes stay listed as optional ride-alongs on the race-pause item. `Chime.wav` is unused by both code bases (kept as an asset only).

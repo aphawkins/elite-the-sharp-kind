@@ -2,10 +2,12 @@
 
 Consolidated log of maintainer decisions for the repository, split out of
 [backlog-roadmap.md](backlog-roadmap.md) so the backlog stays about work
-items and this file stays about the calls that shape them. Newest first.
-When a decision reshapes or unblocks backlog items, those items are
-updated in backlog-roadmap.md to reference the decision here rather than
-restating it.
+items and this file stays about the calls that shape them. The backlog was
+itself split on 2026-07-31 into [backlog-issues.md](backlog-issues.md)
+(defects) and backlog-roadmap.md (features, refactors, cleanups) — a
+decision may reshape items in either. Newest first. When a decision
+reshapes or unblocks backlog items, those items are updated in the backlog
+to reference the decision here rather than restating it.
 
 ## Resolved (2026-07-31) — `ViewLayout` is the viewport, and 8-bit text is on a grid
 

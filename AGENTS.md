@@ -30,7 +30,9 @@ Before implementing:
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
 - Ask before making architectural changes; if approved, follow the principles in `docs/architecture-principles.md`.
-- For general code changes, follow the principles in `docs/backlog-roadmap.md`.
+- For general code changes, follow the principles in `docs/backlog-issues.md`
+  (defects) and `docs/backlog-roadmap.md` (features, refactors, cleanups).
+  Both games work: open issues take priority over anything on the roadmap.
 - If you notice anything unusual or potentially problematic, make it known immediately.
 
 ## 2. Simplicity First

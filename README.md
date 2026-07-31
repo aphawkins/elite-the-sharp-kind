@@ -90,7 +90,8 @@ Note that Stunt Car Racer doesn't read `graphicStyle`, `depthSort` or `showFps` 
 ## Documentation
 
 - [Architecture principles](docs/architecture-principles.md)
-- [Backlog and roadmap](docs/backlog-roadmap.md) — the single consolidated backlog
+- [Backlog — issues](docs/backlog-issues.md) — open defects, fixed first
+- [Backlog and roadmap](docs/backlog-roadmap.md) — features, refactors and spikes
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
 
