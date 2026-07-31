@@ -14,9 +14,11 @@ namespace EliteSharpLib.Views.EightBit;
 /// so this tier has its own width, and the credits are word-wrapped rather
 /// than drawn one centred line each: the longest ("The New Kind - Christian
 /// Pinder 1999-2001", 41 characters) is one character wider than the screen's
-/// 40-character row. <see cref="IBaseView.DrawTextPretty"/> is deliberately
-/// not used for that - it breaks even text that already fits, and it draws
-/// left-aligned where these lines are centred.
+/// 40-character row. It shares <see cref="TextWrap"/> with
+/// <see cref="IBaseView.DrawTextPretty"/> but not the drawing: these rows are
+/// centred rather than left-aligned, and the block is stacked upwards from the
+/// bottom of the viewport, so the line count has to be known before the first
+/// row is placed.
 /// </summary>
 internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
 {
@@ -71,7 +73,7 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
         List<string> lines = [];
         foreach (string credit in model.Credits)
         {
-            Wrap(credit, lines);
+            lines.AddRange(TextWrap.Split(credit, MaxCharsPerLine));
         }
 
         // The credits sit against the bottom of the viewport, one row each, so
@@ -84,28 +86,5 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
         {
             DrawTextCentreOnGrid(creditsFirstRow + i, lines[i], nameof(FontType.Small), _colorWhite);
         }
-    }
-
-    // Break on spaces at the row width. Only one credit is long enough to
-    // need it, but which one that is is the controller's business, not this
-    // view's.
-    private static void Wrap(string text, List<string> lines)
-    {
-        int start = 0;
-
-        while (text.Length - start > MaxCharsPerLine)
-        {
-            int split = text.LastIndexOf(' ', start + MaxCharsPerLine, MaxCharsPerLine);
-
-            if (split <= start)
-            {
-                split = start + MaxCharsPerLine;
-            }
-
-            lines.Add(text[start..split]);
-            start = split + 1;
-        }
-
-        lines.Add(text[start..]);
     }
 }

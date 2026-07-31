@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (one word-wrap, two off-by-ones, 2026-07-31)
+
+- The line breaking that `BaseView8Bit` and `BaseView16Bit` each had a
+  copy of is now `Views/TextWrap.Split`, which returns rows rather than
+  drawing them. `DrawTextPretty` draws those rows left-aligned; the 8-bit
+  options screen centres the same rows and stacks them upwards from the
+  bottom of the viewport, which is why it kept a wrapper of its own and no
+  longer has to. Splitting rather than sharing the drawing is what let one
+  helper serve both.
+- Text that already fitted was broken anyway: the break scan clamped to
+  the last index of the string instead of noticing the remainder fit, so a
+  40-character string on a 40-character row came out as two rows.
+- A row ending in a comma or period could run one character past its
+  width. The scan started at the first character *past* the row rather
+  than the last one on it, so a break there put the punctuation on a row
+  already full. Narrowing it shifts wrapped 16-bit mission text slightly.
+- A space at the break is dropped rather than kept on the row it ends. It
+  drew nothing left-aligned, but it pushed a centred row half a character
+  off centre.
+
 ### Changed (ViewLayout becomes the viewport, and 8-bit text gets a grid, 2026-07-31)
 
 - The screen border was a pixel short on the right: `DrawRectangle` draws

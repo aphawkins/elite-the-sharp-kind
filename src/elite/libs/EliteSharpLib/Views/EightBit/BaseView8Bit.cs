@@ -112,26 +112,9 @@ internal class BaseView8Bit : IBaseView
     {
         ArgumentNullException.ThrowIfNull(text);
 
-        int i = 0;
-        float maxlen = width / CharacterWidth;
-        int previous = i;
-
-        while (i < text.Length)
+        foreach (string line in TextWrap.Split(text, (int)(width / CharacterWidth)))
         {
-            i += (int)maxlen;
-            i = Math.Clamp(i, 0, text.Length - 1);
-            int breakPoint = i;
-
-            while (i > previous && text[i] is not ' ' and not ',' and not '.')
-            {
-                i--;
-            }
-
-            // No space/comma/period found within the line width: hard-break the word.
-            i = i > previous ? i + 1 : breakPoint + 1;
-
-            Graphics.DrawTextLeft(position, text[previous..i], nameof(FontType.Small), _colorWhite);
-            previous = i;
+            Graphics.DrawTextLeft(position, line, nameof(FontType.Small), _colorWhite);
             position.Y += RowHeight;
         }
     }

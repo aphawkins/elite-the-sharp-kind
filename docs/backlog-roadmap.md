@@ -93,16 +93,6 @@ controllers, models and per-tier views". What is left open:
       decide whether the extent should be derived from the scanner art's
       plot area rather than fixed. Affects how far away ships appear, so
       it is a feel decision, not a layout fix.
-- [ ] [EliteSharpLib] `OptionsView8Bit` word-wraps the credits itself
-      because the longest ("The New Kind - Christian Pinder 1999-2001", 41
-      characters) is one character wider than the 8-bit screen's 40-character
-      row, and `IBaseView.DrawTextPretty` is unusable for it (it breaks text
-      that already fits, and draws left-aligned where these lines are
-      centred). Either fix `DrawTextPretty`'s off-by-one break so views can
-      share one wrapper, or shorten the credit wording in
-      `OptionsController`; the local `Wrap` helper is a stopgap either way.
-      Note each tier now has its own copy of the wrapper, on
-      `BaseView8Bit`/`BaseView16Bit`, so a fix has to land in both.
 - [x] [EliteSharpLib] `ShortRangeChartViewBase` was the one screen still
       combining controller and view. Split into
       `ShortRangeChartController`/`ShortRangeChartModel` with per-tier
