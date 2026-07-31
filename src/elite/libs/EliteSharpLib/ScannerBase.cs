@@ -87,6 +87,8 @@ internal abstract class ScannerBase(
 
     protected abstract Vector2 SpeedPosition { get; }
 
+    protected abstract float SpeedHeight { get; }
+
     protected abstract Vector2 RollPosition { get; }
 
     protected abstract Vector2 ClimbPosition { get; }
@@ -327,7 +329,7 @@ internal abstract class ScannerBase(
         float length = _ship.Speed / _ship.MaxSpeed * DialBarWidth;
         FastColor color = (_ship.Speed > (_ship.MaxSpeed * 2 / 3)) ? SpeedWarningColor : DialTopColor;
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < SpeedHeight; i++)
         {
             Draw.Graphics.DrawLine(new(origin.X, origin.Y + i), new(origin.X + length - 1, origin.Y + i), color);
         }

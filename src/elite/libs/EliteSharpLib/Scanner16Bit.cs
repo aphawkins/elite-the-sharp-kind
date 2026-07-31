@@ -69,6 +69,8 @@ internal sealed class Scanner16Bit : ScannerBase
 
     protected override Vector2 SpeedPosition => new(545, 9);
 
+    protected override float SpeedHeight => 6;
+
     protected override Vector2 RollPosition => new(544, 9 + 14);
 
     protected override Vector2 ClimbPosition => new(544, 9 + 14 + 16);
