@@ -7,6 +7,14 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (sdl-drive key names, 2026-07-31)
+
+- `drive.ps1`'s `ConvertTo-VirtualKeyCode` had no entry for `Return`, so a
+  `key:Return` step threw "Unknown key name" (hit while driving SCR's
+  menus). `Return` is now an alias of the existing `Enter`, and `Tab` and
+  `Back`/`Backspace` were added alongside it as the other obvious
+  omissions.
+
 ### Fixed (one word-wrap, two off-by-ones, 2026-07-31)
 
 - The line breaking that `BaseView8Bit` and `BaseView16Bit` each had a

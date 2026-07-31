@@ -83,8 +83,10 @@ function ConvertTo-VirtualKeyCode([string]$KeyName) {
         '^[A-Z]$'           { return [byte][char]$KeyName }
         '^[0-9]$'           { return [byte][char]$KeyName }
         '^Space$'           { return 0x20 }
-        '^Enter$'            { return 0x0D }
+        '^(Enter|Return)$'   { return 0x0D }
         '^Esc(ape)?$'        { return 0x1B }
+        '^Tab$'               { return 0x09 }
+        '^Back(space)?$'      { return 0x08 }
         '^Up$'                { return 0x26 }
         '^Down$'              { return 0x28 }
         '^Left$'              { return 0x25 }

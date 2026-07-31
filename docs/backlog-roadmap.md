@@ -73,10 +73,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [Repo] `sdl-drive/drive.ps1`'s `ConvertTo-VirtualKeyCode` has no
-      entry for `Return`, so a `key:Return` step throws "Unknown key
-      name". Hit while driving SCR's menus (2026-07-28); add Return and
-      any other obvious missing keys.
 - [ ] [Useful.Audio] `AudioController.PlayEffect`'s `_sfx[effectType]`
       is an unguarded dictionary indexer
       ([AudioController.cs:48](../src/useful/libs/Useful.Audio/AudioController.cs)):
