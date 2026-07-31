@@ -61,7 +61,10 @@ jobs:
 
       - name: Update coverage badge file
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        run: cp coveragereport/badge_linecoverage.svg docs/images/coverage-badge.svg
+        # ReportGenerator emits the badge with CRLF, but .gitattributes normalizes
+        # to LF on staging - so a copied-but-unchanged badge stages as a no-op and
+        # create-pull-request fails on the empty commit. Strip the CRs up front.
+        run: tr -d '\r' < coveragereport/badge_linecoverage.svg > docs/images/coverage-badge.svg
 
       - name: Create coverage badge PR
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
