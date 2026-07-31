@@ -103,6 +103,64 @@ public class VisualDumpTests
         RenderAndSave("frame_interpenetrate.bmp", cobra, krait);
     }
 
+    // The missile is the sharpest test of hidden-line removal: its four fins
+    // are double-sided plates (two coplanar triangles wound opposite ways),
+    // so one of each pair survives any backface cull whichever side it is
+    // viewed from, and only occlusion can hide the pair behind the body.
+    [Fact]
+    public void DumpWireframeMissileFrames()
+    {
+        string outDir = Path.Combine(Path.GetTempPath(), "EliteFrames");
+        Directory.CreateDirectory(outDir);
+
+        FastBitmap? lastFrame = null;
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
+        WireframeRenderer shipRenderer = new(graphics, AssetLocator.Create());
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
+        RNG rng = new(new Random(0));
+        EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer, rng);
+        ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
+
+        IShip missile = factory.CreateShip("Missile");
+        missile.Location = new(0, 0, 120, 0);
+
+        for (int i = 0; i < 6; i++)
+        {
+            missile.Rotmat =
+                Matrix4x4.CreateRotationY(i * MathF.PI / 6) * Matrix4x4.CreateRotationX(0.35f);
+
+            graphics.Clear();
+            draw.RenderStart();
+            missile.Draw();
+            draw.RenderEnd();
+            graphics.ScreenUpdate();
+
+            Assert.NotNull(lastFrame);
+            BitmapWriter.Write(lastFrame, Path.Combine(outDir, $"frame_wire_missile_{i}.bmp"));
+        }
+
+        // the same poses filled, as the reference for what should be visible
+        ZBufferRenderer solidRenderer = new(graphics);
+        EliteDraw solidDraw = new(gameState, graphics, AssetLocator.Create(), solidRenderer, rng);
+        IShip solidMissile = ShipFactory.Create(AssetLocator.Create(), solidDraw, rng).CreateShip("Missile");
+        solidMissile.Location = new(0, 0, 120, 0);
+
+        for (int i = 0; i < 6; i++)
+        {
+            solidMissile.Rotmat =
+                Matrix4x4.CreateRotationY(i * MathF.PI / 6) * Matrix4x4.CreateRotationX(0.35f);
+
+            graphics.Clear();
+            solidDraw.RenderStart();
+            solidMissile.Draw();
+            solidDraw.RenderEnd();
+            graphics.ScreenUpdate();
+
+            Assert.NotNull(lastFrame);
+            BitmapWriter.Write(lastFrame, Path.Combine(outDir, $"frame_solid_missile_{i}.bmp"));
+        }
+    }
+
     // A convex decal-free model rendered alone occludes nothing of itself,
     // so both strategies must produce the same silhouette. They are not
     // pixel-identical inside it: the z-buffer owns a shared edge by depth,

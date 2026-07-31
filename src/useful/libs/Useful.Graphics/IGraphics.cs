@@ -45,8 +45,23 @@ public interface IGraphics
     /// camera-space distances as DrawPolygonFilledDepth's, interpolated
     /// along the line, so a line lying on hidden geometry is hidden by it
     /// rather than drawn over everything.
+    /// <para>
+    /// A non-zero <paramref name="surfaceId"/> also draws the pixel when the
+    /// surface already occupying it is the one with that id, however the
+    /// depths compare. That is how an edge escapes being hidden by the very
+    /// surface it bounds, which it lies exactly on: the two are the same
+    /// geometry, so the tie needs deciding by identity, not by a depth bias
+    /// that no single value can get right for every viewing angle. Zero
+    /// means the line belongs to no surface and is tested on depth alone.
+    /// </para>
     /// </summary>
-    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color);
+    public void DrawLineDepth(
+        Vector2 lineStart,
+        Vector2 lineEnd,
+        float depthStart,
+        float depthEnd,
+        FastColor color,
+        int surfaceId);
 
     public void DrawPixel(Vector2 position, FastColor color);
 
@@ -61,6 +76,16 @@ public interface IGraphics
     /// what is already drawn there since the last ClearDepth.
     /// </summary>
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor);
+
+    /// <summary>
+    /// Write a polygon's depth without drawing it, tagging every pixel it
+    /// wins with <paramref name="surfaceId"/>. Primes the depth buffer so a
+    /// later pass can be hidden by geometry that is never itself drawn —
+    /// hidden-line removal, where the surfaces occlude but only the edges
+    /// are visible — and lets each edge recognise its own surface. Ids are
+    /// cleared by ClearDepth along with the depths.
+    /// </summary>
+    public void FillDepth(Vector2[] points, float[] depths, int surfaceId);
 
     /// <summary>
     /// Fill a polygon by sampling a texture. Texture coordinates pair with

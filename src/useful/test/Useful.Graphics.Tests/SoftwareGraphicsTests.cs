@@ -223,6 +223,38 @@ public class SoftwareGraphicsTests
         }
     }
 
+    // FillDepth occludes without drawing, and an edge tagged with the same
+    // surface id draws over it however the depths compare - which is what
+    // lets a wireframe outline survive the very face it bounds while a
+    // genuinely hidden edge does not.
+    [Fact]
+    public void FillDepthOccludesEverythingButItsOwnSurface()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+        Vector2[] quad = [new(0, 0), new(5, 0), new(5, 5), new(0, 5)];
+
+        // Act
+        graphics.ClearDepth();
+        graphics.FillDepth(quad, [10f, 10f, 10f, 10f], surfaceId: 7);
+        graphics.DrawLineDepth(new(0, 1), new(4, 1), 20f, 20f, BaseColors.White, surfaceId: 0);
+        graphics.DrawLineDepth(new(0, 2), new(4, 2), 20f, 20f, BaseColors.White, surfaceId: 9);
+        graphics.DrawLineDepth(new(0, 3), new(4, 3), 20f, 20f, BaseColors.White, surfaceId: 7);
+        graphics.ScreenUpdate();
+
+        // Assert: the surface drew nothing itself; the line behind it
+        // belonging to no surface is hidden; so is one belonging to a
+        // different surface; only the one belonging to that surface draws.
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(2, 0));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(2, 1));
+            Assert.Equal(BaseColors.Black, bmp.GetPixel(2, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 3));
+        }
+    }
+
     // A detail line lying on a face turned away from the camera must be
     // hidden by the nearer surface, not drawn straight through it - the
     // whole reason a line needs a depth test at all.
@@ -238,8 +270,8 @@ public class SoftwareGraphicsTests
         // an identical one in front of it.
         graphics.ClearDepth();
         graphics.DrawPolygonFilledDepth(nearQuad, [10f, 10f, 10f, 10f], BaseColors.Red);
-        graphics.DrawLineDepth(new(0, 1), new(4, 1), 20f, 20f, BaseColors.White);
-        graphics.DrawLineDepth(new(0, 3), new(4, 3), 5f, 5f, BaseColors.White);
+        graphics.DrawLineDepth(new(0, 1), new(4, 1), 20f, 20f, BaseColors.White, surfaceId: 0);
+        graphics.DrawLineDepth(new(0, 3), new(4, 3), 5f, 5f, BaseColors.White, surfaceId: 0);
         graphics.ScreenUpdate();
 
         // Assert
@@ -263,7 +295,7 @@ public class SoftwareGraphicsTests
         // Act
         graphics.ClearDepth();
         graphics.DrawPolygonFilledDepth(quad, [10f, 10f, 10f, 10f], BaseColors.Red);
-        graphics.DrawLineDepth(new(0, 2), new(4, 2), 20f, 5f, BaseColors.White);
+        graphics.DrawLineDepth(new(0, 2), new(4, 2), 20f, 5f, BaseColors.White, surfaceId: 0);
         graphics.ScreenUpdate();
 
         // Assert

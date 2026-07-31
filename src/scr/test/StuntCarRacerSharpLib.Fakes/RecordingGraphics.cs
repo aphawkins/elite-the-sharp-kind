@@ -64,7 +64,7 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     {
     }
 
-    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color)
+    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color, int surfaceId)
     {
     }
 
@@ -81,6 +81,10 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
 
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
         => FilledPolygons.Add((points, faceColor));
+
+    public void FillDepth(Vector2[] points, float[] depths, int surfaceId)
+    {
+    }
 
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
         => TexturedPolygons.Add((points, textureCoords, texture));

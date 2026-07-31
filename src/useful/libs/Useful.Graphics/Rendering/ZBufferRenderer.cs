@@ -63,7 +63,8 @@ public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
                     _polys[i].PointList[1],
                     _polys[i].Depths[0],
                     _polys[i].Depths[1],
-                    _polys[i].Color);
+                    _polys[i].Color,
+                    surfaceId: 0);
                 continue;
             }
 

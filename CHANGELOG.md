@@ -29,6 +29,70 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   finds. This removes the stray stub that poked off the far side of a hull
   silhouette, where no geometry existed to depth-test it away.
 
+### Added (hidden-line removal for wireframe, 2026-07-31)
+
+- Wireframe still showed the missile's fins, and the wings on the Krait,
+  Cougar and Cobras, through the hull. No cull can fix that: those are
+  double-sided plates, two coplanar triangles wound opposite ways, so
+  exactly one of each pair faces the camera from any angle and survives
+  backface culling even when it sits behind the body. Culling removes
+  surfaces facing *away*; it cannot remove surfaces facing you from behind
+  something else, which on a convex hull is the same thing and on a hull
+  with fins is not.
+- `WireframeRenderer` now buffers the frame and draws it in two passes: a
+  new `IGraphics.FillDepth` writes every surface into the depth buffer
+  without drawing it, then the outlines are drawn depth-tested against it.
+  Threaded through the existing depth-fill path in both backends with a
+  `writeColor` flag rather than duplicating the triangle walk. 2-point
+  detail lines are excluded from the first pass - they are not surfaces and
+  occlude nothing.
+- An edge lies exactly on the surface it bounds, so it ties with the depth
+  that surface just wrote, and the two rasterisers sample the same plane at
+  slightly different sub-pixel positions - the tie is decided by about a
+  pixel's worth of depth gradient. No depth bias resolves this: one large
+  enough for a near edge-on face (whose gradient is huge) is also larger
+  than the gap between a wing and the hull behind it, so any value that
+  kept an edge visible also let hidden ones leak. A fixed 1% and then a
+  slope-scaled offset were both tried and both left visible dashing.
+- Settled by identity instead of magnitude: `FillDepth` tags each pixel it
+  wins with a surface id, and `DrawLineDepth` takes the id of the surface
+  its edge belongs to, drawing over that surface however the depths
+  compare. No bias at all. Zero means "no surface", which never matches, so
+  `ZBufferRenderer` and the textured paths are unaffected. Ids are cleared
+  with `ClearDepth`.
+- Verified against a filled reference render of the same missile poses: the
+  wireframe's visible edges match the visible face boundaries of the solid
+  image exactly, with nothing crossing the body. `VisualDumpTests` gained
+  the missile dumps, wireframe and solid, since this is the model that
+  exercises it hardest.
+
+### Fixed (wireframe hidden-surface gaps: unrooted lines and lasers, 2026-07-31)
+
+- Wireframe mode still showed hull detail lines and laser bolts through the
+  hull. `WireframeRenderer` has no depth buffer at all and does no ordering
+  - deliberately, since outlines are order-independent - so the backface
+  cull is its *only* hidden-surface mechanism, and two things were escaping
+  it. In solid mode the per-pixel depth test had been masking both.
+- A detail line lying in no other face's plane has no root, so it had no
+  normal to be culled against and drew unconditionally. It is now culled by
+  the normals its two ends *share*: the model already records, per vertex,
+  the faces that vertex belongs to (the `pn` entries, previously read only
+  by the explosion debris effect), and the faces a line runs along are those
+  common to both its ends. The line draws when any of them faces the camera,
+  which is how the original decided a line's visibility. A line whose ends
+  share none - a model carrying no such data - still draws, so this cannot
+  silently remove detail.
+- The laser bypassed the face loop entirely and was never culled. The bolt
+  springs from a mount on the hull, so it now draws only when that vertex is
+  visible by the same test, and a ship firing away from the viewer no longer
+  paints a bolt through its own hull.
+- Both rules fall back to drawing when the model carries no normals for the
+  vertices in question, which is what the existing `ShipBase` transform and
+  laser tests rely on; four new theory cases cover the culled and kept
+  directions for each. Verified live via `run-elite` in wireframe (the stray
+  stub on the Cobra Mk3 is gone, silhouettes are clean) and re-checked in
+  solid mode for lost detail.
+
 ### Fixed (real per-vertex depth for Elite's z-buffer, 2026-07-31)
 
 - Elite's z-buffered mode never actually got per-vertex depth.

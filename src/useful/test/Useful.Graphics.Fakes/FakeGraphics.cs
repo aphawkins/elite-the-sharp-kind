@@ -44,7 +44,7 @@ public sealed class FakeGraphics(float screenWidth = 0, float screenHeight = 0) 
     {
     }
 
-    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color)
+    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color, int surfaceId)
     {
     }
 
@@ -61,6 +61,10 @@ public sealed class FakeGraphics(float screenWidth = 0, float screenHeight = 0) 
     }
 
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
+    {
+    }
+
+    public void FillDepth(Vector2[] points, float[] depths, int surfaceId)
     {
     }
 

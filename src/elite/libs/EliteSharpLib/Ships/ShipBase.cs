@@ -227,20 +227,95 @@ internal class ShipBase : IShip
     // normal rotated into view. Doing it here rather than on the projected
     // outline keeps the decision off the near-plane depth clamp, which
     // produces meaningless X/Y for a face straddling the camera plane -
-    // and no later clip can undo a cull already taken. A face whose normal
-    // is unknown (a degenerate face, or a detail line lying on no other
-    // face's plane) has nothing to cull against, so it draws.
+    // and no later clip can undo a cull already taken.
     private bool IsFacingCamera(int faceIndex)
     {
+        Face face = Model.Faces[faceIndex];
+        Vector3 surfacePoint = _cameraList[face.PointIndices[0]];
         Vector3 normal = _faceNormal![faceIndex];
-        if (normal == Vector3.Zero)
+
+        return normal != Vector3.Zero
+            ? FacesCamera(normal, surfacePoint)
+            : AnySharedVertexNormalFacesCamera(face, surfacePoint);
+    }
+
+    // True when a model-space normal, rotated into view, turns towards the
+    // camera at the given camera-space point on the surface.
+    private bool FacesCamera(Vector3 normal, Vector3 surfacePoint)
+    {
+        Vector4 rotated = Vector4.Transform(new Vector4(normal, 0), Rotmat);
+        return ((rotated.X * surfacePoint.X) + (rotated.Y * surfacePoint.Y) + (rotated.Z * surfacePoint.Z)) <= 0;
+    }
+
+    // A detail line lying on no other face's plane has no normal of its own,
+    // so it cannot be culled the way a face is. The model still records, per
+    // vertex, the normals of the faces that vertex belongs to; the faces the
+    // line runs along are those shared by every one of its ends, and the line
+    // is visible when any of them is - which is how the original decided a
+    // line's visibility. A line sharing none (a model carrying no such data)
+    // has nothing to cull against and draws, as before.
+    private bool AnySharedVertexNormalFacesCamera(Face face, Vector3 surfacePoint)
+    {
+        // Identity, not equality: the reader hands every vertex on a face the
+        // same pooled FaceNormal instance, and two distinct faces can carry
+        // numerically equal normals.
+        static bool SharesNormal(Point point, FaceNormal normal)
         {
-            return true;
+            foreach (FaceNormal candidate in point.FaceNormals)
+            {
+                if (ReferenceEquals(candidate, normal))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
-        Vector4 rotated = Vector4.Transform(new Vector4(normal, 0), Rotmat);
-        Vector3 toFace = _cameraList[Model.Faces[faceIndex].PointIndices[0]];
-        return ((rotated.X * toFace.X) + (rotated.Y * toFace.Y) + (rotated.Z * toFace.Z)) <= 0;
+        bool anyShared = false;
+
+        foreach (FaceNormal candidate in face.Points[0].FaceNormals)
+        {
+            bool sharedByAll = true;
+            for (int j = 1; j < face.Points.Count && sharedByAll; j++)
+            {
+                sharedByAll = SharesNormal(face.Points[j], candidate);
+            }
+
+            if (!sharedByAll)
+            {
+                continue;
+            }
+
+            anyShared = true;
+            Vector4 direction = candidate.Direction;
+            if (FacesCamera(new(direction.X, direction.Y, direction.Z), surfacePoint))
+            {
+                return true;
+            }
+        }
+
+        return !anyShared;
+    }
+
+    // A single vertex is visible when any face it belongs to is. A vertex
+    // the model records no normals for has nothing to cull against.
+    private bool IsPointFacingCamera(int pointIndex)
+    {
+        Vector3 surfacePoint = _cameraList[pointIndex];
+        bool any = false;
+
+        foreach (FaceNormal normal in Model.Points[pointIndex].FaceNormals)
+        {
+            any = true;
+            Vector4 direction = normal.Direction;
+            if (FacesCamera(new(direction.X, direction.Y, direction.Z), surfacePoint))
+            {
+                return true;
+            }
+        }
+
+        return !any;
     }
 
     // The face's screen outline, clipped to the near plane, with the
@@ -379,6 +454,18 @@ internal class ShipBase : IShip
         }
 
         int lasv = LaserFront;
+
+        // The bolt springs from a mount on the hull, so it is only visible
+        // when that part of the hull is. Without this the laser bypasses the
+        // face cull entirely and a ship firing away from us draws its bolt
+        // straight through its own hull - which the depth test hides in
+        // z-buffered mode but wireframe, having no depth buffer at all,
+        // cannot.
+        if (!IsPointFacingCamera(lasv))
+        {
+            return;
+        }
+
         FastColor color = (Type == ShipType.Viper) ? _colorCyan : _colorWhite;
 
         Vector2 mount = new(pointList[lasv].X, pointList[lasv].Y);

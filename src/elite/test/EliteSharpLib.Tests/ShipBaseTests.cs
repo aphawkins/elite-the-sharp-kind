@@ -270,6 +270,83 @@ public class ShipBaseTests
         Assert.Empty(draw.DrawnPolygons);
     }
 
+    // A detail line lying on no other face's plane has no root to inherit a
+    // normal from. The model still records which faces each vertex belongs
+    // to, so the faces the line runs along are those its two ends share.
+    [Theory]
+    [InlineData(0, 0, 1, false)]
+    [InlineData(0, 0, -1, true)]
+    public void DrawCullsAnUnrootedDetailLineByTheNormalItsEndsShare(
+        float normalX,
+        float normalY,
+        float normalZ,
+        bool expectDrawn)
+    {
+        // Arrange
+        FaceNormal shared = new() { Direction = new(normalX, normalY, normalZ, 0), Visible = true };
+        Point start = new() { Coords = new(-10, 0, 0, 0), FaceNormals = [shared] };
+        Point end = new() { Coords = new(10, 0, 0, 0), FaceNormals = [shared] };
+
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(0, 0, 1000, 0),
+            Model = new()
+            {
+                FaceNormals = [shared],
+                Faces = [new() { Color = default, Points = [start, end], PointIndices = [0, 1] }],
+                Lines = [],
+                Points = [start, end],
+            },
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        Assert.Equal(expectDrawn, draw.DrawnPolygons.Count == 1);
+    }
+
+    // The bolt springs from a mount on the hull, so it is only visible when
+    // that part of the hull is. It bypasses the face loop entirely, so
+    // nothing else culls it.
+    [Theory]
+    [InlineData(0, 0, 1, false)]
+    [InlineData(0, 0, -1, true)]
+    public void DrawLasersCullsABoltWhoseMountFacesAway(
+        float normalX,
+        float normalY,
+        float normalZ,
+        bool expectDrawn)
+    {
+        // Arrange
+        FaceNormal mountNormal = new() { Direction = new(normalX, normalY, normalZ, 0), Visible = true };
+        Point mountPoint = new() { Coords = new(10, 20, 50, 0), FaceNormals = [mountNormal] };
+
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new FakeRandomSource { RandomValue = 0 }))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = new(500, 0, 1000, 0),
+            LaserFront = 0,
+            Flags = ShipProperties.Firing,
+            Model = new()
+            {
+                FaceNormals = [mountNormal],
+                Faces = [],
+                Lines = [],
+                Points = [mountPoint],
+            },
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        Assert.Equal(expectDrawn, draw.DrawnPolygons.Count == 1);
+    }
+
     private static ThreeDModel BuildModel(Vector4[] coords, int[][] faceIndices)
     {
         Point[] modelPoints = [.. coords.Select(c => new Point { Coords = c, FaceNormals = [] })];

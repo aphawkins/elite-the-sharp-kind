@@ -61,6 +61,10 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     private nint _depthTexture;
 
     private float[]? _depthBuffer;
+
+    // The surface currently occupying each pixel, 0 = none; see
+    // SoftwareGraphics._surfaceIds.
+    private int[]? _surfaceIds;
     private bool _depthLayerDirty;
     private bool _depthPassOpen;
 
@@ -180,6 +184,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
         _depthLayer ??= new FastBitmap((int)ScreenWidth, (int)ScreenHeight);
         _depthBuffer ??= new float[(int)ScreenWidth * (int)ScreenHeight];
+        _surfaceIds ??= new int[(int)ScreenWidth * (int)ScreenHeight];
 
         if (_depthTexture == nint.Zero)
         {
@@ -195,6 +200,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
 
         _depthLayer.Clear(BaseColors.TransparentBlack);
         Array.Clear(_depthBuffer);
+        Array.Clear(_surfaceIds);
         _depthLayerDirty = false;
         _depthPassOpen = true;
     }
@@ -343,14 +349,14 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderLine(NativeRenderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y));
     }
 
-    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color)
+    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color, int surfaceId)
     {
         if (_isDisposed || _depthLayer == null)
         {
             return;
         }
 
-        DrawLineDepthToLayer(lineStart, lineEnd, depthStart, depthEnd, color);
+        DrawLineDepthToLayer(lineStart, lineEnd, depthStart, depthEnd, color, surfaceId);
         _depthLayerDirty = true;
     }
 
@@ -398,19 +404,10 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     }
 
     public void DrawPolygonFilledDepth(Vector2[] points, float[] depths, FastColor faceColor)
-    {
-        if (_isDisposed || points == null || depths == null || depths.Length < points.Length || _depthLayer == null)
-        {
-            return;
-        }
+        => FillPolygonDepth(points, depths, faceColor, writeColor: true, surfaceId: 0);
 
-        for (int i = 1; i < points.Length - 1; i++)
-        {
-            DrawTriangleFilledDepthToLayer(points[0], points[i], points[i + 1], depths[0], depths[i], depths[i + 1], faceColor);
-        }
-
-        _depthLayerDirty = true;
-    }
+    public void FillDepth(Vector2[] points, float[] depths, int surfaceId)
+        => FillPolygonDepth(points, depths, BaseColors.Black, writeColor: false, surfaceId);
 
     public void DrawPolygonTextured(Vector2[] points, Vector2[] textureCoords, FastBitmap texture)
     {
@@ -903,7 +900,13 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     // Depth-tested Bresenham line into the CPU depth layer: inverse depth
     // (1/z) is interpolated along the walk by its fraction of the major
     // axis. Mirrors SoftwareGraphics.DrawLineIntDepth.
-    private void DrawLineDepthToLayer(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, in FastColor color)
+    private void DrawLineDepthToLayer(
+        Vector2 lineStart,
+        Vector2 lineEnd,
+        float depthStart,
+        float depthEnd,
+        in FastColor color,
+        int surfaceId)
     {
         int x0 = (int)MathF.Floor(lineStart.X);
         int y0 = (int)MathF.Floor(lineStart.Y);
@@ -923,7 +926,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         for (int step = 0; step <= steps; step++)
         {
             float t = steps == 0 ? 0f : (float)step / steps;
-            PlotDepthTestedLayerPixel(x0, y0, inverseStart + ((inverseEnd - inverseStart) * t), color);
+            PlotDepthTestedLayerPixel(x0, y0, inverseStart + ((inverseEnd - inverseStart) * t), color, surfaceId);
 
             int e2 = 2 * err;
             if (e2 > -dy)
@@ -940,24 +943,59 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         }
     }
 
-    private void PlotDepthTestedLayerPixel(int x, int y, float inverseDepth, in FastColor color)
+    private void PlotDepthTestedLayerPixel(int x, int y, float inverseDepth, in FastColor color, int surfaceId)
     {
         if (x < 0 || x >= (int)ScreenWidth || y < 0 || y >= (int)ScreenHeight)
         {
             return;
         }
 
-        if (DepthTestLayer(x, y, inverseDepth))
+        if (DepthTestLayer(x, y, inverseDepth, surfaceId))
         {
             _depthLayer!.SetPixel(x, y, color);
         }
     }
 
+    private void FillPolygonDepth(Vector2[] points, float[] depths, in FastColor faceColor, bool writeColor, int surfaceId)
+    {
+        if (_isDisposed || points == null || depths == null || depths.Length < points.Length || _depthLayer == null)
+        {
+            return;
+        }
+
+        for (int i = 1; i < points.Length - 1; i++)
+        {
+            DrawTriangleFilledDepthToLayer(
+                points[0],
+                points[i],
+                points[i + 1],
+                depths[0],
+                depths[i],
+                depths[i + 1],
+                faceColor,
+                writeColor,
+                surfaceId);
+        }
+
+        _depthLayerDirty = true;
+    }
+
     // Depth-tested triangle fill into the CPU depth layer: inverse depth
     // (1/z) is interpolated linearly in screen space (perspective-correct
     // for depth) and each pixel only draws when it passes the depth test.
+    // writeColor false runs the depth test and its writes but draws nothing,
+    // which is how a hidden-line pass primes the buffer.
     // Mirrors SoftwareGraphics.DrawTriangleFilledDepth.
-    private void DrawTriangleFilledDepthToLayer(Vector2 a, Vector2 b, Vector2 c, float za, float zb, float zc, in FastColor color)
+    private void DrawTriangleFilledDepthToLayer(
+        Vector2 a,
+        Vector2 b,
+        Vector2 c,
+        float za,
+        float zb,
+        float zc,
+        in FastColor color,
+        bool writeColor,
+        int surfaceId)
     {
         if (za <= 0 || zb <= 0 || zc <= 0)
         {
@@ -1013,13 +1051,21 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
                 (i0, i1) = (i1, i0);
             }
 
-            DrawSpanFilledDepthToLayer(y, x0, x1, i0, i1, color);
+            DrawSpanFilledDepthToLayer(y, x0, x1, i0, i1, color, writeColor, surfaceId);
         }
     }
 
     // Draw one depth-tested scanline of a flat-shaded triangle into the depth
     // layer, interpolating inverse depth from i0 at x0 to i1 at x1.
-    private void DrawSpanFilledDepthToLayer(int y, float x0, float x1, float i0, float i1, in FastColor color)
+    private void DrawSpanFilledDepthToLayer(
+        int y,
+        float x0,
+        float x1,
+        float i0,
+        float i1,
+        in FastColor color,
+        bool writeColor,
+        int surfaceId)
     {
         int start = Math.Max((int)MathF.Floor(x0), 0);
         int end = Math.Min((int)MathF.Floor(x1), (int)ScreenWidth - 1);
@@ -1028,7 +1074,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         for (int x = start; x <= end; x++)
         {
             float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
-            if (DepthTestLayer(x, y, i0 + ((i1 - i0) * t)))
+            if (DepthTestLayer(x, y, i0 + ((i1 - i0) * t), surfaceId) && writeColor)
             {
                 _depthLayer!.SetPixel(x, y, color);
             }
@@ -1136,7 +1182,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         {
             float t = span <= 0 ? 0f : Math.Clamp((x - x0) / span, 0f, 1f);
             float inverseDepth = i0 + ((i1 - i0) * t);
-            if (DepthTestLayer(x, y, inverseDepth))
+            if (DepthTestLayer(x, y, inverseDepth, surfaceId: 0))
             {
                 Vector2 uv = Vector2.Lerp(uv0, uv1, t) / inverseDepth;
                 _depthLayer!.SetPixel(x, y, SampleDepthLayerTexture(texture, uv));
@@ -1148,7 +1194,7 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     // at least as near as what is already there, so later draws win ties
     // (matching SoftwareGraphics.DepthTest and the original Direct3D
     // LESSEQUAL depth test).
-    private bool DepthTestLayer(int x, int y, float inverseDepth)
+    private bool DepthTestLayer(int x, int y, float inverseDepth, int surfaceId)
     {
         if (x < 0 || y < 0 || x >= (int)ScreenWidth || y >= (int)ScreenHeight)
         {
@@ -1158,10 +1204,11 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         int index = (y * (int)ScreenWidth) + x;
         if (inverseDepth < _depthBuffer![index])
         {
-            return false;
+            return surfaceId != 0 && _surfaceIds![index] == surfaceId;
         }
 
         _depthBuffer[index] = inverseDepth;
+        _surfaceIds![index] = surfaceId;
         return true;
     }
 
