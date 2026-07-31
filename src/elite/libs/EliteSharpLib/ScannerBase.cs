@@ -91,9 +91,11 @@ internal abstract class ScannerBase(
 
     protected abstract Vector2 ClimbPosition { get; }
 
-    protected abstract Vector2 CompassPosition { get; }
+    protected abstract Vector2 CompassCentre { get; }
 
     protected abstract float CompassRadius { get; }
+
+    protected abstract float CompassDotRadius { get; }
 
     protected abstract Vector2 MissilePosition { get; }
 
@@ -152,12 +154,12 @@ internal abstract class ScannerBase(
 
         if (_universe.IsStationPresent)
         {
-            Draw.Graphics.DrawImage(nameof(ImageType.BigS), ScannerRelative(StationIndicatorPosition));
+            Draw.Graphics.DrawImage(nameof(ImageType.Station), ScannerRelative(StationIndicatorPosition));
         }
 
         if (_ship.EcmActive != 0)
         {
-            Draw.Graphics.DrawImage(nameof(ImageType.BigE), ScannerRelative(EcmIndicatorPosition));
+            Draw.Graphics.DrawImage(nameof(ImageType.ECM), ScannerRelative(EcmIndicatorPosition));
         }
     }
 
@@ -354,18 +356,17 @@ internal abstract class ScannerBase(
             return;
         }
 
-        Vector2 origin = CompassPosition;
         Vector2 position = ScannerRelative(new(
-            origin.X + (dest.X * CompassRadius),
-            origin.Y + (dest.Y * -CompassRadius)));
+            CompassCentre.X - CompassDotRadius + (dest.X * CompassRadius) + 1f,
+            CompassCentre.Y - CompassDotRadius + (dest.Y * -CompassRadius) + 1f));
 
         if (dest.Z < 0)
         {
-            Draw.Graphics.DrawImage(nameof(ImageType.DotRed), position);
+            Draw.Graphics.DrawImage(nameof(ImageType.CompassRed), position);
         }
         else
         {
-            Draw.Graphics.DrawImage(nameof(ImageType.GreenDot), position);
+            Draw.Graphics.DrawImage(nameof(ImageType.CompassGreen), position);
         }
     }
 

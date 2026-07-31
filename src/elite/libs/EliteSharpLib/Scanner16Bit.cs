@@ -73,9 +73,11 @@ internal sealed class Scanner16Bit : ScannerBase
 
     protected override Vector2 ClimbPosition => new(544, 9 + 14 + 16);
 
-    protected override Vector2 CompassPosition => new(510, 22);
+    protected override Vector2 CompassCentre => new(514, 26);
 
     protected override float CompassRadius => 16;
+
+    protected override float CompassDotRadius => 5;
 
     protected override Vector2 MissilePosition => new(35, 113);
 

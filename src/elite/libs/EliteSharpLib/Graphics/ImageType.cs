@@ -7,10 +7,10 @@ namespace EliteSharpLib.Graphics;
 public enum ImageType
 {
     Scanner = 0,
-    GreenDot = 1,
-    DotRed = 2,
-    BigS = 3,
-    BigE = 4,
+    CompassGreen = 1,
+    CompassRed = 2,
+    Station = 3,
+    ECM = 4,
     EliteText = 5,
     MissileGreen = 6,
     MissileYellow = 7,
