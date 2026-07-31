@@ -19,4 +19,7 @@ internal static partial class LogMessages
 
     [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "Failed to save commander file '{Path}'.")]
     internal static partial void FailedToSaveCommander(ILogger logger, string path, Exception ex);
+
+    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "{EnvVar} is {SetState}; starting commander is {Commander}.")]
+    internal static partial void DebugCommanderEnvVar(ILogger logger, string envVar, string setState, string commander);
 }

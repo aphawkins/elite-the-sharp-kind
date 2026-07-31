@@ -7,6 +7,47 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (startup diagnostics shared by both games, 2026-07-31)
+
+- `GameApp.Run` ([GameApp.cs](src/useful/libs/Useful.App/GameApp.cs)) now logs
+  two facts right after "Starting {title}", once per process, so a bug
+  report's log file carries what fixing it usually needs first without
+  asking the reporter for their machine spec or config: the build's
+  informational version (from `AssemblyInformationalVersionAttribute`, i.e.
+  MinVer's git-derived version), OS description, .NET runtime, process
+  architecture and logical processor count (`LogMessages.SystemInfo`); and
+  the engine settings actually in effect - backend, tier, window scale, fps,
+  graphic style, depth sort, and the sound toggles
+  (`LogMessages.EngineSettings`). Both are logged from the one shared call
+  site both `SDLProgram.cs`s already route through, so Elite and SCR get it
+  identically with no per-game code.
+- Both lines are a single JSON object (`System.Text.Json`-serialized) rather
+  than a prose sentence, so the two facts can be machine-parsed back out of
+  the log file, e.g.
+  `{"backend":"Software","tier":"SixteenBit","windowScale":1,"fps":60,...}`.
+  The message template uses Serilog's `:l` (literal) format specifier on the
+  JSON string - without it the sink would additionally quote-and-escape the
+  whole blob, same as it already does for any plain string property.
+  Verified live in both `elite-.log` and `scr-.log` via `run-elite`/`run-scr`.
+
+### Removed (last conditional compilation site in Elite, 2026-07-31)
+
+- `SaveFile`'s `#if DEBUG` (issue #7) picked `CommanderFactory.Max()` as the
+  starting commander in debug builds and `.Jameson()` otherwise, so trying
+  the debug commander meant a debug build. It's now a runtime check against
+  a new `ELITE_DEBUG_COMMANDER` environment variable (presence-checked, same
+  convention as `Useful.Abstraction.GameHost`'s `GAME_KEY_SCRIPT`/
+  `GAME_FRAME_DUMP_DIR`), so `Jameson()` is the default in every build and
+  `Max()` is an opt-in without recompiling. The other site the backlog item
+  named, a commented-out `////#if QHD` block in `SDLProgram.cs`, had already
+  been deleted by an earlier change; the item was stale on that half.
+- `SaveFile` also logs the outcome at startup (new
+  `LogMessages.DebugCommanderEnvVar`, Information level so it shows with
+  the default log config): `elite-.log` now records whether
+  `ELITE_DEBUG_COMMANDER` was set and which commander it started with,
+  e.g. `ELITE_DEBUG_COMMANDER is set; starting commander is MAX.` -
+  verified live against both branches with `run-elite`.
+
 ### Fixed (a missing sound effect no longer throws, 2026-07-31)
 
 - `AudioController.PlayEffect` looked its sample up with an unguarded

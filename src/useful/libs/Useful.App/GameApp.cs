@@ -1,5 +1,8 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -85,10 +88,12 @@ public static class GameApp
 
         Microsoft.Extensions.Logging.ILogger logger = loggerFactory.CreateLogger(nameof(GameApp));
 
+        LogMessages.StartingTitle(logger, title);
+        LogStartupDiagnostics(logger, engine);
+
         try
         {
             IGameApp game = provider.GetRequiredService<IGameApp>();
-            LogMessages.StartingTitle(logger, title);
             game.Run();
         }
         catch (Exception ex)
@@ -103,6 +108,45 @@ public static class GameApp
         }
 
         return 0;
+    }
+
+    // A bug report rarely comes with the reporter's machine spec or config
+    // file attached, so the log itself carries what a fix usually needs
+    // first: which build, which OS/runtime, and which engine settings were
+    // in effect. Shared by every game via this one call. Logged as JSON
+    // (rather than a prose sentence) so the two facts can be machine-parsed
+    // back out of the log file.
+    private static void LogStartupDiagnostics(Microsoft.Extensions.Logging.ILogger logger, EngineConfigSettings engine)
+    {
+        string version = Assembly.GetEntryAssembly()
+            ?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion
+            ?? "unknown";
+
+        var systemInfo = new
+        {
+            version,
+            os = RuntimeInformation.OSDescription,
+            runtime = RuntimeInformation.FrameworkDescription,
+            architecture = RuntimeInformation.ProcessArchitecture.ToString(),
+            processorCount = Environment.ProcessorCount,
+        };
+        string systemInfoJson = JsonSerializer.Serialize(systemInfo);
+        LogMessages.SystemInfo(logger, systemInfoJson);
+
+        var engineSettings = new
+        {
+            backend = engine.Backend.ToString(),
+            tier = engine.Tier.ToString(),
+            windowScale = engine.WindowScale,
+            fps = engine.Graphics.Fps,
+            graphicStyle = engine.Graphics.GraphicStyle.ToString(),
+            depthSort = engine.Graphics.DepthSort.ToString(),
+            soundEffects = engine.Sound.Effects,
+            soundMusic = engine.Sound.Music,
+        };
+        string engineSettingsJson = JsonSerializer.Serialize(engineSettings);
+        LogMessages.EngineSettings(logger, engineSettingsJson);
     }
 
     // Null means the environment variable was unset or unparseable; the

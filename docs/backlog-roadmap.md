@@ -73,20 +73,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [EliteSharpLib] Remove conditional compilation (issue #7): two
-      `#if` sites remain — the FPS overlay is now the
-      `engine.graphics.showFps` config option rather than a `#if DEBUG`
-      gate, leaving `SaveFile`'s `#if DEBUG` default commander
-      (`CommanderFactory.Max()` vs `.Jameson()`,
-      [SaveFile.cs:51-55](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)),
-      and a fully commented-out `////#if QHD` resolution block in
-      `SDLProgram`
-      ([SDLProgram.cs:26-32](../src/elite/apps/EliteSharp/SDLProgram.cs))
-      that's dead weight now the render-resolution-configurable item below
-      exists. Replace the two live `#if DEBUG`s with a runtime
-      env-var/config check (there's already an `ELITE_LOG_LEVEL`
-      env-var precedent in `SDLProgram.cs`) and delete the dead QHD
-      comment block outright.
 3D pipeline sharing (split 2026-07-14 from the "unify the two 3D
 pipelines" [LARGE] item; a code survey found the pipelines differ more
 than assumed — Elite: float `Matrix4x4` transform, `vec.Z = 1` clamp

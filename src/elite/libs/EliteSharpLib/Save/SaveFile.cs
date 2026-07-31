@@ -15,6 +15,14 @@ namespace EliteSharpLib.Save;
 
 internal sealed class SaveFile
 {
+    /// <summary>
+    /// Set (to any value) to start with <see cref="CommanderFactory.Max"/>
+    /// instead of the default <see cref="CommanderFactory.Jameson"/> -
+    /// convenient for manually exercising late-game equipment/cargo without
+    /// a save file. Unset in normal play.
+    /// </summary>
+    private const string DebugCommanderEnvVar = "ELITE_DEBUG_COMMANDER";
+
     private const string FileExtension = ".cmdr";
 
     private readonly JsonSerializerOptions _options = new()
@@ -48,11 +56,13 @@ internal sealed class SaveFile
         _logger = logger ?? NullLogger<SaveFile>.Instance;
         Directory.CreateDirectory(_baseDirectory);
 
-#if DEBUG
-        _lastSaved = CommanderFactory.Max();
-#else
-        _lastSaved = CommanderFactory.Jameson();
-#endif
+        bool debugCommanderSet = Environment.GetEnvironmentVariable(DebugCommanderEnvVar) is not null;
+        _lastSaved = debugCommanderSet ? CommanderFactory.Max() : CommanderFactory.Jameson();
+        LogMessages.DebugCommanderEnvVar(
+            _logger,
+            DebugCommanderEnvVar,
+            debugCommanderSet ? "set" : "not set",
+            _lastSaved.CommanderName);
     }
 
     internal void GetLastSave()

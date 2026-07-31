@@ -11,4 +11,14 @@ internal static partial class LogMessages
 
     [LoggerMessage(EventId = 1, Level = LogLevel.Critical, Message = "Application terminated unexpectedly")]
     internal static partial void CriticalAppTerminated(ILogger logger, Exception ex);
+
+    // ":l" is Serilog's literal-rendering format specifier - without it the
+    // file/console sink would wrap the whole JSON blob in an extra pair of
+    // quotes (and escape the quotes inside it), same as it already does for
+    // any plain string property.
+    [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "{SystemInfoJson:l}")]
+    internal static partial void SystemInfo(ILogger logger, string systemInfoJson);
+
+    [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "{EngineSettingsJson:l}")]
+    internal static partial void EngineSettings(ILogger logger, string engineSettingsJson);
 }
