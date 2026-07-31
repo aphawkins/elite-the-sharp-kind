@@ -10,7 +10,6 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
-using Useful;
 using Useful.Abstraction;
 using Useful.Audio;
 using Useful.Controls;
@@ -40,7 +39,6 @@ public sealed class EliteMain : IGame, IGameApp
     // frame to frame, producing judder.
     private const float GameTickRate = 13.5f;
 
-    private readonly FastColor _colorText;
     private readonly IAbstraction _abstraction;
     private readonly IGraphics _graphics;
     private readonly IKeyboard _keyboard;
@@ -94,7 +92,6 @@ public sealed class EliteMain : IGame, IGameApp
         _ship = ship;
         _draw = draw;
         _baseView = baseView;
-        _colorText = _draw.Palette["White"];
         _universe = universe;
         _stars = stars;
         _pilot = pilot;
@@ -213,7 +210,7 @@ public sealed class EliteMain : IGame, IGameApp
 
         if (State.MessageCount > 0)
         {
-            _graphics.DrawTextCentre(_draw.Layout.ScannerTop - 40, State.MessageString, nameof(FontType.Small), _colorText);
+            _baseView.DrawInfoMessage(State.MessageString);
         }
 
         if (_space.IsHyperspaceReady)

@@ -7,6 +7,38 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (ViewLayout becomes the viewport, and 8-bit text gets a grid, 2026-07-31)
+
+- The screen border was a pixel short on the right: `DrawRectangle` draws
+  its far edge at `position + size - 1`, so passing `ScreenWidth - 1` lost
+  the last column. It now touches both edges.
+- `ViewLayout` describes one region, the viewport — everything above the
+  HUD — starting at the screen origin. `BorderWidth`, `ScannerTop`,
+  `ScannerLeft`, `ScannerRight` and `Offset` are gone; `Offset` duplicated
+  `ScannerLeft` exactly, and both tiers' scanners being full-width meant
+  the scanner members were screen edges under another name. See
+  [decisions.md](docs/decisions.md).
+- The border is drawn over the viewport's outer pixel rather than reserved
+  out of it, so its width no longer moves any view, and each screen draws
+  it in its own `Draw` instead of `EliteMain.Update` doing it once a tick.
+- The 8-bit viewport is exactly 40x25 of its 8x8 character cells, and
+  8-bit text is positioned with `Row(n)`/`Column(n)`, `DrawTextCentreOnGrid`
+  and `SnapToGrid` rather than pixel constants. Row 0 and the outermost
+  columns belong to the border, so the chrome band is row 1, the header
+  rule row 2, and screen content starts at row 3. The header's yellow
+  verticals down to the scanner are gone on both tiers.
+- The FPS overlay is an engine config option, `engine.graphics.showFps`
+  (off by default), rather than a `#if DEBUG` gate that Release could
+  never show and Debug could never hide. It, the hyperspace countdown and
+  the in-flight message are per-tier chrome on `IBaseView` now, not
+  `EliteMain`'s own drawing.
+- `ShortRangeChartViewBase` — the last screen combining controller and
+  view — is split into `ShortRangeChartController`/`ShortRangeChartModel`
+  with per-tier views. Its model carries screen positions rather than
+  galaxy space, because the row packing decides which planets get a name
+  and the blob sizes depend on the `CarryFlag` side effect of naming;
+  keeping both in the controller is what the backlog entry preferred.
+
 ### Changed (FastColor's implicit conversions removed, 2026-07-30)
 
 - Phase 4, closing out the colour-handling unification: the implicit

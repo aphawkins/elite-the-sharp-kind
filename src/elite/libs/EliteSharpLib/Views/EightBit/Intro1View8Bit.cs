@@ -17,9 +17,8 @@ internal sealed class Intro1View8Bit : BaseView8Bit, IView<Intro1Model>
 {
     // The credits stack upwards from the prompt, one line every 10px: the
     // 8x8 font plus a two-pixel gap.
-    private const float CreditSpacing = 10;
-    private const float CreditsOffset = 60;
-    private const float PromptOffset = 16;
+    private const int CreditsFirstRow = 17;
+    private const int PromptRow = 23;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorYellow;
@@ -42,13 +41,13 @@ internal sealed class Intro1View8Bit : BaseView8Bit, IView<Intro1Model>
 
         _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.ViewportTop + 4);
 
-        float y = _draw.Layout.ScannerTop - CreditsOffset;
+        int row = CreditsFirstRow;
         foreach (string credit in model.Credits)
         {
-            _draw.Graphics.DrawTextCentre(y, credit, nameof(FontType.Small), _colorWhite);
-            y += CreditSpacing;
+            DrawTextCentreOnGrid(row, credit, nameof(FontType.Small), _colorWhite);
+            row++;
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - PromptOffset, model.Prompt, nameof(FontType.Small), _colorYellow);
+        DrawTextCentreOnGrid(PromptRow, model.Prompt, nameof(FontType.Small), _colorYellow);
     }
 }

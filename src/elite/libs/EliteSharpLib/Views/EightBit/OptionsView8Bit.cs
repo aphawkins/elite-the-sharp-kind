@@ -22,11 +22,10 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
 {
     private const int OptionBarHeight = 8;
     private const int OptionBarWidth = 240;
-    private const int FirstRowY = 56;
-    private const int RowSpacingY = 16;
-    private const int CreditSpacingY = 10;
-    private const int CreditsBottomGapY = 6;
-    private const int VersionGapY = 12;
+    private const int FirstRow = 7;
+    private const int RowSpacingRows = 2;
+    private const int CreditsLastRow = 23;
+    private const int VersionGapRows = 2;
 
     // 320px of 8x8 characters, less a character of margin either side.
     private const int MaxCharsPerLine = 38;
@@ -56,7 +55,8 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
 
         for (int i = 0; i < model.Options.Count; i++)
         {
-            Vector2 position = new(_draw.Layout.ViewportCentre.X - (OptionBarWidth / 2), FirstRowY + (i * RowSpacingY));
+            int row = FirstRow + (i * RowSpacingRows);
+            Vector2 position = new(_draw.Layout.ViewportCentre.X - (OptionBarWidth / 2), Row(row));
 
             if (i == model.HighlightedIndex)
             {
@@ -65,7 +65,7 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
 
             FastColor col = model.Options[i].IsEnabled ? _colorWhite : _colorLightGray;
 
-            _draw.Graphics.DrawTextCentre(position.Y, model.Options[i].Label, nameof(FontType.Small), col);
+            DrawTextCentreOnGrid(row, model.Options[i].Label, nameof(FontType.Small), col);
         }
 
         List<string> lines = [];
@@ -74,14 +74,15 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
             Wrap(credit, lines);
         }
 
-        float y = _draw.Layout.ScannerTop - CreditsBottomGapY - (lines.Count * CreditSpacingY);
+        // The credits sit against the bottom of the viewport, one row each, so
+        // the block grows upwards as it wraps.
+        int creditsFirstRow = CreditsLastRow - lines.Count + 1;
 
-        _draw.Graphics.DrawTextCentre(y - VersionGapY, model.Version, nameof(FontType.Small), _colorWhite);
+        DrawTextCentreOnGrid(creditsFirstRow - VersionGapRows, model.Version, nameof(FontType.Small), _colorWhite);
 
-        foreach (string line in lines)
+        for (int i = 0; i < lines.Count; i++)
         {
-            _draw.Graphics.DrawTextCentre(y, line, nameof(FontType.Small), _colorWhite);
-            y += CreditSpacingY;
+            DrawTextCentreOnGrid(creditsFirstRow + i, lines[i], nameof(FontType.Small), _colorWhite);
         }
     }
 

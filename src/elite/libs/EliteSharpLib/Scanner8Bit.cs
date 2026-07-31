@@ -33,7 +33,7 @@ internal sealed class Scanner8Bit : ScannerBase
         DefaultColor = draw.Palette["White"];
     }
 
-    protected override Vector2 ScannerCentre => new(Draw.Layout.ViewportCentre.X - 2, Draw.Layout.ScannerTop + 28);
+    protected override Vector2 ScannerCentre => new(Draw.Layout.ViewportCentre.X - 2, Draw.Layout.ViewportHeight + 28);
 
     protected override (float Y, float X) ScannerExtent => (14, 25);
 

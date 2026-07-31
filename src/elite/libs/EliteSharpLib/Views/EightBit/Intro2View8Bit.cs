@@ -13,8 +13,8 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class Intro2View8Bit : BaseView8Bit, IView<Intro2Model>
 {
-    private const float PromptOffset = 16;
-    private const float ShipNameOffset = 30;
+    private const int PromptRow = 23;
+    private const int ShipNameRow = 21;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorYellow;
@@ -37,15 +37,11 @@ internal sealed class Intro2View8Bit : BaseView8Bit, IView<Intro2Model>
 
         _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.ViewportTop + 4);
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - PromptOffset, model.Prompt, nameof(FontType.Small), _colorYellow);
+        DrawTextCentreOnGrid(PromptRow, model.Prompt, nameof(FontType.Small), _colorYellow);
 
         if (model.ShipName.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(
-                _draw.Layout.ScannerTop - ShipNameOffset,
-                model.ShipName,
-                nameof(FontType.Small),
-                _colorWhite);
+            DrawTextCentreOnGrid(ShipNameRow, model.ShipName, nameof(FontType.Small), _colorWhite);
         }
     }
 }

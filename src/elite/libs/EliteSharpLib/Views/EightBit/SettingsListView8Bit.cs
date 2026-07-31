@@ -24,16 +24,18 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListModel>
 {
-    private const int FirstRowY = 48;
-    private const int CellSpacingY = 20;
-    private const int CellWidth = 148;
-    private const int CellHeight = 17;
-    private const int ColumnPitch = 156;
-    private const int MarginX = 8;
-    private const int ValueIndentX = 8;
-    private const int ValueOffsetY = 8;
-    private const int BackRowGapY = 8;
-    private const int FooterGapY = 16;
+    // Each setting is a two-row cell - name above value - with a blank row
+    // between cells, laid out in two columns.
+    private const int FirstRow = 6;
+    private const int CellRows = 3;
+    private const int CellHeightRows = 2;
+    private const int ValueOffsetRows = 1;
+    private const int BackRowGapRows = 1;
+    private const int FooterGapRows = 2;
+    private const int MarginColumn = 1;
+    private const int ColumnPitchColumns = 20;
+    private const int CellWidthColumns = 18;
+    private const int ValueIndentColumns = 1;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorWhite;
@@ -61,17 +63,21 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
         for (int i = 0; i < lastIndex; i++)
         {
             Vector2 position = new(
-                MarginX + ((i & 1) * ColumnPitch) + _draw.Layout.ScannerLeft,
-                FirstRowY + (i / 2 * CellSpacingY));
+                Column(MarginColumn + ((i & 1) * ColumnPitchColumns)),
+                Row(FirstRow + (i / 2 * CellRows)));
 
             if (i == model.HighlightedIndex)
             {
-                _draw.Graphics.DrawRectangleFilled(position, CellWidth, CellHeight, _colorRed);
+                _draw.Graphics.DrawRectangleFilled(
+                    position,
+                    Column(CellWidthColumns),
+                    Row(CellHeightRows),
+                    _colorRed);
             }
 
             _draw.Graphics.DrawTextLeft(position, model.Rows[i].Name, nameof(FontType.Small), _colorWhite);
             _draw.Graphics.DrawTextLeft(
-                new(position.X + ValueIndentX, position.Y + ValueOffsetY),
+                new(position.X + Column(ValueIndentColumns), position.Y + Row(ValueOffsetRows)),
                 model.Rows[i].Value,
                 nameof(FontType.Small),
                 _colorWhite);
@@ -84,22 +90,22 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
     private void DrawBackRow(SettingsListModel model, int lastIndex)
     {
         // lastIndex settings fill ceil(lastIndex / 2) grid rows above it.
-        float y = FirstRowY + ((lastIndex + 1) / 2 * CellSpacingY) + BackRowGapY;
+        int row = FirstRow + ((lastIndex + 1) / 2 * CellRows) + BackRowGapRows;
 
         if (lastIndex == model.HighlightedIndex)
         {
             _draw.Graphics.DrawRectangleFilled(
-                new(_draw.Layout.ViewportCentre.X - (CellWidth / 2), y),
-                CellWidth,
-                CellHeight - ValueOffsetY,
+                new(_draw.Layout.ViewportCentre.X - (Column(CellWidthColumns) / 2), Row(row)),
+                Column(CellWidthColumns),
+                Row(CellHeightRows - ValueOffsetRows),
                 _colorRed);
         }
 
-        _draw.Graphics.DrawTextCentre(y, model.Rows[lastIndex].Name, nameof(FontType.Small), _colorWhite);
+        DrawTextCentreOnGrid(row, model.Rows[lastIndex].Name, nameof(FontType.Small), _colorWhite);
 
         if (model.Footer.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(y + FooterGapY, model.Footer, nameof(FontType.Small), _colorWhite);
+            DrawTextCentreOnGrid(row + FooterGapRows, model.Footer, nameof(FontType.Small), _colorWhite);
         }
     }
 }

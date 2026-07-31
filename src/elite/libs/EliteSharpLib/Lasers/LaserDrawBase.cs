@@ -29,11 +29,11 @@ internal abstract class LaserDrawBase(GameState gameState, IEliteDraw draw, RNG 
             Y = Draw.Layout.ViewportCentre.Y + (rng.Random(0, 2) * scale),
         };
 
-        Vector2 leftA = new(Draw.Layout.ScannerLeft + (32 * scale), Draw.Layout.ScannerTop);
-        Vector2 leftB = new(Draw.Layout.ScannerLeft + (48 * scale), Draw.Layout.ScannerTop);
+        Vector2 leftA = new(Draw.Layout.ViewportLeft + (32 * scale), Draw.Layout.ViewportHeight);
+        Vector2 leftB = new(Draw.Layout.ViewportLeft + (48 * scale), Draw.Layout.ViewportHeight);
 
-        Vector2 rightA = new(Draw.Layout.ScannerRight - (32 * scale), Draw.Layout.ScannerTop);
-        Vector2 rightB = new(Draw.Layout.ScannerRight - (48 * scale), Draw.Layout.ScannerTop);
+        Vector2 rightA = new(Draw.Layout.ViewportRight - (32 * scale), Draw.Layout.ViewportHeight);
+        Vector2 rightB = new(Draw.Layout.ViewportRight - (48 * scale), Draw.Layout.ViewportHeight);
 
         if (gameState.Config.Engine.Graphics.GraphicStyle == GraphicStyle.Wireframe)
         {

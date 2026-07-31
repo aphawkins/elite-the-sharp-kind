@@ -16,11 +16,10 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class PlanetDataView8Bit : BaseView8Bit, IView<PlanetDataModel>
 {
-    private const int LabelX = 8;
-    private const int ValueX = 88;
-    private const int FirstRowY = 32;
-    private const int RowSpacingY = 8;
-    private const int DescriptionY = 96;
+    private const int LabelColumn = 1;
+    private const int ValueColumn = 9;
+    private const int FirstRow = 4;
+    private const int DescriptionRow = 12;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorGreen;
@@ -43,27 +42,27 @@ internal sealed class PlanetDataView8Bit : BaseView8Bit, IView<PlanetDataModel>
 
         DrawViewHeader(model.Header);
 
-        float y = FirstRowY;
+        int row = FirstRow;
 
         if (model.Distance.Length > 0)
         {
-            DrawRow(ref y, "Distance:", model.Distance);
+            DrawRow(ref row, "Distance:", model.Distance);
         }
 
-        DrawRow(ref y, "Economy:", model.Economy);
-        DrawRow(ref y, "Govt:", model.Government);
-        DrawRow(ref y, "Tech:", model.TechLevel);
-        DrawRow(ref y, "Pop:", model.Population);
-        DrawRow(ref y, "Product:", model.Productivity);
-        DrawRow(ref y, "Radius:", model.Radius);
+        DrawRow(ref row, "Economy:", model.Economy);
+        DrawRow(ref row, "Govt:", model.Government);
+        DrawRow(ref row, "Tech:", model.TechLevel);
+        DrawRow(ref row, "Pop:", model.Population);
+        DrawRow(ref row, "Product:", model.Productivity);
+        DrawRow(ref row, "Radius:", model.Radius);
 
-        DrawTextPretty(new(LabelX + _draw.Layout.ScannerLeft, DescriptionY), 304, model.Description);
+        DrawTextPretty(new(Column(LabelColumn), Row(DescriptionRow)), 304, model.Description);
     }
 
-    private void DrawRow(ref float y, string label, string value)
+    private void DrawRow(ref int row, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), label, nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.ScannerLeft, y), value, nameof(FontType.Small), _colorWhite);
-        y += RowSpacingY;
+        _draw.Graphics.DrawTextLeft(new(Column(LabelColumn), Row(row)), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(Column(ValueColumn), Row(row)), value, nameof(FontType.Small), _colorWhite);
+        row++;
     }
 }

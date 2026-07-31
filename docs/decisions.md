@@ -7,6 +7,40 @@ When a decision reshapes or unblocks backlog items, those items are
 updated in backlog-roadmap.md to reference the decision here rather than
 restating it.
 
+## Resolved (2026-07-31) — `ViewLayout` is the viewport, and 8-bit text is on a grid
+
+`ViewLayout` described its metrics partly against the border and partly
+against the scanner, which made every position two subtractions away from
+what it meant. It now describes **one region, the viewport** — everything
+above the HUD — starting at the screen origin:
+
+- **`BorderWidth`, `ScannerTop`, `ScannerLeft` and `ScannerRight` are
+  gone.** The border's width belongs to the base view that draws the
+  frame; the scanner's geometry belongs to `ScannerBase`. Both tiers'
+  scanners are full-width, so `ScannerLeft` was always 0 and
+  `ScannerRight` always `ScreenWidth - 1` — screen edges wearing the HUD's
+  name. `Offset` went with them, having been an exact duplicate of
+  `ScannerLeft` across ~90 call sites.
+- **The border overlays the viewport's outer pixel rather than being
+  reserved out of it.** Changing its width now moves nothing. The cost is
+  that row 0 and the outermost columns are the border's, and most of the
+  8-bit font's glyphs ink their top and edge pixels, so no text goes
+  there.
+- **The 8-bit viewport is therefore exactly 40x25 of its 8x8 cells**, and
+  8-bit text is positioned with `Row(n)`/`Column(n)` on `BaseView8Bit`
+  rather than pixel constants. Centring goes through
+  `DrawTextCentreOnGrid`, since pixel-centring lands odd-length strings on
+  half a cell; text the short range chart's packing places arbitrarily is
+  put on the grid with `SnapToGrid`, which rounds **up** so a label clears
+  the blob it names. The chrome band is row 1, the header rule row 2, and
+  screen content starts at row 3. The 16-bit font is proportional, so no
+  grid applies to that tier.
+
+The clip region survives this: it is a single cheap guard at the pixel
+level that everything drawn in a tick relies on, and making lasers,
+planets, suns, stars and ships each police the viewport themselves would
+reimplement in six places what `DrawPixel` already does once.
+
 ## Resolved (2026-07-30) — the 16-bit palette is web colour names too
 
 The 8-bit decision below argued that a relative ramp name states nothing

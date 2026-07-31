@@ -14,12 +14,11 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class InventoryView8Bit : BaseView8Bit, IView<InventoryModel>
 {
-    private const int LabelX = 8;
-    private const int ValueX = 48;
-    private const int QuantityX = 136;
-    private const int FirstRowY = 40;
-    private const int RowSpacingY = 8;
-    private const int CargoStartY = 60;
+    private const int LabelColumn = 1;
+    private const int ValueColumn = 6;
+    private const int QuantityColumn = 17;
+    private const int FirstRow = 4;
+    private const int CargoFirstRow = 7;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorGreen;
@@ -42,21 +41,21 @@ internal sealed class InventoryView8Bit : BaseView8Bit, IView<InventoryModel>
 
         DrawViewHeader(model.Title);
 
-        DrawRow(FirstRowY, "Fuel:", model.Fuel);
-        DrawRow(FirstRowY + RowSpacingY, "Cash:", model.Cash);
+        DrawRow(FirstRow, "Fuel:", model.Fuel);
+        DrawRow(FirstRow + 1, "Cash:", model.Cash);
 
-        float y = CargoStartY;
+        int row = CargoFirstRow;
         foreach ((string name, string quantity) in model.Cargo)
         {
-            _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), name, nameof(FontType.Small), _colorWhite);
-            _draw.Graphics.DrawTextLeft(new(QuantityX + _draw.Layout.ScannerLeft, y), quantity, nameof(FontType.Small), _colorWhite);
-            y += RowSpacingY;
+            _draw.Graphics.DrawTextLeft(new(Column(LabelColumn), Row(row)), name, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(Column(QuantityColumn), Row(row)), quantity, nameof(FontType.Small), _colorWhite);
+            row++;
         }
     }
 
-    private void DrawRow(float y, string label, string value)
+    private void DrawRow(int row, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), label, nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.ScannerLeft, y), value, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(Column(LabelColumn), Row(row)), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(Column(ValueColumn), Row(row)), value, nameof(FontType.Small), _colorWhite);
     }
 }

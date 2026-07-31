@@ -34,11 +34,11 @@ internal sealed class Intro2View16Bit : BaseView16Bit, IView<Intro2Model>
 
         _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.ViewportTop + 10);
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 30, model.Prompt, nameof(FontType.Large), _colorGoldenrod);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 30, model.Prompt, nameof(FontType.Large), _colorGoldenrod);
 
         if (model.ShipName.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 60, model.ShipName, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 60, model.ShipName, nameof(FontType.Small), _colorWhite);
         }
     }
 }

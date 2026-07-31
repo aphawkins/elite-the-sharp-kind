@@ -17,14 +17,13 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class MarketView8Bit : BaseView8Bit, IView<MarketModel>
 {
-    private const int NameX = 8;
-    private const int PriceRightX = 152;
-    private const int ForSaleRightX = 216;
-    private const int InHoldRightX = 280;
-    private const int HeaderY = 32;
-    private const int FirstRowY = 42;
-    private const int RowSpacingY = 8;
-    private const int CashY = 186;
+    private const int NameColumn = 1;
+    private const int PriceRightColumn = 19;
+    private const int ForSaleRightColumn = 27;
+    private const int InHoldRightColumn = 35;
+    private const int HeaderRow = 4;
+    private const int FirstRow = 5;
+    private const int CashRow = 23;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorWhite;
@@ -49,41 +48,41 @@ internal sealed class MarketView8Bit : BaseView8Bit, IView<MarketModel>
 
         DrawViewHeader(model.Title);
 
-        _draw.Graphics.DrawTextLeft(new(NameX + _draw.Layout.ScannerLeft, HeaderY), "ITEM", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextRight(new(PriceRightX + _draw.Layout.ScannerLeft, HeaderY), "PRICE", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextRight(new(ForSaleRightX + _draw.Layout.ScannerLeft, HeaderY), "SALE", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextRight(new(InHoldRightX + _draw.Layout.ScannerLeft, HeaderY), "HOLD", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(Column(NameColumn), Row(HeaderRow)), "ITEM", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(PriceRightColumn), Row(HeaderRow)), "PRICE", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(ForSaleRightColumn), Row(HeaderRow)), "SALE", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(InHoldRightColumn), Row(HeaderRow)), "HOLD", nameof(FontType.Small), _colorGreen);
 
         for (int i = 0; i < model.Rows.Count; i++)
         {
-            MarketRow row = model.Rows[i];
-            float y = FirstRowY + (i * RowSpacingY);
+            MarketRow marketRow = model.Rows[i];
+            int row = FirstRow + i;
 
-            if (row.IsHighlighted)
+            if (marketRow.IsHighlighted)
             {
-                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.ScannerLeft, y), 316, RowSpacingY, _colorRed);
+                _draw.Graphics.DrawRectangleFilled(new(Layout.ViewportLeft + 2, Row(row)), 316, 8, _colorRed);
             }
 
-            _draw.Graphics.DrawTextLeft(new(NameX + _draw.Layout.ScannerLeft, y), row.Name, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(Column(NameColumn), Row(row)), marketRow.Name, nameof(FontType.Small), _colorWhite);
             _draw.Graphics.DrawTextRight(
-                new(PriceRightX + _draw.Layout.ScannerLeft, y),
-                $"{row.Price:N1}",
+                new(Column(PriceRightColumn), Row(row)),
+                $"{marketRow.Price:N1}",
                 nameof(FontType.Small),
                 _colorWhite);
             _draw.Graphics.DrawTextRight(
-                new(ForSaleRightX + _draw.Layout.ScannerLeft, y),
-                row.ForSaleQuantity > 0 ? $"{row.ForSaleQuantity}{row.Units}" : "-",
+                new(Column(ForSaleRightColumn), Row(row)),
+                marketRow.ForSaleQuantity > 0 ? $"{marketRow.ForSaleQuantity}{marketRow.Units}" : "-",
                 nameof(FontType.Small),
                 _colorWhite);
             _draw.Graphics.DrawTextRight(
-                new(InHoldRightX + _draw.Layout.ScannerLeft, y),
-                row.InHoldQuantity > 0 ? $"{row.InHoldQuantity}{row.Units}" : "-",
+                new(Column(InHoldRightColumn), Row(row)),
+                marketRow.InHoldQuantity > 0 ? $"{marketRow.InHoldQuantity}{marketRow.Units}" : "-",
                 nameof(FontType.Small),
                 _colorWhite);
         }
 
-        _draw.Graphics.DrawTextLeft(new(NameX + _draw.Layout.ScannerLeft, CashY), "Cash:", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(Column(NameColumn), Row(CashRow)), "Cash:", nameof(FontType.Small), _colorGreen);
         _draw.Graphics.DrawTextRight(
-            new(InHoldRightX + _draw.Layout.ScannerLeft, CashY), $"{model.Cash:N1} Credits", nameof(FontType.Small), _colorWhite);
+            new(Column(InHoldRightColumn), Row(CashRow)), $"{model.Cash:N1} Credits", nameof(FontType.Small), _colorWhite);
     }
 }

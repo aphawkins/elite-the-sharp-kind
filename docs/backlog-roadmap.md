@@ -103,20 +103,24 @@ controllers, models and per-tier views". What is left open:
       `OptionsController`; the local `Wrap` helper is a stopgap either way.
       Note each tier now has its own copy of the wrapper, on
       `BaseView8Bit`/`BaseView16Bit`, so a fix has to land in both.
-- [ ] [EliteSharpLib] `ShortRangeChartViewBase` is the one screen still
-      combining controller and view. Drawing is now per-tier
-      (`ShortRangeChartView8Bit`/`16Bit`), but `Reset` still entangles
-      layout with content selection in a way no clean split survives: the
-      text-row packing is computed from screen coordinates, `row <= 3` skips
-      a planet's blob and not just its name, and `blob_size` depends on
-      `GameState.CarryFlag` — a side effect of the `NamePlanet` call that
-      only happens when a name wins a free row (a faithful port of the
-      original's quirk). Revisit when the 8-bit short-range chart art is
-      actually authored and there are real layout requirements to design
-      against; the preferred shape then is passing the tier's layout metrics
-      (centre, scale, row height) into the controller, keeping the
-      `CarryFlag` quirk in one place, rather than moving row packing and name
-      generation into each tier's view.
+- [x] [EliteSharpLib] `ShortRangeChartViewBase` was the one screen still
+      combining controller and view. Split into
+      `ShortRangeChartController`/`ShortRangeChartModel` with per-tier
+      `ShortRangeChartView8Bit`/`16Bit`, taking the shape this entry
+      preferred: the tier's layout metrics go into the controller, so the row
+      packing and the `CarryFlag` quirk stay in one place and the model
+      carries finished screen positions. That is why this model is in screen
+      space where `GalacticChartModel` is in galaxy space — the packing
+      decides which planets get a name at all, and `blob_size` depends on
+      `GameState.CarryFlag`, a side effect of the `NamePlanet` call that only
+      happens when a name wins a free row (a faithful port of the original's
+      quirk), so neither half survives being deferred to the view.
+- [ ] [EliteSharpLib] `ShortRangeChartController.CrossBounds` derives both
+      tiers' cross-hair clamps from `Scale` (`18 * scale + 1` and
+      `Height - (16 * scale + 1)`), which reproduces the previous per-tier
+      constants exactly at scale 1 and 2. If a tier ever wants clamps that
+      are not a straight multiple of the 8-bit ones, this goes back to being
+      per-tier data on the model.
 
 ### Release engineering (from the retired release plan)
 
@@ -162,11 +166,11 @@ not yet scoped into concrete steps.
       Consider `TryGetValue` plus a logged no-op, matching
       `LogMessages.FailedToCreateShip`'s pattern elsewhere in this file
       for a missing lookup.
-- [ ] [EliteSharpLib] Remove conditional compilation (issue #7): three
-      `#if` sites remain — `EliteMain.DrawFps`'s `#if DEBUG` gate
-      ([EliteMain.cs:170-172,251-260](../src/elite/libs/EliteSharpLib/EliteMain.cs)),
-      `SaveFile`'s `#if DEBUG` default commander (`CommanderFactory.Max()`
-      vs `.Jameson()`,
+- [ ] [EliteSharpLib] Remove conditional compilation (issue #7): two
+      `#if` sites remain — the FPS overlay is now the
+      `engine.graphics.showFps` config option rather than a `#if DEBUG`
+      gate, leaving `SaveFile`'s `#if DEBUG` default commander
+      (`CommanderFactory.Max()` vs `.Jameson()`,
       [SaveFile.cs:51-55](../src/elite/libs/EliteSharpLib/Save/SaveFile.cs)),
       and a fully commented-out `////#if QHD` resolution block in
       `SDLProgram`
@@ -441,8 +445,11 @@ either.**):
       - ~~**The stale comment** in `SDLProgram.cs`~~ — updated with the
         change.
       - **Screens using bare absolute coordinates drift out of
-        alignment** with those that are `Offset`-relative, which stay
-        centred. **This is what is left of this item.**
+        alignment** with those laid out from the viewport, which stay
+        centred. **This is what is left of this item.** (`Offset` is
+        gone — it duplicated `ScannerLeft`, and both were removed when
+        `ViewLayout` became viewport-only; screens now lay out from
+        `ViewportLeft`, which is the screen origin.)
         `ThargoidMissionView16Bit` (`new(116, 132)`, the Blake portrait
         at `new(352, 46)`), `ConstrictorMissionView16Bit`,
         `PlanetDataView16Bit`, `MarketView16Bit` and the commander

@@ -43,7 +43,7 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
         {
             Vector2 position = new(
                 _draw.Layout.ViewportCentre.X - (OptionBarWidth / 2),
-                ((_draw.Layout.ScannerTop - (30 * model.Options.Count)) / 2) + (i * 30));
+                ((_draw.Layout.ViewportHeight - (30 * model.Options.Count)) / 2) + (i * 30));
 
             if (i == model.HighlightedIndex)
             {
@@ -55,9 +55,9 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
             _draw.Graphics.DrawTextCentre(position.Y, model.Options[i].Label, nameof(FontType.Small), col);
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 80, model.Version, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 80, model.Version, nameof(FontType.Small), _colorWhite);
 
-        float y = _draw.Layout.ScannerTop - 60;
+        float y = _draw.Layout.ViewportHeight - 60;
         foreach (string credit in model.Credits)
         {
             _draw.Graphics.DrawTextCentre(y, credit, nameof(FontType.Small), _colorWhite);

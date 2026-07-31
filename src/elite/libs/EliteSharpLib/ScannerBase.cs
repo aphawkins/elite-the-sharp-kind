@@ -130,7 +130,7 @@ internal abstract class ScannerBase(
     protected abstract FastColor DefaultColor { get; }
 
     internal void DrawScanner()
-        => Draw.Graphics.DrawImage(nameof(ImageType.Scanner), new(Draw.Layout.ScannerLeft, Draw.Layout.ScannerTop));
+        => Draw.Graphics.DrawImage(nameof(ImageType.Scanner), new(Draw.Layout.ViewportLeft, Draw.Layout.ViewportHeight));
 
     internal void UpdateConsole()
     {
@@ -169,7 +169,7 @@ internal abstract class ScannerBase(
     /// Turns a scanner-relative position into a screen one.
     /// </summary>
     protected Vector2 ScannerRelative(Vector2 position)
-        => new(Draw.Layout.ScannerLeft + position.X, Draw.Layout.ScannerTop + position.Y);
+        => new(Draw.Layout.ViewportLeft + position.X, Draw.Layout.ViewportHeight + position.Y);
 
     private void DisplayAltitude()
     {

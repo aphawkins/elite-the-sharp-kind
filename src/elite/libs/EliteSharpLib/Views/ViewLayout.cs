@@ -9,22 +9,25 @@ namespace EliteSharpLib.Views;
 /// <summary>
 /// The tier's screen metrics, in one place, for the views to lay out against.
 /// Everything but the four inputs is derived rather than stored: a screen
-/// size, the scanner art's size and the coordinate scale determine the rest,
-/// so no two of these can disagree.
+/// size, the HUD art's size and the coordinate scale determine the rest, so
+/// no two of these can disagree.
 /// <para>
-/// The screen is two regions stacked: the <b>viewport</b> - everything above
-/// the scanner, framed by the border, where the universe and every screen's
-/// content is drawn - and the scanner below it. The viewport members describe
-/// the drawable interior, inside the border; the Scanner members describe the
-/// HUD art. Nothing is expressed relative to the other region.
+/// There is one region here, the <b>viewport</b>: everything above the HUD,
+/// where the universe and every screen's content is drawn. It starts at the
+/// screen's own origin, so a view's position is its position - no border
+/// inset and no HUD edge enter the arithmetic, and the 8-bit tier's viewport
+/// is exactly 40 by 25 of its 8x8 character cells. The border is drawn over
+/// the viewport's outer edge rather than reserved out of it, so changing the
+/// border's width never moves a single view.
 /// </para>
 /// </summary>
 /// <param name="ScreenWidth">The render width in pixels.</param>
 /// <param name="ScreenHeight">The render height in pixels.</param>
 /// <param name="ScannerSize">
-/// The scanner bitmap's size. Taken from the art rather than hardcoded, so
-/// each tier's scanner defines its own HUD height and width (the 8-bit
-/// scanner is 320x56 against the 16-bit 512x129).
+/// The scanner bitmap's size, and the only place the HUD enters the layout:
+/// its height is what the viewport stops short of. Taken from the art rather
+/// than hardcoded, so each tier's scanner sets its own HUD height (the 8-bit
+/// scanner is 320x56 against the 16-bit 640x129).
 /// </param>
 /// <param name="Scale">
 /// Elite's coordinate scale: the game's drawing maths is written in the
@@ -34,36 +37,22 @@ namespace EliteSharpLib.Views;
 /// </param>
 internal sealed record ViewLayout(float ScreenWidth, float ScreenHeight, Vector2 ScannerSize, float Scale)
 {
-    /// <summary>
-    /// Gets the width of the frame drawn around the viewport.
-    /// </summary>
-    public float BorderWidth { get; } = 1;
+    // Left/Top/Right/Bottom are inclusive pixel bounds - Right and Bottom are
+    // the last pixel that is still inside - while Width/Height are the extents
+    // one past them, which is what a clip region and a rectangle want.
+    // The viewport starts at the screen's own origin - that is the whole
+    // point of it - so these are fixed rather than derived.
+    public float ViewportLeft { get; }
 
-    /// <summary>
-    /// Gets the y of the scanner's top edge, which is also the row the
-    /// border's bottom edge is drawn on.
-    /// </summary>
-    public float ScannerTop => ScreenHeight - ScannerSize.Y;
+    public float ViewportTop { get; }
 
-    public float ScannerLeft => ViewportCentre.X - (ScannerSize.X / 2);
+    public float ViewportWidth => ScreenWidth;
 
-    public float ScannerRight => ScannerLeft + ScannerSize.X - 1;
+    public float ViewportHeight => ScreenHeight - ScannerSize.Y;
 
-    // The viewport interior is half-open: Left/Top are the first drawable
-    // pixel inside the border, Right/Bottom are one past the last. The border
-    // itself occupies x = 0 and x = ScreenWidth - 1, y = 0 and y = ScannerTop
-    // - 1, so nothing drawn within these bounds can land on it.
-    public float ViewportLeft => BorderWidth;
+    public float ViewportRight => ViewportWidth - 1;
 
-    public float ViewportTop => BorderWidth;
+    public float ViewportBottom => ViewportHeight - 1;
 
-    public float ViewportRight => ScreenWidth - BorderWidth;
-
-    public float ViewportBottom => ScannerTop - BorderWidth;
-
-    public float ViewportWidth => ViewportRight - ViewportLeft;
-
-    public float ViewportHeight => ViewportBottom - ViewportTop;
-
-    public Vector2 ViewportCentre => new((ViewportLeft + ViewportRight) / 2, (ViewportTop + ViewportBottom) / 2);
+    public Vector2 ViewportCentre => new(ViewportWidth / 2, ViewportHeight / 2);
 }

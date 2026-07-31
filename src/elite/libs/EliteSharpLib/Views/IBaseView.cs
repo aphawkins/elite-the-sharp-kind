@@ -36,6 +36,11 @@ internal interface IBaseView
     public void DrawHyperspaceCountdown(int countdown);
 
     /// <summary>
+    /// Draws the transient in-flight message, low and centred.
+    /// </summary>
+    public void DrawInfoMessage(string message);
+
+    /// <summary>
     /// Word-wraps <paramref name="text"/> within the given width.
     /// </summary>
     public void DrawTextPretty(Vector2 position, float width, string text);

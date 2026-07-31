@@ -4,9 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Ships;
 using Useful;
-using Useful.Controls;
 
 namespace EliteSharpLib.Views.EightBit;
 
@@ -14,99 +12,65 @@ namespace EliteSharpLib.Views.EightBit;
 /// The 8-bit short-range chart, authored for the 320x256 canvas: half the
 /// 16-bit tier's cross and text offsets, matching its Scale of 1.
 /// </summary>
-internal sealed class ShortRangeChartView8Bit : ShortRangeChartViewBase
+internal sealed class ShortRangeChartView8Bit : BaseView8Bit, IView<ShortRangeChartModel>
 {
-    private const int TextX = 8;
-    private const int NameY = 28;
-    private const int DistanceY = 20;
+    private const int TextColumn = 1;
+    private const int NameRow = 22;
+    private const int DistanceRow = 23;
     private const int CrossSize = 8;
 
+    private readonly IEliteDraw _draw;
     private readonly FastColor _colorGreen;
     private readonly FastColor _colorRed;
     private readonly FastColor _colorWhite;
     private readonly FastColor _colorYellow;
 
-    internal ShortRangeChartView8Bit(
-        GameState gameState,
-        IEliteDraw draw,
-        IBaseView baseView,
-        IKeyboard keyboard,
-        PlanetController planet,
-        PlayerShip ship)
-        : base(gameState, draw, baseView, keyboard, planet, ship)
+    internal ShortRangeChartView8Bit(IEliteDraw draw)
+        : base(draw)
     {
+        _draw = draw;
+
         _colorGreen = draw.Palette["Green"];
         _colorRed = draw.Palette["Red"];
         _colorWhite = draw.Palette["White"];
         _colorYellow = draw.Palette["Yellow"];
     }
 
-    protected override (float MinX, float MaxX, float MinY, float MaxY) CrossBounds
-        => (1, EliteDraw.Layout.ViewportRight - 1, 19, EliteDraw.Layout.ScannerTop - 17);
-
-    public override void Draw()
+    public void Draw(ShortRangeChartModel model)
     {
-        BaseView.DrawBorder();
-        BaseView.DrawViewHeader("SHORT RANGE CHART");
+        ArgumentNullException.ThrowIfNull(model);
+
+        DrawBorder();
+
+        DrawViewHeader(model.Title);
 
         // Fuel radius
-        Vector2 centre = EliteDraw.Layout.ViewportCentre;
-        float scale = EliteDraw.Layout.Scale;
-        float radius = Ship.Fuel * 10 * scale;
-        float cross_size = CrossSize * scale;
-        BaseView.Graphics.DrawCircle(centre, radius, _colorGreen);
-        BaseView.Graphics.DrawLine(new(centre.X, centre.Y - cross_size), new(centre.X, centre.Y + cross_size), _colorWhite);
-        BaseView.Graphics.DrawLine(new(centre.X - cross_size, centre.Y), new(centre.X + cross_size, centre.Y), _colorWhite);
+        Vector2 centre = _draw.Layout.ViewportCentre;
+        float scale = _draw.Layout.Scale;
+        float radius = model.FuelLightYears * 10 * scale;
+        float crossSize = CrossSize * scale;
+        Graphics.DrawCircle(centre, radius, _colorGreen);
+        Graphics.DrawLine(new(centre.X, centre.Y - crossSize), new(centre.X, centre.Y + crossSize), _colorWhite);
+        Graphics.DrawLine(new(centre.X - crossSize, centre.Y), new(centre.X + crossSize, centre.Y), _colorWhite);
 
-        // Planets
-        foreach ((Vector2 position, string name) in PlanetNames)
+        // The packing places these against galaxy coordinates, which land
+        // anywhere; the blobs they label keep their exact positions, but the
+        // text snaps to the grid like every other 8-bit string.
+        foreach ((Vector2 position, string name) in model.Labels)
         {
-            BaseView.Graphics.DrawTextLeft(position, name, nameof(FontType.Small), _colorWhite);
+            Graphics.DrawTextLeft(SnapToGrid(position), name, nameof(FontType.Small), _colorWhite);
         }
 
-        foreach ((Vector2 position, float size) in PlanetSizes)
+        foreach ((Vector2 position, float size) in model.Planets)
         {
-            BaseView.Graphics.DrawCircleFilled(position, size, _colorYellow);
+            Graphics.DrawCircleFilled(position, size, _colorYellow);
         }
 
         // Cross
-        BaseView.Graphics.DrawLine(new(Cross.X - CrossSize, Cross.Y), new(Cross.X + CrossSize, Cross.Y), _colorRed);
-        BaseView.Graphics.DrawLine(new(Cross.X, Cross.Y - CrossSize), new(Cross.X, Cross.Y + CrossSize), _colorRed);
+        Graphics.DrawLine(new(model.Cross.X - CrossSize, model.Cross.Y), new(model.Cross.X + CrossSize, model.Cross.Y), _colorRed);
+        Graphics.DrawLine(new(model.Cross.X, model.Cross.Y - CrossSize), new(model.Cross.X, model.Cross.Y + CrossSize), _colorRed);
 
-        DrawStatusText();
-    }
-
-    private void DrawStatusText()
-    {
-        float x = TextX + EliteDraw.Layout.ScannerLeft;
-        float nameY = EliteDraw.Layout.ScannerTop - NameY;
-        float distanceY = EliteDraw.Layout.ScannerTop - DistanceY;
-
-        if (IsFind)
-        {
-            BaseView.Graphics.DrawTextLeft(new(x, nameY), "Planet Name?", nameof(FontType.Small), _colorGreen);
-            BaseView.Graphics.DrawTextLeft(new(x, distanceY), FindName, nameof(FontType.Small), _colorWhite);
-            return;
-        }
-
-        if (string.IsNullOrEmpty(GameState.PlanetName))
-        {
-            BaseView.Graphics.DrawTextLeft(new(x, nameY), "Unknown Planet", nameof(FontType.Small), _colorGreen);
-            BaseView.Graphics.DrawTextLeft(new(x, distanceY), FindName, nameof(FontType.Small), _colorWhite);
-            return;
-        }
-
-        BaseView.Graphics.DrawTextLeft(new(x, nameY), GameState.PlanetName, nameof(FontType.Small), _colorGreen);
-
-        if (GameState.DistanceToPlanet > 0)
-        {
-            // "Distance:" alone is 9 characters of the 40 available, so the
-            // 8-bit row drops the label's "Light Years" suffix.
-            BaseView.Graphics.DrawTextLeft(
-                new(x, distanceY),
-                $"Dist: {GameState.DistanceToPlanet:N1} LY",
-                nameof(FontType.Small),
-                _colorWhite);
-        }
+        Graphics.DrawTextLeft(new(Column(TextColumn), Row(NameRow)), model.Caption, nameof(FontType.Small), _colorGreen);
+        Graphics.DrawTextLeft(new(Column(TextColumn), Row(DistanceRow)), model.Detail, nameof(FontType.Small), _colorWhite);
     }
 }

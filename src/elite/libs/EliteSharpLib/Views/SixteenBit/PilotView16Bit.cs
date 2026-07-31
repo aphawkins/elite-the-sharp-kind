@@ -39,7 +39,7 @@ internal sealed class PilotView16Bit : BaseView16Bit, IView<PilotModel>
 
         if (model.HyperspaceStatus.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 25, model.HyperspaceStatus, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 25, model.HyperspaceStatus, nameof(FontType.Small), _colorWhite);
         }
 
         _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportTop + 10, model.ViewName, nameof(FontType.Small), _colorWhite);

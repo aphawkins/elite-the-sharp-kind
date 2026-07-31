@@ -40,14 +40,14 @@ internal sealed class SaveCommanderView8Bit : BaseView8Bit, IView<SaveCommanderM
 
         DrawViewHeader("SAVE COMMANDER");
 
-        _draw.Graphics.DrawTextCentre(48, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
+        DrawTextCentreOnGrid(6, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
         _draw.Graphics.DrawRectangle(new(_draw.Layout.ViewportCentre.X - (BoxWidth / 2), BoxY), BoxWidth, BoxHeight, _colorWhite);
-        _draw.Graphics.DrawTextCentre(BoxY + 8, model.Name, nameof(FontType.Small), _colorWhite);
+        DrawTextCentreOnGrid(9, model.Name, nameof(FontType.Small), _colorWhite);
 
         if (model.StatusMessage.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(112, model.StatusMessage, nameof(FontType.Small), _colorYellow);
-            _draw.Graphics.DrawTextCentre(128, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
+            DrawTextCentreOnGrid(14, model.StatusMessage, nameof(FontType.Small), _colorYellow);
+            DrawTextCentreOnGrid(16, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
         }
     }
 }

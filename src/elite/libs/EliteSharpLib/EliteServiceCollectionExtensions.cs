@@ -204,7 +204,7 @@ public static class EliteServiceCollectionExtensions
         views.Add(Screen.IntroOne, sp.GetRequiredService<Intro1Controller>());
         views.Add(Screen.IntroTwo, sp.GetRequiredService<Intro2Controller>());
         views.Add(Screen.GalacticChart, sp.GetRequiredService<GalacticChartController>());
-        views.Add(Screen.ShortRangeChart, sp.GetRequiredService<ShortRangeChartViewBase>());
+        views.Add(Screen.ShortRangeChart, sp.GetRequiredService<ShortRangeChartController>());
         views.Add(Screen.PlanetData, sp.GetRequiredService<PlanetDataController>());
         views.Add(Screen.MarketPrices, sp.GetRequiredService<MarketController>());
         views.Add(Screen.CommanderStatus, sp.GetRequiredService<CommanderStatusController>());
@@ -250,7 +250,6 @@ public static class EliteServiceCollectionExtensions
         services.AddBaseView();
         services.AddEliteFlightViews();
         services.AddSplitScreens();
-        services.AddEliteConsoleViews();
     }
 
     private static void AddEliteFlightViews(this IServiceCollection services)
@@ -285,23 +284,6 @@ public static class EliteServiceCollectionExtensions
         => services.AddSingleton<IBaseView>(sp => IsEightBit(sp)
             ? new BaseView8Bit(sp.GetRequiredService<IEliteDraw>())
             : new BaseView16Bit(sp.GetRequiredService<IEliteDraw>()));
-
-    private static void AddEliteConsoleViews(this IServiceCollection services)
-        => services.AddSingleton<ShortRangeChartViewBase>(sp => IsEightBit(sp)
-            ? new ShortRangeChartView8Bit(
-                sp.GetRequiredService<GameState>(),
-                sp.GetRequiredService<IEliteDraw>(),
-                sp.GetRequiredService<IBaseView>(),
-                sp.GetRequiredService<IKeyboard>(),
-                sp.GetRequiredService<PlanetController>(),
-                sp.GetRequiredService<PlayerShip>())
-            : new ShortRangeChartView16Bit(
-                sp.GetRequiredService<GameState>(),
-                sp.GetRequiredService<IEliteDraw>(),
-                sp.GetRequiredService<IBaseView>(),
-                sp.GetRequiredService<IKeyboard>(),
-                sp.GetRequiredService<PlanetController>(),
-                sp.GetRequiredService<PlayerShip>()));
 
     // TODO: improve this (moved from EliteMain, see backlog)
     private static Dictionary<string, SfxSample> BuildEliteSfx() => new()

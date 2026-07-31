@@ -15,20 +15,15 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class ConstrictorMissionView8Bit : BaseView8Bit, IView<ConstrictorMissionModel>
 {
-    private const int TextX = 8;
-    private const int TextWidth = 304;
-    private const int FooterY = 180;
+    private const int TextColumn = 1;
+    private const int TextColumns = 38;
+    private const int FooterRow = 22;
 
-    private readonly IEliteDraw _draw;
     private readonly FastColor _colorYellow;
 
     internal ConstrictorMissionView8Bit(IEliteDraw draw)
         : base(draw)
-    {
-        _draw = draw;
-
-        _colorYellow = draw.Palette["Yellow"];
-    }
+        => _colorYellow = draw.Palette["Yellow"];
 
     public void Draw(ConstrictorMissionModel model)
     {
@@ -40,20 +35,20 @@ internal sealed class ConstrictorMissionView8Bit : BaseView8Bit, IView<Constrict
         {
             case 1:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 32), TextWidth, model.Paragraphs[0]);
-                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 96), TextWidth, model.Paragraphs[1]);
+                DrawTextPretty(new(Column(TextColumn), Row(4)), Column(TextColumns), model.Paragraphs[0]);
+                DrawTextPretty(new(Column(TextColumn), Row(12)), Column(TextColumns), model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
             case 3:
                 DrawViewHeader("INCOMING MESSAGE");
-                _draw.Graphics.DrawTextCentre(48, model.Headline, nameof(FontType.Large), _colorYellow);
-                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 64), TextWidth, model.Paragraphs[0]);
+                DrawTextCentreOnGrid(6, model.Headline, nameof(FontType.Large), _colorYellow);
+                DrawTextPretty(new(Column(TextColumn), Row(8)), Column(TextColumns), model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }
     }
 
     private void DrawFooter()
-        => _draw.Graphics.DrawTextCentre(FooterY, "Press space to continue.", nameof(FontType.Small), _colorYellow);
+        => DrawTextCentreOnGrid(FooterRow, "Press space to continue.", nameof(FontType.Small), _colorYellow);
 }

@@ -16,18 +16,13 @@ internal sealed class EscapeCapsuleView8Bit : BaseView8Bit, IView<EscapeCapsuleM
 {
     // The alert sits above the scanner, clear of the dashboard. Half the
     // 16-bit offset, matching the halved font and scanner heights.
-    private const float AlertOffset = 20;
+    private const int AlertRow = 22;
 
-    private readonly IEliteDraw _draw;
     private readonly FastColor _colorWhite;
 
     internal EscapeCapsuleView8Bit(IEliteDraw draw)
         : base(draw)
-    {
-        _draw = draw;
-
-        _colorWhite = draw.Palette["White"];
-    }
+        => _colorWhite = draw.Palette["White"];
 
     public void Draw(EscapeCapsuleModel model)
     {
@@ -37,11 +32,7 @@ internal sealed class EscapeCapsuleView8Bit : BaseView8Bit, IView<EscapeCapsuleM
 
         if (model.IsAlertVisible)
         {
-            _draw.Graphics.DrawTextCentre(
-                _draw.Layout.ScannerTop - AlertOffset,
-                model.Alert,
-                nameof(FontType.Small),
-                _colorWhite);
+            DrawTextCentreOnGrid(AlertRow, model.Alert, nameof(FontType.Small), _colorWhite);
         }
     }
 }

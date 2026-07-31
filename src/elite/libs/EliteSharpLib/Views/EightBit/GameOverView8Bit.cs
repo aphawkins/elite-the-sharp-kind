@@ -14,16 +14,11 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class GameOverView8Bit : BaseView8Bit, IView<GameOverModel>
 {
-    private readonly IEliteDraw _draw;
     private readonly FastColor _colorYellow;
 
     internal GameOverView8Bit(IEliteDraw draw)
         : base(draw)
-    {
-        _draw = draw;
-
-        _colorYellow = draw.Palette["Yellow"];
-    }
+        => _colorYellow = draw.Palette["Yellow"];
 
     public void Draw(GameOverModel model)
     {
@@ -31,6 +26,6 @@ internal sealed class GameOverView8Bit : BaseView8Bit, IView<GameOverModel>
 
         DrawBorder();
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportCentre.Y, model.Message, nameof(FontType.Small), _colorYellow);
+        DrawTextCentreOnGrid(12, model.Message, nameof(FontType.Small), _colorYellow);
     }
 }

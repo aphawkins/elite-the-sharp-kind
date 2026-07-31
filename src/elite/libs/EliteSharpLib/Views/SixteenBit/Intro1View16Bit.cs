@@ -37,13 +37,13 @@ internal sealed class Intro1View16Bit : BaseView16Bit, IView<Intro1Model>
 
         _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.ViewportTop + 10);
 
-        float y = _draw.Layout.ScannerTop - 90;
+        float y = _draw.Layout.ViewportHeight - 90;
         foreach (string credit in model.Credits)
         {
             _draw.Graphics.DrawTextCentre(y, credit, nameof(FontType.Small), _colorWhite);
             y += CreditSpacing;
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - 30, model.Prompt, nameof(FontType.Large), _colorGoldenrod);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 30, model.Prompt, nameof(FontType.Large), _colorGoldenrod);
     }
 }

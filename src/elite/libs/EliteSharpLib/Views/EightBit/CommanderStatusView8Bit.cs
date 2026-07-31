@@ -18,14 +18,15 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderStatusModel>
 {
-    private const int LabelX = 8;
-    private const int ValueX = 104;
-    private const int EquipmentX = 8;
-    private const int RowSpacingY = 8;
-    private const int EquipmentSpacingY = 8;
-    private const int FirstRowY = 20;
-    private const int EquipmentHeaderY = FirstRowY + (7 * RowSpacingY) + 4;
-    private const int EquipmentStartY = EquipmentHeaderY + EquipmentSpacingY;
+    private const int LabelColumn = 1;
+    private const int ValueColumn = 13;
+    private const int EquipmentColumn = 1;
+    private const int DataRows = 7;
+    private const int FirstRow = FirstContentRow;
+
+    // A blank row separates the data block from the equipment list.
+    private const int EquipmentHeaderRow = FirstRow + DataRows + 1;
+    private const int EquipmentFirstRow = EquipmentHeaderRow + 1;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorGreen;
@@ -48,16 +49,16 @@ internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderSta
 
         DrawViewHeader(model.Title);
 
-        DrawRow(FirstRowY, "System:", model.PresentSystem);
-        DrawRow(FirstRowY + RowSpacingY, "Hyperspace:", model.HyperspaceSystem);
-        DrawRow(FirstRowY + (2 * RowSpacingY), "Condition:", model.Condition);
-        DrawRow(FirstRowY + (3 * RowSpacingY), "Fuel:", model.Fuel);
-        DrawRow(FirstRowY + (4 * RowSpacingY), "Cash:", model.Cash);
-        DrawRow(FirstRowY + (5 * RowSpacingY), "Legal:", model.LegalStatus);
-        DrawRow(FirstRowY + (6 * RowSpacingY), "Rating:", model.Rating);
+        DrawRow(FirstRow, "System:", model.PresentSystem);
+        DrawRow(FirstRow + 1, "Hyperspace:", model.HyperspaceSystem);
+        DrawRow(FirstRow + 2, "Condition:", model.Condition);
+        DrawRow(FirstRow + 3, "Fuel:", model.Fuel);
+        DrawRow(FirstRow + 4, "Cash:", model.Cash);
+        DrawRow(FirstRow + 5, "Legal:", model.LegalStatus);
+        DrawRow(FirstRow + 6, "Rating:", model.Rating);
 
         _draw.Graphics.DrawTextLeft(
-            new(LabelX + _draw.Layout.ScannerLeft, EquipmentHeaderY),
+            new(Column(LabelColumn), Row(EquipmentHeaderRow)),
             "EQUIPMENT:",
             nameof(FontType.Small),
             _colorGreen);
@@ -65,13 +66,13 @@ internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderSta
         DrawEquipment(model.Equipment);
     }
 
-    private void DrawRow(float y, string label, string value)
+    private void DrawRow(int row, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(Column(LabelColumn), Row(row)), label, nameof(FontType.Small), _colorGreen);
 
         if (!string.IsNullOrEmpty(value))
         {
-            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.ScannerLeft, y), value, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(Column(ValueColumn), Row(row)), value, nameof(FontType.Small), _colorWhite);
         }
     }
 
@@ -80,12 +81,12 @@ internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderSta
     // 40-character width, so a second column would overlap it.
     private void DrawEquipment(IReadOnlyList<string> equipment)
     {
-        float y = EquipmentStartY;
+        int row = EquipmentFirstRow;
 
         foreach (string item in equipment)
         {
-            _draw.Graphics.DrawTextLeft(new(EquipmentX + _draw.Layout.ScannerLeft, y), item, nameof(FontType.Small), _colorWhite);
-            y += EquipmentSpacingY;
+            _draw.Graphics.DrawTextLeft(new(Column(EquipmentColumn), Row(row)), item, nameof(FontType.Small), _colorWhite);
+            row++;
         }
     }
 }

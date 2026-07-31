@@ -15,16 +15,11 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class QuitView8Bit : BaseView8Bit, IView<QuitModel>
 {
-    private readonly IEliteDraw _draw;
     private readonly FastColor _colorYellow;
 
     internal QuitView8Bit(IEliteDraw draw)
         : base(draw)
-    {
-        _draw = draw;
-
-        _colorYellow = draw.Palette["Yellow"];
-    }
+        => _colorYellow = draw.Palette["Yellow"];
 
     public void Draw(QuitModel model)
     {
@@ -34,6 +29,6 @@ internal sealed class QuitView8Bit : BaseView8Bit, IView<QuitModel>
 
         DrawViewHeader(model.Header);
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportCentre.Y, model.Prompt, nameof(FontType.Small), _colorYellow);
+        DrawTextCentreOnGrid(12, model.Prompt, nameof(FontType.Small), _colorYellow);
     }
 }

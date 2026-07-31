@@ -15,9 +15,9 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMissionModel>
 {
-    private const int TextX = 8;
-    private const int TextWidth = 304;
-    private const int FooterY = 180;
+    private const int TextColumn = 1;
+    private const int TextColumns = 38;
+    private const int FooterRow = 22;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorYellow;
@@ -40,27 +40,27 @@ internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMiss
         {
             case 4:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 64), TextWidth, model.Paragraphs[0]);
+                DrawTextPretty(new(Column(TextColumn), Row(8)), Column(TextColumns), model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
             case 5:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 32), TextWidth, model.Paragraphs[0]);
-                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 96), TextWidth, model.Paragraphs[1]);
-                _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(232 + _draw.Layout.ScannerLeft, 32));
+                DrawTextPretty(new(Column(TextColumn), Row(4)), Column(TextColumns), model.Paragraphs[0]);
+                DrawTextPretty(new(Column(TextColumn), Row(12)), Column(TextColumns), model.Paragraphs[1]);
+                _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(Column(29), Row(4)));
                 DrawFooter();
                 break;
 
             case 6:
                 DrawViewHeader("INCOMING MESSAGE");
-                _draw.Graphics.DrawTextCentre(48, model.Headline, nameof(FontType.Large), _colorYellow);
-                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 64), TextWidth, model.Paragraphs[0]);
+                DrawTextCentreOnGrid(6, model.Headline, nameof(FontType.Large), _colorYellow);
+                DrawTextPretty(new(Column(TextColumn), Row(8)), Column(TextColumns), model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }
     }
 
     private void DrawFooter()
-        => _draw.Graphics.DrawTextCentre(FooterY, "Press space to continue.", nameof(FontType.Small), _colorYellow);
+        => DrawTextCentreOnGrid(FooterRow, "Press space to continue.", nameof(FontType.Small), _colorYellow);
 }

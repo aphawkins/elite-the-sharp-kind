@@ -14,12 +14,11 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class EquipmentView8Bit : BaseView8Bit, IView<EquipmentModel>
 {
-    private const int NameX = 8;
-    private const int IndentedNameX = 24;
-    private const int PriceRightX = 280;
-    private const int FirstRowY = 32;
-    private const int RowSpacingY = 8;
-    private const int CashY = 190;
+    private const int NameColumn = 1;
+    private const int IndentedNameColumn = 3;
+    private const int PriceRightColumn = 35;
+    private const int FirstRow = 4;
+    private const int CashRow = 24;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorLightGray;
@@ -44,27 +43,27 @@ internal sealed class EquipmentView8Bit : BaseView8Bit, IView<EquipmentModel>
 
         DrawViewHeader("EQUIP SHIP");
 
-        float y = FirstRowY;
+        int row = FirstRow;
 
-        foreach (EquipmentRow row in model.Rows)
+        foreach (EquipmentRow equipmentRow in model.Rows)
         {
-            if (row.IsHighlighted)
+            if (equipmentRow.IsHighlighted)
             {
-                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.ScannerLeft, y), 316, RowSpacingY, _colorRed);
+                _draw.Graphics.DrawRectangleFilled(new(Layout.ViewportLeft + 2, Row(row)), 316, 8, _colorRed);
             }
 
-            FastColor color = row.IsAffordable ? _colorWhite : _colorLightGray;
-            int x = row.IsIndented ? IndentedNameX : NameX;
-            _draw.Graphics.DrawTextLeft(new(x + _draw.Layout.ScannerLeft, y), row.Name, nameof(FontType.Small), color);
+            FastColor color = equipmentRow.IsAffordable ? _colorWhite : _colorLightGray;
+            int column = equipmentRow.IsIndented ? IndentedNameColumn : NameColumn;
+            _draw.Graphics.DrawTextLeft(new(Column(column), Row(row)), equipmentRow.Name, nameof(FontType.Small), color);
 
-            if (row.Price.Length > 0)
+            if (equipmentRow.Price.Length > 0)
             {
-                _draw.Graphics.DrawTextRight(new(PriceRightX + _draw.Layout.ScannerLeft, y), row.Price, nameof(FontType.Small), color);
+                _draw.Graphics.DrawTextRight(new(Column(PriceRightColumn), Row(row)), equipmentRow.Price, nameof(FontType.Small), color);
             }
 
-            y += RowSpacingY;
+            row++;
         }
 
-        _draw.Graphics.DrawTextLeft(new(NameX + _draw.Layout.ScannerLeft, CashY), model.Cash, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(Column(NameColumn), Row(CashRow)), model.Cash, nameof(FontType.Small), _colorWhite);
     }
 }

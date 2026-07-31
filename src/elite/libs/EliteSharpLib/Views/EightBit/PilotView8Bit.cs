@@ -17,16 +17,14 @@ namespace EliteSharpLib.Views.EightBit;
 /// </summary>
 internal sealed class PilotView8Bit : BaseView8Bit, IView<PilotModel>
 {
-    private const float HyperspaceOffsetY = 12;
+    private const int HyperspaceRow = 23;
 
-    private readonly IEliteDraw _draw;
     private readonly LaserDrawBase _laser;
     private readonly FastColor _colorWhite;
 
     internal PilotView8Bit(IEliteDraw draw, GameState gameState, RNG rng)
         : base(draw)
     {
-        _draw = draw;
         _laser = new LaserDraw8Bit(gameState, draw, rng);
 
         _colorWhite = draw.Palette["White"];
@@ -40,14 +38,10 @@ internal sealed class PilotView8Bit : BaseView8Bit, IView<PilotModel>
 
         if (model.HyperspaceStatus.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(
-                _draw.Layout.ScannerTop - HyperspaceOffsetY,
-                model.HyperspaceStatus,
-                nameof(FontType.Small),
-                _colorWhite);
+            DrawTextCentreOnGrid(HyperspaceRow, model.HyperspaceStatus, nameof(FontType.Small), _colorWhite);
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportTop + 4, model.ViewName, nameof(FontType.Small), _colorWhite);
+        DrawTextCentreOnGrid(ChromeRow, model.ViewName, nameof(FontType.Small), _colorWhite);
 
         if (model.IsFiring)
         {

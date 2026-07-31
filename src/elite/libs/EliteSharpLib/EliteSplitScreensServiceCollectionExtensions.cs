@@ -54,6 +54,17 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<IView<GalacticChartModel>>()));
 
+        services.AddSingleton<IView<ShortRangeChartModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
+            ? new ShortRangeChartView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new ShortRangeChartView16Bit(sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new ShortRangeChartController(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<IKeyboard>(),
+            sp.GetRequiredService<PlanetController>(),
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<IView<ShortRangeChartModel>>()));
+
         services.AddSingleton<IView<QuitModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new QuitView8Bit(sp.GetRequiredService<IEliteDraw>())
             : new QuitView16Bit(sp.GetRequiredService<IEliteDraw>()));

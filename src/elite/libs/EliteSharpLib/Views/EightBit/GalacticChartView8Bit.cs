@@ -18,13 +18,13 @@ namespace EliteSharpLib.Views.EightBit;
 internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartModel>
 {
     // The plot's last row is galaxy y=255, which ToScreen puts at
-    // (255 * 0.6) + ViewportTop + 11 = 165 at Scale 1; the divider closes the
+    // (255 * 0.6) + ViewportTop + 12 = 165 at Scale 1; the divider closes the
     // plot off on that row.
-    private const float DividerY = 165;
+    private const float DividerY = 172;
     private const float CrossSize = 5;
-    private const float CaptionX = 8;
-    private const float CaptionOffsetY = 28;
-    private const float DetailOffsetY = 16;
+    private const int CaptionColumn = 1;
+    private const int CaptionRow = 22;
+    private const int DetailRow = 23;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorGreen;
@@ -49,7 +49,7 @@ internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartM
 
         DrawViewHeader(model.Title);
 
-        _draw.Graphics.DrawLine(new(_draw.Layout.ScannerLeft, DividerY), new(_draw.Layout.ScannerRight, DividerY), _colorWhite);
+        _draw.Graphics.DrawLine(new(_draw.Layout.ViewportLeft, DividerY), new(_draw.Layout.ViewportRight, DividerY), _colorWhite);
 
         // Fuel radius
         Vector2 centre = ToScreen(model.DockedPlanet);
@@ -79,12 +79,12 @@ internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartM
 
         // Text
         _draw.Graphics.DrawTextLeft(
-            new(CaptionX + _draw.Layout.ScannerLeft, _draw.Layout.ScannerTop - CaptionOffsetY),
+            new(Column(CaptionColumn), Row(CaptionRow)),
             model.Caption,
             nameof(FontType.Small),
             _colorGreen);
         _draw.Graphics.DrawTextLeft(
-            new(CaptionX + _draw.Layout.ScannerLeft, _draw.Layout.ScannerTop - DetailOffsetY),
+            new(Column(CaptionColumn), Row(DetailRow)),
             model.Detail,
             nameof(FontType.Small),
             _colorWhite);
@@ -92,6 +92,6 @@ internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartM
 
     // Galaxy space (D, B) to this tier's screen coordinates.
     private Vector2 ToScreen(Vector2 galaxy) => new(
-        (galaxy.X * _draw.Layout.Scale * 1.3f) + _draw.Layout.ViewportLeft + 1,
-        (galaxy.Y * _draw.Layout.Scale * 0.6f) + _draw.Layout.ViewportTop + 11);
+        (galaxy.X * _draw.Layout.Scale * 1.2f) + _draw.Layout.ViewportLeft + 8,
+        (galaxy.Y * _draw.Layout.Scale * 0.55f) + _draw.Layout.ViewportTop + 24);
 }

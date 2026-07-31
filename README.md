@@ -59,7 +59,8 @@ Every file has the same three top-level elements: `version`, the schema version;
         "graphics": {
             "fps": 60,                         // Maximum render frame rate.  The game speed is independent of it
             "graphicStyle": "Solid",           // How the 3D world is drawn - every object together, so it can't end up half one and half the other.  Wireframe or Solid
-            "depthSort": "ZBuffer"             // Depth-sort strategy for filled rendering (ignored when graphicStyle is Wireframe).  Painter or ZBuffer
+            "depthSort": "ZBuffer",            // Depth-sort strategy for filled rendering (ignored when graphicStyle is Wireframe).  Painter or ZBuffer
+            "showFps": false                   // Overlay the measured frame rate.  A diagnostic, so off by default
         },
         "sound": {
             "music": true,                     // Play music
@@ -77,7 +78,7 @@ A value that is out of range or unrecognised costs you that setting and nothing 
 
 The exception is a value the JSON binder cannot parse at all — a misspelt enum name, or a string where a number belongs. That fails the whole file, so every setting returns to its default; the `.bad` copy is what makes it recoverable.
 
-Note that Stunt Car Racer doesn't read `graphicStyle` or `depthSort` yet — they are written out with the rest of the engine settings, but only Elite acts on them.
+Note that Stunt Car Racer doesn't read `graphicStyle`, `depthSort` or `showFps` yet — they are written out with the rest of the engine settings, but only Elite acts on them.
 
 ## Repository layout
 

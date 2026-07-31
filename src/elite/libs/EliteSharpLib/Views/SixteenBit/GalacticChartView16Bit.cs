@@ -37,7 +37,7 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
         // Header
         DrawViewHeader(model.Title);
 
-        _draw.Graphics.DrawLine(new(0 + _draw.Layout.ScannerLeft, 36 + 258), new(_draw.Layout.ScannerRight, 36 + 258), _colorWhite);
+        _draw.Graphics.DrawLine(new(0 + _draw.Layout.ViewportLeft, 36 + 258), new(_draw.Layout.ViewportRight, 36 + 258), _colorWhite);
 
         // Fuel radius
         Vector2 centre = ToScreen(model.DockedPlanet);
@@ -68,13 +68,13 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
         // Text
         _draw.Graphics
             .DrawTextLeft(
-                new(16 + _draw.Layout.ScannerLeft, _draw.Layout.ScannerTop - 55),
+                new(16 + _draw.Layout.ViewportLeft, _draw.Layout.ViewportHeight - 55),
                 model.Caption,
                 nameof(FontType.Small),
                 _colorGreen);
         _draw.Graphics
             .DrawTextLeft(
-                new(16 + _draw.Layout.ScannerLeft, _draw.Layout.ScannerTop - 40),
+                new(16 + _draw.Layout.ViewportLeft, _draw.Layout.ViewportHeight - 40),
                 model.Detail,
                 nameof(FontType.Small),
                 _colorWhite);
@@ -82,6 +82,6 @@ internal sealed class GalacticChartView16Bit : BaseView16Bit, IView<GalacticChar
 
     // Galaxy space (D, B) to this tier's screen coordinates.
     private Vector2 ToScreen(Vector2 galaxy) => new(
-        (galaxy.X * _draw.Layout.Scale) + _draw.Layout.ScannerLeft,
+        (galaxy.X * _draw.Layout.Scale) + _draw.Layout.ViewportLeft,
         (galaxy.Y * _draw.Layout.Scale / 2) + (18 * _draw.Layout.Scale) + 1);
 }

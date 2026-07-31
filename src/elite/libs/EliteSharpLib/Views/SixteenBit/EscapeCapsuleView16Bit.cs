@@ -36,7 +36,7 @@ internal sealed class EscapeCapsuleView16Bit : BaseView16Bit, IView<EscapeCapsul
         if (model.IsAlertVisible)
         {
             _draw.Graphics.DrawTextCentre(
-                _draw.Layout.ScannerTop - AlertOffset,
+                _draw.Layout.ViewportHeight - AlertOffset,
                 model.Alert,
                 nameof(FontType.Small),
                 _colorWhite);

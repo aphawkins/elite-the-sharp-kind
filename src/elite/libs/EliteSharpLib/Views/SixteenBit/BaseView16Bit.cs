@@ -20,16 +20,18 @@ internal class BaseView16Bit : IBaseView
     // the word-wrap estimates against rather than a measured one.
     private const int CharacterWidth = 8;
 
+    // The frame drawn around the viewport, overlaying its outer pixel rather
+    // than being reserved out of it.
+    private const int BorderWidth = 1;
+
     private readonly FastColor _colorGoldenrod;
     private readonly FastColor _colorWhite;
     private readonly float _rowHeight;
-    private readonly IEliteDraw _draw;
 
     internal BaseView16Bit(IEliteDraw draw)
     {
         ArgumentNullException.ThrowIfNull(draw);
 
-        _draw = draw;
         Graphics = draw.Graphics;
         Layout = draw.Layout;
         _rowHeight = 8 * draw.Layout.Scale;
@@ -41,23 +43,18 @@ internal class BaseView16Bit : IBaseView
 
     public ViewLayout Layout { get; }
 
-    // The border frames the viewport, so it lies outside it: the screens all
-    // draw inside the view clip region, and this has to step out of it and
-    // back for its own rectangle to survive.
+    // Drawn over the viewport's own edge, so it needs no clip juggling: the
+    // rectangle is the viewport, and the view clip region already admits it.
     public void DrawBorder()
     {
-        _draw.SetFullScreenClipRegion();
-
-        for (int i = 0; i < Layout.BorderWidth; i++)
+        for (int i = 0; i < BorderWidth; i++)
         {
             Graphics.DrawRectangle(
-                new(i, i),
-                Layout.ScreenWidth - (2 * i),
-                Layout.ScannerTop - (2 * i),
+                new(Layout.ViewportLeft + i, Layout.ViewportTop + i),
+                Layout.ViewportWidth - (2 * i),
+                Layout.ViewportHeight - (2 * i),
                 _colorWhite);
         }
-
-        _draw.SetViewClipRegion();
     }
 
     // Right-aligned, so the proportional font's width never has to be
@@ -73,6 +70,13 @@ internal class BaseView16Bit : IBaseView
         => Graphics.DrawTextRight(
             new(Layout.ViewportLeft + 21, Layout.ViewportTop + 4),
             $"{countdown}",
+            nameof(FontType.Small),
+            _colorWhite);
+
+    public void DrawInfoMessage(string message)
+        => Graphics.DrawTextCentre(
+            Layout.ViewportHeight - 40,
+            message,
             nameof(FontType.Small),
             _colorWhite);
 

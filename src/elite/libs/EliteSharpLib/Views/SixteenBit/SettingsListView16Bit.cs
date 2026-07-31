@@ -58,7 +58,7 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
                 return;
             }
 
-            position.X = ((i & 1) * 250) + 32 + _draw.Layout.ScannerLeft;
+            position.X = ((i & 1) * 250) + 32 + _draw.Layout.ViewportLeft;
             position.Y = (i / 2 * 30) + (_draw.Layout.ViewportCentre.Y / 2);
 
             if (i == model.HighlightedIndex)
