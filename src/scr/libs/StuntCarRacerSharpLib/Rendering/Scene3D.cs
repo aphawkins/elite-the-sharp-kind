@@ -33,55 +33,6 @@ public sealed class Scene3D
     private float _halfWidth;
     private float _halfHeight;
 
-    // Clip a camera-space polygon against the near plane z = NearPlane.
-    // Returns the number of resulting points written to the output span
-    // (up to one more point than the input).
-    public static int ClipPolygonToNearPlane(in ReadOnlySpan<Vector3> input, in Span<Vector3> output)
-    {
-        Span<Vector2> textureCoords = stackalloc Vector2[input.Length];
-        Span<Vector2> clippedTextureCoords = stackalloc Vector2[input.Length + 1];
-        return ClipPolygonToNearPlane(input, textureCoords, output, clippedTextureCoords);
-    }
-
-    // As above, interpolating a texture coordinate per point through the
-    // clip (textureCoords pairs with input, outputTextureCoords with output).
-    public static int ClipPolygonToNearPlane(
-        in ReadOnlySpan<Vector3> input,
-        in ReadOnlySpan<Vector2> textureCoords,
-        in Span<Vector3> output,
-        in Span<Vector2> outputTextureCoords)
-    {
-        int count = 0;
-
-        for (int i = 0; i < input.Length; i++)
-        {
-            int nextIndex = (i + 1) % input.Length;
-            Vector3 current = input[i];
-            Vector3 next = input[nextIndex];
-
-            bool currentInside = current.Z >= NearPlane;
-            bool nextInside = next.Z >= NearPlane;
-
-            if (currentInside)
-            {
-                outputTextureCoords[count] = textureCoords[i];
-                output[count++] = current;
-            }
-
-            if (currentInside != nextInside)
-            {
-                float t = (NearPlane - current.Z) / (next.Z - current.Z);
-                outputTextureCoords[count] = Vector2.Lerp(textureCoords[i], textureCoords[nextIndex], t);
-                output[count++] = new(
-                    current.X + ((next.X - current.X) * t),
-                    current.Y + ((next.Y - current.Y) * t),
-                    NearPlane);
-            }
-        }
-
-        return count;
-    }
-
     public void SetView(SceneCamera camera, float screenWidth, float screenHeight)
     {
         ArgumentNullException.ThrowIfNull(camera);

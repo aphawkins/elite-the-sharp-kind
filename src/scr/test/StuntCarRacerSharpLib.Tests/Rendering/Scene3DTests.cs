@@ -58,63 +58,6 @@ public class Scene3DTests
         Assert.True(screen.Y < 200);
     }
 
-    [Fact]
-    public void PolygonBehindCameraIsFullyClipped()
-    {
-        Vector3[] polygon =
-        [
-            new(-100, 0, -1000),
-            new(100, 0, -1000),
-            new(100, 0, -500),
-            new(-100, 0, -500),
-        ];
-
-        Span<Vector3> output = stackalloc Vector3[5];
-        int count = Scene3D.ClipPolygonToNearPlane(polygon, output);
-
-        Assert.Equal(0, count);
-    }
-
-    [Fact]
-    public void PolygonInFrontIsUnchanged()
-    {
-        Vector3[] polygon =
-        [
-            new(-100, 0, 1000),
-            new(100, 0, 1000),
-            new(100, 0, 500),
-            new(-100, 0, 500),
-        ];
-
-        Span<Vector3> output = stackalloc Vector3[5];
-        int count = Scene3D.ClipPolygonToNearPlane(polygon, output);
-
-        Assert.Equal(4, count);
-        Assert.Equal(polygon[0], output[0]);
-        Assert.Equal(polygon[3], output[3]);
-    }
-
-    [Fact]
-    public void PolygonCrossingNearPlaneIsClippedToBoundary()
-    {
-        Vector3[] polygon =
-        [
-            new(-100, 0, 1000),
-            new(100, 0, 1000),
-            new(100, 0, -1000),
-            new(-100, 0, -1000),
-        ];
-
-        Span<Vector3> output = stackalloc Vector3[5];
-        int count = Scene3D.ClipPolygonToNearPlane(polygon, output);
-
-        Assert.Equal(4, count);
-        for (int i = 0; i < count; i++)
-        {
-            Assert.True(output[i].Z >= Scene3D.NearPlane);
-        }
-    }
-
     private static SceneCamera CameraAtOrigin()
     {
         // A camera following a freshly reset car sits at the origin

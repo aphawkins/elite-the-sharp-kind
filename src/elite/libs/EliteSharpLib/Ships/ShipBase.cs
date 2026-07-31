@@ -7,6 +7,7 @@ using EliteSharpLib.Graphics;
 using EliteSharpLib.Trader;
 using Useful;
 using Useful.Assets.Models;
+using Useful.Graphics;
 using Useful.Maths;
 
 namespace EliteSharpLib.Ships;
@@ -20,6 +21,15 @@ internal class ShipBase : IShip
     private const float FarAimDistance = 1_000_000f;
     private const int LaserAimSpread = 24;
 
+    // Camera-space depth the ship's faces are clipped against. Ship sizes run
+    // to hundreds of units, so this sits effectively on the camera plane -
+    // it exists to keep the perspective divide out of the sign flip, not to
+    // cull anything a player would otherwise see.
+    private const float NearPlane = 1f;
+
+    // Ship faces are small polygons; anything larger falls back to the heap.
+    private const int StackFacePoints = 16;
+
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorCyan;
     private readonly FastColor _colorWhite;
@@ -29,6 +39,7 @@ internal class ShipBase : IShip
     // Reused across frames so drawing a ship doesn't allocate; grown to the
     // model's point count on first use.
     private Vector4[] _pointList = [];
+    private Vector3[] _cameraList = [];
 
     internal ShipBase(IEliteDraw draw, RNG rng)
     {
@@ -118,6 +129,7 @@ internal class ShipBase : IShip
         if (_pointList.Length < Model.Points.Count)
         {
             _pointList = new Vector4[Model.Points.Count];
+            _cameraList = new Vector3[Model.Points.Count];
         }
 
         Vector4[] pointList = _pointList;
@@ -136,14 +148,21 @@ internal class ShipBase : IShip
     {
         for (int i = 0; i < Model.Points.Count; i++)
         {
-            pointList[i] = ProjectPoint(Model.Points[i].Coords, transform);
+            Vector4 camera = Vector4.Transform(Model.Points[i].Coords, transform) + Location;
+            _cameraList[i] = new(camera.X, camera.Y, camera.Z);
+            pointList[i] = ProjectPoint(camera);
         }
     }
 
     private Vector4 ProjectPoint(Vector4 localCoords, Matrix4x4 transform)
+        => ProjectPoint(Vector4.Transform(localCoords, transform) + Location);
+
+    // Points behind the near plane still have to yield something for the
+    // backface-winding test and the laser aim, so those keep the original's
+    // depth clamp; the faces themselves are clipped properly before drawing.
+    private Vector4 ProjectPoint(Vector4 cameraCoords)
     {
-        Vector4 vec = Vector4.Transform(localCoords, transform);
-        vec += Location;
+        Vector4 vec = cameraCoords;
 
         if (vec.Z <= 0)
         {
@@ -156,9 +175,22 @@ internal class ShipBase : IShip
         return vec;
     }
 
+    private Vector2 ProjectCameraPoint(Vector3 cameraPoint) => new(
+        _draw.Layout.ViewportCentre.X + (cameraPoint.X * _draw.Focus / cameraPoint.Z),
+        _draw.Layout.ViewportCentre.Y - (cameraPoint.Y * _draw.Focus / cameraPoint.Z));
+
     private void DrawModelFaces(Vector4[] pointList)
     {
         _faceRoot ??= FindFaceRoots();
+
+        int maxPoints = 0;
+        for (int i = 0; i < Model.Faces.Count; i++)
+        {
+            maxPoints = Math.Max(maxPoints, Model.Faces[i].Points.Count);
+        }
+
+        Span<Vector3> face = maxPoints <= StackFacePoints ? stackalloc Vector3[StackFacePoints] : new Vector3[maxPoints];
+        Span<Vector3> clipped = maxPoints <= StackFacePoints ? stackalloc Vector3[StackFacePoints + 1] : new Vector3[maxPoints + 1];
 
         for (int i = 0; i < Model.Faces.Count; i++)
         {
@@ -171,19 +203,57 @@ internal class ShipBase : IShip
             if (((pointList[point0].X - pointList[point1].X) * (pointList[point2].Y - pointList[point1].Y)) <=
                 ((pointList[point0].Y - pointList[point1].Y) * (pointList[point2].X - pointList[point1].X)))
             {
-                int num_points = Model.Faces[i].Points.Count;
-                Vector2[] poly_list = new Vector2[num_points];
-
-                for (int j = 0; j < num_points; j++)
+                Vector2[]? poly_list = BuildFacePolygon(Model.Faces[i], pointList, face, clipped);
+                if (poly_list != null)
                 {
-                    int index = Model.Faces[i].PointIndices[j];
-                    poly_list[j].X = pointList[index].X;
-                    poly_list[j].Y = pointList[index].Y;
+                    _draw.DrawPolygonFilled(poly_list, Model.Faces[i].Color, FaceMeanZ(_faceRoot[i], pointList));
                 }
-
-                _draw.DrawPolygonFilled(poly_list, Model.Faces[i].Color, FaceMeanZ(_faceRoot[i], pointList));
             }
         }
+    }
+
+    // The face's screen outline, clipped to the near plane, or null when the
+    // face lies entirely behind it.
+    private Vector2[]? BuildFacePolygon(
+        Face face,
+        Vector4[] pointList,
+        in Span<Vector3> cameraPoints,
+        in Span<Vector3> clipped)
+    {
+        int numPoints = face.Points.Count;
+
+        // A 2-point detail line is not a polygon - the cyclic clipper would
+        // walk its single edge twice - so it keeps the clamped projection.
+        if (numPoints < 3)
+        {
+            Vector2[] line = new Vector2[numPoints];
+            for (int j = 0; j < numPoints; j++)
+            {
+                int index = face.PointIndices[j];
+                line[j] = new(pointList[index].X, pointList[index].Y);
+            }
+
+            return line;
+        }
+
+        for (int j = 0; j < numPoints; j++)
+        {
+            cameraPoints[j] = _cameraList[face.PointIndices[j]];
+        }
+
+        int count = NearPlaneClip.Clip(cameraPoints[..numPoints], NearPlane, clipped);
+        if (count < 3)
+        {
+            return null;
+        }
+
+        Vector2[] polygon = new Vector2[count];
+        for (int j = 0; j < count; j++)
+        {
+            polygon[j] = ProjectCameraPoint(clipped[j]);
+        }
+
+        return polygon;
     }
 
     // The whole-face depth key: the mean Z of the face's transformed

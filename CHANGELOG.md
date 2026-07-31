@@ -7,6 +7,37 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (shared near-plane clipping, 2026-07-31)
+
+- `Scene3D.ClipPolygonToNearPlane` moved out of SCR into
+  `Useful.Graphics.NearPlaneClip.Clip`
+  ([NearPlaneClip.cs](src/useful/libs/Useful.Graphics/NearPlaneClip.cs)). Both
+  overloads (plain, and the one interpolating texture coordinates) were
+  already pure static Sutherland-Hodgman with no SCR dependencies; the plane
+  distance is now a parameter rather than a constant, because the two games
+  work in different camera units. SCR passes its own `Scene3D.NearPlane`
+  (0.5 track units) and is otherwise unchanged. The three clipping tests
+  moved from `Scene3DTests` to a new `NearPlaneClipTests`, joined by two
+  covering the texture-coordinate overload and a non-default plane.
+- Elite adopted it: `ShipBase` used to force `vec.Z = 1` on any transformed
+  point at or behind the camera, which does not clip the geometry so much as
+  drag the offending vertex onto the camera plane - a face crossing that
+  plane was drawn with a smeared, wrong-shaped outline. Ship faces are now
+  clipped properly: `TransformModelPoints` keeps the camera-space points
+  alongside the projected ones, and each face is clipped against a near
+  plane of 1 unit and projected from the clipped result. A face entirely
+  behind the plane is now dropped rather than drawn as garbage.
+- Two things deliberately keep the old clamp. The backface-winding test and
+  the laser aim both read projected points directly and need *some* value
+  for a point behind the camera, so their behaviour is unchanged; and a
+  2-point detail line is not a polygon, so feeding it to a cyclic clipper
+  would walk its single edge twice. Faces of three points or more - which is
+  every filled surface - go through the clipper.
+- Verified live in both games via `run-elite`/`run-scr`: Elite's ship parade
+  across a full close approach (the case that crosses the camera plane) and
+  the flight views, and an SCR race where the road still reaches the bottom
+  of the viewport uncut.
+
 ### Added (startup diagnostics shared by both games, 2026-07-31)
 
 - `GameApp.Run` ([GameApp.cs](src/useful/libs/Useful.App/GameApp.cs)) now logs

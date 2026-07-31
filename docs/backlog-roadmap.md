@@ -83,15 +83,6 @@ genuinely shareable, each independently. Both games now fill via the
 shared z-buffer: the spike that moved Elite's filled ships off the
 painter's chain landed 2026-07-14, see CHANGELOG):
 
-- [ ] [Useful.Graphics] Move `Scene3D.ClipPolygonToNearPlane` into
-      `Useful.Graphics`: both overloads are pure static methods with no
-      SCR dependencies ([Scene3D.cs:40-84](../src/scr/libs/StuntCarRacerSharpLib/Rendering/Scene3D.cs));
-      then evaluate adopting it in Elite's `TransformModelPoints`, whose
-      `if (vec.Z <= 0) vec.Z = 1` clamp
-      ([ShipBase.cs:125-128](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
-      distorts any geometry crossing the camera plane instead of clipping
-      it. Adoption changes close-range visuals — verify against The New
-      Kind's behaviour before keeping it.
 - [ ] [Useful.Graphics] Extract a shared perspective-projection helper
       (centre + focus·x/z): Elite now writes exactly that form, but
       inlines it at five sites — `ShipBase.ProjectPoint`,

@@ -198,14 +198,14 @@ public sealed class TrackRenderer
             int count;
             if (texture == null)
             {
-                count = Scene3D.ClipPolygonToNearPlane(triangle, clipped);
+                count = NearPlaneClip.Clip(triangle, Scene3D.NearPlane, clipped);
             }
             else
             {
                 triangleUv[0] = textureCoords[0];
                 triangleUv[1] = textureCoords[i];
                 triangleUv[2] = textureCoords[i + 1];
-                count = Scene3D.ClipPolygonToNearPlane(triangle, triangleUv, clipped, clippedUv);
+                count = NearPlaneClip.Clip(triangle, triangleUv, Scene3D.NearPlane, clipped, clippedUv);
             }
 
             if (count < 3)
