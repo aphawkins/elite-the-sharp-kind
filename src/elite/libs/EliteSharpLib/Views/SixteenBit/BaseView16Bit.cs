@@ -62,6 +62,15 @@ internal class BaseView16Bit : IBaseView
         _draw.SetViewClipRegion();
     }
 
+    // Right-aligned, so the proportional font's width never has to be
+    // estimated to place this.
+    public void DrawFps(int fps)
+        => Graphics.DrawTextRight(
+            new(Layout.ViewportRight - 4, Layout.ViewportTop + 4),
+            $"FPS: {fps}",
+            nameof(FontType.Small),
+            _colorWhite);
+
     public void DrawHyperspaceCountdown(int countdown)
         => Graphics.DrawTextRight(
             new(Layout.ViewportLeft + 21, Layout.ViewportTop + 4),

@@ -25,6 +25,12 @@ internal interface IBaseView
     public void DrawBorder();
 
     /// <summary>
+    /// Draws the measured frame rate in the top-right, opposite the
+    /// hyperspace countdown.
+    /// </summary>
+    public void DrawFps(int fps);
+
+    /// <summary>
     /// Draws the hyperspace countdown digit in the top-left.
     /// </summary>
     public void DrawHyperspaceCountdown(int countdown);

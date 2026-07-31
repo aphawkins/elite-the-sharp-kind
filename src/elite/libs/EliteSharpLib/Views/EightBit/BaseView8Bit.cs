@@ -60,9 +60,18 @@ internal class BaseView8Bit : IBaseView
         _draw.SetViewClipRegion();
     }
 
+    // Right-aligned, so the text's own width sets where it starts rather than
+    // this having to estimate it from the 8x8 font.
+    public void DrawFps(int fps)
+        => Graphics.DrawTextRight(
+            new(Layout.ViewportRight - 1, Layout.ViewportTop + 1),
+            $"FPS: {fps}",
+            nameof(FontType.Small),
+            _colorWhite);
+
     public void DrawHyperspaceCountdown(int countdown)
         => Graphics.DrawTextRight(
-            new(Layout.ViewportLeft + 11, Layout.ViewportTop + 2),
+            new(Layout.ViewportLeft + 16, Layout.ViewportTop + 1),
             $"{countdown}",
             nameof(FontType.Small),
             _colorWhite);
