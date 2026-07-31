@@ -45,8 +45,9 @@ public class ShipBaseTests
         Point modelPointA = new() { Coords = pointA, FaceNormals = [] };
         Point modelPointB = new() { Coords = pointB, FaceNormals = [] };
 
-        // A 2-point "face" always passes the visibility/winding check in DrawModelFaces
-        // (point0 and point2 resolve to the same point), keeping this test independent of it.
+        // A 2-point "face" lying on no other face's plane has no normal to cull
+        // against, so it always passes the visibility check in DrawModelFaces,
+        // keeping this test independent of it.
         Face face = new() { Color = default, Points = [modelPointA, modelPointB], PointIndices = [0, 1] };
 
         FakeEliteDraw draw = new();
@@ -203,6 +204,70 @@ public class ShipBaseTests
         // The decal keeps its base face's whole-face key, so the painter's
         // strategy still ties and draws it later.
         Assert.Equal(draw.DrawnPolygons[0].Z, draw.DrawnPolygons[1].Z);
+    }
+
+    [Fact]
+    public void DrawKeepsAFrontFacingFaceThatStraddlesTheCameraPlane()
+    {
+        // Arrange: a triangle with one point behind the camera plane and two
+        // well in front of it. The projection clamps the behind point's depth
+        // to 1, which puts it on screen at the view centre instead of off
+        // behind the viewer - so a winding test run on the projected outline
+        // decides on meaningless coordinates and culls this face, even though
+        // most of it is in front of the camera and facing it. Culling in
+        // camera space, before the clamp can touch anything, keeps it.
+        Vector4 pointA = new(0, 0, -100, 0);
+        Vector4 pointB = new(100, 0, 100, 0);
+        Vector4 pointC = new(0, 100, 100, 0);
+
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = Vector4.Zero,
+            Model = BuildModel([pointA, pointB, pointC], [[0, 1, 2]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert: drawn, and clipped to the near plane rather than including
+        // the behind-camera point.
+        (Vector2[] points, float[] depths, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
+        Assert.Equal(4, points.Length);
+        Assert.All(depths, d => Assert.True(d > 0));
+    }
+
+    [Fact]
+    public void DrawCullsADetailLineLyingOnABackFacingFace()
+    {
+        // Arrange: a back-facing triangle with a 2-point detail line in its
+        // plane, as hull detail sits on a hull face. The line has no winding
+        // of its own, so it used to pass every frame whichever way it faced,
+        // leaving a stray stub poking off the far side of the silhouette.
+        Vector4 location = new(0, 0, 1000, 0);
+        Vector4[] points =
+        [
+            new(-100, -100, 0, 0),
+            new(100, -100, 0, 0),
+            new(0, 100, 0, 0),
+            new(-10, -10, 0, 0),
+            new(10, -10, 0, 0),
+        ];
+
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = location,
+            Model = BuildModel(points, [[0, 1, 2], [3, 4]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        Assert.Empty(draw.DrawnPolygons);
     }
 
     private static ThreeDModel BuildModel(Vector4[] coords, int[][] faceIndices)

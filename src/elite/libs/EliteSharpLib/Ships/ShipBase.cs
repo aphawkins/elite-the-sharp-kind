@@ -47,6 +47,7 @@ internal class ShipBase : IShip
     private readonly FastColor _colorWhite;
     private readonly RNG _rng;
     private int[]? _faceRoot;
+    private Vector3[]? _faceNormal;
 
     // Reused across frames so drawing a ship doesn't allocate; grown to the
     // model's point count on first use.
@@ -170,8 +171,9 @@ internal class ShipBase : IShip
         => ProjectPoint(Vector4.Transform(localCoords, transform) + Location);
 
     // Points behind the near plane still have to yield something for the
-    // backface-winding test and the laser aim, so those keep the original's
-    // depth clamp; the faces themselves are clipped properly before drawing.
+    // laser aim, so those keep the original's depth clamp; the faces
+    // themselves are culled in camera space and clipped properly before
+    // drawing, so the clamp no longer feeds any visibility decision.
     private Vector4 ProjectPoint(Vector4 cameraCoords)
     {
         Vector4 vec = cameraCoords;
@@ -193,7 +195,10 @@ internal class ShipBase : IShip
 
     private void DrawModelFaces(Vector4[] pointList)
     {
-        _faceRoot ??= FindFaceRoots();
+        if (_faceRoot == null)
+        {
+            (_faceRoot, _faceNormal) = FindFaceRoots();
+        }
 
         int maxPoints = 0;
         for (int i = 0; i < Model.Faces.Count; i++)
@@ -206,14 +211,7 @@ internal class ShipBase : IShip
 
         for (int i = 0; i < Model.Faces.Count; i++)
         {
-            int point0 = Model.Faces[i].PointIndices[0];
-            int point1 = Model.Faces[i].PointIndices[1];
-            int point2 = Model.Faces[i].Points.Count > 2
-                ? Model.Faces[i].PointIndices[2]
-                : Model.Faces[i].PointIndices[0];
-
-            if (((pointList[point0].X - pointList[point1].X) * (pointList[point2].Y - pointList[point1].Y)) <=
-                ((pointList[point0].Y - pointList[point1].Y) * (pointList[point2].X - pointList[point1].X)))
+            if (IsFacingCamera(i))
             {
                 float bias = _faceRoot[i] == i ? 1f : DecalDepthBias;
                 Vector2[]? poly_list = BuildFacePolygon(Model.Faces[i], pointList, face, clipped, bias, out float[] depths);
@@ -223,6 +221,26 @@ internal class ShipBase : IShip
                 }
             }
         }
+    }
+
+    // Backface cull in camera space, against the face's own model-space
+    // normal rotated into view. Doing it here rather than on the projected
+    // outline keeps the decision off the near-plane depth clamp, which
+    // produces meaningless X/Y for a face straddling the camera plane -
+    // and no later clip can undo a cull already taken. A face whose normal
+    // is unknown (a degenerate face, or a detail line lying on no other
+    // face's plane) has nothing to cull against, so it draws.
+    private bool IsFacingCamera(int faceIndex)
+    {
+        Vector3 normal = _faceNormal![faceIndex];
+        if (normal == Vector3.Zero)
+        {
+            return true;
+        }
+
+        Vector4 rotated = Vector4.Transform(new Vector4(normal, 0), Rotmat);
+        Vector3 toFace = _cameraList[Model.Faces[faceIndex].PointIndices[0]];
+        return ((rotated.X * toFace.X) + (rotated.Y * toFace.Y) + (rotated.Z * toFace.Z)) <= 0;
     }
 
     // The face's screen outline, clipped to the near plane, with the
@@ -301,9 +319,14 @@ internal class ShipBase : IShip
     // an earlier, larger face. They must render over that base face, so
     // they share its depth key. Faces on no earlier plane root to
     // themselves. Computed once per instance from the model geometry.
-    private int[] FindFaceRoots()
+    //
+    // Also returns each face's model-space normal, for the backface cull. A
+    // detail line has no normal of its own, so it takes its root face's -
+    // which is what makes far-side detail cull with the hull it sits on.
+    private (int[] Roots, Vector3[] Normals) FindFaceRoots()
     {
         int[] roots = new int[Model.Faces.Count];
+        Vector3[] normals = new Vector3[Model.Faces.Count];
         List<(Vector4 Normal, float Offset, int Index)> planes = [];
 
         for (int i = 0; i < Model.Faces.Count; i++)
@@ -334,13 +357,18 @@ internal class ShipBase : IShip
                 if (cross.LengthSquared() > 0)
                 {
                     cross = Vector3.Normalize(cross);
+                    normals[i] = cross;
                     Vector4 normal = new(cross, 0);
                     planes.Add((normal, VectorMaths.VectorDotProduct(normal, face.Points[0].Coords), i));
                 }
             }
+            else if (roots[i] != i)
+            {
+                normals[i] = normals[roots[i]];
+            }
         }
 
-        return roots;
+        return (roots, normals);
     }
 
     private void DrawLasers(Vector4[] pointList)

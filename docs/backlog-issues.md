@@ -40,41 +40,6 @@ selectable* feature produce output that is wrong on its own terms — unlike
 the deliberate period-faithful omissions (no lighting, no texturing in Elite,
 no alpha/fog/AA), which are recorded under Won't below and as roadmap items.
 
-- [ ] [EliteSharpLib] **Backface culling decides on garbage coordinates for
-      faces straddling the camera plane.** The winding test in
-      [`ShipBase.DrawModelFaces`](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)
-      runs on `pointList`, which came from `ProjectPoint`'s
-      `if (vec.Z <= 0) { vec.Z = 1; }` clamp. A face with points on both
-      sides of the camera plane therefore has meaningless projected X/Y
-      feeding the cull, so it can be culled or kept incorrectly — and the
-      near-plane clip that runs *afterwards* cannot undo a decision already
-      taken. The clamp's own comment acknowledges it exists to keep the
-      winding test fed. Visible as faces flickering on/off when a ship
-      passes close by. Fix: cull in camera space against the face normal
-      (`dot(normal, pointOnFace) ` with the normal from the model's own
-      geometry — `FindFaceRoots` already computes plane normals, so the
-      per-face normal can be precomputed once per model rather than per
-      frame), *then* clip, *then* project. That removes the cull's dependency
-      on the clamp entirely; the clamp itself can then only affect the laser
-      aim, where it is harmless.
-
-- [ ] [EliteSharpLib] **2-point detail lines are never backface-culled, so
-      far-side hull detail draws over empty space.** The winding test in
-      [`ShipBase.DrawModelFaces`](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)
-      resolves `point2` to `PointIndices[0]` for a face of fewer than three
-      points, which makes both sides of the comparison the same product —
-      the test degenerates to `0 <= 0` and every detail line passes, every
-      frame, whichever way it faces. (`ShipBaseTests` relies on this to
-      keep its transform test independent of the cull, and says so.) Now
-      that lines are depth-tested, the part of a far-side line lying over
-      the hull is correctly hidden; what remains visible is the part that
-      projects *outside* the near-side silhouette, where there is no
-      geometry to occlude it — a short stray line poking off the hull edge,
-      clearly visible on the Cobra Mk3 in the intro parade. Fix alongside
-      the camera-space cull above: a 2-point face has no normal of its own,
-      so it should be culled by its root face's normal, which
-      `FindFaceRoots` already computes.
-
 - [ ] [Useful.Graphics] **Elite silently drops geometry past 100 polygons per
       frame.** Both `PainterRenderer` and `ZBufferRenderer` open `Submit`
       with `if (_totalPolys == MAXPOLYS) { return; }` — no log, no counter,

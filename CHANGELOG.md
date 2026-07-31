@@ -7,6 +7,28 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (camera-space backface culling for Elite's ships, 2026-07-31)
+
+- `ShipBase.DrawModelFaces` decided backface culling from the *projected*
+  outline, whose behind-camera points had been through `ProjectPoint`'s
+  `if (vec.Z <= 0) { vec.Z = 1; }` depth clamp. A face straddling the camera
+  plane therefore had meaningless screen X/Y feeding the winding test, so it
+  could be culled or kept incorrectly - and the near-plane clip that runs
+  afterwards cannot undo a cull already taken. Visible as faces flickering
+  on and off as a ship passed close by.
+- The cull now runs in camera space, against the face's own normal rotated
+  into view: `dot(normal, pointOnFace) <= 0`. The normals are precomputed
+  once per model by `FindFaceRoots`, which was already deriving plane
+  normals for the decal-rooting pass, so this costs no extra per-frame work.
+  The clamp remains only for the laser aim, where it is harmless.
+- 2-point detail lines are culled too. The old winding test resolved
+  `point2` back to `PointIndices[0]` for a face of fewer than three points,
+  degenerating to `0 <= 0` so every detail line passed every frame whichever
+  way it faced. A line has no normal of its own, so it now takes the normal
+  of the face whose plane it lies in - the root `FindFaceRoots` already
+  finds. This removes the stray stub that poked off the far side of a hull
+  silhouette, where no geometry existed to depth-test it away.
+
 ### Fixed (real per-vertex depth for Elite's z-buffer, 2026-07-31)
 
 - Elite's z-buffered mode never actually got per-vertex depth.
