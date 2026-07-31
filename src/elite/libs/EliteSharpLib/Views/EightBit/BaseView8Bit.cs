@@ -27,6 +27,11 @@ internal class BaseView8Bit : IBaseView
     internal const int FirstContentRow = 3;
     internal const int LastTextColumn = 38;
 
+    // The title screens carry no view header, so their wordmark takes the
+    // chrome band and the row under the rule's place.
+    internal const int TitleRow = 1;
+    internal const int SubtitleRow = 3;
+
     // Low enough to stay clear of the cockpit view, five rows off the bottom.
     internal const int InfoMessageRow = 20;
 
@@ -155,6 +160,18 @@ internal class BaseView8Bit : IBaseView
     /// 40 columns wide.
     /// </summary>
     internal float Column(int column) => Layout.ViewportLeft + (column * CharacterWidth);
+
+    /// <summary>
+    /// Draws the title screens' wordmark, in text rather than a bitmap: the
+    /// 8-bit tier has only its 8x8 font, so the name is spelled out on the
+    /// grid. "---- E L I T E ----" is 19 characters, which centres on the
+    /// 40-column row.
+    /// </summary>
+    internal void DrawTitle()
+    {
+        DrawTextCentreOnGrid(TitleRow, "---- E L I T E ----", nameof(FontType.Large), _colorYellow);
+        DrawTextCentreOnGrid(SubtitleRow, "The Sharp Kind", nameof(FontType.Small), _colorWhite);
+    }
 
     /// <summary>
     /// Draws text centred on the column grid. Graphics.DrawTextCentre centres

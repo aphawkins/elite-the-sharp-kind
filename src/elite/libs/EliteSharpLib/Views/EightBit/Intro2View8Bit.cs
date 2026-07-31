@@ -16,15 +16,12 @@ internal sealed class Intro2View8Bit : BaseView8Bit, IView<Intro2Model>
     private const int PromptRow = 23;
     private const int ShipNameRow = 21;
 
-    private readonly IEliteDraw _draw;
     private readonly FastColor _colorYellow;
     private readonly FastColor _colorWhite;
 
     internal Intro2View8Bit(IEliteDraw draw)
         : base(draw)
     {
-        _draw = draw;
-
         _colorYellow = draw.Palette["Yellow"];
         _colorWhite = draw.Palette["White"];
     }
@@ -35,7 +32,7 @@ internal sealed class Intro2View8Bit : BaseView8Bit, IView<Intro2Model>
 
         DrawBorder();
 
-        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.ViewportTop + 4);
+        DrawTitle();
 
         DrawTextCentreOnGrid(PromptRow, model.Prompt, nameof(FontType.Small), _colorYellow);
 

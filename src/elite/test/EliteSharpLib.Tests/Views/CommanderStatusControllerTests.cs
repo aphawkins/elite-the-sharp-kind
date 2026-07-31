@@ -21,8 +21,8 @@ public class CommanderStatusControllerTests
     [InlineData(0, "Harmless")]
     [InlineData(0x0008, "Mostly Harmless")]
     [InlineData(0x0020, "Average")]
-    [InlineData(0x1900, "- - - E L I T E - - -")]
-    [InlineData(0x7FFF, "- - - E L I T E - - -")]
+    [InlineData(0x1900, "---- E L I T E ----")]
+    [InlineData(0x7FFF, "---- E L I T E ----")]
     public void RatingIsTheHighestBandTheScoreReaches(int score, string expected)
     {
         CommanderStatusController controller = CreateController(out GameState gameState, out _);
