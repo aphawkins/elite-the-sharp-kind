@@ -25,6 +25,7 @@ public class ConfigFileTests
 
         // Assert
         Assert.Equal(60f, config.Engine.Graphics.Fps);
+        Assert.False(config.Engine.Graphics.ShowFps);
         Assert.Equal(1, config.Engine.WindowScale);
         Assert.True(config.Engine.Sound.Music);
         Assert.True(config.Engine.Sound.Effects);
@@ -81,6 +82,15 @@ public class ConfigFileTests
         // Assert
         Assert.Equal(60f, config.Engine.Graphics.Fps);
         Assert.True(config.Game.InstantDock);
+    }
+
+    [Fact]
+    public void ReadConfigHonoursShowFps()
+    {
+        EliteConfig config = ReadWritten(
+            /*lang=json,strict*/ "{\"engine\": {\"graphics\": {\"showFps\": true}}}");
+
+        Assert.True(config.Engine.Graphics.ShowFps);
     }
 
     [Fact]

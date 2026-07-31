@@ -28,6 +28,11 @@ public sealed class GraphicsConfigSettings
     // when GraphicStyle is Solid.
     public DepthSort DepthSort { get; set; } = DepthSort.ZBuffer;
 
+    // Whether to overlay the measured frame rate. Off by default: it is a
+    // diagnostic, not part of the game's display. Nothing to repair - a bool
+    // the binder cannot read simply stays false.
+    public bool ShowFps { get; set; }
+
     /// <summary>
     /// Replaces any graphics value that cannot be honoured with its default,
     /// in place.

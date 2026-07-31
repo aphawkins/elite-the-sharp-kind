@@ -170,9 +170,11 @@ public sealed class EliteMain : IGame, IGameApp
         State.CurrentView.Update();
         _space.UpdateUniverse();
         State.CurrentView.Draw();
-#if DEBUG
-        DrawFps();
-#endif
+
+        if (State.Config.Engine.Graphics.ShowFps)
+        {
+            DrawFps();
+        }
 
         if (!State.IsDocked && !State.IsGameOver)
         {
@@ -203,16 +205,12 @@ public sealed class EliteMain : IGame, IGameApp
         _graphics.ScreenUpdate();
     }
 
-#if DEBUG
-
     private void DrawFps()
         => _graphics.DrawTextLeft(
             new(_draw.Layout.ViewportRight - 65, _draw.Layout.ViewportTop + 3),
             $"FPS: {_framesDrawn.Count}",
             nameof(FontType.Small),
             _colorText);
-
-#endif
 
     // The part of a tick that only applies while flying: laser cooling,
     // messages, the hyperspace countdown and the MCount-driven housekeeping.
