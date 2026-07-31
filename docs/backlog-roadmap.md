@@ -73,18 +73,6 @@ not yet scoped into concrete steps.
 
 ### Cleanups and small refactors
 
-- [ ] [Useful.Audio] `AudioController.PlayEffect`'s `_sfx[effectType]`
-      is an unguarded dictionary indexer
-      ([AudioController.cs:48](../src/useful/libs/Useful.Audio/AudioController.cs)):
-      an effect name missing from the sample dictionary throws
-      `KeyNotFoundException` rather than failing clearly or no-opping.
-      Hit writing `EscapeCapsuleControllerTests` (2026-07-30), which had
-      to populate `Launch` and `Explode` even though the test has
-      nothing to do with sound, since `EffectsOn` defaults true and the
-      lookup runs regardless of what the test wants to exercise.
-      Consider `TryGetValue` plus a logged no-op, matching
-      `LogMessages.FailedToCreateShip`'s pattern elsewhere in this file
-      for a missing lookup.
 - [ ] [EliteSharpLib] Remove conditional compilation (issue #7): two
       `#if` sites remain — the FPS overlay is now the
       `engine.graphics.showFps` config option rather than a `#if DEBUG`

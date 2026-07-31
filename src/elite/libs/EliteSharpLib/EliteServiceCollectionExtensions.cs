@@ -144,7 +144,8 @@ public static class EliteServiceCollectionExtensions
             return new AudioController(
                 sp.GetRequiredService<ISound>(),
                 BuildEliteSfx(),
-                new() { MusicOn = config.Music, EffectsOn = config.Effects });
+                new() { MusicOn = config.Music, EffectsOn = config.Effects },
+                sp.GetRequiredService<ILoggerFactory>().CreateLogger<AudioController>());
         });
         services.AddSingleton(sp => new Pilot(
             sp.GetRequiredService<IEliteDraw>(),

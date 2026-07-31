@@ -22,6 +22,20 @@ public class AudioControllerTests
     }
 
     [Fact]
+    public void PlayEffectNoOpsWhenNoSampleIsRegistered()
+    {
+        // Arrange
+        FakeSound sound = new();
+        AudioController audio = new(sound, new Dictionary<string, SfxSample>(), new());
+
+        // Act
+        audio.PlayEffect("Missing");
+
+        // Assert
+        Assert.Equal(0, sound.PlayCount("Missing"));
+    }
+
+    [Fact]
     public void PlayEffectReplaysOnceTheCooldownHasElapsed()
     {
         // Arrange

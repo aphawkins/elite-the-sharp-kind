@@ -7,6 +7,22 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (a missing sound effect no longer throws, 2026-07-31)
+
+- `AudioController.PlayEffect` looked its sample up with an unguarded
+  dictionary indexer, so an effect name absent from the sample dictionary
+  threw `KeyNotFoundException` out of whatever gameplay code asked for the
+  sound. It now uses `TryGetValue` and logs a Warning no-op instead, via a
+  new `Useful.Audio.LogMessages.MissingSfxSample` following the same
+  `[LoggerMessage]` pattern as `Useful.Graphics`.
+- The logger reaches it through a second constructor taking `ILogger?`
+  (the existing three-argument one delegates with `null`, so tests and any
+  other caller are unchanged); Elite's DI registration passes a real
+  logger. The practical effect is that a test constructing an
+  `AudioController` only has to populate the effects it actually cares
+  about — `EffectsOn` defaults true, so previously every effect the code
+  under test happened to trigger had to be present.
+
 ### Fixed (sdl-drive key names, 2026-07-31)
 
 - `drive.ps1`'s `ConvertTo-VirtualKeyCode` had no entry for `Return`, so a

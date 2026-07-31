@@ -1,5 +1,7 @@
 // 'Useful Libraries' - Andy Hawkins 2023-2026.
 
+using Microsoft.Extensions.Logging;
+
 namespace Useful.Audio;
 
 public sealed class AudioController
@@ -7,14 +9,21 @@ public sealed class AudioController
     private readonly IDictionary<string, SfxSample> _sfx;
     private readonly SfxSample[] _samples;
     private readonly ISound _sound;
+    private readonly ILogger? _logger;
 
     public AudioController(ISound sound, IDictionary<string, SfxSample> sfx, AudioOptions options)
+        : this(sound, sfx, options, logger: null)
+    {
+    }
+
+    public AudioController(ISound sound, IDictionary<string, SfxSample> sfx, AudioOptions options, ILogger? logger)
     {
         ArgumentNullException.ThrowIfNull(sfx);
         ArgumentNullException.ThrowIfNull(options);
 
         _sound = sound;
         _sfx = sfx;
+        _logger = logger;
         MusicOn = options.MusicOn;
         EffectsOn = options.EffectsOn;
 
@@ -45,7 +54,19 @@ public sealed class AudioController
             return;
         }
 
-        SfxSample sample = _sfx[effectType];
+        // An effect with no registered sample is a content gap, not a
+        // fatal error: log it and play nothing rather than throwing from
+        // whatever gameplay code happened to ask for the sound.
+        if (!_sfx.TryGetValue(effectType, out SfxSample? sample))
+        {
+            if (_logger is not null)
+            {
+                LogMessages.MissingSfxSample(_logger, effectType);
+            }
+
+            return;
+        }
+
         if (sample.HasTimeRemaining)
         {
             return;
