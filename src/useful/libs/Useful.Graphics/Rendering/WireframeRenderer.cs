@@ -23,7 +23,7 @@ public sealed class WireframeRenderer : IPolygonRenderer
         _colorWhite = PaletteReader.Read(assetLocator.PalettePath)["White"];
     }
 
-    public void Submit(Vector2[] points, FastColor color, float z)
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
     {
         ArgumentNullException.ThrowIfNull(points);
 

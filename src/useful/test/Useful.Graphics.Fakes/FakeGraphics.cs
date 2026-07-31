@@ -44,6 +44,10 @@ public sealed class FakeGraphics(float screenWidth = 0, float screenHeight = 0) 
     {
     }
 
+    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color)
+    {
+    }
+
     public void DrawPixel(Vector2 position, FastColor color)
     {
     }

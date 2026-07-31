@@ -64,6 +64,10 @@ public sealed class RecordingGraphics(float screenWidth, float screenHeight) : I
     {
     }
 
+    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color)
+    {
+    }
+
     public void DrawPixel(Vector2 position, FastColor color)
     {
     }

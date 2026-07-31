@@ -7,6 +7,70 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (real per-vertex depth for Elite's z-buffer, 2026-07-31)
+
+- Elite's z-buffered mode never actually got per-vertex depth.
+  `ZBufferRenderer.Submit` filled every entry of a polygon's `Depths` array
+  with the single flat whole-face key it was handed, so
+  `DrawPolygonFilledDepth` interpolated a constant across each triangle and
+  the per-pixel test resolved at whole-polygon granularity - no better than
+  the painter's chain on the interpenetrating and steeply-angled faces a
+  depth buffer exists to solve. SCR was already feeding real per-vertex
+  depth straight to `IGraphics`; Elite was the side that wasn't.
+- `IPolygonRenderer.Submit` (and `IEliteDraw.DrawPolygonFilled` behind it)
+  now takes the camera-space depth of each point alongside the flat key.
+  `ShipBase.BuildFacePolygon` emits the near-plane-clipped `Z` per vertex,
+  which is the value it was already computing and discarding.
+  `PainterRenderer` and `WireframeRenderer` ignore the new argument; the
+  flat key stays because the painter's chain still sorts by it.
+- `ZBufferRenderer`'s O(n²) insertion sort into a back-to-front linked chain
+  is gone. It sorted whole polygons and *then* depth-tested every pixel;
+  with a real per-pixel test the sort was dead work. Polygons now draw in
+  submission order. `PainterRenderer` keeps its chain, which is the whole of
+  what it does.
+- Decals needed a bias. Cockpit windows and engine plates lie exactly in the
+  plane of the hull face beneath, so per-vertex depth makes them tie pixel
+  for pixel rather than merely share a key, and the rasteriser's scanline
+  interpolation of inverse depth from floored pixel positions makes that tie
+  inexact - the hull speckles through. Faces that `FindFaceRoots` roots to
+  an earlier plane are now pulled 1% of their depth nearer. 0.1% was
+  measured live as too small to cover the interpolation error on a near
+  edge-on decal; 1% covers it and stays far inside the front-to-back spread
+  of a single ship.
+- `PainterAndZBufferRenderIdenticallyForNonDecalGeometry` became
+  `PainterAndZBufferAgreeOnSilhouetteForNonDecalGeometry`. The two
+  strategies are no longer pixel-identical on a convex decal-free model:
+  the z-buffer awards a shared edge to the nearer face even when it is drawn
+  first, where the painter's later face simply paints over it. The
+  silhouette is still exactly equal, and the seam pixels are ~1% of the
+  covered area.
+- Lines are depth-tested now too, via a new `IGraphics.DrawLineDepth`
+  implemented in both backends (`SoftwareGraphics.DrawLineIntDepth`,
+  `SDLGraphics.DrawLineDepthToLayer` — Bresenham interpolating inverse
+  depth by fraction of the major axis, mirroring the span fills).
+  `ZBufferRenderer` routes its 2-point submissions through it. Previously
+  every line — model detail lines and the laser bolt — went to the plain
+  `DrawLine` and wrote pixels unconditionally, so hull detail on the far
+  side of a ship drew straight through the hull. Dropping the back-to-front
+  chain removed the accidental ordering that had been partly masking this,
+  which is why it is fixed here rather than filed. `PainterRenderer` keeps
+  plain `DrawLine`, which is correct for it — the chain is its ordering.
+- Detail lines take the decal bias for the same reason decals do, and the
+  laser bolt takes it at its mount: the bolt's far end is a screen-space
+  viewport-boundary point with no camera depth of its own, so the whole
+  line tests at the mount's biased depth — it cannot be swallowed by the
+  hull it springs from, but anything genuinely in front still hides it.
+- Verified live via `run-elite` against the same poses rendered in
+  painter's mode: decal panels render solid at every angle including near
+  edge-on, no faces flicker or drop out, and no detail line draws across a
+  hull face any more.
+- Left open, and filed in [backlog-issues.md](docs/backlog-issues.md): a
+  2-point face never gets backface-culled, because the winding test
+  resolves its third point back to its first and degenerates to `0 <= 0`.
+  Depth testing hides such a line where it crosses the hull, but the part
+  projecting outside the silhouette has nothing to occlude it and still
+  shows as a stray line off the hull edge.
+
 ### Changed (shared near-plane clipping, 2026-07-31)
 
 - `Scene3D.ClipPolygonToNearPlane` moved out of SCR into

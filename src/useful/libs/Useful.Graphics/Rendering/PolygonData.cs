@@ -12,9 +12,9 @@ internal struct PolygonData
 
     internal Vector2[] PointList { get; set; }
 
-    // Depth per point, parallel to PointList, for the z-buffered fill.
-    // ZBufferRenderer fills every entry with the polygon's flat Z key.
-    // PainterRenderer leaves this field unused.
+    // Camera-space depth per point, parallel to PointList, for the
+    // z-buffered fill. PainterRenderer leaves this field unused, as
+    // ZBufferRenderer leaves Next and Z unused.
     internal float[] Depths { get; set; }
 
     internal float Z { get; set; }

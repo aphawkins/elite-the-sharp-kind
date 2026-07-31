@@ -16,7 +16,8 @@ public sealed class PainterRenderer(IGraphics graphics) : IPolygonRenderer
     private int _startPoly;
     private int _totalPolys;
 
-    public void Submit(Vector2[] points, FastColor color, float z)
+    // depths is unused: the chain order alone decides occlusion here.
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
     {
         ArgumentNullException.ThrowIfNull(points);
 

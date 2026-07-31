@@ -72,7 +72,7 @@ public class ShipBaseTests
         Vector2 expectedA = ProjectUsingRotmatBasis(pointA, rotmat, location, draw);
         Vector2 expectedB = ProjectUsingRotmatBasis(pointB, rotmat, location, draw);
 
-        (Vector2[] points, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
+        (Vector2[] points, float[] _, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
         Assert.Equal(2, points.Length);
 
         AssertVector2AlmostEqual(expectedA, points[0]);
@@ -121,7 +121,7 @@ public class ShipBaseTests
         float exitDistance = MathF.Min(exitViaLeft, exitViaTop);
         Vector2 expectedEnd = expectedMount + (direction * exitDistance);
 
-        (Vector2[] points, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
+        (Vector2[] points, float[] _, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
         Assert.Equal(2, points.Length);
         AssertVector2AlmostEqual(expectedMount, points[0]);
         AssertVector2AlmostEqual(expectedEnd, points[1]);
@@ -131,6 +131,99 @@ public class ShipBaseTests
         // through the top edge, so X lands well away from either edge.
         Assert.True(MathF.Abs(expectedEnd.X) > 1f);
         Assert.True(MathF.Abs(expectedEnd.X - 511) > 1f);
+    }
+
+    [Fact]
+    public void DrawSubmitsTheCameraDepthOfEachPointOfATiltedFace()
+    {
+        // Arrange: a triangle steeply angled to the camera, so its three
+        // points sit at three clearly different depths. Submitting one flat
+        // depth for all three - as the renderer used to - interpolates a
+        // constant across the face and defeats the per-pixel depth test.
+        Vector4 location = new(0, 0, 1000, 0);
+        Vector4 pointA = new(-100, -100, 0, 0);
+        Vector4 pointB = new(100, -100, 300, 0);
+        Vector4 pointC = new(0, 100, 600, 0);
+
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = location,
+
+            // Wound so the face survives the backface cull.
+            Model = BuildModel([pointA, pointB, pointC], [[0, 2, 1]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        (Vector2[] points, float[] depths, FastColor _, float _) = Assert.Single(draw.DrawnPolygons);
+        Assert.Equal(3, points.Length);
+        Assert.Equal([1000f, 1600f, 1300f], depths);
+    }
+
+    [Fact]
+    public void DrawBiasesADecalNearerThanTheFaceItSitsOn()
+    {
+        // Arrange: a small triangle exactly in the plane of a larger one, as
+        // a cockpit window sits in the plane of the hull. Per-vertex depth
+        // makes the two tie pixel for pixel, so the decal needs a nudge
+        // towards the camera to render over its base face.
+        Vector4 location = new(0, 0, 1000, 0);
+        Vector4[] points =
+        [
+            new(-100, -100, 0, 0),
+            new(100, -100, 0, 0),
+            new(0, 100, 0, 0),
+            new(-10, -10, 0, 0),
+            new(10, -10, 0, 0),
+            new(0, 10, 0, 0),
+        ];
+
+        FakeEliteDraw draw = new();
+        FakeShip ship = new(draw, new(new Random(0)))
+        {
+            Rotmat = Matrix4x4.Identity,
+            Location = location,
+
+            // Wound so both faces survive the backface cull.
+            Model = BuildModel(points, [[0, 2, 1], [3, 5, 4]]),
+        };
+
+        // Act
+        ship.Draw();
+
+        // Assert
+        Assert.Equal(2, draw.DrawnPolygons.Count);
+        Assert.Equal([1000f, 1000f, 1000f], draw.DrawnPolygons[0].Depths);
+        Assert.All(draw.DrawnPolygons[1].Depths, d => Assert.InRange(d, 990f, 999.9f));
+
+        // The decal keeps its base face's whole-face key, so the painter's
+        // strategy still ties and draws it later.
+        Assert.Equal(draw.DrawnPolygons[0].Z, draw.DrawnPolygons[1].Z);
+    }
+
+    private static ThreeDModel BuildModel(Vector4[] coords, int[][] faceIndices)
+    {
+        Point[] modelPoints = [.. coords.Select(c => new Point { Coords = c, FaceNormals = [] })];
+
+        return new()
+        {
+            FaceNormals = [],
+            Faces =
+            [
+                .. faceIndices.Select(indices => new Face
+                {
+                    Color = default,
+                    Points = [.. indices.Select(i => modelPoints[i])],
+                    PointIndices = [.. indices],
+                }),
+            ],
+            Lines = [],
+            Points = [.. modelPoints],
+        };
     }
 
     private static Vector2 Project(Vector4 localCoords, Vector4 location, FakeEliteDraw draw)

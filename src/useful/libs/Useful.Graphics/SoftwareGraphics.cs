@@ -234,6 +234,16 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
         return new(bitmap.Width, bitmap.Height);
     }
 
+    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color)
+        => DrawLineIntDepth(
+            (int)MathF.Floor(lineStart.X),
+            (int)MathF.Floor(lineStart.Y),
+            (int)MathF.Floor(lineEnd.X),
+            (int)MathF.Floor(lineEnd.Y),
+            1f / depthStart,
+            1f / depthEnd,
+            color);
+
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color)
         => DrawLineInt(
             (int)MathF.Floor(lineStart.X),
@@ -961,6 +971,51 @@ public sealed class SoftwareGraphics : IGraphics, IDisposable
                 err += dx;
                 y0 += sy;
             }
+        }
+    }
+
+    // Depth-tested variant of DrawLineInt: inverse depth (1/z) is
+    // interpolated along the Bresenham walk by its fraction of the major
+    // axis, matching how DrawSpanFilledDepth interpolates across a span.
+    private void DrawLineIntDepth(int x0, int y0, int x1, int y1, float inverseStart, float inverseEnd, in FastColor color)
+    {
+        int dx = Math.Abs(x1 - x0);
+        int dy = Math.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        int steps = Math.Max(dx, dy);
+
+        for (int step = 0; step <= steps; step++)
+        {
+            float t = steps == 0 ? 0f : (float)step / steps;
+            PlotDepthTestedPixel(x0, y0, inverseStart + ((inverseEnd - inverseStart) * t), color);
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+    }
+
+    private void PlotDepthTestedPixel(int x, int y, float inverseDepth, in FastColor color)
+    {
+        if (x < 0 || x >= (int)ScreenWidth || y < 0 || y >= (int)ScreenHeight)
+        {
+            return;
+        }
+
+        if (DepthTest(x, y, inverseDepth))
+        {
+            DrawPixel(x, y, color);
         }
     }
 

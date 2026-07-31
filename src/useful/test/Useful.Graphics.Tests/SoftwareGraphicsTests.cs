@@ -223,6 +223,57 @@ public class SoftwareGraphicsTests
         }
     }
 
+    // A detail line lying on a face turned away from the camera must be
+    // hidden by the nearer surface, not drawn straight through it - the
+    // whole reason a line needs a depth test at all.
+    [Fact]
+    public void DrawLineDepthIsHiddenByNearerGeometry()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+        Vector2[] nearQuad = [new(0, 0), new(5, 0), new(5, 5), new(0, 5)];
+
+        // Act: a near surface covering the view, then a line behind it and
+        // an identical one in front of it.
+        graphics.ClearDepth();
+        graphics.DrawPolygonFilledDepth(nearQuad, [10f, 10f, 10f, 10f], BaseColors.Red);
+        graphics.DrawLineDepth(new(0, 1), new(4, 1), 20f, 20f, BaseColors.White);
+        graphics.DrawLineDepth(new(0, 3), new(4, 3), 5f, 5f, BaseColors.White);
+        graphics.ScreenUpdate();
+
+        // Assert
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Red, bmp.GetPixel(2, 1));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(2, 3));
+        }
+    }
+
+    // Depth is interpolated along the line, so one that passes from behind
+    // a surface to in front of it is hidden over exactly the part behind.
+    [Fact]
+    public void DrawLineDepthInterpolatesAlongTheLine()
+    {
+        // Arrange
+        Mock<IAssetLocator> moqAssetLocator = ArrangeAssets();
+        using SoftwareGraphics graphics = SoftwareGraphics.Create(5, 5, DoAssert, moqAssetLocator.Object);
+        Vector2[] quad = [new(0, 0), new(5, 0), new(5, 5), new(0, 5)];
+
+        // Act
+        graphics.ClearDepth();
+        graphics.DrawPolygonFilledDepth(quad, [10f, 10f, 10f, 10f], BaseColors.Red);
+        graphics.DrawLineDepth(new(0, 2), new(4, 2), 20f, 5f, BaseColors.White);
+        graphics.ScreenUpdate();
+
+        // Assert
+        static void DoAssert(FastBitmap bmp)
+        {
+            Assert.Equal(BaseColors.Red, bmp.GetPixel(0, 2));
+            Assert.Equal(BaseColors.White, bmp.GetPixel(4, 2));
+        }
+    }
+
     [Theory]
     [InlineData(0, 0, 5, 5)]
     [InlineData(-1, -1, 5, 5)]

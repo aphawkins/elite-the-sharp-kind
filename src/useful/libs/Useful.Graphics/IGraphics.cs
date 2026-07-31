@@ -40,6 +40,14 @@ public interface IGraphics
 
     public void DrawLine(Vector2 lineStart, Vector2 lineEnd, FastColor color);
 
+    /// <summary>
+    /// Draw a line with per-pixel depth testing. The endpoint depths are
+    /// camera-space distances as DrawPolygonFilledDepth's, interpolated
+    /// along the line, so a line lying on hidden geometry is hidden by it
+    /// rather than drawn over everything.
+    /// </summary>
+    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color);
+
     public void DrawPixel(Vector2 position, FastColor color);
 
     public void DrawPolygon(Vector2[] points, FastColor lineColor);

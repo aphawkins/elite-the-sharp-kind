@@ -65,18 +65,14 @@ internal sealed class EliteDraw : IEliteDraw
 
     public IPaletteCollection Palette { get; }
 
-    // z is one whole-face depth: the chain's sort key, and the flat depth
-    // every pixel of the face tests with in RenderEnd. Flat rather than
-    // per-vertex interpolated depth is deliberate: decal faces (cockpit
-    // windows etc) sit exactly on the hull face beneath, and the
-    // rasterizer's per-triangle interpolation cannot reproduce identical
-    // depths for coplanar faces, which punches holes through the decals.
-    // With one key per face a decal submitted with its base face's key
-    // ties exactly, and the back-to-front chain order lets the
-    // later-submitted decal win the tie, as the painter's draw order
-    // always did.
-    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z)
-        => _shipRenderer.Submit(points, faceColor, z);
+    // depths is the camera-space depth at each point, which the z-buffered
+    // strategy interpolates per pixel; z is one whole-face key, which the
+    // painter's strategy sorts the face by. Decal faces (cockpit windows
+    // etc) sit exactly on the hull face beneath, so the caller gives them
+    // their base face's z key to tie in the painter's order, and a small
+    // near bias in depths to win outright under the per-pixel test.
+    public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z)
+        => _shipRenderer.Submit(points, depths, faceColor, z);
 
     public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);
 

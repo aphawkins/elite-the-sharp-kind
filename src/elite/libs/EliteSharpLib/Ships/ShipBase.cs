@@ -30,6 +30,18 @@ internal class ShipBase : IShip
     // Ship faces are small polygons; anything larger falls back to the heap.
     private const int StackFacePoints = 16;
 
+    // Decal faces (cockpit windows, engine plates) lie exactly in the plane
+    // of the hull face they sit on, so per-vertex depth makes them tie with
+    // it pixel for pixel - and the rasteriser interpolates inverse depth
+    // along a scanline from floored pixel positions, so the tie comes out
+    // inexact and the hull speckles through. Pulling the decal nearer by a
+    // fraction of its depth settles it; relative rather than absolute so it
+    // holds at any range. 0.1% was measured too small to cover the
+    // interpolation error on a near edge-on decal, 1% covers it and stays
+    // far inside the front-to-back spread of a single ship, so a decal
+    // can't punch through a face genuinely in front of it.
+    private const float DecalDepthBias = 0.99f;
+
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorCyan;
     private readonly FastColor _colorWhite;
@@ -203,34 +215,44 @@ internal class ShipBase : IShip
             if (((pointList[point0].X - pointList[point1].X) * (pointList[point2].Y - pointList[point1].Y)) <=
                 ((pointList[point0].Y - pointList[point1].Y) * (pointList[point2].X - pointList[point1].X)))
             {
-                Vector2[]? poly_list = BuildFacePolygon(Model.Faces[i], pointList, face, clipped);
+                float bias = _faceRoot[i] == i ? 1f : DecalDepthBias;
+                Vector2[]? poly_list = BuildFacePolygon(Model.Faces[i], pointList, face, clipped, bias, out float[] depths);
                 if (poly_list != null)
                 {
-                    _draw.DrawPolygonFilled(poly_list, Model.Faces[i].Color, FaceMeanZ(_faceRoot[i], pointList));
+                    _draw.DrawPolygonFilled(poly_list, depths, Model.Faces[i].Color, FaceMeanZ(_faceRoot[i], pointList));
                 }
             }
         }
     }
 
-    // The face's screen outline, clipped to the near plane, or null when the
-    // face lies entirely behind it.
+    // The face's screen outline, clipped to the near plane, with the
+    // camera-space depth of each of its points; null when the face lies
+    // entirely behind the near plane. depthBias scales those depths, to
+    // settle a decal against the face it sits on.
     private Vector2[]? BuildFacePolygon(
         Face face,
         Vector4[] pointList,
         in Span<Vector3> cameraPoints,
-        in Span<Vector3> clipped)
+        in Span<Vector3> clipped,
+        float depthBias,
+        out float[] depths)
     {
         int numPoints = face.Points.Count;
 
         // A 2-point detail line is not a polygon - the cyclic clipper would
-        // walk its single edge twice - so it keeps the clamped projection.
+        // walk its single edge twice - so it keeps the clamped projection,
+        // whose Z is the camera depth except for points behind the camera.
+        // It takes the same bias as a decal: a detail line lies on a hull
+        // face just as a decal panel does.
         if (numPoints < 3)
         {
             Vector2[] line = new Vector2[numPoints];
+            depths = new float[numPoints];
             for (int j = 0; j < numPoints; j++)
             {
                 int index = face.PointIndices[j];
                 line[j] = new(pointList[index].X, pointList[index].Y);
+                depths[j] = pointList[index].Z * depthBias;
             }
 
             return line;
@@ -244,13 +266,16 @@ internal class ShipBase : IShip
         int count = NearPlaneClip.Clip(cameraPoints[..numPoints], NearPlane, clipped);
         if (count < 3)
         {
+            depths = [];
             return null;
         }
 
         Vector2[] polygon = new Vector2[count];
+        depths = new float[count];
         for (int j = 0; j < count; j++)
         {
             polygon[j] = ProjectCameraPoint(clipped[j]);
+            depths[j] = clipped[j].Z * depthBias;
         }
 
         return polygon;
@@ -343,7 +368,13 @@ internal class ShipBase : IShip
 
         Vector2 endPoint = ProjectToViewBoundary(mount, direction);
 
-        _draw.DrawPolygonFilled([mount, endPoint], color, pointList[lasv].Z);
+        // The bolt emerges from the mount on the hull surface, and its far
+        // end is a screen-space boundary point with no camera-space depth of
+        // its own, so the whole line tests at the mount's depth - biased
+        // nearer, like a decal, so the hull it springs from cannot swallow
+        // it. Anything genuinely in front of the firing ship still hides it.
+        float mountZ = pointList[lasv].Z * DecalDepthBias;
+        _draw.DrawPolygonFilled([mount, endPoint], [mountZ, mountZ], color, mountZ);
     }
 
     // Finds where a ray from origin along direction leaves the view rectangle,

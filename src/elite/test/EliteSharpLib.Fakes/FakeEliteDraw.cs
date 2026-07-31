@@ -27,14 +27,14 @@ internal class FakeEliteDraw : IEliteDraw
 
     public IPaletteCollection Palette => new FakePalette();
 
-    public List<(Vector2[] Points, FastColor FaceColor, float Z)> DrawnPolygons { get; } = [];
+    public List<(Vector2[] Points, float[] Depths, FastColor FaceColor, float Z)> DrawnPolygons { get; } = [];
 
     public void DrawObject(IObject obj)
     {
     }
 
-    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z)
-        => DrawnPolygons.Add((points, faceColor, z));
+    public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z)
+        => DrawnPolygons.Add((points, depths, faceColor, z));
 
     public void RenderEnd()
     {

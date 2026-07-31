@@ -37,7 +37,8 @@ internal sealed class ConfigPolygonRenderer : IPolygonRenderer
             ? _painter
             : _zBuffer;
 
-    public void Submit(Vector2[] points, FastColor color, float z) => _current.Submit(points, color, z);
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
+        => _current.Submit(points, depths, color, z);
 
     public void StartFrame()
     {

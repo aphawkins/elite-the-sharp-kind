@@ -34,38 +34,11 @@ there before starting an item that mentions a decision.
 
 ### 3D pipeline correctness (from the 2026-07-31 modern-pipeline gap analysis)
 
-Three defects found comparing both games' 3D pipelines against a modern
+Defects found comparing both games' 3D pipelines against a modern
 rasterisation pipeline. They are Musts because each one makes a *shipped,
 selectable* feature produce output that is wrong on its own terms — unlike
 the deliberate period-faithful omissions (no lighting, no texturing in Elite,
 no alpha/fog/AA), which are recorded under Won't below and as roadmap items.
-
-- [ ] [EliteSharpLib] **The z-buffer renderer never gets per-vertex depth, so
-      z-buffered mode cannot do the one thing it exists for.**
-      [`ZBufferRenderer.Submit`](../src/useful/libs/Useful.Graphics/Rendering/ZBufferRenderer.cs)
-      fills *every* entry of the polygon's `Depths` array with the same value
-      — the flat whole-face key `z` handed to it — so
-      `DrawPolygonFilledDepth` interpolates a constant across the triangle
-      and the per-pixel test resolves at whole-polygon granularity.
-      Interpenetrating and steeply-angled faces, the exact cases a depth
-      buffer exists to solve, come out no better than the painter's chain.
-      The rasteriser already supports true per-vertex depth and SCR feeds it
-      correctly ([TrackRenderer.cs:227](../src/scr/libs/StuntCarRacerSharpLib/Rendering/TrackRenderer.cs)
-      passes `clipped[j].Z`); Elite is the side that doesn't.
-      Fix: carry the near-plane-clipped camera-space `Z` per vertex out of
-      `ShipBase.BuildFacePolygon` alongside the projected `Vector2`, widen
-      `IPolygonRenderer.Submit` to take it, and submit that instead of the
-      mean. Fold in the second half while there: with a real per-pixel depth
-      test, `ZBufferRenderer`'s O(n²) insertion sort into a linked chain is
-      dead work — it sorts back-to-front *and then* depth-tests. Drop the
-      chain from the z-buffer path (keep `PainterRenderer`'s, which needs
-      it). Note `FaceMeanZ`'s plane-rooted decal keys
-      ([ShipBase.FindFaceRoots](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs))
-      exist to make coplanar decals tie with their base face and draw over
-      it; per-vertex depth makes them exactly coplanar rather than merely
-      equal, so decals will need an explicit bias or a draw-order guarantee
-      — check this in the live app (cockpit windows, engine plates) before
-      calling the item done.
 
 - [ ] [EliteSharpLib] **Backface culling decides on garbage coordinates for
       faces straddling the camera plane.** The winding test in
@@ -85,6 +58,23 @@ no alpha/fog/AA), which are recorded under Won't below and as roadmap items.
       on the clamp entirely; the clamp itself can then only affect the laser
       aim, where it is harmless.
 
+- [ ] [EliteSharpLib] **2-point detail lines are never backface-culled, so
+      far-side hull detail draws over empty space.** The winding test in
+      [`ShipBase.DrawModelFaces`](../src/elite/libs/EliteSharpLib/Ships/ShipBase.cs)
+      resolves `point2` to `PointIndices[0]` for a face of fewer than three
+      points, which makes both sides of the comparison the same product —
+      the test degenerates to `0 <= 0` and every detail line passes, every
+      frame, whichever way it faces. (`ShipBaseTests` relies on this to
+      keep its transform test independent of the cull, and says so.) Now
+      that lines are depth-tested, the part of a far-side line lying over
+      the hull is correctly hidden; what remains visible is the part that
+      projects *outside* the near-side silhouette, where there is no
+      geometry to occlude it — a short stray line poking off the hull edge,
+      clearly visible on the Cobra Mk3 in the intro parade. Fix alongside
+      the camera-space cull above: a 2-point face has no normal of its own,
+      so it should be culled by its root face's normal, which
+      `FindFaceRoots` already computes.
+
 - [ ] [Useful.Graphics] **Elite silently drops geometry past 100 polygons per
       frame.** Both `PainterRenderer` and `ZBufferRenderer` open `Submit`
       with `if (_totalPolys == MAXPOLYS) { return; }` — no log, no counter,
@@ -96,8 +86,8 @@ no alpha/fog/AA), which are recorded under Won't below and as roadmap items.
       isn't drawn. Fix direction: measure the real per-frame peak first (a
       debug counter over a busy scene in both games), then either raise the
       cap to something the worst case can't reach or make the overflow
-      loud rather than silent. Sequence after the z-buffer item above, which
-      touches the same two classes.
+      loud rather than silent. (The z-buffer per-vertex-depth item this was
+      sequenced behind is done — see the CHANGELOG.)
 
 ### Layout
 

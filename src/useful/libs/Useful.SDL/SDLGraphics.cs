@@ -343,6 +343,17 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
         SDLGuard.Execute(() => SDL_RenderLine(NativeRenderer, lineStart.X, lineStart.Y, lineEnd.X, lineEnd.Y));
     }
 
+    public void DrawLineDepth(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, FastColor color)
+    {
+        if (_isDisposed || _depthLayer == null)
+        {
+            return;
+        }
+
+        DrawLineDepthToLayer(lineStart, lineEnd, depthStart, depthEnd, color);
+        _depthLayerDirty = true;
+    }
+
     public void DrawPixel(Vector2 position, FastColor color)
     {
         if (_isDisposed)
@@ -844,11 +855,9 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
     }
 
     // Bresenham line into the CPU depth layer, matching SoftwareGraphics's
-    // DrawLineInt. Writes pixels directly with no depth test: ZBufferRenderer's
-    // 2-point line submissions were never depth-tested even in
-    // SoftwareGraphics (a plain "draw this over whatever came before" edge),
-    // so this preserves that behaviour rather than adding a test that never
-    // existed for lines.
+    // DrawLineInt. Writes pixels directly with no depth test - the untested
+    // edge case, for callers that have no depth for the line. Callers that
+    // do go through DrawLineDepthToLayer instead.
     private void DrawLineToDepthLayer(Vector2 lineStart, Vector2 lineEnd, in FastColor color)
     {
         int x0 = (int)MathF.Floor(lineStart.X);
@@ -888,6 +897,59 @@ public sealed unsafe class SDLGraphics : IGraphics, IDisposable
                 err += dx;
                 y0 += sy;
             }
+        }
+    }
+
+    // Depth-tested Bresenham line into the CPU depth layer: inverse depth
+    // (1/z) is interpolated along the walk by its fraction of the major
+    // axis. Mirrors SoftwareGraphics.DrawLineIntDepth.
+    private void DrawLineDepthToLayer(Vector2 lineStart, Vector2 lineEnd, float depthStart, float depthEnd, in FastColor color)
+    {
+        int x0 = (int)MathF.Floor(lineStart.X);
+        int y0 = (int)MathF.Floor(lineStart.Y);
+        int x1 = (int)MathF.Floor(lineEnd.X);
+        int y1 = (int)MathF.Floor(lineEnd.Y);
+
+        float inverseStart = 1f / depthStart;
+        float inverseEnd = 1f / depthEnd;
+
+        int dx = Math.Abs(x1 - x0);
+        int dy = Math.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+        int steps = Math.Max(dx, dy);
+
+        for (int step = 0; step <= steps; step++)
+        {
+            float t = steps == 0 ? 0f : (float)step / steps;
+            PlotDepthTestedLayerPixel(x0, y0, inverseStart + ((inverseEnd - inverseStart) * t), color);
+
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+    }
+
+    private void PlotDepthTestedLayerPixel(int x, int y, float inverseDepth, in FastColor color)
+    {
+        if (x < 0 || x >= (int)ScreenWidth || y < 0 || y >= (int)ScreenHeight)
+        {
+            return;
+        }
+
+        if (DepthTestLayer(x, y, inverseDepth))
+        {
+            _depthLayer!.SetPixel(x, y, color);
         }
     }
 

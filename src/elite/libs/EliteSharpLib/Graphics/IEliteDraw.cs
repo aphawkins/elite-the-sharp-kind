@@ -39,7 +39,7 @@ internal interface IEliteDraw
 
     public void DrawObject(IObject obj);
 
-    public void DrawPolygonFilled(Vector2[] points, FastColor faceColor, float z);
+    public void DrawPolygonFilled(Vector2[] points, float[] depths, FastColor faceColor, float z);
 
     public void RenderEnd();
 

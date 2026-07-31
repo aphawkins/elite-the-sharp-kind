@@ -6,23 +6,26 @@ namespace Useful.Graphics.Rendering;
 
 // Per-pixel depth test via Graphics.DrawPolygonFilledDepth: solid
 // polygons only, wireframe is a separate WireframeRenderer selected
-// instead of this by the caller. Correct tie-breaking for
-// coplanar polygons submitted with the same z (e.g. decals sitting on a
-// base surface) depends on the caller's projection code submitting a
-// stable z key and on submission order for exact ties.
+// instead of this by the caller. The per-pixel test decides occlusion on
+// its own, so polygons are drawn in submission order and the flat z sort
+// key is ignored - unlike PainterRenderer, which is nothing but that
+// order. Exactly coplanar surfaces (decals on a hull face) still resolve
+// by submission order, because the depth test lets the later draw win a
+// tie; the caller is responsible for biasing them if interpolation across
+// differently shaped triangles makes the tie inexact. 2-point detail lines
+// are depth-tested too, so a line lying on a face turned away from the
+// camera is hidden by the hull rather than drawn straight through it.
 public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
 {
     private const int MAXPOLYS = 100;
     private readonly IGraphics _graphics = graphics;
-    private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
-    private int _startPoly;
+    private readonly PolygonData[] _polys = new PolygonData[MAXPOLYS];
     private int _totalPolys;
 
-    public void Submit(Vector2[] points, FastColor color, float z)
+    public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
     {
         ArgumentNullException.ThrowIfNull(points);
-
-        int i;
+        ArgumentNullException.ThrowIfNull(depths);
 
         if (_totalPolys == MAXPOLYS)
         {
@@ -32,68 +35,39 @@ public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
         int x = _totalPolys;
         _totalPolys++;
 
-        _polyChain[x].Color = color;
-        _polyChain[x].Z = z;
-        _polyChain[x].Next = -1;
-        _polyChain[x].PointList = new Vector2[points.Length];
-        _polyChain[x].Depths = new float[points.Length];
+        _polys[x].Color = color;
+        _polys[x].PointList = new Vector2[points.Length];
+        _polys[x].Depths = new float[points.Length];
 
-        for (i = 0; i < points.Length; i++)
+        for (int i = 0; i < points.Length; i++)
         {
-            _polyChain[x].PointList[i] = points[i];
-            _polyChain[x].Depths[i] = z;
+            _polys[x].PointList[i] = points[i];
+            _polys[x].Depths[i] = depths[i];
         }
-
-        if (x == 0)
-        {
-            return;
-        }
-
-        if (z > _polyChain[_startPoly].Z)
-        {
-            _polyChain[x].Next = _startPoly;
-            _startPoly = x;
-            return;
-        }
-
-        for (i = _startPoly; _polyChain[i].Next != -1; i = _polyChain[i].Next)
-        {
-            int nx = _polyChain[i].Next;
-
-            if (z > _polyChain[nx].Z)
-            {
-                _polyChain[i].Next = x;
-                _polyChain[x].Next = nx;
-                return;
-            }
-        }
-
-        _polyChain[i].Next = x;
     }
 
     public void StartFrame()
     {
-        _startPoly = 0;
         _totalPolys = 0;
         _graphics.ClearDepth();
     }
 
     public void EndFrame()
     {
-        if (_totalPolys == 0)
+        for (int i = 0; i < _totalPolys; i++)
         {
-            return;
-        }
-
-        for (int i = _startPoly; i != -1; i = _polyChain[i].Next)
-        {
-            if (_polyChain[i].PointList.Length == 2)
+            if (_polys[i].PointList.Length == 2)
             {
-                _graphics.DrawLine(_polyChain[i].PointList[0], _polyChain[i].PointList[1], _polyChain[i].Color);
+                _graphics.DrawLineDepth(
+                    _polys[i].PointList[0],
+                    _polys[i].PointList[1],
+                    _polys[i].Depths[0],
+                    _polys[i].Depths[1],
+                    _polys[i].Color);
                 continue;
             }
 
-            _graphics.DrawPolygonFilledDepth(_polyChain[i].PointList, _polyChain[i].Depths, _polyChain[i].Color);
+            _graphics.DrawPolygonFilledDepth(_polys[i].PointList, _polys[i].Depths, _polys[i].Color);
         }
     }
 }
