@@ -36,6 +36,8 @@ internal sealed class PilotView8Bit : BaseView8Bit, IView<PilotModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         if (model.HyperspaceStatus.Length > 0)
         {
             _draw.Graphics.DrawTextCentre(
@@ -45,7 +47,7 @@ internal sealed class PilotView8Bit : BaseView8Bit, IView<PilotModel>
                 _colorWhite);
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.Top + 4, model.ViewName, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportTop + 4, model.ViewName, nameof(FontType.Small), _colorWhite);
 
         if (model.IsFiring)
         {

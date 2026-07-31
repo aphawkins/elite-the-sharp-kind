@@ -50,11 +50,13 @@ internal sealed class OptionsView8Bit : BaseView8Bit, IView<OptionsModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader("OPTIONS");
 
         for (int i = 0; i < model.Options.Count; i++)
         {
-            Vector2 position = new(_draw.Layout.Centre.X - (OptionBarWidth / 2), FirstRowY + (i * RowSpacingY));
+            Vector2 position = new(_draw.Layout.ViewportCentre.X - (OptionBarWidth / 2), FirstRowY + (i * RowSpacingY));
 
             if (i == model.HighlightedIndex)
             {

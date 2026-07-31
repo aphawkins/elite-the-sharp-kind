@@ -261,22 +261,26 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<Space>(),
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<IEliteDraw>()));
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<IBaseView>()));
         services.AddSingleton(sp => new LaunchView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
             sp.GetRequiredService<Space>(),
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
-            sp.GetRequiredService<IEliteDraw>()));
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<IBaseView>()));
         services.AddSingleton(sp => new HyperspaceView(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<AudioController>(),
-            sp.GetRequiredService<IEliteDraw>()));
+            sp.GetRequiredService<IEliteDraw>(),
+            sp.GetRequiredService<IBaseView>()));
     }
 
-    // The tier's shared chrome, which EliteMain draws the border and countdown
-    // through and the tier-split screens take for their headers.
+    // The tier's shared chrome: every screen draws its own border through
+    // this, EliteMain the hyperspace countdown, and the tier-split screens
+    // their headers.
     private static void AddBaseView(this IServiceCollection services)
         => services.AddSingleton<IBaseView>(sp => IsEightBit(sp)
             ? new BaseView8Bit(sp.GetRequiredService<IEliteDraw>())

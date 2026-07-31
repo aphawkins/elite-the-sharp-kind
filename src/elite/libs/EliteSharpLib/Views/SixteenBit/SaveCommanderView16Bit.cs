@@ -29,10 +29,12 @@ internal sealed class SaveCommanderView16Bit : BaseView16Bit, IView<SaveCommande
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader("SAVE COMMANDER");
 
         _draw.Graphics.DrawTextCentre(75, "Please enter commander name:", nameof(FontType.Small), _colorWhite);
-        _draw.Graphics.DrawRectangle(new(100 + _draw.Layout.Offset, 100), 312, 50, _colorWhite);
+        _draw.Graphics.DrawRectangle(new(100 + _draw.Layout.ScannerLeft, 100), 312, 50, _colorWhite);
         _draw.Graphics.DrawTextCentre(112, model.Name, nameof(FontType.Large), _colorWhite);
 
         if (model.StatusMessage.Length > 0)

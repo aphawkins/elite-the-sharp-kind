@@ -25,15 +25,15 @@ internal abstract class LaserDrawBase(GameState gameState, IEliteDraw draw, RNG 
 
         Vector2 target = new()
         {
-            X = Draw.Layout.Centre.X + (rng.Random(0, 2) * scale),
-            Y = Draw.Layout.Centre.Y + (rng.Random(0, 2) * scale),
+            X = Draw.Layout.ViewportCentre.X + (rng.Random(0, 2) * scale),
+            Y = Draw.Layout.ViewportCentre.Y + (rng.Random(0, 2) * scale),
         };
 
-        Vector2 leftA = new(Draw.Layout.ScannerLeft + (32 * scale), Draw.Layout.Bottom);
-        Vector2 leftB = new(Draw.Layout.ScannerLeft + (48 * scale), Draw.Layout.Bottom);
+        Vector2 leftA = new(Draw.Layout.ScannerLeft + (32 * scale), Draw.Layout.ScannerTop);
+        Vector2 leftB = new(Draw.Layout.ScannerLeft + (48 * scale), Draw.Layout.ScannerTop);
 
-        Vector2 rightA = new(Draw.Layout.ScannerRight - (32 * scale), Draw.Layout.Bottom);
-        Vector2 rightB = new(Draw.Layout.ScannerRight - (48 * scale), Draw.Layout.Bottom);
+        Vector2 rightA = new(Draw.Layout.ScannerRight - (32 * scale), Draw.Layout.ScannerTop);
+        Vector2 rightB = new(Draw.Layout.ScannerRight - (48 * scale), Draw.Layout.ScannerTop);
 
         if (gameState.Config.Engine.Graphics.GraphicStyle == GraphicStyle.Wireframe)
         {
@@ -62,7 +62,7 @@ internal abstract class LaserDrawBase(GameState gameState, IEliteDraw draw, RNG 
         }
 
         string image = CrosshairImage(laserType);
-        Draw.Graphics.DrawImage(image, Draw.Layout.Centre - (Draw.Graphics.ImageSize(image) / 2));
+        Draw.Graphics.DrawImage(image, Draw.Layout.ViewportCentre - (Draw.Graphics.ImageSize(image) / 2));
     }
 
     /// <summary>

@@ -35,12 +35,14 @@ internal sealed class OptionsView16Bit : BaseView16Bit, IView<OptionsModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader("GAME OPTIONS");
 
         for (int i = 0; i < model.Options.Count; i++)
         {
             Vector2 position = new(
-                _draw.Layout.Centre.X - (OptionBarWidth / 2),
+                _draw.Layout.ViewportCentre.X - (OptionBarWidth / 2),
                 ((_draw.Layout.ScannerTop - (30 * model.Options.Count)) / 2) + (i * 30));
 
             if (i == model.HighlightedIndex)

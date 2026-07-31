@@ -28,6 +28,8 @@ internal sealed class GameOverView16Bit : BaseView16Bit, IView<GameOverModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.Centre.Y, model.Message, nameof(FontType.Large), _colorGoldenrod);
+        DrawBorder();
+
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportCentre.Y, model.Message, nameof(FontType.Large), _colorGoldenrod);
     }
 }

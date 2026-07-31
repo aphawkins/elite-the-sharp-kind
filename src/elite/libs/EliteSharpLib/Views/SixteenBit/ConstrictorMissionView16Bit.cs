@@ -30,19 +30,21 @@ internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IView<Constri
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         switch (model.Stage)
         {
             case 1:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(16 + _draw.Layout.Offset, 50), 300, model.Paragraphs[0]);
-                DrawTextPretty(new(16 + _draw.Layout.Offset, 200), 470, model.Paragraphs[1]);
+                DrawTextPretty(new(16 + _draw.Layout.ScannerLeft, 50), 300, model.Paragraphs[0]);
+                DrawTextPretty(new(16 + _draw.Layout.ScannerLeft, 200), 470, model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
             case 3:
                 DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGoldenrod);
-                DrawTextPretty(new(116 + _draw.Layout.Offset, 132), 400, model.Paragraphs[0]);
+                DrawTextPretty(new(116 + _draw.Layout.ScannerLeft, 132), 400, model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }

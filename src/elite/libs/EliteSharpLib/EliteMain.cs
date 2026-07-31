@@ -144,7 +144,6 @@ public sealed class EliteMain : IGame, IGameApp
 
         _draw.SetFullScreenClipRegion();
         _graphics.Clear();
-        _baseView.DrawBorder();
         _draw.SetViewClipRegion();
 
         if (_ship.Energy < PlayerShip.EnergyMin)
@@ -208,7 +207,7 @@ public sealed class EliteMain : IGame, IGameApp
 
     private void DrawFps()
         => _graphics.DrawTextLeft(
-            new(_draw.Layout.Right - 65, _draw.Layout.Top + 3),
+            new(_draw.Layout.ViewportRight - 65, _draw.Layout.ViewportTop + 3),
             $"FPS: {_framesDrawn.Count}",
             nameof(FontType.Small),
             _colorText);

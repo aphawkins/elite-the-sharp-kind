@@ -12,23 +12,36 @@ namespace EliteSharpLib.Views;
 internal sealed class DockingView : IScreenController
 {
     private readonly AudioController _audio;
+    private readonly IBaseView _baseView;
     private readonly BreakPattern _breakPattern;
     private readonly Combat _combat;
     private readonly GameState _gameState;
     private readonly Space _space;
     private readonly Universe _universe;
 
-    internal DockingView(GameState gameState, AudioController audio, Space space, Combat combat, Universe universe, IEliteDraw draw)
+    internal DockingView(
+        GameState gameState,
+        AudioController audio,
+        Space space,
+        Combat combat,
+        Universe universe,
+        IEliteDraw draw,
+        IBaseView baseView)
     {
         _gameState = gameState;
         _audio = audio;
         _space = space;
         _combat = combat;
         _universe = universe;
+        _baseView = baseView;
         _breakPattern = new(draw);
     }
 
-    public void Draw() => _breakPattern.Draw();
+    public void Draw()
+    {
+        _baseView.DrawBorder();
+        _breakPattern.Draw();
+    }
 
     public void HandleInput()
     {

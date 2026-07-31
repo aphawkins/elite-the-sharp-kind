@@ -11,6 +11,13 @@ namespace EliteSharpLib.Views;
 /// Everything but the four inputs is derived rather than stored: a screen
 /// size, the scanner art's size and the coordinate scale determine the rest,
 /// so no two of these can disagree.
+/// <para>
+/// The screen is two regions stacked: the <b>viewport</b> - everything above
+/// the scanner, framed by the border, where the universe and every screen's
+/// content is drawn - and the scanner below it. The viewport members describe
+/// the drawable interior, inside the border; the Scanner members describe the
+/// HUD art. Nothing is expressed relative to the other region.
+/// </para>
 /// </summary>
 /// <param name="ScreenWidth">The render width in pixels.</param>
 /// <param name="ScreenHeight">The render height in pixels.</param>
@@ -28,38 +35,35 @@ namespace EliteSharpLib.Views;
 internal sealed record ViewLayout(float ScreenWidth, float ScreenHeight, Vector2 ScannerSize, float Scale)
 {
     /// <summary>
-    /// Gets the width of the frame drawn around the view area.
+    /// Gets the width of the frame drawn around the viewport.
     /// </summary>
     public float BorderWidth { get; } = 1;
 
-    public float Left => BorderWidth;
-
-    public float Top => BorderWidth;
-
-    public float Right => ScreenWidth - BorderWidth;
-
-    public float Bottom => ScreenHeight - ScannerSize.Y;
-
-    public Vector2 Centre => new(ScreenWidth / 2, (ScannerTop / 2) + BorderWidth);
-
+    /// <summary>
+    /// Gets the y of the scanner's top edge, which is also the row the
+    /// border's bottom edge is drawn on.
+    /// </summary>
     public float ScannerTop => ScreenHeight - ScannerSize.Y;
 
-    public float ScannerLeft => Centre.X - (ScannerSize.X / 2);
+    public float ScannerLeft => ViewportCentre.X - (ScannerSize.X / 2);
 
     public float ScannerRight => ScannerLeft + ScannerSize.X - 1;
 
-    /// <summary>
-    /// Gets the x of the scanner's left edge, which the absolute-positioned
-    /// screens lay out from so their content stays with the HUD rather than
-    /// with the screen edge as the tier widens.
-    /// </summary>
-    public float Offset => ScannerLeft;
+    // The viewport interior is half-open: Left/Top are the first drawable
+    // pixel inside the border, Right/Bottom are one past the last. The border
+    // itself occupies x = 0 and x = ScreenWidth - 1, y = 0 and y = ScannerTop
+    // - 1, so nothing drawn within these bounds can land on it.
+    public float ViewportLeft => BorderWidth;
 
-    // DrawBorder's rectangle draws its far edge at position+size-1 (last
-    // inclusive pixel), one short of Right/Bottom, so the view clip must stop
-    // one pixel earlier still or content lands on top of the border line
-    // itself instead of stopping short of it.
-    public float Height => Bottom - BorderWidth - 1;
+    public float ViewportTop => BorderWidth;
 
-    public float Width => ScreenWidth - (2 * BorderWidth) - 1;
+    public float ViewportRight => ScreenWidth - BorderWidth;
+
+    public float ViewportBottom => ScannerTop - BorderWidth;
+
+    public float ViewportWidth => ViewportRight - ViewportLeft;
+
+    public float ViewportHeight => ViewportBottom - ViewportTop;
+
+    public Vector2 ViewportCentre => new((ViewportLeft + ViewportRight) / 2, (ViewportTop + ViewportBottom) / 2);
 }

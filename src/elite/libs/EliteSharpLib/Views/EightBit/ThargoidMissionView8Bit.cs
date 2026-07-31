@@ -34,26 +34,28 @@ internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMiss
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         switch (model.Stage)
         {
             case 4:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(TextX + _draw.Layout.Offset, 64), TextWidth, model.Paragraphs[0]);
+                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 64), TextWidth, model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
             case 5:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(TextX + _draw.Layout.Offset, 32), TextWidth, model.Paragraphs[0]);
-                DrawTextPretty(new(TextX + _draw.Layout.Offset, 96), TextWidth, model.Paragraphs[1]);
-                _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(232 + _draw.Layout.Offset, 32));
+                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 32), TextWidth, model.Paragraphs[0]);
+                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 96), TextWidth, model.Paragraphs[1]);
+                _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(232 + _draw.Layout.ScannerLeft, 32));
                 DrawFooter();
                 break;
 
             case 6:
                 DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(48, model.Headline, nameof(FontType.Large), _colorYellow);
-                DrawTextPretty(new(TextX + _draw.Layout.Offset, 64), TextWidth, model.Paragraphs[0]);
+                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 64), TextWidth, model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }

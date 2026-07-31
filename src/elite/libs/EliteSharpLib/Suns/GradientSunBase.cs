@@ -51,14 +51,14 @@ internal abstract class GradientSunBase : IObject
         Vector2 centre = new(Location.X, -Location.Y);
 
         centre *= _draw.Focus / Location.Z;
-        centre += _draw.Layout.Centre;
+        centre += _draw.Layout.ViewportCentre;
 
         float radius = 6291456 / Location.Length() * (_draw.Focus / 256);
 
-        if (centre.X + radius < _draw.Layout.Left ||
-            centre.X - radius > _draw.Layout.Right ||
-            centre.Y + radius < _draw.Layout.Top ||
-            centre.Y - radius > _draw.Layout.Bottom)
+        if (centre.X + radius < _draw.Layout.ViewportLeft ||
+            centre.X - radius > _draw.Layout.ViewportRight ||
+            centre.Y + radius < _draw.Layout.ViewportTop ||
+            centre.Y - radius > _draw.Layout.ViewportBottom)
         {
             return;
         }
@@ -105,7 +105,7 @@ internal abstract class GradientSunBase : IObject
             Y = centre.Y + y,
         };
 
-        if (s.Y < _draw.Layout.Top || s.Y > _draw.Layout.Bottom)
+        if (s.Y < _draw.Layout.ViewportTop || s.Y > _draw.Layout.ViewportBottom)
         {
             return;
         }
@@ -116,19 +116,19 @@ internal abstract class GradientSunBase : IObject
         s.X -= radius * _rng.Random(2, 10) / 256f;
         ex += radius * _rng.Random(2, 10) / 256f;
 
-        if (ex < _draw.Layout.Left || s.X > _draw.Layout.Right)
+        if (ex < _draw.Layout.ViewportLeft || s.X > _draw.Layout.ViewportRight)
         {
             return;
         }
 
-        if (s.X < _draw.Layout.Left)
+        if (s.X < _draw.Layout.ViewportLeft)
         {
-            s.X = _draw.Layout.Left;
+            s.X = _draw.Layout.ViewportLeft;
         }
 
-        if (ex > _draw.Layout.Right)
+        if (ex > _draw.Layout.ViewportRight)
         {
-            ex = _draw.Layout.Right;
+            ex = _draw.Layout.ViewportRight;
         }
 
         float inner = radius * (200 + _rng.Random(8)) / 256;

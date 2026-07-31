@@ -31,13 +31,15 @@ internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader(model.Title);
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.Offset, 40), "PRODUCT", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(166 + _draw.Layout.Offset, 40), "UNIT", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(246 + _draw.Layout.Offset, 40), "PRICE", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(314 + _draw.Layout.Offset, 40), "FOR SALE", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(420 + _draw.Layout.Offset, 40), "IN HOLD", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.ScannerLeft, 40), "PRODUCT", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(166 + _draw.Layout.ScannerLeft, 40), "UNIT", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(246 + _draw.Layout.ScannerLeft, 40), "PRICE", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(314 + _draw.Layout.ScannerLeft, 40), "FOR SALE", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(420 + _draw.Layout.ScannerLeft, 40), "IN HOLD", nameof(FontType.Small), _colorGreen);
 
         for (int i = 0; i < model.Rows.Count; i++)
         {
@@ -46,41 +48,41 @@ internal sealed class MarketView16Bit : BaseView16Bit, IView<MarketModel>
 
             if (row.IsHighlighted)
             {
-                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.Offset, y), 508, 15, _colorDarkRed);
+                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.ScannerLeft, y), 508, 15, _colorDarkRed);
             }
 
-            _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.Offset, y), row.Name, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.ScannerLeft, y), row.Name, nameof(FontType.Small), _colorWhite);
 
-            _draw.Graphics.DrawTextLeft(new(180 + _draw.Layout.Offset, y), row.Units, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(180 + _draw.Layout.ScannerLeft, y), row.Units, nameof(FontType.Small), _colorWhite);
 
             _draw.Graphics
-                .DrawTextRight(new(285 + _draw.Layout.Offset, y), $"{row.Price:N1}", nameof(FontType.Small), _colorWhite);
+                .DrawTextRight(new(285 + _draw.Layout.ScannerLeft, y), $"{row.Price:N1}", nameof(FontType.Small), _colorWhite);
 
             _draw.Graphics.DrawTextRight(
-                new(365 + _draw.Layout.Offset, y),
+                new(365 + _draw.Layout.ScannerLeft, y),
                 row.ForSaleQuantity > 0 ? $"{row.ForSaleQuantity}" : "-",
                 nameof(FontType.Small),
                 _colorWhite);
             _draw.Graphics.DrawTextLeft(
-                new(365 + _draw.Layout.Offset, y),
+                new(365 + _draw.Layout.ScannerLeft, y),
                 row.ForSaleQuantity > 0 ? row.Units : string.Empty,
                 nameof(FontType.Small),
                 _colorWhite);
 
             _draw.Graphics.DrawTextRight(
-                new(455 + _draw.Layout.Offset, y),
+                new(455 + _draw.Layout.ScannerLeft, y),
                 row.InHoldQuantity > 0 ? $"{row.InHoldQuantity,2}" : "-",
                 nameof(FontType.Small),
                 _colorWhite);
             _draw.Graphics.DrawTextLeft(
-                new(455 + _draw.Layout.Offset, y),
+                new(455 + _draw.Layout.ScannerLeft, y),
                 row.InHoldQuantity > 0 ? row.Units : string.Empty,
                 nameof(FontType.Small),
                 _colorWhite);
         }
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.Offset, 340), "Cash:", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.ScannerLeft, 340), "Cash:", nameof(FontType.Small), _colorGreen);
         _draw.Graphics
-            .DrawTextRight(new(225 + _draw.Layout.Offset, 340), $"{model.Cash,10:N1} Credits", nameof(FontType.Small), _colorWhite);
+            .DrawTextRight(new(225 + _draw.Layout.ScannerLeft, 340), $"{model.Cash,10:N1} Credits", nameof(FontType.Small), _colorWhite);
     }
 }

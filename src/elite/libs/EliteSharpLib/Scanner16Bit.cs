@@ -39,7 +39,7 @@ internal sealed class Scanner16Bit : ScannerBase
         DefaultColor = draw.Palette["White"];
     }
 
-    protected override Vector2 ScannerCentre => new(Draw.Layout.Centre.X - 3, Draw.Layout.ScannerTop + 63);
+    protected override Vector2 ScannerCentre => new(Draw.Layout.ViewportCentre.X - 3, Draw.Layout.ScannerTop + 63);
 
     protected override (float Y, float X) ScannerExtent => (28, 50);
 

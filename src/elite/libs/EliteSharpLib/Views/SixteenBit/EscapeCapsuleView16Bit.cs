@@ -31,6 +31,8 @@ internal sealed class EscapeCapsuleView16Bit : BaseView16Bit, IView<EscapeCapsul
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         if (model.IsAlertVisible)
         {
             _draw.Graphics.DrawTextCentre(

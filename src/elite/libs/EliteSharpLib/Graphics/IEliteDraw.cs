@@ -27,7 +27,7 @@ internal interface IEliteDraw
 
     /// <summary>
     /// Gets the perspective projection's focal length in pixels: a point at
-    /// model-space x projects to <c>Layout.Centre.X + (x * Focus / z)</c>.
+    /// model-space x projects to <c>Layout.ViewportCentre.X + (x * Focus / z)</c>.
     /// Derived from the tier's screen height so the field of view is the same
     /// at every tier, and independent of <see cref="ViewLayout.Scale"/>.
     /// </summary>

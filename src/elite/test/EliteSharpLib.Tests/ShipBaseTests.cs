@@ -116,8 +116,8 @@ public class ShipBaseTests
         Vector2 expectedAim = Project(mountCoords * 1_000_000f, location, draw);
         Vector2 direction = expectedAim - expectedMount;
 
-        float exitViaLeft = (draw.Layout.Left - expectedMount.X) / direction.X;
-        float exitViaTop = (draw.Layout.Top - expectedMount.Y) / direction.Y;
+        float exitViaLeft = (draw.Layout.ViewportLeft - expectedMount.X) / direction.X;
+        float exitViaTop = (draw.Layout.ViewportTop - expectedMount.Y) / direction.Y;
         float exitDistance = MathF.Min(exitViaLeft, exitViaTop);
         Vector2 expectedEnd = expectedMount + (direction * exitDistance);
 
@@ -141,8 +141,8 @@ public class ShipBaseTests
             vec.Z = 1;
         }
 
-        float x = draw.Layout.Centre.X + (vec.X * draw.Focus / vec.Z);
-        float y = draw.Layout.Centre.Y - (vec.Y * draw.Focus / vec.Z);
+        float x = draw.Layout.ViewportCentre.X + (vec.X * draw.Focus / vec.Z);
+        float y = draw.Layout.ViewportCentre.Y - (vec.Y * draw.Focus / vec.Z);
         return new(x, y);
     }
 
@@ -156,8 +156,8 @@ public class ShipBaseTests
             vec.Z = 1;
         }
 
-        float x = draw.Layout.Centre.X + (vec.X * draw.Focus / vec.Z);
-        float y = draw.Layout.Centre.Y - (vec.Y * draw.Focus / vec.Z);
+        float x = draw.Layout.ViewportCentre.X + (vec.X * draw.Focus / vec.Z);
+        float y = draw.Layout.ViewportCentre.Y - (vec.Y * draw.Focus / vec.Z);
         return new(x, y);
     }
 

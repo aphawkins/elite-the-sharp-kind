@@ -71,7 +71,7 @@ internal abstract class ShortRangeChartViewBase(
 
         if (_keyboard.IsPressed(ConsoleKey.O))
         {
-            Cross = EliteDraw.Layout.Centre;
+            Cross = EliteDraw.Layout.ViewportCentre;
             CalculateDistanceToPlanet();
         }
 
@@ -123,7 +123,7 @@ internal abstract class ShortRangeChartViewBase(
 
         GalaxySeed glx = new(GameState.Cmdr.Galaxy);
         float scale = EliteDraw.Layout.Scale;
-        Vector2 centre = EliteDraw.Layout.Centre;
+        Vector2 centre = EliteDraw.Layout.ViewportCentre;
 
         for (int i = 0; i < 256; i++)
         {
@@ -244,7 +244,7 @@ internal abstract class ShortRangeChartViewBase(
     private void CalculateDistanceToPlanet()
     {
         float scale = EliteDraw.Layout.Scale;
-        Vector2 centre = EliteDraw.Layout.Centre;
+        Vector2 centre = EliteDraw.Layout.ViewportCentre;
         Vector2 location = new()
         {
             X = ((Cross.X - centre.X) / (4 * scale)) + GameState.DockedPlanet.D,
@@ -258,8 +258,8 @@ internal abstract class ShortRangeChartViewBase(
     }
 
     private void CrossFromHyperspacePlanet() => Cross = new(
-        ((GameState.HyperspacePlanet.D - GameState.DockedPlanet.D) * 4 * EliteDraw.Layout.Scale) + EliteDraw.Layout.Centre.X,
-        ((GameState.HyperspacePlanet.B - GameState.DockedPlanet.B) * 2 * EliteDraw.Layout.Scale) + EliteDraw.Layout.Centre.Y);
+        ((GameState.HyperspacePlanet.D - GameState.DockedPlanet.D) * 4 * EliteDraw.Layout.Scale) + EliteDraw.Layout.ViewportCentre.X,
+        ((GameState.HyperspacePlanet.B - GameState.DockedPlanet.B) * 2 * EliteDraw.Layout.Scale) + EliteDraw.Layout.ViewportCentre.Y);
 
     /// <summary>
     /// Move the planet chart cross hairs to specified position.

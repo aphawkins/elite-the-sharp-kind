@@ -33,7 +33,9 @@ internal sealed class Intro2View8Bit : BaseView8Bit, IView<Intro2Model>
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.Top + 4);
+        DrawBorder();
+
+        _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.ViewportTop + 4);
 
         _draw.Graphics.DrawTextCentre(_draw.Layout.ScannerTop - PromptOffset, model.Prompt, nameof(FontType.Small), _colorYellow);
 

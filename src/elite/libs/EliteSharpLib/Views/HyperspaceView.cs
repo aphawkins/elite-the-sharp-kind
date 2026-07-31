@@ -11,17 +11,23 @@ namespace EliteSharpLib.Views;
 internal sealed class HyperspaceView : IScreenController
 {
     private readonly AudioController _audio;
+    private readonly IBaseView _baseView;
     private readonly BreakPattern _breakPattern;
     private readonly GameState _gameState;
 
-    internal HyperspaceView(GameState gameState, AudioController audio, IEliteDraw draw)
+    internal HyperspaceView(GameState gameState, AudioController audio, IEliteDraw draw, IBaseView baseView)
     {
         _gameState = gameState;
         _audio = audio;
+        _baseView = baseView;
         _breakPattern = new(draw);
     }
 
-    public void Draw() => _breakPattern.Draw();
+    public void Draw()
+    {
+        _baseView.DrawBorder();
+        _breakPattern.Draw();
+    }
 
     public void HandleInput()
     {

@@ -80,7 +80,10 @@ internal sealed class EliteDraw : IEliteDraw
 
     public void SetFullScreenClipRegion() => Graphics.SetClipRegion(new(0, 0), Graphics.ScreenWidth, Graphics.ScreenHeight);
 
-    public void SetViewClipRegion() => Graphics.SetClipRegion(new(Layout.Left, Layout.Top), Layout.Width, Layout.Height);
+    public void SetViewClipRegion() => Graphics.SetClipRegion(
+        new(Layout.ViewportLeft, Layout.ViewportTop),
+        Layout.ViewportWidth,
+        Layout.ViewportHeight);
 
     /// <summary>
     /// Draws an object in the universe. (Ship, Planet, Sun etc).
@@ -200,7 +203,7 @@ internal sealed class EliteDraw : IEliteDraw
                 Vector4 r = vec + ship.Location;
                 Vector2 position = new(r.X, -r.Y);
                 position *= Focus / r.Z;
-                position += Layout.Centre;
+                position += Layout.ViewportCentre;
                 _pointList[np].X = position.X;
                 _pointList[np].Y = position.Y;
                 np++;

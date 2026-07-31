@@ -33,6 +33,8 @@ internal sealed class EscapeCapsuleView8Bit : BaseView8Bit, IView<EscapeCapsuleM
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         if (model.IsAlertVisible)
         {
             _draw.Graphics.DrawTextCentre(

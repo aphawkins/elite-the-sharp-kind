@@ -44,6 +44,8 @@ internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderSta
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader(model.Title);
 
         DrawRow(FirstRowY, "System:", model.PresentSystem);
@@ -54,18 +56,22 @@ internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderSta
         DrawRow(FirstRowY + (5 * RowSpacingY), "Legal:", model.LegalStatus);
         DrawRow(FirstRowY + (6 * RowSpacingY), "Rating:", model.Rating);
 
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, EquipmentHeaderY), "EQUIPMENT:", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(
+            new(LabelX + _draw.Layout.ScannerLeft, EquipmentHeaderY),
+            "EQUIPMENT:",
+            nameof(FontType.Small),
+            _colorGreen);
 
         DrawEquipment(model.Equipment);
     }
 
     private void DrawRow(float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), label, nameof(FontType.Small), _colorGreen);
 
         if (!string.IsNullOrEmpty(value))
         {
-            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.ScannerLeft, y), value, nameof(FontType.Small), _colorWhite);
         }
     }
 
@@ -78,7 +84,7 @@ internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderSta
 
         foreach (string item in equipment)
         {
-            _draw.Graphics.DrawTextLeft(new(EquipmentX + _draw.Layout.Offset, y), item, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(EquipmentX + _draw.Layout.ScannerLeft, y), item, nameof(FontType.Small), _colorWhite);
             y += EquipmentSpacingY;
         }
     }

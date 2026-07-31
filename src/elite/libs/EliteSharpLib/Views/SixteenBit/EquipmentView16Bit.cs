@@ -31,6 +31,8 @@ internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader("EQUIP SHIP");
 
         float y = 55;
@@ -39,21 +41,21 @@ internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
         {
             if (row.IsHighlighted)
             {
-                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.Offset, y + 1), 508, 15, _colorDarkRed);
+                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.ScannerLeft, y + 1), 508, 15, _colorDarkRed);
             }
 
             FastColor color = row.IsAffordable ? _colorWhite : _colorGray;
             int x = row.IsIndented ? 50 : 16;
-            _draw.Graphics.DrawTextLeft(new(x + _draw.Layout.Offset, y), row.Name, nameof(FontType.Small), color);
+            _draw.Graphics.DrawTextLeft(new(x + _draw.Layout.ScannerLeft, y), row.Name, nameof(FontType.Small), color);
 
             if (row.Price.Length > 0)
             {
-                _draw.Graphics.DrawTextRight(new(450 + _draw.Layout.Offset, y), row.Price, nameof(FontType.Small), color);
+                _draw.Graphics.DrawTextRight(new(450 + _draw.Layout.ScannerLeft, y), row.Price, nameof(FontType.Small), color);
             }
 
             y += 15;
         }
 
-        _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.Offset, 340), model.Cash, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(16 + _draw.Layout.ScannerLeft, 340), model.Cash, nameof(FontType.Small), _colorWhite);
     }
 }

@@ -35,6 +35,8 @@ internal sealed class InventoryView16Bit : BaseView16Bit, IView<InventoryModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader(model.Title);
 
         DrawRow(50, "Fuel:", model.Fuel);
@@ -43,15 +45,15 @@ internal sealed class InventoryView16Bit : BaseView16Bit, IView<InventoryModel>
         float y = CargoStartY;
         foreach ((string name, string quantity) in model.Cargo)
         {
-            _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), name, nameof(FontType.Small), _colorWhite);
-            _draw.Graphics.DrawTextLeft(new(QuantityX + _draw.Layout.Offset, y), quantity, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), name, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(QuantityX + _draw.Layout.ScannerLeft, y), quantity, nameof(FontType.Small), _colorWhite);
             y += SpacingY;
         }
     }
 
     private void DrawRow(float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.ScannerLeft, y), value, nameof(FontType.Small), _colorWhite);
     }
 }

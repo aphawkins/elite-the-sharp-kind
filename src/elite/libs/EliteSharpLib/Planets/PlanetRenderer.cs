@@ -22,7 +22,7 @@ internal class PlanetRenderer
     {
         Vector2 position = new(location.X, -location.Y);
         position *= _draw.Focus / location.Z;
-        position += _draw.Layout.Centre;
+        position += _draw.Layout.ViewportCentre;
 
         float radius = 6291456 / location.Length();
 
@@ -32,10 +32,10 @@ internal class PlanetRenderer
         // projection's focal length rather than Scale.
         radius *= _draw.Focus / 256;
 
-        return (position.X + radius < _draw.Layout.Left) ||
-            (position.X - radius > _draw.Layout.Right) ||
-            (position.Y + radius < _draw.Layout.Top) ||
-            (position.Y - radius > _draw.Layout.Bottom)
+        return (position.X + radius < _draw.Layout.ViewportLeft) ||
+            (position.X - radius > _draw.Layout.ViewportRight) ||
+            (position.Y + radius < _draw.Layout.ViewportTop) ||
+            (position.Y - radius > _draw.Layout.ViewportBottom)
             ? null
             : (position, radius);
     }
@@ -88,7 +88,7 @@ internal class PlanetRenderer
         // Bottom/Right are the border line's own row/column (see EliteDraw.Height/
         // Width), so the far edge must be excluded here the same way Top/Left's
         // near edge already is, or the fill paints over the border.
-        if (s.Y < _draw.Layout.Top || s.Y >= _draw.Layout.Bottom)
+        if (s.Y < _draw.Layout.ViewportTop || s.Y >= _draw.Layout.ViewportBottom)
         {
             return;
         }
@@ -106,7 +106,7 @@ internal class PlanetRenderer
 
         for (; s.X <= ex; s.X++)
         {
-            if (s.X >= _draw.Layout.Left && s.X < _draw.Layout.Right)
+            if (s.X >= _draw.Layout.ViewportLeft && s.X < _draw.Layout.ViewportRight)
             {
                 int lx = (int)Math.Clamp(MathF.Abs(rx / div), 0, LandXMax);
                 int ly = (int)Math.Clamp(MathF.Abs(ry / div), 0, LandYMax);

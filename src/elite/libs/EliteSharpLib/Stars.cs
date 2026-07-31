@@ -37,9 +37,9 @@ internal sealed class Stars
     // filling exactly the view at any tier.
     private float StarScale => _draw.Focus / 256;
 
-    private float StarHalfWidth => _draw.Layout.Centre.X / StarScale;
+    private float StarHalfWidth => _draw.Layout.ViewportCentre.X / StarScale;
 
-    private float StarHalfHeight => _draw.Layout.Centre.Y / StarScale;
+    private float StarHalfHeight => _draw.Layout.ViewportCentre.Y / StarScale;
 
     internal void CreateNewStars()
     {
@@ -104,7 +104,7 @@ internal sealed class Stars
 
             if ((star.X > StarHalfWidth)
                 || (star.X < -StarHalfWidth) ||
-                (star.Y > (_draw.Layout.Bottom - _draw.Layout.Centre.Y) / StarScale)
+                (star.Y > (_draw.Layout.ViewportBottom - _draw.Layout.ViewportCentre.Y) / StarScale)
                 || (star.Y < -StarHalfHeight) ||
                 (zz < 16))
             {
@@ -174,7 +174,7 @@ internal sealed class Stars
 
     // Star space (centred on the view) to screen pixels.
     private Vector2 ToScreen(float xx, float yy)
-        => _draw.Layout.Centre + (new Vector2(xx, yy) * StarScale);
+        => _draw.Layout.ViewportCentre + (new Vector2(xx, yy) * StarScale);
 
     // Draw the motion streak from a star's old screen position to where it has
     // just moved to, when both ends are inside the view.
@@ -184,14 +184,14 @@ internal sealed class Stars
         float ex = end.X;
         float ey = end.Y;
 
-        if ((star.X >= _draw.Layout.Left)
-            && (star.X <= _draw.Layout.Right) &&
-            (star.Y >= _draw.Layout.Top)
-            && (star.Y <= _draw.Layout.Bottom) &&
-            (ex >= _draw.Layout.Left)
-            && (ex <= _draw.Layout.Right) &&
-            (ey >= _draw.Layout.Top)
-            && (ey <= _draw.Layout.Bottom))
+        if ((star.X >= _draw.Layout.ViewportLeft)
+            && (star.X <= _draw.Layout.ViewportRight) &&
+            (star.Y >= _draw.Layout.ViewportTop)
+            && (star.Y <= _draw.Layout.ViewportBottom) &&
+            (ex >= _draw.Layout.ViewportLeft)
+            && (ex <= _draw.Layout.ViewportRight) &&
+            (ey >= _draw.Layout.ViewportTop)
+            && (ey <= _draw.Layout.ViewportBottom))
         {
             _draw.Graphics.DrawLine(star, new(ex, ey), _colorWhite);
         }
@@ -237,10 +237,10 @@ internal sealed class Stars
         star = ToScreen(star.X, star.Y);
 
         if ((!WarpStars) &&
-            (star.X >= _draw.Layout.Left)
-            && (star.X <= _draw.Layout.Right) &&
-            (star.Y >= _draw.Layout.Top)
-            && (star.Y <= _draw.Layout.Bottom))
+            (star.X >= _draw.Layout.ViewportLeft)
+            && (star.X <= _draw.Layout.ViewportRight) &&
+            (star.Y >= _draw.Layout.ViewportTop)
+            && (star.Y <= _draw.Layout.ViewportBottom))
         {
             _draw.Graphics.DrawPixel(star, _colorWhite);
 

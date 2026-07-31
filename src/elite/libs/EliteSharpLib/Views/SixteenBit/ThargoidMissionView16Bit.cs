@@ -29,6 +29,8 @@ internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMi
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         switch (model.Stage)
         {
             case 4:

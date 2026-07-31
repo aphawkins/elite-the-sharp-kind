@@ -39,6 +39,8 @@ internal sealed class PlanetDataView8Bit : BaseView8Bit, IView<PlanetDataModel>
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader(model.Header);
 
         float y = FirstRowY;
@@ -55,13 +57,13 @@ internal sealed class PlanetDataView8Bit : BaseView8Bit, IView<PlanetDataModel>
         DrawRow(ref y, "Product:", model.Productivity);
         DrawRow(ref y, "Radius:", model.Radius);
 
-        DrawTextPretty(new(LabelX + _draw.Layout.Offset, DescriptionY), 304, model.Description);
+        DrawTextPretty(new(LabelX + _draw.Layout.ScannerLeft, DescriptionY), 304, model.Description);
     }
 
     private void DrawRow(ref float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.ScannerLeft, y), value, nameof(FontType.Small), _colorWhite);
         y += RowSpacingY;
     }
 }

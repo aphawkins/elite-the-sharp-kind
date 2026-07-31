@@ -82,7 +82,7 @@ public class WireframeSunTests
         graphics.ScreenUpdate();
 
         Assert.NotNull(lastFrame);
-        return (lastFrame, draw.Layout.Centre, draw.Palette["White"]);
+        return (lastFrame, draw.Layout.ViewportCentre, draw.Palette["White"]);
     }
 
     private static int CountPixels(FastBitmap bitmap, in FastColor color)

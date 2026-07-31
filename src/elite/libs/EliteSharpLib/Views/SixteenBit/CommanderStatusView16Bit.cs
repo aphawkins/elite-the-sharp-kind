@@ -39,6 +39,8 @@ internal sealed class CommanderStatusView16Bit : BaseView16Bit, IView<CommanderS
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader(model.Title);
 
         DrawRow(58, "Present System:", model.PresentSystem);
@@ -49,25 +51,25 @@ internal sealed class CommanderStatusView16Bit : BaseView16Bit, IView<CommanderS
         DrawRow(138, "Legal Status:", model.LegalStatus);
         DrawRow(154, "Rating:", model.Rating);
 
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, 186), "EQUIPMENT:", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, 186), "EQUIPMENT:", nameof(FontType.Small), _colorGreen);
 
         DrawEquipment(model.Equipment);
     }
 
     private void DrawRow(float y, string label, string value)
     {
-        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.Offset, y), label, nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(LabelX + _draw.Layout.ScannerLeft, y), label, nameof(FontType.Small), _colorGreen);
 
         if (!string.IsNullOrEmpty(value))
         {
-            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.Offset, y), value, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(new(ValueX + _draw.Layout.ScannerLeft, y), value, nameof(FontType.Small), _colorWhite);
         }
     }
 
     // The equipment list, filling the left column before wrapping to the right.
     private void DrawEquipment(IReadOnlyList<string> equipment)
     {
-        Vector2 position = new(EquipmentX + _draw.Layout.Offset, EquipmentStartY);
+        Vector2 position = new(EquipmentX + _draw.Layout.ScannerLeft, EquipmentStartY);
 
         foreach (string item in equipment)
         {

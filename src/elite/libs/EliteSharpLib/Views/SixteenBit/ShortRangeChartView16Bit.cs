@@ -38,14 +38,15 @@ internal sealed class ShortRangeChartView16Bit : ShortRangeChartViewBase
     }
 
     protected override (float MinX, float MaxX, float MinY, float MaxY) CrossBounds
-        => (1, EliteDraw.Layout.Right - 1, 37, EliteDraw.Layout.ScannerTop - 33);
+        => (1, EliteDraw.Layout.ViewportRight - 1, 37, EliteDraw.Layout.ScannerTop - 33);
 
     public override void Draw()
     {
+        BaseView.DrawBorder();
         BaseView.DrawViewHeader("SHORT RANGE CHART");
 
         // Fuel radius
-        Vector2 centre = EliteDraw.Layout.Centre;
+        Vector2 centre = EliteDraw.Layout.ViewportCentre;
         float scale = EliteDraw.Layout.Scale;
         float radius = Ship.Fuel * 10 * scale;
         float cross_size = CrossSize * scale;
@@ -73,7 +74,7 @@ internal sealed class ShortRangeChartView16Bit : ShortRangeChartViewBase
 
     private void DrawStatusText()
     {
-        float x = TextX + EliteDraw.Layout.Offset;
+        float x = TextX + EliteDraw.Layout.ScannerLeft;
         float nameY = EliteDraw.Layout.ScannerTop - NameY;
         float distanceY = EliteDraw.Layout.ScannerTop - DistanceY;
 

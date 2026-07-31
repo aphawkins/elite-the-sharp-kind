@@ -31,6 +31,8 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader(model.Header);
 
         for (int i = 0; i < model.Rows.Count; i++)
@@ -39,10 +41,10 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
 
             if (i == model.Rows.Count - 1)
             {
-                position.Y = ((model.Rows.Count + 1) / 2 * 30) + (_draw.Layout.Centre.Y / 2) + 32;
+                position.Y = ((model.Rows.Count + 1) / 2 * 30) + (_draw.Layout.ViewportCentre.Y / 2) + 32;
                 if (i == model.HighlightedIndex)
                 {
-                    position.X = _draw.Layout.Centre.X - 200;
+                    position.X = _draw.Layout.ViewportCentre.X - 200;
                     _draw.Graphics.DrawRectangleFilled(position, 400, 15, _colorDarkRed);
                 }
 
@@ -56,8 +58,8 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
                 return;
             }
 
-            position.X = ((i & 1) * 250) + 32 + _draw.Layout.Offset;
-            position.Y = (i / 2 * 30) + (_draw.Layout.Centre.Y / 2);
+            position.X = ((i & 1) * 250) + 32 + _draw.Layout.ScannerLeft;
+            position.Y = (i / 2 * 30) + (_draw.Layout.ViewportCentre.Y / 2);
 
             if (i == model.HighlightedIndex)
             {

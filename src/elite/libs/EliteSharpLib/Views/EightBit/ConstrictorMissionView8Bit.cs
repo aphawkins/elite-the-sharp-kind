@@ -34,19 +34,21 @@ internal sealed class ConstrictorMissionView8Bit : BaseView8Bit, IView<Constrict
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         switch (model.Stage)
         {
             case 1:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(TextX + _draw.Layout.Offset, 32), TextWidth, model.Paragraphs[0]);
-                DrawTextPretty(new(TextX + _draw.Layout.Offset, 96), TextWidth, model.Paragraphs[1]);
+                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 32), TextWidth, model.Paragraphs[0]);
+                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 96), TextWidth, model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
             case 3:
                 DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(48, model.Headline, nameof(FontType.Large), _colorYellow);
-                DrawTextPretty(new(TextX + _draw.Layout.Offset, 64), TextWidth, model.Paragraphs[0]);
+                DrawTextPretty(new(TextX + _draw.Layout.ScannerLeft, 64), TextWidth, model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }

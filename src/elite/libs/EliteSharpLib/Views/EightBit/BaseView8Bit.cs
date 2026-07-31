@@ -24,11 +24,13 @@ internal class BaseView8Bit : IBaseView
 
     private readonly FastColor _colorWhite;
     private readonly FastColor _colorYellow;
+    private readonly IEliteDraw _draw;
 
     internal BaseView8Bit(IEliteDraw draw)
     {
         ArgumentNullException.ThrowIfNull(draw);
 
+        _draw = draw;
         Graphics = draw.Graphics;
         Layout = draw.Layout;
         _colorWhite = draw.Palette["White"];
@@ -39,33 +41,40 @@ internal class BaseView8Bit : IBaseView
 
     public ViewLayout Layout { get; }
 
+    // The border frames the viewport, so it lies outside it: the screens all
+    // draw inside the view clip region, and this has to step out of it and
+    // back for its own rectangle to survive.
     public void DrawBorder()
     {
+        _draw.SetFullScreenClipRegion();
+
         for (int i = 0; i < Layout.BorderWidth; i++)
         {
             Graphics.DrawRectangle(
                 new(i, i),
-                Layout.ScreenWidth - 1 - (2 * i),
-                Layout.Bottom - (2 * i),
+                Layout.ScreenWidth - (2 * i),
+                Layout.ScannerTop - (2 * i),
                 _colorWhite);
         }
+
+        _draw.SetViewClipRegion();
     }
 
     public void DrawHyperspaceCountdown(int countdown)
         => Graphics.DrawTextRight(
-            new(Layout.Left + 11, Layout.Top + 2),
+            new(Layout.ViewportLeft + 11, Layout.ViewportTop + 2),
             $"{countdown}",
             nameof(FontType.Small),
             _colorWhite);
 
     public void DrawViewHeader(string title)
     {
-        Graphics.DrawTextCentre(Layout.Top + 3, title, nameof(FontType.Large), _colorYellow);
-        Graphics.DrawLine(new(Layout.Left, 18), new(Layout.Right, 18), _colorWhite);
+        Graphics.DrawTextCentre(Layout.ViewportTop + 3, title, nameof(FontType.Large), _colorYellow);
+        Graphics.DrawLine(new(Layout.ViewportLeft, 18), new(Layout.ViewportRight, 18), _colorWhite);
 
         // Vertical lines
-        Graphics.DrawLine(new(Layout.ScannerLeft, Layout.Top + 19), new(Layout.ScannerLeft, Layout.ScannerTop), _colorYellow);
-        Graphics.DrawLine(new(Layout.ScannerRight, Layout.Top + 19), new(Layout.ScannerRight, Layout.ScannerTop), _colorYellow);
+        Graphics.DrawLine(new(Layout.ScannerLeft, Layout.ViewportTop + 19), new(Layout.ScannerLeft, Layout.ScannerTop), _colorYellow);
+        Graphics.DrawLine(new(Layout.ScannerRight, Layout.ViewportTop + 19), new(Layout.ScannerRight, Layout.ScannerTop), _colorYellow);
     }
 
     public void DrawTextPretty(Vector2 position, float width, string text)

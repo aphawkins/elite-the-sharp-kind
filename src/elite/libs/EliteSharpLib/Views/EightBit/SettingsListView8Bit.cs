@@ -52,6 +52,8 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
     {
         ArgumentNullException.ThrowIfNull(model);
 
+        DrawBorder();
+
         DrawViewHeader(model.Header);
 
         int lastIndex = model.Rows.Count - 1;
@@ -59,7 +61,7 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
         for (int i = 0; i < lastIndex; i++)
         {
             Vector2 position = new(
-                MarginX + ((i & 1) * ColumnPitch) + _draw.Layout.Offset,
+                MarginX + ((i & 1) * ColumnPitch) + _draw.Layout.ScannerLeft,
                 FirstRowY + (i / 2 * CellSpacingY));
 
             if (i == model.HighlightedIndex)
@@ -87,7 +89,7 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
         if (lastIndex == model.HighlightedIndex)
         {
             _draw.Graphics.DrawRectangleFilled(
-                new(_draw.Layout.Centre.X - (CellWidth / 2), y),
+                new(_draw.Layout.ViewportCentre.X - (CellWidth / 2), y),
                 CellWidth,
                 CellHeight - ValueOffsetY,
                 _colorRed);
