@@ -30,34 +30,6 @@ that mentions a decision.
 
 ## Should
 
-### Asset structure for the 8-bit/16-bit tiers
-
-Implements the 2026-07-28 asset-structure decision in
-[decisions.md](decisions.md); the full design, including the rejected
-alternatives and the measured colour-count baseline, is in
-[asset-structure.md](asset-structure.md). Steps are ordered — each is
-independently verifiable, and steps 1-5 do not depend on the 8-bit art
-existing.
-
-- [ ] [Assets] Author SCR's 8-bit asset set: a 16-colour
-      `palette.json`, `atlas.bmp` and `menu.bmp` under
-      `Images/EightBit/`, and an 8-bit bitmap font (Elite's 8-bit tier
-      uses a single 8x8 `bbc-micro.bmp` for both sizes, declared in an
-      `AssetManifest.EightBit.json`). Hand-authored art, as Elite's was
-      — mechanically downscaling the 16-bit files gives filtered 16-bit
-      imagery, not 8-bit-era art. The tier plumbing is done (2026-07-29,
-      see CHANGELOG): the manifest declares only `SixteenBit`, so
-      selecting `EightBit` fails at startup until the files exist, and
-      adding them plus `"EightBit"` to `Tiers` is all that is left.
-- [ ] [Useful.Assets] Decide whether the asset validator should also
-      check bitmap dimensions against the tier's resolution. Today the
-      colour cap is the only tier constraint, so nothing catches art
-      authored at the wrong size. Elite's 8-bit lasers are exactly half
-      their 16-bit counterparts, but `scanner.bmp` is 260x56 against the
-      16-bit 512x129 — not a halving, so a naive "must be 2x" rule would
-      reject art the maintainer intends. Needs a decision on what the
-      rule is before it can be written.
-
 ### Tier presentation architecture
 
 The controller/view split and the per-tier view split are both **done** (see
@@ -66,45 +38,6 @@ out of them live in
 [architecture-principles.md](architecture-principles.md)'s "Screens:
 controllers, models and per-tier views". What is left open:
 
-- [ ] [EliteSharpLib] Polish the 8-bit view layouts in
-      `Views/EightBit/`. Every screen has one and renders without
-      overflowing, but they are first drafts: verification was "does it
-      build, does it render, does it avoid the obvious overflow", not the
-      worst-case-content check the rules ask for. `CommanderStatusView8Bit`
-      is the one screen that got that treatment and is the reference for
-      what "done" looks like. The maintainer took this judgement over
-      personally, so this is spacing/authoring work, not a refactor.
-      `engine.tier` in `%APPDATA%\The Sharp Kind\elite.sharp` is set to
-      `EightBit` and stays that way while this is the tier being worked on
-      (maintainer, 2026-07-30), so verifying a layout is just a run - no
-      config edit, and nothing to restore afterwards.
-- [ ] [EliteSharpLib] Author `Scanner8Bit`'s HUD layout against the real
-      320x56 scanner art. Its ~20 positions are the 16-bit offsets halved,
-      which is close enough to render but visibly wrong: the dial bars
-      overrun their slots and the compass and indicator cluster are
-      crowded. Same character of work as the view-layout item above, and
-      every number is a named member in one file. `ScannerBase` holds no
-      coordinates, so nothing else has to move.
-- [ ] [EliteSharpLib] `ScannerBase.ScannerExtent` is `(28, 50)` on both
-      tiers, so scanner contacts only ever use ±50px around the centre.
-      The 16-bit radar area grew from 311px wide to 439px with the 640x512
-      widening, so contacts now fill less of the dial than they did.
-      Pre-existing rather than a regression — it was ±50 at 512 too — but
-      decide whether the extent should be derived from the scanner art's
-      plot area rather than fixed. Affects how far away ships appear, so
-      it is a feel decision, not a layout fix.
-- [x] [EliteSharpLib] `ShortRangeChartViewBase` was the one screen still
-      combining controller and view. Split into
-      `ShortRangeChartController`/`ShortRangeChartModel` with per-tier
-      `ShortRangeChartView8Bit`/`16Bit`, taking the shape this entry
-      preferred: the tier's layout metrics go into the controller, so the row
-      packing and the `CarryFlag` quirk stay in one place and the model
-      carries finished screen positions. That is why this model is in screen
-      space where `GalacticChartModel` is in galaxy space — the packing
-      decides which planets get a name at all, and `blob_size` depends on
-      `GameState.CarryFlag`, a side effect of the `NamePlanet` call that only
-      happens when a name wins a free row (a faithful port of the original's
-      quirk), so neither half survives being deferred to the view.
 - [ ] [EliteSharpLib] `ShortRangeChartController.CrossBounds` derives both
       tiers' cross-hair clamps from `Scale` (`18 * scale + 1` and
       `Height - (16 * scale + 1)`), which reproduces the previous per-tier
@@ -485,6 +418,21 @@ either.**):
 
 ## Won't
 
+- [ ] [Assets] SCR's 8-bit asset set — not for now (2026-07-31). The
+      2026-07-28 asset-structure decision in [decisions.md](decisions.md)
+      covers both games and Elite has both tiers, but SCR ships
+      `SixteenBit` only: its manifest's `Tiers` is `[ "SixteenBit" ]`, so
+      selecting `EightBit` throws at startup. Closing that needs a
+      16-colour `palette.json`, an `AssetManifest.EightBit.json`, an 8x8
+      bitmap font, and hand-authored `atlas.bmp` and `menu.bmp` — the two
+      bitmaps being the blocker, since downscaling the 16-bit 1024x1024
+      atlas and 320x200 menu gives filtered 16-bit imagery rather than
+      8-bit-era art. SCR also has no 8-bit resolution: Elite derives its
+      from `SDLProgram.ResolutionFor` (320x256 / 640x512) while SCR still
+      hardcodes its own consts, so the tier would need one chosen
+      (`menu.bmp` is already the Amiga's 320x200). Revisit if the art gets
+      authored. The colour-budget validator applies to whatever lands, so
+      nothing has to be built first.
 - [ ] [Repo] Remaining code-complexity rules from issue #5 (closed
       2026-07-27, see [CHANGELOG.md](../CHANGELOG.md)): `S1541`/`S3776`
       (method/cognitive complexity, 102 sites) and `S107` (parameter
