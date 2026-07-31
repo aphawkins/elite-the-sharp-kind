@@ -56,8 +56,9 @@ Every file has the same three top-level elements: `version`, the schema version;
     "engine": {
         "backend": "Software",                 // Which backend runs the game.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated).  It picks the mixer as well as the rasteriser, so it isn't graphics-only
         "tier": "SixteenBit",                  // Which machine's look the game reproduces.  EightBit or SixteenBit.  Picks the asset set - artwork, fonts, music and effects - and with it the render resolution.  See docs/asset-structure.md
+        "windowScale": 1,                      // How many window pixels each rendered pixel occupies, 1 to 4.  Independent of the tier: the game still renders at the tier's native resolution and is magnified at presentation, so scale 2 is a window twice the size with the same pixels doubled, not more detail
         "graphics": {
-            "fps": 60,                         // Maximum render frame rate.  The game speed is independent of it
+            "fps": 60,                         // Maximum render frame rate, up to 1000.  The game speed is independent of it
             "graphicStyle": "Solid",           // How the 3D world is drawn - every object together, so it can't end up half one and half the other.  Wireframe or Solid
             "depthSort": "ZBuffer",            // Depth-sort strategy for filled rendering (ignored when graphicStyle is Wireframe).  Painter or ZBuffer
             "showFps": false                   // Overlay the measured frame rate.  A diagnostic, so off by default
@@ -65,6 +66,10 @@ Every file has the same three top-level elements: `version`, the schema version;
         "sound": {
             "music": true,                     // Play music
             "effects": true                    // Play sound effects
+        },
+        "logging": {
+            "minimumLevel": "Information",     // Lowest level written to the log file and console.  Trace, Debug, Information, Warning, Error, Critical or None.  The ELITE_LOG_LEVEL / SCR_LOG_LEVEL environment variables override this, for when the config file itself is what needs debugging
+            "retainedFileCount": 7             // How many rolling daily log files are kept, 1 to 366, before the oldest are deleted
         }
     }
 }

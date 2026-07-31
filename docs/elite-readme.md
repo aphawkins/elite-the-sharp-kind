@@ -5,15 +5,14 @@
 A C# port of the classic BBC home computer game 'Elite'.  It is meant to look, feel and play the same as the original 8bit and 16bit versions of the game.
 
 Currently the objective of this port is authenticity, object oriented code and cross platform compatibility using dotnet.
-Framerate is fixed at 13.5 fps, which using the current engine implementation, runs at approximately the same speed as the original.
-Performance, or maximum FPS, are a secondary objective, which may come later.
+The game logic ticks at a fixed 13.5 Hz, the rate at which the original ran; rendering is separate and runs at the engine's configured frame rate (`engine.graphics.fps`, 60 by default), so a higher frame rate makes the game smoother without making it faster.
 
 Part of [The Sharp Kind](../README.md), alongside [Stunt Car Racer - The Sharp Kind](scr-readme.md).
 
 ## Getting Started
 
 The program has been tested to run on the following platforms and architectures:
-- Windows 10 (x64)
+- Windows (x64)
 - Ubuntu 24.04 (x64)
 - Raspberry Pi 4 (ARM64)
 
@@ -109,7 +108,7 @@ The last two are marked `*` on the screen: the backend picks the rendering and a
 
 ## Configuration
 
-Game settings are held in the `elite.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Stunt Car Racer - The Sharp Kind](scr-readme.md). Commander saves (`.cmdr` files) and logs (`logs\elite-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults.
+Game settings are held in the `elite.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Stunt Car Racer - The Sharp Kind](scr-readme.md). Commander saves (`.cmdr` files) and logs (`logs\elite-*.log`, daily rolling, 7 kept by default) live in the same directory. If the config file is missing or invalid the game falls back to defaults.
 
 The file's `engine` element holds the settings shared by every game — the backend, the tier, the frame rate and the graphic style among them — and is documented in the [main readme](../README.md#configuration). Elite's own settings sit alongside it under `game`, and can take the following values:
 

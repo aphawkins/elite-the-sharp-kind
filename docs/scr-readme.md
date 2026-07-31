@@ -4,7 +4,7 @@
 
 A C# port of the classic Geoff Crammond racing game 'Stunt Car Racer'.  It is converted from the C++/DirectX9 Windows remake of the Amiga version, and is meant to feel and play the same as the original.
 
-The port shares the `Useful` libraries with 'Elite - The Sharp Kind': hardware access is hidden behind interfaces, with a software renderer drawing through SDL2.  The physics uses the original Amiga fixed-point algorithms and track data.
+The port shares the `Useful` libraries with 'Elite - The Sharp Kind': hardware access is hidden behind interfaces, with a software renderer drawing through SDL3.  The physics uses the original Amiga fixed-point algorithms and track data.
 
 Part of [The Sharp Kind](../README.md), alongside [Elite - The Sharp Kind](elite-readme.md).  Remaining conversion work is tracked in the [backlog](backlog-roadmap.md).
 
@@ -67,28 +67,14 @@ The cockpit is drawn as a set of sprites over the track view: front wheels that 
 
 ## Configuration
 
-Game settings are held in the `stuntcarracer.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Elite - The Sharp Kind](elite-readme.md). Logs (`logs\scr-*.log`, daily rolling, 7 days retained) live in the same directory. If the config file is missing or invalid the game falls back to defaults. There is no in-game settings screen yet, so `stuntcarracer.sharp` must be edited by hand.
+Game settings are held in the `stuntcarracer.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Elite - The Sharp Kind](elite-readme.md). Logs (`logs\scr-*.log`, daily rolling, 7 kept by default) live in the same directory. If the config file is missing or invalid the game falls back to defaults. There is no in-game settings screen yet, so `stuntcarracer.sharp` must be edited by hand.
 
-Everything it currently reads is in the shared `engine` element, documented in the [main readme](../README.md#configuration): the backend, the tier, the frame rate and the sound switches. Of those, `graphicStyle` and `depthSort` are written out but not acted on yet — Stunt Car Racer draws its track through its own pipeline.
+The file's `engine` element holds the settings shared by every game — the backend, the tier, the window scale, the frame rate, the sound switches and the logging levels among them — and is documented in the [main readme](../README.md#configuration). Of those, `graphicStyle`, `depthSort` and `showFps` are written out but not acted on yet: Stunt Car Racer draws its track through its own pipeline.
 
-The game's own `game` element has nothing in it yet, so the file looks like this:
+Stunt Car Racer's own settings would sit alongside under `game`, but it has none of its own yet, so the element is written out empty:
 
 ``` json
 {
-    "version": 1,
-    "engine": {
-        "backend": "Software",
-        "tier": "SixteenBit",
-        "graphics": {
-            "fps": 60,
-            "graphicStyle": "Solid",
-            "depthSort": "ZBuffer"
-        },
-        "sound": {
-            "music": true,
-            "effects": true
-        }
-    },
     "game": {}
 }
 ```
@@ -100,7 +86,7 @@ The game's own `game` element has nothing in it yet, so the file looks like this
 - Before writing SCR-specific code, check whether the equivalent already exists in `src/useful/*` and extend that library instead of duplicating it.  A genuine SCR-only need (e.g. track-segment collision) is fine to keep local.
 - Behavioural fidelity ("feels like the original"), not bit-exact numerical replication, is the bar — there is no requirement to match the original's frame-by-frame physics output.
 - The original's binary asset formats (tracks/bitmaps/sounds) are read-once inputs to a one-time conversion step, not a live format the C# code must parse identically forever.
-- The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — it belongs to the DirectX stack this port bypasses in favour of SDL2 + `Useful.Audio`.
+- The original remake's Windows-only infrastructure (DXUT registry prefs, clipboard, DirectSound path, `MessageBox` dialogs) is deliberately not ported — it belongs to the DirectX stack this port bypasses in favour of SDL3 + `Useful.Audio`.
 
 ## Credits
 
