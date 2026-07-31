@@ -22,7 +22,6 @@ internal class BaseView16Bit : IBaseView
 
     private readonly FastColor _colorGoldenrod;
     private readonly FastColor _colorWhite;
-    private readonly FastColor _colorYellow;
     private readonly float _rowHeight;
     private readonly IEliteDraw _draw;
 
@@ -36,7 +35,6 @@ internal class BaseView16Bit : IBaseView
         _rowHeight = 8 * draw.Layout.Scale;
         _colorGoldenrod = draw.Palette["Goldenrod"];
         _colorWhite = draw.Palette["White"];
-        _colorYellow = draw.Palette["Yellow"];
     }
 
     public IGraphics Graphics { get; }
@@ -81,11 +79,10 @@ internal class BaseView16Bit : IBaseView
     public void DrawViewHeader(string title)
     {
         Graphics.DrawTextCentre(Layout.ViewportTop + 6, title, nameof(FontType.Large), _colorGoldenrod);
-        Graphics.DrawLine(new(Layout.ViewportLeft, 36), new(Layout.ViewportRight, 36), _colorWhite);
-
-        // Vertical lines
-        Graphics.DrawLine(new(Layout.ScannerLeft, Layout.ViewportTop + 37), new(Layout.ScannerLeft, Layout.ScannerTop), _colorYellow);
-        Graphics.DrawLine(new(Layout.ScannerRight, Layout.ViewportTop + 37), new(Layout.ScannerRight, Layout.ScannerTop), _colorYellow);
+        Graphics.DrawLine(
+            new(Layout.ViewportLeft, Layout.ViewportTop + 35),
+            new(Layout.ViewportRight, Layout.ViewportTop + 35),
+            _colorWhite);
     }
 
     public void DrawTextPretty(Vector2 position, float width, string text)

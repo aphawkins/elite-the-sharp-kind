@@ -78,12 +78,11 @@ internal class BaseView8Bit : IBaseView
 
     public void DrawViewHeader(string title)
     {
-        Graphics.DrawTextCentre(Layout.ViewportTop + 3, title, nameof(FontType.Large), _colorYellow);
-        Graphics.DrawLine(new(Layout.ViewportLeft, 18), new(Layout.ViewportRight, 18), _colorWhite);
-
-        // Vertical lines
-        Graphics.DrawLine(new(Layout.ScannerLeft, Layout.ViewportTop + 19), new(Layout.ScannerLeft, Layout.ScannerTop), _colorYellow);
-        Graphics.DrawLine(new(Layout.ScannerRight, Layout.ViewportTop + 19), new(Layout.ScannerRight, Layout.ScannerTop), _colorYellow);
+        Graphics.DrawTextCentre(Layout.ViewportTop + 1, title, nameof(FontType.Large), _colorYellow);
+        Graphics.DrawLine(
+            new(Layout.ViewportLeft, Layout.ViewportTop + 9),
+            new(Layout.ViewportRight, Layout.ViewportTop + 9),
+            _colorWhite);
     }
 
     public void DrawTextPretty(Vector2 position, float width, string text)

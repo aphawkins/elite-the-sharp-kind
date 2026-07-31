@@ -18,8 +18,9 @@ namespace EliteSharpLib.Views.EightBit;
 internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartModel>
 {
     // The plot's last row is galaxy y=255, which ToScreen puts at
-    // (255 / 2) + 18 = 145 at Scale 1; the divider sits just under it.
-    private const float DividerY = 149;
+    // (255 * 0.6) + ViewportTop + 11 = 165 at Scale 1; the divider closes the
+    // plot off on that row.
+    private const float DividerY = 165;
     private const float CrossSize = 5;
     private const float CaptionX = 8;
     private const float CaptionOffsetY = 28;
@@ -91,6 +92,6 @@ internal sealed class GalacticChartView8Bit : BaseView8Bit, IView<GalacticChartM
 
     // Galaxy space (D, B) to this tier's screen coordinates.
     private Vector2 ToScreen(Vector2 galaxy) => new(
-        (galaxy.X * _draw.Layout.Scale) + _draw.Layout.ScannerLeft,
-        (galaxy.Y * _draw.Layout.Scale / 2) + (18 * _draw.Layout.Scale) + 1);
+        (galaxy.X * _draw.Layout.Scale * 1.3f) + _draw.Layout.ViewportLeft + 1,
+        (galaxy.Y * _draw.Layout.Scale * 0.6f) + _draw.Layout.ViewportTop + 11);
 }

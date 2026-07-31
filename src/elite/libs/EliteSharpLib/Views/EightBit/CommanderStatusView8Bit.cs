@@ -23,7 +23,7 @@ internal sealed class CommanderStatusView8Bit : BaseView8Bit, IView<CommanderSta
     private const int EquipmentX = 8;
     private const int RowSpacingY = 8;
     private const int EquipmentSpacingY = 8;
-    private const int FirstRowY = 40;
+    private const int FirstRowY = 20;
     private const int EquipmentHeaderY = FirstRowY + (7 * RowSpacingY) + 4;
     private const int EquipmentStartY = EquipmentHeaderY + EquipmentSpacingY;
 
