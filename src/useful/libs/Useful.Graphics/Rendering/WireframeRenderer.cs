@@ -17,11 +17,9 @@ namespace Useful.Graphics.Rendering;
 // against it.
 public sealed class WireframeRenderer : IPolygonRenderer
 {
-    private const int MAXPOLYS = 100;
-
     private readonly FastColor _colorWhite;
     private readonly IGraphics _graphics;
-    private readonly PolygonData[] _polys = new PolygonData[MAXPOLYS];
+    private PolygonData[] _polys = new PolygonData[PolygonBuffer.InitialCapacity];
     private int _totalPolys;
 
     public WireframeRenderer(IGraphics graphics, IAssetLocator assetLocator)
@@ -37,10 +35,7 @@ public sealed class WireframeRenderer : IPolygonRenderer
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(depths);
 
-        if (_totalPolys == MAXPOLYS)
-        {
-            return;
-        }
+        PolygonBuffer.EnsureCapacity(ref _polys, _totalPolys + 1);
 
         int x = _totalPolys;
         _totalPolys++;

@@ -7,6 +7,26 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Fixed (the 100-polygon-per-frame cap, 2026-08-01)
+
+- `PainterRenderer`, `ZBufferRenderer` and `WireframeRenderer` each held a
+  fixed 100-entry polygon array and opened `Submit` with
+  `if (_totalPolys == MAXPOLYS) { return; }` - no log, no counter. The cap
+  came from The New Kind's `poly_chain` but was reachable here: with 20
+  universe objects against models running to 29 faces, four Cobras and a
+  station is already ~91 polygons before lasers or explosion debris, and
+  whatever arrived after the hundredth was silently not drawn.
+- The three now share `PolygonBuffer`, which starts at 128 entries and
+  doubles on demand, so nothing is dropped. The buffer is reused frame to
+  frame, so the growth settles at the busiest scene seen and stops
+  allocating. `WireframeRenderer` was under the same cap and is fixed with
+  them, so its hidden-line pass no longer loses surfaces from the depth
+  prepass either.
+- Covered by `PolygonRendererCapacityTests`, which submits 500 polygons in a
+  frame and asserts every one reaches `IGraphics` - failing against the old
+  cap - plus a second frame to check the count resets rather than the buffer
+  shrinking.
+
 ### Fixed (camera-space backface culling for Elite's ships, 2026-07-31)
 
 - `ShipBase.DrawModelFaces` decided backface culling from the *projected*

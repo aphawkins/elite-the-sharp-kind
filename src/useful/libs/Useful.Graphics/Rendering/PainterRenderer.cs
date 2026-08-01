@@ -10,9 +10,8 @@ namespace Useful.Graphics.Rendering;
 // WireframeRenderer selected instead of this at DI-registration time.
 public sealed class PainterRenderer(IGraphics graphics) : IPolygonRenderer
 {
-    private const int MAXPOLYS = 100;
     private readonly IGraphics _graphics = graphics;
-    private readonly PolygonData[] _polyChain = new PolygonData[MAXPOLYS];
+    private PolygonData[] _polyChain = new PolygonData[PolygonBuffer.InitialCapacity];
     private int _startPoly;
     private int _totalPolys;
 
@@ -23,10 +22,7 @@ public sealed class PainterRenderer(IGraphics graphics) : IPolygonRenderer
 
         int i;
 
-        if (_totalPolys == MAXPOLYS)
-        {
-            return;
-        }
+        PolygonBuffer.EnsureCapacity(ref _polyChain, _totalPolys + 1);
 
         int x = _totalPolys;
         _totalPolys++;

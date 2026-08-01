@@ -17,9 +17,8 @@ namespace Useful.Graphics.Rendering;
 // camera is hidden by the hull rather than drawn straight through it.
 public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
 {
-    private const int MAXPOLYS = 100;
     private readonly IGraphics _graphics = graphics;
-    private readonly PolygonData[] _polys = new PolygonData[MAXPOLYS];
+    private PolygonData[] _polys = new PolygonData[PolygonBuffer.InitialCapacity];
     private int _totalPolys;
 
     public void Submit(Vector2[] points, float[] depths, FastColor color, float z)
@@ -27,10 +26,7 @@ public sealed class ZBufferRenderer(IGraphics graphics) : IPolygonRenderer
         ArgumentNullException.ThrowIfNull(points);
         ArgumentNullException.ThrowIfNull(depths);
 
-        if (_totalPolys == MAXPOLYS)
-        {
-            return;
-        }
+        PolygonBuffer.EnsureCapacity(ref _polys, _totalPolys + 1);
 
         int x = _totalPolys;
         _totalPolys++;

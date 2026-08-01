@@ -32,28 +32,6 @@ there before starting an item that mentions a decision.
 
 ## Must
 
-### 3D pipeline correctness (from the 2026-07-31 modern-pipeline gap analysis)
-
-Defects found comparing both games' 3D pipelines against a modern
-rasterisation pipeline. They are Musts because each one makes a *shipped,
-selectable* feature produce output that is wrong on its own terms — unlike
-the deliberate period-faithful omissions (no lighting, no texturing in Elite,
-no alpha/fog/AA), which are recorded under Won't below and as roadmap items.
-
-- [ ] [Useful.Graphics] **Elite silently drops geometry past 100 polygons per
-      frame.** Both `PainterRenderer` and `ZBufferRenderer` open `Submit`
-      with `if (_totalPolys == MAXPOLYS) { return; }` — no log, no counter,
-      nothing. The cap is inherited from The New Kind's `poly_chain`, but it
-      is reachable here: `Universe.MaxUniverseObjects` is 20 and the ship
-      models run to 29 faces (`transporter.obj`; `cobramk3.obj` 19,
-      `coriolis.obj` 15), so four Cobras plus a station is already ~91
-      polygons before lasers and explosion debris. Whatever arrives last just
-      isn't drawn. Fix direction: measure the real per-frame peak first (a
-      debug counter over a busy scene in both games), then either raise the
-      cap to something the worst case can't reach or make the overflow
-      loud rather than silent. (The z-buffer per-vertex-depth item this was
-      sequenced behind is done — see the CHANGELOG.)
-
 ### Layout
 
 - [ ] [EliteSharpLib] **Screens using bare absolute coordinates drift out of
