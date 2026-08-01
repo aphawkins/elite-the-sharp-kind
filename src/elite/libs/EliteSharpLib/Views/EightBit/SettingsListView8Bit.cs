@@ -13,29 +13,26 @@ namespace EliteSharpLib.Views.EightBit;
 /// font. Shared by the game and engine settings screens, exactly as the
 /// 16-bit view is.
 /// <para>
-/// The two columns are kept, even though the widest row
-/// ("Graphic Style:" + "Wireframe", 23 characters) leaves no room for a
-/// value column beside the name at this width: the shared
-/// <see cref="SettingsListController"/>'s cursor moves in steps of two, so a
-/// single visual column would make Up/Down appear to skip a row. Instead each
-/// cell stacks its value under its name, which keeps the grid two-wide and
-/// the navigation honest.
+/// One setting per row, name and value side by side, with no blank row
+/// between them: the widest row ("Graphic Style:" + "Wireframe") is 25 of the
+/// 40 columns, so both fit on one line. The shared
+/// <see cref="SettingsListController"/> steps its cursor one row at a time to
+/// match, and the Back row sits near the foot of the viewport rather than
+/// immediately under the list.
 /// </para>
 /// </summary>
 internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListModel>
 {
-    // Each setting is a two-row cell - name above value - with a blank row
-    // between cells, laid out in two columns.
+    // Each setting is one row - name at the margin, value beside it - and the
+    // rows run consecutively, in a single column.
     private const int FirstRow = 6;
-    private const int CellRows = 3;
-    private const int CellHeightRows = 2;
-    private const int ValueOffsetRows = 1;
-    private const int BackRowGapRows = 1;
+    private const int CellRows = 1;
+    private const int CellHeightRows = 1;
+    private const int BackRow = 19;
     private const int FooterGapRows = 2;
-    private const int MarginColumn = 1;
-    private const int ColumnPitchColumns = 20;
-    private const int CellWidthColumns = 18;
-    private const int ValueIndentColumns = 1;
+    private const int MarginColumn = 7;
+    private const int CellWidthColumns = 25;
+    private const int ValueColumn = 23;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorWhite;
@@ -62,9 +59,7 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
 
         for (int i = 0; i < lastIndex; i++)
         {
-            Vector2 position = new(
-                Column(MarginColumn + ((i & 1) * ColumnPitchColumns)),
-                Row(FirstRow + (i / 2 * CellRows)));
+            Vector2 position = new(Column(MarginColumn), Row(FirstRow + (i * CellRows)));
 
             if (i == model.HighlightedIndex)
             {
@@ -77,7 +72,7 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
 
             _draw.Graphics.DrawTextLeft(position, model.Rows[i].Name, nameof(FontType.Small), _colorWhite);
             _draw.Graphics.DrawTextLeft(
-                new(position.X + Column(ValueIndentColumns), position.Y + Row(ValueOffsetRows)),
+                new(Column(ValueColumn), position.Y),
                 model.Rows[i].Value,
                 nameof(FontType.Small),
                 _colorWhite);
@@ -86,26 +81,24 @@ internal sealed class SettingsListView8Bit : BaseView8Bit, IView<SettingsListMod
         DrawBackRow(model, lastIndex);
     }
 
-    // The Back row spans both columns, under the grid.
+    // The Back row is centred near the foot of the viewport, with the footer
+    // under it.
     private void DrawBackRow(SettingsListModel model, int lastIndex)
     {
-        // lastIndex settings fill ceil(lastIndex / 2) grid rows above it.
-        int row = FirstRow + ((lastIndex + 1) / 2 * CellRows) + BackRowGapRows;
-
         if (lastIndex == model.HighlightedIndex)
         {
             _draw.Graphics.DrawRectangleFilled(
-                new(_draw.Layout.ViewportCentre.X - (Column(CellWidthColumns) / 2), Row(row)),
+                new(_draw.Layout.ViewportCentre.X - (Column(CellWidthColumns) / 2), Row(BackRow)),
                 Column(CellWidthColumns),
-                Row(CellHeightRows - ValueOffsetRows),
+                Row(CellHeightRows),
                 _colorRed);
         }
 
-        DrawTextCentreOnGrid(row, model.Rows[lastIndex].Name, nameof(FontType.Small), _colorWhite);
+        DrawTextCentreOnGrid(BackRow, model.Rows[lastIndex].Name, nameof(FontType.Small), _colorWhite);
 
         if (model.Footer.Length > 0)
         {
-            DrawTextCentreOnGrid(row + FooterGapRows, model.Footer, nameof(FontType.Small), _colorWhite);
+            DrawTextCentreOnGrid(BackRow + FooterGapRows, model.Footer, nameof(FontType.Small), _colorWhite);
         }
     }
 }

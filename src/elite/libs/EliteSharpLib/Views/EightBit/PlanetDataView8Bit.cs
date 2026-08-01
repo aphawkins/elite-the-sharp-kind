@@ -17,9 +17,9 @@ namespace EliteSharpLib.Views.EightBit;
 internal sealed class PlanetDataView8Bit : BaseView8Bit, IView<PlanetDataModel>
 {
     private const int LabelColumn = 1;
-    private const int ValueColumn = 9;
+    private const int ValueColumn = 10;
     private const int FirstRow = 4;
-    private const int DescriptionRow = 12;
+    private const int DescriptionRow = 13;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorGreen;

@@ -42,11 +42,6 @@ internal class BaseView8Bit : IBaseView
     private const int CharacterWidth = 8;
     private const int RowHeight = 8;
 
-    // The frame drawn around the viewport. It overlays the viewport's outer
-    // pixel rather than being reserved out of it, so widening it never shifts
-    // a single view off the character grid.
-    private const int BorderWidth = 1;
-
     private readonly FastColor _colorWhite;
     private readonly FastColor _colorYellow;
 
@@ -68,14 +63,17 @@ internal class BaseView8Bit : IBaseView
     // rectangle is the viewport, and the view clip region already admits it.
     public void DrawBorder()
     {
-        for (int i = 0; i < BorderWidth; i++)
-        {
-            Graphics.DrawRectangle(
-                new(Layout.ViewportLeft + i, Layout.ViewportTop + i),
-                Layout.ViewportWidth - (2 * i),
-                Layout.ViewportHeight - (2 * i),
-                _colorWhite);
-        }
+        // Top
+        Graphics.DrawLine(new(Layout.ViewportLeft, Layout.ViewportTop), new(Layout.ViewportWidth, Layout.ViewportTop), _colorWhite);
+
+        // Left
+        Graphics.DrawLine(new(Layout.ViewportLeft, Layout.ViewportTop), new(Layout.ViewportLeft, Layout.ViewportHeight), _colorWhite);
+
+        // Right
+        Graphics.DrawLine(
+            new(Layout.ViewportWidth - 1, Layout.ViewportTop),
+            new(Layout.ViewportWidth - 1, Layout.ViewportHeight),
+            _colorWhite);
     }
 
     // Row 0 and the outermost columns belong to the border, which overlays

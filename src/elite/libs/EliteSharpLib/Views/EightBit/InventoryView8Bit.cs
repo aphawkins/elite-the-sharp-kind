@@ -15,7 +15,7 @@ namespace EliteSharpLib.Views.EightBit;
 internal sealed class InventoryView8Bit : BaseView8Bit, IView<InventoryModel>
 {
     private const int LabelColumn = 1;
-    private const int ValueColumn = 6;
+    private const int ValueColumn = 7;
     private const int QuantityColumn = 17;
     private const int FirstRow = 4;
     private const int CargoFirstRow = 7;

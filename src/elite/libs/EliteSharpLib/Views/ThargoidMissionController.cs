@@ -16,29 +16,29 @@ namespace EliteSharpLib.Views;
 internal sealed class ThargoidMissionController : IScreenController
 {
     private const string Mission2BriefA =
-        "Attention Commander, I am Captain Fortesque of Her Majesty's Space Navy. " +
-            "We have need of your services again. If you would be so good as to go to " +
-            "Ceerdi you will be briefed.If succesful, you will be rewarded." +
-            "---MESSAGE ENDS.";
+        "Attention Commander, I am Captain Fortesque of Her Majesty's Space Navy. "
+            + "We have need of your services again. If you would be so good as to go to "
+            + "Ceerdi you will be briefed.If succesful, you will be rewarded."
+            + "---MESSAGE ENDS.";
 
     private const string Mission2BriefB =
-        "Good Day Commander. I am Agent Blake of Naval Intelligence. As you know, " +
-            "the Navy have been keeping the Thargoids off your ass out in deep space " +
-            "for many years now. Well the situation has changed. Our boys are ready " +
-            "for a push right to the home system of those murderers.";
+        "Good Day Commander. I am Agent Blake of Naval Intelligence. As you know, "
+            + "the Navy have been keeping the Thargoids off your ass out in deep space "
+            + "for many years now. Well the situation has changed. Our boys are ready "
+            + "for a push right to the home system of those murderers.";
 
     private const string Mission2BriefC =
-        "I have obtained the defence plans for their Hive Worlds. The beetles " +
-            "know we've got something but not what. If I transmit the plans to our " +
-            "base on Birera they'll intercept the transmission. I need a ship to " +
-            "make the run. You're elected. The plans are unipulse coded within " +
-            "this transmission. You will be paid. Good luck Commander. ---MESSAGE ENDS.";
+        "I have obtained the defence plans for their Hive Worlds. The beetles "
+            + "know we've got something but not what. If I transmit the plans to our "
+            + "base on Birera they'll intercept the transmission. I need a ship to "
+            + "make the run. You're elected. The plans are unipulse coded within "
+            + "this transmission. You will be paid. Good luck Commander. ---MESSAGE ENDS.";
 
     private const string Mission2Debrief =
-        "You have served us well and we shall remember. " +
-            "We did not expect the Thargoids to find out about you." +
-            "For the moment please accept this Navy Extra Energy Unit as payment. " +
-            "---MESSAGE ENDS.";
+        "You have served us well and we shall remember. "
+            + "We did not expect the Thargoids to find out about you."
+            + "For the moment please accept this Navy Extra Energy Unit as payment. "
+            + "---MESSAGE ENDS.";
 
     private readonly GameState _gameState;
     private readonly IKeyboard _keyboard;
@@ -101,7 +101,7 @@ internal sealed class ThargoidMissionController : IScreenController
     {
         4 => new(4, string.Empty, [Mission2BriefA], false),
         5 => new(5, string.Empty, [Mission2BriefB, Mission2BriefC], true),
-        6 => new(6, "Well done Commander.", [Mission2Debrief], false),
+        6 => new(6, "Well done Commander!", [Mission2Debrief], false),
         _ => new(0, string.Empty, [], false),
     };
 }

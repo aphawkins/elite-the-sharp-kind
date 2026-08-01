@@ -43,9 +43,13 @@ public class EngineSettingsControllerTests
             out GameState gameState, out FakeKeyboard keyboard, out AudioController audio, out _);
         controller.Reset();
 
-        // Down once to row 2, then toggle.
+        // Down twice to row 2, then toggle.
         keyboard.KeyDown(ConsoleKey.DownArrow, default);
-        controller.HandleInput();
+        for (int i = 0; i < 2; i++)
+        {
+            controller.HandleInput();
+        }
+
         keyboard.KeyUp(ConsoleKey.DownArrow, default);
         keyboard.KeyDown(ConsoleKey.Enter, default);
         controller.HandleInput();
@@ -74,7 +78,7 @@ public class EngineSettingsControllerTests
 
         // Navigate to the last row - the Back row.
         keyboard.KeyDown(ConsoleKey.DownArrow, default);
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 6; i++)
         {
             controller.HandleInput();
         }

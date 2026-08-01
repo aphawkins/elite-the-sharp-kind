@@ -46,7 +46,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<IView<ThargoidMissionModel>>()));
 
-        services.AddSingleton<IView<ConstrictorMissionModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
+        services.AddSingleton<IConstrictorMissionView>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new ConstrictorMissionView8Bit(sp.GetRequiredService<IEliteDraw>())
             : new ConstrictorMissionView16Bit(sp.GetRequiredService<IEliteDraw>()));
         services.AddSingleton(sp => new ConstrictorMissionController(
@@ -57,7 +57,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IShipFactory>(),
-            sp.GetRequiredService<IView<ConstrictorMissionModel>>(),
+            sp.GetRequiredService<IConstrictorMissionView>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConstrictorMissionController>()));
 
         services.AddSingleton<IView<EscapeCapsuleModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)

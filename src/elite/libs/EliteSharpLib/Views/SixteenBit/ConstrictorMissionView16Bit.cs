@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using EliteSharpLib.Graphics;
 using Useful;
 
@@ -11,9 +12,10 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// The 16-bit Constrictor mission messages: the 512-space layout, and nothing
 /// else. The brief and the debrief were laid out differently in the original,
 /// so the layout keys off the model's stage. The Constrictor posing behind
-/// the brief is drawn by the universe, not here.
+/// the brief is drawn by the universe, not here, but this tier picks where it
+/// sits.
 /// </summary>
-internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IView<ConstrictorMissionModel>
+internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IConstrictorMissionView
 {
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorGoldenrod;
@@ -25,6 +27,8 @@ internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IView<Constri
 
         _colorGoldenrod = draw.Palette["Goldenrod"];
     }
+
+    public Vector4 ShipLocation => new(200, 90, 600, 0);
 
     public void Draw(ConstrictorMissionModel model)
     {

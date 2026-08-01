@@ -14,9 +14,9 @@ internal sealed class OptionsController : IScreenController
 {
     private static readonly IReadOnlyList<string> s_credits =
     [
-        "The Sharp Kind - Andy Hawkins 2023",
-        "The New Kind - Christian Pinder 1999-2001",
-        "Original Code - Ian Bell & David Braben",
+        "The Sharp Kind - A Hawkins",
+        "The New Kind - C Pinder",
+        "Original Game - I Bell & D Braben",
     ];
 
     private readonly (string Label, bool DockedOnly)[] _optionList =

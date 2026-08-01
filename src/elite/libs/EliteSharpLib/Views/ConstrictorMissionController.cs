@@ -20,32 +20,32 @@ namespace EliteSharpLib.Views;
 internal sealed class ConstrictorMissionController : IScreenController
 {
     private const string Mission1BriefA =
-        "Greetings Commander, I am Captain Curruthers of " +
-            "Her Majesty's Space Navy and I beg a moment of your " +
-            "valuable time.  We would like you to do a little job " +
-            "for us.  The ship you see here is a new model, the " +
-            "Constrictor, equiped with a top secret new shield " +
-            "generator.  Unfortunately it's been stolen.";
+        "Greetings Commander, I am Captain Curruthers of "
+            + "Her Majesty's Space Navy and I beg a moment of your "
+            + "valuable time. We would like you to do a little job "
+            + "for us. The ship you see here is a new model, the "
+            + "Constrictor, equiped with a top secret new shield "
+            + "generator. Unfortunately it's been stolen.";
 
     private const string Mission1BriefB =
-        "It went missing from our ship yard on Xeer five months ago " +
-            "and was last seen at Reesdice. Your mission should you decide " +
-            "to accept it, is to seek and destroy this ship. You are " +
-            "cautioned that only Military Lasers will get through the new " +
-            "shields and that the Constrictor is fitted with an E.C.M. " +
-            "System. Good Luck, Commander. ---MESSAGE ENDS.";
+        "It went missing from our ship yard on Xeer five months ago "
+            + "and was last seen at Reesdice. Your mission should you decide "
+            + "to accept it, is to seek and destroy this ship. You are "
+            + "cautioned that only Military Lasers will get through the new "
+            + "shields and that the Constrictor is fitted with an E.C.M. "
+            + "System. Good Luck, Commander. ---MESSAGE ENDS.";
 
     private const string Mission1BriefC =
-        "It went missing from our ship yard on Xeer five months ago " +
-            "and is believed to have jumped to this galaxy. " +
-            "Your mission should you decide to accept it, is to seek and " +
-            "destroy this ship. You are cautioned that only Military Lasers " +
-            "will get through the new shields and that the Constrictor is " +
-            "fitted with an E.C.M. System. Good Luck, Commander. ---MESSAGE ENDS.";
+        "It went missing from our ship yard on Xeer five months ago "
+            + "and is believed to have jumped to this galaxy. "
+            + "Your mission should you decide to accept it, is to seek and "
+            + "destroy this ship. You are cautioned that only Military Lasers "
+            + "will get through the new shields and that the Constrictor is "
+            + "fitted with an E.C.M. System. Good Luck, Commander. ---MESSAGE ENDS.";
 
     private const string Mission1Debrief =
-        "There will always be a place for you in Her Majesty's Space Navy. " +
-            "And maybe sooner than you think... ---MESSAGE ENDS.";
+        "There will always be a place for you in Her Majesty's Space Navy. "
+            + "And maybe sooner than you think... ---MESSAGE ENDS.";
 
     private readonly Combat _combat;
     private readonly GameState _gameState;
@@ -55,7 +55,7 @@ internal sealed class ConstrictorMissionController : IScreenController
     private readonly Universe _universe;
     private readonly IShipFactory _shipFactory;
     private readonly ILogger<ConstrictorMissionController> _logger;
-    private readonly IView<ConstrictorMissionModel> _view;
+    private readonly IConstrictorMissionView _view;
 
     internal ConstrictorMissionController(
         GameState gameState,
@@ -65,7 +65,7 @@ internal sealed class ConstrictorMissionController : IScreenController
         Combat combat,
         Universe universe,
         IShipFactory shipFactory,
-        IView<ConstrictorMissionModel> view,
+        IConstrictorMissionView view,
         ILogger<ConstrictorMissionController>? logger = null)
     {
         _gameState = gameState;
@@ -101,7 +101,7 @@ internal sealed class ConstrictorMissionController : IScreenController
             _combat.Reset();
             _universe.ClearUniverse();
             IShip constrictor = _shipFactory.CreateShip("Constrictor");
-            if (!_universe.AddNewShip(constrictor, new(200, 90, 600, 0), VectorMaths.GetLeftHandedBasisMatrix, -127, -127))
+            if (!_universe.AddNewShip(constrictor, _view.ShipLocation, VectorMaths.GetLeftHandedBasisMatrix, -127, -127))
             {
                 LogMessages.FailedToCreateShip(_logger, "Constrictor");
             }

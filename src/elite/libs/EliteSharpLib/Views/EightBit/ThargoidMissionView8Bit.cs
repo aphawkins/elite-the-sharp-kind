@@ -16,8 +16,11 @@ namespace EliteSharpLib.Views.EightBit;
 internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMissionModel>
 {
     private const int TextColumn = 1;
-    private const int TextColumns = 38;
-    private const int FooterRow = 22;
+    private const int TextRowUpper = 3;
+    private const int TextColumnsUpper = 31;
+    private const int TextRowLower = 13;
+    private const int TextColumnsLower = 39;
+    private const int FooterRow = 23;
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorYellow;
@@ -40,22 +43,24 @@ internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMiss
         {
             case 4:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(Column(TextColumn), Row(8)), Column(TextColumns), model.Paragraphs[0]);
+                DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsLower), model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
             case 5:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(Column(TextColumn), Row(4)), Column(TextColumns), model.Paragraphs[0]);
-                DrawTextPretty(new(Column(TextColumn), Row(12)), Column(TextColumns), model.Paragraphs[1]);
-                _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(Column(29), Row(4)));
+                DrawTextPretty(new(Column(TextColumn), Row(TextRowUpper)), Column(TextColumnsUpper), model.Paragraphs[0]);
+                DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsLower), model.Paragraphs[1]);
+
+                // Draw Blake
+                _draw.Graphics.DrawImage(nameof(ImageType.Blake), new(Column(33), Row(3)));
                 DrawFooter();
                 break;
 
             case 6:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextCentreOnGrid(6, model.Headline, nameof(FontType.Large), _colorYellow);
-                DrawTextPretty(new(Column(TextColumn), Row(8)), Column(TextColumns), model.Paragraphs[0]);
+                DrawTextCentreOnGrid(TextRowUpper, model.Headline, nameof(FontType.Large), _colorYellow);
+                DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsUpper), model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }

@@ -11,9 +11,27 @@ namespace EliteSharpLib.Views.SixteenBit;
 /// <summary>
 /// The 16-bit settings list: the 512-space layout, and nothing else. Shared
 /// by the game and engine settings screens, since neither varies the layout.
+/// One setting per row, name and value side by side, the rows running
+/// consecutively down a single column centred on the viewport, with the Back
+/// row near the foot of it rather than immediately under the list.
 /// </summary>
 internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListModel>
 {
+    // A row is the font's line height, so consecutive rows leave no gap.
+    private const int RowHeight = 16;
+    private const int FirstRowOffset = 60;
+
+    // The list is centred on the viewport: ListWidth is the block the name and
+    // its value share, and the value sits ValueOffsetX into it.
+    private const int ListWidth = 260;
+    private const int ValueOffsetX = 120;
+    private const int HighlightHeight = 15;
+
+    // The Back row's distance up from the bottom of the viewport, and the
+    // footer's below it.
+    private const int BackRowOffset = 80;
+    private const int FooterGap = 40;
+
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorWhite;
     private readonly FastColor _colorDarkRed;
@@ -35,40 +53,51 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
 
         DrawViewHeader(model.Header);
 
-        for (int i = 0; i < model.Rows.Count; i++)
+        int lastIndex = model.Rows.Count - 1;
+        float listLeft = _draw.Layout.ViewportCentre.X - (ListWidth / 2);
+
+        for (int i = 0; i < lastIndex; i++)
         {
-            Vector2 position;
-
-            if (i == model.Rows.Count - 1)
-            {
-                position.Y = ((model.Rows.Count + 1) / 2 * 30) + (_draw.Layout.ViewportCentre.Y / 2) + 32;
-                if (i == model.HighlightedIndex)
-                {
-                    position.X = _draw.Layout.ViewportCentre.X - 200;
-                    _draw.Graphics.DrawRectangleFilled(position, 400, 15, _colorDarkRed);
-                }
-
-                _draw.Graphics.DrawTextCentre(position.Y, model.Rows[i].Name, nameof(FontType.Small), _colorWhite);
-
-                if (model.Footer.Length > 0)
-                {
-                    _draw.Graphics.DrawTextCentre(position.Y + 40, model.Footer, nameof(FontType.Small), _colorWhite);
-                }
-
-                return;
-            }
-
-            position.X = ((i & 1) * 250) + 32 + _draw.Layout.ViewportLeft;
-            position.Y = (i / 2 * 30) + (_draw.Layout.ViewportCentre.Y / 2);
+            Vector2 position = new(
+                listLeft,
+                _draw.Layout.ViewportTop + FirstRowOffset + (i * RowHeight));
 
             if (i == model.HighlightedIndex)
             {
-                _draw.Graphics.DrawRectangleFilled(position, 100, 15, _colorDarkRed);
+                _draw.Graphics.DrawRectangleFilled(position, ListWidth, HighlightHeight, _colorDarkRed);
             }
 
             _draw.Graphics.DrawTextLeft(position, model.Rows[i].Name, nameof(FontType.Small), _colorWhite);
-            position.X += 120;
-            _draw.Graphics.DrawTextLeft(position, model.Rows[i].Value, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(
+                new(listLeft + ValueOffsetX, position.Y),
+                model.Rows[i].Value,
+                nameof(FontType.Small),
+                _colorWhite);
+        }
+
+        DrawBackRow(model, lastIndex);
+    }
+
+    // The Back row is centred near the foot of the viewport, with the footer
+    // under it.
+    private void DrawBackRow(SettingsListModel model, int lastIndex)
+    {
+        float y = _draw.Layout.ViewportBottom - BackRowOffset;
+
+        if (lastIndex == model.HighlightedIndex)
+        {
+            _draw.Graphics.DrawRectangleFilled(
+                new(_draw.Layout.ViewportCentre.X - (ListWidth / 2), y),
+                ListWidth,
+                HighlightHeight,
+                _colorDarkRed);
+        }
+
+        _draw.Graphics.DrawTextCentre(y, model.Rows[lastIndex].Name, nameof(FontType.Small), _colorWhite);
+
+        if (model.Footer.Length > 0)
+        {
+            _draw.Graphics.DrawTextCentre(y + FooterGap, model.Footer, nameof(FontType.Small), _colorWhite);
         }
     }
 }

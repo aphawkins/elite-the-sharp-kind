@@ -18,10 +18,11 @@ namespace EliteSharpLib.Views.EightBit;
 internal sealed class MarketView8Bit : BaseView8Bit, IView<MarketModel>
 {
     private const int NameColumn = 1;
-    private const int PriceRightColumn = 19;
-    private const int ForSaleRightColumn = 27;
-    private const int InHoldRightColumn = 35;
-    private const int HeaderRow = 4;
+    private const int UnitRightColumn = 16;
+    private const int PriceRightColumn = 24;
+    private const int ForSaleRightColumn = 29;
+    private const int InHoldRightColumn = 37;
+    private const int HeaderRow = 3;
     private const int FirstRow = 5;
     private const int CashRow = 23;
 
@@ -48,10 +49,15 @@ internal sealed class MarketView8Bit : BaseView8Bit, IView<MarketModel>
 
         DrawViewHeader(model.Title);
 
-        _draw.Graphics.DrawTextLeft(new(Column(NameColumn), Row(HeaderRow)), "ITEM", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextRight(new(Column(PriceRightColumn), Row(HeaderRow)), "PRICE", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextRight(new(Column(ForSaleRightColumn), Row(HeaderRow)), "SALE", nameof(FontType.Small), _colorGreen);
-        _draw.Graphics.DrawTextRight(new(Column(InHoldRightColumn), Row(HeaderRow)), "HOLD", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextLeft(new(Column(NameColumn), Row(HeaderRow + 1)), "PRODUCT", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(UnitRightColumn + 2), Row(HeaderRow + 1)), "UNIT", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(PriceRightColumn + 1), Row(HeaderRow)), "UNIT", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(PriceRightColumn + 1), Row(HeaderRow + 1)), "PRICE", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(ForSaleRightColumn + 5), Row(HeaderRow)), "QUANTITY", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(
+            new(Column(ForSaleRightColumn + 5), Row(HeaderRow + 1)), "FOR SALE", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(InHoldRightColumn + 1), Row(HeaderRow)), "IN", nameof(FontType.Small), _colorGreen);
+        _draw.Graphics.DrawTextRight(new(Column(InHoldRightColumn + 2), Row(HeaderRow + 1)), "HOLD", nameof(FontType.Small), _colorGreen);
 
         for (int i = 0; i < model.Rows.Count; i++)
         {
@@ -64,6 +70,11 @@ internal sealed class MarketView8Bit : BaseView8Bit, IView<MarketModel>
             }
 
             _draw.Graphics.DrawTextLeft(new(Column(NameColumn), Row(row)), marketRow.Name, nameof(FontType.Small), _colorWhite);
+            _draw.Graphics.DrawTextLeft(
+                new(Column(UnitRightColumn), Row(row)),
+                $"{marketRow.Units}",
+                nameof(FontType.Small),
+                _colorWhite);
             _draw.Graphics.DrawTextRight(
                 new(Column(PriceRightColumn), Row(row)),
                 $"{marketRow.Price:N1}",
@@ -71,12 +82,22 @@ internal sealed class MarketView8Bit : BaseView8Bit, IView<MarketModel>
                 _colorWhite);
             _draw.Graphics.DrawTextRight(
                 new(Column(ForSaleRightColumn), Row(row)),
-                marketRow.ForSaleQuantity > 0 ? $"{marketRow.ForSaleQuantity}{marketRow.Units}" : "-",
+                marketRow.ForSaleQuantity > 0 ? $"{marketRow.ForSaleQuantity}" : "-",
+                nameof(FontType.Small),
+                _colorWhite);
+            _draw.Graphics.DrawTextLeft(
+                new(Column(ForSaleRightColumn), Row(row)),
+                marketRow.ForSaleQuantity > 0 ? $"{marketRow.Units}" : string.Empty,
                 nameof(FontType.Small),
                 _colorWhite);
             _draw.Graphics.DrawTextRight(
                 new(Column(InHoldRightColumn), Row(row)),
-                marketRow.InHoldQuantity > 0 ? $"{marketRow.InHoldQuantity}{marketRow.Units}" : "-",
+                marketRow.InHoldQuantity > 0 ? $"{marketRow.InHoldQuantity}" : "-",
+                nameof(FontType.Small),
+                _colorWhite);
+            _draw.Graphics.DrawTextLeft(
+                new(Column(InHoldRightColumn), Row(row)),
+                marketRow.InHoldQuantity > 0 ? $"{marketRow.Units}" : string.Empty,
                 nameof(FontType.Small),
                 _colorWhite);
         }

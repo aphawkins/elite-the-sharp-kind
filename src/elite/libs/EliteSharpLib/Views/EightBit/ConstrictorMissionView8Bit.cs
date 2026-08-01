@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using EliteSharpLib.Graphics;
 using Useful;
 
@@ -13,17 +14,22 @@ namespace EliteSharpLib.Views.EightBit;
 /// 8-bit view layouts" item. Exact spacing is expected to be refined
 /// visually.
 /// </summary>
-internal sealed class ConstrictorMissionView8Bit : BaseView8Bit, IView<ConstrictorMissionModel>
+internal sealed class ConstrictorMissionView8Bit : BaseView8Bit, IConstrictorMissionView
 {
     private const int TextColumn = 1;
-    private const int TextColumns = 38;
-    private const int FooterRow = 22;
+    private const int TextRowUpper = 3;
+    private const int TextColumnsUpper = 32;
+    private const int TextRowLower = 13;
+    private const int TextColumnsLower = 39;
+    private const int FooterRow = 23;
 
     private readonly FastColor _colorYellow;
 
     internal ConstrictorMissionView8Bit(IEliteDraw draw)
         : base(draw)
         => _colorYellow = draw.Palette["Yellow"];
+
+    public Vector4 ShipLocation => new(330, 80, 700, 0);
 
     public void Draw(ConstrictorMissionModel model)
     {
@@ -35,15 +41,15 @@ internal sealed class ConstrictorMissionView8Bit : BaseView8Bit, IView<Constrict
         {
             case 1:
                 DrawViewHeader("INCOMING MESSAGE");
-                DrawTextPretty(new(Column(TextColumn), Row(4)), Column(TextColumns), model.Paragraphs[0]);
-                DrawTextPretty(new(Column(TextColumn), Row(12)), Column(TextColumns), model.Paragraphs[1]);
+                DrawTextPretty(new(Column(TextColumn), Row(TextRowUpper)), Column(TextColumnsUpper), model.Paragraphs[0]);
+                DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsLower), model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
             case 3:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextCentreOnGrid(6, model.Headline, nameof(FontType.Large), _colorYellow);
-                DrawTextPretty(new(Column(TextColumn), Row(8)), Column(TextColumns), model.Paragraphs[0]);
+                DrawTextPretty(new(Column(TextColumn), Row(8)), Column(TextColumnsUpper), model.Paragraphs[0]);
                 DrawFooter();
                 break;
         }

@@ -85,10 +85,10 @@ internal class PlanetRenderer
             Y = offsetY + centre.Y,
         };
 
-        // Bottom/Right are the border line's own row/column (see EliteDraw.Height/
-        // Width), so the far edge must be excluded here the same way Top/Left's
-        // near edge already is, or the fill paints over the border.
-        if (s.Y < _draw.Layout.ViewportTop || s.Y >= _draw.Layout.ViewportBottom)
+        // Bottom is the last row of the viewport and nothing is drawn over it -
+        // the 8-bit border has no bottom edge - so the planet fills right down
+        // to the scanner, as the suns already do.
+        if (s.Y < _draw.Layout.ViewportTop || s.Y > _draw.Layout.ViewportBottom)
         {
             return;
         }

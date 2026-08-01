@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
@@ -122,8 +123,10 @@ public class ConstrictorMissionControllerTests
             new FakeConstrictorMissionView());
     }
 
-    private sealed class FakeConstrictorMissionView : IView<ConstrictorMissionModel>
+    private sealed class FakeConstrictorMissionView : IConstrictorMissionView
     {
+        public Vector4 ShipLocation => new(200, 90, 600, 0);
+
         public void Draw(ConstrictorMissionModel model)
         {
             // Drawing is not under test here.

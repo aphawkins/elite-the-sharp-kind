@@ -5,15 +5,19 @@
 using EliteSharpLib.Config;
 using Useful.Config;
 using Useful.Controls;
-using Useful.Maths;
 
 namespace EliteSharpLib.Views;
 
 /// <summary>
-/// A two-column list of settings with a Back row underneath: the cursor and
+/// A single-column list of settings with a Back row under it: the cursor and
 /// navigation the engine and game settings screens share. Each screen
 /// supplies its own rows, reads its own current values and applies its own
 /// toggles; saving is common, since every change is written as it is made.
+/// <para>
+/// Both tiers lay the list out one setting per row, so the cursor moves a
+/// single row at a time and Left/Right cycle the highlighted setting's value
+/// rather than moving between columns.
+/// </para>
 /// </summary>
 internal abstract class SettingsListController(
     GameState gameState,
@@ -46,14 +50,12 @@ internal abstract class SettingsListController(
             SelectDown();
         }
 
-        if (keyboard.IsPressed(ConsoleKey.OemComma) || keyboard.IsPressed(ConsoleKey.LeftArrow))
+        if (keyboard.IsPressed(ConsoleKey.OemComma)
+            || keyboard.IsPressed(ConsoleKey.LeftArrow)
+            || keyboard.IsPressed(ConsoleKey.OemPeriod)
+            || keyboard.IsPressed(ConsoleKey.RightArrow))
         {
-            SelectLeft();
-        }
-
-        if (keyboard.IsPressed(ConsoleKey.OemPeriod) || keyboard.IsPressed(ConsoleKey.RightArrow))
-        {
-            SelectRight();
+            Cycle();
         }
 
         if (keyboard.IsPressed(ConsoleKey.Enter))
@@ -101,6 +103,21 @@ internal abstract class SettingsListController(
     /// <param name="index">The setting's row, in the order the screen listed them.</param>
     protected abstract void ToggleSetting(int index);
 
+    // Left and Right cycle the highlighted setting's value, the same step
+    // Enter makes. The values run in one direction only - Next is all the
+    // enums behind them offer - so both keys advance rather than one going
+    // back. The Back row has no value, so they leave it alone.
+    private void Cycle()
+    {
+        if (_highlightedItem == _settingList.Length - 1)
+        {
+            return;
+        }
+
+        ToggleSetting(_highlightedItem);
+        configWriter.WriteConfig(State.Config);
+    }
+
     private void Toggle()
     {
         if (_highlightedItem == _settingList.Length - 1)
@@ -117,28 +134,7 @@ internal abstract class SettingsListController(
 
     private void SelectDown()
     {
-        if (_highlightedItem == _settingList.Length - 2)
-        {
-            _highlightedItem = _settingList.Length - 1;
-        }
-
-        if (_highlightedItem < _settingList.Length - 2)
-        {
-            _highlightedItem += 2;
-        }
-    }
-
-    private void SelectLeft()
-    {
-        if (_highlightedItem.IsOdd())
-        {
-            _highlightedItem--;
-        }
-    }
-
-    private void SelectRight()
-    {
-        if (!_highlightedItem.IsOdd() && _highlightedItem < _settingList.Length - 1)
+        if (_highlightedItem < _settingList.Length - 1)
         {
             _highlightedItem++;
         }
@@ -146,14 +142,9 @@ internal abstract class SettingsListController(
 
     private void SelectUp()
     {
-        if (_highlightedItem == _settingList.Length - 1)
+        if (_highlightedItem > 0)
         {
-            _highlightedItem = _settingList.Length - 2;
-        }
-
-        if (_highlightedItem > 1)
-        {
-            _highlightedItem -= 2;
+            _highlightedItem--;
         }
     }
 }
