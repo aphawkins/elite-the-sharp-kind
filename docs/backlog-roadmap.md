@@ -372,7 +372,10 @@ is closer to resolution-independence than the original item assumed.
 [decisions.md](decisions.md) expands the two widescreen items below —
 re-scope them against the 8-bit/16-bit/modern tier scheme and the
 per-game `AssetManager`/config changes it requires before starting
-either.**):
+either. Narrowed again on 2026-08-01: widescreen is a **modern-tier
+concern only** — the 8-bit and 16-bit tiers are fixed-width, so the
+widescreen half of these items applies to the modern tier alone. See
+[decisions.md](decisions.md).**):
 
 - [ ] [Useful.SDL] Resizable window with letterboxed scaling: add
       `SDL_WINDOW_RESIZABLE` in [SDLWindow.cs:23-29](../src/useful/libs/Useful.SDL/SDLWindow.cs)
@@ -426,11 +429,13 @@ either.**):
         `Focus` of the 2026-07-28 tier decision.
       - ~~**The stale comment** in `SDLProgram.cs`~~ — updated with the
         change.
-      - **The fourth — screens using bare absolute coordinates drifting
-        out of alignment — is a defect independent of the tier scheme
-        and now lives in
+      - **The fourth — the 16-bit screens still being laid out for 512
+        on a 640-wide tier — lives in
         [backlog-issues.md](backlog-issues.md)**, where it can be fixed
-        without waiting on this audit.
+        without waiting on this audit. It is a re-authoring job against
+        one known width: per [decisions.md](decisions.md) (2026-08-01)
+        the 8-bit and 16-bit tiers are fixed-width, so no widescreen
+        machinery is wanted for them.
 
       Two specifics this item used to cite are now out of date: `511`
       in `ShipBase.DrawLasers` is already fixed — `ProjectToViewBoundary`

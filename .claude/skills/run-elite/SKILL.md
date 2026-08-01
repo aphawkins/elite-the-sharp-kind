@@ -57,6 +57,12 @@ Useful for building new `-Steps` sequences:
   once undocked). Other `F`-keys switch to chart/status/options
   screens (`EliteMain.HandleViewKeys`) — `F1` while docked instead
   goes to **Undocking**, `F4` while docked goes to **EquipShip**.
+- The **mission briefings** are hours of play away in normal use. Set
+  `ELITE_DEBUG_MISSIONS` (to any value) before launching and `key:Ctrl+M`
+  cycles all five — Constrictor brief, Constrictor debrief, the two
+  Thargoid briefs, the Thargoid debrief. Each is a cheat that leaves the
+  commander mid-mission, so use a fresh run per check
+  ([docs/elite-readme.md](../../../docs/elite-readme.md#environment-variables)).
 - Full mapping: [Screen.cs](../../../src/elite/libs/EliteSharpLib/Views/Screen.cs),
   key handling: [EliteMain.cs](../../../src/elite/libs/EliteSharpLib/EliteMain.cs).
 

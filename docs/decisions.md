@@ -9,6 +9,30 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-01) — widescreen is a modern-tier concern only
+
+The 8-bit and 16-bit tiers are **fixed-width**: each has one resolution
+(320x256 and 640x512) and its screens are laid out for it. The widescreen
+variants sketched in the 2026-07-24 multi-resolution decision above are
+**dropped for those two tiers** — only the modern tier, being vector-based
+rather than tied to a bitmap set, supports widescreen.
+
+Consequences:
+
+- A screen may position content by absolute coordinates measured from the
+  viewport's left edge. There is no width but the tier's own to stay
+  aligned at, so no centred content band, no design-space origin and no
+  scaling layer is wanted between a screen and `ViewLayout`. `ViewLayout`
+  stays the viewport and nothing else.
+- What is left of the old "screens drift out of alignment" issue is
+  narrower and concrete: the 16-bit screens are still laid out for the
+  512-wide tier they were authored at, on a tier that has been 640 wide
+  since 2026-07-30. The fix is to re-lay-out those screens at 640, not to
+  centre a 512 band inside it. Tracked in
+  [backlog-issues.md](backlog-issues.md).
+- Widescreen layout for the modern tier is designed when that tier is,
+  against vector chrome, and inherits nothing from these two.
+
 ## Resolved (2026-07-31) — `ViewLayout` is the viewport, and 8-bit text is on a grid
 
 `ViewLayout` described its metrics partly against the border and partly

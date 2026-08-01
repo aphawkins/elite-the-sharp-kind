@@ -79,6 +79,14 @@ Stunt Car Racer's own settings would sit alongside under `game`, but it has none
 }
 ```
 
+### Environment variables
+
+Stunt Car Racer's own diagnostic opt-in, read at runtime rather than compiled in, so it works in a Release build. The ones shared with Elite, `GAME_KEY_SCRIPT` and `GAME_FRAME_DUMP_DIR`, are in the [main readme](../README.md#environment-variables).
+
+| Variable | Value | Effect |
+| -------- | ----- | ------ |
+| `SCR_LOG_LEVEL` | A Serilog level name: `Verbose`, `Debug`, `Information`, `Warning`, `Error` or `Fatal` — not the config file's own `Trace`…`None` names. Case-insensitive; anything unparseable is ignored and the config value stands | Overrides `engine.logging.minimumLevel`, for when the config file itself is what needs debugging |
+
 ## Porting notes
 
 - Source of the conversion: `github.com/ptitSeb/stuntcarremake` (C++, DirectX9/DXUT + SDL2), a maintained fork of `fluffyfreak/stuntcarracer`.  Earlier work was ported from fluffyfreak before the switch; where the two diverge, ptitSeb's is the source of truth.

@@ -34,19 +34,26 @@ there before starting an item that mentions a decision.
 
 ### Layout
 
-- [ ] [EliteSharpLib] **Screens using bare absolute coordinates drift out of
-      alignment** with those laid out from the viewport, which stay centred.
-      This is a latent bug at any width except the tier's own, independent of
-      the resolution-tier scheme — which is why it sits here rather than with
-      the widescreen work in [backlog-roadmap.md](backlog-roadmap.md).
-      `ThargoidMissionView16Bit` (`new(116, 132)`, the Blake portrait at
-      `new(352, 46)`), `ConstrictorMissionView16Bit`, `PlanetDataView16Bit`,
-      `MarketView16Bit` and the commander save/load screens are the known
-      cases — and their 8-bit counterparts have the same shape at 320. None
-      have been checked live at 640 yet. (`Offset` is gone — it duplicated
-      `ScannerLeft`, and both were removed when `ViewLayout` became
-      viewport-only; screens now lay out from `ViewportLeft`, which is the
-      screen origin.)
+- [ ] [EliteSharpLib] **The 16-bit screens are still laid out for 512 on a
+      640-wide tier.** Their absolute coordinates were authored against
+      512x512 and never revisited when the tier widened to 640x512 on
+      2026-07-30, while headers, prompts and the scanner are drawn about the
+      viewport's centre — so the two are 64 pixels apart at the resolution
+      the game actually ships. Visible on the market table, planet data,
+      equipment list, inventory, commander status, the galactic chart's star
+      field, both mission briefings (`ThargoidMissionView16Bit`'s
+      `new(116, 132)` and the Blake portrait at `new(352, 46)`,
+      `ConstrictorMissionView16Bit`) and the save screen's name box, which
+      sits left of the name it frames.
+      Fix by **re-laying-out those screens against 640** — widening the
+      tables and moving the columns out to use the width. Per
+      [decisions.md](decisions.md) (2026-08-01) the tiers are fixed-width,
+      so this is a one-off re-authoring against a known resolution, *not* a
+      centred content band, a design-space origin, or any other mechanism
+      inside `ViewLayout`. Reach the mission screens with Ctrl-M
+      under `ELITE_DEBUG_MISSIONS` (see
+      [elite-readme.md](elite-readme.md#environment-variables)); they are
+      otherwise hours of play away.
 
 ## Should
 

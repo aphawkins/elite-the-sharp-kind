@@ -45,8 +45,10 @@ Use Left/Right cursor keys to scroll through ships on the ship parade screen
 | F9 | Commander information |
 | F10 | Inventory |
 | F11 | Options |
+| F12 | Dump the current frame as a BMP (needs `GAME_FRAME_DUMP_DIR` — see the [main readme](../README.md#environment-variables)) |
 | P | Pause game |
 | R | Resume game |
+| Ctrl-M | Cycle the five mission briefings (needs `ELITE_DEBUG_MISSIONS`) |
 
 ### Flight Controls
 | Key | Function |
@@ -124,6 +126,16 @@ The file's `engine` element holds the settings shared by every game — the back
 ```
 
 The Game Settings screen changes all of these live, and the engine's graphic style with them; every change is saved as it is made.
+
+### Environment variables
+
+Elite's own diagnostic opt-ins, read at runtime rather than compiled in, so they work in a Release build. The ones shared with Stunt Car Racer, `GAME_KEY_SCRIPT` and `GAME_FRAME_DUMP_DIR`, are in the [main readme](../README.md#environment-variables).
+
+| Variable | Value | Effect |
+| -------- | ----- | ------ |
+| `ELITE_LOG_LEVEL` | A Serilog level name: `Verbose`, `Debug`, `Information`, `Warning`, `Error` or `Fatal` — not the config file's own `Trace`…`None` names. Case-insensitive; anything unparseable is ignored and the config value stands | Overrides `engine.logging.minimumLevel`, for when the config file itself is what needs debugging |
+| `ELITE_DEBUG_COMMANDER` | Anything, including empty — only whether it is set matters | Starts with the fully equipped `Max` commander instead of `Jameson`, for exercising late-game equipment and cargo without a save file |
+| `ELITE_DEBUG_MISSIONS` | Anything, including empty — only whether it is set matters | Enables Ctrl-M, which cycles the five mission briefings: Constrictor brief, Constrictor debrief, the two Thargoid briefs, the Thargoid debrief. Each jump cheats the commander into the state that briefing needs and leaves them mid-mission, the last two overwriting the docked planet's seed — restart rather than carrying on from one |
 
 ## Credits
 

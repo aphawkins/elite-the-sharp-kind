@@ -56,6 +56,9 @@ public sealed class EliteMain : IGame, IGameApp
     private readonly Stars _stars;
     private readonly Universe _universe;
 
+    // Which mission screen the next Ctrl-M jumps to (HandleMissionJumpKeys).
+    private int _missionJumpStage;
+
     internal EliteMain(
         IAbstraction abstraction,
         GameState gameState,
@@ -262,6 +265,26 @@ public sealed class EliteMain : IGame, IGameApp
         HandleFlightViewKeys();
         HandleChartViewKeys();
         HandleStatusViewKeys();
+        HandleMissionJumpKeys();
+    }
+
+    // Ctrl-M: cycle the mission briefings, which normal play puts hours away.
+    // One key rather than five. Ctrl-modified because the briefings are read
+    // while docked and a bare M would fire from the commander-name screens,
+    // which take typed letters; F12 was the obvious key but GameHost has it
+    // for frame dumps. Off unless MissionJump's environment variable is set -
+    // see MissionJump for what each jump costs.
+    private void HandleMissionJumpKeys()
+    {
+        if (!MissionJump.IsEnabled ||
+            !_keyboard.IsPressed(ConsoleKey.M) ||
+            !_keyboard.IsPressed(ConsoleModifiers.Control))
+        {
+            return;
+        }
+
+        MissionJump.To(State, _missionJumpStage);
+        _missionJumpStage = (_missionJumpStage + 1) % MissionJump.Count;
     }
 
     // F1 - F4: the cockpit views, which double as the docked screens

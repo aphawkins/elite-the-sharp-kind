@@ -85,6 +85,15 @@ The exception is a value the JSON binder cannot parse at all — a misspelt enum
 
 Note that Stunt Car Racer doesn't read `graphicStyle`, `depthSort` or `showFps` yet — they are written out with the rest of the engine settings, but only Elite acts on them.
 
+### Environment variables
+
+Diagnostic opt-ins read at runtime rather than compiled in, so they work in a Release build. These are the ones both games share; each game's own are in its readme ([Elite](docs/elite-readme.md#environment-variables), [Stunt Car Racer](docs/scr-readme.md#environment-variables)).
+
+| Variable | Value | Effect |
+| -------- | ----- | ------ |
+| `GAME_KEY_SCRIPT` | A path to a script file, or the script text itself if the value isn't an existing file | The script is replayed into the keyboard tick by tick, for reproducible input without OS-level key injection |
+| `GAME_FRAME_DUMP_DIR` | A directory path, created if it doesn't exist | Framebuffer BMPs are written there, and the F12 dump key is enabled |
+
 ## Repository layout
 
 - `src/useful/` — shared engine libraries (graphics, audio, input, assets, game loop) used by both games

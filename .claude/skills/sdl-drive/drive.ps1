@@ -10,7 +10,8 @@
 #   launch                 - start the exe, wait for its window, foreground it
 #   screenshot:<name>      - capture the window to <ScreenshotDir>/<name>.png
 #   key:<KeyName>          - press a key (see ConvertTo-VirtualKeyCode below
-#                             for supported names)
+#                             for supported names). Modifiers are prefixed
+#                             with +, e.g. key:Ctrl+M, key:Shift+Ctrl+H
 #   key:<KeyName>:<ms>     - press a key and hold it for <ms> milliseconds
 #                             before releasing (for IsHeld-style controls,
 #                             e.g. a racing game's steer/accelerate keys)
@@ -94,6 +95,9 @@ function ConvertTo-VirtualKeyCode([string]$KeyName) {
         # Elite uses these for roll/speed and for menu left/right; the
         # arrow keys are extended-key codes that PostMessage doesn't
         # deliver to SDL, so these are the reliable alternatives.
+        '^Ctrl$'              { return 0x11 }
+        '^Shift$'             { return 0x10 }
+        '^Alt$'               { return 0x12 }
         '^Comma$'             { return 0xBC }
         '^Period$'            { return 0xBE }
         '^Slash$'             { return 0xBF }
@@ -149,17 +153,37 @@ function Invoke-Screenshot([string]$Name) {
     Write-Output "screenshot: $path"
 }
 
+function Send-KeyDown([int]$Vk) {
+    $scan = [SdlDriveWin32]::MapVirtualKey($Vk, 0)
+    $lParam = [IntPtr]((1) -bor ($scan -shl 16))
+    [SdlDriveWin32]::PostMessage($script:hwnd, [SdlDriveWin32]::WM_KEYDOWN, [IntPtr]$Vk, $lParam) | Out-Null
+}
+
+function Send-KeyUp([int]$Vk) {
+    $scan = [SdlDriveWin32]::MapVirtualKey($Vk, 0)
+    $lParam = [IntPtr]((1) -bor ($scan -shl 16) -bor (1 -shl 30) -bor (1 -shl 31))
+    [SdlDriveWin32]::PostMessage($script:hwnd, [SdlDriveWin32]::WM_KEYUP, [IntPtr]$Vk, $lParam) | Out-Null
+}
+
+# A key name may carry modifiers, "Ctrl+M" or "Shift+Ctrl+H": each is held
+# down around the key itself and released in reverse, as a real chord would
+# be. Games that read modifiers separately from the key (Elite's Ctrl-H
+# galactic hyperspace, its Ctrl-M mission jump) need both down at once.
 function Invoke-Key([string]$KeyName, [int]$HoldMs = 150) {
     if ($script:hwnd -eq [IntPtr]::Zero) { throw "not launched - add a 'launch' step first" }
 
-    $vk = ConvertTo-VirtualKeyCode $KeyName
-    $scan = [SdlDriveWin32]::MapVirtualKey($vk, 0)
-    $lParamDown = [IntPtr]((1) -bor ($scan -shl 16))
-    $lParamUp = [IntPtr]((1) -bor ($scan -shl 16) -bor (1 -shl 30) -bor (1 -shl 31))
+    $names = $KeyName -split '\+'
+    $key = $names[-1]
+    $modifiers = @($names[0..($names.Length - 2)])
 
-    [SdlDriveWin32]::PostMessage($script:hwnd, [SdlDriveWin32]::WM_KEYDOWN, [IntPtr]$vk, $lParamDown) | Out-Null
+    $modifierVks = @($modifiers | ForEach-Object { ConvertTo-VirtualKeyCode $_ })
+    $vk = ConvertTo-VirtualKeyCode $key
+
+    foreach ($modifierVk in $modifierVks) { Send-KeyDown $modifierVk }
+    Send-KeyDown $vk
     Start-Sleep -Milliseconds $HoldMs
-    [SdlDriveWin32]::PostMessage($script:hwnd, [SdlDriveWin32]::WM_KEYUP, [IntPtr]$vk, $lParamUp) | Out-Null
+    Send-KeyUp $vk
+    for ($i = $modifierVks.Length - 1; $i -ge 0; $i--) { Send-KeyUp $modifierVks[$i] }
     Write-Output "key: $KeyName (held ${HoldMs}ms)"
 }
 

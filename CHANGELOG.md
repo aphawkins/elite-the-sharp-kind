@@ -7,6 +7,40 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Added (a way into Elite's mission screens, 2026-08-01)
+
+- The five mission briefings were only reachable by playing the missions -
+  the Constrictor brief wants a combat rating of Above Average, the Thargoid
+  sequence the third galaxy and two particular planets - so checking their
+  layout meant hours of play or a hand-edited save. With the new
+  `ELITE_DEBUG_MISSIONS` environment variable set (to any value), Ctrl-M now
+  cycles them: Constrictor brief, Constrictor debrief, the two Thargoid
+  briefs, the Thargoid debrief, and round again.
+- Gated at runtime rather than by `#if DEBUG`, following
+  `ELITE_DEBUG_COMMANDER` and the conditional-compilation removal of issue
+  #7, so the screens can be checked in a Release build too. Unset, Ctrl-M
+  does nothing. Ctrl-modified because a bare M would fire from the
+  commander-name screens, which take typed letters, and F12 - the obvious
+  key - is already `GameHost`'s frame dump.
+- The environment variables are now documented in tables rather than only in
+  code comments, each where it belongs: the shared `GAME_KEY_SCRIPT` and
+  `GAME_FRAME_DUMP_DIR` in the [main readme](README.md#environment-variables)
+  alongside the shared engine config, and each game's own in its readme
+  (`ELITE_LOG_LEVEL`, `ELITE_DEBUG_COMMANDER`, `ELITE_DEBUG_MISSIONS`;
+  `SCR_LOG_LEVEL`), cross-linked both ways. Elite's key table gained the F12
+  frame-dump row with them.
+- Each jump sets the state the screen's own `Reset` tests for and lets that
+  `Reset` run rather than forcing the screen in, so what is drawn is the
+  screen the game draws - the briefing text chosen the usual way, and the
+  Constrictor spawned in front of the player for the screen that shows it.
+  They are cheats and leave the commander mid-mission: the last two also
+  overwrite the docked planet's seed with the system the briefing expects.
+  Documented in [docs/elite-readme.md](docs/elite-readme.md).
+- `MissionJumpTests` drives the real game through `HeadlessGameHarness` and
+  asserts each stage lands on the right screen showing the right briefing,
+  so a drift between the jumps and the controllers' entry conditions fails
+  the build. Verified live with `run-elite`, on and off.
+
 ### Fixed (the 100-polygon-per-frame cap, 2026-08-01)
 
 - `PainterRenderer`, `ZBufferRenderer` and `WireframeRenderer` each held a
