@@ -131,7 +131,7 @@ public class ConfigFileTests
     public void ReadConfigWithAnUnusableWindowScaleRepairsThatSettingAlone(int scale)
     {
         EliteConfig config = ReadWritten(
-            $"{{\"engine\": {{\"windowScale\": {scale}, \"tier\": \"EightBit\"}}}}");
+            $"{{\"engine\": {{\"windowScale\": {scale}, \"tier\": \"8Bit\"}}}}");
 
         Assert.Equal(1, config.Engine.WindowScale);
         Assert.Equal(SystemTier.EightBit, config.Engine.Tier);
@@ -143,7 +143,7 @@ public class ConfigFileTests
         // The scale is independent of the tier: a magnified 8-bit window is
         // the point of the setting, not a contradiction to repair away.
         EliteConfig config = ReadWritten(
-            /*lang=json,strict*/ "{\"engine\": {\"windowScale\": 3, \"tier\": \"EightBit\"}}");
+            /*lang=json,strict*/ "{\"engine\": {\"windowScale\": 3, \"tier\": \"8Bit\"}}");
 
         Assert.Equal(3, config.Engine.WindowScale);
         Assert.Equal(SystemTier.EightBit, config.Engine.Tier);
@@ -158,6 +158,35 @@ public class ConfigFileTests
         Assert.Equal(ConfigSchema.CurrentVersion, ReadWritten(/*lang=json,strict*/ "{\"game\": {}}").Version);
         Assert.Equal(ConfigSchema.CurrentVersion, ReadWritten(/*lang=json,strict*/ "{\"version\": 99}").Version);
     }
+
+    // The tier is spelled with a digit in the file - "8Bit", "16Bit" - not
+    // with the C# member name, which cannot start with one. A round trip
+    // alone would pass either way, so the written text is checked directly.
+    [Theory]
+    [InlineData(SystemTier.EightBit, "8Bit")]
+    [InlineData(SystemTier.SixteenBit, "16Bit")]
+    public void WriteConfigSpellsTheTierWithADigit(SystemTier tier, string expected)
+    {
+        string directory = CreateTempDirectory();
+        ConfigFile<EliteConfig> configFile = new(directory, ConfigFileName);
+
+        configFile.WriteConfig(new() { Engine = new() { Tier = tier } });
+
+        string json = File.ReadAllText(Path.Combine(directory, ConfigFileName));
+        Assert.Contains($"\"tier\": \"{expected}\"", json, StringComparison.Ordinal);
+    }
+
+    // Reading goes through the configuration binder rather than
+    // System.Text.Json, so the digit spelling has to be understood on that
+    // side too - and the old member-name spelling still has to read, or
+    // every config file written before this change loses its tier.
+    [Theory]
+    [InlineData("8Bit", SystemTier.EightBit)]
+    [InlineData("16Bit", SystemTier.SixteenBit)]
+    [InlineData("EightBit", SystemTier.EightBit)]
+    [InlineData("SixteenBit", SystemTier.SixteenBit)]
+    public void ReadConfigAcceptsBothTierSpellings(string written, SystemTier expected)
+        => Assert.Equal(expected, ReadWritten($"{{\"engine\": {{\"tier\": \"{written}\"}}}}").Engine.Tier);
 
     private static EliteConfig ReadWritten(string json)
     {

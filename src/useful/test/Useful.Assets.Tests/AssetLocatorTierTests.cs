@@ -208,7 +208,9 @@ public class AssetLocatorTierTests : IDisposable
 
     private static object Manifest(SystemTier[] tiers) => new
     {
-        Tiers = tiers.Select(x => x.ToString()).ToArray(),
+        // Serialized through SystemTier's own converter, so the manifest
+        // carries the JSON spelling ("16Bit") rather than the member name.
+        Tiers = tiers,
         Palette = "palette.json",
         FontsBitmap = new Dictionary<string, object>
         {

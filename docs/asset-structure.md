@@ -69,15 +69,18 @@ Two additions:
 
 ```json
 {
-  "Tiers": [ "EightBit", "SixteenBit" ],
+  "Tiers": [ "8Bit", "16Bit" ],
   "TierOverrides": {
-    "EightBit": { "Images": { "LaserBeam": "laser.bmp" } }
+    "8Bit": { "Images": { "LaserBeam": "laser.bmp" } }
   }
 }
 ```
 
 * `Tiers` declares which tiers actually ship, so selecting an absent tier
-  fails at startup rather than at first draw.
+  fails at startup rather than at first draw. The digit spelling is the
+  JSON one, matching the config file's `tier`; the directories on disk
+  are named for the `SystemTier` members (`EightBit/`, `SixteenBit/`),
+  because a C# identifier cannot start with a digit.
 * `TierOverrides` is the escape hatch for the cases where a tier's set
   genuinely differs — a merged sprite sheet, or a bitmap with no
   equivalent at that tier.

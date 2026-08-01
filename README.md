@@ -55,7 +55,7 @@ Every file has the same three top-level elements: `version`, the schema version;
     "version": 1,                              // Schema version, so a later change to the file's shape can be migrated rather than reset.  Written automatically
     "engine": {
         "backend": "Software",                 // Which backend runs the game.  Software (CPU rasteriser blitted through SDL) or Hardware (SDL-accelerated).  It picks the mixer as well as the rasteriser, so it isn't graphics-only
-        "tier": "SixteenBit",                  // Which machine's look the game reproduces.  EightBit or SixteenBit.  Picks the asset set - artwork, fonts, music and effects - and with it the render resolution.  See docs/asset-structure.md
+        "tier": "16Bit",                       // Which machine's look the game reproduces.  8Bit or 16Bit.  Picks the asset set - artwork, fonts, music and effects - and with it the render resolution.  See docs/asset-structure.md
         "windowScale": 1,                      // How many window pixels each rendered pixel occupies, 1 to 4.  Independent of the tier: the game still renders at the tier's native resolution and is magnified at presentation, so scale 2 is a window twice the size with the same pixels doubled, not more detail
         "graphics": {
             "fps": 60,                         // Maximum render frame rate, up to 1000.  The game speed is independent of it
