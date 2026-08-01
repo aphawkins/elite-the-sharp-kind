@@ -28,13 +28,13 @@ internal sealed class Scanner16Bit : ScannerBase
     {
         ArgumentNullException.ThrowIfNull(draw);
 
-        DialTopColor = draw.Palette["Goldenrod"];
-        DialBodyColor = draw.Palette["DarkGoldenrod"];
-        DialBottomColor = draw.Palette["DarkRed"];
-        SpeedWarningColor = draw.Palette["DarkRed"];
+        DialTopColor = draw.Palette["Gold"];
+        DialBodyColor = draw.Palette["DarkYellow"];
+        DialBottomColor = draw.Palette["LightRed"];
+        SpeedWarningColor = draw.Palette["LightRed"];
         StationColor = draw.Palette["Green"];
-        MissileColor = draw.Palette["Plum"];
-        PoliceColor = draw.Palette["DarkSlateBlue"];
+        MissileColor = draw.Palette["Lilac"];
+        PoliceColor = draw.Palette["Purple"];
         HostileColor = draw.Palette["Yellow"];
         DefaultColor = draw.Palette["White"];
     }

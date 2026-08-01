@@ -93,7 +93,11 @@ public sealed class AssetSet
         HashSet<uint> distinct = [.. paletteColours];
         Dictionary<string, int> perAsset = new() { ["Palette"] = paletteColours.Count };
         Dictionary<string, uint[]> outsidePalette = [];
+        Dictionary<string, uint[]> offGrid = [];
+        int channelBits = AssetColourBudget.ChannelBits(tier);
         int partialAlpha = 0;
+
+        AddOffGrid(offGrid, "Palette", paletteColours, channelBits);
 
         foreach (KeyValuePair<string, FastBitmap> asset in images.Concat(fontBitmaps))
         {
@@ -102,6 +106,8 @@ public sealed class AssetSet
             perAsset[asset.Key] = assetColours.Count;
             distinct.UnionWith(assetColours);
             partialAlpha += assetPartialAlpha;
+
+            AddOffGrid(offGrid, asset.Key, assetColours, channelBits);
 
             // A set with no palette at all has nothing to be a subset of, so
             // there is nothing to report rather than everything.
@@ -118,7 +124,24 @@ public sealed class AssetSet
             }
         }
 
-        return new(tier, distinct.Count, partialAlpha, perAsset, outsidePalette);
+        return new(tier, distinct.Count, partialAlpha, perAsset, outsidePalette, offGrid);
+    }
+
+    // Colours from one asset that the tier's DAC could not have produced.
+    // Recorded rather than counted, because fixing one means knowing which
+    // colour to snap.
+    private static void AddOffGrid(
+        Dictionary<string, uint[]> offGrid,
+        string asset,
+        HashSet<uint> colours,
+        int channelBits)
+    {
+        uint[] strays = [.. colours.Where(x => !AssetColourBudget.IsOnGrid(x, channelBits)).Order()];
+
+        if (strays.Length > 0)
+        {
+            offGrid[asset] = strays;
+        }
     }
 
     // One asset's distinct opaque colours, and how many of its pixels have an
@@ -158,7 +181,7 @@ public sealed class AssetSet
     // to look at. See docs/asset-structure.md.
     private static void Validate(AssetColourBudget budget, ILogger? logger)
     {
-        if (budget.IsWithinBudget && budget.IsWithinPalette && budget.PartialAlphaCount == 0)
+        if (budget.IsWithinBudget && budget.IsWithinPalette && budget.IsOnColourGrid && budget.PartialAlphaCount == 0)
         {
             return;
         }
@@ -179,19 +202,35 @@ public sealed class AssetSet
 
         if (!budget.IsWithinPalette)
         {
-            string offenders = string.Join(
-                "; ",
-                budget.OutsidePalette
-                    .OrderBy(x => x.Key, StringComparer.Ordinal)
-                    .Select(x => $"{x.Key} ({string.Join(", ", x.Value.Select(c => c.ToString("X8", CultureInfo.InvariantCulture)))})"));
-
             string rule = $"The {budget.Tier} palette is the tier's whole colour set, so every asset colour has to be one it names";
 
             throw new UsefulException(
-                $"{rule}, but {budget.OutsidePalette.Count} asset(s) use colours it does not: {offenders}.");
+                $"{rule}, but {budget.OutsidePalette.Count} asset(s) use colours it does not: {Offenders(budget.OutsidePalette)}.");
+        }
+
+        if (!budget.IsOnColourGrid)
+        {
+            int bits = AssetColourBudget.ChannelBits(budget.Tier);
+            string drives = $"The {budget.Tier} tier drives {bits} bits per channel";
+            string rule = $"{drives}, so every colour has to sit on one of its {1 << bits} levels per channel";
+
+            throw new UsefulException(
+                $"{rule}, but {budget.OffGrid.Count} asset(s) use colours between them: {Offenders(budget.OffGrid)}.");
         }
 
         string partial = $"{budget.PartialAlphaCount} asset pixels have partial alpha";
         throw new UsefulException($"{partial}; the renderer needs alpha to be either 0 or 255.");
     }
+
+    // Names each asset with the colours at fault, so the message says which
+    // file to open and what to look for in it.
+    private static string Offenders(IReadOnlyDictionary<string, uint[]> assets)
+        => string.Join(
+            "; ",
+            assets
+                .OrderBy(x => x.Key, StringComparer.Ordinal)
+                .Select(x => $"{x.Key} ({Hexes(x.Value)})"));
+
+    private static string Hexes(uint[] colours)
+        => string.Join(", ", colours.Select(c => c.ToString("X8", CultureInfo.InvariantCulture)));
 }

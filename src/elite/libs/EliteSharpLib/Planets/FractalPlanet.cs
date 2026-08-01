@@ -6,7 +6,6 @@ using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Ships;
 using Useful;
-using Useful.Assets;
 
 namespace EliteSharpLib.Planets;
 
@@ -37,13 +36,10 @@ internal sealed class FractalPlanet : IObject
         _landscapeRandom = new RandomSource(random);
         _planetRenderer = new(draw);
 
-        // Each tier names its own colours, so the sea and land shades are
-        // looked up by role rather than by a name shared across palettes.
-        bool eightBit = draw.Tier == SystemTier.EightBit;
-        _colorDarkSea = draw.Palette[eightBit ? "Blue" : "Navy"];
+        _colorDarkSea = draw.Palette["Blue"];
         _colorDarkLand = draw.Palette["Green"];
-        _colorSea = draw.Palette[eightBit ? "LightBlue" : "Teal"];
-        _colorLand = draw.Palette[eightBit ? "LightGreen" : "YellowGreen"];
+        _colorSea = draw.Palette["LightBlue"];
+        _colorLand = draw.Palette["LightGreen"];
 
         GenerateLandscape();
     }

@@ -24,7 +24,7 @@ internal class BaseView16Bit : IBaseView
     // than being reserved out of it.
     private const int BorderWidth = 1;
 
-    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorGold;
     private readonly FastColor _colorWhite;
     private readonly float _rowHeight;
 
@@ -35,7 +35,7 @@ internal class BaseView16Bit : IBaseView
         Graphics = draw.Graphics;
         Layout = draw.Layout;
         _rowHeight = 8 * draw.Layout.Scale;
-        _colorGoldenrod = draw.Palette["Goldenrod"];
+        _colorGold = draw.Palette["Gold"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -82,7 +82,7 @@ internal class BaseView16Bit : IBaseView
 
     public void DrawViewHeader(string title)
     {
-        Graphics.DrawTextCentre(Layout.ViewportTop + 6, title, nameof(FontType.Large), _colorGoldenrod);
+        Graphics.DrawTextCentre(Layout.ViewportTop + 6, title, nameof(FontType.Large), _colorGold);
         Graphics.DrawLine(
             new(Layout.ViewportLeft, Layout.ViewportTop + 35),
             new(Layout.ViewportRight, Layout.ViewportTop + 35),

@@ -11,10 +11,10 @@ namespace EliteSharpLib.Suns;
 
 internal sealed class GradientSun16Bit : GradientSunBase
 {
-    private readonly FastColor _colorChocolate;
-    private readonly FastColor _colorSandyBrown;
-    private readonly FastColor _colorPaleGoldenrod;
-    private readonly FastColor _colorTomato;
+    private readonly FastColor _colorDarkOrange;
+    private readonly FastColor _colorLightOrange;
+    private readonly FastColor _colorLightYellow;
+    private readonly FastColor _colorOrange;
     private readonly FastColor _colorWhite;
 
     internal GradientSun16Bit(IEliteDraw draw, RNG rng)
@@ -23,20 +23,20 @@ internal sealed class GradientSun16Bit : GradientSunBase
         ArgumentNullException.ThrowIfNull(draw);
 
         _colorWhite = draw.Palette["White"];
-        _colorPaleGoldenrod = draw.Palette["PaleGoldenrod"];
-        _colorSandyBrown = draw.Palette["SandyBrown"];
-        _colorTomato = draw.Palette["Tomato"];
-        _colorChocolate = draw.Palette["Chocolate"];
+        _colorLightYellow = draw.Palette["LightYellow"];
+        _colorLightOrange = draw.Palette["LightOrange"];
+        _colorOrange = draw.Palette["Orange"];
+        _colorDarkOrange = draw.Palette["DarkOrange"];
     }
 
     private GradientSun16Bit(GradientSun16Bit other)
         : base(other)
     {
         _colorWhite = other._colorWhite;
-        _colorPaleGoldenrod = other._colorPaleGoldenrod;
-        _colorSandyBrown = other._colorSandyBrown;
-        _colorTomato = other._colorTomato;
-        _colorChocolate = other._colorChocolate;
+        _colorLightYellow = other._colorLightYellow;
+        _colorLightOrange = other._colorLightOrange;
+        _colorOrange = other._colorOrange;
+        _colorDarkOrange = other._colorDarkOrange;
     }
 
     public override IObject Clone()
@@ -52,8 +52,8 @@ internal sealed class GradientSun16Bit : GradientSunBase
         => distance < inner
             ? _colorWhite
             : distance < inner2
-                ? _colorPaleGoldenrod
+                ? _colorLightYellow
                 : distance < outer
-                    ? _colorSandyBrown
-                    : dither.IsOdd() ? _colorTomato : _colorChocolate;
+                    ? _colorLightOrange
+                    : dither.IsOdd() ? _colorOrange : _colorDarkOrange;
 }

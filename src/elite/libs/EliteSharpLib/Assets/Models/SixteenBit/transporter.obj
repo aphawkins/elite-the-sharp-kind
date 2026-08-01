@@ -57,35 +57,35 @@ vn 8 34 11
 vn 0 38 17
 vn 0 0 121
 
-usemtl DimGray
+usemtl DarkerGrey
 f 6 5 4 3 2 1 7
-usemtl Teal
+usemtl LightBlue
 f 10 9 2 3
-usemtl Navy
+usemtl Blue
 f 4 10 3
-usemtl DarkSlateBlue
+usemtl Purple
 f 15 14 10 4 5 11
-usemtl Navy
+usemtl Blue
 f 6 11 5
-usemtl Teal
+usemtl LightBlue
 f 12 11 6 7
-usemtl Gray
+usemtl LightGrey
 f 7 1 8 12
-usemtl SlateGray
+usemtl DarkGrey
 f 9 8 1 2
-usemtl Teal
+usemtl LightBlue
 f 14 13 9 10
-usemtl Teal
+usemtl LightBlue
 f 16 15 11 12
-usemtl Gray
+usemtl LightGrey
 f 9 13 8
-usemtl SlateGray
+usemtl DarkGrey
 f 8 16 12
-usemtl LightSlateGray
+usemtl Grey
 f 8 13 16
-usemtl Gainsboro
+usemtl LighterGrey
 f 16 13 14 15
-usemtl DarkRed
+usemtl LightRed
 f 36 35 34 37
 usemtl White
 f 31 30

@@ -9,6 +9,55 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-01) — the 16-bit tier is a 12-bit, 4096-colour machine
+
+The 2026-07-30 decision that renamed the 16-bit palette to web colours is
+**backed out**. A web colour name is only worth having if the value really
+is that colour, and the constraint that actually governs this tier is not
+naming but **channel depth**: the 16-bit machines it stands in for drove a
+12-bit DAC — four bits each of red, green and blue, 4096 colours. So the
+29 ramp names return, and every one of them is now a colour that hardware
+could produce:
+
+```
+White FFFFFF · LighterGrey EEEEEE · LightGrey 888888 · Grey 777777 · DarkGrey 666666 · DarkerGrey 555555 · Black 000000
+Red 880000 · LightRed 991111 · LighterRed CC0000 · RedOrange FF3333 · Orange FF7733 · DarkOrange EE6622 · LightOrange FFBB77
+Gold FFBB33 · DarkYellow DD9911 · PaleYellow FFFF55 · LightYellow FFFFBB · Yellow FFFF00
+Green 008800 · LightGreen 88CC00 · LighterGreen 66EE22 · LightBlue 115599 · Cyan 00FFFF
+Blue 000088 · DarkBlue 111199 · Purple 444488 · BrightPurple BB55EE · Lilac EEAAEE
+```
+
+- **Widen a channel by replication, never a left shift.** A 4-bit `0xE`
+  becomes `0xEE`, not `0xE0`. The shift is the tempting one-liner and it is
+  wrong: it can never reach `0xFF`, so a tier using it has no true white.
+  The art settled this on its own — 109 of the 145 colours in the 16-bit
+  bitmaps were already replicated values and only 2 were shifted ones.
+- **The old ramp values were shifted, so the names cost nothing to
+  restore.** 23 of the 29 were `E0`/`B0`/`70`-style truncations, meaning
+  the author had already picked a 4-bit nibble and expanded it badly.
+  Restoring them as `EE`/`BB`/`77` changes the expansion, not the choice,
+  so the tier looks as it did before either commit.
+- **Three needed a judgement call.** `BrightPurple` (B855F6) and
+  `PaleYellow` (FFFF5C) went to their nearest level. `Grey` (727272) and
+  `DarkGrey` (707070) both round to `777777`, and 12 bits has nothing
+  between 7 and 8, so the neutral ramp was re-spaced one step down —
+  `DarkerGrey` 555555, `DarkGrey` 666666, `Grey` 777777 — to keep four
+  distinct greys.
+- **Enforced at startup, for the palette and the art alike.**
+  `AssetColourBudget.ChannelBits`/`IsOnGrid` and `AssetSet.Load` fail the
+  game on any colour between the tier's levels, naming the asset and the
+  value. This is a separate rule from `PaletteNamesEveryColour`, which
+  stays false for 16-bit: the tier is still direct-colour, so a bitmap need
+  not use a *named* colour — it just has to use a *producible* one.
+- **36 bitmap colours were repainted to comply**, mostly `elitetext.bmp`'s
+  anti-aliased grey ramp and `scanner.bmp`. The ramp loses a few steps
+  where two of its shades now round together, which is inherent to 12 bits.
+  Stunt Car Racer shares the tier and its `menu.bmp` was repainted the same
+  way; its palette was already on the grid.
+- **The 8-bit tier is unaffected.** Its limit is the 16-entry palette, not
+  channel depth, so `ChannelBits` is 8 there and its web colour names — the
+  2026-07-30 decision below — stand.
+
 ## Resolved (2026-08-01) — widescreen is a modern-tier concern only
 
 The 8-bit and 16-bit tiers are **fixed-width**: each has one resolution
@@ -67,43 +116,6 @@ level that everything drawn in a tick relies on, and making lasers,
 planets, suns, stars and ships each police the viewport themselves would
 reimplement in six places what `DrawPixel` already does once.
 
-## Resolved (2026-07-30) — the 16-bit palette is web colour names too
-
-The 8-bit decision below argued that a relative ramp name states nothing
-about a colour. That argument does not stop at 8-bit, so the 16-bit
-palette's 29 ramp names are now **29 CSS/HTML colour names at their exact
-web values**, each the nearest web colour to the value it replaces:
-
-```
-White FFFFFF · Gainsboro DCDCDC · Gray 808080 · LightSlateGray 778899 · SlateGray 708090 · DimGray 696969 · Black 000000
-Maroon 800000 · DarkRed 8B0000 · FireBrick B22222 · Crimson DC143C · Tomato FF6347 · Chocolate D2691E · SandyBrown F4A460
-Goldenrod DAA520 · DarkGoldenrod B8860B · Khaki F0E68C · PaleGoldenrod EEE8AA · Yellow FFFF00
-Green 008000 · YellowGreen 9ACD32 · LimeGreen 32CD32 · Teal 008080 · Cyan 00FFFF
-Navy 000080 · DarkBlue 00008B · DarkSlateBlue 483D8B · MediumOrchid BA55D3 · Plum DDA0DD
-```
-
-- **Nearest by perceptual distance, not by name.** Each old value was
-  matched against the CSS extended set with a low-cost redmean weighting,
-  so the choices follow the colours the art already used rather than what
-  the ramp name said they were: `Red` (800000) *is* `Maroon`, `Orange`
-  (F07030) is `Tomato`, `Lilac` (E0A0E0) is `Plum`.
-- **Ties were broken to keep the ramps distinct and ordered.** Three greys
-  and two reds each had the same nearest web colour, which a dictionary
-  cannot hold twice. The assignment that minimises total distance while
-  staying monotone was taken instead — so `DarkGrey` is `SlateGray` and
-  `Grey` is `LightSlateGray`, both a shade cooler than the neutral they
-  replace, and `LighterRed` is `FireBrick`. `LightBlue` (105090) landed on
-  `Teal` once `DarkSlateBlue` went to the much closer `Purple`.
-- **The tier is direct-colour, so nothing is enforced against this set.**
-  Unlike 8-bit, 16-bit bitmaps may use any colour
-  (`AssetColourBudget.PaletteNamesEveryColour` is false for the tier); the
-  palette is only the set of names the geometry and views draw with, and
-  the values moved by up to ~100 units without any asset needing repaint.
-- **`FractalPlanet` had to become tier-aware.** It is shared code and
-  looked up `Blue`/`LightBlue`/`LightGreen`, three names 16-bit no longer
-  has. It now selects by role, which is the pattern the shared/tier split
-  wants anyway.
-
 ## Resolved (2026-07-30) — the 8-bit palette is sixteen web colour names
 
 The 8-bit palette was a set of 29 relative ramp names (`LighterGrey`,
@@ -135,9 +147,8 @@ Green 008000 · LightGreen 90EE90 · Blue 0000FF · LightBlue ADD8E6 · Cyan 00F
   hull. `Magenta` was earning nothing once the mining laser moved to
   `Purple`.
 - UK spelling is the repo standard, but these are **proper nouns from the
-  CSS specification** and keep its spelling — `Gray`, not `Grey`. (The
-  16-bit palette followed the same way the same day; see the decision
-  above.)
+  CSS specification** and keep its spelling — `Gray`, not `Grey`. The
+  16-bit palette keeps its ramp names and its `Grey` spelling unchanged.
 
 ## Resolved (2026-07-29) — `Focus` follows screen height
 

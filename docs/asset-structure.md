@@ -135,8 +135,8 @@ Each tier caps the number of distinct opaque colours:
 | EightBit | 16 |
 | SixteenBit | 4096 |
 
-The cap is a count of distinct values only — any 32-bit RGB values are
-permitted, they need not be quantised to a 12-bit or 9-bit colour space.
+The cap is a count of distinct values only; which values those may be is
+the separate channel-depth rule below.
 
 The cap applies to the **union across one game's whole asset set for the
 active tier**, not per image: a game's tier corresponds to one machine's
@@ -172,12 +172,42 @@ excludes fully transparent pixels, for the same reason the cap does —
 they carry no colour.
 
 Applying it to 16-bit would fail immediately and for no good reason:
-Elite's 16-bit set holds 145 distinct colours against a 29-entry
-palette, so 138 of them are "unnamed" by construction.
+Elite's 16-bit set holds 134 distinct colours against a 29-entry
+palette, so most of them are "unnamed" by construction.
 
 `AssetColourBudget.OutsidePalette` records the offending colours per
 asset on **every** tier so they can be logged, but only
 `PaletteNamesEveryColour` tiers fail startup over them.
+
+## Channel depth (2026-08-01)
+
+The third rule, and the only one that says which colours a tier may use
+rather than how many or which are named:
+
+| Tier | Bits per channel | Levels per channel |
+| --- | --- | --- |
+| EightBit | 8 | 256 |
+| SixteenBit | 4 | 16 |
+
+The 16-bit machines the tier stands in for drove a **12-bit DAC** — four
+bits each of red, green and blue, 4096 colours — so a channel there may
+only hold one of sixteen levels. An n-bit channel widens to eight by
+**replication**: `0xE` becomes `0xEE`. Not by a left shift, which gives
+`0xE0` and tops out short of white.
+
+The 8-bit tier is limited by its 16-entry palette instead, not by channel
+depth, so it keeps all eight bits and the rule is a no-op there.
+
+This is independent of the palette rule above. 16-bit is still
+direct-colour, so a bitmap need not use a colour the palette *names* — it
+just has to use one the tier could *produce*. Both the palette entries and
+every opaque bitmap pixel are checked.
+
+`AssetColourBudget.ChannelBits` gives the depth, `IsOnGrid` tests one
+colour and `NearestLevel` snaps one channel; `AssetColourBudget.OffGrid`
+records the strays per asset and `AssetSet.Load` throws with the asset and
+the colour named. Alpha is not a DAC channel and is not checked here — it
+is covered by `PartialAlphaCount`.
 
 ### Baseline, and how the assets were brought inside it (2026-07-28)
 

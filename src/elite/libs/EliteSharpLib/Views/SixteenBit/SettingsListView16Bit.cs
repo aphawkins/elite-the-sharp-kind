@@ -34,7 +34,7 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
 
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorWhite;
-    private readonly FastColor _colorDarkRed;
+    private readonly FastColor _colorLightRed;
 
     internal SettingsListView16Bit(IEliteDraw draw)
         : base(draw)
@@ -42,7 +42,7 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
         _draw = draw;
 
         _colorWhite = draw.Palette["White"];
-        _colorDarkRed = draw.Palette["DarkRed"];
+        _colorLightRed = draw.Palette["LightRed"];
     }
 
     public void Draw(SettingsListModel model)
@@ -64,7 +64,7 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
 
             if (i == model.HighlightedIndex)
             {
-                _draw.Graphics.DrawRectangleFilled(position, ListWidth, HighlightHeight, _colorDarkRed);
+                _draw.Graphics.DrawRectangleFilled(position, ListWidth, HighlightHeight, _colorLightRed);
             }
 
             _draw.Graphics.DrawTextLeft(position, model.Rows[i].Name, nameof(FontType.Small), _colorWhite);
@@ -90,7 +90,7 @@ internal sealed class SettingsListView16Bit : BaseView16Bit, IView<SettingsListM
                 new(_draw.Layout.ViewportCentre.X - (ListWidth / 2), y),
                 ListWidth,
                 HighlightHeight,
-                _colorDarkRed);
+                _colorLightRed);
         }
 
         _draw.Graphics.DrawTextCentre(y, model.Rows[lastIndex].Name, nameof(FontType.Small), _colorWhite);

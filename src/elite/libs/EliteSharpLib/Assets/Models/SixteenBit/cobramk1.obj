@@ -27,25 +27,25 @@ vn 0 0 -154
 vn -121 111 -62
 vn 121 111 -62
 
-usemtl Navy
+usemtl Blue
 f 1 2 9
-usemtl Navy
+usemtl Blue
 f 7 8 2 1
 usemtl DarkBlue
 f 3 1 9 5
-usemtl DarkSlateBlue
+usemtl Purple
 f 7 1 3
 usemtl DarkBlue
 f 2 4 6 9
-usemtl DarkSlateBlue
+usemtl Purple
 f 2 8 4
-usemtl Navy
+usemtl Blue
 f 5 9 6
-usemtl DarkSlateBlue
+usemtl Purple
 f 8 7 5 6
-usemtl Navy
+usemtl Blue
 f 3 5 7
-usemtl Navy
+usemtl Blue
 f 4 8 6
 usemtl White
 f 10 11

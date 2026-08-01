@@ -36,33 +36,33 @@ vn 103 25 60
 vn 103 -25 60
 vn -48 0 0
 
-usemtl DarkRed
+usemtl LightRed
 f 2 1 9 10
-usemtl SlateGray
+usemtl DarkGrey
 f 3 2 10 11
-usemtl DarkRed
+usemtl LightRed
 f 4 3 11 12
-usemtl SlateGray
+usemtl DarkGrey
 f 5 4 12 13
-usemtl DimGray
+usemtl DarkerGrey
 f 1 2 3 8
-usemtl DimGray
+usemtl DarkerGrey
 f 3 4 7 8
-usemtl DimGray
+usemtl DarkerGrey
 f 4 5 6 7
-usemtl DarkRed
+usemtl LightRed
 f 6 5 13 14
-usemtl SlateGray
+usemtl DarkGrey
 f 7 6 14 15
-usemtl DarkRed
+usemtl LightRed
 f 8 7 15 16
-usemtl SlateGray
+usemtl DarkGrey
 f 1 8 16 9
-usemtl DimGray
+usemtl DarkerGrey
 f 10 9 16 11
-usemtl DimGray
+usemtl DarkerGrey
 f 12 11 16 15
-usemtl DimGray
+usemtl DarkerGrey
 f 13 12 15 14
 usemtl White
 f 17 18

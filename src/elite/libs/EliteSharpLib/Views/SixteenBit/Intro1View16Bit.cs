@@ -17,7 +17,7 @@ internal sealed class Intro1View16Bit : BaseView16Bit, IView<Intro1Model>
     private const float CreditSpacing = 20;
 
     private readonly IEliteDraw _draw;
-    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorGold;
     private readonly FastColor _colorWhite;
 
     internal Intro1View16Bit(IEliteDraw draw)
@@ -25,7 +25,7 @@ internal sealed class Intro1View16Bit : BaseView16Bit, IView<Intro1Model>
     {
         _draw = draw;
 
-        _colorGoldenrod = draw.Palette["Goldenrod"];
+        _colorGold = draw.Palette["Gold"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -44,6 +44,6 @@ internal sealed class Intro1View16Bit : BaseView16Bit, IView<Intro1Model>
             y += CreditSpacing;
         }
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 30, model.Prompt, nameof(FontType.Large), _colorGoldenrod);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 30, model.Prompt, nameof(FontType.Large), _colorGold);
     }
 }

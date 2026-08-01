@@ -16,9 +16,9 @@ internal sealed class ShortRangeChartView16Bit : BaseView16Bit, IView<ShortRange
     private const int CrossSize = 16;
 
     private readonly IEliteDraw _draw;
-    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorGold;
     private readonly FastColor _colorGreen;
-    private readonly FastColor _colorFireBrick;
+    private readonly FastColor _colorLighterRed;
     private readonly FastColor _colorWhite;
 
     internal ShortRangeChartView16Bit(IEliteDraw draw)
@@ -26,9 +26,9 @@ internal sealed class ShortRangeChartView16Bit : BaseView16Bit, IView<ShortRange
     {
         _draw = draw;
 
-        _colorGoldenrod = draw.Palette["Goldenrod"];
+        _colorGold = draw.Palette["Gold"];
         _colorGreen = draw.Palette["Green"];
-        _colorFireBrick = draw.Palette["FireBrick"];
+        _colorLighterRed = draw.Palette["LighterRed"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -56,12 +56,12 @@ internal sealed class ShortRangeChartView16Bit : BaseView16Bit, IView<ShortRange
 
         foreach ((Vector2 position, float size) in model.Planets)
         {
-            Graphics.DrawCircleFilled(position, size, _colorGoldenrod);
+            Graphics.DrawCircleFilled(position, size, _colorGold);
         }
 
         // Cross
-        Graphics.DrawLine(new(model.Cross.X - CrossSize, model.Cross.Y), new(model.Cross.X + CrossSize, model.Cross.Y), _colorFireBrick);
-        Graphics.DrawLine(new(model.Cross.X, model.Cross.Y - CrossSize), new(model.Cross.X, model.Cross.Y + CrossSize), _colorFireBrick);
+        Graphics.DrawLine(new(model.Cross.X - CrossSize, model.Cross.Y), new(model.Cross.X + CrossSize, model.Cross.Y), _colorLighterRed);
+        Graphics.DrawLine(new(model.Cross.X, model.Cross.Y - CrossSize), new(model.Cross.X, model.Cross.Y + CrossSize), _colorLighterRed);
 
         float x = TextX + _draw.Layout.ViewportLeft;
         Graphics.DrawTextLeft(

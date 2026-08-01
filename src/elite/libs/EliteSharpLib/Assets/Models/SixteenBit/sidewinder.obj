@@ -23,21 +23,21 @@ vn -12 -47 6
 vn 0 -32 8
 vn 12 -47 6
 
-usemtl DarkGoldenrod
+usemtl DarkYellow
 f 5 1 2
-usemtl Goldenrod
+usemtl Gold
 f 5 4 1
-usemtl Goldenrod
+usemtl Gold
 f 3 5 2
-usemtl Gray
+usemtl LightGrey
 f 3 6 4 5
-usemtl DarkGoldenrod
+usemtl DarkYellow
 f 6 1 4
-usemtl Goldenrod
+usemtl Gold
 f 2 1 6
-usemtl DarkGoldenrod
+usemtl DarkYellow
 f 3 2 6
-usemtl FireBrick
+usemtl LighterRed
 f 9 10 7 8
 
 # pn 1 2

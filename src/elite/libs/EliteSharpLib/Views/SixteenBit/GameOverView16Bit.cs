@@ -14,14 +14,14 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class GameOverView16Bit : BaseView16Bit, IView<GameOverModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorGold;
 
     internal GameOverView16Bit(IEliteDraw draw)
         : base(draw)
     {
         _draw = draw;
 
-        _colorGoldenrod = draw.Palette["Goldenrod"];
+        _colorGold = draw.Palette["Gold"];
     }
 
     public void Draw(GameOverModel model)
@@ -30,6 +30,6 @@ internal sealed class GameOverView16Bit : BaseView16Bit, IView<GameOverModel>
 
         DrawBorder();
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportCentre.Y, model.Message, nameof(FontType.Large), _colorGoldenrod);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportCentre.Y, model.Message, nameof(FontType.Large), _colorGold);
     }
 }

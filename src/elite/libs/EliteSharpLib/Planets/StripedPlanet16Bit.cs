@@ -15,68 +15,68 @@ internal sealed class StripedPlanet16Bit : StripedPlanetBase
     {
         ArgumentNullException.ThrowIfNull(draw);
 
-        FastColor colorDarkSlateBlue = draw.Palette["DarkSlateBlue"];
+        FastColor colorPurple = draw.Palette["Purple"];
         FastColor colorDarkBlue = draw.Palette["DarkBlue"];
-        FastColor colorNavy = draw.Palette["Navy"];
-        FastColor colorTeal = draw.Palette["Teal"];
-        FastColor colorGainsboro = draw.Palette["Gainsboro"];
-        FastColor colorTomato = draw.Palette["Tomato"];
-        FastColor colorSandyBrown = draw.Palette["SandyBrown"];
-        FastColor colorChocolate = draw.Palette["Chocolate"];
+        FastColor colorBlue = draw.Palette["Blue"];
+        FastColor colorLightBlue = draw.Palette["LightBlue"];
+        FastColor colorLighterGrey = draw.Palette["LighterGrey"];
+        FastColor colorOrange = draw.Palette["Orange"];
+        FastColor colorLightOrange = draw.Palette["LightOrange"];
+        FastColor colorDarkOrange = draw.Palette["DarkOrange"];
         StripeColors =
         [
-            colorDarkSlateBlue,
-            colorDarkSlateBlue,
+            colorPurple,
+            colorPurple,
             colorDarkBlue,
             colorDarkBlue,
             colorDarkBlue,
             colorDarkBlue,
-            colorNavy,
-            colorNavy,
-            colorNavy,
-            colorNavy,
-            colorTeal,
-            colorTeal,
-            colorGainsboro,
-            colorTomato,
-            colorTomato,
-            colorTomato,
-            colorTomato,
-            colorSandyBrown,
-            colorTomato,
-            colorTomato,
-            colorChocolate,
-            colorChocolate,
-            colorChocolate,
-            colorChocolate,
-            colorTomato,
-            colorSandyBrown,
-            colorChocolate,
-            colorChocolate,
-            colorChocolate,
-            colorChocolate,
-            colorChocolate,
-            colorChocolate,
-            colorTomato,
-            colorTomato,
-            colorSandyBrown,
-            colorTomato,
-            colorTomato,
-            colorTomato,
-            colorTomato,
-            colorGainsboro,
-            colorTeal,
-            colorTeal,
-            colorNavy,
-            colorNavy,
-            colorNavy,
-            colorNavy,
+            colorBlue,
+            colorBlue,
+            colorBlue,
+            colorBlue,
+            colorLightBlue,
+            colorLightBlue,
+            colorLighterGrey,
+            colorOrange,
+            colorOrange,
+            colorOrange,
+            colorOrange,
+            colorLightOrange,
+            colorOrange,
+            colorOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorOrange,
+            colorLightOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorDarkOrange,
+            colorOrange,
+            colorOrange,
+            colorLightOrange,
+            colorOrange,
+            colorOrange,
+            colorOrange,
+            colorOrange,
+            colorLighterGrey,
+            colorLightBlue,
+            colorLightBlue,
+            colorBlue,
+            colorBlue,
+            colorBlue,
+            colorBlue,
             colorDarkBlue,
             colorDarkBlue,
             colorDarkBlue,
             colorDarkBlue,
-            colorDarkSlateBlue,
-            colorDarkSlateBlue,
+            colorPurple,
+            colorPurple,
         ];
 
         GenerateLandscape();

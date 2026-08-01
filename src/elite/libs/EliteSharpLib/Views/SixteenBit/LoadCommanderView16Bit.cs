@@ -14,14 +14,14 @@ internal sealed class LoadCommanderView16Bit : BaseView16Bit, IView<LoadCommande
 {
     private readonly IEliteDraw _draw;
     private readonly FastColor _colorWhite;
-    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorGold;
 
     internal LoadCommanderView16Bit(IEliteDraw draw)
         : base(draw)
     {
         _draw = draw;
 
-        _colorGoldenrod = draw.Palette["Goldenrod"];
+        _colorGold = draw.Palette["Gold"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -39,7 +39,7 @@ internal sealed class LoadCommanderView16Bit : BaseView16Bit, IView<LoadCommande
 
         if (model.ErrorMessage.Length > 0)
         {
-            _draw.Graphics.DrawTextCentre(175, model.ErrorMessage, nameof(FontType.Large), _colorGoldenrod);
+            _draw.Graphics.DrawTextCentre(175, model.ErrorMessage, nameof(FontType.Large), _colorGold);
             _draw.Graphics.DrawTextCentre(200, "Press SPACE to continue.", nameof(FontType.Small), _colorWhite);
         }
     }

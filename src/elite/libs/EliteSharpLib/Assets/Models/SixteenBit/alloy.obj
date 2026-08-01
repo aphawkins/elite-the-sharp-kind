@@ -12,7 +12,7 @@ v 10 -46 6
 vn 0 0 0
 vn 0 0 0
 
-usemtl Gray
+usemtl LightGrey
 f 1 2 3 4
-usemtl DimGray
+usemtl DarkerGrey
 f 4 3 2 1 1 1 1 1

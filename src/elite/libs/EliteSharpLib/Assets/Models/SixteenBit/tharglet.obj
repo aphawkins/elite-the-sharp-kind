@@ -23,19 +23,19 @@ vn 46 42 -14
 vn 20 5 7
 vn 36 0 0
 
-usemtl DarkRed
+usemtl LightRed
 f 4 3 2 1 5
-usemtl Gray
+usemtl LightGrey
 f 7 6 1 2
-usemtl SlateGray
+usemtl DarkGrey
 f 8 7 2 3
-usemtl LightSlateGray
+usemtl Grey
 f 9 8 3 4
-usemtl SlateGray
+usemtl DarkGrey
 f 10 9 4 5
-usemtl DimGray
+usemtl DarkerGrey
 f 5 1 6 10
-usemtl DarkRed
+usemtl LightRed
 f 10 6 7 8 9
 
 # pn 1 1

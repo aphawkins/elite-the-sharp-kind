@@ -27,23 +27,23 @@ vn -88 16 -214
 vn 0 0 -187
 vn 88 16 -214
 
-usemtl SlateGray
+usemtl DarkGrey
 f 4 3 1 2
-usemtl Gray
+usemtl LightGrey
 f 4 2 6
-usemtl DimGray
+usemtl DarkerGrey
 f 6 2 8
-usemtl Gray
+usemtl LightGrey
 f 2 1 7 8
-usemtl DimGray
+usemtl DarkerGrey
 f 5 7 1
-usemtl Gray
+usemtl LightGrey
 f 1 3 5
-usemtl DarkRed
+usemtl LightRed
 f 5 3 7
-usemtl FireBrick
+usemtl LighterRed
 f 3 4 8 7
-usemtl DarkRed
+usemtl LightRed
 f 6 8 4
 usemtl White
 f 9 11

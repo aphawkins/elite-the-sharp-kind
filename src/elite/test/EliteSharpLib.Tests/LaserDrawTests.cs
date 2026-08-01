@@ -19,25 +19,25 @@ public class LaserDrawTests
     // The crosshair sprites are two-colour: transparent plus the laser's
     // own colour, so counting that colour proves the right one was drawn.
     [Fact]
-    public void DrawLaserSightsDrawsThePulseCrosshair() => AssertCrosshairColor(LaserType.Pulse, FastColor.FromUInt32(0xFFFFFF5C));
+    public void DrawLaserSightsDrawsThePulseCrosshair() => AssertCrosshairColor(LaserType.Pulse, FastColor.FromUInt32(0xFFFFFF55));
 
     [Fact]
-    public void DrawLaserSightsDrawsTheBeamCrosshair() => AssertCrosshairColor(LaserType.Beam, FastColor.FromUInt32(0xFFFFFF5C));
+    public void DrawLaserSightsDrawsTheBeamCrosshair() => AssertCrosshairColor(LaserType.Beam, FastColor.FromUInt32(0xFFFFFF55));
 
     [Fact]
-    public void DrawLaserSightsDrawsTheMilitaryCrosshair() => AssertCrosshairColor(LaserType.Military, FastColor.FromUInt32(0xFFC3FF99));
+    public void DrawLaserSightsDrawsTheMilitaryCrosshair() => AssertCrosshairColor(LaserType.Military, FastColor.FromUInt32(0xFFBBFF99));
 
     [Fact]
-    public void DrawLaserSightsDrawsTheMiningCrosshair() => AssertCrosshairColor(LaserType.Mining, FastColor.FromUInt32(0xFFB855F6));
+    public void DrawLaserSightsDrawsTheMiningCrosshair() => AssertCrosshairColor(LaserType.Mining, FastColor.FromUInt32(0xFFBB55EE));
 
     [Fact]
     public void DrawLaserSightsDrawsNothingWithoutALaser()
     {
         FastBitmap frame = DrawSights(LaserType.None);
 
-        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFFFFF5C)));
-        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFC3FF99)));
-        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFB855F6)));
+        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFFFFF55)));
+        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFBBFF99)));
+        Assert.Equal(0, CountPixels(frame, FastColor.FromUInt32(0xFFBB55EE)));
     }
 
     // Outlined beams are the same two triangles as filled ones, so the
@@ -45,7 +45,8 @@ public class LaserDrawTests
     [Fact]
     public void DrawLaserLinesOutlinesTheBeamsWhenLaserWireframeIsSet()
     {
-        FastColor miningColor = FastColor.FromUInt32(0xFFBA55D3);
+        // BrightPurple, the 16-bit palette's mining-laser beam colour.
+        FastColor miningColor = FastColor.FromUInt32(0xFFBB55EE);
 
         int filled = CountPixels(DrawLines(LaserType.Mining, laserWireframe: false), miningColor);
         int wireframe = CountPixels(DrawLines(LaserType.Mining, laserWireframe: true), miningColor);

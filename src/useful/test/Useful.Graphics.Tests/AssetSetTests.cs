@@ -103,11 +103,11 @@ public class AssetSetTests
     [Fact]
     public void AllowsTheSameSetUnderTheRoomierSixteenBitCap()
     {
-        // Arrange: the 17 colours that break the 8-bit cap are fine here, so
+        // Arrange: 17 colours, which break the 8-bit cap but are fine here, so
         // the failure above is the cap doing its job rather than the loader
-        // rejecting the file.
-        uint[] colours = [.. Enumerable.Range(0, 17).Select(i => 0xFF000000u | (uint)i)];
-        using TempImageFile image = TempImageFile.From(Bmp(colours));
+        // rejecting the file. They sit on the 16-bit grid, because that tier
+        // enforces channel depth as well as the cap.
+        using TempImageFile image = TempImageFile.From(Bmp(OnGrid(17)));
 
         // Act
         AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, ("Image", image)));
@@ -207,6 +207,108 @@ public class AssetSetTests
         // Assert
         Assert.Contains("Small", exception.Message, StringComparison.Ordinal);
     }
+
+    [Theory]
+    [InlineData(SystemTier.EightBit, 8)]
+    [InlineData(SystemTier.SixteenBit, 4)]
+    public void DrivesEachTierAtItsOwnChannelDepth(SystemTier tier, int expectedBits)
+        => Assert.Equal(expectedBits, AssetColourBudget.ChannelBits(tier));
+
+    [Theory]
+    [InlineData(0xFF000000u, true)]
+    [InlineData(0xFFFFFFFFu, true)]
+    [InlineData(0xFF112233u, true)]
+    [InlineData(0xFFEE6622u, true)]
+    [InlineData(0xFF808080u, false)] // the midpoint no 4-bit channel can hold
+    [InlineData(0xFFF0F0F0u, false)] // a left shift rather than a replication
+    [InlineData(0xFF11FF34u, false)] // one stray channel is enough
+    [InlineData(0x80112233u, true)] // alpha is not a channel of the DAC
+    public void PlacesAColourOnTheTwelveBitGridOnlyWhenEveryChannelIsALevel(uint argb, bool expected)
+        => Assert.Equal(expected, AssetColourBudget.IsOnGrid(argb, 4));
+
+    [Fact]
+    public void ThrowsWhenASixteenBitColourSitsBetweenTheTiersLevels()
+    {
+        // Arrange: 0x808080 is the classic mid grey, and the one no 12-bit DAC
+        // can produce - 0x77 and 0x88 are the levels either side of it.
+        using TempImageFile image = TempImageFile.From(Bmp(0xFF112233, 0xFF808080));
+        IAssetLocator locator = Locator(SystemTier.SixteenBit, ("Image", image));
+
+        // Act
+        UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
+
+        // Assert: naming the file and the colour is what makes the failure
+        // actionable rather than a hunt through the tier's art.
+        Assert.Contains("Image", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("FF808080", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AllowsASixteenBitSetWhoseColoursAllSitOnTheGrid()
+    {
+        // Arrange
+        using TempImageFile image = TempImageFile.From(Bmp(0xFF112233, 0xFFEE6622));
+
+        // Act
+        AssetSet assets = AssetSet.Load(Locator(SystemTier.SixteenBit, ("Image", image)));
+
+        // Assert
+        Assert.True(assets.Budget.IsOnColourGrid);
+        Assert.Empty(assets.Budget.OffGrid);
+    }
+
+    [Fact]
+    public void ChecksTheNamedPaletteAgainstTheGridAsWellAsTheBitmaps()
+    {
+        // Arrange: the geometry draws with palette names, so a colour the tier
+        // cannot show reaches the screen whether it arrives as a pixel or a
+        // name. The bitmap here is clean, so only the palette can be at fault.
+        using TempImageFile palette = Palette(("Grey", 0xFF808080));
+        using TempImageFile image = TempImageFile.From(Bmp(0xFF112233, 0xFF112233));
+        IAssetLocator locator = Locator(SystemTier.SixteenBit, palette, ("Image", image));
+
+        // Act
+        UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
+
+        // Assert
+        Assert.Contains("Palette", exception.Message, StringComparison.Ordinal);
+        Assert.Contains("FF808080", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void LeavesTheEightBitTierFreeOfTheChannelDepthRule()
+    {
+        // Arrange: the same colour that fails on 16-bit, on the tier whose
+        // limit is its 16-entry palette rather than its channel depth.
+        using TempImageFile image = TempImageFile.From(Bmp(0xFF808080, 0xFF808080));
+
+        // Act
+        AssetSet assets = AssetSet.Load(Locator(SystemTier.EightBit, ("Image", image)));
+
+        // Assert
+        Assert.True(assets.Budget.IsOnColourGrid);
+    }
+
+    [Fact]
+    public void ChecksBitmapFontsAgainstTheGridToo()
+    {
+        // Arrange: the font is part of the tier's set, so its channels have to
+        // land on the tier's levels like any other asset's.
+        using TempImageFile image = TempImageFile.From(Bmp(0xFF112233, 0xFF112233));
+        using TempImageFile font = TempImageFile.From(FontBmp(0xFF112233, 0xFF808080));
+        IAssetLocator locator = Locator(SystemTier.SixteenBit, [("Image", image)], [("Small", font)]);
+
+        // Act
+        UsefulException exception = Assert.Throws<UsefulException>(() => AssetSet.Load(locator));
+
+        // Assert
+        Assert.Contains("Small", exception.Message, StringComparison.Ordinal);
+    }
+
+    // Distinct colours that all sit on the 12-bit grid. One channel only
+    // carries 16 of them, so the count spills into the next.
+    private static uint[] OnGrid(int count)
+        => [.. Enumerable.Range(0, count).Select(i => 0xFF000000u | ((uint)(i % 16) * 0x11u) | ((uint)(i / 16) * 0x1100u))];
 
     private static TempImageFile Palette(params (string Name, uint Argb)[] colours)
         => TempImageFile.From(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(

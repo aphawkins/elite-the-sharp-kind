@@ -7,6 +7,33 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (The 16-bit tier becomes a real 12-bit machine, 2026-08-01)
+
+- The 2026-07-30 rename of the 16-bit palette to web colour names is backed
+  out: the 29 ramp names (`LighterGrey`, `Gold`, `Lilac`, `RedOrange`…)
+  return across `palette.json`, `palette.mtl`, the ~380 `usemtl` lines in
+  the 31 `SixteenBit/*.obj` models and every `Palette["..."]` lookup on the
+  16-bit path. `FractalPlanet` goes back to the plain shared lookup, since
+  the names it wanted exist in both palettes again.
+- In its place the tier gets the constraint that actually describes the
+  hardware: a **12-bit DAC, 4096 colours**, four bits per channel. Every
+  palette entry is now a value that hardware could produce — channels
+  widened by replication (`0xE` → `0xEE`), never by a left shift (`0xE0`),
+  which can never reach white. Most of the old ramp values were shifted
+  nibbles, so restoring them properly expanded changes the expansion rather
+  than the colour.
+- `AssetColourBudget.ChannelBits`/`IsOnGrid` and `AssetSet.Load` enforce it
+  at startup for both the named palette and every bitmap pixel, failing
+  with the offending asset and colour named. Separate from the existing
+  `PaletteNamesEveryColour` rule, which stays false for 16-bit — the tier
+  is direct-colour, so a bitmap need not use a *named* colour, only a
+  *producible* one. The 8-bit tier keeps 8 bits per channel and is
+  unaffected.
+- 36 colours across the 16-bit bitmaps were repainted onto the grid, mostly
+  `elitetext.bmp`'s anti-aliased grey ramp and `scanner.bmp`. Stunt Car
+  Racer shares the tier, so its `menu.bmp` was repainted too; its palette
+  was already compliant.
+
 ### Added (a way into Elite's mission screens, 2026-08-01)
 
 - The five mission briefings were only reachable by playing the missions -
@@ -386,21 +413,6 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
   passes.
 - The two `FastColorTests` covering the deleted operators now exercise
   `FromUInt32`/`ToUInt32` instead, so the round trip stays covered.
-
-### Changed (The 16-bit palette becomes web colours, 2026-07-30)
-
-- `Palette/SixteenBit/palette.json` keeps its 29 entries but drops the ramp
-  names: each is now the nearest CSS colour name at its exact web value —
-  `Gold` to `Goldenrod`, `Red` to `Maroon`, `Orange` to `Tomato`, `Lilac`
-  to `Plum`, `RedOrange` to `Crimson`, and so on. The matching rule and the
-  tie-breaks are in [decisions.md](docs/decisions.md).
-- The 16-bit `palette.mtl` and the ~380 `usemtl` lines across the 31
-  `SixteenBit/*.obj` models moved with it, as did every `Palette["..."]`
-  lookup on the 16-bit path (18 views, the scanner, laser, sun and striped
-  planet).
-- `FractalPlanet` is shared between the tiers and looked up three names
-  16-bit no longer has, so it now picks its sea and land shades by role and
-  tier rather than by a name it assumed both palettes defined.
 
 ### Changed (The 8-bit palette becomes sixteen web colours, 2026-07-30)
 

@@ -14,7 +14,7 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class Intro2View16Bit : BaseView16Bit, IView<Intro2Model>
 {
     private readonly IEliteDraw _draw;
-    private readonly FastColor _colorGoldenrod;
+    private readonly FastColor _colorGold;
     private readonly FastColor _colorWhite;
 
     internal Intro2View16Bit(IEliteDraw draw)
@@ -22,7 +22,7 @@ internal sealed class Intro2View16Bit : BaseView16Bit, IView<Intro2Model>
     {
         _draw = draw;
 
-        _colorGoldenrod = draw.Palette["Goldenrod"];
+        _colorGold = draw.Palette["Gold"];
         _colorWhite = draw.Palette["White"];
     }
 
@@ -34,7 +34,7 @@ internal sealed class Intro2View16Bit : BaseView16Bit, IView<Intro2Model>
 
         _draw.Graphics.DrawImageCentre(nameof(ImageType.EliteText), _draw.Layout.ViewportTop + 10);
 
-        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 30, model.Prompt, nameof(FontType.Large), _colorGoldenrod);
+        _draw.Graphics.DrawTextCentre(_draw.Layout.ViewportHeight - 30, model.Prompt, nameof(FontType.Large), _colorGold);
 
         if (model.ShipName.Length > 0)
         {

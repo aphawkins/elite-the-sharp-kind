@@ -30,31 +30,31 @@ vn 25 -37 -11
 vn -25 -37 -11
 vn 0 0 -112
 
-usemtl SlateGray
+usemtl DarkGrey
 f 1 2 4
-usemtl Gray
+usemtl LightGrey
 f 3 2 1
-usemtl Gray
+usemtl LightGrey
 f 1 4 9
-usemtl SlateGray
+usemtl DarkGrey
 f 9 3 1
-usemtl DarkGoldenrod
+usemtl DarkYellow
 f 4 2 5
-usemtl Goldenrod
+usemtl Gold
 f 5 2 3
-usemtl Goldenrod
+usemtl Gold
 f 4 10 9
-usemtl DarkGoldenrod
+usemtl DarkYellow
 f 9 10 3
-usemtl SlateGray
+usemtl DarkGrey
 f 4 5 6 7
-usemtl Gray
+usemtl LightGrey
 f 3 8 6 5
-usemtl SlateGray
+usemtl DarkGrey
 f 3 10 11 8
-usemtl Gray
+usemtl LightGrey
 f 4 7 11 10
-usemtl DimGray
+usemtl DarkerGrey
 f 11 7 6 8
 
 l 4 6

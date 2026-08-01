@@ -13,8 +13,8 @@ namespace EliteSharpLib.Views.SixteenBit;
 internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
 {
     private readonly IEliteDraw _draw;
-    private readonly FastColor _colorGray;
-    private readonly FastColor _colorDarkRed;
+    private readonly FastColor _colorLightGrey;
+    private readonly FastColor _colorLightRed;
     private readonly FastColor _colorWhite;
 
     internal EquipmentView16Bit(IEliteDraw draw)
@@ -23,8 +23,8 @@ internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
         _draw = draw;
 
         _colorWhite = draw.Palette["White"];
-        _colorGray = draw.Palette["Gray"];
-        _colorDarkRed = draw.Palette["DarkRed"];
+        _colorLightGrey = draw.Palette["LightGrey"];
+        _colorLightRed = draw.Palette["LightRed"];
     }
 
     public void Draw(EquipmentModel model)
@@ -41,10 +41,10 @@ internal sealed class EquipmentView16Bit : BaseView16Bit, IView<EquipmentModel>
         {
             if (row.IsHighlighted)
             {
-                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.ViewportLeft, y + 1), 508, 15, _colorDarkRed);
+                _draw.Graphics.DrawRectangleFilled(new(2 + _draw.Layout.ViewportLeft, y + 1), 508, 15, _colorLightRed);
             }
 
-            FastColor color = row.IsAffordable ? _colorWhite : _colorGray;
+            FastColor color = row.IsAffordable ? _colorWhite : _colorLightGrey;
             int x = row.IsIndented ? 50 : 16;
             _draw.Graphics.DrawTextLeft(new(x + _draw.Layout.ViewportLeft, y), row.Name, nameof(FontType.Small), color);
 
