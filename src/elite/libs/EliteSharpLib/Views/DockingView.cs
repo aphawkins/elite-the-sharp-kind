@@ -62,7 +62,7 @@ internal sealed class DockingView : IScreenController
         if (_breakPattern.IsComplete)
         {
             _space.DockPlayer();
-            _gameState.SetView(Screen.MissionOne);
+            _gameState.SetView(Screen.MissionBriefing);
         }
     }
 }

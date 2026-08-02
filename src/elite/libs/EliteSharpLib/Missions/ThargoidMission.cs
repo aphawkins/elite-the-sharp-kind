@@ -11,7 +11,7 @@ namespace EliteSharpLib.Missions;
 /// Constrictor has been paid for, which <see cref="ConstrictorMission.Rewarded"/>
 /// is what says. As with <see cref="ConstrictorMission"/>, this declares the
 /// stages and nothing else yet;
-/// <see cref="Views.ThargoidMissionController"/> still runs the sequence.
+/// <see cref="Views.MissionBriefingController"/> still runs the sequence.
 /// </summary>
 internal sealed class ThargoidMission : IMission
 {

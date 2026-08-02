@@ -240,8 +240,7 @@ public static class EliteServiceCollectionExtensions
         views.Add(Screen.Quit, sp.GetRequiredService<QuitController>());
         views.Add(Screen.Settings, sp.GetRequiredService<SettingsController>());
         views.Add(Screen.EngineSettings, sp.GetRequiredService<EngineSettingsController>());
-        views.Add(Screen.MissionOne, sp.GetRequiredService<ConstrictorMissionController>());
-        views.Add(Screen.MissionTwo, sp.GetRequiredService<ThargoidMissionController>());
+        views.Add(Screen.MissionBriefing, sp.GetRequiredService<MissionBriefingController>());
         views.Add(Screen.EscapeCapsule, sp.GetRequiredService<EscapeCapsuleController>());
         views.Add(Screen.GameOver, sp.GetRequiredService<GameOverController>());
     }

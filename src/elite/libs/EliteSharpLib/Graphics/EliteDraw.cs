@@ -90,7 +90,7 @@ internal sealed class EliteDraw : IEliteDraw
             not Screen.LeftView and not Screen.RightView and
             not Screen.IntroOne and not Screen.IntroTwo and
             not Screen.GameOver and not Screen.EscapeCapsule and
-            not Screen.MissionOne)
+            not Screen.MissionBriefing)
         {
             return;
         }

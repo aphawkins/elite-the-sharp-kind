@@ -4,9 +4,9 @@ Turning Elite's two hardcoded missions into discoverable plugin parts.
 Started 2026-08-02. **Not finished** — this file is the state of play, so the
 work can be picked up in a new session without re-deriving any of it.
 
-T1, T3 and T2 are landed, and the game plays exactly as it did before. The
-missions are now registry-backed but their behaviour still lives in the two
-controllers; T5 is what moves it.
+T1, T3, T2 and T4 are landed. The missions are registry-backed and every
+briefing is drawn by one screen; what is left is moving the missions' behaviour
+into the missions themselves (T5) and out to a plugin (T6).
 
 ## Why
 
@@ -181,16 +181,43 @@ need this anyway — a save written with a plugin installed and loaded without i
 now reads as not started; a mission the save *names* that nothing provides is
 still rejected and logged, as decided.
 
+### T4 — One briefing screen — **done**
+
+`Screen.MissionOne` and `MissionTwo` are one `Screen.MissionBriefing`, drawn by
+one `MissionBriefingView8Bit`/`16Bit` from one `MissionBriefingModel` — a
+headline (or none), the paragraphs, and whether somebody is pictured. The view
+lays out from that and never from which mission or stage it came, which is what
+lets a plugin's mission draw itself.
+
+`MissionBriefingController` replaces both controllers. On docking it asks each
+mission in turn for a briefing and the first with one gets the screen; space
+asks the ones after it, which is how the two screens used to chain into each
+other and how one docking can still earn both messages. The message *sequences*
+are still in the controller — that is T5's to move — but the screen no longer
+knows whose message it is drawing.
+
+Two things fell out of the collapse:
+
+- **The universe had to be emptied rather than not drawn.** `EliteDraw` used to
+  let the universe through on `MissionOne` and not on `MissionTwo`, which is
+  what kept ships off the Thargoid screens. With one screen there is no such
+  distinction, so a briefing with nothing posing behind it clears the universe
+  as it is built.
+- **One deliberate visual change, on the 8-bit tier only.** The two debriefs had
+  drifted apart — the Constrictor's headline sat at row 6 with its text at row
+  8, the Thargoid's at row 3 with its text at row 13. One rule cannot produce
+  both, so both now use the Thargoid's, and the Constrictor debrief's text
+  starts lower. The 8-bit layouts are first-draft pending the roadmap's "Author
+  the 8-bit view layouts" item, so this is within what that item will revisit.
+  **16-bit is unchanged**, verified screen by screen: its two views were already
+  laying out identically, since the `ViewportLeft` one of them added is always
+  zero.
+
 ## What is left
 
-1. **T4 — One briefing screen.** `MissionBriefingController` plus one view per
-   tier, keyed on what the briefing *contains* (headline? portrait? how many
-   paragraphs?) rather than which mission it is. Collapses
-   `Screen.MissionOne`/`MissionTwo`; `DockingView` and `EliteDraw` reference
-   them.
-2. **T5 — Port both missions to `IMission`**, still inside `EliteSharpLib`, to
+1. **T5 — Port both missions to `IMission`**, still inside `EliteSharpLib`, to
    confirm the context suffices before publishing the assembly boundary.
-3. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
+2. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
    plugin.
 
 ## Consequences to plan for
@@ -229,4 +256,4 @@ worktrees are branched off whatever `master` was and cannot see each other's
 uncommitted work; and `ELITE_DEBUG_COMMANDER` is set machine-wide on the
 maintainer's box, so the game starts as Commander Max, not Jameson.
 
-Remaining order: T4, then T5, then T6, committing each separately.
+Remaining order: T5, then T6, committing each separately.

@@ -37,19 +37,10 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
     // animated sequences that run to a tick count.
     private static void AddSplitSequenceScreens(this IServiceCollection services)
     {
-        services.AddSingleton<IView<ThargoidMissionModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
-            ? new ThargoidMissionView8Bit(sp.GetRequiredService<IEliteDraw>())
-            : new ThargoidMissionView16Bit(sp.GetRequiredService<IEliteDraw>()));
-        services.AddSingleton(sp => new ThargoidMissionController(
-            sp.GetRequiredService<GameState>(),
-            sp.GetRequiredService<IKeyboard>(),
-            sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<IView<ThargoidMissionModel>>()));
-
-        services.AddSingleton<IConstrictorMissionView>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
-            ? new ConstrictorMissionView8Bit(sp.GetRequiredService<IEliteDraw>())
-            : new ConstrictorMissionView16Bit(sp.GetRequiredService<IEliteDraw>()));
-        services.AddSingleton(sp => new ConstrictorMissionController(
+        services.AddSingleton<IMissionBriefingView>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
+            ? new MissionBriefingView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new MissionBriefingView16Bit(sp.GetRequiredService<IEliteDraw>()));
+        services.AddSingleton(sp => new MissionBriefingController(
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<PlayerShip>(),
@@ -57,8 +48,8 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IShipFactory>(),
-            sp.GetRequiredService<IConstrictorMissionView>(),
-            sp.GetRequiredService<ILoggerFactory>().CreateLogger<ConstrictorMissionController>()));
+            sp.GetRequiredService<IMissionBriefingView>(),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<MissionBriefingController>()));
 
         services.AddSingleton<IView<EscapeCapsuleModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
             ? new EscapeCapsuleView8Bit(sp.GetRequiredService<IEliteDraw>())

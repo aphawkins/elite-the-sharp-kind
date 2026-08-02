@@ -9,7 +9,7 @@ namespace EliteSharpLib.Missions;
 /// <summary>
 /// The Navy's hunt for the stolen Constrictor. For now this declares the
 /// stages and nothing else: the sequence still runs from
-/// <see cref="Views.ConstrictorMissionController"/>, and moves in here when the
+/// <see cref="Views.MissionBriefingController"/>, and moves in here when the
 /// missions are ported. What it does today is give the save file and
 /// <see cref="MissionProgress"/> a vocabulary of stages to check against, which
 /// is what replaced the enum that used to be that vocabulary.

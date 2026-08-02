@@ -31,7 +31,7 @@ public class MissionJumpTests
 
         MissionJump.To(harness.Game.State, stage);
 
-        Assert.Equal(stage < 2 ? Screen.MissionOne : Screen.MissionTwo, harness.Game.State.CurrentScreen);
+        Assert.Equal(Screen.MissionBriefing, harness.Game.State.CurrentScreen);
         Assert.Equal(expectedConstrictor, harness.Game.State.Cmdr.Missions.StageOf(ConstrictorMission.Id));
         Assert.Equal(expectedThargoid, harness.Game.State.Cmdr.Missions.StageOf(ThargoidMission.Id));
     }
@@ -47,7 +47,7 @@ public class MissionJumpTests
         for (int stage = 0; stage < MissionJump.Count; stage++)
         {
             MissionJump.To(harness.Game.State, stage);
-            Assert.True(harness.Game.State.CurrentScreen is Screen.MissionOne or Screen.MissionTwo);
+            Assert.Equal(Screen.MissionBriefing, harness.Game.State.CurrentScreen);
         }
     }
 

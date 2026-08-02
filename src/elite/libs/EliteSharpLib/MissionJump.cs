@@ -40,14 +40,14 @@ internal static class MissionJump
     internal const string EnvVar = "ELITE_DEBUG_MISSIONS";
 
     // The Thargoid briefings key off where the commander is docked: Ceerdi
-    // for the second brief, Birera for the debrief (ThargoidMissionController).
+    // for the second brief, Birera for the debrief (MissionBriefingController).
     private const int CeerdiD = 215;
     private const int CeerdiB = 84;
     private const int BireraD = 63;
     private const int BireraB = 72;
 
     // The combat scores the two missions are offered at
-    // (ConstrictorMissionController and ThargoidMissionController).
+    // (MissionBriefingController).
     private const int AboveAverageScore = 256;
     private const int DangerousScore = 1280;
 
@@ -77,12 +77,12 @@ internal static class MissionJump
                 gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.None);
                 gameState.Cmdr.Score = AboveAverageScore;
                 gameState.Cmdr.GalaxyNumber = 0;
-                gameState.SetView(Screen.MissionOne);
+                gameState.SetView(Screen.MissionBriefing);
                 break;
 
             case 1:
                 gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Destroyed);
-                gameState.SetView(Screen.MissionOne);
+                gameState.SetView(Screen.MissionBriefing);
                 break;
 
             case 2:
@@ -90,7 +90,7 @@ internal static class MissionJump
                 gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.None);
                 gameState.Cmdr.Score = DangerousScore;
                 gameState.Cmdr.GalaxyNumber = 2;
-                gameState.SetView(Screen.MissionTwo);
+                gameState.SetView(Screen.MissionBriefing);
                 break;
 
             case 3:
@@ -98,7 +98,7 @@ internal static class MissionJump
                 gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.Summoned);
                 gameState.DockedPlanet.D = CeerdiD;
                 gameState.DockedPlanet.B = CeerdiB;
-                gameState.SetView(Screen.MissionTwo);
+                gameState.SetView(Screen.MissionBriefing);
                 break;
 
             default:
@@ -106,7 +106,7 @@ internal static class MissionJump
                 gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.CarryingPlans);
                 gameState.DockedPlanet.D = BireraD;
                 gameState.DockedPlanet.B = BireraB;
-                gameState.SetView(Screen.MissionTwo);
+                gameState.SetView(Screen.MissionBriefing);
                 break;
         }
     }
