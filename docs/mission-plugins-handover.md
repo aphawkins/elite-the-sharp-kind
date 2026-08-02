@@ -4,8 +4,8 @@ Turning Elite's two hardcoded missions into discoverable plugin parts.
 Started 2026-08-02. **Not finished** — this file is the state of play, so the
 work can be picked up in a new session without re-deriving any of it.
 
-Nothing in this effort has been committed. `master` is untouched at
-`dd1ede1a`, and the game behaves exactly as it did before.
+T1 is landed. Nothing calls it yet, so the game behaves exactly as it did
+before.
 
 ## Why
 
@@ -37,23 +37,11 @@ These were signed off by the maintainer and should not be silently revisited.
 
 ## Progress
 
-### T1 — Contracts assembly — **built, one review round, rework unverified**
+### T1 — Contracts assembly — **done**
 
 `EliteSharp.Missions.Abstractions`: 14 files, 748 lines, builds clean (0
 warnings under `AnalysisMode=All` + `TreatWarningsAsErrors`). No project or
 package references. Nothing from `EliteSharpLib` in its public surface.
-
-**The code is in `docs/mission-plugins-contracts.patch`** (untracked). Apply
-from the repo root:
-
-```
-git apply docs/mission-plugins-contracts.patch
-```
-
-It was produced in a throwaway agent worktree that may since have been pruned —
-the patch is the durable copy. It was cut against `8a11e80f`, three commits
-behind `master`, but touches only new files plus one line in `TheSharpKind.slnx`,
-so it applies cleanly.
 
 Public surface, in brief:
 
@@ -98,20 +86,31 @@ Design points worth not undoing:
   `List<string>` have no value semantics and let a plugin mutate a briefing
   after handing it over.
 
-**Outstanding on T1:** the rework has had no independent review. The first
-review found three high-severity problems; the second — checking the fixes hold
-— died on a spend limit mid-run. Before trusting it, build an external probe
-assembly against the built DLL and try: deriving from anything public, `with`
-expressions bypassing validation, backwards/self steps, a zero-chance ambush, a
-briefing with no paragraphs, mutating a handed-over list.
+The guards were probed from outside the assembly, which is the only place the
+claims mean anything. `EliteSharp.Missions.Abstractions.Tests` is that probe
+made permanent: it references the contracts and nothing else, has no access to
+their internals, and covers the runtime refusals — backwards and self steps,
+steps naming an undeclared stage, a zero-chance ambush, a nameless ship, an
+award worth nothing, a briefing with no paragraphs or a blank one, a blank
+headline, `with` on a briefing re-running the checks, and handed-over lists that
+go on being edited. 39 tests, all passing.
 
-### T3 — Registry and discovery — **not started, blocked**
+The rest is what the compiler refuses, which no test can assert. A throwaway
+assembly compiled against the built DLL confirmed each of these, and they are
+the reason the shapes are as they are:
 
-Blocked twice over: it needs T1 committed to `master` to be visible at all
-(agent worktrees cannot see each other's uncommitted work — this cost a wasted
-run), and the spend limit stopped further agent use.
+- `new MissionStep(...)` — CS1729, the constructor is internal, so steps come
+  only from `MissionStages`.
+- `step with { Stage = ... }`, and the same on `AmbushEncounter`,
+  `LoneWolfEncounter` and `MissionAward` — CS0200, every property is get-only,
+  so `with` cannot route round a validating constructor.
+- Deriving from `MissionStep`, `MissionStages`, `MissionBriefing`,
+  `AmbushEncounter` or `LoneWolfEncounter` — CS0509, all sealed.
 
-Useful findings from the blocked attempt:
+### T3 — Registry and discovery — **not started**
+
+No longer blocked: T1 is on `master`. Useful findings from the earlier blocked
+attempt:
 
 - `System.Composition` **10.0.x** matches the `Microsoft.Extensions.*` versions
   already in `Directory.Packages.props` (central package management is on, so
@@ -180,11 +179,11 @@ Useful findings from the blocked attempt:
 
 The tiered pipeline (`.claude/skills/tier/SKILL.md`) was being followed by hand
 because the `/tier` skill is not registered as invocable. It is not needed: the
-remaining tasks are ordinary sequential work. Suggested order — T1 (apply the
-patch, probe it, commit), then T3, then T2, then T4, T5, T6, committing each
-separately.
+remaining tasks are ordinary sequential work.
 
 Two process notes that cost time here and need not cost it again: agent
 worktrees are branched off whatever `master` was and cannot see each other's
 uncommitted work; and `ELITE_DEBUG_COMMANDER` is set machine-wide on the
 maintainer's box, so the game starts as Commander Max, not Jameson.
+
+Remaining order: T3, then T2, then T4, T5, T6, committing each separately.

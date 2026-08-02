@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Contracts only: a mission plugin references this assembly and nothing
+       else, so it deliberately has no project or package references of its
+       own. Anything reachable from here is published API. -->
+
+</Project>
