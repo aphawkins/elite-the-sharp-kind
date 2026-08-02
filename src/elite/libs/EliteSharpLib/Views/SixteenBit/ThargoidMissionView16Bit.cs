@@ -34,13 +34,13 @@ internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMi
 
         switch (model.Stage)
         {
-            case MissionStage.ThargoidSummoned:
+            case ThargoidStage.Summoned:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
-            case MissionStage.ThargoidCarryingPlans:
+            case ThargoidStage.CarryingPlans:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(16, 50), 300, model.Paragraphs[0]);
                 DrawTextPretty(new(16, 200), 470, model.Paragraphs[1]);
@@ -48,7 +48,7 @@ internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMi
                 DrawFooter();
                 break;
 
-            case MissionStage.ThargoidRewarded:
+            case ThargoidStage.Rewarded:
                 DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
                 DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);

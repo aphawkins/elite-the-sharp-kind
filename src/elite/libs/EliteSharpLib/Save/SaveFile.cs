@@ -180,6 +180,30 @@ internal sealed class SaveFile
             && Enum.TryParse(value, out T parsed)
             && Enum.IsDefined(parsed);
 
+    /// <summary>
+    /// Whether every mission is named exactly once, each with a stage of its own mission's.
+    /// Counting as well as looking each name up leaves no room for an unknown mission, and
+    /// giving each mission its own stage type keeps one mission's stages out of another's.
+    /// </summary>
+    private static bool IsValidMissions(IDictionary<string, MissionState>? missions)
+        => missions is { } stages
+            && stages.Count == Enum.GetValues<MissionName>().Length
+            && IsValidStage<ConstrictorStage>(stages, MissionName.Constrictor)
+            && IsValidStage<ThargoidStage>(stages, MissionName.Thargoid);
+
+    /// <summary>
+    /// Whether the named mission is present with a stage this mission knows.
+    /// </summary>
+    /// <typeparam name="T">The named mission's own stage type.</typeparam>
+    /// <param name="missions">The missions the save file holds.</param>
+    /// <param name="name">The mission to look for.</param>
+    /// <returns>Whether the mission is there and names one of its own stages.</returns>
+    private static bool IsValidStage<T>(IDictionary<string, MissionState> missions, MissionName name)
+        where T : struct, Enum
+        => missions.TryGetValue(name.ToString(), out MissionState? mission)
+            && mission is { } stage
+            && IsNamed<T>(stage.Stage);
+
     private static bool IsValidLegalStatus(LegalStatusState? legal)
         => legal is { Bounty: >= 0 and <= LegalStatusBand.BountyMax }
             && string.Equals(legal.Status, LegalStatusBand.For(legal.Bounty), StringComparison.Ordinal);
@@ -220,7 +244,7 @@ internal sealed class SaveFile
     private bool IsValidSave(SaveState save) => save.FileType == SaveState.CurrentFileType
         && save.Version == SaveState.CurrentVersion
         && !string.IsNullOrWhiteSpace(save.CommanderName)
-        && IsNamed<MissionStage>(save.Mission)
+        && IsValidMissions(save.Missions)
         && save.Score >= 0
         && IsValidLegalStatus(save.LegalStatus)
         && float.IsFinite(save.Credits)
@@ -298,7 +322,11 @@ internal sealed class SaveFile
         },
         MarketRandomiser = _trade.MarketRandomiser,
         Missiles = _ship.MissileCount,
-        Mission = _state.Cmdr.Mission.ToString(),
+        Missions = new Dictionary<string, MissionState>(StringComparer.Ordinal)
+        {
+            [nameof(MissionName.Constrictor)] = new() { Stage = _state.Cmdr.Constrictor.ToString() },
+            [nameof(MissionName.Thargoid)] = new() { Stage = _state.Cmdr.Thargoid.ToString() },
+        },
         Score = _state.Cmdr.Score,
         ShipLocation = new()
         {
@@ -350,7 +378,10 @@ internal sealed class SaveFile
         _state.Cmdr.LegalStatus = _lastSaved.LegalStatus.Bounty;
         _trade.MarketRandomiser = _lastSaved.MarketRandomiser;
         _ship.MissileCount = _lastSaved.Missiles;
-        _state.Cmdr.Mission = Enum.Parse<MissionStage>(_lastSaved.Mission);
+        _state.Cmdr.Constrictor =
+            Enum.Parse<ConstrictorStage>(_lastSaved.Missions[nameof(MissionName.Constrictor)].Stage);
+        _state.Cmdr.Thargoid =
+            Enum.Parse<ThargoidStage>(_lastSaved.Missions[nameof(MissionName.Thargoid)].Stage);
         _state.Cmdr.Score = _lastSaved.Score;
         _state.DockedPlanet.D = _lastSaved.ShipLocation.D;
         _state.DockedPlanet.B = _lastSaved.ShipLocation.B;

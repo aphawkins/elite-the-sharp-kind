@@ -73,33 +73,37 @@ internal static class MissionJump
         switch (stage)
         {
             case 0:
-                gameState.Cmdr.Mission = MissionStage.None;
+                gameState.Cmdr.Constrictor = ConstrictorStage.None;
+                gameState.Cmdr.Thargoid = ThargoidStage.None;
                 gameState.Cmdr.Score = AboveAverageScore;
                 gameState.Cmdr.GalaxyNumber = 0;
                 gameState.SetView(Screen.MissionOne);
                 break;
 
             case 1:
-                gameState.Cmdr.Mission = MissionStage.ConstrictorDestroyed;
+                gameState.Cmdr.Constrictor = ConstrictorStage.Destroyed;
                 gameState.SetView(Screen.MissionOne);
                 break;
 
             case 2:
-                gameState.Cmdr.Mission = MissionStage.ConstrictorRewarded;
+                gameState.Cmdr.Constrictor = ConstrictorStage.Rewarded;
+                gameState.Cmdr.Thargoid = ThargoidStage.None;
                 gameState.Cmdr.Score = DangerousScore;
                 gameState.Cmdr.GalaxyNumber = 2;
                 gameState.SetView(Screen.MissionTwo);
                 break;
 
             case 3:
-                gameState.Cmdr.Mission = MissionStage.ThargoidSummoned;
+                gameState.Cmdr.Constrictor = ConstrictorStage.Rewarded;
+                gameState.Cmdr.Thargoid = ThargoidStage.Summoned;
                 gameState.DockedPlanet.D = CeerdiD;
                 gameState.DockedPlanet.B = CeerdiB;
                 gameState.SetView(Screen.MissionTwo);
                 break;
 
             default:
-                gameState.Cmdr.Mission = MissionStage.ThargoidCarryingPlans;
+                gameState.Cmdr.Constrictor = ConstrictorStage.Rewarded;
+                gameState.Cmdr.Thargoid = ThargoidStage.CarryingPlans;
                 gameState.DockedPlanet.D = BireraD;
                 gameState.DockedPlanet.B = BireraB;
                 gameState.SetView(Screen.MissionTwo);

@@ -157,7 +157,7 @@ internal sealed class Combat
 
         if (obj.Type == ShipType.Constrictor)
         {
-            _gameState.Cmdr.Mission = MissionStage.ConstrictorDestroyed;
+            _gameState.Cmdr.Constrictor = ConstrictorStage.Destroyed;
         }
     }
 
@@ -281,7 +281,7 @@ internal sealed class Combat
             return;
         }
 
-        if (_gameState.Cmdr.Mission == MissionStage.ThargoidCarryingPlans && _rng.Random(256) >= 200)
+        if (_gameState.Cmdr.Thargoid == ThargoidStage.CarryingPlans && _rng.Random(256) >= 200)
         {
             CreateThargoid();
         }
@@ -963,7 +963,7 @@ internal sealed class Combat
 
     private void CreateLoneWolf()
     {
-        IShip loneWolf = _gameState.Cmdr.Mission == MissionStage.ConstrictorBriefed
+        IShip loneWolf = _gameState.Cmdr.Constrictor == ConstrictorStage.Briefed
             && _gameState.Cmdr.GalaxyNumber == 1 &&
             _gameState.DockedPlanet.D == 144
             && _gameState.DockedPlanet.B == 33 &&

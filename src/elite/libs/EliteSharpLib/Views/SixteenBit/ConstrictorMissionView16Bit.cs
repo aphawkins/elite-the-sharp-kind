@@ -39,14 +39,14 @@ internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IConstrictorM
 
         switch (model.Stage)
         {
-            case MissionStage.ConstrictorBriefed:
+            case ConstrictorStage.Briefed:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(16 + _draw.Layout.ViewportLeft, 50), 300, model.Paragraphs[0]);
                 DrawTextPretty(new(16 + _draw.Layout.ViewportLeft, 200), 470, model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
-            case MissionStage.ConstrictorRewarded:
+            case ConstrictorStage.Rewarded:
                 DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
                 DrawTextPretty(new(116 + _draw.Layout.ViewportLeft, 132), 400, model.Paragraphs[0]);

@@ -13,6 +13,6 @@ namespace EliteSharpLib.Views;
 /// differently.
 /// </summary>
 internal sealed record ConstrictorMissionModel(
-    MissionStage Stage,
+    ConstrictorStage Stage,
     string Headline,
     IReadOnlyList<string> Paragraphs);

@@ -15,15 +15,16 @@ namespace EliteSharpLib.Tests;
 public class MissionJumpTests
 {
     // The first two stages belong to the Constrictor mission and the rest to
-    // the Thargoid one, and the mission number is which briefing the screen
-    // then shows.
+    // the Thargoid one, and the pair of stages is which briefing the screen
+    // then shows - the Thargoid jumps also want the Constrictor paid for,
+    // which is the one dependency between the two missions.
     [Theory]
-    [InlineData(0, (int)MissionStage.ConstrictorBriefed)]
-    [InlineData(1, (int)MissionStage.ConstrictorRewarded)]
-    [InlineData(2, (int)MissionStage.ThargoidSummoned)]
-    [InlineData(3, (int)MissionStage.ThargoidCarryingPlans)]
-    [InlineData(4, (int)MissionStage.ThargoidRewarded)]
-    public void EachStageReachesItsBriefing(int stage, int expectedMission)
+    [InlineData(0, (int)ConstrictorStage.Briefed, (int)ThargoidStage.None)]
+    [InlineData(1, (int)ConstrictorStage.Rewarded, (int)ThargoidStage.None)]
+    [InlineData(2, (int)ConstrictorStage.Rewarded, (int)ThargoidStage.Summoned)]
+    [InlineData(3, (int)ConstrictorStage.Rewarded, (int)ThargoidStage.CarryingPlans)]
+    [InlineData(4, (int)ConstrictorStage.Rewarded, (int)ThargoidStage.Rewarded)]
+    public void EachStageReachesItsBriefing(int stage, int expectedConstrictor, int expectedThargoid)
     {
         using HeadlessGameHarness harness = new();
         harness.Run(3, [new(1, ConsoleKey.N, KeyScriptAction.Tap), new(2, ConsoleKey.Spacebar, KeyScriptAction.Tap)]);
@@ -31,7 +32,8 @@ public class MissionJumpTests
         MissionJump.To(harness.Game.State, stage);
 
         Assert.Equal(stage < 2 ? Screen.MissionOne : Screen.MissionTwo, harness.Game.State.CurrentScreen);
-        Assert.Equal((MissionStage)expectedMission, harness.Game.State.Cmdr.Mission);
+        Assert.Equal((ConstrictorStage)expectedConstrictor, harness.Game.State.Cmdr.Constrictor);
+        Assert.Equal((ThargoidStage)expectedThargoid, harness.Game.State.Cmdr.Thargoid);
     }
 
     [Fact]

@@ -14,9 +14,9 @@ using Useful.Maths;
 namespace EliteSharpLib.Views;
 
 /// <summary>
-/// The Constrictor mission's message sequence: advancing the commander's
-/// mission number when the brief is earned or the kill is claimed, and
-/// selecting which briefing is shown.
+/// The Constrictor mission's message sequence: advancing the mission's stage
+/// when the brief is earned or the kill is claimed, and selecting which
+/// briefing is shown.
 /// </summary>
 internal sealed class ConstrictorMissionController : IScreenController
 {
@@ -94,10 +94,12 @@ internal sealed class ConstrictorMissionController : IScreenController
 
     public void Reset()
     {
-        if (_gameState.Cmdr.Mission == MissionStage.None && _gameState.Cmdr.Score >= 256 && _gameState.Cmdr.GalaxyNumber < 2)
+        if (_gameState.Cmdr.Constrictor == ConstrictorStage.None
+            && _gameState.Cmdr.Score >= 256
+            && _gameState.Cmdr.GalaxyNumber < 2)
         {
             // Show brief
-            _gameState.Cmdr.Mission = MissionStage.ConstrictorBriefed;
+            _gameState.Cmdr.Constrictor = ConstrictorStage.Briefed;
 
             _combat.Reset();
             _universe.ClearUniverse();
@@ -112,10 +114,10 @@ internal sealed class ConstrictorMissionController : IScreenController
             _ship.Climb = 0;
             _ship.Speed = 0;
         }
-        else if (_gameState.Cmdr.Mission == MissionStage.ConstrictorDestroyed)
+        else if (_gameState.Cmdr.Constrictor == ConstrictorStage.Destroyed)
         {
             // Show debrief
-            _gameState.Cmdr.Mission = MissionStage.ConstrictorRewarded;
+            _gameState.Cmdr.Constrictor = ConstrictorStage.Rewarded;
             _gameState.Cmdr.Score += 256;
             _trade.Credits += 5000;
         }
@@ -129,18 +131,18 @@ internal sealed class ConstrictorMissionController : IScreenController
     {
     }
 
-    // Exposed for tests: which briefing the current mission number selects,
+    // Exposed for tests: which briefing the current stage selects,
     // and which of the two second paragraphs the galaxy chooses.
-    internal ConstrictorMissionModel BuildModel() => _gameState.Cmdr.Mission switch
+    internal ConstrictorMissionModel BuildModel() => _gameState.Cmdr.Constrictor switch
     {
-        MissionStage.ConstrictorBriefed => new(
-            MissionStage.ConstrictorBriefed,
+        ConstrictorStage.Briefed => new(
+            ConstrictorStage.Briefed,
             string.Empty,
             [Mission1BriefA, _gameState.Cmdr.GalaxyNumber == 0 ? Mission1BriefB : Mission1BriefC]),
-        MissionStage.ConstrictorRewarded => new(
-            MissionStage.ConstrictorRewarded,
+        ConstrictorStage.Rewarded => new(
+            ConstrictorStage.Rewarded,
             "Congratulations Commander!",
             [Mission1Debrief]),
-        _ => new(MissionStage.None, string.Empty, []),
+        _ => new(ConstrictorStage.None, string.Empty, []),
     };
 }

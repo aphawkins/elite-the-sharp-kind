@@ -13,7 +13,7 @@ namespace EliteSharpLib.Views;
 /// differently.
 /// </summary>
 internal sealed record ThargoidMissionModel(
-    MissionStage Stage,
+    ThargoidStage Stage,
     string Headline,
     IReadOnlyList<string> Paragraphs,
     bool ShowPortrait);

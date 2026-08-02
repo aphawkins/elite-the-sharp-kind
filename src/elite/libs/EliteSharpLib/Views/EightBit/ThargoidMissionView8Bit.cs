@@ -42,13 +42,13 @@ internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMiss
 
         switch (model.Stage)
         {
-            case MissionStage.ThargoidSummoned:
+            case ThargoidStage.Summoned:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsLower), model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
-            case MissionStage.ThargoidCarryingPlans:
+            case ThargoidStage.CarryingPlans:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowUpper)), Column(TextColumnsUpper), model.Paragraphs[0]);
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsLower), model.Paragraphs[1]);
@@ -58,7 +58,7 @@ internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMiss
                 DrawFooter();
                 break;
 
-            case MissionStage.ThargoidRewarded:
+            case ThargoidStage.Rewarded:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextCentreOnGrid(TextRowUpper, model.Headline, nameof(FontType.Large), _colorYellow);
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsUpper), model.Paragraphs[0]);

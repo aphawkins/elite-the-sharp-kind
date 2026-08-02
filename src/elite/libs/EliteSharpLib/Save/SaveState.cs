@@ -24,7 +24,7 @@ public sealed class SaveState
         Version = other.Version;
         SavedAtUtc = other.SavedAtUtc;
         CommanderName = other.CommanderName;
-        Mission = other.Mission;
+        Missions = other.Missions;
         Score = other.Score;
         LegalStatus = other.LegalStatus;
         Credits = other.Credits;
@@ -68,7 +68,13 @@ public sealed class SaveState
 
     public string CommanderName { get; set; } = string.Empty;
 
-    public string Mission { get; set; } = string.Empty;
+    /// <summary>
+    /// Gets where the commander has got to in each mission, keyed by the
+    /// mission's name. A mission added later is another key, and leaves the
+    /// ones already here alone.
+    /// </summary>
+    public IDictionary<string, MissionState> Missions { get; init; }
+        = new Dictionary<string, MissionState>(StringComparer.Ordinal);
 
     public int Score { get; set; }
 

@@ -6,15 +6,17 @@ namespace EliteSharpLib.Types;
 
 internal sealed class Commander
 {
+    internal ConstrictorStage Constrictor { get; set; }
+
     internal GalaxySeed Galaxy { get; set; } = new();
 
     internal int GalaxyNumber { get; set; }
 
     internal int LegalStatus { get; set; }
 
-    internal MissionStage Mission { get; set; }
-
     internal string Name { get; set; } = string.Empty;
 
     internal int Score { get; set; }
+
+    internal ThargoidStage Thargoid { get; set; }
 }

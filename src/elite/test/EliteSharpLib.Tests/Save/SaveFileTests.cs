@@ -88,7 +88,12 @@ public class SaveFileTests
         // Assert
         Assert.Equal(SaveState.CurrentFileType, (string?)save["fileType"]);
         Assert.Equal(SaveState.CurrentVersion, (int?)save["version"]);
-        Assert.Equal(nameof(MissionStage.None), (string?)save["mission"]);
+        Assert.Equal(
+            nameof(ConstrictorStage.None),
+            (string?)save["missions"]![nameof(MissionName.Constrictor)]!["stage"]);
+        Assert.Equal(
+            nameof(ThargoidStage.None),
+            (string?)save["missions"]![nameof(MissionName.Thargoid)]!["stage"]);
         Assert.Equal("Clean", (string?)save["legalStatus"]!["status"]);
         Assert.Equal("Pulse", (string?)save["lasers"]!["front"]);
         Assert.Equal("None", (string?)save["lasers"]!["rear"]);
@@ -129,8 +134,6 @@ public class SaveFileTests
     [InlineData("marketRandomiser", 256)]
 
     // Enum members have to be named, not numbered.
-    [InlineData("mission", "3")]
-    [InlineData("mission", "NoSuchMission")]
     [InlineData("energyUnit", "Nuclear")]
     public void LoadCommanderRejectsAValueTheGameCouldNotHaveWritten(string property, object value)
     {
@@ -144,6 +147,78 @@ public class SaveFileTests
 
         // Assert
         Assert.False(result);
+    }
+
+    [Theory]
+
+    // A stage that mission does not have, a stage belonging to the other
+    // mission, and a number where a name belongs.
+    [InlineData("Constrictor", "Summoned")]
+    [InlineData("Thargoid", "Destroyed")]
+    [InlineData("Constrictor", "NoSuchStage")]
+    [InlineData("Thargoid", "2")]
+    public void LoadCommanderRejectsAStageThatIsNotThatMissions(string mission, string stage)
+    {
+        // Arrange: each mission has its own stage type, so one mission's stages are not
+        // another's - the single mission number this replaced could not tell them apart.
+        SaveFile saveFile = CreateSaveFile(out string directory);
+        saveFile.SaveCommander("WrongStage");
+        Edit(directory, "WrongStage", save => save["missions"]![mission]!["stage"] = stage);
+
+        // Act
+        bool result = saveFile.LoadCommander("WrongStage");
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void LoadCommanderRejectsAMissionItDoesNotKnow()
+    {
+        // Arrange: a mission from a later version of the game, or a typo'd name. Either
+        // way the file holds something this build cannot act on.
+        SaveFile saveFile = CreateSaveFile(out string directory);
+        saveFile.SaveCommander("Unknown");
+        Edit(
+            directory,
+            "Unknown",
+            save =>
+            {
+                JsonObject missions = save["missions"]!.AsObject();
+                missions.Remove(nameof(MissionName.Thargoid));
+                missions["Generation"] = new JsonObject { ["stage"] = "Briefed" };
+            });
+
+        // Act
+        bool result = saveFile.LoadCommander("Unknown");
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void LoadCommanderRestoresBothMissionsIndependently()
+    {
+        // Arrange: the point of a mission each - the Constrictor being finished and the
+        // Thargoid run being under way is one state, not two readings of one number.
+        SaveFile saveFile = CreateSaveFile(out string directory, out _, out GameState gameState);
+        saveFile.SaveCommander("MidRun");
+        Edit(
+            directory,
+            "MidRun",
+            save =>
+            {
+                save["missions"]![nameof(MissionName.Constrictor)]!["stage"] = nameof(ConstrictorStage.Rewarded);
+                save["missions"]![nameof(MissionName.Thargoid)]!["stage"] = nameof(ThargoidStage.CarryingPlans);
+            });
+
+        // Act
+        bool loaded = saveFile.LoadCommander("MidRun");
+
+        // Assert
+        Assert.True(loaded);
+        Assert.Equal(ConstrictorStage.Rewarded, gameState.Cmdr.Constrictor);
+        Assert.Equal(ThargoidStage.CarryingPlans, gameState.Cmdr.Thargoid);
     }
 
     [Fact]

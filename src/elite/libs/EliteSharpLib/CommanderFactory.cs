@@ -64,7 +64,7 @@ internal static class CommanderFactory
     {
         SavedAtUtc = DateTimeOffset.UtcNow,
         CommanderName = "JAMESON",
-        Mission = nameof(MissionStage.None),
+        Missions = NoMissionsStarted(),
         ShipLocation = new() { D = 20, B = 173 },
         GalaxySeed = new() { A = 0x4a, B = 0x5a, C = 0x48, D = 0x02, E = 0x53, F = 0xb7 },
         Credits = 100,
@@ -95,7 +95,7 @@ internal static class CommanderFactory
     {
         SavedAtUtc = DateTimeOffset.UtcNow,
         CommanderName = "MAX",
-        Mission = nameof(MissionStage.None),
+        Missions = NoMissionsStarted(),
         ShipLocation = new() { D = 20, B = 173 },
         GalaxySeed = new() { A = 0x4a, B = 0x5a, C = 0x48, D = 0x02, E = 0x53, F = 0xb7 },
         Credits = 10000,
@@ -125,6 +125,16 @@ internal static class CommanderFactory
         => Enum.GetValues<StockType>()
             .Where(type => type != StockType.None)
             .ToDictionary(type => type.ToString(), type => carrying.Contains(type) ? 1 : 0, StringComparer.Ordinal);
+
+    /// <summary>
+    /// Every mission at its opening stage, which both commanders start at.
+    /// </summary>
+    private static Dictionary<string, MissionState> NoMissionsStarted()
+        => new(StringComparer.Ordinal)
+        {
+            [nameof(MissionName.Constrictor)] = new() { Stage = nameof(ConstrictorStage.None) },
+            [nameof(MissionName.Thargoid)] = new() { Stage = nameof(ThargoidStage.None) },
+        };
 
     private static Dictionary<string, int> StartingStationStock()
         => s_startingStationStock.ToDictionary(x => x.Type.ToString(), x => x.Quantity, StringComparer.Ordinal);
