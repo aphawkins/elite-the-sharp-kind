@@ -6,6 +6,7 @@ using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -58,6 +59,8 @@ public class CombatTests
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Pilot pilot = new(draw, audio, universe, ship, rng);
 
-        return new Combat(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng);
+        MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
+
+        return new Combat(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
     }
 }

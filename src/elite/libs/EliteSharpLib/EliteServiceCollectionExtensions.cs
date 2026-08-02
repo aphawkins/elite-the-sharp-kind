@@ -80,7 +80,8 @@ public static class EliteServiceCollectionExtensions
                 sp.GetRequiredService<SaveFile>(),
                 sp.GetRequiredService<Space>(),
                 sp.GetRequiredService<ScannerBase>(),
-                sp.GetRequiredService<AudioController>());
+                sp.GetRequiredService<AudioController>(),
+                sp.GetRequiredService<PlanetController>());
         });
         services.AddSingleton<IGame>(sp => sp.GetRequiredService<EliteMain>());
         services.AddSingleton<IGameApp>(sp => sp.GetRequiredService<EliteMain>());
@@ -125,6 +126,14 @@ public static class EliteServiceCollectionExtensions
                     sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(MissionLoader))),
             ],
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<MissionRegistry>()));
+
+        // The one place the game and its missions talk to each other.
+        services.AddSingleton(sp => new MissionRunner(
+            sp.GetRequiredService<GameState>(),
+            sp.GetRequiredService<PlayerShip>(),
+            sp.GetRequiredService<Trade>(),
+            sp.GetRequiredService<MissionRegistry>(),
+            sp.GetRequiredService<PlanetController>()));
     }
 
     private static void AddEliteRendering(this IServiceCollection services)
@@ -178,6 +187,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<IEliteDraw>(),
             sp.GetRequiredService<IShipFactory>(),
             sp.GetRequiredService<RNG>(),
+            sp.GetRequiredService<MissionRunner>(),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Combat>()));
         services.AddSingleton(sp => new SaveFile(
             sp.GetRequiredService<GameState>(),

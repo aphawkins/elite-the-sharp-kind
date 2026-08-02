@@ -169,6 +169,30 @@ internal sealed class PlanetController
         return found;
     }
 
+    /// <summary>
+    /// The system a galaxy numbers <paramref name="planetNumber"/>, which is
+    /// the other way round from <see cref="FindPlanetNumber"/>. Missions speak
+    /// in planet numbers, so this is how the game turns one back into a system
+    /// it can put the commander at.
+    /// </summary>
+    /// <param name="galaxy">The galaxy's seed.</param>
+    /// <param name="planetNumber">Its system's number, counted from 0.</param>
+    /// <returns>That system's seed.</returns>
+    internal GalaxySeed PlanetAt(GalaxySeed galaxy, int planetNumber)
+    {
+        GalaxySeed glx = new(galaxy);
+
+        for (int i = 0; i < planetNumber; i++)
+        {
+            WaggleGalaxy(glx);
+            WaggleGalaxy(glx);
+            WaggleGalaxy(glx);
+            WaggleGalaxy(glx);
+        }
+
+        return glx;
+    }
+
     internal int FindPlanetNumber(GalaxySeed galaxy, GalaxySeed planet)
     {
         GalaxySeed glx = new(galaxy);

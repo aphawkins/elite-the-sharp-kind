@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -44,7 +45,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<IKeyboard>(),
             sp.GetRequiredService<PlayerShip>(),
-            sp.GetRequiredService<Trade>(),
+            sp.GetRequiredService<MissionRunner>(),
             sp.GetRequiredService<Combat>(),
             sp.GetRequiredService<Universe>(),
             sp.GetRequiredService<IShipFactory>(),

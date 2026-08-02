@@ -29,7 +29,7 @@ public class MissionJumpTests
         using HeadlessGameHarness harness = new();
         harness.Run(3, [new(1, ConsoleKey.N, KeyScriptAction.Tap), new(2, ConsoleKey.Spacebar, KeyScriptAction.Tap)]);
 
-        MissionJump.To(harness.Game.State, stage);
+        MissionJump.To(harness.Game.State, new PlanetController(harness.Game.State), stage);
 
         Assert.Equal(Screen.MissionBriefing, harness.Game.State.CurrentScreen);
         Assert.Equal(expectedConstrictor, harness.Game.State.Cmdr.Missions.StageOf(ConstrictorMission.Id));
@@ -46,7 +46,7 @@ public class MissionJumpTests
         // rather than falling off the end into the default branch.
         for (int stage = 0; stage < MissionJump.Count; stage++)
         {
-            MissionJump.To(harness.Game.State, stage);
+            MissionJump.To(harness.Game.State, new PlanetController(harness.Game.State), stage);
             Assert.Equal(Screen.MissionBriefing, harness.Game.State.CurrentScreen);
         }
     }

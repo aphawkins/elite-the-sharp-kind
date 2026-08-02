@@ -4,9 +4,9 @@ Turning Elite's two hardcoded missions into discoverable plugin parts.
 Started 2026-08-02. **Not finished** — this file is the state of play, so the
 work can be picked up in a new session without re-deriving any of it.
 
-T1, T3, T2 and T4 are landed. The missions are registry-backed and every
-briefing is drawn by one screen; what is left is moving the missions' behaviour
-into the missions themselves (T5) and out to a plugin (T6).
+T1, T3, T2, T4 and T5 are landed. The missions now carry their own behaviour
+behind `IMission`, and the game only reaches them through `MissionRunner`. All
+that is left is T6: moving them out to an assembly of their own.
 
 ## Why
 
@@ -213,37 +213,57 @@ Two things fell out of the collapse:
   laying out identically, since the `ViewportLeft` one of them added is always
   zero.
 
+### T5 — Missions carry their own behaviour — **done**
+
+`ConstrictorMission` and `ThargoidMission` now implement `Advance` and the
+optional interfaces they need, and read the game only through
+`IMissionContext`. **The context turned out to be enough** — nothing had to be
+added to it, which was the question T5 existed to answer.
+
+`MissionRunner` is the one seam. The briefing screen, `Combat` and
+`PlanetDataController` all go through it, and applying a step (record the
+stage, pay the award) is written once, so a reward cannot be collected for a
+stage that was not taken.
+
+What moved, and what it cost:
+
+- **Planet numbers, at last.** The missions name systems by number:
+  Orarra 193 in galaxy 1, Ceerdi 83 and Birera 36 in galaxy 2. `PlanetAt` is
+  the new inverse of `FindPlanetNumber`, and `MissionsTests` checks the three
+  numbers still name the right systems.
+- **`MissionJump` is a real jump now.** It used to fake Ceerdi by overwriting
+  two of the docked planet's six seed bytes, which no longer identifies
+  anything. It sets the galaxy seed and the docked planet properly, so the
+  chart, the planet name and the data screen agree afterwards — visible in the
+  short-range chart after the Thargoid debrief, which now reads BIRERA.
+- **`CurrentPlanetNumber` is memoised.** Finding a planet's number is a scan of
+  all 256, and encounter checks ask on every tick, so `MissionContext` keeps the
+  answer until the seed or galaxy changes.
+- **The rumour bug is fixed.** The mission answers only when docked *and* asked
+  about the system underfoot, so Reesdice is no longer named from anywhere in
+  galaxy 0. There is a test for it.
+- **The Thargoid systems are now galaxy-checked.** The old seed-byte comparison
+  ignored the galaxy; planet numbers only mean anything within one, so the
+  mission checks it. That is a tightening, not a regression.
+- **The ambush roll flipped from `>= 200` to `< 56`.** Identical odds and the
+  same one RNG draw, but a seeded run picks different outcomes.
+- **`Combat` is `partial`.** It was already at the analyzers' 1000-line limit,
+  so the mission-facing spawn lives in `Combat.Missions.cs`.
+
 ## What is left
 
-1. **T5 — Port both missions to `IMission`**, still inside `EliteSharpLib`, to
-   confirm the context suffices before publishing the assembly boundary.
-2. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
-   plugin.
+1. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
+   plugin. The missions no longer touch anything in `EliteSharpLib`, so this
+   should be a project move plus deleting `ClassicMissions`. The one thing to
+   check is `MissionBriefingModel`'s portrait: it is a `bool ShowPortrait`
+   game-side, fed from `MissionPortrait`, and the enum only has Blake in it.
 
 ## Consequences to plan for
 
-- **Planet numbers must be translated.** The port cannot copy the old literals:
-  Ceerdi (215, 84) and Birera (63, 72) in galaxy 2, and the Constrictor's
-  hunting ground (144, 33) in galaxy 1 are seed bytes. `FindPlanetNumber` gives
-  the numbers game-side. `FindPlanetNumber` is a linear scan, so cache the
-  current planet's number when it changes rather than computing it per encounter
-  check.
-- **`MissionJump` needs rewriting.** It currently fakes Ceerdi by overwriting
-  the docked planet's seed; it will have to set a real system.
-- **A live bug to fix on the way.** `Missions/Mission.cs` returns rumour text
-  only when docked *and* describing the docked system, but
-  `PlanetDataController` calls it with the **hyperspace target**. So the
-  Reesdice rumour appears whenever planet 150 is selected on the chart from
-  anywhere in galaxy 0. The contract expresses the correct rule; the port should
-  fix the behaviour rather than reproduce it.
 - **Trimming and AOT are foreclosed.** MEF2's discovery is reflection over
   externally-supplied assemblies. Nothing configures trimming or AOT today so
   this costs nothing now, but plugin discovery is fundamentally incompatible
   with it. Relevant if the plugin model later spreads to views and stock.
-- **Unused public API in the tree.** Landing T1 and T3 alone leaves a contracts
-  assembly and a registry that nothing calls, which cuts against the "nothing
-  speculative" rule in `AGENTS.md`. Deliberate, but do not leave it parked
-  indefinitely.
 
 ## Continuing without agents
 
@@ -256,4 +276,4 @@ worktrees are branched off whatever `master` was and cannot see each other's
 uncommitted work; and `ELITE_DEBUG_COMMANDER` is set machine-wide on the
 maintainer's box, so the game starts as Commander Max, not Jameson.
 
-Remaining order: T5, then T6, committing each separately.
+Only T6 is left.

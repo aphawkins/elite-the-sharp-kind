@@ -5,6 +5,7 @@
 using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
@@ -119,6 +120,7 @@ internal static class EliteSplitScreensServiceCollectionExtensions
             sp.GetRequiredService<GameState>(),
             sp.GetRequiredService<PlanetController>(),
             sp.GetRequiredService<RNG>(),
+            sp.GetRequiredService<MissionRunner>(),
             sp.GetRequiredService<IView<PlanetDataModel>>()));
     }
 

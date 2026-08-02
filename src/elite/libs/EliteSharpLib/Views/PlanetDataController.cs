@@ -85,16 +85,23 @@ internal sealed class PlanetDataController : IScreenController
 
     private readonly PlanetController _planet;
     private readonly RNG _rng;
+    private readonly MissionRunner _missions;
     private readonly IView<PlanetDataModel> _view;
 
     private float _distanceToPlanet;
     private PlanetData _hyperPlanetData = new();
 
-    internal PlanetDataController(GameState gameState, PlanetController planet, RNG rng, IView<PlanetDataModel> view)
+    internal PlanetDataController(
+        GameState gameState,
+        PlanetController planet,
+        RNG rng,
+        MissionRunner missions,
+        IView<PlanetDataModel> view)
     {
         _gameState = gameState;
         _planet = planet;
         _rng = rng;
+        _missions = missions;
         _view = view;
     }
 
@@ -129,13 +136,14 @@ internal sealed class PlanetDataController : IScreenController
 
     private string DescribePlanet(GalaxySeed planet)
     {
-        if (_gameState.Cmdr.Missions.IsAt(ConstrictorMission.Id, ConstrictorMission.Briefed))
+        // A rumour is somebody in this station talking, so the mission is only
+        // asked about the system it can be heard in. This screen shows any
+        // system picked off the chart, and until now it asked with whichever
+        // one that was - which is why the Constrictor was rumoured to be at
+        // Reesdice whenever Reesdice was selected from anywhere in galaxy 0.
+        if (_missions.DescribePlanet(_planet.FindPlanetNumber(_gameState.Cmdr.Galaxy, planet)) is { } rumour)
         {
-            string? mission_text = new Mission(_planet).MissionPlanetDescription(_gameState, planet);
-            if (!string.IsNullOrEmpty(mission_text))
-            {
-                return mission_text;
-            }
+            return rumour;
         }
 
         _rng.Seed.A = planet.C;

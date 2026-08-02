@@ -19,7 +19,7 @@ using Useful.Maths;
 
 namespace EliteSharpLib.Conflict;
 
-internal sealed class Combat
+internal sealed partial class Combat
 {
     private readonly AudioController _audio;
     private readonly GameState _gameState;
@@ -29,6 +29,7 @@ internal sealed class Combat
     private readonly Universe _universe;
     private readonly IEliteDraw _draw;
     private readonly IShipFactory _shipFactory;
+    private readonly MissionRunner _missions;
     private readonly RNG _rng;
     private readonly ILogger<Combat> _logger;
     private bool _isEcmOurs;
@@ -46,6 +47,7 @@ internal sealed class Combat
         IEliteDraw draw,
         IShipFactory shipFactory,
         RNG rng,
+        MissionRunner missions,
         ILogger<Combat>? logger = null)
     {
         _gameState = gameState;
@@ -57,6 +59,7 @@ internal sealed class Combat
         _draw = draw;
         _shipFactory = shipFactory;
         _rng = rng;
+        _missions = missions;
         _logger = logger ?? NullLogger<Combat>.Instance;
     }
 
@@ -155,10 +158,7 @@ internal sealed class Combat
         _audio.PlayEffect(nameof(SoundEffect.Explode));
         obj.Flags |= ShipProperties.Dead;
 
-        if (obj.Type == ShipType.Constrictor)
-        {
-            _gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Destroyed);
-        }
+        _missions.ShipDestroyed(obj.Type.ToString());
     }
 
     internal bool FireLaser()
@@ -281,9 +281,12 @@ internal sealed class Combat
             return;
         }
 
-        if (_gameState.Cmdr.Missions.IsAt(ThargoidMission.Id, ThargoidMission.CarryingPlans) && _rng.Random(256) >= 200)
+        // A mission's own traffic, on top of whatever the system would have
+        // had. The game rolls the odds, so a mission needs no randomness of its
+        // own and cannot spawn ships whenever it likes.
+        if (_missions.Ambush() is { } ambush && _rng.Random(256) < ambush.ChanceInTwoFiftySix)
         {
-            CreateThargoid();
+            CreateMissionShip(ambush.ShipName);
         }
 
         CheckForOthers();
@@ -963,12 +966,13 @@ internal sealed class Combat
 
     private void CreateLoneWolf()
     {
-        IShip loneWolf = _gameState.Cmdr.Missions.IsAt(ConstrictorMission.Id, ConstrictorMission.Briefed)
-            && _gameState.Cmdr.GalaxyNumber == 1 &&
-            _gameState.DockedPlanet.D == 144
-            && _gameState.DockedPlanet.B == 33 &&
-            _universe.ShipCount(ShipType.Constrictor) == 0
-            ? _shipFactory.CreateShip("Constrictor")
+        // A mission may send its own ship in the pirate's place - the same
+        // traffic, a different arrival. It says whether only one may be flying;
+        // the mission cannot see the universe, so the count is kept here.
+        IShip loneWolf = _missions.LoneWolfSubstitute() is { } substitute
+            && (!substitute.Unique
+                || (Enum.TryParse(substitute.ShipName, out ShipType type) && _universe.ShipCount(type) == 0))
+            ? _shipFactory.CreateShip(substitute.ShipName)
             : _shipFactory.CreateLoneWolf();
 
         if (_universe.AddNewShip(loneWolf))

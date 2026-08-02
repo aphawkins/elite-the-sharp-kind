@@ -44,6 +44,7 @@ public sealed class EliteMain : IGame, IGameApp
     private readonly IKeyboard _keyboard;
 
     private readonly AudioController _audio;
+    private readonly PlanetController _planet;
     private readonly Combat _combat;
     private readonly IBaseView _baseView;
     private readonly IEliteDraw _draw;
@@ -72,7 +73,8 @@ public sealed class EliteMain : IGame, IGameApp
         SaveFile save,
         Space space,
         ScannerBase scanner,
-        AudioController audio)
+        AudioController audio,
+        PlanetController planet)
     {
         ArgumentNullException.ThrowIfNull(abstraction);
         ArgumentNullException.ThrowIfNull(gameState);
@@ -86,7 +88,9 @@ public sealed class EliteMain : IGame, IGameApp
         ArgumentNullException.ThrowIfNull(space);
         ArgumentNullException.ThrowIfNull(scanner);
         ArgumentNullException.ThrowIfNull(audio);
+        ArgumentNullException.ThrowIfNull(planet);
 
+        _planet = planet;
         _abstraction = abstraction;
         _graphics = abstraction.Graphics;
         _keyboard = abstraction.Keyboard;
@@ -283,7 +287,7 @@ public sealed class EliteMain : IGame, IGameApp
             return;
         }
 
-        MissionJump.To(State, _missionJumpStage);
+        MissionJump.To(State, _planet, _missionJumpStage);
         _missionJumpStage = (_missionJumpStage + 1) % MissionJump.Count;
     }
 

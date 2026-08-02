@@ -7,6 +7,7 @@ using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -44,7 +45,9 @@ internal static class SettingsControllerFixture
         Universe universe = new(shipFactory, rng);
         audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Pilot pilot = new(draw, audio, universe, ship, rng);
-        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng);
+        MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
+
+        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
 
         return new Space(
             gameState,

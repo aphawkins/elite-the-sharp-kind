@@ -8,6 +8,7 @@ using EliteSharpLib.Equipment;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -24,6 +25,12 @@ namespace EliteSharpLib.Tests.Views;
 // that is what these check, rather than which mission is speaking.
 public class MissionBriefingControllerTests
 {
+    // The galaxy the Thargoid run happens in, and the two systems it runs
+    // between, by the numbers that galaxy gives them.
+    private const int ThargoidGalaxy = 2;
+    private const int Ceerdi = 83;
+    private const int Birera = 36;
+
     private readonly FakeKeyboard _keyboard = new();
     private MissionBriefingController? _controller;
 
@@ -131,8 +138,7 @@ public class MissionBriefingControllerTests
         // telling the view to leave room for it.
         MissionBriefingController controller = CreateController(out GameState gameState);
         gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.Summoned);
-        gameState.DockedPlanet.D = 215;
-        gameState.DockedPlanet.B = 84;
+        GivenDockedAt(gameState, Ceerdi);
 
         // Act
         controller.Reset();
@@ -148,8 +154,7 @@ public class MissionBriefingControllerTests
         // Arrange
         MissionBriefingController controller = CreateController(out GameState gameState, out _, out PlayerShip ship);
         gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.CarryingPlans);
-        gameState.DockedPlanet.D = 63;
-        gameState.DockedPlanet.B = 72;
+        GivenDockedAt(gameState, Birera);
 
         // Act
         controller.Reset();
@@ -189,8 +194,7 @@ public class MissionBriefingControllerTests
         // Arrange
         MissionBriefingController controller = CreateController(out GameState gameState);
         gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.CarryingPlans);
-        gameState.DockedPlanet.D = 63;
-        gameState.DockedPlanet.B = 72;
+        GivenDockedAt(gameState, Birera);
         controller.Reset();
 
         // Act
@@ -198,6 +202,16 @@ public class MissionBriefingControllerTests
 
         // Assert
         Assert.Equal(Screen.CommanderStatus, gameState.CurrentScreen);
+    }
+
+    // The mission compares planet numbers, so a test cannot fake a system by
+    // overwriting two of the docked planet's six seed bytes any more: it has to
+    // put the commander at the real one.
+    private static void GivenDockedAt(GameState gameState, int planetNumber)
+    {
+        gameState.Cmdr.GalaxyNumber = ThargoidGalaxy;
+        gameState.Cmdr.Galaxy = TestMissions.GalaxyAt(ThargoidGalaxy);
+        gameState.DockedPlanet = new PlanetController(gameState).PlanetAt(gameState.Cmdr.Galaxy, planetNumber);
     }
 
     private static void GivenTheConstrictorIsOffered(GameState gameState)
@@ -241,13 +255,14 @@ public class MissionBriefingControllerTests
         Universe universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Pilot pilot = new(draw, audio, universe, ship, rng);
-        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng);
+        MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
+        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
 
         return _controller = new MissionBriefingController(
             gameState,
             _keyboard,
             ship,
-            trade,
+            missions,
             combat,
             universe,
             shipFactory,

@@ -9,6 +9,7 @@ using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -522,7 +523,9 @@ public class SpaceTests
         universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Pilot pilot = new(draw, audio, universe, ship, rng);
-        combat = new Combat(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng);
+        MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
+
+        combat = new Combat(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
         PlanetController planet = new(gameState);
         Stars stars = new(gameState, draw, ship, rng);
 

@@ -6,6 +6,7 @@ using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -75,7 +76,10 @@ public class Intro2ControllerTests
         Universe universe = new(shipFactory, rng);
         AudioController audio = new(new FakeSound(), new Dictionary<string, SfxSample>(), new());
         Pilot pilot = new(draw, audio, universe, ship, rng);
-        Combat combat = new(gameState, audio, ship, new Trade(gameState, ship), pilot, universe, draw, shipFactory, rng);
+        Trade trade = new(gameState, ship);
+        MissionRunner missions = TestMissions.Runner(gameState, ship, trade);
+
+        Combat combat = new(gameState, audio, ship, trade, pilot, universe, draw, shipFactory, rng, missions);
         Stars stars = new(gameState, draw, ship, rng);
 
         return new Intro2Controller(

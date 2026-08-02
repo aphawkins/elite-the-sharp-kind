@@ -3,6 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Missions;
+using EliteSharpLib.Ships;
+using EliteSharpLib.Tests.Missions;
+using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -71,7 +74,15 @@ public class PlanetDataControllerTests
         gameState = new(views, ClassicMissions.Registry());
         RNG rng = new(new FakeRandomSource());
 
-        return new PlanetDataController(gameState, new PlanetController(gameState), rng, new FakePlanetDataView());
+        PlayerShip ship = new();
+        PlanetController planet = new(gameState);
+
+        return new PlanetDataController(
+            gameState,
+            planet,
+            rng,
+            TestMissions.Runner(gameState, ship, new Trade(gameState, ship)),
+            new FakePlanetDataView());
     }
 
     private sealed class FakePlanetDataView : IView<PlanetDataModel>
