@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Controls;
 
@@ -17,11 +18,11 @@ public class MissionJumpTests
     // the Thargoid one, and the mission number is which briefing the screen
     // then shows.
     [Theory]
-    [InlineData(0, 1)]
-    [InlineData(1, 3)]
-    [InlineData(2, 4)]
-    [InlineData(3, 5)]
-    [InlineData(4, 6)]
+    [InlineData(0, (int)MissionStage.ConstrictorBriefed)]
+    [InlineData(1, (int)MissionStage.ConstrictorRewarded)]
+    [InlineData(2, (int)MissionStage.ThargoidSummoned)]
+    [InlineData(3, (int)MissionStage.ThargoidCarryingPlans)]
+    [InlineData(4, (int)MissionStage.ThargoidRewarded)]
     public void EachStageReachesItsBriefing(int stage, int expectedMission)
     {
         using HeadlessGameHarness harness = new();
@@ -30,7 +31,7 @@ public class MissionJumpTests
         MissionJump.To(harness.Game.State, stage);
 
         Assert.Equal(stage < 2 ? Screen.MissionOne : Screen.MissionTwo, harness.Game.State.CurrentScreen);
-        Assert.Equal(expectedMission, harness.Game.State.Cmdr.Mission);
+        Assert.Equal((MissionStage)expectedMission, harness.Game.State.Cmdr.Mission);
     }
 
     [Fact]

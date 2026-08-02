@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Equipment;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Types;
 using Useful.Controls;
 
 namespace EliteSharpLib.Views;
@@ -69,20 +70,26 @@ internal sealed class ThargoidMissionController : IScreenController
 
     public void Reset()
     {
-        if (_gameState.Cmdr.Mission == 3 && _gameState.Cmdr.Score >= 1280 && _gameState.Cmdr.GalaxyNumber == 2)
+        if (_gameState.Cmdr.Mission == MissionStage.ConstrictorRewarded
+            && _gameState.Cmdr.Score >= 1280
+            && _gameState.Cmdr.GalaxyNumber == 2)
         {
             // First brief
-            _gameState.Cmdr.Mission = 4;
+            _gameState.Cmdr.Mission = MissionStage.ThargoidSummoned;
         }
-        else if (_gameState.Cmdr.Mission == 4 && _gameState.DockedPlanet.D == 215 && _gameState.DockedPlanet.B == 84)
+        else if (_gameState.Cmdr.Mission == MissionStage.ThargoidSummoned
+            && _gameState.DockedPlanet.D == 215
+            && _gameState.DockedPlanet.B == 84)
         {
             // Second brief
-            _gameState.Cmdr.Mission = 5;
+            _gameState.Cmdr.Mission = MissionStage.ThargoidCarryingPlans;
         }
-        else if (_gameState.Cmdr.Mission == 5 && _gameState.DockedPlanet.D == 63 && _gameState.DockedPlanet.B == 72)
+        else if (_gameState.Cmdr.Mission == MissionStage.ThargoidCarryingPlans
+            && _gameState.DockedPlanet.D == 63
+            && _gameState.DockedPlanet.B == 72)
         {
             // Debrief
-            _gameState.Cmdr.Mission = 6;
+            _gameState.Cmdr.Mission = MissionStage.ThargoidRewarded;
             _gameState.Cmdr.Score += 256;
             _ship.EnergyUnit = EnergyUnit.Naval;
         }
@@ -99,9 +106,21 @@ internal sealed class ThargoidMissionController : IScreenController
     // Exposed for tests: which briefing the current mission number selects.
     internal ThargoidMissionModel BuildModel() => _gameState.Cmdr.Mission switch
     {
-        4 => new(4, string.Empty, [Mission2BriefA], false),
-        5 => new(5, string.Empty, [Mission2BriefB, Mission2BriefC], true),
-        6 => new(6, "Well done Commander!", [Mission2Debrief], false),
-        _ => new(0, string.Empty, [], false),
+        MissionStage.ThargoidSummoned => new(
+            MissionStage.ThargoidSummoned,
+            string.Empty,
+            [Mission2BriefA],
+            false),
+        MissionStage.ThargoidCarryingPlans => new(
+            MissionStage.ThargoidCarryingPlans,
+            string.Empty,
+            [Mission2BriefB, Mission2BriefC],
+            true),
+        MissionStage.ThargoidRewarded => new(
+            MissionStage.ThargoidRewarded,
+            "Well done Commander!",
+            [Mission2Debrief],
+            false),
+        _ => new(MissionStage.None, string.Empty, [], false),
     };
 }

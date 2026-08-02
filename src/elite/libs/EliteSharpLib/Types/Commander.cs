@@ -12,11 +12,9 @@ internal sealed class Commander
 
     internal int LegalStatus { get; set; }
 
-    internal int Mission { get; set; }
+    internal MissionStage Mission { get; set; }
 
     internal string Name { get; set; } = string.Empty;
-
-    internal int Saved { get; set; }
 
     internal int Score { get; set; }
 }

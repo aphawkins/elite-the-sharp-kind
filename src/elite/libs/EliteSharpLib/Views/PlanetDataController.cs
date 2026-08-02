@@ -129,7 +129,7 @@ internal sealed class PlanetDataController : IScreenController
 
     private string DescribePlanet(GalaxySeed planet)
     {
-        if (_gameState.Cmdr.Mission == 1)
+        if (_gameState.Cmdr.Mission == MissionStage.ConstrictorBriefed)
         {
             string? mission_text = new Mission(_planet).MissionPlanetDescription(_gameState, planet);
             if (!string.IsNullOrEmpty(mission_text))

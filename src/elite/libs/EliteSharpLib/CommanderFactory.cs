@@ -3,27 +3,76 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Save;
+using EliteSharpLib.Trader;
+using EliteSharpLib.Types;
 
 namespace EliteSharpLib;
 
 internal static class CommanderFactory
 {
     /// <summary>
+    /// The station's opening stock, which both commanders start docked at.
+    /// </summary>
+    private static readonly (StockType Type, int Quantity)[] s_startingStationStock =
+    [
+        (StockType.Food, 0x10),
+        (StockType.Textiles, 0x0F),
+        (StockType.Radioactives, 0x11),
+        (StockType.Slaves, 0x00),
+        (StockType.LiquorWines, 0x03),
+        (StockType.Luxuries, 0x1C),
+        (StockType.Narcotics, 0x0E),
+        (StockType.Computers, 0x00),
+        (StockType.Machinery, 0x00),
+        (StockType.Alloys, 0x0A),
+        (StockType.Firearms, 0x00),
+        (StockType.Furs, 0x11),
+        (StockType.Minerals, 0x3A),
+        (StockType.Gold, 0x07),
+        (StockType.Platinum, 0x09),
+        (StockType.GemStones, 0x08),
+        (StockType.AlienItems, 0x00),
+    ];
+
+    /// <summary>
+    /// The goods Commander Max starts with a unit of. The contraband is left
+    /// out so the test commander does not launch as an Offender, and Alien
+    /// Items cannot be bought at all.
+    /// </summary>
+    private static readonly StockType[] s_maxCargo =
+    [
+        StockType.Food,
+        StockType.Textiles,
+        StockType.Radioactives,
+        StockType.LiquorWines,
+        StockType.Luxuries,
+        StockType.Computers,
+        StockType.Machinery,
+        StockType.Alloys,
+        StockType.Furs,
+        StockType.Minerals,
+        StockType.Gold,
+        StockType.Platinum,
+        StockType.GemStones,
+    ];
+
+    /// <summary>
     /// The default commander. Do not modify.
     /// </summary>
     /// <returns>Commander Jameson.</returns>
     internal static SaveState Jameson() => new()
     {
+        SavedAtUtc = DateTimeOffset.UtcNow,
         CommanderName = "JAMESON",
-        Mission = 0,
-        ShipLocation = [20, 173],
-        GalaxySeed = [0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7],
+        Mission = nameof(MissionStage.None),
+        ShipLocation = new() { D = 20, B = 173 },
+        GalaxySeed = new() { A = 0x4a, B = 0x5a, C = 0x48, D = 0x02, E = 0x53, F = 0xb7 },
         Credits = 100,
         Fuel = 7,
         GalaxyNumber = 0,
-        Lasers = ["Pulse", "None", "None", "None"],
+        Lasers = new() { Front = "Pulse", Rear = "None", Left = "None", Right = "None" },
         CargoCapacity = 20,
-        CurrentCargo = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        Cargo = Cargo([]),
         HasECM = false,
         HasFuelScoop = false,
         HasEnergyBomb = false,
@@ -32,30 +81,10 @@ internal static class CommanderFactory
         HasGalacticHyperdrive = false,
         HasEscapeCapsule = false,
         Missiles = 3,
-        LegalStatus = 0,
-        StationStock =
-        [
-            0x10,
-            0x0F,
-            0x11,
-            0x00,
-            0x03,
-            0x1C,
-            0x0E,
-            0x00,
-            0x00,
-            0x0A,
-            0x00,
-            0x11,
-            0x3A,
-            0x07,
-            0x09,
-            0x08,
-            0x00,
-        ],
+        LegalStatus = new() { Status = LegalStatusBand.For(0), Bounty = 0 },
+        StationStock = StartingStationStock(),
         MarketRandomiser = 0,
         Score = 0,
-        Saved = 0x80,
     };
 
     /// <summary>
@@ -64,16 +93,17 @@ internal static class CommanderFactory
     /// <returns>Commander Max.</returns>
     internal static SaveState Max() => new()
     {
+        SavedAtUtc = DateTimeOffset.UtcNow,
         CommanderName = "MAX",
-        Mission = 0,
-        ShipLocation = [20, 173],
-        GalaxySeed = [0x4a, 0x5a, 0x48, 0x02, 0x53, 0xb7],
+        Mission = nameof(MissionStage.None),
+        ShipLocation = new() { D = 20, B = 173 },
+        GalaxySeed = new() { A = 0x4a, B = 0x5a, C = 0x48, D = 0x02, E = 0x53, F = 0xb7 },
         Credits = 10000,
         Fuel = 7,
         GalaxyNumber = 0,
-        Lasers = ["Military", "Pulse", "Beam", "Mining"],
+        Lasers = new() { Front = "Military", Rear = "Pulse", Left = "Mining", Right = "Beam" },
         CargoCapacity = 35,
-        CurrentCargo = [1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0],
+        Cargo = Cargo(s_maxCargo),
         HasECM = true,
         HasFuelScoop = true,
         HasEnergyBomb = true,
@@ -82,29 +112,20 @@ internal static class CommanderFactory
         HasGalacticHyperdrive = true,
         HasEscapeCapsule = true,
         Missiles = 4,
-        LegalStatus = 0,
-        StationStock =
-        [
-            0x10,
-            0x0F,
-            0x11,
-            0x00,
-            0x03,
-            0x1C,
-            0x0E,
-            0x00,
-            0x00,
-            0x0A,
-            0x00,
-            0x11,
-            0x3A,
-            0x07,
-            0x09,
-            0x08,
-            0x00,
-        ],
+        LegalStatus = new() { Status = LegalStatusBand.For(0), Bounty = 0 },
+        StationStock = StartingStationStock(),
         MarketRandomiser = 0,
         Score = 0x1900,
-        Saved = 0x80,
     };
+
+    /// <summary>
+    /// An empty hold, holding one unit of each of the goods named.
+    /// </summary>
+    private static Dictionary<string, int> Cargo(IReadOnlyCollection<StockType> carrying)
+        => Enum.GetValues<StockType>()
+            .Where(type => type != StockType.None)
+            .ToDictionary(type => type.ToString(), type => carrying.Contains(type) ? 1 : 0, StringComparer.Ordinal);
+
+    private static Dictionary<string, int> StartingStationStock()
+        => s_startingStationStock.ToDictionary(x => x.Type.ToString(), x => x.Quantity, StringComparer.Ordinal);
 }

@@ -6,6 +6,7 @@ using EliteSharpLib.Equipment;
 using EliteSharpLib.Lasers;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
+using EliteSharpLib.Types;
 
 namespace EliteSharpLib.Views;
 
@@ -88,7 +89,7 @@ internal sealed class CommanderStatusController : IScreenController
             s_conditionText[CurrentCondition()],
             $"{_ship.Fuel:N1} Light Years",
             $"{_trade.Credits:N1} Credits",
-            _gameState.Cmdr.LegalStatus == 0 ? "Clean" : _gameState.Cmdr.LegalStatus > 50 ? "Fugitive" : "Offender",
+            LegalStatusBand.For(_gameState.Cmdr.LegalStatus),
             CurrentRating(),
             [.. EquipmentFitted()]);
     }

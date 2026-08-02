@@ -4,6 +4,12 @@
 
 namespace EliteSharpLib.Save;
 
+/// <summary>
+/// A saved commander, as the .cmdr file holds them. Everything here is named
+/// rather than positional - cargo and station stock are keyed by the goods'
+/// own names, lasers by the mount they are on - so a file can be read, and
+/// hand-edited, without a copy of this class to count array indices against.
+/// </summary>
 public sealed class SaveState
 {
     public SaveState()
@@ -14,74 +20,100 @@ public sealed class SaveState
     {
         ArgumentNullException.ThrowIfNull(other);
 
+        FileType = other.FileType;
+        Version = other.Version;
+        SavedAtUtc = other.SavedAtUtc;
         CommanderName = other.CommanderName;
         Mission = other.Mission;
-        ShipLocation = other.ShipLocation;
-        GalaxySeed = other.GalaxySeed;
+        Score = other.Score;
+        LegalStatus = other.LegalStatus;
         Credits = other.Credits;
         Fuel = other.Fuel;
-        GalaxyNumber = other.GalaxyNumber;
-        Lasers = other.Lasers;
+        Missiles = other.Missiles;
         CargoCapacity = other.CargoCapacity;
-        CurrentCargo = other.CurrentCargo;
+        EnergyUnit = other.EnergyUnit;
+        Lasers = other.Lasers;
         HasECM = other.HasECM;
         HasFuelScoop = other.HasFuelScoop;
         HasEnergyBomb = other.HasEnergyBomb;
-        EnergyUnit = other.EnergyUnit;
         HasDockingComputer = other.HasDockingComputer;
         HasGalacticHyperdrive = other.HasGalacticHyperdrive;
         HasEscapeCapsule = other.HasEscapeCapsule;
-        Missiles = other.Missiles;
-        LegalStatus = other.LegalStatus;
-        StationStock = other.StationStock;
+        GalaxyNumber = other.GalaxyNumber;
+        GalaxySeed = other.GalaxySeed;
+        ShipLocation = other.ShipLocation;
         MarketRandomiser = other.MarketRandomiser;
-        Score = other.Score;
-        Saved = other.Saved;
+        Cargo = other.Cargo;
+        StationStock = other.StationStock;
     }
 
-    public int CargoCapacity { get; set; }
+    /// <summary>
+    /// Gets what marks the file as ours, so a .cmdr from somewhere else is
+    /// turned away with the version rather than half-parsed.
+    /// </summary>
+    public static string CurrentFileType { get; } = "EliteSharp commander";
+
+    /// <summary>
+    /// Gets the format written today. A file carrying anything else -
+    /// including the unversioned files written before this existed - is not
+    /// loaded.
+    /// </summary>
+    public static int CurrentVersion { get; } = 1;
+
+    public string FileType { get; set; } = CurrentFileType;
+
+    public int Version { get; set; } = CurrentVersion;
+
+    public DateTimeOffset SavedAtUtc { get; set; }
 
     public string CommanderName { get; set; } = string.Empty;
 
-    public float Credits { get; set; }
-
-    public IList<int> CurrentCargo { get; init; } = [];
-
-    public string EnergyUnit { get; set; } = string.Empty;
-
-    public float Fuel { get; set; }
-
-    public int GalaxyNumber { get; set; }
-
-    public IList<int> GalaxySeed { get; init; } = [];
-
-    public bool HasDockingComputer { get; set; }
-
-    public bool HasECM { get; set; }
-
-    public bool HasEnergyBomb { get; set; }
-
-    public bool HasEscapeCapsule { get; set; }
-
-    public bool HasFuelScoop { get; set; }
-
-    public bool HasGalacticHyperdrive { get; set; }
-
-    public IList<string> Lasers { get; init; } = [];
-
-    public int LegalStatus { get; set; }
-
-    public int MarketRandomiser { get; set; }
-
-    public int Missiles { get; set; }
-
-    public int Mission { get; set; }
-
-    public int Saved { get; set; }
+    public string Mission { get; set; } = string.Empty;
 
     public int Score { get; set; }
 
-    public IList<int> ShipLocation { get; init; } = [];
+    public LegalStatusState LegalStatus { get; set; } = new();
 
-    public IList<int> StationStock { get; init; } = [];
+    public float Credits { get; set; }
+
+    public float Fuel { get; set; }
+
+    public int Missiles { get; set; }
+
+    public int CargoCapacity { get; set; }
+
+    public string EnergyUnit { get; set; } = string.Empty;
+
+    public LaserMountState Lasers { get; set; } = new();
+
+    public bool HasECM { get; set; }
+
+    public bool HasFuelScoop { get; set; }
+
+    public bool HasEnergyBomb { get; set; }
+
+    public bool HasDockingComputer { get; set; }
+
+    public bool HasGalacticHyperdrive { get; set; }
+
+    public bool HasEscapeCapsule { get; set; }
+
+    public int GalaxyNumber { get; set; }
+
+    public GalaxySeedState GalaxySeed { get; set; } = new();
+
+    public ShipLocationState ShipLocation { get; set; } = new();
+
+    public int MarketRandomiser { get; set; }
+
+    /// <summary>
+    /// Gets what the commander is carrying, keyed by the goods' names.
+    /// </summary>
+    public IDictionary<string, int> Cargo { get; init; } = new Dictionary<string, int>(StringComparer.Ordinal);
+
+    /// <summary>
+    /// Gets what the station the commander is docked at has for sale, keyed
+    /// by the goods' names.
+    /// </summary>
+    public IDictionary<string, int> StationStock { get; init; } = new Dictionary<string, int>(StringComparer.Ordinal);
 }

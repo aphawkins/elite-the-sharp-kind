@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 
 namespace EliteSharpLib;
@@ -72,33 +73,33 @@ internal static class MissionJump
         switch (stage)
         {
             case 0:
-                gameState.Cmdr.Mission = 0;
+                gameState.Cmdr.Mission = MissionStage.None;
                 gameState.Cmdr.Score = AboveAverageScore;
                 gameState.Cmdr.GalaxyNumber = 0;
                 gameState.SetView(Screen.MissionOne);
                 break;
 
             case 1:
-                gameState.Cmdr.Mission = 2;
+                gameState.Cmdr.Mission = MissionStage.ConstrictorDestroyed;
                 gameState.SetView(Screen.MissionOne);
                 break;
 
             case 2:
-                gameState.Cmdr.Mission = 3;
+                gameState.Cmdr.Mission = MissionStage.ConstrictorRewarded;
                 gameState.Cmdr.Score = DangerousScore;
                 gameState.Cmdr.GalaxyNumber = 2;
                 gameState.SetView(Screen.MissionTwo);
                 break;
 
             case 3:
-                gameState.Cmdr.Mission = 4;
+                gameState.Cmdr.Mission = MissionStage.ThargoidSummoned;
                 gameState.DockedPlanet.D = CeerdiD;
                 gameState.DockedPlanet.B = CeerdiB;
                 gameState.SetView(Screen.MissionTwo);
                 break;
 
             default:
-                gameState.Cmdr.Mission = 5;
+                gameState.Cmdr.Mission = MissionStage.ThargoidCarryingPlans;
                 gameState.DockedPlanet.D = BireraD;
                 gameState.DockedPlanet.B = BireraB;
                 gameState.SetView(Screen.MissionTwo);

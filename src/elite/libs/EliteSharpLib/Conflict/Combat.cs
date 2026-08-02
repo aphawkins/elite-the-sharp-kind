@@ -10,6 +10,7 @@ using EliteSharpLib.Lasers;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;
 using EliteSharpLib.Trader;
+using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -156,7 +157,7 @@ internal sealed class Combat
 
         if (obj.Type == ShipType.Constrictor)
         {
-            _gameState.Cmdr.Mission = 2;
+            _gameState.Cmdr.Mission = MissionStage.ConstrictorDestroyed;
         }
     }
 
@@ -280,7 +281,7 @@ internal sealed class Combat
             return;
         }
 
-        if (_gameState.Cmdr.Mission == 5 && _rng.Random(256) >= 200)
+        if (_gameState.Cmdr.Mission == MissionStage.ThargoidCarryingPlans && _rng.Random(256) >= 200)
         {
             CreateThargoid();
         }
@@ -962,7 +963,7 @@ internal sealed class Combat
 
     private void CreateLoneWolf()
     {
-        IShip loneWolf = _gameState.Cmdr.Mission == 1
+        IShip loneWolf = _gameState.Cmdr.Mission == MissionStage.ConstrictorBriefed
             && _gameState.Cmdr.GalaxyNumber == 1 &&
             _gameState.DockedPlanet.D == 144
             && _gameState.DockedPlanet.B == 33 &&

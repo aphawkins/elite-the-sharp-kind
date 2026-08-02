@@ -5,6 +5,7 @@
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
+using EliteSharpLib.Types;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Controls;
@@ -93,10 +94,10 @@ internal sealed class ConstrictorMissionController : IScreenController
 
     public void Reset()
     {
-        if (_gameState.Cmdr.Mission == 0 && _gameState.Cmdr.Score >= 256 && _gameState.Cmdr.GalaxyNumber < 2)
+        if (_gameState.Cmdr.Mission == MissionStage.None && _gameState.Cmdr.Score >= 256 && _gameState.Cmdr.GalaxyNumber < 2)
         {
             // Show brief
-            _gameState.Cmdr.Mission = 1;
+            _gameState.Cmdr.Mission = MissionStage.ConstrictorBriefed;
 
             _combat.Reset();
             _universe.ClearUniverse();
@@ -111,10 +112,10 @@ internal sealed class ConstrictorMissionController : IScreenController
             _ship.Climb = 0;
             _ship.Speed = 0;
         }
-        else if (_gameState.Cmdr.Mission == 2)
+        else if (_gameState.Cmdr.Mission == MissionStage.ConstrictorDestroyed)
         {
             // Show debrief
-            _gameState.Cmdr.Mission = 3;
+            _gameState.Cmdr.Mission = MissionStage.ConstrictorRewarded;
             _gameState.Cmdr.Score += 256;
             _trade.Credits += 5000;
         }
@@ -132,11 +133,14 @@ internal sealed class ConstrictorMissionController : IScreenController
     // and which of the two second paragraphs the galaxy chooses.
     internal ConstrictorMissionModel BuildModel() => _gameState.Cmdr.Mission switch
     {
-        1 => new(
-            1,
+        MissionStage.ConstrictorBriefed => new(
+            MissionStage.ConstrictorBriefed,
             string.Empty,
             [Mission1BriefA, _gameState.Cmdr.GalaxyNumber == 0 ? Mission1BriefB : Mission1BriefC]),
-        3 => new(3, "Congratulations Commander!", [Mission1Debrief]),
-        _ => new(0, string.Empty, []),
+        MissionStage.ConstrictorRewarded => new(
+            MissionStage.ConstrictorRewarded,
+            "Congratulations Commander!",
+            [Mission1Debrief]),
+        _ => new(MissionStage.None, string.Empty, []),
     };
 }

@@ -60,7 +60,12 @@ public class LoadCommanderControllerTests
     public void LoadingASavedCommanderClearsTheErrorAndMovesOn()
     {
         LoadCommanderController controller = CreateController(out GameState gameState, out FakeKeyboard keyboard, out SaveFile save);
+
+        // A save is only loadable if it was written from a real commander, so start
+        // from one - then clear the name the screen would otherwise prefill with.
+        save.GetLastSave();
         save.SaveCommander("MAX");
+        gameState.Cmdr.Name = string.Empty;
         controller.Reset();
 
         Type(controller, keyboard, "MAX");

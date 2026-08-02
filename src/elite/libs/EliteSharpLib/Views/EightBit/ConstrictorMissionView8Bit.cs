@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Types;
 using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
@@ -39,14 +40,14 @@ internal sealed class ConstrictorMissionView8Bit : BaseView8Bit, IConstrictorMis
 
         switch (model.Stage)
         {
-            case 1:
+            case MissionStage.ConstrictorBriefed:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowUpper)), Column(TextColumnsUpper), model.Paragraphs[0]);
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsLower), model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
-            case 3:
+            case MissionStage.ConstrictorRewarded:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextCentreOnGrid(6, model.Headline, nameof(FontType.Large), _colorYellow);
                 DrawTextPretty(new(Column(TextColumn), Row(8)), Column(TextColumnsUpper), model.Paragraphs[0]);

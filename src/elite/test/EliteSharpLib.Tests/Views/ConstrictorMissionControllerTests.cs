@@ -7,6 +7,7 @@ using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
+using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
 using Useful.Audio;
@@ -25,11 +26,11 @@ public class ConstrictorMissionControllerTests
     public void NothingIsShownOutsideTheMission()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Mission = 0;
+        gameState.Cmdr.Mission = MissionStage.None;
 
         ConstrictorMissionModel model = controller.BuildModel();
 
-        Assert.Equal(0, model.Stage);
+        Assert.Equal(MissionStage.None, model.Stage);
         Assert.Empty(model.Paragraphs);
     }
 
@@ -37,11 +38,11 @@ public class ConstrictorMissionControllerTests
     public void TheBriefIsTwoParagraphsAndNoHeadline()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Mission = 1;
+        gameState.Cmdr.Mission = MissionStage.ConstrictorBriefed;
 
         ConstrictorMissionModel model = controller.BuildModel();
 
-        Assert.Equal(1, model.Stage);
+        Assert.Equal(MissionStage.ConstrictorBriefed, model.Stage);
         Assert.Equal(2, model.Paragraphs.Count);
         Assert.Equal(string.Empty, model.Headline);
     }
@@ -50,7 +51,7 @@ public class ConstrictorMissionControllerTests
     public void TheFirstGalaxyIsToldWhereTheConstrictorWasSeen()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Mission = 1;
+        gameState.Cmdr.Mission = MissionStage.ConstrictorBriefed;
         gameState.Cmdr.GalaxyNumber = 0;
 
         Assert.Contains("Reesdice", controller.BuildModel().Paragraphs[1], StringComparison.Ordinal);
@@ -60,7 +61,7 @@ public class ConstrictorMissionControllerTests
     public void LaterGalaxiesAreToldItJumpedHere()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Mission = 1;
+        gameState.Cmdr.Mission = MissionStage.ConstrictorBriefed;
         gameState.Cmdr.GalaxyNumber = 1;
 
         string paragraph = controller.BuildModel().Paragraphs[1];
@@ -73,11 +74,11 @@ public class ConstrictorMissionControllerTests
     public void TheDebriefCarriesAHeadlineAndOneParagraph()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Mission = 3;
+        gameState.Cmdr.Mission = MissionStage.ConstrictorRewarded;
 
         ConstrictorMissionModel model = controller.BuildModel();
 
-        Assert.Equal(3, model.Stage);
+        Assert.Equal(MissionStage.ConstrictorRewarded, model.Stage);
         Assert.Equal("Congratulations Commander!", model.Headline);
         Assert.Single(model.Paragraphs);
     }
@@ -86,12 +87,12 @@ public class ConstrictorMissionControllerTests
     public void ResetPaysTheBountyOnceTheConstrictorIsDead()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState, out Trade trade);
-        gameState.Cmdr.Mission = 2;
+        gameState.Cmdr.Mission = MissionStage.ConstrictorDestroyed;
         float creditsBefore = trade.Credits;
 
         controller.Reset();
 
-        Assert.Equal(3, gameState.Cmdr.Mission);
+        Assert.Equal(MissionStage.ConstrictorRewarded, gameState.Cmdr.Mission);
         Assert.Equal(creditsBefore + 5000, trade.Credits);
     }
 

@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Types;
 using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
@@ -33,13 +34,13 @@ internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMi
 
         switch (model.Stage)
         {
-            case 4:
+            case MissionStage.ThargoidSummoned:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
-            case 5:
+            case MissionStage.ThargoidCarryingPlans:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(16, 50), 300, model.Paragraphs[0]);
                 DrawTextPretty(new(16, 200), 470, model.Paragraphs[1]);
@@ -47,7 +48,7 @@ internal sealed class ThargoidMissionView16Bit : BaseView16Bit, IView<ThargoidMi
                 DrawFooter();
                 break;
 
-            case 6:
+            case MissionStage.ThargoidRewarded:
                 DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
                 DrawTextPretty(new(116, 132), 400, model.Paragraphs[0]);

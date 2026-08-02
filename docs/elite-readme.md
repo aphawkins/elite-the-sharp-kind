@@ -112,6 +112,8 @@ The last two are marked `*` on the screen: the backend picks the rendering and a
 
 Game settings are held in the `elite.sharp` file, stored in JSON format, in the user's application data directory (`%AppData%\The Sharp Kind` on Windows, `~/.config/The Sharp Kind` on Linux/macOS) — shared with [Stunt Car Racer - The Sharp Kind](scr-readme.md). Commander saves (`.cmdr` files) and logs (`logs\elite-*.log`, daily rolling, 7 kept by default) live in the same directory. If the config file is missing or invalid the game falls back to defaults.
 
+Commander saves carry a `fileType` and a `version`, and name everything they hold — the goods in the hold and on the market by name, the lasers by the mount they are on, the mission by its stage and the legal status by its band as well as its bounty — so a save can be read and hand-edited without a copy of the code beside it. A file the game could not itself have written, whether that is the wrong version, an unknown item of cargo, a legal status whose band contradicts its bounty or a value out of range, is rejected and Commander Jameson is loaded instead. Saves written before the format was versioned are not loadable.
+
 The file's `engine` element holds the settings shared by every game — the backend, the tier, the frame rate and the graphic style among them — and is documented in the [main readme](../README.md#configuration). Elite's own settings sit alongside it under `game`, and can take the following values:
 
 ``` json

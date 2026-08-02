@@ -8,6 +8,7 @@ using EliteSharpLib.Equipment;
 using EliteSharpLib.Lasers;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
+using EliteSharpLib.Types;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -21,9 +22,37 @@ internal sealed class SaveFile
     /// convenient for manually exercising late-game equipment/cargo without
     /// a save file. Unset in normal play.
     /// </summary>
-    private const string DebugCommanderEnvVar = "ELITE_DEBUG_COMMANDER";
+    internal const string DebugCommanderEnvVar = "ELITE_DEBUG_COMMANDER";
 
     private const string FileExtension = ".cmdr";
+
+    /// <summary>
+    /// The most missiles the equipment screen will sell.
+    /// </summary>
+    private const int MissilesMax = 4;
+
+    /// <summary>
+    /// The hold without, and with, the large cargo bay fitted.
+    /// </summary>
+    private const int CargoCapacityStandard = 20;
+
+    /// <inheritdoc cref="CargoCapacityStandard"/>
+    private const int CargoCapacityLarge = 35;
+
+    /// <summary>
+    /// The eight galaxies the hyperdrive cycles through.
+    /// </summary>
+    private const int GalaxyNumberMax = 7;
+
+    /// <summary>
+    /// Seeds and the market randomiser are single bytes.
+    /// </summary>
+    private const int SeedByteMax = 255;
+
+    /// <summary>
+    /// The market clamps every quantity to this, so no save may hold more.
+    /// </summary>
+    private const int QuantityMax = 63;
 
     private readonly JsonSerializerOptions _options = new()
     {
@@ -136,6 +165,45 @@ internal sealed class SaveFile
         }
     }
 
+    /// <summary>
+    /// Whether the text names a member of the enum. The numeric strings
+    /// <see cref="Enum.TryParse{T}(string, out T)"/> also accepts are turned away, so a save
+    /// has to spell its lasers, missions and energy units out.
+    /// </summary>
+    /// <typeparam name="T">The enum the text has to name a member of.</typeparam>
+    /// <param name="value">The text from the save file.</param>
+    /// <returns>Whether the text is one of the enum's names.</returns>
+    private static bool IsNamed<T>(string? value)
+        where T : struct, Enum
+        => value != null
+            && !int.TryParse(value, out _)
+            && Enum.TryParse(value, out T parsed)
+            && Enum.IsDefined(parsed);
+
+    private static bool IsValidLegalStatus(LegalStatusState? legal)
+        => legal is { Bounty: >= 0 and <= LegalStatusBand.BountyMax }
+            && string.Equals(legal.Status, LegalStatusBand.For(legal.Bounty), StringComparison.Ordinal);
+
+    private static bool IsValidLasers(LaserMountState? lasers) => lasers is { } mounts
+        && IsNamed<LaserType>(mounts.Front)
+        && IsNamed<LaserType>(mounts.Rear)
+        && IsNamed<LaserType>(mounts.Left)
+        && IsNamed<LaserType>(mounts.Right);
+
+    private static bool IsValidGalaxySeed(GalaxySeedState? seed) => seed is { } bytes
+        && IsSeedByte(bytes.A)
+        && IsSeedByte(bytes.B)
+        && IsSeedByte(bytes.C)
+        && IsSeedByte(bytes.D)
+        && IsSeedByte(bytes.E)
+        && IsSeedByte(bytes.F);
+
+    private static bool IsValidShipLocation(ShipLocationState? location) => location is { } position
+        && IsSeedByte(position.D)
+        && IsSeedByte(position.B);
+
+    private static bool IsSeedByte(int value) => value is >= 0 and <= SeedByteMax;
+
     private string PathFor(string name)
     {
         char[] invalidChars = Path.GetInvalidFileNameChars();
@@ -144,60 +212,100 @@ internal sealed class SaveFile
     }
 
     /// <summary>
-    /// Validates the shapes and enum values <see cref="SaveStateToGameState"/> assumes without
-    /// checking, so a truncated or hand-edited save can be rejected before it throws there.
+    /// Rejects anything <see cref="SaveStateToGameState"/> would otherwise take on trust: a
+    /// file that is not ours or not this version, a name the enums do not know, a missing or
+    /// unknown item of cargo, and any value outside the range the game itself keeps it in.
+    /// A save that fails here is discarded rather than half-applied.
     /// </summary>
-    private bool IsValidSave(SaveState save) => save.GalaxySeed.Count == 6
-        && save.Lasers.Count == 4
-        && save.CurrentCargo.Count == _trade.StockMarket.Count
-        && save.StationStock.Count == _trade.StockMarket.Count
-        && save.ShipLocation.Count == 2
-        && Enum.TryParse<EnergyUnit>(save.EnergyUnit, out _)
-        && save.Lasers.All(laser => Enum.TryParse<LaserType>(laser, out _));
+    private bool IsValidSave(SaveState save) => save.FileType == SaveState.CurrentFileType
+        && save.Version == SaveState.CurrentVersion
+        && !string.IsNullOrWhiteSpace(save.CommanderName)
+        && IsNamed<MissionStage>(save.Mission)
+        && save.Score >= 0
+        && IsValidLegalStatus(save.LegalStatus)
+        && float.IsFinite(save.Credits)
+        && save.Credits >= 0
+        && float.IsFinite(save.Fuel)
+        && save.Fuel >= 0
+        && save.Fuel <= _ship.MaxFuel
+        && save.Missiles is >= 0 and <= MissilesMax
+        && save.CargoCapacity is CargoCapacityStandard or CargoCapacityLarge
+        && IsNamed<EnergyUnit>(save.EnergyUnit)
+        && IsValidLasers(save.Lasers)
+        && save.GalaxyNumber is >= 0 and <= GalaxyNumberMax
+        && IsValidGalaxySeed(save.GalaxySeed)
+        && IsValidShipLocation(save.ShipLocation)
+        && save.MarketRandomiser is >= 0 and <= SeedByteMax
+        && IsValidStock(save.Cargo)
+        && IsValidStock(save.StationStock)
+        && TonnageOf(save.Cargo) <= save.CargoCapacity;
+
+    /// <summary>
+    /// Whether the goods are named exactly once each, with a quantity the market could have
+    /// produced. Counting as well as looking each name up leaves no room for an unknown one.
+    /// </summary>
+    private bool IsValidStock(IDictionary<string, int>? stock) => stock is { } goods
+        && goods.Count == _trade.StockMarket.Count
+        && _trade.StockMarket.Keys.All(type
+            => goods.TryGetValue(type.ToString(), out int quantity) && quantity is >= 0 and <= QuantityMax);
+
+    /// <summary>
+    /// The hold the cargo would take up. Gold, platinum and gem stones are weighed in
+    /// kilograms and grams, so they do not count against the cargo bay.
+    /// </summary>
+    private int TonnageOf(IDictionary<string, int> cargo) => _trade.StockMarket
+        .Where(x => x.Value.Units == Trade.TONNES)
+        .Sum(x => cargo[x.Key.ToString()]);
 
     private SaveState GameStateToSaveState(string newName) => new()
     {
+        FileType = SaveState.CurrentFileType,
+        Version = SaveState.CurrentVersion,
+        SavedAtUtc = DateTimeOffset.UtcNow,
         CargoCapacity = _ship.CargoCapacity,
         CommanderName = newName,
         Credits = _trade.Credits,
-        CurrentCargo = [.. _trade.StockMarket.Values.Select(x => x.CurrentCargo)],
+        Cargo = _trade.StockMarket.ToDictionary(x => x.Key.ToString(), x => x.Value.CurrentCargo, StringComparer.Ordinal),
         EnergyUnit = _ship.EnergyUnit.ToString(),
         Fuel = _ship.Fuel,
         GalaxyNumber = _state.Cmdr.GalaxyNumber,
-        GalaxySeed =
-            [
-                _state.Cmdr.Galaxy.A,
-                _state.Cmdr.Galaxy.B,
-                _state.Cmdr.Galaxy.C,
-                _state.Cmdr.Galaxy.D,
-                _state.Cmdr.Galaxy.E,
-                _state.Cmdr.Galaxy.F,
-            ],
+        GalaxySeed = new()
+        {
+            A = _state.Cmdr.Galaxy.A,
+            B = _state.Cmdr.Galaxy.B,
+            C = _state.Cmdr.Galaxy.C,
+            D = _state.Cmdr.Galaxy.D,
+            E = _state.Cmdr.Galaxy.E,
+            F = _state.Cmdr.Galaxy.F,
+        },
         HasDockingComputer = _ship.HasDockingComputer,
         HasECM = _ship.HasECM,
         HasEnergyBomb = _ship.HasEnergyBomb,
         HasEscapeCapsule = _ship.HasEscapeCapsule,
         HasFuelScoop = _ship.HasFuelScoop,
         HasGalacticHyperdrive = _ship.HasGalacticHyperdrive,
-        Lasers =
-            [
-                _ship.LaserFront.Type.ToString(),
-                _ship.LaserRear.Type.ToString(),
-                _ship.LaserRight.Type.ToString(),
-                _ship.LaserLeft.Type.ToString(),
-            ],
-        LegalStatus = _state.Cmdr.LegalStatus,
+        Lasers = new()
+        {
+            Front = _ship.LaserFront.Type.ToString(),
+            Rear = _ship.LaserRear.Type.ToString(),
+            Left = _ship.LaserLeft.Type.ToString(),
+            Right = _ship.LaserRight.Type.ToString(),
+        },
+        LegalStatus = new()
+        {
+            Status = LegalStatusBand.For(_state.Cmdr.LegalStatus),
+            Bounty = _state.Cmdr.LegalStatus,
+        },
         MarketRandomiser = _trade.MarketRandomiser,
         Missiles = _ship.MissileCount,
-        Mission = _state.Cmdr.Mission,
-        Saved = _state.Cmdr.Saved,
+        Mission = _state.Cmdr.Mission.ToString(),
         Score = _state.Cmdr.Score,
-        ShipLocation =
-            [
-                _state.DockedPlanet.D,
-                _state.DockedPlanet.B,
-            ],
-        StationStock = [.. _trade.StockMarket.Values.Select(x => x.StationStock)],
+        ShipLocation = new()
+        {
+            D = _state.DockedPlanet.D,
+            B = _state.DockedPlanet.B,
+        },
+        StationStock = _trade.StockMarket.ToDictionary(x => x.Key.ToString(), x => x.Value.StationStock, StringComparer.Ordinal),
     };
 
     private void RestoreSavedCommander()
@@ -215,41 +323,40 @@ internal sealed class SaveFile
         _ship.CargoCapacity = _lastSaved.CargoCapacity;
         _state.Cmdr.Name = _lastSaved.CommanderName;
         _trade.Credits = _lastSaved.Credits;
-        for (int i = 0; i < _trade.StockMarket.Count; i++)
+        foreach (StockType type in _trade.StockMarket.Keys)
         {
-            _trade.StockMarket[(StockType)i + 1].CurrentCargo = _lastSaved.CurrentCargo[i];
+            _trade.StockMarket[type].CurrentCargo = _lastSaved.Cargo[type.ToString()];
         }
 
         _ship.EnergyUnit = Enum.Parse<EnergyUnit>(_lastSaved.EnergyUnit);
         _ship.Fuel = _lastSaved.Fuel;
         _state.Cmdr.GalaxyNumber = _lastSaved.GalaxyNumber;
-        _state.Cmdr.Galaxy.A = _lastSaved.GalaxySeed[0];
-        _state.Cmdr.Galaxy.B = _lastSaved.GalaxySeed[1];
-        _state.Cmdr.Galaxy.C = _lastSaved.GalaxySeed[2];
-        _state.Cmdr.Galaxy.D = _lastSaved.GalaxySeed[3];
-        _state.Cmdr.Galaxy.E = _lastSaved.GalaxySeed[4];
-        _state.Cmdr.Galaxy.F = _lastSaved.GalaxySeed[5];
+        _state.Cmdr.Galaxy.A = _lastSaved.GalaxySeed.A;
+        _state.Cmdr.Galaxy.B = _lastSaved.GalaxySeed.B;
+        _state.Cmdr.Galaxy.C = _lastSaved.GalaxySeed.C;
+        _state.Cmdr.Galaxy.D = _lastSaved.GalaxySeed.D;
+        _state.Cmdr.Galaxy.E = _lastSaved.GalaxySeed.E;
+        _state.Cmdr.Galaxy.F = _lastSaved.GalaxySeed.F;
         _ship.HasDockingComputer = _lastSaved.HasDockingComputer;
         _ship.HasECM = _lastSaved.HasECM;
         _ship.HasEnergyBomb = _lastSaved.HasEnergyBomb;
         _ship.HasEscapeCapsule = _lastSaved.HasEscapeCapsule;
         _ship.HasFuelScoop = _lastSaved.HasFuelScoop;
         _ship.HasGalacticHyperdrive = _lastSaved.HasGalacticHyperdrive;
-        _ship.LaserFront = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[0]));
-        _ship.LaserRear = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[1]));
-        _ship.LaserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[2]));
-        _ship.LaserLeft = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers[3]));
-        _state.Cmdr.LegalStatus = _lastSaved.LegalStatus;
+        _ship.LaserFront = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers.Front));
+        _ship.LaserRear = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers.Rear));
+        _ship.LaserRight = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers.Right));
+        _ship.LaserLeft = LaserFactory.GetLaser(Enum.Parse<LaserType>(_lastSaved.Lasers.Left));
+        _state.Cmdr.LegalStatus = _lastSaved.LegalStatus.Bounty;
         _trade.MarketRandomiser = _lastSaved.MarketRandomiser;
         _ship.MissileCount = _lastSaved.Missiles;
-        _state.Cmdr.Mission = _lastSaved.Mission;
-        _state.Cmdr.Saved = _lastSaved.Saved;
+        _state.Cmdr.Mission = Enum.Parse<MissionStage>(_lastSaved.Mission);
         _state.Cmdr.Score = _lastSaved.Score;
-        _state.DockedPlanet.D = _lastSaved.ShipLocation[0];
-        _state.DockedPlanet.B = _lastSaved.ShipLocation[1];
-        for (int i = 0; i < _trade.StockMarket.Count; i++)
+        _state.DockedPlanet.D = _lastSaved.ShipLocation.D;
+        _state.DockedPlanet.B = _lastSaved.ShipLocation.B;
+        foreach (StockType type in _trade.StockMarket.Keys)
         {
-            _trade.StockMarket[(StockType)i + 1].StationStock = _lastSaved.StationStock[i];
+            _trade.StockMarket[type].StationStock = _lastSaved.StationStock[type.ToString()];
         }
     }
 }

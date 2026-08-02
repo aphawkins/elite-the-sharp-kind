@@ -2,9 +2,11 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Text.Json.Nodes;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
+using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
 using Useful.Fakes.Controls;
@@ -43,12 +45,12 @@ public class SaveFileTests
     [Fact]
     public void LoadCommanderWithTruncatedArraysReturnsFalseInsteadOfThrowing()
     {
-        // Arrange: a hand-edited file with a short galaxySeed array - SaveStateToGameState
-        // indexes GalaxySeed[0..5], so without validation this used to throw.
+        // Arrange: a hand-edited file missing nearly everything - the mapping reads the
+        // seed and the goods without checking, so without validation this used to throw.
         SaveFile saveFile = CreateSaveFile(out string directory);
         File.WriteAllText(
             Path.Combine(directory, "Truncated.cmdr"),
-            /*lang=json,strict*/ "{\"galaxySeed\": [1, 2, 3]}");
+            /*lang=json,strict*/ "{\"galaxySeed\": {\"a\": 1}}");
 
         // Act
         bool result = saveFile.LoadCommander("Truncated");
@@ -73,6 +75,172 @@ public class SaveFileTests
     }
 
     [Fact]
+    public void SaveCommanderNamesEveryGoodItsLasersAndItsMission()
+    {
+        // Arrange: the point of the format - nothing positional, so a save can be read
+        // without counting array indices against the code that wrote it.
+        SaveFile saveFile = CreateSaveFile(out string directory);
+
+        // Act
+        saveFile.SaveCommander("Named");
+        JsonObject save = ReadSave(directory, "Named");
+
+        // Assert
+        Assert.Equal(SaveState.CurrentFileType, (string?)save["fileType"]);
+        Assert.Equal(SaveState.CurrentVersion, (int?)save["version"]);
+        Assert.Equal(nameof(MissionStage.None), (string?)save["mission"]);
+        Assert.Equal("Clean", (string?)save["legalStatus"]!["status"]);
+        Assert.Equal("Pulse", (string?)save["lasers"]!["front"]);
+        Assert.Equal("None", (string?)save["lasers"]!["rear"]);
+        Assert.Equal(0, (int?)save["cargo"]![nameof(StockType.Narcotics)]);
+        Assert.Equal(0x3A, (int?)save["stationStock"]![nameof(StockType.Minerals)]);
+    }
+
+    [Fact]
+    public void LoadCommanderRestoresTheGoodsByName()
+    {
+        // Arrange: cargo is keyed by name, so it has to land on the named good and not
+        // on whichever one happens to sit at that position.
+        SaveFile saveFile = CreateSaveFile(out string directory, out Trade trade);
+        saveFile.SaveCommander("Cargo");
+        Edit(directory, "Cargo", save => save["cargo"]![nameof(StockType.Furs)] = 3);
+
+        // Act
+        bool loaded = saveFile.LoadCommander("Cargo");
+
+        // Assert
+        Assert.True(loaded);
+        Assert.Equal(3, trade.StockMarket[StockType.Furs].CurrentCargo);
+    }
+
+    [Theory]
+
+    // A file from before the format was versioned, and one from a later format.
+    [InlineData("version", 0)]
+    [InlineData("version", 2)]
+    [InlineData("fileType", "Something else")]
+
+    // Values the game itself never produces.
+    [InlineData("fuel", 8)]
+    [InlineData("missiles", 5)]
+    [InlineData("cargoCapacity", 21)]
+    [InlineData("credits", -1)]
+    [InlineData("galaxyNumber", 8)]
+    [InlineData("marketRandomiser", 256)]
+
+    // Enum members have to be named, not numbered.
+    [InlineData("mission", "3")]
+    [InlineData("mission", "NoSuchMission")]
+    [InlineData("energyUnit", "Nuclear")]
+    public void LoadCommanderRejectsAValueTheGameCouldNotHaveWritten(string property, object value)
+    {
+        // Arrange
+        SaveFile saveFile = CreateSaveFile(out string directory);
+        saveFile.SaveCommander("Edited");
+        Edit(directory, "Edited", save => save[property] = JsonValue.Create(value));
+
+        // Act
+        bool result = saveFile.LoadCommander("Edited");
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void LoadCommanderRejectsAnUnknownGood()
+    {
+        // Arrange: a typo'd name would have been read as a missing one, and the array
+        // format could not have caught it at all.
+        SaveFile saveFile = CreateSaveFile(out string directory);
+        saveFile.SaveCommander("Typo");
+        Edit(
+            directory,
+            "Typo",
+            save =>
+            {
+                JsonObject cargo = save["cargo"]!.AsObject();
+                cargo.Remove(nameof(StockType.Furs));
+                cargo["Pelts"] = 0;
+            });
+
+        // Act
+        bool result = saveFile.LoadCommander("Typo");
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void LoadCommanderRejectsAQuantityTheMarketCouldNotHold()
+    {
+        // Arrange
+        SaveFile saveFile = CreateSaveFile(out string directory);
+        saveFile.SaveCommander("Overstocked");
+        Edit(directory, "Overstocked", save => save["stationStock"]![nameof(StockType.Food)] = 64);
+
+        // Act
+        bool result = saveFile.LoadCommander("Overstocked");
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void LoadCommanderRejectsMoreCargoThanTheHoldTakes()
+    {
+        // Arrange: gold, platinum and gem stones are not weighed in tonnes, so it is the
+        // tonnage and not the number of goods that has to fit.
+        SaveFile saveFile = CreateSaveFile(out string directory);
+        saveFile.SaveCommander("Overloaded");
+        Edit(directory, "Overloaded", save => save["cargo"]![nameof(StockType.Food)] = 21);
+
+        // Act
+        bool result = saveFile.LoadCommander("Overloaded");
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void LoadCommanderRejectsALegalStatusThatContradictsItsBounty()
+    {
+        // Arrange: the bounty is what the game works in, so a file naming a band its
+        // bounty does not fall in has been edited wrongly rather than usefully.
+        SaveFile saveFile = CreateSaveFile(out string directory);
+        saveFile.SaveCommander("Liar");
+        Edit(directory, "Liar", save => save["legalStatus"]!["bounty"] = 64);
+
+        // Act
+        bool result = saveFile.LoadCommander("Liar");
+
+        // Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void LoadCommanderRestoresABountyItsBandAgreesWith()
+    {
+        // Arrange
+        SaveFile saveFile = CreateSaveFile(out string directory, out _, out GameState gameState);
+        saveFile.SaveCommander("Fugitive");
+        Edit(
+            directory,
+            "Fugitive",
+            save =>
+            {
+                save["legalStatus"]!["bounty"] = 64;
+                save["legalStatus"]!["status"] = "Fugitive";
+            });
+
+        // Act
+        bool loaded = saveFile.LoadCommander("Fugitive");
+
+        // Assert
+        Assert.True(loaded);
+        Assert.Equal(64, gameState.Cmdr.LegalStatus);
+    }
+
+    [Fact]
     public void SaveCommanderWithPathSeparatorsInNameStaysInsideSaveDirectory()
     {
         // Arrange: a commander name containing path separators must not escape
@@ -87,14 +255,40 @@ public class SaveFileTests
         Assert.Single(Directory.GetFiles(directory));
     }
 
-    private static SaveFile CreateSaveFile(out string directory)
+    private static JsonObject ReadSave(string directory, string name)
+        => JsonNode.Parse(File.ReadAllText(Path.Combine(directory, name + ".cmdr")))!.AsObject();
+
+    private static void Edit(string directory, string name, Action<JsonObject> edit)
     {
+        string path = Path.Combine(directory, name + ".cmdr");
+        JsonObject save = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+        edit(save);
+        File.WriteAllText(path, save.ToJsonString());
+    }
+
+    private static SaveFile CreateSaveFile(out string directory)
+        => CreateSaveFile(out directory, out _, out _);
+
+    private static SaveFile CreateSaveFile(out string directory, out Trade trade)
+        => CreateSaveFile(out directory, out trade, out _);
+
+    private static SaveFile CreateSaveFile(out string directory, out Trade trade, out GameState gameState)
+    {
+        // These tests are written against Commander Jameson, so the debug commander is
+        // cleared for this process rather than left to whatever the machine has set.
+        Environment.SetEnvironmentVariable(SaveFile.DebugCommanderEnvVar, null);
+
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        GameState gameState = new(views);
+        gameState = new(views);
         PlayerShip ship = new();
-        Trade trade = new(gameState, ship);
+        trade = new(gameState, ship);
         PlanetController planet = new(gameState);
         directory = Path.Combine(Path.GetTempPath(), "SaveFileTests_" + Guid.NewGuid().ToString("N"));
-        return new SaveFile(gameState, ship, trade, planet, directory);
+        SaveFile saveFile = new(gameState, ship, trade, planet, directory);
+
+        // As the game does on startup, so the state a save is written from is
+        // Commander Jameson rather than an empty ship.
+        saveFile.GetLastSave();
+        return saveFile;
     }
 }
