@@ -4,8 +4,10 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using EliteSharp.Missions.Abstractions;
 using EliteSharpLib.Equipment;
 using EliteSharpLib.Lasers;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
@@ -63,6 +65,7 @@ internal sealed class SaveFile
 
     private readonly string _baseDirectory;
     private readonly ILogger<SaveFile> _logger;
+    private readonly MissionRegistry _missions;
     private readonly PlanetController _planet;
     private readonly PlayerShip _ship;
     private readonly GameState _state;
@@ -74,6 +77,7 @@ internal sealed class SaveFile
         PlayerShip ship,
         Trade trade,
         PlanetController planet,
+        MissionRegistry missions,
         string baseDirectory,
         ILogger<SaveFile>? logger = null)
     {
@@ -81,6 +85,7 @@ internal sealed class SaveFile
         _ship = ship;
         _trade = trade;
         _planet = planet;
+        _missions = missions;
         _baseDirectory = baseDirectory;
         _logger = logger ?? NullLogger<SaveFile>.Instance;
         Directory.CreateDirectory(_baseDirectory);
@@ -180,30 +185,6 @@ internal sealed class SaveFile
             && Enum.TryParse(value, out T parsed)
             && Enum.IsDefined(parsed);
 
-    /// <summary>
-    /// Whether every mission is named exactly once, each with a stage of its own mission's.
-    /// Counting as well as looking each name up leaves no room for an unknown mission, and
-    /// giving each mission its own stage type keeps one mission's stages out of another's.
-    /// </summary>
-    private static bool IsValidMissions(IDictionary<string, MissionState>? missions)
-        => missions is { } stages
-            && stages.Count == Enum.GetValues<MissionName>().Length
-            && IsValidStage<ConstrictorStage>(stages, MissionName.Constrictor)
-            && IsValidStage<ThargoidStage>(stages, MissionName.Thargoid);
-
-    /// <summary>
-    /// Whether the named mission is present with a stage this mission knows.
-    /// </summary>
-    /// <typeparam name="T">The named mission's own stage type.</typeparam>
-    /// <param name="missions">The missions the save file holds.</param>
-    /// <param name="name">The mission to look for.</param>
-    /// <returns>Whether the mission is there and names one of its own stages.</returns>
-    private static bool IsValidStage<T>(IDictionary<string, MissionState> missions, MissionName name)
-        where T : struct, Enum
-        => missions.TryGetValue(name.ToString(), out MissionState? mission)
-            && mission is { } stage
-            && IsNamed<T>(stage.Stage);
-
     private static bool IsValidLegalStatus(LegalStatusState? legal)
         => legal is { Bounty: >= 0 and <= LegalStatusBand.BountyMax }
             && string.Equals(legal.Status, LegalStatusBand.For(legal.Bounty), StringComparison.Ordinal);
@@ -268,6 +249,41 @@ internal sealed class SaveFile
     /// Whether the goods are named exactly once each, with a quantity the market could have
     /// produced. Counting as well as looking each name up leaves no room for an unknown one.
     /// </summary>
+    /// <summary>
+    /// Whether every mission the save names is installed and is at one of the stages that
+    /// mission declares. The vocabulary now comes from the missions themselves rather than
+    /// from an enum, which is the only way a mission that arrived in a plugin could be
+    /// checked at all. A save may name fewer missions than are installed - the rest have not
+    /// been started - but a mission it names that nothing provides is a save that cannot be
+    /// applied, so it is turned away and logged rather than half-loaded.
+    /// </summary>
+    private bool IsValidMissions(IDictionary<string, MissionState>? missions)
+    {
+        if (missions is null)
+        {
+            return false;
+        }
+
+        foreach ((string name, MissionState state) in missions)
+        {
+            IMission? mission = _missions.Find(name);
+
+            if (mission is null)
+            {
+                LogMessages.SaveNamesUnknownMission(_logger, name);
+                return false;
+            }
+
+            if (state?.Stage is null || mission.Stages.IndexOf(state.Stage) < 0)
+            {
+                LogMessages.SaveNamesUnknownStage(_logger, name, state?.Stage ?? "(none)");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private bool IsValidStock(IDictionary<string, int>? stock) => stock is { } goods
         && goods.Count == _trade.StockMarket.Count
         && _trade.StockMarket.Keys.All(type
@@ -322,11 +338,10 @@ internal sealed class SaveFile
         },
         MarketRandomiser = _trade.MarketRandomiser,
         Missiles = _ship.MissileCount,
-        Missions = new Dictionary<string, MissionState>(StringComparer.Ordinal)
-        {
-            [nameof(MissionName.Constrictor)] = new() { Stage = _state.Cmdr.Constrictor.ToString() },
-            [nameof(MissionName.Thargoid)] = new() { Stage = _state.Cmdr.Thargoid.ToString() },
-        },
+        Missions = _state.Cmdr.Missions.Recorded.ToDictionary(
+            x => x.Key,
+            x => new MissionState { Stage = x.Value },
+            StringComparer.Ordinal),
         Score = _state.Cmdr.Score,
         ShipLocation = new()
         {
@@ -378,10 +393,12 @@ internal sealed class SaveFile
         _state.Cmdr.LegalStatus = _lastSaved.LegalStatus.Bounty;
         _trade.MarketRandomiser = _lastSaved.MarketRandomiser;
         _ship.MissileCount = _lastSaved.Missiles;
-        _state.Cmdr.Constrictor =
-            Enum.Parse<ConstrictorStage>(_lastSaved.Missions[nameof(MissionName.Constrictor)].Stage);
-        _state.Cmdr.Thargoid =
-            Enum.Parse<ThargoidStage>(_lastSaved.Missions[nameof(MissionName.Thargoid)].Stage);
+        _state.Cmdr.Missions.Clear();
+        foreach ((string name, MissionState mission) in _lastSaved.Missions)
+        {
+            _state.Cmdr.Missions.MoveTo(name, mission.Stage);
+        }
+
         _state.Cmdr.Score = _lastSaved.Score;
         _state.DockedPlanet.D = _lastSaved.ShipLocation.D;
         _state.DockedPlanet.B = _lastSaved.ShipLocation.B;

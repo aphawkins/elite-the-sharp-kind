@@ -4,6 +4,7 @@
 
 using BenchmarkDotNet.Attributes;
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
 using Useful.Controls;
 using Useful.Fakes.Assets;
@@ -31,7 +32,7 @@ public class PlanetBenchmarks : IDisposable
         FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(input);
         Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
-        GameState gameState = new(views);
+        GameState gameState = new(views, ClassicMissions.Registry());
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);

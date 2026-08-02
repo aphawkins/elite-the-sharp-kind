@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Types;
+using EliteSharpLib.Missions;
 using Useful;
 
 namespace EliteSharpLib.Views.EightBit;
@@ -42,13 +42,13 @@ internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMiss
 
         switch (model.Stage)
         {
-            case ThargoidStage.Summoned:
+            case ThargoidMission.Summoned:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsLower), model.Paragraphs[0]);
                 DrawFooter();
                 break;
 
-            case ThargoidStage.CarryingPlans:
+            case ThargoidMission.CarryingPlans:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowUpper)), Column(TextColumnsUpper), model.Paragraphs[0]);
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsLower), model.Paragraphs[1]);
@@ -58,7 +58,7 @@ internal sealed class ThargoidMissionView8Bit : BaseView8Bit, IView<ThargoidMiss
                 DrawFooter();
                 break;
 
-            case ThargoidStage.Rewarded:
+            case ThargoidMission.Rewarded:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextCentreOnGrid(TextRowUpper, model.Headline, nameof(FontType.Large), _colorYellow);
                 DrawTextPretty(new(Column(TextColumn), Row(TextRowLower)), Column(TextColumnsUpper), model.Paragraphs[0]);

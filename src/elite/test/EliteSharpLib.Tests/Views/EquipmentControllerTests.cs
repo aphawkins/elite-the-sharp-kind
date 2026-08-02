@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -85,7 +86,7 @@ public class EquipmentControllerTests
     {
         FakeKeyboard keyboard = new();
         ScreenManager<Screen, IScreenController> views = new(keyboard);
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
         ship = new PlayerShip();
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();

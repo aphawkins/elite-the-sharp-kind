@@ -4,6 +4,7 @@
 
 using BenchmarkDotNet.Attributes;
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Suns;
 using Useful.Controls;
 using Useful.Fakes.Assets;
@@ -28,7 +29,7 @@ public class SunBenchmarks : IDisposable
         FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(new SDLInput());
         Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
-        GameState gameState = new(views);
+        GameState gameState = new(views, ClassicMissions.Registry());
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);

@@ -5,6 +5,7 @@
 using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Suns;
@@ -511,7 +512,7 @@ public class SpaceTests
         views.Add(Screen.Docking, new FakeView());
         views.Add(Screen.GameOver, new FakeView());
         views.Add(Screen.Hyperspace, new FakeView());
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
         ship = new PlayerShip();
         trade = new Trade(gameState, ship);
         draw = new FakeEliteDraw();

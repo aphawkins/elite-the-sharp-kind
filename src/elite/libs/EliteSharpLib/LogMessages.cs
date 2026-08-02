@@ -46,4 +46,16 @@ internal static partial class LogMessages
         Level = LogLevel.Critical,
         Message = "'{FirstAssembly}' and '{SecondAssembly}' both provide a mission called '{Name}'.")]
     internal static partial void DuplicateMissionName(ILogger logger, string name, string firstAssembly, string secondAssembly);
+
+    [LoggerMessage(
+        EventId = 9,
+        Level = LogLevel.Warning,
+        Message = "Commander file names mission '{Name}', which nothing provides.")]
+    internal static partial void SaveNamesUnknownMission(ILogger logger, string name);
+
+    [LoggerMessage(
+        EventId = 10,
+        Level = LogLevel.Warning,
+        Message = "Commander file puts mission '{Name}' at stage '{Stage}', which it does not have.")]
+    internal static partial void SaveNamesUnknownStage(ILogger logger, string name, string stage);
 }

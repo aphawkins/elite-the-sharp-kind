@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
@@ -110,11 +111,11 @@ public class LoadCommanderControllerTests
         keyboard = new FakeKeyboard();
         ScreenManager<Screen, IScreenController> views = new(keyboard);
         views.Add(Screen.CommanderStatus, new FakeView());
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
         PlayerShip ship = new();
         Trade trade = new(gameState, ship);
         string directory = Path.Combine(Path.GetTempPath(), "LoadCommanderControllerTests_" + Guid.NewGuid().ToString("N"));
-        save = new SaveFile(gameState, ship, trade, new PlanetController(gameState), directory);
+        save = new SaveFile(gameState, ship, trade, new PlanetController(gameState), ClassicMissions.Registry(), directory);
 
         return new LoadCommanderController(gameState, keyboard, save, new FakeLoadCommanderView());
     }

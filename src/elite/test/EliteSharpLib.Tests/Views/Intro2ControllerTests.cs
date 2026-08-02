@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -66,7 +67,7 @@ public class Intro2ControllerTests
     {
         keyboard = new FakeKeyboard();
         ScreenManager<Screen, IScreenController> views = new(keyboard);
-        GameState gameState = new(views);
+        GameState gameState = new(views, ClassicMissions.Registry());
         PlayerShip ship = new();
         FakeEliteDraw draw = new();
         RNG rng = new(new FakeRandomSource());

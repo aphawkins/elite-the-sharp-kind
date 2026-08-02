@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -47,7 +48,7 @@ public class CombatTests
     private static Combat CreateCombat(out Universe universe, int randomValue)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        GameState gameState = new(views);
+        GameState gameState = new(views, ClassicMissions.Registry());
         PlayerShip ship = new();
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();

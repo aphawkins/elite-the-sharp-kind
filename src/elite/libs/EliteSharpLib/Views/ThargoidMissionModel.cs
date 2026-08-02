@@ -2,8 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Types;
-
 namespace EliteSharpLib.Views;
 
 /// <summary>
@@ -13,7 +11,7 @@ namespace EliteSharpLib.Views;
 /// differently.
 /// </summary>
 internal sealed record ThargoidMissionModel(
-    ThargoidStage Stage,
+    string Stage,
     string Headline,
     IReadOnlyList<string> Paragraphs,
     bool ShowPortrait);

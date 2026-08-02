@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -45,7 +46,7 @@ public class TradeTests
     private static Trade CreateTrade()
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        GameState gameState = new(views);
+        GameState gameState = new(views, ClassicMissions.Registry());
         PlayerShip ship = new();
         return new Trade(gameState, ship);
     }

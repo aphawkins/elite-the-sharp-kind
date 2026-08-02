@@ -62,16 +62,17 @@ public class MissionRegistryTests
     [Fact]
     public void IsBuiltByTheGamesOwnComposition()
     {
-        // Arrange: nothing asks for the registry yet, so without this the
-        // registration would go untried until the missions are wired in.
+        // Arrange
         using HeadlessGameHarness harness = new();
 
-        // Act: the game ships no plugin folder, so this finds nothing and must
-        // still come back.
+        // Act: the game ships no plugin folder, so the built-in missions are
+        // all there is - but they have to be there, or no save would load.
         MissionRegistry registry = harness.Resolve<MissionRegistry>();
 
         // Assert
-        Assert.Empty(registry.All);
+        Assert.Equal(2, registry.All.Count);
+        Assert.NotNull(registry.Find(ConstrictorMission.Id));
+        Assert.NotNull(registry.Find(ThargoidMission.Id));
     }
 
     private static MissionRegistry Registry(params IMission[] missions)

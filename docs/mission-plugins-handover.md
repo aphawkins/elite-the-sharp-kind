@@ -4,12 +4,13 @@ Turning Elite's two hardcoded missions into discoverable plugin parts.
 Started 2026-08-02. **Not finished** — this file is the state of play, so the
 work can be picked up in a new session without re-deriving any of it.
 
-T1 and T3 are landed. Nothing calls them yet, so the game behaves exactly as it
-did before.
+T1, T3 and T2 are landed, and the game plays exactly as it did before. The
+missions are now registry-backed but their behaviour still lives in the two
+controllers; T5 is what moves it.
 
 ## Why
 
-Adding a mission today means editing: two enums in
+Adding a mission used to mean editing: two enums in
 `src/elite/libs/EliteSharpLib/Types/`, two controllers, two `Screen` values and
 four tier-specific views. The maintainer's objection, which started this: the
 mission stages are hardcoded and that is not conducive to adding more missions.
@@ -120,9 +121,9 @@ Two types in `EliteSharpLib/Missions/`:
   of one name log Critical (naming both assemblies) and throw, because a save
   file naming it could mean either.
 
-Registered in `AddEliteCore`, off `AppContext.BaseDirectory`. Nothing resolves
-it yet, so a test builds the game's real composition and asks for it, or the
-registration would go untried until T2.
+Registered in `AddEliteCore`, off `AppContext.BaseDirectory`, and resolved for
+real since T2 — `GameState` needs it to build the commander, so a normal startup
+now logs `No mission plugin folder at '...\Missions'` and carries on.
 
 Two things worth keeping:
 
@@ -153,22 +154,43 @@ Also from the earlier blocked attempt, still true: `System.Composition`
 so the DLLs are enumerated by hand and passed to
 `ContainerConfiguration.WithAssemblies`.
 
+### T2 — `MissionProgress` and save wiring — **done**
+
+The three enums are gone. `Commander.Missions` is a `MissionProgress`: stage
+names as strings, guarded by the registry, so `MoveTo` refuses a mission nobody
+installed and a stage that mission never declared. `IsAt` is what nearly every
+caller wants and keeps stage names from being compared the wrong way.
+
+**T2 could not be done before the missions existed as registry entries.** The
+handover's order had T2 before T5, but deleting the enums empties the stage
+vocabulary, and with an empty registry every save is rejected. So
+`ConstrictorMission` and `ThargoidMission` landed here as built-ins that declare
+their stages — using the old enum's names, so existing saves still load — and
+whose `Advance` returns null for now. Their behaviour is still in the two
+controllers and is T5's job. `ClassicMissions` is the list, and the registry is
+built-ins plus whatever the plugin folder holds.
+
+`GameState`'s constructor takes the registry, because it builds the commander.
+That is why ~25 test and benchmark call sites changed; they pass
+`ClassicMissions.Registry()`.
+
+One deliberate change of shape: **the save file now holds only the stages that
+have been reached.** A fresh commander writes `"missions": {}`. It was going to
+need this anyway — a save written with a plugin installed and loaded without it
+(or the reverse) cannot require every installed mission to be present. Absence
+now reads as not started; a mission the save *names* that nothing provides is
+still rejected and logged, as decided.
+
 ## What is left
 
-1. **T2 — `MissionProgress` + save wiring.** Stages become registry-validated
-   strings; delete `Types/ConstrictorStage.cs`, `Types/ThargoidStage.cs`,
-   `Types/MissionName.cs`. The save file's shape does **not** change —
-   `"missions": { "Constrictor": { "stage": "Rewarded" } }` is already right —
-   only its validation moves from the enums to the registry. A save naming a
-   mission no plugin provides is rejected **and logged**.
-2. **T4 — One briefing screen.** `MissionBriefingController` plus one view per
+1. **T4 — One briefing screen.** `MissionBriefingController` plus one view per
    tier, keyed on what the briefing *contains* (headline? portrait? how many
    paragraphs?) rather than which mission it is. Collapses
    `Screen.MissionOne`/`MissionTwo`; `DockingView` and `EliteDraw` reference
    them.
-3. **T5 — Port both missions to `IMission`**, still inside `EliteSharpLib`, to
+2. **T5 — Port both missions to `IMission`**, still inside `EliteSharpLib`, to
    confirm the context suffices before publishing the assembly boundary.
-4. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
+3. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
    plugin.
 
 ## Consequences to plan for
@@ -207,4 +229,4 @@ worktrees are branched off whatever `master` was and cannot see each other's
 uncommitted work; and `ELITE_DEBUG_COMMANDER` is set machine-wide on the
 maintainer's box, so the game starts as Commander Max, not Jameson.
 
-Remaining order: T2, then T4, T5, T6, committing each separately.
+Remaining order: T4, then T5, then T6, committing each separately.

@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharpLib.Missions;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
 using Useful.Fakes.Controls;
@@ -48,7 +49,7 @@ public class OptionsControllerTests
     private static OptionsController CreateController(out GameState gameState)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
 
         return new OptionsController(gameState, new FakeKeyboard(), new FakeOptionsView());
     }

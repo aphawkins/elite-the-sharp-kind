@@ -5,6 +5,7 @@
 using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -33,7 +34,7 @@ internal static class SettingsControllerFixture
         views.Add(Screen.GameOver, new FakeView());
         views.Add(Screen.Hyperspace, new FakeView());
         views.Add(Screen.Options, new FakeView());
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
 
         draw = new FakeEliteDraw();
         RNG rng = new(new FakeRandomSource());

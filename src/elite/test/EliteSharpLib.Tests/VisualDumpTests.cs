@@ -4,6 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -28,7 +29,7 @@ public class VisualDumpTests
 
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
-        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), ClassicMissions.Registry());
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));
         EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer, rng);
@@ -116,7 +117,7 @@ public class VisualDumpTests
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
         WireframeRenderer shipRenderer = new(graphics, AssetLocator.Create());
-        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), ClassicMissions.Registry());
         RNG rng = new(new Random(0));
         EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer, rng);
         ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);
@@ -175,7 +176,7 @@ public class VisualDumpTests
             FastBitmap? lastFrame = null;
             using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
             IPolygonRenderer shipRenderer = createRenderer(graphics);
-            GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()));
+            GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), ClassicMissions.Registry());
             RNG rng = new(new Random(0));
             EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), shipRenderer, rng);
             ShipFactory factory = ShipFactory.Create(AssetLocator.Create(), draw, rng);

@@ -5,9 +5,9 @@
 using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
-using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
 using Useful.Audio;
@@ -26,11 +26,11 @@ public class ConstrictorMissionControllerTests
     public void NothingIsShownOutsideTheMission()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Constrictor = ConstrictorStage.None;
+        gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.None);
 
         ConstrictorMissionModel model = controller.BuildModel();
 
-        Assert.Equal(ConstrictorStage.None, model.Stage);
+        Assert.Equal(ConstrictorMission.None, model.Stage);
         Assert.Empty(model.Paragraphs);
     }
 
@@ -38,11 +38,11 @@ public class ConstrictorMissionControllerTests
     public void TheBriefIsTwoParagraphsAndNoHeadline()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Constrictor = ConstrictorStage.Briefed;
+        gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Briefed);
 
         ConstrictorMissionModel model = controller.BuildModel();
 
-        Assert.Equal(ConstrictorStage.Briefed, model.Stage);
+        Assert.Equal(ConstrictorMission.Briefed, model.Stage);
         Assert.Equal(2, model.Paragraphs.Count);
         Assert.Equal(string.Empty, model.Headline);
     }
@@ -51,7 +51,7 @@ public class ConstrictorMissionControllerTests
     public void TheFirstGalaxyIsToldWhereTheConstrictorWasSeen()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Constrictor = ConstrictorStage.Briefed;
+        gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Briefed);
         gameState.Cmdr.GalaxyNumber = 0;
 
         Assert.Contains("Reesdice", controller.BuildModel().Paragraphs[1], StringComparison.Ordinal);
@@ -61,7 +61,7 @@ public class ConstrictorMissionControllerTests
     public void LaterGalaxiesAreToldItJumpedHere()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Constrictor = ConstrictorStage.Briefed;
+        gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Briefed);
         gameState.Cmdr.GalaxyNumber = 1;
 
         string paragraph = controller.BuildModel().Paragraphs[1];
@@ -74,11 +74,11 @@ public class ConstrictorMissionControllerTests
     public void TheDebriefCarriesAHeadlineAndOneParagraph()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState);
-        gameState.Cmdr.Constrictor = ConstrictorStage.Rewarded;
+        gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Rewarded);
 
         ConstrictorMissionModel model = controller.BuildModel();
 
-        Assert.Equal(ConstrictorStage.Rewarded, model.Stage);
+        Assert.Equal(ConstrictorMission.Rewarded, model.Stage);
         Assert.Equal("Congratulations Commander!", model.Headline);
         Assert.Single(model.Paragraphs);
     }
@@ -87,12 +87,12 @@ public class ConstrictorMissionControllerTests
     public void ResetPaysTheBountyOnceTheConstrictorIsDead()
     {
         ConstrictorMissionController controller = CreateController(out GameState gameState, out Trade trade);
-        gameState.Cmdr.Constrictor = ConstrictorStage.Destroyed;
+        gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Destroyed);
         float creditsBefore = trade.Credits;
 
         controller.Reset();
 
-        Assert.Equal(ConstrictorStage.Rewarded, gameState.Cmdr.Constrictor);
+        Assert.Equal(ConstrictorMission.Rewarded, gameState.Cmdr.Missions.StageOf(ConstrictorMission.Id));
         Assert.Equal(creditsBefore + 5000, trade.Credits);
     }
 
@@ -102,7 +102,7 @@ public class ConstrictorMissionControllerTests
     private static ConstrictorMissionController CreateController(out GameState gameState, out Trade trade)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
         PlayerShip ship = new();
         trade = new(gameState, ship);
         FakeEliteDraw draw = new();

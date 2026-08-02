@@ -127,14 +127,13 @@ internal static class CommanderFactory
             .ToDictionary(type => type.ToString(), type => carrying.Contains(type) ? 1 : 0, StringComparer.Ordinal);
 
     /// <summary>
-    /// Every mission at its opening stage, which both commanders start at.
+    /// No mission started, which both commanders begin at. The save file holds
+    /// only the stages that have been reached, so a mission nobody has started
+    /// is an entry that is not there - which is also what lets a commander
+    /// saved before a mission was installed load afterwards.
     /// </summary>
     private static Dictionary<string, MissionState> NoMissionsStarted()
-        => new(StringComparer.Ordinal)
-        {
-            [nameof(MissionName.Constrictor)] = new() { Stage = nameof(ConstrictorStage.None) },
-            [nameof(MissionName.Thargoid)] = new() { Stage = nameof(ThargoidStage.None) },
-        };
+        => new(StringComparer.Ordinal);
 
     private static Dictionary<string, int> StartingStationStock()
         => s_startingStationStock.ToDictionary(x => x.Type.ToString(), x => x.Quantity, StringComparer.Ordinal);

@@ -3,9 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Conflict;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
-using EliteSharpLib.Types;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Controls;
@@ -94,12 +94,12 @@ internal sealed class ConstrictorMissionController : IScreenController
 
     public void Reset()
     {
-        if (_gameState.Cmdr.Constrictor == ConstrictorStage.None
+        if (_gameState.Cmdr.Missions.IsAt(ConstrictorMission.Id, ConstrictorMission.None)
             && _gameState.Cmdr.Score >= 256
             && _gameState.Cmdr.GalaxyNumber < 2)
         {
             // Show brief
-            _gameState.Cmdr.Constrictor = ConstrictorStage.Briefed;
+            _gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Briefed);
 
             _combat.Reset();
             _universe.ClearUniverse();
@@ -114,10 +114,10 @@ internal sealed class ConstrictorMissionController : IScreenController
             _ship.Climb = 0;
             _ship.Speed = 0;
         }
-        else if (_gameState.Cmdr.Constrictor == ConstrictorStage.Destroyed)
+        else if (_gameState.Cmdr.Missions.IsAt(ConstrictorMission.Id, ConstrictorMission.Destroyed))
         {
             // Show debrief
-            _gameState.Cmdr.Constrictor = ConstrictorStage.Rewarded;
+            _gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Rewarded);
             _gameState.Cmdr.Score += 256;
             _trade.Credits += 5000;
         }
@@ -133,16 +133,16 @@ internal sealed class ConstrictorMissionController : IScreenController
 
     // Exposed for tests: which briefing the current stage selects,
     // and which of the two second paragraphs the galaxy chooses.
-    internal ConstrictorMissionModel BuildModel() => _gameState.Cmdr.Constrictor switch
+    internal ConstrictorMissionModel BuildModel() => _gameState.Cmdr.Missions.StageOf(ConstrictorMission.Id) switch
     {
-        ConstrictorStage.Briefed => new(
-            ConstrictorStage.Briefed,
+        ConstrictorMission.Briefed => new(
+            ConstrictorMission.Briefed,
             string.Empty,
             [Mission1BriefA, _gameState.Cmdr.GalaxyNumber == 0 ? Mission1BriefB : Mission1BriefC]),
-        ConstrictorStage.Rewarded => new(
-            ConstrictorStage.Rewarded,
+        ConstrictorMission.Rewarded => new(
+            ConstrictorMission.Rewarded,
             "Congratulations Commander!",
             [Mission1Debrief]),
-        _ => new(ConstrictorStage.None, string.Empty, []),
+        _ => new(ConstrictorMission.None, string.Empty, []),
     };
 }

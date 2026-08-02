@@ -3,8 +3,8 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Equipment;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
-using EliteSharpLib.Types;
 using Useful.Controls;
 
 namespace EliteSharpLib.Views;
@@ -72,27 +72,27 @@ internal sealed class ThargoidMissionController : IScreenController
         // The Navy only calls once the Constrictor has been paid for, and only
         // once: the old single mission number said that by being 3 and then
         // moving on, where the Constrictor's own stage stays Rewarded for good.
-        if (_gameState.Cmdr.Thargoid == ThargoidStage.None
-            && _gameState.Cmdr.Constrictor == ConstrictorStage.Rewarded
+        if (_gameState.Cmdr.Missions.IsAt(ThargoidMission.Id, ThargoidMission.None)
+            && _gameState.Cmdr.Missions.IsAt(ConstrictorMission.Id, ConstrictorMission.Rewarded)
             && _gameState.Cmdr.Score >= 1280
             && _gameState.Cmdr.GalaxyNumber == 2)
         {
             // First brief
-            _gameState.Cmdr.Thargoid = ThargoidStage.Summoned;
+            _gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.Summoned);
         }
-        else if (_gameState.Cmdr.Thargoid == ThargoidStage.Summoned
+        else if (_gameState.Cmdr.Missions.IsAt(ThargoidMission.Id, ThargoidMission.Summoned)
             && _gameState.DockedPlanet.D == 215
             && _gameState.DockedPlanet.B == 84)
         {
             // Second brief
-            _gameState.Cmdr.Thargoid = ThargoidStage.CarryingPlans;
+            _gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.CarryingPlans);
         }
-        else if (_gameState.Cmdr.Thargoid == ThargoidStage.CarryingPlans
+        else if (_gameState.Cmdr.Missions.IsAt(ThargoidMission.Id, ThargoidMission.CarryingPlans)
             && _gameState.DockedPlanet.D == 63
             && _gameState.DockedPlanet.B == 72)
         {
             // Debrief
-            _gameState.Cmdr.Thargoid = ThargoidStage.Rewarded;
+            _gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.Rewarded);
             _gameState.Cmdr.Score += 256;
             _ship.EnergyUnit = EnergyUnit.Naval;
         }
@@ -107,23 +107,23 @@ internal sealed class ThargoidMissionController : IScreenController
     }
 
     // Exposed for tests: which briefing the current stage selects.
-    internal ThargoidMissionModel BuildModel() => _gameState.Cmdr.Thargoid switch
+    internal ThargoidMissionModel BuildModel() => _gameState.Cmdr.Missions.StageOf(ThargoidMission.Id) switch
     {
-        ThargoidStage.Summoned => new(
-            ThargoidStage.Summoned,
+        ThargoidMission.Summoned => new(
+            ThargoidMission.Summoned,
             string.Empty,
             [Mission2BriefA],
             false),
-        ThargoidStage.CarryingPlans => new(
-            ThargoidStage.CarryingPlans,
+        ThargoidMission.CarryingPlans => new(
+            ThargoidMission.CarryingPlans,
             string.Empty,
             [Mission2BriefB, Mission2BriefC],
             true),
-        ThargoidStage.Rewarded => new(
-            ThargoidStage.Rewarded,
+        ThargoidMission.Rewarded => new(
+            ThargoidMission.Rewarded,
             "Well done Commander!",
             [Mission2Debrief],
             false),
-        _ => new(ThargoidStage.None, string.Empty, [], false),
+        _ => new(ThargoidMission.None, string.Empty, [], false),
     };
 }

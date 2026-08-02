@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharpLib.Missions;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -67,7 +68,7 @@ public class PlanetDataControllerTests
     private static PlanetDataController CreateController(out GameState gameState)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
         RNG rng = new(new FakeRandomSource());
 
         return new PlanetDataController(gameState, new PlanetController(gameState), rng, new FakePlanetDataView());

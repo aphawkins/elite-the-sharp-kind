@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Audio;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -63,7 +64,7 @@ public class EscapeCapsuleControllerTests
     private static EscapeCapsuleController CreateController()
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        GameState gameState = new(views);
+        GameState gameState = new(views, ClassicMissions.Registry());
         PlayerShip ship = new();
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();

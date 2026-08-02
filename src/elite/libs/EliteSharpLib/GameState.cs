@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Config;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -38,11 +39,15 @@ internal sealed class GameState
 
     private readonly ScreenManager<Screen, IScreenController> _views;
 
-    internal GameState(ScreenManager<Screen, IScreenController> views) => _views = views;
+    internal GameState(ScreenManager<Screen, IScreenController> views, MissionRegistry missions)
+    {
+        _views = views;
+        Cmdr = new(new MissionProgress(missions));
+    }
 
     internal int CarryFlag { get; set; }
 
-    internal Commander Cmdr { get; set; } = new();
+    internal Commander Cmdr { get; set; }
 
     internal EliteConfig Config { get; set; } = new();
 

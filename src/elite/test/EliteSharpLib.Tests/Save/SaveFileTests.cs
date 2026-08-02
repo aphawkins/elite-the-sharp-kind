@@ -3,10 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Text.Json.Nodes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
-using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
 using Useful.Fakes.Controls;
@@ -88,12 +88,10 @@ public class SaveFileTests
         // Assert
         Assert.Equal(SaveState.CurrentFileType, (string?)save["fileType"]);
         Assert.Equal(SaveState.CurrentVersion, (int?)save["version"]);
-        Assert.Equal(
-            nameof(ConstrictorStage.None),
-            (string?)save["missions"]![nameof(MissionName.Constrictor)]!["stage"]);
-        Assert.Equal(
-            nameof(ThargoidStage.None),
-            (string?)save["missions"]![nameof(MissionName.Thargoid)]!["stage"]);
+
+        // A fresh commander has started nothing, and the file holds only the
+        // stages that have been reached.
+        Assert.Empty(save["missions"]!.AsObject());
         Assert.Equal("Clean", (string?)save["legalStatus"]!["status"]);
         Assert.Equal("Pulse", (string?)save["lasers"]!["front"]);
         Assert.Equal("None", (string?)save["lasers"]!["rear"]);
@@ -159,11 +157,14 @@ public class SaveFileTests
     [InlineData("Thargoid", "2")]
     public void LoadCommanderRejectsAStageThatIsNotThatMissions(string mission, string stage)
     {
-        // Arrange: each mission has its own stage type, so one mission's stages are not
+        // Arrange: each mission declares its own stages, so one mission's stages are not
         // another's - the single mission number this replaced could not tell them apart.
         SaveFile saveFile = CreateSaveFile(out string directory);
         saveFile.SaveCommander("WrongStage");
-        Edit(directory, "WrongStage", save => save["missions"]![mission]!["stage"] = stage);
+        Edit(
+            directory,
+            "WrongStage",
+            save => save["missions"]!.AsObject()[mission] = new JsonObject { ["stage"] = stage });
 
         // Act
         bool result = saveFile.LoadCommander("WrongStage");
@@ -182,12 +183,7 @@ public class SaveFileTests
         Edit(
             directory,
             "Unknown",
-            save =>
-            {
-                JsonObject missions = save["missions"]!.AsObject();
-                missions.Remove(nameof(MissionName.Thargoid));
-                missions["Generation"] = new JsonObject { ["stage"] = "Briefed" };
-            });
+            save => save["missions"]!.AsObject()["Generation"] = new JsonObject { ["stage"] = "Briefed" });
 
         // Act
         bool result = saveFile.LoadCommander("Unknown");
@@ -208,8 +204,9 @@ public class SaveFileTests
             "MidRun",
             save =>
             {
-                save["missions"]![nameof(MissionName.Constrictor)]!["stage"] = nameof(ConstrictorStage.Rewarded);
-                save["missions"]![nameof(MissionName.Thargoid)]!["stage"] = nameof(ThargoidStage.CarryingPlans);
+                JsonObject missions = save["missions"]!.AsObject();
+                missions[ConstrictorMission.Id] = new JsonObject { ["stage"] = ConstrictorMission.Rewarded };
+                missions[ThargoidMission.Id] = new JsonObject { ["stage"] = ThargoidMission.CarryingPlans };
             });
 
         // Act
@@ -217,8 +214,31 @@ public class SaveFileTests
 
         // Assert
         Assert.True(loaded);
-        Assert.Equal(ConstrictorStage.Rewarded, gameState.Cmdr.Constrictor);
-        Assert.Equal(ThargoidStage.CarryingPlans, gameState.Cmdr.Thargoid);
+        Assert.Equal(ConstrictorMission.Rewarded, gameState.Cmdr.Missions.StageOf(ConstrictorMission.Id));
+        Assert.Equal(ThargoidMission.CarryingPlans, gameState.Cmdr.Missions.StageOf(ThargoidMission.Id));
+    }
+
+    [Fact]
+    public void LoadCommanderReadsAMissionTheSaveDoesNotMentionAsNotStarted()
+    {
+        // Arrange: a commander saved before a mission existed, or one who has simply
+        // never met it. Either way the absence is the answer, not a reason to refuse
+        // the file.
+        SaveFile saveFile = CreateSaveFile(out string directory, out _, out GameState gameState);
+        saveFile.SaveCommander("PartWay");
+        Edit(
+            directory,
+            "PartWay",
+            save => save["missions"]!.AsObject()[ConstrictorMission.Id]
+                = new JsonObject { ["stage"] = ConstrictorMission.Briefed });
+
+        // Act
+        bool loaded = saveFile.LoadCommander("PartWay");
+
+        // Assert
+        Assert.True(loaded);
+        Assert.Equal(ConstrictorMission.Briefed, gameState.Cmdr.Missions.StageOf(ConstrictorMission.Id));
+        Assert.Equal(ThargoidMission.None, gameState.Cmdr.Missions.StageOf(ThargoidMission.Id));
     }
 
     [Fact]
@@ -354,12 +374,12 @@ public class SaveFileTests
         Environment.SetEnvironmentVariable(SaveFile.DebugCommanderEnvVar, null);
 
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
         PlayerShip ship = new();
         trade = new(gameState, ship);
         PlanetController planet = new(gameState);
         directory = Path.Combine(Path.GetTempPath(), "SaveFileTests_" + Guid.NewGuid().ToString("N"));
-        SaveFile saveFile = new(gameState, ship, trade, planet, directory);
+        SaveFile saveFile = new(gameState, ship, trade, planet, ClassicMissions.Registry(), directory);
 
         // As the game does on startup, so the state a save is written from is
         // Commander Jameson rather than an empty ship.

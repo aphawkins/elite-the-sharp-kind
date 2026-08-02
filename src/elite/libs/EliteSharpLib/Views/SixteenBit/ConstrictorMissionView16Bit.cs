@@ -4,7 +4,7 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Types;
+using EliteSharpLib.Missions;
 using Useful;
 
 namespace EliteSharpLib.Views.SixteenBit;
@@ -39,14 +39,14 @@ internal sealed class ConstrictorMissionView16Bit : BaseView16Bit, IConstrictorM
 
         switch (model.Stage)
         {
-            case ConstrictorStage.Briefed:
+            case ConstrictorMission.Briefed:
                 DrawViewHeader("INCOMING MESSAGE");
                 DrawTextPretty(new(16 + _draw.Layout.ViewportLeft, 50), 300, model.Paragraphs[0]);
                 DrawTextPretty(new(16 + _draw.Layout.ViewportLeft, 200), 470, model.Paragraphs[1]);
                 DrawFooter();
                 break;
 
-            case ConstrictorStage.Rewarded:
+            case ConstrictorMission.Rewarded:
                 DrawViewHeader("INCOMING MESSAGE");
                 _draw.Graphics.DrawTextCentre(100, model.Headline, nameof(FontType.Large), _colorGold);
                 DrawTextPretty(new(116 + _draw.Layout.ViewportLeft, 132), 400, model.Paragraphs[0]);

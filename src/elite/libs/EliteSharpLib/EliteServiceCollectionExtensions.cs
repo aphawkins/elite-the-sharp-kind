@@ -104,7 +104,9 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(sp => new RNG(sp.GetRequiredService<Random>()));
 
         services.AddSingleton(sp => new ScreenManager<Screen, IScreenController>(sp.GetRequiredService<IKeyboard>()));
-        services.AddSingleton(sp => new GameState(sp.GetRequiredService<ScreenManager<Screen, IScreenController>>())
+        services.AddSingleton(sp => new GameState(
+            sp.GetRequiredService<ScreenManager<Screen, IScreenController>>(),
+            sp.GetRequiredService<MissionRegistry>())
         {
             Config = sp.GetRequiredService<ConfigFile<EliteConfig>>().ReadConfig(),
         });
@@ -116,7 +118,12 @@ public static class EliteServiceCollectionExtensions
         // instances it produces are registered here like anything else, so the
         // composition host is gone by the time the registry exists.
         services.AddSingleton(sp => new MissionRegistry(
-            MissionLoader.LoadFrom(AppContext.BaseDirectory, sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(MissionLoader))),
+            [
+                .. ClassicMissions.All,
+                .. MissionLoader.LoadFrom(
+                    AppContext.BaseDirectory,
+                    sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(MissionLoader))),
+            ],
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<MissionRegistry>()));
     }
 
@@ -177,6 +184,7 @@ public static class EliteServiceCollectionExtensions
             sp.GetRequiredService<PlayerShip>(),
             sp.GetRequiredService<Trade>(),
             sp.GetRequiredService<PlanetController>(),
+            sp.GetRequiredService<MissionRegistry>(),
             sp.GetRequiredService<ConfigFile<EliteConfig>>().BaseDirectory,
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<SaveFile>()));
         services.AddSingleton(sp => new Space(

@@ -4,6 +4,7 @@
 
 using EliteSharpLib.Equipment;
 using EliteSharpLib.Fakes;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
@@ -102,7 +103,7 @@ public class CommanderStatusControllerTests
     private static CommanderStatusController CreateController(out GameState gameState, out PlayerShip ship)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        gameState = new(views);
+        gameState = new(views, ClassicMissions.Registry());
         ship = new PlayerShip();
         Trade trade = new(gameState, ship);
         RNG rng = new(new FakeRandomSource());

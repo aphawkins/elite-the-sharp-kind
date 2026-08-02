@@ -2,7 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Types;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Views;
 using Useful.Controls;
 
@@ -19,12 +19,12 @@ public class MissionJumpTests
     // then shows - the Thargoid jumps also want the Constrictor paid for,
     // which is the one dependency between the two missions.
     [Theory]
-    [InlineData(0, (int)ConstrictorStage.Briefed, (int)ThargoidStage.None)]
-    [InlineData(1, (int)ConstrictorStage.Rewarded, (int)ThargoidStage.None)]
-    [InlineData(2, (int)ConstrictorStage.Rewarded, (int)ThargoidStage.Summoned)]
-    [InlineData(3, (int)ConstrictorStage.Rewarded, (int)ThargoidStage.CarryingPlans)]
-    [InlineData(4, (int)ConstrictorStage.Rewarded, (int)ThargoidStage.Rewarded)]
-    public void EachStageReachesItsBriefing(int stage, int expectedConstrictor, int expectedThargoid)
+    [InlineData(0, ConstrictorMission.Briefed, ThargoidMission.None)]
+    [InlineData(1, ConstrictorMission.Rewarded, ThargoidMission.None)]
+    [InlineData(2, ConstrictorMission.Rewarded, ThargoidMission.Summoned)]
+    [InlineData(3, ConstrictorMission.Rewarded, ThargoidMission.CarryingPlans)]
+    [InlineData(4, ConstrictorMission.Rewarded, ThargoidMission.Rewarded)]
+    public void EachStageReachesItsBriefing(int stage, string expectedConstrictor, string expectedThargoid)
     {
         using HeadlessGameHarness harness = new();
         harness.Run(3, [new(1, ConsoleKey.N, KeyScriptAction.Tap), new(2, ConsoleKey.Spacebar, KeyScriptAction.Tap)]);
@@ -32,8 +32,8 @@ public class MissionJumpTests
         MissionJump.To(harness.Game.State, stage);
 
         Assert.Equal(stage < 2 ? Screen.MissionOne : Screen.MissionTwo, harness.Game.State.CurrentScreen);
-        Assert.Equal((ConstrictorStage)expectedConstrictor, harness.Game.State.Cmdr.Constrictor);
-        Assert.Equal((ThargoidStage)expectedThargoid, harness.Game.State.Cmdr.Thargoid);
+        Assert.Equal(expectedConstrictor, harness.Game.State.Cmdr.Missions.StageOf(ConstrictorMission.Id));
+        Assert.Equal(expectedThargoid, harness.Game.State.Cmdr.Missions.StageOf(ThargoidMission.Id));
     }
 
     [Fact]
