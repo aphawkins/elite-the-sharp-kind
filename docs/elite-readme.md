@@ -137,7 +137,27 @@ Elite's own diagnostic opt-ins, read at runtime rather than compiled in, so they
 | -------- | ----- | ------ |
 | `ELITE_LOG_LEVEL` | A Serilog level name: `Verbose`, `Debug`, `Information`, `Warning`, `Error` or `Fatal` — not the config file's own `Trace`…`None` names. Case-insensitive; anything unparseable is ignored and the config value stands | Overrides `engine.logging.minimumLevel`, for when the config file itself is what needs debugging |
 | `ELITE_DEBUG_COMMANDER` | Anything, including empty — only whether it is set matters | Starts with the fully equipped `Max` commander instead of `Jameson`, for exercising late-game equipment and cargo without a save file |
-| `ELITE_DEBUG_MISSIONS` | Anything, including empty — only whether it is set matters | Enables Ctrl-M, which cycles the five mission briefings: Constrictor brief, Constrictor debrief, the two Thargoid briefs, the Thargoid debrief. Each jump cheats the commander into the state that briefing needs and leaves them mid-mission, the last two overwriting the docked planet's seed — restart rather than carrying on from one |
+| `ELITE_DEBUG_MISSIONS` | Anything, including empty — only whether it is set matters | Enables Ctrl-M, which cycles the five mission briefings: Constrictor brief, Constrictor debrief, the two Thargoid briefs, the Thargoid debrief. Each jump cheats the commander into the state that briefing needs and leaves them mid-mission — the last two by moving them to the system it happens at — so restart rather than carrying on from one. Does nothing for a mission that is not installed |
+
+## Missions
+
+Missions are plugins. Each is an assembly referencing
+`EliteSharp.Missions.Abstractions` and nothing else, and the game loads every
+one it finds in a **`Missions` folder beside the executable** at startup.
+
+The two missions the game ships with — the Constrictor hunt and the Thargoid
+plans run — are in `EliteSharp.Missions.Classic` and are found the same way, so
+there is nothing a mission of your own cannot do that these can.
+
+Two things follow from that, and they are the reason to leave the folder alone
+unless you mean it:
+
+- **Removing the folder removes the missions.** The game starts and plays, but
+  no mission is ever offered.
+- **A commander part-way through a mission needs that mission installed.**
+  The commander file records the mission by name, and a file naming a mission
+  nothing provides is refused rather than half-loaded. The log says which name
+  it could not place.
 
 ## Credits
 

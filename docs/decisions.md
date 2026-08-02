@@ -9,6 +9,87 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-02) — missions are plugin assemblies, not game code
+
+The mission stages were hardcoded, and adding a mission meant editing two
+enums, two controllers, two `Screen` values and four tier-specific views.
+A mission is now **an assembly the game finds at startup**, in a `Missions`
+folder beside the executable. The two the game has always had went out with
+everything else, into `EliteSharp.Missions.Classic`, so the door a stranger
+would come through is the one the game itself uses.
+
+**Not a config file.** A mission carries behaviour — spawning a Constrictor,
+fitting an energy unit, being ambushed while carrying plans — so data alone
+cannot express one without inventing a scripting language. This is the pilot
+for the backlog's [LARGE] data-driven game content model item; the answer for
+*content that acts* is an assembly, and only inert content (equipment, stock,
+ship definitions) is a config-shaped problem.
+
+The calls that shaped it:
+
+- **MEF2 (`System.Composition`) for discovery only.** Parts are registered
+  into the existing `ServiceCollection`; the `CompositionHost` is created,
+  drained and disposed inside `MissionLoader` and owns no lifetimes, so the
+  one composition root in `architecture-principles.md` stands. MEF2 has no
+  directory catalogue, so the DLLs are enumerated by hand.
+- **Exported by convention, not by attribute.** A `ConventionBuilder` over
+  types implementing `IMission` is what lets a plugin reference the contracts
+  assembly *and nothing else*; an `[Export]` attribute would have made every
+  plugin author reference MEF. A mission is a public class with a constructor
+  taking no arguments.
+- **Stages are strings, guarded by `MissionProgress`.** A compile-time enum
+  cannot cover missions the game was never built against. Every stage name
+  going in is checked against what that mission declared, so a stage nobody
+  declared is unreachable and everything reading one back can trust it.
+- **Systems are identified by planet number, never by seed bytes.** The old
+  code compared two of a system's six seed bytes, which a plugin author could
+  not discover. `PlanetAt` is the inverse of `FindPlanetNumber`; the numbers
+  are Orarra 193 in galaxy 1, Ceerdi 83 and Birera 36 in galaxy 2, and a test
+  holds them to those names.
+- **Equipment and portraits are small enums of what exists.** There is no
+  name-based equipment lookup in the game and a plugin cannot ship artwork, so
+  inventing string namespaces for either would only let a mission ask for
+  something that cannot be delivered.
+- **One briefing screen for every mission**, laid out from what a briefing
+  contains — a headline, how many paragraphs, whether somebody is pictured —
+  never from which mission sent it. A plugin's mission cannot draw itself.
+
+Contract shapes that exist for a reason and should not be undone:
+
+- **Awards ride on `MissionStep`; `IMissionContext` is read-only.** An earlier
+  draft paid through the context before the stage was committed, so a replayed
+  screen could collect the Constrictor's 5000 credits twice.
+- **`MissionStep`'s constructor is internal.** Steps come only from
+  `MissionStages.Step`, which refuses an undeclared stage or a move that does
+  not go forwards.
+- **No shared base type for encounters.** An abstract record cannot be closed:
+  it emits a `protected` copy constructor any assembly can chain to, and
+  narrowing that is CS8878, so a plugin could derive a kind that lied about
+  itself. Two sealed types instead.
+- Every public property is get-only and every public type sealed, so `with`
+  cannot route round a validating constructor and nothing can be derived from.
+  Verified by compiling a probe assembly against the built DLL.
+
+Consequences:
+
+- **The `Missions` folder is load-bearing.** Remove it and the game has no
+  missions, and a commander part-way through one is refused — the reject-and-log
+  rule for a save naming a mission nothing provides. The app's build copies the
+  plugin in on both `Build` and `Publish`.
+- **Commander files hold only the stages actually reached**, so a fresh
+  commander writes none. A file cannot demand that every installed mission be
+  present when the installed set varies.
+- **Trimming and AOT are foreclosed**, since discovery is reflection over
+  externally-supplied assemblies. Nothing configures either today, so this costs
+  nothing now; it matters if the plugin model spreads to views or stock.
+- **The 8-bit Constrictor debrief moved down the screen** to match the Thargoid
+  one. The two had drifted into different layouts for the same shape of
+  briefing, and one rule cannot draw both. 16-bit is unchanged.
+- A live bug went with the port rather than being reproduced: the rumours about
+  the stolen Constrictor were printed for whatever system was selected on the
+  chart, so Reesdice was named from anywhere in galaxy 0. A rumour is somebody
+  in the station talking, and is now only said about the system underfoot.
+
 ## Resolved (2026-08-01) — the 16-bit tier is a 12-bit, 4096-colour machine
 
 The 2026-07-30 decision that renamed the 16-bit palette to web colours is

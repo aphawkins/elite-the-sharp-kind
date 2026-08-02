@@ -78,7 +78,11 @@ not yet scoped into concrete steps.
       ship definitions, and `ShipFactory.CreateShipFromName`'s
       reflection-based construction (see the smaller interim cleanup
       below) — with a proper config-driven model. Design/scope the config
-      shape before starting.
+      shape before starting. **Missions were the pilot and are done**
+      (2026-08-02, see [decisions.md](decisions.md)): they went to plugin
+      assemblies rather than config, because a mission carries behaviour.
+      What is left here is the inert content, which is the config-shaped
+      half of the problem.
 
 ### 3D pipeline — modern-pipeline gaps
 
