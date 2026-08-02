@@ -22,4 +22,28 @@ internal static partial class LogMessages
 
     [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "{EnvVar} is {SetState}; starting commander is {Commander}.")]
     internal static partial void DebugCommanderEnvVar(ILogger logger, string envVar, string setState, string commander);
+
+    [LoggerMessage(
+        EventId = 5,
+        Level = LogLevel.Information,
+        Message = "No mission plugin folder at '{Path}'.")]
+    internal static partial void NoMissionFolder(ILogger logger, string path);
+
+    [LoggerMessage(
+        EventId = 6,
+        Level = LogLevel.Warning,
+        Message = "Skipped mission plugin '{Path}': it could not be read.")]
+    internal static partial void MissionAssemblyUnreadable(ILogger logger, string path, Exception ex);
+
+    [LoggerMessage(
+        EventId = 7,
+        Level = LogLevel.Information,
+        Message = "Loaded {MissionCount} mission(s) from {AssemblyCount} plugin assemblies.")]
+    internal static partial void MissionsLoaded(ILogger logger, int missionCount, int assemblyCount);
+
+    [LoggerMessage(
+        EventId = 8,
+        Level = LogLevel.Critical,
+        Message = "'{FirstAssembly}' and '{SecondAssembly}' both provide a mission called '{Name}'.")]
+    internal static partial void DuplicateMissionName(ILogger logger, string name, string firstAssembly, string secondAssembly);
 }

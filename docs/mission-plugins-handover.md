@@ -4,8 +4,8 @@ Turning Elite's two hardcoded missions into discoverable plugin parts.
 Started 2026-08-02. **Not finished** — this file is the state of play, so the
 work can be picked up in a new session without re-deriving any of it.
 
-T1 is landed. Nothing calls it yet, so the game behaves exactly as it did
-before.
+T1 and T3 are landed. Nothing calls them yet, so the game behaves exactly as it
+did before.
 
 ## Why
 
@@ -107,24 +107,51 @@ the reason the shapes are as they are:
 - Deriving from `MissionStep`, `MissionStages`, `MissionBriefing`,
   `AmbushEncounter` or `LoneWolfEncounter` — CS0509, all sealed.
 
-### T3 — Registry and discovery — **not started**
+### T3 — Registry and discovery — **done**
 
-No longer blocked: T1 is on `master`. Useful findings from the earlier blocked
-attempt:
+Two types in `EliteSharpLib/Missions/`:
 
-- `System.Composition` **10.0.x** matches the `Microsoft.Extensions.*` versions
-  already in `Directory.Packages.props` (central package management is on, so
-  the version goes there and the csproj reference carries none). Only
-  `System.Composition.Hosting` and `System.Composition.TypedParts` are needed,
-  not the metapackage.
-- MEF2 has **no directory catalog** (unlike MEF1): enumerate the DLLs yourself
-  and pass them to `ContainerConfiguration.WithAssemblies`.
-- `src/elite/libs/EliteSharpLib/IMission.cs` — an `internal interface IMission
-  { DrawBrief(); Update(); }` — is referenced by **nothing** and must be
-  deleted. It sits in the `EliteSharpLib` namespace, so enclosing-namespace
-  resolution would silently bind an unqualified `IMission` to it rather than the
-  contracts one: a wrong-type bug with no compiler error. It was deleted only
-  inside a discarded worktree, so **it is still there on master**.
+- **`MissionLoader`** — `LoadFrom(baseDirectory, logger)`. Everything MEF
+  touches happens inside it and is finished with before it returns, so the
+  composition host owns no lifetimes and the game keeps its one M.E.DI
+  composition root. An absent `Missions` folder logs Information and returns
+  nothing; a file that will not load logs Warning and is skipped.
+- **`MissionRegistry`** — the missions by name, `All` and `Find`. Two missions
+  of one name log Critical (naming both assemblies) and throw, because a save
+  file naming it could mean either.
+
+Registered in `AddEliteCore`, off `AppContext.BaseDirectory`. Nothing resolves
+it yet, so a test builds the game's real composition and asks for it, or the
+registration would go untried until T2.
+
+Two things worth keeping:
+
+- **Missions are exported by convention, not by attribute.** A
+  `ConventionBuilder` exporting types derived from `IMission` is what lets a
+  plugin reference the contracts assembly *and nothing else* — an
+  `[Export]` attribute would have made every plugin author reference MEF. A
+  mission is a public class implementing `IMission` with a constructor taking
+  no arguments.
+- **`AssemblyLoadContext.Default.LoadFromAssemblyPath`, not
+  `Assembly.LoadFrom`** — the latter trips Sonar S3885, and the former is the
+  right API for loading by absolute path anyway.
+
+`EliteSharp.Missions.TestPlugin` is a real plugin, built like a third party's:
+contracts only, no reference to the game or to MEF. `EliteSharpLib.Tests`
+builds it, does **not** reference it (`ReferenceOutputAssembly="false"`), copies
+the DLL into a temp plugin folder and makes the loader find it. That is the only
+way to know the seam works, and it is the template for T6.
+
+The dead `EliteSharpLib/IMission.cs` is gone. It was referenced by nothing and
+sat in the `EliteSharpLib` namespace, where enclosing-namespace resolution would
+have silently bound an unqualified `IMission` to it rather than the contracts
+one — a wrong-type bug with no compiler error.
+
+Also from the earlier blocked attempt, still true: `System.Composition`
+**10.0.x** matches the `Microsoft.Extensions.*` versions already in
+`Directory.Packages.props`, and MEF2 has **no directory catalog** (unlike MEF1),
+so the DLLs are enumerated by hand and passed to
+`ContainerConfiguration.WithAssemblies`.
 
 ## What is left
 
@@ -134,20 +161,14 @@ attempt:
    `"missions": { "Constrictor": { "stage": "Rewarded" } }` is already right —
    only its validation moves from the enums to the registry. A save naming a
    mission no plugin provides is rejected **and logged**.
-2. **T3 — Registry and MEF2 discovery** (above). Plugin assemblies live in a
-   `Missions` folder beside the executable; its absence is the normal case and
-   must log cleanly, not throw. Duplicate mission names are a startup failure
-   (Critical + throw with context); an unreadable DLL is a Warning and skipped.
-   Take the base directory as an injected parameter so tests can point it
-   elsewhere.
-3. **T4 — One briefing screen.** `MissionBriefingController` plus one view per
+2. **T4 — One briefing screen.** `MissionBriefingController` plus one view per
    tier, keyed on what the briefing *contains* (headline? portrait? how many
    paragraphs?) rather than which mission it is. Collapses
    `Screen.MissionOne`/`MissionTwo`; `DockingView` and `EliteDraw` reference
    them.
-4. **T5 — Port both missions to `IMission`**, still inside `EliteSharpLib`, to
+3. **T5 — Port both missions to `IMission`**, still inside `EliteSharpLib`, to
    confirm the context suffices before publishing the assembly boundary.
-5. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
+4. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
    plugin.
 
 ## Consequences to plan for
@@ -186,4 +207,4 @@ worktrees are branched off whatever `master` was and cannot see each other's
 uncommitted work; and `ELITE_DEBUG_COMMANDER` is set machine-wide on the
 maintainer's box, so the game starts as Commander Max, not Jameson.
 
-Remaining order: T3, then T2, then T4, T5, T6, committing each separately.
+Remaining order: T2, then T4, T5, T6, committing each separately.

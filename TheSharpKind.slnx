@@ -41,6 +41,7 @@
   </Folder>
   <Folder Name="/src/elite/test/">
     <Project Path="src/elite/test/EliteSharp.Missions.Abstractions.Tests/EliteSharp.Missions.Abstractions.Tests.csproj" />
+    <Project Path="src/elite/test/EliteSharp.Missions.TestPlugin/EliteSharp.Missions.TestPlugin.csproj" />
     <Project Path="src/elite/test/EliteSharpLib.Fakes/EliteSharpLib.Fakes.csproj" />
     <Project Path="src/elite/test/EliteSharpLib.Tests/EliteSharpLib.Tests.csproj" />
   </Folder>

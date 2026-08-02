@@ -3,10 +3,18 @@
 	<ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <!-- MEF2, for finding mission plugins only. Parts are handed straight to
+         the M.E.DI container, so the composition host owns no lifetimes. The
+         convention builder is what lets a plugin export a mission without
+         referencing MEF itself. -->
+    <PackageReference Include="System.Composition.Convention" />
+    <PackageReference Include="System.Composition.Hosting" />
+    <PackageReference Include="System.Composition.TypedParts" />
   </ItemGroup>
 
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\libs\EliteSharp.Missions.Abstractions\EliteSharp.Missions.Abstractions.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Abstraction\Useful.Abstraction.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Assets\Useful.Assets.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Audio\Useful.Audio.csproj" />

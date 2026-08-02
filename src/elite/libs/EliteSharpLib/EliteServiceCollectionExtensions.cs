@@ -6,6 +6,7 @@ using EliteSharpLib.Audio;
 using EliteSharpLib.Config;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Graphics;
+using EliteSharpLib.Missions;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
@@ -110,6 +111,13 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(_ => new PlayerShip());
         services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
         services.AddSingleton(sp => new PlanetController(sp.GetRequiredService<GameState>()));
+
+        // Plugins are looked for beside the executable. MEF finds them; the
+        // instances it produces are registered here like anything else, so the
+        // composition host is gone by the time the registry exists.
+        services.AddSingleton(sp => new MissionRegistry(
+            MissionLoader.LoadFrom(AppContext.BaseDirectory, sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(MissionLoader))),
+            sp.GetRequiredService<ILoggerFactory>().CreateLogger<MissionRegistry>()));
     }
 
     private static void AddEliteRendering(this IServiceCollection services)

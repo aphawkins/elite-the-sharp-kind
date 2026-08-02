@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- A real mission plugin, built the way a third party's would be: it
+       references the contracts and nothing else - not the game, and not MEF.
+       Nothing references its output; the tests copy the DLL into a plugin
+       folder and make the loader find it, which is the only way to know the
+       seam works. -->
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\libs\EliteSharp.Missions.Abstractions\EliteSharp.Missions.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

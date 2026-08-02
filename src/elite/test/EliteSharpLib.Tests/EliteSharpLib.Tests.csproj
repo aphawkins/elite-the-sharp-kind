@@ -28,6 +28,12 @@
     <ProjectReference Include="..\..\..\useful\test\Useful.Fakes\Useful.Fakes.csproj" />
     <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
     <ProjectReference Include="..\EliteSharpLib.Fakes\EliteSharpLib.Fakes.csproj" />
+    <!-- Built and copied, but deliberately not referenced: the loader has to
+         find this the way it finds a stranger's plugin, off disk. -->
+    <ProjectReference Include="..\EliteSharp.Missions.TestPlugin\EliteSharp.Missions.TestPlugin.csproj"
+                      ReferenceOutputAssembly="false"
+                      OutputItemType="Content"
+                      CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -57,6 +57,12 @@ internal sealed class HeadlessGameHarness : HeadlessGameHarnessBase<GameStateSum
         Game.State.IsDocked,
         Game.State.IsGameOver);
 
+    // For asserting on parts of the real composition that EliteMain does not
+    // reach through - the mission registry, until the missions are wired in.
+    public T Resolve<T>()
+        where T : notnull
+        => _provider.GetRequiredService<T>();
+
     protected override void UpdateGame() => Game.Update();
 
     protected override void DrawGame() => Game.Draw();
