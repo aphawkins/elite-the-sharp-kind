@@ -3,9 +3,9 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Fakes;
-using EliteSharpLib.Missions;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -77,11 +77,11 @@ public class SaveCommanderControllerTests
         keyboard = new FakeKeyboard();
         ScreenManager<Screen, IScreenController> views = new(keyboard);
         views.Add(Screen.Options, new FakeView());
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new();
         Trade trade = new(gameState, ship);
         string directory = Path.Combine(Path.GetTempPath(), "SaveCommanderControllerTests_" + Guid.NewGuid().ToString("N"));
-        save = new SaveFile(gameState, ship, trade, new PlanetController(gameState), ClassicMissions.Registry(), directory);
+        save = new SaveFile(gameState, ship, trade, new PlanetController(gameState), TestMissions.Registry(), directory);
 
         return new SaveCommanderController(gameState, keyboard, save, new FakeSaveCommanderView());
     }

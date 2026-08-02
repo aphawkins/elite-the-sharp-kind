@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
@@ -71,7 +70,7 @@ public class PlanetDataControllerTests
     private static PlanetDataController CreateController(out GameState gameState)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         RNG rng = new(new FakeRandomSource());
 
         PlayerShip ship = new();

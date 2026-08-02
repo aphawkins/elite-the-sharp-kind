@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Missions.Classic;
 using EliteSharpLib.Missions;
 
 namespace EliteSharpLib.Tests.Missions;
@@ -119,5 +120,5 @@ public class MissionProgressTests
         Assert.Empty(progress.Recorded);
     }
 
-    private static MissionProgress Progress() => new(ClassicMissions.Registry());
+    private static MissionProgress Progress() => new(TestMissions.Registry());
 }

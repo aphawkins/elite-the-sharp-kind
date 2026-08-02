@@ -35,7 +35,7 @@ internal static class SettingsControllerFixture
         views.Add(Screen.GameOver, new FakeView());
         views.Add(Screen.Hyperspace, new FakeView());
         views.Add(Screen.Options, new FakeView());
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
 
         draw = new FakeEliteDraw();
         RNG rng = new(new FakeRandomSource());

@@ -6,6 +6,7 @@ using BenchmarkDotNet.Attributes;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Planets;
+using Microsoft.Extensions.Logging.Abstractions;
 using Useful.Controls;
 using Useful.Fakes.Assets;
 using Useful.Fakes.Controls;
@@ -32,7 +33,9 @@ public class PlanetBenchmarks : IDisposable
         FakeAssetLocator assetLocator = new();
         SoftwareKeyboard keyboard = new(input);
         Useful.Abstraction.ScreenManager<Views.Screen, Views.IScreenController> views = new(keyboard);
-        GameState gameState = new(views, ClassicMissions.Registry());
+
+        // These benchmarks are about planets and suns, so no missions are needed.
+        GameState gameState = new(views, new MissionRegistry([], NullLogger<MissionRegistry>.Instance));
         _graphics = SoftwareGraphics.Create(ScreenWidth, ScreenHeight, (_) => { }, assetLocator);
         ZBufferRenderer shipRenderer = new(_graphics);
         RNG rng = new(Random.Shared);

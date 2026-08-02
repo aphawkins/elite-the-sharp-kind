@@ -90,7 +90,7 @@ public class PilotControllerTests
         PilotDirection direction, out PlayerShip ship, out Space space, out GameState gameState)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         ship = new PlayerShip();
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();

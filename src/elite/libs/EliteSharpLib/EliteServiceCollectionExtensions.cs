@@ -115,16 +115,15 @@ public static class EliteServiceCollectionExtensions
         services.AddSingleton(sp => new Trade(sp.GetRequiredService<GameState>(), sp.GetRequiredService<PlayerShip>()));
         services.AddSingleton(sp => new PlanetController(sp.GetRequiredService<GameState>()));
 
-        // Plugins are looked for beside the executable. MEF finds them; the
-        // instances it produces are registered here like anything else, so the
-        // composition host is gone by the time the registry exists.
+        // Every mission is a plugin now, including the two the game has always
+        // had: they are found in the Missions folder beside the executable, the
+        // same way anyone else's would be. MEF finds them; the instances it
+        // produces are registered here like anything else, so the composition
+        // host is gone by the time the registry exists.
         services.AddSingleton(sp => new MissionRegistry(
-            [
-                .. ClassicMissions.All,
-                .. MissionLoader.LoadFrom(
-                    AppContext.BaseDirectory,
-                    sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(MissionLoader))),
-            ],
+            MissionLoader.LoadFrom(
+                AppContext.BaseDirectory,
+                sp.GetRequiredService<ILoggerFactory>().CreateLogger(typeof(MissionLoader))),
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<MissionRegistry>()));
 
         // The one place the game and its missions talk to each other.

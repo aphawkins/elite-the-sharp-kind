@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Missions.Abstractions;
-using EliteSharpLib.Missions;
+using EliteSharp.Missions.Classic;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -208,7 +208,7 @@ public class MissionsTests
 
     private static GameState CreateGameState() => new(
         new ScreenManager<Screen, IScreenController>(new FakeKeyboard()),
-        ClassicMissions.Registry());
+        TestMissions.Registry());
 
     private sealed class FakeContext : IMissionContext
     {

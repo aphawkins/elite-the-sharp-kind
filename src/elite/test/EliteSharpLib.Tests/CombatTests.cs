@@ -49,7 +49,7 @@ public class CombatTests
     private static Combat CreateCombat(out Universe universe, int randomValue)
     {
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        GameState gameState = new(views, ClassicMissions.Registry());
+        GameState gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new();
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();

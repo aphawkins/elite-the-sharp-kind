@@ -4,8 +4,8 @@
 
 using System.Numerics;
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Missions;
 using EliteSharpLib.Suns;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful;
 using Useful.Abstraction;
@@ -73,7 +73,7 @@ public class WireframeSunTests
     {
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(ScreenSize, ScreenSize, b => lastFrame = b, AssetLocator.Create());
-        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), ClassicMissions.Registry());
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         RNG rng = new(new Random(0));
         EliteDraw draw = new(gameState, graphics, AssetLocator.Create(), new ZBufferRenderer(graphics), rng);
         WireframeSun sun = new(draw) { Location = new(0, 0, Distance, 0) };

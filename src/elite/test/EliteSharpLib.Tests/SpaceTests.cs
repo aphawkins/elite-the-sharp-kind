@@ -513,7 +513,7 @@ public class SpaceTests
         views.Add(Screen.Docking, new FakeView());
         views.Add(Screen.GameOver, new FakeView());
         views.Add(Screen.Hyperspace, new FakeView());
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         ship = new PlayerShip();
         trade = new Trade(gameState, ship);
         draw = new FakeEliteDraw();

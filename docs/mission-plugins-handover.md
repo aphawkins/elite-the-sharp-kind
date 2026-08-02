@@ -1,12 +1,14 @@
 # Mission plugins — work log and handover
 
 Turning Elite's two hardcoded missions into discoverable plugin parts.
-Started 2026-08-02. **Not finished** — this file is the state of play, so the
-work can be picked up in a new session without re-deriving any of it.
+Started and **finished** 2026-08-02. This file is the record of what was
+decided and why; the design points in it are worth keeping, the task list is
+history.
 
-T1, T3, T2, T4 and T5 are landed. The missions now carry their own behaviour
-behind `IMission`, and the game only reaches them through `MissionRunner`. All
-that is left is T6: moving them out to an assembly of their own.
+All six pieces landed. The missions are in `EliteSharp.Missions.Classic`, an
+assembly the game does not reference, found in a `Missions` folder beside the
+executable at startup. A normal run now logs `Loaded 2 mission(s) from 1 plugin
+assemblies.`
 
 ## Why
 
@@ -22,7 +24,7 @@ an energy unit, ambushing while carrying plans — so a config file cannot
 express one without inventing a scripting language. A plugin assembly can, which
 is why this is a plugin model and not a `Missions.json`.
 
-## Decisions already taken
+## Decisions taken
 
 These were signed off by the maintainer and should not be silently revisited.
 
@@ -36,7 +38,7 @@ These were signed off by the maintainer and should not be silently revisited.
 | Save naming an unknown mission | **Reject the save, and log it** | Consistent with the existing save validation. Note the consequence: removing a plugin makes affected saves unloadable. |
 | Briefing screens | **Collapse** `Screen.MissionOne` and `MissionTwo` into one | A plugin mission cannot draw itself otherwise. Touches `DockingView` and `EliteDraw`. |
 
-## Progress
+## What was built
 
 ### T1 — Contracts assembly — **done**
 
@@ -123,7 +125,7 @@ Two types in `EliteSharpLib/Missions/`:
 
 Registered in `AddEliteCore`, off `AppContext.BaseDirectory`, and resolved for
 real since T2 — `GameState` needs it to build the commander, so a normal startup
-now logs `No mission plugin folder at '...\Missions'` and carries on.
+now logs how many missions it found, or that there is no plugin folder at all.
 
 Two things worth keeping:
 
@@ -250,13 +252,28 @@ What moved, and what it cost:
 - **`Combat` is `partial`.** It was already at the analyzers' 1000-line limit,
   so the mission-facing spawn lives in `Combat.Missions.cs`.
 
-## What is left
+### T6 — The missions become a plugin — **done**
 
-1. **T6 — Extract to `EliteSharp.Missions.Classic`** and load it as a real
-   plugin. The missions no longer touch anything in `EliteSharpLib`, so this
-   should be a project move plus deleting `ClassicMissions`. The one thing to
-   check is `MissionBriefingModel`'s portrait: it is a `bool ShowPortrait`
-   game-side, fed from `MissionPortrait`, and the enum only has Blake in it.
+`EliteSharp.Missions.Classic` holds both missions and references the contracts
+and nothing else. The game does **not** reference it: the app's build drops the
+DLL into `$(OutDir)Missions`, and `MissionLoader` finds it there at startup like
+any other. There is no built-in mission list left — `ClassicMissions` is gone,
+and the registry is exactly what the plugin folder holds.
+
+- **The stage and mission names went `internal`**, with `InternalsVisibleTo` for
+  the tests. Sonar objects to public constants, and nothing outside needs them:
+  the game reads names off `IMission`.
+- **`MissionJump` spells the names out**, since it can no longer reference the
+  types, and does nothing for a mission nobody installed. It is the only place
+  in the game that names a specific mission, and it is a debug cheat.
+- **`EliteSharpLib.Tests` copies the plugin into its own `Missions` folder**, so
+  the tests that build the game's real composition find their missions the way
+  the game does rather than being handed them.
+
+**The consequence to remember: delete the `Missions` folder and the game has no
+missions at all**, and any commander file part-way through one is refused. That
+is the "removing a plugin makes affected saves unloadable" line in the decisions
+table, now real. The build puts the folder there for both `Build` and `Publish`.
 
 ## Consequences to plan for
 
@@ -265,15 +282,13 @@ What moved, and what it cost:
   this costs nothing now, but plugin discovery is fundamentally incompatible
   with it. Relevant if the plugin model later spreads to views and stock.
 
-## Continuing without agents
+## Notes for next time
 
-The tiered pipeline (`.claude/skills/tier/SKILL.md`) was being followed by hand
-because the `/tier` skill is not registered as invocable. It is not needed: the
-remaining tasks are ordinary sequential work.
+The rest of this was done by hand rather than through the tiered pipeline, and
+did not need it: once the contracts were settled the work was ordinary and
+sequential.
 
-Two process notes that cost time here and need not cost it again: agent
-worktrees are branched off whatever `master` was and cannot see each other's
-uncommitted work; and `ELITE_DEBUG_COMMANDER` is set machine-wide on the
-maintainer's box, so the game starts as Commander Max, not Jameson.
-
-Only T6 is left.
+Two process notes that cost time and need not cost it again: agent worktrees are
+branched off whatever `master` was and cannot see each other's uncommitted work;
+and `ELITE_DEBUG_COMMANDER` is set machine-wide on the maintainer's box, so the
+game starts as Commander Max, not Jameson.

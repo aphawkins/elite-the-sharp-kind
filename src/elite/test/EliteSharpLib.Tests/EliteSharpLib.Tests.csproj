@@ -26,6 +26,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\useful\libs\Useful.Graphics\Useful.Graphics.csproj" />
     <ProjectReference Include="..\..\..\useful\test\Useful.Fakes\Useful.Fakes.csproj" />
+    <!-- Referenced directly, unlike the game, because these tests are about
+         what the two shipped missions do rather than about finding them. -->
+    <ProjectReference Include="..\..\libs\EliteSharp.Missions.Classic\EliteSharp.Missions.Classic.csproj" />
     <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
     <ProjectReference Include="..\EliteSharpLib.Fakes\EliteSharpLib.Fakes.csproj" />
     <!-- Built and copied, but deliberately not referenced: the loader has to
@@ -41,5 +44,20 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <!-- The shipped missions, into a Missions folder, exactly as the app's build
+       does it. The tests that drive the game's real composition have to find
+       their missions the way the game does, or they would be proving something
+       the shipped configuration does not do. -->
+  <Target Name="CopyMissionPlugins" AfterTargets="Build">
+    <MSBuild Projects="..\..\libs\EliteSharp.Missions.Classic\EliteSharp.Missions.Classic.csproj"
+             Targets="GetTargetPath"
+             Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="MissionPlugin" />
+    </MSBuild>
+    <Copy SourceFiles="@(MissionPlugin)"
+          DestinationFolder="$(OutDir)Missions"
+          SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

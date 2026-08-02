@@ -2,19 +2,26 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Missions.Classic;
 using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Types;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace EliteSharpLib.Tests.Missions;
 
-// The built-in missions, for the many tests that build a Combat or a screen
-// and do not care about missions at all.
+// The two shipped missions, handed straight to a registry rather than found on
+// disk. The game only ever loads them off disk; these tests are about what the
+// missions do, and about the many screens that need a registry and do not care
+// what is in it.
 internal static class TestMissions
 {
+    internal static MissionRegistry Registry()
+        => new([new ConstrictorMission(), new ThargoidMission()], NullLogger<MissionRegistry>.Instance);
+
     internal static MissionRunner Runner(GameState gameState, PlayerShip ship, Trade trade)
-        => new(gameState, ship, trade, ClassicMissions.Registry(), new PlanetController(gameState));
+        => new(gameState, ship, trade, Registry(), new PlanetController(gameState));
 
     /// <summary>
     /// The seed of the numbered galaxy, which is the first one's rotated left

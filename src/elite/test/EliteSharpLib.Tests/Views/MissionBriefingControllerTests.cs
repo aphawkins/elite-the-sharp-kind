@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
+using EliteSharp.Missions.Classic;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Equipment;
 using EliteSharpLib.Fakes;
@@ -246,7 +247,7 @@ public class MissionBriefingControllerTests
     {
         ScreenManager<Screen, IScreenController> views = new(_keyboard);
         views.Add(Screen.CommanderStatus, new FakeView());
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         ship = new();
         trade = new(gameState, ship);
         FakeEliteDraw draw = new();

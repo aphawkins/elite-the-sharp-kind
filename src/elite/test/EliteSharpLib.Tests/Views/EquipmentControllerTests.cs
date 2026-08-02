@@ -87,7 +87,7 @@ public class EquipmentControllerTests
     {
         FakeKeyboard keyboard = new();
         ScreenManager<Screen, IScreenController> views = new(keyboard);
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         ship = new PlayerShip();
         Trade trade = new(gameState, ship);
         FakeEliteDraw draw = new();

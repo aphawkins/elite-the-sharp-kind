@@ -3,8 +3,8 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Numerics;
-using EliteSharpLib.Missions;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
 using Useful.Fakes.Controls;
@@ -185,7 +185,7 @@ public class GalacticChartControllerTests
     {
         keyboard = new FakeKeyboard();
         ScreenManager<Screen, IScreenController> views = new(keyboard);
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
 
         return new GalacticChartController(
             gameState,

@@ -5,7 +5,7 @@
 using System.Collections.Immutable;
 using EliteSharp.Missions.Abstractions;
 
-namespace EliteSharpLib.Missions;
+namespace EliteSharp.Missions.Classic;
 
 /// <summary>
 /// The Navy's hunt for the stolen Constrictor: briefed once the commander is
@@ -14,7 +14,7 @@ namespace EliteSharpLib.Missions;
 /// <see cref="IMissionContext"/> and said with a <see cref="MissionStep"/>, so
 /// nothing about it needs the game's own types.
 /// </summary>
-internal sealed class ConstrictorMission : IMission, IMissionEncounters, IMissionKills, IMissionPlanetDescriptions
+public sealed class ConstrictorMission : IMission, IMissionEncounters, IMissionKills, IMissionPlanetDescriptions
 {
     /// <summary>
     /// The name the save file records this mission under.
@@ -58,8 +58,8 @@ internal sealed class ConstrictorMission : IMission, IMissionEncounters, IMissio
     /// rumour says the pirate is right here.
     /// <para>
     /// This is a planet number rather than the seed bytes the game used to
-    /// compare, because a mission cannot see seeds. `MissionsTests` is what
-    /// keeps it honest: it checks this number still names Orarra.
+    /// compare, because a mission cannot see seeds. The game's own MissionsTests
+    /// is what keeps it honest: it checks this number still names Orarra.
     /// </para>
     /// </summary>
     private const int HuntingGalaxy = 1;
@@ -99,6 +99,13 @@ internal sealed class ConstrictorMission : IMission, IMissionEncounters, IMissio
     /// What is being said about the stolen ship, system by system. These are
     /// planet numbers already, so nothing about them had to be translated.
     /// </summary>
+    /// <summary>
+    /// The stages, in the order the commander passes through them. The names
+    /// are the enum's names from before the missions became plugins, so that
+    /// commander files written then still load.
+    /// </summary>
+    private static readonly MissionStages s_declared = new([None, Briefed, Destroyed, Rewarded]);
+
     private static readonly ImmutableArray<string> s_rumours =
     [
         "THE CONSTRICTOR WAS LAST SEEN AT REESDICE, COMMANDER.",
@@ -118,14 +125,7 @@ internal sealed class ConstrictorMission : IMission, IMissionEncounters, IMissio
     public string Name => Id;
 
     /// <inheritdoc/>
-    public MissionStages Stages => Declared;
-
-    /// <summary>
-    /// Gets the stages, in the order the commander passes through them. The
-    /// names are the enum's names from before the missions became plugins, so
-    /// that commander files written then still load.
-    /// </summary>
-    internal static MissionStages Declared { get; } = new([None, Briefed, Destroyed, Rewarded]);
+    public MissionStages Stages => s_declared;
 
     /// <inheritdoc/>
     public MissionStep? Advance(IMissionContext context, string stage)
@@ -138,7 +138,7 @@ internal sealed class ConstrictorMission : IMission, IMissionEncounters, IMissio
             && context.CombatScore >= AboveAverageScore
             && context.GalaxyNumber < 2)
         {
-            return Declared.Step(
+            return s_declared.Step(
                 stage,
                 Briefed,
                 new MissionBriefing
@@ -156,7 +156,7 @@ internal sealed class ConstrictorMission : IMission, IMissionEncounters, IMissio
 
         // The bounty waits for a station: the kill was claimed mid-fight.
         return string.Equals(stage, Destroyed, StringComparison.Ordinal)
-            ? Declared.Step(
+            ? s_declared.Step(
                 stage,
                 Rewarded,
                 new MissionBriefing
@@ -194,7 +194,7 @@ internal sealed class ConstrictorMission : IMission, IMissionEncounters, IMissio
     public MissionStep? ShipDestroyed(IMissionContext context, string stage, string shipName)
         => string.Equals(stage, Briefed, StringComparison.Ordinal)
             && string.Equals(shipName, Constrictor, StringComparison.Ordinal)
-            ? Declared.Step(stage, Destroyed)
+            ? s_declared.Step(stage, Destroyed)
             : null;
 
     /// <summary>

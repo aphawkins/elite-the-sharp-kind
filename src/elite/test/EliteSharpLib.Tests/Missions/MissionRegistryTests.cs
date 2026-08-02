@@ -3,6 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharp.Missions.Abstractions;
+using EliteSharp.Missions.Classic;
 using EliteSharpLib.Missions;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -60,13 +61,15 @@ public class MissionRegistryTests
     }
 
     [Fact]
-    public void IsBuiltByTheGamesOwnComposition()
+    public void FindsTheShippedMissionsOnDiskThroughTheGamesOwnComposition()
     {
-        // Arrange
+        // Arrange: the whole seam, end to end. Nothing here hands the game its
+        // missions - they are in an assembly the game does not reference, found
+        // in the Missions folder beside the binary, which is exactly how a
+        // stranger's would be found.
         using HeadlessGameHarness harness = new();
 
-        // Act: the game ships no plugin folder, so the built-in missions are
-        // all there is - but they have to be there, or no save would load.
+        // Act
         MissionRegistry registry = harness.Resolve<MissionRegistry>();
 
         // Assert

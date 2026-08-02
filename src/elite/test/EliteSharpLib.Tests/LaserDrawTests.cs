@@ -4,7 +4,7 @@
 
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Lasers;
-using EliteSharpLib.Missions;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using Useful;
 using Useful.Abstraction;
@@ -70,7 +70,7 @@ public class LaserDrawTests
     {
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
-        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), ClassicMissions.Registry());
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         gameState.Config.Engine.Graphics.GraphicStyle = laserWireframe ? GraphicStyle.Wireframe : GraphicStyle.Solid;
         RNG rng = new(new Random(0));
         EliteDraw eliteDraw = new(gameState, graphics, AssetLocator.Create(), new ZBufferRenderer(graphics), rng);

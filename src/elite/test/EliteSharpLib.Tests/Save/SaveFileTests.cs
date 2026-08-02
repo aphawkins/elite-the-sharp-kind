@@ -3,9 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Text.Json.Nodes;
-using EliteSharpLib.Missions;
+using EliteSharp.Missions.Classic;
 using EliteSharpLib.Save;
 using EliteSharpLib.Ships;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Trader;
 using EliteSharpLib.Views;
 using Useful.Abstraction;
@@ -374,12 +375,12 @@ public class SaveFileTests
         Environment.SetEnvironmentVariable(SaveFile.DebugCommanderEnvVar, null);
 
         ScreenManager<Screen, IScreenController> views = new(new FakeKeyboard());
-        gameState = new(views, ClassicMissions.Registry());
+        gameState = new(views, TestMissions.Registry());
         PlayerShip ship = new();
         trade = new(gameState, ship);
         PlanetController planet = new(gameState);
         directory = Path.Combine(Path.GetTempPath(), "SaveFileTests_" + Guid.NewGuid().ToString("N"));
-        SaveFile saveFile = new(gameState, ship, trade, planet, ClassicMissions.Registry(), directory);
+        SaveFile saveFile = new(gameState, ship, trade, planet, TestMissions.Registry(), directory);
 
         // As the game does on startup, so the state a save is written from is
         // Commander Jameson rather than an empty ship.

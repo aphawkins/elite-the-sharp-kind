@@ -2,7 +2,6 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-using EliteSharpLib.Missions;
 using EliteSharpLib.Types;
 using EliteSharpLib.Views;
 
@@ -41,10 +40,22 @@ internal static class MissionJump
     /// </summary>
     internal const string EnvVar = "ELITE_DEBUG_MISSIONS";
 
+    // The two missions the game shipped with, and the stages this cheat needs
+    // to put the commander in. They are spelled out because those missions are
+    // a plugin now: the game does not reference them, and a jump to a mission
+    // nobody installed does nothing at all.
+    private const string Constrictor = "Constrictor";
+    private const string Thargoid = "Thargoid";
+    private const string NotStarted = "None";
+    private const string Destroyed = "Destroyed";
+    private const string Rewarded = "Rewarded";
+    private const string Summoned = "Summoned";
+    private const string CarryingPlans = "CarryingPlans";
+
     // The Thargoid briefings key off where the commander is docked: Ceerdi for
     // the second brief, Birera for the debrief. These are the planet numbers
-    // the missions speak in (ThargoidMission), not the seed bytes the game used
-    // to fake by overwriting two of the six.
+    // the missions speak in, not the seed bytes the game used to fake by
+    // overwriting two of the six.
     private const int ThargoidGalaxy = 2;
     private const int Ceerdi = 83;
     private const int Birera = 36;
@@ -89,21 +100,21 @@ internal static class MissionJump
         switch (stage)
         {
             case 0:
-                gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.None);
-                gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.None);
+                MoveTo(gameState, Constrictor, NotStarted);
+                MoveTo(gameState, Thargoid, NotStarted);
                 gameState.Cmdr.Score = AboveAverageScore;
                 gameState.Cmdr.GalaxyNumber = 0;
                 gameState.SetView(Screen.MissionBriefing);
                 break;
 
             case 1:
-                gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Destroyed);
+                MoveTo(gameState, Constrictor, Destroyed);
                 gameState.SetView(Screen.MissionBriefing);
                 break;
 
             case 2:
-                gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Rewarded);
-                gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.None);
+                MoveTo(gameState, Constrictor, Rewarded);
+                MoveTo(gameState, Thargoid, NotStarted);
                 gameState.Cmdr.Score = DangerousScore;
                 gameState.Cmdr.GalaxyNumber = ThargoidGalaxy;
                 gameState.Cmdr.Galaxy = GalaxyAt(ThargoidGalaxy);
@@ -111,18 +122,30 @@ internal static class MissionJump
                 break;
 
             case 3:
-                gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Rewarded);
-                gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.Summoned);
+                MoveTo(gameState, Constrictor, Rewarded);
+                MoveTo(gameState, Thargoid, Summoned);
                 DockAt(gameState, planet, ThargoidGalaxy, Ceerdi);
                 gameState.SetView(Screen.MissionBriefing);
                 break;
 
             default:
-                gameState.Cmdr.Missions.MoveTo(ConstrictorMission.Id, ConstrictorMission.Rewarded);
-                gameState.Cmdr.Missions.MoveTo(ThargoidMission.Id, ThargoidMission.CarryingPlans);
+                MoveTo(gameState, Constrictor, Rewarded);
+                MoveTo(gameState, Thargoid, CarryingPlans);
                 DockAt(gameState, planet, ThargoidGalaxy, Birera);
                 gameState.SetView(Screen.MissionBriefing);
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Moves a mission on, if it is installed at all. The missions are a plugin
+    /// now, so a cheat that names one has to cope with nobody providing it.
+    /// </summary>
+    private static void MoveTo(GameState gameState, string mission, string stage)
+    {
+        if (gameState.Cmdr.Missions.StageOf(mission) is not null)
+        {
+            gameState.Cmdr.Missions.MoveTo(mission, stage);
         }
     }
 

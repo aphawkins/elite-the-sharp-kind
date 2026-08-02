@@ -4,7 +4,7 @@
 
 using EliteSharp.Missions.Abstractions;
 
-namespace EliteSharpLib.Missions;
+namespace EliteSharp.Missions.Classic;
 
 /// <summary>
 /// Running the Thargoid defence plans from Ceerdi to Birera, with the
@@ -12,7 +12,7 @@ namespace EliteSharpLib.Missions;
 /// Constrictor has been paid for, which is the one thing either mission knows
 /// about the other, and it asks that the only way a mission can: by name.
 /// </summary>
-internal sealed class ThargoidMission : IMission, IMissionEncounters
+public sealed class ThargoidMission : IMission, IMissionEncounters
 {
     /// <inheritdoc cref="ConstrictorMission.Id"/>
     internal const string Id = "Thargoid";
@@ -45,7 +45,7 @@ internal sealed class ThargoidMission : IMission, IMissionEncounters
     /// <summary>
     /// The galaxy the run happens in, and the two systems it runs between, as
     /// planet numbers rather than the seed bytes the game used to compare - a
-    /// mission cannot see seeds. `MissionsTests` checks these still name Ceerdi
+    /// mission cannot see seeds. The game's MissionsTests checks these still name Ceerdi
     /// and Birera.
     /// </summary>
     private const int RunGalaxy = 2;
@@ -87,14 +87,17 @@ internal sealed class ThargoidMission : IMission, IMissionEncounters
             + "For the moment please accept this Navy Extra Energy Unit as payment. "
             + "---MESSAGE ENDS.";
 
+    /// <summary>
+    /// The stages, in the order the commander passes through them, under the
+    /// names the save file has always used.
+    /// </summary>
+    private static readonly MissionStages s_declared = new([None, Summoned, CarryingPlans, Rewarded]);
+
     /// <inheritdoc/>
     public string Name => Id;
 
     /// <inheritdoc/>
-    public MissionStages Stages => Declared;
-
-    /// <inheritdoc cref="ConstrictorMission.Declared"/>
-    internal static MissionStages Declared { get; } = new([None, Summoned, CarryingPlans, Rewarded]);
+    public MissionStages Stages => s_declared;
 
     /// <inheritdoc/>
     public MissionStep? Advance(IMissionContext context, string stage)
@@ -110,14 +113,14 @@ internal sealed class ThargoidMission : IMission, IMissionEncounters
             && context.CombatScore >= DangerousScore
             && context.GalaxyNumber == RunGalaxy)
         {
-            return Declared.Step(stage, Summoned, new MissionBriefing { Paragraphs = [BriefA] });
+            return s_declared.Step(stage, Summoned, new MissionBriefing { Paragraphs = [BriefA] });
         }
 
         if (string.Equals(stage, Summoned, StringComparison.Ordinal) && IsAt(context, Ceerdi))
         {
             // Blake hands the plans over in person, so this is the one briefing
             // with somebody pictured on it.
-            return Declared.Step(
+            return s_declared.Step(
                 stage,
                 CarryingPlans,
                 new MissionBriefing
@@ -128,7 +131,7 @@ internal sealed class ThargoidMission : IMission, IMissionEncounters
         }
 
         return string.Equals(stage, CarryingPlans, StringComparison.Ordinal) && IsAt(context, Birera)
-            ? Declared.Step(
+            ? s_declared.Step(
                 stage,
                 Rewarded,
                 new MissionBriefing

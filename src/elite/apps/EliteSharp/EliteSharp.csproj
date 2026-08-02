@@ -20,4 +20,31 @@
 	  <ProjectReference Include="..\..\libs\EliteSharpLib\EliteSharpLib.csproj" />
 	</ItemGroup>
 
+  <ItemGroup>
+    <!-- The missions are plugins, including the two that ship with the game.
+         Built and copied, but deliberately not referenced: the game must find
+         its own missions the same way it finds anyone else's. -->
+    <ProjectReference Include="..\..\libs\EliteSharp.Missions.Classic\EliteSharp.Missions.Classic.csproj"
+                      ReferenceOutputAssembly="false"
+                      Private="false" />
+  </ItemGroup>
+
+  <!-- Into a Missions folder beside the executable, which is where
+       MissionLoader looks. CopyToOutputDirectory would flatten it into the
+       output root, so the path is set here instead. -->
+  <Target Name="CopyMissionPlugins" AfterTargets="Build;Publish">
+    <MSBuild Projects="..\..\libs\EliteSharp.Missions.Classic\EliteSharp.Missions.Classic.csproj"
+             Targets="GetTargetPath"
+             Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
+      <Output TaskParameter="TargetOutputs" ItemName="MissionPlugin" />
+    </MSBuild>
+    <Copy SourceFiles="@(MissionPlugin)"
+          DestinationFolder="$(OutDir)Missions"
+          SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(MissionPlugin)"
+          DestinationFolder="$(PublishDir)Missions"
+          SkipUnchangedFiles="true"
+          Condition="'$(PublishDir)' != ''" />
+  </Target>
+
 </Project>

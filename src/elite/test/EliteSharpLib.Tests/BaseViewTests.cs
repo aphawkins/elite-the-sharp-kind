@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using EliteSharpLib.Graphics;
-using EliteSharpLib.Missions;
+using EliteSharpLib.Tests.Missions;
 using EliteSharpLib.Views;
 using EliteSharpLib.Views.SixteenBit;
 using Useful.Abstraction;
@@ -33,7 +33,7 @@ public class BaseViewTests
     private static EliteDraw Draw()
     {
         FakeGraphics graphics = new();
-        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), ClassicMissions.Registry());
+        GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
         ZBufferRenderer shipRenderer = new(graphics);
         RNG rng = new(new Random(0));
         return new EliteDraw(gameState, graphics, new FakeAssetLocator(), shipRenderer, rng);

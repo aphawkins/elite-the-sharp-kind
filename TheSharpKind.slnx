@@ -34,6 +34,7 @@
   </Folder>
   <Folder Name="/src/elite/libs/">
     <Project Path="src/elite/libs/EliteSharp.Missions.Abstractions/EliteSharp.Missions.Abstractions.csproj" />
+    <Project Path="src/elite/libs/EliteSharp.Missions.Classic/EliteSharp.Missions.Classic.csproj" />
     <Project Path="src/elite/libs/EliteSharpLib/EliteSharpLib.csproj" />
   </Folder>
   <Folder Name="/src/elite/perf/">

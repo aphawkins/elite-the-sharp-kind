@@ -7,6 +7,32 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Missions become plugins, 2026-08-02)
+
+- The two missions are no longer written into the game. They live in
+  **`EliteSharp.Missions.Classic`**, an assembly that references the mission
+  contracts and nothing else, and the game finds them at startup in a
+  **`Missions` folder beside the executable** — the same way it would find
+  anyone else's. Adding a mission is now a new assembly rather than edits to
+  two enums, two controllers, two `Screen` values and four views.
+- **Fixed:** the rumours about the stolen Constrictor were printed for whatever
+  system was selected on the chart, so Reesdice was named from anywhere in the
+  first galaxy. A rumour is somebody in the station talking, and is now only
+  said about the system the commander is standing on.
+- The two mission briefing screens are one screen, which lays itself out from
+  what a briefing contains — a headline, how many paragraphs, whether somebody
+  is pictured — rather than from which mission sent it. On the **8-bit tier the
+  Constrictor debrief moves down the screen**, matching the Thargoid debrief;
+  one rule cannot draw the two layouts they had drifted into. 16-bit is
+  unchanged.
+- Commander files hold only the mission stages actually reached, so a fresh
+  commander writes none. A file naming a mission that nothing provides is
+  refused and says which name it could not place — including when a mission's
+  plugin has been removed.
+- `ELITE_DEBUG_MISSIONS`' Ctrl-M jump now moves the commander to a real system
+  rather than overwriting two of the docked planet's six seed bytes, so the
+  chart, the planet name and the data screen agree afterwards.
+
 ### Changed (The 16-bit tier becomes a real 12-bit machine, 2026-08-01)
 
 - The 2026-07-30 rename of the 16-bit palette to web colour names is backed
