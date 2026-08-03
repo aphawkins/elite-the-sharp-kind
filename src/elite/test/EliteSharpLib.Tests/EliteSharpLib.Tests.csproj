@@ -65,19 +65,24 @@
           SkipUnchangedFiles="true" />
   </Target>
 
-  <!-- Both view packs, into a Views folder, exactly as the app's build does
-       it. Without this the harness has no tier to draw with and every test
-       that builds the real composition fails at startup - which is the
-       failure the game is meant to have, so it is worth it being the same
-       one. -->
+  <ItemGroup>
+    <RenditionProject Include="..\..\libs\EliteSharp.Renditions.EightBit\EliteSharp.Renditions.EightBit.csproj" />
+    <RenditionProject Include="..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj" />
+  </ItemGroup>
+
+  <!-- Both renditions, each into a folder of its own under Renditions,
+       exactly as the app's build does it. Without this the harness has
+       nothing to draw with and every test that builds the real composition
+       fails at startup - which is the failure the game is meant to have, so
+       it is worth it being the same one. -->
   <Target Name="CopyRenditions" AfterTargets="Build">
-    <MSBuild Projects="..\..\libs\EliteSharp.Renditions.EightBit\EliteSharp.Renditions.EightBit.csproj;..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj"
+    <MSBuild Projects="@(RenditionProject)"
              Targets="GetTargetPath"
              Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
-      <Output TaskParameter="TargetOutputs" ItemName="Rendition" />
+      <Output TaskParameter="TargetOutputs" ItemName="RenditionAssembly" />
     </MSBuild>
-    <Copy SourceFiles="@(Rendition)"
-          DestinationFolder="$(OutDir)Renditions"
+    <Copy SourceFiles="@(RenditionAssembly)"
+          DestinationFolder="$(OutDir)Renditions\%(Filename)"
           SkipUnchangedFiles="true" />
   </Target>
 

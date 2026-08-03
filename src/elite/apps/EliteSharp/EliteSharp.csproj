@@ -58,20 +58,30 @@
           Condition="'$(PublishDir)' != ''" />
   </Target>
 
-  <!-- The same, into a Views folder, which is where RenditionLoader looks. Both
-       tiers are copied whichever one is configured: the tier is a setting the
-       commander can change without reinstalling anything. -->
+  <ItemGroup>
+    <RenditionProject Include="..\..\libs\EliteSharp.Renditions.EightBit\EliteSharp.Renditions.EightBit.csproj" />
+    <RenditionProject Include="..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj" />
+  </ItemGroup>
+
+  <!-- Each rendition into a folder of its own under Renditions, which is
+       where RenditionLoader looks. A folder rather than a loose DLL because a
+       rendition brings its own artwork, palette, fonts and ship models with
+       it, and those would collide in one directory - both of the shipped ones
+       have a palette.json and a scanner.bmp.
+
+       Both are copied whichever one is configured: the rendition is a setting
+       the commander can change without reinstalling anything. -->
   <Target Name="CopyRenditions" AfterTargets="Build;Publish">
-    <MSBuild Projects="..\..\libs\EliteSharp.Renditions.EightBit\EliteSharp.Renditions.EightBit.csproj;..\..\libs\EliteSharp.Renditions.SixteenBit\EliteSharp.Renditions.SixteenBit.csproj"
+    <MSBuild Projects="@(RenditionProject)"
              Targets="GetTargetPath"
              Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework)">
-      <Output TaskParameter="TargetOutputs" ItemName="Rendition" />
+      <Output TaskParameter="TargetOutputs" ItemName="RenditionAssembly" />
     </MSBuild>
-    <Copy SourceFiles="@(Rendition)"
-          DestinationFolder="$(OutDir)Renditions"
+    <Copy SourceFiles="@(RenditionAssembly)"
+          DestinationFolder="$(OutDir)Renditions\%(Filename)"
           SkipUnchangedFiles="true" />
-    <Copy SourceFiles="@(Rendition)"
-          DestinationFolder="$(PublishDir)Renditions"
+    <Copy SourceFiles="@(RenditionAssembly)"
+          DestinationFolder="$(PublishDir)Renditions\%(Filename)"
           SkipUnchangedFiles="true"
           Condition="'$(PublishDir)' != ''" />
   </Target>

@@ -56,12 +56,17 @@ internal static class RenditionLoader
     /// </exception>
     public static InstalledRenditions LoadFrom(string baseDirectory, string name, ILogger logger)
     {
-        string folder = Path.Combine(baseDirectory, FolderName);
+        string renditionsFolder = Path.Combine(baseDirectory, FolderName);
         List<Assembly> assemblies = [];
 
-        if (Directory.Exists(folder))
+        if (Directory.Exists(renditionsFolder))
         {
-            foreach (string file in Directory.EnumerateFiles(folder, "*.dll"))
+            // A rendition is a folder, not a loose file: it brings its own
+            // artwork, palette, fonts and ship models alongside its code, and
+            // they would collide in one directory - both of the shipped ones
+            // have a palette.json and a scanner.bmp. Loose DLLs are still read
+            // so a code-only rendition needs no folder of its own.
+            foreach (string file in Directory.EnumerateFiles(renditionsFolder, "*.dll", SearchOption.AllDirectories))
             {
                 // One unreadable file is one rendition the commander cannot play,
                 // which is only fatal if it was the one they asked for - so
@@ -92,11 +97,16 @@ internal static class RenditionLoader
 
         IRendition chosen = Array.Find(renditions, rendition => string.Equals(rendition.Name, name, StringComparison.Ordinal))
             ?? throw new InvalidOperationException(
-                $"Nothing in '{folder}' is called '{name}', so there is nothing to draw the game with.");
+                $"Nothing in '{renditionsFolder}' is called '{name}', so there is nothing to draw the game with.");
+
+        // Where it came from, so the game can find the artwork it brought
+        // with it. A rendition loaded from a loose DLL has the Renditions
+        // folder itself, which is the right answer for one shipping no assets.
+        string folder = Path.GetDirectoryName(chosen.GetType().Assembly.Location) ?? renditionsFolder;
 
         // The settings screen offers the commander what is installed, so the
         // names of the ones that were not chosen are worth keeping.
-        return new(chosen, [.. renditions.Select(r => r.Name).Order(StringComparer.Ordinal)]);
+        return new(chosen, folder, [.. renditions.Select(r => r.Name).Order(StringComparer.Ordinal)]);
     }
 
     private static ConventionBuilder BuildConventions()
