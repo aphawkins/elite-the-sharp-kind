@@ -2,6 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using System.Numerics;
 using EliteSharpLib.Graphics;
 using EliteSharpLib.Lasers;
 using EliteSharpLib.Tests.Missions;
@@ -61,20 +62,21 @@ public class LaserDrawTests
         => Assert.True(CountPixels(DrawSights(laserType), expectedColor) > 0);
 
     private static FastBitmap DrawSights(LaserType laserType)
-        => Render(false, laser => laser.DrawLaserSights(laserType));
+        => Render(laser => laser.DrawLaserSights(laserType));
 
+    // Where the beams converge is the game's roll now rather than the view's,
+    // so the test picks it: dead centre, one of the four the game can roll.
     private static FastBitmap DrawLines(LaserType laserType, bool laserWireframe)
-        => Render(laserWireframe, laser => laser.DrawLaserLines(laserType));
+        => Render(laser => laser.DrawLaserLines(laserType, Vector2.Zero, laserWireframe));
 
-    private static FastBitmap Render(bool laserWireframe, Action<LaserDraw16Bit> draw)
+    private static FastBitmap Render(Action<LaserDraw16Bit> draw)
     {
         FastBitmap? lastFrame = null;
         using SoftwareGraphics graphics = SoftwareGraphics.Create(512, 512, b => lastFrame = b, AssetLocator.Create());
         GameState gameState = new(new ScreenManager<Screen, IScreenController>(new FakeKeyboard()), TestMissions.Registry());
-        gameState.Config.Engine.Graphics.GraphicStyle = laserWireframe ? GraphicStyle.Wireframe : GraphicStyle.Solid;
         RNG rng = new(new Random(0));
         EliteDraw eliteDraw = new(gameState, graphics, AssetLocator.Create(), new ZBufferRenderer(graphics), rng);
-        LaserDraw16Bit laser = new(gameState, eliteDraw, rng);
+        LaserDraw16Bit laser = new(eliteDraw);
 
         graphics.Clear();
         draw(laser);

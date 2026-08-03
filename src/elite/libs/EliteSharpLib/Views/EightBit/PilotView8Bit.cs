@@ -22,10 +22,10 @@ internal sealed class PilotView8Bit : BaseView8Bit, IView<PilotModel>
     private readonly LaserDrawBase _laser;
     private readonly FastColor _colorWhite;
 
-    internal PilotView8Bit(IEliteDraw draw, GameState gameState, RNG rng)
+    internal PilotView8Bit(IEliteDraw draw)
         : base(draw)
     {
-        _laser = new LaserDraw8Bit(gameState, draw, rng);
+        _laser = new LaserDraw8Bit(draw);
 
         _colorWhite = draw.Palette["White"];
     }
@@ -45,7 +45,7 @@ internal sealed class PilotView8Bit : BaseView8Bit, IView<PilotModel>
 
         if (model.IsFiring)
         {
-            _laser.DrawLaserLines(model.LaserType);
+            _laser.DrawLaserLines(model.LaserType, model.LaserAim, model.LaserWireframe);
         }
 
         _laser.DrawLaserSights(model.LaserType);

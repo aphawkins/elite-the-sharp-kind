@@ -13,8 +13,8 @@ internal sealed class LaserDraw8Bit : LaserDrawBase
     private readonly FastColor _colorRed;
     private readonly FastColor _colorYellow;
 
-    internal LaserDraw8Bit(GameState gameState, IEliteDraw draw, RNG rng)
-        : base(gameState, draw, rng)
+    internal LaserDraw8Bit(IEliteDraw draw)
+        : base(draw)
     {
         ArgumentNullException.ThrowIfNull(draw);
 

@@ -109,13 +109,7 @@ internal static class EliteSplitAnimatedScreensServiceCollectionExtensions
             sp.GetRequiredService<ILoggerFactory>().CreateLogger<Intro2Controller>()));
 
         services.AddSingleton<IView<PilotModel>>(sp => EliteServiceCollectionExtensions.IsEightBit(sp)
-            ? new PilotView8Bit(
-                sp.GetRequiredService<IEliteDraw>(),
-                sp.GetRequiredService<GameState>(),
-                sp.GetRequiredService<RNG>())
-            : new PilotView16Bit(
-                sp.GetRequiredService<IEliteDraw>(),
-                sp.GetRequiredService<GameState>(),
-                sp.GetRequiredService<RNG>()));
+            ? new PilotView8Bit(sp.GetRequiredService<IEliteDraw>())
+            : new PilotView16Bit(sp.GetRequiredService<IEliteDraw>()));
     }
 }

@@ -266,6 +266,7 @@ public static class EliteServiceCollectionExtensions
         sp.GetRequiredService<Space>(),
         sp.GetRequiredService<Combat>(),
         direction,
+        sp.GetRequiredService<RNG>(),
         sp.GetRequiredService<IView<PilotModel>>());
 
     // The ~25 views EliteMain used to construct itself, now registered so

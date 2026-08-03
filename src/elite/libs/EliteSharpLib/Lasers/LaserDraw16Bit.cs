@@ -13,8 +13,8 @@ internal sealed class LaserDraw16Bit : LaserDrawBase
     private readonly FastColor _colorPaleYellow;
     private readonly FastColor _colorRedOrange;
 
-    internal LaserDraw16Bit(GameState gameState, IEliteDraw draw, RNG rng)
-        : base(gameState, draw, rng)
+    internal LaserDraw16Bit(IEliteDraw draw)
+        : base(draw)
     {
         _colorPaleYellow = draw.Palette["PaleYellow"];
         _colorRedOrange = draw.Palette["RedOrange"];

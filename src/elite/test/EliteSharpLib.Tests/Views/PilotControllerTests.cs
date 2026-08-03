@@ -106,7 +106,7 @@ public class PilotControllerTests
         space = new(gameState, audio, pilot, combat, trade, ship, new PlanetController(gameState), stars, universe, draw, rng);
 
         return new PilotController(
-            gameState, new FakeKeyboard(), pilot, ship, stars, space, combat, direction, new FakePilotView());
+            gameState, new FakeKeyboard(), pilot, ship, stars, space, combat, direction, rng, new FakePilotView());
     }
 
     private sealed class FakePilotView : IView<PilotModel>

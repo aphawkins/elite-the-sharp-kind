@@ -3,10 +3,12 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Diagnostics;
+using System.Numerics;
 using EliteSharpLib.Conflict;
 using EliteSharpLib.Lasers;
 using EliteSharpLib.Ships;
 using Useful.Controls;
+using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Views;
 
@@ -26,6 +28,7 @@ internal sealed class PilotController : IScreenController
     private readonly Space _space;
     private readonly Combat _combat;
     private readonly PilotDirection _direction;
+    private readonly RNG _rng;
     private readonly IView<PilotModel> _view;
 
     private int _drawLaserFrames;
@@ -39,6 +42,7 @@ internal sealed class PilotController : IScreenController
         Space space,
         Combat combat,
         PilotDirection direction,
+        RNG rng,
         IView<PilotModel> view)
     {
         _gameState = gameState;
@@ -48,6 +52,7 @@ internal sealed class PilotController : IScreenController
         _stars = stars;
         _space = space;
         _combat = combat;
+        _rng = rng;
         _direction = direction;
         _view = view;
     }
@@ -111,7 +116,19 @@ internal sealed class PilotController : IScreenController
             _ => throw new UnreachableException(),
         };
 
-        return new(viewName, hyperspaceStatus, laserType, _drawLaserFrames > 0);
+        // The beams meet a pixel or two off centre, rolled fresh every frame -
+        // that shimmer is the original's. The roll happens here because the
+        // game owns the one source of entropy; a view that rolled its own
+        // would not be reproducible.
+        Vector2 laserAim = new(_rng.Random(0, 2), _rng.Random(0, 2));
+
+        return new(
+            viewName,
+            hyperspaceStatus,
+            laserType,
+            _drawLaserFrames > 0,
+            laserAim,
+            _gameState.Config.Engine.Graphics.GraphicStyle == GraphicStyle.Wireframe);
     }
 
     private void HandleFlightControls()

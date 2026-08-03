@@ -5,7 +5,6 @@
 using System.Numerics;
 using EliteSharpLib.Graphics;
 using Useful;
-using Useful.Graphics.Rendering;
 
 namespace EliteSharpLib.Lasers;
 
@@ -13,21 +12,32 @@ namespace EliteSharpLib.Lasers;
 /// The laser beams and crosshairs. The geometry is shared - it is already
 /// derived from the tier's scale and scanner edges - but the beam colours are
 /// each tier's own, so those are left to the subclass.
+/// <para>
+/// It reads no game state: whether the beams are outlined and where they
+/// converge both arrive on the model, the same as everything else a view
+/// draws.
+/// </para>
 /// </summary>
-internal abstract class LaserDrawBase(GameState gameState, IEliteDraw draw, RNG rng)
+internal abstract class LaserDrawBase(IEliteDraw draw)
 {
     protected IEliteDraw Draw { get; } = draw;
 
-    internal void DrawLaserLines(LaserType laserType)
+    /// <summary>
+    /// Draws the two beams converging ahead of the ship.
+    /// </summary>
+    /// <param name="laserType">The mount that is firing.</param>
+    /// <param name="aim">
+    /// Where the beams meet, relative to the viewport centre and in the
+    /// original's coordinates - the frame's jitter, which the game rolls
+    /// rather than the view.
+    /// </param>
+    /// <param name="wireframe">Whether the beams are outlined rather than filled.</param>
+    internal void DrawLaserLines(LaserType laserType, Vector2 aim, bool wireframe)
     {
         FastColor color = BeamColor(laserType);
         float scale = Draw.Layout.Scale;
 
-        Vector2 target = new()
-        {
-            X = Draw.Layout.ViewportCentre.X + (rng.Random(0, 2) * scale),
-            Y = Draw.Layout.ViewportCentre.Y + (rng.Random(0, 2) * scale),
-        };
+        Vector2 target = Draw.Layout.ViewportCentre + (aim * scale);
 
         Vector2 leftA = new(Draw.Layout.ViewportLeft + (32 * scale), Draw.Layout.ViewportHeight);
         Vector2 leftB = new(Draw.Layout.ViewportLeft + (48 * scale), Draw.Layout.ViewportHeight);
@@ -35,7 +45,7 @@ internal abstract class LaserDrawBase(GameState gameState, IEliteDraw draw, RNG 
         Vector2 rightA = new(Draw.Layout.ViewportRight - (32 * scale), Draw.Layout.ViewportHeight);
         Vector2 rightB = new(Draw.Layout.ViewportRight - (48 * scale), Draw.Layout.ViewportHeight);
 
-        if (gameState.Config.Engine.Graphics.GraphicStyle == GraphicStyle.Wireframe)
+        if (wireframe)
         {
             // Left laser
             Draw.Graphics.DrawTriangle(leftA, target, leftB, color);
