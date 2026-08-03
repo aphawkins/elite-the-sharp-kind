@@ -3,7 +3,7 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Collections.Immutable;
-using EliteSharp.Missions.Abstractions;
+using EliteSharp.Abstractions.Missions;
 
 namespace EliteSharp.Missions.Classic;
 

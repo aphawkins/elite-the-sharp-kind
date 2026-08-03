@@ -7,7 +7,7 @@
        Missions folder beside the executable and the loader finds it there. -->
 
   <ItemGroup>
-    <ProjectReference Include="..\EliteSharp.Missions.Abstractions\EliteSharp.Missions.Abstractions.csproj" />
+    <ProjectReference Include="..\EliteSharp.Abstractions\EliteSharp.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

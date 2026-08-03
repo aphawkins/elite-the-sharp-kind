@@ -14,7 +14,7 @@
 
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\libs\EliteSharp.Missions.Abstractions\EliteSharp.Missions.Abstractions.csproj" />
+	  <ProjectReference Include="..\..\libs\EliteSharp.Abstractions\EliteSharp.Abstractions.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Abstraction\Useful.Abstraction.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Assets\Useful.Assets.csproj" />
 	  <ProjectReference Include="..\..\..\useful\libs\Useful.Audio\Useful.Audio.csproj" />

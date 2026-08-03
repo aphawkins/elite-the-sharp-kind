@@ -3,9 +3,10 @@
 // Elite (C) I.Bell & D.Braben 1984.
 
 using System.Collections.Immutable;
+using EliteSharp.Abstractions.Missions;
 using Xunit;
 
-namespace EliteSharp.Missions.Abstractions.Tests;
+namespace EliteSharp.Abstractions.Tests;
 
 public class MissionStagesTests
 {

@@ -2,7 +2,7 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
-namespace EliteSharp.Missions.Abstractions;
+namespace EliteSharp.Abstractions.Missions;
 
 /// <summary>
 /// The kit a mission may fit to the commander's ship. The game has no way to

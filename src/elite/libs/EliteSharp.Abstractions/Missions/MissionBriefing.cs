@@ -4,7 +4,7 @@
 
 using System.Collections.Immutable;
 
-namespace EliteSharp.Missions.Abstractions;
+namespace EliteSharp.Abstractions.Missions;
 
 /// <summary>
 /// One screen of a mission's message sequence. A single screen draws every

@@ -4,7 +4,7 @@
 
 using System.Collections.Immutable;
 
-namespace EliteSharp.Missions.Abstractions;
+namespace EliteSharp.Abstractions.Missions;
 
 /// <summary>
 /// The stages a mission passes through, in the order it passes through them,

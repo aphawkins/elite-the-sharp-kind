@@ -4,7 +4,7 @@
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using EliteSharp.Missions.Abstractions;
+using EliteSharp.Abstractions.Missions;
 using EliteSharpLib.Equipment;
 using EliteSharpLib.Lasers;
 using EliteSharpLib.Missions;

@@ -6,7 +6,7 @@ using System.Composition.Convention;
 using System.Composition.Hosting;
 using System.Reflection;
 using System.Runtime.Loader;
-using EliteSharp.Missions.Abstractions;
+using EliteSharp.Abstractions.Missions;
 using Microsoft.Extensions.Logging;
 
 namespace EliteSharpLib.Missions;

@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libs\EliteSharp.Missions.Abstractions\EliteSharp.Missions.Abstractions.csproj" />
+    <ProjectReference Include="..\..\libs\EliteSharp.Abstractions\EliteSharp.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

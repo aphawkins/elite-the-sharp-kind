@@ -2,9 +2,10 @@
 // 'Elite - The New Kind' - C.J.Pinder 1999-2001.
 // Elite (C) I.Bell & D.Braben 1984.
 
+using EliteSharp.Abstractions.Missions;
 using Xunit;
 
-namespace EliteSharp.Missions.Abstractions.Tests;
+namespace EliteSharp.Abstractions.Tests;
 
 public class MissionRewardTests
 {

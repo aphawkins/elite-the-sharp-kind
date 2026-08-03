@@ -33,7 +33,7 @@
     <Project Path="src/elite/apps/EliteSharp/EliteSharp.csproj" />
   </Folder>
   <Folder Name="/src/elite/libs/">
-    <Project Path="src/elite/libs/EliteSharp.Missions.Abstractions/EliteSharp.Missions.Abstractions.csproj" />
+    <Project Path="src/elite/libs/EliteSharp.Abstractions/EliteSharp.Abstractions.csproj" />
     <Project Path="src/elite/libs/EliteSharp.Missions.Classic/EliteSharp.Missions.Classic.csproj" />
     <Project Path="src/elite/libs/EliteSharpLib/EliteSharpLib.csproj" />
   </Folder>
@@ -41,7 +41,7 @@
     <Project Path="src/elite/perf/EliteSharpLib.Benchmarks/EliteSharpLib.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/src/elite/test/">
-    <Project Path="src/elite/test/EliteSharp.Missions.Abstractions.Tests/EliteSharp.Missions.Abstractions.Tests.csproj" />
+    <Project Path="src/elite/test/EliteSharp.Abstractions.Tests/EliteSharp.Abstractions.Tests.csproj" />
     <Project Path="src/elite/test/EliteSharp.Missions.TestPlugin/EliteSharp.Missions.TestPlugin.csproj" />
     <Project Path="src/elite/test/EliteSharpLib.Fakes/EliteSharpLib.Fakes.csproj" />
     <Project Path="src/elite/test/EliteSharpLib.Tests/EliteSharpLib.Tests.csproj" />
