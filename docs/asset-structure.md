@@ -1,39 +1,65 @@
 # Asset Structure — The Sharp Kind
 
-How game assets are laid out, resolved, decoded and validated across the
-8-bit and 16-bit system tiers. This is the design note behind the
-multi-resolution tier decision in [decisions.md](decisions.md); the work
-items that implement it live in
-[backlog-roadmap.md](backlog-roadmap.md).
+How game assets are laid out, resolved, decoded and validated. This began as
+the design note behind the multi-resolution tier decision in
+[decisions.md](decisions.md).
 
-Scope: both games get both tiers. The Modern tier from the tier decision
-is deliberately **out of scope here** — it is predominantly vector-based
-and needs no bitmap set, so it is not modelled until it has content.
+**Read it knowing that tiers became renditions on 2026-08-03**, and that
+several of the calls below were reversed by that. Each section says so where
+it applies; the reasoning is kept rather than deleted, because why a thing was
+rejected is worth having when it turns out to be the answer.
 
 ## Layout
 
-Only some asset categories vary by tier. Audio, TrueType fonts and
-tracks are resolution-independent and are not duplicated. Images,
-bitmap fonts, the palette and the models are tier-specific, so those
-categories — and only those — gain a tier subfolder:
+> **Superseded on 2026-08-03.** The layout below was category-first with a
+> tier subfolder, and the alternative described further down — a tree per
+> tier — was rejected. Elite now uses that alternative, because a tier became
+> a **rendition**: a plugin assembly that draws the game, found at startup, and
+> a plugin has to be able to bring its assets with it. What each section still
+> gets right is marked as it comes. Stunt Car Racer, which has one rendition
+> and no plugin model yet, keeps a single flat `Assets/` tree.
+
+An asset belongs either to a rendition or to the game. The artwork, bitmap
+fonts, palette and models are what a rendition looks like, so they travel with
+its assembly; the audio is not a rendition concern and stays with the
+executable:
 
 ```
+Renditions/
+  EliteSharp.Renditions.EightBit/
+    EliteSharp.Renditions.EightBit.dll
+    Assets/
+      AssetManifest.json
+      Images/       scanner.bmp, ...
+      FontsBitmap/  bbc-micro.bmp
+      Palette/      palette.json
+      Models/       adder.obj, ..., palette.mtl
+  EliteSharp.Renditions.SixteenBit/
+    ... the same, its own
 Assets/
   AssetManifest.json
-  Images/
-    EightBit/     scanner.bmp, ...
-    SixteenBit/   scanner.bmp, elitetext.bmp, ...
-  FontsBitmap/
-    EightBit/     font1.bmp, font2.bmp
-    SixteenBit/   font1.bmp, font2.bmp
-  Palette/
-    EightBit/     palette.json
-    SixteenBit/   palette.json
-  Models/
-    EightBit/     adder.obj, ..., palette.mtl
-    SixteenBit/   adder.obj, ..., palette.mtl
-  SFX/  Music/  SoundFonts/  FontsTrueType/   <- tier-neutral
+  SFX/  Music/  SoundFonts/  FontsTrueType/   <- the game's own
 ```
+
+`RenditionAssets` composes the two into one `IAssetLocator`, so nothing that
+consumes an asset knows there are two places to look.
+
+### Why the rejected alternative won
+
+The objection recorded below was that a tree per tier "forces every `.obj` and
+`.ogg` to be triplicated or a `Shared/` pseudo-tier to be invented". That has
+expired, and by the same 2026-07-30 change that recorded it:
+
+* **The `.obj` files were already split.** Models joined the tier-varying
+  categories in that change, because a model's `usemtl` names resolve through
+  the palette and the two palettes stopped agreeing. There is nothing left to
+  triplicate.
+* **The `.ogg` files never move.** Audio stays in the game's own `Assets/`,
+  which is not a pseudo-tier — it is the game's, and a rendition has no
+  opinion about the sound of a laser.
+
+What tipped it is that a rendition is a plugin now. A stranger's rendition
+that could draw but had nothing to draw with would not be a rendition at all.
 
 Models joined the tier-varying categories on 2026-07-30. Geometry is
 resolution-independent, so they were tier-neutral at first — but a
@@ -53,57 +79,51 @@ The rejected alternative was tier-first (`Assets/EightBit/Images/...`,
 the whole tree duplicated per tier). It makes adding or removing a tier a
 single folder operation, but forces every `.obj` and `.ogg` to be
 triplicated or a `Shared/` pseudo-tier to be invented — which is the
-category-first layout again, with an extra concept.
+category-first layout again, with an extra concept. **This is the call that
+was reversed on 2026-08-03; see the note at the top for why it no longer
+holds.**
 
 The palette is tier-scoped because the colour budget below makes it so:
 an 8-bit palette cannot be the 16-bit palette.
 
 ## Manifest
 
-One manifest per game, keyed by logical name exactly as today. The same
-logical name resolves to the same filename in every tier — the tier is a
-*path* concern, not a naming one, so the ~50 logical-name entries are not
-duplicated per tier and cannot drift apart.
+**Superseded on 2026-08-03.** One manifest per rendition, plus one for the
+game, each listing only what it owns. A rendition's manifest is its whole
+manifest, so there is nothing to overlay onto and the `Tiers` list and
+`TierOverrides` escape hatch are both gone - a rendition that is not installed
+is caught by the loader, and a rendition whose set genuinely differs simply
+says so, because it is the only one writing its manifest.
 
-Two additions:
+What a rendition adds instead is what it declares about itself:
 
 ```json
 {
-  "Tiers": [ "8Bit", "16Bit" ],
-  "TierOverrides": {
-    "8Bit": { "Images": { "LaserBeam": "laser.bmp" } }
-  }
+  "Colours": { "MaxColours": 16, "PaletteNamesEveryColour": true, "ChannelBits": 8 }
 }
 ```
 
-* `Tiers` declares which tiers actually ship, so selecting an absent tier
-  fails at startup rather than at first draw. The digit spelling is the
-  JSON one, matching the config file's `tier`; the directories on disk
-  are named for the `SystemTier` members (`EightBit/`, `SixteenBit/`),
-  because a C# identifier cannot start with a digit.
-* `TierOverrides` is the escape hatch for the cases where a tier's set
-  genuinely differs — a merged sprite sheet, or a bitmap with no
-  equivalent at that tier.
+The game cannot know this about a rendition it was never built against - a
+stranger's could be four colours or sixteen million - so the limits enforced
+at load are the ones the rendition claimed. Declaring nothing means
+unconstrained, which is the only honest default: nothing a rendition ships can
+then be rejected for a limit it never claimed to have.
 
 ## Resolution
 
-`AssetLocator` is the only place asset paths are built, so tier
-resolution lives there and nowhere else. The rule is:
+**Superseded on 2026-08-03.** `AssetLocator` is still the only place asset
+paths are built, but there is no tier in a path any more. The rule is one
+line - `<Category>/<file>`, under whatever directory the locator was pointed
+at - because the rendition's folder is the answer. The two-step lookup, the
+fallback and `TierPath` are gone with it.
 
-1. `<Category>/<Tier>/<file>`
-2. falling back to `<Category>/<file>`
+A game wanting both its own assets and a rendition's composes two locators;
+Elite's `RenditionAssets` does that, and `IAssetLocator`'s members are
+unchanged, so no consumer of `ImagePaths` and friends knows either exists.
 
-The fallback is what keeps tier-neutral categories from needing a copy
-per tier, and it is why adding a tier folder to a category needs no code
-change beyond pointing that category at `TierPath`.
-
-The tier is chosen once, at construction (`AssetLocator.Create(tier)`),
-not per call. `IAssetLocator`'s members are unchanged, so no consumer of
-`ImagePaths` and friends has to know a tier exists. The tier comes from
-each game's configuration, alongside the resolution setting.
-
-`SystemTier` is an enum in `Useful.Assets` carrying each tier's colour
-budget.
+`SystemTier` is gone. A rendition names itself with a string, because the game
+cannot enumerate what it has never met, and carries its own colour budget in
+its manifest.
 
 ## Decoding
 
@@ -128,9 +148,12 @@ per-format decoder.
 
 ## Colour budgets
 
-Each tier caps the number of distinct opaque colours:
+**Amended on 2026-08-03: a rendition declares these rather than the game
+holding them.** The two Elite ships still declare what the table says, but the
+numbers now live in each one's manifest, because the game cannot know them
+about a rendition it was never built against.
 
-| Tier | Cap |
+| Rendition | Cap |
 | --- | --- |
 | EightBit | 16 |
 | SixteenBit | 4096 |
@@ -138,10 +161,8 @@ Each tier caps the number of distinct opaque colours:
 The cap is a count of distinct values only; which values those may be is
 the separate channel-depth rule below.
 
-The cap applies to the **union across one game's whole asset set for the
-active tier**, not per image: a game's tier corresponds to one machine's
-palette. The union is per game, so Elite and Stunt Car Racer each get
-their own budget.
+The cap applies to the **union across one rendition's whole asset set**, not
+per image: a rendition standing in for a machine stands in for one palette.
 
 Fully transparent pixels are excluded from the count. Alpha is enforced
 to be either 0 or 255 on both tiers, matching the renderer, which
@@ -298,6 +319,10 @@ uncompressed sources in source control but out of the build output.
 
 Each step is independently verifiable, and steps 1–5 do not depend on
 the 8-bit art existing.
+
+**This plan is done, and is kept as the record of how it was built.** Step 3's
+`SystemTier` and tier resolution were later undone when tiers became
+renditions - see the notes above.
 
 1. Glob the asset lists in both game `.csproj` files → verify: build
    both games, asset output directory is unchanged.

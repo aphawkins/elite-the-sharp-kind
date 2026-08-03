@@ -7,6 +7,29 @@ Completed items from the [backlog](docs/backlog-roadmap.md) move here.
 
 ## [Unreleased]
 
+### Changed (Renditions, 2026-08-03)
+
+- Everything the game draws is now a **rendition**: a plugin holding the
+  screens, the HUD, the way planets, suns, stars and ships are drawn, and the
+  artwork, palette, fonts and models they are drawn with. The two that ship
+  live in a **`Renditions` folder beside the executable** and are found at
+  startup, the same way missions are. Nothing in the game knows which
+  renditions exist, so adding one is a folder.
+- **They need not be machines.** A rendition names itself and declares its own
+  resolution and colour limits, so the next one can be futuristic, underwater
+  or psychedelic at whatever size it likes - it is not limited to standing in
+  for 8-bit or 16-bit hardware.
+- **`engine.tier` is now `engine.rendition`**, and takes a name rather than
+  `8Bit`/`16Bit`. Existing config files are read and upgraded the first time
+  they are saved, so a commander keeps the look they had.
+- The Engine Settings screen offers the renditions actually installed, so it
+  is no longer possible to select one that is not there.
+- **Fixed:** a police Viper showed purple on the 16-bit scanner and fired a
+  cyan beam. A ship is one colour everywhere now, so the 16-bit beam is
+  purple to match. 8-bit police stay cyan, where that palette's only purple
+  is already the missile.
+- No other visible change: both renditions draw exactly what they drew before.
+
 ### Changed (Screens become plugins, 2026-08-03)
 
 - The 8-bit and 16-bit screens are no longer written into the game. Each tier

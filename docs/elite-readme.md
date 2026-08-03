@@ -104,9 +104,9 @@ Use Left/Right cursor keys to scroll through ships on the ship parade screen
 There are two, matching the two halves of the config file. Both are reached from the Options Screen (F11). Use the cursor keys to select a setting and Enter/Return to change it; every change takes effect immediately and is saved as it is made, so there is no save step.
 
 - **Game Settings** — how Elite itself looks and plays: planet style, sun style, planet descriptions and instant docking.
-- **Engine Settings** — the settings shared by every game in the collection: graphic style (wireframe or solid), depth sort, music, sound effects, backend and tier.
+- **Engine Settings** — the settings shared by every game in the collection: graphic style (wireframe or solid), depth sort, music, sound effects, backend and rendition.
 
-The last two are marked `*` on the screen: the backend picks the rendering and audio implementation and the tier picks the asset set and render resolution, and both are read before the game is built, so a change to either is saved now and picked up the next time the game starts.
+The last two are marked `*` on the screen: the backend picks the rendering and audio implementation and the rendition picks everything the game draws with, its resolution included, and both are read before the game is built, so a change to either is saved now and picked up the next time the game starts.
 
 ## Configuration
 
@@ -114,7 +114,7 @@ Game settings are held in the `elite.sharp` file, stored in JSON format, in the 
 
 Commander saves carry a `fileType` and a `version`, and name everything they hold — the goods in the hold and on the market by name, the lasers by the mount they are on, and the legal status by its band as well as its bounty — so a save can be read and hand-edited without a copy of the code beside it. Missions are keyed by name, each with its own stage (`"missions": { "Constrictor": { "stage": "Rewarded" } }`), so they are independent of each other and a mission added later is another key rather than a renumbering. A file the game could not itself have written, whether that is the wrong version, an unknown item of cargo or mission, a stage belonging to a different mission, a legal status whose band contradicts its bounty or a value out of range, is rejected and Commander Jameson is loaded instead. Saves written before the format was versioned are not loadable.
 
-The file's `engine` element holds the settings shared by every game — the backend, the tier, the frame rate and the graphic style among them — and is documented in the [main readme](../README.md#configuration). Elite's own settings sit alongside it under `game`, and can take the following values:
+The file's `engine` element holds the settings shared by every game — the backend, the rendition, the frame rate and the graphic style among them — and is documented in the [main readme](../README.md#configuration). Elite's own settings sit alongside it under `game`, and can take the following values:
 
 ``` json
 {
@@ -159,22 +159,38 @@ unless you mean it:
   nothing provides is refused rather than half-loaded. The log says which name
   it could not place.
 
-## Screens
+## Renditions
 
-The screens are plugins too, one assembly per asset tier —
-`EliteSharp.Views.EightBit` and `EliteSharp.Views.SixteenBit` — found in a
-**`Views` folder beside the executable** at startup. Each references
-`EliteSharp.Abstractions` and nothing else, exactly as a mission does, so a
-tier of your own can do everything these do.
+Everything you see is a plugin. A **rendition** is one interpretation of the
+game — its screens, its HUD, the way it draws planets, suns, stars and ships,
+and the artwork, palette, fonts and ship models it draws them with. Each is a
+folder under **`Renditions` beside the executable**, holding an assembly and
+its `Assets`, and the game finds them at startup the same way it finds
+missions.
 
-Unlike the missions, this folder is not optional. The game picks the pack whose
-tier matches `engine.tier` in the config, and **without it there is nothing to
-draw with**, so it refuses to start and says which tier it could not find. A
-pack that is missing a screen is refused the same way, naming every screen it
-does not draw — the check happens before the first frame rather than when the
-commander opens that screen. Both tiers are installed whichever one is
-configured, since the tier is a setting rather than a choice made at install
-time.
+The two that ship stand in for 8-bit and 16-bit machines, but nothing about
+the model requires that: a rendition can be futuristic, underwater or
+psychedelic, at whatever resolution it likes, because it declares its own name,
+its own screen size and its own colour limits. It references
+`EliteSharp.Abstractions` and nothing else, so there is nothing these two can
+do that one of yours cannot.
+
+Unlike the missions, this folder is not optional:
+
+- **The game picks the rendition named by `engine.rendition`.** Without it
+  there is nothing to draw with, so it refuses to start and says which name it
+  could not find.
+- **A rendition missing a screen is refused the same way**, naming every
+  screen it does not draw. The check happens before the first frame rather
+  than when the commander opens that screen.
+- **All installed renditions are offered on the Engine Settings screen**, so a
+  commander can only switch to one that is really there. The change applies
+  next time the game starts, since the window is made at the size the
+  rendition asks for.
+
+Files written before renditions existed say `"tier": "8Bit"`. That is read and
+carried over to `"rendition": "EightBit"` the first time the file is saved, so
+an old config keeps the look it had.
 
 ## Credits
 

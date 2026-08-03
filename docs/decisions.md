@@ -9,7 +9,80 @@ decision may reshape items in either. Newest first. When a decision
 reshapes or unblocks backlog items, those items are updated in the backlog
 to reference the decision here rather than restating it.
 
+## Resolved (2026-08-03) — a tier is a rendition, and a rendition draws everything
+
+The entry below put the screens behind the plugin door and left the rest of
+the drawing in the game. Finishing the job changed what the thing is called
+and what it is allowed to be.
+
+**Not a tier - a rendition.** "Tier" said these were classes of machine that
+rank against each other. They are not: a rendition is one interpretation of
+the game, and the next one need not be a machine at all - futuristic,
+underwater, psychedelic, at any resolution. "Machine" was considered and lost
+for the same reason, though the prose had been reaching for it (the 16-bit
+decision below calls its tier a machine in its own title).
+
+**So the name is a name, not an enum.** `SystemTier` is gone. A closed set of
+two cannot name a rendition the game was never built against, which is the one
+thing the plugin model exists to allow. It is an open string, as a mission's
+is, with the same obligation to stay put across releases. Everything that
+follows falls out of that:
+
+- **A rendition declares what the game used to assume.** Its colour budget,
+  its screen size and its coordinate scale were facts the game held about two
+  known tiers, hardcoded in three different files. They are the rendition's
+  now, which is what makes "any resolution" true rather than aspirational.
+- **An unrecognised name is not repaired away.** Whether one by that name is
+  installed is settled when it is looked for, by a failure that names it.
+- **Config files keep working.** `engine.tier` is read, folded into
+  `engine.rendition` and never written back, so a file upgrades itself the
+  first time it is saved.
+
+**Everything drawn is the rendition's, not just the screens.** The HUD, the
+four planet styles, the three sun styles, the starfield and the colour a ship
+is painted all moved out. The shape each time is the same: the game computes
+and the rendition draws. A planet renderer is handed a centre, a radius and an
+orientation and never sees a position in space; the scanner is handed a model
+like any screen; the starfield is handed the marks the game decided to show.
+What the game keeps is the universe.
+
+- **Base in the contracts, subclass in the rendition.** Colour injection was
+  tried first and rejected: it assumes the two draw identically forever and
+  differ only in palette, which is an accident of the 8-bit layouts being
+  first drafts. A subclass can override as far as the whole draw.
+- **The entropy stays the game's.** A renderer is handed the seeded stream
+  rather than making one - the fractal planet's seed, the sun's rim shimmer -
+  or the same system would stop looking the same on every visit. The cockpit
+  laser's aim rides on its model for the same reason.
+- **The ship's beam is colours, not a renderer.** It draws through the
+  depth-tested polygon path, which is deliberately not on `IViewSurface`;
+  publishing that to give two colours a renderer would hand every rendition
+  the z-buffer pipeline. One `ShipColours` per rendition serves both the
+  scanner and the beam, which is what fixed a 16-bit Viper showing purple on
+  the scanner and firing cyan.
+- **A rendition brings its own artwork.** Art, palette, fonts and models
+  travel with the assembly; the audio stays with the game. This reverses the
+  tier-first layout rejected on 2026-07-30 - see
+  [asset-structure.md](asset-structure.md) for why that objection expired.
+
+Consequences:
+
+- **The game no longer knows which renditions exist.** No switch anywhere
+  names one. Adding a third is a folder.
+- **`Useful` is free of tiers**, which is what lets Stunt Car Racer grow
+  renditions later without forking `AssetLocator`. Its own vestigial
+  `SixteenBit` folders were flattened in passing.
+- **A rendition is now a large thing to write** - every screen, every world
+  renderer, and a full asset set. That is the price of the two shipped ones
+  going through the same door as a stranger's, and it is the right price:
+  the door is known to work rather than assumed to.
+
 ## Resolved (2026-08-03) — the tiers are plugin assemblies too, behind one contracts assembly
+
+> Superseded the same day by the entry above, which renamed all of this and
+> carried it further. The names here - `Views` folder, view pack, `IViewPack`,
+> tier - are the ones it was decided under; the calls it records still stand
+> unless that entry says otherwise.
 
 The mission work proved the door; this puts the presentation through it. Each
 asset tier's screens are now **an assembly the game finds at startup**, in a

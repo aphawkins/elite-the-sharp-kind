@@ -39,20 +39,20 @@ that mentions a decision.
 
 ## Should
 
-### Tier presentation architecture
+### Rendition presentation architecture
 
-The controller/view split and the per-tier view split are both **done** (see
-[CHANGELOG.md](../CHANGELOG.md) for what landed when); the rules that came
-out of them live in
-[architecture-principles.md](architecture-principles.md)'s "Screens:
-controllers, models and per-tier views". What is left open:
+The controller/view split, the per-rendition split and the move of every
+renderer into a rendition plugin are all **done** (see
+[CHANGELOG.md](../CHANGELOG.md) for what landed when); the rules that came out
+of them live in [architecture-principles.md](architecture-principles.md)'s
+"Screens and renderers". What is left open:
 
 - [ ] [EliteSharpLib] `ShortRangeChartController.CrossBounds` derives both
-      tiers' cross-hair clamps from `Scale` (`18 * scale + 1` and
+      renditions' cross-hair clamps from `Scale` (`18 * scale + 1` and
       `Height - (16 * scale + 1)`), which reproduces the previous per-tier
-      constants exactly at scale 1 and 2. If a tier ever wants clamps that
+      constants exactly at scale 1 and 2. If a rendition ever wants clamps that
       are not a straight multiple of the 8-bit ones, this goes back to being
-      per-tier data on the model.
+      per-rendition data on the model.
 
 ### Release engineering (from the retired release plan)
 
